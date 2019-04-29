@@ -2,39 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C29F0E1A6
-	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 13:55:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1BC8E200
+	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 14:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbfD2Lzb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Apr 2019 07:55:31 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:54569 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727710AbfD2Lzb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Apr 2019 07:55:31 -0400
-Received: by mail-wm1-f67.google.com with SMTP id b10so316753wmj.4;
-        Mon, 29 Apr 2019 04:55:29 -0700 (PDT)
+        id S1727971AbfD2ML4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Apr 2019 08:11:56 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40258 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727913AbfD2ML4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Apr 2019 08:11:56 -0400
+Received: by mail-wr1-f68.google.com with SMTP id h4so15674041wre.7;
+        Mon, 29 Apr 2019 05:11:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:openpgp:autocrypt
+        h=x-gm-message-state:subject:from:to:cc:references:openpgp:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=c4DQQlMYpYLPNWy1jkTEOIN3Thpw5NnN0jol7sCodho=;
-        b=rapsKFJUy0H8g3WAn8xxvkHmdXlljl5Iw1LgDmbugjIsKHZ1SxeLtsdsaP5CCDHJ3G
-         Koj6EMEAw/WYKeJ0asZVz8pYWj7R7cDSjlESINojIfn32/dfIKsIZ6TLKCjOMnzo1E3z
-         J717vealwUMGvDe7rBo4pW9y/icUQdHDgEueqxgrDzg8RJT3MGld5aPGLfE3grBNWciy
-         8uRqqX2UzK1osx2pCPAntzgM+qzOlfshqzqIXPbi5jzaWm4m/gjmU2AkvzORGxg98rFV
-         /nkO6IRD7XzvkC3xGRLxQHbq2OOCJKMosc7WgyDwC5VmkQdMO7sRlvdrwYFnc7b+FH/6
-         SU8w==
-X-Gm-Message-State: APjAAAWlwOQwxzS3H/wAMi9a4jh4V7VkB56ygidiyMA2bq5WPVVNKCF5
-        oGJVUa3icfcmDIrDFHTs6aA=
-X-Google-Smtp-Source: APXvYqx/22oAr8zW29ywyTAM4/CLNybWia5AhbVFjmxehnchgKx1c7pMfzhQ7qY/TMBZEFwTzqQgxQ==
-X-Received: by 2002:a1c:1a85:: with SMTP id a127mr3302088wma.139.1556538929216;
-        Mon, 29 Apr 2019 04:55:29 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id d11sm29364711wrc.32.2019.04.29.04.55.27
+        bh=fNgtKi8T64RHceHJupE8PdZ7i8PveePQCjbL80UGZm0=;
+        b=BY+9QtgbGTh8j4Yi2psk5dgqSEEWFIeMLZnbdHasBnBmeItA+4sOGnwkVRb7n6elB7
+         JJqeFILv6T5TksLBAw7SUh6mUwGAkh+0kfZMbBaE0HcUW4CBktBEDkhKYI7p2GFG/acw
+         +BGPXWBQfHelySguUVSAOnY8viSJR0EGBRf8fP3V2pzwz0yLOCgdPENo+M71QpdXs1nh
+         4+Xp+xHDaCuEgsFh7VOXu0OBWJG9f0fnNDUoLnnxfx+9igd5+mvUDiEp+/WkEnKGPOFf
+         ci11SPpZjGkeiMLb1zTu29EtZFbWL4f1xhGEBgNbUxIOl8+tvWHNvzoH0l2gJrLE1J3l
+         AriQ==
+X-Gm-Message-State: APjAAAXJrUBR/L7xBCIkHAeLu7o/Z+Zf4yv15TtJBi0iIY3PhLuJuR2I
+        r6nCOn/w5qj+NjOZ5iZ9SSA=
+X-Google-Smtp-Source: APXvYqyMBKeaNsl8I4efNful1pC1ysaJWAkdI4FpZQPvjV0aCc00T4NLLoS4haCUfXWBcxnZ7cXMUw==
+X-Received: by 2002:a5d:674f:: with SMTP id l15mr16726370wrw.41.1556539914740;
+        Mon, 29 Apr 2019 05:11:54 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id z13sm26944816wrh.41.2019.04.29.05.11.52
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 04:55:28 -0700 (PDT)
+        Mon, 29 Apr 2019 05:11:53 -0700 (PDT)
 Subject: Re: [PATCH] memcg: make it work on sparse non-0-node systems
+From:   Jiri Slaby <jslaby@suse.cz>
 To:     Michal Hocko <mhocko@kernel.org>
 Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -44,7 +45,7 @@ Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
 References: <359d98e6-044a-7686-8522-bdd2489e9456@suse.cz>
  <20190429105939.11962-1-jslaby@suse.cz>
  <20190429112916.GI21837@dhcp22.suse.cz>
-From:   Jiri Slaby <jslaby@suse.cz>
+ <465a4b50-490c-7978-ecb8-d122b655f868@suse.cz>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
  mQINBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -88,12 +89,12 @@ Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
  9HKkJqkN9xYEYaxtfl5pelF8idoxMZpTvCZY7jhnl2IemZCBMs6s338wS12Qro5WEAxV6cjD
  VSdmcD5l9plhKGLmgVNCTe8DPv81oDn9s0cIRLg9wNnDtj8aIiH8lBHwfUkpn32iv0uMV6Ae
  sLxhDWfOR4N+wu1gzXWgLel4drkCJcuYK5IL1qaZDcuGR8RPo3jbFO7Y
-Message-ID: <465a4b50-490c-7978-ecb8-d122b655f868@suse.cz>
-Date:   Mon, 29 Apr 2019 13:55:26 +0200
+Message-ID: <a8c032b3-a0be-1710-3ec3-cc3b0b1aaa67@suse.cz>
+Date:   Mon, 29 Apr 2019 14:11:51 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190429112916.GI21837@dhcp22.suse.cz>
+In-Reply-To: <465a4b50-490c-7978-ecb8-d122b655f868@suse.cz>
 Content-Type: text/plain; charset=iso-8859-2
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -102,32 +103,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 29. 04. 19, 13:30, Michal Hocko wrote:
-> On Mon 29-04-19 12:59:39, Jiri Slaby wrote:
-> [...]
->>  static inline bool list_lru_memcg_aware(struct list_lru *lru)
->>  {
->> -	/*
->> -	 * This needs node 0 to be always present, even
->> -	 * in the systems supporting sparse numa ids.
->> -	 */
->> -	return !!lru->node[0].memcg_lrus;
->> +	return !!lru->node[first_online_node].memcg_lrus;
->>  }
->>  
->>  static inline struct list_lru_one *
-> 
-> How come this doesn't blow up later - e.g. in memcg_destroy_list_lru
-> path which does iterate over all existing nodes thus including the
-> node 0.
+On 29. 04. 19, 13:55, Jiri Slaby wrote:
+> Well, I could have used first_node. But I am not sure, if the first
+> POSSIBLE node is also ONLINE during boot?
 
-If the node is not disabled (i.e. is N_POSSIBLE), lru->node is allocated
-for that node too. It will also have memcg_lrus properly set.
-
-If it is disabled, it will never be iterated.
-
-Well, I could have used first_node. But I am not sure, if the first
-POSSIBLE node is also ONLINE during boot?
+Thinking about it, it does not matter, actually. Both first_node and
+first_online are allocated and set up, no matter which one is ONLINE
+node. So first_node should work as good as first_online_node.
 
 thanks,
 -- 
