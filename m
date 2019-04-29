@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30428DF61
-	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 11:25:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0969E047
+	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 12:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727393AbfD2JZy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Apr 2019 05:25:54 -0400
-Received: from mail-wr1-f46.google.com ([209.85.221.46]:41603 "EHLO
-        mail-wr1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727072AbfD2JZy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Apr 2019 05:25:54 -0400
-Received: by mail-wr1-f46.google.com with SMTP id c12so14914224wrt.8;
-        Mon, 29 Apr 2019 02:25:52 -0700 (PDT)
+        id S1727630AbfD2KJ6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Apr 2019 06:09:58 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:38958 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727428AbfD2KJ5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Apr 2019 06:09:57 -0400
+Received: by mail-wr1-f47.google.com with SMTP id a9so15149848wrp.6;
+        Mon, 29 Apr 2019 03:09:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:from:to:references:openpgp:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=h3OFNZlc6AsyomiHCZN9csfMCoi5Fu5j7kwL8xvJ/EI=;
-        b=HosF3yWORCx/Khe0yKD48YcoxB4HO+er8494Qi3MRt2eQonDH4IxeYGD9Hlc6rmrbs
-         dtasm9Sdcb8eyRCAYxFYOssRd+PMLnArwVkikATyO6c+BsQHlzuR1VjpWAG0uRHSUiX9
-         UHG7SS6tt+ulPGZkShSyx9u7N0QKNz0wduLFdmrssGtp7gMMGnuYcRHziAV8pyCLwGyw
-         +1pLrgiLfZeqLWsSrI7Xt9EArkpC0EfGT0FJxXRfCaPsm67Ytcu4b9+XRVittz3dxTHP
-         XyKeQ9I5lsrBWvpQNdQ4lFJo+Bb3bb3gUOJbQpQr3ponu/v+kZxhtSJVnbk9LuMaP6gf
-         Mjhg==
-X-Gm-Message-State: APjAAAVwfEHPSFr4RIyaPgd/OLadWz0SqHN2GIb/KhyRpgcgSBtmC+ns
-        EZIEMLCEmx284E5s33oK+F3IDu4l
-X-Google-Smtp-Source: APXvYqxOoG4OBatYmeSRwTce5Lf9o59n26SnyEGs0poOyhvWeg/ZZSa8RM28nQiZ1fD7lwtHWz1A+Q==
-X-Received: by 2002:a5d:4cd1:: with SMTP id c17mr4819108wrt.231.1556529951489;
-        Mon, 29 Apr 2019 02:25:51 -0700 (PDT)
+        bh=LlnFjg7cdPtMY68Qxa9DGaNp90LnLg5WJLNWEjaCUC4=;
+        b=ne6ebrjTdvxWmppwXsfN5lt11thtkmBDSvHRS1voP5+lzkrR+IjPEo7Qf0tkk8bmrC
+         0or/57s15i3G9V28X9eYs0fdscIgXQ9elgtxQIcbcmX+CDg766pwWXvRnsOSaNiR+VyS
+         VqrsSuqJ0zwiyU1czeo4novNYWzJLoMjDGuV//n24i6biAMZD51RvkLVXz+peBeNYd4d
+         a73YilRAZuqaPVm/W6QzDmx87MpF8GeMf+TrjsOXsiW4XPWJRlmSBKfupFTXZ6N2cbeW
+         PwVFTUTb7NSYSY1Xvlo0ZAlDVG8xcWKMB+tYqx0Wtc6EJQowmTaqERcPpzT/ouqf945Z
+         tX5g==
+X-Gm-Message-State: APjAAAVFjY36XkCda1SGQ3gixUkC+x8DcLTpXXXA8l5LEwYlM/1z6N2D
+        qihr+9fzJiEbpfpTM2Uj3+As1oHq
+X-Google-Smtp-Source: APXvYqyQllye7cYKik/HsHVmOu+rnX3aOFJuOpS91pLvtihzNHOqYA8tSvhUlIwQGmNwi9UD/60WAA==
+X-Received: by 2002:a5d:5308:: with SMTP id e8mr9950716wrv.126.1556532595633;
+        Mon, 29 Apr 2019 03:09:55 -0700 (PDT)
 Received: from ?IPv6:2a0b:e7c0:0:107::49? ([2a0b:e7c0:0:107::49])
-        by smtp.gmail.com with ESMTPSA id v192sm32733168wme.24.2019.04.29.02.25.49
-        (version=TLS1_3 cipher=AEAD-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 02:25:49 -0700 (PDT)
+        by smtp.gmail.com with ESMTPSA id s124sm13406184wmf.42.2019.04.29.03.09.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 29 Apr 2019 03:09:54 -0700 (PDT)
 Subject: Re: memcg causes crashes in list_lru_add
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     Johannes Weiner <hannes@cmpxchg.org>,
@@ -42,6 +42,7 @@ To:     Johannes Weiner <hannes@cmpxchg.org>,
         cgroups@vger.kernel.org, mm <linux-mm@kvack.org>,
         Linux kernel mailing list <linux-kernel@vger.kernel.org>
 References: <f0cfcfa7-74d0-8738-1061-05d778155462@suse.cz>
+ <2cbfb8dc-31f0-7b95-8a93-954edb859cd8@suse.cz>
 Openpgp: preference=signencrypt
 Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
  mQINBE6S54YBEACzzjLwDUbU5elY4GTg/NdotjA0jyyJtYI86wdKraekbNE0bC4zV+ryvH4j
@@ -85,12 +86,12 @@ Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
  9HKkJqkN9xYEYaxtfl5pelF8idoxMZpTvCZY7jhnl2IemZCBMs6s338wS12Qro5WEAxV6cjD
  VSdmcD5l9plhKGLmgVNCTe8DPv81oDn9s0cIRLg9wNnDtj8aIiH8lBHwfUkpn32iv0uMV6Ae
  sLxhDWfOR4N+wu1gzXWgLel4drkCJcuYK5IL1qaZDcuGR8RPo3jbFO7Y
-Message-ID: <2cbfb8dc-31f0-7b95-8a93-954edb859cd8@suse.cz>
-Date:   Mon, 29 Apr 2019 11:25:48 +0200
+Message-ID: <359d98e6-044a-7686-8522-bdd2489e9456@suse.cz>
+Date:   Mon, 29 Apr 2019 12:09:53 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <f0cfcfa7-74d0-8738-1061-05d778155462@suse.cz>
+In-Reply-To: <2cbfb8dc-31f0-7b95-8a93-954edb859cd8@suse.cz>
 Content-Type: text/plain; charset=iso-8859-2
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -99,48 +100,40 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 29. 04. 19, 10:16, Jiri Slaby wrote:
-> Hi,
-> 
-> with new enough systemd, one of our systems 100% crashes during boot.
-> Kernels I tried are all affected: 5.1-rc7, 5.0.10 stable, 4.12.14.
-> 
-> The 5.1-rc7 crash:
->> [   12.022637] systemd[1]: Starting Create list of required static device nodes for the current kernel...
->> [   12.023353] BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
->> [   12.041502] #PF error: [normal kernel read fault]
->> [   12.041502] PGD 0 P4D 0 
->> [   12.041502] Oops: 0000 [#1] SMP NOPTI
->> [   12.041502] CPU: 0 PID: 208 Comm: (kmod) Not tainted 5.1.0-rc7-1.g04c1966-default #1 openSUSE Tumbleweed (unreleased)
->> [   12.041502] Hardware name: Supermicro H8DSP-8/H8DSP-8, BIOS 080011  06/30/2006
->> [   12.041502] RIP: 0010:list_lru_add+0x94/0x170
->> [   12.041502] Code: c6 07 00 66 66 66 90 31 c0 5b 5d 41 5c 41 5d 41 5e 41 5f c3 49 8b 7c 24 20 49 8d 54 24 08 48 85 ff 74 07 e9 46 00 00 00 31 ff <48> 8b 42 08 4c 89 6a 08 49 89 55 00 49 89 45 08 4c 89 28 48 8b 42
->> [   12.041502] RSP: 0018:ffffb11b8091be50 EFLAGS: 00010202
->> [   12.041502] RAX: 0000000000000001 RBX: ffff930b35705a40 RCX: ffff9309cf21ade0
->> [   12.041502] RDX: 0000000000000000 RSI: ffff930ab61bc587 RDI: ffff930a17711000
->> [   12.041502] RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
->> [   12.041502] R10: 0000000000000000 R11: 0000000000000008 R12: ffff9309f5f86640
->> [   12.041502] R13: ffff930ab5705a40 R14: 0000000000000001 R15: ffff930a171dc4e0
->> [   12.041502] FS:  00007f42d6ea5940(0000) GS:ffff930ab7800000(0000) knlGS:0000000000000000
->> [   12.041502] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [   12.041502] CR2: 0000000000000008 CR3: 0000000057dec000 CR4: 00000000000006f0
->> [   12.041502] Call Trace:
->> [   12.041502]  d_lru_add+0x44/0x50
+On 29. 04. 19, 11:25, Jiri Slaby wrote:> memcg_update_all_list_lrus
+should take care about resizing the array.
 
-...
+It should, but:
+[    0.058362] Number of physical nodes 2
+[    0.058366] Skipping disabled node 0
 
-> and even makes the beast booting. memcg has very wrong assumptions on
-> 'memcg_nr_cache_ids'. It does not assume it can change later, despite it
-> does.
-...
-> I am not sure why this is machine-dependent. I cannot reproduce on any
-> other box.
-> 
-> Any idea how to fix this mess?
+So this should be the real fix:
+--- linux-5.0-stable1.orig/mm/list_lru.c
++++ linux-5.0-stable1/mm/list_lru.c
+@@ -37,11 +37,12 @@ static int lru_shrinker_id(struct list_l
 
-memcg_update_all_list_lrus should take care about resizing the array. So
-it looks like list_lru_from_memcg_idx returns a stale pointer to
-list_lru_from_kmem and then to list_lru_add. Still investigating.
+ static inline bool list_lru_memcg_aware(struct list_lru *lru)
+ {
+-       /*
+-        * This needs node 0 to be always present, even
+-        * in the systems supporting sparse numa ids.
+-        */
+-       return !!lru->node[0].memcg_lrus;
++       int i;
++
++       for_each_online_node(i)
++               return !!lru->node[i].memcg_lrus;
++
++       return false;
+ }
+
+ static inline struct list_lru_one *
+
+
+
+
+
+Opinions?
 
 thanks,
 -- 
