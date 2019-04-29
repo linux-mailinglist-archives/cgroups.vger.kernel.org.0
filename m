@@ -2,116 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D1BC8E200
-	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 14:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8059E233
+	for <lists+cgroups@lfdr.de>; Mon, 29 Apr 2019 14:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727971AbfD2ML4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Apr 2019 08:11:56 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:40258 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727913AbfD2ML4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Apr 2019 08:11:56 -0400
-Received: by mail-wr1-f68.google.com with SMTP id h4so15674041wre.7;
-        Mon, 29 Apr 2019 05:11:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:openpgp:autocrypt
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=fNgtKi8T64RHceHJupE8PdZ7i8PveePQCjbL80UGZm0=;
-        b=BY+9QtgbGTh8j4Yi2psk5dgqSEEWFIeMLZnbdHasBnBmeItA+4sOGnwkVRb7n6elB7
-         JJqeFILv6T5TksLBAw7SUh6mUwGAkh+0kfZMbBaE0HcUW4CBktBEDkhKYI7p2GFG/acw
-         +BGPXWBQfHelySguUVSAOnY8viSJR0EGBRf8fP3V2pzwz0yLOCgdPENo+M71QpdXs1nh
-         4+Xp+xHDaCuEgsFh7VOXu0OBWJG9f0fnNDUoLnnxfx+9igd5+mvUDiEp+/WkEnKGPOFf
-         ci11SPpZjGkeiMLb1zTu29EtZFbWL4f1xhGEBgNbUxIOl8+tvWHNvzoH0l2gJrLE1J3l
-         AriQ==
-X-Gm-Message-State: APjAAAXJrUBR/L7xBCIkHAeLu7o/Z+Zf4yv15TtJBi0iIY3PhLuJuR2I
-        r6nCOn/w5qj+NjOZ5iZ9SSA=
-X-Google-Smtp-Source: APXvYqyMBKeaNsl8I4efNful1pC1ysaJWAkdI4FpZQPvjV0aCc00T4NLLoS4haCUfXWBcxnZ7cXMUw==
-X-Received: by 2002:a5d:674f:: with SMTP id l15mr16726370wrw.41.1556539914740;
-        Mon, 29 Apr 2019 05:11:54 -0700 (PDT)
-Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
-        by smtp.gmail.com with ESMTPSA id z13sm26944816wrh.41.2019.04.29.05.11.52
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 29 Apr 2019 05:11:53 -0700 (PDT)
-Subject: Re: [PATCH] memcg: make it work on sparse non-0-node systems
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S1728104AbfD2MWV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Apr 2019 08:22:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55076 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727710AbfD2MWT (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 29 Apr 2019 08:22:19 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7349CAE1B;
+        Mon, 29 Apr 2019 12:22:18 +0000 (UTC)
+Date:   Mon, 29 Apr 2019 08:22:14 -0400
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org,
-        Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
-References: <359d98e6-044a-7686-8522-bdd2489e9456@suse.cz>
- <20190429105939.11962-1-jslaby@suse.cz>
- <20190429112916.GI21837@dhcp22.suse.cz>
- <465a4b50-490c-7978-ecb8-d122b655f868@suse.cz>
-Openpgp: preference=signencrypt
-Autocrypt: addr=jslaby@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <a8c032b3-a0be-1710-3ec3-cc3b0b1aaa67@suse.cz>
-Date:   Mon, 29 Apr 2019 14:11:51 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] memcg, oom: no oom-kill for __GFP_RETRY_MAYFAIL
+Message-ID: <20190429122214.GK21837@dhcp22.suse.cz>
+References: <20190428235613.166330-1-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <465a4b50-490c-7978-ecb8-d122b655f868@suse.cz>
-Content-Type: text/plain; charset=iso-8859-2
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190428235613.166330-1-shakeelb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 29. 04. 19, 13:55, Jiri Slaby wrote:
-> Well, I could have used first_node. But I am not sure, if the first
-> POSSIBLE node is also ONLINE during boot?
+On Sun 28-04-19 16:56:13, Shakeel Butt wrote:
+> The documentation of __GFP_RETRY_MAYFAIL clearly mentioned that the
+> OOM killer will not be triggered and indeed the page alloc does not
+> invoke OOM killer for such allocations. However we do trigger memcg
+> OOM killer for __GFP_RETRY_MAYFAIL. Fix that.
 
-Thinking about it, it does not matter, actually. Both first_node and
-first_online are allocated and set up, no matter which one is ONLINE
-node. So first_node should work as good as first_online_node.
+An example of __GFP_RETRY_MAYFAIL memcg OOM report would be nice. I
+thought we haven't been using that flag for memcg allocations yet.
+But this is definitely good to have addressed.
 
-thanks,
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c | 4 +---
+>  1 file changed, 1 insertion(+), 3 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2713b45ec3f0..99eca724ed3b 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2294,7 +2294,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	unsigned long nr_reclaimed;
+>  	bool may_swap = true;
+>  	bool drained = false;
+> -	bool oomed = false;
+>  	enum oom_status oom_status;
+>  
+>  	if (mem_cgroup_is_root(memcg))
+> @@ -2381,7 +2380,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (nr_retries--)
+>  		goto retry;
+>  
+> -	if (gfp_mask & __GFP_RETRY_MAYFAIL && oomed)
+> +	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+>  		goto nomem;
+>  
+>  	if (gfp_mask & __GFP_NOFAIL)
+> @@ -2400,7 +2399,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	switch (oom_status) {
+>  	case OOM_SUCCESS:
+>  		nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
+> -		oomed = true;
+>  		goto retry;
+>  	case OOM_FAILED:
+>  		goto force;
+> -- 
+> 2.21.0.593.g511ec345e18-goog
+> 
+
 -- 
-js
-suse labs
+Michal Hocko
+SUSE Labs
