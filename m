@@ -2,151 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ACC1E108AE
-	for <lists+cgroups@lfdr.de>; Wed,  1 May 2019 16:03:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29AF8109B3
+	for <lists+cgroups@lfdr.de>; Wed,  1 May 2019 16:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbfEAODI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 May 2019 10:03:08 -0400
-Received: from mga09.intel.com ([134.134.136.24]:3043 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbfEAODI (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 May 2019 10:03:08 -0400
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 May 2019 07:03:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.60,417,1549958400"; 
-   d="scan'208";a="145141419"
-Received: from nperf12.hd.intel.com ([10.127.88.161])
-  by fmsmga008.fm.intel.com with ESMTP; 01 May 2019 07:03:06 -0700
-From:   Brian Welty <brian.welty@intel.com>
-To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        ChunMing Zhou <David1.Zhou@amd.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>
-Subject: [RFC PATCH 5/5] drm/i915: Use memory cgroup for enforcing device memory limit
-Date:   Wed,  1 May 2019 10:04:38 -0400
-Message-Id: <20190501140438.9506-6-brian.welty@intel.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190501140438.9506-1-brian.welty@intel.com>
-References: <20190501140438.9506-1-brian.welty@intel.com>
+        id S1726836AbfEAO7Y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 May 2019 10:59:24 -0400
+Received: from mail-eopbgr820045.outbound.protection.outlook.com ([40.107.82.45]:34496
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726488AbfEAO7X (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 1 May 2019 10:59:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gu7yXynnbn64/JHBjYRJffGIJ85vxavJ8+hMR4oGLdg=;
+ b=xUp2IZTDqHMw1IJXotJzA9ExrsbCQ/bHLcN8QiAmrgDOc7pSIAJsvRW835fpwKLiAVsVnQtcuc8+iEDanYQ/MYeF3XDGcFipyDszuRT2qeFqJhkQ7rCHIVa96EHKIt6bCHmpEBTbAf0O7WezyXh6Xqv2eGf6Reur1RQx9qGP1Yc=
+Received: from BYAPR12MB3384.namprd12.prod.outlook.com (20.178.55.225) by
+ BYAPR12MB3525.namprd12.prod.outlook.com (20.179.94.138) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1835.13; Wed, 1 May 2019 14:59:21 +0000
+Received: from BYAPR12MB3384.namprd12.prod.outlook.com
+ ([fe80::7496:be8b:650:d66a]) by BYAPR12MB3384.namprd12.prod.outlook.com
+ ([fe80::7496:be8b:650:d66a%4]) with mapi id 15.20.1835.018; Wed, 1 May 2019
+ 14:59:21 +0000
+From:   "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
+To:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+CC:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
+Subject: [PATCH 0/4] AMDKFD (AMD GPU compute) support for device cgroup.
+Thread-Topic: [PATCH 0/4] AMDKFD (AMD GPU compute) support for device cgroup.
+Thread-Index: AQHVAC51igvNBcs4pE2jTJvFXPXmtw==
+Date:   Wed, 1 May 2019 14:59:21 +0000
+Message-ID: <20190501145904.27505-1-Harish.Kasiviswanathan@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [165.204.55.251]
+x-clientproxiedby: YQBPR0101CA0024.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:c00::37) To BYAPR12MB3384.namprd12.prod.outlook.com
+ (2603:10b6:a03:a9::33)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Harish.Kasiviswanathan@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-mailer: git-send-email 2.17.1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5e68c156-80fc-4a91-7d5d-08d6ce4597a4
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:BYAPR12MB3525;
+x-ms-traffictypediagnostic: BYAPR12MB3525:
+x-microsoft-antispam-prvs: <BYAPR12MB3525F66449E7171C342B918C8C3B0@BYAPR12MB3525.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6108;
+x-forefront-prvs: 00246AB517
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(396003)(376002)(366004)(346002)(136003)(189003)(199004)(1076003)(5660300002)(316002)(25786009)(68736007)(4326008)(86362001)(7736002)(2906002)(110136005)(52116002)(2501003)(36756003)(6512007)(3846002)(6116002)(99286004)(53936002)(186003)(8676002)(14444005)(256004)(66946007)(102836004)(50226002)(14454004)(66066001)(73956011)(478600001)(66556008)(72206003)(71190400001)(81156014)(81166006)(2616005)(66476007)(64756008)(71200400001)(476003)(305945005)(26005)(386003)(486006)(6486002)(8936002)(6436002)(6506007)(66446008);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR12MB3525;H:BYAPR12MB3384.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: uLjQESMACGI4stCF/w7wWTgSXLeDU+K7FWyQf1aLs5Ut1ejaKKFwI6L3MCyDT0eOxGJuhNyCej7wg+h57LARNmk2mR15UKNC1L3Iz63a4rKRwir873uhC257/+d6VzOvCJAz4C9WTXDehHf15WqbtvtL7aixcwzr3qZZXZV7sLG++le7kCMSpHLRa+0yyrUNlsDrL7ZiUtK0CqowZRmsK49eM7C1FaxXygDvjgJfa3VdJtw3xmsPMFTxAXHd9A9RXsqmd5DfvIuC2V0apTqGQW3rkeescf0kF2yD7eP4YT4F1Qi2W6nrWqF45CB0bfHlSgpLmUlfvDk1NxgPtPN2fYKylvQAsPpuFAaX4wAZyVyvbMjn5Ug0gTCn5W0ChAg6+02s4jDk7obnWsguMPJdMleMBDVq1ZQW4Ts34ueevYQ=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5e68c156-80fc-4a91-7d5d-08d6ce4597a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 01 May 2019 14:59:21.5311
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3525
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-i915 driver now includes DRIVER_CGROUPS in feature bits.
-
-To charge device memory allocations, we need to (1) identify appropriate
-cgroup to charge (currently decided at object creation time), and (2)
-make the charging call at the time that memory pages are being allocated.
-
-For (1), see prior DRM patch which associates current task's cgroup with
-GEM objects as they are created.  That cgroup will be charged/uncharged
-for all paging activity against the GEM object.
-
-For (2), we call mem_cgroup_try_charge_direct() in .get_pages callback
-for the GEM object type.  Uncharging is done in .put_pages when the
-memory is marked such that it can be evicted.  The try_charge() call will
-fail with -ENOMEM if the current memory allocation will exceed the cgroup
-device memory maximum, and allow for driver to perform memory reclaim.
-
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: dri-devel@lists.freedesktop.org
-Cc: Matt Roper <matthew.d.roper@intel.com>
-Signed-off-by: Brian Welty <brian.welty@intel.com>
----
- drivers/gpu/drm/i915/i915_drv.c            |  2 +-
- drivers/gpu/drm/i915/intel_memory_region.c | 24 ++++++++++++++++++----
- 2 files changed, 21 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
-index 5a0a59922cb4..4d496c3c3681 100644
---- a/drivers/gpu/drm/i915/i915_drv.c
-+++ b/drivers/gpu/drm/i915/i915_drv.c
-@@ -3469,7 +3469,7 @@ static struct drm_driver driver = {
- 	 * deal with them for Intel hardware.
- 	 */
- 	.driver_features =
--	    DRIVER_GEM | DRIVER_PRIME |
-+	    DRIVER_GEM | DRIVER_PRIME | DRIVER_CGROUPS |
- 	    DRIVER_RENDER | DRIVER_MODESET | DRIVER_ATOMIC | DRIVER_SYNCOBJ,
- 	.release = i915_driver_release,
- 	.open = i915_driver_open,
-diff --git a/drivers/gpu/drm/i915/intel_memory_region.c b/drivers/gpu/drm/i915/intel_memory_region.c
-index 813ff83c132b..e4ac5e4d4857 100644
---- a/drivers/gpu/drm/i915/intel_memory_region.c
-+++ b/drivers/gpu/drm/i915/intel_memory_region.c
-@@ -53,6 +53,8 @@ i915_memory_region_put_pages_buddy(struct drm_i915_gem_object *obj,
- 	mutex_unlock(&obj->memory_region->mm_lock);
- 
- 	obj->mm.dirty = false;
-+	mem_cgroup_uncharge_direct(obj->base.memcg,
-+				   obj->base.size >> PAGE_SHIFT);
- }
- 
- int
-@@ -65,19 +67,29 @@ i915_memory_region_get_pages_buddy(struct drm_i915_gem_object *obj)
- 	struct scatterlist *sg;
- 	unsigned int sg_page_sizes;
- 	unsigned long n_pages;
-+	int err;
- 
- 	GEM_BUG_ON(!IS_ALIGNED(size, mem->mm.min_size));
- 	GEM_BUG_ON(!list_empty(&obj->blocks));
- 
-+	err = mem_cgroup_try_charge_direct(obj->base.memcg, size >> PAGE_SHIFT);
-+	if (err) {
-+		DRM_DEBUG("MEMCG: try_charge failed for %lld\n", size);
-+		return err;
-+	}
-+
- 	st = kmalloc(sizeof(*st), GFP_KERNEL);
--	if (!st)
--		return -ENOMEM;
-+	if (!st) {
-+		err = -ENOMEM;
-+		goto err_uncharge;
-+	}
- 
- 	n_pages = div64_u64(size, mem->mm.min_size);
- 
- 	if (sg_alloc_table(st, n_pages, GFP_KERNEL)) {
- 		kfree(st);
--		return -ENOMEM;
-+		err = -ENOMEM;
-+		goto err_uncharge;
- 	}
- 
- 	sg = st->sgl;
-@@ -161,7 +173,11 @@ i915_memory_region_get_pages_buddy(struct drm_i915_gem_object *obj)
- err_free_blocks:
- 	memory_region_free_pages(obj, st);
- 	mutex_unlock(&mem->mm_lock);
--	return -ENXIO;
-+	err = -ENXIO;
-+err_uncharge:
-+	mem_cgroup_uncharge_direct(obj->base.memcg,
-+				   obj->base.size >> PAGE_SHIFT);
-+	return err;
- }
- 
- int i915_memory_region_init_buddy(struct intel_memory_region *mem)
--- 
-2.21.0
-
+YW1ka2ZkIChwYXJ0IG9mIGFtZGdwdSkgZHJpdmVyIHN1cHBvcnRzIHRoZSBBTUQgR1BVIGNvbXB1
+dGUgc3RhY2suDQphbWRrZmQgZXhwb3NlcyBvbmx5IGEgc2luZ2xlIGRldmljZSAvZGV2L2tmZCBl
+dmVuIGlmIG11bHRpcGxlIEFNRCBHUFUNCihjb21wdXRlKSBkZXZpY2VzIGV4aXN0IGluIGEgc3lz
+dGVtLiBIb3dldmVyLCBhbWRncHUgZHJ2aWVyIGV4cG9zZXMgYQ0Kc2VwYXJhdGUgcmVuZGVyIGRl
+dmljZSBmaWxlIC9kZXYvZHJpL3JlbmRlckROIGZvciBlYWNoIGRldmljZS4gVG8gcGFydGljaXBh
+dGUNCmluIGRldmljZSBjZ3JvdXAgYW1ka2ZkIGRyaXZlciB3aWxsIHJlbHkgb24gdGhlc2UgcmVk
+bmVyIGRldmljZSBmaWxlcy4NCg0KSGFyaXNoIEthc2l2aXN3YW5hdGhhbiAoNCk6DQogIGRybS9h
+bWRrZmQ6IFN0b3JlIGtmZF9kZXYgaW4gaW9saW5rIGFuZCBjYWNoZSBwcm9wZXJ0aWVzDQogIGRy
+bS9hbWQ6IFBhc3MgZHJtX2RldmljZSB0byBrZmQNCiAgZGV2aWNlX2Nncm91cDogRXhwb3J0IF9f
+ZGV2Y2dyb3VwX2NoZWNrX3Blcm1pc3Npb24NCiAgZHJtL2FtZGtmZDogQ2hlY2sgYWdhaW5zdCBk
+ZXZpY2UgY2dyb3VwDQoNCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGdwdS9hbWRncHVfYW1ka2Zk
+LmMgICB8ICAyICstDQogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1kZ3B1X2FtZGtmZC5o
+ICAgfCAgMSArDQogZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRrZmQva2ZkX2RldmljZS5jICAgICAg
+fCAgMiArKw0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tmZF9mbGF0X21lbW9yeS5jIHwg
+IDkgKysrKysrLS0NCiBkcml2ZXJzL2dwdS9kcm0vYW1kL2FtZGtmZC9rZmRfcHJpdi5oICAgICAg
+ICB8IDIwICsrKysrKysrKysrKysrKysrKw0KIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1ka2ZkL2tm
+ZF90b3BvbG9neS5jICAgIHwgMjIgKysrKysrKysrKysrKysrKysrKysNCiBkcml2ZXJzL2dwdS9k
+cm0vYW1kL2FtZGtmZC9rZmRfdG9wb2xvZ3kuaCAgICB8ICAzICsrKw0KIHNlY3VyaXR5L2Rldmlj
+ZV9jZ3JvdXAuYyAgICAgICAgICAgICAgICAgICAgIHwgIDEgKw0KIDggZmlsZXMgY2hhbmdlZCwg
+NTcgaW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCg0KLS0gDQoyLjE3LjENCg0K
