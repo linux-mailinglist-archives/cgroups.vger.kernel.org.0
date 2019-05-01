@@ -2,24 +2,24 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8E9D108AA
-	for <lists+cgroups@lfdr.de>; Wed,  1 May 2019 16:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D286A108AB
+	for <lists+cgroups@lfdr.de>; Wed,  1 May 2019 16:03:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726579AbfEAODD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 May 2019 10:03:03 -0400
+        id S1726580AbfEAODF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 May 2019 10:03:05 -0400
 Received: from mga09.intel.com ([134.134.136.24]:3043 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726478AbfEAODD (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 May 2019 10:03:03 -0400
+        id S1726478AbfEAODF (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 1 May 2019 10:03:05 -0400
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 May 2019 07:03:02 -0700
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 01 May 2019 07:03:04 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.60,417,1549958400"; 
-   d="scan'208";a="145141398"
+   d="scan'208";a="145141406"
 Received: from nperf12.hd.intel.com ([10.127.88.161])
-  by fmsmga008.fm.intel.com with ESMTP; 01 May 2019 07:03:01 -0700
+  by fmsmga008.fm.intel.com with ESMTP; 01 May 2019 07:03:03 -0700
 From:   Brian Welty <brian.welty@intel.com>
 To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
         Li Zefan <lizefan@huawei.com>,
@@ -36,9 +36,9 @@ To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
         Alex Deucher <alexander.deucher@amd.com>,
         ChunMing Zhou <David1.Zhou@amd.com>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>
-Subject: [RFC PATCH 2/5] cgroup: Change kernfs_node for directories to store cgroup_subsys_state
-Date:   Wed,  1 May 2019 10:04:35 -0400
-Message-Id: <20190501140438.9506-3-brian.welty@intel.com>
+Subject: [RFC PATCH 3/5] memcg: Add per-device support to memory cgroup subsystem
+Date:   Wed,  1 May 2019 10:04:36 -0400
+Message-Id: <20190501140438.9506-4-brian.welty@intel.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190501140438.9506-1-brian.welty@intel.com>
 References: <20190501140438.9506-1-brian.welty@intel.com>
@@ -49,198 +49,361 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Change the kernfs_node.priv to store the cgroup_subsys_state (CSS) pointer
-for directories, instead of storing cgroup pointer.  This is done in order
-to support files within the cgroup associated with devices.  We require
-of_css() to return the device-specific CSS pointer for these files.
+Here we update memory cgroup to enable the newly introduced per-device
+framework.  As mentioned in the prior patch, the intent here is to allow
+drivers to have their own private cgroup controls (such as memory limit)
+to be applied to device resources instead of host system resources.
+
+In summary, to enable device registration for memory cgroup subsystem:
+  *  set .allow_devices to true
+  *  add new exported device register and device unregister functions
+     to register a device with the cgroup subsystem
+  *  implement the .device_css_alloc callback to create device
+     specific cgroups_subsys_state within a cgroup
+
+As cgroup is created and for current registered devices, one will see in
+the cgroup filesystem these additional files:
+  mount/<cgroup_name>/memory.devices/<dev_name>/<mem_cgrp attributes>
+
+Registration of a new device is performed in device drivers using new
+mem_cgroup_device_register(). This will create above files in existing
+cgroups.
+
+And for runtime charging to the cgroup, we add the following:
+  *  add new routine to lookup the device-specific cgroup_subsys_state
+     which is within the task's cgroup (mem_cgroup_device_from_task)
+  *  add new functions for device specific 'direct' charging
+
+The last point above involves adding new mem_cgroup_try_charge_direct
+and mem_cgroup_uncharge_direct functions.  The 'direct' name is to say
+that we are charging the specified cgroup state directly and not using
+any associated page or mm_struct.  We are called within device specific
+memory management routines, where the device driver will track which
+cgroup to charge within its own private data structures.
+
+With this initial submission, support for memory accounting and charging
+is functional.  Nested cgroups will correctly maintain the parent for
+device-specific state as well, such that hierarchial charging to device
+files is supported.
 
 Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: dri-devel@lists.freedesktop.org
+Cc: Matt Roper <matthew.d.roper@intel.com>
 Signed-off-by: Brian Welty <brian.welty@intel.com>
 ---
- kernel/cgroup/cgroup-v1.c | 10 ++++----
- kernel/cgroup/cgroup.c    | 48 +++++++++++++++++----------------------
- 2 files changed, 27 insertions(+), 31 deletions(-)
+ include/linux/memcontrol.h |  10 ++
+ mm/memcontrol.c            | 183 ++++++++++++++++++++++++++++++++++---
+ 2 files changed, 178 insertions(+), 15 deletions(-)
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index c126b34fd4ff..4fa56cc2b99c 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -723,6 +723,7 @@ int proc_cgroupstats_show(struct seq_file *m, void *v)
- int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry)
- {
- 	struct kernfs_node *kn = kernfs_node_from_dentry(dentry);
-+	struct cgroup_subsys_state *css;
- 	struct cgroup *cgrp;
- 	struct css_task_iter it;
- 	struct task_struct *tsk;
-@@ -740,12 +741,13 @@ int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry)
- 	 * @kn->priv is RCU safe.  Let's do the RCU dancing.
- 	 */
- 	rcu_read_lock();
--	cgrp = rcu_dereference(*(void __rcu __force **)&kn->priv);
--	if (!cgrp || cgroup_is_dead(cgrp)) {
-+	css = rcu_dereference(*(void __rcu __force **)&kn->priv);
-+	if (!css || cgroup_is_dead(css->cgroup)) {
- 		rcu_read_unlock();
- 		mutex_unlock(&cgroup_mutex);
- 		return -ENOENT;
- 	}
-+	cgrp = css->cgroup;
- 	rcu_read_unlock();
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index dbb6118370c1..711669b613dc 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -348,6 +348,11 @@ void mem_cgroup_cancel_charge(struct page *page, struct mem_cgroup *memcg,
+ 		bool compound);
+ void mem_cgroup_uncharge(struct page *page);
+ void mem_cgroup_uncharge_list(struct list_head *page_list);
++/* direct charging to mem_cgroup is primarily for device driver usage */
++int mem_cgroup_try_charge_direct(struct mem_cgroup *memcg,
++				 unsigned long nr_pages);
++void mem_cgroup_uncharge_direct(struct mem_cgroup *memcg,
++				unsigned long nr_pages);
  
- 	css_task_iter_start(&cgrp->self, 0, &it);
-@@ -851,7 +853,7 @@ void cgroup1_release_agent(struct work_struct *work)
- static int cgroup1_rename(struct kernfs_node *kn, struct kernfs_node *new_parent,
- 			  const char *new_name_str)
- {
--	struct cgroup *cgrp = kn->priv;
-+	struct cgroup_subsys_state *css = kn->priv;
- 	int ret;
+ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
  
- 	if (kernfs_type(kn) != KERNFS_DIR)
-@@ -871,7 +873,7 @@ static int cgroup1_rename(struct kernfs_node *kn, struct kernfs_node *new_parent
+@@ -395,6 +400,11 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
+ bool task_in_mem_cgroup(struct task_struct *task, struct mem_cgroup *memcg);
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
  
- 	ret = kernfs_rename(kn, new_parent, new_name_str);
- 	if (!ret)
--		TRACE_CGROUP_PATH(rename, cgrp);
-+		TRACE_CGROUP_PATH(rename, css->cgroup);
++struct mem_cgroup *mem_cgroup_device_from_task(unsigned long id,
++					       struct task_struct *p);
++int mem_cgroup_device_register(struct device *dev, unsigned long *dev_id);
++void mem_cgroup_device_unregister(unsigned long dev_id);
++
+ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
  
- 	mutex_unlock(&cgroup_mutex);
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 9b035e728941..1fe4fee502ea 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -595,12 +595,13 @@ static void cgroup_get_live(struct cgroup *cgrp)
- 
- struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
- {
--	struct cgroup *cgrp = of->kn->parent->priv;
-+	struct cgroup_subsys_state *css = of->kn->parent->priv;
- 	struct cftype *cft = of_cft(of);
- 
--	/* FIXME this needs updating to lookup device-specific CSS */
--
- 	/*
-+	 * If the cft specifies a subsys and this is not a device file,
-+	 * then lookup the css, otherwise it is already correct.
-+	 *
- 	 * This is open and unprotected implementation of cgroup_css().
- 	 * seq_css() is only called from a kernfs file operation which has
- 	 * an active reference on the file.  Because all the subsystem
-@@ -608,10 +609,9 @@ struct cgroup_subsys_state *of_css(struct kernfs_open_file *of)
- 	 * the matching css from the cgroup's subsys table is guaranteed to
- 	 * be and stay valid until the enclosing operation is complete.
- 	 */
--	if (cft->ss)
--		return rcu_dereference_raw(cgrp->subsys[cft->ss->id]);
--	else
--		return &cgrp->self;
-+	if (cft->ss && !css->device)
-+		css = rcu_dereference_raw(css->cgroup->subsys[cft->ss->id]);
-+	return css;
+ struct mem_cgroup *get_mem_cgroup_from_page(struct page *page);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 81a0d3914ec9..2c8407aed0f5 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -823,6 +823,47 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p)
  }
- EXPORT_SYMBOL_GPL(of_css);
+ EXPORT_SYMBOL(mem_cgroup_from_task);
  
-@@ -1524,12 +1524,14 @@ static u16 cgroup_calc_subtree_ss_mask(u16 subtree_control, u16 this_ss_mask)
-  */
- void cgroup_kn_unlock(struct kernfs_node *kn)
++int mem_cgroup_device_register(struct device *dev, unsigned long *dev_id)
++{
++	return cgroup_device_register(&memory_cgrp_subsys, dev, dev_id);
++}
++EXPORT_SYMBOL(mem_cgroup_device_register);
++
++void mem_cgroup_device_unregister(unsigned long dev_id)
++{
++	cgroup_device_unregister(&memory_cgrp_subsys, dev_id);
++}
++EXPORT_SYMBOL(mem_cgroup_device_unregister);
++
++/**
++ * mem_cgroup_device_from_task: Lookup device-specific memcg
++ * @id: device-specific id returned from mem_cgroup_device_register
++ * @p: task to lookup the memcg
++ *
++ * First use mem_cgroup_from_task to lookup and obtain a reference on
++ * the memcg associated with this task @p.  Within this memcg, find the
++ * device-specific one associated with @id.
++ * However if mem_cgroup is disabled, NULL is returned.
++ */
++struct mem_cgroup *mem_cgroup_device_from_task(unsigned long id,
++					       struct task_struct *p)
++{
++	struct mem_cgroup *memcg;
++	struct mem_cgroup *dev_memcg = NULL;
++
++	if (mem_cgroup_disabled())
++		return NULL;
++
++	rcu_read_lock();
++	memcg  = mem_cgroup_from_task(p);
++	if (memcg)
++		dev_memcg = idr_find(&memcg->css.device_css_idr, id);
++	rcu_read_unlock();
++
++	return dev_memcg;
++}
++EXPORT_SYMBOL(mem_cgroup_device_from_task);
++
+ /**
+  * get_mem_cgroup_from_mm: Obtain a reference on given mm_struct's memcg.
+  * @mm: mm from which memcg should be extracted. It can be NULL.
+@@ -2179,13 +2220,31 @@ void mem_cgroup_handle_over_high(void)
+ 	current->memcg_nr_pages_over_high = 0;
+ }
+ 
++static bool __try_charge(struct mem_cgroup *memcg, unsigned int nr_pages,
++			 struct mem_cgroup **mem_over_limit)
++{
++	struct page_counter *counter;
++
++	if (!do_memsw_account() ||
++	    page_counter_try_charge(&memcg->memsw, nr_pages, &counter)) {
++		if (page_counter_try_charge(&memcg->memory, nr_pages, &counter))
++			return true;
++		if (do_memsw_account())
++			page_counter_uncharge(&memcg->memsw, nr_pages);
++		*mem_over_limit = mem_cgroup_from_counter(counter, memory);
++	} else {
++		*mem_over_limit = mem_cgroup_from_counter(counter, memsw);
++	}
++
++	return false;
++}
++
+ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		      unsigned int nr_pages)
  {
-+	struct cgroup_subsys_state *css;
- 	struct cgroup *cgrp;
- 
- 	if (kernfs_type(kn) == KERNFS_DIR)
--		cgrp = kn->priv;
-+		css = kn->priv;
- 	else
--		cgrp = kn->parent->priv;
-+		css = kn->parent->priv;
-+	cgrp = css->cgroup;
- 
- 	mutex_unlock(&cgroup_mutex);
- 
-@@ -1556,12 +1558,14 @@ void cgroup_kn_unlock(struct kernfs_node *kn)
-  */
- struct cgroup *cgroup_kn_lock_live(struct kernfs_node *kn, bool drain_offline)
- {
-+	struct cgroup_subsys_state *css;
- 	struct cgroup *cgrp;
- 
- 	if (kernfs_type(kn) == KERNFS_DIR)
--		cgrp = kn->priv;
-+		css = kn->priv;
- 	else
--		cgrp = kn->parent->priv;
-+		css = kn->parent->priv;
-+	cgrp = css->cgroup;
- 
- 	/*
- 	 * We're gonna grab cgroup_mutex which nests outside kernfs
-@@ -1652,7 +1656,7 @@ static int cgroup_device_mkdir(struct cgroup_subsys_state *css)
- 	if (WARN_ON_ONCE(ret >= CGROUP_FILE_NAME_MAX))
+ 	unsigned int batch = max(MEMCG_CHARGE_BATCH, nr_pages);
+ 	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
+ 	struct mem_cgroup *mem_over_limit;
+-	struct page_counter *counter;
+ 	unsigned long nr_reclaimed;
+ 	bool may_swap = true;
+ 	bool drained = false;
+@@ -2198,17 +2257,10 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (consume_stock(memcg, nr_pages))
  		return 0;
  
--	kn = kernfs_create_dir(cgrp->kn, name, cgrp->kn->mode, cgrp);
-+	kn = kernfs_create_dir(cgrp->kn, name, cgrp->kn->mode, css);
- 	if (IS_ERR(kn))
- 		return PTR_ERR(kn);
- 	css->device_kn = kn;
-@@ -1662,7 +1666,7 @@ static int cgroup_device_mkdir(struct cgroup_subsys_state *css)
- 		/* FIXME: prefix dev_name with bus_name for uniqueness? */
- 		kn = kernfs_create_dir(css->device_kn,
- 				       dev_name(device_css->device),
--				       cgrp->kn->mode, cgrp);
-+				       cgrp->kn->mode, device_css);
- 		if (IS_ERR(kn))
- 			return PTR_ERR(kn);
- 		/* FIXME: kernfs_get needed here? */
-@@ -2025,7 +2029,7 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 	root->kf_root = kernfs_create_root(kf_sops,
- 					   KERNFS_ROOT_CREATE_DEACTIVATED |
- 					   KERNFS_ROOT_SUPPORT_EXPORTOP,
--					   root_cgrp);
-+					   &root_cgrp->self);
- 	if (IS_ERR(root->kf_root)) {
- 		ret = PTR_ERR(root->kf_root);
- 		goto exit_root_id;
-@@ -3579,9 +3583,9 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
- 				 size_t nbytes, loff_t off)
+-	if (!do_memsw_account() ||
+-	    page_counter_try_charge(&memcg->memsw, batch, &counter)) {
+-		if (page_counter_try_charge(&memcg->memory, batch, &counter))
+-			goto done_restock;
+-		if (do_memsw_account())
+-			page_counter_uncharge(&memcg->memsw, batch);
+-		mem_over_limit = mem_cgroup_from_counter(counter, memory);
+-	} else {
+-		mem_over_limit = mem_cgroup_from_counter(counter, memsw);
+-		may_swap = false;
+-	}
++	if (__try_charge(memcg, batch, &mem_over_limit))
++		goto done_restock;
++	else
++		may_swap = !do_memsw_account();
+ 
+ 	if (batch > nr_pages) {
+ 		batch = nr_pages;
+@@ -2892,6 +2944,9 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
  {
- 	struct cgroup_namespace *ns = current->nsproxy->cgroup_ns;
--	struct cgroup *cgrp = of->kn->parent->priv;
-+	struct cgroup_subsys_state *css = of_css(of);
- 	struct cftype *cft = of->kn->priv;
--	struct cgroup_subsys_state *css;
-+	struct cgroup *cgrp = css->cgroup;
- 	int ret;
+ 	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
  
- 	/*
-@@ -3598,16 +3602,6 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
- 	if (cft->write)
- 		return cft->write(of, buf, nbytes, off);
++	if (memcg->css.device)
++		return 0;
++
+ 	/* we call try-to-free pages for make this cgroup empty */
+ 	lru_add_drain_all();
  
--	/*
--	 * kernfs guarantees that a file isn't deleted with operations in
--	 * flight, which means that the matching css is and stays alive and
--	 * doesn't need to be pinned.  The RCU locking is not necessary
--	 * either.  It's just for the convenience of using cgroup_css().
--	 */
--	rcu_read_lock();
--	css = cgroup_css(cgrp, cft->ss);
--	rcu_read_unlock();
--
- 	if (cft->write_u64) {
- 		unsigned long long v;
- 		ret = kstrtoull(buf, 0, &v);
-@@ -5262,7 +5256,7 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+@@ -4496,7 +4551,7 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+ }
+ 
+ static struct cgroup_subsys_state * __ref
+-mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
++__mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css, bool is_device)
+ {
+ 	struct mem_cgroup *parent = mem_cgroup_from_css(parent_css);
+ 	struct mem_cgroup *memcg;
+@@ -4530,11 +4585,13 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 		 * much sense so let cgroup subsystem know about this
+ 		 * unfortunate state in our controller.
+ 		 */
+-		if (parent != root_mem_cgroup)
++		if (!is_device && parent != root_mem_cgroup)
+ 			memory_cgrp_subsys.broken_hierarchy = true;
  	}
  
- 	/* create the directory */
--	kn = kernfs_create_dir(parent->kn, name, mode, cgrp);
-+	kn = kernfs_create_dir(parent->kn, name, mode, &cgrp->self);
- 	if (IS_ERR(kn)) {
- 		ret = PTR_ERR(kn);
- 		goto out_destroy;
+-	/* The following stuff does not apply to the root */
++	/* The following stuff does not apply to devices or the root */
++	if (is_device)
++		return &memcg->css;
+ 	if (!parent) {
+ 		root_mem_cgroup = memcg;
+ 		return &memcg->css;
+@@ -4554,6 +4611,34 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	return ERR_PTR(-ENOMEM);
+ }
+ 
++static struct cgroup_subsys_state * __ref
++mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
++{
++	return __mem_cgroup_css_alloc(parent_css, false);
++}
++
++/*
++ * For given @cgroup_css, we create and return new device-specific css.
++ *
++ * @device and @cgroup_css are unused here, but they are provided as other
++ * cgroup subsystems might require them.
++ */
++static struct cgroup_subsys_state * __ref
++mem_cgroup_device_css_alloc(struct device *device,
++			    struct cgroup_subsys_state *cgroup_css,
++			    struct cgroup_subsys_state *parent_device_css)
++{
++	/*
++	 * For hierarchial page counters to work correctly, we specify
++	 * parent here as the device-specific css from our parent css
++	 * (@parent_device_css).  In other words, for nested cgroups,
++	 * the device-specific charging structures are also nested.
++	 * Note, caller will itself set .device and .parent in returned
++	 * structure.
++	 */
++	return __mem_cgroup_css_alloc(parent_device_css, true);
++}
++
+ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+@@ -4613,6 +4698,9 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
+ 
++	if (css->device)
++		goto free_cgrp;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys) && !cgroup_memory_nosocket)
+ 		static_branch_dec(&memcg_sockets_enabled_key);
+ 
+@@ -4624,6 +4712,7 @@ static void mem_cgroup_css_free(struct cgroup_subsys_state *css)
+ 	mem_cgroup_remove_from_trees(memcg);
+ 	memcg_free_shrinker_maps(memcg);
+ 	memcg_free_kmem(memcg);
++free_cgrp:
+ 	mem_cgroup_free(memcg);
+ }
+ 
+@@ -5720,6 +5809,7 @@ static struct cftype memory_files[] = {
+ 
+ struct cgroup_subsys memory_cgrp_subsys = {
+ 	.css_alloc = mem_cgroup_css_alloc,
++	.device_css_alloc = mem_cgroup_device_css_alloc,
+ 	.css_online = mem_cgroup_css_online,
+ 	.css_offline = mem_cgroup_css_offline,
+ 	.css_released = mem_cgroup_css_released,
+@@ -5732,6 +5822,7 @@ struct cgroup_subsys memory_cgrp_subsys = {
+ 	.dfl_cftypes = memory_files,
+ 	.legacy_cftypes = mem_cgroup_legacy_files,
+ 	.early_init = 0,
++	.allow_devices = true,
+ };
+ 
+ /**
+@@ -6031,6 +6122,68 @@ void mem_cgroup_cancel_charge(struct page *page, struct mem_cgroup *memcg,
+ 	cancel_charge(memcg, nr_pages);
+ }
+ 
++/**
++ * mem_cgroup_try_charge_direct - try charging nr_pages to memcg
++ * @memcg: memcgto charge
++ * @nr_pages: number of pages to charge
++ *
++ * Try to charge @nr_pages to specified @memcg. This variant is intended
++ * where the memcg is known and can be directly charged, with the primary
++ * use case being in device drivers that have registered with the subsys.
++ * Device drivers that implement their own device-specific memory manager
++ * will use these direct charging functions to make charges against their
++ * device-private state (@memcg) within the cgroup.
++ *
++ * There is no separate mem_cgroup_commit_charge() in this use case, as the
++ * device driver is not using page structs. Reclaim is not needed internally
++ * here, as the caller can decide to attempt memory reclaim on error.
++ *
++ * Returns 0 on success.  Otherwise, an error code is returned.
++ *
++ * To uncharge (or cancel charge), call mem_cgroup_uncharge_direct().
++ */
++int mem_cgroup_try_charge_direct(struct mem_cgroup *memcg,
++				 unsigned long nr_pages)
++{
++	struct mem_cgroup *mem_over_limit;
++	int ret = 0;
++
++	if (!memcg || mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
++		return 0;
++
++	if (__try_charge(memcg, nr_pages, &mem_over_limit)) {
++		css_get_many(&memcg->css, nr_pages);
++	} else {
++		memcg_memory_event(mem_over_limit, MEMCG_MAX);
++		ret = -ENOMEM;
++	}
++	return ret;
++}
++EXPORT_SYMBOL(mem_cgroup_try_charge_direct);
++
++/**
++ * mem_cgroup_uncharge_direct - uncharge nr_pages to memcg
++ * @memcg: memcg to charge
++ * @nr_pages: number of pages to charge
++ *
++ * Uncharge @nr_pages to specified @memcg. This variant is intended
++ * where the memcg is known and can directly uncharge, with the primary
++ * use case being in device drivers that have registered with the subsys.
++ * Device drivers use these direct charging functions to make charges
++ * against their device-private state (@memcg) within the cgroup.
++ *
++ * Returns 0 on success.  Otherwise, an error code is returned.
++ */
++void mem_cgroup_uncharge_direct(struct mem_cgroup *memcg,
++				unsigned long nr_pages)
++{
++	if (!memcg || mem_cgroup_disabled())
++		return;
++
++	cancel_charge(memcg, nr_pages);
++}
++EXPORT_SYMBOL(mem_cgroup_uncharge_direct);
++
+ struct uncharge_gather {
+ 	struct mem_cgroup *memcg;
+ 	unsigned long pgpgout;
 -- 
 2.21.0
 
