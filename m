@@ -2,121 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F7413ACA
-	for <lists+cgroups@lfdr.de>; Sat,  4 May 2019 16:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5326E13E19
+	for <lists+cgroups@lfdr.de>; Sun,  5 May 2019 09:14:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726846AbfEDOwv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 4 May 2019 10:52:51 -0400
-Received: from mail-qt1-f202.google.com ([209.85.160.202]:52253 "EHLO
-        mail-qt1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726776AbfEDOwv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 4 May 2019 10:52:51 -0400
-Received: by mail-qt1-f202.google.com with SMTP id f14so2033962qtq.19
-        for <cgroups@vger.kernel.org>; Sat, 04 May 2019 07:52:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=Q+yvnmyjVEzdFHEWBcoadDmmU/3yK5ganIOIoyEwouc=;
-        b=qFtjqSrcM4UGgRoJ8/RzfeaVyMan+d7Ts2pByis/59NTZYLaxr1drG0H5BJleMrsrh
-         MfXyUTFpANjtUv9d/3lln9gmv0JiZwKgSmPn/unKXf6ckvtwaiukK2EpBgYXSp2zaMVT
-         oBZSmqvUFGBLW+493GEBswqRKrbAhreW7h3pvJZKJyvSY9xqc6PSChOyIBpwKVl7OcOV
-         OYC8eGUnH5wq7H0Hf6xM8doNcgTcKdvF+OGgfSn2qK2KmkPDC1b9x7Pj9K9UegrblR69
-         dmm+H2DsQQ2Abc1ZsllHD5tiuI6keEcXuEUtH1k4JAzFM/AERoSNSFeerIz2sPD+jA9M
-         2gsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=Q+yvnmyjVEzdFHEWBcoadDmmU/3yK5ganIOIoyEwouc=;
-        b=NK0SdZv27jNK0iYSrpHBF5W696FoTppEQDCeC1wTOkLh8+Gqpa2x2pJpnBj1O7X4YK
-         EQndIOc23X6nwZu4lZ3WkaKAxiBssTOdFHYUsHY16FwiZqJfILxTeDFthIB6oTeDrb/o
-         MKJpAU0F+3NfeToDscTudaAeZVLJfucKem9XrAZ9k/ieThCssE7tyva3kpDQm/N+CnAJ
-         udKnb5h5D7dR+t/8My6IU55OC5wyHL/35jnNt3XdxBaEkVshW8vleuCNJ47uukocXQkR
-         SxXwLES1pjivX1v5g1HOP8JStk56xuA+3ZJJudJ9VdoSgMimxg+qzE0Yanj/+dQNvTqU
-         d2Hw==
-X-Gm-Message-State: APjAAAUXD9wXkO0MjOhToWcLNzEaeAn7L4GKWuLTxJV+t/248COoh0M3
-        0B2uFwZ5rfoDZGWjnFEc+AguBcI76NctDA==
-X-Google-Smtp-Source: APXvYqzaEcIiqQDURcZKk/Ciux9eOBC26QDYKJQb+X0sd9obaCdABR9WDozc3I83/n6peCeKM9N158e14DQdFQ==
-X-Received: by 2002:a05:620a:1015:: with SMTP id z21mr3134470qkj.229.1556981570541;
- Sat, 04 May 2019 07:52:50 -0700 (PDT)
-Date:   Sat,  4 May 2019 07:52:42 -0700
-Message-Id: <20190504145242.258875-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
-Subject: [PATCH v2] memcg, fsnotify: no oom-kill for remote memcg charging
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S1726846AbfEEHOm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 5 May 2019 03:14:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725792AbfEEHOm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 5 May 2019 03:14:42 -0400
+Received: from localhost (unknown [193.47.165.251])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 35A502087F;
+        Sun,  5 May 2019 07:14:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1557040481;
+        bh=wfOufAim4Z05zwv37oknpoe8Q7ERn1v/x1yShXBuzwo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kEPSKJZFVOtrHxerAwWDvAcODpxmsrEiPojp4/7M+6j0blyCN6MVehJ4myZtrIC5X
+         34/Zr3ouf0/msOtEJgUzm/YP2V9vUOt0UB2m+ZIjJ46Mn0DhmkOHtLOugSTpCQdchY
+         m6ed6oVQKxlrUjcHhFrZAOOMC8hJMNSequou6LUI=
+Date:   Sun, 5 May 2019 10:14:36 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     "Welty, Brian" <brian.welty@intel.com>
+Cc:     Kenny Ho <y2kenny@gmail.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Parav Pandit <parav@mellanox.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org,
+        J??r??me Glisse <jglisse@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Li Zefan <lizefan@huawei.com>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Christian K??nig <christian.koenig@amd.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        kenny.ho@amd.com, Harish.Kasiviswanathan@amd.com, daniel@ffwll.ch
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+Message-ID: <20190505071436.GD6938@mtr-leonro.mtl.com>
+References: <20190501140438.9506-1-brian.welty@intel.com>
+ <20190502083433.GP7676@mtr-leonro.mtl.com>
+ <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
+ <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The commit d46eb14b735b ("fs: fsnotify: account fsnotify metadata to
-kmemcg") added remote memcg charging for fanotify and inotify event
-objects. The aim was to charge the memory to the listener who is
-interested in the events but without triggering the OOM killer.
-Otherwise there would be security concerns for the listener. At the
-time, oom-kill trigger was not in the charging path. A parallel work
-added the oom-kill back to charging path i.e. commit 29ef680ae7c2
-("memcg, oom: move out_of_memory back to the charge path"). So to not
-trigger oom-killer in the remote memcg, explicitly add
-__GFP_RETRY_MAYFAIL to the fanotigy and inotify event allocations.
+On Fri, May 03, 2019 at 02:14:33PM -0700, Welty, Brian wrote:
+>
+> On 5/2/2019 3:48 PM, Kenny Ho wrote:
+> > On 5/2/2019 1:34 AM, Leon Romanovsky wrote:
+> >> Count us (Mellanox) too, our RDMA devices are exposing special and
+> >> limited in size device memory to the users and we would like to provide
+> >> an option to use cgroup to control its exposure.
+>
+> Hi Leon, great to hear and happy to work with you and RDMA community
+> to shape this framework for use by RDMA devices as well.  The intent
+> was to support more than GPU devices.
+>
+> Incidentally, I also wanted to ask about the rdma cgroup controller
+> and if there is interest in updating the device registration implemented
+> in that controller.  It could use the cgroup_device_register() that is
+> proposed here.   But this is perhaps future work, so can discuss separately.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changelog since v1:
-- Fixed usage of __GFP_RETRY_MAYFAIL flag.
+I'll try to take a look later this week.
 
- fs/notify/fanotify/fanotify.c        | 5 ++++-
- fs/notify/inotify/inotify_fsnotify.c | 7 +++++--
- 2 files changed, 9 insertions(+), 3 deletions(-)
+>
+>
+> > Doesn't RDMA already has a separate cgroup?  Why not implement it there?
+> >
+>
+> Hi Kenny, I can't answer for Leon, but I'm hopeful he agrees with rationale
+> I gave in the cover letter.  Namely, to implement in rdma controller, would
+> mean duplicating existing memcg controls there.
 
-diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.c
-index 6b9c27548997..f78fd4c8f12d 100644
---- a/fs/notify/fanotify/fanotify.c
-+++ b/fs/notify/fanotify/fanotify.c
-@@ -288,10 +288,13 @@ struct fanotify_event *fanotify_alloc_event(struct fsnotify_group *group,
- 	/*
- 	 * For queues with unlimited length lost events are not expected and
- 	 * can possibly have security implications. Avoid losing events when
--	 * memory is short.
-+	 * memory is short. Also make sure to not trigger OOM killer in the
-+	 * target memcg for the limited size queues.
- 	 */
- 	if (group->max_events == UINT_MAX)
- 		gfp |= __GFP_NOFAIL;
-+	else
-+		gfp |= __GFP_RETRY_MAYFAIL;
- 
- 	/* Whoever is interested in the event, pays for the allocation. */
- 	memalloc_use_memcg(group->memcg);
-diff --git a/fs/notify/inotify/inotify_fsnotify.c b/fs/notify/inotify/inotify_fsnotify.c
-index ff30abd6a49b..17c08daa1ba7 100644
---- a/fs/notify/inotify/inotify_fsnotify.c
-+++ b/fs/notify/inotify/inotify_fsnotify.c
-@@ -99,9 +99,12 @@ int inotify_handle_event(struct fsnotify_group *group,
- 	i_mark = container_of(inode_mark, struct inotify_inode_mark,
- 			      fsn_mark);
- 
--	/* Whoever is interested in the event, pays for the allocation. */
-+	/*
-+	 * Whoever is interested in the event, pays for the allocation. However
-+	 * do not trigger the OOM killer in the target memcg.
-+	 */
- 	memalloc_use_memcg(group->memcg);
--	event = kmalloc(alloc_len, GFP_KERNEL_ACCOUNT);
-+	event = kmalloc(alloc_len, GFP_KERNEL_ACCOUNT | __GFP_RETRY_MAYFAIL);
- 	memalloc_unuse_memcg();
- 
- 	if (unlikely(!event)) {
--- 
-2.21.0.1020.gf2820cf01a-goog
+Exactly, I didn't feel comfortable to add notion of "device memory"
+to RDMA cgroup and postponed that decision to later point of time.
+RDMA operates with verbs objects and all our user space API is based around
+that concept. At the end, system administrator will have hard time to
+understand the differences between memcg and RDMA memory.
 
+>
+> Is AMD interested in collaborating to help shape this framework?
+> It is intended to be device-neutral, so could be leveraged by various
+> types of devices.
+> If you have an alternative solution well underway, then maybe
+> we can work together to merge our efforts into one.
+> In the end, the DRM community is best served with common solution.
+>
+>
+> >
+> >>> and with future work, we could extend to:
+> >>> *  track and control share of GPU time (reuse of cpu/cpuacct)
+> >>> *  apply mask of allowed execution engines (reuse of cpusets)
+> >>>
+> >>> Instead of introducing a new cgroup subsystem for GPU devices, a new
+> >>> framework is proposed to allow devices to register with existing cgroup
+> >>> controllers, which creates per-device cgroup_subsys_state within the
+> >>> cgroup.  This gives device drivers their own private cgroup controls
+> >>> (such as memory limits or other parameters) to be applied to device
+> >>> resources instead of host system resources.
+> >>> Device drivers (GPU or other) are then able to reuse the existing cgroup
+> >>> controls, instead of inventing similar ones.
+> >>>
+> >>> Per-device controls would be exposed in cgroup filesystem as:
+> >>>     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
+> >>> such as (for example):
+> >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
+> >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
+> >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
+> >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
+> >>>
+> >>> The drm/i915 patch in this series is based on top of other RFC work [1]
+> >>> for i915 device memory support.
+> >>>
+> >>> AMD [2] and Intel [3] have proposed related work in this area within the
+> >>> last few years, listed below as reference.  This new RFC reuses existing
+> >>> cgroup controllers and takes a different approach than prior work.
+> >>>
+> >>> Finally, some potential discussion points for this series:
+> >>> * merge proposed <subsys_name>.devices into a single devices directory?
+> >>> * allow devices to have multiple registrations for subsets of resources?
+> >>> * document a 'common charging policy' for device drivers to follow?
+> >>>
+> >>> [1] https://patchwork.freedesktop.org/series/56683/
+> >>> [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> >>> [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> >>>
+> >>>
+> >>> Brian Welty (5):
+> >>>   cgroup: Add cgroup_subsys per-device registration framework
+> >>>   cgroup: Change kernfs_node for directories to store
+> >>>     cgroup_subsys_state
+> >>>   memcg: Add per-device support to memory cgroup subsystem
+> >>>   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
+> >>>   drm/i915: Use memory cgroup for enforcing device memory limit
+> >>>
+> >>>  drivers/gpu/drm/drm_drv.c                  |  12 +
+> >>>  drivers/gpu/drm/drm_gem.c                  |   7 +
+> >>>  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
+> >>>  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
+> >>>  include/drm/drm_device.h                   |   3 +
+> >>>  include/drm/drm_drv.h                      |   8 +
+> >>>  include/drm/drm_gem.h                      |  11 +
+> >>>  include/linux/cgroup-defs.h                |  28 ++
+> >>>  include/linux/cgroup.h                     |   3 +
+> >>>  include/linux/memcontrol.h                 |  10 +
+> >>>  kernel/cgroup/cgroup-v1.c                  |  10 +-
+> >>>  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
+> >>>  mm/memcontrol.c                            | 183 +++++++++++-
+> >>>  13 files changed, 552 insertions(+), 59 deletions(-)
+> >>>
+> >>> --
+> >>> 2.21.0
+> >>>
+> >> _______________________________________________
+> >> dri-devel mailing list
+> >> dri-devel@lists.freedesktop.org
+> >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
