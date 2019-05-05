@@ -2,154 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3329013F52
-	for <lists+cgroups@lfdr.de>; Sun,  5 May 2019 14:09:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A26BD1402C
+	for <lists+cgroups@lfdr.de>; Sun,  5 May 2019 16:21:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727482AbfEEMJE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 5 May 2019 08:09:04 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:36692 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727034AbfEEMJE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 5 May 2019 08:09:04 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=jiufei.xue@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TQw9-DK_1557058141;
-Received: from ali-186590e05fa3.local(mailfrom:jiufei.xue@linux.alibaba.com fp:SMTPD_---0TQw9-DK_1557058141)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 05 May 2019 20:09:01 +0800
-Subject: Re: [PATCH v4 RESEND] fs/writeback: use rcu_barrier() to wait for
- inflight wb switches going into workqueue when umount
-To:     Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org
-Cc:     tj@kernel.org, stable@kernel.org, stable@vger.kernel.org
-References: <20190429024108.54150-1-jiufei.xue@linux.alibaba.com>
- <20190430103201.9C2D92080C@mail.kernel.org>
-From:   Jiufei Xue <jiufei.xue@linux.alibaba.com>
-Message-ID: <499a7630-551e-70a1-7a4f-c5848030461d@linux.alibaba.com>
-Date:   Sun, 5 May 2019 20:09:01 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
+        id S1727670AbfEEOVn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 5 May 2019 10:21:43 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:41545 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726397AbfEEOVn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 5 May 2019 10:21:43 -0400
+Received: by mail-oi1-f194.google.com with SMTP id b17so539873oie.8;
+        Sun, 05 May 2019 07:21:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IQqSIA7uD5M0wQf7Hipk4HlzkvDnQtg0hg1zEHr33zY=;
+        b=AWQlbU8VoVdVOq3fIViQl9WYLUDY46SLhaBmW9Msab5SMYgL0D5pHgqnoecO4JXrdp
+         2K/zjn5/HgnHS3DI4TKeICobLr5jNn3MZFF8AWGvOzgMQvaFxHj0UersObHSwzbqjCHU
+         kXFFzOlrutozkLHx0JC/PEftOVW4BUW7jl9QNtEAmrYuDNdqb7lyNN17WYTdeLCmWnPy
+         UnxDtMS+e3G9oMwruAOb/RYs10NL5OqNm6D+D7hRvzETt/45lB6Xuk6D+wbdv1aVOktJ
+         iYhmorWgDXqeGGDkgoGwbfAGo4MEe7F2Ixq+NKElGpK8fo9OAlyHVml2Qc8WS9v2A1Yi
+         1sNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IQqSIA7uD5M0wQf7Hipk4HlzkvDnQtg0hg1zEHr33zY=;
+        b=GTbLaNDC4zAXfV2Su1OaE8jJv/WijE+JDuvK4xh2nneD741w1qwbm/1p4MyOB0utgl
+         /09UZ7MLyzU+/p5ZmRMoXgV252lp4QQQxSU75l4kaHVFRXuHGK6TCU06t/2ezJJ/2PEg
+         GiFum7wdJjUzoxO/I/t7/Vrc76bcM5B9YprNUpXIB6yagVxos+01UbTWlczxdxkkIlDP
+         pVX/hwKyTNRfzsTnufs/MCvREb5mE9VZyxvuufYddbHv9pB8xrBfyt8Lus68eF+G8Ul/
+         YMkvpxG0P6DLMrjpZSGIXfeXlcBg5UXD5lf7n46vsNetwpr7pWC0aiyhCw9AhXp4ef1J
+         ksHQ==
+X-Gm-Message-State: APjAAAWrV8GNJmgrKkqoKlmiiQw7FxRpfgxr79mVYbjIuBHlSkzY7lzX
+        5TBo1513mawxH403/P9cnsD53leC9x4T98cCCUI=
+X-Google-Smtp-Source: APXvYqxtCTlnFpaog3a+ume/+CFEM0o9HMexE6GdSPSB//kAtVjADF27eCZpP5vpBUt2GA/SlUqk8VsrOlucOhccchs=
+X-Received: by 2002:aca:72c9:: with SMTP id p192mr5372420oic.164.1557066102015;
+ Sun, 05 May 2019 07:21:42 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20190430103201.9C2D92080C@mail.kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20190501140438.9506-1-brian.welty@intel.com> <20190502083433.GP7676@mtr-leonro.mtl.com>
+ <CAOWid-cYknxeTQvP9vQf3-i3Cpux+bs7uBs7_o-YMFjVCo19bg@mail.gmail.com>
+ <bb001de0-e4e5-6b3f-7ced-9d0fb329635b@intel.com> <20190505071436.GD6938@mtr-leonro.mtl.com>
+In-Reply-To: <20190505071436.GD6938@mtr-leonro.mtl.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Sun, 5 May 2019 10:21:30 -0400
+Message-ID: <CAOWid-di8kcC2bYKq1KJo+rWfVjwQ13mcVRjaBjhFRzTO=c16Q@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     "Welty, Brian" <brian.welty@intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Parav Pandit <parav@mellanox.com>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx@lists.freedesktop.org,
+        "J??r??me Glisse" <jglisse@redhat.com>,
+        dri-devel@lists.freedesktop.org, Michal Hocko <mhocko@kernel.org>,
+        linux-mm@kvack.org, Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        "Christian K??nig" <christian.koenig@amd.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        kenny.ho@amd.com, Harish.Kasiviswanathan@amd.com, daniel@ffwll.ch
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Sun, May 5, 2019 at 3:14 AM Leon Romanovsky <leon@kernel.org> wrote:
+> > > Doesn't RDMA already has a separate cgroup?  Why not implement it there?
+> > >
+> >
+> > Hi Kenny, I can't answer for Leon, but I'm hopeful he agrees with rationale
+> > I gave in the cover letter.  Namely, to implement in rdma controller, would
+> > mean duplicating existing memcg controls there.
+>
+> Exactly, I didn't feel comfortable to add notion of "device memory"
+> to RDMA cgroup and postponed that decision to later point of time.
+> RDMA operates with verbs objects and all our user space API is based around
+> that concept. At the end, system administrator will have hard time to
+> understand the differences between memcg and RDMA memory.
+Interesting.  I actually don't understand this part (I worked in
+devops/sysadmin side of things but never with rdma.)  Don't
+applications that use rdma require some awareness of rdma (I mean, you
+mentioned verbs and objects... or do they just use regular malloc for
+buffer allocation and then send it through some function?)  As a user,
+I would have this question: why do I need to configure some part of
+rdma resources under rdma cgroup while other part of rdma resources in
+a different, seemingly unrelated cgroups.
+
+I think we need to be careful about drawing the line between
+duplication and over couplings between subsystems.  I have other
+thoughts and concerns and I will try to organize them into a response
+in the next few days.
+
+Regards,
+Kenny
 
 
-On 2019/4/30 下午6:32, Sasha Levin wrote:
-> Hi,
-> 
-> [This is an automated email]
-> 
-> This commit has been processed because it contains a -stable tag.
-> The stable tag indicates that it's relevant for the following trees: all.
-> 
-> The bot has tested the following trees: v5.0.10, v4.19.37, v4.14.114, v4.9.171, v4.4.179, v3.18.139.
-> 
-> v5.0.10: Build OK!
-> v4.19.37: Build OK!
-> v4.14.114: Build OK!
-> v4.9.171: Failed to apply! Possible dependencies:
->     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
->     2264d9c74dda ("x86/intel_rdt: Build structures for each resource based on cache topology")
->     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
->     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
->     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
->     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
->     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
->     5ff193fbde20 ("x86/intel_rdt: Add basic resctrl filesystem support")
->     60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
->     60ec2440c63d ("x86/intel_rdt: Add schemata file")
->     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
->     78e99b4a2b9a ("x86/intel_rdt: Add CONFIG, Makefile, and basic initialization")
->     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
->     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
->     c1c7c3f9d6bb ("x86/intel_rdt: Pick up L3/L2 RDT parameters from CPUID")
-> 
-> v4.4.179: Failed to apply! Possible dependencies:
->     0007bccc3cfd ("x86: Replace RDRAND forced-reseed with simple sanity check")
->     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
->     1b74dde7c47c ("x86/cpu: Convert printk(KERN_<LEVEL> ...) to pr_<level>(...)")
->     27f6d22b037b ("perf/x86: Move perf_event.h to its new home")
->     39b0332a2158 ("perf/x86: Move perf_event_amd.c ........... => x86/events/amd/core.c")
->     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
->     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
->     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
->     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
->     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
->     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
->     724697648eec ("perf/x86: Use INST_RETIRED.PREC_DIST for cycles: ppp")
->     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
->     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
->     fa9cbf320e99 ("perf/x86: Move perf_event.c ............... => x86/events/core.c")
-> 
-> v3.18.139: Failed to apply! Possible dependencies:
->     0ae45f63d4ef ("vfs: add support for a lazytime mount option")
->     4452226ea276 ("writeback: move backing_dev_info->state into bdi_writeback")
->     52ebea749aae ("writeback: make backing_dev_info host cgroup-specific bdi_writebacks")
->     66114cad64bf ("writeback: separate out include/linux/backing-dev-defs.h")
->     682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
->     87e1d789bf55 ("writeback: implement [locked_]inode_to_wb_and_lock_list()")
->     a3816ab0e8fe ("fs: Convert show_fdinfo functions to void")
->     b16b1deb553a ("writeback: make writeback_control track the inode being written back")
->     b4caecd48005 ("fs: introduce f_op->mmap_capabilities for nommu mmap support")
->     bafc0dba1e20 ("buffer, writeback: make __block_write_full_page() honor cgroup writeback")
-> 
-> 
-> How should we proceed with this patch?
-> 
-> --
-
-I am sorry that I forgot to mention that the patch should be applied to stable
-since v4.4.
-
-v4.4.179 and v4.9.171 depend on the commit 7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches"). 
-On these two versions we can just inc isw_nr_in_flight before return.
-
-The patch is pasted below.
-
---- linux-4.4.179.orig/fs/fs-writeback.c.orig	2019-05-05 19:56:29.993961267 +0800
-+++ linux-4.4.179/fs/fs-writeback.c	2019-05-05 19:39:55.880336751 +0800
-@@ -502,8 +502,6 @@ static void inode_switch_wbs(struct inod
- 	ihold(inode);
- 	isw->inode = inode;
- 
--	atomic_inc(&isw_nr_in_flight);
--
- 	/*
- 	 * In addition to synchronizing among switchers, I_WB_SWITCH tells
- 	 * the RCU protected stat update paths to grab the mapping's
-@@ -511,6 +509,9 @@ static void inode_switch_wbs(struct inod
- 	 * Let's continue after I_WB_SWITCH is guaranteed to be visible.
- 	 */
- 	call_rcu(&isw->rcu_head, inode_switch_wbs_rcu_fn);
-+
-+	atomic_inc(&isw_nr_in_flight);
-+
- 	return;
- 
- out_free:
-@@ -880,7 +881,11 @@ restart:
- void cgroup_writeback_umount(void)
- {
- 	if (atomic_read(&isw_nr_in_flight)) {
--		synchronize_rcu();
-+		/*
-+		 * Use rcu_barrier() to wait for all pending callbacks to
-+		 * ensure that all in-flight wb switches are in the workqueue.
-+		 */
-+		rcu_barrier();
- 		flush_workqueue(isw_wq);
- 	}
- }
-
-
-Thanks,
-Jiufei
-
-
-> Thanks,
-> Sasha
-> 
+> >
+> > Is AMD interested in collaborating to help shape this framework?
+> > It is intended to be device-neutral, so could be leveraged by various
+> > types of devices.
+> > If you have an alternative solution well underway, then maybe
+> > we can work together to merge our efforts into one.
+> > In the end, the DRM community is best served with common solution.
+> >
+> >
+> > >
+> > >>> and with future work, we could extend to:
+> > >>> *  track and control share of GPU time (reuse of cpu/cpuacct)
+> > >>> *  apply mask of allowed execution engines (reuse of cpusets)
+> > >>>
+> > >>> Instead of introducing a new cgroup subsystem for GPU devices, a new
+> > >>> framework is proposed to allow devices to register with existing cgroup
+> > >>> controllers, which creates per-device cgroup_subsys_state within the
+> > >>> cgroup.  This gives device drivers their own private cgroup controls
+> > >>> (such as memory limits or other parameters) to be applied to device
+> > >>> resources instead of host system resources.
+> > >>> Device drivers (GPU or other) are then able to reuse the existing cgroup
+> > >>> controls, instead of inventing similar ones.
+> > >>>
+> > >>> Per-device controls would be exposed in cgroup filesystem as:
+> > >>>     mount/<cgroup_name>/<subsys_name>.devices/<dev_name>/<subsys_files>
+> > >>> such as (for example):
+> > >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.max
+> > >>>     mount/<cgroup_name>/memory.devices/<dev_name>/memory.current
+> > >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.stat
+> > >>>     mount/<cgroup_name>/cpu.devices/<dev_name>/cpu.weight
+> > >>>
+> > >>> The drm/i915 patch in this series is based on top of other RFC work [1]
+> > >>> for i915 device memory support.
+> > >>>
+> > >>> AMD [2] and Intel [3] have proposed related work in this area within the
+> > >>> last few years, listed below as reference.  This new RFC reuses existing
+> > >>> cgroup controllers and takes a different approach than prior work.
+> > >>>
+> > >>> Finally, some potential discussion points for this series:
+> > >>> * merge proposed <subsys_name>.devices into a single devices directory?
+> > >>> * allow devices to have multiple registrations for subsets of resources?
+> > >>> * document a 'common charging policy' for device drivers to follow?
+> > >>>
+> > >>> [1] https://patchwork.freedesktop.org/series/56683/
+> > >>> [2] https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> > >>> [3] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> > >>>
+> > >>>
+> > >>> Brian Welty (5):
+> > >>>   cgroup: Add cgroup_subsys per-device registration framework
+> > >>>   cgroup: Change kernfs_node for directories to store
+> > >>>     cgroup_subsys_state
+> > >>>   memcg: Add per-device support to memory cgroup subsystem
+> > >>>   drm: Add memory cgroup registration and DRIVER_CGROUPS feature bit
+> > >>>   drm/i915: Use memory cgroup for enforcing device memory limit
+> > >>>
+> > >>>  drivers/gpu/drm/drm_drv.c                  |  12 +
+> > >>>  drivers/gpu/drm/drm_gem.c                  |   7 +
+> > >>>  drivers/gpu/drm/i915/i915_drv.c            |   2 +-
+> > >>>  drivers/gpu/drm/i915/intel_memory_region.c |  24 +-
+> > >>>  include/drm/drm_device.h                   |   3 +
+> > >>>  include/drm/drm_drv.h                      |   8 +
+> > >>>  include/drm/drm_gem.h                      |  11 +
+> > >>>  include/linux/cgroup-defs.h                |  28 ++
+> > >>>  include/linux/cgroup.h                     |   3 +
+> > >>>  include/linux/memcontrol.h                 |  10 +
+> > >>>  kernel/cgroup/cgroup-v1.c                  |  10 +-
+> > >>>  kernel/cgroup/cgroup.c                     | 310 ++++++++++++++++++---
+> > >>>  mm/memcontrol.c                            | 183 +++++++++++-
+> > >>>  13 files changed, 552 insertions(+), 59 deletions(-)
+> > >>>
+> > >>> --
+> > >>> 2.21.0
+> > >>>
+> > >> _______________________________________________
+> > >> dri-devel mailing list
+> > >> dri-devel@lists.freedesktop.org
+> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
