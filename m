@@ -2,362 +2,199 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B5F917011
-	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 06:26:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D43A176D7
+	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 13:29:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725920AbfEHE0m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 May 2019 00:26:42 -0400
-Received: from mail-it1-f196.google.com ([209.85.166.196]:55455 "EHLO
-        mail-it1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725842AbfEHE0m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 May 2019 00:26:42 -0400
-Received: by mail-it1-f196.google.com with SMTP id q132so1870390itc.5
-        for <cgroups@vger.kernel.org>; Tue, 07 May 2019 21:26:41 -0700 (PDT)
+        id S1727492AbfEHL3W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 May 2019 07:29:22 -0400
+Received: from mail-eopbgr730080.outbound.protection.outlook.com ([40.107.73.80]:59424
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725778AbfEHL3W (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 8 May 2019 07:29:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=indeed.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=xKzx3zkj1Sp6PdbcGNd0a/ApQl4fGkKSYj9cS4BfMSk=;
-        b=AVRq6Y+TCsLKX070hYsTfj2UvZI2fC2giRq/kgHidVsh+fC5xfp04CofqjK8VyJg4x
-         tAsVZednIyttljvnBExPyDH41E8S/CHmm2DI+mn8n9Xq+e9nZ7z2KM0yPtWjz3YbpN72
-         8ju9eAYRdLYhX3Bh6dmyOVZdwgpEA8PNYwO0c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=xKzx3zkj1Sp6PdbcGNd0a/ApQl4fGkKSYj9cS4BfMSk=;
-        b=QQG9zcft9hZswpIbMb0zs89QCHH7lHvv3rXFMZjbk576V1Sl2TLcE6Db3jkiGCkR7B
-         XlRYNgaVd5nc210wpFrNVfBgEFbrfzofwaglrPMQ6Upjvv88e6Oq1PgGAdoKdh26jZbD
-         Z3I0294dfgEIQ/6UrQL2rLZ3Lm6oaC1cnV1vrC89ONV3M91L155gu3p2jdnAoiVd0gYi
-         Z4zAfYrrRq0ypE1y8eY82PatyVPlrDdSoBluLJaRvbsV0qPD4d3xHCtou605G5hwsh9F
-         KMULMiCR36PwF8aSafPeexqxToAS/CDIDIrtlJlNzVhIvTAFYmCfDhTpyauoGKllWAqR
-         Y83w==
-X-Gm-Message-State: APjAAAUORucaUXA8Tao0485zpEm3+4uJJThEZ4PzYvodMjQ5DtyKRfXV
-        glW63OIrDJamPTcEA4nq/rvzF1T0s7aDp6DWyXUMpA==
-X-Google-Smtp-Source: APXvYqzl42uCS+d1uHNtnlQR2Q1wbrTYyT5+uKYCKrUp2wMkWVTzOb5OTgIYhJKvyU8JsM3Maeev7IgVh5Jg+/+PTGc=
-X-Received: by 2002:a24:c455:: with SMTP id v82mr1902076itf.143.1557289600776;
- Tue, 07 May 2019 21:26:40 -0700 (PDT)
+ d=analog.onmicrosoft.com; s=selector1-analog-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9mREEcazEV2TFx5JIFnH3pAzE1JX52Mxgf7Nke2hFVA=;
+ b=qQfQKlBUhqrL+3Zq0CNfpq26DFQMQ47XeDeoOQghyt8YnFxihdOyu/uqLTp4Va2PKJok0DnLUK74RKCRbvROk2XuKOdS1aEBpBZ7S2HyRHxL7vRH6SPzukskQpsFHAO8LtN/Vyu7cA1xYW8YkqaoD+LlmFfxVsALjqdbrsDXj/c=
+Received: from MWHPR03CA0030.namprd03.prod.outlook.com (2603:10b6:301:3b::19)
+ by DM5PR03MB3132.namprd03.prod.outlook.com (2603:10b6:4:3c::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1878.20; Wed, 8 May
+ 2019 11:29:15 +0000
+Received: from SN1NAM02FT031.eop-nam02.prod.protection.outlook.com
+ (2a01:111:f400:7e44::207) by MWHPR03CA0030.outlook.office365.com
+ (2603:10b6:301:3b::19) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1878.20 via Frontend
+ Transport; Wed, 8 May 2019 11:29:14 +0000
+Authentication-Results: spf=pass (sender IP is 137.71.25.57)
+ smtp.mailfrom=analog.com; lists.freedesktop.org; dkim=none (message not
+ signed) header.d=none;lists.freedesktop.org; dmarc=bestguesspass action=none
+ header.from=analog.com;
+Received-SPF: Pass (protection.outlook.com: domain of analog.com designates
+ 137.71.25.57 as permitted sender) receiver=protection.outlook.com;
+ client-ip=137.71.25.57; helo=nwd2mta2.analog.com;
+Received: from nwd2mta2.analog.com (137.71.25.57) by
+ SN1NAM02FT031.mail.protection.outlook.com (10.152.72.116) with Microsoft SMTP
+ Server (version=TLS1_0, cipher=TLS_RSA_WITH_AES_256_CBC_SHA) id 15.20.1856.11
+ via Frontend Transport; Wed, 8 May 2019 11:29:13 +0000
+Received: from NWD2HUBCAS7.ad.analog.com (nwd2hubcas7.ad.analog.com [10.64.69.107])
+        by nwd2mta2.analog.com (8.13.8/8.13.8) with ESMTP id x48BTCgt016944
+        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
+        Wed, 8 May 2019 04:29:12 -0700
+Received: from saturn.analog.com (10.50.1.244) by NWD2HUBCAS7.ad.analog.com
+ (10.64.69.107) with Microsoft SMTP Server id 14.3.408.0; Wed, 8 May 2019
+ 07:29:11 -0400
+From:   Alexandru Ardelean <alexandru.ardelean@analog.com>
+To:     <linuxppc-dev@lists.ozlabs.org>, <linux-kernel@vger.kernel.org>,
+        <linux-ide@vger.kernel.org>, <linux-clk@vger.kernel.org>,
+        <linux-rpi-kernel@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-rockchip@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        <linux-gpio@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        <intel-gfx@lists.freedesktop.org>, <linux-omap@vger.kernel.org>,
+        <linux-mmc@vger.kernel.org>, <linux-wireless@vger.kernel.org>,
+        <netdev@vger.kernel.org>, <linux-pci@vger.kernel.org>,
+        <linux-tegra@vger.kernel.org>, <devel@driverdev.osuosl.org>,
+        <linux-usb@vger.kernel.org>, <kvm@vger.kernel.org>,
+        <linux-fbdev@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-integrity@vger.kernel.org>, <alsa-devel@alsa-project.org>
+CC:     <gregkh@linuxfoundation.org>, <andriy.shevchenko@linux.intel.com>,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>
+Subject: [PATCH 00/16] treewide: fix match_string() helper when array size
+Date:   Wed, 8 May 2019 14:28:25 +0300
+Message-ID: <20190508112842.11654-1-alexandru.ardelean@analog.com>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-References: <CAC=E7cV_2QtXQ-mx4-GfHLyAWxW+7Ub75UmMvOLxLXzot47TWw@mail.gmail.com>
- <1554934850-7002-1-git-send-email-chiluk+linux@indeed.com> <1554934850-7002-2-git-send-email-chiluk+linux@indeed.com>
-In-Reply-To: <1554934850-7002-2-git-send-email-chiluk+linux@indeed.com>
-From:   Dave Chiluk <chiluk+linux@indeed.com>
-Date:   Tue, 7 May 2019 23:26:14 -0500
-Message-ID: <CAC=E7cVoiS=Z7fYCmgCe0iqHLx7hqo2ECZ3JC7pBOyvQu7yhQw@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: Fix low cpu usage with high throttling by
- removing slice expiration
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-ADIRoutedOnPrem: True
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-HT: Tenant
+X-Forefront-Antispam-Report: CIP:137.71.25.57;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(1496009)(376002)(136003)(346002)(396003)(39860400002)(2980300002)(189003)(199004)(336012)(48376002)(6666004)(16586007)(316002)(426003)(356004)(107886003)(2441003)(50226002)(7696005)(51416003)(54906003)(2906002)(478600001)(110136005)(486006)(47776003)(7636002)(44832011)(106002)(50466002)(2616005)(476003)(8676002)(70206006)(246002)(70586007)(4326008)(2201001)(7416002)(26005)(1076003)(186003)(8936002)(77096007)(5660300002)(36756003)(126002)(53416004)(305945005)(86362001)(14444005)(921003)(83996005)(2101003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR03MB3132;H:nwd2mta2.analog.com;FPR:;SPF:Pass;LANG:en;PTR:nwd2mail11.analog.com;MX:1;A:1;
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c32e2cbb-fe64-4c66-7a5d-08d6d3a86664
+X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4709054)(2017052603328);SRVR:DM5PR03MB3132;
+X-MS-TrafficTypeDiagnostic: DM5PR03MB3132:
+X-Microsoft-Antispam-PRVS: <DM5PR03MB3132F0B0976A4F2194522684F9320@DM5PR03MB3132.namprd03.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-Forefront-PRVS: 0031A0FFAF
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam-Message-Info: j/srRMWDBUltVscxVeW1javD8vK/cachSroUu+/Gbw1dTf/SvbBrFyW07ykT1LHxgf7JFm8qQ93W9eBvUwKDflyO8jAEvFHYdehNb6EHWUlpktuzMPEP4dqtYdoUQPJZJheiLPDUHbBGHPrVF+8TL5mDHJaN5ynPAEYsTTkWak369JERGg4vdXLCAeUTNR0/5p+fpFpKdjOGClAHWrD4fgHBh7O9/Ww1YzfpFB5/ShVxDtLKjt6j5yDaAZJVnp6EeWEY3bKP4Xa20OdzBmuebRIP54BdhQLWgxOFaNRtwz2dquRxZGpNeP4PgyojuMA1RloHq4JkY9VStd6NE4AnfhNTuZyPUNrsaLk3IJ1WIYcn7pLDJzCGmOSiZuodj5CqDCxvmc9nwLsca/AMvRwPw64pvgq4xuPYVpmZdqdwNAA=
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 May 2019 11:29:13.4642
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: c32e2cbb-fe64-4c66-7a5d-08d6d3a86664
+X-MS-Exchange-CrossTenant-Id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=eaa689b4-8f87-40e0-9c6f-7228de4d754a;Ip=[137.71.25.57];Helo=[nwd2mta2.analog.com]
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR03MB3132
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I'd really appreciate some attention on this.  Should I have marked
-the subject as sched: instead?
+The intent of this patch series is to make a case for fixing the
+match_string() string helper.
 
-I heard through some back-channels that there may be concern with the
-ability to use more cpu than allocated in a given period.  To that I
-say,
-#1 The current behavior of an application hitting cpu throttling while
-simultaneously accounting for much less cpu time than was allocated is
-a very poor user experience. i.e. granted .5 cpu, but only used .1 cpu
-while simultaneously hitting throttling.
-#2 This has been broken like this since at least 3.16-rc1 which is why
-I ripped out most of the logic instead of trying to patch it again.  I
-proved this experimentally by adding a counter in
-expire_cfs_rq_runtime when runtime is expired.  I can share the
-patches if that would help.  That means that user-interactive
-applications have been able to over-use quota in a similar manner
-since June 2014, and no one has noticed or complained.  Now that the
-mechanism is "fixed" people are starting to notice and they are
-complaining loudly.  See
-https://github.com/kubernetes/kubernetes/issues/67577 and the many
-linked tickets to that one.
-#3 Even though it's true that you can use more cpu than allocated in a
-period, that would require that you under-use quota in previous
-periods equal to the overage.  In effect you are still enforcing the
-quota requirements albeit over longer time-frames than cfs_period_us
-*(I'm amenable to a documentation update to fix this nuance).
-Additionally any single cpu run queue can only over-use by as much as
-sched_cfs_bandwidth_slice_us which defaults to 5ms.  So other
-applications on the same processor will at most be hindered by that
-amount.
-#4 cpu-bound applications will not be able to over-use in any period,
-as the entirety of their quota will be consumed every period.
+The doc-string of the `__sysfs_match_string()` helper mentions that `n`
+(the size of the given array) should be:
+ * @n: number of strings in the array or -1 for NULL terminated arrays
 
-Your review would be much appreciated.
-Thank you,
-Dave
+However, this is not the case.
+The helper stops on the first NULL in the array, regardless of whether -1
+is provided or not.
 
+There are some advantages to allowing this behavior (NULL elements within
+in the array). One example, is to allow reserved registers as NULL in an
+array.
+One example in the series is patch:
+   x86/mtrr: use new match_string() helper + add gaps == minor fix
+which uses a "?" string for values that are reserved/don't care.
 
-On Wed, Apr 10, 2019 at 5:21 PM Dave Chiluk <chiluk+linux@indeed.com> wrote:
->
-> It has been observed, that highly-threaded, non-cpu-bound applications
-> running under cpu.cfs_quota_us constraints can hit a high percentage of
-> periods throttled while simultaneously not consuming the allocated
-> amount of quota.  This use case is typical of user-interactive non-cpu
-> bound web services, such as those running in kubernetes or mesos.
->
-> This has been root caused to threads being allocated per cpu bandwidth
-> slices, and then not fully using that slice within the period, and then
-> having that quota expire.  This constant expiration of unused quota
-> results applications not being able to utilize the quota for which they
-> are allocated.
->
-> The expiration of quota was recently fixed by commit 512ac999d275
-> ("sched/fair: Fix bandwidth timer clock drift condition"). Prior to that
-> it appears that this has been broken since a least commit 51f2176d74ac
-> ("sched/fair: Fix unlocked reads of some cfs_b->quota/period") which was
-> introduced in v3.16-rc1 in 2014.  That commit added the following
-> testcase which resulted in runtime never being expired.
->
-> if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
->         /* extend local deadline, drift is bounded above by 2 ticks */
->         cfs_rq->runtime_expires += TICK_NSEC;
->
-> Because this was broken for nearly 5 years, and has recently been fixed
-> and is now being noticed by many users running kubernetes
-> (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
-> that the mechanisms around expiring runtime should be removed
-> altogether.
->
-> This allows quota runtime slices allocated to per-cpu runqueues to live
-> longer than the period boundary.  This allows threads on runqueues that
-> do not use much CPU to continue to use their remaining slice over a
-> longer period of time than cpu.cfs_period_us. However, this helps
-> prevents the above condition of hitting throttling while also not fully
-> utilizing your cpu quota.
->
-> This theoretically allows a machine to use slightly more than it's
-> allotted quota in some periods.  This overflow would be equal to the
-> amount of quota that was left un-used on cfs_rq's in the previous
-> period.  For CPU bound tasks this will change nothing, as they should
-> theoretically fully utilize all of their quota in each period. For
-> user-interactive tasks as described above this provides a much better
-> user/application experience as their cpu utilization will more closely
-> match the amount they requested when they hit throttling.
->
-> This greatly improves performance of high-thread-count, interactive
-> applications with low cfs_quota_us allocation on high-core-count
-> machines. In the case of an artificial testcase, this performance
-> discrepancy has been observed to be almost 30x performance improvement,
-> while still maintaining correct cpu quota restrictions albeit over
-> longer time intervals than cpu.cfs_period_us.
->
-> Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
-> Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
-> ---
->  kernel/sched/fair.c  | 71 +++++-----------------------------------------------
->  kernel/sched/sched.h |  4 ---
->  2 files changed, 6 insertions(+), 69 deletions(-)
->
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index fdab7eb..b0c3d76 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4291,8 +4291,6 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
->
->         now = sched_clock_cpu(smp_processor_id());
->         cfs_b->runtime = cfs_b->quota;
-> -       cfs_b->runtime_expires = now + ktime_to_ns(cfs_b->period);
-> -       cfs_b->expires_seq++;
->  }
->
->  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-> @@ -4314,8 +4312,7 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->  {
->         struct task_group *tg = cfs_rq->tg;
->         struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(tg);
-> -       u64 amount = 0, min_amount, expires;
-> -       int expires_seq;
-> +       u64 amount = 0, min_amount;
->
->         /* note: this is a positive sum as runtime_remaining <= 0 */
->         min_amount = sched_cfs_bandwidth_slice() - cfs_rq->runtime_remaining;
-> @@ -4332,61 +4329,17 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->                         cfs_b->idle = 0;
->                 }
->         }
-> -       expires_seq = cfs_b->expires_seq;
-> -       expires = cfs_b->runtime_expires;
->         raw_spin_unlock(&cfs_b->lock);
->
->         cfs_rq->runtime_remaining += amount;
-> -       /*
-> -        * we may have advanced our local expiration to account for allowed
-> -        * spread between our sched_clock and the one on which runtime was
-> -        * issued.
-> -        */
-> -       if (cfs_rq->expires_seq != expires_seq) {
-> -               cfs_rq->expires_seq = expires_seq;
-> -               cfs_rq->runtime_expires = expires;
-> -       }
->
->         return cfs_rq->runtime_remaining > 0;
->  }
->
-> -/*
-> - * Note: This depends on the synchronization provided by sched_clock and the
-> - * fact that rq->clock snapshots this value.
-> - */
-> -static void expire_cfs_rq_runtime(struct cfs_rq *cfs_rq)
-> -{
-> -       struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
-> -
-> -       /* if the deadline is ahead of our clock, nothing to do */
-> -       if (likely((s64)(rq_clock(rq_of(cfs_rq)) - cfs_rq->runtime_expires) < 0))
-> -               return;
-> -
-> -       if (cfs_rq->runtime_remaining < 0)
-> -               return;
-> -
-> -       /*
-> -        * If the local deadline has passed we have to consider the
-> -        * possibility that our sched_clock is 'fast' and the global deadline
-> -        * has not truly expired.
-> -        *
-> -        * Fortunately we can check determine whether this the case by checking
-> -        * whether the global deadline(cfs_b->expires_seq) has advanced.
-> -        */
-> -       if (cfs_rq->expires_seq == cfs_b->expires_seq) {
-> -               /* extend local deadline, drift is bounded above by 2 ticks */
-> -               cfs_rq->runtime_expires += TICK_NSEC;
-> -       } else {
-> -               /* global deadline is ahead, expiration has passed */
-> -               cfs_rq->runtime_remaining = 0;
-> -       }
-> -}
-> -
->  static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
->  {
->         /* dock delta_exec before expiring quota (as it could span periods) */
->         cfs_rq->runtime_remaining -= delta_exec;
-> -       expire_cfs_rq_runtime(cfs_rq);
->
->         if (likely(cfs_rq->runtime_remaining > 0))
->                 return;
-> @@ -4577,8 +4530,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->                 resched_curr(rq);
->  }
->
-> -static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
-> -               u64 remaining, u64 expires)
-> +static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b, u64 remaining)
->  {
->         struct cfs_rq *cfs_rq;
->         u64 runtime;
-> @@ -4600,7 +4552,6 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->                 remaining -= runtime;
->
->                 cfs_rq->runtime_remaining += runtime;
-> -               cfs_rq->runtime_expires = expires;
->
->                 /* we check whether we're throttled above */
->                 if (cfs_rq->runtime_remaining > 0)
-> @@ -4625,7 +4576,7 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->   */
->  static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, unsigned long flags)
->  {
-> -       u64 runtime, runtime_expires;
-> +       u64 runtime;
->         int throttled;
->
->         /* no need to continue the timer with no bandwidth constraint */
-> @@ -4653,8 +4604,6 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->         /* account preceding periods in which throttling occurred */
->         cfs_b->nr_throttled += overrun;
->
-> -       runtime_expires = cfs_b->runtime_expires;
-> -
->         /*
->          * This check is repeated as we are holding onto the new bandwidth while
->          * we unthrottle. This can potentially race with an unthrottled group
-> @@ -4667,8 +4616,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->                 cfs_b->distribute_running = 1;
->                 raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->                 /* we can't nest cfs_b->lock while distributing bandwidth */
-> -               runtime = distribute_cfs_runtime(cfs_b, runtime,
-> -                                                runtime_expires);
-> +               runtime = distribute_cfs_runtime(cfs_b, runtime);
->                 raw_spin_lock_irqsave(&cfs_b->lock, flags);
->
->                 cfs_b->distribute_running = 0;
-> @@ -4745,8 +4693,7 @@ static void __return_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->                 return;
->
->         raw_spin_lock(&cfs_b->lock);
-> -       if (cfs_b->quota != RUNTIME_INF &&
-> -           cfs_rq->runtime_expires == cfs_b->runtime_expires) {
-> +       if (cfs_b->quota != RUNTIME_INF) {
->                 cfs_b->runtime += slack_runtime;
->
->                 /* we are under rq->lock, defer unthrottling using a timer */
-> @@ -4779,7 +4726,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->  {
->         u64 runtime = 0, slice = sched_cfs_bandwidth_slice();
->         unsigned long flags;
-> -       u64 expires;
->
->         /* confirm we're still not at a refresh boundary */
->         raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> @@ -4796,7 +4742,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->         if (cfs_b->quota != RUNTIME_INF && cfs_b->runtime > slice)
->                 runtime = cfs_b->runtime;
->
-> -       expires = cfs_b->runtime_expires;
->         if (runtime)
->                 cfs_b->distribute_running = 1;
->
-> @@ -4805,11 +4750,9 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->         if (!runtime)
->                 return;
->
-> -       runtime = distribute_cfs_runtime(cfs_b, runtime, expires);
-> +       runtime = distribute_cfs_runtime(cfs_b, runtime);
->
->         raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> -       if (expires == cfs_b->runtime_expires)
-> -               lsub_positive(&cfs_b->runtime, runtime);
->         cfs_b->distribute_running = 0;
->         raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->  }
-> @@ -4940,8 +4883,6 @@ void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->
->         cfs_b->period_active = 1;
->         overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
-> -       cfs_b->runtime_expires += (overrun + 1) * ktime_to_ns(cfs_b->period);
-> -       cfs_b->expires_seq++;
->         hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
->  }
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index efa686e..69d9bf9 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -341,8 +341,6 @@ struct cfs_bandwidth {
->         u64                     quota;
->         u64                     runtime;
->         s64                     hierarchical_quota;
-> -       u64                     runtime_expires;
-> -       int                     expires_seq;
->
->         short                   idle;
->         short                   period_active;
-> @@ -562,8 +560,6 @@ struct cfs_rq {
->
->  #ifdef CONFIG_CFS_BANDWIDTH
->         int                     runtime_enabled;
-> -       int                     expires_seq;
-> -       u64                     runtime_expires;
->         s64                     runtime_remaining;
->
->         u64                     throttled_clock;
-> --
-> 1.8.3.1
->
+Since the change is a bit big, the change was coupled with renaming
+match_string() -> __match_string().
+The new match_string() helper (resulted here) does an ARRAY_SIZE() over the
+array, which is useful when the array is static. 
+
+Also, this way of doing things is a way to go through all the users of this
+helpers and check that nothing goes wrong, and notify them about the change
+to match_string().
+It's a way of grouping changes in a manage-able way.
+
+The first patch is important, the others can be dropped.
+
+Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+
+Alexandru Ardelean (16):
+  lib: fix match_string() helper when array size is positive
+  treewide: rename match_string() -> __match_string()
+  lib,treewide: add new match_string() helper/macro
+  powerpc/xmon: use new match_string() helper/macro
+  ALSA: oxygen: use new match_string() helper/macro
+  x86/mtrr: use new match_string() helper + add gaps == minor fix
+  device connection: use new match_string() helper/macro
+  cpufreq/intel_pstate: remove NULL entry + use match_string()
+  mmc: sdhci-xenon: use new match_string() helper/macro
+  pinctrl: armada-37xx: use new match_string() helper/macro
+  mm/vmpressure.c: use new match_string() helper/macro
+  rdmacg: use new match_string() helper/macro
+  drm/edid: use new match_string() helper/macro
+  staging: gdm724x: use new match_string() helper/macro
+  video: fbdev: pxafb: use new match_string() helper/macro
+  sched: debug: use new match_string() helper/macro
+
+ arch/powerpc/xmon/xmon.c                         |  2 +-
+ arch/x86/kernel/cpu/mtrr/if.c                    | 10 ++++++----
+ drivers/ata/pata_hpt366.c                        |  2 +-
+ drivers/ata/pata_hpt37x.c                        |  2 +-
+ drivers/base/devcon.c                            |  2 +-
+ drivers/base/property.c                          |  2 +-
+ drivers/clk/bcm/clk-bcm2835.c                    |  4 +---
+ drivers/clk/clk.c                                |  4 ++--
+ drivers/clk/rockchip/clk.c                       |  4 ++--
+ drivers/cpufreq/intel_pstate.c                   |  9 ++++-----
+ drivers/gpio/gpiolib-of.c                        |  2 +-
+ drivers/gpu/drm/drm_edid_load.c                  |  2 +-
+ drivers/gpu/drm/drm_panel_orientation_quirks.c   |  2 +-
+ drivers/gpu/drm/i915/intel_pipe_crc.c            |  2 +-
+ drivers/ide/hpt366.c                             |  2 +-
+ drivers/mfd/omap-usb-host.c                      |  2 +-
+ drivers/mmc/host/sdhci-xenon-phy.c               | 12 ++++++------
+ drivers/net/wireless/intel/iwlwifi/mvm/debugfs.c |  2 +-
+ drivers/pci/pcie/aer.c                           |  2 +-
+ drivers/phy/tegra/xusb.c                         |  2 +-
+ drivers/pinctrl/mvebu/pinctrl-armada-37xx.c      |  4 ++--
+ drivers/pinctrl/pinmux.c                         |  2 +-
+ drivers/power/supply/ab8500_btemp.c              |  2 +-
+ drivers/power/supply/ab8500_charger.c            |  2 +-
+ drivers/power/supply/ab8500_fg.c                 |  2 +-
+ drivers/power/supply/abx500_chargalg.c           |  2 +-
+ drivers/power/supply/charger-manager.c           |  4 ++--
+ drivers/staging/gdm724x/gdm_tty.c                |  3 +--
+ drivers/usb/common/common.c                      |  4 ++--
+ drivers/usb/typec/class.c                        |  8 +++-----
+ drivers/usb/typec/tps6598x.c                     |  2 +-
+ drivers/vfio/vfio.c                              |  4 +---
+ drivers/video/fbdev/pxafb.c                      |  4 ++--
+ fs/ubifs/auth.c                                  |  4 ++--
+ include/linux/string.h                           | 11 ++++++++++-
+ kernel/cgroup/rdma.c                             |  2 +-
+ kernel/sched/debug.c                             |  2 +-
+ kernel/trace/trace.c                             |  2 +-
+ lib/string.c                                     | 13 ++++++++-----
+ mm/mempolicy.c                                   |  2 +-
+ mm/vmpressure.c                                  |  4 ++--
+ security/apparmor/lsm.c                          |  4 ++--
+ security/integrity/ima/ima_main.c                |  2 +-
+ sound/firewire/oxfw/oxfw.c                       |  2 +-
+ sound/pci/oxygen/oxygen_mixer.c                  |  2 +-
+ sound/soc/codecs/max98088.c                      |  2 +-
+ sound/soc/codecs/max98095.c                      |  2 +-
+ sound/soc/soc-dapm.c                             |  2 +-
+ 48 files changed, 88 insertions(+), 82 deletions(-)
+
+-- 
+2.17.1
+
