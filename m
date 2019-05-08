@@ -2,102 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6B317949
-	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 14:22:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C683179F6
+	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 15:10:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727864AbfEHMWH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 May 2019 08:22:07 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:46886 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726751AbfEHMWG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 May 2019 08:22:06 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x48CJBEV086953;
-        Wed, 8 May 2019 12:20:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=Vy0vJPC+R/qK4BTy9W8k2EK+1DkuBwwYmX4Im7RV/1I=;
- b=rwrtMH5vFY76MnriFuwWJRty7cv6d48ndLvoH9qa0iSpe18cQhaRn84K+EEAZ1el4f/y
- JYXzNPHiRG6Um3c2LeXmrh0vIUgokB68rrApoaQDWIhQiq3xdWk5gSEBW5t2CsNm+NQD
- vMj6o0elaMb6F0MU58KC4FWtRSn89CRe22TBfRL7zCGITD8/HSnJoDvmL6xh8b//HGVN
- 0/+i+9yb5Er16ot7xGaUWYdgVLnSKYTBDh5U+VgaaiAGanyy3YqtlO3+pRPaxxQxAHqK
- Taf9LSC6aD/fmeyve7zi016PT3fCR2HgfwqDVjH/4iBaBbfLBHPj+ptzQwZZXQN8uHEa Qg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 2s94b63etg-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 May 2019 12:20:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x48CJL8V107697;
-        Wed, 8 May 2019 12:20:30 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2s94ag20en-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 08 May 2019 12:20:30 +0000
-Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x48CKNew007185;
-        Wed, 8 May 2019 12:20:24 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 08 May 2019 05:20:22 -0700
-Date:   Wed, 8 May 2019 15:20:10 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Alexandru Ardelean <alexandru.ardelean@analog.com>
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-ide@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-gpio@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-omap@vger.kernel.org,
-        linux-mmc@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-tegra@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-usb@vger.kernel.org, kvm@vger.kernel.org,
-        linux-fbdev@vger.kernel.org, linux-mtd@lists.infradead.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-security-module@vger.kernel.org,
-        linux-integrity@vger.kernel.org, alsa-devel@alsa-project.org,
-        gregkh@linuxfoundation.org, andriy.shevchenko@linux.intel.com
-Subject: Re: [PATCH 09/16] mmc: sdhci-xenon: use new match_string()
- helper/macro
-Message-ID: <20190508122010.GC21059@kadam>
-References: <20190508112842.11654-1-alexandru.ardelean@analog.com>
- <20190508112842.11654-11-alexandru.ardelean@analog.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190508112842.11654-11-alexandru.ardelean@analog.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9250 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=644
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1905080079
-X-Proofpoint-Virus-Version: vendor=nai engine=5900 definitions=9250 signatures=668686
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=665 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1905080079
+        id S1726842AbfEHNKY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 May 2019 09:10:24 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:44032 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726754AbfEHNKX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 May 2019 09:10:23 -0400
+Received: by mail-qt1-f194.google.com with SMTP id f24so12639852qtk.11
+        for <cgroups@vger.kernel.org>; Wed, 08 May 2019 06:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=bFa5fWOj2U39bADpZiNUIdboEoriIx8kxrH5dUaTGmo=;
+        b=AaSAORnuiyrLy4PFh/pbfE/NUYTkNM9t+xn/oTFhNa7mX9sFbcaoVkJmtjF5sY1MXr
+         eIqj3qnqmzXQf3o3O2SkcLx/OstU8qzgySEj2W774c/ByF6zLPv23RBIY4/AdgqDX69h
+         EviloJdUjLgbLAaKBBr73X4eiqQGOVvj+ngtfEcjYbzHmsYnmkMhfwihIpIXwxyWhYC4
+         P9wewZNWzPkhrAL+SemyWnARTqAOxs6aObkeomkAd+cUPUB9gKUlTbMdI1yFIc/blKLS
+         prRJc8G/OKf329fbsQGzeslm5Dmgr/SUc0aGC1j/Ff9mMKPmoeDMAUkVDIggh9P0Q4cU
+         WJGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=bFa5fWOj2U39bADpZiNUIdboEoriIx8kxrH5dUaTGmo=;
+        b=bmqamiIlMeA2EfEgWHhYqCTY+GFrRN9fW2ObMTmYS4jkh65JbakiCe1SOXOO2rVhHI
+         7vtzpcMUP1zxYIwiGOtiJ34M/MDML8t5cpG0+vdExykXJYAxbH8AaaVxJCSLgefSVFLc
+         AGDwJ7akCwKhyH0Rt0cFp6We1ybwmkKE7Rw7RC1y6FZzBG/StwguYPhIMv0I0DprIN0x
+         r0tKBODiSh5jadc6mnUEg/HJp9pKBWIFrJ4vI1aANoothNqrQo6SZxM7mRC3JVgyFwri
+         GlDm3ojcxkZ4CPX3S5zU8tHMVJPhhsFOtjEap6a1LLOQaZIo/0AL9ll0s9zBZT1Ba1Az
+         tk+A==
+X-Gm-Message-State: APjAAAWxNpanJxEJb1YZK9+tQF4RuO+ieyFPfFYjwhCwE8YmHeUKYdtg
+        QcrrkWAq3bXt0cwWouZJmGvCSA==
+X-Google-Smtp-Source: APXvYqzm+oveL+e4Ksxqb7E1V14270yzcZkoBPQa3SSnfTb4ZkyMqyPZpOmRXi68d8c82QtaH6B5NQ==
+X-Received: by 2002:a0c:8d07:: with SMTP id r7mr17494725qvb.206.1557321022824;
+        Wed, 08 May 2019 06:10:22 -0700 (PDT)
+Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id v190sm6992635qkc.9.2019.05.08.06.10.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 08 May 2019 06:10:22 -0700 (PDT)
+Message-ID: <1557321021.6132.21.camel@lca.pw>
+Subject: Re: ptrace warning due to "cgroup: get rid of
+ cgroup_freezer_frozen_exit()"
+From:   Qian Cai <cai@lca.pw>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     "oleg@redhat.com" <oleg@redhat.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "lizefan@huawei.com" <lizefan@huawei.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 08 May 2019 09:10:21 -0400
+In-Reply-To: <20190507213752.GA24308@tower.DHCP.thefacebook.com>
+References: <1557259462.6132.20.camel@lca.pw>
+         <20190507213752.GA24308@tower.DHCP.thefacebook.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 08, 2019 at 02:28:35PM +0300, Alexandru Ardelean wrote:
-> -static const char * const phy_types[] = {
-> -	"emmc 5.0 phy",
-> -	"emmc 5.1 phy"
-> -};
-> -
->  enum xenon_phy_type_enum {
->  	EMMC_5_0_PHY,
->  	EMMC_5_1_PHY,
->  	NR_PHY_TYPES
+On Tue, 2019-05-07 at 21:37 +0000, Roman Gushchin wrote:
+> Can you, please, try if the following patch fixes the problem?
 
-There is no need for NR_PHY_TYPES now so you could remove that as well.
+It works great.
 
-regards,
-dan carpenter
-
+> --
+> 
+> diff --git a/kernel/signal.c b/kernel/signal.c
+> index 16b72f4f14df..bf2f268f1386 100644
+> --- a/kernel/signal.c
+> +++ b/kernel/signal.c
+> @@ -2484,9 +2484,6 @@ bool get_signal(struct ksignal *ksig)
+>                 sigdelset(&current->pending.signal, SIGKILL);
+>                 recalc_sigpending();
+>                 current->jobctl &= ~JOBCTL_TRAP_FREEZE;
+> -               spin_unlock_irq(&sighand->siglock);
+> -               if (unlikely(cgroup_task_frozen(current)))
+> -                       cgroup_leave_frozen(true);
+>                 goto fatal;
+>         }
+>  
+> @@ -2608,8 +2605,10 @@ bool get_signal(struct ksignal *ksig)
+>                         continue;
+>                 }
+>  
+> -               spin_unlock_irq(&sighand->siglock);
+>         fatal:
+> +               spin_unlock_irq(&sighand->siglock);
+> +               if (unlikely(cgroup_task_frozen(current)))
+> +                       cgroup_leave_frozen(true);
+>  
+>                 /*
+>                  * Anything else is fatal, maybe with a core dump.
