@@ -2,91 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D6B317D46
-	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 17:27:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90C2917E82
+	for <lists+cgroups@lfdr.de>; Wed,  8 May 2019 18:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728076AbfEHPZn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 May 2019 11:25:43 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:40162 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727020AbfEHPZm (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 8 May 2019 11:25:42 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 0DA21308795F;
-        Wed,  8 May 2019 15:25:41 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.159])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F0BF0277DB;
-        Wed,  8 May 2019 15:25:37 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Wed,  8 May 2019 17:25:40 +0200 (CEST)
-Date:   Wed, 8 May 2019 17:25:36 +0200
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Qian Cai <cai@lca.pw>, "tj@kernel.org" <tj@kernel.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: ptrace warning due to "cgroup: get rid of
- cgroup_freezer_frozen_exit()"
-Message-ID: <20190508152536.GA17058@redhat.com>
-References: <1557259462.6132.20.camel@lca.pw>
- <20190507213752.GA24308@tower.DHCP.thefacebook.com>
+        id S1728738AbfEHQwC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 May 2019 12:52:02 -0400
+Received: from mail-it1-f198.google.com ([209.85.166.198]:58318 "EHLO
+        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728731AbfEHQwB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 May 2019 12:52:01 -0400
+Received: by mail-it1-f198.google.com with SMTP id p23so2664767itc.7
+        for <cgroups@vger.kernel.org>; Wed, 08 May 2019 09:52:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=0mythnzPfhPVWyHlhf2vS5jhrjHuHUNNfUDlg+aYw9A=;
+        b=hUfyTkZ68Y1Th1FtaGCIIHswny3asnTYtn5bdCU8h/5ZzBNo9xBgoZxtbf1T1zZVa0
+         /ytWz+41C6NEgiimWVvWy7nS212q9hZuSeLHr3P3sQe9g1PVyCfBHSF7q3JPoqiq9acO
+         BOBCIYpTbjUCAslllZ4sD878qf1v9stf+8pW+ytG5v9e6zjuCbOg7dl8rcbYg3W96J26
+         lktRrg+V/sD10rtuLUCn0y9JEmG5MFV5MRqizGN65isPBri58sq3zHcKIB8h0/Rl5idD
+         1KDX/9GxwvFCqwBr4VW4cV2yfvZ5lCxZJIYWZWFjLfSydYcurnFPq7HqCMrrm0uIXF18
+         ZWYw==
+X-Gm-Message-State: APjAAAXc6sRNKb0Ljzb1D/ywHICc8g6YxsXfBkEef1KXyYuxwoPK2QQg
+        LuuF5iU4JTEfcqKFrSZvcDHM2bLzUF6BiJFqWaExOI3O4kRI
+X-Google-Smtp-Source: APXvYqzn8EGCMk5VzujP7HVqRUmMSRCGOcAA/AZcz33of0OiGm4u2Q+CbAdIyc3cECPxBabsd8wQ6BLVyHwoK22/ZFtvHA6zWcpP
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190507213752.GA24308@tower.DHCP.thefacebook.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Wed, 08 May 2019 15:25:42 +0000 (UTC)
+X-Received: by 2002:a02:b088:: with SMTP id v8mr30068575jah.21.1557334320874;
+ Wed, 08 May 2019 09:52:00 -0700 (PDT)
+Date:   Wed, 08 May 2019 09:52:00 -0700
+In-Reply-To: <000000000000a573da058858083c@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fe103805886326ea@google.com>
+Subject: Re: WARNING in cgroup_exit
+From:   syzbot <syzbot+f14868630901fc6151d3@syzkaller.appspotmail.com>
+To:     alexander.h.duyck@intel.com, amritha.nambiar@intel.com,
+        andriy.shevchenko@linux.intel.com, ast@kernel.org,
+        bpf@vger.kernel.org, cgroups@vger.kernel.org, daniel@iogearbox.net,
+        davem@davemloft.net, dmitry.torokhov@gmail.com,
+        f.fainelli@gmail.com, guro@fb.com, hannes@cmpxchg.org,
+        idosch@mellanox.com, kafai@fb.com, linux-kernel@vger.kernel.org,
+        lizefan@huawei.com, netdev@vger.kernel.org, sfr@canb.auug.org.au,
+        songliubraving@fb.com, syzkaller-bugs@googlegroups.com,
+        tj@kernel.org, tyhicks@canonical.com, wanghai26@huawei.com,
+        yhs@fb.com, yuehaibing@huawei.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 05/07, Roman Gushchin wrote:
->
-> --- a/kernel/signal.c
-> +++ b/kernel/signal.c
-> @@ -2484,9 +2484,6 @@ bool get_signal(struct ksignal *ksig)
->                 sigdelset(&current->pending.signal, SIGKILL);
->                 recalc_sigpending();
->                 current->jobctl &= ~JOBCTL_TRAP_FREEZE;
+syzbot has bisected this bug to:
 
-just noticed... perhaps it makes more sense to clear JOBCTL_TRAP_FREEZE
-before recalc_sigpending(). Or simply not clear it at all, see below.
+commit e42940e8559c8bbffa8286cc78067c75eb42b374
+Author: Stephen Rothwell <sfr@canb.auug.org.au>
+Date:   Tue May 7 01:03:30 2019 +0000
 
-> -               spin_unlock_irq(&sighand->siglock);
-> -               if (unlikely(cgroup_task_frozen(current)))
-> -                       cgroup_leave_frozen(true);
->                 goto fatal;
->         }
->  
-> @@ -2608,8 +2605,10 @@ bool get_signal(struct ksignal *ksig)
->                         continue;
->                 }
->  
-> -               spin_unlock_irq(&sighand->siglock);
->         fatal:
-> +               spin_unlock_irq(&sighand->siglock);
-> +               if (unlikely(cgroup_task_frozen(current)))
-> +                       cgroup_leave_frozen(true);
+     Merge remote-tracking branch 'rdma/for-next'
 
-Yes, ptrace_signal() can return a fatal signal... and in this case we do not
-clear JOBCTL_TRAP_FREEZE. This doesn't look consistent with the code above.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1746b4e8a00000
+start commit:   00c3bc00 Add linux-next specific files for 20190507
+git tree:       linux-next
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=14c6b4e8a00000
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c6b4e8a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=63cd766601c6c9fc
+dashboard link: https://syzkaller.appspot.com/bug?extid=f14868630901fc6151d3
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10fcf758a00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1202ffa4a00000
 
+Reported-by: syzbot+f14868630901fc6151d3@syzkaller.appspotmail.com
+Fixes: e42940e8559c ("Merge remote-tracking branch 'rdma/for-next'")
 
-
-I can only repeat that somehow we need to cleanup/improve the whole logic.
-
-Say, a traced task reports syscall-enter. ptrace_stop() does enter_frozen().
-The cgroup can become CGRP_FROZEN after that. Now the debugger does PTRACE_CONT,
-the frozen task actually starts the syscall. Obviously not good.
-
-Heh, and if this syscall is sys_exit or sys_exit_group we can hit the same
-warning.
-
-Oleg.
-
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
