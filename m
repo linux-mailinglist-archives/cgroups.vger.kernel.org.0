@@ -2,31 +2,31 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D14A193FE
-	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 23:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C44F193FF
+	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 23:04:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726219AbfEIVEu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 May 2019 17:04:50 -0400
-Received: from mail-eopbgr760057.outbound.protection.outlook.com ([40.107.76.57]:15493
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        id S1727091AbfEIVEv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 May 2019 17:04:51 -0400
+Received: from mail-eopbgr810083.outbound.protection.outlook.com ([40.107.81.83]:27156
+        "EHLO NAM01-BY2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725992AbfEIVEt (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 9 May 2019 17:04:49 -0400
+        id S1727088AbfEIVEu (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 9 May 2019 17:04:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7YOVKDWqtsp3YOBhGBQhAAXk2OeBSRU2dQNs+Dfx/+U=;
- b=tXUFCw7oPwjifIZLe81w7Zc2oACV/bgrI6ivuuvl9Nv61IWawG9tdQmXwk1H8HYE1luoEj8fDQa1BiLUrgk06OPa1gqGuORgmDwh9VeJOptZHFipyafKxZQZom82DJA3WMPqx+uQ77/VQ+vFg1ZxFa6LyXtvyd71kyW28qUbSYw=
-Received: from MWHPR12CA0034.namprd12.prod.outlook.com (2603:10b6:301:2::20)
- by DM5PR1201MB0060.namprd12.prod.outlook.com (2603:10b6:4:54::14) with
+ bh=kQLJJ8Yh38Q57nt87ttc/UN4TMRcEVVhzIf4fqMum0I=;
+ b=HP7Cc6OIKyuVxgHGDZp6Jj4eWORS/dMXpecLkpRWjUBrAIva+/w7why5AJkg36/opzT5OCyMZNwd50sn6Usu/IoZGNupl3BjtFrdKzD2RSxwU1bNoYggPc2WZQdEOOlGPZoorEOsEGcVews9a855OSMelUHwiabDVko519oT2/A=
+Received: from MWHPR12CA0032.namprd12.prod.outlook.com (2603:10b6:301:2::18)
+ by BN7PR12MB2658.namprd12.prod.outlook.com (2603:10b6:408:29::24) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1856.15; Thu, 9 May
- 2019 21:04:45 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.1856.12; Thu, 9 May
+ 2019 21:04:46 +0000
 Received: from CO1NAM03FT005.eop-NAM03.prod.protection.outlook.com
- (2a01:111:f400:7e48::201) by MWHPR12CA0034.outlook.office365.com
- (2603:10b6:301:2::20) with Microsoft SMTP Server (version=TLS1_2,
+ (2a01:111:f400:7e48::205) by MWHPR12CA0032.outlook.office365.com
+ (2603:10b6:301:2::18) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.20.1878.21 via Frontend
- Transport; Thu, 9 May 2019 21:04:45 +0000
+ Transport; Thu, 9 May 2019 21:04:46 +0000
 Authentication-Results: spf=none (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=permerror action=none header.from=amd.com;
@@ -35,18 +35,18 @@ Received-SPF: None (protection.outlook.com: amd.com does not designate
 Received: from SATLEXCHOV02.amd.com (165.204.84.17) by
  CO1NAM03FT005.mail.protection.outlook.com (10.152.80.156) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.1856.11 via Frontend Transport; Thu, 9 May 2019 21:04:44 +0000
+ 15.20.1856.11 via Frontend Transport; Thu, 9 May 2019 21:04:46 +0000
 Received: from kho-5039A.amd.com (10.180.168.240) by SATLEXCHOV02.amd.com
  (10.181.40.72) with Microsoft SMTP Server id 14.3.389.1; Thu, 9 May 2019
- 16:04:42 -0500
+ 16:04:43 -0500
 From:   Kenny Ho <Kenny.Ho@amd.com>
 To:     <y2kenny@gmail.com>, <Kenny.Ho@amd.com>, <cgroups@vger.kernel.org>,
         <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
         <tj@kernel.org>, <sunnanyong@huawei.com>,
         <alexander.deucher@amd.com>, <brian.welty@intel.com>
-Subject: [RFC PATCH v2 1/5] cgroup: Introduce cgroup for drm subsystem
-Date:   Thu, 9 May 2019 17:04:06 -0400
-Message-ID: <20190509210410.5471-2-Kenny.Ho@amd.com>
+Subject: [RFC PATCH v2 2/5] cgroup: Add mechanism to register DRM devices
+Date:   Thu, 9 May 2019 17:04:07 -0400
+Message-ID: <20190509210410.5471-3-Kenny.Ho@amd.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20190509210410.5471-1-Kenny.Ho@amd.com>
 References: <20181120185814.13362-1-Kenny.Ho@amd.com>
@@ -56,169 +56,247 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(376002)(396003)(346002)(136003)(39860400002)(2980300002)(428003)(189003)(199004)(478600001)(47776003)(1076003)(72206003)(50226002)(81166006)(81156014)(8676002)(8936002)(6666004)(356004)(14444005)(305945005)(53416004)(5024004)(2616005)(476003)(11346002)(446003)(86362001)(126002)(486006)(426003)(186003)(26005)(77096007)(48376002)(110136005)(50466002)(5660300002)(2201001)(336012)(53936002)(68736007)(7696005)(2870700001)(76176011)(51416003)(2906002)(70586007)(70206006)(316002)(36756003);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR1201MB0060;H:SATLEXCHOV02.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;MX:1;A:1;
+X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(396003)(376002)(136003)(39860400002)(346002)(2980300002)(428003)(199004)(189003)(72206003)(47776003)(305945005)(48376002)(50466002)(478600001)(5660300002)(11346002)(316002)(70586007)(70206006)(50226002)(51416003)(7696005)(76176011)(2870700001)(110136005)(2906002)(53936002)(6666004)(356004)(1076003)(14444005)(446003)(36756003)(186003)(77096007)(476003)(2616005)(2201001)(336012)(426003)(86362001)(53416004)(486006)(8936002)(81166006)(81156014)(8676002)(126002)(26005)(68736007);DIR:OUT;SFP:1101;SCL:1;SRVR:BN7PR12MB2658;H:SATLEXCHOV02.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;A:1;MX:1;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 601a1d46-a0f3-4dd8-addd-08d6d4c1f6bd
-X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328);SRVR:DM5PR1201MB0060;
-X-MS-TrafficTypeDiagnostic: DM5PR1201MB0060:
-X-Microsoft-Antispam-PRVS: <DM5PR1201MB00600348694940E6A69F2BD183330@DM5PR1201MB0060.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5236;
+X-MS-Office365-Filtering-Correlation-Id: 31415bab-964f-444d-e0da-08d6d4c1f766
+X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328);SRVR:BN7PR12MB2658;
+X-MS-TrafficTypeDiagnostic: BN7PR12MB2658:
+X-Microsoft-Antispam-PRVS: <BN7PR12MB26588BC89ECAD8FF7929722083330@BN7PR12MB2658.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:663;
 X-Forefront-PRVS: 003245E729
 X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: /g/WIAAD+T/l6ZZpl8UZgSVYU8UKyRJEQ2kup3NZhBuClnD15gSy+XTg/vMLcQH1/9LRwXLVh2rDQ3H6GBCk4vsHZ9FfhGc853lKtJC2V48bNfrsjseWUQY9GrqKj9WZDijgjKLX94s/H5mNu5hlKlK83Eyyq4LZarImXXaPSIiuqX/FOIRq9PAB71egCxsF0aj9zy2v4/dmGOmuwLiuQY5DMiELMpi3UTec3PXspWwrX3GRyZwAxss+mDboeUdxDkYx04HbNKf7ecWRGnF5xoIRrsr60MqBMCuLTsIDiOaHgQgBRTLuC4WZqTJPHWg1nTsUww7Sys0CMchhs+IfX8OhqKNNq3NT8rLQ7+BWQ+vPcXRstOZvgAcJJ9m0qvK/6oE+D6EUlzG4YSpkHbh40jRejMEOiVqtiaPwRlOWgo0=
+X-Microsoft-Antispam-Message-Info: g2PtkT3bEYSwvzNjkNT2oNOitOeg67m36U7LBlLd3Oo0Uv5gmzv+L47TWBVCe+4n77/YYQ/BzdVW4fgcidp+WglDlv8d7mQ3QXNi6rmMlLvKUTDp6Cht5+TDpCSKMMI6iW3VIYDLITGC8/N0GPEvrbfuBj1q9aeIKSCeYvpQBbS5YlYXEphbLzsaWc91yPibNoPaEtXvCHKYtmFSdb9gU2shBgSGZY6Cb9rxmbLuAvdzOAznaU+nbBSK/2XGvOpwtwKYfKLdSVNr4pfswQxh8P8XzKZLgfplacHLqobmg96K38EUmY/eEOkEODDpVXJDYKY29/6vWpoBeLJedDhQthmQcHE6UUAkTZFVLVhVt+c4pL34AuxMBWH2hU2zOYJrUqhv3dDVkTLEoK7jYomM/NUbXLpfDFgHHmsxpOgMWCU=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2019 21:04:44.9608
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2019 21:04:46.0952
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 601a1d46-a0f3-4dd8-addd-08d6d4c1f6bd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 31415bab-964f-444d-e0da-08d6d4c1f766
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXCHOV02.amd.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0060
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR12MB2658
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Change-Id: I6830d3990f63f0c13abeba29b1d330cf28882831
+Change-Id: I908ee6975ea0585e4c30eafde4599f87094d8c65
 Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
 ---
- include/linux/cgroup_drm.h    | 32 ++++++++++++++++++++++++++
- include/linux/cgroup_subsys.h |  4 ++++
- init/Kconfig                  |  5 +++++
- kernel/cgroup/Makefile        |  1 +
- kernel/cgroup/drm.c           | 42 +++++++++++++++++++++++++++++++++++
- 5 files changed, 84 insertions(+)
- create mode 100644 include/linux/cgroup_drm.h
- create mode 100644 kernel/cgroup/drm.c
+ include/drm/drm_cgroup.h   |  24 ++++++++
+ include/linux/cgroup_drm.h |  10 ++++
+ kernel/cgroup/drm.c        | 118 ++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 151 insertions(+), 1 deletion(-)
+ create mode 100644 include/drm/drm_cgroup.h
 
-diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
 new file mode 100644
-index 000000000000..121001be1230
+index 000000000000..ddb9eab64360
 --- /dev/null
-+++ b/include/linux/cgroup_drm.h
-@@ -0,0 +1,32 @@
++++ b/include/drm/drm_cgroup.h
+@@ -0,0 +1,24 @@
 +/* SPDX-License-Identifier: MIT
 + * Copyright 2019 Advanced Micro Devices, Inc.
 + */
-+#ifndef _CGROUP_DRM_H
-+#define _CGROUP_DRM_H
++#ifndef __DRM_CGROUP_H__
++#define __DRM_CGROUP_H__
 +
 +#ifdef CONFIG_CGROUP_DRM
 +
-+#include <linux/cgroup.h>
++int drmcgrp_register_device(struct drm_device *device);
 +
-+struct drmcgrp {
-+	struct cgroup_subsys_state	css;
++int drmcgrp_unregister_device(struct drm_device *device);
++
++#else
++static inline int drmcgrp_register_device(struct drm_device *device)
++{
++	return 0;
++}
++
++static inline int drmcgrp_unregister_device(struct drm_device *device)
++{
++	return 0;
++}
++#endif /* CONFIG_CGROUP_DRM */
++#endif /* __DRM_CGROUP_H__ */
+diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+index 121001be1230..d7ccf434ca6b 100644
+--- a/include/linux/cgroup_drm.h
++++ b/include/linux/cgroup_drm.h
+@@ -6,10 +6,20 @@
+ 
+ #ifdef CONFIG_CGROUP_DRM
+ 
++#include <linux/mutex.h>
+ #include <linux/cgroup.h>
++#include <drm/drm_file.h>
++
++/* limit defined per the way drm_minor_alloc operates */
++#define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
++
++struct drmcgrp_device_resource {
++	/* for per device stats */
 +};
-+
-+static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct drmcgrp, css) : NULL;
-+}
-+
-+static inline struct drmcgrp *get_drmcgrp(struct task_struct *task)
-+{
-+	return css_drmcgrp(task_get_css(task, drm_cgrp_id));
-+}
-+
-+
-+static inline struct drmcgrp *parent_drmcgrp(struct drmcgrp *cg)
-+{
-+	return css_drmcgrp(cg->css.parent);
-+}
-+
-+#endif	/* CONFIG_CGROUP_DRM */
-+#endif	/* _CGROUP_DRM_H */
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index acb77dcff3b4..ddedad809e8b 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -61,6 +61,10 @@ SUBSYS(pids)
- SUBSYS(rdma)
- #endif
  
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+SUBSYS(drm)
-+#endif
-+
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index d47cb77a220e..0b0f112eb23b 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -839,6 +839,11 @@ config CGROUP_RDMA
- 	  Attaching processes with active RDMA resources to the cgroup
- 	  hierarchy is allowed even if can cross the hierarchy's limit.
+ struct drmcgrp {
+ 	struct cgroup_subsys_state	css;
++	struct drmcgrp_device_resource	*dev_resources[MAX_DRM_DEV];
+ };
  
-+config CGROUP_DRM
-+	bool "DRM controller (EXPERIMENTAL)"
-+	help
-+	  Provides accounting and enforcement of resources in the DRM subsystem.
-+
- config CGROUP_FREEZER
- 	bool "Freezer controller"
- 	help
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index bfcdae896122..6af14bd93050 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -4,5 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o
- obj-$(CONFIG_CGROUP_FREEZER) += freezer.o
- obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
-+obj-$(CONFIG_CGROUP_DRM) += drm.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
+ static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
 diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-new file mode 100644
-index 000000000000..620c887d6d24
---- /dev/null
+index 620c887d6d24..f9ef4bf042d8 100644
+--- a/kernel/cgroup/drm.c
 +++ b/kernel/cgroup/drm.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: MIT
-+// Copyright 2019 Advanced Micro Devices, Inc.
-+#include <linux/slab.h>
-+#include <linux/cgroup.h>
-+#include <linux/cgroup_drm.h>
+@@ -1,16 +1,79 @@
+ // SPDX-License-Identifier: MIT
+ // Copyright 2019 Advanced Micro Devices, Inc.
++#include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/cgroup.h>
++#include <linux/fs.h>
++#include <linux/seq_file.h>
++#include <linux/mutex.h>
+ #include <linux/cgroup_drm.h>
++#include <drm/drm_device.h>
++#include <drm/drm_cgroup.h>
 +
-+static struct drmcgrp *root_drmcgrp __read_mostly;
++static DEFINE_MUTEX(drmcgrp_mutex);
 +
-+static void drmcgrp_css_free(struct cgroup_subsys_state *css)
-+{
-+	struct drmcgrp *drmcgrp = css_drmcgrp(css);
-+
-+	kfree(css_drmcgrp(css));
-+}
-+
-+static struct cgroup_subsys_state *
-+drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
-+{
-+	struct drmcgrp *parent = css_drmcgrp(parent_css);
-+	struct drmcgrp *drmcgrp;
-+
-+	drmcgrp = kzalloc(sizeof(struct drmcgrp), GFP_KERNEL);
-+	if (!drmcgrp)
-+		return ERR_PTR(-ENOMEM);
-+
-+	if (!parent)
-+		root_drmcgrp = drmcgrp;
-+
-+	return &drmcgrp->css;
-+}
-+
-+struct cftype files[] = {
-+	{ }	/* terminate */
++struct drmcgrp_device {
++	struct drm_device	*dev;
++	struct mutex		mutex;
 +};
 +
-+struct cgroup_subsys drm_cgrp_subsys = {
-+	.css_alloc	= drmcgrp_css_alloc,
-+	.css_free	= drmcgrp_css_free,
-+	.early_init	= false,
-+	.legacy_cftypes	= files,
-+	.dfl_cftypes	= files,
-+};
++/* indexed by drm_minor for access speed */
++static struct drmcgrp_device	*known_drmcgrp_devs[MAX_DRM_DEV];
++
++static int max_minor;
++
+ 
+ static struct drmcgrp *root_drmcgrp __read_mostly;
+ 
+ static void drmcgrp_css_free(struct cgroup_subsys_state *css)
+ {
+ 	struct drmcgrp *drmcgrp = css_drmcgrp(css);
++	int i;
++
++	for (i = 0; i <= max_minor; i++) {
++		if (drmcgrp->dev_resources[i] != NULL)
++			kfree(drmcgrp->dev_resources[i]);
++	}
++
++	kfree(drmcgrp);
++}
++
++static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int i)
++{
++	struct drmcgrp_device_resource *ddr = drmcgrp->dev_resources[i];
++
++	if (ddr == NULL) {
++		ddr = kzalloc(sizeof(struct drmcgrp_device_resource),
++			GFP_KERNEL);
++
++		if (!ddr)
++			return -ENOMEM;
++
++		drmcgrp->dev_resources[i] = ddr;
++	}
++
++	/* set defaults here */
++
++	return 0;
++}
++
++static inline int init_drmcgrp(struct drmcgrp *drmcgrp, struct drm_device *dev)
++{
++	int rc = 0;
++	int i;
++
++	if (dev != NULL) {
++		rc = init_drmcgrp_single(drmcgrp, dev->primary->index);
++		return rc;
++	}
++
++	for (i = 0; i <= max_minor; i++) {
++		rc = init_drmcgrp_single(drmcgrp, i);
++		if (rc)
++			return rc;
++	}
+ 
+-	kfree(css_drmcgrp(css));
++	return 0;
+ }
+ 
+ static struct cgroup_subsys_state *
+@@ -18,11 +81,18 @@ drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+ 	struct drmcgrp *parent = css_drmcgrp(parent_css);
+ 	struct drmcgrp *drmcgrp;
++	int rc;
+ 
+ 	drmcgrp = kzalloc(sizeof(struct drmcgrp), GFP_KERNEL);
+ 	if (!drmcgrp)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	rc = init_drmcgrp(drmcgrp, NULL);
++	if (rc) {
++		drmcgrp_css_free(&drmcgrp->css);
++		return ERR_PTR(rc);
++	}
++
+ 	if (!parent)
+ 		root_drmcgrp = drmcgrp;
+ 
+@@ -40,3 +110,49 @@ struct cgroup_subsys drm_cgrp_subsys = {
+ 	.legacy_cftypes	= files,
+ 	.dfl_cftypes	= files,
+ };
++
++int drmcgrp_register_device(struct drm_device *dev)
++{
++	struct drmcgrp_device *ddev;
++	struct cgroup_subsys_state *pos;
++	struct drmcgrp *child;
++
++	ddev = kzalloc(sizeof(struct drmcgrp_device), GFP_KERNEL);
++	if (!ddev)
++		return -ENOMEM;
++
++	ddev->dev = dev;
++	mutex_init(&ddev->mutex);
++
++	mutex_lock(&drmcgrp_mutex);
++	known_drmcgrp_devs[dev->primary->index] = ddev;
++	max_minor = max(max_minor, dev->primary->index);
++	mutex_unlock(&drmcgrp_mutex);
++
++	/* init cgroups created before registration (i.e. root cgroup) */
++	if (root_drmcgrp != NULL) {
++		init_drmcgrp(root_drmcgrp, dev);
++
++		rcu_read_lock();
++		css_for_each_child(pos, &root_drmcgrp->css) {
++			child = css_drmcgrp(pos);
++			init_drmcgrp(child, dev);
++		}
++		rcu_read_unlock();
++	}
++
++	return 0;
++}
++EXPORT_SYMBOL(drmcgrp_register_device);
++
++int drmcgrp_unregister_device(struct drm_device *dev)
++{
++	mutex_lock(&drmcgrp_mutex);
++
++	kfree(known_drmcgrp_devs[dev->primary->index]);
++	known_drmcgrp_devs[dev->primary->index] = NULL;
++
++	mutex_unlock(&drmcgrp_mutex);
++	return 0;
++}
++EXPORT_SYMBOL(drmcgrp_unregister_device);
 -- 
 2.21.0
 
