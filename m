@@ -2,96 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1C318E7E
-	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 18:52:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D966218F48
+	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 19:36:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbfEIQwg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 May 2019 12:52:36 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:45967 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726600AbfEIQwg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 May 2019 12:52:36 -0400
-Received: by mail-qt1-f196.google.com with SMTP id t1so3248481qtc.12;
-        Thu, 09 May 2019 09:52:35 -0700 (PDT)
+        id S1726681AbfEIRgq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 May 2019 13:36:46 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43057 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726576AbfEIRgq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 May 2019 13:36:46 -0400
+Received: by mail-qk1-f196.google.com with SMTP id z6so1120388qkl.10;
+        Thu, 09 May 2019 10:36:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
-        b=lZ76QuoWP/RlQ75YXkOJcraYtkNTORpFzzVYzxh33URZ1VMjG3Xx5DjtZ3CHin9xa5
-         fS/xGH7+lJxkoHr7QwVmyDAjbeF7nvOmxv9beDILF+sB+8CiqCfnpouLazaG1HGm4wWr
-         sSEbhOG5/jozTrc/fsmtxtN959XvvWOXy5liSIq+k6J+n2dlsbSH6ap+adywXTDR7kLx
-         KiqF0AAJVljqXt6esw6EBUoQy090O3TR79BAiDBzt0e3J3KThFw2L3AVAsylb2+p2P5b
-         a2N9dHCQk3vpX1jSLasmI3wCY61bPxdTWmHGDEdgCCrPI+I3gdezXTWfZ9jvSdaQw7fz
-         mByg==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=iom6SqE2pGkNK9Z5BBYeoQQuW8YcGD2ELbPKlGymboM=;
+        b=cs0FXI2lpYwghUSDOf097f2v6Rt4diQmigrD+c/Xo1713L8qT08oedAGfjEbWsJUYJ
+         Y4uKJTdVdNlH5L2MyZL/0C5q/QLyE+ubVYeRFqZX8QwccR9HwEcpxshclYF2cqqOMnBL
+         ArKHoK9IiybB9p/TBSc6izdky9KEgTCNrSG3YfvQ5t+M1AsJdSrAr23HIhrXJJ8a1+OZ
+         6DiXvnfAxygTWRdUtaronQth1170tRMp467SFEcmAwqwIOvJSO9k64YUc5qLMAbbjhDT
+         KLFHGOIbXHgb3WyyF+MGnwAIvJejG1ZOLF7KZ4/O+H7WoXMreTJzTS7OfgJbDsYUqCGA
+         9WDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
-        b=X+qgnQND/SkWk3uehmAV8cvcDM4jrbVJoc0JzvMMKQHC/g4xRFQnDKGNsVrtMAjvuv
-         2dGhA1FzWeOuOokfzCW7ElZWpk21B1QuRSjQBJSUpUS79AtDWf/8sKb7kOMbG3QKnIFV
-         BdsSDfWXgjPQn7WuDGvl9nmeg6PG6v70SfKmcz8okamN4QtaTBd4dSvVkAyKjv77/UvF
-         uHvIYOf5Vod8wrE/HZ3yjFmQvL1cr0DjSxt0bKBkc1fSJU3artQ7ch0b14N+BEcVxqKT
-         3Mny6agn4cy7hFCljYubkmBZnIu4TiXOX3ZLVKyzWboOuMueALeY5wRMeXMW1OiheA2R
-         XqCQ==
-X-Gm-Message-State: APjAAAW4aogQpAiE6j+DyXsMAwDAkdLUxCCdHxkSZgvTrZmmQi8mUcA0
-        4N6rMIS5jJlV/WwDdA2wf3I=
-X-Google-Smtp-Source: APXvYqx1t5kT+XXZFiBv+VqPqn8kVEYcdTa7Y4TE5pWMD/WmWnopKPh7/3rEKvsPEmRwg0IA9htZcQ==
-X-Received: by 2002:ac8:19f5:: with SMTP id s50mr4695898qtk.281.1557420754955;
-        Thu, 09 May 2019 09:52:34 -0700 (PDT)
+         :mime-version:content-disposition:user-agent;
+        bh=iom6SqE2pGkNK9Z5BBYeoQQuW8YcGD2ELbPKlGymboM=;
+        b=GlKDBxSwjK81S4HsifJV7Z4HC0FqGXQvlMOxVuQ94dbc1ZUQSzjuwu3i6GSnGl+/9v
+         xObkClwB1/JKWP64Nb82TfddP3CKFtZlBS3gbyweyTGCtrW/l1PKK/FvPmnIFmj6uk5/
+         QDTyRlDj88nYyAxyBYpgfhXg9L+SdPSUpCjJCgFYh/ITK/JNPUCCcH0fPYO5CK8Dk+Yx
+         EJ+Qifv1Sa6vmObEFtdJT3xCC8uJRMBrtFHaPc8qP4bUPhDgWnNFOPBV6n17hxQYiKly
+         vIDSIjOly0++xocrf/SfCBOtpI0gDpvYN9W2EJInExQAnfTBxdxlEHtAPqalrM1PRS02
+         P3vg==
+X-Gm-Message-State: APjAAAU3tPqi4muh1dui4m0EIsU0ftUUPgBJ+E3k1qtOs+0ocicdgRvh
+        fSrdyKn/iNLQKVSbVU15KiE=
+X-Google-Smtp-Source: APXvYqxjQ7swkRK1YRWZ4ss04zp7hmROFHao0gs+Me0/F62lHiaZreba66C0xaFRZCf49sR/6+o1Tw==
+X-Received: by 2002:a37:5945:: with SMTP id n66mr4312900qkb.295.1557423405211;
+        Thu, 09 May 2019 10:36:45 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::1:c346])
-        by smtp.gmail.com with ESMTPSA id x47sm1527214qth.68.2019.05.09.09.52.33
+        by smtp.gmail.com with ESMTPSA id f129sm1316130qkj.47.2019.05.09.10.36.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 May 2019 09:52:34 -0700 (PDT)
-Date:   Thu, 9 May 2019 09:52:32 -0700
+        Thu, 09 May 2019 10:36:44 -0700 (PDT)
+Date:   Thu, 9 May 2019 10:36:42 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     "Welty, Brian" <brian.welty@intel.com>
-Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        RDMA mailing list <linux-rdma@vger.kernel.org>,
-        Leon Romanovsky <leon@kernel.org>, kenny.ho@amd.com
-Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
-Message-ID: <20190509165232.GW374014@devbig004.ftw2.facebook.com>
-References: <20190501140438.9506-1-brian.welty@intel.com>
- <20190506152643.GL374014@devbig004.ftw2.facebook.com>
- <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>, Oleg Nesterov <oleg@redhat.com>
+Subject: [GIT PULL] cgroup changes for v5.2-rc1
+Message-ID: <20190509173642.GA374014@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hello, Linus.
 
-On Tue, May 07, 2019 at 12:50:50PM -0700, Welty, Brian wrote:
-> There might still be merit in having a 'device mem' cgroup controller.
-> The resource model at least is then no longer mixed up with host memory.
-> RDMA community seemed to have some interest in a common controller at
-> least for device memory aspects.
-> Thoughts on this?   I believe could still reuse the 'struct mem_cgroup' data
-> structure.  There should be some opportunity to reuse charging APIs and
-> have some nice integration with HMM for charging to device memory, depending
-> on backing store.
+This pull request includes Roman's cgroup2 freezer implementation.
+It's a separate machanism from cgroup1 freezer.  Instead of blocking
+user tasks in arbitrary uninterruptible sleeps, the new implementation
+extends jobctl stop - frozen tasks are trapped in jobctl stop until
+thawed and can be killed and ptraced.  Lots of thanks to Oleg for
+sheperding the effort.
 
-Library-ish sharing is fine but in terms of interface, I think it'd be
-better to keep them separate at least for now.  Down the line maybe
-these resources will interact with each other in a more integrated way
-but I don't think it's a good idea to try to design and implement
-resource models for something like that preemptively.
+Other than that, there are a few trivial changes.
 
 Thanks.
+
+The following changes since commit 145f47c7381d43c789cbad55d4dbfd28fc6c46a4:
+
+  Merge tag '5.1-rc3-smb3-fixes' of git://git.samba.org/sfrench/cifs-2.6 (2019-04-03 20:21:25 -1000)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.2
+
+for you to fetch changes up to f2b31bb598248c04721cb8485e6091a9feb045ac:
+
+  cgroup: never call do_group_exit() with task->frozen bit set (2019-05-09 07:56:47 -0700)
+
+----------------------------------------------------------------
+Fuqian Huang (1):
+      kernel: cgroup: fix misuse of %x
+
+Roman Gushchin (12):
+      cgroup: rename freezer.c into legacy_freezer.c
+      cgroup: implement __cgroup_task_count() helper
+      cgroup: protect cgroup->nr_(dying_)descendants by css_set_lock
+      cgroup: cgroup v2 freezer
+      kselftests: cgroup: don't fail on cg_kill_all() error in cg_destroy()
+      kselftests: cgroup: add freezer controller self-tests
+      cgroup: make TRACE_CGROUP_PATH irq-safe
+      cgroup: add tracing points for cgroup v2 freezer
+      cgroup: document cgroup v2 freezer interface
+      cgroup: prevent spurious transition into non-frozen state
+      cgroup: get rid of cgroup_freezer_frozen_exit()
+      cgroup: never call do_group_exit() with task->frozen bit set
+
+Shakeel Butt (1):
+      cgroup: remove extra cgroup_migrate_finish() call
+
+Shaokun Zhang (1):
+      cgroup: Remove unused cgrp variable
+
+ Documentation/admin-guide/cgroup-v2.rst       |  27 +
+ include/linux/cgroup-defs.h                   |  33 +
+ include/linux/cgroup.h                        |  43 ++
+ include/linux/sched.h                         |   2 +
+ include/linux/sched/jobctl.h                  |   2 +
+ include/trace/events/cgroup.h                 |  55 ++
+ kernel/cgroup/Makefile                        |   4 +-
+ kernel/cgroup/cgroup-internal.h               |   8 +-
+ kernel/cgroup/cgroup-v1.c                     |  16 -
+ kernel/cgroup/cgroup.c                        | 152 ++++-
+ kernel/cgroup/debug.c                         |   8 +-
+ kernel/cgroup/freezer.c                       | 639 +++++++------------
+ kernel/cgroup/legacy_freezer.c                | 481 +++++++++++++++
+ kernel/fork.c                                 |   2 +
+ kernel/signal.c                               |  66 +-
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ tools/testing/selftests/cgroup/cgroup_util.c  |  58 +-
+ tools/testing/selftests/cgroup/cgroup_util.h  |   5 +
+ tools/testing/selftests/cgroup/test_freezer.c | 851 ++++++++++++++++++++++++++
+ 20 files changed, 2012 insertions(+), 443 deletions(-)
+ create mode 100644 kernel/cgroup/legacy_freezer.c
+ create mode 100644 tools/testing/selftests/cgroup/test_freezer.c
 
 -- 
 tejun
