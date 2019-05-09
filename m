@@ -2,60 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9380E18E63
-	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 18:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D1C318E7E
+	for <lists+cgroups@lfdr.de>; Thu,  9 May 2019 18:52:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726653AbfEIQsG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 May 2019 12:48:06 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:34700 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726620AbfEIQsG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 May 2019 12:48:06 -0400
-Received: by mail-qk1-f194.google.com with SMTP id n68so1887769qka.1
-        for <cgroups@vger.kernel.org>; Thu, 09 May 2019 09:48:06 -0700 (PDT)
+        id S1726640AbfEIQwg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 May 2019 12:52:36 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:45967 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726600AbfEIQwg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 May 2019 12:52:36 -0400
+Received: by mail-qt1-f196.google.com with SMTP id t1so3248481qtc.12;
+        Thu, 09 May 2019 09:52:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=LnyOr6ZjvYu5ZxnoPdE4jqzxN1EqnDnnop6FdcNjWUo=;
-        b=WtlE+P3HplSNzxMK41/9RDh/agT6ECvTArx0nyXfmTrqPeHrI1dlhmlFbPSfGkf1XZ
-         EYVC00Ie/P5VHI9oUnao//YW5RN8bj/xIucPH7Q/LYeBAdXtCUCS/XxnY7WS+mq9dW2i
-         5lwvj7qHtwSwBTEOzvM2SvOlykhHzpReUEhhvVvxi0Hfp2iyuYjfZAWqy7XHNGKTYO+H
-         YAyFa3LhmBg1NdPHNsxPtPyrL2XMHNUoFsOsh2HSY1Cgn+dtXhVzNfcMhhrJyrnofCCa
-         ZvZOw4hQFIjgJEZjHFxoAk1Ys0ZUq4sSZLUgfd31jwkZmUizT8dr7fLkoPKDGCXNyHpL
-         V+dg==
+        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
+        b=lZ76QuoWP/RlQ75YXkOJcraYtkNTORpFzzVYzxh33URZ1VMjG3Xx5DjtZ3CHin9xa5
+         fS/xGH7+lJxkoHr7QwVmyDAjbeF7nvOmxv9beDILF+sB+8CiqCfnpouLazaG1HGm4wWr
+         sSEbhOG5/jozTrc/fsmtxtN959XvvWOXy5liSIq+k6J+n2dlsbSH6ap+adywXTDR7kLx
+         KiqF0AAJVljqXt6esw6EBUoQy090O3TR79BAiDBzt0e3J3KThFw2L3AVAsylb2+p2P5b
+         a2N9dHCQk3vpX1jSLasmI3wCY61bPxdTWmHGDEdgCCrPI+I3gdezXTWfZ9jvSdaQw7fz
+         mByg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LnyOr6ZjvYu5ZxnoPdE4jqzxN1EqnDnnop6FdcNjWUo=;
-        b=a5m5uCnhCwiQ3GxXskdueLGGNoNwBHI03h72vrnLtElGI/39jpErSZvXbtaplZPq0X
-         Eyb+4+bjJfdJ62x3GqgFmaqxjZIoWjiSAyZWt2VbGMp5KnxkjDAElsDtMp0McdENZooj
-         5G+NE3P75tXV1PCFD0uVl4ugtvskfvlh9NLL2EQfX18NpGGKH6hpg/o6vTXHSINC4Yd3
-         1iqZnvoVTyNbqM6ZSQhThdxRacOD4sQrUmNKwciE61bX2EE8dCuvgzM54ErlP5XHKxR7
-         cTMFsMeuIoH+5ygBtB5ac7LFXS2G8QTUcISum3XsM+F3VI7ftA66wFmcsLIr/OJNyobp
-         w4FQ==
-X-Gm-Message-State: APjAAAX10JggvNxNQjRovqkeXfv52grl7ig8mzlnn7yaXkOOsM1cDR26
-        NXq5Vc5LcfGphHm7qgSGYJNiddqc0wE=
-X-Google-Smtp-Source: APXvYqxj1UpguRUHZlnsD2pdtF8y8Y6jpDdLG+5qOZpB2lOkj/swrowMpce7P5mkPHFxmjEnZklzJQ==
-X-Received: by 2002:ae9:df44:: with SMTP id t65mr4225788qkf.126.1557420485515;
-        Thu, 09 May 2019 09:48:05 -0700 (PDT)
+        bh=jUsBtZeNw5FNZWL8p+EHmLQcD3RYdpay6K7eQaM/McY=;
+        b=X+qgnQND/SkWk3uehmAV8cvcDM4jrbVJoc0JzvMMKQHC/g4xRFQnDKGNsVrtMAjvuv
+         2dGhA1FzWeOuOokfzCW7ElZWpk21B1QuRSjQBJSUpUS79AtDWf/8sKb7kOMbG3QKnIFV
+         BdsSDfWXgjPQn7WuDGvl9nmeg6PG6v70SfKmcz8okamN4QtaTBd4dSvVkAyKjv77/UvF
+         uHvIYOf5Vod8wrE/HZ3yjFmQvL1cr0DjSxt0bKBkc1fSJU3artQ7ch0b14N+BEcVxqKT
+         3Mny6agn4cy7hFCljYubkmBZnIu4TiXOX3ZLVKyzWboOuMueALeY5wRMeXMW1OiheA2R
+         XqCQ==
+X-Gm-Message-State: APjAAAW4aogQpAiE6j+DyXsMAwDAkdLUxCCdHxkSZgvTrZmmQi8mUcA0
+        4N6rMIS5jJlV/WwDdA2wf3I=
+X-Google-Smtp-Source: APXvYqx1t5kT+XXZFiBv+VqPqn8kVEYcdTa7Y4TE5pWMD/WmWnopKPh7/3rEKvsPEmRwg0IA9htZcQ==
+X-Received: by 2002:ac8:19f5:: with SMTP id s50mr4695898qtk.281.1557420754955;
+        Thu, 09 May 2019 09:52:34 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::1:c346])
-        by smtp.gmail.com with ESMTPSA id m31sm1466763qtm.46.2019.05.09.09.48.03
+        by smtp.gmail.com with ESMTPSA id x47sm1527214qth.68.2019.05.09.09.52.33
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 09 May 2019 09:48:04 -0700 (PDT)
-Date:   Thu, 9 May 2019 09:48:02 -0700
+        Thu, 09 May 2019 09:52:34 -0700 (PDT)
+Date:   Thu, 9 May 2019 09:52:32 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     zhangliguang <zhangliguang@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] fs/writeback: Attach inode's wb to root if needed
-Message-ID: <20190509164802.GV374014@devbig004.ftw2.facebook.com>
-References: <1557389033-39649-1-git-send-email-zhangliguang@linux.alibaba.com>
+To:     "Welty, Brian" <brian.welty@intel.com>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        RDMA mailing list <linux-rdma@vger.kernel.org>,
+        Leon Romanovsky <leon@kernel.org>, kenny.ho@amd.com
+Subject: Re: [RFC PATCH 0/5] cgroup support for GPU devices
+Message-ID: <20190509165232.GW374014@devbig004.ftw2.facebook.com>
+References: <20190501140438.9506-1-brian.welty@intel.com>
+ <20190506152643.GL374014@devbig004.ftw2.facebook.com>
+ <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1557389033-39649-1-git-send-email-zhangliguang@linux.alibaba.com>
+In-Reply-To: <cf58b047-d678-ad89-c9b6-96fc6b01c1d7@intel.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -64,25 +75,21 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Thu, May 09, 2019 at 04:03:53PM +0800, zhangliguang wrote:
-> There might have tons of files queued in the writeback, awaiting for
-> writing back. Unfortunately, the writeback's cgroup has been dead. In
-> this case, we reassociate the inode with another writeback cgroup, but
-> we possibly can't because the writeback associated with the dead cgroup
-> is the only valid one. In this case, the new writeback is allocated,
-> initialized and associated with the inode. It causes unnecessary high
-> system load and latency.
-> 
-> This fixes the issue by enforce moving the inode to root cgroup when the
-> previous binding cgroup becomes dead. With it, no more unnecessary
-> writebacks are created, populated and the system load decreased by about
-> 6x in the online service we encounted:
->     Without the patch: about 30% system load
->     With the patch:    about  5% system load
+On Tue, May 07, 2019 at 12:50:50PM -0700, Welty, Brian wrote:
+> There might still be merit in having a 'device mem' cgroup controller.
+> The resource model at least is then no longer mixed up with host memory.
+> RDMA community seemed to have some interest in a common controller at
+> least for device memory aspects.
+> Thoughts on this?   I believe could still reuse the 'struct mem_cgroup' data
+> structure.  There should be some opportunity to reuse charging APIs and
+> have some nice integration with HMM for charging to device memory, depending
+> on backing store.
 
-Can you please describe the scenario with more details?  I'm having a
-bit of hard time understanding the amount of cpu cycles being
-consumed.
+Library-ish sharing is fine but in terms of interface, I think it'd be
+better to keep them separate at least for now.  Down the line maybe
+these resources will interact with each other in a more integrated way
+but I don't think it's a good idea to try to design and implement
+resource models for something like that preemptively.
 
 Thanks.
 
