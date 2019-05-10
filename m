@@ -2,52 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF9419D41
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 14:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 468B719D4A
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 14:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727194AbfEJM3e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 May 2019 08:29:34 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:35562 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727071AbfEJM3e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 08:29:34 -0400
-Received: by mail-wm1-f65.google.com with SMTP id q15so3349852wmj.0
-        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 05:29:32 -0700 (PDT)
+        id S1727405AbfEJMbv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 May 2019 08:31:51 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:33450 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727285AbfEJMbv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 08:31:51 -0400
+Received: by mail-wm1-f66.google.com with SMTP id c66so1218237wme.0
+        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 05:31:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=reply-to:subject:to:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=yOmfaZDryvShxOtHKjMJKj95UivcRPfaVojEmSu/26A=;
-        b=XX1Qe9xLxmRzWMs+gM8Z3OzJUW6533qdU7KyOGjOO59uVAjoP22nZeT74wMTIxmEjL
-         bBQqFceHazBDWjLjlceoGJ4UaRzWeLB6Sh+wXM0Pm7VsvvWPWikSFu05Pbhq1f8DmNoR
-         Y9ZOuDB61jYyLbliSsk5yVS2lJvrGe/v2N+Qbh+QmmouUJCmDPkTDenRhQSnVWcZZxKp
-         D+Q+7JrU2pirBR/Iw2+DPQdxu32ckw5QK5RGzmu3/Sf/EltuLq1aWcwptH7kqUhNqxJW
-         2R1Pk+tFrWsiJg8MZ/pgy13vhmgqHePZR7lGAJ9VPIQTdQFY5i+GP6WOUbKwQJAKw79s
-         E+SA==
+        bh=EQY4uwQj1WgFw8LLjh7dFTKB6G9R/Xpl3wCAFu8cKvY=;
+        b=TzryiSZ6CXZ8NdpL9oOcYdIyY5asKUQKHCDpMnS4Wn5TnfYPv2tTwGrM8BTdMbCJgF
+         FguUoXzMDo3cQAJAMFfMPnjkBul3ei5L12ulwhXau1R/yp34dGAkBd8X/JhcU6CpDHbA
+         CuKLyZKZENUUXH64FfsqxJN05uGDB2CspJ+1/0P0yZCGirpYdEMVDTuaxWPm20k0mzAd
+         gh23HB/4joSeiCI0SOfDho0/H22ApYeb7/9ndiHFYKxQcZNDNpUkVr+tjg1DHq7rV9Jh
+         rJRzwJhzYLaW7w+63+lDYCYxUwRqNvXdAwWYQPyl/bHeSp7RMPkUVyqSOXos5pFlQeOd
+         4eWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:subject:to:references:from:message-id
          :date:user-agent:mime-version:in-reply-to:content-transfer-encoding
          :content-language;
-        bh=yOmfaZDryvShxOtHKjMJKj95UivcRPfaVojEmSu/26A=;
-        b=F/AJ8MLG98ELqL1P/Aq7vgSzbhMq/99haaqBQwndhNCwsuqtkwprP2nVU/T4gAVMFK
-         trmxRwOf4jIxY2v49ccM//vHTcoJ8YRckDaVgMgtiekT206dvq8U7GzyTZ4C4T6cKX3O
-         iNQ2cfs+L3qzhKfOnZdwIIYbMZhz33EmdDiEG/2b+Lklxk1Lbv7u5qFOvtE/XRw4pqen
-         83Tez0WNOBpRCAySARgL2glRhkVEd9D2chjLbAmMvWTgA9uWPl7+YLKFhX1o8E3f0n9a
-         rtZLeRbLTyMmwLb6keklErKYmy+HHlCbKjQzmsEwL6aEHMz7q4wJILPf7hof6TnECGEb
-         yCQA==
-X-Gm-Message-State: APjAAAUESrB9s23/13ZTbpTNCzQsY8bXmC/BZVoeMuqtq+Lfqpm/CE7/
-        w37KGXPpmPd93BJyp3aSW3c=
-X-Google-Smtp-Source: APXvYqyxEtbRv3HqNx/5upYIgZ3OdagwpsTZAsDkRjHZc3C4exPNJlGgKuqk4nIYlBmfU0FrNp8AYA==
-X-Received: by 2002:a1c:2803:: with SMTP id o3mr7127140wmo.93.1557491371837;
-        Fri, 10 May 2019 05:29:31 -0700 (PDT)
+        bh=EQY4uwQj1WgFw8LLjh7dFTKB6G9R/Xpl3wCAFu8cKvY=;
+        b=BTa7uswKV2lx7AOOcGVPm2nDfCVcN6+dlVP4hs3Y5TnYQh7gZ+bUGw0nKpCOzX5TP+
+         5vvKgJg7wRWE7i36xw+u/GW52nDobOAwmzeGfNx5OuScD8ryZrfqz/uPPHkJB4xwpIIV
+         OS0Zg0MkCkHH05L8nmB5x7oqDxeNO/xW/e/ySP/LsUDz0XpgWtQjwE9ehNpHgHZrTdZ7
+         Vde5ZlDHHf3hjKiZT8H8r/UF1AsBnBgoBlBo3Xk2UDXQpgenQR4fwyji/8cmtE+4n4e2
+         sruMBHuZHjAP5G/kjoRsIuO8Whrz1CihL7aY09sFR6cGT+jdaV+vg4qadcsETyxUVEIC
+         2rHA==
+X-Gm-Message-State: APjAAAUAN/iVK83ETplML+JLXu/Q1nCFujli59ojE+O8cOSOQ1svMcY/
+        WfR2n8daaNbz5CXwTncJd30=
+X-Google-Smtp-Source: APXvYqzrkKeyENtP4zmmyD5HupAJeDe0gun1AC7tq0txrtpruCyHvkyEy6/U51l9/35E/PvjEgWdRA==
+X-Received: by 2002:a1c:2e88:: with SMTP id u130mr6688708wmu.54.1557491508940;
+        Fri, 10 May 2019 05:31:48 -0700 (PDT)
 Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
-        by smtp.gmail.com with ESMTPSA id r64sm13028429wmr.0.2019.05.10.05.29.30
+        by smtp.gmail.com with ESMTPSA id d3sm9206283wmf.46.2019.05.10.05.31.46
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 10 May 2019 05:29:31 -0700 (PDT)
+        Fri, 10 May 2019 05:31:48 -0700 (PDT)
 Reply-To: christian.koenig@amd.com
-Subject: Re: [RFC PATCH v2 5/5] drm, cgroup: Add peak GEM buffer allocation
- limit
+Subject: Re: [RFC PATCH v2 0/5] new cgroup controller for gpu/drm subsystem
 To:     Kenny Ho <Kenny.Ho@amd.com>, y2kenny@gmail.com,
         cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
         amd-gfx@lists.freedesktop.org, tj@kernel.org,
@@ -55,14 +54,13 @@ To:     Kenny Ho <Kenny.Ho@amd.com>, y2kenny@gmail.com,
         brian.welty@intel.com
 References: <20181120185814.13362-1-Kenny.Ho@amd.com>
  <20190509210410.5471-1-Kenny.Ho@amd.com>
- <20190509210410.5471-6-Kenny.Ho@amd.com>
 From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
-Message-ID: <e5fbca82-9cea-de6b-da78-630e7b1902f6@gmail.com>
-Date:   Fri, 10 May 2019 14:29:29 +0200
+Message-ID: <00c14f11-4c25-2108-546e-04a2721d2cfa@gmail.com>
+Date:   Fri, 10 May 2019 14:31:45 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.6.1
 MIME-Version: 1.0
-In-Reply-To: <20190509210410.5471-6-Kenny.Ho@amd.com>
+In-Reply-To: <20190509210410.5471-1-Kenny.Ho@amd.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Content-Language: en-US
@@ -71,182 +69,139 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Am 09.05.19 um 23:04 schrieb Kenny Ho:
-> This new drmcgrp resource limits the largest GEM buffer that can be
-> allocated in a cgroup.
->
-> Change-Id: I0830d56775568e1cf215b56cc892d5e7945e9f25
-> Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
-> ---
->   include/linux/cgroup_drm.h |  2 ++
->   kernel/cgroup/drm.c        | 59 ++++++++++++++++++++++++++++++++++++++
->   2 files changed, 61 insertions(+)
->
-> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-> index fe14ba7bb1cf..57c07a148975 100644
-> --- a/include/linux/cgroup_drm.h
-> +++ b/include/linux/cgroup_drm.h
-> @@ -16,8 +16,10 @@
->   struct drmcgrp_device_resource {
->   	/* for per device stats */
->   	s64			bo_stats_total_allocated;
-> +	size_t			bo_stats_peak_allocated;
->   
->   	s64			bo_limits_total_allocated;
-> +	size_t			bo_limits_peak_allocated;
+That looks better than I thought it would be.
 
-Why s64 for the total limit and size_t for the peak allocation?
+I think it is a good approach to try to add a global limit first and 
+when that's working go ahead with limiting device specific resources.
+
+The only major issue I can see is on patch #4, see there for further 
+details.
 
 Christian.
 
->   };
->   
->   struct drmcgrp {
-> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> index bc3abff09113..5c7e1b8059ce 100644
-> --- a/kernel/cgroup/drm.c
-> +++ b/kernel/cgroup/drm.c
-> @@ -17,6 +17,7 @@ struct drmcgrp_device {
->   	struct mutex		mutex;
->   
->   	s64			bo_limits_total_allocated_default;
-> +	size_t			bo_limits_peak_allocated_default;
->   };
->   
->   #define DRMCG_CTF_PRIV_SIZE 3
-> @@ -24,6 +25,7 @@ struct drmcgrp_device {
->   
->   enum drmcgrp_res_type {
->   	DRMCGRP_TYPE_BO_TOTAL,
-> +	DRMCGRP_TYPE_BO_PEAK,
->   };
->   
->   enum drmcgrp_file_type {
-> @@ -72,6 +74,9 @@ static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int i)
->   	if (known_drmcgrp_devs[i] != NULL) {
->   		ddr->bo_limits_total_allocated =
->   		  known_drmcgrp_devs[i]->bo_limits_total_allocated_default;
-> +
-> +		ddr->bo_limits_peak_allocated =
-> +		  known_drmcgrp_devs[i]->bo_limits_peak_allocated_default;
->   	}
->   
->   	return 0;
-> @@ -131,6 +136,9 @@ static inline void drmcgrp_print_stats(struct drmcgrp_device_resource *ddr,
->   	case DRMCGRP_TYPE_BO_TOTAL:
->   		seq_printf(sf, "%lld\n", ddr->bo_stats_total_allocated);
->   		break;
-> +	case DRMCGRP_TYPE_BO_PEAK:
-> +		seq_printf(sf, "%zu\n", ddr->bo_stats_peak_allocated);
-> +		break;
->   	default:
->   		seq_puts(sf, "\n");
->   		break;
-> @@ -149,6 +157,9 @@ static inline void drmcgrp_print_limits(struct drmcgrp_device_resource *ddr,
->   	case DRMCGRP_TYPE_BO_TOTAL:
->   		seq_printf(sf, "%lld\n", ddr->bo_limits_total_allocated);
->   		break;
-> +	case DRMCGRP_TYPE_BO_PEAK:
-> +		seq_printf(sf, "%zu\n", ddr->bo_limits_peak_allocated);
-> +		break;
->   	default:
->   		seq_puts(sf, "\n");
->   		break;
-> @@ -167,6 +178,9 @@ static inline void drmcgrp_print_default(struct drmcgrp_device *ddev,
->   	case DRMCGRP_TYPE_BO_TOTAL:
->   		seq_printf(sf, "%lld\n", ddev->bo_limits_total_allocated_default);
->   		break;
-> +	case DRMCGRP_TYPE_BO_PEAK:
-> +		seq_printf(sf, "%zu\n", ddev->bo_limits_peak_allocated_default);
-> +		break;
->   	default:
->   		seq_puts(sf, "\n");
->   		break;
-> @@ -182,6 +196,11 @@ static inline void drmcgrp_print_help(int cardNum, struct seq_file *sf,
->   		"Total amount of buffer allocation in bytes for card%d\n",
->   		cardNum);
->   		break;
-> +	case DRMCGRP_TYPE_BO_PEAK:
-> +		seq_printf(sf,
-> +		"Largest buffer allocation in bytes for card%d\n",
-> +		cardNum);
-> +		break;
->   	default:
->   		seq_puts(sf, "\n");
->   		break;
-> @@ -254,6 +273,10 @@ ssize_t drmcgrp_bo_limit_write(struct kernfs_open_file *of, char *buf,
->                                   if (val < 0) continue;
->   				ddr->bo_limits_total_allocated = val;
->   				break;
-> +			case DRMCGRP_TYPE_BO_PEAK:
-> +                                if (val < 0) continue;
-> +				ddr->bo_limits_peak_allocated = val;
-> +				break;
->   			default:
->   				break;
->   			}
-> @@ -300,6 +323,33 @@ struct cftype files[] = {
->   		.private = (DRMCGRP_TYPE_BO_TOTAL << DRMCG_CTF_PRIV_SIZE) |
->   			DRMCGRP_FTYPE_MAX,
->   	},
-> +	{
-> +		.name = "buffer.peak.stats",
-> +		.seq_show = drmcgrp_bo_show,
-> +		.private = (DRMCGRP_TYPE_BO_PEAK << DRMCG_CTF_PRIV_SIZE) |
-> +			DRMCGRP_FTYPE_STATS,
-> +	},
-> +	{
-> +		.name = "buffer.peak.default",
-> +		.seq_show = drmcgrp_bo_show,
-> +		.flags = CFTYPE_ONLY_ON_ROOT,
-> +		.private = (DRMCGRP_TYPE_BO_PEAK << DRMCG_CTF_PRIV_SIZE) |
-> +			DRMCGRP_FTYPE_DEFAULT,
-> +	},
-> +	{
-> +		.name = "buffer.peak.help",
-> +		.seq_show = drmcgrp_bo_show,
-> +		.flags = CFTYPE_ONLY_ON_ROOT,
-> +		.private = (DRMCGRP_TYPE_BO_PEAK << DRMCG_CTF_PRIV_SIZE) |
-> +			DRMCGRP_FTYPE_HELP,
-> +	},
-> +	{
-> +		.name = "buffer.peak.max",
-> +		.write = drmcgrp_bo_limit_write,
-> +		.seq_show = drmcgrp_bo_show,
-> +		.private = (DRMCGRP_TYPE_BO_PEAK << DRMCG_CTF_PRIV_SIZE) |
-> +			DRMCGRP_FTYPE_MAX,
-> +	},
->   	{ }	/* terminate */
->   };
->   
-> @@ -323,6 +373,7 @@ int drmcgrp_register_device(struct drm_device *dev)
->   
->   	ddev->dev = dev;
->   	ddev->bo_limits_total_allocated_default = S64_MAX;
-> +	ddev->bo_limits_peak_allocated_default = SIZE_MAX;
->   
->   	mutex_init(&ddev->mutex);
->   
-> @@ -393,6 +444,11 @@ bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
->   			result = false;
->   			break;
->   		}
-> +
-> +		if (d->bo_limits_peak_allocated < size) {
-> +			result = false;
-> +			break;
-> +		}
->   	}
->   	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
->   
-> @@ -414,6 +470,9 @@ void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
->   		ddr = drmcgrp->dev_resources[devIdx];
->   
->   		ddr->bo_stats_total_allocated += (s64)size;
-> +
-> +		if (ddr->bo_stats_peak_allocated < (size_t)size)
-> +			ddr->bo_stats_peak_allocated = (size_t)size;
->   	}
->   	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
->   }
+Am 09.05.19 um 23:04 schrieb Kenny Ho:
+> This is a follow up to the RFC I made last november to introduce a cgroup controller for the GPU/DRM subsystem [a].  The goal is to be able to provide resource management to GPU resources using things like container.  The cover letter from v1 is copied below for reference.
+>
+> Usage examples:
+> // set limit for card1 to 1GB
+> sed -i '2s/.*/1073741824/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
+>
+> // set limit for card0 to 512MB
+> sed -i '1s/.*/536870912/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
+>
+>
+> v2:
+> * Removed the vendoring concepts
+> * Add limit to total buffer allocation
+> * Add limit to the maximum size of a buffer allocation
+>
+> TODO: process migration
+> TODO: documentations
+>
+> [a]: https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+>
+> v1: cover letter
+>
+> The purpose of this patch series is to start a discussion for a generic cgroup
+> controller for the drm subsystem.  The design proposed here is a very early one.
+> We are hoping to engage the community as we develop the idea.
+>
+>
+> Backgrounds
+> ==========
+> Control Groups/cgroup provide a mechanism for aggregating/partitioning sets of
+> tasks, and all their future children, into hierarchical groups with specialized
+> behaviour, such as accounting/limiting the resources which processes in a cgroup
+> can access[1].  Weights, limits, protections, allocations are the main resource
+> distribution models.  Existing cgroup controllers includes cpu, memory, io,
+> rdma, and more.  cgroup is one of the foundational technologies that enables the
+> popular container application deployment and management method.
+>
+> Direct Rendering Manager/drm contains code intended to support the needs of
+> complex graphics devices. Graphics drivers in the kernel may make use of DRM
+> functions to make tasks like memory management, interrupt handling and DMA
+> easier, and provide a uniform interface to applications.  The DRM has also
+> developed beyond traditional graphics applications to support compute/GPGPU
+> applications.
+>
+>
+> Motivations
+> =========
+> As GPU grow beyond the realm of desktop/workstation graphics into areas like
+> data center clusters and IoT, there are increasing needs to monitor and regulate
+> GPU as a resource like cpu, memory and io.
+>
+> Matt Roper from Intel began working on similar idea in early 2018 [2] for the
+> purpose of managing GPU priority using the cgroup hierarchy.  While that
+> particular use case may not warrant a standalone drm cgroup controller, there
+> are other use cases where having one can be useful [3].  Monitoring GPU
+> resources such as VRAM and buffers, CU (compute unit [AMD's nomenclature])/EU
+> (execution unit [Intel's nomenclature]), GPU job scheduling [4] can help
+> sysadmins get a better understanding of the applications usage profile.  Further
+> usage regulations of the aforementioned resources can also help sysadmins
+> optimize workload deployment on limited GPU resources.
+>
+> With the increased importance of machine learning, data science and other
+> cloud-based applications, GPUs are already in production use in data centers
+> today [5,6,7].  Existing GPU resource management is very course grain, however,
+> as sysadmins are only able to distribute workload on a per-GPU basis [8].  An
+> alternative is to use GPU virtualization (with or without SRIOV) but it
+> generally acts on the entire GPU instead of the specific resources in a GPU.
+> With a drm cgroup controller, we can enable alternate, fine-grain, sub-GPU
+> resource management (in addition to what may be available via GPU
+> virtualization.)
+>
+> In addition to production use, the DRM cgroup can also help with testing
+> graphics application robustness by providing a mean to artificially limit DRM
+> resources availble to the applications.
+>
+> Challenges
+> ========
+> While there are common infrastructure in DRM that is shared across many vendors
+> (the scheduler [4] for example), there are also aspects of DRM that are vendor
+> specific.  To accommodate this, we borrowed the mechanism used by the cgroup to
+> handle different kinds of cgroup controller.
+>
+> Resources for DRM are also often device (GPU) specific instead of system
+> specific and a system may contain more than one GPU.  For this, we borrowed some
+> of the ideas from RDMA cgroup controller.
+>
+> Approach
+> =======
+> To experiment with the idea of a DRM cgroup, we would like to start with basic
+> accounting and statistics, then continue to iterate and add regulating
+> mechanisms into the driver.
+>
+> [1] https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt
+> [2] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> [3] https://www.spinics.net/lists/cgroups/msg20720.html
+> [4] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/scheduler
+> [5] https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
+> [6] https://blog.openshift.com/gpu-accelerated-sql-queries-with-postgresql-pg-strom-in-openshift-3-10/
+> [7] https://github.com/RadeonOpenCompute/k8s-device-plugin
+> [8] https://github.com/kubernetes/kubernetes/issues/52757
+>
+> Kenny Ho (5):
+>    cgroup: Introduce cgroup for drm subsystem
+>    cgroup: Add mechanism to register DRM devices
+>    drm/amdgpu: Register AMD devices for DRM cgroup
+>    drm, cgroup: Add total GEM buffer allocation limit
+>    drm, cgroup: Add peak GEM buffer allocation limit
+>
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c    |   4 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |   4 +
+>   drivers/gpu/drm/drm_gem.c                  |   7 +
+>   drivers/gpu/drm/drm_prime.c                |   9 +
+>   include/drm/drm_cgroup.h                   |  54 +++
+>   include/drm/drm_gem.h                      |  11 +
+>   include/linux/cgroup_drm.h                 |  47 ++
+>   include/linux/cgroup_subsys.h              |   4 +
+>   init/Kconfig                               |   5 +
+>   kernel/cgroup/Makefile                     |   1 +
+>   kernel/cgroup/drm.c                        | 497 +++++++++++++++++++++
+>   11 files changed, 643 insertions(+)
+>   create mode 100644 include/drm/drm_cgroup.h
+>   create mode 100644 include/linux/cgroup_drm.h
+>   create mode 100644 kernel/cgroup/drm.c
+>
 
