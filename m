@@ -2,55 +2,32 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 065011A012
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 17:25:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1508D1A297
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 19:46:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727584AbfEJPZv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 May 2019 11:25:51 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:37672 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727471AbfEJPZu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 11:25:50 -0400
-Received: by mail-oi1-f196.google.com with SMTP id 143so4821669oii.4
-        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 08:25:50 -0700 (PDT)
+        id S1727580AbfEJRqW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 May 2019 13:46:22 -0400
+Received: from mail-eopbgr790070.outbound.protection.outlook.com ([40.107.79.70]:10903
+        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727383AbfEJRqW (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 10 May 2019 13:46:22 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=lKwN54SK+W6O9fjruMh2Yrp66lpefmr9JPdcP+S36Vk=;
-        b=MzkCyMwYP6vwvvOjpLsMr1FlOuh2aoSNNH4ivWkC7vz7RDHLCfPIa6PQ0cDphZUWli
-         ZL4ccEZcjzcHxoez+sUBmG6KB3GXXo6JKartpZB87cBcQ3kEEBHNKbXgIfZ3004OvQmy
-         aeFhzsmcxtQJxQgsfJzYXPiR5n/SS87g57B4ks4ruWHPckfFAYvCAWhuSUQzDOv7cENV
-         /0tQoVOdezg84O2bBx67TFiOoYzHSIo7N0RHW8jpz4ernghPEO2tRCunQiLTevYRQAMt
-         yXiaRGRB883oEV+r7F/D08/8ZuuSm9/z3uh+79uHZrXZPefFfMch+bQecK3Y4L1i1WTH
-         TfmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=lKwN54SK+W6O9fjruMh2Yrp66lpefmr9JPdcP+S36Vk=;
-        b=k3GB9+S5hCGutRhgyh77zN6nd60pZG5nu4H+Y81VK/fYPSX82yQgL2u14jq2o7K5UW
-         tFEoy7lIny7oiqqG4WXiaXW/w2FJaBNhS8droAxsnZ0/S2Svab5uUO18DTPleEmb/MU6
-         ntKMJzZvrOsIj2h9YOJg99AbynO+y/SvMAZCVmaEh3jyrcaWvhKSNQBFuq44ZdfgE2He
-         WVTCzuHHrrvXgyjlojr40JYmfDwDghaMISsrqmy/brevqmjjZuiRefg0RZ+eYQZwYrzU
-         rOETHGWoKudyuP9RN8VwIk+GrTxm/og08aTXIvSbOOq65RACLuzbW4HJkwgQ+i3KSKEU
-         dZsQ==
-X-Gm-Message-State: APjAAAWazkNzF1r2gUIIKDwf50ZEyULM8UinOJBH8M01qiEq7V6MXdUS
-        R02VXoxGhGDOQEAytzRSwCUn7OOTMaAyBEfD+O4=
-X-Google-Smtp-Source: APXvYqxMoxs8eeJi15rqKro5+GmOfVwMuCoN5hY4PYXTEvCmTRz9NKHdGZOHdS5/jU0ofKopRhRfCK6E+Z/P/ewrlO0=
-X-Received: by 2002:aca:d90a:: with SMTP id q10mr4730169oig.65.1557501950024;
- Fri, 10 May 2019 08:25:50 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181120185814.13362-1-Kenny.Ho@amd.com> <20190509210410.5471-1-Kenny.Ho@amd.com>
- <20190509210410.5471-5-Kenny.Ho@amd.com> <f63c8d6b-92a4-2977-d062-7e0b7036834e@gmail.com>
- <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com> <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
-In-Reply-To: <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Fri, 10 May 2019 11:25:38 -0400
-Message-ID: <CAOWid-eVz4w-hN=4tPZ1AOu54xMH_2ztDDZaMEKRCAeBgt9Dyw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation limit
-To:     "Koenig, Christian" <Christian.Koenig@amd.com>
-Cc:     "Ho, Kenny" <Kenny.Ho@amd.com>,
+ d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=B/92nmOdWsNJPnh6SmK2q9CfqboyL4PMoCi6za8Y5gU=;
+ b=D56DMvVyeVjulL9lrr+V/ywoFfsvK7ZgHigc4dmzoeMrHV9GVqAD2eypMGuTH+KzNCKuRwNosfb9aEZIQS6d1TcGj4P1I9U6XVclfAkKzNbw93SAGVfyyfBqeCgH2keOJxiaJW6eFNAQJzuIyYLoNwQhwesc6SspXaohYi38FtI=
+Received: from DM5PR12MB1546.namprd12.prod.outlook.com (10.172.36.23) by
+ DM5PR12MB1882.namprd12.prod.outlook.com (10.175.91.13) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.21; Fri, 10 May 2019 17:46:17 +0000
+Received: from DM5PR12MB1546.namprd12.prod.outlook.com
+ ([fe80::e1b1:5b6f:b2df:afa5]) by DM5PR12MB1546.namprd12.prod.outlook.com
+ ([fe80::e1b1:5b6f:b2df:afa5%7]) with mapi id 15.20.1878.022; Fri, 10 May 2019
+ 17:46:17 +0000
+From:   "Koenig, Christian" <Christian.Koenig@amd.com>
+To:     Kenny Ho <y2kenny@gmail.com>
+CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
         "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
@@ -58,72 +35,188 @@ Cc:     "Ho, Kenny" <Kenny.Ho@amd.com>,
         "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
         "Deucher, Alexander" <Alexander.Deucher@amd.com>,
         Brian Welty <brian.welty@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v2 0/5] new cgroup controller for gpu/drm subsystem
+Thread-Topic: [RFC PATCH v2 0/5] new cgroup controller for gpu/drm subsystem
+Thread-Index: AQHVB0IancrjeeDDy0qf+2LcA6cnfKZkof0A
+Date:   Fri, 10 May 2019 17:46:17 +0000
+Message-ID: <ca24849a-a8f6-0f85-db25-b6e28416e3dc@amd.com>
+References: <20181120185814.13362-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-1-Kenny.Ho@amd.com>
+ <00c14f11-4c25-2108-546e-04a2721d2cfa@gmail.com>
+ <CAOWid-dJZrnAifFYByh4p9x-jA1o_5YWkoNVAVbdRUaxzdPbGA@mail.gmail.com>
+In-Reply-To: <CAOWid-dJZrnAifFYByh4p9x-jA1o_5YWkoNVAVbdRUaxzdPbGA@mail.gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+x-originating-ip: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+x-clientproxiedby: AM4PR08CA0048.eurprd08.prod.outlook.com
+ (2603:10a6:205:2::19) To DM5PR12MB1546.namprd12.prod.outlook.com
+ (2603:10b6:4:8::23)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Christian.Koenig@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 2adc4360-7966-46c0-7e19-08d6d56f6713
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB1882;
+x-ms-traffictypediagnostic: DM5PR12MB1882:
+x-ms-exchange-purlcount: 9
+x-microsoft-antispam-prvs: <DM5PR12MB188253FE55DEBD0BA79DDCBD830C0@DM5PR12MB1882.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0033AAD26D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(366004)(346002)(39860400002)(396003)(199004)(189003)(72206003)(305945005)(81156014)(25786009)(65826007)(68736007)(71190400001)(1411001)(54906003)(6506007)(966005)(478600001)(36756003)(386003)(58126008)(229853002)(6436002)(316002)(64126003)(81166006)(6486002)(2906002)(53546011)(2616005)(102836004)(11346002)(65956001)(446003)(476003)(186003)(46003)(65806001)(486006)(8676002)(4326008)(7736002)(66574012)(99286004)(71200400001)(8936002)(6246003)(6916009)(53936002)(6116002)(31686004)(6306002)(6512007)(66946007)(73956011)(14444005)(14454004)(52116002)(256004)(66476007)(64756008)(66556008)(66446008)(76176011)(5660300002)(86362001)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB1882;H:DM5PR12MB1546.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: YU9o7rb7O497Y5eoRxicwp/ZRCpID1Ng6FJaaRv5VCq6JzlPL3UGaSI3r+YRogaRx1+HEQffovmElhAaU12DvdQwkZz5EwsVaKsFwg9InO/nUeCmWmQ/tBLQImOAIT19VjIooS1h+WKuctaw3ILsVIN9/wOr4+pP1p4fUrpR9aEL6bGCd4m0XpFJBESJoMxyyvjiuvS636JMLP3BxWLvspCQYloEnBnXoi7+gPRGCNmP2QmPn8QZXfxdTodGQUVn0nZ7MXHnouMGzs9eIGRvqxXuqY61WGU6nRHQUb6+Vi7ke/n8mcYkWapAuVq1eVCRff8vetZ63iboeoiPYlM93BTLX/Q3Z+NZJknfQxCqbd7QGO/PcbaFVmqZk4TvbHAMenvekkYoTkpQGynJlWuzJlsdyVgsn01l0f8iXMzu8XY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <62847DCF96C60245993B5723B239B09A@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2adc4360-7966-46c0-7e19-08d6d56f6713
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2019 17:46:17.1904
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 10, 2019 at 11:08 AM Koenig, Christian
-<Christian.Koenig@amd.com> wrote:
-> Am 10.05.19 um 16:57 schrieb Kenny Ho:
-> > On Fri, May 10, 2019 at 8:28 AM Christian K=C3=B6nig
-> > <ckoenig.leichtzumerken@gmail.com> wrote:
-> >> Am 09.05.19 um 23:04 schrieb Kenny Ho:
-> So the drm cgroup container is separate to other cgroup containers?
-In cgroup-v1, which is most widely deployed currently, all controllers
-have their own hierarchy (see /sys/fs/cgroup/).  In cgroup-v2, the
-hierarchy is unified by individual controllers can be disabled (I
-believe, I am not super familiar with v2.)
-
-> In other words as long as userspace doesn't change, this wouldn't have
-> any effect?
-As far as things like docker and podman is concern, yes.  I am not
-sure about the behaviour of others like lxc, lxd, etc. because I
-haven't used those myself.
-
-> Well that is unexpected cause then a processes would be in different
-> groups for different controllers, but if that's really the case that
-> would certainly work.
-I believe this is a possibility for v1 and is why folks came up with
-the unified hierarchy in v2 to solve some of the issues.
-https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#issues-wi=
-th-v1-and-rationales-for-v2
-
-Regards,
-Kenny
-
-> > On the other hand, if there are expectations for resource management
-> > between containers, I would like to know who is the expected manager
-> > and how does it fit into the concept of container (which enforce some
-> > level of isolation.)  One possible manager may be the display server.
-> > But as long as the display server is in a parent cgroup of the apps'
-> > cgroup, the apps can still import handles from the display server
-> > under the current implementation.  My understanding is that this is
-> > most likely the case, with the display server simply sitting at the
-> > default/root cgroup.  But I certainly want to hear more about other
-> > use cases (for example, is running multiple display servers on a
-> > single host a realistic possibility?  Are there people running
-> > multiple display servers inside peer containers?  If so, how do they
-> > coordinate resources?)
->
-> We definitely have situations with multiple display servers running
-> (just think of VR).
->
-> I just can't say if they currently use cgroups in any way.
->
-> Thanks,
-> Christian.
->
-> >
-> > I should probably summarize some of these into the commit message.
-> >
-> > Regards,
-> > Kenny
-> >
-> >
-> >
-> >> Christian.
-> >>
->
+QW0gMTAuMDUuMTkgdW0gMTc6MDcgc2NocmllYiBLZW5ueSBIbzoNCj4gW0NBVVRJT046IEV4dGVy
+bmFsIEVtYWlsXQ0KPg0KPiBPbiBGcmksIE1heSAxMCwgMjAxOSBhdCA4OjMxIEFNIENocmlzdGlh
+biBLw7ZuaWcNCj4gPGNrb2VuaWcubGVpY2h0enVtZXJrZW5AZ21haWwuY29tPiB3cm90ZToNCj4+
+IEkgdGhpbmsgaXQgaXMgYSBnb29kIGFwcHJvYWNoIHRvIHRyeSB0byBhZGQgYSBnbG9iYWwgbGlt
+aXQgZmlyc3QgYW5kDQo+PiB3aGVuIHRoYXQncyB3b3JraW5nIGdvIGFoZWFkIHdpdGggbGltaXRp
+bmcgZGV2aWNlIHNwZWNpZmljIHJlc291cmNlcy4NCj4gV2hhdCBhcmUgc29tZSBvZiB0aGUgZ2xv
+YmFsIGRybSByZXNvdXJjZSBsaW1pdC9hbGxvY2F0aW9uIHRoYXQgd291bGQNCj4gYmUgdXNlZnVs
+IHRvIGltcGxlbWVudD8gSSB3b3VsZCBiZSBoYXBweSB0byBkaWcgaW50byB0aG9zZS4NCg0KSSB3
+YXMgdGhpbmtpbmcgYWJvdXQgZGV2aWNlIHNwZWNpZmljIHN0dWZmIGxpa2UgVlJBTSBldGMuLi4N
+Cg0KV2hhdCBJJ20gYWxzbyBub3QgY2xlYXIgYWJvdXQgaXMgaG93IHRoaXMgc2hvdWxkIGludGVy
+YWN0IHdpdGggbWVtY2cuIA0KRS5nLiBkbyB3ZSBhbHNvIG5lZWQgdG8gYWNjb3VudCBCT3MgaW4g
+bWVtY2c/DQoNCkluIHRoZW9yeSBJIHdvdWxkIHNheSB5ZXMuDQoNCkNocmlzdGlhbi4NCg0KPg0K
+PiBSZWdhcmRzLA0KPiBLZW5ueQ0KPg0KPg0KPj4gVGhlIG9ubHkgbWFqb3IgaXNzdWUgSSBjYW4g
+c2VlIGlzIG9uIHBhdGNoICM0LCBzZWUgdGhlcmUgZm9yIGZ1cnRoZXINCj4+IGRldGFpbHMuDQo+
+Pg0KPj4gQ2hyaXN0aWFuLg0KPj4NCj4+IEFtIDA5LjA1LjE5IHVtIDIzOjA0IHNjaHJpZWIgS2Vu
+bnkgSG86DQo+Pj4gVGhpcyBpcyBhIGZvbGxvdyB1cCB0byB0aGUgUkZDIEkgbWFkZSBsYXN0IG5v
+dmVtYmVyIHRvIGludHJvZHVjZSBhIGNncm91cCBjb250cm9sbGVyIGZvciB0aGUgR1BVL0RSTSBz
+dWJzeXN0ZW0gW2FdLiAgVGhlIGdvYWwgaXMgdG8gYmUgYWJsZSB0byBwcm92aWRlIHJlc291cmNl
+IG1hbmFnZW1lbnQgdG8gR1BVIHJlc291cmNlcyB1c2luZyB0aGluZ3MgbGlrZSBjb250YWluZXIu
+ICBUaGUgY292ZXIgbGV0dGVyIGZyb20gdjEgaXMgY29waWVkIGJlbG93IGZvciByZWZlcmVuY2Uu
+DQo+Pj4NCj4+PiBVc2FnZSBleGFtcGxlczoNCj4+PiAvLyBzZXQgbGltaXQgZm9yIGNhcmQxIHRv
+IDFHQg0KPj4+IHNlZCAtaSAnMnMvLiovMTA3Mzc0MTgyNC8nIC9zeXMvZnMvY2dyb3VwLzxjZ3Jv
+dXA+L2RybS5idWZmZXIudG90YWwubWF4DQo+Pj4NCj4+PiAvLyBzZXQgbGltaXQgZm9yIGNhcmQw
+IHRvIDUxMk1CDQo+Pj4gc2VkIC1pICcxcy8uKi81MzY4NzA5MTIvJyAvc3lzL2ZzL2Nncm91cC88
+Y2dyb3VwPi9kcm0uYnVmZmVyLnRvdGFsLm1heA0KPj4+DQo+Pj4NCj4+PiB2MjoNCj4+PiAqIFJl
+bW92ZWQgdGhlIHZlbmRvcmluZyBjb25jZXB0cw0KPj4+ICogQWRkIGxpbWl0IHRvIHRvdGFsIGJ1
+ZmZlciBhbGxvY2F0aW9uDQo+Pj4gKiBBZGQgbGltaXQgdG8gdGhlIG1heGltdW0gc2l6ZSBvZiBh
+IGJ1ZmZlciBhbGxvY2F0aW9uDQo+Pj4NCj4+PiBUT0RPOiBwcm9jZXNzIG1pZ3JhdGlvbg0KPj4+
+IFRPRE86IGRvY3VtZW50YXRpb25zDQo+Pj4NCj4+PiBbYV06IGh0dHBzOi8vbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnL2FyY2hpdmVzL2RyaS1kZXZlbC8yMDE4LU5vdmVtYmVyLzE5NzEwNi5odG1sDQo+
+Pj4NCj4+PiB2MTogY292ZXIgbGV0dGVyDQo+Pj4NCj4+PiBUaGUgcHVycG9zZSBvZiB0aGlzIHBh
+dGNoIHNlcmllcyBpcyB0byBzdGFydCBhIGRpc2N1c3Npb24gZm9yIGEgZ2VuZXJpYyBjZ3JvdXAN
+Cj4+PiBjb250cm9sbGVyIGZvciB0aGUgZHJtIHN1YnN5c3RlbS4gIFRoZSBkZXNpZ24gcHJvcG9z
+ZWQgaGVyZSBpcyBhIHZlcnkgZWFybHkgb25lLg0KPj4+IFdlIGFyZSBob3BpbmcgdG8gZW5nYWdl
+IHRoZSBjb21tdW5pdHkgYXMgd2UgZGV2ZWxvcCB0aGUgaWRlYS4NCj4+Pg0KPj4+DQo+Pj4gQmFj
+a2dyb3VuZHMNCj4+PiA9PT09PT09PT09DQo+Pj4gQ29udHJvbCBHcm91cHMvY2dyb3VwIHByb3Zp
+ZGUgYSBtZWNoYW5pc20gZm9yIGFnZ3JlZ2F0aW5nL3BhcnRpdGlvbmluZyBzZXRzIG9mDQo+Pj4g
+dGFza3MsIGFuZCBhbGwgdGhlaXIgZnV0dXJlIGNoaWxkcmVuLCBpbnRvIGhpZXJhcmNoaWNhbCBn
+cm91cHMgd2l0aCBzcGVjaWFsaXplZA0KPj4+IGJlaGF2aW91ciwgc3VjaCBhcyBhY2NvdW50aW5n
+L2xpbWl0aW5nIHRoZSByZXNvdXJjZXMgd2hpY2ggcHJvY2Vzc2VzIGluIGEgY2dyb3VwDQo+Pj4g
+Y2FuIGFjY2Vzc1sxXS4gIFdlaWdodHMsIGxpbWl0cywgcHJvdGVjdGlvbnMsIGFsbG9jYXRpb25z
+IGFyZSB0aGUgbWFpbiByZXNvdXJjZQ0KPj4+IGRpc3RyaWJ1dGlvbiBtb2RlbHMuICBFeGlzdGlu
+ZyBjZ3JvdXAgY29udHJvbGxlcnMgaW5jbHVkZXMgY3B1LCBtZW1vcnksIGlvLA0KPj4+IHJkbWEs
+IGFuZCBtb3JlLiAgY2dyb3VwIGlzIG9uZSBvZiB0aGUgZm91bmRhdGlvbmFsIHRlY2hub2xvZ2ll
+cyB0aGF0IGVuYWJsZXMgdGhlDQo+Pj4gcG9wdWxhciBjb250YWluZXIgYXBwbGljYXRpb24gZGVw
+bG95bWVudCBhbmQgbWFuYWdlbWVudCBtZXRob2QuDQo+Pj4NCj4+PiBEaXJlY3QgUmVuZGVyaW5n
+IE1hbmFnZXIvZHJtIGNvbnRhaW5zIGNvZGUgaW50ZW5kZWQgdG8gc3VwcG9ydCB0aGUgbmVlZHMg
+b2YNCj4+PiBjb21wbGV4IGdyYXBoaWNzIGRldmljZXMuIEdyYXBoaWNzIGRyaXZlcnMgaW4gdGhl
+IGtlcm5lbCBtYXkgbWFrZSB1c2Ugb2YgRFJNDQo+Pj4gZnVuY3Rpb25zIHRvIG1ha2UgdGFza3Mg
+bGlrZSBtZW1vcnkgbWFuYWdlbWVudCwgaW50ZXJydXB0IGhhbmRsaW5nIGFuZCBETUENCj4+PiBl
+YXNpZXIsIGFuZCBwcm92aWRlIGEgdW5pZm9ybSBpbnRlcmZhY2UgdG8gYXBwbGljYXRpb25zLiAg
+VGhlIERSTSBoYXMgYWxzbw0KPj4+IGRldmVsb3BlZCBiZXlvbmQgdHJhZGl0aW9uYWwgZ3JhcGhp
+Y3MgYXBwbGljYXRpb25zIHRvIHN1cHBvcnQgY29tcHV0ZS9HUEdQVQ0KPj4+IGFwcGxpY2F0aW9u
+cy4NCj4+Pg0KPj4+DQo+Pj4gTW90aXZhdGlvbnMNCj4+PiA9PT09PT09PT0NCj4+PiBBcyBHUFUg
+Z3JvdyBiZXlvbmQgdGhlIHJlYWxtIG9mIGRlc2t0b3Avd29ya3N0YXRpb24gZ3JhcGhpY3MgaW50
+byBhcmVhcyBsaWtlDQo+Pj4gZGF0YSBjZW50ZXIgY2x1c3RlcnMgYW5kIElvVCwgdGhlcmUgYXJl
+IGluY3JlYXNpbmcgbmVlZHMgdG8gbW9uaXRvciBhbmQgcmVndWxhdGUNCj4+PiBHUFUgYXMgYSBy
+ZXNvdXJjZSBsaWtlIGNwdSwgbWVtb3J5IGFuZCBpby4NCj4+Pg0KPj4+IE1hdHQgUm9wZXIgZnJv
+bSBJbnRlbCBiZWdhbiB3b3JraW5nIG9uIHNpbWlsYXIgaWRlYSBpbiBlYXJseSAyMDE4IFsyXSBm
+b3IgdGhlDQo+Pj4gcHVycG9zZSBvZiBtYW5hZ2luZyBHUFUgcHJpb3JpdHkgdXNpbmcgdGhlIGNn
+cm91cCBoaWVyYXJjaHkuICBXaGlsZSB0aGF0DQo+Pj4gcGFydGljdWxhciB1c2UgY2FzZSBtYXkg
+bm90IHdhcnJhbnQgYSBzdGFuZGFsb25lIGRybSBjZ3JvdXAgY29udHJvbGxlciwgdGhlcmUNCj4+
+PiBhcmUgb3RoZXIgdXNlIGNhc2VzIHdoZXJlIGhhdmluZyBvbmUgY2FuIGJlIHVzZWZ1bCBbM10u
+ICBNb25pdG9yaW5nIEdQVQ0KPj4+IHJlc291cmNlcyBzdWNoIGFzIFZSQU0gYW5kIGJ1ZmZlcnMs
+IENVIChjb21wdXRlIHVuaXQgW0FNRCdzIG5vbWVuY2xhdHVyZV0pL0VVDQo+Pj4gKGV4ZWN1dGlv
+biB1bml0IFtJbnRlbCdzIG5vbWVuY2xhdHVyZV0pLCBHUFUgam9iIHNjaGVkdWxpbmcgWzRdIGNh
+biBoZWxwDQo+Pj4gc3lzYWRtaW5zIGdldCBhIGJldHRlciB1bmRlcnN0YW5kaW5nIG9mIHRoZSBh
+cHBsaWNhdGlvbnMgdXNhZ2UgcHJvZmlsZS4gIEZ1cnRoZXINCj4+PiB1c2FnZSByZWd1bGF0aW9u
+cyBvZiB0aGUgYWZvcmVtZW50aW9uZWQgcmVzb3VyY2VzIGNhbiBhbHNvIGhlbHAgc3lzYWRtaW5z
+DQo+Pj4gb3B0aW1pemUgd29ya2xvYWQgZGVwbG95bWVudCBvbiBsaW1pdGVkIEdQVSByZXNvdXJj
+ZXMuDQo+Pj4NCj4+PiBXaXRoIHRoZSBpbmNyZWFzZWQgaW1wb3J0YW5jZSBvZiBtYWNoaW5lIGxl
+YXJuaW5nLCBkYXRhIHNjaWVuY2UgYW5kIG90aGVyDQo+Pj4gY2xvdWQtYmFzZWQgYXBwbGljYXRp
+b25zLCBHUFVzIGFyZSBhbHJlYWR5IGluIHByb2R1Y3Rpb24gdXNlIGluIGRhdGEgY2VudGVycw0K
+Pj4+IHRvZGF5IFs1LDYsN10uICBFeGlzdGluZyBHUFUgcmVzb3VyY2UgbWFuYWdlbWVudCBpcyB2
+ZXJ5IGNvdXJzZSBncmFpbiwgaG93ZXZlciwNCj4+PiBhcyBzeXNhZG1pbnMgYXJlIG9ubHkgYWJs
+ZSB0byBkaXN0cmlidXRlIHdvcmtsb2FkIG9uIGEgcGVyLUdQVSBiYXNpcyBbOF0uICBBbg0KPj4+
+IGFsdGVybmF0aXZlIGlzIHRvIHVzZSBHUFUgdmlydHVhbGl6YXRpb24gKHdpdGggb3Igd2l0aG91
+dCBTUklPVikgYnV0IGl0DQo+Pj4gZ2VuZXJhbGx5IGFjdHMgb24gdGhlIGVudGlyZSBHUFUgaW5z
+dGVhZCBvZiB0aGUgc3BlY2lmaWMgcmVzb3VyY2VzIGluIGEgR1BVLg0KPj4+IFdpdGggYSBkcm0g
+Y2dyb3VwIGNvbnRyb2xsZXIsIHdlIGNhbiBlbmFibGUgYWx0ZXJuYXRlLCBmaW5lLWdyYWluLCBz
+dWItR1BVDQo+Pj4gcmVzb3VyY2UgbWFuYWdlbWVudCAoaW4gYWRkaXRpb24gdG8gd2hhdCBtYXkg
+YmUgYXZhaWxhYmxlIHZpYSBHUFUNCj4+PiB2aXJ0dWFsaXphdGlvbi4pDQo+Pj4NCj4+PiBJbiBh
+ZGRpdGlvbiB0byBwcm9kdWN0aW9uIHVzZSwgdGhlIERSTSBjZ3JvdXAgY2FuIGFsc28gaGVscCB3
+aXRoIHRlc3RpbmcNCj4+PiBncmFwaGljcyBhcHBsaWNhdGlvbiByb2J1c3RuZXNzIGJ5IHByb3Zp
+ZGluZyBhIG1lYW4gdG8gYXJ0aWZpY2lhbGx5IGxpbWl0IERSTQ0KPj4+IHJlc291cmNlcyBhdmFp
+bGJsZSB0byB0aGUgYXBwbGljYXRpb25zLg0KPj4+DQo+Pj4gQ2hhbGxlbmdlcw0KPj4+ID09PT09
+PT09DQo+Pj4gV2hpbGUgdGhlcmUgYXJlIGNvbW1vbiBpbmZyYXN0cnVjdHVyZSBpbiBEUk0gdGhh
+dCBpcyBzaGFyZWQgYWNyb3NzIG1hbnkgdmVuZG9ycw0KPj4+ICh0aGUgc2NoZWR1bGVyIFs0XSBm
+b3IgZXhhbXBsZSksIHRoZXJlIGFyZSBhbHNvIGFzcGVjdHMgb2YgRFJNIHRoYXQgYXJlIHZlbmRv
+cg0KPj4+IHNwZWNpZmljLiAgVG8gYWNjb21tb2RhdGUgdGhpcywgd2UgYm9ycm93ZWQgdGhlIG1l
+Y2hhbmlzbSB1c2VkIGJ5IHRoZSBjZ3JvdXAgdG8NCj4+PiBoYW5kbGUgZGlmZmVyZW50IGtpbmRz
+IG9mIGNncm91cCBjb250cm9sbGVyLg0KPj4+DQo+Pj4gUmVzb3VyY2VzIGZvciBEUk0gYXJlIGFs
+c28gb2Z0ZW4gZGV2aWNlIChHUFUpIHNwZWNpZmljIGluc3RlYWQgb2Ygc3lzdGVtDQo+Pj4gc3Bl
+Y2lmaWMgYW5kIGEgc3lzdGVtIG1heSBjb250YWluIG1vcmUgdGhhbiBvbmUgR1BVLiAgRm9yIHRo
+aXMsIHdlIGJvcnJvd2VkIHNvbWUNCj4+PiBvZiB0aGUgaWRlYXMgZnJvbSBSRE1BIGNncm91cCBj
+b250cm9sbGVyLg0KPj4+DQo+Pj4gQXBwcm9hY2gNCj4+PiA9PT09PT09DQo+Pj4gVG8gZXhwZXJp
+bWVudCB3aXRoIHRoZSBpZGVhIG9mIGEgRFJNIGNncm91cCwgd2Ugd291bGQgbGlrZSB0byBzdGFy
+dCB3aXRoIGJhc2ljDQo+Pj4gYWNjb3VudGluZyBhbmQgc3RhdGlzdGljcywgdGhlbiBjb250aW51
+ZSB0byBpdGVyYXRlIGFuZCBhZGQgcmVndWxhdGluZw0KPj4+IG1lY2hhbmlzbXMgaW50byB0aGUg
+ZHJpdmVyLg0KPj4+DQo+Pj4gWzFdIGh0dHBzOi8vd3d3Lmtlcm5lbC5vcmcvZG9jL0RvY3VtZW50
+YXRpb24vY2dyb3VwLXYxL2Nncm91cHMudHh0DQo+Pj4gWzJdIGh0dHBzOi8vbGlzdHMuZnJlZWRl
+c2t0b3Aub3JnL2FyY2hpdmVzL2ludGVsLWdmeC8yMDE4LUphbnVhcnkvMTUzMTU2Lmh0bWwNCj4+
+PiBbM10gaHR0cHM6Ly93d3cuc3Bpbmljcy5uZXQvbGlzdHMvY2dyb3Vwcy9tc2cyMDcyMC5odG1s
+DQo+Pj4gWzRdIGh0dHBzOi8vZWxpeGlyLmJvb3RsaW4uY29tL2xpbnV4L2xhdGVzdC9zb3VyY2Uv
+ZHJpdmVycy9ncHUvZHJtL3NjaGVkdWxlcg0KPj4+IFs1XSBodHRwczovL2t1YmVybmV0ZXMuaW8v
+ZG9jcy90YXNrcy9tYW5hZ2UtZ3B1cy9zY2hlZHVsaW5nLWdwdXMvDQo+Pj4gWzZdIGh0dHBzOi8v
+YmxvZy5vcGVuc2hpZnQuY29tL2dwdS1hY2NlbGVyYXRlZC1zcWwtcXVlcmllcy13aXRoLXBvc3Rn
+cmVzcWwtcGctc3Ryb20taW4tb3BlbnNoaWZ0LTMtMTAvDQo+Pj4gWzddIGh0dHBzOi8vZ2l0aHVi
+LmNvbS9SYWRlb25PcGVuQ29tcHV0ZS9rOHMtZGV2aWNlLXBsdWdpbg0KPj4+IFs4XSBodHRwczov
+L2dpdGh1Yi5jb20va3ViZXJuZXRlcy9rdWJlcm5ldGVzL2lzc3Vlcy81Mjc1Nw0KPj4+DQo+Pj4g
+S2VubnkgSG8gKDUpOg0KPj4+ICAgICBjZ3JvdXA6IEludHJvZHVjZSBjZ3JvdXAgZm9yIGRybSBz
+dWJzeXN0ZW0NCj4+PiAgICAgY2dyb3VwOiBBZGQgbWVjaGFuaXNtIHRvIHJlZ2lzdGVyIERSTSBk
+ZXZpY2VzDQo+Pj4gICAgIGRybS9hbWRncHU6IFJlZ2lzdGVyIEFNRCBkZXZpY2VzIGZvciBEUk0g
+Y2dyb3VwDQo+Pj4gICAgIGRybSwgY2dyb3VwOiBBZGQgdG90YWwgR0VNIGJ1ZmZlciBhbGxvY2F0
+aW9uIGxpbWl0DQo+Pj4gICAgIGRybSwgY2dyb3VwOiBBZGQgcGVhayBHRU0gYnVmZmVyIGFsbG9j
+YXRpb24gbGltaXQNCj4+Pg0KPj4+ICAgIGRyaXZlcnMvZ3B1L2RybS9hbWQvYW1kZ3B1L2FtZGdw
+dV9rbXMuYyAgICB8ICAgNCArDQo+Pj4gICAgZHJpdmVycy9ncHUvZHJtL2FtZC9hbWRncHUvYW1k
+Z3B1X29iamVjdC5jIHwgICA0ICsNCj4+PiAgICBkcml2ZXJzL2dwdS9kcm0vZHJtX2dlbS5jICAg
+ICAgICAgICAgICAgICAgfCAgIDcgKw0KPj4+ICAgIGRyaXZlcnMvZ3B1L2RybS9kcm1fcHJpbWUu
+YyAgICAgICAgICAgICAgICB8ICAgOSArDQo+Pj4gICAgaW5jbHVkZS9kcm0vZHJtX2Nncm91cC5o
+ICAgICAgICAgICAgICAgICAgIHwgIDU0ICsrKw0KPj4+ICAgIGluY2x1ZGUvZHJtL2RybV9nZW0u
+aCAgICAgICAgICAgICAgICAgICAgICB8ICAxMSArDQo+Pj4gICAgaW5jbHVkZS9saW51eC9jZ3Jv
+dXBfZHJtLmggICAgICAgICAgICAgICAgIHwgIDQ3ICsrDQo+Pj4gICAgaW5jbHVkZS9saW51eC9j
+Z3JvdXBfc3Vic3lzLmggICAgICAgICAgICAgIHwgICA0ICsNCj4+PiAgICBpbml0L0tjb25maWcg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCAgIDUgKw0KPj4+ICAgIGtlcm5lbC9jZ3Jv
+dXAvTWFrZWZpbGUgICAgICAgICAgICAgICAgICAgICB8ICAgMSArDQo+Pj4gICAga2VybmVsL2Nn
+cm91cC9kcm0uYyAgICAgICAgICAgICAgICAgICAgICAgIHwgNDk3ICsrKysrKysrKysrKysrKysr
+KysrKw0KPj4+ICAgIDExIGZpbGVzIGNoYW5nZWQsIDY0MyBpbnNlcnRpb25zKCspDQo+Pj4gICAg
+Y3JlYXRlIG1vZGUgMTAwNjQ0IGluY2x1ZGUvZHJtL2RybV9jZ3JvdXAuaA0KPj4+ICAgIGNyZWF0
+ZSBtb2RlIDEwMDY0NCBpbmNsdWRlL2xpbnV4L2Nncm91cF9kcm0uaA0KPj4+ICAgIGNyZWF0ZSBt
+b2RlIDEwMDY0NCBrZXJuZWwvY2dyb3VwL2RybS5jDQo+Pj4NCg0K
