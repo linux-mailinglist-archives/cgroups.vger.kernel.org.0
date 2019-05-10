@@ -2,32 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 739F219FDA
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 17:09:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 065011A012
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 17:25:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727357AbfEJPJA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 May 2019 11:09:00 -0400
-Received: from mail-eopbgr730050.outbound.protection.outlook.com ([40.107.73.50]:28016
-        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727346AbfEJPJA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 10 May 2019 11:09:00 -0400
+        id S1727584AbfEJPZv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 May 2019 11:25:51 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:37672 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727471AbfEJPZu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 11:25:50 -0400
+Received: by mail-oi1-f196.google.com with SMTP id 143so4821669oii.4
+        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 08:25:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ZJWhlMy7XWoraoZljkJ+yKiPDGcUmXOVDXAw/HTxAUI=;
- b=0TEIlxkUtKPOKE4xTnOAuHaHWHy274oDsgjPX1njiYEFUmyVSNAgOJJn4LTfW8WPNutbdT/o0JenegePuav8EzEC1eP7u5izEwU3gtKmo8vB2LgHfy/CEBj3WHHozv1UHAqNxmDlUZFSHvZ2JBMBG9ddSAkJ0t+yrSgJQrnnXSI=
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com (10.172.36.23) by
- DM5PR12MB2392.namprd12.prod.outlook.com (52.132.141.21) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.21; Fri, 10 May 2019 15:08:57 +0000
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::e1b1:5b6f:b2df:afa5]) by DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::e1b1:5b6f:b2df:afa5%7]) with mapi id 15.20.1878.022; Fri, 10 May 2019
- 15:08:57 +0000
-From:   "Koenig, Christian" <Christian.Koenig@amd.com>
-To:     Kenny Ho <y2kenny@gmail.com>
-CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lKwN54SK+W6O9fjruMh2Yrp66lpefmr9JPdcP+S36Vk=;
+        b=MzkCyMwYP6vwvvOjpLsMr1FlOuh2aoSNNH4ivWkC7vz7RDHLCfPIa6PQ0cDphZUWli
+         ZL4ccEZcjzcHxoez+sUBmG6KB3GXXo6JKartpZB87cBcQ3kEEBHNKbXgIfZ3004OvQmy
+         aeFhzsmcxtQJxQgsfJzYXPiR5n/SS87g57B4ks4ruWHPckfFAYvCAWhuSUQzDOv7cENV
+         /0tQoVOdezg84O2bBx67TFiOoYzHSIo7N0RHW8jpz4ernghPEO2tRCunQiLTevYRQAMt
+         yXiaRGRB883oEV+r7F/D08/8ZuuSm9/z3uh+79uHZrXZPefFfMch+bQecK3Y4L1i1WTH
+         TfmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lKwN54SK+W6O9fjruMh2Yrp66lpefmr9JPdcP+S36Vk=;
+        b=k3GB9+S5hCGutRhgyh77zN6nd60pZG5nu4H+Y81VK/fYPSX82yQgL2u14jq2o7K5UW
+         tFEoy7lIny7oiqqG4WXiaXW/w2FJaBNhS8droAxsnZ0/S2Svab5uUO18DTPleEmb/MU6
+         ntKMJzZvrOsIj2h9YOJg99AbynO+y/SvMAZCVmaEh3jyrcaWvhKSNQBFuq44ZdfgE2He
+         WVTCzuHHrrvXgyjlojr40JYmfDwDghaMISsrqmy/brevqmjjZuiRefg0RZ+eYQZwYrzU
+         rOETHGWoKudyuP9RN8VwIk+GrTxm/og08aTXIvSbOOq65RACLuzbW4HJkwgQ+i3KSKEU
+         dZsQ==
+X-Gm-Message-State: APjAAAWazkNzF1r2gUIIKDwf50ZEyULM8UinOJBH8M01qiEq7V6MXdUS
+        R02VXoxGhGDOQEAytzRSwCUn7OOTMaAyBEfD+O4=
+X-Google-Smtp-Source: APXvYqxMoxs8eeJi15rqKro5+GmOfVwMuCoN5hY4PYXTEvCmTRz9NKHdGZOHdS5/jU0ofKopRhRfCK6E+Z/P/ewrlO0=
+X-Received: by 2002:aca:d90a:: with SMTP id q10mr4730169oig.65.1557501950024;
+ Fri, 10 May 2019 08:25:50 -0700 (PDT)
+MIME-Version: 1.0
+References: <20181120185814.13362-1-Kenny.Ho@amd.com> <20190509210410.5471-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-5-Kenny.Ho@amd.com> <f63c8d6b-92a4-2977-d062-7e0b7036834e@gmail.com>
+ <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com> <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
+In-Reply-To: <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 10 May 2019 11:25:38 -0400
+Message-ID: <CAOWid-eVz4w-hN=4tPZ1AOu54xMH_2ztDDZaMEKRCAeBgt9Dyw@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation limit
+To:     "Koenig, Christian" <Christian.Koenig@amd.com>
+Cc:     "Ho, Kenny" <Kenny.Ho@amd.com>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
         "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
@@ -35,124 +58,72 @@ CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
         "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
         "Deucher, Alexander" <Alexander.Deucher@amd.com>,
         Brian Welty <brian.welty@intel.com>
-Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
- limit
-Thread-Topic: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
- limit
-Thread-Index: AQHVB0DJVkIxCCCoYECMKlqE0zp4P6ZkdgmA
-Date:   Fri, 10 May 2019 15:08:56 +0000
-Message-ID: <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
-References: <20181120185814.13362-1-Kenny.Ho@amd.com>
- <20190509210410.5471-1-Kenny.Ho@amd.com>
- <20190509210410.5471-5-Kenny.Ho@amd.com>
- <f63c8d6b-92a4-2977-d062-7e0b7036834e@gmail.com>
- <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com>
-In-Reply-To: <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-x-originating-ip: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-x-clientproxiedby: AM5P189CA0010.EURP189.PROD.OUTLOOK.COM
- (2603:10a6:206:15::23) To DM5PR12MB1546.namprd12.prod.outlook.com
- (2603:10b6:4:8::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Christian.Koenig@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 7c02fa72-003d-4199-b9c9-08d6d5596c0d
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB2392;
-x-ms-traffictypediagnostic: DM5PR12MB2392:
-x-microsoft-antispam-prvs: <DM5PR12MB239271083AE88C104CC6A8DA830C0@DM5PR12MB2392.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0033AAD26D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(39860400002)(376002)(136003)(366004)(396003)(189003)(199004)(8936002)(52116002)(7736002)(54906003)(229853002)(8676002)(81166006)(81156014)(99286004)(58126008)(65826007)(6486002)(68736007)(6436002)(316002)(6512007)(1411001)(6506007)(76176011)(31686004)(386003)(53546011)(102836004)(64126003)(186003)(6916009)(5660300002)(36756003)(2906002)(31696002)(66574012)(14444005)(256004)(478600001)(86362001)(71200400001)(6246003)(25786009)(65956001)(65806001)(4326008)(11346002)(66476007)(446003)(486006)(64756008)(476003)(46003)(2616005)(66556008)(66446008)(53936002)(6116002)(71190400001)(66946007)(73956011)(72206003)(14454004)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB2392;H:DM5PR12MB1546.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: iOdnsXDLP5ve+BPQuQWoG3KjNqInhysEBjsLuLRiFj0MTSeKqzilPmxctH54HR9VCjlI1CryIEHnLeMsGFiEvAR5fhCbSZwWHJw+fh1V1JL6X2k3/fGO1qWzNW4DGcCXS1mG8THOJIbY3N6tY0XCDK9X11kllcwlyjdTLA4fk7pMrUAJeynvGNRsrf1CPUo2Grf7/GOF4jlUhLs384SdlYPcS2jZoDSLGloqzne07KftyGsAJxJD3xVA+2wyeHnckuviL0R2GtSxT90IxjzjHARTCVwIOk99fDZsFEasPynKaG9nt7uRTNZggf/8a6VIGcyAPi1TetkW7JIdK4qiCesyjwnEt6Pm4014kWaFoI3NFLO8UgXiECJGQJESTcG90ABQJQbAYD57ovpfk+5AaSIF6qKxwFqsTlmlCvRNJFY=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9A156827FCA34246B18E27B32C833FA6@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7c02fa72-003d-4199-b9c9-08d6d5596c0d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2019 15:08:56.9455
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2392
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-QW0gMTAuMDUuMTkgdW0gMTY6NTcgc2NocmllYiBLZW5ueSBIbzoNCj4gW0NBVVRJT046IEV4dGVy
-bmFsIEVtYWlsXQ0KPg0KPiBPbiBGcmksIE1heSAxMCwgMjAxOSBhdCA4OjI4IEFNIENocmlzdGlh
-biBLw7ZuaWcNCj4gPGNrb2VuaWcubGVpY2h0enVtZXJrZW5AZ21haWwuY29tPiB3cm90ZToNCj4+
-IEFtIDA5LjA1LjE5IHVtIDIzOjA0IHNjaHJpZWIgS2VubnkgSG86DQo+Pj4gKyAgICAgLyogb25s
-eSBhbGxvdyBibyBmcm9tIHRoZSBzYW1lIGNncm91cCBvciBpdHMgYW5jZXN0b3IgdG8gYmUgaW1w
-b3J0ZWQgKi8NCj4+PiArICAgICBpZiAoZHJtY2dycCAhPSBOVUxMICYmDQo+Pj4gKyAgICAgICAg
-ICAgICAgICAgICAgICFkcm1jZ3JwX2lzX3NlbGZfb3JfYW5jZXN0b3IoZHJtY2dycCwgb2JqLT5k
-cm1jZ3JwKSkgew0KPj4+ICsgICAgICAgICAgICAgcmV0ID0gLUVBQ0NFUzsNCj4+PiArICAgICAg
-ICAgICAgIGdvdG8gb3V0X3VubG9jazsNCj4+PiArICAgICB9DQo+Pj4gKw0KPj4gVGhpcyB3aWxs
-IG1vc3QgbGlrZWx5IGdvIHVwIGluIGZsYW1lcy4NCj4+DQo+PiBJZiBJJ20gbm90IGNvbXBsZXRl
-bHkgbWlzdGFrZW4gd2UgYWxyZWFkeSB1c2UNCj4+IGRybV9nZW1fcHJpbWVfZmRfdG9faGFuZGxl
-KCkgdG8gZXhjaGFuZ2UgaGFuZGxlcyBiZXR3ZWVuIGRpZmZlcmVudA0KPj4gY2dyb3VwcyBpbiBj
-dXJyZW50IGNvbnRhaW5lciB1c2FnZXMuDQo+IFRoaXMgaXMgc29tZXRoaW5nIHRoYXQgSSBhbSBp
-bnRlcmVzdGVkIGluIGdldHRpbmcgbW9yZSBkZXRhaWxzIGZyb20NCj4gdGhlIGJyb2FkZXIgY29t
-bXVuaXR5IGJlY2F1c2UgdGhlIGRldGFpbHMgYWZmZWN0IGhvdyBsaWtlbHkgdGhpcyB3aWxsDQo+
-IGdvIHVwIGluIGZsYW1lcyA7KS4gIE5vdGUgdGhhdCB0aGlzIGNoZWNrIGRvZXMgbm90IGJsb2Nr
-IHNoYXJpbmcgb2YNCj4gaGFuZGxlcyBmcm9tIGNncm91cCBwYXJlbnQgdG8gY2hpbGRyZW4gaW4g
-dGhlIGhpZXJhcmNoeSwgbm9yIGRvZXMgaXQNCj4gYmxvY2tzIHNoYXJpbmcgb2YgaGFuZGxlcyB3
-aXRoaW4gYSBjZ3JvdXAuDQo+DQo+IEkgYW0gaW50ZXJlc3RlZCB0byBmaW5kIG91dCwgd2hlbiBl
-eGlzdGluZyBhcHBzIHNoYXJlIGhhbmRsZXMgYmV0d2Vlbg0KPiBjb250YWluZXJzLCBpZiB0aGVy
-ZSBhcmUgYW55IGV4cGVjdGF0aW9ucyBvbiByZXNvdXJjZSBtYW5hZ2VtZW50Lg0KPiBTaW5jZSB0
-aGVyZSBhcmUgbm8gZHJtIGNncm91cCBmb3IgY3VycmVudCBjb250YWluZXIgdXNhZ2UsIEkgZXhw
-ZWN0DQo+IHRoZSBhbnN3ZXIgdG8gYmUgbm8uICBJbiB0aGlzIGNhc2UsIHRoZSBkcm0gY2dyb3Vw
-IGNvbnRyb2xsZXIgY2FuIGJlDQo+IGRpc2FibGVkIG9uIGl0cyBvd24gKGluIHRoZSBjb250ZXh0
-IG9mIGNncm91cC12MidzIHVuaWZpZWQgaGllcmFyY2h5KSwNCj4gb3IgdGhlIHByb2Nlc3MgY2Fu
-IHJlbWFpbiBhdCB0aGUgcm9vdCBmb3IgdGhlIGRybSBjZ3JvdXAgaGllcmFyY2h5IChpbg0KPiB0
-aGUgY29udGV4dCBvZiBjZ3JvdXAtdjEuKSAgSWYgSSB1bmRlcnN0YW5kIHRoZSBjZ3JvdXAgYXBp
-IGNvcnJlY3RseSwNCj4gdGhhdCBtZWFucyBhbGwgcHJvY2VzcyB3b3VsZCBiZSBwYXJ0IG9mIHRo
-ZSByb290IGNncm91cCBhcyBmYXIgYXMgdGhlDQo+IGRybSBjb250cm9sbGVyIGlzIGNvbmNlcm5l
-ZCBhbmQgdGhpcyBibG9jayB3aWxsIG5vdCBjb21lIGludG8gZWZmZWN0Lg0KPiBJIGhhdmUgdmVy
-aWZpZWQgdGhhdCB0aGlzIGlzIGluZGVlZCB0aGUgY3VycmVudCBkZWZhdWx0IGJlaGF2aW91ciBv
-ZiBhDQo+IGNvbnRhaW5lciBydW50aW1lIChydW5jLCB3aGljaCBpcyB1c2VkIGJ5IGRvY2tlciwg
-cG9kbWFuIGFuZCBvdGhlcnMuKQ0KPiBUaGUgbmV3IGRybSBjZ3JvdXAgY29udHJvbGxlciBpcyBz
-aW1wbHkgaWdub3JlZCBhbmQgYWxsIHByb2Nlc3Nlcw0KPiByZW1haW4gYXQgdGhlIHJvb3Qgb2Yg
-dGhlIGhpZXJhcmNoeSAoc2luY2UgdGhlcmUgYXJlIG5vIG90aGVyDQo+IGNncm91cHMuKSAgSSBw
-bGFuIHRvIG1ha2UgY29udHJpYnV0aW9ucyB0byBydW5jIChzbyBmb2xrcyBjYW4gYWN0dWFsbHkN
-Cj4gdXNlIHRoaXMgZmVhdHVyZXMgd2l0aCBkb2NrZXIvcG9kbWFuL2s4cywgZXRjLikgb25jZSB0
-aGluZ3Mgc3RhYmlsaXplZA0KPiBvbiB0aGUga2VybmVsIHNpZGUuDQoNClNvIHRoZSBkcm0gY2dy
-b3VwIGNvbnRhaW5lciBpcyBzZXBhcmF0ZSB0byBvdGhlciBjZ3JvdXAgY29udGFpbmVycz8NCg0K
-SW4gb3RoZXIgd29yZHMgYXMgbG9uZyBhcyB1c2Vyc3BhY2UgZG9lc24ndCBjaGFuZ2UsIHRoaXMg
-d291bGRuJ3QgaGF2ZSANCmFueSBlZmZlY3Q/DQoNCldlbGwgdGhhdCBpcyB1bmV4cGVjdGVkIGNh
-dXNlIHRoZW4gYSBwcm9jZXNzZXMgd291bGQgYmUgaW4gZGlmZmVyZW50IA0KZ3JvdXBzIGZvciBk
-aWZmZXJlbnQgY29udHJvbGxlcnMsIGJ1dCBpZiB0aGF0J3MgcmVhbGx5IHRoZSBjYXNlIHRoYXQg
-DQp3b3VsZCBjZXJ0YWlubHkgd29yay4NCg0KPiBPbiB0aGUgb3RoZXIgaGFuZCwgaWYgdGhlcmUg
-YXJlIGV4cGVjdGF0aW9ucyBmb3IgcmVzb3VyY2UgbWFuYWdlbWVudA0KPiBiZXR3ZWVuIGNvbnRh
-aW5lcnMsIEkgd291bGQgbGlrZSB0byBrbm93IHdobyBpcyB0aGUgZXhwZWN0ZWQgbWFuYWdlcg0K
-PiBhbmQgaG93IGRvZXMgaXQgZml0IGludG8gdGhlIGNvbmNlcHQgb2YgY29udGFpbmVyICh3aGlj
-aCBlbmZvcmNlIHNvbWUNCj4gbGV2ZWwgb2YgaXNvbGF0aW9uLikgIE9uZSBwb3NzaWJsZSBtYW5h
-Z2VyIG1heSBiZSB0aGUgZGlzcGxheSBzZXJ2ZXIuDQo+IEJ1dCBhcyBsb25nIGFzIHRoZSBkaXNw
-bGF5IHNlcnZlciBpcyBpbiBhIHBhcmVudCBjZ3JvdXAgb2YgdGhlIGFwcHMnDQo+IGNncm91cCwg
-dGhlIGFwcHMgY2FuIHN0aWxsIGltcG9ydCBoYW5kbGVzIGZyb20gdGhlIGRpc3BsYXkgc2VydmVy
-DQo+IHVuZGVyIHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uLiAgTXkgdW5kZXJzdGFuZGluZyBp
-cyB0aGF0IHRoaXMgaXMNCj4gbW9zdCBsaWtlbHkgdGhlIGNhc2UsIHdpdGggdGhlIGRpc3BsYXkg
-c2VydmVyIHNpbXBseSBzaXR0aW5nIGF0IHRoZQ0KPiBkZWZhdWx0L3Jvb3QgY2dyb3VwLiAgQnV0
-IEkgY2VydGFpbmx5IHdhbnQgdG8gaGVhciBtb3JlIGFib3V0IG90aGVyDQo+IHVzZSBjYXNlcyAo
-Zm9yIGV4YW1wbGUsIGlzIHJ1bm5pbmcgbXVsdGlwbGUgZGlzcGxheSBzZXJ2ZXJzIG9uIGENCj4g
-c2luZ2xlIGhvc3QgYSByZWFsaXN0aWMgcG9zc2liaWxpdHk/ICBBcmUgdGhlcmUgcGVvcGxlIHJ1
-bm5pbmcNCj4gbXVsdGlwbGUgZGlzcGxheSBzZXJ2ZXJzIGluc2lkZSBwZWVyIGNvbnRhaW5lcnM/
-ICBJZiBzbywgaG93IGRvIHRoZXkNCj4gY29vcmRpbmF0ZSByZXNvdXJjZXM/KQ0KDQpXZSBkZWZp
-bml0ZWx5IGhhdmUgc2l0dWF0aW9ucyB3aXRoIG11bHRpcGxlIGRpc3BsYXkgc2VydmVycyBydW5u
-aW5nIA0KKGp1c3QgdGhpbmsgb2YgVlIpLg0KDQpJIGp1c3QgY2FuJ3Qgc2F5IGlmIHRoZXkgY3Vy
-cmVudGx5IHVzZSBjZ3JvdXBzIGluIGFueSB3YXkuDQoNClRoYW5rcywNCkNocmlzdGlhbi4NCg0K
-Pg0KPiBJIHNob3VsZCBwcm9iYWJseSBzdW1tYXJpemUgc29tZSBvZiB0aGVzZSBpbnRvIHRoZSBj
-b21taXQgbWVzc2FnZS4NCj4NCj4gUmVnYXJkcywNCj4gS2VubnkNCj4NCj4NCj4NCj4+IENocmlz
-dGlhbi4NCj4+DQoNCg==
+On Fri, May 10, 2019 at 11:08 AM Koenig, Christian
+<Christian.Koenig@amd.com> wrote:
+> Am 10.05.19 um 16:57 schrieb Kenny Ho:
+> > On Fri, May 10, 2019 at 8:28 AM Christian K=C3=B6nig
+> > <ckoenig.leichtzumerken@gmail.com> wrote:
+> >> Am 09.05.19 um 23:04 schrieb Kenny Ho:
+> So the drm cgroup container is separate to other cgroup containers?
+In cgroup-v1, which is most widely deployed currently, all controllers
+have their own hierarchy (see /sys/fs/cgroup/).  In cgroup-v2, the
+hierarchy is unified by individual controllers can be disabled (I
+believe, I am not super familiar with v2.)
+
+> In other words as long as userspace doesn't change, this wouldn't have
+> any effect?
+As far as things like docker and podman is concern, yes.  I am not
+sure about the behaviour of others like lxc, lxd, etc. because I
+haven't used those myself.
+
+> Well that is unexpected cause then a processes would be in different
+> groups for different controllers, but if that's really the case that
+> would certainly work.
+I believe this is a possibility for v1 and is why folks came up with
+the unified hierarchy in v2 to solve some of the issues.
+https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html#issues-wi=
+th-v1-and-rationales-for-v2
+
+Regards,
+Kenny
+
+> > On the other hand, if there are expectations for resource management
+> > between containers, I would like to know who is the expected manager
+> > and how does it fit into the concept of container (which enforce some
+> > level of isolation.)  One possible manager may be the display server.
+> > But as long as the display server is in a parent cgroup of the apps'
+> > cgroup, the apps can still import handles from the display server
+> > under the current implementation.  My understanding is that this is
+> > most likely the case, with the display server simply sitting at the
+> > default/root cgroup.  But I certainly want to hear more about other
+> > use cases (for example, is running multiple display servers on a
+> > single host a realistic possibility?  Are there people running
+> > multiple display servers inside peer containers?  If so, how do they
+> > coordinate resources?)
+>
+> We definitely have situations with multiple display servers running
+> (just think of VR).
+>
+> I just can't say if they currently use cgroups in any way.
+>
+> Thanks,
+> Christian.
+>
+> >
+> > I should probably summarize some of these into the commit message.
+> >
+> > Regards,
+> > Kenny
+> >
+> >
+> >
+> >> Christian.
+> >>
+>
