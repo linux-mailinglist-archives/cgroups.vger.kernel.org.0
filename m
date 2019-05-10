@@ -2,147 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 678B71A2A0
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 19:49:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD0BC1A2A3
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 19:50:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727569AbfEJRtQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 May 2019 13:49:16 -0400
-Received: from mail-eopbgr790057.outbound.protection.outlook.com ([40.107.79.57]:46912
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727488AbfEJRtP (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 10 May 2019 13:49:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=3QWemaJATZzRBd5TNSZtkHDozQzs+DD+66Z/ahgKuPQ=;
- b=ftdH29+HieG86wQVefrm6tkjTP8117eUAxNsdRhf603nmZlHsnNtico3u2HKwAfNX7rfVxzeo7nlTAHRtYXNxLvYvQ3h4Ytm4R+EzPTVJuuY+TdAPa46Ob2fFJcQ2096a3GbsiO4i5o2EhrsDEavNIvfXfuhLarBPvpTX8YlwGA=
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com (10.172.36.23) by
- DM5PR12MB1882.namprd12.prod.outlook.com (10.175.91.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.21; Fri, 10 May 2019 17:48:32 +0000
-Received: from DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::e1b1:5b6f:b2df:afa5]) by DM5PR12MB1546.namprd12.prod.outlook.com
- ([fe80::e1b1:5b6f:b2df:afa5%7]) with mapi id 15.20.1878.022; Fri, 10 May 2019
- 17:48:32 +0000
-From:   "Koenig, Christian" <Christian.Koenig@amd.com>
-To:     Kenny Ho <y2kenny@gmail.com>
-CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Brian Welty <brian.welty@intel.com>
-Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
- limit
-Thread-Topic: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
- limit
-Thread-Index: AQHVB0DJVkIxCCCoYECMKlqE0zp4P6ZkdgmAgAAEsgCAACfkAA==
-Date:   Fri, 10 May 2019 17:48:32 +0000
-Message-ID: <64d12227-a0b9-acee-518c-8c97c5da4136@amd.com>
-References: <20181120185814.13362-1-Kenny.Ho@amd.com>
- <20190509210410.5471-1-Kenny.Ho@amd.com>
- <20190509210410.5471-5-Kenny.Ho@amd.com>
- <f63c8d6b-92a4-2977-d062-7e0b7036834e@gmail.com>
- <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com>
- <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
- <CAOWid-eVz4w-hN=4tPZ1AOu54xMH_2ztDDZaMEKRCAeBgt9Dyw@mail.gmail.com>
-In-Reply-To: <CAOWid-eVz4w-hN=4tPZ1AOu54xMH_2ztDDZaMEKRCAeBgt9Dyw@mail.gmail.com>
-Accept-Language: de-DE, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-x-originating-ip: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
-x-clientproxiedby: AM6P193CA0009.EURP193.PROD.OUTLOOK.COM
- (2603:10a6:209:3e::22) To DM5PR12MB1546.namprd12.prod.outlook.com
- (2603:10b6:4:8::23)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Christian.Koenig@amd.com; 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 96a6fb4b-ca3e-41fe-6b1c-08d6d56fb7d1
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB1882;
-x-ms-traffictypediagnostic: DM5PR12MB1882:
-x-ms-exchange-purlcount: 1
-x-microsoft-antispam-prvs: <DM5PR12MB1882AA900EA5043CC84A319A830C0@DM5PR12MB1882.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 0033AAD26D
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(376002)(136003)(366004)(346002)(39860400002)(396003)(199004)(189003)(72206003)(305945005)(81156014)(25786009)(65826007)(68736007)(71190400001)(1411001)(54906003)(6506007)(966005)(478600001)(36756003)(386003)(58126008)(229853002)(6436002)(316002)(64126003)(81166006)(6486002)(2906002)(53546011)(2616005)(102836004)(11346002)(65956001)(446003)(476003)(186003)(46003)(65806001)(486006)(8676002)(4326008)(7736002)(66574012)(99286004)(71200400001)(8936002)(6246003)(6916009)(53936002)(6116002)(31686004)(6306002)(6512007)(66946007)(73956011)(14444005)(14454004)(52116002)(256004)(66476007)(64756008)(66556008)(66446008)(76176011)(5660300002)(86362001)(31696002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB1882;H:DM5PR12MB1546.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 36uvzz1UErxgycaBj/uSBnRN35fJ1j95N4L8kaedj5W8ulov2E2M9BVVWNNzKi+SVvbUQj/g8F6oMmKBxB6l8aRZDPDr3sFfNPl6qOATuoEwDMt4dG9IcMsbDhUDDMKzOAZWq/+FPb6l1ZX5gn5rdpgSw0NWm/rHM0snBbieV60fVm7VRcg8WqHiWqz4uktysgFKwoyYQDxQ7a9jBDsHDWOxHl4Dn7+N50YeFUxG962GrCOVSpL02foI2IyoBQNzpiWy1tKG10lXH5FvQjO+nFdOHZehNUNFvX4bV1RKbv0NyCBcWhQI7KoQvY92P6YlRhNAktL9YI3cOIplj7QcUZayC+Shcl3sQGiPO90K9m0tlqWoQWCc5Jq/sfv1LJs/bzslh1PFokmctvbLdkQO0TpVSJp1uYLqhT3FEUEMIAQ=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <9983955C6C6EAB4889D7F39A79324FF4@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1727790AbfEJRuA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 May 2019 13:50:00 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:55938 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727562AbfEJRuA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 13:50:00 -0400
+Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
+        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4AHaXSC017909
+        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 10:49:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=Vx+fboig1rRLQHiyt4x8kMFHXQDhcpUyPZUqbGASJ+s=;
+ b=ZB5habr6JwKSQxVtjXM6wum/5y6gDXvf1zm3QSA0WIyWoZO0i14+TM/b/oM7egq7bYiV
+ 3g4QhKmma8jg8vvjz2wUOWmy60hvB5hQzF2j+cqTAiUfHn1ekIBYt1MxDskTPe6YkOVe
+ PIOagbPtqJaAf4h5/koWYEhvVUOzJAzSXGs= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0b-00082601.pphosted.com with ESMTP id 2sdd3e0gb4-4
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 10:49:59 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::128) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Fri, 10 May 2019 10:49:57 -0700
+Received: by devvm2807.frc2.facebook.com (Postfix, from userid 119756)
+        id 938503D2646C; Fri, 10 May 2019 10:49:55 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Dan Schatzberg <dschatzberg@fb.com>
+Smtp-Origin-Hostname: devvm2807.frc2.facebook.com
+CC:     Dan Schatzberg <dschatzberg@fb.com>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>
+Smtp-Origin-Cluster: frc2c02
+Subject: [PATCH] psi: Expose pressure metrics on root cgroup
+Date:   Fri, 10 May 2019 10:49:34 -0700
+Message-ID: <20190510174938.3361741-1-dschatzberg@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 96a6fb4b-ca3e-41fe-6b1c-08d6d56fb7d1
-X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2019 17:48:32.5228
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB1882
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-09_02:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-QW0gMTAuMDUuMTkgdW0gMTc6MjUgc2NocmllYiBLZW5ueSBIbzoNCj4gW0NBVVRJT046IEV4dGVy
-bmFsIEVtYWlsXQ0KPg0KPiBPbiBGcmksIE1heSAxMCwgMjAxOSBhdCAxMTowOCBBTSBLb2VuaWcs
-IENocmlzdGlhbg0KPiA8Q2hyaXN0aWFuLktvZW5pZ0BhbWQuY29tPiB3cm90ZToNCj4+IEFtIDEw
-LjA1LjE5IHVtIDE2OjU3IHNjaHJpZWIgS2VubnkgSG86DQo+Pj4gT24gRnJpLCBNYXkgMTAsIDIw
-MTkgYXQgODoyOCBBTSBDaHJpc3RpYW4gS8O2bmlnDQo+Pj4gPGNrb2VuaWcubGVpY2h0enVtZXJr
-ZW5AZ21haWwuY29tPiB3cm90ZToNCj4+Pj4gQW0gMDkuMDUuMTkgdW0gMjM6MDQgc2NocmllYiBL
-ZW5ueSBIbzoNCj4+IFNvIHRoZSBkcm0gY2dyb3VwIGNvbnRhaW5lciBpcyBzZXBhcmF0ZSB0byBv
-dGhlciBjZ3JvdXAgY29udGFpbmVycz8NCj4gSW4gY2dyb3VwLXYxLCB3aGljaCBpcyBtb3N0IHdp
-ZGVseSBkZXBsb3llZCBjdXJyZW50bHksIGFsbCBjb250cm9sbGVycw0KPiBoYXZlIHRoZWlyIG93
-biBoaWVyYXJjaHkgKHNlZSAvc3lzL2ZzL2Nncm91cC8pLiAgSW4gY2dyb3VwLXYyLCB0aGUNCj4g
-aGllcmFyY2h5IGlzIHVuaWZpZWQgYnkgaW5kaXZpZHVhbCBjb250cm9sbGVycyBjYW4gYmUgZGlz
-YWJsZWQgKEkNCj4gYmVsaWV2ZSwgSSBhbSBub3Qgc3VwZXIgZmFtaWxpYXIgd2l0aCB2Mi4pDQo+
-DQo+PiBJbiBvdGhlciB3b3JkcyBhcyBsb25nIGFzIHVzZXJzcGFjZSBkb2Vzbid0IGNoYW5nZSwg
-dGhpcyB3b3VsZG4ndCBoYXZlDQo+PiBhbnkgZWZmZWN0Pw0KPiBBcyBmYXIgYXMgdGhpbmdzIGxp
-a2UgZG9ja2VyIGFuZCBwb2RtYW4gaXMgY29uY2VybiwgeWVzLiAgSSBhbSBub3QNCj4gc3VyZSBh
-Ym91dCB0aGUgYmVoYXZpb3VyIG9mIG90aGVycyBsaWtlIGx4YywgbHhkLCBldGMuIGJlY2F1c2Ug
-SQ0KPiBoYXZlbid0IHVzZWQgdGhvc2UgbXlzZWxmLg0KPg0KPj4gV2VsbCB0aGF0IGlzIHVuZXhw
-ZWN0ZWQgY2F1c2UgdGhlbiBhIHByb2Nlc3NlcyB3b3VsZCBiZSBpbiBkaWZmZXJlbnQNCj4+IGdy
-b3VwcyBmb3IgZGlmZmVyZW50IGNvbnRyb2xsZXJzLCBidXQgaWYgdGhhdCdzIHJlYWxseSB0aGUg
-Y2FzZSB0aGF0DQo+PiB3b3VsZCBjZXJ0YWlubHkgd29yay4NCj4gSSBiZWxpZXZlIHRoaXMgaXMg
-YSBwb3NzaWJpbGl0eSBmb3IgdjEgYW5kIGlzIHdoeSBmb2xrcyBjYW1lIHVwIHdpdGgNCj4gdGhl
-IHVuaWZpZWQgaGllcmFyY2h5IGluIHYyIHRvIHNvbHZlIHNvbWUgb2YgdGhlIGlzc3Vlcy4NCj4g
-aHR0cHM6Ly93d3cua2VybmVsLm9yZy9kb2MvaHRtbC9sYXRlc3QvYWRtaW4tZ3VpZGUvY2dyb3Vw
-LXYyLmh0bWwjaXNzdWVzLXdpdGgtdjEtYW5kLXJhdGlvbmFsZXMtZm9yLXYyDQoNCldlbGwgYW5v
-dGhlciBxdWVzdGlvbiBpcyB3aHkgZG8gd2Ugd2FudCB0byBwcmV2ZW50IHRoYXQgaW4gdGhlIGZp
-cnN0IHBsYWNlPw0KDQpJIG1lYW4gdGhlIHdvcnN0IHRoaW5nIHRoYXQgY2FuIGhhcHBlbiBpcyB0
-aGF0IHdlIGFjY291bnQgYSBCTyBtdWx0aXBsZSANCnRpbWVzLg0KDQpBbmQgZ29pbmcgaW50byB0
-aGUgc2FtZSBkaXJlY3Rpb24gd2hlcmUgaXMgdGhlIGNvZGUgdG8gaGFuZGxlIGFuIG9wZW4gDQpk
-ZXZpY2UgZmlsZSBkZXNjcmlwdG9yIHdoaWNoIGlzIHNlbmQgZnJvbSBvbmUgY2dyb3VwIHRvIGFu
-b3RoZXI/DQoNClJlZ2FyZHMsDQpDaHJpc3RpYW4uDQoNCj4NCj4gUmVnYXJkcywNCj4gS2VubnkN
-Cj4NCj4+PiBPbiB0aGUgb3RoZXIgaGFuZCwgaWYgdGhlcmUgYXJlIGV4cGVjdGF0aW9ucyBmb3Ig
-cmVzb3VyY2UgbWFuYWdlbWVudA0KPj4+IGJldHdlZW4gY29udGFpbmVycywgSSB3b3VsZCBsaWtl
-IHRvIGtub3cgd2hvIGlzIHRoZSBleHBlY3RlZCBtYW5hZ2VyDQo+Pj4gYW5kIGhvdyBkb2VzIGl0
-IGZpdCBpbnRvIHRoZSBjb25jZXB0IG9mIGNvbnRhaW5lciAod2hpY2ggZW5mb3JjZSBzb21lDQo+
-Pj4gbGV2ZWwgb2YgaXNvbGF0aW9uLikgIE9uZSBwb3NzaWJsZSBtYW5hZ2VyIG1heSBiZSB0aGUg
-ZGlzcGxheSBzZXJ2ZXIuDQo+Pj4gQnV0IGFzIGxvbmcgYXMgdGhlIGRpc3BsYXkgc2VydmVyIGlz
-IGluIGEgcGFyZW50IGNncm91cCBvZiB0aGUgYXBwcycNCj4+PiBjZ3JvdXAsIHRoZSBhcHBzIGNh
-biBzdGlsbCBpbXBvcnQgaGFuZGxlcyBmcm9tIHRoZSBkaXNwbGF5IHNlcnZlcg0KPj4+IHVuZGVy
-IHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uLiAgTXkgdW5kZXJzdGFuZGluZyBpcyB0aGF0IHRo
-aXMgaXMNCj4+PiBtb3N0IGxpa2VseSB0aGUgY2FzZSwgd2l0aCB0aGUgZGlzcGxheSBzZXJ2ZXIg
-c2ltcGx5IHNpdHRpbmcgYXQgdGhlDQo+Pj4gZGVmYXVsdC9yb290IGNncm91cC4gIEJ1dCBJIGNl
-cnRhaW5seSB3YW50IHRvIGhlYXIgbW9yZSBhYm91dCBvdGhlcg0KPj4+IHVzZSBjYXNlcyAoZm9y
-IGV4YW1wbGUsIGlzIHJ1bm5pbmcgbXVsdGlwbGUgZGlzcGxheSBzZXJ2ZXJzIG9uIGENCj4+PiBz
-aW5nbGUgaG9zdCBhIHJlYWxpc3RpYyBwb3NzaWJpbGl0eT8gIEFyZSB0aGVyZSBwZW9wbGUgcnVu
-bmluZw0KPj4+IG11bHRpcGxlIGRpc3BsYXkgc2VydmVycyBpbnNpZGUgcGVlciBjb250YWluZXJz
-PyAgSWYgc28sIGhvdyBkbyB0aGV5DQo+Pj4gY29vcmRpbmF0ZSByZXNvdXJjZXM/KQ0KPj4gV2Ug
-ZGVmaW5pdGVseSBoYXZlIHNpdHVhdGlvbnMgd2l0aCBtdWx0aXBsZSBkaXNwbGF5IHNlcnZlcnMg
-cnVubmluZw0KPj4gKGp1c3QgdGhpbmsgb2YgVlIpLg0KPj4NCj4+IEkganVzdCBjYW4ndCBzYXkg
-aWYgdGhleSBjdXJyZW50bHkgdXNlIGNncm91cHMgaW4gYW55IHdheS4NCj4+DQo+PiBUaGFua3Ms
-DQo+PiBDaHJpc3RpYW4uDQo+Pg0KPj4+IEkgc2hvdWxkIHByb2JhYmx5IHN1bW1hcml6ZSBzb21l
-IG9mIHRoZXNlIGludG8gdGhlIGNvbW1pdCBtZXNzYWdlLg0KPj4+DQo+Pj4gUmVnYXJkcywNCj4+
-PiBLZW5ueQ0KPj4+DQo+Pj4NCj4+Pg0KPj4+PiBDaHJpc3RpYW4uDQo+Pj4+DQoNCg==
+Pressure metrics are already recorded and exposed in procfs for the
+entire system, but any tool which monitors cgroup pressure has to
+special case the root cgroup to read from procfs. This patch exposes
+the already recorded pressure metrics on the root cgroup.
+
+Signed-off-by: Dan Schatzberg <dschatzberg@fb.com>
+---
+ include/linux/psi.h    |  1 +
+ kernel/cgroup/cgroup.c | 18 ++++++++++++------
+ kernel/sched/psi.c     |  2 +-
+ 3 files changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index fc08da2bcc0a..64740dc42aa2 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -10,6 +10,7 @@ struct css_set;
+ #ifdef CONFIG_PSI
+ 
+ extern bool psi_disabled;
++extern struct psi_group psi_system;
+ 
+ void psi_init(void);
+ 
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index dc8adb124874..3a748c746324 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3392,15 +3392,24 @@ static int cpu_stat_show(struct seq_file *seq, void *v)
+ #ifdef CONFIG_PSI
+ static int cgroup_cpu_pressure_show(struct seq_file *seq, void *v)
+ {
+-	return psi_show(seq, &seq_css(seq)->cgroup->psi, PSI_CPU);
++	struct cgroup *cgroup = seq_css(seq)->cgroup;
++	struct psi_group *psi = cgroup->id == 1 ? &psi_system : &cgroup->psi;
++
++	return psi_show(seq, psi, PSI_CPU);
+ }
+ static int cgroup_memory_pressure_show(struct seq_file *seq, void *v)
+ {
+-	return psi_show(seq, &seq_css(seq)->cgroup->psi, PSI_MEM);
++	struct cgroup *cgroup = seq_css(seq)->cgroup;
++	struct psi_group *psi = cgroup->id == 1 ? &psi_system : &cgroup->psi;
++
++	return psi_show(seq, psi, PSI_MEM);
+ }
+ static int cgroup_io_pressure_show(struct seq_file *seq, void *v)
+ {
+-	return psi_show(seq, &seq_css(seq)->cgroup->psi, PSI_IO);
++	struct cgroup *cgroup = seq_css(seq)->cgroup;
++	struct psi_group *psi = cgroup->id == 1 ? &psi_system : &cgroup->psi;
++
++	return psi_show(seq, psi, PSI_IO);
+ }
+ #endif
+ 
+@@ -4518,17 +4527,14 @@ static struct cftype cgroup_base_files[] = {
+ #ifdef CONFIG_PSI
+ 	{
+ 		.name = "cpu.pressure",
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.seq_show = cgroup_cpu_pressure_show,
+ 	},
+ 	{
+ 		.name = "memory.pressure",
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.seq_show = cgroup_memory_pressure_show,
+ 	},
+ 	{
+ 		.name = "io.pressure",
+-		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.seq_show = cgroup_io_pressure_show,
+ 	},
+ #endif
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index cc3faf56b614..59e67b3c3bc4 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -150,7 +150,7 @@ static u64 psi_period __read_mostly;
+ 
+ /* System-level pressure and stall tracking */
+ static DEFINE_PER_CPU(struct psi_group_cpu, system_group_pcpu);
+-static struct psi_group psi_system = {
++struct psi_group psi_system = {
+ 	.pcpu = &system_group_pcpu,
+ };
+ 
+-- 
+2.17.1
+
