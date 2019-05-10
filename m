@@ -2,249 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97FA619FD4
-	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 17:07:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 739F219FDA
+	for <lists+cgroups@lfdr.de>; Fri, 10 May 2019 17:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727548AbfEJPHe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 May 2019 11:07:34 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37278 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727346AbfEJPHe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 May 2019 11:07:34 -0400
-Received: by mail-ot1-f66.google.com with SMTP id r10so5130006otd.4
-        for <cgroups@vger.kernel.org>; Fri, 10 May 2019 08:07:33 -0700 (PDT)
+        id S1727357AbfEJPJA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 May 2019 11:09:00 -0400
+Received: from mail-eopbgr730050.outbound.protection.outlook.com ([40.107.73.50]:28016
+        "EHLO NAM05-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727346AbfEJPJA (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 10 May 2019 11:09:00 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=6KbiBBZ7ZM7RTV80AP0G7wsgbLZR8pTJS1Q99/v7I3c=;
-        b=mrNnNzjM2bb2PAFcCC/WS4dCqJyE9jSHwX14K8iMqhkdxvf0UjbSIUHAvyb7FAiYeY
-         Z6oTySKPdm6BM98UHjpXo7gjNHP7trEDACWwTldvXwfQliH96QawYP3EUCgs+RUzPLub
-         OoO1gfrY+LxPkBUAOCBzatWvqIRdSmsEcrMdLlWwBDeyG0znVVPesxSfjTm+YwL5yOQk
-         fq8KBFdg5DX7/qFqVBzMqxMMW4XnZpLO5XQw/ASyALu7GllCAqKQfXrZaNOIkInLA63I
-         vSYSOrkxGT+xsCncCr3RQtXOpPdYKq+/LXksKrGJQIPZmrO3dmqDV7gHckp2ve89XUro
-         /+Pg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=6KbiBBZ7ZM7RTV80AP0G7wsgbLZR8pTJS1Q99/v7I3c=;
-        b=iNlBKa477LRtntWTAYm/eTdT5mN3a38wdp3LSRz8XUewDOD09BGsA6rSJBj7dOZOKW
-         KJ3ai7Ui4OiSzFF1d6DTl7rBDU0++6cKbeqj9BgIr2YamQbVy9s6n0soGNgVJD6CgC7a
-         VWcxdnGHDtgetEDzuyvgl2RxywADs6LY31opzZ2BC/DEQFjSTvFurLj9ZQdQpPT8kQC0
-         QkU0cMsn/vZ2VbX+rHw1y+XjiZG3FOWNngq9k18OvK21J8yfRDHr7S/A+sxk5QDqzKYy
-         F6vq/PwFg16GaUeCjFOABMosfJNtojAOKmDFZFpkic1dSebjMqopWBK/cSHPWgpH3ihr
-         b5xA==
-X-Gm-Message-State: APjAAAX/8F465af4B0yzZMa5v4HNyvoh7QIAbLN1gZwSpSf9Q1vy8ssi
-        jNuBzx7MmzheHoEw5YAjNeT95+QmLgbNRKQAvrA=
-X-Google-Smtp-Source: APXvYqyxxwyRpiYBh7LCwkkFlT5qSG5MSgMk1wamfn42KUFJQ5czL/y4LAvKVOnkwa1fiOkFQOp7gasbXwXwK9Bad98=
-X-Received: by 2002:a9d:6852:: with SMTP id c18mr7630064oto.174.1557500852799;
- Fri, 10 May 2019 08:07:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <20181120185814.13362-1-Kenny.Ho@amd.com> <20190509210410.5471-1-Kenny.Ho@amd.com>
- <00c14f11-4c25-2108-546e-04a2721d2cfa@gmail.com>
-In-Reply-To: <00c14f11-4c25-2108-546e-04a2721d2cfa@gmail.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Fri, 10 May 2019 11:07:21 -0400
-Message-ID: <CAOWid-dJZrnAifFYByh4p9x-jA1o_5YWkoNVAVbdRUaxzdPbGA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] new cgroup controller for gpu/drm subsystem
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        Tejun Heo <tj@kernel.org>, sunnanyong@huawei.com,
-        Alex Deucher <alexander.deucher@amd.com>,
+ d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZJWhlMy7XWoraoZljkJ+yKiPDGcUmXOVDXAw/HTxAUI=;
+ b=0TEIlxkUtKPOKE4xTnOAuHaHWHy274oDsgjPX1njiYEFUmyVSNAgOJJn4LTfW8WPNutbdT/o0JenegePuav8EzEC1eP7u5izEwU3gtKmo8vB2LgHfy/CEBj3WHHozv1UHAqNxmDlUZFSHvZ2JBMBG9ddSAkJ0t+yrSgJQrnnXSI=
+Received: from DM5PR12MB1546.namprd12.prod.outlook.com (10.172.36.23) by
+ DM5PR12MB2392.namprd12.prod.outlook.com (52.132.141.21) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1878.21; Fri, 10 May 2019 15:08:57 +0000
+Received: from DM5PR12MB1546.namprd12.prod.outlook.com
+ ([fe80::e1b1:5b6f:b2df:afa5]) by DM5PR12MB1546.namprd12.prod.outlook.com
+ ([fe80::e1b1:5b6f:b2df:afa5%7]) with mapi id 15.20.1878.022; Fri, 10 May 2019
+ 15:08:57 +0000
+From:   "Koenig, Christian" <Christian.Koenig@amd.com>
+To:     Kenny Ho <y2kenny@gmail.com>
+CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
         Brian Welty <brian.welty@intel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
+ limit
+Thread-Topic: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
+ limit
+Thread-Index: AQHVB0DJVkIxCCCoYECMKlqE0zp4P6ZkdgmA
+Date:   Fri, 10 May 2019 15:08:56 +0000
+Message-ID: <1ca1363e-b39c-c299-1d24-098b1059f7ff@amd.com>
+References: <20181120185814.13362-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-5-Kenny.Ho@amd.com>
+ <f63c8d6b-92a4-2977-d062-7e0b7036834e@gmail.com>
+ <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com>
+In-Reply-To: <CAOWid-fpHqvq35C+gfHmLnuHM9Lj+iiHFXE=3RPrkAiFL2=wvQ@mail.gmail.com>
+Accept-Language: de-DE, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+x-originating-ip: [2a02:908:1252:fb60:be8a:bd56:1f94:86e7]
+x-clientproxiedby: AM5P189CA0010.EURP189.PROD.OUTLOOK.COM
+ (2603:10a6:206:15::23) To DM5PR12MB1546.namprd12.prod.outlook.com
+ (2603:10b6:4:8::23)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Christian.Koenig@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7c02fa72-003d-4199-b9c9-08d6d5596c0d
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:DM5PR12MB2392;
+x-ms-traffictypediagnostic: DM5PR12MB2392:
+x-microsoft-antispam-prvs: <DM5PR12MB239271083AE88C104CC6A8DA830C0@DM5PR12MB2392.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0033AAD26D
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(346002)(39860400002)(376002)(136003)(366004)(396003)(189003)(199004)(8936002)(52116002)(7736002)(54906003)(229853002)(8676002)(81166006)(81156014)(99286004)(58126008)(65826007)(6486002)(68736007)(6436002)(316002)(6512007)(1411001)(6506007)(76176011)(31686004)(386003)(53546011)(102836004)(64126003)(186003)(6916009)(5660300002)(36756003)(2906002)(31696002)(66574012)(14444005)(256004)(478600001)(86362001)(71200400001)(6246003)(25786009)(65956001)(65806001)(4326008)(11346002)(66476007)(446003)(486006)(64756008)(476003)(46003)(2616005)(66556008)(66446008)(53936002)(6116002)(71190400001)(66946007)(73956011)(72206003)(14454004)(305945005);DIR:OUT;SFP:1101;SCL:1;SRVR:DM5PR12MB2392;H:DM5PR12MB1546.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: iOdnsXDLP5ve+BPQuQWoG3KjNqInhysEBjsLuLRiFj0MTSeKqzilPmxctH54HR9VCjlI1CryIEHnLeMsGFiEvAR5fhCbSZwWHJw+fh1V1JL6X2k3/fGO1qWzNW4DGcCXS1mG8THOJIbY3N6tY0XCDK9X11kllcwlyjdTLA4fk7pMrUAJeynvGNRsrf1CPUo2Grf7/GOF4jlUhLs384SdlYPcS2jZoDSLGloqzne07KftyGsAJxJD3xVA+2wyeHnckuviL0R2GtSxT90IxjzjHARTCVwIOk99fDZsFEasPynKaG9nt7uRTNZggf/8a6VIGcyAPi1TetkW7JIdK4qiCesyjwnEt6Pm4014kWaFoI3NFLO8UgXiECJGQJESTcG90ABQJQbAYD57ovpfk+5AaSIF6qKxwFqsTlmlCvRNJFY=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <9A156827FCA34246B18E27B32C833FA6@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7c02fa72-003d-4199-b9c9-08d6d5596c0d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 10 May 2019 15:08:56.9455
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2392
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 10, 2019 at 8:31 AM Christian K=C3=B6nig
-<ckoenig.leichtzumerken@gmail.com> wrote:
->
-> I think it is a good approach to try to add a global limit first and
-> when that's working go ahead with limiting device specific resources.
-What are some of the global drm resource limit/allocation that would
-be useful to implement? I would be happy to dig into those.
-
-Regards,
-Kenny
-
-
-> The only major issue I can see is on patch #4, see there for further
-> details.
->
-> Christian.
->
-> Am 09.05.19 um 23:04 schrieb Kenny Ho:
-> > This is a follow up to the RFC I made last november to introduce a cgro=
-up controller for the GPU/DRM subsystem [a].  The goal is to be able to pro=
-vide resource management to GPU resources using things like container.  The=
- cover letter from v1 is copied below for reference.
-> >
-> > Usage examples:
-> > // set limit for card1 to 1GB
-> > sed -i '2s/.*/1073741824/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
-> >
-> > // set limit for card0 to 512MB
-> > sed -i '1s/.*/536870912/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
-> >
-> >
-> > v2:
-> > * Removed the vendoring concepts
-> > * Add limit to total buffer allocation
-> > * Add limit to the maximum size of a buffer allocation
-> >
-> > TODO: process migration
-> > TODO: documentations
-> >
-> > [a]: https://lists.freedesktop.org/archives/dri-devel/2018-November/197=
-106.html
-> >
-> > v1: cover letter
-> >
-> > The purpose of this patch series is to start a discussion for a generic=
- cgroup
-> > controller for the drm subsystem.  The design proposed here is a very e=
-arly one.
-> > We are hoping to engage the community as we develop the idea.
-> >
-> >
-> > Backgrounds
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > Control Groups/cgroup provide a mechanism for aggregating/partitioning =
-sets of
-> > tasks, and all their future children, into hierarchical groups with spe=
-cialized
-> > behaviour, such as accounting/limiting the resources which processes in=
- a cgroup
-> > can access[1].  Weights, limits, protections, allocations are the main =
-resource
-> > distribution models.  Existing cgroup controllers includes cpu, memory,=
- io,
-> > rdma, and more.  cgroup is one of the foundational technologies that en=
-ables the
-> > popular container application deployment and management method.
-> >
-> > Direct Rendering Manager/drm contains code intended to support the need=
-s of
-> > complex graphics devices. Graphics drivers in the kernel may make use o=
-f DRM
-> > functions to make tasks like memory management, interrupt handling and =
-DMA
-> > easier, and provide a uniform interface to applications.  The DRM has a=
-lso
-> > developed beyond traditional graphics applications to support compute/G=
-PGPU
-> > applications.
-> >
-> >
-> > Motivations
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > As GPU grow beyond the realm of desktop/workstation graphics into areas=
- like
-> > data center clusters and IoT, there are increasing needs to monitor and=
- regulate
-> > GPU as a resource like cpu, memory and io.
-> >
-> > Matt Roper from Intel began working on similar idea in early 2018 [2] f=
-or the
-> > purpose of managing GPU priority using the cgroup hierarchy.  While tha=
-t
-> > particular use case may not warrant a standalone drm cgroup controller,=
- there
-> > are other use cases where having one can be useful [3].  Monitoring GPU
-> > resources such as VRAM and buffers, CU (compute unit [AMD's nomenclatur=
-e])/EU
-> > (execution unit [Intel's nomenclature]), GPU job scheduling [4] can hel=
-p
-> > sysadmins get a better understanding of the applications usage profile.=
-  Further
-> > usage regulations of the aforementioned resources can also help sysadmi=
-ns
-> > optimize workload deployment on limited GPU resources.
-> >
-> > With the increased importance of machine learning, data science and oth=
-er
-> > cloud-based applications, GPUs are already in production use in data ce=
-nters
-> > today [5,6,7].  Existing GPU resource management is very course grain, =
-however,
-> > as sysadmins are only able to distribute workload on a per-GPU basis [8=
-].  An
-> > alternative is to use GPU virtualization (with or without SRIOV) but it
-> > generally acts on the entire GPU instead of the specific resources in a=
- GPU.
-> > With a drm cgroup controller, we can enable alternate, fine-grain, sub-=
-GPU
-> > resource management (in addition to what may be available via GPU
-> > virtualization.)
-> >
-> > In addition to production use, the DRM cgroup can also help with testin=
-g
-> > graphics application robustness by providing a mean to artificially lim=
-it DRM
-> > resources availble to the applications.
-> >
-> > Challenges
-> > =3D=3D=3D=3D=3D=3D=3D=3D
-> > While there are common infrastructure in DRM that is shared across many=
- vendors
-> > (the scheduler [4] for example), there are also aspects of DRM that are=
- vendor
-> > specific.  To accommodate this, we borrowed the mechanism used by the c=
-group to
-> > handle different kinds of cgroup controller.
-> >
-> > Resources for DRM are also often device (GPU) specific instead of syste=
-m
-> > specific and a system may contain more than one GPU.  For this, we borr=
-owed some
-> > of the ideas from RDMA cgroup controller.
-> >
-> > Approach
-> > =3D=3D=3D=3D=3D=3D=3D
-> > To experiment with the idea of a DRM cgroup, we would like to start wit=
-h basic
-> > accounting and statistics, then continue to iterate and add regulating
-> > mechanisms into the driver.
-> >
-> > [1] https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt
-> > [2] https://lists.freedesktop.org/archives/intel-gfx/2018-January/15315=
-6.html
-> > [3] https://www.spinics.net/lists/cgroups/msg20720.html
-> > [4] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/sche=
-duler
-> > [5] https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
-> > [6] https://blog.openshift.com/gpu-accelerated-sql-queries-with-postgre=
-sql-pg-strom-in-openshift-3-10/
-> > [7] https://github.com/RadeonOpenCompute/k8s-device-plugin
-> > [8] https://github.com/kubernetes/kubernetes/issues/52757
-> >
-> > Kenny Ho (5):
-> >    cgroup: Introduce cgroup for drm subsystem
-> >    cgroup: Add mechanism to register DRM devices
-> >    drm/amdgpu: Register AMD devices for DRM cgroup
-> >    drm, cgroup: Add total GEM buffer allocation limit
-> >    drm, cgroup: Add peak GEM buffer allocation limit
-> >
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c    |   4 +
-> >   drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |   4 +
-> >   drivers/gpu/drm/drm_gem.c                  |   7 +
-> >   drivers/gpu/drm/drm_prime.c                |   9 +
-> >   include/drm/drm_cgroup.h                   |  54 +++
-> >   include/drm/drm_gem.h                      |  11 +
-> >   include/linux/cgroup_drm.h                 |  47 ++
-> >   include/linux/cgroup_subsys.h              |   4 +
-> >   init/Kconfig                               |   5 +
-> >   kernel/cgroup/Makefile                     |   1 +
-> >   kernel/cgroup/drm.c                        | 497 ++++++++++++++++++++=
-+
-> >   11 files changed, 643 insertions(+)
-> >   create mode 100644 include/drm/drm_cgroup.h
-> >   create mode 100644 include/linux/cgroup_drm.h
-> >   create mode 100644 kernel/cgroup/drm.c
-> >
->
+QW0gMTAuMDUuMTkgdW0gMTY6NTcgc2NocmllYiBLZW5ueSBIbzoNCj4gW0NBVVRJT046IEV4dGVy
+bmFsIEVtYWlsXQ0KPg0KPiBPbiBGcmksIE1heSAxMCwgMjAxOSBhdCA4OjI4IEFNIENocmlzdGlh
+biBLw7ZuaWcNCj4gPGNrb2VuaWcubGVpY2h0enVtZXJrZW5AZ21haWwuY29tPiB3cm90ZToNCj4+
+IEFtIDA5LjA1LjE5IHVtIDIzOjA0IHNjaHJpZWIgS2VubnkgSG86DQo+Pj4gKyAgICAgLyogb25s
+eSBhbGxvdyBibyBmcm9tIHRoZSBzYW1lIGNncm91cCBvciBpdHMgYW5jZXN0b3IgdG8gYmUgaW1w
+b3J0ZWQgKi8NCj4+PiArICAgICBpZiAoZHJtY2dycCAhPSBOVUxMICYmDQo+Pj4gKyAgICAgICAg
+ICAgICAgICAgICAgICFkcm1jZ3JwX2lzX3NlbGZfb3JfYW5jZXN0b3IoZHJtY2dycCwgb2JqLT5k
+cm1jZ3JwKSkgew0KPj4+ICsgICAgICAgICAgICAgcmV0ID0gLUVBQ0NFUzsNCj4+PiArICAgICAg
+ICAgICAgIGdvdG8gb3V0X3VubG9jazsNCj4+PiArICAgICB9DQo+Pj4gKw0KPj4gVGhpcyB3aWxs
+IG1vc3QgbGlrZWx5IGdvIHVwIGluIGZsYW1lcy4NCj4+DQo+PiBJZiBJJ20gbm90IGNvbXBsZXRl
+bHkgbWlzdGFrZW4gd2UgYWxyZWFkeSB1c2UNCj4+IGRybV9nZW1fcHJpbWVfZmRfdG9faGFuZGxl
+KCkgdG8gZXhjaGFuZ2UgaGFuZGxlcyBiZXR3ZWVuIGRpZmZlcmVudA0KPj4gY2dyb3VwcyBpbiBj
+dXJyZW50IGNvbnRhaW5lciB1c2FnZXMuDQo+IFRoaXMgaXMgc29tZXRoaW5nIHRoYXQgSSBhbSBp
+bnRlcmVzdGVkIGluIGdldHRpbmcgbW9yZSBkZXRhaWxzIGZyb20NCj4gdGhlIGJyb2FkZXIgY29t
+bXVuaXR5IGJlY2F1c2UgdGhlIGRldGFpbHMgYWZmZWN0IGhvdyBsaWtlbHkgdGhpcyB3aWxsDQo+
+IGdvIHVwIGluIGZsYW1lcyA7KS4gIE5vdGUgdGhhdCB0aGlzIGNoZWNrIGRvZXMgbm90IGJsb2Nr
+IHNoYXJpbmcgb2YNCj4gaGFuZGxlcyBmcm9tIGNncm91cCBwYXJlbnQgdG8gY2hpbGRyZW4gaW4g
+dGhlIGhpZXJhcmNoeSwgbm9yIGRvZXMgaXQNCj4gYmxvY2tzIHNoYXJpbmcgb2YgaGFuZGxlcyB3
+aXRoaW4gYSBjZ3JvdXAuDQo+DQo+IEkgYW0gaW50ZXJlc3RlZCB0byBmaW5kIG91dCwgd2hlbiBl
+eGlzdGluZyBhcHBzIHNoYXJlIGhhbmRsZXMgYmV0d2Vlbg0KPiBjb250YWluZXJzLCBpZiB0aGVy
+ZSBhcmUgYW55IGV4cGVjdGF0aW9ucyBvbiByZXNvdXJjZSBtYW5hZ2VtZW50Lg0KPiBTaW5jZSB0
+aGVyZSBhcmUgbm8gZHJtIGNncm91cCBmb3IgY3VycmVudCBjb250YWluZXIgdXNhZ2UsIEkgZXhw
+ZWN0DQo+IHRoZSBhbnN3ZXIgdG8gYmUgbm8uICBJbiB0aGlzIGNhc2UsIHRoZSBkcm0gY2dyb3Vw
+IGNvbnRyb2xsZXIgY2FuIGJlDQo+IGRpc2FibGVkIG9uIGl0cyBvd24gKGluIHRoZSBjb250ZXh0
+IG9mIGNncm91cC12MidzIHVuaWZpZWQgaGllcmFyY2h5KSwNCj4gb3IgdGhlIHByb2Nlc3MgY2Fu
+IHJlbWFpbiBhdCB0aGUgcm9vdCBmb3IgdGhlIGRybSBjZ3JvdXAgaGllcmFyY2h5IChpbg0KPiB0
+aGUgY29udGV4dCBvZiBjZ3JvdXAtdjEuKSAgSWYgSSB1bmRlcnN0YW5kIHRoZSBjZ3JvdXAgYXBp
+IGNvcnJlY3RseSwNCj4gdGhhdCBtZWFucyBhbGwgcHJvY2VzcyB3b3VsZCBiZSBwYXJ0IG9mIHRo
+ZSByb290IGNncm91cCBhcyBmYXIgYXMgdGhlDQo+IGRybSBjb250cm9sbGVyIGlzIGNvbmNlcm5l
+ZCBhbmQgdGhpcyBibG9jayB3aWxsIG5vdCBjb21lIGludG8gZWZmZWN0Lg0KPiBJIGhhdmUgdmVy
+aWZpZWQgdGhhdCB0aGlzIGlzIGluZGVlZCB0aGUgY3VycmVudCBkZWZhdWx0IGJlaGF2aW91ciBv
+ZiBhDQo+IGNvbnRhaW5lciBydW50aW1lIChydW5jLCB3aGljaCBpcyB1c2VkIGJ5IGRvY2tlciwg
+cG9kbWFuIGFuZCBvdGhlcnMuKQ0KPiBUaGUgbmV3IGRybSBjZ3JvdXAgY29udHJvbGxlciBpcyBz
+aW1wbHkgaWdub3JlZCBhbmQgYWxsIHByb2Nlc3Nlcw0KPiByZW1haW4gYXQgdGhlIHJvb3Qgb2Yg
+dGhlIGhpZXJhcmNoeSAoc2luY2UgdGhlcmUgYXJlIG5vIG90aGVyDQo+IGNncm91cHMuKSAgSSBw
+bGFuIHRvIG1ha2UgY29udHJpYnV0aW9ucyB0byBydW5jIChzbyBmb2xrcyBjYW4gYWN0dWFsbHkN
+Cj4gdXNlIHRoaXMgZmVhdHVyZXMgd2l0aCBkb2NrZXIvcG9kbWFuL2s4cywgZXRjLikgb25jZSB0
+aGluZ3Mgc3RhYmlsaXplZA0KPiBvbiB0aGUga2VybmVsIHNpZGUuDQoNClNvIHRoZSBkcm0gY2dy
+b3VwIGNvbnRhaW5lciBpcyBzZXBhcmF0ZSB0byBvdGhlciBjZ3JvdXAgY29udGFpbmVycz8NCg0K
+SW4gb3RoZXIgd29yZHMgYXMgbG9uZyBhcyB1c2Vyc3BhY2UgZG9lc24ndCBjaGFuZ2UsIHRoaXMg
+d291bGRuJ3QgaGF2ZSANCmFueSBlZmZlY3Q/DQoNCldlbGwgdGhhdCBpcyB1bmV4cGVjdGVkIGNh
+dXNlIHRoZW4gYSBwcm9jZXNzZXMgd291bGQgYmUgaW4gZGlmZmVyZW50IA0KZ3JvdXBzIGZvciBk
+aWZmZXJlbnQgY29udHJvbGxlcnMsIGJ1dCBpZiB0aGF0J3MgcmVhbGx5IHRoZSBjYXNlIHRoYXQg
+DQp3b3VsZCBjZXJ0YWlubHkgd29yay4NCg0KPiBPbiB0aGUgb3RoZXIgaGFuZCwgaWYgdGhlcmUg
+YXJlIGV4cGVjdGF0aW9ucyBmb3IgcmVzb3VyY2UgbWFuYWdlbWVudA0KPiBiZXR3ZWVuIGNvbnRh
+aW5lcnMsIEkgd291bGQgbGlrZSB0byBrbm93IHdobyBpcyB0aGUgZXhwZWN0ZWQgbWFuYWdlcg0K
+PiBhbmQgaG93IGRvZXMgaXQgZml0IGludG8gdGhlIGNvbmNlcHQgb2YgY29udGFpbmVyICh3aGlj
+aCBlbmZvcmNlIHNvbWUNCj4gbGV2ZWwgb2YgaXNvbGF0aW9uLikgIE9uZSBwb3NzaWJsZSBtYW5h
+Z2VyIG1heSBiZSB0aGUgZGlzcGxheSBzZXJ2ZXIuDQo+IEJ1dCBhcyBsb25nIGFzIHRoZSBkaXNw
+bGF5IHNlcnZlciBpcyBpbiBhIHBhcmVudCBjZ3JvdXAgb2YgdGhlIGFwcHMnDQo+IGNncm91cCwg
+dGhlIGFwcHMgY2FuIHN0aWxsIGltcG9ydCBoYW5kbGVzIGZyb20gdGhlIGRpc3BsYXkgc2VydmVy
+DQo+IHVuZGVyIHRoZSBjdXJyZW50IGltcGxlbWVudGF0aW9uLiAgTXkgdW5kZXJzdGFuZGluZyBp
+cyB0aGF0IHRoaXMgaXMNCj4gbW9zdCBsaWtlbHkgdGhlIGNhc2UsIHdpdGggdGhlIGRpc3BsYXkg
+c2VydmVyIHNpbXBseSBzaXR0aW5nIGF0IHRoZQ0KPiBkZWZhdWx0L3Jvb3QgY2dyb3VwLiAgQnV0
+IEkgY2VydGFpbmx5IHdhbnQgdG8gaGVhciBtb3JlIGFib3V0IG90aGVyDQo+IHVzZSBjYXNlcyAo
+Zm9yIGV4YW1wbGUsIGlzIHJ1bm5pbmcgbXVsdGlwbGUgZGlzcGxheSBzZXJ2ZXJzIG9uIGENCj4g
+c2luZ2xlIGhvc3QgYSByZWFsaXN0aWMgcG9zc2liaWxpdHk/ICBBcmUgdGhlcmUgcGVvcGxlIHJ1
+bm5pbmcNCj4gbXVsdGlwbGUgZGlzcGxheSBzZXJ2ZXJzIGluc2lkZSBwZWVyIGNvbnRhaW5lcnM/
+ICBJZiBzbywgaG93IGRvIHRoZXkNCj4gY29vcmRpbmF0ZSByZXNvdXJjZXM/KQ0KDQpXZSBkZWZp
+bml0ZWx5IGhhdmUgc2l0dWF0aW9ucyB3aXRoIG11bHRpcGxlIGRpc3BsYXkgc2VydmVycyBydW5u
+aW5nIA0KKGp1c3QgdGhpbmsgb2YgVlIpLg0KDQpJIGp1c3QgY2FuJ3Qgc2F5IGlmIHRoZXkgY3Vy
+cmVudGx5IHVzZSBjZ3JvdXBzIGluIGFueSB3YXkuDQoNClRoYW5rcywNCkNocmlzdGlhbi4NCg0K
+Pg0KPiBJIHNob3VsZCBwcm9iYWJseSBzdW1tYXJpemUgc29tZSBvZiB0aGVzZSBpbnRvIHRoZSBj
+b21taXQgbWVzc2FnZS4NCj4NCj4gUmVnYXJkcywNCj4gS2VubnkNCj4NCj4NCj4NCj4+IENocmlz
+dGlhbi4NCj4+DQoNCg==
