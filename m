@@ -2,148 +2,254 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E8EC81CE23
-	for <lists+cgroups@lfdr.de>; Tue, 14 May 2019 19:38:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9F4C1CE39
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2019 19:46:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726013AbfENRiC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 May 2019 13:38:02 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56888 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726180AbfENRiB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 May 2019 13:38:01 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4EHZY9L003642;
-        Tue, 14 May 2019 10:37:57 -0700
+        id S1726303AbfENRqO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 May 2019 13:46:14 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:33890 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726180AbfENRqO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 May 2019 13:46:14 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4EHebuK016014;
+        Tue, 14 May 2019 10:46:11 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=UiKD4eIBRQlORSYHHk9+E29AxWlzzgFhNYxpF2gL9Q4=;
- b=grX6znigpdJulaBpqZYlrwuib+rKkSB90Qmrs9C9DAatuLIOmodBaaNvHIZSYeHNDiwe
- tjpiaSET/m9Vn9TCp0zvhlB/iPDOHFAP4WKDulI4NS+0Dt+260EpoZjDcgNKvx6XfPBe
- JhdCuwalQ+NIbtkA0mzkNYqF3zI82DXWycg= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2sfy23rvac-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 14 May 2019 10:37:57 -0700
-Received: from ash-exhub204.TheFacebook.com (2620:10d:c0a8:83::4) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 14 May 2019 10:37:56 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 14 May 2019 10:37:56 -0700
+ bh=iFTJ0SqketpKa3Ua/Wo7Oc5guTdLd4V8cmejc+ytmug=;
+ b=lukHVSqqVLpq/Gt+ZszLWxFY6MEWOlHIp0DoS3rW9X+JDMD9I8ipHev2goAdWseEwUQB
+ RnTOMqHXcu41mbxqPh1Eb7Pikyo1wQZUPb4rjCI8AqUp0tZwL+kNuI8RXVQv6HqRs2Se
+ Rp5EROZr7k9B86QcHfDBq9JjvLiSz1gEwzg= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sfs5ht067-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Tue, 14 May 2019 10:46:11 -0700
+Received: from prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) by
+ prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 14 May 2019 10:46:09 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx05.TheFacebook.com (2620:10d:c081:6::19) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Tue, 14 May 2019 10:46:09 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Tue, 14 May 2019 10:46:09 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-com;
+ s=selector1-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UiKD4eIBRQlORSYHHk9+E29AxWlzzgFhNYxpF2gL9Q4=;
- b=Auba8Tg96eF/qoE8w3sLU70R0LwQ//KO8U9WVTq/hzwNuKaWAYFRPIBHY4mU2OpNHQnQCN+YjsTzljtwFn+oybX2f99/JYY+QsoT0B/HJ7ccHuNlGgMf3ZkMyFmrKooJZkfuJ3uBqDKHJBdOZxsrE8xz+pCxPSjWheKX2zU+lLQ=
+ bh=iFTJ0SqketpKa3Ua/Wo7Oc5guTdLd4V8cmejc+ytmug=;
+ b=GukmpHwaZrU4SLgX/I8WijkXNZveGAuFz+tDhn/Sjs1/AqDGVT+eR1zJf4FCN8xcN8hjz+1aj2tNwkkvW17jYBz7mQamSer4MHNPcmFUnIjHDAi9xjjJ6ND8E0ypVqjhfbR0oDZ701U3bvv+aFAdmb3Kd14gmZoeX8lbT7DZFWw=
 Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.156.24) by
- BYAPR15MB3208.namprd15.prod.outlook.com (20.179.56.158) with Microsoft SMTP
+ BYAPR15MB3191.namprd15.prod.outlook.com (20.179.56.93) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.25; Tue, 14 May 2019 17:37:54 +0000
+ 15.20.1900.16; Tue, 14 May 2019 17:46:07 +0000
 Received: from BYAPR15MB2631.namprd15.prod.outlook.com
  ([fe80::d4f6:b485:69ee:fd9a]) by BYAPR15MB2631.namprd15.prod.outlook.com
  ([fe80::d4f6:b485:69ee:fd9a%7]) with mapi id 15.20.1878.024; Tue, 14 May 2019
- 17:37:54 +0000
+ 17:46:07 +0000
 From:   Roman Gushchin <guro@fb.com>
-To:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
-CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH 4/4] drm/amdkfd: Check against device cgroup
-Thread-Topic: [PATCH 4/4] drm/amdkfd: Check against device cgroup
-Thread-Index: AQHVAC55koEwRnit7kyr2zcr6OGdM6Zpe10AgAF7x4A=
-Date:   Tue, 14 May 2019 17:37:54 +0000
-Message-ID: <20190514173749.GA12629@tower.DHCP.thefacebook.com>
-References: <20190501145904.27505-1-Harish.Kasiviswanathan@amd.com>
- <20190501145904.27505-5-Harish.Kasiviswanathan@amd.com>
- <20190514015832.GA14741@tower.DHCP.thefacebook.com>
-In-Reply-To: <20190514015832.GA14741@tower.DHCP.thefacebook.com>
+To:     Oleg Nesterov <oleg@redhat.com>
+CC:     Tejun Heo <tj@kernel.org>, Alex Xu <alex_y_xu@yahoo.ca>,
+        Kernel Team <Kernel-team@fb.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] signal: don't always leave task frozen after
+ ptrace_stop()
+Thread-Topic: [PATCH] signal: don't always leave task frozen after
+ ptrace_stop()
+Thread-Index: AQHVCcYNSLY5w2Qdtk+XJPFi9yaJA6ZqySyAgAAdFIA=
+Date:   Tue, 14 May 2019 17:46:07 +0000
+Message-ID: <20190514174603.GB12629@tower.DHCP.thefacebook.com>
+References: <20190513195517.2289671-1-guro@fb.com>
+ <20190514160158.GB32459@redhat.com>
+In-Reply-To: <20190514160158.GB32459@redhat.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR14CA0018.namprd14.prod.outlook.com
- (2603:10b6:300:ae::28) To BYAPR15MB2631.namprd15.prod.outlook.com
+x-clientproxiedby: MWHPR1001CA0024.namprd10.prod.outlook.com
+ (2603:10b6:301:2a::37) To BYAPR15MB2631.namprd15.prod.outlook.com
  (2603:10b6:a03:152::24)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [2620:10d:c090:200::298]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0c4d9b55-db37-4a7c-f1d7-08d6d892e528
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB3208;
-x-ms-traffictypediagnostic: BYAPR15MB3208:
-x-microsoft-antispam-prvs: <BYAPR15MB3208539FCFDB1BDB1FCA3CDDBE080@BYAPR15MB3208.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-ms-office365-filtering-correlation-id: f977f296-3b25-43c0-9031-08d6d8940ada
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB3191;
+x-ms-traffictypediagnostic: BYAPR15MB3191:
+x-microsoft-antispam-prvs: <BYAPR15MB31912A76A3161C3F93A38896BE080@BYAPR15MB3191.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 0037FD6480
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(346002)(396003)(136003)(366004)(39860400002)(189003)(199004)(6436002)(4326008)(25786009)(305945005)(68736007)(73956011)(53936002)(71190400001)(6246003)(7736002)(33656002)(6486002)(66446008)(81156014)(81166006)(14454004)(8936002)(229853002)(186003)(66476007)(66556008)(64756008)(66946007)(52116002)(446003)(478600001)(8676002)(6916009)(316002)(99286004)(1076003)(6116002)(54906003)(6512007)(9686003)(46003)(2906002)(71200400001)(76176011)(14444005)(102836004)(256004)(86362001)(486006)(6506007)(386003)(476003)(11346002)(5660300002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3208;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(189003)(199004)(54534003)(71200400001)(71190400001)(6116002)(86362001)(1076003)(2906002)(256004)(14444005)(5660300002)(6916009)(53936002)(305945005)(7736002)(4326008)(25786009)(6246003)(68736007)(8936002)(81156014)(81166006)(486006)(46003)(446003)(476003)(11346002)(99286004)(54906003)(14454004)(498600001)(186003)(6506007)(76176011)(52116002)(102836004)(66476007)(53546011)(66446008)(33656002)(9686003)(386003)(8676002)(64756008)(6436002)(66556008)(6512007)(229853002)(6486002)(73956011)(66946007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3191;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: Xm5H8VI7fwaWhGKRqvG7ENl+FZnaZtOyTg0sDMBJhhloGAHmNbkzYg4soB+MvtPYCJfIw9OQjaFre1IpfYnZ816ctUAbmR3kmjoyLB39JFgvN7LmZUaUJ6djUh3rRp1R9+RwaCGsKNEFwaJ5DuzTCsANHqdroE8OAsqGW891XtiBagYrXuSzNbtPoWCeLRBJSgWoVmUPxMG9lp6ywlpYr6OM1s1jtwv6Mn6LUybtl8cqqvmRkCyXSN2Liffr7a+s/Rl/gQk8ODwUDfwOamxBAjbgTaIYxAKdEXPBOZ2PUwqb8bGipFE4vHs6WlRFecUme4+EMMpkpyhfwtxv6kD/2y8WbPLEq0nZKY0Vwy8ENUf3p1XIvs4CGD7KpSctbuDaxjIKP6zbVxutQZZP00fCykakp4ZRCNJxwp9Rt+WMgFo=
+x-microsoft-antispam-message-info: ENf6Et+s3mIM1ZBFVgrFfDAMwStSqkbhVKc7vXHmBXWhsBt9VdgJN40zfbR4mlzNtrsoVE3Nlqs4rTj1jgoum5wJK6DQOkzAavluy4MND0hpaLwQkT5R3a5+H1ITTceqU0EsAlTdG+aZnvNdb/0R1YDpjzekjTnw6YA4wVYwM4rxvR5KWaRQOfu0QIgIvydGyl+vJQ23bQ9EtZQ07pW2r1bRZqPRkyN/HhZiHRsp2C292s8qhMMUIiE4YgdHk1ju1xmq+6zhJgc4Tn9YANhTv3me1WanbCLX1EhXVkRRUXITawxpS5QGMVlxW5i2AR5fyk1N5nd2xfEl1x8uZ6C/gnufxo2yiIX5J7HbFeX+iJ+LU137jXF0ZWj92qPqR9Tasu9w9es+I7a3skb2VV6nmvH0xZ25DmdFd/uCj9y5KsM=
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <606A94B7321FCC45AB99DA08D0D9361D@namprd15.prod.outlook.com>
+Content-ID: <C22CEF3A0D495548B30C6E790ADAA0FC@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0c4d9b55-db37-4a7c-f1d7-08d6d892e528
-X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2019 17:37:54.3633
+X-MS-Exchange-CrossTenant-Network-Message-Id: f977f296-3b25-43c0-9031-08d6d8940ada
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2019 17:46:07.1047
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3208
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3191
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-14_10:,,
  signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905140120
-X-FB-Internal: deliver
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 14, 2019 at 01:58:40AM +0000, Roman Gushchin wrote:
-> On Wed, May 01, 2019 at 02:59:29PM +0000, Kasiviswanathan, Harish wrote:
-> > Participate in device cgroup. All kfd devices are exposed via /dev/kfd.
-> > So use /dev/dri/renderN node.
-> >=20
-> > Before exposing the device to a task check if it has permission to
-> > access it. If the task (based on its cgroup) can access /dev/dri/render=
-N
-> > then expose the device via kfd node.
-> >=20
-> > If the task cannot access /dev/dri/renderN then process device data
-> > (pdd) is not created. This will ensure that task cannot use the device.
-> >=20
-> > In sysfs topology, all device nodes are visible irrespective of the tas=
-k
-> > cgroup. The sysfs node directories are created at driver load time and
-> > cannot be changed dynamically. However, access to information inside
-> > nodes is controlled based on the task's cgroup permissions.
-> >=20
-> > Signed-off-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
-> > Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+On Tue, May 14, 2019 at 06:01:59PM +0200, Oleg Nesterov wrote:
+> Roman,
 >=20
-> Hello, Harish!
+> Sorry, I can't agree with this patch. And even the changelog doesn't
+> look right.
 >=20
-> Cgroup/device controller part looks good to me.
-> Please, feel free to use my acks for patches 3 and 4:
-> Acked-by: Roman Gushchin <guro@fb.com>
+> On 05/13, Roman Gushchin wrote:
+> >
+> > The ptrace_stop() function contains the cgroup_enter_frozen() call,
+> > but no cgroup_leave_frozen(). When ptrace_stop() is called from the
+> > do_jobctl_trap() path, it's correct, because corresponding
+> > cgroup_leave_frozen() calls in get_signal() will guarantee that
+> > the task won't leave the signal handler loop frozen.
+> >
+> > However, if ptrace_stop() is called from ptrace_signal() or
+> > ptrace_notify(), there is no such guarantee, and the task may leave
+> > with the frozen bit set.
+>=20
+> ptrace_signal() looks fine in that the task can't return to user-mode,
+> get_signal() will be called again exactly because ->frozen =3D=3D 1 means
+> TIF_SIGPENDING. So I an not surre I understand why ptrace_signal() does
+> ptrace_stop(false) with your patch. But this is minor.
+>=20
+> > It leads to the regression, reported by Alex Xu. Write system call
+> > gets mistakenly interrupted by fake TIF_SIGPENDING, which is set
+> > by recalc_sigpending_tsk() because of the set frozen bit.
+>=20
+> IMHO, the real problem is not that syscall was interrupted. The problem
+> is that a frozen task must never start the syscall.
+>=20
+>=20
+> -------------------------------------------------------------------------=
+--
+>=20
+> Can't we add the unconditional leave_frozen() into ptrace_stop() for now =
+?
+>=20
+> Sure, this is not what we want. Debugger can disturb CGRP_FROZEN.
+>=20
+> But. The "may_remain_frozen" argument uglifies this code too much (imo) a=
+nd
+> at the same time it doesn't solve the problem above: CGRP_FROZEN can be c=
+leared
+> "for no reason".
+>=20
+> Say, why ptrace_event_pid() should do leave_frozen(true) ? And if there i=
+s any
+> reason, then why wait_for_vfork_done() can do leave_frozen(false) ?
+>=20
+> Or syscall-exit path. It can't miss get_signal(), it doesn't need leave_f=
+rozen().
+>=20
+>=20
+> In short, I believe that compared to the unconditional leave_frozen() in =
+ptrace_stop()
+> this patch buys almost nothing, but makes the code and the whole logic mu=
+ch uglier.
+>=20
+> Oleg.
+>=20
 
-Hello!
+Hi Oleg!
 
-After the second look at the patchset I came to an understanding that
-exporting cgroup_v1-only __devcgroup_check_permission() isn't the best idea=
-.
+I agree that "may_remain_frozen" adds a lot of ugliness, so let's fix
+the regression with the unconditional leave_frozen(true). The patch below.
+Please, let me know if it's not what you meant.
 
-Instead it would be better to export devcgroup_check_permission(), which
-provides an universal interface for both cgroup v1 and v2 device controller=
-s.
-It  require some refactorings, but should be not hard.
+The problem is that it makes the ptrace freezer kselftest to flap,
+so it's good only as a temporarily solution. But it looks like we agree her=
+e.
 
-Does it makes sense to you? Can you, please, rework this part?
+Thank you!
 
-Thanks!
+
+--
+
+From 2602261b066a06f6884057d2cd7369951768b9ed Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <guro@fb.com>
+Date: Tue, 14 May 2019 10:13:19 -0700
+Subject: [PATCH] signal: unconditionally leave the frozen state in
+ ptrace_stop()
+
+Alex Xu reported a regression in strace, caused by the introduction of
+the cgroup v2 freezer. The regression can be reproduced by stracing
+the following simple program:
+
+  #include <unistd.h>
+
+  int main() {
+      write(1, "a", 1);
+      return 0;
+  }
+
+An attempt to run strace ./a.out leads to the infinite loop:
+  [ pre-main omitted ]
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  write(1, "a", 1)                        =3D ? ERESTARTSYS (To be restarte=
+d if SA_RESTART is set)
+  [ repeats forever ]
+
+The problem occurs because the traced task leaves ptrace_stop()
+(and the signal handling loop) with the frozen bit set. So let's
+call cgroup_leave_frozen(true) unconditionally after sleeping
+in ptrace_stop().
+
+With this patch applied, strace works as expected:
+  [ pre-main omitted ]
+  write(1, "a", 1)                        =3D 1
+  exit_group(0)                           =3D ?
+  +++ exited with 0 +++
+
+Reported-by: Alex Xu <alex_y_xu@yahoo.ca>
+Fixes: 76f969e8948d ("cgroup: cgroup v2 freezer")
+Signed-off-by: Roman Gushchin <guro@fb.com>
+Cc: Oleg Nesterov <oleg@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>
+---
+ kernel/signal.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/signal.c b/kernel/signal.c
+index 8607b11ff936..565ba14d89d5 100644
+--- a/kernel/signal.c
++++ b/kernel/signal.c
+@@ -2112,6 +2112,7 @@ static void ptrace_stop(int exit_code, int why, int c=
+lear_code, kernel_siginfo_t
+ 		preempt_enable_no_resched();
+ 		cgroup_enter_frozen();
+ 		freezable_schedule();
++		cgroup_leave_frozen(true);
+ 	} else {
+ 		/*
+ 		 * By the time we got the lock, our tracer went away.
+--=20
+2.20.1
+
