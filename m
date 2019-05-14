@@ -2,102 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 71DAD1BF39
-	for <lists+cgroups@lfdr.de>; Mon, 13 May 2019 23:47:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4F41C06E
+	for <lists+cgroups@lfdr.de>; Tue, 14 May 2019 03:59:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726465AbfEMVra (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 May 2019 17:47:30 -0400
-Received: from mail-eopbgr760075.outbound.protection.outlook.com ([40.107.76.75]:23318
-        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726421AbfEMVr3 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 13 May 2019 17:47:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector1-amd-com;
+        id S1726387AbfENB7G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 May 2019 21:59:06 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:58550 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726327AbfENB7G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 May 2019 21:59:06 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4E1oB36030425;
+        Mon, 13 May 2019 18:59:01 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=i3Pkxf7VTf2IM0QTltjUJeV3OviV+aj+2NUhz7zBWuw=;
+ b=AuFO/DlHcVDzd9CqPVz+ERSfyu/z8BUKNy0lNo9MOf+rDaG2xqQ+HAFzm1cA2zlv43ao
+ oI1LoAWPGMpUTW4H9nbCXbPx2MccIM41cPuhV1l/gixIQEuQmQkLaRLTbx2EfJPyxLND
+ BUaL8DHgOGv2DSFPZvX7Wimrkbw7hAC6QC0= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sf9vh2cjx-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Mon, 13 May 2019 18:59:01 -0700
+Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Mon, 13 May 2019 18:59:01 -0700
+Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
+ prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Mon, 13 May 2019 18:59:00 -0700
+Received: from NAM01-SN1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Mon, 13 May 2019 18:59:00 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=n2jSXKQ5UA+EIgCBJRtFSX/GCm/g42bVM0iOtlr+Qek=;
- b=jEPcS+OPE9ojRNS+8KLbHvVe2eeV8nC5PmdnR70MJ3a/9MGX4E5mjkWGeJWRmY3dUeQA+ls9E5ID1E37NGEff0kWDXy0pLNQ18Uw8H/TZNhBGGh+36fB0zUQy4Hr8jD0BFwT6Ij+9XLhPFMysgAZdZpV4l0f3KY811HxnAmNUKs=
-Received: from BYAPR12MB3384.namprd12.prod.outlook.com (20.178.55.225) by
- BYAPR12MB3093.namprd12.prod.outlook.com (20.178.54.146) with Microsoft SMTP
+ bh=i3Pkxf7VTf2IM0QTltjUJeV3OviV+aj+2NUhz7zBWuw=;
+ b=gUdJwCB9lVehEqge/dww1jYByYlnasnAZ8f9F84HXnmveB+4jB2beFDl20cd/9n/F71Xy0u7m+lfCmAXVhv2dfPhkhoZDM5gMyo6ewpiEniab95II16Roy/8eZtWR2r97d0KQfiyQZDnhyfIqTVWeODemq4k67lD7BDGTD3zBFU=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB2692.namprd15.prod.outlook.com (20.179.138.209) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1878.21; Mon, 13 May 2019 21:47:27 +0000
-Received: from BYAPR12MB3384.namprd12.prod.outlook.com
- ([fe80::94db:e1b3:e492:1513]) by BYAPR12MB3384.namprd12.prod.outlook.com
- ([fe80::94db:e1b3:e492:1513%6]) with mapi id 15.20.1878.024; Mon, 13 May 2019
- 21:47:27 +0000
-From:   "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
-To:     "aris@redhat.com" <aris@redhat.com>,
-        "tj@kernel.org" <tj@kernel.org>, "guro@fb.com" <guro@fb.com>
-CC:     "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 3/4] device_cgroup: Export __devcgroup_check_permission
-Thread-Topic: [PATCH 3/4] device_cgroup: Export __devcgroup_check_permission
-Thread-Index: AQHVAC55ig/tjOJIrUisrubOK/T1G6ZpqokA
-Date:   Mon, 13 May 2019 21:47:26 +0000
-Message-ID: <2ceffd10-c3d0-86bb-b010-ed1eae655f85@amd.com>
+ 15.20.1878.25; Tue, 14 May 2019 01:58:40 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::251b:ff54:1c67:4e5f]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::251b:ff54:1c67:4e5f%7]) with mapi id 15.20.1878.024; Tue, 14 May 2019
+ 01:58:40 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
+CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: Re: [PATCH 4/4] drm/amdkfd: Check against device cgroup
+Thread-Topic: [PATCH 4/4] drm/amdkfd: Check against device cgroup
+Thread-Index: AQHVAC55koEwRnit7kyr2zcr6OGdM6Zp8LgA
+Date:   Tue, 14 May 2019 01:58:40 +0000
+Message-ID: <20190514015832.GA14741@tower.DHCP.thefacebook.com>
 References: <20190501145904.27505-1-Harish.Kasiviswanathan@amd.com>
- <20190501145904.27505-4-Harish.Kasiviswanathan@amd.com>
-In-Reply-To: <20190501145904.27505-4-Harish.Kasiviswanathan@amd.com>
+ <20190501145904.27505-5-Harish.Kasiviswanathan@amd.com>
+In-Reply-To: <20190501145904.27505-5-Harish.Kasiviswanathan@amd.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
-x-originating-ip: [165.204.55.251]
-x-clientproxiedby: YTXPR0101CA0006.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00::19) To BYAPR12MB3384.namprd12.prod.outlook.com
- (2603:10b6:a03:a9::33)
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Harish.Kasiviswanathan@amd.com; 
+x-clientproxiedby: BYAPR01CA0002.prod.exchangelabs.com (2603:10b6:a02:80::15)
+ To BN8PR15MB2626.namprd15.prod.outlook.com (2603:10b6:408:c7::28)
 x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::3cb5]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 87d204fd-77ea-4d47-0ef5-08d6d7ec96fe
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(4618075)(2017052603328)(7193020);SRVR:BYAPR12MB3093;
-x-ms-traffictypediagnostic: BYAPR12MB3093:
-x-microsoft-antispam-prvs: <BYAPR12MB309398FB0E009981B544331F8C0F0@BYAPR12MB3093.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:3276;
-x-forefront-prvs: 0036736630
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(39860400002)(396003)(376002)(346002)(366004)(136003)(189003)(199004)(53754006)(66556008)(64756008)(66446008)(25786009)(66476007)(71200400001)(66946007)(2906002)(71190400001)(73956011)(64126003)(478600001)(2616005)(11346002)(446003)(6486002)(486006)(99286004)(6436002)(476003)(72206003)(52116002)(76176011)(65806001)(66066001)(65956001)(6512007)(58126008)(110136005)(54906003)(102836004)(386003)(6506007)(53546011)(26005)(186003)(14454004)(229853002)(68736007)(305945005)(316002)(65826007)(7736002)(86362001)(31696002)(36756003)(2201001)(5660300002)(31686004)(14444005)(8936002)(256004)(81166006)(81156014)(53936002)(3846002)(6116002)(6246003)(8676002)(2501003)(4326008);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR12MB3093;H:BYAPR12MB3384.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
+x-ms-office365-filtering-correlation-id: 6c89329c-60e5-4620-a799-08d6d80faf5b
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BN8PR15MB2692;
+x-ms-traffictypediagnostic: BN8PR15MB2692:
+x-microsoft-antispam-prvs: <BN8PR15MB26928D5C35302C17EDBFF5A4BE080@BN8PR15MB2692.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 0037FD6480
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(396003)(39860400002)(366004)(346002)(199004)(189003)(6512007)(1076003)(229853002)(14444005)(9686003)(7736002)(81166006)(71200400001)(478600001)(71190400001)(186003)(81156014)(6486002)(256004)(6246003)(8936002)(8676002)(53936002)(33656002)(446003)(305945005)(46003)(64756008)(6916009)(5660300002)(66946007)(66446008)(73956011)(11346002)(66556008)(6436002)(54906003)(66476007)(4326008)(486006)(476003)(86362001)(14454004)(6116002)(316002)(25786009)(2906002)(6506007)(52116002)(99286004)(68736007)(76176011)(386003)(102836004);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2692;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: fSKl7aP0X4Rkhdzgl3pE/A7Fx+vhHFR0YDl5+0CdT3BaGkpOecoH3yw1ZzUdOsgDVuIqTR4ju4yaUBVcX+FTYuRlhTWLU5ZCCUsG4/vXEi37QVyguZmSk094XjIFCEyHkZCCSFBy/dQu+0w58qGaHomQXSQchWh8IZU9EFkhNXovKaFTu/FehZesKvplvFcHFKWQJxvS1Dgwxq7tjJVw9myRYfEJyvPgP1DBRE7qEUNEGG3cQwEBmPnP3E7JK7myixUbLdue2vUBdzbwXoeIFTpKJabitJL1bJvz048RVXNdfg+PXasgRJzTuiY8vs0fJQswwWjCMJLSAvVnx6TY0BrGRu41e7NtfGRxsLBpmWSEXns09x1AQ3xaFzNPDcji6fa3LfTSDwduRSMOuUTMPnd8E0+GJPb7IDONpFXbE9Q=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <242F64A8B4C32E4BB3A78FA5C525BC18@namprd12.prod.outlook.com>
-Content-Transfer-Encoding: base64
+x-microsoft-antispam-message-info: 2MDlAHQCOppJ5pKconq31DaNTjO9pcfH98tBjuaBtoflCYnkQo7Bcs5Rgzq+zWOmZZmQRZkxOAekuiR7PCQnup+/yub3ltlGlSuGwYVofgPaP92O1Erlq+FIIBTYpda3RwcwmkBSKE2xMLOhsDVD+GWJdJcF6hwD1BPP+XZ39WB3LVEd7WmMJIEBa7Cb1MQ1eN/VF8S9UjTTkOL2LCSTQMMKV+Z+0uJV57WditZ6O5bEq1KJ2XR/k65XXFjknDjsjaGlcDKx78MtXQUc+Sdg/mBg+eGD1ILb3z4o5DkkEjaBNraWKCVYqidtC8pC/UU5Pg2Y0+LN0JqTOWMYW6RHiH92xykCmqdKUng/nA2a2Q+acpMRsajRLB98+LG3dGJW+7SldUWpivIPHIp6azfFADbxjQccEAg9d5b1bWmrWuw=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <6FF8CD02E98B004BBE547B3D3A239E33@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 87d204fd-77ea-4d47-0ef5-08d6d7ec96fe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 13 May 2019 21:47:26.9886
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6c89329c-60e5-4620-a799-08d6d80faf5b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 14 May 2019 01:58:40.1430
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB3093
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2692
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-14_01:,,
+ signatures=0
+X-Proofpoint-Spam-Reason: safe
+X-FB-Internal: Safe
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-SGVsbG8gRXZlcnlvbmUsDQoNCkNvdWxkIHlvdSBwbGVhc2UgcmV2aWV3IHRoaXMgcGF0Y2g/DQoN
-CkJlc3QgUmVnYXJkcywNCg0KSGFyaXNoDQoNCg0KDQpPbiAyMDE5LTA1LTAxIDEwOjU5IGEubS4s
-IEthc2l2aXN3YW5hdGhhbiwgSGFyaXNoIHdyb3RlOg0KPiBGb3IgQU1EIGNvbXB1dGUgKGFtZGtm
-ZCkgZHJpdmVyLg0KPg0KPiBBbGwgQU1EIGNvbXB1dGUgZGV2aWNlcyBhcmUgZXhwb3J0ZWQgdmlh
-IHNpbmdsZSBkZXZpY2Ugbm9kZSAvZGV2L2tmZC4gQXMNCj4gYSByZXN1bHQgZGV2aWNlcyBjYW5u
-b3QgYmUgY29udHJvbGxlZCBpbmRpdmlkdWFsbHkgdXNpbmcgZGV2aWNlIGNncm91cC4NCj4NCj4g
-QU1EIGNvbXB1dGUgZGV2aWNlcyB3aWxsIHJlbHkgb24gaXRzIGdyYXBoaWNzIGNvdW50ZXJwYXJ0
-IHRoYXQgZXhwb3Nlcw0KPiAvZGV2L2RyaS9yZW5kZXJOIG5vZGUgZm9yIGVhY2ggZGV2aWNlLiBG
-b3IgZWFjaCB0YXNrIChiYXNlZCBvbiBpdHMNCj4gY2dyb3VwKSwgS0ZEIGRyaXZlciB3aWxsIGNo
-ZWNrIGlmIC9kZXYvZHJpL3JlbmRlck4gbm9kZSBpcyBhY2Nlc3NpYmxlDQo+IGJlZm9yZSBleHBv
-c2luZyBpdC4NCj4NCj4gU2lnbmVkLW9mZi1ieTogSGFyaXNoIEthc2l2aXN3YW5hdGhhbiA8SGFy
-aXNoLkthc2l2aXN3YW5hdGhhbkBhbWQuY29tPg0KPiBSZXZpZXdlZC1ieTogRmVsaXggS3VlaGxp
-bmcgPEZlbGl4Lkt1ZWhsaW5nQGFtZC5jb20+DQo+IC0tLQ0KPiAgc2VjdXJpdHkvZGV2aWNlX2Nn
-cm91cC5jIHwgMSArDQo+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKykNCj4NCj4gZGlm
-ZiAtLWdpdCBhL3NlY3VyaXR5L2RldmljZV9jZ3JvdXAuYyBiL3NlY3VyaXR5L2RldmljZV9jZ3Jv
-dXAuYw0KPiBpbmRleCBjZDk3OTI5ZmFjNjYuLmUzYTlhZDVkYjVhMCAxMDA2NDQNCj4gLS0tIGEv
-c2VjdXJpdHkvZGV2aWNlX2Nncm91cC5jDQo+ICsrKyBiL3NlY3VyaXR5L2RldmljZV9jZ3JvdXAu
-Yw0KPiBAQCAtODI0LDMgKzgyNCw0IEBAIGludCBfX2RldmNncm91cF9jaGVja19wZXJtaXNzaW9u
-KHNob3J0IHR5cGUsIHUzMiBtYWpvciwgdTMyIG1pbm9yLA0KPiAgDQo+ICAJcmV0dXJuIDA7DQo+
-ICB9DQo+ICtFWFBPUlRfU1lNQk9MKF9fZGV2Y2dyb3VwX2NoZWNrX3Blcm1pc3Npb24pOw0K
+On Wed, May 01, 2019 at 02:59:29PM +0000, Kasiviswanathan, Harish wrote:
+> Participate in device cgroup. All kfd devices are exposed via /dev/kfd.
+> So use /dev/dri/renderN node.
+>=20
+> Before exposing the device to a task check if it has permission to
+> access it. If the task (based on its cgroup) can access /dev/dri/renderN
+> then expose the device via kfd node.
+>=20
+> If the task cannot access /dev/dri/renderN then process device data
+> (pdd) is not created. This will ensure that task cannot use the device.
+>=20
+> In sysfs topology, all device nodes are visible irrespective of the task
+> cgroup. The sysfs node directories are created at driver load time and
+> cannot be changed dynamically. However, access to information inside
+> nodes is controlled based on the task's cgroup permissions.
+>=20
+> Signed-off-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
+> Reviewed-by: Felix Kuehling <Felix.Kuehling@amd.com>
+
+Hello, Harish!
+
+Cgroup/device controller part looks good to me.
+Please, feel free to use my acks for patches 3 and 4:
+Acked-by: Roman Gushchin <guro@fb.com>
+
+Thanks!
+
+> ---
+>  drivers/gpu/drm/amd/amdkfd/kfd_flat_memory.c |  9 +++++++--
+>  drivers/gpu/drm/amd/amdkfd/kfd_priv.h        | 17 +++++++++++++++++
+>  drivers/gpu/drm/amd/amdkfd/kfd_topology.c    | 12 ++++++++++++
+>  3 files changed, 36 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/drivers/gpu/drm/amd/amdkfd/kfd_flat_memory.c b/drivers/gpu/d=
+rm/amd/amdkfd/kfd_flat_memory.c
+> index dc7339825b5c..3804edfb4ff7 100644
+> --- a/drivers/gpu/drm/amd/amdkfd/kfd_flat_memory.c
+> +++ b/drivers/gpu/drm/amd/amdkfd/kfd_flat_memory.c
+> @@ -369,8 +369,13 @@ int kfd_init_apertures(struct kfd_process *process)
+> =20
+>  	/*Iterating over all devices*/
+>  	while (kfd_topology_enum_kfd_devices(id, &dev) =3D=3D 0) {
+> -		if (!dev) {
+> -			id++; /* Skip non GPU devices */
+> +		if (!dev || kfd_devcgroup_check_permission(dev)) {
+> +			/* Skip non GPU devices and devices to which the
+> +			 * current process have no access to. Access can be
+> +			 * limited by placing the process in a specific
+> +			 * cgroup hierarchy
+                                           ^
+				Probably, a missing dot here.
+> +			 */
+> +			id++;
+>  			continue;
+>  		}
+> =20
