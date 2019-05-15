@@ -2,164 +2,163 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 928E61E5F5
-	for <lists+cgroups@lfdr.de>; Wed, 15 May 2019 02:16:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B14A1EBF8
+	for <lists+cgroups@lfdr.de>; Wed, 15 May 2019 12:18:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726605AbfEOAQc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 May 2019 20:16:32 -0400
-Received: from mail-yb1-f195.google.com ([209.85.219.195]:35305 "EHLO
-        mail-yb1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726265AbfEOAQc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 May 2019 20:16:32 -0400
-Received: by mail-yb1-f195.google.com with SMTP id k202so315040ybk.2
-        for <cgroups@vger.kernel.org>; Tue, 14 May 2019 17:16:31 -0700 (PDT)
+        id S1726212AbfEOKSw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 May 2019 06:18:52 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:35888 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726170AbfEOKSw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 May 2019 06:18:52 -0400
+Received: by mail-lj1-f196.google.com with SMTP id z1so2001611ljb.3
+        for <cgroups@vger.kernel.org>; Wed, 15 May 2019 03:18:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=n6UubTu1HxL5JVqa4cIS4IiqN2UOsI0+Vavy5s5bkSQ=;
-        b=Ii41x4BPQ69+lEiDQCtrEuc+lF56MxJAe2Nu9E3XbvbR4rUAzOZNAXuAlZRNS6P1H0
-         g1yyCvGfKBvZs2+YsXBIRXAAt9TKkYkQT8esPIAPxIMrzkMFFDmkcCGxuibr51tDIoEf
-         hOvtu0p5Qti7QFT1qMeD2cxKaHTYxfMIvR16MTXd+gcnStMT2TE8onV6SNVb465wsnXH
-         wJp8kOMWTtX8IzL1/yOc8GesomdBPegBNpb3c6rVynA4KMxgNmF6NSTnPBOPUCewSG7b
-         unooTfA0p8UWmIEaIJ3dtmy1DpodFr7a94oCGmib2FAfj7Xgdla1FlVXjyqxjZB9wq8E
-         /Ang==
+        bh=KFvZDl23y035feTSM2upuZ1LCAcrX8ykiQojg4IcAkQ=;
+        b=Hkf6YYNNErzxvv5/SAw6jPm1nxRGPXBx754mOPzdNOiyOQtDOOhR/b5ZIKJPxxuFLC
+         atqV38GudEL/shOEA7TbbpYUTd26wB3pnWTXAeqnSTxsgZXcBKo9I6rzgYNTbiGB5R6e
+         v84ceroUvmWprEM6kcSAhw3vUXWV+fWFbxvbOQxRczzeZsKVzDjSROUMJtI0KaUkeW7w
+         /LSmvZfRWIrs/vjBpnAiCFpikTqAP0lVUV97xoXaa/Jgi8A7KZGby9FV0Xs3Rf/oh593
+         J94cwao/g2KFbLoPwOcq9gOe2K6UJgiTmLzWuYi/ajn3a+ufG080Vo2mnFa59dmQVZMU
+         BQoQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=n6UubTu1HxL5JVqa4cIS4IiqN2UOsI0+Vavy5s5bkSQ=;
-        b=NJrzpBGDGAuq5kRbMmHE5LEbspQPR2z3+/xuATE87M9CTws1sxXhWfdMGiAWG0bw+c
-         ktLzZ6+gzPhkZ1G+zfCbDTmrtaRDi96ZlLgtvKP135bIu+rzorlKpeOu+YnWRtGbCHoY
-         skP5129rU4eOQeIKmtq+UE4YfuQDsvQ2E9u7ihfvQL6Dt42NaBMyHmKOvUQS00RpkeuH
-         GDd0/7LbLKqBVw6Rg10wQ5Bahq7+e1T49r1ZrdRAk+33VM0ZNMO5YxG9mDECypyZ9XvL
-         n+T9t0lbgSC2wCyXfsatHmKnxaauYjGUrJyqUVV0cB7mQcJnNObHVm6l3CdIMGnlblrL
-         uH9A==
-X-Gm-Message-State: APjAAAWKOUzJ6poms59ZXNo6nfEqSZboEcxjGSVDEPjzCOrhoeCMbYpL
-        Rg2AhAZ9MoaC8RjkPnADw/fFJc055VEr4PcaU8b22w==
-X-Google-Smtp-Source: APXvYqwXpG8BpCaAhxMLZu1bQsUf0ZlBvmb6V18GIGFeDsrDFmUXX3NvR6sEHYqBkd0VzopGg8Iw+LuwYseyH2LTLrI=
-X-Received: by 2002:a25:ad11:: with SMTP id y17mr18143295ybi.393.1557879391180;
- Tue, 14 May 2019 17:16:31 -0700 (PDT)
+        bh=KFvZDl23y035feTSM2upuZ1LCAcrX8ykiQojg4IcAkQ=;
+        b=N19Z6+Q8tJgzIOdnFSjwGIHhlugQBbT4N48v6tGH8gclbEnZpbOlEyxwd4PigV+cKq
+         NwGowH7S09kX1OcQOjAVUL5AESRO31seuCy07YcwyRw5QrvZgekQClKVI1VmLEFtAssw
+         6GnbNRRVV/EeTXPdA2ILN9RxBUwlVKPcLftby+0CvY7w8ixQOiXcSEUy0SLm3yaPDgBn
+         Lyxfy9xnU0ZKDDV3KwctGlHOrvioslxOH0N4nzFYucvOcxUF7M4rtcFgtPe9FiXmySdr
+         RT1cw/a8VM9Akx2TYbNDbd6eLQrfGz1d1OsXNqsCraqAG+4GZmqqiTbeju3oDnqSW2bD
+         tibw==
+X-Gm-Message-State: APjAAAXzdAICiy1HB9sYDv30bt8zqIqJ0u4dHNYasMiNpMg52VO6HoVP
+        8H+Dy8v/tGhx2VXhEKo5XZkxJJWo5mNQLrPeLJSUkQ==
+X-Google-Smtp-Source: APXvYqzXSDxXzZaIHvQv6Hj8D6hBJyT94LQx5AB4o8tdiEegklyUu4UzQksSBOnXrPhXrqYrL4XuiKLaYNjTPBZT1qg=
+X-Received: by 2002:a2e:9c51:: with SMTP id t17mr20054268ljj.104.1557915529294;
+ Wed, 15 May 2019 03:18:49 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190514213940.2405198-1-guro@fb.com> <20190514213940.2405198-8-guro@fb.com>
-In-Reply-To: <20190514213940.2405198-8-guro@fb.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 14 May 2019 17:16:19 -0700
-Message-ID: <CALvZod5sPsvUCLS1Ud0sW=n+UoJb=DR5LbmMJKRhUeUoi+=64w@mail.gmail.com>
-Subject: Re: [PATCH v4 7/7] mm: fix /proc/kpagecgroup interface for slab pages
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Christoph Lameter <cl@linux.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>
+References: <20190408214539.2705660-1-songliubraving@fb.com>
+ <20190410115907.GE19434@e105550-lin.cambridge.arm.com> <A2E9A149-9EAA-478D-A096-1D4D4BA442B3@fb.com>
+ <CAKfTPtAFB3gSZYJN1BcjU_XoY=Pfu2xtea+2MEw7FkVc3mwTSA@mail.gmail.com>
+ <E97E73F4-CE8C-4CD7-B6B6-5F63A4E881B1@fb.com> <F0A127DD-F9B6-4FBE-B9AD-8E8B00A7D676@fb.com>
+ <CAKfTPtA_ouYCes9LnYn0quAKm273mi3vP-++GTBtYcQn07xc6Q@mail.gmail.com>
+ <A62E5068-4A1E-44E3-99BB-02E98229C1E2@fb.com> <CAKfTPtAG3v=37wyLjzkNNK_6HdoMK6WO7AMYfa+G24rq2iyAfg@mail.gmail.com>
+ <19AF6556-A2A2-435B-9358-CD22CF7BFD9F@fb.com> <2E7A1CDA-0384-474E-9011-5B209A1A58DF@fb.com>
+ <0C1325C9-DE18-42C6-854D-64433ABD6FC3@fb.com>
+In-Reply-To: <0C1325C9-DE18-42C6-854D-64433ABD6FC3@fb.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 15 May 2019 12:18:37 +0200
+Message-ID: <CAKfTPtDxhjh0LsjgTwKhMMtFqhyDW6qtU-=9K1p-fCR6YLjxCQ@mail.gmail.com>
+Subject: Re: [PATCH 0/7] introduce cpu.headroom knob to cpu controller
+To:     Song Liu <songliubraving@fb.com>
+Cc:     Morten Rasmussen <morten.rasmussen@arm.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        Kernel Team <Kernel-team@fb.com>,
+        viresh kumar <viresh.kumar@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Roman Gushchin <guro@fb.com>
-Date: Tue, May 14, 2019 at 2:54 PM
-To: Andrew Morton, Shakeel Butt
-Cc: <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
-<kernel-team@fb.com>, Johannes Weiner, Michal Hocko, Rik van Riel,
-Christoph Lameter, Vladimir Davydov, <cgroups@vger.kernel.org>, Roman
-Gushchin
+Hi Song,
 
-> Switching to an indirect scheme of getting mem_cgroup pointer for
-> !root slab pages broke /proc/kpagecgroup interface for them.
+On Tue, 14 May 2019 at 22:58, Song Liu <songliubraving@fb.com> wrote:
 >
-> Let's fix it by learning page_cgroup_ino() how to get memcg
-> pointer for slab pages.
+> Hi Vincent,
 >
-> Reported-by: Shakeel Butt <shakeelb@google.com>
-> Signed-off-by: Roman Gushchin <guro@fb.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+[snip]
 
-> ---
->  mm/memcontrol.c  |  5 ++++-
->  mm/slab.h        | 25 +++++++++++++++++++++++++
->  mm/slab_common.c |  1 +
->  3 files changed, 30 insertions(+), 1 deletion(-)
+> >
+> > Here are some more results with both Viresh's patch and the cpu.headroom
+> > set. In these tests, the side job runs with SCHED_IDLE, so we get benefit
+> > of Viresh's patch.
+> >
+> > We collected another metric here, average "cpu time" used by the requests.
+> > We also presented "wall time" and "wall - cpu" time. "wall time" is the
+> > same as "latency" in previous results. Basically, "wall time" includes cpu
+> > time, scheduling latency, and time spent waiting for data (from data base,
+> > memcache, etc.). We don't have good data that separates scheduling latency
+> > and time spent waiting for data, so we present "wall - cpu" time, which is
+> > the sum of the two. Time spent waiting for data should not change in these
+> > tests, so changes in "wall - cpu" mostly comes from scheduling latency.
+> > All the latency numbers are normalized based on the "wall time" of the
+> > first row.
+> >
+> > side job | cpu.headroom |  cpu-idle | wall time | cpu time | wall - cpu
+> > ------------------------------------------------------------------------
+> > none    |     n/a      |    42.4%  |   1.00    |   0.31   |   0.69
+> > ffmpeg   |       0      |    10.8%  |   1.17    |   0.38   |   0.79
+> > ffmpeg   |     25%      |    22.8%  |   1.08    |   0.35   |   0.73
+> >
+> > From these results, we can see that Viresh's patch reduces the latency
+> > overhead of the side job, from 42% (in previous results) to 17%. And
+> > a 25% cpu.headroom further reduces the latency overhead to 8%.
+> > cpu.headroom reduces time spent in "cpu time" and "wall - cpu" time,
+> > which means cpu.headroom yields better IPC and lower scheduling latency.
+> >
+> > I think these data demonstrate that
+> >
+> >  1. Viresh's work is helpful in reducing scheduling latency introduced
+> >     by SCHED_IDLE side jobs.
+> >  2. cpu.headroom work provides mechanism to further reduce scheduling
+> >     latency on top of Viresh's work.
+> >
+> > Therefore, the combination of the two work would give us mechanisms to
+> > control the latency overhead of side workloads.
+> >
+> > @Vincent, do these data and analysis make sense from your point of view?
 >
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 0655639433ed..9b2413c2e9ea 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -494,7 +494,10 @@ ino_t page_cgroup_ino(struct page *page)
->         unsigned long ino = 0;
+> Do you have further questions/concerns with this set?
+
+Viresh's patchset takes into account CPU running only sched_idle task
+only for the fast wakeup path. But nothing special is (yet) done for
+the slow path or during idle load balance.
+The histogram that you provided for "Fallback to sched-idle CPU for
+better performance", shows that even if we have significantly reduced
+the long wakeup latency, there are still some wakeup latency evenly
+distributed in the range [16us-2msec]. Such values are most probably
+because of sched_other task doesn't always preempt sched_idle task and
+sometime waits for the next tick. This means that there are still
+margin for improving the results with sched_idle without adding a new
+knob.
+The headroom knob forces cpus to be idle from time to time and the
+scheduler fallbacks to the normal scheduling policy that tries to fill
+idle CPU in this case. I'm still not convinced that most of the
+increase of the latency increase is linked to contention when
+accessing shared resources.
+
 >
->         rcu_read_lock();
-> -       memcg = READ_ONCE(page->mem_cgroup);
-> +       if (PageHead(page) && PageSlab(page))
-> +               memcg = memcg_from_slab_page(page);
-> +       else
-> +               memcg = READ_ONCE(page->mem_cgroup);
->         while (memcg && !(memcg->css.flags & CSS_ONLINE))
->                 memcg = parent_mem_cgroup(memcg);
->         if (memcg)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 7ba50e526d82..50fa534c0fc0 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -256,6 +256,26 @@ static inline struct kmem_cache *memcg_root_cache(struct kmem_cache *s)
->         return s->memcg_params.root_cache;
->  }
+> As the data shown, scheduling latency is not the only resource of high
+> latency here. In fact, with hyper threading and other shared system
+> resources (cache, memory, etc.), side workload would always negatively
+> impact the latency of the main workload. It is impossible to eliminate
+> these impacts with scheduler optimizations. On the other hand,
+> cpu.headroom provides mechanism to limit such impact.
 >
-> +/*
-> + * Expects a pointer to a slab page. Please note, that PageSlab() check
-> + * isn't sufficient, as it returns true also for tail compound slab pages,
-> + * which do not have slab_cache pointer set.
-> + * So this function assumes that the page can pass PageHead() and PageSlab()
-> + * checks.
-> + */
-> +static inline struct mem_cgroup *memcg_from_slab_page(struct page *page)
-> +{
-> +       struct kmem_cache *s;
-> +
-> +       WARN_ON_ONCE(!rcu_read_lock_held());
-> +
-> +       s = READ_ONCE(page->slab_cache);
-> +       if (s && !is_root_cache(s))
-> +               return rcu_dereference(s->memcg_params.memcg);
-> +
-> +       return NULL;
-> +}
-> +
->  /*
->   * Charge the slab page belonging to the non-root kmem_cache.
->   * Can be called for non-root kmem_caches only.
-> @@ -353,6 +373,11 @@ static inline struct kmem_cache *memcg_root_cache(struct kmem_cache *s)
->         return s;
->  }
+> Optimization and protection are two sides of the problem. While we
+> spend a lot of time optimizing the workload (so Viresh's work is really
+> interesting for us), cpu.headroom works on the protection side. There
+> are multiple reasons behind the high latencies. cpu.headroom provides
+> universal protection against all these.
 >
-> +static inline struct mem_cgroup *memcg_from_slab_page(struct page *page)
-> +{
-> +       return NULL;
-> +}
-> +
->  static inline int memcg_charge_slab(struct page *page, gfp_t gfp, int order,
->                                     struct kmem_cache *s)
->  {
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 354762394162..9d2a3d6245dc 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -254,6 +254,7 @@ static void memcg_unlink_cache(struct kmem_cache *s)
->                 list_del(&s->memcg_params.kmem_caches_node);
->                 mem_cgroup_put(rcu_dereference_protected(s->memcg_params.memcg,
->                         lockdep_is_held(&slab_mutex)));
-> +               rcu_assign_pointer(s->memcg_params.memcg, NULL);
->         }
->  }
->  #else
-> --
-> 2.20.1
+> With the protection of cpu.headroom, we can actually do optimizations
+> more efficiently, as we can safely start with a high headroom, and
+> then try to lower it.
+>
+> Please let me know your thoughts on this.
+>
+> Thanks,
+> Song
+>
+>
 >
