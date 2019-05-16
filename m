@@ -2,117 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B99D720937
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 16:10:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EE220946
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 16:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727038AbfEPOKU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 May 2019 10:10:20 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37841 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbfEPOKT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 10:10:19 -0400
-Received: by mail-qt1-f196.google.com with SMTP id o7so4037213qtp.4
-        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 07:10:19 -0700 (PDT)
+        id S1727071AbfEPOMs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 May 2019 10:12:48 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:35627 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbfEPOMs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 10:12:48 -0400
+Received: by mail-wr1-f67.google.com with SMTP id m3so3431638wrv.2
+        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 07:12:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4sDOxMUP58OIR9BfihJ4UZAZRlR6Y13wM0CaqjH6oNE=;
-        b=gqMdqGipCRaZuzcjHF1PBfs5h15q+m/gyx1euVyQWs60klB8iAxKHH295hUzDZ5Dil
-         aN1Lsbi7UwxeSod3kZoXguG7TPCHIJgQcKlejv4WFgyAXPKPUv30dsjltoh+s77gEH+s
-         oGXGGuHJHZ7iWXvoiNK2TjukdS7hIh+WZjKxzIHjvsyfA2kSDj11XkdYAwPuscuTFXPg
-         iie+OAMNP2cdtNDBhnZ123S1/aeZXPM3RPbCSK1i2FE411VCoFcoh26AMtaSafk1K/TM
-         Wz0f4nmOXS3Aj+jb3WqHoehP4+HUuHouLzjcc+ZxQ2uhpr1w8NMLTmkGA2jl6yG7EFeX
-         M1bA==
+        h=reply-to:subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=lSwbFWzRiS8FZuFJszUREBuA/RBtw3ld1q66H70SoTI=;
+        b=Uko2mgZrKk4b9lz6lS3uhyQnaceHyGNZWwcgSU2iuowhTsGzwK6e2wzRnsR6dMcxN0
+         LptM5PbOFAIrGEsnd54Y8GlCxHO7Ko1Oax/xYIDr07K2aY9glOZEUjNLiec4i0G0Hg/s
+         7iEcpwcQJqUrBersyzxZymlvs8t4KYnD479zMAxvdfekYSOX6QTqz45S02NsIHMxbpPz
+         sIuhlXOwRU4qa/uiORC63hEnCCkWyxo7rIOJPfSNDzTmw6ETo3PVLKQiWQlL93oTyQ2R
+         bEoUXnB7REXZw/RsxhEgjF6pFnGTp/OZyGpsOK2Gw3LEsFoo91dBsDJMXzRvPbTujS4V
+         UvZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4sDOxMUP58OIR9BfihJ4UZAZRlR6Y13wM0CaqjH6oNE=;
-        b=eKt+WPSrKSKCM8E2NDga7PvzSd4tBwBDky4YuM5oW2qipZ+FqNjBDR3p9O8IZJ9vla
-         dcs+lQNkVKKbv5dTG5ycIuRVA1RJIs2FojHC51zCjZm9u3FR3e7bkYfDmREVbYlKa8mK
-         ao/CyE4oeEcZpi0OAFUTr1QeGmORJC4s2Qhyiu0ZtdWvoXcCLIuy+rtdraGL7JRgIXF6
-         VJRevzPErhGOId2cX2/6FgRAbJ5qado8QB9snd1wu+uI5lPujucXoTZ7FdUcvAUNCQcV
-         oB4U7vgpXRB4gkqJksboZf+wHNZTVJuSVwLsisz/AkD5rsnZqgXF/MOjPDAz4W4Pncrq
-         sC0g==
-X-Gm-Message-State: APjAAAVFS5lLiRa7/Bk/iy5re8zdYxm1ILPeW8Zfh3z/e+9VaMzTWK/T
-        9AbSPrmhiCFUzX228xysciD/zXy/Pxg=
-X-Google-Smtp-Source: APXvYqwbWSZUa7+C4SUhRR7nMwltVkifbPmv9MOwZiTJD/HH2P7E+cA10XzeUWDy3BsfOIk4/YIaeg==
-X-Received: by 2002:ac8:2edc:: with SMTP id i28mr42310462qta.115.1558015818989;
-        Thu, 16 May 2019 07:10:18 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:30c9])
-        by smtp.gmail.com with ESMTPSA id p8sm3389554qta.24.2019.05.16.07.10.17
+        h=x-gm-message-state:reply-to:subject:to:cc:references:from
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-transfer-encoding:content-language;
+        bh=lSwbFWzRiS8FZuFJszUREBuA/RBtw3ld1q66H70SoTI=;
+        b=BaWSXM8+ln82fI/yP4Wti7k+gWnd9EC3VG/cUQ323wjCYkl+Y6b59pDqAWvaERyInV
+         8o23UMx5s9UxRDfKSAaR08qHKYE4W8Jgevq2Qj09kKnmRyjmIcdDyrIDVd3Ee9g7gbdV
+         eOnZjxaWemNYNuOzC2woyfr9i/6o0NwzLxhuLOnVgU15rm02cDTWNCpr2eg8bnZKi4ex
+         /vvUWAQa7nvUPcY0ZOtJNzOlkP4Tygg5hYF6TwYb+gc0sp6iXaVyqNjfMi239c9sSzlR
+         2V1ofx2/9WcN2VZ18HbEKvRjBaQXVFqu5v1LFRwH8jEAcN8O1B7RepVz88O9lHrus3da
+         xorQ==
+X-Gm-Message-State: APjAAAUbqCNaZfvzWsFtsblmNGjvWcaGCT8kBLYqZ0vDffolTGX4EbCf
+        p+DdNMVTeXnIjEuA6lK3JVCkzPyK
+X-Google-Smtp-Source: APXvYqxSSO3ZWWMBPz0oHOCL9eMrinbzzDReUF3UBViYg3o0NnEQ4bFGsajhnTYXG3U9vuStZF1itg==
+X-Received: by 2002:adf:aa09:: with SMTP id p9mr4050839wrd.59.1558015965837;
+        Thu, 16 May 2019 07:12:45 -0700 (PDT)
+Received: from ?IPv6:2a02:908:1252:fb60:be8a:bd56:1f94:86e7? ([2a02:908:1252:fb60:be8a:bd56:1f94:86e7])
+        by smtp.gmail.com with ESMTPSA id d3sm7480770wmf.46.2019.05.16.07.12.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 May 2019 07:10:18 -0700 (PDT)
-Date:   Thu, 16 May 2019 07:10:15 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     "Welty, Brian" <brian.welty@intel.com>,
-        Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        sunnanyong@huawei.com, Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
+        Thu, 16 May 2019 07:12:45 -0700 (PDT)
+Reply-To: christian.koenig@amd.com
 Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
  limit
-Message-ID: <20190516141015.GC374014@devbig004.ftw2.facebook.com>
+To:     Kenny Ho <y2kenny@gmail.com>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+Cc:     "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
+        "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "Welty, Brian" <brian.welty@intel.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
 References: <20181120185814.13362-1-Kenny.Ho@amd.com>
  <20190509210410.5471-1-Kenny.Ho@amd.com>
  <20190509210410.5471-5-Kenny.Ho@amd.com>
  <d81e8f55-9602-818e-0f9c-1d9d150133b1@intel.com>
  <CAOWid-ftUrVVWPu9KuS8xpWKNQT6_FtxB8gEyEAn9nLD6qxb5Q@mail.gmail.com>
+ <7db2caae-7eab-7c6a-fe90-89cb9cae30b4@amd.com>
+ <6e124f5e-f83f-5ca1-4616-92538f202653@gmail.com>
+ <CAOWid-fQgah16ycz-V-ymsm7yKUnFTeTSBaW4MK=2mqUHhCcmw@mail.gmail.com>
+From:   =?UTF-8?Q?Christian_K=c3=b6nig?= <ckoenig.leichtzumerken@gmail.com>
+Message-ID: <1c50433e-442b-cada-7928-b00ed0f6f9d2@gmail.com>
+Date:   Thu, 16 May 2019 16:12:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-ftUrVVWPu9KuS8xpWKNQT6_FtxB8gEyEAn9nLD6qxb5Q@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CAOWid-fQgah16ycz-V-ymsm7yKUnFTeTSBaW4MK=2mqUHhCcmw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Am 16.05.19 um 16:03 schrieb Kenny Ho:
+> On Thu, May 16, 2019 at 3:25 AM Christian König
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+>> Am 16.05.19 um 09:16 schrieb Koenig, Christian:
+>>> Am 16.05.19 um 04:29 schrieb Kenny Ho:
+>>>> On Wed, May 15, 2019 at 5:26 PM Welty, Brian <brian.welty@intel.com> wrote:
+>>>>> On 5/9/2019 2:04 PM, Kenny Ho wrote:
+>>>>>> Each file is multi-lined with one entry/line per drm device.
+>>>>> Multi-line is correct for multiple devices, but I believe you need
+>>>>> to use a KEY to denote device for both your set and get routines.
+>>>>> I didn't see your set functions reading a key, or the get functions
+>>>>> printing the key in output.
+>>>>> cgroups-v2 conventions mention using KEY of major:minor, but I think
+>>>>> you can use drm_minor as key?
+>>>> Given this controller is specific to the drm kernel subsystem which
+>>>> uses minor to identify drm device,
+>>> Wait a second, using the DRM minor is a good idea in the first place.
+>> Well that should have read "is not a good idea"..
+>>
+>> I have a test system with a Vega10 and a Vega20. Which device gets which
+>> minor is not stable, but rather defined by the scan order of the PCIe bus.
+>>
+>> Normally the scan order is always the same, but adding or removing
+>> devices or delaying things just a little bit during init is enough to
+>> change this.
+>>
+>> We need something like the Linux sysfs location or similar to have a
+>> stable implementation.
+> I get that, which is why I don't use minor to identify cards in user
+> space apps I wrote:
+> https://github.com/RadeonOpenCompute/k8s-device-plugin/blob/c2659c9d1d0713cad36fb5256681125121e6e32f/internal/pkg/amdgpu/amdgpu.go#L85
 
-I haven't gone through the patchset yet but some quick comments.
+Yeah, that is certainly a possibility.
 
-On Wed, May 15, 2019 at 10:29:21PM -0400, Kenny Ho wrote:
-> Given this controller is specific to the drm kernel subsystem which
-> uses minor to identify drm device, I don't see a need to complicate
-> the interfaces more by having major and a key.  As you can see in the
-> examples below, the drm device minor corresponds to the line number.
-> I am not sure how strict cgroup upstream is about the convention but I
+> But within the kernel, I think my use of minor is consistent with the
+> rest of the drm subsystem.  I hope I don't need to reform the way the
+> drm subsystem use minor in order to introduce a cgroup controller.
 
-We're pretty strict.
+Well I would try to avoid using the minor and at least look for 
+alternatives. E.g. what does udev uses to identify the devices for 
+example? And IIRC we have something like a "device-name" in the kernel 
+as well (what's printed in the logs).
 
-> am hoping there are flexibility here to allow for what I have
-> implemented.  There are a couple of other things I have done that is
+The minimum we need to do is get away from the minor=linenum approach, 
+cause as Daniel pointed out the minor allocation is quite a mess and not 
+necessary contiguous.
 
-So, please follow the interface conventions.  We can definitely add
-new ones but that would need functional reasons.
+Regards,
+Christian.
 
-> not described in the convention: 1) inclusion of read-only *.help file
-> at the root cgroup, 2) use read-only (which I can potentially make rw)
-> *.default file instead of having a default entries (since the default
-> can be different for different devices) inside the control files (this
-> way, the resetting of cgroup values for all the drm devices, can be
-> done by a simple 'cp'.)
+>
+> Regards,
+> Kenny
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
 
-Again, please follow the existing conventions.  There's a lot more
-harm than good in every controller being creative in their own way.
-It's trivial to build convenience features in userspace.  Please do it
-there.
-
-> > Is this really useful for an administrator to control?
-> > Isn't the resource we want to control actually the physical backing store?
-> That's correct.  This is just the first level of control since the
-> backing store can be backed by different type of memory.  I am in the
-> process of adding at least two more resources.  Stay tuned.  I am
-> doing the charge here to enforce the idea of "creator is deemed owner"
-> at a place where the code is shared by all (the init function.)
-
-Ideally, controller should only control hard resources which impact
-behaviors and performance which are immediately visible to users.
-
-Thanks.
-
--- 
-tejun
