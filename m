@@ -2,100 +2,192 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EE45120A85
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 16:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01E6420AC9
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 17:12:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727435AbfEPO6a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 May 2019 10:58:30 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43828 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726801AbfEPO63 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 10:58:29 -0400
-Received: by mail-ot1-f65.google.com with SMTP id i8so3673656oth.10
-        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 07:58:29 -0700 (PDT)
+        id S1727316AbfEPPM2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 May 2019 11:12:28 -0400
+Received: from mail-lf1-f46.google.com ([209.85.167.46]:34641 "EHLO
+        mail-lf1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726740AbfEPPM2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 11:12:28 -0400
+Received: by mail-lf1-f46.google.com with SMTP id v18so2956834lfi.1;
+        Thu, 16 May 2019 08:12:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=TAXmI7ViLmDBzBy7WEsJO+IrrN0Omh7qQ2SpFzX3/qs=;
-        b=piJeisUUwhQRZ4+x66kX29/b7KYSDS/xiEOhSVsuGfA88FR0gy17SWN8ZvKyzH/5OM
-         W5NrghFtsMJjX+KJK8MbT7k/sKBwXA1Q86xf/hmuSistn2gp9iYvM+eFcv5Wv38A0V4o
-         fQFOLhF6Z3J42Qw1knKNFsvMfWVeVbKVnXljL2RKu5QBVB8LjQNjNKJrCT5d7DfIcdqN
-         Kpxv4r0XcOQX88YqCR5YckcRZmAX5wFWS0gZfybmpZBBK5xdYSUZXfruKByEolBgHy3w
-         yT2tNvJNktVvuL3/j4/zLXDwBe+uXf0jYtuhE/5lC2qu7zhaDw33EN1uO6wVFNFDUUQc
-         lUZw==
+        bh=Gkh9T1Pf1TZ58K6YO+MkSR4mW1twy0xAjhb82p+QvNo=;
+        b=tzgTxOhp4Ro1XDxk6wlZ8SQ9qZM1m2aK5iY6/mvOOY2a/9wPIt/Cjl5p8aS9fZH1dc
+         JsBH+qBeT1NdZjvbxvEX2VAHFs/k4ekOvofwjgINNRoWu/Y5aC9UEagR98EjDEDbja+D
+         kMujsHloSrfohM9QDxi3uA1Bc1xNj2Cjplh6PtaEmc3pGAfuB23KvM8/iNGe6dkbbBTj
+         Up4AJQASg6+tGXe+IWyLQzJHR5llFuOJE8JEb//D003KiXc3QhbF9Mg6sshGAZLwW/vH
+         W5+ZbqrdCLjiX+Nfhmqm9EWACFFxLEAqqTEFp1LtbJR+PjFE6SZwvRLQOGsHJFINVQxG
+         UnxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=TAXmI7ViLmDBzBy7WEsJO+IrrN0Omh7qQ2SpFzX3/qs=;
-        b=F2XfaYBjEf+rkiHFsb7h7JyE6DX/hiqypBj9iDrMBtLqe/4dqMCXWYHUUQfDusy9Wi
-         0Xd1GIJ9FOxarkDnNzRivjFom9TwsvkrAZYFhLFLLzwmPwh/teeUEeO81KsPhD1/HSSq
-         kCm9DYVYSQYKf8qKpmcX8/ttX12tTwv/+Fy+0m/UCh2JIcI7TQPkqtILxqdnyIxkAax2
-         vP6jm++HHCMrRX7jwk+pu5dMCSFfH0yExIBP/l1DTOqIVhxJIkruxWnfHW4mBTSvJDNC
-         B2ZvTN6kA/7hhITM94gUq4hNeYn6ReSCbgRaZJ5Nxgvra39/p26ErdXkhO6prK4/nOcf
-         zEwA==
-X-Gm-Message-State: APjAAAXchK6K6e51f6XlmFP6+9N5JzRFyBErHsYvtlVo6gmAWuQBwrfW
-        DdQncjW21ojWVQ31DSGNqwRaZ+zuOyqq0zeeqjo=
-X-Google-Smtp-Source: APXvYqznfGfE9F/rQ0XB6eKk1l3lCo+w+8PyryMdB3vQAgGRL1rSuYWgMuTu3eRCvNetuh1xbsXNohyC/nD7XFRpiLg=
-X-Received: by 2002:a9d:754c:: with SMTP id b12mr22534otl.237.1558018709075;
- Thu, 16 May 2019 07:58:29 -0700 (PDT)
+        bh=Gkh9T1Pf1TZ58K6YO+MkSR4mW1twy0xAjhb82p+QvNo=;
+        b=fqA7ppqVGX2QPBGT3IfW/aS8jkkjccWUMTGZRgwhUOrY3q/hLVhy82fWNsoBH9AM+8
+         ja7iVI6+uhqBxqQnlJY+qsGe2Qd9VsCdKwx+kI1jPd51M9zOVbjaiGngNLc/ppJdWz94
+         BDqPUEhHKOu9PXRJb7DLw0fW3choC+QmBJ1OezFcuPOJ8ZgI6DI2u4OCEQ4LTQjvRd0v
+         IHfjbQfEVQv05iSPrboJkYv/rZ1h7etnyaU6mQKXF5m+uVBSE+nUki7QwUccb4WnaOQ2
+         kS3HvDNbnvA2WY2Rwb+/EG9XkSeU6/RTWMtLF2rGvJSuiYgAfe9m7vklTqQu3A7w83L/
+         DI9A==
+X-Gm-Message-State: APjAAAX2qY2P4SM2lYcfvwya2PZ56feHXhz+Kgqnaikp71LIF1dlxGGP
+        i7Uz3GPLzOnGU6TDBsTwrramVxijD8Hqa0wGh18=
+X-Google-Smtp-Source: APXvYqyRJIHp/LGo0xfFDd+wsy5z6PCQHBlHqdMk6M+nKjU81x0ekM9bvQpPP20l3YTKL4CaMVFvF14QwWDuebomLz4=
+X-Received: by 2002:a19:8:: with SMTP id 8mr24147995lfa.125.1558019545170;
+ Thu, 16 May 2019 08:12:25 -0700 (PDT)
 MIME-Version: 1.0
-References: <20181120185814.13362-1-Kenny.Ho@amd.com> <20190509210410.5471-1-Kenny.Ho@amd.com>
- <20190509210410.5471-5-Kenny.Ho@amd.com> <d81e8f55-9602-818e-0f9c-1d9d150133b1@intel.com>
- <CAOWid-ftUrVVWPu9KuS8xpWKNQT6_FtxB8gEyEAn9nLD6qxb5Q@mail.gmail.com> <20190516141015.GC374014@devbig004.ftw2.facebook.com>
-In-Reply-To: <20190516141015.GC374014@devbig004.ftw2.facebook.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Thu, 16 May 2019 10:58:17 -0400
-Message-ID: <CAOWid-fU7ScF7-+Ox-y2RHLeXVZmDOno=nLDf6HtToAPFwNNrQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation limit
-To:     Tejun Heo <tj@kernel.org>
-Cc:     "Welty, Brian" <brian.welty@intel.com>,
-        Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        sunnanyong@huawei.com, Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+References: <20190516103915.GB27421@krava>
+In-Reply-To: <20190516103915.GB27421@krava>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Thu, 16 May 2019 08:12:13 -0700
+Message-ID: <CAADnVQ+3rBfhJ=L=ZECUNss8Vdsu5snacT8-SqSwnjGHbUna+g@mail.gmail.com>
+Subject: Re: [RFC] cgroup gets release after long time
+To:     Jiri Olsa <jolsa@redhat.com>, Roman Gushchin <guro@fb.com>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Daniel Mack <daniel@zonque.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "David S. Miller" <davem@davemloft.net>,
+        Pavel Hrdina <phrdina@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 16, 2019 at 10:10 AM Tejun Heo <tj@kernel.org> wrote:
-> I haven't gone through the patchset yet but some quick comments.
+On Thu, May 16, 2019 at 3:39 AM Jiri Olsa <jolsa@redhat.com> wrote:
 >
-> On Wed, May 15, 2019 at 10:29:21PM -0400, Kenny Ho wrote:
-> > Given this controller is specific to the drm kernel subsystem which
-> > uses minor to identify drm device, I don't see a need to complicate
-> > the interfaces more by having major and a key.  As you can see in the
-> > examples below, the drm device minor corresponds to the line number.
-> > I am not sure how strict cgroup upstream is about the convention but I
->
-> We're pretty strict.
->
-> > am hoping there are flexibility here to allow for what I have
-> > implemented.  There are a couple of other things I have done that is
->
-> So, please follow the interface conventions.  We can definitely add
-> new ones but that would need functional reasons.
->
-> > not described in the convention: 1) inclusion of read-only *.help file
-> > at the root cgroup, 2) use read-only (which I can potentially make rw)
-> > *.default file instead of having a default entries (since the default
-> > can be different for different devices) inside the control files (this
-> > way, the resetting of cgroup values for all the drm devices, can be
-> > done by a simple 'cp'.)
->
-> Again, please follow the existing conventions.  There's a lot more
-> harm than good in every controller being creative in their own way.
-> It's trivial to build convenience features in userspace.  Please do it
-> there.
-I can certainly remove the ro *.help file and leave the documentation
-to Documentation/, but for the *.default I do have a functional reason
-to it.  As far as I can tell from the convention, the default is per
-cgroup and there is no way to describe per device default.  Although,
-perhaps we are talking about two different kinds of defaults.  Anyway,
-I can leave the discussion to a more detailed review.
+> hi,
+> Pavel reported an issue with bpf programs (attached to cgroup)
+> not being released at the time when the cgroup is removed and
+> are still visible in 'bpftool prog' list afterwards.
 
-Regards,
-Kenny
+right. the workaround systemd and others are using today is
+to detach bpf prog before rmdir of cgroup.
+Roman has patches to do this automatically.
+
+> It seems like this is not bpf specific, because I was able
+> to cut the bpf code from his example and still see delayed
+> release of cgroup.
+>
+> It happens only on cgroup2 fs (booted with systemd.unified_cgroup_hierarchy=1
+> kernel command line option), please check the attached program
+> below and following scenario:
+>
+> TERM 1
+> # gcc -o test test.c
+>
+>                         TERM 2
+>                         # cd /sys/kernel/debug/tracing
+>                         # echo 1 > events/cgroup/cgroup_release/enable
+>
+> TERM 1 -> create and remove cgroup1
+> # ./test group1
+> qemu-system-x86_64: terminating on signal 15 from pid 1775 (./test)
+>
+>                         TERM 2
+>                         # cat trace_pipe
+>                         <nothing>
+>
+> TERM 1 -> create and remove cgroup2
+> # ./test group2
+> qemu-system-x86_64: terminating on signal 15 from pid 1783 (./test)
+>
+>                         TERM 2  - group1 being released
+>                         # cat trace_pipe
+>                         kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
+>
+> TERM 1 -> create and remove cgroup3
+> # ./test group3
+> qemu-system-x86_64: terminating on signal 15 from pid 1798 (./test)
+>
+>                         TERM 2 - group2 being released
+>                         # cat trace_pipe
+>                         kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
+>                         kworker/22:0-1787  [022] ....  2961.501261: cgroup_release: root=0 id=78 level=1 path=/group2
+>
+>
+> Looks like the previous cgroup release is triggered by creating
+> another cgroup.  If I don't do anything the cgroup is released
+> (tracepoint shows) in about 90 seconds.
+>
+> The cgroup_release tracepoint is triggered in css_release_work_fn,
+> the same function where the cgroup_bpf_put is called, hence the
+> delay in releasing of the bpf programs.
+>
+> Is this expected or somehow configurable? It's confusing seeing
+> all the bpf programs from removed cgroups being around. In Pavel's
+> setup it's about 100 of them.
+>
+> Note, I could reproduce this only with qemu-kvm being run in child
+> process in the example below.
+>
+> thoughts? thanks,
+> jirka
+>
+>
+> ---
+> #include <fcntl.h>
+> #include <signal.h>
+> #include <stdio.h>
+> #include <string.h>
+> #include <sys/stat.h>
+> #include <sys/types.h>
+> #include <unistd.h>
+>
+> #define CGROUP_PATH "/sys/fs/cgroup"
+>
+> int
+> main(int argc, char **argv)
+> {
+>         pid_t pid = -1;
+>         char path[1024];
+>         int rc;
+>
+>         pid = fork();
+>
+>         if (pid == 0) {
+>                 execl("/usr/bin/qemu-kvm",
+>                       "/usr/bin/qemu-kvm",
+>                       "-display", "none",
+>                       NULL);
+>                 fprintf(stderr, "failed to start qemu process\n");
+>                 _exit(-1);
+>         } else {
+>                 int filefd = -1;
+>                 char proc[1024];
+>
+>                 snprintf(path, 1024, "%s/%s", CGROUP_PATH, argv[1]);
+>
+>                 sleep(1);
+>
+>                 if (mkdir(path, 0755) < 0) {
+>                         fprintf(stderr, "failed to create cgroup '%s'\n", path);
+>                         return -1;
+>                 }
+>
+>                 snprintf(proc, 1024, "%s/cgroup.procs", path);
+>
+>                 filefd = open(proc, O_WRONLY|O_TRUNC);
+>                 if (filefd > 0) {
+>                         dprintf(filefd, "%u", pid);
+>                         close(filefd);
+>                 }
+>
+>                 sleep(1);
+>         }
+>
+>         if (pid > 0)
+>                 kill(pid, SIGTERM);
+>         do {
+>                 rc = rmdir(path);
+>         } while (rc != 0);
+>
+>         return 0;
+> }
