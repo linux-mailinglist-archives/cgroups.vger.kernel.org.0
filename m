@@ -2,115 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA4A20E10
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 19:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB520E2F
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 19:45:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727804AbfEPRi1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 May 2019 13:38:27 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:44286 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726409AbfEPRi1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 13:38:27 -0400
-Received: from pps.filterd (m0001255.ppops.net [127.0.0.1])
-        by mx0b-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4GHVsFC009911
-        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 10:38:26 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-type; s=facebook;
- bh=B2SIJpPp/mlOGynEQLUWe5A/4Aq03L0X3tl4w90B9Gw=;
- b=U/xGWQ3ojU2JxIog44PXNp5LPf2/Ycypw+1r8vLEJyLqAzCnHVyC3zvrKUvVZK0XoAwZ
- DN0Y0n3NAKzNROT8Uh7Ecr++ixHJ9xnPfvBycVuQZ4gX7kxv3Xr0Nkf9WT4+yhJtCOo+
- rJF8OhLSP4zv0YuxXkQW0bS/JN7M9+GwNnU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0b-00082601.pphosted.com with ESMTP id 2sh7c895t5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 10:38:26 -0700
-Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 16 May 2019 10:38:25 -0700
-Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
-        id B087112182CE9; Thu, 16 May 2019 10:38:23 -0700 (PDT)
-Smtp-Origin-Hostprefix: devvm
-From:   Roman Gushchin <guro@fb.com>
-Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
-To:     Tejun Heo <tj@kernel.org>
-CC:     Oleg Nesterov <oleg@redhat.com>, Alex Xu <alex_y_xu@yahoo.ca>,
-        <kernel-team@fb.com>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
-Smtp-Origin-Cluster: prn2c23
-Subject: [PATCH RESEND] signal: unconditionally leave the frozen state in ptrace_stop()
-Date:   Thu, 16 May 2019 10:38:21 -0700
-Message-ID: <20190516173821.1498807-1-guro@fb.com>
-X-Mailer: git-send-email 2.17.1
-X-FB-Internal: Safe
+        id S1726563AbfEPRp1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 May 2019 13:45:27 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:41238 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbfEPRp1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 13:45:27 -0400
+Received: by mail-qt1-f194.google.com with SMTP id y22so4904850qtn.8;
+        Thu, 16 May 2019 10:45:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=TZW9oPjKjF7UuQfNRNZlJhWogoRZGc1JB7uoqoIfv+8=;
+        b=U+/Dsbpe3Ev8qOz5ABegg4QwYrxhkHAqm6TrtgUJZMxYDxJyKNRkrRR2BomF+w8bGA
+         JeXPRak510vhmmzJ8bRXqpXFQtGibDSo/kyK2zYtiw+D7B7H/6Gb/lGYxPaHanLuyx5i
+         gUYWYVTnZ5fNLpvZmPoI1/hpBdL/MlRiTGoXmomSU60h70cP2MeSUERNp3AMtK+BAXOR
+         753TXbfYLlPuastYz2vzgY435v4UWD/63ouWJF2lzPjL0KwD1TPbqNzSVAQQTSmrFxD3
+         BiH4q8vfb1Vc8YX3FlMIFhHYqPuYMeE0fF9Zpl545yER8ygpzwARFTZi9cGlYGk6xKUt
+         f7dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TZW9oPjKjF7UuQfNRNZlJhWogoRZGc1JB7uoqoIfv+8=;
+        b=rALhC8waL0mjiX2VLLZKV3UrmLDWRWQmqRXe6mxhcEVixh6aRsAoqaHuaUl381LHYi
+         1hMLat+r/yvLsRhbH5g4D2DX2mqV28TERoJUSbgN5RG1Gk7ZhY22mDeVVPA7FkaZNlIw
+         gFU9vSMoQD+Lu68clyxRDzIa8qdp2uFVqxflgfkJkwRZxT8foAX+fCdyP/sLHfcO0wvX
+         SbycO0VwzWyvFw8yX0bi7NABzVj8jIWO7IHNg3JpzsIw4Xr55/A5I91vGR9lqvpHCOO2
+         rqX96gSP7a4eYDfMl3Yd724ByPRRok3kNYUJcGIy/zdmPvXWrqC63QJTt7K4ZSdeBieG
+         7T+Q==
+X-Gm-Message-State: APjAAAWT0rh1A0VCPJGtUSxaRscucZqsDfCYlfeY/XZytfilYg/0iSO5
+        BgVB2AderhTof76oBUAccU42NqioRHg=
+X-Google-Smtp-Source: APXvYqyUkVz3sqfNMifhOeY7ZDSeqgmGmjvjqqsICWFuayNjL9C3yjroqXXDBYnZFz5G9EOCbhBW9Q==
+X-Received: by 2002:a05:6214:41:: with SMTP id c1mr33503890qvr.138.1558028725812;
+        Thu, 16 May 2019 10:45:25 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:e390])
+        by smtp.gmail.com with ESMTPSA id e37sm4124575qte.23.2019.05.16.10.45.24
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 May 2019 10:45:24 -0700 (PDT)
+Date:   Thu, 16 May 2019 10:45:23 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Oleg Nesterov <oleg@redhat.com>, Alex Xu <alex_y_xu@yahoo.ca>,
+        kernel-team@fb.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RESEND] signal: unconditionally leave the frozen state in
+ ptrace_stop()
+Message-ID: <20190516174523.GD374014@devbig004.ftw2.facebook.com>
+References: <20190516173821.1498807-1-guro@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-16_14:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=317 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1905160111
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190516173821.1498807-1-guro@fb.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Alex Xu reported a regression in strace, caused by the introduction of
-the cgroup v2 freezer. The regression can be reproduced by stracing
-the following simple program:
+On Thu, May 16, 2019 at 10:38:21AM -0700, Roman Gushchin wrote:
+> Alex Xu reported a regression in strace, caused by the introduction of
+> the cgroup v2 freezer. The regression can be reproduced by stracing
+> the following simple program:
+> 
+>   #include <unistd.h>
+> 
+>   int main() {
+>       write(1, "a", 1);
+>       return 0;
+>   }
+> 
+> An attempt to run strace ./a.out leads to the infinite loop:
+>   [ pre-main omitted ]
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+>   [ repeats forever ]
+> 
+> The problem occurs because the traced task leaves ptrace_stop()
+> (and the signal handling loop) with the frozen bit set. So let's
+> call cgroup_leave_frozen(true) unconditionally after sleeping
+> in ptrace_stop().
+> 
+> With this patch applied, strace works as expected:
+>   [ pre-main omitted ]
+>   write(1, "a", 1)                        = 1
+>   exit_group(0)                           = ?
+>   +++ exited with 0 +++
+> 
+> Reported-by: Alex Xu <alex_y_xu@yahoo.ca>
+> Fixes: 76f969e8948d ("cgroup: cgroup v2 freezer")
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Acked-by: Oleg Nesterov <oleg@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
 
-  #include <unistd.h>
+Applied to cgroup/for-5.2-fixes.
 
-  int main() {
-      write(1, "a", 1);
-      return 0;
-  }
+Thanks.
 
-An attempt to run strace ./a.out leads to the infinite loop:
-  [ pre-main omitted ]
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  write(1, "a", 1)                        = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
-  [ repeats forever ]
-
-The problem occurs because the traced task leaves ptrace_stop()
-(and the signal handling loop) with the frozen bit set. So let's
-call cgroup_leave_frozen(true) unconditionally after sleeping
-in ptrace_stop().
-
-With this patch applied, strace works as expected:
-  [ pre-main omitted ]
-  write(1, "a", 1)                        = 1
-  exit_group(0)                           = ?
-  +++ exited with 0 +++
-
-Reported-by: Alex Xu <alex_y_xu@yahoo.ca>
-Fixes: 76f969e8948d ("cgroup: cgroup v2 freezer")
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Acked-by: Oleg Nesterov <oleg@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>
----
- kernel/signal.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/kernel/signal.c b/kernel/signal.c
-index 8607b11ff936..565ba14d89d5 100644
---- a/kernel/signal.c
-+++ b/kernel/signal.c
-@@ -2112,6 +2112,7 @@ static void ptrace_stop(int exit_code, int why, int clear_code, kernel_siginfo_t
- 		preempt_enable_no_resched();
- 		cgroup_enter_frozen();
- 		freezable_schedule();
-+		cgroup_leave_frozen(true);
- 	} else {
- 		/*
- 		 * By the time we got the lock, our tracer went away.
 -- 
-2.20.1
-
+tejun
