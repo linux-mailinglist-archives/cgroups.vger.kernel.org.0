@@ -2,166 +2,209 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6CE7203AD
-	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 12:39:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93731206E5
+	for <lists+cgroups@lfdr.de>; Thu, 16 May 2019 14:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727160AbfEPKjT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 May 2019 06:39:19 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:46458 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727144AbfEPKjT (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 16 May 2019 06:39:19 -0400
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 5B9B43179164;
-        Thu, 16 May 2019 10:39:18 +0000 (UTC)
-Received: from krava (unknown [10.43.17.48])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 47273983F;
-        Thu, 16 May 2019 10:39:16 +0000 (UTC)
-Date:   Thu, 16 May 2019 12:39:15 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Daniel Mack <daniel@zonque.org>
-Cc:     cgroups@vger.kernel.org, bpf@vger.kernel.org,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Pavel Hrdina <phrdina@redhat.com>
-Subject: [RFC] cgroup gets release after long time
-Message-ID: <20190516103915.GB27421@krava>
+        id S1726723AbfEPM3F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 May 2019 08:29:05 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:36107 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726513AbfEPM3E (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 May 2019 08:29:04 -0400
+Received: by mail-ed1-f65.google.com with SMTP id a8so5032631edx.3
+        for <cgroups@vger.kernel.org>; Thu, 16 May 2019 05:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=i+Lyxzg1cYsoIY9/z0raLB7h90h+0ypKbiiOiLxJIc4=;
+        b=VHJchvJkBUL/IiXCqvxAcr+2npuP0fs7zrWHH7236TKDnakQ0iZlJdW4pCjn+8nxL+
+         3E1lsKC0liOlLQT1gOGdcLFHiJvB76/L0bRTc6rSNm4I8IfC+OljCRbxjOQ257sm6jxr
+         Y46sqchCpt5nqUfyFUQIu/9ra0M5fEiAkKh5U=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=i+Lyxzg1cYsoIY9/z0raLB7h90h+0ypKbiiOiLxJIc4=;
+        b=S7ZaeNjX63etw8JS6Xw7JtDID750ABVcicah2wZzhoEj2qQYuVft5WQxRiSsPwhWzU
+         uGunBInNFcT/vhDXGGRl9NXiTzCR87hBPk7o5bAU9HnbWmXx1q6GL7xOtLfO0AyBfEvI
+         dJrzz7DjovJyBFzHXBxteg54yFHkXTZAbruhJpfnwlvCL+ETSzOt+u6Qw3o3k6pH4pM5
+         cSWAbMYym89QmtpbxlEHNvPApxi6d33sNotaVgRw+UMzLwj/DzdqeAZh8E9o5Y9XefbB
+         GLiKoXKclqRAoLRfFM/9KWKKjXp8F2NQJ027mTzZNT2G8QxqPgjbONcfA1x4PlHx8vl5
+         5ubg==
+X-Gm-Message-State: APjAAAXVwiLFB2etymCAPKT9nat7lNqQqnpTxAF+x35UMMM69fR4KdAf
+        ksc2AqO+sx7PFo9NrKmIrHciqg==
+X-Google-Smtp-Source: APXvYqxrreJ6ABa5awYWluY+zOs/iIa6BkyLYZkzZE6+e1vzjgscU8bF9TwZ1FvI0SbHUp2uC2Hnng==
+X-Received: by 2002:a17:906:f19a:: with SMTP id gs26mr31357470ejb.78.1558009742079;
+        Thu, 16 May 2019 05:29:02 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
+        by smtp.gmail.com with ESMTPSA id r2sm1055553ejp.76.2019.05.16.05.29.00
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 16 May 2019 05:29:00 -0700 (PDT)
+Date:   Thu, 16 May 2019 14:28:58 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     christian.koenig@amd.com
+Cc:     Kenny Ho <y2kenny@gmail.com>,
+        "Welty, Brian" <brian.welty@intel.com>,
+        "sunnanyong@huawei.com" <sunnanyong@huawei.com>,
+        "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [RFC PATCH v2 4/5] drm, cgroup: Add total GEM buffer allocation
+ limit
+Message-ID: <20190516122858.GB3851@phenom.ffwll.local>
+References: <20181120185814.13362-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-1-Kenny.Ho@amd.com>
+ <20190509210410.5471-5-Kenny.Ho@amd.com>
+ <d81e8f55-9602-818e-0f9c-1d9d150133b1@intel.com>
+ <CAOWid-ftUrVVWPu9KuS8xpWKNQT6_FtxB8gEyEAn9nLD6qxb5Q@mail.gmail.com>
+ <7db2caae-7eab-7c6a-fe90-89cb9cae30b4@amd.com>
+ <6e124f5e-f83f-5ca1-4616-92538f202653@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Thu, 16 May 2019 10:39:18 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6e124f5e-f83f-5ca1-4616-92538f202653@gmail.com>
+X-Operating-System: Linux phenom 4.14.0-3-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-hi,
-Pavel reported an issue with bpf programs (attached to cgroup)
-not being released at the time when the cgroup is removed and
-are still visible in 'bpftool prog' list afterwards.
+On Thu, May 16, 2019 at 09:25:31AM +0200, Christian König wrote:
+> Am 16.05.19 um 09:16 schrieb Koenig, Christian:
+> > Am 16.05.19 um 04:29 schrieb Kenny Ho:
+> > > [CAUTION: External Email]
+> > > 
+> > > On Wed, May 15, 2019 at 5:26 PM Welty, Brian <brian.welty@intel.com> wrote:
+> > > > On 5/9/2019 2:04 PM, Kenny Ho wrote:
+> > > > > There are four control file types,
+> > > > > stats (ro) - display current measured values for a resource
+> > > > > max (rw) - limits for a resource
+> > > > > default (ro, root cgroup only) - default values for a resource
+> > > > > help (ro, root cgroup only) - help string for a resource
+> > > > > 
+> > > > > Each file is multi-lined with one entry/line per drm device.
+> > > > Multi-line is correct for multiple devices, but I believe you need
+> > > > to use a KEY to denote device for both your set and get routines.
+> > > > I didn't see your set functions reading a key, or the get functions
+> > > > printing the key in output.
+> > > > cgroups-v2 conventions mention using KEY of major:minor, but I think
+> > > > you can use drm_minor as key?
+> > > Given this controller is specific to the drm kernel subsystem which
+> > > uses minor to identify drm device,
+> > Wait a second, using the DRM minor is a good idea in the first place.
+> 
+> Well that should have read "is not a good idea"..
 
-It seems like this is not bpf specific, because I was able
-to cut the bpf code from his example and still see delayed
-release of cgroup.
+What else should we use?
+> 
+> Christian.
+> 
+> > 
+> > I have a test system with a Vega10 and a Vega20. Which device gets which
+> > minor is not stable, but rather defined by the scan order of the PCIe bus.
+> > 
+> > Normally the scan order is always the same, but adding or removing
+> > devices or delaying things just a little bit during init is enough to
+> > change this.
+> > 
+> > We need something like the Linux sysfs location or similar to have a
+> > stable implementation.
 
-It happens only on cgroup2 fs (booted with systemd.unified_cgroup_hierarchy=1
-kernel command line option), please check the attached program
-below and following scenario:
+You can go from sysfs location to drm class directory (in sysfs) and back.
+That means if you care you need to walk sysfs yourself a bit, but using
+the drm minor isn't a blocker itself.
 
-TERM 1
-# gcc -o test test.c
+One downside with the drm minor is that it's pretty good nonsense once you
+have more than 64 gpus though, due to how we space render and legacy nodes
+in the minor ids :-)
+-Daniel
+> > 
+> > Regards,
+> > Christian.
+> > 
+> > >    I don't see a need to complicate
+> > > the interfaces more by having major and a key.  As you can see in the
+> > > examples below, the drm device minor corresponds to the line number.
+> > > I am not sure how strict cgroup upstream is about the convention but I
+> > > am hoping there are flexibility here to allow for what I have
+> > > implemented.  There are a couple of other things I have done that is
+> > > not described in the convention: 1) inclusion of read-only *.help file
+> > > at the root cgroup, 2) use read-only (which I can potentially make rw)
+> > > *.default file instead of having a default entries (since the default
+> > > can be different for different devices) inside the control files (this
+> > > way, the resetting of cgroup values for all the drm devices, can be
+> > > done by a simple 'cp'.)
+> > > 
+> > > > > Usage examples:
+> > > > > // set limit for card1 to 1GB
+> > > > > sed -i '2s/.*/1073741824/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
+> > > > > 
+> > > > > // set limit for card0 to 512MB
+> > > > > sed -i '1s/.*/536870912/' /sys/fs/cgroup/<cgroup>/drm.buffer.total.max
+> > > > >    /** @file drm_gem.c
+> > > > > @@ -154,6 +156,9 @@ void drm_gem_private_object_init(struct drm_device *dev,
+> > > > >         obj->handle_count = 0;
+> > > > >         obj->size = size;
+> > > > >         drm_vma_node_reset(&obj->vma_node);
+> > > > > +
+> > > > > +     obj->drmcgrp = get_drmcgrp(current);
+> > > > > +     drmcgrp_chg_bo_alloc(obj->drmcgrp, dev, size);
+> > > > Why do the charging here?
+> > > > There is no backing store yet for the buffer, so this is really tracking something akin to allowed virtual memory for GEM objects?
+> > > > Is this really useful for an administrator to control?
+> > > > Isn't the resource we want to control actually the physical backing store?
+> > > That's correct.  This is just the first level of control since the
+> > > backing store can be backed by different type of memory.  I am in the
+> > > process of adding at least two more resources.  Stay tuned.  I am
+> > > doing the charge here to enforce the idea of "creator is deemed owner"
+> > > at a place where the code is shared by all (the init function.)
+> > > 
+> > > > > +     while (i <= max_minor && limits != NULL) {
+> > > > > +             sval =  strsep(&limits, "\n");
+> > > > > +             rc = kstrtoll(sval, 0, &val);
+> > > > Input should be "KEY VALUE", so KEY will determine device to apply this to.
+> > > > Also, per cgroups-v2 documentation of limits, I believe need to parse and handle the special "max" input value.
+> > > > 
+> > > > parse_resources() in rdma controller is example for both of above.
+> > > Please see my previous reply for the rationale of my hope to not need
+> > > a key.  I can certainly add handling of "max" and "default".
+> > > 
+> > > 
+> > > > > +void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+> > > > > +             size_t size)
+> > > > Shouldn't this return an error and be implemented with same semantics as the
+> > > > try_charge() functions of other controllers?
+> > > > Below will allow stats_total_allocated to overrun limits_total_allocated.
+> > > This is because I am charging the buffer at the init of the buffer
+> > > which does not fail so the "try" (drmcgrp_bo_can_allocate) is separate
+> > > and placed earlier and nearer other condition where gem object
+> > > allocation may fail.  In other words, there are multiple possibilities
+> > > for which gem allocation may fail (cgroup limit being one of them) and
+> > > satisfying cgroup limit does not mean a charge is needed.  I can
+> > > certainly combine the two functions to have an additional try_charge
+> > > semantic as well if that is really needed.
+> > > 
+> > > Regards,
+> > > Kenny
+> > _______________________________________________
+> > amd-gfx mailing list
+> > amd-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-			TERM 2
-			# cd /sys/kernel/debug/tracing
-			# echo 1 > events/cgroup/cgroup_release/enable
-
-TERM 1 -> create and remove cgroup1
-# ./test group1
-qemu-system-x86_64: terminating on signal 15 from pid 1775 (./test)
-
-			TERM 2
-			# cat trace_pipe
-			<nothing>
-
-TERM 1 -> create and remove cgroup2
-# ./test group2
-qemu-system-x86_64: terminating on signal 15 from pid 1783 (./test)
-
-			TERM 2  - group1 being released
-			# cat trace_pipe
-			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
-
-TERM 1 -> create and remove cgroup3
-# ./test group3
-qemu-system-x86_64: terminating on signal 15 from pid 1798 (./test)
-
-			TERM 2 - group2 being released
-			# cat trace_pipe
-			kworker/22:2-1135  [022] ....  2947.375526: cgroup_release: root=0 id=78 level=1 path=/group1
-			kworker/22:0-1787  [022] ....  2961.501261: cgroup_release: root=0 id=78 level=1 path=/group2
-
-
-Looks like the previous cgroup release is triggered by creating
-another cgroup.  If I don't do anything the cgroup is released
-(tracepoint shows) in about 90 seconds.
-
-The cgroup_release tracepoint is triggered in css_release_work_fn,
-the same function where the cgroup_bpf_put is called, hence the
-delay in releasing of the bpf programs.
-
-Is this expected or somehow configurable? It's confusing seeing
-all the bpf programs from removed cgroups being around. In Pavel's
-setup it's about 100 of them.
-
-Note, I could reproduce this only with qemu-kvm being run in child
-process in the example below.
-
-thoughts? thanks,
-jirka
-
-
----
-#include <fcntl.h>
-#include <signal.h>
-#include <stdio.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
-
-#define CGROUP_PATH "/sys/fs/cgroup"
-
-int
-main(int argc, char **argv)
-{
-	pid_t pid = -1;
-	char path[1024];
-	int rc;
-
-	pid = fork();
-
-	if (pid == 0) {
-		execl("/usr/bin/qemu-kvm",
-		      "/usr/bin/qemu-kvm",
-		      "-display", "none",
-		      NULL);
-		fprintf(stderr, "failed to start qemu process\n");
-		_exit(-1);
-	} else {
-		int filefd = -1;
-		char proc[1024];
-
-		snprintf(path, 1024, "%s/%s", CGROUP_PATH, argv[1]);
-
-		sleep(1);
-
-		if (mkdir(path, 0755) < 0) {
-			fprintf(stderr, "failed to create cgroup '%s'\n", path);
-			return -1;
-		}
-
-		snprintf(proc, 1024, "%s/cgroup.procs", path);
-
-		filefd = open(proc, O_WRONLY|O_TRUNC);
-		if (filefd > 0) {
-			dprintf(filefd, "%u", pid);
-			close(filefd);
-		}
-
-		sleep(1);
-	}
-
-	if (pid > 0)
-		kill(pid, SIGTERM);
-	do {
-		rc = rmdir(path);
-	} while (rc != 0);
-
-	return 0;
-}
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
