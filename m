@@ -2,123 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E4D8216C6
-	for <lists+cgroups@lfdr.de>; Fri, 17 May 2019 12:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D7C7217D6
+	for <lists+cgroups@lfdr.de>; Fri, 17 May 2019 13:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728520AbfEQKM6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 May 2019 06:12:58 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:33386 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727758AbfEQKM6 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 17 May 2019 06:12:58 -0400
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 78DB83001A62;
-        Fri, 17 May 2019 10:12:57 +0000 (UTC)
-Received: from antique-laptop (unknown [10.43.2.63])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 26BE578373;
-        Fri, 17 May 2019 10:12:54 +0000 (UTC)
-Date:   Fri, 17 May 2019 12:12:51 +0200
-From:   Pavel Hrdina <phrdina@redhat.com>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, Jiri Olsa <jolsa@redhat.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Daniel Mack <daniel@zonque.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [RFC] cgroup gets release after long time
-Message-ID: <20190517101222.GF1981@antique-laptop>
-References: <20190516103915.GB27421@krava>
- <20190516152224.GA7163@castle.DHCP.thefacebook.com>
- <20190516153144.GC19737@antique-laptop>
- <20190516171427.GA8058@castle.DHCP.thefacebook.com>
- <CAADnVQ+c4HW+1jrurHDX0M4-yn13fmU=TYhF+8wPrxNZZRcjTw@mail.gmail.com>
+        id S1728383AbfEQLmH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 May 2019 07:42:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52046 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727727AbfEQLmH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 17 May 2019 07:42:07 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A5610AECD;
+        Fri, 17 May 2019 11:42:05 +0000 (UTC)
+From:   Jiri Slaby <jslaby@suse.cz>
+To:     linux-mm@kvack.org
+Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org,
+        Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+Subject: [PATCH v2] memcg: make it work on sparse non-0-node systems
+Date:   Fri, 17 May 2019 13:42:04 +0200
+Message-Id: <20190517114204.6330-1-jslaby@suse.cz>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <20190517080044.tnwhbeyxcccsymgf@esperanza>
+References: <20190517080044.tnwhbeyxcccsymgf@esperanza>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="Qf1oXS95uex85X0R"
-Content-Disposition: inline
-In-Reply-To: <CAADnVQ+c4HW+1jrurHDX0M4-yn13fmU=TYhF+8wPrxNZZRcjTw@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.45]); Fri, 17 May 2019 10:12:57 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+We have a single node system with node 0 disabled:
+  Scanning NUMA topology in Northbridge 24
+  Number of physical nodes 2
+  Skipping disabled node 0
+  Node 1 MemBase 0000000000000000 Limit 00000000fbff0000
+  NODE_DATA(1) allocated [mem 0xfbfda000-0xfbfeffff]
 
---Qf1oXS95uex85X0R
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This causes crashes in memcg when system boots:
+  BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
+  #PF error: [normal kernel read fault]
+...
+  RIP: 0010:list_lru_add+0x94/0x170
+...
+  Call Trace:
+   d_lru_add+0x44/0x50
+   dput.part.34+0xfc/0x110
+   __fput+0x108/0x230
+   task_work_run+0x9f/0xc0
+   exit_to_usermode_loop+0xf5/0x100
 
-On Thu, May 16, 2019 at 10:25:50AM -0700, Alexei Starovoitov wrote:
-> On Thu, May 16, 2019 at 10:15 AM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Thu, May 16, 2019 at 05:31:44PM +0200, Pavel Hrdina wrote:
-> > > On Thu, May 16, 2019 at 03:22:33PM +0000, Roman Gushchin wrote:
-> > > > On Thu, May 16, 2019 at 12:39:15PM +0200, Jiri Olsa wrote:
-> > > > > hi,
-> > > > > Pavel reported an issue with bpf programs (attached to cgroup)
-> > > > > not being released at the time when the cgroup is removed and
-> > > > > are still visible in 'bpftool prog' list afterwards.
-> > > >
-> > > > Hi Jiri!
-> > > >
-> > > > Can you, please, try the patch from
-> > > > https://github.com/rgushchin/linux/commit/f77afa1952d81a1afa6c4872d=
-342bf6721e148e2 ?
-> > > >
-> > > > It should solve the problem, and I'm about to post it upstream.
-> > >
-> > > Perfect, I'll give it a try with full libvirt setup as well.
-> > >
-> > > Can we have this somehow detectable from user-space so libvirt can
-> > > decide when to use BPF or not?  I would like to avoid using BPF with
-> > > libvirt if this issue is not fixed and we cannot simply workaround it
-> > > as systemd automatically removes cgroups for us.
-> >
-> > Hm, I don't think there is a good way to detect it from userspace.
-> > At least I have no good ideas. Alexei? Daniel?
-> >
-> > If you're interested in a particular stable version, we can probably
-> > treat it as a "fix", and backport.
->=20
-> right.
-> also user space workaround is trivial.
-> Just detach before rmdir.
+It is reproducible as far as 4.12. I did not try older kernels. You have
+to have a new enough systemd, e.g. 241 (the reason is unknown -- was not
+investigated). Cannot be reproduced with systemd 234.
 
-Well yes, it's trivial but not if you are using machined from systemd.
-Once libvirt kills QEMU process systemd automatically removes the
-cgroup so we don't have any chance to remove the BPF program.
+The system crashes because the size of lru array is never updated in
+memcg_update_all_list_lrus and the reads are past the zero-sized array,
+causing dereferences of random memory.
 
-Would it be too ugly to put something into
-'/sys/kernel/cgroup/features'?
+The root cause are list_lru_memcg_aware checks in the list_lru code.
+The test in list_lru_memcg_aware is broken: it assumes node 0 is always
+present, but it is not true on some systems as can be seen above.
 
-Pavel
+So fix this by avoiding checks on node 0. Remember the memcg-awareness
+by a bool flag in struct list_lru.
 
---Qf1oXS95uex85X0R
-Content-Type: application/pgp-signature; name="signature.asc"
+[v2] use the idea proposed by Vladimir -- the bool flag.
 
------BEGIN PGP SIGNATURE-----
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Suggested-by: Vladimir Davydov <vdavydov.dev@gmail.com>
+Acked-by: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: <cgroups@vger.kernel.org>
+Cc: <linux-mm@kvack.org>
+Cc: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+---
+ include/linux/list_lru.h | 1 +
+ mm/list_lru.c            | 8 +++-----
+ 2 files changed, 4 insertions(+), 5 deletions(-)
 
-iQIzBAEBCAAdFiEEcbzs91ho/coWWY7aUi1kczAH4YwFAlzeiSMACgkQUi1kczAH
-4YwxjxAA2NmLZIjbAiTsE+D4p8WbDUps9sldDKMKZI9sqeoffL779fLYxKsRnWSg
-U0W5T85hNPsFwbRDLYwWzBoOqD+HuspY/MrhUzH1SagvZyYkJyJ0GxM+JvfgMFfS
-HRQE7179vLFGx0OP0c4od2l7FUGPS1XVHoLc6gskehErkMPJog5I+OmqF9DPBlAB
-6Qk6K4kTeH88jIRuHQmAEzOpOZrjjeaQ+ugih4eTCRmeB/uFLzwJfHzmY4SyWUnz
-fEXf6GNd6dyFrCr4dWUF0wTFrV8hK3MynHBWQFVykZczD25n2B8E0PoGxZExCaBp
-c3pImWFCfspu/15ajqP1nsSxggdGdP4PnzW9sR+eG3igL+EaltTJDUI8A/hPeOcw
-BQUY24MSDZaxJlB8Kzx81/pbWRGoIjvYk1lwkZFTXTGfOSPdu21VjW7mNRBqAsH9
-WfPHS5UHZ5hLZfqqCYER/xUWT/Ea4BTcoFmFkUhCYFjwcWtvCaT6XikEBTr2skVv
-6FHXNB1vLykknJuc+hXlur7cabcMCXmr+PrGslvpEF00yn4IosbGoHwpmxcOLUMc
-/7LbN7nQdkCBNQI6ka2/oXG/ph1xNVsBD26/+XUuwdqzgvGMOZVVToXV4W/UjczO
-Ij6qj1tRImuC0jupYc+w0RwTtWu9D8Vs6V0Fp7BmOm4PGXOAqlE=
-=1uOM
------END PGP SIGNATURE-----
+diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
+index aa5efd9351eb..d5ceb2839a2d 100644
+--- a/include/linux/list_lru.h
++++ b/include/linux/list_lru.h
+@@ -54,6 +54,7 @@ struct list_lru {
+ #ifdef CONFIG_MEMCG_KMEM
+ 	struct list_head	list;
+ 	int			shrinker_id;
++	bool			memcg_aware;
+ #endif
+ };
+ 
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index 0730bf8ff39f..d3b538146efd 100644
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -37,11 +37,7 @@ static int lru_shrinker_id(struct list_lru *lru)
+ 
+ static inline bool list_lru_memcg_aware(struct list_lru *lru)
+ {
+-	/*
+-	 * This needs node 0 to be always present, even
+-	 * in the systems supporting sparse numa ids.
+-	 */
+-	return !!lru->node[0].memcg_lrus;
++	return lru->memcg_aware;
+ }
+ 
+ static inline struct list_lru_one *
+@@ -451,6 +447,8 @@ static int memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
+ {
+ 	int i;
+ 
++	lru->memcg_aware = memcg_aware;
++
+ 	if (!memcg_aware)
+ 		return 0;
+ 
+-- 
+2.21.0
 
---Qf1oXS95uex85X0R--
