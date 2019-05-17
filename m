@@ -2,149 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0E421824
-	for <lists+cgroups@lfdr.de>; Fri, 17 May 2019 14:27:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D58121833
+	for <lists+cgroups@lfdr.de>; Fri, 17 May 2019 14:33:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728073AbfEQM1H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 May 2019 08:27:07 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59000 "EHLO mx1.suse.de"
+        id S1728425AbfEQMdN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 May 2019 08:33:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59664 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728365AbfEQM1H (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 17 May 2019 08:27:07 -0400
+        id S1728365AbfEQMdN (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 17 May 2019 08:33:13 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 9D97DAEF5;
-        Fri, 17 May 2019 12:27:05 +0000 (UTC)
-Date:   Fri, 17 May 2019 14:27:05 +0200
+        by mx1.suse.de (Postfix) with ESMTP id 1D0C2AF7C;
+        Fri, 17 May 2019 12:33:11 +0000 (UTC)
+Date:   Fri, 17 May 2019 14:33:10 +0200
 From:   Michal Hocko <mhocko@kernel.org>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org,
-        Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
-Subject: Re: [PATCH v2] memcg: make it work on sparse non-0-node systems
-Message-ID: <20190517122705.GH6836@dhcp22.suse.cz>
-References: <20190517080044.tnwhbeyxcccsymgf@esperanza>
- <20190517114204.6330-1-jslaby@suse.cz>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     akpm@linux-foundation.org, mm-commits@vger.kernel.org,
+        tj@kernel.org, guro@fb.com, dennis@kernel.org,
+        chris@chrisdown.name,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        linux-mm@kvack.org
+Subject: Re: + mm-consider-subtrees-in-memoryevents.patch added to -mm tree
+Message-ID: <20190517123310.GI6836@dhcp22.suse.cz>
+References: <20190212224542.ZW63a%akpm@linux-foundation.org>
+ <20190213124729.GI4525@dhcp22.suse.cz>
+ <20190516175655.GA25818@cmpxchg.org>
+ <20190516180932.GA13208@dhcp22.suse.cz>
+ <20190516193943.GA26439@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190517114204.6330-1-jslaby@suse.cz>
+In-Reply-To: <20190516193943.GA26439@cmpxchg.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 17-05-19 13:42:04, Jiri Slaby wrote:
-> We have a single node system with node 0 disabled:
->   Scanning NUMA topology in Northbridge 24
->   Number of physical nodes 2
->   Skipping disabled node 0
->   Node 1 MemBase 0000000000000000 Limit 00000000fbff0000
->   NODE_DATA(1) allocated [mem 0xfbfda000-0xfbfeffff]
+On Thu 16-05-19 15:39:43, Johannes Weiner wrote:
+> On Thu, May 16, 2019 at 08:10:42PM +0200, Michal Hocko wrote:
+> > On Thu 16-05-19 13:56:55, Johannes Weiner wrote:
+> > > On Wed, Feb 13, 2019 at 01:47:29PM +0100, Michal Hocko wrote:
+[...]
+> > > > FTR: As I've already said here [1] I can live with this change as long
+> > > > as there is a larger consensus among cgroup v2 users. So let's give this
+> > > > some more time before merging to see whether there is such a consensus.
+> > > > 
+> > > > [1] http://lkml.kernel.org/r/20190201102515.GK11599@dhcp22.suse.cz
+> > > 
+> > > It's been three months without any objections.
+> > 
+> > It's been three months without any _feedback_ from anybody. It might
+> > very well be true that people just do not read these emails or do not
+> > care one way or another.
 > 
-> This causes crashes in memcg when system boots:
->   BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
->   #PF error: [normal kernel read fault]
-> ...
->   RIP: 0010:list_lru_add+0x94/0x170
-> ...
->   Call Trace:
->    d_lru_add+0x44/0x50
->    dput.part.34+0xfc/0x110
->    __fput+0x108/0x230
->    task_work_run+0x9f/0xc0
->    exit_to_usermode_loop+0xf5/0x100
+> This is exactly the type of stuff that Mel was talking about at LSFMM
+> not even two weeks ago. How one objection, however absurd, can cause
+> "controversy" and block an effort to address a mistake we have made in
+> the past that is now actively causing problems for real users.
 > 
-> It is reproducible as far as 4.12. I did not try older kernels. You have
-> to have a new enough systemd, e.g. 241 (the reason is unknown -- was not
-> investigated). Cannot be reproduced with systemd 234.
-> 
-> The system crashes because the size of lru array is never updated in
-> memcg_update_all_list_lrus and the reads are past the zero-sized array,
-> causing dereferences of random memory.
-> 
-> The root cause are list_lru_memcg_aware checks in the list_lru code.
-> The test in list_lru_memcg_aware is broken: it assumes node 0 is always
-> present, but it is not true on some systems as can be seen above.
-> 
-> So fix this by avoiding checks on node 0. Remember the memcg-awareness
-> by a bool flag in struct list_lru.
-> 
-> [v2] use the idea proposed by Vladimir -- the bool flag.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Suggested-by: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Acked-by: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: <cgroups@vger.kernel.org>
-> Cc: <linux-mm@kvack.org>
-> Cc: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
+> And now after stalling this fix for three months to wait for unlikely
+> objections, you're moving the goal post. This is frustrating.
 
-Fixes: 60d3fd32a7a9 ("list_lru: introduce per-memcg lists")
-unless I have missed something
+I see your frustration but I find the above wording really unfair. Let me
+remind you that this is a considerable user visible change in the
+semantic and that always has to be evaluated carefuly. A change that would
+clearly regress anybody who rely on the current semantic. This is not an
+internal implementation detail kinda thing.
 
-Cc: stable sounds like a good idea to me as well, although nobody has
-noticed this yet but Node0 machines are quite rare.
+I have suggested an option for the new behavior to be opt-in which
+would be a regression safe option. You keep insisting that we absolutely
+have to have hierarchical reporting by default for consistency reasons.
+I do understand that argument but when I weigh consistency vs. potential
+regression risk I rather go a conservative way. This is a traditional
+way how we deal with semantic changes like this. There are always
+exceptions possible and that is why I wanted to hear from other users of
+cgroup v2, even from those who are not directly affected now.
 
-I haven't checked all users of list_lru but the structure size increase
-shouldn't be a big problem. There tend to be only limited number of
-those and the number shouldn't be huge.
+If you feel so stronly about this topic and the suggested opt-in is an
+absolute no-go then you are free to override my opinion here. I haven't
+Nacked this patch.
 
-So this looks good to me.
-Acked-by: Michal Hocko <mhocko@suse.com>
+> Nobody else is speaking up because the current user base is very small
+> and because the idea that anybody has developed against and is relying
+> on the current problematic behavior is completely contrived. In
+> reality, the behavior surprises people and causes production issues.
 
-Thanks a lot Jiri!
+I strongly suspect users usually do not follow discussions on our
+mailing lists. They only come up later when something breaks and that
+is too late. I do realize that this makes the above call for a wider
+consensus harder but a lack of upstream bug reports also suggests that
+people do not care or simply haven't noticed any issues due to way how
+they use the said interface (maybe deeper hierarchies are not that
+common).
 
-> ---
->  include/linux/list_lru.h | 1 +
->  mm/list_lru.c            | 8 +++-----
->  2 files changed, 4 insertions(+), 5 deletions(-)
+> > > Can we merge this for
+> > > v5.2 please? We still have users complaining about this inconsistent
+> > > behavior (the last one was yesterday) and we'd rather not carry any
+> > > out of tree patches.
+> > 
+> > Could you point me to those complains or is this something internal?
 > 
-> diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-> index aa5efd9351eb..d5ceb2839a2d 100644
-> --- a/include/linux/list_lru.h
-> +++ b/include/linux/list_lru.h
-> @@ -54,6 +54,7 @@ struct list_lru {
->  #ifdef CONFIG_MEMCG_KMEM
->  	struct list_head	list;
->  	int			shrinker_id;
-> +	bool			memcg_aware;
->  #endif
->  };
->  
-> diff --git a/mm/list_lru.c b/mm/list_lru.c
-> index 0730bf8ff39f..d3b538146efd 100644
-> --- a/mm/list_lru.c
-> +++ b/mm/list_lru.c
-> @@ -37,11 +37,7 @@ static int lru_shrinker_id(struct list_lru *lru)
->  
->  static inline bool list_lru_memcg_aware(struct list_lru *lru)
->  {
-> -	/*
-> -	 * This needs node 0 to be always present, even
-> -	 * in the systems supporting sparse numa ids.
-> -	 */
-> -	return !!lru->node[0].memcg_lrus;
-> +	return lru->memcg_aware;
->  }
->  
->  static inline struct list_lru_one *
-> @@ -451,6 +447,8 @@ static int memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
->  {
->  	int i;
->  
-> +	lru->memcg_aware = memcg_aware;
-> +
->  	if (!memcg_aware)
->  		return 0;
->  
-> -- 
-> 2.21.0
+> It's something internal, unfortunately, or I'd link to it.
+> 
+> In this report yesterday, the user missed OOM kills that occured in
+> nested subgroups of individual job components. They monitor the entire
+> job status and health at the top-level "job" cgroup: total memory
+> usage, VM activity and trends from memory.stat, pressure for cpu, io,
+> memory etc. All of these are recursive. They assumed they could
+> monitor memory.events likewise and were left in the assumption that
+> everything was fine when in reality there was OOM killing going on in
+> one of the leaves.
 
+This kind of argument has been already mentioned during the discussion
+and I understand it.
 -- 
 Michal Hocko
 SUSE Labs
