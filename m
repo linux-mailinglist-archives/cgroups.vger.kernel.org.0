@@ -2,113 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE1F122063
-	for <lists+cgroups@lfdr.de>; Sat, 18 May 2019 00:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F14D220C9
+	for <lists+cgroups@lfdr.de>; Sat, 18 May 2019 01:49:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728218AbfEQWhI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 May 2019 18:37:08 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:38982 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728179AbfEQWhI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 May 2019 18:37:08 -0400
-X-Greylist: delayed 1255 seconds by postgrey-1.27 at vger.kernel.org; Fri, 17 May 2019 18:37:06 EDT
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hRl91-000BD0-LI; Fri, 17 May 2019 18:16:03 -0400
-To:     linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk, paolo.valente@linaro.org, jack@suse.cz,
-        jmoyer@redhat.com, tytso@mit.edu, amakhalov@vmware.com,
-        anishs@vmware.com, srivatsab@vmware.com,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: CFQ idling kills I/O performance on ext4 with blkio cgroup controller
-Message-ID: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
-Date:   Fri, 17 May 2019 15:16:01 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S1726960AbfEQXtU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 May 2019 19:49:20 -0400
+Received: from mail-yw1-f73.google.com ([209.85.161.73]:54040 "EHLO
+        mail-yw1-f73.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726519AbfEQXtU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 May 2019 19:49:20 -0400
+Received: by mail-yw1-f73.google.com with SMTP id p13so7817366ywm.20
+        for <cgroups@vger.kernel.org>; Fri, 17 May 2019 16:49:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=A7gs1+mF+FP/rGmpwnYONHmDSeyLtKWRbITND9nfmUM=;
+        b=Bvr6EX1BZXsucquzdYD7Uqmbj6wwCOxg3rcQn60MXW4DU7nJ6/r0BcLbdwz5tSoo77
+         t8gK6+Z8fzNWaCdetWoEM7f+2o8RnbLx8CS1YTx0OWWOXgHf9GbSSna8rk7ZkJtW9366
+         qbOsVKy8h934mTsg17ZQzmg23y3wZf6pC6xq1BVMNnUuFeutN/8AR5EEbmK2sMuprJRg
+         a6emrfrio99QVrVPAotorRVenxbKFArMXtlR5cm7+deloUaXTiqoqlTSpS4oeX0kgREi
+         0grH9KoxLi4uE2v2hT9u5ceJ8cARpo0zsvhoqwkeDP3WrpIcGPvl6wRM7wSZypUbnFbe
+         t2WA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=A7gs1+mF+FP/rGmpwnYONHmDSeyLtKWRbITND9nfmUM=;
+        b=i894r1VSedpRLSZppxorASc1Jg5PamSjqCbQ1dyCw97Vcu9PlDGDoFe6k8IN8QTEg7
+         z78CBvKIYcZXNBdBzb1Oyn5YsJe6ShX2ooZWHZ46At+XpMtwbSOYzftccnc014/dFkM/
+         Sww36oqCdfaOGSAltojqpTwXfMjbZmRgsihraONS2khuBLRbnhLwNFZgpkEKhpoh4ih6
+         wCUwLutgBCYSrP8d624z4z6hLf784xQprrxofup5EGaDA5M0ALJWghaooqCD0OqXl8PL
+         3fKVC4kBdM5z9NdaLKj+BoqSCUmVa8VMop0D+Xm3Ze0iElWsJrreGfe/EI2eHH5N3YHt
+         Rogg==
+X-Gm-Message-State: APjAAAW2iDVDkoGolrT8W8yQcPHxLlYWfPM4yt+chy+JXF3VHyyim7IT
+        WQE7w6SjSo0sLHkuTZIEDtehRFYzuidWMg==
+X-Google-Smtp-Source: APXvYqwKEww9mPrrXsrI0/TpLKrEc7pSe78bah2w5Z+0kdvcu66zLeplA2OTybD6hUGaqQkHasrvoaOkRdan0w==
+X-Received: by 2002:a81:3589:: with SMTP id c131mr28332892ywa.456.1558136959229;
+ Fri, 17 May 2019 16:49:19 -0700 (PDT)
+Date:   Fri, 17 May 2019 16:49:09 -0700
+Message-Id: <20190517234909.175734-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.21.0.1020.gf2820cf01a-goog
+Subject: [PATCH] mm, memcg: introduce memory.events.local
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Chris Down <chris@chrisdown.name>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+The memory controller in cgroup v2 exposes memory.events file for each
+memcg which shows the number of times events like low, high, max, oom
+and oom_kill have happened for the whole tree rooted at that memcg.
+Users can also poll or register notification to monitor the changes in
+that file. Any event at any level of the tree rooted at memcg will
+notify all the listeners along the path till root_mem_cgroup. There are
+existing users which depend on this behavior.
 
-Hi,
+However there are users which are only interested in the events
+happening at a specific level of the memcg tree and not in the events in
+the underlying tree rooted at that memcg. One such use-case is a
+centralized resource monitor which can dynamically adjust the limits of
+the jobs running on a system. The jobs can create their sub-hierarchy
+for their own sub-tasks. The centralized monitor is only interested in
+the events at the top level memcgs of the jobs as it can then act and
+adjust the limits of the jobs. Using the current memory.events for such
+centralized monitor is very inconvenient. The monitor will keep
+receiving events which it is not interested and to find if the received
+event is interesting, it has to read memory.event files of the next
+level and compare it with the top level one. So, let's introduce
+memory.events.local to the memcg which shows and notify for the events
+at the memcg level.
 
-One of my colleagues noticed upto 10x - 30x drop in I/O throughput
-running the following command, with the CFQ I/O scheduler:
+Now, does memory.stat and memory.pressure need their local versions.
+IMHO no due to the no internal process contraint of the cgroup v2. The
+memory.stat file of the top level memcg of a job shows the stats and
+vmevents of the whole tree. The local stats or vmevents of the top level
+memcg will only change if there is a process running in that memcg but
+v2 does not allow that. Similarly for memory.pressure there will not be
+any process in the internal nodes and thus no chance of local pressure.
 
-dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflags=dsync
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/memcontrol.h |  7 ++++++-
+ mm/memcontrol.c            | 25 +++++++++++++++++++++++++
+ 2 files changed, 31 insertions(+), 1 deletion(-)
 
-Throughput with CFQ: 60 KB/s
-Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 36bdfe8e5965..de77405eec46 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -239,8 +239,9 @@ struct mem_cgroup {
+ 	/* OOM-Killer disable */
+ 	int		oom_kill_disable;
+ 
+-	/* memory.events */
++	/* memory.events and memory.events.local */
+ 	struct cgroup_file events_file;
++	struct cgroup_file events_local_file;
+ 
+ 	/* handle for "memory.swap.events" */
+ 	struct cgroup_file swap_events_file;
+@@ -286,6 +287,7 @@ struct mem_cgroup {
+ 	atomic_long_t		vmevents_local[NR_VM_EVENT_ITEMS];
+ 
+ 	atomic_long_t		memory_events[MEMCG_NR_MEMORY_EVENTS];
++	atomic_long_t		memory_events_local[MEMCG_NR_MEMORY_EVENTS];
+ 
+ 	unsigned long		socket_pressure;
+ 
+@@ -761,6 +763,9 @@ static inline void count_memcg_event_mm(struct mm_struct *mm,
+ static inline void memcg_memory_event(struct mem_cgroup *memcg,
+ 				      enum memcg_memory_event event)
+ {
++	atomic_long_inc(&memcg->memory_events_local[event]);
++	cgroup_file_notify(&memcg->events_local_file);
++
+ 	do {
+ 		atomic_long_inc(&memcg->memory_events[event]);
+ 		cgroup_file_notify(&memcg->events_file);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2713b45ec3f0..a746127012fa 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5648,6 +5648,25 @@ static int memory_events_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
++static int memory_events_local_show(struct seq_file *m, void *v)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
++
++	seq_printf(m, "low %lu\n",
++		   atomic_long_read(&memcg->memory_events_local[MEMCG_LOW]));
++	seq_printf(m, "high %lu\n",
++		   atomic_long_read(&memcg->memory_events_local[MEMCG_HIGH]));
++	seq_printf(m, "max %lu\n",
++		   atomic_long_read(&memcg->memory_events_local[MEMCG_MAX]));
++	seq_printf(m, "oom %lu\n",
++		   atomic_long_read(&memcg->memory_events_local[MEMCG_OOM]));
++	seq_printf(m, "oom_kill %lu\n",
++		   atomic_long_read(&memcg->memory_events_local[MEMCG_OOM_KILL])
++		   );
++
++	return 0;
++}
++
+ static int memory_stat_show(struct seq_file *m, void *v)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+@@ -5806,6 +5825,12 @@ static struct cftype memory_files[] = {
+ 		.file_offset = offsetof(struct mem_cgroup, events_file),
+ 		.seq_show = memory_events_show,
+ 	},
++	{
++		.name = "events.local",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.file_offset = offsetof(struct mem_cgroup, events_local_file),
++		.seq_show = memory_events_local_show,
++	},
+ 	{
+ 		.name = "stat",
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+-- 
+2.21.0.1020.gf2820cf01a-goog
 
-I spent some time looking into it and found that this is caused by the
-undesirable interaction between 4 different components:
-
-- blkio cgroup controller enabled
-- ext4 with the jbd2 kthread running in the root blkio cgroup
-- dd running on ext4, in any other blkio cgroup than that of jbd2
-- CFQ I/O scheduler with defaults for slice_idle and group_idle
-
-
-When docker is enabled, systemd creates a blkio cgroup called
-system.slice to run system services (and docker) under it, and a
-separate blkio cgroup called user.slice for user processes. So, when
-dd is invoked, it runs under user.slice.
-
-The dd command above includes the dsync flag, which performs an
-fdatasync after every write to the output file. Since dd is writing to
-a file on ext4, jbd2 will be active, committing transactions
-corresponding to those fdatasync requests from dd. (In other words, dd
-depends on jdb2, in order to make forward progress). But jdb2 being a
-kernel thread, runs in the root blkio cgroup, as opposed to dd, which
-runs under user.slice.
-
-Now, if the I/O scheduler in use for the underlying block device is
-CFQ, then its inter-queue/inter-group idling takes effect (via the
-slice_idle and group_idle parameters, both of which default to 8ms).
-Therefore, everytime CFQ switches between processing requests from dd
-vs jbd2, this 8ms idle time is injected, which slows down the overall
-throughput tremendously!
-
-To verify this theory, I tried various experiments, and in all cases,
-the 4 pre-conditions mentioned above were necessary to reproduce this
-performance drop. For example, if I used an XFS filesystem (which
-doesn't use a separate kthread like jbd2 for journaling), or if I dd'ed
-directly to a block device, I couldn't reproduce the performance
-issue. Similarly, running dd in the root blkio cgroup (where jbd2
-runs) also gets full performance; as does using the noop or deadline
-I/O schedulers; or even CFQ itself, with slice_idle and group_idle set
-to zero.
-
-These results were reproduced on a Linux VM (kernel v4.19) on ESXi,
-both with virtualized storage as well as with disk pass-through,
-backed by a rotational hard disk in both cases. The same problem was
-also seen with the BFQ I/O scheduler in kernel v5.1.
-
-Searching for any earlier discussions of this problem, I found an old
-thread on LKML that encountered this behavior [1], as well as a docker
-github issue [2] with similar symptoms (mentioned later in the
-thread).
-
-So, I'm curious to know if this is a well-understood problem and if
-anybody has any thoughts on how to fix it.
-
-Thank you very much!
-
-
-[1]. https://lkml.org/lkml/2015/11/19/359
-
-[2]. https://github.com/moby/moby/issues/21485
-     https://github.com/moby/moby/issues/21485#issuecomment-222941103
-
-Regards,
-Srivatsa
