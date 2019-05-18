@@ -2,187 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C545E22126
-	for <lists+cgroups@lfdr.de>; Sat, 18 May 2019 03:33:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E10CB22485
+	for <lists+cgroups@lfdr.de>; Sat, 18 May 2019 20:40:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727133AbfERBd4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 May 2019 21:33:56 -0400
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:35788 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726761AbfERBd4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 May 2019 21:33:56 -0400
-Received: by mail-qk1-f182.google.com with SMTP id c15so5626955qkl.2
-        for <cgroups@vger.kernel.org>; Fri, 17 May 2019 18:33:51 -0700 (PDT)
+        id S1729530AbfERSkA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 May 2019 14:40:00 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:44934 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729342AbfERSkA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 May 2019 14:40:00 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c5so10268480wrs.11
+        for <cgroups@vger.kernel.org>; Sat, 18 May 2019 11:39:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=sX2gtiM1F/1BEzdGKla5dDrkWxKhhFTMd4O/Z6SAzBo=;
-        b=qUY01mlSmX4DbsPDMJaYgJn3Q/drbMkfzs7GJn39QrYDuj43qSb92iwS/7+dfV4fsA
-         0E8GL5YXkNLl9QevERwZcDsUAahh7V23GHEc/jHP/nvE1FZj5aNfpsurZLUN4ZiGXEJ/
-         kEGUkzJ+KOKblkBelAf19+5XJ3k0XULDRxrpj2mX4ZCwtT2ZBYUMR0dBeAsyWuZJQaWX
-         7G4Sw6HuNpB8ZG8ZF69Ylb2U1935CrzrJkcIIgF0d3O/0dSo/MsxvOblfCa25GbkuF5l
-         FtduQ6ojspDQKSXBdEZqZ/+4SZgnNdMSP3FQ17kAMAVk3BPNG8wNhbPTRYDyYt+rrFxq
-         Z90w==
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=ouEAfY4fVdVHhS9xR65IP6Zu3YZKMcX1yK26/K9YRUY=;
+        b=nlp7cHJt2SjtBL+lyV4uwEHDsEea6nRrWx5BU9r3PG8LieJX1ROiQDyxQpLG1WdGm/
+         2TrUP8Z6n6D2ouN6A/3sw7WZysGcv73ll6ZTXI8RyL+ntXWvd5wHWzQ0o6aS92tqPJju
+         C1rGQW9JCxQuhs7CQOqrLPbJWm4aEiqDd41KQhAWZirqNKSNz9MAlQOMB68cUxn0UUTe
+         KIP/emPF1QPcyA/CLxVNJXMr1X2h46CgI12jfOyhBlI++DQErsG3wj3NPXfXWYj9glIE
+         wEEPycLptPZkBPIoyZqcaurC/U5Ltp6ZOOnPhW8BvqdYLnVBza6XzYvD+pPkgWf02k+g
+         eK+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=sX2gtiM1F/1BEzdGKla5dDrkWxKhhFTMd4O/Z6SAzBo=;
-        b=A1W2rnN/NrhlZ7ReXpJY9WKr0Z03okLSvEMN55x3LxuOeb5lDctkHczG4ueG2hfthv
-         1iDBLWCEgHpEMANTwctzlNE6fhdnlbP7GrCGh9zpdHhZkjsNegRyAobqfP0AvsbF9N5b
-         AuSfvgLyWIZsonzYHC9JC/4nHQPM6IyWi6+OLl0tBR3GqiDx0JCgQA5jDVMeOHCBlURi
-         7q2McMQYlHd+hUzhcXlvNbKUhwTD4PqHoaupRc3wxcEcajkGt9TR/cR6vX0mukb7IAL3
-         zl1WTv8r4AAqJy7h1pl1AyfiF9TPSWUrByZUSek5lY3fT5h6NqsEw6J+UYCW1mKCBvIL
-         zi1Q==
-X-Gm-Message-State: APjAAAVK4JLrJI9abi6ztxYokiuOYzFi9LAwfvrU4yO0O/cY5lsmLUBd
-        KeP1aT6nH35OdZBStiAneJQ/EA==
-X-Google-Smtp-Source: APXvYqwf0oihuMDsTfVgR6ZJ1VQoL7rw3UIuUWL4s1dxZcgaqafC88Kcarb02I8LUJo8ZbVVwPDEsQ==
-X-Received: by 2002:a05:620a:1232:: with SMTP id v18mr48607219qkj.27.1558143230592;
-        Fri, 17 May 2019 18:33:50 -0700 (PDT)
-Received: from localhost (pool-108-27-252-85.nycmny.fios.verizon.net. [108.27.252.85])
-        by smtp.gmail.com with ESMTPSA id z29sm5166322qkg.19.2019.05.17.18.33.49
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 17 May 2019 18:33:49 -0700 (PDT)
-Date:   Fri, 17 May 2019 21:33:48 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     akpm@linux-foundation.org, mm-commits@vger.kernel.org,
-        tj@kernel.org, guro@fb.com, dennis@kernel.org,
-        chris@chrisdown.name,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        linux-mm@kvack.org
-Subject: Re: + mm-consider-subtrees-in-memoryevents.patch added to -mm tree
-Message-ID: <20190518013348.GA6655@cmpxchg.org>
-References: <20190212224542.ZW63a%akpm@linux-foundation.org>
- <20190213124729.GI4525@dhcp22.suse.cz>
- <20190516175655.GA25818@cmpxchg.org>
- <20190516180932.GA13208@dhcp22.suse.cz>
- <20190516193943.GA26439@cmpxchg.org>
- <20190517123310.GI6836@dhcp22.suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190517123310.GI6836@dhcp22.suse.cz>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=ouEAfY4fVdVHhS9xR65IP6Zu3YZKMcX1yK26/K9YRUY=;
+        b=FneGE2vVWa7CHiBG3fGJU6sWuRN6pFOv/lAM3J3NWSd0IHgPhvZmzu69+wdqs3iKJ0
+         d/kVM2Juh7HEFUjIpChEDFCqSWtUSIKOsBaKpOOyP4ayJnuf5kuOnbEvDOfCTmqZH4Oi
+         WoolQvMInWgYhqanwtdDGRE/EL4++aOPBSmvsU6DK70HwUgkDFfRdeu010i2ilc0rkql
+         voek5eNVPnSkATwb+kRhybBVSswLtadZCmgPaAwy9zCtR6XiteT8nVFXTbpQmC6XItWt
+         xep4ADU4yFc77a1yrp00puTU3HIpeQI0KfwTr0Vxbpd4eAiIR+doVKNnkMtITuizBJMN
+         kbag==
+X-Gm-Message-State: APjAAAWfCf084ODry13GiNN805jOK4lwI3IShQENUs5yO3tUbfL5IfZy
+        qKsvursyifusZp7VymcWQdZw/w==
+X-Google-Smtp-Source: APXvYqzVK8BV5Of9EvEM1INCvl8U4K12CuUulfyj9lY9OcHKvXPf2OwHmZNC0FvObtMXpR/7vHW8IA==
+X-Received: by 2002:a5d:5701:: with SMTP id a1mr40449129wrv.52.1558204797886;
+        Sat, 18 May 2019 11:39:57 -0700 (PDT)
+Received: from [192.168.0.104] (146-241-112-39.dyn.eolo.it. [146.241.112.39])
+        by smtp.gmail.com with ESMTPSA id m206sm16520509wmf.21.2019.05.18.11.39.55
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 18 May 2019 11:39:56 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Sat, 18 May 2019 20:39:54 +0200
+In-Reply-To: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
+        jmoyer@redhat.com, tytso@mit.edu, amakhalov@vmware.com,
+        anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 17, 2019 at 02:33:10PM +0200, Michal Hocko wrote:
-> On Thu 16-05-19 15:39:43, Johannes Weiner wrote:
-> > On Thu, May 16, 2019 at 08:10:42PM +0200, Michal Hocko wrote:
-> > > On Thu 16-05-19 13:56:55, Johannes Weiner wrote:
-> > > > On Wed, Feb 13, 2019 at 01:47:29PM +0100, Michal Hocko wrote:
-> [...]
-> > > > > FTR: As I've already said here [1] I can live with this change as long
-> > > > > as there is a larger consensus among cgroup v2 users. So let's give this
-> > > > > some more time before merging to see whether there is such a consensus.
-> > > > > 
-> > > > > [1] http://lkml.kernel.org/r/20190201102515.GK11599@dhcp22.suse.cz
-> > > > 
-> > > > It's been three months without any objections.
-> > > 
-> > > It's been three months without any _feedback_ from anybody. It might
-> > > very well be true that people just do not read these emails or do not
-> > > care one way or another.
-> > 
-> > This is exactly the type of stuff that Mel was talking about at LSFMM
-> > not even two weeks ago. How one objection, however absurd, can cause
-> > "controversy" and block an effort to address a mistake we have made in
-> > the past that is now actively causing problems for real users.
-> > 
-> > And now after stalling this fix for three months to wait for unlikely
-> > objections, you're moving the goal post. This is frustrating.
-> 
-> I see your frustration but I find the above wording really unfair. Let me
-> remind you that this is a considerable user visible change in the
-> semantic and that always has to be evaluated carefuly. A change that would
-> clearly regress anybody who rely on the current semantic. This is not an
-> internal implementation detail kinda thing.
-> 
-> I have suggested an option for the new behavior to be opt-in which
-> would be a regression safe option. You keep insisting that we absolutely
-> have to have hierarchical reporting by default for consistency reasons.
-> I do understand that argument but when I weigh consistency vs. potential
-> regression risk I rather go a conservative way. This is a traditional
-> way how we deal with semantic changes like this. There are always
-> exceptions possible and that is why I wanted to hear from other users of
-> cgroup v2, even from those who are not directly affected now.
 
-I have acknowledged this concern in previous discussions. But the rule
-is "don't break userspace", not "never change behavior". We do allow
-the latter when it's highly unlikely that anyone would mind and the
-new behavior is a much better default for current and future users.
+--Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Let me try to make the case for exactly this:
+I've addressed these issues in my last batch of improvements for BFQ, =
+which landed in the upcoming 5.2. If you give it a try, and still see =
+the problem, then I'll be glad to reproduce it, and hopefully fix it for =
+you.
 
-- Adoption data suggests that cgroup2 isn't really used yet. RHEL8 was
-  just released with cgroup1 per default. Fedora is currently debating
-  a switch. None of the other distros default to cgroup2. There is an
-  article on the lwn frontpage *right now* about Docker planning on
-  switching to cgroup2 in the near future. Kubernetes is on
-  cgroup1. Android is on cgroup1. Shakeel agrees that Facebook is
-  probably the only serious user of cgroup2 right now. The cloud and
-  all mainstream container software is still on cgroup1.
+Thanks,
+Paolo
 
-- Using this particular part of the interface is a fairly advanced
-  step in the cgroup2 adoption process. We've been using cgroup2 for a
-  while and we've only now started running into this memory.events
-  problem as we're enhancing our monitoring and automation
-  infrastructure. If we're the only serious deployment, and we just
-  started noticing it, what's the chance of regressing someone else?
+> Il giorno 18 mag 2019, alle ore 00:16, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+>=20
+> Hi,
+>=20
+> One of my colleagues noticed upto 10x - 30x drop in I/O throughput
+> running the following command, with the CFQ I/O scheduler:
+>=20
+> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflags=3Ddsync
+>=20
+> Throughput with CFQ: 60 KB/s
+> Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
+>=20
+> I spent some time looking into it and found that this is caused by the
+> undesirable interaction between 4 different components:
+>=20
+> - blkio cgroup controller enabled
+> - ext4 with the jbd2 kthread running in the root blkio cgroup
+> - dd running on ext4, in any other blkio cgroup than that of jbd2
+> - CFQ I/O scheduler with defaults for slice_idle and group_idle
+>=20
+>=20
+> When docker is enabled, systemd creates a blkio cgroup called
+> system.slice to run system services (and docker) under it, and a
+> separate blkio cgroup called user.slice for user processes. So, when
+> dd is invoked, it runs under user.slice.
+>=20
+> The dd command above includes the dsync flag, which performs an
+> fdatasync after every write to the output file. Since dd is writing to
+> a file on ext4, jbd2 will be active, committing transactions
+> corresponding to those fdatasync requests from dd. (In other words, dd
+> depends on jdb2, in order to make forward progress). But jdb2 being a
+> kernel thread, runs in the root blkio cgroup, as opposed to dd, which
+> runs under user.slice.
+>=20
+> Now, if the I/O scheduler in use for the underlying block device is
+> CFQ, then its inter-queue/inter-group idling takes effect (via the
+> slice_idle and group_idle parameters, both of which default to 8ms).
+> Therefore, everytime CFQ switches between processing requests from dd
+> vs jbd2, this 8ms idle time is injected, which slows down the overall
+> throughput tremendously!
+>=20
+> To verify this theory, I tried various experiments, and in all cases,
+> the 4 pre-conditions mentioned above were necessary to reproduce this
+> performance drop. For example, if I used an XFS filesystem (which
+> doesn't use a separate kthread like jbd2 for journaling), or if I =
+dd'ed
+> directly to a block device, I couldn't reproduce the performance
+> issue. Similarly, running dd in the root blkio cgroup (where jbd2
+> runs) also gets full performance; as does using the noop or deadline
+> I/O schedulers; or even CFQ itself, with slice_idle and group_idle set
+> to zero.
+>=20
+> These results were reproduced on a Linux VM (kernel v4.19) on ESXi,
+> both with virtualized storage as well as with disk pass-through,
+> backed by a rotational hard disk in both cases. The same problem was
+> also seen with the BFQ I/O scheduler in kernel v5.1.
+>=20
+> Searching for any earlier discussions of this problem, I found an old
+> thread on LKML that encountered this behavior [1], as well as a docker
+> github issue [2] with similar symptoms (mentioned later in the
+> thread).
+>=20
+> So, I'm curious to know if this is a well-understood problem and if
+> anybody has any thoughts on how to fix it.
+>=20
+> Thank you very much!
+>=20
+>=20
+> [1]. https://lkml.org/lkml/2015/11/19/359
+>=20
+> [2]. https://github.com/moby/moby/issues/21485
+>     https://github.com/moby/moby/issues/21485#issuecomment-222941103
+>=20
+> Regards,
+> Srivatsa
 
-- Violating expectations costs users time and money either way, but
-  the status quo is much more costly: somebody who expects these
-  events to be local could see events that did occur at an
-  unexpectedly higher level of the tree. But somebody who expects
-  these events to be hierarchical will miss real events entirely!
 
-  Now, for an alarm and monitoring infrastructure, what is worse: to
-  see occurring OOM kills reported at a tree level you don't expect?
-  Or to *miss* occurring OOM kills that you're trying to look out for?
+--Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
-  Automatic remediation might not be as clear-cut, but for us, and I
-  would assume many others, an unnecessary service restart or failover
-  would have a shorter downtime than missing a restart after a kill.
+-----BEGIN PGP SIGNATURE-----
 
-- The status quo is more likely to violate expectations, given how the
-  cgroup2 interface as a whole is designed.
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzgUXoACgkQOAkCLQGo
+9oPNXw//edQtNFa1ZbM3WUODyCQi7cKAIh4ducAKO16wY4cr3eaXmlDO++GEBBos
+cPdrh1eqQUs6ARuLbmwyLSCZpm3dyJFuK6RBqWYAPdM8vExd4cl6xAHzCK271grv
+2+HvBk5p9/fR+TZoKKz/fv6gJG1qBW6/sdVwLGY7pb6J9iTYjRO6t2faRhc6LXFE
+LrsLOwF4OzYYhYbbU1tvTu34VxDycloASVdaYUQsqA9B3C5NO1VeMVhoPRFXL6fK
+8ZOiXkpOZLaqldXk6sctyg7yWFmzjUFS/PfnG3ZBSOGWYhA0T7aIEzOddQy39Ckx
+iEFl6DCCsUrzCw7kWZRjitVeDZp1itdANtNmqBBwcv/ccW1ag4Hryt08F9LSNKp/
+P4JDKOLezZ39VQyLoOnYVT/HeCQjx1uQpmilE3lU6+KFEjq61lD5y072Wz8Nw8AE
+qVjwv7Z2FPAROe8JGVpHn6YMvFzrl79nKa+ji9BlQWm1JVvgDcHoZGdVyuaznNyV
+NXOpSbi2BnsQvyfhNYwSc9/Jkopfbx/3fMkTK7LnLLSiPo1snzC2bMdICJPWtsYx
+Vqd4II1J1ZcvSmllZ7lOHpAi3JsPbuemcx0fvA8CXdBST0ZgEuaJLzb2MM5+X8uP
+SJwBn7Vy3TlM6kio9mtr4W3x2341l/FmpxnHWDZiCFsS6A/EQ6c=
+=FzRW
+-----END PGP SIGNATURE-----
 
-  We have seen this in practice: memory.current is hierarchical,
-  memory.stat is hierarchical, memory.pressure is hierarchical - users
-  expect memory.events to be hierarchical. This misunderstanding has
-  already cost us time and money.
-
-  Chances are, even if there were other users of memory.events, that
-  they're using the interface incorrectly and haven't noticed yet,
-  rather than relying on the inconsistency.
-
-  It's not a hypothetical, we have seen this with our fleet customers.
-
-So combining what we know about
-
-1. the current adoption rate
-2. likely user expectations
-3. the failure mode of missing pressure and OOM kill signals
-
-means that going with the conservative option and not fixing this
-inconsistency puts pretty much all users that will ever use this
-interface at the risk of pain, outages and wasted engineering hours.
-
-Making the fix available but opt-in has the same result for everybody
-that isn't following this thread/patch along.
-
-All that to protect an unlikely existing cgroup2 user from something
-they are even less likely have noticed, let alone rely on.
-
-This sounds like a terrible trade-off to me. I don't think it's a
-close call in this case.
-
-I understand that we have to think harder and be more careful with
-changes like this. The bar *should* be high. But in this case, there
-doesn't seem to be a real risk of regression for anybody, while the
-risk of the status quo causing problems is high and happening. These
-circumstances should be part of the decision process.
+--Apple-Mail=_2AB4EAF8-8BC4-47A0-9500-56DE63C63E62--
