@@ -2,179 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9596E23191
-	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 12:46:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FAE023B4A
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 16:54:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731727AbfETKqE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 May 2019 06:46:04 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34675 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731724AbfETKqE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 06:46:04 -0400
-Received: by mail-wm1-f67.google.com with SMTP id j187so13989067wma.1
-        for <cgroups@vger.kernel.org>; Mon, 20 May 2019 03:46:02 -0700 (PDT)
+        id S2388177AbfETOy3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 May 2019 10:54:29 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:37939 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732387AbfETOy3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 10:54:29 -0400
+Received: by mail-ua1-f66.google.com with SMTP id r19so4745369uap.5;
+        Mon, 20 May 2019 07:54:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=FNQffb8QL8IgGta8QHGMIkJOjNxQ6yOoFcpL2RGNOxo=;
-        b=Yx3Oh9sdjhtxkjy2qUZOvGLEh/omRfY9Mkk8SZgdDDixIStb27nmcn3B7LNLkywYKf
-         JSJs2y09yTFai60dfvSU6bs3U2Y+HZSEgZwWN6UlzEZ1wASRtjIcHxGBtD4y6tsAuqVS
-         3ujdLIe/3srn1f0SjS94N6OmFmNXyQjA8jYYAeTVbdE87jeskYdVzPBwTuGiV5VXMofg
-         Qcc4TKaT9Wtzyo5PNWXoXjNZN8OY3QNXt/d/SPjmZQCZVqxth/sR5PvwpcgaROR92mOk
-         Z6Us/2nTa0Du6iMydUy7SM5zXTl+W32h+hkN9oHJisAKE0vA0TrVU7YYUAkZEQA//CVY
-         df6Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=8cXCSMG/utY4UucWb4ekygNexeTn9aJiisIiVvtivhA=;
+        b=ZU1x/Bp2X6efOLs6VCJ6w1Y0/Tx//zW4Ud90lRRbRSmCiz5AojOo473KCRA1bw98rL
+         Xr8VvLNK5CrMk2GXwtG407SUCkWPF3GcdHtkGzyYxq9CO0MN8PeXxCh2EVJV95XXloKQ
+         ts6dEhyIdh71+h7iYVn147d+/97Sj7jezcx+AncoJt0Js2Pki95HdfKfeuxQ4aK0LrEg
+         L8w8tHdtnJzu6vuHtsCmaj698Jci8ICsaiU5knDuPLCDSgalX75JuSBfVb/yntUmDFBz
+         guLP5Ak5FGNc8SFTBSYNfxGmPH3qKxIYZspdEBK9dNELQhFtZteuW8hrYaPt9WWJauX4
+         qMNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=FNQffb8QL8IgGta8QHGMIkJOjNxQ6yOoFcpL2RGNOxo=;
-        b=Rp/2JbrDZk0Phpx4DIfSxRcfFibMZolKCA6snfOX7WyEKFNKbw5dyvFGrTImpyO3z3
-         K9R/S3Z06qqPcdSZ4QrRS8QDtNLN1nCq/MMOgR6ETX6KcBTkhN8TvctUaywvpmx0/U+B
-         1P5TtUTM1IZT0CADLcpcxd6+RmOx+5fZZgqyKavNWzZLOtmGHMN4FjrKW7lQ0Op3jQH8
-         NZzW/+eRheE7f0ZptV4vWUDzK3kaHadE+L2PWUUH0Cm7pgsK5RAekio/XLG9253yJ9M3
-         TqfH1SkWuNM4vgeeBncoMtE26kXjft1ZwGGoepRHDFVkSTh6j0LG2iVTTGEz3kwPAgyH
-         Kxmw==
-X-Gm-Message-State: APjAAAXKu0NPEOpIiUMpHxLdpbcfohIX8UieCV7vnJj/CnuFbdsr5fjW
-        YwVTiPVyNw4QmgekyzOUvDosiA==
-X-Google-Smtp-Source: APXvYqwf9Bs8lTKBrSvqq/FNc2Kp0ccnjoaTSSxl7jXQW63EXQ+RaXppUqT7Z5tC+EpLaW9/edIhpA==
-X-Received: by 2002:a1c:385:: with SMTP id 127mr11200126wmd.109.1558349161708;
-        Mon, 20 May 2019 03:46:01 -0700 (PDT)
-Received: from [192.168.0.100] ([88.147.73.106])
-        by smtp.gmail.com with ESMTPSA id x187sm18555952wmb.33.2019.05.20.03.45.59
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8cXCSMG/utY4UucWb4ekygNexeTn9aJiisIiVvtivhA=;
+        b=BecE2poLD9b7h0/Gw1+3K9L+dXx6sAzX8uUnGHCEdkWkJP+arJNdx6A1gPplJkK3u2
+         C0JQEfm6ha+Aeq+Y0sdK7VXVsj/1MehKWvf5XNWK0XApxbkOG6SUR+ecJKRXnryduTN4
+         dMOJCTQiqQkz9wukJMjDJYukyREf+QsTRnM2vYVVQfMyVflEsSSd7vxlGBPrBYOF11IM
+         xCcR7NNOAtTTNfpr3vNtWGQMlbA860dQWYKed5mbvV09gDWrR3xoWghow6XHiYQwC+yj
+         kx8Uof+GWBYFAwtR0fvDnLGLd/DfD2CeG94d+Bl0iyZaJ128edBuFu6+c/RENYAq6a13
+         eLyg==
+X-Gm-Message-State: APjAAAWJfLjYtmJl8iNZFkH13mFFw45kj54HYHBDpsozKAsttQAHRWCg
+        jzl/LraKRMU2Z6vD1uU4cVueq4mZ
+X-Google-Smtp-Source: APXvYqwlmD0ueYLqSZ4VSGxhwR1uaHyYJwtikMj8/LvKbmobY+swajNr6uJX9UnneAMOHiTbm0GAbw==
+X-Received: by 2002:ab0:42e4:: with SMTP id j91mr14823452uaj.28.1558364067745;
+        Mon, 20 May 2019 07:54:27 -0700 (PDT)
+Received: from llong.remote.csb (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id 125sm5502165vkt.11.2019.05.20.07.54.25
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 20 May 2019 03:46:00 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <1C0A2FC8-620C-4AFE-A921-35EDAC377BD4@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_695B9A4F-9A68-4C92-B622-6C792D193B9F";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Mon, 20 May 2019 12:45:58 +0200
-In-Reply-To: <20190520091558.GC2172@quack2.suse.cz>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-To:     Jan Kara <jack@suse.cz>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <20190518192847.GB14277@mit.edu> <20190520091558.GC2172@quack2.suse.cz>
-X-Mailer: Apple Mail (2.3445.104.8)
+        Mon, 20 May 2019 07:54:26 -0700 (PDT)
+Subject: Re: [PATCH v4 5/7] mm: rework non-root kmem_cache lifecycle
+ management
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>
+References: <20190514213940.2405198-1-guro@fb.com>
+ <20190514213940.2405198-6-guro@fb.com>
+ <CALvZod6Zb_kYHyG02jXBY9gvvUn_gOug7kq_hVa8vuCbXdPdjQ@mail.gmail.com>
+From:   Waiman Long <longman9394@gmail.com>
+Message-ID: <5e3c4646-3e4f-414a-0eca-5249956d68a5@gmail.com>
+Date:   Mon, 20 May 2019 10:54:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
+MIME-Version: 1.0
+In-Reply-To: <CALvZod6Zb_kYHyG02jXBY9gvvUn_gOug7kq_hVa8vuCbXdPdjQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 5/14/19 8:06 PM, Shakeel Butt wrote:
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index 4e5b4292a763..1ee967b4805e 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -45,6 +45,8 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work);
+>  static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+>                     slab_caches_to_rcu_destroy_workfn);
+>
+> +static void kmemcg_queue_cache_shutdown(struct percpu_ref *percpu_ref);
+> +
 
---Apple-Mail=_695B9A4F-9A68-4C92-B622-6C792D193B9F
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
+kmemcg_queue_cache_shutdown is only defined if CONFIG_MEMCG_KMEM is
+defined. If it is not defined, a compilation warning can be produced.
+Maybe putting the declaration inside a CONFIG_MEMCG_KMEM block:
 
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 61d7a96a917b..57ba6cf3dc39 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -45,7 +45,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct
+work_stru
+ct *work);
+ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+             slab_caches_to_rcu_destroy_workfn);
+ 
++#ifdef CONFIG_MEMCG_KMEM
+ static void kmemcg_queue_cache_shutdown(struct percpu_ref *percpu_ref);
++#endif
+ 
+ /*
+  * Set of flags that will prevent slab merging
+-- 
 
+Cheers,
+Longman
 
-> Il giorno 20 mag 2019, alle ore 11:15, Jan Kara <jack@suse.cz> ha scritto:
-> 
-> On Sat 18-05-19 15:28:47, Theodore Ts'o wrote:
->> On Sat, May 18, 2019 at 08:39:54PM +0200, Paolo Valente wrote:
->>> I've addressed these issues in my last batch of improvements for
->>> BFQ, which landed in the upcoming 5.2. If you give it a try, and
->>> still see the problem, then I'll be glad to reproduce it, and
->>> hopefully fix it for you.
->> 
->> Hi Paolo, I'm curious if you could give a quick summary about what you
->> changed in BFQ?
->> 
->> I was considering adding support so that if userspace calls fsync(2)
->> or fdatasync(2), to attach the process's CSS to the transaction, and
->> then charge all of the journal metadata writes the process's CSS.  If
->> there are multiple fsync's batched into the transaction, the first
->> process which forced the early transaction commit would get charged
->> the entire journal write.  OTOH, journal writes are sequential I/O, so
->> the amount of disk time for writing the journal is going to be
->> relatively small, and especially, the fact that work from other
->> cgroups is going to be minimal, especially if hadn't issued an
->> fsync().
-> 
-> But this makes priority-inversion problems with ext4 journal worse, doesn't
-> it? If we submit journal commit in blkio cgroup of some random process, it
-> may get throttled which then effectively blocks the whole filesystem. Or do
-> you want to implement a more complex back-pressure mechanism where you'd
-> just account to different blkio cgroup during journal commit and then
-> throttle as different point where you are not blocking other tasks from
-> progress?
-> 
->> In the case where you have three cgroups all issuing fsync(2) and they
->> all landed in the same jbd2 transaction thanks to commit batching, in
->> the ideal world we would split up the disk time usage equally across
->> those three cgroups.  But it's probably not worth doing that...
->> 
->> That being said, we probably do need some BFQ support, since in the
->> case where we have multiple processes doing buffered writes w/o fsync,
->> we do charnge the data=ordered writeback to each block cgroup. Worse,
->> the commit can't complete until the all of the data integrity
->> writebacks have completed.  And if there are N cgroups with dirty
->> inodes, and slice_idle set to 8ms, there is going to be 8*N ms worth
->> of idle time tacked onto the commit time.
-> 
-> Yeah. At least in some cases, we know there won't be any more IO from a
-> particular cgroup in the near future (e.g. transaction commit completing,
-> or when the layers above IO scheduler already know which IO they are going
-> to submit next) and in that case idling is just a waste of time.
-
-Yep.  Issues like this are targeted exactly by the improvement I
-mentioned in my previous reply.
-
-> But so far
-> I haven't decided how should look a reasonably clean interface for this
-> that isn't specific to a particular IO scheduler implementation.
-> 
-
-That's an interesting point.  So far, I've assumed that nobody would
-have told anything to BFQ.  But if you guys think that such a
-communication may be acceptable at some degree, then I'd be glad to
-try to come up with some solution.  For instance: some hook that any
-I/O scheduler may export if meaningful.
-
-Thanks,
-Paolo
-
-> 								Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
-
-
---Apple-Mail=_695B9A4F-9A68-4C92-B622-6C792D193B9F
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzihWYACgkQOAkCLQGo
-9oPXOA//SHPnVMxI3rHezSW0oYnbHoHp+FGr9dlhy3tQXGYXlhkAVnAO5z8rFFiF
-l3i0Rm84B/BLL/v/a2NMj50boLqfrjMA7YhUscj+uoGyQgmA8LZGfMv9RmSQt2mf
-6KZfuJL4UdDkbjagKpWOaRjuOnvrP1L2psg0rbngdSil8ZS/D60FbWL6f8NmDSmz
-tb/s/ZS8YM4b58Qp6rtoMLwQVfj6vT+4QJib4C/YNbo9wY8+JULuuJRllRYqATsL
-cxOJFGwfL5fvcvQ/agaqp4lorVBLrMMMNEi9NpH6AFcQ8ALAZ2jEzKANOmrP8f43
-cQpuLhsOVBAZuWQpmAYwX5au9VUaGTZsrhqYPEeMWY23Q0LHmJt8k4FoEF4wZRnt
-F7pVokpmMlwjcgw0+OzFm+OngQHdXFxbFwY8boWtmSXdSiZiZ61nbTfAnYNlp+/W
-Of0RlXgzZTMH5gqRLaFjZamQUIE5oWTtIvCPC9cF4CE2+tyQVHbla7Azgo/JvFRw
-LEbg21BDrSUxUfJukpaYrjtZ+LIyuFG3R+Wn3HN1qVAmUW+T3imrTN9U+xXft3c1
-mkp8LwHND/8tnCGOsxYZXpEK4SmPykGOPpJS8Zjc+XWcr70HYXw8xMcajb0Fsl9p
-y9BLh0rZNMYmI58YAucv5thw+MbdtdoKCWh2R+Oebh7Il2+0kLM=
-=xSol
------END PGP SIGNATURE-----
-
---Apple-Mail=_695B9A4F-9A68-4C92-B622-6C792D193B9F--
