@@ -2,152 +2,273 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AEAF230A3
-	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 11:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D09B42312B
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 12:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730557AbfETJty (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 May 2019 05:49:54 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:38175 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730353AbfETJty (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 05:49:54 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id E5C9424574;
-        Mon, 20 May 2019 05:49:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 20 May 2019 05:49:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=C
-        1sepVsVX9R0sUwMSr9tcIjd0xGsqGQ5crxHcPHp6Qo=; b=vFq0epEZ2ibXxjQqG
-        nzNC/6JOBQtKkEguOI5mvf5SZOCkEIHDiem/MghQGYYKnrK0A8PkFefJw8XuEBwt
-        T3Zhmp1a5xyrJGOV6hFOFxk5YwThWUHMBUVmUo5wZ6oNeWqcP6QIR03JfMx3Maxa
-        RPq+TmwbLloFgD0p0BjxRuoGt+PlVJ9HfrACGTQyt6Bq/J+e3VU01kXK5ouHq2zE
-        cOAhrZMlardlq1LByaYoK14IVAlS2rOK49cDQOUeBuGA2Zhb27c/sd+iBvA0c6qR
-        MmRIpPTuH4TmA0tJoBr2GQGQXF/h1/AUJFD7dPsGSfTRkJXIXpamqNRcZSu73syK
-        Ls2Uw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=C1sepVsVX9R0sUwMSr9tcIjd0xGsqGQ5crxHcPHp6
-        Qo=; b=T6CpdkPtLdT1uSj1UCbzWfMV3nmTHKZe2l7FqatPzEd6N7khKNK5wka/T
-        YfjE5RWZYZidef1NZcgLtZ/MwqeAmYLKaK0ua+6bGtymdgPAKdhELzmyQ2pJTqjY
-        YT0dR5j43ehBrUXsekGFvI3/KJ5UhWeAY2RUQXj4snnvNtz32nixMk/2i6tfGaHw
-        HUd3PM0APdP+jyOj/lVxUASm5DcR+X96YmljZeDXEBKTjuBc3OL91dVe5LkUNGRn
-        3/5T6ZpqGJ8G/lp0WaeAmmrDUZQ62/WhHu+GU2uh5aXx/0a3v+xd+5IC9Nr9+j6B
-        YbOwytjxG17R+oHYtahxsFIu9CnJA==
-X-ME-Sender: <xms:PnjiXCtyit7_aj9_Ed-KkxckV4STUjIRhEArsk47xyqrGWxTj9--cw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddruddtkedgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtugfgjggfsehtkeertddtreejnecuhfhrohhmpefirhgv
-    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucfkphepkeefrdekiedrkeelrd
-    dutdejnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhen
-    ucevlhhushhtvghrufhiiigvpedt
-X-ME-Proxy: <xmx:PnjiXBhJE0YJDNVYIONxbjvYTSVQuZsKr50t2URAtOKWcc00nMfsBg>
-    <xmx:PnjiXCv7q2nvDKOVoQifENRHw8oWdppSEFgXYEb9nudz5M--lKhM-A>
-    <xmx:PnjiXE92dNEIj-D3Th--k2WWNasFuUXsZvgo1ReR5IObTNGvxmP-4Q>
-    <xmx:PnjiXKnmkdqiZvVHX8KbBcBS2F1moParQx6sMdXb-RrWMGFgFGmaYA>
-Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
-        by mail.messagingengine.com (Postfix) with ESMTPA id DDC1B10378;
-        Mon, 20 May 2019 05:49:49 -0400 (EDT)
-Date:   Mon, 20 May 2019 11:49:48 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Jiufei Xue <jiufei.xue@linux.alibaba.com>
-Cc:     Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
-        tj@kernel.org, stable@kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH v4 RESEND] fs/writeback: use rcu_barrier() to wait for
- inflight wb switches going into workqueue when umount
-Message-ID: <20190520094948.GB23521@kroah.com>
-References: <20190429024108.54150-1-jiufei.xue@linux.alibaba.com>
- <20190430103201.9C2D92080C@mail.kernel.org>
- <499a7630-551e-70a1-7a4f-c5848030461d@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <499a7630-551e-70a1-7a4f-c5848030461d@linux.alibaba.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+        id S1730127AbfETKT4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 May 2019 06:19:56 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:44246 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727539AbfETKT4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 06:19:56 -0400
+Received: by mail-wr1-f68.google.com with SMTP id w13so3180408wru.11
+        for <cgroups@vger.kernel.org>; Mon, 20 May 2019 03:19:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=NwlnnO8ESeSxRw5I4cSTLQD2eWjIGGdF4E5YUL4sVio=;
+        b=fAeOqnI2tkRWtCPWlJF7KOL2rZ6fIISdVjNIqB3Lv7Bxh9XfXkfPmpxvPqEkR4X54I
+         aFuP6tqomqaxs9D49vDgbyzY7OpGuYSdY0CGjUoCDGqsw0p+TRLAPtIgZyehV+DwB5tI
+         Bdj3K4ZYQuz+wThYUbsCAurjUcCpUIQfG+4KhbwkriHMYfVbJVZjpRcHQftlaejPYI+8
+         WZFnR+zW4uwmMal5Dl2kI3OUy2OVPKH9Y60RU2o6htHTKnwvOPHx/dulutbwccFAPS9T
+         9ct51ALpTxHBpEogLDVOc+PY4PajGm90K1Fd/aHl+pGbH0TL1aGLvyztnZ2EJUntDwt7
+         BaKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=NwlnnO8ESeSxRw5I4cSTLQD2eWjIGGdF4E5YUL4sVio=;
+        b=mojzvA6kMkUcV5hlmSyxgmNT75m/ZFhV8Ee6Ea2jO/9uiDpgnYoGrbHz17ClLPtu4C
+         UcJ7TZmlEBERW042evSgmTrgg23uXuhADfetSKmXaPl0DWA1REKa4/ZCODJ+yw44IQlC
+         cRSeHyRc2Swq0+YYWkep76MJHhXgThCrtVACOrOM0rU6ytQAT6/JPiBHnlDKPdP7mLNn
+         BXmOWUui2yOQ3kBdhwSDSV1ZEprt4CK50uvTqnqRn0s87FBHplYRZVy3uVhEHFDlGXwa
+         C0tgrOWgPxxcnzvFvfV6pbiFfS46KfXyjWl2hu1anJ6hyypgz4dW/6itGXJJsAxHIvkx
+         TQrw==
+X-Gm-Message-State: APjAAAX+vXNuS++ptoGQTOZ1LDL6wfTX2NRkW3uYJx4lYRluxdH7UQvu
+        BERoLIf/CIDYoFDIwjTN8S7Dow==
+X-Google-Smtp-Source: APXvYqx52K77ouRWnzbrZV/5ooOeTACW32zdewSNSqifd0mODVN3MQr613HERnftnokuquE4p6GB+w==
+X-Received: by 2002:adf:9c0a:: with SMTP id f10mr4504745wrc.248.1558347594134;
+        Mon, 20 May 2019 03:19:54 -0700 (PDT)
+Received: from [192.168.0.100] ([88.147.73.106])
+        by smtp.gmail.com with ESMTPSA id s11sm31793721wrb.71.2019.05.20.03.19.51
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 20 May 2019 03:19:52 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_0E3633DD-4248-4655-9843-6C90BDFC002D";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Mon, 20 May 2019 12:19:50 +0200
+In-Reply-To: <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, tytso@mit.edu, amakhalov@vmware.com,
+        anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, May 05, 2019 at 08:09:01PM +0800, Jiufei Xue wrote:
-> 
-> 
-> On 2019/4/30 下午6:32, Sasha Levin wrote:
-> > Hi,
-> > 
-> > [This is an automated email]
-> > 
-> > This commit has been processed because it contains a -stable tag.
-> > The stable tag indicates that it's relevant for the following trees: all.
-> > 
-> > The bot has tested the following trees: v5.0.10, v4.19.37, v4.14.114, v4.9.171, v4.4.179, v3.18.139.
-> > 
-> > v5.0.10: Build OK!
-> > v4.19.37: Build OK!
-> > v4.14.114: Build OK!
-> > v4.9.171: Failed to apply! Possible dependencies:
-> >     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
-> >     2264d9c74dda ("x86/intel_rdt: Build structures for each resource based on cache topology")
-> >     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
-> >     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
-> >     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
-> >     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
-> >     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
-> >     5ff193fbde20 ("x86/intel_rdt: Add basic resctrl filesystem support")
-> >     60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
-> >     60ec2440c63d ("x86/intel_rdt: Add schemata file")
-> >     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
-> >     78e99b4a2b9a ("x86/intel_rdt: Add CONFIG, Makefile, and basic initialization")
-> >     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
-> >     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
-> >     c1c7c3f9d6bb ("x86/intel_rdt: Pick up L3/L2 RDT parameters from CPUID")
-> > 
-> > v4.4.179: Failed to apply! Possible dependencies:
-> >     0007bccc3cfd ("x86: Replace RDRAND forced-reseed with simple sanity check")
-> >     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
-> >     1b74dde7c47c ("x86/cpu: Convert printk(KERN_<LEVEL> ...) to pr_<level>(...)")
-> >     27f6d22b037b ("perf/x86: Move perf_event.h to its new home")
-> >     39b0332a2158 ("perf/x86: Move perf_event_amd.c ........... => x86/events/amd/core.c")
-> >     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
-> >     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
-> >     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
-> >     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
-> >     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
-> >     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
-> >     724697648eec ("perf/x86: Use INST_RETIRED.PREC_DIST for cycles: ppp")
-> >     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
-> >     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
-> >     fa9cbf320e99 ("perf/x86: Move perf_event.c ............... => x86/events/core.c")
-> > 
-> > v3.18.139: Failed to apply! Possible dependencies:
-> >     0ae45f63d4ef ("vfs: add support for a lazytime mount option")
-> >     4452226ea276 ("writeback: move backing_dev_info->state into bdi_writeback")
-> >     52ebea749aae ("writeback: make backing_dev_info host cgroup-specific bdi_writebacks")
-> >     66114cad64bf ("writeback: separate out include/linux/backing-dev-defs.h")
-> >     682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
-> >     87e1d789bf55 ("writeback: implement [locked_]inode_to_wb_and_lock_list()")
-> >     a3816ab0e8fe ("fs: Convert show_fdinfo functions to void")
-> >     b16b1deb553a ("writeback: make writeback_control track the inode being written back")
-> >     b4caecd48005 ("fs: introduce f_op->mmap_capabilities for nommu mmap support")
-> >     bafc0dba1e20 ("buffer, writeback: make __block_write_full_page() honor cgroup writeback")
-> > 
-> > 
-> > How should we proceed with this patch?
-> > 
-> > --
-> 
-> I am sorry that I forgot to mention that the patch should be applied to stable
-> since v4.4.
-> 
-> v4.4.179 and v4.9.171 depend on the commit 7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches"). 
-> On these two versions we can just inc isw_nr_in_flight before return.
 
-Thanks, I've just backported 7fc5854f8c6e to those kernels now and then
-this applied.
+--Apple-Mail=_0E3633DD-4248-4655-9843-6C90BDFC002D
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-greg k-h
+
+
+> Il giorno 18 mag 2019, alle ore 22:50, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+> On 5/18/19 11:39 AM, Paolo Valente wrote:
+>> I've addressed these issues in my last batch of improvements for BFQ,
+>> which landed in the upcoming 5.2. If you give it a try, and still see
+>> the problem, then I'll be glad to reproduce it, and hopefully fix it
+>> for you.
+>>=20
+>=20
+> Hi Paolo,
+>=20
+> Thank you for looking into this!
+>=20
+> I just tried current mainline at commit 72cf0b07, but unfortunately
+> didn't see any improvement:
+>=20
+> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+>=20
+> With mq-deadline, I get:
+>=20
+> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.90981 s, 1.3 MB/s
+>=20
+> With bfq, I get:
+> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 84.8216 s, 60.4 kB/s
+>=20
+
+Hi Srivatsa,
+thanks for reproducing this on mainline.  I seem to have reproduced a
+bonsai-tree version of this issue.  Before digging into the block
+trace, I'd like to ask you for some feedback.
+
+First, in my test, the total throughput of the disk happens to be
+about 20 times as high as that enjoyed by dd, regardless of the I/O
+scheduler.  I guess this massive overhead is normal with dsync, but
+I'd like know whether it is about the same on your side.  This will
+help me understand whether I'll actually be analyzing about the same
+problem as yours.
+
+Second, the commands I used follow.  Do they implement your test case
+correctly?
+
+[root@localhost tmp]# mkdir /sys/fs/cgroup/blkio/testgrp
+[root@localhost tmp]# echo $BASHPID > =
+/sys/fs/cgroup/blkio/testgrp/cgroup.procs
+[root@localhost tmp]# cat /sys/block/sda/queue/scheduler
+[mq-deadline] bfq none
+[root@localhost tmp]# dd if=3D/dev/zero of=3D/root/test.img bs=3D512 =
+count=3D10000 oflag=3Ddsync
+10000+0 record dentro
+10000+0 record fuori
+5120000 bytes (5,1 MB, 4,9 MiB) copied, 14,6892 s, 349 kB/s
+[root@localhost tmp]# echo bfq > /sys/block/sda/queue/scheduler
+[root@localhost tmp]# dd if=3D/dev/zero of=3D/root/test.img bs=3D512 =
+count=3D10000 oflag=3Ddsync
+10000+0 record dentro
+10000+0 record fuori
+5120000 bytes (5,1 MB, 4,9 MiB) copied, 20,1953 s, 254 kB/s
+
+Thanks,
+Paolo
+
+> Please let me know if any more info about my setup might be helpful.
+>=20
+> Thank you!
+>=20
+> Regards,
+> Srivatsa
+> VMware Photon OS
+>=20
+>>=20
+>>> Il giorno 18 mag 2019, alle ore 00:16, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>=20
+>>>=20
+>>> Hi,
+>>>=20
+>>> One of my colleagues noticed upto 10x - 30x drop in I/O throughput
+>>> running the following command, with the CFQ I/O scheduler:
+>>>=20
+>>> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflags=3Ddsync
+>>>=20
+>>> Throughput with CFQ: 60 KB/s
+>>> Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
+>>>=20
+>>> I spent some time looking into it and found that this is caused by =
+the
+>>> undesirable interaction between 4 different components:
+>>>=20
+>>> - blkio cgroup controller enabled
+>>> - ext4 with the jbd2 kthread running in the root blkio cgroup
+>>> - dd running on ext4, in any other blkio cgroup than that of jbd2
+>>> - CFQ I/O scheduler with defaults for slice_idle and group_idle
+>>>=20
+>>>=20
+>>> When docker is enabled, systemd creates a blkio cgroup called
+>>> system.slice to run system services (and docker) under it, and a
+>>> separate blkio cgroup called user.slice for user processes. So, when
+>>> dd is invoked, it runs under user.slice.
+>>>=20
+>>> The dd command above includes the dsync flag, which performs an
+>>> fdatasync after every write to the output file. Since dd is writing =
+to
+>>> a file on ext4, jbd2 will be active, committing transactions
+>>> corresponding to those fdatasync requests from dd. (In other words, =
+dd
+>>> depends on jdb2, in order to make forward progress). But jdb2 being =
+a
+>>> kernel thread, runs in the root blkio cgroup, as opposed to dd, =
+which
+>>> runs under user.slice.
+>>>=20
+>>> Now, if the I/O scheduler in use for the underlying block device is
+>>> CFQ, then its inter-queue/inter-group idling takes effect (via the
+>>> slice_idle and group_idle parameters, both of which default to 8ms).
+>>> Therefore, everytime CFQ switches between processing requests from =
+dd
+>>> vs jbd2, this 8ms idle time is injected, which slows down the =
+overall
+>>> throughput tremendously!
+>>>=20
+>>> To verify this theory, I tried various experiments, and in all =
+cases,
+>>> the 4 pre-conditions mentioned above were necessary to reproduce =
+this
+>>> performance drop. For example, if I used an XFS filesystem (which
+>>> doesn't use a separate kthread like jbd2 for journaling), or if I =
+dd'ed
+>>> directly to a block device, I couldn't reproduce the performance
+>>> issue. Similarly, running dd in the root blkio cgroup (where jbd2
+>>> runs) also gets full performance; as does using the noop or deadline
+>>> I/O schedulers; or even CFQ itself, with slice_idle and group_idle =
+set
+>>> to zero.
+>>>=20
+>>> These results were reproduced on a Linux VM (kernel v4.19) on ESXi,
+>>> both with virtualized storage as well as with disk pass-through,
+>>> backed by a rotational hard disk in both cases. The same problem was
+>>> also seen with the BFQ I/O scheduler in kernel v5.1.
+>>>=20
+>>> Searching for any earlier discussions of this problem, I found an =
+old
+>>> thread on LKML that encountered this behavior [1], as well as a =
+docker
+>>> github issue [2] with similar symptoms (mentioned later in the
+>>> thread).
+>>>=20
+>>> So, I'm curious to know if this is a well-understood problem and if
+>>> anybody has any thoughts on how to fix it.
+>>>=20
+>>> Thank you very much!
+>>>=20
+>>>=20
+>>> [1]. https://lkml.org/lkml/2015/11/19/359
+>>>=20
+>>> [2]. https://github.com/moby/moby/issues/21485
+>>>    https://github.com/moby/moby/issues/21485#issuecomment-222941103
+>>>=20
+>>> Regards,
+>>> Srivatsa
+>>=20
+>=20
+
+
+--Apple-Mail=_0E3633DD-4248-4655-9843-6C90BDFC002D
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzif0YACgkQOAkCLQGo
+9oM5xQ//dvsiY41qM7W/y79e3ViCl5oabT79tXKDHAGnXMLPWIScoMuI0CpONuBA
+hRvnLCO8Wvwl8aXbJzfVnv0J5XkBCiRlIEBf2XXvhgXWjwSOIRtLXoKfnyZ26h1Z
+GGrC8q4pY+s/2d8wUanLHlOo+ExsJoU+5xWzL9Wx45XafzaG88aOl/yCb8mGgw2S
+/kkSWIVGMn930yRgGqr4b+dNqivNg2euqSRpjfhRNm0hCkM7q2r1En2Xyef5eEeP
+3d1SO+qQo6kIylYEtu8Y6foZZfqlBQLWUV/oCdaQ0Os77Z1cqfjIxUOLkkEU+QKi
+gHSXwCoM/S1pOL74o7TkDbWoL4MpyK9AaatNSULRxE1yWDYF2dd/31Tc/ZLcutYE
+VYG0SWUXx2diM5ccCWVedHEHhs9VVxUP4ftipt6tAzdsyT0RCxTwQPapn4NToMUj
+3DlFpM8DUdYNuiVrQhpr3/+gB0OJ64XC3bgQM80rzFO2AWuGmydlUc6Tle8AqNNG
+qAHUZ25+VOBwPrOptJOH249yWYrSgT0FHqWEppNmCi0JyVLjbOJuLT06/IT7q2AW
+Ob5N/G2PxFiXuCDLeJlC7UIl8Ua7Sg5v+MmJVDgL0qDUctZvJHNZZdMbeedk1ZHH
+XH0SX/3JDNrmO2XdjIrzAWSdQX3Ev1Yv2jOkHnMAs6Na+1H+vf4=
+=lPeU
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_0E3633DD-4248-4655-9843-6C90BDFC002D--
