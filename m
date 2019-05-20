@@ -2,98 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E9422FFA
-	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 11:16:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AEAF230A3
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 11:49:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731833AbfETJQC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 May 2019 05:16:02 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37692 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1730677AbfETJQC (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 20 May 2019 05:16:02 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BE23FAE4B;
-        Mon, 20 May 2019 09:15:59 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F16311E3C5F; Mon, 20 May 2019 11:15:58 +0200 (CEST)
-Date:   Mon, 20 May 2019 11:15:58 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Theodore Ts'o <tytso@mit.edu>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, axboe@kernel.dk, jack@suse.cz,
-        jmoyer@redhat.com, amakhalov@vmware.com, anishs@vmware.com,
-        srivatsab@vmware.com
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Message-ID: <20190520091558.GC2172@quack2.suse.cz>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <20190518192847.GB14277@mit.edu>
+        id S1730557AbfETJty (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 May 2019 05:49:54 -0400
+Received: from out2-smtp.messagingengine.com ([66.111.4.26]:38175 "EHLO
+        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730353AbfETJty (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 05:49:54 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id E5C9424574;
+        Mon, 20 May 2019 05:49:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Mon, 20 May 2019 05:49:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:content-transfer-encoding:in-reply-to; s=fm3; bh=C
+        1sepVsVX9R0sUwMSr9tcIjd0xGsqGQ5crxHcPHp6Qo=; b=vFq0epEZ2ibXxjQqG
+        nzNC/6JOBQtKkEguOI5mvf5SZOCkEIHDiem/MghQGYYKnrK0A8PkFefJw8XuEBwt
+        T3Zhmp1a5xyrJGOV6hFOFxk5YwThWUHMBUVmUo5wZ6oNeWqcP6QIR03JfMx3Maxa
+        RPq+TmwbLloFgD0p0BjxRuoGt+PlVJ9HfrACGTQyt6Bq/J+e3VU01kXK5ouHq2zE
+        cOAhrZMlardlq1LByaYoK14IVAlS2rOK49cDQOUeBuGA2Zhb27c/sd+iBvA0c6qR
+        MmRIpPTuH4TmA0tJoBr2GQGQXF/h1/AUJFD7dPsGSfTRkJXIXpamqNRcZSu73syK
+        Ls2Uw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=C1sepVsVX9R0sUwMSr9tcIjd0xGsqGQ5crxHcPHp6
+        Qo=; b=T6CpdkPtLdT1uSj1UCbzWfMV3nmTHKZe2l7FqatPzEd6N7khKNK5wka/T
+        YfjE5RWZYZidef1NZcgLtZ/MwqeAmYLKaK0ua+6bGtymdgPAKdhELzmyQ2pJTqjY
+        YT0dR5j43ehBrUXsekGFvI3/KJ5UhWeAY2RUQXj4snnvNtz32nixMk/2i6tfGaHw
+        HUd3PM0APdP+jyOj/lVxUASm5DcR+X96YmljZeDXEBKTjuBc3OL91dVe5LkUNGRn
+        3/5T6ZpqGJ8G/lp0WaeAmmrDUZQ62/WhHu+GU2uh5aXx/0a3v+xd+5IC9Nr9+j6B
+        YbOwytjxG17R+oHYtahxsFIu9CnJA==
+X-ME-Sender: <xms:PnjiXCtyit7_aj9_Ed-KkxckV4STUjIRhEArsk47xyqrGWxTj9--cw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduuddruddtkedgvddtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtugfgjggfsehtkeertddtreejnecuhfhrohhmpefirhgv
+    ghcumffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucfkphepkeefrdekiedrkeelrd
+    dutdejnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomhen
+    ucevlhhushhtvghrufhiiigvpedt
+X-ME-Proxy: <xmx:PnjiXBhJE0YJDNVYIONxbjvYTSVQuZsKr50t2URAtOKWcc00nMfsBg>
+    <xmx:PnjiXCv7q2nvDKOVoQifENRHw8oWdppSEFgXYEb9nudz5M--lKhM-A>
+    <xmx:PnjiXE92dNEIj-D3Th--k2WWNasFuUXsZvgo1ReR5IObTNGvxmP-4Q>
+    <xmx:PnjiXKnmkdqiZvVHX8KbBcBS2F1moParQx6sMdXb-RrWMGFgFGmaYA>
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DDC1B10378;
+        Mon, 20 May 2019 05:49:49 -0400 (EDT)
+Date:   Mon, 20 May 2019 11:49:48 +0200
+From:   Greg KH <greg@kroah.com>
+To:     Jiufei Xue <jiufei.xue@linux.alibaba.com>
+Cc:     Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
+        tj@kernel.org, stable@kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v4 RESEND] fs/writeback: use rcu_barrier() to wait for
+ inflight wb switches going into workqueue when umount
+Message-ID: <20190520094948.GB23521@kroah.com>
+References: <20190429024108.54150-1-jiufei.xue@linux.alibaba.com>
+ <20190430103201.9C2D92080C@mail.kernel.org>
+ <499a7630-551e-70a1-7a4f-c5848030461d@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190518192847.GB14277@mit.edu>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <499a7630-551e-70a1-7a4f-c5848030461d@linux.alibaba.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 18-05-19 15:28:47, Theodore Ts'o wrote:
-> On Sat, May 18, 2019 at 08:39:54PM +0200, Paolo Valente wrote:
-> > I've addressed these issues in my last batch of improvements for
-> > BFQ, which landed in the upcoming 5.2. If you give it a try, and
-> > still see the problem, then I'll be glad to reproduce it, and
-> > hopefully fix it for you.
+On Sun, May 05, 2019 at 08:09:01PM +0800, Jiufei Xue wrote:
 > 
-> Hi Paolo, I'm curious if you could give a quick summary about what you
-> changed in BFQ?
 > 
-> I was considering adding support so that if userspace calls fsync(2)
-> or fdatasync(2), to attach the process's CSS to the transaction, and
-> then charge all of the journal metadata writes the process's CSS.  If
-> there are multiple fsync's batched into the transaction, the first
-> process which forced the early transaction commit would get charged
-> the entire journal write.  OTOH, journal writes are sequential I/O, so
-> the amount of disk time for writing the journal is going to be
-> relatively small, and especially, the fact that work from other
-> cgroups is going to be minimal, especially if hadn't issued an
-> fsync().
-
-But this makes priority-inversion problems with ext4 journal worse, doesn't
-it? If we submit journal commit in blkio cgroup of some random process, it
-may get throttled which then effectively blocks the whole filesystem. Or do
-you want to implement a more complex back-pressure mechanism where you'd
-just account to different blkio cgroup during journal commit and then
-throttle as different point where you are not blocking other tasks from
-progress?
-
-> In the case where you have three cgroups all issuing fsync(2) and they
-> all landed in the same jbd2 transaction thanks to commit batching, in
-> the ideal world we would split up the disk time usage equally across
-> those three cgroups.  But it's probably not worth doing that...
+> On 2019/4/30 下午6:32, Sasha Levin wrote:
+> > Hi,
+> > 
+> > [This is an automated email]
+> > 
+> > This commit has been processed because it contains a -stable tag.
+> > The stable tag indicates that it's relevant for the following trees: all.
+> > 
+> > The bot has tested the following trees: v5.0.10, v4.19.37, v4.14.114, v4.9.171, v4.4.179, v3.18.139.
+> > 
+> > v5.0.10: Build OK!
+> > v4.19.37: Build OK!
+> > v4.14.114: Build OK!
+> > v4.9.171: Failed to apply! Possible dependencies:
+> >     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
+> >     2264d9c74dda ("x86/intel_rdt: Build structures for each resource based on cache topology")
+> >     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
+> >     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
+> >     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
+> >     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
+> >     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
+> >     5ff193fbde20 ("x86/intel_rdt: Add basic resctrl filesystem support")
+> >     60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
+> >     60ec2440c63d ("x86/intel_rdt: Add schemata file")
+> >     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
+> >     78e99b4a2b9a ("x86/intel_rdt: Add CONFIG, Makefile, and basic initialization")
+> >     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
+> >     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
+> >     c1c7c3f9d6bb ("x86/intel_rdt: Pick up L3/L2 RDT parameters from CPUID")
+> > 
+> > v4.4.179: Failed to apply! Possible dependencies:
+> >     0007bccc3cfd ("x86: Replace RDRAND forced-reseed with simple sanity check")
+> >     113c60970cf4 ("x86/intel_rdt: Add Haswell feature discovery")
+> >     1b74dde7c47c ("x86/cpu: Convert printk(KERN_<LEVEL> ...) to pr_<level>(...)")
+> >     27f6d22b037b ("perf/x86: Move perf_event.h to its new home")
+> >     39b0332a2158 ("perf/x86: Move perf_event_amd.c ........... => x86/events/amd/core.c")
+> >     3ee7e8697d58 ("bdi: Fix another oops in wb_workfn()")
+> >     4f341a5e4844 ("x86/intel_rdt: Add scheduler hook")
+> >     5318ce7d4686 ("bdi: Shutdown writeback on all cgwbs in cgwb_bdi_destroy()")
+> >     5b825c3af1d8 ("sched/headers: Prepare to remove <linux/cred.h> inclusion from <linux/sched.h>")
+> >     5dd43ce2f69d ("sched/wait: Split out the wait_bit*() APIs from <linux/wait.h> into <linux/wait_bit.h>")
+> >     6b2bb7265f0b ("sched/wait: Introduce wait_var_event()")
+> >     724697648eec ("perf/x86: Use INST_RETIRED.PREC_DIST for cycles: ppp")
+> >     7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches")
+> >     8236b0ae31c8 ("bdi: wake up concurrent wb_shutdown() callers.")
+> >     fa9cbf320e99 ("perf/x86: Move perf_event.c ............... => x86/events/core.c")
+> > 
+> > v3.18.139: Failed to apply! Possible dependencies:
+> >     0ae45f63d4ef ("vfs: add support for a lazytime mount option")
+> >     4452226ea276 ("writeback: move backing_dev_info->state into bdi_writeback")
+> >     52ebea749aae ("writeback: make backing_dev_info host cgroup-specific bdi_writebacks")
+> >     66114cad64bf ("writeback: separate out include/linux/backing-dev-defs.h")
+> >     682aa8e1a6a1 ("writeback: implement unlocked_inode_to_wb transaction and use it for stat updates")
+> >     87e1d789bf55 ("writeback: implement [locked_]inode_to_wb_and_lock_list()")
+> >     a3816ab0e8fe ("fs: Convert show_fdinfo functions to void")
+> >     b16b1deb553a ("writeback: make writeback_control track the inode being written back")
+> >     b4caecd48005 ("fs: introduce f_op->mmap_capabilities for nommu mmap support")
+> >     bafc0dba1e20 ("buffer, writeback: make __block_write_full_page() honor cgroup writeback")
+> > 
+> > 
+> > How should we proceed with this patch?
+> > 
+> > --
 > 
-> That being said, we probably do need some BFQ support, since in the
-> case where we have multiple processes doing buffered writes w/o fsync,
-> we do charnge the data=ordered writeback to each block cgroup.  Worse,
-> the commit can't complete until the all of the data integrity
-> writebacks have completed.  And if there are N cgroups with dirty
-> inodes, and slice_idle set to 8ms, there is going to be 8*N ms worth
-> of idle time tacked onto the commit time.
+> I am sorry that I forgot to mention that the patch should be applied to stable
+> since v4.4.
+> 
+> v4.4.179 and v4.9.171 depend on the commit 7fc5854f8c6e ("writeback: synchronize sync(2) against cgroup writeback membership switches"). 
+> On these two versions we can just inc isw_nr_in_flight before return.
 
-Yeah. At least in some cases, we know there won't be any more IO from a
-particular cgroup in the near future (e.g. transaction commit completing,
-or when the layers above IO scheduler already know which IO they are going
-to submit next) and in that case idling is just a waste of time. But so far
-I haven't decided how should look a reasonably clean interface for this
-that isn't specific to a particular IO scheduler implementation.
+Thanks, I've just backported 7fc5854f8c6e to those kernels now and then
+this applied.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+greg k-h
