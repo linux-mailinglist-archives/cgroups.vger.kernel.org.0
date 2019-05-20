@@ -2,105 +2,193 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 03CF223E00
-	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 19:05:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2611E23FAD
+	for <lists+cgroups@lfdr.de>; Mon, 20 May 2019 19:57:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390441AbfETRFc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 May 2019 13:05:32 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:38767 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390329AbfETRFb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 13:05:31 -0400
-Received: by mail-pg1-f193.google.com with SMTP id j26so7083814pgl.5
-        for <cgroups@vger.kernel.org>; Mon, 20 May 2019 10:05:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=4ZOI+jnwXBptD9UIpostnVMZFPCwcvxnpKvL3qurL40=;
-        b=Rg3JGm7cAcDM+AZNutQuRwGkJ3ubXbt1UCwOCgZnkJntyOzhCrWnunCiEjWY7ROSIZ
-         kVmBbyBsGGB57A5oVMp546xpWJgwU/oSoyDYqohN31no/hHulLW0cV3TFXQxHRGm3Arh
-         oZI0B0sNElaQefwHOOurYmhojHza1z+7f0MdJSYwJgf0UX78I0BFmHNhkkyTJP+ysJgA
-         1oq4KvyqLM9FGoFmGF0bhA3gzuw3Xcn/MOZUKRVRWJpoiE+3D/NOeDKnUVfhlEhq8tFr
-         ACelj15Q04D4dmGoY8dB6fOkc4qS2Hmb9f4IVHnDWYoNGwTJItV3oZNqdJ6Lf+b5E2oC
-         /1IA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=4ZOI+jnwXBptD9UIpostnVMZFPCwcvxnpKvL3qurL40=;
-        b=a/gafZynMs6PXG9S8abpuSlwDlB/Qk67yD5MANXnuziiWO3u5MKc3gLT832U6NA2pA
-         G+HcVogMFEMfLbDu516JPlcx7v9TDVtUia1Mik7KzvGiCmI2/wWTP/yUsZLd6pXV1JEy
-         AQQ79n71tP+C3dGEEqtRGo+kZTyFXt5elzud7D6ZAGCCuvgTTV/BCSyieDqpK9fcso6O
-         rxcuBy/Fik4j6EcAHDT5fVPLuiptLsEDdLaiN1XFmdvSAIrXmKS4Dca6bdjsnYp8IO+9
-         CQeU+tvWIAmeyx+DT/rVtiEh3hYzZVBHoEyQ/akgaesnyzjg2PiY54MEU+L5Pfj6dOwr
-         67vQ==
-X-Gm-Message-State: APjAAAWJunj4HltNKTPUn+6CUVNmpJmQpGr9kgTs3+F+p0GYT75wUFzL
-        qlTtRITb2zjjeb3izcQH7lW0vNgrrYs=
-X-Google-Smtp-Source: APXvYqwYUPMF0FEJQ8SH6f6V9L+pAAf6oW7lozkMuesu1RZqnBX5kL/J9WlcSj5ZD7fx0NEgV+if8A==
-X-Received: by 2002:a63:1045:: with SMTP id 5mr32327108pgq.55.1558371931150;
-        Mon, 20 May 2019 10:05:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:df5f])
-        by smtp.gmail.com with ESMTPSA id u76sm21219972pgc.84.2019.05.20.10.05.29
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 20 May 2019 10:05:30 -0700 (PDT)
-Date:   Mon, 20 May 2019 13:05:28 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
+        id S1727031AbfETR5E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 May 2019 13:57:04 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:34686 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726566AbfETR5D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 May 2019 13:57:03 -0400
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4KHjAho026026;
+        Mon, 20 May 2019 10:56:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=ZiG/s3OPwoUxswb+C2dKoiuIlrtNc7Ss7KDaPAFqyZg=;
+ b=rA4LGsS5aYKGac27pVplwvVYqfQ+bM3ff142NEYp7ETU4F1d5MbqOpMFGD7YfI7Qfuwp
+ qDY5mC4qpbX8HQSSoyC9UIDEZxik8cCeD2AtglXP2wKX9V0PKbmfGMWeP0N/0Fw0v6+u
+ m4IhoUFUsD+R03vxZ8ww0k5xQyIq3PbJtis= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2skvds1448-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 20 May 2019 10:56:52 -0700
+Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
+ ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 20 May 2019 10:56:50 -0700
+Received: from ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) by
+ ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 20 May 2019 10:56:50 -0700
+Received: from NAM05-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Mon, 20 May 2019 10:56:50 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZiG/s3OPwoUxswb+C2dKoiuIlrtNc7Ss7KDaPAFqyZg=;
+ b=GuMF0nCwIKAVEvMlixihJm3hjQALm+Qv4YVIo4UF5s19OLw6pegSyvK2OiNZacKCtId5btboBCDy2dRa49lCLEXDhogGqddghRN5Oc5NssHCC9QA02isUYbARR1yLf0ADxIKkTa35AEM8f9D0ggICxXAX3TFRNsnES0ScXbMejI=
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.156.24) by
+ BYAPR15MB3029.namprd15.prod.outlook.com (20.178.238.90) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1900.16; Mon, 20 May 2019 17:56:47 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a%7]) with mapi id 15.20.1900.020; Mon, 20 May 2019
+ 17:56:47 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Waiman Long <longman9394@gmail.com>
+CC:     Shakeel Butt <shakeelb@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm, memcg: introduce memory.events.local
-Message-ID: <20190520170528.GC11665@cmpxchg.org>
-References: <20190518001818.193336-1-shakeelb@google.com>
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <Kernel-team@fb.com>,
+        "Johannes Weiner" <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Rik van Riel <riel@surriel.com>,
+        Christoph Lameter <cl@linux.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [PATCH v4 5/7] mm: rework non-root kmem_cache lifecycle
+ management
+Thread-Topic: [PATCH v4 5/7] mm: rework non-root kmem_cache lifecycle
+ management
+Thread-Index: AQHVCrIlH017tiyY2Em3G+ZR7kFOEaZ0Im8AgAAy7wA=
+Date:   Mon, 20 May 2019 17:56:46 +0000
+Message-ID: <20190520175640.GA24204@tower.DHCP.thefacebook.com>
+References: <20190514213940.2405198-1-guro@fb.com>
+ <20190514213940.2405198-6-guro@fb.com>
+ <CALvZod6Zb_kYHyG02jXBY9gvvUn_gOug7kq_hVa8vuCbXdPdjQ@mail.gmail.com>
+ <5e3c4646-3e4f-414a-0eca-5249956d68a5@gmail.com>
+In-Reply-To: <5e3c4646-3e4f-414a-0eca-5249956d68a5@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR2001CA0023.namprd20.prod.outlook.com
+ (2603:10b6:301:15::33) To BYAPR15MB2631.namprd15.prod.outlook.com
+ (2603:10b6:a03:152::24)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:21ea]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 86eeca8c-8b5c-4fd0-8d57-08d6dd4c86a6
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB3029;
+x-ms-traffictypediagnostic: BYAPR15MB3029:
+x-microsoft-antispam-prvs: <BYAPR15MB30298A52EEC1FBCE7A5E67CBBE060@BYAPR15MB3029.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:792;
+x-forefront-prvs: 004395A01C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(396003)(366004)(39860400002)(136003)(346002)(189003)(199004)(5660300002)(1076003)(7416002)(4326008)(102836004)(53936002)(476003)(6436002)(11346002)(186003)(6486002)(6116002)(68736007)(486006)(54906003)(305945005)(6246003)(446003)(46003)(7736002)(99286004)(66946007)(73956011)(66476007)(66556008)(64756008)(66446008)(14454004)(86362001)(33656002)(81166006)(81156014)(8936002)(256004)(14444005)(76176011)(6916009)(52116002)(1411001)(2906002)(386003)(71190400001)(6506007)(316002)(229853002)(53546011)(9686003)(6512007)(25786009)(71200400001)(478600001)(8676002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3029;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 1139iuDNBkPi/ux1Wb2FAePfwVD47vAdfYwsGARMx5idUGlbr2Q7WhXPwVVQaoJiCjbwi84qOKN90gQ6nfsaQMIbI5tQ7vR2UwLQq0sBBnM4cAdegyR+fmccLDTMMmtovQ6cGA3+mby2IBdmGMujxCwth9QSEcqBVE2wrMhtGT4Q1QOpwFgZfreWbjyD+wMJ0eSWjBS9bzMLO+alF+TTO+YVMmPF31Ruu2wLZxP8Eb8tw2ow4Ra8MnorB1Cax9Do4c+V7TX2THQ37boWEEtleo65n2nH3nDDvaNEmPhAcaGs3/eretlozQ6MYt79lhv2A5jNTbNK3FCOEIcQOV5/ClFxtAw1UUITfrvGtsV4wNNcwL3onsgjIeFndf5Yp0CLBEsCIE4MPPJiWmprx8bE5+xp2S/zunr+xh0W7TjslfY=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <8521F75896B0D548B2274FB23420AC8E@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190518001818.193336-1-shakeelb@google.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 86eeca8c-8b5c-4fd0-8d57-08d6dd4c86a6
+X-MS-Exchange-CrossTenant-originalarrivaltime: 20 May 2019 17:56:46.9656
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3029
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-20_07:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905200112
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 17, 2019 at 05:18:18PM -0700, Shakeel Butt wrote:
-> The memory controller in cgroup v2 exposes memory.events file for each
-> memcg which shows the number of times events like low, high, max, oom
-> and oom_kill have happened for the whole tree rooted at that memcg.
-> Users can also poll or register notification to monitor the changes in
-> that file. Any event at any level of the tree rooted at memcg will
-> notify all the listeners along the path till root_mem_cgroup. There are
-> existing users which depend on this behavior.
-> 
-> However there are users which are only interested in the events
-> happening at a specific level of the memcg tree and not in the events in
-> the underlying tree rooted at that memcg. One such use-case is a
-> centralized resource monitor which can dynamically adjust the limits of
-> the jobs running on a system. The jobs can create their sub-hierarchy
-> for their own sub-tasks. The centralized monitor is only interested in
-> the events at the top level memcgs of the jobs as it can then act and
-> adjust the limits of the jobs. Using the current memory.events for such
-> centralized monitor is very inconvenient. The monitor will keep
-> receiving events which it is not interested and to find if the received
-> event is interesting, it has to read memory.event files of the next
-> level and compare it with the top level one. So, let's introduce
-> memory.events.local to the memcg which shows and notify for the events
-> at the memcg level.
-> 
-> Now, does memory.stat and memory.pressure need their local versions.
-> IMHO no due to the no internal process contraint of the cgroup v2. The
-> memory.stat file of the top level memcg of a job shows the stats and
-> vmevents of the whole tree. The local stats or vmevents of the top level
-> memcg will only change if there is a process running in that memcg but
-> v2 does not allow that. Similarly for memory.pressure there will not be
-> any process in the internal nodes and thus no chance of local pressure.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+On Mon, May 20, 2019 at 10:54:24AM -0400, Waiman Long wrote:
+> On 5/14/19 8:06 PM, Shakeel Butt wrote:
+> > diff --git a/mm/slab_common.c b/mm/slab_common.c
+> > index 4e5b4292a763..1ee967b4805e 100644
+> > --- a/mm/slab_common.c
+> > +++ b/mm/slab_common.c
+> > @@ -45,6 +45,8 @@ static void slab_caches_to_rcu_destroy_workfn(struct =
+work_struct *work);
+> >  static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+> >                     slab_caches_to_rcu_destroy_workfn);
+> >
+> > +static void kmemcg_queue_cache_shutdown(struct percpu_ref *percpu_ref)=
+;
+> > +
+>=20
+> kmemcg_queue_cache_shutdown is only defined if CONFIG_MEMCG_KMEM is
+> defined. If it is not defined, a compilation warning can be produced.
+> Maybe putting the declaration inside a CONFIG_MEMCG_KMEM block:
 
-This looks reasonable to me. Thanks for working out a clear use case
-and also addressing how it compares to the stats and pressure files.
+Hi Waiman!
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Yes, that makes total sense to me. Thank you for letting me know!
+How about this one?
+
+--
+
+From 0fa19369adc240cc93281911a59713822a4f3e07 Mon Sep 17 00:00:00 2001
+From: Roman Gushchin <guro@fb.com>
+Date: Mon, 20 May 2019 10:52:07 -0700
+Subject: [PATCH] mm: guard kmemcg_queue_cache_shutdown() with
+ CONFIG_MEMCG_KMEM
+
+Currently kmemcg_queue_cache_shutdown() is defined only
+if CONFIG_MEMCG_KMEM is set, however the declaration is not guarded
+with corresponding ifdefs. So a compilation warning might be produced.
+
+Let's move the declaration to the section of slab_common.c, where all
+kmemcg-specific stuff is defined.
+
+Reported-by: Waiman Long <longman9394@gmail.com>
+Signed-off-by: Roman Gushchin <guro@fb.com>
+---
+ mm/slab_common.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 9d2a3d6245dc..e818609c8209 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -45,8 +45,6 @@ static void slab_caches_to_rcu_destroy_workfn(struct work=
+_struct *work);
+ static DECLARE_WORK(slab_caches_to_rcu_destroy_work,
+ 		    slab_caches_to_rcu_destroy_workfn);
+=20
+-static void kmemcg_queue_cache_shutdown(struct percpu_ref *percpu_ref);
+-
+ /*
+  * Set of flags that will prevent slab merging
+  */
+@@ -134,6 +132,8 @@ int __kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t=
+ flags, size_t nr,
+ LIST_HEAD(slab_root_caches);
+ static DEFINE_SPINLOCK(memcg_kmem_wq_lock);
+=20
++static void kmemcg_queue_cache_shutdown(struct percpu_ref *percpu_ref);
++
+ void slab_init_memcg_params(struct kmem_cache *s)
+ {
+ 	s->memcg_params.root_cache =3D NULL;
+--=20
+2.20.1
