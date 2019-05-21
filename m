@@ -2,89 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07DDF255AD
-	for <lists+cgroups@lfdr.de>; Tue, 21 May 2019 18:32:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54E7425601
+	for <lists+cgroups@lfdr.de>; Tue, 21 May 2019 18:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728337AbfEUQcB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 May 2019 12:32:01 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:41432 "EHLO
+        id S1728467AbfEUQtS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 May 2019 12:49:18 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:47396 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1728055AbfEUQcB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 May 2019 12:32:01 -0400
+        with ESMTP id S1727817AbfEUQtS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 May 2019 12:49:18 -0400
 Received: from callcc.thunk.org (guestnat-104-133-0-109.corp.google.com [104.133.0.109] (may be forged))
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LGV973024567
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id x4LGmFdg004334
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 21 May 2019 12:31:10 -0400
+        Tue, 21 May 2019 12:48:16 -0400
 Received: by callcc.thunk.org (Postfix, from userid 15806)
-        id DF045420481; Tue, 21 May 2019 12:31:08 -0400 (EDT)
-Date:   Tue, 21 May 2019 12:31:08 -0400
+        id 184C4420481; Tue, 21 May 2019 12:48:15 -0400 (EDT)
+Date:   Tue, 21 May 2019 12:48:14 -0400
+From:   "Theodore Ts'o" <tytso@mit.edu>
 To:     Jan Kara <jack@suse.cz>
 Cc:     Paolo Valente <paolo.valente@linaro.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
         linux-fsdevel@vger.kernel.org,
         linux-block <linux-block@vger.kernel.org>,
         linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, jmoyer@redhat.com,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
         amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
 Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
  controller
-Message-ID: <20190521163108.GB2591@mit.edu>
-Mail-Followup-To: tytso@mit.edu, Jan Kara <jack@suse.cz>,
+Message-ID: <20190521164814.GC2591@mit.edu>
+Mail-Followup-To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
         Paolo Valente <paolo.valente@linaro.org>,
         "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>,
         linux-fsdevel@vger.kernel.org,
         linux-block <linux-block@vger.kernel.org>,
         linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, jmoyer@redhat.com,
+        linux-kernel@vger.kernel.org, axboe@kernel.dk, jmoyer@redhat.com,
         amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
 References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
  <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <238e14ff-68d1-3b21-a291-28de4f2d77af@csail.mit.edu>
- <6EB6C9D2-E774-48FA-AC95-BC98D97645D0@linaro.org>
- <20190521091026.GA17019@quack2.suse.cz>
+ <20190518192847.GB14277@mit.edu>
+ <20190520091558.GC2172@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521091026.GA17019@quack2.suse.cz>
->From:  Theodore Ts'o <tytso@mit.edu>
+In-Reply-To: <20190520091558.GC2172@quack2.suse.cz>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-From:   "Theodore Ts'o" <tytso@mit.edu>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 21, 2019 at 11:10:26AM +0200, Jan Kara wrote:
-> > [root@localhost tmp]# dd if=/dev/zero of=/root/test.img bs=512 count=10000 oflag=dsync
-> 
-> Yes and that's expected. It just shows how inefficient small synchronous IO
-> is. Look, dd(1) writes 512-bytes. From FS point of view we have to write:
-> full fs block with data (+4KB), inode to journal (+4KB), journal descriptor
-> block (+4KB), journal superblock (+4KB), transaction commit block (+4KB) -
-> so that's 20KB just from top of my head to write 512 bytes...
+On Mon, May 20, 2019 at 11:15:58AM +0200, Jan Kara wrote:
+> But this makes priority-inversion problems with ext4 journal worse, doesn't
+> it? If we submit journal commit in blkio cgroup of some random process, it
+> may get throttled which then effectively blocks the whole filesystem. Or do
+> you want to implement a more complex back-pressure mechanism where you'd
+> just account to different blkio cgroup during journal commit and then
+> throttle as different point where you are not blocking other tasks from
+> progress?
 
-Well, it's not *that* bad.  With fdatasync(), we're only having to do
-this worse case thing every 8 writes.  The other writes, we don't
-actually need to do any file-system level block allocation, so it's
-only a 512 byte write to the disk[1] seven out of eight writes.
+Good point, yes, it can.  It depends in what cgroup the file system is
+mounted (and hence what cgroup the jbd2 kernel thread is on).  If it
+was mounted in the root cgroup, then jbd2 thread is going to be
+completely unthrottled (except for the data=ordered writebacks, which
+will be charged to the cgroup which write those pages) so the only
+thing which is nuking us will be the slice_idle timeout --- both for
+the writebacks (which could get charged to N different cgroups, with
+disastrous effects --- and this is going to be true for any file
+system on a syncfs(2) call as well) and switching between the jbd2
+thread's cgroup and the writeback cgroup.
 
-That's also true for the slice_idle hit, of course, We only need to do
-a jbd2 transaction when there is a block allocation, and that's only
-going to happen one in eight writes.
+One thing the I/O scheduler could do is use the synchronous flag as a
+hint that it should ix-nay on the idle-way.  Or maybe we need to have
+a different way to signal this to the jbd2 thread, since I do
+recognize that this issue is ext4-specific, *because* we do the
+transaction handling in a separate thread, and because of the
+data=ordered scheme, both of which are unique to ext4.  So exempting
+synchronous writes from cgroup control doesn't make sense for other
+file systems.
 
-       	   	      	     	     	   - Ted
+So maybe a special flag meaning "entangled writes", where the
+sched_idle hacks should get suppressed for the data=ordered
+writebacks, but we still charge the block I/O to the relevant CSS's?
 
-[1] Of course, small synchronous writes to a HDD are *also* terrible
-for performance, just from the HDD's perspective.  For a random write
-workload, if you are using disks with a 4k physical sector size, it's
-having to do a read/modify/write for each 512 byte write.  And HDD
-vendors are talking about wanting to go to a 32k or 64k physical
-sector size...  In this sequential write workload, you'll mostly be
-shielded from this by the HDD's cache, but the fact that you have to
-wait for the bits to hit the platter is always going to be painful.
+I could also imagine if there was some way that file system could
+track whether all of the file system modifications were charged to a
+single cgroup, we could in that case charge it to that cgroup?
+
+> Yeah. At least in some cases, we know there won't be any more IO from a
+> particular cgroup in the near future (e.g. transaction commit completing,
+> or when the layers above IO scheduler already know which IO they are going
+> to submit next) and in that case idling is just a waste of time. But so far
+> I haven't decided how should look a reasonably clean interface for this
+> that isn't specific to a particular IO scheduler implementation.
+
+The best I've come up with is some way of signalling that all of the
+writes coming from the jbd2 commit are entangled, probably via a bio
+flag.
+
+If we don't have cgroup support, the other thing we could do is assume
+that the jbd2 thread should always be in the root (unconstrained)
+cgroup, and then force all writes, include data=ordered writebacks, to
+be in the jbd2's cgroup.  But that would make the block cgroup
+controls trivially bypassable by an application, which could just be
+fsync-happy and exempt all of its buffered I/O writes from cgroup
+control.  So that's probably not a great way to go --- but it would at
+least fix this particular performance issue.  :-/
+
+						- Ted
