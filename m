@@ -2,171 +2,484 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC16C254D5
-	for <lists+cgroups@lfdr.de>; Tue, 21 May 2019 18:05:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2BB325571
+	for <lists+cgroups@lfdr.de>; Tue, 21 May 2019 18:22:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728091AbfEUQFH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 May 2019 12:05:07 -0400
-Received: from mailgate2.uni-hannover.de ([130.75.2.114]:53604 "EHLO
-        mailgate2.uni-hannover.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728067AbfEUQFG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 May 2019 12:05:06 -0400
-X-Greylist: delayed 558 seconds by postgrey-1.27 at vger.kernel.org; Tue, 21 May 2019 12:05:03 EDT
-Received: from kolab.sra.uni-hannover.de (kolab.sra.uni-hannover.de [130.75.33.6])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mailgate2.uni-hannover.de (Postfix) with ESMTPS id 6426A2087;
-        Tue, 21 May 2019 17:55:43 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at sra.uni-hannover.de
-Received: from lab.sra.uni-hannover.de (aerobus.sra.uni-hannover.de
- [130.75.33.87])
- by kolab.sra.uni-hannover.de (Postfix) with SMTP id 1984B3E027C;
- Tue, 21 May 2019 17:55:22 +0200 (CEST)
-Received: (nullmailer pid 14993 invoked by uid 20151);
- Tue, 21 May 2019 15:55:41 -0000
-From:   Lukas Prause <langspielplatte@black-mesa.xyz>
-To:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        rostedt@goodmis.org
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lukas Prause <langspielplatte@black-mesa.xyz>,
-        Lennart Glauer <mail@lennart-glauer.de>
-Subject: [PATCH] Fix comments with paths pointing to renamed or moved files.
-Date:   Tue, 21 May 2019 17:54:30 +0200
-Message-Id: <20190521155430.14941-1-langspielplatte@black-mesa.xyz>
-X-Mailer: git-send-email 2.17.1
+        id S1728597AbfEUQV5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 May 2019 12:21:57 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:44820 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728273AbfEUQV5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 May 2019 12:21:57 -0400
+Received: by mail-wr1-f47.google.com with SMTP id w13so8565243wru.11
+        for <cgroups@vger.kernel.org>; Tue, 21 May 2019 09:21:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=X6jdBU6BWbHlLqeVdcMLZJlrgdM1TwHp5j/3UtFM64o=;
+        b=r/w21dC0csQeCxFtwKWl4zkQhquNVEx1jGiSA498WuH9rbmQGIw6kP445Gny7VqUeW
+         J4FrO6zrcKDM2JSb9nDXKfGgvvPg2mzvtBpHxuta+ZvGD7KOYOVnDAmM2s2uAuZJaJDE
+         b9Ixt8LqIlR4yKkFqT1M8eBc4LHrpPNB4ZLD7KfUVsiNXMbD1WKaiyWvEierXYKd+dNn
+         /b4qo/elsFOq1j5WXsVP9ogL7Z059zWlhyBDQ+vEgzqxa2+bGc6enMP54uiY2mb3FNcX
+         s5FwKXHI5haMUOAOSUmwhaJffDITItfTSBQVzIMmbj9lRRoS5PDUqahzS882uGJ8b9hZ
+         kcyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=X6jdBU6BWbHlLqeVdcMLZJlrgdM1TwHp5j/3UtFM64o=;
+        b=F5aFOZT/PNW8XUgMMPTdQTL4bEOgotAx66BkYx+SdLIAOcaQQGVBqOdLGUrmNHxICO
+         i+7b7TF/oP5IeFnvy/q9x2vIgICnPRmtWwi4UZBcn7oWtUxYRt5LNyDg1Ju/5dBCXRIS
+         ZHNIsXgGyelXQK6PvSzVpR+r/zo1nhDTE3KrSZzJUaPSpbg7vP0Hx+a0m7Hs8CJZb2JU
+         jccMRK2TiEvF9ucX/D0f+9dBa5vPa7RNWoj3TPaGJkPXuFwI8oJDNYm/C92SXc3lAqEl
+         Vp/qhVp9vT5Ux3Fpg5blok9IwjY5tX3AiiqC8GpVLlRluI6CY6ZBQ1zqsY39Z3pSWZWF
+         0Vnw==
+X-Gm-Message-State: APjAAAUenl8g6mZHpc8WqAMyKM6OQxJXqYwOFypEtbN/rmjTjChJ6cFx
+        0aI6a35ebtqSLkK9bQW9QVvxjQ==
+X-Google-Smtp-Source: APXvYqxWBad4HgL7admuUa12ZaqWYiUvaWjFm8vRAEiVO1XM8bu7LFbHIV31KnEAG9FUilKIE9hU3g==
+X-Received: by 2002:adf:f38a:: with SMTP id m10mr3969501wro.81.1558455714847;
+        Tue, 21 May 2019 09:21:54 -0700 (PDT)
+Received: from [192.168.0.101] (88-147-35-136.dyn.eolo.it. [88.147.35.136])
+        by smtp.gmail.com with ESMTPSA id z8sm22644175wrh.48.2019.05.21.09.21.52
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 21 May 2019 09:21:53 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_608522D7-0F7D-4DBD-81EA-41A5B6AD7229";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Tue, 21 May 2019 18:21:48 +0200
+In-Reply-To: <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch corrects renamed or moved paths in comments.
 
-Signed-off-by: Lukas Prause <langspielplatte@black-mesa.xyz>
-Signed-off-by: Lennart Glauer <mail@lennart-glauer.de>
----
- kernel/cgroup/cpuset.c       |  2 +-
- kernel/locking/mutex-debug.h |  2 +-
- kernel/power/power.h         |  2 +-
- kernel/sched/core.c          |  2 +-
- kernel/trace/trace.h         | 14 +++++++-------
- 5 files changed, 11 insertions(+), 11 deletions(-)
+--Apple-Mail=_608522D7-0F7D-4DBD-81EA-41A5B6AD7229
+Content-Type: multipart/mixed;
+	boundary="Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8"
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 6a1942ed781c..6381622e2f2f 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -329,7 +329,7 @@ static struct cpuset top_cpuset = {
-  * cpumasks and nodemasks.
-  *
-  * Accessing a task's cpuset should be done in accordance with the
-- * guidelines for accessing subsystem state in kernel/cgroup.c
-+ * guidelines for accessing subsystem state in kernel/cgroup/cgroup.c
-  */
- 
- static DEFINE_MUTEX(cpuset_mutex);
-diff --git a/kernel/locking/mutex-debug.h b/kernel/locking/mutex-debug.h
-index 1edd3f45a4ec..0dee0a07cd4c 100644
---- a/kernel/locking/mutex-debug.h
-+++ b/kernel/locking/mutex-debug.h
-@@ -8,7 +8,7 @@
-  *
-  * This file contains mutex debugging related internal declarations,
-  * prototypes and inline functions, for the CONFIG_DEBUG_MUTEXES case.
-- * More details are in kernel/mutex-debug.c.
-+ * More details are in kernel/locking/mutex-debug.c.
-  */
- 
- /*
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 9e58bdc8a562..5de8b0c7f657 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -182,7 +182,7 @@ extern int swsusp_unmark(void);
- #endif
- 
- struct timeval;
--/* kernel/power/swsusp.c */
-+/* kernel/power/hibernate.c */
- extern void swsusp_show_speed(ktime_t, ktime_t, unsigned int, char *);
- 
- #ifdef CONFIG_SUSPEND
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 102dfcf0a29a..0ce0dc44ffc3 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -3334,7 +3334,7 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
-  *   1. Explicit blocking: mutex, semaphore, waitqueue, etc.
-  *
-  *   2. TIF_NEED_RESCHED flag is checked on interrupt and userspace return
-- *      paths. For example, see arch/x86/entry_64.S.
-+ *      paths. For example, see arch/x86/entry/entry_64.S.
-  *
-  *      To drive preemption between tasks, the scheduler sets the flag in timer
-  *      interrupt handler scheduler_tick().
-diff --git a/kernel/trace/trace.h b/kernel/trace/trace.h
-index 1974ce818ddb..0c304d6f5b31 100644
---- a/kernel/trace/trace.h
-+++ b/kernel/trace/trace.h
-@@ -1684,7 +1684,7 @@ extern int register_trigger_hist_enable_disable_cmds(void);
-  *	initialization such as incrementing a per-trigger reference
-  *	count, for instance.  This is usually implemented by the
-  *	generic utility function @event_trigger_init() (see
-- *	trace_event_triggers.c).
-+ *	trace_events_trigger.c).
-  *
-  * @free: An optional de-initialization function called for the
-  *	trigger when the trigger is unregistered (via the
-@@ -1693,12 +1693,12 @@ extern int register_trigger_hist_enable_disable_cmds(void);
-  *	per-trigger reference count and freeing corresponding trigger
-  *	data, for instance.  This is usually implemented by the
-  *	generic utility function @event_trigger_free() (see
-- *	trace_event_triggers.c).
-+ *	trace_events_trigger.c).
-  *
-  * @print: The callback function invoked to have the trigger print
-  *	itself.  This is usually implemented by a wrapper function
-  *	that calls the generic utility function @event_trigger_print()
-- *	(see trace_event_triggers.c).
-+ *	(see trace_events_trigger.c).
-  */
- struct event_trigger_ops {
- 	void			(*func)(struct event_trigger_data *data,
-@@ -1758,7 +1758,7 @@ struct event_trigger_ops {
-  *	the appropriate trace event.  It makes use of the other
-  *	event_command callback functions to orchestrate this, and is
-  *	usually implemented by the generic utility function
-- *	@event_trigger_callback() (see trace_event_triggers.c).
-+ *	@event_trigger_callback() (see trace_events_trigger.c).
-  *
-  * @reg: Adds the trigger to the list of triggers associated with the
-  *	event, and enables the event trigger itself, after
-@@ -1767,13 +1767,13 @@ struct event_trigger_ops {
-  *	make the decision as to whether or not multiple instances of
-  *	the trigger should be allowed.  This is usually implemented by
-  *	the generic utility function @register_trigger() (see
-- *	trace_event_triggers.c).
-+ *	trace_events_trigger.c).
-  *
-  * @unreg: Removes the trigger from the list of triggers associated
-  *	with the event, and disables the event trigger itself, after
-  *	initializing it (via the event_trigger_ops @free() function).
-  *	This is usually implemented by the generic utility function
-- *	@unregister_trigger() (see trace_event_triggers.c).
-+ *	@unregister_trigger() (see trace_events_trigger.c).
-  *
-  * @unreg_all: An optional function called to remove all the triggers
-  *	from the list of triggers associated with the event.  Called
-@@ -1783,7 +1783,7 @@ struct event_trigger_ops {
-  *	for the trigger.  If no @set_filter() method is set for the
-  *	event command, filters set by the user for the command will be
-  *	ignored.  This is usually implemented by the generic utility
-- *	function @set_trigger_filter() (see trace_event_triggers.c).
-+ *	function @set_trigger_filter() (see trace_events_trigger.c).
-  *
-  * @get_trigger_ops: The callback function invoked to retrieve the
-  *	event_trigger_ops implementation associated with the command.
--- 
-2.17.1
+
+--Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+> Il giorno 21 mag 2019, alle ore 15:20, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>=20
+>=20
+>=20
+>> Il giorno 21 mag 2019, alle ore 13:25, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>>=20
+>>=20
+>>=20
+>>> Il giorno 20 mag 2019, alle ore 12:19, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>>>=20
+>>>=20
+>>>=20
+>>>> Il giorno 18 mag 2019, alle ore 22:50, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>>=20
+>>>> On 5/18/19 11:39 AM, Paolo Valente wrote:
+>>>>> I've addressed these issues in my last batch of improvements for =
+BFQ,
+>>>>> which landed in the upcoming 5.2. If you give it a try, and still =
+see
+>>>>> the problem, then I'll be glad to reproduce it, and hopefully fix =
+it
+>>>>> for you.
+>>>>>=20
+>>>>=20
+>>>> Hi Paolo,
+>>>>=20
+>>>> Thank you for looking into this!
+>>>>=20
+>>>> I just tried current mainline at commit 72cf0b07, but unfortunately
+>>>> didn't see any improvement:
+>>>>=20
+>>>> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+>>>>=20
+>>>> With mq-deadline, I get:
+>>>>=20
+>>>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.90981 s, 1.3 MB/s
+>>>>=20
+>>>> With bfq, I get:
+>>>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 84.8216 s, 60.4 kB/s
+>>>>=20
+>>>=20
+>>> Hi Srivatsa,
+>>> thanks for reproducing this on mainline.  I seem to have reproduced =
+a
+>>> bonsai-tree version of this issue.
+>>=20
+>> Hi again Srivatsa,
+>> I've analyzed the trace, and I've found the cause of the loss of
+>> throughput in on my side.  To find out whether it is the same cause =
+as
+>> on your side, I've prepared a script that executes your test and =
+takes
+>> a trace during the test.  If ok for you, could you please
+>> - change the value for the DEVS parameter in the attached script, if
+>> needed
+>> - execute the script
+>> - send me the trace file that the script will leave in your working
+>> dir
+>>=20
+>=20
+> Sorry, I forgot to add that I also need you to, first, apply the
+> attached patch (it will make BFQ generate the log I need).
+>=20
+
+Sorry again :) This time for attaching one more patch.  This is
+basically a blind fix attempt, based on what I see in my VM.
+
+So, instead of only sending me a trace, could you please:
+1) apply this new patch on top of the one I attached in my previous =
+email
+2) repeat your test and report results
+3) regardless of whether bfq performance improves, take a trace with
+   my script (I've attached a new version that doesn't risk to output an
+   annoying error message as the previous one)
+
+Thanks,
+Paolo
+
+
+--Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8
+Content-Disposition: attachment;
+	filename=dsync_test.sh
+Content-Type: application/octet-stream;
+	x-unix-mode=0744;
+	name="dsync_test.sh"
+Content-Transfer-Encoding: 7bit
+
+#!/bin/bash
+
+DEVS=sda # please set this parameter to the dev name for your test drive
+
+TRACE=1
+
+function init_tracing {
+	if [ "$TRACE" == "1" ] ; then
+		if [ ! -d /sys/kernel/debug/tracing ] ; then
+			mount -t debugfs none /sys/kernel/debug
+		fi
+		echo nop > /sys/kernel/debug/tracing/current_tracer
+		echo 500000 > /sys/kernel/debug/tracing/buffer_size_kb
+		echo blk > /sys/kernel/debug/tracing/current_tracer
+	fi
+}
+
+function set_tracing {
+	if [ "$TRACE" == "1" ] ; then
+	    if [[ -e /sys/kernel/debug/tracing/tracing_enabled && \
+		$(cat /sys/kernel/debug/tracing/tracing_enabled) -ne $1 ]]; then
+			echo "echo $1 > /sys/kernel/debug/tracing/tracing_enabled"
+			echo $1 > /sys/kernel/debug/tracing/tracing_enabled
+		fi
+		dev=$(echo $DEVS | awk '{ print $1 }')
+		if [[ -e /sys/block/$dev/trace/enable && \
+			  $(cat /sys/block/$dev/trace/enable) -ne $1 ]]; then
+		    echo "echo $1 > /sys/block/$dev/trace/enable"
+		    echo $1 > /sys/block/$dev/trace/enable
+		fi
+
+		if [ "$1" == 0 ]; then
+		    for cpu_path in /sys/kernel/debug/tracing/per_cpu/cpu?
+		    do
+			stat_file=$cpu_path/stats
+			OVER=$(grep "overrun" $stat_file | \
+			    grep -v "overrun: 0")
+			if [ "$OVER" != "" ]; then
+			    cpu=$(basename $cpu_path)
+			    echo $OVER on $cpu, please increase buffer size!
+			fi
+		    done
+		fi
+	fi
+}
+
+init_tracing
+
+mkdir /sys/fs/cgroup/blkio/testgrp
+echo $BASHPID > /sys/fs/cgroup/blkio/testgrp/cgroup.procs
+echo > /sys/kernel/debug/tracing/trace
+set_tracing 1 
+echo bfq > /sys/block/sda/queue/scheduler
+cat /sys/block/sda/queue/scheduler
+echo 0 > /sys/block/sda/queue/iosched/low_latency
+dd if=/dev/zero of=/root/test.img bs=512 count=5000 oflag=dsync
+set_tracing 0
+echo 1 > /sys/block/sda/queue/iosched/low_latency
+cp /sys/kernel/debug/tracing/trace .
+echo $BASHPID > /sys/fs/cgroup/blkio/cgroup.procs 
+rmdir /sys/fs/cgroup/blkio/testgrp
+
+--Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8
+Content-Disposition: attachment;
+	filename=0001-block-bfq-boost-injection.patch.gz
+Content-Type: application/x-gzip;
+	x-unix-mode=0644;
+	name="0001-block-bfq-boost-injection.patch.gz"
+Content-Transfer-Encoding: base64
+
+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
+Leu/S3bHquEfAAA=
+--Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+> Thanks,
+> Paolo
+>=20
+> <0001-block-bfq-add-logs-and-BUG_ONs.patch.gz>
+>=20
+>> Looking forward to your trace,
+>> Paolo
+>>=20
+>> <dsync_test.sh>
+>>> Before digging into the block
+>>> trace, I'd like to ask you for some feedback.
+>>>=20
+>>> First, in my test, the total throughput of the disk happens to be
+>>> about 20 times as high as that enjoyed by dd, regardless of the I/O
+>>> scheduler.  I guess this massive overhead is normal with dsync, but
+>>> I'd like know whether it is about the same on your side. This will
+>>> help me understand whether I'll actually be analyzing about the same
+>>> problem as yours.
+>>>=20
+>>> Second, the commands I used follow.  Do they implement your test =
+case
+>>> correctly?
+>>>=20
+>>> [root@localhost tmp]# mkdir /sys/fs/cgroup/blkio/testgrp
+>>> [root@localhost tmp]# echo $BASHPID > =
+/sys/fs/cgroup/blkio/testgrp/cgroup.procs
+>>> [root@localhost tmp]# cat /sys/block/sda/queue/scheduler
+>>> [mq-deadline] bfq none
+>>> [root@localhost tmp]# dd if=3D/dev/zero of=3D/root/test.img bs=3D512 =
+count=3D10000 oflag=3Ddsync
+>>> 10000+0 record dentro
+>>> 10000+0 record fuori
+>>> 5120000 bytes (5,1 MB, 4,9 MiB) copied, 14,6892 s, 349 kB/s
+>>> [root@localhost tmp]# echo bfq > /sys/block/sda/queue/scheduler
+>>> [root@localhost tmp]# dd if=3D/dev/zero of=3D/root/test.img bs=3D512 =
+count=3D10000 oflag=3Ddsync
+>>> 10000+0 record dentro
+>>> 10000+0 record fuori
+>>> 5120000 bytes (5,1 MB, 4,9 MiB) copied, 20,1953 s, 254 kB/s
+>>>=20
+>>> Thanks,
+>>> Paolo
+>>>=20
+>>>> Please let me know if any more info about my setup might be =
+helpful.
+>>>>=20
+>>>> Thank you!
+>>>>=20
+>>>> Regards,
+>>>> Srivatsa
+>>>> VMware Photon OS
+>>>>=20
+>>>>>=20
+>>>>>> Il giorno 18 mag 2019, alle ore 00:16, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>>>>=20
+>>>>>>=20
+>>>>>> Hi,
+>>>>>>=20
+>>>>>> One of my colleagues noticed upto 10x - 30x drop in I/O =
+throughput
+>>>>>> running the following command, with the CFQ I/O scheduler:
+>>>>>>=20
+>>>>>> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflags=3Ddsync
+>>>>>>=20
+>>>>>> Throughput with CFQ: 60 KB/s
+>>>>>> Throughput with noop or deadline: 1.5 MB/s - 2 MB/s
+>>>>>>=20
+>>>>>> I spent some time looking into it and found that this is caused =
+by the
+>>>>>> undesirable interaction between 4 different components:
+>>>>>>=20
+>>>>>> - blkio cgroup controller enabled
+>>>>>> - ext4 with the jbd2 kthread running in the root blkio cgroup
+>>>>>> - dd running on ext4, in any other blkio cgroup than that of jbd2
+>>>>>> - CFQ I/O scheduler with defaults for slice_idle and group_idle
+>>>>>>=20
+>>>>>>=20
+>>>>>> When docker is enabled, systemd creates a blkio cgroup called
+>>>>>> system.slice to run system services (and docker) under it, and a
+>>>>>> separate blkio cgroup called user.slice for user processes. So, =
+when
+>>>>>> dd is invoked, it runs under user.slice.
+>>>>>>=20
+>>>>>> The dd command above includes the dsync flag, which performs an
+>>>>>> fdatasync after every write to the output file. Since dd is =
+writing to
+>>>>>> a file on ext4, jbd2 will be active, committing transactions
+>>>>>> corresponding to those fdatasync requests from dd. (In other =
+words, dd
+>>>>>> depends on jdb2, in order to make forward progress). But jdb2 =
+being a
+>>>>>> kernel thread, runs in the root blkio cgroup, as opposed to dd, =
+which
+>>>>>> runs under user.slice.
+>>>>>>=20
+>>>>>> Now, if the I/O scheduler in use for the underlying block device =
+is
+>>>>>> CFQ, then its inter-queue/inter-group idling takes effect (via =
+the
+>>>>>> slice_idle and group_idle parameters, both of which default to =
+8ms).
+>>>>>> Therefore, everytime CFQ switches between processing requests =
+from dd
+>>>>>> vs jbd2, this 8ms idle time is injected, which slows down the =
+overall
+>>>>>> throughput tremendously!
+>>>>>>=20
+>>>>>> To verify this theory, I tried various experiments, and in all =
+cases,
+>>>>>> the 4 pre-conditions mentioned above were necessary to reproduce =
+this
+>>>>>> performance drop. For example, if I used an XFS filesystem (which
+>>>>>> doesn't use a separate kthread like jbd2 for journaling), or if I =
+dd'ed
+>>>>>> directly to a block device, I couldn't reproduce the performance
+>>>>>> issue. Similarly, running dd in the root blkio cgroup (where jbd2
+>>>>>> runs) also gets full performance; as does using the noop or =
+deadline
+>>>>>> I/O schedulers; or even CFQ itself, with slice_idle and =
+group_idle set
+>>>>>> to zero.
+>>>>>>=20
+>>>>>> These results were reproduced on a Linux VM (kernel v4.19) on =
+ESXi,
+>>>>>> both with virtualized storage as well as with disk pass-through,
+>>>>>> backed by a rotational hard disk in both cases. The same problem =
+was
+>>>>>> also seen with the BFQ I/O scheduler in kernel v5.1.
+>>>>>>=20
+>>>>>> Searching for any earlier discussions of this problem, I found an =
+old
+>>>>>> thread on LKML that encountered this behavior [1], as well as a =
+docker
+>>>>>> github issue [2] with similar symptoms (mentioned later in the
+>>>>>> thread).
+>>>>>>=20
+>>>>>> So, I'm curious to know if this is a well-understood problem and =
+if
+>>>>>> anybody has any thoughts on how to fix it.
+>>>>>>=20
+>>>>>> Thank you very much!
+>>>>>>=20
+>>>>>>=20
+>>>>>> [1]. https://lkml.org/lkml/2015/11/19/359
+>>>>>>=20
+>>>>>> [2]. https://github.com/moby/moby/issues/21485
+>>>>>> https://github.com/moby/moby/issues/21485#issuecomment-222941103
+>>>>>>=20
+>>>>>> Regards,
+>>>>>> Srivatsa
+
+
+--Apple-Mail=_19306D8E-630F-4723-A54B-681928BEBAD8--
+
+--Apple-Mail=_608522D7-0F7D-4DBD-81EA-41A5B6AD7229
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzkJZwACgkQOAkCLQGo
+9oOCdhAAlILYtAIpU+zvV62s9XLJyeDTWKGBDjDmrXrhvR0LHYpXA9h5wULmbtuN
+sa8O5yXeWvlzBE0iZQrB4ABFv+20nIXSLYienwXQpg/CusHAwwlgk1KYVCPrYgTC
+E4Rrt1bJbMAvL2T2sEUsvsnzO0lInhRB+iBXzJ4Muv4fkbkw99ODjNjDhfTCU6nX
+1zqBYf3x3EhGniQ+Zi9yX4BMQUZOfymWMCW/28rM5y8AqrubrPh9aCNZNgdqTRAY
+cqPYpKG6X0OthlzdM3QrvntGS8JcedtNACfS26eXXbBjKcqnJvY/+1Mq9xEAs4yL
+/JRyr53ArDM0I3/1Ti/bHQnOc8sodc9Pb2LbP3QcA6MoJLOsOsvucsHGz+3Lis87
+hTc0EAOoK5eoj75FI4rXLqOzzMIiAQU4R2Woyvmo8PLx4PUPsl2RNAigPktCdfV1
+jr/UoVRwpSp0dZErKptq5LWNehlODU86eGH9QWRnv1d/sTu7mmEz3aAF7/mWvCWP
+VW7ZJWw4vhszxM7bj8wp+56+3ONRMpfosjgT/GvqiEvJSBrHFkYNnWpRhaDOC732
+nbxjIY3Xhk7YchGCHYghRBOavBHVn+2Vaq8zYBwWvjUMDWNIv23r+JSqpAbDekUH
+Nh+I7wMgxr6LmtVSKDJeFRebXZLaIxseiZZys+QDr2LgyELCBGk=
+=iRRe
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_608522D7-0F7D-4DBD-81EA-41A5B6AD7229--
