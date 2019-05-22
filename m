@@ -2,135 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AFFAF26054
-	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 11:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73C9426135
+	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 12:02:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728536AbfEVJTo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 May 2019 05:19:44 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48888 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726552AbfEVJTo (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 22 May 2019 05:19:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 843E1ADEC;
-        Wed, 22 May 2019 09:19:42 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     akpm@linux-foundation.org
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
-        stable@vger.kernel.org, linux-mm@kvack.org,
-        Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
-Subject: [PATCH -resend v2] memcg: make it work on sparse non-0-node systems
-Date:   Wed, 22 May 2019 11:19:40 +0200
-Message-Id: <20190522091940.3615-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20190517114204.6330-1-jslaby@suse.cz>
-References: <20190517114204.6330-1-jslaby@suse.cz>
+        id S1729431AbfEVKBf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 May 2019 06:01:35 -0400
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:48279 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729414AbfEVKBe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 06:01:34 -0400
+Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1hTO3s-000DFW-EO; Wed, 22 May 2019 06:01:28 -0400
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+Date:   Wed, 22 May 2019 03:01:24 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We have a single node system with node 0 disabled:
-  Scanning NUMA topology in Northbridge 24
-  Number of physical nodes 2
-  Skipping disabled node 0
-  Node 1 MemBase 0000000000000000 Limit 00000000fbff0000
-  NODE_DATA(1) allocated [mem 0xfbfda000-0xfbfeffff]
+On 5/22/19 2:09 AM, Paolo Valente wrote:
+> 
+> First, thank you very much for testing my patches, and, above all, for
+> sharing those huge traces!
+> 
+> According to the your traces, the residual 20% lower throughput that you
+> record is due to the fact that the BFQ injection mechanism takes a few
+> hundredths of seconds to stabilize, at the beginning of the workload.
+> During that setup time, the throughput is equal to the dreadful ~60-90 KB/s
+> that you see without this new patch.  After that time, there
+> seems to be no loss according to the trace.
+> 
+> The problem is that a loss lasting only a few hundredths of seconds is
+> however not negligible for a write workload that lasts only 3-4
+> seconds.  Could you please try writing a larger file?
+> 
 
-This causes crashes in memcg when system boots:
-  BUG: unable to handle kernel NULL pointer dereference at 0000000000000008
-  #PF error: [normal kernel read fault]
-...
-  RIP: 0010:list_lru_add+0x94/0x170
-...
-  Call Trace:
-   d_lru_add+0x44/0x50
-   dput.part.34+0xfc/0x110
-   __fput+0x108/0x230
-   task_work_run+0x9f/0xc0
-   exit_to_usermode_loop+0xf5/0x100
+I tried running dd for longer (about 100 seconds), but still saw around
+1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
+mq-deadline and noop. But I'm not too worried about that difference.
 
-It is reproducible as far as 4.12. I did not try older kernels. You have
-to have a new enough systemd, e.g. 241 (the reason is unknown -- was not
-investigated). Cannot be reproduced with systemd 234.
+> In addition, I wanted to ask you whether you measured BFQ throughput
+> with traces disabled.  This may make a difference.
+> 
 
-The system crashes because the size of lru array is never updated in
-memcg_update_all_list_lrus and the reads are past the zero-sized array,
-causing dereferences of random memory.
+The above result (1.4 MB/s) was obtained with traces disabled.
 
-The root cause are list_lru_memcg_aware checks in the list_lru code.
-The test in list_lru_memcg_aware is broken: it assumes node 0 is always
-present, but it is not true on some systems as can be seen above.
+> After trying writing a larger file, you can try with low_latency on.
+> On my side, it causes results to become a little unstable across
+> repetitions (which is expected).
+> 
+With low_latency on, I get between 60 KB/s - 100 KB/s.
 
-So fix this by avoiding checks on node 0. Remember the memcg-awareness
-by a bool flag in struct list_lru.
-
-[v2] use the idea proposed by Vladimir -- the bool flag.
-
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Fixes: 60d3fd32a7a9 ("list_lru: introduce per-memcg lists")
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Suggested-by: Vladimir Davydov <vdavydov.dev@gmail.com>
-Acked-by: Vladimir Davydov <vdavydov.dev@gmail.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Cc: <cgroups@vger.kernel.org>
-Cc: <stable@vger.kernel.org>
-Cc: <linux-mm@kvack.org>
-Cc: Raghavendra K T <raghavendra.kt@linux.vnet.ibm.com>
----
-
-This is only a resent patch. I did not send it the akpm's way previously.
-
- include/linux/list_lru.h | 1 +
- mm/list_lru.c            | 8 +++-----
- 2 files changed, 4 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/list_lru.h b/include/linux/list_lru.h
-index aa5efd9351eb..d5ceb2839a2d 100644
---- a/include/linux/list_lru.h
-+++ b/include/linux/list_lru.h
-@@ -54,6 +54,7 @@ struct list_lru {
- #ifdef CONFIG_MEMCG_KMEM
- 	struct list_head	list;
- 	int			shrinker_id;
-+	bool			memcg_aware;
- #endif
- };
- 
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 0730bf8ff39f..d3b538146efd 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -37,11 +37,7 @@ static int lru_shrinker_id(struct list_lru *lru)
- 
- static inline bool list_lru_memcg_aware(struct list_lru *lru)
- {
--	/*
--	 * This needs node 0 to be always present, even
--	 * in the systems supporting sparse numa ids.
--	 */
--	return !!lru->node[0].memcg_lrus;
-+	return lru->memcg_aware;
- }
- 
- static inline struct list_lru_one *
-@@ -451,6 +447,8 @@ static int memcg_init_list_lru(struct list_lru *lru, bool memcg_aware)
- {
- 	int i;
- 
-+	lru->memcg_aware = memcg_aware;
-+
- 	if (!memcg_aware)
- 		return 0;
- 
--- 
-2.21.0
-
+Regards,
+Srivatsa
+VMware Photon OS
