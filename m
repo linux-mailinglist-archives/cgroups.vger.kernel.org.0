@@ -2,155 +2,182 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D5B25D98
-	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 07:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8187525EFE
+	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 10:05:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725819AbfEVFad (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 May 2019 01:30:33 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:43280 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbfEVFac (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 01:30:32 -0400
-Received: by mail-wr1-f65.google.com with SMTP id t7so389221wrr.10
-        for <cgroups@vger.kernel.org>; Tue, 21 May 2019 22:30:31 -0700 (PDT)
+        id S1728773AbfEVIFw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 May 2019 04:05:52 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:33486 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728370AbfEVIFv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 04:05:51 -0400
+Received: by mail-wr1-f67.google.com with SMTP id d9so1163640wrx.0
+        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 01:05:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=khAfVgyvdFpD+3BrbDMKT8RJLVGP4g3H+a67pFViOXc=;
-        b=ZZ7LukV0216gLYaha22MBJ0hKw12PTjtcsOtESvqoFx2r8YXGyqNWCUCL45b1wedZD
-         ZFNWVfSTZF3ZUou6Ksk4uYSJh+d2PC9HQrQiSG61+UoTKm1c9yaPNHD4fJTQWFZMRDO1
-         pr1LvFbHpOEBHuWFtKevEqMDfMCiVnTOiK32GFFeU4bRc0EOQ9F0EUlN+nXzNlwHA2xB
-         hQ+rsJCfg5ODxzSI7HUVjPStRo09JWJ9UWqRkFyoIqvsnPMHk9INdC3ytAPm5PWhOsph
-         E3085FTjpiN+d9BzuykZ7awBQxQAum0qGAUnNW0nyIyMIH8p6w0wV2frQdhQNhhaStrI
-         q/LQ==
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=5IBIrmvVf6ccQNtdeu2yWc9LBHhhxGRdGfBVh0+028w=;
+        b=nWl3XtfGIqveSLzPdyEuAYRuA8O7EYCM0ZtEgQ98DXJsA2zQzynY9G9rSYeseu7ci5
+         5KOe7ue5VJv9/oJvslVlbwxovozJmUJVdfdiAwatZRNHOLWB605HT9Bht1bQhsJFoZ0h
+         O8Ew1carVKdmMVmYPwgVk523ad6Oonl8yVKfoZj1tw1DeQRbFyLA1HoOYSfd/eKsgKzQ
+         7RWbiLmAIak6Lu72/j5jH1NFhinktak81lGqNLQYBCAZxVHvcKAU457C1n52KVEAOBGV
+         B+iC9uipo0uWSS+ouPP7hYuVIetP/gSu/agvrI0QXpzU1JYl9nLLdXzXZEJDmP0Av+gV
+         LGFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=khAfVgyvdFpD+3BrbDMKT8RJLVGP4g3H+a67pFViOXc=;
-        b=N8BAVM7tv928QfBNAFr3qWOaA50L7X1KRKpA0zOLGNU9N9bWdxGf8+tOmdktuOI889
-         EdcKZXTcq9EqTC2i3RF1n8sUNx80k6NL5FJ6/fvnelsdFZNhKf5r8kmizW6eemZ0jjP2
-         TxU6BM0226SCT8HtZfirjhHm5cajeRdkeF6Zq7U4FwZCufKCnAFq+ofSKqaMW8PnRfX6
-         zTAgGS2IbVowee9anoXS9f7Unud3KREnZoPOkQgWK0/zftVlaBgB8bKujq83ufrDON69
-         Fz62qFIfo9vrSOR7fsaftRqkVn3B0joxvQ4McEQWCxMnmE1+9LtvrxZisEn5Pt7tH6of
-         dc7A==
-X-Gm-Message-State: APjAAAU8DourJa2+w3onHaS63j0rSG6dfwWpJ7edv90kDtcUnPIDA9pJ
-        ULQ22iJoOiTwqFZCoPKdO/xmA/Oms4xOyRP9mobcK/cRFLc=
-X-Google-Smtp-Source: APXvYqyHeIQKj0Z4wRld3Nv42dTU/iH3BbSC9pIZ0KcQpdW6gcf7eqXRf/Bm3IQyDDtmyAz5PGReJvK72TbhosnXntk=
-X-Received: by 2002:adf:ab45:: with SMTP id r5mr26865834wrc.100.1558503029912;
- Tue, 21 May 2019 22:30:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190212224542.ZW63a%akpm@linux-foundation.org>
- <20190213124729.GI4525@dhcp22.suse.cz> <20190516175655.GA25818@cmpxchg.org>
- <20190516180932.GA13208@dhcp22.suse.cz> <20190516193943.GA26439@cmpxchg.org>
- <20190517123310.GI6836@dhcp22.suse.cz> <CALvZod6xErQ3AA+9oHSqB2bqtK9gKk4T0iPoGPkufBiJALko1Q@mail.gmail.com>
-In-Reply-To: <CALvZod6xErQ3AA+9oHSqB2bqtK9gKk4T0iPoGPkufBiJALko1Q@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 21 May 2019 22:30:18 -0700
-Message-ID: <CAJuCfpHW8ZM7OcHKjxAQWsXfrUDordtsKP2MT0oDTW5XxKb7Nw@mail.gmail.com>
-Subject: Re: + mm-consider-subtrees-in-memoryevents.patch added to -mm tree
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mm-commits@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Dennis Zhou <dennis@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=5IBIrmvVf6ccQNtdeu2yWc9LBHhhxGRdGfBVh0+028w=;
+        b=VAgUT7OlMWCFYUAiOC0+672AUEUbhzbwZuNf/4KsAmUSJak01iP1Uvuu0rynukq7+o
+         UXOdbauSG21AcFjcuHyuVvWzSyTtJrZy+Kt3AqwhacLOUYMHXwpLP1PqiktrkZk6P4i3
+         yICdKLkE7rqszub1wtrCrxT05xEfnAlSzrJYpNFdU9GRMjQGLqndj6S/3jOyM5L+ytNF
+         aFDAJh8JuAMq7WZRWPfZ2KuPwE3lf+zHxsOlN7544n7ARvlqCv9Oxy8X6WZIKRDe4XXm
+         uo/t1pf7B8/at+dUKAAEIrUvQ8WDoYNNcm0tNqjF/8Pt2nu1mOAhiJLAICv/Id4U2TL0
+         9tog==
+X-Gm-Message-State: APjAAAWo/UZEBP39bMM2Ht4XTGvg22/Vmkm3iYkhAbKQ/muh7zoc7yry
+        7zkJNoYb4PDeDk+QOQ0ucf7rMw==
+X-Google-Smtp-Source: APXvYqyp3cwbjBT2OIymk4j5HSd2Mnu+CvGqClw/DIwkORgLNVvAuawEHWU5ZpivC/01GynCrEiJXQ==
+X-Received: by 2002:adf:f9c3:: with SMTP id w3mr6562625wrr.271.1558512349291;
+        Wed, 22 May 2019 01:05:49 -0700 (PDT)
+Received: from [192.168.0.100] (88-147-40-42.dyn.eolo.it. [88.147.40.42])
+        by smtp.gmail.com with ESMTPSA id 34sm42104331wre.32.2019.05.22.01.05.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 22 May 2019 01:05:48 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_D125924D-1FFE-4DC1-9485-B31EC5A3E5A7";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Wed, 22 May 2019 10:05:46 +0200
+In-Reply-To: <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 17, 2019 at 6:00 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Fri, May 17, 2019 at 5:33 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Thu 16-05-19 15:39:43, Johannes Weiner wrote:
-> > > On Thu, May 16, 2019 at 08:10:42PM +0200, Michal Hocko wrote:
-> > > > On Thu 16-05-19 13:56:55, Johannes Weiner wrote:
-> > > > > On Wed, Feb 13, 2019 at 01:47:29PM +0100, Michal Hocko wrote:
-> > [...]
-> > > > > > FTR: As I've already said here [1] I can live with this change as long
-> > > > > > as there is a larger consensus among cgroup v2 users. So let's give this
-> > > > > > some more time before merging to see whether there is such a consensus.
-> > > > > >
-> > > > > > [1] http://lkml.kernel.org/r/20190201102515.GK11599@dhcp22.suse.cz
-> > > > >
-> > > > > It's been three months without any objections.
-> > > >
-> > > > It's been three months without any _feedback_ from anybody. It might
-> > > > very well be true that people just do not read these emails or do not
-> > > > care one way or another.
-> > >
-> > > This is exactly the type of stuff that Mel was talking about at LSFMM
-> > > not even two weeks ago. How one objection, however absurd, can cause
-> > > "controversy" and block an effort to address a mistake we have made in
-> > > the past that is now actively causing problems for real users.
-> > >
-> > > And now after stalling this fix for three months to wait for unlikely
-> > > objections, you're moving the goal post. This is frustrating.
-> >
-> > I see your frustration but I find the above wording really unfair. Let me
-> > remind you that this is a considerable user visible change in the
-> > semantic and that always has to be evaluated carefuly. A change that would
-> > clearly regress anybody who rely on the current semantic. This is not an
-> > internal implementation detail kinda thing.
-> >
-> > I have suggested an option for the new behavior to be opt-in which
-> > would be a regression safe option. You keep insisting that we absolutely
-> > have to have hierarchical reporting by default for consistency reasons.
-> > I do understand that argument but when I weigh consistency vs. potential
-> > regression risk I rather go a conservative way. This is a traditional
-> > way how we deal with semantic changes like this. There are always
-> > exceptions possible and that is why I wanted to hear from other users of
-> > cgroup v2, even from those who are not directly affected now.
-> >
-> > If you feel so stronly about this topic and the suggested opt-in is an
-> > absolute no-go then you are free to override my opinion here. I haven't
-> > Nacked this patch.
-> >
-> > > Nobody else is speaking up because the current user base is very small
-> > > and because the idea that anybody has developed against and is relying
-> > > on the current problematic behavior is completely contrived. In
-> > > reality, the behavior surprises people and causes production issues.
-> >
-> > I strongly suspect users usually do not follow discussions on our
-> > mailing lists. They only come up later when something breaks and that
-> > is too late. I do realize that this makes the above call for a wider
-> > consensus harder but a lack of upstream bug reports also suggests that
-> > people do not care or simply haven't noticed any issues due to way how
-> > they use the said interface (maybe deeper hierarchies are not that
-> > common).
-> >
->
-> I suspect that FB is the only one using cgroup v2 in production and
-> others (data center) users are still evaluating/exploring. Also IMHO
-> the cgroup v2 users are on the bleeding edge. As new cgroup v2
-> features and controllers are added, the users either switch to latest
-> kernel or backport. That might be the reason no one objected. Also
-> none of the distribution has defaulted to v2 yet, so, not many
-> transparent v2 users yet.
 
-In Android we are not using cgroups v2 yet (and that's why I was
-refraining from commenting earlier), however when I was evaluating
-them for future use I was disappointed that events do not propagate up
-the hierarchy. One usecase that I was considering is to get a
-notification when OOM kill happens. With cgroups v2 we would be forced
-to use per-app hierarchy to avoid process migrations between memcgs
-when an app changes its state (background/foreground). With such a
-setup we would end up with many leaf cgroups. Polling each individual
-leaf cgroup's memory.events file to detect OOM occurrence would
-require lots of extra FDs registered with an epoll(). Having an
-ability to poll a common parent cgroup to detect that one of the leafs
-generated an OOM event would be way more frugal.
-I realize this does not constitute a real-life usecase but hopefully
-possible usecases can provide some value too.
-Thanks,
-Suren.
+--Apple-Mail=_D125924D-1FFE-4DC1-9485-B31EC5A3E5A7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-> Shakeel
->
+
+
+> Il giorno 22 mag 2019, alle ore 00:51, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+> [ Resending this mail with a dropbox link to the traces (instead
+> of a file attachment), since it didn't go through the last time. ]
+>=20
+> On 5/21/19 10:38 AM, Paolo Valente wrote:
+>>=20
+>>> So, instead of only sending me a trace, could you please:
+>>> 1) apply this new patch on top of the one I attached in my previous =
+email
+>>> 2) repeat your test and report results
+>>=20
+>> One last thing (I swear!): as you can see from my script, I tested =
+the
+>> case low_latency=3D0 so far.  So please, for the moment, do your test
+>> with low_latency=3D0.  You find the whole path to this parameter in,
+>> e.g., my script.
+>>=20
+> No problem! :) Thank you for sharing patches for me to test!
+>=20
+> I have good news :) Your patch improves the throughput significantly
+> when low_latency =3D 0.
+>=20
+> Without any patch:
+>=20
+> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+> 10000+0 records in
+> 10000+0 records out
+> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 58.0915 s, 88.1 kB/s
+>=20
+>=20
+> With both patches applied:
+>=20
+> dd if=3D/dev/zero of=3D/root/test0.img bs=3D512 count=3D10000 =
+oflag=3Ddsync
+> 10000+0 records in
+> 10000+0 records out
+> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.87487 s, 1.3 MB/s
+>=20
+> The performance is still not as good as mq-deadline (which achieves
+> 1.6 MB/s), but this is a huge improvement for BFQ nonetheless!
+>=20
+> A tarball with the trace output from the 2 scenarios you requested,
+> one with only the debug patch applied =
+(trace-bfq-add-logs-and-BUG_ONs),
+> and another with both patches applied (trace-bfq-boost-injection) is
+> available here:
+>=20
+> https://www.dropbox.com/s/pdf07vi7afido7e/bfq-traces.tar.gz?dl=3D0
+>=20
+
+Hi Srivatsa,
+I've seen the bugzilla you've created.  I'm a little confused on how
+to better proceed.  Shall we move this discussion to the bugzilla, or
+should we continue this discussion here, where it has started, and
+then update the bugzilla?
+
+Let me know,
+Paolo
+
+> Thank you!
+>=20
+> Regards,
+> Srivatsa
+> VMware Photon OS
+
+
+--Apple-Mail=_D125924D-1FFE-4DC1-9485-B31EC5A3E5A7
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlAtoACgkQOAkCLQGo
+9oMOew//baPEoy03FXyfpwRm+aDYCXZracwMcV8EWCYLxsc9h+OSDu7YSL3VY+ld
+2SyrH2br9GjVHPnM218Moh1g2pTGr9C2BtEzWT72DnGFmZqEYFOS3+KJ6D4FEK/l
+6qOtaYyYZDABc5D+wW1B+wouBFeDFH/V4QWpIgyAjKPHi+rTeerEFNzNmsx2SngT
+mn+AG8kUfecpNhThxEEJxPZN0Edso3t6vet2vsJ7FEmpxD+AW4V6h5oxRBMMlzks
+JeDs0/gvOV0wiRSAwlmQSecNSssSLLSeouHlLu3+ara3YxdNstDjBd7ODXiabUdX
+4NPn9U5baJ8XsC4s6ukMOm1Bc7Q97ZFS4cM5b9FoqTYgWuwL32vbHFPffe/0Ld2g
+hJcXoI7HmDyGvH4jAvlSQ4hDDkuLRjf0450Y75onK8uq/g6r0VhGXgntHl+ghMvI
+ykkrXo8cPp9Ii4MiOAbH4FaVj1/1yinJdiIbR7bCdj3kODB8wzLunSAB3GDVTqYr
+qqFfl6MYNxJi6mUpERhdFa8JsohkU9f/PK+hYh4HYjZNveV1YcSJfcuoCu2t1/yA
+04KNr+WG1JFQrrXe+iqXtu5EMD/K6QlH9iBXabq8V/JJ1TR/X3WXo2iPRhDfpKc7
++kRGBjEtU+WJvdECyd4AfTpVuKBK8tUewLIBr7WchCBggJ/4sFg=
+=q2Kr
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D125924D-1FFE-4DC1-9485-B31EC5A3E5A7--
