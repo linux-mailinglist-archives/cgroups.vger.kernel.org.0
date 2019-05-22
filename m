@@ -2,202 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9E326283
-	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 12:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 512E526715
+	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 17:44:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729260AbfEVKyS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 May 2019 06:54:18 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:55985 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729312AbfEVKyO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 06:54:14 -0400
-Received: by mail-wm1-f54.google.com with SMTP id x64so1717729wmb.5
-        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 03:54:12 -0700 (PDT)
+        id S1729603AbfEVPo0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 May 2019 11:44:26 -0400
+Received: from mail-pf1-f177.google.com ([209.85.210.177]:38146 "EHLO
+        mail-pf1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729402AbfEVPo0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 11:44:26 -0400
+Received: by mail-pf1-f177.google.com with SMTP id b76so1540011pfb.5
+        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 08:44:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=CNhkQEJls3nT3iMkh1/CUssdVTSurGv5Rigbx0wo7U4=;
-        b=Oru7bhxHELgGgoBi4ETh1p8HocPNWexprBV9cag2KIgoyMzmaiNQwjb/C9rBPs3ZAI
-         1P+sgXAq+LJ7ARtyNTI4NCxWWJc6H0XdbdS3gzpWGbzWqv2mLRxF3XBKnfPksvNy4bmf
-         Z2N4R5yg3IW6OCechLbsRxdHCdJwHtT86JuAGc5439Udl1VwIBq11R8j6O3p7r2AEC/L
-         y1v3u8BSe0ElkJjp4CXNQJbH5m1IP5ENonLLsP0JZ/gAU5M5ED3KOUsrtv1TabKpJpZO
-         8pKF7hu2w25OO7PxveAEep+kbBQOfRiYMA7x6Nz3poDzw9PJimXfPoy8tpcYkqHNm+8K
-         Mrtg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Z2dsucXEI+4jvL/MdjM5V2xnzon5dvV20hzmst7SI+w=;
+        b=QEF+zn6btGpaZqM8f+IKFYqUq9v/Z7nVJc5hwB7Rsx3ybr7C3yoYL92vIvxi9L/hgY
+         ZMJ2Ji1yspXAzrAVJ3ADZVQUDcRvEOYsYWQBuaz6bO8miAOlYzoQKQkjOrwC/3tsKjYx
+         A4d4jMapVv1bxyua1ChiqHYxhX48A/3uMN1NVH72O/e+tS9Dc3scB9aTEvEvGtjoZi+Q
+         98SilnjsnWbW5QH/Bu9WxnIr73P0RyENw74jrmzwv/TG7BUbTqTqZTdG+XUQetFvizXG
+         Nclj6JQyDVN70kl/TrSbnI9SyIJtVv8O2G03D/AF5+UjVBLd9OEFjO9HIUrL3bVqgACM
+         X8GA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=CNhkQEJls3nT3iMkh1/CUssdVTSurGv5Rigbx0wo7U4=;
-        b=b2+riPjC09TgUHedF4eCt/Hy7qJnXh6Qa55m4Y3b38ZrPvbj2bITkNrdYlFAZuaDGO
-         r3StFadcp0PzUL0JIc7uRic5HnnsS/Qq+fUoelEaDg7Pz6n+p+qoeWsgotb+3GO2m33V
-         xpN9z6twt5cYulVyPU6rJqb9UVKJy5/ZsnvyUYfMDen0SoHfFOqiNVxWZq5Jx2f8xPRc
-         vViRDl0npGs02SC7wXwPZ9PQe4p/iNAr7jsB1yVAE99+t/9iPueprdDQoiyZ5y8wFM4t
-         tsG+wQogemyRn+4Twq//R+mrSjFvdHJ+4d1RgnIZnkljrc11qoOCh7+V31/DPxIahGw6
-         Stpw==
-X-Gm-Message-State: APjAAAXOczSca3OOdZRPGdVOyXkN9B0fLldj33NXU4eGlBCfWid0KdDx
-        n/7GvGbEsG/97pxu2T2Uu7HuSA==
-X-Google-Smtp-Source: APXvYqxxWhUiT/XYL68wetT0/Xm1tLz2ltHVCg3kd/rCLbdKFVY5j4a0s9Q2rPyucIGz4zDbxnBm5Q==
-X-Received: by 2002:a7b:c458:: with SMTP id l24mr6858233wmi.53.1558522451312;
-        Wed, 22 May 2019 03:54:11 -0700 (PDT)
-Received: from [192.168.0.100] (88-147-40-42.dyn.eolo.it. [88.147.40.42])
-        by smtp.gmail.com with ESMTPSA id w9sm5480053wmg.7.2019.05.22.03.54.09
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 May 2019 03:54:10 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Wed, 22 May 2019 12:54:07 +0200
-In-Reply-To: <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
-X-Mailer: Apple Mail (2.3445.104.8)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Z2dsucXEI+4jvL/MdjM5V2xnzon5dvV20hzmst7SI+w=;
+        b=Hf5pHiDTarPQnk+YuUeII77x1p1UnrmGGKaa9qp5DY5MZBHfkAjQ90ayFTRVG1hkwV
+         aCM+hn3X9bFBpUUcTfUpSns8EKKu/KdmwmPKiYZBgJSbqkoaedH+TbX8yucRel/V4ydb
+         NwvcqflqPDaS9TYcDBesAFuwIlBn1kKF3G6NqvWho4FlIayp7Yg7Yi8lhrWiMCOeMi/m
+         Y8kz75nVsC+eVEuJikSaTv+u7OdaZ0J/NnPNQ4L9f/4uNobl5N/xFSFpnqJEnk8e/2e3
+         44aG5r65sNiiVWpNEUkh1Rff0SJwrG9FW5+XCCi+k0hZRx/bzcAQ08hjKdkakSZUkuIi
+         Mw9w==
+X-Gm-Message-State: APjAAAVX1RXHVDSTWmh8TmHSbC/kbKOFn53arCy3Eb21iu+v4GDtco0Z
+        pcdvUTRwAI51MID/o2AL7cFWMg==
+X-Google-Smtp-Source: APXvYqwNhNcpWibI4Oqtyib2hlUbtVFt/lmAsL6lT2SW95cEyZw8qdJilZn5xKkTMIfePZ7Vf2JUHQ==
+X-Received: by 2002:aa7:99c7:: with SMTP id v7mr97012872pfi.103.1558539865858;
+        Wed, 22 May 2019 08:44:25 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::ed6d])
+        by smtp.gmail.com with ESMTPSA id j184sm25079831pge.83.2019.05.22.08.44.24
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 22 May 2019 08:44:24 -0700 (PDT)
+Date:   Wed, 22 May 2019 11:44:23 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@kernel.org>, mm-commits@vger.kernel.org,
+        tj@kernel.org, guro@fb.com, dennis@kernel.org,
+        chris@chrisdown.name,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        linux-mm@kvack.org
+Subject: Re: + mm-consider-subtrees-in-memoryevents.patch added to -mm tree
+Message-ID: <20190522154423.GA24972@cmpxchg.org>
+References: <20190212224542.ZW63a%akpm@linux-foundation.org>
+ <20190213124729.GI4525@dhcp22.suse.cz>
+ <20190516175655.GA25818@cmpxchg.org>
+ <20190516180932.GA13208@dhcp22.suse.cz>
+ <20190516193943.GA26439@cmpxchg.org>
+ <20190517123310.GI6836@dhcp22.suse.cz>
+ <20190518013348.GA6655@cmpxchg.org>
+ <20190521192351.4d3fd16c6f0e6a0b088779a6@linux-foundation.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190521192351.4d3fd16c6f0e6a0b088779a6@linux-foundation.org>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, May 21, 2019 at 07:23:51PM -0700, Andrew Morton wrote:
+> On Fri, 17 May 2019 21:33:48 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
+> 
+> > - Adoption data suggests that cgroup2 isn't really used yet. RHEL8 was
+> >   just released with cgroup1 per default. Fedora is currently debating
+> >   a switch. None of the other distros default to cgroup2. There is an
+> >   article on the lwn frontpage *right now* about Docker planning on
+> >   switching to cgroup2 in the near future. Kubernetes is on
+> >   cgroup1. Android is on cgroup1. Shakeel agrees that Facebook is
+> >   probably the only serious user of cgroup2 right now. The cloud and
+> >   all mainstream container software is still on cgroup1.
+> 
+> I'm thinking we need a cc:stable so these forthcoming distros are more
+> likely to pick up the new behaviour?
 
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-
-> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->=20
-> On 5/22/19 2:09 AM, Paolo Valente wrote:
->>=20
->> First, thank you very much for testing my patches, and, above all, =
-for
->> sharing those huge traces!
->>=20
->> According to the your traces, the residual 20% lower throughput that =
-you
->> record is due to the fact that the BFQ injection mechanism takes a =
-few
->> hundredths of seconds to stabilize, at the beginning of the workload.
->> During that setup time, the throughput is equal to the dreadful =
-~60-90 KB/s
->> that you see without this new patch.  After that time, there
->> seems to be no loss according to the trace.
->>=20
->> The problem is that a loss lasting only a few hundredths of seconds =
-is
->> however not negligible for a write workload that lasts only 3-4
->> seconds.  Could you please try writing a larger file?
->>=20
->=20
-> I tried running dd for longer (about 100 seconds), but still saw =
-around
-> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
-> mq-deadline and noop.
-
-Ok, then now the cause is the periodic reset of the mechanism.
-
-It would be super easy to fill this gap, by just gearing the mechanism
-toward a very aggressive injection.  The problem is maintaining
-control.  As you can imagine from the performance gap between CFQ (or
-BFQ with malfunctioning injection) and BFQ with this fix, it is very
-hard to succeed in maximizing the throughput while at the same time
-preserving control on per-group I/O.
-
-On the bright side, you might be interested in one of the benefits
-that BFQ gives in return for this ~10% loss of throughput, in a
-scenario that may be important for you (according to affiliation you
-report): from ~500% to ~1000% higher throughput when you have to serve
-the I/O of multiple VMs, and to guarantee at least no starvation to
-any VM [1].  The same holds with multiple clients or containers, and
-in general with any set of entities that may compete for storage.
-
-[1] =
-https://www.linaro.org/blog/io-bandwidth-management-for-production-quality=
--services/
-
-> But I'm not too worried about that difference.
->=20
->> In addition, I wanted to ask you whether you measured BFQ throughput
->> with traces disabled.  This may make a difference.
->>=20
->=20
-> The above result (1.4 MB/s) was obtained with traces disabled.
->=20
->> After trying writing a larger file, you can try with low_latency on.
->> On my side, it causes results to become a little unstable across
->> repetitions (which is expected).
->>=20
-> With low_latency on, I get between 60 KB/s - 100 KB/s.
->=20
-
-Gosh, full regression.  Fortunately, it is simply meaningless to use
-low_latency in a scenario where the goal is to guarantee per-group
-bandwidths.  Low-latency heuristics, to reach their (low-latency)
-goals, modify the I/O schedule compared to the best schedule for
-honoring group weights and boosting throughput.  So, as recommended in
-BFQ documentation, just switch low_latency off if you want to control
-I/O with groups.  It may still make sense to leave low_latency on
-in some specific case, which I don't want to bother you about.
-
-However, I feel bad with such a low throughput :)  Would you be so
-kind to provide me with a trace?
-
-Thanks,
-Paolo
-
-> Regards,
-> Srivatsa
-> VMware Photon OS
-
-
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlKk8ACgkQOAkCLQGo
-9oM6/A//WCuWEiR1JltuM5aklvJR+eYW/8xLJ3rbu8+0GrZIuuF1iPSXcB9p5yBP
-Wv3z5VUoumSlsb9aQlq6M0TPc5htnj00mIIuKaOAXZOhLNjTCvIEaSm1K8CtAW2B
-03MrWYTQw50jvR6OxpKtU0SKcMQQLPweiJPdTjy4tWUGgYoswDXFg+en8HNgSLv4
-sNGJQ8NrBQHU13P2WBm/j0ikPdKUfrM5yt6SdP7fDiYxemuMCecvUHMQOqhS7bua
-bgzZ9Y0DJfNtkELmGxsrNgTehctLCc7AEaViSzQVZxLs+FPa7pFIv30D8Nt8Hx3b
-e9x2zS/LXryo/Nx5NFgeMCISd1FbU2+eVqNmJhnjdCzDFiMUEM4GaQ7MbDNKZ1sO
-6ud0S49AOKvX4AXp5W+lufgRhQIw6OmIopPcXmzhUI3NZ9AqK430a5PwMjaUMn67
-PL9RYaLBU3p/POExsr5beMhc7Z6yGPtWF/tTFZuzQx0j3SXNoLjolpHLc3T0R/06
-eC8iUx+IUhkcOKrlmq2p1cLHpqzCVX8wPa/2xxcDveg5MiKo/U8dxQ5xmGEa8sSs
-nuZKPU7SJKeXae0UtOB3H74NIJU0joKCKhRherD7zYiJdx9RwSAv40Vbbhnq1DBo
-XI57SYyx53LQmwIKLdHXOgE0EKCnxBzPxZIK3CQIuSR8bzYRe8o=
-=WeX3
------END PGP SIGNATURE-----
-
---Apple-Mail=_53A52072-8428-4910-8FA8-7AAC6D010D2E--
+Yup, makes sense to me. Thank you!
