@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 646E026021
-	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 11:09:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABD52602D
+	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 11:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728806AbfEVJJd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 May 2019 05:09:33 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:38581 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728725AbfEVJJc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 05:09:32 -0400
-Received: by mail-wm1-f66.google.com with SMTP id t5so1352015wmh.3
-        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 02:09:30 -0700 (PDT)
+        id S1728536AbfEVJM7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 May 2019 05:12:59 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:46347 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728707AbfEVJM7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 05:12:59 -0400
+Received: by mail-wr1-f67.google.com with SMTP id r7so1359558wrr.13
+        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 02:12:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=Fs6G449Jswk/hH7c/uX6tzFFhtWXUq58A/0uXZEuWts=;
-        b=IiDefu5bqQEPWNEoq67LbPmJCSQoTwMZJxGkSqwRJ+Exp/XLQT5ktDPQpue90UV2VM
-         cwEl8DUj55krmLv7r9mUW/DR7BPIWxxJFg4I9eMMNZwBTjd+5HOtk7Otov9tMfse3Eb0
-         USrMI0mQORY3d1nVFZQTsqKVl+dRrTlUpDOaRZUMIPw81XSVNUqorUm1cJS/ecmDIbyr
-         kotvYGe77OXjbOIocNFZhNGfDjH5AEeY6Y22+R2lX5ffdDXhWdqyz1rkSiPuh3BuMIzY
-         TNdxCYTEIt7jM4zryq+udmPxM6TmxUZ7Cb5jSN6y738c1C4Zyf10ECyEMjF05J5b8KNX
-         5khQ==
+        bh=rE8Wct0UxfEhY9tt7Rg+uVL4FI68TDcokTaqF5xHzQs=;
+        b=V8o6Ep+QR0eP6MpPvEQrnJLjZBxuAuNyjG5P+obSCbdPfNcV7GlxKOxPXZH723EgHx
+         gu3AHnqiE3fBRkTPcZMXbtxsTd1d+9OjAunY8+oWoqySlXfukrGZBl7A42oRbvdXO3lQ
+         lrEj5NXoCJhA0R94mQrV1ESLTZkoc2Cv/xIiF4bNW7M+L6Mf/pOoCFsF5TPe9JajpWqp
+         uFjj3rKSwQ1RerocltqB1Cexxr0KdDiPkdpx3BpAdGq6FPXdTyKRwI5Z4iF6k684XFVa
+         0cSE0F/CM0+zIs+jPxRmYYUgkeIKiiMNpm3QVgVHAZaGd28fK5Sa6QyYnSmvjJhe1aaV
+         gOHg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=Fs6G449Jswk/hH7c/uX6tzFFhtWXUq58A/0uXZEuWts=;
-        b=KuB9dTlHWr957sV9M/INGUHVLHDZo1tYhl9ZX66rToX1bNPLwE4v3XVf6FJ1NnZyo7
-         xRdin/mlEJITi95BQ62+L6vNM7sGkYgBQxiGjys2X/XqHS23984YOBk1pzJGnaQtyN5R
-         E21ceWN5oO/jdx1nILWjOX1eJYwRyjmGP5BWqHfm0VyF59088ivjaR+zaco98BdFSVIc
-         e00bX/L6JbJEpk6WEuZPFQRMYGldU1n9QBUVvHtYGDtEJa/wIP+3un4hHxKn8mgBlAmE
-         v/Bzpa5gmSdxkWREYIc/22kJMS/wU/6KS3jB6SdB1GGqN/vXYWBeVIGNKBud9KTD6oP5
-         sV8Q==
-X-Gm-Message-State: APjAAAVOl34TR0D2Ug/QdO35ZCqkknBZul8oKEmWEbIOzizcm+4TRKy5
-        ICv754N7ibKYghUQu7PK8NYPgQ==
-X-Google-Smtp-Source: APXvYqwsdLWKTXlecXjTTY5sTEfZl/5WfZLsQZ++SMUSfStJ/qLyrQyz4ydIavTKGPfGzldSqDDplw==
-X-Received: by 2002:a1c:dc86:: with SMTP id t128mr6259490wmg.64.1558516169471;
-        Wed, 22 May 2019 02:09:29 -0700 (PDT)
+        bh=rE8Wct0UxfEhY9tt7Rg+uVL4FI68TDcokTaqF5xHzQs=;
+        b=EOT0Y9y64f1G4gHrtKdBy39U6EBftGcJR797iZsuO7nMv580LQAS/2gkwQqVoTprgO
+         eFOjvZi1RvgtOhIhb39ACbC02QoqRxBnNTUW5DIUA+0OqHPJ4HIqHSs0kOq/R4wKhB65
+         AbNoHVXDG9ucI0cb9fXPUPN4mlo6bLhzPdEEc9CrbXM/ga8PrGE1ucs1AiSIhdX87NVi
+         mednA+Wja49I9+jud4+OM8V0xgrFfo0SJL7vUj8UJKuTVPjJTJzbDY2EFlSgncoPan7d
+         qozt0mL0hX84dUrDGX9ejI4k2ITeamdGViPap3zOqyDVskbz5HHQ/0NtXKC6x9xVNekl
+         943w==
+X-Gm-Message-State: APjAAAV5Cl0ymPB8cMB4tydXULXT1phorIDwG76dUUt8tyAt8uYF4aR9
+        k3aUXVbgEGXxZKu5wVWdVJNLeA==
+X-Google-Smtp-Source: APXvYqwvtxGG8jH6YwkZapBXJ/fgPv1poDp8G6YLsqJwnzUuyhinC6N/0tUvGOku1MTZYsEkVHp6yw==
+X-Received: by 2002:adf:f208:: with SMTP id p8mr33137611wro.160.1558516377240;
+        Wed, 22 May 2019 02:12:57 -0700 (PDT)
 Received: from [192.168.0.100] (88-147-40-42.dyn.eolo.it. [88.147.40.42])
-        by smtp.gmail.com with ESMTPSA id u7sm13503722wmg.25.2019.05.22.02.09.28
+        by smtp.gmail.com with ESMTPSA id w3sm11277147wrv.25.2019.05.22.02.12.55
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 May 2019 02:09:28 -0700 (PDT)
+        Wed, 22 May 2019 02:12:56 -0700 (PDT)
 From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+Message-Id: <9E95BE27-2167-430F-9C7F-6D4A0E255FF3@linaro.org>
 Content-Type: multipart/signed;
-        boundary="Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F";
+        boundary="Apple-Mail=_4DC1C4F9-FFD5-4309-8346-630474A6C16C";
         protocol="application/pgp-signature";
         micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
 Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
  controller
-Date:   Wed, 22 May 2019 11:09:26 +0200
-In-Reply-To: <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+Date:   Wed, 22 May 2019 11:12:55 +0200
+In-Reply-To: <f4b11315-144c-c67d-5143-50b5be950ede@csail.mit.edu>
 Cc:     linux-fsdevel@vger.kernel.org,
         linux-block <linux-block@vger.kernel.org>,
         linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
@@ -73,6 +73,7 @@ References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
  <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
  <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
  <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <f4b11315-144c-c67d-5143-50b5be950ede@csail.mit.edu>
 X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -80,119 +81,108 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F
+--Apple-Mail=_4DC1C4F9-FFD5-4309-8346-630474A6C16C
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
 
 
-> Il giorno 22 mag 2019, alle ore 10:05, Paolo Valente =
-<paolo.valente@linaro.org> ha scritto:
->=20
->=20
->=20
->> Il giorno 22 mag 2019, alle ore 00:51, Srivatsa S. Bhat =
+> Il giorno 22 mag 2019, alle ore 11:02, Srivatsa S. Bhat =
 <srivatsa@csail.mit.edu> ha scritto:
+>=20
+> On 5/22/19 1:05 AM, Paolo Valente wrote:
 >>=20
->> [ Resending this mail with a dropbox link to the traces (instead
->> of a file attachment), since it didn't go through the last time. ]
 >>=20
->> On 5/21/19 10:38 AM, Paolo Valente wrote:
+>>> Il giorno 22 mag 2019, alle ore 00:51, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
 >>>=20
->>>> So, instead of only sending me a trace, could you please:
->>>> 1) apply this new patch on top of the one I attached in my previous =
-email
->>>> 2) repeat your test and report results
+>>> [ Resending this mail with a dropbox link to the traces (instead
+>>> of a file attachment), since it didn't go through the last time. ]
 >>>=20
->>> One last thing (I swear!): as you can see from my script, I tested =
+>>> On 5/21/19 10:38 AM, Paolo Valente wrote:
+>>>>=20
+>>>>> So, instead of only sending me a trace, could you please:
+>>>>> 1) apply this new patch on top of the one I attached in my =
+previous email
+>>>>> 2) repeat your test and report results
+>>>>=20
+>>>> One last thing (I swear!): as you can see from my script, I tested =
 the
->>> case low_latency=3D0 so far.  So please, for the moment, do your =
+>>>> case low_latency=3D0 so far.  So please, for the moment, do your =
 test
->>> with low_latency=3D0.  You find the whole path to this parameter in,
->>> e.g., my script.
+>>>> with low_latency=3D0.  You find the whole path to this parameter =
+in,
+>>>> e.g., my script.
+>>>>=20
+>>> No problem! :) Thank you for sharing patches for me to test!
 >>>=20
->> No problem! :) Thank you for sharing patches for me to test!
->>=20
->> I have good news :) Your patch improves the throughput significantly
->> when low_latency =3D 0.
->>=20
->> Without any patch:
->>=20
->> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
+>>> I have good news :) Your patch improves the throughput significantly
+>>> when low_latency =3D 0.
+>>>=20
+>>> Without any patch:
+>>>=20
+>>> dd if=3D/dev/zero of=3D/root/test.img bs=3D512 count=3D10000 =
 oflag=3Ddsync
->> 10000+0 records in
->> 10000+0 records out
->> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 58.0915 s, 88.1 kB/s
->>=20
->>=20
->> With both patches applied:
->>=20
->> dd if=3D/dev/zero of=3D/root/test0.img bs=3D512 count=3D10000 =
+>>> 10000+0 records in
+>>> 10000+0 records out
+>>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 58.0915 s, 88.1 kB/s
+>>>=20
+>>>=20
+>>> With both patches applied:
+>>>=20
+>>> dd if=3D/dev/zero of=3D/root/test0.img bs=3D512 count=3D10000 =
 oflag=3Ddsync
->> 10000+0 records in
->> 10000+0 records out
->> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.87487 s, 1.3 MB/s
->>=20
->> The performance is still not as good as mq-deadline (which achieves
->> 1.6 MB/s), but this is a huge improvement for BFQ nonetheless!
->>=20
->> A tarball with the trace output from the 2 scenarios you requested,
->> one with only the debug patch applied =
+>>> 10000+0 records in
+>>> 10000+0 records out
+>>> 5120000 bytes (5.1 MB, 4.9 MiB) copied, 3.87487 s, 1.3 MB/s
+>>>=20
+>>> The performance is still not as good as mq-deadline (which achieves
+>>> 1.6 MB/s), but this is a huge improvement for BFQ nonetheless!
+>>>=20
+>>> A tarball with the trace output from the 2 scenarios you requested,
+>>> one with only the debug patch applied =
 (trace-bfq-add-logs-and-BUG_ONs),
->> and another with both patches applied (trace-bfq-boost-injection) is
->> available here:
+>>> and another with both patches applied (trace-bfq-boost-injection) is
+>>> available here:
+>>>=20
+>>> https://www.dropbox.com/s/pdf07vi7afido7e/bfq-traces.tar.gz?dl=3D0
+>>>=20
 >>=20
->> https://www.dropbox.com/s/pdf07vi7afido7e/bfq-traces.tar.gz?dl=3D0
+>> Hi Srivatsa,
+>> I've seen the bugzilla you've created.  I'm a little confused on how
+>> to better proceed.  Shall we move this discussion to the bugzilla, or
+>> should we continue this discussion here, where it has started, and
+>> then update the bugzilla?
 >>=20
 >=20
-> Hi Srivatsa,
-> I've seen the bugzilla you've created.  I'm a little confused on how
-> to better proceed.  Shall we move this discussion to the bugzilla, or
-> should we continue this discussion here, where it has started, and
-> then update the bugzilla?
+> Let's continue here on LKML itself.
+
+Just done :)
+
+> The only reason I created the
+> bugzilla entry is to attach the tarball of the traces, assuming
+> that it would allow me to upload a 20 MB file (since email attachment
+> didn't work). But bugzilla's file restriction is much smaller than
+> that, so it didn't work out either, and I resorted to using dropbox.
+> So we don't need the bugzilla entry anymore; I might as well close it
+> to avoid confusion.
 >=20
 
-Ok, I've received some feedback on this point, and I'll continue the
-discussion here.  Then I'll report back on the bugzilla.
-
-First, thank you very much for testing my patches, and, above all, for
-sharing those huge traces!
-
-According to the your traces, the residual 20% lower throughput that you
-record is due to the fact that the BFQ injection mechanism takes a few
-hundredths of seconds to stabilize, at the beginning of the workload.
-During that setup time, the throughput is equal to the dreadful ~60-90 =
-KB/s
-that you see without this new patch.  After that time, there
-seems to be no loss according to the trace.
-
-The problem is that a loss lasting only a few hundredths of seconds is
-however not negligible for a write workload that lasts only 3-4
-seconds.  Could you please try writing a larger file?
-
-In addition, I wanted to ask you whether you measured BFQ throughput
-with traces disabled.  This may make a difference.
-
-After trying writing a larger file, you can try with low_latency on.
-On my side, it causes results to become a little unstable across
-repetitions (which is expected).
+No no, don't close it: it can reach people that don't use LKML.  We
+just have to remember to report back at the end of this.  BTW, I also
+think that the bug is incorrectly filed against 5.1, while all these
+tests and results concern 5.2-rcX.
 
 Thanks,
 Paolo
 
-
-> Let me know,
-> Paolo
->=20
->> Thank you!
->>=20
->> Regards,
->> Srivatsa
->> VMware Photon OS
+> Regards,
+> Srivatsa
+> VMware Photon OS
 
 
---Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F
+--Apple-Mail=_4DC1C4F9-FFD5-4309-8346-630474A6C16C
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -202,19 +192,19 @@ Content-Description: Message signed with OpenPGP
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlEcYACgkQOAkCLQGo
-9oNJ3Q//Sg7XcjVaaf3n1snyQH02p5UlfydhClnm/MruZLDVt8oB0HJMiP23IUwC
-m3LhFiSCOgV2+knSjwbk3jtUR2tnvkBVcko/G2luqxPxJrq7v5GjSfEb/hLjgwpB
-U7ufv14kR2EbE5C+2Qz9/JMsco9EOnGpCr3hO6/iWYkGBScu79iqoIH3wUuRdpg2
-m1SkP/NWcrtc4kydA09RHjQTeSFNLZeO9PLjAVR6tkUGEmwopqqE+toWYiqBtScs
-1Bf+eoQqAIxDr2OA98HpvUN6hYQxsDTNNbNn04wRLb+fK2BChcDDkM5MaJ/09YpK
-s4DXMjs+ifvLi3PTTbAscjujOLDnsWaAmmY/rufox97lXPxxt6UySkdENFUBFLNd
-bWvWMAb438p0Pz3hwNrU/tZh+nGYvqQT11oXq1Dlrks6kXS+iEfuZms34vz9tGfr
-r8XlqfImvkUSn4NI7YocIyqg76Rf2t5VGr59mR+7cN58y/vBbkPr7FkjXl/1LfGm
-bQsHL+D+NHb7NXgX91Jp97bKIX0yHnXdxrGZsjCH27C/HOzhtrncBzjcU2TPMEw+
-T9JmOJf8G2vXfR5G5voKot2wX1qZ9Nnpd9T5U0rHd4ami2oiOv0BV1rAkbjaH5Qd
-RcWZyGaSRBpzHuQQPi/jG18YzPbNt6szIflujQfdX38sPRcTXyk=
-=qTPQ
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzlEpcACgkQOAkCLQGo
+9oPdEw//WxVy6NXqpJ3PDhtxBUM+Q1PcVKlaTaCBteRnbxyptYxJJuedsDp9j1O1
+yU2XB75LNHy4NFLIVAqvdtSbmGpSl16XgFEq3t4/f5dGd066RhiV8f4APnQuqXHm
+MlwYjL6BdqYzP7MUCA7xBM0eNztJmHMpisG/ox1fpk4/YrJm0N9y0LHSxazPOaao
+dsRUqa97+tT3znMqFgTwGkfsYUZcuKc+nyQuZaFUwwKww8SqJYVTSXtcE+BIsngu
+tyw52Ty26br/9An4BXGXiDOXzB45s+AsvpJK+kntxB9BqSLnvCTNAWqPSJyvoHgn
+8DJvTjqHk53JsGuEs0kie3mGVB7VbDQ2ljRYhbYx11pVYKSxvS0ykmMKMd64Vyyb
+/VbB7q8t3cfpCU1YPsWUPjeiZIBkQNqlYsdhA1AclUMMEAo5k7nVZEG1tlvZrL9t
+D4sY5nOxd5shFqEb5wwxlMvmoLh7VP3bkxfuDetg/fKBT5HvsNcYrgX7EgumrM7j
+O+5KsvvhH/JbAXg70sicLqBZZGeXWf9s7lPO3JdVkoTXy2VaaQuFGocTN2tzMYhx
+5058wdhCYh8wnEJ3L+13JQv/P88WNiYkCzMJglsp7MKOFGWv7gzcyARTqkuhjm4h
+x5nNzFvvG6VWQi1LIWCMEthAWWoo+F2QDvHi71g890jQLrE0Ibg=
+=EX0B
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_3DB989E2-874B-47C2-B6CC-3F154F79180F--
+--Apple-Mail=_4DC1C4F9-FFD5-4309-8346-630474A6C16C--
