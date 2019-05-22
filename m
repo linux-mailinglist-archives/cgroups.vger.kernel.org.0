@@ -2,186 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 451B126A97
-	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 21:10:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D616271AA
+	for <lists+cgroups@lfdr.de>; Wed, 22 May 2019 23:30:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729562AbfEVTKf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 May 2019 15:10:35 -0400
-Received: from smtprelay0186.hostedemail.com ([216.40.44.186]:36296 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729018AbfEVTKf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 15:10:35 -0400
-X-Greylist: delayed 599 seconds by postgrey-1.27 at vger.kernel.org; Wed, 22 May 2019 15:10:34 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id 90D6E18024508;
-        Wed, 22 May 2019 18:54:36 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 60240182251DF;
-        Wed, 22 May 2019 18:54:36 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::::::::::::::,RULES_HIT:41:69:355:379:599:800:960:966:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1535:1544:1593:1594:1711:1730:1747:1777:1792:2196:2199:2393:2559:2562:2828:2896:3138:3139:3140:3141:3142:3355:3622:3866:3870:3871:3872:4321:4385:4605:5007:6119:6742:8784:10004:10848:11026:11232:11473:11658:11914:12043:12296:12438:12555:12679:12740:12760:12895:12986:13439:14096:14097:14181:14254:14659:14721:21080:21325:21451:21611:21627:30001:30002:30003:30004:30005:30006:30007:30008:30009:30010:30011:30012:30013:30014:30015:30016:30017:30018:30019:30020:30021:30022:30023:30024:30025:30026:30027:30028:30029:30030:30031:30032:30033:30034:30035:30036:30037:30038:30039:30040:30041:30042:30043:30044:30045:30046:30047:30048:30049:30050:30051:30052:30053:30054:30055:30057:30058:30059:30060:30061:30062:30063:30064:30065:30066:30067:30068:30069:30070:30071:30072:30073:30074:30075:30076:30077:3007
-X-HE-Tag: beds74_27dc26fe10b2d
-X-Filterd-Recvd-Size: 5469
-Received: from XPS-9350 (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
-        (Authenticated sender: joe@perches.com)
-        by omf20.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 22 May 2019 18:54:33 +0000 (UTC)
-Message-ID: <8ae488765c8d441dbb444adaf89e59a2afa81298.camel@perches.com>
-Subject: Re: [PATCH] Fix comments with paths pointing to renamed or moved
- files.
-From:   Joe Perches <joe@perches.com>
-To:     Pavel Machek <pavel@ucw.cz>,
-        Lukas Prause <langspielplatte@black-mesa.xyz>
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
-        rjw@rjwysocki.net, len.brown@intel.com, rostedt@goodmis.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lennart Glauer <mail@lennart-glauer.de>
-Date:   Wed, 22 May 2019 11:54:31 -0700
-In-Reply-To: <20190522183614.GD10003@amd>
-References: <20190521155430.14941-1-langspielplatte@black-mesa.xyz>
-         <20190522183614.GD10003@amd>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.30.1-1build1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S1730485AbfEVV34 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 May 2019 17:29:56 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:46084 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729857AbfEVV3o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 May 2019 17:29:44 -0400
+Received: from pps.filterd (m0044008.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4MLFSQA003983
+        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 14:29:43 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=THkyaL46U42CuIQO/bUMHkqiVtg4R96gtH4e/2sSFSE=;
+ b=qKxa6dRDmhGboAf4t93kFw+cSCWjYrMDcCbxKQLXCH1zPD+OGhpMqESwgP3mNyUytAMu
+ YR7TwU4WPFDXFEdLDT7MDYoZzwWf4VDTdbvxsg00Rq1epl12obXjfcTEd7liodvtUVOa
+ 9DvfQiWl6t5I0JjH7Ssid/iPvtC8DIyobEI= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sn8b0sjdu-3
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+        for <cgroups@vger.kernel.org>; Wed, 22 May 2019 14:29:43 -0700
+Received: from mx-out.facebook.com (2620:10d:c0a8:1b::d) by
+ mail.thefacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Wed, 22 May 2019 14:29:41 -0700
+Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
+        id 569AF1251A294; Wed, 22 May 2019 14:29:39 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
+To:     <bpf@vger.kernel.org>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        <netdev@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        <kernel-team@fb.com>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH bpf-next 0/4] cgroup bpf auto-detachment
+Date:   Wed, 22 May 2019 14:29:28 -0700
+Message-ID: <20190522212932.2646247-1-guro@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-22_13:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=13 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=390 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905220148
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 2019-05-22 at 20:36 +0200, Pavel Machek wrote:
-> On Tue 2019-05-21 17:54:30, Lukas Prause wrote:
-> > This patch corrects renamed or moved paths in comments.
-> > 
-> > Signed-off-by: Lukas Prause <langspielplatte@black-mesa.xyz>
-> > Signed-off-by: Lennart Glauer <mail@lennart-glauer.de>
-> 
-> Acked-by: Pavel Machek <pavel@ucw.cz>
-> 
-> > diff --git a/kernel/power/power.h b/kernel/power/power.h
-> > index 9e58bdc8a562..5de8b0c7f657 100644
-> > --- a/kernel/power/power.h
-> > +++ b/kernel/power/power.h
-> > @@ -182,7 +182,7 @@ extern int swsusp_unmark(void);
-> >  #endif
-> >  
-> >  struct timeval;
-> > -/* kernel/power/swsusp.c */
-> > +/* kernel/power/hibernate.c */
-> >  extern void swsusp_show_speed(ktime_t, ktime_t, unsigned int, char *);
-> >  
-> >  #ifdef CONFIG_SUSPEND
+This patchset implements a cgroup bpf auto-detachment functionality:
+bpf programs are attached as soon as possible after removal of the
+cgroup, without waiting for the release of all associated resources.
 
-I think all of these markings should be removed instead.
-Why are these useful?
-It seems many of these filenames in power.h aren't correct anyway.
+Patches 2 and 3 are required to implement a corresponding kselftest
+in patch 4.
 
-For instance power.h has:
+Roman Gushchin (4):
+  bpf: decouple the lifetime of cgroup_bpf from cgroup itself
+  selftests/bpf: convert test_cgrp2_attach2 example into kselftest
+  selftests/bpf: enable all available cgroup v2 controllers
+  selftests/bpf: add auto-detach test
 
-   /* kernel/power/hibernate.c */
-   extern int swsusp_check(void);
-   extern void swsusp_free(void);
-   extern int swsusp_read(unsigned int *flags_p);
-   extern int swsusp_write(unsigned int flags);
-   extern void swsusp_close(fmode_t);
-   #ifdef CONFIG_SUSPEND
-   extern int swsusp_unmark(void);
-   #endif
+ include/linux/bpf-cgroup.h                    |   8 +-
+ include/linux/cgroup.h                        |  18 ++
+ kernel/bpf/cgroup.c                           |  25 ++-
+ kernel/cgroup/cgroup.c                        |  11 +-
+ samples/bpf/Makefile                          |   2 -
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  58 +++++++
+ .../selftests/bpf/test_cgroup_attach.c        | 154 ++++++++++++++++--
+ 8 files changed, 253 insertions(+), 27 deletions(-)
+ rename samples/bpf/test_cgrp2_attach2.c => tools/testing/selftests/bpf/test_cgroup_attach.c (78%)
 
-but:
-
-swsusp_check is in swap.c
-swsusp_free is in snapshot.c
-swsusp_read is in swap.c
-
-etc...
-
-Perhaps:
----
- kernel/power/power.h | 10 ----------
- 1 file changed, 10 deletions(-)
-
-diff --git a/kernel/power/power.h b/kernel/power/power.h
-index 9e58bdc8a562..52bcb72564e5 100644
---- a/kernel/power/power.h
-+++ b/kernel/power/power.h
-@@ -16,7 +16,6 @@ struct swsusp_info {
- } __aligned(PAGE_SIZE);
- 
- #ifdef CONFIG_HIBERNATION
--/* kernel/power/snapshot.c */
- extern void __init hibernate_reserved_size_init(void);
- extern void __init hibernate_image_size_init(void);
- 
-@@ -55,7 +54,6 @@ extern int hibernate_resume_nonboot_cpu_disable(void);
- 
- asmlinkage int swsusp_save(void);
- 
--/* kernel/power/hibernate.c */
- extern bool freezer_test_done;
- 
- extern int hibernation_snapshot(int platform_mode);
-@@ -63,7 +61,6 @@ extern int hibernation_restore(int platform_mode);
- extern int hibernation_platform_enter(void);
- 
- #ifdef CONFIG_STRICT_KERNEL_RWX
--/* kernel/power/snapshot.c */
- extern void enable_restore_image_protection(void);
- #else
- static inline void enable_restore_image_protection(void) {}
-@@ -171,7 +168,6 @@ extern int swsusp_swap_in_use(void);
- #define SF_NOCOMPRESS_MODE	2
- #define SF_CRC32_MODE	        4
- 
--/* kernel/power/hibernate.c */
- extern int swsusp_check(void);
- extern void swsusp_free(void);
- extern int swsusp_read(unsigned int *flags_p);
-@@ -182,11 +178,9 @@ extern int swsusp_unmark(void);
- #endif
- 
- struct timeval;
--/* kernel/power/swsusp.c */
- extern void swsusp_show_speed(ktime_t, ktime_t, unsigned int, char *);
- 
- #ifdef CONFIG_SUSPEND
--/* kernel/power/suspend.c */
- extern const char * const pm_labels[];
- extern const char *pm_states[];
- extern const char *mem_sleep_states[];
-@@ -202,7 +196,6 @@ static inline int suspend_devices_and_enter(suspend_state_t state)
- #endif /* !CONFIG_SUSPEND */
- 
- #ifdef CONFIG_PM_TEST_SUSPEND
--/* kernel/power/suspend_test.c */
- extern void suspend_test_start(void);
- extern void suspend_test_finish(const char *label);
- #else /* !CONFIG_PM_TEST_SUSPEND */
-@@ -211,7 +204,6 @@ static inline void suspend_test_finish(const char *label) {}
- #endif /* !CONFIG_PM_TEST_SUSPEND */
- 
- #ifdef CONFIG_PM_SLEEP
--/* kernel/power/main.c */
- extern int __pm_notifier_call_chain(unsigned long val, int nr_to_call,
- 				    int *nr_calls);
- extern int pm_notifier_call_chain(unsigned long val);
-@@ -289,7 +281,6 @@ static inline void suspend_thaw_processes(void)
- 
- #ifdef CONFIG_PM_AUTOSLEEP
- 
--/* kernel/power/autosleep.c */
- extern int pm_autosleep_init(void);
- extern int pm_autosleep_lock(void);
- extern void pm_autosleep_unlock(void);
-@@ -307,7 +298,6 @@ static inline suspend_state_t pm_autosleep_state(void) { return PM_SUSPEND_ON; }
- 
- #ifdef CONFIG_PM_WAKELOCKS
- 
--/* kernel/power/wakelock.c */
- extern ssize_t pm_show_wakelocks(char *buf, bool show_active);
- extern int pm_wake_lock(const char *buf);
- extern int pm_wake_unlock(const char *buf);
-
+-- 
+2.20.1
 
