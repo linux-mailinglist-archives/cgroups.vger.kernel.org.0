@@ -2,402 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D13E1284D5
-	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 19:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F8828579
+	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 19:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731115AbfEWRWq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 May 2019 13:22:46 -0400
-Received: from mail-wr1-f51.google.com ([209.85.221.51]:44888 "EHLO
-        mail-wr1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731309AbfEWRWp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 13:22:45 -0400
-Received: by mail-wr1-f51.google.com with SMTP id w13so7121609wru.11
-        for <cgroups@vger.kernel.org>; Thu, 23 May 2019 10:22:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=InxZ5iLACNFG7Vx1pJFG6j1VGK3C8LKW3Pv0n2HdX+A=;
-        b=sjyydNsJzBhRt7U6ln+3IbD5L5Ezv5HWlrW9gK6JoZHadmqbtaTf6UIYof4YJQNjkI
-         knfn9lOG4i3LpC8Rg8Ucmml6uxYOC/vHyqiB7yFhOxYG5UhKLhHi/uc1IO9Kx8Qgm++K
-         6yX5FY9El4TWPjlZjpf8Tv4GX//JNe0nFd09+cGSWHiG3z3t9UNn3ubDWj60uetL67Hh
-         U/q8Y1AzeH7KgRfimm21QLJmJhbSPuxq2F/GI0Xd9CHZUWW5IXB20yX9FKRSbTWMX1IU
-         H4Yk2feL3OV3vjN4KRm2qwt+bIvua+6CmJPRLoarc8mAtE/Ay/55PIH42X9ZpkS4K8Wi
-         daZg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=InxZ5iLACNFG7Vx1pJFG6j1VGK3C8LKW3Pv0n2HdX+A=;
-        b=sYGN+Pdxupfwm9tTa4r56AVKaU4qCSP4pFqjuzuODddmC5c990+KlmKD5W1+bJVje1
-         cEyOvLnThggKB1UjApArQ6Xst4YrUr4XQqRIhF/itZaTrMbpLSWFIWaHk65+UmYMLQmG
-         7t/h9RXPlzR/2yBhXN9c4F4qhzHI5ye0N6N9sxo+W7e0qHrhV0nbcFZHTpBCLhQKAqqp
-         pbrfO2+FrIAssU2YJ0V6i1qqA4tkbUlkz8hzZMpQzxJdsQ6tEBHMszJpYbKRmQWpMYb5
-         8B9kVY+bXhSIv7ukmIvkorHItwNJTvmjW2NRhnBnjuWGtnIFdNn3vDETcVCcXqeLYpWR
-         fTdg==
-X-Gm-Message-State: APjAAAUcyTTQ25GG5cYVOvO9h3PkJLPyIRaf8Tnh2CKkrMQMdDcBunN5
-        fmIeMeLC/7XR70E2PxloekPOmQ==
-X-Google-Smtp-Source: APXvYqzF8+G3wET+S+exvjqW8Kxk9v9JrFg/Ri5mOyFh+MPsPVxxp7tvqZ62rRx3VVW1PeiwSCK1fQ==
-X-Received: by 2002:adf:fa4e:: with SMTP id y14mr2229827wrr.149.1558632161613;
-        Thu, 23 May 2019 10:22:41 -0700 (PDT)
-Received: from [192.168.0.102] (84-33-65-143.dyn.eolo.it. [84.33.65.143])
-        by smtp.gmail.com with ESMTPSA id z4sm30491894wru.69.2019.05.23.10.22.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 10:22:40 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_D45781B4-9ACB-4EB0-B468-DF882BDE48A5";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Thu, 23 May 2019 19:22:38 +0200
-In-Reply-To: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
- <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
- <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
- <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.8)
+        id S1731192AbfEWR7I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 May 2019 13:59:08 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:38248 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731073AbfEWR7I (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 13:59:08 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4NHwWq4012062;
+        Thu, 23 May 2019 10:58:46 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=de5HqLKENBOTVi8j+LLu18Z4hDZQ4TJG+nR63K2QNnU=;
+ b=SYh8wN7cBRfARZ96o+K0g8DPHAEfFVd3a6Xoj6if2T1hIVlWPWw49/TXS+uNFN2zI2ni
+ VWFenwmaTyEcPqQmepfB+F6TnK16T7k4tgcZkT5TmgTB/qP1a5VMQXxVt/JsP4efNidX
+ KJLI5aQkdlPLsmQ+84gqYELfSky9YyyZ5rk= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2snyam88m9-10
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 23 May 2019 10:58:45 -0700
+Received: from prn-hub03.TheFacebook.com (2620:10d:c081:35::127) by
+ prn-hub02.TheFacebook.com (2620:10d:c081:35::126) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 23 May 2019 10:58:45 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.27) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 23 May 2019 10:58:45 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=de5HqLKENBOTVi8j+LLu18Z4hDZQ4TJG+nR63K2QNnU=;
+ b=KKCMBLAFDGuJ2QdvTNQQSCezO6w07szUZUlCew8tG/VETktDdGAxaFR9A4VydPJRuUPwqLpvX6ogWWQ7Q53SmkCDoFkGF4hVgqHBjORgprszp2SWvGh7ZJsIJ7CbegAmbzj0wicyCzCr4Y27pyjFMY4QPo67GMVM/ELVbZaXh2s=
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.156.24) by
+ BYAPR15MB2694.namprd15.prod.outlook.com (20.179.156.223) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.16; Thu, 23 May 2019 17:58:40 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a%7]) with mapi id 15.20.1922.018; Thu, 23 May 2019
+ 17:58:40 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Topic: [PATCH v2 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Index: AQHVEPUtpidQdc9d6UW2SWsAUk86b6Z4NBMAgADMSwA=
+Date:   Thu, 23 May 2019 17:58:40 +0000
+Message-ID: <20190523175833.GA7107@tower.DHCP.thefacebook.com>
+References: <20190522232051.2938491-1-guro@fb.com>
+ <20190522232051.2938491-5-guro@fb.com>
+ <f7953267-8559-2f58-f39a-b2b0c3bf2e38@fb.com>
+In-Reply-To: <f7953267-8559-2f58-f39a-b2b0c3bf2e38@fb.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR12CA0058.namprd12.prod.outlook.com
+ (2603:10b6:300:103::20) To BYAPR15MB2631.namprd15.prod.outlook.com
+ (2603:10b6:a03:152::24)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::8323]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1a42e212-2073-4f47-ae37-08d6dfa849a4
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB2694;
+x-ms-traffictypediagnostic: BYAPR15MB2694:
+x-microsoft-antispam-prvs: <BYAPR15MB2694BA21B49719F89F668620BE010@BYAPR15MB2694.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8882;
+x-forefront-prvs: 00462943DE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(346002)(376002)(396003)(136003)(366004)(189003)(199004)(6486002)(68736007)(229853002)(6436002)(71190400001)(2906002)(33656002)(386003)(6506007)(53546011)(71200400001)(52116002)(1076003)(7736002)(66476007)(73956011)(66946007)(305945005)(6116002)(102836004)(486006)(478600001)(476003)(54906003)(446003)(11346002)(76176011)(14454004)(46003)(99286004)(53936002)(4326008)(5024004)(6246003)(5660300002)(14444005)(256004)(6636002)(186003)(316002)(81156014)(8936002)(66556008)(64756008)(66446008)(81166006)(6512007)(25786009)(8676002)(6862004)(9686003)(86362001);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2694;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 6FdNlttIXtSffCTk8fMGBc63qMB25sJvgJOX8a53fTmoJt05e1RJS9z00r2jAKGIWznAdy7pOgLCRcIhmXBxmp+B1PIz7vK25NFFJS7E43uVjRcMkGcGQ07hizlDijav+48BrRRNQZYOXpMpIKrAOwQmJuFBHPs1qL2KSUs/pk9XetK22ozeaeWp917SbR2/L7uLYGgeAuKH9d+t04jN7v6FDBBtJJCn3IEgePdF0Jps5xqIcvH3+SxP0otN1NPbd9HwyzEXuJtz6Yr2+45Q6dnrX3Gu0D9jDWyhayY5zNg8V/OgoJHS0f+y/sxRzr3F3YuPOcXqfHX+pSbmcZgHR/xXKNL7TF3fzJd0ajy12mZgZLcHrtp+eqmSSEq4AHomVyX+ETNugXJ8GlervI5oZp/zDYL7DfQN77iz7gBvakw=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <0C59FFFCC474F14F9CA30C7EDE14439D@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a42e212-2073-4f47-ae37-08d6dfa849a4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2019 17:58:40.6180
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2694
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-23_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905230120
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
---Apple-Mail=_D45781B4-9ACB-4EB0-B468-DF882BDE48A5
-Content-Type: multipart/mixed;
-	boundary="Apple-Mail=_3B66D298-FEA1-4A37-ABBE-8A493C140EF6"
-
-
---Apple-Mail=_3B66D298-FEA1-4A37-ABBE-8A493C140EF6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-
-> Il giorno 23 mag 2019, alle ore 11:19, Paolo Valente =
-<paolo.valente@linaro.org> ha scritto:
+On Wed, May 22, 2019 at 10:47:24PM -0700, Yonghong Song wrote:
 >=20
 >=20
+> On 5/22/19 4:20 PM, Roman Gushchin wrote:
+> > Add a kselftest to cover bpf auto-detachment functionality.
+> > The test creates a cgroup, associates some resources with it,
+> > attaches a couple of bpf programs and deletes the cgroup.
+> >=20
+> > Then it checks that bpf programs are going away in 5 seconds.
+> >=20
+> > Expected output:
+> >    $ ./test_cgroup_attach
+> >    #override:PASS
+> >    #multi:PASS
+> >    #autodetach:PASS
+> >    test_cgroup_attach:PASS
+> >=20
+> > On a kernel without auto-detaching:
+> >    $ ./test_cgroup_attach
+> >    #override:PASS
+> >    #multi:PASS
+> >    #autodetach:FAIL
+> >    test_cgroup_attach:FAIL
 >=20
->> Il giorno 23 mag 2019, alle ore 04:30, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->>=20
->> On 5/22/19 3:54 AM, Paolo Valente wrote:
->>>=20
->>>=20
->>>> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->>>>=20
->>>> On 5/22/19 2:09 AM, Paolo Valente wrote:
->>>>>=20
->>>>> First, thank you very much for testing my patches, and, above all, =
-for
->>>>> sharing those huge traces!
->>>>>=20
->>>>> According to the your traces, the residual 20% lower throughput =
-that you
->>>>> record is due to the fact that the BFQ injection mechanism takes a =
-few
->>>>> hundredths of seconds to stabilize, at the beginning of the =
-workload.
->>>>> During that setup time, the throughput is equal to the dreadful =
-~60-90 KB/s
->>>>> that you see without this new patch.  After that time, there
->>>>> seems to be no loss according to the trace.
->>>>>=20
->>>>> The problem is that a loss lasting only a few hundredths of =
-seconds is
->>>>> however not negligible for a write workload that lasts only 3-4
->>>>> seconds.  Could you please try writing a larger file?
->>>>>=20
->>>>=20
->>>> I tried running dd for longer (about 100 seconds), but still saw =
-around
->>>> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
->>>> mq-deadline and noop.
->>>=20
->>> Ok, then now the cause is the periodic reset of the mechanism.
->>>=20
->>> It would be super easy to fill this gap, by just gearing the =
-mechanism
->>> toward a very aggressive injection.  The problem is maintaining
->>> control.  As you can imagine from the performance gap between CFQ =
-(or
->>> BFQ with malfunctioning injection) and BFQ with this fix, it is very
->>> hard to succeed in maximizing the throughput while at the same time
->>> preserving control on per-group I/O.
->>>=20
->>=20
->> Ah, I see. Just to make sure that this fix doesn't overly optimize =
-for
->> total throughput (because of the testcase we've been using) and end =
-up
->> causing regressions in per-group I/O control, I ran a test with
->> multiple simultaneous dd instances, each writing to a different
->> portion of the filesystem (well separated, to induce seeks), and each
->> dd task bound to its own blkio cgroup. I saw similar results with and
->> without this patch, and the throughput was equally distributed among
->> all the dd tasks.
->>=20
->=20
-> Thank you very much for pre-testing this change, this let me know in
-> advance that I shouldn't find issues when I'll test regressions, at
-> the end of this change phase.
->=20
->>> On the bright side, you might be interested in one of the benefits
->>> that BFQ gives in return for this ~10% loss of throughput, in a
->>> scenario that may be important for you (according to affiliation you
->>> report): from ~500% to ~1000% higher throughput when you have to =
-serve
->>> the I/O of multiple VMs, and to guarantee at least no starvation to
->>> any VM [1].  The same holds with multiple clients or containers, and
->>> in general with any set of entities that may compete for storage.
->>>=20
->>> [1] =
-https://www.linaro.org/blog/io-bandwidth-management-for-production-quality=
--services/
->>>=20
->>=20
->> Great article! :) Thank you for sharing it!
->=20
-> Thanks! I mentioned it just to better put things into context.
->=20
->>=20
->>>> But I'm not too worried about that difference.
->>>>=20
->>>>> In addition, I wanted to ask you whether you measured BFQ =
-throughput
->>>>> with traces disabled.  This may make a difference.
->>>>>=20
->>>>=20
->>>> The above result (1.4 MB/s) was obtained with traces disabled.
->>>>=20
->>>>> After trying writing a larger file, you can try with low_latency =
-on.
->>>>> On my side, it causes results to become a little unstable across
->>>>> repetitions (which is expected).
->>>>>=20
->>>> With low_latency on, I get between 60 KB/s - 100 KB/s.
->>>>=20
->>>=20
->>> Gosh, full regression.  Fortunately, it is simply meaningless to use
->>> low_latency in a scenario where the goal is to guarantee per-group
->>> bandwidths.  Low-latency heuristics, to reach their (low-latency)
->>> goals, modify the I/O schedule compared to the best schedule for
->>> honoring group weights and boosting throughput.  So, as recommended =
-in
->>> BFQ documentation, just switch low_latency off if you want to =
-control
->>> I/O with groups.  It may still make sense to leave low_latency on
->>> in some specific case, which I don't want to bother you about.
->>>=20
->>=20
->> My main concern here is about Linux's I/O performance out-of-the-box,
->> i.e., with all default settings, which are:
->>=20
->> - cgroups and blkio enabled (systemd default)
->> - blkio non-root cgroups in use (this is the implicit systemd =
-behavior
->> if docker is installed; i.e., it runs tasks under user.slice)
->> - I/O scheduler with blkio group sched support: bfq
->> - bfq default configuration: low_latency =3D 1
->>=20
->> If this yields a throughput that is 10x-30x slower than what is
->> achievable, I think we should either fix the code (if possible) or
->> change the defaults such that they don't lead to this performance
->> collapse (perhaps default low_latency to 0 if bfq group scheduling
->> is in use?)
->=20
-> Yeah, I thought of this after sending my last email yesterday. Group
-> scheduling and low-latency heuristics may simply happen to fight
-> against each other in personal systems.  Let's proceed this way. I'll
-> try first to make the BFQ low-latency mechanism clever enough to not
-> hinder throughput when groups are in place.  If I make it, then we
-> will get the best of the two worlds: group isolation and intra-group
-> low latency; with no configuration change needed.  If I don't make it,
-> I'll try to think of the best solution to cope with this non-trivial
-> situation.
->=20
->=20
->>> However, I feel bad with such a low throughput :)  Would you be so
->>> kind to provide me with a trace?
->>>=20
->> Certainly! Short runs of dd resulted in a lot of variation in the
->> throughput (between 60 KB/s - 1 MB/s), so I increased dd's runtime
->> to get repeatable numbers (~70 KB/s). As a result, the trace file
->> (trace-bfq-boost-injection-low-latency-71KBps) is quite large, and
->> is available here:
->>=20
->> https://www.dropbox.com/s/svqfbv0idcg17pn/bfq-traces.tar.gz?dl=3D0
->>=20
->=20
-> Thank you very much for your patience and professional help.
->=20
->> Also, I'm very happy to run additional tests or experiments to help
->> track down this issue. So, please don't hesitate to let me know if
->> you'd like me to try anything else or get you additional traces etc. =
-:)
->>=20
->=20
-> Here's to you!  :) I've attached a new small improvement that may
-> reduce fluctuations (path to apply on top of the others, of course).
-> Unfortunately, I don't expect this change to boost the throughput
-> though.
->=20
-> In contrast, I've thought of a solution that might be rather
-> effective: making BFQ aware (heuristically) of trivial
-> synchronizations between processes in different groups.  This will
-> require a little more work and time.
->=20
+> I ran this problem without both old and new kernels and
+> both get all PASSes. My testing environment is a VM.
+> Could you specify how to trigger the above failure?
 
-Hi Srivatsa,
-I'm back :)
+Most likely you're running cgroup v1, so the memory controller
+is not enabled on unified hierarchy. You need to pass
+"cgroup_no_v1=3Dall systemd.unified_cgroup_hierarchy=3D1"
+as boot time options to run fully on cgroup v2.
 
-First, there was a mistake in the last patch I sent you, namely in
-0001-block-bfq-re-sample-req-service-times-when-possible.patch.
-Please don't apply that patch at all.
+But generally speaking, the lifecycle of a dying cgroup is
+completely implementation-defined. No guarantees are provided.
+So false positives are fine here, and shouldn't be considered as
+something bad.
 
-I've attached a new series of patches instead.  The first patch in this
-series is a fixed version of the faulty patch above (if I'm creating too
-much confusion, I'll send you again all patches to apply on top of
-mainline).
+At the end all we want it to detach programs in a reasonable time
+after rmdir.
 
-This series also implements the more effective idea I told you a few
-hours ago.  In my system, the loss is now around only 10%, even with
-low_latency on.
+Btw, thank you for the careful review of the patchset. I'll
+address your comments, add acks and will send out v3.
 
-Looking forward to your results,
-Paolo
-
-
---Apple-Mail=_3B66D298-FEA1-4A37-ABBE-8A493C140EF6
-Content-Disposition: attachment;
-	filename=patches-with-waker-detection.tgz
-Content-Type: application/octet-stream;
-	x-unix-mode=0644;
-	name="patches-with-waker-detection.tgz"
-Content-Transfer-Encoding: base64
-
-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
---Apple-Mail=_3B66D298-FEA1-4A37-ABBE-8A493C140EF6
-Content-Transfer-Encoding: 7bit
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-
-> 
-> Thanks,
-> Paolo
-> 
-> <0001-block-bfq-re-sample-req-service-times-when-possible.patch.gz>
-> 
->> Thank you!
->> 
->> Regards,
->> Srivatsa
->> VMware Photon OS
-
-
---Apple-Mail=_3B66D298-FEA1-4A37-ABBE-8A493C140EF6--
-
---Apple-Mail=_D45781B4-9ACB-4EB0-B468-DF882BDE48A5
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzm1t4ACgkQOAkCLQGo
-9oPIqQ//Z5mcV5eOga88TOTnk31AOpAjof6PYkaQf54nUFxWT8vDmOb7PC8Qj96r
-uOHZvR1OvbIcg7MY162L7gDu46TWpwSS8HyYtqbE8X/G6ge9e8dxh6YH3ZvRxRXq
-8t3hr6Jwewi6bD/qR/ZfVnxDgY8p0lNnY8lzft2lQyEvuS5Jr7JoktkoUQBS4a17
-m1rS3qR0PrMDEwgaBscQuXe4aGGOpUqw8RhY6D5OLHAu20CqBdRekL+8kCxIPn20
-aUoDRRdMc4PKlW/quCbpKUV5csALG78Se4pKoc9HI4o9pa512WG9oTd/a2TAI3QY
-GU5qLHr+sxHZ2U850J78uGi+InJ1gxTXLuAjiSbGMmWZInaEyvplieR4MC/iYZZA
-BiOR5JHol0T10oWelaHjIFsEreXE439MupDO6VrAXJfYOVAdgJM2ESSRO4lUrR0t
-CZ8GUqFpM4v6qmhfCx4v3N3vuXk5AeFLll1zlf/Sklj5ks4f/UWmtbuUkZUnodA0
-BCgsx/Wmkyo8EilDNQa92uZKcLG430csn13D86TqCR3Jda532swPICXk/KyTOqan
-I/zLYII50shrgEpWt0EzBkw32cckWKGz1krqs/U5dxy9SqnjjWDKVlB5pQIIfgWO
-5tmYt3twzJ935rkfFyqEG3DpVxsffpfX88FtBy6eFPJ/xBeqM/4=
-=uowl
------END PGP SIGNATURE-----
-
---Apple-Mail=_D45781B4-9ACB-4EB0-B468-DF882BDE48A5--
+Thanks!
