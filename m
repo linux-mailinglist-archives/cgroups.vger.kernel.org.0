@@ -2,109 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC6528DDD
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 01:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7073228DF8
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 01:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388492AbfEWXcn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 May 2019 19:32:43 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:50834 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387693AbfEWXcn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 19:32:43 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hTxCO-000Pj9-7L; Thu, 23 May 2019 19:32:36 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
- <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
- <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
-Message-ID: <a0096333-55c0-eb30-87fc-d63b5e285b99@csail.mit.edu>
-Date:   Thu, 23 May 2019 16:32:32 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
-Content-Type: text/plain; charset=windows-1252
+        id S2388379AbfEWXnZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 May 2019 19:43:25 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:49542 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388129AbfEWXnZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 19:43:25 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4NNea3u006535;
+        Thu, 23 May 2019 16:43:03 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=f056jcvQEMd8XhBuxKG3eAcSjUdhkSgLRalk/El0N+A=;
+ b=F4T0GEL1HOFBoMyaZLkCnbWi57oAi5qJzhOOsf+TsXSqgM2aUV5isfi1KP99pIko6SRg
+ GnH1oE8bl4iP/CD5aJi525wNhogjZS6ZE8HMgdHXuLtzt7sgKE8eO1eIvew0otokB7P1
+ PqM4MiBv5w0dCMgWmX0pfBZ/vk4irk1qbIA= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2sp3e0rcjh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 May 2019 16:43:03 -0700
+Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
+ ash-exhub101.TheFacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 May 2019 16:43:02 -0700
+Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
+ ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 May 2019 16:43:02 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 23 May 2019 16:43:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=f056jcvQEMd8XhBuxKG3eAcSjUdhkSgLRalk/El0N+A=;
+ b=GiO2qQwpaobSq+eJipapKcGrkwbwGvuBZ2A7X+ocKiXnnGTH35BEct8xvFDZCUmYv6mqKC4A1AEz7hQIgv8/6LBrucAHtqtaIuNDvgAMvqWt+Ngiz0vSo2iZUL8wJdfL7623/ulDzwCCOsViIUFlrbmWTFtaG82/bc1RpBxg9+A=
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.156.24) by
+ BYAPR15MB3142.namprd15.prod.outlook.com (20.178.239.215) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.18; Thu, 23 May 2019 23:43:00 +0000
+Received: from BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a]) by BYAPR15MB2631.namprd15.prod.outlook.com
+ ([fe80::d4f6:b485:69ee:fd9a%7]) with mapi id 15.20.1922.018; Thu, 23 May 2019
+ 23:43:00 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Yonghong Song <yhs@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Topic: [PATCH v3 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Index: AQHVEaCPg78JwYs3bk+j5PuTlvgUDqZ5VeUAgAAJVwA=
+Date:   Thu, 23 May 2019 23:43:00 +0000
+Message-ID: <20190523234254.GA17907@tower.DHCP.thefacebook.com>
+References: <20190523194532.2376233-1-guro@fb.com>
+ <20190523194532.2376233-5-guro@fb.com>
+ <4ff840cb-7e24-62d5-4ea7-fbca34218800@fb.com>
+In-Reply-To: <4ff840cb-7e24-62d5-4ea7-fbca34218800@fb.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR0201CA0078.namprd02.prod.outlook.com
+ (2603:10b6:301:75::19) To BYAPR15MB2631.namprd15.prod.outlook.com
+ (2603:10b6:a03:152::24)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:3036]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 8a2cdaf1-f1b0-4ac0-4db2-08d6dfd863de
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB3142;
+x-ms-traffictypediagnostic: BYAPR15MB3142:
+x-microsoft-antispam-prvs: <BYAPR15MB3142D0BF135F4F5CC5E64E5DBE010@BYAPR15MB3142.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 00462943DE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(136003)(39860400002)(346002)(396003)(376002)(189003)(199004)(486006)(81156014)(81166006)(33656002)(8936002)(6862004)(4326008)(25786009)(14454004)(316002)(186003)(99286004)(53936002)(68736007)(54906003)(66446008)(6246003)(256004)(2906002)(64756008)(5024004)(66476007)(66556008)(8676002)(66946007)(6116002)(73956011)(76176011)(6512007)(46003)(9686003)(386003)(6506007)(53546011)(71200400001)(71190400001)(1076003)(5660300002)(446003)(4744005)(6486002)(476003)(102836004)(52116002)(478600001)(86362001)(11346002)(6436002)(229853002)(6636002)(7736002)(305945005);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB3142;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: csUhtAAKF1/GJtflklgpZYsuPVt80h40oYov75PbRGEc0l1h7slRAcK0dYQtkmfPxg0Bti3Dk4l6m/hPhKewY2Bv/yY/BKcFiUpxk8z/8Nu9X1RVbC3zqkgPkR2WK5ioVYWVmHn7PM5VuHv4kR4p3rgvjRZHmj53CQhzOFUkNSV93cE5e7O8S2jyPDap1/6AxrHHi6MHrKFrWyOqfEy1WYijLQBoLXT4Vn77m56qxnWx4ciSQ1ecGaTke3wKYKU/12hzZnGHtHYemvopPHgDCbmScCSiJPFvizd7reV8T8OuaedcOyd8TirGPTiXL1VnRiu5bfNKFokQ3RchrTE+OTSRhH948VXvoNJxcvOCUo6192U3wA1oTqDjO9u22PMmcbGauaMdXowXt0VJbi/ctmL196pjJhI9Atyz8HE8iZM=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <939DF126ABA27447928EED9237DE1734@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8a2cdaf1-f1b0-4ac0-4db2-08d6dfd863de
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2019 23:43:00.3605
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3142
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-23_18:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=471 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905230153
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/22/19 7:30 PM, Srivatsa S. Bhat wrote:
-> On 5/22/19 3:54 AM, Paolo Valente wrote:
->>
->>
->>> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
->>>
->>> On 5/22/19 2:09 AM, Paolo Valente wrote:
->>>>
->>>> First, thank you very much for testing my patches, and, above all, for
->>>> sharing those huge traces!
->>>>
->>>> According to the your traces, the residual 20% lower throughput that you
->>>> record is due to the fact that the BFQ injection mechanism takes a few
->>>> hundredths of seconds to stabilize, at the beginning of the workload.
->>>> During that setup time, the throughput is equal to the dreadful ~60-90 KB/s
->>>> that you see without this new patch.  After that time, there
->>>> seems to be no loss according to the trace.
->>>>
->>>> The problem is that a loss lasting only a few hundredths of seconds is
->>>> however not negligible for a write workload that lasts only 3-4
->>>> seconds.  Could you please try writing a larger file?
->>>>
->>>
->>> I tried running dd for longer (about 100 seconds), but still saw around
->>> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
->>> mq-deadline and noop.
->>
->> Ok, then now the cause is the periodic reset of the mechanism.
->>
->> It would be super easy to fill this gap, by just gearing the mechanism
->> toward a very aggressive injection.  The problem is maintaining
->> control.  As you can imagine from the performance gap between CFQ (or
->> BFQ with malfunctioning injection) and BFQ with this fix, it is very
->> hard to succeed in maximizing the throughput while at the same time
->> preserving control on per-group I/O.
->>
-> 
-> Ah, I see. Just to make sure that this fix doesn't overly optimize for
-> total throughput (because of the testcase we've been using) and end up
-> causing regressions in per-group I/O control, I ran a test with
-> multiple simultaneous dd instances, each writing to a different
-> portion of the filesystem (well separated, to induce seeks), and each
-> dd task bound to its own blkio cgroup. I saw similar results with and
-> without this patch, and the throughput was equally distributed among
-> all the dd tasks.
-> 
-Actually, it turns out that I ran the dd tasks directly on the block
-device for this experiment, and not on top of ext4. I'll redo this on
-ext4 and report back soon.
+On Thu, May 23, 2019 at 04:09:30PM -0700, Yonghong Song wrote:
+>=20
+>=20
+> On 5/23/19 12:45 PM, Roman Gushchin wrote:
+> > Add a kselftest to cover bpf auto-detachment functionality.
+> > The test creates a cgroup, associates some resources with it,
+> > attaches a couple of bpf programs and deletes the cgroup.
+> >=20
+> > Then it checks that bpf programs are going away in 5 seconds.
+> >=20
+> > Expected output:
+> >    $ ./test_cgroup_attach
+> >    #override:PASS
+> >    #multi:PASS
+> >    #autodetach:PASS
+> >    test_cgroup_attach:PASS
+> >=20
+> > On a kernel without auto-detaching:
+> >    $ ./test_cgroup_attach
+> >    #override:PASS
+> >    #multi:PASS
+> >    #autodetach:FAIL
+> >    test_cgroup_attach:FAIL
+> >=20
+> > Signed-off-by: Roman Gushchin <guro@fb.com>
+>=20
+> Looks good to me. It will be good if you can add test_cgroup_attach
+> to .gitignore to avoid it shows up in `git status`. With that,
 
-Regards,
-Srivatsa
-VMware Photon OS
+I don't think it deserves a new version, I'll prepare a separate patch
+for it.
+
+>=20
+> Acked-by: Yonghong Song <yhs@fb.com>
+
+Thank you for the review!
