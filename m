@@ -2,587 +2,330 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 044E427629
-	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 08:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CCDE2790E
+	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 11:19:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725873AbfEWGpl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 May 2019 02:45:41 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:33815 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725806AbfEWGpk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 02:45:40 -0400
-Received: by mail-pg1-f196.google.com with SMTP id c13so2614490pgt.1;
-        Wed, 22 May 2019 23:45:40 -0700 (PDT)
+        id S1728184AbfEWJTj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 May 2019 05:19:39 -0400
+Received: from mail-wm1-f41.google.com ([209.85.128.41]:53906 "EHLO
+        mail-wm1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726081AbfEWJTj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 05:19:39 -0400
+Received: by mail-wm1-f41.google.com with SMTP id 198so5003264wme.3
+        for <cgroups@vger.kernel.org>; Thu, 23 May 2019 02:19:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NBeXXTy/40RaTjhuD81fRVjl5TS0c9w9o38fDOfAe8s=;
-        b=Tuyjr317fiemnOZ0+4CrXra6+SGsh/PQp5jvLkk/oULnRtCB9hZSqWZrcEVHWmFwdc
-         tf/G4CEZcMiK6wVlcQvNuwlCo/EhZBZQXxPA4R+tPIkWq1gAJngHuMzFHK89OZQX0AGl
-         K7fX0t2EpPVZvPcLGHzTAqVLX0oZiewlCblCS31n4fxsuccTKHR1cPtjWz8eF6NATtyo
-         Fe3bI1DlAZvkrw+KwwT4ex4elw/yloZUZnDQ+nZUklblUKg/zQermrcurHUV3QCJe8vr
-         r2YpxRb6vk/uTZ1VIgZcjHoWsrPjAU4++HGWIIEMiFQNWkegFfD/ks+2wV1QOMM6y768
-         vbGA==
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=752R2EWnvdqWfiqHkJZUDQa+kUi+0Nb6hw+n+jxBCIs=;
+        b=eCsrQiWAfJqQDlKFPdfjytj55/UmsbE2kg6DRt+wsbmgjcaPvPO3S8sDV1SobnBzUQ
+         JfhpGWWh1B+3JavSkM9vzqzb916ygvEdI8wzWxS8WvS0oXsYdXO6VUtQuQjqZwsx0sVn
+         tDBta4pchIXNyGyhthY41jknZCPhIeImo12eiQOHSx63efzq67LXFOnHXJu3hV+vnJ3i
+         /nRpKAK0x0iAmgIwnaJqJQLijC1E5czSxnUNq8zTfm99EoEqVmEZl7OnDjuraQOe9JPD
+         gEstY4+pcLfO7zS9KiUx/KNLZ0YcKsg4ilRuC8dTcZ/qWlz2IoYHzrxKav2F0AjA7Rba
+         n6hg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NBeXXTy/40RaTjhuD81fRVjl5TS0c9w9o38fDOfAe8s=;
-        b=sMgwSxfEFbAxnUOAXIVg0jzFMJlOb5u0lzCyjDmD1Fp0Ly5PENaEnStgNXeQ3KSDRc
-         b12y3KLRQOe3v4ChfxPCDQx1X1nf5nTDcm0y5cxiD3ANSE76Gl08YpRYEWwlpFfGaiN2
-         4tccYAAariHquzmvw7TB8b6QKJspOouhNPINAQubQaXJjvIKh2G+dO8b0E5ROGBnJDuB
-         JHGfPJbb4Xq6Y4eIJsQ1vtb9xJDZkOgDHxHFeWdElrhZwpn2de0z4FJOkTIKBB0FaSnE
-         mFkSbSDxXFoJOPvo0N+VTRlKdrpwC24kw/KGn4yh/R5xdzYxfq3B+haZSqSjap9vQ0e4
-         uqCg==
-X-Gm-Message-State: APjAAAXP2emAWyp7u3T45YIThMeh57QgE9y7mRulxVv5Lu3rpa6gppne
-        8yROg9axunlaCrsX/mXPYgGdFmSP
-X-Google-Smtp-Source: APXvYqyyLt4CHaW/Z76HlASn2xSqbLIZfTC+HpcrDp7h1smBSAUDnXxO9y0gzNgJO5CFND+phn7VQg==
-X-Received: by 2002:a65:4246:: with SMTP id d6mr52491326pgq.156.1558593939452;
-        Wed, 22 May 2019 23:45:39 -0700 (PDT)
-Received: from xxh01v.add.shbt.qihoo.net ([180.163.220.62])
-        by smtp.gmail.com with ESMTPSA id c17sm24657756pfo.114.2019.05.22.23.45.36
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 22 May 2019 23:45:37 -0700 (PDT)
-From:   xxhdx1985126@gmail.com
-To:     ceph-devel@vger.kernel.org, ukernel@gmail.com,
-        cgroups@vger.kernel.org
-Cc:     Xuehan Xu <xuxuehan@360.cn>
-Subject: [PATCH] cgroup: add a new group controller for cephfs
-Date:   Thu, 23 May 2019 06:44:12 +0000
-Message-Id: <20190523064412.31498-1-xxhdx1985126@gmail.com>
-X-Mailer: git-send-email 2.20.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=752R2EWnvdqWfiqHkJZUDQa+kUi+0Nb6hw+n+jxBCIs=;
+        b=ap2fAyxRb07OPUWwBBtSIANzh2lDFBCpfsW9EaqDdGqDD7vcr2xKDDfqLwOXONDKH3
+         Q/0TTynwkAfYWMHC1FLn9JEMnk62d3wD19SnSFA8g4xABGnfxMix9KQ1UptpK/k/KTGU
+         AHdFyITiDlxxFMDlfrAWJK9ChYcFhdtDNSOFdVwfSQjThjL392weswpa8XV4giDKHUAX
+         1yo/mhSN8cE5dn7rDwq2DTse4MkZMdsUSzDzF5Watxc2OZfqJqKEu7+JJjkOQ9vt/fJp
+         0bDAz3lbzkvkwHlmxkfLPxPvTy0RoKVq2LZzclZUfFZ3IkHGJ9oe62xa21pp2Dx2s2JO
+         whfw==
+X-Gm-Message-State: APjAAAWFYZUUQzqp2/xsZf2AY5nLRL6o1iLM8DWo7v9mwXz20Sh/vV+W
+        MqvhxeBOMPKhHPtY7PEEyQcZsA==
+X-Google-Smtp-Source: APXvYqzeT6WAwvxjESd3ETgawhOIQDp+KM0dUYl6uLNBf6+HK1fhSfDukcBdrYl9RgxU0MV223kM3A==
+X-Received: by 2002:a1c:2109:: with SMTP id h9mr10982689wmh.68.1558603175570;
+        Thu, 23 May 2019 02:19:35 -0700 (PDT)
+Received: from [192.168.0.102] (84-33-69-110.dyn.eolo.it. [84.33.69.110])
+        by smtp.gmail.com with ESMTPSA id h14sm26488017wrt.11.2019.05.23.02.19.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 02:19:34 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_6065E5A0-5868-41D1-99D7-84A50782E2C7";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+Date:   Thu, 23 May 2019 11:19:32 +0200
+In-Reply-To: <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
+ <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
+ <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Xuehan Xu <xuxuehan@360.cn>
 
-this controller is supposed to facilitate limiting
-the metadata ops or data ops issued to the underlying
-cluster.
+--Apple-Mail=_6065E5A0-5868-41D1-99D7-84A50782E2C7
+Content-Type: multipart/mixed;
+	boundary="Apple-Mail=_C3800707-4A1A-482E-B2AC-97FE6F293BC6"
 
-Signed-off-by: Xuehan Xu <xuxuehan@360.cn>
----
- include/linux/cgroup_cephfs.h |  57 +++++
- include/linux/cgroup_subsys.h |   4 +
- init/Kconfig                  |   5 +
- kernel/cgroup/Makefile        |   1 +
- kernel/cgroup/cephfs.c        | 398 ++++++++++++++++++++++++++++++++++
- 5 files changed, 465 insertions(+)
- create mode 100644 include/linux/cgroup_cephfs.h
- create mode 100644 kernel/cgroup/cephfs.c
 
-diff --git a/include/linux/cgroup_cephfs.h b/include/linux/cgroup_cephfs.h
-new file mode 100644
-index 000000000000..91809862b8f8
---- /dev/null
-+++ b/include/linux/cgroup_cephfs.h
-@@ -0,0 +1,57 @@
-+#ifndef _CEPHFS_CGROUP_H
-+#define _CEPHFS_CGROUP_H
-+
-+#include <linux/cgroup.h>
-+
-+#define META_OPS_IOPS_IDX 0
-+#define DATA_OPS_IOPS_IDX 0
-+#define DATA_OPS_BAND_IDX 1
-+#define META_OPS_TB_NUM 1
-+#define DATA_OPS_TB_NUM 2
-+
-+/*
-+ * token bucket throttle
-+ */
-+struct token_bucket {
-+    u64 remain;
-+    u64 max;
-+    u64 target_throughput;
-+};
-+
-+struct token_bucket_throttle {
-+    struct token_bucket* tb;
-+    u64 tick_interval;
-+    int tb_num;
-+    struct list_head reqs_blocked;
-+    struct mutex bucket_lock;
-+    struct delayed_work tick_work;
-+    unsigned long tbt_timeout;
-+};
-+
-+struct queue_item {
-+    struct list_head token_bucket_throttle_item;
-+    u64* tokens_requested;
-+    int tb_item_num;
-+    struct completion throttled;
-+    unsigned long tbt_timeout;
-+};
-+
-+struct cephfscg {
-+    struct cgroup_subsys_state  css;
-+    spinlock_t          lock;
-+
-+    struct token_bucket_throttle meta_ops_throttle;
-+    struct token_bucket_throttle data_ops_throttle;
-+};
-+
-+extern void schedule_token_bucket_throttle_tick(struct token_bucket_throttle* ptbt, u64 tick_interval);
-+
-+extern void token_bucket_throttle_tick(struct work_struct* work);
-+
-+extern int get_token_bucket_throttle(struct token_bucket_throttle* ptbt, struct queue_item* req);
-+
-+extern int queue_item_init(struct queue_item* qitem, struct token_bucket_throttle* ptbt, int tb_item_num);
-+
-+extern int token_bucket_throttle_init(struct token_bucket_throttle* ptbt, int token_bucket_num);
-+
-+#endif /*_CEPHFS_CGROUP_H*/
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index acb77dcff3b4..577a276570a5 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -61,6 +61,10 @@ SUBSYS(pids)
- SUBSYS(rdma)
- #endif
- 
-+#if IS_ENABLED(CONFIG_CGROUP_CEPH_FS)
-+SUBSYS(cephfs)
-+#endif
-+
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index 4592bf7997c0..e22f3aea9e23 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -867,6 +867,11 @@ config CGROUP_RDMA
- 	  Attaching processes with active RDMA resources to the cgroup
- 	  hierarchy is allowed even if can cross the hierarchy's limit.
- 
-+config CGROUP_CEPH_FS
-+    bool "cephfs controller"
-+    help
-+        cephfs cgroup controller
-+
- config CGROUP_FREEZER
- 	bool "Freezer controller"
- 	help
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index bfcdae896122..aaf836181f1a 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
-+obj-$(CONFIG_CGROUP_CEPH_FS) += cephfs.o
-diff --git a/kernel/cgroup/cephfs.c b/kernel/cgroup/cephfs.c
-new file mode 100644
-index 000000000000..65b9e9618a5d
---- /dev/null
-+++ b/kernel/cgroup/cephfs.c
-@@ -0,0 +1,398 @@
-+#include <linux/cgroup_cephfs.h>
-+#include <linux/slab.h>
-+
-+struct cephfscg cephfscg_root;
-+
-+static void put_token(struct token_bucket_throttle* ptbt, u64 tick_interval)
-+{
-+    struct token_bucket* ptb = NULL;
-+    u64 tokens_to_put = 0;
-+    int i = 0;
-+
-+    for (i = 0; i < ptbt->tb_num; i++) {
-+        ptb = &ptbt->tb[i];
-+        
-+        if (!ptb->max)
-+            continue;
-+
-+        tokens_to_put = ptb->target_throughput * tick_interval / HZ;
-+
-+        if (ptb->remain + tokens_to_put >= ptb->max)
-+            ptb->remain = ptb->max;
-+        else
-+            ptb->remain += tokens_to_put;
-+        pr_debug("%s: put_token: token bucket remain: %lld\n", __func__, ptb->remain);
-+    }
-+}
-+
-+static bool should_wait(struct token_bucket_throttle* ptbt, struct queue_item* qitem)
-+{
-+    struct token_bucket* ptb = NULL;
-+    int i = 0;
-+
-+    BUG_ON(ptbt->tb_num != qitem->tb_item_num);
-+    for (i = 0; i < ptbt->tb_num; i++) {
-+        ptb = &ptbt->tb[i];
-+
-+        if (!ptb->max)
-+            continue;
-+
-+        if (ptb->remain < qitem->tokens_requested[i])
-+            return true;
-+    }
-+    return false;
-+}
-+
-+static void get_token(struct token_bucket_throttle* ptbt, struct queue_item* qitem)
-+{
-+    struct token_bucket* ptb = NULL;
-+    int i = 0;
-+    BUG_ON(should_wait(ptbt, qitem));
-+
-+    for (i = 0; i < ptbt->tb_num; i++) {
-+        ptb = &ptbt->tb[i];
-+        if (!ptb->max)
-+            continue;
-+        ptb->remain -= qitem->tokens_requested[i];
-+    }
-+}
-+
-+void schedule_token_bucket_throttle_tick(struct token_bucket_throttle* ptbt, u64 tick_interval)
-+{
-+    if (tick_interval)
-+        schedule_delayed_work(&ptbt->tick_work, tick_interval);
-+}
-+EXPORT_SYMBOL(schedule_token_bucket_throttle_tick);
-+
-+void token_bucket_throttle_tick(struct work_struct* work)
-+{
-+    struct token_bucket_throttle* ptbt = 
-+        container_of(work, struct token_bucket_throttle, tick_work.work);
-+    struct queue_item* req = NULL, *tmp = NULL;
-+    LIST_HEAD(reqs_to_go);
-+    u64 tick_interval = ptbt->tick_interval;
-+
-+    mutex_lock(&ptbt->bucket_lock);
-+    put_token(ptbt, tick_interval);
-+    if (!tick_interval)
-+        pr_debug("%s: tick_interval set to 0, turning off the throttle, item: %p\n", __func__, req);
-+
-+    list_for_each_entry_safe(req, tmp, &ptbt->reqs_blocked, token_bucket_throttle_item) {
-+        pr_debug("%s: waiting item: %p\n", __func__, req);
-+        if (tick_interval) {
-+            if (should_wait(ptbt, req))
-+                break;
-+            get_token(ptbt, req);
-+        }
-+        list_del(&req->token_bucket_throttle_item);
-+        list_add_tail(&req->token_bucket_throttle_item, &reqs_to_go);
-+        pr_debug("%s: tokens got for req: %p\n", __func__, req);
-+    }
-+    mutex_unlock(&ptbt->bucket_lock);
-+
-+    list_for_each_entry_safe(req, tmp, &reqs_to_go, token_bucket_throttle_item) {
-+        pr_debug("%s: notifying req: %p, list head: %p\n", __func__, req, &reqs_to_go);
-+        complete_all(&req->throttled);
-+        list_del(&req->token_bucket_throttle_item);
-+    }
-+
-+    if (tick_interval)
-+        schedule_token_bucket_throttle_tick(ptbt, tick_interval);
-+}
-+EXPORT_SYMBOL(token_bucket_throttle_tick);
-+
-+int get_token_bucket_throttle(struct token_bucket_throttle* ptbt, struct queue_item* req)
-+{
-+    int ret = 0;
-+    long timeleft = 0;
-+
-+    mutex_lock(&ptbt->bucket_lock);
-+    if (should_wait(ptbt, req)) {
-+        pr_debug("%s: wait for tokens, req: %p\n", __func__, req);
-+        list_add_tail(&req->token_bucket_throttle_item, &ptbt->reqs_blocked);
-+        mutex_unlock(&ptbt->bucket_lock);
-+        timeleft = wait_for_completion_killable_timeout(&req->throttled, req->tbt_timeout ?: MAX_SCHEDULE_TIMEOUT);
-+        if (timeleft > 0) 
-+            ret = 0;
-+        else if (!timeleft)
-+            ret = -EIO; /* timed out */
-+        else {
-+            /* killed */
-+            pr_debug("%s: killed, req: %p\n", __func__, req);
-+            mutex_lock(&ptbt->bucket_lock);
-+            list_del(&req->token_bucket_throttle_item);
-+            mutex_unlock(&ptbt->bucket_lock);
-+            ret = timeleft;
-+        }
-+    } else {
-+        pr_debug("%s: no need to wait for tokens, going ahead, req: %p\n", __func__, req);
-+        get_token(ptbt, req);                                                                
-+        mutex_unlock(&ptbt->bucket_lock);
-+    }
-+    return ret;
-+}
-+EXPORT_SYMBOL(get_token_bucket_throttle);
-+
-+int queue_item_init(struct queue_item* qitem, struct token_bucket_throttle* ptbt, int tb_item_num)
-+{
-+    qitem->tokens_requested = kzalloc(sizeof(*qitem->tokens_requested) * tb_item_num, GFP_KERNEL);
-+    if (!qitem->tokens_requested)
-+        return -ENOMEM;
-+
-+    qitem->tb_item_num = tb_item_num;
-+    INIT_LIST_HEAD(&qitem->token_bucket_throttle_item);
-+    init_completion(&qitem->throttled);
-+    qitem->tbt_timeout = ptbt->tbt_timeout;
-+
-+    return 0;
-+}
-+EXPORT_SYMBOL(queue_item_init);
-+
-+int token_bucket_throttle_init(struct token_bucket_throttle* ptbt,
-+        int token_bucket_num)
-+{
-+    int i = 0;
-+
-+    INIT_LIST_HEAD(&ptbt->reqs_blocked);
-+    mutex_init(&ptbt->bucket_lock);
-+    ptbt->tb_num = token_bucket_num;
-+    ptbt->tb = kzalloc(sizeof(*ptbt->tb) * ptbt->tb_num, GFP_KERNEL);
-+    if (!ptbt->tb) {
-+        return -ENOMEM;
-+    }
-+
-+    for (i = 0; i < ptbt->tb_num; i++) {
-+        ptbt->tb[i].target_throughput = 0;
-+        ptbt->tb[i].max = 0;
-+    }
-+    ptbt->tick_interval = 0;
-+    ptbt->tbt_timeout = 0;
-+    INIT_DELAYED_WORK(&ptbt->tick_work, token_bucket_throttle_tick);
-+
-+    return 0;
-+}
-+EXPORT_SYMBOL(token_bucket_throttle_init);
-+
-+static int set_throttle_params(struct token_bucket_throttle* ptbt, char* param_list)
-+{
-+    char* options = strstrip(param_list);
-+    char* val = NULL;
-+    int res = 0;
-+    unsigned long interval = 0, timeout = 0, last_interval = ptbt->tick_interval;
-+
-+    val = strsep(&options, ",");
-+    if (!val)
-+        return -EINVAL;
-+
-+    res = kstrtol(val, 0, &interval);
-+    if (res)
-+        return res;
-+
-+    val = strsep(&options, ",");
-+    if (!val)
-+        return -EINVAL;
-+
-+    res = kstrtol(val, 0, &timeout);
-+    if (res)
-+        return res;
-+
-+    if (last_interval && !interval) {
-+        int i = 0;
-+
-+        for (i = 0; i<ptbt->tb_num; i++) {
-+            if (ptbt->tb[i].max) {
-+                /* all token bucket must be unset
-+                 * before turning off the throttle */
-+                return -EINVAL;
-+            }
-+        }
-+    }
-+    ptbt->tick_interval = msecs_to_jiffies(interval);
-+    ptbt->tbt_timeout = timeout;
-+
-+    if (ptbt->tick_interval && !last_interval) {
-+        schedule_token_bucket_throttle_tick(ptbt, ptbt->tick_interval);
-+    }
-+
-+    return 0;
-+}
-+
-+static int set_tb_params(struct token_bucket_throttle* ptbt, int tb_idx, char* param_list)
-+{
-+    char* options = strstrip(param_list);
-+    char* val = NULL;
-+    int res = 0;
-+    unsigned long throughput = 0, burst = 0;
-+
-+    val = strsep(&options, ",");
-+    if (!val)
-+        return -EINVAL;
-+
-+    res = kstrtol(val, 0, &throughput);
-+    if (res)
-+        return res;
-+
-+    val = strsep(&options, ",");
-+    if (!val)
-+        return -EINVAL;
-+
-+    res = kstrtol(val, 0, &burst);
-+    if (res)
-+        return res;
-+
-+    if (!(throughput && burst) && (throughput || burst)) {
-+        /* either both or none of throughput and burst are set*/
-+        return -EINVAL;
-+    }
-+    if (throughput && !ptbt->tick_interval) {
-+        /* all token bucket must be unset
-+         * before turning off the throttle */
-+        return -EINVAL;
-+    }
-+    ptbt->tb[tb_idx].target_throughput = throughput;
-+    ptbt->tb[tb_idx].max = burst;
-+
-+    return 0;
-+}
-+
-+static ssize_t cephfscg_set_throttle_params(struct kernfs_open_file *of,
-+        char *buf, size_t nbytes, loff_t off)
-+{
-+    const char *throttle_name;
-+    int ret = 0;
-+    struct cephfscg* cephfscg_p =
-+        container_of(seq_css(of->seq_file), struct cephfscg, css);
-+
-+    throttle_name = of->kn->name;
-+    if (!strcmp(throttle_name, "cephfs.meta_ops")) {
-+        ret = set_throttle_params(&cephfscg_p->meta_ops_throttle, buf);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops")) {
-+        ret = set_throttle_params(&cephfscg_p->data_ops_throttle, buf);
-+    } else if (!strcmp(throttle_name, "cephfs.meta_ops.iops")) {
-+        ret = set_tb_params(&cephfscg_p->meta_ops_throttle, META_OPS_IOPS_IDX, buf);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops.iops")) {
-+        ret = set_tb_params(&cephfscg_p->data_ops_throttle, DATA_OPS_IOPS_IDX, buf);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops.band")) {
-+        ret = set_tb_params(&cephfscg_p->data_ops_throttle, DATA_OPS_BAND_IDX, buf);
-+    }
-+
-+    return ret ?: nbytes;
-+}
-+
-+static int cephfscg_throttle_params_read(struct seq_file *sf, void *v)
-+{
-+    const char *throttle_name;
-+    struct cephfscg* cephfscg_p =
-+        container_of(seq_css(sf), struct cephfscg, css);
-+   
-+    throttle_name = ((struct kernfs_open_file*)sf->private)->kn->name;
-+    if (!strcmp(throttle_name, "cephfs.meta_ops")) {
-+        seq_printf(sf, "%llu,%lu\n",
-+                cephfscg_p->meta_ops_throttle.tick_interval,
-+                cephfscg_p->meta_ops_throttle.tbt_timeout);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops")) {
-+        seq_printf(sf, "%llu,%lu\n",
-+                cephfscg_p->data_ops_throttle.tick_interval,
-+                cephfscg_p->data_ops_throttle.tbt_timeout);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops.iops")) {
-+        seq_printf(sf, "%llu,%llu\n",
-+                cephfscg_p->data_ops_throttle.tb[DATA_OPS_IOPS_IDX].target_throughput,
-+                cephfscg_p->data_ops_throttle.tb[DATA_OPS_IOPS_IDX].max);
-+    } else if (!strcmp(throttle_name, "cephfs.data_ops.band")) {
-+        seq_printf(sf, "%llu,%llu\n",
-+                cephfscg_p->data_ops_throttle.tb[DATA_OPS_BAND_IDX].target_throughput,
-+                cephfscg_p->data_ops_throttle.tb[DATA_OPS_BAND_IDX].max);
-+    } else if (!strcmp(throttle_name, "cephfs.meta_ops.iops")) {
-+        seq_printf(sf, "%llu,%llu\n",
-+                cephfscg_p->meta_ops_throttle.tb[META_OPS_IOPS_IDX].target_throughput,
-+                cephfscg_p->meta_ops_throttle.tb[META_OPS_IOPS_IDX].max);
-+    }
-+    
-+    return 0;
-+}
-+
-+static struct cftype cephfscg_files[] = {
-+    {
-+        .name = "meta_ops.iops",
-+        .write = cephfscg_set_throttle_params,
-+        .seq_show = cephfscg_throttle_params_read,
-+    },
-+    {
-+        .name = "meta_ops",
-+        .write = cephfscg_set_throttle_params,
-+        .seq_show = cephfscg_throttle_params_read,
-+    },
-+    {
-+        .name = "data_ops.iops",
-+        .write = cephfscg_set_throttle_params,
-+        .seq_show = cephfscg_throttle_params_read,
-+    },
-+    {
-+        .name = "data_ops.band",
-+        .write = cephfscg_set_throttle_params,
-+        .seq_show = cephfscg_throttle_params_read,
-+    },
-+    {
-+        .name = "data_ops",
-+        .write = cephfscg_set_throttle_params,
-+        .seq_show = cephfscg_throttle_params_read,
-+    },
-+    { }
-+};
-+
-+static struct cgroup_subsys_state *
-+cephfscg_css_alloc(struct cgroup_subsys_state *parent_css) {
-+
-+    struct cephfscg* cephfscg_p = NULL;
-+    struct cgroup_subsys_state *ret = NULL;
-+    int r = 0;
-+
-+    if (!parent_css) {
-+        cephfscg_p = &cephfscg_root;
-+    } else {
-+        cephfscg_p = kzalloc(sizeof(*cephfscg_p), GFP_KERNEL);
-+        if (!cephfscg_p) {
-+            ret = ERR_PTR(-ENOMEM);
-+            goto err;
-+        }
-+    }
-+
-+    spin_lock_init(&cephfscg_p->lock);
-+
-+    r = token_bucket_throttle_init(&cephfscg_p->meta_ops_throttle, 1);
-+    if (r) {
-+        ret = ERR_PTR(r);
-+        goto err;
-+    }
-+
-+    r = token_bucket_throttle_init(&cephfscg_p->data_ops_throttle, 2);
-+    if (r) {
-+        ret = ERR_PTR(r);
-+        goto err;
-+    }
-+
-+    return &cephfscg_p->css;
-+err:
-+    return ret;
-+}
-+
-+static void cephfscg_css_free(struct cgroup_subsys_state *css) {
-+    struct cephfscg* cephfscg_p = 
-+        css ? container_of(css, struct cephfscg, css) : NULL;
-+
-+    cancel_delayed_work_sync(&cephfscg_p->meta_ops_throttle.tick_work);
-+    cancel_delayed_work_sync(&cephfscg_p->data_ops_throttle.tick_work);
-+
-+    kfree(cephfscg_p->meta_ops_throttle.tb);
-+    kfree(cephfscg_p->data_ops_throttle.tb);
-+
-+    kfree(cephfscg_p);
-+}
-+
-+struct cgroup_subsys cephfs_cgrp_subsys = {
-+    .css_alloc = cephfscg_css_alloc,
-+    .css_free = cephfscg_css_free,
-+    .dfl_cftypes = cephfscg_files,
-+    .legacy_cftypes = cephfscg_files,
-+};
-+EXPORT_SYMBOL_GPL(cephfs_cgrp_subsys);
--- 
-2.20.1
+--Apple-Mail=_C3800707-4A1A-482E-B2AC-97FE6F293BC6
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
+
+
+> Il giorno 23 mag 2019, alle ore 04:30, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+> On 5/22/19 3:54 AM, Paolo Valente wrote:
+>>=20
+>>=20
+>>> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>=20
+>>> On 5/22/19 2:09 AM, Paolo Valente wrote:
+>>>>=20
+>>>> First, thank you very much for testing my patches, and, above all, =
+for
+>>>> sharing those huge traces!
+>>>>=20
+>>>> According to the your traces, the residual 20% lower throughput =
+that you
+>>>> record is due to the fact that the BFQ injection mechanism takes a =
+few
+>>>> hundredths of seconds to stabilize, at the beginning of the =
+workload.
+>>>> During that setup time, the throughput is equal to the dreadful =
+~60-90 KB/s
+>>>> that you see without this new patch.  After that time, there
+>>>> seems to be no loss according to the trace.
+>>>>=20
+>>>> The problem is that a loss lasting only a few hundredths of seconds =
+is
+>>>> however not negligible for a write workload that lasts only 3-4
+>>>> seconds.  Could you please try writing a larger file?
+>>>>=20
+>>>=20
+>>> I tried running dd for longer (about 100 seconds), but still saw =
+around
+>>> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
+>>> mq-deadline and noop.
+>>=20
+>> Ok, then now the cause is the periodic reset of the mechanism.
+>>=20
+>> It would be super easy to fill this gap, by just gearing the =
+mechanism
+>> toward a very aggressive injection.  The problem is maintaining
+>> control.  As you can imagine from the performance gap between CFQ (or
+>> BFQ with malfunctioning injection) and BFQ with this fix, it is very
+>> hard to succeed in maximizing the throughput while at the same time
+>> preserving control on per-group I/O.
+>>=20
+>=20
+> Ah, I see. Just to make sure that this fix doesn't overly optimize for
+> total throughput (because of the testcase we've been using) and end up
+> causing regressions in per-group I/O control, I ran a test with
+> multiple simultaneous dd instances, each writing to a different
+> portion of the filesystem (well separated, to induce seeks), and each
+> dd task bound to its own blkio cgroup. I saw similar results with and
+> without this patch, and the throughput was equally distributed among
+> all the dd tasks.
+>=20
+
+Thank you very much for pre-testing this change, this let me know in
+advance that I shouldn't find issues when I'll test regressions, at
+the end of this change phase.
+
+>> On the bright side, you might be interested in one of the benefits
+>> that BFQ gives in return for this ~10% loss of throughput, in a
+>> scenario that may be important for you (according to affiliation you
+>> report): from ~500% to ~1000% higher throughput when you have to =
+serve
+>> the I/O of multiple VMs, and to guarantee at least no starvation to
+>> any VM [1].  The same holds with multiple clients or containers, and
+>> in general with any set of entities that may compete for storage.
+>>=20
+>> [1] =
+https://www.linaro.org/blog/io-bandwidth-management-for-production-quality=
+-services/
+>>=20
+>=20
+> Great article! :) Thank you for sharing it!
+
+Thanks! I mentioned it just to better put things into context.
+
+>=20
+>>> But I'm not too worried about that difference.
+>>>=20
+>>>> In addition, I wanted to ask you whether you measured BFQ =
+throughput
+>>>> with traces disabled.  This may make a difference.
+>>>>=20
+>>>=20
+>>> The above result (1.4 MB/s) was obtained with traces disabled.
+>>>=20
+>>>> After trying writing a larger file, you can try with low_latency =
+on.
+>>>> On my side, it causes results to become a little unstable across
+>>>> repetitions (which is expected).
+>>>>=20
+>>> With low_latency on, I get between 60 KB/s - 100 KB/s.
+>>>=20
+>>=20
+>> Gosh, full regression.  Fortunately, it is simply meaningless to use
+>> low_latency in a scenario where the goal is to guarantee per-group
+>> bandwidths.  Low-latency heuristics, to reach their (low-latency)
+>> goals, modify the I/O schedule compared to the best schedule for
+>> honoring group weights and boosting throughput.  So, as recommended =
+in
+>> BFQ documentation, just switch low_latency off if you want to control
+>> I/O with groups.  It may still make sense to leave low_latency on
+>> in some specific case, which I don't want to bother you about.
+>>=20
+>=20
+> My main concern here is about Linux's I/O performance out-of-the-box,
+> i.e., with all default settings, which are:
+>=20
+> - cgroups and blkio enabled (systemd default)
+> - blkio non-root cgroups in use (this is the implicit systemd behavior
+>  if docker is installed; i.e., it runs tasks under user.slice)
+> - I/O scheduler with blkio group sched support: bfq
+> - bfq default configuration: low_latency =3D 1
+>=20
+> If this yields a throughput that is 10x-30x slower than what is
+> achievable, I think we should either fix the code (if possible) or
+> change the defaults such that they don't lead to this performance
+> collapse (perhaps default low_latency to 0 if bfq group scheduling
+> is in use?)
+
+Yeah, I thought of this after sending my last email yesterday.  Group
+scheduling and low-latency heuristics may simply happen to fight
+against each other in personal systems.  Let's proceed this way.  I'll
+try first to make the BFQ low-latency mechanism clever enough to not
+hinder throughput when groups are in place.  If I make it, then we
+will get the best of the two worlds: group isolation and intra-group
+low latency; with no configuration change needed.  If I don't make it,
+I'll try to think of the best solution to cope with this non-trivial
+situation.
+
+
+>> However, I feel bad with such a low throughput :)  Would you be so
+>> kind to provide me with a trace?
+>>=20
+> Certainly! Short runs of dd resulted in a lot of variation in the
+> throughput (between 60 KB/s - 1 MB/s), so I increased dd's runtime
+> to get repeatable numbers (~70 KB/s). As a result, the trace file
+> (trace-bfq-boost-injection-low-latency-71KBps) is quite large, and
+> is available here:
+>=20
+> https://www.dropbox.com/s/svqfbv0idcg17pn/bfq-traces.tar.gz?dl=3D0
+>=20
+
+Thank you very much for your patience and professional help.
+
+> Also, I'm very happy to run additional tests or experiments to help
+> track down this issue. So, please don't hesitate to let me know if
+> you'd like me to try anything else or get you additional traces etc. =
+:)
+>=20
+
+Here's to you!  :) I've attached a new small improvement that may
+reduce fluctuations (path to apply on top of the others, of course).
+Unfortunately, I don't expect this change to boost the throughput
+though.
+
+In contrast, I've thought of a solution that might be rather
+effective: making BFQ aware (heuristically) of trivial
+synchronizations between processes in different groups.  This will
+require a little more work and time.
+
+
+Thanks,
+Paolo
+
+
+--Apple-Mail=_C3800707-4A1A-482E-B2AC-97FE6F293BC6
+Content-Disposition: attachment;
+	filename*0=0001-block-bfq-re-sample-req-service-times-when-possible.patch.g;
+	filename*1=z
+Content-Type: application/x-gzip;
+	x-unix-mode=0644;
+	name="0001-block-bfq-re-sample-req-service-times-when-possible.patch.gz"
+Content-Transfer-Encoding: base64
+
+H4sICDVl5lwAAzAwMDEtYmxvY2stYmZxLXJlLXNhbXBsZS1yZXEtc2VydmljZS10aW1lcy13aGVu
+LXBvc3NpYmxlLnBhdGNoAJVSyW7bMBA9m18xvQReRJmS5TV1kKJF0ENSBEjaS1EItEjaTGnRJmk7
+Bpp/79BygRySQwVCJGd58/hmbpxdA8+FEmPFxjIbCa6qfDoYjBZcVDlXYphPZJFl6GZwZ2t4kBvI
+xsDY7LQgZywjNwgzg3tujYUf3Mg6SPi4idd031yvja65s6l1yyvyhQc5g8fVLoF8AHf8iCjZFDI2
+GxazgkGPISp52C2eZBVm8PP+0+Pnr79gYWz1O4GF2s7ASer5emMknrbgpdvrSkLQa+nhsJI1bKz3
+emEkIQ96WUtBrVJ0cfwPlpRS0tTsY0mqra9WUqQV/IEJ9JoPIzJQGmlUK14vpUhgDLpGPkHb2rd7
+nQQDhDQy3tu0Q4jQSgGlSx2A99+CX7xlJboW8hkmqhBMDobDyUSl6XQgWT4qhJiOc1SPjYoisn4b
+lyDdd7Cvr4GO2GCYjKF32rMBoM0HHnQFe6tFFL3cbQQ2rtR1bEtp9FqHtg9uV4WTG50cungSCYFW
+C7oRwAUI7qjrJTRpqELaePtxw+gtvXqNCHNY8+cytHe1PzUOEwOKmIA1ognpXBLaeiG91gtI4yVo
+Be0PsS69clt/5oeJFxfwz4rGUji9lw7mc8g6mNzqd+MfaT7tfHg1UA0nw30o41yVcajK2kOwoKwx
+9nBOO1j321guzq33jbkft/cg5sAuSY8APr3fhUZPqGwsG2QCtQ1w4DpEuZR1wOtjHO+dRH7nKNTv
+ZDYWS7pGxeaRMVGK0m2xyrfvt7coEgWSpzlLM0L+AlnH/GXpAwAA
+--Apple-Mail=_C3800707-4A1A-482E-B2AC-97FE6F293BC6
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+> Thank you!
+> 
+> Regards,
+> Srivatsa
+> VMware Photon OS
+
+
+--Apple-Mail=_C3800707-4A1A-482E-B2AC-97FE6F293BC6--
+
+--Apple-Mail=_6065E5A0-5868-41D1-99D7-84A50782E2C7
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzmZaQACgkQOAkCLQGo
+9oN3UhAAlDsMHiLeEJiAh5CfSMH9i8sBH9nD1rVceX2fj+dKMbLAYkvureuqgTBz
+H1eeX7nOZJrI+I/I++peJEVSZxS3UW7p+HW1V937VJUiVqg6mNq8H9K5WTDGuOHb
+YghIed8OQbEXAGVecCzkzyhvVJB5+6vT2TCD2evTYYbxpyZULNeQi6VWyk4PusSt
+0357KacEOtGOIWntj8tXEX3WpQ5QpqclyPUO4loxbUrTyRIKcMoqIrT8Pk0P0W93
+9lszncgvrPG3/Gk58TXwnec8O3M6EsKammr0onPkJVxGeIp+NKNbInPnJxX7jwgl
+sa443Ehi1GcNVCNEAFuCtMaHa+freTbtyZwXKxPuQz5TSGYjn9n2WqkzlJoyCHxa
+fJ2apbQJg1Tg0pdFDtWCPBkg/7GbzVareNLyNZx0Zm02jGcWBW8tlRqfl6vUFymC
+oFllJTir6UlZWktoeKZgBe5yDlNMdSy0q1vjVgczC5dR845cf9OoUb4Z2ra8XWFV
+z4Zv3t2aU0+I6cwgzEsfHwGyIY17IjiJcY+vwVYlxGDTqA6mzUAC/VhO5IS3fwLx
+ZE5WrGcdYedEro96p61uprxX8DK5BYtSf3t9MnnGoFk8jWF3GzEcpjaiBs+tBqEt
+8NCrJeFsarc7VaqbU88MJ2NMCFFmRD6B2JuvA9QEm+aFU3lXxHQ=
+=7q6b
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_6065E5A0-5868-41D1-99D7-84A50782E2C7--
