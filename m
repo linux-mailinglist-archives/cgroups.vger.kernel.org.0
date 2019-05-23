@@ -2,386 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EA9828C07
-	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 23:02:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B70C28D95
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 01:06:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730544AbfEWVCL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 May 2019 17:02:11 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:36222 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727015AbfEWVCL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 17:02:11 -0400
-Received: by mail-ed1-f65.google.com with SMTP id a8so11124124edx.3
-        for <cgroups@vger.kernel.org>; Thu, 23 May 2019 14:02:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r1lKMCcJEP0JaWbSAwsLaWxaEf5UMVzQQOLAUDu+uuo=;
-        b=aNpohfpBiV8iO87p6Pt6ssotsxN8h0GH7oNSKj0h8hoHVSy1ruVV9/4Izsu1e2V7po
-         tiODw/KbMQNyQtLN+BdH6TjY1zcCSyixthBhAYn1SWHfTL3U6Az0n2kQeh8kxfJkpFBI
-         2186GYu1xzghsOzJEgKDOIH/Fq4KW0P7P0FgE4ZhQax17cINfdpgXQ0nDXjVtMduNrBe
-         ONrQhx3EZMWv/lNgkNKaON7MYTLRpbHJnFQFDQmceu7MYFJ+embyDcqblGHluqTgdvAf
-         1jTOVf7/dokmrp08lT7L6j5ahss8mD7yg8a6EuDp78iBR2nWpxRAIt8LIruMxUm1roze
-         UueA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r1lKMCcJEP0JaWbSAwsLaWxaEf5UMVzQQOLAUDu+uuo=;
-        b=T9afU8MJm7esxcpKSRJqyeCY1pQb0IfNMJKv1F6/42Ob+Y4AgbcH0l/NW8IQG66XDh
-         xmeGnvm5bxzZQFW7Y4eajIvT7Vg66pCNjmbFjzWd0Y3kjbUZ/+YcPXBcBxv/gYjqaV/r
-         ppokAUyCIo3CHai7QYVUVpUnFtgochVYBo5gY3ArFedjtpjsdhbeojLHhIrRE/s+cGsE
-         ivkfDTc6M+GDJvf1RPHcpXfXqSzvXa52ut6gIXDnYDBMqJh+Uyt1eHXJc436lbrQBZ3L
-         tIikmnzOEl6X8As20EXaSYjKKmohWfZzxoRKMAuGax4myroPRJ3/Bwv+3xvj+gTmTSTn
-         qY7g==
-X-Gm-Message-State: APjAAAX3XGW0XGokYiEJYiKUtu9kUnn0gLugobm2iAYfu+OnFquYJaBR
-        dh4p3ii3p/oq8Ghcp/9fdCMbQdoq0tJ5G/10TBebzQ==
-X-Google-Smtp-Source: APXvYqxS5oF0GqTGdLCu14UTevksyl+kRa1VJ+ve+iJnZmwSNAwukSl67ebQcvhi4qQWEcMtJNKhBDUtBHk5/nF9f9Y=
-X-Received: by 2002:a50:ce5b:: with SMTP id k27mr47384816edj.48.1558645328946;
- Thu, 23 May 2019 14:02:08 -0700 (PDT)
+        id S2387997AbfEWXGU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 May 2019 19:06:20 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56278 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2387725AbfEWXGU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 19:06:20 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x4NN3Nxi006423;
+        Thu, 23 May 2019 16:06:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=phIreuEgZGB7hQWiDfT5EjSzPgXajjPLmKUroPJW/3o=;
+ b=i8PEXjCTErOrFLbO0ALMQ0L7wXcHg3OD4nWtbBXeBZdK3pZNyQcZ2V0EA7lamYXMu3v9
+ 3Pjgob4yxCL5qIJBb3yYinLylsDLWXYKN7avV2eXZAwkBCYC9M5OsBY3OIu00D/z0ccu
+ xxIWpGg+4YYhJsxU/QwGEJ+xOzk6r7VVSzQ= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0089730.ppops.net with ESMTP id 2sp3gm89eg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 23 May 2019 16:06:06 -0700
+Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
+ ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 May 2019 16:06:05 -0700
+Received: from ash-exhub203.TheFacebook.com (2620:10d:c0a8:83::5) by
+ ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 23 May 2019 16:06:05 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 23 May 2019 16:06:05 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=phIreuEgZGB7hQWiDfT5EjSzPgXajjPLmKUroPJW/3o=;
+ b=M3OmUr98ek40/t9N6LlZebmgfWE530LBmu3qBg7KiP+NIuatCTImUALCF80GgyRMR+EZFr08P871ouMbStX+VVNFBUizMIn5xfUyw/vbDZIYj8U+xrfum+DPq/+LTY8ESux4TCt+FxWjuvvdh4NKPKhjDs/A6VqejIa5RWp8MYU=
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com (20.179.59.17) by
+ BYAPR15MB2247.namprd15.prod.outlook.com (52.135.197.11) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.1922.18; Thu, 23 May 2019 23:06:03 +0000
+Received: from BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::956e:28a4:f18d:b698]) by BYAPR15MB3384.namprd15.prod.outlook.com
+ ([fe80::956e:28a4:f18d:b698%3]) with mapi id 15.20.1900.020; Thu, 23 May 2019
+ 23:06:03 +0000
+From:   Yonghong Song <yhs@fb.com>
+To:     Roman Gushchin <guro@fb.com>
+CC:     Alexei Starovoitov <ast@kernel.org>,
+        "bpf@vger.kernel.org" <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Kernel Team <Kernel-team@fb.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Topic: [PATCH v2 bpf-next 4/4] selftests/bpf: add auto-detach test
+Thread-Index: AQHVEPUtUUkH/nhO2UeBDfLyvw3JgKZ4NA4AgADMVQCAAFXeAA==
+Date:   Thu, 23 May 2019 23:06:02 +0000
+Message-ID: <5a44b791-899b-5638-4c75-235a31a0cb4d@fb.com>
+References: <20190522232051.2938491-1-guro@fb.com>
+ <20190522232051.2938491-5-guro@fb.com>
+ <f7953267-8559-2f58-f39a-b2b0c3bf2e38@fb.com>
+ <20190523175833.GA7107@tower.DHCP.thefacebook.com>
+In-Reply-To: <20190523175833.GA7107@tower.DHCP.thefacebook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: BYAPR02CA0067.namprd02.prod.outlook.com
+ (2603:10b6:a03:54::44) To BYAPR15MB3384.namprd15.prod.outlook.com
+ (2603:10b6:a03:10e::17)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::d011]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c502961f-2783-4dcc-e7d3-08d6dfd33a31
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600141)(711020)(4605104)(2017052603328)(7193020);SRVR:BYAPR15MB2247;
+x-ms-traffictypediagnostic: BYAPR15MB2247:
+x-microsoft-antispam-prvs: <BYAPR15MB2247192229D6313D1E8FBAE3D3010@BYAPR15MB2247.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 00462943DE
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(376002)(39860400002)(366004)(346002)(136003)(189003)(199004)(478600001)(6636002)(25786009)(6862004)(4326008)(102836004)(31686004)(14454004)(229853002)(6116002)(37006003)(2906002)(5660300002)(316002)(68736007)(6506007)(6512007)(66946007)(73956011)(53546011)(31696002)(86362001)(6486002)(66476007)(386003)(66446008)(66556008)(64756008)(54906003)(36756003)(6436002)(486006)(256004)(46003)(5024004)(99286004)(14444005)(446003)(71190400001)(71200400001)(186003)(53936002)(76176011)(305945005)(7736002)(52116002)(2616005)(81156014)(476003)(11346002)(8676002)(81166006)(8936002)(6246003);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2247;H:BYAPR15MB3384.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: jBckefJ74sVsi0NXxXtCKUIXUnIoE9k6R8wKjsEnEM+SOaVAllSoUlqNdBPfyEUn5l5g2tS1Q/HUjfH3c2y6K+/mJzaHRpSPuBh4qlxgIVPl5pssiAoB5wvj8TnKZLn9qJB2SRgrV/5i1lBAJcL3ZLCWOLxX/7CkL04oAABX35Rmk44D3ivA784T0yWd9ofdqRK1hZ4wqe1n86UZCNHzE/lpOt7qzvewiDElkkZBQ0xCN7Jw7DBcEBpQkjlzE72/uMs/2HMr1Md1TO5CQoLjfV4TaO6yPBYKKyuVu5h2RYdKxUrvzXHFBCk3kFakIxBeobH+OMD8KR2U9txZtXrHLoYrw5ZYjDTeSHlOKofJAgZoM8ktwz5v0HGTqDhq+nV8PXyoS2YfX/woMDDfhiHjFUtVFtJiBJMPff3iLfvq0a0=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <15E0BB2E1DBFAF4DB4358347764A8F5A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
- <1558637087-20283-1-git-send-email-chiluk+linux@indeed.com> <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
-In-Reply-To: <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Thu, 23 May 2019 14:01:58 -0700
-Message-ID: <CAFTs51W0KdK4nw6wydn2HjNYvFRC8DYMmVeKX9FAe+4YUGEAZg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] sched/fair: Fix low cpu usage with high throttling
- by removing expiration of cpu-local slices
-To:     Dave Chiluk <chiluk+linux@indeed.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-Network-Message-Id: c502961f-2783-4dcc-e7d3-08d6dfd33a31
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 May 2019 23:06:03.0574
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2247
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-23_17:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905230149
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, May 23, 2019 at 11:44 AM Dave Chiluk <chiluk+linux@indeed.com> wrote:
->
-> It has been observed, that highly-threaded, non-cpu-bound applications
-> running under cpu.cfs_quota_us constraints can hit a high percentage of
-> periods throttled while simultaneously not consuming the allocated
-> amount of quota.  This use case is typical of user-interactive non-cpu
-> bound applications, such as those running in kubernetes or mesos when
-> run on multiple cpu cores.
->
-> This has been root caused to threads being allocated per cpu bandwidth
-> slices, and then not fully using that slice within the period. At which
-> point the slice and quota expires.  This expiration of unused slice
-> results in applications not being able to utilize the quota for which
-> they are allocated.
->
-> The expiration of per-cpu slices was recently fixed by
-> 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
-> condition")'.  Prior to that it appears that this has been broken since
-> at least 'commit 51f2176d74ac ("sched/fair: Fix unlocked reads of some
-> cfs_b->quota/period")' which was introduced in v3.16-rc1 in 2014.  That
-> added the following conditional which resulted in slices never being
-> expired.
->
-> if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
->         /* extend local deadline, drift is bounded above by 2 ticks */
->         cfs_rq->runtime_expires += TICK_NSEC;
->
-> Because this was broken for nearly 5 years, and has recently been fixed
-> and is now being noticed by many users running kubernetes
-> (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
-> that the mechanisms around expiring runtime should be removed
-> altogether.
->
-> This allows only per-cpu slices to live longer than the period boundary.
-> This allows threads on runqueues that do not use much CPU to continue to
-> use their remaining slice over a longer period of time than
-> cpu.cfs_period_us. However, this helps prevents the above condition of
-> hitting throttling while also not fully utilizing your cpu quota.
->
-> This theoretically allows a machine to use slightly more than it's
-> allotted quota in some periods.  This overflow would be bounded by the
-> remaining per-cpu slice that was left un-used in the previous period.
-> For CPU bound tasks this will change nothing, as they should
-> theoretically fully utilize all of their quota and slices in each
-> period. For user-interactive tasks as described above this provides a
-> much better user/application experience as their cpu utilization will
-> more closely match the amount they requested when they hit throttling.
->
-> This greatly improves performance of high-thread-count, non-cpu bound
-> applications with low cfs_quota_us allocation on high-core-count
-> machines. In the case of an artificial testcase, this performance
-> discrepancy has been observed to be almost 30x performance improvement,
-> while still maintaining correct cpu quota restrictions albeit over
-> longer time intervals than cpu.cfs_period_us.
-
-If the machine runs at/close to capacity, won't the overallocation
-of the quota to bursty tasks necessarily negatively impact every other
-task? Should the "unused" quota be available only on idle CPUs?
-(Or maybe this is the behavior achieved here, and only the comment and
-the commit message should be fixed...)
-
->  That testcase is
-> available at https://github.com/indeedeng/fibtest.
->
-> Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
-> Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
-> ---
->  Documentation/scheduler/sched-bwc.txt | 29 +++++++++++---
->  kernel/sched/fair.c                   | 71 +++--------------------------------
->  kernel/sched/sched.h                  |  4 --
->  3 files changed, 29 insertions(+), 75 deletions(-)
->
-> diff --git a/Documentation/scheduler/sched-bwc.txt b/Documentation/scheduler/sched-bwc.txt
-> index f6b1873..4ded8ae 100644
-> --- a/Documentation/scheduler/sched-bwc.txt
-> +++ b/Documentation/scheduler/sched-bwc.txt
-> @@ -8,16 +8,33 @@ CFS bandwidth control is a CONFIG_FAIR_GROUP_SCHED extension which allows the
->  specification of the maximum CPU bandwidth available to a group or hierarchy.
->
->  The bandwidth allowed for a group is specified using a quota and period. Within
-> -each given "period" (microseconds), a group is allowed to consume only up to
-> -"quota" microseconds of CPU time.  When the CPU bandwidth consumption of a
-> -group exceeds this limit (for that period), the tasks belonging to its
-> -hierarchy will be throttled and are not allowed to run again until the next
-> -period.
-> +each given "period" (microseconds), a task group is allocated up to "quota"
-> +microseconds of CPU time.  When the CPU bandwidth consumption of a group
-> +exceeds this limit (for that period), the tasks belonging to its hierarchy will
-> +be throttled and are not allowed to run again until the next period.
->
->  A group's unused runtime is globally tracked, being refreshed with quota units
->  above at each period boundary.  As threads consume this bandwidth it is
->  transferred to cpu-local "silos" on a demand basis.  The amount transferred
-> -within each of these updates is tunable and described as the "slice".
-> +within each of these updates is tunable and described as the "slice".  Slices
-> +that are allocated to cpu-local silos do not expire at the end of the period,
-> +but unallocated quota does.  This doesn't affect cpu-bound applications as they
-> +by definition consume all of their bandwidth in each each period.
-> +
-> +However for highly-threaded user-interactive/non-cpu bound applications this
-> +non-expiration nuance allows applications to burst past their quota limits
-> +equal to the amount of unused slice per cpu that the task group is running on.
-> +This slight burst requires that quota had gone unused in previous periods.
-> +Additionally this burst amount is limited to the size of a slice for every cpu
-> +a task group is run on.  As a result, this mechanism still strictly limits the
-> +task group to quota average usage over a longer time windows.  This provides
-> +better more predictable user experience for highly threaded applications with
-> +small quota limits on high core count machines.  It also eliminates the
-> +propensity to throttle these applications while simultanously using less than
-> +quota amounts of cpu.  Another way to say this, is that by allowing the unused
-> +portion of a slice to be used in following periods we have decreased the
-> +possibility of wasting unused quota on cpu-local silos that don't need much cpu
-> +time.
->
->  Management
->  ----------
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index f35930f..a675c69 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4295,8 +4295,6 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
->
->         now = sched_clock_cpu(smp_processor_id());
->         cfs_b->runtime = cfs_b->quota;
-> -       cfs_b->runtime_expires = now + ktime_to_ns(cfs_b->period);
-> -       cfs_b->expires_seq++;
->  }
->
->  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-> @@ -4318,8 +4316,7 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->  {
->         struct task_group *tg = cfs_rq->tg;
->         struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(tg);
-> -       u64 amount = 0, min_amount, expires;
-> -       int expires_seq;
-> +       u64 amount = 0, min_amount;
->
->         /* note: this is a positive sum as runtime_remaining <= 0 */
->         min_amount = sched_cfs_bandwidth_slice() - cfs_rq->runtime_remaining;
-> @@ -4336,61 +4333,17 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->                         cfs_b->idle = 0;
->                 }
->         }
-> -       expires_seq = cfs_b->expires_seq;
-> -       expires = cfs_b->runtime_expires;
->         raw_spin_unlock(&cfs_b->lock);
->
->         cfs_rq->runtime_remaining += amount;
-> -       /*
-> -        * we may have advanced our local expiration to account for allowed
-> -        * spread between our sched_clock and the one on which runtime was
-> -        * issued.
-> -        */
-> -       if (cfs_rq->expires_seq != expires_seq) {
-> -               cfs_rq->expires_seq = expires_seq;
-> -               cfs_rq->runtime_expires = expires;
-> -       }
->
->         return cfs_rq->runtime_remaining > 0;
->  }
->
-> -/*
-> - * Note: This depends on the synchronization provided by sched_clock and the
-> - * fact that rq->clock snapshots this value.
-> - */
-> -static void expire_cfs_rq_runtime(struct cfs_rq *cfs_rq)
-> -{
-> -       struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
-> -
-> -       /* if the deadline is ahead of our clock, nothing to do */
-> -       if (likely((s64)(rq_clock(rq_of(cfs_rq)) - cfs_rq->runtime_expires) < 0))
-> -               return;
-> -
-> -       if (cfs_rq->runtime_remaining < 0)
-> -               return;
-> -
-> -       /*
-> -        * If the local deadline has passed we have to consider the
-> -        * possibility that our sched_clock is 'fast' and the global deadline
-> -        * has not truly expired.
-> -        *
-> -        * Fortunately we can check determine whether this the case by checking
-> -        * whether the global deadline(cfs_b->expires_seq) has advanced.
-> -        */
-> -       if (cfs_rq->expires_seq == cfs_b->expires_seq) {
-> -               /* extend local deadline, drift is bounded above by 2 ticks */
-> -               cfs_rq->runtime_expires += TICK_NSEC;
-> -       } else {
-> -               /* global deadline is ahead, expiration has passed */
-> -               cfs_rq->runtime_remaining = 0;
-> -       }
-> -}
-> -
->  static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
->  {
->         /* dock delta_exec before expiring quota (as it could span periods) */
->         cfs_rq->runtime_remaining -= delta_exec;
-> -       expire_cfs_rq_runtime(cfs_rq);
->
->         if (likely(cfs_rq->runtime_remaining > 0))
->                 return;
-> @@ -4581,8 +4534,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->                 resched_curr(rq);
->  }
->
-> -static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
-> -               u64 remaining, u64 expires)
-> +static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b, u64 remaining)
->  {
->         struct cfs_rq *cfs_rq;
->         u64 runtime;
-> @@ -4604,7 +4556,6 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->                 remaining -= runtime;
->
->                 cfs_rq->runtime_remaining += runtime;
-> -               cfs_rq->runtime_expires = expires;
->
->                 /* we check whether we're throttled above */
->                 if (cfs_rq->runtime_remaining > 0)
-> @@ -4629,7 +4580,7 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->   */
->  static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, unsigned long flags)
->  {
-> -       u64 runtime, runtime_expires;
-> +       u64 runtime;
->         int throttled;
->
->         /* no need to continue the timer with no bandwidth constraint */
-> @@ -4657,8 +4608,6 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->         /* account preceding periods in which throttling occurred */
->         cfs_b->nr_throttled += overrun;
->
-> -       runtime_expires = cfs_b->runtime_expires;
-> -
->         /*
->          * This check is repeated as we are holding onto the new bandwidth while
->          * we unthrottle. This can potentially race with an unthrottled group
-> @@ -4671,8 +4620,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->                 cfs_b->distribute_running = 1;
->                 raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->                 /* we can't nest cfs_b->lock while distributing bandwidth */
-> -               runtime = distribute_cfs_runtime(cfs_b, runtime,
-> -                                                runtime_expires);
-> +               runtime = distribute_cfs_runtime(cfs_b, runtime);
->                 raw_spin_lock_irqsave(&cfs_b->lock, flags);
->
->                 cfs_b->distribute_running = 0;
-> @@ -4749,8 +4697,7 @@ static void __return_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->                 return;
->
->         raw_spin_lock(&cfs_b->lock);
-> -       if (cfs_b->quota != RUNTIME_INF &&
-> -           cfs_rq->runtime_expires == cfs_b->runtime_expires) {
-> +       if (cfs_b->quota != RUNTIME_INF) {
->                 cfs_b->runtime += slack_runtime;
->
->                 /* we are under rq->lock, defer unthrottling using a timer */
-> @@ -4783,7 +4730,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->  {
->         u64 runtime = 0, slice = sched_cfs_bandwidth_slice();
->         unsigned long flags;
-> -       u64 expires;
->
->         /* confirm we're still not at a refresh boundary */
->         raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> @@ -4800,7 +4746,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->         if (cfs_b->quota != RUNTIME_INF && cfs_b->runtime > slice)
->                 runtime = cfs_b->runtime;
->
-> -       expires = cfs_b->runtime_expires;
->         if (runtime)
->                 cfs_b->distribute_running = 1;
->
-> @@ -4809,11 +4754,9 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->         if (!runtime)
->                 return;
->
-> -       runtime = distribute_cfs_runtime(cfs_b, runtime, expires);
-> +       runtime = distribute_cfs_runtime(cfs_b, runtime);
->
->         raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> -       if (expires == cfs_b->runtime_expires)
-> -               lsub_positive(&cfs_b->runtime, runtime);
->         cfs_b->distribute_running = 0;
->         raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->  }
-> @@ -4969,8 +4912,6 @@ void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->
->         cfs_b->period_active = 1;
->         overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
-> -       cfs_b->runtime_expires += (overrun + 1) * ktime_to_ns(cfs_b->period);
-> -       cfs_b->expires_seq++;
->         hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
->  }
->
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index b52ed1a..0c0ed23 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -341,8 +341,6 @@ struct cfs_bandwidth {
->         u64                     quota;
->         u64                     runtime;
->         s64                     hierarchical_quota;
-> -       u64                     runtime_expires;
-> -       int                     expires_seq;
->
->         short                   idle;
->         short                   period_active;
-> @@ -562,8 +560,6 @@ struct cfs_rq {
->
->  #ifdef CONFIG_CFS_BANDWIDTH
->         int                     runtime_enabled;
-> -       int                     expires_seq;
-> -       u64                     runtime_expires;
->         s64                     runtime_remaining;
->
->         u64                     throttled_clock;
-> --
-> 1.8.3.1
->
+DQoNCk9uIDUvMjMvMTkgMTA6NTggQU0sIFJvbWFuIEd1c2hjaGluIHdyb3RlOg0KPiBPbiBXZWQs
+IE1heSAyMiwgMjAxOSBhdCAxMDo0NzoyNFBNIC0wNzAwLCBZb25naG9uZyBTb25nIHdyb3RlOg0K
+Pj4NCj4+DQo+PiBPbiA1LzIyLzE5IDQ6MjAgUE0sIFJvbWFuIEd1c2hjaGluIHdyb3RlOg0KPj4+
+IEFkZCBhIGtzZWxmdGVzdCB0byBjb3ZlciBicGYgYXV0by1kZXRhY2htZW50IGZ1bmN0aW9uYWxp
+dHkuDQo+Pj4gVGhlIHRlc3QgY3JlYXRlcyBhIGNncm91cCwgYXNzb2NpYXRlcyBzb21lIHJlc291
+cmNlcyB3aXRoIGl0LA0KPj4+IGF0dGFjaGVzIGEgY291cGxlIG9mIGJwZiBwcm9ncmFtcyBhbmQg
+ZGVsZXRlcyB0aGUgY2dyb3VwLg0KPj4+DQo+Pj4gVGhlbiBpdCBjaGVja3MgdGhhdCBicGYgcHJv
+Z3JhbXMgYXJlIGdvaW5nIGF3YXkgaW4gNSBzZWNvbmRzLg0KPj4+DQo+Pj4gRXhwZWN0ZWQgb3V0
+cHV0Og0KPj4+ICAgICAkIC4vdGVzdF9jZ3JvdXBfYXR0YWNoDQo+Pj4gICAgICNvdmVycmlkZTpQ
+QVNTDQo+Pj4gICAgICNtdWx0aTpQQVNTDQo+Pj4gICAgICNhdXRvZGV0YWNoOlBBU1MNCj4+PiAg
+ICAgdGVzdF9jZ3JvdXBfYXR0YWNoOlBBU1MNCj4+Pg0KPj4+IE9uIGEga2VybmVsIHdpdGhvdXQg
+YXV0by1kZXRhY2hpbmc6DQo+Pj4gICAgICQgLi90ZXN0X2Nncm91cF9hdHRhY2gNCj4+PiAgICAg
+I292ZXJyaWRlOlBBU1MNCj4+PiAgICAgI211bHRpOlBBU1MNCj4+PiAgICAgI2F1dG9kZXRhY2g6
+RkFJTA0KPj4+ICAgICB0ZXN0X2Nncm91cF9hdHRhY2g6RkFJTA0KPj4NCj4+IEkgcmFuIHRoaXMg
+cHJvYmxlbSB3aXRob3V0IGJvdGggb2xkIGFuZCBuZXcga2VybmVscyBhbmQNCj4+IGJvdGggZ2V0
+IGFsbCBQQVNTZXMuIE15IHRlc3RpbmcgZW52aXJvbm1lbnQgaXMgYSBWTS4NCj4+IENvdWxkIHlv
+dSBzcGVjaWZ5IGhvdyB0byB0cmlnZ2VyIHRoZSBhYm92ZSBmYWlsdXJlPw0KPiANCj4gTW9zdCBs
+aWtlbHkgeW91J3JlIHJ1bm5pbmcgY2dyb3VwIHYxLCBzbyB0aGUgbWVtb3J5IGNvbnRyb2xsZXIN
+Cj4gaXMgbm90IGVuYWJsZWQgb24gdW5pZmllZCBoaWVyYXJjaHkuIFlvdSBuZWVkIHRvIHBhc3MN
+Cj4gImNncm91cF9ub192MT1hbGwgc3lzdGVtZC51bmlmaWVkX2Nncm91cF9oaWVyYXJjaHk9MSIN
+Cj4gYXMgYm9vdCB0aW1lIG9wdGlvbnMgdG8gcnVuIGZ1bGx5IG9uIGNncm91cCB2Mi4NCg0KSSB0
+ZXN0ZWQgb24gYSBjZ3JvdXAgdjIgbWFjaGluZSBhbmQgaXQgaW5kZWVkIGZhaWxlZCB3aXRob3V0
+DQp0aGUgY29yZSBwYXRjaC4gVGhhbmtzIQ0KDQo+IA0KPiBCdXQgZ2VuZXJhbGx5IHNwZWFraW5n
+LCB0aGUgbGlmZWN5Y2xlIG9mIGEgZHlpbmcgY2dyb3VwIGlzDQo+IGNvbXBsZXRlbHkgaW1wbGVt
+ZW50YXRpb24tZGVmaW5lZC4gTm8gZ3VhcmFudGVlcyBhcmUgcHJvdmlkZWQuDQo+IFNvIGZhbHNl
+IHBvc2l0aXZlcyBhcmUgZmluZSBoZXJlLCBhbmQgc2hvdWxkbid0IGJlIGNvbnNpZGVyZWQgYXMN
+Cj4gc29tZXRoaW5nIGJhZC4NCj4gDQo+IEF0IHRoZSBlbmQgYWxsIHdlIHdhbnQgaXQgdG8gZGV0
+YWNoIHByb2dyYW1zIGluIGEgcmVhc29uYWJsZSB0aW1lDQo+IGFmdGVyIHJtZGlyLg0KPiANCj4g
+QnR3LCB0aGFuayB5b3UgZm9yIHRoZSBjYXJlZnVsIHJldmlldyBvZiB0aGUgcGF0Y2hzZXQuIEkn
+bGwNCj4gYWRkcmVzcyB5b3VyIGNvbW1lbnRzLCBhZGQgYWNrcyBhbmQgd2lsbCBzZW5kIG91dCB2
+My4NCj4gDQo+IFRoYW5rcyENCj4gDQo=
