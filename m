@@ -2,60 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 68C24285F9
-	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 20:35:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022272861E
+	for <lists+cgroups@lfdr.de>; Thu, 23 May 2019 20:44:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731519AbfEWSff (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 May 2019 14:35:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35746 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731261AbfEWSff (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 23 May 2019 14:35:35 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B5F8321019;
-        Thu, 23 May 2019 18:35:33 +0000 (UTC)
-Date:   Thu, 23 May 2019 14:35:32 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Lukas Prause <langspielplatte@black-mesa.xyz>
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        peterz@infradead.org, mingo@redhat.com, will.deacon@arm.com,
-        rjw@rjwysocki.net, len.brown@intel.com, pavel@ucw.cz,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-pm@vger.kernel.org,
-        Lennart Glauer <mail@lennart-glauer.de>
-Subject: Re: [PATCH] Fix comments with paths pointing to renamed or moved
- files.
-Message-ID: <20190523143532.0319e253@gandalf.local.home>
-In-Reply-To: <20190521155430.14941-1-langspielplatte@black-mesa.xyz>
-References: <20190521155430.14941-1-langspielplatte@black-mesa.xyz>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1731525AbfEWSow (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 May 2019 14:44:52 -0400
+Received: from mail-ot1-f50.google.com ([209.85.210.50]:45270 "EHLO
+        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731523AbfEWSow (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 May 2019 14:44:52 -0400
+Received: by mail-ot1-f50.google.com with SMTP id t24so6355133otl.12
+        for <cgroups@vger.kernel.org>; Thu, 23 May 2019 11:44:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=indeed.com; s=google;
+        h=from:to:subject:date:message-id:in-reply-to:references;
+        bh=yNILfyJChXA1qHX1Kqi1owLnUHep4ERKIkS79Wu1+tk=;
+        b=ytyrCd/qOMiw0SMCH3uGeCH96UCKXfeNngBh+3fqTLyrvfr3w1CggUfgpYbxePvNdH
+         mgBFPc9L9iqibPjumTk2GvTbWndammyucmWOw7SoENj+v2wcyYufN6wiTU612eG5yOFW
+         L3WLFb7W/s9PKX9oom+IMNnX0YkzBTk+WZOnc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
+         :references;
+        bh=yNILfyJChXA1qHX1Kqi1owLnUHep4ERKIkS79Wu1+tk=;
+        b=rX+YDXLcNX+HEzohd3smXRgsBi04Ix3X8pTxFCvfJ6FNO4i8HAFJIG4CmWTlAoyxwY
+         36Wjs8evHiwyA/4mp0YIbgebcKn9tY37aBfU8dYKVZn2llBQf4DZ+XjwTji3izr0ROXk
+         gBsOQyp9ZUKSiTcwzjffl89mc6c0c76IG9HcRfV1GzYLxOT5pKd3HIdCJBKEKDfQR5L7
+         5DK9lXXKR+tpUZ5VtXQKXgORNFvbOKd0KsAV6B2TFZxt41VDfm3S2guVyKdRnvjBEWct
+         b65Rs/mYrkmqLQ7YUyggl85qWatCafm/RCo0JdsWoHbmg6nRKBlC5s+kPDft6h9gTlKy
+         1WLw==
+X-Gm-Message-State: APjAAAWRy5OgVKKvdZjlr+1HBGfEt0n4QaMwL7aafJ/ny5bsk72jYQ0c
+        IeATq4z6Pa5GaefgEDA2cL2p3Q==
+X-Google-Smtp-Source: APXvYqzrg3W4K8wR2ebTIsIl4Uob3uxGrA1mPsTDJ1btsxIfLnHK4XWZ6ckIo/J0Nrexypt51+CS8w==
+X-Received: by 2002:a9d:7a93:: with SMTP id l19mr3843085otn.49.1558637091094;
+        Thu, 23 May 2019 11:44:51 -0700 (PDT)
+Received: from cando.ausoff.indeed.net ([97.105.47.162])
+        by smtp.gmail.com with ESMTPSA id s63sm83801oia.34.2019.05.23.11.44.50
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 23 May 2019 11:44:50 -0700 (PDT)
+From:   Dave Chiluk <chiluk+linux@indeed.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Kyle Anderson <kwa@yelp.com>,
+        Gabriel Munos <gmunoz@netflix.com>,
+        John Hammond <jhammond@indeed.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: [PATCH v2 0/1] sched/fair: Fix low cpu usage with high throttling by removing expiration of cpu-local slices
+Date:   Thu, 23 May 2019 13:44:46 -0500
+Message-Id: <1558637087-20283-1-git-send-email-chiluk+linux@indeed.com>
+X-Mailer: git-send-email 1.8.3.1
+In-Reply-To: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
+References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 21 May 2019 17:54:30 +0200
-Lukas Prause <langspielplatte@black-mesa.xyz> wrote:
-
-> This patch corrects renamed or moved paths in comments.
-> 
-> Signed-off-by: Lukas Prause <langspielplatte@black-mesa.xyz>
-> Signed-off-by: Lennart Glauer <mail@lennart-glauer.de>
-> ---
->  kernel/cgroup/cpuset.c       |  2 +-
->  kernel/locking/mutex-debug.h |  2 +-
->  kernel/power/power.h         |  2 +-
->  kernel/sched/core.c          |  2 +-
->  kernel/trace/trace.h         | 14 +++++++-------
-
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
--- Steve
-
->  5 files changed, 11 insertions(+), 11 deletions(-)
-
+Changelog v2
+    - Fixed some checkpatch errors in the commit message.
