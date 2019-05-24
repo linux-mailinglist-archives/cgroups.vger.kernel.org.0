@@ -2,168 +2,265 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A73FA29C3E
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 18:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D448429D4C
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 19:39:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390596AbfEXQ2n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 12:28:43 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:38975 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390210AbfEXQ2n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 12:28:43 -0400
-Received: by mail-ed1-f68.google.com with SMTP id e24so15178474edq.6
-        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 09:28:41 -0700 (PDT)
+        id S1731464AbfEXRjD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 13:39:03 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:38404 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726997AbfEXRjD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 13:39:03 -0400
+Received: by mail-pl1-f195.google.com with SMTP id f97so4449800plb.5
+        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 10:39:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=yDvF8ijGMjXKswBaAKmkx4e+4Hw2+kdouMbMASjbcVw=;
-        b=DGIG2OEHCcGy9pFLL1EUTPA4Q4CAVvRVSxI5Oc+ftogN0WouSQiw4CkW6FvYzATM9u
-         ClIQ91EObEDk5+xk+Db1HLIcdXFFuMPIOsZi/ynjLiGlVMhl/kbGGjgRky/TkxKY4Me2
-         xzYJrKIvRKLbKNaP3qqpHmAoTJ/JQ3d4sPq89OYTaG8owOhepVzXN66yjaaer9Izy2SS
-         qTjH3H89y+/LJtOFvkdN9jSUNZgTpFEtjOu6eNz0lxbTe9KFPvtRTt8b/UUnKJ5oytwz
-         kThh1ZhyaTdMQlFifrR5G9Ks9tDDGJ0bwgMNbCiWtD+vY9hAX4TzdC6W3zgBBEwwWNqT
-         ljEw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=nyAGe/ZR2qCl2jcH2bXcLfSjZ2XY6PxF57WjX3zmMwM=;
+        b=n6dbur+BmKYV6EDJkvnaZkqre40ZcNPejsdxgzNShah9xqH4f8tlzpnh/u0urSaM+h
+         /1Bex7TxS4+BzabkWmnDSExzJav9EHmLOlwFUrTBOHuC2ppqxpmRitBTVw8gIgrgcU2J
+         6QuCqiSGziEklgQoMfPMXD1KTR3+SLCjY/EuoArpsDuE59+kI2P6zrjQQw2k1WI/vpkd
+         tIpgna7p1gY56VS4qtUdLXP87qyWkzgeRl/9trETyO3eZD9YFpZx/Fej5T4I9woAPXM7
+         d2/ui0ktTyeQJ9tr5hUN7sy52JYWt6oaXNDdKdocc0DIc7c80I5ynG24LSKawjZ3oZV6
+         34aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=yDvF8ijGMjXKswBaAKmkx4e+4Hw2+kdouMbMASjbcVw=;
-        b=mBFD3WCVU73w/WSmG1+l9iW7o89uqnvI+hK0ANl6NQ9VLNBSwfaX4lH6Gy3lw5oOKm
-         Jnc0fYprAca3syFTL9u+VAjcG1Va+f0LsAQlACSDCgrSJV6cbubEiJank2wOStts5hpI
-         kGseMnfDg2dfqZubTQxzWumQu/lOpN4//Pf4B1RkhkW4FTOogxV+yc6DJq9uc4Insjn9
-         pFfwM355z1V+G0pRas4j8U+I26SREduJx+o56ZocR4jkDC+6sn4JbtnZN29SFKpd07xY
-         GfhGEJyQSpXjgFTJ7Pf6146yTe+0gYfea2i2byPFZA54u0LrGegIVS0vOUtzqdgcTI9x
-         bcfw==
-X-Gm-Message-State: APjAAAWQJUEDaBJJFk/fYBWboHz+XO4dM4KIteFccZQA3+855oPcWefY
-        bvW+t5ZGI8N+aIouKWDsOUvgzkg1cazQmik8YG173Q==
-X-Google-Smtp-Source: APXvYqxGzwVO1ZkMJIM3Mnc1FEnNtAkwAMMiTeH+RINJrdbRUCyXo6u4j5F2/YpAI/m4f9JnvvvTDSL73V4y4hQty84=
-X-Received: by 2002:aa7:c44e:: with SMTP id n14mr32345338edr.203.1558715321234;
- Fri, 24 May 2019 09:28:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=nyAGe/ZR2qCl2jcH2bXcLfSjZ2XY6PxF57WjX3zmMwM=;
+        b=JSzvPMUFtGqglE5AQZrcWu7l9DelTPDxOuSNEui5YOUP79nJLaSP+hUfR8eUUWSVEA
+         nPejA/sgw/hlScFCrPm3xzFl2hQDRJ1V3vhpBlJPZ89GhysR0U51EaXqUWUHnu7lK/Eg
+         ZcFx8LjEoa7kbkuCifsxKrMek0VpgtZTIQMOD51aATtR9iQKJghfpKd74A55jtoqmkfQ
+         22eRYU17ughmS5FSgBfUUPQVrlGzMeNmyUMbnqj6VlsI4IPXmrhOuU9J7QsAS71zoL/e
+         Fj8tlWGdmoHhWVyOR19CaM0eFSfDmc2qd6oMgSKMYkvOF45tkvgvdVLXUKSDGEcFcwrM
+         2y2A==
+X-Gm-Message-State: APjAAAUVp7A4CN+vbtbEe+nqXJfA0eYLEHt8ni7gkB07BtQSpeHP/n3N
+        Vd2sWKRW63fBXj07MqMkSNbfaA==
+X-Google-Smtp-Source: APXvYqzFawM3FsxaN8KrS37GCCwDD6pToqDos87g5+9DlQY2z4p0UPRIlClDsQs+/e4Ob2Kp2KHscQ==
+X-Received: by 2002:a17:902:a407:: with SMTP id p7mr17759721plq.41.1558719542879;
+        Fri, 24 May 2019 10:39:02 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:180::805])
+        by smtp.gmail.com with ESMTPSA id a66sm3340142pfa.89.2019.05.24.10.39.01
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 24 May 2019 10:39:01 -0700 (PDT)
+Date:   Fri, 24 May 2019 13:39:00 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: fix page cache convergence regression
+Message-ID: <20190524173900.GA11702@cmpxchg.org>
+References: <20190524153148.18481-1-hannes@cmpxchg.org>
+ <20190524160417.GB1075@bombadil.infradead.org>
 MIME-Version: 1.0
-References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
- <1558637087-20283-1-git-send-email-chiluk+linux@indeed.com>
- <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
- <CAFTs51W0KdK4nw6wydn2HjNYvFRC8DYMmVeKX9FAe+4YUGEAZg@mail.gmail.com>
- <20190524143204.GB4684@lorien.usersys.redhat.com> <CAC=E7cXxsyMLw1PR+8QchTH8FYL7WX6_8LBVdqueR1yjW+VVkQ@mail.gmail.com>
-In-Reply-To: <CAC=E7cXxsyMLw1PR+8QchTH8FYL7WX6_8LBVdqueR1yjW+VVkQ@mail.gmail.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Fri, 24 May 2019 09:28:30 -0700
-Message-ID: <CAFTs51Vm258CkDXi_Jj_cGOMotTvhdYR_VW8aUwAUvgistZOFQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] sched/fair: Fix low cpu usage with high throttling
- by removing expiration of cpu-local slices
-To:     Dave Chiluk <chiluk+linux@indeed.com>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Ben Segall <bsegall@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190524160417.GB1075@bombadil.infradead.org>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 24, 2019 at 8:15 AM Dave Chiluk <chiluk+linux@indeed.com> wrote:
->
-> On Fri, May 24, 2019 at 9:32 AM Phil Auld <pauld@redhat.com> wrote:
-> > On Thu, May 23, 2019 at 02:01:58PM -0700 Peter Oskolkov wrote:
->
-> > > If the machine runs at/close to capacity, won't the overallocation
-> > > of the quota to bursty tasks necessarily negatively impact every other
-> > > task? Should the "unused" quota be available only on idle CPUs?
-> > > (Or maybe this is the behavior achieved here, and only the comment and
-> > > the commit message should be fixed...)
-> > >
-> >
-> > It's bounded by the amount left unused from the previous period. So
-> > theoretically a process could use almost twice its quota. But then it
-> > would have nothing left over in the next period. To repeat it would have
-> > to not use any that next period. Over a longer number of periods it's the
-> > same amount of CPU usage.
-> >
-> > I think that is more fair than throttling a process that has never used
-> > its full quota.
-> >
-> > And it removes complexity.
-> >
-> > Cheers,
-> > Phil
->
-> Actually it's not even that bad.  The overallocation of quota to a
-> bursty task in a period is limited to at most one slice per cpu, and
-> that slice must not have been used in the previous periods.  The slice
-> size is set with /proc/sys/kernel/sched_cfs_bandwidth_slice_us and
-> defaults to 5ms.  If a bursty task goes from underutilizing quota to
-> using it's entire quota, it will not be able to burst in the
-> subsequent periods.  Therefore in an absolute worst case contrived
-> scenario, a bursty task can add at most 5ms to the latency of other
-> threads on the same CPU.  I think this worst case 5ms tradeoff is
-> entirely worth it.
->
-> This does mean that a theoretically a poorly written massively
-> threaded application on an 80 core box, that spreads itself onto 80
-> cpu run queues, can overutilize it's quota in a period by at most 5ms
-> * 80 CPUs in a sincle period (slice * number of runqueues the
-> application is running on).  But that means that each of those threads
->  would have had to not be use their quota in a previous period, and it
-> also means that the application would have to be carefully written to
-> exacerbate this behavior.
->
-> Additionally if cpu bound threads underutilize a slice of their quota
-> in a period due to the cfs choosing a bursty task to run, they should
-> theoretically be able to make it up in the following periods when the
-> bursty task is unable to "burst".
+On Fri, May 24, 2019 at 09:04:17AM -0700, Matthew Wilcox wrote:
+> On Fri, May 24, 2019 at 11:31:48AM -0400, Johannes Weiner wrote:
+> > diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+> > index 0e01e6129145..cbbf76e4c973 100644
+> > --- a/include/linux/xarray.h
+> > +++ b/include/linux/xarray.h
+> > @@ -292,6 +292,7 @@ struct xarray {
+> >  	spinlock_t	xa_lock;
+> >  /* private: The rest of the data structure is not to be used directly. */
+> >  	gfp_t		xa_flags;
+> > +	gfp_t		xa_gfp;
+> >  	void __rcu *	xa_head;
+> >  };
+> 
+> No.  I'm willing to go for a xa_flag which says to use __GFP_ACCOUNT, but
+> you can't add another element to the struct xarray.
 
-OK, so it is indeed possible that CPU bound threads will underutilize a slice
-of their quota in a period as a result of this patch. This should probably
-be clearly stated in the code comments and in the commit message.
+Ok, we can generalize per-tree gfp flags later if necessary.
 
-In addition, I believe that although many workloads will indeed be
-indifferent to getting their fair share "later", some latency-sensitive
-workloads will definitely be negatively affected by this temporary
-CPU quota stealing by bursty antagonists. So there should probably be
-a way to limit this behavior; for example, by making it tunable
-per cgroup.
+Below is the updated fix that uses an XA_FLAGS_ACCOUNT flag instead.
 
->
-> Please be careful here quota and slice are being treated differently.
-> Quota does not roll-over between periods, only slices of quota that
-> has already been allocated to per cpu run queues. If you allocate
-> 100ms of quota per period to an application, but it only spreads onto
-> 3 cpu run queues that means it can in the worst case use 3 x slice
-> size = 15ms in periods following underutilization.
->
-> So why does this matter.  Well applications that use thread pools
-> *(*cough* java *cough*) with lots of tiny little worker threads, tend
-> to spread themselves out onto a lot of run queues.  These worker
-> threads grab quota slices in order to run, then rarely use all of
-> their slice (1 or 2ms out of the 5ms).  This results in those worker
-> threads starving the main application of quota, and then expiring the
-> remainder of that quota slice on the per-cpu.  Going back to my
-> earlier 100ms quota / 80 cpu example.  That means only
-> 100ms/cfs_bandwidth_slice_us(5ms) = 20 slices are available in a
-> period.  So only 20 out of these 80 cpus ever get a slice allocated to
-> them.  By allowing these per-cpu run queues to use their remaining
-> slice in following periods these worker threads do not need to be
-> allocated additional slice, and thereby the main threads are actually
-> able to use the allocated cpu quota.
->
-> This can be experienced by running fibtest available at
-> https://github.com/indeedeng/fibtest/.
-> $ runfibtest 1
-> runs a single fast thread taskset to cpu 0
-> $ runfibtest 8
-> Runs a single fast thread taskset to cpu 0, and 7 slow threads taskset
-> to cpus 1-7.  This run is expected to show less iterations, but the
-> worse problem is that the cpu usage is far less than the 500ms that it
-> should have received.
->
-> Thanks for the engagement on this,
-> Dave Chiluk
+---
+From 63a0dbc571ff38f7c072c62d6bc28192debe37ac Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Fri, 24 May 2019 10:12:46 -0400
+Subject: [PATCH] mm: fix page cache convergence regression
+
+Since a28334862993 ("page cache: Finish XArray conversion"), on most
+major Linux distributions, the page cache doesn't correctly transition
+when the hot data set is changing, and leaves the new pages thrashing
+indefinitely instead of kicking out the cold ones.
+
+On a freshly booted, freshly ssh'd into virtual machine with 1G RAM
+running stock Arch Linux:
+
+[root@ham ~]# ./reclaimtest.sh
++ dd of=workingset-a bs=1M count=0 seek=600
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ ./mincore workingset-a
+153600/153600 workingset-a
++ dd of=workingset-b bs=1M count=0 seek=600
++ cat workingset-b
++ cat workingset-b
++ cat workingset-b
++ cat workingset-b
++ ./mincore workingset-a workingset-b
+104029/153600 workingset-a
+120086/153600 workingset-b
++ cat workingset-b
++ cat workingset-b
++ cat workingset-b
++ cat workingset-b
++ ./mincore workingset-a workingset-b
+104029/153600 workingset-a
+120268/153600 workingset-b
+
+workingset-b is a 600M file on a 1G host that is otherwise entirely
+idle. No matter how often it's being accessed, it won't get cached.
+
+While investigating, I noticed that the non-resident information gets
+aggressively reclaimed - /proc/vmstat::workingset_nodereclaim. This is
+a problem because a workingset transition like this relies on the
+non-resident information tracked in the page cache tree of evicted
+file ranges: when the cache faults are refaults of recently evicted
+cache, we challenge the existing active set, and that allows a new
+workingset to establish itself.
+
+Tracing the shrinker that maintains this memory revealed that all page
+cache tree nodes were allocated to the root cgroup. This is a problem,
+because 1) the shrinker sizes the amount of non-resident information
+it keeps to the size of the cgroup's other memory and 2) on most major
+Linux distributions, only kernel threads live in the root cgroup and
+everything else gets put into services or session groups:
+
+[root@ham ~]# cat /proc/self/cgroup
+0::/user.slice/user-0.slice/session-c1.scope
+
+As a result, we basically maintain no non-resident information for the
+workloads running on the system, thus breaking the caching algorithm.
+
+Looking through the code, I found the culprit in the above-mentioned
+patch: when switching from the radix tree to xarray, it dropped the
+__GFP_ACCOUNT flag from the tree node allocations - the flag that
+makes sure the allocated memory gets charged to and tracked by the
+cgroup of the calling process - in this case, the one doing the fault.
+
+To fix this, allow xarray users to specify per-tree flag that makes
+xarray allocate nodes using __GFP_ACCOUNT. Then restore the page cache
+tree annotation to request such cgroup tracking for the cache nodes.
+
+With this patch applied, the page cache correctly converges on new
+workingsets again after just a few iterations:
+
+[root@ham ~]# ./reclaimtest.sh
++ dd of=workingset-a bs=1M count=0 seek=600
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ cat workingset-a
++ ./mincore workingset-a
+153600/153600 workingset-a
++ dd of=workingset-b bs=1M count=0 seek=600
++ cat workingset-b
++ ./mincore workingset-a workingset-b
+124607/153600 workingset-a
+87876/153600 workingset-b
++ cat workingset-b
++ ./mincore workingset-a workingset-b
+81313/153600 workingset-a
+133321/153600 workingset-b
++ cat workingset-b
++ ./mincore workingset-a workingset-b
+63036/153600 workingset-a
+153600/153600 workingset-b
+
+Cc: stable@vger.kernel.org # 4.20+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ fs/inode.c             |  2 +-
+ include/linux/xarray.h |  1 +
+ lib/xarray.c           | 12 ++++++++++--
+ 3 files changed, 12 insertions(+), 3 deletions(-)
+
+diff --git a/fs/inode.c b/fs/inode.c
+index e9d18b2c3f91..cd67859dbaf1 100644
+--- a/fs/inode.c
++++ b/fs/inode.c
+@@ -361,7 +361,7 @@ EXPORT_SYMBOL(inc_nlink);
+ 
+ static void __address_space_init_once(struct address_space *mapping)
+ {
+-	xa_init_flags(&mapping->i_pages, XA_FLAGS_LOCK_IRQ);
++	xa_init_flags(&mapping->i_pages, XA_FLAGS_LOCK_IRQ | XA_FLAGS_ACCOUNT);
+ 	init_rwsem(&mapping->i_mmap_rwsem);
+ 	INIT_LIST_HEAD(&mapping->private_list);
+ 	spin_lock_init(&mapping->private_lock);
+diff --git a/include/linux/xarray.h b/include/linux/xarray.h
+index 0e01e6129145..5921599b6dc4 100644
+--- a/include/linux/xarray.h
++++ b/include/linux/xarray.h
+@@ -265,6 +265,7 @@ enum xa_lock_type {
+ #define XA_FLAGS_TRACK_FREE	((__force gfp_t)4U)
+ #define XA_FLAGS_ZERO_BUSY	((__force gfp_t)8U)
+ #define XA_FLAGS_ALLOC_WRAPPED	((__force gfp_t)16U)
++#define XA_FLAGS_ACCOUNT	((__force gfp_t)32U)
+ #define XA_FLAGS_MARK(mark)	((__force gfp_t)((1U << __GFP_BITS_SHIFT) << \
+ 						(__force unsigned)(mark)))
+ 
+diff --git a/lib/xarray.c b/lib/xarray.c
+index 6be3acbb861f..446b956c9188 100644
+--- a/lib/xarray.c
++++ b/lib/xarray.c
+@@ -298,6 +298,8 @@ bool xas_nomem(struct xa_state *xas, gfp_t gfp)
+ 		xas_destroy(xas);
+ 		return false;
+ 	}
++	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
++		gfp |= __GFP_ACCOUNT;
+ 	xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+ 	if (!xas->xa_alloc)
+ 		return false;
+@@ -325,6 +327,8 @@ static bool __xas_nomem(struct xa_state *xas, gfp_t gfp)
+ 		xas_destroy(xas);
+ 		return false;
+ 	}
++	if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
++		gfp |= __GFP_ACCOUNT;
+ 	if (gfpflags_allow_blocking(gfp)) {
+ 		xas_unlock_type(xas, lock_type);
+ 		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+@@ -358,8 +362,12 @@ static void *xas_alloc(struct xa_state *xas, unsigned int shift)
+ 	if (node) {
+ 		xas->xa_alloc = NULL;
+ 	} else {
+-		node = kmem_cache_alloc(radix_tree_node_cachep,
+-					GFP_NOWAIT | __GFP_NOWARN);
++		gfp_t gfp = GFP_NOWAIT | __GFP_NOWARN;
++
++		if (xas->xa->xa_flags & XA_FLAGS_ACCOUNT)
++			gfp |= __GFP_ACCOUNT;
++
++		node = kmem_cache_alloc(radix_tree_node_cachep, gfp);
+ 		if (!node) {
+ 			xas_set_err(xas, -ENOMEM);
+ 			return NULL;
+-- 
+2.21.0
+
