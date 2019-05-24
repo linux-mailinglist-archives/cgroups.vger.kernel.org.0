@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 860982914E
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 08:51:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FD1629227
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 09:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388600AbfEXGvr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 02:51:47 -0400
-Received: from mail-wr1-f42.google.com ([209.85.221.42]:45007 "EHLO
-        mail-wr1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388890AbfEXGvr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 02:51:47 -0400
-Received: by mail-wr1-f42.google.com with SMTP id w13so368004wru.11
-        for <cgroups@vger.kernel.org>; Thu, 23 May 2019 23:51:45 -0700 (PDT)
+        id S2389227AbfEXH40 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 03:56:26 -0400
+Received: from mail-wm1-f54.google.com ([209.85.128.54]:51766 "EHLO
+        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389194AbfEXH4Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 03:56:25 -0400
+Received: by mail-wm1-f54.google.com with SMTP id f10so875360wmb.1
+        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 00:56:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
          :references;
-        bh=lltLW4PSxvyQGN9XyeiraZ/m6eO8W0SUMmn8vLH/4Ls=;
-        b=sKNR8NY0tdHJd99RjxkPWy5xROELdQXkEYNdj/yXQrJN4FaQmVN45QCN+eIrSK75WP
-         ksEV48A0KtcwdJ9WAYF86rYLYCVOGp1ezKwrE4l0l1vCYYNVlHTSH++X/aQ3RFdsCeix
-         DHmQ8gtHyGsgVdOz549pXg1ADjYR26rUtPm1bnQJ2P7DUCn0HnaK8zR89jPQc34pKSRg
-         B8cqAYAHnLDICrsEbLoGb8hyaqXQdIfKuCnlGo5AfN/607orQpVcUMFUjDEPKj4mJKsL
-         i44CxLQJGkyq75HPyRtYgbniv5FkQXkM9PAvHFchZwf84BRgVR8P0Rlbi6P8v+/LPpxj
-         o/zg==
+        bh=xOwE27tWyksgaqY93VGQDfbE0SG8a7+4hJ69zf3tsCI=;
+        b=cvi281LmYQRpKtB+efzpk+zEj2QfuTcjQLY+XQ7kxO2KyYrOZQxR+scgf5PYcDOY+f
+         GoDYe/Q8WjLgBaQNOxVO4u6bXXfSb3yO9pwKNq4mp1gw57T0yUf102iV5FlNQvDRmW+U
+         nxQVC5ThIhvk3YADAWKnNd5cQEqWaDetOKkjdvhOP1kJbOxbl0Y4A+n2BG0J2oJSIkjt
+         n9OM50Q+LUTIauFCxhSlA65XQB17QOIZIgJ1qQkZWnp0Jb0ry13ot7N03zgCrkM29GfF
+         OOKZgTZY17DWaed/H0Y7bmIKZWwtcOB1ooBd12gq0C+rD4EVm4BSY8+MqV1kvuQsx00V
+         ndzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:message-id:mime-version:subject:date
          :in-reply-to:cc:to:references;
-        bh=lltLW4PSxvyQGN9XyeiraZ/m6eO8W0SUMmn8vLH/4Ls=;
-        b=isyyV4O1PBks+ODx++rSliDvrhmxfDlYulsSuVFA8KFLcOWLNx9agBzI8B7wUZQtAZ
-         iutJD/kYgq3QZlKIlgdWa7lzk7MZu9iQXOElmKxjH7kGAUVOrgxeCTsOhCLURNlsJxKK
-         t8g+EPYRZDhHtu2YAuiUSKtAxyOEqE1xol9w5QvYFljil5jRPQIp1mNCcpN0EGDKK5ho
-         pzo6xXm3IjCrWsJTNGKRTW/8evfMNeFJAVJdAkEl8BN1oRSbk4/yB1lOB5bPJo26+0zy
-         wsYNSiIEPerhtWDuq8f+4a/BKYHZUE1irRK/gvnn1cAICBr7oY1gfMurTP+GYArwvR/0
-         NLRA==
-X-Gm-Message-State: APjAAAUGkZFO5y1j6ZRVsM782A090OliKyDCbEiY8TKWUGyIljiezQP7
-        yHkJ+aTUPCQojteILscWtyBLaA==
-X-Google-Smtp-Source: APXvYqzeAuKP4BywTT/svgg/pjDVaIDsDagPL3WmK/2Rp2Vr6wlLceTq/3SQUFtprD0lx72bBfsIvA==
-X-Received: by 2002:a5d:680d:: with SMTP id w13mr22137863wru.316.1558680704991;
-        Thu, 23 May 2019 23:51:44 -0700 (PDT)
+        bh=xOwE27tWyksgaqY93VGQDfbE0SG8a7+4hJ69zf3tsCI=;
+        b=GJf88pNKbH8jWpQsvO+9mz4GBXxfFhoYtrt6GdC9ccOo8uVm/iFxUkp2aGLzV2ccjr
+         jD4WiYCIira5bg4i8hjm+nwyXiy8qDVx8GCt9IVWJPPQAfzwxutjnH/tdACITYv/KM1v
+         mWRbShTBeccVMZBuii6C36Q0QWQC0wjCejDvAIE1Gy9wgWj0QHf4x2HJwq9Av0f9RyTw
+         1eQTO2ytGgCwjHWrfWcxEyb8oXAhIB2a6SsHJV8HOy6uV3MUjrkWv1LRhWa8cdkjZsqo
+         LiSGg2FF8psU2+XZRYqu81HiCjdcaCi4ygZElXouqcaMlhfxzYZs6aHTXtFOFEEu6pZg
+         2E+Q==
+X-Gm-Message-State: APjAAAWaCfSoqyFtHiB7lXaNST9Urgk4aA1DJX9G8DTR3YjjpwkB/1yj
+        cnjky7jIFJMDTm8C2Pr/H5+GnbcfE1Q=
+X-Google-Smtp-Source: APXvYqwNni3hQgfIfX1vlkCrokKwyjtCuO5wouuSrghjrmul/HNcXhIJADl30LQonuwfFjSOaVVjJg==
+X-Received: by 2002:a1c:9e92:: with SMTP id h140mr861706wme.82.1558684580772;
+        Fri, 24 May 2019 00:56:20 -0700 (PDT)
 Received: from [192.168.0.100] (84-33-66-28.dyn.eolo.it. [84.33.66.28])
-        by smtp.gmail.com with ESMTPSA id u2sm4345328wra.82.2019.05.23.23.51.42
+        by smtp.gmail.com with ESMTPSA id j190sm1753319wmb.19.2019.05.24.00.56.18
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 May 2019 23:51:43 -0700 (PDT)
+        Fri, 24 May 2019 00:56:19 -0700 (PDT)
 From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+Message-Id: <CDB0583F-8852-4BF8-98F9-EAA93838ADD5@linaro.org>
 Content-Type: multipart/signed;
-        boundary="Apple-Mail=_85482289-FC7E-4B1A-B758-AC353CB4BF94";
+        boundary="Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7";
         protocol="application/pgp-signature";
         micalg=pgp-sha256
 Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
 Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
  controller
-Date:   Fri, 24 May 2019 08:51:41 +0200
-In-Reply-To: <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+Date:   Fri, 24 May 2019 09:56:17 +0200
+In-Reply-To: <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
 Cc:     linux-fsdevel@vger.kernel.org,
         linux-block <linux-block@vger.kernel.org>,
         linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
@@ -80,6 +80,7 @@ References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
  <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
  <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
  <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
 X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -87,172 +88,231 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---Apple-Mail=_85482289-FC7E-4B1A-B758-AC353CB4BF94
+--Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7
+Content-Type: multipart/mixed;
+	boundary="Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F"
+
+
+--Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain;
 	charset=us-ascii
 
 
 
-> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->=20
-> On 5/23/19 10:22 AM, Paolo Valente wrote:
->>=20
->>> Il giorno 23 mag 2019, alle ore 11:19, Paolo Valente =
+> Il giorno 24 mag 2019, alle ore 08:51, Paolo Valente =
 <paolo.valente@linaro.org> ha scritto:
->>>=20
->>>> Il giorno 23 mag 2019, alle ore 04:30, Srivatsa S. Bhat =
+>=20
+>=20
+>=20
+>> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat =
 <srivatsa@csail.mit.edu> ha scritto:
+>>=20
+>> On 5/23/19 10:22 AM, Paolo Valente wrote:
+>>>=20
+>>>> Il giorno 23 mag 2019, alle ore 11:19, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
 >>>>=20
-> [...]
->>>> Also, I'm very happy to run additional tests or experiments to help
->>>> track down this issue. So, please don't hesitate to let me know if
->>>> you'd like me to try anything else or get you additional traces =
+>>>>> Il giorno 23 mag 2019, alle ore 04:30, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>>>=20
+>> [...]
+>>>>> Also, I'm very happy to run additional tests or experiments to =
+help
+>>>>> track down this issue. So, please don't hesitate to let me know if
+>>>>> you'd like me to try anything else or get you additional traces =
 etc. :)
+>>>>>=20
+>>>>=20
+>>>> Here's to you!  :) I've attached a new small improvement that may
+>>>> reduce fluctuations (path to apply on top of the others, of =
+course).
+>>>> Unfortunately, I don't expect this change to boost the throughput
+>>>> though.
+>>>>=20
+>>>> In contrast, I've thought of a solution that might be rather
+>>>> effective: making BFQ aware (heuristically) of trivial
+>>>> synchronizations between processes in different groups. This will
+>>>> require a little more work and time.
 >>>>=20
 >>>=20
->>> Here's to you!  :) I've attached a new small improvement that may
->>> reduce fluctuations (path to apply on top of the others, of course).
->>> Unfortunately, I don't expect this change to boost the throughput
->>> though.
+>>> Hi Srivatsa,
+>>> I'm back :)
 >>>=20
->>> In contrast, I've thought of a solution that might be rather
->>> effective: making BFQ aware (heuristically) of trivial
->>> synchronizations between processes in different groups.  This will
->>> require a little more work and time.
+>>> First, there was a mistake in the last patch I sent you, namely in
+>>> 0001-block-bfq-re-sample-req-service-times-when-possible.patch.
+>>> Please don't apply that patch at all.
 >>>=20
->>=20
->> Hi Srivatsa,
->> I'm back :)
->>=20
->> First, there was a mistake in the last patch I sent you, namely in
->> 0001-block-bfq-re-sample-req-service-times-when-possible.patch.
->> Please don't apply that patch at all.
->>=20
->> I've attached a new series of patches instead.  The first patch in =
+>>> I've attached a new series of patches instead.  The first patch in =
 this
->> series is a fixed version of the faulty patch above (if I'm creating =
+>>> series is a fixed version of the faulty patch above (if I'm creating =
 too
->> much confusion, I'll send you again all patches to apply on top of
->> mainline).
+>>> much confusion, I'll send you again all patches to apply on top of
+>>> mainline).
+>>>=20
+>>=20
+>> No problem, I got it :)
+>>=20
+>>> This series also implements the more effective idea I told you a few
+>>> hours ago.  In my system, the loss is now around only 10%, even with
+>>> low_latency on.
+>>>=20
+>>=20
+>> When trying to run multiple dd tasks simultaneously, I get the kernel
+>> panic shown below (mainline is fine, without these patches).
 >>=20
 >=20
-> No problem, I got it :)
->=20
->> This series also implements the more effective idea I told you a few
->> hours ago.  In my system, the loss is now around only 10%, even with
->> low_latency on.
->>=20
->=20
-> When trying to run multiple dd tasks simultaneously, I get the kernel
-> panic shown below (mainline is fine, without these patches).
+> Could you please provide me somehow with a list =
+*(bfq_serv_to_charge+0x21) ?
 >=20
 
-Could you please provide me somehow with a list =
-*(bfq_serv_to_charge+0x21) ?
+Maybe I've found the cause. Please apply also the two patches attached =
+and retry.
 
 Thanks,
 Paolo
 
-> [  568.232231] BUG: kernel NULL pointer dereference, address: =
+
+--Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
+Content-Disposition: attachment;
+	filename=fix-patches-for-waker-detection.tgz
+Content-Type: application/octet-stream;
+	x-unix-mode=0644;
+	name="fix-patches-for-waker-detection.tgz"
+Content-Transfer-Encoding: base64
+
+H4sIAFqj51wAA+1WbVMbNxDOV+5XLMw0Y7BlTud78TkNQ9MObT+kSYe2XzqdG/mkMyrnk32SCUzo
+f+9KZ8AOBkJLmOn0HmxkSavVanf1rAp5TmbM5CdCk0LV5AM7FTXhwojcSFXtv3gC+L6fRBG4Nm5a
+PwibdgmggzChSUAjfwA+TcLAfwHRU2z+EBbasBpNmTFVqnvkUKwo7plfnuO6/Y+geCD+eBZKxqXK
+T8m4mJMpThO9qAVhtj8nUpNKGVwgpoITpok02inpO61uD9QRh+Gd8afJIFiP/yDAzgvwn8MB//P4
+H9VqCuF46MeUFklQsAEdCx5EOWNhyngeFSIKAj9OOec+vFUVHIsZ0AR8f+Q+EGAEPatmBO+tD+E3
+VorKCPjaubR/1nQPS1mxWvVVPTnwvmNGjOColj3ARHjLLlALTcFPRxEdRQPo+qjVO16M/8Q0HMHv
+77/55dsfgO4Hf4DLxR5g8o3AZiPYbARmB+YgNWA2QpONwDRgNoJLac87lpMKU1QVBRlfPMJWQojX
+7Lpvb4BUGi8L7+dwCWhoFycpFLIUkJ+waiI4HglkpUVt74/udHd7KMBFKWy/Q3Y9j8uiAEIm0gDb
+36R5vGnUkxUX50DH3BfBMGRBkfT7QZ4O4zQuaDyIgbp7Zg3erNfrdrt36D48BIIuT3oJdF07BBzC
+nDcyhzMlufVvxjjPajFfCG062tSL3MCyC3v1fNeDLYQVnLL6NLMRyU6YzlwAOra7++pGplQTJ2In
+uAvovAc7KN8EDLQwYBR8xXd6zaItsHCsc+BEsub3THLUS1DgLxClFiALcErJQcm0yXI1naH3Bdo+
+d0tg+7XXfZR4k10vX7plW40V96qHG7k1a3fh47UH1ibg9b06V/yWl4LVdzgXI+8F/cDvU8/7vPv/
+GfwfrPC/FWcEpbHPKiR8zslU1atsfxsP8P+A4uQa/wcJjaOW/58Djv/HNImSaBAXaT6O8Zv6UcSS
+dODnlA2LcV5QGoX5MH4O/g9GwV38H3zK/5iNyPwuGwGzETAbwWbjFyH7FMm+wQbKH35Jyl8l+X6f
+BkMbqxz/+L+l/DSJejF0bZOuEP6n3G5pp0BbskqcG6SkK/K345wZ5iQ40vRy/aLSzv9QqmripNA3
+Z5lRGTqsnogNxeOK41c049xCONW2tHxE7n1z9HP25tfvs3c/dbYbArX7Iu+tT9WWCruocMnsDVnq
+iypveBIuL6+IuUaqFRiaAwzY5SUuWZaYjOmL6VSYWuaZzgUmiFSdmy2bcrXrKl4tzKKuMGlOLVlr
+TFhV646zwbo4jENqfYxt2KP0tpfXj4oKSlTRjGz287LOIpg9U1NXetclp7HfHXm84BNhslIUprMi
+24g6t6367XZJaureJsGN9eeqQK6boC9uaV6V3L5d0JdZtgzi1v6e/Q978GMB5kTArFa50Bqfd1rl
+EpmEwwdpTpoabd8PrNQK3HmvFu6/g5mouKwmPauiwttqmQWfh8sYxal9+YRxkmCsnipEd71yVkK1
+k58opdEu4LJGpeWFO2LzAmq2vHkAPfj+eTiQS7OWz401qVePsVmjD1cslnrV5J1/9BJp0aJFixYt
+WrRo0aJFixYtWrRo0aJFixYtWjwV/gYrXf+BACgAAA==
+--Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+> Thanks,
+> Paolo
+>=20
+>> [  568.232231] BUG: kernel NULL pointer dereference, address: =
 0000000000000024
-> [  568.232257] #PF: supervisor read access in kernel mode
-> [  568.232273] #PF: error_code(0x0000) - not-present page
-> [  568.232289] PGD 0 P4D 0
-> [  568.232299] Oops: 0000 [#1] SMP PTI
-> [  568.232312] CPU: 0 PID: 1029 Comm: dd Tainted: G            E     =
+>> [  568.232257] #PF: supervisor read access in kernel mode
+>> [  568.232273] #PF: error_code(0x0000) - not-present page
+>> [  568.232289] PGD 0 P4D 0
+>> [  568.232299] Oops: 0000 [#1] SMP PTI
+>> [  568.232312] CPU: 0 PID: 1029 Comm: dd Tainted: G            E     =
 5.1.0-io-dbg-4+ #6
-> [  568.232334] Hardware name: VMware, Inc. VMware Virtual =
+>> [  568.232334] Hardware name: VMware, Inc. VMware Virtual =
 Platform/440BX Desktop Reference Platform, BIOS 6.00 04/05/2016
-> [  568.232388] RIP: 0010:bfq_serv_to_charge+0x21/0x50
-> [  568.232404] Code: ff e8 c3 5e bc ff 0f 1f 00 0f 1f 44 00 00 48 8b =
+>> [  568.232388] RIP: 0010:bfq_serv_to_charge+0x21/0x50
+>> [  568.232404] Code: ff e8 c3 5e bc ff 0f 1f 00 0f 1f 44 00 00 48 8b =
 86 20 01 00 00 55 48 89 e5 53 48 89 fb a8 40 75 09 83 be a0 01 00 00 01 =
 76 09 <8b> 43 24 c1 e8 09 5b 5d c3 48 8b 7e 08 e8 5d fd ff ff 84 c0 75 =
 ea
-> [  568.232473] RSP: 0018:ffffa73a42dab750 EFLAGS: 00010002
-> [  568.232489] RAX: 0000000000001052 RBX: 0000000000000000 RCX: =
+>> [  568.232473] RSP: 0018:ffffa73a42dab750 EFLAGS: 00010002
+>> [  568.232489] RAX: 0000000000001052 RBX: 0000000000000000 RCX: =
 ffffa73a42dab7a0
-> [  568.232510] RDX: ffffa73a42dab657 RSI: ffff8b7b6ba2ab70 RDI: =
+>> [  568.232510] RDX: ffffa73a42dab657 RSI: ffff8b7b6ba2ab70 RDI: =
 0000000000000000
-> [  568.232530] RBP: ffffa73a42dab758 R08: 0000000000000000 R09: =
+>> [  568.232530] RBP: ffffa73a42dab758 R08: 0000000000000000 R09: =
 0000000000000001
-> [  568.232551] R10: 0000000000000000 R11: ffffa73a42dab7a0 R12: =
+>> [  568.232551] R10: 0000000000000000 R11: ffffa73a42dab7a0 R12: =
 ffff8b7b6aed3800
-> [  568.232571] R13: 0000000000000000 R14: 0000000000000000 R15: =
+>> [  568.232571] R13: 0000000000000000 R14: 0000000000000000 R15: =
 ffff8b7b6aed3800
-> [  568.232592] FS:  00007fb5b0724540(0000) GS:ffff8b7b6f800000(0000) =
+>> [  568.232592] FS:  00007fb5b0724540(0000) GS:ffff8b7b6f800000(0000) =
 knlGS:0000000000000000
-> [  568.232615] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [  568.232632] CR2: 0000000000000024 CR3: 00000004266be002 CR4: =
+>> [  568.232615] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> [  568.232632] CR2: 0000000000000024 CR3: 00000004266be002 CR4: =
 00000000001606f0
-> [  568.232690] Call Trace:
-> [  568.232703]  bfq_select_queue+0x781/0x1000
-> [  568.232717]  bfq_dispatch_request+0x1d7/0xd60
-> [  568.232731]  ? bfq_bfqq_handle_idle_busy_switch.isra.36+0x2cd/0xb20
-> [  568.232751]  blk_mq_do_dispatch_sched+0xa8/0xe0
-> [  568.232765]  blk_mq_sched_dispatch_requests+0xe3/0x150
-> [  568.232783]  __blk_mq_run_hw_queue+0x56/0x100
-> [  568.232798]  __blk_mq_delay_run_hw_queue+0x107/0x160
-> [  568.232814]  blk_mq_run_hw_queue+0x75/0x190
-> [  568.232828]  blk_mq_sched_insert_requests+0x7a/0x100
-> [  568.232844]  blk_mq_flush_plug_list+0x1d7/0x280
-> [  568.232859]  blk_flush_plug_list+0xc2/0xe0
-> [  568.232872]  blk_finish_plug+0x2c/0x40
-> [  568.232886]  ext4_writepages+0x592/0xe60
-> [  568.233381]  ? ext4_mark_iloc_dirty+0x52b/0x860
-> [  568.233851]  do_writepages+0x3c/0xd0
-> [  568.234304]  ? ext4_mark_inode_dirty+0x1a0/0x1a0
-> [  568.234748]  ? do_writepages+0x3c/0xd0
-> [  568.235197]  ? __generic_write_end+0x4e/0x80
-> [  568.235644]  __filemap_fdatawrite_range+0xa5/0xe0
-> [  568.236089]  ? __filemap_fdatawrite_range+0xa5/0xe0
-> [  568.236533]  ? ext4_da_write_end+0x13c/0x280
-> [  568.236983]  file_write_and_wait_range+0x5a/0xb0
-> [  568.237407]  ext4_sync_file+0x11e/0x3e0
-> [  568.237819]  vfs_fsync_range+0x48/0x80
-> [  568.238217]  ext4_file_write_iter+0x234/0x3d0
-> [  568.238610]  ? _cond_resched+0x19/0x40
-> [  568.238982]  new_sync_write+0x112/0x190
-> [  568.239347]  __vfs_write+0x29/0x40
-> [  568.239705]  vfs_write+0xb1/0x1a0
-> [  568.240078]  ksys_write+0x89/0xc0
-> [  568.240428]  __x64_sys_write+0x1a/0x20
-> [  568.240771]  do_syscall_64+0x5b/0x140
-> [  568.241115]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-> [  568.241456] RIP: 0033:0x7fb5b02325f4
-> [  568.241787] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f =
+>> [  568.232690] Call Trace:
+>> [  568.232703]  bfq_select_queue+0x781/0x1000
+>> [  568.232717]  bfq_dispatch_request+0x1d7/0xd60
+>> [  568.232731]  ? =
+bfq_bfqq_handle_idle_busy_switch.isra.36+0x2cd/0xb20
+>> [  568.232751]  blk_mq_do_dispatch_sched+0xa8/0xe0
+>> [  568.232765]  blk_mq_sched_dispatch_requests+0xe3/0x150
+>> [  568.232783]  __blk_mq_run_hw_queue+0x56/0x100
+>> [  568.232798]  __blk_mq_delay_run_hw_queue+0x107/0x160
+>> [  568.232814]  blk_mq_run_hw_queue+0x75/0x190
+>> [  568.232828]  blk_mq_sched_insert_requests+0x7a/0x100
+>> [  568.232844]  blk_mq_flush_plug_list+0x1d7/0x280
+>> [  568.232859]  blk_flush_plug_list+0xc2/0xe0
+>> [  568.232872]  blk_finish_plug+0x2c/0x40
+>> [  568.232886]  ext4_writepages+0x592/0xe60
+>> [  568.233381]  ? ext4_mark_iloc_dirty+0x52b/0x860
+>> [  568.233851]  do_writepages+0x3c/0xd0
+>> [  568.234304]  ? ext4_mark_inode_dirty+0x1a0/0x1a0
+>> [  568.234748]  ? do_writepages+0x3c/0xd0
+>> [  568.235197]  ? __generic_write_end+0x4e/0x80
+>> [  568.235644]  __filemap_fdatawrite_range+0xa5/0xe0
+>> [  568.236089]  ? __filemap_fdatawrite_range+0xa5/0xe0
+>> [  568.236533]  ? ext4_da_write_end+0x13c/0x280
+>> [  568.236983]  file_write_and_wait_range+0x5a/0xb0
+>> [  568.237407]  ext4_sync_file+0x11e/0x3e0
+>> [  568.237819]  vfs_fsync_range+0x48/0x80
+>> [  568.238217]  ext4_file_write_iter+0x234/0x3d0
+>> [  568.238610]  ? _cond_resched+0x19/0x40
+>> [  568.238982]  new_sync_write+0x112/0x190
+>> [  568.239347]  __vfs_write+0x29/0x40
+>> [  568.239705]  vfs_write+0xb1/0x1a0
+>> [  568.240078]  ksys_write+0x89/0xc0
+>> [  568.240428]  __x64_sys_write+0x1a/0x20
+>> [  568.240771]  do_syscall_64+0x5b/0x140
+>> [  568.241115]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+>> [  568.241456] RIP: 0033:0x7fb5b02325f4
+>> [  568.241787] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f =
 1f 80 00 00 00 00 48 8d 05 09 11 2d 00 8b 00 85 c0 75 13 b8 01 00 00 00 =
 0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 41 54 55 49 89 d4 53 48 89 =
 f5
-> [  568.242842] RSP: 002b:00007ffcb12e2968 EFLAGS: 00000246 ORIG_RAX: =
+>> [  568.242842] RSP: 002b:00007ffcb12e2968 EFLAGS: 00000246 ORIG_RAX: =
 0000000000000001
-> [  568.243220] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: =
+>> [  568.243220] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: =
 00007fb5b02325f4
-> [  568.243616] RDX: 0000000000000200 RSI: 000055698f2ad000 RDI: =
+>> [  568.243616] RDX: 0000000000000200 RSI: 000055698f2ad000 RDI: =
 0000000000000001
-> [  568.244026] RBP: 0000000000000200 R08: 0000000000000004 R09: =
+>> [  568.244026] RBP: 0000000000000200 R08: 0000000000000004 R09: =
 0000000000000003
-> [  568.244401] R10: 00007fb5b04feca0 R11: 0000000000000246 R12: =
+>> [  568.244401] R10: 00007fb5b04feca0 R11: 0000000000000246 R12: =
 000055698f2ad000
-> [  568.244775] R13: 0000000000000000 R14: 0000000000000000 R15: =
+>> [  568.244775] R13: 0000000000000000 R14: 0000000000000000 R15: =
 000055698f2ad000
-> [  568.245154] Modules linked in: xt_MASQUERADE(E) =
+>> [  568.245154] Modules linked in: xt_MASQUERADE(E) =
 nf_conntrack_netlink(E) nfnetlink(E) xfrm_user(E) xfrm_algo(E) =
 xt_addrtype(E) br_netfilter(E) bridge(E) stp(E) llc(E) overlay(E) =
 vmw_vsock_vmci_transport(E) vsock(E) ip6table_filter(E) ip6_tables(E) =
 xt_conntrack(E) iptable_mangle(E) iptable_nat(E) nf_nat(E) =
 iptable_filter
-> [  568.248651] CR2: 0000000000000024
-> [  568.249142] ---[ end trace 0ddd315e0a5bdfba ]---
->=20
->=20
-> Regards,
-> Srivatsa
-> VMware Photon OS
+>> [  568.248651] CR2: 0000000000000024
+>> [  568.249142] ---[ end trace 0ddd315e0a5bdfba ]---
+>>=20
+>>=20
+>> Regards,
+>> Srivatsa
+>> VMware Photon OS
 
 
---Apple-Mail=_85482289-FC7E-4B1A-B758-AC353CB4BF94
+--Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F--
+
+--Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7
 Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
 	filename=signature.asc
@@ -262,19 +322,19 @@ Content-Description: Message signed with OpenPGP
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlznlH0ACgkQOAkCLQGo
-9oP7Kg//QHKt9Jzd3acqyDErdMmFS2yVJJYS8+gQCTLa0fu44rQYs7wiCipLNKdI
-rrymUh3KYssp2iTE23wVHZ36OfkU0157yzztHAoguyq2CNMFfTYv+T7lx3803In3
-KS9QalPnIpm5K1ectGfCtcXb8QZt/ZAJ1mZDhhphQEIx9dOqmW1+tehihzgzW0K1
-vKIk9DaN4/WcE7yeQCtaD7gJI4TWKaKhwDfH+BmfjMg0OvU4xOjaJFSvjH/C+OWp
-Mw9DIDt+Ne638wKuPPsH1aEtZxR/G0Z+wHy+CuAyikt4KTDm4dGcHpGR99Rhb6IY
-LOeHKWUD0JyeJs5oQdUFL8fRNu2i7LhOVVJKuOdW99yvWNe/zzY9fgaPzt78itNS
-SiKvkQAqKYHtVkk8RW3+U3HbXR1v0vV62nhbBgrSF9qhVecvRgeYhzBVl6ZkAo5z
-UwiIRjQgzsbUDrnHjrzYxGb45sJxkC+WJRxTf95hJ3y842uy7ML6YBNHmfWDi5d+
-3xsV1qvIvSyMaj/NryCRbRqM1XseyiQGw+gSSqUAbhCgPEVhPAzn3sUYizz2DVAi
-VQAUAOvo4bq1UJqM8AMTYItdgG4PqMafRPGDQY9wQ0emWyc8Qsb99Lm9rvhOG0Ou
-IDRcISk/XZTXb/M0nuaMIJ6pP1IjsAGOXyWk6wADOD8Gn5WarRE=
-=5NSm
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzno6EACgkQOAkCLQGo
+9oP5Yw//cMsQ66HWRVR3U6hWYrjB0Qqp0C0XdkV4yBVB8zO25XyddWQNmpJJ0WIj
+GXS4Cx67f0RxmAS1KBkwPROtmDAaNDkUVSaGSX8un85/jgo5u9lZ8918x0IoWGLl
+3ClDL0+kY84Tgtys5ND5zKcB3q6E4WWezI7ckJV2hdHoaeO/30P644RcSV/A9Fxt
+4Dv+/iSmN5nLJ2VXSs/aKnEMS9HlrmhdUG/NEdOOqZfqG4WX6e52tlu/uy+/kZ3U
+BHkIXImmaxZZOD6bLnb8BkzPlanAGFHgjFrZI7W01Oa4vZaTis5P0kvTCM5AScm9
+Jf7Zg1uWKqGRDbMCLBsRtT2gC/3UJuRoIh4ppHcrg4NvHKsMnlcwA+ivrJ0TjlVA
+lkr4UVhP1eEI2ewmEBqGInOXRGy9qyO+m7h4q3bKftz1J+0SW+yUU9Gfq9aNIhrF
+8VTGnLu7g532TMlELiQWLaXNgGbTAIRckzD8HkIQ9iCr+XfKXPVKz+QEuH1CXQvn
+FbUXNugUKvHxAgSL5Q3I57558xUzhPHxl74/Xti0MeC8nwocUTeJYm5evbFFPCr2
+SZ07bfTXF6JY09zZ8J1oJCquBgFSn7mijmrpT4Bu39IMB20orvNl1vJH75qUfo4F
+w3MPzqGF2N5lPZBFtWRQb6rhUDdNcHMX6cl4byx6XxGnAP2D9sM=
+=eDWo
 -----END PGP SIGNATURE-----
 
---Apple-Mail=_85482289-FC7E-4B1A-B758-AC353CB4BF94--
+--Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7--
