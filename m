@@ -2,64 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 141EC2A095
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 23:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8331D2A097
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 23:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404255AbfEXVoG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 17:44:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37200 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404176AbfEXVoG (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 24 May 2019 17:44:06 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9BA61217D7;
-        Fri, 24 May 2019 21:44:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558734246;
-        bh=TiUA1WFEq7Il0rd+tzTv7rHfLDePXM5hZjMGD293VfM=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=cJ+pF9asSBVEbeEPeP4pGA0GV5iHC4bFiFHmwoUEDwMg7DFd9qo4/LIbkBQ4tMJEI
-         0P7Xi2JdoC42bXYGpT6WKBUWfmkp7AZszIPijW/GZ8fpUAlM95SC/uT8XAKkzXDsjB
-         MsQHY6yNf8WuMRRrrmjS3ZtdwpvPrvdw9ldaJSyY=
-Subject: Re: [PATCH v2 1/3] kselftest/cgroup: fix unexpected testing failure
- on test_memcontrol
-To:     Tejun Heo <tj@kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jay Kamat <jgkamat@fb.com>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shuah <shuah@kernel.org>
-References: <20190520030140.203605-1-alex.shi@linux.alibaba.com>
- <20190520030140.203605-2-alex.shi@linux.alibaba.com>
- <20190524214035.GG374014@devbig004.ftw2.facebook.com>
-From:   shuah <shuah@kernel.org>
-Message-ID: <0c6b76b8-e20c-33f0-21da-64a5d5da30a9@kernel.org>
-Date:   Fri, 24 May 2019 15:44:04 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S2404248AbfEXVoP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 17:44:15 -0400
+Received: from mail-vk1-f169.google.com ([209.85.221.169]:38707 "EHLO
+        mail-vk1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404176AbfEXVoP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 17:44:15 -0400
+Received: by mail-vk1-f169.google.com with SMTP id p24so2549621vki.5;
+        Fri, 24 May 2019 14:44:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ppYQMWAvPPPHzjUYhTAXcRClz6zmn//kA8Gna2puNdM=;
+        b=iCLh9A/cXLCJu2cYrfO+D02D9JZCWjOPfABYzSpzSnzvw+iM+O0nFXo9bOFy4NoG35
+         6tGwLsX1stvp9Fj1cZi6gDDlt4vQF2vczIeIiQFnLylhzPc0M03zMQ1sks0SjMfDuTkz
+         718ibMT8MzmQYgwSzJosjqZXGmhF1KWLLrjQO1GdHBOP4nUOg4VvJPDcTr51s4LGjXek
+         4wCuKnt1wVE7yNsEE+jaHVwNP7/lz1UcPqN4zRMUKLCPQxHEdfzqgv32V6RhbzGHkC9A
+         +8rorSl29HWTk+xcTrT+17IWJ0FuA7sFzaY0rJzrpFc3FWfcUQ5KRh6mChaNxRiybqz2
+         7NXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ppYQMWAvPPPHzjUYhTAXcRClz6zmn//kA8Gna2puNdM=;
+        b=UMDYOQtrB/ACHmjOmj4MjmJUylnRQjo3/CpevjC3KwRlwnZPRJRl2K5I4aHyg76UZI
+         a8nPK98tLs5q3pUNExqL3EJh49jr8gVVXWLUItr0j7jAFXsznZBheidvrznxRhvvpYvb
+         SUSB+SaU18yRxlK/UsaW7PMbdXENmRprJeFyKVwSLj5R4UR0cG1EPi2Ng49ZFGshEb+w
+         kDfptoCbvMWnleRSQpRwpJvVwKMh3bpB5Gn0szZAuIK7JXM6urGOFor3p5W0lbguimJr
+         VettBU7FVKxXNmt/BBrRIKJi0NcgtwMwigaQ3rrx+XgQd8rKIKFjSBuNi08wTOyRqsVE
+         nGtA==
+X-Gm-Message-State: APjAAAXHTgljn1fNAwcGp86L/Y13mjYMCNJ/dGQPutmtgaOgzgeOTzQU
+        hWO9WsGPfqBxcfT/VFj/dzs=
+X-Google-Smtp-Source: APXvYqz8Q+5EOwArJXYcxB42iNP/7jC6QHkeqJ960QLp/YsSo4VPosPZyy+KSbDmHVRWANDCqIBz9g==
+X-Received: by 2002:a1f:8ad0:: with SMTP id m199mr8096355vkd.80.1558734254307;
+        Fri, 24 May 2019 14:44:14 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:36ab])
+        by smtp.gmail.com with ESMTPSA id v133sm2586461vkv.5.2019.05.24.14.44.13
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 24 May 2019 14:44:13 -0700 (PDT)
+Date:   Fri, 24 May 2019 14:44:12 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Xuehan Xu <xxhdx1985126@gmail.com>
+Cc:     ceph-devel <ceph-devel@vger.kernel.org>, cgroups@vger.kernel.org
+Subject: Re: Fwd: [PATCH 1/2] cgroup: add a new group controller for cephfs
+Message-ID: <20190524214412.GH374014@devbig004.ftw2.facebook.com>
+References: <20190430120534.5231-1-xxhdx1985126@gmail.com>
+ <CAJACTuczjByPgDmBb1vgPdX5U0LWhygVNzRS+VPXt3ZSEo+eTQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20190524214035.GG374014@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJACTuczjByPgDmBb1vgPdX5U0LWhygVNzRS+VPXt3ZSEo+eTQ@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/24/19 3:40 PM, Tejun Heo wrote:
-> Hello,
-> 
-> All three patches look good to me.  Please feel free to add my
-> acked-by.  Shuah, should I route these through cgroup tree or would
-> the kselftest tree be a better fit?
-> 
-> Thanks.
-> 
+Hello,
 
+On Thu, May 23, 2019 at 02:33:46PM +0800, Xuehan Xu wrote:
+> From: Xuehan Xu <xuxuehan@360.cn>
+> cgroup: add a new cgroup controller dedicated to cephfs client ops limiting
+> 
+> this controller is supposed to limit the metadata
+> ops or data ops issued to the underlying cluster.
+> 
+> Signed-off-by: Xuehan Xu <xuxuehan@360.cn>
 
-Tejun, I can take them through kselftest tree.
+Can you please elaborate why ceph needs its own controller?
 
-thanks,
--- Shuah
+Thanks.
+
+-- 
+tejun
