@@ -2,238 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DFCD329B0D
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 17:31:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA3829B21
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 17:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389449AbfEXPbw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 11:31:52 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:32903 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389352AbfEXPbw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 11:31:52 -0400
-Received: by mail-pl1-f195.google.com with SMTP id g21so4339196plq.0
-        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 08:31:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xax+Itit2redxrlh2xu6KH2UMjJ3BZeeSxkOY3WyROU=;
-        b=z485kAr9blKJo6NBcbFr+fn20i1azeIo3+m7fUvokaeqRUDgcc0Eo9zWEeVNtRD1lh
-         y8wnAE4K60RClRAnK0p7rP6oJCWY56aQWFQyaaetR3chFQKdoud5UkTqffwxDnZrBC1c
-         AKlGkIuVvJuetDxg4BKn90i8pRVi3aL3y5jwHOYTBIpTXcGfK/RFsXGI6ixujey85UfO
-         RtIEsCCVTd7dqNaA4HkMOE5TGlTeIruWEdryqC1zR9XDeidfqPF5zSyeCCEzzgzUgrO7
-         /xBYTJd7bBwfT2YNxIrnTJ7MrR6t2ftIbdJShesXRo+8/jmZqk7VE/n94cYHv6ZpW0HQ
-         6uOw==
+        id S2389517AbfEXPeN convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 24 May 2019 11:34:13 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:45070 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389288AbfEXPeM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 11:34:12 -0400
+Received: by mail-ot1-f65.google.com with SMTP id t24so9043325otl.12
+        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 08:34:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=xax+Itit2redxrlh2xu6KH2UMjJ3BZeeSxkOY3WyROU=;
-        b=Bbh5mqiQ12T6Gi5HeCTsXlbE0kTuEtHUEGlPfCnuXM/d/dW5E+aQLXDQEELxuqnJrZ
-         U0ufgKNYikdyt0V5piUcWeYy2plBmycYTH+DQKSwJwsIFS0RGfzU5ctDoHUp8qLZdh9t
-         RI6re1OhmnNjB0TLcJFd8O3Ln6sivQJ92rd3mLer3F1lpXHliwpWzmnmVrqb6QVj9xjC
-         KYCDhkIDzASLeSqWvyH+BnSu2eMt/NdQtm2uVJFllffUhM2oDhiwxlxCD7iRngTlQgZM
-         5QBbYdptchJ/BO5UDu/42JGnZqkCBfLFFh0LSma5ECkm02XB8unXw+NZQkFBI1WhBa4A
-         KjZg==
-X-Gm-Message-State: APjAAAWM+WP+7f2MEW1VyzwGfHIj4/DGWQHU6CIuENlZTqhIRqhDgg59
-        uFgEkJKnERiU61knfmzYE8jrMA==
-X-Google-Smtp-Source: APXvYqzJDR+ptpnVNFiBcyHOv6NHmG2mK8rNF3q+c/HygM64gpdEeAHy3TO3MHZ4nC0zBp3xVj++ag==
-X-Received: by 2002:a17:902:8c8f:: with SMTP id t15mr51364381plo.87.1558711911326;
-        Fri, 24 May 2019 08:31:51 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:180::805])
-        by smtp.gmail.com with ESMTPSA id j2sm4862174pfb.157.2019.05.24.08.31.50
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 24 May 2019 08:31:50 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] mm: fix page cache convergence regression
-Date:   Fri, 24 May 2019 11:31:48 -0400
-Message-Id: <20190524153148.18481-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.21.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=XmUFDj9D/eofBnJzPdCvp5T1ZMAct2TpjK59uIWjaGI=;
+        b=awNI/7N+hL/5j2AEakSqAMc8rGHAbYt6TAdhQnG3gYDmBcKtYIaHDfPX9E+teJByUa
+         Ll2AxN1D3tajSKRjAFwQHxz/MjFn4moo3xhx8S9sb30WFDKNKuDIMPj+5Vn0JExary5u
+         yjCT6SLsTDFY3v8CTrw2dKT+26Ln57HMD3obNi/mnyGOhOiWTHSSewOSgf/zsnmqPM+1
+         XW7Bo6x3m+M+jujg1eAjc/xBmQT6Z1YYLdpIpqry5Ri5WNyTuiJKvahmKKyntmzBGMeC
+         5M/9I43wTL53Snlsi54GG5HkPDiKXM1pkSUtU3/QgrzzhNf2jwz2uDIxCUvwNkCb80z8
+         QzOQ==
+X-Gm-Message-State: APjAAAUJwSECzDKAgGeEHlKFCBvcvVvkNIoqyNGaxgPlzg9GsusuBw53
+        zdFVOjsktnZGnGBO3vT+P5X/JAeAU8rpYX2hGRBWITZHQzI=
+X-Google-Smtp-Source: APXvYqxsrFVzXtT9Acfrz6QjWXchCDlZpb53Ha0Iwr8PLUs05rv6qoQCFOXdqtNTzA0Ek/izdns14Zvmvnm+oyKNNNs=
+X-Received: by 2002:a9d:30d6:: with SMTP id r22mr62722773otg.33.1558712052313;
+ Fri, 24 May 2019 08:34:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20190409204003.6428-1-jsavitz@redhat.com> <20190521143414.GJ5307@blackbody.suse.cz>
+In-Reply-To: <20190521143414.GJ5307@blackbody.suse.cz>
+From:   Joel Savitz <jsavitz@redhat.com>
+Date:   Fri, 24 May 2019 11:33:55 -0400
+Message-ID: <CAL1p7m6nfPkWoEEAjO+Gxq-ZiRY7+1jU_7dVcw2-hjC22xz-4A@mail.gmail.com>
+Subject: Re: [PATCH v2] cpuset: restore sanity to cpuset_cpus_allowed_fallback()
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Tejun Heo <tj@kernel.org>, Waiman Long <longman@redhat.com>,
+        Phil Auld <pauld@redhat.com>, cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since a28334862993 ("page cache: Finish XArray conversion"), on most
-major Linux distributions, the page cache doesn't correctly transition
-when the hot data set is changing, and leaves the new pages thrashing
-indefinitely instead of kicking out the cold ones.
+On Tue, May 21, 2019 at 10:35 AM Michal Koutný <mkoutny@suse.com> wrote:
+> >       $ grep Cpus /proc/$$/status
+> >       Cpus_allowed:   ff
+> >       Cpus_allowed_list:      0-7
+>
+> (a)
+>
+> >       $ taskset -p 4 $$
+> >       pid 19202's current affinity mask: f
 
-On a freshly booted, freshly ssh'd into virtual machine with 1G RAM
-running stock Arch Linux:
+> I'm confused where this value comes from, I must be missing something.
+>
+> Joel, is the task in question put into a cpuset with 0xf CPUs only (at
+> point (a))? Or are the CPUs 4-7 offlined as well?
 
-[root@ham ~]# ./reclaimtest.sh
-+ dd of=workingset-a bs=1M count=0 seek=600
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ ./mincore workingset-a
-153600/153600 workingset-a
-+ dd of=workingset-b bs=1M count=0 seek=600
-+ cat workingset-b
-+ cat workingset-b
-+ cat workingset-b
-+ cat workingset-b
-+ ./mincore workingset-a workingset-b
-104029/153600 workingset-a
-120086/153600 workingset-b
-+ cat workingset-b
-+ cat workingset-b
-+ cat workingset-b
-+ cat workingset-b
-+ ./mincore workingset-a workingset-b
-104029/153600 workingset-a
-120268/153600 workingset-b
+Good point.
 
-workingset-b is a 600M file on a 1G host that is otherwise entirely
-idle. No matter how often it's being accessed, it won't get cached.
+It is a bit ambiguous, but I performed no action on the task's cpuset
+nor did I offline any cpus at point (a).
 
-While investigating, I noticed that the non-resident information gets
-aggressively reclaimed - /proc/vmstat::workingset_nodereclaim. This is
-a problem because a workingset transition like this relies on the
-non-resident information tracked in the page cache tree of evicted
-file ranges: when the cache faults are refaults of recently evicted
-cache, we challenge the existing active set, and that allows a new
-workingset to establish itself.
+After a bit of research, I am fairly certain that the observed
+discrepancy is due to differing mechanisms used to acquire the cpuset
+mask value.
 
-Tracing the shrinker that maintains this memory revealed that all page
-cache tree nodes were allocated to the root cgroup. This is a problem,
-because 1) the shrinker sizes the amount of non-resident information
-it keeps to the size of the cgroup's other memory and 2) on most major
-Linux distributions, only kernel threads live in the root cgroup and
-everything else gets put into services or session groups:
+The first mechanism, via `grep Cpus /proc/$$/status`, has it's value
+populated by the expression (task->cpus_allowed) in
+fs/proc/array.c:sched_getaffinity(), whereas the taskset utility
+(https://github.com/karelzak/util-linux/blob/master/schedutils/taskset.c)
+uses sched_getaffinity(2) to determine the "current affinity mask"
+value from the expression (task->cpus_allowed & cpu_active_mask) in
+kernel/sched/core.c:sched_getaffinty(),
 
-[root@ham ~]# cat /proc/self/cgroup
-0::/user.slice/user-0.slice/session-c1.scope
+I do not know if there is an explicit reason for this discrepancy or
+whether the two mechanisms were simply built independently, perhaps
+for different purposes.
 
-As a result, we basically maintain no non-resident information for the
-workloads running on the system, thus breaking the caching algorithm.
+I think the /proc/$$/status value is intended to simply reflect the
+user-specified policy stating which cpus the task is allowed to run on
+without consideration for hardware state, whereas the taskset value is
+representative of the cpus that the task can actually be run on given
+the restriction policy specified by the user via the cpuset mechanism.
 
-Looking through the code, I found the culprit in the above-mentioned
-patch: when switching from the radix tree to xarray, it dropped the
-__GFP_ACCOUNT flag from the tree node allocations - the flag that
-makes sure the allocated memory gets charged to and tracked by the
-cgroup of the calling process - in this case, the one doing the fault.
-
-To fix this, allow xarray users to specify per-tree gfp flags that
-supplement the hardcoded gfp flags inside the xarray expansion code.
-This is analogous to the radix tree API. Then restore the page cache
-tree annotation that passes the __GFP_ACCOUNT flag during expansions.
-
-With this patch applied, the page cache correctly converges on new
-workingsets again after just a few iterations:
-
-[root@ham ~]# ./reclaimtest.sh
-+ dd of=workingset-a bs=1M count=0 seek=600
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ cat workingset-a
-+ ./mincore workingset-a
-153600/153600 workingset-a
-+ dd of=workingset-b bs=1M count=0 seek=600
-+ cat workingset-b
-+ ./mincore workingset-a workingset-b
-124607/153600 workingset-a
-87876/153600 workingset-b
-+ cat workingset-b
-+ ./mincore workingset-a workingset-b
-81313/153600 workingset-a
-133321/153600 workingset-b
-+ cat workingset-b
-+ ./mincore workingset-a workingset-b
-63036/153600 workingset-a
-153600/153600 workingset-b
-
-Cc: stable@vger.kernel.org # 4.20+
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- fs/inode.c             | 1 +
- include/linux/xarray.h | 2 ++
- lib/xarray.c           | 8 ++++++--
- 3 files changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/fs/inode.c b/fs/inode.c
-index e9d18b2c3f91..3b454d2119c4 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -362,6 +362,7 @@ EXPORT_SYMBOL(inc_nlink);
- static void __address_space_init_once(struct address_space *mapping)
- {
- 	xa_init_flags(&mapping->i_pages, XA_FLAGS_LOCK_IRQ);
-+	mapping->i_pages.xa_gfp = __GFP_ACCOUNT;
- 	init_rwsem(&mapping->i_mmap_rwsem);
- 	INIT_LIST_HEAD(&mapping->private_list);
- 	spin_lock_init(&mapping->private_lock);
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index 0e01e6129145..cbbf76e4c973 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -292,6 +292,7 @@ struct xarray {
- 	spinlock_t	xa_lock;
- /* private: The rest of the data structure is not to be used directly. */
- 	gfp_t		xa_flags;
-+	gfp_t		xa_gfp;
- 	void __rcu *	xa_head;
- };
- 
-@@ -374,6 +375,7 @@ static inline void xa_init_flags(struct xarray *xa, gfp_t flags)
- {
- 	spin_lock_init(&xa->xa_lock);
- 	xa->xa_flags = flags;
-+	xa->xa_gfp = 0;
- 	xa->xa_head = NULL;
- }
- 
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 6be3acbb861f..324be9534861 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -298,6 +298,7 @@ bool xas_nomem(struct xa_state *xas, gfp_t gfp)
- 		xas_destroy(xas);
- 		return false;
- 	}
-+	gfp |= xas->xa->xa_gfp;
- 	xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
- 	if (!xas->xa_alloc)
- 		return false;
-@@ -325,6 +326,7 @@ static bool __xas_nomem(struct xa_state *xas, gfp_t gfp)
- 		xas_destroy(xas);
- 		return false;
- 	}
-+	gfp |= xas->xa->xa_gfp;
- 	if (gfpflags_allow_blocking(gfp)) {
- 		xas_unlock_type(xas, lock_type);
- 		xas->xa_alloc = kmem_cache_alloc(radix_tree_node_cachep, gfp);
-@@ -358,8 +360,10 @@ static void *xas_alloc(struct xa_state *xas, unsigned int shift)
- 	if (node) {
- 		xas->xa_alloc = NULL;
- 	} else {
--		node = kmem_cache_alloc(radix_tree_node_cachep,
--					GFP_NOWAIT | __GFP_NOWARN);
-+		gfp_t gfp;
-+
-+		gfp = GFP_NOWAIT | __GFP_NOWARN | xas->xa->xa_gfp;
-+		node = kmem_cache_alloc(radix_tree_node_cachep, gfp);
- 		if (!node) {
- 			xas_set_err(xas, -ENOMEM);
- 			return NULL;
--- 
-2.21.0
-
+By the way, I posted a v2 of this patch that correctly handles cgroup
+v2 behavior.
