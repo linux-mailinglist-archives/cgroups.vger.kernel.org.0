@@ -2,339 +2,372 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FD1629227
-	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 09:56:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B90A5293F3
+	for <lists+cgroups@lfdr.de>; Fri, 24 May 2019 10:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389227AbfEXH40 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 03:56:26 -0400
-Received: from mail-wm1-f54.google.com ([209.85.128.54]:51766 "EHLO
-        mail-wm1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389194AbfEXH4Z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 03:56:25 -0400
-Received: by mail-wm1-f54.google.com with SMTP id f10so875360wmb.1
-        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 00:56:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
-         :references;
-        bh=xOwE27tWyksgaqY93VGQDfbE0SG8a7+4hJ69zf3tsCI=;
-        b=cvi281LmYQRpKtB+efzpk+zEj2QfuTcjQLY+XQ7kxO2KyYrOZQxR+scgf5PYcDOY+f
-         GoDYe/Q8WjLgBaQNOxVO4u6bXXfSb3yO9pwKNq4mp1gw57T0yUf102iV5FlNQvDRmW+U
-         nxQVC5ThIhvk3YADAWKnNd5cQEqWaDetOKkjdvhOP1kJbOxbl0Y4A+n2BG0J2oJSIkjt
-         n9OM50Q+LUTIauFCxhSlA65XQB17QOIZIgJ1qQkZWnp0Jb0ry13ot7N03zgCrkM29GfF
-         OOKZgTZY17DWaed/H0Y7bmIKZWwtcOB1ooBd12gq0C+rD4EVm4BSY8+MqV1kvuQsx00V
-         ndzg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:message-id:mime-version:subject:date
-         :in-reply-to:cc:to:references;
-        bh=xOwE27tWyksgaqY93VGQDfbE0SG8a7+4hJ69zf3tsCI=;
-        b=GJf88pNKbH8jWpQsvO+9mz4GBXxfFhoYtrt6GdC9ccOo8uVm/iFxUkp2aGLzV2ccjr
-         jD4WiYCIira5bg4i8hjm+nwyXiy8qDVx8GCt9IVWJPPQAfzwxutjnH/tdACITYv/KM1v
-         mWRbShTBeccVMZBuii6C36Q0QWQC0wjCejDvAIE1Gy9wgWj0QHf4x2HJwq9Av0f9RyTw
-         1eQTO2ytGgCwjHWrfWcxEyb8oXAhIB2a6SsHJV8HOy6uV3MUjrkWv1LRhWa8cdkjZsqo
-         LiSGg2FF8psU2+XZRYqu81HiCjdcaCi4ygZElXouqcaMlhfxzYZs6aHTXtFOFEEu6pZg
-         2E+Q==
-X-Gm-Message-State: APjAAAWaCfSoqyFtHiB7lXaNST9Urgk4aA1DJX9G8DTR3YjjpwkB/1yj
-        cnjky7jIFJMDTm8C2Pr/H5+GnbcfE1Q=
-X-Google-Smtp-Source: APXvYqwNni3hQgfIfX1vlkCrokKwyjtCuO5wouuSrghjrmul/HNcXhIJADl30LQonuwfFjSOaVVjJg==
-X-Received: by 2002:a1c:9e92:: with SMTP id h140mr861706wme.82.1558684580772;
-        Fri, 24 May 2019 00:56:20 -0700 (PDT)
-Received: from [192.168.0.100] (84-33-66-28.dyn.eolo.it. [84.33.66.28])
-        by smtp.gmail.com with ESMTPSA id j190sm1753319wmb.19.2019.05.24.00.56.18
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 24 May 2019 00:56:19 -0700 (PDT)
-From:   Paolo Valente <paolo.valente@linaro.org>
-Message-Id: <CDB0583F-8852-4BF8-98F9-EAA93838ADD5@linaro.org>
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-Date:   Fri, 24 May 2019 09:56:17 +0200
-In-Reply-To: <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
-Cc:     linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
-To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
- <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
- <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
- <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
- <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
- <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
- <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
- <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
- <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
- <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
- <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
- <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
- <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
- <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
-X-Mailer: Apple Mail (2.3445.104.8)
+        id S2389732AbfEXI4B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 04:56:01 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:46790 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389874AbfEXI4B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 04:56:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=pmXwLdZ27o/ZAHcWOVnuw+ZMjQnjYqv7rTKwOpO73BE=; b=heCu+gLeCHMqX0EFl1A2Hq2vH
+        mnQORA85CbgLV1+NPgAljS8Fn9oGwO/yqALDhb1I9PUvYMJUSAaEtvvgTcwOi4v9VO9Qbu+yn9gjv
+        3WKnumQ/Ir+/5X8tpg71QhlOiJiT0/pw7+d2/SEGk9KpLXas9eOe31Vd+KwhY+HLDOZ5n4FHLSOFl
+        N79U8ZpG2BhjeTgmC6FUlSVAssSA4uwQQn3J/dzn+GKlM9Ow9sVLoTJj5YQRyvI5Vykf4Xrrbd1hz
+        JEbXQBkyCBPqbD0cevGpH0YRkUpiRaCfhRdYgc/T2HnWf29J8TSgd13The7Jl517qid6lRSoG0fKq
+        S2Dfk/N2A==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.90_1 #2 (Red Hat Linux))
+        id 1hU5zV-0007Cp-Ri; Fri, 24 May 2019 08:55:54 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ABEEF201D3687; Fri, 24 May 2019 10:55:52 +0200 (CEST)
+Date:   Fri, 24 May 2019 10:55:52 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Dave Chiluk <chiluk+linux@indeed.com>
+Cc:     Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Kyle Anderson <kwa@yelp.com>,
+        Gabriel Munos <gmunoz@netflix.com>,
+        John Hammond <jhammond@indeed.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Ben Segall <bsegall@google.com>, Paul Turner <pjt@google.com>
+Subject: Re: [PATCH v2 1/1] sched/fair: Fix low cpu usage with high
+ throttling by removing expiration of cpu-local slices
+Message-ID: <20190524085552.GG2589@hirez.programming.kicks-ass.net>
+References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
+ <1558637087-20283-1-git-send-email-chiluk+linux@indeed.com>
+ <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7
-Content-Type: multipart/mixed;
-	boundary="Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F"
+(it always helps to Cc the people who actually wrote the code)
 
+Ben, can you have a look at this?
 
---Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-
-> Il giorno 24 mag 2019, alle ore 08:51, Paolo Valente =
-<paolo.valente@linaro.org> ha scritto:
->=20
->=20
->=20
->> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->>=20
->> On 5/23/19 10:22 AM, Paolo Valente wrote:
->>>=20
->>>> Il giorno 23 mag 2019, alle ore 11:19, Paolo Valente =
-<paolo.valente@linaro.org> ha scritto:
->>>>=20
->>>>> Il giorno 23 mag 2019, alle ore 04:30, Srivatsa S. Bhat =
-<srivatsa@csail.mit.edu> ha scritto:
->>>>>=20
->> [...]
->>>>> Also, I'm very happy to run additional tests or experiments to =
-help
->>>>> track down this issue. So, please don't hesitate to let me know if
->>>>> you'd like me to try anything else or get you additional traces =
-etc. :)
->>>>>=20
->>>>=20
->>>> Here's to you!  :) I've attached a new small improvement that may
->>>> reduce fluctuations (path to apply on top of the others, of =
-course).
->>>> Unfortunately, I don't expect this change to boost the throughput
->>>> though.
->>>>=20
->>>> In contrast, I've thought of a solution that might be rather
->>>> effective: making BFQ aware (heuristically) of trivial
->>>> synchronizations between processes in different groups. This will
->>>> require a little more work and time.
->>>>=20
->>>=20
->>> Hi Srivatsa,
->>> I'm back :)
->>>=20
->>> First, there was a mistake in the last patch I sent you, namely in
->>> 0001-block-bfq-re-sample-req-service-times-when-possible.patch.
->>> Please don't apply that patch at all.
->>>=20
->>> I've attached a new series of patches instead.  The first patch in =
-this
->>> series is a fixed version of the faulty patch above (if I'm creating =
-too
->>> much confusion, I'll send you again all patches to apply on top of
->>> mainline).
->>>=20
->>=20
->> No problem, I got it :)
->>=20
->>> This series also implements the more effective idea I told you a few
->>> hours ago.  In my system, the loss is now around only 10%, even with
->>> low_latency on.
->>>=20
->>=20
->> When trying to run multiple dd tasks simultaneously, I get the kernel
->> panic shown below (mainline is fine, without these patches).
->>=20
->=20
-> Could you please provide me somehow with a list =
-*(bfq_serv_to_charge+0x21) ?
->=20
-
-Maybe I've found the cause. Please apply also the two patches attached =
-and retry.
-
-Thanks,
-Paolo
-
-
---Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
-Content-Disposition: attachment;
-	filename=fix-patches-for-waker-detection.tgz
-Content-Type: application/octet-stream;
-	x-unix-mode=0644;
-	name="fix-patches-for-waker-detection.tgz"
-Content-Transfer-Encoding: base64
-
-H4sIAFqj51wAA+1WbVMbNxDOV+5XLMw0Y7BlTud78TkNQ9MObT+kSYe2XzqdG/mkMyrnk32SCUzo
-f+9KZ8AOBkJLmOn0HmxkSavVanf1rAp5TmbM5CdCk0LV5AM7FTXhwojcSFXtv3gC+L6fRBG4Nm5a
-PwibdgmggzChSUAjfwA+TcLAfwHRU2z+EBbasBpNmTFVqnvkUKwo7plfnuO6/Y+geCD+eBZKxqXK
-T8m4mJMpThO9qAVhtj8nUpNKGVwgpoITpok02inpO61uD9QRh+Gd8afJIFiP/yDAzgvwn8MB//P4
-H9VqCuF46MeUFklQsAEdCx5EOWNhyngeFSIKAj9OOec+vFUVHIsZ0AR8f+Q+EGAEPatmBO+tD+E3
-VorKCPjaubR/1nQPS1mxWvVVPTnwvmNGjOColj3ARHjLLlALTcFPRxEdRQPo+qjVO16M/8Q0HMHv
-77/55dsfgO4Hf4DLxR5g8o3AZiPYbARmB+YgNWA2QpONwDRgNoJLac87lpMKU1QVBRlfPMJWQojX
-7Lpvb4BUGi8L7+dwCWhoFycpFLIUkJ+waiI4HglkpUVt74/udHd7KMBFKWy/Q3Y9j8uiAEIm0gDb
-36R5vGnUkxUX50DH3BfBMGRBkfT7QZ4O4zQuaDyIgbp7Zg3erNfrdrt36D48BIIuT3oJdF07BBzC
-nDcyhzMlufVvxjjPajFfCG062tSL3MCyC3v1fNeDLYQVnLL6NLMRyU6YzlwAOra7++pGplQTJ2In
-uAvovAc7KN8EDLQwYBR8xXd6zaItsHCsc+BEsub3THLUS1DgLxClFiALcErJQcm0yXI1naH3Bdo+
-d0tg+7XXfZR4k10vX7plW40V96qHG7k1a3fh47UH1ibg9b06V/yWl4LVdzgXI+8F/cDvU8/7vPv/
-GfwfrPC/FWcEpbHPKiR8zslU1atsfxsP8P+A4uQa/wcJjaOW/58Djv/HNImSaBAXaT6O8Zv6UcSS
-dODnlA2LcV5QGoX5MH4O/g9GwV38H3zK/5iNyPwuGwGzETAbwWbjFyH7FMm+wQbKH35Jyl8l+X6f
-BkMbqxz/+L+l/DSJejF0bZOuEP6n3G5pp0BbskqcG6SkK/K345wZ5iQ40vRy/aLSzv9QqmripNA3
-Z5lRGTqsnogNxeOK41c049xCONW2tHxE7n1z9HP25tfvs3c/dbYbArX7Iu+tT9WWCruocMnsDVnq
-iypveBIuL6+IuUaqFRiaAwzY5SUuWZaYjOmL6VSYWuaZzgUmiFSdmy2bcrXrKl4tzKKuMGlOLVlr
-TFhV646zwbo4jENqfYxt2KP0tpfXj4oKSlTRjGz287LOIpg9U1NXetclp7HfHXm84BNhslIUprMi
-24g6t6367XZJaureJsGN9eeqQK6boC9uaV6V3L5d0JdZtgzi1v6e/Q978GMB5kTArFa50Bqfd1rl
-EpmEwwdpTpoabd8PrNQK3HmvFu6/g5mouKwmPauiwttqmQWfh8sYxal9+YRxkmCsnipEd71yVkK1
-k58opdEu4LJGpeWFO2LzAmq2vHkAPfj+eTiQS7OWz401qVePsVmjD1cslnrV5J1/9BJp0aJFixYt
-WrRo0aJFixYtWrRo0aJFixYtWjwV/gYrXf+BACgAAA==
---Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-
-> Thanks,
-> Paolo
->=20
->> [  568.232231] BUG: kernel NULL pointer dereference, address: =
-0000000000000024
->> [  568.232257] #PF: supervisor read access in kernel mode
->> [  568.232273] #PF: error_code(0x0000) - not-present page
->> [  568.232289] PGD 0 P4D 0
->> [  568.232299] Oops: 0000 [#1] SMP PTI
->> [  568.232312] CPU: 0 PID: 1029 Comm: dd Tainted: G            E     =
-5.1.0-io-dbg-4+ #6
->> [  568.232334] Hardware name: VMware, Inc. VMware Virtual =
-Platform/440BX Desktop Reference Platform, BIOS 6.00 04/05/2016
->> [  568.232388] RIP: 0010:bfq_serv_to_charge+0x21/0x50
->> [  568.232404] Code: ff e8 c3 5e bc ff 0f 1f 00 0f 1f 44 00 00 48 8b =
-86 20 01 00 00 55 48 89 e5 53 48 89 fb a8 40 75 09 83 be a0 01 00 00 01 =
-76 09 <8b> 43 24 c1 e8 09 5b 5d c3 48 8b 7e 08 e8 5d fd ff ff 84 c0 75 =
-ea
->> [  568.232473] RSP: 0018:ffffa73a42dab750 EFLAGS: 00010002
->> [  568.232489] RAX: 0000000000001052 RBX: 0000000000000000 RCX: =
-ffffa73a42dab7a0
->> [  568.232510] RDX: ffffa73a42dab657 RSI: ffff8b7b6ba2ab70 RDI: =
-0000000000000000
->> [  568.232530] RBP: ffffa73a42dab758 R08: 0000000000000000 R09: =
-0000000000000001
->> [  568.232551] R10: 0000000000000000 R11: ffffa73a42dab7a0 R12: =
-ffff8b7b6aed3800
->> [  568.232571] R13: 0000000000000000 R14: 0000000000000000 R15: =
-ffff8b7b6aed3800
->> [  568.232592] FS:  00007fb5b0724540(0000) GS:ffff8b7b6f800000(0000) =
-knlGS:0000000000000000
->> [  568.232615] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [  568.232632] CR2: 0000000000000024 CR3: 00000004266be002 CR4: =
-00000000001606f0
->> [  568.232690] Call Trace:
->> [  568.232703]  bfq_select_queue+0x781/0x1000
->> [  568.232717]  bfq_dispatch_request+0x1d7/0xd60
->> [  568.232731]  ? =
-bfq_bfqq_handle_idle_busy_switch.isra.36+0x2cd/0xb20
->> [  568.232751]  blk_mq_do_dispatch_sched+0xa8/0xe0
->> [  568.232765]  blk_mq_sched_dispatch_requests+0xe3/0x150
->> [  568.232783]  __blk_mq_run_hw_queue+0x56/0x100
->> [  568.232798]  __blk_mq_delay_run_hw_queue+0x107/0x160
->> [  568.232814]  blk_mq_run_hw_queue+0x75/0x190
->> [  568.232828]  blk_mq_sched_insert_requests+0x7a/0x100
->> [  568.232844]  blk_mq_flush_plug_list+0x1d7/0x280
->> [  568.232859]  blk_flush_plug_list+0xc2/0xe0
->> [  568.232872]  blk_finish_plug+0x2c/0x40
->> [  568.232886]  ext4_writepages+0x592/0xe60
->> [  568.233381]  ? ext4_mark_iloc_dirty+0x52b/0x860
->> [  568.233851]  do_writepages+0x3c/0xd0
->> [  568.234304]  ? ext4_mark_inode_dirty+0x1a0/0x1a0
->> [  568.234748]  ? do_writepages+0x3c/0xd0
->> [  568.235197]  ? __generic_write_end+0x4e/0x80
->> [  568.235644]  __filemap_fdatawrite_range+0xa5/0xe0
->> [  568.236089]  ? __filemap_fdatawrite_range+0xa5/0xe0
->> [  568.236533]  ? ext4_da_write_end+0x13c/0x280
->> [  568.236983]  file_write_and_wait_range+0x5a/0xb0
->> [  568.237407]  ext4_sync_file+0x11e/0x3e0
->> [  568.237819]  vfs_fsync_range+0x48/0x80
->> [  568.238217]  ext4_file_write_iter+0x234/0x3d0
->> [  568.238610]  ? _cond_resched+0x19/0x40
->> [  568.238982]  new_sync_write+0x112/0x190
->> [  568.239347]  __vfs_write+0x29/0x40
->> [  568.239705]  vfs_write+0xb1/0x1a0
->> [  568.240078]  ksys_write+0x89/0xc0
->> [  568.240428]  __x64_sys_write+0x1a/0x20
->> [  568.240771]  do_syscall_64+0x5b/0x140
->> [  568.241115]  entry_SYSCALL_64_after_hwframe+0x49/0xbe
->> [  568.241456] RIP: 0033:0x7fb5b02325f4
->> [  568.241787] Code: 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b3 0f =
-1f 80 00 00 00 00 48 8d 05 09 11 2d 00 8b 00 85 c0 75 13 b8 01 00 00 00 =
-0f 05 <48> 3d 00 f0 ff ff 77 54 f3 c3 66 90 41 54 55 49 89 d4 53 48 89 =
-f5
->> [  568.242842] RSP: 002b:00007ffcb12e2968 EFLAGS: 00000246 ORIG_RAX: =
-0000000000000001
->> [  568.243220] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: =
-00007fb5b02325f4
->> [  568.243616] RDX: 0000000000000200 RSI: 000055698f2ad000 RDI: =
-0000000000000001
->> [  568.244026] RBP: 0000000000000200 R08: 0000000000000004 R09: =
-0000000000000003
->> [  568.244401] R10: 00007fb5b04feca0 R11: 0000000000000246 R12: =
-000055698f2ad000
->> [  568.244775] R13: 0000000000000000 R14: 0000000000000000 R15: =
-000055698f2ad000
->> [  568.245154] Modules linked in: xt_MASQUERADE(E) =
-nf_conntrack_netlink(E) nfnetlink(E) xfrm_user(E) xfrm_algo(E) =
-xt_addrtype(E) br_netfilter(E) bridge(E) stp(E) llc(E) overlay(E) =
-vmw_vsock_vmci_transport(E) vsock(E) ip6table_filter(E) ip6_tables(E) =
-xt_conntrack(E) iptable_mangle(E) iptable_nat(E) nf_nat(E) =
-iptable_filter
->> [  568.248651] CR2: 0000000000000024
->> [  568.249142] ---[ end trace 0ddd315e0a5bdfba ]---
->>=20
->>=20
->> Regards,
->> Srivatsa
->> VMware Photon OS
-
-
---Apple-Mail=_EC32D5E7-9C4C-4CC3-A6AC-7B1210BF124F--
-
---Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzno6EACgkQOAkCLQGo
-9oP5Yw//cMsQ66HWRVR3U6hWYrjB0Qqp0C0XdkV4yBVB8zO25XyddWQNmpJJ0WIj
-GXS4Cx67f0RxmAS1KBkwPROtmDAaNDkUVSaGSX8un85/jgo5u9lZ8918x0IoWGLl
-3ClDL0+kY84Tgtys5ND5zKcB3q6E4WWezI7ckJV2hdHoaeO/30P644RcSV/A9Fxt
-4Dv+/iSmN5nLJ2VXSs/aKnEMS9HlrmhdUG/NEdOOqZfqG4WX6e52tlu/uy+/kZ3U
-BHkIXImmaxZZOD6bLnb8BkzPlanAGFHgjFrZI7W01Oa4vZaTis5P0kvTCM5AScm9
-Jf7Zg1uWKqGRDbMCLBsRtT2gC/3UJuRoIh4ppHcrg4NvHKsMnlcwA+ivrJ0TjlVA
-lkr4UVhP1eEI2ewmEBqGInOXRGy9qyO+m7h4q3bKftz1J+0SW+yUU9Gfq9aNIhrF
-8VTGnLu7g532TMlELiQWLaXNgGbTAIRckzD8HkIQ9iCr+XfKXPVKz+QEuH1CXQvn
-FbUXNugUKvHxAgSL5Q3I57558xUzhPHxl74/Xti0MeC8nwocUTeJYm5evbFFPCr2
-SZ07bfTXF6JY09zZ8J1oJCquBgFSn7mijmrpT4Bu39IMB20orvNl1vJH75qUfo4F
-w3MPzqGF2N5lPZBFtWRQb6rhUDdNcHMX6cl4byx6XxGnAP2D9sM=
-=eDWo
------END PGP SIGNATURE-----
-
---Apple-Mail=_1E5A2666-71A4-465E-B108-71D502D558C7--
+On Thu, May 23, 2019 at 01:44:47PM -0500, Dave Chiluk wrote:
+> It has been observed, that highly-threaded, non-cpu-bound applications
+> running under cpu.cfs_quota_us constraints can hit a high percentage of
+> periods throttled while simultaneously not consuming the allocated
+> amount of quota.  This use case is typical of user-interactive non-cpu
+> bound applications, such as those running in kubernetes or mesos when
+> run on multiple cpu cores.
+> 
+> This has been root caused to threads being allocated per cpu bandwidth
+> slices, and then not fully using that slice within the period. At which
+> point the slice and quota expires.  This expiration of unused slice
+> results in applications not being able to utilize the quota for which
+> they are allocated.
+> 
+> The expiration of per-cpu slices was recently fixed by
+> 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
+> condition")'.  Prior to that it appears that this has been broken since
+> at least 'commit 51f2176d74ac ("sched/fair: Fix unlocked reads of some
+> cfs_b->quota/period")' which was introduced in v3.16-rc1 in 2014.  That
+> added the following conditional which resulted in slices never being
+> expired.
+> 
+> if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
+> 	/* extend local deadline, drift is bounded above by 2 ticks */
+> 	cfs_rq->runtime_expires += TICK_NSEC;
+> 
+> Because this was broken for nearly 5 years, and has recently been fixed
+> and is now being noticed by many users running kubernetes
+> (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
+> that the mechanisms around expiring runtime should be removed
+> altogether.
+> 
+> This allows only per-cpu slices to live longer than the period boundary.
+> This allows threads on runqueues that do not use much CPU to continue to
+> use their remaining slice over a longer period of time than
+> cpu.cfs_period_us. However, this helps prevents the above condition of
+> hitting throttling while also not fully utilizing your cpu quota.
+> 
+> This theoretically allows a machine to use slightly more than it's
+> allotted quota in some periods.  This overflow would be bounded by the
+> remaining per-cpu slice that was left un-used in the previous period.
+> For CPU bound tasks this will change nothing, as they should
+> theoretically fully utilize all of their quota and slices in each
+> period. For user-interactive tasks as described above this provides a
+> much better user/application experience as their cpu utilization will
+> more closely match the amount they requested when they hit throttling.
+> 
+> This greatly improves performance of high-thread-count, non-cpu bound
+> applications with low cfs_quota_us allocation on high-core-count
+> machines. In the case of an artificial testcase, this performance
+> discrepancy has been observed to be almost 30x performance improvement,
+> while still maintaining correct cpu quota restrictions albeit over
+> longer time intervals than cpu.cfs_period_us.  That testcase is
+> available at https://github.com/indeedeng/fibtest.
+> 
+> Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
+> Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
+> ---
+>  Documentation/scheduler/sched-bwc.txt | 29 +++++++++++---
+>  kernel/sched/fair.c                   | 71 +++--------------------------------
+>  kernel/sched/sched.h                  |  4 --
+>  3 files changed, 29 insertions(+), 75 deletions(-)
+> 
+> diff --git a/Documentation/scheduler/sched-bwc.txt b/Documentation/scheduler/sched-bwc.txt
+> index f6b1873..4ded8ae 100644
+> --- a/Documentation/scheduler/sched-bwc.txt
+> +++ b/Documentation/scheduler/sched-bwc.txt
+> @@ -8,16 +8,33 @@ CFS bandwidth control is a CONFIG_FAIR_GROUP_SCHED extension which allows the
+>  specification of the maximum CPU bandwidth available to a group or hierarchy.
+>  
+>  The bandwidth allowed for a group is specified using a quota and period. Within
+> -each given "period" (microseconds), a group is allowed to consume only up to
+> -"quota" microseconds of CPU time.  When the CPU bandwidth consumption of a
+> -group exceeds this limit (for that period), the tasks belonging to its
+> -hierarchy will be throttled and are not allowed to run again until the next
+> -period.
+> +each given "period" (microseconds), a task group is allocated up to "quota"
+> +microseconds of CPU time.  When the CPU bandwidth consumption of a group
+> +exceeds this limit (for that period), the tasks belonging to its hierarchy will
+> +be throttled and are not allowed to run again until the next period.
+>  
+>  A group's unused runtime is globally tracked, being refreshed with quota units
+>  above at each period boundary.  As threads consume this bandwidth it is
+>  transferred to cpu-local "silos" on a demand basis.  The amount transferred
+> -within each of these updates is tunable and described as the "slice".
+> +within each of these updates is tunable and described as the "slice".  Slices
+> +that are allocated to cpu-local silos do not expire at the end of the period,
+> +but unallocated quota does.  This doesn't affect cpu-bound applications as they
+> +by definition consume all of their bandwidth in each each period.
+> +
+> +However for highly-threaded user-interactive/non-cpu bound applications this
+> +non-expiration nuance allows applications to burst past their quota limits
+> +equal to the amount of unused slice per cpu that the task group is running on.
+> +This slight burst requires that quota had gone unused in previous periods.
+> +Additionally this burst amount is limited to the size of a slice for every cpu
+> +a task group is run on.  As a result, this mechanism still strictly limits the
+> +task group to quota average usage over a longer time windows.  This provides
+> +better more predictable user experience for highly threaded applications with
+> +small quota limits on high core count machines.  It also eliminates the
+> +propensity to throttle these applications while simultanously using less than
+> +quota amounts of cpu.  Another way to say this, is that by allowing the unused
+> +portion of a slice to be used in following periods we have decreased the
+> +possibility of wasting unused quota on cpu-local silos that don't need much cpu
+> +time.
+>  
+>  Management
+>  ----------
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index f35930f..a675c69 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -4295,8 +4295,6 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
+>  
+>  	now = sched_clock_cpu(smp_processor_id());
+>  	cfs_b->runtime = cfs_b->quota;
+> -	cfs_b->runtime_expires = now + ktime_to_ns(cfs_b->period);
+> -	cfs_b->expires_seq++;
+>  }
+>  
+>  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+> @@ -4318,8 +4316,7 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+>  {
+>  	struct task_group *tg = cfs_rq->tg;
+>  	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(tg);
+> -	u64 amount = 0, min_amount, expires;
+> -	int expires_seq;
+> +	u64 amount = 0, min_amount;
+>  
+>  	/* note: this is a positive sum as runtime_remaining <= 0 */
+>  	min_amount = sched_cfs_bandwidth_slice() - cfs_rq->runtime_remaining;
+> @@ -4336,61 +4333,17 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+>  			cfs_b->idle = 0;
+>  		}
+>  	}
+> -	expires_seq = cfs_b->expires_seq;
+> -	expires = cfs_b->runtime_expires;
+>  	raw_spin_unlock(&cfs_b->lock);
+>  
+>  	cfs_rq->runtime_remaining += amount;
+> -	/*
+> -	 * we may have advanced our local expiration to account for allowed
+> -	 * spread between our sched_clock and the one on which runtime was
+> -	 * issued.
+> -	 */
+> -	if (cfs_rq->expires_seq != expires_seq) {
+> -		cfs_rq->expires_seq = expires_seq;
+> -		cfs_rq->runtime_expires = expires;
+> -	}
+>  
+>  	return cfs_rq->runtime_remaining > 0;
+>  }
+>  
+> -/*
+> - * Note: This depends on the synchronization provided by sched_clock and the
+> - * fact that rq->clock snapshots this value.
+> - */
+> -static void expire_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+> -{
+> -	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
+> -
+> -	/* if the deadline is ahead of our clock, nothing to do */
+> -	if (likely((s64)(rq_clock(rq_of(cfs_rq)) - cfs_rq->runtime_expires) < 0))
+> -		return;
+> -
+> -	if (cfs_rq->runtime_remaining < 0)
+> -		return;
+> -
+> -	/*
+> -	 * If the local deadline has passed we have to consider the
+> -	 * possibility that our sched_clock is 'fast' and the global deadline
+> -	 * has not truly expired.
+> -	 *
+> -	 * Fortunately we can check determine whether this the case by checking
+> -	 * whether the global deadline(cfs_b->expires_seq) has advanced.
+> -	 */
+> -	if (cfs_rq->expires_seq == cfs_b->expires_seq) {
+> -		/* extend local deadline, drift is bounded above by 2 ticks */
+> -		cfs_rq->runtime_expires += TICK_NSEC;
+> -	} else {
+> -		/* global deadline is ahead, expiration has passed */
+> -		cfs_rq->runtime_remaining = 0;
+> -	}
+> -}
+> -
+>  static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
+>  {
+>  	/* dock delta_exec before expiring quota (as it could span periods) */
+>  	cfs_rq->runtime_remaining -= delta_exec;
+> -	expire_cfs_rq_runtime(cfs_rq);
+>  
+>  	if (likely(cfs_rq->runtime_remaining > 0))
+>  		return;
+> @@ -4581,8 +4534,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
+>  		resched_curr(rq);
+>  }
+>  
+> -static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
+> -		u64 remaining, u64 expires)
+> +static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b, u64 remaining)
+>  {
+>  	struct cfs_rq *cfs_rq;
+>  	u64 runtime;
+> @@ -4604,7 +4556,6 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
+>  		remaining -= runtime;
+>  
+>  		cfs_rq->runtime_remaining += runtime;
+> -		cfs_rq->runtime_expires = expires;
+>  
+>  		/* we check whether we're throttled above */
+>  		if (cfs_rq->runtime_remaining > 0)
+> @@ -4629,7 +4580,7 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
+>   */
+>  static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, unsigned long flags)
+>  {
+> -	u64 runtime, runtime_expires;
+> +	u64 runtime;
+>  	int throttled;
+>  
+>  	/* no need to continue the timer with no bandwidth constraint */
+> @@ -4657,8 +4608,6 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
+>  	/* account preceding periods in which throttling occurred */
+>  	cfs_b->nr_throttled += overrun;
+>  
+> -	runtime_expires = cfs_b->runtime_expires;
+> -
+>  	/*
+>  	 * This check is repeated as we are holding onto the new bandwidth while
+>  	 * we unthrottle. This can potentially race with an unthrottled group
+> @@ -4671,8 +4620,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
+>  		cfs_b->distribute_running = 1;
+>  		raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
+>  		/* we can't nest cfs_b->lock while distributing bandwidth */
+> -		runtime = distribute_cfs_runtime(cfs_b, runtime,
+> -						 runtime_expires);
+> +		runtime = distribute_cfs_runtime(cfs_b, runtime);
+>  		raw_spin_lock_irqsave(&cfs_b->lock, flags);
+>  
+>  		cfs_b->distribute_running = 0;
+> @@ -4749,8 +4697,7 @@ static void __return_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+>  		return;
+>  
+>  	raw_spin_lock(&cfs_b->lock);
+> -	if (cfs_b->quota != RUNTIME_INF &&
+> -	    cfs_rq->runtime_expires == cfs_b->runtime_expires) {
+> +	if (cfs_b->quota != RUNTIME_INF) {
+>  		cfs_b->runtime += slack_runtime;
+>  
+>  		/* we are under rq->lock, defer unthrottling using a timer */
+> @@ -4783,7 +4730,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
+>  {
+>  	u64 runtime = 0, slice = sched_cfs_bandwidth_slice();
+>  	unsigned long flags;
+> -	u64 expires;
+>  
+>  	/* confirm we're still not at a refresh boundary */
+>  	raw_spin_lock_irqsave(&cfs_b->lock, flags);
+> @@ -4800,7 +4746,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
+>  	if (cfs_b->quota != RUNTIME_INF && cfs_b->runtime > slice)
+>  		runtime = cfs_b->runtime;
+>  
+> -	expires = cfs_b->runtime_expires;
+>  	if (runtime)
+>  		cfs_b->distribute_running = 1;
+>  
+> @@ -4809,11 +4754,9 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
+>  	if (!runtime)
+>  		return;
+>  
+> -	runtime = distribute_cfs_runtime(cfs_b, runtime, expires);
+> +	runtime = distribute_cfs_runtime(cfs_b, runtime);
+>  
+>  	raw_spin_lock_irqsave(&cfs_b->lock, flags);
+> -	if (expires == cfs_b->runtime_expires)
+> -		lsub_positive(&cfs_b->runtime, runtime);
+>  	cfs_b->distribute_running = 0;
+>  	raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
+>  }
+> @@ -4969,8 +4912,6 @@ void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+>  
+>  	cfs_b->period_active = 1;
+>  	overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
+> -	cfs_b->runtime_expires += (overrun + 1) * ktime_to_ns(cfs_b->period);
+> -	cfs_b->expires_seq++;
+>  	hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
+>  }
+>  
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index b52ed1a..0c0ed23 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -341,8 +341,6 @@ struct cfs_bandwidth {
+>  	u64			quota;
+>  	u64			runtime;
+>  	s64			hierarchical_quota;
+> -	u64			runtime_expires;
+> -	int			expires_seq;
+>  
+>  	short			idle;
+>  	short			period_active;
+> @@ -562,8 +560,6 @@ struct cfs_rq {
+>  
+>  #ifdef CONFIG_CFS_BANDWIDTH
+>  	int			runtime_enabled;
+> -	int			expires_seq;
+> -	u64			runtime_expires;
+>  	s64			runtime_remaining;
+>  
+>  	u64			throttled_clock;
+> -- 
+> 1.8.3.1
+> 
