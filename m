@@ -2,180 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD7A2A0F6
-	for <lists+cgroups@lfdr.de>; Sat, 25 May 2019 00:07:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96842A1D4
+	for <lists+cgroups@lfdr.de>; Sat, 25 May 2019 01:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730068AbfEXWHY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 18:07:24 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:42451 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729552AbfEXWHX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 18:07:23 -0400
-Received: by mail-ed1-f66.google.com with SMTP id l25so16224669eda.9
-        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 15:07:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=posk.io; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=aqOH77AFv2fQ8WuNNOzGfaD62FQFznjbgv+BXyATBoQ=;
-        b=L92ErfkuKLNpSCuWOJZZYzzlKOxrRVdqgQOBcjLPbFUroWQMmZvZtNA6dAB+17Wp41
-         TsoWakbK40NRsG9ef9j62ZTdS7xdavC+K/GMFLsgIqhT5cQwUFhyoj1NnjH+LjGJrsVH
-         HetgkYR02HOFa1rwZRMQjk+Ko62kS32RL5MPtPpnF4g8GH7EB2lQvXKB6GXnmsAFtmOo
-         mAioyfEYLn/Jhgp/OG/syHn2KTY47nYNyLDMGNa4IPECUm79DRux4xABUByvt8Ltc23W
-         izpv+UC8EJNqgiKju3Z8eKxd8rGxXsWyUAQKoubEVoRhQqB7ELWwWq4Qqi7MhaQzdrVT
-         G9KQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aqOH77AFv2fQ8WuNNOzGfaD62FQFznjbgv+BXyATBoQ=;
-        b=NPAxufUobkKSuG2uBZGG0gCTmovolO02nJGru8jTsiThMNSLF3szQSOpt+URsihfQV
-         Mgv/4jq8IiciRgbBAN4feIG6S0nsIIt6ZIj/HFfTGrG2iajgivSc4R+5tvcBUm0alj++
-         RK7WdBAmkxO5csnUYaBmapcKDXRpb+i/K+Xov21+cCQV7s2N/XcIQf3l4lR7rQIV0Gki
-         F941UFxeou3NOHHcq1HmkvjcG1QZNI24kx2EQ9mSY8K9VUN/lgrE6tPNw9kCGKeBGdu3
-         q9BIrjVrX9HDJ6xfkatlPyoEgvzvCFjm8nvIiJtKe6Etn2NUePSdxK0ovgd3gp3U6XlR
-         Sttw==
-X-Gm-Message-State: APjAAAUcjaME8NruzO2gCOQEmfylbMUukibRqRDX/zTRlrjTltLVO97x
-        SYGSGnDVsO25L2t9OayfZR/GstXFYKwCGn1kP10CEg==
-X-Google-Smtp-Source: APXvYqwm0syJ2uvbnJzuayuTIzucKMGjLKTBqqb04IwuxhvLNtPc31ycK/h5Y88aVdOST0pL3yfJjj5rxMjP2l6qA9E=
-X-Received: by 2002:a17:906:4e87:: with SMTP id v7mr78014607eju.150.1558735641658;
- Fri, 24 May 2019 15:07:21 -0700 (PDT)
+        id S1726127AbfEXXwX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 19:52:23 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:51184 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726125AbfEXXwO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 19:52:14 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x4ONnDGX006988
+        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 16:52:14 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-type; s=facebook;
+ bh=XDz+gmj/EBFqZGWRU3jYaIrBb6wF338CvPmYvlgJN2I=;
+ b=mv80gHPIWaroUzxkE2SCC1qEQelrZ/H4Chtait3Z/WfTyBoiNBkUGpFAmbr54Bfjk22P
+ FLHd4zHolOU9WCSs6wBkPlks1gxF17SNszVMCxVC1pIDDWE/GY4W/4v3kAPxhTgEdOlY
+ wP2Og9eLcbW3Ah18O3A+G3tZ20mJDUquOJU= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2spmmws6tv-5
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Fri, 24 May 2019 16:52:14 -0700
+Received: from mx-out.facebook.com (2620:10d:c081:10::13) by
+ mail.thefacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA) id 15.1.1713.5;
+ Fri, 24 May 2019 16:52:11 -0700
+Received: by devvm2643.prn2.facebook.com (Postfix, from userid 111017)
+        id 3A7771267AEB3; Fri, 24 May 2019 16:51:57 -0700 (PDT)
+Smtp-Origin-Hostprefix: devvm
+From:   Roman Gushchin <guro@fb.com>
+Smtp-Origin-Hostname: devvm2643.prn2.facebook.com
+To:     Alexei Starovoitov <ast@kernel.org>, <bpf@vger.kernel.org>
+CC:     Daniel Borkmann <daniel@iogearbox.net>, <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, <kernel-team@fb.com>,
+        <cgroups@vger.kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+        Yonghong Song <yhs@fb.com>, <linux-kernel@vger.kernel.org>,
+        Roman Gushchin <guro@fb.com>
+Smtp-Origin-Cluster: prn2c23
+Subject: [PATCH v4 bpf-next 0/4] cgroup bpf auto-detachment
+Date:   Fri, 24 May 2019 16:51:52 -0700
+Message-ID: <20190524235156.4076591-1-guro@fb.com>
+X-Mailer: git-send-email 2.17.1
+X-FB-Internal: Safe
 MIME-Version: 1.0
-References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
- <1558637087-20283-1-git-send-email-chiluk+linux@indeed.com>
- <1558637087-20283-2-git-send-email-chiluk+linux@indeed.com>
- <CAFTs51W0KdK4nw6wydn2HjNYvFRC8DYMmVeKX9FAe+4YUGEAZg@mail.gmail.com>
- <20190524143204.GB4684@lorien.usersys.redhat.com> <CAC=E7cXxsyMLw1PR+8QchTH8FYL7WX6_8LBVdqueR1yjW+VVkQ@mail.gmail.com>
- <CAFTs51Vm258CkDXi_Jj_cGOMotTvhdYR_VW8aUwAUvgistZOFQ@mail.gmail.com> <CAC=E7cXVrGRKMNkJPhd4fJi7wgdYk=YcXPV7B8GVNL5M69BarQ@mail.gmail.com>
-In-Reply-To: <CAC=E7cXVrGRKMNkJPhd4fJi7wgdYk=YcXPV7B8GVNL5M69BarQ@mail.gmail.com>
-From:   Peter Oskolkov <posk@posk.io>
-Date:   Fri, 24 May 2019 15:07:10 -0700
-Message-ID: <CAFTs51VhpDk9iW5UT62CkPCN3SjgUHHO1nVqhe+ssHMYqou6Bg@mail.gmail.com>
-Subject: Re: [PATCH v2 1/1] sched/fair: Fix low cpu usage with high throttling
- by removing expiration of cpu-local slices
-To:     Dave Chiluk <chiluk+linux@indeed.com>
-Cc:     Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
-        Ben Segall <bsegall@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-05-24_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=744 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1905240162
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 24, 2019 at 2:35 PM Dave Chiluk <chiluk+linux@indeed.com> wrote:
->
-> On Fri, May 24, 2019 at 11:28 AM Peter Oskolkov <posk@posk.io> wrote:
-> >
-> > On Fri, May 24, 2019 at 8:15 AM Dave Chiluk <chiluk+linux@indeed.com> wrote:
-> > >
-> > > On Fri, May 24, 2019 at 9:32 AM Phil Auld <pauld@redhat.com> wrote:
-> > > > On Thu, May 23, 2019 at 02:01:58PM -0700 Peter Oskolkov wrote:
-> > >
-> > > > > If the machine runs at/close to capacity, won't the overallocation
-> > > > > of the quota to bursty tasks necessarily negatively impact every other
-> > > > > task? Should the "unused" quota be available only on idle CPUs?
-> > > > > (Or maybe this is the behavior achieved here, and only the comment and
-> > > > > the commit message should be fixed...)
-> > > > >
-> > > >
-> > > > It's bounded by the amount left unused from the previous period. So
-> > > > theoretically a process could use almost twice its quota. But then it
-> > > > would have nothing left over in the next period. To repeat it would have
-> > > > to not use any that next period. Over a longer number of periods it's the
-> > > > same amount of CPU usage.
-> > > >
-> > > > I think that is more fair than throttling a process that has never used
-> > > > its full quota.
-> > > >
-> > > > And it removes complexity.
-> > > >
-> > > > Cheers,
-> > > > Phil
-> > >
-> > > Actually it's not even that bad.  The overallocation of quota to a
-> > > bursty task in a period is limited to at most one slice per cpu, and
-> > > that slice must not have been used in the previous periods.  The slice
-> > > size is set with /proc/sys/kernel/sched_cfs_bandwidth_slice_us and
-> > > defaults to 5ms.  If a bursty task goes from underutilizing quota to
-> > > using it's entire quota, it will not be able to burst in the
-> > > subsequent periods.  Therefore in an absolute worst case contrived
-> > > scenario, a bursty task can add at most 5ms to the latency of other
-> > > threads on the same CPU.  I think this worst case 5ms tradeoff is
-> > > entirely worth it.
-> > >
-> > > This does mean that a theoretically a poorly written massively
-> > > threaded application on an 80 core box, that spreads itself onto 80
-> > > cpu run queues, can overutilize it's quota in a period by at most 5ms
-> > > * 80 CPUs in a sincle period (slice * number of runqueues the
-> > > application is running on).  But that means that each of those threads
-> > >  would have had to not be use their quota in a previous period, and it
-> > > also means that the application would have to be carefully written to
-> > > exacerbate this behavior.
-> > >
-> > > Additionally if cpu bound threads underutilize a slice of their quota
-> > > in a period due to the cfs choosing a bursty task to run, they should
-> > > theoretically be able to make it up in the following periods when the
-> > > bursty task is unable to "burst".
-> >
-> > OK, so it is indeed possible that CPU bound threads will underutilize a slice
-> > of their quota in a period as a result of this patch. This should probably
-> > be clearly stated in the code comments and in the commit message.
-> >
-> > In addition, I believe that although many workloads will indeed be
-> > indifferent to getting their fair share "later", some latency-sensitive
-> > workloads will definitely be negatively affected by this temporary
-> > CPU quota stealing by bursty antagonists. So there should probably be
-> > a way to limit this behavior; for example, by making it tunable
-> > per cgroup.
-> >
-> This patch restores the behavior that existed from at least
-> v3.16..v4.18, and the current Redhat 7 kernels.  So you are kind of
-> championing a moot point as no one has noticed this "bursting"
-> behavior in over 5 years.  By removing this slice expiration
-> altogether we restore the behavior and also solve the root issue of
-> 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
-> condition")'.
->
-> Since 512ac999d275, many people are now noticing the slice expiration
-> and very displeased with the behavior change.
-> see: https://github.com/kubernetes/kubernetes/issues/67577
->
-> I would love to hear if you know of a single complaint during that 5
-> year time window, where someone noticed this bursting and reported
-> that it negatively affected their application.
+This patchset implements a cgroup bpf auto-detachment functionality:
+bpf programs are detached as soon as possible after removal of the
+cgroup, without waiting for the release of all associated resources.
 
-Linux CPU scheduling tail latency is a well-known issue and a major
-pain point in some workloads:
-https://www.google.com/search?q=linux+cpu+scheduling+tail+latency
+Patches 2 and 3 are required to implement a corresponding kselftest
+in patch 4.
 
-Even assuming that nobody noticed this particular cause
-of CPU scheduling latencies, it does not mean the problem should be waved
-away. At least it should be documented, if at this point it decided that
-it is difficult to address it in a meaningful way. And, preferably, a way
-to address the issue later on should be discussed and hopefully agreed to.
+v4:
+  1) release cgroup bpf data using a workqueue
+  2) add test_cgroup_attach to .gitignore
 
->
-> As for the documentation, I thought about documenting the possible
-> adverse side-effect, but I didn't feel it was worthwhile since no one
-> had noticed that corner case in the 5 years.  I also could not figure
-> out a concise way of describing the slight corner case issue without
-> overly complicating the documentation.  I felt that adding that corner
-> case would have detracted rather than added to the documentation's
-> usefulness.  As far as commenting in code, considering most of this
-> commit removes lines, there's not a really great place for it.  That's
-> why I did my best to describe the behavior in the documentation.
-> Smart people can draw conclusions from there as you have done.  Please
-> keep in mind that this "bursting" is again limited to a single slice
-> on each per-cpu run-queue.
->
-> Thank you,
-> Dave
+v3:
+  1) some minor changes and typo fixes
+
+v2:
+  1) removed a bogus check in patch 4
+  2) moved buf[len] = 0 in patch 2
+
+
+Roman Gushchin (4):
+  bpf: decouple the lifetime of cgroup_bpf from cgroup itself
+  selftests/bpf: convert test_cgrp2_attach2 example into kselftest
+  selftests/bpf: enable all available cgroup v2 controllers
+  selftests/bpf: add auto-detach test
+
+ include/linux/bpf-cgroup.h                    |  11 +-
+ include/linux/cgroup.h                        |  18 +++
+ kernel/bpf/cgroup.c                           |  41 ++++-
+ kernel/cgroup/cgroup.c                        |  11 +-
+ samples/bpf/Makefile                          |   2 -
+ tools/testing/selftests/bpf/.gitignore        |   1 +
+ tools/testing/selftests/bpf/Makefile          |   4 +-
+ tools/testing/selftests/bpf/cgroup_helpers.c  |  57 +++++++
+ .../selftests/bpf/test_cgroup_attach.c        | 146 ++++++++++++++++--
+ 9 files changed, 262 insertions(+), 29 deletions(-)
+ rename samples/bpf/test_cgrp2_attach2.c => tools/testing/selftests/bpf/test_cgroup_attach.c (79%)
+
+-- 
+2.21.0
+
