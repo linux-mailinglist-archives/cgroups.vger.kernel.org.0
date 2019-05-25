@@ -2,73 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AD452A1FC
-	for <lists+cgroups@lfdr.de>; Sat, 25 May 2019 02:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E81B2A270
+	for <lists+cgroups@lfdr.de>; Sat, 25 May 2019 04:57:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726245AbfEYAGl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 May 2019 20:06:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726015AbfEYAGl (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 24 May 2019 20:06:41 -0400
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net [24.9.64.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73F5C2075E;
-        Sat, 25 May 2019 00:06:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1558742800;
-        bh=R5AKhhljVFaewfHEJrRuX+cMSqD/1Iy0pRTZaZD5wOA=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=gCiElU+nd/lFG9ym/Rld6sfSG6dgF4ypBbDXnsWuBOAJPxmOH5Ruw1x0wSNYyzIkd
-         gqUvYt2Y1Hy9DiuXT88sEqhkTCfDgtxngUDv7/Zax9v7o/YFOOvrbPtp66lSut0EWI
-         t6IPvgPj2T76F4J4cGrkn+8xspQXslqqsQa5l2hI=
-Subject: Re: [PATCH v2 1/3] kselftest/cgroup: fix unexpected testing failure
- on test_memcontrol
-To:     Tejun Heo <tj@kernel.org>, Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Jay Kamat <jgkamat@fb.com>, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org, shuah <shuah@kernel.org>
-References: <20190520030140.203605-1-alex.shi@linux.alibaba.com>
- <20190520030140.203605-2-alex.shi@linux.alibaba.com>
- <20190524214035.GG374014@devbig004.ftw2.facebook.com>
- <0c6b76b8-e20c-33f0-21da-64a5d5da30a9@kernel.org>
-From:   shuah <shuah@kernel.org>
-Message-ID: <ea5514c1-80a1-3c41-de1c-43582b6f1a49@kernel.org>
-Date:   Fri, 24 May 2019 18:06:39 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        id S1726483AbfEYC5c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 24 May 2019 22:57:32 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:40168 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726452AbfEYC5c (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 24 May 2019 22:57:32 -0400
+Received: by mail-lj1-f194.google.com with SMTP id q62so10237833ljq.7;
+        Fri, 24 May 2019 19:57:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=riyApgsTYeHf2zY9V/AMEGkb7h3Dl4SpcWBAI87ws7o=;
+        b=Cr2EYgUjkeLHCtvqjSOGW9oFUeSPO02ig9NkKOBRRNy0fICJ7Ng/0FaVg2RY/yn8+m
+         fz1gqwEe5Nghmb5/L0O5hssEIMkWS1e+FyPTKJK9O30frk2ZuXUF4A7Sv0KDahcfE8zk
+         YtliVApzcXpsSSdDiNfKn6Sw5q+kJFunCzZVbDdOtbLiZwofrEhlj/bp58LcT/3UnmF0
+         2/ydota/TCeN+DqRA829wZP16pG24a5l/A9vt+NrcUhcK1FAB9OpXT6DXYRCXKa5H0+K
+         2rBqm9geg/dPXJDCyYojiykzXs+Q4uq2kfpSoHY55opQgPFJZNGpg74TUPicJdisQ2Ei
+         eBvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=riyApgsTYeHf2zY9V/AMEGkb7h3Dl4SpcWBAI87ws7o=;
+        b=SV/bm9xe+oglb96lZKDhl3ETHKm19yf2hrQqWNfwRTH/IXVqwvg/+8YNINRPB7/woN
+         JIh7PmJpoMbULffmtpSyhbw+PXp4vRMd5y89fj2hXddpiYqr33hfZ8rkatvS5H08ibhU
+         QRvDSnqJ4Yzw3KmrSz3/Qud/5JS8LhGUbFlNsc8CeLKyygGRJLYbfXOxaTIXh8wsV4b9
+         u6oloT8zVsHRgxD9Sz9Bbn07g/ID+HIwz+NvDIa4TJonvhLaXzW0Zkk+droPIOVuvoNs
+         2wV9PGbaOy96p7tPkAzGiIYfsFz5xH7hPBFy9EzNhc1V5lY0gq4WcFO/Yi4bLi8OcwIw
+         zkRQ==
+X-Gm-Message-State: APjAAAUnN3NaxC91uy5bz6/PCQFpbDAXp6Gp94L1HJT/FDXKHCIovS1K
+        N/weBK+6J1w0iSLdu9uz0RzMhqo5aH5Tllo5jqc=
+X-Google-Smtp-Source: APXvYqxnGOe4vLPIZGxJNiD7SeAsy+hRtoTVLawKiMP0eSxVoqpe33uxazI46OQ4KvRMCNOsqH+AWDLowdcftJ0FSLQ=
+X-Received: by 2002:a2e:96d7:: with SMTP id d23mr1867375ljj.206.1558753049339;
+ Fri, 24 May 2019 19:57:29 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <0c6b76b8-e20c-33f0-21da-64a5d5da30a9@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20190524235156.4076591-1-guro@fb.com>
+In-Reply-To: <20190524235156.4076591-1-guro@fb.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Fri, 24 May 2019 19:57:17 -0700
+Message-ID: <CAADnVQK7uukL5=S=96BrU7YOyxidA4Pnm3rPRoGy45bJU=_8tA@mail.gmail.com>
+Subject: Re: [PATCH v4 bpf-next 0/4] cgroup bpf auto-detachment
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Alexei Starovoitov <ast@kernel.org>, bpf <bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Network Development <netdev@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Kernel Team <kernel-team@fb.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Stanislav Fomichev <sdf@fomichev.me>,
+        Yonghong Song <yhs@fb.com>, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/24/19 3:44 PM, shuah wrote:
-> On 5/24/19 3:40 PM, Tejun Heo wrote:
->> Hello,
->>
->> All three patches look good to me.  Please feel free to add my
->> acked-by.  Shuah, should I route these through cgroup tree or would
->> the kselftest tree be a better fit?
->>
->> Thanks.
->>
-> 
-> 
-> Tejun, I can take them through kselftest tree.
-> 
+On Fri, May 24, 2019 at 4:52 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> This patchset implements a cgroup bpf auto-detachment functionality:
+> bpf programs are detached as soon as possible after removal of the
+> cgroup, without waiting for the release of all associated resources.
+>
+> Patches 2 and 3 are required to implement a corresponding kselftest
+> in patch 4.
+>
+> v4:
+>   1) release cgroup bpf data using a workqueue
+>   2) add test_cgroup_attach to .gitignore
 
-Alex,
-
-patches 1/3 and 2/3 failed checkpatch. Could you please the warns
-and send v3. Go ahead and send all v3 for all 3 patches
-
-thanks,
--- Shuah
-
+There is a conflict in tools/testing/selftests/bpf/Makefile
+Please rebase
