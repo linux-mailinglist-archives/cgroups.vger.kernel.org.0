@@ -2,211 +2,348 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A9D2C93C
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 16:48:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04CF32CAD6
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 18:00:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726992AbfE1Os1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 May 2019 10:48:27 -0400
-Received: from [198.50.183.10] ([198.50.183.10]:60012 "EHLO mahatta.net"
-        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727038AbfE1Os0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 28 May 2019 10:48:26 -0400
-From:   aishatu@mahatta.net
-To:     cgroups@vger.kernel.org
-Subject: Purchase_rfq
-Date:   28 May 2019 16:48:21 +0200
-Message-ID: <20190528164821.C9006D7FE21F30DC@mahatta.net>
+        id S1726734AbfE1QAS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 May 2019 12:00:18 -0400
+Received: from mail-yb1-f193.google.com ([209.85.219.193]:34355 "EHLO
+        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726362AbfE1QAR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 12:00:17 -0400
+Received: by mail-yb1-f193.google.com with SMTP id x32so5134941ybh.1
+        for <cgroups@vger.kernel.org>; Tue, 28 May 2019 09:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=JLUVuSgF9TjSX5+CGhWzvF7FPKQJgaj78mLOqHozZi0=;
+        b=TnfZ9voFC+OqE2g5xxm1QKCI2DDBjvYQSAgvxI4qkdsPcW0JQezwjEc1yPU3DZudph
+         YARd2JI9JLP4WutMgK+tuLzPSDCsdRK13FpIl/OnBo6HjpB/NRXK3agdIAvk+mnKKEXI
+         FGTaR/tc9Jg/2r4Gwh1OfZb81l6h6BsFa7Nc1auJc5GGgNaimWHwrJqaElcGueXy4Kpo
+         dtjwxtfTv7L04dyLcHAmNGALrv4rrfnGn87SiU8o7SiRAKuDogZcdDmMuvtVaoVoHEjw
+         OUZbnBsqbDLGTEDpFmtLZqHtp2Y3mZrPcAbBX0UIpA+NX7xsOhvY6MXcoU3CuuuW5dnH
+         dcFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JLUVuSgF9TjSX5+CGhWzvF7FPKQJgaj78mLOqHozZi0=;
+        b=h/gfH1Yps3J/2JkF3s8S19yzzCzRKp90fUAUJGJ9mTSz/zMYU26zjFTCNikhsxBxwB
+         pmdTTpcEgDjpirxI8UUoVFFN4XI75anThkeUPz3OaguoEGZdfMCL3zgFj3vU6AXXr8rX
+         jzjPKlmq+JtOnzPzDBgspv/qDn/dj6DcLuw8myipspEL99STgo9WD+Mgm3RuylmOEE+l
+         ImL3JIzj4jb3IqyZMJcJBTykK1dn7AfvnYPOqbO1g2QE9WwphO/CZhQBVK9BLH4FoDpx
+         3TanXG7TY7vMZ/Zw95j8gGPx7kv7cs3K5NfzkSbdb1w5heHFlQyp/x3mdCqPA2ZynVde
+         G4IA==
+X-Gm-Message-State: APjAAAUGaIE/+h6GD4IbNf4+82i4IUvIBjxysslpH9HJDzxsRwWrCykV
+        wu9bDGxdPbnZdjJF59Fp+8f5FD9wzjpXfm1Z7AwxiQ==
+X-Google-Smtp-Source: APXvYqwHhed/7BvvQixG5VPDthTxmSGfIWlDM6wzbIXnBlHakZZHPYo0Ct4HcdwUTfPpgePbGSfAwyjwjxJ2tH7mdwI=
+X-Received: by 2002:a25:943:: with SMTP id u3mr25127031ybm.293.1559059216503;
+ Tue, 28 May 2019 09:00:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed;
-        boundary="----=_NextPart_000_0012_ADB17037.D950D37D"
+References: <20190520063534.GB19312@shao2-debian> <20190520215328.GA1186@cmpxchg.org>
+ <20190521134646.GE19312@shao2-debian> <20190521151647.GB2870@cmpxchg.org>
+In-Reply-To: <20190521151647.GB2870@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 28 May 2019 09:00:05 -0700
+Message-ID: <CALvZod5KFJvfBfTZKWiDo_ux_OkLKK-b6sWtnYeFCY2ARiiKwQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: don't batch updates of local VM stats and events
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <rong.a.chen@intel.com>, lkp@01.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This is a multi-part message in MIME format.
+On Tue, May 21, 2019 at 8:16 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> The kernel test robot noticed a 26% will-it-scale pagefault regression
+> from commit 42a300353577 ("mm: memcontrol: fix recursive statistics
+> correctness & scalabilty"). This appears to be caused by bouncing the
+> additional cachelines from the new hierarchical statistics counters.
+>
+> We can fix this by getting rid of the batched local counters instead.
+>
+> Originally, there were *only* group-local counters, and they were
+> fully maintained per cpu. A reader of a stats file high up in the
+> cgroup tree would have to walk the entire subtree and collect each
+> level's per-cpu counters to get the recursive view. This was
+> prohibitively expensive, and so we switched to per-cpu batched updates
+> of the local counters during a983b5ebee57 ("mm: memcontrol: fix
+> excessive complexity in memory.stat reporting"), reducing the
+> complexity from nr_subgroups * nr_cpus to nr_subgroups.
+>
+> With growing machines and cgroup trees, the tree walk itself became
+> too expensive for monitoring top-level groups, and this is when the
+> culprit patch added hierarchy counters on each cgroup level. When the
+> per-cpu batch size would be reached, both the local and the hierarchy
+> counters would get batch-updated from the per-cpu delta simultaneously.
+>
+> This makes local and hierarchical counter reads blazingly fast, but it
+> unfortunately makes the write-side too cache line intense.
+>
+> Since local counter reads were never a problem - we only centralized
+> them to accelerate the hierarchy walk - and use of the local counters
+> are becoming rarer due to replacement with hierarchical views (ongoing
+> rework in the page reclaim and workingset code), we can make those
+> local counters unbatched per-cpu counters again.
+>
+> The scheme will then be as such:
+>
+>    when a memcg statistic changes, the writer will:
+>    - update the local counter (per-cpu)
+>    - update the batch counter (per-cpu). If the batch is full:
+>    - spill the batch into the group's atomic_t
+>    - spill the batch into all ancestors' atomic_ts
+>    - empty out the batch counter (per-cpu)
+>
+>    when a local memcg counter is read, the reader will:
+>    - collect the local counter from all cpus
+>
+>    when a hiearchy memcg counter is read, the reader will:
+>    - read the atomic_t
+>
+> We might be able to simplify this further and make the recursive
+> counters unbatched per-cpu counters as well (batch upward propagation,
+> but leave per-cpu collection to the readers), but that will require a
+> more in-depth analysis and testing of all the callsites. Deal with the
+> immediate regression for now.
+>
+> Fixes: 42a300353577 ("mm: memcontrol: fix recursive statistics correctness & scalabilty")
+> Reported-by: kernel test robot <rong.a.chen@intel.com>
+> Tested-by: kernel test robot <rong.a.chen@intel.com>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  include/linux/memcontrol.h | 26 ++++++++++++++++--------
+>  mm/memcontrol.c            | 41 ++++++++++++++++++++++++++------------
+>  2 files changed, 46 insertions(+), 21 deletions(-)
+>
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index bc74d6a4407c..2d23ae7bd36d 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -126,9 +126,12 @@ struct memcg_shrinker_map {
+>  struct mem_cgroup_per_node {
+>         struct lruvec           lruvec;
+>
+> +       /* Legacy local VM stats */
+> +       struct lruvec_stat __percpu *lruvec_stat_local;
+> +
+> +       /* Subtree VM stats (batched updates) */
+>         struct lruvec_stat __percpu *lruvec_stat_cpu;
+>         atomic_long_t           lruvec_stat[NR_VM_NODE_STAT_ITEMS];
+> -       atomic_long_t           lruvec_stat_local[NR_VM_NODE_STAT_ITEMS];
+>
+>         unsigned long           lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+>
+> @@ -274,17 +277,18 @@ struct mem_cgroup {
+>         atomic_t                moving_account;
+>         struct task_struct      *move_lock_task;
+>
+> -       /* memory.stat */
+> +       /* Legacy local VM stats and events */
+> +       struct memcg_vmstats_percpu __percpu *vmstats_local;
+> +
+> +       /* Subtree VM stats and events (batched updates) */
+>         struct memcg_vmstats_percpu __percpu *vmstats_percpu;
+>
+>         MEMCG_PADDING(_pad2_);
+>
+>         atomic_long_t           vmstats[MEMCG_NR_STAT];
+> -       atomic_long_t           vmstats_local[MEMCG_NR_STAT];
+> -
+>         atomic_long_t           vmevents[NR_VM_EVENT_ITEMS];
+> -       atomic_long_t           vmevents_local[NR_VM_EVENT_ITEMS];
+>
+> +       /* memory.events */
+>         atomic_long_t           memory_events[MEMCG_NR_MEMORY_EVENTS];
+>
+>         unsigned long           socket_pressure;
+> @@ -576,7 +580,11 @@ static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+>  static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+>                                                    int idx)
+>  {
+> -       long x = atomic_long_read(&memcg->vmstats_local[idx]);
+> +       long x = 0;
+> +       int cpu;
+> +
+> +       for_each_possible_cpu(cpu)
+> +               x += per_cpu(memcg->vmstats_local->stat[idx], cpu);
+>  #ifdef CONFIG_SMP
+>         if (x < 0)
+>                 x = 0;
+> @@ -650,13 +658,15 @@ static inline unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>                                                     enum node_stat_item idx)
+>  {
+>         struct mem_cgroup_per_node *pn;
+> -       long x;
+> +       long x = 0;
+> +       int cpu;
+>
+>         if (mem_cgroup_disabled())
+>                 return node_page_state(lruvec_pgdat(lruvec), idx);
+>
+>         pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> -       x = atomic_long_read(&pn->lruvec_stat_local[idx]);
+> +       for_each_possible_cpu(cpu)
+> +               x += per_cpu(pn->lruvec_stat_local->count[idx], cpu);
+>  #ifdef CONFIG_SMP
+>         if (x < 0)
+>                 x = 0;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e50a2db5b4ff..8d42e5c7bf37 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -700,11 +700,12 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+>         if (mem_cgroup_disabled())
+>                 return;
+>
+> +       __this_cpu_add(memcg->vmstats_local->stat[idx], val);
+> +
+>         x = val + __this_cpu_read(memcg->vmstats_percpu->stat[idx]);
+>         if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+>                 struct mem_cgroup *mi;
+>
+> -               atomic_long_add(x, &memcg->vmstats_local[idx]);
 
-------=_NextPart_000_0012_ADB17037.D950D37D
+I was suspecting the following for-loop+atomic-add for the regression.
+Why the above atomic-add is the culprit?
 
-------=_NextPart_000_0012_ADB17037.D950D37D
-Content-Type: application/octet-stream; name="INQUIRY_4178916..xlsx"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="INQUIRY_4178916..xlsx"
-
-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
-AAB6IAAAAAA=
-
-------=_NextPart_000_0012_ADB17037.D950D37D--
+>                 for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>                         atomic_long_add(x, &mi->vmstats[idx]);
+>                 x = 0;
+> @@ -754,11 +755,12 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+>         __mod_memcg_state(memcg, idx, val);
+>
+>         /* Update lruvec */
+> +       __this_cpu_add(pn->lruvec_stat_local->count[idx], val);
+> +
+>         x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
+>         if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+>                 struct mem_cgroup_per_node *pi;
+>
+> -               atomic_long_add(x, &pn->lruvec_stat_local[idx]);
+>                 for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
+>                         atomic_long_add(x, &pi->lruvec_stat[idx]);
+>                 x = 0;
+> @@ -780,11 +782,12 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+>         if (mem_cgroup_disabled())
+>                 return;
+>
+> +       __this_cpu_add(memcg->vmstats_local->events[idx], count);
+> +
+>         x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
+>         if (unlikely(x > MEMCG_CHARGE_BATCH)) {
+>                 struct mem_cgroup *mi;
+>
+> -               atomic_long_add(x, &memcg->vmevents_local[idx]);
+>                 for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>                         atomic_long_add(x, &mi->vmevents[idx]);
+>                 x = 0;
+> @@ -799,7 +802,12 @@ static unsigned long memcg_events(struct mem_cgroup *memcg, int event)
+>
+>  static unsigned long memcg_events_local(struct mem_cgroup *memcg, int event)
+>  {
+> -       return atomic_long_read(&memcg->vmevents_local[event]);
+> +       long x = 0;
+> +       int cpu;
+> +
+> +       for_each_possible_cpu(cpu)
+> +               x += per_cpu(memcg->vmstats_local->events[event], cpu);
+> +       return x;
+>  }
+>
+>  static void mem_cgroup_charge_statistics(struct mem_cgroup *memcg,
+> @@ -2200,11 +2208,9 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>                         long x;
+>
+>                         x = this_cpu_xchg(memcg->vmstats_percpu->stat[i], 0);
+> -                       if (x) {
+> -                               atomic_long_add(x, &memcg->vmstats_local[i]);
+> +                       if (x)
+>                                 for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>                                         atomic_long_add(x, &memcg->vmstats[i]);
+> -                       }
+>
+>                         if (i >= NR_VM_NODE_STAT_ITEMS)
+>                                 continue;
+> @@ -2214,12 +2220,10 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>
+>                                 pn = mem_cgroup_nodeinfo(memcg, nid);
+>                                 x = this_cpu_xchg(pn->lruvec_stat_cpu->count[i], 0);
+> -                               if (x) {
+> -                                       atomic_long_add(x, &pn->lruvec_stat_local[i]);
+> +                               if (x)
+>                                         do {
+>                                                 atomic_long_add(x, &pn->lruvec_stat[i]);
+>                                         } while ((pn = parent_nodeinfo(pn, nid)));
+> -                               }
+>                         }
+>                 }
+>
+> @@ -2227,11 +2231,9 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>                         long x;
+>
+>                         x = this_cpu_xchg(memcg->vmstats_percpu->events[i], 0);
+> -                       if (x) {
+> -                               atomic_long_add(x, &memcg->vmevents_local[i]);
+> +                       if (x)
+>                                 for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>                                         atomic_long_add(x, &memcg->vmevents[i]);
+> -                       }
+>                 }
+>         }
+>
+> @@ -4492,8 +4494,15 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+>         if (!pn)
+>                 return 1;
+>
+> +       pn->lruvec_stat_local = alloc_percpu(struct lruvec_stat);
+> +       if (!pn->lruvec_stat_local) {
+> +               kfree(pn);
+> +               return 1;
+> +       }
+> +
+>         pn->lruvec_stat_cpu = alloc_percpu(struct lruvec_stat);
+>         if (!pn->lruvec_stat_cpu) {
+> +               free_percpu(pn->lruvec_stat_local);
+>                 kfree(pn);
+>                 return 1;
+>         }
+> @@ -4515,6 +4524,7 @@ static void free_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
+>                 return;
+>
+>         free_percpu(pn->lruvec_stat_cpu);
+> +       free_percpu(pn->lruvec_stat_local);
+>         kfree(pn);
+>  }
+>
+> @@ -4525,6 +4535,7 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+>         for_each_node(node)
+>                 free_mem_cgroup_per_node_info(memcg, node);
+>         free_percpu(memcg->vmstats_percpu);
+> +       free_percpu(memcg->vmstats_local);
+>         kfree(memcg);
+>  }
+>
+> @@ -4553,6 +4564,10 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
+>         if (memcg->id.id < 0)
+>                 goto fail;
+>
+> +       memcg->vmstats_local = alloc_percpu(struct memcg_vmstats_percpu);
+> +       if (!memcg->vmstats_local)
+> +               goto fail;
+> +
+>         memcg->vmstats_percpu = alloc_percpu(struct memcg_vmstats_percpu);
+>         if (!memcg->vmstats_percpu)
+>                 goto fail;
+> --
+> 2.21.0
+>
