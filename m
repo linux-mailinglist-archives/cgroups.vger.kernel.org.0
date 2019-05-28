@@ -2,105 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A3302CEBE
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 20:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70ACB2CF00
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 20:56:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727428AbfE1SdI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 May 2019 14:33:08 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:38266 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727201AbfE1SdI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 14:33:08 -0400
-Received: by mail-lj1-f196.google.com with SMTP id o13so28748lji.5;
-        Tue, 28 May 2019 11:33:06 -0700 (PDT)
+        id S1727184AbfE1S4J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 May 2019 14:56:09 -0400
+Received: from mail-ua1-f67.google.com ([209.85.222.67]:40272 "EHLO
+        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726463AbfE1S4J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 14:56:09 -0400
+Received: by mail-ua1-f67.google.com with SMTP id d4so8407041uaj.7;
+        Tue, 28 May 2019 11:56:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/dxRboK00I5JVZJIcKIh8lDmjqTZ8vT2RGIZXym9hs8=;
-        b=JdETCGK02W+TtswFGWYTMmY9WIEyBXPpCljaIU/VvB/d3DyEtFWnP0lJVxjUjx9TD+
-         BbFimxaiEpjpXaitfVH8KM8TBEOsn6oSsKdEWrPjq9D15Ew99jozw+GsV/lZqrVVZ0bd
-         sGtow18Jv93Jk3c4kkSM9BZ05m3scy1imL1EdiSpaSjWhIrIPyNB9w8DdlCdVlnDOZNn
-         KB5glui+lV+DZKpPu++CN6VKlXQmcVFXpxLJUgk52DMVAvzV1zTNcKZuZuMlzrMfr+zo
-         qH7zlgas8ajm6z/0f37WMEh9ITFodHk5tXZpvMdRGXtAceFsYcaEo3ESqN2B34xySD+d
-         KVXQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=u2vKrC8e8AnG7bW+4DZ/V1meRc4PDbuorAeJTymG4Y4=;
+        b=MDDiuEPMelHkgMWgSKYRjyQIeWD/ouruSjU4ACu7p/oJ3WTucAZTAQsz4i0JBvHCz1
+         U5bSfL8BGzOaayfxj/G8Dk6zcicsyVBkvChN0PAml3EQeIgZrLjLabjZfhVVkh4Wm6Ag
+         wDSiY9MjhZpjYf4gmwpQPUB4DFl+UT4abMHcCs/z3cTwOHc1pW8dFN4CDwAgxfJhY5BL
+         nakw6hcsyZd8q3IHOM4pT/7/uifEFp4e7Dxp8Vps7C1iJ4EBdAjSRQGbnhyimXT6oEW0
+         oW9hmHm25wWRaMLvSuO0f5zabJ3bP4pnme1aAwVOjOToyv24g4tFlzTu+GPr3QWLbzQe
+         brhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/dxRboK00I5JVZJIcKIh8lDmjqTZ8vT2RGIZXym9hs8=;
-        b=hStiXKQEcsLyXn9s3UUQ9FM3CXz1q2oIn9QATiYEh2nhthQ466gw9R1CAf1LQoLHVT
-         V0xSfg4TUvGYhnl8Ts4dWFX3q4zK60cJpxkC5HlskMajTnWZyoVOSN6BnFKLyfJXk8ge
-         hpkPfWPxlNzQzxyTtV1mOqm+m6T0FmlKSnFhN52RWTi8RulWSAcKZZgvmTIc8gZ55AcN
-         BMwEvtuHMcxKTvQeBjo+hGc7K3BDZ/4e0Q7OC/UE0UuouXSM+PnKKXgo2G+NpXaKyhbf
-         2oGQluKOgv7+UlSJXS8AglT7gxDxvun37i8CjSFS4QmtrVBWsBfQmA7ViSrpTPtl0X4K
-         SikA==
-X-Gm-Message-State: APjAAAUgeG9NwvpGLc881l3Kx4jkhXUyb7uisqNCe9xuPSmggd3ANiXW
-        ti7gG2rr3NaaNknDfDK1osw=
-X-Google-Smtp-Source: APXvYqy3s9q75FdgW1jA17eTPuwlMKdHK6SG0NcuvVUvEqKB1BuEK4FqNNQLezmX/qt3sQkeKbs49Q==
-X-Received: by 2002:a2e:9193:: with SMTP id f19mr24449382ljg.111.1559068386280;
-        Tue, 28 May 2019 11:33:06 -0700 (PDT)
-Received: from esperanza ([176.120.239.149])
-        by smtp.gmail.com with ESMTPSA id a7sm171218lji.13.2019.05.28.11.33.04
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 May 2019 11:33:05 -0700 (PDT)
-Date:   Tue, 28 May 2019 21:33:02 +0300
-From:   Vladimir Davydov <vdavydov.dev@gmail.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Rik van Riel <riel@surriel.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>, cgroups@vger.kernel.org,
-        Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v5 6/7] mm: reparent slab memory on cgroup removal
-Message-ID: <20190528183302.zv75bsxxblc6v4dt@esperanza>
-References: <20190521200735.2603003-1-guro@fb.com>
- <20190521200735.2603003-7-guro@fb.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=u2vKrC8e8AnG7bW+4DZ/V1meRc4PDbuorAeJTymG4Y4=;
+        b=nW+vnDTzvVQECXqV4m3KbSHF5USc9PWpSgu48eOxyYzqcbC3lV2eRGft14vv480yUM
+         KyfzeZwLxpVsm/ZEBDyk0p1/6WTzPt22KSA/4pY99US3uEO7iTjOi4m/ige/st56T1+J
+         fH7v1u2GhHq1fMLYQDW3ZLGxrVuLHC7vrLvHKchSmYTG4P89d3psYzPjT86tf06OofeI
+         USL6TNUR+hZLs56AEOPDBQPfbenWLgmIwWVhbO4eptL2/Az7MCELLO1rhPb/ausDsdr2
+         Re7Lnu62MPj/3/5YRwrjlIqsa5OKAzBbd7WdOeP5b4+gQhKxPvtqPPloKfIjFCuJnJvH
+         al4w==
+X-Gm-Message-State: APjAAAWYRU4pxRHBbRUp6zMaaKTix1ZxT7bqpxWnY4QANKQI0kRtVw/j
+        Dj+TNbHfGsEyxZdXam4dTrpjS+XU
+X-Google-Smtp-Source: APXvYqwFIHYU1zkbjqQF9k9xbYRzbj5CJgL7vB1Yw2YhYWmz9NNxvoWn9yqgWy2L12eun7GGNxhmDQ==
+X-Received: by 2002:ab0:806:: with SMTP id a6mr43288984uaf.10.1559069767987;
+        Tue, 28 May 2019 11:56:07 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:d74f])
+        by smtp.gmail.com with ESMTPSA id k82sm9413128vkk.12.2019.05.28.11.56.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 28 May 2019 11:56:06 -0700 (PDT)
+Date:   Tue, 28 May 2019 11:56:04 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Xuehan Xu <xxhdx1985126@gmail.com>
+Cc:     ceph-devel <ceph-devel@vger.kernel.org>,
+        "Yan, Zheng" <ukernel@gmail.com>, cgroups@vger.kernel.org,
+        Xuehan Xu <xuxuehan@360.cn>
+Subject: Re: [PATCH] cgroup: add a new group controller for cephfs
+Message-ID: <20190528185604.GK374014@devbig004.ftw2.facebook.com>
+References: <20190523064412.31498-1-xxhdx1985126@gmail.com>
+ <20190524214855.GJ374014@devbig004.ftw2.facebook.com>
+ <CAJACTueLKEBkuquf989dveBnd5cOknf7LvB+fg+9PyjDw1VX6g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521200735.2603003-7-guro@fb.com>
+In-Reply-To: <CAJACTueLKEBkuquf989dveBnd5cOknf7LvB+fg+9PyjDw1VX6g@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 21, 2019 at 01:07:34PM -0700, Roman Gushchin wrote:
-> Let's reparent memcg slab memory on memcg offlining. This allows us
-> to release the memory cgroup without waiting for the last outstanding
-> kernel object (e.g. dentry used by another application).
-> 
-> So instead of reparenting all accounted slab pages, let's do reparent
-> a relatively small amount of kmem_caches. Reparenting is performed as
-> a part of the deactivation process.
-> 
-> Since the parent cgroup is already charged, everything we need to do
-> is to splice the list of kmem_caches to the parent's kmem_caches list,
-> swap the memcg pointer and drop the css refcounter for each kmem_cache
-> and adjust the parent's css refcounter. Quite simple.
-> 
-> Please, note that kmem_cache->memcg_params.memcg isn't a stable
-> pointer anymore. It's safe to read it under rcu_read_lock() or
-> with slab_mutex held.
-> 
-> We can race with the slab allocation and deallocation paths. It's not
-> a big problem: parent's charge and slab global stats are always
-> correct, and we don't care anymore about the child usage and global
-> stats. The child cgroup is already offline, so we don't use or show it
-> anywhere.
-> 
-> Local slab stats (NR_SLAB_RECLAIMABLE and NR_SLAB_UNRECLAIMABLE)
-> aren't used anywhere except count_shadow_nodes(). But even there it
-> won't break anything: after reparenting "nodes" will be 0 on child
-> level (because we're already reparenting shrinker lists), and on
-> parent level page stats always were 0, and this patch won't change
-> anything.
-> 
-> Signed-off-by: Roman Gushchin <guro@fb.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Hello,
 
-This one looks good to me. I can't see why anything could possibly go
-wrong after this change.
+On Sat, May 25, 2019 at 01:03:56PM +0800, Xuehan Xu wrote:
+> However, Ilya Dryomov pointed out, in another thread in the mailing
+> list ceph-devel, that the blkio controller is supposed to handle any
+> io now. We now think maybe we should try to leverage the blkio
+> controller to implement the cephfs io limiting mechanism. Am I right
+> about this? Thanks:-)
+
+Hmmm... io.latency works only if the IOs pass through a request_queue.
+Given the transport is network, would it make more sense to control
+from network side?
+
+Thanks.
+
+-- 
+tejun
