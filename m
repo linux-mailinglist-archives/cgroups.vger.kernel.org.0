@@ -2,64 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F085C2CF04
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 20:58:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 366042CF1D
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 21:02:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727240AbfE1S6I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 May 2019 14:58:08 -0400
-Received: from mail-ua1-f67.google.com ([209.85.222.67]:39232 "EHLO
-        mail-ua1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726463AbfE1S6H (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 14:58:07 -0400
-Received: by mail-ua1-f67.google.com with SMTP id w44so477511uad.6
-        for <cgroups@vger.kernel.org>; Tue, 28 May 2019 11:58:07 -0700 (PDT)
+        id S1726497AbfE1TCm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 May 2019 15:02:42 -0400
+Received: from mail-ua1-f66.google.com ([209.85.222.66]:39504 "EHLO
+        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727013AbfE1TCm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 15:02:42 -0400
+Received: by mail-ua1-f66.google.com with SMTP id w44so485463uad.6
+        for <cgroups@vger.kernel.org>; Tue, 28 May 2019 12:02:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Q5FUIIyIG/0kYxdJLwvb4Tn9IP6XuPLN30cwZcfV96M=;
-        b=t5RQ0PeKQ3Lf0uZs1+v6VkeIQNZAI1g50GV0MuQ5SWBbAlMESQVFP3NdID7wfxknWA
-         srqzxnF3eROBqMrRzGG+IcsSoE6MHrvY3LVwQIvM6E1YX7VzSrZrRLr0HxdBf5YUMrP1
-         4MwU8q4E19mju+RupN9qvqLJZ2olsaPriVJ3+lMpTzUBztcXdkjyLcXlaSDQxmylEVc3
-         5H3eo4E6o4GLpAhNSvE2iQSLaomEtYaMZwRR7GaC6C2meEJvrViv+32mn1RMIUdZ2EgB
-         ZYjajvJ6xzF4Adyjmyd+4UeLHFfhaJjsckQ4evZV54PQ2QeSXwaADQzR0a9+M0SF0Kjk
-         c3/w==
+        bh=+9BnizOCabQkDdyYFoUODFzvXj83s9DouynwLQc1zAo=;
+        b=vPZeoGpM1TxM+rkKkDVkj/pk7NjplN75jwOoId2JL3sEUhdp82vzMeQ0BrLfkPmlpv
+         8j6SaTx4hbfC4z2optFvqnvYxlQrR/KwVtQtVbHV8o5bEn6GPfhrEW3CD1R3gKB0yR8a
+         ar6ngjcK1UwlF9lGj2IxX8XVABFdvomtIoapBuBP1hwQuvbmC3WO3dXLGFRY61Bf6Ihg
+         YojYnc9v7viqOHt+w8M3FL4G6MC5ijYel/0VDKBEQ4WYGeNiMWymsff+b9nL7+VH5stZ
+         sroJGWWwChj5gdmlIPBUS1pVd9qwdq92JlQYPD+p0ix1h58hROUG0o8EyO4m/FMxj3z7
+         tZBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Q5FUIIyIG/0kYxdJLwvb4Tn9IP6XuPLN30cwZcfV96M=;
-        b=JrOp+hWAIjksxRDpS1nfbq8UXnC2nZhSgOFT6dlRX87jSx1x36D40VqBpG5kKYz46S
-         l6vL1FNR1pDqDgc0TD2/DjULHxMzbkiGKQWs+R3fO4Qj/0Gxa9h9VuuEE4WVgta2AzE8
-         PK11jWQF4XaEyYCIdM/jGNzvs/vTtsfCBvDmDh0H1UMxXd/c7DiOcYvc441ldYepmyoH
-         rBPVpIllCxVjPzSXpRYYsIwICvGWcPh/IHZfK/PuiAiQOmsbxY2Fy+XVIdtu2Ycsb7nX
-         JdjXv2KEjqggRkEbe4MsLwuC3pOMnmM/l+weH04bAU65ipVTZKDz7gtzZkGAuJMgEIJ9
-         qrtA==
-X-Gm-Message-State: APjAAAUNMA5HEghBXX7dT+m3KaQl4wn/xgPUsjolV2Joa7hOr3heBqYI
-        rR1JQjFOMW/bXurzeyzlxKvP55nU
-X-Google-Smtp-Source: APXvYqyzIp+9V0GCnMFbyFIWbdXgxE6d38Ijb1ZUnD+N/Zsf3vRAEWz9VOM/NuvbnpIfmagxPiJwDQ==
-X-Received: by 2002:ab0:2395:: with SMTP id b21mr6528154uan.108.1559069886863;
-        Tue, 28 May 2019 11:58:06 -0700 (PDT)
+        bh=+9BnizOCabQkDdyYFoUODFzvXj83s9DouynwLQc1zAo=;
+        b=E6S1dYTYTCsnvbdFKlUgAJo54gYcBbB09CXZDmKVnrL98d/KZqAbFTbyTV/cfBVd2N
+         f9TH8AiuqRHIcKcCNNo5Qgul/BA6YE+VIYUNmxiGuMFW6se5A2eXdr02AlOsGeZL2wiz
+         AbbQyTENSb9TGuWuNV0MyQuQ7i55Sre24dOKdmqh4YfcdCsL32A38QmNmZWHo1GTJ0W/
+         XOWE/kDMO6Q2FXD7kRQeDXX8hTIu5EsTCyQHXgm3NzdGPHSbyQn1Mj0iEsVIn5h89aQe
+         tAG8Lutq/xojr10Uk7lDmGdMA/wB0ItVukqaMupnwgw7vMisg6uby1GQ7+j105TCs2ds
+         70nw==
+X-Gm-Message-State: APjAAAWT1napq/f1LgJvdTHcG5TsYt4ZGAxfDl0f+2HJo6BkRdOzhs72
+        mjSfKtVJ13zr6jCvtQxAn+qhu5MI
+X-Google-Smtp-Source: APXvYqzm/Llg3EcAmooSmrW8alU2K3WRudRMe2u8y10GPBYXtzgiDWUSwvNxu2yC3/mHUonjW+RP1w==
+X-Received: by 2002:ab0:7346:: with SMTP id k6mr40444068uap.89.1559070161378;
+        Tue, 28 May 2019 12:02:41 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::3:d74f])
-        by smtp.gmail.com with ESMTPSA id d5sm9124705vka.34.2019.05.28.11.58.05
+        by smtp.gmail.com with ESMTPSA id 60sm4466721uah.1.2019.05.28.12.02.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 28 May 2019 11:58:05 -0700 (PDT)
-Date:   Tue, 28 May 2019 11:58:04 -0700
+        Tue, 28 May 2019 12:02:40 -0700 (PDT)
+Date:   Tue, 28 May 2019 12:02:39 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
-Cc:     "guro@fb.com" <guro@fb.com>,
+To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
+Cc:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH v2 0/4] AMDKFD (AMD GPU compute) support for device
- cgroup.
-Message-ID: <20190528185804.GL374014@devbig004.ftw2.facebook.com>
+Subject: Re: [PATCH v2 4/4] drm/amdkfd: Check against device cgroup
+Message-ID: <20190528190239.GM374014@devbig004.ftw2.facebook.com>
 References: <20190517161435.14121-1-Harish.Kasiviswanathan@amd.com>
- <20190517164937.GF374014@devbig004.ftw2.facebook.com>
- <BYAPR12MB3384A590739D7E18B736CB368C0B0@BYAPR12MB3384.namprd12.prod.outlook.com>
+ <20190517161435.14121-5-Harish.Kasiviswanathan@amd.com>
+ <e547c0a1-e153-c3a6-79bc-67f59f364c3e@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BYAPR12MB3384A590739D7E18B736CB368C0B0@BYAPR12MB3384.namprd12.prod.outlook.com>
+In-Reply-To: <e547c0a1-e153-c3a6-79bc-67f59f364c3e@amd.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -68,10 +67,21 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Fri, May 17, 2019 at 08:04:42PM +0000, Kasiviswanathan, Harish wrote:
-> 1). Documentation for user on how to use device cgroup for amdkfd device. I have some more information on this in patch 4. 
+On Fri, May 17, 2019 at 08:12:17PM +0000, Kuehling, Felix wrote:
+> Patches 1,2,4 will be submitted through amd-staging-drm-next. Patch 3 
+> goes through the cgroup tree. Patch 4 depends on patch 3. So submitting 
+> patch 4 will need to wait until we rebase amd-staging-drm-next on a new 
+> enough kernel release that includes patch 3.
+> 
+> Patch 1 and 2 could be submitted now or wait for patch 3 as well so we 
+> submit all our cgroup stuff in amdgpu and KFD together. It probably 
+> makes most sense to wait since unused code tends to rot.
+> 
+> Patches 1,2,4 are already reviewed by me. Feel free to add my Acked-by 
+> to patch 3.
 
-I see.  Yeah, I just missed that.
+Please feel free to add my acked-by and take patch 3 with the rest of
+the patchset.
 
 Thanks.
 
