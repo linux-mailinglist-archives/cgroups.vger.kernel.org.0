@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8494F2CD45
-	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 19:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 183882CD4D
+	for <lists+cgroups@lfdr.de>; Tue, 28 May 2019 19:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726964AbfE1RLb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 May 2019 13:11:31 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:44018 "EHLO
+        id S1726452AbfE1RM7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 May 2019 13:12:59 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:40130 "EHLO
         mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbfE1RLb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 13:11:31 -0400
-Received: by mail-lf1-f68.google.com with SMTP id u27so15198342lfg.10;
-        Tue, 28 May 2019 10:11:30 -0700 (PDT)
+        with ESMTP id S1726236AbfE1RM7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 May 2019 13:12:59 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h13so15206400lfc.7;
+        Tue, 28 May 2019 10:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=A8QVP2Qf5aJcHIy8l49WfRPomDE8uUrBG/3Am/yYNlU=;
-        b=tbj82VcOGB/BLqdwN+zId/aL1F3LbvsduOAs5GjftF3C0NFgGGQfU7vrCi+8ZFR4Ew
-         uMeDuC9cIWItsZjEU/EYdPtcQbKmV0dwqkHg9AKjbOptmKOd7+DPQ5dAVm05PXKt+oqr
-         Td+xYmJbU2LeazwHzmVCPZVcSIPUATTVRVMsqa/4LHzrIbZLk9+XKgatIB2qZQOx+2ZA
-         HWq/fedWq82lYNQt9lABwgmMYVhppMEEmA50HzdtSJIgMvQoAuTqzJ3bJoQ5o3mjftyT
-         3JTeLVmb57ufyHL1txvLiGXT8sTJqMyPMloJLNcl+S/m1XAOixYz0YB+OWBWw35SNfR1
-         S1Yw==
+        bh=7II5+XRnVobtVPgQVRQrDR8x4e5To08TyrztMHGvqag=;
+        b=eaq0BTRPkhNafZhWSSYSrscltuZlK8p6kHWOeCVXycDQv7t3RspcGhqc4CbVFRfJ0/
+         o7HJXatIFeoKZxyCMT287FoSfvrUs0U0xqqF+ZyaTxsF6AXOvHhx+mEnvBMiZVkkC7ec
+         QCS0S+APb1j6fW2ryNi4o7g80ajjVeRBHQNbzfaBo7pN07pH1YZkz60t0gSOOA3Sa77n
+         IUDDmczlKJ9hmuAndnQn4+Y/SUZKWO+OMmA80g+gjOLOd+UpCkLuevIe+dS8TuJtPJey
+         2PC562PZ6yYaNgc3BidpuZdLxw+bNgr4tYYphKwEZ3XqIzT7w38tkPatdRI9FkWb/PTS
+         N+nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=A8QVP2Qf5aJcHIy8l49WfRPomDE8uUrBG/3Am/yYNlU=;
-        b=YhNFAwgmYB6Uaj7F5WZV4dbf8W39BEFOTNyrERDVhxN1d0KuFcK41XtUHgC5E+qQ1g
-         f12Fc5ZOmoHVFnnUXh6x+zAQyxs9cmg3ALRQhWISr533wgTRvTw+DHdZooVxyt9E5iup
-         3tFJlwv7Jc6DZi8c2febJYYLkAsa70AsV8C/sab1v/u9diTa69LzxnGupT63x8Nl6LHN
-         dmBWgLQp6ubHY1xZ/XYqaVAwOT3yxNkgqMEqzBcOW3LHd6JUsxvCsy879yPw5MGjFKh1
-         s9oCv77QQb2V5RByJmYYFDVaN6HZR/8CljaSApSoTRVqBTdzoNy2ryI2psJV9pS9gp2f
-         J+/g==
-X-Gm-Message-State: APjAAAWwcnXwKOISIa21LjbqP9rU+kV5ZQSsOxHhOvL805cfNK4LHBXH
-        1DozqopimoUBxNt/ZaHoFBM=
-X-Google-Smtp-Source: APXvYqwQOyDJDkoWZFLu1XnDsguS/WvRfLzgNCnt9179uP3/qtkWME3gOICVuCXUEZgQ3/k83zfTpg==
-X-Received: by 2002:a05:6512:6c:: with SMTP id i12mr45456509lfo.130.1559063489378;
-        Tue, 28 May 2019 10:11:29 -0700 (PDT)
+        bh=7II5+XRnVobtVPgQVRQrDR8x4e5To08TyrztMHGvqag=;
+        b=DUO5En1dTvbSXbQmc1GJnFFO6BTzt4kM8cklYJFWB48yixiorxlkVoiTq/CxBHIffZ
+         iXHVIvJO+E1H3MlLjs+L7VjJ6bmW9oXtjSuz+E1M80xJUtSiXHOVRBxHWDMMs+vYxdr3
+         xgwBrmnqGu/zrcbdfPuBkBn0kMUBrw3XWHGcaUoTh0wehFtWK2F/YtcWJRKTGTcxWsX7
+         r0foGPhd8Knt/9VDehH3QdBJALvz7SfQKfZ30t0k8j6p7VEpTpGu/BO1vwA2kowJVvx+
+         6IGIadI3kyMYpxG1EcOxZYvXPUNygFjtHuIpGsSebpqwxVYLDjGgIyjCGU7ptKvSbhza
+         TB/Q==
+X-Gm-Message-State: APjAAAV93OVsPOgfGkrb1W0J7jh4irOp4k8Y9FXBiOP1B7gDtgZUVm2l
+        ftnfML7vEQ2TwlaUI2Om6fk=
+X-Google-Smtp-Source: APXvYqweo1MPDUPsmU7agUat02Negiwx5X1FenEPDIVNxQGPC9Z7TsrTpK50AruQozndnwRD+b61rA==
+X-Received: by 2002:ac2:4908:: with SMTP id n8mr3692243lfi.10.1559063577452;
+        Tue, 28 May 2019 10:12:57 -0700 (PDT)
 Received: from esperanza ([176.120.239.149])
-        by smtp.gmail.com with ESMTPSA id h22sm3057578ljk.86.2019.05.28.10.11.28
+        by smtp.gmail.com with ESMTPSA id x14sm2989317lfe.83.2019.05.28.10.12.56
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 28 May 2019 10:11:28 -0700 (PDT)
-Date:   Tue, 28 May 2019 20:11:26 +0300
+        Tue, 28 May 2019 10:12:56 -0700 (PDT)
+Date:   Tue, 28 May 2019 20:12:54 +0300
 From:   Vladimir Davydov <vdavydov.dev@gmail.com>
 To:     Roman Gushchin <guro@fb.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
@@ -55,43 +55,30 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         Shakeel Butt <shakeelb@google.com>,
         Christoph Lameter <cl@linux.com>, cgroups@vger.kernel.org,
         Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v5 2/7] mm: generalize postponed non-root kmem_cache
- deactivation
-Message-ID: <20190528171126.oaneakkydwyzied6@esperanza>
+Subject: Re: [PATCH v5 4/7] mm: unify SLAB and SLUB page accounting
+Message-ID: <20190528171254.ymnytie2uc4hwd4v@esperanza>
 References: <20190521200735.2603003-1-guro@fb.com>
- <20190521200735.2603003-3-guro@fb.com>
+ <20190521200735.2603003-5-guro@fb.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190521200735.2603003-3-guro@fb.com>
+In-Reply-To: <20190521200735.2603003-5-guro@fb.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 21, 2019 at 01:07:30PM -0700, Roman Gushchin wrote:
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index 6e00bdf8618d..4e5b4292a763 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -866,11 +859,12 @@ static void flush_memcg_workqueue(struct kmem_cache *s)
->  	mutex_unlock(&slab_mutex);
->  
->  	/*
-> -	 * SLUB deactivates the kmem_caches through call_rcu. Make
-> +	 * SLAB and SLUB deactivate the kmem_caches through call_rcu. Make
->  	 * sure all registered rcu callbacks have been invoked.
->  	 */
-> -	if (IS_ENABLED(CONFIG_SLUB))
-> -		rcu_barrier();
-> +#ifndef CONFIG_SLOB
-> +	rcu_barrier();
-> +#endif
+On Tue, May 21, 2019 at 01:07:32PM -0700, Roman Gushchin wrote:
+> Currently the page accounting code is duplicated in SLAB and SLUB
+> internals. Let's move it into new (un)charge_slab_page helpers
+> in the slab_common.c file. These helpers will be responsible
+> for statistics (global and memcg-aware) and memcg charging.
+> So they are replacing direct memcg_(un)charge_slab() calls.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Acked-by: Christoph Lameter <cl@linux.com>
 
-Nit: you don't need to check CONFIG_SLOB here as this code is under
-CONFIG_MEMCG_KMEM which depends on !SLOB.
+Makes sense even without the rest of the series,
 
-Other than that, the patch looks good to me, provided using rcu for slab
-deactivation proves to be really necessary, although I'd split it in two
-patches - one doing renaming another refactoring - easier to review that
-way.
+Acked-by: Vladimir Davydov <vdavydov.dev@gmail.com>
