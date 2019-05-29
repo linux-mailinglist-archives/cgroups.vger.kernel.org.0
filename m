@@ -2,81 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 52F642E739
-	for <lists+cgroups@lfdr.de>; Wed, 29 May 2019 23:15:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F33522E81C
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2019 00:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726547AbfE2VPc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 May 2019 17:15:32 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:39753 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726043AbfE2VPc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 May 2019 17:15:32 -0400
-Received: by mail-qt1-f193.google.com with SMTP id i34so4438712qta.6
-        for <cgroups@vger.kernel.org>; Wed, 29 May 2019 14:15:32 -0700 (PDT)
+        id S1726668AbfE2WZE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 May 2019 18:25:04 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36681 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726254AbfE2WZE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 May 2019 18:25:04 -0400
+Received: by mail-lj1-f195.google.com with SMTP id m22so3881210ljc.3
+        for <cgroups@vger.kernel.org>; Wed, 29 May 2019 15:25:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=q5EwstTJhgo/CmWvbkydomfc7Y5tM+FHszEHUfelsnI=;
-        b=J++Vh0pi+jjTIaaZE9ElQ5pSaNpOAJzFFW8YjWcFxPPah+rXc9cdVeNvSK+15Evwc+
-         zuica+uEyZVa0l+Q5Y7tS5zGzmSO2NClJ5AR2Nn858Diz5EaJICFnuVTbqn46bQXNbTa
-         GkR7CfZWELzA0xEv77or9+oNoBwEj2NmgqF2FsiEciQX3cYaoJMB64YRtRWKqw4xyKqC
-         2/XsTTR4GqVyTyZDnTAbPDQJpgjwaFDAenxOGw+lC8IS5zWzlpey+G2UMg/UY7yQY+Yy
-         cweT0ORFhkpjlGM/aBGawbH103ooIVC1tR3G/zOyVSw2Lh5DC2du1035lLtPICx9Szv/
-         sBPw==
+        d=ugedal.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DK/ogr6pZZUphW9lU4h1f+fFgOabCak3KXyja9ZoLt0=;
+        b=EtEkBupWZk2J/O72xoPMmoNFOSLqen/od3RSkObixQLiBW0S7B4LBoMgiN1OJs5lTI
+         7eQsLP01PJJoMg2Rx3TXT2fHK9oKRyTMsSxuM14Bv/AhGUfZbEp+jOWiJjg08NWOPWIn
+         60jXRmoCOn7ULv9kGZ6Qa3BukeR4KLALFfbLjl+hFFUdKHdpARIjb7oq/IA0fCdMe6Jw
+         CGumH0h5cYi/VpKQ+Q0RElMr9yUgKn5Qljab6cDKdX0txp1pFfhPYKT+HwcU8Rt1cCYS
+         WLSjSr5B2qq/nQyorb4FdVBSJC+ONV8G5I9EocBK2BtkSCoIadihUFJo7fO60LGyljtK
+         4pKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=q5EwstTJhgo/CmWvbkydomfc7Y5tM+FHszEHUfelsnI=;
-        b=magrknoSkO73ChjLku6Rlx5uayniwLn3XB6j/9+B13mzN78AupDuSCaepMN1kW8naL
-         eMbi0vNTBZlfd2Wvje14/AGY0qpTNPVIotNKn6vn8qLwvRfcBg8Gtrj2Qd+q8e/Ecqyn
-         ZP26GkX/7XFxFqHWT7W68UTG2uciM+PpA671QPZS7sFLBwkUuw2/5QdheyfwmycA0kH1
-         M2ecBS5qNX42N2Uu5ie+m0fQAtrJgef4OExfGJLfSJGYeEMQrmrM8zh5bmRX49b2QW7g
-         L0InI1SWWX5rPOo2b01nE0Yq81RAWhoyo67cE9kWzJw0B3LFhvfdpCPMJ+BtOJVVM8ij
-         Yxww==
-X-Gm-Message-State: APjAAAWuVcqVFtO89RqUPq7peisMjcgixPQlofWB1M30fLwyEdpahKEB
-        tZHdpdhg4IKfKShMdBYaZNE=
-X-Google-Smtp-Source: APXvYqwtJsAQCorwt92UaL06uw44FCL8fslNaFAvjgA/BRG9GP3Ha0FgBHy+R+6H9qBX1JWXuSIP6w==
-X-Received: by 2002:ac8:60d4:: with SMTP id i20mr125750qtm.376.1559164531703;
-        Wed, 29 May 2019 14:15:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:849f])
-        by smtp.gmail.com with ESMTPSA id o185sm289478qkd.64.2019.05.29.14.15.30
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=DK/ogr6pZZUphW9lU4h1f+fFgOabCak3KXyja9ZoLt0=;
+        b=UDjTznGmEeRKoqlCyyy9XsO4lRLCA60jnv0yZXkoP0Zt4jWBQ/7llnuN0eAxwqitx9
+         JCoQC2SN0nkRfh1/FATgL8da9jI6VnwO3/fpQdIZEQhZ5FzS9syv8sX1o1NOgINO1Nkp
+         PM4RqNwfP/MsB6eAzbYyTzOgNL/DG4gFxl/ITzlu8h83DUANBMGWitt4GgNrEWGx/8Cr
+         1IlUjGeL7OGu9sOALzIrI13Kie9Bc116g9bxQzO2+BfbSGSV2E/gboRVtulLW41Xfb8S
+         lxT03+xLvuWZooiGquAhgrM900Xd7eWmmk0Pj0CPT3aFgraqwDq1mIHGqFcZm4iNJ5ko
+         lPCA==
+X-Gm-Message-State: APjAAAUYSzo5c80L4VIDLEZ9Sg8e7gq6BjmY33IhJ/ZpNk+S+c+ZZ9AP
+        eEXDuyAfm+Qa/SDXbUT/9P/0NYGA5SgaAHsV
+X-Google-Smtp-Source: APXvYqy0RN6ic0nj6bgyH0NezC2bwxY/JEYIDLewQ/OEvI+10SkZ2sUZRbFizdUdOEoeHXmIvT/NkA==
+X-Received: by 2002:a2e:b0e1:: with SMTP id h1mr118902ljl.171.1559168702343;
+        Wed, 29 May 2019 15:25:02 -0700 (PDT)
+Received: from xps13.ZyXEL-USG (84-52-230.83.3p.ntebredband.no. [84.52.230.83])
+        by smtp.gmail.com with ESMTPSA id s12sm113843lji.34.2019.05.29.15.25.00
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 29 May 2019 14:15:30 -0700 (PDT)
-Date:   Wed, 29 May 2019 14:15:29 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
-Cc:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        Dave Airlie <airlied@redhat.com>,
-        "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: Re: [PATCH v2 4/4] drm/amdkfd: Check against device cgroup
-Message-ID: <20190529211529.GQ374014@devbig004.ftw2.facebook.com>
-References: <20190517161435.14121-1-Harish.Kasiviswanathan@amd.com>
- <20190517161435.14121-5-Harish.Kasiviswanathan@amd.com>
- <e547c0a1-e153-c3a6-79bc-67f59f364c3e@amd.com>
- <20190528190239.GM374014@devbig004.ftw2.facebook.com>
- <d39ec6a7-b30d-404b-c8d1-4e22604e0c8e@amd.com>
+        Wed, 29 May 2019 15:25:00 -0700 (PDT)
+From:   Odin Ugedal <odin@ugedal.com>
+To:     odin@ugedal.com
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-doc@vger.kernel.org (open list:DOCUMENTATION),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] docs cgroups: add another example size for hugetlb
+Date:   Thu, 30 May 2019 00:24:25 +0200
+Message-Id: <20190529222425.30879-1-odin@ugedal.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d39ec6a7-b30d-404b-c8d1-4e22604e0c8e@amd.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 29, 2019 at 08:45:44PM +0000, Kuehling, Felix wrote:
-> Just to clarify, are you saying that we should upstream this change 
-> through Alex Deucher's amd-staging-drm-next and Dave Airlie's drm-next 
-> trees?
+Add another example to clarify that HugePages smaller than 1MB will
+be displayed using "KB", with an uppercased K (eg. 20KB), and not the
+normal SI prefix kilo (small k).
 
-Yeah, sure, whichever tree is the most convenient.
+Because of a misunderstanding/copy-paste error inside runc
+(see https://github.com/opencontainers/runc/pull/2065), it tried
+accessing the cgroup control file of a 64kB HugePage using
+"hugetlb.64kB._____" instead of the correct "hugetlb.64KB._____".
 
-Thanks.
+Adding a new example will make it clear how sizes smaller than 1MB are
+handled.
 
+Signed-off-by: Odin Ugedal <odin@ugedal.com>
+---
+ Documentation/cgroup-v1/hugetlb.txt | 22 +++++++++++++---------
+ 1 file changed, 13 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/cgroup-v1/hugetlb.txt b/Documentation/cgroup-v1/hugetlb.txt
+index 106245c3aecc..1260e5369b9b 100644
+--- a/Documentation/cgroup-v1/hugetlb.txt
++++ b/Documentation/cgroup-v1/hugetlb.txt
+@@ -32,14 +32,18 @@ Brief summary of control files
+  hugetlb.<hugepagesize>.usage_in_bytes     # show current usage for "hugepagesize" hugetlb
+  hugetlb.<hugepagesize>.failcnt		   # show the number of allocation failure due to HugeTLB limit
+ 
+-For a system supporting two hugepage size (16M and 16G) the control
++For a system supporting three hugepage sizes (64k, 32M and 1G), the control
+ files include:
+ 
+-hugetlb.16GB.limit_in_bytes
+-hugetlb.16GB.max_usage_in_bytes
+-hugetlb.16GB.usage_in_bytes
+-hugetlb.16GB.failcnt
+-hugetlb.16MB.limit_in_bytes
+-hugetlb.16MB.max_usage_in_bytes
+-hugetlb.16MB.usage_in_bytes
+-hugetlb.16MB.failcnt
++hugetlb.1GB.limit_in_bytes
++hugetlb.1GB.max_usage_in_bytes
++hugetlb.1GB.usage_in_bytes
++hugetlb.1GB.failcnt
++hugetlb.64KB.limit_in_bytes
++hugetlb.64KB.max_usage_in_bytes
++hugetlb.64KB.usage_in_bytes
++hugetlb.64KB.failcnt
++hugetlb.32MB.limit_in_bytes
++hugetlb.32MB.max_usage_in_bytes
++hugetlb.32MB.usage_in_bytes
++hugetlb.32MB.failcnt
 -- 
-tejun
+2.21.0
+
