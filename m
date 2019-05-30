@@ -2,98 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 64EFE30391
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2019 22:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A67303AE
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2019 22:59:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726430AbfE3UwO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 May 2019 16:52:14 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:41741 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725961AbfE3UwO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 May 2019 16:52:14 -0400
-Received: by mail-pf1-f193.google.com with SMTP id q17so4705070pfq.8
-        for <cgroups@vger.kernel.org>; Thu, 30 May 2019 13:52:13 -0700 (PDT)
+        id S1726100AbfE3U7e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 May 2019 16:59:34 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:43165 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725440AbfE3U7d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 May 2019 16:59:33 -0400
+Received: by mail-qt1-f196.google.com with SMTP id z24so8746941qtj.10;
+        Thu, 30 May 2019 13:59:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=6xW2J8Id+5nx2KJz7k0sgVn959SqhmXLM/78ZxNyQrM=;
-        b=P7oOZgl3CtO57JCewH/kKTPTub5g44+HbkPoxMUgXSg+G+mYhHLm56nrj0Ca0w4uXe
-         1y5o+9cwnqcke09kZKrZ07g+cQivOFM52Jn56eiI9G38mT2W5A58AY/pnXbpMkHnaf6b
-         YmGt4GV5AsM5rEH9QzxxTZrA7C0HqUi7G0YlE=
+        bh=TTwhY4W7bsMQU2b95UCtmjTrgQBWgMfaFKcWD6fHn2Y=;
+        b=iAXlbDPirvlihRGO1qbHDrGMPSPT1YVs5ripw25ItuMTE3l/cNb3L41Z8jMWCg9Kob
+         1Z9T5/FwlhmVEd+GpkrkbggNtGCQ4yZpb5ZW4+OgD75tfPYXpL4RYPL4lRmqyyv3wpoR
+         /YxDPx25zmV9Y8SIPhw5YJYATTrp18w1lq/oemoMJWa/0+SBEem0RZtc3urhaBchBnpg
+         56m0B9PA8h1LUgdoQBZfVB/3b0qucgVkWMD8fFf3izjuyl0dvwU89qoFAiGt8hxExONO
+         B9gZYhEAp3xcuF+9PP3Z8pM6A0yWtRxE7BkLBTrJdLxUkW4bIwfeL/VEEJWkIa0hWi50
+         pBAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=6xW2J8Id+5nx2KJz7k0sgVn959SqhmXLM/78ZxNyQrM=;
-        b=h4W/+o0eAod0hwW+VkCs/k6ZWsfsXf5Ioa16YyImrYSDbsApUFyLdBSdHTnF8BATgj
-         22zn6anf7gNSYKhNNF8lszGFLs54R6JSgbvcGVBflWIMdS7cS1IF1Ywg8fvR37nN4L0/
-         Eb3x+80sM/+U6asd2cN+i3H/G1+qq7UJjOQ+fcTLDoDjY2y+aY+xI//awSKVN4VsiY4w
-         Va77TcukzXxBIy2UDMy9kj/5/sKIimze6r2/93Jj7+xrjUFlc1VbilsG6Bp47UFTF/ih
-         +5McLsF4iCZKeuLitzLXMJtrPolucpXN9kPGjNFlkMUEjm5Hyr0tvqraF+0Wqh4S+Crz
-         gxXw==
-X-Gm-Message-State: APjAAAUaaLzArdTOg+xISq7mvUnQRIpTvhFs07azqD/XFcJs1FwyZxJ9
-        ZG+cCYnqgCQvKHWcqqa8tGo4kg==
-X-Google-Smtp-Source: APXvYqw2Vrsl6MhrLN4N404XzV0x9D1AP5nF4XCE2sc5cXxgq1gpcLjWmpcQqB50nghux+A2TsCiFA==
-X-Received: by 2002:a63:4006:: with SMTP id n6mr5564930pga.424.1559249533347;
-        Thu, 30 May 2019 13:52:13 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:200::ca0f])
-        by smtp.gmail.com with ESMTPSA id b3sm4127765pfr.146.2019.05.30.13.52.11
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 30 May 2019 13:52:12 -0700 (PDT)
-Date:   Thu, 30 May 2019 13:52:10 -0700
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH REBASED] mm, memcg: Make scan aggression always exclude
- protection
-Message-ID: <20190530205210.GA165912@chrisdown.name>
-References: <20190228213050.GA28211@chrisdown.name>
- <20190322160307.GA3316@chrisdown.name>
- <20190530061221.GA6703@dhcp22.suse.cz>
- <20190530064453.GA110128@chrisdown.name>
- <20190530065111.GC6703@dhcp22.suse.cz>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TTwhY4W7bsMQU2b95UCtmjTrgQBWgMfaFKcWD6fHn2Y=;
+        b=cqJJVWkMLHn1et8/6tnm4D2ceuAk2SbR2nPLbuRKKkRfj9TdJi0+QM7YrDn+n4NpwL
+         9fkZUJWoUiummEWeq62Mi0hR20VNcQmENYqc7Vw1vQAMvy15c9wPcpCqe9C/mn1rdazP
+         GB7lcWQJdRJHspRkIq27BA4V6ufgasZXx4R/UtPK0w9qCEiA35rHyqjNBRpLDqqP0+Du
+         6sW3Vi5rXWzG+FZzwDVQHAMntqDwhU0pnTxu4sxzBbVwRmOZJha7TYWVDFcDGqDdvuvM
+         d7VfWLFUQh+zzu36K3pBWCCVhjW2RoK0QmUFdqx0PGPMCe2w6vTzAtRHKDvD9tk2VZRv
+         q0Iw==
+X-Gm-Message-State: APjAAAWgvtKKx/iPxMPTBPO5uM56PNiBoPZnbbsRSNz6nPZ1hBBk5aDp
+        DKvkxioQylYzXRmBB5ChsHE=
+X-Google-Smtp-Source: APXvYqxrJ3ah20Z+AgJSXVA+GlNjZK8ct2M/F8QOItY6m4FohS5BiGMOctQxVzQP3O9+Tf4jkEP3NQ==
+X-Received: by 2002:ac8:96e:: with SMTP id z43mr3514163qth.55.1559249972808;
+        Thu, 30 May 2019 13:59:32 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:658d])
+        by smtp.gmail.com with ESMTPSA id u17sm2342884qtk.0.2019.05.30.13.59.31
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 May 2019 13:59:31 -0700 (PDT)
+Date:   Thu, 30 May 2019 13:59:30 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Xuehan Xu <xxhdx1985126@gmail.com>
+Cc:     ceph-devel <ceph-devel@vger.kernel.org>,
+        "Yan, Zheng" <ukernel@gmail.com>, cgroups@vger.kernel.org,
+        Xuehan Xu <xuxuehan@360.cn>
+Subject: Re: [PATCH] cgroup: add a new group controller for cephfs
+Message-ID: <20190530205930.GW374014@devbig004.ftw2.facebook.com>
+References: <20190523064412.31498-1-xxhdx1985126@gmail.com>
+ <20190524214855.GJ374014@devbig004.ftw2.facebook.com>
+ <CAJACTueLKEBkuquf989dveBnd5cOknf7LvB+fg+9PyjDw1VX6g@mail.gmail.com>
+ <20190528185604.GK374014@devbig004.ftw2.facebook.com>
+ <CAJACTucnCGLTbRAX0V5GBMmCQh4Dh8T9b0in1TUMCOVysJ0wjw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190530065111.GC6703@dhcp22.suse.cz>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <CAJACTucnCGLTbRAX0V5GBMmCQh4Dh8T9b0in1TUMCOVysJ0wjw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Hocko writes:
->On Wed 29-05-19 23:44:53, Chris Down wrote:
->> Michal Hocko writes:
->> > Maybe I am missing something so correct me if I am wrong but the new
->> > calculation actually means that we always allow to scan even min
->> > protected memcgs right?
->>
->> We check if the memcg is min protected as a precondition for coming into
->> this function at all, so this generally isn't possible. See the
->> mem_cgroup_protected MEMCG_PROT_MIN check in shrink_node.
->
->OK, that is the part I was missing, I got confused by checking the min
->limit as well here. Thanks for the clarification. A comment would be
->handy or do we really need to consider min at all?
+Hello,
 
-You mean as part of the reclaim pressure calculation? Yeah, we still need it, 
-because we might only set memory.min, but not set memory.low.
+On Wed, May 29, 2019 at 10:27:36AM +0800, Xuehan Xu wrote:
+> I think, since we are offering users an interface to control the io
+> reqs issuing rate, we'd better provide the interface through the io
+> controller, is this right?
 
->> (Of course, it's possible we race with going within protection thresholds
->> again, but this patch doesn't make that any better or worse than the
->> previous situation.)
->
->Yeah.
->
->With the above clarified. The code the resulting code is much easier to
->follow and the overal logic makes sense to me.
->
->Acked-by: Michal Hocko <mhocko@suse.com>
+I'm not entirely sure what the right approach is here.  For most
+controllers, there are concrete resources which are being controlled
+even if it's a virtual resource like pids.  Here, it isn't clear how
+the resource should be defined.  Ideally, it should be defined as
+fractions / weights of whatever backends can do but that might not be
+that easy to define.
 
-Thanks for your thorough review! :-)
+Another issue is that non-work-conserving limits usually aren't enough
+to serve majority of use cases and it's better to at least consider
+how work-conserving control should look like before settling interface
+decisions.
+
+> Actually, for now, we are considering implement a ceph-specific
+> "blkcg_policy" which adds new io controller "cf" files to let users
+> modify configurations of the ceph-specific "blkcg_policy" and limit
+> the ceph reqs sent to the underlying cluster all by itself rather than
+> relying on the existing blkcg_policies like io latency or io throttle.
+> Is this the right way to go? Thanks:-)
+
+Can we take a step back and think through what the fundamental
+resources are?  Do these control knobs even belong to the client
+machines?
+
+Thanks.
+
+-- 
+tejun
