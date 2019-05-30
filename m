@@ -2,33 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93EE82F8A6
-	for <lists+cgroups@lfdr.de>; Thu, 30 May 2019 10:39:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2981C2FA7D
+	for <lists+cgroups@lfdr.de>; Thu, 30 May 2019 12:46:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726786AbfE3IjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 May 2019 04:39:07 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:56549 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726439AbfE3IjG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 May 2019 04:39:06 -0400
-Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hWGaT-000Qui-MV; Thu, 30 May 2019 04:39:01 -0400
+        id S1726666AbfE3KqI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 May 2019 06:46:08 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:35742 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726198AbfE3KqD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 May 2019 06:46:03 -0400
+Received: by mail-wr1-f68.google.com with SMTP id m3so3893562wrv.2
+        for <cgroups@vger.kernel.org>; Thu, 30 May 2019 03:46:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=C4BgjhOQ5WaS5BA3N176Rm/rfCh1eKw3G7OX1NDf330=;
+        b=ZHcoAoPWP49Y2hs6v2CQOh3DuFecDqeF+g/Ha0Cx5554RiqUdqSjrUzEZQVawME5Cc
+         t+JWaCh6cNprvD3GC4CZfFFbIwJWiKzfGohC55oV4K0Na9RhHK/LLTzKj4xnTd5f2Gaq
+         0JUpqCX5DrLWJ666CabaEEq9HV3pSETTY2fM1u0f59YmtuRGzeuPmEfX7Ul8rAQX3yhS
+         Ph0H9Zx+IcE06NJeEbMaQwmxzJHsWPOOfQIj1iyCpkACP5B3j6lRRXABD3PpiTQiaHgC
+         vFDLvU0hiN5zArHGDOJyjx8412ViMLTh/x389UmROZNRRzaqxLyusdnuWtLi2exM6T65
+         4m9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=C4BgjhOQ5WaS5BA3N176Rm/rfCh1eKw3G7OX1NDf330=;
+        b=R/DI+Pa5a8x9JvBsMYsLGCrBs0UtDyTLx1rJ9BogvrYWe3+KomG7/+MKWyhT2WMQjY
+         1MWcwczFKI5QoD10pW70Nh+9pBDVeFaZIF94siWiYdCUUN9Vf2i48c5zdAo7XJqBTRcQ
+         ZGJcCzU8fQSadRvM/2weGtG+U9SD6q0wUq+8QQqtv6UwadgfPdRFVfrza3S/c0zOE/zW
+         EgucTiDAVtKEAMRKq6mmo26Al1xe3yUiPJPzhDY69pF5iyiZOta8kj99GKkTE+y8mWjG
+         MR57dyOm9y0Jrz1HWeglShvBqEoMMAae2moy0yccR4LZyyUpnDDtOWpK7mzgL4UIulcV
+         A2AA==
+X-Gm-Message-State: APjAAAWvKyXGnWLfabj7qP4vkhXcai+GrSTQPCuEOJ/0Sltg3U8GuLW/
+        3zsPjKkNnjFmTJfA0Ki/2SQyBQ==
+X-Google-Smtp-Source: APXvYqw1PXKaN2XzfkxrvWWIUxCH2bCO0CxsjAS2wAGmjr/lS4zV9Vzp6V0DJRzdzI6FdoPQh7Bf9w==
+X-Received: by 2002:adf:e408:: with SMTP id g8mr2145454wrm.143.1559213160542;
+        Thu, 30 May 2019 03:46:00 -0700 (PDT)
+Received: from [192.168.0.101] (84-33-71-35.dyn.eolo.it. [84.33.71.35])
+        by smtp.gmail.com with ESMTPSA id j123sm3875449wmb.32.2019.05.30.03.45.58
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 May 2019 03:45:59 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_D5FC080D-8BC9-40E2-AD6D-43794CA895EE";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
 Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
  controller
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-To:     Paolo Valente <paolo.valente@linaro.org>
+Date:   Thu, 30 May 2019 12:45:57 +0200
+In-Reply-To: <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
 Cc:     linux-fsdevel@vger.kernel.org,
         linux-block <linux-block@vger.kernel.org>,
         linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
         kernel list <linux-kernel@vger.kernel.org>,
         Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-        jmoyer@redhat.com, Theodore Ts'o <tytso@mit.edu>,
-        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com
+        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+To:     "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
 References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
- <1812E450-14EF-4D5A-8F31-668499E13652@linaro.org>
  <46c6a4be-f567-3621-2e16-0e341762b828@csail.mit.edu>
  <07D11833-8285-49C2-943D-E4C1D23E8859@linaro.org>
  <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
@@ -41,95 +78,173 @@ References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
  <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
  <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
  <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
- <a0096333-55c0-eb30-87fc-d63b5e285b99@csail.mit.edu>
-Message-ID: <c2a6f85b-389a-7c0a-4a5d-f1312d6831cd@csail.mit.edu>
-Date:   Thu, 30 May 2019 01:38:59 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.6.1
-MIME-Version: 1.0
-In-Reply-To: <a0096333-55c0-eb30-87fc-d63b5e285b99@csail.mit.edu>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+ <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/23/19 4:32 PM, Srivatsa S. Bhat wrote:
-> On 5/22/19 7:30 PM, Srivatsa S. Bhat wrote:
->> On 5/22/19 3:54 AM, Paolo Valente wrote:
->>>
->>>
->>>> Il giorno 22 mag 2019, alle ore 12:01, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
->>>>
->>>> On 5/22/19 2:09 AM, Paolo Valente wrote:
->>>>>
->>>>> First, thank you very much for testing my patches, and, above all, for
->>>>> sharing those huge traces!
->>>>>
->>>>> According to the your traces, the residual 20% lower throughput that you
->>>>> record is due to the fact that the BFQ injection mechanism takes a few
->>>>> hundredths of seconds to stabilize, at the beginning of the workload.
->>>>> During that setup time, the throughput is equal to the dreadful ~60-90 KB/s
->>>>> that you see without this new patch.  After that time, there
->>>>> seems to be no loss according to the trace.
->>>>>
->>>>> The problem is that a loss lasting only a few hundredths of seconds is
->>>>> however not negligible for a write workload that lasts only 3-4
->>>>> seconds.  Could you please try writing a larger file?
->>>>>
->>>>
->>>> I tried running dd for longer (about 100 seconds), but still saw around
->>>> 1.4 MB/s throughput with BFQ, and between 1.5 MB/s - 1.6 MB/s with
->>>> mq-deadline and noop.
->>>
->>> Ok, then now the cause is the periodic reset of the mechanism.
->>>
->>> It would be super easy to fill this gap, by just gearing the mechanism
->>> toward a very aggressive injection.  The problem is maintaining
->>> control.  As you can imagine from the performance gap between CFQ (or
->>> BFQ with malfunctioning injection) and BFQ with this fix, it is very
->>> hard to succeed in maximizing the throughput while at the same time
->>> preserving control on per-group I/O.
->>>
->>
->> Ah, I see. Just to make sure that this fix doesn't overly optimize for
->> total throughput (because of the testcase we've been using) and end up
->> causing regressions in per-group I/O control, I ran a test with
->> multiple simultaneous dd instances, each writing to a different
->> portion of the filesystem (well separated, to induce seeks), and each
->> dd task bound to its own blkio cgroup. I saw similar results with and
->> without this patch, and the throughput was equally distributed among
->> all the dd tasks.
->>
-> Actually, it turns out that I ran the dd tasks directly on the block
-> device for this experiment, and not on top of ext4. I'll redo this on
-> ext4 and report back soon.
-> 
 
-With all your patches applied (including waker detection for the low
-latency case), I ran four simultaneous dd instances, each writing to a
-different ext4 partition, and each dd task bound to its own blkio
-cgroup.  The throughput continued to be well distributed among the dd
-tasks, as shown below (I increased dd's block size from 512B to 8KB
-for these experiments to get double-digit throughput numbers, so as to
-make comparisons easier).
+--Apple-Mail=_D5FC080D-8BC9-40E2-AD6D-43794CA895EE
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-bfq with low_latency = 1:
 
-819200000 bytes (819 MB, 781 MiB) copied, 16452.6 s, 49.8 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17139.6 s, 47.8 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17251.7 s, 47.5 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17384 s, 47.1 kB/s
 
-bfq with low_latency = 0:
+> Il giorno 30 mag 2019, alle ore 10:29, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>=20
+> On 5/29/19 12:41 AM, Paolo Valente wrote:
+>>=20
+>>=20
+>>> Il giorno 29 mag 2019, alle ore 03:09, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>=20
+>>> On 5/23/19 11:51 PM, Paolo Valente wrote:
+>>>>=20
+>>>>> Il giorno 24 mag 2019, alle ore 01:43, Srivatsa S. Bhat =
+<srivatsa@csail.mit.edu> ha scritto:
+>>>>>=20
+>>>>> When trying to run multiple dd tasks simultaneously, I get the =
+kernel
+>>>>> panic shown below (mainline is fine, without these patches).
+>>>>>=20
+>>>>=20
+>>>> Could you please provide me somehow with a list =
+*(bfq_serv_to_charge+0x21) ?
+>>>>=20
+>>>=20
+>>> Hi Paolo,
+>>>=20
+>>> Sorry for the delay! Here you go:
+>>>=20
+>>> (gdb) list *(bfq_serv_to_charge+0x21)
+>>> 0xffffffff814bad91 is in bfq_serv_to_charge =
+(./include/linux/blkdev.h:919).
+>>> 914
+>>> 915	extern unsigned int blk_rq_err_bytes(const struct request *rq);
+>>> 916
+>>> 917	static inline unsigned int blk_rq_sectors(const struct request =
+*rq)
+>>> 918	{
+>>> 919		return blk_rq_bytes(rq) >> SECTOR_SHIFT;
+>>> 920	}
+>>> 921
+>>> 922	static inline unsigned int blk_rq_cur_sectors(const struct =
+request *rq)
+>>> 923	{
+>>> (gdb)
+>>>=20
+>>>=20
+>>> For some reason, I've not been able to reproduce this issue after
+>>> reporting it here. (Perhaps I got lucky when I hit the kernel panic
+>>> a bunch of times last week).
+>>>=20
+>>> I'll test with your fix applied and see how it goes.
+>>>=20
+>>=20
+>> Great!  the offending line above gives me hope that my fix is =
+correct.
+>> If no more failures occur, then I'm eager (and a little worried ...)
+>> to see how it goes with throughput :)
+>>=20
+>=20
+> Your fix held up well under my testing :)
+>=20
 
-819200000 bytes (819 MB, 781 MiB) copied, 16257.9 s, 50.4 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17204.5 s, 47.6 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17220.6 s, 47.6 kB/s
-819200000 bytes (819 MB, 781 MiB) copied, 17348.1 s, 47.2 kB/s
- 
-Regards,
-Srivatsa
-VMware Photon OS
+Great!
+
+> As for throughput, with low_latency =3D 1, I get around 1.4 MB/s with
+> bfq (vs 1.6 MB/s with mq-deadline). This is a huge improvement
+> compared to what it was before (70 KB/s).
+>=20
+
+That's beautiful news!
+
+So, now we have the best of the two worlds: maximum throughput and
+total control on I/O (including minimum latency for interactive and
+soft real-time applications).  Besides, no manual configuration
+needed.  Of course, this holds unless/until you find other flaws ... ;)
+
+> With tracing on, the throughput is a bit lower (as expected I guess),
+> about 1 MB/s, and the corresponding trace file
+> (trace-waker-detection-1MBps) is available at:
+>=20
+> https://www.dropbox.com/s/3roycp1zwk372zo/bfq-traces.tar.gz?dl=3D0
+>=20
+
+Thank you for the new trace.  I've analyzed it carefully, and, as I
+imagined, this residual 12% throughput loss is due to a couple of
+heuristics that occasionally get something wrong.  Most likely, ~12%
+is the worst-case loss, and if one repeats the tests, the loss may be
+much lower in some runs.
+
+I think it is very hard to eliminate this fluctuation while keeping
+full I/O control.  But, who knows, I might have some lucky idea in the
+future.
+
+At any rate, since you pointed out that you are interested in
+out-of-the-box performance, let me complete the context: in case
+low_latency is left set, one gets, in return for this 12% loss,
+a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
+times of applications under load [1];
+b) 500-1000% higher throughput in multi-client server workloads, as I
+already pointed out [2].
+
+I'm going to prepare complete patches.  In addition, if ok for you,
+I'll report these results on the bug you created.  Then I guess we can
+close it.
+
+[1] https://algo.ing.unimo.it/people/paolo/disk_sched/results.php
+[2] =
+https://www.linaro.org/blog/io-bandwidth-management-for-production-quality=
+-services/
+
+> Thank you so much for your tireless efforts in fixing this issue!
+>=20
+
+I did enjoy working on this with you: your test case and your support
+enabled me to make important improvements.  So, thank you very much
+for your collaboration so far,
+Paolo
+
+
+> Regards,
+> Srivatsa
+> VMware Photon OS
+
+
+--Apple-Mail=_D5FC080D-8BC9-40E2-AD6D-43794CA895EE
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlzvtGUACgkQOAkCLQGo
+9oNVJw//fwlcfMSVaKx721kD5B4qn6aWHMN4d2RzIDbrJh88OKMa9IDy70+NPqXq
+dEDMwLetb/KsF3Ox2dEaWt+NTwIW9/AzzdIZSwuwMvuZVR606rmQhqcBfW5uhQuF
+WKozLzC5VPIJLowgpYmWSQ+q283Ufsl4R/dGyaXBwYx8qRFarjsKQe+v+ozzzM+8
+m8c0nf5K17nwsMVLAk7HizOAUosP+kHkNILsgXV9gu2RpPc1LE3SYHF5ujfnR8lh
+3t4PJdH7r1gi4vRcyqVZvW9i15bhgUgQNlJARvgA9EeV5ekQQbY6a/ywds3z8CTV
+fSlCJt9xsqqz7cxf4BQUiBud2UTv1NoVCMTYwDJ4AK4r9hffMpy1iyhMyhx9Q8WE
++jOpntWPeMyU8RCnV87pKo3ELzIlMpucCxTvlRAoZBmEltuQn/DvUGv0N0YizeIF
+s99H14r4yrNKsQSzna6qyE+FAs+QpUHpXV44IHVZzhyXesxqPtaju/LisYCIilNs
+GAVcHW9JIv68KdAMq3t5EX/XXfn/v9/3/8vY1UrhGafcJu9JkJW0Z5UyjzRctRC0
+3UmIgpEWz9+mAjPuIboYbmL1uHaUcfxNUwqr38/rEv2rMm0zzd3ipHzzJCIS09NX
+OjDXhgG+zqvWE7H8OC7Sqxg8ZUKpKPkhJRi8m0MrZsl7GYaM9Ok=
+=sgcb
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_D5FC080D-8BC9-40E2-AD6D-43794CA895EE--
