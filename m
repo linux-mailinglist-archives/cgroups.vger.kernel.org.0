@@ -2,165 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B33314F2
-	for <lists+cgroups@lfdr.de>; Fri, 31 May 2019 20:52:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0651331553
+	for <lists+cgroups@lfdr.de>; Fri, 31 May 2019 21:27:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726589AbfEaSwb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 31 May 2019 14:52:31 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:42316 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727053AbfEaSwb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 31 May 2019 14:52:31 -0400
-Received: by mail-qt1-f194.google.com with SMTP id s15so2120461qtk.9
-        for <cgroups@vger.kernel.org>; Fri, 31 May 2019 11:52:30 -0700 (PDT)
+        id S1727160AbfEaT1n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 31 May 2019 15:27:43 -0400
+Received: from mail-pf1-f193.google.com ([209.85.210.193]:46868 "EHLO
+        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726807AbfEaT1n (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 31 May 2019 15:27:43 -0400
+Received: by mail-pf1-f193.google.com with SMTP id y11so6749006pfm.13
+        for <cgroups@vger.kernel.org>; Fri, 31 May 2019 12:27:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=5IWuOvRy3W8IAMMjrN6EW+AHDQ5SNAvFQ0qqlutlcTA=;
-        b=k32f1U1UrwqrGTTwJR+dlxTc6zyT0JvUl1qEK0bG4/F0QlsA9gQlDssjOJ6SHrmxD3
-         MgPy55FAaIq4mQhXrHwE/17vtQvVtUCEJp/127o2///cjIKpjhMe1mMFj87LDESqUBbs
-         u7EuN0frncl4niarvXJyjxVq5pRX+PjuDrajtfMISeYOEMxBa6GfvZxObb0MBa4s/n97
-         Onoj555Ei/uHaEZRzTMqbHPs2Uvc7vpVztLyO5lsOaUt9KL5TT8zcOW+01Juv1SpqW52
-         URygFm+HP1omwV+b+fD4+cOSf5QXKpviqdp2uyl4kEh+mhb9wgXrYQ/5bQwEnvLKp5S8
-         6h8A==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=3oPC7MpGNkmIv4lC37rTS0RoLjGGQjB5vfa5jgin/Xo=;
+        b=SbI05ChMOHpTulNwmjhSR5ZbY9idO2IxEcT87P8CRpkS49RpLitZ6wSoqJeEdL1yVK
+         cww6Si5nneZ2edimkGsX9/iIsmxdqDJDY5OVjkYb730pjSBbLnqr5fWiePVGdfkZ6x8p
+         K2nnnRVs/YngzaK04SXScheJ4pWXrpnvyJLow=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=5IWuOvRy3W8IAMMjrN6EW+AHDQ5SNAvFQ0qqlutlcTA=;
-        b=ofW5PpNKwUgRq2ZQqFcoFSUgxnrdJxTlT0Pn5snKHr1uwmzxo8kLYklg/0znyQfnVQ
-         8giUGIMSgNQo9WEBBX6odz0rkL6M/z5/FY8sdgTku2x5O6wrRJ1s7l/Q7Z1/tH94eQ2s
-         +/VjT1fc/TjQDHQ4Uw2CjI77o13bDua41APzJNQd3zztGjWZiQUeKLqPCxRMXKJG32wh
-         w8xnv6yYFWf8pJ9/r/bXzHEDFg5XhiCKx/aG1U9eX1t5+ity2WZmiCvTZFa8ZStsZNou
-         984+qcx1qMsvESMRf8C8Aa9qdY8XtR47EMcDeXK9JZEyBqzHs/TfiqOicggrZMQftF1h
-         jEHQ==
-X-Gm-Message-State: APjAAAVl6FPt5d7qT7ia1DGNVco3vzTQ5xLlD1BE+ivLEpgosNnwdvTE
-        SHMzcVHjQccHq28lXhWJ5/Y=
-X-Google-Smtp-Source: APXvYqxdxc9Npu9wsw5cS8vmM6CTEYwNEObhJ27Bv+wwQKX53KUPtx7A/zFUd16G9fb7Z+GwDyn24A==
-X-Received: by 2002:ac8:2a46:: with SMTP id l6mr10464802qtl.309.1559328750075;
-        Fri, 31 May 2019 11:52:30 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::4513])
-        by smtp.gmail.com with ESMTPSA id b66sm3264403qkd.37.2019.05.31.11.52.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 31 May 2019 11:52:29 -0700 (PDT)
-Date:   Fri, 31 May 2019 11:52:27 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH cgroup/for-5.3] cgroup: add cgroup_parse_float()
-Message-ID: <20190531185212.GH374014@devbig004.ftw2.facebook.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=3oPC7MpGNkmIv4lC37rTS0RoLjGGQjB5vfa5jgin/Xo=;
+        b=FuRpzokvkfPvsPIld4XVzRD9199T79g3dzAxOqUqZVfOk2GWeMgF2P+GgUujd3zpdp
+         iecN6PXW/DGnjGh+Mfoqm9GipQlQrslCy3dywLQqO54EIrYTuUmD70Adzlf4wgc3S+gp
+         PZhw2peYxM4UBwGFeW7r7W75baIXcduHMjIBz9CYG3Wcth3rS0GWbhzlA47zMnHEiRqA
+         +DoCUxcqVmRfEo8uiPQD8uTObkCc3IzHyfk0t1+fcblVQKCpyUPCjIlqvUvaLWDfi4uJ
+         L30DVHdmDEkuV2W1HVYHT1mCqJupAMvqO+FWJ42POjTjpxWEK1rTm5dxs+2uqk81XESc
+         zaaw==
+X-Gm-Message-State: APjAAAXTdVX5XsPWGKtmB+ddDeRkFCbBdtLBAaBt8j+eZwslmpwcQAVE
+        NgRhNq3FiiPXC9FxS4eS3Qhz4yppcgBQtw==
+X-Google-Smtp-Source: APXvYqx8hFRJFZmWhsZTcS5jPsQcgCdx6RY9Azo2rv/4QAY3o3jE3z984dUqq8bjDr4wU09ByZJlcQ==
+X-Received: by 2002:a62:1885:: with SMTP id 127mr12522926pfy.48.1559330862439;
+        Fri, 31 May 2019 12:27:42 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:200::3:3d82])
+        by smtp.gmail.com with ESMTPSA id f2sm5497516pgs.83.2019.05.31.12.27.41
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Fri, 31 May 2019 12:27:41 -0700 (PDT)
+Date:   Fri, 31 May 2019 12:27:40 -0700
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, kernel-team@fb.com
+Subject: Re: [PATCH REBASED] mm, memcg: Make scan aggression always exclude
+ protection
+Message-ID: <20190531192740.GA286159@chrisdown.name>
+References: <20190228213050.GA28211@chrisdown.name>
+ <20190322160307.GA3316@chrisdown.name>
+ <20190530061221.GA6703@dhcp22.suse.cz>
+ <20190530064453.GA110128@chrisdown.name>
+ <20190530065111.GC6703@dhcp22.suse.cz>
+ <20190530205210.GA165912@chrisdown.name>
+ <20190531062854.GG6896@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190531062854.GG6896@dhcp22.suse.cz>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From a5e112e6424adb77d953eac20e6936b952fd6b32 Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Mon, 13 May 2019 12:37:17 -0700
+Michal Hocko writes:
+>On Thu 30-05-19 13:52:10, Chris Down wrote:
+>> Michal Hocko writes:
+>> > On Wed 29-05-19 23:44:53, Chris Down wrote:
+>> > > Michal Hocko writes:
+>> > > > Maybe I am missing something so correct me if I am wrong but the new
+>> > > > calculation actually means that we always allow to scan even min
+>> > > > protected memcgs right?
+>> > >
+>> > > We check if the memcg is min protected as a precondition for coming into
+>> > > this function at all, so this generally isn't possible. See the
+>> > > mem_cgroup_protected MEMCG_PROT_MIN check in shrink_node.
+>> >
+>> > OK, that is the part I was missing, I got confused by checking the min
+>> > limit as well here. Thanks for the clarification. A comment would be
+>> > handy or do we really need to consider min at all?
+>>
+>> You mean as part of the reclaim pressure calculation? Yeah, we still need
+>> it, because we might only set memory.min, but not set memory.low.
+>
+>But then the memcg will get excluded as well right?
 
-cgroup already uses floating point for percent[ile] numbers and there
-are several controllers which want to take them as input.  Add a
-generic parse helper to handle inputs.
+I'm not sure what you mean, could you clarify? :-)
 
-Update the interface convention documentation about the use of
-percentage numbers.  While at it, also clarify the default time unit.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
-Applied to cgroup/for-5.3.
-
- Documentation/admin-guide/cgroup-v2.rst |  6 ++++
- include/linux/cgroup.h                  |  2 ++
- kernel/cgroup/cgroup.c                  | 43 +++++++++++++++++++++++++
- 3 files changed, 51 insertions(+)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 88e746074252..73b0c0d8df31 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -696,6 +696,12 @@ Conventions
-   informational files on the root cgroup which end up showing global
-   information available elsewhere shouldn't exist.
- 
-+- The default time unit is microseconds.  If a different unit is ever
-+  used, an explicit unit suffix must be present.
-+
-+- A parts-per quantity should use a percentage decimal with at least
-+  two digit fractional part - e.g. 13.40.
-+
- - If a controller implements weight based resource distribution, its
-   interface file should be named "weight" and have the range [1,
-   10000] with 100 as the default.  The values are chosen to allow
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 0297f930a56e..3745ecdad925 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -131,6 +131,8 @@ void cgroup_free(struct task_struct *p);
- int cgroup_init_early(void);
- int cgroup_init(void);
- 
-+int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v);
-+
- /*
-  * Iteration helpers and macros.
-  */
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index a7df319c2e9a..7dffcfe17441 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6387,4 +6387,47 @@ static int __init cgroup_sysfs_init(void)
- 	return sysfs_create_group(kernel_kobj, &cgroup_sysfs_attr_group);
- }
- subsys_initcall(cgroup_sysfs_init);
-+
-+static u64 power_of_ten(int power)
-+{
-+	u64 v = 1;
-+	while (power--)
-+		v *= 10;
-+	return v;
-+}
-+
-+/**
-+ * cgroup_parse_float - parse a floating number
-+ * @input: input string
-+ * @dec_shift: number of decimal digits to shift
-+ * @v: output
-+ *
-+ * Parse a decimal floating point number in @input and store the result in
-+ * @v with decimal point right shifted @dec_shift times.  For example, if
-+ * @input is "12.3456" and @dec_shift is 3, *@v will be set to 12345.
-+ * Returns 0 on success, -errno otherwise.
-+ *
-+ * There's nothing cgroup specific about this function except that it's
-+ * currently the only user.
-+ */
-+int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v)
-+{
-+	s64 whole, frac = 0;
-+	int fstart = 0, fend = 0, flen;
-+
-+	if (!sscanf(input, "%lld.%n%lld%n", &whole, &fstart, &frac, &fend))
-+		return -EINVAL;
-+	if (frac < 0)
-+		return -EINVAL;
-+
-+	flen = fend > fstart ? fend - fstart : 0;
-+	if (flen < dec_shift)
-+		frac *= power_of_ten(dec_shift - flen);
-+	else
-+		frac = DIV_ROUND_CLOSEST_ULL(frac, power_of_ten(flen - dec_shift));
-+
-+	*v = whole * power_of_ten(dec_shift) + frac;
-+	return 0;
-+}
-+
- #endif /* CONFIG_SYSFS */
--- 
-2.17.1
-
+The only thing we use memory.min for in this patch is potentially as the 
+protection size, which we then use to determine reclaim pressure. We don't use 
+this information if the cgroup is below memory.min, because you'll never come 
+in here. This is for if you *do* have memory.min or memory.low set and you are 
+*exceeding* it (or we are in low reclaim), in which case we want it (or 
+memory.low if higher) considered as the protection size.
