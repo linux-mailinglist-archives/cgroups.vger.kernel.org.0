@@ -2,100 +2,149 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0651331553
-	for <lists+cgroups@lfdr.de>; Fri, 31 May 2019 21:27:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88AC632277
+	for <lists+cgroups@lfdr.de>; Sun,  2 Jun 2019 09:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727160AbfEaT1n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 31 May 2019 15:27:43 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:46868 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726807AbfEaT1n (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 31 May 2019 15:27:43 -0400
-Received: by mail-pf1-f193.google.com with SMTP id y11so6749006pfm.13
-        for <cgroups@vger.kernel.org>; Fri, 31 May 2019 12:27:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=3oPC7MpGNkmIv4lC37rTS0RoLjGGQjB5vfa5jgin/Xo=;
-        b=SbI05ChMOHpTulNwmjhSR5ZbY9idO2IxEcT87P8CRpkS49RpLitZ6wSoqJeEdL1yVK
-         cww6Si5nneZ2edimkGsX9/iIsmxdqDJDY5OVjkYb730pjSBbLnqr5fWiePVGdfkZ6x8p
-         K2nnnRVs/YngzaK04SXScheJ4pWXrpnvyJLow=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=3oPC7MpGNkmIv4lC37rTS0RoLjGGQjB5vfa5jgin/Xo=;
-        b=FuRpzokvkfPvsPIld4XVzRD9199T79g3dzAxOqUqZVfOk2GWeMgF2P+GgUujd3zpdp
-         iecN6PXW/DGnjGh+Mfoqm9GipQlQrslCy3dywLQqO54EIrYTuUmD70Adzlf4wgc3S+gp
-         PZhw2peYxM4UBwGFeW7r7W75baIXcduHMjIBz9CYG3Wcth3rS0GWbhzlA47zMnHEiRqA
-         +DoCUxcqVmRfEo8uiPQD8uTObkCc3IzHyfk0t1+fcblVQKCpyUPCjIlqvUvaLWDfi4uJ
-         L30DVHdmDEkuV2W1HVYHT1mCqJupAMvqO+FWJ42POjTjpxWEK1rTm5dxs+2uqk81XESc
-         zaaw==
-X-Gm-Message-State: APjAAAXTdVX5XsPWGKtmB+ddDeRkFCbBdtLBAaBt8j+eZwslmpwcQAVE
-        NgRhNq3FiiPXC9FxS4eS3Qhz4yppcgBQtw==
-X-Google-Smtp-Source: APXvYqx8hFRJFZmWhsZTcS5jPsQcgCdx6RY9Azo2rv/4QAY3o3jE3z984dUqq8bjDr4wU09ByZJlcQ==
-X-Received: by 2002:a62:1885:: with SMTP id 127mr12522926pfy.48.1559330862439;
-        Fri, 31 May 2019 12:27:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:200::3:3d82])
-        by smtp.gmail.com with ESMTPSA id f2sm5497516pgs.83.2019.05.31.12.27.41
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Fri, 31 May 2019 12:27:41 -0700 (PDT)
-Date:   Fri, 31 May 2019 12:27:40 -0700
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Dennis Zhou <dennis@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH REBASED] mm, memcg: Make scan aggression always exclude
- protection
-Message-ID: <20190531192740.GA286159@chrisdown.name>
-References: <20190228213050.GA28211@chrisdown.name>
- <20190322160307.GA3316@chrisdown.name>
- <20190530061221.GA6703@dhcp22.suse.cz>
- <20190530064453.GA110128@chrisdown.name>
- <20190530065111.GC6703@dhcp22.suse.cz>
- <20190530205210.GA165912@chrisdown.name>
- <20190531062854.GG6896@dhcp22.suse.cz>
+        id S1725877AbfFBHfK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 2 Jun 2019 03:35:10 -0400
+Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:45621 "EHLO
+        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725875AbfFBHfJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 2 Jun 2019 03:35:09 -0400
+Received: from c-73-193-85-113.hsd1.wa.comcast.net ([73.193.85.113] helo=srivatsab-a01.vmware.com)
+        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
+        (Exim 4.82)
+        (envelope-from <srivatsa@csail.mit.edu>)
+        id 1hXKXo-000XZY-I5; Sun, 02 Jun 2019 03:04:40 -0400
+Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
+ controller
+To:     Paolo Valente <paolo.valente@linaro.org>
+Cc:     linux-fsdevel@vger.kernel.org,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
+        Jeff Moyer <jmoyer@redhat.com>, Theodore Ts'o <tytso@mit.edu>,
+        amakhalov@vmware.com, anishs@vmware.com, srivatsab@vmware.com,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu>
+ <A0DFE635-EFEC-4670-AD70-5D813E170BEE@linaro.org>
+ <5B6570A2-541A-4CF8-98E0-979EA6E3717D@linaro.org>
+ <2CB39B34-21EE-4A95-A073-8633CF2D187C@linaro.org>
+ <FC24E25F-4578-454D-AE2B-8D8D352478D8@linaro.org>
+ <0e3fdf31-70d9-26eb-7b42-2795d4b03722@csail.mit.edu>
+ <F5E29C98-6CC4-43B8-994D-0B5354EECBF3@linaro.org>
+ <686D6469-9DE7-4738-B92A-002144C3E63E@linaro.org>
+ <01d55216-5718-767a-e1e6-aadc67b632f4@csail.mit.edu>
+ <CA8A23E2-6F22-4444-9A20-E052A94CAA9B@linaro.org>
+ <cc148388-3c82-d7c0-f9ff-8c31bb5dc77d@csail.mit.edu>
+ <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
+ <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
+ <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
+ <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
+ <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
+ <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
+ <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
+ <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
+Message-ID: <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
+Date:   Sun, 2 Jun 2019 00:04:34 -0700
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
+ Gecko/20100101 Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20190531062854.GG6896@dhcp22.suse.cz>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Hocko writes:
->On Thu 30-05-19 13:52:10, Chris Down wrote:
->> Michal Hocko writes:
->> > On Wed 29-05-19 23:44:53, Chris Down wrote:
->> > > Michal Hocko writes:
->> > > > Maybe I am missing something so correct me if I am wrong but the new
->> > > > calculation actually means that we always allow to scan even min
->> > > > protected memcgs right?
->> > >
->> > > We check if the memcg is min protected as a precondition for coming into
->> > > this function at all, so this generally isn't possible. See the
->> > > mem_cgroup_protected MEMCG_PROT_MIN check in shrink_node.
->> >
->> > OK, that is the part I was missing, I got confused by checking the min
->> > limit as well here. Thanks for the clarification. A comment would be
->> > handy or do we really need to consider min at all?
+On 5/30/19 3:45 AM, Paolo Valente wrote:
+> 
+> 
+>> Il giorno 30 mag 2019, alle ore 10:29, Srivatsa S. Bhat <srivatsa@csail.mit.edu> ha scritto:
 >>
->> You mean as part of the reclaim pressure calculation? Yeah, we still need
->> it, because we might only set memory.min, but not set memory.low.
+[...]
+>>
+>> Your fix held up well under my testing :)
+>>
+> 
+> Great!
+> 
+>> As for throughput, with low_latency = 1, I get around 1.4 MB/s with
+>> bfq (vs 1.6 MB/s with mq-deadline). This is a huge improvement
+>> compared to what it was before (70 KB/s).
+>>
+> 
+> That's beautiful news!
+> 
+> So, now we have the best of the two worlds: maximum throughput and
+> total control on I/O (including minimum latency for interactive and
+> soft real-time applications).  Besides, no manual configuration
+> needed.  Of course, this holds unless/until you find other flaws ... ;)
+> 
+
+Indeed, that's awesome! :)
+
+>> With tracing on, the throughput is a bit lower (as expected I guess),
+>> about 1 MB/s, and the corresponding trace file
+>> (trace-waker-detection-1MBps) is available at:
+>>
+>> https://www.dropbox.com/s/3roycp1zwk372zo/bfq-traces.tar.gz?dl=0
+>>
+> 
+> Thank you for the new trace.  I've analyzed it carefully, and, as I
+> imagined, this residual 12% throughput loss is due to a couple of
+> heuristics that occasionally get something wrong.  Most likely, ~12%
+> is the worst-case loss, and if one repeats the tests, the loss may be
+> much lower in some runs.
 >
->But then the memcg will get excluded as well right?
 
-I'm not sure what you mean, could you clarify? :-)
+Ah, I see.
+ 
+> I think it is very hard to eliminate this fluctuation while keeping
+> full I/O control.  But, who knows, I might have some lucky idea in the
+> future.
+> 
 
-The only thing we use memory.min for in this patch is potentially as the 
-protection size, which we then use to determine reclaim pressure. We don't use 
-this information if the cgroup is below memory.min, because you'll never come 
-in here. This is for if you *do* have memory.min or memory.low set and you are 
-*exceeding* it (or we are in low reclaim), in which case we want it (or 
-memory.low if higher) considered as the protection size.
+:)
+
+> At any rate, since you pointed out that you are interested in
+> out-of-the-box performance, let me complete the context: in case
+> low_latency is left set, one gets, in return for this 12% loss,
+> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
+> times of applications under load [1];
+> b) 500-1000% higher throughput in multi-client server workloads, as I
+> already pointed out [2].
+> 
+
+I'm very happy that you could solve the problem without having to
+compromise on any of the performance characteristics/features of BFQ!
+
+
+> I'm going to prepare complete patches.  In addition, if ok for you,
+> I'll report these results on the bug you created.  Then I guess we can
+> close it.
+> 
+
+Sounds great!
+
+> [1] https://algo.ing.unimo.it/people/paolo/disk_sched/results.php
+> [2] https://www.linaro.org/blog/io-bandwidth-management-for-production-quality-services/
+> 
+>> Thank you so much for your tireless efforts in fixing this issue!
+>>
+> 
+> I did enjoy working on this with you: your test case and your support
+> enabled me to make important improvements.  So, thank you very much
+> for your collaboration so far,
+> Paolo
+
+My pleasure! :)
+ 
+Regards,
+Srivatsa
+VMware Photon OS
