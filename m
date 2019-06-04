@@ -2,147 +2,494 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6737D34B08
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 16:54:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5DE335196
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 23:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727861AbfFDOyk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Jun 2019 10:54:40 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49582 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727854AbfFDOyk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 10:54:40 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x54EcAlf076003
-        for <cgroups@vger.kernel.org>; Tue, 4 Jun 2019 10:54:38 -0400
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2swrs5e7ky-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 10:54:38 -0400
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <cgroups@vger.kernel.org> from <rppt@linux.ibm.com>;
-        Tue, 4 Jun 2019 15:54:30 +0100
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 4 Jun 2019 15:54:26 +0100
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x54EsPk160882980
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Jun 2019 14:54:25 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A5A23AE045;
-        Tue,  4 Jun 2019 14:54:25 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id A6587AE055;
-        Tue,  4 Jun 2019 14:54:24 +0000 (GMT)
-Received: from rapoport-lnx (unknown [9.148.8.53])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Tue,  4 Jun 2019 14:54:24 +0000 (GMT)
-Date:   Tue, 4 Jun 2019 17:54:22 +0300
-From:   Mike Rapoport <rppt@linux.ibm.com>
-To:     Mark Rutland <mark.rutland@arm.com>
-Cc:     Qian Cai <cai@lca.pw>, akpm@linux-foundation.org,
-        catalin.marinas@arm.com, will.deacon@arm.com,
-        linux-kernel@vger.kernel.org, mhocko@kernel.org,
-        linux-mm@kvack.org, vdavydov.dev@gmail.com, hannes@cmpxchg.org,
-        guro@fb.com, cgroups@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH -next] arm64/mm: fix a bogus GFP flag in pgd_alloc()
-References: <1559656836-24940-1-git-send-email-cai@lca.pw>
- <20190604142338.GC24467@lakrids.cambridge.arm.com>
+        id S1726033AbfFDVFP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Jun 2019 17:05:15 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:36461 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfFDVFP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 17:05:15 -0400
+Received: by mail-pg1-f195.google.com with SMTP id a3so3661860pgb.3
+        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 14:05:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iN0wSIUb/u/LwFM5hUxI2ZE7eNuxFIJhNcRWtLrQb08=;
+        b=aM3vRSpRvUYoeZpLpVYtEg0+HHSblnxK1fvw5UKAozYEjZy/Wfkq9zdklnoaFQgnHc
+         4z8sLCysvlRUvbDA5LDMcDvcQVHay5N0kVkPb9oOjNGV79LtqTpJdP2CdPvPqEJQ9HJX
+         8RE/sF3X8w1OSman+zke60M9Qm3JR9m8BHtnB8Z/T5hIKm4rUaSdcdWtWKuj69D4HObr
+         VpxN8VFFVrbktr+KD2J7lvfY2Dz1BKUXlDO19tUA0Z3LjU/B8AyUyBBFwkuSQSNJy/aN
+         o+Ab0HrN4brclc/CDVL7M29e4WlOCZqK3gWox3UBwK1BrRn7zf0cYBLkftBQKK8OGzLz
+         BKAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=iN0wSIUb/u/LwFM5hUxI2ZE7eNuxFIJhNcRWtLrQb08=;
+        b=iG+IMfntWeJQoJU/Dfq2+KXRS7ikEXRZKuSuTMziRI3R804llUIj54xhbBtpKeirG7
+         UcZu2qrnCPzPI/F9D2ex9QBV045kcpd834vd6cpAkQ27I0ISQ9E/YDYte4XjKZOetR9W
+         ibvqORZ/tU1iYFhInBT/4iQsqYVdODR2J54RtQu2/LV5rlCKrupbqxh3AmLtcmAznTZJ
+         hCKxDkf7dQ6oh/6dOO8i0E9iOXbbhz7wsDpWQMbMD7ldYmfH8vlByVzXNHQcBagKvlsM
+         YWYWzevusnAnlWnj9Ktow5MYLEn5L1uMlTTK3uVkdvzNSdtdvSkSR82whCxOwYoqhaIj
+         NoOA==
+X-Gm-Message-State: APjAAAWPmVgkfbdfSvNwQoK3PGHyW3xBuqJMHwmlbKdVZnIodXDtoJK7
+        GvEmEMJ5ayTkVw8xTHuGjYdLog==
+X-Google-Smtp-Source: APXvYqyRImQsPQcKl4N8rh7qY3+59zaI7xKOVpxBussVMAYaxmbNTpknfNVpGcKQz5xfBw7M+1lR4A==
+X-Received: by 2002:aa7:8b4d:: with SMTP id i13mr42068094pfd.233.1559682311686;
+        Tue, 04 Jun 2019 14:05:11 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:8201])
+        by smtp.gmail.com with ESMTPSA id c9sm8678629pfn.3.2019.06.04.14.05.10
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 04 Jun 2019 14:05:10 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: memcontrol: dump memory.stat during cgroup OOM
+Date:   Tue,  4 Jun 2019 17:05:09 -0400
+Message-Id: <20190604210509.9744-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190604142338.GC24467@lakrids.cambridge.arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-TM-AS-GCONF: 00
-x-cbid: 19060414-4275-0000-0000-0000033CA09A
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 19060414-4276-0000-0000-0000384CB014
-Message-Id: <20190604145422.GG8417@rapoport-lnx>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-04_10:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- malwarescore=0 suspectscore=7 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906040097
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 04, 2019 at 03:23:38PM +0100, Mark Rutland wrote:
-> On Tue, Jun 04, 2019 at 10:00:36AM -0400, Qian Cai wrote:
-> > The commit "arm64: switch to generic version of pte allocation"
-> > introduced endless failures during boot like,
-> > 
-> > kobject_add_internal failed for pgd_cache(285:chronyd.service) (error:
-> > -2 parent: cgroup)
-> > 
-> > It turns out __GFP_ACCOUNT is passed to kernel page table allocations
-> > and then later memcg finds out those don't belong to any cgroup.
-> 
-> Mike, I understood from [1] that this wasn't expected to be a problem,
-> as the accounting should bypass kernel threads.
-> 
-> Was that assumption wrong, or is something different happening here?
+The current cgroup OOM memory info dump doesn't include all the memory
+we are tracking, nor does it give insight into what the VM tried to do
+leading up to the OOM. All that useful info is in memory.stat.
 
-I was under impression that all allocations are going through
-__memcg_kmem_charge() which does the bypass.
+Furthermore, the recursive printing for every child cgroup can
+generate absurd amounts of data on the console for larger cgroup
+trees, and it's not like we provide a per-cgroup breakdown during
+global OOM kills.
 
-Apparently, it's not the case :(
+When an OOM kill is triggered, print one set of recursive memory.stat
+items at the level whose limit triggered the OOM condition.
 
-> > 
-> > backtrace:
-> >   kobject_add_internal
-> >   kobject_init_and_add
-> >   sysfs_slab_add+0x1a8
-> >   __kmem_cache_create
-> >   create_cache
-> >   memcg_create_kmem_cache
-> >   memcg_kmem_cache_create_func
-> >   process_one_work
-> >   worker_thread
-> >   kthread
-> > 
-> > Signed-off-by: Qian Cai <cai@lca.pw>
-> > ---
-> >  arch/arm64/mm/pgd.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/mm/pgd.c b/arch/arm64/mm/pgd.c
-> > index 769516cb6677..53c48f5c8765 100644
-> > --- a/arch/arm64/mm/pgd.c
-> > +++ b/arch/arm64/mm/pgd.c
-> > @@ -38,7 +38,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
-> >  	if (PGD_SIZE == PAGE_SIZE)
-> >  		return (pgd_t *)__get_free_page(gfp);
-> >  	else
-> > -		return kmem_cache_alloc(pgd_cache, gfp);
-> > +		return kmem_cache_alloc(pgd_cache, GFP_PGTABLE_KERNEL);
-> 
-> This is used to allocate PGDs for both user and kernel pagetables (e.g.
-> for the efi runtime services), so while this may fix the regression, I'm
-> not sure it's the right fix.
+Example output:
 
-Me neither.
+stress invoked oom-killer: gfp_mask=0x100cca(GFP_HIGHUSER_MOVABLE), order=0, oom_score_adj=0
+CPU: 2 PID: 210 Comm: stress Not tainted 5.2.0-rc2-mm1-00247-g47d49835983c #135
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-20181126_142135-anatol 04/01/2014
+Call Trace:
+ dump_stack+0x46/0x60
+ dump_header+0x4c/0x2d0
+ oom_kill_process.cold.10+0xb/0x10
+ out_of_memory+0x200/0x270
+ ? try_to_free_mem_cgroup_pages+0xdf/0x130
+ mem_cgroup_out_of_memory+0xb7/0xc0
+ try_charge+0x680/0x6f0
+ mem_cgroup_try_charge+0xb5/0x160
+ __add_to_page_cache_locked+0xc6/0x300
+ ? list_lru_destroy+0x80/0x80
+ add_to_page_cache_lru+0x45/0xc0
+ pagecache_get_page+0x11b/0x290
+ filemap_fault+0x458/0x6d0
+ ext4_filemap_fault+0x27/0x36
+ __do_fault+0x2f/0xb0
+ __handle_mm_fault+0x9c5/0x1140
+ ? apic_timer_interrupt+0xa/0x20
+ handle_mm_fault+0xc5/0x180
+ __do_page_fault+0x1ab/0x440
+ ? page_fault+0x8/0x30
+ page_fault+0x1e/0x30
+RIP: 0033:0x55c32167fc10
+Code: Bad RIP value.
+RSP: 002b:00007fff1d031c50 EFLAGS: 00010206
+RAX: 000000000dc00000 RBX: 00007fd2db000010 RCX: 00007fd2db000010
+RDX: 0000000000000000 RSI: 0000000010001000 RDI: 0000000000000000
+RBP: 000055c321680a54 R08: 00000000ffffffff R09: 0000000000000000
+R10: 0000000000000022 R11: 0000000000000246 R12: ffffffffffffffff
+R13: 0000000000000002 R14: 0000000000001000 R15: 0000000010000000
+memory: usage 1024kB, limit 1024kB, failcnt 75131
+swap: usage 0kB, limit 9007199254740988kB, failcnt 0
+Memory cgroup stats for /foo:
+anon 0
+file 0
+kernel_stack 36864
+slab 274432
+sock 0
+shmem 0
+file_mapped 0
+file_dirty 0
+file_writeback 0
+anon_thp 0
+inactive_anon 126976
+active_anon 0
+inactive_file 0
+active_file 0
+unevictable 0
+slab_reclaimable 0
+slab_unreclaimable 274432
+pgfault 59466
+pgmajfault 1617
+workingset_refault 2145
+workingset_activate 0
+workingset_nodereclaim 0
+pgrefill 98952
+pgscan 200060
+pgsteal 59340
+pgactivate 40095
+pgdeactivate 96787
+pglazyfree 0
+pglazyfreed 0
+thp_fault_alloc 0
+thp_collapse_alloc 0
+Tasks state (memory values in pages):
+[  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+[    200]     0   200     1121      884    53248       29             0 bash
+[    209]     0   209      905      246    45056       19             0 stress
+[    210]     0   210    66442       56   499712    56349             0 stress
+oom-kill:constraint=CONSTRAINT_NONE,nodemask=(null),oom_memcg=/foo,task_memcg=/foo,task=stress,pid=210,uid=0
+Memory cgroup out of memory: Killed process 210 (stress) total-vm:265768kB, anon-rss:0kB, file-rss:224kB, shmem-rss:0kB
+oom_reaper: reaped process 210 (stress), now anon-rss:0kB, file-rss:0kB, shmem-rss:0kB
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 289 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 157 insertions(+), 132 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6de8ca735ee2..0907a96ceddf 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -66,6 +66,7 @@
+ #include <linux/lockdep.h>
+ #include <linux/file.h>
+ #include <linux/tracehook.h>
++#include <linux/seq_buf.h>
+ #include "internal.h"
+ #include <net/sock.h>
+ #include <net/ip.h>
+@@ -1365,27 +1366,114 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+ 	return false;
+ }
  
-> Do we need a separate pgd_alloc_kernel()?
+-static const unsigned int memcg1_stats[] = {
+-	MEMCG_CACHE,
+-	MEMCG_RSS,
+-	MEMCG_RSS_HUGE,
+-	NR_SHMEM,
+-	NR_FILE_MAPPED,
+-	NR_FILE_DIRTY,
+-	NR_WRITEBACK,
+-	MEMCG_SWAP,
+-};
++static char *memory_stat_format(struct mem_cgroup *memcg)
++{
++	struct seq_buf s;
++	int i;
  
-I'd like to take a closer look at memcg paths once again before adding
-pgd_alloc_kernel().
-
-Johannes, Roman, can you please advise anything?
-
-> Thanks,
-> Mark.
-> 
-> [1] https://lkml.kernel.org/r/20190505061956.GE15755@rapoport-lnx
-> 
-
+-static const char *const memcg1_stat_names[] = {
+-	"cache",
+-	"rss",
+-	"rss_huge",
+-	"shmem",
+-	"mapped_file",
+-	"dirty",
+-	"writeback",
+-	"swap",
+-};
++	seq_buf_init(&s, kvmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
++	if (!s.buffer)
++		return NULL;
++
++	/*
++	 * Provide statistics on the state of the memory subsystem as
++	 * well as cumulative event counters that show past behavior.
++	 *
++	 * This list is ordered following a combination of these gradients:
++	 * 1) generic big picture -> specifics and details
++	 * 2) reflecting userspace activity -> reflecting kernel heuristics
++	 *
++	 * Current memory state:
++	 */
++
++	seq_buf_printf(&s, "anon %llu\n",
++		       (u64)memcg_page_state(memcg, MEMCG_RSS) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "file %llu\n",
++		       (u64)memcg_page_state(memcg, MEMCG_CACHE) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "kernel_stack %llu\n",
++		       (u64)memcg_page_state(memcg, MEMCG_KERNEL_STACK_KB) *
++		       1024);
++	seq_buf_printf(&s, "slab %llu\n",
++		       (u64)(memcg_page_state(memcg, NR_SLAB_RECLAIMABLE) +
++			     memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE)) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "sock %llu\n",
++		       (u64)memcg_page_state(memcg, MEMCG_SOCK) *
++		       PAGE_SIZE);
++
++	seq_buf_printf(&s, "shmem %llu\n",
++		       (u64)memcg_page_state(memcg, NR_SHMEM) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "file_mapped %llu\n",
++		       (u64)memcg_page_state(memcg, NR_FILE_MAPPED) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "file_dirty %llu\n",
++		       (u64)memcg_page_state(memcg, NR_FILE_DIRTY) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "file_writeback %llu\n",
++		       (u64)memcg_page_state(memcg, NR_WRITEBACK) *
++		       PAGE_SIZE);
++
++	/*
++	 * TODO: We should eventually replace our own MEMCG_RSS_HUGE counter
++	 * with the NR_ANON_THP vm counter, but right now it's a pain in the
++	 * arse because it requires migrating the work out of rmap to a place
++	 * where the page->mem_cgroup is set up and stable.
++	 */
++	seq_buf_printf(&s, "anon_thp %llu\n",
++		       (u64)memcg_page_state(memcg, MEMCG_RSS_HUGE) *
++		       PAGE_SIZE);
++
++	for (i = 0; i < NR_LRU_LISTS; i++)
++		seq_buf_printf(&s, "%s %llu\n", mem_cgroup_lru_names[i],
++			       (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
++			       PAGE_SIZE);
++
++	seq_buf_printf(&s, "slab_reclaimable %llu\n",
++		       (u64)memcg_page_state(memcg, NR_SLAB_RECLAIMABLE) *
++		       PAGE_SIZE);
++	seq_buf_printf(&s, "slab_unreclaimable %llu\n",
++		       (u64)memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE) *
++		       PAGE_SIZE);
++
++	/* Accumulated memory events */
++
++	seq_buf_printf(&s, "pgfault %lu\n", memcg_events(memcg, PGFAULT));
++	seq_buf_printf(&s, "pgmajfault %lu\n", memcg_events(memcg, PGMAJFAULT));
++
++	seq_buf_printf(&s, "workingset_refault %lu\n",
++		       memcg_page_state(memcg, WORKINGSET_REFAULT));
++	seq_buf_printf(&s, "workingset_activate %lu\n",
++		       memcg_page_state(memcg, WORKINGSET_ACTIVATE));
++	seq_buf_printf(&s, "workingset_nodereclaim %lu\n",
++		       memcg_page_state(memcg, WORKINGSET_NODERECLAIM));
++
++	seq_buf_printf(&s, "pgrefill %lu\n", memcg_events(memcg, PGREFILL));
++	seq_buf_printf(&s, "pgscan %lu\n",
++		       memcg_events(memcg, PGSCAN_KSWAPD) +
++		       memcg_events(memcg, PGSCAN_DIRECT));
++	seq_buf_printf(&s, "pgsteal %lu\n",
++		       memcg_events(memcg, PGSTEAL_KSWAPD) +
++		       memcg_events(memcg, PGSTEAL_DIRECT));
++	seq_buf_printf(&s, "pgactivate %lu\n", memcg_events(memcg, PGACTIVATE));
++	seq_buf_printf(&s, "pgdeactivate %lu\n", memcg_events(memcg, PGDEACTIVATE));
++	seq_buf_printf(&s, "pglazyfree %lu\n", memcg_events(memcg, PGLAZYFREE));
++	seq_buf_printf(&s, "pglazyfreed %lu\n", memcg_events(memcg, PGLAZYFREED));
++
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	seq_buf_printf(&s, "thp_fault_alloc %lu\n",
++		       memcg_events(memcg, THP_FAULT_ALLOC));
++	seq_buf_printf(&s, "thp_collapse_alloc %lu\n",
++		       memcg_events(memcg, THP_COLLAPSE_ALLOC));
++#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++
++	/* The above should easily fit into one page */
++	WARN_ON_ONCE(seq_buf_has_overflowed(&s));
++
++	return s.buffer;
++}
+ 
+ #define K(x) ((x) << (PAGE_SHIFT-10))
+ /**
+@@ -1420,39 +1508,32 @@ void mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct task_struct *
+  */
+ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ {
+-	struct mem_cgroup *iter;
+-	unsigned int i;
++	char *buf;
+ 
+ 	pr_info("memory: usage %llukB, limit %llukB, failcnt %lu\n",
+ 		K((u64)page_counter_read(&memcg->memory)),
+ 		K((u64)memcg->memory.max), memcg->memory.failcnt);
+-	pr_info("memory+swap: usage %llukB, limit %llukB, failcnt %lu\n",
+-		K((u64)page_counter_read(&memcg->memsw)),
+-		K((u64)memcg->memsw.max), memcg->memsw.failcnt);
+-	pr_info("kmem: usage %llukB, limit %llukB, failcnt %lu\n",
+-		K((u64)page_counter_read(&memcg->kmem)),
+-		K((u64)memcg->kmem.max), memcg->kmem.failcnt);
+-
+-	for_each_mem_cgroup_tree(iter, memcg) {
+-		pr_info("Memory cgroup stats for ");
+-		pr_cont_cgroup_path(iter->css.cgroup);
+-		pr_cont(":");
+-
+-		for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+-			if (memcg1_stats[i] == MEMCG_SWAP && !do_swap_account)
+-				continue;
+-			pr_cont(" %s:%luKB", memcg1_stat_names[i],
+-				K(memcg_page_state_local(iter,
+-							 memcg1_stats[i])));
+-		}
+-
+-		for (i = 0; i < NR_LRU_LISTS; i++)
+-			pr_cont(" %s:%luKB", mem_cgroup_lru_names[i],
+-				K(memcg_page_state_local(iter,
+-							 NR_LRU_BASE + i)));
+-
+-		pr_cont("\n");
++	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		pr_info("swap: usage %llukB, limit %llukB, failcnt %lu\n",
++			K((u64)page_counter_read(&memcg->swap)),
++			K((u64)memcg->swap.max), memcg->swap.failcnt);
++	else {
++		pr_info("memory+swap: usage %llukB, limit %llukB, failcnt %lu\n",
++			K((u64)page_counter_read(&memcg->memsw)),
++			K((u64)memcg->memsw.max), memcg->memsw.failcnt);
++		pr_info("kmem: usage %llukB, limit %llukB, failcnt %lu\n",
++			K((u64)page_counter_read(&memcg->kmem)),
++			K((u64)memcg->kmem.max), memcg->kmem.failcnt);
+ 	}
++
++	pr_info("Memory cgroup stats for ");
++	pr_cont_cgroup_path(memcg->css.cgroup);
++	pr_cont(":");
++	buf = memory_stat_format(memcg);
++	if (!buf)
++		return;
++	pr_info("%s", buf);
++	kvfree(buf);
+ }
+ 
+ /*
+@@ -3484,6 +3565,28 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ }
+ #endif /* CONFIG_NUMA */
+ 
++static const unsigned int memcg1_stats[] = {
++	MEMCG_CACHE,
++	MEMCG_RSS,
++	MEMCG_RSS_HUGE,
++	NR_SHMEM,
++	NR_FILE_MAPPED,
++	NR_FILE_DIRTY,
++	NR_WRITEBACK,
++	MEMCG_SWAP,
++};
++
++static const char *const memcg1_stat_names[] = {
++	"cache",
++	"rss",
++	"rss_huge",
++	"shmem",
++	"mapped_file",
++	"dirty",
++	"writeback",
++	"swap",
++};
++
+ /* Universal VM events cgroup1 shows, original sort order */
+ static const unsigned int memcg1_events[] = {
+ 	PGPGIN,
+@@ -5666,91 +5769,13 @@ static int memory_events_local_show(struct seq_file *m, void *v)
+ static int memory_stat_show(struct seq_file *m, void *v)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+-	int i;
+-
+-	/*
+-	 * Provide statistics on the state of the memory subsystem as
+-	 * well as cumulative event counters that show past behavior.
+-	 *
+-	 * This list is ordered following a combination of these gradients:
+-	 * 1) generic big picture -> specifics and details
+-	 * 2) reflecting userspace activity -> reflecting kernel heuristics
+-	 *
+-	 * Current memory state:
+-	 */
+-
+-	seq_printf(m, "anon %llu\n",
+-		   (u64)memcg_page_state(memcg, MEMCG_RSS) * PAGE_SIZE);
+-	seq_printf(m, "file %llu\n",
+-		   (u64)memcg_page_state(memcg, MEMCG_CACHE) * PAGE_SIZE);
+-	seq_printf(m, "kernel_stack %llu\n",
+-		   (u64)memcg_page_state(memcg, MEMCG_KERNEL_STACK_KB) * 1024);
+-	seq_printf(m, "slab %llu\n",
+-		   (u64)(memcg_page_state(memcg, NR_SLAB_RECLAIMABLE) +
+-			 memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE)) *
+-		   PAGE_SIZE);
+-	seq_printf(m, "sock %llu\n",
+-		   (u64)memcg_page_state(memcg, MEMCG_SOCK) * PAGE_SIZE);
+-
+-	seq_printf(m, "shmem %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_SHMEM) * PAGE_SIZE);
+-	seq_printf(m, "file_mapped %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_FILE_MAPPED) * PAGE_SIZE);
+-	seq_printf(m, "file_dirty %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_FILE_DIRTY) * PAGE_SIZE);
+-	seq_printf(m, "file_writeback %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_WRITEBACK) * PAGE_SIZE);
+-
+-	/*
+-	 * TODO: We should eventually replace our own MEMCG_RSS_HUGE counter
+-	 * with the NR_ANON_THP vm counter, but right now it's a pain in the
+-	 * arse because it requires migrating the work out of rmap to a place
+-	 * where the page->mem_cgroup is set up and stable.
+-	 */
+-	seq_printf(m, "anon_thp %llu\n",
+-		   (u64)memcg_page_state(memcg, MEMCG_RSS_HUGE) * PAGE_SIZE);
+-
+-	for (i = 0; i < NR_LRU_LISTS; i++)
+-		seq_printf(m, "%s %llu\n", mem_cgroup_lru_names[i],
+-			   (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
+-			   PAGE_SIZE);
+-
+-	seq_printf(m, "slab_reclaimable %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_SLAB_RECLAIMABLE) *
+-		   PAGE_SIZE);
+-	seq_printf(m, "slab_unreclaimable %llu\n",
+-		   (u64)memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE) *
+-		   PAGE_SIZE);
+-
+-	/* Accumulated memory events */
+-
+-	seq_printf(m, "pgfault %lu\n", memcg_events(memcg, PGFAULT));
+-	seq_printf(m, "pgmajfault %lu\n", memcg_events(memcg, PGMAJFAULT));
+-
+-	seq_printf(m, "workingset_refault %lu\n",
+-		   memcg_page_state(memcg, WORKINGSET_REFAULT));
+-	seq_printf(m, "workingset_activate %lu\n",
+-		   memcg_page_state(memcg, WORKINGSET_ACTIVATE));
+-	seq_printf(m, "workingset_nodereclaim %lu\n",
+-		   memcg_page_state(memcg, WORKINGSET_NODERECLAIM));
+-
+-	seq_printf(m, "pgrefill %lu\n", memcg_events(memcg, PGREFILL));
+-	seq_printf(m, "pgscan %lu\n", memcg_events(memcg, PGSCAN_KSWAPD) +
+-		   memcg_events(memcg, PGSCAN_DIRECT));
+-	seq_printf(m, "pgsteal %lu\n", memcg_events(memcg, PGSTEAL_KSWAPD) +
+-		   memcg_events(memcg, PGSTEAL_DIRECT));
+-	seq_printf(m, "pgactivate %lu\n", memcg_events(memcg, PGACTIVATE));
+-	seq_printf(m, "pgdeactivate %lu\n", memcg_events(memcg, PGDEACTIVATE));
+-	seq_printf(m, "pglazyfree %lu\n", memcg_events(memcg, PGLAZYFREE));
+-	seq_printf(m, "pglazyfreed %lu\n", memcg_events(memcg, PGLAZYFREED));
+-
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	seq_printf(m, "thp_fault_alloc %lu\n",
+-		   memcg_events(memcg, THP_FAULT_ALLOC));
+-	seq_printf(m, "thp_collapse_alloc %lu\n",
+-		   memcg_events(memcg, THP_COLLAPSE_ALLOC));
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
++	char *buf;
+ 
++	buf = memory_stat_format(memcg);
++	if (!buf)
++		return -ENOMEM;
++	seq_puts(m, buf);
++	kvfree(buf);
+ 	return 0;
+ }
+ 
 -- 
-Sincerely yours,
-Mike.
+2.21.0
 
