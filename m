@@ -2,168 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E46BC34989
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 15:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 147EB349B0
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 16:01:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727602AbfFDN4H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Jun 2019 09:56:07 -0400
-Received: from mail-it1-f198.google.com ([209.85.166.198]:35360 "EHLO
-        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727506AbfFDN4H (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 09:56:07 -0400
-Received: by mail-it1-f198.google.com with SMTP id m188so99312ita.0
-        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 06:56:06 -0700 (PDT)
+        id S1727709AbfFDOBJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Jun 2019 10:01:09 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:46993 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727458AbfFDOBI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 10:01:08 -0400
+Received: by mail-qt1-f194.google.com with SMTP id z19so13778646qtz.13
+        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 07:01:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HA9nmzXQ1v1EpP1te6eSn7ZdKChVSouT7677WSi9nIU=;
+        b=FjD0vS909bew//7s7kZ4U68BxVAcYNK5lIoo28VJ0iR1cKCHo5uwPCWhKdZwvb5R3h
+         l+JLi7kgdhHQ1mXfsVZvplZ78xwVC8/ftBcb4Y1CP7AfT7ECrvsLzhzJmhjoXKQ+9YfW
+         jkK1KfkjNxpW1xSRKQnYK4mvUMqCOfcP73zC3WHA+ooGIl+psI9Q4jqvA7bBCK7mH9Ef
+         w3/bC3nfoSs3iDZfv8dHX2070J87acrVGFg6U4tChzCNpv8wZEvISzXrFjF4d2cH+dQg
+         CW65qtmF/xSV9/UwnhEaWAjNq9r1a+ZARBE5OytTmcBx9/3tgsvUzYwtXDaZM5w9ZTBz
+         LD/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=e0x3CjfxT+Tc9OfQE9UyUP0v/CUgs1KGy0Ok9Cy7y8Q=;
-        b=a9fvkd0H+yofJOwMZoLUj4wvnC4+LwpnnsEh3+BGWEgui0jORcJIQ/+jgr/cwgcq7C
-         tMI6h1boFOQZpnzifZrKzPqU3oSe2hpmezoujph7T55w5C7lTmD10CS0mouA2Z63HBPd
-         7X8V4rLVc/GUhb6vHsFLc2m2j8WBlhpy8S2J+2hacW37nDrnA6E8Rk65eILAQeJwGUJO
-         WInn12CVMZAQPZJmo3wohZ6F6g+myRAM1ITX2+EpMRk9WDiUAkayqUijohJYh1gADRnQ
-         YnGUWCCAQ/vXuwJl7w6Ht01LwuNn31GZLjUSP/kvG7INezMhDVE/tF8wm4uOiKbcegjH
-         6QSQ==
-X-Gm-Message-State: APjAAAWaUZsfusqbo6oY1kWsz5FYEa3zPF18opz8eZqCFVAkl129FFUD
-        BYb6frG9t61ROX8DvLVhMYVN4wo1MT2YdTO6LpKs4jXJ3hKj
-X-Google-Smtp-Source: APXvYqxswE3V/GpTEDke+LgJdIgEgE7AHZepq4QIp7VgGjhnjLYEetNn3M4bxurDFjITYWRV/6FI9+281KrpB9Zvomf/8KvUcPy8
-MIME-Version: 1.0
-X-Received: by 2002:a5d:9f12:: with SMTP id q18mr16396879iot.250.1559656566027;
- Tue, 04 Jun 2019 06:56:06 -0700 (PDT)
-Date:   Tue, 04 Jun 2019 06:56:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000097025d058a7fd785@google.com>
-Subject: KASAN: slab-out-of-bounds Read in css_task_iter_advance
-From:   syzbot <syzbot+9343b7623bc03dc680c1@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HA9nmzXQ1v1EpP1te6eSn7ZdKChVSouT7677WSi9nIU=;
+        b=VWSPOuTVOKjE2uN1PY2mRtdgP19fc4OVYE4INlmokWaQnkJmSl07D+xRj4Cj4luIGi
+         m7QAPRuhyKfpnrDsUioSgvTgEr5CFte/NgEUZE7I1Y25uL/fIvGYBbSRLecl2YoJJt4o
+         wBVGxUjezYNPCu73MT8J4r3h9cIpc3VBAwOUANNUcHhvz+1DaFCrfkrpU1f80TphY9F+
+         LDo2dCiNalMpuX3zbJ9X7Ftd00ir7LNU/Qrxaikcm2ArM0axdqUi+sYG2Vbo/UihZyHj
+         F8GObdgsqdYaUVvlqPIOHl5POrT+Xo6047VFsS3qmWc0eXGrxqvnH30fuaQlUjEIH5bM
+         1UVw==
+X-Gm-Message-State: APjAAAWjVT0j3K22gvgcio3lMBadB5rmMp8Na+vjgGHBA/EzeVtLFbiL
+        7SOMS4t8jw1puPOuWjE8H3pLQw==
+X-Google-Smtp-Source: APXvYqyaYFcOVCNNE4EgaFXVtcyiuzl8/nFtl+bPshTs3JbBCrjCSlVZ/oa+7ymTOAx0gJHRKZE4qg==
+X-Received: by 2002:a0c:be87:: with SMTP id n7mr8195030qvi.65.1559656867510;
+        Tue, 04 Jun 2019 07:01:07 -0700 (PDT)
+Received: from qcai.nay.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id f189sm2340295qkj.13.2019.06.04.07.01.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 04 Jun 2019 07:01:06 -0700 (PDT)
+From:   Qian Cai <cai@lca.pw>
+To:     akpm@linux-foundation.org
+Cc:     rppt@linux.ibm.com, will.deacon@arm.com, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Qian Cai <cai@lca.pw>
+Subject: [PATCH -next] arm64/mm: fix a bogus GFP flag in pgd_alloc()
+Date:   Tue,  4 Jun 2019 10:00:36 -0400
+Message-Id: <1559656836-24940-1-git-send-email-cai@lca.pw>
+X-Mailer: git-send-email 1.8.3.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+The commit "arm64: switch to generic version of pte allocation"
+introduced endless failures during boot like,
 
-syzbot found the following crash on:
+kobject_add_internal failed for pgd_cache(285:chronyd.service) (error:
+-2 parent: cgroup)
 
-HEAD commit:    56b697c6 Add linux-next specific files for 20190604
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=170d747ca00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=9343b7623bc03dc680c1
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+It turns out __GFP_ACCOUNT is passed to kernel page table allocations
+and then later memcg finds out those don't belong to any cgroup.
 
-Unfortunately, I don't have any reproducer for this crash yet.
+backtrace:
+  kobject_add_internal
+  kobject_init_and_add
+  sysfs_slab_add+0x1a8
+  __kmem_cache_create
+  create_cache
+  memcg_create_kmem_cache
+  memcg_kmem_cache_create_func
+  process_one_work
+  worker_thread
+  kthread
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+9343b7623bc03dc680c1@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: slab-out-of-bounds in css_task_iter_advance+0x49b/0x540  
-kernel/cgroup/cgroup.c:4507
-Read of size 4 at addr ffff88809ae59d64 by task syz-executor.2/28895
-
-CPU: 1 PID: 28895 Comm: syz-executor.2 Not tainted 5.2.0-rc3-next-20190604  
-#8
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  print_address_description.cold+0xd4/0x306 mm/kasan/report.c:351
-  __kasan_report.cold+0x1b/0x36 mm/kasan/report.c:482
-  kasan_report+0x12/0x20 mm/kasan/common.c:614
-  __asan_report_load4_noabort+0x14/0x20 mm/kasan/generic_report.c:131
-  css_task_iter_advance+0x49b/0x540 kernel/cgroup/cgroup.c:4507
-  css_task_iter_start+0x18b/0x230 kernel/cgroup/cgroup.c:4543
-  update_tasks_flags+0x85/0x100 kernel/cgroup/cpuset.c:1836
-  update_flag+0x232/0x470 kernel/cgroup/cpuset.c:1886
-  cpuset_write_u64+0x222/0x270 kernel/cgroup/cpuset.c:2268
-  cgroup_file_write+0x4db/0x790 kernel/cgroup/cgroup.c:3727
-  kernfs_fop_write+0x2b8/0x480 fs/kernfs/file.c:316
-  __vfs_write+0x8a/0x110 fs/read_write.c:494
-  vfs_write+0x268/0x5d0 fs/read_write.c:558
-  ksys_write+0x14f/0x290 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f8d15ef2c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
-RDX: 0000000000000011 RSI: 00000000200000c0 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f8d15ef36d4
-R13: 00000000004c8eb1 R14: 00000000004dfb68 R15: 00000000ffffffff
-
-Allocated by task 9803:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_kmalloc mm/kasan/common.c:489 [inline]
-  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
-  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:497
-  slab_post_alloc_hook mm/slab.h:444 [inline]
-  slab_alloc mm/slab.c:3320 [inline]
-  kmem_cache_alloc+0x11a/0x6f0 mm/slab.c:3482
-  getname_flags fs/namei.c:138 [inline]
-  getname_flags+0xd6/0x5b0 fs/namei.c:128
-  getname fs/namei.c:209 [inline]
-  do_renameat2+0x199/0xc40 fs/namei.c:4543
-  __do_sys_rename fs/namei.c:4671 [inline]
-  __se_sys_rename fs/namei.c:4669 [inline]
-  __x64_sys_rename+0x61/0x80 fs/namei.c:4669
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-Freed by task 9803:
-  save_stack+0x23/0x90 mm/kasan/common.c:71
-  set_track mm/kasan/common.c:79 [inline]
-  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:451
-  kasan_slab_free+0xe/0x10 mm/kasan/common.c:459
-  __cache_free mm/slab.c:3426 [inline]
-  kmem_cache_free+0x86/0x320 mm/slab.c:3692
-  putname+0xef/0x130 fs/namei.c:259
-  do_renameat2+0x2b4/0xc40 fs/namei.c:4647
-  __do_sys_rename fs/namei.c:4671 [inline]
-  __se_sys_rename fs/namei.c:4669 [inline]
-  __x64_sys_rename+0x61/0x80 fs/namei.c:4669
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-
-The buggy address belongs to the object at ffff88809ae58440
-  which belongs to the cache names_cache of size 4096
-The buggy address is located 2340 bytes to the right of
-  4096-byte region [ffff88809ae58440, ffff88809ae59440)
-The buggy address belongs to the page:
-page:ffffea00026b9600 refcount:1 mapcount:0 mapping:ffff8880aa593ac0  
-index:0x0 compound_mapcount: 0
-flags: 0x1fffc0000010200(slab|head)
-raw: 01fffc0000010200 ffffea00018b4308 ffffea0001afb488 ffff8880aa593ac0
-raw: 0000000000000000 ffff88809ae58440 0000000100000001 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
-  ffff88809ae59c00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809ae59c80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-> ffff88809ae59d00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-                                                        ^
-  ffff88809ae59d80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-  ffff88809ae59e00: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
-
-
+Signed-off-by: Qian Cai <cai@lca.pw>
 ---
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm64/mm/pgd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm64/mm/pgd.c b/arch/arm64/mm/pgd.c
+index 769516cb6677..53c48f5c8765 100644
+--- a/arch/arm64/mm/pgd.c
++++ b/arch/arm64/mm/pgd.c
+@@ -38,7 +38,7 @@ pgd_t *pgd_alloc(struct mm_struct *mm)
+ 	if (PGD_SIZE == PAGE_SIZE)
+ 		return (pgd_t *)__get_free_page(gfp);
+ 	else
+-		return kmem_cache_alloc(pgd_cache, gfp);
++		return kmem_cache_alloc(pgd_cache, GFP_PGTABLE_KERNEL);
+ }
+ 
+ void pgd_free(struct mm_struct *mm, pgd_t *pgd)
+-- 
+1.8.3.1
+
