@@ -2,38 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B085134A6D
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 16:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6737D34B08
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 16:54:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727408AbfFDOaZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Jun 2019 10:30:25 -0400
-Received: from usa-sjc-mx-foss1.foss.arm.com ([217.140.101.70]:45294 "EHLO
-        foss.arm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727347AbfFDOaZ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 4 Jun 2019 10:30:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.72.51.249])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 41343341;
-        Tue,  4 Jun 2019 07:30:25 -0700 (PDT)
-Received: from lakrids.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.72.51.249])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 2C5B83F690;
-        Tue,  4 Jun 2019 07:30:23 -0700 (PDT)
-Date:   Tue, 4 Jun 2019 15:30:20 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Qian Cai <cai@lca.pw>, rppt@linux.ibm.com
-Cc:     akpm@linux-foundation.org, catalin.marinas@arm.com,
-        will.deacon@arm.com, linux-kernel@vger.kernel.org,
-        mhocko@kernel.org, linux-mm@kvack.org, vdavydov.dev@gmail.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        id S1727861AbfFDOyk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Jun 2019 10:54:40 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:49582 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727854AbfFDOyk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 10:54:40 -0400
+Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x54EcAlf076003
+        for <cgroups@vger.kernel.org>; Tue, 4 Jun 2019 10:54:38 -0400
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2swrs5e7ky-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 10:54:38 -0400
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <cgroups@vger.kernel.org> from <rppt@linux.ibm.com>;
+        Tue, 4 Jun 2019 15:54:30 +0100
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 4 Jun 2019 15:54:26 +0100
+Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x54EsPk160882980
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 Jun 2019 14:54:25 GMT
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A5A23AE045;
+        Tue,  4 Jun 2019 14:54:25 +0000 (GMT)
+Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id A6587AE055;
+        Tue,  4 Jun 2019 14:54:24 +0000 (GMT)
+Received: from rapoport-lnx (unknown [9.148.8.53])
+        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Tue,  4 Jun 2019 14:54:24 +0000 (GMT)
+Date:   Tue, 4 Jun 2019 17:54:22 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Qian Cai <cai@lca.pw>, akpm@linux-foundation.org,
+        catalin.marinas@arm.com, will.deacon@arm.com,
+        linux-kernel@vger.kernel.org, mhocko@kernel.org,
+        linux-mm@kvack.org, vdavydov.dev@gmail.com, hannes@cmpxchg.org,
+        guro@fb.com, cgroups@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
 Subject: Re: [PATCH -next] arm64/mm: fix a bogus GFP flag in pgd_alloc()
-Message-ID: <20190604143020.GD24467@lakrids.cambridge.arm.com>
 References: <1559656836-24940-1-git-send-email-cai@lca.pw>
  <20190604142338.GC24467@lakrids.cambridge.arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20190604142338.GC24467@lakrids.cambridge.arm.com>
-User-Agent: Mutt/1.11.1+11 (2f07cb52) (2018-12-01)
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-TM-AS-GCONF: 00
+x-cbid: 19060414-4275-0000-0000-0000033CA09A
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19060414-4276-0000-0000-0000384CB014
+Message-Id: <20190604145422.GG8417@rapoport-lnx>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-04_10:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=7 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906040097
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -54,7 +88,13 @@ On Tue, Jun 04, 2019 at 03:23:38PM +0100, Mark Rutland wrote:
 > as the accounting should bypass kernel threads.
 > 
 > Was that assumption wrong, or is something different happening here?
-> 
+
+I was under impression that all allocations are going through
+__memcg_kmem_charge() which does the bypass.
+
+Apparently, it's not the case :(
+
+> > 
 > > backtrace:
 > >   kobject_add_internal
 > >   kobject_init_and_add
@@ -87,14 +127,22 @@ On Tue, Jun 04, 2019 at 03:23:38PM +0100, Mark Rutland wrote:
 > for the efi runtime services), so while this may fix the regression, I'm
 > not sure it's the right fix.
 
-I see that since [1], pgd_alloc() was updated to special-case the
-init_mm, which is not sufficient for cases like:
+Me neither.
+ 
+> Do we need a separate pgd_alloc_kernel()?
+ 
+I'd like to take a closer look at memcg paths once again before adding
+pgd_alloc_kernel().
 
-	efi_mm.pgd = pgd_alloc(&efi_mm)
+Johannes, Roman, can you please advise anything?
 
-... which occurs in a kthread.
+> Thanks,
+> Mark.
+> 
+> [1] https://lkml.kernel.org/r/20190505061956.GE15755@rapoport-lnx
+> 
 
-So let's have a pgd_alloc_kernel() to make that explicit.
+-- 
+Sincerely yours,
+Mike.
 
-Thanks,
-Mark.
