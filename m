@@ -2,188 +2,173 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 512B4345FD
-	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 13:55:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52D853498A
+	for <lists+cgroups@lfdr.de>; Tue,  4 Jun 2019 15:56:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727610AbfFDLzX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Jun 2019 07:55:23 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:43728 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727250AbfFDLzX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 07:55:23 -0400
-Received: by mail-qt1-f195.google.com with SMTP id z24so6169323qtj.10
-        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 04:55:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=h8UiBw5YF7XvZ0Sc1GxQewXB7h1IamgVFTbLK/OqV7s=;
-        b=1VcEEnwcedHvdBV5Fz7LJACfGBlBEELnMr9lZCVc2tdNE17MzFVpq3PoO/OYI2CCab
-         PbqwkZP2yZWzjc+T0Jzc8PjnxxRFUDS9opGd+STgN30OkQtqfd1ZTwE941ui9q0075y/
-         Ps7mcgfZ/aX1FeJv1qcr8noLIEPZnU7n8FX4EcIymK1+Pod5kyZ/NwyceIZD0nfU37O+
-         98J6uUSrYWKl6ib4NHpZBkNCay2V1SMDszW/Nn+a3cRNsbmEifBSv9VB70FZ/u4ov2+m
-         EkfNnqfCq6StXsNSJ7hTQekxOgZ34KjdyYWuP0EgiVhA6B3nNr7XnM1j8ZPTD+B7tCed
-         cfWA==
+        id S1727545AbfFDN4H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Jun 2019 09:56:07 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:47850 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727443AbfFDN4H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Jun 2019 09:56:07 -0400
+Received: by mail-io1-f69.google.com with SMTP id r27so16464625iob.14
+        for <cgroups@vger.kernel.org>; Tue, 04 Jun 2019 06:56:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=h8UiBw5YF7XvZ0Sc1GxQewXB7h1IamgVFTbLK/OqV7s=;
-        b=nT0tMwv3+9T1YDnw5xQkktM2vGVP+qKl2UxagyEsuLz0pYjIvzFaLHrjcPQoeVeyjd
-         wdFh7OmV7NYdNVCGn3Wu4RgjNGQWlXzvLDsUiG/WVqAbulDJSh4MT8sccofoCV5E48r7
-         fcr7SUtJTdX0j5nqxoKSC/ZAUx9N0z/brGfmYGbVOvPyTuNxsbRSyd809uw5nMRtkgpz
-         aDGpheV912DLMVZrzT/WHem0WOix74RyFq6OdVbyzv/NB7s8mpraXK1HruoAF7ByFXjX
-         KPadEhlOui7mykRnOfIy9fZPf/HuiAqMP0IBZBGYevSdQWKEdhHh1OQdKmTtpEP3CXLB
-         mCug==
-X-Gm-Message-State: APjAAAUbGEOB7Bt9/FxvMePnOWAU+Xz6hBkxjpzM1ubnehmt7srHtEfj
-        cB+K0VPvJp0w5OLvOFa7q0WdiEpWFvE=
-X-Google-Smtp-Source: APXvYqyV1Dm27WU4y+l7+YFidXGLtknNS0wTxBBMR5Oynuq7MZkxquuK4YQ95aMau8OAsZdcxtdeGw==
-X-Received: by 2002:a0c:88c3:: with SMTP id 3mr8026706qvo.21.1559649321482;
-        Tue, 04 Jun 2019 04:55:21 -0700 (PDT)
-Received: from localhost (pool-108-27-252-85.nycmny.fios.verizon.net. [108.27.252.85])
-        by smtp.gmail.com with ESMTPSA id 41sm3499015qtp.32.2019.06.04.04.55.20
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Tue, 04 Jun 2019 04:55:20 -0700 (PDT)
-Date:   Tue, 4 Jun 2019 07:55:19 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Joseph Qi <joseph.qi@linux.alibaba.com>
-Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
-        akpm@linux-foundation.org, Tejun Heo <tj@kernel.org>,
-        Jiufei Xue <jiufei.xue@linux.alibaba.com>,
-        Caspar Zhang <caspar@linux.alibaba.com>
-Subject: Re: [RFC PATCH 2/3] psi: cgroup v1 support
-Message-ID: <20190604115519.GA18545@cmpxchg.org>
-References: <20190604015745.78972-1-joseph.qi@linux.alibaba.com>
- <20190604015745.78972-3-joseph.qi@linux.alibaba.com>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=LCdbntvhYYZKRFof+Yh6ukzQ5F55ULY7kbPPhoeYtys=;
+        b=kLkRtIkFO6aN46D7YCV8+9tirIyHaEsUzlLx6tRY5nb7ooohZXO5/PiCH1bMSDviyt
+         EXBLng6uuLQtAnLLQfJ/8TpMQquCYAAZoYk6N84j3r/rmjFT9Gq/tm9i2xvimKuBkKZO
+         EUDXnEm8BL5LAluj19KUqmUGCTp8nJbR7/1QpO7KRq8PMY+KDY2jcb2M84q18j0XF9ez
+         tRRhd38hjTaF3mJyOoR29iAcQu6hLp+2+8skQifpEBpT6WOB8vNk8T9e+nVhkgYdoyO8
+         G9OmWTRX+VCX67Z4dHLVzy2zVsjDmQvCkW80REuG6Dpl5JM54dV72w+Eb6jZUSgON8i/
+         t9vA==
+X-Gm-Message-State: APjAAAXYJXr0lXvETmWViooKE636Yhfodx3hJ2/YT6ZZWMP58X9cJgi2
+        RCUSEtpSpVy0figqa6lhTqqonrTpBEpkbGOWm9eGlpSuTkon
+X-Google-Smtp-Source: APXvYqx8CytJgHtRoktHUU2J1oDCyXLYUV8bPq8r3+mr2+5Ym9d9ysvUSJwqeGwsF4dYnASG9SHlZMgmViBDfPpQiF6QK3loO23s
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190604015745.78972-3-joseph.qi@linux.alibaba.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+X-Received: by 2002:a05:6638:38f:: with SMTP id y15mr21667600jap.143.1559656565809;
+ Tue, 04 Jun 2019 06:56:05 -0700 (PDT)
+Date:   Tue, 04 Jun 2019 06:56:05 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000093abc2058a7fd715@google.com>
+Subject: KASAN: use-after-free Read in css_task_iter_advance
+From:   syzbot <syzbot+678796542f88f534c79e@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 04, 2019 at 09:57:44AM +0800, Joseph Qi wrote:
-> Implements pressure stall tracking for cgroup v1.
-> 
-> Signed-off-by: Joseph Qi <joseph.qi@linux.alibaba.com>
-> ---
->  kernel/sched/psi.c | 65 +++++++++++++++++++++++++++++++++++++++-------
->  1 file changed, 56 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
-> index 7acc632c3b82..909083c828d5 100644
-> --- a/kernel/sched/psi.c
-> +++ b/kernel/sched/psi.c
-> @@ -719,13 +719,30 @@ static u32 psi_group_change(struct psi_group *group, int cpu,
->  	return state_mask;
->  }
->  
-> -static struct psi_group *iterate_groups(struct task_struct *task, void **iter)
-> +static struct cgroup *psi_task_cgroup(struct task_struct *task, enum psi_res res)
-> +{
-> +	switch (res) {
-> +	case NR_PSI_RESOURCES:
-> +		return task_dfl_cgroup(task);
-> +	case PSI_IO:
-> +		return task_cgroup(task, io_cgrp_subsys.id);
-> +	case PSI_MEM:
-> +		return task_cgroup(task, memory_cgrp_subsys.id);
-> +	case PSI_CPU:
-> +		return task_cgroup(task, cpu_cgrp_subsys.id);
-> +	default:  /* won't reach here */
-> +		return NULL;
-> +	}
-> +}
-> +
-> +static struct psi_group *iterate_groups(struct task_struct *task, void **iter,
-> +					enum psi_res res)
->  {
->  #ifdef CONFIG_CGROUPS
->  	struct cgroup *cgroup = NULL;
->  
->  	if (!*iter)
-> -		cgroup = task->cgroups->dfl_cgrp;
-> +		cgroup = psi_task_cgroup(task, res);
->  	else if (*iter == &psi_system)
->  		return NULL;
->  	else
-> @@ -776,15 +793,45 @@ void psi_task_change(struct task_struct *task, int clear, int set)
->  		     wq_worker_last_func(task) == psi_avgs_work))
->  		wake_clock = false;
->  
-> -	while ((group = iterate_groups(task, &iter))) {
-> -		u32 state_mask = psi_group_change(group, cpu, clear, set);
-> +	if (cgroup_subsys_on_dfl(cpu_cgrp_subsys) ||
-> +	    cgroup_subsys_on_dfl(memory_cgrp_subsys) ||
-> +	    cgroup_subsys_on_dfl(io_cgrp_subsys)) {
-> +		while ((group = iterate_groups(task, &iter, NR_PSI_RESOURCES))) {
-> +			u32 state_mask = psi_group_change(group, cpu, clear, set);
->  
-> -		if (state_mask & group->poll_states)
-> -			psi_schedule_poll_work(group, 1);
-> +			if (state_mask & group->poll_states)
-> +				psi_schedule_poll_work(group, 1);
->  
-> -		if (wake_clock && !delayed_work_pending(&group->avgs_work))
-> -			schedule_delayed_work(&group->avgs_work, PSI_FREQ);
-> +			if (wake_clock && !delayed_work_pending(&group->avgs_work))
-> +				schedule_delayed_work(&group->avgs_work, PSI_FREQ);
-> +		}
-> +	} else {
-> +		enum psi_task_count i;
-> +		enum psi_res res;
-> +		int psi_flags = clear | set;
-> +
-> +		for (i = NR_IOWAIT; i < NR_PSI_TASK_COUNTS; i++) {
-> +			if ((i == NR_IOWAIT) && (psi_flags & TSK_IOWAIT))
-> +				res = PSI_IO;
-> +			else if ((i == NR_MEMSTALL) && (psi_flags & TSK_MEMSTALL))
-> +				res = PSI_MEM;
-> +			else if ((i == NR_RUNNING) && (psi_flags & TSK_RUNNING))
-> +				res = PSI_CPU;
-> +			else
-> +				continue;
-> +
-> +			while ((group = iterate_groups(task, &iter, res))) {
-> +				u32 state_mask = psi_group_change(group, cpu, clear, set);
+Hello,
 
-This doesn't work. Each resource state is composed of all possible
-task states:
+syzbot found the following crash on:
 
-static bool test_state(unsigned int *tasks, enum psi_states state)
-{
-	switch (state) {
-	case PSI_IO_SOME:
-		return tasks[NR_IOWAIT];
-	case PSI_IO_FULL:
-		return tasks[NR_IOWAIT] && !tasks[NR_RUNNING];
-	case PSI_MEM_SOME:
-		return tasks[NR_MEMSTALL];
-	case PSI_MEM_FULL:
-		return tasks[NR_MEMSTALL] && !tasks[NR_RUNNING];
-	case PSI_CPU_SOME:
-		return tasks[NR_RUNNING] > 1;
-	case PSI_NONIDLE:
-		return tasks[NR_IOWAIT] || tasks[NR_MEMSTALL] ||
-			tasks[NR_RUNNING];
-	default:
-		return false;
-	}
-}
+HEAD commit:    56b697c6 Add linux-next specific files for 20190604
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=1310e25aa00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=678796542f88f534c79e
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-So the IO controller needs to know of NR_RUNNING to tell some vs full,
-the memory controller needs to know of NR_IOWAIT to tell nonidle etc.
+Unfortunately, I don't have any reproducer for this crash yet.
 
-You need to run the full psi task tracking and aggregation machinery
-separately for each of the different cgroups a task can be in in v1.
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+678796542f88f534c79e@syzkaller.appspotmail.com
 
-Needless to say, that is expensive. For cpu, memory and io, it's
-triple the scheduling overhead with three ancestor walks and three
-times the cache footprint; three times more aggregation workers every
-two seconds... We could never turn this on per default.
+==================================================================
+BUG: KASAN: use-after-free in css_task_iter_advance+0x49b/0x540  
+kernel/cgroup/cgroup.c:4507
+Read of size 4 at addr ffff888096f20fe4 by task syz-executor.4/24150
 
-Have you considered just co-mounting cgroup2, if for nothing else, to
-get the pressure numbers?
+CPU: 1 PID: 24150 Comm: syz-executor.4 Not tainted 5.2.0-rc3-next-20190604  
+#8
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  print_address_description.cold+0xd4/0x306 mm/kasan/report.c:351
+  __kasan_report.cold+0x1b/0x36 mm/kasan/report.c:482
+  kasan_report+0x12/0x20 mm/kasan/common.c:614
+  __asan_report_load4_noabort+0x14/0x20 mm/kasan/generic_report.c:131
+  css_task_iter_advance+0x49b/0x540 kernel/cgroup/cgroup.c:4507
+  css_task_iter_start+0x18b/0x230 kernel/cgroup/cgroup.c:4543
+  __cgroup_procs_start.isra.0+0x32f/0x400 kernel/cgroup/cgroup.c:4634
+  cgroup_threads_start+0x23/0x30 kernel/cgroup/cgroup.c:4741
+  cgroup_seqfile_start+0xa4/0xd0 kernel/cgroup/cgroup.c:3752
+  kernfs_seq_start+0xdc/0x190 fs/kernfs/file.c:118
+  traverse fs/seq_file.c:108 [inline]
+  traverse+0x165/0x740 fs/seq_file.c:91
+  seq_read+0x8dd/0x1110 fs/seq_file.c:188
+  kernfs_fop_read+0xed/0x560 fs/kernfs/file.c:252
+  do_loop_readv_writev fs/read_write.c:714 [inline]
+  do_loop_readv_writev fs/read_write.c:701 [inline]
+  do_iter_read+0x4a4/0x660 fs/read_write.c:935
+  vfs_readv+0xf0/0x160 fs/read_write.c:997
+  do_preadv+0x1c4/0x280 fs/read_write.c:1089
+  __do_sys_preadv fs/read_write.c:1139 [inline]
+  __se_sys_preadv fs/read_write.c:1134 [inline]
+  __x64_sys_preadv+0x9a/0xf0 fs/read_write.c:1134
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459279
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f55b7e66c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000127
+RAX: ffffffffffffffda RBX: 0000000000000004 RCX: 0000000000459279
+RDX: 0000000000000001 RSI: 0000000020000b40 RDI: 0000000000000004
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000002 R11: 0000000000000246 R12: 00007f55b7e676d4
+R13: 00000000004c614c R14: 00000000004da9a8 R15: 00000000ffffffff
+
+Allocated by task 8993:
+  save_stack+0x23/0x90 mm/kasan/common.c:71
+  set_track mm/kasan/common.c:79 [inline]
+  __kasan_kmalloc mm/kasan/common.c:489 [inline]
+  __kasan_kmalloc.constprop.0+0xcf/0xe0 mm/kasan/common.c:462
+  kasan_slab_alloc+0xf/0x20 mm/kasan/common.c:497
+  slab_post_alloc_hook mm/slab.h:444 [inline]
+  slab_alloc mm/slab.c:3320 [inline]
+  kmem_cache_alloc+0x11a/0x6f0 mm/slab.c:3482
+  getname_flags fs/namei.c:138 [inline]
+  getname_flags+0xd6/0x5b0 fs/namei.c:128
+  getname+0x1a/0x20 fs/namei.c:209
+  do_sys_open+0x2c9/0x5d0 fs/open.c:1064
+  __do_sys_open fs/open.c:1088 [inline]
+  __se_sys_open fs/open.c:1083 [inline]
+  __x64_sys_open+0x7e/0xc0 fs/open.c:1083
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+Freed by task 8993:
+  save_stack+0x23/0x90 mm/kasan/common.c:71
+  set_track mm/kasan/common.c:79 [inline]
+  __kasan_slab_free+0x102/0x150 mm/kasan/common.c:451
+  kasan_slab_free+0xe/0x10 mm/kasan/common.c:459
+  __cache_free mm/slab.c:3426 [inline]
+  kmem_cache_free+0x86/0x320 mm/slab.c:3692
+  putname+0xef/0x130 fs/namei.c:259
+  do_sys_open+0x318/0x5d0 fs/open.c:1079
+  __do_sys_open fs/open.c:1088 [inline]
+  __se_sys_open fs/open.c:1083 [inline]
+  __x64_sys_open+0x7e/0xc0 fs/open.c:1083
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+
+The buggy address belongs to the object at ffff888096f20d40
+  which belongs to the cache names_cache of size 4096
+The buggy address is located 676 bytes inside of
+  4096-byte region [ffff888096f20d40, ffff888096f21d40)
+The buggy address belongs to the page:
+page:ffffea00025bc800 refcount:1 mapcount:0 mapping:ffff8880aa593ac0  
+index:0x0 compound_mapcount: 0
+flags: 0x1fffc0000010200(slab|head)
+raw: 01fffc0000010200 ffffea0002a01388 ffffea0002315988 ffff8880aa593ac0
+raw: 0000000000000000 ffff888096f20d40 0000000100000001 0000000000000000
+page dumped because: kasan: bad access detected
+
+Memory state around the buggy address:
+  ffff888096f20e80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888096f20f00: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+> ffff888096f20f80: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+                                                        ^
+  ffff888096f21000: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+  ffff888096f21080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
+==================================================================
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
