@@ -2,193 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 39395360E0
-	for <lists+cgroups@lfdr.de>; Wed,  5 Jun 2019 18:11:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B99CB3620B
+	for <lists+cgroups@lfdr.de>; Wed,  5 Jun 2019 19:03:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728575AbfFEQLh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Jun 2019 12:11:37 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37054 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728550AbfFEQLh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Jun 2019 12:11:37 -0400
-Received: by mail-pl1-f196.google.com with SMTP id bh12so3781016plb.4
-        for <cgroups@vger.kernel.org>; Wed, 05 Jun 2019 09:11:36 -0700 (PDT)
+        id S1728793AbfFERDg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Jun 2019 13:03:36 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:38909 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728794AbfFERDg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Jun 2019 13:03:36 -0400
+Received: by mail-qt1-f193.google.com with SMTP id l3so18826165qtj.5
+        for <cgroups@vger.kernel.org>; Wed, 05 Jun 2019 10:03:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=KwGTPhlO4F01V7ggP/cBc9JouzklE/A9aHOmDIgUHBk=;
-        b=zjoAxtmU+7WyTYQ00sJFDH6OJqtCjZpplgs9SVN+RWNg6guyKEzFqHxWvkeWD5xfQx
-         3viyeJVCAPj+8k0LO4Z+bc2QpTkfCW9m8xZE9z6fUdeDh7YFKe1UZZyi0rL238e8zESs
-         MYs+yNFzM+DRnW6HrIeF6FbVmC7ddiFnlLH2M9Lor+6Q+h9+zxEHT4bocMkRdEW4SE1O
-         tCd8Z2lNM9FmEhZvR0Aq+vQRXZxxJ1ZRDemdOvmtML38bbyLZbowaKM5F0TdIWZ+tBA3
-         yyUMzaBENQiqhfUXhFhSk3/uadr0bUA4xkuQeThSRBjkw90iT+SCdxg/HHsZwmrIAtTf
-         UMfQ==
+        bh=i95vFPoXF2aibM9zJc0/oYy2BodI27H2qyuN0bQw9Yc=;
+        b=jxSiakHOlIHT8jsCZ0Q5g9RtHfHfE81IkoIm9MAtVRIkOHhscsS5lkb3YSnrUNHQKE
+         p5lyxlZnJOtfWCyAQxZsLVi/xJb4YMifYynY3avwjMBtQQP+8YKwfi1s85zn/jqGO6zV
+         IlD2FkP2jGteUprB+vB44NKzM+a7S+lRCt6xz9twYJ0OWo/Cu9JTJCVoUcwWH3tORJXB
+         00K1815DunnsYDPtNC5qapP1hceu+97AK8i9lgYB62Nt8P2uUl2Babfm6gSToS13VYx6
+         gdAPCiKLAX4rqb2isBYGK8PuD03U8kqJQiI9cZs/+cd7no17LOZDsL7CZQw/L03ivTuA
+         ppXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=KwGTPhlO4F01V7ggP/cBc9JouzklE/A9aHOmDIgUHBk=;
-        b=CSHQaXoc3KRf502SPPz2Kv3ovvropE10NAeOE1zLn5sdDH8zsfQHspgxXsvbl88tDk
-         34Wcg7YriUN+VlP6FdDejjaquoyxdYdXC7B/RWqghkEPOAwcQ1lUHVdLGIgRiW8dPSKO
-         Eu4Rlpvjkdk+er7oEStcCxUpMnIYHI+klZ/vXMtvTxrE1sYtUaK5NAEBQTaVHHvfKDE7
-         fQwJdlF1lWSHg3K4puC40pjJ0rXzLYx7Gwkurtg0HihfYqvb922E2QrTmUVUg9s7YtsI
-         hDHUb/c2y8lw1a6gAyfZhbjwYV9dO8M4Q+be6vpMKJJY1VkMNA2qckNe0O2WSwXjorF9
-         eO8w==
-X-Gm-Message-State: APjAAAXtLMPVfR1Qr16iundrg2I3cLxIjNtVbKxO5Eodp6T1IP98JLF+
-        dEV6RlovabyJ1N9dhYXPGl+LKA==
-X-Google-Smtp-Source: APXvYqzRcWHUDNkdKFYTdIkL15U3HOaNWIkBFbGPcJrWTqB/LeooYydW5MnjfgZx/KAQu0s/mvfszA==
-X-Received: by 2002:a17:902:b402:: with SMTP id x2mr45364816plr.128.1559751096018;
-        Wed, 05 Jun 2019 09:11:36 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:9bd9])
-        by smtp.gmail.com with ESMTPSA id k14sm43340134pga.5.2019.06.05.09.11.34
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 05 Jun 2019 09:11:34 -0700 (PDT)
-Date:   Wed, 5 Jun 2019 12:11:33 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: dump memory.stat during cgroup OOM
-Message-ID: <20190605161133.GA12453@cmpxchg.org>
-References: <20190604210509.9744-1-hannes@cmpxchg.org>
- <20190605120837.GE15685@dhcp22.suse.cz>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=i95vFPoXF2aibM9zJc0/oYy2BodI27H2qyuN0bQw9Yc=;
+        b=UnJ/7zOFIPrsFA5oyGicWeF9Dm2JmmZbPbIvqulNYO1BOvm3+O1fzlsJIr58Gb5bXv
+         BEd6O1aDagIyOkMCNJZ5asGPAfKjUBhdX4ih+7a+ls2vz2iWRjf7Uo+x6zsIVgrI5RyH
+         OfSV9E5iaydA4A2ra67T5CrMuUk6c8HKwQnO8hKRzOjtWaeUKCe5diMPkHQ2nKmFejPy
+         BdsvO57KJNpWpvMaxxEgeDarF1ex2nPc02OAwgEb6D5X51UcllzDsCgjIJ3TRE2HHuoH
+         MIRP7WyOJNxF8a4aXpS2uQiCJoVHGHjJHD24A4cf9UHnWr6GFFwKy29AyQzaGuQg8XXK
+         G6Rw==
+X-Gm-Message-State: APjAAAUkV1lCfevsep2+W/2Dpx5sgUQ5XzEHfsGaWjQ7hjZ5+zg40mmj
+        +1a4dMr789C4gxH/zWL3lPE=
+X-Google-Smtp-Source: APXvYqxtd5z5cGbGq5TjeCwdNUerioeji7UmkR6Nl7UyUP7Rr6RVrJqbhYnygtgyEynEuGlrwtVqLg==
+X-Received: by 2002:ac8:1750:: with SMTP id u16mr21378557qtk.90.1559754215607;
+        Wed, 05 Jun 2019 10:03:35 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:c027])
+        by smtp.gmail.com with ESMTPSA id w30sm8885985qtb.28.2019.06.05.10.03.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Jun 2019 10:03:34 -0700 (PDT)
+Date:   Wed, 5 Jun 2019 10:03:33 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Li Zefan <lizefan@huawei.com>, Topi Miettinen <toiwoton@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
+        Oleg Nesterov <oleg@redhat.com>, security@debian.org,
+        Lennart Poettering <lennart@poettering.net>,
+        security@kernel.org
+Subject: [PATCH 4/3 cgroup/for-5.2-fixes] cgroup: css_task_iter_skip()'d
+ iterators must be advanced before accessed
+Message-ID: <20190605170333.GQ374014@devbig004.ftw2.facebook.com>
+References: <1956727d-1ee8-92af-1e00-66ae4921b075@gmail.com>
+ <87zhn6923n.fsf@xmission.com>
+ <e407a8e7-7780-f08f-320a-a0f2c954d253@gmail.com>
+ <20190529003601.GN374014@devbig004.ftw2.facebook.com>
+ <e45d974b-5eff-f781-291f-ddf5e9679e4c@gmail.com>
+ <20190530183556.GR374014@devbig004.ftw2.facebook.com>
+ <20190530183637.GS374014@devbig004.ftw2.facebook.com>
+ <20190530183700.GT374014@devbig004.ftw2.facebook.com>
+ <20190530183845.GU374014@devbig004.ftw2.facebook.com>
+ <20190531174028.GG374014@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190605120837.GE15685@dhcp22.suse.cz>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+In-Reply-To: <20190531174028.GG374014@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 05, 2019 at 02:08:37PM +0200, Michal Hocko wrote:
-> On Tue 04-06-19 17:05:09, Johannes Weiner wrote:
-> > The current cgroup OOM memory info dump doesn't include all the memory
-> > we are tracking, nor does it give insight into what the VM tried to do
-> > leading up to the OOM. All that useful info is in memory.stat.
-> 
-> I agree that other memcg counters can provide a useful insight for the OOM
-> situation.
-> 
-> > Furthermore, the recursive printing for every child cgroup can
-> > generate absurd amounts of data on the console for larger cgroup
-> > trees, and it's not like we provide a per-cgroup breakdown during
-> > global OOM kills.
-> 
-> The idea was that this information might help to identify which subgroup
-> is the major contributor to the OOM at a higher level. I have to confess
-> that I have never really used that information myself though.
+From cee0c33c546a93957a52ae9ab6bebadbee765ec5 Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Wed, 5 Jun 2019 09:54:34 -0700
 
-Yeah, same. The thing is that sometimes we have tens or even hundreds
-of subgroups, and when an OOM triggers at the top-level the console
-will be printing for a while. But often when you have that big of a
-shared domain it's because you just run a lot of parallel instances of
-the same job, and when the oom triggers it's because you ran too many
-jobs rather than one job acting up. In more hybrid setups, we tend to
-also configure the limits more locally.
+b636fd38dc40 ("cgroup: Implement css_task_iter_skip()") introduced
+css_task_iter_skip() which is used to fix task iterations skipping
+dying threadgroup leaders with live threads.  Skipping is implemented
+as a subportion of full advancing but css_task_iter_next() forgot to
+fully advance a skipped iterator before determining the next task to
+visit causing it to return invalid task pointers.
 
-> > When an OOM kill is triggered, print one set of recursive memory.stat
-> > items at the level whose limit triggered the OOM condition.
-> > 
-> > Example output:
-> > 
-> [...]
-> > memory: usage 1024kB, limit 1024kB, failcnt 75131
-> > swap: usage 0kB, limit 9007199254740988kB, failcnt 0
-> > Memory cgroup stats for /foo:
-> > anon 0
-> > file 0
-> > kernel_stack 36864
-> > slab 274432
-> > sock 0
-> > shmem 0
-> > file_mapped 0
-> > file_dirty 0
-> > file_writeback 0
-> > anon_thp 0
-> > inactive_anon 126976
-> > active_anon 0
-> > inactive_file 0
-> > active_file 0
-> > unevictable 0
-> > slab_reclaimable 0
-> > slab_unreclaimable 274432
-> > pgfault 59466
-> > pgmajfault 1617
-> > workingset_refault 2145
-> > workingset_activate 0
-> > workingset_nodereclaim 0
-> > pgrefill 98952
-> > pgscan 200060
-> > pgsteal 59340
-> > pgactivate 40095
-> > pgdeactivate 96787
-> > pglazyfree 0
-> > pglazyfreed 0
-> > thp_fault_alloc 0
-> > thp_collapse_alloc 0
-> 
-> I am not entirely happy with that many lines in the oom report though. I
-> do see that you are trying to reduce code duplication which is fine but
-> would it be possible to squeeze all of these counters on a single line?
-> The same way we do for the global OOM report?
+Fix it by making css_task_iter_next() fully advance the iterator if it
+has been skipped since the previous iteration.
 
-TBH I really hate those in the global reports because I always
-struggle to find what I'm looking for. And smoking guns don't stand
-out visually either. I'd rather have newlines there as well.
-
-> > +	seq_buf_init(&s, kvmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
-> 
-> What is the reason to use kvmalloc here? It doesn't make much sense to
-> me to use it for the page size allocation TBH.
-
-Oh, good spot. I first did something similar to seq_file.c with an
-auto-resizing buffer in case we print too much data. Then decided
-that's silly since everything that will print into the buffer is right
-there, and it's obvious that it'll fit, so I did the fixed allocation
-and the WARN_ON instead.
-
-How about a simple kmalloc?. I know it's a page sized buffer, but the
-gfp interface seems a bit too low-level and has weird kinks that
-kmalloc nicely abstracts into a sane memory allocation interface, with
-kmemleak support and so forth...
-
-Thanks for your review.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: syzbot
+Link: http://lkml.kernel.org/r/00000000000097025d058a7fd785@google.com
+Fixes: b636fd38dc40 ("cgroup: Implement css_task_iter_skip()")
 ---
+Applied to cgroup/for-5.2-fixes.  Thanks.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0907a96ceddf..b0e0e840705d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1371,7 +1371,7 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 	struct seq_buf s;
- 	int i;
+ kernel/cgroup/cgroup.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index a7df319c2e9a..9538a12d42d6 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4550,6 +4550,10 @@ struct task_struct *css_task_iter_next(struct css_task_iter *it)
  
--	seq_buf_init(&s, kvmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
-+	seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
- 	if (!s.buffer)
- 		return NULL;
+ 	spin_lock_irq(&css_set_lock);
  
-@@ -1533,7 +1533,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- 	if (!buf)
- 		return;
- 	pr_info("%s", buf);
--	kvfree(buf);
-+	kfree(buf);
- }
- 
- /*
-@@ -5775,7 +5775,7 @@ static int memory_stat_show(struct seq_file *m, void *v)
- 	if (!buf)
- 		return -ENOMEM;
- 	seq_puts(m, buf);
--	kvfree(buf);
-+	kfree(buf);
- 	return 0;
- }
- 
++	/* @it may be half-advanced by skips, finish advancing */
++	if (it->flags & CSS_TASK_ITER_SKIPPED)
++		css_task_iter_advance(it);
++
+ 	if (it->task_pos) {
+ 		it->cur_task = list_entry(it->task_pos, struct task_struct,
+ 					  cg_list);
+-- 
+2.17.1
+
