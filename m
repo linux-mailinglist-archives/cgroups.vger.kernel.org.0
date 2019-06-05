@@ -2,138 +2,193 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D04B336059
-	for <lists+cgroups@lfdr.de>; Wed,  5 Jun 2019 17:34:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39395360E0
+	for <lists+cgroups@lfdr.de>; Wed,  5 Jun 2019 18:11:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728032AbfFEPeI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Jun 2019 11:34:08 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:41896 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726829AbfFEPeI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Jun 2019 11:34:08 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x55FUgFC039576;
-        Wed, 5 Jun 2019 15:32:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2018-07-02;
- bh=OZ1kDdTgN4wvLaPyCNbaBt4ZZAol0O1Af0n8ppQn/zU=;
- b=SlyLnGBXh3+Z/kVO/l6MtBnlb/hL9gKjC3CliEvgg9yYkyraDbOZv+xE+6/BydM6W02j
- 8MXGwY8TYLi9z4jDghyFakXxGwlgaO/5kJ8bM0ljtmVE5iNv+yMVB/XAftSP04CwlxCC
- 8m65gs3Ntc74ibhVNhve9meTwuBtHY8lwgRfnhEe978fwYosu2Eak5nBKaQbFqjbwddC
- +49tb1GrtXJ0gZJ8J362dwJw6BoCfGDK+bw0HVfdk2ZHuWWbThgQUwUoO1llvAB8Mjys
- D6PbUMcQj+WDcrplRbfyv4etIOFyiBLU7D4hfEO6EoR6Ovny60qaCVxHjA7EUq4pg0fV Pg== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2130.oracle.com with ESMTP id 2sugstkees-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 05 Jun 2019 15:32:44 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x55FWgi1133961;
-        Wed, 5 Jun 2019 15:32:43 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3030.oracle.com with ESMTP id 2swnhc6sy2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 05 Jun 2019 15:32:43 +0000
-Received: from abhmp0009.oracle.com (abhmp0009.oracle.com [141.146.116.15])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x55FWSXg025273;
-        Wed, 5 Jun 2019 15:32:30 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 05 Jun 2019 08:32:28 -0700
-Date:   Wed, 5 Jun 2019 11:32:29 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, hannes@cmpxchg.org,
-        jiangshanlai@gmail.com, lizefan@huawei.com, bsd@redhat.com,
-        dan.j.williams@intel.com, dave.hansen@intel.com,
-        juri.lelli@redhat.com, mhocko@kernel.org, peterz@infradead.org,
-        steven.sistare@oracle.com, tglx@linutronix.de,
-        tom.hromatka@oracle.com, vdavydov.dev@gmail.com,
+        id S1728575AbfFEQLh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Jun 2019 12:11:37 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37054 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728550AbfFEQLh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Jun 2019 12:11:37 -0400
+Received: by mail-pl1-f196.google.com with SMTP id bh12so3781016plb.4
+        for <cgroups@vger.kernel.org>; Wed, 05 Jun 2019 09:11:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KwGTPhlO4F01V7ggP/cBc9JouzklE/A9aHOmDIgUHBk=;
+        b=zjoAxtmU+7WyTYQ00sJFDH6OJqtCjZpplgs9SVN+RWNg6guyKEzFqHxWvkeWD5xfQx
+         3viyeJVCAPj+8k0LO4Z+bc2QpTkfCW9m8xZE9z6fUdeDh7YFKe1UZZyi0rL238e8zESs
+         MYs+yNFzM+DRnW6HrIeF6FbVmC7ddiFnlLH2M9Lor+6Q+h9+zxEHT4bocMkRdEW4SE1O
+         tCd8Z2lNM9FmEhZvR0Aq+vQRXZxxJ1ZRDemdOvmtML38bbyLZbowaKM5F0TdIWZ+tBA3
+         yyUMzaBENQiqhfUXhFhSk3/uadr0bUA4xkuQeThSRBjkw90iT+SCdxg/HHsZwmrIAtTf
+         UMfQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KwGTPhlO4F01V7ggP/cBc9JouzklE/A9aHOmDIgUHBk=;
+        b=CSHQaXoc3KRf502SPPz2Kv3ovvropE10NAeOE1zLn5sdDH8zsfQHspgxXsvbl88tDk
+         34Wcg7YriUN+VlP6FdDejjaquoyxdYdXC7B/RWqghkEPOAwcQ1lUHVdLGIgRiW8dPSKO
+         Eu4Rlpvjkdk+er7oEStcCxUpMnIYHI+klZ/vXMtvTxrE1sYtUaK5NAEBQTaVHHvfKDE7
+         fQwJdlF1lWSHg3K4puC40pjJ0rXzLYx7Gwkurtg0HihfYqvb922E2QrTmUVUg9s7YtsI
+         hDHUb/c2y8lw1a6gAyfZhbjwYV9dO8M4Q+be6vpMKJJY1VkMNA2qckNe0O2WSwXjorF9
+         eO8w==
+X-Gm-Message-State: APjAAAXtLMPVfR1Qr16iundrg2I3cLxIjNtVbKxO5Eodp6T1IP98JLF+
+        dEV6RlovabyJ1N9dhYXPGl+LKA==
+X-Google-Smtp-Source: APXvYqzRcWHUDNkdKFYTdIkL15U3HOaNWIkBFbGPcJrWTqB/LeooYydW5MnjfgZx/KAQu0s/mvfszA==
+X-Received: by 2002:a17:902:b402:: with SMTP id x2mr45364816plr.128.1559751096018;
+        Wed, 05 Jun 2019 09:11:36 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:9bd9])
+        by smtp.gmail.com with ESMTPSA id k14sm43340134pga.5.2019.06.05.09.11.34
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 Jun 2019 09:11:34 -0700 (PDT)
+Date:   Wed, 5 Jun 2019 12:11:33 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, shakeelb@google.com
-Subject: Re: [RFC v2 0/5] cgroup-aware unbound workqueues
-Message-ID: <20190605153229.nvxr6j7tdzffwkgj@ca-dmjordan1.us.oracle.com>
-References: <20190605133650.28545-1-daniel.m.jordan@oracle.com>
- <20190605135319.GK374014@devbig004.ftw2.facebook.com>
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: dump memory.stat during cgroup OOM
+Message-ID: <20190605161133.GA12453@cmpxchg.org>
+References: <20190604210509.9744-1-hannes@cmpxchg.org>
+ <20190605120837.GE15685@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190605135319.GK374014@devbig004.ftw2.facebook.com>
-User-Agent: NeoMutt/20180323-268-5a959c
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9279 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1810050000 definitions=main-1906050097
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9279 signatures=668687
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
- definitions=main-1906050096
+In-Reply-To: <20190605120837.GE15685@dhcp22.suse.cz>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
-
-On Wed, Jun 05, 2019 at 06:53:19AM -0700, Tejun Heo wrote:
-> On Wed, Jun 05, 2019 at 09:36:45AM -0400, Daniel Jordan wrote:
-> > My use case for this work is kernel multithreading, the series formerly known
-> > as ktask[2] that I'm now trying to combine with padata according to feedback
-> > from the last post.  Helper threads in a multithreaded job may consume lots of
-> > resources that aren't properly accounted to the cgroup of the task that started
-> > the job.
+On Wed, Jun 05, 2019 at 02:08:37PM +0200, Michal Hocko wrote:
+> On Tue 04-06-19 17:05:09, Johannes Weiner wrote:
+> > The current cgroup OOM memory info dump doesn't include all the memory
+> > we are tracking, nor does it give insight into what the VM tried to do
+> > leading up to the OOM. All that useful info is in memory.stat.
 > 
-> Can you please go into more details on the use cases?
+> I agree that other memcg counters can provide a useful insight for the OOM
+> situation.
+> 
+> > Furthermore, the recursive printing for every child cgroup can
+> > generate absurd amounts of data on the console for larger cgroup
+> > trees, and it's not like we provide a per-cgroup breakdown during
+> > global OOM kills.
+> 
+> The idea was that this information might help to identify which subgroup
+> is the major contributor to the OOM at a higher level. I have to confess
+> that I have never really used that information myself though.
 
-Sure, quoting from the last ktask post:
+Yeah, same. The thing is that sometimes we have tens or even hundreds
+of subgroups, and when an OOM triggers at the top-level the console
+will be printing for a while. But often when you have that big of a
+shared domain it's because you just run a lot of parallel instances of
+the same job, and when the oom triggers it's because you ran too many
+jobs rather than one job acting up. In more hybrid setups, we tend to
+also configure the limits more locally.
 
-  A single CPU can spend an excessive amount of time in the kernel operating
-  on large amounts of data.  Often these situations arise during initialization-
-  and destruction-related tasks, where the data involved scales with system size.
-  These long-running jobs can slow startup and shutdown of applications and the
-  system itself while extra CPUs sit idle.
-      
-  To ensure that applications and the kernel continue to perform well as core
-  counts and memory sizes increase, harness these idle CPUs to complete such jobs
-  more quickly.
-      
-  ktask is a generic framework for parallelizing CPU-intensive work in the
-  kernel.  The API is generic enough to add concurrency to many different kinds
-  of tasks--for example, zeroing a range of pages or evicting a list of
-  inodes--and aims to save its clients the trouble of splitting up the work,
-  choosing the number of threads to use, maintaining an efficient concurrency
-  level, starting these threads, and load balancing the work between them.
+> > When an OOM kill is triggered, print one set of recursive memory.stat
+> > items at the level whose limit triggered the OOM condition.
+> > 
+> > Example output:
+> > 
+> [...]
+> > memory: usage 1024kB, limit 1024kB, failcnt 75131
+> > swap: usage 0kB, limit 9007199254740988kB, failcnt 0
+> > Memory cgroup stats for /foo:
+> > anon 0
+> > file 0
+> > kernel_stack 36864
+> > slab 274432
+> > sock 0
+> > shmem 0
+> > file_mapped 0
+> > file_dirty 0
+> > file_writeback 0
+> > anon_thp 0
+> > inactive_anon 126976
+> > active_anon 0
+> > inactive_file 0
+> > active_file 0
+> > unevictable 0
+> > slab_reclaimable 0
+> > slab_unreclaimable 274432
+> > pgfault 59466
+> > pgmajfault 1617
+> > workingset_refault 2145
+> > workingset_activate 0
+> > workingset_nodereclaim 0
+> > pgrefill 98952
+> > pgscan 200060
+> > pgsteal 59340
+> > pgactivate 40095
+> > pgdeactivate 96787
+> > pglazyfree 0
+> > pglazyfreed 0
+> > thp_fault_alloc 0
+> > thp_collapse_alloc 0
+> 
+> I am not entirely happy with that many lines in the oom report though. I
+> do see that you are trying to reduce code duplication which is fine but
+> would it be possible to squeeze all of these counters on a single line?
+> The same way we do for the global OOM report?
 
-So far the users of the framework primarily consume CPU and memory.
+TBH I really hate those in the global reports because I always
+struggle to find what I'm looking for. And smoking guns don't stand
+out visually either. I'd rather have newlines there as well.
 
-> For memory and io, we're generally going for remote charging, where a
-> kthread explicitly says who the specific io or allocation is for,
-> combined with selective back-charging, where the resource is charged
-> and consumed unconditionally even if that would put the usage above
-> the current limits temporarily.  From what I've been seeing recently,
-> combination of the two give us really good control quality without
-> being too invasive across the stack.
+> > +	seq_buf_init(&s, kvmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+> 
+> What is the reason to use kvmalloc here? It doesn't make much sense to
+> me to use it for the page size allocation TBH.
 
-Yes, for memory I actually use remote charging.  In patch 3 the worker's
-current->active_memcg field is changed to match that of the cgroup associated
-with the work.
+Oh, good spot. I first did something similar to seq_file.c with an
+auto-resizing buffer in case we print too much data. Then decided
+that's silly since everything that will print into the buffer is right
+there, and it's obvious that it'll fit, so I did the fixed allocation
+and the WARN_ON instead.
 
-Cc Shakeel, since we're talking about it.
+How about a simple kmalloc?. I know it's a page sized buffer, but the
+gfp interface seems a bit too low-level and has weird kinks that
+kmalloc nicely abstracts into a sane memory allocation interface, with
+kmemleak support and so forth...
 
-> CPU doesn't have a backcharging mechanism yet and depending on the use
-> case, we *might* need to put kthreads in different cgroups.  However,
-> such use cases might not be that abundant and there may be gotaches
-> which require them to be force-executed and back-charged (e.g. fs
-> compression from global reclaim).
+Thanks for your review.
 
-The CPU-intensiveness of these works is one of the reasons for actually putting
-the workers through the migration path.  I don't know of a way to get the
-workers to respect the cpu controller (and even cpuset for that matter) without
-doing that.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
 
-Thanks for the quick feedback.
-
-Daniel
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0907a96ceddf..b0e0e840705d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1371,7 +1371,7 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 	struct seq_buf s;
+ 	int i;
+ 
+-	seq_buf_init(&s, kvmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
++	seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+ 	if (!s.buffer)
+ 		return NULL;
+ 
+@@ -1533,7 +1533,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+ 	if (!buf)
+ 		return;
+ 	pr_info("%s", buf);
+-	kvfree(buf);
++	kfree(buf);
+ }
+ 
+ /*
+@@ -5775,7 +5775,7 @@ static int memory_stat_show(struct seq_file *m, void *v)
+ 	if (!buf)
+ 		return -ENOMEM;
+ 	seq_puts(m, buf);
+-	kvfree(buf);
++	kfree(buf);
+ 	return 0;
+ }
+ 
