@@ -2,168 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DEEF36A6D
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2019 05:17:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF98636BAC
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2019 07:33:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbfFFDRQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Jun 2019 23:17:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17671 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726454AbfFFDRQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 5 Jun 2019 23:17:16 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id A40754191C74A36B4DEA;
-        Thu,  6 Jun 2019 11:17:08 +0800 (CST)
-Received: from [127.0.0.1] (10.177.131.64) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.439.0; Thu, 6 Jun 2019
- 11:16:58 +0800
-Subject: Re: [Question] panic when write file cpuset.cpus
-To:     <tj@kernel.org>, <lizefan@huawei.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <wangkefeng.wang@huawei.com>,
-        <yi.zhang@huawei.com>
-References: <0efc2890-5cb4-2700-8de4-304e72b7dbb4@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>
-From:   Chen Zhou <chenzhou10@huawei.com>
-Message-ID: <e97ef832-37de-a3f5-0cd4-4c93d97008ac@huawei.com>
-Date:   Thu, 6 Jun 2019 11:16:48 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.7.1
+        id S1726538AbfFFFdH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Jun 2019 01:33:07 -0400
+Received: from mail-it1-f198.google.com ([209.85.166.198]:58997 "EHLO
+        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbfFFFdH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jun 2019 01:33:07 -0400
+Received: by mail-it1-f198.google.com with SMTP id l193so856750ita.8
+        for <cgroups@vger.kernel.org>; Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=W5FF42zVDo3trtwvrjbtAnVcsXKoMkINuTi+BPyFgek=;
+        b=EuXAZ95Y6OxfTppBFvms6gGIiOS8JTmJ4967mhysTWf9H3gj/Cpqw5U9d7dhHm/zJX
+         c3MSGFqFD9QaAgeQ1oWtH/s0UbbY/HIPS2XVFDr4RVGRrQjGpjLK5zRsgsoztCD3Bh0h
+         SB4JP/aNJ83gSFQ0SZHlK+CwGpjTcwO3q0U+lcsJY6KiGBEES7a5ncHzFcnQfTxW134O
+         tGwPdaxFeOYGB7OkApdHzJmFOLQjFAKlHSvIrJUeGieIo0MgMqVkaVyafm9cATKSjllI
+         eDZc3rFRfrMnK6RLY9o3s6zmibpQLMoGpCZ+iak5U6Ag7DCeiR/y17uBJoLxVmlLuMu2
+         jHgQ==
+X-Gm-Message-State: APjAAAUIIm96NiwS6pWNX7M/enpP7OHmtbz4YmyhOp6biyh6RuQLAdeF
+        csaISF+/zh2jpIVDMv4/Cm6Fa202tyw5rqAhfM12Tj4jWcft
+X-Google-Smtp-Source: APXvYqz9VSUc/8eq6b84tHBQ+U7qjz624v0EGp0dlfT+6ewmxPMDHxVvliMgENV/TnWGADV2fbh3yhNDyGIqQ+am2toYAWdTda+c
 MIME-Version: 1.0
-In-Reply-To: <0efc2890-5cb4-2700-8de4-304e72b7dbb4@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-X-Originating-IP: [10.177.131.64]
-X-CFilter-Loop: Reflected
+X-Received: by 2002:a05:660c:887:: with SMTP id o7mr5081314itk.159.1559799186165;
+ Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
+Date:   Wed, 05 Jun 2019 22:33:06 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006994aa058aa10cb8@google.com>
+Subject: WARNING: refcount bug in css_task_iter_next
+From:   syzbot <syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com>
+To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        netdev@vger.kernel.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-K0NjIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCg0KT24gMjAxOS82LzYgMTE6MDQs
-IENoZW4gWmhvdSB3cm90ZToNCj4gSGkgYWxsLA0KPiANCj4gSSBoaXQgdGhlIGZvbGxvd2lu
-ZyBpc3N1ZSBpbiBsaW51eCA0LjQgd2hpY2ggaXMgaGFyZCB0byByZXByb2R1Y2UuDQo+IA0K
-PiBbMjAxOTA1MjcyMjExMDZdW2JzcF9wY2lfZGV2aWNlX2dldF9iYXJdLS0tIHBCYXNlUGh5
-QWRkciA6M2EwMDgwMDAwMDAsIGxlbjo0MDAwMDAwICAtLS0NCj4gWzIwMTkwNTI3MjIxMTA2
-XVVuYWJsZSB0byBoYW5kbGUga2VybmVsIHBhZ2luZyByZXF1ZXN0IGF0IHZpcnR1YWwgYWRk
-cmVzcyAxMDAwMDAwMTANCj4gWzIwMTkwNTI3MjIxMTA3XXBnZCA9IGZmZmZmZmQzYzY5NmIw
-MDANCj4gWzIwMTkwNTI3MjIxMTA3XVsxMDAwMDAwMTBdICpwZ2Q9MDAwMDAwMDAwMDAwMDAw
-MCwgKnB1ZD0wMDAwMDAwMDAwMDAwMDAwDQo+IFsyMDE5MDUyNzIyMTEwN11JbnRlcm5hbCBl
-cnJvcjogT29wczogOTYwMDAwMDUgWyMxXSBQUkVFTVBUIFNNUA0KPiBbMjAxOTA1MjcyMjEx
-MDddTW9kdWxlcyBsaW5rZWQgaW46IGxpbnV4X3VzZXJfYmRlKE8pIGxpbnV4X2tlcm5lbF9i
-ZGUoTykgY21hYyhPKSBuc2UoTykgcHAoTykgdG0oTykgbGZlKE8pIHRpcGMoTykgcGNpZV9h
-ZXJfaGlzaShPKSBicmRfZHJ2X2xwdShPKSBoaTE2MXhfZ2xmKE8pIGhpMTYxeF9nbGMoTykg
-Y2hpcF9zZGtfYWRwdChPKSBib25kaW5nKE8pIG1lbWVudihPKSBpb2Zfc2FsKE8pIGlvZl9k
-bG9nKE8pIGlvZl9kZXZlbnQoTykgaW9mX2lvbW0oTykgZHJ2X2JzcF9waWMoTykgYnNwX2Nv
-bW1vbihPKSBwcmFtZGlzayhPKSBic3BfcHJvYyhPKSBrZGNfdWlvX2xvZyhPKSB2cnBfZW52
-X2xvZ19hcmVhKE8pIGRydl9ic3BfZm1lYShPKSBEcnZfTGFzdFdkc19LKE8pIERydl9DcHVE
-ZnhJbmZvX0soTykgRHJ2X0NwdURmeF9LKE8pIHY4X2RmeF9jcHUoTykgRHJ2X0RmeF9LKE8p
-IERydl9DcHVSZWdJbmplY3RfSyhPKSBEcnZfUmVzZXRDYXVzZV9LKE8pIERydl9LYm94X0so
-TykgZW52X2NvcmUoTykgaW9mX2RhdGEoTykgRHJ2X0wyZmx1c2hfSyhPKSBhcm02NF9jYWNo
-ZV9kZngoTykgbW1hcGRldihPKSBkcnZfZXh0ZXJuX2ludChPKSBpcnFfbW9uaXRvcihPKSBk
-cnZfYnNwX2F2cyhPKSBEcnZfUG1idXNfSyhPKSBEcnZfU21jX0soTykgYnNwX3NhbChPKSBE
-cnZfSXBzZWNfSyhPKSBEcnZfVHNlbnNvcl9LKE8pIHBjaV9oaXNpKE8pIHNlcmRlcyhPKSBE
-cnZfQ2hlY2tCb290X0soTykgRHJ2X0RqdGFnX0soTykgYWRkcl93aW4oTykgaW9mX2NiYihP
-KSBEcnZfSTJjX0soTykgaG5zX3Vpb19lbmV0KE8pIGhuc19lbmV0X2RydihPKSBobnNfZHNh
-ZihPKSBobmFlKE8pIGhuc19tZGlvKE8pIG1kaW8oTykgRHJ2X0Zsb3dDdHJsX0soTykgRHJ2
-X0dwaW9fSyhPKSBEcnZfU3lzQ2xrX0soTykgcGh5c21hcF9vZihPKSBtYXBfcm9tKE8pIGNm
-aV9jbWRzZXRfMDAwMihPKSBjZmlfcHJvYmUoTykgY2ZpX3V0aWwoTykgZ2VuX3Byb2JlKE8p
-IGNoaXByZWcoTykgcnNtKE8pIHJ0b3Nfc25hcHNob3QoTykgcnRvc19rYm94X3BhbmljKE8p
-IGJzcF93ZHQoTykgZHJ2X2JzcF9kZHIoTykgYnNwX3JlZyhPKSBEcnZfRHRzX0soTykgRHJ2
-X1N5c0N0bF9LKE8pIGFybV9zYWxfaXNzdShPKSBrc2VjdXJlYyhQTykgZXh0NCBqYmQyIGV4
-dDIgbWJjYWNoZSBvZnBhcnQgaTJjX2RldiBpMmNfY29yZSB1aW8gbmFuZCBuYW5kX2VjYyBu
-YW5kX2lkcyBjbWRsaW5lcGFydCBtdGRibG9jayBtdGRfYmxrZGV2cyBtdGQNCj4gWzIwMTkw
-NTI3MjIxMTA3XUNQVTogMiBQSUQ6IDI2NTYgQ29tbTogbW9uaXRvciBUYWludGVkOiBQICAg
-ICAgICBXICBPICAgIDQuNC4xNzEgIzENCj4gWzIwMTkwNTI3MjIxMTA3XUhhcmR3YXJlIG5h
-bWU6IEhpc2lsaWNvbiBjaGlwNl8xNiBQcm9kdWN0IEJvYXJkIChEVCkNCj4gWzIwMTkwNTI3
-MjIxMTA3XXRhc2s6IGZmZmZmZmQzYmY4MWMyNTAgdGFzay5zdGFjazogZmZmZmZmZDNiZmYw
-YzAwMA0KPiBbMjAxOTA1MjcyMjExMDddUEMgaXMgYXQgcmJfZXJhc2UrMHgxNC8weDMyMA0K
-PiBbMjAxOTA1MjcyMjExMDddTFIgaXMgYXQgZXJhc2VfaGVhZGVyKzB4NTAvMHg1NA0KPiBb
-MjAxOTA1MjcyMjExMDddcGMgOiBbPGZmZmZmZjgwMDg0NmU1Mjg+XSBsciA6IFs8ZmZmZmZm
-ODAwODNkMjQ2OD5dIHBzdGF0ZTogMDAwMDAxNDUNCj4gWzIwMTkwNTI3MjIxMTA3XXNwIDog
-ZmZmZmZmZDNiZmYwZjlhMA0KPiBbMjAxOTA1MjcyMjExMDddeDI5OiBmZmZmZmZkM2JmZjBm
-OWEwIHgyODogZmZmZmZmNjlmZThiMTk4MA0KPiBbMjAxOTA1MjcyMjExMDddeDI3OiAwMDAw
-MDAwMDAwMDAwMDAxIHgyNjogZmZmZmZmODAwOGU3ZTM0MA0KPiBbMjAxOTA1MjcyMjExMDdd
-eDI1OiBmZmZmZmY4MDA4ZTA1MDAwIHgyNDogZmZmZmZmODAwOGUzMmUyOA0KPiBbMjAxOTA1
-MjcyMjExMDddeDIzOiBmZmZmZmZkM2MwNTQyNTAwIHgyMjogZmZmZmZmODAwOGUzMjAwMA0K
-PiBbMjAxOTA1MjcyMjExMDddeDIxOiBmZmZmZmY4MDA4ZTA1MDAwIHgyMDogZmZmZmZmZDNj
-MDU0MmYwMA0KPiBbMjAxOTA1MjcyMjExMDddeDE5OiBmZmZmZmZkM2MwNTQyZmI4IHgxODog
-MDAwMDAwMDAwMDAwMDAwZg0KPiBbMjAxOTA1MjcyMjExMDddeDE3OiAwMDAwMDA3ZjliZDIw
-ZTEwIHgxNjogZmZmZmZmODAwODM2NzEwOA0KPiBbMjAxOTA1MjcyMjExMDddeDE1OiAwMDAw
-MDAwMDAwMDAxZmVlIHgxNDogMDAwMDAwMDAwMDAwMDAwMA0KPiBbMjAxOTA1MjcyMjExMDdd
-eDEzOiAwMDAwMDAwMDAwMDAwMDAwIHgxMjogMDAwMDAwMDAwMDAwMDAwMA0KPiBbMjAxOTA1
-MjcyMjExMDddeDExOiAwMDAwMDAwMDAwMDAwMDAxIHgxMDogMDAwMDAwMDAwMDAwMDAwMQ0K
-PiBbMjAxOTA1MjcyMjExMDddeDkgOiAwMDAwMDAwMDAwMDAwMDAxIHg4IDogZmZmZmZmODAw
-ODk0NjIyZA0KPiBbMjAxOTA1MjcyMjExMDddeDcgOiBmZmZmZmZkM2M2NWRkN2QwIHg2IDog
-MDAwMDAwMDAwMDAwMDAwMA0KPiBbMjAxOTA1MjcyMjExMDddeDUgOiBmZmZmZmZkM2JmODFh
-NzQwIHg0IDogMDAwMDAwMDAwMDAwMDAwMA0KPiBbMjAxOTA1MjcyMjExMDddeDMgOiAwMDAw
-MDAwMTAwMDAwMDAxIHgyIDogMDAwMDAwMDEwMDAwMDAwMA0KPiBbMjAxOTA1MjcyMjExMDdd
-eDEgOiBmZmZmZmZkM2MwNTQyNTUwIHgwIDogZmZmZmZmZDNjMDU0MmY1OA0KPiBbMjAxOTA1
-MjcyMjExMDddUHJvY2VzcyBtb25pdG9yIChwaWQ6IDI2NTYsIHN0YWNrIGxpbWl0ID0gMHhm
-ZmZmZmZkM2JmZjBjMDAwKQ0KPiBbMjAxOTA1MjcyMjExMDddDQo+IFsyMDE5MDUyNzIyMTEw
-N11bPGZmZmZmZjgwMDg0NmU1Mjg+XSByYl9lcmFzZSsweDE0LzB4MzIwDQo+IFsyMDE5MDUy
-NzIyMTEwN11bPGZmZmZmZjgwMDgzZDJmNWM+XSBkcm9wX3N5c2N0bF90YWJsZSsweDE3Yy8w
-eDFkNA0KPiBbMjAxOTA1MjcyMjExMDddWzxmZmZmZmY4MDA4M2QyZjg0Pl0gZHJvcF9zeXNj
-dGxfdGFibGUrMHgxYTQvMHgxZDQNCj4gWzIwMTkwNTI3MjIxMTA3XVs8ZmZmZmZmODAwODNk
-MzA1MD5dIHVucmVnaXN0ZXJfc3lzY3RsX3RhYmxlKzB4OWMvMHhhOA0KPiBbMjAxOTA1Mjcy
-MjExMDddWzxmZmZmZmY4MDA4M2QzMDE0Pl0gdW5yZWdpc3Rlcl9zeXNjdGxfdGFibGUrMHg2
-MC8weGE4DQo+IFsyMDE5MDUyNzIyMTEwN11bPGZmZmZmZjgwMDgyNWI4ODA+XSBwYXJ0aXRp
-b25fc2NoZWRfZG9tYWlucysweDY0LzB4MzM4DQo+IFsyMDE5MDUyNzIyMTEwN11bPGZmZmZm
-ZjgwMDgyYmQzN2M+XSByZWJ1aWxkX3NjaGVkX2RvbWFpbnNfbG9ja2VkKzB4ZTAvMHgzYzAN
-Cj4gWzIwMTkwNTI3MjIxMTA3XVs8ZmZmZmZmODAwODJiZTU5MD5dIGNwdXNldF93cml0ZV9y
-ZXNtYXNrKzB4Mjg4LzB4OGNjCQ0KPiBbMjAxOTA1MjcyMjExMDddWzxmZmZmZmY4MDA4MmI1
-NjAwPl0gY2dyb3VwX2ZpbGVfd3JpdGUrMHg2NC8weDEyOA0KPiBbMjAxOTA1MjcyMjExMDdd
-WzxmZmZmZmY4MDA4M2RhYTUwPl0ga2VybmZzX2ZvcF93cml0ZSsweDE1Yy8weDFhYw0KPiBb
-MjAxOTA1MjcyMjExMDddWzxmZmZmZmY4MDA4MzY1YzljPl0gX192ZnNfd3JpdGUrMHg2MC8w
-eDEyNA0KPiBbMjAxOTA1MjcyMjExMDddWzxmZmZmZmY4MDA4MzY2NjZjPl0gdmZzX3dyaXRl
-KzB4YjAvMHgxODQNCj4gWzIwMTkwNTI3MjIxMTA3XVs8ZmZmZmZmODAwODM2NzE3ND5dIFN5
-U193cml0ZSsweDZjLzB4Y2MNCj4gWzIwMTkwNTI3MjIxMTA3XVs8ZmZmZmZmODAwODIwMmNi
-OD5dIF9fc3lzX3RyYWNlX3JldHVybisweDAvMHg0DQo+IA0KPiANCj4gVGhlIGRpc2Fzc2Vt
-YmxlciBhbmQgdGhlIHNvdXJjZSBjb2RlIGFib3V0IHRoZSBiYWNrdHJhY2UgYXJlIGFzIGJl
-bG93Og0KPiANCj4gcmJfZXJhc2UoKS0+X19yYl9lcmFzZV9hdWdtZW50ZWQoKS0+X19yYl9j
-aGFuZ2VfY2hpbGQoKQ0KPiBfX3JiX2VyYXNlX2F1Z21lbnRlZCgpOg0KPiBmZmZmZmY4MDA4
-NDZlNTE0OiAgICAgICBhOTQwOTAwNiAgICAgICAgbGRwICAgICB4NiwgeDQsIFt4MCwgIzhd
-DQo+IGZmZmZmZjgwMDg0NmU1MTg6ICAgICAgIGI1MDAwMjQ0ICAgICAgICBjYm56ICAgIHg0
-LCBmZmZmZmY4MDA4NDZlNTYwIDxyYl9lcmFzZSsweDRjPg0KPiBmZmZmZmY4MDA4NDZlNTFj
-OiAgICAgICBmOTQwMDAwMyAgICAgICAgbGRyICAgICB4MywgW3gwXQ0KPiBfX3JiX2NoYW5n
-ZV9jaGlsZCgpOg0KPiBmZmZmZmY4MDA4NDZlNTIwOiAgICAgICBmMjdlZjQ2MiAgICAgICAg
-YW5kcyAgICB4MiwgeDMsICMweGZmZmZmZmZmZmZmZmZmZmMNCj4gZmZmZmZmODAwODQ2ZTUy
-NDogICAgICAgNTQwMDAxNDAgICAgICAgIGIuZXEgICAgZmZmZmZmODAwODQ2ZTU0YyA8cmJf
-ZXJhc2UrMHgzOD4gIC8vIGIubm9uZQ0KPiBmZmZmZmY4MDA4NDZlNTI4OiAgICAgICBmOTQw
-MDg0NCAgICAgICAgbGRyICAgICB4NCwgW3gyLCAjMTZdDQo+IGZmZmZmZjgwMDg0NmU1MmM6
-ICAgICAgIGViMDQwMDFmICAgICAgICBjbXAgICAgIHgwLCB4NA0KPiANCj4gZmZmZmZmODAw
-ODQ2ZTUzMDogICAgICAgNTQwMDAwYTEgICAgICAgIGIubmUgICAgZmZmZmZmODAwODQ2ZTU0
-NCA8cmJfZXJhc2UrMHgzMD4gIC8vIGIuYW55DQo+IF9fd3JpdGVfb25jZV9zaXplKCk6DQo+
-IGZmZmZmZjgwMDg0NmU1MzQ6ICAgICAgIGY5MDAwODQ2ICAgICAgICBzdHIgICAgIHg2LCBb
-eDIsICMxNl0NCj4gDQo+IHJiX2VyYXNlKCktPl9fcmJfZXJhc2VfYXVnbWVudGVkKCktPl9f
-cmJfY2hhbmdlX2NoaWxkKCkNCj4gc3RhdGljIF9fYWx3YXlzX2lubGluZSBzdHJ1Y3QgcmJf
-bm9kZSAqDQo+IF9fcmJfZXJhc2VfYXVnbWVudGVkKHN0cnVjdCByYl9ub2RlICpub2RlLCBz
-dHJ1Y3QgcmJfcm9vdCAqcm9vdCwNCj4gCQkgICAgIGNvbnN0IHN0cnVjdCByYl9hdWdtZW50
-X2NhbGxiYWNrcyAqYXVnbWVudCkNCj4gew0KPiAJLi4uDQo+IAlpZiAoIXRtcCkgew0KPiAJ
-CS4uLg0KPiAJCXBjID0gbm9kZS0+X19yYl9wYXJlbnRfY29sb3I7DQo+IAkJcGFyZW50ID0g
-X19yYl9wYXJlbnQocGMpOw0KPiAJCV9fcmJfY2hhbmdlX2NoaWxkKG5vZGUsIGNoaWxkLCBw
-YXJlbnQsIHJvb3QpOw0KPiAJLi4uDQo+IH0NCj4gc3RhdGljIGlubGluZSB2b2lkDQo+IF9f
-cmJfY2hhbmdlX2NoaWxkKHN0cnVjdCByYl9ub2RlICpvbGQsIHN0cnVjdCByYl9ub2RlICpu
-ZXcsDQo+IAkJICBzdHJ1Y3QgcmJfbm9kZSAqcGFyZW50LCBzdHJ1Y3QgcmJfcm9vdCAqcm9v
-dCkNCj4gew0KPiAJaWYgKHBhcmVudCkgew0KPiAJCWlmIChwYXJlbnQtPnJiX2xlZnQgPT0g
-b2xkKQ0KPiAJCQlXUklURV9PTkNFKHBhcmVudC0+cmJfbGVmdCwgbmV3KTsNCj4gCQllbHNl
-DQo+IAkJCVdSSVRFX09OQ0UocGFyZW50LT5yYl9yaWdodCwgbmV3KTsNCj4gCX0gZWxzZQ0K
-PiAJCVdSSVRFX09OQ0Uocm9vdC0+cmJfbm9kZSwgbmV3KTsNCj4gfQ0KPiANCj4gDQo+IFdo
-ZW4gcGFuaWMsIHRoZSB4MCBpcyBmZmZmZmZkM2MwNTQyZjU4IHdoaWNoIGluZGljYXRlcyB0
-aGUgZmlyc3QgcGFyYW1ldGVyIG9mIGZ1bmN0aW9uIF9fcmJfZXJhc2VfYXVnbWVudGVkLg0K
-PiANCj4gMmYzOCAgYzA1NDI1MDAgZmZmZmZmZDMgYzA1NDJmNTggZmZmZmZmZDMgMDAwMDAw
-MDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDANCj4gMmY1OCAgMDAwMDAwMDEgMDAwMDAw
-MDEgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAwMDAgYzA1NDJmMDAgZmZmZmZm
-ZDMNCj4gMmY3OCAgYzA1NDJmZjggZmZmZmZmZDMgMDAwMDAwMDAgMDAwMDAwMDAgMDAwMDAw
-MDAgMDAwMDQxNmQgMDAwMDAwMDAgMDAwMDAwMDANCj4gDQo+IHgwIGlzIHRoZSAic3RydWN0
-IHJiX25vZGUgKm5vZGUiLCB0aGF0IGlzLCB0aGUgY29udGVudCBvZiB0aGUgbm9kZSBpczoN
-Cj4gc3RydWN0IHJiX25vZGUgew0KPiAJdW5zaWduZWQgbG9uZyAgX19yYl9wYXJlbnRfY29s
-b3I7ICAgICAgICAgICAgIDAwMDAwMDAxMDAwMDAwMDENCj4gCXN0cnVjdCByYl9ub2RlICpy
-Yl9yaWdodDsgICAgICAgICAgICAgICAgICAgICBmZmZmZmZkM2MwNTQyNTU4DQo+IAlzdHJ1
-Y3QgcmJfbm9kZSAqcmJfbGVmdDsgICAgICAgICAgICAgICAgICAgICAgMDAwMDAwMDAwMDAw
-MDAwMA0KPiB9IF9fYXR0cmlidXRlX18oKGFsaWduZWQoc2l6ZW9mKGxvbmcpKSkpOw0KPiAN
-Cj4gVGhlIHZhbHVlIG9mIF9fcmJfcGFyZW50X2NvbG9yIGlzIDAwMDAwMDAxMDAwMDAwMDEg
-YW5kIHRoZSBwYXJlbnQgYWRkcmVzcyBpcyAwMDAwMDAwMTAwMDAwMDAwLiBHZW5lcmFsbHks
-IHRoZSBwYXJlbnQNCj4gYWRkcmVzcyBzaG91bGQgYmUgTlVMTCBvciBhIHZhbGlkIGFkZHJl
-c3MuDQo+IA0KPiANCj4gSXMgdGhlcmUgYW55IGlkZWEgYWJvdXQgdGhpcyBpc3N1ZT8NCj4g
-DQo+IFRoYW5rcywNCj4gQ2hlbiBaaG91DQo+IA0KPiANCj4gDQo+IA0KPiANCg==
+Hello,
 
+syzbot found the following crash on:
+
+HEAD commit:    b2924447 Add linux-next specific files for 20190605
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=11c492d2a00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
+dashboard link: https://syzkaller.appspot.com/bug?extid=644dc16442b3a35f3629
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: increment on 0; use-after-free.
+WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156 refcount_inc_checked  
+lib/refcount.c:156 [inline]
+WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156  
+refcount_inc_checked+0x61/0x70 lib/refcount.c:154
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 4184 Comm: syz-executor.3 Not tainted 5.2.0-rc3-next-20190605 #9
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
+  panic+0x2cb/0x744 kernel/panic.c:219
+  __warn.cold+0x20/0x4d kernel/panic.c:576
+  report_bug+0x263/0x2b0 lib/bug.c:186
+  fixup_bug arch/x86/kernel/traps.c:179 [inline]
+  fixup_bug arch/x86/kernel/traps.c:174 [inline]
+  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
+  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
+  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
+RIP: 0010:refcount_inc_checked lib/refcount.c:156 [inline]
+RIP: 0010:refcount_inc_checked+0x61/0x70 lib/refcount.c:154
+Code: 1d db 0e 68 06 31 ff 89 de e8 1b c4 3b fe 84 db 75 dd e8 d2 c2 3b fe  
+48 c7 c7 e0 b6 c4 87 c6 05 bb 0e 68 06 01 e8 dd db 0d fe <0f> 0b eb c1 90  
+90 90 90 90 90 90 90 90 90 90 55 48 89 e5 41 57 41
+RSP: 0018:ffff8882000ef290 EFLAGS: 00010082
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815b04b6 RDI: ffffed104001de44
+RBP: ffff8882000ef2a0 R08: ffff8882035744c0 R09: ffffed1015d040f1
+R10: ffffed1015d040f0 R11: ffff8880ae820787 R12: ffff88804436a660
+R13: ffff8882000ef368 R14: ffff88804436a640 R15: 1ffff1104001de5d
+  css_task_iter_next+0xf9/0x190 kernel/cgroup/cgroup.c:4568
+  mem_cgroup_scan_tasks+0xbb/0x180 mm/memcontrol.c:1168
+  select_bad_process mm/oom_kill.c:374 [inline]
+  out_of_memory mm/oom_kill.c:1088 [inline]
+  out_of_memory+0x6b2/0x1280 mm/oom_kill.c:1035
+  mem_cgroup_out_of_memory+0x1ca/0x230 mm/memcontrol.c:1573
+  mem_cgroup_oom mm/memcontrol.c:1905 [inline]
+  try_charge+0xfbe/0x1480 mm/memcontrol.c:2468
+  mem_cgroup_try_charge+0x24d/0x5e0 mm/memcontrol.c:6073
+  __add_to_page_cache_locked+0x425/0xe70 mm/filemap.c:839
+  add_to_page_cache_lru+0x1cb/0x760 mm/filemap.c:916
+  pagecache_get_page+0x357/0x850 mm/filemap.c:1655
+  grab_cache_page_write_begin+0x75/0xb0 mm/filemap.c:3157
+  simple_write_begin+0x36/0x2c0 fs/libfs.c:438
+  generic_perform_write+0x22a/0x520 mm/filemap.c:3207
+  __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
+  generic_file_write_iter+0x360/0x610 mm/filemap.c:3368
+  call_write_iter include/linux/fs.h:1870 [inline]
+  new_sync_write+0x4d3/0x770 fs/read_write.c:483
+  __vfs_write+0xe1/0x110 fs/read_write.c:496
+  vfs_write+0x268/0x5d0 fs/read_write.c:558
+  ksys_write+0x14f/0x290 fs/read_write.c:611
+  __do_sys_write fs/read_write.c:623 [inline]
+  __se_sys_write fs/read_write.c:620 [inline]
+  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
+  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+RIP: 0033:0x459279
+Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
+48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
+ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007f9a334d9c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
+RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
+RDX: 0000000003d3427e RSI: 0000000020000180 RDI: 0000000000000004
+RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9a334da6d4
+R13: 00000000004c8ee8 R14: 00000000004dfbb0 R15: 00000000ffffffff
+Shutting down cpus with NMI
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
