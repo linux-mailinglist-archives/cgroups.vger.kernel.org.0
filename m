@@ -2,144 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF98636BAC
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2019 07:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B310636C18
+	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2019 08:15:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726538AbfFFFdH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 Jun 2019 01:33:07 -0400
-Received: from mail-it1-f198.google.com ([209.85.166.198]:58997 "EHLO
-        mail-it1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbfFFFdH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jun 2019 01:33:07 -0400
-Received: by mail-it1-f198.google.com with SMTP id l193so856750ita.8
-        for <cgroups@vger.kernel.org>; Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=W5FF42zVDo3trtwvrjbtAnVcsXKoMkINuTi+BPyFgek=;
-        b=EuXAZ95Y6OxfTppBFvms6gGIiOS8JTmJ4967mhysTWf9H3gj/Cpqw5U9d7dhHm/zJX
-         c3MSGFqFD9QaAgeQ1oWtH/s0UbbY/HIPS2XVFDr4RVGRrQjGpjLK5zRsgsoztCD3Bh0h
-         SB4JP/aNJ83gSFQ0SZHlK+CwGpjTcwO3q0U+lcsJY6KiGBEES7a5ncHzFcnQfTxW134O
-         tGwPdaxFeOYGB7OkApdHzJmFOLQjFAKlHSvIrJUeGieIo0MgMqVkaVyafm9cATKSjllI
-         eDZc3rFRfrMnK6RLY9o3s6zmibpQLMoGpCZ+iak5U6Ag7DCeiR/y17uBJoLxVmlLuMu2
-         jHgQ==
-X-Gm-Message-State: APjAAAUIIm96NiwS6pWNX7M/enpP7OHmtbz4YmyhOp6biyh6RuQLAdeF
-        csaISF+/zh2jpIVDMv4/Cm6Fa202tyw5rqAhfM12Tj4jWcft
-X-Google-Smtp-Source: APXvYqz9VSUc/8eq6b84tHBQ+U7qjz624v0EGp0dlfT+6ewmxPMDHxVvliMgENV/TnWGADV2fbh3yhNDyGIqQ+am2toYAWdTda+c
+        id S1725947AbfFFGPi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Jun 2019 02:15:38 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:33626 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725267AbfFFGPi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jun 2019 02:15:38 -0400
+Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5667a7c122227
+        for <cgroups@vger.kernel.org>; Thu, 6 Jun 2019 02:15:37 -0400
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2sxv7eaxs0-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Thu, 06 Jun 2019 02:15:36 -0400
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <cgroups@vger.kernel.org> from <rppt@linux.ibm.com>;
+        Thu, 6 Jun 2019 07:15:35 +0100
+Received: from b06avi18878370.portsmouth.uk.ibm.com (9.149.26.194)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 6 Jun 2019 07:15:30 +0100
+Received: from d06av24.portsmouth.uk.ibm.com (d06av24.portsmouth.uk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id x566FTuV17432996
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 Jun 2019 06:15:29 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 402574207B;
+        Thu,  6 Jun 2019 06:15:29 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id F234B4205E;
+        Thu,  6 Jun 2019 06:15:27 +0000 (GMT)
+Received: from rapoport-lnx (unknown [9.148.8.53])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Thu,  6 Jun 2019 06:15:27 +0000 (GMT)
+Date:   Thu, 6 Jun 2019 09:15:26 +0300
+From:   Mike Rapoport <rppt@linux.ibm.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, hannes@cmpxchg.org,
+        jiangshanlai@gmail.com, lizefan@huawei.com, bsd@redhat.com,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        juri.lelli@redhat.com, mhocko@kernel.org, peterz@infradead.org,
+        steven.sistare@oracle.com, tglx@linutronix.de,
+        tom.hromatka@oracle.com, vdavydov.dev@gmail.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC v2 0/5] cgroup-aware unbound workqueues
+References: <20190605133650.28545-1-daniel.m.jordan@oracle.com>
+ <20190605135319.GK374014@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-X-Received: by 2002:a05:660c:887:: with SMTP id o7mr5081314itk.159.1559799186165;
- Wed, 05 Jun 2019 22:33:06 -0700 (PDT)
-Date:   Wed, 05 Jun 2019 22:33:06 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006994aa058aa10cb8@google.com>
-Subject: WARNING: refcount bug in css_task_iter_next
-From:   syzbot <syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com>
-To:     ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, tj@kernel.org, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190605135319.GK374014@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-TM-AS-GCONF: 00
+x-cbid: 19060606-0020-0000-0000-00000346FEB7
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 19060606-0021-0000-0000-0000219A1108
+Message-Id: <20190606061525.GD23056@rapoport-lnx>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-06_05:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906060046
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi Tejun,
 
-syzbot found the following crash on:
+On Wed, Jun 05, 2019 at 06:53:19AM -0700, Tejun Heo wrote:
+> Hello, Daniel.
+> 
+> On Wed, Jun 05, 2019 at 09:36:45AM -0400, Daniel Jordan wrote:
+> > My use case for this work is kernel multithreading, the series formerly known
+> > as ktask[2] that I'm now trying to combine with padata according to feedback
+> > from the last post.  Helper threads in a multithreaded job may consume lots of
+> > resources that aren't properly accounted to the cgroup of the task that started
+> > the job.
+> 
+> Can you please go into more details on the use cases?
 
-HEAD commit:    b2924447 Add linux-next specific files for 20190605
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=11c492d2a00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4248d6bc70076f7d
-dashboard link: https://syzkaller.appspot.com/bug?extid=644dc16442b3a35f3629
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+If I remember correctly, the original Bandan's work was about using
+workqueues instead of kthreads in vhost. 
+ 
+> For memory and io, we're generally going for remote charging, where a
+> kthread explicitly says who the specific io or allocation is for,
+> combined with selective back-charging, where the resource is charged
+> and consumed unconditionally even if that would put the usage above
+> the current limits temporarily.  From what I've been seeing recently,
+> combination of the two give us really good control quality without
+> being too invasive across the stack.
+> 
+> CPU doesn't have a backcharging mechanism yet and depending on the use
+> case, we *might* need to put kthreads in different cgroups.  However,
+> such use cases might not be that abundant and there may be gotaches
+> which require them to be force-executed and back-charged (e.g. fs
+> compression from global reclaim).
+> 
+> Thanks.
+> 
+> -- 
+> tejun
+> 
 
-Unfortunately, I don't have any reproducer for this crash yet.
+-- 
+Sincerely yours,
+Mike.
 
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+644dc16442b3a35f3629@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-refcount_t: increment on 0; use-after-free.
-WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156 refcount_inc_checked  
-lib/refcount.c:156 [inline]
-WARNING: CPU: 0 PID: 4184 at lib/refcount.c:156  
-refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Kernel panic - not syncing: panic_on_warn set ...
-CPU: 0 PID: 4184 Comm: syz-executor.3 Not tainted 5.2.0-rc3-next-20190605 #9
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
-Google 01/01/2011
-Call Trace:
-  __dump_stack lib/dump_stack.c:77 [inline]
-  dump_stack+0x172/0x1f0 lib/dump_stack.c:113
-  panic+0x2cb/0x744 kernel/panic.c:219
-  __warn.cold+0x20/0x4d kernel/panic.c:576
-  report_bug+0x263/0x2b0 lib/bug.c:186
-  fixup_bug arch/x86/kernel/traps.c:179 [inline]
-  fixup_bug arch/x86/kernel/traps.c:174 [inline]
-  do_error_trap+0x11b/0x200 arch/x86/kernel/traps.c:272
-  do_invalid_op+0x37/0x50 arch/x86/kernel/traps.c:291
-  invalid_op+0x14/0x20 arch/x86/entry/entry_64.S:986
-RIP: 0010:refcount_inc_checked lib/refcount.c:156 [inline]
-RIP: 0010:refcount_inc_checked+0x61/0x70 lib/refcount.c:154
-Code: 1d db 0e 68 06 31 ff 89 de e8 1b c4 3b fe 84 db 75 dd e8 d2 c2 3b fe  
-48 c7 c7 e0 b6 c4 87 c6 05 bb 0e 68 06 01 e8 dd db 0d fe <0f> 0b eb c1 90  
-90 90 90 90 90 90 90 90 90 90 55 48 89 e5 41 57 41
-RSP: 0018:ffff8882000ef290 EFLAGS: 00010082
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815b04b6 RDI: ffffed104001de44
-RBP: ffff8882000ef2a0 R08: ffff8882035744c0 R09: ffffed1015d040f1
-R10: ffffed1015d040f0 R11: ffff8880ae820787 R12: ffff88804436a660
-R13: ffff8882000ef368 R14: ffff88804436a640 R15: 1ffff1104001de5d
-  css_task_iter_next+0xf9/0x190 kernel/cgroup/cgroup.c:4568
-  mem_cgroup_scan_tasks+0xbb/0x180 mm/memcontrol.c:1168
-  select_bad_process mm/oom_kill.c:374 [inline]
-  out_of_memory mm/oom_kill.c:1088 [inline]
-  out_of_memory+0x6b2/0x1280 mm/oom_kill.c:1035
-  mem_cgroup_out_of_memory+0x1ca/0x230 mm/memcontrol.c:1573
-  mem_cgroup_oom mm/memcontrol.c:1905 [inline]
-  try_charge+0xfbe/0x1480 mm/memcontrol.c:2468
-  mem_cgroup_try_charge+0x24d/0x5e0 mm/memcontrol.c:6073
-  __add_to_page_cache_locked+0x425/0xe70 mm/filemap.c:839
-  add_to_page_cache_lru+0x1cb/0x760 mm/filemap.c:916
-  pagecache_get_page+0x357/0x850 mm/filemap.c:1655
-  grab_cache_page_write_begin+0x75/0xb0 mm/filemap.c:3157
-  simple_write_begin+0x36/0x2c0 fs/libfs.c:438
-  generic_perform_write+0x22a/0x520 mm/filemap.c:3207
-  __generic_file_write_iter+0x25e/0x630 mm/filemap.c:3336
-  generic_file_write_iter+0x360/0x610 mm/filemap.c:3368
-  call_write_iter include/linux/fs.h:1870 [inline]
-  new_sync_write+0x4d3/0x770 fs/read_write.c:483
-  __vfs_write+0xe1/0x110 fs/read_write.c:496
-  vfs_write+0x268/0x5d0 fs/read_write.c:558
-  ksys_write+0x14f/0x290 fs/read_write.c:611
-  __do_sys_write fs/read_write.c:623 [inline]
-  __se_sys_write fs/read_write.c:620 [inline]
-  __x64_sys_write+0x73/0xb0 fs/read_write.c:620
-  do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x459279
-Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7  
-48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff  
-ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007f9a334d9c78 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000459279
-RDX: 0000000003d3427e RSI: 0000000020000180 RDI: 0000000000000004
-RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f9a334da6d4
-R13: 00000000004c8ee8 R14: 00000000004dfbb0 R15: 00000000ffffffff
-Shutting down cpus with NMI
-Kernel Offset: disabled
-Rebooting in 86400 seconds..
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
