@@ -2,154 +2,210 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C9437754
-	for <lists+cgroups@lfdr.de>; Thu,  6 Jun 2019 17:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BB73841E
+	for <lists+cgroups@lfdr.de>; Fri,  7 Jun 2019 08:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728565AbfFFPDH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 6 Jun 2019 11:03:07 -0400
-Received: from esa3.hgst.iphmx.com ([216.71.153.141]:3871 "EHLO
-        esa3.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727309AbfFFPDH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Jun 2019 11:03:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1559833387; x=1591369387;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=77O/NUdT38XGfrjDff5NjM8zU6sT8Poj32urvyyH9LQ=;
-  b=B/tcjmMrHZ5gmZeQQqjDoCI7K4JXDC9CoarbYmaOBsxzSvOjf7iwL9uq
-   0lZSY8Qu/Pf0UkACqzUiKRKNXU6Eg6F/nKns2sE2YDI1GaGSiVu2PVahB
-   Cb5FQE9PJhOaSQ8t23SsRXrnxAwUFTJEPayQo3aTwa3PL9V8juLvj3uWn
-   kC4/AfCgUr7qpEkCHUEfEe/FmpFMUstsdE52bkcOcHq6yPfHEIMixvtyA
-   1itwDyQ9eHcZ7CQE2kGWHaYvHHefYXQ2jVqEa01rIUGVKKrBTTb/Uk+e8
-   loOZJLjCZwhDCpUSN865Socvw1JQyWGjazU2tEZjBDJVjoK87jwNJ/ii8
-   g==;
-X-IronPort-AV: E=Sophos;i="5.63,559,1557158400"; 
-   d="scan'208";a="114906567"
-Received: from mail-co1nam04lp2053.outbound.protection.outlook.com (HELO NAM04-CO1-obe.outbound.protection.outlook.com) ([104.47.45.53])
-  by ob1.hgst.iphmx.com with ESMTP; 06 Jun 2019 23:03:06 +0800
+        id S1726970AbfFGGHy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 7 Jun 2019 02:07:54 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:36499 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725902AbfFGGHx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 7 Jun 2019 02:07:53 -0400
+Received: by mail-wm1-f65.google.com with SMTP id u8so668126wmm.1
+        for <cgroups@vger.kernel.org>; Thu, 06 Jun 2019 23:07:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Xq6dkQ6VWPE4D4SL5rvWUtzAf/9p6ITXPkC1UBHgNgU=;
- b=yhA3It6xG3t93OUc0A3zRwuR5cWTNMir7mYoH3YckjJh+9OvUP176bWe1KM+Z2O6Dxk4Sg+JWlDi5Hluz0qHnaSEw2XrELsqd71roJdphOlhQ5Ca1PT8cRTp30ZcL3+uQB/E78vHr1EfXLnCDnDZ1ma/O0vbYOFW+j4wuGCMECk=
-Received: from BYAPR04MB5749.namprd04.prod.outlook.com (20.179.58.26) by
- BYAPR04MB4984.namprd04.prod.outlook.com (52.135.233.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.1965.12; Thu, 6 Jun 2019 15:03:04 +0000
-Received: from BYAPR04MB5749.namprd04.prod.outlook.com
- ([fe80::ad42:af4b:a53b:80f5]) by BYAPR04MB5749.namprd04.prod.outlook.com
- ([fe80::ad42:af4b:a53b:80f5%4]) with mapi id 15.20.1965.011; Thu, 6 Jun 2019
- 15:03:04 +0000
-From:   Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Paolo Valente <paolo.valente@linaro.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/6] blk-cgroup: factor out a helper to read rwstat
- counter
-Thread-Topic: [PATCH 1/6] blk-cgroup: factor out a helper to read rwstat
- counter
-Thread-Index: AQHVHFJhZ4VKgpaKE06JKCLjPSf8gQ==
-Date:   Thu, 6 Jun 2019 15:03:04 +0000
-Message-ID: <BYAPR04MB5749DB3E6C0307980F32A80886170@BYAPR04MB5749.namprd04.prod.outlook.com>
+        d=linaro.org; s=google;
+        h=from:message-id:mime-version:subject:date:in-reply-to:cc:to
+         :references;
+        bh=6xJ4Zi0fEzF1tamGyEeDu2gwAQnQnxhNg41rFECCkME=;
+        b=j1kxod//g55v+aH9PBXXXCXwL4CPf5Z5ng1IQ85XBMkKZwUXVz5JzjKRrl3YV3MYHh
+         5QEo9EtbKVWSFhvsQtEQ2knHJfp8/9EMq86MrSnhNT4HwGUG3qGK8yv1go7PKxIHtv8Z
+         x5i7xnmgrN1ki+HZ7iA7v1Wph8U7c+hVnMbbx8KOCpC3fYGHojp59mY5/Aplw/ZA3Zxv
+         85hT6g0MPadKGjRjBGVtxFU2sZ1brlAS8opEUswBxGegwMLqGXA3xzu3FJkTNxuzsfBT
+         /Krk/5igaBPzGDw04EUyRZzCFNUIa8lEdQE8fzUlhyt1uPb2dsF2j9eWvylzbOPusXGo
+         ShGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :in-reply-to:cc:to:references;
+        bh=6xJ4Zi0fEzF1tamGyEeDu2gwAQnQnxhNg41rFECCkME=;
+        b=Ug9TlVu3GUSK6fEWeohmSw9+8e4X/2imkiWhkcxgJXKiBUXCc/LuGDMNmY8ni+9akB
+         DJk0WHvKC5WO2yT8wUvP3zlTCQvVNO/snkHNugJ/5MU0PadzJwdM6WANROsd9m3BGrUb
+         BdYY3lmuya0yH6nHVMZGCLhlzhWsPdunmZiA+n+MmSfNsE4kcSpee2SDTU++e/UvXtDv
+         xFdlvYTpms2NVoUJgqROiP4dofHztTGHEj7hCfb303sgqFirZ0W6vsGtMvDt4fdyGb2W
+         LyHUgPdCIqI9IvO5cV4fhFxp8W3se0rtSIKUTH3OOJcmkXUDOteWH4vVYJk+zP+krS0R
+         ZWvg==
+X-Gm-Message-State: APjAAAWCJeNkQxUkbozKQk7kvCjA4+SJlSZM3sS3D9HkxytRnfEs9V9m
+        CSZEQZKhHLwUpTwcsrRKU3aynQ==
+X-Google-Smtp-Source: APXvYqwISqB3DmYuwmFsvD/7tOs53RmwCC1Gt1bRtzf4ND71VN50Ybj8wEoqZJLBWqG9rrbs3alEZA==
+X-Received: by 2002:a1c:c2d5:: with SMTP id s204mr2338221wmf.174.1559887670872;
+        Thu, 06 Jun 2019 23:07:50 -0700 (PDT)
+Received: from [192.168.0.102] (88-147-34-172.dyn.eolo.it. [88.147.34.172])
+        by smtp.gmail.com with ESMTPSA id n7sm787465wrw.64.2019.06.06.23.07.49
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 Jun 2019 23:07:50 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+Message-Id: <3F21E6DF-2688-46A8-8A41-320BCBA86D05@linaro.org>
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_5E4D2C27-0D0A-4856-A512-45033AE94569";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: [PATCH 5/6] bfq-iosched: move bfq_stat_recursive_sum into the
+ only caller
+Date:   Fri, 7 Jun 2019 08:07:48 +0200
+In-Reply-To: <20190606102624.3847-6-hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+To:     Christoph Hellwig <hch@lst.de>
 References: <20190606102624.3847-1-hch@lst.de>
- <20190606102624.3847-2-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Chaitanya.Kulkarni@wdc.com; 
-x-originating-ip: [199.255.45.63]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 0b41e927-1bd2-4288-5dbb-08d6ea901382
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600148)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BYAPR04MB4984;
-x-ms-traffictypediagnostic: BYAPR04MB4984:
-wdcipoutbound: EOP-TRUE
-x-microsoft-antispam-prvs: <BYAPR04MB4984E92356A6DC8E28A02FA986170@BYAPR04MB4984.namprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:127;
-x-forefront-prvs: 00603B7EEF
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(136003)(376002)(396003)(39860400002)(346002)(199004)(189003)(446003)(74316002)(6436002)(71200400001)(14444005)(256004)(76116006)(66946007)(91956017)(66476007)(71190400001)(66556008)(64756008)(66446008)(73956011)(33656002)(186003)(9686003)(26005)(68736007)(6246003)(110136005)(54906003)(316002)(7696005)(478600001)(76176011)(53936002)(6116002)(3846002)(72206003)(25786009)(4326008)(81166006)(229853002)(99286004)(81156014)(52536014)(66066001)(8676002)(2906002)(5660300002)(102836004)(8936002)(86362001)(7736002)(305945005)(14454004)(486006)(55016002)(476003)(53546011)(6506007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR04MB4984;H:BYAPR04MB5749.namprd04.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: rkSE0LkJP/uFX7Z/nfNmizq2fPas7HyE1GHESkShk3l+58zJ+1aC3Hscf2dtq2DPRDVbSW8MEj+2kHh0/okuASugJzUNpLW6yiKO0ZtLKiEKXSYb1+TEz6TP1kIsE/uxGpQmf8YLziuuuyOoJ8aCKFc3zPwenMClymazTr0BmV3dZLLqdxVNmjef0MkJd8LTPrBau0ILo2YCObDuocwoq0oUSUn+E/Ja7DdRQFq7c8RSKeHZZdp5mjMizGOpguBFyUJa/Pni717TRPksCm/q1USD9yMS2UOVLPb3koQrewdEtoiZ/Ri0fpflNFCEwT7O0mldVOKLxufWpFsWVtPMHH0A0EqF6HAVfzpq47t5WnAXBWUEnK6jjorvDf+wkD/p/zp7GV15UIUWO1sxmZcO4vRmviBI4I1PDsrsjJD1+Bg=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
-MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0b41e927-1bd2-4288-5dbb-08d6ea901382
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jun 2019 15:03:04.1315
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: Chaitanya.Kulkarni@wdc.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR04MB4984
+ <20190606102624.3847-6-hch@lst.de>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Looks good to me.=0A=
-=0A=
-Reviewed-by: Chaitanya Kulkarni <chaitanya.kulkarni@wdc.com>=0A=
-=0A=
-On 06/06/2019 03:27 AM, Christoph Hellwig wrote:=0A=
-> Trying to break up the crazy statements to something readable.=0A=
-> Also switch to an unsigned counter as it can't ever turn negative.=0A=
->=0A=
-> Signed-off-by: Christoph Hellwig <hch@lst.de>=0A=
-> ---=0A=
->   block/blk-cgroup.c         | 5 ++---=0A=
->   include/linux/blk-cgroup.h | 7 +++++++=0A=
->   2 files changed, 9 insertions(+), 3 deletions(-)=0A=
->=0A=
-> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c=0A=
-> index b97b479e4f64..6f79ace02be4 100644=0A=
-> --- a/block/blk-cgroup.c=0A=
-> +++ b/block/blk-cgroup.c=0A=
-> @@ -750,7 +750,7 @@ struct blkg_rwstat blkg_rwstat_recursive_sum(struct b=
-lkcg_gq *blkg,=0A=
->   	struct blkcg_gq *pos_blkg;=0A=
->   	struct cgroup_subsys_state *pos_css;=0A=
->   	struct blkg_rwstat sum =3D { };=0A=
-> -	int i;=0A=
-> +	unsigned int i;=0A=
->=0A=
->   	lockdep_assert_held(&blkg->q->queue_lock);=0A=
->=0A=
-> @@ -767,8 +767,7 @@ struct blkg_rwstat blkg_rwstat_recursive_sum(struct b=
-lkcg_gq *blkg,=0A=
->   			rwstat =3D (void *)pos_blkg + off;=0A=
->=0A=
->   		for (i =3D 0; i < BLKG_RWSTAT_NR; i++)=0A=
-> -			atomic64_add(atomic64_read(&rwstat->aux_cnt[i]) +=0A=
-> -				percpu_counter_sum_positive(&rwstat->cpu_cnt[i]),=0A=
-> +			atomic64_add(blkg_rwstat_read_counter(rwstat, i),=0A=
->   				&sum.aux_cnt[i]);=0A=
->   	}=0A=
->   	rcu_read_unlock();=0A=
-> diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h=0A=
-> index 76c61318fda5..06236f56a840 100644=0A=
-> --- a/include/linux/blk-cgroup.h=0A=
-> +++ b/include/linux/blk-cgroup.h=0A=
-> @@ -198,6 +198,13 @@ int blkcg_activate_policy(struct request_queue *q,=
-=0A=
->   void blkcg_deactivate_policy(struct request_queue *q,=0A=
->   			     const struct blkcg_policy *pol);=0A=
->=0A=
-> +static inline u64 blkg_rwstat_read_counter(struct blkg_rwstat *rwstat,=
-=0A=
-> +		unsigned int idx)=0A=
-> +{=0A=
-> +	return atomic64_read(&rwstat->aux_cnt[idx]) +=0A=
-> +		percpu_counter_sum_positive(&rwstat->cpu_cnt[idx]);=0A=
-> +}=0A=
-> +=0A=
->   const char *blkg_dev_name(struct blkcg_gq *blkg);=0A=
->   void blkcg_print_blkgs(struct seq_file *sf, struct blkcg *blkcg,=0A=
->   		       u64 (*prfill)(struct seq_file *,=0A=
->=0A=
-=0A=
+
+--Apple-Mail=_5E4D2C27-0D0A-4856-A512-45033AE94569
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+> Il giorno 6 giu 2019, alle ore 12:26, Christoph Hellwig <hch@lst.de> =
+ha scritto:
+>=20
+> This function was moved from core block code and is way to generic.
+> Fold it into the only caller and simplify it based on the actually
+> passed arguments.
+>=20
+
+Acked-by: Paolo Valente <paolo.valente@linaro.org>
+
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+> block/bfq-cgroup.c | 62 ++++++++++++++--------------------------------
+> 1 file changed, 19 insertions(+), 43 deletions(-)
+>=20
+> diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+> index a691dca7e966..d84302445e30 100644
+> --- a/block/bfq-cgroup.c
+> +++ b/block/bfq-cgroup.c
+> @@ -80,47 +80,6 @@ static inline void bfq_stat_add_aux(struct bfq_stat =
+*to,
+> 		     &to->aux_cnt);
+> }
+>=20
+> -/**
+> - * bfq_stat_recursive_sum - collect hierarchical bfq_stat
+> - * @blkg: blkg of interest
+> - * @pol: blkcg_policy which contains the bfq_stat
+> - * @off: offset to the bfq_stat in blkg_policy_data or @blkg
+> - *
+> - * Collect the bfq_stat specified by @blkg, @pol and @off and all its
+> - * online descendants and their aux counts.  The caller must be =
+holding the
+> - * queue lock for online tests.
+> - *
+> - * If @pol is NULL, bfq_stat is at @off bytes into @blkg; otherwise, =
+it is
+> - * at @off bytes into @blkg's blkg_policy_data of the policy.
+> - */
+> -static u64 bfq_stat_recursive_sum(struct blkcg_gq *blkg,
+> -			    struct blkcg_policy *pol, int off)
+> -{
+> -	struct blkcg_gq *pos_blkg;
+> -	struct cgroup_subsys_state *pos_css;
+> -	u64 sum =3D 0;
+> -
+> -	lockdep_assert_held(&blkg->q->queue_lock);
+> -
+> -	rcu_read_lock();
+> -	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
+> -		struct bfq_stat *stat;
+> -
+> -		if (!pos_blkg->online)
+> -			continue;
+> -
+> -		if (pol)
+> -			stat =3D (void *)blkg_to_pd(pos_blkg, pol) + =
+off;
+> -		else
+> -			stat =3D (void *)blkg + off;
+> -
+> -		sum +=3D bfq_stat_read(stat) + =
+atomic64_read(&stat->aux_cnt);
+> -	}
+> -	rcu_read_unlock();
+> -
+> -	return sum;
+> -}
+> -
+> /**
+>  * blkg_prfill_stat - prfill callback for bfq_stat
+>  * @sf: seq_file to print to
+> @@ -1045,8 +1004,25 @@ static int bfqg_print_rwstat(struct seq_file =
+*sf, void *v)
+> static u64 bfqg_prfill_stat_recursive(struct seq_file *sf,
+> 				      struct blkg_policy_data *pd, int =
+off)
+> {
+> -	u64 sum =3D bfq_stat_recursive_sum(pd_to_blkg(pd),
+> -					  &blkcg_policy_bfq, off);
+> +	struct blkcg_gq *blkg =3D pd_to_blkg(pd);
+> +	struct blkcg_gq *pos_blkg;
+> +	struct cgroup_subsys_state *pos_css;
+> +	u64 sum =3D 0;
+> +
+> +	lockdep_assert_held(&blkg->q->queue_lock);
+> +
+> +	rcu_read_lock();
+> +	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
+> +		struct bfq_stat *stat;
+> +
+> +		if (!pos_blkg->online)
+> +			continue;
+> +
+> +		stat =3D (void *)blkg_to_pd(pos_blkg, &blkcg_policy_bfq) =
++ off;
+> +		sum +=3D bfq_stat_read(stat) + =
+atomic64_read(&stat->aux_cnt);
+> +	}
+> +	rcu_read_unlock();
+> +
+> 	return __blkg_prfill_u64(sf, pd, sum);
+> }
+>=20
+> --
+> 2.20.1
+>=20
+
+
+--Apple-Mail=_5E4D2C27-0D0A-4856-A512-45033AE94569
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEpYoduex+OneZyvO8OAkCLQGo9oMFAlz5/zQACgkQOAkCLQGo
+9oMJ1g//Uq6rihqfY8N/SIZ5zFCHuk8eizqXtFV4p1MKbm84R2YUTOZWifce95vW
+5R5XVD7mRQ2h4hzwDW1r7aE+reoCCAlCIGqXITUpT/e2PpUvRmY+6Wcs6Vwcd9vR
+GfZjKIGqydgbxRfdBho352yUN+/QYJxR+XSkwVLzNQVKKuuzbGQFh3kafY/mjE1b
+m1WoyOmUgjve+ui4TGyU5M3Mn3aRCSzoYWzIj1QyOqjgaFp9FFkFKGv46fu2C2zP
+SGYbSvn+WuLxBhh+Wh8A0gDREuV7MyPyOVCZMA8VN7fCBykrCT6d6TKjTmc20WuY
+7mT6MNFF0mom6dIX2spjTL0rnAdgKkRInwaI5RJm1fQXVVPZTm4hArKfK0Yl/68D
+BM1kqYh2T8OLEiTQLCL5IRX844El11g/btmlNLlhBPeUeNkERe6CucSX0++UllA6
+TREKdlmE1Jy/8uZKgCEgJpAOB8mCnU+MxrpXSGrY+V/iBtZt12R5M8nXLmWgiJ1p
+xXPyvE5JMYg6xgAMTBO9mnBsTALF11WRQl9PVWdmOxWUFiZhRgzdp3zgpoaFAFjW
+YAOxsLp2LY7iz7TT9KGoE/uN6rArHIVYnMTuzWfCv547wnwQXlYXaJBSSqKxEoj/
+5P52zzCamgtxlKahQHQ/JJQcvRloGKFgZNm2N5igas9duc07e+o=
+=25My
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_5E4D2C27-0D0A-4856-A512-45033AE94569--
