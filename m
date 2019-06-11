@@ -2,103 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B96723D5F4
-	for <lists+cgroups@lfdr.de>; Tue, 11 Jun 2019 20:57:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01AB3D644
+	for <lists+cgroups@lfdr.de>; Tue, 11 Jun 2019 21:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404753AbfFKS5w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Jun 2019 14:57:52 -0400
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:44066 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404245AbfFKS5w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jun 2019 14:57:52 -0400
-Received: by mail-pg1-f194.google.com with SMTP id n2so7456290pgp.11
-        for <cgroups@vger.kernel.org>; Tue, 11 Jun 2019 11:57:52 -0700 (PDT)
+        id S2392572AbfFKTDi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Jun 2019 15:03:38 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:44563 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392561AbfFKTDh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Jun 2019 15:03:37 -0400
+Received: by mail-pf1-f196.google.com with SMTP id t16so7999645pfe.11;
+        Tue, 11 Jun 2019 12:03:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=PvZOO6SlbBl6sW8KnxeVjLzBojASciU8drnfnIurJCc=;
-        b=SwFC4U/Zp8tFk3Tqh/SCVKLFThHBrcmG2nZWPUrPjPkegyO8eUtkmAdbmYGJDPb+69
-         hALVV6ry/jph3KSWS3xE3IUE5jWcUqWrf3B2FvHdz8qAjFWeNdHn8YowWRxFH1Kc2rHp
-         mslUfK3BICyRbSHn8GbZHLu84BITnyU6GdgkTEWKtR/3r51Bm1i23ZiYybqNZZngvDHn
-         XdlZcpe/Pd0l6AVAzU5HqNR3ilieoV4Othd8IV1c6Szhrj1OySxkFmBdmRa4EfShq772
-         q3lM5JH1PnwHSB8sPVIP+M/JvarQdfUiXildWCqOyCmRGQ2vUwn4hZluKS8uqNeaYVrL
-         iLoA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=TINH5Zv9sdfI5yGkKfukd7zEs5gc5SFmFE6Rm33jogw=;
+        b=sTbvzg1IBs2bb8cjreY5cBasSaH+2pFI5pjQ35wagL+18kPnXLznCC9TyL/tH+M4hP
+         q8EzAGJHmuFs3cTKR1D9zefrPRRKJAU8/AOrhIRoejq49CWhnsGswe/IoyW+3pLcVrZA
+         idoBHD6D/SGQjCHVkxMcAuSa0qZ0UYf6PuryCCl6KxGiUpZO9zLoZB/vD1r7/EDrA+xH
+         AVkmXuIzCTP0+FrXVOmES1ohd6KLAjLFxCArXYNa/4QqLSZCec9i31IIvqj3lneR3rck
+         uR0BMYPVVBv3BGDTkrSUVMI/X2O/9KCPcGFl11pf9di+5Ug8qf/qOIO7Nn2RveaTofno
+         9dig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=PvZOO6SlbBl6sW8KnxeVjLzBojASciU8drnfnIurJCc=;
-        b=dSx0nZixDuz88iLxp4MwAphryJfHPWW7I8nThARDbRmtU/2K3Jzb6PtguBkVtK+c5N
-         GyV1Yp6ju9C/AINY+k3NAZlhXVK+/QwgOSgBTZ7koEeO6jOgqtDWjWspizUID9wmMqBF
-         6204MadpnufausIQpuQPoVadeeCY9msNvv7xNmvy1y4Waq4uE9LEJlNefHb7jNPUDVw1
-         SyUl+650q+gpusmNg24uIPy8IOeMxvG0icVDiaePNMYmDp92rgULTQVJbKQcYEZamc9i
-         TJOPt80M1RxO9Ko5CZCG/XcoYpwGQEVGlsU3vss3BectmMkiMbg7+r0QC3LorQHqb5wN
-         EuBA==
-X-Gm-Message-State: APjAAAUaS/ow16JGK4fL432XydejBaBhDLzLMkIjiBKwDXaWDrixa+Yd
-        Uxh7BruIEtaqnuoCs/+w+hY=
-X-Google-Smtp-Source: APXvYqy/5+dVXalJDmH9t6CoJcAC6PcnQaBGODeQYN4PZ3BdjshoMX7bNLjCpoy219xGzDsx4GRPig==
-X-Received: by 2002:a65:4086:: with SMTP id t6mr20974572pgp.155.1560279471703;
-        Tue, 11 Jun 2019 11:57:51 -0700 (PDT)
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=TINH5Zv9sdfI5yGkKfukd7zEs5gc5SFmFE6Rm33jogw=;
+        b=kJdY8QEZIURUZo4HI1IMAJ31YHhLhQOT0JyIu/z4oYMmnbIh1Ilp/5D9gBJ2+bbLqB
+         5Q22m9UZxg/2wjx18KoAlemA0HzDVaq3nVT+9VyDgdSYq1SK5N7ebdKeg+Rt1lMZzobi
+         hGcB+RMX6DktW7sarEbF71v5XQAxCVDAH8yz5fQK69APpzVbgkbK/ZA1O6BNM9zoRs6+
+         0hcoCcEr1vSsYC71cLuW5tIRcPV5oDbmICNsHFaZ0bez9YuMImM5ODYQz4uKJyzSb+ag
+         r5jSLR6nG3BjIJuDbVMpdpvVAzkhAyUntQu9wtLj+V1Fh3ZBp5SWZ7sANUrMk91gklD7
+         gzrA==
+X-Gm-Message-State: APjAAAVS0gNjm+B+VuYHMOfqp2tgCNkDmwHjfOTQ+qEzcxJQyzMSOBVO
+        WBXvuDv6lyEDMAXDFqdXWXg=
+X-Google-Smtp-Source: APXvYqyurkJYg+ONU24NoQH+aOpKIHaCcBkqNsSi7eK6I99H2KHZq5aZwOzTKoSX9JiYUzkROPsUWw==
+X-Received: by 2002:a62:6d47:: with SMTP id i68mr82880905pfc.189.1560279816496;
+        Tue, 11 Jun 2019 12:03:36 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::2:1677])
-        by smtp.gmail.com with ESMTPSA id o13sm23016pje.28.2019.06.11.11.57.50
+        by smtp.gmail.com with ESMTPSA id y22sm12843821pgj.38.2019.06.11.12.03.35
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 11 Jun 2019 11:57:50 -0700 (PDT)
-Date:   Tue, 11 Jun 2019 11:57:42 -0700
+        Tue, 11 Jun 2019 12:03:35 -0700 (PDT)
+Date:   Tue, 11 Jun 2019 12:03:32 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
-        security@debian.org, security@kernel.org,
-        Lennart Poettering <lennart@poettering.net>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>
-Subject: Re: [PATCH 3/3 cgroup/for-5.2-fixes] cgroup: Include dying leaders
- with live threads in PROCS iterations
-Message-ID: <20190611185742.GH3341036@devbig004.ftw2.facebook.com>
-References: <87blznagrl.fsf@xmission.com>
- <1956727d-1ee8-92af-1e00-66ae4921b075@gmail.com>
- <87zhn6923n.fsf@xmission.com>
- <e407a8e7-7780-f08f-320a-a0f2c954d253@gmail.com>
- <20190529003601.GN374014@devbig004.ftw2.facebook.com>
- <e45d974b-5eff-f781-291f-ddf5e9679e4c@gmail.com>
- <20190530183556.GR374014@devbig004.ftw2.facebook.com>
- <20190530183637.GS374014@devbig004.ftw2.facebook.com>
- <20190530183700.GT374014@devbig004.ftw2.facebook.com>
- <20190607170952.GE30727@blackbody.suse.cz>
+To:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        Jens Axboe <axboe@kernel.dk>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH v3 05/33] docs: cgroup-v1: convert docs to ReST and
+ rename to *.rst
+Message-ID: <20190611190332.GI3341036@devbig004.ftw2.facebook.com>
+References: <cover.1560045490.git.mchehab+samsung@kernel.org>
+ <79865a4248ce5b042106e5ec69bb493292a8d392.1560045490.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20190607170952.GE30727@blackbody.suse.cz>
+In-Reply-To: <79865a4248ce5b042106e5ec69bb493292a8d392.1560045490.git.mchehab+samsung@kernel.org>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Michal.
+On Sat, Jun 08, 2019 at 11:26:55PM -0300, Mauro Carvalho Chehab wrote:
+> Convert the cgroup-v1 files to ReST format, in order to
+> allow a later addition to the admin-guide.
+> 
+> The conversion is actually:
+>   - add blank lines and identation in order to identify paragraphs;
+>   - fix tables markups;
+>   - add some lists markups;
+>   - mark literal blocks;
+>   - adjust title markups.
+> 
+> At its new index.rst, let's add a :orphan: while this is not linked to
+> the main index.rst file, in order to avoid build warnings.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
 
-On Fri, Jun 07, 2019 at 07:09:53PM +0200, Michal Koutný wrote:
-> Wouldn't it make more sense to call
-> 	css_set_move_task(tsk, cset, NULL, false);
-> in cgroup_release instead of cgroup_exit then?
->
-> css_set_move_task triggers the cgroup emptiness notification so if we
-> list group leaders with running siblings as members of the cgroup (IMO
-> correct), is it consistent to deliver the (un)populated event
-> that early?
-> By moving to cgroup_release we would also make this notification
-> analogous to SIGCHLD delivery.
+Acked-by: Tejun Heo <tj@kernel.org>
 
-So, the current behavior is mostly historical and I don't think this
-is a better behavior.  That said, I'm not sure about the cost benefit
-ratio of changing the behavior at this point given how long the code
-has been this way.  Another aspect is that it'd expose zombie tasks
-and possibly migrations of them to each controller.
+Please feel free to route with the rest of the series.  If you want
+the patch to be routed through the cgroup tree, please let me know.
 
 Thanks.
 
