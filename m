@@ -2,136 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A5E243051
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jun 2019 21:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1153448B7
+	for <lists+cgroups@lfdr.de>; Thu, 13 Jun 2019 19:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbfFLThA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jun 2019 15:37:00 -0400
-Received: from outgoing-stata.csail.mit.edu ([128.30.2.210]:49613 "EHLO
-        outgoing-stata.csail.mit.edu" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727496AbfFLThA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jun 2019 15:37:00 -0400
-Received: from [4.30.142.84] (helo=srivatsab-a01.vmware.com)
-        by outgoing-stata.csail.mit.edu with esmtpsa (TLS1.2:RSA_AES_128_CBC_SHA1:128)
-        (Exim 4.82)
-        (envelope-from <srivatsa@csail.mit.edu>)
-        id 1hb93J-000Cx6-6M; Wed, 12 Jun 2019 15:36:57 -0400
-Subject: Re: CFQ idling kills I/O performance on ext4 with blkio cgroup
- controller
-To:     Jan Kara <jack@suse.cz>
-Cc:     Paolo Valente <paolo.valente@linaro.org>,
-        linux-fsdevel@vger.kernel.org,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-ext4@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jeff Moyer <jmoyer@redhat.com>,
-        Theodore Ts'o <tytso@mit.edu>, amakhalov@vmware.com,
-        anishs@vmware.com, srivatsab@vmware.com,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Stable <stable@vger.kernel.org>
-References: <6FE0A98F-1E3D-4EF6-8B38-2C85741924A4@linaro.org>
- <2A58C239-EF3F-422B-8D87-E7A3B500C57C@linaro.org>
- <a04368ba-f1d5-8f2c-1279-a685a137d024@csail.mit.edu>
- <E270AD92-943E-4529-8158-AB480D6D9DF8@linaro.org>
- <5b71028c-72f0-73dd-0cd5-f28ff298a0a3@csail.mit.edu>
- <FFA44D26-75FF-4A8E-A331-495349BE5FFC@linaro.org>
- <0d6e3c02-1952-2177-02d7-10ebeb133940@csail.mit.edu>
- <7B74A790-BD98-412B-ADAB-3B513FB1944E@linaro.org>
- <6a6f4aa4-fc95-f132-55b2-224ff52bd2d8@csail.mit.edu>
- <7c5e9d11-4a3d-7df4-c1e6-7c95919522ab@csail.mit.edu>
- <20190612130446.GD14578@quack2.suse.cz>
-From:   "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Message-ID: <dd32ed59-a543-fc76-9a9a-2462f0119270@csail.mit.edu>
-Date:   Wed, 12 Jun 2019 12:36:53 -0700
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S1729283AbfFMRKy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jun 2019 13:10:54 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:38324 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729204AbfFLWdJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jun 2019 18:33:09 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5CMTs85064050;
+        Wed, 12 Jun 2019 22:31:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2018-07-02;
+ bh=SOIVm550t2juiTj4vnRQ5BaJ/KWVoCF7DZnOrZI0vno=;
+ b=lhk5qU4z4GwfZqTKR5mbk79cDQzaoJ563ewToos4HaKC4mOW42ZuJj4rIKQuuXEL39VM
+ tp4ZtszcjEpWB2WzalUsZvkf7EoQ4QcnxIQ2Qft1s6ZYSRtjhbym4uydGIVYMvhQvAHw
+ fRHwYoG8GoVcSmHkzJ6QvWx2AS/Jpc3PwZV8EssJZG84yCzFBaQYH11ADbuo9e/H9WzV
+ gBEoPFk2imAOKNWZH8Ol5/pQ2PTjvdP/f1tgifVJKX2HZGYVJYPuqPyaHLVwju+kvqVN
+ 3IYSt5eHrO4z++6UFpnrsjBUDs0k5Ev4rGF32Mx66rhmqD9/GhvxdpAvARzyeKXqVnkG 1A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 2t04etx9bj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 22:31:48 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5CMSCmx113818;
+        Wed, 12 Jun 2019 22:29:47 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2t0p9s3x41-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 12 Jun 2019 22:29:47 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x5CMTW3r019311;
+        Wed, 12 Jun 2019 22:29:39 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 12 Jun 2019 15:29:32 -0700
+Date:   Wed, 12 Jun 2019 18:29:34 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>, hannes@cmpxchg.org,
+        jiangshanlai@gmail.com, lizefan@huawei.com, bsd@redhat.com,
+        dan.j.williams@intel.com, dave.hansen@intel.com,
+        juri.lelli@redhat.com, mhocko@kernel.org, peterz@infradead.org,
+        steven.sistare@oracle.com, tglx@linutronix.de,
+        tom.hromatka@oracle.com, vdavydov.dev@gmail.com,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, shakeelb@google.com
+Subject: Re: [RFC v2 0/5] cgroup-aware unbound workqueues
+Message-ID: <20190612222934.y74wxy3aju6eqs4r@ca-dmjordan1.us.oracle.com>
+References: <20190605133650.28545-1-daniel.m.jordan@oracle.com>
+ <20190605135319.GK374014@devbig004.ftw2.facebook.com>
+ <20190605153229.nvxr6j7tdzffwkgj@ca-dmjordan1.us.oracle.com>
+ <20190611195549.GL3341036@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20190612130446.GD14578@quack2.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190611195549.GL3341036@devbig004.ftw2.facebook.com>
+User-Agent: NeoMutt/20180323-268-5a959c
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906120157
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9286 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906120157
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-[ Adding Greg to CC ]
-
-On 6/12/19 6:04 AM, Jan Kara wrote:
-> On Tue 11-06-19 15:34:48, Srivatsa S. Bhat wrote:
->> On 6/2/19 12:04 AM, Srivatsa S. Bhat wrote:
->>> On 5/30/19 3:45 AM, Paolo Valente wrote:
->>>>
->> [...]
->>>> At any rate, since you pointed out that you are interested in
->>>> out-of-the-box performance, let me complete the context: in case
->>>> low_latency is left set, one gets, in return for this 12% loss,
->>>> a) at least 1000% higher responsiveness, e.g., 1000% lower start-up
->>>> times of applications under load [1];
->>>> b) 500-1000% higher throughput in multi-client server workloads, as I
->>>> already pointed out [2].
->>>>
->>>
->>> I'm very happy that you could solve the problem without having to
->>> compromise on any of the performance characteristics/features of BFQ!
->>>
->>>
->>>> I'm going to prepare complete patches.  In addition, if ok for you,
->>>> I'll report these results on the bug you created.  Then I guess we can
->>>> close it.
->>>>
->>>
->>> Sounds great!
->>>
->>
->> Hi Paolo,
->>
->> Hope you are doing great!
->>
->> I was wondering if you got a chance to post these patches to LKML for
->> review and inclusion... (No hurry, of course!)
->>
->> Also, since your fixes address the performance issues in BFQ, do you
->> have any thoughts on whether they can be adapted to CFQ as well, to
->> benefit the older stable kernels that still support CFQ?
+On Tue, Jun 11, 2019 at 12:55:49PM -0700, Tejun Heo wrote:
+> > > CPU doesn't have a backcharging mechanism yet and depending on the use
+> > > case, we *might* need to put kthreads in different cgroups.  However,
+> > > such use cases might not be that abundant and there may be gotaches
+> > > which require them to be force-executed and back-charged (e.g. fs
+> > > compression from global reclaim).
+> > 
+> > The CPU-intensiveness of these works is one of the reasons for actually putting
+> > the workers through the migration path.  I don't know of a way to get the
+> > workers to respect the cpu controller (and even cpuset for that matter) without
+> > doing that.
 > 
-> Since CFQ doesn't exist in current upstream kernel anymore, I seriously
-> doubt you'll be able to get any performance improvements for it in the
-> stable kernels...
-> 
+> So, I still think it'd likely be better to go back-charging route than
+> actually putting kworkers in non-root cgroups.  That's gonna be way
+> cheaper, simpler and makes avoiding inadvertent priority inversions
+> trivial.
 
-I suspected as much, but that seems unfortunate though. The latest LTS
-kernel is based on 4.19, which still supports CFQ. It would have been
-great to have a process to address significant issues on older
-kernels too.
+Ok, I'll experiment with backcharging in the cpu controller.  Initial plan is
+to smooth out resource usage by backcharging after each chunk of work that each
+helper thread does rather than do one giant backcharge after the multithreaded
+job is over.  May turn out better performance-wise to do it less often than
+this.
 
-Greg, do you have any thoughts on this? The context is that both CFQ
-and BFQ I/O schedulers have issues that cause I/O throughput to suffer
-upto 10x - 30x on certain workloads and system configurations, as
-reported in [1].
+I'll also experiment with getting workqueue workers to respect cpuset without
+migrating.  Seems to make sense to use the intersection of an unbound worker's
+cpumask and the cpuset's cpumask, and make some compromises if the result is
+empty.
 
-In this thread, Paolo posted patches to fix BFQ performance on
-mainline. However CFQ suffers from the same performance collapse, but
-CFQ was removed from the kernel in v5.0. So obviously the usual stable
-backporting path won't work here for several reasons:
-
-  1. There won't be a mainline commit to backport from, as CFQ no
-     longer exists in mainline.
-
-  2. This is not a security/stability fix, and is likely to involve
-     invasive changes.
-
-I was wondering if there was a way to address the performance issues
-in CFQ in the older stable kernels (including the latest LTS 4.19),
-despite the above constraints, since the performance drop is much too
-significant. I guess not, but thought I'd ask :-)
-
-[1]. https://lore.kernel.org/lkml/8d72fcf7-bbb4-2965-1a06-e9fc177a8938@csail.mit.edu/ 
-
-
-Regards,
-Srivatsa
-VMware Photon OS
+Daniel
