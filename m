@@ -2,74 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A621942DAB
-	for <lists+cgroups@lfdr.de>; Wed, 12 Jun 2019 19:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D63A42E43
+	for <lists+cgroups@lfdr.de>; Wed, 12 Jun 2019 20:02:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725878AbfFLRqb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Jun 2019 13:46:31 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:40134 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725807AbfFLRqb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jun 2019 13:46:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=s/cPizosD0yo9hCc0bnbtGXeZtAcZupgNDhvNsY19l8=; b=WwCSS6HPwhqRa8GP/pqPBaFzP
-        GrvimiXjmrb2Lac/YuJURT5NEkTZ03tllxmZf4raxtLhj8xRzZpA1nyAi20YMkh9UtzIOSXqUwbaD
-        0BR7cC+o/zli58tv/fpRUXm2OVrbUwH/FYsmRNVzEpFcvERHHW2fDKvlb4bDkK0wlj0y0NUsd2qVZ
-        3JysHIJo4FFUfwPT8LTOXD+nG0luamwCYvjGn/kNL2+UTt0EWdKWBa4wSQAWIfqjKIpjtwNr2Lh14
-        88uqNEqXa1LNnW3eOP8p1dtHsQPLQ6Z3uJitSTklS2//XqtOvvjlDNUBvXXktfJT1Emo53PWq2got
-        rHLTovsbA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hb7KI-0000Om-U3; Wed, 12 Jun 2019 17:46:23 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0A68B209B9C09; Wed, 12 Jun 2019 19:39:31 +0200 (CEST)
-Date:   Wed, 12 Jun 2019 19:39:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Joel Savitz <jsavitz@redhat.com>, linux-kernel@vger.kernel.org,
-        Li Zefan <lizefan@huawei.com>, Phil Auld <pauld@redhat.com>,
-        Waiman Long <longman@redhat.com>,
+        id S1727566AbfFLSCk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Jun 2019 14:02:40 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:37729 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728040AbfFLSCk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Jun 2019 14:02:40 -0400
+Received: by mail-pf1-f195.google.com with SMTP id 19so9289535pfa.4;
+        Wed, 12 Jun 2019 11:02:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5+frD1W0PaRHYVfg7bRlg/bAjJXsZpY3XnMe0SfDiS8=;
+        b=DPUHU1je3wTkpwlmd4MDNQvT6dUdwrfcgO9977+0I6QZnpSQ06GQLLwWKQDu8JQL4e
+         A0s6M+ym0+M2+9lOyg+uLIrUhDvUczKtO7PPnpDIuDx6v1EjhQlNbLMifAD7wHFAjOEz
+         SFXRSfsnlETmOJAxvMO7pxUVw8jsxiGVvps9/8pjqDShlbA7FHSvsdbq7m76wH5eV/O4
+         6ANvVXTPseOZh3bv4kS9RMlv6PAddZOy135SEKfAITFTRQUBhrZeexigSL9EMMPI5KAW
+         i5rZwS18NdwBeTZkhL+ZXrYsTmp6PkS4RxsEhYKDrRm6mC5ZD2TGpxTUnjDwgDytUWJM
+         9LKA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5+frD1W0PaRHYVfg7bRlg/bAjJXsZpY3XnMe0SfDiS8=;
+        b=r3HySzIMTlMRq7SYaenjrcl4baVOZSzLa4nqvWLn3P+NEgLXHE0shFnzzL1va6XPso
+         MRwGWRD5Jga5nkvlzsxq9XI0z3buMH9rEUMbFQPN+1O55S3oJJ710hiS9mGLbldHVIcW
+         MM9GwwMEDe1iTjpRGC+0FGCj/+oiEBO2uX85g+QMcn3Ww8kcLB8SjquTESex1aX3qQqe
+         MoY2/J+drkOIC0ySAoN/cWIGg8FYZq91M4PQ1BcfykwCHWYD9FaKAsdcouhx6LwPPE2p
+         N5GuJecAihUDS/jE6ADf6TaA/JFWyHQUATFR2HmegKwxiXrj4iPxh15s0TvWLI4LEIO5
+         pR/Q==
+X-Gm-Message-State: APjAAAXHKem/xVGREo5RDnMU50Ipy1xcTIc0XbdgPL3tEnNTvKsjwyqP
+        kZ64TOD/9DxMQQEAB3Ks1CE=
+X-Google-Smtp-Source: APXvYqwae3ax93KZBruArMl2KQTDH37C9xXhwO6pqxhbJI70VmY7WfvIA2jEavLoCOMpZlxYqYsIWQ==
+X-Received: by 2002:a17:90a:718c:: with SMTP id i12mr502752pjk.32.1560362559537;
+        Wed, 12 Jun 2019 11:02:39 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::c431])
+        by smtp.gmail.com with ESMTPSA id s5sm127486pji.9.2019.06.12.11.02.38
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 12 Jun 2019 11:02:38 -0700 (PDT)
+Date:   Wed, 12 Jun 2019 11:02:36 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Joel Savitz <jsavitz@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Phil Auld <pauld@redhat.com>, Waiman Long <longman@redhat.com>,
         Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org
 Subject: Re: [RESEND PATCH v3] cpuset: restore sanity to
  cpuset_cpus_allowed_fallback()
-Message-ID: <20190612173930.GL3402@hirez.programming.kicks-ass.net>
+Message-ID: <20190612180236.GQ3341036@devbig004.ftw2.facebook.com>
 References: <1560354648-23632-1-git-send-email-jsavitz@redhat.com>
- <20190612160244.GP3341036@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190612160244.GP3341036@devbig004.ftw2.facebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1560354648-23632-1-git-send-email-jsavitz@redhat.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 12, 2019 at 09:02:44AM -0700, Tejun Heo wrote:
-> On Wed, Jun 12, 2019 at 11:50:48AM -0400, Joel Savitz wrote:
-> > In the case that a process is constrained by taskset(1) (i.e.
-> > sched_setaffinity(2)) to a subset of available cpus, and all of those are
-> > subsequently offlined, the scheduler will set tsk->cpus_allowed to
-> > the current value of task_cs(tsk)->effective_cpus.
-> > 
-> > This is done via a call to do_set_cpus_allowed() in the context of 
-> > cpuset_cpus_allowed_fallback() made by the scheduler when this case is
-> > detected. This is the only call made to cpuset_cpus_allowed_fallback()
-> > in the latest mainline kernel.
-> > 
-> > However, this is not sane behavior.
+On Wed, Jun 12, 2019 at 11:50:48AM -0400, Joel Savitz wrote:
+> In the case that a process is constrained by taskset(1) (i.e.
+> sched_setaffinity(2)) to a subset of available cpus, and all of those are
+> subsequently offlined, the scheduler will set tsk->cpus_allowed to
+> the current value of task_cs(tsk)->effective_cpus.
 > 
-> While not perfect (we'll need to stop updating task's cpumask from
-> cpuset to make), this is still a signifcant improvement.
+> This is done via a call to do_set_cpus_allowed() in the context of 
+> cpuset_cpus_allowed_fallback() made by the scheduler when this case is
+> detected. This is the only call made to cpuset_cpus_allowed_fallback()
+> in the latest mainline kernel.
 > 
->  Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> If there's no objection, I'll route it through the cgroup tree.
+> However, this is not sane behavior.
+...
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Suggested-by: Phil Auld <pauld@redhat.com>
+> Signed-off-by: Joel Savitz <jsavitz@redhat.com>
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Applied to cgroup/for-5.2-fixes.
+
+Thanks.
+
+-- 
+tejun
