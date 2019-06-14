@@ -2,35 +2,35 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BE34844FFF
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2019 01:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDC3245085
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2019 02:27:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725867AbfFMX3y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Jun 2019 19:29:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:3632 "EHLO mga18.intel.com"
+        id S1725778AbfFNA1x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Jun 2019 20:27:53 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13367 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725789AbfFMX3y (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 Jun 2019 19:29:54 -0400
+        id S1725777AbfFNA1x (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 13 Jun 2019 20:27:53 -0400
 X-Amp-Result: UNSCANNABLE
 X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 16:29:48 -0700
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 13 Jun 2019 17:27:49 -0700
 X-ExtLoop1: 1
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga005.jf.intel.com with ESMTP; 13 Jun 2019 16:29:46 -0700
+  by fmsmga005.fm.intel.com with ESMTP; 13 Jun 2019 17:27:47 -0700
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1hbZA9-000G0N-RH; Fri, 14 Jun 2019 07:29:45 +0800
-Date:   Fri, 14 Jun 2019 07:29:22 +0800
+        id 1hba4J-000C3N-Im; Fri, 14 Jun 2019 08:27:47 +0800
+Date:   Fri, 14 Jun 2019 08:26:53 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Chris Mason <chris.mason@fusionio.com>
 Cc:     kbuild-all@01.org, cgroups@vger.kernel.org,
         Tejun Heo <tj@kernel.org>
-Subject: [cgroup:btrfs-blkcg-updates 7/8] ERROR: "blkcg_root_css"
+Subject: [cgroup:btrfs-blkcg-updates 8/8] ERROR: "wbc_detach_inode"
  [fs/btrfs/btrfs.ko] undefined!
-Message-ID: <201906140720.RgHVVwqw%lkp@intel.com>
+Message-ID: <201906140850.j1CIrXne%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="jRHKVT23PllUwdXP"
+Content-Type: multipart/mixed; boundary="SLDf9lqlvOQaIe6s"
 Content-Disposition: inline
 X-Patchwork-Hint: ignore
 User-Agent: Mutt/1.5.23 (2014-03-12)
@@ -40,17 +40,17 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---jRHKVT23PllUwdXP
+--SLDf9lqlvOQaIe6s
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git btrfs-blkcg-updates
 head:   128ddd26f41a8fc4efdca041f134113adeee9a34
-commit: caf8869a91b21558f6acffb39ec74bb8119afc50 [7/8] Btrfs: use REQ_CGROUP_PUNT for worker thread submitted bios
+commit: 128ddd26f41a8fc4efdca041f134113adeee9a34 [8/8] Btrfs: extent_write_locked_range() should attach inode->i_wb
 config: x86_64-lkp (attached as .config)
 compiler: gcc-7 (Debian 7.3.0-1) 7.3.0
 reproduce:
-        git checkout caf8869a91b21558f6acffb39ec74bb8119afc50
+        git checkout 128ddd26f41a8fc4efdca041f134113adeee9a34
         # save the attached .config to linux build tree
         make ARCH=x86_64 
 
@@ -59,18 +59,21 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
->> ERROR: "blkcg_root_css" [fs/btrfs/btrfs.ko] undefined!
+   ERROR: "blkcg_root_css" [fs/btrfs/btrfs.ko] undefined!
+>> ERROR: "__inode_attach_wb" [fs/btrfs/btrfs.ko] undefined!
+>> ERROR: "wbc_attach_and_unlock_inode" [fs/btrfs/btrfs.ko] undefined!
+>> ERROR: "wbc_detach_inode" [fs/btrfs/btrfs.ko] undefined!
 
 ---
 0-DAY kernel test infrastructure                Open Source Technology Center
 https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
 
---jRHKVT23PllUwdXP
+--SLDf9lqlvOQaIe6s
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICKTZAl0AAy5jb25maWcAlDzbctw2su/5iinnJaktJ5LsKK7d0gOGBDnIkAQNgCONX1iK
+H4sICMXnAl0AAy5jb25maWcAlDzbctw2su/5iinnJaktJ5LsKK7d0gOGBDnIkAQNgCONX1iK
 NHZUK0s+uuzaf3+6AZBsgKCc3UqtNd2Ne9/R4I8//Lhiz0/3ny+fbq4ub2+/rT4d7g4Pl0+H
 69XHm9vDv1a5XDXSrHguzC9AXN3cPX/99eu70/707eq3X05+OXr9cPV2tT083B1uV9n93ceb
 T8/Q/ub+7ocff4D/fgTg5y/Q1cM/V5+url7/vvopP/x5c3m3+v2XN9D6+Gf3B5BmsilE2WdZ
@@ -580,4 +583,4 @@ EJcs275yS4eDQmcMzEuwYrAu6mk/vmmy8eT6/GS5ynRhMPOnOoyX6MUrHUoK7msPRo39I0c8
 AzJdvs4YvkjwcbBV9epnincqunhx4s4NG1WjNgrcBiaNEiHYqYMOiSvwfVWsTQ3PIJ3aG0tb
 4dxnuEcH+WPYHzglRd3amTincra2kkIYMHzNqJvBC2/ovsNnc/p/7GIy2ZW+AQA=
 
---jRHKVT23PllUwdXP--
+--SLDf9lqlvOQaIe6s--
