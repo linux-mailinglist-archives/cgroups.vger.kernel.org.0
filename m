@@ -2,135 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ABB246564
-	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2019 19:09:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3823A46584
+	for <lists+cgroups@lfdr.de>; Fri, 14 Jun 2019 19:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726255AbfFNRJS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Jun 2019 13:09:18 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:45975 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725808AbfFNRJR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jun 2019 13:09:17 -0400
-Received: by mail-qt1-f195.google.com with SMTP id j19so3262528qtr.12;
-        Fri, 14 Jun 2019 10:09:17 -0700 (PDT)
+        id S1725996AbfFNRRm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Jun 2019 13:17:42 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35160 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725991AbfFNRRm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Jun 2019 13:17:42 -0400
+Received: by mail-qt1-f194.google.com with SMTP id d23so3360415qto.2
+        for <cgroups@vger.kernel.org>; Fri, 14 Jun 2019 10:17:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8wh55Cc5i2Lm0uKQU6Z1K0oTPrUc8lTykFYnyLF1hmI=;
-        b=Xj7snfT/PvWl6aBQDyjdw33T+D2UjBfUv8RjbVPeLJPCahk+HvjxdswjSWDN7oIr3C
-         VQqddC+9kvHVUKM8EGbrAmYUV0+0j4Bi4GJOz0KS7SWEutrJnQ9h6o629P1e7aXgz1hG
-         jYAAyP+qXwhwdMKmCGbXYsK3ptud5FO8peYMj6VfZdpP0x3PEAqns/79Scv8oNPOyINZ
-         IGwWr6UiFZcxLd9zcmVIEH+Ua+3+7Zs7hlkWipuAtIXd7S3PXrI7KzjnzaNiUNOkfiBK
-         JNlEh8bt5d+0/rwI+49lysrhE8rhSD/DxFGxvmsO5e2415dRKMYoTgq0ebMlIrBZ5zt0
-         HK3w==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=r5jrrOAKtFXOvMcXiZJVsg4x13O1N6yko4DRi1SdibI=;
+        b=YS7ZxW3wr66DB8Sde66jbglAwldG0NFJCxdjeIThxzSO1REEUd96sOPodBWibeiWHg
+         soPCJliv81TA6/nAz0nruL/6A7iLBZOeBLw4QmD5eHRQ5G2YPV+OAbDkhsR/7DxtxbWD
+         NPGJzNvhQCtzUTltUBhA22oK5xs2jeRFk0RYhxMa8rle+G0w+gUTqcnuYqLrWbyL1Uys
+         kk5ao9oBsCF93WRXEIDul5/60oSKd/Uit4GdXCk+llSCCuEZnKySdF3rTeGi3e+yTCWc
+         cUo7J33F1mPZvd9IPBfwKZs/LjuqEjaogw4XAAIIVm+G4Fa/2IqQVwELTzYFvJ5Du4XS
+         hBqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8wh55Cc5i2Lm0uKQU6Z1K0oTPrUc8lTykFYnyLF1hmI=;
-        b=arPf1lu+3vdAUw90UiAL970Xgw2fAyeB4bhdKDgfBywaWbEHNPV9dzO2ttjMyMMKU2
-         a9V7LgaNMVYBU1z24HMY/i0TjnRkcx0kp4Zd6CxYgHW36yvmNJ+HnDqA2v/eANzJwHBl
-         bofwFzp2j7h0eiPcuDsMOX3Gzm2+VTrYmE9B4s2Ak8FYOVrERRw4G1hYWoBWdJZVpkvv
-         8UJCmdGZOy8B/vu3HZBcAbhVAs8P0FDh8WDYRYPh5hOge7hyorqZpXVVZBGMUpmOmrch
-         bwecBfNGQuaCoisp+4l1U4+RAiXBg6E02oXemwZoU6btl2ciC1rMI2IOCQSCpoYqB1Xj
-         PJ4w==
-X-Gm-Message-State: APjAAAXeyCUBYwwLySunPxD1xhNVat6sN3Su0mFME+UtMq+e+XCHpXOu
-        mhqCgtmf3Ir9ZL1e0bctKz4=
-X-Google-Smtp-Source: APXvYqzZee60sXrwkCUgGq+ra5aKQV5AK6TR6hJfqiSgAwuo4IfEnuq9VXMpCRgDobBNl5LOD3J3xw==
-X-Received: by 2002:a0c:af16:: with SMTP id i22mr9320471qvc.234.1560532156439;
-        Fri, 14 Jun 2019 10:09:16 -0700 (PDT)
+         :mime-version:content-disposition:user-agent;
+        bh=r5jrrOAKtFXOvMcXiZJVsg4x13O1N6yko4DRi1SdibI=;
+        b=An5kjqodtEs8ab8/9klRDsFsytsVhRhaNPe0ry6HuAb7fGgNdwKRCfhdSxARwe5jMC
+         E+NVxRaeABhiwqw3q0X+L3F/zjskL6cwcODqT4fdgjkgjEVJbjScFDAT4KBZYUy7nZS9
+         Z33QrLIju3fdhQRdcUhEC4RwiiH66yRSCJ7eNP2zvgUg39a62mXrsVfABzvlSTavoTOC
+         GDzoYArXEflhrlJwsHGirL3muLRYgCWVA+1n9Nk62tyWmSMuMqenvRt09/cvb8RzxfKt
+         iOslGpxNDhlau4INM61ujpFFhHGRjYb5fn//+MIkdaspC9d/lWFLky9BUVjJHiKr693R
+         XcmQ==
+X-Gm-Message-State: APjAAAWWyCTxhGP3A8IZKmBrmJpTnS/QZ2iBlSu20E3yowm+0XKIvLHG
+        Pe2uJ2R06mxfyJP2R1I/BhQ=
+X-Google-Smtp-Source: APXvYqyy+YlNtHJrhSWrEl2WQszIvB4nkMvYE+eEnt3D7kIM0IGAPeiofHsapYl0eD3YfKDAHnA0Qw==
+X-Received: by 2002:a0c:b659:: with SMTP id q25mr8937955qvf.29.1560532660940;
+        Fri, 14 Jun 2019 10:17:40 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::6bab])
-        by smtp.gmail.com with ESMTPSA id g185sm1822986qkf.54.2019.06.14.10.09.15
+        by smtp.gmail.com with ESMTPSA id 5sm2135178qkr.68.2019.06.14.10.17.39
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 14 Jun 2019 10:09:15 -0700 (PDT)
-Date:   Fri, 14 Jun 2019 10:09:14 -0700
+        Fri, 14 Jun 2019 10:17:40 -0700 (PDT)
+Date:   Fri, 14 Jun 2019 10:17:38 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     Alexei Starovoitov <ast@fb.com>
-Cc:     Quentin Monnet <quentin.monnet@netronome.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>, Andy Newell <newella@fb.com>,
-        Chris Mason <clm@fb.com>,
-        "josef@toxicpanda.com" <josef@toxicpanda.com>,
-        Dennis Zhou <dennisz@fb.com>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        Kernel Team <Kernel-team@fb.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "ast@kernel.org" <ast@kernel.org>,
-        "daniel@iogearbox.net" <daniel@iogearbox.net>,
-        Martin Lau <kafai@fb.com>, Song Liu <songliubraving@fb.com>,
-        Yonghong Song <yhs@fb.com>,
-        "bpf@vger.kernel.org" <bpf@vger.kernel.org>
-Subject: Re: [PATCH 10/10] blkcg: implement BPF_PROG_TYPE_IO_COST
-Message-ID: <20190614170914.GF538958@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614015620.1587672-11-tj@kernel.org>
- <e4d1df7b-66bb-061a-8ecb-ff1e5be3ab1d@netronome.com>
- <20190614145239.GA538958@devbig004.ftw2.facebook.com>
- <bed0a66a-7aa6-ac36-9182-31a4937257e5@fb.com>
+To:     Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [PATCH cgroup/for-5.3] cgroup: Move cgroup_parse_float()
+ implementation out of CONFIG_SYSFS
+Message-ID: <20190614171738.GG538958@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bed0a66a-7aa6-ac36-9182-31a4937257e5@fb.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Alexei.
+From 38cf3a687f5827fcfc81cbc433ef5822693a49c1 Mon Sep 17 00:00:00 2001
+From: Tejun Heo <tj@kernel.org>
+Date: Fri, 14 Jun 2019 10:12:45 -0700
 
-On Fri, Jun 14, 2019 at 04:35:35PM +0000, Alexei Starovoitov wrote:
-> the example bpf prog looks flexible enough to allow some degree
-> of experiments. The question is what kind of new algorithms you envision
-> it will do? what other inputs it would need to make a decision?
-> I think it's ok to start with what it does now and extend further
-> when need arises.
+a5e112e6424a ("cgroup: add cgroup_parse_float()") accidentally added
+cgroup_parse_float() inside CONFIG_SYSFS block.  Move it outside so
+that it doesn't cause failures on !CONFIG_SYSFS builds.
 
-I'm not sure right now.  The linear model worked a lot better than I
-originally expected and looks like it can cover most of the current
-use cases.  It could easily be that we just haven't seen enough
-different cases yet.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: a5e112e6424a ("cgroup: add cgroup_parse_float()")
+---
+Applied to cgroup/for-5.3.
 
-At one point, quadratic model was on the table in case the linear
-model wasn't good enough.  Also, one area which may need improvements
-could be factoring in r/w mixture into consideration.  Some SSDs'
-performance nose-dive when r/w commands are mixed in certain
-proportions.  Right now, we just deal with that by adjusting global
-performance ratio (vrate) but I can imagine a model which considers
-the issue history in the past X seconds of the cgroup and bumps the
-overall cost according to r/w mixture.
+ kernel/cgroup/cgroup.c | 84 +++++++++++++++++++++---------------------
+ 1 file changed, 42 insertions(+), 42 deletions(-)
 
-> > * Is block ioctl the right mechanism to attach these programs?
-> 
-> imo ioctl is a bit weird, but since its only one program per block
-> device it's probably ok? Unless you see it being cgroup scoped in
-> the future? Then cgroup-bpf style hooks will be more suitable
-> and allow a chain of programs.
-
-As this is a device property, I think there should only be one program
-per block device.
-
-> > * Are there more parameters that need to be exposed to the programs?
-> > 
-> > * It'd be great to have efficient access to per-blockdev and
-> >    per-blockdev-cgroup-pair storages available to these programs so
-> >    that they can keep track of history.  What'd be the best of way of
-> >    doing that considering the fact that these programs will be called
-> >    per each IO and the overhead can add up quickly?
-> 
-> Martin's socket local storage solved that issue for sockets.
-> Something very similar can work for per-blockdev-per-cgroup.
-
-Cool, that sounds great in case we need to develop this further.  Andy
-had this self-learning model which didn't need any external input and
-could tune itself solely based on device saturation state.  If the
-prog can remember states cheaply, it'd be pretty cool to experiment
-with things like that in bpf.
-
-Thanks.
-
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9e3dffb09489..f582414e15ba 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6229,6 +6229,48 @@ struct cgroup *cgroup_get_from_fd(int fd)
+ }
+ EXPORT_SYMBOL_GPL(cgroup_get_from_fd);
+ 
++static u64 power_of_ten(int power)
++{
++	u64 v = 1;
++	while (power--)
++		v *= 10;
++	return v;
++}
++
++/**
++ * cgroup_parse_float - parse a floating number
++ * @input: input string
++ * @dec_shift: number of decimal digits to shift
++ * @v: output
++ *
++ * Parse a decimal floating point number in @input and store the result in
++ * @v with decimal point right shifted @dec_shift times.  For example, if
++ * @input is "12.3456" and @dec_shift is 3, *@v will be set to 12345.
++ * Returns 0 on success, -errno otherwise.
++ *
++ * There's nothing cgroup specific about this function except that it's
++ * currently the only user.
++ */
++int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v)
++{
++	s64 whole, frac = 0;
++	int fstart = 0, fend = 0, flen;
++
++	if (!sscanf(input, "%lld.%n%lld%n", &whole, &fstart, &frac, &fend))
++		return -EINVAL;
++	if (frac < 0)
++		return -EINVAL;
++
++	flen = fend > fstart ? fend - fstart : 0;
++	if (flen < dec_shift)
++		frac *= power_of_ten(dec_shift - flen);
++	else
++		frac = DIV_ROUND_CLOSEST_ULL(frac, power_of_ten(flen - dec_shift));
++
++	*v = whole * power_of_ten(dec_shift) + frac;
++	return 0;
++}
++
+ /*
+  * sock->sk_cgrp_data handling.  For more info, see sock_cgroup_data
+  * definition in cgroup-defs.h.
+@@ -6392,46 +6434,4 @@ static int __init cgroup_sysfs_init(void)
+ }
+ subsys_initcall(cgroup_sysfs_init);
+ 
+-static u64 power_of_ten(int power)
+-{
+-	u64 v = 1;
+-	while (power--)
+-		v *= 10;
+-	return v;
+-}
+-
+-/**
+- * cgroup_parse_float - parse a floating number
+- * @input: input string
+- * @dec_shift: number of decimal digits to shift
+- * @v: output
+- *
+- * Parse a decimal floating point number in @input and store the result in
+- * @v with decimal point right shifted @dec_shift times.  For example, if
+- * @input is "12.3456" and @dec_shift is 3, *@v will be set to 12345.
+- * Returns 0 on success, -errno otherwise.
+- *
+- * There's nothing cgroup specific about this function except that it's
+- * currently the only user.
+- */
+-int cgroup_parse_float(const char *input, unsigned dec_shift, s64 *v)
+-{
+-	s64 whole, frac = 0;
+-	int fstart = 0, fend = 0, flen;
+-
+-	if (!sscanf(input, "%lld.%n%lld%n", &whole, &fstart, &frac, &fend))
+-		return -EINVAL;
+-	if (frac < 0)
+-		return -EINVAL;
+-
+-	flen = fend > fstart ? fend - fstart : 0;
+-	if (flen < dec_shift)
+-		frac *= power_of_ten(dec_shift - flen);
+-	else
+-		frac = DIV_ROUND_CLOSEST_ULL(frac, power_of_ten(flen - dec_shift));
+-
+-	*v = whole * power_of_ten(dec_shift) + frac;
+-	return 0;
+-}
+-
+ #endif /* CONFIG_SYSFS */
 -- 
-tejun
+2.17.1
+
