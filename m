@@ -2,104 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 135574997F
-	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2019 08:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 565C34A1E6
+	for <lists+cgroups@lfdr.de>; Tue, 18 Jun 2019 15:19:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729010AbfFRGyX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Jun 2019 02:54:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728948AbfFRGyW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 18 Jun 2019 02:54:22 -0400
-Received: from brain-police (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AB0AB20665;
-        Tue, 18 Jun 2019 06:54:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1560840861;
-        bh=h6KCEecYqvEUsVXMGsOj14p5VeuD+CI26MOesVKK8tw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oBvX088a/fOuuObjn7+ntF6Kq5hoY2/4Hpn4C9r/FHAPQ18VfSrKIN6FL5H8J8wzc
-         BBR26SXGwC+04hPIj6pp4cWe3SMe5tW99SFutH5DZAbPe6caLBBE0uSV5X3hETFvma
-         RU/jAfOdqr0dwXiPJhdVASX8az+JIm0olJ4+olBE=
-Date:   Tue, 18 Jun 2019 07:54:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Mike Rapoport <rppt@linux.ibm.com>
-Cc:     Will Deacon <will.deacon@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>, Qian Cai <cai@lca.pw>,
-        akpm@linux-foundation.org, Roman Gushchin <guro@fb.com>,
-        catalin.marinas@arm.com, linux-kernel@vger.kernel.org,
-        mhocko@kernel.org, linux-mm@kvack.org, vdavydov.dev@gmail.com,
-        hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH -next] arm64/mm: fix a bogus GFP flag in pgd_alloc()
-Message-ID: <20190618065414.GA15875@brain-police>
-References: <1559656836-24940-1-git-send-email-cai@lca.pw>
- <20190604142338.GC24467@lakrids.cambridge.arm.com>
- <20190610114326.GF15979@fuggles.cambridge.arm.com>
- <1560187575.6132.70.camel@lca.pw>
- <20190611100348.GB26409@lakrids.cambridge.arm.com>
- <20190613121100.GB25164@rapoport-lnx>
- <20190617151252.GF16810@rapoport-lnx>
- <20190617163630.GH30800@fuggles.cambridge.arm.com>
- <20190618061259.GB15497@rapoport-lnx>
+        id S1726023AbfFRNS7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Jun 2019 09:18:59 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:37040 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725988AbfFRNS7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Jun 2019 09:18:59 -0400
+Received: by mail-pl1-f196.google.com with SMTP id bh12so5716160plb.4;
+        Tue, 18 Jun 2019 06:18:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=frPkqK5kCI1XnEaOJ+gNA8ONJutQPz+wVq6WTnhwMv8=;
+        b=MwxxC1Aei34Cyt/RQZWMjP+a4hNcl64B+WUfPUJH+bukkH+G4UWUE5+Dat7QBE+FHi
+         kwOPH8bijP+7vCqoozK8KxIRc5ZAPHrTAolIn+NddL1OmmrUzbfUIb5IZd0XwQuusVpH
+         SLkzArTcdoWTyP2tHqrUxQOLIANVq4ci7fUBVt4DCjgQ0Nwg/SDOxohCWUgNpnGi8QB/
+         vwE8byzpuMJeo43H6vSLet8Zym3fn0uNLcjupCuVRJf+9/N7LVYjRYhADnqIONQ0/LHU
+         hDpnKFEYwGRskf3Tth2u6xHq2hy8AAYl89RH4lIOXIfdQE9+OtnDs/iE6k7o4ibgv8cb
+         Gmgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=frPkqK5kCI1XnEaOJ+gNA8ONJutQPz+wVq6WTnhwMv8=;
+        b=QL6oRg8Q6dVTf8JDTIw88aEpffDD7pBvsYIuUizBGwllSLSr8QSog76iAz6A9q9R4g
+         DaSawSDsBHpWUqvq0eBvuq/2DEJ5y2/IZJovnYtP8svRbMeuNsffeVtjFa8Z1zEgnZxa
+         I104rdRwMpL/AvMb6vmrf65yR1iVWTTp8S9K7NzKxeEUU6ALxKbFfc0OWPugsx5bVY6V
+         3oKhwIsCzJZFgWy4XGsA9O+OrGgxQj9jSXUZql8rXl8fFv7rzHo3e8XrMUd2P6nN9I9C
+         U6Oo2XKC77E1C4e1y9eQ8bQRO/0GGAr0vIIXZIlKweRC3TPoVWzfNdH/YdrtJARvO0LI
+         lijQ==
+X-Gm-Message-State: APjAAAWeEpfod4DBjeCbMBIgngDZL7Wnp0QTByeTLO2GZf5HM5Y6N2lm
+        69juno3LHd7/RhbtU8S7LIM=
+X-Google-Smtp-Source: APXvYqw8fKeZTvDIlKYXkdfuvQguQX28fZf2Wih+dmg/3F4bhG+gPQl4Td0q7H2vlj0KjFtJiznIgw==
+X-Received: by 2002:a17:902:8bc1:: with SMTP id r1mr21851807plo.42.1560863938494;
+        Tue, 18 Jun 2019 06:18:58 -0700 (PDT)
+Received: from localhost ([123.213.206.190])
+        by smtp.gmail.com with ESMTPSA id j1sm16770659pfe.101.2019.06.18.06.18.57
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 18 Jun 2019 06:18:57 -0700 (PDT)
+Date:   Tue, 18 Jun 2019 22:18:54 +0900
+From:   Minwoo Im <minwoo.im.dev@gmail.com>
+To:     Weiping Zhang <zhangweiping@didiglobal.com>
+Cc:     axboe@kernel.dk, tj@kernel.org, hch@lst.de, bvanassche@acm.org,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-nvme@lists.infradead.org
+Subject: Re: [PATCH v2 4/4] nvme: add support weighted round robin queue
+Message-ID: <20190618131854.GA419@minwooim-desktop>
+References: <cover.1560679439.git.zhangweiping@didiglobal.com>
+ <0b0fa12a337f97a8cc878b58673b3eb619539174.1560679439.git.zhangweiping@didiglobal.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20190618061259.GB15497@rapoport-lnx>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <0b0fa12a337f97a8cc878b58673b3eb619539174.1560679439.git.zhangweiping@didiglobal.com>
+User-Agent: Mutt/1.11.4 (2019-03-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jun 18, 2019 at 09:12:59AM +0300, Mike Rapoport wrote:
-> On Mon, Jun 17, 2019 at 05:36:30PM +0100, Will Deacon wrote:
-> > On Mon, Jun 17, 2019 at 06:12:52PM +0300, Mike Rapoport wrote:
-> > > Andrew, can you please add the patch below as an incremental fix?
-> > > 
-> > > With this the arm64::pgd_alloc() should be in the right shape.
-> > > 
-> > > 
-> > > From 1c1ef0bc04c655689c6c527bd03b140251399d87 Mon Sep 17 00:00:00 2001
-> > > From: Mike Rapoport <rppt@linux.ibm.com>
-> > > Date: Mon, 17 Jun 2019 17:37:43 +0300
-> > > Subject: [PATCH] arm64/mm: don't initialize pgd_cache twice
-> > > 
-> > > When PGD_SIZE != PAGE_SIZE, arm64 uses kmem_cache for allocation of PGD
-> > > memory. That cache was initialized twice: first through
-> > > pgtable_cache_init() alias and then as an override for weak
-> > > pgd_cache_init().
-> > > 
-> > > After enabling accounting for the PGD memory, this created a confusion for
-> > > memcg and slub sysfs code which resulted in the following errors:
-> > > 
-> > > [   90.608597] kobject_add_internal failed for pgd_cache(13:init.scope) (error: -2 parent: cgroup)
-> > > [   90.678007] kobject_add_internal failed for pgd_cache(13:init.scope) (error: -2 parent: cgroup)
-> > > [   90.713260] kobject_add_internal failed for pgd_cache(21:systemd-tmpfiles-setup.service) (error: -2 parent: cgroup)
-> > > 
-> > > Removing the alias from pgtable_cache_init() and keeping the only pgd_cache
-> > > initialization in pgd_cache_init() resolves the problem and allows
-> > > accounting of PGD memory.
-> > > 
-> > > Reported-by: Qian Cai <cai@lca.pw>
-> > > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > > ---
-> > >  arch/arm64/include/asm/pgtable.h | 3 +--
-> > >  arch/arm64/mm/pgd.c              | 5 +----
-> > >  2 files changed, 2 insertions(+), 6 deletions(-)
-> > 
-> > Looks like this actually fixes caa841360134 ("x86/mm: Initialize PGD cache
-> > during mm initialization") due to an unlucky naming conflict!
-> > 
-> > In which case, I'd actually prefer to take this fix asap via the arm64
-> > tree. Is that ok?
+On 19-06-16 18:15:56, Weiping Zhang wrote:
+> Now nvme support five types hardware queue:
+> poll:		if io was marked for poll
+> wrr_low:	weighted round robin low
+> wrr_medium:	weighted round robin medium
+> wrr_high:	weighted round robin high
+> read:		for read, if blkcg's wrr is none and is not poll
+> defaut:		for write/flush, if blkcg's wrr is none and is not poll
 > 
-> I suppose so, it just won't apply as is. Would you like a patch against the
-> current upstream?
+> for read, default and poll those submission queue's priority is medium by default;
+> 
+> Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
 
-Yes, please. I'm assuming it's a straightforward change (please shout if it
-isn't).
+Hello Weiping,
 
-Will
+Please add linux-nvme mailing list for this patch to be reviewed from
+the nvme people.
