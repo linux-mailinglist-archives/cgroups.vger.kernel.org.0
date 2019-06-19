@@ -2,89 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 474CA4C3F1
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 01:04:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7EB4C415
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 01:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726251AbfFSXEn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Jun 2019 19:04:43 -0400
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:42201 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726449AbfFSXEl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jun 2019 19:04:41 -0400
-Received: by mail-yw1-f68.google.com with SMTP id s5so307860ywd.9
-        for <cgroups@vger.kernel.org>; Wed, 19 Jun 2019 16:04:40 -0700 (PDT)
+        id S1730730AbfFSXZZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Jun 2019 19:25:25 -0400
+Received: from mail-yb1-f201.google.com ([209.85.219.201]:47108 "EHLO
+        mail-yb1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726251AbfFSXZY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Jun 2019 19:25:24 -0400
+Received: by mail-yb1-f201.google.com with SMTP id u9so1066945ybb.14
+        for <cgroups@vger.kernel.org>; Wed, 19 Jun 2019 16:25:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NbzMOyrZckNlP/Lcg+Lm/vM3zrC2t8DPpb83xlh9FiI=;
-        b=t5CyOJNfaac+Q7sPzpACyPTDx6EHsMBAXAnNFHc1O5tDZWecDaCzf1vYTuyz7Zjf/e
-         67AVLo3wFwFhYh4mwpzgD+9UNuTSphgseGd0AVOtn7iOtYOElLcQ3s+WX4gwDSQUJSAG
-         kHzUBPWbM3Dmo4KyNNeKLuRTTau5zxBm1pYUE8IUgg96i3/B0ojjp1aZCvK8b5YvIrRq
-         3y/D3kCzgimUMVAjolJtiirGA8S5lSRCCmJdB1ggTynoPqquMl1gDOrFf2Hao69SK3nD
-         qqRIODa4r7NbdVpNTrP+mSFxZxA2I3Lap/PkRe7pPMQAA9C50Yxp8L3JthprklpEeTg/
-         Qmtw==
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=2Xe5CNu50mksX/zEQQqGlLiWQgOuxvE/hS5GIpxigKA=;
+        b=g1it1EteZ/NGeK69zsjfHOTg9qZMabcBis5hFjOrlB2l+EFid2XH43a/H1Q98WQaN4
+         EuaSsBaTPlqXmMYUHUth9G/bMVvlH6pFOoOKmzO5ypBeVy38P7a0Es8xFNAKHTRaabbw
+         8raai+S+rVgHmvNm9WwaNFbh3CDbHzBDR0yc8D2i20C+AGY93ETkj7ecEaSTfenjJLSd
+         fcu2WQVp0NMDR3iKV/rnrn6v8WivwS78j6PGG20RxN0RiXWs5GoTqxJGDi9W1+QRi9g4
+         d0z67gIh/nncaGZD0tfYFyUqwU/UD9ePElOit5dKhGB4YOjiUpRTPlAbsW+SCWdDRbSB
+         Q3KA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NbzMOyrZckNlP/Lcg+Lm/vM3zrC2t8DPpb83xlh9FiI=;
-        b=rNuNnShwRVqIan5jRuH4MTSZMQHwSsyKPPo8vRRUvavoXHNHdbg0Ot4mbqAlSHeRqa
-         81fluVyrOcIBM30pYFcL3prmbN6UvLbOrNXSgJRMMTo2+CHlWMyK1VP4fed9FTNHu6kw
-         dCVQFPhluhydNSJa9jaDryKkRgiGAY1yHKwSKrn8Iw3g6dY+O8pyG75mb/p9okmWd6eA
-         OHjcFummjGZ1+Y9iuR+DHZ1Nv5UJtcbUs1m+wBUPxDJ0Rhpe6kHw+K9wBRjd6xrP7J73
-         HJCgnXMUv4vE2ZCQqkhV/sMkwglmW1/xtCZG8TfNS/KQh7EOg06JT+oUWHmj5Eamy0s5
-         Drfg==
-X-Gm-Message-State: APjAAAWwRsNiDUBUU5nFtFc9neemRPgRB7ni8zkS8nuWxioCFP7XdUP3
-        RlSM8SqozLb6f7+bNFtEuDeNIshrbt6pNDLjyUdlng==
-X-Google-Smtp-Source: APXvYqwwLc9GbuN1yski600QDsOdlXMt97I/+eg7SO2Z7GQo/t8DI3dWtHIREvPeuOmKIK1eoWONOQDWPdZIfMaHZBs=
-X-Received: by 2002:a81:a55:: with SMTP id 82mr37722007ywk.205.1560985479831;
- Wed, 19 Jun 2019 16:04:39 -0700 (PDT)
-MIME-Version: 1.0
-References: <e5cfe17c-a59f-b1d1-19ce-590245106068@intel.com>
-In-Reply-To: <e5cfe17c-a59f-b1d1-19ce-590245106068@intel.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=2Xe5CNu50mksX/zEQQqGlLiWQgOuxvE/hS5GIpxigKA=;
+        b=Hz69gaKWrPAJVh9/XiqAXAl3gkbhF5uv+1DNDuASnmBkR46ma1EvngTKNSvbNUds9i
+         oqam9LO5BaKfqLk0HG+qQC8zTiupKAKuFzwNx4ansXJaZ8CxBWYc6UQtRSTsWh19hDu3
+         pBPwts+hwj7VeHN+i7w8KbZ8d6R1d+usRLiyMzXvI6QV+zpsvrUy8bYpaXuKRW9EYM/E
+         XP0xY+HdnBMhd1F1sznm2vMWR6U1IjCJRZYe01YX9K/ghr3SvW5XF2Yl+OOwFWkfpqNT
+         p7v4F/K1w1KYxb7BeRD0bJhFi4C1RxflW9pV9/07FN4uAt95bbK0+7rJkZz8IZOevj3L
+         dcXw==
+X-Gm-Message-State: APjAAAWvjvtFxPZUgbLKd2xC6j7S9VkYvjmbqOumhuICJbf/s66gF8Ml
+        cqZ9Kaytr9uKIme1D015g7ICDezAh8KlRg==
+X-Google-Smtp-Source: APXvYqx0Ajd3n7T85uM4Bzn0REZs50Wj6xVympn1t8+jBERmV3VKWhN1SE1iCxw29OAeOkbSedQJqpGRdieoww==
+X-Received: by 2002:a0d:c485:: with SMTP id g127mr43382535ywd.405.1560986723899;
+ Wed, 19 Jun 2019 16:25:23 -0700 (PDT)
+Date:   Wed, 19 Jun 2019 16:25:14 -0700
+Message-Id: <20190619232514.58994-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.22.0.410.gd8fdbe21b5-goog
+Subject: [PATCH] slub: Don't panic for memcg kmem cache creation failure
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 19 Jun 2019 16:04:28 -0700
-Message-ID: <CALvZod6Bfbi57mRmbYetO+R=gB07kkewo=F9sTyMdWpDXGgwDg@mail.gmail.com>
-Subject: Re: memcg/kmem panics
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Williams, Dan J" <dan.j.williams@intel.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        Dave Hansen <dave.hansen@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 3:50 PM Dave Hansen <dave.hansen@intel.com> wrote:
->
-> I have a bit of a grievance to file.  :)
->
-> I'm seeing "Cannot create slab..." panic()s coming from
-> kmem_cache_open() when trying to create memory cgroups on a Fedora
-> system running 5.2-rc's.  The panic()s happen when failing to create
-> memcg-specific slabs because the memcg code passes through the
-> root_cache->flags, which can include SLAB_PANIC.
->
-> I haven't tracked down the root cause yet, or where this behavior
-> started.  But, the end-user experience is that systemd tries to create a
-> cgroup and ends up with a kernel panic.  That's rather sad, especially
-> for the poor sod that's trying to debug it.
->
-> Should memcg_create_kmem_cache() be, perhaps filtering out SLAB_PANIC
-> from root_cache->flags, for instance?  That might make the system a bit
-> less likely to turn into a doorstop if and when something goes mildly
-> wrong.  I've hacked out the panic()s and the system actually seems to
-> boot OK.
+Currently for CONFIG_SLUB, if a memcg kmem cache creation is failed and
+the corresponding root kmem cache has SLAB_PANIC flag, the kernel will
+be crashed. This is unnecessary as the kernel can handle the creation
+failures of memcg kmem caches. Additionally CONFIG_SLAB does not
+implement this behavior. So, to keep the behavior consistent between
+SLAB and SLUB, removing the panic for memcg kmem cache creation
+failures. The root kmem cache creation failure for SLAB_PANIC correctly
+panics for both SLAB and SLUB.
 
-You must be using CONFIG_SLUB and I see that in kmem_cache_open() in
-SLUB doing a SLAB_PANIC check. I think we should remove that
-altogether from SLUB as SLAB does not do this and failure in memcg
-kmem cache creation can and should be handled gracefully. I can send a
-patch to remove that check.
+Reported-by: Dave Hansen <dave.hansen@intel.com>
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/slub.c | 4 ----
+ 1 file changed, 4 deletions(-)
 
-Shakeel
+diff --git a/mm/slub.c b/mm/slub.c
+index 6a5174b51cd6..84c6508e360d 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -3640,10 +3640,6 @@ static int kmem_cache_open(struct kmem_cache *s, slab_flags_t flags)
+ 
+ 	free_kmem_cache_nodes(s);
+ error:
+-	if (flags & SLAB_PANIC)
+-		panic("Cannot create slab %s size=%u realsize=%u order=%u offset=%u flags=%lx\n",
+-		      s->name, s->size, s->size,
+-		      oo_order(s->oo), s->offset, (unsigned long)flags);
+ 	return -EINVAL;
+ }
+ 
+-- 
+2.22.0.410.gd8fdbe21b5-goog
+
