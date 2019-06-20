@@ -2,52 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B7E084D09D
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 16:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5AFBE4D0E6
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 16:51:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726649AbfFTOoj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jun 2019 10:44:39 -0400
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:45988 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbfFTOoj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jun 2019 10:44:39 -0400
-Received: by mail-yw1-f68.google.com with SMTP id m16so1262168ywh.12
-        for <cgroups@vger.kernel.org>; Thu, 20 Jun 2019 07:44:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hkFAHTitPkfoSMrSNRMsrnAtfZq9o+iv5woQgM2GCxU=;
-        b=thXTMTeTx0xXiZ9u/a78f4w6z2h57qLbhWVkhGpc5uU4+H4pPEGPk9N0YCZIJUb/U4
-         TnuCUQ66JQqC0RvWoZCgR5L5jwqo76zVzKpMp8pXzP0t0CQ13sojAuWtJV7WnzKSCT2L
-         TWtmySeyPfLwUziR7l0nrBHtk8fljJ+2ySjxfL+NG8AENzVWfMDj+iozng9mw4Awlsxa
-         skqETBHwe+amhnj7vzDXN7JX46bW7xj9yy4+eq7BrRCQxowABoE0AiBdKbjHH05Jx41W
-         5BmmPDMNbpX33eiLB6cDqnj9kFawoUkLCrF0p8UIYzkm0l8IfyFnL90oSO42R54TvW4k
-         dHxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hkFAHTitPkfoSMrSNRMsrnAtfZq9o+iv5woQgM2GCxU=;
-        b=VaqKKZ4xHf+G8cYaP0cUH+wxIc4bpd/VTYNie67ail9usbkvO1EA75TTSbye0E8LoR
-         HwmYuxR5r1tLT8+C3gyFE5aOVC7qNLk/Vq3n7u2wYWdxcOVxe6jtIs57Wz614eHA5RjE
-         H8xjVN4GdkUYypp7XEESUBwH19uspwFUAvZwF4ArKi4qkKzB1VC3hsH94nuFvcbDDVRt
-         ECpM2u/B+wKGgPVkyb8iAXY8G+oTNbsSB3Yxu6mB+wF+hNep8vZTiY8RJA/iMRmHtdmo
-         FavvFxH90oOwWIQcYYiodIp/4orcDZyLRW2nhJXomnk4xx2i7vhRnWXzJ+z632JQ1cZ1
-         OsFw==
-X-Gm-Message-State: APjAAAW3dSqUqbIqo9rCoyuaQ1g5TBRS+12deIv36Bhznw4blsyW8vMV
-        Nh7lJ4QpkHMBKnDdpZG8fMx4FMBit30ukFNOvpgnjA==
-X-Google-Smtp-Source: APXvYqx6zBr4fQkuPVHdnX/C78xgvMrTTDAZuq5i6MOjKE9DTzL7jnNL4Y6jb/qP1KrId0xDX5nVw5xKzMf3llYMevw=
-X-Received: by 2002:a81:ae0e:: with SMTP id m14mr55624057ywh.308.1561041878378;
- Thu, 20 Jun 2019 07:44:38 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190619232514.58994-1-shakeelb@google.com> <20190620055028.GA12083@dhcp22.suse.cz>
-In-Reply-To: <20190620055028.GA12083@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 20 Jun 2019 07:44:27 -0700
-Message-ID: <CALvZod4Fd5X91CzDLaVAvspQL-zoD7+9OGTiOro-hiMda=DqBA@mail.gmail.com>
+        id S1726697AbfFTOvv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jun 2019 10:51:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55576 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726491AbfFTOvv (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 20 Jun 2019 10:51:51 -0400
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Jun 2019 07:51:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.63,397,1557212400"; 
+   d="scan'208";a="243650388"
+Received: from bekenney-mobl.amr.corp.intel.com (HELO [10.251.12.53]) ([10.251.12.53])
+  by orsmga001.jf.intel.com with ESMTP; 20 Jun 2019 07:51:50 -0700
 Subject: Re: [PATCH] slub: Don't panic for memcg kmem cache creation failure
-To:     Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>,
+        Michal Hocko <mhocko@kernel.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Christoph Lameter <cl@linux.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -56,54 +31,84 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        LKML <linux-kernel@vger.kernel.org>
+References: <20190619232514.58994-1-shakeelb@google.com>
+ <20190620055028.GA12083@dhcp22.suse.cz>
+ <CALvZod4Fd5X91CzDLaVAvspQL-zoD7+9OGTiOro-hiMda=DqBA@mail.gmail.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Openpgp: preference=signencrypt
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+Message-ID: <e7ce6ea7-50fc-78ad-1394-4da11cba7ad3@intel.com>
+Date:   Thu, 20 Jun 2019 07:51:50 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <CALvZod4Fd5X91CzDLaVAvspQL-zoD7+9OGTiOro-hiMda=DqBA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 19, 2019 at 10:50 PM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Wed 19-06-19 16:25:14, Shakeel Butt wrote:
-> > Currently for CONFIG_SLUB, if a memcg kmem cache creation is failed and
-> > the corresponding root kmem cache has SLAB_PANIC flag, the kernel will
-> > be crashed. This is unnecessary as the kernel can handle the creation
-> > failures of memcg kmem caches.
->
-> AFAICS it will handle those by simply not accounting those objects
-> right?
->
+On 6/20/19 7:44 AM, Shakeel Butt wrote:
+>> I am wondering whether SLAB_PANIC makes sense in general though. Why is
+>> it any different from any other essential early allocations? We tend to
+>> not care about allocation failures for those on bases that the system
+>> must be in a broken state to fail that early already. Do you think it is
+>> time to remove SLAB_PANIC altogether?
+>>
+> That would need some investigation into the history of SLAB_PANIC. I
+> will look into it.
 
-The memcg kmem cache creation is async. The allocation has already
-been decided not to be accounted on creation trigger. If memcg kmem
-cache creation is failed, it will fail silently and the next
-allocation will trigger the creation process again.
+I think it still makes sense for things like the vma, filp, dentry
+caches.  If we don't
+have those, we can't even execve("/sbin/init") so we shouldn't even bother
+continuing to boot.
 
-> > Additionally CONFIG_SLAB does not
-> > implement this behavior. So, to keep the behavior consistent between
-> > SLAB and SLUB, removing the panic for memcg kmem cache creation
-> > failures. The root kmem cache creation failure for SLAB_PANIC correctly
-> > panics for both SLAB and SLUB.
->
-> I do agree that panicing is really dubious especially because it opens
-> doors to shut the system down from a restricted environment. So the
-> patch makes sesne to me.
->
-> I am wondering whether SLAB_PANIC makes sense in general though. Why is
-> it any different from any other essential early allocations? We tend to
-> not care about allocation failures for those on bases that the system
-> must be in a broken state to fail that early already. Do you think it is
-> time to remove SLAB_PANIC altogether?
->
-
-That would need some investigation into the history of SLAB_PANIC. I
-will look into it.
-
-> > Reported-by: Dave Hansen <dave.hansen@intel.com>
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks.
+Maybe we should turn off SLAB_PANIC behavior after boot.  We don't want
+a silly driver or filesystem module that's creating slabs to be causing
+panic()s.
