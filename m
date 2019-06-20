@@ -2,95 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 964534D23B
-	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 17:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 298304D3CF
+	for <lists+cgroups@lfdr.de>; Thu, 20 Jun 2019 18:32:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726654AbfFTPfT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Jun 2019 11:35:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41364 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726757AbfFTPfT (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 20 Jun 2019 11:35:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1977EAE46;
-        Thu, 20 Jun 2019 15:35:18 +0000 (UTC)
-Date:   Thu, 20 Jun 2019 17:35:16 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Christoph Lameter <cl@linux.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Dave Hansen <dave.hansen@intel.com>
-Subject: Re: [PATCH] slub: Don't panic for memcg kmem cache creation failure
-Message-ID: <20190620153516.GG12083@dhcp22.suse.cz>
-References: <20190619232514.58994-1-shakeelb@google.com>
- <20190620055028.GA12083@dhcp22.suse.cz>
- <CALvZod4Fd5X91CzDLaVAvspQL-zoD7+9OGTiOro-hiMda=DqBA@mail.gmail.com>
+        id S1726827AbfFTQcs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Jun 2019 12:32:48 -0400
+Received: from mail-ed1-f51.google.com ([209.85.208.51]:42036 "EHLO
+        mail-ed1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726750AbfFTQcs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Jun 2019 12:32:48 -0400
+Received: by mail-ed1-f51.google.com with SMTP id z25so5560666edq.9
+        for <cgroups@vger.kernel.org>; Thu, 20 Jun 2019 09:32:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=lWaahTvqeFpcpOtko+DL9aqqDWntV26lpwBJ5O+GW9Q=;
+        b=Ug1/ChKVDzZOYIsyHhPlKIGz91/Caw12cOGtM3k4qGRp0QUaNpaZajCdz1zUwJVnUU
+         7hrEBLN5/30FS9zP1pmuXFOeTOFVTWQv6iudmJr2WyzkGjk/jBIgpLHR5Hb7Hp9GwxAq
+         iVNNU/nNvttkOibLuAO8CYjoTxQTFLqMWrNGki6x3KloaUI4L/P42naGG2d1RXzD92nS
+         utDAceIRT21JKaiDyEJwfXUG0u4F5Z6UU798naR+FLS7p932QPO1usvR/BG+CHz26Ind
+         NV5+qAwaZYvaYBM1V4c/jK0cYw81pun9SmNQEg58GsmqfIXyBRIjiMCUiIrfZIkqrLwe
+         cLLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=lWaahTvqeFpcpOtko+DL9aqqDWntV26lpwBJ5O+GW9Q=;
+        b=SVgPdFNZJpo3qFpt30AoABkLn8WolopIG1wv32rcRAj+21TV7U7khL7mOzW0ci2c3f
+         GZHSC8xfOaohL+uaUujwmPb4A05jc9MQwF/YdQv976R4c4Ycn5l6Zf2YCxsBF4CYjoQd
+         F1TNjrR5hIrRnydjXReLafm1pXwCyLpqlaz3/PS6BbBs7qCCMNUgSVhpd4OCDw7dzbPI
+         S2t/ZcdC/oOPzdDmCpQJFbGGAQ11tec0dZUeUQlxyxIkGltqzkACRGd2LWmPR8qmudxS
+         ONx7haOeegAPxxBRLlND3+Y1SHHEkbV/5n1QaV4VyzL9RZaPEzJl9H1UpBk77J8JgL4Y
+         b86A==
+X-Gm-Message-State: APjAAAUVCp9LE+gIq3Vjbv5ROQJWa0D4lNlD8hzHgOm9JJNAjAni1dq1
+        +hYTd7xgiGIpgrdGgl1oCTAl3g==
+X-Google-Smtp-Source: APXvYqyUXASWweDho/JuDfLx0BFLxa/LvWX2vKj9OspUCh/7y6SIk9wCcu7jn9dzMR3d1xj/+9Smqw==
+X-Received: by 2002:a50:9203:: with SMTP id i3mr123016558eda.302.1561048366254;
+        Thu, 20 Jun 2019 09:32:46 -0700 (PDT)
+Received: from [192.168.1.208] (ip-5-186-115-204.cgn.fibianet.dk. [5.186.115.204])
+        by smtp.gmail.com with ESMTPSA id d3sm8925edd.88.2019.06.20.09.32.44
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 20 Jun 2019 09:32:45 -0700 (PDT)
+Subject: Re: blk-cgroup cleanups
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Paolo Valente <paolo.valente@linaro.org>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20190606102624.3847-1-hch@lst.de>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2afccbe4-ef5e-6a74-551d-d91b2d1a267a@kernel.dk>
+Date:   Thu, 20 Jun 2019 10:32:43 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod4Fd5X91CzDLaVAvspQL-zoD7+9OGTiOro-hiMda=DqBA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190606102624.3847-1-hch@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 20-06-19 07:44:27, Shakeel Butt wrote:
-> On Wed, Jun 19, 2019 at 10:50 PM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Wed 19-06-19 16:25:14, Shakeel Butt wrote:
-> > > Currently for CONFIG_SLUB, if a memcg kmem cache creation is failed and
-> > > the corresponding root kmem cache has SLAB_PANIC flag, the kernel will
-> > > be crashed. This is unnecessary as the kernel can handle the creation
-> > > failures of memcg kmem caches.
-> >
-> > AFAICS it will handle those by simply not accounting those objects
-> > right?
-> >
+On 6/6/19 4:26 AM, Christoph Hellwig wrote:
+> Hi all,
 > 
-> The memcg kmem cache creation is async. The allocation has already
-> been decided not to be accounted on creation trigger. If memcg kmem
-> cache creation is failed, it will fail silently and the next
-> allocation will trigger the creation process again.
+> below are a couple of cleanups I came up with when trying to understand
+> the blk-cgroup code.
 
-Ohh, right I forgot that it will get retried. This would be useful to
-mention in the changelog as it is not straightforward from reading just
-the particular function.
-
-> > > Additionally CONFIG_SLAB does not
-> > > implement this behavior. So, to keep the behavior consistent between
-> > > SLAB and SLUB, removing the panic for memcg kmem cache creation
-> > > failures. The root kmem cache creation failure for SLAB_PANIC correctly
-> > > panics for both SLAB and SLUB.
-> >
-> > I do agree that panicing is really dubious especially because it opens
-> > doors to shut the system down from a restricted environment. So the
-> > patch makes sesne to me.
-> >
-> > I am wondering whether SLAB_PANIC makes sense in general though. Why is
-> > it any different from any other essential early allocations? We tend to
-> > not care about allocation failures for those on bases that the system
-> > must be in a broken state to fail that early already. Do you think it is
-> > time to remove SLAB_PANIC altogether?
-> >
-> 
-> That would need some investigation into the history of SLAB_PANIC. I
-> will look into it.
-
-Well, I strongly suspect this is a relict from the past. I have hard
-time to believe that the system would get to a usable state if many of
-those caches would fail to allocate. And as Dave said in his reply it is
-quite silly to give this weapon to a random driver hands. Everybody just
-thinks his toy is the most important one...
+Applied, thanks.
 
 -- 
-Michal Hocko
-SUSE Labs
+Jens Axboe
+
