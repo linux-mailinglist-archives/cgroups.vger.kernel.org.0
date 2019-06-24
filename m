@@ -2,93 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EFB84F55D
-	for <lists+cgroups@lfdr.de>; Sat, 22 Jun 2019 12:50:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A9850BB9
+	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2019 15:19:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726286AbfFVKuK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 22 Jun 2019 06:50:10 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:42367 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726112AbfFVKuK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 22 Jun 2019 06:50:10 -0400
-Received: by mail-ed1-f68.google.com with SMTP id z25so13954091edq.9
-        for <cgroups@vger.kernel.org>; Sat, 22 Jun 2019 03:50:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Un5Ke0Ru3iTFXv9DrHEizflVlYGBaDhARoB+8+C5nXM=;
-        b=fvbKB5TlvypASkdr6JJEqT+E42DBN0pFXhiTmPQumrN6AsC+5aFLHqKEl1h9JIPeFI
-         wT7rdzr9+HxAdxGq2NCrlmzhbkb1OCzv0K+hWV78IBOdBNdeQO46C4rJf9Ay4KxpBeOj
-         el2VI30Bn4q8a7oR2ktRalUdtzAVCiyVtKGnYmwwBkJhVucVDM+mQBbut00cC5cXfM1J
-         MG/amAaBtKKIn/E1fN/oJMAnyUki9KfWBxjYynvaA9H70KYDTj1+jVdixNiz+fZp0X7n
-         48h/8hMgneF+7IfyGQ0UzOysAWNzg8YiPMEpbCqrD6clo91hcw+7FKnXQWRYCKlES9/m
-         /WYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Un5Ke0Ru3iTFXv9DrHEizflVlYGBaDhARoB+8+C5nXM=;
-        b=UQU7s7QangXo04SCsUg+Rc3ViAy07lQfuWjgb/BHve21X1KjsBUegf2ozKSScXsKs3
-         vWNZ7uTLjG5Ux1plNAZlKcwyy49XLf92Qo08wl+2p7oyCW49sv7jlqAU7X6XeNWMw47R
-         zSJZkryNsVfGmlYskqYXtNouwRTRtzWu7MAU6mjjKPSVpn4AnhjV3tZdx5n5JUPsObfK
-         HdeK5xzbW2PlP3ZKy7A/CFWFDbmUEok3syXLkRW6REKPZfAa5eJbyLMq9im9qQu9RlEE
-         noXkCKBP+AbxuNLwWDIcklzUyxQ3H2OntNN0uQeaMB6bUZaQ6XWZ8n/90dBLAuR0eE/K
-         4wxA==
-X-Gm-Message-State: APjAAAVMTXp+uryE3CoLtw3bT4j9sAknfdbv/MkKlQ0ftgxFNF6dSJ6M
-        vnHTGVoIXCXBqhZBYBunXatcWkBlNewn8nyMTOk=
-X-Google-Smtp-Source: APXvYqxHLDnJhWr1ejcVYo3KLv+n7hqKLkcbM976bCTh1lMTCpYtx8TcKc5mQDiT3JvcoHWVkAjymahQkW4IgZsLTFE=
-X-Received: by 2002:a17:906:b741:: with SMTP id fx1mr119436807ejb.45.1561200608646;
- Sat, 22 Jun 2019 03:50:08 -0700 (PDT)
+        id S1729485AbfFXNTU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Jun 2019 09:19:20 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:56550 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728666AbfFXNTU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Jun 2019 09:19:20 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5ODJ0OZ165441;
+        Mon, 24 Jun 2019 13:19:17 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2018-07-02;
+ bh=ukvKF+6EKxDXdy5ac54CpdKSb/Bhckv8wOpEKFESCAM=;
+ b=vvlJpET5e6JvyJItbtElAh6WSetiZEWvxA0/vz8Wm6tLKblUgPAH1LfmuV/0C7gnNkfE
+ W7aXr38ZrRtNftmcnyHRH4CFCPJ14s6Hd6z2IzC9UNU3cy07BN/GC2H2puwc/MsCxfJW
+ W05/ZVcYrG89DeEM2QgiJiHkwJYcvxbG7ZP2iOthlBNsuSYJtcmbEevUTpOkRda9nrQs
+ wBMHk5Aa3Ono2Jacli6oMPzj3e1pnw4Rcab5MjLp5efCJqHpc+JJUuxIv1EuhhpPxVlV
+ 77VVEGYOI0ERicT2QPPpzhINNbQsYs698b4dI3StAopkgRqZ2AxyIPHFJTRiILPQEe4a mQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2t9cyq6a9p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jun 2019 13:19:17 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x5ODIgSQ164409;
+        Mon, 24 Jun 2019 13:19:16 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 2t9p6tk0yg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 24 Jun 2019 13:19:16 +0000
+Received: from abhmp0022.oracle.com (abhmp0022.oracle.com [141.146.116.28])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x5ODJFrk009331;
+        Mon, 24 Jun 2019 13:19:15 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 24 Jun 2019 06:19:14 -0700
+Date:   Mon, 24 Jun 2019 16:19:09 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     guro@fb.com
+Cc:     cgroups@vger.kernel.org
+Subject: [bug report] cgroup: re-use the parent pointer in
+ cgroup_destroy_locked()
+Message-ID: <20190624131909.GA32073@mwanda>
 MIME-Version: 1.0
-Received: by 2002:a17:906:640a:0:0:0:0 with HTTP; Sat, 22 Jun 2019 03:50:08
- -0700 (PDT)
-Reply-To: miss.fatimayusuf11@gmail.com
-From:   "Miss.Fatima Yusuf" <miss.fatimayusuf@gmail.com>
-Date:   Sat, 22 Jun 2019 10:50:08 +0000
-Message-ID: <CAC8N3VQaahZJQ1SH+YMFOOwK0JhBnwkX+FA7pu3T7QhwZNV49w@mail.gmail.com>
-Subject: From:Miss: Fatima Yusuf.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=1 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=269
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1810050000 definitions=main-1906240108
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9297 signatures=668687
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=1 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=313 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1810050000
+ definitions=main-1906240109
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From:Miss: Fatima Yusuf.
+Hello Roman Gushchin,
 
-For sure this mail would definitely come to you as a surprise, but do
-take your good time to go through it, My name is Ms. Fatima Yusuf,i am
-from Ivory Coast.
+This is a semi-automatic email about new static checker warnings.
 
-I lost my parents a year and couple of months ago. My father was a
-serving director of the Agro-exporting board until his death. He was
-assassinated by his business partners.Before his death, he made a
-deposit of US$9.7 Million Dollars here in Cote d'ivoire which was for
-the purchase of cocoa processing machine and development of another
-factory before his untimely death.
+The patch 5a621e6c958e: "cgroup: re-use the parent pointer in 
+cgroup_destroy_locked()" from Aug 2, 2017, leads to the following 
+Smatch complaint:
 
-Being that this part of the world experiences political and crises
-time without number, there is no guarantee of lives and properties. I
-cannot invest this money here any long, despite the fact it had been
-my late father's industrial plans.
+    kernel/cgroup/cgroup.c:5531 cgroup_destroy_locked()
+    error: we previously assumed 'parent' could be null (see line 5515)
 
-I want you to do me a favor to receive this funds into your country or
-any safer place as the beneficiary, I have plans to invest this money
-in continuation with the investment vision of my late father, but not
-in this place again rather in your country. I have the vision of going
-into real estate and industrial production or any profitable business
-venture.
+kernel/cgroup/cgroup.c
+  5514	
+  5515		if (parent && cgroup_is_threaded(cgrp))
+                    ^^^^^^
+Apparently this check has been around for 2 years and we've never Oopsed
+so it can probably be deleted.
 
-I will be ready to compensate you with 20% of the total Amount, now
-all my hope is banked on you and i really wants to invest this money
-in your country, where there is stability of Government, political and
-economic welfare.
+  5516			parent->nr_threaded_children--;
+  5517	
+  5518		spin_lock_irq(&css_set_lock);
+  5519		for (tcgrp = cgroup_parent(cgrp); tcgrp; tcgrp = cgroup_parent(tcgrp)) {
+  5520			tcgrp->nr_descendants--;
+  5521			tcgrp->nr_dying_descendants++;
+  5522			/*
+  5523			 * If the dying cgroup is frozen, decrease frozen descendants
+  5524			 * counters of ancestor cgroups.
+  5525			 */
+  5526			if (test_bit(CGRP_FROZEN, &cgrp->flags))
+  5527				tcgrp->freezer.nr_frozen_descendants--;
+  5528		}
+  5529		spin_unlock_irq(&css_set_lock);
+  5530	
+  5531		cgroup1_check_for_release(parent);
+                                          ^^^^^^
+If "parent" were NULL it would Oops here.
 
-My greatest worry now is how to move out of this country because my
-uncle is threatening to kill me as he killed my father,Please do not
-let anybody hear about this, it is between me and you alone because of
-my security reason.
+  5532	
+  5533		cgroup_bpf_offline(cgrp);
 
-I am waiting to hear from you.
-Yours Sincerely,
-Miss.Fatima Yusuf.
+regards,
+dan carpenter
