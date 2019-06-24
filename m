@@ -2,210 +2,404 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3E8850DF3
-	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2019 16:28:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FA2150DF4
+	for <lists+cgroups@lfdr.de>; Mon, 24 Jun 2019 16:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbfFXO2j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Jun 2019 10:28:39 -0400
-Received: from mx2.didichuxing.com ([36.110.17.22]:26543 "HELO
-        bsf01.didichuxing.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with SMTP id S1726749AbfFXO2j (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Jun 2019 10:28:39 -0400
-X-ASG-Debug-ID: 1561386513-0e40886efa18f2f0001-hhPYk8
-Received: from BJEXCAS01.didichuxing.com (bogon [172.20.36.235]) by bsf01.didichuxing.com with ESMTP id 38F0UmLad1gVDosh; Mon, 24 Jun 2019 22:28:33 +0800 (CST)
+        id S1727027AbfFXO3C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Jun 2019 10:29:02 -0400
+Received: from mx2.didiglobal.com ([111.202.154.82]:9624 "HELO
+        bsf02.didichuxing.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with SMTP id S1726749AbfFXO3B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Jun 2019 10:29:01 -0400
+X-ASG-Debug-ID: 1561386532-0e41086a09178520001-hhPYk8
+Received: from BJEXCAS03.didichuxing.com (bogon [172.20.36.245]) by bsf02.didichuxing.com with ESMTP id 5k0ei3O7iq5IFBJK; Mon, 24 Jun 2019 22:28:52 +0800 (CST)
 X-Barracuda-Envelope-From: zhangweiping@didiglobal.com
 Received: from 192.168.3.9 (172.22.50.20) by BJSGEXMBX03.didichuxing.com
  (172.20.15.133) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 24 Jun
- 2019 22:28:33 +0800
-Date:   Mon, 24 Jun 2019 22:28:32 +0800
+ 2019 22:28:52 +0800
+Date:   Mon, 24 Jun 2019 22:28:51 +0800
 From:   Weiping Zhang <zhangweiping@didiglobal.com>
 To:     <axboe@kernel.dk>, <tj@kernel.org>, <hch@lst.de>,
         <bvanassche@acm.org>, <keith.busch@intel.com>,
         <minwoo.im.dev@gmail.com>
 CC:     <linux-block@vger.kernel.org>, <cgroups@vger.kernel.org>,
         <linux-nvme@lists.infradead.org>
-Subject: [PATCH v3 0/5] Add support Weighted Round Robin for blkcg and nvme
-Message-ID: <cover.1561381826.git.zhangweiping@didiglobal.com>
-X-ASG-Orig-Subj: [PATCH v3 0/5] Add support Weighted Round Robin for blkcg and nvme
+Subject: [PATCH v3 1/5] block: add weighted round robin for blkcgroup
+Message-ID: <1333161d2c64dbe93f9dcd0814ffaf6d00216d58.1561385989.git.zhangweiping@didiglobal.com>
+X-ASG-Orig-Subj: [PATCH v3 1/5] block: add weighted round robin for blkcgroup
 Mail-Followup-To: axboe@kernel.dk, tj@kernel.org, hch@lst.de,
         bvanassche@acm.org, keith.busch@intel.com, minwoo.im.dev@gmail.com,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-nvme@lists.infradead.org
+References: <cover.1561385989.git.zhangweiping@didiglobal.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
+In-Reply-To: <cover.1561385989.git.zhangweiping@didiglobal.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 X-Originating-IP: [172.22.50.20]
 X-ClientProxiedBy: BJEXCAS03.didichuxing.com (172.20.36.245) To
  BJSGEXMBX03.didichuxing.com (172.20.15.133)
-X-Barracuda-Connect: bogon[172.20.36.235]
-X-Barracuda-Start-Time: 1561386513
-X-Barracuda-URL: https://bsf01.didichuxing.com:443/cgi-mod/mark.cgi
+X-Barracuda-Connect: bogon[172.20.36.245]
+X-Barracuda-Start-Time: 1561386532
+X-Barracuda-URL: https://bsf02.didichuxing.com:443/cgi-mod/mark.cgi
 X-Virus-Scanned: by bsmtpd at didichuxing.com
-X-Barracuda-Scan-Msg-Size: 5318
+X-Barracuda-Scan-Msg-Size: 10653
 X-Barracuda-BRTS-Status: 1
-X-Barracuda-Bayes: INNOCENT GLOBAL 0.0008 1.0000 -2.0158
-X-Barracuda-Spam-Score: -0.92
-X-Barracuda-Spam-Status: No, SCORE=-0.92 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=1000.0 tests=FB_GET_MEDS, FB_GET_MEDS_2
+X-Barracuda-Bayes: INNOCENT GLOBAL 0.0000 1.0000 -2.0210
+X-Barracuda-Spam-Score: -1.52
+X-Barracuda-Spam-Status: No, SCORE=-1.52 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=1000.0 tests=BSF_RULE7568M
 X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.73067
         Rule breakdown below
          pts rule name              description
         ---- ---------------------- --------------------------------------------------
-        0.00 FB_GET_MEDS            BODY: Looks like trying to sell meds
-        1.10 FB_GET_MEDS_2          Looks like trying to sell meds
+        0.50 BSF_RULE7568M          Custom Rule 7568M
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Each block cgroup can select a weighted round robin type to make
+its io requests go to the specified haredware queue. Now we support
+three round robin type high, medium, low like what nvme specification
+donse.
 
-This series try to add Weighted Round Robin for block cgroup and nvme
-driver. When multiple containers share a single nvme device, we want
-to protect IO critical container from not be interfernced by other
-containers. We add blkio.wrr interface to user to control their IO
-priority. The blkio.wrr accept five level priorities, which contains
-"urgent", "high", "medium", "low" and "none", the "none" is used for
-disable WRR for this cgroup.
+Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
+---
+ block/blk-cgroup.c         | 89 ++++++++++++++++++++++++++++++++++++++++++++++
+ block/blk-mq-debugfs.c     |  4 +++
+ block/blk-mq-sched.c       |  6 +++-
+ block/blk-mq-tag.c         |  4 +--
+ block/blk-mq-tag.h         |  2 +-
+ block/blk-mq.c             | 12 +++++--
+ block/blk-mq.h             | 20 +++++++++--
+ block/blk.h                |  2 +-
+ include/linux/blk-cgroup.h |  2 ++
+ include/linux/blk-mq.h     | 14 ++++++++
+ 10 files changed, 145 insertions(+), 10 deletions(-)
 
-The first patch add an WRR infrastucture for block cgroup.
-
-We add extra four hareware contexts at blk-mq layer,
-HCTX_TYPE_WRR_URGETN/HIGH/MEDIUM/LOW to allow device driver maps
-different hardsware queues to dirrenct hardware context.
-
-The second patch add a nvme_ctrl_ops named get_ams to get the expect
-Arbitration Mechanism Selected, now this series only support nvme-pci.
-This operations will check both CAP.AMS and nvme-pci wrr queue count,
-to decide enable WRR or RR.
-
-The third patch rename write_queues module parameter to read_queues,
-that can simplify the calculation the number of defaut,read,poll,wrr
-queue.
-
-The fourth patch skip the empty affinity set, because nvme may have
-7 affinity sets, and some affinity set may be empty.
-
-The last patch add support nvme-pci Weighted Round Robin with Urgent
-Priority Class, we add four module paranmeters as follow:
-	wrr_urgent_queues
-	wrr_high_queues
-	wrr_medium_queues
-	wrr_low_queues
-nvme-pci will set CC.AMS=001b, if CAP.AMS[17]=1 and wrr_xxx_queues
-larger than 0. nvme driver will split hardware queues base on the
-read/pool/wrr_xxx_queues, then set proper value for Queue Priority
-(QPRIO) in DWORD11.
-
-fio test:
-
-CPU:	Intel(R) Xeon(R) Platinum 8160 CPU @ 2.10GHz
-NVME:	Intel SSDPE2KX020T8 P4510 2TB
-
-[root@tmp-201812-d1802-818396173 low]# nvme show-regs /dev/nvme0n1
-cap     : 2078030fff
-version : 10200
-intms   : 0
-intmc   : 0
-cc      : 460801
-csts    : 1
-nssr    : 0
-aqa     : 1f001f
-asq     : 5f7cc08000
-acq     : 5f5ac23000
-cmbloc  : 0
-cmbsz   : 0
-
-Run fio-1, fio-2, fio-3 in parallel, 
-
-For RR(round robin) these three fio nearly get same iops or bps,
-if we set blkio.wrr for different priority, the WRR "high" will
-get more iops/bps than "medium" and "low".
-
-
-
-RR:
-fio-1: echo "259:0 none" > /sys/fs/cgroup/blkio/high/blkio.wrr
-fio-2: echo "259:0 none" > /sys/fs/cgroup/blkio/medium/blkio.wrr
-fio-3: echo "259:0 none" > /sys/fs/cgroup/blkio/low/blkio.wrr
-
-WRR:
-fio-1: echo "259:0 high" > /sys/fs/cgroup/blkio/high/blkio.wrr
-fio-2: echo "259:0 medium" > /sys/fs/cgroup/blkio/medium/blkio.wrr
-fio-3: echo "259:0 low" > /sys/fs/cgroup/blkio/low/blkio.wrr
-
-rwtest=randread
-fio --bs=4k --ioengine=libaio --iodepth=32 --filename=/dev/nvme0n1 --direct=1 --runtime=60 --numjobs=8 --rw=$rwtest --name=test$1 --group_reporting
-
-Randread 4K	RR		WRR
--------------------------------------------------------
-fio-1:		220 k		395 k
-fio-2:		220 k		197 k
-fio-3:		220 k		66  k
-
-rwtest=randwrite
-fio --bs=4k --ioengine=libaio --iodepth=32 --filename=/dev/nvme0n1 --direct=1 --runtime=60 --numjobs=8 --rw=$rwtest --name=test$1 --group_reporting
-
-Randwrite 4K	RR		WRR
--------------------------------------------------------
-fio-1:		150 k		295 k
-fio-2:		150 k		148 k
-fio-3:		150 k		51  k
-
-rwtest=read
-fio --bs=512k --ioengine=libaio --iodepth=32 --filename=/dev/nvme0n1 --direct=1 --runtime=60 --numjobs=8 --rw=$rwtest --name=test$1 --group_reporting
-
-read 512K	RR		WRR
--------------------------------------------------------
-fio-1:		963 MiB/s	1704 MiB/s
-fio-2:		950 MiB/s	850  MiB/s
-fio-3:		961 MiB/s	284  MiB/s
-
-rwtest=read
-fio --bs=512k --ioengine=libaio --iodepth=32 --filename=/dev/nvme0n1 --direct=1 --runtime=60 --numjobs=8 --rw=$rwtest --name=test$1 --group_reporting
-
-write 512K	RR		WRR
--------------------------------------------------------
-fio-1:		890 MiB/s	1150 MiB/s
-fio-2:		871 MiB/s	595  MiB/s
-fio-3:		895 MiB/s	188  MiB/s
-
-
-Changes since V2:
- * drop null_blk related patch, which adds a new NULL_Q_IRQ_WRR to
-	simulte nvme wrr policy
- * add urgent tagset map for nvme driver
- * fix some problem in V2, suggested by Minwoo
-
-Changes since V1:
- * reorder HCTX_TYPE_POLL to the last one to adopt nvme driver easily.
- * add support WRR(Weighted Round Robin) for nvme driver
-
-Weiping Zhang (5):
-  block: add weighted round robin for blkcgroup
-  nvme: add get_ams for nvme_ctrl_ops
-  nvme-pci: rename module parameter write_queues to read_queues
-  genirq/affinity: allow driver's discontigous affinity set
-  nvme: add support weighted round robin queue
-
- block/blk-cgroup.c         |  89 ++++++++++++++++
- block/blk-mq-debugfs.c     |   4 +
- block/blk-mq-sched.c       |   6 +-
- block/blk-mq-tag.c         |   4 +-
- block/blk-mq-tag.h         |   2 +-
- block/blk-mq.c             |  12 ++-
- block/blk-mq.h             |  20 +++-
- block/blk.h                |   2 +-
- drivers/nvme/host/core.c   |   9 +-
- drivers/nvme/host/nvme.h   |   2 +
- drivers/nvme/host/pci.c    | 246 ++++++++++++++++++++++++++++++++++++---------
- include/linux/blk-cgroup.h |   2 +
- include/linux/blk-mq.h     |  14 +++
- include/linux/interrupt.h  |   2 +-
- include/linux/nvme.h       |   3 +
- kernel/irq/affinity.c      |   4 +
- 16 files changed, 362 insertions(+), 59 deletions(-)
-
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 440797293235..723a27417754 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1014,6 +1014,90 @@ static int blkcg_print_stat(struct seq_file *sf, void *v)
+ 	return 0;
+ }
+ 
++static const char *blk_wrr_name[BLK_WRR_COUNT] = {
++	[BLK_WRR_NONE]		= "none",
++	[BLK_WRR_LOW]		= "low",
++	[BLK_WRR_MEDIUM]	= "medium",
++	[BLK_WRR_HIGH]		= "high",
++	[BLK_WRR_URGENT]	= "urgent",
++};
++
++static inline const char *blk_wrr_to_name(int wrr)
++{
++	if (wrr < BLK_WRR_NONE || wrr >= BLK_WRR_COUNT)
++		return "wrong";
++
++	return blk_wrr_name[wrr];
++}
++
++static ssize_t blkcg_wrr_write(struct kernfs_open_file *of,
++			 char *buf, size_t nbytes, loff_t off)
++{
++	struct blkcg *blkcg = css_to_blkcg(of_css(of));
++	struct gendisk *disk;
++	struct request_queue *q;
++	struct blkcg_gq *blkg;
++	unsigned int major, minor;
++	int wrr, key_len, part, ret;
++	char *body;
++
++	if (sscanf(buf, "%u:%u%n", &major, &minor, &key_len) != 2)
++		return -EINVAL;
++
++	body = buf + key_len;
++	if (!isspace(*body))
++		return -EINVAL;
++	body = skip_spaces(body);
++	wrr = sysfs_match_string(blk_wrr_name, body);
++	if (wrr == BLK_WRR_COUNT)
++		return -EINVAL;
++
++	disk = get_gendisk(MKDEV(major, minor), &part);
++	if (!disk)
++		return -ENODEV;
++	if (part) {
++		ret = -EINVAL;
++		goto fail;
++	}
++
++	q = disk->queue;
++
++	blkg = blkg_lookup_create(blkcg, q);
++
++	atomic_set(&blkg->wrr, wrr);
++	put_disk_and_module(disk);
++
++	return nbytes;
++fail:
++	put_disk_and_module(disk);
++	return ret;
++}
++
++static int blkcg_wrr_show(struct seq_file *sf, void *v)
++{
++	struct blkcg *blkcg = css_to_blkcg(seq_css(sf));
++	struct blkcg_gq *blkg;
++
++	rcu_read_lock();
++
++	hlist_for_each_entry_rcu(blkg, &blkcg->blkg_list, blkcg_node) {
++		const char *dname;
++		char *buf;
++		size_t size = seq_get_buf(sf, &buf), off = 0;
++
++		dname = blkg_dev_name(blkg);
++		if (!dname)
++			continue;
++
++		off += scnprintf(buf+off, size-off, "%s %s\n", dname,
++			blk_wrr_to_name(atomic_read(&blkg->wrr)));
++		seq_commit(sf, off);
++	}
++
++	rcu_read_unlock();
++	return 0;
++}
++
+ static struct cftype blkcg_files[] = {
+ 	{
+ 		.name = "stat",
+@@ -1028,6 +1112,11 @@ static struct cftype blkcg_legacy_files[] = {
+ 		.name = "reset_stats",
+ 		.write_u64 = blkcg_reset_stats,
+ 	},
++	{
++		.name = "wrr",
++		.write = blkcg_wrr_write,
++		.seq_show = blkcg_wrr_show,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+diff --git a/block/blk-mq-debugfs.c b/block/blk-mq-debugfs.c
+index 5d940ff124a5..53dcfca015cd 100644
+--- a/block/blk-mq-debugfs.c
++++ b/block/blk-mq-debugfs.c
+@@ -436,6 +436,10 @@ static int hctx_busy_show(void *data, struct seq_file *m)
+ static const char *const hctx_types[] = {
+ 	[HCTX_TYPE_DEFAULT]	= "default",
+ 	[HCTX_TYPE_READ]	= "read",
++	[HCTX_TYPE_WRR_LOW]	= "wrr_low",
++	[HCTX_TYPE_WRR_MEDIUM]	= "wrr_medium",
++	[HCTX_TYPE_WRR_HIGH]	= "wrr_high",
++	[HCTX_TYPE_WRR_URGENT]	= "wrr_urgent",
+ 	[HCTX_TYPE_POLL]	= "poll",
+ };
+ 
+diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
+index 2766066a15db..8a6c564877d0 100644
+--- a/block/blk-mq-sched.c
++++ b/block/blk-mq-sched.c
+@@ -7,6 +7,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/blk-mq.h>
++#include <linux/blk-cgroup.h>
+ 
+ #include <trace/events/block.h>
+ 
+@@ -322,10 +323,13 @@ bool __blk_mq_sched_bio_merge(struct request_queue *q, struct bio *bio)
+ {
+ 	struct elevator_queue *e = q->elevator;
+ 	struct blk_mq_ctx *ctx = blk_mq_get_ctx(q);
+-	struct blk_mq_hw_ctx *hctx = blk_mq_map_queue(q, bio->bi_opf, ctx);
++	struct blk_mq_hw_ctx *hctx;
++	struct blkcg_gq *blkg = bio->bi_blkg;
++	int wrr = blkg ? atomic_read(&blkg->wrr) : BLK_WRR_NONE;
+ 	bool ret = false;
+ 	enum hctx_type type;
+ 
++	hctx = blk_mq_map_queue(q, bio->bi_opf, ctx, wrr);
+ 	if (e && e->type->ops.bio_merge) {
+ 		blk_mq_put_ctx(ctx);
+ 		return e->type->ops.bio_merge(hctx, bio);
+diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
+index 7513c8eaabee..6fd5261c4fbc 100644
+--- a/block/blk-mq-tag.c
++++ b/block/blk-mq-tag.c
+@@ -106,7 +106,7 @@ static int __blk_mq_get_tag(struct blk_mq_alloc_data *data,
+ 		return __sbitmap_queue_get(bt);
+ }
+ 
+-unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
++unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data, int wrr)
+ {
+ 	struct blk_mq_tags *tags = blk_mq_tags_from_data(data);
+ 	struct sbitmap_queue *bt;
+@@ -171,7 +171,7 @@ unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data)
+ 
+ 		data->ctx = blk_mq_get_ctx(data->q);
+ 		data->hctx = blk_mq_map_queue(data->q, data->cmd_flags,
+-						data->ctx);
++						data->ctx, wrr);
+ 		tags = blk_mq_tags_from_data(data);
+ 		if (data->flags & BLK_MQ_REQ_RESERVED)
+ 			bt = &tags->breserved_tags;
+diff --git a/block/blk-mq-tag.h b/block/blk-mq-tag.h
+index 61deab0b5a5a..ef43f819ead8 100644
+--- a/block/blk-mq-tag.h
++++ b/block/blk-mq-tag.h
+@@ -25,7 +25,7 @@ struct blk_mq_tags {
+ extern struct blk_mq_tags *blk_mq_init_tags(unsigned int nr_tags, unsigned int reserved_tags, int node, int alloc_policy);
+ extern void blk_mq_free_tags(struct blk_mq_tags *tags);
+ 
+-extern unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data);
++extern unsigned int blk_mq_get_tag(struct blk_mq_alloc_data *data, int wrr);
+ extern void blk_mq_put_tag(struct blk_mq_hw_ctx *hctx, struct blk_mq_tags *tags,
+ 			   struct blk_mq_ctx *ctx, unsigned int tag);
+ extern bool blk_mq_has_free_tags(struct blk_mq_tags *tags);
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index ce0f5f4ede70..8e8e743c4c0d 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -356,6 +356,12 @@ static struct request *blk_mq_get_request(struct request_queue *q,
+ 	struct request *rq;
+ 	unsigned int tag;
+ 	bool put_ctx_on_error = false;
++	int wrr;
++
++	if (bio && bio->bi_blkg)
++		wrr = atomic_read(&bio->bi_blkg->wrr);
++	else
++		wrr = BLK_WRR_NONE;
+ 
+ 	blk_queue_enter_live(q);
+ 	data->q = q;
+@@ -365,7 +371,7 @@ static struct request *blk_mq_get_request(struct request_queue *q,
+ 	}
+ 	if (likely(!data->hctx))
+ 		data->hctx = blk_mq_map_queue(q, data->cmd_flags,
+-						data->ctx);
++						data->ctx, wrr);
+ 	if (data->cmd_flags & REQ_NOWAIT)
+ 		data->flags |= BLK_MQ_REQ_NOWAIT;
+ 
+@@ -385,7 +391,7 @@ static struct request *blk_mq_get_request(struct request_queue *q,
+ 		blk_mq_tag_busy(data->hctx);
+ 	}
+ 
+-	tag = blk_mq_get_tag(data);
++	tag = blk_mq_get_tag(data, wrr);
+ 	if (tag == BLK_MQ_TAG_FAIL) {
+ 		if (put_ctx_on_error) {
+ 			blk_mq_put_ctx(data->ctx);
+@@ -1060,7 +1066,7 @@ bool blk_mq_get_driver_tag(struct request *rq)
+ 		data.flags |= BLK_MQ_REQ_RESERVED;
+ 
+ 	shared = blk_mq_tag_busy(data.hctx);
+-	rq->tag = blk_mq_get_tag(&data);
++	rq->tag = blk_mq_get_tag(&data, BLK_WRR_NONE);
+ 	if (rq->tag >= 0) {
+ 		if (shared) {
+ 			rq->rq_flags |= RQF_MQ_INFLIGHT;
+diff --git a/block/blk-mq.h b/block/blk-mq.h
+index 633a5a77ee8b..493a63e9f5ae 100644
+--- a/block/blk-mq.h
++++ b/block/blk-mq.h
+@@ -101,7 +101,8 @@ static inline struct blk_mq_hw_ctx *blk_mq_map_queue_type(struct request_queue *
+  */
+ static inline struct blk_mq_hw_ctx *blk_mq_map_queue(struct request_queue *q,
+ 						     unsigned int flags,
+-						     struct blk_mq_ctx *ctx)
++						     struct blk_mq_ctx *ctx,
++						     int wrr)
+ {
+ 	enum hctx_type type = HCTX_TYPE_DEFAULT;
+ 
+@@ -110,7 +111,22 @@ static inline struct blk_mq_hw_ctx *blk_mq_map_queue(struct request_queue *q,
+ 	 */
+ 	if (flags & REQ_HIPRI)
+ 		type = HCTX_TYPE_POLL;
+-	else if ((flags & REQ_OP_MASK) == REQ_OP_READ)
++	else if (wrr > BLK_WRR_NONE && wrr < BLK_WRR_COUNT) {
++		switch (wrr) {
++		case BLK_WRR_LOW:
++			type = HCTX_TYPE_WRR_LOW;
++			break;
++		case BLK_WRR_MEDIUM:
++			type = HCTX_TYPE_WRR_MEDIUM;
++			break;
++		case BLK_WRR_HIGH:
++			type = HCTX_TYPE_WRR_HIGH;
++			break;
++		default:
++			type = HCTX_TYPE_WRR_URGENT;
++			break;
++		}
++	} else if ((flags & REQ_OP_MASK) == REQ_OP_READ)
+ 		type = HCTX_TYPE_READ;
+ 	
+ 	return ctx->hctxs[type];
+diff --git a/block/blk.h b/block/blk.h
+index 7814aa207153..7779157c63ee 100644
+--- a/block/blk.h
++++ b/block/blk.h
+@@ -39,7 +39,7 @@ extern struct ida blk_queue_ida;
+ static inline struct blk_flush_queue *
+ blk_get_flush_queue(struct request_queue *q, struct blk_mq_ctx *ctx)
+ {
+-	return blk_mq_map_queue(q, REQ_OP_FLUSH, ctx)->fq;
++	return blk_mq_map_queue(q, REQ_OP_FLUSH, ctx, BLK_WRR_NONE)->fq;
+ }
+ 
+ static inline void __blk_get_queue(struct request_queue *q)
+diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
+index 76c61318fda5..0a6a9bcea590 100644
+--- a/include/linux/blk-cgroup.h
++++ b/include/linux/blk-cgroup.h
+@@ -141,6 +141,8 @@ struct blkcg_gq {
+ 	atomic64_t			delay_start;
+ 	u64				last_delay;
+ 	int				last_use;
++	/* weighted round robin */
++	atomic_t			wrr;
+ };
+ 
+ typedef struct blkcg_policy_data *(blkcg_pol_alloc_cpd_fn)(gfp_t gfp);
+diff --git a/include/linux/blk-mq.h b/include/linux/blk-mq.h
+index 15d1aa53d96c..b5445a8f58d8 100644
+--- a/include/linux/blk-mq.h
++++ b/include/linux/blk-mq.h
+@@ -85,11 +85,25 @@ struct blk_mq_queue_map {
+ enum hctx_type {
+ 	HCTX_TYPE_DEFAULT,	/* all I/O not otherwise accounted for */
+ 	HCTX_TYPE_READ,		/* just for READ I/O */
++	HCTX_TYPE_WRR_LOW,	/* blkcg: weighted round robin - low */
++	HCTX_TYPE_WRR_MEDIUM,	/* blkcg: weighted round robin - medium */
++	HCTX_TYPE_WRR_HIGH,	/* blkcg: weighted round robin - high */
++	HCTX_TYPE_WRR_URGENT,	/* blkcg: weighted round robin - urgent */
+ 	HCTX_TYPE_POLL,		/* polled I/O of any kind */
+ 
+ 	HCTX_MAX_TYPES,
+ };
+ 
++enum blk_wrr {
++	BLK_WRR_NONE,
++	BLK_WRR_LOW,
++	BLK_WRR_MEDIUM,
++	BLK_WRR_HIGH,
++	BLK_WRR_URGENT,
++
++	BLK_WRR_COUNT,
++};
++
+ struct blk_mq_tag_set {
+ 	/*
+ 	 * map[] holds ctx -> hctx mappings, one map exists for each type
 -- 
 2.14.1
 
