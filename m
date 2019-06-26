@@ -2,111 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 72B1B57293
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 22:27:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5912A572A4
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 22:37:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbfFZU1K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 16:27:10 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:40937 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZU1K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 16:27:10 -0400
-Received: by mail-pl1-f196.google.com with SMTP id a93so2045489pla.7;
-        Wed, 26 Jun 2019 13:27:10 -0700 (PDT)
+        id S1726239AbfFZUho (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 16:37:44 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:46809 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726227AbfFZUho (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 16:37:44 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n4so4220719wrw.13
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 13:37:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=x1o8oqi0CP9ZDnGVZ99akUd6mY/E2omAq/EbskrFW4k=;
-        b=POv1IyE+sfM8PtylMEWG9x0KHLapZZmKG9O21FYbI6DJsX5YyUowJrGlqsd1brIdG8
-         4ooVgaj5bl5g67fjcD008OmeeshHnFYPER80FNuf5bYHxde/ukJ7bWPpS8NczoyEc+cd
-         CKv88keWcLtmuhtiNaZoX+rSSEGKhfYIcDgDEeWjODEkilqjwNyropymwYsdONJxg/BT
-         RNVNSIq/3Dm6bgbcxL3pgXBZ/PJQDE9Y849OPSdGMAR8sKJdGdQE52In7DcwfdXdT/zY
-         0kLbMrXm0RsqOhLX7c87vpo1H5eqgA6gd/xXSJomam4kbPKHTDP711I23q8T80n26mkx
-         3q8Q==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PoKojTv4DP1CTaPk4hl31T1ZiHUB+yaY0GHfGPmG7PM=;
+        b=eUqmKVHgMpukYvvbovqdh1LhXRpdrgqpQKey28jlQCM+Z2NyKA/h27OpNMKUxV6bYV
+         5BX8neOV3Bed+Va0CkiQNd8/4a2FU5bIPkS2HLD8lmbJRZAlAdnU5nbCHNPmSw/+pch2
+         AbPIIiiK+qSWrkNz7jfKIZv5FX/Yzoz63Uam7VUJtTjKCm/iKPYKzNEPGKvI5EjBHXb8
+         vQ9Ub1oczsHWAS2GDPptvCvvWA5kaivBOQrZ2jPY4H7CUedY352otYLsf0cbTAuqcEgx
+         3jqkv84tdl7nSmo5Ez2hl1q8jt5RnBv1CMU9ZCsBS6NQ5yfdIXHOilRrGNQ0dJxTx2VM
+         Nw7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=x1o8oqi0CP9ZDnGVZ99akUd6mY/E2omAq/EbskrFW4k=;
-        b=SHDq5fb5Plw6aHWd+FfXsFUSEk/6rSZjetOcMVtIOen3dqZkZBI5jyWCEJd5z5FeF0
-         cCRIo5Jxqj9iD/hgtEtR1pRGWmVTa3R/vKWkWrDksZT6I4J6wuGywRJzj6DoLcOsdVAJ
-         ZnOUn8R3sQ0CVFvjHBXdQNjEQWZbivu/VRj/npDBuYXVrwawLoVMnINfs0A1A/qdqBis
-         rturGjulM3NxeQwDNS3hbVWMj0kN60NWpaK0B+Sail50pGTROjVYeYU4GPa67IOpEVKU
-         TBGJas6eTX/m2XOdtCTINLn1LHWuJwlUX6yspQdo0AxsHhnlwMSEQwO7YPuuAJhtL+Jr
-         TNOA==
-X-Gm-Message-State: APjAAAUjSExevr7Kh32l3zgULNXHwSjWdpKwM+IdeLx6q6W2s89y8jS5
-        PEAn18fIVr0HlcPtgUiecmc=
-X-Google-Smtp-Source: APXvYqyjymNoPT4b92sWLExLPDZZq/X+c5U+Nyf00E2YjebGqOGMookCtAi+tYDjxEy8W4ninii9dg==
-X-Received: by 2002:a17:902:9b81:: with SMTP id y1mr7962559plp.194.1561580829862;
-        Wed, 26 Jun 2019 13:27:09 -0700 (PDT)
-Received: from localhost ([123.213.206.190])
-        by smtp.gmail.com with ESMTPSA id p27sm83702pfq.136.2019.06.26.13.27.08
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 26 Jun 2019 13:27:09 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 05:27:06 +0900
-From:   Minwoo Im <minwoo.im.dev@gmail.com>
-To:     Weiping Zhang <zwp10758@gmail.com>
-Cc:     Weiping Zhang <zhangweiping@didiglobal.com>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>, keith.busch@intel.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org, Minwoo Im <minwoo.im.dev@gmail.com>
-Subject: Re: [PATCH v3 3/5] nvme-pci: rename module parameter write_queues to
- read_queues
-Message-ID: <20190626202706.GC4934@minwooim-desktop>
-References: <cover.1561385989.git.zhangweiping@didiglobal.com>
- <d61b1b9a31c3d2fae9ece26bcd5f4504b25f059f.1561385989.git.zhangweiping@didiglobal.com>
- <20190624200445.GB6526@minwooim-desktop>
- <CAA70yB5arvfaUsktN-cvd0yHpRi+FwFjL4r5_jTRWM8+rBVdnA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PoKojTv4DP1CTaPk4hl31T1ZiHUB+yaY0GHfGPmG7PM=;
+        b=o9iFyfyBKewTYKd99HfPA1MMRx+xUHkBTD3XiK/0Kdl0x4290XbFK1tBIJtw7aqLGK
+         Suruhq+kmZfL9tiEW6H+N8m0VjHLeO1u29D1U1fFY5k8RYaVQY19yZGTBTT2iqtXWgXX
+         jSJkIafYGe0vk7v3L3AXBiQZ0iqKFHz7nUUiZuFj4bxIKSAbsrVUCmDFMTZ+3ilrFZMM
+         s+czvvzZ4y+zC4rHmB5xJgdZ4FYTTchjWrI7fn8Q1PbBrsYrMtAImQMn27/rkmww0sU4
+         RASMNr2FIIvFmC7UppOvnCPKd2FYJh5bNjd2AWS2A7gogAB0hhleyAFD4BuDW++mOtes
+         x+VA==
+X-Gm-Message-State: APjAAAV3r4JgioduTcSYQor4QdbasocF6SCnBYIlIBUZSMjLYEBJ+gu2
+        7z7cEYE6o1M6P3c92zCvnJr4AvMJRAwE3Bm6rJw=
+X-Google-Smtp-Source: APXvYqwtqlEbO8+EMh/ywP0aoBCzVSiuqXGkS4Jdu/wv5ptIaGrtHk2EKqYsmvsmVqAnmd6ZpSYApKlu1XeSlNhqCKo=
+X-Received: by 2002:adf:e9c6:: with SMTP id l6mr5384686wrn.216.1561581462095;
+ Wed, 26 Jun 2019 13:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAA70yB5arvfaUsktN-cvd0yHpRi+FwFjL4r5_jTRWM8+rBVdnA@mail.gmail.com>
-User-Agent: Mutt/1.11.4 (2019-03-13)
+References: <20190626150522.11618-1-Kenny.Ho@amd.com> <20190626150522.11618-3-Kenny.Ho@amd.com>
+ <20190626155605.GQ12905@phenom.ffwll.local>
+In-Reply-To: <20190626155605.GQ12905@phenom.ffwll.local>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Wed, 26 Jun 2019 16:37:30 -0400
+Message-ID: <CAOWid-cDopwjMns+c=fRpUA-z51zU=YbDC2QCVUXDjjTiyRcXw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 02/11] cgroup: Add mechanism to register DRM devices
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 19-06-25 22:48:57, Weiping Zhang wrote:
-> Minwoo Im <minwoo.im.dev@gmail.com> 于2019年6月25日周二 上午6:00写道：
-> >
-> > On 19-06-24 22:29:19, Weiping Zhang wrote:
-> > > Now nvme support three type hardware queues, read, poll and default,
-> > > this patch rename write_queues to read_queues to set the number of
-> > > read queues more explicitly. This patch alos is prepared for nvme
-> > > support WRR(weighted round robin) that we can get the number of
-> > > each queue type easily.
-> > >
-> > > Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
-> >
-> > Hello, Weiping.
-> >
-> > Thanks for making this patch as a separated one.  Actually I'd like to
-> > hear about if the origin purpose of this param can be changed or not.
-> >
-> > I can see a log from Jens when it gets added her:
-> >   Commit 3b6592f70ad7("nvme: utilize two queue maps, one for reads and
-> >                        one for writes")
-> >   It says:
-> >   """
-> >   NVMe does round-robin between queues by default, which means that
-> >   sharing a queue map for both reads and writes can be problematic
-> >   in terms of read servicing. It's much easier to flood the queue
-> >   with writes and reduce the read servicing.
-> >   """
-> >
-> > So, I'd like to hear what other people think about this patch :)
-> >
-> 
-> This patch does not change its original behavior, if we set read_queue
-> greater than 0, the read and write request will use different tagset map,
-> so they will use different hardware queue.
+(sending again, I keep missing the reply-all in gmail.)
 
-Yes, that's why I want to hear some comments for this change from other
-people.  I'm not against this change, though.
+On Wed, Jun 26, 2019 at 11:56 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Why the separate, explicit registration step? I think a simpler design for
+> drivers would be that we set up cgroups if there's anything to be
+> controlled, and then for GEM drivers the basic GEM stuff would be set up
+> automically (there's really no reason not to I think).
+
+Is this what you mean with the comment about drm_dev_register below?
+I think I understand what you are saying but not super clear.  Are you
+suggesting the use of driver feature bits (drm_core_check_feature,
+etc.) similar to the way Brian Welty did in his proposal in May?
+
+> Also tying to the minor is a bit funky, since we have multiple of these.
+> Need to make sure were at least consistent with whether we use the primary
+> or render minor - I'd always go with the primary one like you do here.
+
+Um... come to think of it, I can probably embed struct drmcgrp_device
+into drm_device and that way I don't really need to keep a separate
+array of
+known_drmcgrp_devs and get rid of that max_minor thing.  Not sure why
+I didn't think of this before.
+
+> > +
+> > +int drmcgrp_register_device(struct drm_device *dev)
+>
+> Imo this should be done as part of drm_dev_register (maybe only if the
+> driver has set up a controller or something). Definitely with the
+> unregister logic below. Also anything used by drivers needs kerneldoc.
+>
+>
+> > +     /* init cgroups created before registration (i.e. root cgroup) */
+> > +     if (root_drmcgrp != NULL) {
+> > +             struct cgroup_subsys_state *pos;
+> > +             struct drmcgrp *child;
+> > +
+> > +             rcu_read_lock();
+> > +             css_for_each_descendant_pre(pos, &root_drmcgrp->css) {
+> > +                     child = css_drmcgrp(pos);
+> > +                     init_drmcgrp(child, dev);
+> > +             }
+> > +             rcu_read_unlock();
+>
+> I have no idea, but is this guaranteed to get them all?
+
+I believe so, base on my understanding about
+css_for_each_descendant_pre and how I am starting from the root
+cgroup.  Hopefully I didn't miss anything.
+
+Regards,
+Kenny
