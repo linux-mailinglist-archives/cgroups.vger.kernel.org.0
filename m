@@ -2,61 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AA3956E50
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 18:06:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9533B56E70
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 18:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726157AbfFZQF7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 12:05:59 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:36147 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbfFZQF7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 12:05:59 -0400
-Received: by mail-ed1-f67.google.com with SMTP id k21so4082586edq.3
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 09:05:57 -0700 (PDT)
+        id S1726227AbfFZQNA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 12:13:00 -0400
+Received: from mail-ed1-f68.google.com ([209.85.208.68]:43501 "EHLO
+        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726354AbfFZQNA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 12:13:00 -0400
+Received: by mail-ed1-f68.google.com with SMTP id e3so4065963edr.10
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 09:12:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=A+EpXpfoJ8iYiW+nfqWZW0jNTe/ono+nTDZMvRVkbH8=;
-        b=d7bBjSNgp+vldolslUXxoCWY9e+2SDCKiE5QbbVNcm5KhUhkoG4ezACJi/VM3xn88M
-         LeZ4lYAH7ipougUM6Tq7vRa7paOuD8DJ0i1okXstIw7pq0ZG7drj0ekFLcZQKp0G63JR
-         B9ZazqeOhtc1cpybjYAjLmU9dYUOcgnEN+YaE=
+        bh=SWXNmb7GUeHHEkLzaXYll8rDGNvnyCU3wZ5YDgqleLA=;
+        b=d0jCQ0+pode9KR2pHRHz9CvtaGcSgbYLb4crTkh+309/waJwgL8bw+pc6mdSvR2ojg
+         w+ihaM1BcCiBOO77wTcO377PXU1HqmHmZOjgzDwxeWK1aW/BVmooZTwi23vq0XxDNG8v
+         FuraJ8JW7AaACZBeYunue6ZJph4ydCQFVpgaA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=A+EpXpfoJ8iYiW+nfqWZW0jNTe/ono+nTDZMvRVkbH8=;
-        b=Rw14xWHWhRvJpN0xKGzyzRF5m2wee/+Hps1d4gKrMs1a1/4Kj6PMffDtwZUWI0Obcb
-         y4x4aV5Hj+qhRfzChEDoAVgQ9B3YwsleXoIkFWq1n3B/frrE4+MVGTEGfh2EuRRk3oHK
-         c6tdxMI1sFdoKaNO4rc+aSgZ+qJpz6VltJWYCBPIG/8SEbwR6f37cWs1sV2SHxaVZTlF
-         jLXXArgXcYWpJ3jka8e76X3jmvsw5+Gui5jmybguiSyeabU+YRiXeF2V5Ygsr7Qcr8uh
-         wBTAnp/he4UcQmqBHnV3dCaoFPUuvqGY62i2UFfGT+sr9CQbU4Vc9lGhi59EfpiW7j4b
-         koFQ==
-X-Gm-Message-State: APjAAAUhZQOu8uMcsGfbnOIx3Q/dZEzVkcmLCS0Q4MyxcFKLmBWNjV9t
-        N6NLNKoGwM2WeRzbmByBYz+qZg==
-X-Google-Smtp-Source: APXvYqwbhA3pBgieHde0c5d8BHChR4ve3IhSz1xiGO7u4jqNZCw1KVdQ16WChSXWUa4LdDHcVNK5eg==
-X-Received: by 2002:a50:9203:: with SMTP id i3mr6448122eda.302.1561565156356;
-        Wed, 26 Jun 2019 09:05:56 -0700 (PDT)
+        bh=SWXNmb7GUeHHEkLzaXYll8rDGNvnyCU3wZ5YDgqleLA=;
+        b=EUg1DpQ7csZXUF63lwd9MY/p4vNQaiSe5zFmgStqyt9KoSownNOSI4/fhWllCCOmSd
+         8nOWYcSPvpBymJBuemCBb6FaNxmdiwE2sbue1DgBRoUNkGhcj7GnbKtQdl0QOlQCqMP0
+         Rd4U4k+MUaOayklY+4h/CMrGiLsD1H0m66AiAz8d3X/yMJYx1Fnvqv3IlYE/hWue945F
+         csyHky2Bc+8MkFzGstVH5GZgkLJWkhF+K5R2Gz7EbUCkk8+gr6hH/vo5p1hrlMekBx05
+         19+LYA5YUrJo46sTjlGsRAMYlynjlAaOvc2xpJDszKpldpzYpqYH7awk+GBWoZrUdeZc
+         kilQ==
+X-Gm-Message-State: APjAAAX8MJjni/ssDiSTMroBiwVUb2AuxdVXSJ8ovOyD285RpJFtE2PE
+        UMHKgvGctTxFPy0PY4Imt9BF0w==
+X-Google-Smtp-Source: APXvYqyuyYlERpxvdx2wwhrT/NDF/Iy6a6vJ3Xnu/kk2CFuDtlT7dzNXv+B4hHQmDmfAolSCO+jLSQ==
+X-Received: by 2002:a17:906:5813:: with SMTP id m19mr4819488ejq.6.1561565577169;
+        Wed, 26 Jun 2019 09:12:57 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id j13sm1152951ejt.13.2019.06.26.09.05.55
+        by smtp.gmail.com with ESMTPSA id z10sm5834037edl.35.2019.06.26.09.12.55
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 09:05:55 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 18:05:53 +0200
+        Wed, 26 Jun 2019 09:12:56 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 18:12:54 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Kenny Ho <Kenny.Ho@amd.com>
 Cc:     y2kenny@gmail.com, cgroups@vger.kernel.org,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         tj@kernel.org, alexander.deucher@amd.com, christian.koenig@amd.com,
         joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 04/11] drm, cgroup: Add total GEM buffer
- allocation limit
-Message-ID: <20190626160553.GR12905@phenom.ffwll.local>
+Subject: Re: [RFC PATCH v3 07/11] drm, cgroup: Add TTM buffer allocation stats
+Message-ID: <20190626161254.GS12905@phenom.ffwll.local>
 References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-5-Kenny.Ho@amd.com>
+ <20190626150522.11618-8-Kenny.Ho@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190626150522.11618-5-Kenny.Ho@amd.com>
+In-Reply-To: <20190626150522.11618-8-Kenny.Ho@amd.com>
 X-Operating-System: Linux phenom 4.19.0-5-amd64 
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
@@ -64,635 +63,489 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 11:05:15AM -0400, Kenny Ho wrote:
-> The drm resource being measured and limited here is the GEM buffer
-> objects.  User applications allocate and free these buffers.  In
-> addition, a process can allocate a buffer and share it with another
-> process.  The consumer of a shared buffer can also outlive the
-> allocator of the buffer.
+On Wed, Jun 26, 2019 at 11:05:18AM -0400, Kenny Ho wrote:
+> The drm resource being measured is the TTM (Translation Table Manager)
+> buffers.  TTM manages different types of memory that a GPU might access.
+> These memory types include dedicated Video RAM (VRAM) and host/system
+> memory accessible through IOMMU (GART/GTT).  TTM is currently used by
+> multiple drm drivers (amd, ast, bochs, cirrus, hisilicon, maga200,
+> nouveau, qxl, virtio, vmwgfx.)
 > 
-> For the purpose of cgroup accounting and limiting, ownership of the
-> buffer is deemed to be the cgroup for which the allocating process
-> belongs to.  There is one cgroup limit per drm device.
+> drm.memory.stats
+>         A read-only nested-keyed file which exists on all cgroups.
+>         Each entry is keyed by the drm device's major:minor.  The
+>         following nested keys are defined.
 > 
-> In order to prevent the buffer outliving the cgroup that owns it, a
-> process is prevented from importing buffers that are not own by the
-> process' cgroup or the ancestors of the process' cgroup.  In other
-> words, in order for a buffer to be shared between two cgroups, the
-> buffer must be created by the common ancestors of the cgroups.
+>           ======         =============================================
+>           system         Host/system memory
+
+Shouldn't that be covered by gem bo stats already? Also, system memory is
+definitely something a lot of non-ttm drivers want to be able to track, so
+that needs to be separate from ttm.
+
+>           tt             Host memory used by the drm device (GTT/GART)
+>           vram           Video RAM used by the drm device
+>           priv           Other drm device, vendor specific memory
+
+So what's "priv". In general I think we need some way to register the
+different kinds of memory, e.g. stuff not in your list:
+
+- multiple kinds of vram (like numa-style gpus)
+- cma (for all those non-ttm drivers that's a big one, it's like system
+  memory but also totally different)
+- any carveouts and stuff
+>           ======         =============================================
 > 
-> drm.buffer.stats
+>         Reading returns the following::
+> 
+>         226:0 system=0 tt=0 vram=0 priv=0
+>         226:1 system=0 tt=9035776 vram=17768448 priv=16809984
+>         226:2 system=0 tt=9035776 vram=17768448 priv=16809984
+> 
+> drm.memory.evict.stats
 >         A read-only flat-keyed file which exists on all cgroups.  Each
 >         entry is keyed by the drm device's major:minor.
 > 
->         Total GEM buffer allocation in bytes.
+>         Total number of evictions.
 > 
-> drm.buffer.default
->         A read-only flat-keyed file which exists on the root cgroup.
->         Each entry is keyed by the drm device's major:minor.
-> 
->         Default limits on the total GEM buffer allocation in bytes.
-
-Don't we need a "0 means no limit" semantics here?
-
-> drm.buffer.max
->         A read-write flat-keyed file which exists on all cgroups.  Each
->         entry is keyed by the drm device's major:minor.
-> 
->         Per device limits on the total GEM buffer allocation in byte.
->         This is a hard limit.  Attempts in allocating beyond the cgroup
->         limit will result in ENOMEM.  Shorthand understood by memparse
->         (such as k, m, g) can be used.
-> 
->         Set allocation limit for /dev/dri/card1 to 1GB
->         echo "226:1 1g" > drm.buffer.total.max
-> 
->         Set allocation limit for /dev/dri/card0 to 512MB
->         echo "226:0 512m" > drm.buffer.total.max
-
-I think we need a new drm-cgroup.rst which contains all this
-documentation.
-
-With multiple GPUs, do we need an overall GEM bo limit, across all gpus?
-For other stuff later on like vram/tt/... and all that it needs to be
-per-device, but I think one overall limit could be useful.
-
-> 
-> Change-Id: I4c249d06d45ec709d6481d4cbe87c5168545c5d0
+> Change-Id: Ice2c4cc845051229549bebeb6aa2d7d6153bdf6a
 > Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
+
+I think with all the ttm refactoring going on I think we need to de-ttm
+the interface functions here a bit. With Gerd Hoffmans series you can just
+use a gem_bo pointer here, so what's left to do is have some extracted
+structure for tracking memory types. I think Brian Welty has some ideas
+for this, even in patch form. Would be good to keep him on cc at least for
+the next version. We'd need to explicitly hand in the ttm_mem_reg (or
+whatever the specific thing is going to be).
+
+-Daniel
 > ---
->  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |   4 +
->  drivers/gpu/drm/drm_gem.c                  |   8 +
->  drivers/gpu/drm/drm_prime.c                |   9 +
->  include/drm/drm_cgroup.h                   |  34 ++-
->  include/drm/drm_gem.h                      |  11 +
->  include/linux/cgroup_drm.h                 |   2 +
->  kernel/cgroup/drm.c                        | 321 +++++++++++++++++++++
->  7 files changed, 387 insertions(+), 2 deletions(-)
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c |   3 +-
+>  drivers/gpu/drm/ttm/ttm_bo.c            |  30 +++++++
+>  drivers/gpu/drm/ttm/ttm_bo_util.c       |   4 +
+>  include/drm/drm_cgroup.h                |  19 ++++
+>  include/drm/ttm/ttm_bo_api.h            |   2 +
+>  include/drm/ttm/ttm_bo_driver.h         |   8 ++
+>  include/linux/cgroup_drm.h              |   4 +
+>  kernel/cgroup/drm.c                     | 113 ++++++++++++++++++++++++
+>  8 files changed, 182 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-> index 93b2c5a48a71..b4c078b7ad63 100644
-> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
-> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> index e9ecc3953673..a8dfc78ed45f 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.c
+> @@ -1678,8 +1678,9 @@ int amdgpu_ttm_init(struct amdgpu_device *adev)
+>  	mutex_init(&adev->mman.gtt_window_lock);
+>  
+>  	/* No others user of address space so set it to 0 */
+> -	r = ttm_bo_device_init(&adev->mman.bdev,
+> +	r = ttm_bo_device_init_tmp(&adev->mman.bdev,
+>  			       &amdgpu_bo_driver,
+> +			       adev->ddev,
+>  			       adev->ddev->anon_inode->i_mapping,
+>  			       adev->need_dma32);
+>  	if (r) {
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> index 2845fceb2fbd..e9f70547f0ad 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
 > @@ -34,6 +34,7 @@
->  #include <drm/drmP.h>
->  #include <drm/amdgpu_drm.h>
->  #include <drm/drm_cache.h>
+>  #include <drm/ttm/ttm_module.h>
+>  #include <drm/ttm/ttm_bo_driver.h>
+>  #include <drm/ttm/ttm_placement.h>
 > +#include <drm/drm_cgroup.h>
->  #include "amdgpu.h"
->  #include "amdgpu_trace.h"
->  #include "amdgpu_amdkfd.h"
-> @@ -446,6 +447,9 @@ static int amdgpu_bo_do_create(struct amdgpu_device *adev,
->  	if (!amdgpu_bo_validate_size(adev, size, bp->domain))
->  		return -ENOMEM;
->  
-> +	if (!drmcgrp_bo_can_allocate(current, adev->ddev, size))
-> +		return -ENOMEM;
-
-So what happens when you start a lot of threads all at the same time,
-allocating gem bo? Also would be nice if we could roll out at least the
-accounting part of this cgroup to all GEM drivers.
-
-> +
->  	*bo_ptr = NULL;
->  
->  	acc_size = ttm_bo_dma_acc_size(&adev->mman.bdev, size,
-> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-> index 6a80db077dc6..e20c1034bf2b 100644
-> --- a/drivers/gpu/drm/drm_gem.c
-> +++ b/drivers/gpu/drm/drm_gem.c
-> @@ -37,10 +37,12 @@
->  #include <linux/shmem_fs.h>
->  #include <linux/dma-buf.h>
->  #include <linux/mem_encrypt.h>
+>  #include <linux/jiffies.h>
+>  #include <linux/slab.h>
+>  #include <linux/sched.h>
+> @@ -42,6 +43,7 @@
+>  #include <linux/module.h>
+>  #include <linux/atomic.h>
+>  #include <linux/reservation.h>
 > +#include <linux/cgroup_drm.h>
->  #include <drm/drmP.h>
->  #include <drm/drm_vma_manager.h>
->  #include <drm/drm_gem.h>
->  #include <drm/drm_print.h>
-> +#include <drm/drm_cgroup.h>
->  #include "drm_internal.h"
 >  
->  /** @file drm_gem.c
-> @@ -154,6 +156,9 @@ void drm_gem_private_object_init(struct drm_device *dev,
->  	obj->handle_count = 0;
->  	obj->size = size;
->  	drm_vma_node_reset(&obj->vma_node);
+>  static void ttm_bo_global_kobj_release(struct kobject *kobj);
+>  
+> @@ -151,6 +153,10 @@ static void ttm_bo_release_list(struct kref *list_kref)
+>  	struct ttm_bo_device *bdev = bo->bdev;
+>  	size_t acc_size = bo->acc_size;
+>  
+> +	if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +		drmcgrp_unchg_mem(bo);
+> +	put_drmcgrp(bo->drmcgrp);
 > +
-> +	obj->drmcgrp = get_drmcgrp(current);
-> +	drmcgrp_chg_bo_alloc(obj->drmcgrp, dev, size);
->  }
->  EXPORT_SYMBOL(drm_gem_private_object_init);
+>  	BUG_ON(kref_read(&bo->list_kref));
+>  	BUG_ON(kref_read(&bo->kref));
+>  	BUG_ON(atomic_read(&bo->cpu_writers));
+> @@ -353,6 +359,8 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+>  		if (bo->mem.mem_type == TTM_PL_SYSTEM) {
+>  			if (bdev->driver->move_notify)
+>  				bdev->driver->move_notify(bo, evict, mem);
+> +			if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +				drmcgrp_mem_track_move(bo, evict, mem);
+>  			bo->mem = *mem;
+>  			mem->mm_node = NULL;
+>  			goto moved;
+> @@ -361,6 +369,8 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
 >  
-> @@ -804,6 +809,9 @@ drm_gem_object_release(struct drm_gem_object *obj)
->  	if (obj->filp)
->  		fput(obj->filp);
+>  	if (bdev->driver->move_notify)
+>  		bdev->driver->move_notify(bo, evict, mem);
+> +	if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +		drmcgrp_mem_track_move(bo, evict, mem);
 >  
-> +	drmcgrp_unchg_bo_alloc(obj->drmcgrp, obj->dev, obj->size);
-> +	put_drmcgrp(obj->drmcgrp);
-> +
->  	drm_gem_free_mmap_offset(obj);
->  }
->  EXPORT_SYMBOL(drm_gem_object_release);
-> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
-> index 231e3f6d5f41..eeb612116810 100644
-> --- a/drivers/gpu/drm/drm_prime.c
-> +++ b/drivers/gpu/drm/drm_prime.c
-> @@ -32,6 +32,7 @@
->  #include <drm/drm_prime.h>
->  #include <drm/drm_gem.h>
->  #include <drm/drmP.h>
-> +#include <drm/drm_cgroup.h>
+>  	if (!(old_man->flags & TTM_MEMTYPE_FLAG_FIXED) &&
+>  	    !(new_man->flags & TTM_MEMTYPE_FLAG_FIXED))
+> @@ -374,6 +384,8 @@ static int ttm_bo_handle_move_mem(struct ttm_buffer_object *bo,
+>  		if (bdev->driver->move_notify) {
+>  			swap(*mem, bo->mem);
+>  			bdev->driver->move_notify(bo, false, mem);
+> +			if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +				drmcgrp_mem_track_move(bo, evict, mem);
+>  			swap(*mem, bo->mem);
+>  		}
 >  
->  #include "drm_internal.h"
->  
-> @@ -794,6 +795,7 @@ int drm_gem_prime_fd_to_handle(struct drm_device *dev,
->  {
->  	struct dma_buf *dma_buf;
->  	struct drm_gem_object *obj;
-> +	struct drmcgrp *drmcgrp = drmcgrp_from(current);
->  	int ret;
->  
->  	dma_buf = dma_buf_get(prime_fd);
-> @@ -818,6 +820,13 @@ int drm_gem_prime_fd_to_handle(struct drm_device *dev,
->  		goto out_unlock;
+> @@ -1275,6 +1287,10 @@ int ttm_bo_init_reserved(struct ttm_bo_device *bdev,
+>  		WARN_ON(!locked);
 >  	}
 >  
-> +	/* only allow bo from the same cgroup or its ancestor to be imported */
-> +	if (drmcgrp != NULL &&
-
-Quite a serious limitation here ...
-
-> +			!drmcgrp_is_self_or_ancestor(drmcgrp, obj->drmcgrp)) {
-
-Also what happens if you actually share across devices? Then importing in
-the 2nd group is suddenly possible, and I think will be double-counted.
-
-What's the underlying technical reason for not allowing sharing across
-cgroups?
-
-> +		ret = -EACCES;
-> +		goto out_unlock;
-> +	}
+> +	bo->drmcgrp = get_drmcgrp(current);
+> +	if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +		drmcgrp_chg_mem(bo);
 > +
->  	if (obj->dma_buf) {
->  		WARN_ON(obj->dma_buf != dma_buf);
->  	} else {
+>  	if (likely(!ret))
+>  		ret = ttm_bo_validate(bo, placement, ctx);
+>  
+> @@ -1666,6 +1682,20 @@ int ttm_bo_device_init(struct ttm_bo_device *bdev,
+>  }
+>  EXPORT_SYMBOL(ttm_bo_device_init);
+>  
+> +/* TODO merge with official function when implementation finalized*/
+> +int ttm_bo_device_init_tmp(struct ttm_bo_device *bdev,
+> +		struct ttm_bo_driver *driver,
+> +		struct drm_device *ddev,
+> +		struct address_space *mapping,
+> +		bool need_dma32)
+> +{
+> +	int ret = ttm_bo_device_init(bdev, driver, mapping, need_dma32);
+> +
+> +	bdev->ddev = ddev;
+> +	return ret;
+> +}
+> +EXPORT_SYMBOL(ttm_bo_device_init_tmp);
+> +
+>  /*
+>   * buffer object vm functions.
+>   */
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo_util.c b/drivers/gpu/drm/ttm/ttm_bo_util.c
+> index 895d77d799e4..4ed7847c21f4 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo_util.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo_util.c
+> @@ -32,6 +32,7 @@
+>  #include <drm/ttm/ttm_bo_driver.h>
+>  #include <drm/ttm/ttm_placement.h>
+>  #include <drm/drm_vma_manager.h>
+> +#include <drm/drm_cgroup.h>
+>  #include <linux/io.h>
+>  #include <linux/highmem.h>
+>  #include <linux/wait.h>
+> @@ -522,6 +523,9 @@ static int ttm_buffer_object_transfer(struct ttm_buffer_object *bo,
+>  	ret = reservation_object_trylock(fbo->base.resv);
+>  	WARN_ON(!ret);
+>  
+> +	if (bo->bdev->ddev != NULL) // TODO: remove after ddev initiazlied for all
+> +		drmcgrp_chg_mem(bo);
+> +
+>  	*new_obj = &fbo->base;
+>  	return 0;
+>  }
 > diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
-> index ddb9eab64360..8711b7c5f7bf 100644
+> index 8711b7c5f7bf..48ab5450cf17 100644
 > --- a/include/drm/drm_cgroup.h
 > +++ b/include/drm/drm_cgroup.h
-> @@ -4,12 +4,20 @@
->  #ifndef __DRM_CGROUP_H__
+> @@ -5,6 +5,7 @@
 >  #define __DRM_CGROUP_H__
 >  
-> +#include <linux/cgroup_drm.h>
-> +
+>  #include <linux/cgroup_drm.h>
+> +#include <drm/ttm/ttm_bo_api.h>
+>  
 >  #ifdef CONFIG_CGROUP_DRM
 >  
->  int drmcgrp_register_device(struct drm_device *device);
-> -
->  int drmcgrp_unregister_device(struct drm_device *device);
-> -
-> +bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self,
-> +		struct drmcgrp *relative);
-> +void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
-> +		size_t size);
-> +void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
-> +		size_t size);
-> +bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
-> +		size_t size);
+> @@ -18,6 +19,11 @@ void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+>  		size_t size);
+>  bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
+>  		size_t size);
+> +void drmcgrp_chg_mem(struct ttm_buffer_object *tbo);
+> +void drmcgrp_unchg_mem(struct ttm_buffer_object *tbo);
+> +void drmcgrp_mem_track_move(struct ttm_buffer_object *old_bo, bool evict,
+> +		struct ttm_mem_reg *new_mem);
+> +
 >  #else
 >  static inline int drmcgrp_register_device(struct drm_device *device)
 >  {
-> @@ -20,5 +28,27 @@ static inline int drmcgrp_unregister_device(struct drm_device *device)
+> @@ -50,5 +56,18 @@ static inline bool drmcgrp_bo_can_allocate(struct task_struct *task,
 >  {
->  	return 0;
+>  	return true;
 >  }
 > +
-> +static inline bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self,
-> +		struct drmcgrp *relative)
-> +{
-> +	return false;
-> +}
-> +
-> +static inline void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp,
-> +		struct drm_device *dev,	size_t size)
+> +static inline void drmcgrp_chg_mem(struct ttm_buffer_object *tbo)
 > +{
 > +}
 > +
-> +static inline void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp,
-> +		struct drm_device *dev,	size_t size)
+> +static inline void drmcgrp_unchg_mem(struct ttm_buffer_object *tbo)
 > +{
 > +}
 > +
-> +static inline bool drmcgrp_bo_can_allocate(struct task_struct *task,
-> +		struct drm_device *dev,	size_t size)
+> +static inline void drmcgrp_mem_track_move(struct ttm_buffer_object *old_bo,
+> +		bool evict, struct ttm_mem_reg *new_mem)
 > +{
-> +	return true;
 > +}
 >  #endif /* CONFIG_CGROUP_DRM */
 >  #endif /* __DRM_CGROUP_H__ */
-> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
-> index c95727425284..09d1c69a3f0c 100644
-> --- a/include/drm/drm_gem.h
-> +++ b/include/drm/drm_gem.h
-> @@ -272,6 +272,17 @@ struct drm_gem_object {
->  	 *
+> diff --git a/include/drm/ttm/ttm_bo_api.h b/include/drm/ttm/ttm_bo_api.h
+> index 49d9cdfc58f2..ae1bb6daec81 100644
+> --- a/include/drm/ttm/ttm_bo_api.h
+> +++ b/include/drm/ttm/ttm_bo_api.h
+> @@ -128,6 +128,7 @@ struct ttm_tt;
+>   * struct ttm_buffer_object
+>   *
+>   * @bdev: Pointer to the buffer object device structure.
+> + * @drmcgrp: DRM cgroup this object belongs to.
+>   * @type: The bo type.
+>   * @destroy: Destruction function. If NULL, kfree is used.
+>   * @num_pages: Actual number of pages.
+> @@ -174,6 +175,7 @@ struct ttm_buffer_object {
 >  	 */
->  	const struct drm_gem_object_funcs *funcs;
-> +
-> +	/**
-> +	 * @drmcgrp:
-> +	 *
-> +	 * DRM cgroup this GEM object belongs to.
-> +	 *
-> +	 * This is used to track and limit the amount of GEM objects a user
-> +	 * can allocate.  Since GEM objects can be shared, this is also used
-> +	 * to ensure GEM objects are only shared within the same cgroup.
-> +	 */
-> +	struct drmcgrp *drmcgrp;
->  };
 >  
+>  	struct ttm_bo_device *bdev;
+> +	struct drmcgrp *drmcgrp;
+>  	enum ttm_bo_type type;
+>  	void (*destroy) (struct ttm_buffer_object *);
+>  	unsigned long num_pages;
+> diff --git a/include/drm/ttm/ttm_bo_driver.h b/include/drm/ttm/ttm_bo_driver.h
+> index c008346c2401..4cbcb41e5aa9 100644
+> --- a/include/drm/ttm/ttm_bo_driver.h
+> +++ b/include/drm/ttm/ttm_bo_driver.h
+> @@ -30,6 +30,7 @@
+>  #ifndef _TTM_BO_DRIVER_H_
+>  #define _TTM_BO_DRIVER_H_
+>  
+> +#include <drm/drm_device.h>
+>  #include <drm/drm_mm.h>
+>  #include <drm/drm_vma_manager.h>
+>  #include <linux/workqueue.h>
+> @@ -442,6 +443,7 @@ extern struct ttm_bo_global {
+>   * @driver: Pointer to a struct ttm_bo_driver struct setup by the driver.
+>   * @man: An array of mem_type_managers.
+>   * @vma_manager: Address space manager
+> + * @ddev: Pointer to struct drm_device that this ttm_bo_device belongs to
+>   * lru_lock: Spinlock that protects the buffer+device lru lists and
+>   * ddestroy lists.
+>   * @dev_mapping: A pointer to the struct address_space representing the
+> @@ -460,6 +462,7 @@ struct ttm_bo_device {
+>  	struct ttm_bo_global *glob;
+>  	struct ttm_bo_driver *driver;
+>  	struct ttm_mem_type_manager man[TTM_NUM_MEM_TYPES];
+> +	struct drm_device *ddev;
+>  
+>  	/*
+>  	 * Protected by internal locks.
+> @@ -598,6 +601,11 @@ int ttm_bo_device_init(struct ttm_bo_device *bdev,
+>  		       struct address_space *mapping,
+>  		       bool need_dma32);
+>  
+> +int ttm_bo_device_init_tmp(struct ttm_bo_device *bdev,
+> +		       struct ttm_bo_driver *driver,
+> +		       struct drm_device *ddev,
+> +		       struct address_space *mapping,
+> +		       bool need_dma32);
 >  /**
+>   * ttm_bo_unmap_virtual
+>   *
 > diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-> index 27497f786c93..efa019666f1c 100644
+> index e4400b21ab8e..141bea06f74c 100644
 > --- a/include/linux/cgroup_drm.h
 > +++ b/include/linux/cgroup_drm.h
-> @@ -15,6 +15,8 @@
+> @@ -9,6 +9,7 @@
+>  #include <linux/mutex.h>
+>  #include <linux/cgroup.h>
+>  #include <drm/drm_file.h>
+> +#include <drm/ttm/ttm_placement.h>
 >  
->  struct drmcgrp_device_resource {
->  	/* for per device stats */
-> +	s64			bo_stats_total_allocated;
-> +	s64			bo_limits_total_allocated;
+>  /* limit defined per the way drm_minor_alloc operates */
+>  #define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
+> @@ -22,6 +23,9 @@ struct drmcgrp_device_resource {
+>  	size_t			bo_limits_peak_allocated;
+>  
+>  	s64			bo_stats_count_allocated;
+> +
+> +	s64			mem_stats[TTM_PL_PRIV+1];
+> +	s64			mem_stats_evict;
 >  };
 >  
 >  struct drmcgrp {
 > diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> index 7da6e0d93991..cfc1fe74dca3 100644
+> index 9144f93b851f..5aee42a628c1 100644
 > --- a/kernel/cgroup/drm.c
 > +++ b/kernel/cgroup/drm.c
-> @@ -9,6 +9,7 @@
+> @@ -8,6 +8,8 @@
+>  #include <linux/mutex.h>
 >  #include <linux/cgroup_drm.h>
 >  #include <linux/kernel.h>
+> +#include <drm/ttm/ttm_bo_api.h>
+> +#include <drm/ttm/ttm_bo_driver.h>
 >  #include <drm/drm_device.h>
-> +#include <drm/drm_ioctl.h>
+>  #include <drm/drm_ioctl.h>
 >  #include <drm/drm_cgroup.h>
->  
->  static DEFINE_MUTEX(drmcgrp_mutex);
-> @@ -16,6 +17,26 @@ static DEFINE_MUTEX(drmcgrp_mutex);
->  struct drmcgrp_device {
->  	struct drm_device	*dev;
->  	struct mutex		mutex;
-> +
-> +	s64			bo_limits_total_allocated_default;
-> +};
-> +
-> +#define DRMCG_CTF_PRIV_SIZE 3
-> +#define DRMCG_CTF_PRIV_MASK GENMASK((DRMCG_CTF_PRIV_SIZE - 1), 0)
-> +#define DRMCG_CTF_PRIV(res_type, f_type)  ((res_type) <<\
-> +		DRMCG_CTF_PRIV_SIZE | (f_type))
-> +#define DRMCG_CTF_PRIV2RESTYPE(priv) ((priv) >> DRMCG_CTF_PRIV_SIZE)
-> +#define DRMCG_CTF_PRIV2FTYPE(priv) ((priv) & DRMCG_CTF_PRIV_MASK)
-> +
-> +
-> +enum drmcgrp_res_type {
-> +	DRMCGRP_TYPE_BO_TOTAL,
-> +};
-> +
-> +enum drmcgrp_file_type {
-> +	DRMCGRP_FTYPE_STATS,
-> +	DRMCGRP_FTYPE_LIMIT,
-> +	DRMCGRP_FTYPE_DEFAULT,
+> @@ -34,6 +36,8 @@ enum drmcgrp_res_type {
+>  	DRMCGRP_TYPE_BO_TOTAL,
+>  	DRMCGRP_TYPE_BO_PEAK,
+>  	DRMCGRP_TYPE_BO_COUNT,
+> +	DRMCGRP_TYPE_MEM,
+> +	DRMCGRP_TYPE_MEM_EVICT,
 >  };
 >  
+>  enum drmcgrp_file_type {
+> @@ -42,6 +46,13 @@ enum drmcgrp_file_type {
+>  	DRMCGRP_FTYPE_DEFAULT,
+>  };
+>  
+> +static char const *ttm_placement_names[] = {
+> +	[TTM_PL_SYSTEM] = "system",
+> +	[TTM_PL_TT]     = "tt",
+> +	[TTM_PL_VRAM]   = "vram",
+> +	[TTM_PL_PRIV]   = "priv",
+> +};
+> +
 >  /* indexed by drm_minor for access speed */
-> @@ -54,6 +75,10 @@ static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int minor)
->  	}
+>  static struct drmcgrp_device	*known_drmcgrp_devs[MAX_DRM_DEV];
 >  
->  	/* set defaults here */
-> +	if (known_drmcgrp_devs[minor] != NULL) {
-> +		ddr->bo_limits_total_allocated =
-> +		  known_drmcgrp_devs[minor]->bo_limits_total_allocated_default;
-> +	}
->  
->  	return 0;
->  }
-> @@ -100,7 +125,225 @@ drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
->  	return &drmcgrp->css;
->  }
->  
-> +static inline void drmcgrp_print_stats(struct drmcgrp_device_resource *ddr,
-> +		struct seq_file *sf, enum drmcgrp_res_type type)
-> +{
-> +	if (ddr == NULL) {
-> +		seq_puts(sf, "\n");
-> +		return;
-> +	}
-> +
-> +	switch (type) {
-> +	case DRMCGRP_TYPE_BO_TOTAL:
-> +		seq_printf(sf, "%lld\n", ddr->bo_stats_total_allocated);
-> +		break;
-> +	default:
-> +		seq_puts(sf, "\n");
-> +		break;
-> +	}
-> +}
-> +
-> +static inline void drmcgrp_print_limits(struct drmcgrp_device_resource *ddr,
-> +		struct seq_file *sf, enum drmcgrp_res_type type)
-> +{
-> +	if (ddr == NULL) {
-> +		seq_puts(sf, "\n");
-> +		return;
-> +	}
-> +
-> +	switch (type) {
-> +	case DRMCGRP_TYPE_BO_TOTAL:
-> +		seq_printf(sf, "%lld\n", ddr->bo_limits_total_allocated);
-> +		break;
-> +	default:
-> +		seq_puts(sf, "\n");
-> +		break;
-> +	}
-> +}
-> +
-> +static inline void drmcgrp_print_default(struct drmcgrp_device *ddev,
-> +		struct seq_file *sf, enum drmcgrp_res_type type)
-> +{
-> +	if (ddev == NULL) {
-> +		seq_puts(sf, "\n");
-> +		return;
-> +	}
-> +
-> +	switch (type) {
-> +	case DRMCGRP_TYPE_BO_TOTAL:
-> +		seq_printf(sf, "%lld\n",
-> +				ddev->bo_limits_total_allocated_default);
-> +		break;
-> +	default:
-> +		seq_puts(sf, "\n");
-> +		break;
-> +	}
-> +}
-> +
-> +int drmcgrp_bo_show(struct seq_file *sf, void *v)
-> +{
-> +	struct drmcgrp *drmcgrp = css_drmcgrp(seq_css(sf));
-> +	struct drmcgrp_device_resource *ddr = NULL;
-> +	enum drmcgrp_file_type f_type =
-> +		DRMCG_CTF_PRIV2FTYPE(seq_cft(sf)->private);
-> +	enum drmcgrp_res_type type =
-> +		DRMCG_CTF_PRIV2RESTYPE(seq_cft(sf)->private);
-> +	struct drmcgrp_device *ddev;
+> @@ -134,6 +145,7 @@ drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
+>  static inline void drmcgrp_print_stats(struct drmcgrp_device_resource *ddr,
+>  		struct seq_file *sf, enum drmcgrp_res_type type)
+>  {
 > +	int i;
-> +
-> +	for (i = 0; i <= max_minor; i++) {
-> +		ddr = drmcgrp->dev_resources[i];
-> +		ddev = known_drmcgrp_devs[i];
-> +
-> +		seq_printf(sf, "%d:%d ", DRM_MAJOR, i);
-> +
-> +		switch (f_type) {
-> +		case DRMCGRP_FTYPE_STATS:
-> +			drmcgrp_print_stats(ddr, sf, type);
-> +			break;
-> +		case DRMCGRP_FTYPE_LIMIT:
-> +			drmcgrp_print_limits(ddr, sf, type);
-> +			break;
-> +		case DRMCGRP_FTYPE_DEFAULT:
-> +			drmcgrp_print_default(ddev, sf, type);
-> +			break;
-> +		default:
-> +			seq_puts(sf, "\n");
-> +			break;
+>  	if (ddr == NULL) {
+>  		seq_puts(sf, "\n");
+>  		return;
+> @@ -149,6 +161,16 @@ static inline void drmcgrp_print_stats(struct drmcgrp_device_resource *ddr,
+>  	case DRMCGRP_TYPE_BO_COUNT:
+>  		seq_printf(sf, "%lld\n", ddr->bo_stats_count_allocated);
+>  		break;
+> +	case DRMCGRP_TYPE_MEM:
+> +		for (i = 0; i <= TTM_PL_PRIV; i++) {
+> +			seq_printf(sf, "%s=%lld ", ttm_placement_names[i],
+> +					ddr->mem_stats[i]);
 > +		}
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static inline void drmcgrp_pr_cft_err(const struct drmcgrp *drmcgrp,
-> +		const char *cft_name, int minor)
-> +{
-> +	pr_err("drmcgrp: error parsing %s, minor %d ",
-> +			cft_name, minor);
-> +	pr_cont_cgroup_name(drmcgrp->css.cgroup);
-> +	pr_cont("\n");
-> +}
-> +
-> +static inline int drmcgrp_process_limit_val(char *sval, bool is_mem,
-> +			s64 def_val, s64 max_val, s64 *ret_val)
-> +{
-> +	int rc = strcmp("max", sval);
-> +
-> +
-> +	if (!rc)
-> +		*ret_val = max_val;
-> +	else {
-> +		rc = strcmp("default", sval);
-> +
-> +		if (!rc)
-> +			*ret_val = def_val;
-> +	}
-> +
-> +	if (rc) {
-> +		if (is_mem) {
-> +			*ret_val = memparse(sval, NULL);
-> +			rc = 0;
-> +		} else {
-> +			rc = kstrtoll(sval, 0, ret_val);
-> +		}
-> +	}
-> +
-> +	if (*ret_val > max_val)
-> +		*ret_val = max_val;
-> +
-> +	return rc;
-> +}
-> +
-> +ssize_t drmcgrp_bo_limit_write(struct kernfs_open_file *of, char *buf,
-> +		size_t nbytes, loff_t off)
-> +{
-> +	struct drmcgrp *drmcgrp = css_drmcgrp(of_css(of));
-> +	struct drmcgrp *parent = parent_drmcgrp(drmcgrp);
-> +	enum drmcgrp_res_type type =
-> +		DRMCG_CTF_PRIV2RESTYPE(of_cft(of)->private);
-> +	char *cft_name = of_cft(of)->name;
-> +	char *limits = strstrip(buf);
-> +	struct drmcgrp_device *ddev;
-> +	struct drmcgrp_device_resource *ddr;
-> +	char *line;
-> +	char sattr[256];
-> +	s64 val;
-> +	s64 p_max;
-> +	int rc;
-> +	int minor;
-> +
-> +	while (limits != NULL) {
-> +		line =  strsep(&limits, "\n");
-> +
-> +		if (sscanf(line,
-> +			__stringify(DRM_MAJOR)":%u %255[^\t\n]",
-> +							&minor, sattr) != 2) {
-> +			pr_err("drmcgrp: error parsing %s ", cft_name);
-> +			pr_cont_cgroup_name(drmcgrp->css.cgroup);
-> +			pr_cont("\n");
-> +
-> +			continue;
-> +		}
-> +
-> +		if (minor < 0 || minor > max_minor) {
-> +			pr_err("drmcgrp: invalid minor %d for %s ",
-> +					minor, cft_name);
-> +			pr_cont_cgroup_name(drmcgrp->css.cgroup);
-> +			pr_cont("\n");
-> +
-> +			continue;
-> +		}
-> +
-> +		ddr = drmcgrp->dev_resources[minor];
-> +		ddev = known_drmcgrp_devs[minor];
-> +		switch (type) {
-> +		case DRMCGRP_TYPE_BO_TOTAL:
-> +			p_max = parent == NULL ? S64_MAX :
-> +				parent->dev_resources[minor]->
-> +				bo_limits_total_allocated;
-> +
-> +			rc = drmcgrp_process_limit_val(sattr, true,
-> +				ddev->bo_limits_total_allocated_default,
-> +				p_max,
-> +				&val);
-> +
-> +			if (rc || val < 0) {
-> +				drmcgrp_pr_cft_err(drmcgrp, cft_name, minor);
-> +				continue;
-> +			}
-> +
-> +			ddr->bo_limits_total_allocated = val;
-> +			break;
-> +		default:
-> +			break;
-> +		}
-> +	}
-> +
-> +	return nbytes;
-> +}
-> +
->  struct cftype files[] = {
+> +		seq_puts(sf, "\n");
+> +		break;
+> +	case DRMCGRP_TYPE_MEM_EVICT:
+> +		seq_printf(sf, "%lld\n", ddr->mem_stats_evict);
+> +		break;
+>  	default:
+>  		seq_puts(sf, "\n");
+>  		break;
+> @@ -406,6 +428,18 @@ struct cftype files[] = {
+>  		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_COUNT,
+>  						DRMCGRP_FTYPE_STATS),
+>  	},
 > +	{
-> +		.name = "buffer.total.stats",
+> +		.name = "memory.stats",
 > +		.seq_show = drmcgrp_bo_show,
-> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
+> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_MEM,
 > +						DRMCGRP_FTYPE_STATS),
 > +	},
 > +	{
-> +		.name = "buffer.total.default",
+> +		.name = "memory.evict.stats",
 > +		.seq_show = drmcgrp_bo_show,
-> +		.flags = CFTYPE_ONLY_ON_ROOT,
-> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
-> +						DRMCGRP_FTYPE_DEFAULT),
-> +	},
-> +	{
-> +		.name = "buffer.total.max",
-> +		.write = drmcgrp_bo_limit_write,
-> +		.seq_show = drmcgrp_bo_show,
-> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
-> +						DRMCGRP_FTYPE_LIMIT),
+> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_MEM_EVICT,
+> +						DRMCGRP_FTYPE_STATS),
 > +	},
 >  	{ }	/* terminate */
 >  };
 >  
-> @@ -121,6 +364,8 @@ int drmcgrp_register_device(struct drm_device *dev)
->  		return -ENOMEM;
->  
->  	ddev->dev = dev;
-> +	ddev->bo_limits_total_allocated_default = S64_MAX;
-> +
->  	mutex_init(&ddev->mutex);
->  
->  	mutex_lock(&drmcgrp_mutex);
-> @@ -156,3 +401,79 @@ int drmcgrp_unregister_device(struct drm_device *dev)
->  	return 0;
+> @@ -555,3 +589,82 @@ void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+>  	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
 >  }
->  EXPORT_SYMBOL(drmcgrp_unregister_device);
+>  EXPORT_SYMBOL(drmcgrp_unchg_bo_alloc);
 > +
-> +bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self, struct drmcgrp *relative)
+> +void drmcgrp_chg_mem(struct ttm_buffer_object *tbo)
 > +{
-> +	for (; self != NULL; self = parent_drmcgrp(self))
-> +		if (self == relative)
-> +			return true;
-> +
-> +	return false;
-> +}
-> +EXPORT_SYMBOL(drmcgrp_is_self_or_ancestor);
-> +
-> +bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
-> +		size_t size)
-> +{
-> +	struct drmcgrp *drmcgrp = drmcgrp_from(task);
-> +	struct drmcgrp_device_resource *ddr;
-> +	struct drmcgrp_device_resource *d;
+> +	struct drm_device *dev = tbo->bdev->ddev;
+> +	struct drmcgrp *drmcgrp = tbo->drmcgrp;
 > +	int devIdx = dev->primary->index;
-> +	bool result = true;
-> +	s64 delta = 0;
-> +
-> +	if (drmcgrp == NULL || drmcgrp == root_drmcgrp)
-> +		return true;
-> +
-> +	ddr = drmcgrp->dev_resources[devIdx];
-> +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
-> +	for ( ; drmcgrp != root_drmcgrp; drmcgrp = parent_drmcgrp(drmcgrp)) {
-> +		d = drmcgrp->dev_resources[devIdx];
-> +		delta = d->bo_limits_total_allocated -
-> +				d->bo_stats_total_allocated;
-> +
-> +		if (delta <= 0 || size > delta) {
-> +			result = false;
-> +			break;
-> +		}
-> +	}
-> +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
-> +
-> +	return result;
-> +}
-> +EXPORT_SYMBOL(drmcgrp_bo_can_allocate);
-> +
-> +void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
-> +		size_t size)
-> +{
+> +	s64 size = (s64)(tbo->mem.size);
+> +	int mem_type = tbo->mem.mem_type;
 > +	struct drmcgrp_device_resource *ddr;
-> +	int devIdx = dev->primary->index;
 > +
 > +	if (drmcgrp == NULL || known_drmcgrp_devs[devIdx] == NULL)
 > +		return;
+> +
+> +	mem_type = mem_type > TTM_PL_PRIV ? TTM_PL_PRIV : mem_type;
 > +
 > +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
 > +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp)) {
 > +		ddr = drmcgrp->dev_resources[devIdx];
-> +
-> +		ddr->bo_stats_total_allocated += (s64)size;
+> +		ddr->mem_stats[mem_type] += size;
 > +	}
 > +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
 > +}
-> +EXPORT_SYMBOL(drmcgrp_chg_bo_alloc);
+> +EXPORT_SYMBOL(drmcgrp_chg_mem);
 > +
-> +void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
-> +		size_t size)
+> +void drmcgrp_unchg_mem(struct ttm_buffer_object *tbo)
 > +{
+> +	struct drm_device *dev = tbo->bdev->ddev;
+> +	struct drmcgrp *drmcgrp = tbo->drmcgrp;
 > +	int devIdx = dev->primary->index;
+> +	s64 size = (s64)(tbo->mem.size);
+> +	int mem_type = tbo->mem.mem_type;
+> +	struct drmcgrp_device_resource *ddr;
 > +
 > +	if (drmcgrp == NULL || known_drmcgrp_devs[devIdx] == NULL)
 > +		return;
 > +
+> +	mem_type = mem_type > TTM_PL_PRIV ? TTM_PL_PRIV : mem_type;
+> +
 > +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
-> +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp))
-> +		drmcgrp->dev_resources[devIdx]->bo_stats_total_allocated
-> +			-= (s64)size;
+> +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp)) {
+> +		ddr = drmcgrp->dev_resources[devIdx];
+> +		ddr->mem_stats[mem_type] -= size;
+> +	}
 > +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
 > +}
-> +EXPORT_SYMBOL(drmcgrp_unchg_bo_alloc);
+> +EXPORT_SYMBOL(drmcgrp_unchg_mem);
+> +
+> +void drmcgrp_mem_track_move(struct ttm_buffer_object *old_bo, bool evict,
+> +		struct ttm_mem_reg *new_mem)
+> +{
+> +	struct drm_device *dev = old_bo->bdev->ddev;
+> +	struct drmcgrp *drmcgrp = old_bo->drmcgrp;
+> +	s64 move_in_bytes = (s64)(old_bo->mem.size);
+> +	int devIdx = dev->primary->index;
+> +	int old_mem_type = old_bo->mem.mem_type;
+> +	int new_mem_type = new_mem->mem_type;
+> +	struct drmcgrp_device_resource *ddr;
+> +	struct drmcgrp_device *known_dev;
+> +
+> +	known_dev = known_drmcgrp_devs[devIdx];
+> +
+> +	if (drmcgrp == NULL || known_dev == NULL)
+> +		return;
+> +
+> +	old_mem_type = old_mem_type > TTM_PL_PRIV ? TTM_PL_PRIV : old_mem_type;
+> +	new_mem_type = new_mem_type > TTM_PL_PRIV ? TTM_PL_PRIV : new_mem_type;
+> +
+> +	mutex_lock(&known_dev->mutex);
+> +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp)) {
+> +		ddr = drmcgrp->dev_resources[devIdx];
+> +		ddr->mem_stats[old_mem_type] -= move_in_bytes;
+> +		ddr->mem_stats[new_mem_type] += move_in_bytes;
+> +
+> +		if (evict)
+> +			ddr->mem_stats_evict++;
+> +	}
+> +	mutex_unlock(&known_dev->mutex);
+> +}
+> +EXPORT_SYMBOL(drmcgrp_mem_track_move);
 > -- 
 > 2.21.0
 > 
