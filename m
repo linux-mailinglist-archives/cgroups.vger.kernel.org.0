@@ -2,118 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B760552DF
-	for <lists+cgroups@lfdr.de>; Tue, 25 Jun 2019 17:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5CC0560A5
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 05:52:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730957AbfFYPGs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 Jun 2019 11:06:48 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:46876 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730607AbfFYPGs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 Jun 2019 11:06:48 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n4so18249297wrw.13;
-        Tue, 25 Jun 2019 08:06:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=xByavRLEp3hyk80ImZC5g4m0uX3mEmi564FcqH3YV+4=;
-        b=tlWS7Yz/W15rn9kS5pEmeU24xPWl3dLfYtvp0mWhQmAot8015j2JyJ/BEdnE4UNHlv
-         dIjyCMwhJ8L3mcIvAHiKRA8PKFd7DqHm4KlizLrT2LQcxldjvoTtJ0LoeYTlNehrD9is
-         3YcdhDBFkWdNmtO1hAIcYdnPq4a0M0qpdAubTA6Hv2IExWUMY6lwq52+nq3CsDBvo2tw
-         z+AnGfkN22D9VSkDEBEAtP1elKGsS1EL8YSBSrw4wa1cfXJDtdsvNKoa82YrAgyBM6yd
-         4GlpdNjhb0atXlInpT7sbEKiSw4ME7wvNL7wncCy87+gTfKAb+1UjkaJIDZjd1Z4xkW5
-         UnEg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=xByavRLEp3hyk80ImZC5g4m0uX3mEmi564FcqH3YV+4=;
-        b=FMdpVc/snzCM8dZ9IxNINOqmnc8eW1UYdfAmnUUOQYhbUHc6OPal3wHp5Q5FvGLuHm
-         4ZkO1mzunYQgu7qaUIyru/4DPCLO1DW8RxUqDs0hj6V8Z69ZDSY8KIuV7zuAtEbdIRzB
-         pp5gShxI6xblsUfbI1UgAqjv+sB5Kb3MeRqiMuSBHXktDWlzJfxdR88lmToaMI3c3rXe
-         IUfjlew/+GP9/XyjXgI9K15Hn+rmvIO8KndcNo+xu0pNfx2LUt8hAdyp1/7ucR/qZ7t7
-         SpS4onUOBYlUOHlnptLDZCZng7Pv/+qMa/YDZJfucneGFFzUXm+HmdchIBUaUfSYEpfL
-         35Iw==
-X-Gm-Message-State: APjAAAUloA7IpphoN5t9DwaOBH0O7OLnagPsM1GoH4HK01ZfPvty6s5R
-        GMFk6Y7eP+4K6sISEjCnslWdK802ixqmgWIBY+E=
-X-Google-Smtp-Source: APXvYqySP4F5Gxe4WqMw/8I6UbqzE8WfAQHLiEoyP8KIfDZ7Te8L72vf7YDad41QFdhXdBq0u6l1+OAqGSVMoHAdb7I=
-X-Received: by 2002:adf:ec4c:: with SMTP id w12mr38109440wrn.160.1561475206440;
- Tue, 25 Jun 2019 08:06:46 -0700 (PDT)
+        id S1727326AbfFZDnY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 Jun 2019 23:43:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54584 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727317AbfFZDnY (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 25 Jun 2019 23:43:24 -0400
+Received: from sasha-vm.mshome.net (mobile-107-77-172-74.mobile.att.net [107.77.172.74])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 82BD821655;
+        Wed, 26 Jun 2019 03:43:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1561520602;
+        bh=CTgbSb/STtDheisGfsL3f2cO9SoZaxgdEaueJD9i2Z0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=kVeh1Y5cYmS6lYKXK0JkoSVsXdEOUj+odj8m+8uSwjLwu/BeoWznadoKY/0PXZuLO
+         h2ChXYMqwjjoCouByQ9tYryqz59ZeV0K7ujgPn9lFwAxo0bPXBGtoDxz1yxAN7B27L
+         MGGeCAslSNQdfVJjk7DnITTCGSKS5oqRkO8IF2t4=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Joel Savitz <jsavitz@redhat.com>, Waiman Long <longman@redhat.com>,
+        Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.1 46/51] cpuset: restore sanity to cpuset_cpus_allowed_fallback()
+Date:   Tue, 25 Jun 2019 23:41:02 -0400
+Message-Id: <20190626034117.23247-46-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190626034117.23247-1-sashal@kernel.org>
+References: <20190626034117.23247-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <cover.1561385989.git.zhangweiping@didiglobal.com>
- <6e3b0f511a291dd0ce570a6cc5393e10d4509d0e.1561385989.git.zhangweiping@didiglobal.com>
- <20190624202110.GD6526@minwooim-desktop>
-In-Reply-To: <20190624202110.GD6526@minwooim-desktop>
-From:   Weiping Zhang <zwp10758@gmail.com>
-Date:   Tue, 25 Jun 2019 23:06:36 +0800
-Message-ID: <CAA70yB4Japiic4wAG=5ud8LrS2E-SaKxeV8yqG6j0pMCFTWjNQ@mail.gmail.com>
-Subject: Re: [PATCH v3 5/5] nvme: add support weighted round robin queue
-To:     Minwoo Im <minwoo.im.dev@gmail.com>
-Cc:     Weiping Zhang <zhangweiping@didiglobal.com>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>, keith.busch@intel.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Minwoo Im <minwoo.im.dev@gmail.com> =E4=BA=8E2019=E5=B9=B46=E6=9C=8825=E6=
-=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8A=E5=8D=886:01=E5=86=99=E9=81=93=EF=BC=9A
->
-> > @@ -2627,7 +2752,30 @@ static int nvme_pci_get_address(struct nvme_ctrl=
- *ctrl, char *buf, int size)
-> >
-> >  static void nvme_pci_get_ams(struct nvme_ctrl *ctrl, u32 *ams)
-> >  {
-> > -     *ams =3D NVME_CC_AMS_RR;
-> > +     /* if deivce doesn't support WRR, force reset wrr queues to 0 */
-> > +     if (!NVME_CAP_AMS_WRRU(ctrl->cap)) {
-> > +             wrr_low_queues =3D 0;
-> > +             wrr_medium_queues =3D 0;
-> > +             wrr_high_queues =3D 0;
-> > +             wrr_urgent_queues =3D 0;
->
-> Could we avoid this kind of reset variables in get_XXX() function?  I
-> guess it would be great if it just tries to get some value which is
-> mainly focused to do.
+From: Joel Savitz <jsavitz@redhat.com>
 
-I think its ok, when we use these variables in nvme_setup_irqs,
-we can check ctrl->wrr_enabled, if it was false, skip all wrr_xxx_queues.
-In other words, if ctrl->wrr_enabled is true, at least we have one wrr queu=
-e.
+[ Upstream commit d477f8c202d1f0d4791ab1263ca7657bbe5cf79e ]
 
->
-> > +
-> > +             *ams =3D NVME_CC_AMS_RR;
-> > +             ctrl->wrr_enabled =3D false;
-> > +             return;
-> > +     }
-> > +
-> > +     /*
-> > +      * if device support WRR, check wrr queue count, all wrr queues a=
-re
-> > +      * 0, don't enable device's WRR.
-> > +      */
-> > +     if ((wrr_low_queues + wrr_medium_queues + wrr_high_queues +
-> > +                             wrr_urgent_queues) > 0) {
-> > +             *ams =3D NVME_CC_AMS_WRRU;
-> > +             ctrl->wrr_enabled =3D true;
-> > +     } else {
-> > +             *ams =3D NVME_CC_AMS_RR;
-> > +             ctrl->wrr_enabled =3D false;
->
-> These two line can be merged into above condition:
-It's ok, and merge comments for NVME_CC_AMS_RR.
->
->         if (!NVME_CAP_AMS_WRRU(ctrl->cap) ||
->                 wrr_low_queues + wrr_medium_queues + wrr_high_queues +
->                         wrr_urgent_queues <=3D 0) {
->                 *ams =3D NVME_CC_AMS_RR;
->                 ctrl->wrr_enabled =3D false;
->         }
+In the case that a process is constrained by taskset(1) (i.e.
+sched_setaffinity(2)) to a subset of available cpus, and all of those are
+subsequently offlined, the scheduler will set tsk->cpus_allowed to
+the current value of task_cs(tsk)->effective_cpus.
+
+This is done via a call to do_set_cpus_allowed() in the context of
+cpuset_cpus_allowed_fallback() made by the scheduler when this case is
+detected. This is the only call made to cpuset_cpus_allowed_fallback()
+in the latest mainline kernel.
+
+However, this is not sane behavior.
+
+I will demonstrate this on a system running the latest upstream kernel
+with the following initial configuration:
+
+	# grep -i cpu /proc/$$/status
+	Cpus_allowed:	ffffffff,fffffff
+	Cpus_allowed_list:	0-63
+
+(Where cpus 32-63 are provided via smt.)
+
+If we limit our current shell process to cpu2 only and then offline it
+and reonline it:
+
+	# taskset -p 4 $$
+	pid 2272's current affinity mask: ffffffffffffffff
+	pid 2272's new affinity mask: 4
+
+	# echo off > /sys/devices/system/cpu/cpu2/online
+	# dmesg | tail -3
+	[ 2195.866089] process 2272 (bash) no longer affine to cpu2
+	[ 2195.872700] IRQ 114: no longer affine to CPU2
+	[ 2195.879128] smpboot: CPU 2 is now offline
+
+	# echo on > /sys/devices/system/cpu/cpu2/online
+	# dmesg | tail -1
+	[ 2617.043572] smpboot: Booting Node 0 Processor 2 APIC 0x4
+
+We see that our current process now has an affinity mask containing
+every cpu available on the system _except_ the one we originally
+constrained it to:
+
+	# grep -i cpu /proc/$$/status
+	Cpus_allowed:   ffffffff,fffffffb
+	Cpus_allowed_list:      0-1,3-63
+
+This is not sane behavior, as the scheduler can now not only place the
+process on previously forbidden cpus, it can't even schedule it on
+the cpu it was originally constrained to!
+
+Other cases result in even more exotic affinity masks. Take for instance
+a process with an affinity mask containing only cpus provided by smt at
+the moment that smt is toggled, in a configuration such as the following:
+
+	# taskset -p f000000000 $$
+	# grep -i cpu /proc/$$/status
+	Cpus_allowed:	000000f0,00000000
+	Cpus_allowed_list:	36-39
+
+A double toggle of smt results in the following behavior:
+
+	# echo off > /sys/devices/system/cpu/smt/control
+	# echo on > /sys/devices/system/cpu/smt/control
+	# grep -i cpus /proc/$$/status
+	Cpus_allowed:	ffffff00,ffffffff
+	Cpus_allowed_list:	0-31,40-63
+
+This is even less sane than the previous case, as the new affinity mask
+excludes all smt-provided cpus with ids less than those that were
+previously in the affinity mask, as well as those that were actually in
+the mask.
+
+With this patch applied, both of these cases end in the following state:
+
+	# grep -i cpu /proc/$$/status
+	Cpus_allowed:	ffffffff,ffffffff
+	Cpus_allowed_list:	0-63
+
+The original policy is discarded. Though not ideal, it is the simplest way
+to restore sanity to this fallback case without reinventing the cpuset
+wheel that rolls down the kernel just fine in cgroup v2. A user who wishes
+for the previous affinity mask to be restored in this fallback case can use
+that mechanism instead.
+
+This patch modifies scheduler behavior by instead resetting the mask to
+task_cs(tsk)->cpus_allowed by default, and cpu_possible mask in legacy
+mode. I tested the cases above on both modes.
+
+Note that the scheduler uses this fallback mechanism if and only if
+_every_ other valid avenue has been traveled, and it is the last resort
+before calling BUG().
+
+Suggested-by: Waiman Long <longman@redhat.com>
+Suggested-by: Phil Auld <pauld@redhat.com>
+Signed-off-by: Joel Savitz <jsavitz@redhat.com>
+Acked-by: Phil Auld <pauld@redhat.com>
+Acked-by: Waiman Long <longman@redhat.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ kernel/cgroup/cpuset.c | 15 ++++++++++++++-
+ 1 file changed, 14 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 4834c4214e9c..6c9deb2cc687 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3255,10 +3255,23 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+ 	spin_unlock_irqrestore(&callback_lock, flags);
+ }
+ 
++/**
++ * cpuset_cpus_allowed_fallback - final fallback before complete catastrophe.
++ * @tsk: pointer to task_struct with which the scheduler is struggling
++ *
++ * Description: In the case that the scheduler cannot find an allowed cpu in
++ * tsk->cpus_allowed, we fall back to task_cs(tsk)->cpus_allowed. In legacy
++ * mode however, this value is the same as task_cs(tsk)->effective_cpus,
++ * which will not contain a sane cpumask during cases such as cpu hotplugging.
++ * This is the absolute last resort for the scheduler and it is only used if
++ * _every_ other avenue has been traveled.
++ **/
++
+ void cpuset_cpus_allowed_fallback(struct task_struct *tsk)
+ {
+ 	rcu_read_lock();
+-	do_set_cpus_allowed(tsk, task_cs(tsk)->effective_cpus);
++	do_set_cpus_allowed(tsk, is_in_v2_mode() ?
++		task_cs(tsk)->cpus_allowed : cpu_possible_mask);
+ 	rcu_read_unlock();
+ 
+ 	/*
+-- 
+2.20.1
+
