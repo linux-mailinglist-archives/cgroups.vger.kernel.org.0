@@ -2,319 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DD29156E1C
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 17:56:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAC3456E28
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 17:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbfFZP4L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 11:56:11 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44943 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbfFZP4L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 11:56:11 -0400
-Received: by mail-ed1-f67.google.com with SMTP id k8so3989379edr.11
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 08:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=b8N0XuHLMqrJQXmLm+2uSL4Ak/YQzhUfppEvcpxNhdU=;
-        b=N7ULXVSeuODxCVqizNpydWEDzjxIgR+bf2Gz5O2lwAQCWTmMUcdKhVnghCAIua43V/
-         qIuHcSxiSBaJQop5snrzrT1vj6L9KTfwLQFamSsk9zblhONsYs1kPGWFcQcsAG0wk46C
-         b25QJr8CvO1ih8AlI7876pz2KuENh1VppYoos=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=b8N0XuHLMqrJQXmLm+2uSL4Ak/YQzhUfppEvcpxNhdU=;
-        b=UO633wt7OmjtNNSEy2WuPzXSV5Y7OYq1ml3/PLI3p7AZmmUfc7zaMB/XPEV+mdxnmP
-         bOnOKk6p3ejPzpZNCJJAHc6rIGtOKt3ZScfSVieE42Lt04gCpzj8kjiH6VNDptGy2Sii
-         KGCfOD3pPumRqpy2pfo9IM/5019VL8l3fJSxG5kFeMwGiwsr/3uGzUwu7iAtO9tirF6a
-         ejLW00hxtRgxaO2v848U4n0UUppExdzPg7cr7jEXbCOUuObagIc8gNvct4mm+T5EgWhZ
-         J5TaNV4JOuV5e0xHBYE470a/pQCPMHrExngO2mDCb86bU34XbzvLbks7igYN9qO7nImm
-         BC+Q==
-X-Gm-Message-State: APjAAAVFbA4YNzJDD2AMV9t1k2lmOl8i2n5+RdjxzHYEIXW42UaexT9h
-        C8SuEnJ1vhq9jS7XUvvnt4bqrlT28Cw=
-X-Google-Smtp-Source: APXvYqxj5iQ8cgJzXif/pPyy4Sja3143s1j9ggVAk9qGMS7fXVtVMugZW1UWF3d14w6P7GQnc9gk+A==
-X-Received: by 2002:a05:6402:397:: with SMTP id o23mr6350378edv.68.1561564568630;
-        Wed, 26 Jun 2019 08:56:08 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id n5sm3050587ejc.62.2019.06.26.08.56.07
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 08:56:07 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 17:56:05 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Kenny Ho <Kenny.Ho@amd.com>
-Cc:     y2kenny@gmail.com, cgroups@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
-        tj@kernel.org, alexander.deucher@amd.com, christian.koenig@amd.com,
-        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 02/11] cgroup: Add mechanism to register DRM
- devices
-Message-ID: <20190626155605.GQ12905@phenom.ffwll.local>
-References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-3-Kenny.Ho@amd.com>
+        id S1726227AbfFZP5h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 11:57:37 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21542 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726104AbfFZP5g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 11:57:36 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5QFtXkS018654;
+        Wed, 26 Jun 2019 08:56:49 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=e4QsHOsj/ansg9eJGXoLS07ec1mXlD32/gZfHaz02rE=;
+ b=Qhn1rGvG3PQKThcV7S3szGMRxklG0EGyDGloa9rtkqGFllT6YfqSg4Lwc9wXyNoip4bT
+ Hh/3EqMBkMhpO4TpU/TrYxJTdTMmOMYr1s3bA5JP5RdGgfVgHSkj/OxE3D/1NAuK585l
+ Mu2DUEc9hdWXyg+Loo3aRtJIbDxP+MDAmQ0= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2tc8axgtpq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 26 Jun 2019 08:56:49 -0700
+Received: from prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) by
+ prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 26 Jun 2019 08:56:48 -0700
+Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
+ prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 26 Jun 2019 08:56:47 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 26 Jun 2019 08:56:47 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=e4QsHOsj/ansg9eJGXoLS07ec1mXlD32/gZfHaz02rE=;
+ b=pBOfZ6Ik4NbQulFMYfkeon9uC6aeQdMn8rxgdnVAs+6jb92kvNYyPluZ/j9Xy0OqCV2rR4khpjvwt6myidLdAR5o6N1ysmDuXSg2ruGI1mTsNB5QIApp6k85/kwsHc8DRyNBdVszDty3xnLjiMD9cKFWwpqiQoLmfJMp6+adEW4=
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
+ MWHPR15MB1200.namprd15.prod.outlook.com (10.175.3.136) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Wed, 26 Jun 2019 15:56:46 +0000
+Received: from MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
+ ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.2008.018; Wed, 26 Jun 2019
+ 15:56:46 +0000
+From:   Song Liu <songliubraving@fb.com>
+To:     =?utf-8?B?TWljaGFsIEtvdXRuw70=?= <mkoutny@suse.com>
+CC:     Morten Rasmussen <morten.rasmussen@arm.com>,
+        Kernel Team <Kernel-team@fb.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 0/7] introduce cpu.headroom knob to cpu controller
+Thread-Topic: [PATCH 0/7] introduce cpu.headroom knob to cpu controller
+Thread-Index: AQHU7lSD68FtcB4UGUOYupgC9AfmOKY1TPCAgACBxACAQAwaAIAALJKAgDgNsoCAAH3FAA==
+Date:   Wed, 26 Jun 2019 15:56:46 +0000
+Message-ID: <11B128A7-6E3C-4DB7-817D-36711F3DD0C4@fb.com>
+References: <20190408214539.2705660-1-songliubraving@fb.com>
+ <20190410115907.GE19434@e105550-lin.cambridge.arm.com>
+ <A2E9A149-9EAA-478D-A096-1D4D4BA442B3@fb.com>
+ <20190521134730.GA12346@blackbody.suse.cz>
+ <D9376488-F290-4917-9124-292AA649948C@fb.com>
+ <20190626082634.GA22035@blackbody.suse.cz>
+In-Reply-To: <20190626082634.GA22035@blackbody.suse.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3445.104.11)
+x-originating-ip: [2620:10d:c090:180::1:6898]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b6d5be1b-c89b-46e3-28a0-08d6fa4ee443
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1200;
+x-ms-traffictypediagnostic: MWHPR15MB1200:
+x-microsoft-antispam-prvs: <MWHPR15MB12009CE039DAD55DB4CF715CB3E20@MWHPR15MB1200.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 00808B16F3
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(39860400002)(396003)(366004)(346002)(189003)(199004)(8936002)(6436002)(68736007)(50226002)(6512007)(53936002)(478600001)(99286004)(6916009)(14454004)(256004)(33656002)(6246003)(5660300002)(2906002)(6486002)(229853002)(86362001)(46003)(76176011)(476003)(57306001)(7736002)(66556008)(2616005)(66476007)(305945005)(76116006)(25786009)(71200400001)(11346002)(73956011)(6116002)(446003)(66946007)(186003)(8676002)(81166006)(4326008)(316002)(81156014)(102836004)(6506007)(14444005)(54906003)(53546011)(71190400001)(36756003)(486006)(64756008)(66446008);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1200;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 4mGTOfnd2tLAd3dC/InGeyeeUst1JI3mgILc92f9PzaUCh5BakgDdrLBfYvN+DYrGnqJlqxeE4dhvd6edb5oyqkhbeWfeueXTVCvYKY+/RZHtN8azFdTzuPthM5YagF8WtxFG+Ib0tjWysJGf6lOKsUAdZaFnpw1Fs1pi8zTqSJxlHc9yJijrsaMFLJi8A3i0feOLxNM8a/znxBE0sCuWuiPhYWWDIcO9EYjY/VDIIFkgtHvl5fWwy1JN1SYyUixTwRmk3yOMp0MSUNVjSVHXcXQIlKTn/otPdSaSJ5TBp5hVPn52bU0PPQA/GaRqaqvu6GCVtMlRvOX1WglOj26LAz4+CByPcweKWiEVLa+iMmgti4EP4ULJGHnVpdJTtmxox7MovoWNeAOFcoNJFAvx/jeGyliQ3qSlXZ+RwPOCKs=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3983C0F8C296C546851342B9A822F7CD@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190626150522.11618-3-Kenny.Ho@amd.com>
-X-Operating-System: Linux phenom 4.19.0-5-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: b6d5be1b-c89b-46e3-28a0-08d6fa4ee443
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2019 15:56:46.1712
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1200
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-26_09:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906260186
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 11:05:13AM -0400, Kenny Ho wrote:
-> Change-Id: I908ee6975ea0585e4c30eafde4599f87094d8c65
-> Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
-
-Why the separate, explicit registration step? I think a simpler design for
-drivers would be that we set up cgroups if there's anything to be
-controlled, and then for GEM drivers the basic GEM stuff would be set up
-automically (there's really no reason not to I think).
-
-Also tying to the minor is a bit funky, since we have multiple of these.
-Need to make sure were at least consistent with whether we use the primary
-or render minor - I'd always go with the primary one like you do here.
-
-> ---
->  include/drm/drm_cgroup.h   |  24 ++++++++
->  include/linux/cgroup_drm.h |  10 ++++
->  kernel/cgroup/drm.c        | 116 +++++++++++++++++++++++++++++++++++++
->  3 files changed, 150 insertions(+)
->  create mode 100644 include/drm/drm_cgroup.h
-> 
-> diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
-> new file mode 100644
-> index 000000000000..ddb9eab64360
-> --- /dev/null
-> +++ b/include/drm/drm_cgroup.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: MIT
-> + * Copyright 2019 Advanced Micro Devices, Inc.
-> + */
-> +#ifndef __DRM_CGROUP_H__
-> +#define __DRM_CGROUP_H__
-> +
-> +#ifdef CONFIG_CGROUP_DRM
-> +
-> +int drmcgrp_register_device(struct drm_device *device);
-> +
-> +int drmcgrp_unregister_device(struct drm_device *device);
-> +
-> +#else
-> +static inline int drmcgrp_register_device(struct drm_device *device)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline int drmcgrp_unregister_device(struct drm_device *device)
-> +{
-> +	return 0;
-> +}
-> +#endif /* CONFIG_CGROUP_DRM */
-> +#endif /* __DRM_CGROUP_H__ */
-> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-> index 9928e60037a5..27497f786c93 100644
-> --- a/include/linux/cgroup_drm.h
-> +++ b/include/linux/cgroup_drm.h
-> @@ -6,10 +6,20 @@
->  
->  #ifdef CONFIG_CGROUP_DRM
->  
-> +#include <linux/mutex.h>
->  #include <linux/cgroup.h>
-> +#include <drm/drm_file.h>
-> +
-> +/* limit defined per the way drm_minor_alloc operates */
-> +#define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
-> +
-> +struct drmcgrp_device_resource {
-> +	/* for per device stats */
-> +};
->  
->  struct drmcgrp {
->  	struct cgroup_subsys_state	css;
-> +	struct drmcgrp_device_resource	*dev_resources[MAX_DRM_DEV];
->  };
->  
->  static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
-> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> index 66cb1dda023d..7da6e0d93991 100644
-> --- a/kernel/cgroup/drm.c
-> +++ b/kernel/cgroup/drm.c
-> @@ -1,28 +1,99 @@
->  // SPDX-License-Identifier: MIT
->  // Copyright 2019 Advanced Micro Devices, Inc.
-> +#include <linux/export.h>
->  #include <linux/slab.h>
->  #include <linux/cgroup.h>
-> +#include <linux/fs.h>
-> +#include <linux/seq_file.h>
-> +#include <linux/mutex.h>
->  #include <linux/cgroup_drm.h>
-> +#include <linux/kernel.h>
-> +#include <drm/drm_device.h>
-> +#include <drm/drm_cgroup.h>
-> +
-> +static DEFINE_MUTEX(drmcgrp_mutex);
-> +
-> +struct drmcgrp_device {
-> +	struct drm_device	*dev;
-> +	struct mutex		mutex;
-> +};
-> +
-> +/* indexed by drm_minor for access speed */
-> +static struct drmcgrp_device	*known_drmcgrp_devs[MAX_DRM_DEV];
-> +
-> +static int max_minor;
-
-Uh no global stuff like this please. Or some explanation in the commit
-message why we really cant avoid this.
-
-> +
->  
->  static struct drmcgrp *root_drmcgrp __read_mostly;
->  
->  static void drmcgrp_css_free(struct cgroup_subsys_state *css)
->  {
->  	struct drmcgrp *drmcgrp = css_drmcgrp(css);
-> +	int i;
-> +
-> +	for (i = 0; i <= max_minor; i++) {
-> +		if (drmcgrp->dev_resources[i] != NULL)
-> +			kfree(drmcgrp->dev_resources[i]);
-> +	}
->  
->  	kfree(drmcgrp);
->  }
->  
-> +static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int minor)
-> +{
-> +	struct drmcgrp_device_resource *ddr = drmcgrp->dev_resources[minor];
-> +
-> +	if (ddr == NULL) {
-> +		ddr = kzalloc(sizeof(struct drmcgrp_device_resource),
-> +			GFP_KERNEL);
-> +
-> +		if (!ddr)
-> +			return -ENOMEM;
-> +
-> +		drmcgrp->dev_resources[minor] = ddr;
-> +	}
-> +
-> +	/* set defaults here */
-> +
-> +	return 0;
-> +}
-> +
-> +static inline int init_drmcgrp(struct drmcgrp *drmcgrp, struct drm_device *dev)
-> +{
-> +	int rc = 0;
-> +	int i;
-> +
-> +	if (dev != NULL) {
-> +		rc = init_drmcgrp_single(drmcgrp, dev->primary->index);
-> +		return rc;
-> +	}
-> +
-> +	for (i = 0; i <= max_minor; i++) {
-> +		rc = init_drmcgrp_single(drmcgrp, i);
-> +		if (rc)
-> +			return rc;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->  static struct cgroup_subsys_state *
->  drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
->  {
->  	struct drmcgrp *parent = css_drmcgrp(parent_css);
->  	struct drmcgrp *drmcgrp;
-> +	int rc;
->  
->  	drmcgrp = kzalloc(sizeof(struct drmcgrp), GFP_KERNEL);
->  	if (!drmcgrp)
->  		return ERR_PTR(-ENOMEM);
->  
-> +	rc = init_drmcgrp(drmcgrp, NULL);
-> +	if (rc) {
-> +		drmcgrp_css_free(&drmcgrp->css);
-> +		return ERR_PTR(rc);
-> +	}
-> +
->  	if (!parent)
->  		root_drmcgrp = drmcgrp;
->  
-> @@ -40,3 +111,48 @@ struct cgroup_subsys drm_cgrp_subsys = {
->  	.legacy_cftypes	= files,
->  	.dfl_cftypes	= files,
->  };
-> +
-> +int drmcgrp_register_device(struct drm_device *dev)
-
-Imo this should be done as part of drm_dev_register (maybe only if the
-driver has set up a controller or something). Definitely with the
-unregister logic below. Also anything used by drivers needs kerneldoc.
-
-
-> +{
-> +	struct drmcgrp_device *ddev;
-> +
-> +	ddev = kzalloc(sizeof(struct drmcgrp_device), GFP_KERNEL);
-> +	if (!ddev)
-> +		return -ENOMEM;
-> +
-> +	ddev->dev = dev;
-> +	mutex_init(&ddev->mutex);
-> +
-> +	mutex_lock(&drmcgrp_mutex);
-> +	known_drmcgrp_devs[dev->primary->index] = ddev;
-> +	max_minor = max(max_minor, dev->primary->index);
-> +	mutex_unlock(&drmcgrp_mutex);
-> +
-> +	/* init cgroups created before registration (i.e. root cgroup) */
-> +	if (root_drmcgrp != NULL) {
-> +		struct cgroup_subsys_state *pos;
-> +		struct drmcgrp *child;
-> +
-> +		rcu_read_lock();
-> +		css_for_each_descendant_pre(pos, &root_drmcgrp->css) {
-> +			child = css_drmcgrp(pos);
-> +			init_drmcgrp(child, dev);
-> +		}
-> +		rcu_read_unlock();
-
-I have no idea, but is this guaranteed to get them all?
--Daniel
-
-> +	}
-> +
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drmcgrp_register_device);
-> +
-> +int drmcgrp_unregister_device(struct drm_device *dev)
-> +{
-> +	mutex_lock(&drmcgrp_mutex);
-> +
-> +	kfree(known_drmcgrp_devs[dev->primary->index]);
-> +	known_drmcgrp_devs[dev->primary->index] = NULL;
-> +
-> +	mutex_unlock(&drmcgrp_mutex);
-> +	return 0;
-> +}
-> +EXPORT_SYMBOL(drmcgrp_unregister_device);
-> -- 
-> 2.21.0
-> 
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+SGkgTWljaGFsLA0KDQo+IE9uIEp1biAyNiwgMjAxOSwgYXQgMToyNiBBTSwgTWljaGFsIEtvdXRu
+w70gPG1rb3V0bnlAc3VzZS5jb20+IHdyb3RlOg0KPiANCj4gSGVsbG8gU29uZyBhbmQgSSBhcG9s
+b2d5IGZvciBsYXRlIHJlcGx5Lg0KPiANCj4gSSB1bmRlcnN0YW5kIHRoZSBtb3RpdmF0aW9uIGZv
+ciB0aGUgaGVhZHJvb20gYXR0cmlidXRlIGlzIHRvIGFjaGlldmUNCj4gc2lkZSBsb2FkIHRocm90
+dGxpbmcgYmVmb3JlIHRoZSBDUFUgaXMgZnVsbHkgc2F0dXJhdGVkIHNpbmNlIHlvdXINCj4gbWVh
+c3VyZW1lbnRzIHNob3cgdGhhdCBzb21ldGhpbmcgZWxzZSBnZXRzIHNhdHVyYXRlZCBlYXJsaWVy
+IHRoYW4gQ1BVDQo+IGFuZCBjYXVzZXMgZ3JvdyBvZiB0aGUgb2JzZXJ2ZWQgbGF0ZW5jeS4NCj4g
+DQo+IFRoZSBzZWNvbmQgYXNwZWN0IG9mIHRoZSBoZWFkcm9vbSBrbm9iLCBpLmUuIGR5bmFtaWMg
+cGFydGl0aW9uaW5nIG9mIHRoZQ0KPiBDUFUgcmVzb3VyY2UgaXMgSU1PIHNvbWV0aGluZyB3aGlj
+aCB3ZSBhbHJlYWR5IGhhdmUgdGhhbmtzIHRvDQo+IGNwdS53ZWlnaHQuDQoNCkkgdGhpbmsgdGhl
+IGNwdS5oZWFkcm9vbSBrbm9iIGlzIHRoZSBkeW5hbWljIHZlcnNpb24gb2YgdGhlIGNwdS5tYXgg
+a25vYi4gDQpJdCBzZXJ2ZXMgZGlmZmVyZW50IHJvbGUgYXMgY3B1LndlaWdodC4gDQoNCmNwdS53
+ZWlnaHQgaXMgbGlrZTogd2hlbiBib3RoIHRhc2tzIGNhbiBydW4sIHdoaWNoIG9uZSBnZXRzIG1v
+cmUgY3ljbGVzLiANCmNwdS5oZWFkcm9vbSBpcyBsaWtlOiBldmVuIHRoZXJlIGlzIGlkbGUgY3B1
+IGN5Y2xlLCB0aGUgc2lkZSB3b3JrbG9hZCANCnNob3VsZCBub3QgdXNlIGl0IGFsbC4gDQoNCj4g
+DQo+IEFzIHlvdSB3cm90ZSwgcGxhaW4gY3B1LndlaWdodCBvZiB3b3JrbG9hZHMgZGlkbid0IHdv
+cmsgZm9yIHlvdSwgc28gSQ0KPiB0aGluayBpdCdkIGJlIHdvcnRoIGZpZ3VyaW5nIG91dCB3aGF0
+IGlzIHRoZSByZXNvdXJjZSB3aG9zZSBzYXR1cmF0aW9uDQo+IGFmZmVjdHMgdGhlIG92ZXJhbGwg
+b2JzZXJ2ZWQgbGF0ZW5jeSBhbmQgc2VlIGlmIGEgcHJvdGVjdGlvbi93ZWlnaHRzIG9uDQo+IHRo
+YXQgcmVzb3VyY2UgY2FuIGJlIHNldCAob3IgaW1wbGVtZW50ZWQpLg0KDQpPdXIgZ29hbCBoZXJl
+IGlzIG5vdCB0byBzb2x2ZSBhIHBhcnRpY3VsYXIgY2FzZS4gSW5zdGVhZCwgd2Ugd291bGQgbGlr
+ZSANCmEgdW5pdmVyc2FsIHNvbHV0aW9uIGZvciBkaWZmZXJlbnQgY29tYmluYXRpb24gb2YgbWFp
+biB3b3JrbG9hZCBhbmQgc2lkZQ0Kd29ya2xvYWQuIGNwdS5oZWFkcm9vbSBtYWtlcyBpdCBlYXN5
+IHRvIGFkanVzdCB0aHJvdHRsaW5nIGJhc2VkIG5vIHRoZSANCnJlcXVpcmVtZW50IG9mIHRoZSBt
+YWluIHdvcmtsb2FkLiANCg0KQWxzbywgdGhlcmUgYXJlIHJlc291cmNlcyB0aGF0IGNvdWxkIG9u
+bHkgYmUgcHJvdGVjdGVkIGJ5IGludGVudGlvbmFsbHkNCmxlYXZlIHNvbWUgaWRsZSBjeWNsZXMu
+IEZvciBleGFtcGxlLCBTTVQgc2libGluZ3Mgc2hhcmUgQUxVcywgc29tZXRpbWVzIA0Kd2UgaGF2
+ZSB0byB0aHJvdHRsZSBvbmUgU01UIHNpYmxpbmcgdG8gbWFrZSB0aGUgb3RoZXIgc2libGluZyBy
+dW4gZmFzdGVyLiANCg0KPiANCj4gT24gVHVlLCBNYXkgMjEsIDIwMTkgYXQgMDQ6Mjc6MDJQTSAr
+MDAwMCwgU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNvbT4gd3JvdGU6DQo+PiBUaGUgb3Zl
+cmFsbCBsYXRlbmN5IChvciB3YWxsIGxhdGVuY3kpIGNvbnRhaW5zOiANCj4+IA0KPj4gICAoMSkg
+Y3B1IHRpbWUsIHdoaWNoIGlzIChhKSBhbmQgKGQpIGluIHRoZSBsb29wIGFib3ZlOw0KPiBIb3cg
+ZG8geW91IG1lYXN1cmUgdGhpcyBDUFUgdGltZT8gRG9lcyBpdCBpbmNsdWRlIHRpbWUgc3BlbnQg
+aW4gdGhlDQo+IGtlcm5lbD8gKE9yIGNhbiB0aGVyZSBiZSBhbnl0aGluZyBlbHNlIHVuYWNjb3Vu
+dGVkIGZvciBpbiB0aGUgZm9sbG93aW5nDQo+IGNhbGN1bGF0aW9ucz8pDQoNCldlIG1lYXN1cmVz
+IGhvdyBtdWNoIHRpbWUgYSB0aHJlYWQgaXMgcnVubmluZy4gSXQgaW5jbHVkZXMga2VybmVsIHRp
+bWUuIA0KSSB0aGluayB3ZSBkaWRuJ3QgbWVhc3VyZSB0aW1lcyBzcGVudCBvbiBwcm9jZXNzaW5n
+IElSUXMsIGJ1dCB0aGF0IGlzIA0Kc21hbGwgY29tcGFyZWQgd2l0aCBvdmVyYWxsIGxhdGVuY3ku
+IA0KDQo+IA0KPj4gICAoMikgdGltZSB3YWl0aW5nIGZvciBkYXRhLCB3aGljaCBpcyAoYik7DQo+
+IElzIHlvdXIgYXNzdW1wdGlvbiBvZiB0aGlzIGJlaW5nIGNvbnN0YW50IHN1cHBvcnRlZCBieSB0
+aGUgbWVhc3VyZW1lbnRzPw0KDQpXZSBkb24ndCBtZWFzdXJlIHRoYXQgc3BlY2lmaWNhbGx5LiBU
+aGUgZGF0YSBpcyBmZXRjaGVkIG92ZXIgdGhlIG5ldHdvcmsNCmZyb20gb3RoZXIgc2VydmVycy4g
+VGhlIGxhdGVuY3kgdG8gZmV0Y2ggZGF0YSBpcyBub3QgY29uc3RhbnQsIGJ1dCB0aGUgDQphdmVy
+YWdlIG9mIHRob3VzYW5kcyBvZiByZXF1ZXN0cyBzaG91bGQgYmUgdGhlIHNhbWUgZm9yIGRpZmZl
+cmVudCBjYXNlcy4gDQoNCj4gDQo+IFRoZSBsYXN0IG5vdGUgaXMgcmVnYXJkaW5nIHNlbWFudGlj
+cyBvZiB0aGUgaGVhZHJvb20ga25vYiwgSSdtIG5vdCBzdXJlDQo+IGl0IGZpdHMgd2VsbCBpbnRv
+IHRoZSB3ZWlnaHReYWxsb2NhdGlvbl5saW1pdF5wcm90ZWN0aW9uIG1vZGVsLiBJdCBzZWVtcw0K
+PiB0byBtZSB0aGF0IGl0J3MgY3JhZnRlZCB0byBzYXRpc2Z5IHRoZSBkaXZpc2lvbiB0byBvbmUg
+bWFpbiB3b3JrbG9hZCBhbmQNCj4gc2lkZSB3b3JrbG9hZCwgaG93ZXZlciwgdGhlIGNvbmNlcHQg
+ZG9lc24ndCBnZW5lcmFsaXplIHdlbGwgdG8gYXJiaXRyYXJ5DQo+IG51bWJlciBvZiBzaWJsaW5n
+cyAoZS5nLiB0d28gY2dyb3VwcyB3aXRoIHNhbWUgaGVhZHJvb20sIHRoaXJkIHdpdGgNCj4gbGVz
+cywgd2hvIGlzIHdpbm5pbmc/KS4NCg0KVGhlIHNlbWFudGljcyBpcyBub3QgdmVyeSBzdHJhaWdo
+dGZvcndhcmQuIFdlIGRpc2N1c3NlZCBhYm91dCBpdCBmb3IgYSANCmxvbmcgdGltZS4gQW5kIGl0
+IGlzIHJlYWxseSBjcmFmdGVkIHRvIHByb3RlY3Rpb24gbW9kZWwuIA0KDQpJbiB5b3VyIGV4YW1w
+bGUsIHNheSBib3RoIEEgYW5kIEIgaGF2ZSAzMCUgaGVhZHJvb20sIGFuZCBDIGhhcyAyMCUuIEEg
+YW5kDQpCIGFyZSAid2lubmluZyIsIGFzIHRoZXkgd2lsbCBub3QgYmUgdGhyb3R0bGVkLiBDIHdp
+bGwgYmUgdGhyb3R0bGVkIHdoZW4NCnRoZSBnbG9iYWwgaWRsZW5lc3MgaXMgbG93ZXIgdGhhbiAx
+MCUgKDMwJSAtIDIwJSkuIA0KDQpOb3RlIHRoYXQsIHRoaXMgaXMgbm90IGEgdHlwaWNhbCB1c2Ug
+Y2FzZSBmb3IgY3B1LmhlYWRyb29tLiBJZiBtdWx0aXBsZSANCmxhdGVuY3kgc2Vuc2l0aXZlIGFw
+cGxpY2F0aW9ucyBhcmUgc2hhcmluZyB0aGUgc2FtZSBzZXJ2ZXIsIHRoZXkgd291bGQgDQpuZWVk
+IHNvbWUgcGFydGl0aW9uIHNjaGVtZS4gDQoNClRoYW5rcywNClNvbmcNCg0KDQo=
