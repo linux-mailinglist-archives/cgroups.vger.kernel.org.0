@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 07434560C6
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 05:53:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CA7E56062
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 05:48:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727627AbfFZDov (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 Jun 2019 23:44:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56184 "EHLO mail.kernel.org"
+        id S1727843AbfFZDpx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 Jun 2019 23:45:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727195AbfFZDot (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 25 Jun 2019 23:44:49 -0400
-Received: from sasha-vm.mshome.net (mobile-107-77-172-98.mobile.att.net [107.77.172.98])
+        id S1727405AbfFZDpx (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 25 Jun 2019 23:45:53 -0400
+Received: from sasha-vm.mshome.net (mobile-107-77-172-74.mobile.att.net [107.77.172.74])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33CAC20659;
-        Wed, 26 Jun 2019 03:44:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 64AC0214DA;
+        Wed, 26 Jun 2019 03:45:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1561520688;
-        bh=rg2X3Dz7v8hDfBOjeKAWERZJmuKoBfoNg9SUmhhyzo8=;
+        s=default; t=1561520751;
+        bh=DZe5PTe4zle8QnQQX1FE+nwEIWNj8Vl0WiZFq6FsARA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vCbPz6WHoa3FLjaRNGDUaztVRIAul/QEKdncdn9zxa3pf/M/3pnImFBflO5sFJPLF
-         rhFQLSNdbDu5rxNcRZBemr2Me96WWTls2myB2PD8Y9spTjhH68x+Kvc3zp9d9QYQ9y
-         vcev348FzvwHbDExx3cczlNryRi6jpmK+WlOqqEE=
+        b=y2MA7T/TcTQhzg+T96feYRF92qTjg/aOK00uNpVNNfUgUHL2PhIpqfskWH5Jh0Mhl
+         IpRjVrsPyGPnx6py4/rZfKGpLWt/udSgz3RJFTocGWDrONRAEGMOzHSUbOo3bHhIn+
+         xGdPCZxhOtsLWw7V+gA1JJo2iR4pFlqe7+wLf2fE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Joel Savitz <jsavitz@redhat.com>, Waiman Long <longman@redhat.com>,
@@ -30,12 +30,12 @@ Cc:     Joel Savitz <jsavitz@redhat.com>, Waiman Long <longman@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Tejun Heo <tj@kernel.org>, Sasha Levin <sashal@kernel.org>,
         cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 29/34] cpuset: restore sanity to cpuset_cpus_allowed_fallback()
-Date:   Tue, 25 Jun 2019 23:43:30 -0400
-Message-Id: <20190626034335.23767-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 17/21] cpuset: restore sanity to cpuset_cpus_allowed_fallback()
+Date:   Tue, 25 Jun 2019 23:45:02 -0400
+Message-Id: <20190626034506.24125-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190626034335.23767-1-sashal@kernel.org>
-References: <20190626034335.23767-1-sashal@kernel.org>
+In-Reply-To: <20190626034506.24125-1-sashal@kernel.org>
+References: <20190626034506.24125-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -154,10 +154,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 14 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 266f10cb7222..ff956ccbb6df 100644
+index 4657e2924ecb..0a0e1aa11f5e 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -2432,10 +2432,23 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+@@ -2436,10 +2436,23 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
  	spin_unlock_irqrestore(&callback_lock, flags);
  }
  
