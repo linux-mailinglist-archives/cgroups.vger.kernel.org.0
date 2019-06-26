@@ -2,53 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D15A757340
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 23:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC0245739D
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 23:28:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726239AbfFZVEC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 17:04:02 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:42742 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726227AbfFZVEB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 17:04:01 -0400
-Received: by mail-ot1-f67.google.com with SMTP id l15so3996812otn.9
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 14:04:01 -0700 (PDT)
+        id S1726271AbfFZV2B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 17:28:01 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:40472 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726239AbfFZV2B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 17:28:01 -0400
+Received: by mail-wr1-f68.google.com with SMTP id p11so4396899wre.7
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 14:28:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=CTgSwImCroOFj856c6bJv9eV5qY46L9dV95K0+Zih2Q=;
-        b=UCE+WsZGunsOBF8nMXHJLfgwTPfDujf3BDyDgts1yhNw10gFaR5g1/EMEWZKRQy6a6
-         VI81wvq6y7nRQ5uxKintPFtS3/NVMIlQu3reNMg3WMEMY9f4FFwUy2Lgr22jvJvGuZG+
-         qlof6vkk4miibq5fDI8IVWWJr5emfHN12X/Fs=
+        bh=CKPa1AsM7rfnwQnb1Ufx9QUB+dzAQ4Qp3sCYKeKlFpw=;
+        b=ftA5X6EP5X9FO3Z/g4O6tC81NKR4qxvgjO0iEqlJkrant6fG49e8aXNYfAKxXWvC5s
+         YEzjlIueeADKHfQ3cfkZiIxuwHylNsB5yHaBidw6MjkHRdFoYB4zlCDcZhmrPiz2J/c5
+         b63Ns32h/HY4JYlnhmcy8oSICZkHUrxVnNG+fO8X0CFRHQGLXlD2JsMf0x2ewuVezVo9
+         KyO9Z711WenXYbZFdEZbFqrBqtIM3cGBD+94uC1NL55UdaNoSo27SH46UhLmQQ9e4VPf
+         HC+nYypRMZJ9cUcj/lIaQ5C4i4TpsYLqZ8khOE61RIgNyhLvpk1heX6QA46t6lzfPZIY
+         76uA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=CTgSwImCroOFj856c6bJv9eV5qY46L9dV95K0+Zih2Q=;
-        b=eIhK+8GCiLwNJ//B1bbQRWrj3Qzlsi9e18AuO22banB/P99BICNh50eQmxFrlmhB4X
-         LPedjsbu35E5ojT7CPKSuKJDDbpGLO0vj5SvbwyGUTpCyTbNZxtTvHNBjQ99N7IvWQ7y
-         ribZqVBygWNT8ZguLT44QM5yGuPC2VnH8yoEA8iDLN9fEIpGppDpQYkjc+rphJjxa7ew
-         m8uSqAaqfegdOF13M9S4xtnQQ60Sl9NlvPpw3qzcrIi/D15YcrFvW0UFGd1KlhnB80jy
-         OcwSossjx+npdugExdkA4tEO5oW0qJExi83Gxxy7+nHvnn1WmYcUPmbAT7rrGNFfY9PV
-         zLXg==
-X-Gm-Message-State: APjAAAX0JyIrCd1fx2/degL/x2kx+ivAeSyx4jPrpTQKZ6Z+XHuHdIAj
-        O8FhmM8QLrsauj0scJ4N1hQFkx4OjJovWDUN2/mBWQ==
-X-Google-Smtp-Source: APXvYqw4UC5SHZdLwBOG2SzDRa0FhoUc+zkZjiOVFNDtOGAE1f36qyXXcR9ig2SS1vvXmMMoZwnvP8V4Fgg753rQnOk=
-X-Received: by 2002:a9d:6e8d:: with SMTP id a13mr244064otr.303.1561583040687;
- Wed, 26 Jun 2019 14:04:00 -0700 (PDT)
+        bh=CKPa1AsM7rfnwQnb1Ufx9QUB+dzAQ4Qp3sCYKeKlFpw=;
+        b=NXpHxmaEIw9rtW7aIshyoTu64+TO0BQ4RuFt+qufJ2m4YExAkJIBeyCc9CstY1/BNr
+         2doTxmFTx+CihK0Rn4BfZDfjQyS1mtSo5OP+nGFMUOBJLADLb9KOefcdtSkT89lqRr1H
+         Kakbdm4OTRxc13sVQ11OnKul82Q3NfAxV/TAZpNBoUj8uvi0Yt3n3H37249HxuWnpZpB
+         8cYA8CEI2Ugv2shuAiHqEm5MhINqwur+rQb+PmrdaUFDlCkch63y9rxQhOTFD2U2pGEy
+         ShIZOEWFWvqCK/gu7cWIp7hIkofz70zU+WQW8y28W6BFG2CE9Nd0jM+Yorf+NQRQ3dMI
+         g23w==
+X-Gm-Message-State: APjAAAX79ssdElfpUh2gtjVWt3Yyd9OWoNbqOiTQakHZcd2GmgnZKn4p
+        k6jGnjeaFbxOvuzsRM/g7u7SPslhtvsvEEgoOZM=
+X-Google-Smtp-Source: APXvYqxUU3CG54iiQpahlIP3u7Svs62bElm/WYd6V3cDt0emTydXjWKulrSmoZCnJh2WYSszOGvx5EQlq964yw9/mb8=
+X-Received: by 2002:adf:e442:: with SMTP id t2mr5288781wrm.286.1561584479326;
+ Wed, 26 Jun 2019 14:27:59 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190626150522.11618-1-Kenny.Ho@amd.com> <20190626150522.11618-3-Kenny.Ho@amd.com>
- <20190626155605.GQ12905@phenom.ffwll.local> <CAOWid-cDopwjMns+c=fRpUA-z51zU=YbDC2QCVUXDjjTiyRcXw@mail.gmail.com>
-In-Reply-To: <CAOWid-cDopwjMns+c=fRpUA-z51zU=YbDC2QCVUXDjjTiyRcXw@mail.gmail.com>
-From:   Daniel Vetter <daniel@ffwll.ch>
-Date:   Wed, 26 Jun 2019 23:03:49 +0200
-Message-ID: <CAKMK7uERvn7Ed2trGQShM94Ozp6+x8bsULFyGj9CYWstuzb56A@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 02/11] cgroup: Add mechanism to register DRM devices
-To:     Kenny Ho <y2kenny@gmail.com>
+References: <20190626150522.11618-1-Kenny.Ho@amd.com> <20190626150522.11618-5-Kenny.Ho@amd.com>
+ <20190626160553.GR12905@phenom.ffwll.local>
+In-Reply-To: <20190626160553.GR12905@phenom.ffwll.local>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Wed, 26 Jun 2019 17:27:48 -0400
+Message-ID: <CAOWid-eurCMx1F7ciUwx0e+p=s=NP8=UxQUhhF-hdK-iAna+fA@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 04/11] drm, cgroup: Add total GEM buffer allocation limit
+To:     Daniel Vetter <daniel@ffwll.ch>
 Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         Tejun Heo <tj@kernel.org>,
         Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
@@ -59,102 +61,75 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 10:37 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> (sending again, I keep missing the reply-all in gmail.)
-
-You can make it the default somewhere in the gmail options.
-
-(also resending, I missed that you didn't group-replied).
-
-On Wed, Jun 26, 2019 at 10:25 PM Kenny Ho <y2kenny@gmail.com> wrote:
+On Wed, Jun 26, 2019 at 12:05 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> On Wed, Jun 26, 2019 at 11:56 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > drm.buffer.default
+> >         A read-only flat-keyed file which exists on the root cgroup.
+> >         Each entry is keyed by the drm device's major:minor.
 > >
-> > Why the separate, explicit registration step? I think a simpler design for
-> > drivers would be that we set up cgroups if there's anything to be
-> > controlled, and then for GEM drivers the basic GEM stuff would be set up
-> > automically (there's really no reason not to I think).
+> >         Default limits on the total GEM buffer allocation in bytes.
 >
-> Is this what you mean with the comment about drm_dev_register below?
-> I think I understand what you are saying but not super clear.  Are you
-> suggesting the use of driver feature bits (drm_core_check_feature,
-> etc.) similar to the way Brian Welty did in his proposal in May?
+> Don't we need a "0 means no limit" semantics here?
 
-Also not exactly a fan of driver feature bits tbh. What I had in mind was:
+I believe the convention is to use the 'max' keyword.
 
-- For stuff like the GEM accounting which we can do for all drivers
-easily (we can't do the enforcment, that needs a few changes), just
-roll it out for everyone. I.e. if you enable the DRMCG Kconfig, all
-DRIVER_GEM would get that basic gem cgroup accounting.
-
-- for other bits the driver just registers certain things, like "I can
-enforce gem limits" or "I have gpu memory regions vram, tt, and system
-and can enforce them" in their normal driver setup. Then at
-drm_dev_register time we register all these additional cgroups, like
-we today register all the other interafaces and pieces of a drm_device
-(drm_minor, drm_connectors, debugfs files, sysfs stuff, all these
-things).
-
-Since the concepts are still a bit in flux, let's take an example from
-the modeset side:
-- driver call drm_connector_init() to create connector object
-- drm_dev_register() also sets up all the public interfaces for that
-connector (debugfs, sysfs, ...)
-
-I think a similar setup would be good for cgroups here, you just
-register your special ttm_mem_reg or whatever, and the magic happens
-automatically.
-
-> > Also tying to the minor is a bit funky, since we have multiple of these.
-> > Need to make sure were at least consistent with whether we use the primary
-> > or render minor - I'd always go with the primary one like you do here.
 >
-> Um... come to think of it, I can probably embed struct drmcgrp_device
-> into drm_device and that way I don't really need to keep a separate
-> array of
-> known_drmcgrp_devs and get rid of that max_minor thing.  Not sure why
-> I didn't think of this before.
+> I think we need a new drm-cgroup.rst which contains all this
+> documentation.
 
-Yeah if that's possible, embedding is definitely the preferred way.
-drm_device is huge already, and the per-device overhead really doesn't
-matter.
+Yes I planned to do that when things are more finalized.  I am
+actually writing the commit message following the current doc format
+so I can reuse it in the rst.
 
-> > > +
-> > > +int drmcgrp_register_device(struct drm_device *dev)
-> >
-> > Imo this should be done as part of drm_dev_register (maybe only if the
-> > driver has set up a controller or something). Definitely with the
-> > unregister logic below. Also anything used by drivers needs kerneldoc.
-> >
-> >
-> > > +     /* init cgroups created before registration (i.e. root cgroup) */
-> > > +     if (root_drmcgrp != NULL) {
-> > > +             struct cgroup_subsys_state *pos;
-> > > +             struct drmcgrp *child;
-> > > +
-> > > +             rcu_read_lock();
-> > > +             css_for_each_descendant_pre(pos, &root_drmcgrp->css) {
-> > > +                     child = css_drmcgrp(pos);
-> > > +                     init_drmcgrp(child, dev);
-> > > +             }
-> > > +             rcu_read_unlock();
-> >
-> > I have no idea, but is this guaranteed to get them all?
 >
-> I believe so, base on my understanding about
-> css_for_each_descendant_pre and how I am starting from the root
-> cgroup.  Hopefully I didn't miss anything.
+> With multiple GPUs, do we need an overall GEM bo limit, across all gpus?
+> For other stuff later on like vram/tt/... and all that it needs to be
+> per-device, but I think one overall limit could be useful.
 
-Well it's rcu, so I expect it'll race with concurrent
-addition/removal. And the kerneldoc has some complicated sounding
-comments about how to synchronize that with some locks that I don't
-fully understand, but I think you're also not having any additional
-locking so not sure this all works correctly ...
+This one I am not sure but should be fairly straightforward to add.
+I'd love to hear more feedbacks on this as well.
 
-Do we still need the init_dmcgrp stuff if we'd just embedd? That would
-probably be the simplest way to solve this all :-)
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-+41 (0) 79 365 57 48 - http://blog.ffwll.ch
+> >       if (!amdgpu_bo_validate_size(adev, size, bp->domain))
+> >               return -ENOMEM;
+> >
+> > +     if (!drmcgrp_bo_can_allocate(current, adev->ddev, size))
+> > +             return -ENOMEM;
+>
+> So what happens when you start a lot of threads all at the same time,
+> allocating gem bo? Also would be nice if we could roll out at least the
+> accounting part of this cgroup to all GEM drivers.
+
+When there is a large number of allocation, the allocation will be
+checked in sequence within a device (since I used a per device mutex
+in the check.)  Are you suggesting the overhead here is significant
+enough to be a bottleneck?  The accounting part should be available to
+all GEM drivers (unless I missed something) since the chg and unchg
+function is called via the generic drm_gem_private_object_init and
+drm_gem_object_release.
+
+> > +     /* only allow bo from the same cgroup or its ancestor to be imported */
+> > +     if (drmcgrp != NULL &&
+>
+> Quite a serious limitation here ...
+>
+> > +                     !drmcgrp_is_self_or_ancestor(drmcgrp, obj->drmcgrp)) {
+>
+> Also what happens if you actually share across devices? Then importing in
+> the 2nd group is suddenly possible, and I think will be double-counted.
+>
+> What's the underlying technical reason for not allowing sharing across
+> cgroups?
+
+With the current implementation, there shouldn't be double counting as
+the counting is done during the buffer init.
+
+To be clear, sharing across cgroup is allowed, the buffer just needs
+to be allocated by a process that is parent to the cgroup.  So in the
+case of xorg allocating buffer for client, the xorg would be in the
+root cgroup and the buffer can be passed around by different clients
+(in root or other cgroup.)  The idea here is to establish some form of
+ownership, otherwise there wouldn't be a way to account for or limit
+the usage.
+
+Regards,
+Kenny
