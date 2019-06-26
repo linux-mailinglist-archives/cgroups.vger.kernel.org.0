@@ -2,139 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CAB74573F4
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 23:58:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E967A5741D
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 00:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726370AbfFZV6d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 17:58:33 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:43513 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbfFZV6d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 17:58:33 -0400
-Received: by mail-wr1-f67.google.com with SMTP id p13so47144wru.10
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 14:58:32 -0700 (PDT)
+        id S1726328AbfFZWKb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 18:10:31 -0400
+Received: from mail-io1-f49.google.com ([209.85.166.49]:35417 "EHLO
+        mail-io1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726293AbfFZWKa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 18:10:30 -0400
+Received: by mail-io1-f49.google.com with SMTP id m24so295786ioo.2
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 15:10:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=indeed.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=PjJc1xqUwMoNZYdPXiJ0bqpqYxBHZbKMocYaShEMxpI=;
-        b=OA3/ZVhuHJ9kRK9Stp7sRbUcoaTnEMC017hzleupit9TgdCjqEGbpvGvamDUeltYp6
-         PeHuF3Y/yDmQkNngbC+0I2p2uwh9vROctSvIMUvQa/+g1JLjN2xnhGY15OaJchd+pv+4
-         csudVRk5Yko2o7YO/l0JRr1RTyd4+Nzq2/S4v9ZEm6vCmV29c2brFaT0CDshnpBH9sET
-         0uphoEx3wEejmLnooM5W8I64ouY0j6G35lmlsNB3EJr7O2sy/5OH7c5Wk95/b786szbA
-         fQh8r92kHja8sUQymPsp6dRcR75P0zSJRiq6FjEtL/Nw3Xu2laK4FbKlEEN91Kg0Stqz
-         ELDw==
+        bh=rH2Dez6ibqeQegsSHJwCDNyF4HevqK6rJDhBC1vQRG4=;
+        b=yyWseDrs1tj8p1o6MQ872kjOA3UQ9CVqeYBmzwveWs+QXL8fcZ+guUO9UdPac/xfHj
+         gFVMKie1TtQFHdC4tm2WBM2cjHHHn08h2zlPssRFotp/FOHhzpueAl4s1jKCYs2O0yvO
+         cSItEv0JI4r+/FqqfoDEb9j8YIQSIZTgpAleo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PjJc1xqUwMoNZYdPXiJ0bqpqYxBHZbKMocYaShEMxpI=;
-        b=Dbkr1gzC1ln5O3Oc7GfqEUEoJJX4YpyGMdehwR/IFeqx8RoRzoeSL78LmE27HffW9z
-         EUFplBuGFjXoj4ud58e/+yzcNB6WGufoxwma3mRlTl8kWQObsvsdFJqmtRsG7PlkoP1r
-         /sWac+HEClo2+QiRJo7ILmvMKrIwzfvOSN6PzBnBfYYArR7ulEu/kN5FNNt2o4bnGsTI
-         XSUrY5sbf9jMdE6aTcH8fQ+pS+Q/q7+jZuERAOOTRJWIBypo1mz8BPPPhYwmE0khZGu7
-         jWAg+qtNsGZoOdw6Ykt87OP++mOY8rSNK2vet3DZ1hJrToZ2bLjg+COuJDk14rjEP3Aq
-         2loQ==
-X-Gm-Message-State: APjAAAV8MzZZDBMncN8W0lEOdt+vrOBZyRtuMC1T9q9MZtzH4M9exIOM
-        URYpQh7fovObWUrGyOcmeSMWW6eptIKNTwEFbmo=
-X-Google-Smtp-Source: APXvYqzs7wbJwwppIXTwNkzk/UwxEdAf3XwQVn7RYgtTFOe+H1Sebsu/ctx6nCfRzL3pcBdQ5SU7sy9PF7qvGjsH38k=
-X-Received: by 2002:adf:e442:: with SMTP id t2mr36340wrm.286.1561586311171;
- Wed, 26 Jun 2019 14:58:31 -0700 (PDT)
+        bh=rH2Dez6ibqeQegsSHJwCDNyF4HevqK6rJDhBC1vQRG4=;
+        b=HXyVUn9ZSaPNqCz74xxcFwbVG28izv+vBIG1Q09UVuowFVLrU3ndrNl3SPQ/kQGuAg
+         fVDA8CUSPZeD/pmldBod/YV08XgjGuV6iTXACBtNx6yA9U4SKwRNUxUIU/7n95Ymub6U
+         1zu20Z+lJttz+01SuaUhlNWwW/I2UoM2auyxZNRkbP2GYGJv8KV7AF2PvcIqYPO+WMNz
+         B3DhYUGqCsk9O9LowEnn2cH4+ekMiTS/ByfODMlCHgkN/gASMZfvAkWjGi/TR/ffkAki
+         sWj6gXwkjvJLFhul9ESRMdp+9RLJ5CaXcFgWP//GuAC8/n0VKMzs8qDRBY1+fcodznUn
+         sRBw==
+X-Gm-Message-State: APjAAAUSTyXUVtT8KK32RHCdM+Fpnb3qNfe/QfaJuexLRIK7GRCEYKoE
+        5Se1Gzx37kSG+uVxRimW7I5HpyuyPVe9Y3GWaDvqjA==
+X-Google-Smtp-Source: APXvYqyVRtUZY5KCSRc4HzJsiZQqcfxNVTUbuzMgIOhL99PiWQ4QhxidNwMHFyN508po+8Dlvcc9k4YWfRA5t8uxDNM=
+X-Received: by 2002:a6b:2bcd:: with SMTP id r196mr567888ior.73.1561587029777;
+ Wed, 26 Jun 2019 15:10:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190626150522.11618-1-Kenny.Ho@amd.com> <20190626150522.11618-3-Kenny.Ho@amd.com>
- <20190626155605.GQ12905@phenom.ffwll.local> <CAOWid-cDopwjMns+c=fRpUA-z51zU=YbDC2QCVUXDjjTiyRcXw@mail.gmail.com>
- <CAKMK7uERvn7Ed2trGQShM94Ozp6+x8bsULFyGj9CYWstuzb56A@mail.gmail.com>
-In-Reply-To: <CAKMK7uERvn7Ed2trGQShM94Ozp6+x8bsULFyGj9CYWstuzb56A@mail.gmail.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Wed, 26 Jun 2019 17:58:19 -0400
-Message-ID: <CAOWid-eeVcsb-rJfY9rxM4vDqGz=3XcZH0G=Qz9sq97L-NduCQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 02/11] cgroup: Add mechanism to register DRM devices
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
+ <1561391404-14450-1-git-send-email-chiluk+linux@indeed.com>
+ <1561391404-14450-2-git-send-email-chiluk+linux@indeed.com> <xm26tvcex50s.fsf@bsegall-linux.svl.corp.google.com>
+In-Reply-To: <xm26tvcex50s.fsf@bsegall-linux.svl.corp.google.com>
+From:   Dave Chiluk <chiluk+linux@indeed.com>
+Date:   Wed, 26 Jun 2019 17:10:04 -0500
+Message-ID: <CAC=E7cUxcNkc7T7AXCr3PO6rqqxrk269JW3SDnXG-LtO-6-BVQ@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] sched/fair: Return all runtime when cfs_b has very
+ little remaining.
+To:     Ben Segall <bsegall@google.com>
+Cc:     Phil Auld <pauld@redhat.com>, Peter Oskolkov <posk@posk.io>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Brendan Gregg <bgregg@netflix.com>,
+        Kyle Anderson <kwa@yelp.com>,
+        Gabriel Munos <gmunoz@netflix.com>,
+        John Hammond <jhammond@indeed.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 5:04 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> On Wed, Jun 26, 2019 at 10:37 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> > (sending again, I keep missing the reply-all in gmail.)
-> You can make it the default somewhere in the gmail options.
-Um... interesting, my option was actually not set (neither reply or reply-all.)
+On Mon, Jun 24, 2019 at 10:33:07AM -0700, bsegall@google.com wrote:
+> This still has a similar cost as reducing min_cfs_rq_runtime to 0 - we
+> now take a tg-global lock on every group se dequeue. Setting min=0 means
+> that we have to take it on both enqueue and dequeue, while baseline
+> means we take it once per min_cfs_rq_runtime in the worst case.
+Yep, it's only slightly better than simply setting min_cfs_rq_runtime=0.
+There's definitely a tradeoff of having to grab the lock every time.
 
-> > On Wed, Jun 26, 2019 at 11:56 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > >
-> > > Why the separate, explicit registration step? I think a simpler design for
-> > > drivers would be that we set up cgroups if there's anything to be
-> > > controlled, and then for GEM drivers the basic GEM stuff would be set up
-> > > automically (there's really no reason not to I think).
-> >
-> > Is this what you mean with the comment about drm_dev_register below?
-> > I think I understand what you are saying but not super clear.  Are you
-> > suggesting the use of driver feature bits (drm_core_check_feature,
-> > etc.) similar to the way Brian Welty did in his proposal in May?
->
-> Also not exactly a fan of driver feature bits tbh. What I had in mind was:
->
-> - For stuff like the GEM accounting which we can do for all drivers
-> easily (we can't do the enforcment, that needs a few changes), just
-> roll it out for everyone. I.e. if you enable the DRMCG Kconfig, all
-> DRIVER_GEM would get that basic gem cgroup accounting.
->
-> - for other bits the driver just registers certain things, like "I can
-> enforce gem limits" or "I have gpu memory regions vram, tt, and system
-> and can enforce them" in their normal driver setup. Then at
-> drm_dev_register time we register all these additional cgroups, like
-> we today register all the other interafaces and pieces of a drm_device
-> (drm_minor, drm_connectors, debugfs files, sysfs stuff, all these
-> things).
->
-> Since the concepts are still a bit in flux, let's take an example from
-> the modeset side:
-> - driver call drm_connector_init() to create connector object
-> - drm_dev_register() also sets up all the public interfaces for that
-> connector (debugfs, sysfs, ...)
->
-> I think a similar setup would be good for cgroups here, you just
-> register your special ttm_mem_reg or whatever, and the magic happens
-> automatically.
+The other non-obvious benefit to this is that when the application
+starts hitting throttling the entire application starts hitting
+throttling closer to simultaneously.  Previously, threads that don't do
+much could continue sipping on their 1ms of min_cfs_rq_runtime, while
+main threads were throttled.  With this the application would more or
+less halt within 5ms of full quota usage.
 
-Ok, I will look into those (I am not too familiar about those at this point.)
+> In addition how much this helps is very dependent on the exact pattern
+> of sleep/wake - you can still strand all but 15ms of runtime with a
+> pretty reasonable pattern.
 
-> > > I have no idea, but is this guaranteed to get them all?
-> >
-> > I believe so, base on my understanding about
-> > css_for_each_descendant_pre and how I am starting from the root
-> > cgroup.  Hopefully I didn't miss anything.
->
-> Well it's rcu, so I expect it'll race with concurrent
-> addition/removal. And the kerneldoc has some complicated sounding
-> comments about how to synchronize that with some locks that I don't
-> fully understand, but I think you're also not having any additional
-> locking so not sure this all works correctly ...
->
-> Do we still need the init_dmcgrp stuff if we'd just embedd? That would
-> probably be the simplest way to solve this all :-)
+I thought this change would have an upper bound stranded time of:
+NUMCPUs * min_cfs_rq_runtime - 3 * sched_cfs_bandwidth_slice().
+From the stranding of 1ms on each queue minues the amount that we'd
+return when we forcibly hit the 3 x bandwidth slice Am I missing
+something here? Additionally that's worst case, and would require that
+threads be scheduled on distinct cpus mostly sequentially, and then
+never run again.
 
-I will need to dig into it a bit more to know for sure.  I think I
-still need the init_drmcgrp stuff. I implemented it like this because
-the cgroup subsystem appear to be initialized before the drm subsystem
-so the root cgroup does not know any drm devices and the per device
-default limits are not set.  In theory, I should only need to set the
-root cgroup (so I don't need to use css_for_each_descendant_pre, which
-requires the rcu_lock.)  But I am not 100% confident there won't be
-any additional cgroup being added to the hierarchy between cgroup
-subsystem init and drm subsystem init.
+> If the cost of taking this global lock across all cpus without a
+> ratelimit was somehow not a problem, I'd much prefer to just set
+> min_cfs_rq_runtime = 0. (Assuming it is, I definitely prefer the "lie
+> and sorta have 2x period 2x runtime" solution of removing expiration)
 
-Alternatively I can protect it with an additional mutex but I am not
-sure if that's needed.
+Can I take this as an technical ack of the v3 patchset?  Do you have any
+other comments for that patchset you'd like to see corrected before it
+gets integrated?  If you are indeed good with that patchset, I'll clean
+up the comment and Documentation text and re-submit as a v5 patchset. I
 
-Regards,
-Kenny
+actually like that patchset best as well, for all the reasons already
+discussed.  Especially the one where it's been running like this for 5
+years prior to 512ac999.
+
+Also given my new-found understanding of min_cfs_rq_runtime, doesn't
+this mean that if we don't expire runtime we could potentially have a
+worst case of 1ms * NUMCPUs of extra runtime instead of 2x runtime?
+This is because min_cfs_rq_runtime could theoretically live on a per-cpu
+indefinitely?  Still this is actually much smaller than I previously had
+feared.  Also it still holds that average runtime is still bounded by
+runtime/period on average.
+
+Thanks
