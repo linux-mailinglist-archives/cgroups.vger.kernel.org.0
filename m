@@ -2,85 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BF3E56F31
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 18:56:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAF1C571D9
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 21:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726042AbfFZQ4s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 12:56:48 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58104 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726131AbfFZQ4s (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 26 Jun 2019 12:56:48 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 286DE83F3C;
-        Wed, 26 Jun 2019 16:56:33 +0000 (UTC)
-Received: from llong.com (dhcp-17-85.bos.redhat.com [10.18.17.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C46A119C5B;
-        Wed, 26 Jun 2019 16:56:29 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH] memcg: Add kmem.slabinfo to v2 for debugging purpose
-Date:   Wed, 26 Jun 2019 12:56:14 -0400
-Message-Id: <20190626165614.18586-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.27]); Wed, 26 Jun 2019 16:56:48 +0000 (UTC)
+        id S1726239AbfFZTfU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 15:35:20 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:33721 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726104AbfFZTfU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 15:35:20 -0400
+Received: by mail-wm1-f65.google.com with SMTP id h19so5373155wme.0
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 12:35:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/5SrQ5SYua3CBmwCDqScHd2/Bwr4oTQ8I2YEBgR7+gA=;
+        b=eMsKc+rnCj8StfekhCHMqWi4SmNhIffQowFbvQPE+yXuPzxz4jp694GIj1LYbyqrtp
+         7UQ8vM7QNCfBJ0nAE7gVrTydFflwf2vtINWHN4yYPxc3boYl6W9MdK8TdnqTjGsfc9Kg
+         FurBoVhNLd0DKjNzVViMIQlpZbtv2DrP6GgxAgnijbQYsmmKK16K4zE8aL1IKE4Lc+R+
+         eyjJZtfCP4Dqiv2LXZ2n+OF7Q2j+CKW+HJarmsrWV1nBjU1Lu8mxjZs9K4TX/ZbWaHRP
+         CiKjA6Du28wcuxDpKm6wb1O4aD34efUIp42Ki0iITbQh0IFlpCFJ5djzrAEsNSzcmd8f
+         MFWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/5SrQ5SYua3CBmwCDqScHd2/Bwr4oTQ8I2YEBgR7+gA=;
+        b=O1ThRwLngkTtPtacny30QLLmpPLoFxLI3gPvFw5tXVLBWv+DzVLkdJNbmMgfaQdjYk
+         RD/0czzxWK3n6kZFsGApxqf3/rt4pEmz2VnRgrEc6Gs66SV992foC25wiEndtBLBs4u3
+         fb56RTqNZymcvwAcGteXK9AUDSI0AkIyFGzdr+rrVgbECMM0TcjoYJUR11bZGcAO8TgM
+         ZjT8D4E/PZitMRUTVUhI7QFZJMElqsHjbhM0Af4JuvXYz60p8QRv24tkxcnotp+wh4FQ
+         RSvEMgkULNdB2bvr5lNygR39E4djawlGlEtnKPxOFQq2eAXblWTo/LcDyupzsbrA4P6/
+         YGFA==
+X-Gm-Message-State: APjAAAUfcnWZJM4Gv7uetMqsRVxIgWlHEV1SLmcVwqYhweGFs5g1XbKL
+        ALSSTB6UYCdBqGAATC6+uo6CalSznZ2ctYbTbBV8jbucym4=
+X-Google-Smtp-Source: APXvYqyG8Is/2v0hS1XHLGNtOeXAyVyYv2E23r0Yvate33SClP0PPy8+QLPRF9mvGuAMa/xfdd48bj61kdArq/BDS/A=
+X-Received: by 2002:a1c:9c8a:: with SMTP id f132mr384737wme.29.1561577718154;
+ Wed, 26 Jun 2019 12:35:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20190626150522.11618-1-Kenny.Ho@amd.com> <20190626150522.11618-2-Kenny.Ho@amd.com>
+ <20190626154929.GP12905@phenom.ffwll.local>
+In-Reply-To: <20190626154929.GP12905@phenom.ffwll.local>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Wed, 26 Jun 2019 15:35:06 -0400
+Message-ID: <CAOWid-dyGwf=e0ikBEQ=bnVM_bC8-FeTOD8fJVMJKUgPv6vtyw@mail.gmail.com>
+Subject: Re: [RFC PATCH v3 01/11] cgroup: Introduce cgroup for drm subsystem
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-With memory cgroup v1, there is a kmem.slabinfo file that can be
-used to view what slabs are allocated to the memory cgroup. There
-is currently no such equivalent in memory cgroup v2. This file can
-be useful for debugging purpose.
+On Wed, Jun 26, 2019 at 11:49 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> Bunch of naming bikesheds
 
-This patch adds an equivalent kmem.slabinfo to v2 with the caveat that
-this file will only show up as ".__DEBUG__.memory.kmem.slabinfo" when the
-"cgroup_debug" parameter is specified in the kernel boot command line.
-This is to avoid cluttering the cgroup v2 interface with files that
-are seldom used by end users.
+I appreciate the suggestions, naming is hard :).
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/memcontrol.c | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
+> > +#include <linux/cgroup.h>
+> > +
+> > +struct drmcgrp {
+>
+> drm_cgroup for more consistency how we usually call these things.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ba9138a4a1de..236554a23f8f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5812,6 +5812,22 @@ static struct cftype memory_files[] = {
- 		.seq_show = memory_oom_group_show,
- 		.write = memory_oom_group_write,
- 	},
-+#ifdef CONFIG_MEMCG_KMEM
-+	{
-+		/*
-+		 * This file is for debugging purpose only and will show
-+		 * up as ".__DEBUG__.memory.kmem.slabinfo" when the
-+		 * "cgroup_debug" parameter is specified in the kernel
-+		 * boot command line.
-+		 */
-+		.name = "kmem.slabinfo",
-+		.flags = CFTYPE_NOT_ON_ROOT | CFTYPE_DEBUG,
-+		.seq_start = memcg_slab_start,
-+		.seq_next = memcg_slab_next,
-+		.seq_stop = memcg_slab_stop,
-+		.seq_show = memcg_slab_show,
-+	},
-+#endif
- 	{ }	/* terminate */
- };
- 
--- 
-2.18.1
+I was hoping to keep the symbol short if possible.  I started with
+drmcg (following blkcg),  but I believe that causes confusion with
+other aspect of the drm subsystem.  I don't have too strong of an
+opinion on this but I'd prefer not needing to keep refactoring.  So if
+there are other opinions on this, please speak up.
 
+> > +
+> > +static inline void put_drmcgrp(struct drmcgrp *drmcgrp)
+>
+> In drm we generally put _get/_put at the end, cgroup seems to do the same.
+
+ok, I will refactor.
+
+> > +{
+> > +     if (drmcgrp)
+> > +             css_put(&drmcgrp->css);
+> > +}
+> > +
+> > +static inline struct drmcgrp *parent_drmcgrp(struct drmcgrp *cg)
+>
+> I'd also call this drm_cgroup_parent or so.
+>
+> Also all the above needs a bit of nice kerneldoc for the final version.
+> -Daniel
+
+Noted, will do, thanks.
+
+Regards,
+Kenny
