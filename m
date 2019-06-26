@@ -2,178 +2,706 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC3456E28
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 17:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AA3956E50
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 18:06:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726227AbfFZP5h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 11:57:37 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:21542 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726104AbfFZP5g (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 11:57:36 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.27/8.16.0.27) with SMTP id x5QFtXkS018654;
-        Wed, 26 Jun 2019 08:56:49 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=e4QsHOsj/ansg9eJGXoLS07ec1mXlD32/gZfHaz02rE=;
- b=Qhn1rGvG3PQKThcV7S3szGMRxklG0EGyDGloa9rtkqGFllT6YfqSg4Lwc9wXyNoip4bT
- Hh/3EqMBkMhpO4TpU/TrYxJTdTMmOMYr1s3bA5JP5RdGgfVgHSkj/OxE3D/1NAuK585l
- Mu2DUEc9hdWXyg+Loo3aRtJIbDxP+MDAmQ0= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by mx0a-00082601.pphosted.com with ESMTP id 2tc8axgtpq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 26 Jun 2019 08:56:49 -0700
-Received: from prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) by
- prn-hub06.TheFacebook.com (2620:10d:c081:35::130) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 26 Jun 2019 08:56:48 -0700
-Received: from prn-hub01.TheFacebook.com (2620:10d:c081:35::125) by
- prn-mbx02.TheFacebook.com (2620:10d:c081:6::16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 26 Jun 2019 08:56:47 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 26 Jun 2019 08:56:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector1-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=e4QsHOsj/ansg9eJGXoLS07ec1mXlD32/gZfHaz02rE=;
- b=pBOfZ6Ik4NbQulFMYfkeon9uC6aeQdMn8rxgdnVAs+6jb92kvNYyPluZ/j9Xy0OqCV2rR4khpjvwt6myidLdAR5o6N1ysmDuXSg2ruGI1mTsNB5QIApp6k85/kwsHc8DRyNBdVszDty3xnLjiMD9cKFWwpqiQoLmfJMp6+adEW4=
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com (10.175.3.22) by
- MWHPR15MB1200.namprd15.prod.outlook.com (10.175.3.136) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2008.16; Wed, 26 Jun 2019 15:56:46 +0000
-Received: from MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d]) by MWHPR15MB1165.namprd15.prod.outlook.com
- ([fe80::400e:e329:ea98:aa0d%6]) with mapi id 15.20.2008.018; Wed, 26 Jun 2019
- 15:56:46 +0000
-From:   Song Liu <songliubraving@fb.com>
-To:     =?utf-8?B?TWljaGFsIEtvdXRuw70=?= <mkoutny@suse.com>
-CC:     Morten Rasmussen <morten.rasmussen@arm.com>,
-        Kernel Team <Kernel-team@fb.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "vincent.guittot@linaro.org" <vincent.guittot@linaro.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 0/7] introduce cpu.headroom knob to cpu controller
-Thread-Topic: [PATCH 0/7] introduce cpu.headroom knob to cpu controller
-Thread-Index: AQHU7lSD68FtcB4UGUOYupgC9AfmOKY1TPCAgACBxACAQAwaAIAALJKAgDgNsoCAAH3FAA==
-Date:   Wed, 26 Jun 2019 15:56:46 +0000
-Message-ID: <11B128A7-6E3C-4DB7-817D-36711F3DD0C4@fb.com>
-References: <20190408214539.2705660-1-songliubraving@fb.com>
- <20190410115907.GE19434@e105550-lin.cambridge.arm.com>
- <A2E9A149-9EAA-478D-A096-1D4D4BA442B3@fb.com>
- <20190521134730.GA12346@blackbody.suse.cz>
- <D9376488-F290-4917-9124-292AA649948C@fb.com>
- <20190626082634.GA22035@blackbody.suse.cz>
-In-Reply-To: <20190626082634.GA22035@blackbody.suse.cz>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-mailer: Apple Mail (2.3445.104.11)
-x-originating-ip: [2620:10d:c090:180::1:6898]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b6d5be1b-c89b-46e3-28a0-08d6fa4ee443
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:MWHPR15MB1200;
-x-ms-traffictypediagnostic: MWHPR15MB1200:
-x-microsoft-antispam-prvs: <MWHPR15MB12009CE039DAD55DB4CF715CB3E20@MWHPR15MB1200.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 00808B16F3
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(376002)(39860400002)(396003)(366004)(346002)(189003)(199004)(8936002)(6436002)(68736007)(50226002)(6512007)(53936002)(478600001)(99286004)(6916009)(14454004)(256004)(33656002)(6246003)(5660300002)(2906002)(6486002)(229853002)(86362001)(46003)(76176011)(476003)(57306001)(7736002)(66556008)(2616005)(66476007)(305945005)(76116006)(25786009)(71200400001)(11346002)(73956011)(6116002)(446003)(66946007)(186003)(8676002)(81166006)(4326008)(316002)(81156014)(102836004)(6506007)(14444005)(54906003)(53546011)(71190400001)(36756003)(486006)(64756008)(66446008);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1200;H:MWHPR15MB1165.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 4mGTOfnd2tLAd3dC/InGeyeeUst1JI3mgILc92f9PzaUCh5BakgDdrLBfYvN+DYrGnqJlqxeE4dhvd6edb5oyqkhbeWfeueXTVCvYKY+/RZHtN8azFdTzuPthM5YagF8WtxFG+Ib0tjWysJGf6lOKsUAdZaFnpw1Fs1pi8zTqSJxlHc9yJijrsaMFLJi8A3i0feOLxNM8a/znxBE0sCuWuiPhYWWDIcO9EYjY/VDIIFkgtHvl5fWwy1JN1SYyUixTwRmk3yOMp0MSUNVjSVHXcXQIlKTn/otPdSaSJ5TBp5hVPn52bU0PPQA/GaRqaqvu6GCVtMlRvOX1WglOj26LAz4+CByPcweKWiEVLa+iMmgti4EP4ULJGHnVpdJTtmxox7MovoWNeAOFcoNJFAvx/jeGyliQ3qSlXZ+RwPOCKs=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <3983C0F8C296C546851342B9A822F7CD@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        id S1726157AbfFZQF7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 12:05:59 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:36147 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbfFZQF7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 12:05:59 -0400
+Received: by mail-ed1-f67.google.com with SMTP id k21so4082586edq.3
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 09:05:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=A+EpXpfoJ8iYiW+nfqWZW0jNTe/ono+nTDZMvRVkbH8=;
+        b=d7bBjSNgp+vldolslUXxoCWY9e+2SDCKiE5QbbVNcm5KhUhkoG4ezACJi/VM3xn88M
+         LeZ4lYAH7ipougUM6Tq7vRa7paOuD8DJ0i1okXstIw7pq0ZG7drj0ekFLcZQKp0G63JR
+         B9ZazqeOhtc1cpybjYAjLmU9dYUOcgnEN+YaE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=A+EpXpfoJ8iYiW+nfqWZW0jNTe/ono+nTDZMvRVkbH8=;
+        b=Rw14xWHWhRvJpN0xKGzyzRF5m2wee/+Hps1d4gKrMs1a1/4Kj6PMffDtwZUWI0Obcb
+         y4x4aV5Hj+qhRfzChEDoAVgQ9B3YwsleXoIkFWq1n3B/frrE4+MVGTEGfh2EuRRk3oHK
+         c6tdxMI1sFdoKaNO4rc+aSgZ+qJpz6VltJWYCBPIG/8SEbwR6f37cWs1sV2SHxaVZTlF
+         jLXXArgXcYWpJ3jka8e76X3jmvsw5+Gui5jmybguiSyeabU+YRiXeF2V5Ygsr7Qcr8uh
+         wBTAnp/he4UcQmqBHnV3dCaoFPUuvqGY62i2UFfGT+sr9CQbU4Vc9lGhi59EfpiW7j4b
+         koFQ==
+X-Gm-Message-State: APjAAAUhZQOu8uMcsGfbnOIx3Q/dZEzVkcmLCS0Q4MyxcFKLmBWNjV9t
+        N6NLNKoGwM2WeRzbmByBYz+qZg==
+X-Google-Smtp-Source: APXvYqwbhA3pBgieHde0c5d8BHChR4ve3IhSz1xiGO7u4jqNZCw1KVdQ16WChSXWUa4LdDHcVNK5eg==
+X-Received: by 2002:a50:9203:: with SMTP id i3mr6448122eda.302.1561565156356;
+        Wed, 26 Jun 2019 09:05:56 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
+        by smtp.gmail.com with ESMTPSA id j13sm1152951ejt.13.2019.06.26.09.05.55
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Wed, 26 Jun 2019 09:05:55 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 18:05:53 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kenny Ho <Kenny.Ho@amd.com>
+Cc:     y2kenny@gmail.com, cgroups@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
+        tj@kernel.org, alexander.deucher@amd.com, christian.koenig@amd.com,
+        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+Subject: Re: [RFC PATCH v3 04/11] drm, cgroup: Add total GEM buffer
+ allocation limit
+Message-ID: <20190626160553.GR12905@phenom.ffwll.local>
+References: <20190626150522.11618-1-Kenny.Ho@amd.com>
+ <20190626150522.11618-5-Kenny.Ho@amd.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: b6d5be1b-c89b-46e3-28a0-08d6fa4ee443
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Jun 2019 15:56:46.1712
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: songliubraving@fb.com
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1200
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-26_09:,,
- signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
- clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
- mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.0.1-1810050000 definitions=main-1906260186
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190626150522.11618-5-Kenny.Ho@amd.com>
+X-Operating-System: Linux phenom 4.19.0-5-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-SGkgTWljaGFsLA0KDQo+IE9uIEp1biAyNiwgMjAxOSwgYXQgMToyNiBBTSwgTWljaGFsIEtvdXRu
-w70gPG1rb3V0bnlAc3VzZS5jb20+IHdyb3RlOg0KPiANCj4gSGVsbG8gU29uZyBhbmQgSSBhcG9s
-b2d5IGZvciBsYXRlIHJlcGx5Lg0KPiANCj4gSSB1bmRlcnN0YW5kIHRoZSBtb3RpdmF0aW9uIGZv
-ciB0aGUgaGVhZHJvb20gYXR0cmlidXRlIGlzIHRvIGFjaGlldmUNCj4gc2lkZSBsb2FkIHRocm90
-dGxpbmcgYmVmb3JlIHRoZSBDUFUgaXMgZnVsbHkgc2F0dXJhdGVkIHNpbmNlIHlvdXINCj4gbWVh
-c3VyZW1lbnRzIHNob3cgdGhhdCBzb21ldGhpbmcgZWxzZSBnZXRzIHNhdHVyYXRlZCBlYXJsaWVy
-IHRoYW4gQ1BVDQo+IGFuZCBjYXVzZXMgZ3JvdyBvZiB0aGUgb2JzZXJ2ZWQgbGF0ZW5jeS4NCj4g
-DQo+IFRoZSBzZWNvbmQgYXNwZWN0IG9mIHRoZSBoZWFkcm9vbSBrbm9iLCBpLmUuIGR5bmFtaWMg
-cGFydGl0aW9uaW5nIG9mIHRoZQ0KPiBDUFUgcmVzb3VyY2UgaXMgSU1PIHNvbWV0aGluZyB3aGlj
-aCB3ZSBhbHJlYWR5IGhhdmUgdGhhbmtzIHRvDQo+IGNwdS53ZWlnaHQuDQoNCkkgdGhpbmsgdGhl
-IGNwdS5oZWFkcm9vbSBrbm9iIGlzIHRoZSBkeW5hbWljIHZlcnNpb24gb2YgdGhlIGNwdS5tYXgg
-a25vYi4gDQpJdCBzZXJ2ZXMgZGlmZmVyZW50IHJvbGUgYXMgY3B1LndlaWdodC4gDQoNCmNwdS53
-ZWlnaHQgaXMgbGlrZTogd2hlbiBib3RoIHRhc2tzIGNhbiBydW4sIHdoaWNoIG9uZSBnZXRzIG1v
-cmUgY3ljbGVzLiANCmNwdS5oZWFkcm9vbSBpcyBsaWtlOiBldmVuIHRoZXJlIGlzIGlkbGUgY3B1
-IGN5Y2xlLCB0aGUgc2lkZSB3b3JrbG9hZCANCnNob3VsZCBub3QgdXNlIGl0IGFsbC4gDQoNCj4g
-DQo+IEFzIHlvdSB3cm90ZSwgcGxhaW4gY3B1LndlaWdodCBvZiB3b3JrbG9hZHMgZGlkbid0IHdv
-cmsgZm9yIHlvdSwgc28gSQ0KPiB0aGluayBpdCdkIGJlIHdvcnRoIGZpZ3VyaW5nIG91dCB3aGF0
-IGlzIHRoZSByZXNvdXJjZSB3aG9zZSBzYXR1cmF0aW9uDQo+IGFmZmVjdHMgdGhlIG92ZXJhbGwg
-b2JzZXJ2ZWQgbGF0ZW5jeSBhbmQgc2VlIGlmIGEgcHJvdGVjdGlvbi93ZWlnaHRzIG9uDQo+IHRo
-YXQgcmVzb3VyY2UgY2FuIGJlIHNldCAob3IgaW1wbGVtZW50ZWQpLg0KDQpPdXIgZ29hbCBoZXJl
-IGlzIG5vdCB0byBzb2x2ZSBhIHBhcnRpY3VsYXIgY2FzZS4gSW5zdGVhZCwgd2Ugd291bGQgbGlr
-ZSANCmEgdW5pdmVyc2FsIHNvbHV0aW9uIGZvciBkaWZmZXJlbnQgY29tYmluYXRpb24gb2YgbWFp
-biB3b3JrbG9hZCBhbmQgc2lkZQ0Kd29ya2xvYWQuIGNwdS5oZWFkcm9vbSBtYWtlcyBpdCBlYXN5
-IHRvIGFkanVzdCB0aHJvdHRsaW5nIGJhc2VkIG5vIHRoZSANCnJlcXVpcmVtZW50IG9mIHRoZSBt
-YWluIHdvcmtsb2FkLiANCg0KQWxzbywgdGhlcmUgYXJlIHJlc291cmNlcyB0aGF0IGNvdWxkIG9u
-bHkgYmUgcHJvdGVjdGVkIGJ5IGludGVudGlvbmFsbHkNCmxlYXZlIHNvbWUgaWRsZSBjeWNsZXMu
-IEZvciBleGFtcGxlLCBTTVQgc2libGluZ3Mgc2hhcmUgQUxVcywgc29tZXRpbWVzIA0Kd2UgaGF2
-ZSB0byB0aHJvdHRsZSBvbmUgU01UIHNpYmxpbmcgdG8gbWFrZSB0aGUgb3RoZXIgc2libGluZyBy
-dW4gZmFzdGVyLiANCg0KPiANCj4gT24gVHVlLCBNYXkgMjEsIDIwMTkgYXQgMDQ6Mjc6MDJQTSAr
-MDAwMCwgU29uZyBMaXUgPHNvbmdsaXVicmF2aW5nQGZiLmNvbT4gd3JvdGU6DQo+PiBUaGUgb3Zl
-cmFsbCBsYXRlbmN5IChvciB3YWxsIGxhdGVuY3kpIGNvbnRhaW5zOiANCj4+IA0KPj4gICAoMSkg
-Y3B1IHRpbWUsIHdoaWNoIGlzIChhKSBhbmQgKGQpIGluIHRoZSBsb29wIGFib3ZlOw0KPiBIb3cg
-ZG8geW91IG1lYXN1cmUgdGhpcyBDUFUgdGltZT8gRG9lcyBpdCBpbmNsdWRlIHRpbWUgc3BlbnQg
-aW4gdGhlDQo+IGtlcm5lbD8gKE9yIGNhbiB0aGVyZSBiZSBhbnl0aGluZyBlbHNlIHVuYWNjb3Vu
-dGVkIGZvciBpbiB0aGUgZm9sbG93aW5nDQo+IGNhbGN1bGF0aW9ucz8pDQoNCldlIG1lYXN1cmVz
-IGhvdyBtdWNoIHRpbWUgYSB0aHJlYWQgaXMgcnVubmluZy4gSXQgaW5jbHVkZXMga2VybmVsIHRp
-bWUuIA0KSSB0aGluayB3ZSBkaWRuJ3QgbWVhc3VyZSB0aW1lcyBzcGVudCBvbiBwcm9jZXNzaW5n
-IElSUXMsIGJ1dCB0aGF0IGlzIA0Kc21hbGwgY29tcGFyZWQgd2l0aCBvdmVyYWxsIGxhdGVuY3ku
-IA0KDQo+IA0KPj4gICAoMikgdGltZSB3YWl0aW5nIGZvciBkYXRhLCB3aGljaCBpcyAoYik7DQo+
-IElzIHlvdXIgYXNzdW1wdGlvbiBvZiB0aGlzIGJlaW5nIGNvbnN0YW50IHN1cHBvcnRlZCBieSB0
-aGUgbWVhc3VyZW1lbnRzPw0KDQpXZSBkb24ndCBtZWFzdXJlIHRoYXQgc3BlY2lmaWNhbGx5LiBU
-aGUgZGF0YSBpcyBmZXRjaGVkIG92ZXIgdGhlIG5ldHdvcmsNCmZyb20gb3RoZXIgc2VydmVycy4g
-VGhlIGxhdGVuY3kgdG8gZmV0Y2ggZGF0YSBpcyBub3QgY29uc3RhbnQsIGJ1dCB0aGUgDQphdmVy
-YWdlIG9mIHRob3VzYW5kcyBvZiByZXF1ZXN0cyBzaG91bGQgYmUgdGhlIHNhbWUgZm9yIGRpZmZl
-cmVudCBjYXNlcy4gDQoNCj4gDQo+IFRoZSBsYXN0IG5vdGUgaXMgcmVnYXJkaW5nIHNlbWFudGlj
-cyBvZiB0aGUgaGVhZHJvb20ga25vYiwgSSdtIG5vdCBzdXJlDQo+IGl0IGZpdHMgd2VsbCBpbnRv
-IHRoZSB3ZWlnaHReYWxsb2NhdGlvbl5saW1pdF5wcm90ZWN0aW9uIG1vZGVsLiBJdCBzZWVtcw0K
-PiB0byBtZSB0aGF0IGl0J3MgY3JhZnRlZCB0byBzYXRpc2Z5IHRoZSBkaXZpc2lvbiB0byBvbmUg
-bWFpbiB3b3JrbG9hZCBhbmQNCj4gc2lkZSB3b3JrbG9hZCwgaG93ZXZlciwgdGhlIGNvbmNlcHQg
-ZG9lc24ndCBnZW5lcmFsaXplIHdlbGwgdG8gYXJiaXRyYXJ5DQo+IG51bWJlciBvZiBzaWJsaW5n
-cyAoZS5nLiB0d28gY2dyb3VwcyB3aXRoIHNhbWUgaGVhZHJvb20sIHRoaXJkIHdpdGgNCj4gbGVz
-cywgd2hvIGlzIHdpbm5pbmc/KS4NCg0KVGhlIHNlbWFudGljcyBpcyBub3QgdmVyeSBzdHJhaWdo
-dGZvcndhcmQuIFdlIGRpc2N1c3NlZCBhYm91dCBpdCBmb3IgYSANCmxvbmcgdGltZS4gQW5kIGl0
-IGlzIHJlYWxseSBjcmFmdGVkIHRvIHByb3RlY3Rpb24gbW9kZWwuIA0KDQpJbiB5b3VyIGV4YW1w
-bGUsIHNheSBib3RoIEEgYW5kIEIgaGF2ZSAzMCUgaGVhZHJvb20sIGFuZCBDIGhhcyAyMCUuIEEg
-YW5kDQpCIGFyZSAid2lubmluZyIsIGFzIHRoZXkgd2lsbCBub3QgYmUgdGhyb3R0bGVkLiBDIHdp
-bGwgYmUgdGhyb3R0bGVkIHdoZW4NCnRoZSBnbG9iYWwgaWRsZW5lc3MgaXMgbG93ZXIgdGhhbiAx
-MCUgKDMwJSAtIDIwJSkuIA0KDQpOb3RlIHRoYXQsIHRoaXMgaXMgbm90IGEgdHlwaWNhbCB1c2Ug
-Y2FzZSBmb3IgY3B1LmhlYWRyb29tLiBJZiBtdWx0aXBsZSANCmxhdGVuY3kgc2Vuc2l0aXZlIGFw
-cGxpY2F0aW9ucyBhcmUgc2hhcmluZyB0aGUgc2FtZSBzZXJ2ZXIsIHRoZXkgd291bGQgDQpuZWVk
-IHNvbWUgcGFydGl0aW9uIHNjaGVtZS4gDQoNClRoYW5rcywNClNvbmcNCg0KDQo=
+On Wed, Jun 26, 2019 at 11:05:15AM -0400, Kenny Ho wrote:
+> The drm resource being measured and limited here is the GEM buffer
+> objects.  User applications allocate and free these buffers.  In
+> addition, a process can allocate a buffer and share it with another
+> process.  The consumer of a shared buffer can also outlive the
+> allocator of the buffer.
+> 
+> For the purpose of cgroup accounting and limiting, ownership of the
+> buffer is deemed to be the cgroup for which the allocating process
+> belongs to.  There is one cgroup limit per drm device.
+> 
+> In order to prevent the buffer outliving the cgroup that owns it, a
+> process is prevented from importing buffers that are not own by the
+> process' cgroup or the ancestors of the process' cgroup.  In other
+> words, in order for a buffer to be shared between two cgroups, the
+> buffer must be created by the common ancestors of the cgroups.
+> 
+> drm.buffer.stats
+>         A read-only flat-keyed file which exists on all cgroups.  Each
+>         entry is keyed by the drm device's major:minor.
+> 
+>         Total GEM buffer allocation in bytes.
+> 
+> drm.buffer.default
+>         A read-only flat-keyed file which exists on the root cgroup.
+>         Each entry is keyed by the drm device's major:minor.
+> 
+>         Default limits on the total GEM buffer allocation in bytes.
+
+Don't we need a "0 means no limit" semantics here?
+
+> drm.buffer.max
+>         A read-write flat-keyed file which exists on all cgroups.  Each
+>         entry is keyed by the drm device's major:minor.
+> 
+>         Per device limits on the total GEM buffer allocation in byte.
+>         This is a hard limit.  Attempts in allocating beyond the cgroup
+>         limit will result in ENOMEM.  Shorthand understood by memparse
+>         (such as k, m, g) can be used.
+> 
+>         Set allocation limit for /dev/dri/card1 to 1GB
+>         echo "226:1 1g" > drm.buffer.total.max
+> 
+>         Set allocation limit for /dev/dri/card0 to 512MB
+>         echo "226:0 512m" > drm.buffer.total.max
+
+I think we need a new drm-cgroup.rst which contains all this
+documentation.
+
+With multiple GPUs, do we need an overall GEM bo limit, across all gpus?
+For other stuff later on like vram/tt/... and all that it needs to be
+per-device, but I think one overall limit could be useful.
+
+> 
+> Change-Id: I4c249d06d45ec709d6481d4cbe87c5168545c5d0
+> Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c |   4 +
+>  drivers/gpu/drm/drm_gem.c                  |   8 +
+>  drivers/gpu/drm/drm_prime.c                |   9 +
+>  include/drm/drm_cgroup.h                   |  34 ++-
+>  include/drm/drm_gem.h                      |  11 +
+>  include/linux/cgroup_drm.h                 |   2 +
+>  kernel/cgroup/drm.c                        | 321 +++++++++++++++++++++
+>  7 files changed, 387 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> index 93b2c5a48a71..b4c078b7ad63 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_object.c
+> @@ -34,6 +34,7 @@
+>  #include <drm/drmP.h>
+>  #include <drm/amdgpu_drm.h>
+>  #include <drm/drm_cache.h>
+> +#include <drm/drm_cgroup.h>
+>  #include "amdgpu.h"
+>  #include "amdgpu_trace.h"
+>  #include "amdgpu_amdkfd.h"
+> @@ -446,6 +447,9 @@ static int amdgpu_bo_do_create(struct amdgpu_device *adev,
+>  	if (!amdgpu_bo_validate_size(adev, size, bp->domain))
+>  		return -ENOMEM;
+>  
+> +	if (!drmcgrp_bo_can_allocate(current, adev->ddev, size))
+> +		return -ENOMEM;
+
+So what happens when you start a lot of threads all at the same time,
+allocating gem bo? Also would be nice if we could roll out at least the
+accounting part of this cgroup to all GEM drivers.
+
+> +
+>  	*bo_ptr = NULL;
+>  
+>  	acc_size = ttm_bo_dma_acc_size(&adev->mman.bdev, size,
+> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+> index 6a80db077dc6..e20c1034bf2b 100644
+> --- a/drivers/gpu/drm/drm_gem.c
+> +++ b/drivers/gpu/drm/drm_gem.c
+> @@ -37,10 +37,12 @@
+>  #include <linux/shmem_fs.h>
+>  #include <linux/dma-buf.h>
+>  #include <linux/mem_encrypt.h>
+> +#include <linux/cgroup_drm.h>
+>  #include <drm/drmP.h>
+>  #include <drm/drm_vma_manager.h>
+>  #include <drm/drm_gem.h>
+>  #include <drm/drm_print.h>
+> +#include <drm/drm_cgroup.h>
+>  #include "drm_internal.h"
+>  
+>  /** @file drm_gem.c
+> @@ -154,6 +156,9 @@ void drm_gem_private_object_init(struct drm_device *dev,
+>  	obj->handle_count = 0;
+>  	obj->size = size;
+>  	drm_vma_node_reset(&obj->vma_node);
+> +
+> +	obj->drmcgrp = get_drmcgrp(current);
+> +	drmcgrp_chg_bo_alloc(obj->drmcgrp, dev, size);
+>  }
+>  EXPORT_SYMBOL(drm_gem_private_object_init);
+>  
+> @@ -804,6 +809,9 @@ drm_gem_object_release(struct drm_gem_object *obj)
+>  	if (obj->filp)
+>  		fput(obj->filp);
+>  
+> +	drmcgrp_unchg_bo_alloc(obj->drmcgrp, obj->dev, obj->size);
+> +	put_drmcgrp(obj->drmcgrp);
+> +
+>  	drm_gem_free_mmap_offset(obj);
+>  }
+>  EXPORT_SYMBOL(drm_gem_object_release);
+> diff --git a/drivers/gpu/drm/drm_prime.c b/drivers/gpu/drm/drm_prime.c
+> index 231e3f6d5f41..eeb612116810 100644
+> --- a/drivers/gpu/drm/drm_prime.c
+> +++ b/drivers/gpu/drm/drm_prime.c
+> @@ -32,6 +32,7 @@
+>  #include <drm/drm_prime.h>
+>  #include <drm/drm_gem.h>
+>  #include <drm/drmP.h>
+> +#include <drm/drm_cgroup.h>
+>  
+>  #include "drm_internal.h"
+>  
+> @@ -794,6 +795,7 @@ int drm_gem_prime_fd_to_handle(struct drm_device *dev,
+>  {
+>  	struct dma_buf *dma_buf;
+>  	struct drm_gem_object *obj;
+> +	struct drmcgrp *drmcgrp = drmcgrp_from(current);
+>  	int ret;
+>  
+>  	dma_buf = dma_buf_get(prime_fd);
+> @@ -818,6 +820,13 @@ int drm_gem_prime_fd_to_handle(struct drm_device *dev,
+>  		goto out_unlock;
+>  	}
+>  
+> +	/* only allow bo from the same cgroup or its ancestor to be imported */
+> +	if (drmcgrp != NULL &&
+
+Quite a serious limitation here ...
+
+> +			!drmcgrp_is_self_or_ancestor(drmcgrp, obj->drmcgrp)) {
+
+Also what happens if you actually share across devices? Then importing in
+the 2nd group is suddenly possible, and I think will be double-counted.
+
+What's the underlying technical reason for not allowing sharing across
+cgroups?
+
+> +		ret = -EACCES;
+> +		goto out_unlock;
+> +	}
+> +
+>  	if (obj->dma_buf) {
+>  		WARN_ON(obj->dma_buf != dma_buf);
+>  	} else {
+> diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
+> index ddb9eab64360..8711b7c5f7bf 100644
+> --- a/include/drm/drm_cgroup.h
+> +++ b/include/drm/drm_cgroup.h
+> @@ -4,12 +4,20 @@
+>  #ifndef __DRM_CGROUP_H__
+>  #define __DRM_CGROUP_H__
+>  
+> +#include <linux/cgroup_drm.h>
+> +
+>  #ifdef CONFIG_CGROUP_DRM
+>  
+>  int drmcgrp_register_device(struct drm_device *device);
+> -
+>  int drmcgrp_unregister_device(struct drm_device *device);
+> -
+> +bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self,
+> +		struct drmcgrp *relative);
+> +void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+> +		size_t size);
+> +void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+> +		size_t size);
+> +bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
+> +		size_t size);
+>  #else
+>  static inline int drmcgrp_register_device(struct drm_device *device)
+>  {
+> @@ -20,5 +28,27 @@ static inline int drmcgrp_unregister_device(struct drm_device *device)
+>  {
+>  	return 0;
+>  }
+> +
+> +static inline bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self,
+> +		struct drmcgrp *relative)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp,
+> +		struct drm_device *dev,	size_t size)
+> +{
+> +}
+> +
+> +static inline void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp,
+> +		struct drm_device *dev,	size_t size)
+> +{
+> +}
+> +
+> +static inline bool drmcgrp_bo_can_allocate(struct task_struct *task,
+> +		struct drm_device *dev,	size_t size)
+> +{
+> +	return true;
+> +}
+>  #endif /* CONFIG_CGROUP_DRM */
+>  #endif /* __DRM_CGROUP_H__ */
+> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+> index c95727425284..09d1c69a3f0c 100644
+> --- a/include/drm/drm_gem.h
+> +++ b/include/drm/drm_gem.h
+> @@ -272,6 +272,17 @@ struct drm_gem_object {
+>  	 *
+>  	 */
+>  	const struct drm_gem_object_funcs *funcs;
+> +
+> +	/**
+> +	 * @drmcgrp:
+> +	 *
+> +	 * DRM cgroup this GEM object belongs to.
+> +	 *
+> +	 * This is used to track and limit the amount of GEM objects a user
+> +	 * can allocate.  Since GEM objects can be shared, this is also used
+> +	 * to ensure GEM objects are only shared within the same cgroup.
+> +	 */
+> +	struct drmcgrp *drmcgrp;
+>  };
+>  
+>  /**
+> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+> index 27497f786c93..efa019666f1c 100644
+> --- a/include/linux/cgroup_drm.h
+> +++ b/include/linux/cgroup_drm.h
+> @@ -15,6 +15,8 @@
+>  
+>  struct drmcgrp_device_resource {
+>  	/* for per device stats */
+> +	s64			bo_stats_total_allocated;
+> +	s64			bo_limits_total_allocated;
+>  };
+>  
+>  struct drmcgrp {
+> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
+> index 7da6e0d93991..cfc1fe74dca3 100644
+> --- a/kernel/cgroup/drm.c
+> +++ b/kernel/cgroup/drm.c
+> @@ -9,6 +9,7 @@
+>  #include <linux/cgroup_drm.h>
+>  #include <linux/kernel.h>
+>  #include <drm/drm_device.h>
+> +#include <drm/drm_ioctl.h>
+>  #include <drm/drm_cgroup.h>
+>  
+>  static DEFINE_MUTEX(drmcgrp_mutex);
+> @@ -16,6 +17,26 @@ static DEFINE_MUTEX(drmcgrp_mutex);
+>  struct drmcgrp_device {
+>  	struct drm_device	*dev;
+>  	struct mutex		mutex;
+> +
+> +	s64			bo_limits_total_allocated_default;
+> +};
+> +
+> +#define DRMCG_CTF_PRIV_SIZE 3
+> +#define DRMCG_CTF_PRIV_MASK GENMASK((DRMCG_CTF_PRIV_SIZE - 1), 0)
+> +#define DRMCG_CTF_PRIV(res_type, f_type)  ((res_type) <<\
+> +		DRMCG_CTF_PRIV_SIZE | (f_type))
+> +#define DRMCG_CTF_PRIV2RESTYPE(priv) ((priv) >> DRMCG_CTF_PRIV_SIZE)
+> +#define DRMCG_CTF_PRIV2FTYPE(priv) ((priv) & DRMCG_CTF_PRIV_MASK)
+> +
+> +
+> +enum drmcgrp_res_type {
+> +	DRMCGRP_TYPE_BO_TOTAL,
+> +};
+> +
+> +enum drmcgrp_file_type {
+> +	DRMCGRP_FTYPE_STATS,
+> +	DRMCGRP_FTYPE_LIMIT,
+> +	DRMCGRP_FTYPE_DEFAULT,
+>  };
+>  
+>  /* indexed by drm_minor for access speed */
+> @@ -54,6 +75,10 @@ static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int minor)
+>  	}
+>  
+>  	/* set defaults here */
+> +	if (known_drmcgrp_devs[minor] != NULL) {
+> +		ddr->bo_limits_total_allocated =
+> +		  known_drmcgrp_devs[minor]->bo_limits_total_allocated_default;
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -100,7 +125,225 @@ drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
+>  	return &drmcgrp->css;
+>  }
+>  
+> +static inline void drmcgrp_print_stats(struct drmcgrp_device_resource *ddr,
+> +		struct seq_file *sf, enum drmcgrp_res_type type)
+> +{
+> +	if (ddr == NULL) {
+> +		seq_puts(sf, "\n");
+> +		return;
+> +	}
+> +
+> +	switch (type) {
+> +	case DRMCGRP_TYPE_BO_TOTAL:
+> +		seq_printf(sf, "%lld\n", ddr->bo_stats_total_allocated);
+> +		break;
+> +	default:
+> +		seq_puts(sf, "\n");
+> +		break;
+> +	}
+> +}
+> +
+> +static inline void drmcgrp_print_limits(struct drmcgrp_device_resource *ddr,
+> +		struct seq_file *sf, enum drmcgrp_res_type type)
+> +{
+> +	if (ddr == NULL) {
+> +		seq_puts(sf, "\n");
+> +		return;
+> +	}
+> +
+> +	switch (type) {
+> +	case DRMCGRP_TYPE_BO_TOTAL:
+> +		seq_printf(sf, "%lld\n", ddr->bo_limits_total_allocated);
+> +		break;
+> +	default:
+> +		seq_puts(sf, "\n");
+> +		break;
+> +	}
+> +}
+> +
+> +static inline void drmcgrp_print_default(struct drmcgrp_device *ddev,
+> +		struct seq_file *sf, enum drmcgrp_res_type type)
+> +{
+> +	if (ddev == NULL) {
+> +		seq_puts(sf, "\n");
+> +		return;
+> +	}
+> +
+> +	switch (type) {
+> +	case DRMCGRP_TYPE_BO_TOTAL:
+> +		seq_printf(sf, "%lld\n",
+> +				ddev->bo_limits_total_allocated_default);
+> +		break;
+> +	default:
+> +		seq_puts(sf, "\n");
+> +		break;
+> +	}
+> +}
+> +
+> +int drmcgrp_bo_show(struct seq_file *sf, void *v)
+> +{
+> +	struct drmcgrp *drmcgrp = css_drmcgrp(seq_css(sf));
+> +	struct drmcgrp_device_resource *ddr = NULL;
+> +	enum drmcgrp_file_type f_type =
+> +		DRMCG_CTF_PRIV2FTYPE(seq_cft(sf)->private);
+> +	enum drmcgrp_res_type type =
+> +		DRMCG_CTF_PRIV2RESTYPE(seq_cft(sf)->private);
+> +	struct drmcgrp_device *ddev;
+> +	int i;
+> +
+> +	for (i = 0; i <= max_minor; i++) {
+> +		ddr = drmcgrp->dev_resources[i];
+> +		ddev = known_drmcgrp_devs[i];
+> +
+> +		seq_printf(sf, "%d:%d ", DRM_MAJOR, i);
+> +
+> +		switch (f_type) {
+> +		case DRMCGRP_FTYPE_STATS:
+> +			drmcgrp_print_stats(ddr, sf, type);
+> +			break;
+> +		case DRMCGRP_FTYPE_LIMIT:
+> +			drmcgrp_print_limits(ddr, sf, type);
+> +			break;
+> +		case DRMCGRP_FTYPE_DEFAULT:
+> +			drmcgrp_print_default(ddev, sf, type);
+> +			break;
+> +		default:
+> +			seq_puts(sf, "\n");
+> +			break;
+> +		}
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static inline void drmcgrp_pr_cft_err(const struct drmcgrp *drmcgrp,
+> +		const char *cft_name, int minor)
+> +{
+> +	pr_err("drmcgrp: error parsing %s, minor %d ",
+> +			cft_name, minor);
+> +	pr_cont_cgroup_name(drmcgrp->css.cgroup);
+> +	pr_cont("\n");
+> +}
+> +
+> +static inline int drmcgrp_process_limit_val(char *sval, bool is_mem,
+> +			s64 def_val, s64 max_val, s64 *ret_val)
+> +{
+> +	int rc = strcmp("max", sval);
+> +
+> +
+> +	if (!rc)
+> +		*ret_val = max_val;
+> +	else {
+> +		rc = strcmp("default", sval);
+> +
+> +		if (!rc)
+> +			*ret_val = def_val;
+> +	}
+> +
+> +	if (rc) {
+> +		if (is_mem) {
+> +			*ret_val = memparse(sval, NULL);
+> +			rc = 0;
+> +		} else {
+> +			rc = kstrtoll(sval, 0, ret_val);
+> +		}
+> +	}
+> +
+> +	if (*ret_val > max_val)
+> +		*ret_val = max_val;
+> +
+> +	return rc;
+> +}
+> +
+> +ssize_t drmcgrp_bo_limit_write(struct kernfs_open_file *of, char *buf,
+> +		size_t nbytes, loff_t off)
+> +{
+> +	struct drmcgrp *drmcgrp = css_drmcgrp(of_css(of));
+> +	struct drmcgrp *parent = parent_drmcgrp(drmcgrp);
+> +	enum drmcgrp_res_type type =
+> +		DRMCG_CTF_PRIV2RESTYPE(of_cft(of)->private);
+> +	char *cft_name = of_cft(of)->name;
+> +	char *limits = strstrip(buf);
+> +	struct drmcgrp_device *ddev;
+> +	struct drmcgrp_device_resource *ddr;
+> +	char *line;
+> +	char sattr[256];
+> +	s64 val;
+> +	s64 p_max;
+> +	int rc;
+> +	int minor;
+> +
+> +	while (limits != NULL) {
+> +		line =  strsep(&limits, "\n");
+> +
+> +		if (sscanf(line,
+> +			__stringify(DRM_MAJOR)":%u %255[^\t\n]",
+> +							&minor, sattr) != 2) {
+> +			pr_err("drmcgrp: error parsing %s ", cft_name);
+> +			pr_cont_cgroup_name(drmcgrp->css.cgroup);
+> +			pr_cont("\n");
+> +
+> +			continue;
+> +		}
+> +
+> +		if (minor < 0 || minor > max_minor) {
+> +			pr_err("drmcgrp: invalid minor %d for %s ",
+> +					minor, cft_name);
+> +			pr_cont_cgroup_name(drmcgrp->css.cgroup);
+> +			pr_cont("\n");
+> +
+> +			continue;
+> +		}
+> +
+> +		ddr = drmcgrp->dev_resources[minor];
+> +		ddev = known_drmcgrp_devs[minor];
+> +		switch (type) {
+> +		case DRMCGRP_TYPE_BO_TOTAL:
+> +			p_max = parent == NULL ? S64_MAX :
+> +				parent->dev_resources[minor]->
+> +				bo_limits_total_allocated;
+> +
+> +			rc = drmcgrp_process_limit_val(sattr, true,
+> +				ddev->bo_limits_total_allocated_default,
+> +				p_max,
+> +				&val);
+> +
+> +			if (rc || val < 0) {
+> +				drmcgrp_pr_cft_err(drmcgrp, cft_name, minor);
+> +				continue;
+> +			}
+> +
+> +			ddr->bo_limits_total_allocated = val;
+> +			break;
+> +		default:
+> +			break;
+> +		}
+> +	}
+> +
+> +	return nbytes;
+> +}
+> +
+>  struct cftype files[] = {
+> +	{
+> +		.name = "buffer.total.stats",
+> +		.seq_show = drmcgrp_bo_show,
+> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
+> +						DRMCGRP_FTYPE_STATS),
+> +	},
+> +	{
+> +		.name = "buffer.total.default",
+> +		.seq_show = drmcgrp_bo_show,
+> +		.flags = CFTYPE_ONLY_ON_ROOT,
+> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
+> +						DRMCGRP_FTYPE_DEFAULT),
+> +	},
+> +	{
+> +		.name = "buffer.total.max",
+> +		.write = drmcgrp_bo_limit_write,
+> +		.seq_show = drmcgrp_bo_show,
+> +		.private = DRMCG_CTF_PRIV(DRMCGRP_TYPE_BO_TOTAL,
+> +						DRMCGRP_FTYPE_LIMIT),
+> +	},
+>  	{ }	/* terminate */
+>  };
+>  
+> @@ -121,6 +364,8 @@ int drmcgrp_register_device(struct drm_device *dev)
+>  		return -ENOMEM;
+>  
+>  	ddev->dev = dev;
+> +	ddev->bo_limits_total_allocated_default = S64_MAX;
+> +
+>  	mutex_init(&ddev->mutex);
+>  
+>  	mutex_lock(&drmcgrp_mutex);
+> @@ -156,3 +401,79 @@ int drmcgrp_unregister_device(struct drm_device *dev)
+>  	return 0;
+>  }
+>  EXPORT_SYMBOL(drmcgrp_unregister_device);
+> +
+> +bool drmcgrp_is_self_or_ancestor(struct drmcgrp *self, struct drmcgrp *relative)
+> +{
+> +	for (; self != NULL; self = parent_drmcgrp(self))
+> +		if (self == relative)
+> +			return true;
+> +
+> +	return false;
+> +}
+> +EXPORT_SYMBOL(drmcgrp_is_self_or_ancestor);
+> +
+> +bool drmcgrp_bo_can_allocate(struct task_struct *task, struct drm_device *dev,
+> +		size_t size)
+> +{
+> +	struct drmcgrp *drmcgrp = drmcgrp_from(task);
+> +	struct drmcgrp_device_resource *ddr;
+> +	struct drmcgrp_device_resource *d;
+> +	int devIdx = dev->primary->index;
+> +	bool result = true;
+> +	s64 delta = 0;
+> +
+> +	if (drmcgrp == NULL || drmcgrp == root_drmcgrp)
+> +		return true;
+> +
+> +	ddr = drmcgrp->dev_resources[devIdx];
+> +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
+> +	for ( ; drmcgrp != root_drmcgrp; drmcgrp = parent_drmcgrp(drmcgrp)) {
+> +		d = drmcgrp->dev_resources[devIdx];
+> +		delta = d->bo_limits_total_allocated -
+> +				d->bo_stats_total_allocated;
+> +
+> +		if (delta <= 0 || size > delta) {
+> +			result = false;
+> +			break;
+> +		}
+> +	}
+> +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
+> +
+> +	return result;
+> +}
+> +EXPORT_SYMBOL(drmcgrp_bo_can_allocate);
+> +
+> +void drmcgrp_chg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+> +		size_t size)
+> +{
+> +	struct drmcgrp_device_resource *ddr;
+> +	int devIdx = dev->primary->index;
+> +
+> +	if (drmcgrp == NULL || known_drmcgrp_devs[devIdx] == NULL)
+> +		return;
+> +
+> +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
+> +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp)) {
+> +		ddr = drmcgrp->dev_resources[devIdx];
+> +
+> +		ddr->bo_stats_total_allocated += (s64)size;
+> +	}
+> +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
+> +}
+> +EXPORT_SYMBOL(drmcgrp_chg_bo_alloc);
+> +
+> +void drmcgrp_unchg_bo_alloc(struct drmcgrp *drmcgrp, struct drm_device *dev,
+> +		size_t size)
+> +{
+> +	int devIdx = dev->primary->index;
+> +
+> +	if (drmcgrp == NULL || known_drmcgrp_devs[devIdx] == NULL)
+> +		return;
+> +
+> +	mutex_lock(&known_drmcgrp_devs[devIdx]->mutex);
+> +	for ( ; drmcgrp != NULL; drmcgrp = parent_drmcgrp(drmcgrp))
+> +		drmcgrp->dev_resources[devIdx]->bo_stats_total_allocated
+> +			-= (s64)size;
+> +	mutex_unlock(&known_drmcgrp_devs[devIdx]->mutex);
+> +}
+> +EXPORT_SYMBOL(drmcgrp_unchg_bo_alloc);
+> -- 
+> 2.21.0
+> 
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
