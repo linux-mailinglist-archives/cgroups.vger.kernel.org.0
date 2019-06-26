@@ -2,60 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75EA556E0B
-	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 17:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD29156E1C
+	for <lists+cgroups@lfdr.de>; Wed, 26 Jun 2019 17:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726104AbfFZPte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Jun 2019 11:49:34 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:46972 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725958AbfFZPte (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 11:49:34 -0400
-Received: by mail-ed1-f68.google.com with SMTP id d4so3956430edr.13
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 08:49:33 -0700 (PDT)
+        id S1726104AbfFZP4L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Jun 2019 11:56:11 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:44943 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725958AbfFZP4L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Jun 2019 11:56:11 -0400
+Received: by mail-ed1-f67.google.com with SMTP id k8so3989379edr.11
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 08:56:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Es6EeAoseHYZOX9Z+FPHHYaVmxeOxFwx/XOxr6xH0RQ=;
-        b=Ii3UhXUUfacip4L9yCh1pax20++rbhqzgKL+K3IL81wxwvMS7vBaFHjo+psnoV0ozM
-         YeRQyEULvuQwglRDU/CMkZZWyvIoNF6hgv2ve9pUobtZlMLNljnQYg6/vAvkhddua7Le
-         OFxxsR+Rw0uRItAc7vRkTail6fvhceTxuewzA=
+        bh=b8N0XuHLMqrJQXmLm+2uSL4Ak/YQzhUfppEvcpxNhdU=;
+        b=N7ULXVSeuODxCVqizNpydWEDzjxIgR+bf2Gz5O2lwAQCWTmMUcdKhVnghCAIua43V/
+         qIuHcSxiSBaJQop5snrzrT1vj6L9KTfwLQFamSsk9zblhONsYs1kPGWFcQcsAG0wk46C
+         b25QJr8CvO1ih8AlI7876pz2KuENh1VppYoos=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Es6EeAoseHYZOX9Z+FPHHYaVmxeOxFwx/XOxr6xH0RQ=;
-        b=bUESqBgUC3SMh/56PxJbWuXC5WoFAvgWV04wyipBjYtS/tAl+zgv7TzLr7JPx5D767
-         xxDFffyTLz/N6JVm+Vf4Q02J3IZNb7o8NiL9jgbnkTmBJFzlnWU0zJ5kztItK3YQ8+I9
-         Ib1vBvvocedSmIGPiLu30o0hyaGOXA8eRHMEpQEyb+LEwfHt1VVRX2nbYxHtO8w/lhhf
-         JEembAFFEdlgHz/6oq1uXcRH6p6RIcl2q6T0SSMyKi3uie9Z4p61GE9+BrbKFnk/R7fc
-         EVOiR4EgqUG+T8OKbnE0+3eOB+7OZn2MmGpX9BtBTqhGm7xI0bQLwVu/v07Vu/25C0PA
-         Mcaw==
-X-Gm-Message-State: APjAAAWx+SyDo2A1RYlV5vUgIXjmTywNkdx++ajsPJAR+SA9kbr5lQM9
-        gX/fD/uYCCHg2EaLmb8Nb90S0A==
-X-Google-Smtp-Source: APXvYqxPeH0sMk9gk1iWWvIZw38Pr++ewNa+PhvQ8RbjjmdLGanrzILoOJxpdVxzSyAEAGi33vsASQ==
-X-Received: by 2002:a17:906:4bcb:: with SMTP id x11mr4880010ejv.1.1561564172520;
-        Wed, 26 Jun 2019 08:49:32 -0700 (PDT)
+        bh=b8N0XuHLMqrJQXmLm+2uSL4Ak/YQzhUfppEvcpxNhdU=;
+        b=UO633wt7OmjtNNSEy2WuPzXSV5Y7OYq1ml3/PLI3p7AZmmUfc7zaMB/XPEV+mdxnmP
+         bOnOKk6p3ejPzpZNCJJAHc6rIGtOKt3ZScfSVieE42Lt04gCpzj8kjiH6VNDptGy2Sii
+         KGCfOD3pPumRqpy2pfo9IM/5019VL8l3fJSxG5kFeMwGiwsr/3uGzUwu7iAtO9tirF6a
+         ejLW00hxtRgxaO2v848U4n0UUppExdzPg7cr7jEXbCOUuObagIc8gNvct4mm+T5EgWhZ
+         J5TaNV4JOuV5e0xHBYE470a/pQCPMHrExngO2mDCb86bU34XbzvLbks7igYN9qO7nImm
+         BC+Q==
+X-Gm-Message-State: APjAAAVFbA4YNzJDD2AMV9t1k2lmOl8i2n5+RdjxzHYEIXW42UaexT9h
+        C8SuEnJ1vhq9jS7XUvvnt4bqrlT28Cw=
+X-Google-Smtp-Source: APXvYqxj5iQ8cgJzXif/pPyy4Sja3143s1j9ggVAk9qGMS7fXVtVMugZW1UWF3d14w6P7GQnc9gk+A==
+X-Received: by 2002:a05:6402:397:: with SMTP id o23mr6350378edv.68.1561564568630;
+        Wed, 26 Jun 2019 08:56:08 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id e43sm5989586ede.62.2019.06.26.08.49.31
+        by smtp.gmail.com with ESMTPSA id n5sm3050587ejc.62.2019.06.26.08.56.07
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 08:49:31 -0700 (PDT)
-Date:   Wed, 26 Jun 2019 17:49:29 +0200
+        Wed, 26 Jun 2019 08:56:07 -0700 (PDT)
+Date:   Wed, 26 Jun 2019 17:56:05 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Kenny Ho <Kenny.Ho@amd.com>
 Cc:     y2kenny@gmail.com, cgroups@vger.kernel.org,
         dri-devel@lists.freedesktop.org, amd-gfx@lists.freedesktop.org,
         tj@kernel.org, alexander.deucher@amd.com, christian.koenig@amd.com,
         joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 01/11] cgroup: Introduce cgroup for drm subsystem
-Message-ID: <20190626154929.GP12905@phenom.ffwll.local>
+Subject: Re: [RFC PATCH v3 02/11] cgroup: Add mechanism to register DRM
+ devices
+Message-ID: <20190626155605.GQ12905@phenom.ffwll.local>
 References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-2-Kenny.Ho@amd.com>
+ <20190626150522.11618-3-Kenny.Ho@amd.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190626150522.11618-2-Kenny.Ho@amd.com>
+In-Reply-To: <20190626150522.11618-3-Kenny.Ho@amd.com>
 X-Operating-System: Linux phenom 4.19.0-5-amd64 
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
@@ -63,214 +64,248 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 26, 2019 at 11:05:12AM -0400, Kenny Ho wrote:
-Needs a bit more commit message here I htink.
-
-> Change-Id: I6830d3990f63f0c13abeba29b1d330cf28882831
+On Wed, Jun 26, 2019 at 11:05:13AM -0400, Kenny Ho wrote:
+> Change-Id: I908ee6975ea0585e4c30eafde4599f87094d8c65
 > Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
 
-Bunch of naming bikesheds
-> ---
->  include/linux/cgroup_drm.h    | 76 +++++++++++++++++++++++++++++++++++
->  include/linux/cgroup_subsys.h |  4 ++
->  init/Kconfig                  |  5 +++
->  kernel/cgroup/Makefile        |  1 +
->  kernel/cgroup/drm.c           | 42 +++++++++++++++++++
->  5 files changed, 128 insertions(+)
->  create mode 100644 include/linux/cgroup_drm.h
->  create mode 100644 kernel/cgroup/drm.c
+Why the separate, explicit registration step? I think a simpler design for
+drivers would be that we set up cgroups if there's anything to be
+controlled, and then for GEM drivers the basic GEM stuff would be set up
+automically (there's really no reason not to I think).
 
+Also tying to the minor is a bit funky, since we have multiple of these.
+Need to make sure were at least consistent with whether we use the primary
+or render minor - I'd always go with the primary one like you do here.
+
+> ---
+>  include/drm/drm_cgroup.h   |  24 ++++++++
+>  include/linux/cgroup_drm.h |  10 ++++
+>  kernel/cgroup/drm.c        | 116 +++++++++++++++++++++++++++++++++++++
+>  3 files changed, 150 insertions(+)
+>  create mode 100644 include/drm/drm_cgroup.h
 > 
-> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+> diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
 > new file mode 100644
-> index 000000000000..9928e60037a5
+> index 000000000000..ddb9eab64360
 > --- /dev/null
-> +++ b/include/linux/cgroup_drm.h
-> @@ -0,0 +1,76 @@
+> +++ b/include/drm/drm_cgroup.h
+> @@ -0,0 +1,24 @@
 > +/* SPDX-License-Identifier: MIT
 > + * Copyright 2019 Advanced Micro Devices, Inc.
 > + */
-> +#ifndef _CGROUP_DRM_H
-> +#define _CGROUP_DRM_H
+> +#ifndef __DRM_CGROUP_H__
+> +#define __DRM_CGROUP_H__
 > +
 > +#ifdef CONFIG_CGROUP_DRM
 > +
-> +#include <linux/cgroup.h>
+> +int drmcgrp_register_device(struct drm_device *device);
 > +
-> +struct drmcgrp {
-
-drm_cgroup for more consistency how we usually call these things.
-
-> +	struct cgroup_subsys_state	css;
+> +int drmcgrp_unregister_device(struct drm_device *device);
+> +
+> +#else
+> +static inline int drmcgrp_register_device(struct drm_device *device)
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline int drmcgrp_unregister_device(struct drm_device *device)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_CGROUP_DRM */
+> +#endif /* __DRM_CGROUP_H__ */
+> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+> index 9928e60037a5..27497f786c93 100644
+> --- a/include/linux/cgroup_drm.h
+> +++ b/include/linux/cgroup_drm.h
+> @@ -6,10 +6,20 @@
+>  
+>  #ifdef CONFIG_CGROUP_DRM
+>  
+> +#include <linux/mutex.h>
+>  #include <linux/cgroup.h>
+> +#include <drm/drm_file.h>
+> +
+> +/* limit defined per the way drm_minor_alloc operates */
+> +#define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
+> +
+> +struct drmcgrp_device_resource {
+> +	/* for per device stats */
+> +};
+>  
+>  struct drmcgrp {
+>  	struct cgroup_subsys_state	css;
+> +	struct drmcgrp_device_resource	*dev_resources[MAX_DRM_DEV];
+>  };
+>  
+>  static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
+> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
+> index 66cb1dda023d..7da6e0d93991 100644
+> --- a/kernel/cgroup/drm.c
+> +++ b/kernel/cgroup/drm.c
+> @@ -1,28 +1,99 @@
+>  // SPDX-License-Identifier: MIT
+>  // Copyright 2019 Advanced Micro Devices, Inc.
+> +#include <linux/export.h>
+>  #include <linux/slab.h>
+>  #include <linux/cgroup.h>
+> +#include <linux/fs.h>
+> +#include <linux/seq_file.h>
+> +#include <linux/mutex.h>
+>  #include <linux/cgroup_drm.h>
+> +#include <linux/kernel.h>
+> +#include <drm/drm_device.h>
+> +#include <drm/drm_cgroup.h>
+> +
+> +static DEFINE_MUTEX(drmcgrp_mutex);
+> +
+> +struct drmcgrp_device {
+> +	struct drm_device	*dev;
+> +	struct mutex		mutex;
 > +};
 > +
-> +static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
+> +/* indexed by drm_minor for access speed */
+> +static struct drmcgrp_device	*known_drmcgrp_devs[MAX_DRM_DEV];
+> +
+> +static int max_minor;
 
-ccs_to_drm_cgroup
+Uh no global stuff like this please. Or some explanation in the commit
+message why we really cant avoid this.
 
+> +
+>  
+>  static struct drmcgrp *root_drmcgrp __read_mostly;
+>  
+>  static void drmcgrp_css_free(struct cgroup_subsys_state *css)
+>  {
+>  	struct drmcgrp *drmcgrp = css_drmcgrp(css);
+> +	int i;
+> +
+> +	for (i = 0; i <= max_minor; i++) {
+> +		if (drmcgrp->dev_resources[i] != NULL)
+> +			kfree(drmcgrp->dev_resources[i]);
+> +	}
+>  
+>  	kfree(drmcgrp);
+>  }
+>  
+> +static inline int init_drmcgrp_single(struct drmcgrp *drmcgrp, int minor)
 > +{
-> +	return css ? container_of(css, struct drmcgrp, css) : NULL;
+> +	struct drmcgrp_device_resource *ddr = drmcgrp->dev_resources[minor];
+> +
+> +	if (ddr == NULL) {
+> +		ddr = kzalloc(sizeof(struct drmcgrp_device_resource),
+> +			GFP_KERNEL);
+> +
+> +		if (!ddr)
+> +			return -ENOMEM;
+> +
+> +		drmcgrp->dev_resources[minor] = ddr;
+> +	}
+> +
+> +	/* set defaults here */
+> +
+> +	return 0;
 > +}
 > +
-> +static inline struct drmcgrp *drmcgrp_from(struct task_struct *task)
-
-task_get_drm_cgroup for consistency with task_get_css?
-
+> +static inline int init_drmcgrp(struct drmcgrp *drmcgrp, struct drm_device *dev)
 > +{
-> +	return css_drmcgrp(task_get_css(task, drm_cgrp_id));
+> +	int rc = 0;
+> +	int i;
+> +
+> +	if (dev != NULL) {
+> +		rc = init_drmcgrp_single(drmcgrp, dev->primary->index);
+> +		return rc;
+> +	}
+> +
+> +	for (i = 0; i <= max_minor; i++) {
+> +		rc = init_drmcgrp_single(drmcgrp, i);
+> +		if (rc)
+> +			return rc;
+> +	}
+> +
+> +	return 0;
 > +}
 > +
-> +static inline struct drmcgrp *get_drmcgrp(struct task_struct *task)
+>  static struct cgroup_subsys_state *
+>  drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
+>  {
+>  	struct drmcgrp *parent = css_drmcgrp(parent_css);
+>  	struct drmcgrp *drmcgrp;
+> +	int rc;
+>  
+>  	drmcgrp = kzalloc(sizeof(struct drmcgrp), GFP_KERNEL);
+>  	if (!drmcgrp)
+>  		return ERR_PTR(-ENOMEM);
+>  
+> +	rc = init_drmcgrp(drmcgrp, NULL);
+> +	if (rc) {
+> +		drmcgrp_css_free(&drmcgrp->css);
+> +		return ERR_PTR(rc);
+> +	}
+> +
+>  	if (!parent)
+>  		root_drmcgrp = drmcgrp;
+>  
+> @@ -40,3 +111,48 @@ struct cgroup_subsys drm_cgrp_subsys = {
+>  	.legacy_cftypes	= files,
+>  	.dfl_cftypes	= files,
+>  };
+> +
+> +int drmcgrp_register_device(struct drm_device *dev)
+
+Imo this should be done as part of drm_dev_register (maybe only if the
+driver has set up a controller or something). Definitely with the
+unregister logic below. Also anything used by drivers needs kerneldoc.
+
+
 > +{
-> +	struct cgroup_subsys_state *css = task_get_css(task, drm_cgrp_id);
+> +	struct drmcgrp_device *ddev;
 > +
-> +	if (css)
-> +		css_get(css);
+> +	ddev = kzalloc(sizeof(struct drmcgrp_device), GFP_KERNEL);
+> +	if (!ddev)
+> +		return -ENOMEM;
 > +
-> +	return css_drmcgrp(css);
-> +}
+> +	ddev->dev = dev;
+> +	mutex_init(&ddev->mutex);
 > +
-> +static inline void put_drmcgrp(struct drmcgrp *drmcgrp)
-
-In drm we generally put _get/_put at the end, cgroup seems to do the same.
-
-> +{
-> +	if (drmcgrp)
-> +		css_put(&drmcgrp->css);
-> +}
+> +	mutex_lock(&drmcgrp_mutex);
+> +	known_drmcgrp_devs[dev->primary->index] = ddev;
+> +	max_minor = max(max_minor, dev->primary->index);
+> +	mutex_unlock(&drmcgrp_mutex);
 > +
-> +static inline struct drmcgrp *parent_drmcgrp(struct drmcgrp *cg)
+> +	/* init cgroups created before registration (i.e. root cgroup) */
+> +	if (root_drmcgrp != NULL) {
+> +		struct cgroup_subsys_state *pos;
+> +		struct drmcgrp *child;
+> +
+> +		rcu_read_lock();
+> +		css_for_each_descendant_pre(pos, &root_drmcgrp->css) {
+> +			child = css_drmcgrp(pos);
+> +			init_drmcgrp(child, dev);
+> +		}
+> +		rcu_read_unlock();
 
-I'd also call this drm_cgroup_parent or so.
-
-Also all the above needs a bit of nice kerneldoc for the final version.
+I have no idea, but is this guaranteed to get them all?
 -Daniel
 
-> +{
-> +	return css_drmcgrp(cg->css.parent);
+> +	}
+> +
+> +	return 0;
 > +}
+> +EXPORT_SYMBOL(drmcgrp_register_device);
 > +
-> +#else /* CONFIG_CGROUP_DRM */
-> +
-> +struct drmcgrp {
-> +};
-> +
-> +static inline struct drmcgrp *css_drmcgrp(struct cgroup_subsys_state *css)
+> +int drmcgrp_unregister_device(struct drm_device *dev)
 > +{
-> +	return NULL;
+> +	mutex_lock(&drmcgrp_mutex);
+> +
+> +	kfree(known_drmcgrp_devs[dev->primary->index]);
+> +	known_drmcgrp_devs[dev->primary->index] = NULL;
+> +
+> +	mutex_unlock(&drmcgrp_mutex);
+> +	return 0;
 > +}
-> +
-> +static inline struct drmcgrp *drmcgrp_from(struct task_struct *task)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline struct drmcgrp *get_drmcgrp(struct task_struct *task)
-> +{
-> +	return NULL;
-> +}
-> +
-> +static inline void put_drmcgrp(struct drmcgrp *drmcgrp)
-> +{
-> +}
-> +
-> +static inline struct drmcgrp *parent_drmcgrp(struct drmcgrp *cg)
-> +{
-> +	return NULL;
-> +}
-> +
-> +#endif	/* CONFIG_CGROUP_DRM */
-> +#endif	/* _CGROUP_DRM_H */
-> diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-> index acb77dcff3b4..ddedad809e8b 100644
-> --- a/include/linux/cgroup_subsys.h
-> +++ b/include/linux/cgroup_subsys.h
-> @@ -61,6 +61,10 @@ SUBSYS(pids)
->  SUBSYS(rdma)
->  #endif
->  
-> +#if IS_ENABLED(CONFIG_CGROUP_DRM)
-> +SUBSYS(drm)
-> +#endif
-> +
->  /*
->   * The following subsystems are not supported on the default hierarchy.
->   */
-> diff --git a/init/Kconfig b/init/Kconfig
-> index d47cb77a220e..0b0f112eb23b 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -839,6 +839,11 @@ config CGROUP_RDMA
->  	  Attaching processes with active RDMA resources to the cgroup
->  	  hierarchy is allowed even if can cross the hierarchy's limit.
->  
-> +config CGROUP_DRM
-> +	bool "DRM controller (EXPERIMENTAL)"
-> +	help
-> +	  Provides accounting and enforcement of resources in the DRM subsystem.
-> +
->  config CGROUP_FREEZER
->  	bool "Freezer controller"
->  	help
-> diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-> index bfcdae896122..6af14bd93050 100644
-> --- a/kernel/cgroup/Makefile
-> +++ b/kernel/cgroup/Makefile
-> @@ -4,5 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o
->  obj-$(CONFIG_CGROUP_FREEZER) += freezer.o
->  obj-$(CONFIG_CGROUP_PIDS) += pids.o
->  obj-$(CONFIG_CGROUP_RDMA) += rdma.o
-> +obj-$(CONFIG_CGROUP_DRM) += drm.o
->  obj-$(CONFIG_CPUSETS) += cpuset.o
->  obj-$(CONFIG_CGROUP_DEBUG) += debug.o
-> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> new file mode 100644
-> index 000000000000..66cb1dda023d
-> --- /dev/null
-> +++ b/kernel/cgroup/drm.c
-> @@ -0,0 +1,42 @@
-> +// SPDX-License-Identifier: MIT
-> +// Copyright 2019 Advanced Micro Devices, Inc.
-> +#include <linux/slab.h>
-> +#include <linux/cgroup.h>
-> +#include <linux/cgroup_drm.h>
-> +
-> +static struct drmcgrp *root_drmcgrp __read_mostly;
-> +
-> +static void drmcgrp_css_free(struct cgroup_subsys_state *css)
-> +{
-> +	struct drmcgrp *drmcgrp = css_drmcgrp(css);
-> +
-> +	kfree(drmcgrp);
-> +}
-> +
-> +static struct cgroup_subsys_state *
-> +drmcgrp_css_alloc(struct cgroup_subsys_state *parent_css)
-> +{
-> +	struct drmcgrp *parent = css_drmcgrp(parent_css);
-> +	struct drmcgrp *drmcgrp;
-> +
-> +	drmcgrp = kzalloc(sizeof(struct drmcgrp), GFP_KERNEL);
-> +	if (!drmcgrp)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	if (!parent)
-> +		root_drmcgrp = drmcgrp;
-> +
-> +	return &drmcgrp->css;
-> +}
-> +
-> +struct cftype files[] = {
-> +	{ }	/* terminate */
-> +};
-> +
-> +struct cgroup_subsys drm_cgrp_subsys = {
-> +	.css_alloc	= drmcgrp_css_alloc,
-> +	.css_free	= drmcgrp_css_free,
-> +	.early_init	= false,
-> +	.legacy_cftypes	= files,
-> +	.dfl_cftypes	= files,
-> +};
+> +EXPORT_SYMBOL(drmcgrp_unregister_device);
 > -- 
 > 2.21.0
 > 
