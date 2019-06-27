@@ -2,86 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 029BF58D1A
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 23:32:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A1C9658D1B
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 23:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbfF0Vc1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Jun 2019 17:32:27 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:55340 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726441AbfF0Vc1 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 27 Jun 2019 17:32:27 -0400
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id CBC2558E5C;
-        Thu, 27 Jun 2019 21:32:06 +0000 (UTC)
-Received: from llong.remote.csb (dhcp-17-85.bos.redhat.com [10.18.17.85])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 28CB85D9D2;
-        Thu, 27 Jun 2019 21:31:59 +0000 (UTC)
-Subject: Re: [PATCH 2/2] mm, slab: Extend vm/drop_caches to shrink kmem slabs
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <20190624174219.25513-1-longman@redhat.com>
- <20190624174219.25513-3-longman@redhat.com>
- <20190626201900.GC24698@tower.DHCP.thefacebook.com>
- <063752b2-4f1a-d198-36e7-3e642d4fcf19@redhat.com>
- <20190627212419.GA25233@tower.DHCP.thefacebook.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <73f18141-7e74-9630-06ff-ac8cf9688e6e@redhat.com>
-Date:   Thu, 27 Jun 2019 17:31:58 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        id S1726463AbfF0VdX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jun 2019 17:33:23 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:39108 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726441AbfF0VdW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 17:33:22 -0400
+Received: by mail-ed1-f65.google.com with SMTP id m10so8496978edv.6
+        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2019 14:33:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ymOdyMM4kE64/AUQiKyV50r6ZF407r2qw9+vaz2LbUI=;
+        b=MW1qpb3KrqbU/Ri52N56RHJJu7qB/KHN0qgpeEJFE+8Ms9Ugd0095JF4DfwKy7Egk9
+         HiMg+Jc+1knkFL32tTiY098a490CCZrIQzEkunpROdZ5dxGhMm3TZgBXeLYDsR+gf+6f
+         QRMptRQYM6W86dRG6gll7PSlfiGFvycyPyDHc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ymOdyMM4kE64/AUQiKyV50r6ZF407r2qw9+vaz2LbUI=;
+        b=BxQFKKR/R1l4el43Mc6juatq4f7y9m6QfvNRxn6TdgjN5HF8VUf3cxcfXDisU5ZPR8
+         P3ctjWIc0PMpQb6lSTmiIqlHxVs0K+Vyzf4slP3BuBGo1MBYrnH2IWI6pPv+bK4jObzH
+         +2WnEgRxjWyFadey7TXxraVndSaa75Ky5FKfguNh20gUE6nRW0i/UvdJq/kUeFmsejq1
+         QdUMtuy2GTjruhgT4tZ110Hq3YbtkM0ledIxxqvi5Twx9jfXC/VHC9XbvpnB1WlOioiG
+         Cel3H9bNcGp0wq47fGMLZ/exbdRKdqKIqFedeTuUqXB8V5wi8iMq/L1zHlHPeJR7j+Wq
+         sq6A==
+X-Gm-Message-State: APjAAAXoEOcCkxo38qeWlSqH8NbevfBlBdYervwC06+2fdSnyfrW2ORa
+        xDhRRzVGATJ0Fv1Wmz0h6MLWDg==
+X-Google-Smtp-Source: APXvYqxjRbFKIe6IvjmJOpPred6Rdtl4vcg0lEYGA3qs82CKrGWrX1IF77bjtg7XJeyS5vyoT9pSfg==
+X-Received: by 2002:a17:906:6a89:: with SMTP id p9mr5325560ejr.44.1561671201380;
+        Thu, 27 Jun 2019 14:33:21 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
+        by smtp.gmail.com with ESMTPSA id y18sm40743ejh.84.2019.06.27.14.33.19
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Thu, 27 Jun 2019 14:33:20 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 23:33:17 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kenny Ho <y2kenny@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>,
+        Brian Welty <brian.welty@intel.com>, kraxel@redhat.com,
+        Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+Subject: Re: [RFC PATCH v3 07/11] drm, cgroup: Add TTM buffer allocation stats
+Message-ID: <20190627213317.GP12905@phenom.ffwll.local>
+References: <20190626150522.11618-1-Kenny.Ho@amd.com>
+ <20190626150522.11618-8-Kenny.Ho@amd.com>
+ <20190626161254.GS12905@phenom.ffwll.local>
+ <CAOWid-f3kKnM=4oC5Bba5WW5WNV2MH5PvVamrhO6LBr5ydPJQg@mail.gmail.com>
+ <20190627060113.GC12905@phenom.ffwll.local>
+ <CAOWid-e=M4Rf30s8ZoK5n2fOYNHhvpun0H=7URsKmsGc3Z0FDQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20190627212419.GA25233@tower.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.39]); Thu, 27 Jun 2019 21:32:26 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWid-e=M4Rf30s8ZoK5n2fOYNHhvpun0H=7URsKmsGc3Z0FDQ@mail.gmail.com>
+X-Operating-System: Linux phenom 4.19.0-5-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 6/27/19 5:24 PM, Roman Gushchin wrote:
->>> 2) what's your long-term vision here? do you think that we need to shrink
->>>    kmem_caches periodically, depending on memory pressure? how a user
->>>    will use this new sysctl?
->> Shrinking the kmem caches under extreme memory pressure can be one way
->> to free up extra pages, but the effect will probably be temporary.
->>> What's the problem you're trying to solve in general?
->> At least for the slub allocator, shrinking the caches allow the number
->> of active objects reported in slabinfo to be more accurate. In addition,
->> this allow to know the real slab memory consumption. I have been working
->> on a BZ about continuous memory leaks with a container based workloads.
->> The ability to shrink caches allow us to get a more accurate memory
->> consumption picture. Another alternative is to turn on slub_debug which
->> will then disables all the per-cpu slabs.
-> I see... I agree with Michal here, that extending drop_caches sysctl isn't
-> the best idea. Isn't it possible to achieve the same effect using slub sysfs?
+On Thu, Jun 27, 2019 at 04:17:09PM -0400, Kenny Ho wrote:
+> On Thu, Jun 27, 2019 at 2:01 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > btw reminds me: I guess it would be good to have a per-type .total
+> > read-only exposed, so that userspace has an idea of how much there is?
+> > ttm is trying to be agnostic to the allocator that's used to manage a
+> > memory type/resource, so doesn't even know that. But I think something we
+> > need to expose to admins, otherwise they can't meaningfully set limits.
+> 
+> I don't think I understand this bit, do you mean total across multiple
+> GPU of the same mem type?  Or do you mean the total available per GPU
+> (or something else?)
 
-Yes, using the slub sysfs interface can be a possible alternative.
-
-Cheers,
-Longman
-
+Total for a given type on a given cpu. E.g. maybe you want to give 50% of
+your vram to one cgroup, and the other 50% to the other cgroup. For that
+you need to know how much vram you have. And expecting people to lspci and
+then look at wikipedia for how much vram that chip should have (or
+something like that) isn't great. Hence 0.vram.total, 0.tt.total, and so
+on (also for all the other gpu minors ofc).  For system memory we probably
+don't want to provide a total, since that's already a value that's easy to
+obtain from various sources.
+-Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
