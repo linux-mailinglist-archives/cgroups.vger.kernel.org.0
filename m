@@ -2,163 +2,206 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7843558CF7
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 23:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB8958CFD
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 23:25:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726513AbfF0VYI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Jun 2019 17:24:08 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:36944 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726384AbfF0VYH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 17:24:07 -0400
-Received: by mail-ed1-f67.google.com with SMTP id w13so8514487eds.4
-        for <cgroups@vger.kernel.org>; Thu, 27 Jun 2019 14:24:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=otHtNJ6XLOlqZhPeIZirZt2keyMHruR4+iS1eoOobto=;
-        b=kNeFqqMqfMBdZri2sH0kJAocN+E8lfihTK+M/U6SK0NgfxgWCK1SGsCZ4fGLjuhBhM
-         CHFMqqyUM1a/5FkmRyVjoS2DoMw/tRhLIR6a4dZTa6EKC0M3keg3WYaJr4D2GtBNN4Xi
-         iuYeXFVjumXstv1Zal9DgGXumRSGIczDQjHyI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=otHtNJ6XLOlqZhPeIZirZt2keyMHruR4+iS1eoOobto=;
-        b=IGJjrFT23Bb0u64u0ZzkeercXIhlReYneEpASVojZruJ5F5ygg4EuLV5GIjXWXOlx/
-         PCni8P9sWX1Wqf4iK6qsHqLdK9KNr4Ze3wP3LxlV5WFD/rn7oiRpiwIfyTsdQ7B/oU3e
-         2jHfInu4llmsih0LER4NoIDCdBksendEdGWBNZ6c30aflLy7ySR3KraHDf9Lfld+CFAO
-         mDjGQGluQMYVKwhQPjTWXKg10/VnA0oEH3US4U9yG38BEbEAdbcK1zus/8Cp4Z3bqtrU
-         +jBsingPQx42m7h3ZtnAZebOPGaUxOyacOq0GGPXXl5OIQmzO16cTz24Wlba5lSCgdZj
-         97CQ==
-X-Gm-Message-State: APjAAAVvtcK3dJVXmaVqkXbba3iS56o9f1zDmp4ixEo68K2n8WclHVzh
-        tZYOQPbXnpc8jP2UKApfBg07qQ==
-X-Google-Smtp-Source: APXvYqwETNiiTdBZaXEw5ryKHJMyMo/RQ0qQf1JQcQ5BdUaLTPDJWjFxLeItoJluUCiMfYYwkZHHzQ==
-X-Received: by 2002:a50:b13b:: with SMTP id k56mr7312607edd.192.1561670644991;
-        Thu, 27 Jun 2019 14:24:04 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id dc1sm40327ejb.39.2019.06.27.14.24.03
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Thu, 27 Jun 2019 14:24:04 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 23:24:01 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
-        cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 04/11] drm, cgroup: Add total GEM buffer
- allocation limit
-Message-ID: <20190627212401.GO12905@phenom.ffwll.local>
-References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-5-Kenny.Ho@amd.com>
- <20190626160553.GR12905@phenom.ffwll.local>
- <CAOWid-eurCMx1F7ciUwx0e+p=s=NP8=UxQUhhF-hdK-iAna+fA@mail.gmail.com>
- <20190626214113.GA12905@phenom.ffwll.local>
- <CAOWid-egYGijS0a6uuG4mPUmOWaPwF-EKokR=LFNJ=5M+akVZw@mail.gmail.com>
- <20190627054320.GB12905@phenom.ffwll.local>
- <CAOWid-cT4TQ7HGzcSWjmLGjAW_D1hRrkNguEiV8N+baNiKQm_A@mail.gmail.com>
+        id S1726520AbfF0VZW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jun 2019 17:25:22 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:37224 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726384AbfF0VZW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 17:25:22 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x5RLJSFP005746;
+        Thu, 27 Jun 2019 14:24:29 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=sNOu3HJF9ywLPRfufTO5OfZzrVkrGyiQosuhKaX+PKU=;
+ b=YPadNksSiOYGqw+BAyyZpfaWwww3OIwZFi6ng0BIayOywkVkfgsAdBfmb9YVPMxK74It
+ Q0uaE6NWTpZtpHPvoM9tcirgjyokdmfxVBQT/AmILxIwLyHYd0///NDHfpeoaXlwW0aW
+ daP1EJnhvurny0ESMh7mg/6yf0Nr/PAJRBc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2tcc49wc1s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 27 Jun 2019 14:24:28 -0700
+Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
+ ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Thu, 27 Jun 2019 14:24:26 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Thu, 27 Jun 2019 14:24:26 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=testarcselector01; d=microsoft.com; cv=none;
+ b=ybgO0aecehDfhCD9kKZmqGgtcrKd6UbTnI6mKmzghb9Mnr96LFZ2p/FQR9M1j+XzaSlUCT0/483puHxPA9WYqRzT/Bk3m0m0LLKYZp4da4MP1n1tfjcdzFtsGfckU7Ry01E2p2vABvyiUeNqZH0fihYqc/PXoQJZjEOvZ6EX67E=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=testarcselector01;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sNOu3HJF9ywLPRfufTO5OfZzrVkrGyiQosuhKaX+PKU=;
+ b=u/nonQjW2/rPfIadF188kpIEeO7AH1eB2ra2JkUOTkMLM3Lb3/16hJSlyaskfwYhac/YdMlNObfwVjjD01bd9kavSBqY3Xks/utFWTuR1RQm+BvCHaFCnevRUmRtW9TWhUlDSCRccKit0vXXHX7rO3dePfsaXBXnylIxaSylqxY=
+ARC-Authentication-Results: i=1; test.office365.com
+ 1;spf=none;dmarc=none;dkim=none;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sNOu3HJF9ywLPRfufTO5OfZzrVkrGyiQosuhKaX+PKU=;
+ b=cONWwgOqiZvAyWfGsIE5JImH/EeoYWyEdx0i35coVnU44YH+rI70/oJFtukfMwsDwEUb1Fbmerf+wkYujPyNwU38S7yFmSRfU7aiGGIz2cDUfguMXYwVzxVxCILeR2rmsemJktFjhYGBkfnq9cBlL7jamXSiLJ4sUkhH7D9bR6w=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB2979.namprd15.prod.outlook.com (20.178.220.83) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2008.16; Thu, 27 Jun 2019 21:24:25 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::e594:155f:a43:92ad]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::e594:155f:a43:92ad%6]) with mapi id 15.20.2008.018; Thu, 27 Jun 2019
+ 21:24:25 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Waiman Long <longman@redhat.com>
+CC:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        "David Rientjes" <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        "Kees Cook" <keescook@chromium.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "Michal Hocko" <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        "Andrea Arcangeli" <aarcange@redhat.com>
+Subject: Re: [PATCH 2/2] mm, slab: Extend vm/drop_caches to shrink kmem slabs
+Thread-Topic: [PATCH 2/2] mm, slab: Extend vm/drop_caches to shrink kmem slabs
+Thread-Index: AQHVKrRnjGLXeWaE8kq5EhXDbrxOt6auY3OAgAGdGgCAAAdmgA==
+Date:   Thu, 27 Jun 2019 21:24:25 +0000
+Message-ID: <20190627212419.GA25233@tower.DHCP.thefacebook.com>
+References: <20190624174219.25513-1-longman@redhat.com>
+ <20190624174219.25513-3-longman@redhat.com>
+ <20190626201900.GC24698@tower.DHCP.thefacebook.com>
+ <063752b2-4f1a-d198-36e7-3e642d4fcf19@redhat.com>
+In-Reply-To: <063752b2-4f1a-d198-36e7-3e642d4fcf19@redhat.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR10CA0016.namprd10.prod.outlook.com (2603:10b6:301::26)
+ To BN8PR15MB2626.namprd15.prod.outlook.com (2603:10b6:408:c7::28)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::d870]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 85e7d3af-a785-47e9-895c-08d6fb45d42b
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BN8PR15MB2979;
+x-ms-traffictypediagnostic: BN8PR15MB2979:
+x-microsoft-antispam-prvs: <BN8PR15MB29796CB922220D28EDB2B5B4BEFD0@BN8PR15MB2979.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6430;
+x-forefront-prvs: 008184426E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(376002)(136003)(39860400002)(396003)(346002)(366004)(199004)(189003)(81156014)(8676002)(6486002)(8936002)(6436002)(81166006)(229853002)(76176011)(66556008)(64756008)(52116002)(66946007)(73956011)(66476007)(2906002)(66446008)(99286004)(446003)(11346002)(486006)(476003)(46003)(53936002)(14444005)(102836004)(7736002)(305945005)(186003)(256004)(9686003)(53546011)(386003)(6512007)(6506007)(316002)(5660300002)(68736007)(25786009)(1076003)(71200400001)(54906003)(6116002)(478600001)(14454004)(7416002)(6246003)(33656002)(6916009)(4326008)(86362001)(71190400001);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2979;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: LijSsYHZvhuTlMC7mP6/vlfb8V4T4r78OTs4AjMiy9BYneidFCZfxZNlhOiRJ7Rfqt82SvEJD+qZnZFA64DIIOorpos5N8GA7dPgwW+VK3PUWJwfN2v9iX9VRuGYgcrie2AuNHvEYPtdcRLvKSdlJed3kyxZEldRV+GCNcVIiVPIbkIDQx85p7wBipqZjRgS5nK87PfJQQ6T9oHwsTMNZ7MFQABdMAOWQnjdWX3DYiS20oS4lGIp/+IZ1jXXLZYh6OaGX23jdZtfE5b8OQJP7wwyhnzsK42JHggVCqCq3ftoXN3+KFbA30WNkxY3CCM+NOa/GcGPfD99GNFIb7ERi3ikyUMt6xYirNR+pnJuZLAHLu29i76kct7xr2qAkdezbTYihtKzAl/15KE43+A0fOLKlw9SKjJ3FISZR6twn04=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <7E5727AEB2313B4682CD26ADDCB22D2A@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-cT4TQ7HGzcSWjmLGjAW_D1hRrkNguEiV8N+baNiKQm_A@mail.gmail.com>
-X-Operating-System: Linux phenom 4.19.0-5-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 85e7d3af-a785-47e9-895c-08d6fb45d42b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 27 Jun 2019 21:24:25.4110
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2979
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-06-27_14:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1015 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1906270244
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 02:42:43PM -0400, Kenny Ho wrote:
-> On Thu, Jun 27, 2019 at 1:43 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> > On Wed, Jun 26, 2019 at 06:41:32PM -0400, Kenny Ho wrote:
-> > > So without the sharing restriction and some kind of ownership
-> > > structure, we will have to migrate/change the owner of the buffer when
-> > > the cgroup that created the buffer die before the receiving cgroup(s)
-> > > and I am not sure how to do that properly at the moment.  1) Should
-> > > each cgroup keep track of all the buffers that belongs to it and
-> > > migrate?  (Is that efficient?)  2) which cgroup should be the new
-> > > owner (and therefore have the limit applied?)  Having the creator
-> > > being the owner is kind of natural, but let say the buffer is shared
-> > > with 5 other cgroups, which of these 5 cgroups should be the new owner
-> > > of the buffer?
-> >
-> > Different answers:
-> >
-> > - Do we care if we leak bos like this in a cgroup, if the cgroup
-> >   disappears before all the bo are cleaned up?
-> >
-> > - Just charge the bo to each cgroup it's in? Will be quite a bit more
-> >   tracking needed to get that done ...
-> That seems to be the approach memcg takes, but as shown by the lwn
-> link you sent me from the last rfc (talk from Roman Gushchin), that
-> approach is not problem free either.  And wouldn't this approach
-> disconnect resource management from the underlying resource one would
-> like to control?  For example, if you have 5 MB of memory, you can
-> have 5 users using 1 MB each.  But in the charge-everybody approach, a
-> 1 MB usage shared 4 times will make it looks like 5MB is used.  So the
-> resource being control is no longer 'real' since the amount of
-> resource you have is now dynamic and depends on the amount of sharing
-> one does.
+On Thu, Jun 27, 2019 at 04:57:50PM -0400, Waiman Long wrote:
+> On 6/26/19 4:19 PM, Roman Gushchin wrote:
+> >> =20
+> >> +#ifdef CONFIG_MEMCG_KMEM
+> >> +static void kmem_cache_shrink_memcg(struct mem_cgroup *memcg,
+> >> +				    void __maybe_unused *arg)
+> >> +{
+> >> +	struct kmem_cache *s;
+> >> +
+> >> +	if (memcg =3D=3D root_mem_cgroup)
+> >> +		return;
+> >> +	mutex_lock(&slab_mutex);
+> >> +	list_for_each_entry(s, &memcg->kmem_caches,
+> >> +			    memcg_params.kmem_caches_node) {
+> >> +		kmem_cache_shrink(s);
+> >> +	}
+> >> +	mutex_unlock(&slab_mutex);
+> >> +	cond_resched();
+> >> +}
+> > A couple of questions:
+> > 1) how about skipping already offlined kmem_caches? They are already sh=
+runk,
+> >    so you probably won't get much out of them. Or isn't it true?
+>=20
+> I have been thinking about that. This patch is based on the linux tree
+> and so don't have an easy to find out if the kmem caches have been
+> shrinked. Rebasing this on top of linux-next, I can use the
+> SLAB_DEACTIVATED flag as a marker for skipping the shrink.
+>=20
+> With all the latest patches, I am still seeing 121 out of a total of 726
+> memcg kmem caches (1/6) that are deactivated caches after system bootup
+> one of the test systems. My system is still using cgroup v1 and so the
+> number may be different in a v2 setup. The next step is probably to
+> figure out why those deactivated caches are still there.
 
-The problem with memcg is that it's not just the allocation, but a ton of
-memory allocated to track these allocations. At least that's my
-understanding of the nature of the memcg leak. Made a lot worse by pages
-being small and plentiful and shared extremely widely (e.g. it's really
-hard to control who gets charged for pagecache allocations, so those
-pagecache entries might outlive the memcg forever if you're unlucky).
+It's not a secret: these kmem_caches are holding objects, which are in use.
+It's a drawback of the current slab accounting implementation: every
+object holds a whole page and the corresponding kmem_cache. It's optimized
+for a large number of objects, which are created and destroyed within
+the life of the cgroup (e.g. task_structs), and it works worse for long-liv=
+ing
+objects like vfs cache.
 
-For us it's just a counter, plus bo sharing is a lot more controlled: On
-any reasonable system if you do kill the compositor, then all the clients
-go down. And when you do kill a client, the compositor will release all
-the shared buffers (and any other resources).
+Long-term I think we need a different implementation for long-living object=
+s,
+so that objects belonging to different memory cgroups can share the same pa=
+ge
+and kmem_caches.
 
-So I think for drmcg we won't have anything near the same resource leak
-problem even in theory, and in practice I think the issue is none.
+It's a fairly big change though.
 
-> > - Also, there's the legacy way of sharing a bo, with the FLINK and
-> >   GEM_OPEN ioctls. We need to plug these holes too.
-> >
-> > Just feels like your current solution is technically well-justified, but
-> > it completely defeats the point of cgroups/containers and buffer sharing
-> > ...
-> Um... I am going to get a bit philosophical here and suggest that the
-> idea of sharing (especially uncontrolled sharing) is inherently at odd
-> with containment.  It's like, if everybody is special, no one is
-> special.  Perhaps an alternative is to make this configurable so that
-> people can allow sharing knowing the caveat?  And just to be clear,
-> the current solution allows for sharing, even between cgroup.
+>=20
+> > 2) what's your long-term vision here? do you think that we need to shri=
+nk
+> >    kmem_caches periodically, depending on memory pressure? how a user
+> >    will use this new sysctl?
+> Shrinking the kmem caches under extreme memory pressure can be one way
+> to free up extra pages, but the effect will probably be temporary.
+> > What's the problem you're trying to solve in general?
+>=20
+> At least for the slub allocator, shrinking the caches allow the number
+> of active objects reported in slabinfo to be more accurate. In addition,
+> this allow to know the real slab memory consumption. I have been working
+> on a BZ about continuous memory leaks with a container based workloads.
+> The ability to shrink caches allow us to get a more accurate memory
+> consumption picture. Another alternative is to turn on slub_debug which
+> will then disables all the per-cpu slabs.
 
-The thing is, why shouldn't we just allow it (with some documented
-caveat)?
+I see... I agree with Michal here, that extending drop_caches sysctl isn't
+the best idea. Isn't it possible to achieve the same effect using slub sysf=
+s?
 
-I mean if all people do is share it as your current patches allow, then
-there's nothing funny going on (at least if we go with just leaking the
-allocations). If we allow additional sharing, then that's a plus.
-
-And if you want additional containment, that's a different thing: The
-entire linux architecture for containers is that a container doesn't
-exist. Instead you get a pile of building blocks that all solve different
-aspects of what a container needs to do:
-- cgroups for resource limits
-- namespaces for resource visibility
-- selinux/secomp/lsm for resource isolation and access rights
-
-Let's not try to build a drm cgroup control that tries to do more than
-what cgroups are meant to solve. If you have a need to restrict the
-sharing, imo that should be done with an lsm security hook.
-
-btw for bo sharing, I've found a 3rd sharing path (besides dma-buf and gem
-flink): GETCRTC ioctl can also be used (it's the itended goal actually) to
-share buffers across processes.
--Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Thanks!
