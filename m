@@ -2,96 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AA9AF5845D
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 16:20:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DD2F5853A
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 17:07:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726431AbfF0OU3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Jun 2019 10:20:29 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34178 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726370AbfF0OU3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 10:20:29 -0400
-Received: by mail-qt1-f193.google.com with SMTP id m29so2627678qtu.1;
-        Thu, 27 Jun 2019 07:20:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ibMkJJWkf9wfeR0beVqPsWCh5Yhblc2HN5zfVuXpgPc=;
-        b=WNnNyq3R8FEYB2OR4flGfDaN1gAY7zPvl1DH6UtOPQvFdLJb3HAALzv3EDVY/ywtdl
-         TpKnrFAROO6vLbl+cRlP7sQ/1Lc580ODR9iQYsWRhQPGRdN8YIyadlaHheXQdXZofolU
-         R8XFUCJOYrgrWI9K8MuvklrUsp0h60A6/ga0KIQ8nFq1NYb0GJIUnq8stt4LOn0nAA35
-         AQ3BLdfljIXqXQUYnWdrvO0xLRuPg31xcILy/wmDpdItAuKlMBglKb0a/CspeBgyrgLq
-         F0l4pO6YScXuy6RtPMh/BgdclgtR8UQWLIqcUDte8+04k4YUjlcbMMIw3z0ZZiZ986yh
-         SsnA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ibMkJJWkf9wfeR0beVqPsWCh5Yhblc2HN5zfVuXpgPc=;
-        b=oHl7sl6VGWOAt51+18jAUdh+oj6HAKrbqX0GVRqejRVq51SJ9pEqp63EWD6OU1Elx3
-         AfuZuB90bBVSo81wjzkKqfnxueqTu+17gvc9lLGgOWUq/vWvh6VXRl22WWQa7IsPZ5e/
-         w7VXbpUQjtCvSfjk3+LRmykSTHKzJMwAfY93pFcxVZzaeLxkFs5uZ+tiMi89rbo+m92/
-         mgaKTNdOrK7bqJBTAlI+D14VzPxEzlKV1kO9Uko/rJYCXHmHO2Lh21HZStH1F8XelF9u
-         QY1E4+KQfNPrWO+A1P61gPgiEkkogS5G2lzfRRRMCCCrtBbOf5YI6kWiy5BE4ZGT3umX
-         FYvQ==
-X-Gm-Message-State: APjAAAVpVU7LunA120tyQLVivGavgMgREtxzGlSnmEnKSwSlPWTPdhAH
-        pgybAVjnKsoWBJF2wep6tDQ=
-X-Google-Smtp-Source: APXvYqzz3ddo5kehN94RkRnIMw8EXVljFjNANKZxMc7zBPdyQt10KTunLVInpbJ3F2ZQzhNNjIcNhg==
-X-Received: by 2002:a0c:d0fc:: with SMTP id b57mr3618236qvh.78.1561645228288;
-        Thu, 27 Jun 2019 07:20:28 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::5a51])
-        by smtp.gmail.com with ESMTPSA id s134sm1084648qke.51.2019.06.27.07.20.27
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 27 Jun 2019 07:20:27 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 07:20:24 -0700
-From:   Tejun Heo <tj@kernel.org>
+        id S1726590AbfF0PHu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jun 2019 11:07:50 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40656 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726405AbfF0PHu (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 27 Jun 2019 11:07:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 5F70CAC37;
+        Thu, 27 Jun 2019 15:07:48 +0000 (UTC)
+Date:   Thu, 27 Jun 2019 17:07:46 +0200
+From:   Michal Hocko <mhocko@kernel.org>
 To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH] memcg: Add kmem.slabinfo to v2 for debugging purpose
-Message-ID: <20190627142024.GW657710@devbig004.ftw2.facebook.com>
-References: <20190626165614.18586-1-longman@redhat.com>
+Cc:     Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 1/2] mm, memcontrol: Add memcg_iterate_all()
+Message-ID: <20190627150746.GD5303@dhcp22.suse.cz>
+References: <20190624174219.25513-1-longman@redhat.com>
+ <20190624174219.25513-2-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190626165614.18586-1-longman@redhat.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190624174219.25513-2-longman@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Waiman.
+On Mon 24-06-19 13:42:18, Waiman Long wrote:
+> Add a memcg_iterate_all() function for iterating all the available
+> memory cgroups and call the given callback function for each of the
+> memory cgruops.
 
-On Wed, Jun 26, 2019 at 12:56:14PM -0400, Waiman Long wrote:
-> With memory cgroup v1, there is a kmem.slabinfo file that can be
-> used to view what slabs are allocated to the memory cgroup. There
-> is currently no such equivalent in memory cgroup v2. This file can
-> be useful for debugging purpose.
+Why is a trivial wrapper any better than open coded usage of the
+iterator?
+
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  include/linux/memcontrol.h |  3 +++
+>  mm/memcontrol.c            | 13 +++++++++++++
+>  2 files changed, 16 insertions(+)
 > 
-> This patch adds an equivalent kmem.slabinfo to v2 with the caveat that
-> this file will only show up as ".__DEBUG__.memory.kmem.slabinfo" when the
-> "cgroup_debug" parameter is specified in the kernel boot command line.
-> This is to avoid cluttering the cgroup v2 interface with files that
-> are seldom used by end users.
-
-Can you please take a look at drgn?
-
-  https://github.com/osandov/drgn
-
-Baking in debug interface files always is limited and nasty and drgn
-can get you way more flexible debugging / monitoring tool w/o having
-to bake in anything into the kernel.  For an example, please take a
-look at
-
-  https://lore.kernel.org/bpf/20190614015620.1587672-10-tj@kernel.org/
-
-Thanks.
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 1dcb763bb610..0e31418e5a47 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1268,6 +1268,9 @@ static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+>  struct kmem_cache *memcg_kmem_get_cache(struct kmem_cache *cachep);
+>  void memcg_kmem_put_cache(struct kmem_cache *cachep);
+>  
+> +extern void memcg_iterate_all(void (*callback)(struct mem_cgroup *memcg,
+> +					       void *arg), void *arg);
+> +
+>  #ifdef CONFIG_MEMCG_KMEM
+>  int __memcg_kmem_charge(struct page *page, gfp_t gfp, int order);
+>  void __memcg_kmem_uncharge(struct page *page, int order);
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ba9138a4a1de..c1c4706f7696 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -443,6 +443,19 @@ static int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
+>  static void memcg_free_shrinker_maps(struct mem_cgroup *memcg) { }
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+> +/*
+> + * Iterate all the memory cgroups and call the given callback function
+> + * for each of the memory cgroups.
+> + */
+> +void memcg_iterate_all(void (*callback)(struct mem_cgroup *memcg, void *arg),
+> +		       void *arg)
+> +{
+> +	struct mem_cgroup *memcg;
+> +
+> +	for_each_mem_cgroup(memcg)
+> +		callback(memcg, arg);
+> +}
+> +
+>  /**
+>   * mem_cgroup_css_from_page - css of the memcg associated with a page
+>   * @page: page of interest
+> -- 
+> 2.18.1
 
 -- 
-tejun
+Michal Hocko
+SUSE Labs
