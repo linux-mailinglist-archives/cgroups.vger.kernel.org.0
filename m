@@ -2,67 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C126057BB1
-	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 08:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DE157BC3
+	for <lists+cgroups@lfdr.de>; Thu, 27 Jun 2019 08:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbfF0GBU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Jun 2019 02:01:20 -0400
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:43750 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725385AbfF0GBT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 02:01:19 -0400
-Received: by mail-ed1-f65.google.com with SMTP id e3so5826872edr.10
-        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 23:01:18 -0700 (PDT)
+        id S1726293AbfF0GL6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Jun 2019 02:11:58 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:39622 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725770AbfF0GL6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Jun 2019 02:11:58 -0400
+Received: by mail-ed1-f66.google.com with SMTP id m10so5873798edv.6
+        for <cgroups@vger.kernel.org>; Wed, 26 Jun 2019 23:11:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=25Oe2d3WCzWTQdi4EmaWIZ1elA6XVFDY/UbbQcTZPgA=;
-        b=irh7a2Lcdij9HgxBwi7J2xacmCC+ceo+cVADHaIq5ovmq5GjpHlsm027Nuoo/2+KhJ
-         MIupYJ3mCZA1W1B0Xa0w81Lq8qGVFCZ0HKCjKrOes8SE74v0+TQYSK9+vkGIZnEQZPNe
-         xqBcnsigt4UTFpODPW6hWjkpjTSj3LRD0MkOk=
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=zDIpKnvYiVCYTejTV37QRzi1CxIsLmfrZczH31ThNLQ=;
+        b=li1ctxapcS+exZVZnmTZPY3ffXSkif3dqdeoEc1N+OG/3CeSucNO2/99/DeKWAtT7+
+         btmMtY/d08vyrmNG/2cfBUlfF+xzX+tEzUQZ0YRdGoZyi8vL2ura8uacvfpCwVp/rIec
+         5viyu0Wb9T4xbQzWorf/NvRaH9OMIiT2NrrZY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=25Oe2d3WCzWTQdi4EmaWIZ1elA6XVFDY/UbbQcTZPgA=;
-        b=rWHPrmb9oox9BFmLYTWL3CDj9Rq17clvPtw4Vhwe5j6yckF7esxJ077/axy9jm4ZZd
-         dtIYwigKU1DH2vDFkIaPFlmPq6UW9fp3YSbmGcix9WYtTTpMdHTI8bXEARL4kjIKnCO4
-         laa/i5pNpUwsjtgANKdsu/isUuDmWjhjyegEuYHJ2dyoEuByjLWFkHWY+59KVlQtfA6X
-         PR9D9mjWtaZ8HmzAhHKsVUsJMlHdScC5eiiBZtdyv/wu1CRYSwc+FXbJX8qG5Uh4Nydr
-         ICJjWii3yZbhJOYx/0LBc2a7DI5kKF3VWxZFckyIcoEFhyXcvz9i+lfzd/W05IC3SMom
-         lsZw==
-X-Gm-Message-State: APjAAAXCu8toTiAzweQdTNG+tWwEog3D5Y2KxqQkLt3uv2HImpL9IFMA
-        jMscIRL7jlKMv0goPEKwR3D9MA==
-X-Google-Smtp-Source: APXvYqyERhsA6Z0GG7Jfi+y8iUQQTuScqGEt6KUNiq6nC8M0hV2GnIfWg1B8k2KCjGjx6Bk5Q7Uo/w==
-X-Received: by 2002:a50:8dcb:: with SMTP id s11mr1908937edh.144.1561615277507;
-        Wed, 26 Jun 2019 23:01:17 -0700 (PDT)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=zDIpKnvYiVCYTejTV37QRzi1CxIsLmfrZczH31ThNLQ=;
+        b=qmB6Pcwn12mvY5ZjtjSrRPszcgXlE3pmKihcvsimVu9F4xXuOW2mcPXPgJ8viNuWqe
+         3h6Ns1PYpKzxPzEIpOa2ChZfPO59NWdla9c10WHA1pSrCh+kZ8LJe9ATniel+w5tu2ZO
+         YzpHYc5Amtr7p8MwXDpteeI3GzCT2xrnCW0w2VDePR99GB9TAZ5+qnM2OgrL1brFexka
+         uQpcbCGDvDh2t7Pug8MS61m+GB+qeutaba94HnoEoZZztNVJj1DbnLiiO4nogYne8BOS
+         u/1tw+q2nYXnOY+FB1XZhg0KNdF5c8rzZeIkaRaYOU0nHdoB15q11OgrFM4Bxa8A/GQ3
+         Psig==
+X-Gm-Message-State: APjAAAWFqQfKlpKESl0zSqj4yt+GWFFk+vTM8sZ91ClazpQYHhzHI/HA
+        HeS8YY+EAnN+8CZP/DEqXbqm7Q==
+X-Google-Smtp-Source: APXvYqwYdBqBILsPoUpP28pLBsiLfE0SukeJRv2ra43KJpvQDaTlcWtMAP7L/P/7mMHkwrWJbdpBkA==
+X-Received: by 2002:aa7:d297:: with SMTP id w23mr1976958edq.128.1561615916302;
+        Wed, 26 Jun 2019 23:11:56 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id g16sm395021edc.76.2019.06.26.23.01.15
+        by smtp.gmail.com with ESMTPSA id f24sm417863edf.30.2019.06.26.23.11.54
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Wed, 26 Jun 2019 23:01:16 -0700 (PDT)
-Date:   Thu, 27 Jun 2019 08:01:13 +0200
+        Wed, 26 Jun 2019 23:11:55 -0700 (PDT)
+Date:   Thu, 27 Jun 2019 08:11:53 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        Brian Welty <brian.welty@intel.com>, kraxel@redhat.com,
-        Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
+        cgroups@vger.kernel.org,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Tejun Heo <tj@kernel.org>,
         Alex Deucher <alexander.deucher@amd.com>,
         Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 07/11] drm, cgroup: Add TTM buffer allocation stats
-Message-ID: <20190627060113.GC12905@phenom.ffwll.local>
+Subject: Re: [RFC PATCH v3 09/11] drm, cgroup: Add per cgroup bw measure and
+ control
+Message-ID: <20190627061153.GD12905@phenom.ffwll.local>
 References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-8-Kenny.Ho@amd.com>
- <20190626161254.GS12905@phenom.ffwll.local>
- <CAOWid-f3kKnM=4oC5Bba5WW5WNV2MH5PvVamrhO6LBr5ydPJQg@mail.gmail.com>
+ <20190626150522.11618-10-Kenny.Ho@amd.com>
+ <20190626162554.GU12905@phenom.ffwll.local>
+ <CAOWid-dO5QH4wLyN_ztMaoZtLM9yzw-FEMgk3ufbh1ahHJ2vVg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAOWid-f3kKnM=4oC5Bba5WW5WNV2MH5PvVamrhO6LBr5ydPJQg@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOWid-dO5QH4wLyN_ztMaoZtLM9yzw-FEMgk3ufbh1ahHJ2vVg@mail.gmail.com>
 X-Operating-System: Linux phenom 4.19.0-5-amd64 
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
@@ -70,87 +73,83 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 12:06:13AM -0400, Kenny Ho wrote:
-> On Wed, Jun 26, 2019 at 12:12 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Thu, Jun 27, 2019 at 12:34:05AM -0400, Kenny Ho wrote:
+> On Wed, Jun 26, 2019 at 12:25 PM Daniel Vetter <daniel@ffwll.ch> wrote:
 > >
-> > On Wed, Jun 26, 2019 at 11:05:18AM -0400, Kenny Ho wrote:
-> > > drm.memory.stats
-> > >         A read-only nested-keyed file which exists on all cgroups.
-> > >         Each entry is keyed by the drm device's major:minor.  The
-> > >         following nested keys are defined.
-> > >
-> > >           ======         =============================================
-> > >           system         Host/system memory
+> > On Wed, Jun 26, 2019 at 11:05:20AM -0400, Kenny Ho wrote:
+> > > The bandwidth is measured by keeping track of the amount of bytes moved
+> > > by ttm within a time period.  We defined two type of bandwidth: burst
+> > > and average.  Average bandwidth is calculated by dividing the total
+> > > amount of bytes moved within a cgroup by the lifetime of the cgroup.
+> > > Burst bandwidth is similar except that the byte and time measurement is
+> > > reset after a user configurable period.
 > >
-> > Shouldn't that be covered by gem bo stats already? Also, system memory is
-> > definitely something a lot of non-ttm drivers want to be able to track, so
-> > that needs to be separate from ttm.
-> The gem bo stats covers all of these type.  I am treat the gem stats
-> as more of the front end and a hard limit and this set of stats as the
-> backing store which can be of various type.  How does non-ttm drivers
-> identify various memory types?
-
-Not explicitly, they generally just have one. I think i915 currently has
-two, system and carveout (with vram getting added).
-
-> > >           tt             Host memory used by the drm device (GTT/GART)
-> > >           vram           Video RAM used by the drm device
-> > >           priv           Other drm device, vendor specific memory
+> > So I'm not too sure exposing this is a great idea, at least depending upon
+> > what you're trying to do with it. There's a few concerns here:
 > >
-> > So what's "priv". In general I think we need some way to register the
-> > different kinds of memory, e.g. stuff not in your list:
+> > - I think bo movement stats might be useful, but they're not telling you
+> >   everything. Applications can also copy data themselves and put buffers
+> >   where they want them, especially with more explicit apis like vk.
 > >
-> > - multiple kinds of vram (like numa-style gpus)
-> > - cma (for all those non-ttm drivers that's a big one, it's like system
-> >   memory but also totally different)
-> > - any carveouts and stuff
-> privs are vendor specific, which is why I have truncated it.  For
-> example, AMD has AMDGPU_PL_GDS, GWS, OA
-> https://elixir.bootlin.com/linux/v5.2-rc6/source/drivers/gpu/drm/amd/amdgpu/amdgpu_ttm.h#L30
+> > - which kind of moves are we talking about here? Eviction related bo moves
+> >   seem not counted here, and if you have lots of gpus with funny
+> >   interconnects you might also get other kinds of moves, not just system
+> >   ram <-> vram.
+> Eviction move is counted but I think I placed the delay in the wrong
+> place (the tracking of byte moved is in previous patch in
+> ttm_bo_handle_move_mem, which is common to all move as far as I can
+> tell.)
 > 
-> Since we are using keyed file type, we should be able to support
-> vendor specific memory type but I am not sure if this is acceptable to
-> cgroup upstream.  This is why I stick to the 3 memory type that is
-> common across all ttm drivers.
+> > - What happens if we slow down, but someone else needs to evict our
+> >   buffers/move them (ttm is atm not great at this, but Christian König is
+> >   working on patches). I think there's lots of priority inversion
+> >   potential here.
+> >
+> > - If the goal is to avoid thrashing the interconnects, then this isn't the
+> >   full picture by far - apps can use copy engines and explicit placement,
+> >   again that's how vulkan at least is supposed to work.
+> >
+> > I guess these all boil down to: What do you want to achieve here? The
+> > commit message doesn't explain the intended use-case of this.
+> Thrashing prevention is the intent.  I am not familiar with Vulkan so
+> I will have to get back to you on that.  I don't know how those
+> explicit placement translate into the kernel.  At this stage, I think
+> it's still worth while to have this as a resource even if some
+> applications bypass the kernel.  I certainly welcome more feedback on
+> this topic.
 
-I think we'll need custom memory pools, not just priv, and I guess some
-naming scheme for them. I think just exposing them as amd-gws, amd-oa,
-amd-gds would make sense.
+The trouble with thrashing prevention like this is that either you don't
+limit all the bo moves, and then you don't count everything. Or you limit
+them all, and then you create priority inversions in the ttm eviction
+handler, essentially rate-limiting everyone who's thrashing. Or at least
+you run the risk of that happening.
 
-Another thing I wonder about is multi-gpu cards, with multiple gpus and
-each their own vram and other device-specific resources. For those we'd
-have node0.vram and node1.vram too (on top of maybe an overall vram node,
-not sure).
+Not what you want I think :-)
 
-> > I think with all the ttm refactoring going on I think we need to de-ttm
-> > the interface functions here a bit. With Gerd Hoffmans series you can just
-> > use a gem_bo pointer here, so what's left to do is have some extracted
-> > structure for tracking memory types. I think Brian Welty has some ideas
-> > for this, even in patch form. Would be good to keep him on cc at least for
-> > the next version. We'd need to explicitly hand in the ttm_mem_reg (or
-> > whatever the specific thing is going to be).
-> 
-> I assume Gerd Hoffman's series you are referring to is this one?
-> https://www.spinics.net/lists/dri-devel/msg215056.html
+I also think that the blkcg people are still trying to figure out how to
+make this work fully reliable (it's the same problem really), and a
+critical piece is knowing/estimating the overall bandwidth. Without that
+the admin can't really do something meaningful. The problem with that is
+you don't know, not just because of vk, but any userspace that has buffers
+in the pci gart uses the same interconnect just as part of its rendering
+job. So if your goal is to guaranteed some minimal amount of bo move
+bandwidth, then this wont work, because you have no idea how much bandwith
+there even is for bo moves.
 
-There's a newer one, much more complete, but yes that's the work.
+Getting thrashing limited is very hard.
 
-> I can certainly keep an eye out for Gerd's refactoring while
-> refactoring other parts of this RFC.
-> 
-> I have added Brian and Gerd to the thread for awareness.
-
-btw just realized that maybe building the interfaces on top of ttm_mem_reg
-is maybe not the best. That's what you're using right now, but in a way
-that's just the ttm internal detail of how the backing storage is
-allocated. I think the structure we need to abstract away is
-ttm_mem_type_manager, without any of the actual management details.
-
-btw reminds me: I guess it would be good to have a per-type .total
-read-only exposed, so that userspace has an idea of how much there is?
-ttm is trying to be agnostic to the allocator that's used to manage a
-memory type/resource, so doesn't even know that. But I think something we
-need to expose to admins, otherwise they can't meaningfully set limits.
+I feel like a better approach would by to add a cgroup for the various
+engines on the gpu, and then also account all the sdma (or whatever the
+name of the amd copy engines is again) usage by ttm_bo moves to the right
+cgroup. I think that's a more meaningful limitation. For direct thrashing
+control I think there's both not enough information available in the
+kernel (you'd need some performance counters to watch how much bandwidth
+userspace batches/CS are wasting), and I don't think the ttm eviction
+logic is ready to step over all the priority inversion issues this will
+bring up. Managing sdma usage otoh will be a lot more straightforward (but
+still has all the priority inversion problems, but in the scheduler that
+might be easier to fix perhaps with the explicit dependency graph - in the
+i915 scheduler we already have priority boosting afaiui).
 -Daniel
 -- 
 Daniel Vetter
