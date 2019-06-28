@@ -2,101 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0A6959DBE
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 16:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D6E1259EED
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 17:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbfF1ObR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Jun 2019 10:31:17 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:45323 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726707AbfF1ObP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jun 2019 10:31:15 -0400
-Received: by mail-wr1-f67.google.com with SMTP id f9so6502218wre.12
-        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2019 07:31:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=vIGColdwlEbXzgqC2nSGDJI+imgI3Vqv6hRTUWcURzQ=;
-        b=hpNOx+M2/Sh5VPGyPXz44kyJ5gXNONHHGeYRsYZeIcxWGmKd924chiHKA6lpaANinj
-         J1++lDa5Hqjp7W4GBW5QqLV7JFqJDM8TU9jI+g4mLpXkNOUVF+bbIPypcfNbNi6QeyZ0
-         Qh4BIHiD8uSvQW+b9CXdTTnabi2c78DrAA+RcLeWyQ42IF5FkFpuXbQ+Fq9TNmdNT9Gc
-         wHbL1F6TAzJZd+7I0pHLNi8I3tOCotmtSjq80Xnfh6bgdXIUApne6E3UOzCWxJSl5p4Y
-         g0UKdUdSeTU2XRd3sE+IoyQMbg+7nV3fcHdOlh+SbrRxxD/ZAYbvGbD8I7aq1bOuL92v
-         OkdA==
-X-Gm-Message-State: APjAAAV/4kr32x7Mu5DY1oxSTZ2b/mzfhYgbM8lsr/D9J6TOCgLpsq7G
-        xU8LNY845f/qE0FZOse7hamQsg==
-X-Google-Smtp-Source: APXvYqwx09hYWkLmHko84vnw++BV/pG5dTLGCo1wtOyMVyrIMDG9Y8/TsrSYd/185KxfT1jmBBtkAg==
-X-Received: by 2002:adf:ea8b:: with SMTP id s11mr1636482wrm.100.1561732272911;
-        Fri, 28 Jun 2019 07:31:12 -0700 (PDT)
-Received: from localhost.localdomain ([151.29.165.245])
-        by smtp.gmail.com with ESMTPSA id j7sm3290365wru.54.2019.06.28.07.31.11
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 28 Jun 2019 07:31:11 -0700 (PDT)
-Date:   Fri, 28 Jun 2019 16:31:09 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     mingo@redhat.com, rostedt@goodmis.org, tj@kernel.org,
-        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
-        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
-        bristot@redhat.com, mathieu.poirier@linaro.org, lizefan@huawei.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH v8 5/8] cgroup/cpuset: convert cpuset_mutex to
- percpu_rwsem
-Message-ID: <20190628143109.GX26005@localhost.localdomain>
-References: <20190628080618.522-1-juri.lelli@redhat.com>
- <20190628080618.522-6-juri.lelli@redhat.com>
- <20190628124553.GT3419@hirez.programming.kicks-ass.net>
+        id S1726707AbfF1Pca (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Jun 2019 11:32:30 -0400
+Received: from a9-30.smtp-out.amazonses.com ([54.240.9.30]:45750 "EHLO
+        a9-30.smtp-out.amazonses.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726686AbfF1Pc3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jun 2019 11:32:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=6gbrjpgwjskckoa6a5zn6fwqkn67xbtw; d=amazonses.com; t=1561735948;
+        h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:MIME-Version:Content-Type:Feedback-ID;
+        bh=AS0whl/EcrrVIjGmsUBB1P/c2zpIOxnuhHXncVKXZDs=;
+        b=SPfGmsXFLQEBn6h5ufA7w1jky3/Rc5RZWDgWNaiTM/EHlEN3OYChoYEFopmh0TVK
+        CsfQ0V2VNWhAZKX5OVGAkkAuAJkc9V4P1tYZ2E+eFutc3svPaXxXsz0EOpjrjpx2KYK
+        te37a4g49qMNkC2/MEGlyyhGG40MgUxZQUWAqOFo=
+Date:   Fri, 28 Jun 2019 15:32:28 +0000
+From:   Christopher Lameter <cl@linux.com>
+X-X-Sender: cl@nuc-kabylake
+To:     Roman Gushchin <guro@fb.com>
+cc:     Waiman Long <longman@redhat.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 2/2] mm, slab: Extend vm/drop_caches to shrink kmem
+ slabs
+In-Reply-To: <20190627212419.GA25233@tower.DHCP.thefacebook.com>
+Message-ID: <0100016b9eb7685e-0a5ab625-abb4-4e79-ab86-07744b1e4c3a-000000@email.amazonses.com>
+References: <20190624174219.25513-1-longman@redhat.com> <20190624174219.25513-3-longman@redhat.com> <20190626201900.GC24698@tower.DHCP.thefacebook.com> <063752b2-4f1a-d198-36e7-3e642d4fcf19@redhat.com> <20190627212419.GA25233@tower.DHCP.thefacebook.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190628124553.GT3419@hirez.programming.kicks-ass.net>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Type: text/plain; charset=US-ASCII
+X-SES-Outgoing: 2019.06.28-54.240.9.30
+Feedback-ID: 1.us-east-1.fQZZZ0Xtj2+TD7V5apTT/NrT6QKuPgzCT/IC7XYgDKI=:AmazonSES
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+On Thu, 27 Jun 2019, Roman Gushchin wrote:
 
-On 28/06/19 14:45, Peter Zijlstra wrote:
-> On Fri, Jun 28, 2019 at 10:06:15AM +0200, Juri Lelli wrote:
-> > @@ -2154,7 +2154,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
-> >  	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> >  	cs = css_cs(css);
-> >  
-> > -	mutex_lock(&cpuset_mutex);
-> > +	percpu_down_read(&cpuset_rwsem);
-> >  
-> >  	/* allow moving tasks into an empty cpuset if on default hierarchy */
-> >  	ret = -ENOSPC;
-> > @@ -2178,7 +2178,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
-> >  	cs->attach_in_progress++;
-> >  	ret = 0;
-> >  out_unlock:
-> > -	mutex_unlock(&cpuset_mutex);
-> > +	percpu_up_read(&cpuset_rwsem);
-> >  	return ret;
-> >  }
-> >  
-> > @@ -2188,9 +2188,9 @@ static void cpuset_cancel_attach(struct cgroup_taskset *tset)
-> >  
-> >  	cgroup_taskset_first(tset, &css);
-> >  
-> > -	mutex_lock(&cpuset_mutex);
-> > +	percpu_down_read(&cpuset_rwsem);
-> >  	css_cs(css)->attach_in_progress--;
-> > -	mutex_unlock(&cpuset_mutex);
-> > +	percpu_up_read(&cpuset_rwsem);
-> >  }
-> 
-> These are the only percpu_down_read()s introduced in this patch; are we
-> sure this is correct? Specifically, what serializes
-> ->attach_in_progress?
+> so that objects belonging to different memory cgroups can share the same page
+> and kmem_caches.
+>
+> It's a fairly big change though.
 
-No, I think it's wrong, sorry. I'll change to the write variant in next
-version.
+Could this be done at another level? Put a cgoup pointer into the
+corresponding structures and then go back to just a single kmen_cache for
+the system as a whole? You can still account them per cgroup and there
+will be no cleanup problem anymore. You could scan through a slab cache
+to remove the objects of a certain cgroup and then the fragmentation
+problem that cgroups create here will be handled by the slab allocators in
+the traditional way. The duplication of the kmem_cache was not designed
+into the allocators but bolted on later.
 
-Thanks,
-
-Juri
