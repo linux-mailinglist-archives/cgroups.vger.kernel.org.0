@@ -2,37 +2,37 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 78FEC59596
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 10:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B02C59598
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 10:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726690AbfF1IGp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Jun 2019 04:06:45 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:44632 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbfF1IGo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jun 2019 04:06:44 -0400
-Received: by mail-wr1-f65.google.com with SMTP id r16so3381410wrl.11
-        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2019 01:06:43 -0700 (PDT)
+        id S1726835AbfF1IGq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Jun 2019 04:06:46 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:44636 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726817AbfF1IGq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Jun 2019 04:06:46 -0400
+Received: by mail-wr1-f67.google.com with SMTP id r16so3381506wrl.11
+        for <cgroups@vger.kernel.org>; Fri, 28 Jun 2019 01:06:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=IEUt13ZTn0zBCZAP80Omheo6qj6rUso/70fm+QzSiTs=;
-        b=FKwqJFD14Jq/w2YwZrjLp3Wtoel8cOLDR/Mvo2UCyK/cFQh3TPYliZcvfG3FX2hche
-         xh/sGYct0ryhkjn5uogWTyCr8q3yubsd8otg/N6rPKHoB3w8XHJA04fpvZFX4fO/hUiQ
-         NwoTRIRtXGgfQE+/63iO7YRD8kYR9djR7Zs1tUz4PpewQ1FY5YoiEgQyJAls+sDvB5m5
-         4DSbCekUZwg3Do6GVEz3WOLUci6xyYfhkKNqvGuAPHZLUEhV4wHXok8l/cwVq3EQ9px4
-         zxVHCxyxyNwgIiU656zQs0wDUqNK0lx95AsmCsNzXynualZUveuOptXDcUf/A9Pli/ne
-         jSwg==
-X-Gm-Message-State: APjAAAWBkXRj6k/lHJ8m2jM1RDQewSsQy2XpHSdUWbAFq4JLDtT/Ryf4
-        ChoI5/mJdPVsgNSeetn/kayTfA==
-X-Google-Smtp-Source: APXvYqzPRjytR9yU8/kgcOYCrhT7z5bh4HdwLxRR6gtwP84KVKSKW1hp4WvYsFE8Q2uc4rqaPnuQLw==
-X-Received: by 2002:adf:f186:: with SMTP id h6mr6561363wro.274.1561709202544;
-        Fri, 28 Jun 2019 01:06:42 -0700 (PDT)
+        bh=XK0rmw3TRvyFu6q2ZzeV9ctx1JYPjrgUFwlyn6Ylmt0=;
+        b=oQGDRAaFehGixzcfm7Kb1ir2NeFdgkzMf+PFlo69IKPYH9kvVrKQTdOYxQ8B9dSYe9
+         buBwKJssBjrL6c24gwk92vwQu/p+HOvP+GYkpdL3z3O8Uq8W66ThXbXkQ0HDqGPjGNgA
+         DBnJXxLutEQYwqCavGmP56UPqP/ETiDByAAGZ5RiYtyjKN6yWAyIqt3t5WGSo+bIlHU5
+         +IRN2Dii7rBUQeJkusEAV2bTjkN9JSj/nJXadQqaiT/uqfPjb19Z5DGZmoBodbIMgg+n
+         yhI8RBEW+PPOW52aKVXyBwvimuRouVdNsf6hBnqhKhwRiT21BQkt3OuiSOBALE5oqPHm
+         lJYQ==
+X-Gm-Message-State: APjAAAXhcIu8kadjsSSBn4FYiQ4JVu0EaUjxda5yfQBIFaKl+LPGDZrF
+        TV3npesV2HjA4BdZLlujsjuCBw==
+X-Google-Smtp-Source: APXvYqyUcVBU2757Aiq/oZgeZXK15E2by++ZZM7xg8VM22JD2aUmQlxlo9LzXJrJNt/nrKiti9ZdXw==
+X-Received: by 2002:a5d:45d0:: with SMTP id b16mr6676645wrs.209.1561709203910;
+        Fri, 28 Jun 2019 01:06:43 -0700 (PDT)
 Received: from localhost.localdomain.com ([151.29.165.245])
-        by smtp.gmail.com with ESMTPSA id z19sm1472774wmi.7.2019.06.28.01.06.41
+        by smtp.gmail.com with ESMTPSA id z19sm1472774wmi.7.2019.06.28.01.06.42
         (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 28 Jun 2019 01:06:42 -0700 (PDT)
+        Fri, 28 Jun 2019 01:06:43 -0700 (PDT)
 From:   Juri Lelli <juri.lelli@redhat.com>
 To:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
         tj@kernel.org
@@ -40,9 +40,9 @@ Cc:     linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
         claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
         bristot@redhat.com, mathieu.poirier@linaro.org, lizefan@huawei.com,
         cgroups@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>
-Subject: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug lock order
-Date:   Fri, 28 Jun 2019 10:06:16 +0200
-Message-Id: <20190628080618.522-7-juri.lelli@redhat.com>
+Subject: [PATCH v8 7/8] sched/core: Prevent race condition between cpuset and __sched_setscheduler()
+Date:   Fri, 28 Jun 2019 10:06:17 +0200
+Message-Id: <20190628080618.522-8-juri.lelli@redhat.com>
 X-Mailer: git-send-email 2.17.2
 In-Reply-To: <20190628080618.522-1-juri.lelli@redhat.com>
 References: <20190628080618.522-1-juri.lelli@redhat.com>
@@ -51,188 +51,153 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-cpuset_rwsem is going to be acquired from sched_setscheduler() with a
-following patch. There are however paths (e.g., spawn_ksoftirqd) in
-which sched_scheduler() is eventually called while holding hotplug lock;
-this creates a dependecy between hotplug lock (to be always acquired
-first) and cpuset_rwsem (to be always acquired after hotplug lock).
+No synchronisation mechanism exists between the cpuset subsystem and
+calls to function __sched_setscheduler(). As such, it is possible that
+new root domains are created on the cpuset side while a deadline
+acceptance test is carried out in __sched_setscheduler(), leading to a
+potential oversell of CPU bandwidth.
 
-Fix paths which currently take the two locks in the wrong order (after
-a following patch is applied).
+Grab cpuset_rwsem read lock from core scheduler, so to prevent
+situations such as the one described above from happening.
 
 Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+
 ---
- include/linux/cpuset.h |  8 ++++----
- kernel/cgroup/cpuset.c | 22 +++++++++++++++++-----
- 2 files changed, 21 insertions(+), 9 deletions(-)
+
+v7->v8: use a percpu_rwsem read lock to avoid hotpath bottleneck issues
+---
+ include/linux/cpuset.h |  5 +++++
+ kernel/cgroup/cpuset.c | 11 +++++++++++
+ kernel/sched/core.c    | 33 ++++++++++++++++++++++++++-------
+ 3 files changed, 42 insertions(+), 7 deletions(-)
 
 diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 934633a05d20..7f1478c26a33 100644
+index 7f1478c26a33..04c20de66afc 100644
 --- a/include/linux/cpuset.h
 +++ b/include/linux/cpuset.h
-@@ -40,14 +40,14 @@ static inline bool cpusets_enabled(void)
+@@ -55,6 +55,8 @@ extern void cpuset_init_smp(void);
+ extern void cpuset_force_rebuild(void);
+ extern void cpuset_update_active_cpus(void);
+ extern void cpuset_wait_for_hotplug(void);
++extern void cpuset_read_lock(void);
++extern void cpuset_read_unlock(void);
+ extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
+ extern void cpuset_cpus_allowed_fallback(struct task_struct *p);
+ extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+@@ -176,6 +178,9 @@ static inline void cpuset_update_active_cpus(void)
  
- static inline void cpuset_inc(void)
+ static inline void cpuset_wait_for_hotplug(void) { }
+ 
++static inline void cpuset_read_lock(void) { }
++static inline void cpuset_read_unlock(void) { }
++
+ static inline void cpuset_cpus_allowed(struct task_struct *p,
+ 				       struct cpumask *mask)
  {
--	static_branch_inc(&cpusets_pre_enable_key);
--	static_branch_inc(&cpusets_enabled_key);
-+	static_branch_inc_cpuslocked(&cpusets_pre_enable_key);
-+	static_branch_inc_cpuslocked(&cpusets_enabled_key);
- }
- 
- static inline void cpuset_dec(void)
- {
--	static_branch_dec(&cpusets_enabled_key);
--	static_branch_dec(&cpusets_pre_enable_key);
-+	static_branch_dec_cpuslocked(&cpusets_enabled_key);
-+	static_branch_dec_cpuslocked(&cpusets_pre_enable_key);
- }
- 
- extern int cpuset_init(void);
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index a7c0c8d8f132..d92b351f89e3 100644
+index d92b351f89e3..f47b5c5c3c8b 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1026,8 +1026,8 @@ static void rebuild_sched_domains_locked(void)
- 	cpumask_var_t *doms;
- 	int ndoms;
+@@ -334,6 +334,17 @@ static struct cpuset top_cpuset = {
+  */
  
-+	lockdep_assert_cpus_held();
- 	percpu_rwsem_assert_held(&cpuset_rwsem);
--	get_online_cpus();
+ DEFINE_STATIC_PERCPU_RWSEM(cpuset_rwsem);
++
++void cpuset_read_lock(void)
++{
++	percpu_down_read(&cpuset_rwsem);
++}
++
++void cpuset_read_unlock(void)
++{
++	percpu_up_read(&cpuset_rwsem);
++}
++
+ static DEFINE_SPINLOCK(callback_lock);
  
+ static struct workqueue_struct *cpuset_migrate_mm_wq;
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index acd6a9fe85bc..18e151c6b48d 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4208,6 +4208,9 @@ static int __sched_setscheduler(struct task_struct *p,
+ 			return retval;
+ 	}
+ 
++	if (pi)
++		cpuset_read_lock();
++
  	/*
- 	 * We have raced with CPU hotplug. Don't do anything to avoid
-@@ -1036,19 +1036,17 @@ static void rebuild_sched_domains_locked(void)
- 	 */
- 	if (!top_cpuset.nr_subparts_cpus &&
- 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
--		goto out;
-+		return;
- 
- 	if (top_cpuset.nr_subparts_cpus &&
- 	   !cpumask_subset(top_cpuset.effective_cpus, cpu_active_mask))
--		goto out;
-+		return;
- 
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
- 
- 	/* Have scheduler rebuild the domains */
- 	partition_and_rebuild_sched_domains(ndoms, doms, attr);
--out:
--	put_online_cpus();
- }
- #else /* !CONFIG_SMP */
- static void rebuild_sched_domains_locked(void)
-@@ -1058,9 +1056,11 @@ static void rebuild_sched_domains_locked(void)
- 
- void rebuild_sched_domains(void)
- {
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 	rebuild_sched_domains_locked();
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
- }
- 
- /**
-@@ -2298,6 +2298,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
- 	cpuset_filetype_t type = cft->private;
- 	int retval = 0;
- 
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs)) {
- 		retval = -ENODEV;
-@@ -2335,6 +2336,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+ 	 * Make sure no PI-waiters arrive (or leave) while we are
+ 	 * changing the priority of the task:
+@@ -4280,6 +4283,8 @@ static int __sched_setscheduler(struct task_struct *p,
+ 	if (unlikely(oldpolicy != -1 && oldpolicy != p->policy)) {
+ 		policy = oldpolicy = -1;
+ 		task_rq_unlock(rq, p, &rf);
++		if (pi)
++			cpuset_read_unlock();
+ 		goto recheck;
  	}
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
+ 
+@@ -4338,8 +4343,10 @@ static int __sched_setscheduler(struct task_struct *p,
+ 	preempt_disable();
+ 	task_rq_unlock(rq, p, &rf);
+ 
+-	if (pi)
++	if (pi) {
++		cpuset_read_unlock();
+ 		rt_mutex_adjust_pi(p);
++	}
+ 
+ 	/* Run balance callbacks after we've adjusted the PI chain: */
+ 	balance_callback(rq);
+@@ -4349,6 +4356,8 @@ static int __sched_setscheduler(struct task_struct *p,
+ 
+ unlock:
+ 	task_rq_unlock(rq, p, &rf);
++	if (pi)
++		cpuset_read_unlock();
  	return retval;
  }
  
-@@ -2345,6 +2347,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
- 	cpuset_filetype_t type = cft->private;
- 	int retval = -ENODEV;
- 
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2359,6 +2362,7 @@ static int cpuset_write_s64(struct cgroup_subsys_state *css, struct cftype *cft,
- 	}
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
+@@ -4433,10 +4442,15 @@ do_sched_setscheduler(pid_t pid, int policy, struct sched_param __user *param)
+ 	rcu_read_lock();
+ 	retval = -ESRCH;
+ 	p = find_process_by_pid(pid);
+-	if (p != NULL)
+-		retval = sched_setscheduler(p, policy, &lparam);
++	if (!p) {
++		rcu_read_unlock();
++		goto exit;
++	}
++	get_task_struct(p);
+ 	rcu_read_unlock();
+-
++	retval = sched_setscheduler(p, policy, &lparam);
++	put_task_struct(p);
++exit:
  	return retval;
  }
  
-@@ -2397,6 +2401,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	kernfs_break_active_protection(of->kn);
- 	flush_work(&cpuset_hotplug_work);
- 
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2422,6 +2427,7 @@ static ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	free_cpuset(trialcs);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
- 	kernfs_unbreak_active_protection(of->kn);
- 	css_put(&cs->css);
- 	flush_workqueue(cpuset_migrate_mm_wq);
-@@ -2552,6 +2558,7 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
- 		return -EINVAL;
- 
- 	css_get(&cs->css);
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
-@@ -2559,6 +2566,7 @@ static ssize_t sched_partition_write(struct kernfs_open_file *of, char *buf,
- 	retval = update_prstate(cs, val);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
- 	css_put(&cs->css);
- 	return retval ?: nbytes;
- }
-@@ -2764,6 +2772,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	if (!parent)
- 		return 0;
- 
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 
- 	set_bit(CS_ONLINE, &cs->flags);
-@@ -2816,6 +2825,7 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	spin_unlock_irq(&callback_lock);
- out_unlock:
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
- 	return 0;
+@@ -4564,10 +4578,15 @@ SYSCALL_DEFINE3(sched_setattr, pid_t, pid, struct sched_attr __user *, uattr,
+ 	rcu_read_lock();
+ 	retval = -ESRCH;
+ 	p = find_process_by_pid(pid);
+-	if (p != NULL)
+-		retval = sched_setattr(p, &attr);
++	if (!p) {
++		rcu_read_unlock();
++		goto exit;
++	}
++	get_task_struct(p);
+ 	rcu_read_unlock();
+-
++	retval = sched_setattr(p, &attr);
++	put_task_struct(p);
++exit:
+ 	return retval;
  }
  
-@@ -2834,6 +2844,7 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- {
- 	struct cpuset *cs = css_cs(css);
- 
-+	get_online_cpus();
- 	percpu_down_write(&cpuset_rwsem);
- 
- 	if (is_partition_root(cs))
-@@ -2854,6 +2865,7 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
- 	clear_bit(CS_ONLINE, &cs->flags);
- 
- 	percpu_up_write(&cpuset_rwsem);
-+	put_online_cpus();
- }
- 
- static void cpuset_css_free(struct cgroup_subsys_state *css)
 -- 
 2.17.2
 
