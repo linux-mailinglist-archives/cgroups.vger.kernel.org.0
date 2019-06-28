@@ -2,20 +2,20 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 223C75949C
-	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 09:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55CEB59501
+	for <lists+cgroups@lfdr.de>; Fri, 28 Jun 2019 09:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727220AbfF1HKy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Jun 2019 03:10:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57106 "EHLO mx1.suse.de"
+        id S1726484AbfF1Hbd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 28 Jun 2019 03:31:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32908 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726574AbfF1HKy (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 28 Jun 2019 03:10:54 -0400
+        id S1726426AbfF1Hbd (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 28 Jun 2019 03:31:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A3B15B16F;
-        Fri, 28 Jun 2019 07:10:51 +0000 (UTC)
-Date:   Fri, 28 Jun 2019 09:10:49 +0200
+        by mx1.suse.de (Postfix) with ESMTP id D3DF7B167;
+        Fri, 28 Jun 2019 07:31:30 +0000 (UTC)
+Date:   Fri, 28 Jun 2019 09:31:28 +0200
 From:   Michal Hocko <mhocko@kernel.org>
 To:     Waiman Long <longman@redhat.com>
 Cc:     Christoph Lameter <cl@linux.com>,
@@ -34,38 +34,44 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 1/2] mm, memcontrol: Add memcg_iterate_all()
-Message-ID: <20190628071049.GA2751@dhcp22.suse.cz>
+Subject: Re: [PATCH 2/2] mm, slab: Extend vm/drop_caches to shrink kmem slabs
+Message-ID: <20190628073128.GC2751@dhcp22.suse.cz>
 References: <20190624174219.25513-1-longman@redhat.com>
- <20190624174219.25513-2-longman@redhat.com>
- <20190627150746.GD5303@dhcp22.suse.cz>
- <2213070d-34c3-4f40-d780-ac371a9cbbbe@redhat.com>
+ <20190624174219.25513-3-longman@redhat.com>
+ <20190627151506.GE5303@dhcp22.suse.cz>
+ <5cb05d2c-39a7-f138-b0b9-4b03d6008999@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2213070d-34c3-4f40-d780-ac371a9cbbbe@redhat.com>
+In-Reply-To: <5cb05d2c-39a7-f138-b0b9-4b03d6008999@redhat.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 27-06-19 17:03:06, Waiman Long wrote:
-> On 6/27/19 11:07 AM, Michal Hocko wrote:
-> > On Mon 24-06-19 13:42:18, Waiman Long wrote:
-> >> Add a memcg_iterate_all() function for iterating all the available
-> >> memory cgroups and call the given callback function for each of the
-> >> memory cgruops.
-> > Why is a trivial wrapper any better than open coded usage of the
-> > iterator?
-> 
-> Because the iterator is only defined within memcontrol.c. So an
-> alternative may be to put the iterator into a header file that can be
-> used by others. Will take a look at that.
+On Thu 27-06-19 17:16:04, Waiman Long wrote:
+> On 6/27/19 11:15 AM, Michal Hocko wrote:
+> > On Mon 24-06-19 13:42:19, Waiman Long wrote:
+> >> With the slub memory allocator, the numbers of active slab objects
+> >> reported in /proc/slabinfo are not real because they include objects
+> >> that are held by the per-cpu slab structures whether they are actually
+> >> used or not.  The problem gets worse the more CPUs a system have. For
+> >> instance, looking at the reported number of active task_struct objects,
+> >> one will wonder where all the missing tasks gone.
+> >>
+> >> I know it is hard and costly to get a real count of active objects.
+> > What exactly is expensive? Why cannot slabinfo reduce the number of
+> > active objects by per-cpu cached objects?
+> >
+> The number of cachelines that needs to be accessed in order to get an
+> accurate count will be much higher if we need to iterate through all the
+> per-cpu structures. In addition, accessing the per-cpu partial list will
+> be racy.
 
-That would be preferred.
-
-Thanks!
+Why is all that a problem for a root only interface that should be used
+quite rarely (it is not something that you should be reading hundreds
+time per second, right)?
 -- 
 Michal Hocko
 SUSE Labs
