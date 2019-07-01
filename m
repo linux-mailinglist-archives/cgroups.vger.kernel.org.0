@@ -2,91 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C1315AE95
-	for <lists+cgroups@lfdr.de>; Sun, 30 Jun 2019 07:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8905B553
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jul 2019 08:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725902AbfF3FKm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 30 Jun 2019 01:10:42 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:53791 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbfF3FKm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 30 Jun 2019 01:10:42 -0400
-Received: by mail-wm1-f65.google.com with SMTP id x15so12667457wmj.3
-        for <cgroups@vger.kernel.org>; Sat, 29 Jun 2019 22:10:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/21JLQKbSiGCUYaRJe7+nwJe/s7BHXcW2bb6YBBe9vE=;
-        b=sMh5OGxWkcMzotiqbQAZxq5yUs747U8hXAm5IU0xWuMx2HB0QTohc/KWCW+i5xCPRL
-         2u51ZA2iwTJZy01MbN4wVlNbrc960x2iOGG+7IGxcR/pPFG4bOqBVRWTbefqZMg6U6Xa
-         bPB57rLDSFq5spK5XYoVY9v3X0AjFsPIClCANA6+cRPO1uUyZawZVpoqt1uygaOqvCYI
-         JKI4zSLgm6bSb1Pql0InBkG1f8KGby58+V1I1RSCBoHACfmqVPaQT/VIjDWiJo04hPf6
-         Ostxl+B+CyubRU11qRC2qlq7tqVEkfSIMvIjD1WLOFPzIjJxFlhe+00xQq0HlKQB47Qg
-         Ab1w==
+        id S1727619AbfGAGwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Jul 2019 02:52:39 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:34133 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727540AbfGAGwi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Jul 2019 02:52:38 -0400
+Received: by mail-wm1-f67.google.com with SMTP id w9so13792384wmd.1
+        for <cgroups@vger.kernel.org>; Sun, 30 Jun 2019 23:52:37 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/21JLQKbSiGCUYaRJe7+nwJe/s7BHXcW2bb6YBBe9vE=;
-        b=j2J2ibSQOHZIG15m0DNovnudnTYqYJh55w32T7aBu9arclA3R39bEfNXSjhBGnwegN
-         kwhR+uVfWNg004zE5rMqIQ1vz1FdUk0qLbGvlIaxd/keDLV5IdTfh5UJKW4+px7ITnTr
-         81s1YNoZuP5kvTaYZ3mV5eb4b3P8P96WKUSjGyeQx0gbc2JQ6z8eZU6i1lA9j52JakQx
-         Jl2MuSYx7ZWRY9fQnjWxQyQBb4aXRk209l/LALgqs2/II7/GWU65r8G1TBXt76bEXCBH
-         hMlTw0Aj/FcQ2dXH9L1YB6dYU2y8d1uO3LAgR/pcpQhLL230gLNnP2UrUWwxfy2Hj2dz
-         nL+A==
-X-Gm-Message-State: APjAAAWOb+kh3zkK+ZM4DcV4o1PX8LPVYczp6VRxdSq+QyW6jB5wTopI
-        QcL3yk8OZs+Q2W8YDpqcWPUzaxAeloo3Um7M7Zc=
-X-Google-Smtp-Source: APXvYqxpaJBC2iDXF6u5DwDzM9SQtL1TwvLfLxe+y66Lwo3m7+Fkhz6wV6G6nXxJ9B6XU8wJQ2T/O3AgjvDeo4AY21g=
-X-Received: by 2002:a1c:9c8a:: with SMTP id f132mr12370472wme.29.1561871439807;
- Sat, 29 Jun 2019 22:10:39 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ZanPqiEPVMdySHonMbQBl/5/VvjKUDnA16ZAnUCifwo=;
+        b=l8X2QrWaF6FiBgZIHeCKn6TR5dZZU1PBHp4XB8Uzi/bO1CtwwrhErhicZsvnm2baBj
+         ZVUFb2Dusj5mWTygCLhMtvY1G/QH1wJ2sEyrPO2/FX7q4ajm/vwg4FxdwkwnHiljNvxy
+         xn9pkmRjsOotxW7fl1oG8dcGaO1kSkWoth6MvEHim6C7seeXVFsh+wY75axcjUe3C44d
+         3DbMk7uec1C3udDk/phk0sv2ZvYW6IWbYWQOSpQmK+dUHfqBfqp2dKA7tOTz8T8OSyK2
+         rpbFlnY7qFy3alQzO16C2Hj0TVHzIR8ePNfPmwftlA4bZb+ji1hp4wf7axA/Uace9wlz
+         60Ng==
+X-Gm-Message-State: APjAAAV9sRYjiFMXebV7YIKG0m/vhEt2kfcAgSX20l3Lj92UlMMQ68PI
+        jthl3Tc5DAf6NjKRcAsQ2xKUO4Umi5s=
+X-Google-Smtp-Source: APXvYqyAJZ4botdtSJ3zU9ORTAwwQRPjpGAfhDs9AIdatmN70PBO8LqjP2idy/zV96eTgzly1dbG3w==
+X-Received: by 2002:a1c:dc07:: with SMTP id t7mr16638183wmg.164.1561963956698;
+        Sun, 30 Jun 2019 23:52:36 -0700 (PDT)
+Received: from localhost.localdomain ([151.15.224.253])
+        by smtp.gmail.com with ESMTPSA id h21sm10492932wmb.47.2019.06.30.23.52.35
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Sun, 30 Jun 2019 23:52:35 -0700 (PDT)
+Date:   Mon, 1 Jul 2019 08:52:33 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     mingo@redhat.com, rostedt@goodmis.org, tj@kernel.org,
+        linux-kernel@vger.kernel.org, luca.abeni@santannapisa.it,
+        claudio@evidence.eu.com, tommaso.cucinotta@santannapisa.it,
+        bristot@redhat.com, mathieu.poirier@linaro.org, lizefan@huawei.com,
+        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
+Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
+ lock order
+Message-ID: <20190701065233.GA26005@localhost.localdomain>
+References: <20190628080618.522-1-juri.lelli@redhat.com>
+ <20190628080618.522-7-juri.lelli@redhat.com>
+ <20190628130308.GU3419@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20190626150522.11618-1-Kenny.Ho@amd.com> <CAKMK7uFq7qCpzXqrD4o8Vw_dOwt=ny_oS7TRZFsANpPdC604vw@mail.gmail.com>
-In-Reply-To: <CAKMK7uFq7qCpzXqrD4o8Vw_dOwt=ny_oS7TRZFsANpPdC604vw@mail.gmail.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Sun, 30 Jun 2019 01:10:28 -0400
-Message-ID: <CAOWid-e-gxFBoiBii4wZs0HMnHwCvJWOQWpNopdPHi8So53gNw@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 00/11] new cgroup controller for gpu/drm subsystem
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>, Jerome Glisse <jglisse@redhat.com>,
-        cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190628130308.GU3419@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 27, 2019 at 3:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> Another question I have: What about HMM? With the device memory zone
-> the core mm will be a lot more involved in managing that, but I also
-> expect that we'll have classic buffer-based management for a long time
-> still. So these need to work together, and I fear slightly that we'll
-> have memcg and drmcg fighting over the same pieces a bit perhaps?
->
-> Adding Jerome, maybe he has some thoughts on this.
+Hi,
 
-I just did a bit of digging and this looks like the current behaviour:
-https://www.kernel.org/doc/html/v5.1/vm/hmm.html#memory-cgroup-memcg-and-rss-accounting
+On 28/06/19 15:03, Peter Zijlstra wrote:
+> On Fri, Jun 28, 2019 at 10:06:16AM +0200, Juri Lelli wrote:
+> > cpuset_rwsem is going to be acquired from sched_setscheduler() with a
+> > following patch. There are however paths (e.g., spawn_ksoftirqd) in
+> > which sched_scheduler() is eventually called while holding hotplug lock;
+> > this creates a dependecy between hotplug lock (to be always acquired
+> > first) and cpuset_rwsem (to be always acquired after hotplug lock).
+> > 
+> > Fix paths which currently take the two locks in the wrong order (after
+> > a following patch is applied).
+> > Signed-off-by: Juri Lelli <juri.lelli@redhat.com>
+> 
+> This all reminds me of this:
+> 
+>   https://lkml.kernel.org/r/1510755615-25906-1-git-send-email-prsood@codeaurora.org
+> 
+> Which sadly got reverted again. If we do this now (I've always been a
+> proponent), then we can make that rebuild synchronous again, which
+> should also help here IIRC.
 
-"For now device memory is accounted as any regular page in rss
-counters (either anonymous if device page is used for anonymous, file
-if device page is used for file backed page or shmem if device page is
-used for shared memory). This is a deliberate choice to keep existing
-applications, that might start using device memory without knowing
-about it, running unimpacted.
+Why was that reverted? Perf regression of some type?
 
-A drawback is that the OOM killer might kill an application using a
-lot of device memory and not a lot of regular system memory and thus
-not freeing much system memory. We want to gather more real world
-experience on how applications and system react under memory pressure
-in the presence of device memory before deciding to account device
-memory differently."
+Thanks,
 
-Regards,
-Kenny
+Juri
