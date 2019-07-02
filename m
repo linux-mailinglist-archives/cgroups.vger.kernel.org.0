@@ -2,30 +2,26 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C1C4E5D9C2
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2019 02:53:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5FE75DAE7
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2019 03:32:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbfGCAxF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Jul 2019 20:53:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47378 "EHLO mail.kernel.org"
+        id S1727491AbfGCBcR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Jul 2019 21:32:17 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:44392 "EHLO mx1.redhat.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727101AbfGCAxF (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 2 Jul 2019 20:53:05 -0400
-Received: from akpm3.svl.corp.google.com (unknown [104.133.8.65])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1727304AbfGCBcR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 2 Jul 2019 21:32:17 -0400
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 662352184C;
-        Tue,  2 Jul 2019 20:03:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562097799;
-        bh=kyfxYTDfXVVYVh+jLp8SPqoH6e+/on1CISn5rmKjOZ0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Tiln9LxMX1fNAo2/Ddp+J6EQL7IwtJ9uvLaA5tNsAMv7HWx786TfZZ+Zg2iwEa3zy
-         7DBc6NmB8eX7vXDjNIm9YVca7qmERe9+BWTzyahQE+3k8jNzrBotulWcBmvPHIX2uk
-         qZiUwdYXD/LKMhpngm7ibkztyOQiF7ErCvRr6OuA=
-Date:   Tue, 2 Jul 2019 13:03:18 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Waiman Long <longman@redhat.com>
+        by mx1.redhat.com (Postfix) with ESMTPS id 68284309174E;
+        Tue,  2 Jul 2019 20:44:33 +0000 (UTC)
+Received: from llong.remote.csb (dhcp-17-160.bos.redhat.com [10.18.17.160])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 67346183E0;
+        Tue,  2 Jul 2019 20:44:25 +0000 (UTC)
+Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
+ caches
+To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
@@ -42,57 +38,76 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
- caches
-Message-Id: <20190702130318.39d187dc27dbdd9267788165@linux-foundation.org>
-In-Reply-To: <20190702183730.14461-1-longman@redhat.com>
 References: <20190702183730.14461-1-longman@redhat.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+ <20190702130318.39d187dc27dbdd9267788165@linux-foundation.org>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <78879b79-1b8f-cdfd-d4fa-610afe5e5d48@redhat.com>
+Date:   Tue, 2 Jul 2019 16:44:24 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20190702130318.39d187dc27dbdd9267788165@linux-foundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.41]); Tue, 02 Jul 2019 20:44:47 +0000 (UTC)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue,  2 Jul 2019 14:37:30 -0400 Waiman Long <longman@redhat.com> wrote:
-
-> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
-> file to shrink the slab by flushing all the per-cpu slabs and free
-> slabs in partial lists. This applies only to the root caches, though.
-> 
-> Extends this capability by shrinking all the child memcg caches and
-> the root cache when a value of '2' is written to the shrink sysfs file.
-
-Why?
-
-Please fully describe the value of the proposed feature to or users. 
-Always.
-
-> 
-> ...
+On 7/2/19 4:03 PM, Andrew Morton wrote:
+> On Tue,  2 Jul 2019 14:37:30 -0400 Waiman Long <longman@redhat.com> wrote:
 >
-> --- a/Documentation/ABI/testing/sysfs-kernel-slab
-> +++ b/Documentation/ABI/testing/sysfs-kernel-slab
-> @@ -429,10 +429,12 @@ KernelVersion:	2.6.22
->  Contact:	Pekka Enberg <penberg@cs.helsinki.fi>,
->  		Christoph Lameter <cl@linux-foundation.org>
->  Description:
-> -		The shrink file is written when memory should be reclaimed from
-> -		a cache.  Empty partial slabs are freed and the partial list is
-> -		sorted so the slabs with the fewest available objects are used
-> -		first.
-> +		A value of '1' is written to the shrink file when memory should
-> +		be reclaimed from a cache.  Empty partial slabs are freed and
-> +		the partial list is sorted so the slabs with the fewest
-> +		available objects are used first.  When a value of '2' is
-> +		written, all the corresponding child memory cgroup caches
-> +		should be shrunk as well.  All other values are invalid.
+>> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
+>> file to shrink the slab by flushing all the per-cpu slabs and free
+>> slabs in partial lists. This applies only to the root caches, though.
+>>
+>> Extends this capability by shrinking all the child memcg caches and
+>> the root cache when a value of '2' is written to the shrink sysfs file.
+> Why?
+>
+> Please fully describe the value of the proposed feature to or users. 
+> Always.
 
-One would expect this to be a bitfield, like /proc/sys/vm/drop_caches. 
-So writing 3 does both forms of shrinking.
+Sure. Essentially, the sysfs shrink interface is not complete. It allows
+the root cache to be shrunk, but not any of the memcg caches. 
 
-Yes, it happens to be the case that 2 is a superset of 1, but what
-about if we add "4"?
+The same can also be said for others slab sysfs files which show current
+cache status. I don't think sysfs files are created for the memcg
+caches, but I may be wrong. In many cases, information can be available
+elsewhere like the slabinfo file. The shrink operation, however, has no
+other alternative available.
+
+>> ...
+>>
+>> --- a/Documentation/ABI/testing/sysfs-kernel-slab
+>> +++ b/Documentation/ABI/testing/sysfs-kernel-slab
+>> @@ -429,10 +429,12 @@ KernelVersion:	2.6.22
+>>  Contact:	Pekka Enberg <penberg@cs.helsinki.fi>,
+>>  		Christoph Lameter <cl@linux-foundation.org>
+>>  Description:
+>> -		The shrink file is written when memory should be reclaimed from
+>> -		a cache.  Empty partial slabs are freed and the partial list is
+>> -		sorted so the slabs with the fewest available objects are used
+>> -		first.
+>> +		A value of '1' is written to the shrink file when memory should
+>> +		be reclaimed from a cache.  Empty partial slabs are freed and
+>> +		the partial list is sorted so the slabs with the fewest
+>> +		available objects are used first.  When a value of '2' is
+>> +		written, all the corresponding child memory cgroup caches
+>> +		should be shrunk as well.  All other values are invalid.
+> One would expect this to be a bitfield, like /proc/sys/vm/drop_caches. 
+> So writing 3 does both forms of shrinking.
+>
+> Yes, it happens to be the case that 2 is a superset of 1, but what
+> about if we add "4"?
+>
+Yes, I can make it into a bit fields of 2 bits, just like
+/proc/sys/vm/drop_caches.
+
+Cheers,
+Longman
 
