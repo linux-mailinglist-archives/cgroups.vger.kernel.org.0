@@ -2,46 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 259AA5D05B
-	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2019 15:17:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECCD5D061
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jul 2019 15:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726732AbfGBNRC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Jul 2019 09:17:02 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:34698 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726635AbfGBNRC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Jul 2019 09:17:02 -0400
-Received: by mail-ed1-f68.google.com with SMTP id s49so27311831edb.1
-        for <cgroups@vger.kernel.org>; Tue, 02 Jul 2019 06:17:00 -0700 (PDT)
+        id S1726635AbfGBNUJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Jul 2019 09:20:09 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:36091 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726457AbfGBNUI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Jul 2019 09:20:08 -0400
+Received: by mail-ed1-f66.google.com with SMTP id k21so8716498edq.3
+        for <cgroups@vger.kernel.org>; Tue, 02 Jul 2019 06:20:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=GjTPDe0xOLXCQ42kjksJhMQtbr7e/gOnvxffBVj5VYM=;
-        b=SfkZ75kt4gYBpIqvUdeGKW/La+OD9o3pkBi2szmvwtNdrpFbBFUsOCFi3juAg1Bkqd
-         nLpqW5wngRazdSCLVAeSksqThkNT5+8quj2tXn9MCNAPe1roBunYJLBd2mbzkjs7AYwk
-         5wrZG2AG5O69LENVr18Ynb/lTPygEBYUM3gcA=
+        bh=tzwvLHoODplnbHp8E5wmzRqBd3OOGVG/jeLS3EJmbkI=;
+        b=PLQgsPgYBC/G9Xu6IxvRYvzAvQRalruQEH0a8dsSrM/GzFFEwvOGcjPQPO8gkjDj6L
+         VAPFPhiDO0tL24ASu834S6tk4flGYFc7iVwXREVPsrVkjby6PD3rjVTPaMDeUho627RR
+         vug066EctcLUKndhQWVVmmH+MAXfdNRYxOHqw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GjTPDe0xOLXCQ42kjksJhMQtbr7e/gOnvxffBVj5VYM=;
-        b=nTEF4QvMTNXQ0JhBxfLzNM4O1SWQIRD1c+BTIWWGnPwRswHaNAxfWVttz2uqeGXYaM
-         ihjaW+QX/32T1QZRLXk9YxPc3RIlt6rF6Zifq/yG/tfQJMr9D++xDo74fueUK9AZvAgV
-         7zaH1SltIkDPNvzOjRg0G00ThuFYeKITA6Zy4IhH8ZytEtUPJSi2tkzRf8nIqjVM5spG
-         juc7M89YoZu2+ma0VbDx5hmSXcWnlLgJgEocN6BIo/AbJD1A8D9k0t+93wPK7kv54i/V
-         immrwZLARwPDaIPlN8OOH8VoGgbcOLapOc0oPC6zHugH0p1tc7+CsDQdf/yHqXq7iUmY
-         cVRA==
-X-Gm-Message-State: APjAAAVhFlwUn5HxBr9fgTNmFW7JCGSNOkA4o/roBGwaGHBnCW2wb/OY
-        ZCJZJQchoV5/4KVmMltKLLddIw==
-X-Google-Smtp-Source: APXvYqwROZlY4NhAUER24ig3V40kY5agwqbJ1sX3D63fvIeUb5fnhe+PrRVXP4NrOQjSehPxanpEtg==
-X-Received: by 2002:a50:9157:: with SMTP id f23mr34902455eda.79.1562073420063;
-        Tue, 02 Jul 2019 06:17:00 -0700 (PDT)
+        bh=tzwvLHoODplnbHp8E5wmzRqBd3OOGVG/jeLS3EJmbkI=;
+        b=s/9s91ggiorZus7gXj6VDOOV1LcnMAi/Q1NQ+oXTUIL3HKGrMujS7Pi5TC0yfJXfsv
+         E6X5QvlDRoCEju/20MGUfhot8dgpHivV6Y6ADlK2KIDlEaFCijEGqts7QYgGr641a7z/
+         4TT3Ia37Vxcmt7w4Kyin9Y5lFkXc4j/zMx2W27iCmuxie+NAn2dF7l1vgYW2MJdQeB8Y
+         2dVTnUstsJaN4nQMWfd0hs5JVmfgsQ2Dj8bUZUm+a6upOuKi2A0Dc25mZXY7cy32Jryu
+         /nvPT8u27HDHV104H9QPxx5E0+Zqe66hBkltpxqRESDPd+SqtNUjAQeHu7iH23+c06bU
+         RFRw==
+X-Gm-Message-State: APjAAAWXEy79LiIgfzTbRtiORWQsVlpk4A4UT+zb6lWTpE+Q8tOSUCHV
+        eFj4iI2XC7R/BOfWEWWHWjzCgg==
+X-Google-Smtp-Source: APXvYqw7FGdmAU7xcVGE/u+98yQ6KUSJpvpjWVisE8v6s1ByxKG2c+sZUyC6EXgZQVbFuJbU9e7APQ==
+X-Received: by 2002:aa7:d985:: with SMTP id u5mr6460651eds.222.1562073607031;
+        Tue, 02 Jul 2019 06:20:07 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:569e:0:3106:d637:d723:e855])
-        by smtp.gmail.com with ESMTPSA id a3sm2736724ejn.64.2019.07.02.06.16.58
+        by smtp.gmail.com with ESMTPSA id g3sm4558034edh.24.2019.07.02.06.20.05
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Tue, 02 Jul 2019 06:16:58 -0700 (PDT)
-Date:   Tue, 2 Jul 2019 15:16:51 +0200
+        Tue, 02 Jul 2019 06:20:05 -0700 (PDT)
+Date:   Tue, 2 Jul 2019 15:20:03 +0200
 From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Kenny Ho <y2kenny@gmail.com>
 Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
@@ -52,23 +52,19 @@ Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
         Alex Deucher <alexander.deucher@amd.com>,
         Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
-Subject: Re: [RFC PATCH v3 04/11] drm, cgroup: Add total GEM buffer
- allocation limit
-Message-ID: <20190702131651.GA15868@phenom.ffwll.local>
+Subject: Re: [RFC PATCH v3 09/11] drm, cgroup: Add per cgroup bw measure and
+ control
+Message-ID: <20190702132003.GB15868@phenom.ffwll.local>
 References: <20190626150522.11618-1-Kenny.Ho@amd.com>
- <20190626150522.11618-5-Kenny.Ho@amd.com>
- <20190626160553.GR12905@phenom.ffwll.local>
- <CAOWid-eurCMx1F7ciUwx0e+p=s=NP8=UxQUhhF-hdK-iAna+fA@mail.gmail.com>
- <20190626214113.GA12905@phenom.ffwll.local>
- <CAOWid-egYGijS0a6uuG4mPUmOWaPwF-EKokR=LFNJ=5M+akVZw@mail.gmail.com>
- <20190627054320.GB12905@phenom.ffwll.local>
- <CAOWid-cT4TQ7HGzcSWjmLGjAW_D1hRrkNguEiV8N+baNiKQm_A@mail.gmail.com>
- <20190627212401.GO12905@phenom.ffwll.local>
- <CAOWid-dZQhpKHxYEFn+X+WSep+B66M_LtN6v0=4-uO3ecZ0pcg@mail.gmail.com>
+ <20190626150522.11618-10-Kenny.Ho@amd.com>
+ <20190626162554.GU12905@phenom.ffwll.local>
+ <CAOWid-dO5QH4wLyN_ztMaoZtLM9yzw-FEMgk3ufbh1ahHJ2vVg@mail.gmail.com>
+ <20190627061153.GD12905@phenom.ffwll.local>
+ <CAOWid-dCkevUiN27pkwfPketdqS8O+ZGYu8vRMPY2GhXGaVARA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAOWid-dZQhpKHxYEFn+X+WSep+B66M_LtN6v0=4-uO3ecZ0pcg@mail.gmail.com>
+In-Reply-To: <CAOWid-dCkevUiN27pkwfPketdqS8O+ZGYu8vRMPY2GhXGaVARA@mail.gmail.com>
 X-Operating-System: Linux phenom 4.19.0-5-amd64 
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
@@ -76,91 +72,49 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jun 28, 2019 at 02:43:18PM -0400, Kenny Ho wrote:
-> On Thu, Jun 27, 2019 at 5:24 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > On Thu, Jun 27, 2019 at 02:42:43PM -0400, Kenny Ho wrote:
-> > > Um... I am going to get a bit philosophical here and suggest that the
-> > > idea of sharing (especially uncontrolled sharing) is inherently at odd
-> > > with containment.  It's like, if everybody is special, no one is
-> > > special.  Perhaps an alternative is to make this configurable so that
-> > > people can allow sharing knowing the caveat?  And just to be clear,
-> > > the current solution allows for sharing, even between cgroup.
-> >
-> > The thing is, why shouldn't we just allow it (with some documented
-> > caveat)?
-> >
-> > I mean if all people do is share it as your current patches allow, then
-> > there's nothing funny going on (at least if we go with just leaking the
-> > allocations). If we allow additional sharing, then that's a plus.
-> Um... perhaps I was being overly conservative :).  So let me
-> illustrate with an example to add more clarity and get more comments
-> on it.
-> 
-> Let say we have the following cgroup hierarchy (The letters are
-> cgroups with R being the root cgroup.  The numbers in brackets are
-> processes.  The processes are placed with the 'No Internal Process
-> Constraint' in mind.)
-> R (4, 5) ------ A (6)
->   \
->     B ---- C (7,8)
->      \
->        D (9)
-> 
-> Here is a list of operation and the associated effect on the size
-> track by the cgroups (for simplicity, each buffer is 1 unit in size.)
-> With current implementation (charge on buffer creation with
-> restriction on sharing.)
-> R   A   B   C   D   |Ops
-> ================
-> 1   0   0   0   0   |4 allocated a buffer
-> 1   0   0   0   0   |4 shared a buffer with 5
-> 1   0   0   0   0   |4 shared a buffer with 9
-> 2   0   1   0   1   |9 allocated a buffer
-> 3   0   2   1   1   |7 allocated a buffer
-> 3   0   2   1   1   |7 shared a buffer with 8
-> 3   0   2   1   1   |7 sharing with 9 (not allowed)
-> 3   0   2   1   1   |7 sharing with 4 (not allowed)
-> 3   0   2   1   1   |7 release a buffer
-> 2   0   1   0   1   |8 release a buffer from 7
+On Fri, Jun 28, 2019 at 03:49:28PM -0400, Kenny Ho wrote:
+> On Thu, Jun 27, 2019 at 2:11 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > I feel like a better approach would by to add a cgroup for the various
+> > engines on the gpu, and then also account all the sdma (or whatever the
+> > name of the amd copy engines is again) usage by ttm_bo moves to the right
+> > cgroup.  I think that's a more meaningful limitation. For direct thrashing
+> > control I think there's both not enough information available in the
+> > kernel (you'd need some performance counters to watch how much bandwidth
+> > userspace batches/CS are wasting), and I don't think the ttm eviction
+> > logic is ready to step over all the priority inversion issues this will
+> > bring up. Managing sdma usage otoh will be a lot more straightforward (but
+> > still has all the priority inversion problems, but in the scheduler that
+> > might be easier to fix perhaps with the explicit dependency graph - in the
+> > i915 scheduler we already have priority boosting afaiui).
+> My concern with hooking into the engine/ lower level is that the
+> engine may not be process/cgroup aware.  So the bandwidth tracking is
 
-This is your current implementation, right? Let's call it A.
+Why is the engine not process aware? Thus far all command submission I'm
+aware of is done by a real process from userspace ... we should be able to
+track these with cgroups perfectly.
 
-> The suggestion as I understand it (charge per buffer reference with
-> unrestricted sharing.)
-> R   A   B   C   D   |Ops
-> ================
-> 1   0   0   0   0   |4 allocated a buffer
-> 2   0   0   0   0   |4 shared a buffer with 5
-> 3   0   0   0   1   |4 shared a buffer with 9
-> 4   0   1   0   2   |9 allocated a buffer
-> 5   0   2   1   1   |7 allocated a buffer
-> 6   0   3   2   1   |7 shared a buffer with 8
-> 7   0   4   2   2   |7 sharing with 9
-> 8   0   4   2   2   |7 sharing with 4
-> 7   0   3   1   2   |7 release a buffer
-> 6   0   2   0   2   |8 release a buffer from 7
-> 
-> Is this a correct understanding of the suggestion?
+> per device.  I am also wondering if this is also potentially be a case
+> of perfect getting in the way of good.  While ttm_bo_handle_move_mem
+> may not track everything, it is still a key function for a lot of the
+> memory operation.  Also, if the programming model is designed to
+> bypass the kernel then I am not sure if there are anything the kernel
+> can do.  (Things like kernel-bypass network stack comes to mind.)  All
+> that said, I will certainly dig deeper into the topic.
 
-Yup that's one option I think. The other option (and it's probably
-simpler), is to go with your current accounting, but drop the sharing
-restriction. I.e. buffers are accounting to whomever allocates them first,
-not who's all using them. For memcg this has some serious trouble with
-cgroups not getting cleaned up due to leaked refrences. But for gem bo we
-spread the references in a lot more controlled manner, and all the
-long-lived references are under control of userspace.
+The problem is there's not a full bypass of the kernel, any reasonable
+workload will need both. But if you only control one side of the bandwidth
+usuage, you're not really controlling anything.
 
-E.g. if Xorg fails to clean up bo references of clients that dead, that's
-clearly an Xorg bug and needs to be fixed there. But not something we need
-to allow as a valid use-cases. For page references/accounting in memcg
-this is totally different, since pages can survive in the pagecache
-forever. No such bo-cache or anything similar exists for gem_bo.
+Also, this is uapi: Perfect is pretty much the bar we need to clear, any
+mistake will hurt us for the next 10 years at least :-)
 
-Personally I prefer option A, but on sharing restriction. If you want that
-sharing restriction, we need to figure out how to implement it using
-something else. Plus we need to make sure all possible ways to share a bo
-are covered (and there are many).
--Daniel
+btw if you haven't read it yet: The lwn article about the new block io
+controller is pretty interesting. I think you're trying to solve a similar
+problem here:
+
+https://lwn.net/SubscriberLink/792256/e66982524fa9477b/
+
+Cheers, Daniel
 -- 
 Daniel Vetter
 Software Engineer, Intel Corporation
