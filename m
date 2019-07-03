@@ -2,22 +2,26 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA6A5DE51
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2019 08:56:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ABEA5E4F2
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jul 2019 15:12:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727004AbfGCG4e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Jul 2019 02:56:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42086 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726490AbfGCG4e (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 3 Jul 2019 02:56:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 84525AF84;
-        Wed,  3 Jul 2019 06:56:32 +0000 (UTC)
-Date:   Wed, 3 Jul 2019 08:56:28 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Waiman Long <longman@redhat.com>
+        id S1726928AbfGCNMl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Jul 2019 09:12:41 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:33376 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725933AbfGCNMk (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 3 Jul 2019 09:12:40 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 92AF1308FEC6;
+        Wed,  3 Jul 2019 13:12:19 +0000 (UTC)
+Received: from llong.remote.csb (dhcp-17-160.bos.redhat.com [10.18.17.160])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 7702C1001B04;
+        Wed,  3 Jul 2019 13:12:13 +0000 (UTC)
+Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
+ caches
+To:     Michal Hocko <mhocko@kernel.org>
 Cc:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
@@ -34,31 +38,45 @@ Cc:     Christoph Lameter <cl@linux.com>,
         Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
- caches
-Message-ID: <20190703065628.GK978@dhcp22.suse.cz>
 References: <20190702183730.14461-1-longman@redhat.com>
+ <20190703065628.GK978@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <9ade5859-b937-c1ac-9881-2289d734441d@redhat.com>
+Date:   Wed, 3 Jul 2019 09:12:13 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190702183730.14461-1-longman@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190703065628.GK978@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.49]); Wed, 03 Jul 2019 13:12:40 +0000 (UTC)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 02-07-19 14:37:30, Waiman Long wrote:
-> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
-> file to shrink the slab by flushing all the per-cpu slabs and free
-> slabs in partial lists. This applies only to the root caches, though.
-> 
-> Extends this capability by shrinking all the child memcg caches and
-> the root cache when a value of '2' is written to the shrink sysfs file.
+On 7/3/19 2:56 AM, Michal Hocko wrote:
+> On Tue 02-07-19 14:37:30, Waiman Long wrote:
+>> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
+>> file to shrink the slab by flushing all the per-cpu slabs and free
+>> slabs in partial lists. This applies only to the root caches, though.
+>>
+>> Extends this capability by shrinking all the child memcg caches and
+>> the root cache when a value of '2' is written to the shrink sysfs file.
+> Why do we need a new value for this functionality? I would tend to think
+> that skipping memcg caches is a bug/incomplete implementation. Or is it
+> a deliberate decision to cover root caches only?
 
-Why do we need a new value for this functionality? I would tend to think
-that skipping memcg caches is a bug/incomplete implementation. Or is it
-a deliberate decision to cover root caches only?
--- 
-Michal Hocko
-SUSE Labs
+It is just that I don't want to change the existing behavior of the
+current code. It will definitely take longer to shrink both the root
+cache and the memcg caches. If we all agree that the only sensible
+operation is to shrink root cache and the memcg caches together. I am
+fine just adding memcg shrink without changing the sysfs interface
+definition and be done with it.
+
+Cheers,
+Longman
+
