@@ -2,130 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 215455F3F3
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jul 2019 09:39:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 841CB5F4F0
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jul 2019 10:49:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727180AbfGDHhf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Jul 2019 03:37:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46180 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725945AbfGDHhf (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 4 Jul 2019 03:37:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 5CBB9AD7F;
-        Thu,  4 Jul 2019 07:37:32 +0000 (UTC)
-Date:   Thu, 4 Jul 2019 09:37:30 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
- caches
-Message-ID: <20190704073730.GA5620@dhcp22.suse.cz>
-References: <20190702183730.14461-1-longman@redhat.com>
- <20190702130318.39d187dc27dbdd9267788165@linux-foundation.org>
- <78879b79-1b8f-cdfd-d4fa-610afe5e5d48@redhat.com>
- <20190702143340.715f771192721f60de1699d7@linux-foundation.org>
- <c29ff725-95ba-db4d-944f-d33f5f766cd3@redhat.com>
- <20190703155314.GT978@dhcp22.suse.cz>
- <ca6147ca-25be-cba6-a7b9-fcac6d21345d@redhat.com>
+        id S1727230AbfGDIta (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Jul 2019 04:49:30 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:55095 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727138AbfGDIta (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jul 2019 04:49:30 -0400
+Received: by mail-wm1-f65.google.com with SMTP id p74so1851173wme.4
+        for <cgroups@vger.kernel.org>; Thu, 04 Jul 2019 01:49:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=AB76fZ4FGkqviuGc5asXXE0TYmR4RcAuqGDgezPIa0I=;
+        b=HHg3wRA68na99kAyx9FJkUtrWVwESlV7iqLoDuHihj6EpkL6Tss/+YoG+rGfJyhPf2
+         PtYVtO3F+O42TonTgZtRUAxbXcTeYRSMiYryjpvO+njWZB5LWQ++LQdX5NeMdpOXDImU
+         Ba2ryCJ1eU+gYtmnNndqLjmJrRNdEBkVERh/YBUanqZrl6c/laqTnfqaySQ1GFJJGMnI
+         xGiDG0pX/cIoOWQrHbfXA9hwtLF7j9wZqy9qmOna5DXOBt69saHPTCpwdj5krJF1GeSu
+         9qxNYtzTi+XbMxJbQgiyUWD8YPGBPQ3yRc1LH18sXmZ7LqEELQsyRMC9Er348QDU1CsS
+         rtxA==
+X-Gm-Message-State: APjAAAXBN8ypb1A3vNlYXuSivHDVP+pPvvynu34YW/eJgMOx/YtCZwqe
+        4vtDRMVx0emleGycB3BA6JkUd7RHhYc=
+X-Google-Smtp-Source: APXvYqz1Q1DleGiXZJyelc0x4oeE2RpsSdPwidTtNcDiqfLPQI8czdr7RR9RMZcY1fHcuY/QWxxFUg==
+X-Received: by 2002:a1c:acc8:: with SMTP id v191mr11850426wme.177.1562230168039;
+        Thu, 04 Jul 2019 01:49:28 -0700 (PDT)
+Received: from localhost.localdomain ([151.15.230.231])
+        by smtp.gmail.com with ESMTPSA id p11sm5493523wrm.53.2019.07.04.01.49.26
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 04 Jul 2019 01:49:26 -0700 (PDT)
+Date:   Thu, 4 Jul 2019 10:49:24 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        mathieu.poirier@linaro.org, lizefan@huawei.com,
+        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
+Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
+ lock order
+Message-ID: <20190704084924.GC9099@localhost.localdomain>
+References: <20190628080618.522-1-juri.lelli@redhat.com>
+ <20190628080618.522-7-juri.lelli@redhat.com>
+ <20190628130308.GU3419@hirez.programming.kicks-ass.net>
+ <20190701065233.GA26005@localhost.localdomain>
+ <20190701082731.GP3402@hirez.programming.kicks-ass.net>
+ <20190701145107.GY657710@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca6147ca-25be-cba6-a7b9-fcac6d21345d@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190701145107.GY657710@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 03-07-19 12:16:09, Waiman Long wrote:
-> On 7/3/19 11:53 AM, Michal Hocko wrote:
-> > On Wed 03-07-19 11:21:16, Waiman Long wrote:
-> >> On 7/2/19 5:33 PM, Andrew Morton wrote:
-> >>> On Tue, 2 Jul 2019 16:44:24 -0400 Waiman Long <longman@redhat.com> wrote:
-> >>>
-> >>>> On 7/2/19 4:03 PM, Andrew Morton wrote:
-> >>>>> On Tue,  2 Jul 2019 14:37:30 -0400 Waiman Long <longman@redhat.com> wrote:
-> >>>>>
-> >>>>>> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
-> >>>>>> file to shrink the slab by flushing all the per-cpu slabs and free
-> >>>>>> slabs in partial lists. This applies only to the root caches, though.
-> >>>>>>
-> >>>>>> Extends this capability by shrinking all the child memcg caches and
-> >>>>>> the root cache when a value of '2' is written to the shrink sysfs file.
-> >>>>> Why?
-> >>>>>
-> >>>>> Please fully describe the value of the proposed feature to or users. 
-> >>>>> Always.
-> >>>> Sure. Essentially, the sysfs shrink interface is not complete. It allows
-> >>>> the root cache to be shrunk, but not any of the memcg caches. 
-> >>> But that doesn't describe anything of value.  Who wants to use this,
-> >>> and why?  How will it be used?  What are the use-cases?
-> >>>
-> >> For me, the primary motivation of posting this patch is to have a way to
-> >> make the number of active objects reported in /proc/slabinfo more
-> >> accurately reflect the number of objects that are actually being used by
-> >> the kernel.
-> > I believe we have been through that. If the number is inexact due to
-> > caching then lets fix slabinfo rather than trick around it and teach
-> > people to do a magic write to some file that will "solve" a problem.
-> > This is exactly what drop_caches turned out to be in fact. People just
-> > got used to drop caches because they were told so by $random web page.
-> > So really, think about the underlying problem and try to fix it.
-> >
-> > It is true that you could argue that this patch is actually fixing the
-> > existing interface because it doesn't really do what it is documented to
-> > do and on those grounds I would agree with the change.
-> 
-> I do think that we should correct the shrink file to do what it is
-> designed to do to include the memcg caches as well.
-> 
-> 
-> >  But do not teach
-> > people that they have to write to some file to get proper numbers.
-> > Because that is just a bad idea and it will kick back the same way
-> > drop_caches.
-> 
-> The /proc/slabinfo file is a well-known file that is probably used
-> relatively extensively. Making it to scan through all the per-cpu
-> structures will probably cause performance issues as the slab_mutex has
-> to be taken during the whole duration of the scan. That could have
-> undesirable side effect.
+Hi,
 
-Please be more specific with some numbers ideally. Also if collecting
-data is too expensive, why cannot we simply account cached objects count
-in pcp manner?
+On 01/07/19 07:51, Tejun Heo wrote:
+> Hello,
+> 
+> On Mon, Jul 01, 2019 at 10:27:31AM +0200, Peter Zijlstra wrote:
+> > IIRC TJ figured it wasn't strictly required to fix the lock invertion at
+> > that time and they sorted it differently. If I (re)read the thread
+> > correctly the other day, he didn't have fundamental objections against
+> > it, but wanted the simpler fix.
+> 
+> Yeah I've got no objections to the change itself, it just wasn't
+> needed at the time.  We've had multiple issues there tho, so please
+> keep an eye open after the changes get merged.
 
-> Instead, I am thinking about extending the slab/objects sysfs file to
-> also show the number of objects hold up by the per-cpu structures and
-> thus we can get an accurate count by subtracting it from the reported
-> active objects. That will have a more limited performance impact as it
-> is just one kmem cache instead of all the kmem caches in the system.
-> Also the sysfs files are not as commonly used as slabinfo. That will be
-> another patch in the near future.
+Should I take this as an indication that you had a look at the set and
+(apart from Peter's comments) you are OK with them?
 
-Both are root only and once it is widespread that slabinfo doesn't
-provide precise data you can expect tools will try to fix that by adding
-another file(s) and we are back to square one, no? In other words
-slabinfo
+If that's the case I will send a v9 out soon. Otherwise I'd kindly ask
+you to please have a look.
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks!
+
+Juri
