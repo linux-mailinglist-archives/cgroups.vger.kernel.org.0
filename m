@@ -2,86 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 841CB5F4F0
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jul 2019 10:49:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0763761A4C
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 07:20:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727230AbfGDIta (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Jul 2019 04:49:30 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:55095 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727138AbfGDIta (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jul 2019 04:49:30 -0400
-Received: by mail-wm1-f65.google.com with SMTP id p74so1851173wme.4
-        for <cgroups@vger.kernel.org>; Thu, 04 Jul 2019 01:49:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=AB76fZ4FGkqviuGc5asXXE0TYmR4RcAuqGDgezPIa0I=;
-        b=HHg3wRA68na99kAyx9FJkUtrWVwESlV7iqLoDuHihj6EpkL6Tss/+YoG+rGfJyhPf2
-         PtYVtO3F+O42TonTgZtRUAxbXcTeYRSMiYryjpvO+njWZB5LWQ++LQdX5NeMdpOXDImU
-         Ba2ryCJ1eU+gYtmnNndqLjmJrRNdEBkVERh/YBUanqZrl6c/laqTnfqaySQ1GFJJGMnI
-         xGiDG0pX/cIoOWQrHbfXA9hwtLF7j9wZqy9qmOna5DXOBt69saHPTCpwdj5krJF1GeSu
-         9qxNYtzTi+XbMxJbQgiyUWD8YPGBPQ3yRc1LH18sXmZ7LqEELQsyRMC9Er348QDU1CsS
-         rtxA==
-X-Gm-Message-State: APjAAAXBN8ypb1A3vNlYXuSivHDVP+pPvvynu34YW/eJgMOx/YtCZwqe
-        4vtDRMVx0emleGycB3BA6JkUd7RHhYc=
-X-Google-Smtp-Source: APXvYqz1Q1DleGiXZJyelc0x4oeE2RpsSdPwidTtNcDiqfLPQI8czdr7RR9RMZcY1fHcuY/QWxxFUg==
-X-Received: by 2002:a1c:acc8:: with SMTP id v191mr11850426wme.177.1562230168039;
-        Thu, 04 Jul 2019 01:49:28 -0700 (PDT)
-Received: from localhost.localdomain ([151.15.230.231])
-        by smtp.gmail.com with ESMTPSA id p11sm5493523wrm.53.2019.07.04.01.49.26
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 04 Jul 2019 01:49:26 -0700 (PDT)
-Date:   Thu, 4 Jul 2019 10:49:24 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
-        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
-        mathieu.poirier@linaro.org, lizefan@huawei.com,
-        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
-Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
- lock order
-Message-ID: <20190704084924.GC9099@localhost.localdomain>
-References: <20190628080618.522-1-juri.lelli@redhat.com>
- <20190628080618.522-7-juri.lelli@redhat.com>
- <20190628130308.GU3419@hirez.programming.kicks-ass.net>
- <20190701065233.GA26005@localhost.localdomain>
- <20190701082731.GP3402@hirez.programming.kicks-ass.net>
- <20190701145107.GY657710@devbig004.ftw2.facebook.com>
+        id S1727770AbfGHFUU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Jul 2019 01:20:20 -0400
+Received: from [197.254.217.239] ([197.254.217.239]:42442 "EHLO mail.cert.sd"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727286AbfGHFUU (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 8 Jul 2019 01:20:20 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.cert.sd (Postfix) with ESMTP id 8C72A3879C8;
+        Sun,  7 Jul 2019 21:12:59 +0200 (CAT)
+Received: from mail.cert.sd ([127.0.0.1])
+        by localhost (mail.cert.sd [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id v419S0i9YB2v; Sun,  7 Jul 2019 21:12:59 +0200 (CAT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.cert.sd (Postfix) with ESMTP id CE7B65ED253;
+        Sun,  7 Jul 2019 20:49:57 +0200 (CAT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.cert.sd CE7B65ED253
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cert.sd;
+        s=3B54D788-828F-11E8-945F-63B06BDA8568; t=1562525399;
+        bh=i6jGklZsYhvyS6O+r4vHl3fsu2UV4hnEJS7rdZ4svBg=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=aCXApiFq3UGItLP8jXixxAE8rrYn91FXdHgH5iI3WtkZcDZagdemzfmAd1hEofpzr
+         qKuuAl2A6xbY5vdhu8Tr35PLThNlAJDoPjfTWv/bxr3h6mJYAQYmc1y3unUMqZpDin
+         Z9Heay+ICc80R6xuffRSrCj/wuKINJqdxpBeOE/B1LJKF3JmpbeEP2oJqwk9UDnVpc
+         zKpD7r54hWNeSNhP5qVhBqaHuFUlfp28zh0031IXifL7L/PjZEaLclSjwftULjJZVb
+         hoyppU1yI+ErrAYUT+htUclCCexuFSikSGrTi66DXoKbgKpjQUG8308D6NXFao2dPE
+         UpErSyYpUsjVQ==
+X-Virus-Scanned: amavisd-new at mail.cert.sd
+Received: from mail.cert.sd ([127.0.0.1])
+        by localhost (mail.cert.sd [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 1pWoABDHQino; Sun,  7 Jul 2019 20:49:57 +0200 (CAT)
+Received: from [192.168.0.103] (unknown [105.112.75.159])
+        by mail.cert.sd (Postfix) with ESMTPSA id 0E53C5E05DD;
+        Sun,  7 Jul 2019 18:44:54 +0200 (CAT)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190701145107.GY657710@devbig004.ftw2.facebook.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: CASH GRANT / SPENDEN !!!
+To:     Recipients <moamar@cert.sd>
+From:   "LISA ROBINSON" <moamar@cert.sd>
+Date:   Sun, 07 Jul 2019 17:35:27 +0100
+Reply-To: charitylisajohnrobinson900@usa.com
+X-Antivirus: Avast (VPS 190707-2, 07/07/2019), Outbound message
+X-Antivirus-Status: Clean
+Message-Id: <20190707164455.0E53C5E05DD@mail.cert.sd>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Sehr geehrter Empf=E4nger, Sie wurden ausgew=E4hlt, um von Frau Lisa Robins=
+on (1.200.000,00 USD) als wohlt=E4tige Spende / Stipendium zu erhalten. Dah=
+er m=FCssen Sie sie f=FCr weitere Informationen per E-Mail kontaktieren.
 
-On 01/07/19 07:51, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Jul 01, 2019 at 10:27:31AM +0200, Peter Zijlstra wrote:
-> > IIRC TJ figured it wasn't strictly required to fix the lock invertion at
-> > that time and they sorted it differently. If I (re)read the thread
-> > correctly the other day, he didn't have fundamental objections against
-> > it, but wanted the simpler fix.
-> 
-> Yeah I've got no objections to the change itself, it just wasn't
-> needed at the time.  We've had multiple issues there tho, so please
-> keep an eye open after the changes get merged.
 
-Should I take this as an indication that you had a look at the set and
-(apart from Peter's comments) you are OK with them?
+Dear Beneficiary, You have been selected to receive ($1,200,000.00 USD) as =
+charity donation/grant from Mrs. Lisa Robinson.Therefore, you are required =
+to contact her through email for more details. 
 
-If that's the case I will send a v9 out soon. Otherwise I'd kindly ask
-you to please have a look.
+---
+This email has been checked for viruses by Avast antivirus software.
+https://www.avast.com/antivirus
 
-Thanks!
-
-Juri
