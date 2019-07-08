@@ -2,71 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD998620AB
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 16:41:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAD46268B
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 18:42:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728823AbfGHOlY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Jul 2019 10:41:24 -0400
-Received: from mail-qt1-f172.google.com ([209.85.160.172]:38094 "EHLO
-        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728764AbfGHOlY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Jul 2019 10:41:24 -0400
-Received: by mail-qt1-f172.google.com with SMTP id n11so18231019qtl.5;
-        Mon, 08 Jul 2019 07:41:24 -0700 (PDT)
+        id S1730383AbfGHQmq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Jul 2019 12:42:46 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:43106 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729501AbfGHQmq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Jul 2019 12:42:46 -0400
+Received: by mail-qt1-f194.google.com with SMTP id w17so15536758qto.10;
+        Mon, 08 Jul 2019 09:42:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=kXUN90sDFULd4qRU/R3KEOn/usuVWjJoGJ35nR0nQ18=;
-        b=Xl9uEj6Og+rO1HLpisU7MOQS4uv+UWSEBNNTBNCnDepQBNXTF8mBQpk9jo/3wdKibZ
-         CtZ5kQkMen21+OKQuJ+PCew8yXZuL5r+BgvKpLxdZM9mmLPQ+IYG6A+qUCJCGIEZ8tnH
-         reW7Nkw1QthoOFm1CoYBce4mMtko7w8uWB1P05mMGNTOsZXKHk1cluXKkadnDTJGwCBm
-         IGzeblqdEzm5X4MFpL3O715NYXJ49/og3rViPEBVtXDCIra2D+aJBBXOv9Wf8sSq/MwJ
-         Z+c7nb/En3PazH06XUDEysCWZsK/YpFDRy6/xAUpmjPARQnRlTG5Jc/8fnHOcuzk4zWR
-         REOg==
+        bh=8IxAaS8HkYeCdm6ofdJNfkVr0RYEAJ+U8cg6TKAE1aA=;
+        b=L4VgEUxFKymN8SdwCiz5jn/rBEPjrGbx7eFnC/6wSUv7PRduz3U9K5Wb58pE9nCwOh
+         K4B+yYRyrknRJhYhK5GxOAr8okc1478Hpn7cwz/VKt0SCzvrBwHR/NOc9+F67juzgoUl
+         TlucAUvTpmHDN6YI/nfX0Cv+I3FnSvxeTZbthwIBDS/D5/643uM+t1caAPoJBE3QKINO
+         hkjzqay4+jr7+ZiC4mBgaYshjyViUjma8mTmO9MpWs5vwFYwofGWzCwYgk9D7k/ajgk/
+         0RpyJHJRof2GfzuXUrUDsf76MOC/CVeHbyq6lFHXgsRZhHhALQFMfMuY+g/Evqa19ZPf
+         upmA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kXUN90sDFULd4qRU/R3KEOn/usuVWjJoGJ35nR0nQ18=;
-        b=k+0pISdu7F130TrTO4mCoz5vkU3z7TH7JDaABJEHfm7Kok9vMYBBX91Rrpy9IY65dq
-         meUM13XhZMBJ/lcu4GAKCHBD7/QsBEqXb9n2TTxeZX0lvQfOg/vqP0YUcFPvyCb7wwn8
-         0Vll0p7bKo4Nhe4WguZstmCy1tw+tHv4JqX+3fhLwN940v/xs+XhlBNOZDI6muFVTTuB
-         zLYQoTIb6zcVQN1pOuamZi4GYHrCDhXJCYYWpUKfv/OZ8420uremGNztC7JM5GbQTyQA
-         CIOwVQl2ltGQ28Rt7Ca8t9sRHP6WbZ9vJU6GYmxn6LKVGMT8AjdJHP6CnO3cHHfyxtwG
-         XQbg==
-X-Gm-Message-State: APjAAAVsLA31yXLimn7rAcA3CEE1PAJSmIkHoDoVYT7SxzOLtsIgBxSj
-        K8iDcrxMbcvjyWve7VgpK1U=
-X-Google-Smtp-Source: APXvYqzWtXVq70kcEBCAF1m2IUspOBnTrPdr4XPMk3W1jFGF8Wj2K0zHDvWCYUCXGwEsoLQ0eBJRtA==
-X-Received: by 2002:ac8:3449:: with SMTP id v9mr10281942qtb.163.1562596883530;
-        Mon, 08 Jul 2019 07:41:23 -0700 (PDT)
+        bh=8IxAaS8HkYeCdm6ofdJNfkVr0RYEAJ+U8cg6TKAE1aA=;
+        b=h7vsA4/009uCoTiU7rnU+ZgLpGRAwol2QCfpv4MkxyIOmD/8B9BstXrx6rrI2kGVBV
+         vZ8SCH9soz8XVtx+jkBL0l+FepQQLCl711+gqzoA25pfX9/m9lbwu8voKs/ha40SubYJ
+         BKd2ju/JO1D4mErMe7xyABgmx0Z9t/lwNwdO3BKra7z2mqsKfIALfS+90uev57NjXjko
+         eViyQG+RjpJ8KHjQShDwIlrXwJCamqY/2GIIAP2+eH15CGb4ypTq4M2tN1EblDo2euDQ
+         3EHI8UxJroBMANAw35RciqmBHKeQVHQBubMoWuKItCGjv9qgdA8bCtyGhK/+sLONr9UG
+         IocQ==
+X-Gm-Message-State: APjAAAWY0f0zvd0tdsVJ/yBIEeIbae/CQfVgc9gpJr6wYUgZqjZAw9nI
+        pOW6CaujoWSfh9AlcHw1dvYhFaNlAwE=
+X-Google-Smtp-Source: APXvYqwOFtpEKmE0vYok9cs+Q6wE0KUH3YBAjuKmXTpvOHBb8y0HkU2ai1QhoHte1/udNlbR+UNmJw==
+X-Received: by 2002:a0c:95c6:: with SMTP id t6mr16273425qvt.134.1562604165035;
+        Mon, 08 Jul 2019 09:42:45 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::2:fa50])
-        by smtp.gmail.com with ESMTPSA id g3sm7342207qkk.125.2019.07.08.07.41.22
+        by smtp.gmail.com with ESMTPSA id y42sm10823867qtc.66.2019.07.08.09.42.44
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jul 2019 07:41:22 -0700 (PDT)
-Date:   Mon, 8 Jul 2019 07:41:21 -0700
+        Mon, 08 Jul 2019 09:42:44 -0700 (PDT)
+Date:   Mon, 8 Jul 2019 09:42:43 -0700
 From:   Tejun Heo <tj@kernel.org>
 To:     Peng Wang <rocking@whu.edu.cn>
 Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: simplify code for cgroup_subtree_control_write()
-Message-ID: <20190708144121.GA657710@devbig004.ftw2.facebook.com>
-References: <20190708130132.5582-1-rocking@whu.edu.cn>
+Subject: Re: [PATCH] cgroup: minor tweak for logic to get cgroup css
+Message-ID: <20190708164243.GE657710@devbig004.ftw2.facebook.com>
+References: <20190703020749.22988-1-rocking@whu.edu.cn>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190708130132.5582-1-rocking@whu.edu.cn>
+In-Reply-To: <20190703020749.22988-1-rocking@whu.edu.cn>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 09:01:32PM +0800, Peng Wang wrote:
-> Process "enable" and "disable" earlier to simplify code.
+On Wed, Jul 03, 2019 at 10:07:49AM +0800, Peng Wang wrote:
+> We could only handle the case that css exists
+> and css_try_get_online() fails.
 
-I don't think this is correct and even if it were the value of this
-change is close to none, so nack on this one.
+As css_tryget_online() can't handle NULL input, this is a bug fix.
+Can you please clarify that in the description?
 
 Thanks.
 
