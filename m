@@ -2,105 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B408561F36
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 15:03:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD998620AB
+	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 16:41:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728242AbfGHNDp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Jul 2019 09:03:45 -0400
-Received: from app1.whu.edu.cn ([202.114.64.88]:59412 "EHLO whu.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727493AbfGHNDp (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 8 Jul 2019 09:03:45 -0400
-Received: from localhost (unknown [111.202.192.5])
-        by email1 (Coremail) with SMTP id AQBjCgBHKToiPyNdsrRhAA--.45504S2;
-        Mon, 08 Jul 2019 21:03:35 +0800 (CST)
-From:   Peng Wang <rocking@whu.edu.cn>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peng Wang <rocking@whu.edu.cn>
-Subject: [PATCH] cgroup: simplify code for cgroup_subtree_control_write()
-Date:   Mon,  8 Jul 2019 21:01:32 +0800
-Message-Id: <20190708130132.5582-1-rocking@whu.edu.cn>
-X-Mailer: git-send-email 2.19.1
+        id S1728823AbfGHOlY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Jul 2019 10:41:24 -0400
+Received: from mail-qt1-f172.google.com ([209.85.160.172]:38094 "EHLO
+        mail-qt1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728764AbfGHOlY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Jul 2019 10:41:24 -0400
+Received: by mail-qt1-f172.google.com with SMTP id n11so18231019qtl.5;
+        Mon, 08 Jul 2019 07:41:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=kXUN90sDFULd4qRU/R3KEOn/usuVWjJoGJ35nR0nQ18=;
+        b=Xl9uEj6Og+rO1HLpisU7MOQS4uv+UWSEBNNTBNCnDepQBNXTF8mBQpk9jo/3wdKibZ
+         CtZ5kQkMen21+OKQuJ+PCew8yXZuL5r+BgvKpLxdZM9mmLPQ+IYG6A+qUCJCGIEZ8tnH
+         reW7Nkw1QthoOFm1CoYBce4mMtko7w8uWB1P05mMGNTOsZXKHk1cluXKkadnDTJGwCBm
+         IGzeblqdEzm5X4MFpL3O715NYXJ49/og3rViPEBVtXDCIra2D+aJBBXOv9Wf8sSq/MwJ
+         Z+c7nb/En3PazH06XUDEysCWZsK/YpFDRy6/xAUpmjPARQnRlTG5Jc/8fnHOcuzk4zWR
+         REOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=kXUN90sDFULd4qRU/R3KEOn/usuVWjJoGJ35nR0nQ18=;
+        b=k+0pISdu7F130TrTO4mCoz5vkU3z7TH7JDaABJEHfm7Kok9vMYBBX91Rrpy9IY65dq
+         meUM13XhZMBJ/lcu4GAKCHBD7/QsBEqXb9n2TTxeZX0lvQfOg/vqP0YUcFPvyCb7wwn8
+         0Vll0p7bKo4Nhe4WguZstmCy1tw+tHv4JqX+3fhLwN940v/xs+XhlBNOZDI6muFVTTuB
+         zLYQoTIb6zcVQN1pOuamZi4GYHrCDhXJCYYWpUKfv/OZ8420uremGNztC7JM5GbQTyQA
+         CIOwVQl2ltGQ28Rt7Ca8t9sRHP6WbZ9vJU6GYmxn6LKVGMT8AjdJHP6CnO3cHHfyxtwG
+         XQbg==
+X-Gm-Message-State: APjAAAVsLA31yXLimn7rAcA3CEE1PAJSmIkHoDoVYT7SxzOLtsIgBxSj
+        K8iDcrxMbcvjyWve7VgpK1U=
+X-Google-Smtp-Source: APXvYqzWtXVq70kcEBCAF1m2IUspOBnTrPdr4XPMk3W1jFGF8Wj2K0zHDvWCYUCXGwEsoLQ0eBJRtA==
+X-Received: by 2002:ac8:3449:: with SMTP id v9mr10281942qtb.163.1562596883530;
+        Mon, 08 Jul 2019 07:41:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:fa50])
+        by smtp.gmail.com with ESMTPSA id g3sm7342207qkk.125.2019.07.08.07.41.22
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Jul 2019 07:41:22 -0700 (PDT)
+Date:   Mon, 8 Jul 2019 07:41:21 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Peng Wang <rocking@whu.edu.cn>
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: simplify code for cgroup_subtree_control_write()
+Message-ID: <20190708144121.GA657710@devbig004.ftw2.facebook.com>
+References: <20190708130132.5582-1-rocking@whu.edu.cn>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQBjCgBHKToiPyNdsrRhAA--.45504S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7AFy8AF4UGF4rWFWkCw13CFg_yoW8GFyUp3
-        ZxGryft3y5ZF95WF17ta40gFyfGw4xX347Ka98Ww1fXw1akr1qqr1fZr1rXFy7ZF97Cw1a
-        yFs8AFn5Kr48trDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUkq14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_Xr4l
-        42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-        WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-        I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-        4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
-        0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUjnjjDUUUUU==
-X-CM-SenderInfo: qsqrijaqrviiqqxyq4lkxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190708130132.5582-1-rocking@whu.edu.cn>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Process "enable" and "disable" earlier to simplify code.
+On Mon, Jul 08, 2019 at 09:01:32PM +0800, Peng Wang wrote:
+> Process "enable" and "disable" earlier to simplify code.
 
-Signed-off-by: Peng Wang <rocking@whu.edu.cn>
----
- kernel/cgroup/cgroup.c | 23 ++++++++---------------
- 1 file changed, 8 insertions(+), 15 deletions(-)
+I don't think this is correct and even if it were the value of this
+change is close to none, so nack on this one.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index bf9dbffd46b1..e49b8bde5c99 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3269,23 +3269,21 @@ static ssize_t cgroup_subtree_control_write(struct kernfs_open_file *of,
- 	if (!cgrp)
- 		return -ENODEV;
- 
-+	enable &= ~(cgrp->subtree_control);
-+	disable &= cgrp->subtree_control;
-+
-+	if (!enable && !disable) {
-+		ret = 0;
-+		goto out_unlock;
-+	}
-+
- 	for_each_subsys(ss, ssid) {
- 		if (enable & (1 << ssid)) {
--			if (cgrp->subtree_control & (1 << ssid)) {
--				enable &= ~(1 << ssid);
--				continue;
--			}
--
- 			if (!(cgroup_control(cgrp) & (1 << ssid))) {
- 				ret = -ENOENT;
- 				goto out_unlock;
- 			}
- 		} else if (disable & (1 << ssid)) {
--			if (!(cgrp->subtree_control & (1 << ssid))) {
--				disable &= ~(1 << ssid);
--				continue;
--			}
--
- 			/* a child has it enabled? */
- 			cgroup_for_each_live_child(child, cgrp) {
- 				if (child->subtree_control & (1 << ssid)) {
-@@ -3296,11 +3294,6 @@ static ssize_t cgroup_subtree_control_write(struct kernfs_open_file *of,
- 		}
- 	}
- 
--	if (!enable && !disable) {
--		ret = 0;
--		goto out_unlock;
--	}
--
- 	ret = cgroup_vet_subtree_control_enable(cgrp, enable);
- 	if (ret)
- 		goto out_unlock;
+Thanks.
+
 -- 
-2.19.1
-
+tejun
