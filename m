@@ -2,89 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 690F662725
-	for <lists+cgroups@lfdr.de>; Mon,  8 Jul 2019 19:31:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CACF62DBE
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jul 2019 03:56:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728708AbfGHRbk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 8 Jul 2019 13:31:40 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:36013 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbfGHRbk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Jul 2019 13:31:40 -0400
-Received: by mail-qt1-f193.google.com with SMTP id z4so15385399qtc.3;
-        Mon, 08 Jul 2019 10:31:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F3Z8ODmIuThf6qIMsRJ9IwagYSAnPtGl9RN+7VHHChg=;
-        b=aqE1xvZMtT7tlMKN0uI2aPhS+B7q7NPQx57ZzTXE3rm2BGvJMUQYHZdGbsSR+ZNHfg
-         KfCyif2Z5T+CAzVEI8+uNEiuZ86jaLvvcnbumD1DftZwskChw61iCaejgttVDYeo+puX
-         EMcYe4mqQRkut1balpM3jphqF+6LvTpJVgsDGjeKNcaL2HrtEEceP6faQACtVF2GbCnH
-         EnfW9OChjLrUTnLaic14bALWa2BZWvwWjb4HbOhssw6ZZDbanIOucVyKb3DXFQID3zzN
-         6PaxqH4Gy69wl4Cd+/ST6a+M1Yks+kZdteW72v8EtAfrgEC6A0/zqxo7tvMMEc0VlKUl
-         /AcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F3Z8ODmIuThf6qIMsRJ9IwagYSAnPtGl9RN+7VHHChg=;
-        b=BVMfdo+CNJi8nbWz7KKml47a5Goq8IzdzN0kmr9EBWQqncPfGlMzMqYUowBqKdGVeB
-         8qdt6Nv3z5pXjJ6szNvoLpLjfjntkeIHN0cL1sAfyrHjvgNFHfpLdXJbNN8mI0xIrz+O
-         aRJ1MnkGgFn6Spd4pH1LFcH8ipprfkPUprraD3Nvpkr1XLOu3YFbIJla7NWEIlFA5RRd
-         XN2B8/PvPhBU+LzACo3M7ruKrnk78u5CC7xqfIoHBCcyaJKZzvjv2IL+6fcxtfvUse11
-         5VqHPUqaRUbuOIHDSzp9LZ1KfAtJJ11rJDqgbNu57uh6IEdIdA/vZPbjYkrCzVJQ33mt
-         1cIA==
-X-Gm-Message-State: APjAAAU9IjvhyNawQP2RDl2yx19ZZI1iChyKlUqO6Z5IsyuoFh1h2KBO
-        oTn1wYTf1WuRwKBNnJXS8Ro=
-X-Google-Smtp-Source: APXvYqzGrhEv1gxKVd1/9J9mYvxXMWJHhzWdHoqmqPs9JYDKKxlkOivbY+dTn6S37VhKMXYfjeiwoA==
-X-Received: by 2002:aed:2d67:: with SMTP id h94mr10495706qtd.154.1562607099035;
-        Mon, 08 Jul 2019 10:31:39 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:fa50])
-        by smtp.gmail.com with ESMTPSA id m44sm8984785qtm.54.2019.07.08.10.31.38
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 08 Jul 2019 10:31:38 -0700 (PDT)
-Date:   Mon, 8 Jul 2019 10:31:37 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Peng Wang <rocking@whu.edu.cn>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] cgroup: minor tweak for logic to get cgroup css
-Message-ID: <20190708173137.GH657710@devbig004.ftw2.facebook.com>
-References: <20190703020749.22988-1-rocking@whu.edu.cn>
- <20190708164243.GE657710@devbig004.ftw2.facebook.com>
- <20190708172944.GA24662@tower.DHCP.thefacebook.com>
+        id S1726072AbfGIB4C convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Mon, 8 Jul 2019 21:56:02 -0400
+Received: from app2.whu.edu.cn ([202.114.64.89]:39874 "EHLO whu.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725886AbfGIB4C (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 8 Jul 2019 21:56:02 -0400
+Received: from MI20170214RZUL (unknown [111.202.192.3])
+        by email2 (Coremail) with SMTP id AgBjCgBnNvQr9CNdzSxlAA--.254S3;
+        Tue, 09 Jul 2019 09:55:56 +0800 (CST)
+From:   "Peng Wang" <rocking@whu.edu.cn>
+To:     "'Tejun Heo'" <tj@kernel.org>
+Cc:     <lizefan@huawei.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20190708130132.5582-1-rocking@whu.edu.cn> <20190708144121.GA657710@devbig004.ftw2.facebook.com>
+In-Reply-To: <20190708144121.GA657710@devbig004.ftw2.facebook.com>
+Subject: RE: [PATCH] cgroup: simplify code for cgroup_subtree_control_write()
+Date:   Tue, 9 Jul 2019 09:55:54 +0800
+Message-ID: <000301d535f9$71f1ab90$55d502b0$@whu.edu.cn>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190708172944.GA24662@tower.DHCP.thefacebook.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain;
+        charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQE94/eHFYIYcEzptv5v1lkJv7sJaAH+JMagp+A37hA=
+Content-Language: zh-cn
+X-CM-TRANSID: AgBjCgBnNvQr9CNdzSxlAA--.254S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY87k0a2IF6r1xM7kC6x804xWl14x267AK
+        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
+        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j
+        6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F
+        4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvE
+        ncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I
+        8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xS
+        Y4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRN
+        b10UUUUUU==
+X-CM-SenderInfo: qsqrijaqrviiqqxyq4lkxovvfxof0/
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 08, 2019 at 05:29:49PM +0000, Roman Gushchin wrote:
-> On Mon, Jul 08, 2019 at 09:42:43AM -0700, Tejun Heo wrote:
-> > On Wed, Jul 03, 2019 at 10:07:49AM +0800, Peng Wang wrote:
-> > > We could only handle the case that css exists
-> > > and css_try_get_online() fails.
-> > 
-> > As css_tryget_online() can't handle NULL input, this is a bug fix.
-> > Can you please clarify that in the description?
+On Monday, July 8, 2019 10:41 PM, Tejun Heo wrote:
+> On Mon, Jul 08, 2019 at 09:01:32PM +0800, Peng Wang wrote:
+> > Process "enable" and "disable" earlier to simplify code.
 > 
-> -       if (!css || !css_tryget_online(css))
-> +       if (css && !css_tryget_online(css))
+> I don't think this is correct and even if it were the value of this
+> change is close to none, so nack on this one.
+
+OK. 
+Although I have tested this patch for common case, It's just somewhat trivial.
+
+Thanks for your time :-).
+
 > 
-> If css == NULL, !css is true, and the second part of the || statement
-> will not be evaluated. So it's not a bug fix.
+> Thanks.
+> 
+> --
+> tejun
 
-Ah right, it's just confusing.  Will apply after the merge window.
-
-Thanks.
-
--- 
-tejun
