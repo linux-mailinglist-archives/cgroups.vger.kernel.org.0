@@ -2,70 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CACF62DBE
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jul 2019 03:56:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D967E62DF7
+	for <lists+cgroups@lfdr.de>; Tue,  9 Jul 2019 04:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbfGIB4C convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Mon, 8 Jul 2019 21:56:02 -0400
-Received: from app2.whu.edu.cn ([202.114.64.89]:39874 "EHLO whu.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbfGIB4C (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 8 Jul 2019 21:56:02 -0400
-Received: from MI20170214RZUL (unknown [111.202.192.3])
-        by email2 (Coremail) with SMTP id AgBjCgBnNvQr9CNdzSxlAA--.254S3;
-        Tue, 09 Jul 2019 09:55:56 +0800 (CST)
-From:   "Peng Wang" <rocking@whu.edu.cn>
-To:     "'Tejun Heo'" <tj@kernel.org>
-Cc:     <lizefan@huawei.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20190708130132.5582-1-rocking@whu.edu.cn> <20190708144121.GA657710@devbig004.ftw2.facebook.com>
-In-Reply-To: <20190708144121.GA657710@devbig004.ftw2.facebook.com>
-Subject: RE: [PATCH] cgroup: simplify code for cgroup_subtree_control_write()
-Date:   Tue, 9 Jul 2019 09:55:54 +0800
-Message-ID: <000301d535f9$71f1ab90$55d502b0$@whu.edu.cn>
+        id S1726760AbfGICPq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Jul 2019 22:15:46 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41499 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725905AbfGICPq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 8 Jul 2019 22:15:46 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TWQeV8w_1562638537;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWQeV8w_1562638537)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 09 Jul 2019 10:15:38 +0800
+Subject: Re: [PATCH v2 4/4] numa: introduce numa cling feature
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mcgrof@kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
+ <b24c6aa0-7a89-b0b4-984a-a775b8df40a5@linux.alibaba.com>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <b9a58067-194b-221d-111c-ed1f7661976b@linux.alibaba.com>
+Date:   Tue, 9 Jul 2019 10:15:37 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="UTF-8"
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Microsoft Outlook 16.0
-Thread-Index: AQE94/eHFYIYcEzptv5v1lkJv7sJaAH+JMagp+A37hA=
-Content-Language: zh-cn
-X-CM-TRANSID: AgBjCgBnNvQr9CNdzSxlAA--.254S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY87k0a2IF6r1xM7kC6x804xWl14x267AK
-        xVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGw
-        A2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j
-        6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26F
-        4UJVW0owA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr1j6rxdM2AIxVAIcxkEcVAq07x20xvE
-        ncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I
-        8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xS
-        Y4AK67AK6w4l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-        xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
-        MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-        0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
-        6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7sRN
-        b10UUUUUU==
-X-CM-SenderInfo: qsqrijaqrviiqqxyq4lkxovvfxof0/
+In-Reply-To: <b24c6aa0-7a89-b0b4-984a-a775b8df40a5@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Monday, July 8, 2019 10:41 PM, Tejun Heo wrote:
-> On Mon, Jul 08, 2019 at 09:01:32PM +0800, Peng Wang wrote:
-> > Process "enable" and "disable" earlier to simplify code.
+On 2019/7/8 下午4:07, Hillf Danton wrote:
 > 
-> I don't think this is correct and even if it were the value of this
-> change is close to none, so nack on this one.
+> On Mon, 8 Jul 2019 10:25:27 +0800 Michael Wang wrote:
+>> /* Attempt to migrate a task to a CPU on the preferred node. */
+>> static void numa_migrate_preferred(struct task_struct *p)
+>> {
+>> +	bool failed, target;
+>> 	unsigned long interval = HZ;
+>>
+>> 	/* This task has no NUMA fault statistics yet */
+>> @@ -1891,8 +2117,12 @@ static void numa_migrate_preferred(struct task_struct *p)
+>> 	if (task_node(p) == p->numa_preferred_nid)
+>> 		return;
+>>
+>> +	target = p->numa_preferred_nid;
+>> +
+> Something instead of bool can be used, too.
 
-OK. 
-Although I have tested this patch for common case, It's just somewhat trivial.
-
-Thanks for your time :-).
+Thx for point out :-) to be fix in v3.
 
 > 
-> Thanks.
-> 
-> --
-> tejun
+>> 	/* Otherwise, try migrate to a CPU on the preferred node */
+>> -	task_numa_migrate(p);
+>> +	failed = (task_numa_migrate(p) != 0);
+>> +
+>> +	update_migrate_stat(p, target, failed);
+>> }
+>>
+>> static void
+>> @@ -6195,6 +6447,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>> 	if ((unsigned)i < nr_cpumask_bits)
+>> 		return i;
+>>
+>> +	/*
+>> +	 * Failed to find an idle cpu, wake affine may want to pull but
+>> +	 * try stay on prev-cpu when the task cling to it.
+>> +	 */
+>> +	if (task_numa_cling(p, cpu_to_node(prev), cpu_to_node(target)))
+>> +		return prev;
+>> +
+> Curious to know what test figures would look like without the above line.
 
+It depends on the wake affine condition then, when waker task consider wakee
+suitable for pull, wakee may leave the preferred node, or maybe pull to the
+preferred node, just randomly and follow the fate.
+
+In mysql case when there are many such wakeup cases and system is very busy,
+the observed workloads could be 4:6 or 3:7 distributed in two nodes.
+
+Regards,
+Michael Wang
+
+> 
+>> 	return target;
+>> }
+>>
+>> Tested on a 2 node box with 96 cpus, do sysbench-mysql-oltp_read_write
+>> testing, X mysqld instances created and attached to X cgroups, X sysbench
+>> instances then created and attached to corresponding cgroup to test the
+>> mysql with oltp_read_write script for 20 minutes, average eps show:
+>>
+>> 				origin		ng + cling
+>> 4 instances each 24 threads	7545.28		7790.49		+3.25%
+>> 4 instances each 48 threads	9359.36		9832.30		+5.05%
+>> 4 instances each 72 threads	9602.88		10196.95	+6.19%
+>>
+>> 8 instances each 24 threads	4478.82		4508.82		+0.67%
+>> 8 instances each 48 threads	5514.90		5689.93		+3.17%
+>> 8 instances each 72 threads	5582.19		5741.33		+2.85%
+> 
