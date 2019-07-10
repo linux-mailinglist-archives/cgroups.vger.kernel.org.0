@@ -2,80 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B92A63BBC
-	for <lists+cgroups@lfdr.de>; Tue,  9 Jul 2019 21:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDE0864563
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2019 12:50:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727669AbfGITNS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Jul 2019 15:13:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44648 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726335AbfGITNS (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 9 Jul 2019 15:13:18 -0400
-Received: from sol.localdomain (c-24-5-143-220.hsd1.ca.comcast.net [24.5.143.220])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 70BD420693;
-        Tue,  9 Jul 2019 19:13:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1562699597;
-        bh=kDcSbNV3zUHCWGgMuoqYR+UpXm9UjCOca3wxvegVj0U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=QF8PxI8V/joCRGDbEsVwPccQXWyJ5hjc7cTZYa5NfFsAQZugmSK9IhLRhVSr8SC9d
-         cSfgGKieaamuEps8aw7BG/OtffbFbmihclYxiHEaDfxeb6hODrJdfpGlmKPG/r+a0f
-         KFOdOQjYlGqpLUw04Dw/DwfHCx2cTcy/mBb67VRE=
-Date:   Tue, 9 Jul 2019 12:13:16 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Reminder: 1 open syzbot bug in "kernel/cgroup" subsystem
-Message-ID: <20190709191316.GD641@sol.localdomain>
-Mail-Followup-To: cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+        id S1727136AbfGJKuM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Jul 2019 06:50:12 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:49086 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726130AbfGJKuM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jul 2019 06:50:12 -0400
+X-Greylist: delayed 447 seconds by postgrey-1.27 at vger.kernel.org; Wed, 10 Jul 2019 06:50:11 EDT
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id B99FB2E0EBF;
+        Wed, 10 Jul 2019 13:42:42 +0300 (MSK)
+Received: from smtpcorp1p.mail.yandex.net (smtpcorp1p.mail.yandex.net [2a02:6b8:0:1472:2741:0:8b6:10])
+        by mxbackcorp2j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id uC97EkyPww-ggUe3vPG;
+        Wed, 10 Jul 2019 13:42:42 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1562755362; bh=MuHsnMCLNYQMR7LQcEktY+8kMNp1AKabcUeHAMKR+Lw=;
+        h=In-Reply-To:Message-ID:Date:References:To:From:Subject:Cc;
+        b=BGZjj8D8y+oFQMhHbtp28s9y8KPUGvHMIb/s6H6Ut3D7K4rDQ3yblRq9KWrkzEY8w
+         NYDruSUJfsGJ6x8IyfFvwIrbt+Ymq5XA375GgGcf1DVrVrry/OlFf2RQo2zy37kyRf
+         OcDTCr5S3/TY58oAHlb6vbZaxkdzoMP8DCWQCL2U=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:fce8:911:2fe8:4dfb])
+        by smtpcorp1p.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id maOvm5OG9B-gfwmJY11;
+        Wed, 10 Jul 2019 13:42:41 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH] blk-throttle: fix zero wait time for iops throttled group
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-kernel@vger.kernel.org
+Cc:     Liu Bo <bo.liu@linux.alibaba.com>, Stable <stable@vger.kernel.org>,
+        cgroups@vger.kernel.org
+References: <156259979778.2486.6296077059654653057.stgit@buzz>
+Message-ID: <50aa6400-6128-0344-d7c8-0d73fccff350@yandex-team.ru>
+Date:   Wed, 10 Jul 2019 13:42:41 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <156259979778.2486.6296077059654653057.stgit@buzz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[This email was generated by a script.  Let me know if you have any suggestions
-to make it better, or if you want it re-generated with the latest status.]
+On 08.07.2019 18:29, Konstantin Khlebnikov wrote:
+> After commit 991f61fe7e1d ("Blk-throttle: reduce tail io latency when iops
+> limit is enforced") wait time could be zero even if group is throttled and
+> cannot issue requests right now. As a result throtl_select_dispatch() turns
+> into busy-loop under irq-safe queue spinlock.
 
-Of the currently open syzbot reports against the upstream kernel, I've manually
-marked 1 of them as possibly being a bug in the "kernel/cgroup" subsystem.
+To be clear: this almost instantly kills entire machine - other cpus stuck at sending ipi.
 
-If you believe this bug is no longer valid, please close the syzbot report by
-sending a '#syz fix', '#syz dup', or '#syz invalid' command in reply to the
-original thread, as explained at https://goo.gl/tpsmEJ#status
-
-If you believe I misattributed this bug to the "kernel/cgroup" subsystem, please
-let me know, and if possible forward the report to the correct people or mailing
-list.
-
-Here is the bug:
-
---------------------------------------------------------------------------------
-Title:              WARNING in cgroup_apply_control_enable
-Last occurred:      9 days ago
-Reported:           365 days ago
-Branches:           Mainline and others
-Dashboard link:     https://syzkaller.appspot.com/bug?id=4cb6430631b7567848a6736be59d0350b3ada2ea
-Original thread:    https://lkml.kernel.org/lkml/00000000000009f9a305708faf46@google.com/T/#u
-
-This bug has a C reproducer.
-
-No one replied to the original thread for this bug.
-
-If you fix this bug, please add the following tag to the commit:
-    Reported-by: syzbot+5493b2a54d31d6aea629@syzkaller.appspotmail.com
-
-If you send any email or patch for this bug, please consider replying to the
-original thread.  For the git send-email command to use, or tips on how to reply
-if the thread isn't in your mailbox, see the "Reply instructions" at
-https://lkml.kernel.org/r/00000000000009f9a305708faf46@google.com
-
+> 
+> Fix is simple: always round up target time to the next throttle slice.
+> 
+> Fixes: 991f61fe7e1d ("Blk-throttle: reduce tail io latency when iops limit is enforced")
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Cc: stable@vger.kernel.org # v4.19+
+> ---
+>   block/blk-throttle.c |    9 +++------
+>   1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+> index 9ea7c0ecad10..8ab6c8153223 100644
+> --- a/block/blk-throttle.c
+> +++ b/block/blk-throttle.c
+> @@ -881,13 +881,10 @@ static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
+>   	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
+>   	u64 tmp;
+>   
+> -	jiffy_elapsed = jiffy_elapsed_rnd = jiffies - tg->slice_start[rw];
+> -
+> -	/* Slice has just started. Consider one slice interval */
+> -	if (!jiffy_elapsed)
+> -		jiffy_elapsed_rnd = tg->td->throtl_slice;
+> +	jiffy_elapsed = jiffies - tg->slice_start[rw];
+>   
+> -	jiffy_elapsed_rnd = roundup(jiffy_elapsed_rnd, tg->td->throtl_slice);
+> +	/* Round up to the next throttle slice, wait time must be nonzero */
+> +	jiffy_elapsed_rnd = roundup(jiffy_elapsed + 1, tg->td->throtl_slice);
+>   
+>   	/*
+>   	 * jiffy_elapsed_rnd should not be a big value as minimum iops can be
+> 
