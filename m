@@ -2,107 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A59065364
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2019 11:00:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6828E65426
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2019 11:51:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726997AbfGKJAR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jul 2019 05:00:17 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60700 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726088AbfGKJAR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jul 2019 05:00:17 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TWcBEPJ_1562835610;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWcBEPJ_1562835610)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Jul 2019 17:00:11 +0800
-Subject: Re: [PATCH 0/4] per cgroup numa suite
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Peter Zijlstra <peterz@infradead.org>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mcgrof@kernel.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
-References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
- <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
-Message-ID: <6a050974-30f3-66b6-4c99-c7e376fb84d8@linux.alibaba.com>
-Date:   Thu, 11 Jul 2019 17:00:10 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S1728301AbfGKJvU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jul 2019 05:51:20 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:54278 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727960AbfGKJvT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jul 2019 05:51:19 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=FJ+go1rWo5bup7lu7g/QrNgXQ3Vwzmjj/rkN/hAyR6E=; b=yIDvRQUUo6BD24ceByuSwi6A2
+        Rww/Ym6ehYSo7ILp67PD0kmgu5Up17yvsyzeRmT9bEzCeOsfMkkDnSea8zZQUckUSrk1879m8lser
+        uumLJudSXDSwA/2el/6kuoo28u0z7SpYZ0RaqG1E8wVOHeK+M9CTBgekZalc6hEHDRTeko/8soLPl
+        Mrqzp6+7xwvG++u9/5uChEwbPki+iVEWFwnOiyb8okckM1Od0DOpbBObJHVhBBb3amC+PQ2vFpMC/
+        JduHZ1uIG+mK7vQnZBBrUp2eyh+ohf0UMsRPPjGiXDWSTwyUpOACXX4y/wc4g3Y/AVjjT4QbAEpit
+        b1TE/EmJw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hlVjF-0002rq-8I; Thu, 11 Jul 2019 09:51:05 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5443C20B2B4C4; Thu, 11 Jul 2019 11:51:02 +0200 (CEST)
+Date:   Thu, 11 Jul 2019 11:51:02 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     bsegall@google.com
+Cc:     Dave Chiluk <chiluk+linux@indeed.com>,
+        Pqhil Auld <pauld@redhat.com>, Peter Oskolkov <posk@posk.io>,
+        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Kyle Anderson <kwa@yelp.com>,
+        Gabriel Munos <gmunoz@netflix.com>,
+        John Hammond <jhammond@indeed.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        Paul Turner <pjt@google.com>
+Subject: Re: [PATCH v5 1/1] sched/fair: Fix low cpu usage with high
+ throttling by removing expiration of cpu-local slices
+Message-ID: <20190711095102.GX3402@hirez.programming.kicks-ass.net>
+References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
+ <1561664970-1555-1-git-send-email-chiluk+linux@indeed.com>
+ <1561664970-1555-2-git-send-email-chiluk+linux@indeed.com>
+ <xm26lfxhwlxr.fsf@bsegall-linux.svl.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <xm26lfxhwlxr.fsf@bsegall-linux.svl.corp.google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi folks,
 
-How do you think about these patches?
+FWIW, good to see progress, still waiting for you guys to agree :-)
 
-During most of our tests the results show stable improvements, thus
-we consider this as a generic problem and proposed this solution,
-hope to help address the issue.
+On Mon, Jul 01, 2019 at 01:15:44PM -0700, bsegall@google.com wrote:
 
-Comments are sincerely welcome :-)
+> - Taking up-to-every rq->lock is bad and expensive and 5ms may be too
+>   short a delay for this. I haven't tried microbenchmarks on the cost of
+>   this vs min_cfs_rq_runtime = 0 vs baseline.
 
-Regards,
-Michael Wang
+Yes, that's tricky, SGI/HPE have definite ideas about that.
 
-On 2019/7/3 上午11:26, 王贇 wrote:
-> During our torturing on numa stuff, we found problems like:
-> 
->   * missing per-cgroup information about the per-node execution status
->   * missing per-cgroup information about the numa locality
-> 
-> That is when we have a cpu cgroup running with bunch of tasks, no good
-> way to tell how it's tasks are dealing with numa.
-> 
-> The first two patches are trying to complete the missing pieces, but
-> more problems appeared after monitoring these status:
-> 
->   * tasks not always running on the preferred numa node
->   * tasks from same cgroup running on different nodes
-> 
-> The task numa group handler will always check if tasks are sharing pages
-> and try to pack them into a single numa group, so they will have chance to
-> settle down on the same node, but this failed in some cases:
-> 
->   * workloads share page caches rather than share mappings
->   * workloads got too many wakeup across nodes
-> 
-> Since page caches are not traced by numa balancing, there are no way to
-> realize such kind of relationship, and when there are too many wakeup,
-> task will be drag from the preferred node and then migrate back by numa
-> balancing, repeatedly.
-> 
-> Here the third patch try to address the first issue, we could now give hint
-> to kernel about the relationship of tasks, and pack them into single numa
-> group.
-> 
-> And the forth patch introduced numa cling, which try to address the wakup
-> issue, now we try to make task stay on the preferred node on wakeup in fast
-> path, in order to address the unbalancing risk, we monitoring the numa
-> migration failure ratio, and pause numa cling when it reach the specified
-> degree.
-> 
-> Michael Wang (4):
->   numa: introduce per-cgroup numa balancing locality statistic
->   numa: append per-node execution info in memory.numa_stat
->   numa: introduce numa group per task group
->   numa: introduce numa cling feature
-> 
->  include/linux/memcontrol.h   |  37 ++++
->  include/linux/sched.h        |   8 +-
->  include/linux/sched/sysctl.h |   3 +
->  kernel/sched/core.c          |  37 ++++
->  kernel/sched/debug.c         |   7 +
->  kernel/sched/fair.c          | 455 ++++++++++++++++++++++++++++++++++++++++++-
->  kernel/sched/sched.h         |  14 ++
->  kernel/sysctl.c              |   9 +
->  mm/memcontrol.c              |  66 +++++++
->  9 files changed, 628 insertions(+), 8 deletions(-)
-> 
+> @@ -4781,12 +4790,41 @@ static __always_inline void return_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+>   */
+>  static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
+>  {
+> -	u64 runtime = 0, slice = sched_cfs_bandwidth_slice();
+> +	u64 runtime = 0;
+>  	unsigned long flags;
+>  	u64 expires;
+> +	struct cfs_rq *cfs_rq, *temp;
+> +	LIST_HEAD(temp_head);
+> +
+> +	local_irq_save(flags);
+> +
+> +	raw_spin_lock(&cfs_b->lock);
+> +	cfs_b->slack_started = false;
+> +	list_splice_init(&cfs_b->slack_cfs_rq, &temp_head);
+> +	raw_spin_unlock(&cfs_b->lock);
+> +
+> +
+> +	/* Gather all left over runtime from all rqs */
+> +	list_for_each_entry_safe(cfs_rq, temp, &temp_head, slack_list) {
+> +		struct rq *rq = rq_of(cfs_rq);
+> +		struct rq_flags rf;
+> +
+> +		rq_lock(rq, &rf);
+> +
+> +		raw_spin_lock(&cfs_b->lock);
+> +		list_del_init(&cfs_rq->slack_list);
+> +		if (!cfs_rq->nr_running && cfs_rq->runtime_remaining > 0 &&
+> +		    cfs_rq->runtime_expires == cfs_b->runtime_expires) {
+> +			cfs_b->runtime += cfs_rq->runtime_remaining;
+> +			cfs_rq->runtime_remaining = 0;
+> +		}
+> +		raw_spin_unlock(&cfs_b->lock);
+> +
+> +		rq_unlock(rq, &rf);
+> +	}
+
+But worse still, you take possibly every rq->lock without ever
+re-enabling IRQs.
+
+>  
+>  	/* confirm we're still not at a refresh boundary */
+> -	raw_spin_lock_irqsave(&cfs_b->lock, flags);
+> +	raw_spin_lock(&cfs_b->lock);
+>  	cfs_b->slack_started = false;
+>  	if (cfs_b->distribute_running) {
+>  		raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
