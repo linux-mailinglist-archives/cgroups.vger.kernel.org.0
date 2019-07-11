@@ -2,130 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A766764DF9
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jul 2019 23:21:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A59065364
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jul 2019 11:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727188AbfGJVVq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Jul 2019 17:21:46 -0400
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:40971 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbfGJVVq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jul 2019 17:21:46 -0400
-Received: by mail-pf1-f169.google.com with SMTP id m30so1674118pff.8;
-        Wed, 10 Jul 2019 14:21:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=siIn1w9IRj9EyAz1dx7Gl8hkgFfIWbx6jNb+pkUBwDM=;
-        b=CWXXPYiJmNO2VkL3MT7DkHV+hmD6kdOoGicSmCBWezxnW3FtZWUaM6vZU1jQNA/eS+
-         ln6xoL5gaBXAKj+Ud0V0NkTKNiTDmbUXXBzRXsgE1yQmVCRot+YPhZcGoM758uw19VmT
-         CnnGu6vGxos82NuqzEfkrNw+TtW7B1jITstDIG5KEQR4BKgB2lIqHSCLaqrsgNMQxsfj
-         Zcpjs6nphhqe+2Bt9te7fqFOQ0J1rBiZI3EyD11sChA1bbYVICRaNWJ6c+cVl2mprSR7
-         4YfoDL5JUBiN7h9J+arYvdtZjXF4lBEAxb5wNcCPLRGk4SlBvVCGts/PESbNS7CE3hqa
-         K6rw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=siIn1w9IRj9EyAz1dx7Gl8hkgFfIWbx6jNb+pkUBwDM=;
-        b=G31mc882SuOiuD0N1mw7JnNKERYDORTa67csrSf2+wZtJS1WbvacojJa08pYUdwVOz
-         SQ18iWt9eVpMRKC9l0/IkrgmigzF/3e7xZNs0cooV7r8aWnzoQlMvzS6WINk0XDeuDaJ
-         B1DDPp918zLoBc+Ukg4YqEvmsBrk+i+erXyX/lfmz+Axk5WngVovw65qFyam/5yNr3Cy
-         VWcnmo/1DCVg2+1qXZ1lYalxQ3UEWTzfjqlyOyifUw4i1kleQ6aAMzx3MsddNSJ4XGK+
-         jZ6dWyhufFjPbP4wgjkuOIzJ2XbOUr0W6Jy08/OH5WpIUSOOaFd4O/r+R+Ft6llzH3Al
-         gsPw==
-X-Gm-Message-State: APjAAAV8u15dOr7ORhUpFdg28PyneAkQtmR/io4PtZVHXMETu2jnT8jf
-        hAOH6V7C+B7rY2HSO5JweFg=
-X-Google-Smtp-Source: APXvYqxQfsexkWldj+RCgTAbmj+xZvqfEumit5Aa+odfoOiHhmjsD1wG+GkD6dTNi1iGZIz2KvODBQ==
-X-Received: by 2002:a63:5550:: with SMTP id f16mr363820pgm.426.1562793705481;
-        Wed, 10 Jul 2019 14:21:45 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:2bbe])
-        by smtp.gmail.com with ESMTPSA id f19sm3851402pfk.180.2019.07.10.14.21.44
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 10 Jul 2019 14:21:44 -0700 (PDT)
-Date:   Wed, 10 Jul 2019 14:21:42 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
-        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH 11/10] block: omit request->pre_start_time_ns if
- !CONFIG_BLK_CGROUP_IOCOST work-conserving porportional controller
-Message-ID: <20190710212142.GP657710@devbig004.ftw2.facebook.com>
-References: <20190710205128.1316483-1-tj@kernel.org>
+        id S1726997AbfGKJAR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jul 2019 05:00:17 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:60700 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726088AbfGKJAR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jul 2019 05:00:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=11;SR=0;TI=SMTPD_---0TWcBEPJ_1562835610;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWcBEPJ_1562835610)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 11 Jul 2019 17:00:11 +0800
+Subject: Re: [PATCH 0/4] per cgroup numa suite
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+To:     Peter Zijlstra <peterz@infradead.org>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mcgrof@kernel.org, keescook@chromium.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org
+References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
+ <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
+Message-ID: <6a050974-30f3-66b6-4c99-c7e376fb84d8@linux.alibaba.com>
+Date:   Thu, 11 Jul 2019 17:00:10 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190710205128.1316483-1-tj@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From e2693136fa64d5c9dde73d2d663bde84f8326877 Mon Sep 17 00:00:00 2001
-From: Tejun Heo <tj@kernel.org>
-Date: Wed, 10 Jul 2019 14:18:12 -0700
+Hi folks,
 
-request->pre_start_time is currently only used by the iocost
-controller.  Let's omit the field if disabled and avoid wasting space
-in struct request.
+How do you think about these patches?
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Suggested-by: Jens Axboe <axboe@kernel.dk>
----
-The git branch is updated accordingly.
+During most of our tests the results show stable improvements, thus
+we consider this as a generic problem and proposed this solution,
+hope to help address the issue.
 
-Thanks.
+Comments are sincerely welcome :-)
 
- block/blk-mq.c         | 2 ++
- include/linux/blkdev.h | 7 +++++++
- 2 files changed, 9 insertions(+)
+Regards,
+Michael Wang
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 90b46988cc02..ce96bcd7e260 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -325,7 +325,9 @@ static struct request *blk_mq_rq_ctx_init(struct blk_mq_alloc_data *data,
- 	RB_CLEAR_NODE(&rq->rb_node);
- 	rq->rq_disk = NULL;
- 	rq->part = NULL;
-+#ifdef CONFIG_BLK_CGROUP_IOCOST
- 	rq->pre_start_time_ns = pre_start_time_ns;
-+#endif
- 	if (blk_mq_need_time_stamp(rq))
- 		rq->start_time_ns = ktime_get_ns();
- 	else
-diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-index 4247a9bc44b7..2425af6d3f5e 100644
---- a/include/linux/blkdev.h
-+++ b/include/linux/blkdev.h
-@@ -194,8 +194,10 @@ struct request {
- 
- 	struct gendisk *rq_disk;
- 	struct hd_struct *part;
-+#ifdef CONFIG_BLK_CGROUP_IOCOST
- 	/* Time that the first bio started allocating this request. */
- 	u64 pre_start_time_ns;
-+#endif
- 	/* Time that this request was allocated for this IO. */
- 	u64 start_time_ns;
- 	/* Time that I/O was submitted to the device. */
-@@ -635,8 +637,13 @@ bool blk_queue_flag_test_and_set(unsigned int flag, struct request_queue *q);
- 	test_bit(QUEUE_FLAG_SCSI_PASSTHROUGH, &(q)->queue_flags)
- #define blk_queue_pci_p2pdma(q)	\
- 	test_bit(QUEUE_FLAG_PCI_P2PDMA, &(q)->queue_flags)
-+
-+#ifdef CONFIG_BLK_CGROUP_IOCOST
- #define blk_queue_rec_prestart(q)	\
- 	test_bit(QUEUE_FLAG_REC_PRESTART, &(q)->queue_flags)
-+#else
-+#define blk_queue_rec_prestart(q)		false
-+#endif
- 
- #define blk_noretry_request(rq) \
- 	((rq)->cmd_flags & (REQ_FAILFAST_DEV|REQ_FAILFAST_TRANSPORT| \
--- 
-2.17.1
-
+On 2019/7/3 上午11:26, 王贇 wrote:
+> During our torturing on numa stuff, we found problems like:
+> 
+>   * missing per-cgroup information about the per-node execution status
+>   * missing per-cgroup information about the numa locality
+> 
+> That is when we have a cpu cgroup running with bunch of tasks, no good
+> way to tell how it's tasks are dealing with numa.
+> 
+> The first two patches are trying to complete the missing pieces, but
+> more problems appeared after monitoring these status:
+> 
+>   * tasks not always running on the preferred numa node
+>   * tasks from same cgroup running on different nodes
+> 
+> The task numa group handler will always check if tasks are sharing pages
+> and try to pack them into a single numa group, so they will have chance to
+> settle down on the same node, but this failed in some cases:
+> 
+>   * workloads share page caches rather than share mappings
+>   * workloads got too many wakeup across nodes
+> 
+> Since page caches are not traced by numa balancing, there are no way to
+> realize such kind of relationship, and when there are too many wakeup,
+> task will be drag from the preferred node and then migrate back by numa
+> balancing, repeatedly.
+> 
+> Here the third patch try to address the first issue, we could now give hint
+> to kernel about the relationship of tasks, and pack them into single numa
+> group.
+> 
+> And the forth patch introduced numa cling, which try to address the wakup
+> issue, now we try to make task stay on the preferred node on wakeup in fast
+> path, in order to address the unbalancing risk, we monitoring the numa
+> migration failure ratio, and pause numa cling when it reach the specified
+> degree.
+> 
+> Michael Wang (4):
+>   numa: introduce per-cgroup numa balancing locality statistic
+>   numa: append per-node execution info in memory.numa_stat
+>   numa: introduce numa group per task group
+>   numa: introduce numa cling feature
+> 
+>  include/linux/memcontrol.h   |  37 ++++
+>  include/linux/sched.h        |   8 +-
+>  include/linux/sched/sysctl.h |   3 +
+>  kernel/sched/core.c          |  37 ++++
+>  kernel/sched/debug.c         |   7 +
+>  kernel/sched/fair.c          | 455 ++++++++++++++++++++++++++++++++++++++++++-
+>  kernel/sched/sched.h         |  14 ++
+>  kernel/sysctl.c              |   9 +
+>  mm/memcontrol.c              |  66 +++++++
+>  9 files changed, 628 insertions(+), 8 deletions(-)
+> 
