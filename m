@@ -2,90 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA167670F5
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 16:04:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 115716714D
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 16:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726967AbfGLOER (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jul 2019 10:04:17 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38588 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726867AbfGLOEQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 10:04:16 -0400
-Received: by mail-qt1-f195.google.com with SMTP id n11so8164759qtl.5
-        for <cgroups@vger.kernel.org>; Fri, 12 Jul 2019 07:04:16 -0700 (PDT)
+        id S1727116AbfGLOZY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jul 2019 10:25:24 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:45583 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726939AbfGLOZY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 10:25:24 -0400
+Received: by mail-pl1-f195.google.com with SMTP id y8so4848888plr.12;
+        Fri, 12 Jul 2019 07:25:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=9L3733if1HuRLL5zZv5eZHlWQiU13iqExsAt1AQHDmY=;
+        b=VSgPlNfdufMwqcv8BXKRQn84MCxQSn/4zstrvTf+cNggal8AgvbiU+yvfRo6INmcRC
+         0bCXNaw4N6SMdHF45IWdRLf2OIkJrk8RNNtk+wLEZMb8rhQmo4nuJF7bbI5cwO0aaBjS
+         L5F5cY0jXiBtmkuyQrZh9eOx53RNk8G4xdjpUHA+LzOmuFQbxd2zvRZ7VkicqO8ACvhF
+         S4F4YqPkbSb1EPWdmUCJn8dczDJf7yNw/VTAQKPtOp1LUXx4pv+4yDXQJX46WJ0CLGgg
+         iX81GXvv0/fMQDBuonE9xsfz2wNDYPx0P3Ao7I4qaFWrN6EQXMafnl6G+B0l0BSF2iOU
+         GN8A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qOSLjOC0a6pOm0G5m4ewIw/B4m7qP1LrJ+Nw6hOt0Ks=;
-        b=AUBNqrdRHeQwYmzGfiuq6mv+qLVSpn+q6VdVOgvBjJM6vBiu2OXeq4T3z1Z1w77Qju
-         XMb+3sI5iuA0yc/j8ss5D8GGnwzNB1h7yzIkC13Xgotzxmo6LaoqMxBKf7Pk7EQ99giL
-         FRENvWonBp8+H4WMX494VcYC3eGnVq8eWW/DM8fBELYhXaNBujTPPo+YT8omK7NtapZB
-         hX7QdNk2IFuWzTlrUv0vAcDHn3N7bxOVqDdGZBJIs6BWhGqNbA4BdCraCeJLEcP8fRFY
-         KM0WAlWkDhYH2IhAsVB2d3tuQb0AlV3VMW8WFdyYeqUYkx5nc/kC/IydlMF8lqMqwPCo
-         C4QA==
-X-Gm-Message-State: APjAAAWX+EGw6odLUEGXsUEeL/vLe7rnP4k09bIUEFSSYAQ6LUV3on47
-        rc6eL2TxBJqrltmntC6ZbztZNYkU9cE=
-X-Google-Smtp-Source: APXvYqw058I4WeqHkGmyQaJoOr3NNaqT1eRI4pdNh/6ynAM4gYk2cFoMchjCUD/MQuh7OK/ujczBLA==
-X-Received: by 2002:aed:2241:: with SMTP id o1mr6518892qtc.233.1562940255726;
-        Fri, 12 Jul 2019 07:04:15 -0700 (PDT)
-Received: from localhost.localdomain ([151.15.230.231])
-        by smtp.gmail.com with ESMTPSA id n184sm3643754qkc.114.2019.07.12.07.04.12
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jul 2019 07:04:14 -0700 (PDT)
-Date:   Fri, 12 Jul 2019 16:04:09 +0200
-From:   Juri Lelli <juri.lelli@redhat.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
-        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
-        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
-        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
-        mathieu.poirier@linaro.org, lizefan@huawei.com,
-        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
-Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
- lock order
-Message-ID: <20190712140409.GB13885@localhost.localdomain>
-References: <20190628080618.522-1-juri.lelli@redhat.com>
- <20190628080618.522-7-juri.lelli@redhat.com>
- <20190628130308.GU3419@hirez.programming.kicks-ass.net>
- <20190701065233.GA26005@localhost.localdomain>
- <20190701082731.GP3402@hirez.programming.kicks-ass.net>
- <20190701145107.GY657710@devbig004.ftw2.facebook.com>
- <20190704084924.GC9099@localhost.localdomain>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9L3733if1HuRLL5zZv5eZHlWQiU13iqExsAt1AQHDmY=;
+        b=NBVMq82lc8zE3b4MLUHOyNwggDXERFRhmDmgwpRgEteetSc2LHpXiniOazTpn1Ne/J
+         /MG2sQ4LdZpyIpdxuRZ7D2a2x9P37h9aVlKa1LnOxUcozBif3/UeZ9mksbe2cxklRSMI
+         ZaID5TDm7zyhq9DXrgaetgxkeedEjBp1o7JiVQfahcRrTA2h2OwDUmW+EOjW7e6sdMtl
+         0ul97fPzlHZhifv6J5Q1Gp9LGIveRzM9UIEDrlxe39PKFownyySubOiQ2LwAx1T41RKu
+         IwzSyJD9myeE5QWzDry1rwN1t3pyGYWqiKG7iJ70uisDwsCCpOHlK7Aou2dm60Wxj5Qa
+         osPA==
+X-Gm-Message-State: APjAAAUpu9cjyO7akQyeDyOqCCitD0QoPrI+FSz4H7b9l7iBggzkQKZm
+        dIYk3ceD0Z/cSb/xH/r/z5w=
+X-Google-Smtp-Source: APXvYqxRUDnMu2b0NEFVFzmVA6ow3YGK/wulCBM5exjcCxQDsgflC+FNsSu/x1MkE39PUa49BC+vNA==
+X-Received: by 2002:a17:902:8207:: with SMTP id x7mr11835394pln.63.1562941523495;
+        Fri, 12 Jul 2019 07:25:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::47b6])
+        by smtp.gmail.com with ESMTPSA id p7sm9100177pfp.131.2019.07.12.07.25.21
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Jul 2019 07:25:22 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 07:25:19 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] MAINTAINERS: add entry for block io cgroup
+Message-ID: <20190712142502.GA680549@devbig004.ftw2.facebook.com>
+References: <156284038698.3851.6531328622774377848.stgit@buzz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190704084924.GC9099@localhost.localdomain>
-User-Agent: Mutt/1.11.3 (2019-02-01)
+In-Reply-To: <156284038698.3851.6531328622774377848.stgit@buzz>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 04/07/19 10:49, Juri Lelli wrote:
-> Hi,
-> 
-> On 01/07/19 07:51, Tejun Heo wrote:
-> > Hello,
-> > 
-> > On Mon, Jul 01, 2019 at 10:27:31AM +0200, Peter Zijlstra wrote:
-> > > IIRC TJ figured it wasn't strictly required to fix the lock invertion at
-> > > that time and they sorted it differently. If I (re)read the thread
-> > > correctly the other day, he didn't have fundamental objections against
-> > > it, but wanted the simpler fix.
-> > 
-> > Yeah I've got no objections to the change itself, it just wasn't
-> > needed at the time.  We've had multiple issues there tho, so please
-> > keep an eye open after the changes get merged.
-> 
-> Should I take this as an indication that you had a look at the set and
-> (apart from Peter's comments) you are OK with them?
-> 
-> If that's the case I will send a v9 out soon. Otherwise I'd kindly ask
-> you to please have a look.
+Hello, Konstantin.
 
-Gentle ping.
+On Thu, Jul 11, 2019 at 01:19:47PM +0300, Konstantin Khlebnikov wrote:
+> +CONTROL GROUP - BLOCK IO CONTROLLER (BLKIO)
+> +L:	cgroups@vger.kernel.org
+> +F:	Documentation/cgroup-v1/blkio-controller.rst
+> +F:	block/blk-cgroup.c
+> +F:	include/linux/blk-cgroup.h
+> +F:	block/blk-throttle.c
+> +F:	block/blk-iolatency.c
+> +F:	block/bfq-cgroup.c
 
-Thanks,
+Given that blkcg changes are often entangled with generic block
+changes and best routed through block tree, I think it'd be useful to
+add the followings.
 
-Juri
+M:      Tejun Heo <tj@kernel.org>
+M:      Jens Axboe <axboe@kernel.dk>
+L:      linux-block@vger.kernel.org
+T:      git git://git.kernel.dk/linux-block
+
+Thanks.
+
+-- 
+tejun
