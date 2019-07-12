@@ -2,21 +2,21 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7F8664E0
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 05:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83EF166527
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 05:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728861AbfGLDRg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jul 2019 23:17:36 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:60155 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728899AbfGLDRg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jul 2019 23:17:36 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TWfas.h_1562901451;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWfas.h_1562901451)
+        id S1729420AbfGLDnW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jul 2019 23:43:22 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:46903 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729293AbfGLDnV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jul 2019 23:43:21 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TWfco61_1562902997;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWfco61_1562902997)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Jul 2019 11:17:32 +0800
-Subject: Re: [PATCH 2/4] numa: append per-node execution info in
- memory.numa_stat
+          Fri, 12 Jul 2019 11:43:18 +0800
+Subject: Re: [PATCH 1/4] numa: introduce per-cgroup numa balancing locality,
+ statistic
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
@@ -25,15 +25,15 @@ Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         Mel Gorman <mgorman@suse.de>, riel@surriel.com
 References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
  <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
- <825ebaf0-9f71-bbe1-f054-7fa585d61af1@linux.alibaba.com>
- <20190711134527.GC3402@hirez.programming.kicks-ass.net>
+ <3ac9b43a-cc80-01be-0079-df008a71ce4b@linux.alibaba.com>
+ <20190711134754.GD3402@hirez.programming.kicks-ass.net>
 From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <e0c38e99-7a01-7a84-2030-6cb963452e81@linux.alibaba.com>
-Date:   Fri, 12 Jul 2019 11:17:31 +0800
+Message-ID: <b027f9cc-edd2-840c-3829-176a1e298446@linux.alibaba.com>
+Date:   Fri, 12 Jul 2019 11:43:17 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
  Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
-In-Reply-To: <20190711134527.GC3402@hirez.programming.kicks-ass.net>
+In-Reply-To: <20190711134754.GD3402@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 8bit
@@ -44,47 +44,36 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-On 2019/7/11 下午9:45, Peter Zijlstra wrote:
-> On Wed, Jul 03, 2019 at 11:29:15AM +0800, 王贇 wrote:
+On 2019/7/11 下午9:47, Peter Zijlstra wrote:
+[snip]
+>> +	rcu_read_lock();
+>> +	memcg = mem_cgroup_from_task(p);
+>> +	if (idx != -1)
+>> +		this_cpu_inc(memcg->stat_numa->locality[idx]);
 > 
->> +++ b/include/linux/memcontrol.h
->> @@ -190,6 +190,7 @@ enum memcg_numa_locality_interval {
->>
->>  struct memcg_stat_numa {
->>  	u64 locality[NR_NL_INTERVAL];
->> +	u64 exectime;
+> I thought cgroups were supposed to be hierarchical. That is, if we have:
 > 
-> Maybe call the field jiffies, because that's what it counts.
+>           R
+> 	 / \
+> 	 A
+> 	/\
+> 	  B
+> 	  \
+> 	   t1
+> 
+> Then our task t1 should be accounted to B (as you do), but also to A and
+> R.
 
-Sure, will be in next version.
+I get the point but not quite sure about this...
+
+Not like pages there are no hierarchical limitation on locality, also tasks
+running in a particular group have no influence to others, not to mention the
+extra overhead, does it really meaningful to account the stuff hierarchically?
 
 Regards,
 Michael Wang
 
 > 
->>  };
->>
->>  #endif
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 2edf3f5ac4b9..d5f48365770f 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -3575,6 +3575,18 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
->>  		seq_printf(m, " %u", jiffies_to_msecs(sum));
->>  	}
->>  	seq_putc(m, '\n');
->> +
->> +	seq_puts(m, "exectime");
->> +	for_each_online_node(nr) {
->> +		int cpu;
->> +		u64 sum = 0;
->> +
->> +		for_each_cpu(cpu, cpumask_of_node(nr))
->> +			sum += per_cpu(memcg->stat_numa->exectime, cpu);
->> +
->> +		seq_printf(m, " %llu", jiffies_to_msecs(sum));
->> +	}
->> +	seq_putc(m, '\n');
->>  #endif
->>
->>  	return 0;
+>> +	rcu_read_unlock();
+>> +}
+>> +#endif
