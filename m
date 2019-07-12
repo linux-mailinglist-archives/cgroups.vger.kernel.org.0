@@ -2,85 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8348666AC5
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 12:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA167670F5
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 16:04:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbfGLKKd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jul 2019 06:10:33 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:34277 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726002AbfGLKKd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 06:10:33 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TWhPUDd_1562926224;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWhPUDd_1562926224)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Jul 2019 18:10:25 +0800
-Subject: Re: [PATCH 1/4] numa: introduce per-cgroup numa balancing locality,
- statistic
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mcgrof@kernel.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        Mel Gorman <mgorman@suse.de>, riel@surriel.com
-References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
- <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
- <3ac9b43a-cc80-01be-0079-df008a71ce4b@linux.alibaba.com>
- <20190711134754.GD3402@hirez.programming.kicks-ass.net>
- <b027f9cc-edd2-840c-3829-176a1e298446@linux.alibaba.com>
- <20190712075815.GN3402@hirez.programming.kicks-ass.net>
- <37474414-1a54-8e3a-60df-eb7e5e1cc1ed@linux.alibaba.com>
- <20190712094214.GR3402@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <f8020f92-045e-d515-360b-faf9a149ab80@linux.alibaba.com>
-Date:   Fri, 12 Jul 2019 18:10:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S1726967AbfGLOER (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jul 2019 10:04:17 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38588 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726867AbfGLOEQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 10:04:16 -0400
+Received: by mail-qt1-f195.google.com with SMTP id n11so8164759qtl.5
+        for <cgroups@vger.kernel.org>; Fri, 12 Jul 2019 07:04:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qOSLjOC0a6pOm0G5m4ewIw/B4m7qP1LrJ+Nw6hOt0Ks=;
+        b=AUBNqrdRHeQwYmzGfiuq6mv+qLVSpn+q6VdVOgvBjJM6vBiu2OXeq4T3z1Z1w77Qju
+         XMb+3sI5iuA0yc/j8ss5D8GGnwzNB1h7yzIkC13Xgotzxmo6LaoqMxBKf7Pk7EQ99giL
+         FRENvWonBp8+H4WMX494VcYC3eGnVq8eWW/DM8fBELYhXaNBujTPPo+YT8omK7NtapZB
+         hX7QdNk2IFuWzTlrUv0vAcDHn3N7bxOVqDdGZBJIs6BWhGqNbA4BdCraCeJLEcP8fRFY
+         KM0WAlWkDhYH2IhAsVB2d3tuQb0AlV3VMW8WFdyYeqUYkx5nc/kC/IydlMF8lqMqwPCo
+         C4QA==
+X-Gm-Message-State: APjAAAWX+EGw6odLUEGXsUEeL/vLe7rnP4k09bIUEFSSYAQ6LUV3on47
+        rc6eL2TxBJqrltmntC6ZbztZNYkU9cE=
+X-Google-Smtp-Source: APXvYqw058I4WeqHkGmyQaJoOr3NNaqT1eRI4pdNh/6ynAM4gYk2cFoMchjCUD/MQuh7OK/ujczBLA==
+X-Received: by 2002:aed:2241:: with SMTP id o1mr6518892qtc.233.1562940255726;
+        Fri, 12 Jul 2019 07:04:15 -0700 (PDT)
+Received: from localhost.localdomain ([151.15.230.231])
+        by smtp.gmail.com with ESMTPSA id n184sm3643754qkc.114.2019.07.12.07.04.12
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 12 Jul 2019 07:04:14 -0700 (PDT)
+Date:   Fri, 12 Jul 2019 16:04:09 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        mathieu.poirier@linaro.org, lizefan@huawei.com,
+        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
+Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
+ lock order
+Message-ID: <20190712140409.GB13885@localhost.localdomain>
+References: <20190628080618.522-1-juri.lelli@redhat.com>
+ <20190628080618.522-7-juri.lelli@redhat.com>
+ <20190628130308.GU3419@hirez.programming.kicks-ass.net>
+ <20190701065233.GA26005@localhost.localdomain>
+ <20190701082731.GP3402@hirez.programming.kicks-ass.net>
+ <20190701145107.GY657710@devbig004.ftw2.facebook.com>
+ <20190704084924.GC9099@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20190712094214.GR3402@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190704084924.GC9099@localhost.localdomain>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 2019/7/12 下午5:42, Peter Zijlstra wrote:
-> On Fri, Jul 12, 2019 at 05:11:25PM +0800, 王贇 wrote:
->>
->>
->> On 2019/7/12 下午3:58, Peter Zijlstra wrote:
->> [snip]
->>>>>
->>>>> Then our task t1 should be accounted to B (as you do), but also to A and
->>>>> R.
->>>>
->>>> I get the point but not quite sure about this...
->>>>
->>>> Not like pages there are no hierarchical limitation on locality, also tasks
->>>
->>> You can use cpusets to affect that.
->>
->> Could you please give more detail on this?
+On 04/07/19 10:49, Juri Lelli wrote:
+> Hi,
 > 
-> Documentation/cgroup-v1/cpusets.txt
+> On 01/07/19 07:51, Tejun Heo wrote:
+> > Hello,
+> > 
+> > On Mon, Jul 01, 2019 at 10:27:31AM +0200, Peter Zijlstra wrote:
+> > > IIRC TJ figured it wasn't strictly required to fix the lock invertion at
+> > > that time and they sorted it differently. If I (re)read the thread
+> > > correctly the other day, he didn't have fundamental objections against
+> > > it, but wanted the simpler fix.
+> > 
+> > Yeah I've got no objections to the change itself, it just wasn't
+> > needed at the time.  We've had multiple issues there tho, so please
+> > keep an eye open after the changes get merged.
 > 
-> Look for mems_allowed.
-
-This is the attribute belong to cpuset cgroup isn't it?
-
-Forgive me but I have no idea on how to combined this
-with memory cgroup's locality hierarchical update...
-parent memory cgroup do not have influence on mems_allowed
-to it's children, correct?
-
-What about we just account the locality status of child
-memory group into it's ancestors?
-
-Regards,
-Michael Wang
-
+> Should I take this as an indication that you had a look at the set and
+> (apart from Peter's comments) you are OK with them?
 > 
+> If that's the case I will send a v9 out soon. Otherwise I'd kindly ask
+> you to please have a look.
+
+Gentle ping.
+
+Thanks,
+
+Juri
