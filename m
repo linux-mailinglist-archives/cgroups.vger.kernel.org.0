@@ -2,93 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D5B6656C
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 06:03:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D039266800
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jul 2019 09:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726388AbfGLED3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jul 2019 00:03:29 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:46834 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725268AbfGLED3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 00:03:29 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TWfcT1L_1562904203;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TWfcT1L_1562904203)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 12 Jul 2019 12:03:24 +0800
-Subject: Re: [PATCH 3/4] numa: introduce numa group per task group
-To:     Peter Zijlstra <peterz@infradead.org>
+        id S1726231AbfGLHxa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jul 2019 03:53:30 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:55070 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726230AbfGLHx3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jul 2019 03:53:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yBJq9CDSWPk31o8rRIJukShqhxBMe0EUUUqQoPxta+0=; b=Qj1RfR/O8WufKxSqWgw5cNtHdP
+        EiGCtkdhnfwmBHRpq16DvuUT5c9pJocq2KVloiR2wNQRjNvSizqzigMTOuvCIrABB4VRLg6nt0atI
+        +9JPW+rbGxfKWv0Dwzg/13BWWqMwyt912a0wnbJ/4Q+pt5oU9IqVCIdxofj9cz2RmTvKze+nm2k9S
+        IzDbo38zYGjtuGmMto/J0ZEiGXsNyHPTCL3lyS5bh+k6uG3uZl8ODKmLzV2S1U/NKL3x+bBuuHwtH
+        e/TOKwj9nw7Mi5MRQPOuizEX9cEzb6LV9O7izC5X3w9vMRSmw8OpUkwxZjXoaIsqnY2/nJ3Av7SRr
+        wE54IWHA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hlqMq-0004VU-NY; Fri, 12 Jul 2019 07:53:22 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C950520B2B4C6; Fri, 12 Jul 2019 09:53:18 +0200 (CEST)
+Date:   Fri, 12 Jul 2019 09:53:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
 Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         Ingo Molnar <mingo@redhat.com>, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, mcgrof@kernel.org, keescook@chromium.org,
         linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
         Mel Gorman <mgorman@suse.de>, riel@surriel.com
+Subject: Re: [PATCH 4/4] numa: introduce numa cling feature
+Message-ID: <20190712075318.GM3402@hirez.programming.kicks-ass.net>
 References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
  <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
- <93cf9333-2f9a-ca1e-a4a6-54fc388d1673@linux.alibaba.com>
- <20190711141038.GE3402@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Message-ID: <50a5ae9e-6dbd-51b6-a374-1b0e45588abf@linux.alibaba.com>
-Date:   Fri, 12 Jul 2019 12:03:23 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+ <9a440936-1e5d-d3bb-c795-ef6f9839a021@linux.alibaba.com>
+ <20190711142728.GF3402@hirez.programming.kicks-ass.net>
+ <82f42063-ce51-dd34-ba95-5b32ee733de7@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20190711141038.GE3402@hirez.programming.kicks-ass.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <82f42063-ce51-dd34-ba95-5b32ee733de7@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri, Jul 12, 2019 at 11:10:08AM +0800, 王贇 wrote:
+> On 2019/7/11 下午10:27, Peter Zijlstra wrote:
 
-
-On 2019/7/11 下午10:10, Peter Zijlstra wrote:
-> On Wed, Jul 03, 2019 at 11:32:32AM +0800, 王贇 wrote:
->> By tracing numa page faults, we recognize tasks sharing the same page,
->> and try pack them together into a single numa group.
->>
->> However when two task share lot's of cache pages while not much
->> anonymous pages, since numa balancing do not tracing cache page, they
->> have no chance to join into the same group.
->>
->> While tracing cache page cost too much, we could use some hints from
+> >> Thus we introduce the numa cling, which try to prevent tasks leaving
+> >> the preferred node on wakeup fast path.
+> > 
+> > 
+> >> @@ -6195,6 +6447,13 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+> >>  	if ((unsigned)i < nr_cpumask_bits)
+> >>  		return i;
+> >>
+> >> +	/*
+> >> +	 * Failed to find an idle cpu, wake affine may want to pull but
+> >> +	 * try stay on prev-cpu when the task cling to it.
+> >> +	 */
+> >> +	if (task_numa_cling(p, cpu_to_node(prev), cpu_to_node(target)))
+> >> +		return prev;
+> >> +
+> >>  	return target;
+> >>  }
+> > 
+> > Select idle sibling should never cross node boundaries and is thus the
+> > entirely wrong place to fix anything.
 > 
-> I forgot; where again do we skip shared pages? task_numa_work() doesn't
-> seem to skip file vmas.
+> Hmm.. in our early testing the printk show both select_task_rq_fair() and
+> task_numa_find_cpu() will call select_idle_sibling with prev and target on
+> different node, thus we pick this point to save few lines.
 
-That's the page cache generated by file read/write, rather than the pages
-for file mapping, pages of memory to support IO also won't be considered as
-shared between tasks since they don't belong to any particular task, but may
-serving multiples.
+But it will never return @prev if it is not in the same cache domain as
+@target. See how everything is gated by:
 
-> 
->> userland and cpu cgroup could be a good one.
->>
->> This patch introduced new entry 'numa_group' for cpu cgroup, by echo
->> non-zero into the entry, we can now force all the tasks of this cgroup
->> to join the same numa group serving for task group.
->>
->> In this way tasks are more likely to settle down on the same node, to
->> share closer cpu cache and gain benefit from NUMA on both file/anonymous
->> pages.
->>
->> Besides, when multiple cgroup enabled numa group, they will be able to
->> exchange task location by utilizing numa migration, in this way they
->> could achieve single node settle down without breaking load balance.
-> 
-> I dislike cgroup only interfaces; it there really nothing else we could
-> use for this?
+  && cpus_share_cache(x, target)
 
-Me too... while at this moment that's the best approach we have got, we also
-tried to use separately module to handle these automatically, but this need
-a very good understanding of the system, configuration and workloads which
-only known by the owner.
+> But if the semantics of select_idle_sibling() is to return cpu on the same
+> node of target, what about move the logical after select_idle_sibling() for
+> the two callers?
 
-So maybe just providing the functionality and leave the choice to user is not
-that bad?
-
-Regards,
-Michael Wang
-
-> 
+No, that's insane. You don't do select_idle_sibling() to then ignore the
+result. You have to change @target before calling select_idle_sibling().
