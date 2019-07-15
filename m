@@ -2,67 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D56B868768
-	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2019 12:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B28786889B
+	for <lists+cgroups@lfdr.de>; Mon, 15 Jul 2019 14:10:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729544AbfGOKxN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Jul 2019 06:53:13 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37295 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729591AbfGOKxM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Jul 2019 06:53:12 -0400
-Received: by mail-pf1-f194.google.com with SMTP id 19so7244257pfa.4
-        for <cgroups@vger.kernel.org>; Mon, 15 Jul 2019 03:53:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=RmuPYMJj1ksPxWp3Nnt3MSsohZ+f2rEHBoYqFA6TG4g=;
-        b=L/TXjvvawlEMRvGZz1BdH7pYqpg4k5KxccyKMl4sOmDHfiAWrbQh9yTos5h+WZAyw0
-         rYI3JLO38KaNJUS50DK6KIJM5iMKWOd3JMoeqwMghSaRPm/UBTIkccYObTnlnGxbpGnh
-         mR078z/cyD+vJsLd3XkK2WbluEzd+A/CvzDkS/OC+WhqBNAI+Ganmfzv0QkhJGC/PHgu
-         k3XdzWwbZJ2Azsb8z4dOaCUdJ+AruuFMX6jH6SNBxitl/MICdDh8/AYBmSwUnbpFqrZX
-         qEXfq1ji91RhEHBuONqdYilwUDO4jdJSP5rNOFfzx2vfd/8gf/0YXwfdPBo/D8+S8+J+
-         QAMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=RmuPYMJj1ksPxWp3Nnt3MSsohZ+f2rEHBoYqFA6TG4g=;
-        b=Fxjy2HwPrEQ6NhSaWVlNVaQ9elyXmDxhLSyTpDnBmfuV0YNPL4+vHHG90QhWorZIhP
-         cNe9W0IH1dfDOyiyzhPAPI8WICwrtQaET6D9pc5OYqREma3VkA3IQ+ppnY3qRFRMsRCU
-         LbKKLQV5XRDpdOPBksq08EYwcH227V5GbpJNtmtWraT7LHlVlHrW0k8XQZgKtm78uXkd
-         ZnLXY6Ho+qWSPrropAb5cX8IyRIFXQb3FafrUAuTOHLNKjtJrA+m7XNvN9b2mofzQkkP
-         5BanzI7PUxxOLqIAFRk05LLfQkaZ9eH17X3o6PRYadM+JurxivwAM+TfENW8qC2D9lF9
-         bwqg==
-X-Gm-Message-State: APjAAAX9+njtZcbi0VSxu9vTSaG0qUKgMtlCY5VLpXCL5q2dkIImKoxP
-        JqGADwjZsr2pUMefbi752d0pgf7A+isAkypvMXw=
-X-Google-Smtp-Source: APXvYqwshhSK0muF5Dfo6Nz1SyvuoAsS60ro3t+8umLpaCIrJ8c+KcmjKXQk6Vn1CYjHePVWrr/y8PZzQuqvshPD9ds=
-X-Received: by 2002:a63:58c:: with SMTP id 134mr27425993pgf.106.1563187991603;
- Mon, 15 Jul 2019 03:53:11 -0700 (PDT)
+        id S1729966AbfGOMKc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Jul 2019 08:10:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59806 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729827AbfGOMKb (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 15 Jul 2019 08:10:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1D765AF0B;
+        Mon, 15 Jul 2019 12:10:30 +0000 (UTC)
+Date:   Mon, 15 Jul 2019 14:10:25 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
+        hannes@cmpxchg.org, vdavydov.dev@gmail.com, mcgrof@kernel.org,
+        mhocko@kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>, riel@surriel.com,
+        Mel Gorman <mgorman@suse.de>, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] numa: introduce per-cgroup numa balancing locality,
+ statistic
+Message-ID: <20190715121025.GN9035@blackbody.suse.cz>
+References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
+ <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
+ <3ac9b43a-cc80-01be-0079-df008a71ce4b@linux.alibaba.com>
+ <20190711134754.GD3402@hirez.programming.kicks-ass.net>
+ <b027f9cc-edd2-840c-3829-176a1e298446@linux.alibaba.com>
+ <20190712075815.GN3402@hirez.programming.kicks-ass.net>
+ <37474414-1a54-8e3a-60df-eb7e5e1cc1ed@linux.alibaba.com>
+ <20190712094214.GR3402@hirez.programming.kicks-ass.net>
+ <f8020f92-045e-d515-360b-faf9a149ab80@linux.alibaba.com>
 MIME-Version: 1.0
-Received: by 2002:a17:90a:b78d:0:0:0:0 with HTTP; Mon, 15 Jul 2019 03:53:11
- -0700 (PDT)
-From:   Donald Douglas <ddouglasng@gmail.com>
-Date:   Mon, 15 Jul 2019 03:53:11 -0700
-Message-ID: <CALVR28E2B-syyGKK-rb3Per2WdVKq4M3eTdj1DYoqjv5xbMZtQ@mail.gmail.com>
-Subject: Kindly Respond
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <f8020f92-045e-d515-360b-faf9a149ab80@linux.alibaba.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hello Yun.
 
-I am Barr Fredrick Mbogo a business consultant i have a lucrative
-business to discuss with you from the Eastern part of Africa Uganda to
-be precise aimed at agreed percentage upon your acceptance of my hand
-in business and friendship. Kindly respond to me if you are interested
-to partner with me for an update. Very important.
+On Fri, Jul 12, 2019 at 06:10:24PM +0800, 王贇  <yun.wang@linux.alibaba.com> wrote:
+> Forgive me but I have no idea on how to combined this
+> with memory cgroup's locality hierarchical update...
+> parent memory cgroup do not have influence on mems_allowed
+> to it's children, correct?
+I'd recommend to look at the v2 of the cpuset controller that implements
+the hierarchical behavior among configured memory node sets.
 
-Yours Sincerely,
-Donald Douglas,
-For,
-Barr Frederick Mbogo
-Legal Consultant.
-Reply to: barrfredmbogo@consultant.com
+(My comment would better fit to 
+    [PATCH 3/4] numa: introduce numa group per task group
+IIUC, you could use cpuset controller to constraint memory nodes.)
+
+For the second part (accessing numa statistics, i.e. this patch), I
+wonder wheter this information wouldn't be better presented under the
+cpuset controller too.
+
+HTH,
+Michal
