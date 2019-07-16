@@ -2,106 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6287B69F42
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2019 00:57:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60DE56A08F
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2019 04:41:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731451AbfGOW5e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Jul 2019 18:57:34 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:34980 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730954AbfGOW5d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Jul 2019 18:57:33 -0400
-Received: by mail-wm1-f67.google.com with SMTP id l2so16743573wmg.0
-        for <cgroups@vger.kernel.org>; Mon, 15 Jul 2019 15:57:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7VSl4WMlmc5jmN5dNuL2dV5fcPROFvmtmokhA+NF36I=;
-        b=FupgII/o9bbimWyh0bR/UkrMCpIcBrEpJ9ja2EO6K5VA/hOxrdLwUrKeytS0QyP0Y0
-         OhXsBBkmUiEHwe9vHBVKjTY1KbQ8/G/lcXfmnhG5kapCPmdHusIlp+cwSXAld52Wnqa/
-         nRh649s69N06QxHZL6McwutEtJnh9SDnxj+SU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7VSl4WMlmc5jmN5dNuL2dV5fcPROFvmtmokhA+NF36I=;
-        b=Cw6vVQWyq3mUZwJbekqyMzesT0Rl+EhmGLjSnS9/zrKLNjDx0rhqUAGAD9OmWEYuXj
-         pQErLEBYoKxT3ccXsVKqwqJxcj5h1vzZr0LJd9/mBmTycHzxgT9zUOWxBMiAP5JjhWYj
-         JpYamO6+n5V/DrRdDoM8Kn02Wwf+u3qpLh0Tj2pRUKGSmL830S6l3RWKSgmK6L5IATKG
-         5grARr/cHmGIg7ZPmZvIv9wlUPJxmEElriVb4KSRiFqROiT+0kttMPNoDymrxCf4XcLp
-         uKbdQI6BRsdoJmciT2k+l8Jiw/uCGx3O0IqjUkjOuKNmbnfTyw3K3QvZnreM2J3e4yWp
-         TsCQ==
-X-Gm-Message-State: APjAAAXZZwyrQ8UGU/GxDao9ZaMaPLK11gobuYvMwnp6mmARCstEpeWE
-        CNSwijKZ82Wa5x3Klr/d8NhmKQ==
-X-Google-Smtp-Source: APXvYqy3qZPv7NxVmAgsG8P+5YpErVdVg3oEYNfChcxlHtHFxfOQT0uIAVxdzoD2pqCzf24bVM8CQw==
-X-Received: by 2002:a7b:c766:: with SMTP id x6mr27363436wmk.40.1563231451449;
-        Mon, 15 Jul 2019 15:57:31 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:180::1:d8da])
-        by smtp.gmail.com with ESMTPSA id h8sm17918169wmf.12.2019.07.15.15.57.30
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 15 Jul 2019 15:57:30 -0700 (PDT)
-Date:   Mon, 15 Jul 2019 23:57:29 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Dennis Zhou <dennis@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH] mm: Proportional memory.{low,min} reclaim
-Message-ID: <20190715225729.GA19191@chrisdown.name>
-References: <20190124014455.GA6396@chrisdown.name>
- <20190128210031.GA31446@castle.DHCP.thefacebook.com>
- <20190128214213.GB15349@chrisdown.name>
- <20190128215230.GA32069@castle.DHCP.thefacebook.com>
- <20190715153527.86a3f6e65ecf5d501252dbf1@linux-foundation.org>
+        id S1730630AbfGPCln (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Jul 2019 22:41:43 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:35228 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729512AbfGPClm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Jul 2019 22:41:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0TX1EVd9_1563244897;
+Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TX1EVd9_1563244897)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 16 Jul 2019 10:41:37 +0800
+Subject: Re: [PATCH 1/4] numa: introduce per-cgroup numa balancing locality,
+ statistic
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, keescook@chromium.org,
+        hannes@cmpxchg.org, vdavydov.dev@gmail.com, mcgrof@kernel.org,
+        mhocko@kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>, riel@surriel.com,
+        Mel Gorman <mgorman@suse.de>, cgroups@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
+ <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
+ <3ac9b43a-cc80-01be-0079-df008a71ce4b@linux.alibaba.com>
+ <20190711134754.GD3402@hirez.programming.kicks-ass.net>
+ <b027f9cc-edd2-840c-3829-176a1e298446@linux.alibaba.com>
+ <20190712075815.GN3402@hirez.programming.kicks-ass.net>
+ <37474414-1a54-8e3a-60df-eb7e5e1cc1ed@linux.alibaba.com>
+ <20190712094214.GR3402@hirez.programming.kicks-ass.net>
+ <f8020f92-045e-d515-360b-faf9a149ab80@linux.alibaba.com>
+ <20190715121025.GN9035@blackbody.suse.cz>
+From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Message-ID: <ecd21563-539c-06b1-92f2-26a111163174@linux.alibaba.com>
+Date:   Tue, 16 Jul 2019 10:41:36 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20190715153527.86a3f6e65ecf5d501252dbf1@linux-foundation.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20190715121025.GN9035@blackbody.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hey Andrew,
+Hi Michal,
 
-Andrew Morton writes:
->On Mon, 28 Jan 2019 21:52:40 +0000 Roman Gushchin <guro@fb.com> wrote:
->
->> > Hmm, this isn't really a common situation that I'd thought about, but it
->> > seems reasonable to make the boundaries when in low reclaim to be between
->> > min and low, rather than 0 and low. I'll add another patch with that. Thanks
->>
->> It's not a stopper, so I'm perfectly fine with a follow-up patch.
->
->Did this happen?
+Thx for the comments :-)
 
-Yes, that's "mm, memcg: make memory.emin the baseline for utilisation 
-determination" :-)
+On 2019/7/15 下午8:10, Michal Koutný wrote:
+> Hello Yun.
+> 
+> On Fri, Jul 12, 2019 at 06:10:24PM +0800, 王贇  <yun.wang@linux.alibaba.com> wrote:
+>> Forgive me but I have no idea on how to combined this
+>> with memory cgroup's locality hierarchical update...
+>> parent memory cgroup do not have influence on mems_allowed
+>> to it's children, correct?
+> I'd recommend to look at the v2 of the cpuset controller that implements
+> the hierarchical behavior among configured memory node sets.
 
->I'm still trying to get this five month old patchset unstuck :(.
+Actually whatever the memory node sets or cpu allow sets is, it will
+take effect on task's behavior regarding memory location and cpu
+location, while the locality only care about the results rather than
+the sets.
 
-Thank you for your help. The patches are stable and proven to do what they're 
-intended to do at scale (both shown by the test results, and production use 
-inside FB at scale).
+For example if we bind tasks to cpus of node 0 and memory allow only
+the node 1, by cgroup controller or madvise, then they will running
+on node 0 with all the memory on node 1, on each PF for numa balancing,
+the task will access page on node 1 from node 0 remotely, so the
+locality will always be 0.
 
->I do have a note here that mhocko intended to take a closer look but I
->don't recall whether that happened.
->
->I could
->
->a) say what the hell and merge them or
->b) sit on them for another cycle or
->c) drop them and ask Chris for a resend so we can start again.
+> 
+> (My comment would better fit to 
+>     [PATCH 3/4] numa: introduce numa group per task group
+> IIUC, you could use cpuset controller to constraint memory nodes.)
+> 
+> For the second part (accessing numa statistics, i.e. this patch), I
+> wonder wheter this information wouldn't be better presented under the
+> cpuset controller too.
 
-Is there any reason to resend? As far as I know these patches are good to go.  
-I'm happy to rebase them, as long as it doesn't extend the time they're being 
-sat on. I don't see anything changing before the next release, though, and I 
-feel any reviews are clearly not coming at this series with any urgency.
+Yeah, we realized the cpu cgroup could be a better place to hold these
+new statistics, both locality and exectime are task's running behavior,
+related to memory location but not the memory behavior, will apply in
+next version.
 
-Thanks for the poke on this, I appreciate it.
+Regards,
+Michael Wang
+
+> 
+> HTH,
+> Michal
+> 
