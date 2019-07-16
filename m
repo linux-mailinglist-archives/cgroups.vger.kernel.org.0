@@ -2,112 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB8B26AAD7
-	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2019 16:49:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB4076ABE1
+	for <lists+cgroups@lfdr.de>; Tue, 16 Jul 2019 17:36:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387839AbfGPOsx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Jul 2019 10:48:53 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:33068 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725926AbfGPOsw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Jul 2019 10:48:52 -0400
-Received: by mail-lf1-f65.google.com with SMTP id x3so13995789lfc.0
-        for <cgroups@vger.kernel.org>; Tue, 16 Jul 2019 07:48:51 -0700 (PDT)
+        id S1728137AbfGPPgh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Jul 2019 11:36:37 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:37559 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbfGPPgg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Jul 2019 11:36:36 -0400
+Received: by mail-pg1-f193.google.com with SMTP id g15so9632189pgi.4;
+        Tue, 16 Jul 2019 08:36:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=YrNz8Q0qPVQBIoGob+UcRjTxZM1rMVhgoGUsAEtnBd8=;
-        b=nRiNC+kUdj8lsYEzkcic81q9xM1RzrwfOcHBr5/kNF0xZPu/wF9Vuhh3dG+c5MjMsB
-         Lcd+uU1Eyy9SGkEH1qTwGyP5MmWQw80swJjOgDqnNzvvPSbELxtkfVNzxvC1rzKPff4T
-         nlkrn59+VV4ygIjhgauMHTsYBOdeAARNubjpDOia/L0U+3Q449nuF7uWDDAAdvL1dmFd
-         wJkmpbOwdAES6uGqXCQbVrzRu18SfRx3imvYjibztYVB/oUecv5Q1nVe3IgQqHZsjfPC
-         c+pHZCA00FHgqIAk0IDcmvCtqYbkEEM0TRO78bDpZYR17llbBNgvigXKjGMP63jnccZl
-         Rtog==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=Rkr1cM2tkiVjVeg3QaVTaa27A8PkbBvry/gW4kLkkZo=;
+        b=QPXD/nW75d/To43UoaPRd46yJMqyRqYx84yCkV48ArLvUhJsr81fCDsaOReW/mntY4
+         RoUEInISzJzFjjgiiNXOa/dFxR7Hzb8s9QWuJEXbDpAjuUW8qLSOa3vp4DB2Du7ikDQx
+         kdo3OcgremMaklw/9W7tJleL438pee+faQN3g7CyoM/kHu0ijiYHegsvSSzASOp2/+LL
+         bHrQXIPE9qoKfDbqjX+9GC1V1nPuLxGcNXYcNTRg892CVHTum+xRz/WOyDmpD9br0oYT
+         o8XwOp8uuAu3ggxnWxmjeLqw+A7zojyphIG3Z2MqJ6olNNctQKECDqK4AOufZ0WUHwvf
+         ANng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YrNz8Q0qPVQBIoGob+UcRjTxZM1rMVhgoGUsAEtnBd8=;
-        b=TfpykDrgGWtVWNoWJUBSoyr/TozjMOa/8J1UvYoCP5czefIznNHcCay4Wo9NtpsZax
-         RQ+Vi7dz2OtVz44CkPD/ChHKHU+E6uPIxvvoGcsHJ2yS12vbkqne7kvVOUlhkt/+9ZGq
-         SdqCq3zYVPCNk5tAdj+DhLReCFxJ+Si5Pyof8GMrOfII1GfKXcveWHUNM4Tw2ot8uJ/h
-         8GybzxRwE9E1eCerXqlgE6w7TdNZcWiNAbj7Aicxk93rv84QoKaEltTg+X0+bDzhUzhs
-         zZo8JweIw216XiYxTEJOF8qbzlPazvst+LHIe8M4pJ0yiXyF34oEmpjnprY66xdvmGBs
-         WsNw==
-X-Gm-Message-State: APjAAAUU0QuUz04y1BBsSMPxrvIz/bCQJO6PVjkV+B58WbYGAVH1RY76
-        10h93sgWOrCX8St0iUpsj/PYnO5foQREn3o78EbgWA==
-X-Google-Smtp-Source: APXvYqzwgfoA/O0/6VCpe6UiVXMfT4oG6b+Xw+pP/6lwm4luF7oDF7cnWd0k0s/a94sofLAj5fHQ1EasPXvqmHlPG74=
-X-Received: by 2002:a19:ed0c:: with SMTP id y12mr14444159lfy.191.1563288530642;
- Tue, 16 Jul 2019 07:48:50 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=Rkr1cM2tkiVjVeg3QaVTaa27A8PkbBvry/gW4kLkkZo=;
+        b=chEVVX6LWzXfTJvu/TDufFD08ERd8qi8y+w1tk2Z78VotgW6QBEhuemAM6Kxmc6KEj
+         plauadxiZgGqxFMyLh3Lnd23ZtlLDYgU4Leuk7NsR4RQRuuGL3h3SjmIC/XJ0/ebYlV5
+         AI4XTHR+QvdcK4YQf1Ov+NCntOSdJ/sd4ZuEbXV6sPfgWYm/zbWbe4jGBW0W0vbu1hc+
+         EWFvocHJpWCL59vKWaHiie1ssDgOSv+74qkChmn+AG/614vx27qmGmE/yHkUEFLNA23j
+         MURI41cdRjR/o23Kb9puX/3VW4McDpvGRdRND6vq2je1JKtDBLulS+dkLS3qLLom7wcl
+         9rAw==
+X-Gm-Message-State: APjAAAXjylL0XjdxK63d7KB9gnVieQ/EpDygHrj9VPWSLN2XSibir/oW
+        0TA0aQEyAMtKGu53HRF506o=
+X-Google-Smtp-Source: APXvYqxqjICYy2wgQAyfVEsWbMRZ2XhKMky42PgJKXXhPuTAwsdNMpyVPxKFiAlYvIxBfC5n1IkO+Q==
+X-Received: by 2002:a17:90a:26ea:: with SMTP id m97mr37461305pje.59.1563291395785;
+        Tue, 16 Jul 2019 08:36:35 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:4779])
+        by smtp.gmail.com with ESMTPSA id m31sm25660642pjb.6.2019.07.16.08.36.34
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jul 2019 08:36:35 -0700 (PDT)
+Date:   Tue, 16 Jul 2019 08:36:33 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Juri Lelli <juri.lelli@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>, mingo@redhat.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        mathieu.poirier@linaro.org, lizefan@huawei.com,
+        cgroups@vger.kernel.org, Prateek Sood <prsood@codeaurora.org>
+Subject: Re: [PATCH v8 6/8] cgroup/cpuset: Change cpuset_rwsem and hotplug
+ lock order
+Message-ID: <20190716153633.GA696309@devbig004.ftw2.facebook.com>
+References: <20190628080618.522-1-juri.lelli@redhat.com>
+ <20190628080618.522-7-juri.lelli@redhat.com>
+ <20190628130308.GU3419@hirez.programming.kicks-ass.net>
+ <20190701065233.GA26005@localhost.localdomain>
+ <20190701082731.GP3402@hirez.programming.kicks-ass.net>
+ <20190701145107.GY657710@devbig004.ftw2.facebook.com>
+ <20190704084924.GC9099@localhost.localdomain>
+ <20190712140409.GB13885@localhost.localdomain>
 MIME-Version: 1.0
-References: <20190405174708.1010-1-guro@fb.com> <20190405174708.1010-7-guro@fb.com>
-In-Reply-To: <20190405174708.1010-7-guro@fb.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Tue, 16 Jul 2019 20:18:39 +0530
-Message-ID: <CA+G9fYvz6MA0N8GgwY5QNdWBAw+XT9QcmwnABsSpjLnwz_jLzA@mail.gmail.com>
-Subject: Re: [PATCH v10 6/9] kselftests: cgroup: add freezer controller self-tests
-To:     Roman Gushchin <guroan@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
-        kernel-team@fb.com, cgroups@vger.kernel.org,
-        open list <linux-kernel@vger.kernel.org>,
-        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190712140409.GB13885@localhost.localdomain>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Roman,
+On Fri, Jul 12, 2019 at 04:04:09PM +0200, Juri Lelli wrote:
+> > Should I take this as an indication that you had a look at the set and
+> > (apart from Peter's comments) you are OK with them?
+> > 
+> > If that's the case I will send a v9 out soon. Otherwise I'd kindly ask
+> > you to please have a look.
+> 
+> Gentle ping.
 
-Just want to share information here on what we notice on running this test case,
+Sorry about the late response.  Yes, I have no objection to the change
+but can you please cc Waiman Long on the next round?
 
-On Fri, 5 Apr 2019 at 23:17, Roman Gushchin <guroan@gmail.com> wrote:
->
-> This patch implements 9 tests for the freezer controller for
-> cgroup v2:
-...
-> 6) ptrace test: the test checks that it's possible to attach to
-> a process in a frozen cgroup, get some information and detach, and
-> the cgroup will remain frozen.
+Thanks.
 
-selftests cgroup test_freezer failed because of the sys entry path not found.
- Cgroup /sys/fs/cgroup/unified/cg_test_ptrace isn't frozen
-/sys/fs/cgroup/unified/cg_test_ptrace: isn't_frozen #
-# not ok 6 test_cgfreezer_ptrace
-
-This test case fails intermittently.
-
-Test output:
--------------
-# selftests cgroup test_freezer
-cgroup: test_freezer_ #
-# Cgroup /sys/fs/cgroup/unified/cg_test_ptrace isn't frozen
-/sys/fs/cgroup/unified/cg_test_ptrace: isn't_frozen #
-# ok 1 test_cgfreezer_simple
-1: test_cgfreezer_simple_ #
-# ok 2 test_cgfreezer_tree
-2: test_cgfreezer_tree_ #
-# ok 3 test_cgfreezer_forkbomb
-3: test_cgfreezer_forkbomb_ #
-# ok 4 test_cgfreezer_rmdir
-4: test_cgfreezer_rmdir_ #
-# ok 5 test_cgfreezer_migrate
-5: test_cgfreezer_migrate_ #
-# not ok 6 test_cgfreezer_ptrace
-ok: 6_test_cgfreezer_ptrace #
-# ok 7 test_cgfreezer_stopped
-7: test_cgfreezer_stopped_ #
-# ok 8 test_cgfreezer_ptraced
-8: test_cgfreezer_ptraced_ #
-# ok 9 test_cgfreezer_vfork
-9: test_cgfreezer_vfork_ #
-[FAIL] 3 selftests cgroup test_freezer
-selftests: cgroup_test_freezer [FAIL]
-
-Test results link,
-https://qa-reports.linaro.org/lkft/linux-mainline-oe/tests/kselftest/cgroup_test_freezer?page=1
-
-- Naresh
+-- 
+tejun
