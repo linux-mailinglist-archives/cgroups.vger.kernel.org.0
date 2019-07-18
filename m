@@ -2,96 +2,208 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E06E56CF48
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2019 15:59:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818F46D39B
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2019 20:20:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727687AbfGRN7U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Jul 2019 09:59:20 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:37325 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726608AbfGRN7U (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Jul 2019 09:59:20 -0400
-Received: by mail-pl1-f193.google.com with SMTP id b3so13946659plr.4;
-        Thu, 18 Jul 2019 06:59:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=NUBO4YCRDgiN4UTvulVlnqUREX1vo2A5l3XRIoGqGME=;
-        b=HB2wxzPrDEbYvHZRxbCo9QRYUEqFFdl/rLdSPDNQYHaEXWjZkxMi5D3ZDvSHU+GimH
-         SjcBOAyXrOFaRY0/xrjsItgWCiNyLkHR22zMFkHeN5NIyS9rLfXrSGDxiRtB3m76QUSe
-         /zMrEvjf8vwCUkix56WOcpeoCu3cMSS8jTI5uDV9f7v2E+6pf01BfrasSPbmS1t2lb0d
-         jIylXQGdbBV6wsnHLlR0FIX4ZevsifJ+0fXpE9MeaNqosdEUDzHJZmINobNAcB5l20d8
-         C+arXOCsEGPjD+C3b/NqjC0jhOHPsaVVIwQx0NzkHOVSIdU5STuQzJ1UChfJRB7Mhe9y
-         dbyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=NUBO4YCRDgiN4UTvulVlnqUREX1vo2A5l3XRIoGqGME=;
-        b=fvSLcgTL6BK0k1H/x/TiRCGME4y7Iyd9IVib1+OC6syqTdV0V+SUYR3nJ3DyMck3yL
-         hM2K2Vm6C7ScTh4Q6bdHrHFHIYKJpqKiNwCQYdF8OBs3PMPnKvmB3ts4XyTaHAVL2Kvl
-         v8LwWulHa898iuwetIcv0LpsUUGFc2VkLvXVI5GeU0Y7kFtOe3h3iF4nFthyD+mJiCoG
-         VcNYxiAzjetfi2xptnpNV4awsOhPijoZkrA+QseDB9HxH/wwAY4N7NlzU0GM9DKJRorZ
-         ijRc8hnAJY0FblhLbuO+uC8EadoR2425nXSahTVQj/q34bP3N+gXIAxufzcVN8BT0CSC
-         s4cA==
-X-Gm-Message-State: APjAAAWOWIHuHTuH8YGMEYDqlPo5CTeChBzcemrS5rdqU4NbYTHCU1tI
-        pgM6o+eGGnVpNbX9+mxV5s8=
-X-Google-Smtp-Source: APXvYqx173fSB7lx9dKAPXlsiipxa5JyR/hpYuhUgImVW+wGnZmLIzDlKvpQwh4ZL+yVrTeDqFz9yg==
-X-Received: by 2002:a17:902:5c3:: with SMTP id f61mr46783088plf.98.1563458359244;
-        Thu, 18 Jul 2019 06:59:19 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::3:ef9b])
-        by smtp.gmail.com with ESMTPSA id e11sm33141264pfm.35.2019.07.18.06.59.18
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 18 Jul 2019 06:59:18 -0700 (PDT)
-Date:   Thu, 18 Jul 2019 06:59:16 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk, hch@lst.de, bvanassche@acm.org,
-        keith.busch@intel.com, minwoo.im.dev@gmail.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v3 1/5] block: add weighted round robin for blkcgroup
-Message-ID: <20190718135916.GC696309@devbig004.ftw2.facebook.com>
-References: <cover.1561385989.git.zhangweiping@didiglobal.com>
- <1333161d2c64dbe93f9dcd0814ffaf6d00216d58.1561385989.git.zhangweiping@didiglobal.com>
+        id S1728183AbfGRSSO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Jul 2019 14:18:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:33370 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390994AbfGRSSO (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 18 Jul 2019 14:18:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0221728;
+        Thu, 18 Jul 2019 11:18:13 -0700 (PDT)
+Received: from e110439-lin.cambridge.arm.com (e110439-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 4DE2C3F71A;
+        Thu, 18 Jul 2019 11:18:10 -0700 (PDT)
+From:   Patrick Bellasi <patrick.bellasi@arm.com>
+To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-api@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tejun Heo <tj@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Paul Turner <pjt@google.com>, Michal Koutny <mkoutny@suse.com>,
+        Quentin Perret <quentin.perret@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Steve Muckle <smuckle@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alessio Balsini <balsini@android.com>
+Subject: [PATCH v12 0/6] Add utilization clamping support (CGroups API)
+Date:   Thu, 18 Jul 2019 19:17:42 +0100
+Message-Id: <20190718181748.28446-1-patrick.bellasi@arm.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1333161d2c64dbe93f9dcd0814ffaf6d00216d58.1561385989.git.zhangweiping@didiglobal.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Weiping.
+Hi all, this is a respin of:
 
-On Mon, Jun 24, 2019 at 10:28:51PM +0800, Weiping Zhang wrote:
-> +static const char *blk_wrr_name[BLK_WRR_COUNT] = {
-> +	[BLK_WRR_NONE]		= "none",
-> +	[BLK_WRR_LOW]		= "low",
-> +	[BLK_WRR_MEDIUM]	= "medium",
-> +	[BLK_WRR_HIGH]		= "high",
-> +	[BLK_WRR_URGENT]	= "urgent",
-> +};
+  https://lore.kernel.org/lkml/20190708084357.12944-1-patrick.bellasi@arm.com/
 
-cgroup controllers must be fully hierarchical which the proposed
-implementation isn't.  While it can be made hierarchical, there's only
-so much one can do if there are only five priority levels.
+which addresses all the comments collected so far:
 
-Can you please take a look at the following?
+- track requested cgroup's percentage to mask conversion rounding to userspace
+- use a dedicated variable for parent restrictions
+- make more explicit in the documentation that the requested "protection" is
+  always capped by the requested "limit"
+- use the newly added uclamp_mutex to serialize the sysfs write callback
+- add missing RCU read locks across cpu_util_update_eff() call from
+  uclamp_update_root_tg()
+- remove not required and confusing sentence from the above changelog
+- add a new patch to always use enum uclamp_id for clamp_id values
+- fix percentage's decimals format string
 
-  http://lkml.kernel.org/r/20190710205128.1316483-1-tj@kernel.org
+as well as adds some small modifications:
 
-In comparison, I'm having a bit of hard time seeing the benefits of
-this approach.  In addition to the finite level limitation, the actual
-WRR behavior would be device dependent and what each level means is
-likely to fluctuate depending on the workload and device model.
+- introduce UCLAMP_PERCENT_{SHIFT,SCALE} to avoid hardcoded constants
+- s/uclamp_scale_from_percent()/capacity_from_percent()/
+- move range check from cpu_uclamp_{min,max}_write() to capacity_from_percent()
 
-I wonder whether WRR is something more valuable to help internal queue
-management rather than being exposed to userspace directly.
+The series is based on top of today's Linus master branch (wip for 5.3-rc1):
 
-Thanks.
+  commit 22051d9c4a57 ("Merge tag 'platform-drivers-x86-v5.3-2' of git://git.infradead.org/linux-platform-drivers-x86")
+
+Thanks Quentin, Michal and Tejun for your review comments!
+
+This has been the first code review targeting specifically the cgroups bits and
+the series is now hopefully in a better shape.
+
+Looking forward for any additional comments! ;)
+
+Cheers,
+Patrick
+
+Series Organization
+===================
+
+The full tree is available here:
+
+   git://linux-arm.org/linux-pb.git   lkml/utilclamp_v12
+   http://www.linux-arm.org/git?p=linux-pb.git;a=shortlog;h=refs/heads/lkml/utilclamp_v12
+
+
+Newcomer's Short Abstract
+=========================
+
+The Linux scheduler tracks a "utilization" signal for each scheduling entity
+(SE), e.g. tasks, to know how much CPU time they use. This signal allows the
+scheduler to know how "big" a task is and, in principle, it can support
+advanced task placement strategies by selecting the best CPU to run a task.
+Some of these strategies are represented by the Energy Aware Scheduler [1].
+
+When the schedutil cpufreq governor is in use, the utilization signal allows
+the Linux scheduler to also drive frequency selection. The CPU utilization
+signal, which represents the aggregated utilization of tasks scheduled on that
+CPU, is used to select the frequency which best fits the workload generated by
+the tasks.
+
+The current translation of utilization values into a frequency selection is
+simple: we go to max for RT tasks or to the minimum frequency which can
+accommodate the utilization of DL+FAIR tasks.
+However, utilization values by themselves cannot convey the desired
+power/performance behaviors of each task as intended by user-space.
+As such they are not ideally suited for task placement decisions.
+
+Task placement and frequency selection policies in the kernel can be improved
+by taking into consideration hints coming from authorized user-space elements,
+like for example the Android middleware or more generally any "System
+Management Software" (SMS) framework.
+
+Utilization clamping is a mechanism which allows to "clamp" (i.e. filter) the
+utilization generated by RT and FAIR tasks within a range defined by user-space.
+The clamped utilization value can then be used, for example, to enforce a
+minimum and/or maximum frequency depending on which tasks are active on a CPU.
+
+The main use-cases for utilization clamping are:
+
+ - boosting: better interactive response for small tasks which
+   are affecting the user experience.
+
+   Consider for example the case of a small control thread for an external
+   accelerator (e.g. GPU, DSP, other devices). Here, from the task utilization
+   the scheduler does not have a complete view of what the task's requirements
+   are and, if it's a small utilization task, it keeps selecting a more energy
+   efficient CPU, with smaller capacity and lower frequency, thus negatively
+   impacting the overall time required to complete task activations.
+
+ - capping: increase energy efficiency for background tasks not affecting the
+   user experience.
+
+   Since running on a lower capacity CPU at a lower frequency is more energy
+   efficient, when the completion time is not a main goal, then capping the
+   utilization considered for certain (maybe big) tasks can have positive
+   effects, both on energy consumption and thermal headroom.
+   This feature allows also to make RT tasks more energy friendly on mobile
+   systems where running them on high capacity CPUs and at the maximum
+   frequency is not required.
+
+From these two use-cases, it's worth noticing that frequency selection
+biasing, introduced by patches 9 and 10 of this series, is just one possible
+usage of utilization clamping. Another compelling extension of utilization
+clamping is in helping the scheduler in making tasks placement decisions.
+
+Utilization is (also) a task specific property the scheduler uses to know
+how much CPU bandwidth a task requires, at least as long as there is idle time.
+Thus, the utilization clamp values, defined either per-task or per-task_group,
+can represent tasks to the scheduler as being bigger (or smaller) than what
+they actually are.
+
+Utilization clamping thus enables interesting additional optimizations, for
+example on asymmetric capacity systems like Arm big.LITTLE and DynamIQ CPUs,
+where:
+
+ - boosting: try to run small/foreground tasks on higher-capacity CPUs to
+   complete them faster despite being less energy efficient.
+
+ - capping: try to run big/background tasks on low-capacity CPUs to save power
+   and thermal headroom for more important tasks
+
+This series does not present this additional usage of utilization clamping but
+it's an integral part of the EAS feature set, where [2] is one of its main
+components.
+
+Android kernels use SchedTune, a solution similar to utilization clamping, to
+bias both 'frequency selection' and 'task placement'. This series provides the
+foundation to add similar features to mainline while focusing, for the
+time being, just on schedutil integration.
+
+
+References
+==========
+
+[1] Energy Aware Scheduling
+    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/scheduler/sched-energy.txt?h=v5.1
+
+[2] Expressing per-task/per-cgroup performance hints
+    Linux Plumbers Conference 2018
+    https://linuxplumbersconf.org/event/2/contributions/128/
+
+
+Patrick Bellasi (6):
+  sched/core: uclamp: Extend CPU's cgroup controller
+  sched/core: uclamp: Propagate parent clamps
+  sched/core: uclamp: Propagate system defaults to root group
+  sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
+  sched/core: uclamp: Update CPU's refcount on TG's clamp changes
+  sched/core: uclamp: always use enum uclamp_id for clamp_id values
+
+ Documentation/admin-guide/cgroup-v2.rst |  34 +++
+ init/Kconfig                            |  22 ++
+ kernel/sched/core.c                     | 382 ++++++++++++++++++++++--
+ kernel/sched/sched.h                    |  12 +-
+ 4 files changed, 430 insertions(+), 20 deletions(-)
 
 -- 
-tejun
+2.22.0
+
