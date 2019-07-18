@@ -2,21 +2,21 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A8D66D3A3
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2019 20:20:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AEEA6D3A8
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jul 2019 20:20:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391074AbfGRSSU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Jul 2019 14:18:20 -0400
-Received: from foss.arm.com ([217.140.110.172]:33412 "EHLO foss.arm.com"
+        id S2391123AbfGRSSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Jul 2019 14:18:23 -0400
+Received: from foss.arm.com ([217.140.110.172]:33434 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391060AbfGRSST (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 18 Jul 2019 14:18:19 -0400
+        id S2391116AbfGRSSW (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 18 Jul 2019 14:18:22 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C396F28;
-        Thu, 18 Jul 2019 11:18:18 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id ABE22152F;
+        Thu, 18 Jul 2019 11:18:21 -0700 (PDT)
 Received: from e110439-lin.cambridge.arm.com (e110439-lin.cambridge.arm.com [10.1.194.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1CB513F71A;
-        Thu, 18 Jul 2019 11:18:16 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 056E03F71A;
+        Thu, 18 Jul 2019 11:18:18 -0700 (PDT)
 From:   Patrick Bellasi <patrick.bellasi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-api@vger.kernel.org, cgroups@vger.kernel.org
@@ -36,9 +36,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Steve Muckle <smuckle@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Alessio Balsini <balsini@android.com>
-Subject: [PATCH v12 2/6] sched/core: uclamp: Propagate parent clamps
-Date:   Thu, 18 Jul 2019 19:17:44 +0100
-Message-Id: <20190718181748.28446-3-patrick.bellasi@arm.com>
+Subject: [PATCH v12 3/6] sched/core: uclamp: Propagate system defaults to root group
+Date:   Thu, 18 Jul 2019 19:17:45 +0100
+Message-Id: <20190718181748.28446-4-patrick.bellasi@arm.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190718181748.28446-1-patrick.bellasi@arm.com>
 References: <20190718181748.28446-1-patrick.bellasi@arm.com>
@@ -49,28 +49,32 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-In order to properly support hierarchical resources control, the cgroup
-delegation model requires that attribute writes from a child group never
-fail but still are locally consistent and constrained based on parent's
-assigned resources. This requires to properly propagate and aggregate
-parent attributes down to its descendants.
+The clamp values are not tunable at the level of the root task group.
+That's for two main reasons:
 
-Implement this mechanism by adding a new "effective" clamp value for each
-task group. The effective clamp value is defined as the smaller value
-between the clamp value of a group and the effective clamp value of its
-parent. This is the actual clamp value enforced on tasks in a task group.
+ - the root group represents "system resources" which are always
+   entirely available from the cgroup standpoint.
 
-Since it's possible for a cpu.uclamp.min value to be bigger than the
-cpu.uclamp.max value, ensure local consistency by restricting each
-"protection" (i.e. min utilization) with the corresponding "limit"
-(i.e. max utilization).
+ - when tuning/restricting "system resources" makes sense, tuning must
+   be done using a system wide API which should also be available when
+   control groups are not.
 
-Do that at effective clamps propagation to ensure all user-space write
-never fails while still always tracking the most restrictive values.
+When a system wide restriction is available, cgroups should be aware of
+its value in order to know exactly how much "system resources" are
+available for the subgroups.
 
-Update sysctl_sched_uclamp_handler() to use the newly introduced
-uclamp_mutex so that we serialize system default updates with cgroup
-relate updates.
+Utilization clamping supports already the concepts of:
+
+ - system defaults: which define the maximum possible clamp values
+   usable by tasks.
+
+ - effective clamps: which allows a parent cgroup to constraint (maybe
+   temporarily) its descendants without losing the information related
+   to the values "requested" from them.
+
+Exploit these two concepts and bind them together in such a way that,
+whenever system default are tuned, the new values are propagated to
+(possibly) restrict or relax the "effective" value of nested cgroups.
 
 Signed-off-by: Patrick Bellasi <patrick.bellasi@arm.com>
 Cc: Ingo Molnar <mingo@redhat.com>
@@ -79,185 +83,66 @@ Cc: Tejun Heo <tj@kernel.org>
 
 ---
 Changes in v12:
- Message-ID: <20190716140706.vuggfigjlys44lkp@e110439-lin>
- - use a dedicated variable for parent restrictions
- - make more explicit in the documentation that the requested "protection" is
-   always capped by the requested "limit"
- Message-ID: <20190716175542.p7vs2muslyuez6lq@e110439-lin>
- - use the newly added uclamp_mutex to serialize the sysfs write callback
+ Message-ID: <20190716143417.us3xhksrsaxsl2ok@e110439-lin>
+ - add missing RCU read locks across cpu_util_update_eff() call from
+   uclamp_update_root_tg()
 ---
- kernel/sched/core.c  | 70 ++++++++++++++++++++++++++++++++++++++++++--
- kernel/sched/sched.h |  2 ++
- 2 files changed, 69 insertions(+), 3 deletions(-)
+ kernel/sched/core.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index fcc32afe53cb..08f5a0c205c6 100644
+index 08f5a0c205c6..e9231b089d5c 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -773,6 +773,18 @@ static void set_load_weight(struct task_struct *p, bool update_load)
+@@ -1017,10 +1017,30 @@ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+ 		uclamp_rq_dec_id(rq, p, clamp_id);
  }
  
- #ifdef CONFIG_UCLAMP_TASK
-+/*
-+ * Serializes updates of utilization clamp values
-+ *
-+ * The (slow-path) user-space triggers utilization clamp value updates which
-+ * can require updates on (fast-path) scheduler's data structures used to
-+ * support enqueue/dequeue operations.
-+ * While the per-CPU rq lock protects fast-path update operations, user-space
-+ * requests are serialized using a mutex to reduce the risk of conflicting
-+ * updates or API abuses.
-+ */
-+static DEFINE_MUTEX(uclamp_mutex);
++#ifdef CONFIG_UCLAMP_TASK_GROUP
++static void cpu_util_update_eff(struct cgroup_subsys_state *css);
++static void uclamp_update_root_tg(void)
++{
++	struct task_group *tg = &root_task_group;
 +
- /* Max allowed minimum utilization */
- unsigned int sysctl_sched_uclamp_util_min = SCHED_CAPACITY_SCALE;
- 
-@@ -1010,10 +1022,9 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
++	uclamp_se_set(&tg->uclamp_req[UCLAMP_MIN],
++		      sysctl_sched_uclamp_util_min, false);
++	uclamp_se_set(&tg->uclamp_req[UCLAMP_MAX],
++		      sysctl_sched_uclamp_util_max, false);
++
++	rcu_read_lock();
++	cpu_util_update_eff(&root_task_group.css);
++	rcu_read_unlock();
++}
++#else
++static void uclamp_update_root_tg(void) { }
++#endif
++
+ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+ 				void __user *buffer, size_t *lenp,
  				loff_t *ppos)
  {
++	bool update_root_tg = false;
  	int old_min, old_max;
--	static DEFINE_MUTEX(mutex);
  	int result;
  
--	mutex_lock(&mutex);
-+	mutex_lock(&uclamp_mutex);
- 	old_min = sysctl_sched_uclamp_util_min;
- 	old_max = sysctl_sched_uclamp_util_max;
- 
-@@ -1048,7 +1059,7 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
- 	sysctl_sched_uclamp_util_min = old_min;
- 	sysctl_sched_uclamp_util_max = old_max;
- done:
--	mutex_unlock(&mutex);
-+	mutex_unlock(&uclamp_mutex);
- 
- 	return result;
- }
-@@ -1137,6 +1148,8 @@ static void __init init_uclamp(void)
- 	unsigned int clamp_id;
- 	int cpu;
- 
-+	mutex_init(&uclamp_mutex);
-+
- 	for_each_possible_cpu(cpu) {
- 		memset(&cpu_rq(cpu)->uclamp, 0, sizeof(struct uclamp_rq));
- 		cpu_rq(cpu)->uclamp_flags = 0;
-@@ -1153,6 +1166,7 @@ static void __init init_uclamp(void)
- 		uclamp_default[clamp_id] = uc_max;
- #ifdef CONFIG_UCLAMP_TASK_GROUP
- 		root_task_group.uclamp_req[clamp_id] = uc_max;
-+		root_task_group.uclamp[clamp_id] = uc_max;
- #endif
+@@ -1043,12 +1063,17 @@ int sysctl_sched_uclamp_handler(struct ctl_table *table, int write,
+ 	if (old_min != sysctl_sched_uclamp_util_min) {
+ 		uclamp_se_set(&uclamp_default[UCLAMP_MIN],
+ 			      sysctl_sched_uclamp_util_min, false);
++		update_root_tg = true;
  	}
- }
-@@ -6740,6 +6754,7 @@ static inline void alloc_uclamp_sched_group(struct task_group *tg,
- 	for_each_clamp_id(clamp_id) {
- 		uclamp_se_set(&tg->uclamp_req[clamp_id],
- 			      uclamp_none(clamp_id), false);
-+		tg->uclamp[clamp_id] = parent->uclamp[clamp_id];
+ 	if (old_max != sysctl_sched_uclamp_util_max) {
+ 		uclamp_se_set(&uclamp_default[UCLAMP_MAX],
+ 			      sysctl_sched_uclamp_util_max, false);
++		update_root_tg = true;
  	}
- #endif
- }
-@@ -6990,6 +7005,45 @@ static void cpu_cgroup_attach(struct cgroup_taskset *tset)
- }
  
- #ifdef CONFIG_UCLAMP_TASK_GROUP
-+static void cpu_util_update_eff(struct cgroup_subsys_state *css)
-+{
-+	struct cgroup_subsys_state *top_css = css;
-+	struct uclamp_se *uc_parent = NULL;
-+	struct uclamp_se *uc_se = NULL;
-+	unsigned int eff[UCLAMP_CNT];
-+	unsigned int clamp_id;
-+	unsigned int clamps;
++	if (update_root_tg)
++		uclamp_update_root_tg();
 +
-+	css_for_each_descendant_pre(css, top_css) {
-+		uc_parent = css_tg(css)->parent
-+			? css_tg(css)->parent->uclamp : NULL;
-+
-+		for_each_clamp_id(clamp_id) {
-+			/* Assume effective clamps matches requested clamps */
-+			eff[clamp_id] = css_tg(css)->uclamp_req[clamp_id].value;
-+			/* Cap effective clamps with parent's effective clamps */
-+			if (uc_parent &&
-+			    eff[clamp_id] > uc_parent[clamp_id].value) {
-+				eff[clamp_id] = uc_parent[clamp_id].value;
-+			}
-+		}
-+		/* Ensure protection is always capped by limit */
-+		eff[UCLAMP_MIN] = min(eff[UCLAMP_MIN], eff[UCLAMP_MAX]);
-+
-+		/* Propagate most restrictive effective clamps */
-+		clamps = 0x0;
-+		uc_se = css_tg(css)->uclamp;
-+		for_each_clamp_id(clamp_id) {
-+			if (eff[clamp_id] == uc_se[clamp_id].value)
-+				continue;
-+			uc_se[clamp_id].value = eff[clamp_id];
-+			uc_se[clamp_id].bucket_id = uclamp_bucket_id(eff[clamp_id]);
-+			clamps |= (0x1 << clamp_id);
-+		}
-+		if (!clamps)
-+			css = css_rightmost_descendant(css);
-+	}
-+}
- 
- #define _POW10(exp) ((unsigned int)1e##exp)
- #define POW10(exp) _POW10(exp)
-@@ -7040,6 +7094,7 @@ static ssize_t cpu_uclamp_min_write(struct kernfs_open_file *of,
- 	if (req.ret)
- 		return req.ret;
- 
-+	mutex_lock(&uclamp_mutex);
- 	rcu_read_lock();
- 
- 	tg = css_tg(of_css(of));
-@@ -7049,7 +7104,11 @@ static ssize_t cpu_uclamp_min_write(struct kernfs_open_file *of,
- 	/* Keep track of the actual requested value */
- 	tg->uclamp_pct[UCLAMP_MIN] = req.percent;
- 
-+	/* Update effective clamps to track the most restrictive value */
-+	cpu_util_update_eff(of_css(of));
-+
- 	rcu_read_unlock();
-+	mutex_unlock(&uclamp_mutex);
- 
- 	return nbytes;
- }
-@@ -7065,6 +7124,7 @@ static ssize_t cpu_uclamp_max_write(struct kernfs_open_file *of,
- 	if (req.ret)
- 		return req.ret;
- 
-+	mutex_lock(&uclamp_mutex);
- 	rcu_read_lock();
- 
- 	tg = css_tg(of_css(of));
-@@ -7074,7 +7134,11 @@ static ssize_t cpu_uclamp_max_write(struct kernfs_open_file *of,
- 	/* Keep track of the actual requested value */
- 	tg->uclamp_pct[UCLAMP_MAX] = req.percent;
- 
-+	/* Update effective clamps to track the most restrictive value */
-+	cpu_util_update_eff(of_css(of));
-+
- 	rcu_read_unlock();
-+	mutex_unlock(&uclamp_mutex);
- 
- 	return nbytes;
- }
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index f10557a2dea7..93a030321210 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -399,6 +399,8 @@ struct task_group {
- 	unsigned int		uclamp_pct[UCLAMP_CNT];
- 	/* Clamp values requested for a task group */
- 	struct uclamp_se	uclamp_req[UCLAMP_CNT];
-+	/* Effective clamp values used for a task group */
-+	struct uclamp_se	uclamp[UCLAMP_CNT];
- #endif
- 
- };
+ 	/*
+ 	 * Updating all the RUNNABLE task is expensive, keep it simple and do
+ 	 * just a lazy update at each next enqueue time.
 -- 
 2.22.0
 
