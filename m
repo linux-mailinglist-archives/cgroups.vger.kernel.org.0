@@ -2,60 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6A46E8E2
-	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2019 18:39:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 824466E998
+	for <lists+cgroups@lfdr.de>; Fri, 19 Jul 2019 18:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730900AbfGSQjj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Jul 2019 12:39:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41974 "EHLO mx1.suse.de"
+        id S1727850AbfGSQrP convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 19 Jul 2019 12:47:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43608 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727577AbfGSQjj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 19 Jul 2019 12:39:39 -0400
+        id S1727528AbfGSQrP (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 19 Jul 2019 12:47:15 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8D338AF9C;
-        Fri, 19 Jul 2019 16:39:37 +0000 (UTC)
-Date:   Fri, 19 Jul 2019 18:39:31 +0200
+        by mx1.suse.de (Postfix) with ESMTP id 80171AF9C;
+        Fri, 19 Jul 2019 16:47:13 +0000 (UTC)
+Date:   Fri, 19 Jul 2019 18:47:11 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 To:     =?utf-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        Peter Zijlstra <peterz@infradead.org>, mhocko@kernel.org,
-        Ingo Molnar <mingo@redhat.com>, keescook@chromium.org,
-        mcgrof@kernel.org, linux-mm@kvack.org,
-        Hillf Danton <hdanton@sina.com>, cgroups@vger.kernel.org,
+Cc:     keescook@chromium.org, hannes@cmpxchg.org, vdavydov.dev@gmail.com,
+        Peter Zijlstra <peterz@infradead.org>, mcgrof@kernel.org,
+        mhocko@kernel.org, linux-mm@kvack.org,
+        Ingo Molnar <mingo@redhat.com>, riel@surriel.com,
+        Mel Gorman <mgorman@suse.de>, cgroups@vger.kernel.org,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/4] numa: append per-node execution time in
- cpu.numa_stat
-Message-ID: <20190719163930.GA854@blackbody.suse.cz>
-References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
- <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
- <65c1987f-bcce-2165-8c30-cf8cf3454591@linux.alibaba.com>
- <6973a1bf-88f2-b54e-726d-8b7d95d80197@linux.alibaba.com>
+Subject: Re: [PATCH 1/4] numa: introduce per-cgroup numa balancing locality,
+ statistic
+Message-ID: <20190719164711.GB854@blackbody.suse.cz>
+References: <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
+ <3ac9b43a-cc80-01be-0079-df008a71ce4b@linux.alibaba.com>
+ <20190711134754.GD3402@hirez.programming.kicks-ass.net>
+ <b027f9cc-edd2-840c-3829-176a1e298446@linux.alibaba.com>
+ <20190712075815.GN3402@hirez.programming.kicks-ass.net>
+ <37474414-1a54-8e3a-60df-eb7e5e1cc1ed@linux.alibaba.com>
+ <20190712094214.GR3402@hirez.programming.kicks-ass.net>
+ <f8020f92-045e-d515-360b-faf9a149ab80@linux.alibaba.com>
+ <20190715121025.GN9035@blackbody.suse.cz>
+ <ecd21563-539c-06b1-92f2-26a111163174@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <6973a1bf-88f2-b54e-726d-8b7d95d80197@linux.alibaba.com>
+Content-Transfer-Encoding: 8BIT
+In-Reply-To: <ecd21563-539c-06b1-92f2-26a111163174@linux.alibaba.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 16, 2019 at 11:40:35AM +0800, 王贇  <yun.wang@linux.alibaba.com> wrote:
-> By doing 'cat /sys/fs/cgroup/cpu/CGROUP_PATH/cpu.numa_stat', we see new
-> output line heading with 'exectime', like:
-> 
->   exectime 311900 407166
-What you present are times aggregated over CPUs in the NUMA nodes, this
-seems a bit lossy interface. 
+On Tue, Jul 16, 2019 at 10:41:36AM +0800, 王贇  <yun.wang@linux.alibaba.com> wrote:
+> Actually whatever the memory node sets or cpu allow sets is, it will
+> take effect on task's behavior regarding memory location and cpu
+> location, while the locality only care about the results rather than
+> the sets.
+My previous response missed much of the context, so it was a bit off.
 
-Despite you the aggregated information is sufficient for your
-monitoring, I think it's worth providing the information with the
-original granularity.
-
-Note that cpuacct v1 controller used to report such percpu runtime
-stats. The v2 implementation would rather build upon the rstat API.
+I see what you mean by the locality now. Alas, I can't assess whether
+it's the right thing to do regarding NUMA behavior that you try to
+optimize (i.e. you need an answer from someone more familiar with NUMA
+balancing).
 
 Michal
-
