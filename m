@@ -2,82 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B79976FEE1
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2019 13:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83DFB6FF9D
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2019 14:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728459AbfGVLlt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Jul 2019 07:41:49 -0400
-Received: from app1.whu.edu.cn ([202.114.64.88]:44356 "EHLO whu.edu.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1728312AbfGVLlt (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 22 Jul 2019 07:41:49 -0400
-Received: from localhost (unknown [111.202.192.5])
-        by email1 (Coremail) with SMTP id AQBjCgCXeTr2oDVdC7OvAA--.37111S2;
-        Mon, 22 Jul 2019 19:41:42 +0800 (CST)
-From:   Peng Wang <rocking@whu.edu.cn>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Peng Wang <rocking@whu.edu.cn>
-Subject: [PATCH] cgroup: remove redundant assignment in while loop of cgroup_calc_subtree_ss_mask()
-Date:   Mon, 22 Jul 2019 19:39:23 +0800
-Message-Id: <20190722113923.16914-1-rocking@whu.edu.cn>
-X-Mailer: git-send-email 2.19.1
+        id S1729385AbfGVM2d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Jul 2019 08:28:33 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:55489 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728569AbfGVM2d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Jul 2019 08:28:33 -0400
+Received: by mail-wm1-f67.google.com with SMTP id a15so34960427wmj.5
+        for <cgroups@vger.kernel.org>; Mon, 22 Jul 2019 05:28:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=l6/eI+1bfxhgnjF0+OZA0BlRzZcPL9vx2FzAtVqZorc=;
+        b=RUXWxF1SaeiTMU2ULNitdCL5/LR9xCD+Rpt4NRWYGSDsK9HaQD/Dbs3JjDqVPwRqbV
+         Ev2wlywZ3zwtOtWId+XUg3l5TKE8zSWa5UDYLU0koYg5f4oYt3XvfZx/2KsGQFK00dsP
+         bM99gjbxgibxvjz1FZgzO9RQzjTf897qJ56nYH+l/9FVarvfBGr8NRBerAxkz2ty24Sf
+         sGBezUdPqSMcvrLDlg12THVaRWjK0xtWKdzK7tQZI7Y6ghQe1ju0rb7sF3Sa/ZL3fpe5
+         HDuRwNcWSmyclEu+2+qgsxX8E/Ze+B2/WWUjmMLWZnhz3r7akOWH4N1+fwSy+MKOzZRx
+         QzEg==
+X-Gm-Message-State: APjAAAVaWDRJszKJ2MDNmJbrMdb5XeFq7TiWzASAk8E0pCNmfdZriSpJ
+        ZmdtNC0SnAsvUBRkfim3P59n+Q==
+X-Google-Smtp-Source: APXvYqxlnx12U06nxALU+ypFMTNO8C+4v1VLcbEHRpfOkBv18csOs1A7a/44UULrCDehw/7w3JL4iw==
+X-Received: by 2002:a1c:5602:: with SMTP id k2mr59725677wmb.173.1563798511297;
+        Mon, 22 Jul 2019 05:28:31 -0700 (PDT)
+Received: from localhost.localdomain ([151.15.230.231])
+        by smtp.gmail.com with ESMTPSA id w25sm37202326wmk.18.2019.07.22.05.28.30
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 22 Jul 2019 05:28:30 -0700 (PDT)
+Date:   Mon, 22 Jul 2019 14:28:28 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+        tj@kernel.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        mathieu.poirier@linaro.org, lizefan@huawei.com, longman@redhat.com,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v9 4/8] sched/deadline: Fix bandwidth accounting at all
+ levels after offline migration
+Message-ID: <20190722122828.GG25636@localhost.localdomain>
+References: <20190719140000.31694-1-juri.lelli@redhat.com>
+ <20190719140000.31694-5-juri.lelli@redhat.com>
+ <5da6abab-00ff-9bb4-f24b-0bf5dfcd4c35@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: AQBjCgCXeTr2oDVdC7OvAA--.37111S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtryxWFWDArWfKF1DZF48Crg_yoWkJrb_X3
-        W8Jr1q9rWxA34YyrsFvFsYvay0g3y5Wr1v9w1qgFWDXFyUJrW5J3Z3tF15Xr43uFs5trZr
-        tr93JFn3JF4qqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2AFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-        Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-        1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-        cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-        ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc2xSY4AK67AK6r4kMxAI
-        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
-        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
-        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
-        CI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-        6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JU3-BNUUUUU=
-X-CM-SenderInfo: qsqrijaqrviiqqxyq4lkxovvfxof0/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5da6abab-00ff-9bb4-f24b-0bf5dfcd4c35@arm.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-new_ss_mask is always not less than cur_ss_mask.
-We don not need to update it with cur_ss_mask's value.
+On 22/07/19 13:07, Dietmar Eggemann wrote:
+> On 7/19/19 3:59 PM, Juri Lelli wrote:
+> 
+> [...]
+> 
+> > @@ -557,6 +558,38 @@ static struct rq *dl_task_offline_migration(struct rq *rq, struct task_struct *p
+> >  		double_lock_balance(rq, later_rq);
+> >  	}
+> >  
+> > +	if (p->dl.dl_non_contending || p->dl.dl_throttled) {
+> > +		/*
+> > +		 * Inactive timer is armed (or callback is running, but
+> > +		 * waiting for us to release rq locks). In any case, when it
+> > +		 * will file (or continue), it will see running_bw of this
+> 
+> s/file/fire ?
 
-Signed-off-by: Peng Wang <rocking@whu.edu.cn>
----
- kernel/cgroup/cgroup.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Yep.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 300b0c416341..2b8c39dabd26 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1520,7 +1520,7 @@ static umode_t cgroup_file_mode(const struct cftype *cft)
-  */
- static u16 cgroup_calc_subtree_ss_mask(u16 subtree_control, u16 this_ss_mask)
- {
--	u16 cur_ss_mask = subtree_control;
-+	u16 cur_ss_mask = subtree_control, new_ss_mask;
- 	struct cgroup_subsys *ss;
- 	int ssid;
- 
-@@ -1528,9 +1528,8 @@ static u16 cgroup_calc_subtree_ss_mask(u16 subtree_control, u16 this_ss_mask)
- 
- 	cur_ss_mask |= cgrp_dfl_implicit_ss_mask;
- 
-+	new_ss_mask = cur_ss_mask;
- 	while (true) {
--		u16 new_ss_mask = cur_ss_mask;
--
- 		do_each_subsys_mask(ss, ssid, cur_ss_mask) {
- 			new_ss_mask |= ss->depends_on;
- 		} while_each_subsys_mask();
--- 
-2.19.1
+> > +		 * task migrated to later_rq (and correctly handle it).
+> 
+> Is this because of dl_task_timer()->enqueue_task_dl()->task_contending()
+> setting dl_se->dl_non_contending = 0 ?
 
+No, this is related to inactive_task_timer() callback. Since the task is
+migrated (by this function calling set_task_cpu()) because a CPU hotplug
+operation happened, we need to reflect this w.r.t. running_bw, or
+inactive_task_timer() might sub from the new CPU and cause running_bw to
+underflow.
+
+Thanks,
+
+Juri
