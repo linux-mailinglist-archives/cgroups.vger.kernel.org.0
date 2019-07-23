@@ -2,341 +2,284 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9CC719E9
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:05:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66409719FD
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbfGWOF0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Jul 2019 10:05:26 -0400
-Received: from mail.univention.de ([82.198.197.8]:29615 "EHLO
-        mail.univention.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726201AbfGWOF0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 10:05:26 -0400
-X-Greylist: delayed 501 seconds by postgrey-1.27 at vger.kernel.org; Tue, 23 Jul 2019 10:05:25 EDT
-Received: from localhost (localhost [127.0.0.1])
-        by solig.knut.univention.de (Postfix) with ESMTP id 5761367FBCF9;
-        Tue, 23 Jul 2019 15:57:02 +0200 (CEST)
-X-Virus-Scanned: by amavisd-new-2.10.1 (20141025) (Debian) at
-        knut.univention.de
-Received: from mail.univention.de ([127.0.0.1])
-        by localhost (solig.knut.univention.de [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id NPOy2s2nKK_H; Tue, 23 Jul 2019 15:56:59 +0200 (CEST)
-Received: from [192.168.0.222] (mail.univention.de [82.198.197.8])
-        by solig.knut.univention.de (Postfix) with ESMTPSA id 1E82E67FBCED;
-        Tue, 23 Jul 2019 15:56:59 +0200 (CEST)
-To:     cgroups@vger.kernel.org, systemd-devel@lists.freedesktop.org
-From:   Philipp Hahn <hahn@univention.de>
-Subject: linux-image-4.9.0-9: Memory "leak" caused by CGroup as used by
+        id S1732286AbfGWOKn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jul 2019 10:10:43 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:56450 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1732136AbfGWOKn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 10:10:43 -0400
+Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
+        by m0001303.ppops.net (8.16.0.27/8.16.0.27) with SMTP id x6NE2whO026536;
+        Tue, 23 Jul 2019 07:10:38 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=TeAgIZO4eParDRSJHHrHkFuJVgMpxSi+n48xZWLGHcE=;
+ b=LsCodIB8HkkRnZ2U7GaN5tDtR6xLunehuf7frQLPbJTcXxwtaTQwcNlEIe7Y80N09oLA
+ 7AkoWbkJu+dH7YUXoT4dcWGZWts0LvK8RnENIOehL6bj9LzDvbcWEmDvMKyay/Fx/mcY
+ aAAGOZXUIx1raISmIk7O9e+IuBNfmEczscc= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by m0001303.ppops.net with ESMTP id 2twjyn37eu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 23 Jul 2019 07:10:37 -0700
+Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
+ ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 23 Jul 2019 07:10:36 -0700
+Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
+ ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 23 Jul 2019 07:10:36 -0700
+Received: from NAM05-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 23 Jul 2019 07:10:36 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Md4DD7x4MxQJPLhjGV6cQb869WEfk+pR/dlJKvSQjqeKHWw8ylwka5AWgfDnAEaTh/uXSajOc78fSNcH29M8kJn6VinLk56W6IgieoHCFOFj8gnzxrbjxhZwXcpg2x9cMR9s+eFQ0imhOT55zzKafN1pzwJVZ+292biimYSPU33ay/wSf2M0hlS9y4e3AcwTJsoDiSpQvgvS2atc6cFDJFFw2FROzpj6ZFiiFAzvFEFeZE8ZWRnpvWUITfpUTRF/Pf7v2oHopwPRcrL5QvbO/IeA+fXyA8mTE9xDsY35fHnw3kZlEFbKFQKm8O6Xh0cB1c7V1NW/gMPkfGYS+Dk8FQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TeAgIZO4eParDRSJHHrHkFuJVgMpxSi+n48xZWLGHcE=;
+ b=KDQA23j8X0/ALysid2B+Gujpw8ACPbO2myWMgnuKzrADO1eUj1RFnfUlcpmMcKcuhgQuUHc22ZYMbI/WykuqFlOHVJOuHWFLz2ocAOCIcenU725fAPdRCNNmdHfM0R/8jH7BYZA/fdTbXy8Btcb63jZodJYMBLQGzu/2XTNyNRlObRPu24KXZb7KOfvHaGQeyFLP2D5cxzvx2+U/NDS2R4C6dGA9vmB1dzBMNWlmtvmPFiXftpYsd2AGbQWG/y2zaY9o4CdIneO255uHQvJ0RjqaC2392ItIo2Vrzo3b37haiXyOX50j5MLzBxnwAg0gLFLFn0DGcOmgLQA36fn8TQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1;spf=pass
+ smtp.mailfrom=fb.com;dmarc=pass action=none header.from=fb.com;dkim=pass
+ header.d=fb.com;arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector1-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TeAgIZO4eParDRSJHHrHkFuJVgMpxSi+n48xZWLGHcE=;
+ b=iVukjKKJoFUFp9ER8BY9Dkb8paGl+iO8oA8KbOVJDbNiUydqj9HembZXb3+2UTBE8E89bVoH3f3cMXuUhhyO0chDi/4lGzr+XB6LfIArjYHK1QhcsVZ850vhPiXCUM3kZvi7F/XyRzSRazpQ5jRX20zW8Ed/IwF/zm/y/s3A18M=
+Received: from DM6PR15MB2635.namprd15.prod.outlook.com (20.179.161.152) by
+ DM6PR15MB3036.namprd15.prod.outlook.com (20.179.16.30) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2094.16; Tue, 23 Jul 2019 14:10:34 +0000
+Received: from DM6PR15MB2635.namprd15.prod.outlook.com
+ ([fe80::fc39:8b78:f4df:a053]) by DM6PR15MB2635.namprd15.prod.outlook.com
+ ([fe80::fc39:8b78:f4df:a053%3]) with mapi id 15.20.2094.013; Tue, 23 Jul 2019
+ 14:10:34 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Philipp Hahn <hahn@univention.de>
+CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "systemd-devel@lists.freedesktop.org" 
+        <systemd-devel@lists.freedesktop.org>,
+        =?utf-8?B?5q6154aK5pil?= <duanxiongchun@bytedance.com>
+Subject: Re: linux-image-4.9.0-9: Memory "leak" caused by CGroup as used by
  pam_systemd
-Openpgp: preference=signencrypt
-Autocrypt: addr=hahn@univention.de; prefer-encrypt=mutual; keydata=
- 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
- E57YS6NHln5zGC8hHrOFsw==
-Organization: Univention GmbH
-Cc:     Roman Gushchin <guro@fb.com>,
-        =?UTF-8?B?5q6154aK5pil?= <duanxiongchun@bytedance.com>
-Message-ID: <ad0222ca-5fb0-4177-dc82-ca63f079e942@univention.de>
-Date:   Tue, 23 Jul 2019 15:56:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
-MIME-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------96D375F0260231941D7A2A1D"
+Thread-Topic: linux-image-4.9.0-9: Memory "leak" caused by CGroup as used by
+ pam_systemd
+Thread-Index: AQHVQV6N/oFcmrrGFEytID2rfOtWTKbYPgaA
+Date:   Tue, 23 Jul 2019 14:10:34 +0000
+Message-ID: <20190723141029.GA10930@castle.DHCP.thefacebook.com>
+References: <ad0222ca-5fb0-4177-dc82-ca63f079e942@univention.de>
+In-Reply-To: <ad0222ca-5fb0-4177-dc82-ca63f079e942@univention.de>
+Accept-Language: en-US
 Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR08CA0015.namprd08.prod.outlook.com
+ (2603:10b6:301:5f::28) To DM6PR15MB2635.namprd15.prod.outlook.com
+ (2603:10b6:5:1a6::24)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c091:500::1:6dab]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: a14604ed-2872-46a2-ca49-08d70f77874d
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600148)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:DM6PR15MB3036;
+x-ms-traffictypediagnostic: DM6PR15MB3036:
+x-ms-exchange-purlcount: 5
+x-microsoft-antispam-prvs: <DM6PR15MB303659CD10A1BEF3A2345F10BEC70@DM6PR15MB3036.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-forefront-prvs: 0107098B6C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(136003)(346002)(376002)(39860400002)(189003)(199004)(64756008)(66476007)(66946007)(305945005)(102836004)(6506007)(53546011)(6246003)(386003)(7736002)(14454004)(2906002)(86362001)(486006)(8676002)(99286004)(66446008)(6116002)(256004)(14444005)(316002)(5660300002)(6306002)(66556008)(33656002)(76176011)(6486002)(6916009)(478600001)(52116002)(966005)(6436002)(53936002)(81166006)(54906003)(11346002)(46003)(68736007)(66574012)(71190400001)(1076003)(229853002)(4326008)(476003)(9686003)(25786009)(6512007)(81156014)(186003)(71200400001)(8936002)(446003);DIR:OUT;SFP:1102;SCL:1;SRVR:DM6PR15MB3036;H:DM6PR15MB2635.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: 1Vx5L8EsA/fmWCeEyzL6wYic+Ih7fejLGFhk0i52WaVbpQpD5ZbJ5vrjrViyeOISHP49/wevI01/mDujKyrBghOxIEeHicnd5WcsVgSaeaUhrMZtRWMH+P/sc0zy/7Wk2zX189ttXUu63Z7OVX4/IlQ44RiIMueWJC05mDMe9W36G+dwdA9DME8fWU0e1BuU4y85bd8cXzxCBBKSr6HN8ihVNwozP3GlAU2PdVxyL1x++itJXa3ZhHPVk93K5Rlh5G8EwlJOxygTzoLzd9tEDJF6rRaeWhLaaV82u9u//ZZBXu3+DCZDswxPiJY342EdS2KEqvkiGa6HA0G3oHDnCbXVwce6KDlFHOclK7I72n1eXyUDX7gOhc+9hqwZ0IJz+ysD1d6LaZwiLOfkEYisgMmH8HfRdb064smZr3Qg1Co=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <4E6A26DF239AF749A7C4EECCEBBEF498@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: a14604ed-2872-46a2-ca49-08d70f77874d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Jul 2019 14:10:34.3400
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: guro@fb.com
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR15MB3036
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:,, definitions=2019-07-23_06:,,
+ signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 phishscore=0 bulkscore=0 spamscore=0
+ clxscore=1011 lowpriorityscore=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-1810050000 definitions=main-1907230141
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------96D375F0260231941D7A2A1D
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
-
-Hi,
-
-I analyzed the issue and the problem seems to be CGroup related:
-
-- we're using 'pam_systemd' in "/etc/pam.d/common-session"
-
-- each cron-job / login then creates a new CGroup below
-"/sys/fs/cgroup/systemd/user.slice/" while that job / session is running
-
-- when the job / session terminates, the directory is deleted by
-pam_systemd.
-
-- but the Linux kernel still uses the CGroup to track kernel internal
-memory (SLAB objects, pending cache pages, ...?)
-
-- inside the kernel the CGroup is marked as "dying", but it is only
-garbage collected very later on
-
-- until then it adds to memory pressure and very slowly pushed the
-system into swap.
-
-
-I back-ported the patch
-<https://www.spinics.net/lists/cgroups/msg20611.html> from Roman
-Gushchin to add some extra debugging, which indeed shows a large number
-of "dying" cgroups:
-
-> # find /sys/fs/cgroup/memory -name cgroup.stat -exec grep '^nr_dying_descendants [^0]'  {} +
->   /sys/fs/cgroup/memory/cgroup.stat:nr_dying_descendants 360
->   /sys/fs/cgroup/memory/user.slice/cgroup.stat:nr_dying_descendants 320
->   /sys/fs/cgroup/memory/user.slice/user-0.slice/cgroup.stat:nr_dying_descendants 303
->   /sys/fs/cgroup/memory/system.slice/cgroup.stat:nr_dying_descendants 40
-> # grep ^memory /proc/cgroups 
->   memory  10      452     1
-
-Removing "pam_systemd" from PAM makes the problem go away.
-
-Later Debain kernels are compiled with "CONFIG_MEMCG_KMEM=y", which
-prompted me to add "cgroup.memory=nokmem" to the kernel command line.
-This also seems to reduce the problem, but I'm not 100% convinced that
-it really improves the situation.
-
-
-I do not have a very good reproducer, but creating a cron-job with just
-> * * *  * *  root  dd if=/dev/urandom of=/var/tmp/test-$$ count=1 >/dev/null
-
-will most often increase the number of dying CGs every minute by one.
-
-
-I do not know who is at fault here, if it is
-- the Linux kernel for not freeing those resources earlier
-- systemd for using CGs in a broken way
-- someone others fault.
-
-Clearly this is not good and I would like to receive some feedback on
-what could be done top solve this issue, as running cron jobs is user
-exploitable and can be used to DoS the system.
-While looking for existing bug reports I stumbled over 912411 in Debian,
-which also claims that there is a CG related leak - with Linux 4.19.x.
-
-Should "pam_systemd" maybe do something like this before deleting the CG
-directory:
-> echo 0 >/sys/fs/cgroup/memory/.../memory.force_empty
-
-
-Some more details are available at our bug-tracker at
-<https://forge.univention.org/bugzilla/show_bug.cgi?id=49614#c5>.
-
-Debian-Bugs:
-* <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=931111>
-* <https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=912411>
-
-Sincerely
-Philipp
--- 
-Philipp Hahn
-Open Source Software Engineer
-
-Univention GmbH
-be open.
-Mary-Somerville-Str. 1
-D-28359 Bremen
-Tel.: +49 421 22232-0
-Fax : +49 421 22232-99
-hahn@univention.de
-
-https://www.univention.de/
-Geschäftsführer: Peter H. Ganten
-HRB 20755 Amtsgericht Bremen
-Steuer-Nr.: 71-597-02876
-
---------------96D375F0260231941D7A2A1D
-Content-Type: text/x-patch;
- name="49614_linux-cgroup-dying.diff"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="49614_linux-cgroup-dying.diff"
-
-=46rom 0679dee03c6d706d57145ea92c23d08fa10a1999 Mon Sep 17 00:00:00 2001
-Message-Id: <0679dee03c6d706d57145ea92c23d08fa10a1999.1562083574.git.hahn=
-@univention.de>
-From: Roman Gushchin <guro@fb.com>
-Date: Wed, 2 Aug 2017 17:55:29 +0100
-Subject: [PATCH] cgroup: keep track of number of descent cgroups
-
-Keep track of the number of online and dying descent cgroups.
-
-This data will be used later to add an ability to control cgroup
-hierarchy (limit the depth and the number of descent cgroups)
-and display hierarchy stats.
-
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Suggested-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Zefan Li <lizefan@huawei.com>
-Cc: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: kernel-team@fb.com
-Cc: cgroups@vger.kernel.org
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Signed-off-by: Philipp Hahn <hahn@univention.de>
-Url: https://www.spinics.net/lists/cgroups/msg20611.html
---- a/kernel/cgroup.c
-+++ b/kernel/cgroup.c
-@@ -4922,6 +4922,18 @@ static struct cftype cgroup_dfl_base_fil
- 	{ }	/* terminate */
- };
-=20
-+static int cgroup_stat_show(struct seq_file *seq, void *v)
-+{
-+	struct cgroup *cgroup =3D seq_css(seq)->cgroup;
-+
-+	seq_printf(seq, "nr_descendants %d\n",
-+		   cgroup->nr_descendants);
-+	seq_printf(seq, "nr_dying_descendants %d\n",
-+		   cgroup->nr_dying_descendants);
-+
-+	return 0;
-+}
-+
- /* cgroup core interface files for the legacy hierarchies */
- static struct cftype cgroup_legacy_base_files[] =3D {
- 	{
-@@ -4964,6 +4976,10 @@ static struct cftype cgroup_legacy_base_
- 		.write =3D cgroup_release_agent_write,
- 		.max_write_len =3D PATH_MAX - 1,
- 	},
-+	{
-+		.name =3D "cgroup.stat",
-+		.seq_show =3D cgroup_stat_show,
-+	},
- 	{ }	/* terminate */
- };
-=20
-@@ -5063,9 +5079,15 @@ static void css_release_work_fn(struct w
- 		if (ss->css_released)
- 			ss->css_released(css);
- 	} else {
-+		struct cgroup *tcgrp;
-+
- 		/* cgroup release path */
- 		trace_cgroup_release(cgrp);
-=20
-+		for (tcgrp =3D cgroup_parent(cgrp); tcgrp;
-+		     tcgrp =3D cgroup_parent(tcgrp))
-+			tcgrp->nr_dying_descendants--;
-+
- 		cgroup_idr_remove(&cgrp->root->cgroup_idr, cgrp->id);
- 		cgrp->id =3D -1;
-=20
-@@ -5262,9 +5284,13 @@ static struct cgroup *cgroup_create(stru
- 	cgrp->root =3D root;
- 	cgrp->level =3D level;
-=20
--	for (tcgrp =3D cgrp; tcgrp; tcgrp =3D cgroup_parent(tcgrp))
-+	for (tcgrp =3D cgrp; tcgrp; tcgrp =3D cgroup_parent(tcgrp)) {
- 		cgrp->ancestor_ids[tcgrp->level] =3D tcgrp->id;
-=20
-+		if (tcgrp !=3D cgrp)
-+			tcgrp->nr_descendants++;
-+	}
-+
- 	if (notify_on_release(parent))
- 		set_bit(CGRP_NOTIFY_ON_RELEASE, &cgrp->flags);
-=20
-@@ -5468,6 +5494,7 @@ static void kill_css(struct cgroup_subsy
- static int cgroup_destroy_locked(struct cgroup *cgrp)
- 	__releases(&cgroup_mutex) __acquires(&cgroup_mutex)
- {
-+	struct cgroup *tcgrp;
- 	struct cgroup_subsys_state *css;
- 	struct cgrp_cset_link *link;
- 	int ssid;
-@@ -5512,6 +5539,11 @@ static int cgroup_destroy_locked(struct
- 	 */
- 	kernfs_remove(cgrp->kn);
-=20
-+	for (tcgrp =3D cgroup_parent(cgrp); tcgrp; tcgrp =3D cgroup_parent(tcgr=
-p)) {
-+		tcgrp->nr_descendants--;
-+		tcgrp->nr_dying_descendants++;
-+	}
-+
- 	check_for_release(cgroup_parent(cgrp));
-=20
- 	/* put the base reference */
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -245,6 +245,14 @@ struct cgroup {
- 	int level;
-=20
- 	/*
-+	 * Keep track of total numbers of visible and dying descent cgroups.
-+	 * Dying cgroups are cgroups which were deleted by a user,
-+	 * but are still existing because someone else is holding a reference.
-+	 */
-+	int nr_descendants;
-+	int nr_dying_descendants;
-+
-+	/*
- 	 * Each non-empty css_set associated with this cgroup contributes
- 	 * one to populated_cnt.  All children with non-zero popuplated_cnt
- 	 * of their own contribute one.  The count is zero iff there's no
-
---------------96D375F0260231941D7A2A1D--
+SGkgUGhpbGlwcCENCg0KVGhhbmsgeW91IGZvciB0aGUgcmVwb3J0IQ0KDQpJJ3ZlIHNwZW50IGxv
+dCBvZiB0aW1lIHdvcmtpbmcgb24gdGhpcyBwcm9ibGVtLCBhbmQgdGhlIGZpbmFsIHBhdGNoc2V0
+DQpoYXMgYmVlbiBtZXJnZWQgaW50byA1LjMuIEl0IGltcGxlbWVudHMgcmVwYXJlbnRpbmcgb2Yg
+dGhlIHNsYWIgbWVtb3J5DQpvbiBjZ3JvdXAgZGVsZXRpb24uIDUuMyBzaG91bGQgYmUgbXVjaCBi
+ZXR0ZXIgaW4gcmVjbGFpbWluZyBkeWluZyBjZ3JvdXBzLg0KDQpVbmZvcnR1bmF0ZWx5LCB0aGUg
+cGF0Y2hzZXQgaXMgcXVpdGUgaW52YXNpdmUgYW5kIGlzIGJhc2VkIG9uIHNvbWUNCnZtc3RhdHMg
+Y2hhbmdlcyBmcm9tIDUuMiwgc28gaXQncyBub3QgdHJpdmlhbCB0byBiYWNrcG9ydCBpdCB0bw0K
+b2xkZXIga2VybmVscy4NCg0KQWxzbywgdGhlcmUgaXMgbm8gZ29vZCB3b3JrYXJvdW5kLCBvbmx5
+IG1hbnVhbGx5IGRyb3BwaW5nIGtlcm5lbA0KY2FjaGVzIG9yIGRpc2FibGUgdGhlIGtlcm5lbCBt
+ZW1vcnkgYWNjb3VudGluZyBhcyBhIHdob2xlLg0KDQpUaGFua3MhDQoNCk9uIFR1ZSwgSnVsIDIz
+LCAyMDE5IGF0IDAzOjU2OjU5UE0gKzAyMDAsIFBoaWxpcHAgSGFobiB3cm90ZToNCj4gSGksDQo+
+IA0KPiBJIGFuYWx5emVkIHRoZSBpc3N1ZSBhbmQgdGhlIHByb2JsZW0gc2VlbXMgdG8gYmUgQ0dy
+b3VwIHJlbGF0ZWQ6DQo+IA0KPiAtIHdlJ3JlIHVzaW5nICdwYW1fc3lzdGVtZCcgaW4gIi9ldGMv
+cGFtLmQvY29tbW9uLXNlc3Npb24iDQo+IA0KPiAtIGVhY2ggY3Jvbi1qb2IgLyBsb2dpbiB0aGVu
+IGNyZWF0ZXMgYSBuZXcgQ0dyb3VwIGJlbG93DQo+ICIvc3lzL2ZzL2Nncm91cC9zeXN0ZW1kL3Vz
+ZXIuc2xpY2UvIiB3aGlsZSB0aGF0IGpvYiAvIHNlc3Npb24gaXMgcnVubmluZw0KPiANCj4gLSB3
+aGVuIHRoZSBqb2IgLyBzZXNzaW9uIHRlcm1pbmF0ZXMsIHRoZSBkaXJlY3RvcnkgaXMgZGVsZXRl
+ZCBieQ0KPiBwYW1fc3lzdGVtZC4NCj4gDQo+IC0gYnV0IHRoZSBMaW51eCBrZXJuZWwgc3RpbGwg
+dXNlcyB0aGUgQ0dyb3VwIHRvIHRyYWNrIGtlcm5lbCBpbnRlcm5hbA0KPiBtZW1vcnkgKFNMQUIg
+b2JqZWN0cywgcGVuZGluZyBjYWNoZSBwYWdlcywgLi4uPykNCj4gDQo+IC0gaW5zaWRlIHRoZSBr
+ZXJuZWwgdGhlIENHcm91cCBpcyBtYXJrZWQgYXMgImR5aW5nIiwgYnV0IGl0IGlzIG9ubHkNCj4g
+Z2FyYmFnZSBjb2xsZWN0ZWQgdmVyeSBsYXRlciBvbg0KPiANCj4gLSB1bnRpbCB0aGVuIGl0IGFk
+ZHMgdG8gbWVtb3J5IHByZXNzdXJlIGFuZCB2ZXJ5IHNsb3dseSBwdXNoZWQgdGhlDQo+IHN5c3Rl
+bSBpbnRvIHN3YXAuDQo+IA0KPiANCj4gSSBiYWNrLXBvcnRlZCB0aGUgcGF0Y2gNCj4gPGh0dHBz
+Oi8vdXJsZGVmZW5zZS5wcm9vZnBvaW50LmNvbS92Mi91cmw/dT1odHRwcy0zQV9fd3d3LnNwaW5p
+Y3MubmV0X2xpc3RzX2Nncm91cHNfbXNnMjA2MTEuaHRtbCZkPUR3SURhUSZjPTVWRDBSVHRObFRo
+M3ljZDQxYjNNVXcmcj1qSllndERNN1FULVctRnpfZDI5SFlRJm09RDdTRUluV1pMa29zRzQ0UU5l
+QXltZWEyUjFQUVlUX3l2WTdVOW9wTEFUZyZzPWpqd3NNTmVhN2RTcWFMaVEyMjd1MU1JMU5OVlZy
+aGJsUmJqbVZxN01fTjQmZT0gPiBmcm9tIFJvbWFuDQo+IEd1c2hjaGluIHRvIGFkZCBzb21lIGV4
+dHJhIGRlYnVnZ2luZywgd2hpY2ggaW5kZWVkIHNob3dzIGEgbGFyZ2UgbnVtYmVyDQo+IG9mICJk
+eWluZyIgY2dyb3VwczoNCj4gDQo+ID4gIyBmaW5kIC9zeXMvZnMvY2dyb3VwL21lbW9yeSAtbmFt
+ZSBjZ3JvdXAuc3RhdCAtZXhlYyBncmVwICdebnJfZHlpbmdfZGVzY2VuZGFudHMgW14wXScgIHt9
+ICsNCj4gPiAgIC9zeXMvZnMvY2dyb3VwL21lbW9yeS9jZ3JvdXAuc3RhdDpucl9keWluZ19kZXNj
+ZW5kYW50cyAzNjANCj4gPiAgIC9zeXMvZnMvY2dyb3VwL21lbW9yeS91c2VyLnNsaWNlL2Nncm91
+cC5zdGF0Om5yX2R5aW5nX2Rlc2NlbmRhbnRzIDMyMA0KPiA+ICAgL3N5cy9mcy9jZ3JvdXAvbWVt
+b3J5L3VzZXIuc2xpY2UvdXNlci0wLnNsaWNlL2Nncm91cC5zdGF0Om5yX2R5aW5nX2Rlc2NlbmRh
+bnRzIDMwMw0KPiA+ICAgL3N5cy9mcy9jZ3JvdXAvbWVtb3J5L3N5c3RlbS5zbGljZS9jZ3JvdXAu
+c3RhdDpucl9keWluZ19kZXNjZW5kYW50cyA0MA0KPiA+ICMgZ3JlcCBebWVtb3J5IC9wcm9jL2Nn
+cm91cHMgDQo+ID4gICBtZW1vcnkgIDEwICAgICAgNDUyICAgICAxDQo+IA0KPiBSZW1vdmluZyAi
+cGFtX3N5c3RlbWQiIGZyb20gUEFNIG1ha2VzIHRoZSBwcm9ibGVtIGdvIGF3YXkuDQo+IA0KPiBM
+YXRlciBEZWJhaW4ga2VybmVscyBhcmUgY29tcGlsZWQgd2l0aCAiQ09ORklHX01FTUNHX0tNRU09
+eSIsIHdoaWNoDQo+IHByb21wdGVkIG1lIHRvIGFkZCAiY2dyb3VwLm1lbW9yeT1ub2ttZW0iIHRv
+IHRoZSBrZXJuZWwgY29tbWFuZCBsaW5lLg0KPiBUaGlzIGFsc28gc2VlbXMgdG8gcmVkdWNlIHRo
+ZSBwcm9ibGVtLCBidXQgSSdtIG5vdCAxMDAlIGNvbnZpbmNlZCB0aGF0DQo+IGl0IHJlYWxseSBp
+bXByb3ZlcyB0aGUgc2l0dWF0aW9uLg0KPiANCj4gDQo+IEkgZG8gbm90IGhhdmUgYSB2ZXJ5IGdv
+b2QgcmVwcm9kdWNlciwgYnV0IGNyZWF0aW5nIGEgY3Jvbi1qb2Igd2l0aCBqdXN0DQo+ID4gKiAq
+ICogICogKiAgcm9vdCAgZGQgaWY9L2Rldi91cmFuZG9tIG9mPS92YXIvdG1wL3Rlc3QtJCQgY291
+bnQ9MSA+L2Rldi9udWxsDQo+IA0KPiB3aWxsIG1vc3Qgb2Z0ZW4gaW5jcmVhc2UgdGhlIG51bWJl
+ciBvZiBkeWluZyBDR3MgZXZlcnkgbWludXRlIGJ5IG9uZS4NCj4gDQo+IA0KPiBJIGRvIG5vdCBr
+bm93IHdobyBpcyBhdCBmYXVsdCBoZXJlLCBpZiBpdCBpcw0KPiAtIHRoZSBMaW51eCBrZXJuZWwg
+Zm9yIG5vdCBmcmVlaW5nIHRob3NlIHJlc291cmNlcyBlYXJsaWVyDQo+IC0gc3lzdGVtZCBmb3Ig
+dXNpbmcgQ0dzIGluIGEgYnJva2VuIHdheQ0KPiAtIHNvbWVvbmUgb3RoZXJzIGZhdWx0Lg0KPiAN
+Cj4gQ2xlYXJseSB0aGlzIGlzIG5vdCBnb29kIGFuZCBJIHdvdWxkIGxpa2UgdG8gcmVjZWl2ZSBz
+b21lIGZlZWRiYWNrIG9uDQo+IHdoYXQgY291bGQgYmUgZG9uZSB0b3Agc29sdmUgdGhpcyBpc3N1
+ZSwgYXMgcnVubmluZyBjcm9uIGpvYnMgaXMgdXNlcg0KPiBleHBsb2l0YWJsZSBhbmQgY2FuIGJl
+IHVzZWQgdG8gRG9TIHRoZSBzeXN0ZW0uDQo+IFdoaWxlIGxvb2tpbmcgZm9yIGV4aXN0aW5nIGJ1
+ZyByZXBvcnRzIEkgc3R1bWJsZWQgb3ZlciA5MTI0MTEgaW4gRGViaWFuLA0KPiB3aGljaCBhbHNv
+IGNsYWltcyB0aGF0IHRoZXJlIGlzIGEgQ0cgcmVsYXRlZCBsZWFrIC0gd2l0aCBMaW51eCA0LjE5
+LnguDQo+IA0KPiBTaG91bGQgInBhbV9zeXN0ZW1kIiBtYXliZSBkbyBzb21ldGhpbmcgbGlrZSB0
+aGlzIGJlZm9yZSBkZWxldGluZyB0aGUgQ0cNCj4gZGlyZWN0b3J5Og0KPiA+IGVjaG8gMCA+L3N5
+cy9mcy9jZ3JvdXAvbWVtb3J5Ly4uLi9tZW1vcnkuZm9yY2VfZW1wdHkNCj4gDQo+IA0KPiBTb21l
+IG1vcmUgZGV0YWlscyBhcmUgYXZhaWxhYmxlIGF0IG91ciBidWctdHJhY2tlciBhdA0KPiA8aHR0
+cHM6Ly91cmxkZWZlbnNlLnByb29mcG9pbnQuY29tL3YyL3VybD91PWh0dHBzLTNBX19mb3JnZS51
+bml2ZW50aW9uLm9yZ19idWd6aWxsYV9zaG93LTVGYnVnLmNnaS0zRmlkLTNENDk2MTQtMjNjNSZk
+PUR3SURhUSZjPTVWRDBSVHRObFRoM3ljZDQxYjNNVXcmcj1qSllndERNN1FULVctRnpfZDI5SFlR
+Jm09RDdTRUluV1pMa29zRzQ0UU5lQXltZWEyUjFQUVlUX3l2WTdVOW9wTEFUZyZzPUJ6S21QX3Vs
+TWFJTkZCMkJqZkVWTmpPemd5Z29PMnhJZGVfQlhLWFZIaWsmZT0gPi4NCj4gDQo+IERlYmlhbi1C
+dWdzOg0KPiAqIDxodHRwczovL3VybGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0
+cHMtM0FfX2J1Z3MuZGViaWFuLm9yZ19jZ2ktMkRiaW5fYnVncmVwb3J0LmNnaS0zRmJ1Zy0zRDkz
+MTExMSZkPUR3SURhUSZjPTVWRDBSVHRObFRoM3ljZDQxYjNNVXcmcj1qSllndERNN1FULVctRnpf
+ZDI5SFlRJm09RDdTRUluV1pMa29zRzQ0UU5lQXltZWEyUjFQUVlUX3l2WTdVOW9wTEFUZyZzPU9m
+NVZKdUVSR3VXMjNlUTdTSWVGY2t2VVhwSDA4M0hmVFZsT1pidlA5TE0mZT0gPg0KPiAqIDxodHRw
+czovL3VybGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0cHMtM0FfX2J1Z3MuZGVi
+aWFuLm9yZ19jZ2ktMkRiaW5fYnVncmVwb3J0LmNnaS0zRmJ1Zy0zRDkxMjQxMSZkPUR3SURhUSZj
+PTVWRDBSVHRObFRoM3ljZDQxYjNNVXcmcj1qSllndERNN1FULVctRnpfZDI5SFlRJm09RDdTRUlu
+V1pMa29zRzQ0UU5lQXltZWEyUjFQUVlUX3l2WTdVOW9wTEFUZyZzPTQtOG1oSklVVFhaUFdJSFFy
+TUh4S0YyeDJ4YnJoWEVTWGxhMDRhM0tuYUEmZT0gPg0KPiANCj4gU2luY2VyZWx5DQo+IFBoaWxp
+cHANCj4gLS0gDQo+IFBoaWxpcHAgSGFobg0KPiBPcGVuIFNvdXJjZSBTb2Z0d2FyZSBFbmdpbmVl
+cg0KPiANCj4gVW5pdmVudGlvbiBHbWJIDQo+IGJlIG9wZW4uDQo+IE1hcnktU29tZXJ2aWxsZS1T
+dHIuIDENCj4gRC0yODM1OSBCcmVtZW4NCj4gVGVsLjogKzQ5IDQyMSAyMjIzMi0wDQo+IEZheCA6
+ICs0OSA0MjEgMjIyMzItOTkNCj4gaGFobkB1bml2ZW50aW9uLmRlDQo+IA0KPiBodHRwczovL3Vy
+bGRlZmVuc2UucHJvb2Zwb2ludC5jb20vdjIvdXJsP3U9aHR0cHMtM0FfX3d3dy51bml2ZW50aW9u
+LmRlXyZkPUR3SURhUSZjPTVWRDBSVHRObFRoM3ljZDQxYjNNVXcmcj1qSllndERNN1FULVctRnpf
+ZDI5SFlRJm09RDdTRUluV1pMa29zRzQ0UU5lQXltZWEyUjFQUVlUX3l2WTdVOW9wTEFUZyZzPVV4
+ODRxRDVyeVRnMU4yYXdhT0xxSG53SDFlN2NrakhfSFFHTW9VLXVQdU0mZT0gDQo+IEdlc2Now6Rm
+dHNmw7xocmVyOiBQZXRlciBILiBHYW50ZW4NCj4gSFJCIDIwNzU1IEFtdHNnZXJpY2h0IEJyZW1l
+bg0KPiBTdGV1ZXItTnIuOiA3MS01OTctMDI4NzYNCg0KPiBGcm9tIDA2NzlkZWUwM2M2ZDcwNmQ1
+NzE0NWVhOTJjMjNkMDhmYTEwYTE5OTkgTW9uIFNlcCAxNyAwMDowMDowMCAyMDAxDQo+IE1lc3Nh
+Z2UtSWQ6IDwwNjc5ZGVlMDNjNmQ3MDZkNTcxNDVlYTkyYzIzZDA4ZmExMGExOTk5LjE1NjIwODM1
+NzQuZ2l0LmhhaG5AdW5pdmVudGlvbi5kZT4NCj4gRnJvbTogUm9tYW4gR3VzaGNoaW4gPGd1cm9A
+ZmIuY29tPg0KPiBEYXRlOiBXZWQsIDIgQXVnIDIwMTcgMTc6NTU6MjkgKzAxMDANCj4gU3ViamVj
+dDogW1BBVENIXSBjZ3JvdXA6IGtlZXAgdHJhY2sgb2YgbnVtYmVyIG9mIGRlc2NlbnQgY2dyb3Vw
+cw0KPiANCj4gS2VlcCB0cmFjayBvZiB0aGUgbnVtYmVyIG9mIG9ubGluZSBhbmQgZHlpbmcgZGVz
+Y2VudCBjZ3JvdXBzLg0KPiANCj4gVGhpcyBkYXRhIHdpbGwgYmUgdXNlZCBsYXRlciB0byBhZGQg
+YW4gYWJpbGl0eSB0byBjb250cm9sIGNncm91cA0KPiBoaWVyYXJjaHkgKGxpbWl0IHRoZSBkZXB0
+aCBhbmQgdGhlIG51bWJlciBvZiBkZXNjZW50IGNncm91cHMpDQo+IGFuZCBkaXNwbGF5IGhpZXJh
+cmNoeSBzdGF0cy4NCj4gDQo+IFNpZ25lZC1vZmYtYnk6IFJvbWFuIEd1c2hjaGluIDxndXJvQGZi
+LmNvbT4NCj4gU3VnZ2VzdGVkLWJ5OiBUZWp1biBIZW8gPHRqQGtlcm5lbC5vcmc+DQo+IFNpZ25l
+ZC1vZmYtYnk6IFRlanVuIEhlbyA8dGpAa2VybmVsLm9yZz4NCj4gQ2M6IFplZmFuIExpIDxsaXpl
+ZmFuQGh1YXdlaS5jb20+DQo+IENjOiBXYWltYW4gTG9uZyA8bG9uZ21hbkByZWRoYXQuY29tPg0K
+PiBDYzogSm9oYW5uZXMgV2VpbmVyIDxoYW5uZXNAY21weGNoZy5vcmc+DQo+IENjOiBrZXJuZWwt
+dGVhbUBmYi5jb20NCj4gQ2M6IGNncm91cHNAdmdlci5rZXJuZWwub3JnDQo+IENjOiBsaW51eC1k
+b2NAdmdlci5rZXJuZWwub3JnDQo+IENjOiBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+
+IFNpZ25lZC1vZmYtYnk6IFBoaWxpcHAgSGFobiA8aGFobkB1bml2ZW50aW9uLmRlPg0KPiBVcmw6
+IGh0dHBzOi8vd3d3LnNwaW5pY3MubmV0L2xpc3RzL2Nncm91cHMvbXNnMjA2MTEuaHRtbA0KPiAt
+LS0gYS9rZXJuZWwvY2dyb3VwLmMNCj4gKysrIGIva2VybmVsL2Nncm91cC5jDQo+IEBAIC00OTIy
+LDYgKzQ5MjIsMTggQEAgc3RhdGljIHN0cnVjdCBjZnR5cGUgY2dyb3VwX2RmbF9iYXNlX2ZpbA0K
+PiAgCXsgfQkvKiB0ZXJtaW5hdGUgKi8NCj4gIH07DQo+ICANCj4gK3N0YXRpYyBpbnQgY2dyb3Vw
+X3N0YXRfc2hvdyhzdHJ1Y3Qgc2VxX2ZpbGUgKnNlcSwgdm9pZCAqdikNCj4gK3sNCj4gKwlzdHJ1
+Y3QgY2dyb3VwICpjZ3JvdXAgPSBzZXFfY3NzKHNlcSktPmNncm91cDsNCj4gKw0KPiArCXNlcV9w
+cmludGYoc2VxLCAibnJfZGVzY2VuZGFudHMgJWRcbiIsDQo+ICsJCSAgIGNncm91cC0+bnJfZGVz
+Y2VuZGFudHMpOw0KPiArCXNlcV9wcmludGYoc2VxLCAibnJfZHlpbmdfZGVzY2VuZGFudHMgJWRc
+biIsDQo+ICsJCSAgIGNncm91cC0+bnJfZHlpbmdfZGVzY2VuZGFudHMpOw0KPiArDQo+ICsJcmV0
+dXJuIDA7DQo+ICt9DQo+ICsNCj4gIC8qIGNncm91cCBjb3JlIGludGVyZmFjZSBmaWxlcyBmb3Ig
+dGhlIGxlZ2FjeSBoaWVyYXJjaGllcyAqLw0KPiAgc3RhdGljIHN0cnVjdCBjZnR5cGUgY2dyb3Vw
+X2xlZ2FjeV9iYXNlX2ZpbGVzW10gPSB7DQo+ICAJew0KPiBAQCAtNDk2NCw2ICs0OTc2LDEwIEBA
+IHN0YXRpYyBzdHJ1Y3QgY2Z0eXBlIGNncm91cF9sZWdhY3lfYmFzZV8NCj4gIAkJLndyaXRlID0g
+Y2dyb3VwX3JlbGVhc2VfYWdlbnRfd3JpdGUsDQo+ICAJCS5tYXhfd3JpdGVfbGVuID0gUEFUSF9N
+QVggLSAxLA0KPiAgCX0sDQo+ICsJew0KPiArCQkubmFtZSA9ICJjZ3JvdXAuc3RhdCIsDQo+ICsJ
+CS5zZXFfc2hvdyA9IGNncm91cF9zdGF0X3Nob3csDQo+ICsJfSwNCj4gIAl7IH0JLyogdGVybWlu
+YXRlICovDQo+ICB9Ow0KPiAgDQo+IEBAIC01MDYzLDkgKzUwNzksMTUgQEAgc3RhdGljIHZvaWQg
+Y3NzX3JlbGVhc2Vfd29ya19mbihzdHJ1Y3Qgdw0KPiAgCQlpZiAoc3MtPmNzc19yZWxlYXNlZCkN
+Cj4gIAkJCXNzLT5jc3NfcmVsZWFzZWQoY3NzKTsNCj4gIAl9IGVsc2Ugew0KPiArCQlzdHJ1Y3Qg
+Y2dyb3VwICp0Y2dycDsNCj4gKw0KPiAgCQkvKiBjZ3JvdXAgcmVsZWFzZSBwYXRoICovDQo+ICAJ
+CXRyYWNlX2Nncm91cF9yZWxlYXNlKGNncnApOw0KPiAgDQo+ICsJCWZvciAodGNncnAgPSBjZ3Jv
+dXBfcGFyZW50KGNncnApOyB0Y2dycDsNCj4gKwkJICAgICB0Y2dycCA9IGNncm91cF9wYXJlbnQo
+dGNncnApKQ0KPiArCQkJdGNncnAtPm5yX2R5aW5nX2Rlc2NlbmRhbnRzLS07DQo+ICsNCj4gIAkJ
+Y2dyb3VwX2lkcl9yZW1vdmUoJmNncnAtPnJvb3QtPmNncm91cF9pZHIsIGNncnAtPmlkKTsNCj4g
+IAkJY2dycC0+aWQgPSAtMTsNCj4gIA0KPiBAQCAtNTI2Miw5ICs1Mjg0LDEzIEBAIHN0YXRpYyBz
+dHJ1Y3QgY2dyb3VwICpjZ3JvdXBfY3JlYXRlKHN0cnUNCj4gIAljZ3JwLT5yb290ID0gcm9vdDsN
+Cj4gIAljZ3JwLT5sZXZlbCA9IGxldmVsOw0KPiAgDQo+IC0JZm9yICh0Y2dycCA9IGNncnA7IHRj
+Z3JwOyB0Y2dycCA9IGNncm91cF9wYXJlbnQodGNncnApKQ0KPiArCWZvciAodGNncnAgPSBjZ3Jw
+OyB0Y2dycDsgdGNncnAgPSBjZ3JvdXBfcGFyZW50KHRjZ3JwKSkgew0KPiAgCQljZ3JwLT5hbmNl
+c3Rvcl9pZHNbdGNncnAtPmxldmVsXSA9IHRjZ3JwLT5pZDsNCj4gIA0KPiArCQlpZiAodGNncnAg
+IT0gY2dycCkNCj4gKwkJCXRjZ3JwLT5ucl9kZXNjZW5kYW50cysrOw0KPiArCX0NCj4gKw0KPiAg
+CWlmIChub3RpZnlfb25fcmVsZWFzZShwYXJlbnQpKQ0KPiAgCQlzZXRfYml0KENHUlBfTk9USUZZ
+X09OX1JFTEVBU0UsICZjZ3JwLT5mbGFncyk7DQo+ICANCj4gQEAgLTU0NjgsNiArNTQ5NCw3IEBA
+IHN0YXRpYyB2b2lkIGtpbGxfY3NzKHN0cnVjdCBjZ3JvdXBfc3Vic3kNCj4gIHN0YXRpYyBpbnQg
+Y2dyb3VwX2Rlc3Ryb3lfbG9ja2VkKHN0cnVjdCBjZ3JvdXAgKmNncnApDQo+ICAJX19yZWxlYXNl
+cygmY2dyb3VwX211dGV4KSBfX2FjcXVpcmVzKCZjZ3JvdXBfbXV0ZXgpDQo+ICB7DQo+ICsJc3Ry
+dWN0IGNncm91cCAqdGNncnA7DQo+ICAJc3RydWN0IGNncm91cF9zdWJzeXNfc3RhdGUgKmNzczsN
+Cj4gIAlzdHJ1Y3QgY2dycF9jc2V0X2xpbmsgKmxpbms7DQo+ICAJaW50IHNzaWQ7DQo+IEBAIC01
+NTEyLDYgKzU1MzksMTEgQEAgc3RhdGljIGludCBjZ3JvdXBfZGVzdHJveV9sb2NrZWQoc3RydWN0
+DQo+ICAJICovDQo+ICAJa2VybmZzX3JlbW92ZShjZ3JwLT5rbik7DQo+ICANCj4gKwlmb3IgKHRj
+Z3JwID0gY2dyb3VwX3BhcmVudChjZ3JwKTsgdGNncnA7IHRjZ3JwID0gY2dyb3VwX3BhcmVudCh0
+Y2dycCkpIHsNCj4gKwkJdGNncnAtPm5yX2Rlc2NlbmRhbnRzLS07DQo+ICsJCXRjZ3JwLT5ucl9k
+eWluZ19kZXNjZW5kYW50cysrOw0KPiArCX0NCj4gKw0KPiAgCWNoZWNrX2Zvcl9yZWxlYXNlKGNn
+cm91cF9wYXJlbnQoY2dycCkpOw0KPiAgDQo+ICAJLyogcHV0IHRoZSBiYXNlIHJlZmVyZW5jZSAq
+Lw0KPiAtLS0gYS9pbmNsdWRlL2xpbnV4L2Nncm91cC1kZWZzLmgNCj4gKysrIGIvaW5jbHVkZS9s
+aW51eC9jZ3JvdXAtZGVmcy5oDQo+IEBAIC0yNDUsNiArMjQ1LDE0IEBAIHN0cnVjdCBjZ3JvdXAg
+ew0KPiAgCWludCBsZXZlbDsNCj4gIA0KPiAgCS8qDQo+ICsJICogS2VlcCB0cmFjayBvZiB0b3Rh
+bCBudW1iZXJzIG9mIHZpc2libGUgYW5kIGR5aW5nIGRlc2NlbnQgY2dyb3Vwcy4NCj4gKwkgKiBE
+eWluZyBjZ3JvdXBzIGFyZSBjZ3JvdXBzIHdoaWNoIHdlcmUgZGVsZXRlZCBieSBhIHVzZXIsDQo+
+ICsJICogYnV0IGFyZSBzdGlsbCBleGlzdGluZyBiZWNhdXNlIHNvbWVvbmUgZWxzZSBpcyBob2xk
+aW5nIGEgcmVmZXJlbmNlLg0KPiArCSAqLw0KPiArCWludCBucl9kZXNjZW5kYW50czsNCj4gKwlp
+bnQgbnJfZHlpbmdfZGVzY2VuZGFudHM7DQo+ICsNCj4gKwkvKg0KPiAgCSAqIEVhY2ggbm9uLWVt
+cHR5IGNzc19zZXQgYXNzb2NpYXRlZCB3aXRoIHRoaXMgY2dyb3VwIGNvbnRyaWJ1dGVzDQo+ICAJ
+ICogb25lIHRvIHBvcHVsYXRlZF9jbnQuICBBbGwgY2hpbGRyZW4gd2l0aCBub24temVybyBwb3B1
+cGxhdGVkX2NudA0KPiAgCSAqIG9mIHRoZWlyIG93biBjb250cmlidXRlIG9uZS4gIFRoZSBjb3Vu
+dCBpcyB6ZXJvIGlmZiB0aGVyZSdzIG5vDQoNCg==
