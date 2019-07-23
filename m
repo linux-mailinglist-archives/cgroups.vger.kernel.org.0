@@ -2,446 +2,385 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BCB971D74
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 19:13:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ABA271EB4
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 20:07:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388260AbfGWRNQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Jul 2019 13:13:16 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:58126 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388226AbfGWRNQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 23 Jul 2019 13:13:16 -0400
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 6A6B530655F5;
-        Tue, 23 Jul 2019 17:13:15 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-116-134.phx2.redhat.com [10.3.116.134])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id D359F19C59;
-        Tue, 23 Jul 2019 17:13:11 +0000 (UTC)
-Date:   Tue, 23 Jul 2019 13:13:09 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Dave Chiluk <chiluk+linux@indeed.com>
-Cc:     Ben Segall <bsegall@google.com>, Peter Oskolkov <posk@posk.io>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 1/1] sched/fair: Fix low cpu usage with high
- throttling by removing expiration of cpu-local slices
-Message-ID: <20190723171307.GC2947@lorien.usersys.redhat.com>
-References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
- <1563900266-19734-1-git-send-email-chiluk+linux@indeed.com>
- <1563900266-19734-2-git-send-email-chiluk+linux@indeed.com>
+        id S2387766AbfGWSHL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jul 2019 14:07:11 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:40427 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729712AbfGWSHL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 14:07:11 -0400
+Received: by mail-pf1-f195.google.com with SMTP id p184so19523192pfp.7
+        for <cgroups@vger.kernel.org>; Tue, 23 Jul 2019 11:07:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=cJHEAVWl1tbCq6ukXkqa/4qPq6rNW7ZWRv/GqyAszJY=;
+        b=eEheOy3IlgY++sPTAGLqr8+4YB3GpTh7TCSlLWOujgZ+0+ilhCL7o1hziSx0sfFD6+
+         CoZ0StdFwUpfQTbtHBx+Yq4X6A5S4d87b22LHrnMpcgY/SEX1M8mcfx/VxNt3k9QaAYj
+         tyPIHMN5OtOhmsExFw8vP8TMsal4bQT1KlCeE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=cJHEAVWl1tbCq6ukXkqa/4qPq6rNW7ZWRv/GqyAszJY=;
+        b=UTrs6rm3HL7vDQ3CT0zsEQfGYNacVooWC5sC827wqvCU0xTNhlzwhnR7M6U6H4rBg/
+         tiboQmuc+m445kpFd1KT9L2piAX2YjF0dn2JNgmAcgIgfTn9bRXwSwE7NQecRuFIKTL7
+         Sb9UYYfujDSw3L0weJrdQ4lH0Uw9Lrya1t2eSgWa2CBclnv90n1CWPFz4AySb/OcVvQO
+         /hCukO2amB877IqLG/1YysboI4vwwRuSKqJrXZWMJxiKEuAy/As4F0ShFBUT7MqbaqwZ
+         P8HpMsCCn8P/KwBMkoxqyv4bwX8nlrjxKIT9ZQKfFsAOq/7o5648LE7G6l8DmMWQ1LUn
+         g1iA==
+X-Gm-Message-State: APjAAAWYAjeWHxX5umQNND2VlobRBPVQ4awBFqQlI1qvEA475YgIWLWR
+        fJAfWq4etc2SWiUHZZCuOGhH9A==
+X-Google-Smtp-Source: APXvYqzaneOdEl8RRsVstaKXnp+gHViyBe1Q96OQm7sZ0iiZH37Y/7zsMzdGcabZtXkj7UIhTi0Kiw==
+X-Received: by 2002:aa7:8b11:: with SMTP id f17mr7055202pfd.19.1563905229824;
+        Tue, 23 Jul 2019 11:07:09 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:48f4])
+        by smtp.gmail.com with ESMTPSA id v185sm50327782pfb.14.2019.07.23.11.07.08
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Tue, 23 Jul 2019 11:07:09 -0700 (PDT)
+Date:   Tue, 23 Jul 2019 14:07:00 -0400
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org, kernel-team@fb.com,
+        Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH v4] mm: Throttle allocators when failing reclaim over
+ memory.high
+Message-ID: <20190723180700.GA29459@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <1563900266-19734-2-git-send-email-chiluk+linux@indeed.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.47]); Tue, 23 Jul 2019 17:13:15 +0000 (UTC)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190501184104.GA30293@chrisdown.name>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Dave,
+We're trying to use memory.high to limit workloads, but have found that
+containment can frequently fail completely and cause OOM situations
+outside of the cgroup. This happens especially with swap space -- either
+when none is configured, or swap is full. These failures often also
+don't have enough warning to allow one to react, whether for a human or
+for a daemon monitoring PSI.
 
-On Tue, Jul 23, 2019 at 11:44:26AM -0500 Dave Chiluk wrote:
-> It has been observed, that highly-threaded, non-cpu-bound applications
-> running under cpu.cfs_quota_us constraints can hit a high percentage of
-> periods throttled while simultaneously not consuming the allocated
-> amount of quota. This use case is typical of user-interactive non-cpu
-> bound applications, such as those running in kubernetes or mesos when
-> run on multiple cpu cores.
-> 
-> This has been root caused to cpu-local run queue being allocated per cpu
-> bandwidth slices, and then not fully using that slice within the period.
-> At which point the slice and quota expires. This expiration of unused
-> slice results in applications not being able to utilize the quota for
-> which they are allocated.
-> 
-> The non-expiration of per-cpu slices was recently fixed by
-> 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
-> condition")'. Prior to that it appears that this had been broken since
-> at least 'commit 51f2176d74ac ("sched/fair: Fix unlocked reads of some
-> cfs_b->quota/period")' which was introduced in v3.16-rc1 in 2014. That
-> added the following conditional which resulted in slices never being
-> expired.
-> 
-> if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
-> 	/* extend local deadline, drift is bounded above by 2 ticks */
-> 	cfs_rq->runtime_expires += TICK_NSEC;
-> 
-> Because this was broken for nearly 5 years, and has recently been fixed
-> and is now being noticed by many users running kubernetes
-> (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
-> that the mechanisms around expiring runtime should be removed
-> altogether.
-> 
-> This allows quota already allocated to per-cpu run-queues to live longer
-> than the period boundary. This allows threads on runqueues that do not
-> use much CPU to continue to use their remaining slice over a longer
-> period of time than cpu.cfs_period_us. However, this helps prevent the
-> above condition of hitting throttling while also not fully utilizing
-> your cpu quota.
-> 
-> This theoretically allows a machine to use slightly more than its
-> allotted quota in some periods. This overflow would be bounded by the
-> remaining quota left on each per-cpu runqueueu. This is typically no
-> more than min_cfs_rq_runtime=1ms per cpu. For CPU bound tasks this will
-> change nothing, as they should theoretically fully utilize all of their
-> quota in each period. For user-interactive tasks as described above this
-> provides a much better user/application experience as their cpu
-> utilization will more closely match the amount they requested when they
-> hit throttling. This means that cpu limits no longer strictly apply per
-> period for non-cpu bound applications, but that they are still accurate
-> over longer timeframes.
-> 
-> This greatly improves performance of high-thread-count, non-cpu bound
-> applications with low cfs_quota_us allocation on high-core-count
-> machines. In the case of an artificial testcase (10ms/100ms of quota on
-> 80 CPU machine), this commit resulted in almost 30x performance
-> improvement, while still maintaining correct cpu quota restrictions.
-> That testcase is available at https://github.com/indeedeng/fibtest.
-> 
-> Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
-> Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
-> Reviewed-by: Ben Segall <bsegall@google.com>
+Here is output from a simple program showing how long it takes in μsec
+(column 2) to allocate a megabyte of anonymous memory (column 1) when a
+cgroup is already beyond its memory high setting, and no swap is
+available:
 
-This still works for me. The documentation reads pretty well, too. Good job.
+    [root@ktst ~]# systemd-run -p MemoryHigh=100M -p MemorySwapMax=1 \
+    > --wait -t timeout 300 /root/mdf
+    [...]
+    95  1035
+    96  1038
+    97  1000
+    98  1036
+    99  1048
+    100 1590
+    101 1968
+    102 1776
+    103 1863
+    104 1757
+    105 1921
+    106 1893
+    107 1760
+    108 1748
+    109 1843
+    110 1716
+    111 1924
+    112 1776
+    113 1831
+    114 1766
+    115 1836
+    116 1588
+    117 1912
+    118 1802
+    119 1857
+    120 1731
+    [...]
+    [System OOM in 2-3 seconds]
 
-Feel free to add my Acked-by: or Reviewed-by: Phil Auld <pauld@redhat.com>.
+The delay does go up extremely marginally past the 100MB memory.high
+threshold, as now we spend time scanning before returning to usermode,
+but it's nowhere near enough to contain growth. It also doesn't get
+worse the more pages you have, since it only considers nr_pages.
 
-I'll run it through some more tests when I have time. The code is the same
-as the earlier one I tested from what I can see.
+The current situation goes against both the expectations of users of
+memory.high, and our intentions as cgroup v2 developers. In
+cgroup-v2.txt, we claim that we will throttle and only under "extreme
+conditions" will memory.high protection be breached. Likewise, cgroup v2
+users generally also expect that memory.high should throttle workloads
+as they exceed their high threshold. However, as seen above, this isn't
+always how it works in practice -- even on banal setups like those with
+no swap, or where swap has become exhausted, we can end up with
+memory.high being breached and us having no weapons left in our arsenal
+to combat runaway growth with, since reclaim is futile.
 
-Cheers,
-Phil
+It's also hard for system monitoring software or users to tell how bad
+the situation is, as "high" events for the memcg may in some cases be
+benign, and in others be catastrophic. The current status quo is that we
+fail containment in a way that doesn't provide any advance warning that
+things are about to go horribly wrong (for example, we are about to
+invoke the kernel OOM killer).
 
-> ---
->  Documentation/scheduler/sched-bwc.rst | 74 ++++++++++++++++++++++++++++-------
->  kernel/sched/fair.c                   | 72 ++++------------------------------
->  kernel/sched/sched.h                  |  4 --
->  3 files changed, 67 insertions(+), 83 deletions(-)
-> 
-> diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-> index 3a90642..9801d6b 100644
-> --- a/Documentation/scheduler/sched-bwc.rst
-> +++ b/Documentation/scheduler/sched-bwc.rst
-> @@ -9,15 +9,16 @@ CFS bandwidth control is a CONFIG_FAIR_GROUP_SCHED extension which allows the
->  specification of the maximum CPU bandwidth available to a group or hierarchy.
->  
->  The bandwidth allowed for a group is specified using a quota and period. Within
-> -each given "period" (microseconds), a group is allowed to consume only up to
-> -"quota" microseconds of CPU time.  When the CPU bandwidth consumption of a
-> -group exceeds this limit (for that period), the tasks belonging to its
-> -hierarchy will be throttled and are not allowed to run again until the next
-> -period.
-> -
-> -A group's unused runtime is globally tracked, being refreshed with quota units
-> -above at each period boundary.  As threads consume this bandwidth it is
-> -transferred to cpu-local "silos" on a demand basis.  The amount transferred
-> +each given "period" (microseconds), a task group is allocated up to "quota"
-> +microseconds of CPU time. That quota is assigned to per-cpu run queues in
-> +slices as threads in the cgroup become runnable. Once all quota has been
-> +assigned any additional requests for quota will result in those threads being
-> +throttled. Throttled threads will not be able to run again until the next
-> +period when the quota is replenished.
-> +
-> +A group's unassigned quota is globally tracked, being refreshed back to
-> +cfs_quota units at each period boundary. As threads consume this bandwidth it
-> +is transferred to cpu-local "silos" on a demand basis. The amount transferred
->  within each of these updates is tunable and described as the "slice".
->  
->  Management
-> @@ -35,12 +36,12 @@ The default values are::
->  
->  A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
->  bandwidth restriction in place, such a group is described as an unconstrained
-> -bandwidth group.  This represents the traditional work-conserving behavior for
-> +bandwidth group. This represents the traditional work-conserving behavior for
->  CFS.
->  
->  Writing any (valid) positive value(s) will enact the specified bandwidth limit.
-> -The minimum quota allowed for the quota or period is 1ms.  There is also an
-> -upper bound on the period length of 1s.  Additional restrictions exist when
-> +The minimum quota allowed for the quota or period is 1ms. There is also an
-> +upper bound on the period length of 1s. Additional restrictions exist when
->  bandwidth limits are used in a hierarchical fashion, these are explained in
->  more detail below.
->  
-> @@ -53,8 +54,8 @@ unthrottled if it is in a constrained state.
->  System wide settings
->  --------------------
->  For efficiency run-time is transferred between the global pool and CPU local
-> -"silos" in a batch fashion.  This greatly reduces global accounting pressure
-> -on large systems.  The amount transferred each time such an update is required
-> +"silos" in a batch fashion. This greatly reduces global accounting pressure
-> +on large systems. The amount transferred each time such an update is required
->  is described as the "slice".
->  
->  This is tunable via procfs::
-> @@ -97,6 +98,51 @@ There are two ways in which a group may become throttled:
->  In case b) above, even though the child may have runtime remaining it will not
->  be allowed to until the parent's runtime is refreshed.
->  
-> +CFS Bandwidth Quota Caveats
-> +---------------------------
-> +Once a slice is assigned to a cpu it does not expire.  However all but 1ms of
-> +the slice may be returned to the global pool if all threads on that cpu become
-> +unrunnable. This is configured at compile time by the min_cfs_rq_runtime
-> +variable. This is a performance tweak that helps prevent added contention on
-> +the global lock.
-> +
-> +The fact that cpu-local slices do not expire results in some interesting corner
-> +cases that should be understood.
-> +
-> +For cgroup cpu constrained applications that are cpu limited this is a
-> +relatively moot point because they will naturally consume the entirety of their
-> +quota as well as the entirety of each cpu-local slice in each period. As a
-> +result it is expected that nr_periods roughly equal nr_throttled, and that
-> +cpuacct.usage will increase roughly equal to cfs_quota_us in each period.
-> +
-> +For highly-threaded, non-cpu bound applications this non-expiration nuance
-> +allows applications to briefly burst past their quota limits by the amount of
-> +unused slice on each cpu that the task group is running on (typically at most
-> +1ms per cpu or as defined by min_cfs_rq_runtime).  This slight burst only
-> +applies if quota had been assigned to a cpu and then not fully used or returned
-> +in previous periods. This burst amount will not be transferred between cores.
-> +As a result, this mechanism still strictly limits the task group to quota
-> +average usage, albeit over a longer time window than a single period.  This
-> +also limits the burst ability to no more than 1ms per cpu.  This provides
-> +better more predictable user experience for highly threaded applications with
-> +small quota limits on high core count machines. It also eliminates the
-> +propensity to throttle these applications while simultanously using less than
-> +quota amounts of cpu. Another way to say this, is that by allowing the unused
-> +portion of a slice to remain valid across periods we have decreased the
-> +possibility of wastefully expiring quota on cpu-local silos that don't need a
-> +full slice's amount of cpu time.
-> +
-> +The interaction between cpu-bound and non-cpu-bound-interactive applications
-> +should also be considered, especially when single core usage hits 100%. If you
-> +gave each of these applications half of a cpu-core and they both got scheduled
-> +on the same CPU it is theoretically possible that the non-cpu bound application
-> +will use up to 1ms additional quota in some periods, thereby preventing the
-> +cpu-bound application from fully using its quota by that same amount. In these
-> +instances it will be up to the CFS algorithm (see sched-design-CFS.rst) to
-> +decide which application is chosen to run, as they will both be runnable and
-> +have remaining quota. This runtime discrepancy will be made up in the following
-> +periods when the interactive application idles.
-> +
->  Examples
->  --------
->  1. Limit a group to 1 CPU worth of runtime::
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 036be95..00b68f0 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -4316,8 +4316,6 @@ void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
->  
->  	now = sched_clock_cpu(smp_processor_id());
->  	cfs_b->runtime = cfs_b->quota;
-> -	cfs_b->runtime_expires = now + ktime_to_ns(cfs_b->period);
-> -	cfs_b->expires_seq++;
->  }
->  
->  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
-> @@ -4339,8 +4337,7 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->  {
->  	struct task_group *tg = cfs_rq->tg;
->  	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(tg);
-> -	u64 amount = 0, min_amount, expires;
-> -	int expires_seq;
-> +	u64 amount = 0, min_amount;
->  
->  	/* note: this is a positive sum as runtime_remaining <= 0 */
->  	min_amount = sched_cfs_bandwidth_slice() - cfs_rq->runtime_remaining;
-> @@ -4357,61 +4354,17 @@ static int assign_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->  			cfs_b->idle = 0;
->  		}
->  	}
-> -	expires_seq = cfs_b->expires_seq;
-> -	expires = cfs_b->runtime_expires;
->  	raw_spin_unlock(&cfs_b->lock);
->  
->  	cfs_rq->runtime_remaining += amount;
-> -	/*
-> -	 * we may have advanced our local expiration to account for allowed
-> -	 * spread between our sched_clock and the one on which runtime was
-> -	 * issued.
-> -	 */
-> -	if (cfs_rq->expires_seq != expires_seq) {
-> -		cfs_rq->expires_seq = expires_seq;
-> -		cfs_rq->runtime_expires = expires;
-> -	}
->  
->  	return cfs_rq->runtime_remaining > 0;
->  }
->  
-> -/*
-> - * Note: This depends on the synchronization provided by sched_clock and the
-> - * fact that rq->clock snapshots this value.
-> - */
-> -static void expire_cfs_rq_runtime(struct cfs_rq *cfs_rq)
-> -{
-> -	struct cfs_bandwidth *cfs_b = tg_cfs_bandwidth(cfs_rq->tg);
-> -
-> -	/* if the deadline is ahead of our clock, nothing to do */
-> -	if (likely((s64)(rq_clock(rq_of(cfs_rq)) - cfs_rq->runtime_expires) < 0))
-> -		return;
-> -
-> -	if (cfs_rq->runtime_remaining < 0)
-> -		return;
-> -
-> -	/*
-> -	 * If the local deadline has passed we have to consider the
-> -	 * possibility that our sched_clock is 'fast' and the global deadline
-> -	 * has not truly expired.
-> -	 *
-> -	 * Fortunately we can check determine whether this the case by checking
-> -	 * whether the global deadline(cfs_b->expires_seq) has advanced.
-> -	 */
-> -	if (cfs_rq->expires_seq == cfs_b->expires_seq) {
-> -		/* extend local deadline, drift is bounded above by 2 ticks */
-> -		cfs_rq->runtime_expires += TICK_NSEC;
-> -	} else {
-> -		/* global deadline is ahead, expiration has passed */
-> -		cfs_rq->runtime_remaining = 0;
-> -	}
-> -}
-> -
->  static void __account_cfs_rq_runtime(struct cfs_rq *cfs_rq, u64 delta_exec)
->  {
->  	/* dock delta_exec before expiring quota (as it could span periods) */
->  	cfs_rq->runtime_remaining -= delta_exec;
-> -	expire_cfs_rq_runtime(cfs_rq);
->  
->  	if (likely(cfs_rq->runtime_remaining > 0))
->  		return;
-> @@ -4602,8 +4555,7 @@ void unthrottle_cfs_rq(struct cfs_rq *cfs_rq)
->  		resched_curr(rq);
->  }
->  
-> -static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
-> -		u64 remaining, u64 expires)
-> +static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b, u64 remaining)
->  {
->  	struct cfs_rq *cfs_rq;
->  	u64 runtime;
-> @@ -4625,7 +4577,6 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->  		remaining -= runtime;
->  
->  		cfs_rq->runtime_remaining += runtime;
-> -		cfs_rq->runtime_expires = expires;
->  
->  		/* we check whether we're throttled above */
->  		if (cfs_rq->runtime_remaining > 0)
-> @@ -4650,7 +4601,7 @@ static u64 distribute_cfs_runtime(struct cfs_bandwidth *cfs_b,
->   */
->  static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, unsigned long flags)
->  {
-> -	u64 runtime, runtime_expires;
-> +	u64 runtime;
->  	int throttled;
->  
->  	/* no need to continue the timer with no bandwidth constraint */
-> @@ -4678,8 +4629,6 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->  	/* account preceding periods in which throttling occurred */
->  	cfs_b->nr_throttled += overrun;
->  
-> -	runtime_expires = cfs_b->runtime_expires;
-> -
->  	/*
->  	 * This check is repeated as we are holding onto the new bandwidth while
->  	 * we unthrottle. This can potentially race with an unthrottled group
-> @@ -4692,8 +4641,7 @@ static int do_sched_cfs_period_timer(struct cfs_bandwidth *cfs_b, int overrun, u
->  		cfs_b->distribute_running = 1;
->  		raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->  		/* we can't nest cfs_b->lock while distributing bandwidth */
-> -		runtime = distribute_cfs_runtime(cfs_b, runtime,
-> -						 runtime_expires);
-> +		runtime = distribute_cfs_runtime(cfs_b, runtime);
->  		raw_spin_lock_irqsave(&cfs_b->lock, flags);
->  
->  		cfs_b->distribute_running = 0;
-> @@ -4775,8 +4723,7 @@ static void __return_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->  		return;
->  
->  	raw_spin_lock(&cfs_b->lock);
-> -	if (cfs_b->quota != RUNTIME_INF &&
-> -	    cfs_rq->runtime_expires == cfs_b->runtime_expires) {
-> +	if (cfs_b->quota != RUNTIME_INF) {
->  		cfs_b->runtime += slack_runtime;
->  
->  		/* we are under rq->lock, defer unthrottling using a timer */
-> @@ -4809,7 +4756,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->  {
->  	u64 runtime = 0, slice = sched_cfs_bandwidth_slice();
->  	unsigned long flags;
-> -	u64 expires;
->  
->  	/* confirm we're still not at a refresh boundary */
->  	raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> @@ -4827,7 +4773,6 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->  	if (cfs_b->quota != RUNTIME_INF && cfs_b->runtime > slice)
->  		runtime = cfs_b->runtime;
->  
-> -	expires = cfs_b->runtime_expires;
->  	if (runtime)
->  		cfs_b->distribute_running = 1;
->  
-> @@ -4836,11 +4781,10 @@ static void do_sched_cfs_slack_timer(struct cfs_bandwidth *cfs_b)
->  	if (!runtime)
->  		return;
->  
-> -	runtime = distribute_cfs_runtime(cfs_b, runtime, expires);
-> +	runtime = distribute_cfs_runtime(cfs_b, runtime);
->  
->  	raw_spin_lock_irqsave(&cfs_b->lock, flags);
-> -	if (expires == cfs_b->runtime_expires)
-> -		lsub_positive(&cfs_b->runtime, runtime);
-> +	lsub_positive(&cfs_b->runtime, runtime);
->  	cfs_b->distribute_running = 0;
->  	raw_spin_unlock_irqrestore(&cfs_b->lock, flags);
->  }
-> @@ -4997,8 +4941,6 @@ void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->  
->  	cfs_b->period_active = 1;
->  	overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
-> -	cfs_b->runtime_expires += (overrun + 1) * ktime_to_ns(cfs_b->period);
-> -	cfs_b->expires_seq++;
->  	hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
->  }
->  
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 802b1f3..28c16e9 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -335,8 +335,6 @@ struct cfs_bandwidth {
->  	u64			quota;
->  	u64			runtime;
->  	s64			hierarchical_quota;
-> -	u64			runtime_expires;
-> -	int			expires_seq;
->  
->  	u8			idle;
->  	u8			period_active;
-> @@ -556,8 +554,6 @@ struct cfs_rq {
->  
->  #ifdef CONFIG_CFS_BANDWIDTH
->  	int			runtime_enabled;
-> -	int			expires_seq;
-> -	u64			runtime_expires;
->  	s64			runtime_remaining;
->  
->  	u64			throttled_clock;
-> -- 
-> 1.8.3.1
-> 
+This patch introduces explicit throttling when reclaim is failing to
+keep memcg size contained at the memory.high setting. It does so by
+applying an exponential delay curve derived from the memcg's overage
+compared to memory.high.  In the normal case where the memcg is either
+below or only marginally over its memory.high setting, no throttling
+will be performed.
 
+This composes well with system health monitoring and remediation, as
+these allocator delays are factored into PSI's memory pressure
+calculations. This both creates a mechanism system administrators or
+applications consuming the PSI interface to trivially see that the memcg
+in question is struggling and use that to make more reasonable
+decisions, and permits them enough time to act. Either of these can act
+with significantly more nuance than that we can provide using the system
+OOM killer.
+
+This is a similar idea to memory.oom_control in cgroup v1 which would
+put the cgroup to sleep if the threshold was violated, but it's also
+significantly improved as it results in visible memory pressure, and
+also doesn't schedule indefinitely, which previously made tracing and
+other introspection difficult (ie. it's clamped at 2*HZ per allocation
+through MEMCG_MAX_HIGH_DELAY_JIFFIES).
+
+Contrast the previous results with a kernel with this patch:
+
+    [root@ktst ~]# systemd-run -p MemoryHigh=100M -p MemorySwapMax=1 \
+    > --wait -t timeout 300 /root/mdf
+    [...]
+    95  1002
+    96  1000
+    97  1002
+    98  1003
+    99  1000
+    100 1043
+    101 84724
+    102 330628
+    103 610511
+    104 1016265
+    105 1503969
+    106 2391692
+    107 2872061
+    108 3248003
+    109 4791904
+    110 5759832
+    111 6912509
+    112 8127818
+    113 9472203
+    114 12287622
+    115 12480079
+    116 14144008
+    117 15808029
+    118 16384500
+    119 16383242
+    120 16384979
+    [...]
+
+As you can see, in the normal case, memory allocation takes around 1000
+μsec. However, as we exceed our memory.high, things start to increase
+exponentially, but fairly leniently at first. Our first megabyte over
+memory.high takes us 0.16 seconds, then the next is 0.46 seconds, then
+the next is almost an entire second. This gets worse until we reach our
+eventual 2*HZ clamp per batch, resulting in 16 seconds per megabyte.
+However, this is still making forward progress, so permits tracing or
+further analysis with programs like GDB.
+
+We use an exponential curve for our delay penalty for a few reasons:
+
+1. We run mem_cgroup_handle_over_high to potentially do reclaim after
+   we've already performed allocations, which means that temporarily
+   going over memory.high by a small amount may be perfectly legitimate,
+   even for compliant workloads. We don't want to unduly penalise such
+   cases.
+2. An exponential curve (as opposed to a static or linear delay) allows
+   ramping up memory pressure stats more gradually, which can be useful
+   to work out that you have set memory.high too low, without destroying
+   application performance entirely.
+
+This patch expands on earlier work by Johannes Weiner. Thanks!
+
+Signed-off-by: Chris Down <chris@chrisdown.name>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: linux-kernel@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: kernel-team@fb.com
+---
+ mm/memcontrol.c | 125 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 124 insertions(+), 1 deletion(-)
+
+[v4: Rebased and fixed theoretical (but somewhat unlikely) divide by zero]
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d969cf5598ce..8a46496822e3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -57,6 +57,7 @@
+ #include <linux/lockdep.h>
+ #include <linux/file.h>
+ #include <linux/tracehook.h>
++#include <linux/psi.h>
+ #include <linux/seq_buf.h>
+ #include "internal.h"
+ #include <net/sock.h>
+@@ -2314,12 +2315,68 @@ static void high_work_func(struct work_struct *work)
+ 	reclaim_high(memcg, MEMCG_CHARGE_BATCH, GFP_KERNEL);
+ }
+ 
++/*
++ * Clamp the maximum sleep time per allocation batch to 2 seconds. This is
++ * enough to still cause a significant slowdown in most cases, while still
++ * allowing diagnostics and tracing to proceed without becoming stuck.
++ */
++#define MEMCG_MAX_HIGH_DELAY_JIFFIES (2UL*HZ)
++
++/*
++ * When calculating the delay, we use these either side of the exponentiation to
++ * maintain precision and scale to a reasonable number of jiffies (see the table
++ * below.
++ *
++ * - MEMCG_DELAY_PRECISION_SHIFT: Extra precision bits while translating the
++ *   overage ratio to a delay.
++ * - MEMCG_DELAY_SCALING_SHIFT: The number of bits to scale down down the
++ *   proposed penalty in order to reduce to a reasonable number of jiffies, and
++ *   to produce a reasonable delay curve.
++ *
++ * MEMCG_DELAY_SCALING_SHIFT just happens to be a number that produces a
++ * reasonable delay curve compared to precision-adjusted overage, not
++ * penalising heavily at first, but still making sure that growth beyond the
++ * limit penalises misbehaviour cgroups by slowing them down exponentially. For
++ * example, with a high of 100 megabytes:
++ *
++ *  +-------+------------------------+
++ *  | usage | time to allocate in ms |
++ *  +-------+------------------------+
++ *  | 100M  |                      0 |
++ *  | 101M  |                      6 |
++ *  | 102M  |                     25 |
++ *  | 103M  |                     57 |
++ *  | 104M  |                    102 |
++ *  | 105M  |                    159 |
++ *  | 106M  |                    230 |
++ *  | 107M  |                    313 |
++ *  | 108M  |                    409 |
++ *  | 109M  |                    518 |
++ *  | 110M  |                    639 |
++ *  | 111M  |                    774 |
++ *  | 112M  |                    921 |
++ *  | 113M  |                   1081 |
++ *  | 114M  |                   1254 |
++ *  | 115M  |                   1439 |
++ *  | 116M  |                   1638 |
++ *  | 117M  |                   1849 |
++ *  | 118M  |                   2000 |
++ *  | 119M  |                   2000 |
++ *  | 120M  |                   2000 |
++ *  +-------+------------------------+
++ */
++ #define MEMCG_DELAY_PRECISION_SHIFT 20
++ #define MEMCG_DELAY_SCALING_SHIFT 14
++
+ /*
+  * Scheduled by try_charge() to be executed from the userland return path
+  * and reclaims memory over the high limit.
+  */
+ void mem_cgroup_handle_over_high(void)
+ {
++	unsigned long usage, high, clamped_high;
++	unsigned long pflags;
++	unsigned long penalty_jiffies, overage;
+ 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
+ 	struct mem_cgroup *memcg;
+ 
+@@ -2328,8 +2385,74 @@ void mem_cgroup_handle_over_high(void)
+ 
+ 	memcg = get_mem_cgroup_from_mm(current->mm);
+ 	reclaim_high(memcg, nr_pages, GFP_KERNEL);
+-	css_put(&memcg->css);
+ 	current->memcg_nr_pages_over_high = 0;
++
++	/*
++	 * memory.high is breached and reclaim is unable to keep up. Throttle
++	 * allocators proactively to slow down excessive growth.
++	 *
++	 * We use overage compared to memory.high to calculate the number of
++	 * jiffies to sleep (penalty_jiffies). Ideally this value should be
++	 * fairly lenient on small overages, and increasingly harsh when the
++	 * memcg in question makes it clear that it has no intention of stopping
++	 * its crazy behaviour, so we exponentially increase the delay based on
++	 * overage amount.
++	 */
++
++	usage = page_counter_read(&memcg->memory);
++	high = READ_ONCE(memcg->high);
++
++	if (usage <= high)
++		goto out;
++
++	/*
++	 * Prevent division by 0 in overage calculation by acting as if it was a
++	 * threshold of 1 page
++	 */
++	clamped_high = max(high, 1);
++
++	overage = ((u64)(usage - high) << MEMCG_DELAY_PRECISION_SHIFT)
++		/ clamped_high;
++	penalty_jiffies = ((u64)overage * overage * HZ)
++		>> (MEMCG_DELAY_PRECISION_SHIFT + MEMCG_DELAY_SCALING_SHIFT);
++
++	/*
++	 * Factor in the task's own contribution to the overage, such that four
++	 * N-sized allocations are throttled approximately the same as one
++	 * 4N-sized allocation.
++	 *
++	 * MEMCG_CHARGE_BATCH pages is nominal, so work out how much smaller or
++	 * larger the current charge patch is than that.
++	 */
++	penalty_jiffies = penalty_jiffies * nr_pages / MEMCG_CHARGE_BATCH;
++
++	/*
++	 * Clamp the max delay per usermode return so as to still keep the
++	 * application moving forwards and also permit diagnostics, albeit
++	 * extremely slowly.
++	 */
++	penalty_jiffies = min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
++
++	/*
++	 * Don't sleep if the amount of jiffies this memcg owes us is so low
++	 * that it's not even worth doing, in an attempt to be nice to those who
++	 * go only a small amount over their memory.high value and maybe haven't
++	 * been aggressively reclaimed enough yet.
++	 */
++	if (penalty_jiffies <= HZ / 100)
++		goto out;
++
++	/*
++	 * If we exit early, we're guaranteed to die (since
++	 * schedule_timeout_killable sets TASK_KILLABLE). This means we don't
++	 * need to account for any ill-begotten jiffies to pay them off later.
++	 */
++	psi_memstall_enter(&pflags);
++	schedule_timeout_killable(penalty_jiffies);
++	psi_memstall_leave(&pflags);
++
++out:
++	css_put(&memcg->css);
+ }
+ 
+ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
 -- 
+2.22.0
+
