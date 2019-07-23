@@ -2,132 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DC18971A5B
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:29:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDFA771A65
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:30:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730982AbfGWO35 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Jul 2019 10:29:57 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:51549 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729666AbfGWO34 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 10:29:56 -0400
-Received: by mail-wm1-f68.google.com with SMTP id 207so38801529wma.1;
-        Tue, 23 Jul 2019 07:29:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=T+ucanRlN4v00bCj+V9TWieMN0M4BoMWf+6f7FC6bAA=;
-        b=gQ/V/Kgk2dWanp/KXQhCBr0KJKWqquPK27y24HLK0FJzKOLlf5Cm7tefm2CrJmJKl/
-         e7hIxteKhMruQi8hMcCB+4t4z5bjLw3j7xrpiAniv/csxJeyOvqdyFmS6c5uOrNRs+ck
-         NAxAHGd9UFgkK71wCLhjZHgWe8f2ZEi9qe2Y0xQJOnHSjFQIxjRzRd0nULv7NAHKFIi3
-         9ckf/xG2uyAD+FZs02UaImyAEfQ7hT3RJv1qq+2NaLFxEG33Kgj589rL7Tj58BlI1V4r
-         hqGvWo8AB3R1Pu/jWR29eyoiPq5if0NcvdEhrCIoTFvjSHOVmiUcGTKYYGg5azTmXlQ2
-         in7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=T+ucanRlN4v00bCj+V9TWieMN0M4BoMWf+6f7FC6bAA=;
-        b=ggTH2d8faeWZIOP9ADkKd7+LmxbN07kJTZ//oJ8WTMXK6ZVSb8FwcNEZVhlbuT3LR/
-         nFu24+5yPQCMnhgOFV5GvZRFbqwjaSQ9mZYJfoDL8zpdCFs12k+kH6lqqKaJ4tKr+7yl
-         +kbde1yAD97X5uTTLPasUP2W9LwYADcl5sQofgb3hKvf2Gs7TmAQblBKlTTgBtcC4V6v
-         19J4ygER5SrQdaeONI/Jv+b1ysRm8HZyjzUd9pwnFTMaLObS0g+4Zer7TaN13Xs6xtRB
-         98gU2C4eNt7auTpV5ZZLuc8NUMP5ON/zC4pccZsu1uzAC35xJZXTEA1s3dmXA7VxWBd7
-         5qjg==
-X-Gm-Message-State: APjAAAXtj0oRKIwDYOa1/ZRv+rjR9675jwxFvCU++Vn9Wr2Mk422DOCc
-        wYMHxeRag3dSbCF2eUGEZW9ivR5ii34ZdylzpJ4=
-X-Google-Smtp-Source: APXvYqxtjGdc0X5DgIjGIR/fBYrgXZ6QVvG6t43yMN7+jj0gbuq+mxyzv1SxW3j1Ghs6r1ykg0hciXwlkERlfceRn1E=
-X-Received: by 2002:a1c:4c1a:: with SMTP id z26mr68132355wmf.2.1563892193986;
- Tue, 23 Jul 2019 07:29:53 -0700 (PDT)
+        id S1731991AbfGWOaM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jul 2019 10:30:12 -0400
+Received: from mx1.redhat.com ([209.132.183.28]:53898 "EHLO mx1.redhat.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731652AbfGWOaM (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 23 Jul 2019 10:30:12 -0400
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mx1.redhat.com (Postfix) with ESMTPS id 3914781F18;
+        Tue, 23 Jul 2019 14:30:11 +0000 (UTC)
+Received: from llong.remote.csb (dhcp-17-160.bos.redhat.com [10.18.17.160])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EBAC600D1;
+        Tue, 23 Jul 2019 14:30:08 +0000 (UTC)
+Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
+ caches
+To:     peter enderborg <peter.enderborg@sony.com>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>
+References: <20190702183730.14461-1-longman@redhat.com>
+ <71ab6307-9484-fdd3-fe6d-d261acf7c4a5@sony.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <f878a00c-5d84-534b-deac-5736534a61cd@redhat.com>
+Date:   Tue, 23 Jul 2019 10:30:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-References: <cover.1561385989.git.zhangweiping@didiglobal.com>
- <1333161d2c64dbe93f9dcd0814ffaf6d00216d58.1561385989.git.zhangweiping@didiglobal.com>
- <20190718135916.GC696309@devbig004.ftw2.facebook.com>
-In-Reply-To: <20190718135916.GC696309@devbig004.ftw2.facebook.com>
-From:   Weiping Zhang <zwp10758@gmail.com>
-Date:   Tue, 23 Jul 2019 22:29:48 +0800
-Message-ID: <CAA70yB5cjengLDTUN3U02yuBmn+dxi2KreegD+u2RohejUocsA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] block: add weighted round robin for blkcgroup
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>, keith.busch@intel.com,
-        Minwoo Im <minwoo.im.dev@gmail.com>,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <71ab6307-9484-fdd3-fe6d-d261acf7c4a5@sony.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Tue, 23 Jul 2019 14:30:12 +0000 (UTC)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Tejun Heo <tj@kernel.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=8818=E6=97=A5=E5=91=
-=A8=E5=9B=9B =E4=B8=8B=E5=8D=8810:00=E5=86=99=E9=81=93=EF=BC=9A
+On 7/22/19 8:46 AM, peter enderborg wrote:
+> On 7/2/19 8:37 PM, Waiman Long wrote:
+>> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
+>> file to shrink the slab by flushing all the per-cpu slabs and free
+>> slabs in partial lists. This applies only to the root caches, though.
+>>
+>> Extends this capability by shrinking all the child memcg caches and
+>> the root cache when a value of '2' is written to the shrink sysfs file.
+>>
+>> On a 4-socket 112-core 224-thread x86-64 system after a parallel kernel
+>> build, the the amount of memory occupied by slabs before shrinking
+>> slabs were:
+>>
+>>  # grep task_struct /proc/slabinfo
+>>  task_struct         7114   7296   7744    4    8 : tunables    0    0
+>>  0 : slabdata   1824   1824      0
+>>  # grep "^S[lRU]" /proc/meminfo
+>>  Slab:            1310444 kB
+>>  SReclaimable:     377604 kB
+>>  SUnreclaim:       932840 kB
+>>
+>> After shrinking slabs:
+>>
+>>  # grep "^S[lRU]" /proc/meminfo
+>>  Slab:             695652 kB
+>>  SReclaimable:     322796 kB
+>>  SUnreclaim:       372856 kB
+>>  # grep task_struct /proc/slabinfo
+>>  task_struct         2262   2572   7744    4    8 : tunables    0    0
+>>  0 : slabdata    643    643      0
 >
-> Hello, Weiping.
->
-> On Mon, Jun 24, 2019 at 10:28:51PM +0800, Weiping Zhang wrote:
-> > +static const char *blk_wrr_name[BLK_WRR_COUNT] =3D {
-> > +     [BLK_WRR_NONE]          =3D "none",
-> > +     [BLK_WRR_LOW]           =3D "low",
-> > +     [BLK_WRR_MEDIUM]        =3D "medium",
-> > +     [BLK_WRR_HIGH]          =3D "high",
-> > +     [BLK_WRR_URGENT]        =3D "urgent",
-> > +};
->
-Hello Tejun,
+> What is the time between this measurement points? Should not the shrinked memory show up as reclaimable?
 
-> cgroup controllers must be fully hierarchical which the proposed
-> implementation isn't.  While it can be made hierarchical, there's only
-> so much one can do if there are only five priority levels.
->
+In this case, I echoed '2' to all the shrink sysfs files under
+/sys/kernel/slab. The purpose of shrinking caches is to reclaim as much
+unused memory slabs from all the caches, irrespective if they are
+reclaimable or not. We do not reclaim any used objects. That is why we
+see the numbers were reduced in both cases.
 
-These priority are fully mapped to nvme specification except WRR_NONE.
-The Weighted Round Robin only support some of nvme devices, not all nvme
-support this feature, if you think the name of blkio.wrr is too common
-for block layer
-I like to rename it to blkio.nvme.wrr. This patchset implent a simple inter=
-face
-to user, if user want to use this feature they should to know the Qos
-of WRR provided by
-nvme device is accetable for their applicatiions. The NVME WRR is a
-simple and usefull
-feature, I want to give user one more option when they select a proper
-io isolation policy.
-It's not a general io isolation method, like what blkio.throttlle or
-iocost did, it just implement
-a simple mapping between application and nvme hardware submission
-queue,  not add
-any extra io statistic at block layer. The weight of (high, medium,
-low) and the burst can be
-changed by nvme-set-feature command. But this patchset does not
-support that, will be
-added in the feature.
-
-> Can you please take a look at the following?
->
->   http://lkml.kernel.org/r/20190710205128.1316483-1-tj@kernel.org
->
-> In comparison, I'm having a bit of hard time seeing the benefits of
-> this approach.  In addition to the finite level limitation, the actual
-> WRR behavior would be device dependent and what each level means is
-> likely to fluctuate depending on the workload and device model.
->
-From the test result(sequtial and random) it seems the high priority
-can get more
-bps/iops than lower priority. If device cannot guarantee the io
-latency when mixture
-IOs issued to the device, I think, for WRR,  the software should tune Weigt=
-h of
-high,medium, low and arbitration burst may provide a more stable
-latency, like what
-iocost does(tune overall io issue rate).
-
-> I wonder whether WRR is something more valuable to help internal queue
-> management rather than being exposed to userspace directly.
->
-> Thanks.
->
-> --
-> tejun
+Cheers,
+Longman
