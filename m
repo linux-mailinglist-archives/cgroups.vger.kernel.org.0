@@ -2,94 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 243997025E
-	for <lists+cgroups@lfdr.de>; Mon, 22 Jul 2019 16:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 650447161D
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 12:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729122AbfGVO36 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Jul 2019 10:29:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:38758 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725907AbfGVO36 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 22 Jul 2019 10:29:58 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2370F344;
-        Mon, 22 Jul 2019 07:29:57 -0700 (PDT)
-Received: from [0.0.0.0] (e107985-lin.cambridge.arm.com [10.1.194.38])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D51AC3F694;
-        Mon, 22 Jul 2019 07:29:54 -0700 (PDT)
-Subject: Re: [PATCH v9 4/8] sched/deadline: Fix bandwidth accounting at all
- levels after offline migration
+        id S1730390AbfGWKbw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jul 2019 06:31:52 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:54492 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727513AbfGWKbw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 06:31:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=MnT833q43OKgOeGMbkNl4vZ1Sr0chNDr5cIKxrka6/s=; b=guRZ1+tUYg9jhJ2PD2PsuUIT1
+        4QBkAklWJMBjR8UXnloAdUN4bhNaFSBjKNDfGAUGWOD5iKniBRB+YfV+0UkW3CDtuLIkLlSjLK/Ed
+        Z6vwQ1qxWmwY3EusrIZ5611r4vWuXwo+3a0omOSXASgptn1A6WiWz0+UPBCKEgE+K3SACKHbYjDzJ
+        LH7ooWwzv5hNYYxpsrYRd6bnroTm5z9n5eeMxrcOTAQvI7WNDS5OwNGQh03Ds/dpR6FBMVtf2sq6l
+        VVsL4ORpmJCl39/ulpHCNLeKHvDfXwygOLirPh0lzboT5Dju9JgC5S9bVnmLh76+mI0Y2LElUF1F/
+        SS9hLuRug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hps4z-0003kp-Vw; Tue, 23 Jul 2019 10:31:34 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B3B16201A9429; Tue, 23 Jul 2019 12:31:31 +0200 (CEST)
+Date:   Tue, 23 Jul 2019 12:31:31 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     Juri Lelli <juri.lelli@redhat.com>
-Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
-        tj@kernel.org, linux-kernel@vger.kernel.org,
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@redhat.com,
+        rostedt@goodmis.org, tj@kernel.org, linux-kernel@vger.kernel.org,
         luca.abeni@santannapisa.it, claudio@evidence.eu.com,
         tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
         mathieu.poirier@linaro.org, lizefan@huawei.com, longman@redhat.com,
         cgroups@vger.kernel.org
+Subject: Re: [PATCH v9 2/8] sched/core: Streamlining calls to task_rq_unlock()
+Message-ID: <20190723103131.GB3402@hirez.programming.kicks-ass.net>
 References: <20190719140000.31694-1-juri.lelli@redhat.com>
- <20190719140000.31694-5-juri.lelli@redhat.com>
- <5da6abab-00ff-9bb4-f24b-0bf5dfcd4c35@arm.com>
- <20190722122828.GG25636@localhost.localdomain>
- <07a45864-07bf-aa5d-3ff7-a300326b9040@arm.com>
- <20190722133520.GH25636@localhost.localdomain>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <0e546906-01b1-b15b-7188-9ad2c4b30dc1@arm.com>
-Date:   Mon, 22 Jul 2019 16:29:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+ <20190719140000.31694-3-juri.lelli@redhat.com>
+ <50f00347-ffb3-285c-5a7d-3a9c5f813950@arm.com>
+ <20190722083214.GF25636@localhost.localdomain>
 MIME-Version: 1.0
-In-Reply-To: <20190722133520.GH25636@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190722083214.GF25636@localhost.localdomain>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/22/19 3:35 PM, Juri Lelli wrote:
-> On 22/07/19 15:21, Dietmar Eggemann wrote:
->> On 7/22/19 2:28 PM, Juri Lelli wrote:
->>> On 22/07/19 13:07, Dietmar Eggemann wrote:
->>>> On 7/19/19 3:59 PM, Juri Lelli wrote:
->>>>
->>>> [...]
->>>>
->>>>> @@ -557,6 +558,38 @@ static struct rq *dl_task_offline_migration(struct rq *rq, struct task_struct *p
->>>>>  		double_lock_balance(rq, later_rq);
->>>>>  	}
->>>>>  
->>>>> +	if (p->dl.dl_non_contending || p->dl.dl_throttled) {
->>>>> +		/*
->>>>> +		 * Inactive timer is armed (or callback is running, but
->>>>> +		 * waiting for us to release rq locks). In any case, when it
->>>>> +		 * will file (or continue), it will see running_bw of this
->>>>
->>>> s/file/fire ?
->>>
->>> Yep.
->>>
->>>>> +		 * task migrated to later_rq (and correctly handle it).
->>>>
->>>> Is this because of dl_task_timer()->enqueue_task_dl()->task_contending()
->>>> setting dl_se->dl_non_contending = 0 ?
->>>
->>> No, this is related to inactive_task_timer() callback. Since the task is
->>> migrated (by this function calling set_task_cpu()) because a CPU hotplug
->>> operation happened, we need to reflect this w.r.t. running_bw, or
->>> inactive_task_timer() might sub from the new CPU and cause running_bw to
->>> underflow.
->>
->> I was more referring to the '... it will see running_bw of thus task
->> migrated to later_rq ...) and specifically to the HOW the timer
->> callback can detect this.
-> 
-> Oh, it actually doesn't "actively" detect this condition. The problem is
-> that if it still sees dl_non_contending == 1, it will sub (from the
-> "new" rq to which task's running_bw hasn't been added - w/o this fix)
-> and cause the underflow.
+On Mon, Jul 22, 2019 at 10:32:14AM +0200, Juri Lelli wrote:
 
-I was wrong ... enqueue_task_dl() is called with ENQUEUE_REPLENISH which
-doesn't call task_contending(). The comment makes sense to me now.
+> Thanks for reporting. The set is based on cgroup/for-next (as of last
+> week), though. I can of course rebase on tip/sched/core or mainline if
+> needed.
 
+TJ; I would like to take these patches through the scheduler tree if you
+don't mind. Afaict there's no real conflict vs cgroup/for-next (I
+applied the patches and then did a pull of cgroup/for-next which
+finished without complaints).
 
