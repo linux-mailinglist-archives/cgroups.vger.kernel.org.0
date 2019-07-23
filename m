@@ -2,101 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DDFA771A65
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D49E71AEF
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jul 2019 16:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731991AbfGWOaM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Jul 2019 10:30:12 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:53898 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731652AbfGWOaM (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 23 Jul 2019 10:30:12 -0400
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id 3914781F18;
-        Tue, 23 Jul 2019 14:30:11 +0000 (UTC)
-Received: from llong.remote.csb (dhcp-17-160.bos.redhat.com [10.18.17.160])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1EBAC600D1;
-        Tue, 23 Jul 2019 14:30:08 +0000 (UTC)
-Subject: Re: [PATCH] mm, slab: Extend slab/shrink to shrink all the memcg
- caches
-To:     peter enderborg <peter.enderborg@sony.com>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     linux-mm@kvack.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>
-References: <20190702183730.14461-1-longman@redhat.com>
- <71ab6307-9484-fdd3-fe6d-d261acf7c4a5@sony.com>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <f878a00c-5d84-534b-deac-5736534a61cd@redhat.com>
-Date:   Tue, 23 Jul 2019 10:30:07 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        id S1732758AbfGWO6Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jul 2019 10:58:25 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:40172 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731768AbfGWO6Z (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jul 2019 10:58:25 -0400
+Received: by mail-wr1-f67.google.com with SMTP id r1so43532552wrl.7
+        for <cgroups@vger.kernel.org>; Tue, 23 Jul 2019 07:58:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=9Q95sKPFk9TccCca5wm3MHqC/bILt6AlguaLb9p5BtM=;
+        b=rcaVJd6jSywMyzULYpFa8nCQFQm1pwdoYaCfaPqMV1xZdg0LQmORRNmY3YmyF13+DJ
+         LYp1wRzcBLxArgzhFM7idwDWzM4xlmu4+g0Ie3UckRs2dDd8d/4/Vkqj/BozG3m7tyyH
+         gWwpCX+HQmkJNpSVAZ4FUVHu8Ln2pfAZ97yPzg+tEw0Ciyu170/gggidw//tFKQNe56J
+         Hpp5I6kcAAKW+N/D5pCGVvDdTpMfhD4C/ibyz+1Ujelq8gvMyDoEto7VMeAWKoAqKMtJ
+         XusIcnwmfI0uaYFCNTrvpsBI1amDXjFWnSP6VceISE+EJEo1jzD9JWNSJsiFCX+YbItF
+         u9Mw==
+X-Gm-Message-State: APjAAAWwJVpxWGzexwFPCDc5Xs8CwOium6GgS5ZGO9o4c7/YX/vDmENp
+        bPiHtZt9wY5aNe+kjU084rA+eg==
+X-Google-Smtp-Source: APXvYqwajsaIpsTNukBrd6DpemfTekkynv+5Etmj9MGkQ//eh78SY+UKHQhzkijD9ozwvRSKVYHHOw==
+X-Received: by 2002:adf:fe09:: with SMTP id n9mr85777998wrr.41.1563893903061;
+        Tue, 23 Jul 2019 07:58:23 -0700 (PDT)
+Received: from localhost.localdomain ([151.82.8.29])
+        by smtp.gmail.com with ESMTPSA id x11sm30735456wmi.26.2019.07.23.07.58.20
+        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
+        Tue, 23 Jul 2019 07:58:21 -0700 (PDT)
+Date:   Tue, 23 Jul 2019 16:58:18 +0200
+From:   Juri Lelli <juri.lelli@redhat.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>, mingo@redhat.com,
+        rostedt@goodmis.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        mathieu.poirier@linaro.org, lizefan@huawei.com, longman@redhat.com,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v9 2/8] sched/core: Streamlining calls to task_rq_unlock()
+Message-ID: <20190723145818.GI25636@localhost.localdomain>
+References: <20190719140000.31694-1-juri.lelli@redhat.com>
+ <20190719140000.31694-3-juri.lelli@redhat.com>
+ <50f00347-ffb3-285c-5a7d-3a9c5f813950@arm.com>
+ <20190722083214.GF25636@localhost.localdomain>
+ <20190723103131.GB3402@hirez.programming.kicks-ass.net>
+ <20190723131100.GE696309@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <71ab6307-9484-fdd3-fe6d-d261acf7c4a5@sony.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.25]); Tue, 23 Jul 2019 14:30:12 +0000 (UTC)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723131100.GE696309@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 7/22/19 8:46 AM, peter enderborg wrote:
-> On 7/2/19 8:37 PM, Waiman Long wrote:
->> Currently, a value of '1" is written to /sys/kernel/slab/<slab>/shrink
->> file to shrink the slab by flushing all the per-cpu slabs and free
->> slabs in partial lists. This applies only to the root caches, though.
->>
->> Extends this capability by shrinking all the child memcg caches and
->> the root cache when a value of '2' is written to the shrink sysfs file.
->>
->> On a 4-socket 112-core 224-thread x86-64 system after a parallel kernel
->> build, the the amount of memory occupied by slabs before shrinking
->> slabs were:
->>
->>  # grep task_struct /proc/slabinfo
->>  task_struct         7114   7296   7744    4    8 : tunables    0    0
->>  0 : slabdata   1824   1824      0
->>  # grep "^S[lRU]" /proc/meminfo
->>  Slab:            1310444 kB
->>  SReclaimable:     377604 kB
->>  SUnreclaim:       932840 kB
->>
->> After shrinking slabs:
->>
->>  # grep "^S[lRU]" /proc/meminfo
->>  Slab:             695652 kB
->>  SReclaimable:     322796 kB
->>  SUnreclaim:       372856 kB
->>  # grep task_struct /proc/slabinfo
->>  task_struct         2262   2572   7744    4    8 : tunables    0    0
->>  0 : slabdata    643    643      0
->
-> What is the time between this measurement points? Should not the shrinked memory show up as reclaimable?
+On 23/07/19 06:11, Tejun Heo wrote:
+> On Tue, Jul 23, 2019 at 12:31:31PM +0200, Peter Zijlstra wrote:
+> > On Mon, Jul 22, 2019 at 10:32:14AM +0200, Juri Lelli wrote:
+> > 
+> > > Thanks for reporting. The set is based on cgroup/for-next (as of last
+> > > week), though. I can of course rebase on tip/sched/core or mainline if
+> > > needed.
+> > 
+> > TJ; I would like to take these patches through the scheduler tree if you
+> > don't mind. Afaict there's no real conflict vs cgroup/for-next (I
+> > applied the patches and then did a pull of cgroup/for-next which
+> > finished without complaints).
+> 
+> Yeah, for sure, please go ahead.
+> 
+> Thanks.
 
-In this case, I echoed '2' to all the shrink sysfs files under
-/sys/kernel/slab. The purpose of shrinking caches is to reclaim as much
-unused memory slabs from all the caches, irrespective if they are
-reclaimable or not. We do not reclaim any used objects. That is why we
-see the numbers were reduced in both cases.
-
-Cheers,
-Longman
+Thanks!
