@@ -2,125 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 044EF77144
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 20:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 48E2C77222
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 21:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387443AbfGZSak (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Jul 2019 14:30:40 -0400
-Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:23601 "EHLO
-        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726539AbfGZSak (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Jul 2019 14:30:40 -0400
-Received: (qmail 21622 invoked from network); 26 Jul 2019 20:30:36 +0200
-X-Fcrdns: No
-Received: from phoffice.de-nserver.de (HELO [10.242.2.5]) (185.39.223.5)
-  (smtp-auth username hostmaster@profihost.com, mechanism plain)
-  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Fri, 26 Jul 2019 20:30:36 +0200
-Subject: Re: No memory reclaim while reaching MemoryHigh
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     cgroups@vger.kernel.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "n.fahldieck@profihost.ag" <n.fahldieck@profihost.ag>,
-        Daniel Aberger - Profihost AG <d.aberger@profihost.ag>,
-        p.kramme@profihost.ag
-References: <496dd106-abdd-3fca-06ad-ff7abaf41475@profihost.ag>
- <20190725140117.GC3582@dhcp22.suse.cz>
- <028ff462-b547-b9a5-bdb0-e0de3a884afd@profihost.ag>
- <20190726074557.GF6142@dhcp22.suse.cz>
-From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Message-ID: <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
-Date:   Fri, 26 Jul 2019 20:30:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726840AbfGZT3U (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Jul 2019 15:29:20 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:33938 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726803AbfGZT3U (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Jul 2019 15:29:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:
+        Reply-To:Content-Type:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=ns01a/+dJBOEjeT/1CWh/+CD7/ir0pFGY6xdTOQcPbo=; b=IHzfhfoSB3RigJZKXgA69tpIeY
+        uJU4NTCegW0XVP4J9jLhGvyOVRNehr61tOVVCQJ7JIzfoetv3U29Z+ipmcEcI/HIGufUzderBSp8Y
+        nr2XwQ6oVIdWZGg3h3ppChnhLa/TP7+t6B/4CvN91rFN7IWqgQdV/3hmbeCEVMIBAgK5QMbQaK2mi
+        wPNdNxFaNzD9TaSygnBTiI7DZphoA0g9/1XBVI9dRwyKoPg6Rny/0YpN8g7NI11Et/tDrVba+P10P
+        pfK0fHEpeglcz/LBuNgBwcrKVczR1rvTlH3j7B3xpR5AY3ZnpPsEathZ1LH5OGQidg14Ckb7fmMx2
+        6bveAY0Q==;
+Received: from [179.95.31.157] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hr5u2-00046y-Ud; Fri, 26 Jul 2019 19:29:18 +0000
+Received: from mchehab by bombadil.infradead.org with local (Exim 4.92)
+        (envelope-from <mchehab@bombadil.infradead.org>)
+        id 1hr5tz-0004ym-Lg; Fri, 26 Jul 2019 16:29:15 -0300
+From:   Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Mauro Carvalho Chehab <mchehab@infradead.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org
+Subject: [PATCH 4/5] docs: cgroup-v1/blkio-controller.rst: remove a CFQ left over
+Date:   Fri, 26 Jul 2019 16:29:13 -0300
+Message-Id: <553b460b2352f7ed741c0f71ee777ae9c9c5ff5c.1564169297.git.mchehab+samsung@kernel.org>
+X-Mailer: git-send-email 2.21.0
+In-Reply-To: <5c44856436bbaeb4f2d4b750365b82de973ad054.1564169297.git.mchehab+samsung@kernel.org>
+References: <5c44856436bbaeb4f2d4b750365b82de973ad054.1564169297.git.mchehab+samsung@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20190726074557.GF6142@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Am 26.07.19 um 09:45 schrieb Michal Hocko:
-> On Thu 25-07-19 23:37:14, Stefan Priebe - Profihost AG wrote:
->> Hi Michal,
->>
->> Am 25.07.19 um 16:01 schrieb Michal Hocko:
->>> On Thu 25-07-19 15:17:17, Stefan Priebe - Profihost AG wrote:
->>>> Hello all,
->>>>
->>>> i hope i added the right list and people - if i missed someone i would
->>>> be happy to know.
->>>>
->>>> While using kernel 4.19.55 and cgroupv2 i set a MemoryHigh value for a
->>>> varnish service.
->>>>
->>>> It happens that the varnish.service cgroup reaches it's MemoryHigh value
->>>> and stops working due to throttling.
->>>
->>> What do you mean by "stops working"? Does it mean that the process is
->>> stuck in the kernel doing the reclaim? /proc/<pid>/stack would tell you
->>> what the kernel executing for the process.
->>
->> The service no longer responses to HTTP requests.
->>
->> stack switches in this case between:
->> [<0>] io_schedule+0x12/0x40
->> [<0>] __lock_page_or_retry+0x1e7/0x4e0
->> [<0>] filemap_fault+0x42f/0x830
->> [<0>] __xfs_filemap_fault.constprop.11+0x49/0x120
->> [<0>] __do_fault+0x57/0x108
->> [<0>] __handle_mm_fault+0x949/0xef0
->> [<0>] handle_mm_fault+0xfc/0x1f0
->> [<0>] __do_page_fault+0x24a/0x450
->> [<0>] do_page_fault+0x32/0x110
->> [<0>] async_page_fault+0x1e/0x30
->> [<0>] 0xffffffffffffffff
->>
->> and
->>
->> [<0>] poll_schedule_timeout.constprop.13+0x42/0x70
->> [<0>] do_sys_poll+0x51e/0x5f0
->> [<0>] __x64_sys_poll+0xe7/0x130
->> [<0>] do_syscall_64+0x5b/0x170
->> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> [<0>] 0xffffffffffffffff
-> 
-> Neither of the two seem to be memcg related.
+changeset fb5772cbfe48 ("blkio-controller.txt: Remove references to CFQ")
+removed cgroup references to CFQ, but it kept one left. Get rid of
+it.
 
-Yes but at least the xfs one is a page fault - isn't this related?
+Fixes: fb5772cbfe48 ("blkio-controller.txt: Remove references to CFQ")
+Signed-off-by: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+---
+ Documentation/admin-guide/cgroup-v1/blkio-controller.rst | 6 ------
+ 1 file changed, 6 deletions(-)
 
-> Have you tried to get
-> several snapshots and see if the backtrace is stable?
-No it's not it switches most of the time between these both. But as long
-as the xfs one with the page fault is seen it does not serve requests
-and that one is seen for at least 1-5s than the poill one is visible and
-than the xfs one again for 1-5s.
-
-This happens if i do:
-systemctl set-property --runtime varnish.service MemoryHigh=6.5G
-
-if i set:
-systemctl set-property --runtime varnish.service MemoryHigh=14G
-
-i never get the xfs handle_mm fault one. This is reproducable.
-
-> tell you whether your application is stuck in a single syscall or they
-> are just progressing very slowly (-ttt parameter should give you timing)
-
-Yes it's still going forward but really really slow due to memory
-pressure. memory.pressure of varnish cgroup shows high values above 100
-or 200.
-
-I can reproduce the same with rsync or other tasks using memory for
-inodes and dentries. What i don't unterstand is that the kernel does not
-reclaim memory for the userspace process and drops the cache. I can't
-believe those entries are hot - as they must be at least some days old
-as a fresh process running a day only consumes about 200MB of indoe /
-dentries / page cache.
-
-Greets,
-Stefan
+diff --git a/Documentation/admin-guide/cgroup-v1/blkio-controller.rst b/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
+index 1d7d962933be..36d43ae7dc13 100644
+--- a/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
++++ b/Documentation/admin-guide/cgroup-v1/blkio-controller.rst
+@@ -130,12 +130,6 @@ Proportional weight policy files
+ 	    dev     weight
+ 	    8:16    300
+ 
+-- blkio.leaf_weight[_device]
+-	- Equivalents of blkio.weight[_device] for the purpose of
+-          deciding how much weight tasks in the given cgroup has while
+-          competing with the cgroup's child cgroups. For details,
+-          please refer to Documentation/block/cfq-iosched.txt.
+-
+ - blkio.time
+ 	- disk time allocated to cgroup per device in milliseconds. First
+ 	  two fields specify the major and minor number of the device and
+-- 
+2.21.0
 
