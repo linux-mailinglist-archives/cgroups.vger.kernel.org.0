@@ -2,128 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDF4177108
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 20:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 044EF77144
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 20:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbfGZSOl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Jul 2019 14:14:41 -0400
-Received: from bombadil.infradead.org ([198.137.202.133]:33302 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726781AbfGZSOk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Jul 2019 14:14:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=u+lpT/JDYChvPfnGwY3zyoUNga/MspVT2AZ3BOnHYeQ=; b=J3AuEJhibZaQ59WWz9Dvs5SAk
-        tOZGBHDTys1MvF7IVIK5qPubajsPiDKhUytHxHBBscw9SNUy6DQy/582GKYNvQsg78TR8QXcdScud
-        /bhuddvQ/zZMqs6JwKgaSG8ATDmFg1jnRA4tGWiX+rQPQmgfrYE5toK+TNIlFrIlkqRJsGM8yHD9l
-        ormVs4nN6UzJyvmrohztWz0cHfxy/Fy66kMDw0EgZUQ01XyKe8ytvfUtnvs6SDb1TaU4X+YbIikdA
-        Qtr+thdejB5X7lSa+R9yq9E0Pxscj0Xqi+kjopmF1FpKPBZDYTFwiazYN4pproqO084VLip1k/Uwy
-        LyFo72VLA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1hr4jj-0002xL-0n; Fri, 26 Jul 2019 18:14:35 +0000
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id DA44520227073; Fri, 26 Jul 2019 20:14:32 +0200 (CEST)
-Date:   Fri, 26 Jul 2019 20:14:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Dave Chiluk <chiluk+linux@indeed.com>,
-        Ben Segall <bsegall@google.com>, Peter Oskolkov <posk@posk.io>,
-        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
-        Kyle Anderson <kwa@yelp.com>,
-        Gabriel Munos <gmunoz@netflix.com>,
-        John Hammond <jhammond@indeed.com>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 1/1] sched/fair: Fix low cpu usage with high
- throttling by removing expiration of cpu-local slices
-Message-ID: <20190726181432.GR31381@hirez.programming.kicks-ass.net>
-References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
- <1563900266-19734-1-git-send-email-chiluk+linux@indeed.com>
- <1563900266-19734-2-git-send-email-chiluk+linux@indeed.com>
- <20190723171307.GC2947@lorien.usersys.redhat.com>
+        id S2387443AbfGZSak (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Jul 2019 14:30:40 -0400
+Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:23601 "EHLO
+        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726539AbfGZSak (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Jul 2019 14:30:40 -0400
+Received: (qmail 21622 invoked from network); 26 Jul 2019 20:30:36 +0200
+X-Fcrdns: No
+Received: from phoffice.de-nserver.de (HELO [10.242.2.5]) (185.39.223.5)
+  (smtp-auth username hostmaster@profihost.com, mechanism plain)
+  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Fri, 26 Jul 2019 20:30:36 +0200
+Subject: Re: No memory reclaim while reaching MemoryHigh
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     cgroups@vger.kernel.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "n.fahldieck@profihost.ag" <n.fahldieck@profihost.ag>,
+        Daniel Aberger - Profihost AG <d.aberger@profihost.ag>,
+        p.kramme@profihost.ag
+References: <496dd106-abdd-3fca-06ad-ff7abaf41475@profihost.ag>
+ <20190725140117.GC3582@dhcp22.suse.cz>
+ <028ff462-b547-b9a5-bdb0-e0de3a884afd@profihost.ag>
+ <20190726074557.GF6142@dhcp22.suse.cz>
+From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+Message-ID: <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
+Date:   Fri, 26 Jul 2019 20:30:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190723171307.GC2947@lorien.usersys.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190726074557.GF6142@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 23, 2019 at 01:13:09PM -0400, Phil Auld wrote:
-> Hi Dave,
+Am 26.07.19 um 09:45 schrieb Michal Hocko:
+> On Thu 25-07-19 23:37:14, Stefan Priebe - Profihost AG wrote:
+>> Hi Michal,
+>>
+>> Am 25.07.19 um 16:01 schrieb Michal Hocko:
+>>> On Thu 25-07-19 15:17:17, Stefan Priebe - Profihost AG wrote:
+>>>> Hello all,
+>>>>
+>>>> i hope i added the right list and people - if i missed someone i would
+>>>> be happy to know.
+>>>>
+>>>> While using kernel 4.19.55 and cgroupv2 i set a MemoryHigh value for a
+>>>> varnish service.
+>>>>
+>>>> It happens that the varnish.service cgroup reaches it's MemoryHigh value
+>>>> and stops working due to throttling.
+>>>
+>>> What do you mean by "stops working"? Does it mean that the process is
+>>> stuck in the kernel doing the reclaim? /proc/<pid>/stack would tell you
+>>> what the kernel executing for the process.
+>>
+>> The service no longer responses to HTTP requests.
+>>
+>> stack switches in this case between:
+>> [<0>] io_schedule+0x12/0x40
+>> [<0>] __lock_page_or_retry+0x1e7/0x4e0
+>> [<0>] filemap_fault+0x42f/0x830
+>> [<0>] __xfs_filemap_fault.constprop.11+0x49/0x120
+>> [<0>] __do_fault+0x57/0x108
+>> [<0>] __handle_mm_fault+0x949/0xef0
+>> [<0>] handle_mm_fault+0xfc/0x1f0
+>> [<0>] __do_page_fault+0x24a/0x450
+>> [<0>] do_page_fault+0x32/0x110
+>> [<0>] async_page_fault+0x1e/0x30
+>> [<0>] 0xffffffffffffffff
+>>
+>> and
+>>
+>> [<0>] poll_schedule_timeout.constprop.13+0x42/0x70
+>> [<0>] do_sys_poll+0x51e/0x5f0
+>> [<0>] __x64_sys_poll+0xe7/0x130
+>> [<0>] do_syscall_64+0x5b/0x170
+>> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>> [<0>] 0xffffffffffffffff
 > 
-> On Tue, Jul 23, 2019 at 11:44:26AM -0500 Dave Chiluk wrote:
-> > It has been observed, that highly-threaded, non-cpu-bound applications
-> > running under cpu.cfs_quota_us constraints can hit a high percentage of
-> > periods throttled while simultaneously not consuming the allocated
-> > amount of quota. This use case is typical of user-interactive non-cpu
-> > bound applications, such as those running in kubernetes or mesos when
-> > run on multiple cpu cores.
-> > 
-> > This has been root caused to cpu-local run queue being allocated per cpu
-> > bandwidth slices, and then not fully using that slice within the period.
-> > At which point the slice and quota expires. This expiration of unused
-> > slice results in applications not being able to utilize the quota for
-> > which they are allocated.
-> > 
-> > The non-expiration of per-cpu slices was recently fixed by
-> > 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
-> > condition")'. Prior to that it appears that this had been broken since
-> > at least 'commit 51f2176d74ac ("sched/fair: Fix unlocked reads of some
-> > cfs_b->quota/period")' which was introduced in v3.16-rc1 in 2014. That
-> > added the following conditional which resulted in slices never being
-> > expired.
-> > 
-> > if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
-> > 	/* extend local deadline, drift is bounded above by 2 ticks */
-> > 	cfs_rq->runtime_expires += TICK_NSEC;
-> > 
-> > Because this was broken for nearly 5 years, and has recently been fixed
-> > and is now being noticed by many users running kubernetes
-> > (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
-> > that the mechanisms around expiring runtime should be removed
-> > altogether.
-> > 
-> > This allows quota already allocated to per-cpu run-queues to live longer
-> > than the period boundary. This allows threads on runqueues that do not
-> > use much CPU to continue to use their remaining slice over a longer
-> > period of time than cpu.cfs_period_us. However, this helps prevent the
-> > above condition of hitting throttling while also not fully utilizing
-> > your cpu quota.
-> > 
-> > This theoretically allows a machine to use slightly more than its
-> > allotted quota in some periods. This overflow would be bounded by the
-> > remaining quota left on each per-cpu runqueueu. This is typically no
-> > more than min_cfs_rq_runtime=1ms per cpu. For CPU bound tasks this will
-> > change nothing, as they should theoretically fully utilize all of their
-> > quota in each period. For user-interactive tasks as described above this
-> > provides a much better user/application experience as their cpu
-> > utilization will more closely match the amount they requested when they
-> > hit throttling. This means that cpu limits no longer strictly apply per
-> > period for non-cpu bound applications, but that they are still accurate
-> > over longer timeframes.
-> > 
-> > This greatly improves performance of high-thread-count, non-cpu bound
-> > applications with low cfs_quota_us allocation on high-core-count
-> > machines. In the case of an artificial testcase (10ms/100ms of quota on
-> > 80 CPU machine), this commit resulted in almost 30x performance
-> > improvement, while still maintaining correct cpu quota restrictions.
-> > That testcase is available at https://github.com/indeedeng/fibtest.
-> > 
-> > Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
-> > Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
-> > Reviewed-by: Ben Segall <bsegall@google.com>
-> 
-> This still works for me. The documentation reads pretty well, too. Good job.
-> 
-> Feel free to add my Acked-by: or Reviewed-by: Phil Auld <pauld@redhat.com>.
+> Neither of the two seem to be memcg related.
 
-Thanks guys!
+Yes but at least the xfs one is a page fault - isn't this related?
+
+> Have you tried to get
+> several snapshots and see if the backtrace is stable?
+No it's not it switches most of the time between these both. But as long
+as the xfs one with the page fault is seen it does not serve requests
+and that one is seen for at least 1-5s than the poill one is visible and
+than the xfs one again for 1-5s.
+
+This happens if i do:
+systemctl set-property --runtime varnish.service MemoryHigh=6.5G
+
+if i set:
+systemctl set-property --runtime varnish.service MemoryHigh=14G
+
+i never get the xfs handle_mm fault one. This is reproducable.
+
+> tell you whether your application is stuck in a single syscall or they
+> are just progressing very slowly (-ttt parameter should give you timing)
+
+Yes it's still going forward but really really slow due to memory
+pressure. memory.pressure of varnish cgroup shows high values above 100
+or 200.
+
+I can reproduce the same with rsync or other tasks using memory for
+inodes and dentries. What i don't unterstand is that the kernel does not
+reclaim memory for the userspace process and drops the cache. I can't
+believe those entries are hot - as they must be at least some days old
+as a fresh process running a day only consumes about 200MB of indoe /
+dentries / page cache.
+
+Greets,
+Stefan
+
