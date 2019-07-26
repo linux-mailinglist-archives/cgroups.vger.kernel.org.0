@@ -2,213 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A93D6766AF
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 14:55:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD04767F3
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 15:41:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726262AbfGZMzf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Jul 2019 08:55:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38710 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726074AbfGZMzf (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 26 Jul 2019 08:55:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id BA2EFABB2;
-        Fri, 26 Jul 2019 12:55:33 +0000 (UTC)
-Date:   Fri, 26 Jul 2019 14:55:33 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S1727805AbfGZNlC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Jul 2019 09:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47304 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727260AbfGZNlB (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 26 Jul 2019 09:41:01 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 935C122CD5;
+        Fri, 26 Jul 2019 13:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1564148459;
+        bh=kL3mlcYcc+Q9jAb4Pl1atYrXYmTb6HeWN92nUpHLk3A=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Fw6HTIlJ+dAqBanjdLDnU16zhOoRdqUtIylBtdNW2WzzF5FvL2Cx8vuj8jhqG1j9M
+         M3B+u6aLF4Gk3rzzT/VYncTazb8cwYNb5xdX3nivM5JTBdyB7WLV2x2rmt8R/F2hxY
+         U7BmMX8rV2rgejZsHmQ2yjPpYzbhRRGaDk4MvuHs=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v2] mm: memcontrol: fix use after free in
- mem_cgroup_iter()
-Message-ID: <20190726125533.GO6142@dhcp22.suse.cz>
-References: <20190726021247.16162-1-miles.chen@mediatek.com>
- <20190726124933.GN6142@dhcp22.suse.cz>
+        Yafang Shao <shaoyafang@didiglobal.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 5.2 52/85] mm/memcontrol.c: keep local VM counters in sync with the hierarchical ones
+Date:   Fri, 26 Jul 2019 09:39:02 -0400
+Message-Id: <20190726133936.11177-52-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20190726133936.11177-1-sashal@kernel.org>
+References: <20190726133936.11177-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190726124933.GN6142@dhcp22.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 26-07-19 14:49:33, Michal Hocko wrote:
-> On Fri 26-07-19 10:12:47, Miles Chen wrote:
-> > This patch is sent to report an use after free in mem_cgroup_iter()
-> > after merging commit: be2657752e9e "mm: memcg: fix use after free in
-> > mem_cgroup_iter()".
-> > 
-> > I work with android kernel tree (4.9 & 4.14), and the commit:
-> > be2657752e9e "mm: memcg: fix use after free in mem_cgroup_iter()" has
-> > been merged to the trees. However, I can still observe use after free
-> > issues addressed in the commit be2657752e9e.
-> > (on low-end devices, a few times this month)
-> > 
-> > backtrace:
-> > 	css_tryget <- crash here
-> > 	mem_cgroup_iter
-> > 	shrink_node
-> > 	shrink_zones
-> > 	do_try_to_free_pages
-> > 	try_to_free_pages
-> > 	__perform_reclaim
-> > 	__alloc_pages_direct_reclaim
-> > 	__alloc_pages_slowpath
-> > 	__alloc_pages_nodemask
-> > 
-> > To debug, I poisoned mem_cgroup before freeing it:
-> > 
-> > static void __mem_cgroup_free(struct mem_cgroup *memcg)
-> > 	for_each_node(node)
-> > 	free_mem_cgroup_per_node_info(memcg, node);
-> > 	free_percpu(memcg->stat);
-> > +       /* poison memcg before freeing it */
-> > +       memset(memcg, 0x78, sizeof(struct mem_cgroup));
-> > 	kfree(memcg);
-> > }
-> > 
-> > The coredump shows the position=0xdbbc2a00 is freed.
-> > 
-> > (gdb) p/x ((struct mem_cgroup_per_node *)0xe5009e00)->iter[8]
-> > $13 = {position = 0xdbbc2a00, generation = 0x2efd}
-> > 
-> > 0xdbbc2a00:     0xdbbc2e00      0x00000000      0xdbbc2800      0x00000100
-> > 0xdbbc2a10:     0x00000200      0x78787878      0x00026218      0x00000000
-> > 0xdbbc2a20:     0xdcad6000      0x00000001      0x78787800      0x00000000
-> > 0xdbbc2a30:     0x78780000      0x00000000      0x0068fb84      0x78787878
-> > 0xdbbc2a40:     0x78787878      0x78787878      0x78787878      0xe3fa5cc0
-> > 0xdbbc2a50:     0x78787878      0x78787878      0x00000000      0x00000000
-> > 0xdbbc2a60:     0x00000000      0x00000000      0x00000000      0x00000000
-> > 0xdbbc2a70:     0x00000000      0x00000000      0x00000000      0x00000000
-> > 0xdbbc2a80:     0x00000000      0x00000000      0x00000000      0x00000000
-> > 0xdbbc2a90:     0x00000001      0x00000000      0x00000000      0x00100000
-> > 0xdbbc2aa0:     0x00000001      0xdbbc2ac8      0x00000000      0x00000000
-> > 0xdbbc2ab0:     0x00000000      0x00000000      0x00000000      0x00000000
-> > 0xdbbc2ac0:     0x00000000      0x00000000      0xe5b02618      0x00001000
-> > 0xdbbc2ad0:     0x00000000      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2ae0:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2af0:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b00:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b10:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b20:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b30:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b40:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b50:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b60:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b70:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2b80:     0x78787878      0x78787878      0x00000000      0x78787878
-> > 0xdbbc2b90:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 0xdbbc2ba0:     0x78787878      0x78787878      0x78787878      0x78787878
-> > 
-> > In the reclaim path, try_to_free_pages() does not setup
-> > sc.target_mem_cgroup and sc is passed to do_try_to_free_pages(), ...,
-> > shrink_node().
-> > 
-> > In mem_cgroup_iter(), root is set to root_mem_cgroup because
-> > sc->target_mem_cgroup is NULL.
-> > It is possible to assign a memcg to root_mem_cgroup.nodeinfo.iter in
-> > mem_cgroup_iter().
-> > 
-> > 	try_to_free_pages
-> > 		struct scan_control sc = {...}, target_mem_cgroup is 0x0;
-> > 	do_try_to_free_pages
-> > 	shrink_zones
-> > 	shrink_node
-> > 		 mem_cgroup *root = sc->target_mem_cgroup;
-> > 		 memcg = mem_cgroup_iter(root, NULL, &reclaim);
-> > 	mem_cgroup_iter()
-> > 		if (!root)
-> > 			root = root_mem_cgroup;
-> > 		...
-> > 
-> > 		css = css_next_descendant_pre(css, &root->css);
-> > 		memcg = mem_cgroup_from_css(css);
-> > 		cmpxchg(&iter->position, pos, memcg);
-> > 
-> > My device uses memcg non-hierarchical mode.
-> > When we release a memcg: invalidate_reclaim_iterators() reaches only
-> > dead_memcg and its parents. If non-hierarchical mode is used,
-> > invalidate_reclaim_iterators() never reaches root_mem_cgroup.
-> > 
-> > static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> > {
-> > 	struct mem_cgroup *memcg = dead_memcg;
-> > 
-> > 	for (; memcg; memcg = parent_mem_cgroup(memcg)
-> > 	...
-> > }
-> > 
-> > So the use after free scenario looks like:
-> > 
-> > CPU1						CPU2
-> > 
-> > try_to_free_pages
-> > do_try_to_free_pages
-> > shrink_zones
-> > shrink_node
-> > mem_cgroup_iter()
-> >     if (!root)
-> >     	root = root_mem_cgroup;
-> >     ...
-> >     css = css_next_descendant_pre(css, &root->css);
-> >     memcg = mem_cgroup_from_css(css);
-> >     cmpxchg(&iter->position, pos, memcg);
-> > 
-> > 					invalidate_reclaim_iterators(memcg);
-> > 					...
-> > 					__mem_cgroup_free()
-> > 						kfree(memcg);
-> > 
-> > try_to_free_pages
-> > do_try_to_free_pages
-> > shrink_zones
-> > shrink_node
-> > mem_cgroup_iter()
-> >     if (!root)
-> >     	root = root_mem_cgroup;
-> >     ...
-> >     mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
-> >     iter = &mz->iter[reclaim->priority];
-> >     pos = READ_ONCE(iter->position);
-> >     css_tryget(&pos->css) <- use after free
-> 
-> Thanks for the write up. This is really useful.
-> 
-> > To avoid this, we should also invalidate root_mem_cgroup.nodeinfo.iter in
-> > invalidate_reclaim_iterators().
-> 
-> I am sorry, I didn't get to comment an earlier version but I am
-> wondering whether it makes more sense to do and explicit invalidation.
-> 
-> [...]
-> > +static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> > +{
-> > +	struct mem_cgroup *memcg = dead_memcg;
-> > +	int invalidate_root = 0;
-> > +
-> > +	for (; memcg; memcg = parent_mem_cgroup(memcg))
-> > +		__invalidate_reclaim_iterators(memcg, dead_memcg);
-> 
-> 	/* here goes your comment */
-> 	if (!dead_memcg->use_hierarchy)
-> 		__invalidate_reclaim_iterators(root_mem_cgroup,	dead_memcg);
-> > +
-> > +}
-> 
-> Other than that the patch looks good to me.
-> 
-> Acked-by: Michal Hocko <mhocko@suse.com>
+From: Yafang Shao <laoar.shao@gmail.com>
 
-Btw. I believe we want to push this to stable trees as well. I think it
-goes all the way down to 5ac8fb31ad2e ("mm: memcontrol: convert reclaim
-iterator to simple css refcounting"). Unless I am missing something a
-Fixes: tag would be really helpful.
+[ Upstream commit 766a4c19d880887c457811b86f1f68525e416965 ]
+
+After commit 815744d75152 ("mm: memcontrol: don't batch updates of local
+VM stats and events"), the local VM counter are not in sync with the
+hierarchical ones.
+
+Below is one example in a leaf memcg on my server (with 8 CPUs):
+
+	inactive_file 3567570944
+	total_inactive_file 3568029696
+
+We find that the deviation is very great because the 'val' in
+__mod_memcg_state() is in pages while the effective value in
+memcg_stat_show() is in bytes.
+
+So the maximum of this deviation between local VM stats and total VM
+stats can be (32 * number_of_cpu * PAGE_SIZE), that may be an
+unacceptably great value.
+
+We should keep the local VM stats in sync with the total stats.  In
+order to keep this behavior the same across counters, this patch updates
+__mod_lruvec_state() and __count_memcg_events() as well.
+
+Link: http://lkml.kernel.org/r/1562851979-10610-1-git-send-email-laoar.shao@gmail.com
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Yafang Shao <shaoyafang@didiglobal.com>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ mm/memcontrol.c | 22 +++++++++++++++-------
+ 1 file changed, 15 insertions(+), 7 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ba9138a4a1de..07b4ca559bcc 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -691,12 +691,15 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+ 	if (mem_cgroup_disabled())
+ 		return;
+ 
+-	__this_cpu_add(memcg->vmstats_local->stat[idx], val);
+-
+ 	x = val + __this_cpu_read(memcg->vmstats_percpu->stat[idx]);
+ 	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+ 		struct mem_cgroup *mi;
+ 
++		/*
++		 * Batch local counters to keep them in sync with
++		 * the hierarchical ones.
++		 */
++		__this_cpu_add(memcg->vmstats_local->stat[idx], x);
+ 		for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+ 			atomic_long_add(x, &mi->vmstats[idx]);
+ 		x = 0;
+@@ -745,13 +748,15 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 	/* Update memcg */
+ 	__mod_memcg_state(memcg, idx, val);
+ 
+-	/* Update lruvec */
+-	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
+-
+ 	x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
+ 	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
+ 		struct mem_cgroup_per_node *pi;
+ 
++		/*
++		 * Batch local counters to keep them in sync with
++		 * the hierarchical ones.
++		 */
++		__this_cpu_add(pn->lruvec_stat_local->count[idx], x);
+ 		for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
+ 			atomic_long_add(x, &pi->lruvec_stat[idx]);
+ 		x = 0;
+@@ -773,12 +778,15 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
+ 	if (mem_cgroup_disabled())
+ 		return;
+ 
+-	__this_cpu_add(memcg->vmstats_local->events[idx], count);
+-
+ 	x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
+ 	if (unlikely(x > MEMCG_CHARGE_BATCH)) {
+ 		struct mem_cgroup *mi;
+ 
++		/*
++		 * Batch local counters to keep them in sync with
++		 * the hierarchical ones.
++		 */
++		__this_cpu_add(memcg->vmstats_local->events[idx], x);
+ 		for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+ 			atomic_long_add(x, &mi->vmevents[idx]);
+ 		x = 0;
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
