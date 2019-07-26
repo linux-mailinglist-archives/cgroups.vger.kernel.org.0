@@ -2,150 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD04767F3
-	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 15:41:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDF4177108
+	for <lists+cgroups@lfdr.de>; Fri, 26 Jul 2019 20:14:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727805AbfGZNlC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 26 Jul 2019 09:41:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47304 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727260AbfGZNlB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 26 Jul 2019 09:41:01 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 935C122CD5;
-        Fri, 26 Jul 2019 13:40:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1564148459;
-        bh=kL3mlcYcc+Q9jAb4Pl1atYrXYmTb6HeWN92nUpHLk3A=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Fw6HTIlJ+dAqBanjdLDnU16zhOoRdqUtIylBtdNW2WzzF5FvL2Cx8vuj8jhqG1j9M
-         M3B+u6aLF4Gk3rzzT/VYncTazb8cwYNb5xdX3nivM5JTBdyB7WLV2x2rmt8R/F2hxY
-         U7BmMX8rV2rgejZsHmQ2yjPpYzbhRRGaDk4MvuHs=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Yafang Shao <shaoyafang@didiglobal.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.2 52/85] mm/memcontrol.c: keep local VM counters in sync with the hierarchical ones
-Date:   Fri, 26 Jul 2019 09:39:02 -0400
-Message-Id: <20190726133936.11177-52-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20190726133936.11177-1-sashal@kernel.org>
-References: <20190726133936.11177-1-sashal@kernel.org>
+        id S1726864AbfGZSOl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 26 Jul 2019 14:14:41 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:33302 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726781AbfGZSOk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 26 Jul 2019 14:14:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=u+lpT/JDYChvPfnGwY3zyoUNga/MspVT2AZ3BOnHYeQ=; b=J3AuEJhibZaQ59WWz9Dvs5SAk
+        tOZGBHDTys1MvF7IVIK5qPubajsPiDKhUytHxHBBscw9SNUy6DQy/582GKYNvQsg78TR8QXcdScud
+        /bhuddvQ/zZMqs6JwKgaSG8ATDmFg1jnRA4tGWiX+rQPQmgfrYE5toK+TNIlFrIlkqRJsGM8yHD9l
+        ormVs4nN6UzJyvmrohztWz0cHfxy/Fy66kMDw0EgZUQ01XyKe8ytvfUtnvs6SDb1TaU4X+YbIikdA
+        Qtr+thdejB5X7lSa+R9yq9E0Pxscj0Xqi+kjopmF1FpKPBZDYTFwiazYN4pproqO084VLip1k/Uwy
+        LyFo72VLA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=hirez.programming.kicks-ass.net)
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1hr4jj-0002xL-0n; Fri, 26 Jul 2019 18:14:35 +0000
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DA44520227073; Fri, 26 Jul 2019 20:14:32 +0200 (CEST)
+Date:   Fri, 26 Jul 2019 20:14:32 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Phil Auld <pauld@redhat.com>
+Cc:     Dave Chiluk <chiluk+linux@indeed.com>,
+        Ben Segall <bsegall@google.com>, Peter Oskolkov <posk@posk.io>,
+        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Brendan Gregg <bgregg@netflix.com>,
+        Kyle Anderson <kwa@yelp.com>,
+        Gabriel Munos <gmunoz@netflix.com>,
+        John Hammond <jhammond@indeed.com>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 1/1] sched/fair: Fix low cpu usage with high
+ throttling by removing expiration of cpu-local slices
+Message-ID: <20190726181432.GR31381@hirez.programming.kicks-ass.net>
+References: <1558121424-2914-1-git-send-email-chiluk+linux@indeed.com>
+ <1563900266-19734-1-git-send-email-chiluk+linux@indeed.com>
+ <1563900266-19734-2-git-send-email-chiluk+linux@indeed.com>
+ <20190723171307.GC2947@lorien.usersys.redhat.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190723171307.GC2947@lorien.usersys.redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Yafang Shao <laoar.shao@gmail.com>
+On Tue, Jul 23, 2019 at 01:13:09PM -0400, Phil Auld wrote:
+> Hi Dave,
+> 
+> On Tue, Jul 23, 2019 at 11:44:26AM -0500 Dave Chiluk wrote:
+> > It has been observed, that highly-threaded, non-cpu-bound applications
+> > running under cpu.cfs_quota_us constraints can hit a high percentage of
+> > periods throttled while simultaneously not consuming the allocated
+> > amount of quota. This use case is typical of user-interactive non-cpu
+> > bound applications, such as those running in kubernetes or mesos when
+> > run on multiple cpu cores.
+> > 
+> > This has been root caused to cpu-local run queue being allocated per cpu
+> > bandwidth slices, and then not fully using that slice within the period.
+> > At which point the slice and quota expires. This expiration of unused
+> > slice results in applications not being able to utilize the quota for
+> > which they are allocated.
+> > 
+> > The non-expiration of per-cpu slices was recently fixed by
+> > 'commit 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift
+> > condition")'. Prior to that it appears that this had been broken since
+> > at least 'commit 51f2176d74ac ("sched/fair: Fix unlocked reads of some
+> > cfs_b->quota/period")' which was introduced in v3.16-rc1 in 2014. That
+> > added the following conditional which resulted in slices never being
+> > expired.
+> > 
+> > if (cfs_rq->runtime_expires != cfs_b->runtime_expires) {
+> > 	/* extend local deadline, drift is bounded above by 2 ticks */
+> > 	cfs_rq->runtime_expires += TICK_NSEC;
+> > 
+> > Because this was broken for nearly 5 years, and has recently been fixed
+> > and is now being noticed by many users running kubernetes
+> > (https://github.com/kubernetes/kubernetes/issues/67577) it is my opinion
+> > that the mechanisms around expiring runtime should be removed
+> > altogether.
+> > 
+> > This allows quota already allocated to per-cpu run-queues to live longer
+> > than the period boundary. This allows threads on runqueues that do not
+> > use much CPU to continue to use their remaining slice over a longer
+> > period of time than cpu.cfs_period_us. However, this helps prevent the
+> > above condition of hitting throttling while also not fully utilizing
+> > your cpu quota.
+> > 
+> > This theoretically allows a machine to use slightly more than its
+> > allotted quota in some periods. This overflow would be bounded by the
+> > remaining quota left on each per-cpu runqueueu. This is typically no
+> > more than min_cfs_rq_runtime=1ms per cpu. For CPU bound tasks this will
+> > change nothing, as they should theoretically fully utilize all of their
+> > quota in each period. For user-interactive tasks as described above this
+> > provides a much better user/application experience as their cpu
+> > utilization will more closely match the amount they requested when they
+> > hit throttling. This means that cpu limits no longer strictly apply per
+> > period for non-cpu bound applications, but that they are still accurate
+> > over longer timeframes.
+> > 
+> > This greatly improves performance of high-thread-count, non-cpu bound
+> > applications with low cfs_quota_us allocation on high-core-count
+> > machines. In the case of an artificial testcase (10ms/100ms of quota on
+> > 80 CPU machine), this commit resulted in almost 30x performance
+> > improvement, while still maintaining correct cpu quota restrictions.
+> > That testcase is available at https://github.com/indeedeng/fibtest.
+> > 
+> > Fixes: 512ac999d275 ("sched/fair: Fix bandwidth timer clock drift condition")
+> > Signed-off-by: Dave Chiluk <chiluk+linux@indeed.com>
+> > Reviewed-by: Ben Segall <bsegall@google.com>
+> 
+> This still works for me. The documentation reads pretty well, too. Good job.
+> 
+> Feel free to add my Acked-by: or Reviewed-by: Phil Auld <pauld@redhat.com>.
 
-[ Upstream commit 766a4c19d880887c457811b86f1f68525e416965 ]
-
-After commit 815744d75152 ("mm: memcontrol: don't batch updates of local
-VM stats and events"), the local VM counter are not in sync with the
-hierarchical ones.
-
-Below is one example in a leaf memcg on my server (with 8 CPUs):
-
-	inactive_file 3567570944
-	total_inactive_file 3568029696
-
-We find that the deviation is very great because the 'val' in
-__mod_memcg_state() is in pages while the effective value in
-memcg_stat_show() is in bytes.
-
-So the maximum of this deviation between local VM stats and total VM
-stats can be (32 * number_of_cpu * PAGE_SIZE), that may be an
-unacceptably great value.
-
-We should keep the local VM stats in sync with the total stats.  In
-order to keep this behavior the same across counters, this patch updates
-__mod_lruvec_state() and __count_memcg_events() as well.
-
-Link: http://lkml.kernel.org/r/1562851979-10610-1-git-send-email-laoar.shao@gmail.com
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Yafang Shao <shaoyafang@didiglobal.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- mm/memcontrol.c | 22 +++++++++++++++-------
- 1 file changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ba9138a4a1de..07b4ca559bcc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -691,12 +691,15 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	__this_cpu_add(memcg->vmstats_local->stat[idx], val);
--
- 	x = val + __this_cpu_read(memcg->vmstats_percpu->stat[idx]);
- 	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
- 		struct mem_cgroup *mi;
- 
-+		/*
-+		 * Batch local counters to keep them in sync with
-+		 * the hierarchical ones.
-+		 */
-+		__this_cpu_add(memcg->vmstats_local->stat[idx], x);
- 		for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
- 			atomic_long_add(x, &mi->vmstats[idx]);
- 		x = 0;
-@@ -745,13 +748,15 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 	/* Update memcg */
- 	__mod_memcg_state(memcg, idx, val);
- 
--	/* Update lruvec */
--	__this_cpu_add(pn->lruvec_stat_local->count[idx], val);
--
- 	x = val + __this_cpu_read(pn->lruvec_stat_cpu->count[idx]);
- 	if (unlikely(abs(x) > MEMCG_CHARGE_BATCH)) {
- 		struct mem_cgroup_per_node *pi;
- 
-+		/*
-+		 * Batch local counters to keep them in sync with
-+		 * the hierarchical ones.
-+		 */
-+		__this_cpu_add(pn->lruvec_stat_local->count[idx], x);
- 		for (pi = pn; pi; pi = parent_nodeinfo(pi, pgdat->node_id))
- 			atomic_long_add(x, &pi->lruvec_stat[idx]);
- 		x = 0;
-@@ -773,12 +778,15 @@ void __count_memcg_events(struct mem_cgroup *memcg, enum vm_event_item idx,
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	__this_cpu_add(memcg->vmstats_local->events[idx], count);
--
- 	x = count + __this_cpu_read(memcg->vmstats_percpu->events[idx]);
- 	if (unlikely(x > MEMCG_CHARGE_BATCH)) {
- 		struct mem_cgroup *mi;
- 
-+		/*
-+		 * Batch local counters to keep them in sync with
-+		 * the hierarchical ones.
-+		 */
-+		__this_cpu_add(memcg->vmstats_local->events[idx], x);
- 		for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
- 			atomic_long_add(x, &mi->vmevents[idx]);
- 		x = 0;
--- 
-2.20.1
-
+Thanks guys!
