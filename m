@@ -2,174 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E74C77F6E
-	for <lists+cgroups@lfdr.de>; Sun, 28 Jul 2019 14:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D64A781AD
+	for <lists+cgroups@lfdr.de>; Sun, 28 Jul 2019 23:11:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726010AbfG1M3m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 28 Jul 2019 08:29:42 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:43330 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726008AbfG1M3m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 28 Jul 2019 08:29:42 -0400
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 2691F2E0ACA;
-        Sun, 28 Jul 2019 15:29:39 +0300 (MSK)
-Received: from smtpcorp1j.mail.yandex.net (smtpcorp1j.mail.yandex.net [2a02:6b8:0:1619::137])
-        by mxbackcorp2j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id dss6TXipDP-TcNGG9RB;
-        Sun, 28 Jul 2019 15:29:39 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1564316979; bh=EObxK8dqWVVRvRBsEeGGtpDlfj4a0yOhIWWPIED/x3I=;
-        h=Message-ID:Date:To:From:Subject:Cc;
-        b=1whsAqWuYKUJOXIPmma8+5xsd/DouCy6BjR807Y4R+wzUZD3rwTnOdzO8+z9EzdNm
-         DhYxNS7unEDB0vVeMJeEVb0CTUOUtgKtNd7Qx+hfo0Mic5/s1HJS79olmnfDG17l7a
-         0AqyBOkOz+M6pGmoVhyanJQEcgC735AjJsBq5x6M=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from unknown (unknown [2a02:6b8:b080:9005::1:7])
-        by smtpcorp1j.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id uMle0XeyLh-TcAq4Ce2;
-        Sun, 28 Jul 2019 15:29:38 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: [PATCH RFC] mm/memcontrol: reclaim severe usage over high limit in
- get_user_pages loop
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Date:   Sun, 28 Jul 2019 15:29:38 +0300
-Message-ID: <156431697805.3170.6377599347542228221.stgit@buzz>
-User-Agent: StGit/0.17.1-dirty
+        id S1726103AbfG1VL5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 28 Jul 2019 17:11:57 -0400
+Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:16663 "EHLO
+        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726089AbfG1VL5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 28 Jul 2019 17:11:57 -0400
+Received: (qmail 1443 invoked from network); 28 Jul 2019 23:11:54 +0200
+X-Fcrdns: No
+Received: from phoffice.de-nserver.de (HELO [10.242.2.6]) (185.39.223.5)
+  (smtp-auth username hostmaster@profihost.com, mechanism plain)
+  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Sun, 28 Jul 2019 23:11:54 +0200
+Subject: Re: No memory reclaim while reaching MemoryHigh
+From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     cgroups@vger.kernel.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        "n.fahldieck@profihost.ag" <n.fahldieck@profihost.ag>,
+        Daniel Aberger - Profihost AG <d.aberger@profihost.ag>,
+        p.kramme@profihost.ag
+References: <496dd106-abdd-3fca-06ad-ff7abaf41475@profihost.ag>
+ <20190725140117.GC3582@dhcp22.suse.cz>
+ <028ff462-b547-b9a5-bdb0-e0de3a884afd@profihost.ag>
+ <20190726074557.GF6142@dhcp22.suse.cz>
+ <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
+Message-ID: <9eb7d70a-40b1-b452-a0cf-24418fa6254c@profihost.ag>
+Date:   Sun, 28 Jul 2019 23:11:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
 Content-Transfer-Encoding: 7bit
+X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-High memory limit in memory cgroup allows to batch memory reclaiming and
-defer it until returning into userland. This moves it out of any locks.
+here is a memory.stat output of the cgroup:
+# cat /sys/fs/cgroup/system.slice/varnish.service/memory.stat
+anon 8113229824
+file 39735296
+kernel_stack 26345472
+slab 24985600
+sock 339968
+shmem 0
+file_mapped 38793216
+file_dirty 946176
+file_writeback 0
+inactive_anon 0
+active_anon 8113119232
+inactive_file 40198144
+active_file 102400
+unevictable 0
+slab_reclaimable 2859008
+slab_unreclaimable 22126592
+pgfault 178231449
+pgmajfault 22011
+pgrefill 393038
+pgscan 4218254
+pgsteal 430005
+pgactivate 295416
+pgdeactivate 351487
+pglazyfree 0
+pglazyfreed 0
+workingset_refault 401874
+workingset_activate 62535
+workingset_nodereclaim 0
 
-Fixed gap between high and max limit works pretty well (we are using
-64 * NR_CPUS pages) except cases when one syscall allocates tons of
-memory. This affects all other tasks in cgroup because they might hit
-max memory limit in unhandy places and\or under hot locks.
+Greets,
+Stefan
 
-For example mmap with MAP_POPULATE or MAP_LOCKED might allocate a lot
-of pages and push memory cgroup usage far ahead high memory limit.
-
-This patch uses halfway between high and max limits as threshold and
-in this case starts memory reclaiming if mem_cgroup_handle_over_high()
-called with argument only_severe = true, otherwise reclaim is deferred
-till returning into userland. If high limits isn't set nothing changes.
-
-Now long running get_user_pages will periodically reclaim cgroup memory.
-Other possible targets are generic file read/write iter loops.
-
-Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
----
- include/linux/memcontrol.h |    4 ++--
- include/linux/tracehook.h  |    2 +-
- mm/gup.c                   |    5 ++++-
- mm/memcontrol.c            |   17 ++++++++++++++++-
- 4 files changed, 23 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 44c41462be33..eca2bf9560f2 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -512,7 +512,7 @@ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
- 	return mz->lru_zone_size[zone_idx][lru];
- }
- 
--void mem_cgroup_handle_over_high(void);
-+void mem_cgroup_handle_over_high(bool only_severe);
- 
- unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg);
- 
-@@ -969,7 +969,7 @@ static inline void unlock_page_memcg(struct page *page)
- {
- }
- 
--static inline void mem_cgroup_handle_over_high(void)
-+static inline void mem_cgroup_handle_over_high(bool only_severe)
- {
- }
- 
-diff --git a/include/linux/tracehook.h b/include/linux/tracehook.h
-index 36fb3bbed6b2..8845fb65353f 100644
---- a/include/linux/tracehook.h
-+++ b/include/linux/tracehook.h
-@@ -194,7 +194,7 @@ static inline void tracehook_notify_resume(struct pt_regs *regs)
- 	}
- #endif
- 
--	mem_cgroup_handle_over_high();
-+	mem_cgroup_handle_over_high(false);
- 	blkcg_maybe_throttle_current();
- }
- 
-diff --git a/mm/gup.c b/mm/gup.c
-index 98f13ab37bac..42b93fffe824 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -847,8 +847,11 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
- 			ret = -ERESTARTSYS;
- 			goto out;
- 		}
--		cond_resched();
- 
-+		/* Reclaim memory over high limit before stocking too much */
-+		mem_cgroup_handle_over_high(true);
-+
-+		cond_resched();
- 		page = follow_page_mask(vma, start, foll_flags, &ctx);
- 		if (!page) {
- 			ret = faultin_page(tsk, vma, start, &foll_flags,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index cdbb7a84cb6e..15fa664ce98c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2317,11 +2317,16 @@ static void high_work_func(struct work_struct *work)
- 	reclaim_high(memcg, MEMCG_CHARGE_BATCH, GFP_KERNEL);
- }
- 
-+#define MEMCG_SEVERE_OVER_HIGH	(1 << 31)
-+
- /*
-  * Scheduled by try_charge() to be executed from the userland return path
-  * and reclaims memory over the high limit.
-+ *
-+ * Long allocation loops should call periodically with only_severe = true
-+ * to reclaim memory if usage already over halfway to the max limit.
-  */
--void mem_cgroup_handle_over_high(void)
-+void mem_cgroup_handle_over_high(bool only_severe)
- {
- 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
- 	struct mem_cgroup *memcg;
-@@ -2329,6 +2334,11 @@ void mem_cgroup_handle_over_high(void)
- 	if (likely(!nr_pages))
- 		return;
- 
-+	if (nr_pages & MEMCG_SEVERE_OVER_HIGH)
-+		nr_pages -= MEMCG_SEVERE_OVER_HIGH;
-+	else if (only_severe)
-+		return;
-+
- 	memcg = get_mem_cgroup_from_mm(current->mm);
- 	reclaim_high(memcg, nr_pages, GFP_KERNEL);
- 	css_put(&memcg->css);
-@@ -2493,6 +2503,11 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 				schedule_work(&memcg->high_work);
- 				break;
- 			}
-+			/* Mark as severe if over halfway to the max limit */
-+			if (page_counter_read(&memcg->memory) >
-+			    (memcg->high >> 1) + (memcg->memory.max >> 1))
-+				current->memcg_nr_pages_over_high |=
-+						MEMCG_SEVERE_OVER_HIGH;
- 			current->memcg_nr_pages_over_high += batch;
- 			set_notify_resume(current);
- 			break;
-
+Am 26.07.19 um 20:30 schrieb Stefan Priebe - Profihost AG:
+> Am 26.07.19 um 09:45 schrieb Michal Hocko:
+>> On Thu 25-07-19 23:37:14, Stefan Priebe - Profihost AG wrote:
+>>> Hi Michal,
+>>>
+>>> Am 25.07.19 um 16:01 schrieb Michal Hocko:
+>>>> On Thu 25-07-19 15:17:17, Stefan Priebe - Profihost AG wrote:
+>>>>> Hello all,
+>>>>>
+>>>>> i hope i added the right list and people - if i missed someone i would
+>>>>> be happy to know.
+>>>>>
+>>>>> While using kernel 4.19.55 and cgroupv2 i set a MemoryHigh value for a
+>>>>> varnish service.
+>>>>>
+>>>>> It happens that the varnish.service cgroup reaches it's MemoryHigh value
+>>>>> and stops working due to throttling.
+>>>>
+>>>> What do you mean by "stops working"? Does it mean that the process is
+>>>> stuck in the kernel doing the reclaim? /proc/<pid>/stack would tell you
+>>>> what the kernel executing for the process.
+>>>
+>>> The service no longer responses to HTTP requests.
+>>>
+>>> stack switches in this case between:
+>>> [<0>] io_schedule+0x12/0x40
+>>> [<0>] __lock_page_or_retry+0x1e7/0x4e0
+>>> [<0>] filemap_fault+0x42f/0x830
+>>> [<0>] __xfs_filemap_fault.constprop.11+0x49/0x120
+>>> [<0>] __do_fault+0x57/0x108
+>>> [<0>] __handle_mm_fault+0x949/0xef0
+>>> [<0>] handle_mm_fault+0xfc/0x1f0
+>>> [<0>] __do_page_fault+0x24a/0x450
+>>> [<0>] do_page_fault+0x32/0x110
+>>> [<0>] async_page_fault+0x1e/0x30
+>>> [<0>] 0xffffffffffffffff
+>>>
+>>> and
+>>>
+>>> [<0>] poll_schedule_timeout.constprop.13+0x42/0x70
+>>> [<0>] do_sys_poll+0x51e/0x5f0
+>>> [<0>] __x64_sys_poll+0xe7/0x130
+>>> [<0>] do_syscall_64+0x5b/0x170
+>>> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+>>> [<0>] 0xffffffffffffffff
+>>
+>> Neither of the two seem to be memcg related.
+> 
+> Yes but at least the xfs one is a page fault - isn't this related?
+> 
+>> Have you tried to get
+>> several snapshots and see if the backtrace is stable?
+> No it's not it switches most of the time between these both. But as long
+> as the xfs one with the page fault is seen it does not serve requests
+> and that one is seen for at least 1-5s than the poill one is visible and
+> than the xfs one again for 1-5s.
+> 
+> This happens if i do:
+> systemctl set-property --runtime varnish.service MemoryHigh=6.5G
+> 
+> if i set:
+> systemctl set-property --runtime varnish.service MemoryHigh=14G
+> 
+> i never get the xfs handle_mm fault one. This is reproducable.
+> 
+>> tell you whether your application is stuck in a single syscall or they
+>> are just progressing very slowly (-ttt parameter should give you timing)
+> 
+> Yes it's still going forward but really really slow due to memory
+> pressure. memory.pressure of varnish cgroup shows high values above 100
+> or 200.
+> 
+> I can reproduce the same with rsync or other tasks using memory for
+> inodes and dentries. What i don't unterstand is that the kernel does not
+> reclaim memory for the userspace process and drops the cache. I can't
+> believe those entries are hot - as they must be at least some days old
+> as a fresh process running a day only consumes about 200MB of indoe /
+> dentries / page cache.
+> 
+> Greets,
+> Stefan
+> 
