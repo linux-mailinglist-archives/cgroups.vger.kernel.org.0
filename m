@@ -2,161 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D64A781AD
-	for <lists+cgroups@lfdr.de>; Sun, 28 Jul 2019 23:11:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B196781E1
+	for <lists+cgroups@lfdr.de>; Sun, 28 Jul 2019 23:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726103AbfG1VL5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 28 Jul 2019 17:11:57 -0400
-Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:16663 "EHLO
-        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726089AbfG1VL5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 28 Jul 2019 17:11:57 -0400
-Received: (qmail 1443 invoked from network); 28 Jul 2019 23:11:54 +0200
-X-Fcrdns: No
-Received: from phoffice.de-nserver.de (HELO [10.242.2.6]) (185.39.223.5)
-  (smtp-auth username hostmaster@profihost.com, mechanism plain)
-  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Sun, 28 Jul 2019 23:11:54 +0200
-Subject: Re: No memory reclaim while reaching MemoryHigh
-From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     cgroups@vger.kernel.org, "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        id S1726173AbfG1VjO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 28 Jul 2019 17:39:14 -0400
+Received: from mail-qt1-f175.google.com ([209.85.160.175]:40840 "EHLO
+        mail-qt1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726163AbfG1VjO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 28 Jul 2019 17:39:14 -0400
+Received: by mail-qt1-f175.google.com with SMTP id a15so57744305qtn.7
+        for <cgroups@vger.kernel.org>; Sun, 28 Jul 2019 14:39:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=YH3/wT+cTox718QKlVPN3VNrRnEKlV12MOV4OX51RgA=;
+        b=jrIqJ7geMyt3Nn8m5sFlBvbgaeBpqJVm/l/SZW/WXi7dKuP4muj9HCQXHz0jTivXkC
+         I1/Qhwlgs8XqOOPoGoydOnL+OEe3jLrq2tRARU7Ff0lqKM5TpSfaDVH4caKeObGi+8vy
+         MefyjADc2LUvA7Oz+bpIXhocppf1jILL63CX0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YH3/wT+cTox718QKlVPN3VNrRnEKlV12MOV4OX51RgA=;
+        b=APKYOk2wPazfUAaMByyrdezh9HmlnGa6iXRXjFitbgp2HDqW02jG6qUnpY+lMF0PV0
+         P4YPZQxAbTw+6+K3yaSvgxOEN79uFXmDf2pQE2BonIL4xLrp26gt4fj4L44cQMtUSLx9
+         BBfkTrLKyAHnc5M2prxfQh/D7Rjj+FXUl36jEt9XsFbKXWE8qE/KssUajhy4XdL4JBi0
+         1fzfFBpVFD+xRYUhtxcONF5KTK3XmqyVD5z861aR9NWENXu/pv/GlVhrlgApcEQ37za1
+         sc9xFnNKRLe/ifDpik7s8uHrsKgbjGSpVmRm/RvWCGcN+NIVzf1lZbD9JCSXZExPoFVi
+         WJ1w==
+X-Gm-Message-State: APjAAAUiwwBgkF0Lxf3yU/+aKN05r645RlNcnNIzxmpJ6aQAxKAXDjij
+        cAz42evVk0RjcFsgJNHs74rcZw==
+X-Google-Smtp-Source: APXvYqyVT2VgEEMPpkMQCCj5rnFGVpkZLpAQ3yGYm3a86qXec/2goBgdvj52z3louGSZGggDKZwKrQ==
+X-Received: by 2002:a0c:e5c6:: with SMTP id u6mr58990963qvm.102.1564349953210;
+        Sun, 28 Jul 2019 14:39:13 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::53b0])
+        by smtp.gmail.com with ESMTPSA id t29sm23521011qtt.42.2019.07.28.14.39.12
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Sun, 28 Jul 2019 14:39:12 -0700 (PDT)
+Date:   Sun, 28 Jul 2019 22:39:10 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+Cc:     Michal Hocko <mhocko@kernel.org>, cgroups@vger.kernel.org,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         "n.fahldieck@profihost.ag" <n.fahldieck@profihost.ag>,
         Daniel Aberger - Profihost AG <d.aberger@profihost.ag>,
         p.kramme@profihost.ag
+Subject: Re: No memory reclaim while reaching MemoryHigh
+Message-ID: <20190728213910.GA138427@chrisdown.name>
 References: <496dd106-abdd-3fca-06ad-ff7abaf41475@profihost.ag>
  <20190725140117.GC3582@dhcp22.suse.cz>
  <028ff462-b547-b9a5-bdb0-e0de3a884afd@profihost.ag>
  <20190726074557.GF6142@dhcp22.suse.cz>
  <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
-Message-ID: <9eb7d70a-40b1-b452-a0cf-24418fa6254c@profihost.ag>
-Date:   Sun, 28 Jul 2019 23:11:53 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+ <9eb7d70a-40b1-b452-a0cf-24418fa6254c@profihost.ag>
 MIME-Version: 1.0
-In-Reply-To: <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <9eb7d70a-40b1-b452-a0cf-24418fa6254c@profihost.ag>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-here is a memory.stat output of the cgroup:
-# cat /sys/fs/cgroup/system.slice/varnish.service/memory.stat
-anon 8113229824
-file 39735296
-kernel_stack 26345472
-slab 24985600
-sock 339968
-shmem 0
-file_mapped 38793216
-file_dirty 946176
-file_writeback 0
-inactive_anon 0
-active_anon 8113119232
-inactive_file 40198144
-active_file 102400
-unevictable 0
-slab_reclaimable 2859008
-slab_unreclaimable 22126592
-pgfault 178231449
-pgmajfault 22011
-pgrefill 393038
-pgscan 4218254
-pgsteal 430005
-pgactivate 295416
-pgdeactivate 351487
-pglazyfree 0
-pglazyfreed 0
-workingset_refault 401874
-workingset_activate 62535
-workingset_nodereclaim 0
+Hi Stefan,
 
-Greets,
-Stefan
+Stefan Priebe - Profihost AG writes:
+>anon 8113229824
 
-Am 26.07.19 um 20:30 schrieb Stefan Priebe - Profihost AG:
-> Am 26.07.19 um 09:45 schrieb Michal Hocko:
->> On Thu 25-07-19 23:37:14, Stefan Priebe - Profihost AG wrote:
->>> Hi Michal,
->>>
->>> Am 25.07.19 um 16:01 schrieb Michal Hocko:
->>>> On Thu 25-07-19 15:17:17, Stefan Priebe - Profihost AG wrote:
->>>>> Hello all,
->>>>>
->>>>> i hope i added the right list and people - if i missed someone i would
->>>>> be happy to know.
->>>>>
->>>>> While using kernel 4.19.55 and cgroupv2 i set a MemoryHigh value for a
->>>>> varnish service.
->>>>>
->>>>> It happens that the varnish.service cgroup reaches it's MemoryHigh value
->>>>> and stops working due to throttling.
->>>>
->>>> What do you mean by "stops working"? Does it mean that the process is
->>>> stuck in the kernel doing the reclaim? /proc/<pid>/stack would tell you
->>>> what the kernel executing for the process.
->>>
->>> The service no longer responses to HTTP requests.
->>>
->>> stack switches in this case between:
->>> [<0>] io_schedule+0x12/0x40
->>> [<0>] __lock_page_or_retry+0x1e7/0x4e0
->>> [<0>] filemap_fault+0x42f/0x830
->>> [<0>] __xfs_filemap_fault.constprop.11+0x49/0x120
->>> [<0>] __do_fault+0x57/0x108
->>> [<0>] __handle_mm_fault+0x949/0xef0
->>> [<0>] handle_mm_fault+0xfc/0x1f0
->>> [<0>] __do_page_fault+0x24a/0x450
->>> [<0>] do_page_fault+0x32/0x110
->>> [<0>] async_page_fault+0x1e/0x30
->>> [<0>] 0xffffffffffffffff
->>>
->>> and
->>>
->>> [<0>] poll_schedule_timeout.constprop.13+0x42/0x70
->>> [<0>] do_sys_poll+0x51e/0x5f0
->>> [<0>] __x64_sys_poll+0xe7/0x130
->>> [<0>] do_syscall_64+0x5b/0x170
->>> [<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
->>> [<0>] 0xffffffffffffffff
->>
->> Neither of the two seem to be memcg related.
-> 
-> Yes but at least the xfs one is a page fault - isn't this related?
-> 
->> Have you tried to get
->> several snapshots and see if the backtrace is stable?
-> No it's not it switches most of the time between these both. But as long
-> as the xfs one with the page fault is seen it does not serve requests
-> and that one is seen for at least 1-5s than the poill one is visible and
-> than the xfs one again for 1-5s.
-> 
-> This happens if i do:
-> systemctl set-property --runtime varnish.service MemoryHigh=6.5G
-> 
-> if i set:
-> systemctl set-property --runtime varnish.service MemoryHigh=14G
-> 
-> i never get the xfs handle_mm fault one. This is reproducable.
-> 
->> tell you whether your application is stuck in a single syscall or they
->> are just progressing very slowly (-ttt parameter should give you timing)
-> 
-> Yes it's still going forward but really really slow due to memory
-> pressure. memory.pressure of varnish cgroup shows high values above 100
-> or 200.
-> 
-> I can reproduce the same with rsync or other tasks using memory for
-> inodes and dentries. What i don't unterstand is that the kernel does not
-> reclaim memory for the userspace process and drops the cache. I can't
-> believe those entries are hot - as they must be at least some days old
-> as a fresh process running a day only consumes about 200MB of indoe /
-> dentries / page cache.
-> 
-> Greets,
-> Stefan
-> 
+You mention this problem happens if you set memory.high to 6.5G, however in 
+steady state your application is 8G. What makes you think it (both its RSS and 
+other shared resources like the page cache and other shared resources) can 
+compress to 6.5G without memory thrashing?
+
+I expect you're just setting memory.high so low that we end up having to 
+constantly thrash the disk due to reclaim, from the evidence you presented.
