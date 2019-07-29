@@ -2,86 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CC3478ED5
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 17:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB95D78FD4
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 17:49:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727814AbfG2PNy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Jul 2019 11:13:54 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:35192 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbfG2PNy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Jul 2019 11:13:54 -0400
-Received: by mail-pg1-f196.google.com with SMTP id s1so22117784pgr.2;
-        Mon, 29 Jul 2019 08:13:54 -0700 (PDT)
+        id S2388278AbfG2Ptz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Jul 2019 11:49:55 -0400
+Received: from mail-vs1-f65.google.com ([209.85.217.65]:43334 "EHLO
+        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387663AbfG2Pty (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Jul 2019 11:49:54 -0400
+Received: by mail-vs1-f65.google.com with SMTP id j26so41113159vsn.10
+        for <cgroups@vger.kernel.org>; Mon, 29 Jul 2019 08:49:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZnLXcFhj+Go8GG8/vsP0gGZ0JCfmJSZ7rbeDeF2qVeE=;
-        b=XUK3INafO/K7rNvFDvDF8JVU+N+jADLF5S80ly0dl6c7dAg3Bn2NK4Xi3vS3+cBW6z
-         k530Dav9ZNTwqZJ1gPbBE7huyQlh36P5Vt5+PcuZ+3tereumhe73oBeYjt1CandmYOwd
-         csjOa6nhfGoWBtDgy7w/dzUn92301/n8eILgg62MHBX/MGo7k6jt7YTO+EnilKFCQ6S4
-         pJvgnA1r2WpJzbU5JnudrG5cZ8fgRfu/22BfZiAonM2S0O9Y0ne4MrC1X7Arz7HUp/sr
-         +2k/LOkqHrtganDCGLJRHHxYjM62wplT1spDMbekbbFIAQNKSCXVIhJ3xLzI8pJfJFrI
-         LqOg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=uUW0YKHPLieEQydyNjaqE+DPJSP/Cf4fqcZtPwBzjUQ=;
+        b=Cc+rnM3wvWjLyuINuMWXDGs5fxT5e9t10JNduKKSfTicMo308IATLLWRf1HbfpWVFJ
+         b9HvoMhkEEadSy05edUEx8sn1mVyofmiYp6O2xYQvx9A1WtU4SuHaPssop3lf5ncDbCt
+         yG5gMY4JLtex+4bR+Q44glXssu1lBsGRrlcGVKY1Zanm/FcxXPu9Lpcm8BrKG2Kqswp+
+         rb3AJRXbn4R0hDAXhtZXs3XIx2+JoGwvRFnm4k9C4FTS9vMmF8Ya9luCi/wweOUwz+Vp
+         ouAIcGKMhFgKox4L1g3oYilw3A/fOpStl9pHs6Z5h8qQlenPlAGWPeZVHxefOnX7b/y2
+         zufw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZnLXcFhj+Go8GG8/vsP0gGZ0JCfmJSZ7rbeDeF2qVeE=;
-        b=cuBb1livmVKcFqWPnXLwopcrwggPF9m1jo3jHiF9l6VOZn1N2C/OC9c66cmbu0CzP4
-         il95YY8v1ZUBcv0k1PIacqO6AhKbSh09O5B6XPjvcr4Scgxc6lyJkx1IGRFalRJ5h1ml
-         rqodo8pxm+GsHyFoCxqxkOXVTecIS/QEGTT56DGxG9ViiCYw9q4kCHaF0lhclkGp7jLc
-         TVPgzGzaNAcDsKNns9XM0QMlTew+3TswaFTCde4cUOn2I8mOd3El2QSE3VScx/8aoizD
-         +Ov2W4QtYKJioqI21UAbx5f81sWK5H3TNdp3EQFPDAEPycHsEsXTvDiVcO3EVfKkrrtj
-         pLXg==
-X-Gm-Message-State: APjAAAVuFZrVEDLAKpaUBzUulk8edMkKlYHf1bk8m+neYPesx9VXGAtm
-        /YKde2jG2PZkckebBzUtdeo=
-X-Google-Smtp-Source: APXvYqzMajOUoR19pFuqbmPr8IgmUhfrMFA45ZK9qFI+NJaThzATOY9KVAMv5D52hHPcjJfWOhVCeQ==
-X-Received: by 2002:a63:c009:: with SMTP id h9mr77405961pgg.166.1564413233854;
-        Mon, 29 Jul 2019 08:13:53 -0700 (PDT)
-Received: from suzukaze.ipads-lab.se.sjtu.edu.cn ([89.31.126.54])
-        by smtp.gmail.com with ESMTPSA id q1sm72661765pfg.84.2019.07.29.08.13.51
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=uUW0YKHPLieEQydyNjaqE+DPJSP/Cf4fqcZtPwBzjUQ=;
+        b=OKAeIxBmbxM2X9OXI79+Ixi2loIJhBuKNlqs6Xo5P7EDfMLiclju1VYVaRJw98paOU
+         7mn5Pxs2TZwZm9bF7sHnvqbXl+WpYr+IG6XqQRM2ajRKXdhZ2gAS1YlwMin1Ty4RE6QN
+         Fvv5lWuKWiHTImamqhOC2Rp3km3ebBnelUMUdN8DQIw0EsZAeaq8dP5JtA7ocn0V8/wj
+         HapeSioieiTKLw4DcD8IWQLhYF5Dt3IZCqEN8YUvRmFS3Z/cG5A63eBXdZdeUdKfivrP
+         Gnzh5IjylVHuAZDKWbtfaIOif+medeSu07mHQ9tfoeE5X3/ABk8TQM4UaIln6ScOx7vc
+         Tzzw==
+X-Gm-Message-State: APjAAAVwb3heo4NLG7nh7xncE1n9a7n00JBFeO02toQtapIs8ebLK/yj
+        oTGUwA5h1SgJonNk8dNZM9k=
+X-Google-Smtp-Source: APXvYqzvvmRlC370jmHcQF5fxfCKQPBjEkd1dfVOREKA/n9iD4FSeCbNS9niC5SCPNU2sBDZeyzhIA==
+X-Received: by 2002:a67:7087:: with SMTP id l129mr68222271vsc.206.1564415393680;
+        Mon, 29 Jul 2019 08:49:53 -0700 (PDT)
+Received: from localhost (pool-108-27-252-85.nycmny.fios.verizon.net. [108.27.252.85])
+        by smtp.gmail.com with ESMTPSA id q15sm25893828vka.44.2019.07.29.08.49.52
         (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 29 Jul 2019 08:13:53 -0700 (PDT)
-From:   Chuhong Yuan <hslester96@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Chuhong Yuan <hslester96@gmail.com>
-Subject: [PATCH 01/12] rdmacg: Replace strncmp with str_has_prefix
-Date:   Mon, 29 Jul 2019 23:13:46 +0800
-Message-Id: <20190729151346.9280-1-hslester96@gmail.com>
-X-Mailer: git-send-email 2.20.1
+        Mon, 29 Jul 2019 08:49:53 -0700 (PDT)
+Date:   Mon, 29 Jul 2019 11:49:52 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Subject: Re: [PATCH RFC] mm/memcontrol: reclaim severe usage over high limit
+ in get_user_pages loop
+Message-ID: <20190729154952.GC21958@cmpxchg.org>
+References: <156431697805.3170.6377599347542228221.stgit@buzz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <156431697805.3170.6377599347542228221.stgit@buzz>
+User-Agent: Mutt/1.12.0 (2019-05-25)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-strncmp(str, const, len) is error-prone.
-We had better use newly introduced
-str_has_prefix() instead of it.
+On Sun, Jul 28, 2019 at 03:29:38PM +0300, Konstantin Khlebnikov wrote:
+> --- a/mm/gup.c
+> +++ b/mm/gup.c
+> @@ -847,8 +847,11 @@ static long __get_user_pages(struct task_struct *tsk, struct mm_struct *mm,
+>  			ret = -ERESTARTSYS;
+>  			goto out;
+>  		}
+> -		cond_resched();
+>  
+> +		/* Reclaim memory over high limit before stocking too much */
+> +		mem_cgroup_handle_over_high(true);
 
-Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
----
- kernel/cgroup/rdma.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I'd rather this remained part of the try_charge() call. The code
+comment in try_charge says this:
 
-diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
-index ae042c347c64..fd12a227f8e4 100644
---- a/kernel/cgroup/rdma.c
-+++ b/kernel/cgroup/rdma.c
-@@ -379,7 +379,7 @@ static int parse_resource(char *c, int *intval)
- 			return -EINVAL;
- 		return i;
- 	}
--	if (strncmp(value, RDMACG_MAX_STR, len) == 0) {
-+	if (str_has_prefix(value, RDMACG_MAX_STR)) {
- 		*intval = S32_MAX;
- 		return i;
- 	}
--- 
-2.20.1
+	 * We can perform reclaim here if __GFP_RECLAIM but let's
+	 * always punt for simplicity and so that GFP_KERNEL can
+	 * consistently be used during reclaim.
 
+The simplicity argument doesn't hold true anymore once we have to add
+manual calls into allocation sites. We should instead fix try_charge()
+to do synchronous reclaim for __GFP_RECLAIM and only punt to userspace
+return when actually needed.
