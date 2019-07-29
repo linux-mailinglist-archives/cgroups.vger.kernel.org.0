@@ -2,78 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E82C78475
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 07:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D148B784E3
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 08:25:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726708AbfG2FeP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Jul 2019 01:34:15 -0400
-Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:61339 "EHLO
-        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726314AbfG2FeP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Jul 2019 01:34:15 -0400
-Received: (qmail 19911 invoked from network); 29 Jul 2019 07:34:13 +0200
-X-Fcrdns: No
-Received: from phoffice.de-nserver.de (HELO [10.11.11.165]) (185.39.223.5)
-  (smtp-auth username hostmaster@profihost.com, mechanism plain)
-  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Mon, 29 Jul 2019 07:34:13 +0200
-Subject: Re: No memory reclaim while reaching MemoryHigh
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Michal Hocko <mhocko@kernel.org>, cgroups@vger.kernel.org,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        "n.fahldieck@profihost.ag" <n.fahldieck@profihost.ag>,
-        Daniel Aberger - Profihost AG <d.aberger@profihost.ag>,
-        p.kramme@profihost.ag
-References: <496dd106-abdd-3fca-06ad-ff7abaf41475@profihost.ag>
- <20190725140117.GC3582@dhcp22.suse.cz>
- <028ff462-b547-b9a5-bdb0-e0de3a884afd@profihost.ag>
- <20190726074557.GF6142@dhcp22.suse.cz>
- <d205c7a1-30c4-e26c-7e9c-debc431b5ada@profihost.ag>
- <9eb7d70a-40b1-b452-a0cf-24418fa6254c@profihost.ag>
- <20190728213910.GA138427@chrisdown.name>
-From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Message-ID: <2444c2d9-4c56-557a-5a25-c8ca25f94423@profihost.ag>
-Date:   Mon, 29 Jul 2019 07:34:13 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726586AbfG2GZC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Jul 2019 02:25:02 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47252 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725934AbfG2GZC (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 29 Jul 2019 02:25:02 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 765A3ADFC;
+        Mon, 29 Jul 2019 06:25:01 +0000 (UTC)
+Date:   Mon, 29 Jul 2019 08:25:00 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v2] mm: memcontrol: fix use after free in
+ mem_cgroup_iter()
+Message-ID: <20190729062500.GB9330@dhcp22.suse.cz>
+References: <20190726021247.16162-1-miles.chen@mediatek.com>
+ <20190726124933.GN6142@dhcp22.suse.cz>
+ <20190726125533.GO6142@dhcp22.suse.cz>
+ <1564184878.19817.5.camel@mtkswgap22>
 MIME-Version: 1.0
-In-Reply-To: <20190728213910.GA138427@chrisdown.name>
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: 7bit
-X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1564184878.19817.5.camel@mtkswgap22>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Chris,
-Am 28.07.19 um 23:39 schrieb Chris Down:
-> Hi Stefan,
+On Sat 27-07-19 07:47:58, Miles Chen wrote:
+> On Fri, 2019-07-26 at 14:55 +0200, Michal Hocko wrote:
+[...]
+> > > I am sorry, I didn't get to comment an earlier version but I am
+> > > wondering whether it makes more sense to do and explicit invalidation.
+> > > 
 > 
-> Stefan Priebe - Profihost AG writes:
->> anon 8113229824
+> I think we should keep the original v2 version, the reason is the 
+> !use_hierarchy does not imply we can reach root_mem_cgroup:
 > 
-> You mention this problem happens if you set memory.high to 6.5G, however
-> in steady state your application is 8G.
-This is a current memory.stat now i would test with memory.high set to
-7.9 or 8G.
+> cd /sys/fs/cgroup/memory/0
+> mkdir 1
+> cd /sys/fs/cgroup/memory/0/1
+> echo 1 > memory.use_hierarchy // only 1 and its children has
+> use_hierarchy set
+> mkdir 2
+> 
+> rmdir 2 // parent_mem_cgroup(2) goes up to 1
 
-Last week it was at 6.5G
+You are right I have missed this case. I am not sure anybody is using
+layout like that but your fix is more robust and catches that case as
+well.
 
- What makes you think it (both
-> its RSS and other shared resources like the page cache and other shared
-> resources) can compress to 6.5G without memory thrashing?
-If i issue echo 3 > drop_caches the usage always drops down to 5.8G
-
-
-> I expect you're just setting memory.high so low that we end up having to
-> constantly thrash the disk due to reclaim, from the evidence you presented.
-
-This sounds interesting? How can i verify this? And what do you mean by
-trashing the disk? swap is completely disabled.
-
-I thought all memory which i can drop with drop_caches can be reclaimed?
-
-Greets,
-Stefan
+Acked-by: Michal Hocko <mhocko@suse.com>
+-- 
+Michal Hocko
+SUSE Labs
