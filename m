@@ -2,293 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 278667904F
-	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239E479217
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jul 2019 19:29:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728449AbfG2QGt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 29 Jul 2019 12:06:49 -0400
-Received: from mail-vs1-f67.google.com ([209.85.217.67]:35539 "EHLO
-        mail-vs1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728448AbfG2QGt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Jul 2019 12:06:49 -0400
-Received: by mail-vs1-f67.google.com with SMTP id u124so41187411vsu.2
-        for <cgroups@vger.kernel.org>; Mon, 29 Jul 2019 09:06:48 -0700 (PDT)
+        id S1728908AbfG2R3E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 29 Jul 2019 13:29:04 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:46917 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725934AbfG2R3E (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 29 Jul 2019 13:29:04 -0400
+Received: by mail-qt1-f194.google.com with SMTP id h21so60316250qtn.13;
+        Mon, 29 Jul 2019 10:29:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tpb97y9OJ2eW+E2YobxTQO2miCp0akwTJT0Z7aQfyeM=;
-        b=wDPRxrvTNueI8fNXL07B/ppCEVxTEcWA/TjAlf+5ovS5WynFHfhJ5ZfCW7SBr3Jxzw
-         3gfrjs3Q+4lGG5fs/9LFj9wo7IxjqfjuL2iuoHq8ZBZTFDKs75eqXDcSbNHSTaeZIm29
-         2zw+HjOpx+TLMbGbYNuWu8PqzkOYGhcwnTdmDDBDbiV0hgphz0IYpULyl0llBDghd4vq
-         474Tvj7KUrhpirtRilT1vn3yl7gk7qpOXt8Co3GLYpLkDgn0AGdNUpRjUVpsEmR71gVj
-         PGoBIlvgQzsa+mD2kWc7evXvapP8gt2BCIkIEZ8rnb7UChOy1ls5NxkEyItfQ3HQZiyZ
-         s/3A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=udkUdoHD+/xDbjBugzOSQ54RdKcLOvg7mCBhGnLbrHY=;
+        b=oh54sUbqobJwz9lD8GsJU9GCOWfnXwfAsAG3K9yMfohPeWmqap0o2gqLB8B0e1ky8U
+         e37WLWqIOD4v3QcbJqyhfmeWrigLZi9lTlOFjRshdB47i0McihHUiSXOYW72erAwtW4h
+         4iYG5Vr7nO39ZaUSHgdLVNVGU8KH4sndynjs91oJgtSid4bkhglmXffKyl834QaAngdA
+         DvOzpuLJrSTw8N+ZfdutrFul1SB6i21Sh1z00FSZXNcN8yDkXB57LOljJuo6w3lWRwWv
+         ICyERxp9m8QwB3gS882QmH14NabvmB3IbdMoSsfCm0Mu2j77FzN4DCmP5/f75wALlMW6
+         ffaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tpb97y9OJ2eW+E2YobxTQO2miCp0akwTJT0Z7aQfyeM=;
-        b=fKUIxOOzRnpV3nBoVotj+w3OluhCP72xf1hV/FwRCdykwK+pGUrCJPD7WxI4L0wkZ4
-         wromqmUonuppB3n27LAF1aMVpaWBr+xZYSQkM9e96k75rm53EZ0fnR25/ab8BBN5PxGp
-         MOetpNuz3JpAEvYywydbSFM/3Ui9f3qBcUdsc012U2Jf7G6lPwVA0I5nWJwtd12ll65i
-         U+9Brii6mU8/mgYBOsVwjhOFvp2LCFWnALzCyI5569cJudEf9C/cuSGQJGYOXAVdWrHj
-         yT2HUTMyAzZ1njNWP0qaJx+paWYiq1VPtCiVZ05uXZJiDN6ue0R0NiimEdFYQTvyO1lF
-         ZNCw==
-X-Gm-Message-State: APjAAAWcOkIMoNeVCdmguoF/eG/YZt5oWx0vp2r0dkEo82ivQRANqtbP
-        wzNo/IvxxXPw96nkAhEksUo=
-X-Google-Smtp-Source: APXvYqyDZ9drgNJSebHt9o3VcULIeACSV8agtfWqengWcrFfqwinUbEaEMuze3cTXq1Le+hE4h3rig==
-X-Received: by 2002:a67:1787:: with SMTP id 129mr65506861vsx.64.1564416407936;
-        Mon, 29 Jul 2019 09:06:47 -0700 (PDT)
-Received: from localhost (pool-108-27-252-85.nycmny.fios.verizon.net. [108.27.252.85])
-        by smtp.gmail.com with ESMTPSA id s10sm14260409vsr.7.2019.07.29.09.06.47
-        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
-        Mon, 29 Jul 2019 09:06:47 -0700 (PDT)
-Date:   Mon, 29 Jul 2019 12:06:46 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v2] mm: memcontrol: fix use after free in
- mem_cgroup_iter()
-Message-ID: <20190729160646.GD21958@cmpxchg.org>
-References: <20190726021247.16162-1-miles.chen@mediatek.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=udkUdoHD+/xDbjBugzOSQ54RdKcLOvg7mCBhGnLbrHY=;
+        b=jKhf5F7tgjfTduGKWiwMrZSQBbS9jF4TfVVWdeXn5wOKC/Y3E0/52a3cW+uYlfpjoy
+         v+KB+NZLIi9L6yIXD7E2LAs2WCyf058o2hJcK0mz87hqw+ZOvFVntVessuAw+1cOu2z1
+         FE4xw2bFzmSDQY2Hw28n+q4hKm2KQRMWL1qeQfYzSfC7nUtM60z6n4FxPmacC73tcdQe
+         GULLSPAc+Txw8oUHDJLryjr4Fx5di128IOBtCaiKkUw4ZsuqEfUDqM6MEi1kMtq3mDMx
+         DEfiM/6rPysnHFs26upu7UOsLme0xkDCYQ5kxF1Wj5IovqfftVHaZb+FYycEO+cKNGtu
+         Mzcw==
+X-Gm-Message-State: APjAAAUwjEfbU2vR64KgraL8FK7bJssivaU2EQwEnPKGnyGWcHU6DFYi
+        FiNuHhRRm/BoHWv25R+dES9pS5kO90ruWOCTusg=
+X-Google-Smtp-Source: APXvYqz19nEJwzZPl0Rc1pBiSuYwxF86on9CogNKuQGhaTvySkOxalyFhl01uTOEKTeFdMf1rKYufS3N7KlFpgwpIYQ=
+X-Received: by 2002:a0c:ae50:: with SMTP id z16mr78170781qvc.60.1564421343160;
+ Mon, 29 Jul 2019 10:29:03 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190726021247.16162-1-miles.chen@mediatek.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+References: <156431697805.3170.6377599347542228221.stgit@buzz>
+ <20190729091738.GF9330@dhcp22.suse.cz> <3d6fc779-2081-ba4b-22cf-be701d617bb4@yandex-team.ru>
+ <20190729103307.GG9330@dhcp22.suse.cz>
+In-Reply-To: <20190729103307.GG9330@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 29 Jul 2019 10:28:43 -0700
+Message-ID: <CAHbLzkrdj-O2uXwM8ujm90OcgjyR4nAiEbFtRGe7SOoY_fs=BA@mail.gmail.com>
+Subject: Re: [PATCH RFC] mm/memcontrol: reclaim severe usage over high limit
+ in get_user_pages loop
+To:     Michal Hocko <mhocko@kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 26, 2019 at 10:12:47AM +0800, Miles Chen wrote:
-> This patch is sent to report an use after free in mem_cgroup_iter()
-> after merging commit: be2657752e9e "mm: memcg: fix use after free in
-> mem_cgroup_iter()".
-> 
-> I work with android kernel tree (4.9 & 4.14), and the commit:
-> be2657752e9e "mm: memcg: fix use after free in mem_cgroup_iter()" has
-> been merged to the trees. However, I can still observe use after free
-> issues addressed in the commit be2657752e9e.
-> (on low-end devices, a few times this month)
-> 
-> backtrace:
-> 	css_tryget <- crash here
-> 	mem_cgroup_iter
-> 	shrink_node
-> 	shrink_zones
-> 	do_try_to_free_pages
-> 	try_to_free_pages
-> 	__perform_reclaim
-> 	__alloc_pages_direct_reclaim
-> 	__alloc_pages_slowpath
-> 	__alloc_pages_nodemask
-> 
-> To debug, I poisoned mem_cgroup before freeing it:
-> 
-> static void __mem_cgroup_free(struct mem_cgroup *memcg)
-> 	for_each_node(node)
-> 	free_mem_cgroup_per_node_info(memcg, node);
-> 	free_percpu(memcg->stat);
-> +       /* poison memcg before freeing it */
-> +       memset(memcg, 0x78, sizeof(struct mem_cgroup));
-> 	kfree(memcg);
-> }
-> 
-> The coredump shows the position=0xdbbc2a00 is freed.
-> 
-> (gdb) p/x ((struct mem_cgroup_per_node *)0xe5009e00)->iter[8]
-> $13 = {position = 0xdbbc2a00, generation = 0x2efd}
-> 
-> 0xdbbc2a00:     0xdbbc2e00      0x00000000      0xdbbc2800      0x00000100
-> 0xdbbc2a10:     0x00000200      0x78787878      0x00026218      0x00000000
-> 0xdbbc2a20:     0xdcad6000      0x00000001      0x78787800      0x00000000
-> 0xdbbc2a30:     0x78780000      0x00000000      0x0068fb84      0x78787878
-> 0xdbbc2a40:     0x78787878      0x78787878      0x78787878      0xe3fa5cc0
-> 0xdbbc2a50:     0x78787878      0x78787878      0x00000000      0x00000000
-> 0xdbbc2a60:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a70:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a80:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a90:     0x00000001      0x00000000      0x00000000      0x00100000
-> 0xdbbc2aa0:     0x00000001      0xdbbc2ac8      0x00000000      0x00000000
-> 0xdbbc2ab0:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2ac0:     0x00000000      0x00000000      0xe5b02618      0x00001000
-> 0xdbbc2ad0:     0x00000000      0x78787878      0x78787878      0x78787878
-> 0xdbbc2ae0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2af0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b00:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b10:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b20:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b30:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b40:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b50:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b60:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b70:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b80:     0x78787878      0x78787878      0x00000000      0x78787878
-> 0xdbbc2b90:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2ba0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 
-> In the reclaim path, try_to_free_pages() does not setup
-> sc.target_mem_cgroup and sc is passed to do_try_to_free_pages(), ...,
-> shrink_node().
-> 
-> In mem_cgroup_iter(), root is set to root_mem_cgroup because
-> sc->target_mem_cgroup is NULL.
-> It is possible to assign a memcg to root_mem_cgroup.nodeinfo.iter in
-> mem_cgroup_iter().
-> 
-> 	try_to_free_pages
-> 		struct scan_control sc = {...}, target_mem_cgroup is 0x0;
-> 	do_try_to_free_pages
-> 	shrink_zones
-> 	shrink_node
-> 		 mem_cgroup *root = sc->target_mem_cgroup;
-> 		 memcg = mem_cgroup_iter(root, NULL, &reclaim);
-> 	mem_cgroup_iter()
-> 		if (!root)
-> 			root = root_mem_cgroup;
-> 		...
-> 
-> 		css = css_next_descendant_pre(css, &root->css);
-> 		memcg = mem_cgroup_from_css(css);
-> 		cmpxchg(&iter->position, pos, memcg);
-> 
-> My device uses memcg non-hierarchical mode.
-> When we release a memcg: invalidate_reclaim_iterators() reaches only
-> dead_memcg and its parents. If non-hierarchical mode is used,
-> invalidate_reclaim_iterators() never reaches root_mem_cgroup.
-> 
-> static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> {
-> 	struct mem_cgroup *memcg = dead_memcg;
-> 
-> 	for (; memcg; memcg = parent_mem_cgroup(memcg)
-> 	...
-> }
-> 
-> So the use after free scenario looks like:
-> 
-> CPU1						CPU2
-> 
-> try_to_free_pages
-> do_try_to_free_pages
-> shrink_zones
-> shrink_node
-> mem_cgroup_iter()
->     if (!root)
->     	root = root_mem_cgroup;
->     ...
->     css = css_next_descendant_pre(css, &root->css);
->     memcg = mem_cgroup_from_css(css);
->     cmpxchg(&iter->position, pos, memcg);
-> 
-> 					invalidate_reclaim_iterators(memcg);
-> 					...
-> 					__mem_cgroup_free()
-> 						kfree(memcg);
-> 
-> try_to_free_pages
-> do_try_to_free_pages
-> shrink_zones
-> shrink_node
-> mem_cgroup_iter()
->     if (!root)
->     	root = root_mem_cgroup;
->     ...
->     mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
->     iter = &mz->iter[reclaim->priority];
->     pos = READ_ONCE(iter->position);
->     css_tryget(&pos->css) <- use after free
-> 
-> To avoid this, we should also invalidate root_mem_cgroup.nodeinfo.iter in
-> invalidate_reclaim_iterators().
-> 
-> Change since v1:
-> Add a comment to explain why we need to handle root_mem_cgroup separately.
-> Rename invalid_root to invalidate_root.
-> 
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
-> ---
->  mm/memcontrol.c | 38 ++++++++++++++++++++++++++++----------
->  1 file changed, 28 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index cdbb7a84cb6e..09f2191f113b 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1130,26 +1130,44 @@ void mem_cgroup_iter_break(struct mem_cgroup *root,
->  		css_put(&prev->css);
->  }
->  
-> -static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> +static void __invalidate_reclaim_iterators(struct mem_cgroup *from,
-> +					struct mem_cgroup *dead_memcg)
->  {
-> -	struct mem_cgroup *memcg = dead_memcg;
->  	struct mem_cgroup_reclaim_iter *iter;
->  	struct mem_cgroup_per_node *mz;
->  	int nid;
->  	int i;
->  
-> -	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-> -		for_each_node(nid) {
-> -			mz = mem_cgroup_nodeinfo(memcg, nid);
-> -			for (i = 0; i <= DEF_PRIORITY; i++) {
-> -				iter = &mz->iter[i];
-> -				cmpxchg(&iter->position,
-> -					dead_memcg, NULL);
-> -			}
-> +	for_each_node(nid) {
-> +		mz = mem_cgroup_nodeinfo(from, nid);
-> +		for (i = 0; i <= DEF_PRIORITY; i++) {
-> +			iter = &mz->iter[i];
-> +			cmpxchg(&iter->position,
-> +				dead_memcg, NULL);
->  		}
->  	}
->  }
->  
-> +/*
-> + * When cgruop1 non-hierarchy mode is used, parent_mem_cgroup() does
-> + * not walk all the way up to the cgroup root (root_mem_cgroup). So
-> + * we have to handle dead_memcg from cgroup root separately.
-> + */
-> +static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> +{
-> +	struct mem_cgroup *memcg = dead_memcg;
-> +	int invalidate_root = 0;
-> +
-> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-> +		__invalidate_reclaim_iterators(memcg, dead_memcg);
-> +		if (memcg == root_mem_cgroup)
-> +			invalidate_root = 1;
-> +	}
-> +
-> +	if (!invalidate_root)
-> +		__invalidate_reclaim_iterators(root_mem_cgroup, dead_memcg);
+On Mon, Jul 29, 2019 at 3:33 AM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Mon 29-07-19 12:40:29, Konstantin Khlebnikov wrote:
+> > On 29.07.2019 12:17, Michal Hocko wrote:
+> > > On Sun 28-07-19 15:29:38, Konstantin Khlebnikov wrote:
+> > > > High memory limit in memory cgroup allows to batch memory reclaiming and
+> > > > defer it until returning into userland. This moves it out of any locks.
+> > > >
+> > > > Fixed gap between high and max limit works pretty well (we are using
+> > > > 64 * NR_CPUS pages) except cases when one syscall allocates tons of
+> > > > memory. This affects all other tasks in cgroup because they might hit
+> > > > max memory limit in unhandy places and\or under hot locks.
+> > > >
+> > > > For example mmap with MAP_POPULATE or MAP_LOCKED might allocate a lot
+> > > > of pages and push memory cgroup usage far ahead high memory limit.
+> > > >
+> > > > This patch uses halfway between high and max limits as threshold and
+> > > > in this case starts memory reclaiming if mem_cgroup_handle_over_high()
+> > > > called with argument only_severe = true, otherwise reclaim is deferred
+> > > > till returning into userland. If high limits isn't set nothing changes.
+> > > >
+> > > > Now long running get_user_pages will periodically reclaim cgroup memory.
+> > > > Other possible targets are generic file read/write iter loops.
+> > >
+> > > I do see how gup can lead to a large high limit excess, but could you be
+> > > more specific why is that a problem? We should be reclaiming the similar
+> > > number of pages cumulatively.
+> > >
+> >
+> > Large gup might push usage close to limit and keep it here for a some time.
+> > As a result concurrent allocations will enter direct reclaim right at
+> > charging much more frequently.
+>
+> Yes, this is indeed prossible. On the other hand even the reclaim from
+> the charge path doesn't really prevent from that happening because the
+> context might get preempted or blocked on locks. So I guess we need a
+> more detailed information of an actual world visible problem here.
+>
+> > Right now deferred recalaim after passing high limit works like distributed
+> > memcg kswapd which reclaims memory in "background" and prevents completely
+> > synchronous direct reclaim.
+> >
+> > Maybe somebody have any plans for real kswapd for memcg?
+>
+> I am not aware of that. The primary problem back then was that we simply
+> cannot have a kernel thread per each memcg because that doesn't scale.
+> Using kthreads and a dynamic pool of threads tends to be quite tricky -
+> e.g. a proper accounting, scaling again.
 
-"invalidate_root" suggests we still have to invalidate the root, but
-the variable works the opposite way. How about dropping it altogether
-and moving the comment directly to where the decision is made:
+We did discuss this topic in last year's LSF/MM, please see:
+https://lwn.net/Articles/753162/. We (Alibaba) do have the memcg
+kswapd thing work in our production environment for a while, and it
+works well for our 11.11 shopping festival flood.
 
-	struct mem_cgroup *memcg = dead_memcg;
+I did plan to post the patches to upstream, but I was distracted by
+something else for a long time, now I already redesigned it and
+already had some preliminary patches work, if you are interested in
+this I would like post the patches soon to gather some comments early.
 
-	do {
-		__invalidate_reclaim_iterators(memcg, dead_memcg);
-		last = memcg;
-	} while ((memcg = parent_mem_cgroup(memcg)));
+However, some of the issues mentioned by Michal does still exist, i.e.
+accounting. I have not thought too much about accounting yet. I
+recalled Johannes mentioned they were working on accounting kswapd
+back then. But, I'm not sure if they are still working on that or not,
+or he just meant some throttling solved by commit
+2cf855837b89d92996cf264713f3bed2bf9b0b4f ("memcontrol: schedule
+throttling if we are congested")? But, I recalled vaguely accounting
+sounds not very critical.
 
-	/*
-	 * When cgruop1 non-hierarchy mode is used,
-	 * parent_mem_cgroup() does not walk all the way up to the
-	 * cgroup root (root_mem_cgroup). So we have to handle
-	 * dead_memcg from cgroup root separately.
-	 */
-	if (last != root_mem_cgroup)
-		__invalidate_reclaim_iterators(root_mem_cgroup, dead_memcg);
+I don't worry too much about scale since the scale issue is not unique
+to background reclaim, direct reclaim may run into the same problem.
+If you run into extreme memory pressure, a lot memcgs run into direct
+relcaim and global reclaim is also running at the mean time, your
+machine is definitely already not usable. And, our usecase is memcg
+backgroup reclaim is mainly used by some latency sensitive memcgs
+(running latency sensitive applications) to try to minimize direct
+reclaim, for other memcgs they'd better be throttled by direct reclaim
+if they consume too much memory.
+
+Regards,
+Yang
+
+>
+> > I've put mem_cgroup_handle_over_high in gup next to cond_resched() and
+> > later that gave me idea that this is good place for running any
+> > deferred works, like bottom half for tasks. Right now this happens
+> > only at switching into userspace.
+>
+> I am not against pushing high memory reclaim into the charge path in
+> principle. I just want to hear how big of a problem this really is in
+> practice. If this is mostly a theoretical problem that might hit then I
+> would rather stick with the existing code though.
+>
+> --
+> Michal Hocko
+> SUSE Labs
+>
