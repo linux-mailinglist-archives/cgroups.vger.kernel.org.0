@@ -2,94 +2,270 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 949017A1A4
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2019 09:12:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50BCF7A240
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2019 09:28:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727021AbfG3HMd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Jul 2019 03:12:33 -0400
-Received: from smtprelay0065.hostedemail.com ([216.40.44.65]:34105 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726180AbfG3HMd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Jul 2019 03:12:33 -0400
-X-Greylist: delayed 541 seconds by postgrey-1.27 at vger.kernel.org; Tue, 30 Jul 2019 03:12:32 EDT
-Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
-        by smtpgrave02.hostedemail.com (Postfix) with ESMTP id 0C19518015306
-        for <cgroups@vger.kernel.org>; Tue, 30 Jul 2019 07:03:33 +0000 (UTC)
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 586E983777EE;
-        Tue, 30 Jul 2019 07:03:31 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,3,0,,d41d8cd98f00b204,joe@perches.com,:::::::::::::::::::,RULES_HIT:41:152:355:379:599:800:960:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2559:2563:2682:2685:2691:2827:2859:2893:2898:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3353:3622:3834:3865:3866:3867:3868:3870:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4830:5007:6119:7858:7903:8531:9025:9040:10004:10400:10450:10455:10848:11026:11232:11658:11783:11914:12043:12294:12297:12438:12555:12663:12740:12895:13069:13311:13357:13845:13894:14096:14097:14181:14659:14721:19904:19999:21080:21324:21433:21627:21740:30054:30070:30090:30091,0,RBL:error,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:fn,MSBL:0,DNSBL:neutral,Custom_rules:0:0:0,LFtime:3,LUA_SUMMARY:none
-X-HE-Tag: anger88_1e83daf9ea507
-X-Filterd-Recvd-Size: 2841
-Received: from XPS-9350.home (cpe-23-242-196-136.socal.res.rr.com [23.242.196.136])
-        (Authenticated sender: joe@perches.com)
-        by omf12.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 30 Jul 2019 07:03:29 +0000 (UTC)
-Message-ID: <80fbaf63ddbe66cbbf3391256402295af1a3336f.camel@perches.com>
-Subject: Re: [PATCH 01/12] rdmacg: Replace strncmp with str_has_prefix
-From:   Joe Perches <joe@perches.com>
-To:     Chuhong Yuan <hslester96@gmail.com>,
-        Kees Cook <keescook@chromium.org>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Laura Abbott <labbott@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Tue, 30 Jul 2019 00:03:28 -0700
-In-Reply-To: <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
-References: <20190729151346.9280-1-hslester96@gmail.com>
-         <201907292117.DA40CA7D@keescook>
-         <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.30.5-0ubuntu0.18.10.1 
+        id S1727445AbfG3H13 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Jul 2019 03:27:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53694 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726432AbfG3H12 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 30 Jul 2019 03:27:28 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 8A31BAFBB;
+        Tue, 30 Jul 2019 07:27:25 +0000 (UTC)
+Date:   Tue, 30 Jul 2019 09:27:24 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        wsd_upstream@mediatek.com,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH v4] mm: memcontrol: fix use after free in
+ mem_cgroup_iter()
+Message-ID: <20190730072724.GM9330@dhcp22.suse.cz>
+References: <20190730015729.4406-1-miles.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190730015729.4406-1-miles.chen@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 2019-07-30 at 14:39 +0800, Chuhong Yuan wrote:
-> Kees Cook <keescook@chromium.org> 于2019年7月30日周二 下午12:26写道：
-> > On Mon, Jul 29, 2019 at 11:13:46PM +0800, Chuhong Yuan wrote:
-> > > strncmp(str, const, len) is error-prone.
-> > > We had better use newly introduced
-> > > str_has_prefix() instead of it.
-> > 
-> > Wait, stop. :) After Laura called my attention to your conversion series,
-> > mpe pointed out that str_has_prefix() is almost redundant to strstarts()
-> > (from 2009), and the latter has many more users. Let's fix strstarts()
-> > match str_has_prefix()'s return behavior (all the existing callers are
-> > doing boolean tests, so the change in return value won't matter), and
-> > then we can continue with this replacement. (And add some documentation
-> > to Documenation/process/deprecated.rst along with a checkpatch.pl test
-> > maybe too?)
-> > 
+[Cc Andrew to pick up the patch]
+
+On Tue 30-07-19 09:57:29, Miles Chen wrote:
+> This patch is sent to report an use after free in mem_cgroup_iter()
+> after merging commit: be2657752e9e "mm: memcg: fix use after free in
+> mem_cgroup_iter()".
 > 
-> Thanks for your advice!
-> Does that mean replacing strstarts()'s implementation with
-> str_has_prefix()'s and then use strstarts() to substitute
-> strncmp?
+> I work with android kernel tree (4.9 & 4.14), and the commit:
+> be2657752e9e "mm: memcg: fix use after free in mem_cgroup_iter()" has
+> been merged to the trees. However, I can still observe use after free
+> issues addressed in the commit be2657752e9e.
+> (on low-end devices, a few times this month)
 > 
-> I am not very clear about how to add the test into checkpatch.pl.
-> Should I write a check for this pattern or directly add strncmp into
-> deprecated_apis?
+> backtrace:
+> 	css_tryget <- crash here
+> 	mem_cgroup_iter
+> 	shrink_node
+> 	shrink_zones
+> 	do_try_to_free_pages
+> 	try_to_free_pages
+> 	__perform_reclaim
+> 	__alloc_pages_direct_reclaim
+> 	__alloc_pages_slowpath
+> 	__alloc_pages_nodemask
+> 
+> To debug, I poisoned mem_cgroup before freeing it:
+> 
+> static void __mem_cgroup_free(struct mem_cgroup *memcg)
+> 	for_each_node(node)
+> 	free_mem_cgroup_per_node_info(memcg, node);
+> 	free_percpu(memcg->stat);
+> +       /* poison memcg before freeing it */
+> +       memset(memcg, 0x78, sizeof(struct mem_cgroup));
+> 	kfree(memcg);
+> }
+> 
+> The coredump shows the position=0xdbbc2a00 is freed.
+> 
+> (gdb) p/x ((struct mem_cgroup_per_node *)0xe5009e00)->iter[8]
+> $13 = {position = 0xdbbc2a00, generation = 0x2efd}
+> 
+> 0xdbbc2a00:     0xdbbc2e00      0x00000000      0xdbbc2800      0x00000100
+> 0xdbbc2a10:     0x00000200      0x78787878      0x00026218      0x00000000
+> 0xdbbc2a20:     0xdcad6000      0x00000001      0x78787800      0x00000000
+> 0xdbbc2a30:     0x78780000      0x00000000      0x0068fb84      0x78787878
+> 0xdbbc2a40:     0x78787878      0x78787878      0x78787878      0xe3fa5cc0
+> 0xdbbc2a50:     0x78787878      0x78787878      0x00000000      0x00000000
+> 0xdbbc2a60:     0x00000000      0x00000000      0x00000000      0x00000000
+> 0xdbbc2a70:     0x00000000      0x00000000      0x00000000      0x00000000
+> 0xdbbc2a80:     0x00000000      0x00000000      0x00000000      0x00000000
+> 0xdbbc2a90:     0x00000001      0x00000000      0x00000000      0x00100000
+> 0xdbbc2aa0:     0x00000001      0xdbbc2ac8      0x00000000      0x00000000
+> 0xdbbc2ab0:     0x00000000      0x00000000      0x00000000      0x00000000
+> 0xdbbc2ac0:     0x00000000      0x00000000      0xe5b02618      0x00001000
+> 0xdbbc2ad0:     0x00000000      0x78787878      0x78787878      0x78787878
+> 0xdbbc2ae0:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2af0:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b00:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b10:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b20:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b30:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b40:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b50:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b60:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b70:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2b80:     0x78787878      0x78787878      0x00000000      0x78787878
+> 0xdbbc2b90:     0x78787878      0x78787878      0x78787878      0x78787878
+> 0xdbbc2ba0:     0x78787878      0x78787878      0x78787878      0x78787878
+> 
+> In the reclaim path, try_to_free_pages() does not setup
+> sc.target_mem_cgroup and sc is passed to do_try_to_free_pages(), ...,
+> shrink_node().
+> 
+> In mem_cgroup_iter(), root is set to root_mem_cgroup because
+> sc->target_mem_cgroup is NULL.
+> It is possible to assign a memcg to root_mem_cgroup.nodeinfo.iter in
+> mem_cgroup_iter().
+> 
+> 	try_to_free_pages
+> 		struct scan_control sc = {...}, target_mem_cgroup is 0x0;
+> 	do_try_to_free_pages
+> 	shrink_zones
+> 	shrink_node
+> 		 mem_cgroup *root = sc->target_mem_cgroup;
+> 		 memcg = mem_cgroup_iter(root, NULL, &reclaim);
+> 	mem_cgroup_iter()
+> 		if (!root)
+> 			root = root_mem_cgroup;
+> 		...
+> 
+> 		css = css_next_descendant_pre(css, &root->css);
+> 		memcg = mem_cgroup_from_css(css);
+> 		cmpxchg(&iter->position, pos, memcg);
+> 
+> My device uses memcg non-hierarchical mode.
+> When we release a memcg: invalidate_reclaim_iterators() reaches only
+> dead_memcg and its parents. If non-hierarchical mode is used,
+> invalidate_reclaim_iterators() never reaches root_mem_cgroup.
+> 
+> static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
+> {
+> 	struct mem_cgroup *memcg = dead_memcg;
+> 
+> 	for (; memcg; memcg = parent_mem_cgroup(memcg)
+> 	...
+> }
+> 
+> So the use after free scenario looks like:
+> 
+> CPU1						CPU2
+> 
+> try_to_free_pages
+> do_try_to_free_pages
+> shrink_zones
+> shrink_node
+> mem_cgroup_iter()
+>     if (!root)
+>     	root = root_mem_cgroup;
+>     ...
+>     css = css_next_descendant_pre(css, &root->css);
+>     memcg = mem_cgroup_from_css(css);
+>     cmpxchg(&iter->position, pos, memcg);
+> 
+> 					invalidate_reclaim_iterators(memcg);
+> 					...
+> 					__mem_cgroup_free()
+> 						kfree(memcg);
+> 
+> try_to_free_pages
+> do_try_to_free_pages
+> shrink_zones
+> shrink_node
+> mem_cgroup_iter()
+>     if (!root)
+>     	root = root_mem_cgroup;
+>     ...
+>     mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
+>     iter = &mz->iter[reclaim->priority];
+>     pos = READ_ONCE(iter->position);
+>     css_tryget(&pos->css) <- use after free
+> 
+> To avoid this, we should also invalidate root_mem_cgroup.nodeinfo.iter in
+> invalidate_reclaim_iterators().
+> 
+> Change since v1:
+> Add a comment to explain why we need to handle root_mem_cgroup separately.
+> Rename invalid_root to invalidate_root.
+> 
+> Change since v2:
+> Add fix tag
+> 
+> Change since v3:
+> Remove confusing 'invalidate_root', make the code easier to read
+> 
+> Fixes: 5ac8fb31ad2e ("mm: memcontrol: convert reclaim iterator to simple css refcounting")
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
 
-After Nitin's patch gets applied: (which btw wasn't cc'd to lkml)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-(sorry about the bad link, something about it hits some
- spam filter)
+> ---
+>  mm/memcontrol.c | 39 +++++++++++++++++++++++++++++----------
+>  1 file changed, 29 insertions(+), 10 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index cdbb7a84cb6e..8a2a2d5cfc26 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1130,26 +1130,45 @@ void mem_cgroup_iter_break(struct mem_cgroup *root,
+>  		css_put(&prev->css);
+>  }
+>  
+> -static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
+> +static void __invalidate_reclaim_iterators(struct mem_cgroup *from,
+> +					struct mem_cgroup *dead_memcg)
+>  {
+> -	struct mem_cgroup *memcg = dead_memcg;
+>  	struct mem_cgroup_reclaim_iter *iter;
+>  	struct mem_cgroup_per_node *mz;
+>  	int nid;
+>  	int i;
+>  
+> -	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+> -		for_each_node(nid) {
+> -			mz = mem_cgroup_nodeinfo(memcg, nid);
+> -			for (i = 0; i <= DEF_PRIORITY; i++) {
+> -				iter = &mz->iter[i];
+> -				cmpxchg(&iter->position,
+> -					dead_memcg, NULL);
+> -			}
+> +	for_each_node(nid) {
+> +		mz = mem_cgroup_nodeinfo(from, nid);
+> +		for (i = 0; i <= DEF_PRIORITY; i++) {
+> +			iter = &mz->iter[i];
+> +			cmpxchg(&iter->position,
+> +				dead_memcg, NULL);
+>  		}
+>  	}
+>  }
+>  
+> +static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
+> +{
+> +	struct mem_cgroup *memcg = dead_memcg;
+> +	struct mem_cgroup *last;
+> +
+> +	do {
+> +		__invalidate_reclaim_iterators(memcg, dead_memcg);
+> +		last = memcg;
+> +	} while (memcg = parent_mem_cgroup(memcg));
+> +
+> +	/*
+> +	 * When cgruop1 non-hierarchy mode is used,
+> +	 * parent_mem_cgroup() does not walk all the way up to the
+> +	 * cgroup root (root_mem_cgroup). So we have to handle
+> +	 * dead_memcg from cgroup root separately.
+> +	 */
+> +	if (last != root_mem_cgroup)
+> +		__invalidate_reclaim_iterators(root_mem_cgroup,
+> +						dead_memcg);
+> +}
+> +
+>  /**
+>   * mem_cgroup_scan_tasks - iterate over tasks of a memory cgroup hierarchy
+>   * @memcg: hierarchy root
+> -- 
+> 2.18.0
 
-open wall . com/lists/kernel-hardening/2019/07/28/1
-
-Add it to deprecated_string_apis
-
-And we've had this sort of discussion before:
-
-https://lore.kernel.org/patchwork/patch/1026598/
-
-I believe I'm still in favor of global conversion of
-strstarts to str_has_prefix.
-
-
+-- 
+Michal Hocko
+SUSE Labs
