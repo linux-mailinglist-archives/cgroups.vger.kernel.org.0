@@ -2,270 +2,165 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BCF7A240
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2019 09:28:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A71E7AA0C
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jul 2019 15:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727445AbfG3H13 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Jul 2019 03:27:29 -0400
-Received: from mx2.suse.de ([195.135.220.15]:53694 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726432AbfG3H12 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 30 Jul 2019 03:27:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 8A31BAFBB;
-        Tue, 30 Jul 2019 07:27:25 +0000 (UTC)
-Date:   Tue, 30 Jul 2019 09:27:24 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        wsd_upstream@mediatek.com,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4] mm: memcontrol: fix use after free in
- mem_cgroup_iter()
-Message-ID: <20190730072724.GM9330@dhcp22.suse.cz>
-References: <20190730015729.4406-1-miles.chen@mediatek.com>
+        id S1728318AbfG3Nr6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Jul 2019 09:47:58 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:37058 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728240AbfG3Nr5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Jul 2019 09:47:57 -0400
+Received: by mail-ed1-f67.google.com with SMTP id w13so62668273eds.4;
+        Tue, 30 Jul 2019 06:47:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=3fepK0Jwe5W6w8k8YhbMt3CwG0aFRSUfnwoWIEoMNS4=;
+        b=uOYi27sPVshsO12cRu1wgKTuW3aD1eYQnWnJ2Am1fF90xmwdBZJOFVJTT8BrZgmEwo
+         ZnvRXMpvklk4YTSBvnvrEuqvIRBfxTWWk3hKpkNdCDHIjKcyePB6RlSuHLJINi71cbig
+         UDS8L5FB1nzxRAGHZufvSU8oEaFBam8Yp8a1Prm3ti5hdJZDerZAju8AS4ViZS3gsZh9
+         PYBqRMQleYpz887iXlk+SP1rIyyB2D/YqW85mmSu4BRWBno5a+WyzzjE3VPw2c/pao3H
+         X9LP10UTo5/zQAPAzpMcph3soTiTW0oDStxuomLhYVyeQow+bpVeR63QBE9Jm62xV3i6
+         2qgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=3fepK0Jwe5W6w8k8YhbMt3CwG0aFRSUfnwoWIEoMNS4=;
+        b=HhhJkShQ5dRKzeFjbAGC618F18cWkVX4ZdtminHXEuSxTQi3oBf4HyZPKBupqYb95e
+         6qMi7ogc/M5XK0XHHnNCxv4AluYLE1ISZ4N+sUTE7VSZxytaz908XXNrSN/0MQ7ptsZP
+         BedBQBSEjkaGVXfiE0KHY1Z31sMPdzQE21LYOrj+vNsjqR/XNAOGQufKoF2qz4dorZ+f
+         gBkrpdG2aiUpvNjcyvuBb/Z0TuZr37Pm4TIn14E2xVka/lR/fjD69zPrz+s/DxvvrQr0
+         HM8bjUfN8wB9l/xgxzf/eO7Y8dLC2Xp5HgsdKv+1IbZvfiDg6/0JpIxvPLbOcwBrJWoY
+         W6jQ==
+X-Gm-Message-State: APjAAAWQupYX4gtkEoQGFO1zgdYHCWBhCHbOywWq8uM3FjYBFzlvdCl7
+        3cIVYwTxSrg0mAACvKsuwfiD0MOjJIGz5XwluyU=
+X-Google-Smtp-Source: APXvYqw0Lss1BrfXSJ8BL7bsixwvMwj0uTRxnSUvSMt/BOqrwM0Jqj7X+7JK7PBUHyqM6cDax7UE8TnfnJ8/Xc+V/d4=
+X-Received: by 2002:a17:906:a350:: with SMTP id bz16mr91682077ejb.296.1564494475561;
+ Tue, 30 Jul 2019 06:47:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190730015729.4406-1-miles.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190729151346.9280-1-hslester96@gmail.com> <201907292117.DA40CA7D@keescook>
+ <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
+In-Reply-To: <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
+From:   Chuhong Yuan <hslester96@gmail.com>
+Date:   Tue, 30 Jul 2019 21:47:46 +0800
+Message-ID: <CANhBUQ3pYGwKng-wxsGn3tBj3z_kN-CZQL__5YTwwJuco=fH0w@mail.gmail.com>
+Subject: Re: [PATCH 01/12] rdmacg: Replace strncmp with str_has_prefix
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joe Perches <joe@perches.com>,
+        Laura Abbott <labbott@redhat.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Steven Rostedt <rostedt@goodmis.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[Cc Andrew to pick up the patch]
+Chuhong Yuan <hslester96@gmail.com> =E4=BA=8E2019=E5=B9=B47=E6=9C=8830=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=882:39=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Kees Cook <keescook@chromium.org> =E4=BA=8E2019=E5=B9=B47=E6=9C=8830=E6=
+=97=A5=E5=91=A8=E4=BA=8C =E4=B8=8B=E5=8D=8812:26=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Mon, Jul 29, 2019 at 11:13:46PM +0800, Chuhong Yuan wrote:
+> > > strncmp(str, const, len) is error-prone.
+> > > We had better use newly introduced
+> > > str_has_prefix() instead of it.
+> >
+> > Wait, stop. :) After Laura called my attention to your conversion serie=
+s,
+> > mpe pointed out that str_has_prefix() is almost redundant to strstarts(=
+)
+> > (from 2009), and the latter has many more users. Let's fix strstarts()
+> > match str_has_prefix()'s return behavior (all the existing callers are
+> > doing boolean tests, so the change in return value won't matter), and
+> > then we can continue with this replacement. (And add some documentation
+> > to Documenation/process/deprecated.rst along with a checkpatch.pl test
+> > maybe too?)
+> >
+>
+> Thanks for your advice!
+> Does that mean replacing strstarts()'s implementation with
+> str_has_prefix()'s and then use strstarts() to substitute
+> strncmp?
+>
+> I am not very clear about how to add the test into checkpatch.pl.
+> Should I write a check for this pattern or directly add strncmp into
+> deprecated_apis?
+>
+> > Actually I'd focus first on the actually broken cases first (sizeof()
+> > without the "-1", etc):
+> >
+> > $ git grep strncmp.*sizeof | grep -v -- '-' | wc -l
+> > 17
+> >
+> > I expect the "copy/paste" changes could just be a Coccinelle script tha=
+t
+> > Linus could run to fix all the cases (and should be added to the kernel
+> > source's list of Coccinelle scripts). Especially since the bulk of the
+> > usage pattern are doing literals like this:
+> >
+>
+> Actually I am using a Coccinelle script to detect the cases and
+> have found 800+ places of strncmp(str, const, len).
+> But the script still needs some improvement since it has false
+> negatives and only focuses on detecting, not replacement.
+> I can upload it after improvement.
+> In which form should I upload it? In a patch's description or put it
+> in coccinelle scripts?
+>
+> > arch/alpha/kernel/setup.c:   if (strncmp(p, "mem=3D", 4) =3D=3D 0) {
+> >
+> > $ git grep -E 'strncmp.*(sizeof|, *[0-9]*)' | wc -l
+> > 2565
+> >
+> > And some cases are weirdly backwards:
+> >
+> > tools/perf/util/callchain.c:  if (!strncmp(tok, "none", strlen(tok))) {
+> >
 
-On Tue 30-07-19 09:57:29, Miles Chen wrote:
-> This patch is sent to report an use after free in mem_cgroup_iter()
-> after merging commit: be2657752e9e "mm: memcg: fix use after free in
-> mem_cgroup_iter()".
-> 
-> I work with android kernel tree (4.9 & 4.14), and the commit:
-> be2657752e9e "mm: memcg: fix use after free in mem_cgroup_iter()" has
-> been merged to the trees. However, I can still observe use after free
-> issues addressed in the commit be2657752e9e.
-> (on low-end devices, a few times this month)
-> 
-> backtrace:
-> 	css_tryget <- crash here
-> 	mem_cgroup_iter
-> 	shrink_node
-> 	shrink_zones
-> 	do_try_to_free_pages
-> 	try_to_free_pages
-> 	__perform_reclaim
-> 	__alloc_pages_direct_reclaim
-> 	__alloc_pages_slowpath
-> 	__alloc_pages_nodemask
-> 
-> To debug, I poisoned mem_cgroup before freeing it:
-> 
-> static void __mem_cgroup_free(struct mem_cgroup *memcg)
-> 	for_each_node(node)
-> 	free_mem_cgroup_per_node_info(memcg, node);
-> 	free_percpu(memcg->stat);
-> +       /* poison memcg before freeing it */
-> +       memset(memcg, 0x78, sizeof(struct mem_cgroup));
-> 	kfree(memcg);
-> }
-> 
-> The coredump shows the position=0xdbbc2a00 is freed.
-> 
-> (gdb) p/x ((struct mem_cgroup_per_node *)0xe5009e00)->iter[8]
-> $13 = {position = 0xdbbc2a00, generation = 0x2efd}
-> 
-> 0xdbbc2a00:     0xdbbc2e00      0x00000000      0xdbbc2800      0x00000100
-> 0xdbbc2a10:     0x00000200      0x78787878      0x00026218      0x00000000
-> 0xdbbc2a20:     0xdcad6000      0x00000001      0x78787800      0x00000000
-> 0xdbbc2a30:     0x78780000      0x00000000      0x0068fb84      0x78787878
-> 0xdbbc2a40:     0x78787878      0x78787878      0x78787878      0xe3fa5cc0
-> 0xdbbc2a50:     0x78787878      0x78787878      0x00000000      0x00000000
-> 0xdbbc2a60:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a70:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a80:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2a90:     0x00000001      0x00000000      0x00000000      0x00100000
-> 0xdbbc2aa0:     0x00000001      0xdbbc2ac8      0x00000000      0x00000000
-> 0xdbbc2ab0:     0x00000000      0x00000000      0x00000000      0x00000000
-> 0xdbbc2ac0:     0x00000000      0x00000000      0xe5b02618      0x00001000
-> 0xdbbc2ad0:     0x00000000      0x78787878      0x78787878      0x78787878
-> 0xdbbc2ae0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2af0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b00:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b10:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b20:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b30:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b40:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b50:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b60:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b70:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2b80:     0x78787878      0x78787878      0x00000000      0x78787878
-> 0xdbbc2b90:     0x78787878      0x78787878      0x78787878      0x78787878
-> 0xdbbc2ba0:     0x78787878      0x78787878      0x78787878      0x78787878
-> 
-> In the reclaim path, try_to_free_pages() does not setup
-> sc.target_mem_cgroup and sc is passed to do_try_to_free_pages(), ...,
-> shrink_node().
-> 
-> In mem_cgroup_iter(), root is set to root_mem_cgroup because
-> sc->target_mem_cgroup is NULL.
-> It is possible to assign a memcg to root_mem_cgroup.nodeinfo.iter in
-> mem_cgroup_iter().
-> 
-> 	try_to_free_pages
-> 		struct scan_control sc = {...}, target_mem_cgroup is 0x0;
-> 	do_try_to_free_pages
-> 	shrink_zones
-> 	shrink_node
-> 		 mem_cgroup *root = sc->target_mem_cgroup;
-> 		 memcg = mem_cgroup_iter(root, NULL, &reclaim);
-> 	mem_cgroup_iter()
-> 		if (!root)
-> 			root = root_mem_cgroup;
-> 		...
-> 
-> 		css = css_next_descendant_pre(css, &root->css);
-> 		memcg = mem_cgroup_from_css(css);
-> 		cmpxchg(&iter->position, pos, memcg);
-> 
-> My device uses memcg non-hierarchical mode.
-> When we release a memcg: invalidate_reclaim_iterators() reaches only
-> dead_memcg and its parents. If non-hierarchical mode is used,
-> invalidate_reclaim_iterators() never reaches root_mem_cgroup.
-> 
-> static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> {
-> 	struct mem_cgroup *memcg = dead_memcg;
-> 
-> 	for (; memcg; memcg = parent_mem_cgroup(memcg)
-> 	...
-> }
-> 
-> So the use after free scenario looks like:
-> 
-> CPU1						CPU2
-> 
-> try_to_free_pages
-> do_try_to_free_pages
-> shrink_zones
-> shrink_node
-> mem_cgroup_iter()
->     if (!root)
->     	root = root_mem_cgroup;
->     ...
->     css = css_next_descendant_pre(css, &root->css);
->     memcg = mem_cgroup_from_css(css);
->     cmpxchg(&iter->position, pos, memcg);
-> 
-> 					invalidate_reclaim_iterators(memcg);
-> 					...
-> 					__mem_cgroup_free()
-> 						kfree(memcg);
-> 
-> try_to_free_pages
-> do_try_to_free_pages
-> shrink_zones
-> shrink_node
-> mem_cgroup_iter()
->     if (!root)
->     	root = root_mem_cgroup;
->     ...
->     mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
->     iter = &mz->iter[reclaim->priority];
->     pos = READ_ONCE(iter->position);
->     css_tryget(&pos->css) <- use after free
-> 
-> To avoid this, we should also invalidate root_mem_cgroup.nodeinfo.iter in
-> invalidate_reclaim_iterators().
-> 
-> Change since v1:
-> Add a comment to explain why we need to handle root_mem_cgroup separately.
-> Rename invalid_root to invalidate_root.
-> 
-> Change since v2:
-> Add fix tag
-> 
-> Change since v3:
-> Remove confusing 'invalidate_root', make the code easier to read
-> 
-> Fixes: 5ac8fb31ad2e ("mm: memcontrol: convert reclaim iterator to simple css refcounting")
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+I find there are cases of this pattern are not wrong.
+One example is kernel/irq/debugfs.c: if (!strncmp(buf, "trigger", size)) {
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Thus I do not know whether I should include these cases in my script.
 
-> ---
->  mm/memcontrol.c | 39 +++++++++++++++++++++++++++++----------
->  1 file changed, 29 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index cdbb7a84cb6e..8a2a2d5cfc26 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1130,26 +1130,45 @@ void mem_cgroup_iter_break(struct mem_cgroup *root,
->  		css_put(&prev->css);
->  }
->  
-> -static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> +static void __invalidate_reclaim_iterators(struct mem_cgroup *from,
-> +					struct mem_cgroup *dead_memcg)
->  {
-> -	struct mem_cgroup *memcg = dead_memcg;
->  	struct mem_cgroup_reclaim_iter *iter;
->  	struct mem_cgroup_per_node *mz;
->  	int nid;
->  	int i;
->  
-> -	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-> -		for_each_node(nid) {
-> -			mz = mem_cgroup_nodeinfo(memcg, nid);
-> -			for (i = 0; i <= DEF_PRIORITY; i++) {
-> -				iter = &mz->iter[i];
-> -				cmpxchg(&iter->position,
-> -					dead_memcg, NULL);
-> -			}
-> +	for_each_node(nid) {
-> +		mz = mem_cgroup_nodeinfo(from, nid);
-> +		for (i = 0; i <= DEF_PRIORITY; i++) {
-> +			iter = &mz->iter[i];
-> +			cmpxchg(&iter->position,
-> +				dead_memcg, NULL);
->  		}
->  	}
->  }
->  
-> +static void invalidate_reclaim_iterators(struct mem_cgroup *dead_memcg)
-> +{
-> +	struct mem_cgroup *memcg = dead_memcg;
-> +	struct mem_cgroup *last;
-> +
-> +	do {
-> +		__invalidate_reclaim_iterators(memcg, dead_memcg);
-> +		last = memcg;
-> +	} while (memcg = parent_mem_cgroup(memcg));
-> +
-> +	/*
-> +	 * When cgruop1 non-hierarchy mode is used,
-> +	 * parent_mem_cgroup() does not walk all the way up to the
-> +	 * cgroup root (root_mem_cgroup). So we have to handle
-> +	 * dead_memcg from cgroup root separately.
-> +	 */
-> +	if (last != root_mem_cgroup)
-> +		__invalidate_reclaim_iterators(root_mem_cgroup,
-> +						dead_memcg);
-> +}
-> +
->  /**
->   * mem_cgroup_scan_tasks - iterate over tasks of a memory cgroup hierarchy
->   * @memcg: hierarchy root
-> -- 
-> 2.18.0
-
--- 
-Michal Hocko
-SUSE Labs
+> > -Kees
+> >
+>
+> I think with the help of Coccinelle script, all strncmp(str, const, len)
+> can be replaced and these problems will be eliminated. :)
+>
+> Regards,
+> Chuhong
+>
+> > > Signed-off-by: Chuhong Yuan <hslester96@gmail.com>
+> > > ---
+> > >  kernel/cgroup/rdma.c | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > >
+> > > diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
+> > > index ae042c347c64..fd12a227f8e4 100644
+> > > --- a/kernel/cgroup/rdma.c
+> > > +++ b/kernel/cgroup/rdma.c
+> > > @@ -379,7 +379,7 @@ static int parse_resource(char *c, int *intval)
+> > >                       return -EINVAL;
+> > >               return i;
+> > >       }
+> > > -     if (strncmp(value, RDMACG_MAX_STR, len) =3D=3D 0) {
+> > > +     if (str_has_prefix(value, RDMACG_MAX_STR)) {
+> > >               *intval =3D S32_MAX;
+> > >               return i;
+> > >       }
+> > > --
+> > > 2.20.1
+> > >
+> >
+> > --
+> > Kees Cook
