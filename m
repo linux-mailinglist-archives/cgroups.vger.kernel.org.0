@@ -2,47 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B31748067F
-	for <lists+cgroups@lfdr.de>; Sat,  3 Aug 2019 16:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 73F3180685
+	for <lists+cgroups@lfdr.de>; Sat,  3 Aug 2019 16:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390653AbfHCOCJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 3 Aug 2019 10:02:09 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:40543 "EHLO
+        id S2391277AbfHCOCL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 3 Aug 2019 10:02:11 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:42907 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391165AbfHCOCI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Aug 2019 10:02:08 -0400
-Received: by mail-qt1-f194.google.com with SMTP id a15so76825449qtn.7;
-        Sat, 03 Aug 2019 07:02:07 -0700 (PDT)
+        with ESMTP id S2391220AbfHCOCK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 3 Aug 2019 10:02:10 -0400
+Received: by mail-qt1-f194.google.com with SMTP id h18so76879718qtm.9;
+        Sat, 03 Aug 2019 07:02:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=nLlHstn4NE1DLTa8MBcCUwC1TFpRtd2dCdrLnBskzhg=;
-        b=b1oxKseyt1LyDYjoudvzC1hpTJo++RG9fGoMA1s5KW/D/iHMPVK750EZAfJwkzPSC6
-         uURCombHdllFO2iJlD57v5pIos+dxvvSVQwNR38Ny/GBOnKlw3SJFzjyc2Qsuc8Wwc4N
-         Nv28xKTg1sJX4TSYvunTzqqhf8k+Oc6jCcIbufFqWeH3EwtZeLgDx/DSQPLU8DuSyjcQ
-         tXnApdDsE/ZGqpT6H9+Ft332dtpil1zcgHKQRF3ZYGzFf9LB7cESicyzbnyBG2Jh2Q+8
-         1RzH6XX1hi4m9gPi55cwHUJjDsdDWzfPe3th0+5QgvDKEqfhnUeE8IgKdzsVYoJsOxdk
-         oCMw==
+        bh=D9orjRjfDP9pgbxu2ifvLHy1ukGCDC2EnGjf/tPTneg=;
+        b=cYPLPoMt3nONdxSxEBH2DXkIoLL+c9kekNeZLQCrDU7eCfsa88/QnKRrpo2uMjGpnt
+         8yr36k8tiB7bRtBvd+j8pp9LWfqhmue6miSiyxYELzY5FOgfWc3t58Snbg5xMh32u7rt
+         53KM77N+vC78kPnMnfPjHh98M4fvvJg+TDfRrGu/otL4kB49lI+RXnGcUJn6ggTljn6T
+         9eY1HB5jWO32Zsqkc6HchBQ3JKLeJC5KoocZEgyb7QzmFt3SrF//DO0yYyQMG7d5kpQr
+         HLMxXYD/noRAOoXbQ7C1kXaOd/Rh95WKAb4novdD59drxwXue25gMwWDx4RmQHus7pYV
+         t6ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references;
-        bh=nLlHstn4NE1DLTa8MBcCUwC1TFpRtd2dCdrLnBskzhg=;
-        b=kSeSjdplR08VZdCX5Nku/4apSnFiuTxL9CUPVAWvzWDHzCCctQVD5pd1xZnQAO8CWy
-         TUbTQFP/Ib1U+/Kq0ci8ug6Eb1RWvE46C9YAOW0s20aj+BjqtMuBKOEoCsnHeXZaLa25
-         zeXMqsETbDNqPVwipPCIVuB6+mmpg3cnbNKAZQiz9o42aFXBNs8B/GkFmWQX+CWdXrPR
-         ecF3n71f2G1cA5uHKKTNKK7+Fp3r/QmlJQ/Jzhfdk6wNvyMY/Ei4KWNOVqJYhH1nWVdX
-         t46LzsZCNZR+5BuOJrZSDDq3E4VBvP7nba8yErAkHbjoB/WfR/IL5uD+6Ec10sVJdQJ5
-         3M/g==
-X-Gm-Message-State: APjAAAVimh4wLR4oZRR3qE7JYtPFtthB6d6UU6+WnM0tXo/CjAXa85mC
-        r1yPtffBbp2vaZwqTsXAmnA=
-X-Google-Smtp-Source: APXvYqzMiari5I3bSyI7xBIGI8+SdQjIZjsTWhlYOhUC+G2ITji3BPgjA4OSJA43R/PapwQ5OGKLAw==
-X-Received: by 2002:a0c:895b:: with SMTP id 27mr99111155qvq.94.1564840926938;
-        Sat, 03 Aug 2019 07:02:06 -0700 (PDT)
+        bh=D9orjRjfDP9pgbxu2ifvLHy1ukGCDC2EnGjf/tPTneg=;
+        b=ehgp3uUV42wj8ZD3UceWkL8fKNHhXJtqi4mZmqhCqP5p0Q3iLWGFp2uxl5OxX5SCfu
+         xcJ/xEBXDOL4CyMTM4wzpHmiVL91NohD8PQQCpY6LEsgxNJDY+jzETYY1tgOMETU6P39
+         G71MEAoIVBM2q7nKIyn+xgB8X8bS9YVz0QA9TGzMZqz6hlgmVoooUOGGK8Qz9EijQS9i
+         LfdHiRIhP//eWuoQWum/k8I49owwuugibgtUqeYq4A6qq4MTkmTC2bnuXpE1Yz1v6zQ2
+         /OI/TIX4BeUMACiITqq+pDXGIjCsZQ4ane5IiTk3/Vk3pS72B9Vuup9QCzvmFbH8Eo+L
+         Gzsw==
+X-Gm-Message-State: APjAAAXljUJ19k3B+rBiFEwtdjjz5eVUm/dTxIoRP+aumYfuvlFUTnmc
+        pnYcd3tlX5hpdLEoSaiq8dY=
+X-Google-Smtp-Source: APXvYqzq4ivE4tAq5lf09J8xU7TbLV1kaIEe1KkD0cgBL2Q8YLk017OZlnCCIbvPhSic+6Qi+z3/Ew==
+X-Received: by 2002:ac8:c45:: with SMTP id l5mr96088707qti.63.1564840929275;
+        Sat, 03 Aug 2019 07:02:09 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::efce])
-        by smtp.gmail.com with ESMTPSA id z1sm38529457qkg.103.2019.08.03.07.02.06
+        by smtp.gmail.com with ESMTPSA id 18sm35265973qkh.77.2019.08.03.07.02.08
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 03 Aug 2019 07:02:06 -0700 (PDT)
+        Sat, 03 Aug 2019 07:02:08 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
         mhocko@kernel.org, vdavydov.dev@gmail.com
@@ -50,9 +50,9 @@ Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, guro@fb.com, akpm@linux-foundation.org,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 2/4] bdi: Add bdi->id
-Date:   Sat,  3 Aug 2019 07:01:53 -0700
-Message-Id: <20190803140155.181190-3-tj@kernel.org>
+Subject: [PATCH 3/4] writeback, memcg: Implement cgroup_writeback_by_id()
+Date:   Sat,  3 Aug 2019 07:01:54 -0700
+Message-Id: <20190803140155.181190-4-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20190803140155.181190-1-tj@kernel.org>
 References: <20190803140155.181190-1-tj@kernel.org>
@@ -61,157 +61,106 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-There currently is no way to universally identify and lookup a bdi
-without holding a reference and pointer to it.  This patch adds an
-non-recycling bdi->id and implements bdi_get_by_id() which looks up
-bdis by their ids.  This will be used by memcg foreign inode flushing.
-
-I left bdi_list alone for simplicity and because while rb_tree does
-support rcu assignment it doesn't seem to guarantee lossless walk when
-walk is racing aginst tree rebalance operations.
+Implement cgroup_writeback_by_id() which initiates cgroup writeback
+from bdi and memcg IDs.  This will be used by memcg foreign inode
+flushing.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/backing-dev-defs.h |  2 +
- include/linux/backing-dev.h      |  1 +
- mm/backing-dev.c                 | 65 +++++++++++++++++++++++++++++++-
- 3 files changed, 66 insertions(+), 2 deletions(-)
+ fs/fs-writeback.c         | 64 +++++++++++++++++++++++++++++++++++++++
+ include/linux/writeback.h |  4 +++
+ 2 files changed, 68 insertions(+)
 
-diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-index 8fb740178d5d..1075f2552cfc 100644
---- a/include/linux/backing-dev-defs.h
-+++ b/include/linux/backing-dev-defs.h
-@@ -185,6 +185,8 @@ struct bdi_writeback {
- };
- 
- struct backing_dev_info {
-+	u64 id;
-+	struct rb_node rb_node; /* keyed by ->id */
- 	struct list_head bdi_list;
- 	unsigned long ra_pages;	/* max readahead in PAGE_SIZE units */
- 	unsigned long io_pages;	/* max allowed IO size */
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index 02650b1253a2..84cdcfbc763f 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -24,6 +24,7 @@ static inline struct backing_dev_info *bdi_get(struct backing_dev_info *bdi)
- 	return bdi;
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 6129debdc938..5c79d7acefdb 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -880,6 +880,70 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
+ 		wb_put(last_wb);
  }
  
-+struct backing_dev_info *bdi_get_by_id(u64 id);
- void bdi_put(struct backing_dev_info *bdi);
- 
- __printf(2, 3)
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index e8e89158adec..4a8816e0b8d4 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -1,6 +1,7 @@
- // SPDX-License-Identifier: GPL-2.0-only
- 
- #include <linux/wait.h>
-+#include <linux/rbtree.h>
- #include <linux/backing-dev.h>
- #include <linux/kthread.h>
- #include <linux/freezer.h>
-@@ -22,10 +23,12 @@ EXPORT_SYMBOL_GPL(noop_backing_dev_info);
- static struct class *bdi_class;
- 
- /*
-- * bdi_lock protects updates to bdi_list. bdi_list has RCU reader side
-- * locking.
-+ * bdi_lock protects bdi_tree and updates to bdi_list. bdi_list has RCU
-+ * reader side locking.
-  */
- DEFINE_SPINLOCK(bdi_lock);
-+static u64 bdi_id_cursor;
-+static struct rb_root bdi_tree = RB_ROOT;
- LIST_HEAD(bdi_list);
- 
- /* bdi_wq serves all asynchronous writeback tasks */
-@@ -859,9 +862,58 @@ struct backing_dev_info *bdi_alloc_node(gfp_t gfp_mask, int node_id)
- }
- EXPORT_SYMBOL(bdi_alloc_node);
- 
-+struct rb_node **bdi_lookup_rb_node(u64 id, struct rb_node **parentp)
-+{
-+	struct rb_node **p = &bdi_tree.rb_node;
-+	struct rb_node *parent = NULL;
-+	struct backing_dev_info *bdi;
-+
-+	lockdep_assert_held(&bdi_lock);
-+
-+	while (*p) {
-+		parent = *p;
-+		bdi = rb_entry(parent, struct backing_dev_info, rb_node);
-+
-+		if (bdi->id > id)
-+			p = &(*p)->rb_left;
-+		else if (bdi->id < id)
-+			p = &(*p)->rb_right;
-+		else
-+			break;
-+	}
-+
-+	if (parentp)
-+		*parentp = parent;
-+	return p;
-+}
-+
 +/**
-+ * bdi_get_by_id - lookup and get bdi from its id
-+ * @id: bdi id to lookup
++ * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
++ * @bdi_id: target bdi id
++ * @memcg_id: target memcg css id
++ * @nr_pages: number of pages to write
++ * @reason: reason why some writeback work initiated
++ * @done: target wb_completion
 + *
-+ * Find bdi matching @id and get it.  Returns NULL if the matching bdi
-+ * doesn't exist or is already unregistered.
++ * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
++ * with the specified parameters.
 + */
-+struct backing_dev_info *bdi_get_by_id(u64 id)
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
++			   enum wb_reason reason, struct wb_completion *done)
 +{
-+	struct backing_dev_info *bdi = NULL;
-+	struct rb_node **p;
++	struct backing_dev_info *bdi;
++	struct cgroup_subsys_state *memcg_css;
++	struct bdi_writeback *wb;
++	struct wb_writeback_work *work;
++	int ret;
 +
-+	spin_lock_irq(&bdi_lock);
-+	p = bdi_lookup_rb_node(id, NULL);
-+	if (*p) {
-+		bdi = rb_entry(*p, struct backing_dev_info, rb_node);
-+		bdi_get(bdi);
++	/* lookup bdi and memcg */
++	bdi = bdi_get_by_id(bdi_id);
++	if (!bdi)
++		return -ENOENT;
++
++	rcu_read_lock();
++	memcg_css = css_from_id(memcg_id, &memory_cgrp_subsys);
++	if (memcg_css && !css_tryget(memcg_css))
++		memcg_css = NULL;
++	rcu_read_unlock();
++	if (!memcg_css) {
++		ret = -ENOENT;
++		goto out_bdi_put;
 +	}
-+	spin_unlock_irq(&bdi_lock);
 +
-+	return bdi;
++	/* and find the associated wb */
++	wb = wb_get_create(bdi, memcg_css, GFP_NOWAIT | __GFP_NOWARN);
++	if (!wb) {
++		ret = -ENOMEM;
++		goto out_css_put;
++	}
++
++	/* issue the writeback work */
++	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
++	if (work) {
++		work->nr_pages = nr;
++		work->sync_mode = WB_SYNC_NONE;
++		work->reason = reason;
++		work->done = done;
++		work->auto_free = 1;
++		wb_queue_work(wb, work);
++		ret = 0;
++	} else {
++		ret = -ENOMEM;
++	}
++
++	wb_put(wb);
++out_css_put:
++	css_put(memcg_css);
++out_bdi_put:
++	bdi_put(bdi);
++	return ret;
 +}
 +
- int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
- {
- 	struct device *dev;
-+	struct rb_node *parent, **p;
+ /**
+  * cgroup_writeback_umount - flush inode wb switches for umount
+  *
+diff --git a/include/linux/writeback.h b/include/linux/writeback.h
+index 8945aac31392..ad794f2a7d42 100644
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -217,6 +217,10 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
+ void wbc_detach_inode(struct writeback_control *wbc);
+ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+ 			      size_t bytes);
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
++			   enum wb_reason reason, struct wb_completion *done);
++int writeback_by_id(int id, unsigned long nr, enum wb_reason reason,
++		    struct wb_completion *done);
+ void cgroup_writeback_umount(void);
  
- 	if (bdi->dev)	/* The driver needs to use separate queues per device */
- 		return 0;
-@@ -877,7 +929,15 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
- 	set_bit(WB_registered, &bdi->wb.state);
- 
- 	spin_lock_bh(&bdi_lock);
-+
-+	bdi->id = ++bdi_id_cursor;
-+
-+	p = bdi_lookup_rb_node(bdi->id, &parent);
-+	rb_link_node(&bdi->rb_node, parent, p);
-+	rb_insert_color(&bdi->rb_node, &bdi_tree);
-+
- 	list_add_tail_rcu(&bdi->bdi_list, &bdi_list);
-+
- 	spin_unlock_bh(&bdi_lock);
- 
- 	trace_writeback_bdi_register(bdi);
-@@ -918,6 +978,7 @@ EXPORT_SYMBOL(bdi_register_owner);
- static void bdi_remove_from_list(struct backing_dev_info *bdi)
- {
- 	spin_lock_bh(&bdi_lock);
-+	rb_erase(&bdi->rb_node, &bdi_tree);
- 	list_del_rcu(&bdi->bdi_list);
- 	spin_unlock_bh(&bdi_lock);
- 
+ /**
 -- 
 2.17.1
 
