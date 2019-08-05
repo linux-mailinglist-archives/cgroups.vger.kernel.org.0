@@ -2,228 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D521081272
-	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2019 08:38:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA78181403
+	for <lists+cgroups@lfdr.de>; Mon,  5 Aug 2019 10:18:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727520AbfHEGiY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Aug 2019 02:38:24 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:45186 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727460AbfHEGiX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Aug 2019 02:38:23 -0400
-Received: by mail-pl1-f193.google.com with SMTP id y8so36078775plr.12
-        for <cgroups@vger.kernel.org>; Sun, 04 Aug 2019 23:38:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=MuVYHrlXRDGRQL1cMnPZM826RHR8kEr3M58QLGT7l6o=;
-        b=oOQBrs12OopXCz7nK2i2nem3bftqhB7645AkBg0ImN6CVvW2lFbZstYRhFAHDIA+tV
-         GbDlO/gHxhAeTdEo73cZoyqmMT0zgXH7WTXEnu//hj1eKBgThaGQl7o+8Cxoiu2qWecO
-         D8LKIRg0PktmBPfDG/X//TIsTZtL1nmLBcKSb030DOvsD2rPQJtrKgSt5ZUoeqrD5O9h
-         iSjjK171swVL4dpo5X8NL/I93IGWfQroEcc+EuuJNLJqvPnpcxkI3+lxCSovuum/3l/3
-         H2HWPry5YzDsHdK2dr3B59xsPdwwAn91ooqYuLaKK7sbgty11UzEWSz0jDavzAb5Fj0u
-         gj3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=MuVYHrlXRDGRQL1cMnPZM826RHR8kEr3M58QLGT7l6o=;
-        b=Oa5MSQZaDhIcw6lUsFcrXx404h1ov3VmM4EyMPnpAdcgusInKgYhuMeJJK2v7zomsq
-         A9yzacNwxnezRgXOS3PRtPW9lGWwQ0GQHfqBRLZJK4C9+gNxapbTA2D+dUyvFXja4C7V
-         d8d2ueW+HsF6wbgmtx6ULVq26kBwIWJPAsfv8sEbmlPj4Y1ZHr4R0z1P+KnqwI4QjvQh
-         RVVauFJ6sPdFnvfuAXY9kAcFDRfgUOb4QelBdZSCYSx9iuZDgfqr5hHsk2XqNTXaXRS0
-         i7uiUHr5OzLD2yOVa4hKuO5zldISp0V2qWxbtSRLOPiE4kfHo6j5Rs0pN/Q2DFEm6Ugk
-         Wq8A==
-X-Gm-Message-State: APjAAAXzeqGV+GnxPxQHeItiLeG+zFm6dlnn9Jbng5xeV+WkDOP5Yl/z
-        a8adpHoRM1725WKFlBcI/c7tng==
-X-Google-Smtp-Source: APXvYqyhlzIJ9VjR93pVAFfcUHzonu6+OfVYXlc34pKN37u8dvT7OL8OKZgve6cNtHqXzs16VfYv1g==
-X-Received: by 2002:a17:902:44f:: with SMTP id 73mr144683356ple.192.1564987102993;
-        Sun, 04 Aug 2019 23:38:22 -0700 (PDT)
-Received: from localhost ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id q126sm40687394pfb.56.2019.08.04.23.38.21
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Sun, 04 Aug 2019 23:38:22 -0700 (PDT)
-From:   Fam Zheng <zhengfeiran@bytedance.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     axboe@kernel.dk, fam@euphon.net, paolo.valente@linaro.org,
-        duanxiongchun@bytedance.com, linux-block@vger.kernel.org,
-        tj@kernel.org, cgroups@vger.kernel.org,
-        zhangjiachen.jc@bytedance.com
-Subject: [PATCH v2 3/3] bfq: Add per-device weight
-Date:   Mon,  5 Aug 2019 14:38:07 +0800
-Message-Id: <20190805063807.9494-4-zhengfeiran@bytedance.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20190805063807.9494-1-zhengfeiran@bytedance.com>
-References: <20190805063807.9494-1-zhengfeiran@bytedance.com>
+        id S1726518AbfHEISP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Aug 2019 04:18:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42926 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727624AbfHEISO (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 5 Aug 2019 04:18:14 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7B600ADDC;
+        Mon,  5 Aug 2019 08:18:12 +0000 (UTC)
+Date:   Mon, 5 Aug 2019 10:18:10 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Masoud Sharbiani <msharbiani@apple.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Possible mem cgroup bug in kernels between 4.18.0 and 5.3-rc1.
+Message-ID: <20190805081810.GA7597@dhcp22.suse.cz>
+References: <5659221C-3E9B-44AD-9BBF-F74DE09535CD@apple.com>
+ <20190802074047.GQ11627@dhcp22.suse.cz>
+ <7E44073F-9390-414A-B636-B1AE916CC21E@apple.com>
+ <20190802144110.GL6461@dhcp22.suse.cz>
+ <5DE6F4AE-F3F9-4C52-9DFC-E066D9DD5EDC@apple.com>
+ <20190802191430.GO6461@dhcp22.suse.cz>
+ <A06C5313-B021-4ADA-9897-CE260A9011CC@apple.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <A06C5313-B021-4ADA-9897-CE260A9011CC@apple.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Signed-off-by: Fam Zheng <zhengfeiran@bytedance.com>
----
- block/bfq-cgroup.c  | 95 ++++++++++++++++++++++++++++++++++++++++++++++-------
- block/bfq-iosched.h |  3 ++
- 2 files changed, 87 insertions(+), 11 deletions(-)
+On Fri 02-08-19 16:28:25, Masoud Sharbiani wrote:
+> 
+> 
+> > On Aug 2, 2019, at 12:14 PM, Michal Hocko <mhocko@kernel.org> wrote:
+> > 
+> > On Fri 02-08-19 11:00:55, Masoud Sharbiani wrote:
+> >> 
+> >> 
+> >>> On Aug 2, 2019, at 7:41 AM, Michal Hocko <mhocko@kernel.org> wrote:
+> >>> 
+> >>> On Fri 02-08-19 07:18:17, Masoud Sharbiani wrote:
+> >>>> 
+> >>>> 
+> >>>>> On Aug 2, 2019, at 12:40 AM, Michal Hocko <mhocko@kernel.org> wrote:
+> >>>>> 
+> >>>>> On Thu 01-08-19 11:04:14, Masoud Sharbiani wrote:
+> >>>>>> Hey folks,
+> >>>>>> I’ve come across an issue that affects most of 4.19, 4.20 and 5.2 linux-stable kernels that has only been fixed in 5.3-rc1.
+> >>>>>> It was introduced by
+> >>>>>> 
+> >>>>>> 29ef680 memcg, oom: move out_of_memory back to the charge path 
+> >>>>> 
+> >>>>> This commit shouldn't really change the OOM behavior for your particular
+> >>>>> test case. It would have changed MAP_POPULATE behavior but your usage is
+> >>>>> triggering the standard page fault path. The only difference with
+> >>>>> 29ef680 is that the OOM killer is invoked during the charge path rather
+> >>>>> than on the way out of the page fault.
+> >>>>> 
+> >>>>> Anyway, I tried to run your test case in a loop and leaker always ends
+> >>>>> up being killed as expected with 5.2. See the below oom report. There
+> >>>>> must be something else going on. How much swap do you have on your
+> >>>>> system?
+> >>>> 
+> >>>> I do not have swap defined. 
+> >>> 
+> >>> OK, I have retested with swap disabled and again everything seems to be
+> >>> working as expected. The oom happens earlier because I do not have to
+> >>> wait for the swap to get full.
+> >>> 
+> >> 
+> >> In my tests (with the script provided), it only loops 11 iterations before hanging, and uttering the soft lockup message.
+> >> 
+> >> 
+> >>> Which fs do you use to write the file that you mmap?
+> >> 
+> >> /dev/sda3 on / type xfs (rw,relatime,seclabel,attr2,inode64,logbufs=8,logbsize=32k,noquota)
+> >> 
+> >> Part of the soft lockup path actually specifies that it is going through __xfs_filemap_fault():
+> > 
+> > Right, I have just missed that.
+> > 
+> > [...]
+> > 
+> >> If I switch the backing file to a ext4 filesystem (separate hard drive), it OOMs.
+> >> 
+> >> 
+> >> If I switch the file used to /dev/zero, it OOMs: 
+> >> …
+> >> Todal sum was 0. Loop count is 11
+> >> Buffer is @ 0x7f2b66c00000
+> >> ./test-script-devzero.sh: line 16:  3561 Killed                  ./leaker -p 10240 -c 100000
+> >> 
+> >> 
+> >>> Or could you try to
+> >>> simplify your test even further? E.g. does everything work as expected
+> >>> when doing anonymous mmap rather than file backed one?
+> >> 
+> >> It also OOMs with MAP_ANON. 
+> >> 
+> >> Hope that helps.
+> > 
+> > It helps to focus more on the xfs reclaim path. Just to be sure, is
+> > there any difference if you use cgroup v2? I do not expect to be but
+> > just to be sure there are no v1 artifacts.
+> 
+> I was unable to use cgroups2. I’ve created the new control group, but the attempt to move a running process into it fails with ‘Device or resource busy’.
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 28e5a9241237..de4fd8b725aa 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -904,7 +904,7 @@ void bfq_end_wr_async(struct bfq_data *bfqd)
- 	bfq_end_wr_async_queues(bfqd, bfqd->root_group);
- }
- 
--static int bfq_io_show_weight(struct seq_file *sf, void *v)
-+static int bfq_io_show_weight_legacy(struct seq_file *sf, void *v)
- {
- 	struct blkcg *blkcg = css_to_blkcg(seq_css(sf));
- 	struct bfq_group_data *bfqgd = blkcg_to_bfqgd(blkcg);
-@@ -918,8 +918,32 @@ static int bfq_io_show_weight(struct seq_file *sf, void *v)
- 	return 0;
- }
- 
--static void bfq_group_set_weight(struct bfq_group *bfqg, u64 weight)
-+static u64 bfqg_prfill_weight_device(struct seq_file *sf,
-+				     struct blkg_policy_data *pd, int off)
-+{
-+	struct bfq_group *bfqg = pd_to_bfqg(pd);
-+
-+	if (!bfqg->entity.dev_weight)
-+		return 0;
-+	return __blkg_prfill_u64(sf, pd, bfqg->entity.dev_weight);
-+}
-+
-+static int bfq_io_show_weight(struct seq_file *sf, void *v)
-+{
-+	struct blkcg *blkcg = css_to_blkcg(seq_css(sf));
-+	struct bfq_group_data *bfqgd = blkcg_to_bfqgd(blkcg);
-+
-+	seq_printf(sf, "default %u\n", bfqgd->weight);
-+	blkcg_print_blkgs(sf, blkcg, bfqg_prfill_weight_device,
-+			  &blkcg_policy_bfq, 0, false);
-+	return 0;
-+}
-+
-+static void bfq_group_set_weight(struct bfq_group *bfqg, u64 weight, u64 dev_weight)
- {
-+	weight = dev_weight ?: weight;
-+
-+	bfqg->entity.dev_weight = dev_weight;
- 	/*
- 	 * Setting the prio_changed flag of the entity
- 	 * to 1 with new_weight == weight would re-set
-@@ -967,28 +991,71 @@ static int bfq_io_set_weight_legacy(struct cgroup_subsys_state *css,
- 		struct bfq_group *bfqg = blkg_to_bfqg(blkg);
- 
- 		if (bfqg)
--			bfq_group_set_weight(bfqg, val);
-+			bfq_group_set_weight(bfqg, val, 0);
- 	}
- 	spin_unlock_irq(&blkcg->lock);
- 
- 	return ret;
- }
- 
--static ssize_t bfq_io_set_weight(struct kernfs_open_file *of,
--				 char *buf, size_t nbytes,
--				 loff_t off)
-+static ssize_t bfq_io_set_device_weight(struct kernfs_open_file *of,
-+					char *buf, size_t nbytes,
-+					loff_t off)
- {
--	u64 weight;
--	/* First unsigned long found in the file is used */
--	int ret = kstrtoull(strim(buf), 0, &weight);
-+	int ret;
-+	struct blkg_conf_ctx ctx;
-+	struct blkcg *blkcg = css_to_blkcg(of_css(of));
-+	struct bfq_group *bfqg;
-+	u64 v;
- 
-+	ret = blkg_conf_prep(blkcg, &blkcg_policy_bfq, buf, &ctx);
- 	if (ret)
- 		return ret;
- 
--	ret = bfq_io_set_weight_legacy(of_css(of), NULL, weight);
-+	if (sscanf(ctx.body, "%llu", &v) == 1) {
-+		/* require "default" on dfl */
-+		ret = -ERANGE;
-+		if (!v)
-+			goto out;
-+	} else if (!strcmp(strim(ctx.body), "default")) {
-+		v = 0;
-+	} else {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	bfqg = blkg_to_bfqg(ctx.blkg);
-+
-+	ret = -ERANGE;
-+	if (!v || (v >= BFQ_MIN_WEIGHT && v <= BFQ_MAX_WEIGHT)) {
-+		bfq_group_set_weight(bfqg, bfqg->entity.weight, v);
-+		ret = 0;
-+	}
-+out:
-+	blkg_conf_finish(&ctx);
- 	return ret ?: nbytes;
- }
- 
-+static ssize_t bfq_io_set_weight(struct kernfs_open_file *of,
-+				 char *buf, size_t nbytes,
-+				 loff_t off)
-+{
-+	char *endp;
-+	int ret;
-+	u64 v;
-+
-+	buf = strim(buf);
-+
-+	/* "WEIGHT" or "default WEIGHT" sets the default weight */
-+	v = simple_strtoull(buf, &endp, 0);
-+	if (*endp == '\0' || sscanf(buf, "default %llu", &v) == 1) {
-+		ret = bfq_io_set_weight_legacy(of_css(of), NULL, v);
-+		return ret ?: nbytes;
-+	}
-+
-+	return bfq_io_set_device_weight(of, buf, nbytes, off);
-+}
-+
- #ifdef CONFIG_BFQ_CGROUP_DEBUG
- static int bfqg_print_stat(struct seq_file *sf, void *v)
- {
-@@ -1145,9 +1212,15 @@ struct cftype bfq_blkcg_legacy_files[] = {
- 	{
- 		.name = "bfq.weight",
- 		.flags = CFTYPE_NOT_ON_ROOT,
--		.seq_show = bfq_io_show_weight,
-+		.seq_show = bfq_io_show_weight_legacy,
- 		.write_u64 = bfq_io_set_weight_legacy,
- 	},
-+	{
-+		.name = "bfq.weight_device",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = bfq_io_show_weight,
-+		.write = bfq_io_set_weight,
-+	},
- 
- 	/* statistics, covers only the tasks in the bfqg */
- 	{
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index e80adf822bbe..5d1a519640f6 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -168,6 +168,9 @@ struct bfq_entity {
- 	/* budget, used also to calculate F_i: F_i = S_i + @budget / @weight */
- 	int budget;
- 
-+	/* device weight, if non-zero, it overrides the default weight of
-+	 * bfq_group_data */
-+	int dev_weight;
- 	/* weight of the queue */
- 	int weight;
- 	/* next weight if a change is in progress */
+Have you enabled the memory controller for the hierarchy? Please read
+Documentation/admin-guide/cgroup-v2.rst for more information.
 -- 
-2.11.0
-
+Michal Hocko
+SUSE Labs
