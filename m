@@ -2,20 +2,20 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 742B083673
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 18:12:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CB2B83684
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 18:12:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387697AbfHFQMA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Aug 2019 12:12:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39912 "EHLO mx1.suse.de"
+        id S2387864AbfHFQMM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Aug 2019 12:12:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40078 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387822AbfHFQL7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 6 Aug 2019 12:11:59 -0400
+        id S2387859AbfHFQML (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 6 Aug 2019 12:12:11 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A19EAAC90;
-        Tue,  6 Aug 2019 16:11:57 +0000 (UTC)
-Date:   Tue, 6 Aug 2019 18:11:53 +0200
+        by mx1.suse.de (Postfix) with ESMTP id 2DF17AE82;
+        Tue,  6 Aug 2019 16:12:10 +0000 (UTC)
+Date:   Tue, 6 Aug 2019 18:12:06 +0200
 From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 To:     Patrick Bellasi <patrick.bellasi@arm.com>
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
@@ -36,15 +36,14 @@ Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Steve Muckle <smuckle@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Alessio Balsini <balsini@android.com>
-Subject: Re: [PATCH v13 2/6] sched/core: uclamp: Propagate parent clamps
-Message-ID: <20190806161153.GA19991@blackbody.suse.cz>
+Subject: Re: [PATCH v13 0/6] Add utilization clamping support (CGroups API)
+Message-ID: <20190806161206.GA20526@blackbody.suse.cz>
 References: <20190802090853.4810-1-patrick.bellasi@arm.com>
- <20190802090853.4810-3-patrick.bellasi@arm.com>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="gKMricLos+KVdGMg"
+        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
 Content-Disposition: inline
-In-Reply-To: <20190802090853.4810-3-patrick.bellasi@arm.com>
+In-Reply-To: <20190802090853.4810-1-patrick.bellasi@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -52,57 +51,44 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---gKMricLos+KVdGMg
+--J2SCkAp4GZ/dPZZf
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Aug 02, 2019 at 10:08:49AM +0100, Patrick Bellasi <patrick.bellasi@=
-arm.com> wrote:
-> @@ -7095,6 +7149,7 @@ static ssize_t cpu_uclamp_write(struct kernfs_open_=
-file *of, char *buf,
->  	if (req.ret)
->  		return req.ret;
-> =20
-> +	mutex_lock(&uclamp_mutex);
->  	rcu_read_lock();
-> =20
->  	tg =3D css_tg(of_css(of));
-> @@ -7107,7 +7162,11 @@ static ssize_t cpu_uclamp_write(struct kernfs_open=
-_file *of, char *buf,
->  	 */
->  	tg->uclamp_pct[clamp_id] =3D req.percent;
-> =20
-> +	/* Update effective clamps to track the most restrictive value */
-> +	cpu_util_update_eff(of_css(of));
-> +
->  	rcu_read_unlock();
-> +	mutex_unlock(&uclamp_mutex);
-Following my remarks to "[PATCH v13 1/6] sched/core: uclamp: Extend
-CPU's cgroup", I wonder if the rcu_read_lock() couldn't be moved right
-before cpu_util_update_eff(). And by extension rcu_read_(un)lock could
-be hidden into cpu_util_update_eff() closer to its actual need.
+On Fri, Aug 02, 2019 at 10:08:47AM +0100, Patrick Bellasi <patrick.bellasi@arm.com> wrote:
+> Patrick Bellasi (6):
+>   sched/core: uclamp: Extend CPU's cgroup controller
+>   sched/core: uclamp: Propagate parent clamps
+>   sched/core: uclamp: Propagate system defaults to root group
+>   sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
+>   sched/core: uclamp: Update CPU's refcount on TG's clamp changes
+>   sched/core: uclamp: always use enum uclamp_id for clamp_id values
+Thank you Patrick for your patience. I used the time to revisit the
+series once again and I think the RCU locks can be streamlined a bit. If
+you find that correct, feel free to add my Reviewed-by to the updated
+series (for 1/6 and legacy, I'm just asking).
 
+Michal
 
---gKMricLos+KVdGMg
+--J2SCkAp4GZ/dPZZf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEE+amhwRV4jZeXdUhoK2l36XSZ9y4FAl1JpsAACgkQK2l36XSZ
-9y59yRAAiTIJ7zMA4BzWiApDiPUuWBsjGzn3EGAI1lHOu3FP0ILzIJMvHZqRChjv
-uENYySwWcX1WMTDdya+T2DlQFgMnmmaoDhfUQsP2WjtFsGgO/2w4iCW+V7E0pfLX
-KvYmqSnzd84pGJ13PPlJlaaFtftIPOZSroK9Ne/Qdze8W8NkcyF5EXxEZ1jDYK2Z
-OuzOuCTkSfX+G76pZnRkdq+GpomApHpke1Ps4oAYwHfattL2KCum9tNZ1abC2BtO
-D9Vstb553sIGcNlV70QsIMO5mCS3v7zdZZE+K86watSuy0yYBq+HarnbYNTzhGdU
-7ZQQ6eB+386+jlPinpVwxdu07ZkScZzQmrBMV8IBDyPcSGAj4HreGu/AE/MFKn1u
-GuxhhfbvAolvJCO2XxFrko9l1aUAHXOflCEs1Mm2FKvYqYkWG++v2YOSQTFIVhy3
-+ZSKSWXeKjSL+rz+FUaEiPzmZrZRNowJfNWNNGBNCFWlyXvXmSVxdXyPs6oJcHI2
-t+cCXvdlkUSVYBBlmivh1+ZizXw4RDCh1Vw8yU9Wl5jN+wcOgb/fGfYUeVs+ciDA
-hQu+K9hybv1dJrxs9qAbY8vqtZoxxOy5w2XzgyKP1Gg3TevAmVJMcvwE6A1aPd4+
-FH0Q0/bjPIDdH2gbWeSa2e3oJXWuVSLBrSLo5nUFFMIY/eTX7WI=
-=I3Ys
+iQIzBAEBCAAdFiEE+amhwRV4jZeXdUhoK2l36XSZ9y4FAl1JptUACgkQK2l36XSZ
+9y5W6A//bd2vajYPAer2JvC6d9xuQWZZ5TLPE3p5GabysMeyHBvrsPBtDVkfxPCl
+Ig0xnM1ann3/V4zG1hxP1jRoeN8z7e6wzhgCo9NC3LEcrPMSGSu1+3eO9NW9jWEw
+xWCYZgcZVNypWOJ0TshOLQVHy9ZvqYw7kfRPKzz4YsuUVUffmz41ImNqIh+OlU+C
+lBhfJcFb0CeNqWEcCinM4E8tSuYa80fzH2lx+qtTxNoO8n+QnISkuNF6h5OebgWW
+AnJ0AbG8GeF5qV6pcAO+1Au9PzrbeNPhPDiesNuaHZsFwgIzUESlMrsRGecHZl9h
+BjBA4tyd4alIxX7tFsit8zny1Xr/AL6ZFZziYdiFJGMucatfp5pQQ2ig7zIOv1pc
+84e28nAAQ281V0qvTAaf1GuuTErFCLY7B8H7C4aCtZ1A6ZE/maFwE0NIOB9j9TmM
+30VenQ9F1IfTaigHm8BqTjH9L2KnY3L2dQ9jLcdxrcfUJDpMhs/CDu/Lnz9/SRk3
+x3PJq2uecZKMaULdCp1rqkdseKqxcZ++gxkzt6wGLwVUwQP8XW2gyWclFWlw/PLU
+H8NLcDN1a8BMj1kHxNzTk661nLNr/5zhHVkzDmDs6ydHCSP1o0KJHeJOxtKHg7Lm
+p1cQRmFoBN581HHKA9wHYk7GAmEGRLoQ+lXA0lcIb0aIU0boDz0=
+=gVva
 -----END PGP SIGNATURE-----
 
---gKMricLos+KVdGMg--
+--J2SCkAp4GZ/dPZZf--
