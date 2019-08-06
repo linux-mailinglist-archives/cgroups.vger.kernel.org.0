@@ -2,91 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 292B383729
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 18:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3521683D91
+	for <lists+cgroups@lfdr.de>; Wed,  7 Aug 2019 01:01:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732926AbfHFQlB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Tue, 6 Aug 2019 12:41:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:36768 "EHLO foss.arm.com"
+        id S1726340AbfHFXBF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 6 Aug 2019 19:01:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732917AbfHFQlB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 6 Aug 2019 12:41:01 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12764344;
-        Tue,  6 Aug 2019 09:41:00 -0700 (PDT)
-Received: from e110439-lin (e110439-lin.cambridge.arm.com [10.1.194.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CC9F3F575;
-        Tue,  6 Aug 2019 09:40:57 -0700 (PDT)
-References: <20190802090853.4810-1-patrick.bellasi@arm.com> <20190806161206.GA20526@blackbody.suse.cz>
-User-agent: mu4e 1.3.3; emacs 26.2
-From:   Patrick Bellasi <patrick.bellasi@arm.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-api@vger.kernel.org, cgroups@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "Vincent Guittot" <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Paul Turner <pjt@google.com>,
-        Quentin Perret <quentin.perret@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Steve Muckle <smuckle@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alessio Balsini <balsini@android.com>
-Subject: Re: [PATCH v13 0/6] Add utilization clamping support (CGroups API)
-In-reply-to: <20190806161206.GA20526@blackbody.suse.cz>
-Date:   Tue, 06 Aug 2019 17:40:55 +0100
-Message-ID: <87k1bqfdrc.fsf@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+        id S1725974AbfHFXBF (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 6 Aug 2019 19:01:05 -0400
+Received: from localhost.localdomain (c-73-223-200-170.hsd1.ca.comcast.net [73.223.200.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C7A32070D;
+        Tue,  6 Aug 2019 23:01:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1565132464;
+        bh=vGl/qyUj+m3xdNJaJ9fF/HjSzIEZvTJK5xJjIUiHOxQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ram+yxpjoZZlMPdi2p/p8wC9xbLXU244ul4IK2w7JME7Dob0R4Qy/D1hsmAvZ0GDM
+         lPuIhCuLFw5/g2cagStWN5Eua65k6HVxgrIAfPon7hrUHTVSJGBaJH22M3WDg17C6L
+         TdVf/pEW1LNxxYciU9FWLJmB9xyejRP00N6oKK4k=
+Date:   Tue, 6 Aug 2019 16:01:02 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, guro@fb.com
+Subject: Re: [PATCH 2/4] bdi: Add bdi->id
+Message-Id: <20190806160102.11366694af6b56d9c4ca6ea3@linux-foundation.org>
+In-Reply-To: <20190803140155.181190-3-tj@kernel.org>
+References: <20190803140155.181190-1-tj@kernel.org>
+        <20190803140155.181190-3-tj@kernel.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Sat,  3 Aug 2019 07:01:53 -0700 Tejun Heo <tj@kernel.org> wrote:
 
-On Tue, Aug 06, 2019 at 17:12:06 +0100, Michal Koutný wrote...
+> There currently is no way to universally identify and lookup a bdi
+> without holding a reference and pointer to it.  This patch adds an
+> non-recycling bdi->id and implements bdi_get_by_id() which looks up
+> bdis by their ids.  This will be used by memcg foreign inode flushing.
 
-> On Fri, Aug 02, 2019 at 10:08:47AM +0100, Patrick Bellasi <patrick.bellasi@arm.com> wrote:
->> Patrick Bellasi (6):
->>   sched/core: uclamp: Extend CPU's cgroup controller
->>   sched/core: uclamp: Propagate parent clamps
->>   sched/core: uclamp: Propagate system defaults to root group
->>   sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
->>   sched/core: uclamp: Update CPU's refcount on TG's clamp changes
->>   sched/core: uclamp: always use enum uclamp_id for clamp_id values
+Why is the id non-recycling?  Presumably to address some
+lifetime/lookup issues, but what are they?
 
-Hi Michal!
+Why was the IDR code not used?
 
-> Thank you Patrick for your patience.
+> I left bdi_list alone for simplicity and because while rb_tree does
+> support rcu assignment it doesn't seem to guarantee lossless walk when
+> walk is racing aginst tree rebalance operations.
+> 
+> ...
+>
+> +/**
+> + * bdi_get_by_id - lookup and get bdi from its id
+> + * @id: bdi id to lookup
+> + *
+> + * Find bdi matching @id and get it.  Returns NULL if the matching bdi
+> + * doesn't exist or is already unregistered.
+> + */
+> +struct backing_dev_info *bdi_get_by_id(u64 id)
+> +{
+> +	struct backing_dev_info *bdi = NULL;
+> +	struct rb_node **p;
+> +
+> +	spin_lock_irq(&bdi_lock);
 
-Thanks to you for your reviews.
+Why irq-safe?  Everywhere else uses spin_lock_bh(&bdi_lock).
 
-> I used the time to revisit the series once again and I think the RCU
-> locks can be streamlined a bit.
-
-I'll have a look at those, thanks!
-
-> If you find that correct, feel free to add my Reviewed-by to the
-> updated series (for 1/6 and legacy, I'm just asking).
-
-Sure, actually sorry for not having already added that tag in the
-current version, it will be there in v14 ;)
-
-> Michal
-
-Cheers,
-Patrick
-
---
-#include <best/regards.h>
-
-Patrick Bellasi
-
+> +	p = bdi_lookup_rb_node(id, NULL);
+> +	if (*p) {
+> +		bdi = rb_entry(*p, struct backing_dev_info, rb_node);
+> +		bdi_get(bdi);
+> +	}
+> +	spin_unlock_irq(&bdi_lock);
+> +
+> +	return bdi;
+> +}
+> +
+>
+> ...
+>
