@@ -2,118 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EC838293E
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 03:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E69282A05
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 05:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731340AbfHFBdp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Aug 2019 21:33:45 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51505 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728870AbfHFBdp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Aug 2019 21:33:45 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=yun.wang@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TYmOEx4_1565055217;
-Received: from testdeMacBook-Pro.local(mailfrom:yun.wang@linux.alibaba.com fp:SMTPD_---0TYmOEx4_1565055217)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 06 Aug 2019 09:33:40 +0800
-Subject: Re: [PATCH v2 0/4] per-cgroup numa suite
-From:   =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
-To:     Peter Zijlstra <peterz@infradead.org>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mcgrof@kernel.org, keescook@chromium.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>
-References: <209d247e-c1b2-3235-2722-dd7c1f896483@linux.alibaba.com>
- <60b59306-5e36-e587-9145-e90657daec41@linux.alibaba.com>
- <65c1987f-bcce-2165-8c30-cf8cf3454591@linux.alibaba.com>
-Message-ID: <789b95a2-6a92-eb30-85c5-af8e5dcc8048@linux.alibaba.com>
-Date:   Tue, 6 Aug 2019 09:33:37 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
- Gecko/20100101 Thunderbird/60.7.0
+        id S1729383AbfHFD2x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Aug 2019 23:28:53 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:34190 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728892AbfHFD2x (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Aug 2019 23:28:53 -0400
+Received: by mail-qt1-f195.google.com with SMTP id k10so14027732qtq.1;
+        Mon, 05 Aug 2019 20:28:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=aoJs4+GZcrMW12maFhHxBWCjreCnZG8IIroKJ5Dk56w=;
+        b=kPmJavQlKC0qoOuF78dkRk9X6JVlHFkwGK1peHZHj0UFVxLbLlTm/X+vuwLi6rDTmY
+         aXayCcF6YYeKFgRSI6W+734GagJiaJfX8BHoIixitFMdY/4AsEYsSaLqxSWluMm4xaSE
+         zA7OGuMlaprEKB+sr57Wibi7sFwTkSY3z2Me5Qe32x+F596HUdYRuJFkul4bFSQprW1q
+         JrldsZuhof5957Q/xkny1ZgQ2FPbIB6s4K1Vc5E/R9BsiqIKmSkhL5Dd60a7+AyG0Mih
+         9XtZ7rSBPguMqHF6magt/107WW1GNFKFxW1lzNzuAAIYzmWN5NHZb3YqFy8xH567gitR
+         vi3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=aoJs4+GZcrMW12maFhHxBWCjreCnZG8IIroKJ5Dk56w=;
+        b=Jfoh4/Ar/bTmtjxyJTc2mHlINRQu1K7VctMa9BTuNfnfq0FCba5AwXrSYg9F4PweVj
+         7DR3fKYzWAlCXYeHm+nXQ1SIClM6m4Dfbd0LZACCbG3QNY3sBnQqvog5C0BDw1ALa4j/
+         ZnsAqmZc5z8QcMxyfvW6fJbNPKs6+2m1w1QQ4keIR3Rz8WMc6mQ3GyeuRHbga0Y/F6gY
+         06QdvJ+iLu7079+yhu2gpiG953/1da+VWh6dQT0i2OUBJVmftkJs6unXFjfghcVvlusK
+         OQGHA9IT2ET1wWlOIwLMtBdyxzypECraPIZjRSP+FYsmwl+lqH5+O4hrRFCDzqpAuetS
+         N/QQ==
+X-Gm-Message-State: APjAAAWBZm3kyimouf4FSgQpRHYfnUlPejnvqWOrevfPPqKuiP2zikRh
+        q5hCO3MYF6ReRCqCryyHJ4Td99QpeMkFCnvHo+Hdvw==
+X-Google-Smtp-Source: APXvYqz6dPCfj+pirXMMo99Ejr8ClrpVzZXvEm5OpbqIaQEx0AF8UPM5lFBqF88MBMF0yiaRMwtPQsCKPr2MU1U78kg=
+X-Received: by 2002:ac8:f3b:: with SMTP id e56mr1164468qtk.123.1565062132340;
+ Mon, 05 Aug 2019 20:28:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <65c1987f-bcce-2165-8c30-cf8cf3454591@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <156431697805.3170.6377599347542228221.stgit@buzz>
+ <20190729091738.GF9330@dhcp22.suse.cz> <3d6fc779-2081-ba4b-22cf-be701d617bb4@yandex-team.ru>
+ <20190729103307.GG9330@dhcp22.suse.cz> <CAHbLzkrdj-O2uXwM8ujm90OcgjyR4nAiEbFtRGe7SOoY_fs=BA@mail.gmail.com>
+ <20190729184850.GH9330@dhcp22.suse.cz> <CAHbLzkp9xFV2sE0TdKfWNRVcAwaYNKwDugRiBBoEKx6A_Hr3Jw@mail.gmail.com>
+ <20190802093507.GF6461@dhcp22.suse.cz> <CAHbLzkrjh7KEvdfXackaVy8oW5CU=UaBucERffxcUorgq1vdoA@mail.gmail.com>
+ <20190805143239.GS7597@dhcp22.suse.cz>
+In-Reply-To: <20190805143239.GS7597@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Mon, 5 Aug 2019 20:28:40 -0700
+Message-ID: <CAHbLzkpD+kawkR42mWpxvZHvSZNhYEsibiMYzx+3q0rTBS6L9g@mail.gmail.com>
+Subject: Re: [PATCH RFC] mm/memcontrol: reclaim severe usage over high limit
+ in get_user_pages loop
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Linux MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        cgroups@vger.kernel.org, Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi, Folks
+On Mon, Aug 5, 2019 at 7:32 AM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Fri 02-08-19 11:56:28, Yang Shi wrote:
+> > On Fri, Aug 2, 2019 at 2:35 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > >
+> > > On Thu 01-08-19 14:00:51, Yang Shi wrote:
+> > > > On Mon, Jul 29, 2019 at 11:48 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > > > >
+> > > > > On Mon 29-07-19 10:28:43, Yang Shi wrote:
+> > > > > [...]
+> > > > > > I don't worry too much about scale since the scale issue is not unique
+> > > > > > to background reclaim, direct reclaim may run into the same problem.
+> > > > >
+> > > > > Just to clarify. By scaling problem I mean 1:1 kswapd thread to memcg.
+> > > > > You can have thousands of memcgs and I do not think we really do want
+> > > > > to create one kswapd for each. Once we have a kswapd thread pool then we
+> > > > > get into a tricky land where a determinism/fairness would be non trivial
+> > > > > to achieve. Direct reclaim, on the other hand is bound by the workload
+> > > > > itself.
+> > > >
+> > > > Yes, I agree thread pool would introduce more latency than dedicated
+> > > > kswapd thread. But, it looks not that bad in our test. When memory
+> > > > allocation is fast, even though dedicated kswapd thread can't catch
+> > > > up. So, such background reclaim is best effort, not guaranteed.
+> > > >
+> > > > I don't quite get what you mean about fairness. Do you mean they may
+> > > > spend excessive cpu time then cause other processes starvation? I
+> > > > think this could be mitigated by properly organizing and setting
+> > > > groups. But, I agree this is tricky.
+> > >
+> > > No, I meant that the cost of reclaiming a unit of charges (e.g.
+> > > SWAP_CLUSTER_MAX) is not constant and depends on the state of the memory
+> > > on LRUs. Therefore any thread pool mechanism would lead to unfair
+> > > reclaim and non-deterministic behavior.
+> >
+> > Yes, the cost depends on the state of pages, but I still don't quite
+> > understand what does "unfair" refer to in this context. Do you mean
+> > some cgroups may reclaim much more than others?
+>
+> > Or the work may take too long so it can't not serve other cgroups in time?
+>
+> exactly.
 
-Please feel free to comment if you got any concerns :-)
+Actually, I'm not very concerned by this. In our design each memcg has
+its dedicated work (memcg->wmark_work), so the reclaim work for
+different memcgs could be run in parallel since they are *different*
+work in fact although they run the same function. And, We could queue
+them to a dedicated unbound workqueue which may have maximum 512 or
+scale with nr cpus active works. Although the system may have
+thousands of online memcgs, I'm supposed it should be rare to have all
+of them trigger reclaim at the same time.
 
-Hi, Peter
-
-How do you think about this version?
-
-Please let us know if it's still not good enough to be accepted :-)
-
-Regards,
-Michael Wang
-
-On 2019/7/16 上午11:38, 王贇 wrote:
-> During our torturing on numa stuff, we found problems like:
-> 
->   * missing per-cgroup information about the per-node execution status
->   * missing per-cgroup information about the numa locality
-> 
-> That is when we have a cpu cgroup running with bunch of tasks, no good
-> way to tell how it's tasks are dealing with numa.
-> 
-> The first two patches are trying to complete the missing pieces, but
-> more problems appeared after monitoring these status:
-> 
->   * tasks not always running on the preferred numa node
->   * tasks from same cgroup running on different nodes
-> 
-> The task numa group handler will always check if tasks are sharing pages
-> and try to pack them into a single numa group, so they will have chance to
-> settle down on the same node, but this failed in some cases:
-> 
->   * workloads share page caches rather than share mappings
->   * workloads got too many wakeup across nodes
-> 
-> Since page caches are not traced by numa balancing, there are no way to
-> realize such kind of relationship, and when there are too many wakeup,
-> task will be drag from the preferred node and then migrate back by numa
-> balancing, repeatedly.
-> 
-> Here the third patch try to address the first issue, we could now give hint
-> to kernel about the relationship of tasks, and pack them into single numa
-> group.
-> 
-> And the forth patch introduced numa cling, which try to address the wakup
-> issue, now we try to make task stay on the preferred node on wakeup in fast
-> path, in order to address the unbalancing risk, we monitoring the numa
-> migration failure ratio, and pause numa cling when it reach the specified
-> degree.
-> 
-> Since v1:
->   * move statistics from memory cgroup into cpu group
->   * statistics now accounting in hierarchical way
->   * locality now accounted into 8 regions equally
->   * numa cling no longer override select_idle_sibling, instead we
->     prevent numa swap migration with tasks cling to dst-node, also
->     prevent wake affine to drag tasks away which already cling to
->     prev-cpu
->   * other refine on comments and names
-> 
-> Michael Wang (4):
->   v2 numa: introduce per-cgroup numa balancing locality statistic
->   v2 numa: append per-node execution time in cpu.numa_stat
->   v2 numa: introduce numa group per task group
->   v4 numa: introduce numa cling feature
-> 
->  include/linux/sched.h        |   8 +-
->  include/linux/sched/sysctl.h |   3 +
->  kernel/sched/core.c          |  85 ++++++++
->  kernel/sched/debug.c         |   7 +
->  kernel/sched/fair.c          | 510 ++++++++++++++++++++++++++++++++++++++++++-
->  kernel/sched/sched.h         |  41 ++++
->  kernel/sysctl.c              |   9 +
->  7 files changed, 651 insertions(+), 12 deletions(-)
-> 
+> --
+> Michal Hocko
+> SUSE Labs
