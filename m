@@ -2,29 +2,32 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CB2B83684
-	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 18:12:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 292B383729
+	for <lists+cgroups@lfdr.de>; Tue,  6 Aug 2019 18:41:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387864AbfHFQMM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 6 Aug 2019 12:12:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40078 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2387859AbfHFQML (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 6 Aug 2019 12:12:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2DF17AE82;
-        Tue,  6 Aug 2019 16:12:10 +0000 (UTC)
-Date:   Tue, 6 Aug 2019 18:12:06 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Patrick Bellasi <patrick.bellasi@arm.com>
+        id S1732926AbfHFQlB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Tue, 6 Aug 2019 12:41:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:36768 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732917AbfHFQlB (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 6 Aug 2019 12:41:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 12764344;
+        Tue,  6 Aug 2019 09:41:00 -0700 (PDT)
+Received: from e110439-lin (e110439-lin.cambridge.arm.com [10.1.194.43])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 7CC9F3F575;
+        Tue,  6 Aug 2019 09:40:57 -0700 (PDT)
+References: <20190802090853.4810-1-patrick.bellasi@arm.com> <20190806161206.GA20526@blackbody.suse.cz>
+User-agent: mu4e 1.3.3; emacs 26.2
+From:   Patrick Bellasi <patrick.bellasi@arm.com>
+To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-api@vger.kernel.org, cgroups@vger.kernel.org,
         Ingo Molnar <mingo@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
         Tejun Heo <tj@kernel.org>,
         "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        "Vincent Guittot" <vincent.guittot@linaro.org>,
         Viresh Kumar <viresh.kumar@linaro.org>,
         Paul Turner <pjt@google.com>,
         Quentin Perret <quentin.perret@arm.com>,
@@ -37,58 +40,53 @@ Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Suren Baghdasaryan <surenb@google.com>,
         Alessio Balsini <balsini@android.com>
 Subject: Re: [PATCH v13 0/6] Add utilization clamping support (CGroups API)
-Message-ID: <20190806161206.GA20526@blackbody.suse.cz>
-References: <20190802090853.4810-1-patrick.bellasi@arm.com>
+In-reply-to: <20190806161206.GA20526@blackbody.suse.cz>
+Date:   Tue, 06 Aug 2019 17:40:55 +0100
+Message-ID: <87k1bqfdrc.fsf@arm.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="J2SCkAp4GZ/dPZZf"
-Content-Disposition: inline
-In-Reply-To: <20190802090853.4810-1-patrick.bellasi@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---J2SCkAp4GZ/dPZZf
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Tue, Aug 06, 2019 at 17:12:06 +0100, Michal Koutný wrote...
 
-On Fri, Aug 02, 2019 at 10:08:47AM +0100, Patrick Bellasi <patrick.bellasi@arm.com> wrote:
-> Patrick Bellasi (6):
->   sched/core: uclamp: Extend CPU's cgroup controller
->   sched/core: uclamp: Propagate parent clamps
->   sched/core: uclamp: Propagate system defaults to root group
->   sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
->   sched/core: uclamp: Update CPU's refcount on TG's clamp changes
->   sched/core: uclamp: always use enum uclamp_id for clamp_id values
-Thank you Patrick for your patience. I used the time to revisit the
-series once again and I think the RCU locks can be streamlined a bit. If
-you find that correct, feel free to add my Reviewed-by to the updated
-series (for 1/6 and legacy, I'm just asking).
+> On Fri, Aug 02, 2019 at 10:08:47AM +0100, Patrick Bellasi <patrick.bellasi@arm.com> wrote:
+>> Patrick Bellasi (6):
+>>   sched/core: uclamp: Extend CPU's cgroup controller
+>>   sched/core: uclamp: Propagate parent clamps
+>>   sched/core: uclamp: Propagate system defaults to root group
+>>   sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
+>>   sched/core: uclamp: Update CPU's refcount on TG's clamp changes
+>>   sched/core: uclamp: always use enum uclamp_id for clamp_id values
 
-Michal
+Hi Michal!
 
---J2SCkAp4GZ/dPZZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+> Thank you Patrick for your patience.
 
------BEGIN PGP SIGNATURE-----
+Thanks to you for your reviews.
 
-iQIzBAEBCAAdFiEE+amhwRV4jZeXdUhoK2l36XSZ9y4FAl1JptUACgkQK2l36XSZ
-9y5W6A//bd2vajYPAer2JvC6d9xuQWZZ5TLPE3p5GabysMeyHBvrsPBtDVkfxPCl
-Ig0xnM1ann3/V4zG1hxP1jRoeN8z7e6wzhgCo9NC3LEcrPMSGSu1+3eO9NW9jWEw
-xWCYZgcZVNypWOJ0TshOLQVHy9ZvqYw7kfRPKzz4YsuUVUffmz41ImNqIh+OlU+C
-lBhfJcFb0CeNqWEcCinM4E8tSuYa80fzH2lx+qtTxNoO8n+QnISkuNF6h5OebgWW
-AnJ0AbG8GeF5qV6pcAO+1Au9PzrbeNPhPDiesNuaHZsFwgIzUESlMrsRGecHZl9h
-BjBA4tyd4alIxX7tFsit8zny1Xr/AL6ZFZziYdiFJGMucatfp5pQQ2ig7zIOv1pc
-84e28nAAQ281V0qvTAaf1GuuTErFCLY7B8H7C4aCtZ1A6ZE/maFwE0NIOB9j9TmM
-30VenQ9F1IfTaigHm8BqTjH9L2KnY3L2dQ9jLcdxrcfUJDpMhs/CDu/Lnz9/SRk3
-x3PJq2uecZKMaULdCp1rqkdseKqxcZ++gxkzt6wGLwVUwQP8XW2gyWclFWlw/PLU
-H8NLcDN1a8BMj1kHxNzTk661nLNr/5zhHVkzDmDs6ydHCSP1o0KJHeJOxtKHg7Lm
-p1cQRmFoBN581HHKA9wHYk7GAmEGRLoQ+lXA0lcIb0aIU0boDz0=
-=gVva
------END PGP SIGNATURE-----
+> I used the time to revisit the series once again and I think the RCU
+> locks can be streamlined a bit.
 
---J2SCkAp4GZ/dPZZf--
+I'll have a look at those, thanks!
+
+> If you find that correct, feel free to add my Reviewed-by to the
+> updated series (for 1/6 and legacy, I'm just asking).
+
+Sure, actually sorry for not having already added that tag in the
+current version, it will be there in v14 ;)
+
+> Michal
+
+Cheers,
+Patrick
+
+--
+#include <best/regards.h>
+
+Patrick Bellasi
+
