@@ -2,120 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6537F86539
-	for <lists+cgroups@lfdr.de>; Thu,  8 Aug 2019 17:10:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 414FF867C5
+	for <lists+cgroups@lfdr.de>; Thu,  8 Aug 2019 19:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732815AbfHHPK1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 8 Aug 2019 11:10:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:34730 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732404AbfHHPK1 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 8 Aug 2019 11:10:27 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0D8CC1596;
-        Thu,  8 Aug 2019 08:10:26 -0700 (PDT)
-Received: from e110439-lin (e110439-lin.cambridge.arm.com [10.1.194.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 732293F706;
-        Thu,  8 Aug 2019 08:10:23 -0700 (PDT)
-References: <20190802090853.4810-1-patrick.bellasi@arm.com> <20190802090853.4810-2-patrick.bellasi@arm.com> <20190806161133.GA18532@blackbody.suse.cz>
-User-agent: mu4e 1.3.3; emacs 26.2
-From:   Patrick Bellasi <patrick.bellasi@arm.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-api@vger.kernel.org, cgroups@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Tejun Heo <tj@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        "Vincent Guittot" <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Paul Turner <pjt@google.com>,
-        Quentin Perret <quentin.perret@arm.com>,
+        id S2404223AbfHHRQZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Aug 2019 13:16:25 -0400
+Received: from mx2.suse.de ([195.135.220.15]:53980 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2404211AbfHHRQY (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 8 Aug 2019 13:16:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 1B717AE48;
+        Thu,  8 Aug 2019 17:16:23 +0000 (UTC)
+Date:   Thu, 8 Aug 2019 19:16:21 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Patrick Bellasi <patrick.bellasi@arm.com>
+Cc:     Alessio Balsini <balsini@android.com>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Morten Rasmussen <morten.rasmussen@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Todd Kjos <tkjos@google.com>,
+        Quentin Perret <quentin.perret@arm.com>,
         Joel Fernandes <joelaf@google.com>,
+        Paul Turner <pjt@google.com>,
         Steve Muckle <smuckle@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
-        Alessio Balsini <balsini@android.com>
-Subject: Re: [PATCH v13 1/6] sched/core: uclamp: Extend CPU's cgroup controller
-Message-ID: <87imr74sfh.fsf@arm.com>
-In-reply-to: <20190806161133.GA18532@blackbody.suse.cz>
-Date:   Thu, 08 Aug 2019 16:10:21 +0100
+        Todd Kjos <tkjos@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Tejun Heo <tj@kernel.org>,
+        VincentGuittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>, cgroups@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH v13 2/6] sched/core: uclamp: Propagate parent clamps
+Message-ID: <20190808171620.GE8617@blackbody.suse.cz>
+References: <20190802090853.4810-1-patrick.bellasi@arm.com>
+ <20190802090853.4810-3-patrick.bellasi@arm.com>
+ <20190806161153.GA19991@blackbody.suse.cz>
+ <87h86r4rvp.fsf@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="M/SuVGWktc5uNpra"
+Content-Disposition: inline
+In-Reply-To: <87h86r4rvp.fsf@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
-On Tue, Aug 06, 2019 at 17:11:34 +0100, Michal Koutný wrote...
+--M/SuVGWktc5uNpra
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> On Fri, Aug 02, 2019 at 10:08:48AM +0100, Patrick Bellasi <patrick.bellasi@arm.com> wrote:
->> +static ssize_t cpu_uclamp_write(struct kernfs_open_file *of, char *buf,
->> +				size_t nbytes, loff_t off,
->> +				enum uclamp_id clamp_id)
->> +{
->> +	struct uclamp_request req;
->> +	struct task_group *tg;
->> +
->> +	req = capacity_from_percent(buf);
->> +	if (req.ret)
->> +		return req.ret;
->> +
->> +	rcu_read_lock();
-> This should be the uclamp_mutex.
->
-> (The compound results of the series is correct as the lock is introduced
-> in "sched/core: uclamp: Propagate parent clamps".
-> This is just for the happiness of cherry-pickers/bisectors.)
+On Thu, Aug 08, 2019 at 04:08:10PM +0100, Patrick Bellasi <patrick.bellasi@=
+arm.com> wrote:
+> Well, if I've got correctly your comment in the previous message, I
+> would say that at this stage we don't need RCU looks at all.
+Agreed.
 
-Right, will move the uclamp_mutex introduction in this patch instead of
-in the following one.
+> Reason being that cpu_util_update_eff() gets called only from
+> cpu_uclamp_write() which is from an ongoing write operation on a cgroup
+> attribute and thus granted to be available.
+>=20
+> We will eventually need to move the RCU look only down the stack when
+> uclamp_update_active_tasks() gets called to update the RUNNABLE tasks on
+> a RQ... or perhaps we don't need them since we already get the
+> task_rq_lock() for each task we visit.
+Unless you remove css_for_each_descendant_pre() in
+cpu_util_update_eff(), the rcu_read_lock() cannot go below it.
+(You'd be RCU-accessing other csses that aren't pinned in the write.)
 
->> +static inline void cpu_uclamp_print(struct seq_file *sf,
->> +				    enum uclamp_id clamp_id)
->> +{
->> [...]
->> +	rcu_read_lock();
->> +	tg = css_tg(seq_css(sf));
->> +	util_clamp = tg->uclamp_req[clamp_id].value;
->> +	rcu_read_unlock();
-> Why is the rcu_read_lock() needed here? (I'm considering the comment in
-> of_css() that should apply here (and it seems that similar uses in other
-> seq_file handlers also skip this).)
+Michal
 
-So, looks like that since we are in the context of a file operation,
-all the cgroup's attribute read/write functions are implicitly save.
+--M/SuVGWktc5uNpra
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-IOW, we don't need an RCU lock since the TG data structures are granted
-to be always available till the end of the read/write operation.
+-----BEGIN PGP SIGNATURE-----
 
-That seems to make sense... I'm wondering if keeping the RCU look is
-still a precaution for possible future code/assumption changes or just
-an unnecessary overhead?
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl1MWN8ACgkQia1+riC5
+qSityw/+JXOBnu4pwW3aN+tZLpsDmQp30H/RvF8UM9xruXiajWC8seiPhBHO/K+d
+NTgTcMYp4XLXOBDOPR1OvFFLAhgv38xf4R4+kyvg9Z6Yq0jRbOQR6t/foXIOEKV4
+OhkPVNl57zVqJoUmTMN5I7ld8AM/dA4RPas3vG9qLrALc1cycaSGmeTNRNzGo3Ga
+zhNO5KOYipeQoMJJw+KslJgfUctj7YPLKrIDeqt7wRJ6s1rJ8srqlR4QJiqnwvpt
+Adit3pj4WaOMaYJhX7HuAgEn26kwKkX1Edw9a7BJQny2Zu+CxPrR7AkHPD/eTJyG
+XHHBBhW3vsKGYkOSpSTavv1Pc+402OkteacYPiP7Hh38UHPEeOnKjAwJFnDRDUKJ
+mwOw08r0d7tMZKBnMgchOPtpOATD2M9/No9z8TVFoxILfcXpMjEQE6apYVNH2rvl
+vJkH7wujXxbkWCgL6xopQdyG//G/vGHrPPWJmlhNMvL4Y/KRwj7zEqMvOHC1XQAt
+WpqQGv5uI6R0WZv31qSIkoXGsfnNx2oz/tR16SpAQUvKRu7en2KwgvzHQGbBfXmV
+LuNR/iu0/tuOac76MEvdu3dAAyoccmdmYmBZSKm0/+wcqDAa8SKu3CIWhWb8Bu5P
++LzuhocAwLPW4ZGSUxuQ+np/D+SyqOJSIhJIlqAmSPtG6TMDGkI=
+=LPyl
+-----END PGP SIGNATURE-----
 
->> @@ -7369,6 +7506,20 @@ static struct cftype cpu_legacy_files[] = {
->> [...]
->> +		.name = "uclamp.min",
->> [...]
->> +		.name = "uclamp.max",
-> I don't see technical reasons why uclamp couldn't work on legacy
-> hierarchy and Tejun acked the series, despite that I'll ask -- should
-> the new attributes be exposed in v1 controller hierarchy (taking into
-> account the legacy API is sort of frozen and potential maintenance needs
-> spanning both hierarchies)?
-
-Not sure to get what you mean here: I'm currently exposing uclamp to
-both v1 and v2 hierarchies.
-
-Best,
-Patrick
-
---
-#include <best/regards.h>
-
-Patrick Bellasi
+--M/SuVGWktc5uNpra--
