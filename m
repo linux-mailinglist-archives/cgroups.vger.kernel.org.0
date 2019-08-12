@@ -2,168 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA49588EA1
-	for <lists+cgroups@lfdr.de>; Sun, 11 Aug 2019 00:01:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDD6B8A703
+	for <lists+cgroups@lfdr.de>; Mon, 12 Aug 2019 21:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726472AbfHJWBO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 10 Aug 2019 18:01:14 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:34122 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726382AbfHJWBO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 10 Aug 2019 18:01:14 -0400
-Received: by mail-ot1-f68.google.com with SMTP id n5so146206987otk.1
-        for <cgroups@vger.kernel.org>; Sat, 10 Aug 2019 15:01:13 -0700 (PDT)
+        id S1726799AbfHLTXT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Aug 2019 15:23:19 -0400
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:42874 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726549AbfHLTXT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Aug 2019 15:23:19 -0400
+Received: by mail-pg1-f194.google.com with SMTP id t132so49975849pgb.9
+        for <cgroups@vger.kernel.org>; Mon, 12 Aug 2019 12:23:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CKSBDb3n2Zw/j8kWgy95XapjnDr9kx+5JJx/IJIa8C8=;
-        b=NUcrHdVOutsZBY/9WFTG0qmyK4Pv+ynw61exCRXGPu4QidGG4QRnMuzfvhUu4CTm5+
-         LBz0d2+yyKpuXU/u8m58dPJXV2KpiikkKgNrk8yy5Kmgq+wXhz9UU7aU3uPtKXzrFPl4
-         Uu49ni8D5+tQwgLiVAZ7tIN2GsoxkxtYVSDWeGaim9N80nxj3cpnVNFWTUINaec9HC2w
-         sZIG+ZnSKDOwLQ44s4Fx7hqoFAOqHPCHKUSGuypcc88/J9Cuh0bOK5RjjClR4OYtXXX1
-         XNTB//O3ZxXOb8ugK43J+tV03Ay3CYIoqDeLg2wTgRn14F/4Mrz1bSvxeIKsvExmUbXQ
-         rvyw==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WbZ4Sjz/PnOqkj9Tyb0eRWLHmMcoPs5r9WlmOIHpeSo=;
+        b=jzC2l9r88UaY1IukY7wBl28NxdfPM525Oizdju82oqnG+UjMFtJsmQ4V8Uvx/6+Orm
+         fWS1GQxRoaEB2jq5CsZnnU1wxLSuBymvRWSQYQv2k4Fc04be15Oia6PI0grZJI7R2lxH
+         IIEMek1SCHJoUx7vl2b0ZqSLUs8sascLRu9JdKIBwCJMo6nAISs6UQ+jEeXfnyNHERRv
+         auaqhuzsjPAV71Ee7a+PteY3nAiiXs0DyQhgGfGNjObh9DdA0bOLONSDN10g6v6ng50c
+         nzWmlZ4d3goJTdGLPL9hG2fwhhVHCKPrGDEk5V0RvMSdUKKA+J9+ZRo4KaIWYRmCYX2/
+         vyyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CKSBDb3n2Zw/j8kWgy95XapjnDr9kx+5JJx/IJIa8C8=;
-        b=f9qcAkIQEAibJ2qPoKRbiLiUecYPD/H3OyrWngu/1oFtJVFYDbihbh/Sl8cYAs8As2
-         ee7zqzfu9KZrFEJilUbTpCJ2vweAaph3KZp7eY5s3TkUlfNiWUE6at6sdxtSi7ltNiD9
-         HTnMbZqhxRAnIrgo3ijWaG/9L6C9pKLCE/YOiOvfi2NpSb5ThoyOI6lpVvmW/z/5v+xQ
-         hb/FO18gGjgafNthKNfkytNWuqMAlJ0NvuAf85Z7MAUoO2NEw3BICgHvehaaHABK6nS2
-         USx/Sr0qsKruGwFTtkix1d6xzdCwAm8+V4HAuQ+kCB9y0VhKXbG53Hl2pkGFahPHtbiO
-         YVQg==
-X-Gm-Message-State: APjAAAVhKLcQLw9nOdXGr77q2/krAOPq96moPNNPwMir+0O0E+kDOUXJ
-        B0UtWtptpZloFAojUlA3uzEl7lXgJDhan3ZcYrtRMg==
-X-Google-Smtp-Source: APXvYqz0uGRd+OhDQQzhvps5/ie3QYUxGJ4pkAuGl0z6CDhEr4NK2GSI4SjZWju6OEg2EGL2jIXdS1whMQ9aB6RYVjA=
-X-Received: by 2002:aca:190b:: with SMTP id l11mr11116656oii.67.1565474472697;
- Sat, 10 Aug 2019 15:01:12 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WbZ4Sjz/PnOqkj9Tyb0eRWLHmMcoPs5r9WlmOIHpeSo=;
+        b=kKDP0qWCC5p3Itby3AjbJc2VchrgSfJ/HskA9TbJSkEMfGCf3NqaXnxsRQOIK78JcX
+         Som9iZcJDDz01E+gEiGGEGA7aqOcv6XexcjrkYji/mwkWJRi/ioVXz37tvMO7Et01US6
+         AfIDF418GJ2n0lW18lSymCAvUWxv+5D1hhkNpJ7IJMkBuHNzKh/vcxnKZFacYeM2rWuG
+         Ho5vXOVR6eSYcA2T5dDS9E3luZXgGgj14r6rx7std5UEAylrenBKV1qGjMBJa8RYjvwM
+         9sfxrLhbCY6pm6u1WhKtaaUaoyMzXjuCgNeUAfRXsOIDhEI9ODDqnIbPtXzbbCTS86zB
+         NvPg==
+X-Gm-Message-State: APjAAAVZ5tdH4ysszJa/dzHFCqqfQHtDodEZ47nOduhXbsOA6zhmNhx5
+        owAFjT6DvPkuTHWiJiNJeCDuGg==
+X-Google-Smtp-Source: APXvYqw1S8904a2xrHCvhOv0CHIN7t7zCW5x0903Sd3n3zquB/ZaHzb6mZNsVhdWI0VY78GJibDFVA==
+X-Received: by 2002:a65:5188:: with SMTP id h8mr31346069pgq.294.1565637798475;
+        Mon, 12 Aug 2019 12:23:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::5810])
+        by smtp.gmail.com with ESMTPSA id v8sm340554pjb.6.2019.08.12.12.23.17
+        (version=TLS1_3 cipher=AEAD-AES256-GCM-SHA384 bits=256/256);
+        Mon, 12 Aug 2019 12:23:17 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: vmscan: do not share cgroup iteration between reclaimers
+Date:   Mon, 12 Aug 2019 15:23:16 -0400
+Message-Id: <20190812192316.13615-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-References: <20190808231340.53601-1-almasrymina@google.com>
- <f0a5afe9-2586-38c9-9a6d-8a2b7b288b50@oracle.com> <CAHS8izOKmaOETBd_545Zex=KFNjYOvf3dCzcMRUEXnnhYCK5bw@mail.gmail.com>
- <71a29844-7367-44c4-23be-eff26ac80467@oracle.com>
-In-Reply-To: <71a29844-7367-44c4-23be-eff26ac80467@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Sat, 10 Aug 2019 15:01:01 -0700
-Message-ID: <CAHS8izPGhHS+=qnf7Vy=C8kXQ=7v7XH3uEVitrW6ARRYU6iDdg@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 0/5] hugetlb_cgroup: Add hugetlb_cgroup reservation limits
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>, akpm@linux-foundation.org,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Aug 10, 2019 at 11:58 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 8/9/19 12:42 PM, Mina Almasry wrote:
-> > On Fri, Aug 9, 2019 at 10:54 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >> On 8/8/19 4:13 PM, Mina Almasry wrote:
-> >>> Problem:
-> >>> Currently tasks attempting to allocate more hugetlb memory than is available get
-> >>> a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
-> >>> However, if a task attempts to allocate hugetlb memory only more than its
-> >>> hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
-> >>> but will SIGBUS the task when it attempts to fault the memory in.
-> <snip>
-> >> I believe tracking reservations for shared mappings can get quite complicated.
-> >> The hugetlbfs reservation code around shared mappings 'works' on the basis
-> >> that shared mapping reservations are global.  As a result, reservations are
-> >> more associated with the inode than with the task making the reservation.
-> >
-> > FWIW, I found it not too bad. And my tests at least don't detect an
-> > anomaly around shared mappings. The key I think is that I'm tracking
-> > cgroup to uncharge on the file_region entry inside the resv_map, so we
-> > know who allocated each file_region entry exactly and we can uncharge
-> > them when the entry is region_del'd.
-> >
-> >> For example, consider a file of size 4 hugetlb pages.
-> >> Task A maps the first 2 pages, and 2 reservations are taken.  Task B maps
-> >> all 4 pages, and 2 additional reservations are taken.  I am not really sure
-> >> of the desired semantics here for reservation limits if A and B are in separate
-> >> cgroups.  Should B be charged for 4 or 2 reservations?
-> >
-> > Task A's cgroup is charged 2 pages to its reservation usage.
-> > Task B's cgroup is charged 2 pages to its reservation usage.
->
-> OK,
-> Suppose Task B's cgroup allowed 2 huge pages reservation and 2 huge pages
-> allocation.  The mmap would succeed, but Task B could potentially need to
-> allocate more than 2 huge pages.  So, when faulting in more than 2 huge
-> pages B would get a SIGBUS.  Correct?  Or, am I missing something?
->
-> Perhaps reservation charge should always be the same as map size/maximum
-> allocation size?
+One of our services observed a high rate of cgroup OOM kills in the
+presence of large amounts of clean cache. Debugging showed that the
+culprit is the shared cgroup iteration in page reclaim.
 
-I'm thinking this would work similar to how other shared memory like
-tmpfs is accounted for right now. I.e. if a task conducts an operation
-that causes memory to be allocated then that task is charged for that
-memory, and if another task uses memory that has already been
-allocated and charged by another task, then it can use the memory
-without being charged.
+Under high allocation concurrency, multiple threads enter reclaim at
+the same time. Fearing overreclaim when we first switched from the
+single global LRU to cgrouped LRU lists, we introduced a shared
+iteration state for reclaim invocations - whether 1 or 20 reclaimers
+are active concurrently, we only walk the cgroup tree once: the 1st
+reclaimer reclaims the first cgroup, the second the second one etc.
+With more reclaimers than cgroups, we start another walk from the top.
 
-So in case of hugetlb memory, if a task is mmaping memory that causes
-a new reservation to be made, and new entries to be created in the
-resv_map for the shared mapping, then that task gets charged. If the
-task is mmaping memory that is already reserved or faulted, then it
-reserves or faults it without getting charged.
+This sounded reasonable at the time, but the problem is that reclaim
+concurrency doesn't scale with allocation concurrency. As reclaim
+concurrency increases, the amount of memory individual reclaimers get
+to scan gets smaller and smaller. Individual reclaimers may only see
+one cgroup per cycle, and that may not have much reclaimable
+memory. We see individual reclaimers declare OOM when there is plenty
+of reclaimable memory available in cgroups they didn't visit.
 
-In the example above, in chronological order:
-- Task A mmaps 2 hugetlb pages, gets charged 2 hugetlb reservations.
-- Task B mmaps 4 hugetlb pages, gets charged only 2 hugetlb
-reservations because the first 2 are charged already and can be used
-without incurring a charge.
-- Task B accesses 4 hugetlb pages, gets charged *4* hugetlb faults,
-since none of the 4 pages are faulted in yet. If the task is only
-allowed 2 hugetlb page faults then it will actually get a SIGBUS.
-- Task A accesses 4 hugetlb pages, gets charged no faults, since all
-the hugetlb faults is charged to Task B.
+This patch does away with the shared iterator, and every reclaimer is
+allowed to scan the full cgroup tree and see all of reclaimable
+memory, just like it would on a non-cgrouped system. This way, when
+OOM is declared, we know that the reclaimer actually had a chance.
 
-So, yes, I can see a scenario where userspace still gets SIGBUS'd, but
-I think that's fine because:
-1. Notice that the SIGBUS is due to the faulting limit, and not the
-reservation limit, so we're not regressing the status quo per say.
-Folks using the fault limit today understand the SIGBUS risk.
-2. the way I expect folks to use this is to use 'reservation limits'
-to partition the available hugetlb memory on the machine using it and
-forgo using the existing fault limits. Using both at the same time I
-think would be a superuser feature for folks that really know what
-they are doing, and understand the risk of SIGBUS that comes with
-using the existing fault limits.
-3. I expect userspace to in general handle this correctly because
-there are similar challenges with all shared memory and accounting of
-it, even in tmpfs, I think.
+To still maintain fairness in reclaim pressure, disallow cgroup
+reclaim from bailing out of the tree walk early. Kswapd and regular
+direct reclaim already don't bail, so it's not clear why limit reclaim
+would have to, especially since it only walks subtrees to begin with.
 
-I would not like to charge the full reservation to every process that
-does the mmap. Think of this, much more common scenario: Task A and B
-are supposed to collaborate on a 10 hugetlb pages of data. Task B
-should not access any hugetlb memory other than the memory it is
-working on with Task A, so:
+This change completely eliminates the OOM kills on our service, while
+showing no signs of overreclaim - no increased scan rates, %sys time,
+or abrupt free memory spikes. I tested across 100 machines that have
+64G of RAM and host about 300 cgroups each.
 
-1. Task A is put in a cgroup with 10 hugetlb pages reservation limit.
-2. Task B is put in a cgroup with 0 hugetlb pages of reservation limit.
-3. Task A mmaps 10 hugetlb pages of hugetlb memory, and notifies Task
-B that it is done.
-4. Task B, due to programmer error, tries to mmap hugetlb memory
-beyond what Task A set up for it, it gets denied at mmap time by the
-cgroup reservation limit.
-5. Task B mmaps the same 10 hugetlb pages of memory and starts working
-on them. The mmap succeeds because Task B is not charged anything.
+[ It's possible overreclaim never was a *practical* issue to begin
+  with - it was simply a concern we had on the mailing lists at the
+  time, with no real data to back it up. But we have also added more
+  bail-out conditions deeper inside reclaim (e.g. the proportional
+  exit in shrink_node_memcg) since. Regardless, now we have data that
+  suggests full walks are more reliable and scale just fine. ]
 
-If we were charging the full reservation to both Tasks A and B, then
-both A and B would have be in cgroups that allow 10 pages of hugetlb
-reservations, and the mmap in step 4 would succeed, and we
-accidentally overcommitted the amount of hugetlb memory available.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/vmscan.c | 22 ++--------------------
+ 1 file changed, 2 insertions(+), 20 deletions(-)
 
-> --
-> Mike Kravetz
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index dbdc46a84f63..b2f10fa49c88 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2667,10 +2667,6 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 
+ 	do {
+ 		struct mem_cgroup *root = sc->target_mem_cgroup;
+-		struct mem_cgroup_reclaim_cookie reclaim = {
+-			.pgdat = pgdat,
+-			.priority = sc->priority,
+-		};
+ 		unsigned long node_lru_pages = 0;
+ 		struct mem_cgroup *memcg;
+ 
+@@ -2679,7 +2675,7 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 		nr_reclaimed = sc->nr_reclaimed;
+ 		nr_scanned = sc->nr_scanned;
+ 
+-		memcg = mem_cgroup_iter(root, NULL, &reclaim);
++		memcg = mem_cgroup_iter(root, NULL, NULL);
+ 		do {
+ 			unsigned long lru_pages;
+ 			unsigned long reclaimed;
+@@ -2724,21 +2720,7 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ 				   sc->nr_scanned - scanned,
+ 				   sc->nr_reclaimed - reclaimed);
+ 
+-			/*
+-			 * Kswapd have to scan all memory cgroups to fulfill
+-			 * the overall scan target for the node.
+-			 *
+-			 * Limit reclaim, on the other hand, only cares about
+-			 * nr_to_reclaim pages to be reclaimed and it will
+-			 * retry with decreasing priority if one round over the
+-			 * whole hierarchy is not sufficient.
+-			 */
+-			if (!current_is_kswapd() &&
+-					sc->nr_reclaimed >= sc->nr_to_reclaim) {
+-				mem_cgroup_iter_break(root, memcg);
+-				break;
+-			}
+-		} while ((memcg = mem_cgroup_iter(root, memcg, &reclaim)));
++		} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
+ 
+ 		if (reclaim_state) {
+ 			sc->nr_reclaimed += reclaim_state->reclaimed_slab;
+-- 
+2.22.0
+
