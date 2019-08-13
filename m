@@ -2,149 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C4218C03D
-	for <lists+cgroups@lfdr.de>; Tue, 13 Aug 2019 20:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597038C4DD
+	for <lists+cgroups@lfdr.de>; Wed, 14 Aug 2019 01:40:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbfHMSOf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Aug 2019 14:14:35 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:43759 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726363AbfHMSOf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Aug 2019 14:14:35 -0400
-Received: by mail-pg1-f195.google.com with SMTP id k3so644419pgb.10
-        for <cgroups@vger.kernel.org>; Tue, 13 Aug 2019 11:14:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=EgcOWrbU42e6Bz/dNCaGzvQRlmmBX/ILwM0rAxK2QB8=;
-        b=Xpgr53VvIkeiIKN7I509QxwJNBY38P1bS8Gb57ABqKGEjIDZT7FL7kvsq8TSUDicYz
-         AV6mOPsUxwsdTmvxxhluwI1qmfupgIQR8/IJ38jYSTypC7rVcRM8NGi8WUEZipLoKVMZ
-         Jz+1huobQe+KyeLD0c32pDcLoBiGynF7flJHDuhqOZmZo5qI/3OrbNwAjYVpzdxDsHSL
-         twFboR4cqTfiADNZva+/cfsaEWD8i+bJqlvjgvQIb87GVugh+f0uW+pjcchomLVu2CtH
-         16hyjA1yiWexmWe3OiNgDC1fxkbGApsvS3TU9O4P3UTG+oYTuGJ3zNimp3etPg43xIKQ
-         TdMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=EgcOWrbU42e6Bz/dNCaGzvQRlmmBX/ILwM0rAxK2QB8=;
-        b=mT42z9pTLFJfr+QTjAA7SRtPQgvHKvP4edlX50krUK+XQ6Zd87V44I6QxwB1Kff7iT
-         XwoebzSJEgJRuIVFGof2WSUSn6A5rfYwU0vJLur5juJmFC8rhniPRSrJ050N/ILz+s0c
-         BBS/sPP3ejJBKr90AWeUVbf/M0eFd6OVKbh5OXvZSwU2P+2n0c5pKYxIiDhxByV1NWRq
-         sVL8P688stIyNhYsW5LcAV2da8dwUKmIcy88pj/YT7wQ8j73DY3HPqjuvMJJBhPg0RGt
-         q1xFs0AvC3XocprXntt4norfqBIQ9tf1Zu1V/+o/B7k918aOOutcMF4z0Mtdl0R5oiEL
-         Nn6Q==
-X-Gm-Message-State: APjAAAXqcivIbT1A3uv+xSZ6JYDSiZ3n7uFUiRr6WQ2tJNJuaCAnA8YA
-        yqJPwZifZEBh3t31dwTzqnNgUg==
-X-Google-Smtp-Source: APXvYqxm4rEwQVbBW1raq/7+W9mNweWzI0asgIirQw+hy7Tc8jMSIH3VXXZpkTVVJNolRGgIV23cFg==
-X-Received: by 2002:a65:5c02:: with SMTP id u2mr35599324pgr.367.1565720073850;
-        Tue, 13 Aug 2019 11:14:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::2:674])
-        by smtp.gmail.com with ESMTPSA id e9sm1925110pge.39.2019.08.13.11.14.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Aug 2019 11:14:33 -0700 (PDT)
-Date:   Tue, 13 Aug 2019 14:14:31 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yang Shi <shy828301@gmail.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: vmscan: do not share cgroup iteration between
- reclaimers
-Message-ID: <20190813181431.GA23056@cmpxchg.org>
-References: <20190812192316.13615-1-hannes@cmpxchg.org>
- <20190813132938.GJ17933@dhcp22.suse.cz>
- <CAHbLzkrRvoVLH16Cxq-f6hn-CLJjh=tJnYnF8P0xNiZ9=eEg8A@mail.gmail.com>
+        id S1726231AbfHMXky (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Aug 2019 19:40:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:49408 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725923AbfHMXkx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Aug 2019 19:40:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DNcgnI160249;
+        Tue, 13 Aug 2019 23:40:43 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=4sbmczonSDq7hMSzD5d9nB/WEujCYY2Kbl0OVowZy30=;
+ b=Mg48PWRCx/UGmdQ+LhxE0ApUMA7usmcn1IT6wfUB5oESpjaJU95lAFUuOP+lrXza5i2O
+ nGjnhjYB1nLdwSAsLGfRqAq8GrzokGXFZs0QyU0dvnO25FfoQSwyRbC4yZj4Kj+btcxY
+ iFDLLUdN0+FyulEzyuGWuf/4Uk5OVbkO/OgUfapiZZCyLFvHEWCP27leFn22m0y+gsTe
+ 1hFbzXXR0oHlRKmZRbIywzASgEONv5aerYMH2thpsejQ1zdhiSlWJQB2LohBqfS86SNE
+ QXvMxHJGlBGyz/09dAR9paxjdwWJIj/k0n0MNZ74YFw8ZhDH2Ypm0s/vFLr6h48ARUUz XQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2u9pjqh721-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Aug 2019 23:40:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7DNcbpL140772;
+        Tue, 13 Aug 2019 23:40:42 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2ubwrgk14p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 13 Aug 2019 23:40:42 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x7DNeeLZ018940;
+        Tue, 13 Aug 2019 23:40:41 GMT
+Received: from [192.168.1.222] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 13 Aug 2019 16:40:40 -0700
+Subject: Re: [RFC PATCH v2 0/5] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ limits
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>, akpm@linux-foundation.org,
+        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
+        cgroups@vger.kernel.org
+References: <20190808231340.53601-1-almasrymina@google.com>
+ <f0a5afe9-2586-38c9-9a6d-8a2b7b288b50@oracle.com>
+ <CAHS8izOKmaOETBd_545Zex=KFNjYOvf3dCzcMRUEXnnhYCK5bw@mail.gmail.com>
+ <71a29844-7367-44c4-23be-eff26ac80467@oracle.com>
+ <CAHS8izPGhHS+=qnf7Vy=C8kXQ=7v7XH3uEVitrW6ARRYU6iDdg@mail.gmail.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <ce087279-7235-e579-4aec-bc3792b6c09c@oracle.com>
+Date:   Tue, 13 Aug 2019 16:40:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHbLzkrRvoVLH16Cxq-f6hn-CLJjh=tJnYnF8P0xNiZ9=eEg8A@mail.gmail.com>
-User-Agent: Mutt/1.12.0 (2019-05-25)
+In-Reply-To: <CAHS8izPGhHS+=qnf7Vy=C8kXQ=7v7XH3uEVitrW6ARRYU6iDdg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908130224
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9348 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908130224
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Aug 13, 2019 at 08:59:38AM -0700, Yang Shi wrote:
-> On Tue, Aug 13, 2019 at 6:29 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Mon 12-08-19 15:23:16, Johannes Weiner wrote:
-> > > One of our services observed a high rate of cgroup OOM kills in the
-> > > presence of large amounts of clean cache. Debugging showed that the
-> > > culprit is the shared cgroup iteration in page reclaim.
-> > >
-> > > Under high allocation concurrency, multiple threads enter reclaim at
-> > > the same time. Fearing overreclaim when we first switched from the
-> > > single global LRU to cgrouped LRU lists, we introduced a shared
-> > > iteration state for reclaim invocations - whether 1 or 20 reclaimers
-> > > are active concurrently, we only walk the cgroup tree once: the 1st
-> > > reclaimer reclaims the first cgroup, the second the second one etc.
-> > > With more reclaimers than cgroups, we start another walk from the top.
-> > >
-> > > This sounded reasonable at the time, but the problem is that reclaim
-> > > concurrency doesn't scale with allocation concurrency. As reclaim
-> > > concurrency increases, the amount of memory individual reclaimers get
-> > > to scan gets smaller and smaller. Individual reclaimers may only see
-> > > one cgroup per cycle, and that may not have much reclaimable
-> > > memory. We see individual reclaimers declare OOM when there is plenty
-> > > of reclaimable memory available in cgroups they didn't visit.
-> > >
-> > > This patch does away with the shared iterator, and every reclaimer is
-> > > allowed to scan the full cgroup tree and see all of reclaimable
-> > > memory, just like it would on a non-cgrouped system. This way, when
-> > > OOM is declared, we know that the reclaimer actually had a chance.
-> > >
-> > > To still maintain fairness in reclaim pressure, disallow cgroup
-> > > reclaim from bailing out of the tree walk early. Kswapd and regular
-> > > direct reclaim already don't bail, so it's not clear why limit reclaim
-> > > would have to, especially since it only walks subtrees to begin with.
-> >
-> > The code does bail out on any direct reclaim - be it limit or page
-> > allocator triggered. Check the !current_is_kswapd part of the condition.
+On 8/10/19 3:01 PM, Mina Almasry wrote:
+> On Sat, Aug 10, 2019 at 11:58 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>
+>> On 8/9/19 12:42 PM, Mina Almasry wrote:
+>>> On Fri, Aug 9, 2019 at 10:54 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>>>> On 8/8/19 4:13 PM, Mina Almasry wrote:
+>>>>> Problem:
+>>>>> Currently tasks attempting to allocate more hugetlb memory than is available get
+>>>>> a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
+>>>>> However, if a task attempts to allocate hugetlb memory only more than its
+>>>>> hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
+>>>>> but will SIGBUS the task when it attempts to fault the memory in.
+>> <snip>
+>>>> I believe tracking reservations for shared mappings can get quite complicated.
+>>>> The hugetlbfs reservation code around shared mappings 'works' on the basis
+>>>> that shared mapping reservations are global.  As a result, reservations are
+>>>> more associated with the inode than with the task making the reservation.
+>>>
+>>> FWIW, I found it not too bad. And my tests at least don't detect an
+>>> anomaly around shared mappings. The key I think is that I'm tracking
+>>> cgroup to uncharge on the file_region entry inside the resv_map, so we
+>>> know who allocated each file_region entry exactly and we can uncharge
+>>> them when the entry is region_del'd.
+>>>
+>>>> For example, consider a file of size 4 hugetlb pages.
+>>>> Task A maps the first 2 pages, and 2 reservations are taken.  Task B maps
+>>>> all 4 pages, and 2 additional reservations are taken.  I am not really sure
+>>>> of the desired semantics here for reservation limits if A and B are in separate
+>>>> cgroups.  Should B be charged for 4 or 2 reservations?
+>>>
+>>> Task A's cgroup is charged 2 pages to its reservation usage.
+>>> Task B's cgroup is charged 2 pages to its reservation usage.
+>>
+>> OK,
+>> Suppose Task B's cgroup allowed 2 huge pages reservation and 2 huge pages
+>> allocation.  The mmap would succeed, but Task B could potentially need to
+>> allocate more than 2 huge pages.  So, when faulting in more than 2 huge
+>> pages B would get a SIGBUS.  Correct?  Or, am I missing something?
+>>
+>> Perhaps reservation charge should always be the same as map size/maximum
+>> allocation size?
 > 
-> Yes, please see commit 2bb0f34fe3c1 ("mm: vmscan: do not iterate all
-> mem cgroups for global direct reclaim")
-
-This patch is a workaround for the cgroup tree blowing up with zombie
-cgroups. Roman's slab reparenting patches are fixing the zombies, so
-we shouldn't need this anymore.
-
-Because with or without the direct reclaim rule, we still don't want
-offline cgroups to accumulate like this. They also slow down kswapd,
-and they eat a ton of RAM.
-
-> > > This change completely eliminates the OOM kills on our service, while
-> > > showing no signs of overreclaim - no increased scan rates, %sys time,
-> > > or abrupt free memory spikes. I tested across 100 machines that have
-> > > 64G of RAM and host about 300 cgroups each.
-> >
-> > What is the usual direct reclaim involvement on those machines?
-> >
-> > > [ It's possible overreclaim never was a *practical* issue to begin
-> > >   with - it was simply a concern we had on the mailing lists at the
-> > >   time, with no real data to back it up. But we have also added more
-> > >   bail-out conditions deeper inside reclaim (e.g. the proportional
-> > >   exit in shrink_node_memcg) since. Regardless, now we have data that
-> > >   suggests full walks are more reliable and scale just fine. ]
-> >
-> > I do not see how shrink_node_memcg bail out helps here. We do scan up-to
-> > SWAP_CLUSTER_MAX pages for each LRU at least once. So we are getting to
-> > nr_memcgs_with_pages multiplier with the patch applied in the worst case.
-> >
-> > How much that matters is another question and it depends on the
-> > number of cgroups and the rate the direct reclaim happens. I do not
-> > remember exact numbers but even walking a very large memcg tree was
-> > noticeable.
+> I'm thinking this would work similar to how other shared memory like
+> tmpfs is accounted for right now. I.e. if a task conducts an operation
+> that causes memory to be allocated then that task is charged for that
+> memory, and if another task uses memory that has already been
+> allocated and charged by another task, then it can use the memory
+> without being charged.
 > 
-> I'm concerned by this too. It might be ok to cgroup v2, but v1 still
-> dominates. And, considering offline memcgs it might be not unusual to
-> have quite large memcg tree.
+> So in case of hugetlb memory, if a task is mmaping memory that causes
+> a new reservation to be made, and new entries to be created in the
+> resv_map for the shared mapping, then that task gets charged. If the
+> task is mmaping memory that is already reserved or faulted, then it
+> reserves or faults it without getting charged.
+> 
+> In the example above, in chronological order:
+> - Task A mmaps 2 hugetlb pages, gets charged 2 hugetlb reservations.
+> - Task B mmaps 4 hugetlb pages, gets charged only 2 hugetlb
+> reservations because the first 2 are charged already and can be used
+> without incurring a charge.
+> - Task B accesses 4 hugetlb pages, gets charged *4* hugetlb faults,
+> since none of the 4 pages are faulted in yet. If the task is only
+> allowed 2 hugetlb page faults then it will actually get a SIGBUS.
+> - Task A accesses 4 hugetlb pages, gets charged no faults, since all
+> the hugetlb faults is charged to Task B.
+> 
+> So, yes, I can see a scenario where userspace still gets SIGBUS'd, but
+> I think that's fine because:
+> 1. Notice that the SIGBUS is due to the faulting limit, and not the
+> reservation limit, so we're not regressing the status quo per say.
+> Folks using the fault limit today understand the SIGBUS risk.
+> 2. the way I expect folks to use this is to use 'reservation limits'
+> to partition the available hugetlb memory on the machine using it and
+> forgo using the existing fault limits. Using both at the same time I
+> think would be a superuser feature for folks that really know what
+> they are doing, and understand the risk of SIGBUS that comes with
+> using the existing fault limits.
+> 3. I expect userspace to in general handle this correctly because
+> there are similar challenges with all shared memory and accounting of
+> it, even in tmpfs, I think.
 
-cgroup2 was affected by the offline memcgs just as much as cgroup1 -
-probably even more so because it tracks more types of memory per
-default. That's why Roman worked tirelessly on a solution.
-
-But we shouldn't keep those bandaid patches around forever.
+Ok, that helps explain your use case.  I agree that it would be difficult
+to use both fault and reservation limits together.  Especially in the case
+of shared mappings.
+-- 
+Mike Kravetz
