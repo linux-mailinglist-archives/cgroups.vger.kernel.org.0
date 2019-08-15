@@ -2,22 +2,22 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C0FE78EE78
-	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2019 16:41:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42B528EE99
+	for <lists+cgroups@lfdr.de>; Thu, 15 Aug 2019 16:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729820AbfHOOlb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Aug 2019 10:41:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54284 "EHLO mx1.suse.de"
+        id S1726865AbfHOOq0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 15 Aug 2019 10:46:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56200 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1731874AbfHOOla (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 15 Aug 2019 10:41:30 -0400
+        id S1726008AbfHOOq0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 15 Aug 2019 10:46:26 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 1B5CAAE03;
-        Thu, 15 Aug 2019 14:41:25 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id 0005CABB1;
+        Thu, 15 Aug 2019 14:46:23 +0000 (UTC)
 Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EBA241E4200; Thu, 15 Aug 2019 16:41:23 +0200 (CEST)
-Date:   Thu, 15 Aug 2019 16:41:23 +0200
+        id AC6771E4200; Thu, 15 Aug 2019 16:46:23 +0200 (CEST)
+Date:   Thu, 15 Aug 2019 16:46:23 +0200
 From:   Jan Kara <jack@suse.cz>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
@@ -25,25 +25,29 @@ Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
         linux-mm@kvack.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, guro@fb.com,
         akpm@linux-foundation.org
-Subject: Re: [PATCH 1/4] writeback: Generalize and expose wb_completion
-Message-ID: <20190815144123.GL14313@quack2.suse.cz>
+Subject: Re: [PATCH 2/4] bdi: Add bdi->id
+Message-ID: <20190815144623.GM14313@quack2.suse.cz>
 References: <20190803140155.181190-1-tj@kernel.org>
- <20190803140155.181190-2-tj@kernel.org>
+ <20190803140155.181190-3-tj@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190803140155.181190-2-tj@kernel.org>
+In-Reply-To: <20190803140155.181190-3-tj@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat 03-08-19 07:01:52, Tejun Heo wrote:
-> wb_completion is used to track writeback completions.  We want to use
-> it from memcg side for foreign inode flushes.  This patch updates it
-> to remember the target waitq instead of assuming bdi->wb_waitq and
-> expose it outside of fs-writeback.c.
+On Sat 03-08-19 07:01:53, Tejun Heo wrote:
+> There currently is no way to universally identify and lookup a bdi
+> without holding a reference and pointer to it.  This patch adds an
+> non-recycling bdi->id and implements bdi_get_by_id() which looks up
+> bdis by their ids.  This will be used by memcg foreign inode flushing.
+> 
+> I left bdi_list alone for simplicity and because while rb_tree does
+> support rcu assignment it doesn't seem to guarantee lossless walk when
+> walk is racing aginst tree rebalance operations.
 > 
 > Signed-off-by: Tejun Heo <tj@kernel.org>
 
@@ -51,198 +55,153 @@ The patch looks good to me. You can add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
+Although I would note that here you take effort not to recycle bdi->id so
+that you don't flush wrong devices while in patch 4 you take pretty lax
+approach to feeding garbage into the writeback system. So these two don't
+quite match to me...
+
 								Honza
 
 > ---
->  fs/fs-writeback.c                | 47 ++++++++++----------------------
->  include/linux/backing-dev-defs.h | 20 ++++++++++++++
->  include/linux/backing-dev.h      |  2 ++
->  3 files changed, 36 insertions(+), 33 deletions(-)
+>  include/linux/backing-dev-defs.h |  2 +
+>  include/linux/backing-dev.h      |  1 +
+>  mm/backing-dev.c                 | 65 +++++++++++++++++++++++++++++++-
+>  3 files changed, 66 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 542b02d170f8..6129debdc938 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -36,10 +36,6 @@
->   */
->  #define MIN_WRITEBACK_PAGES	(4096UL >> (PAGE_SHIFT - 10))
->  
-> -struct wb_completion {
-> -	atomic_t		cnt;
-> -};
-> -
->  /*
->   * Passed into wb_writeback(), essentially a subset of writeback_control
->   */
-> @@ -60,19 +56,6 @@ struct wb_writeback_work {
->  	struct wb_completion *done;	/* set if the caller waits */
->  };
->  
-> -/*
-> - * If one wants to wait for one or more wb_writeback_works, each work's
-> - * ->done should be set to a wb_completion defined using the following
-> - * macro.  Once all work items are issued with wb_queue_work(), the caller
-> - * can wait for the completion of all using wb_wait_for_completion().  Work
-> - * items which are waited upon aren't freed automatically on completion.
-> - */
-> -#define DEFINE_WB_COMPLETION_ONSTACK(cmpl)				\
-> -	struct wb_completion cmpl = {					\
-> -		.cnt		= ATOMIC_INIT(1),			\
-> -	}
-> -
-> -
->  /*
->   * If an inode is constantly having its pages dirtied, but then the
->   * updates stop dirtytime_expire_interval seconds in the past, it's
-> @@ -182,7 +165,7 @@ static void finish_writeback_work(struct bdi_writeback *wb,
->  	if (work->auto_free)
->  		kfree(work);
->  	if (done && atomic_dec_and_test(&done->cnt))
-> -		wake_up_all(&wb->bdi->wb_waitq);
-> +		wake_up_all(done->waitq);
->  }
->  
->  static void wb_queue_work(struct bdi_writeback *wb,
-> @@ -206,20 +189,18 @@ static void wb_queue_work(struct bdi_writeback *wb,
->  
->  /**
->   * wb_wait_for_completion - wait for completion of bdi_writeback_works
-> - * @bdi: bdi work items were issued to
->   * @done: target wb_completion
->   *
->   * Wait for one or more work items issued to @bdi with their ->done field
-> - * set to @done, which should have been defined with
-> - * DEFINE_WB_COMPLETION_ONSTACK().  This function returns after all such
-> - * work items are completed.  Work items which are waited upon aren't freed
-> + * set to @done, which should have been initialized with
-> + * DEFINE_WB_COMPLETION().  This function returns after all such work items
-> + * are completed.  Work items which are waited upon aren't freed
->   * automatically on completion.
->   */
-> -static void wb_wait_for_completion(struct backing_dev_info *bdi,
-> -				   struct wb_completion *done)
-> +void wb_wait_for_completion(struct wb_completion *done)
->  {
->  	atomic_dec(&done->cnt);		/* put down the initial count */
-> -	wait_event(bdi->wb_waitq, !atomic_read(&done->cnt));
-> +	wait_event(*done->waitq, !atomic_read(&done->cnt));
->  }
->  
->  #ifdef CONFIG_CGROUP_WRITEBACK
-> @@ -843,7 +824,7 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
->  restart:
->  	rcu_read_lock();
->  	list_for_each_entry_continue_rcu(wb, &bdi->wb_list, bdi_node) {
-> -		DEFINE_WB_COMPLETION_ONSTACK(fallback_work_done);
-> +		DEFINE_WB_COMPLETION(fallback_work_done, bdi);
->  		struct wb_writeback_work fallback_work;
->  		struct wb_writeback_work *work;
->  		long nr_pages;
-> @@ -890,7 +871,7 @@ static void bdi_split_work_to_wbs(struct backing_dev_info *bdi,
->  		last_wb = wb;
->  
->  		rcu_read_unlock();
-> -		wb_wait_for_completion(bdi, &fallback_work_done);
-> +		wb_wait_for_completion(&fallback_work_done);
->  		goto restart;
->  	}
->  	rcu_read_unlock();
-> @@ -2362,7 +2343,8 @@ static void wait_sb_inodes(struct super_block *sb)
->  static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
->  				     enum wb_reason reason, bool skip_if_busy)
->  {
-> -	DEFINE_WB_COMPLETION_ONSTACK(done);
-> +	struct backing_dev_info *bdi = sb->s_bdi;
-> +	DEFINE_WB_COMPLETION(done, bdi);
->  	struct wb_writeback_work work = {
->  		.sb			= sb,
->  		.sync_mode		= WB_SYNC_NONE,
-> @@ -2371,14 +2353,13 @@ static void __writeback_inodes_sb_nr(struct super_block *sb, unsigned long nr,
->  		.nr_pages		= nr,
->  		.reason			= reason,
->  	};
-> -	struct backing_dev_info *bdi = sb->s_bdi;
->  
->  	if (!bdi_has_dirty_io(bdi) || bdi == &noop_backing_dev_info)
->  		return;
->  	WARN_ON(!rwsem_is_locked(&sb->s_umount));
->  
->  	bdi_split_work_to_wbs(sb->s_bdi, &work, skip_if_busy);
-> -	wb_wait_for_completion(bdi, &done);
-> +	wb_wait_for_completion(&done);
->  }
->  
->  /**
-> @@ -2440,7 +2421,8 @@ EXPORT_SYMBOL(try_to_writeback_inodes_sb);
->   */
->  void sync_inodes_sb(struct super_block *sb)
->  {
-> -	DEFINE_WB_COMPLETION_ONSTACK(done);
-> +	struct backing_dev_info *bdi = sb->s_bdi;
-> +	DEFINE_WB_COMPLETION(done, bdi);
->  	struct wb_writeback_work work = {
->  		.sb		= sb,
->  		.sync_mode	= WB_SYNC_ALL,
-> @@ -2450,7 +2432,6 @@ void sync_inodes_sb(struct super_block *sb)
->  		.reason		= WB_REASON_SYNC,
->  		.for_sync	= 1,
->  	};
-> -	struct backing_dev_info *bdi = sb->s_bdi;
->  
->  	/*
->  	 * Can't skip on !bdi_has_dirty() because we should wait for !dirty
-> @@ -2464,7 +2445,7 @@ void sync_inodes_sb(struct super_block *sb)
->  	/* protect against inode wb switch, see inode_switch_wbs_work_fn() */
->  	bdi_down_write_wb_switch_rwsem(bdi);
->  	bdi_split_work_to_wbs(bdi, &work, false);
-> -	wb_wait_for_completion(bdi, &done);
-> +	wb_wait_for_completion(&done);
->  	bdi_up_write_wb_switch_rwsem(bdi);
->  
->  	wait_sb_inodes(sb);
 > diff --git a/include/linux/backing-dev-defs.h b/include/linux/backing-dev-defs.h
-> index 6a1a8a314d85..8fb740178d5d 100644
+> index 8fb740178d5d..1075f2552cfc 100644
 > --- a/include/linux/backing-dev-defs.h
 > +++ b/include/linux/backing-dev-defs.h
-> @@ -67,6 +67,26 @@ enum wb_reason {
->  	WB_REASON_MAX,
+> @@ -185,6 +185,8 @@ struct bdi_writeback {
 >  };
 >  
-> +struct wb_completion {
-> +	atomic_t		cnt;
-> +	wait_queue_head_t	*waitq;
-> +};
-> +
-> +#define __WB_COMPLETION_INIT(_waitq)	\
-> +	(struct wb_completion){ .cnt = ATOMIC_INIT(1), .waitq = (_waitq) }
-> +
-> +/*
-> + * If one wants to wait for one or more wb_writeback_works, each work's
-> + * ->done should be set to a wb_completion defined using the following
-> + * macro.  Once all work items are issued with wb_queue_work(), the caller
-> + * can wait for the completion of all using wb_wait_for_completion().  Work
-> + * items which are waited upon aren't freed automatically on completion.
-> + */
-> +#define WB_COMPLETION_INIT(bdi)		__WB_COMPLETION_INIT(&(bdi)->wb_waitq)
-> +
-> +#define DEFINE_WB_COMPLETION(cmpl, bdi)	\
-> +	struct wb_completion cmpl = WB_COMPLETION_INIT(bdi)
-> +
->  /*
->   * For cgroup writeback, multiple wb's may map to the same blkcg.  Those
->   * wb's can operate mostly independently but should share the congested
+>  struct backing_dev_info {
+> +	u64 id;
+> +	struct rb_node rb_node; /* keyed by ->id */
+>  	struct list_head bdi_list;
+>  	unsigned long ra_pages;	/* max readahead in PAGE_SIZE units */
+>  	unsigned long io_pages;	/* max allowed IO size */
 > diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-> index 35b31d176f74..02650b1253a2 100644
+> index 02650b1253a2..84cdcfbc763f 100644
 > --- a/include/linux/backing-dev.h
 > +++ b/include/linux/backing-dev.h
-> @@ -44,6 +44,8 @@ void wb_start_background_writeback(struct bdi_writeback *wb);
->  void wb_workfn(struct work_struct *work);
->  void wb_wakeup_delayed(struct bdi_writeback *wb);
+> @@ -24,6 +24,7 @@ static inline struct backing_dev_info *bdi_get(struct backing_dev_info *bdi)
+>  	return bdi;
+>  }
 >  
-> +void wb_wait_for_completion(struct wb_completion *done);
+> +struct backing_dev_info *bdi_get_by_id(u64 id);
+>  void bdi_put(struct backing_dev_info *bdi);
+>  
+>  __printf(2, 3)
+> diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+> index e8e89158adec..4a8816e0b8d4 100644
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -1,6 +1,7 @@
+>  // SPDX-License-Identifier: GPL-2.0-only
+>  
+>  #include <linux/wait.h>
+> +#include <linux/rbtree.h>
+>  #include <linux/backing-dev.h>
+>  #include <linux/kthread.h>
+>  #include <linux/freezer.h>
+> @@ -22,10 +23,12 @@ EXPORT_SYMBOL_GPL(noop_backing_dev_info);
+>  static struct class *bdi_class;
+>  
+>  /*
+> - * bdi_lock protects updates to bdi_list. bdi_list has RCU reader side
+> - * locking.
+> + * bdi_lock protects bdi_tree and updates to bdi_list. bdi_list has RCU
+> + * reader side locking.
+>   */
+>  DEFINE_SPINLOCK(bdi_lock);
+> +static u64 bdi_id_cursor;
+> +static struct rb_root bdi_tree = RB_ROOT;
+>  LIST_HEAD(bdi_list);
+>  
+>  /* bdi_wq serves all asynchronous writeback tasks */
+> @@ -859,9 +862,58 @@ struct backing_dev_info *bdi_alloc_node(gfp_t gfp_mask, int node_id)
+>  }
+>  EXPORT_SYMBOL(bdi_alloc_node);
+>  
+> +struct rb_node **bdi_lookup_rb_node(u64 id, struct rb_node **parentp)
+> +{
+> +	struct rb_node **p = &bdi_tree.rb_node;
+> +	struct rb_node *parent = NULL;
+> +	struct backing_dev_info *bdi;
 > +
->  extern spinlock_t bdi_lock;
->  extern struct list_head bdi_list;
+> +	lockdep_assert_held(&bdi_lock);
+> +
+> +	while (*p) {
+> +		parent = *p;
+> +		bdi = rb_entry(parent, struct backing_dev_info, rb_node);
+> +
+> +		if (bdi->id > id)
+> +			p = &(*p)->rb_left;
+> +		else if (bdi->id < id)
+> +			p = &(*p)->rb_right;
+> +		else
+> +			break;
+> +	}
+> +
+> +	if (parentp)
+> +		*parentp = parent;
+> +	return p;
+> +}
+> +
+> +/**
+> + * bdi_get_by_id - lookup and get bdi from its id
+> + * @id: bdi id to lookup
+> + *
+> + * Find bdi matching @id and get it.  Returns NULL if the matching bdi
+> + * doesn't exist or is already unregistered.
+> + */
+> +struct backing_dev_info *bdi_get_by_id(u64 id)
+> +{
+> +	struct backing_dev_info *bdi = NULL;
+> +	struct rb_node **p;
+> +
+> +	spin_lock_irq(&bdi_lock);
+> +	p = bdi_lookup_rb_node(id, NULL);
+> +	if (*p) {
+> +		bdi = rb_entry(*p, struct backing_dev_info, rb_node);
+> +		bdi_get(bdi);
+> +	}
+> +	spin_unlock_irq(&bdi_lock);
+> +
+> +	return bdi;
+> +}
+> +
+>  int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
+>  {
+>  	struct device *dev;
+> +	struct rb_node *parent, **p;
+>  
+>  	if (bdi->dev)	/* The driver needs to use separate queues per device */
+>  		return 0;
+> @@ -877,7 +929,15 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
+>  	set_bit(WB_registered, &bdi->wb.state);
+>  
+>  	spin_lock_bh(&bdi_lock);
+> +
+> +	bdi->id = ++bdi_id_cursor;
+> +
+> +	p = bdi_lookup_rb_node(bdi->id, &parent);
+> +	rb_link_node(&bdi->rb_node, parent, p);
+> +	rb_insert_color(&bdi->rb_node, &bdi_tree);
+> +
+>  	list_add_tail_rcu(&bdi->bdi_list, &bdi_list);
+> +
+>  	spin_unlock_bh(&bdi_lock);
+>  
+>  	trace_writeback_bdi_register(bdi);
+> @@ -918,6 +978,7 @@ EXPORT_SYMBOL(bdi_register_owner);
+>  static void bdi_remove_from_list(struct backing_dev_info *bdi)
+>  {
+>  	spin_lock_bh(&bdi_lock);
+> +	rb_erase(&bdi->rb_node, &bdi_tree);
+>  	list_del_rcu(&bdi->bdi_list);
+>  	spin_unlock_bh(&bdi_lock);
 >  
 > -- 
 > 2.17.1
