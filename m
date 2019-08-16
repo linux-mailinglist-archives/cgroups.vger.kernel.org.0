@@ -2,107 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B985C900A4
-	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2019 13:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCAB904E5
+	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2019 17:45:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727154AbfHPLTE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Aug 2019 07:19:04 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42058 "EHLO
-        Galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727218AbfHPLTB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 16 Aug 2019 07:19:01 -0400
-Received: from localhost ([127.0.0.1] helo=flow.W.breakpoint.cc)
-        by Galois.linutronix.de with esmtp (Exim 4.80)
-        (envelope-from <bigeasy@linutronix.de>)
-        id 1hyaG3-0008PI-80; Fri, 16 Aug 2019 13:18:59 +0200
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     cgroups@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, tglx@linutronix.de,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH 4/4] cgroup: Acquire cgroup_rstat_lock with enabled interrupts
-Date:   Fri, 16 Aug 2019 13:18:17 +0200
-Message-Id: <20190816111817.834-5-bigeasy@linutronix.de>
-X-Mailer: git-send-email 2.23.0.rc1
-In-Reply-To: <20190816111817.834-1-bigeasy@linutronix.de>
-References: <20190816111817.834-1-bigeasy@linutronix.de>
+        id S1727347AbfHPPpm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 16 Aug 2019 11:45:42 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60788 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727345AbfHPPpm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 16 Aug 2019 11:45:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id E8AACAE1C;
+        Fri, 16 Aug 2019 15:45:37 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 3EB341E4009; Fri, 16 Aug 2019 17:45:37 +0200 (CEST)
+Date:   Fri, 16 Aug 2019 17:45:37 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, guro@fb.com,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH 3/5] writeback: Separate out wb_get_lookup() from
+ wb_get_create()
+Message-ID: <20190816154537.GG3041@quack2.suse.cz>
+References: <20190815195619.GA2263813@devbig004.ftw2.facebook.com>
+ <20190815195823.GD2263813@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190815195823.GD2263813@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-There is no need to disable interrupts while cgroup_rstat_lock is
-acquired. The lock is never used in-IRQ context so a simple spin_lock()
-is enough for synchronisation purpose.
+On Thu 15-08-19 12:58:23, Tejun Heo wrote:
+> Separate out wb_get_lookup() which doesn't try to create one if there
+> isn't already one from wb_get_create().  This will be used by later
+> patches.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-Acquire cgroup_rstat_lock without disabling interrupts and ensure that
-cgroup_rstat_cpu_lock is acquired with disabled interrupts (this one is
-acquired in-IRQ context).
+Looks good to me. You can add:
 
-Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
----
- kernel/cgroup/rstat.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index bbfce474c66a2..a59962e66aea1 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -161,17 +161,17 @@ static void cgroup_rstat_flush_locked(struct cgroup *=
-cgrp)
- 						       cpu);
- 		struct cgroup *pos =3D NULL;
-=20
--		raw_spin_lock(cpu_lock);
-+		raw_spin_lock_irq(cpu_lock);
- 		while ((pos =3D cgroup_rstat_cpu_pop_updated(pos, cgrp, cpu)))
- 			cgroup_base_stat_flush(pos, cpu);
-=20
--		raw_spin_unlock(cpu_lock);
-+		raw_spin_unlock_irq(cpu_lock);
-=20
- 		if (need_resched() || spin_needbreak(&cgroup_rstat_lock)) {
--			spin_unlock_irq(&cgroup_rstat_lock);
-+			spin_unlock(&cgroup_rstat_lock);
- 			if (!cond_resched())
- 				cpu_relax();
--			spin_lock_irq(&cgroup_rstat_lock);
-+			spin_lock(&cgroup_rstat_lock);
- 		}
- 	}
- }
-@@ -193,9 +193,9 @@ void cgroup_rstat_flush(struct cgroup *cgrp)
- {
- 	might_sleep();
-=20
--	spin_lock_irq(&cgroup_rstat_lock);
-+	spin_lock(&cgroup_rstat_lock);
- 	cgroup_rstat_flush_locked(cgrp);
--	spin_unlock_irq(&cgroup_rstat_lock);
-+	spin_unlock(&cgroup_rstat_lock);
- }
-=20
- /**
-@@ -211,7 +211,7 @@ static void cgroup_rstat_flush_hold(struct cgroup *cgrp)
- 	__acquires(&cgroup_rstat_lock)
- {
- 	might_sleep();
--	spin_lock_irq(&cgroup_rstat_lock);
-+	spin_lock(&cgroup_rstat_lock);
- 	cgroup_rstat_flush_locked(cgrp);
- }
-=20
-@@ -221,7 +221,7 @@ static void cgroup_rstat_flush_hold(struct cgroup *cgrp)
- static void cgroup_rstat_flush_release(void)
- 	__releases(&cgroup_rstat_lock)
- {
--	spin_unlock_irq(&cgroup_rstat_lock);
-+	spin_unlock(&cgroup_rstat_lock);
- }
-=20
- int cgroup_rstat_init(struct cgroup *cgrp)
---=20
-2.23.0.rc1
+								Honza
 
+> ---
+>  include/linux/backing-dev.h |    2 +
+>  mm/backing-dev.c            |   55 +++++++++++++++++++++++++++++---------------
+>  2 files changed, 39 insertions(+), 18 deletions(-)
+> 
+> --- a/include/linux/backing-dev.h
+> +++ b/include/linux/backing-dev.h
+> @@ -230,6 +230,8 @@ static inline int bdi_sched_wait(void *w
+>  struct bdi_writeback_congested *
+>  wb_congested_get_create(struct backing_dev_info *bdi, int blkcg_id, gfp_t gfp);
+>  void wb_congested_put(struct bdi_writeback_congested *congested);
+> +struct bdi_writeback *wb_get_lookup(struct backing_dev_info *bdi,
+> +				    struct cgroup_subsys_state *memcg_css);
+>  struct bdi_writeback *wb_get_create(struct backing_dev_info *bdi,
+>  				    struct cgroup_subsys_state *memcg_css,
+>  				    gfp_t gfp);
+> --- a/mm/backing-dev.c
+> +++ b/mm/backing-dev.c
+> @@ -618,13 +618,12 @@ out_put:
+>  }
+>  
+>  /**
+> - * wb_get_create - get wb for a given memcg, create if necessary
+> + * wb_get_lookup - get wb for a given memcg
+>   * @bdi: target bdi
+>   * @memcg_css: cgroup_subsys_state of the target memcg (must have positive ref)
+> - * @gfp: allocation mask to use
+>   *
+> - * Try to get the wb for @memcg_css on @bdi.  If it doesn't exist, try to
+> - * create one.  The returned wb has its refcount incremented.
+> + * Try to get the wb for @memcg_css on @bdi.  The returned wb has its
+> + * refcount incremented.
+>   *
+>   * This function uses css_get() on @memcg_css and thus expects its refcnt
+>   * to be positive on invocation.  IOW, rcu_read_lock() protection on
+> @@ -641,6 +640,39 @@ out_put:
+>   * each lookup.  On mismatch, the existing wb is discarded and a new one is
+>   * created.
+>   */
+> +struct bdi_writeback *wb_get_lookup(struct backing_dev_info *bdi,
+> +				    struct cgroup_subsys_state *memcg_css)
+> +{
+> +	struct bdi_writeback *wb;
+> +
+> +	if (!memcg_css->parent)
+> +		return &bdi->wb;
+> +
+> +	rcu_read_lock();
+> +	wb = radix_tree_lookup(&bdi->cgwb_tree, memcg_css->id);
+> +	if (wb) {
+> +		struct cgroup_subsys_state *blkcg_css;
+> +
+> +		/* see whether the blkcg association has changed */
+> +		blkcg_css = cgroup_get_e_css(memcg_css->cgroup, &io_cgrp_subsys);
+> +		if (unlikely(wb->blkcg_css != blkcg_css || !wb_tryget(wb)))
+> +			wb = NULL;
+> +		css_put(blkcg_css);
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return wb;
+> +}
+> +
+> +/**
+> + * wb_get_create - get wb for a given memcg, create if necessary
+> + * @bdi: target bdi
+> + * @memcg_css: cgroup_subsys_state of the target memcg (must have positive ref)
+> + * @gfp: allocation mask to use
+> + *
+> + * Try to get the wb for @memcg_css on @bdi.  If it doesn't exist, try to
+> + * create one.  See wb_get_lookup() for more details.
+> + */
+>  struct bdi_writeback *wb_get_create(struct backing_dev_info *bdi,
+>  				    struct cgroup_subsys_state *memcg_css,
+>  				    gfp_t gfp)
+> @@ -653,20 +685,7 @@ struct bdi_writeback *wb_get_create(stru
+>  		return &bdi->wb;
+>  
+>  	do {
+> -		rcu_read_lock();
+> -		wb = radix_tree_lookup(&bdi->cgwb_tree, memcg_css->id);
+> -		if (wb) {
+> -			struct cgroup_subsys_state *blkcg_css;
+> -
+> -			/* see whether the blkcg association has changed */
+> -			blkcg_css = cgroup_get_e_css(memcg_css->cgroup,
+> -						     &io_cgrp_subsys);
+> -			if (unlikely(wb->blkcg_css != blkcg_css ||
+> -				     !wb_tryget(wb)))
+> -				wb = NULL;
+> -			css_put(blkcg_css);
+> -		}
+> -		rcu_read_unlock();
+> +		wb = wb_get_lookup(bdi, memcg_css);
+>  	} while (!wb && !cgwb_create(bdi, memcg_css, gfp));
+>  
+>  	return wb;
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
