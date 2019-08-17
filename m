@@ -2,86 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC0790554
-	for <lists+cgroups@lfdr.de>; Fri, 16 Aug 2019 18:03:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D24AF90FA8
+	for <lists+cgroups@lfdr.de>; Sat, 17 Aug 2019 11:28:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727737AbfHPQC7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 16 Aug 2019 12:02:59 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39564 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727377AbfHPQC6 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 16 Aug 2019 12:02:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 3F51EAF97;
-        Fri, 16 Aug 2019 16:02:57 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id A3BC71E4009; Fri, 16 Aug 2019 18:02:56 +0200 (CEST)
-Date:   Fri, 16 Aug 2019 18:02:56 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com, guro@fb.com,
-        akpm@linux-foundation.org
-Subject: Re: [PATCH 5/5] writeback, memcg: Implement foreign dirty flushing
-Message-ID: <20190816160256.GI3041@quack2.suse.cz>
-References: <20190815195619.GA2263813@devbig004.ftw2.facebook.com>
- <20190815195930.GF2263813@devbig004.ftw2.facebook.com>
+        id S1725911AbfHQJ2W convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Sat, 17 Aug 2019 05:28:22 -0400
+Received: from mail.csu.ru ([195.54.14.68]:53861 "HELO mail.csu.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+        id S1725832AbfHQJ2W (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 17 Aug 2019 05:28:22 -0400
+X-Greylist: delayed 576 seconds by postgrey-1.27 at vger.kernel.org; Sat, 17 Aug 2019 05:28:12 EDT
+Received: from webmail.csu.ru (webmail.csu.ru [195.54.14.80])
+        (Authenticated sender: pto)
+        by mail.csu.ru (Postfix) with ESMTPA id 58F67143A0C;
+        Sat, 17 Aug 2019 14:18:20 +0500 (+05)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.csu.ru 58F67143A0C
+Received: from 197.237.168.51
+        (SquirrelMail authenticated user pto)
+        by webmail.csu.ru with HTTP;
+        Sat, 17 Aug 2019 14:18:21 +0500
+Message-ID: <5b925aab4654418c946f37c21ec3d09b.squirrel@webmail.csu.ru>
+Date:   Sat, 17 Aug 2019 14:18:21 +0500
+Subject: 
+From:   "Lisa Robinson" <aweb4111@gmail.com>
+User-Agent: SquirrelMail/1.4.22
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190815195930.GF2263813@devbig004.ftw2.facebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;charset=utf-8
+X-Priority: 3 (Normal)
+Importance: Normal
+X-KLMS-Rule-ID: 2
+X-KLMS-Message-Action: skipped, MessageAuthentication
+X-KLMS-AntiSpam-Lua-Profiles: 143834 [Aug 17 2019]
+X-KLMS-AntiSpam-Version: 5.8.6.0
+X-KLMS-AntiSpam-Envelope-From: aweb4111@gmail.com
+X-KLMS-AntiSpam-Auth: dmarc=fail header.from=gmail.com policy=none;spf=softfail smtp.mailfrom=gmail.com;dkim=none
+X-KLMS-AntiSpam-Rate: 30
+X-KLMS-AntiSpam-Status: not_detected
+X-KLMS-AntiSpam-Method: none
+X-KLMS-AntiSpam-Info: LuaCore: 312 312 4c9e4568ba55fc3cf9a6a6ed868a456a9232a9d4, {rep_avail}, {reputation received: black}, {black address: 197.237.168.51}, {Prob_to_header_missing}, 195.54.14.80:7.1.2;webmail.csu.ru:7.1.1;gmail.com:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1, ApMailHostAddress: 195.54.14.80
+X-MS-Exchange-Organization-SCL: -1
+X-KLMS-AntiSpam-Interceptor-Info: scan successful
+X-KLMS-AntiPhishing: Clean, bases: 2019/08/17 08:19:00
+X-KLMS-AntiVirus: Kaspersky Security for Linux Mail Server, version 8.0.3.30, bases: 2019/08/17 06:37:00 #13872394
+X-KLMS-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: 8BIT
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 15-08-19 12:59:30, Tejun Heo wrote:
-> +/* issue foreign writeback flushes for recorded foreign dirtying events */
-> +void mem_cgroup_flush_foreign(struct bdi_writeback *wb)
-> +{
-> +	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
-> +	unsigned long intv = msecs_to_jiffies(dirty_expire_interval * 10);
-> +	u64 now = jiffies_64;
-> +	int i;
-> +
-> +	for (i = 0; i < MEMCG_CGWB_FRN_CNT; i++) {
-> +		struct memcg_cgwb_frn *frn = &memcg->cgwb_frn[i];
-> +
-> +		/*
-> +		 * If the record is older than dirty_expire_interval,
-> +		 * writeback on it has already started.  No need to kick it
-> +		 * off again.  Also, don't start a new one if there's
-> +		 * already one in flight.
-> +		 */
-> +		if (frn->at > now - intv && atomic_read(&frn->done.cnt) == 1) {
-> +			frn->at = 0;
-> +			cgroup_writeback_by_id(frn->bdi_id, frn->memcg_id,
-> +					       LONG_MAX, WB_REASON_FOREIGN_FLUSH,
-> +					       &frn->done);
-> +		}
 
-Hum, two concerns here still:
 
-1) You ask to writeback LONG_MAX pages. That means that you give up any
-livelock avoidance for the flusher work and you can writeback almost
-forever if someone is busily dirtying pages in the wb. I think you need to
-pick something like amount of dirty pages in the given wb (that would have
-to be fetched after everything is looked up) or just some arbitrary
-reasonably small constant like 1024 (but then I guess there's no guarantee
-stuck memcg will make any progress and you've invalidated the frn entry
-here).
 
-2) When you invalidate frn entry here by writing 0 to 'at', it's likely to get
-reused soon. Possibly while the writeback is still running. And then you
-won't start any writeback for the new entry because of the
-atomic_read(&frn->done.cnt) == 1 check. This seems like it could happen
-pretty frequently?
+Sie haben einen Geldzuschuss vom Miss Lisa Robinson Charity Program.
+E-Mail für weitere Details.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
