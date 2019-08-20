@@ -2,36 +2,30 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D20A95B91
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2019 11:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F12E95B8A
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2019 11:51:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729711AbfHTJuN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Aug 2019 05:50:13 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:56240 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729705AbfHTJto (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Aug 2019 05:49:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Ta-6uiR_1566294572;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Ta-6uiR_1566294572)
+        id S1729727AbfHTJto (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Aug 2019 05:49:44 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:59724 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728426AbfHTJtn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Aug 2019 05:49:43 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0TZztT4P_1566294573;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TZztT4P_1566294573)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 20 Aug 2019 17:49:32 +0800
+          Tue, 20 Aug 2019 17:49:34 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
         Mel Gorman <mgorman@techsingularity.net>,
         Tejun Heo <tj@kernel.org>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: [PATCH 02/14] lru/memcg: move the lruvec->pgdat sync out lru_lock
-Date:   Tue, 20 Aug 2019 17:48:25 +0800
-Message-Id: <1566294517-86418-3-git-send-email-alex.shi@linux.alibaba.com>
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: [PATCH 04/14] lru/compaction: use per lruvec lock in isolate_migratepages_block
+Date:   Tue, 20 Aug 2019 17:48:27 +0800
+Message-Id: <1566294517-86418-5-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -40,101 +34,126 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We are going to move lruvec getting out of lru_lock, the only unsafe
-part is lruvec->pgdat syncing when memory node hot pluging.
-
-Splitting out the lruvec->pgdat assignment now and will put it in
-lruvec lru_lock protection.
-
-No function changes in this patch now.
+Using lruvec locking to replace pgdat lru_lock. and then unfold
+compact_unlock_should_abort() to fit the replacement.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Cc: Chris Down <chris@chrisdown.name>
-Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Qian Cai <cai@lca.pw>
+Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
 ---
- include/linux/memcontrol.h | 24 +++++++++++++++++-------
- mm/memcontrol.c            |  8 +-------
- 2 files changed, 18 insertions(+), 14 deletions(-)
+ mm/compaction.c | 48 ++++++++++++++++++++++++++++++------------------
+ 1 file changed, 30 insertions(+), 18 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 2cd4359cb38c..95b3d9885ab6 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -359,6 +359,17 @@ void mem_cgroup_cancel_charge(struct page *page, struct mem_cgroup *memcg,
- 	return memcg->nodeinfo[nid];
- }
- 
-+static void sync_lruvec_pgdat(struct lruvec *lruvec, struct pglist_data *pgdat)
-+{
-+	/*
-+	 * Since a node can be onlined after the mem_cgroup was created,
-+	 * we have to be prepared to initialize lruvec->pgdat here;
-+	 * and if offlined then reonlined, we need to reinitialize it.
-+	 */
-+	if (!mem_cgroup_disabled() && unlikely(lruvec->pgdat != pgdat))
-+		lruvec->pgdat = pgdat;
-+}
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 9a737f343183..8877f38410d8 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -785,7 +785,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 	unsigned long nr_scanned = 0, nr_isolated = 0;
+ 	struct lruvec *lruvec;
+ 	unsigned long flags = 0;
+-	bool locked = false;
++	struct lruvec *locked_lruvec = NULL;
+ 	struct page *page = NULL, *valid_page = NULL;
+ 	unsigned long start_pfn = low_pfn;
+ 	bool skip_on_failure = false;
+@@ -845,11 +845,20 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		 * contention, to give chance to IRQs. Abort completely if
+ 		 * a fatal signal is pending.
+ 		 */
+-		if (!(low_pfn % SWAP_CLUSTER_MAX)
+-		    && compact_unlock_should_abort(&pgdat->lruvec.lru_lock,
+-					    flags, &locked, cc)) {
+-			low_pfn = 0;
+-			goto fatal_pending;
++		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
++			if (locked_lruvec) {
++				spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
++				locked_lruvec = NULL;
++			}
 +
- /**
-  * mem_cgroup_lruvec - get the lru list vector for a node or a memcg zone
-  * @node: node of the wanted lruvec
-@@ -382,13 +393,7 @@ static inline struct lruvec *mem_cgroup_lruvec(struct pglist_data *pgdat,
- 	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
- 	lruvec = &mz->lruvec;
- out:
--	/*
--	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->pgdat here;
--	 * and if offlined then reonlined, we need to reinitialize it.
--	 */
--	if (unlikely(lruvec->pgdat != pgdat))
--		lruvec->pgdat = pgdat;
-+	sync_lruvec_pgdat(lruvec, pgdat);
- 	return lruvec;
- }
- 
-@@ -857,6 +862,11 @@ static inline void mem_cgroup_migrate(struct page *old, struct page *new)
- {
- }
- 
-+static inline void sync_lruvec_pgdat(struct lruvec *lruvec,
-+						struct pglist_data *pgdat)
-+{
-+}
++			if (fatal_signal_pending(current)) {
++				cc->contended = true;
 +
- static inline struct lruvec *mem_cgroup_lruvec(struct pglist_data *pgdat,
- 				struct mem_cgroup *memcg)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2792b8ed405f..e8a1b0d95ba8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1257,13 +1257,7 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
- 	mz = mem_cgroup_page_nodeinfo(memcg, page);
- 	lruvec = &mz->lruvec;
- out:
--	/*
--	 * Since a node can be onlined after the mem_cgroup was created,
--	 * we have to be prepared to initialize lruvec->zone here;
--	 * and if offlined then reonlined, we need to reinitialize it.
--	 */
--	if (unlikely(lruvec->pgdat != pgdat))
--		lruvec->pgdat = pgdat;
-+	sync_lruvec_pgdat(lruvec, pgdat);
- 	return lruvec;
- }
++				low_pfn = 0;
++				goto fatal_pending;
++			}
++
++			cond_resched();
+ 		}
  
+ 		if (!pfn_valid_within(low_pfn))
+@@ -918,10 +927,10 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 			 */
+ 			if (unlikely(__PageMovable(page)) &&
+ 					!PageIsolated(page)) {
+-				if (locked) {
+-					spin_unlock_irqrestore(&pgdat->lruvec.lru_lock,
++				if (locked_lruvec) {
++					spin_unlock_irqrestore(&locked_lruvec->lru_lock,
+ 									flags);
+-					locked = false;
++					locked_lruvec = NULL;
+ 				}
+ 
+ 				if (!isolate_movable_page(page, isolate_mode))
+@@ -947,10 +956,14 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+ 			goto isolate_fail;
+ 
++		lruvec = mem_cgroup_page_lruvec(page, pgdat);
++
+ 		/* If we already hold the lock, we can skip some rechecking */
+-		if (!locked) {
+-			locked = compact_lock_irqsave(&pgdat->lruvec.lru_lock,
+-								&flags, cc);
++		if (lruvec != locked_lruvec) {
++			if (compact_lock_irqsave(&lruvec->lru_lock, &flags, cc))
++				locked_lruvec = lruvec;
++
++			sync_lruvec_pgdat(lruvec, pgdat);
+ 
+ 			/* Try get exclusive access under lock */
+ 			if (!skip_updated) {
+@@ -974,7 +987,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 			}
+ 		}
+ 
+-		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 
+ 		/* Try isolate the page */
+ 		if (__isolate_lru_page(page, isolate_mode) != 0)
+@@ -1015,9 +1027,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		 * page anyway.
+ 		 */
+ 		if (nr_isolated) {
+-			if (locked) {
+-				spin_unlock_irqrestore(&pgdat->lruvec.lru_lock, flags);
+-				locked = false;
++			if (locked_lruvec) {
++				spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
++				locked_lruvec = NULL;
+ 			}
+ 			putback_movable_pages(&cc->migratepages);
+ 			cc->nr_migratepages = 0;
+@@ -1042,8 +1054,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		low_pfn = end_pfn;
+ 
+ isolate_abort:
+-	if (locked)
+-		spin_unlock_irqrestore(&pgdat->lruvec.lru_lock, flags);
++	if (locked_lruvec)
++		spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
+ 
+ 	/*
+ 	 * Updated the cached scanner pfn once the pageblock has been scanned
 -- 
 1.8.3.1
 
