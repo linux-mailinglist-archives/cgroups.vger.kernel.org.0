@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F12E95B8A
-	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2019 11:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51F0695B88
+	for <lists+cgroups@lfdr.de>; Tue, 20 Aug 2019 11:51:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729727AbfHTJto (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Aug 2019 05:49:44 -0400
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:59724 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728426AbfHTJtn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Aug 2019 05:49:43 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0TZztT4P_1566294573;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TZztT4P_1566294573)
+        id S1729700AbfHTJtn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 20 Aug 2019 05:49:43 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:39122 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729660AbfHTJtm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Aug 2019 05:49:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0TZzk.Bf_1566294574;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TZzk.Bf_1566294574)
           by smtp.aliyun-inc.com(127.0.0.1);
           Tue, 20 Aug 2019 17:49:34 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
@@ -21,139 +21,92 @@ To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         Mel Gorman <mgorman@techsingularity.net>,
         Tejun Heo <tj@kernel.org>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>
-Subject: [PATCH 04/14] lru/compaction: use per lruvec lock in isolate_migratepages_block
-Date:   Tue, 20 Aug 2019 17:48:27 +0800
-Message-Id: <1566294517-86418-5-git-send-email-alex.shi@linux.alibaba.com>
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Hugh Dickins <hughd@google.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        David Rientjes <rientjes@google.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>
+Subject: [PATCH 05/14] lru/huge_page: use per lruvec lock in __split_huge_page
+Date:   Tue, 20 Aug 2019 17:48:28 +0800
+Message-Id: <1566294517-86418-6-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Using lruvec locking to replace pgdat lru_lock. and then unfold
-compact_unlock_should_abort() to fit the replacement.
+Using lruvec lock to replace pgdat lru_lock.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Cc: Hugh Dickins <hughd@google.com>
 Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Qian Cai <cai@lca.pw>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc: "Jérôme Glisse" <jglisse@redhat.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+Cc: David Rientjes <rientjes@google.com>
+Cc: Souptick Joarder <jrdr.linux@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/compaction.c | 48 ++++++++++++++++++++++++++++++------------------
- 1 file changed, 30 insertions(+), 18 deletions(-)
+ mm/huge_memory.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index 9a737f343183..8877f38410d8 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -785,7 +785,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 	unsigned long nr_scanned = 0, nr_isolated = 0;
- 	struct lruvec *lruvec;
- 	unsigned long flags = 0;
--	bool locked = false;
-+	struct lruvec *locked_lruvec = NULL;
- 	struct page *page = NULL, *valid_page = NULL;
- 	unsigned long start_pfn = low_pfn;
- 	bool skip_on_failure = false;
-@@ -845,11 +845,20 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * contention, to give chance to IRQs. Abort completely if
- 		 * a fatal signal is pending.
- 		 */
--		if (!(low_pfn % SWAP_CLUSTER_MAX)
--		    && compact_unlock_should_abort(&pgdat->lruvec.lru_lock,
--					    flags, &locked, cc)) {
--			low_pfn = 0;
--			goto fatal_pending;
-+		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
-+			if (locked_lruvec) {
-+				spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
-+				locked_lruvec = NULL;
-+			}
-+
-+			if (fatal_signal_pending(current)) {
-+				cc->contended = true;
-+
-+				low_pfn = 0;
-+				goto fatal_pending;
-+			}
-+
-+			cond_resched();
- 		}
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 3a483deee807..9a96c0944b4d 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2529,7 +2529,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 		xa_unlock(&head->mapping->i_pages);
+ 	}
  
- 		if (!pfn_valid_within(low_pfn))
-@@ -918,10 +927,10 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 			 */
- 			if (unlikely(__PageMovable(page)) &&
- 					!PageIsolated(page)) {
--				if (locked) {
--					spin_unlock_irqrestore(&pgdat->lruvec.lru_lock,
-+				if (locked_lruvec) {
-+					spin_unlock_irqrestore(&locked_lruvec->lru_lock,
- 									flags);
--					locked = false;
-+					locked_lruvec = NULL;
- 				}
+-	spin_unlock_irqrestore(&pgdat->lruvec.lru_lock, flags);
++	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
  
- 				if (!isolate_movable_page(page, isolate_mode))
-@@ -947,10 +956,14 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
- 			goto isolate_fail;
+ 	remap_page(head);
  
-+		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+
- 		/* If we already hold the lock, we can skip some rechecking */
--		if (!locked) {
--			locked = compact_lock_irqsave(&pgdat->lruvec.lru_lock,
--								&flags, cc);
-+		if (lruvec != locked_lruvec) {
-+			if (compact_lock_irqsave(&lruvec->lru_lock, &flags, cc))
-+				locked_lruvec = lruvec;
-+
-+			sync_lruvec_pgdat(lruvec, pgdat);
+@@ -2671,6 +2671,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
+ 	struct anon_vma *anon_vma = NULL;
+ 	struct address_space *mapping = NULL;
++	struct lruvec *lruvec;
+ 	int count, mapcount, extra_pins, ret;
+ 	bool mlocked;
+ 	unsigned long flags;
+@@ -2739,8 +2740,10 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 	if (mlocked)
+ 		lru_add_drain();
  
- 			/* Try get exclusive access under lock */
- 			if (!skip_updated) {
-@@ -974,7 +987,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 			}
- 		}
++	lruvec = mem_cgroup_page_lruvec(head, pgdata);
+ 	/* prevent PageLRU to go away from under us, and freeze lru stats */
+-	spin_lock_irqsave(&pgdata->lruvec.lru_lock, flags);
++	spin_lock_irqsave(&lruvec->lru_lock, flags);
++	sync_lruvec_pgdat(lruvec, pgdata);
  
--		lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 
- 		/* Try isolate the page */
- 		if (__isolate_lru_page(page, isolate_mode) != 0)
-@@ -1015,9 +1027,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * page anyway.
- 		 */
- 		if (nr_isolated) {
--			if (locked) {
--				spin_unlock_irqrestore(&pgdat->lruvec.lru_lock, flags);
--				locked = false;
-+			if (locked_lruvec) {
-+				spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
-+				locked_lruvec = NULL;
- 			}
- 			putback_movable_pages(&cc->migratepages);
- 			cc->nr_migratepages = 0;
-@@ -1042,8 +1054,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		low_pfn = end_pfn;
- 
- isolate_abort:
--	if (locked)
--		spin_unlock_irqrestore(&pgdat->lruvec.lru_lock, flags);
-+	if (locked_lruvec)
-+		spin_unlock_irqrestore(&locked_lruvec->lru_lock, flags);
- 
- 	/*
- 	 * Updated the cached scanner pfn once the pageblock has been scanned
+ 	if (mapping) {
+ 		XA_STATE(xas, &mapping->i_pages, page_index(head));
+@@ -2785,7 +2788,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		spin_unlock(&pgdata->split_queue_lock);
+ fail:		if (mapping)
+ 			xa_unlock(&mapping->i_pages);
+-		spin_unlock_irqrestore(&pgdata->lruvec.lru_lock, flags);
++		spin_unlock_irqrestore(&lruvec->lru_lock, flags);
+ 		remap_page(head);
+ 		ret = -EBUSY;
+ 	}
 -- 
 1.8.3.1
 
