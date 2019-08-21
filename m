@@ -2,162 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 149309822E
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2019 20:01:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E42929862A
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2019 23:02:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726903AbfHUSAs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Aug 2019 14:00:48 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:55104 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbfHUSAs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Aug 2019 14:00:48 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LHsXJu086567;
-        Wed, 21 Aug 2019 18:00:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=tmRGzebsdlR9sHASmyyyKPRbTYCSfFlnVG/zj++02Y4=;
- b=HwUtvYoInfaOTd1lpkEF2lXCkMMdX8CCXLFKikiq1tJTeuhrZIHbtyZt8T8CDAj/kJ49
- VnjSul33YJvV5jf+Uj9PtxaV5/CcI73/kU9ElXuNugL621Rk0AiI1I2oL79Mvf+xi36n
- 76vZRSktp24TmNIuHTXekZuGyRu1NjL3pw0YsEbJpb/vUWHsKQa9qEjZmm9AYUV4RSd2
- B/EJ0530GJxR6tkZmHGGcESAaXpcopGjSgNDdU8f26Xc2dkZ+WaruJgFG4B6bTZtEq7j
- s9K8k8QULrqN1tnEiUSa4SGco7jrEgYaenk4MeWWYscV6wZZTdubbQBpR3Nu+vQofrnT VQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2ue90tqk0m-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 18:00:37 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7LHwho4092514;
-        Wed, 21 Aug 2019 18:00:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3030.oracle.com with ESMTP id 2uh2q4twq2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 21 Aug 2019 18:00:36 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7LI0WiV009735;
-        Wed, 21 Aug 2019 18:00:32 GMT
-Received: from [192.168.1.218] (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Wed, 21 Aug 2019 11:00:32 -0700
-Subject: Re: [PATCH 00/14] per memcg lru_lock
-To:     Alex Shi <alex.shi@linux.alibaba.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>
-References: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-Message-ID: <6ba1ffb0-fce0-c590-c373-7cbc516dbebd@oracle.com>
-Date:   Wed, 21 Aug 2019 14:00:31 -0400
+        id S1728641AbfHUVCP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Aug 2019 17:02:15 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:34976 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728428AbfHUVCO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Aug 2019 17:02:14 -0400
+Received: by mail-qk1-f193.google.com with SMTP id r21so3180206qke.2;
+        Wed, 21 Aug 2019 14:02:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=KqdERxhIBAIfp0cd0hd74/Q6JgUT8pUqLNfVR97hQrw=;
+        b=cvs9Vr1YLEympRLozhgSozrKl/OUAv7d2nZM7TBMrHINk/WCc10TYb0b7zVsDTOHhU
+         Ta5B4QJ347mfUkR+Wup4leIKwduHVyS+oPVMrEk2P80BjxZRHKGUtSEQ6gZ9xJhc74f7
+         FXfp3eqwTYi689KtqkWIiD0avLvg+V4jePnSbNV5KsDQnukJYxKgL4OHMa+8ehX5TEHN
+         Sf7gBaXzkDUK+ATl6xXFt3mobpa8Y7S3RQchx1wt7116E02QSagSd/IuyCGvHU2Q+r8j
+         6rvey1+5cnTsOx0CG88ElNI/RUUWRUhXv5KiUGa23CgKxHmLU/gjbEvt2/2Rp8aPHMBT
+         N9lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=KqdERxhIBAIfp0cd0hd74/Q6JgUT8pUqLNfVR97hQrw=;
+        b=HiNLVJVgcUehhxt7HVn2urI0gMs8OTkFNqfZXY2ImC5P5jdI9JaDUaSSSNzKBTRfFf
+         8VYRV0E5cT7SckIsnRbTs+yO7En4drVC7bEWVjng4j7eT8iWJe3yjMhMW3+/G10l77cN
+         ToEW5I1dUPjUvItv4OV9tfBxpYCaSwEhEzK3lfaEFfVC3hz/tb3R3x8Kkfz6o3yLalT9
+         5e05O05pbCjA4F6rlbaTy3UiZ75LvZ0TRxQvwV/VQqmCdsRsmb0mYHRL2NylNBD8Qfyk
+         UUFv4GQYcp1ty4d2L07Rj2/qCqXe4Ltdurlr0buF8nhFsx6g2A9tOWPMylHocriKMc7d
+         d9Dg==
+X-Gm-Message-State: APjAAAUU4UMmuPHt21dtTeUiL4ZKNyGX7j2WVSgmEtmEwNJuPNQqGhdX
+        yR0fXvERhTBlt3CFRppdU3G3d8RG
+X-Google-Smtp-Source: APXvYqwiYZD1Q0jEB7i1nrSipTQUHE/zf0lNymV6cHbSadUYR57/Bem3O2OHYhxa9abFPy0fNICRPg==
+X-Received: by 2002:ae9:e84b:: with SMTP id a72mr33982679qkg.355.1566421332435;
+        Wed, 21 Aug 2019 14:02:12 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:1f05])
+        by smtp.gmail.com with ESMTPSA id l18sm10223076qtp.64.2019.08.21.14.02.11
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Aug 2019 14:02:11 -0700 (PDT)
+Date:   Wed, 21 Aug 2019 14:02:10 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, guro@fb.com, akpm@linux-foundation.org
+Subject: [PATCH v3 4/5] writeback, memcg: Implement cgroup_writeback_by_id()
+Message-ID: <20190821210210.GM2263813@devbig004.ftw2.facebook.com>
+References: <20190815195619.GA2263813@devbig004.ftw2.facebook.com>
+ <20190815195902.GE2263813@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1908210179
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9355 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1908210179
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190815195902.GE2263813@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Alex,
+Implement cgroup_writeback_by_id() which initiates cgroup writeback
+from bdi and memcg IDs.  This will be used by memcg foreign inode
+flushing.
 
-On 8/20/19 5:48 AM, Alex Shi wrote:
-> In some data center, containers are used widely to deploy different kind
-> of services, then multiple memcgs share per node pgdat->lru_lock which
-> cause heavy lock contentions when doing lru operation.
-> 
-> On my 2 socket * 6 cores E5-2630 platform, 24 containers run aim9
-> simultaneously with mmtests' config:
->          # AIM9
->          export AIM9_TESTTIME=180
->          export AIM9_TESTLIST=page_test,brk_test
-> 
-> perf lock report show much contentions on lru_lock in 20 second snapshot:
->                          Name   acquired  contended   avg wait (ns) total wait (ns)   max wait (ns)   min wait (ns)
->          &(ptlock_ptr(pag...         22          0               0       0               0               0
->          ...
->          &(&pgdat->lru_lo...          9          7           12728       89096           26656            1597
+v2: Use wb_get_lookup() instead of wb_get_create() to avoid creating
+    spurious wbs.
 
-This is system-wide right, not per container?  Even per container, 89 usec isn't much contention over 20 seconds.  You may want to give this a try:
+v3: Interpret 0 @nr as 1.25 * nr_dirty to implement best-effort
+    flushing while avoding possible livelocks.
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ fs/fs-writeback.c         |   83 ++++++++++++++++++++++++++++++++++++++++++++++
+ include/linux/writeback.h |    2 +
+ 2 files changed, 85 insertions(+)
 
-It's also synthetic but it stresses lru_lock more than just anon alloc/free.  It hits the page activate path, which is where we see this lock in our database, and if enough memory is configured lru_lock also gets stressed during reclaim, similar to [1].
-
-It'd be better though, as Michal suggests, to use the real workload that's causing problems.  Where are you seeing contention?
-
-> With this patch series, lruvec->lru_lock show no contentions
->          &(&lruvec->lru_l...          8          0               0       0               0               0
-> 
-> and aim9 page_test/brk_test performance increased 5%~50%.
-
-Where does the 50% number come in?  The numbers below seem to only show ~4% boost.
-
-> BTW, Detailed results in aim9-pft.compare.log if needed,
-> All containers data are increased and pretty steady.
-> 
-> $for i in Max Min Hmean Stddev CoeffVar BHmean-50 BHmean-95 BHmean-99; do echo "========= $i page_test ============"; cat aim9-pft.compare.log | grep "^$i.*page_test" | awk 'BEGIN {a=b=0;}  { a+=$3; b+=$6 } END { print "5.3-rc4          " a/24; print "5.3-rc4+lru_lock " b/24}' ; done
-> ========= Max page_test ============
-> 5.3-rc4          34729.6
-> 5.3-rc4+lru_lock 36128.3
-> ========= Min page_test ============
-> 5.3-rc4          33644.2
-> 5.3-rc4+lru_lock 35349.7
-> ========= Hmean page_test ============
-> 5.3-rc4          34355.4
-> 5.3-rc4+lru_lock 35810.9
-> ========= Stddev page_test ============
-> 5.3-rc4          319.757
-> 5.3-rc4+lru_lock 223.324
-> ========= CoeffVar page_test ============
-> 5.3-rc4          0.93125
-> 5.3-rc4+lru_lock 0.623333
-> ========= BHmean-50 page_test ============
-> 5.3-rc4          34579.2
-> 5.3-rc4+lru_lock 35977.1
-> ========= BHmean-95 page_test ============
-> 5.3-rc4          34421.7
-> 5.3-rc4+lru_lock 35853.6
-> ========= BHmean-99 page_test ============
-> 5.3-rc4          34421.7
-> 5.3-rc4+lru_lock 35853.6
-> 
-> $for i in Max Min Hmean Stddev CoeffVar BHmean-50 BHmean-95 BHmean-99; do echo "========= $i brk_test ============"; cat aim9-pft.compare.log | grep "^$i.*brk_test" | awk 'BEGIN {a=b=0;}  { a+=$3; b+=$6 } END { print "5.3-rc4          " a/24; print "5.3-rc4+lru_lock " b/24}' ; done
-> ========= Max brk_test ============
-> 5.3-rc4          96647.7
-> 5.3-rc4+lru_lock 98960.3
-> ========= Min brk_test ============
-> 5.3-rc4          91800.8
-> 5.3-rc4+lru_lock 96817.6
-> ========= Hmean brk_test ============
-> 5.3-rc4          95470
-> 5.3-rc4+lru_lock 97769.6
-> ========= Stddev brk_test ============
-> 5.3-rc4          1253.52
-> 5.3-rc4+lru_lock 596.593
-> ========= CoeffVar brk_test ============
-> 5.3-rc4          1.31375
-> 5.3-rc4+lru_lock 0.609583
-> ========= BHmean-50 brk_test ============
-> 5.3-rc4          96141.4
-> 5.3-rc4+lru_lock 98194
-> ========= BHmean-95 brk_test ============
-> 5.3-rc4          95818.5
-> 5.3-rc4+lru_lock 97857.2
-> ========= BHmean-99 brk_test ============
-> 5.3-rc4          95818.5
-> 5.3-rc4+lru_lock 97857.2
-
-[1] https://lore.kernel.org/linux-mm/CABdVr8R2y9B+2zzSAT_Ve=BQCa+F+E9_kVH+C28DGpkeQitiog@mail.gmail.com/
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -892,6 +892,89 @@ restart:
+ }
+ 
+ /**
++ * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
++ * @bdi_id: target bdi id
++ * @memcg_id: target memcg css id
++ * @nr_pages: number of pages to write, 0 for best-effort dirty flushing
++ * @reason: reason why some writeback work initiated
++ * @done: target wb_completion
++ *
++ * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
++ * with the specified parameters.
++ */
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
++			   enum wb_reason reason, struct wb_completion *done)
++{
++	struct backing_dev_info *bdi;
++	struct cgroup_subsys_state *memcg_css;
++	struct bdi_writeback *wb;
++	struct wb_writeback_work *work;
++	int ret;
++
++	/* lookup bdi and memcg */
++	bdi = bdi_get_by_id(bdi_id);
++	if (!bdi)
++		return -ENOENT;
++
++	rcu_read_lock();
++	memcg_css = css_from_id(memcg_id, &memory_cgrp_subsys);
++	if (memcg_css && !css_tryget(memcg_css))
++		memcg_css = NULL;
++	rcu_read_unlock();
++	if (!memcg_css) {
++		ret = -ENOENT;
++		goto out_bdi_put;
++	}
++
++	/*
++	 * And find the associated wb.  If the wb isn't there already
++	 * there's nothing to flush, don't create one.
++	 */
++	wb = wb_get_lookup(bdi, memcg_css);
++	if (!wb) {
++		ret = -ENOENT;
++		goto out_css_put;
++	}
++
++	/*
++	 * If @nr is zero, the caller is attempting to write out most of
++	 * the currently dirty pages.  Let's take the current dirty page
++	 * count and inflate it by 25% which should be large enough to
++	 * flush out most dirty pages while avoiding getting livelocked by
++	 * concurrent dirtiers.
++	 */
++	if (!nr) {
++		unsigned long filepages, headroom, dirty, writeback;
++
++		mem_cgroup_wb_stats(wb, &filepages, &headroom, &dirty,
++				      &writeback);
++		nr = dirty * 10 / 8;
++	}
++
++	/* issue the writeback work */
++	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
++	if (work) {
++		work->nr_pages = nr;
++		work->sync_mode = WB_SYNC_NONE;
++		work->range_cyclic = 1;
++		work->reason = reason;
++		work->done = done;
++		work->auto_free = 1;
++		wb_queue_work(wb, work);
++		ret = 0;
++	} else {
++		ret = -ENOMEM;
++	}
++
++	wb_put(wb);
++out_css_put:
++	css_put(memcg_css);
++out_bdi_put:
++	bdi_put(bdi);
++	return ret;
++}
++
++/**
+  * cgroup_writeback_umount - flush inode wb switches for umount
+  *
+  * This function is called when a super_block is about to be destroyed and
+--- a/include/linux/writeback.h
++++ b/include/linux/writeback.h
+@@ -217,6 +217,8 @@ void wbc_attach_and_unlock_inode(struct
+ void wbc_detach_inode(struct writeback_control *wbc);
+ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+ 			      size_t bytes);
++int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
++			   enum wb_reason reason, struct wb_completion *done);
+ void cgroup_writeback_umount(void);
+ 
+ /**
