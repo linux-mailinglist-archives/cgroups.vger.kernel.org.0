@@ -2,75 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2587697F3B
-	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2019 17:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7E4497F6F
+	for <lists+cgroups@lfdr.de>; Wed, 21 Aug 2019 17:53:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728333AbfHUPoG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 21 Aug 2019 11:44:06 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46746 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727553AbfHUPoG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Aug 2019 11:44:06 -0400
-Received: by mail-qk1-f196.google.com with SMTP id p13so2188944qkg.13;
-        Wed, 21 Aug 2019 08:44:05 -0700 (PDT)
+        id S1727037AbfHUPxd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 21 Aug 2019 11:53:33 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:38565 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726869AbfHUPxc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 21 Aug 2019 11:53:32 -0400
+Received: by mail-qk1-f193.google.com with SMTP id u190so2259977qkh.5
+        for <cgroups@vger.kernel.org>; Wed, 21 Aug 2019 08:53:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=WsaM9eIl3JXCekJs4SyvVa1WU1qEuim85t6paiIn/CI=;
-        b=gBwwCIlRoRsncPrLfulxtiNtBqDslrrk01qoUakj7ROxgUCe2Z1Jkie5QrOYx6cy1t
-         ittH90Nf5mi+zTDNL+DT/YD22t+Gq4e4G1xT2KXF/IWYBadFqyiJVb1YtkbDxqokGJbz
-         2FUoS6prtlCz8ZqXUlLW/C+7dfISWWedqHkc26+Sgeb1Mqp2ByRaRx/BYT26Raskd9fG
-         dZjhnF77bE+uuLLYKItQJogKGqIj7IlYf1ScdYDDqpVrQjz0D4D0XBpaB0hrYBHvxLq/
-         4vetyes91YzvtHonebCbwxVB9w4U7blReA094/muNGax4e8R6EiuBSsk9XlEvN3/ON/Q
-         mn7Q==
+        bh=N04aZbraHstGtd2N4jzbwtTQL7Y7JEPWx+OCV6a2CW8=;
+        b=c3AzYgoGaZ0HmJzoIhU1rx9tKz7WYX4jimmIHXOb/EyLjqpCZQcpHgm0WRvMmVGUHP
+         iruyXAOU6DYqZyhuBNf8CbX/fqXgVW2scIxcTAbKpWL6obFC2M+dQdadsneSVeKntf7+
+         Ub6rz6PLe9tWfrMnboijw7AI4DWdzuO7d7d5CcSBxGXu4tFAwStboAAyvjr0PZ3JL06a
+         +3khlkBsWIu99cmCSKfEPToUFzv3d2Dxwi3syp4i7YOrZ7ywMkEd/gZQClpr4dOZ9bYE
+         SGfNvsP9dkSKasjCrAmvFNPXXknQWaC8Iay6YUIDdD3SD9kOGYrtj1HsYnRzyX7cB95g
+         xfXA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=WsaM9eIl3JXCekJs4SyvVa1WU1qEuim85t6paiIn/CI=;
-        b=FL+kYhAHDCr1z9tg7egO3tgoYVjsPgTrnQQmMOatTqndvwWqAaKNNlF/Yipv0TltsH
-         MBVwMrY3JWhOpcZKrisU9Hski//xTqISoSTseS34Qm7C5Cp8HYJwXvC4tghkglklZvnx
-         SFirOgQi++FUUDMJkpdfv7Zl87uD5SrPFT1oDNJ4r+Cxcki6iDFnCRlISwrr7O3tAF+l
-         3YQkUJOOyFiqiIj9Tn4P7xPxVbD0Dd+/Wo13cQ8aMy94i2+8kPqp5ips1+nZ6GAMCfvX
-         6NCL3jotSMn4A+/Y/Sq7xrL//4prXptLf7ymxsi6sAF+2UbRYC0y63cIiRQ9zAODYvBl
-         6Lzw==
-X-Gm-Message-State: APjAAAX6tuADOYs0IVz6qnfo19mpwuv7i8crTjwqE39CNzkfKKghU/0R
-        gXBSJkjLoQofoBxSoNP8lTs=
-X-Google-Smtp-Source: APXvYqyoo7O4zfbKH6+h9K44hSm5hrR8vMIas7kYusKUQEoRDkhQgiXDaxkhQ2c9BF00wPuPLVmdAw==
-X-Received: by 2002:a37:8c07:: with SMTP id o7mr16922667qkd.491.1566402245255;
-        Wed, 21 Aug 2019 08:44:05 -0700 (PDT)
+        bh=N04aZbraHstGtd2N4jzbwtTQL7Y7JEPWx+OCV6a2CW8=;
+        b=BeRSWe7Vqr1zSO1/ChRs4AFHIWJClPRch3Jt1q6ptCHlpdwyL0HBsf44A7r8g+gKLm
+         JAustBau1+lnPcK/ICoX5cljbqGalZVE7JrNr7zGQw8afhyUpTbb+kXqYKmBMas3KbRE
+         cup+8oLfTCcCeh7PRVZQA9CEHtGw2B0BL/nicqPg7J0g8PlAu4tfylgiBsVkIPtkRlV1
+         YD73+1NtdI2RprY6WPQQ3K7+55pkQ4DzcGqbQ/hlpacRM3dAcP9Eol5jXm2PvorP0HKQ
+         bR8ZKyaLc5oDt0wkc+MVSITJXaYXOjpR4BVC6hMEDcpq/Y/PjTBcvCl409cMwwypwsCT
+         cl9Q==
+X-Gm-Message-State: APjAAAWT++4eyMa1v8wnL2vhPz20QkSh/rymTEcEx6utQzufbyDKlpUm
+        c5qYX923TuMvvXjmOHNMDxg=
+X-Google-Smtp-Source: APXvYqx9z91axdIAsnfZc9fvoqJXgycXZVxWwdxdGi1TfuZ/yy7FRRh07DSzCtI0gQ7lmZVYlkIdDQ==
+X-Received: by 2002:a05:620a:132e:: with SMTP id p14mr31993117qkj.498.1566402811531;
+        Wed, 21 Aug 2019 08:53:31 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::1:1f05])
-        by smtp.gmail.com with ESMTPSA id r4sm10171491qtt.90.2019.08.21.08.44.04
+        by smtp.gmail.com with ESMTPSA id q9sm10580843qtj.48.2019.08.21.08.53.30
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Aug 2019 08:44:04 -0700 (PDT)
-Date:   Wed, 21 Aug 2019 08:44:02 -0700
+        Wed, 21 Aug 2019 08:53:30 -0700 (PDT)
+Date:   Wed, 21 Aug 2019 08:53:29 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     Fam Zheng <zhengfeiran@bytedance.com>
-Cc:     linux-kernel@vger.kernel.org, axboe@kernel.dk, fam@euphon.net,
-        paolo.valente@linaro.org, duanxiongchun@bytedance.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        zhangjiachen.jc@bytedance.com
-Subject: Re: [PATCH v2 3/3] bfq: Add per-device weight
-Message-ID: <20190821154402.GI2263813@devbig004.ftw2.facebook.com>
-References: <20190805063807.9494-1-zhengfeiran@bytedance.com>
- <20190805063807.9494-4-zhengfeiran@bytedance.com>
+To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, tglx@linutronix.de
+Subject: Re: [PATCH 1/4] cgroup: Remove ->css_rstat_flush()
+Message-ID: <20190821155329.GJ2263813@devbig004.ftw2.facebook.com>
+References: <20190816111817.834-1-bigeasy@linutronix.de>
+ <20190816111817.834-2-bigeasy@linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190805063807.9494-4-zhengfeiran@bytedance.com>
+In-Reply-To: <20190816111817.834-2-bigeasy@linutronix.de>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 05, 2019 at 02:38:07PM +0800, Fam Zheng wrote:
-> Signed-off-by: Fam Zheng <zhengfeiran@bytedance.com>
+On Fri, Aug 16, 2019 at 01:18:14PM +0200, Sebastian Andrzej Siewior wrote:
+> I was looking at the lifetime of the the ->css_rstat_flush() to see if
+> cgroup_rstat_cpu_lock should remain a raw_spinlock_t. I didn't find any
+> users and is unused since it was introduced in commit
+>   8f53470bab042 ("cgroup: Add cgroup_subsys->css_rstat_flush()")
+> 
+> Remove the css_rstat_flush callback because it has no users.
+> 
+> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-Looks good to me.
-
- Acked-by: Tejun Heo <tj@kernel.org>
+Yeah, I'd rather keep it.  The patch which used this didn't get merged
+but the use case is valid and it will likely be used for different
+cases.
 
 Thanks.
 
