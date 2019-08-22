@@ -2,21 +2,21 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62BFB99508
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2019 15:31:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE819950E
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2019 15:31:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389086AbfHVN2h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Aug 2019 09:28:37 -0400
-Received: from foss.arm.com ([217.140.110.172]:45864 "EHLO foss.arm.com"
+        id S2389095AbfHVN2k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Aug 2019 09:28:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:45882 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389078AbfHVN2g (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 22 Aug 2019 09:28:36 -0400
+        id S2388515AbfHVN2j (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 22 Aug 2019 09:28:39 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9DE5D15A2;
-        Thu, 22 Aug 2019 06:28:35 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 884411570;
+        Thu, 22 Aug 2019 06:28:38 -0700 (PDT)
 Received: from e110439-lin.cambridge.arm.com (e110439-lin.cambridge.arm.com [10.1.194.43])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id E5E743F706;
-        Thu, 22 Aug 2019 06:28:32 -0700 (PDT)
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id D5FF63F706;
+        Thu, 22 Aug 2019 06:28:35 -0700 (PDT)
 From:   Patrick Bellasi <patrick.bellasi@arm.com>
 To:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         linux-api@vger.kernel.org, cgroups@vger.kernel.org
@@ -36,9 +36,9 @@ Cc:     Ingo Molnar <mingo@redhat.com>,
         Steve Muckle <smuckle@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Alessio Balsini <balsini@android.com>
-Subject: [PATCH v14 4/6] sched/core: uclamp: Use TG's clamps to restrict TASK's clamps
-Date:   Thu, 22 Aug 2019 14:28:09 +0100
-Message-Id: <20190822132811.31294-5-patrick.bellasi@arm.com>
+Subject: [PATCH v14 5/6] sched/core: uclamp: Update CPU's refcount on TG's clamp changes
+Date:   Thu, 22 Aug 2019 14:28:10 +0100
+Message-Id: <20190822132811.31294-6-patrick.bellasi@arm.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190822132811.31294-1-patrick.bellasi@arm.com>
 References: <20190822132811.31294-1-patrick.bellasi@arm.com>
@@ -49,29 +49,15 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When a task specific clamp value is configured via sched_setattr(2), this
-value is accounted in the corresponding clamp bucket every time the task is
-{en,de}qeued. However, when cgroups are also in use, the task specific
-clamp values could be restricted by the task_group (TG) clamp values.
+On updates of task group (TG) clamp values, ensure that these new values
+are enforced on all RUNNABLE tasks of the task group, i.e. all RUNNABLE
+tasks are immediately boosted and/or capped as requested.
 
-Update uclamp_cpu_inc() to aggregate task and TG clamp values. Every time a
-task is enqueued, it's accounted in the clamp bucket tracking the smaller
-clamp between the task specific value and its TG effective value. This
-allows to:
-
-1. ensure cgroup clamps are always used to restrict task specific requests,
-   i.e. boosted not more than its TG effective protection and capped at
-   least as its TG effective limit.
-
-2. implement a "nice-like" policy, where tasks are still allowed to request
-   less than what enforced by their TG effective limits and protections
-
-Do this by exploiting the concept of "effective" clamp, which is already
-used by a TG to track parent enforced restrictions.
-
-Apply task group clamp restrictions only to tasks belonging to a child
-group. While, for tasks in the root group or in an autogroup, system
-defaults are still enforced.
+Do that each time we update effective clamps from cpu_util_update_eff().
+Use the *cgroup_subsys_state (css) to walk the list of tasks in each
+affected TG and update their RUNNABLE tasks.
+Update each task by using the same mechanism used for cpu affinity masks
+updates, i.e. by taking the rq lock.
 
 Signed-off-by: Patrick Bellasi <patrick.bellasi@arm.com>
 Reviewed-by: Michal Koutny <mkoutny@suse.com>
@@ -80,57 +66,86 @@ Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
 Cc: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/core.c | 28 +++++++++++++++++++++++++++-
- 1 file changed, 27 insertions(+), 1 deletion(-)
+ kernel/sched/core.c | 58 ++++++++++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 57 insertions(+), 1 deletion(-)
 
 diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 3ca054ad3f3e..04fc161e4dbe 100644
+index 04fc161e4dbe..fc2dc86a2abe 100644
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -873,16 +873,42 @@ unsigned int uclamp_rq_max_value(struct rq *rq, unsigned int clamp_id,
- 	return uclamp_idle_value(rq, clamp_id, clamp_value);
+@@ -1043,6 +1043,57 @@ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
+ 		uclamp_rq_dec_id(rq, p, clamp_id);
  }
  
-+static inline struct uclamp_se
-+uclamp_tg_restrict(struct task_struct *p, unsigned int clamp_id)
++static inline void
++uclamp_update_active(struct task_struct *p, unsigned int clamp_id)
 +{
-+	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
-+#ifdef CONFIG_UCLAMP_TASK_GROUP
-+	struct uclamp_se uc_max;
++	struct rq_flags rf;
++	struct rq *rq;
 +
 +	/*
-+	 * Tasks in autogroups or root task group will be
-+	 * restricted by system defaults.
++	 * Lock the task and the rq where the task is (or was) queued.
++	 *
++	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
++	 * price to pay to safely serialize util_{min,max} updates with
++	 * enqueues, dequeues and migration operations.
++	 * This is the same locking schema used by __set_cpus_allowed_ptr().
 +	 */
-+	if (task_group_is_autogroup(task_group(p)))
-+		return uc_req;
-+	if (task_group(p) == &root_task_group)
-+		return uc_req;
++	rq = task_rq_lock(p, &rf);
 +
-+	uc_max = task_group(p)->uclamp[clamp_id];
-+	if (uc_req.value > uc_max.value || !uc_req.user_defined)
-+		return uc_max;
-+#endif
++	/*
++	 * Setting the clamp bucket is serialized by task_rq_lock().
++	 * If the task is not yet RUNNABLE and its task_struct is not
++	 * affecting a valid clamp bucket, the next time it's enqueued,
++	 * it will already see the updated clamp bucket value.
++	 */
++	if (!p->uclamp[clamp_id].active)
++		goto done;
 +
-+	return uc_req;
++	uclamp_rq_dec_id(rq, p, clamp_id);
++	uclamp_rq_inc_id(rq, p, clamp_id);
++
++done:
++
++	task_rq_unlock(rq, p, &rf);
 +}
 +
- /*
-  * The effective clamp bucket index of a task depends on, by increasing
-  * priority:
-  * - the task specific clamp value, when explicitly requested from userspace
-+ * - the task group effective clamp value, for tasks not either in the root
-+ *   group or in an autogroup
-  * - the system default clamp value, defined by the sysadmin
-  */
- static inline struct uclamp_se
- uclamp_eff_get(struct task_struct *p, unsigned int clamp_id)
- {
--	struct uclamp_se uc_req = p->uclamp_req[clamp_id];
-+	struct uclamp_se uc_req = uclamp_tg_restrict(p, clamp_id);
- 	struct uclamp_se uc_max = uclamp_default[clamp_id];
++static inline void
++uclamp_update_active_tasks(struct cgroup_subsys_state *css,
++			   unsigned int clamps)
++{
++	struct css_task_iter it;
++	struct task_struct *p;
++	unsigned int clamp_id;
++
++	css_task_iter_start(css, 0, &it);
++	while ((p = css_task_iter_next(&it))) {
++		for_each_clamp_id(clamp_id) {
++			if ((0x1 << clamp_id) & clamps)
++				uclamp_update_active(p, clamp_id);
++		}
++	}
++	css_task_iter_end(&it);
++}
++
+ #ifdef CONFIG_UCLAMP_TASK_GROUP
+ static void cpu_util_update_eff(struct cgroup_subsys_state *css);
+ static void uclamp_update_root_tg(void)
+@@ -7160,8 +7211,13 @@ static void cpu_util_update_eff(struct cgroup_subsys_state *css)
+ 			uc_se[clamp_id].bucket_id = uclamp_bucket_id(eff[clamp_id]);
+ 			clamps |= (0x1 << clamp_id);
+ 		}
+-		if (!clamps)
++		if (!clamps) {
+ 			css = css_rightmost_descendant(css);
++			continue;
++		}
++
++		/* Immediately update descendants RUNNABLE tasks */
++		uclamp_update_active_tasks(css, clamps);
+ 	}
+ }
  
- 	/* System default restrictions always apply */
 -- 
 2.22.0
 
