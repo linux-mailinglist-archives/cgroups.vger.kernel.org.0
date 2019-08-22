@@ -2,94 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC3D995A6
-	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2019 15:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 046329981B
+	for <lists+cgroups@lfdr.de>; Thu, 22 Aug 2019 17:26:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731971AbfHVN61 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Aug 2019 09:58:27 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:37605 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731614AbfHVN61 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Aug 2019 09:58:27 -0400
-Received: by mail-qt1-f196.google.com with SMTP id y26so7786930qto.4
-        for <cgroups@vger.kernel.org>; Thu, 22 Aug 2019 06:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=SPj+gL+0mYPmQFP5JGWSNorkU++xc1v51BhWWyhxmsA=;
-        b=lMqTvjDCInqOVQIO2st9JKxYoxSWuzXuB/WUqrO70gJRbC6ZldPUn9fB6wU0tLO6eS
-         IVyzqetocPFlw45Mh9fpNBux/DJ8TrjsSzNWyDnG08wCqpP2xoRkDI77+vhrW7yXVn0P
-         1BNQ7sMLDvv0phZAFzpx2pA6EH4obWhzLL9W/PYA/leAD/3Jvgck0dEoMWkUrYO2FBUB
-         m6YkhIfzb5lLv0hmkFo44NQbMIcp4sbG/nmj9UY6G8D/jF4zyFBdwAwT3knXyUQ3Q+kt
-         fIRAQ4BhgWrOIWCkrGo9DCnbCPMChz9lvLiNomVHsE1f0umQSGXxJqOsCTY3tGSF0lWL
-         H2bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SPj+gL+0mYPmQFP5JGWSNorkU++xc1v51BhWWyhxmsA=;
-        b=SRMoYGjjNyRjTSZs9LY65r4DgIakw1h/EvIZVNIQ5+5orzIf8m6vTNznd1za5uSrs8
-         6d5Q55IiWW7P9vR49Hoq8sn99qzbKm0zr2bBoYioK5j0WlI8bykJc7xI2GC0Cj4f9XJP
-         7TnNMT2BHROOLJ94Sc4V33Ko0iwhpl0Lf4IOPb/H6dIZHPYWtZbPKikzoDEqo6sU12y8
-         tBE5YMV9hEe8JNf/fLQqTExhfIjQKWgrpi4XZgfq0zTDnUW/oWwwpOYEQgVvyZ/3vorJ
-         VmSC2ds3cnKXY+0G7Ndng5RAZJYn9jaL3nzpNHSXzfGthgRYwU1F90sVN9bWVHDAGE6Q
-         RG3Q==
-X-Gm-Message-State: APjAAAV82IKxAm6dfFdU2sZYRYEIvQfimAI5O7c5pjBfKAa70WIaVHU7
-        W8UEgTmtt/VTOpyWYCRTu5+n+e6N
-X-Google-Smtp-Source: APXvYqxejdj6ot1QqliONa1sfPBuhkuHIsJkRCxcR6H3Fmerp9mYHAkeZFdIYuVZ7XaaYkyw9q2fyQ==
-X-Received: by 2002:a0c:99ee:: with SMTP id y46mr20764542qve.54.1566482306432;
-        Thu, 22 Aug 2019 06:58:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:500::1:1f05])
-        by smtp.gmail.com with ESMTPSA id v23sm10950887qtq.40.2019.08.22.06.58.25
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Aug 2019 06:58:25 -0700 (PDT)
-Date:   Thu, 22 Aug 2019 06:58:23 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, tglx@linutronix.de
-Subject: Re: [PATCH 1/4] cgroup: Remove ->css_rstat_flush()
-Message-ID: <20190822135823.GO2263813@devbig004.ftw2.facebook.com>
-References: <20190816111817.834-1-bigeasy@linutronix.de>
- <20190816111817.834-2-bigeasy@linutronix.de>
- <20190821155329.GJ2263813@devbig004.ftw2.facebook.com>
- <20190822082032.qyy2isvvtj5waymx@linutronix.de>
+        id S1731426AbfHVP0F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Aug 2019 11:26:05 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:56738 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729880AbfHVP0F (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Aug 2019 11:26:05 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MF4Mx0087310;
+        Thu, 22 Aug 2019 15:20:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=1L5ER/qHk23OYtUxN07nDgRdnfnZxx2DF63Rw066TEU=;
+ b=TUTU2NnUGOh4xD4o+ekU6weirf9jpHf+pLiY1Q/982QWFCZeo0muWZqUzEIst9mmeX2G
+ tvc1KCLIMJv2FqopEsyv9HxiinVifeIFZCOgOXpieTlIyE8BeQT5DXBbUeH9BA0GC9f6
+ SkWbP7KPLFpzj68lv1OfKaMVHRSLAvsoHzQarkWQyeeglWf6MzaDzBMcVo8CHqrA0PWn
+ gC9SiP1VTgkabkM2NZBe6va8+EacRo3aq8PzjlZ90Q57mH9CIy9gYUV1DMDBTWHFVliT
+ W7QWqT+hSJMIQ8GpYi/X7nlE+ViJU+0yCyasx6cEh9hTVifRdlge73HeEEwcgwfEymcU sA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2130.oracle.com with ESMTP id 2ue90txm3f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Aug 2019 15:20:56 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x7MF3xeU179464;
+        Thu, 22 Aug 2019 15:20:56 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 2uhusembk0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Aug 2019 15:20:55 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x7MFKrjU013736;
+        Thu, 22 Aug 2019 15:20:54 GMT
+Received: from [192.168.1.219] (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 22 Aug 2019 15:20:53 +0000
+Subject: Re: [PATCH 00/14] per memcg lru_lock
+To:     Alex Shi <alex.shi@linux.alibaba.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>
+References: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
+ <6ba1ffb0-fce0-c590-c373-7cbc516dbebd@oracle.com>
+ <348495d2-b558-fdfd-a411-89c75d4a9c78@linux.alibaba.com>
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+Message-ID: <b776032e-eabb-64ff-8aee-acc2b3711717@oracle.com>
+Date:   Thu, 22 Aug 2019 11:20:52 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190822082032.qyy2isvvtj5waymx@linutronix.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <348495d2-b558-fdfd-a411-89c75d4a9c78@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9356 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1908220150
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9356 signatures=668684
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1908220150
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 10:20:32AM +0200, Sebastian Andrzej Siewior wrote:
-> On 2019-08-21 08:53:29 [-0700], Tejun Heo wrote:
-> > On Fri, Aug 16, 2019 at 01:18:14PM +0200, Sebastian Andrzej Siewior wrote:
-> > > I was looking at the lifetime of the the ->css_rstat_flush() to see if
-> > > cgroup_rstat_cpu_lock should remain a raw_spinlock_t. I didn't find any
-> > > users and is unused since it was introduced in commit
-> > >   8f53470bab042 ("cgroup: Add cgroup_subsys->css_rstat_flush()")
-> > > 
-> > > Remove the css_rstat_flush callback because it has no users.
-> > > 
-> > > Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> > 
-> > Yeah, I'd rather keep it.  The patch which used this didn't get merged
-> > but the use case is valid and it will likely be used for different
-> > cases.
+On 8/22/19 7:56 AM, Alex Shi wrote:
+> 在 2019/8/22 上午2:00, Daniel Jordan 写道:
+>>    https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice>
+>> It's also synthetic but it stresses lru_lock more than just anon alloc/free.  It hits the page activate path, which is where we see this lock in our database, and if enough memory is configured lru_lock also gets stressed during reclaim, similar to [1].
 > 
-> I was afraid that the inner while loop in cgroup_rstat_flush_locked()
-> could get too long with the css_rstat_flush() here. Especially if it
-> acquires spin locks. But since this is not currently happening...
-> Any objections to the remaining series if I drop this patch?
+> Thanks for the sharing, this patchset can not help the [1] case, since it's just relief the per container lock contention now.
 
-Nack for the whole series.  Please stop mixing interface and locking
-changes.
+I should've been clearer.  [1] is meant as an example of someone suffering from lru_lock during reclaim.  Wouldn't your series help per-memcg reclaim?
 
-Thanks.
+> Yes, readtwice case could be more sensitive for this lru_lock changes in containers. I may try to use it in container with some tuning. But anyway, aim9 is also pretty good to show the problem and solutions. :)
+>>
+>> It'd be better though, as Michal suggests, to use the real workload that's causing problems.  Where are you seeing contention?
+> 
+> We repeatly create or delete a lot of different containers according to servers load/usage, so normal workload could cause lots of pages alloc/remove. 
 
--- 
-tejun
+I think numbers from that scenario would help your case.
+
+> aim9 could reflect part of scenarios. I don't know the DB scenario yet.
+
+We see it during DB shutdown when each DB process frees its memory (zap_pte_range -> mark_page_accessed).  But that's a different thing, clearly Not This Series.
+
+>>> With this patch series, lruvec->lru_lock show no contentions
+>>>           &(&lruvec->lru_l...          8          0               0       0               0               0
+>>>
+>>> and aim9 page_test/brk_test performance increased 5%~50%.
+>>
+>> Where does the 50% number come in?  The numbers below seem to only show ~4% boost.
+> 
+> the Setddev/CoeffVar case has about 50% performance increase. one of container's mmtests result as following:
+> 
+> Stddev    page_test      245.15 (   0.00%)      189.29 (  22.79%)
+> Stddev    brk_test      1258.60 (   0.00%)      629.16 (  50.01%)
+> CoeffVar  page_test        0.71 (   0.00%)        0.53 (  26.05%)
+> CoeffVar  brk_test         1.32 (   0.00%)        0.64 (  51.14%)
+
+Aha.  50% decrease in stdev.
