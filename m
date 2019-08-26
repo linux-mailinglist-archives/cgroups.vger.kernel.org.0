@@ -2,110 +2,172 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FF139CBC2
-	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2019 10:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 682059D10C
+	for <lists+cgroups@lfdr.de>; Mon, 26 Aug 2019 15:49:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729519AbfHZIjy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 26 Aug 2019 04:39:54 -0400
-Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:42262 "EHLO
-        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729523AbfHZIjx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 26 Aug 2019 04:39:53 -0400
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 3B9232E045B;
-        Mon, 26 Aug 2019 11:39:51 +0300 (MSK)
-Received: from smtpcorp1p.mail.yandex.net (smtpcorp1p.mail.yandex.net [2a02:6b8:0:1472:2741:0:8b6:10])
-        by mxbackcorp2j.mail.yandex.net (nwsmtp/Yandex) with ESMTP id kPAtGJAWjF-doPiv6Rx;
-        Mon, 26 Aug 2019 11:39:51 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1566808791; bh=Y7ejts7lpiJhlX4+egWDk+iu4dJWOZ7po0kKT0OpMC4=;
-        h=In-Reply-To:References:Date:Message-ID:From:To:Subject;
-        b=ZVQN0C0X7bfLpqONhnIcbXCciPSnf0ZQe87EOzqxF7ubpJcjvtoTJmY+Jof+wIqia
-         PEaE9w9ENQcqOpxatGvjD0TmDLw+9EItjqMz8obWXNyoLfUEk2Nq2/ckAr+NthoGs5
-         cCPwE+ZAbNG9qfRqLLqgDRWz23KdHvzmNr8zZToU=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:f558:a2a9:365e:6e19])
-        by smtpcorp1p.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id n5aJDOHkZi-doBieEVh;
-        Mon, 26 Aug 2019 11:39:50 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH 00/14] per memcg lru_lock
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@kernel.org>,
-        Hugh Dickins <hughd@google.com>
-References: <1566294517-86418-1-git-send-email-alex.shi@linux.alibaba.com>
- <6ba1ffb0-fce0-c590-c373-7cbc516dbebd@oracle.com>
- <348495d2-b558-fdfd-a411-89c75d4a9c78@linux.alibaba.com>
- <b776032e-eabb-64ff-8aee-acc2b3711717@oracle.com>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <d5256ebf-8314-8c24-a7ed-e170b7d39b61@yandex-team.ru>
-Date:   Mon, 26 Aug 2019 11:39:49 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1731592AbfHZNtn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 26 Aug 2019 09:49:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45008 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728550AbfHZNtn (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 26 Aug 2019 09:49:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 66B20ABF4;
+        Mon, 26 Aug 2019 13:49:41 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 170331E3DA1; Mon, 26 Aug 2019 15:49:40 +0200 (CEST)
+Date:   Mon, 26 Aug 2019 15:49:40 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     axboe@kernel.dk, jack@suse.cz, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com, guro@fb.com,
+        akpm@linux-foundation.org
+Subject: Re: [PATCH v3 4/5] writeback, memcg: Implement
+ cgroup_writeback_by_id()
+Message-ID: <20190826134940.GE10614@quack2.suse.cz>
+References: <20190815195619.GA2263813@devbig004.ftw2.facebook.com>
+ <20190815195902.GE2263813@devbig004.ftw2.facebook.com>
+ <20190821210210.GM2263813@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <b776032e-eabb-64ff-8aee-acc2b3711717@oracle.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190821210210.GM2263813@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 22/08/2019 18.20, Daniel Jordan wrote:
-> On 8/22/19 7:56 AM, Alex Shi wrote:
->> 在 2019/8/22 上午2:00, Daniel Jordan 写道:
->>>    https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice>
->>> It's also synthetic but it stresses lru_lock more than just anon alloc/free.  It hits the page activate path, which is where we see this 
->>> lock in our database, and if enough memory is configured lru_lock also gets stressed during reclaim, similar to [1].
->>
->> Thanks for the sharing, this patchset can not help the [1] case, since it's just relief the per container lock contention now.
+On Wed 21-08-19 14:02:10, Tejun Heo wrote:
+> Implement cgroup_writeback_by_id() which initiates cgroup writeback
+> from bdi and memcg IDs.  This will be used by memcg foreign inode
+> flushing.
 > 
-> I should've been clearer.  [1] is meant as an example of someone suffering from lru_lock during reclaim.  Wouldn't your series help 
-> per-memcg reclaim?
+> v2: Use wb_get_lookup() instead of wb_get_create() to avoid creating
+>     spurious wbs.
 > 
->> Yes, readtwice case could be more sensitive for this lru_lock changes in containers. I may try to use it in container with some tuning. 
->> But anyway, aim9 is also pretty good to show the problem and solutions. :)
->>>
->>> It'd be better though, as Michal suggests, to use the real workload that's causing problems.  Where are you seeing contention?
->>
->> We repeatly create or delete a lot of different containers according to servers load/usage, so normal workload could cause lots of pages 
->> alloc/remove. 
+> v3: Interpret 0 @nr as 1.25 * nr_dirty to implement best-effort
+>     flushing while avoding possible livelocks.
 > 
-> I think numbers from that scenario would help your case.
-> 
->> aim9 could reflect part of scenarios. I don't know the DB scenario yet.
-> 
-> We see it during DB shutdown when each DB process frees its memory (zap_pte_range -> mark_page_accessed).  But that's a different thing, 
-> clearly Not This Series.
-> 
->>>> With this patch series, lruvec->lru_lock show no contentions
->>>>           &(&lruvec->lru_l...          8          0               0       0               0               0
->>>>
->>>> and aim9 page_test/brk_test performance increased 5%~50%.
->>>
->>> Where does the 50% number come in?  The numbers below seem to only show ~4% boost.
->>After splitting lru-locks present per-cpu page-vectors works no so well
-because they mixes pages from different cgroups.
+> Signed-off-by: Tejun Heo <tj@kernel.org>
 
-pagevec_lru_move_fn and friends need better implementation:
-either sorting pages or splitting vectores in per-lruvec basis.
->> the Setddev/CoeffVar case has about 50% performance increase. one of container's mmtests result as following:
->>
->> Stddev    page_test      245.15 (   0.00%)      189.29 (  22.79%)
->> Stddev    brk_test      1258.60 (   0.00%)      629.16 (  50.01%)
->> CoeffVar  page_test        0.71 (   0.00%)        0.53 (  26.05%)
->> CoeffVar  brk_test         1.32 (   0.00%)        0.64 (  51.14%)
-> 
-> Aha.  50% decrease in stdev.
-> 
+The patch looks good to me. You can add:
 
-After splitting lru-locks present per-cpu page-vectors works
-no so well because they mix pages from different cgroups.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-pagevec_lru_move_fn and friends need better implementation:
-either sorting pages or splitting vectores in per-lruvec basis.
+								Honza
+
+> ---
+>  fs/fs-writeback.c         |   83 ++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/writeback.h |    2 +
+>  2 files changed, 85 insertions(+)
+> 
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -892,6 +892,89 @@ restart:
+>  }
+>  
+>  /**
+> + * cgroup_writeback_by_id - initiate cgroup writeback from bdi and memcg IDs
+> + * @bdi_id: target bdi id
+> + * @memcg_id: target memcg css id
+> + * @nr_pages: number of pages to write, 0 for best-effort dirty flushing
+> + * @reason: reason why some writeback work initiated
+> + * @done: target wb_completion
+> + *
+> + * Initiate flush of the bdi_writeback identified by @bdi_id and @memcg_id
+> + * with the specified parameters.
+> + */
+> +int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr,
+> +			   enum wb_reason reason, struct wb_completion *done)
+> +{
+> +	struct backing_dev_info *bdi;
+> +	struct cgroup_subsys_state *memcg_css;
+> +	struct bdi_writeback *wb;
+> +	struct wb_writeback_work *work;
+> +	int ret;
+> +
+> +	/* lookup bdi and memcg */
+> +	bdi = bdi_get_by_id(bdi_id);
+> +	if (!bdi)
+> +		return -ENOENT;
+> +
+> +	rcu_read_lock();
+> +	memcg_css = css_from_id(memcg_id, &memory_cgrp_subsys);
+> +	if (memcg_css && !css_tryget(memcg_css))
+> +		memcg_css = NULL;
+> +	rcu_read_unlock();
+> +	if (!memcg_css) {
+> +		ret = -ENOENT;
+> +		goto out_bdi_put;
+> +	}
+> +
+> +	/*
+> +	 * And find the associated wb.  If the wb isn't there already
+> +	 * there's nothing to flush, don't create one.
+> +	 */
+> +	wb = wb_get_lookup(bdi, memcg_css);
+> +	if (!wb) {
+> +		ret = -ENOENT;
+> +		goto out_css_put;
+> +	}
+> +
+> +	/*
+> +	 * If @nr is zero, the caller is attempting to write out most of
+> +	 * the currently dirty pages.  Let's take the current dirty page
+> +	 * count and inflate it by 25% which should be large enough to
+> +	 * flush out most dirty pages while avoiding getting livelocked by
+> +	 * concurrent dirtiers.
+> +	 */
+> +	if (!nr) {
+> +		unsigned long filepages, headroom, dirty, writeback;
+> +
+> +		mem_cgroup_wb_stats(wb, &filepages, &headroom, &dirty,
+> +				      &writeback);
+> +		nr = dirty * 10 / 8;
+> +	}
+> +
+> +	/* issue the writeback work */
+> +	work = kzalloc(sizeof(*work), GFP_NOWAIT | __GFP_NOWARN);
+> +	if (work) {
+> +		work->nr_pages = nr;
+> +		work->sync_mode = WB_SYNC_NONE;
+> +		work->range_cyclic = 1;
+> +		work->reason = reason;
+> +		work->done = done;
+> +		work->auto_free = 1;
+> +		wb_queue_work(wb, work);
+> +		ret = 0;
+> +	} else {
+> +		ret = -ENOMEM;
+> +	}
+> +
+> +	wb_put(wb);
+> +out_css_put:
+> +	css_put(memcg_css);
+> +out_bdi_put:
+> +	bdi_put(bdi);
+> +	return ret;
+> +}
+> +
+> +/**
+>   * cgroup_writeback_umount - flush inode wb switches for umount
+>   *
+>   * This function is called when a super_block is about to be destroyed and
+> --- a/include/linux/writeback.h
+> +++ b/include/linux/writeback.h
+> @@ -217,6 +217,8 @@ void wbc_attach_and_unlock_inode(struct
+>  void wbc_detach_inode(struct writeback_control *wbc);
+>  void wbc_account_cgroup_owner(struct writeback_control *wbc, struct page *page,
+>  			      size_t bytes);
+> +int cgroup_writeback_by_id(u64 bdi_id, int memcg_id, unsigned long nr_pages,
+> +			   enum wb_reason reason, struct wb_completion *done);
+>  void cgroup_writeback_umount(void);
+>  
+>  /**
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
