@@ -2,78 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 771DD9DE9D
-	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2019 09:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 07ED79E563
+	for <lists+cgroups@lfdr.de>; Tue, 27 Aug 2019 12:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726025AbfH0HV0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Aug 2019 03:21:26 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:5220 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725890AbfH0HV0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 27 Aug 2019 03:21:26 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id D927B75A98B991A4FDC5;
-        Tue, 27 Aug 2019 15:21:24 +0800 (CST)
-Received: from localhost.localdomain (10.67.212.132) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.439.0; Tue, 27 Aug 2019 15:21:14 +0800
-From:   Shaokun Zhang <zhangshaokun@hisilicon.com>
-To:     <cgroups@vger.kernel.org>
-CC:     Shaokun Zhang <zhangshaokun@hisilicon.com>,
-        Tejun Heo <tj@kernel.org>, "Li Zefan" <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: [RESEND PATCH] cgroup: Remove unused for_each_e_css macro and comment
-Date:   Tue, 27 Aug 2019 15:19:01 +0800
-Message-ID: <1566890341-38158-1-git-send-email-zhangshaokun@hisilicon.com>
-X-Mailer: git-send-email 2.7.4
+        id S1727138AbfH0KKU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Aug 2019 06:10:20 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:36075 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726584AbfH0KKT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Aug 2019 06:10:19 -0400
+Received: by mail-ed1-f66.google.com with SMTP id g24so3318643edu.3
+        for <cgroups@vger.kernel.org>; Tue, 27 Aug 2019 03:10:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=E1mXiLDMeCBnuH8acbRiGZEzKKN2n3++JkCRPbUs8fc=;
+        b=Gqs4knKCCfqZnImHuCJjv5d2N4QmpykYMVm4OmSFEAwOWf3RASdFHW14RtQnZKnLab
+         Wh/xR2LQa+ZeU6QWiS9MKI0UOWXrFwmrbiZFZiuEFtWiGGSSmbZk08xeNIfJ4aey/FyQ
+         nmu5E0Vl8wtz3DLg/iuhkCL6hHzfLWD9LeEfI/KdI4Oz7BNQQyDFVi6Wd4//VHKRS/az
+         OC3k5bA1zZOcVknHR4UYjU1VlO6ykVgCotb57+Iu7bYdTUqMqAFrduhke8BxhIiLtSey
+         5RbFP4c1Hyx8+R1jSuP42rvKlgjCIXudv1wEfNacNFDoalYB3+BBAOytoNDE5NCaxhOn
+         7Rig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=E1mXiLDMeCBnuH8acbRiGZEzKKN2n3++JkCRPbUs8fc=;
+        b=fJdqeQfPiLAe4Wy0jUWg1cJsWQbi5sE4Z9fOPzM3JThuybw25A0z6Ij94gG5N2bwDY
+         5guJVze4Dmgxw+3Zjfo3Ukq/HUHXOnj28g5OdOsrYo9XNLDjLDO3WFt6+KCyT8o5AdVI
+         pVcBmIh/a+KLNwMmWP+UHxoDmHpuxB0wqwEKK5zYQFlZBlK0jHCPvjuOYl6PZaaev+3+
+         4DNofBJD+cEJ50Yn7sJiwnctvuFlMPdEulXtUHqGfESNX0Nk5MOpT2AZ5VaNXw2GGW9S
+         bRsfkfr9jp2jD/a17tbaw0D0p0sR/vTu4D/cGzXPmlRNUwqSbcyAlFo37NgJm6If/7Ia
+         +y9g==
+X-Gm-Message-State: APjAAAVsMZ/BwRJ76JQLOFlC/twLwnpg/K4UuG/lmeMBZikks4uUxrUX
+        WfRuyDtfxpyXgbWViGOkXx56dUD7dYmq7mODY1A=
+X-Google-Smtp-Source: APXvYqzfVAO8woay384egpzJY+DEKYoJTBxk3eGYtAIRgyh1FCU0o7JpCYz+VG2zOiRRlmwjOppIjDy81dG51h/Q77A=
+X-Received: by 2002:a17:906:7d3:: with SMTP id m19mr20873350ejc.70.1566900618166;
+ Tue, 27 Aug 2019 03:10:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.67.212.132]
-X-CFilter-Loop: Reflected
+Received: by 2002:aa7:d94f:0:0:0:0:0 with HTTP; Tue, 27 Aug 2019 03:10:17
+ -0700 (PDT)
+Reply-To: eco.bank1204@gmail.com
+From:   "MS. MARYANNA B. THOMASON" <eco.bank1204@gmail.com>
+Date:   Tue, 27 Aug 2019 11:10:17 +0100
+Message-ID: <CAOE+jAD=+cuoZ5trn6_L4TkqcOUx-VyjNbFGbZ=VLpJoHNNzxw@mail.gmail.com>
+Subject: WHAT IS GOING ON? DID YOU AUTHORIZE MR. WILLIAM GEORGE TO RECEIVE
+ YOUR ATM CARD WORTH $15.600,000MILLION US DOLLARS FROM OUR DIPLOMATIC AGENT?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-'for_each_e_css' macro became unused after commit <37ff9f8f4742>
-("cgroup: make cgroup[_taskset]_migrate() take cgroup_root instead of
-cgroup").
-Remove it and its comment.
+ATTN, DEAR
 
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Li Zefan <lizefan@huawei.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Shaokun Zhang <zhangshaokun@hisilicon.com>
----
- kernel/cgroup/cgroup.c | 15 ---------------
- 1 file changed, 15 deletions(-)
+WHAT IS GOING ON? DID YOU AUTHORIZE MR. WILLIAM GEORGE TO RECEIVE YOUR
+ATM CARD  WORTH $15.600,000MILLION US DOLLARS FROM OUR DIPLOMATIC
+AGENT?
+CONTACT OUR DIPLOMATIC AGENT MR. CATHY JONES TO RECEIVE YOUR ATM
+MASTER CARD WORTH $15.600.000MUS DOLLARS.
+SHE WILL HANDLE THE DELIVERY TO YOUR HOUSE ADDRESS
+IMMEDIATELY YOU GET IN TOUCH WITH HER TODAY.
+Contact Her on this Address listed for you
+DIPLOMATIC AGENT Mrs. CATHY JONES
+Email; Katerinejones19@gmail.com
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e43cbcfd7b78..9e4cf8ba206f 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -663,21 +663,6 @@ EXPORT_SYMBOL_GPL(of_css);
- 		else
- 
- /**
-- * for_each_e_css - iterate all effective css's of a cgroup
-- * @css: the iteration cursor
-- * @ssid: the index of the subsystem, CGROUP_SUBSYS_COUNT after reaching the end
-- * @cgrp: the target cgroup to iterate css's of
-- *
-- * Should be called under cgroup_[tree_]mutex.
-- */
--#define for_each_e_css(css, ssid, cgrp)					    \
--	for ((ssid) = 0; (ssid) < CGROUP_SUBSYS_COUNT; (ssid)++)	    \
--		if (!((css) = cgroup_e_css_by_mask(cgrp,		    \
--						   cgroup_subsys[(ssid)]))) \
--			;						    \
--		else
--
--/**
-  * do_each_subsys_mask - filter for_each_subsys with a bitmask
-  * @ss: the iteration cursor
-  * @ssid: the index of @ss, CGROUP_SUBSYS_COUNT after reaching the end
--- 
-2.7.4
+Contact Her by texting on this phone numver (408) 650-6103)
+listed for you
+DIPLOMATIC AGENT MS. CATHY JONES
+Phone Number; (408) 650-6103, Note she can receive only text message.
 
+TEXT OR CALL HER FOR URGENT COMMUNICATIONS. (408) 650-6103
+ASK HIM TO SEND YOU THE ATM MASTER CARD WORTH $15.600.000MUS DOLLARS
+AS WE INSTRUCTED.
+PLEASE, ENDEAVOUR to re-ceonfirm your current mailing address to him
+as i have writing below.Avoid of wrong shipment, delivering your
+Parcel to another person.
+This is only informations He need from you to deliver your ATm MASTER
+Card to you now
+1.YOUR FULL NAME______________
+2.COUNTRY___________________
+3.ADDRESS_____________________
+4.PHONE NUMBERS______________________________
+Remember,Contact this Diplomatic Agent, Mrs. Cathy Jones on her
+email address .
+EMAIL: Katerinejones19@gmail.com, only money you are required to send
+to Her is official diplomatic agent delivery fee sum of $50.00 us
+only. She is at JFK Airport,New York
+Text Her this on telephone No: (408) 650-6103
+
+God bless
+SINCERELY YOURS
+MS. MARYANNA B. THOMASON
