@@ -2,269 +2,182 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C2F51A0D23
-	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2019 00:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DBA5A0D45
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2019 00:07:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726907AbfH1WGI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Aug 2019 18:06:08 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:42683 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726839AbfH1WGI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Aug 2019 18:06:08 -0400
-Received: by mail-qk1-f194.google.com with SMTP id f13so1122554qkm.9;
-        Wed, 28 Aug 2019 15:06:06 -0700 (PDT)
+        id S1726953AbfH1WGK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Aug 2019 18:06:10 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:35163 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbfH1WGJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Aug 2019 18:06:09 -0400
+Received: by mail-qt1-f194.google.com with SMTP id u34so1420061qte.2;
+        Wed, 28 Aug 2019 15:06:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=vDon8M1NTFQbFibMp4kfu+E3libW4ghIHFjpCN3/Sb8=;
-        b=GF2v1bOluHD/OkqipjqvA+sPl0H3BQepwJraUApzHqySvYizPwWE4ZIijVU6Dhuygt
-         TnFoi+ULA5Ff4BKLF8IgJnocF4gLSEC6vdLRqovXmyVY9N7K8WU6TzuH/CmHLuzS6AX1
-         VqZaaLFaiDh1eT66s03MgVMgFmdGEuiiiABwUjAoYD5pCFa1vCU6h/uzmGccmloMmlng
-         Mx9pmZPx4irfcZcMl+rryvh0kse+KpVIpDp+YS366aepwiRnq50qtcw3QH41f0EKEZCK
-         yCufagiiozzbowr0gyi1H5mZEUsqDXK6HsjO5ObhSA/YU+gItqy/yHfjI1fO5MbR8MBj
-         mE2Q==
+        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=E79NtAzOgIUAizJwIesUtiv2mCB5ZP/4rNwX4GMcwPI=;
+        b=aYzG7U0qx200TAfF6SANRqpsqmzCpyPAG6ywyYSvuykYASu2JfqjduSvQDq0IbeRh/
+         Qygo2r9DYfVqyC/MO929R8Pz0U0y3Ijgwy856gR0/8/C/vAv0TAhwXKimEPwkppjV1C9
+         EmbbgDfwv/x0e1SAuE3/QLuzafbLQCQrvkeyfQcu9/E0v84XvW5eKCUn4JjkmM88k1m9
+         mt+jC2UUw1ckafk+3PxhG707zlguMjx+uEy6X/6bM3FVcJ/l+00fLe2GzdhiJ5Lj59sK
+         5QrpyeR4p5hzEiF+ME0aA+UwrZg/jLzVnwSJ5cQ6yMvip/dick/WiQKYI1oeahebMC36
+         Y+lg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
-        bh=vDon8M1NTFQbFibMp4kfu+E3libW4ghIHFjpCN3/Sb8=;
-        b=K1NEXPnfJmXQfqmi8l+Ds3+raTfafCaI32xmMigea2mo/XvS8DPhk0TVhKI09pknpv
-         VtmLAloTQWQm11BciZ6cs6q3j6uynUdeIaCKjHFS363C49/BsNLHBjtH91riQCfHCr1q
-         9h+9nwFaoWoSMuA1SIt4Jl50wOV5CaKLsZ6KvY9oFJptwKL6XiiDncT0WuF+JCsw+nKN
-         Pmc7rSDln8ZMvnIR9uOT8NADj19ocWYy3Fy+gK4blQe6FeIYx0CurDRFC9qThsB9ihzf
-         DjsxmUPhWEiAnwZoWA2g+/5A8xAlZMOtOpZS1EU37G0RoDOK5luoa6JxHG8LyPc1bR6T
-         Ks1A==
-X-Gm-Message-State: APjAAAWo6qibYY/SQW0qvcvj0zUBarHFsiCyegPGQJXfHkGOlhFz4PWV
-        PT/DmZeJQKKNOhLM8Yc5kR4=
-X-Google-Smtp-Source: APXvYqwAFv81LsDVvF5UXN5dahyez4CEqHbvAWDOZAhu+oN1W9nIcwhE78ywRXVp03oEENgVd8vKeQ==
-X-Received: by 2002:ae9:e714:: with SMTP id m20mr6198003qka.72.1567029966033;
-        Wed, 28 Aug 2019 15:06:06 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :in-reply-to:references;
+        bh=E79NtAzOgIUAizJwIesUtiv2mCB5ZP/4rNwX4GMcwPI=;
+        b=Oa+jozsc6KJWw0lLWI7zs5jXR4CicYqvMS3aNxg5NnEsq9SkXyIizfh5wD2RxokNfG
+         /e3nLzy/+ju0FQb2DicIvE7AtfKfIuLuYABV+zkq3TAIfWtDzaT/KCQUdB33fnI/kgpI
+         rEFXzhj/iQ7wYd48UUGavgfGby09POxeIRB5xk5+cvvGp94zpeUetA4mq7sjDE6N/LEB
+         MP1PM55bG2BAvV5ArLu/iRBi1RmTOCKE7iWwG9TZ9Rnd6VDtAvfx0cBEpbXXLmwEx2np
+         XGjJGcXBrMv7dkdMT7Qr1KpkGVQ9YX79hyQzYWqEmVnLH7Cz3s2by/HQ/RjEOYEqdGES
+         rlog==
+X-Gm-Message-State: APjAAAWTfSWxQyo2nOFVNXhSh/u9CRncRyy7ZK+vkx46kD1P3Ei4a7Q3
+        25NvPvBtKZyO0UWnNHHhfKc=
+X-Google-Smtp-Source: APXvYqx9vU3VKTWbwI+ywDQtC5OCaqsdO0JrIAO9I1jKI5YTwkUUNkFnToF+7r2alN0q6k5ThAt0tw==
+X-Received: by 2002:ac8:64a:: with SMTP id e10mr6635078qth.30.1567029968213;
+        Wed, 28 Aug 2019 15:06:08 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::1:c231])
-        by smtp.gmail.com with ESMTPSA id w5sm223367qki.13.2019.08.28.15.06.05
+        by smtp.gmail.com with ESMTPSA id l8sm332778qti.65.2019.08.28.15.06.07
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 28 Aug 2019 15:06:05 -0700 (PDT)
+        Wed, 28 Aug 2019 15:06:07 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
         dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org
 Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org
-Subject: [PATCHSET v3 block/for-linus] IO cost model based work-conserving porportional controller
-Date:   Wed, 28 Aug 2019 15:05:50 -0700
-Message-Id: <20190828220600.2527417-1-tj@kernel.org>
+        kernel-team@fb.com, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Subject: [PATCH 01/10] blkcg: pass @q and @blkcg into blkcg_pol_alloc_pd_fn()
+Date:   Wed, 28 Aug 2019 15:05:51 -0700
+Message-Id: <20190828220600.2527417-2-tj@kernel.org>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20190828220600.2527417-1-tj@kernel.org>
+References: <20190828220600.2527417-1-tj@kernel.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Changes from v2[2]:
+Instead of @node, pass in @q and @blkcg so that the alloc function has
+more context.  This doesn't cause any behavior change and will be used
+by io.weight implementation.
 
-* Fixed a divide-by-zero bug in current_hweight().
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+ block/bfq-cgroup.c         | 5 +++--
+ block/blk-cgroup.c         | 6 +++---
+ block/blk-iolatency.c      | 6 ++++--
+ block/blk-throttle.c       | 6 ++++--
+ include/linux/blk-cgroup.h | 3 ++-
+ 5 files changed, 16 insertions(+), 10 deletions(-)
 
-* pre_start_time and friends renamed to alloc_time and now has its own
-  CONFIG option which is selected by IOCOST.
-
-Changes from v1[1]:
-
-* Prerequisite patchsets had cosmetic changes and merged.  Refreshed
-  on top.
-
-* Renamed from ioweight to iocost.  All source code and tools are
-  updated accordingly.  Control knobs io.weight.qos and
-  io.weight.cost_model are renamed to io.cost.qos and io.cost.model
-  respectively.  This is a more fitting name which won't become a
-  misnomer when, for example, cost based io.max is added.
-
-* Various bug fixes and improvements.  A few bugs were discovered
-  while testing against high-iops nvme device.  Auto parameter
-  selection improved and verified across different classes of SSDs.
-
-* Dropped bpf iocost support for now.
-
-* Added coef generation script.
-
-* Verified on high-iops nvme device.  Result is included below.
-
-One challenge of controlling IO resources is the lack of trivially
-observable cost metric.  This is distinguished from CPU and memory
-where wallclock time and the number of bytes can serve as accurate
-enough approximations.
-
-Bandwidth and iops are the most commonly used metrics for IO devices
-but depending on the type and specifics of the device, different IO
-patterns easily lead to multiple orders of magnitude variations
-rendering them useless for the purpose of IO capacity distribution.
-While on-device time, with a lot of clutches, could serve as a useful
-approximation for non-queued rotational devices, this is no longer
-viable with modern devices, even the rotational ones.
-
-While there is no cost metric we can trivially observe, it isn't a
-complete mystery.  For example, on a rotational device, seek cost
-dominates while a contiguous transfer contributes a smaller amount
-proportional to the size.  If we can characterize at least the
-relative costs of these different types of IOs, it should be possible
-to implement a reasonable work-conserving proportional IO resource
-distribution.
-
-This patchset implements IO cost model based work-conserving
-proportional controller.  It currently has a simple linear cost model
-builtin where each IO is classified as sequential or random and given
-a base cost accordingly and additional size-proportional cost is added
-on top.  Each IO is given a cost based on the model and the controller
-issues IOs for each cgroup according to their hierarchical weight.
-
-By default, the controller adapts its overall IO rate so that it
-doesn't build up buffer bloat in the request_queue layer, which
-guarantees that the controller doesn't lose significant amount of
-total work.  However, this may not provide sufficient differentiation
-as the underlying device may have a deep queue and not be fair in how
-the queued IOs are serviced.  The controller provides extra QoS
-control knobs which allow tightening control feedback loop as
-necessary.
-
-For more details on the control mechanism, implementation and
-interface, please refer to the comment at the top of
-block/blk-iocost.c and Documentation/admin-guide/cgroup-v2.rst changes
-in the "blkcg: implement blk-iocost" patch.
-
-Here are some test results.  Each test run goes through the following
-combinations with each combination running for a minute.  All tests
-are performed against regular files on btrfs w/ deadline as the IO
-scheduler.  Random IOs are direct w/ queue depth of 64.  Sequential
-are normal buffered IOs.
-
-        high priority (weight=500)      low priority (weight=100)
-
-        Rand read                       None
-        ditto                           Rand read
-        ditto                           Seq  read
-        ditto                           Rand write
-        ditto                           Seq  write
-        Seq  read                       None
-        ditto                           Rand read
-        ditto                           Seq  read
-        ditto                           Rand write
-        ditto                           Seq  write
-        Rand write                      None
-        ditto                           Rand read
-        ditto                           Seq  read
-        ditto                           Rand write
-        ditto                           Seq  write
-        Seq  write                      None
-        ditto                           Rand read
-        ditto                           Seq  read
-        ditto                           Rand write
-        ditto                           Seq  write
-
-* 7200RPM SATA hard disk
-  * No IO control
-    https://photos.app.goo.gl/1KBHn7ykpC1LXRkB8
-  * iocost, QoS: None
-    https://photos.app.goo.gl/MLNQGxCtBQ8wAmjm7
-  * iocost, QoS: rpct=95.00 rlat=40000 wpct=95.00 wlat=40000 min=25.00 max=200.00
-    https://photos.app.goo.gl/XqXHm3Mkbm9w6Db46
-* NCQ-blacklisted SATA SSD (QD==1)
-  * No IO control
-    https://photos.app.goo.gl/wCTXeu2uJ6LYL4pk8
-  * iocost, QoS: None
-    https://photos.app.goo.gl/T2HedKD2sywQgj7R9
-  * iocost, QoS: rpct=95.00 rlat=20000 wpct=95.00 wlat=20000 min=50.00 max=200.00
-    https://photos.app.goo.gl/urBTV8XQc1UqPJJw7
-* SATA SSD (QD==32)
-  * No IO control
-    https://photos.app.goo.gl/TjEVykuVudSQcryh6
-  * iocost, QoS: None
-    https://photos.app.goo.gl/iyQBsky7bmM54Xiq7
-  * iocost, QoS: rpct=95.00 rlat=10000 wpct=95.00 wlat=20000 min=50.00 max=400.00
-    https://photos.app.goo.gl/q1a6URLDxPLMrnHy5
-* NVME SSD (ran with 8 concurrent fio jobs to achieve saturation)
-  * No IO control
-    https://photos.app.goo.gl/S6xjEVTJzcfb3w1j7
-  * iocost, QoS: None
-    https://photos.app.goo.gl/SjQUUotJBAGr7vqz7
-  * iocost, QoS: rpct=95.00 rlat=5000 wpct=95.00 wlat=5000 min=1.00 max=10000.00
-    https://photos.app.goo.gl/RsaYBd2muX7CegoN7
-
-Even without explicit QoS configuration, read-heavy scenarios can
-obtain acceptable differentiation.  However, when write-heavy, the
-deep buffering on the device side makes it difficult to maintain
-control.  With QoS parameters set, the differentiation is acceptable
-across all combinations.
-
-The implementation comes with default cost model parameters which are
-selected automatically which should provide acceptable behavior across
-most common devices.  The parameters for hdd and consumer-grade SSDs
-seem pretty robust.  The default parameter set and selection criteria
-for highend SSDs might need further adjustments.
-
-It is fairly easy to configure the QoS parameters and, if needed, cost
-model coefficients.  We'll follow up with tooling and further
-documentation.  Also, the last RFC patch in the series implements
-support for bpf-based custom cost function.  Originally we thought
-that we'd need per-device-type cost functions but the simple linear
-model now seem good enough to cover all common device classes.  In
-case custom cost functions become necessary, we can fully develop the
-bpf based extension and also easily add different builtin cost models.
-
-Andy Newell did the heavy lifting of analyzing IO workloads and device
-characteristics, exploring various cost models, determining the
-default model and parameters to use.
-
-Josef Bacik implemented a prototype which explored the use of
-different types of cost metrics including on-device time and Andy's
-linear model.
-
-This patchset is on top of the current block/for-next 53fc55c817c3
-("Merge branch 'for-5.4/block' into for-next") and contains the
-following 10 patches.
-
- 0001-blkcg-pass-q-and-blkcg-into-blkcg_pol_alloc_pd_fn.patch
- 0002-blkcg-make-cpd_init_fn-optional.patch
- 0003-blkcg-separate-blkcg_conf_get_disk-out-of-blkg_conf_.patch
- 0004-block-rq_qos-add-rq_qos_merge.patch
- 0005-block-rq_qos-implement-rq_qos_ops-queue_depth_change.patch
- 0006-blkcg-s-RQ_QOS_CGROUP-RQ_QOS_LATENCY.patch
- 0007-blk-mq-add-optional-request-alloc_time_ns.patch
- 0008-blkcg-implement-blk-iocost.patch
- 0009-blkcg-add-tools-cgroup-iocost_monitor.py.patch
- 0010-blkcg-add-tools-cgroup-iocost_coef_gen.py.patch
-
-0001-0007 are prep patches.
-0008 implements blk-iocost.
-0009 adds monitoring script.
-0010 adds linear cost model coefficient generation script.
-
-The patchset is also available in the following git branch.
-
- git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-iow-v2
-
-diffstat follows, Thanks.
-
- Documentation/admin-guide/cgroup-v2.rst |   97 +
- block/Kconfig                           |   13 
- block/Makefile                          |    1 
- block/bfq-cgroup.c                      |    5 
- block/blk-cgroup.c                      |   71 
- block/blk-core.c                        |    4 
- block/blk-iocost.c                      | 2395 ++++++++++++++++++++++++++++++++
- block/blk-iolatency.c                   |    8 
- block/blk-mq.c                          |   13 
- block/blk-rq-qos.c                      |   18 
- block/blk-rq-qos.h                      |   28 
- block/blk-settings.c                    |    2 
- block/blk-throttle.c                    |    6 
- block/blk-wbt.c                         |   18 
- block/blk-wbt.h                         |    4 
- include/linux/blk-cgroup.h              |    4 
- include/linux/blk_types.h               |    3 
- include/linux/blkdev.h                  |   13 
- include/trace/events/iocost.h           |  174 ++
- tools/cgroup/iocost_coef_gen.py         |  178 ++
- tools/cgroup/iocost_monitor.py          |  270 +++
- 21 files changed, 3272 insertions(+), 53 deletions(-)
-
---
-tejun
-
-[1] http://lkml.kernel.org/r/20190614015620.1587672-1-tj@kernel.org
-[2] http://lkml.kernel.org/r/20190710205128.1316483-1-tj@kernel.org
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 0f6cd688924f..e6fb537b4bfc 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -501,11 +501,12 @@ static void bfq_cpd_free(struct blkcg_policy_data *cpd)
+ 	kfree(cpd_to_bfqgd(cpd));
+ }
+ 
+-static struct blkg_policy_data *bfq_pd_alloc(gfp_t gfp, int node)
++static struct blkg_policy_data *bfq_pd_alloc(gfp_t gfp, struct request_queue *q,
++					     struct blkcg *blkcg)
+ {
+ 	struct bfq_group *bfqg;
+ 
+-	bfqg = kzalloc_node(sizeof(*bfqg), gfp, node);
++	bfqg = kzalloc_node(sizeof(*bfqg), gfp, q->node);
+ 	if (!bfqg)
+ 		return NULL;
+ 
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 55a7dc227dfb..6a82ca3fb5cf 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -175,7 +175,7 @@ static struct blkcg_gq *blkg_alloc(struct blkcg *blkcg, struct request_queue *q,
+ 			continue;
+ 
+ 		/* alloc per-policy data and attach it to blkg */
+-		pd = pol->pd_alloc_fn(gfp_mask, q->node);
++		pd = pol->pd_alloc_fn(gfp_mask, q, blkcg);
+ 		if (!pd)
+ 			goto err_free;
+ 
+@@ -1346,7 +1346,7 @@ int blkcg_activate_policy(struct request_queue *q,
+ 		blk_mq_freeze_queue(q);
+ pd_prealloc:
+ 	if (!pd_prealloc) {
+-		pd_prealloc = pol->pd_alloc_fn(GFP_KERNEL, q->node);
++		pd_prealloc = pol->pd_alloc_fn(GFP_KERNEL, q, &blkcg_root);
+ 		if (!pd_prealloc) {
+ 			ret = -ENOMEM;
+ 			goto out_bypass_end;
+@@ -1362,7 +1362,7 @@ int blkcg_activate_policy(struct request_queue *q,
+ 		if (blkg->pd[pol->plid])
+ 			continue;
+ 
+-		pd = pol->pd_alloc_fn(GFP_NOWAIT | __GFP_NOWARN, q->node);
++		pd = pol->pd_alloc_fn(GFP_NOWAIT | __GFP_NOWARN, q, &blkcg_root);
+ 		if (!pd)
+ 			swap(pd, pd_prealloc);
+ 		if (!pd) {
+diff --git a/block/blk-iolatency.c b/block/blk-iolatency.c
+index 0fff7b56df0e..46fa6449f4bb 100644
+--- a/block/blk-iolatency.c
++++ b/block/blk-iolatency.c
+@@ -934,11 +934,13 @@ static size_t iolatency_pd_stat(struct blkg_policy_data *pd, char *buf,
+ }
+ 
+ 
+-static struct blkg_policy_data *iolatency_pd_alloc(gfp_t gfp, int node)
++static struct blkg_policy_data *iolatency_pd_alloc(gfp_t gfp,
++						   struct request_queue *q,
++						   struct blkcg *blkcg)
+ {
+ 	struct iolatency_grp *iolat;
+ 
+-	iolat = kzalloc_node(sizeof(*iolat), gfp, node);
++	iolat = kzalloc_node(sizeof(*iolat), gfp, q->node);
+ 	if (!iolat)
+ 		return NULL;
+ 	iolat->stats = __alloc_percpu_gfp(sizeof(struct latency_stat),
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 8ab6c8153223..0445c998c377 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -478,12 +478,14 @@ static void throtl_service_queue_init(struct throtl_service_queue *sq)
+ 	timer_setup(&sq->pending_timer, throtl_pending_timer_fn, 0);
+ }
+ 
+-static struct blkg_policy_data *throtl_pd_alloc(gfp_t gfp, int node)
++static struct blkg_policy_data *throtl_pd_alloc(gfp_t gfp,
++						struct request_queue *q,
++						struct blkcg *blkcg)
+ {
+ 	struct throtl_grp *tg;
+ 	int rw;
+ 
+-	tg = kzalloc_node(sizeof(*tg), gfp, node);
++	tg = kzalloc_node(sizeof(*tg), gfp, q->node);
+ 	if (!tg)
+ 		return NULL;
+ 
+diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
+index 0bb79d858a13..261248e88eb1 100644
+--- a/include/linux/blk-cgroup.h
++++ b/include/linux/blk-cgroup.h
+@@ -149,7 +149,8 @@ typedef struct blkcg_policy_data *(blkcg_pol_alloc_cpd_fn)(gfp_t gfp);
+ typedef void (blkcg_pol_init_cpd_fn)(struct blkcg_policy_data *cpd);
+ typedef void (blkcg_pol_free_cpd_fn)(struct blkcg_policy_data *cpd);
+ typedef void (blkcg_pol_bind_cpd_fn)(struct blkcg_policy_data *cpd);
+-typedef struct blkg_policy_data *(blkcg_pol_alloc_pd_fn)(gfp_t gfp, int node);
++typedef struct blkg_policy_data *(blkcg_pol_alloc_pd_fn)(gfp_t gfp,
++				struct request_queue *q, struct blkcg *blkcg);
+ typedef void (blkcg_pol_init_pd_fn)(struct blkg_policy_data *pd);
+ typedef void (blkcg_pol_online_pd_fn)(struct blkg_policy_data *pd);
+ typedef void (blkcg_pol_offline_pd_fn)(struct blkg_policy_data *pd);
+-- 
+2.17.1
 
