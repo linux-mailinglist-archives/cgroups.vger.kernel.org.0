@@ -2,98 +2,269 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 69060A0918
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2019 19:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F51A0D23
+	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2019 00:06:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726566AbfH1R6N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Aug 2019 13:58:13 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:37779 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726623AbfH1R6N (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Aug 2019 13:58:13 -0400
-Received: by mail-oi1-f195.google.com with SMTP id b25so410314oib.4
-        for <cgroups@vger.kernel.org>; Wed, 28 Aug 2019 10:58:12 -0700 (PDT)
+        id S1726907AbfH1WGI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Aug 2019 18:06:08 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42683 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726839AbfH1WGI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Aug 2019 18:06:08 -0400
+Received: by mail-qk1-f194.google.com with SMTP id f13so1122554qkm.9;
+        Wed, 28 Aug 2019 15:06:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tK5THlH7NqfDItCUjzopiqfECSLNe3u1Nqtw0AYmMVQ=;
-        b=IBueXC/olKJzB5vkgN7R06mcGGzgzCsySyIoqFzMQQeswkJAHKqFm+qVQ5Q/mM2Viu
-         zMz1KIwbGEYS6VOP2ibBFyCNrAXohuSwim7uGYeBOM127IrM3XRf1yt9rJ+GHWQq+xby
-         Qc9uu+kA2eAXXs7BwohGVmINAWOvSq+nfdDJ7Y8/cZH7Zjv7WKps8+dAr7a87Jg8U7go
-         y6wsL5nd8ng2CHv6pSTiVZcRNiB8QywcWIY3rsDRn9ebc9S69ai7ItW57QzlHO290kDA
-         /eZVRciXkxX0EBDYL1nGG9xnDi802eQ8QjILYMSICbvd2i1N6UMg++8x6WAxh9mniN+W
-         DZgw==
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=vDon8M1NTFQbFibMp4kfu+E3libW4ghIHFjpCN3/Sb8=;
+        b=GF2v1bOluHD/OkqipjqvA+sPl0H3BQepwJraUApzHqySvYizPwWE4ZIijVU6Dhuygt
+         TnFoi+ULA5Ff4BKLF8IgJnocF4gLSEC6vdLRqovXmyVY9N7K8WU6TzuH/CmHLuzS6AX1
+         VqZaaLFaiDh1eT66s03MgVMgFmdGEuiiiABwUjAoYD5pCFa1vCU6h/uzmGccmloMmlng
+         Mx9pmZPx4irfcZcMl+rryvh0kse+KpVIpDp+YS366aepwiRnq50qtcw3QH41f0EKEZCK
+         yCufagiiozzbowr0gyi1H5mZEUsqDXK6HsjO5ObhSA/YU+gItqy/yHfjI1fO5MbR8MBj
+         mE2Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tK5THlH7NqfDItCUjzopiqfECSLNe3u1Nqtw0AYmMVQ=;
-        b=ZWzmxHgRiI4TQj3XbMk2ZhYxFoUTKz4ftpKAjjCOjIsrFctxvAYONncOdJZy1K1p/Y
-         g8ieRpDRuHdZxLdBnoJbgzlxqYdkcAjgFMITBKl7LB6P5TffixMhXcdtm6yeRfqTt4Lw
-         MPBV2eRBgD6dgT3y7q41Kp3A5n84FFohRkwuHugOdjbfJdqT15IqLaBsCq6JacLOUlvL
-         /QXoMsksPuaPNU7dxgGa2XHHlKncRSMh6h/0rdWmHfIgKyRtkEuOJ64JPTHMaVAp5A+Y
-         qUYiMky1J2/b999m58YBVD1zKsJPp5QIcWlqWNiSZnGI41g2L8e06tmTMp3COXU8Os1d
-         x0sQ==
-X-Gm-Message-State: APjAAAUcUOGdui2LM6oZVEr0cAuyX3Zt07OPtRjZX596Sur2Jlk+v7yy
-        xH6MvpqbqVBspZGsLQSP6kpPN5i4XTezORwl5YwlDA==
-X-Google-Smtp-Source: APXvYqz0MlmHPcbvq/+RV6BUWyxran0z3juZutp6BvdDm8/FPvPCOgrtXXF42MKgXKq3VxKiHhatdFzdm45AKBpnZPA=
-X-Received: by 2002:a05:6808:b3a:: with SMTP id t26mr3719696oij.67.1567015091735;
- Wed, 28 Aug 2019 10:58:11 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190826233240.11524-1-almasrymina@google.com> <20190828112340.GB7466@dhcp22.suse.cz>
-In-Reply-To: <20190828112340.GB7466@dhcp22.suse.cz>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 28 Aug 2019 10:58:00 -0700
-Message-ID: <CAHS8izPPhPoqh-J9LJ40NJUCbgTFS60oZNuDSHmgtMQiYw72RA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/6] hugetlb_cgroup: Add hugetlb_cgroup reservation limits
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=vDon8M1NTFQbFibMp4kfu+E3libW4ghIHFjpCN3/Sb8=;
+        b=K1NEXPnfJmXQfqmi8l+Ds3+raTfafCaI32xmMigea2mo/XvS8DPhk0TVhKI09pknpv
+         VtmLAloTQWQm11BciZ6cs6q3j6uynUdeIaCKjHFS363C49/BsNLHBjtH91riQCfHCr1q
+         9h+9nwFaoWoSMuA1SIt4Jl50wOV5CaKLsZ6KvY9oFJptwKL6XiiDncT0WuF+JCsw+nKN
+         Pmc7rSDln8ZMvnIR9uOT8NADj19ocWYy3Fy+gK4blQe6FeIYx0CurDRFC9qThsB9ihzf
+         DjsxmUPhWEiAnwZoWA2g+/5A8xAlZMOtOpZS1EU37G0RoDOK5luoa6JxHG8LyPc1bR6T
+         Ks1A==
+X-Gm-Message-State: APjAAAWo6qibYY/SQW0qvcvj0zUBarHFsiCyegPGQJXfHkGOlhFz4PWV
+        PT/DmZeJQKKNOhLM8Yc5kR4=
+X-Google-Smtp-Source: APXvYqwAFv81LsDVvF5UXN5dahyez4CEqHbvAWDOZAhu+oN1W9nIcwhE78ywRXVp03oEENgVd8vKeQ==
+X-Received: by 2002:ae9:e714:: with SMTP id m20mr6198003qka.72.1567029966033;
+        Wed, 28 Aug 2019 15:06:06 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::1:c231])
+        by smtp.gmail.com with ESMTPSA id w5sm223367qki.13.2019.08.28.15.06.05
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 28 Aug 2019 15:06:05 -0700 (PDT)
+From:   Tejun Heo <tj@kernel.org>
+To:     axboe@kernel.dk, newella@fb.com, clm@fb.com, josef@toxicpanda.com,
+        dennisz@fb.com, lizefan@huawei.com, hannes@cmpxchg.org
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org
+Subject: [PATCHSET v3 block/for-linus] IO cost model based work-conserving porportional controller
+Date:   Wed, 28 Aug 2019 15:05:50 -0700
+Message-Id: <20190828220600.2527417-1-tj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 28, 2019 at 4:23 AM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Mon 26-08-19 16:32:34, Mina Almasry wrote:
-> >  mm/hugetlb.c                                  | 493 ++++++++++++------
-> >  mm/hugetlb_cgroup.c                           | 187 +++++--
->
-> This is a lot of changes to an already subtle code which hugetlb
-> reservations undoubly are.
+Changes from v2[2]:
 
-For what it's worth, I think this patch series is a net decrease in
-the complexity of the reservation code, especially the region_*
-functions, which is where a lot of the complexity lies. I removed the
-race between region_del and region_{add|chg}, refactored the main
-logic into smaller code, moved common code to helpers and deleted the
-duplicates, and finally added lots of comments to the hard to
-understand pieces. I hope that when folks review the changes they will
-see that! :)
+* Fixed a divide-by-zero bug in current_hweight().
 
-> Moreover cgroupv1 is feature frozen and I am
-> not aware of any plans to port the controller to v2.
+* pre_start_time and friends renamed to alloc_time and now has its own
+  CONFIG option which is selected by IOCOST.
 
-Also for what it's worth, if porting the controller to v2 is a
-requisite to take this, I'm happy to do that. As far as I understand
-there is no reason hugetlb_cgroups shouldn't be in cgroups v2, and we
-see value in them.
+Changes from v1[1]:
 
-> That all doesn't
-> sound in favor of this change. Mike is the maintainer of the hugetlb
-> code so I will defer to him to make a decision but I wouldn't recommend
-> that.
-> --
-> Michal Hocko
-> SUSE Labs
+* Prerequisite patchsets had cosmetic changes and merged.  Refreshed
+  on top.
+
+* Renamed from ioweight to iocost.  All source code and tools are
+  updated accordingly.  Control knobs io.weight.qos and
+  io.weight.cost_model are renamed to io.cost.qos and io.cost.model
+  respectively.  This is a more fitting name which won't become a
+  misnomer when, for example, cost based io.max is added.
+
+* Various bug fixes and improvements.  A few bugs were discovered
+  while testing against high-iops nvme device.  Auto parameter
+  selection improved and verified across different classes of SSDs.
+
+* Dropped bpf iocost support for now.
+
+* Added coef generation script.
+
+* Verified on high-iops nvme device.  Result is included below.
+
+One challenge of controlling IO resources is the lack of trivially
+observable cost metric.  This is distinguished from CPU and memory
+where wallclock time and the number of bytes can serve as accurate
+enough approximations.
+
+Bandwidth and iops are the most commonly used metrics for IO devices
+but depending on the type and specifics of the device, different IO
+patterns easily lead to multiple orders of magnitude variations
+rendering them useless for the purpose of IO capacity distribution.
+While on-device time, with a lot of clutches, could serve as a useful
+approximation for non-queued rotational devices, this is no longer
+viable with modern devices, even the rotational ones.
+
+While there is no cost metric we can trivially observe, it isn't a
+complete mystery.  For example, on a rotational device, seek cost
+dominates while a contiguous transfer contributes a smaller amount
+proportional to the size.  If we can characterize at least the
+relative costs of these different types of IOs, it should be possible
+to implement a reasonable work-conserving proportional IO resource
+distribution.
+
+This patchset implements IO cost model based work-conserving
+proportional controller.  It currently has a simple linear cost model
+builtin where each IO is classified as sequential or random and given
+a base cost accordingly and additional size-proportional cost is added
+on top.  Each IO is given a cost based on the model and the controller
+issues IOs for each cgroup according to their hierarchical weight.
+
+By default, the controller adapts its overall IO rate so that it
+doesn't build up buffer bloat in the request_queue layer, which
+guarantees that the controller doesn't lose significant amount of
+total work.  However, this may not provide sufficient differentiation
+as the underlying device may have a deep queue and not be fair in how
+the queued IOs are serviced.  The controller provides extra QoS
+control knobs which allow tightening control feedback loop as
+necessary.
+
+For more details on the control mechanism, implementation and
+interface, please refer to the comment at the top of
+block/blk-iocost.c and Documentation/admin-guide/cgroup-v2.rst changes
+in the "blkcg: implement blk-iocost" patch.
+
+Here are some test results.  Each test run goes through the following
+combinations with each combination running for a minute.  All tests
+are performed against regular files on btrfs w/ deadline as the IO
+scheduler.  Random IOs are direct w/ queue depth of 64.  Sequential
+are normal buffered IOs.
+
+        high priority (weight=500)      low priority (weight=100)
+
+        Rand read                       None
+        ditto                           Rand read
+        ditto                           Seq  read
+        ditto                           Rand write
+        ditto                           Seq  write
+        Seq  read                       None
+        ditto                           Rand read
+        ditto                           Seq  read
+        ditto                           Rand write
+        ditto                           Seq  write
+        Rand write                      None
+        ditto                           Rand read
+        ditto                           Seq  read
+        ditto                           Rand write
+        ditto                           Seq  write
+        Seq  write                      None
+        ditto                           Rand read
+        ditto                           Seq  read
+        ditto                           Rand write
+        ditto                           Seq  write
+
+* 7200RPM SATA hard disk
+  * No IO control
+    https://photos.app.goo.gl/1KBHn7ykpC1LXRkB8
+  * iocost, QoS: None
+    https://photos.app.goo.gl/MLNQGxCtBQ8wAmjm7
+  * iocost, QoS: rpct=95.00 rlat=40000 wpct=95.00 wlat=40000 min=25.00 max=200.00
+    https://photos.app.goo.gl/XqXHm3Mkbm9w6Db46
+* NCQ-blacklisted SATA SSD (QD==1)
+  * No IO control
+    https://photos.app.goo.gl/wCTXeu2uJ6LYL4pk8
+  * iocost, QoS: None
+    https://photos.app.goo.gl/T2HedKD2sywQgj7R9
+  * iocost, QoS: rpct=95.00 rlat=20000 wpct=95.00 wlat=20000 min=50.00 max=200.00
+    https://photos.app.goo.gl/urBTV8XQc1UqPJJw7
+* SATA SSD (QD==32)
+  * No IO control
+    https://photos.app.goo.gl/TjEVykuVudSQcryh6
+  * iocost, QoS: None
+    https://photos.app.goo.gl/iyQBsky7bmM54Xiq7
+  * iocost, QoS: rpct=95.00 rlat=10000 wpct=95.00 wlat=20000 min=50.00 max=400.00
+    https://photos.app.goo.gl/q1a6URLDxPLMrnHy5
+* NVME SSD (ran with 8 concurrent fio jobs to achieve saturation)
+  * No IO control
+    https://photos.app.goo.gl/S6xjEVTJzcfb3w1j7
+  * iocost, QoS: None
+    https://photos.app.goo.gl/SjQUUotJBAGr7vqz7
+  * iocost, QoS: rpct=95.00 rlat=5000 wpct=95.00 wlat=5000 min=1.00 max=10000.00
+    https://photos.app.goo.gl/RsaYBd2muX7CegoN7
+
+Even without explicit QoS configuration, read-heavy scenarios can
+obtain acceptable differentiation.  However, when write-heavy, the
+deep buffering on the device side makes it difficult to maintain
+control.  With QoS parameters set, the differentiation is acceptable
+across all combinations.
+
+The implementation comes with default cost model parameters which are
+selected automatically which should provide acceptable behavior across
+most common devices.  The parameters for hdd and consumer-grade SSDs
+seem pretty robust.  The default parameter set and selection criteria
+for highend SSDs might need further adjustments.
+
+It is fairly easy to configure the QoS parameters and, if needed, cost
+model coefficients.  We'll follow up with tooling and further
+documentation.  Also, the last RFC patch in the series implements
+support for bpf-based custom cost function.  Originally we thought
+that we'd need per-device-type cost functions but the simple linear
+model now seem good enough to cover all common device classes.  In
+case custom cost functions become necessary, we can fully develop the
+bpf based extension and also easily add different builtin cost models.
+
+Andy Newell did the heavy lifting of analyzing IO workloads and device
+characteristics, exploring various cost models, determining the
+default model and parameters to use.
+
+Josef Bacik implemented a prototype which explored the use of
+different types of cost metrics including on-device time and Andy's
+linear model.
+
+This patchset is on top of the current block/for-next 53fc55c817c3
+("Merge branch 'for-5.4/block' into for-next") and contains the
+following 10 patches.
+
+ 0001-blkcg-pass-q-and-blkcg-into-blkcg_pol_alloc_pd_fn.patch
+ 0002-blkcg-make-cpd_init_fn-optional.patch
+ 0003-blkcg-separate-blkcg_conf_get_disk-out-of-blkg_conf_.patch
+ 0004-block-rq_qos-add-rq_qos_merge.patch
+ 0005-block-rq_qos-implement-rq_qos_ops-queue_depth_change.patch
+ 0006-blkcg-s-RQ_QOS_CGROUP-RQ_QOS_LATENCY.patch
+ 0007-blk-mq-add-optional-request-alloc_time_ns.patch
+ 0008-blkcg-implement-blk-iocost.patch
+ 0009-blkcg-add-tools-cgroup-iocost_monitor.py.patch
+ 0010-blkcg-add-tools-cgroup-iocost_coef_gen.py.patch
+
+0001-0007 are prep patches.
+0008 implements blk-iocost.
+0009 adds monitoring script.
+0010 adds linear cost model coefficient generation script.
+
+The patchset is also available in the following git branch.
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-iow-v2
+
+diffstat follows, Thanks.
+
+ Documentation/admin-guide/cgroup-v2.rst |   97 +
+ block/Kconfig                           |   13 
+ block/Makefile                          |    1 
+ block/bfq-cgroup.c                      |    5 
+ block/blk-cgroup.c                      |   71 
+ block/blk-core.c                        |    4 
+ block/blk-iocost.c                      | 2395 ++++++++++++++++++++++++++++++++
+ block/blk-iolatency.c                   |    8 
+ block/blk-mq.c                          |   13 
+ block/blk-rq-qos.c                      |   18 
+ block/blk-rq-qos.h                      |   28 
+ block/blk-settings.c                    |    2 
+ block/blk-throttle.c                    |    6 
+ block/blk-wbt.c                         |   18 
+ block/blk-wbt.h                         |    4 
+ include/linux/blk-cgroup.h              |    4 
+ include/linux/blk_types.h               |    3 
+ include/linux/blkdev.h                  |   13 
+ include/trace/events/iocost.h           |  174 ++
+ tools/cgroup/iocost_coef_gen.py         |  178 ++
+ tools/cgroup/iocost_monitor.py          |  270 +++
+ 21 files changed, 3272 insertions(+), 53 deletions(-)
+
+--
+tejun
+
+[1] http://lkml.kernel.org/r/20190614015620.1587672-1-tj@kernel.org
+[2] http://lkml.kernel.org/r/20190710205128.1316483-1-tj@kernel.org
+
