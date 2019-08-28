@@ -2,58 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FF69F8EC
-	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2019 05:55:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A390B9F8F2
+	for <lists+cgroups@lfdr.de>; Wed, 28 Aug 2019 05:55:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbfH1DzA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 27 Aug 2019 23:55:00 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:36321 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726234AbfH1DzA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Aug 2019 23:55:00 -0400
-Received: by mail-pf1-f196.google.com with SMTP id w2so775745pfi.3
-        for <cgroups@vger.kernel.org>; Tue, 27 Aug 2019 20:55:00 -0700 (PDT)
+        id S1726569AbfH1DzJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 27 Aug 2019 23:55:09 -0400
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:41465 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726506AbfH1DzD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 27 Aug 2019 23:55:03 -0400
+Received: by mail-pl1-f193.google.com with SMTP id m9so551685pls.8
+        for <cgroups@vger.kernel.org>; Tue, 27 Aug 2019 20:55:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance.com; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y9181Itz3jIauqOELXX6WInlwQHr+dm37ugRC+ucshM=;
-        b=TjQXccpZVKZ1sffAXO/DsPyDsK+AdFu9vdXcGvo9YuHGjpeHZlNiTOqwGfSPmYezm8
-         l9Ajufq1E8hHy8CbTnQ2anykStPYMn7aF2ga3wEwW/IN1412J6cvxPr1DCxzzre7bLtx
-         yS+d1Zh8I5PLqcOSKW5u/cce0sblzCDq2saTXTtJySLWpDmPv4on2rEXv33NS+3gHECZ
-         /SIke6FZhTib1ascyJl3ItKGFoiCXn+zjg79QsgbWTNJQuWIrANzjeE+aU6JHsMPNJ9y
-         IyyyJ8KkIDEJn10TuxcBtjTkEygENGwIvTRAXT18w5KFl4l7fKuf377AwEnhJljA6BBF
-         crrA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=mxNtarX9nX57XJxkArjO2AM3QUOz0wzt/JnfD0VPOK0=;
+        b=F4caB0aZl1+ljrrlr2ZXzSJ64Udep2IJeA7lQGcAGXBMsyDN9JCNHMO6FT0Ar5vP0v
+         UnJCBrHKqZHlbtTQE09XNLLGK9s6lXCj0RfiEUYHCKkZZT3DyfafbE7GpO6RUlwg+E8T
+         EDITDAEd81fTvZLyUoEhaX1ib77eZxhg/UoEi81UsG9KE3s0ZgZqgkTAa8cMari6sOBz
+         BiasbpjnO/EnhLafHhn/4W5YObrmcFzXPTkbANjmau0q6sNwnLh/HDhWRGDe0dfDU182
+         lkes5Qnwe7Mcqt21kTvs3UN/UlyCzS3m/4xDlaMvoRd5eiDJFX2ROW2Xo/vuHPiT5E/i
+         l6ZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Y9181Itz3jIauqOELXX6WInlwQHr+dm37ugRC+ucshM=;
-        b=Zh3PxoJBMKtoR+R21BZub/iwvW4A4xZq3DTXo9n2Pp3NPWzQkNpXt5pzk7Ezy4svAW
-         sy6X51Jg0+0ClPmZ5rRjrgdGVyrt0IroIslPO2bQ/AXU6/joBvCdXhO1GD/TFGsp2/PX
-         LgwGwsLxZnDwX/b25krANpHqWvtcdHWOOT7Z2hqc1+gvZFFDyGsEWR++66qyWCR2Ki9R
-         62k26FRy1I4hRHTlnmyvdYyn3w4O+FB45JXXyXbXbYDxpiol0Z5ZlDHdxClqDThWvvqr
-         ykTbbwSpG+ODCdK9UnNS9m4baoKxpCBDItAO0nBhdxo94hS4GI79Tg07fbPNjIqy6GMW
-         qTDQ==
-X-Gm-Message-State: APjAAAWiN6IUPSu8P4M/YerfHmYtJbwP8mlgpBwtHuxqSFdUcSSpv6y+
-        va4SbR5l4JYIgTusxvSpilGX/Q==
-X-Google-Smtp-Source: APXvYqzmfJh9pWOwzVARAistAKFsjEbyiAppZPV4jIoYh1R0tTv5COwEsvxQ4IKTKUnzMpTTzS4AvQ==
-X-Received: by 2002:a17:90a:ac02:: with SMTP id o2mr2160177pjq.134.1566964499671;
-        Tue, 27 Aug 2019 20:54:59 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=mxNtarX9nX57XJxkArjO2AM3QUOz0wzt/JnfD0VPOK0=;
+        b=ICrZj9YR+ll+YQZGESUB4hZ4sxUHdlXhlIiabq0n4e/yoeQyHyV3ymboV6pEd5HWqr
+         t32qhjlVWSzw0io3Y7M+yvXl5puVrb7jb1aavH7ldgWIYfjZIZUuQVxWMX4LG9MUfyIE
+         fcFnKLk6IbFlQqPuAVU9ZEfjwP9gR6n9yNGS/b8jZQIwu+1GtzyPAMHJ5dbbQ+yum0Hv
+         6UlVlFU8LLCKXE0w4wHi3qHlAQL/WoLBdUuG+aycgKlZ1bD3EhBSlmMQvFTuQx+C8P4Y
+         ag5WhxxP5ghST1GZ2JZOpzgghOQrStfpzyzAUvf6AjhOVVzQVlI1vBeQzyS58uSin0tU
+         p9EA==
+X-Gm-Message-State: APjAAAUhEAOVX+lu/SyFteuV/6f2Akxuc0Whr0O4CZIoKHxlqMEUpa52
+        CosbW+z32GFBvFX+j+sOd98wPQ==
+X-Google-Smtp-Source: APXvYqx3e2ELfBN+TGYLKM3FzD+6OoDzIwJzZbWpZcxu0XdIQBMS++7j1DfCl/f6RY1tc9dYTvz3FQ==
+X-Received: by 2002:a17:902:aa43:: with SMTP id c3mr2177445plr.11.1566964502988;
+        Tue, 27 Aug 2019 20:55:02 -0700 (PDT)
 Received: from localhost ([61.120.150.70])
-        by smtp.gmail.com with ESMTPSA id y188sm891408pfb.115.2019.08.27.20.54.58
+        by smtp.gmail.com with ESMTPSA id i124sm902847pfe.61.2019.08.27.20.55.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Aug 2019 20:54:59 -0700 (PDT)
+        Tue, 27 Aug 2019 20:55:02 -0700 (PDT)
 From:   Fam Zheng <zhengfeiran@bytedance.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     axboe@kernel.dk, paolo.valente@linaro.org, fam@euphon.net,
         duanxiongchun@bytedance.com, cgroups@vger.kernel.org,
         zhangjiachen.jc@bytedance.com, tj@kernel.org,
         linux-block@vger.kernel.org
-Subject: [PATCH v3 0/3] Implement BFQ per-device weight interface
-Date:   Wed, 28 Aug 2019 11:54:50 +0800
-Message-Id: <20190828035453.18129-1-zhengfeiran@bytedance.com>
+Subject: [PATCH v3 1/3] bfq: Fix the missing barrier in __bfq_entity_update_weight_prio
+Date:   Wed, 28 Aug 2019 11:54:51 +0800
+Message-Id: <20190828035453.18129-2-zhengfeiran@bytedance.com>
 X-Mailer: git-send-email 2.22.1
+In-Reply-To: <20190828035453.18129-1-zhengfeiran@bytedance.com>
+References: <20190828035453.18129-1-zhengfeiran@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
@@ -61,64 +63,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-v3: Pick up rev-by and ack-by from Paolo and Tejun.
-    Add commit message to patch 3.
+The comment of bfq_group_set_weight says the reading of prio_changed
+should happen before the reading of weight, but a memory barrier is
+missing here. Add it now, to match the smp_wmb() there.
 
-(Revision starting from v2 since v1 was used off-list)
+Signed-off-by: Fam Zheng <zhengfeiran@bytedance.com>
+Reviewed-by: Paolo Valente <paolo.valente@linaro.org>
+---
+ block/bfq-wf2q.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Hi Paolo and others,
-
-This adds to BFQ the missing per-device weight interfaces:
-blkio.bfq.weight_device on legacy and io.bfq.weight on unified. The
-implementation pretty closely resembles what we had in CFQ and the parsing code
-is basically reused.
-
-Tests
-=====
-
-Using two cgroups and three block devices, having weights setup as:
-
-Cgroup          test1           test2
-============================================
-default         100             500
-sda             500             100
-sdb             default         default
-sdc             200             200
-
-cgroup v1 runs
---------------
-
-    sda.test1.out:   READ: bw=913MiB/s
-    sda.test2.out:   READ: bw=183MiB/s
-
-    sdb.test1.out:   READ: bw=213MiB/s
-    sdb.test2.out:   READ: bw=1054MiB/s
-
-    sdc.test1.out:   READ: bw=650MiB/s
-    sdc.test2.out:   READ: bw=650MiB/s
-
-cgroup v2 runs
---------------
-
-    sda.test1.out:   READ: bw=915MiB/s
-    sda.test2.out:   READ: bw=184MiB/s
-
-    sdb.test1.out:   READ: bw=216MiB/s
-    sdb.test2.out:   READ: bw=1069MiB/s
-
-    sdc.test1.out:   READ: bw=621MiB/s
-    sdc.test2.out:   READ: bw=622MiB/s
-
-Fam Zheng (3):
-  bfq: Fix the missing barrier in __bfq_entity_update_weight_prio
-  bfq: Extract bfq_group_set_weight from bfq_io_set_weight_legacy
-  bfq: Add per-device weight
-
- block/bfq-cgroup.c  | 151 +++++++++++++++++++++++++++++++++-----------
- block/bfq-iosched.h |   3 +
- block/bfq-wf2q.c    |   2 +
- 3 files changed, 119 insertions(+), 37 deletions(-)
-
+diff --git a/block/bfq-wf2q.c b/block/bfq-wf2q.c
+index c9ba225081ce..05f0bf4a1144 100644
+--- a/block/bfq-wf2q.c
++++ b/block/bfq-wf2q.c
+@@ -744,6 +744,8 @@ __bfq_entity_update_weight_prio(struct bfq_service_tree *old_st,
+ 		}
+ #endif
+ 
++		/* Matches the smp_wmb() in bfq_group_set_weight. */
++		smp_rmb();
+ 		old_st->wsum -= entity->weight;
+ 
+ 		if (entity->new_weight != entity->orig_weight) {
 -- 
 2.22.1
 
