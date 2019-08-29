@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DAE33A1158
+	by mail.lfdr.de (Postfix) with ESMTP id 494EAA1157
 	for <lists+cgroups@lfdr.de>; Thu, 29 Aug 2019 08:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726973AbfH2GFt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Aug 2019 02:05:49 -0400
-Received: from mail-eopbgr790085.outbound.protection.outlook.com ([40.107.79.85]:60313
-        "EHLO NAM03-CO1-obe.outbound.protection.outlook.com"
+        id S1727392AbfH2GFs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Aug 2019 02:05:48 -0400
+Received: from mail-eopbgr770071.outbound.protection.outlook.com ([40.107.77.71]:3910
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726069AbfH2GFs (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        id S1726973AbfH2GFs (ORCPT <rfc822;cgroups@vger.kernel.org>);
         Thu, 29 Aug 2019 02:05:48 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YOOnm65+8DVPzLNgLBopgvAcbKfSblTKWX3+6e8qFKcVEa3Qjdw+yJaFvjPcNApWuWvKahl6l89xJv3Wu3Ipu6R3WH8q4VJRe7asX0GUw6/E4K38kCKIOuPMF9FODPqHj3UR3V2WGQ5A4nK7U8pB2jDBvE58tnsZJ4/tnGYPTQKXvjju2DHQQSdxVMPVX5m4k8GRVicfPj69WipF/56LDZzemx5yTRyVUyPq2YuwLofFW/DkXHQiqcI4INLBsRqDmWL4/l7IUCtYZEGXjk9ATq0jul6/I7ZP/hHVWCh/6NBe9qB+eH3+9+32wyrpz7vztGky9cJtUq4i6ILqmGMS6g==
+ b=XbM2WRs5ttAz78pAfNQ0P0VTlRgZ1/WsFdlPqYU59XbqZLCNwhHazGd81a208k7nzRvfvF3HVEl76Clt8phSqtJvpjW/Mvitx026lzXakeOm6pYOgkH37pGYqVhG8VZryEO3NrXa8AFfBhVSMAkWYKXVHhGSyt7wI7cUYP6eQ45XtyaFW2uauhrNP/73gI9UuLvg7q6ZLXiMEap8XDZ5syAYqDg0L0KA3koKOlcA7V6WsDnR36+g1r1PXmVwLRx4C/ikCoNzfF+D2GHJWvCSopl7d9YcCBaXte10lHpGvR5AqlLC9Sg8aTsMlAawoAyHIADXSPtHKUuf6hzIQVs1/g==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s6EPMox26fU5F2yp9AcfPra6fm+DXi302zWJUO9/tUM=;
- b=Y4/QAdTMqcZcaWOG8AxWXLRLc1qJnPhIkHlI/ycqtJrVY0BdfLZtqbejheSms6oXfqpdCB+BYabRqWsP6m/zoPxB7PJIcZS2meDEpvm0yQ5u9rABzMgiLfRZK+iHAzQcWCZy0EtXwW5a+9KsVkr9sos1EnAREpLGh7+49/IQiiBt5nSPpOpp068mLpLBz+/xlZl2Ba7l7VLGG0e3fCekrQ5NwSTaFvLbmKQfpvpXhtPT58YS3ie+byyinkOwzn2eCsHbtZzMPQvW1pxMW6kiwdmEkNsY2J8LmTO0XBkVlCvwEwJ956KcHUoANgMFntKb6FoCACX8hpYet0f0ONu2IA==
+ bh=NiGfUj8lkzJ3n79e6BUomcC2im3IgVaCAfZ0em4K9D8=;
+ b=ZjOLopLwh88IcqEhrliRwCXAY8Oso0OJBqvMmKNP/v0LsLULPFMwNRRmvzLez09gs1U9ZQm7eD7jPj+oGSeYGsDEU8V2Ps0vxoLw4hri/D5NIq/A6u7649LM9xjdu4oqIDLd8/39V2X5bZ8nZwpZgF7jEuyeyaevoqaQd3g29EI4n/ETBBjaJnPbYWZRat9+HEzgCbt6l7mDqiAmPF7emlld2c7qla0JwrLVvN/USEKcvtNKLlu9ai6i9uKcxl7dc6cGv8Jz/D9rAKUd6VFNnq+eYI0W1PlJvE+v8Mj3LrxyXKRYQD7g5wkgDKnIQe1CgIzskQDToEFS/hh1U+2Nqw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
  165.204.84.17) smtp.rcpttodomain=cray.com smtp.mailfrom=amd.com;
  dmarc=permerror action=none header.from=amd.com; dkim=none (message not
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s6EPMox26fU5F2yp9AcfPra6fm+DXi302zWJUO9/tUM=;
- b=DIgzN0K2bhawl7vChxfradlfciqZ6J/8jD8900FSQAicN0F0nOZY3Coo5B6M+iHKZf4O9jjb1nQipqvK56BJwaM/wWGBDL9b+bzgnrNTG2unukKc9rCbpvsXr7incVH+ZeEutYfiPdKh/NcTO/wIX7AjQnhbA/ey31ABYtfk1UM=
-Received: from CH2PR12CA0005.namprd12.prod.outlook.com (2603:10b6:610:57::15)
- by BN6PR12MB1267.namprd12.prod.outlook.com (2603:10b6:404:17::13) with
+ bh=NiGfUj8lkzJ3n79e6BUomcC2im3IgVaCAfZ0em4K9D8=;
+ b=F/85A8BHfYyS56NNQGmsnJiRuymDFnEkRRnIlR2at9P/ddHTF36pJ3QIv/Dt2oo65OGFs5x3KtCxzSwI6CpNPeK0sUjayLPvx2uhSJDs3ivetA4yeuSnTZLeo5mwfRT3jF7e2fRBaZaRUFsiQUTnbxwnxHYDbRdlm+9bepu/aWE=
+Received: from CH2PR12CA0015.namprd12.prod.outlook.com (2603:10b6:610:57::25)
+ by SN6PR12MB2717.namprd12.prod.outlook.com (2603:10b6:805:70::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2199.20; Thu, 29 Aug
- 2019 06:05:44 +0000
+ 2019 06:05:46 +0000
 Received: from CO1NAM03FT045.eop-NAM03.prod.protection.outlook.com
- (2a01:111:f400:7e48::200) by CH2PR12CA0005.outlook.office365.com
- (2603:10b6:610:57::15) with Microsoft SMTP Server (version=TLS1_2,
+ (2a01:111:f400:7e48::202) by CH2PR12CA0015.outlook.office365.com
+ (2603:10b6:610:57::25) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2220.18 via Frontend
- Transport; Thu, 29 Aug 2019 06:05:44 +0000
+ Transport; Thu, 29 Aug 2019 06:05:45 +0000
 Authentication-Results: spf=none (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; cray.com; dkim=none (message not signed)
  header.d=none;cray.com; dmarc=permerror action=none header.from=amd.com;
@@ -46,10 +46,10 @@ Received-SPF: None (protection.outlook.com: amd.com does not designate
 Received: from SATLEXCHOV01.amd.com (165.204.84.17) by
  CO1NAM03FT045.mail.protection.outlook.com (10.152.81.214) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.2220.16 via Frontend Transport; Thu, 29 Aug 2019 06:05:44 +0000
+ 15.20.2220.16 via Frontend Transport; Thu, 29 Aug 2019 06:05:45 +0000
 Received: from kho-5039A.amd.com (10.180.168.240) by SATLEXCHOV01.amd.com
  (10.181.40.71) with Microsoft SMTP Server id 14.3.389.1; Thu, 29 Aug 2019
- 01:05:42 -0500
+ 01:05:43 -0500
 From:   Kenny Ho <Kenny.Ho@amd.com>
 To:     <y2kenny@gmail.com>, <cgroups@vger.kernel.org>,
         <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
@@ -58,9 +58,9 @@ To:     <y2kenny@gmail.com>, <cgroups@vger.kernel.org>,
         <joseph.greathouse@amd.com>, <jsparks@cray.com>,
         <lkaplan@cray.com>, <daniel@ffwll.ch>
 CC:     Kenny Ho <Kenny.Ho@amd.com>
-Subject: [PATCH RFC v4 02/16] cgroup: Introduce cgroup for drm subsystem
-Date:   Thu, 29 Aug 2019 02:05:19 -0400
-Message-ID: <20190829060533.32315-3-Kenny.Ho@amd.com>
+Subject: [PATCH RFC v4 03/16] drm, cgroup: Initialize drmcg properties
+Date:   Thu, 29 Aug 2019 02:05:20 -0400
+Message-ID: <20190829060533.32315-4-Kenny.Ho@amd.com>
 X-Mailer: git-send-email 2.22.0
 In-Reply-To: <20190829060533.32315-1-Kenny.Ho@amd.com>
 References: <20190829060533.32315-1-Kenny.Ho@amd.com>
@@ -69,285 +69,382 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(346002)(136003)(396003)(2980300002)(428003)(199004)(189003)(5660300002)(86362001)(47776003)(6666004)(356004)(1076003)(478600001)(2201001)(2870700001)(2906002)(316002)(70206006)(70586007)(50466002)(110136005)(48376002)(53416004)(426003)(36756003)(4326008)(305945005)(53936002)(8936002)(8676002)(81156014)(186003)(51416003)(2616005)(11346002)(446003)(476003)(76176011)(5024004)(14444005)(7696005)(126002)(486006)(81166006)(50226002)(336012)(26005)(921003)(1121003)(2101003)(83996005);DIR:OUT;SFP:1101;SCL:1;SRVR:BN6PR12MB1267;H:SATLEXCHOV01.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;A:1;MX:1;
+X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:NLI;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(136003)(396003)(346002)(376002)(39860400002)(2980300002)(428003)(189003)(199004)(446003)(186003)(2616005)(486006)(11346002)(14444005)(336012)(47776003)(2201001)(7696005)(76176011)(51416003)(86362001)(305945005)(476003)(126002)(4326008)(426003)(26005)(1076003)(2906002)(50226002)(356004)(6666004)(53416004)(36756003)(8676002)(478600001)(81166006)(53936002)(81156014)(5660300002)(2870700001)(8936002)(70206006)(110136005)(48376002)(316002)(70586007)(50466002)(921003)(1121003)(83996005)(2101003);DIR:OUT;SFP:1101;SCL:1;SRVR:SN6PR12MB2717;H:SATLEXCHOV01.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;MX:1;A:1;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: caf341a5-4743-4ef4-28f8-08d72c46edc3
-X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328);SRVR:BN6PR12MB1267;
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1267:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB12672D332DBBA12243361DBC83A20@BN6PR12MB1267.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Office365-Filtering-Correlation-Id: 025f64c5-f4e2-4352-6e51-08d72c46ee75
+X-Microsoft-Antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600166)(711020)(4605104)(1401327)(4618075)(2017052603328);SRVR:SN6PR12MB2717;
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2717:
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2717AE16324919432844661683A20@SN6PR12MB2717.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1107;
 X-Forefront-PRVS: 0144B30E41
 X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam-Message-Info: Is/OMQpFy8pXu8KcjTArZldv4Mepd09Di21K+1ZZUrYFaLZsNuhyelAmGqu2ykIjMd1C69MRUZEdDGdwzBy4M5LCkRZBVcByyzHTHc4erqEhhDplPuPRHHpuZu0zLbhsacZdAmK72BECH10jMuVcXqvr61dmYuTkVMCRPBp39mtel+FFs2y8PQGMnBtZWKDPrwxYx6X7XXQPwdIk+E8A5yBCMiEVJ5HFVzfVGoz3/+Bx+a6ZIltSmZdp2Ino2SoBoTSQd7hIEnIfI4NEfuqWYrk2KEb7J6j5AdTd/37rRUePlxRSubCR/Guk9oRRwvCf22yAP6lUs9LMskDCAqOfc17QVfxmCyowP7cprFguhYtboCQoSewjRLTczGrZYKzctrJrbuAnIvl4q+a1A0J5OQgfMeMV//7ua9hsVtxlprg=
+X-Microsoft-Antispam-Message-Info: ae3ZS0U59ft24Xab2IS6lz3xxMxUxvKQO6r80983KE0Cv+6IcXReai3gTT45vWyRRlQpiNwZisNksgY07+uPCcp+rSh9/xSW7T0F4Xjqe6YTM73Jv2g4K9T5MIqTivTweMdGgDk9zk6fNx/UMxbbfNBwfTP23oHZ/TTKvR0gMZq8dCQRCzMYLxyFnIH0ksvGarTP0X69rXYn42Mc0esN6xuNZNXLScVU2BSO0lkL6by7aZcKJeRg9uw0Y7cKsu60SvKtYMFUoELQKhckvikcN+FW6gb73iq/1JSAGpDjTjwph4UcyZXVsw1jw1T4qW4XcBkBWs/ZkRL+fulWR7/SfzSPo1SFdd5gA5iqmKWqir3Hep8td949cTn0AjW53c198ogfl2b4l7etTTr6fz3l6C5wbVAr9kUi6GhEEs2Ii5k=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2019 06:05:44.1292
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Aug 2019 06:05:45.2968
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: caf341a5-4743-4ef4-28f8-08d72c46edc3
+X-MS-Exchange-CrossTenant-Network-Message-Id: 025f64c5-f4e2-4352-6e51-08d72c46ee75
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXCHOV01.amd.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1267
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2717
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-With the increased importance of machine learning, data science and
-other cloud-based applications, GPUs are already in production use in
-data centers today.  Existing GPU resource management is very coarse
-grain, however, as sysadmins are only able to distribute workload on a
-per-GPU basis.  An alternative is to use GPU virtualization (with or
-without SRIOV) but it generally acts on the entire GPU instead of the
-specific resources in a GPU.  With a drm cgroup controller, we can
-enable alternate, fine-grain, sub-GPU resource management (in addition
-to what may be available via GPU virtualization.)
+drmcg initialization involves allocating a per cgroup, per device data
+structure and setting the defaults.  There are two entry points for
+drmcg init:
 
-Change-Id: I6830d3990f63f0c13abeba29b1d330cf28882831
+1) When struct drmcg is created via css_alloc, initialization is done
+for each device
+
+2) When DRM devices are created after drmcgs are created
+  a) Per device drmcg data structure is allocated at the beginning of
+  DRM device creation such that drmcg can begin tracking usage
+  statistics
+  b) At the end of DRM device creation, drmcg_device_update is called in
+  case device specific defaults need to be applied.
+
+Entry point #2 usually applies to the root cgroup since it can be
+created before DRM devices are available.  The drmcg controller will go
+through all existing drm cgroups and initialize them with the new device
+accordingly.
+
+Change-Id: I908ee6975ea0585e4c30eafde4599f87094d8c65
 Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 18 ++++-
- Documentation/cgroup-v1/drm.rst         |  1 +
- include/linux/cgroup_drm.h              | 92 +++++++++++++++++++++++++
- include/linux/cgroup_subsys.h           |  4 ++
- init/Kconfig                            |  5 ++
- kernel/cgroup/Makefile                  |  1 +
- kernel/cgroup/drm.c                     | 42 +++++++++++
- 7 files changed, 161 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/cgroup-v1/drm.rst
- create mode 100644 include/linux/cgroup_drm.h
- create mode 100644 kernel/cgroup/drm.c
+ drivers/gpu/drm/drm_drv.c  |   7 +++
+ include/drm/drm_cgroup.h   |  27 ++++++++
+ include/drm/drm_device.h   |   7 +++
+ include/drm/drm_drv.h      |   9 +++
+ include/linux/cgroup_drm.h |  13 ++++
+ kernel/cgroup/drm.c        | 123 +++++++++++++++++++++++++++++++++++++
+ 6 files changed, 186 insertions(+)
+ create mode 100644 include/drm/drm_cgroup.h
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 88e746074252..2936423a3fd5 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -61,8 +61,10 @@ v1 is available under Documentation/cgroup-v1/.
-      5-6. Device
-      5-7. RDMA
-        5-7-1. RDMA Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-8. DRM
-+       5-8-1. DRM Interface Files
-+     5-9. Misc
-+       5-9-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -1889,6 +1891,18 @@ RDMA Interface Files
- 	  ocrdma1 hca_handle=1 hca_object=23
+diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+index 000cddabd970..94265eba68ca 100644
+--- a/drivers/gpu/drm/drm_drv.c
++++ b/drivers/gpu/drm/drm_drv.c
+@@ -37,6 +37,7 @@
+ #include <drm/drm_client.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drmP.h>
++#include <drm/drm_cgroup.h>
  
+ #include "drm_crtc_internal.h"
+ #include "drm_legacy.h"
+@@ -672,6 +673,7 @@ int drm_dev_init(struct drm_device *dev,
+ 	mutex_init(&dev->filelist_mutex);
+ 	mutex_init(&dev->clientlist_mutex);
+ 	mutex_init(&dev->master_mutex);
++	mutex_init(&dev->drmcg_mutex);
  
-+DRM
-+---
-+
-+The "drm" controller regulates the distribution and accounting of
-+of DRM (Direct Rendering Manager) and GPU-related resources.
-+
-+DRM Interface Files
-+~~~~~~~~~~~~~~~~~~~~
-+
-+TODO
-+
-+
- Misc
- ----
+ 	dev->anon_inode = drm_fs_inode_new();
+ 	if (IS_ERR(dev->anon_inode)) {
+@@ -708,6 +710,7 @@ int drm_dev_init(struct drm_device *dev,
+ 	if (ret)
+ 		goto err_setunique;
  
-diff --git a/Documentation/cgroup-v1/drm.rst b/Documentation/cgroup-v1/drm.rst
++	drmcg_device_early_init(dev);
+ 	return 0;
+ 
+ err_setunique:
+@@ -722,6 +725,7 @@ int drm_dev_init(struct drm_device *dev,
+ 	drm_fs_inode_free(dev->anon_inode);
+ err_free:
+ 	put_device(dev->dev);
++	mutex_destroy(&dev->drmcg_mutex);
+ 	mutex_destroy(&dev->master_mutex);
+ 	mutex_destroy(&dev->clientlist_mutex);
+ 	mutex_destroy(&dev->filelist_mutex);
+@@ -798,6 +802,7 @@ void drm_dev_fini(struct drm_device *dev)
+ 
+ 	put_device(dev->dev);
+ 
++	mutex_destroy(&dev->drmcg_mutex);
+ 	mutex_destroy(&dev->master_mutex);
+ 	mutex_destroy(&dev->clientlist_mutex);
+ 	mutex_destroy(&dev->filelist_mutex);
+@@ -1008,6 +1013,8 @@ int drm_dev_register(struct drm_device *dev, unsigned long flags)
+ 		 dev->dev ? dev_name(dev->dev) : "virtual device",
+ 		 dev->primary->index);
+ 
++	drmcg_device_update(dev);
++
+ 	goto out_unlock;
+ 
+ err_minors:
+diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
 new file mode 100644
-index 000000000000..5f5658e1f5ed
+index 000000000000..bef9f9245924
 --- /dev/null
-+++ b/Documentation/cgroup-v1/drm.rst
-@@ -0,0 +1 @@
-+Please see ../cgroup-v2.rst for details
-diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-new file mode 100644
-index 000000000000..971166f9dd78
---- /dev/null
-+++ b/include/linux/cgroup_drm.h
-@@ -0,0 +1,92 @@
++++ b/include/drm/drm_cgroup.h
+@@ -0,0 +1,27 @@
 +/* SPDX-License-Identifier: MIT
 + * Copyright 2019 Advanced Micro Devices, Inc.
 + */
-+#ifndef _CGROUP_DRM_H
-+#define _CGROUP_DRM_H
++#ifndef __DRM_CGROUP_H__
++#define __DRM_CGROUP_H__
++
++/**
++ * Per DRM device properties for DRM cgroup controller for the purpose
++ * of storing per device defaults
++ */
++struct drmcg_props {
++};
 +
 +#ifdef CONFIG_CGROUP_DRM
 +
-+#include <linux/cgroup.h>
-+
-+/**
-+ * The DRM cgroup controller data structure.
-+ */
-+struct drmcg {
-+	struct cgroup_subsys_state	css;
-+};
-+
-+/**
-+ * css_to_drmcg - get the corresponding drmcg ref from a cgroup_subsys_state
-+ * @css: the target cgroup_subsys_state
-+ *
-+ * Return: DRM cgroup that contains the @css
-+ */
-+static inline struct drmcg *css_to_drmcg(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct drmcg, css) : NULL;
-+}
-+
-+/**
-+ * drmcg_get - get the drmcg reference that a task belongs to
-+ * @task: the target task
-+ *
-+ * This increase the reference count of the css that the @task belongs to
-+ *
-+ * Return: reference to the DRM cgroup the task belongs to
-+ */
-+static inline struct drmcg *drmcg_get(struct task_struct *task)
-+{
-+	return css_to_drmcg(task_get_css(task, drm_cgrp_id));
-+}
-+
-+/**
-+ * drmcg_put - put a drmcg reference
-+ * @drmcg: the target drmcg
-+ *
-+ * Put a reference obtained via drmcg_get
-+ */
-+static inline void drmcg_put(struct drmcg *drmcg)
-+{
-+	if (drmcg)
-+		css_put(&drmcg->css);
-+}
-+
-+/**
-+ * drmcg_parent - find the parent of a drm cgroup
-+ * @cg: the target drmcg
-+ *
-+ * This does not increase the reference count of the parent cgroup
-+ *
-+ * Return: parent DRM cgroup of @cg
-+ */
-+static inline struct drmcg *drmcg_parent(struct drmcg *cg)
-+{
-+	return css_to_drmcg(cg->css.parent);
-+}
-+
-+#else /* CONFIG_CGROUP_DRM */
-+
-+struct drmcg {
-+};
-+
-+static inline struct drmcg *css_to_drmcg(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
-+static inline struct drmcg *drmcg_get(struct task_struct *task)
-+{
-+	return NULL;
-+}
-+
-+static inline void drmcg_put(struct drmcg *drmcg)
++void drmcg_device_update(struct drm_device *device);
++void drmcg_device_early_init(struct drm_device *device);
++#else
++static inline void drmcg_device_update(struct drm_device *device)
 +{
 +}
 +
-+static inline struct drmcg *drmcg_parent(struct drmcg *cg)
++static inline void drmcg_device_early_init(struct drm_device *device)
 +{
-+	return NULL;
 +}
-+
-+#endif	/* CONFIG_CGROUP_DRM */
-+#endif	/* _CGROUP_DRM_H */
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index acb77dcff3b4..ddedad809e8b 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -61,6 +61,10 @@ SUBSYS(pids)
- SUBSYS(rdma)
- #endif
++#endif /* CONFIG_CGROUP_DRM */
++#endif /* __DRM_CGROUP_H__ */
+diff --git a/include/drm/drm_device.h b/include/drm/drm_device.h
+index 7f9ef709b2b6..5d7d779a5083 100644
+--- a/include/drm/drm_device.h
++++ b/include/drm/drm_device.h
+@@ -8,6 +8,7 @@
  
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+SUBSYS(drm)
-+#endif
+ #include <drm/drm_hashtab.h>
+ #include <drm/drm_mode_config.h>
++#include <drm/drm_cgroup.h>
+ 
+ struct drm_driver;
+ struct drm_minor;
+@@ -304,6 +305,12 @@ struct drm_device {
+ 	 */
+ 	struct drm_fb_helper *fb_helper;
+ 
++        /** \name DRM Cgroup */
++	/*@{ */
++	struct mutex drmcg_mutex;
++	struct drmcg_props drmcg_props;
++	/*@} */
 +
- /*
-  * The following subsystems are not supported on the default hierarchy.
+ 	/* Everything below here is for legacy driver, never use! */
+ 	/* private: */
+ #if IS_ENABLED(CONFIG_DRM_LEGACY)
+diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+index 24f8d054c570..c8a37a08d98d 100644
+--- a/include/drm/drm_drv.h
++++ b/include/drm/drm_drv.h
+@@ -660,6 +660,15 @@ struct drm_driver {
+ 			    struct drm_device *dev,
+ 			    uint32_t handle);
+ 
++	/**
++	 * @drmcg_custom_init
++	 *
++	 * Optional callback used to initialize drm cgroup per device properties
++	 * such as resource limit defaults.
++	 */
++	void (*drmcg_custom_init)(struct drm_device *dev,
++			struct drmcg_props *props);
++
+ 	/**
+ 	 * @gem_vm_ops: Driver private ops for this object
+ 	 */
+diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+index 971166f9dd78..4ecd44f2ac27 100644
+--- a/include/linux/cgroup_drm.h
++++ b/include/linux/cgroup_drm.h
+@@ -6,13 +6,26 @@
+ 
+ #ifdef CONFIG_CGROUP_DRM
+ 
++#include <linux/mutex.h>
+ #include <linux/cgroup.h>
++#include <drm/drm_file.h>
++
++/* limit defined per the way drm_minor_alloc operates */
++#define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
++
++/**
++ * Per DRM cgroup, per device resources (such as statistics and limits)
++ */
++struct drmcg_device_resource {
++	/* for per device stats */
++};
+ 
+ /**
+  * The DRM cgroup controller data structure.
   */
-diff --git a/init/Kconfig b/init/Kconfig
-index 8b9ffe236e4f..01d3453f6e04 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -876,6 +876,11 @@ config CGROUP_RDMA
- 	  Attaching processes with active RDMA resources to the cgroup
- 	  hierarchy is allowed even if can cross the hierarchy's limit.
+ struct drmcg {
+ 	struct cgroup_subsys_state	css;
++	struct drmcg_device_resource	*dev_resources[MAX_DRM_DEV];
+ };
  
-+config CGROUP_DRM
-+	bool "DRM controller (EXPERIMENTAL)"
-+	help
-+	  Provides accounting and enforcement of resources in the DRM subsystem.
-+
- config CGROUP_FREEZER
- 	bool "Freezer controller"
- 	help
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index 5d7a76bfbbb7..31f186f58121 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -4,5 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o freezer.o
- obj-$(CONFIG_CGROUP_FREEZER) += legacy_freezer.o
- obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
-+obj-$(CONFIG_CGROUP_DRM) += drm.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
+ /**
 diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-new file mode 100644
-index 000000000000..e97861b3cb30
---- /dev/null
+index e97861b3cb30..135fdcdc4b51 100644
+--- a/kernel/cgroup/drm.c
 +++ b/kernel/cgroup/drm.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: MIT
-+// Copyright 2019 Advanced Micro Devices, Inc.
-+#include <linux/slab.h>
-+#include <linux/cgroup.h>
-+#include <linux/cgroup_drm.h>
+@@ -1,28 +1,103 @@
+ // SPDX-License-Identifier: MIT
+ // Copyright 2019 Advanced Micro Devices, Inc.
++#include <linux/export.h>
+ #include <linux/slab.h>
+ #include <linux/cgroup.h>
++#include <linux/fs.h>
++#include <linux/seq_file.h>
++#include <linux/mutex.h>
+ #include <linux/cgroup_drm.h>
++#include <linux/kernel.h>
++#include <drm/drm_file.h>
++#include <drm/drm_drv.h>
++#include <drm/drm_device.h>
++#include <drm/drm_cgroup.h>
 +
-+static struct drmcg *root_drmcg __read_mostly;
-+
-+static void drmcg_css_free(struct cgroup_subsys_state *css)
++/* global mutex for drmcg across all devices */
++static DEFINE_MUTEX(drmcg_mutex);
+ 
+ static struct drmcg *root_drmcg __read_mostly;
+ 
++static int drmcg_css_free_fn(int id, void *ptr, void *data)
 +{
-+	struct drmcg *drmcg = css_to_drmcg(css);
++	struct drm_minor *minor = ptr;
++	struct drmcg *drmcg = data;
 +
-+	kfree(drmcg);
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return 0;
++
++	kfree(drmcg->dev_resources[minor->index]);
++
++	return 0;
 +}
 +
-+static struct cgroup_subsys_state *
-+drmcg_css_alloc(struct cgroup_subsys_state *parent_css)
+ static void drmcg_css_free(struct cgroup_subsys_state *css)
+ {
+ 	struct drmcg *drmcg = css_to_drmcg(css);
+ 
++	drm_minor_for_each(&drmcg_css_free_fn, drmcg);
++
+ 	kfree(drmcg);
+ }
+ 
++static inline int init_drmcg_single(struct drmcg *drmcg, struct drm_device *dev)
 +{
-+	struct drmcg *parent = css_to_drmcg(parent_css);
-+	struct drmcg *drmcg;
++	int minor = dev->primary->index;
++	struct drmcg_device_resource *ddr = drmcg->dev_resources[minor];
 +
-+	drmcg = kzalloc(sizeof(struct drmcg), GFP_KERNEL);
-+	if (!drmcg)
-+		return ERR_PTR(-ENOMEM);
++	if (ddr == NULL) {
++		ddr = kzalloc(sizeof(struct drmcg_device_resource),
++			GFP_KERNEL);
 +
-+	if (!parent)
-+		root_drmcg = drmcg;
++		if (!ddr)
++			return -ENOMEM;
++	}
 +
-+	return &drmcg->css;
++	mutex_lock(&dev->drmcg_mutex);
++	drmcg->dev_resources[minor] = ddr;
++
++	/* set defaults here */
++
++	mutex_unlock(&dev->drmcg_mutex);
++	return 0;
 +}
 +
-+struct cftype files[] = {
-+	{ }	/* terminate */
-+};
++static int init_drmcg_fn(int id, void *ptr, void *data)
++{
++	struct drm_minor *minor = ptr;
++	struct drmcg *drmcg = data;
 +
-+struct cgroup_subsys drm_cgrp_subsys = {
-+	.css_alloc	= drmcg_css_alloc,
-+	.css_free	= drmcg_css_free,
-+	.early_init	= false,
-+	.legacy_cftypes	= files,
-+	.dfl_cftypes	= files,
-+};
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return 0;
++
++	return init_drmcg_single(drmcg, minor->dev);
++}
++
++static inline int init_drmcg(struct drmcg *drmcg, struct drm_device *dev)
++{
++	if (dev != NULL)
++		return init_drmcg_single(drmcg, dev);
++
++	return drm_minor_for_each(&init_drmcg_fn, drmcg);
++}
++
+ static struct cgroup_subsys_state *
+ drmcg_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+ 	struct drmcg *parent = css_to_drmcg(parent_css);
+ 	struct drmcg *drmcg;
++	int rc;
+ 
+ 	drmcg = kzalloc(sizeof(struct drmcg), GFP_KERNEL);
+ 	if (!drmcg)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	rc = init_drmcg(drmcg, NULL);
++	if (rc) {
++		drmcg_css_free(&drmcg->css);
++		return ERR_PTR(rc);
++	}
++
+ 	if (!parent)
+ 		root_drmcg = drmcg;
+ 
+@@ -40,3 +115,51 @@ struct cgroup_subsys drm_cgrp_subsys = {
+ 	.legacy_cftypes	= files,
+ 	.dfl_cftypes	= files,
+ };
++
++static inline void drmcg_update_cg_tree(struct drm_device *dev)
++{
++	/* init cgroups created before registration (i.e. root cgroup) */
++	if (root_drmcg != NULL) {
++		struct cgroup_subsys_state *pos;
++		struct drmcg *child;
++
++		rcu_read_lock();
++		css_for_each_descendant_pre(pos, &root_drmcg->css) {
++			child = css_to_drmcg(pos);
++			init_drmcg(child, dev);
++		}
++		rcu_read_unlock();
++	}
++}
++
++/**
++ * drmcg_device_update - update DRM cgroups defaults
++ * @dev: the target DRM device
++ *
++ * If @dev has a drmcg_custom_init for the DRM cgroup controller, it will be called
++ * to set device specific defaults and set the initial values for all existing
++ * cgroups created prior to @dev become available.
++ */
++void drmcg_device_update(struct drm_device *dev)
++{
++	if (dev->driver->drmcg_custom_init)
++	{
++		dev->driver->drmcg_custom_init(dev, &dev->drmcg_props);
++
++		drmcg_update_cg_tree(dev);
++	}
++}
++EXPORT_SYMBOL(drmcg_device_update);
++
++/**
++ * drmcg_device_early_init - initialize device specific resources for DRM cgroups
++ * @dev: the target DRM device
++ *
++ * Allocate and initialize device specific resources for existing DRM cgroups.
++ * Typically only the root cgroup exists before the initialization of @dev.
++ */
++void drmcg_device_early_init(struct drm_device *dev)
++{
++	drmcg_update_cg_tree(dev);
++}
++EXPORT_SYMBOL(drmcg_device_early_init);
 -- 
 2.22.0
 
