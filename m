@@ -2,123 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC4B7A346A
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 11:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A29C2A408C
+	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2019 00:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727236AbfH3Jsp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Aug 2019 05:48:45 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:49438 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725780AbfH3Jsp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Aug 2019 05:48:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=PKLkBBrwktzoIAL7/V9IuDoU+f4BVjGqlqVhW17S6o4=; b=As1pAFviZ2UU9B0+0SzNSBCYv
-        9+oue+ii5LBUF5/NUqfkAyYITd/SJz/5wQ2PYc5kOQtywSz1Q0SrjuAlUC0TlY60GmLqJWrXVoSY/
-        LRYhMgyEKpN2IP8uadwOqPYt6p0KIG6BNS2+DnjF0a0Y60VchqV0DXrWYMvpWyibEpAXcG5QrzM3g
-        EA9J74XOel0mtM2fyTPtoOMwMoNrc/TfPnjMy+tu6ZRwy1wQuth2hdDmd5KYjje0uko0UybFJMgEa
-        dCMIPX2o2AVt/F4b4HIwAam68PB09LKYH8l7L13plZRYYpSw2bEP7tKKT712sNnreNmk1/2Sl8lQr
-        U6kwSbDpg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i3dWG-0000vT-3f; Fri, 30 Aug 2019 09:48:36 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D56F7300489;
-        Fri, 30 Aug 2019 11:47:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3FB8529AD3511; Fri, 30 Aug 2019 11:48:34 +0200 (CEST)
-Date:   Fri, 30 Aug 2019 11:48:34 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Patrick Bellasi <patrick.bellasi@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-api@vger.kernel.org, cgroups@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Paul Turner <pjt@google.com>, Michal Koutny <mkoutny@suse.com>,
-        Quentin Perret <quentin.perret@arm.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Todd Kjos <tkjos@google.com>,
-        Joel Fernandes <joelaf@google.com>,
-        Steve Muckle <smuckle@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Alessio Balsini <balsini@android.com>
-Subject: Re: [PATCH v14 5/6] sched/core: uclamp: Update CPU's refcount on
- TG's clamp changes
-Message-ID: <20190830094834.GB2369@hirez.programming.kicks-ass.net>
-References: <20190822132811.31294-1-patrick.bellasi@arm.com>
- <20190822132811.31294-6-patrick.bellasi@arm.com>
+        id S1728286AbfH3W1m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Aug 2019 18:27:42 -0400
+Received: from mx6.ucr.edu ([138.23.62.71]:44566 "EHLO mx6.ucr.edu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1728271AbfH3W1m (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 30 Aug 2019 18:27:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=ucr.edu; i=@ucr.edu; q=dns/txt; s=selector3;
+  t=1567204062; x=1598740062;
+  h=mime-version:references:in-reply-to:from:date:message-id:
+   subject:to:cc;
+  bh=+AxKleiBOotn72mRXxY/KudOmnLMJMiIcrvaqwrtHdw=;
+  b=LH0KFHNWRNvzX+riE6BAiviAIpghckehNEMgFmrch/5vCQ9uxXvjelON
+   lQfmJbaWEXTZe7fPJz6QZ8RzovXF3D+PQ7/3ZVn75WftiNYwGv4yoE7zo
+   5DC647mr9M/30oLNQQq8d/etq3lKxVjDhxrb+EQoUhUDyK8AT0scdnFAY
+   YT3bxXTP0PEJ3nn5PID2xZUwEDogOLjPwLgDJ28iOVFVu3N9j8KOPMEQm
+   hiPHfwtXV3DtgmqD0QVJwqyYG50BUQcRmdr29ULrf92h8b/Hnd5R1Jxq7
+   7/D0UMSdjlANzVFVwvRAvggCF05KbhYYlyG5Zd2bQ5sXRkBj7yLmg6sjF
+   A==;
+IronPort-SDR: sGlKQBWd0Gg6gkdQsOsijPEm3VC5b54NIVqy/rwZ9CCiVe8bsie+lfPohJnNXQ3d8bfYEsnFJQ
+ S3CHTB/afMWNeJ+2dmNggGucqvHCUoIS/byEp+g2qNy6O2Qa75yHsKRxlSQ0LgKBcf5VntODqU
+ X3JoE8k+wy5ERE0ihM1YKOTUuIFEXy2X0VsgJSSRnLjAkNFQc/gbeZN0B+4ViDk1UumD1sAKYs
+ k73dcF3KOEG6n3L6w9gOQKcVHlsjnYVYjSDqMnOEVY5hNEchb7tvjArYSkCZuMhT1/sS7LvPtC
+ kuQ=
+IronPort-PHdr: =?us-ascii?q?9a23=3AluUVaRMajBwymjHZQP8l6mtUPXoX/o7sNwtQ0K?=
+ =?us-ascii?q?IMzox0Lfr/rarrMEGX3/hxlliBBdydt6sezbOI7uu5ACQp2tWoiDg6aptCVh?=
+ =?us-ascii?q?sI2409vjcLJ4q7M3D9N+PgdCcgHc5PBxdP9nC/NlVJSo6lPwWB6nK94iQPFR?=
+ =?us-ascii?q?rhKAF7Ovr6GpLIj8Swyuu+54Dfbx9HiTagf79+Ngi6oATRu8UZnIduN7s6xw?=
+ =?us-ascii?q?fUrHdPZ+lY335jK0iJnxb76Mew/Zpj/DpVtvk86cNOUrj0crohQ7BAAzsoL2?=
+ =?us-ascii?q?465MvwtRneVgSP/WcTUn8XkhVTHQfI6gzxU4rrvSv7sup93zSaPdHzQLspVz?=
+ =?us-ascii?q?mu87tnRRn1gyocKTU37H/YhdBxjKJDoRKuuRp/w5LPYIqIMPZyZ77Rcc8GSW?=
+ =?us-ascii?q?ZEWMtaSi5PDZ6mb4YXAOUBM+RXoYnzqVUNsBWwGxWjCfjzyjNUnHL6wbE23/?=
+ =?us-ascii?q?gjHAzAwQcuH8gOsHPRrNjtNqgSUOG0zKnVzTXEcvhZ2jf955LJchs8pvyNXb?=
+ =?us-ascii?q?NxccrLxkkuCw/JkludpJf4PzyJzOQBqXaU4Pd9Ve+2jWMstgJ/oiC3y8sylo?=
+ =?us-ascii?q?XEgpgZx1PE+Clj3Yo4JN+1RFR5bNK4FpZbqjuUOJFsQsw4RmFloCM6yrobtp?=
+ =?us-ascii?q?GlZCUK05EnxwLHa/yAboiI/grvVOaPLjd8g3JoYLe/iAyz8Uik0+H8Use03E?=
+ =?us-ascii?q?tToipLkNTAqmoB1xPU6siARft9+lmu1SyT2ADU7+FIOUE0lazFJJ492rM8iI?=
+ =?us-ascii?q?YfvEDZEiL1mEj6lrKae0Qm9+Sy6enrfq3qppqGOI91jgH+PL4umsu6AekgMg?=
+ =?us-ascii?q?kPXmib9v691LH/4UH0Tq5HjuAqnanDqpzVO9kUprOhDw9Pzokj8wq/Dyuh0N?=
+ =?us-ascii?q?kAgXYHI0hFeBWaj4jxIFHDO+74DfihjFS2ijtrxO7JPqfnAprTKnjPirDhfa?=
+ =?us-ascii?q?xy6x0U9A1m6NFU55tQQpEGK/H0Ehv0tNvTDRgRMAGuxevjTtJn2dVNd3iIB/?=
+ =?us-ascii?q?qoMbHSrFjA1OImIqHYdZ0VsTelc6MN+vX0y3I1hAlOLuGSwZILZSXgTbxdKE?=
+ =?us-ascii?q?KDbC+p249ZHA=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A2E8AAB6omldf0anVdFmHgEGBwaBVQc?=
+ =?us-ascii?q?LAYNWMyqEIY8LgW0FHZN2hSSBewEIAQEBDi8BAYQ/AoJhIzYHDgIDCAEBBQE?=
+ =?us-ascii?q?BAQEBBgQBAQIQAQEJCwsIJ4VDgjopAYJoAQEBAxIRBFIQCwsDCgICJgICIhI?=
+ =?us-ascii?q?BBQEcBhMIGoULBaFigQM8iyR/M4huAQgMgUkSeiiLeIIXgRGDEj6HT4JYBIE?=
+ =?us-ascii?q?uAQEBlFSWCQEGAoINFIwriCwbmGItpiIPIYE1AYIKMxolfwZngU6CThcVji0?=
+ =?us-ascii?q?iMI84AQE?=
+X-IPAS-Result: =?us-ascii?q?A2E8AAB6omldf0anVdFmHgEGBwaBVQcLAYNWMyqEIY8Lg?=
+ =?us-ascii?q?W0FHZN2hSSBewEIAQEBDi8BAYQ/AoJhIzYHDgIDCAEBBQEBAQEBBgQBAQIQA?=
+ =?us-ascii?q?QEJCwsIJ4VDgjopAYJoAQEBAxIRBFIQCwsDCgICJgICIhIBBQEcBhMIGoULB?=
+ =?us-ascii?q?aFigQM8iyR/M4huAQgMgUkSeiiLeIIXgRGDEj6HT4JYBIEuAQEBlFSWCQEGA?=
+ =?us-ascii?q?oINFIwriCwbmGItpiIPIYE1AYIKMxolfwZngU6CThcVji0iMI84AQE?=
+X-IronPort-AV: E=Sophos;i="5.64,447,1559545200"; 
+   d="scan'208";a="73576433"
+Received: from mail-lf1-f70.google.com ([209.85.167.70])
+  by smtpmx6.ucr.edu with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 30 Aug 2019 15:27:21 -0700
+Received: by mail-lf1-f70.google.com with SMTP id b30so1859883lfq.6
+        for <cgroups@vger.kernel.org>; Fri, 30 Aug 2019 15:27:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zLm09boqVLNebbJn0KRM9g9k9tAtM8q9U95oJU1h0L0=;
+        b=Vo3zchKlbdu1n1q1rBoq/8Hs8DgdlP90ur3n0n9/YRexZ9zG4hPhz8Mgbmhh9QYHJw
+         9LQxvlv6DRewM5yLspJ1LlP7B1u3Io51xD8DbVc1n1f2BhmzNViNXu4v5mqBsJ1plW/Y
+         JfPuKo0xGEURjO+84Er5+IDLJbt9cBXfeJAmSsNU3DURRyvT4TzKctQcWT+KT0whhtJH
+         nW/kAV0Mecl6U5xvTwgM8uCLLoERtBrSaYhwnBDwVpwbUFnuWj7PuQkMWRQrZg+QAcLb
+         nelQyeur01kfjOtjGCDi3Bw4PTVDxjnIUojpMJrj6t7fCp8oEFp7WA6cdnELgntXS2bS
+         oasQ==
+X-Gm-Message-State: APjAAAUBL1VAonYf7viVdIo+lcsx1JoRgLdWRWoQ2A0TU3r/Z5Oi/4Tg
+        EHWta9uEbCBMpQWm/074NwW5BSWcibOAaxM5OPMtF7Wvb2MAHG1qFBtcgPm55LQQdnxTkWU3qtb
+        lvSv7102cGcJW31iVln4kvLIsS+AN62w9ABA=
+X-Received: by 2002:a19:2d19:: with SMTP id k25mr11524770lfj.76.1567204039625;
+        Fri, 30 Aug 2019 15:27:19 -0700 (PDT)
+X-Google-Smtp-Source: APXvYqxNwVPvOdN/tveaY5mDrcDGRnQDZr8owb4Bj/v//Ng1I8rWXAU6aT8pAFp3c8BU1Pct5O5eSmP/cI28qOpREA4=
+X-Received: by 2002:a19:2d19:: with SMTP id k25mr11524763lfj.76.1567204039450;
+ Fri, 30 Aug 2019 15:27:19 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20190822132811.31294-6-patrick.bellasi@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20190822062210.18649-1-yzhai003@ucr.edu> <20190822070550.GA12785@dhcp22.suse.cz>
+ <CABvMjLRCt4gC3GKzBehGppxfyMOb6OGQwW-6Yu_+MbMp5tN3tg@mail.gmail.com> <20190822201200.GP12785@dhcp22.suse.cz>
+In-Reply-To: <20190822201200.GP12785@dhcp22.suse.cz>
+From:   Yizhuo Zhai <yzhai003@ucr.edu>
+Date:   Fri, 30 Aug 2019 15:27:50 -0700
+Message-ID: <CABvMjLRFm5ghgXJYuuNOOSzg01EgE1MazAY7c6HXZaa6wogF8g@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcg: return value of the function
+ mem_cgroup_from_css() is not checked
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Chengyu Song <csong@cs.ucr.edu>, Zhiyun Qian <zhiyunq@cs.ucr.edu>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 22, 2019 at 02:28:10PM +0100, Patrick Bellasi wrote:
+Our tool did not trace back the whole path, so, now we could say it
+might happen.
 
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 04fc161e4dbe..fc2dc86a2abe 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1043,6 +1043,57 @@ static inline void uclamp_rq_dec(struct rq *rq, struct task_struct *p)
->  		uclamp_rq_dec_id(rq, p, clamp_id);
->  }
->  
-> +static inline void
-> +uclamp_update_active(struct task_struct *p, unsigned int clamp_id)
-> +{
-> +	struct rq_flags rf;
-> +	struct rq *rq;
-> +
-> +	/*
-> +	 * Lock the task and the rq where the task is (or was) queued.
-> +	 *
-> +	 * We might lock the (previous) rq of a !RUNNABLE task, but that's the
-> +	 * price to pay to safely serialize util_{min,max} updates with
-> +	 * enqueues, dequeues and migration operations.
-> +	 * This is the same locking schema used by __set_cpus_allowed_ptr().
-> +	 */
-> +	rq = task_rq_lock(p, &rf);
+On Thu, Aug 22, 2019 at 1:12 PM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Thu 22-08-19 13:07:17, Yizhuo Zhai wrote:
+> > This will happen if variable "wb->memcg_css" is NULL. This case is reported
+> > by our analysis tool.
+>
+> Does your tool report the particular call path and conditions when that
+> happen? Or is it just a "it mignt happen" kinda thing?
+>
+> > Since the function mem_cgroup_wb_domain() is visible to the global, we
+> > cannot control caller's behavior.
+>
+> I am sorry but I do not understand what is this supposed to mean.
+> --
+> Michal Hocko
+> SUSE Labs
 
-Since modifying cgroup parameters is priv only, this should be OK I
-suppose. Priv can already DoS the system anyway.
 
-> +	/*
-> +	 * Setting the clamp bucket is serialized by task_rq_lock().
-> +	 * If the task is not yet RUNNABLE and its task_struct is not
-> +	 * affecting a valid clamp bucket, the next time it's enqueued,
-> +	 * it will already see the updated clamp bucket value.
-> +	 */
-> +	if (!p->uclamp[clamp_id].active)
-> +		goto done;
-> +
-> +	uclamp_rq_dec_id(rq, p, clamp_id);
-> +	uclamp_rq_inc_id(rq, p, clamp_id);
-> +
-> +done:
 
-I'm thinking that:
+-- 
+Kind Regards,
 
-	if (p->uclamp[clamp_id].active) {
-		uclamp_rq_dec_id(rq, p, clamp_id);
-		uclamp_rq_inc_id(rq, p, clamp_id);
-	}
+Yizhuo Zhai
 
-was too obvious? ;-)
-
-> +
-> +	task_rq_unlock(rq, p, &rf);
-> +}
+Computer Science, Graduate Student
+University of California, Riverside
