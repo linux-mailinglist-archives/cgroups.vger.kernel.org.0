@@ -2,73 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BFA57A2CB1
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 04:17:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FC4A2F2F
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 07:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727344AbfH3CRL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Aug 2019 22:17:11 -0400
-Received: from mga11.intel.com ([192.55.52.93]:19851 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727270AbfH3CRL (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Aug 2019 22:17:11 -0400
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 19:17:11 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.64,445,1559545200"; 
-   d="scan'208";a="183662280"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by orsmga003.jf.intel.com with ESMTP; 29 Aug 2019 19:17:09 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1i3WTN-0003aA-98; Fri, 30 Aug 2019 10:17:09 +0800
-Date:   Fri, 30 Aug 2019 10:16:36 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     kbuild-all@01.org, cgroups@vger.kernel.org
-Subject: [cgroup:review-iocost-v2 8/12] block/blk-iocost.c:1866
- ioc_cpd_alloc() error: potential null dereference 'iocc'.  (kzalloc returns
- null)
-Message-ID: <201908301034.mK1ucDIL%lkp@intel.com>
+        id S1726405AbfH3Ftf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Aug 2019 01:49:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54484 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726005AbfH3Ftf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 30 Aug 2019 01:49:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 65AC2B671;
+        Fri, 30 Aug 2019 05:49:33 +0000 (UTC)
+Date:   Fri, 30 Aug 2019 07:49:31 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        stable@vger.kernel.org
+Subject: Re: [PATCH] mm: memcontrol: fix percpu vmstats and vmevents flush
+Message-ID: <20190830054931.GN28313@dhcp22.suse.cz>
+References: <20190829203110.129263-1-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-Patchwork-Hint: ignore
-User-Agent: NeoMutt/20170113 (1.7.2)
+In-Reply-To: <20190829203110.129263-1-shakeelb@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/tj/cgroup.git review-iocost-v2
-head:   deaaabcc443b8e576ad5a9cde55e87f67e5ae467
-commit: d1409e6f65e258920b2a935a937a3761de2971a0 [8/12] blkcg: implement blk-iocost
+On Thu 29-08-19 13:31:10, Shakeel Butt wrote:
+> Instead of using raw_cpu_read() use per_cpu() to read the actual data of
+> the corresponding cpu otherwise we will be reading the data of the
+> current cpu for the number of online CPUs.
+> 
+> Fixes: bb65f89b7d3d ("mm: memcontrol: flush percpu vmevents before releasing memcg")
+> Fixes: c350a99ea2b1 ("mm: memcontrol: flush percpu vmstats before releasing memcg")
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: <stable@vger.kernel.org>
 
-If you fix the issue, kindly add following tag
-Reported-by: kbuild test robot <lkp@intel.com>
+Ups, missed that when reviewing. Sorry about that.
 
-New smatch warnings:
-block/blk-iocost.c:1866 ioc_cpd_alloc() error: potential null dereference 'iocc'.  (kzalloc returns null)
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Old smatch warnings:
-include/linux/compiler.h:226 __write_once_size() warn: potential memory corrupting cast 8 vs 4 bytes
+> ---
+> 
+> Note: The buggy patches were marked for stable therefore adding Cc to
+> stable.
+> 
+>  mm/memcontrol.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 26e2999af608..f4e60ee8b845 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -3271,7 +3271,7 @@ static void memcg_flush_percpu_vmstats(struct mem_cgroup *memcg)
+>  
+>  	for_each_online_cpu(cpu)
+>  		for (i = 0; i < MEMCG_NR_STAT; i++)
+> -			stat[i] += raw_cpu_read(memcg->vmstats_percpu->stat[i]);
+> +			stat[i] += per_cpu(memcg->vmstats_percpu->stat[i], cpu);
+>  
+>  	for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>  		for (i = 0; i < MEMCG_NR_STAT; i++)
+> @@ -3286,8 +3286,8 @@ static void memcg_flush_percpu_vmstats(struct mem_cgroup *memcg)
+>  
+>  		for_each_online_cpu(cpu)
+>  			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+> -				stat[i] += raw_cpu_read(
+> -					pn->lruvec_stat_cpu->count[i]);
+> +				stat[i] += per_cpu(
+> +					pn->lruvec_stat_cpu->count[i], cpu);
+>  
+>  		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
+>  			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
+> @@ -3306,8 +3306,8 @@ static void memcg_flush_percpu_vmevents(struct mem_cgroup *memcg)
+>  
+>  	for_each_online_cpu(cpu)
+>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+> -			events[i] += raw_cpu_read(
+> -				memcg->vmstats_percpu->events[i]);
+> +			events[i] += per_cpu(memcg->vmstats_percpu->events[i],
+> +					     cpu);
+>  
+>  	for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
+> -- 
+> 2.23.0.187.g17f5b7556c-goog
+> 
 
-vim +/iocc +1866 block/blk-iocost.c
-
-  1860	
-  1861	static struct blkcg_policy_data *ioc_cpd_alloc(gfp_t gfp)
-  1862	{
-  1863		struct ioc_cgrp *iocc;
-  1864	
-  1865		iocc = kzalloc(sizeof(struct ioc_cgrp), gfp);
-> 1866		iocc->dfl_weight = CGROUP_WEIGHT_DFL;
-  1867	
-  1868		return &iocc->cpd;
-  1869	}
-  1870	
-
----
-0-DAY kernel test infrastructure                Open Source Technology Center
-https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
+-- 
+Michal Hocko
+SUSE Labs
