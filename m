@@ -2,107 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FC4A2F2F
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 07:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21729A3461
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 11:45:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726405AbfH3Ftf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Aug 2019 01:49:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54484 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726005AbfH3Ftf (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 30 Aug 2019 01:49:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 65AC2B671;
-        Fri, 30 Aug 2019 05:49:33 +0000 (UTC)
-Date:   Fri, 30 Aug 2019 07:49:31 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: fix percpu vmstats and vmevents flush
-Message-ID: <20190830054931.GN28313@dhcp22.suse.cz>
-References: <20190829203110.129263-1-shakeelb@google.com>
+        id S1727859AbfH3Jpa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Aug 2019 05:45:30 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:49392 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727751AbfH3Jpa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Aug 2019 05:45:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=sRzfMxg/wb0LZA+yxxNDj+QkDWg9yL2CpESWkv5XC/w=; b=l2LwR+WZLkNuEzUTAdmtkXcm3
+        oa334e4Rqs8Yq0Nq0CkLdOVet4f+H8YYMmJl5clWcQPgJMbRjzcpWXQ6/knfmZGiAbW+iUnLpPM86
+        Tpciv6IJKV3YWiNZ3Fao3+MXOt0npZRncrUeki+/Wi0i4AisF5qYv5mxoiFq5bCpO19dWGPkXBwFU
+        QTY7D5N0yj38gVn+oYJnJFElg/HqbY6ZYY+s1gFnZBlynLvagoR2ZoAqY0wxJDTPC0XUvNeBWsDgh
+        PDFR5latRRys33U67/D7R7baHn1Jz23RMdDtFJgbiytvOTchW1XXcDTFwFJA4qsyVcWRG/Ed21htd
+        26cnQEJDQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i3dSu-0000tZ-1d; Fri, 30 Aug 2019 09:45:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 9B6A93035D7;
+        Fri, 30 Aug 2019 11:44:30 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 290FF29AD350F; Fri, 30 Aug 2019 11:45:05 +0200 (CEST)
+Date:   Fri, 30 Aug 2019 11:45:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Patrick Bellasi <patrick.bellasi@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-api@vger.kernel.org, cgroups@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Paul Turner <pjt@google.com>, Michal Koutny <mkoutny@suse.com>,
+        Quentin Perret <quentin.perret@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Steve Muckle <smuckle@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alessio Balsini <balsini@android.com>
+Subject: Re: [PATCH v14 1/6] sched/core: uclamp: Extend CPU's cgroup
+ controller
+Message-ID: <20190830094505.GA2369@hirez.programming.kicks-ass.net>
+References: <20190822132811.31294-1-patrick.bellasi@arm.com>
+ <20190822132811.31294-2-patrick.bellasi@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20190829203110.129263-1-shakeelb@google.com>
+In-Reply-To: <20190822132811.31294-2-patrick.bellasi@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 29-08-19 13:31:10, Shakeel Butt wrote:
-> Instead of using raw_cpu_read() use per_cpu() to read the actual data of
-> the corresponding cpu otherwise we will be reading the data of the
-> current cpu for the number of online CPUs.
-> 
-> Fixes: bb65f89b7d3d ("mm: memcontrol: flush percpu vmevents before releasing memcg")
-> Fixes: c350a99ea2b1 ("mm: memcontrol: flush percpu vmstats before releasing memcg")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Michal Hocko <mhocko@suse.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: <stable@vger.kernel.org>
+On Thu, Aug 22, 2019 at 02:28:06PM +0100, Patrick Bellasi wrote:
+> +#define _POW10(exp) ((unsigned int)1e##exp)
+> +#define POW10(exp) _POW10(exp)
 
-Ups, missed that when reviewing. Sorry about that.
+What is this magic? You're forcing a float literal into an integer.
+Surely that deserves a comment!
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+> +struct uclamp_request {
+> +#define UCLAMP_PERCENT_SHIFT	2
+> +#define UCLAMP_PERCENT_SCALE	(100 * POW10(UCLAMP_PERCENT_SHIFT))
+> +	s64 percent;
+> +	u64 util;
+> +	int ret;
+> +};
+> +
+> +static inline struct uclamp_request
+> +capacity_from_percent(char *buf)
+> +{
+> +	struct uclamp_request req = {
+> +		.percent = UCLAMP_PERCENT_SCALE,
+> +		.util = SCHED_CAPACITY_SCALE,
+> +		.ret = 0,
+> +	};
+> +
+> +	buf = strim(buf);
+> +	if (strncmp("max", buf, 4)) {
 
-> ---
-> 
-> Note: The buggy patches were marked for stable therefore adding Cc to
-> stable.
-> 
->  mm/memcontrol.c | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 26e2999af608..f4e60ee8b845 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3271,7 +3271,7 @@ static void memcg_flush_percpu_vmstats(struct mem_cgroup *memcg)
->  
->  	for_each_online_cpu(cpu)
->  		for (i = 0; i < MEMCG_NR_STAT; i++)
-> -			stat[i] += raw_cpu_read(memcg->vmstats_percpu->stat[i]);
-> +			stat[i] += per_cpu(memcg->vmstats_percpu->stat[i], cpu);
->  
->  	for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
->  		for (i = 0; i < MEMCG_NR_STAT; i++)
-> @@ -3286,8 +3286,8 @@ static void memcg_flush_percpu_vmstats(struct mem_cgroup *memcg)
->  
->  		for_each_online_cpu(cpu)
->  			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -				stat[i] += raw_cpu_read(
-> -					pn->lruvec_stat_cpu->count[i]);
-> +				stat[i] += per_cpu(
-> +					pn->lruvec_stat_cpu->count[i], cpu);
->  
->  		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
->  			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> @@ -3306,8 +3306,8 @@ static void memcg_flush_percpu_vmevents(struct mem_cgroup *memcg)
->  
->  	for_each_online_cpu(cpu)
->  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
-> -			events[i] += raw_cpu_read(
-> -				memcg->vmstats_percpu->events[i]);
-> +			events[i] += per_cpu(memcg->vmstats_percpu->events[i],
-> +					     cpu);
->  
->  	for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
->  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++)
-> -- 
-> 2.23.0.187.g17f5b7556c-goog
-> 
+That is either a bug, and you meant to write: strncmp(buf, "max", 3), or
+it is not, and then you could've written: strcmp(buf, "max")
 
--- 
-Michal Hocko
-SUSE Labs
+But as written it doesn't make sense.
+
+> +		req.ret = cgroup_parse_float(buf, UCLAMP_PERCENT_SHIFT,
+> +					     &req.percent);
+> +		if (req.ret)
+> +			return req;
+> +		if (req.percent > UCLAMP_PERCENT_SCALE) {
+> +			req.ret = -ERANGE;
+> +			return req;
+> +		}
+> +
+> +		req.util = req.percent << SCHED_CAPACITY_SHIFT;
+> +		req.util = DIV_ROUND_CLOSEST_ULL(req.util, UCLAMP_PERCENT_SCALE);
+> +	}
+> +
+> +	return req;
+> +}
+
