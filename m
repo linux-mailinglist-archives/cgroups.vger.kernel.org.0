@@ -2,75 +2,73 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AB3DA2B30
-	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 01:53:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA57A2CB1
+	for <lists+cgroups@lfdr.de>; Fri, 30 Aug 2019 04:17:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726825AbfH2Xw7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Aug 2019 19:52:59 -0400
-Received: from mail-pf1-f194.google.com ([209.85.210.194]:37865 "EHLO
-        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbfH2Xw6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Aug 2019 19:52:58 -0400
-Received: by mail-pf1-f194.google.com with SMTP id y9so3233122pfl.4
-        for <cgroups@vger.kernel.org>; Thu, 29 Aug 2019 16:52:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6oTB1dU146xuL9pK4Gwg180KU60SGC31jIorRGs7ptk=;
-        b=a250Zfx3hOfWzOHrL5E2dEv/6jxRZA+JbksFHHqddgm0GXvE1i4OV0Ui/sUUwWq9Qz
-         4sKMyiAb+MJUEMoErBcXFPrcnPtDT2GaH8lfEelAqVK5nG8PlK407kkkx6hvjFc6VoV9
-         U33PcQmOIjjinVTDjaCccNNDE79eJ2UxQkEfA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6oTB1dU146xuL9pK4Gwg180KU60SGC31jIorRGs7ptk=;
-        b=cbnrAkQv4yIRNFNXQUnYRft0AV6vP1L2LVUnlW4DgyAUQnj0CmfRVEAFDALq023gOd
-         xRmajR/CrjKeH8p2V/wBKVehDrs0OpZ1Q/1n52XzO09zNduheecSDKW0G/MRuwz0fIcz
-         zza1a8NwMtpZV1I77yGEEyxCRZG35vtPQBh5kf83wimvC8pGiI6Bmlq7rv4CgnZoSt5J
-         KG4lEUgbpJWMjYWji4nxdpk98n0zC2AQH22IJnYPqvz7cQsJ2DEMHADsTXgj9uqq0mkB
-         JiDjC6wODCrkfGFUAFZISr2eNainnZD0yiZ5pJEKVty+AVCw5kZTi/ZAzIGipK0kMOn5
-         zg6A==
-X-Gm-Message-State: APjAAAVogazICsjnXv4E9md8T8OPdHcILExf5LDOkXM6PHSzQivL6rAz
-        QEAhOfC2alkEDTpSU2NKk/Fh+Q==
-X-Google-Smtp-Source: APXvYqwiOx/qe9a/xRLREIyTn3MhbFX5uD0lqjU79yaf26iwaXo0Rf6U2kBqJTeyMxYK5IrjN8j1aw==
-X-Received: by 2002:a62:1a45:: with SMTP id a66mr15134237pfa.142.1567122778338;
-        Thu, 29 Aug 2019 16:52:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v189sm4473046pfv.176.2019.08.29.16.52.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2019 16:52:57 -0700 (PDT)
-Date:   Thu, 29 Aug 2019 16:52:56 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Chuhong Yuan <hslester96@gmail.com>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Joe Perches <joe@perches.com>,
-        Laura Abbott <labbott@redhat.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: [PATCH 01/12] rdmacg: Replace strncmp with str_has_prefix
-Message-ID: <201908291652.46E2D65@keescook>
-References: <20190729151346.9280-1-hslester96@gmail.com>
- <201907292117.DA40CA7D@keescook>
- <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
+        id S1727344AbfH3CRL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Aug 2019 22:17:11 -0400
+Received: from mga11.intel.com ([192.55.52.93]:19851 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727270AbfH3CRL (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 29 Aug 2019 22:17:11 -0400
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 29 Aug 2019 19:17:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.64,445,1559545200"; 
+   d="scan'208";a="183662280"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga003.jf.intel.com with ESMTP; 29 Aug 2019 19:17:09 -0700
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1i3WTN-0003aA-98; Fri, 30 Aug 2019 10:17:09 +0800
+Date:   Fri, 30 Aug 2019 10:16:36 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     kbuild-all@01.org, cgroups@vger.kernel.org
+Subject: [cgroup:review-iocost-v2 8/12] block/blk-iocost.c:1866
+ ioc_cpd_alloc() error: potential null dereference 'iocc'.  (kzalloc returns
+ null)
+Message-ID: <201908301034.mK1ucDIL%lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANhBUQ3V2A-TBVizVh+eMLSi5Gzw5sMBY7C-0a8=-z15qyQ75w@mail.gmail.com>
+X-Patchwork-Hint: ignore
+User-Agent: NeoMutt/20170113 (1.7.2)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 30, 2019 at 02:39:40PM +0800, Chuhong Yuan wrote:
-> I think with the help of Coccinelle script, all strncmp(str, const, len)
-> can be replaced and these problems will be eliminated. :)
+tree:   https://kernel.googlesource.com/pub/scm/linux/kernel/git/tj/cgroup.git review-iocost-v2
+head:   deaaabcc443b8e576ad5a9cde55e87f67e5ae467
+commit: d1409e6f65e258920b2a935a937a3761de2971a0 [8/12] blkcg: implement blk-iocost
 
-Hi! Just pinging this thread again. Any progress on this conversion?
+If you fix the issue, kindly add following tag
+Reported-by: kbuild test robot <lkp@intel.com>
 
-Thanks!
+New smatch warnings:
+block/blk-iocost.c:1866 ioc_cpd_alloc() error: potential null dereference 'iocc'.  (kzalloc returns null)
 
--- 
-Kees Cook
+Old smatch warnings:
+include/linux/compiler.h:226 __write_once_size() warn: potential memory corrupting cast 8 vs 4 bytes
+
+vim +/iocc +1866 block/blk-iocost.c
+
+  1860	
+  1861	static struct blkcg_policy_data *ioc_cpd_alloc(gfp_t gfp)
+  1862	{
+  1863		struct ioc_cgrp *iocc;
+  1864	
+  1865		iocc = kzalloc(sizeof(struct ioc_cgrp), gfp);
+> 1866		iocc->dfl_weight = CGROUP_WEIGHT_DFL;
+  1867	
+  1868		return &iocc->cpd;
+  1869	}
+  1870	
+
+---
+0-DAY kernel test infrastructure                Open Source Technology Center
+https://lists.01.org/pipermail/kbuild-all                   Intel Corporation
