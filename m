@@ -2,98 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 01379A4440
-	for <lists+cgroups@lfdr.de>; Sat, 31 Aug 2019 13:20:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AFABA4F4A
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2019 08:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726685AbfHaLUQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 31 Aug 2019 07:20:16 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34201 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726062AbfHaLUQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 31 Aug 2019 07:20:16 -0400
-Received: by mail-qt1-f193.google.com with SMTP id a13so10597425qtj.1;
-        Sat, 31 Aug 2019 04:20:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LvmGRX4LOdsdUyhqS2DocPUCGusSGnHnPDwLS+tUYBw=;
-        b=PK/UUpMIz6vGKESR/qWrB73mE5YrMA3srDYvsuYkZrvinUDXGVxGQ5MG3gdvcVS07j
-         ZfANEcE/6el1beaQ4LSh3G1MTb05PufyP/OU6Q0VQOb2cDAcrIxDzvSZv+FYVzrntCvQ
-         tTWEaEuJyTtf8N2g7gXdNHT7+q8SLvbxI/heNodCYdg+heOHOoAdjPP4Vsu3obkzZWSe
-         H5W7JInfDelMo6SSnpOS6d0F9x0aIdjeq9YYKXaxhbj3w9W8nmYuGb4t7T/SW7pQKzB/
-         097wawu8tSWVKZF9uRH0rbsWAQ5AUeikdovBIDTVghW4ccY/51t6WwfqP70a9c4bACZh
-         jL9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LvmGRX4LOdsdUyhqS2DocPUCGusSGnHnPDwLS+tUYBw=;
-        b=XqbXTdgCk0QLUjU09c18Ppvk5AVQOuGwEWyovFBFhLiSBv+AZP5Lb8vgvqRpOUPYsS
-         I19cLFyA4qaSYnEWy+XeI/nhdcroYwEgg82J+4vo7lT1eY1iDlJpidarz+Ic3WYhsPun
-         wtc5/82vpJjK/LTiX+E08PNY1U8Uu+2lOgy8baWMqJTolSW33HJOysjsLu2nzduVo5IH
-         FfuIKtVyodwKhd0CxQ57EMb5eXWbKodUlRom782fpYpwaXJirlUcjEHL2ZeQlzxnKv4A
-         dxI9JOdFMp7jhNTxvvDmNgnd4Qp9Jnv9Rvdmz0zTAhVZCU0oSROaZKqgxLCyO+1BZ6Aw
-         0hYQ==
-X-Gm-Message-State: APjAAAV8VuD4LHHuMkoeOCWHz8x2+BOXt5UJFCZrGbNXj+PPKWP5wIuX
-        UnJsNMNjGDpVdZdn7dW8/4w=
-X-Google-Smtp-Source: APXvYqxlmdRha80klC3NPhknthgVd3QVg1cGBUKDxmEcoq0Bjs+/s8SS3U82mQXt9So7bUSlMmHy0A==
-X-Received: by 2002:ad4:4a92:: with SMTP id h18mr13034019qvx.235.1567250414665;
-        Sat, 31 Aug 2019 04:20:14 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::3986])
-        by smtp.gmail.com with ESMTPSA id t15sm1442361qti.12.2019.08.31.04.20.13
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Sat, 31 Aug 2019 04:20:13 -0700 (PDT)
-Date:   Sat, 31 Aug 2019 04:20:10 -0700
-From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-Message-ID: <20190831112010.GG2263813@devbig004.ftw2.facebook.com>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614175642.GA657710@devbig004.ftw2.facebook.com>
- <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <73CA9E04-DD93-47E4-B0FE-0A12EC991DEF@linaro.org>
+        id S1729467AbfIBGlP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Sep 2019 02:41:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:48880 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726375AbfIBGlP (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 2 Sep 2019 02:41:15 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05ADF337;
+        Sun,  1 Sep 2019 23:41:14 -0700 (PDT)
+Received: from darkstar (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 088393F71A;
+        Sun,  1 Sep 2019 23:43:05 -0700 (PDT)
+References: <20190822132811.31294-1-patrick.bellasi@arm.com> <20190822132811.31294-2-patrick.bellasi@arm.com> <20190830094505.GA2369@hirez.programming.kicks-ass.net>
+User-agent: mu4e 1.3.3; emacs 25.3.1
+From:   Patrick Bellasi <patrick.bellasi@arm.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-api@vger.kernel.org, cgroups@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Paul Turner <pjt@google.com>, Michal Koutny <mkoutny@suse.com>,
+        Quentin Perret <quentin.perret@arm.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Todd Kjos <tkjos@google.com>,
+        Joel Fernandes <joelaf@google.com>,
+        Steve Muckle <smuckle@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Alessio Balsini <balsini@android.com>
+Subject: Re: [PATCH v14 1/6] sched/core: uclamp: Extend CPU's cgroup controller
+Message-ID: <87zhjnnqz2.fsf@arm.com>
+In-reply-to: <20190830094505.GA2369@hirez.programming.kicks-ass.net>
+Date:   Mon, 02 Sep 2019 07:38:53 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73CA9E04-DD93-47E4-B0FE-0A12EC991DEF@linaro.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+Content-Type: text/plain
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
 
-On Sat, Aug 31, 2019 at 09:10:26AM +0200, Paolo Valente wrote:
-> Hi Tejun,
-> thank you very much for this extra information, I'll try the
-> configuration you suggest.  In this respect, is this still the branch
-> to use
-> 
-> https://kernel.googlesource.com/pub/scm/linux/kernel/git/tj/cgroup/+/refs/heads/review-iocost-v2
-> 
-> also after the issue spotted two days ago [1]?
+On Fri, Aug 30, 2019 at 09:45:05 +0000, Peter Zijlstra wrote...
 
-block/for-next is the branch which has all the updates.
+> On Thu, Aug 22, 2019 at 02:28:06PM +0100, Patrick Bellasi wrote:
+>> +#define _POW10(exp) ((unsigned int)1e##exp)
+>> +#define POW10(exp) _POW10(exp)
+>
+> What is this magic? You're forcing a float literal into an integer.
+> Surely that deserves a comment!
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git for-next
+Yes, I'm introducing the two constants:
+  UCLAMP_PERCENT_SHIFT,
+  UCLAMP_PERCENT_SCALE
+similar to what we have for CAPACITY. Moreover, I need both 100*100 (for
+the scale) and 100 further down in the code for the: 
 
-Thanks.
+	percent = div_u64_rem(percent, POW10(UCLAMP_PERCENT_SHIFT), &rem);
 
--- 
-tejun
+used in cpu_uclamp_print().
+
+That's why adding a compile time support to compute a 10^N is useful.
+
+C provides the "1eN" literal, I just convert it to integer and to do
+that at compile time I need a two level macros.
+
+What if I add this comment just above the macro definitions:
+
+/*
+ * Integer 10^N with a given N exponent by casting to integer the literal "1eN"
+ * C expression. Since there is no way to convert a macro argument (N) into a
+ * character constant, use two levels of macros.
+ */
+
+is this clear enough?
+
+>
+>> +struct uclamp_request {
+>> +#define UCLAMP_PERCENT_SHIFT	2
+>> +#define UCLAMP_PERCENT_SCALE	(100 * POW10(UCLAMP_PERCENT_SHIFT))
+>> +	s64 percent;
+>> +	u64 util;
+>> +	int ret;
+>> +};
+>> +
+>> +static inline struct uclamp_request
+>> +capacity_from_percent(char *buf)
+>> +{
+>> +	struct uclamp_request req = {
+>> +		.percent = UCLAMP_PERCENT_SCALE,
+>> +		.util = SCHED_CAPACITY_SCALE,
+>> +		.ret = 0,
+>> +	};
+>> +
+>> +	buf = strim(buf);
+>> +	if (strncmp("max", buf, 4)) {
+>
+> That is either a bug, and you meant to write: strncmp(buf, "max", 3),
+> or it is not, and then you could've written: strcmp(buf, "max")
+
+I don't think it's a bug.
+
+The usage of 4 is intentional, to force a '\0' check while using
+strncmp(). Otherwise, strncmp(buf, "max", 3) would accept also strings
+starting by "max", which we don't want.
+
+> But as written it doesn't make sense.
+
+The code is safe but I agree that strcmp() does just the same and it
+does not generate confusion. That's actually a pretty good example
+on how it's not always better to use strncmp() instead of strcmp().
+
+Cheers,
+Patrick
+
