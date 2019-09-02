@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F16EA5009
-	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2019 09:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F308A502B
+	for <lists+cgroups@lfdr.de>; Mon,  2 Sep 2019 09:47:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729527AbfIBHiy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Sep 2019 03:38:54 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:42268 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725839AbfIBHiy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Sep 2019 03:38:54 -0400
+        id S1729855AbfIBHrd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Sep 2019 03:47:33 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:46724 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729382AbfIBHrc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Sep 2019 03:47:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
+        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
         Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=czLm9+6XeObljoXUlErx8mAKQvTAxkpX8YXKtxnvR4g=; b=UQykYbAyrrel/FfPuS6bPE+5w
-        MBmQ3B4whQzp+6X6/IjDTCyaNfY6g6oYXjxje/EICxmgJrmUETodNdZ2yhi00ffprnn6MrVDdL8LV
-        RyddXIHAQU4AMu1E/qJjB/BwhEyX+sOJc7N+88IML2MdGM/QvT7weXDugntF0SFaDiv7C5YTe2mEc
-        Hl+edJpyJU+brRrkfIDEkoF9Kg2BL7YZdExZOmbQPDE5FCoHtNhMC9EzhScErMWcR2oWTkj2wB0KJ
-        uLKTD2rl5Pi4jV5/ulydOP1bJ480eK7uy1k6r9ABehMfydGQj2iJmIlZIY+/XSYkWOf9XzIoMeLMi
-        jC8lQl3yw==;
+         bh=fYldPtPtIGj2tv2z5tJVF8kAtfN8pBR+/NHizVHdMpM=; b=ekpdxU+knZnMh5434px+hOBhu
+        xgI39mMze/viBKrF5jrQZH+mkLMoohlXfDe0/u13CYG3hXiDHMPeOz4UjmmXWLN5Ti389lpMRFkio
+        yrGbsDy9anQTvaAS0K4RbukmDAoNI6BYkMgFvE3VGY9tRhA0sthaWBVk961VP2RBni2fx0qNAgqMF
+        3AA/0QAs2C3g+aq91j2RodonXMsrSDZSj1si2zYbOZpEoo/lsgsbybwYU/6bE/h6btT7WEEr1vnUk
+        /l23WCvfHXgt4MCUhpIOzfoy9gF/w75iELWGRYhcG+r7Z6Xrw3+sGxhCNzUFerRwIK17qOXc0MBOH
+        0hCOQ2u9g==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
-        id 1i4gv8-0004iF-Mo; Mon, 02 Sep 2019 07:38:38 +0000
+        by bombadil.infradead.org with esmtpsa (Exim 4.92 #3 (Red Hat Linux))
+        id 1i4h3e-0004LW-NT; Mon, 02 Sep 2019 07:47:27 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 070F330116F;
-        Mon,  2 Sep 2019 09:38:00 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 3E523301A76;
+        Mon,  2 Sep 2019 09:46:49 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9574829B7E7A5; Mon,  2 Sep 2019 09:38:36 +0200 (CEST)
-Date:   Mon, 2 Sep 2019 09:38:36 +0200
+        id CEA3F29B7E7A5; Mon,  2 Sep 2019 09:47:24 +0200 (CEST)
+Date:   Mon, 2 Sep 2019 09:47:24 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     Patrick Bellasi <patrick.bellasi@arm.com>
 Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
@@ -52,76 +52,102 @@ Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
         Steve Muckle <smuckle@google.com>,
         Suren Baghdasaryan <surenb@google.com>,
         Alessio Balsini <balsini@android.com>
-Subject: Re: [PATCH v14 5/6] sched/core: uclamp: Update CPU's refcount on
- TG's clamp changes
-Message-ID: <20190902073836.GO2369@hirez.programming.kicks-ass.net>
+Subject: Re: [PATCH v14 1/6] sched/core: uclamp: Extend CPU's cgroup
+ controller
+Message-ID: <20190902074724.GP2369@hirez.programming.kicks-ass.net>
 References: <20190822132811.31294-1-patrick.bellasi@arm.com>
- <20190822132811.31294-6-patrick.bellasi@arm.com>
- <20190830094834.GB2369@hirez.programming.kicks-ass.net>
- <87woernqnb.fsf@arm.com>
+ <20190822132811.31294-2-patrick.bellasi@arm.com>
+ <20190830094505.GA2369@hirez.programming.kicks-ass.net>
+ <87zhjnnqz2.fsf@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87woernqnb.fsf@arm.com>
+In-Reply-To: <87zhjnnqz2.fsf@arm.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 02, 2019 at 07:44:40AM +0100, Patrick Bellasi wrote:
-> On Fri, Aug 30, 2019 at 09:48:34 +0000, Peter Zijlstra wrote...
-> > On Thu, Aug 22, 2019 at 02:28:10PM +0100, Patrick Bellasi wrote:
-
-> >> +	rq = task_rq_lock(p, &rf);
+On Mon, Sep 02, 2019 at 07:38:53AM +0100, Patrick Bellasi wrote:
+> 
+> On Fri, Aug 30, 2019 at 09:45:05 +0000, Peter Zijlstra wrote...
+> 
+> > On Thu, Aug 22, 2019 at 02:28:06PM +0100, Patrick Bellasi wrote:
+> >> +#define _POW10(exp) ((unsigned int)1e##exp)
+> >> +#define POW10(exp) _POW10(exp)
 > >
-> > Since modifying cgroup parameters is priv only, this should be OK I
-> > suppose. Priv can already DoS the system anyway.
+> > What is this magic? You're forcing a float literal into an integer.
+> > Surely that deserves a comment!
 > 
-> Are you referring to the possibility to DoS the scheduler by keep
-> writing cgroup attributes?
+> Yes, I'm introducing the two constants:
+>   UCLAMP_PERCENT_SHIFT,
+>   UCLAMP_PERCENT_SCALE
+> similar to what we have for CAPACITY. Moreover, I need both 100*100 (for
+> the scale) and 100 further down in the code for the: 
 
-Yep.
+Ooh, right you are. I clearly was in need of weekend. Somehow I read
+that code as if you were forcing the float representation into an
+integer, which is not what you do.
 
-> Because, in that case I think cgroup attributes could be written also by
-> non priv users. It all depends on how they are mounted and permissions
-> are set. Isn't it?
+> 	percent = div_u64_rem(percent, POW10(UCLAMP_PERCENT_SHIFT), &rem);
 > 
-> Anyway, I'm not sure we can fix that here... and in principle we could
-> have that DoS by setting CPUs affinities, which is user exposed.
-> Isn't it?
+> used in cpu_uclamp_print().
+> 
+> That's why adding a compile time support to compute a 10^N is useful.
+> 
+> C provides the "1eN" literal, I just convert it to integer and to do
+> that at compile time I need a two level macros.
+> 
+> What if I add this comment just above the macro definitions:
+> 
+> /*
+>  * Integer 10^N with a given N exponent by casting to integer the literal "1eN"
+>  * C expression. Since there is no way to convert a macro argument (N) into a
+>  * character constant, use two levels of macros.
+>  */
+> 
+> is this clear enough?
 
-Only for a single task; by using the cgroup thing we have that in-kernel
-iteration of tasks.
+Yeah, let me go add that.
 
-The thing I worry about is bouncing rq->lock around the system; but
-yeah, I suppose a normal user could achieve something similar with
-enough tasks.
-
-> >> +	/*
-> >> +	 * Setting the clamp bucket is serialized by task_rq_lock().
-> >> +	 * If the task is not yet RUNNABLE and its task_struct is not
-> >> +	 * affecting a valid clamp bucket, the next time it's enqueued,
-> >> +	 * it will already see the updated clamp bucket value.
-> >> +	 */
-> >> +	if (!p->uclamp[clamp_id].active)
-> >> +		goto done;
+> >
+> >> +struct uclamp_request {
+> >> +#define UCLAMP_PERCENT_SHIFT	2
+> >> +#define UCLAMP_PERCENT_SCALE	(100 * POW10(UCLAMP_PERCENT_SHIFT))
+> >> +	s64 percent;
+> >> +	u64 util;
+> >> +	int ret;
+> >> +};
 > >> +
-> >> +	uclamp_rq_dec_id(rq, p, clamp_id);
-> >> +	uclamp_rq_inc_id(rq, p, clamp_id);
+> >> +static inline struct uclamp_request
+> >> +capacity_from_percent(char *buf)
+> >> +{
+> >> +	struct uclamp_request req = {
+> >> +		.percent = UCLAMP_PERCENT_SCALE,
+> >> +		.util = SCHED_CAPACITY_SCALE,
+> >> +		.ret = 0,
+> >> +	};
 > >> +
-> >> +done:
+> >> +	buf = strim(buf);
+> >> +	if (strncmp("max", buf, 4)) {
 > >
-> > I'm thinking that:
-> >
-> > 	if (p->uclamp[clamp_id].active) {
-> > 		uclamp_rq_dec_id(rq, p, clamp_id);
-> > 		uclamp_rq_inc_id(rq, p, clamp_id);
-> > 	}
-> >
-> > was too obvious? ;-)
+> > That is either a bug, and you meant to write: strncmp(buf, "max", 3),
+> > or it is not, and then you could've written: strcmp(buf, "max")
 > 
-> Yep, right... I think there was some more code in prev versions but I
-> forgot to get rid of that "goto" pattern after some change.
+> I don't think it's a bug.
+> 
+> The usage of 4 is intentional, to force a '\0' check while using
+> strncmp(). Otherwise, strncmp(buf, "max", 3) would accept also strings
+> starting by "max", which we don't want.
 
-OK, already fixed that.
+Right; I figured.
+
+> > But as written it doesn't make sense.
+> 
+> The code is safe but I agree that strcmp() does just the same and it
+> does not generate confusion. That's actually a pretty good example
+> on how it's not always better to use strncmp() instead of strcmp().
+
+OK, I made it strcmp(), because that is what I figured was the intended
+semantics.
