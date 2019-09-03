@@ -2,114 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C691A6B34
-	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 16:22:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3465A720D
+	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 19:58:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728576AbfICOWN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Sep 2019 10:22:13 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:35918 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728925AbfICOWL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 10:22:11 -0400
-Received: by mail-qk1-f196.google.com with SMTP id s18so5066796qkj.3
-        for <cgroups@vger.kernel.org>; Tue, 03 Sep 2019 07:22:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=zXvrHc8bIlM8VodivjNDsnx6+oAEFk8HI08Pi/PdZy0=;
-        b=arZrudyLT8vTBXeGc+RzCc8cTYEs3iyuTYalOAK8Glv1IOK+eWWBNQWyvS8kFPmvs8
-         cXIvmXi+hJkM1FOJpx5IPOjfYvPRIzhid3fb2nB/JrVWSTaqecT2VZSSzQiT3GLBEhVD
-         smanZ/a5pgEUewoLHRsTzIMv9ved1r7kbjWXhXrjDyLyY7rPLZf0ySFrYu7mKpvQJxkF
-         6zkSA2MEAIopfNY5Ll0n+vlI8Z1hVWLGrtAY/KyJTTp+EipIkSMRL9vg7B0zT/2F6vW+
-         GLuEGCAkw1KhNkAUKZ5Qs8nmOqIqiZ993sMb4VYDVKWNLkoIjdzO2woNnmAnCXfVizng
-         kRPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zXvrHc8bIlM8VodivjNDsnx6+oAEFk8HI08Pi/PdZy0=;
-        b=HzTzoZC3DEqWDDnEazKpDyyiQTHwYjufel6p3+YfbUxjYtjHGqiLIllUcutWfN56ck
-         Se5Dn5CLlQIWzXi9ofmn4pQktOtr7NOTRlxtqPW0vFYsuF8SqyCgxIljB8Alt9kpqn/T
-         PN+3An4OnE+y2vnZh+SITBz0MvOH0NCFmHd96sGPXjEWQ8wPNeqkGU+i4gwoK3je2crG
-         cTSjsjz9z1K/RPKFlQ2B1qr+zn1khVC0BgXs30Fd4rTqBAfgEtRx6TP1tVm8mQ7EuXXR
-         TszltqJHJ9JaQjbXcfTZgKabsdkJlMyqAvNQHoAwLfS993/Dufrp1S9nrl0hX79dnpJJ
-         CHSA==
-X-Gm-Message-State: APjAAAXWLJJh1qWUgu8lokOvMSI0QShimkBMpS/idUjuU+YwEQs7qjUX
-        v7xaRWgyk15QxKad2pa0V+qUdPRajPtBfE5dWh4Xbw==
-X-Google-Smtp-Source: APXvYqzRj6Qy94zXxM718BMGrBx7jps9qVb8rKF7Cps40w/i6I9cXmMkiicMdflzzRvbKZLV3AfkOSAorVEoJeh+BqA=
-X-Received: by 2002:a05:620a:1367:: with SMTP id d7mr12839832qkl.20.1567520530372;
- Tue, 03 Sep 2019 07:22:10 -0700 (PDT)
-MIME-Version: 1.0
-References: <20190822132811.31294-1-patrick.bellasi@arm.com>
- <20190822132811.31294-2-patrick.bellasi@arm.com> <CAJuCfpGWtrg02LNE3PJZag9-LLVT=by2v+9x_tm1PyoXwZ8DqQ@mail.gmail.com>
- <20190903085248.GB8756@blackbody.suse.cz>
-In-Reply-To: <20190903085248.GB8756@blackbody.suse.cz>
-From:   Joel Fernandes <joelaf@google.com>
-Date:   Tue, 3 Sep 2019 10:21:59 -0400
-Message-ID: <CAJWu+opnNT3bQwe+SsdR0Q+PSt7DA=JAQ_5sbZ6h2DXd4ZqwHA@mail.gmail.com>
-Subject: Re: [PATCH v14 1/6] sched/core: uclamp: Extend CPU's cgroup controller
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Suren Baghdasaryan <surenb@google.com>,
-        Patrick Bellasi <patrick.bellasi@arm.com>,
-        Alessio Balsini <balsini@android.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Morten Rasmussen <morten.rasmussen@arm.com>,
-        Quentin Perret <quentin.perret@arm.com>,
-        Paul Turner <pjt@google.com>,
-        Steve Muckle <smuckle@google.com>,
-        Todd Kjos <tkjos@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        id S1729005AbfICR6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Sep 2019 13:58:31 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:49252 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728010AbfICR6b (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 13:58:31 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x83HsfZH111420;
+        Tue, 3 Sep 2019 17:58:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=2CQvjcjn8S5qepJOVui7TagmqoVkFQxOyG/LeHJ4jns=;
+ b=VIsu3iuVv3V2Rp/MY04+TEmNsQFl9ZZIxerTVvvOODw0AwKdlACPaGmAriaj5jWMBm7l
+ cmsiNjxTyXAmhw9W9qJPqdALaf9wz6lloMeD3NcSoMsTiwv+A/tkftb5CE8iRbG1LC0u
+ rCQny2Pp3b9WmLoct6jngYegMfAgh+Th8mu8lpUhb174FHU8QHqTUyaF1zZL0gh2++C0
+ +Z+OZvxhLZVp0XwqvakZrbD+eTfuGDHQqXqBjpcMZAxGr/M/lCFpIsbVD13Ez+TbrmFI
+ AWtSYUqk2UhJbQzyDWHlwyl78ImjmPY+z0FQ0RnjHlNd9FaaAaT47S+fe7Q3+14n7HtZ dA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 2usvvu82gj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Sep 2019 17:58:14 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x83Hw9Ni128598;
+        Tue, 3 Sep 2019 17:58:14 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2usu50v2q3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 03 Sep 2019 17:58:13 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x83Hvfix000347;
+        Tue, 3 Sep 2019 17:57:41 GMT
+Received: from [192.168.1.222] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 03 Sep 2019 10:57:41 -0700
+Subject: Re: [PATCH v3 0/6] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ limits
+To:     Michal Hocko <mhocko@kernel.org>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org,
+        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
         Tejun Heo <tj@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        linux-api@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>
+References: <20190826233240.11524-1-almasrymina@google.com>
+ <20190828112340.GB7466@dhcp22.suse.cz>
+ <CAHS8izPPhPoqh-J9LJ40NJUCbgTFS60oZNuDSHmgtMQiYw72RA@mail.gmail.com>
+ <20190829071807.GR28313@dhcp22.suse.cz>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <cb7ebcce-05c5-3384-5632-2bbac9995c15@oracle.com>
+Date:   Tue, 3 Sep 2019 10:57:39 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20190829071807.GR28313@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1906280000 definitions=main-1909030180
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1011
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
+ definitions=main-1909030180
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 3, 2019 at 4:53 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote:
->
-> On Mon, Sep 02, 2019 at 04:02:57PM -0700, Suren Baghdasaryan <surenb@goog=
-le.com> wrote:
-> > > +static inline void cpu_uclamp_print(struct seq_file *sf,
-> > > +                                   enum uclamp_id clamp_id)
-> > > [...]
-> > > +       rcu_read_lock();
-> > > +       tg =3D css_tg(seq_css(sf));
-> > > +       util_clamp =3D tg->uclamp_req[clamp_id].value;
-> > > +       rcu_read_unlock();
-> > > +
-> > > +       if (util_clamp =3D=3D SCHED_CAPACITY_SCALE) {
-> > > +               seq_puts(sf, "max\n");
-> > > +               return;
-> > > +       }
-> > > +
-> > > +       percent =3D tg->uclamp_pct[clamp_id];
-> >
-> > You are taking RCU lock when accessing tg->uclamp_req but not when
-> > accessing tg->uclamp_pct.
-> Good point.
->
-> > Is that intentional? Can tg be destroyed under you?
-> Actually, the rcu_read{,un}lock should be unnecessary in the context of
-> the kernfs file op handler -- the tg/css won't go away as long as its
-> kernfs file is being worked with.
->
+On 8/29/19 12:18 AM, Michal Hocko wrote:
+> [Cc cgroups maintainers]
+> 
+> On Wed 28-08-19 10:58:00, Mina Almasry wrote:
+>> On Wed, Aug 28, 2019 at 4:23 AM Michal Hocko <mhocko@kernel.org> wrote:
+>>>
+>>> On Mon 26-08-19 16:32:34, Mina Almasry wrote:
+>>>>  mm/hugetlb.c                                  | 493 ++++++++++++------
+>>>>  mm/hugetlb_cgroup.c                           | 187 +++++--
+>>>
+>>> This is a lot of changes to an already subtle code which hugetlb
+>>> reservations undoubly are.
+>>
+>> For what it's worth, I think this patch series is a net decrease in
+>> the complexity of the reservation code, especially the region_*
+>> functions, which is where a lot of the complexity lies. I removed the
+>> race between region_del and region_{add|chg}, refactored the main
+>> logic into smaller code, moved common code to helpers and deleted the
+>> duplicates, and finally added lots of comments to the hard to
+>> understand pieces. I hope that when folks review the changes they will
+>> see that! :)
+> 
+> Post those improvements as standalone patches and sell them as
+> improvements. We can talk about the net additional complexity of the
+> controller much easier then.
 
-Also, add to that the fact that there is no rcu_dereference() call to
-access any of the pointers in the reader or any of its callers. And, I
-don't see any "wait for completion" type of pattern here so that
-rcu_read_{lock, unlock}() pair does seem useless.
+All such changes appear to be in patch 4 of this series.  The commit message
+says "region_add() and region_chg() are heavily refactored to in this commit
+to make the code easier to understand and remove duplication.".  However, the
+modifications were also added to accommodate the new cgroup reservation
+accounting.  I think it would be helpful to explain why the existing code does
+not work with the new accounting.  For example, one change is because
+"existing code coalesces resv_map entries for shared mappings.  new cgroup
+accounting requires that resv_map entries be kept separate for proper
+uncharging."
 
-thanks,
+I am starting to review the changes, but it would help if there was a high
+level description.  I also like Michal's idea of calling out the region_*
+changes separately.  If not a standalone patch, at least the first patch of
+the series.  This new code will be exercised even if cgroup reservation
+accounting not enabled, so it is very important than no subtle regressions
+be introduced.
 
- - Joel
+-- 
+Mike Kravetz
