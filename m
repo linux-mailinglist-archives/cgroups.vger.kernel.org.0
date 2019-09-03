@@ -2,150 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CBCA7398
-	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 21:23:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D186A73A8
+	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 21:30:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725962AbfICTXc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Sep 2019 15:23:32 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:37622 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726079AbfICTXc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 15:23:32 -0400
-Received: by mail-wr1-f68.google.com with SMTP id z11so18682275wrt.4
-        for <cgroups@vger.kernel.org>; Tue, 03 Sep 2019 12:23:29 -0700 (PDT)
+        id S1725883AbfICTaZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Sep 2019 15:30:25 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:39996 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725953AbfICTaZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 15:30:25 -0400
+Received: by mail-wr1-f66.google.com with SMTP id c3so18694496wrd.7
+        for <cgroups@vger.kernel.org>; Tue, 03 Sep 2019 12:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=zc/lNm90ymDp4B8V4zTs798Pr6EV37dROBLhjTsTKSU=;
-        b=Zc7zavcNQFU8ADTRgPlLMx6fLwaAKBQg/XRCu3VX8fbASXElwghl1EY9acOcIhq4aC
-         CHv3/OPtaCODa9GlQ8nufy+2dQZc6QD2DMgudKiHDyZAVRQGaDYzuquFSVgf3M4W2uMS
-         WgUpLLrLM59nINI+WNDFMettOWdQX7cjFOBnex9jp6TowcTQ9jARqAD/nno9YdGwZM/2
-         zpdvdqZoA5GuwxaAyvRnYjoxtxflWh1YnrzQzUZuVOWByFLYQBx6DafiV45HUhNiiWit
-         xc16ITDQmYSl1VDDhB+JzeKoiYQwb0ehOWY251tcl5EZlSLMB6TzU/1VChkGiROiOWt2
-         Nd8Q==
+        bh=BUC9lNV3hiLQYYhK09gUGrdClqoIa3FcNpKkrkBFKUs=;
+        b=dOiBwHRt8IrV+6hpNvTDbS6aoB5EH3z4mCO1RHw+JoOBM7t049RVg/ueYKwqsgHTev
+         ndqWdh/yNmmbMXnYN9u9G8GfPKv4O5SxYLfTYCbcl6i0znIa1JI5c8Z3MlzTP2DvjM8R
+         W+oY+f78T/859JA6GAgTcYYFeQpCAxXBtouSQQ0Q3zr6lrCe6ou6vxNHpP60V9IcAHH9
+         JrQzUp1+bRg8vUoc8g0BzLEKDdidFpqPkrPoi81MdxjbT7tzJ8CXpsHXM4k7mE5uM7zD
+         eeV+inQonK+lK/6woygeYQJlxePKYHm92EmzhNS3em0sGXi/m8BOseuywSmZvvvGkTs9
+         wHiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=zc/lNm90ymDp4B8V4zTs798Pr6EV37dROBLhjTsTKSU=;
-        b=Q3zlux79pVyF8kPQ/vO0hW1q0S7qFk9bVSoCb7u2reB1iqoXknaN6C0FjOL0orQtff
-         eXwHnJPXYFlvsJi4Piy/NnItx1u1S/k/G8aHhu+W7vc6LNPF8cuZ0cdKuYZJl07GELLe
-         oqdYHokSm+0tCLBKgKs/+QThQuLmYyKI7nYkvKEyuK6mFaU+aoNn6YGUMNTalXlMtCZK
-         k7CQbkIe7KxOtBETRctG4onqIpjJLsUO7uzNKwE8/PcSY5n6xRsUGViTmyuZ5hozzHWr
-         tYFhuksSBAHDDbopOEKv0p5Mp/1uWPufl/6MOvg0cTzF0WoiT5mDNCW2QLIvU1hfp8yt
-         752Q==
-X-Gm-Message-State: APjAAAUSLLGqW5mNS0+sH/TTEQ+ptu+z66BkJE0YTDojJrrCbbqr6ke4
-        +sQBd+MSSj0gp98J6ee9PwqVmnTskHTotw/u9MM=
-X-Google-Smtp-Source: APXvYqyr2mZhE1m/H3NhFnFGjUP9uKQIx6KLt4cttEWmWseyiid/WgTmAoK3XiIIhJYzMsEGlSzfMwq4gzPujf8nE3s=
-X-Received: by 2002:adf:ef44:: with SMTP id c4mr23908279wrp.216.1567538609007;
- Tue, 03 Sep 2019 12:23:29 -0700 (PDT)
+        bh=BUC9lNV3hiLQYYhK09gUGrdClqoIa3FcNpKkrkBFKUs=;
+        b=V15Hr52N9h4VvsC1qyR4dkmuqWGol8U5dxzojAyo6qLLRaUwqrYMXV9MppOcotvxaI
+         nJsXwRCDPJAasgQxyGkqbmRKRyO5JG93R3r8BMnXa5aEQvmLIroepxFllP06tF9dnDJL
+         F/9TsZCEwlDvldBpvIiTifcstCuF9/FlAZjcXlHKIxUouTheJgSxUQGZjcCWsGLLpvK+
+         MLITRGNXgrnHo/m465k+oWBB4MJfzRG7tkghW0NGyEjTb5mg+z/fCeitSP7dtCsmvTTa
+         CYE8N71tAmniJ3NeSPCtuf2e/vOrl+ERhskjjweStK1eCUjfEIF9autr4fEHmlRaTTDP
+         u7ig==
+X-Gm-Message-State: APjAAAVeEq9M+FbQdIooh/k9wn/p/CrZvKI2crcDEL7dSpjs0E81BoAB
+        TkddaAIhO3DhA5Ba6VmBirFaGagiqeaV8IJI9nY=
+X-Google-Smtp-Source: APXvYqwGtw3k06abnxnAPKVukQA7dOhMMxI8wqrOCiZub2liJlFPTERNxfiKu289CQ8PDUPntVyv2CnSIs5XpSTAGwc=
+X-Received: by 2002:adf:ef44:: with SMTP id c4mr23938460wrp.216.1567539022320;
+ Tue, 03 Sep 2019 12:30:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190831042857.GD2263813@devbig004.ftw2.facebook.com>
- <20190903075550.GJ2112@phenom.ffwll.local> <20190903185013.GI2263813@devbig004.ftw2.facebook.com>
-In-Reply-To: <20190903185013.GI2263813@devbig004.ftw2.facebook.com>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190903080217.GL2112@phenom.ffwll.local>
+ <f8d561b9-091e-2f74-944f-38230195eea8@amd.com> <CAKMK7uGDs1fznj7PQytc7fAtBoSQ4VmW6D6UDqTgPxzgHOsC+Q@mail.gmail.com>
+In-Reply-To: <CAKMK7uGDs1fznj7PQytc7fAtBoSQ4VmW6D6UDqTgPxzgHOsC+Q@mail.gmail.com>
 From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Tue, 3 Sep 2019 15:23:17 -0400
-Message-ID: <CAOWid-fvJHyX4+S3zt5rM6pfPWQYMoi=+xKmcbODcLdYpFXduQ@mail.gmail.com>
+Date:   Tue, 3 Sep 2019 15:30:11 -0400
+Message-ID: <CAOWid-cgr3BuGzuxeGTmb_4jQXEy=GJVXR874iTz_kYRgRUqKA@mail.gmail.com>
 Subject: Re: [PATCH RFC v4 00/16] new cgroup controller for gpu/drm subsystem
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
-        cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
+        "Greathouse, Joseph" <Joseph.Greathouse@amd.com>,
+        "jsparks@cray.com" <jsparks@cray.com>,
+        "lkaplan@cray.com" <lkaplan@cray.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+On Tue, Sep 3, 2019 at 5:20 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+>
+> On Tue, Sep 3, 2019 at 10:24 AM Koenig, Christian
+> <Christian.Koenig@amd.com> wrote:
+> >
+> > Am 03.09.19 um 10:02 schrieb Daniel Vetter:
+> > > On Thu, Aug 29, 2019 at 02:05:17AM -0400, Kenny Ho wrote:
+> > >> With this RFC v4, I am hoping to have some consensus on a merge plan.  I believe
+> > >> the GEM related resources (drm.buffer.*) introduced in previous RFC and,
+> > >> hopefully, the logical GPU concept (drm.lgpu.*) introduced in this RFC are
+> > >> uncontroversial and ready to move out of RFC and into a more formal review.  I
+> > >> will continue to work on the memory backend resources (drm.memory.*).
+> > >>
+> > >> The cover letter from v1 is copied below for reference.
+> > >>
+> > >> [v1]: https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> > >> [v2]: https://www.spinics.net/lists/cgroups/msg22074.html
+> > >> [v3]: https://lists.freedesktop.org/archives/amd-gfx/2019-June/036026.html
+> > > So looking at all this doesn't seem to have changed much, and the old
+> > > discussion didn't really conclude anywhere (aside from some details).
+> > >
+> > > One more open though that crossed my mind, having read a ton of ttm again
+> > > recently: How does this all interact with ttm global limits? I'd say the
+> > > ttm global limits is the ur-cgroups we have in drm, and not looking at
+> > > that seems kinda bad.
+> >
+> > At least my hope was to completely replace ttm globals with those
+> > limitations here when it is ready.
+>
+> You need more, at least some kind of shrinker to cut down bo placed in
+> system memory when we're under memory pressure. Which drags in a
+> pretty epic amount of locking lols (see i915's shrinker fun, where we
+> attempt that). Probably another good idea to share at least some
+> concepts, maybe even code.
 
-Thanks for looking into this.  I can definitely help where I can and I
-am sure other experts will jump in if I start misrepresenting the
-reality :) (as Daniel already have done.)
+I am still looking into your shrinker suggestion so the memory.*
+resources are untouch from RFC v3.  The main change for the buffer.*
+resources is the removal of buffer sharing restriction as you
+suggested and additional documentation of that behaviour.  (I may have
+neglected mentioning it in the cover.)  The other key part of RFC v4
+is the "logical GPU/lgpu" concept.  I am hoping to get it out there
+early for feedback while I continue to work on the memory.* parts.
 
-Regarding your points, my understanding is that there isn't really a
-TTM vs GEM situation anymore (there is an lwn.net article about that,
-but it is more than a decade old.)  I believe GEM is the common
-interface at this point and more and more features are being
-refactored into it.  For example, AMD's driver uses TTM internally but
-things are exposed via the GEM interface.
-
-This GEM resource is actually the single number resource you just
-referred to.  A GEM buffer (the drm.buffer.* resources) can be backed
-by VRAM, or system memory or other type of memory.  The more fine
-grain control is the drm.memory.* resources which still need more
-discussion.  (As some of the functionalities in TTM are being
-refactored into the GEM level.  I have seen some patches that make TTM
-a subclass of GEM.)
-
-This RFC can be grouped into 3 areas and they are fairly independent
-so they can be reviewed separately: high level device memory control
-(buffer.*), fine grain memory control and bandwidth (memory.*) and
-compute resources (lgpu.*)  I think the memory.* resources are the
-most controversial part but I think it's still needed.
-
-Perhaps an analogy may help.  For a system, we have CPUs and memory.
-And within memory, it can be backed by RAM or swap.  For GPU, each
-device can have LGPUs and buffers.  And within the buffers, it can be
-backed by VRAM, or system RAM or even swap.
-
-As for setting the right amount, I think that's where the profiling
-aspect of the *.stats comes in.  And while one can't necessary buy
-more VRAM, it is still a useful knob to adjust if the intention is to
-pack more work into a GPU device with predictable performance.  This
-research on various GPU workload may be of interest:
-
-A Taxonomy of GPGPU Performance Scaling
-http://www.computermachines.org/joe/posters/iiswc2015_taxonomy.pdf
-http://www.computermachines.org/joe/publications/pdfs/iiswc2015_taxonomy.pdf
-
-(summary: GPU workload can be memory bound or compute bound.  So it's
-possible to pack different workload together to improve utilization.)
-
-Regards,
 Kenny
 
-On Tue, Sep 3, 2019 at 2:50 PM Tejun Heo <tj@kernel.org> wrote:
+> -Daniel
 >
-> Hello, Daniel.
->
-> On Tue, Sep 03, 2019 at 09:55:50AM +0200, Daniel Vetter wrote:
-> > > * While breaking up and applying control to different types of
-> > >   internal objects may seem attractive to folks who work day in and
-> > >   day out with the subsystem, they aren't all that useful to users and
-> > >   the siloed controls are likely to make the whole mechanism a lot
-> > >   less useful.  We had the same problem with cgroup1 memcg - putting
-> > >   control of different uses of memory under separate knobs.  It made
-> > >   the whole thing pretty useless.  e.g. if you constrain all knobs
-> > >   tight enough to control the overall usage, overall utilization
-> > >   suffers, but if you don't, you really don't have control over actual
-> > >   usage.  For memcg, what has to be allocated and controlled is
-> > >   physical memory, no matter how they're used.  It's not like you can
-> > >   go buy more "socket" memory.  At least from the looks of it, I'm
-> > >   afraid gpu controller is repeating the same mistakes.
 > >
-> > We do have quite a pile of different memories and ranges, so I don't
-> > thinkt we're doing the same mistake here. But it is maybe a bit too
->
-> I see.  One thing which caught my eyes was the system memory control.
-> Shouldn't that be controlled by memcg?  Is there something special
-> about system memory used by gpus?
->
-> > complicated, and exposes stuff that most users really don't care about.
->
-> Could be from me not knowing much about gpus but definitely looks too
-> complex to me.  I don't see how users would be able to alloate, vram,
-> system memory and GART with reasonable accuracy.  memcg on cgroup2
-> deals with just single number and that's already plenty challenging.
->
-> Thanks.
->
-> --
-> tejun
+> > Christian.
+> >
+> > > -Daniel
+> > >
+> > >> v4:
+> > >> Unchanged (no review needed)
+> > >> * drm.memory.*/ttm resources (Patch 9-13, I am still working on memory bandwidth
+> > >> and shrinker)
+> > >> Base on feedbacks on v3:
+> > >> * update nominclature to drmcg
+> > >> * embed per device drmcg properties into drm_device
+> > >> * split GEM buffer related commits into stats and limit
+> > >> * rename function name to align with convention
+> > >> * combined buffer accounting and check into a try_charge function
+> > >> * support buffer stats without limit enforcement
+> > >> * removed GEM buffer sharing limitation
+> > >> * updated documentations
+> > >> New features:
+> > >> * introducing logical GPU concept
+> > >> * example implementation with AMD KFD
+> > >>
+> > >> v3:
+> > >> Base on feedbacks on v2:
+> > >> * removed .help type file from v2
+> > >> * conform to cgroup convention for default and max handling
+> > >> * conform to cgroup convention for addressing device specific limits (with major:minor)
+> > >> New function:
+> > >> * adopted memparse for memory size related attributes
+> > >> * added macro to marshall drmcgrp cftype private  (DRMCG_CTF_PRIV, etc.)
+> > >> * added ttm buffer usage stats (per cgroup, for system, tt, vram.)
+> > >> * added ttm buffer usage limit (per cgroup, for vram.)
+> > >> * added per cgroup bandwidth stats and limiting (burst and average bandwidth)
+> > >>
+> > >> v2:
+> > >> * Removed the vendoring concepts
+> > >> * Add limit to total buffer allocation
+> > >> * Add limit to the maximum size of a buffer allocation
+> > >>
+> > >> v1: cover letter
