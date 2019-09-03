@@ -2,154 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D186A73A8
-	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 21:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8215BA73E1
+	for <lists+cgroups@lfdr.de>; Tue,  3 Sep 2019 21:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725883AbfICTaZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Sep 2019 15:30:25 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:39996 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbfICTaZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 15:30:25 -0400
-Received: by mail-wr1-f66.google.com with SMTP id c3so18694496wrd.7
-        for <cgroups@vger.kernel.org>; Tue, 03 Sep 2019 12:30:23 -0700 (PDT)
+        id S1726090AbfICTpv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Sep 2019 15:45:51 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52180 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725994AbfICTpv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 15:45:51 -0400
+Received: by mail-wm1-f67.google.com with SMTP id k1so761775wmi.1
+        for <cgroups@vger.kernel.org>; Tue, 03 Sep 2019 12:45:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BUC9lNV3hiLQYYhK09gUGrdClqoIa3FcNpKkrkBFKUs=;
-        b=dOiBwHRt8IrV+6hpNvTDbS6aoB5EH3z4mCO1RHw+JoOBM7t049RVg/ueYKwqsgHTev
-         ndqWdh/yNmmbMXnYN9u9G8GfPKv4O5SxYLfTYCbcl6i0znIa1JI5c8Z3MlzTP2DvjM8R
-         W+oY+f78T/859JA6GAgTcYYFeQpCAxXBtouSQQ0Q3zr6lrCe6ou6vxNHpP60V9IcAHH9
-         JrQzUp1+bRg8vUoc8g0BzLEKDdidFpqPkrPoi81MdxjbT7tzJ8CXpsHXM4k7mE5uM7zD
-         eeV+inQonK+lK/6woygeYQJlxePKYHm92EmzhNS3em0sGXi/m8BOseuywSmZvvvGkTs9
-         wHiA==
+        bh=NYsl+WnBNOSzkzGcFs1LuQIIp7KdKnXoVt1TdYqbhNg=;
+        b=SsANTSRz7Bro8WAvrKynQVHMXjfwfbW/kmB/QSt8ynaeOeWpgyX8RCaZwmyrTTjEUx
+         uGG2RqmhiRKyeN5Q3WW0o+hxlgqEXRGVMGBHGw+Yhar1zdyY7u8XSaW1ZVU5qc530EZk
+         bFdF/ojhK+OWxuQSV0Si5FTmbFwbvdwRiEIRs5yHNn+cvGv9hUNAG+eMcIPJaATfhvDY
+         ib/pJA4FOCujGemDl8SMrPDcydb+hv1mz+81gExfwWmCFJtpwpMAAgLOtpGQSvaOvxhN
+         f08g0X5g5n51JfDPGmWrSTYwhFYQcOImAF58AAgTByC6E7TM9lYKXBqqgYM6Dg/FZVTs
+         yOlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BUC9lNV3hiLQYYhK09gUGrdClqoIa3FcNpKkrkBFKUs=;
-        b=V15Hr52N9h4VvsC1qyR4dkmuqWGol8U5dxzojAyo6qLLRaUwqrYMXV9MppOcotvxaI
-         nJsXwRCDPJAasgQxyGkqbmRKRyO5JG93R3r8BMnXa5aEQvmLIroepxFllP06tF9dnDJL
-         F/9TsZCEwlDvldBpvIiTifcstCuF9/FlAZjcXlHKIxUouTheJgSxUQGZjcCWsGLLpvK+
-         MLITRGNXgrnHo/m465k+oWBB4MJfzRG7tkghW0NGyEjTb5mg+z/fCeitSP7dtCsmvTTa
-         CYE8N71tAmniJ3NeSPCtuf2e/vOrl+ERhskjjweStK1eCUjfEIF9autr4fEHmlRaTTDP
-         u7ig==
-X-Gm-Message-State: APjAAAVeEq9M+FbQdIooh/k9wn/p/CrZvKI2crcDEL7dSpjs0E81BoAB
-        TkddaAIhO3DhA5Ba6VmBirFaGagiqeaV8IJI9nY=
-X-Google-Smtp-Source: APXvYqwGtw3k06abnxnAPKVukQA7dOhMMxI8wqrOCiZub2liJlFPTERNxfiKu289CQ8PDUPntVyv2CnSIs5XpSTAGwc=
-X-Received: by 2002:adf:ef44:: with SMTP id c4mr23938460wrp.216.1567539022320;
- Tue, 03 Sep 2019 12:30:22 -0700 (PDT)
+        bh=NYsl+WnBNOSzkzGcFs1LuQIIp7KdKnXoVt1TdYqbhNg=;
+        b=Bosz4LkOVnkoMcZI6KGOSu5oJQQ8refWYdNVIRY69x5RNDkqVI7g4l6oCKnVl39Ius
+         N3/MAVJhDG4MEbAAjORKHfU7DIuhBNoBU0GTTiXfflIRJYdM8bFe4IqxY1Fydod7MuK5
+         DFqgAeHDs0nodtzIiHAg+ATAYTwi/0mz2VGdRZu+4li7GKQOtLI/yCvlyVhk11t2ohsD
+         Kr6voj8XyrfzvOlZtl4Q6d7QSC40Wke0p7S+pOuOFthR9FRMUOMmB3k7vkhH7iQRFD7s
+         6LdMpgnFAB2D2/JeHdLlKguGjrzO67IcFVqmIiwjeGwKX4s1zUHncMDBd2lMCKK6duCH
+         eqUQ==
+X-Gm-Message-State: APjAAAWZMwn8SC3VUPl/xgNfRiLpg0/XUItTfc4pXIKYBEdSqmjKmMT3
+        bQcLZRpdvQ3nDjPXqqPAzkRlkJoWzBQYnS0O8nY=
+X-Google-Smtp-Source: APXvYqxQh47GOErjlT0YtgDIsGVuiGJ4BB6C7zMaZtm3tHHYDANfiEYckETqYawXwDVuvSwbJ1A+W6mo5UO6YgJA8oI=
+X-Received: by 2002:a7b:c761:: with SMTP id x1mr1240453wmk.100.1567539948476;
+ Tue, 03 Sep 2019 12:45:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190903080217.GL2112@phenom.ffwll.local>
- <f8d561b9-091e-2f74-944f-38230195eea8@amd.com> <CAKMK7uGDs1fznj7PQytc7fAtBoSQ4VmW6D6UDqTgPxzgHOsC+Q@mail.gmail.com>
-In-Reply-To: <CAKMK7uGDs1fznj7PQytc7fAtBoSQ4VmW6D6UDqTgPxzgHOsC+Q@mail.gmail.com>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190829060533.32315-2-Kenny.Ho@amd.com>
+ <20190903075719.GK2112@phenom.ffwll.local>
+In-Reply-To: <20190903075719.GK2112@phenom.ffwll.local>
 From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Tue, 3 Sep 2019 15:30:11 -0400
-Message-ID: <CAOWid-cgr3BuGzuxeGTmb_4jQXEy=GJVXR874iTz_kYRgRUqKA@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 00/16] new cgroup controller for gpu/drm subsystem
+Date:   Tue, 3 Sep 2019 15:45:37 -0400
+Message-ID: <CAOWid-dxxDhyxP2+0R0oKAk29rR-1TbMyhshR1+gbcpGJCAW6g@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 01/16] drm: Add drm_minor_for_each
 To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Ho, Kenny" <Kenny.Ho@amd.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "tj@kernel.org" <tj@kernel.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Kuehling, Felix" <Felix.Kuehling@amd.com>,
-        "Greathouse, Joseph" <Joseph.Greathouse@amd.com>,
-        "jsparks@cray.com" <jsparks@cray.com>,
-        "lkaplan@cray.com" <lkaplan@cray.com>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 3, 2019 at 5:20 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+On Tue, Sep 3, 2019 at 3:57 AM Daniel Vetter <daniel@ffwll.ch> wrote:
 >
-> On Tue, Sep 3, 2019 at 10:24 AM Koenig, Christian
-> <Christian.Koenig@amd.com> wrote:
+> On Thu, Aug 29, 2019 at 02:05:18AM -0400, Kenny Ho wrote:
+> > To allow other subsystems to iterate through all stored DRM minors and
+> > act upon them.
 > >
-> > Am 03.09.19 um 10:02 schrieb Daniel Vetter:
-> > > On Thu, Aug 29, 2019 at 02:05:17AM -0400, Kenny Ho wrote:
-> > >> With this RFC v4, I am hoping to have some consensus on a merge plan.  I believe
-> > >> the GEM related resources (drm.buffer.*) introduced in previous RFC and,
-> > >> hopefully, the logical GPU concept (drm.lgpu.*) introduced in this RFC are
-> > >> uncontroversial and ready to move out of RFC and into a more formal review.  I
-> > >> will continue to work on the memory backend resources (drm.memory.*).
-> > >>
-> > >> The cover letter from v1 is copied below for reference.
-> > >>
-> > >> [v1]: https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
-> > >> [v2]: https://www.spinics.net/lists/cgroups/msg22074.html
-> > >> [v3]: https://lists.freedesktop.org/archives/amd-gfx/2019-June/036026.html
-> > > So looking at all this doesn't seem to have changed much, and the old
-> > > discussion didn't really conclude anywhere (aside from some details).
-> > >
-> > > One more open though that crossed my mind, having read a ton of ttm again
-> > > recently: How does this all interact with ttm global limits? I'd say the
-> > > ttm global limits is the ur-cgroups we have in drm, and not looking at
-> > > that seems kinda bad.
+> > Also exposes drm_minor_acquire and drm_minor_release for other subsystem
+> > to handle drm_minor.  DRM cgroup controller is the initial consumer of
+> > this new features.
 > >
-> > At least my hope was to completely replace ttm globals with those
-> > limitations here when it is ready.
+> > Change-Id: I7c4b67ce6b31f06d1037b03435386ff5b8144ca5
+> > Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
 >
-> You need more, at least some kind of shrinker to cut down bo placed in
-> system memory when we're under memory pressure. Which drags in a
-> pretty epic amount of locking lols (see i915's shrinker fun, where we
-> attempt that). Probably another good idea to share at least some
-> concepts, maybe even code.
+> Iterating over minors for cgroups sounds very, very wrong. Why do we care
+> whether a buffer was allocated through kms dumb vs render nodes?
+>
+> I'd expect all the cgroup stuff to only work on drm_device, if it does
+> care about devices.
+>
+> (I didn't look through the patch series to find out where exactly you're
+> using this, so maybe I'm off the rails here).
 
-I am still looking into your shrinker suggestion so the memory.*
-resources are untouch from RFC v3.  The main change for the buffer.*
-resources is the removal of buffer sharing restriction as you
-suggested and additional documentation of that behaviour.  (I may have
-neglected mentioning it in the cover.)  The other key part of RFC v4
-is the "logical GPU/lgpu" concept.  I am hoping to get it out there
-early for feedback while I continue to work on the memory.* parts.
+I am exposing this to remove the need to keep track of a separate list
+of available drm_device in the system (to remove the registering and
+unregistering of drm_device to the cgroup subsystem and just use
+drm_minor as the single source of truth.)  I am only filtering out the
+render nodes minor because they point to the same drm_device and is
+confusing.
+
+Perhaps I missed an obvious way to list the drm devices without
+iterating through the drm_minors?  (I probably jumped to the minors
+because $major:$minor is the convention to address devices in cgroup.)
 
 Kenny
 
 > -Daniel
 >
+> > ---
+> >  drivers/gpu/drm/drm_drv.c      | 19 +++++++++++++++++++
+> >  drivers/gpu/drm/drm_internal.h |  4 ----
+> >  include/drm/drm_drv.h          |  4 ++++
+> >  3 files changed, 23 insertions(+), 4 deletions(-)
 > >
-> > Christian.
+> > diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> > index 862621494a93..000cddabd970 100644
+> > --- a/drivers/gpu/drm/drm_drv.c
+> > +++ b/drivers/gpu/drm/drm_drv.c
+> > @@ -254,11 +254,13 @@ struct drm_minor *drm_minor_acquire(unsigned int minor_id)
 > >
-> > > -Daniel
-> > >
-> > >> v4:
-> > >> Unchanged (no review needed)
-> > >> * drm.memory.*/ttm resources (Patch 9-13, I am still working on memory bandwidth
-> > >> and shrinker)
-> > >> Base on feedbacks on v3:
-> > >> * update nominclature to drmcg
-> > >> * embed per device drmcg properties into drm_device
-> > >> * split GEM buffer related commits into stats and limit
-> > >> * rename function name to align with convention
-> > >> * combined buffer accounting and check into a try_charge function
-> > >> * support buffer stats without limit enforcement
-> > >> * removed GEM buffer sharing limitation
-> > >> * updated documentations
-> > >> New features:
-> > >> * introducing logical GPU concept
-> > >> * example implementation with AMD KFD
-> > >>
-> > >> v3:
-> > >> Base on feedbacks on v2:
-> > >> * removed .help type file from v2
-> > >> * conform to cgroup convention for default and max handling
-> > >> * conform to cgroup convention for addressing device specific limits (with major:minor)
-> > >> New function:
-> > >> * adopted memparse for memory size related attributes
-> > >> * added macro to marshall drmcgrp cftype private  (DRMCG_CTF_PRIV, etc.)
-> > >> * added ttm buffer usage stats (per cgroup, for system, tt, vram.)
-> > >> * added ttm buffer usage limit (per cgroup, for vram.)
-> > >> * added per cgroup bandwidth stats and limiting (burst and average bandwidth)
-> > >>
-> > >> v2:
-> > >> * Removed the vendoring concepts
-> > >> * Add limit to total buffer allocation
-> > >> * Add limit to the maximum size of a buffer allocation
-> > >>
-> > >> v1: cover letter
+> >       return minor;
+> >  }
+> > +EXPORT_SYMBOL(drm_minor_acquire);
+> >
+> >  void drm_minor_release(struct drm_minor *minor)
+> >  {
+> >       drm_dev_put(minor->dev);
+> >  }
+> > +EXPORT_SYMBOL(drm_minor_release);
+> >
+> >  /**
+> >   * DOC: driver instance overview
+> > @@ -1078,6 +1080,23 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
+> >  }
+> >  EXPORT_SYMBOL(drm_dev_set_unique);
+> >
+> > +/**
+> > + * drm_minor_for_each - Iterate through all stored DRM minors
+> > + * @fn: Function to be called for each pointer.
+> > + * @data: Data passed to callback function.
+> > + *
+> > + * The callback function will be called for each @drm_minor entry, passing
+> > + * the minor, the entry and @data.
+> > + *
+> > + * If @fn returns anything other than %0, the iteration stops and that
+> > + * value is returned from this function.
+> > + */
+> > +int drm_minor_for_each(int (*fn)(int id, void *p, void *data), void *data)
+> > +{
+> > +     return idr_for_each(&drm_minors_idr, fn, data);
+> > +}
+> > +EXPORT_SYMBOL(drm_minor_for_each);
+> > +
+> >  /*
+> >   * DRM Core
+> >   * The DRM core module initializes all global DRM objects and makes them
+> > diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+> > index e19ac7ca602d..6bfad76f8e78 100644
+> > --- a/drivers/gpu/drm/drm_internal.h
+> > +++ b/drivers/gpu/drm/drm_internal.h
+> > @@ -54,10 +54,6 @@ void drm_prime_destroy_file_private(struct drm_prime_file_private *prime_fpriv);
+> >  void drm_prime_remove_buf_handle_locked(struct drm_prime_file_private *prime_fpriv,
+> >                                       struct dma_buf *dma_buf);
+> >
+> > -/* drm_drv.c */
+> > -struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+> > -void drm_minor_release(struct drm_minor *minor);
+> > -
+> >  /* drm_vblank.c */
+> >  void drm_vblank_disable_and_save(struct drm_device *dev, unsigned int pipe);
+> >  void drm_vblank_cleanup(struct drm_device *dev);
+> > diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+> > index 68ca736c548d..24f8d054c570 100644
+> > --- a/include/drm/drm_drv.h
+> > +++ b/include/drm/drm_drv.h
+> > @@ -799,5 +799,9 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
+> >
+> >  int drm_dev_set_unique(struct drm_device *dev, const char *name);
+> >
+> > +int drm_minor_for_each(int (*fn)(int id, void *p, void *data), void *data);
+> > +
+> > +struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+> > +void drm_minor_release(struct drm_minor *minor);
+> >
+> >  #endif
+> > --
+> > 2.22.0
+> >
+>
+> --
+> Daniel Vetter
+> Software Engineer, Intel Corporation
+> http://blog.ffwll.ch
