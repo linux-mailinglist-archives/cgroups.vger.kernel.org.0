@@ -2,153 +2,247 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 390C7A77AC
-	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2019 01:46:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6E14A7E86
+	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2019 10:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726441AbfICXq2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Sep 2019 19:46:28 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:47656 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbfICXq1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Sep 2019 19:46:27 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x83NiMgm016233;
-        Tue, 3 Sep 2019 23:46:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : from : to :
- cc : references : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=gVzd1xf9o+fcSS2lfDeJltPXEjbUtM30OmGuZGgNO7M=;
- b=hSmwubqrsY25Qx8aIq/54/tJiLgh28xXXlaE0aNL0uV9fXey2tXHfMl0THru4K7mEjr9
- oZag18RuzqILZ9Cg9xZUYVU/7L/ZpfkToycFo1IE6TraQKhwh6rdwSDw/hOYY7QjE1Ec
- q02lZeb892ymnKgpkKK9/31TDcipl2reZmoXAJe4dbsIHaqnEcowWrONpgec1otShh5C
- eV7VMyIcACsuK3r41bdRNt4dxUaWo1+RH8WhdhyesJxQwWc00L9TljBtURYSfJLWRkiT
- G8fqrPSjXVNb9xteZdgoXIv5K1yYMXoRlR1HPqE6gqA7f1Lj1LdPS+3LqCwUuEGhA27n Sg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2130.oracle.com with ESMTP id 2ut23tg065-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Sep 2019 23:46:09 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x83NhNr7016728;
-        Tue, 3 Sep 2019 23:44:09 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 2ut1hmh6sy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 03 Sep 2019 23:44:09 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x83Ni2e1013424;
-        Tue, 3 Sep 2019 23:44:02 GMT
-Received: from [192.168.1.222] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 03 Sep 2019 16:44:02 -0700
-Subject: Re: [PATCH v3 0/6] hugetlb_cgroup: Add hugetlb_cgroup reservation
- limits
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-To:     Michal Hocko <mhocko@kernel.org>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        id S1727348AbfIDIyk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Sep 2019 04:54:40 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:40657 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727156AbfIDIyj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Sep 2019 04:54:39 -0400
+Received: by mail-ed1-f65.google.com with SMTP id v38so15786890edm.7
+        for <cgroups@vger.kernel.org>; Wed, 04 Sep 2019 01:54:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7M8KqRr09YF2rG8v6AhiYJ7DMek/7P3q9PGby+XNdwE=;
+        b=K5c+5IU7CQQBJ63s79t0CUwN/Dcwlx65PillLY/bzbxkCxxMQv/vFW0lYLR1cBC6eQ
+         KDlVWPuaxe6u1DIFg5JPjlAi74ec1cYC+NsGqmTIqm0lMf1jHL8tc97UK+V9R0Q9biBz
+         77Cw3FQnRblBQpCcLtfLhjUnsbdppoZB7vvGE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7M8KqRr09YF2rG8v6AhiYJ7DMek/7P3q9PGby+XNdwE=;
+        b=JJyWP2DFfxgQvxCbdJbB13m4KlvGy4bzO4vQpUMHyEFaMinxcwal3eioDTQRhTbYal
+         7pkt2M7KQ8zYIEvzLlCrEAufvwuAo9Aummw/E+diupr1FJVI8GUZwq/kYU3VkBBxhaG7
+         8eWaMBeWs/o/bqcOS8D7K5rXYaaWQRpZduCBT0RdEnE0kzPxkeDANTkmzzowbArbOh7u
+         BkXnPQSHt7mZuYT6drnJ2wHd/Sdm4iHMpcQijrlRV9Npfy7Dmr8wbTzm1LxfhNPuk1AZ
+         z4XuCR59yJqHEJLcy0mr39Oy2ueAG9ik396/I87XEn/Uie1GtQrQYeDdkuui1bdszAjM
+         08zA==
+X-Gm-Message-State: APjAAAX34fiSpRSSS6ltTzvsLAgtMdXAkd52t+rQnJFNkU8jvBqnNVst
+        EnnBdnEtGbebonDzdmpXvo8LoQ==
+X-Google-Smtp-Source: APXvYqwafUqSHorSCctZ9Hg75EMvqHVYqAbeN+Q+inZcpQnZ04EnucMAsmDpuIPvzsxHSWa/S/pEoQ==
+X-Received: by 2002:a05:6402:168f:: with SMTP id a15mr39835890edv.5.1567587277371;
+        Wed, 04 Sep 2019 01:54:37 -0700 (PDT)
+Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
+        by smtp.gmail.com with ESMTPSA id v8sm1615204ejk.29.2019.09.04.01.54.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2019 01:54:36 -0700 (PDT)
+Date:   Wed, 4 Sep 2019 10:54:34 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kenny Ho <y2kenny@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
         cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>
-References: <20190826233240.11524-1-almasrymina@google.com>
- <20190828112340.GB7466@dhcp22.suse.cz>
- <CAHS8izPPhPoqh-J9LJ40NJUCbgTFS60oZNuDSHmgtMQiYw72RA@mail.gmail.com>
- <20190829071807.GR28313@dhcp22.suse.cz>
- <cb7ebcce-05c5-3384-5632-2bbac9995c15@oracle.com>
-Message-ID: <e7f91a50-5957-249c-8756-25ea87c77fc4@oracle.com>
-Date:   Tue, 3 Sep 2019 16:44:00 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com
+Subject: Re: [PATCH RFC v4 01/16] drm: Add drm_minor_for_each
+Message-ID: <20190904085434.GF2112@phenom.ffwll.local>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com>
+ <20190829060533.32315-2-Kenny.Ho@amd.com>
+ <20190903075719.GK2112@phenom.ffwll.local>
+ <CAOWid-dxxDhyxP2+0R0oKAk29rR-1TbMyhshR1+gbcpGJCAW6g@mail.gmail.com>
+ <CAKMK7uEofjdVURu+meonh_YdV5eX8vfNALkW3A_+kLapCV8j+w@mail.gmail.com>
+ <CAOWid-eUVztW4hNVpznnJRcwHcjCirGL2aS75p4OY8XoGuJqUg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cb7ebcce-05c5-3384-5632-2bbac9995c15@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1906280000 definitions=main-1909030239
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9369 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1906280000
- definitions=main-1909030239
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWid-eUVztW4hNVpznnJRcwHcjCirGL2aS75p4OY8XoGuJqUg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.2.0-2-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/3/19 10:57 AM, Mike Kravetz wrote:
-> On 8/29/19 12:18 AM, Michal Hocko wrote:
->> [Cc cgroups maintainers]
->>
->> On Wed 28-08-19 10:58:00, Mina Almasry wrote:
->>> On Wed, Aug 28, 2019 at 4:23 AM Michal Hocko <mhocko@kernel.org> wrote:
->>>>
->>>> On Mon 26-08-19 16:32:34, Mina Almasry wrote:
->>>>>  mm/hugetlb.c                                  | 493 ++++++++++++------
->>>>>  mm/hugetlb_cgroup.c                           | 187 +++++--
->>>>
->>>> This is a lot of changes to an already subtle code which hugetlb
->>>> reservations undoubly are.
->>>
->>> For what it's worth, I think this patch series is a net decrease in
->>> the complexity of the reservation code, especially the region_*
->>> functions, which is where a lot of the complexity lies. I removed the
->>> race between region_del and region_{add|chg}, refactored the main
->>> logic into smaller code, moved common code to helpers and deleted the
->>> duplicates, and finally added lots of comments to the hard to
->>> understand pieces. I hope that when folks review the changes they will
->>> see that! :)
->>
->> Post those improvements as standalone patches and sell them as
->> improvements. We can talk about the net additional complexity of the
->> controller much easier then.
+On Tue, Sep 03, 2019 at 04:43:45PM -0400, Kenny Ho wrote:
+> On Tue, Sep 3, 2019 at 4:12 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > On Tue, Sep 3, 2019 at 9:45 PM Kenny Ho <y2kenny@gmail.com> wrote:
+> > > On Tue, Sep 3, 2019 at 3:57 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> > > > Iterating over minors for cgroups sounds very, very wrong. Why do we care
+> > > > whether a buffer was allocated through kms dumb vs render nodes?
+> > > >
+> > > > I'd expect all the cgroup stuff to only work on drm_device, if it does
+> > > > care about devices.
+> > > >
+> > > > (I didn't look through the patch series to find out where exactly you're
+> > > > using this, so maybe I'm off the rails here).
+> > >
+> > > I am exposing this to remove the need to keep track of a separate list
+> > > of available drm_device in the system (to remove the registering and
+> > > unregistering of drm_device to the cgroup subsystem and just use
+> > > drm_minor as the single source of truth.)  I am only filtering out the
+> > > render nodes minor because they point to the same drm_device and is
+> > > confusing.
+> > >
+> > > Perhaps I missed an obvious way to list the drm devices without
+> > > iterating through the drm_minors?  (I probably jumped to the minors
+> > > because $major:$minor is the convention to address devices in cgroup.)
+> >
+> > Create your own if there's nothing, because you need to anyway:
+> > - You need special locking anyway, we can't just block on the idr lock
+> > for everything.
+> > - This needs to refcount drm_device, no the minors.
+> >
+> > Iterating over stuff still feels kinda wrong still, because normally
+> > the way we register/unregister userspace api (and cgroups isn't
+> > anything else from a drm driver pov) is by adding more calls to
+> > drm_dev_register/unregister. If you put a drm_cg_register/unregister
+> > call in there we have a clean separation, and you can track all the
+> > currently active devices however you want. Iterating over objects that
+> > can be hotunplugged any time tends to get really complicated really
+> > quickly.
 > 
-> All such changes appear to be in patch 4 of this series.  The commit message
-> says "region_add() and region_chg() are heavily refactored to in this commit
-> to make the code easier to understand and remove duplication.".  However, the
-> modifications were also added to accommodate the new cgroup reservation
-> accounting.  I think it would be helpful to explain why the existing code does
-> not work with the new accounting.  For example, one change is because
-> "existing code coalesces resv_map entries for shared mappings.  new cgroup
-> accounting requires that resv_map entries be kept separate for proper
-> uncharging."
+> Um... I thought this is what I had previously.  Did I misunderstood
+> your feedback from v3?  Doesn't drm_minor already include all these
+> facilities so isn't creating my own kind of reinventing the wheel?
+> (as I did previously?)  drm_minor_register is called inside
+> drm_dev_register so isn't leveraging existing drm_minor facilities
+> much better solution?
+
+Hm the previous version already dropped out of my inbox, so hard to find
+it again. And I couldn't find this in archieves. Do you have pointers?
+
+I thought the previous version did cgroup init separately from drm_device
+setup, and I guess I suggested that it should be moved int
+drm_dev_register/unregister?
+
+Anyway, I don't think reusing the drm_minor registration makes sense,
+since we want to be on the drm_device, not on the minor. Which is a bit
+awkward for cgroups, which wants to identify devices using major.minor
+pairs. But I guess drm is the first subsystem where 1 device can be
+exposed through multiple minors ...
+
+Tejun, any suggestions on this?
+
+Anyway, I think just leveraging existing code because it can be abused to
+make it fit for us doesn't make sense. E.g. for the kms side we also don't
+piggy-back on top of drm_minor_register (it would be technically
+possible), but instead we have drm_modeset_register_all().
+-Daniel
+
 > 
-> I am starting to review the changes, but it would help if there was a high
-> level description.  I also like Michal's idea of calling out the region_*
-> changes separately.  If not a standalone patch, at least the first patch of
-> the series.  This new code will be exercised even if cgroup reservation
-> accounting not enabled, so it is very important than no subtle regressions
-> be introduced.
-
-While looking at the region_* changes, I started thinking about this no
-coalesce change for shared mappings which I think is necessary.  Am I
-mistaken, or is this a requirement?
-
-If it is a requirement, then think about some of the possible scenarios
-such as:
-- There is a hugetlbfs file of size 10 huge pages.
-- Task A has reservations for pages at offset 1 3 5 7 and 9
-- Task B then mmaps the entire file which should result in reservations
-  at 0 2 4 6 and 8.
-- region_chg will return 5, but will also need to allocate 5 resv_map
-  entries for the subsequent region_add which can not fail.  Correct?
-  The code does not appear to handle this.
-
-BTW, this series will BUG when running libhugetlbfs test suite.  It will
-hit this in resv_map_release().
-
-	VM_BUG_ON(resv_map->adds_in_progress);
+> Kenny
+> 
+> >
+> >
+> > >
+> > > Kenny
+> > >
+> > > > -Daniel
+> > > >
+> > > > > ---
+> > > > >  drivers/gpu/drm/drm_drv.c      | 19 +++++++++++++++++++
+> > > > >  drivers/gpu/drm/drm_internal.h |  4 ----
+> > > > >  include/drm/drm_drv.h          |  4 ++++
+> > > > >  3 files changed, 23 insertions(+), 4 deletions(-)
+> > > > >
+> > > > > diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
+> > > > > index 862621494a93..000cddabd970 100644
+> > > > > --- a/drivers/gpu/drm/drm_drv.c
+> > > > > +++ b/drivers/gpu/drm/drm_drv.c
+> > > > > @@ -254,11 +254,13 @@ struct drm_minor *drm_minor_acquire(unsigned int minor_id)
+> > > > >
+> > > > >       return minor;
+> > > > >  }
+> > > > > +EXPORT_SYMBOL(drm_minor_acquire);
+> > > > >
+> > > > >  void drm_minor_release(struct drm_minor *minor)
+> > > > >  {
+> > > > >       drm_dev_put(minor->dev);
+> > > > >  }
+> > > > > +EXPORT_SYMBOL(drm_minor_release);
+> > > > >
+> > > > >  /**
+> > > > >   * DOC: driver instance overview
+> > > > > @@ -1078,6 +1080,23 @@ int drm_dev_set_unique(struct drm_device *dev, const char *name)
+> > > > >  }
+> > > > >  EXPORT_SYMBOL(drm_dev_set_unique);
+> > > > >
+> > > > > +/**
+> > > > > + * drm_minor_for_each - Iterate through all stored DRM minors
+> > > > > + * @fn: Function to be called for each pointer.
+> > > > > + * @data: Data passed to callback function.
+> > > > > + *
+> > > > > + * The callback function will be called for each @drm_minor entry, passing
+> > > > > + * the minor, the entry and @data.
+> > > > > + *
+> > > > > + * If @fn returns anything other than %0, the iteration stops and that
+> > > > > + * value is returned from this function.
+> > > > > + */
+> > > > > +int drm_minor_for_each(int (*fn)(int id, void *p, void *data), void *data)
+> > > > > +{
+> > > > > +     return idr_for_each(&drm_minors_idr, fn, data);
+> > > > > +}
+> > > > > +EXPORT_SYMBOL(drm_minor_for_each);
+> > > > > +
+> > > > >  /*
+> > > > >   * DRM Core
+> > > > >   * The DRM core module initializes all global DRM objects and makes them
+> > > > > diff --git a/drivers/gpu/drm/drm_internal.h b/drivers/gpu/drm/drm_internal.h
+> > > > > index e19ac7ca602d..6bfad76f8e78 100644
+> > > > > --- a/drivers/gpu/drm/drm_internal.h
+> > > > > +++ b/drivers/gpu/drm/drm_internal.h
+> > > > > @@ -54,10 +54,6 @@ void drm_prime_destroy_file_private(struct drm_prime_file_private *prime_fpriv);
+> > > > >  void drm_prime_remove_buf_handle_locked(struct drm_prime_file_private *prime_fpriv,
+> > > > >                                       struct dma_buf *dma_buf);
+> > > > >
+> > > > > -/* drm_drv.c */
+> > > > > -struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+> > > > > -void drm_minor_release(struct drm_minor *minor);
+> > > > > -
+> > > > >  /* drm_vblank.c */
+> > > > >  void drm_vblank_disable_and_save(struct drm_device *dev, unsigned int pipe);
+> > > > >  void drm_vblank_cleanup(struct drm_device *dev);
+> > > > > diff --git a/include/drm/drm_drv.h b/include/drm/drm_drv.h
+> > > > > index 68ca736c548d..24f8d054c570 100644
+> > > > > --- a/include/drm/drm_drv.h
+> > > > > +++ b/include/drm/drm_drv.h
+> > > > > @@ -799,5 +799,9 @@ static inline bool drm_drv_uses_atomic_modeset(struct drm_device *dev)
+> > > > >
+> > > > >  int drm_dev_set_unique(struct drm_device *dev, const char *name);
+> > > > >
+> > > > > +int drm_minor_for_each(int (*fn)(int id, void *p, void *data), void *data);
+> > > > > +
+> > > > > +struct drm_minor *drm_minor_acquire(unsigned int minor_id);
+> > > > > +void drm_minor_release(struct drm_minor *minor);
+> > > > >
+> > > > >  #endif
+> > > > > --
+> > > > > 2.22.0
+> > > > >
+> > > >
+> > > > --
+> > > > Daniel Vetter
+> > > > Software Engineer, Intel Corporation
+> > > > http://blog.ffwll.ch
+> >
+> >
+> >
+> > --
+> > Daniel Vetter
+> > Software Engineer, Intel Corporation
+> > +41 (0) 79 365 57 48 - http://blog.ffwll.ch
 
 -- 
-Mike Kravetz
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
