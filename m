@@ -2,41 +2,44 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BED0A8768
-	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2019 21:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 847AAA876A
+	for <lists+cgroups@lfdr.de>; Wed,  4 Sep 2019 21:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727125AbfIDNxM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Sep 2019 09:53:12 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:59224 "EHLO
+        id S1730017AbfIDNxO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Sep 2019 09:53:14 -0400
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:59302 "EHLO
         forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726304AbfIDNxM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Sep 2019 09:53:12 -0400
+        by vger.kernel.org with ESMTP id S1726528AbfIDNxO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Sep 2019 09:53:14 -0400
 Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 5723E2E1AF9;
-        Wed,  4 Sep 2019 16:53:09 +0300 (MSK)
-Received: from smtpcorp1p.mail.yandex.net (smtpcorp1p.mail.yandex.net [2a02:6b8:0:1472:2741:0:8b6:10])
-        by mxbackcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id VODvC8jeNf-r9Nu2Lhc;
-        Wed, 04 Sep 2019 16:53:09 +0300
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 7EDB42E1B27;
+        Wed,  4 Sep 2019 16:53:11 +0300 (MSK)
+Received: from smtpcorp1o.mail.yandex.net (smtpcorp1o.mail.yandex.net [2a02:6b8:0:1a2d::30])
+        by mxbackcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id mLwgbAJwYJ-rBN8VOE7;
+        Wed, 04 Sep 2019 16:53:11 +0300
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1567605189; bh=9NG/dDnFeKeZHp7gq4Bt3jk12l8IcLQ6rwdO1YD1xvQ=;
-        h=Message-ID:Date:To:From:Subject:Cc;
-        b=Ai2bzEbJdK+baGdRKLO3SHZG+trevrPdYggz78BEbE91uKDRhP/r9odOJkZ2Dga3G
-         FRTz0fb1uTJTZwcwqMnA44/U1x/ocUIpHSlF7wqoKjKBtWlvjg/cs2pLxaO+QAOYKF
-         ZnbqrmTnFEbaAXSvZhbTEvvJhjBU5YXvFV3SbSTs=
+        t=1567605191; bh=lTB5juDz41QpnMFucOhR5p9H8tWOOdh3MISjDg6Qtyo=;
+        h=In-Reply-To:Message-ID:References:Date:To:From:Subject:Cc;
+        b=t3HiszGlnoa0G41kFf87kWHWUfY/hTsAHUKmF5h9fmsvsFu3c8o8tu/MlWtpddOFA
+         tesrmKHUH/r2B0Pu47yB4Ay2NuVX3+tF/9dbtV51c1AkmtwGVs7gSzp/ehwzFqbFdU
+         6ycbxiL/tz7fm+BIVbdgZH5gdafWmJqj0BCqsuys=
 Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
 Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:c142:79c2:9d86:677a])
-        by smtpcorp1p.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id qxrH47Cxp8-r8D0XNmB;
-        Wed, 04 Sep 2019 16:53:09 +0300
+        by smtpcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id J9CNPMyWdF-rBfqrSjj;
+        Wed, 04 Sep 2019 16:53:11 +0300
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (Client certificate not present)
-Subject: [PATCH v1 0/7] mm/memcontrol: recharge mlocked pages
+Subject: [PATCH v1 1/7] mm/memcontrol: move locking page out of
+ mem_cgroup_move_account
 From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org
 Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
         Johannes Weiner <hannes@cmpxchg.org>
-Date:   Wed, 04 Sep 2019 16:53:08 +0300
-Message-ID: <156760509382.6560.17364256340940314860.stgit@buzz>
+Date:   Wed, 04 Sep 2019 16:53:10 +0300
+Message-ID: <156760519049.6560.475471327815521193.stgit@buzz>
+In-Reply-To: <156760509382.6560.17364256340940314860.stgit@buzz>
+References: <156760509382.6560.17364256340940314860.stgit@buzz>
 User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
@@ -46,48 +49,151 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently mlock keeps pages in cgroups where they were accounted.
-This way one container could affect another if they share file cache.
-Typical case is writing (downloading) file in one container and then
-locking in another. After that first container cannot get rid of cache.
-Also removed cgroup stays pinned by these mlocked pages.
+Required for calling mem_cgroup_move_account() for already locked page.
 
-This patchset implements recharging pages to cgroup of mlock user.
-
-There are three cases:
-* recharging at first mlock
-* recharging at munlock to any remaining mlock
-* recharging at 'culling' in reclaimer to any existing mlock
-
-To keep things simple recharging ignores memory limit. After that memory
-usage temporary could be higher than limit but cgroup will reclaim memory
-later or trigger oom, which is valid outcome when somebody mlock too much.
-
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 ---
+ mm/memcontrol.c |   64 +++++++++++++++++++++++++++----------------------------
+ 1 file changed, 31 insertions(+), 33 deletions(-)
 
-Konstantin Khlebnikov (7):
-      mm/memcontrol: move locking page out of mem_cgroup_move_account
-      mm/memcontrol: add mem_cgroup_recharge
-      mm/mlock: add vma argument for mlock_vma_page()
-      mm/mlock: recharge memory accounting to first mlock user
-      mm/mlock: recharge memory accounting to second mlock user at munlock
-      mm/vmscan: allow changing page memory cgroup during reclaim
-      mm/mlock: recharge mlocked pages at culling by vmscan
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 9ec5e12486a7..40ddc233e973 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5135,7 +5135,8 @@ static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
+  * @from: mem_cgroup which the page is moved from.
+  * @to:	mem_cgroup which the page is moved to. @from != @to.
+  *
+- * The caller must make sure the page is not on LRU (isolate_page() is useful.)
++ * The caller must lock the page and make sure it is not on LRU
++ * (isolate_page() is useful.)
+  *
+  * This function doesn't do "charge" to new cgroup and doesn't do "uncharge"
+  * from old cgroup.
+@@ -5147,24 +5148,15 @@ static int mem_cgroup_move_account(struct page *page,
+ {
+ 	unsigned long flags;
+ 	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
+-	int ret;
+ 	bool anon;
+ 
+ 	VM_BUG_ON(from == to);
++	VM_BUG_ON_PAGE(!PageLocked(page), page);
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON(compound && !PageTransHuge(page));
+ 
+-	/*
+-	 * Prevent mem_cgroup_migrate() from looking at
+-	 * page->mem_cgroup of its source page while we change it.
+-	 */
+-	ret = -EBUSY;
+-	if (!trylock_page(page))
+-		goto out;
+-
+-	ret = -EINVAL;
+ 	if (page->mem_cgroup != from)
+-		goto out_unlock;
++		return -EINVAL;
+ 
+ 	anon = PageAnon(page);
+ 
+@@ -5204,18 +5196,14 @@ static int mem_cgroup_move_account(struct page *page,
+ 	page->mem_cgroup = to;
+ 	spin_unlock_irqrestore(&from->move_lock, flags);
+ 
+-	ret = 0;
+-
+ 	local_irq_disable();
+ 	mem_cgroup_charge_statistics(to, page, compound, nr_pages);
+ 	memcg_check_events(to, page);
+ 	mem_cgroup_charge_statistics(from, page, compound, -nr_pages);
+ 	memcg_check_events(from, page);
+ 	local_irq_enable();
+-out_unlock:
+-	unlock_page(page);
+-out:
+-	return ret;
++
++	return 0;
+ }
+ 
+ /**
+@@ -5535,36 +5523,42 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
+ 	struct vm_area_struct *vma = walk->vma;
+ 	pte_t *pte;
+ 	spinlock_t *ptl;
+-	enum mc_target_type target_type;
+ 	union mc_target target;
+ 	struct page *page;
+ 
+ 	ptl = pmd_trans_huge_lock(pmd, vma);
+ 	if (ptl) {
++		bool device = false;
++
+ 		if (mc.precharge < HPAGE_PMD_NR) {
+ 			spin_unlock(ptl);
+ 			return 0;
+ 		}
+-		target_type = get_mctgt_type_thp(vma, addr, *pmd, &target);
+-		if (target_type == MC_TARGET_PAGE) {
+-			page = target.page;
+-			if (!isolate_lru_page(page)) {
+-				if (!mem_cgroup_move_account(page, true,
+-							     mc.from, mc.to)) {
+-					mc.precharge -= HPAGE_PMD_NR;
+-					mc.moved_charge += HPAGE_PMD_NR;
+-				}
+-				putback_lru_page(page);
+-			}
+-			put_page(page);
+-		} else if (target_type == MC_TARGET_DEVICE) {
++
++		switch (get_mctgt_type_thp(vma, addr, *pmd, &target)) {
++		case MC_TARGET_DEVICE:
++			device = true;
++			/* fall through */
++		case MC_TARGET_PAGE:
+ 			page = target.page;
++			if (!trylock_page(page))
++				goto put_huge;
++			if (!device && isolate_lru_page(page))
++				goto unlock_huge;
+ 			if (!mem_cgroup_move_account(page, true,
+ 						     mc.from, mc.to)) {
+ 				mc.precharge -= HPAGE_PMD_NR;
+ 				mc.moved_charge += HPAGE_PMD_NR;
+ 			}
++			if (!device)
++				putback_lru_page(page);
++unlock_huge:
++			unlock_page(page);
++put_huge:
+ 			put_page(page);
++			break;
++		default:
++			break;
+ 		}
+ 		spin_unlock(ptl);
+ 		return 0;
+@@ -5596,8 +5590,10 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
+ 			 */
+ 			if (PageTransCompound(page))
+ 				goto put;
+-			if (!device && isolate_lru_page(page))
++			if (!trylock_page(page))
+ 				goto put;
++			if (!device && isolate_lru_page(page))
++				goto unlock;
+ 			if (!mem_cgroup_move_account(page, false,
+ 						mc.from, mc.to)) {
+ 				mc.precharge--;
+@@ -5606,6 +5602,8 @@ static int mem_cgroup_move_charge_pte_range(pmd_t *pmd,
+ 			}
+ 			if (!device)
+ 				putback_lru_page(page);
++unlock:
++			unlock_page(page);
+ put:			/* get_mctgt_type() gets the page */
+ 			put_page(page);
+ 			break;
 
-
- Documentation/admin-guide/cgroup-v1/memory.rst |    5 +
- include/linux/memcontrol.h                     |    9 ++
- include/linux/rmap.h                           |    3 -
- mm/gup.c                                       |    2 
- mm/huge_memory.c                               |    4 -
- mm/internal.h                                  |    6 +
- mm/ksm.c                                       |    2 
- mm/memcontrol.c                                |  104 ++++++++++++++++--------
- mm/migrate.c                                   |    2 
- mm/mlock.c                                     |   14 +++
- mm/rmap.c                                      |    5 +
- mm/vmscan.c                                    |   17 ++--
- 12 files changed, 121 insertions(+), 52 deletions(-)
-
---
-Signature
