@@ -2,254 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B6CAA212
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2019 13:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19CD6AA2CB
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2019 14:15:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725921AbfIEL4h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Sep 2019 07:56:37 -0400
-Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:40407 "EHLO
-        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2387621AbfIEL4h (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Sep 2019 07:56:37 -0400
-Received: (qmail 13786 invoked from network); 5 Sep 2019 13:56:34 +0200
-X-Fcrdns: No
-Received: from phoffice.de-nserver.de (HELO [10.242.2.4]) (185.39.223.5)
-  (smtp-auth username hostmaster@profihost.com, mechanism plain)
-  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Thu, 05 Sep 2019 13:56:34 +0200
+        id S1730937AbfIEMPV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Sep 2019 08:15:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50350 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731351AbfIEMPV (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 5 Sep 2019 08:15:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6EAFEB752;
+        Thu,  5 Sep 2019 12:15:18 +0000 (UTC)
 Subject: Re: lot of MemAvailable but falling cache and raising PSI
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Cc:     l.roehrs@profihost.ag, cgroups@vger.kernel.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>
 References: <4b4ba042-3741-7b16-2292-198c569da2aa@profihost.ag>
- <20190905114022.GH3838@dhcp22.suse.cz>
-From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Message-ID: <7a3d23f2-b5fe-b4c0-41cd-e79070637bd9@profihost.ag>
-Date:   Thu, 5 Sep 2019 13:56:34 +0200
+From:   Vlastimil Babka <vbabka@suse.cz>
+Openpgp: preference=signencrypt
+Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
+ 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
+Message-ID: <5c1d6fca-4bbe-1c09-e0c5-523bca8fbb6a@suse.cz>
+Date:   Thu, 5 Sep 2019 14:15:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190905114022.GH3838@dhcp22.suse.cz>
+In-Reply-To: <4b4ba042-3741-7b16-2292-198c569da2aa@profihost.ag>
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-Am 05.09.19 um 13:40 schrieb Michal Hocko:
-> On Thu 05-09-19 13:27:10, Stefan Priebe - Profihost AG wrote:
->> Hello all,
->>
->> i hope you can help me again to understand the current MemAvailable
->> value in the linux kernel. I'm running a 4.19.52 kernel + psi patches in
->> this case.
->>
->> I'm seeing the following behaviour i don't understand and ask for help.
->>
->> While MemAvailable shows 5G the kernel starts to drop cache from 4G down
->> to 1G while the apache spawns some PHP processes. After that the PSI
->> mem.some value rises and the kernel tries to reclaim memory but
->> MemAvailable stays at 5G.
->>
->> Any ideas?
+On 9/5/19 1:27 PM, Stefan Priebe - Profihost AG wrote:
+> Hello all,
 > 
-> Can you collect /proc/vmstat (every second or so) and post it while this
-> is the case please?
+> i hope you can help me again to understand the current MemAvailable
+> value in the linux kernel. I'm running a 4.19.52 kernel + psi patches in
+> this case.
+> 
+> I'm seeing the following behaviour i don't understand and ask for help.
+> 
+> While MemAvailable shows 5G the kernel starts to drop cache from 4G down
+> to 1G while the apache spawns some PHP processes. After that the PSI
+> mem.some value rises and the kernel tries to reclaim memory but
+> MemAvailable stays at 5G.
+> 
+> Any ideas?
 
-Yes sure.
+PHP seems to use madvise(MADV_HUGEPAGE), so if it's a NUMA machine it
+might be worth trying to cherry-pick these two commits:
+92717d429b38 ("Revert "Revert "mm, thp: consolidate THP gfp handling
+into alloc_hugepage_direct_gfpmask""")
+a8282608c88e ("Revert "mm, thp: restore node-local hugepage allocations"")
 
-But i don't know which event you mean exactly. Current situation is PSI
-/ memory pressure is > 20 but:
-
-This is the current status where MemAvailable show 5G but Cached is
-already dropped to 1G coming from 4G:
-
-
-meminfo:
-MemTotal:       16423116 kB
-MemFree:         5280736 kB
-MemAvailable:    5332752 kB
-Buffers:            2572 kB
-Cached:          1225112 kB
-SwapCached:            0 kB
-Active:          8934976 kB
-Inactive:        1026900 kB
-Active(anon):    8740396 kB
-Inactive(anon):   873448 kB
-Active(file):     194580 kB
-Inactive(file):   153452 kB
-Unevictable:       19900 kB
-Mlocked:           19900 kB
-SwapTotal:             0 kB
-SwapFree:              0 kB
-Dirty:              1980 kB
-Writeback:             0 kB
-AnonPages:       8423480 kB
-Mapped:           978212 kB
-Shmem:            875680 kB
-Slab:             839868 kB
-SReclaimable:     383396 kB
-SUnreclaim:       456472 kB
-KernelStack:       22576 kB
-PageTables:        49824 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:     8211556 kB
-Committed_AS:   32060624 kB
-VmallocTotal:   34359738367 kB
-VmallocUsed:           0 kB
-VmallocChunk:          0 kB
-Percpu:           118048 kB
-HardwareCorrupted:     0 kB
-AnonHugePages:   6406144 kB
-ShmemHugePages:        0 kB
-ShmemPmdMapped:        0 kB
-HugePages_Total:       0
-HugePages_Free:        0
-HugePages_Rsvd:        0
-HugePages_Surp:        0
-Hugepagesize:       2048 kB
-Hugetlb:               0 kB
-DirectMap4k:     2580336 kB
-DirectMap2M:    14196736 kB
-DirectMap1G:     2097152 kB
-
-
-vmstat shows:
-nr_free_pages 1320053
-nr_zone_inactive_anon 218362
-nr_zone_active_anon 2185108
-nr_zone_inactive_file 38363
-nr_zone_active_file 48645
-nr_zone_unevictable 4975
-nr_zone_write_pending 495
-nr_mlock 4975
-nr_page_table_pages 12553
-nr_kernel_stack 22576
-nr_bounce 0
-nr_zspages 0
-nr_free_cma 0
-numa_hit 13916119899
-numa_miss 0
-numa_foreign 0
-numa_interleave 15629
-numa_local 13916119899
-numa_other 0
-nr_inactive_anon 218362
-nr_active_anon 2185164
-nr_inactive_file 38363
-nr_active_file 48645
-nr_unevictable 4975
-nr_slab_reclaimable 95849
-nr_slab_unreclaimable 114118
-nr_isolated_anon 0
-nr_isolated_file 0
-workingset_refault 71365357
-workingset_activate 20281670
-workingset_restore 8995665
-workingset_nodereclaim 326085
-nr_anon_pages 2105903
-nr_mapped 244553
-nr_file_pages 306921
-nr_dirty 495
-nr_writeback 0
-nr_writeback_temp 0
-nr_shmem 218920
-nr_shmem_hugepages 0
-nr_shmem_pmdmapped 0
-nr_anon_transparent_hugepages 3128
-nr_unstable 0
-nr_vmscan_write 0
-nr_vmscan_immediate_reclaim 1833104
-nr_dirtied 386544087
-nr_written 259220036
-nr_dirty_threshold 265636
-nr_dirty_background_threshold 132656
-pgpgin 1817628997
-pgpgout 3730818029
-pswpin 0
-pswpout 0
-pgalloc_dma 0
-pgalloc_dma32 5790777997
-pgalloc_normal 20003662520
-pgalloc_movable 0
-allocstall_dma 0
-allocstall_dma32 0
-allocstall_normal 39
-allocstall_movable 1980089
-pgskip_dma 0
-pgskip_dma32 0
-pgskip_normal 0
-pgskip_movable 0
-pgfree 26637215947
-pgactivate 316722654
-pgdeactivate 261039211
-pglazyfree 0
-pgfault 17719356599
-pgmajfault 30985544
-pglazyfreed 0
-pgrefill 286826568
-pgsteal_kswapd 36740923
-pgsteal_direct 349291470
-pgscan_kswapd 36878966
-pgscan_direct 395327492
-pgscan_direct_throttle 0
-zone_reclaim_failed 0
-pginodesteal 49817087
-slabs_scanned 597956834
-kswapd_inodesteal 1412447
-kswapd_low_wmark_hit_quickly 39
-kswapd_high_wmark_hit_quickly 319
-pageoutrun 3585
-pgrotated 2873743
-drop_pagecache 0
-drop_slab 0
-oom_kill 0
-pgmigrate_success 839062285
-pgmigrate_fail 507313
-compact_migrate_scanned 9619077010
-compact_free_scanned 67985619651
-compact_isolated 1684537704
-compact_stall 205761
-compact_fail 182420
-compact_success 23341
-compact_daemon_wake 2
-compact_daemon_migrate_scanned 811
-compact_daemon_free_scanned 490241
-htlb_buddy_alloc_success 0
-htlb_buddy_alloc_fail 0
-unevictable_pgs_culled 1006521
-unevictable_pgs_scanned 0
-unevictable_pgs_rescued 997077
-unevictable_pgs_mlocked 1319203
-unevictable_pgs_munlocked 842471
-unevictable_pgs_cleared 470531
-unevictable_pgs_stranded 459613
-thp_fault_alloc 20263113
-thp_fault_fallback 3368635
-thp_collapse_alloc 226476
-thp_collapse_alloc_failed 17594
-thp_file_alloc 0
-thp_file_mapped 0
-thp_split_page 1159
-thp_split_page_failed 3927
-thp_deferred_split_page 20348941
-thp_split_pmd 53361
-thp_split_pud 0
-thp_zero_page_alloc 1
-thp_zero_page_alloc_failed 0
-thp_swpout 0
-thp_swpout_fallback 0
-balloon_inflate 0
-balloon_deflate 0
-balloon_migrate 0
-swap_ra 0
-swap_ra_hit 0
-
-Greets,
-Stefan
+> Thanks!
+> 
+> Greets,
+> Stefan
+> 
+> 
 
