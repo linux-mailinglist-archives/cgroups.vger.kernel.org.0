@@ -2,193 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E800A9844
-	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2019 04:18:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADA93A9C01
+	for <lists+cgroups@lfdr.de>; Thu,  5 Sep 2019 09:38:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727162AbfIECSg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Sep 2019 22:18:36 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:36434 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725965AbfIECSg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Sep 2019 22:18:36 -0400
-Received: by mail-pg1-f193.google.com with SMTP id l21so493423pgm.3;
-        Wed, 04 Sep 2019 19:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6AyUQpUESbXIit8/mFMuPXgv5/l8JCgnDTWH0unW7Ss=;
-        b=ZF+ems9WYI1dee3Fth3+II+uEhqwh9SDSOy/2cLlr2AGI0eutDB20m+Y69c9hh/iKV
-         7MfMoJ8T7RwK6sDdB98z8oSuZi/yl7xuUxKyISDrmuxLBC0QyHgRI1YAo/CSM9MXomfX
-         cHLw5jDsPMogRTRsIWaZg6vh5IMXClAWJLPN4X43JbcPwLUtVreXCUGd4+rsE6/f07Me
-         27ypQ0P37hXaEGRWbBjaboAjn59n0Bzu3RZtXyTA003KOSVqwBY4+dJaxn1sd5dnQ1sb
-         lkY2qEANWis5xyxPIv41HmGgOC+FTyJ5kWuFAecW2bhC+oH8Oe2OFjHgChkdfwg9eHst
-         /n5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=6AyUQpUESbXIit8/mFMuPXgv5/l8JCgnDTWH0unW7Ss=;
-        b=qrzCCmaLsYxovBUzOI2H1McgPHLBweYHDWFMM9+wX1htEegeA9KRR7Ma0MNFRCSxyU
-         LUolZ/Q4UGLbwzsim0ws4rOqEOW/AtGi7aRKbMzQ/p2HPsYxOWKG/ZpHqSyJ7mtUGrfG
-         gj5q68agF9Y/sW4nRob3MuRFOTgfSbcpBf2QXfjubMvEsfs1tNe5YX2dbwSGfOeH397W
-         Cvs4ctsIvJVCmEtp4iDEizfbO+RwNrlvl/KqgfuRRbAOBn9FqayO3sNiyC50zpyadmRX
-         nq7rrEI///wIQD4xWT6F5kC98CpYnrSQ3T7oK5xN3rAlVEuIn4Ov5Douvbwa1UlorWbw
-         JEpw==
-X-Gm-Message-State: APjAAAX25LBYyDHZFyJKTmmBClH0mnodjtWz1vP3/9xsBX3j8xoOS16l
-        VWAqkVpZN8wLh+sPmoXvQyI=
-X-Google-Smtp-Source: APXvYqzB7CyDkKhOzRfwfntB20aN/ewPWN+KWDAyqacQoGytccJa0OE7GS4Gd33gXpDrOLrtaEw+ig==
-X-Received: by 2002:a17:90a:e28b:: with SMTP id d11mr49875pjz.110.1567649915252;
-        Wed, 04 Sep 2019 19:18:35 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id h12sm396173pgr.8.2019.09.04.19.18.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Sep 2019 19:18:34 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        id S1726097AbfIEHiW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Sep 2019 03:38:22 -0400
+Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:39482 "EHLO
+        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730809AbfIEHiW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Sep 2019 03:38:22 -0400
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 031232E1519;
+        Thu,  5 Sep 2019 10:38:18 +0300 (MSK)
+Received: from smtpcorp1j.mail.yandex.net (smtpcorp1j.mail.yandex.net [2a02:6b8:0:1619::137])
+        by mxbackcorp1g.mail.yandex.net (nwsmtp/Yandex) with ESMTP id zR742402O6-cGCeA6uq;
+        Thu, 05 Sep 2019 10:38:17 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1567669097; bh=p62JvE7KIEdXgE5AI0O+ncYaxKXSledvuRxkzME19lE=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=w77rFB3tr6IkUqc3lv1cy4Vf2a2mzFTEgpy+TL3fPDVhh1Mdqjs6mz1Cn+KzNESdn
+         QqquEkwKT49yyjF/sJV2v9ZCqPe85FWRAwxQOkVmsFlYQ7AUcx8S+27Myi6JReTqOW
+         KNXK5RJ6pM83josbgeyjnQTDTsaqFkXi0GBS6xwE=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:c142:79c2:9d86:677a])
+        by smtpcorp1j.mail.yandex.net (nwsmtp/Yandex) with ESMTPSA id hEYODfnDuP-cG7uwExp;
+        Thu, 05 Sep 2019 10:38:16 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH v1 0/7] mm/memcontrol: recharge mlocked pages
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>,
         Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vincent Wang <vincent.wang@unisoc.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>
-Subject: [PATCH] cpuset: adjust the lock sequence when rebuilding the sched domains.
-Date:   Thu,  5 Sep 2019 10:18:08 +0800
-Message-Id: <20190905021808.25130-1-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
+References: <156760509382.6560.17364256340940314860.stgit@buzz>
+ <20190904143747.GA3838@dhcp22.suse.cz>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <6171edb1-4598-5709-bb62-07bed89175b1@yandex-team.ru>
+Date:   Thu, 5 Sep 2019 10:38:16 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190904143747.GA3838@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Vincent Wang <vincent.wang@unisoc.com>
+On 04/09/2019 17.37, Michal Hocko wrote:
+> On Wed 04-09-19 16:53:08, Konstantin Khlebnikov wrote:
+>> Currently mlock keeps pages in cgroups where they were accounted.
+>> This way one container could affect another if they share file cache.
+>> Typical case is writing (downloading) file in one container and then
+>> locking in another. After that first container cannot get rid of cache.
+>> Also removed cgroup stays pinned by these mlocked pages.
+>>
+>> This patchset implements recharging pages to cgroup of mlock user.
+>>
+>> There are three cases:
+>> * recharging at first mlock
+>> * recharging at munlock to any remaining mlock
+>> * recharging at 'culling' in reclaimer to any existing mlock
+>>
+>> To keep things simple recharging ignores memory limit. After that memory
+>> usage temporary could be higher than limit but cgroup will reclaim memory
+>> later or trigger oom, which is valid outcome when somebody mlock too much.
+> 
+> I assume that this is mlock specific because the pagecache which has the
+> same problem is reclaimable and the problem tends to resolve itself
+> after some time.
+> 
+> Anyway, how big of a problem this really is? A lingering memcg is
+> certainly not nice but pages are usually not mlocked for ever. Or is
+> this a way to protect from an hostile actor?
 
-A deadlock issue is found when executing a cpu hotplug stress test on
-android phones with cpuset and scheduil enabled.
+We're using mlock mostly to avoid non-deterministic behaviour in cache.
+For example some of our applications mlock index structures in databases
+to limit count of major faults in worst case.
 
-When CPUx is plugged out, the hotplug thread that calls cpu_down()
-will hold cpu_hotplug_lock and wait the thread cpuhp/x to finish
-hotplug. If the core is the last one in a cluster, cpuhp/x have to
-call cpuhp_cpufreq_offline() and the kernel thread sugov need to exit
-for schedutil governor. The exit of sugov need to hold
-cgroup_threadgroup_rwsem in exit_signals(). For example:
+Surprisingly mlock fixates unwanted effects of non-predictable cache sharing.
 
-PID: 150    TASK: ffffffc0b9cad080  CPU: 0   COMMAND: "sprdhotplug"
- #0 [ffffff8009fcb9d0] __switch_to at ffffff80080858f0
- #1 [ffffff8009fcb9f0] __schedule at ffffff80089f185c
- #2 [ffffff8009fcba80] schedule at ffffff80089f1b84
- #3 [ffffff8009fcbaa0] schedule_timeout at ffffff80089f5124
- #4 [ffffff8009fcbb40] wait_for_common at ffffff80089f2944
- #5 [ffffff8009fcbbe0] wait_for_completion at ffffff80089f29a4
- #6 [ffffff8009fcbc00] __cpuhp_kick_ap at ffffff80080ab030
- #7 [ffffff8009fcbc20] cpuhp_kick_ap_work at ffffff80080ab154
- #8 [ffffff8009fcbc70] _cpu_down at ffffff80089ee19c
- #9 [ffffff8009fcbcd0] cpu_down at ffffff80080ac144
+So, it seems makes sense to make mlock behaviour simple and completely
+deterministic because this isn't cheap operation and needs careful
+resource planning.
 
-PID: 26     TASK: ffffffc0bbe22080  CPU: 3   COMMAND: "cpuhp/3"
- #0 [ffffff8009693a30] __switch_to at ffffff80080858f0
- #1 [ffffff8009693a50] __schedule at ffffff80089f185c
- #2 [ffffff8009693ae0] schedule at ffffff80089f1b84
- #3 [ffffff8009693b00] schedule_timeout at ffffff80089f5124
- #4 [ffffff8009693ba0] wait_for_common at ffffff80089f2944
- #5 [ffffff8009693c40] wait_for_completion at ffffff80089f29a4
- #6 [ffffff8009693c60] kthread_stop at ffffff80080ccd2c
- #7 [ffffff8009693c90] sugov_exit at ffffff8008102134
- #8 [ffffff8009693cc0] cpufreq_exit_governor at ffffff80086c03bc
- #9 [ffffff8009693ce0] cpufreq_offline at ffffff80086c0634
 
-PID: 13819  TASK: ffffffc0affb6080  CPU: 0   COMMAND: "sugov:3"
- #0 [ffffff800ee73c30] __switch_to at ffffff80080858f0
- #1 [ffffff800ee73c50] __schedule at ffffff80089f185c
- #2 [ffffff800ee73ce0] schedule at ffffff80089f1b84
- #3 [ffffff800ee73d00] rwsem_down_read_failed at ffffff80089f49d0
- #4 [ffffff800ee73d80] __percpu_down_read at ffffff8008102ebc
- #5 [ffffff800ee73da0] exit_signals at ffffff80080bbd24
- #6 [ffffff800ee73de0] do_exit at ffffff80080ae65c
- #7 [ffffff800ee73e60] kthread at ffffff80080cc550
 
-Sometimes cgroup_threadgroup_rwsem is hold by another thread, for
-example Binder:681_2 on android, it wants to hold cpuset_mutex:
+On 05/09/2019 02.13, Roman Gushchin wrote:> On Wed, Sep 04, 2019 at 04:53:08PM +0300, Konstantin Khlebnikov wrote:
+ >> Currently mlock keeps pages in cgroups where they were accounted.
+ >> This way one container could affect another if they share file cache.
+ >> Typical case is writing (downloading) file in one container and then
+ >> locking in another. After that first container cannot get rid of cache.
+ >
+ > Yeah, it's a valid problem, and it's not about mlocked pages only,
+ > the same thing is true for generic pagecache. The only difference is that
+ > in theory memory pressure should fix everything. But in reality
+ > pagecache used by the second container can be very hot, so the first
+ > once can't really get rid of it.
+ > In other words, there is no way to pass a pagecache page between cgroups
+ > without evicting it and re-reading from a storage, which is sub-optimal
+ > in many cases.
+ >
+ > We thought about new madvise(), which will uncharge pagecache but set
+ > a new page flag, which will mean something like "whoever first starts using
+ > the page, should be charged for it". But it never materialized in a patchset.
 
-PID: 732    TASK: ffffffc09668b080  CPU: 2   COMMAND: "Binder:681_2"
- #0 [ffffff800cb7b8c0] __switch_to at ffffff80080858f0
- #1 [ffffff800cb7b8e0] __schedule at ffffff80089f185c
- #2 [ffffff800cb7b970] schedule at ffffff80089f1b84
- #3 [ffffff800cb7b990] schedule_preempt_disabled at ffffff80089f205c
- #4 [ffffff800cb7b9a0] __mutex_lock at ffffff80089f3118
- #5 [ffffff800cb7ba40] __mutex_lock_slowpath at ffffff80089f3230
- #6 [ffffff800cb7ba60] mutex_lock at ffffff80089f3278
- #7 [ffffff800cb7ba80] cpuset_can_attach at ffffff8008152f84
- #8 [ffffff800cb7bae0] cgroup_migrate_execute at ffffff800814ada8
+I've implemented something similar in OpenVZ kernel - "shadow" LRU sets for
+abandoned cache which automatically changes ownership at first activation.
 
-On android, a thread kworker/3:0 will hold cpuset_mutex in
-rebuild_sched_domains() and want to hold cpu_hotplug_lock which
-is already hold by the hotplug thread.
+I'm thinking about fadvise() or fcntl() for moving cache into current memory cgroup.
+This should give enough control to solve all our problems.
 
-PID: 4847   TASK: ffffffc031a6a080  CPU: 3   COMMAND: "kworker/3:0"
- #0 [ffffff8016fd3ad0] __switch_to at ffffff80080858f0
- #1 [ffffff8016fd3af0] __schedule at ffffff80089f185c
- #2 [ffffff8016fd3b80] schedule at ffffff80089f1b84
- #3 [ffffff8016fd3ba0] rwsem_down_read_failed at ffffff80089f49d0
- #4 [ffffff8016fd3c20] __percpu_down_read at ffffff8008102ebc
- #5 [ffffff8016fd3c40] cpus_read_lock at ffffff80080aa59c
- #6 [ffffff8016fd3c50] rebuild_sched_domains_locked at ffffff80081522a8
+ >
+ >> Also removed cgroup stays pinned by these mlocked pages.
+ >
+ > Tbh, I don't think it's a big issue here. If only there is a huge number
+ > of 1-page sized mlock areas, but this seems to be unlikely.
 
-In order to fix the deadlock, this patch will adjust the lock sequence
-when rebuilding sched domains. After stress tests, it works well.
+Yep, not so big problem, tmpfs generates much more issues in this area.
 
-Signed-off-by: Vincent Wang <vincent.wang@unisoc.com>
-Signed-off-by: Chunyan Zhang <zhang.lyra@gmail.com>
----
- kernel/cgroup/cpuset.c | 9 ++++-----
- 1 file changed, 4 insertions(+), 5 deletions(-)
+ >
+ >>
+ >> This patchset implements recharging pages to cgroup of mlock user.
+ >>
+ >> There are three cases:
+ >> * recharging at first mlock
+ >> * recharging at munlock to any remaining mlock
+ >> * recharging at 'culling' in reclaimer to any existing mlock
+ >>
+ >> To keep things simple recharging ignores memory limit. After that memory
+ >> usage temporary could be higher than limit but cgroup will reclaim memory
+ >> later or trigger oom, which is valid outcome when somebody mlock too much.
+ >
+ > OOM is a concern here. If quitting an application will cause an immediate OOM
+ > in an other cgroup, that's not so good. Ideally it should work like
+ > memory.high, forcing all threads in the second cgroup into direct reclaim.
+ >
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 5aa37531ce76..ef10d276da22 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -912,7 +912,6 @@ static void rebuild_sched_domains_locked(void)
- 	int ndoms;
- 
- 	lockdep_assert_held(&cpuset_mutex);
--	get_online_cpus();
- 
- 	/*
- 	 * We have raced with CPU hotplug. Don't do anything to avoid
-@@ -921,19 +920,17 @@ static void rebuild_sched_domains_locked(void)
- 	 */
- 	if (!top_cpuset.nr_subparts_cpus &&
- 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
--		goto out;
-+		return;
- 
- 	if (top_cpuset.nr_subparts_cpus &&
- 	   !cpumask_subset(top_cpuset.effective_cpus, cpu_active_mask))
--		goto out;
-+		return;
- 
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
- 
- 	/* Have scheduler rebuild the domains */
- 	partition_sched_domains(ndoms, doms, attr);
--out:
--	put_online_cpus();
- }
- #else /* !CONFIG_SMP */
- static void rebuild_sched_domains_locked(void)
-@@ -943,9 +940,11 @@ static void rebuild_sched_domains_locked(void)
- 
- void rebuild_sched_domains(void)
- {
-+	get_online_cpus();
- 	mutex_lock(&cpuset_mutex);
- 	rebuild_sched_domains_locked();
- 	mutex_unlock(&cpuset_mutex);
-+	put_online_cpus();
- }
- 
- /**
--- 
-2.20.1
+Mlock requires careful resource planning. Since sharing always been
+non-deterministic each user should be ready to take all locked memory.
 
+It's hard to inject direct reclaim into another thread for sure.
+All we could do is starting background reclaim in kernel thread.
+Doing this in task who calls munlock() is not fair.
+
+At mlock it's possible to force direct claim for memory usage over high limit:
+https://lore.kernel.org/linux-mm/156431697805.3170.6377599347542228221.stgit@buzz/
+
+> 
+>> Konstantin Khlebnikov (7):
+>>        mm/memcontrol: move locking page out of mem_cgroup_move_account
+>>        mm/memcontrol: add mem_cgroup_recharge
+>>        mm/mlock: add vma argument for mlock_vma_page()
+>>        mm/mlock: recharge memory accounting to first mlock user
+>>        mm/mlock: recharge memory accounting to second mlock user at munlock
+>>        mm/vmscan: allow changing page memory cgroup during reclaim
+>>        mm/mlock: recharge mlocked pages at culling by vmscan
+>>
+>>
+>>   Documentation/admin-guide/cgroup-v1/memory.rst |    5 +
+>>   include/linux/memcontrol.h                     |    9 ++
+>>   include/linux/rmap.h                           |    3 -
+>>   mm/gup.c                                       |    2
+>>   mm/huge_memory.c                               |    4 -
+>>   mm/internal.h                                  |    6 +
+>>   mm/ksm.c                                       |    2
+>>   mm/memcontrol.c                                |  104 ++++++++++++++++--------
+>>   mm/migrate.c                                   |    2
+>>   mm/mlock.c                                     |   14 +++
+>>   mm/rmap.c                                      |    5 +
+>>   mm/vmscan.c                                    |   17 ++--
+>>   12 files changed, 121 insertions(+), 52 deletions(-)
+>>
+>> --
+>> Signature
+> 
