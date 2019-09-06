@@ -2,152 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B1EAB498
-	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 11:07:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA052AB4AC
+	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 11:12:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392855AbfIFJHW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Sep 2019 05:07:22 -0400
-Received: from mail-wm1-f53.google.com ([209.85.128.53]:37164 "EHLO
-        mail-wm1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726936AbfIFJHW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 05:07:22 -0400
-Received: by mail-wm1-f53.google.com with SMTP id r195so6184185wme.2
-        for <cgroups@vger.kernel.org>; Fri, 06 Sep 2019 02:07:20 -0700 (PDT)
+        id S2388916AbfIFJMp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Sep 2019 05:12:45 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:34618 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730704AbfIFJMp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 05:12:45 -0400
+Received: by mail-ed1-f66.google.com with SMTP id s49so5691939edb.1
+        for <cgroups@vger.kernel.org>; Fri, 06 Sep 2019 02:12:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bRNpTF+jlVTEA0th1ETWAk1qTJWN6Qeu8URjuG4vuw0=;
-        b=g2/f8zaLtJ58LwSPZ4Fxp31XofUqLVy6CiLpQZDRxqfSFCkkkcQLmP2pN2lCr2Rvma
-         iQJYDrF+zvyU/PUN6bEeU5c3tIgPkZfK545NpqirU+wuHQnRcG43TdxBmEC2cEZRwsiY
-         rtFeoV8dRoYX1yt6xiu7gsSNbRo/a2xy2lLe+bnBCfBxMj1ZL9K1yYgTC0JgUyLrQ8Up
-         SGrBhpTBm62GcF/Xcwdw5RbV4mP9XNKsL94XLYOL+Z65LESWw2zQzD1bbFKib96Bk+9s
-         KAaQoiygmpBNgES7OYeyQdBSdamFxGxMR9Rl/R6obORIq2TlsRfCcMnN7w819OT00gC7
-         vLkw==
+        d=ffwll.ch; s=google;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8pEqT/7PVhOn5E1RdOfZNt4oxSI4VkCztNjkHiJeFiY=;
+        b=WPdT/JVxl7Dt9NVmLhjoXgL48l1X+TvNqNDy9dHcH8vfUaLdt4QEEFFJClMquLVwuN
+         RV77Hq/Oo7P+6hmVXsBoQTlqK0H9SJX8djO6rGLa5WFkBTU5SrhCBMIgQBcXM+VkxPoS
+         e6p0KgpYhvrPR0heyT7/katg1/W8HDChjE8XY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=bRNpTF+jlVTEA0th1ETWAk1qTJWN6Qeu8URjuG4vuw0=;
-        b=d8tlUGPo3RhuZWv3ifBCSDhefxlO6fxmlqS5YLVOsaGGKYHE6tvjfrl28VjbnAnI/p
-         WgCWmdF+yBOi0jxjyqBzrR1njl4snYYmEtDViTd2cZCjfvQXtlQHcuYeZRia5J9Nh+Aa
-         x9FcJ5ExDenKSq2cSdQC8Duu25hQ390ZS5GS04hR+xJ6Zcib9XCNJclrb3waeht0gKhY
-         eyvq7O4rMmPkCIZll9502lEXEysW/1LVIwq2pf0rNOke4sxGVz5YOjXKQbFpigId36vQ
-         s/9UEXVKCyiT4XDXd1nPi7ACQV8QyM3NU4tv441ZDHVTPcFNNcMHfxfMNoT1aUIhwbjj
-         Whrw==
-X-Gm-Message-State: APjAAAU+gT9/1At7WrTxtSbAdGBpMcVNTB7bpilrC6Mc3wh2bZ8l8/t4
-        N0VB/lrkxSU0pC5amrt+U1cCvg==
-X-Google-Smtp-Source: APXvYqzTkSfIsU3hU/2q5f43wN5BDN/9Qf5vdBDJjz92GTwgZTlvkevjXpGIrHIxjNr/Bdt75k4Fig==
-X-Received: by 2002:a7b:c935:: with SMTP id h21mr6004171wml.35.1567760839881;
-        Fri, 06 Sep 2019 02:07:19 -0700 (PDT)
-Received: from [192.168.0.103] (88-147-65-157.dyn.eolo.it. [88.147.65.157])
-        by smtp.gmail.com with ESMTPSA id j22sm9584317wre.45.2019.09.06.02.07.18
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Sep 2019 02:07:19 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
-Date:   Fri, 6 Sep 2019 11:07:17 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
-References: <20190614015620.1587672-1-tj@kernel.org>
- <20190614175642.GA657710@devbig004.ftw2.facebook.com>
- <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <88C7DC68-680E-49BB-9699-509B9B0B12A0@linaro.org>
- <20190902155652.GH2263813@devbig004.ftw2.facebook.com>
- <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
- <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
-To:     Tejun Heo <tj@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.8)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8pEqT/7PVhOn5E1RdOfZNt4oxSI4VkCztNjkHiJeFiY=;
+        b=l+LFBG/mlp07NJ5O+S1BFIeW6VPVjThSiQTI9wiKUlVg2TK/lIcs1Hbzd87K97GrSf
+         rod3gM4F0t8fzeex2AsMmYzFIVmi/k4ozYamDETq1QvIJuTHRLTcQsCWer1SVEIYmHiY
+         9koyuFhtraMMpFgA7yVLEiryZMCCnmizyIb2+frQTEpHKXRmGW6zDMh2or5z7hHtwLY1
+         3bC/RukpIwirnD/LU2ybKNuXlvHhs/xYcTnIg37H9YTBh0QdkoA623w5ni8t9U/j9BTG
+         096HvUydPEYmV5xM4YuoRqUFAtwyGomzLKAOSDUDfyGsQR7v+DdeJdbxahkF2rcLgY/B
+         MOZQ==
+X-Gm-Message-State: APjAAAUybqM/7UXzQ7pyQYJflSZtuVlhFZvMpBnajyD5Q2fg6c1s7neX
+        GAsFAgEBJ8aXfBdtJWvcLwKliku0r+0=
+X-Google-Smtp-Source: APXvYqzl/nleXKkE9hdjksK2Ymyu6lmcILfEkJq8BVbCQj4bR/80R37+Lw/J5Ykrq9sWREIA/hAdFQ==
+X-Received: by 2002:aa7:ca41:: with SMTP id j1mr8291121edt.63.1567761163294;
+        Fri, 06 Sep 2019 02:12:43 -0700 (PDT)
+Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
+        by smtp.gmail.com with ESMTPSA id j1sm215348ejc.13.2019.09.06.02.12.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 06 Sep 2019 02:12:42 -0700 (PDT)
+Date:   Fri, 6 Sep 2019 11:12:40 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Kenny Ho <y2kenny@gmail.com>
+Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
+        cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com
+Subject: Re: [PATCH RFC v4 01/16] drm: Add drm_minor_for_each
+Message-ID: <20190906091240.GB3958@phenom.ffwll.local>
+References: <20190903075719.GK2112@phenom.ffwll.local>
+ <CAOWid-dxxDhyxP2+0R0oKAk29rR-1TbMyhshR1+gbcpGJCAW6g@mail.gmail.com>
+ <CAKMK7uEofjdVURu+meonh_YdV5eX8vfNALkW3A_+kLapCV8j+w@mail.gmail.com>
+ <CAOWid-eUVztW4hNVpznnJRcwHcjCirGL2aS75p4OY8XoGuJqUg@mail.gmail.com>
+ <20190904085434.GF2112@phenom.ffwll.local>
+ <CAOWid-fiEOmPw1z=aF6E4VE03xikREKt-X8VVKGGUGBQd3i=Kw@mail.gmail.com>
+ <CAKMK7uGSrscs-WAv0pYfcxaUGXvx7M6JYbiPHTY=1hxRbFK1sg@mail.gmail.com>
+ <CAOWid-eRZGxWzHw4qFqtSOCixQXvY4bEP91QnVH0Nmm13J9F-g@mail.gmail.com>
+ <CAKMK7uHy+GRAcpLDuz6STCBW+GNfNWr-i=ZERF3uqkO7jfynnQ@mail.gmail.com>
+ <CAOWid-cRP1T2gr2U_ZN+QhS7jFM0kFTWiYy8JPPXXmGW7xBPzA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWid-cRP1T2gr2U_ZN+QhS7jFM0kFTWiYy8JPPXXmGW7xBPzA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.2.0-2-amd64 
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-> Il giorno 5 set 2019, alle ore 18:55, Tejun Heo <tj@kernel.org> ha scritto:
+On Thu, Sep 05, 2019 at 05:26:08PM -0400, Kenny Ho wrote:
+> On Thu, Sep 5, 2019 at 4:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
+> >
+> *snip*
+> > drm_dev_unregister gets called on hotunplug, so your cgroup-internal
+> > tracking won't get out of sync any more than the drm_minor list gets
+> > out of sync with drm_devices. The trouble with drm_minor is just that
+> > cgroup doesn't track allocations on drm_minor (that's just the uapi
+> > flavour), but on the underlying drm_device. So really doesn't make
+> > much sense to attach cgroup tracking to the drm_minor.
 > 
-> Hello, Paolo.
+> Um... I think I get what you are saying, but isn't this a matter of
+> the cgroup controller doing a drm_dev_get when using the drm_minor?
+> Or that won't work because it's possible to have a valid drm_minor but
+> invalid drm_device in it? I understand it's an extra level of
+> indirection but since the convention for addressing device in cgroup
+> is using $major:$minor I don't see a way to escape this.  (Tejun
+> actually already made a comment on my earlier RFC where I didn't
+> follow the major:minor convention strictly.)
+
+drm_device is the object that controls lifetime and everything, that's why
+you need to do a drm_dev_get and all that in some places. Going through
+the minor really feels like a distraction.
+
+And yes we have a bit a mess between cgroups insisting on using the minor,
+and drm_device having more than 1 minor for the same underlying physical
+resource. Just because the uapi is a bit a mess in that regard doesn't
+mean we should pull that mess into the kernel implementation imo.
+-Daniel
+
 > 
-> So, I'm currently verifying iocost in the FB fleet.  Around three
-> thousand machines running v5.2 (+ some backports) with btrfs on a
-> handful of different models of consumer grade SSDs.  I haven't seen
-> complete loss of control as you're reporting.  Given that you're
-> reporting the same thing on io.latency, which is deployed on multiple
-> orders of magnitude more machines at this point, it's likely that
-> there's something common affecting your test setup.
-
-Yep, I had that doubt too, so I extended my tests to one more PC and
-two more drives: a fast SAMSUNG NVMe SSD 970 PRO and an HITACHI
-HTS72755 HDD, using the QoS configurations suggested in your last
-email.  As for the filesystem, I'm interested in ext4, because it is
-the most widely used file system, and, with some workloads, it makes
-it hard to control I/O while keeping throughput high.  I'll provide hw
-and sw details in my reply to your next question.  I'm willing to run
-tests with btrfs too, at a later time.
-
-Something is wrong with io.cost also with the other PC and the other
-drives.  In the next table, each pair of numbers contains the target's
-throughput and the total throughput:
-
-                  none                 io.cost               bfq
-SAMSUNG SSD    11.373  3295.517     6.468  3273.892    10.802  1862.288
-HITACHI HDD    0.026    11.531      0.042    30.299     0.067    76.642
-
-With the SAMSUNG SSD, io.cost gives to the target less throughput than
-none (and bfq is behaving badly too, but this is my problem).  On the
-HDD, io.cost gives to the target a little bit more than half the
-throughput guaranteed by bfq, and reaches less than half the total
-throughput reached by bfq.
-
-I do agree that three thousand is an overwhelming number of machines,
-and I'll probably never have that many resources for my tests.  Still,
-it seems rather unlikely that two different PCs, and three different
-drives, all suffer from a common anomaly that causes troubles only to
-io.cost and io.latency.
-
-I try to never overlook also me being the problematic link in the
-chain.  But I'm executing this test with the public script I mentioned
-in my previous emails; and all steps seem correct.
-
->  Can you please
-> describe your test configuration and if you aren't already try testing
-> on btrfs?
+> Kenny
 > 
+> > > > Just doing a drm_cg_register/unregister pair that's called from
+> > > > drm_dev_register/unregister, and then if you want, looking up the
+> > > > right minor (I think always picking the render node makes sense for
+> > > > this, and skipping if there's no render node) would make most sense.
+> > > > At least for the basic cgroup controllers which are generic across
+> > > > drivers.
+> > >
+> > > Why do we want to skip drm devices that does not have a render node
+> > > and not just use the primary instead?
+> >
+> > I guess we could also take the primary node, but drivers with only
+> > primary node are generaly display-only drm drivers. Not sure we want
+> > cgroups on those (but I guess can't hurt, and more consistent). But
+> > then we'd always need to pick the primary node for cgroup
+> > identification purposes.
+> > -Daniel
+> >
+> > >
+> > > Kenny
+> > >
+> > >
+> > >
+> > > > -Daniel
 
-PC 1: Thinkpad W520, Ubuntu 18.04 (no configuration change w.r.t.
-defaults), PLEXTOR SATA PX-256M5S SSD, HITACHI HTS72755 HDD, ext4.
-
-PC 2: Thinkpad X1 Extreme, Ubuntu 19.04 (no configuration change
-w.r.t.  defaults), SAMSUNG NVMe SSD 970 PRO, ext4.
-
-If you need more details, just ask.
-
-Thanks,
-Paolo
-
-
-
-> Thanks.
-> 
-> -- 
-> tejun
-
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
