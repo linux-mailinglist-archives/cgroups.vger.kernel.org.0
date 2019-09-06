@@ -2,139 +2,280 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA052AB4AC
-	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 11:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9A0AAB568
+	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 12:08:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388916AbfIFJMp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Sep 2019 05:12:45 -0400
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:34618 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730704AbfIFJMp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 05:12:45 -0400
-Received: by mail-ed1-f66.google.com with SMTP id s49so5691939edb.1
-        for <cgroups@vger.kernel.org>; Fri, 06 Sep 2019 02:12:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=8pEqT/7PVhOn5E1RdOfZNt4oxSI4VkCztNjkHiJeFiY=;
-        b=WPdT/JVxl7Dt9NVmLhjoXgL48l1X+TvNqNDy9dHcH8vfUaLdt4QEEFFJClMquLVwuN
-         RV77Hq/Oo7P+6hmVXsBoQTlqK0H9SJX8djO6rGLa5WFkBTU5SrhCBMIgQBcXM+VkxPoS
-         e6p0KgpYhvrPR0heyT7/katg1/W8HDChjE8XY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=8pEqT/7PVhOn5E1RdOfZNt4oxSI4VkCztNjkHiJeFiY=;
-        b=l+LFBG/mlp07NJ5O+S1BFIeW6VPVjThSiQTI9wiKUlVg2TK/lIcs1Hbzd87K97GrSf
-         rod3gM4F0t8fzeex2AsMmYzFIVmi/k4ozYamDETq1QvIJuTHRLTcQsCWer1SVEIYmHiY
-         9koyuFhtraMMpFgA7yVLEiryZMCCnmizyIb2+frQTEpHKXRmGW6zDMh2or5z7hHtwLY1
-         3bC/RukpIwirnD/LU2ybKNuXlvHhs/xYcTnIg37H9YTBh0QdkoA623w5ni8t9U/j9BTG
-         096HvUydPEYmV5xM4YuoRqUFAtwyGomzLKAOSDUDfyGsQR7v+DdeJdbxahkF2rcLgY/B
-         MOZQ==
-X-Gm-Message-State: APjAAAUybqM/7UXzQ7pyQYJflSZtuVlhFZvMpBnajyD5Q2fg6c1s7neX
-        GAsFAgEBJ8aXfBdtJWvcLwKliku0r+0=
-X-Google-Smtp-Source: APXvYqzl/nleXKkE9hdjksK2Ymyu6lmcILfEkJq8BVbCQj4bR/80R37+Lw/J5Ykrq9sWREIA/hAdFQ==
-X-Received: by 2002:aa7:ca41:: with SMTP id j1mr8291121edt.63.1567761163294;
-        Fri, 06 Sep 2019 02:12:43 -0700 (PDT)
-Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
-        by smtp.gmail.com with ESMTPSA id j1sm215348ejc.13.2019.09.06.02.12.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 06 Sep 2019 02:12:42 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 11:12:40 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
-        cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com
-Subject: Re: [PATCH RFC v4 01/16] drm: Add drm_minor_for_each
-Message-ID: <20190906091240.GB3958@phenom.ffwll.local>
-References: <20190903075719.GK2112@phenom.ffwll.local>
- <CAOWid-dxxDhyxP2+0R0oKAk29rR-1TbMyhshR1+gbcpGJCAW6g@mail.gmail.com>
- <CAKMK7uEofjdVURu+meonh_YdV5eX8vfNALkW3A_+kLapCV8j+w@mail.gmail.com>
- <CAOWid-eUVztW4hNVpznnJRcwHcjCirGL2aS75p4OY8XoGuJqUg@mail.gmail.com>
- <20190904085434.GF2112@phenom.ffwll.local>
- <CAOWid-fiEOmPw1z=aF6E4VE03xikREKt-X8VVKGGUGBQd3i=Kw@mail.gmail.com>
- <CAKMK7uGSrscs-WAv0pYfcxaUGXvx7M6JYbiPHTY=1hxRbFK1sg@mail.gmail.com>
- <CAOWid-eRZGxWzHw4qFqtSOCixQXvY4bEP91QnVH0Nmm13J9F-g@mail.gmail.com>
- <CAKMK7uHy+GRAcpLDuz6STCBW+GNfNWr-i=ZERF3uqkO7jfynnQ@mail.gmail.com>
- <CAOWid-cRP1T2gr2U_ZN+QhS7jFM0kFTWiYy8JPPXXmGW7xBPzA@mail.gmail.com>
+        id S2390102AbfIFKIh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Sep 2019 06:08:37 -0400
+Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:17605 "EHLO
+        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387908AbfIFKIg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 06:08:36 -0400
+Received: (qmail 17846 invoked from network); 6 Sep 2019 12:08:32 +0200
+X-Fcrdns: No
+Received: from phoffice.de-nserver.de (HELO [10.242.2.9]) (185.39.223.5)
+  (smtp-auth username hostmaster@profihost.com, mechanism plain)
+  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Fri, 06 Sep 2019 12:08:32 +0200
+Subject: Re: lot of MemAvailable but falling cache and raising PSI
+From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <4b4ba042-3741-7b16-2292-198c569da2aa@profihost.ag>
+ <20190905114022.GH3838@dhcp22.suse.cz>
+ <7a3d23f2-b5fe-b4c0-41cd-e79070637bd9@profihost.ag>
+Message-ID: <e866c481-04f2-fdb4-4d99-e7be2414591e@profihost.ag>
+Date:   Fri, 6 Sep 2019 12:08:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-cRP1T2gr2U_ZN+QhS7jFM0kFTWiYy8JPPXXmGW7xBPzA@mail.gmail.com>
-X-Operating-System: Linux phenom 5.2.0-2-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <7a3d23f2-b5fe-b4c0-41cd-e79070637bd9@profihost.ag>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 05, 2019 at 05:26:08PM -0400, Kenny Ho wrote:
-> On Thu, Sep 5, 2019 at 4:32 PM Daniel Vetter <daniel@ffwll.ch> wrote:
-> >
-> *snip*
-> > drm_dev_unregister gets called on hotunplug, so your cgroup-internal
-> > tracking won't get out of sync any more than the drm_minor list gets
-> > out of sync with drm_devices. The trouble with drm_minor is just that
-> > cgroup doesn't track allocations on drm_minor (that's just the uapi
-> > flavour), but on the underlying drm_device. So really doesn't make
-> > much sense to attach cgroup tracking to the drm_minor.
+These are the biggest differences in meminfo before and after cached
+starts to drop. I didn't expect cached end up in MemFree.
+
+Before:
+MemTotal:       16423116 kB
+MemFree:          374572 kB
+MemAvailable:    5633816 kB
+Cached:          5550972 kB
+Inactive:        4696580 kB
+Inactive(file):  3624776 kB
+
+
+After:
+MemTotal:       16423116 kB
+MemFree:         3477168 kB
+MemAvailable:    6066916 kB
+Cached:          2724504 kB
+Inactive:        1854740 kB
+Inactive(file):   950680 kB
+
+Any explanation?
+
+Greets,
+Stefan
+Am 05.09.19 um 13:56 schrieb Stefan Priebe - Profihost AG:
 > 
-> Um... I think I get what you are saying, but isn't this a matter of
-> the cgroup controller doing a drm_dev_get when using the drm_minor?
-> Or that won't work because it's possible to have a valid drm_minor but
-> invalid drm_device in it? I understand it's an extra level of
-> indirection but since the convention for addressing device in cgroup
-> is using $major:$minor I don't see a way to escape this.  (Tejun
-> actually already made a comment on my earlier RFC where I didn't
-> follow the major:minor convention strictly.)
-
-drm_device is the object that controls lifetime and everything, that's why
-you need to do a drm_dev_get and all that in some places. Going through
-the minor really feels like a distraction.
-
-And yes we have a bit a mess between cgroups insisting on using the minor,
-and drm_device having more than 1 minor for the same underlying physical
-resource. Just because the uapi is a bit a mess in that regard doesn't
-mean we should pull that mess into the kernel implementation imo.
--Daniel
-
+> Am 05.09.19 um 13:40 schrieb Michal Hocko:
+>> On Thu 05-09-19 13:27:10, Stefan Priebe - Profihost AG wrote:
+>>> Hello all,
+>>>
+>>> i hope you can help me again to understand the current MemAvailable
+>>> value in the linux kernel. I'm running a 4.19.52 kernel + psi patches in
+>>> this case.
+>>>
+>>> I'm seeing the following behaviour i don't understand and ask for help.
+>>>
+>>> While MemAvailable shows 5G the kernel starts to drop cache from 4G down
+>>> to 1G while the apache spawns some PHP processes. After that the PSI
+>>> mem.some value rises and the kernel tries to reclaim memory but
+>>> MemAvailable stays at 5G.
+>>>
+>>> Any ideas?
+>>
+>> Can you collect /proc/vmstat (every second or so) and post it while this
+>> is the case please?
 > 
-> Kenny
+> Yes sure.
 > 
-> > > > Just doing a drm_cg_register/unregister pair that's called from
-> > > > drm_dev_register/unregister, and then if you want, looking up the
-> > > > right minor (I think always picking the render node makes sense for
-> > > > this, and skipping if there's no render node) would make most sense.
-> > > > At least for the basic cgroup controllers which are generic across
-> > > > drivers.
-> > >
-> > > Why do we want to skip drm devices that does not have a render node
-> > > and not just use the primary instead?
-> >
-> > I guess we could also take the primary node, but drivers with only
-> > primary node are generaly display-only drm drivers. Not sure we want
-> > cgroups on those (but I guess can't hurt, and more consistent). But
-> > then we'd always need to pick the primary node for cgroup
-> > identification purposes.
-> > -Daniel
-> >
-> > >
-> > > Kenny
-> > >
-> > >
-> > >
-> > > > -Daniel
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> But i don't know which event you mean exactly. Current situation is PSI
+> / memory pressure is > 20 but:
+> 
+> This is the current status where MemAvailable show 5G but Cached is
+> already dropped to 1G coming from 4G:
+> 
+> 
+> meminfo:
+> MemTotal:       16423116 kB
+> MemFree:         5280736 kB
+> MemAvailable:    5332752 kB
+> Buffers:            2572 kB
+> Cached:          1225112 kB
+> SwapCached:            0 kB
+> Active:          8934976 kB
+> Inactive:        1026900 kB
+> Active(anon):    8740396 kB
+> Inactive(anon):   873448 kB
+> Active(file):     194580 kB
+> Inactive(file):   153452 kB
+> Unevictable:       19900 kB
+> Mlocked:           19900 kB
+> SwapTotal:             0 kB
+> SwapFree:              0 kB
+> Dirty:              1980 kB
+> Writeback:             0 kB
+> AnonPages:       8423480 kB
+> Mapped:           978212 kB
+> Shmem:            875680 kB
+> Slab:             839868 kB
+> SReclaimable:     383396 kB
+> SUnreclaim:       456472 kB
+> KernelStack:       22576 kB
+> PageTables:        49824 kB
+> NFS_Unstable:          0 kB
+> Bounce:                0 kB
+> WritebackTmp:          0 kB
+> CommitLimit:     8211556 kB
+> Committed_AS:   32060624 kB
+> VmallocTotal:   34359738367 kB
+> VmallocUsed:           0 kB
+> VmallocChunk:          0 kB
+> Percpu:           118048 kB
+> HardwareCorrupted:     0 kB
+> AnonHugePages:   6406144 kB
+> ShmemHugePages:        0 kB
+> ShmemPmdMapped:        0 kB
+> HugePages_Total:       0
+> HugePages_Free:        0
+> HugePages_Rsvd:        0
+> HugePages_Surp:        0
+> Hugepagesize:       2048 kB
+> Hugetlb:               0 kB
+> DirectMap4k:     2580336 kB
+> DirectMap2M:    14196736 kB
+> DirectMap1G:     2097152 kB
+> 
+> 
+> vmstat shows:
+> nr_free_pages 1320053
+> nr_zone_inactive_anon 218362
+> nr_zone_active_anon 2185108
+> nr_zone_inactive_file 38363
+> nr_zone_active_file 48645
+> nr_zone_unevictable 4975
+> nr_zone_write_pending 495
+> nr_mlock 4975
+> nr_page_table_pages 12553
+> nr_kernel_stack 22576
+> nr_bounce 0
+> nr_zspages 0
+> nr_free_cma 0
+> numa_hit 13916119899
+> numa_miss 0
+> numa_foreign 0
+> numa_interleave 15629
+> numa_local 13916119899
+> numa_other 0
+> nr_inactive_anon 218362
+> nr_active_anon 2185164
+> nr_inactive_file 38363
+> nr_active_file 48645
+> nr_unevictable 4975
+> nr_slab_reclaimable 95849
+> nr_slab_unreclaimable 114118
+> nr_isolated_anon 0
+> nr_isolated_file 0
+> workingset_refault 71365357
+> workingset_activate 20281670
+> workingset_restore 8995665
+> workingset_nodereclaim 326085
+> nr_anon_pages 2105903
+> nr_mapped 244553
+> nr_file_pages 306921
+> nr_dirty 495
+> nr_writeback 0
+> nr_writeback_temp 0
+> nr_shmem 218920
+> nr_shmem_hugepages 0
+> nr_shmem_pmdmapped 0
+> nr_anon_transparent_hugepages 3128
+> nr_unstable 0
+> nr_vmscan_write 0
+> nr_vmscan_immediate_reclaim 1833104
+> nr_dirtied 386544087
+> nr_written 259220036
+> nr_dirty_threshold 265636
+> nr_dirty_background_threshold 132656
+> pgpgin 1817628997
+> pgpgout 3730818029
+> pswpin 0
+> pswpout 0
+> pgalloc_dma 0
+> pgalloc_dma32 5790777997
+> pgalloc_normal 20003662520
+> pgalloc_movable 0
+> allocstall_dma 0
+> allocstall_dma32 0
+> allocstall_normal 39
+> allocstall_movable 1980089
+> pgskip_dma 0
+> pgskip_dma32 0
+> pgskip_normal 0
+> pgskip_movable 0
+> pgfree 26637215947
+> pgactivate 316722654
+> pgdeactivate 261039211
+> pglazyfree 0
+> pgfault 17719356599
+> pgmajfault 30985544
+> pglazyfreed 0
+> pgrefill 286826568
+> pgsteal_kswapd 36740923
+> pgsteal_direct 349291470
+> pgscan_kswapd 36878966
+> pgscan_direct 395327492
+> pgscan_direct_throttle 0
+> zone_reclaim_failed 0
+> pginodesteal 49817087
+> slabs_scanned 597956834
+> kswapd_inodesteal 1412447
+> kswapd_low_wmark_hit_quickly 39
+> kswapd_high_wmark_hit_quickly 319
+> pageoutrun 3585
+> pgrotated 2873743
+> drop_pagecache 0
+> drop_slab 0
+> oom_kill 0
+> pgmigrate_success 839062285
+> pgmigrate_fail 507313
+> compact_migrate_scanned 9619077010
+> compact_free_scanned 67985619651
+> compact_isolated 1684537704
+> compact_stall 205761
+> compact_fail 182420
+> compact_success 23341
+> compact_daemon_wake 2
+> compact_daemon_migrate_scanned 811
+> compact_daemon_free_scanned 490241
+> htlb_buddy_alloc_success 0
+> htlb_buddy_alloc_fail 0
+> unevictable_pgs_culled 1006521
+> unevictable_pgs_scanned 0
+> unevictable_pgs_rescued 997077
+> unevictable_pgs_mlocked 1319203
+> unevictable_pgs_munlocked 842471
+> unevictable_pgs_cleared 470531
+> unevictable_pgs_stranded 459613
+> thp_fault_alloc 20263113
+> thp_fault_fallback 3368635
+> thp_collapse_alloc 226476
+> thp_collapse_alloc_failed 17594
+> thp_file_alloc 0
+> thp_file_mapped 0
+> thp_split_page 1159
+> thp_split_page_failed 3927
+> thp_deferred_split_page 20348941
+> thp_split_pmd 53361
+> thp_split_pud 0
+> thp_zero_page_alloc 1
+> thp_zero_page_alloc_failed 0
+> thp_swpout 0
+> thp_swpout_fallback 0
+> balloon_inflate 0
+> balloon_deflate 0
+> balloon_migrate 0
+> swap_ra 0
+> swap_ra_hit 0
+> 
+> Greets,
+> Stefan
+> 
