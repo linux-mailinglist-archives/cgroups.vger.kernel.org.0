@@ -2,105 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 44B33ABB8D
-	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 16:58:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25BF7ABC3E
+	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 17:23:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392201AbfIFO6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Sep 2019 10:58:31 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:34697 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbfIFO6b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 10:58:31 -0400
-Received: by mail-qt1-f193.google.com with SMTP id a13so7407633qtj.1;
-        Fri, 06 Sep 2019 07:58:30 -0700 (PDT)
+        id S2387557AbfIFPXZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Sep 2019 11:23:25 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37021 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbfIFPXY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 6 Sep 2019 11:23:24 -0400
+Received: by mail-qk1-f195.google.com with SMTP id u184so3055067qkd.4
+        for <cgroups@vger.kernel.org>; Fri, 06 Sep 2019 08:23:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=LOL4RkhxwNmxVBDlkkOKh5q7eIdq3MEVHDS6KxIm1I4=;
-        b=MOXP8ySNFPJpMxFpoTNloLC7w8Wh/zABeSUGLmy9GcZZLTPwTWbLNAiqmpDc3ec4/o
-         fd/SQEbUNPqNvtpl1/z5Lvnd779JkYSuyqQbJvM8lCbSRUV/hrvYwZxSgL1rKwz0us/i
-         ZREmz6vxrZfPNGqJkZmhWJzITJzzyL2gIw8RxEgkUTgtbxCjFWnGsP1l5JXqBN4ds0LM
-         SVyRMrlR29TEH85320jHVL5TDIO8nn5KCyJ9cdcTr0DMf2el5OoMqyCl+KPnXNdr78gM
-         NnqSEpEKFjrjmUF5jre4PNzvz5/0G04w9u5myf8I6/pAcoyhos2ouAn+mFiJ6I12Kg6r
-         75JQ==
+        bh=OJ2aInTH+ll02m34eiKB5anEI6az0ahAcVsZsWlgcJc=;
+        b=UO76zrFl49LKNJTSDdriZCNJ7IyuMqcUrBY7wZJo92eM2VFOtWq3obIUqVB3OV5wK5
+         g0aMdU/P5Bie5xF38jeVaHiOGa5A07Is5Dr2yKz5YkKCN/DY0AkBLJ5iMMHlwt1SNN+A
+         NTp7mU6lP1/o/J1Oxwuy42XCnYbKcO9t8gU3Sm+U3Jlh7DLdOiNEoYfmJATFcpZBuwgy
+         2Gb3wV+35UmTZdwRdpVcsh0qaMPs1C8JpZ3OjMGAYNS3TWBM5lSvQo/DIuERiPUhWrjF
+         hVBue2c+XioJnHHcwEDd/febjuSCcKx5MclkFqjwnDCneZcrrTN6k2VhBfD1Mi4lybAS
+         LIhw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LOL4RkhxwNmxVBDlkkOKh5q7eIdq3MEVHDS6KxIm1I4=;
-        b=bvCsxm+7mke4oAm9lVJ7sqkX5g8rBzceWjkhyKXuRsc7PKNbiEpuNWMiVcpq+43ulF
-         QIolFhhZOJQAM/S7B5/PM4pqoiPJfFOsQSwJhJaGjF+zLmVkw0O6kRO3rGfg3MuiBgzw
-         O7tgFWS8GMtyuaX1tVND2xrnvXgCSSir8sxkhAXA0ArA4Wy+qPbV1Sgc0d8OvVmhwrrt
-         qsNn8FjJm0XGGU7K5iiJ060rOC8fp7hPSGyPAMGNpTsSluIaeLyppOgsMNMp0vvGfM8X
-         pWdHPdj3GbuAG696f4vO/fihvrVzS7fUHL/fx/6D8hHVxnhamUcqWdcA1dq030oHeX/m
-         hmqQ==
-X-Gm-Message-State: APjAAAXupRDMVQga3obNhhiRDQ6cNTSbLe6kxxhsSDAkqGdUtexBXq9C
-        VcrEGiFSQeTq0pO4Vig0Y4A=
-X-Google-Smtp-Source: APXvYqzw/ynJVnXeScViPWyvcMnfE9uWmFXTKN6Uah/pXOmrexC6Mnw/vVsY8SiKAx59SdE4f2ivQw==
-X-Received: by 2002:ac8:5390:: with SMTP id x16mr9499947qtp.390.1567781909530;
-        Fri, 06 Sep 2019 07:58:29 -0700 (PDT)
+        bh=OJ2aInTH+ll02m34eiKB5anEI6az0ahAcVsZsWlgcJc=;
+        b=joBHDy1gV4ESpoaLyjP2DaLWSBtwvqMd53b9cFz6ieLOg5FKBFTfOlpM091wBlLdC2
+         e5JkDNOqMfQ97WjC8KC4CagJnDUAbuXbPfTg0uz/J2yq0waWel+sZh1ynyg11rc4SI+u
+         3c7eQ+Yn55jvdG1NY9pukMo3dm5bnQXhzP2xsFBJ2C1Qvsm2UTJIPXixL+FEyM6/SvuF
+         cRrXMsOWAqTGmqPW33iksEdcW7hLz/szkqneLSWuoNaPrSCgbMmqmIPEBPFsnkKGXObe
+         6Y36kN3tLvA862u8+3jGzx8KwBFohg3HJA8WR2Agdi/JBJsqDQP9RMd6RBncYb0SxFEv
+         nw4Q==
+X-Gm-Message-State: APjAAAXMIqMg4mZXyezxhMlQ2DPXWQnXPhwKETWrzgV87N7/qRUqZiYH
+        uDqr5pO7LIMwgchH5vqAh9o=
+X-Google-Smtp-Source: APXvYqxWCuFp0bfkKuq41IsDLncbaoUCMpj4GmWjBh9gcJ7tAJ2yOJo7NrzKNUpTK0fRYBeUv0Y4jw==
+X-Received: by 2002:a37:4f4c:: with SMTP id d73mr9375226qkb.171.1567783403281;
+        Fri, 06 Sep 2019 08:23:23 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::e7cb])
-        by smtp.gmail.com with ESMTPSA id g194sm2967170qke.46.2019.09.06.07.58.28
+        by smtp.gmail.com with ESMTPSA id i66sm3293712qkb.105.2019.09.06.08.23.21
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 06 Sep 2019 07:58:28 -0700 (PDT)
-Date:   Fri, 6 Sep 2019 07:58:26 -0700
+        Fri, 06 Sep 2019 08:23:22 -0700 (PDT)
+Date:   Fri, 6 Sep 2019 08:23:20 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, newella@fb.com, clm@fb.com,
-        Josef Bacik <josef@toxicpanda.com>, dennisz@fb.com,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>, kernel-team@fb.com,
-        cgroups@vger.kernel.org, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        bpf@vger.kernel.org
-Subject: Re: [PATCHSET block/for-next] IO cost model based work-conserving
- porportional controller
-Message-ID: <20190906145826.GL2263813@devbig004.ftw2.facebook.com>
-References: <5A63F937-F7B5-4D09-9DB4-C73D6F571D50@linaro.org>
- <B5E431F7-549D-4FC4-A098-D074DF9586A1@linaro.org>
- <20190820151903.GH2263813@devbig004.ftw2.facebook.com>
- <9EB760CE-0028-4766-AE9D-6E90028D8579@linaro.org>
- <20190831065358.GF2263813@devbig004.ftw2.facebook.com>
- <88C7DC68-680E-49BB-9699-509B9B0B12A0@linaro.org>
- <20190902155652.GH2263813@devbig004.ftw2.facebook.com>
- <D9F6BC6D-FEB3-40CA-A33C-F501AE4434F0@linaro.org>
- <20190905165540.GJ2263813@devbig004.ftw2.facebook.com>
- <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, Kenny Ho <y2kenny@gmail.com>,
+        cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        joseph.greathouse@amd.com, jsparks@cray.com, lkaplan@cray.com
+Subject: Re: [PATCH RFC v4 00/16] new cgroup controller for gpu/drm subsystem
+Message-ID: <20190906152320.GM2263813@devbig004.ftw2.facebook.com>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com>
+ <20190831042857.GD2263813@devbig004.ftw2.facebook.com>
+ <20190903075550.GJ2112@phenom.ffwll.local>
+ <20190903185013.GI2263813@devbig004.ftw2.facebook.com>
+ <CAKMK7uE5Bj-3cJH895iqnLpwUV+GBDM1Y=n4Z4A3xervMdJKXg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <EFFA2298-8614-4AFC-9208-B36976F6548C@linaro.org>
+In-Reply-To: <CAKMK7uE5Bj-3cJH895iqnLpwUV+GBDM1Y=n4Z4A3xervMdJKXg@mail.gmail.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Paolo.
+Hello, Daniel.
 
-On Fri, Sep 06, 2019 at 11:07:17AM +0200, Paolo Valente wrote:
-> email.  As for the filesystem, I'm interested in ext4, because it is
-> the most widely used file system, and, with some workloads, it makes
+On Tue, Sep 03, 2019 at 09:48:22PM +0200, Daniel Vetter wrote:
+> I think system memory separate from vram makes sense. For one, vram is
+> like 10x+ faster than system memory, so we definitely want to have
+> good control on that. But maybe we only want one vram bucket overall
+> for the entire system?
+> 
+> The trouble with system memory is that gpu tasks pin that memory to
+> prep execution. There's two solutions:
+> - i915 has a shrinker. Lots (and I really mean lots) of pain with
+> direct reclaim recursion, which often means we can't free memory, and
+> we're angering the oom killer a lot. Plus it introduces real bad
+> latency spikes everywhere (gpu workloads are occasionally really slow,
+> think "worse than pageout to spinning rust" to get memory freed).
+> - ttm just has a global limit, set to 50% of system memory.
+> 
+> I do think a global system memory limit to tame the shrinker, without
+> the ttm approach of possible just wasting half your memory, could be
+> useful.
 
-Ext4 can't do writeback control as it currently stands.  It creates
-hard ordering across data writes from different cgroups.  No matter
-what mechanism you use for IO control, it is broken.  I'm sure it's
-fixable but does need some work.
+Hmm... what'd be the fundamental difference from slab or socket memory
+which are handled through memcg?  Is system memory used by GPUs have
+further global restrictions in addition to the amount of physical
+memory used?
 
-That said, read-only tests like you're doing should work fine on ext4
-too but the last time I tested io control on ext4 is more than a year
-ago so something might have changed in the meantime.
+> I'm also not sure of the bw limits, given all the fun we have on the
+> block io cgroups side. Aside from that the current bw limit only
+> controls the bw the kernel uses, userspace can submit unlimited
+> amounts of copying commands that use the same pcie links directly to
+> the gpu, bypassing this cg knob. Also, controlling execution time for
+> gpus is very tricky, since they work a lot more like a block io device
+> or maybe a network controller with packet scheduling, than a cpu.
 
-Just to rule out this isn't what you're hitting.  Can you please run
-your test on btrfs with the following patchset applied?
-
- http://lkml.kernel.org/r/20190710192818.1069475-1-tj@kernel.org
-
-And as I wrote in the previous reply, I did run your benchmark on one
-of the test machines and it did work fine.
+At the system level, it just gets folded into cpu time, which isn't
+perfect but is usually a good enough approximation of compute related
+dynamic resources.  Can gpu do someting similar or at least start with
+that?
 
 Thanks.
 
