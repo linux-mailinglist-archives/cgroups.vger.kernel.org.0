@@ -2,130 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2ED0AB5C3
-	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 12:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EEA0ABAAA
+	for <lists+cgroups@lfdr.de>; Fri,  6 Sep 2019 16:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730926AbfIFKZO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Sep 2019 06:25:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34808 "EHLO mx1.suse.de"
+        id S2394394AbfIFOSG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Sep 2019 10:18:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:36032 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729613AbfIFKZO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 6 Sep 2019 06:25:14 -0400
+        id S2394366AbfIFOSG (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 6 Sep 2019 10:18:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2F171AF1B;
-        Fri,  6 Sep 2019 10:25:12 +0000 (UTC)
-Subject: Re: lot of MemAvailable but falling cache and raising PSI
-To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>,
-        Michal Hocko <mhocko@kernel.org>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
-References: <4b4ba042-3741-7b16-2292-198c569da2aa@profihost.ag>
- <20190905114022.GH3838@dhcp22.suse.cz>
- <7a3d23f2-b5fe-b4c0-41cd-e79070637bd9@profihost.ag>
- <e866c481-04f2-fdb4-4d99-e7be2414591e@profihost.ag>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Openpgp: preference=signencrypt
-Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <87c69256-8e5b-2195-2815-4c417d0575cb@suse.cz>
-Date:   Fri, 6 Sep 2019 12:25:09 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        by mx1.suse.de (Postfix) with ESMTP id 9904BAE50;
+        Fri,  6 Sep 2019 14:18:04 +0000 (UTC)
+Date:   Fri, 6 Sep 2019 16:18:02 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>, tglx@linutronix.de,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/4] cgroup: Remove ->css_rstat_flush()
+Message-ID: <20190906141801.GC16166@blackbody.suse.cz>
+References: <20190816111817.834-1-bigeasy@linutronix.de>
+ <20190816111817.834-2-bigeasy@linutronix.de>
+ <20190821155329.GJ2263813@devbig004.ftw2.facebook.com>
+ <20190822082032.qyy2isvvtj5waymx@linutronix.de>
+ <20190822135823.GO2263813@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <e866c481-04f2-fdb4-4d99-e7be2414591e@profihost.ag>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="eHhjakXzOLJAF9wJ"
+Content-Disposition: inline
+In-Reply-To: <20190822135823.GO2263813@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/6/19 12:08 PM, Stefan Priebe - Profihost AG wrote:
-> These are the biggest differences in meminfo before and after cached
-> starts to drop. I didn't expect cached end up in MemFree.
-> 
-> Before:
-> MemTotal:       16423116 kB
-> MemFree:          374572 kB
-> MemAvailable:    5633816 kB
-> Cached:          5550972 kB
-> Inactive:        4696580 kB
-> Inactive(file):  3624776 kB
-> 
-> 
-> After:
-> MemTotal:       16423116 kB
-> MemFree:         3477168 kB
-> MemAvailable:    6066916 kB
-> Cached:          2724504 kB
-> Inactive:        1854740 kB
-> Inactive(file):   950680 kB
-> 
-> Any explanation?
 
-How does /proc/pagetypeinfo look like?
-Also as Michal said, collecting the whole of /proc/vmstat (e.g. catting
-it to vmstat.$TIMESTAMP once per second) when the bad situation is
-happening, would be useful.
-You could also try if the bad trend stops after you execute:
- echo never > /sys/kernel/mm/transparent_hugepage/defrag
+--eHhjakXzOLJAF9wJ
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Aug 22, 2019 at 06:58:23AM -0700, Tejun Heo <tj@kernel.org> wrote:
+> Nack for the whole series.  Please stop mixing interface and locking
+> changes.
+A bit na=EFve question -- why to keep unused functions that may come
+handy, in the future, possibly? (I reckon there is no clear general
+answer, the two cases below illustrate that.)
+
+The reasons for ->css_rstat_flush() presence that I see:
+- it's the required extension point of rstat mechanism,
+- together with cgroup_rstat_lock it keeps a guarantee for potential
+  users that they don't need to synchronize on their own when
+  aggregating stats.
+
+I'm not so sure about cgroup_rstat_flush_irqsafe() though. That function
+is currently not used. Would anyone possibly need doing stats
+aggregation in IRQ context? I don't see the reason. Then the
+cgroup_rstat_lock could be taken without IRQs disabled as proposed, no? [1]
+
+The "[PATCH 4/4] cgroup: Acquire cgroup_rstat_lock with enabled
+interrupts" also moves the IRQs disabling to the per-cpu
+cgroup_rstat_cpu_lock. Honestly, I don't understand the reasoning.
+(Although, disabling IRQs with this lock may see some use if stat
+updates happened from within IRQ handlers.)
+
+Michal
+
+[1] Or do we need IRQs disabled because of cputime_adjust() obtaining
+consistent data (in cgroup_base_stat_cputime_show())? Then
+cgroup_rstat_flush_hold() shouldn't pass may_sleep =3D true.
+
+--eHhjakXzOLJAF9wJ
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl1yapMACgkQia1+riC5
+qShJPQ/7B31c73JmytHOgI20xfrHekaUXXCvLL6U/05WMVckKdOCeSM/ikyhAL1u
+sWDz2mKlm3sGC6BDrgNATmecQhz8gtB2R32U5waV9GZufaNZ6YloIPqnx5j5RBW8
+E+QRxaThfinr2k/l7zj+mQtRm2kC2zaedi2whBqxlBCcqlicGIxuMhaH7CwNeWJx
+7+YW2Lfq3BXkE/fI1xUUplwH7B+ZX4NmtXiF7jaVYAeQD9X9+Ms3IAiDZxDiVYP5
++5daTMbbEIL8lqeU4F5D1OP/Ct3Y3hR+l7EU8sVn6wri6Lzl0AFljlw2RyK+wjdL
+TlOsHHN40hU7c+qOZajhAxr8lGZssW/kQVQ7oj0WCgyhyfkSO32WnNUfqnlPXsMv
+MYCelzfcySr23XQwqzBhsYcO0P4OVf06C17oi4AyVhAZgN7lxeGQKG3m6qzpBuLf
+92Fb5kupB74rRJz/1OJzZLf0/60UwuMNmqJEF7Bc6H7sjxI6qaGQY/h5qC9gkwkz
+R5b+m/+6z1nqqR4Tisp1R1XKVjKXfKxJnCiStSJVw35wrurAx85rgihrBHIxEOOJ
+ZbnFi+o6ZOng40ZnN01BEOlx3Vff0dHQMivBrUFkmJfTuoDiEYvJkdYFVDefohMT
+jpr3IluvQadyX+E3S6wnpOhJEr1Yq7ygK0q9ObojZnbLHiAluZ4=
+=GVQ5
+-----END PGP SIGNATURE-----
+
+--eHhjakXzOLJAF9wJ--
