@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 133B7ACF53
-	for <lists+cgroups@lfdr.de>; Sun,  8 Sep 2019 16:39:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64116AD3EA
+	for <lists+cgroups@lfdr.de>; Mon,  9 Sep 2019 09:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726836AbfIHOjK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 8 Sep 2019 10:39:10 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:35050 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726752AbfIHOjK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 8 Sep 2019 10:39:10 -0400
-Received: by mail-lf1-f67.google.com with SMTP id w6so8533048lfl.2;
-        Sun, 08 Sep 2019 07:39:08 -0700 (PDT)
+        id S2388182AbfIIHcH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Sep 2019 03:32:07 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39631 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732359AbfIIHcE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Sep 2019 03:32:04 -0400
+Received: by mail-wm1-f67.google.com with SMTP id q12so13345878wmj.4
+        for <cgroups@vger.kernel.org>; Mon, 09 Sep 2019 00:32:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FmmHtAJUP2a/sLNIvsEgkXzhFS+gIz57sAKIuY6RAn8=;
-        b=lBDsvcqqCALrs7Asc/HmKgFWFmwGNUKXuO1TAhKJ5Csl+ugUwRosyWCH334U7DF+ZF
-         dcoLrwnMGGWEpFSOiyHsNBBRLoSjg97E2KnqWfDOV4ZIavS1O0CNzvZFJhRlUU6deFCS
-         rMCFjQV/LyfaP0/59T1/0LlgAivaQpSrPCCk5LAJvkt7WHPFkVo6eS4szqHZNAQrGvxK
-         LHXyEbIFlqq+lVSU6OZ6pJC8prWZ8mk0H+7gtoYydJpgt6dNrc+PdesE+N0mUu65ogSu
-         vkkkXx3SIF2SWg+LALK7c/dINDV5wP70vX9NWMxYhgM9MdGv4vaJlLDWtFKjKYbWFxLp
-         Q6jA==
+        bh=B1DB8hLBI0DfoqSgN7BPkx2C4LPQLRBtlT6+2pkAJhs=;
+        b=HKRj88wLIuKKvMVrlcCv44LZGStlBJSMMWn4leonTHif3dSsI6XAAv+OM86+GCrN1v
+         /hOaBr4dA9agJJsMN2NYIiBjmsuYpTNf+QT52+rpd974601QbtgJW3WkeenkfG758vHI
+         8ZxT/x+F2of1EhU+ByWFVGSyy1wTh1hM88FeSE1dPOx5hCgQYmVMy2M94iciqXojaTmL
+         3VOUCnsFbF9Ancywa6eTxH/S//UOOLO/4AZLR5wRM1KS4iGmDekWn9sLA1XZwuc5p3s5
+         QmPtliwpPqY1PJaqx6n0mXBW58VfnEJe87NWLZ/rah0/r1Rte+oSMwZzDYGlc18n3Dpp
+         7wUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=FmmHtAJUP2a/sLNIvsEgkXzhFS+gIz57sAKIuY6RAn8=;
-        b=AESS/ByH986uYrOHabsob0Pp6LJLKvj92cCCxZnhoIbspcvkSRfijR8vwcrWWcmn0K
-         TJCmHPs9F+LSvLLrDlYmIXc9aO5mWSgL5qVCSS3PN3IFJO4qPd973Pnp/AVU69uKYRaY
-         epFqXM48UrsLf3++SPDHDky25wSwisDXfley5XMHY5V/1zawflOd2cGYbWwboLK6YHCY
-         KNU99z3zBOI2Fqc8UsSSF4tDdVDrX9tCWKZrTk5G875IOEBUUUnQQc+Y/g8rudfWVsZr
-         ixgBxV+8Dj5XFEgTvhaS21GPw+Pi42jw8TXr1ebtLnXn0Jy7KF4fWx9ujhMYYg+WdQJZ
-         ryxA==
-X-Gm-Message-State: APjAAAX4pKP15RS8xhmtApSHWDuMaJzf07ybO4q73DxZPloHMSXQQSpt
-        AhuBnZ4yDwxx4dyNBAYUSVo=
-X-Google-Smtp-Source: APXvYqxcbaQS8WynGpl53n+pakgNA0lHVLZrKm5k4Gn6oLQe8fn3KHnNy1mTo5IscKem22QUoBsyRg==
-X-Received: by 2002:a19:5f55:: with SMTP id a21mr13732991lfj.56.1567953547645;
-        Sun, 08 Sep 2019 07:39:07 -0700 (PDT)
-Received: from alpha (ppp78-37-236-177.pppoe.avangarddsl.ru. [78.37.236.177])
-        by smtp.gmail.com with ESMTPSA id p12sm2007088ljn.15.2019.09.08.07.39.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Sep 2019 07:39:06 -0700 (PDT)
-Received: (nullmailer pid 19711 invoked by uid 1000);
-        Sun, 08 Sep 2019 14:40:43 -0000
-From:   Ivan Safonov <insafonov@gmail.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ivan Safonov <insafonov@gmail.com>
-Subject: [PATCH] cgroup: use kv(malloc|free) instead of pidlist_(allocate|free)
-Date:   Sun,  8 Sep 2019 17:40:41 +0300
-Message-Id: <20190908144041.19667-1-insafonov@gmail.com>
-X-Mailer: git-send-email 2.21.0
+        bh=B1DB8hLBI0DfoqSgN7BPkx2C4LPQLRBtlT6+2pkAJhs=;
+        b=fZMQ9Qkt8y1nAWHDhLl2efoY2IgmPVN8eQMFvg/kS4aHuu9rwxHMgqOMQ/wHb9EnS7
+         dVBUha7QwJGBs1W4TN2eqrQAHTyhm4U4/X1KNDmXalQQ/WAxxVhBJeW43sOX0ONvNOJR
+         I0HHKcUY3mc7qU4jZBXu8clcdQAmPr4Zsi2keSEcg5YMsbDyNefEzZ/PLoc8k+4OlOam
+         crhWVvb0169Ozec77k6ukRtESNada/1oWp4GfUCgYkBOyK9EWfsMSH3dGOoFKaKUivP8
+         Zh9/BI4kWSDWAgcoSPbGgjRhHcmM7+Y38Nn0pAZTesIzVndXioldeozbWmIY6yDOc+uR
+         dXIg==
+X-Gm-Message-State: APjAAAWHm8lMm+00v7mHVMNZ38BrRJ8XK3qHdxA2MucAD3J6qFaRKEZz
+        gJ9gUi/D/l1HdV90lqdC+QOeXQ==
+X-Google-Smtp-Source: APXvYqzv1j7KdbWHRbYvFmEQmw0sUCnWSiYEhKtrI2a3yeQ+7I2WDIr3T9Q1zYOP3/YMvnPk/YV7DA==
+X-Received: by 2002:a1c:7f4f:: with SMTP id a76mr11413619wmd.117.1568014320844;
+        Mon, 09 Sep 2019 00:32:00 -0700 (PDT)
+Received: from localhost.localdomain (146-241-7-242.dyn.eolo.it. [146.241.7.242])
+        by smtp.gmail.com with ESMTPSA id c8sm617012wrr.49.2019.09.09.00.31.59
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 09 Sep 2019 00:32:00 -0700 (PDT)
+From:   Paolo Valente <paolo.valente@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ulf.hansson@linaro.org, linus.walleij@linaro.org,
+        bfq-iosched@googlegroups.com, oleksandr@natalenko.name,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Paolo Valente <paolo.valente@linaro.org>
+Subject: [PATCH 0/1] block, bfq: remove bfq prefix from cgroups filenames
+Date:   Mon,  9 Sep 2019 09:31:16 +0200
+Message-Id: <20190909073117.20625-1-paolo.valente@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
@@ -62,81 +62,29 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Resolve TODO:
-> The following two functions "fix" the issue where there are more pids
-> than kmalloc will give memory for; in such cases, we use vmalloc/vfree.
-> TODO: replace with a kernel-wide solution to this problem
+Hi Jens,
+now that BFQ's weight interface has been fixed [1], can we proceed
+with this change?
 
-kv(malloc|free) is appropriate replacement for pidlist_(allocate|free).
+In addition to acking this solution, in [2] Tejun already suggested a
+reduced version of the present patch. In Tejun's version, only
+bfq.weight is changed. But I guess that legacy code may use also some
+of the other bfq parameters in cgroups, without the bfq prefix. Apart
+from that, any version is ok for me, provided that it solves the
+current confusing situation for userspace [3].
 
-Signed-off-by: Ivan Safonov <insafonov@gmail.com>
----
- kernel/cgroup/cgroup-v1.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+Thanks,
+Paolo
 
-diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index 88006be40ea3..1f25f35af2c4 100644
---- a/kernel/cgroup/cgroup-v1.c
-+++ b/kernel/cgroup/cgroup-v1.c
-@@ -193,25 +193,6 @@ struct cgroup_pidlist {
- 	struct delayed_work destroy_dwork;
- };
- 
--/*
-- * The following two functions "fix" the issue where there are more pids
-- * than kmalloc will give memory for; in such cases, we use vmalloc/vfree.
-- * TODO: replace with a kernel-wide solution to this problem
-- */
--#define PIDLIST_TOO_LARGE(c) ((c) * sizeof(pid_t) > (PAGE_SIZE * 2))
--static void *pidlist_allocate(int count)
--{
--	if (PIDLIST_TOO_LARGE(count))
--		return vmalloc(array_size(count, sizeof(pid_t)));
--	else
--		return kmalloc_array(count, sizeof(pid_t), GFP_KERNEL);
--}
--
--static void pidlist_free(void *p)
--{
--	kvfree(p);
--}
--
- /*
-  * Used to destroy all pidlists lingering waiting for destroy timer.  None
-  * should be left afterwards.
-@@ -244,7 +225,7 @@ static void cgroup_pidlist_destroy_work_fn(struct work_struct *work)
- 	 */
- 	if (!delayed_work_pending(dwork)) {
- 		list_del(&l->links);
--		pidlist_free(l->list);
-+		kvfree(l->list);
- 		put_pid_ns(l->key.ns);
- 		tofree = l;
- 	}
-@@ -365,7 +346,7 @@ static int pidlist_array_load(struct cgroup *cgrp, enum cgroup_filetype type,
- 	 * show up until sometime later on.
- 	 */
- 	length = cgroup_task_count(cgrp);
--	array = pidlist_allocate(length);
-+	array = kvmalloc(array_size(length, sizeof(pid_t)), GFP_KERNEL);
- 	if (!array)
- 		return -ENOMEM;
- 	/* now, populate the array */
-@@ -390,12 +371,12 @@ static int pidlist_array_load(struct cgroup *cgrp, enum cgroup_filetype type,
- 
- 	l = cgroup_pidlist_find_create(cgrp, type);
- 	if (!l) {
--		pidlist_free(array);
-+		kvfree(array);
- 		return -ENOMEM;
- 	}
- 
- 	/* store array, freeing old if necessary */
--	pidlist_free(l->list);
-+	kvfree(l->list);
- 	l->list = array;
- 	l->length = length;
- 	*lp = l;
--- 
-2.21.0
+[1] https://lkml.org/lkml/2019/8/27/1716
+[2] https://www.mail-archive.com/linux-block@vger.kernel.org/msg35823.html
+[3] https://github.com/systemd/systemd/issues/7057
 
+Angelo Ruocco (1):
+  block, bfq: delete "bfq" prefix from cgroup filenames
+
+ block/bfq-cgroup.c | 46 +++++++++++++++++++++++-----------------------
+ 1 file changed, 23 insertions(+), 23 deletions(-)
+
+--
+2.20.1
