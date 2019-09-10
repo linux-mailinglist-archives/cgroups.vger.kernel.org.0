@@ -2,63 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B73FAF0F8
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 20:21:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5A65AF111
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 20:32:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726618AbfIJSVW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Sep 2019 14:21:22 -0400
-Received: from mail-pg1-f177.google.com ([209.85.215.177]:40500 "EHLO
-        mail-pg1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727352AbfIJSVV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Sep 2019 14:21:21 -0400
-Received: by mail-pg1-f177.google.com with SMTP id w10so10161175pgj.7
-        for <cgroups@vger.kernel.org>; Tue, 10 Sep 2019 11:21:19 -0700 (PDT)
+        id S1727079AbfIJScI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Sep 2019 14:32:08 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:36970 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725875AbfIJScI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Sep 2019 14:32:08 -0400
+Received: by mail-pl1-f194.google.com with SMTP id b10so9017594plr.4
+        for <cgroups@vger.kernel.org>; Tue, 10 Sep 2019 11:32:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=He18b5RVxxpe8smLyrpLpEIbfLqZ+paKB0vO+pHwR0g=;
-        b=xqDdzksClH+VzDniz0I3kbc4+dbzzazVKzgT6Ff4DZMABzndDy97UPPfDYpirqRCml
-         PFu9R4FCQtPyGcxX/uYeajB/GMRFM0mZUbiZDKp83Aky9HTCz45hCcdFFkDt+V2HvzYI
-         TfNIAcMWT4/Z38wIcFGpNBTsAjEeuCKY5GHcu/2ZO9zytYqipZbjE6Pr1OmE2xFFJNpK
-         jGApnEkDxlX0I2fd6Kv4CSpKDI5HI1r7tfX8JMs0XYpDeZRO2KhFEAeTVCP8v/l80S7J
-         haD3WvPie8GxrBV3FQyZcasYkmMDtrDImkPwXs4nib/c5wR/YXhvjZfcP7BG5/yvZREU
-         obew==
+        bh=gmihbRTTguhKuF5poqPrKOZtRuKZ2B/FVhu85kYPomo=;
+        b=eFEJ0DHdQ+gOjr08che3M4Ms36pQZ/j0IezL7oi03HQnX2YjfG1S+nNKpcLRqLGWtQ
+         PPxCQw+rHkJOyVpzA+WrbkIWHKwEQwYWJoThRT+YJ+Z3FLxkwzRk/gUSR4mBaYxPs/A3
+         ZHHHb/+KW51o1rmGeub/erimGc9yzYv0SnByD5rdzoyIJ7PwZNxKm4n1vCbrVDwpCWvS
+         sAbC06jkTUKjyfwSL8GcQMX4lTVlRzbXbCyowRdrk/eNaJMSv2bHcL8+UjIkLfgVeR0a
+         eK1lxBcNMUCi4/G5rr+vfxQG/ioz4oWUm9RgMCHhKh1G9K44i828u1woNK4lOf65DSik
+         a8Bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=He18b5RVxxpe8smLyrpLpEIbfLqZ+paKB0vO+pHwR0g=;
-        b=e5IfdRfMlkyaLjRImSeC0mS68qYEPo2NNq0y3wSrRhxB1Gu7gAg4cAzzfBeSF5fAAE
-         TT+nwkbhGGpYCQ9eObO0ZHRaEr3f91Nu74lBlFSIyckjV0Hs0qbtchPtGTxGU9LN71vI
-         CToNHEEKts0u80QOLCv0FAGzc3HnbU4BIwvX9Fk0wJme/pl6aImNGhCQ6aI/QzzSnx7U
-         kyDn3TNPLvJ/VuNWLqgDpe+EsuhJDgEEtVt2lBPHqqWWJJQv83zaHTgA2G6nRfhcF5/G
-         vR2auEIebW1w4Wv9Z8dqe+6arwHHgj87+ZG+LksOoOiUf8psWMFOH9WDQnh3ereRXcZz
-         vVfQ==
-X-Gm-Message-State: APjAAAXnWjLPimpnxKsa22q7GVADoor1FSo28/+s+fJVz3r95QEdHYOE
-        YK4vRbz8dajNoeXh2AcBHrspIO6WDf0=
-X-Google-Smtp-Source: APXvYqxEGGAanfl9SlthPWRKT+GwrUUtorAPx3HUFq4hKMuGjQSTQz95q8I0tLNAn4ATjGR8vVobqw==
-X-Received: by 2002:a62:3893:: with SMTP id f141mr21107527pfa.221.1568139679352;
-        Tue, 10 Sep 2019 11:21:19 -0700 (PDT)
-Received: from ?IPv6:2600:380:b456:5481:e4d0:d8e2:e397:e69f? ([2600:380:b456:5481:e4d0:d8e2:e397:e69f])
-        by smtp.gmail.com with ESMTPSA id g2sm20935834pfm.32.2019.09.10.11.21.15
+        bh=gmihbRTTguhKuF5poqPrKOZtRuKZ2B/FVhu85kYPomo=;
+        b=rNOP4ejBu3IB0gTpbFZARFr4Hhj8pSN9zXiTsAKyQw43edA2mVW2+HnjMATWrEjx3a
+         oVMMkU306l+X33sHjBLu3KWpO8xIKCDubiryOtqHrinkBbmgIn2hawYpLs2TyQVLkPBp
+         jBfoQ5CmMPybZwR1Ep6TGyoLCLECAgfGNb98Poyy8oD+rwpIetdCyzgVsuc69o6XqebJ
+         EvUgoWaMuShyCu2yMfelTqxcRC4XSs5ADZqp1WlORxIhDoAM48YCusE9Kn8iLw0ThOXZ
+         DdlSw8Pz3nc6G88sr1EgwmJs/PMgL0CzqqaqQOrOXCzjXdZk556OuQU/LtPQLTvrw8TC
+         4efg==
+X-Gm-Message-State: APjAAAV4KIrB/dNbb0DUxTXO3zwMShQiY4R6qz3Rt6eLvQDd2j5NxXCh
+        K3CGVcVpFYt8kq73AWcWS09YaQ==
+X-Google-Smtp-Source: APXvYqxUyL7Z6oVqM2K/cpBXdQ5XU4zczgojdiiYF8PPrDacQNODuEfl8nlxlhZ7o1pEL7sF4f2lww==
+X-Received: by 2002:a17:902:b086:: with SMTP id p6mr32047305plr.315.1568140326506;
+        Tue, 10 Sep 2019 11:32:06 -0700 (PDT)
+Received: from ?IPv6:2600:380:b456:5481:2ce0:140c:7117:4b2a? ([2600:380:b456:5481:2ce0:140c:7117:4b2a])
+        by smtp.gmail.com with ESMTPSA id b20sm22735360pff.158.2019.09.10.11.32.04
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Sep 2019 11:21:17 -0700 (PDT)
-Subject: Re: [block/for-next] iocost: Fix incorrect operation order during
- iocg free
+        Tue, 10 Sep 2019 11:32:05 -0700 (PDT)
+Subject: Re: [PATCHSET block/for-next] blk-iocost: Implement absolute debt
+ handling
 To:     Tejun Heo <tj@kernel.org>
 Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, kernel-team@fb.com,
-        Dave Jones <davej@codemonkey.org.uk>
-References: <20190910161525.GT2263813@devbig004.ftw2.facebook.com>
+        kernel-team@vger.kernel.org, cgroups@vger.kernel.org,
+        newella@fb.com
+References: <20190904194556.2984857-1-tj@kernel.org>
 From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2222732f-09f7-1434-31a6-b591630d2efb@kernel.dk>
-Date:   Tue, 10 Sep 2019 12:21:14 -0600
+Message-ID: <1d8b7394-09bc-63ef-5bb7-de0f2ff2c75a@kernel.dk>
+Date:   Tue, 10 Sep 2019 12:32:02 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.8.0
 MIME-Version: 1.0
-In-Reply-To: <20190910161525.GT2263813@devbig004.ftw2.facebook.com>
+In-Reply-To: <20190904194556.2984857-1-tj@kernel.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,36 +67,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/10/19 10:15 AM, Tejun Heo wrote:
-> ioc_pd_free() first cancels the hrtimers and then deactivates the
-> iocg.  However, the iocg timer can run inbetween and reschedule the
-> hrtimers which will end up running after the iocg is freed leading to
-> crashes like the following.
+On 9/4/19 1:45 PM, Tejun Heo wrote:
+> Currently, when a given cgroup doesn't have enough budget, a forced or
+> merged bio will advance the cgroup's vtime by the cost calculated
+> according to the hierarchical weight at the time of issue.  Once vtime
+> is advanced, how the cgroup's weight changes doesn't matter.  It has
+> to wait until global vtime catches up with the cgroup's.
 > 
->    general protection fault: 0000 [#1] SMP
->    ...
->    RIP: 0010:iocg_kick_delay+0xbe/0x1b0
->    RSP: 0018:ffffc90003598ea0 EFLAGS: 00010046
->    RAX: 1cee00fd69512b54 RBX: ffff8881bba48400 RCX: 00000000000003e8
->    RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8881bba48400
->    RBP: 0000000000004e20 R08: 0000000000000002 R09: 00000000000003e8
->    R10: 0000000000000000 R11: 0000000000000000 R12: ffffc90003598ef0
->    R13: 00979f3810ad461f R14: ffff8881bba4b400 R15: 25439f950d26e1d1
->    FS:  0000000000000000(0000) GS:ffff88885f800000(0000) knlGS:0000000000000000
->    CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->    CR2: 00007f64328c7e40 CR3: 0000000002409005 CR4: 00000000003606e0
->    DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->    DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->    Call Trace:
->     <IRQ>
->     iocg_delay_timer_fn+0x3d/0x60
->     __hrtimer_run_queues+0xfe/0x270
->     hrtimer_interrupt+0xf4/0x210
->     smp_apic_timer_interrupt+0x5e/0x120
->     apic_timer_interrupt+0xf/0x20
->     </IRQ>
+> This means that the cost is calculated based on the hweight at the
+> time of issuing but may later be paid at the wrong hweight.  This, for
+> example, can lead to a scenario like the following.
 > 
-> Fix it by canceling hrtimers after deactivating the iocg.
+> 1. A cgroup with a very low hweight runs out of budget.
+> 
+> 2. A storm of swap-out happens on it.  All of them are scaled
+>     according to the current low hweight and charged to vtime pushing
+>     it to a far future.
+> 
+> 3. All other cgroups go idle and now the above cgroup has access to
+>     the whole device.  However, because vtime is already wound using
+>     the past low hweight, what its current hweight is doesn't matter
+>     until global vtime catches up to the local vtime.
+> 
+> 4. As a result, either vrate gets ramped up extremely or the IOs stall
+>     while the underlying device is idle.
+> 
+> This patchset fixes the behavior by accounting the cost of forced or
+> merged bios in absolute vtime rather than cgroup-relative.  This
+> allows the cgroup to pay back the debt with whatever actual budget it
+> has each period removing the hweight discrepancy.
+> 
+> Note that !forced bios' costs are already accounted in absolute vtime.
+> This patchset puts forced charges on the same ground.
+> 
+> This patchset contains the following five patches and is on top of the
+> current linux-block.git for-next 35e7ae82f62b ("Merge branch
+> 'for-5.4/block' into for-next").
+> 
+>   0001-blk-iocost-Account-force-charged-overage-in-absolute.patch
+>   0002-blk-iocost-Don-t-let-merges-push-vtime-into-the-futu.patch
+>   0003-iocost_monitor-Always-use-strings-for-json-values.patch
+>   0004-iocost_monitor-Report-more-info-with-higher-accuracy.patch
+>   0005-iocost_monitor-Report-debt.patch
+> 
+> 0001-0002 implement absolute debt handling.  0003-0005 improve the
+> monitoring script and add debt reporting.
 
 Applied, thanks.
 
