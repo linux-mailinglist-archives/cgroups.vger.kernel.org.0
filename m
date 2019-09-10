@@ -2,81 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 79ADAAE98F
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 13:54:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2761BAEAE7
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 14:55:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725981AbfIJLyv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Sep 2019 07:54:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43322 "EHLO mx1.suse.de"
+        id S2390795AbfIJMzX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Sep 2019 08:55:23 -0400
+Received: from mx2.suse.de ([195.135.220.15]:49918 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725935AbfIJLyv (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 10 Sep 2019 07:54:51 -0400
+        id S1730525AbfIJMzX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 10 Sep 2019 08:55:23 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 96058ABCE;
-        Tue, 10 Sep 2019 11:54:49 +0000 (UTC)
-Date:   Tue, 10 Sep 2019 13:54:48 +0200
-From:   Michal Hocko <mhocko@kernel.org>
+        by mx1.suse.de (Postfix) with ESMTP id D2174B8EF;
+        Tue, 10 Sep 2019 12:55:20 +0000 (UTC)
+Date:   Tue, 10 Sep 2019 14:55:14 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
-        Kenny Ho <y2kenny@gmail.com>, cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com
-Subject: Re: [PATCH RFC v4 00/16] new cgroup controller for gpu/drm subsystem
-Message-ID: <20190910115448.GT2063@dhcp22.suse.cz>
-References: <20190829060533.32315-1-Kenny.Ho@amd.com>
- <20190831042857.GD2263813@devbig004.ftw2.facebook.com>
- <20190903075550.GJ2112@phenom.ffwll.local>
- <20190903185013.GI2263813@devbig004.ftw2.facebook.com>
- <CAKMK7uE5Bj-3cJH895iqnLpwUV+GBDM1Y=n4Z4A3xervMdJKXg@mail.gmail.com>
- <20190906152320.GM2263813@devbig004.ftw2.facebook.com>
- <CAKMK7uEXP7XLFB2aFU6+E0TH_DepFRkfCoKoHwkXtjZRDyhHig@mail.gmail.com>
- <20190906154539.GP2263813@devbig004.ftw2.facebook.com>
+Cc:     hannes@cmpxchg.org, clm@fb.com, dennisz@fb.com, newella@fb.com,
+        lizefan@huawei.com, axboe@kernel.dk, josef@toxicpanda.com,
+        Josef Bacik <jbacik@fb.com>, kernel-team@fb.com,
+        Rik van Riel <riel@surriel.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Valente <paolo.valente@linaro.org>
+Subject: Re: [PATCH 08/10] blkcg: implement blk-iocost
+Message-ID: <20190910125513.GA6399@blackbody.suse.cz>
+References: <20190828220600.2527417-1-tj@kernel.org>
+ <20190828220600.2527417-9-tj@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1yeeQ81UyVL57Vl7"
 Content-Disposition: inline
-In-Reply-To: <20190906154539.GP2263813@devbig004.ftw2.facebook.com>
+In-Reply-To: <20190828220600.2527417-9-tj@kernel.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 06-09-19 08:45:39, Tejun Heo wrote:
-> Hello, Daniel.
-> 
-> On Fri, Sep 06, 2019 at 05:34:16PM +0200, Daniel Vetter wrote:
-> > > Hmm... what'd be the fundamental difference from slab or socket memory
-> > > which are handled through memcg?  Is system memory used by GPUs have
-> > > further global restrictions in addition to the amount of physical
-> > > memory used?
-> > 
-> > Sometimes, but that would be specific resources (kinda like vram),
-> > e.g. CMA regions used by a gpu. But probably not something you'll run
-> > in a datacenter and want cgroups for ...
-> > 
-> > I guess we could try to integrate with the memcg group controller. One
-> > trouble is that aside from i915 most gpu drivers do not really have a
-> > full shrinker, so not sure how that would all integrate.
-> 
-> So, while it'd great to have shrinkers in the longer term, it's not a
-> strict requirement to be accounted in memcg.  It already accounts a
-> lot of memory which isn't reclaimable (a lot of slabs and socket
-> buffer).
 
-Yeah, having a shrinker is preferred but the memory should better be
-reclaimable in some form. If not by any other means then at least bound
-to a user process context so that it goes away with a task being killed
-by the OOM killer. If that is not the case then we cannot really charge
-it because then the memcg controller is of no use. We can tolerate it to
-some degree if the amount of memory charged like that is negligible to
-the overall size. But from the discussion it seems that these buffers
-are really large.
--- 
-Michal Hocko
-SUSE Labs
+--1yeeQ81UyVL57Vl7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hello.
+
+On Wed, Aug 28, 2019 at 03:05:58PM -0700, Tejun Heo <tj@kernel.org> wrote:
+> diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+> [...]
+> +static struct cftype ioc_files[] = {
+> +		.name = "weight",
+> [...]
+This adds the generic io.weight attribute. How will this compose with
+the weight from IO schedulers? (AFAIK, only BFQ allows proportional
+control as of now. +CC Paolo.)
+
+I see this attributes are effectively per-cgroup per-device. Apparently,
+one device should have only one weight across hierarchy. Would it make
+sense to have io.bfq.weight and io.cost.weight with disjunctive devices?
+
+(Alas, I have no idea how to make the users of io.weight happy, when
+proportionality control mechanism seems orthogonal to the weight.
+(Vector weights?))
+
+
+> +		.name = "cost.qos",
+> +		.flags = CFTYPE_ONLY_ON_ROOT,
+> [...]
+> +		.name = "cost.model",
+> +		.flags = CFTYPE_ONLY_ON_ROOT,
+I'm concerned that these aren't true cgroup attributes. The root cgroup
+would act as container for global configuration options. Wouldn't these
+values better fit as (configurable) attributes of the respective
+devices?
+
+Secondly, how is CFTYPE_ONLY_ON_ROOT supposed to be presented in cgroup
+namespaces?
+
+Thanks,
+Michal
+
+--1yeeQ81UyVL57Vl7
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl13nSUACgkQia1+riC5
+qShK8w//Q7gh2wjcYmn/uuKlxF40/MhRa8LwT9aDjZp3gEiRmMQbHUHpx3Td5aAl
+nPOQEp/W2sucYziohHPIokkeXIx+RwJliOEYfOCP+47ZOtWpeBXe6bTfmeRe87Ak
+xSZ6M3ibr2Y4mNLdcvjSzSeh1T0qAha9B5DBEuK7C4xqK45DKSekLjVmd9jd71cE
+CoYm56fVYZpDcYAHdTW7kjMie85QTLbiEY0WsuC563fxAoHDBZCDReIEtuAeMMog
+lgOgBquPb6OCObzkE9CYMSroWMCRPkq2F9BTnk85fnpXkeQeE1cP8FbFt8CXGSh2
+wsaz3dP8z7TAkUHRGySQiqaxsWDKRh/6KBk8Lv/wxffF3nSGLXuHC8tKcQIWHP45
+y+e6utaK47XA7JDZcXObloE200Vpko5MhYM6vKsUYNDQ8BQjew/+xs5aYdU7yO/z
+RtstUYBwgH6WWufm7D4yezdWGaJCZCuqtd46hy9vz8sJpm7iuJFbQdIQRD9z4kSf
+NieSVJLSO3p6QJVYOdbtN1xzEEz1Qm8UJaHcgyjaUckKVjnkB7UWe/U5wj7D+b5R
+sI0i0ACF6fdMsM0UnVArg4usmuFcwhO7NkngLrY85c6UTP75At+FhmTRJA3ZaIXI
+l3T8OtIYNXt3+PBYIGwcPHLDa+HbPOToKpeP6ePE1r9ZzSV8bzI=
+=VCDP
+-----END PGP SIGNATURE-----
+
+--1yeeQ81UyVL57Vl7--
