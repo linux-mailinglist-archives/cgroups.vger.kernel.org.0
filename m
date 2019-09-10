@@ -2,75 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC59AEF14
-	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 18:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAECAAEF2B
+	for <lists+cgroups@lfdr.de>; Tue, 10 Sep 2019 18:09:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388927AbfIJQDe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Sep 2019 12:03:34 -0400
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:34088 "EHLO
+        id S2394060AbfIJQI7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Sep 2019 12:08:59 -0400
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36605 "EHLO
         mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732013AbfIJQDe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Sep 2019 12:03:34 -0400
-Received: by mail-qt1-f194.google.com with SMTP id j1so8630606qth.1
-        for <cgroups@vger.kernel.org>; Tue, 10 Sep 2019 09:03:34 -0700 (PDT)
+        with ESMTP id S1726998AbfIJQI7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Sep 2019 12:08:59 -0400
+Received: by mail-qt1-f194.google.com with SMTP id o12so21425827qtf.3;
+        Tue, 10 Sep 2019 09:08:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7aIOX124CvBDQ+soNFV0AIGLUFHPyLLvAhmjlVF2WPk=;
-        b=VqkWghjlkTpH+A8hE16ODggPKsNxNZPC2yhI1hjp84XcqzJbGwKU6z8oknVnI7TadB
-         PHemMFbHH5gvsYBqcWlvRyRxP4VRQ3tpv8Q8FV/8k0cwe9Gs9BHCFpHFy1pVKBlSKOQr
-         5Sky68xI/IuGVVBezT7cYQo4JOmj/9g/gWri1H3bfoKG+F/gRyw5my6rpbxMkPN7+DlO
-         uKDrPZ9958F75rMuAIQ2BXJLAznPnFZUPvnKoQrBSmmopoOxVILteEphyDO7v4gWhGwR
-         E47gNFbPptPrTFOAtK4SexBzeZN9jrwYCatSt1d+mXYimj1UDBzcH1LZ2YuZrwi4OHd9
-         1zfQ==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=bdd/RVi8vfAfg851AYquHh04me7NuiJ7iVVTsDpYp68=;
+        b=fUA+fYqvDaEh6XnC8UBQ3JpjN/2WjcxI+8CiRk4SalHIoVe5prkjFMu71bb/uLhLEi
+         vdSRmM1ImkGHh+5l222crJZZ8/ZbN5H9jaqs5XiMxOkLTzGZGkekXnXHoceWM87OVVZW
+         t0OZsTU5TT8dmyCn/uOnVU4OzwLHubfn9Uk/eyxwR46e9wcUNF0twyojDJIJ4r9hPgm+
+         ctrVk79+ExOfFiWG/zP/jiTtOv9aL/Mk6GmHBR0tH9tBI793M0JSgUKIbdE11v4CZcki
+         biWouuq8snH+yIDMNXZDgpkw+bvxzlXrTIXXskJqm/qPfuoXfRt7hgJ7cl/2r4M4jd6M
+         /rRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7aIOX124CvBDQ+soNFV0AIGLUFHPyLLvAhmjlVF2WPk=;
-        b=WKnDLLcuiFiTF27w39l1YlUSKKCxB3O0LMz7R5uKPh2fQnyhRrVeH0i67Q3LSuppRF
-         5U8jUDiCyTQQvWyrEP8YwMGYN3KVRF/mMbYvIRwSbhm26Onrv7tMLUKvU3Uch3c4wwX9
-         PmnoRmmfd7pTXR6D/AsHkDJTgzF/oKE819BBZOgGlwo/NwP20DKeYXt4E5cc1zOS2day
-         UZc+imqcu6K6m2HfUKtYja6I5wWOiCl7aUx59M/NvpmwSHxLPh1mrLmTau+K4xyUJUdD
-         YZLWciHxihFKcrxCCnzH2ZZe61XmEsvjDViMIzX4+mrRBVEfq54tAHd40Fx5kr2QOlu0
-         ZgRA==
-X-Gm-Message-State: APjAAAUsvTSuJCYucOd+krjYW8P4cG81znCmPJ0vD/7n9qp3kdDcJ7/M
-        zm6vFi6ihZuj/cUC4lYCipwpDLr3NOU=
-X-Google-Smtp-Source: APXvYqx5gqcyO2isFyQIcHOc2o+DcKf/TqnH/zbLgQZA4VElls50DS+7LNJQCVGNDmDZFbFJ4RCP6Q==
-X-Received: by 2002:aed:2d67:: with SMTP id h94mr29270980qtd.63.1568131413281;
-        Tue, 10 Sep 2019 09:03:33 -0700 (PDT)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=bdd/RVi8vfAfg851AYquHh04me7NuiJ7iVVTsDpYp68=;
+        b=Xt5SG5XtyBA6qhASIRM4KZGFpyopS97sn8S5HuVAFUEbkVzbcEsEyDWUHo1RX1mwrW
+         rhQG9GLGfmIGNhOP3G+V5XbJP0/LyKEPvCQXmy6uJkYVuRXzT9CigmeimNN72DXwbTlS
+         zpFWATZi5N9rrPzyUxPOR4+X9zHvLO0oQE4MXq/nxiZLb5s/kzDlssfqRjSzCHsbz6D9
+         fFD/rvzTbF6NRtUD2IyWDax53rPajgUWVWQmduRvPFvX8g1jNpuSzdDDgkkQcTrJkk99
+         bfSzed4xzb7DZHoFqIFLYsdDxMNv4CT+5a+mb6sElaCpTrQyExoWfm020ri3ZH1k9Bxb
+         8c+Q==
+X-Gm-Message-State: APjAAAWPIbZUEyyqpRYG70FV9tEbe6mC9V0sAO03Z5vWqerhrI8gsDlX
+        EmghMwuQtq2teD9SWSg+pPY=
+X-Google-Smtp-Source: APXvYqy1mXMLatf/bfCumeTCUJ4Qv5l0eyL7tNeUKutGwTA1BrLjrBcgiAJOawTlqrJzUwRaNUHvnw==
+X-Received: by 2002:ac8:23b9:: with SMTP id q54mr31058151qtq.107.1568131737923;
+        Tue, 10 Sep 2019 09:08:57 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::2:f049])
-        by smtp.gmail.com with ESMTPSA id e17sm9285328qkn.61.2019.09.10.09.03.32
+        by smtp.gmail.com with ESMTPSA id a134sm9730633qkc.95.2019.09.10.09.08.56
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 10 Sep 2019 09:03:32 -0700 (PDT)
-Date:   Tue, 10 Sep 2019 09:03:29 -0700
+        Tue, 10 Sep 2019 09:08:57 -0700 (PDT)
+Date:   Tue, 10 Sep 2019 09:08:55 -0700
 From:   Tejun Heo <tj@kernel.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <Kenny.Ho@amd.com>,
-        Kenny Ho <y2kenny@gmail.com>, cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com
-Subject: Re: [PATCH RFC v4 00/16] new cgroup controller for gpu/drm subsystem
-Message-ID: <20190910160329.GR2263813@devbig004.ftw2.facebook.com>
-References: <20190829060533.32315-1-Kenny.Ho@amd.com>
- <20190831042857.GD2263813@devbig004.ftw2.facebook.com>
- <20190903075550.GJ2112@phenom.ffwll.local>
- <20190903185013.GI2263813@devbig004.ftw2.facebook.com>
- <CAKMK7uE5Bj-3cJH895iqnLpwUV+GBDM1Y=n4Z4A3xervMdJKXg@mail.gmail.com>
- <20190906152320.GM2263813@devbig004.ftw2.facebook.com>
- <CAKMK7uEXP7XLFB2aFU6+E0TH_DepFRkfCoKoHwkXtjZRDyhHig@mail.gmail.com>
- <20190906154539.GP2263813@devbig004.ftw2.facebook.com>
- <20190910115448.GT2063@dhcp22.suse.cz>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     hannes@cmpxchg.org, clm@fb.com, dennisz@fb.com, newella@fb.com,
+        lizefan@huawei.com, axboe@kernel.dk, josef@toxicpanda.com,
+        Josef Bacik <jbacik@fb.com>, kernel-team@fb.com,
+        Rik van Riel <riel@surriel.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Paolo Valente <paolo.valente@linaro.org>
+Subject: Re: [PATCH 08/10] blkcg: implement blk-iocost
+Message-ID: <20190910160855.GS2263813@devbig004.ftw2.facebook.com>
+References: <20190828220600.2527417-1-tj@kernel.org>
+ <20190828220600.2527417-9-tj@kernel.org>
+ <20190910125513.GA6399@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20190910115448.GT2063@dhcp22.suse.cz>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20190910125513.GA6399@blackbody.suse.cz>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -79,26 +73,45 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello, Michal.
 
-On Tue, Sep 10, 2019 at 01:54:48PM +0200, Michal Hocko wrote:
-> > So, while it'd great to have shrinkers in the longer term, it's not a
-> > strict requirement to be accounted in memcg.  It already accounts a
-> > lot of memory which isn't reclaimable (a lot of slabs and socket
-> > buffer).
-> 
-> Yeah, having a shrinker is preferred but the memory should better be
-> reclaimable in some form. If not by any other means then at least bound
-> to a user process context so that it goes away with a task being killed
-> by the OOM killer. If that is not the case then we cannot really charge
-> it because then the memcg controller is of no use. We can tolerate it to
-> some degree if the amount of memory charged like that is negligible to
-> the overall size. But from the discussion it seems that these buffers
-> are really large.
+On Tue, Sep 10, 2019 at 02:55:14PM +0200, Michal Koutný wrote:
+> This adds the generic io.weight attribute. How will this compose with
+> the weight from IO schedulers? (AFAIK, only BFQ allows proportional
+> control as of now. +CC Paolo.)
 
-Yeah, oom kills should be able to reduce the usage; however, please
-note that tmpfs, among other things, can already escape this
-restriction and we can have cgroups which are over max and empty.
-It's obviously not ideal but the system doesn't melt down from it
-either.
+The two being enabled at the same time doesn't make sense, so we can
+just switch over to bfq when bfq is selected as the iosched.  I asked
+what Paolo wanted to do in terms of interface a couple times now but
+didn't get an answer and he posted a patch which makes the two
+controllers conflict, so....  Paolo, so it looks like you want to
+rename all bfq files to drop the bfq prefix, right?  I can implement
+the switching if so.
+
+> I see this attributes are effectively per-cgroup per-device. Apparently,
+> one device should have only one weight across hierarchy. Would it make
+> sense to have io.bfq.weight and io.cost.weight with disjunctive devices?
+
+It never makes sense to have both enabled, so I don't think that
+interface makes sense.
+
+> > +		.name = "cost.qos",
+> > +		.flags = CFTYPE_ONLY_ON_ROOT,
+> > [...]
+> > +		.name = "cost.model",
+> > +		.flags = CFTYPE_ONLY_ON_ROOT,
+> I'm concerned that these aren't true cgroup attributes. The root cgroup
+> would act as container for global configuration options. Wouldn't these
+> values better fit as (configurable) attributes of the respective
+> devices?
+
+Initially, I put them under block device sysfs but it was too clumsy
+with different config file formats and all.  I think it's better to
+have global controller configs at the root cgroup.
+
+> Secondly, how is CFTYPE_ONLY_ON_ROOT supposed to be presented in cgroup
+> namespaces?
+
+Not at all.  These are system-wide configs.  cgroup namespaces
+shouldn't have anything which aren't in non-root cgroups.
 
 Thanks.
 
