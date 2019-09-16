@@ -2,105 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E957AB3D90
-	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2019 17:21:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF400B3DAF
+	for <lists+cgroups@lfdr.de>; Mon, 16 Sep 2019 17:29:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388609AbfIPPVG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Sep 2019 11:21:06 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:39415 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389040AbfIPPVF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Sep 2019 11:21:05 -0400
-Received: by mail-wr1-f67.google.com with SMTP id r3so9192737wrj.6
-        for <cgroups@vger.kernel.org>; Mon, 16 Sep 2019 08:21:04 -0700 (PDT)
+        id S1727374AbfIPP3z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Sep 2019 11:29:55 -0400
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:32869 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389125AbfIPP3v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Sep 2019 11:29:51 -0400
+Received: by mail-qt1-f195.google.com with SMTP id r5so341366qtd.0;
+        Mon, 16 Sep 2019 08:29:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=K5n01uhQ5HwxlBE5M/2zmjIiad/mSltxdBurQPag48E=;
-        b=Jy6+FzxuA5xspP87WcsXSOV4KOdYZWkwZV9U8INYadGh7JZSwRWH/gbT0hmx1AVdJp
-         c3z4qE9I4ZBu1OjPKIDmA/xJwG31JNjYTHNY62FngQXJj5Ch5iIf3UvshZV0IaFH7yuh
-         v9qvTI6LiL9JqE+hz8CfexVxz2uXwVd5QIAsfhXlMbsTH/wDD/OOX1+fX6e0lOq7Dc6o
-         kpe/jGOTZFtoFFaRWaeYDiih2pLyUhyfw4aG8BiagqvcX5YT1xfGUnnl72ARPECAPPBr
-         BSGYMoyvKuKfPeDNJ+h/hWOJcuvDR9nehhvCOzGJkCoKRRPU+l6z5hvmHnbNmglWZkkH
-         9olg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=Ey0wD9SSrsgQ+GVE+vYc1coFKJxFcUoh6S5jBW7ZYvo=;
+        b=r6Tdi/eeQB83Zu0TvOlrODrPbnDctrTtiVLezpx9OYq6F37NtaWbabg56gHTpdI46+
+         4PLIar4hiAHgKcM1xNimBS6Yf83anB4wxsER40seAeriMGLA5vBDLGNJe7X65PPCVdrb
+         cB7HaOl0pIOlEs6n0a1rqQUqcTCLkz0TupZDeojcFchmrQBGNXQW3ZnfchDR8SQZNCkV
+         v6KMEVgJSEsQcXbHCd0qU9rHkuLW7gplk2XZNoejD2u/hd6FyX5Up46CqdLeJncyY7w2
+         /RlNtrVqCHgO76Ma36XAB7w9caRNBZ9weXUnuxu9VsijfM2p9OACH2Ri4kYuglIb7mwp
+         eXjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=K5n01uhQ5HwxlBE5M/2zmjIiad/mSltxdBurQPag48E=;
-        b=gLqp/pADfX6J3RvR3VU7EKLP2obzDweiz7sQ3zVHCvLTzyw5YUnuREOZImCcFkzozF
-         E32bJwM3B7LzYh2XRI3+ELn83+tI2jBtMGmtAGP4AaNCicvEbXZ+qXfgdQwcF0BRWsCH
-         889ITb6Tv7sb2F45frjNl9bTRSH114u2gpY3XNGwHl1uVg0i59fk5gjVr2PRJiXa4yLM
-         Csn3MU5ZLNnadxf+kPQMrmhYVD/qgPp1ZByxn8tIuvIU/RngpqEu0NyBdIPVTwWPzElH
-         VomimKyMwVVydzENiRKA2yRONGGyCUKha89xxGzQrRXINBo+ZrCkJLU1gJhbXRaZxUXh
-         ArjA==
-X-Gm-Message-State: APjAAAXS8169Bdg1b73Cqt7DOan/MEX7drL+li3hiKqlOEkbr7tvApVt
-        EYagm0fDcCnaT7mszlTWazbN9MkPQmI=
-X-Google-Smtp-Source: APXvYqyjxEqp9sHAmo5kttc6Y0BlvcD5LMImSzPduV+19RimNQXROmwgEraX+NhAEljzg9KcrdGXzA==
-X-Received: by 2002:a5d:4b4e:: with SMTP id w14mr232550wrs.191.1568647263455;
-        Mon, 16 Sep 2019 08:21:03 -0700 (PDT)
-Received: from [192.168.0.101] (146-241-102-115.dyn.eolo.it. [146.241.102.115])
-        by smtp.gmail.com with ESMTPSA id c18sm7151337wrv.10.2019.09.16.08.21.02
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=Ey0wD9SSrsgQ+GVE+vYc1coFKJxFcUoh6S5jBW7ZYvo=;
+        b=hLjQQKvwsGrDypJb4XP5rJ+TEDB9txVr+viyXlYDEBYcoai5HuyazAKmg+ziAicb4y
+         4HK5/m7uNsFWGU0s+fTAtgeBoX9nFsIkloASEd4gDHNSacHAGNRMuHnBZdgFI53jriPZ
+         Zt8xb+YmPo4MfSWa9tI/70IcasqZ5fUbNvAElOi2lj34Rh+iubVNVWfYrx2+OmFj5+A/
+         cV8Up2bYjsrlROcuWDiPZd2yXqlk7v/+UKe2/R3eAV9K1QvW3pzZE5lNIRjqxX9cesHm
+         zTeDq50HzD08M/1S8N/j6IlC2Svh5GfsTan9YlAF0NQpNjES0uRuaYxHyYw7U5G+VZQI
+         yV9w==
+X-Gm-Message-State: APjAAAW0RXBevu5EwLt3GX79eiA2gGTOtE4q28KhS0e1XYPX7tH0aDv3
+        dNF/gt4JfEkleH+unLdC9CY=
+X-Google-Smtp-Source: APXvYqyXthja/QdH/NMIDXevzStb5/TsM5qOGaLrHnJeAP1ao11hRQe/lnCpRnc+KpP+QrPQjQt9hw==
+X-Received: by 2002:a0c:8a6d:: with SMTP id 42mr627069qvu.138.1568647790078;
+        Mon, 16 Sep 2019 08:29:50 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::c30c])
+        by smtp.gmail.com with ESMTPSA id b192sm17149426qkg.39.2019.09.16.08.29.49
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 16 Sep 2019 08:21:02 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
-Subject: Re: [PATCH 0/1] block, bfq: remove bfq prefix from cgroups filenames
-From:   Paolo Valente <paolo.valente@linaro.org>
-In-Reply-To: <20190916151643.GC3084169@devbig004.ftw2.facebook.com>
-Date:   Mon, 16 Sep 2019 17:21:01 +0200
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        noreply-spamdigest via bfq-iosched 
-        <bfq-iosched@googlegroups.com>,
-        Oleksandr Natalenko <oleksandr@natalenko.name>,
-        cgroups@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <64329DDB-FFF4-4709-83B1-39D5E6BF6AB6@linaro.org>
-References: <20190909073117.20625-1-paolo.valente@linaro.org>
- <80C56C11-DA21-4036-9006-2F459ACE9A8C@linaro.org>
- <c67c4d4b-ee56-85c1-5b94-7ae1704918b6@kernel.dk>
- <1F3898DA-C61F-4FA7-B586-F0FA0CAF5069@linaro.org>
- <20190916151643.GC3084169@devbig004.ftw2.facebook.com>
-To:     Tejun Heo <tj@kernel.org>
-X-Mailer: Apple Mail (2.3445.104.8)
+        Mon, 16 Sep 2019 08:29:49 -0700 (PDT)
+Date:   Mon, 16 Sep 2019 08:29:47 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.4-rc1
+Message-ID: <20190916152947.GE3084169@devbig004.ftw2.facebook.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello, Linus.
 
+Three minor cleanup patches.
 
-> Il giorno 16 set 2019, alle ore 17:16, Tejun Heo <tj@kernel.org> ha =
-scritto:
->=20
-> Hello, Paolo.
->=20
-> On Mon, Sep 16, 2019 at 05:07:29PM +0200, Paolo Valente wrote:
->> Tejun, could you put your switch-off-io-cost code into a standalone
->> patch, so that I can put it together with this one in a complete
->> series?
->=20
-> It was more of a proof-of-concept / example, so the note in the email
-> that the code is free to be modified / used any way you see fit.  That
-> said, if you like it as it is, I can surely prep it as a standalone
-> patch.
->=20
+Thanks.
 
-AFAICT your proposal contains no evident error.  Plus, no one seems to
-have complained about the idea (regardless from the exact
-implementation).  So I guess the best next step is to go for it.
+The following changes since commit ad5e427e0f6b702e52c11d1f7b2b7be3bac7de82:
 
-Thanks,
-Paolo
+  Merge branch 'parisc-5.3-3' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux (2019-07-23 15:34:59 -0700)
 
-> Thanks.
->=20
-> --=20
-> tejun
+are available in the Git repository at:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.4
+
+for you to fetch changes up to 653a23ca7e1e1ae907654e91d028bc6dfc7fce0c:
+
+  Use kvmalloc in cgroups-v1 (2019-08-07 11:37:58 -0700)
+
+----------------------------------------------------------------
+Marc Koderer (1):
+      Use kvmalloc in cgroups-v1
+
+Markus Elfring (1):
+      cgroup: Replace a seq_printf() call by seq_puts() in cgroup_print_ss_mask()
+
+Peng Wang (1):
+      cgroup: minor tweak for logic to get cgroup css
+
+ kernel/cgroup/cgroup-v1.c | 27 ++++-----------------------
+ kernel/cgroup/cgroup.c    |  4 ++--
+ 2 files changed, 6 insertions(+), 25 deletions(-)
+
+-- 
+tejun
