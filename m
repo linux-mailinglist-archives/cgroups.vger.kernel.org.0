@@ -2,76 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B22D5B4862
-	for <lists+cgroups@lfdr.de>; Tue, 17 Sep 2019 09:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B64CB4B79
+	for <lists+cgroups@lfdr.de>; Tue, 17 Sep 2019 12:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392665AbfIQHkG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Sep 2019 03:40:06 -0400
-Received: from mx2.suse.de ([195.135.220.15]:56752 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2392664AbfIQHkG (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 17 Sep 2019 03:40:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id DBCF3AD3A;
-        Tue, 17 Sep 2019 07:40:04 +0000 (UTC)
-Date:   Tue, 17 Sep 2019 09:40:03 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcontrol: fix a -Wunused-function warning
-Message-ID: <20190917074003.GA17727@dhcp22.suse.cz>
-References: <1568648453-5482-1-git-send-email-cai@lca.pw>
+        id S1726231AbfIQKEY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Tue, 17 Sep 2019 06:04:24 -0400
+Received: from mail.11d03.mspz7.gob.ec ([190.214.23.250]:41050 "EHLO
+        mail.11d03.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725270AbfIQKEY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Sep 2019 06:04:24 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 709B7405EFA6A;
+        Mon, 16 Sep 2019 23:37:56 -0500 (-05)
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id Ne3Bjs9G_jmc; Mon, 16 Sep 2019 23:37:55 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTP id 4CE2A405324FC;
+        Mon, 16 Sep 2019 23:37:50 -0500 (-05)
+X-Virus-Scanned: amavisd-new at 11d03.mspz7.gob.ec
+Received: from mail.11d03.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d03.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id meqg7s7aVur9; Mon, 16 Sep 2019 23:37:50 -0500 (-05)
+Received: from [10.33.79.142] (unknown [105.4.0.133])
+        by mail.11d03.mspz7.gob.ec (Postfix) with ESMTPSA id 1E504405EB83A;
+        Mon, 16 Sep 2019 23:37:35 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1568648453-5482-1-git-send-email-cai@lca.pw>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <vicenta.sinche@11d03.mspz7.gob.ec>
+From:   ''Tayeb souami'' <vicenta.sinche@11d03.mspz7.gob.ec>
+Date:   Tue, 17 Sep 2019 06:37:26 +0200
+Reply-To: Tayebsouam.spende@gmail.com
+Message-Id: <20190917043736.1E504405EB83A@mail.11d03.mspz7.gob.ec>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 16-09-19 11:40:53, Qian Cai wrote:
-> mem_cgroup_id_get() was introduced in the commit 73f576c04b94
-> ("mm:memcontrol: fix cgroup creation failure after many small jobs").
-> 
-> Later, it no longer has any user since the commits,
-> 
-> 1f47b61fb407 ("mm: memcontrol: fix swap counter leak on swapout from offline cgroup")
-> 58fa2a5512d9 ("mm: memcontrol: add sanity checks for memcg->id.ref on get/put")
-> 
-> so safe to remove it.
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
+Lieber Freund,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Ich bin Herr Tayeb Souami, New Jersey, Vereinigte Staaten von Amerika, der Mega-Gewinner von $ 315million In Mega Millions Jackpot, spende ich an 5 zufällige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Mail nach einem Spinball ausgewählt.Ich habe den größten Teil meines Vermögens auf eine Reihe von Wohltätigkeitsorganisationen und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die Summe von € 2.000.000,00 an Sie als eine der ausgewählten 5 zu spenden, um meine Gewinne zu überprüfen, sehen Sie bitte meine You Tube Seite unten.
 
-> ---
->  mm/memcontrol.c | 5 -----
->  1 file changed, 5 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 9ec5e12486a7..9a375b376157 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4675,11 +4675,6 @@ static void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
->  	}
->  }
->  
-> -static inline void mem_cgroup_id_get(struct mem_cgroup *memcg)
-> -{
-> -	mem_cgroup_id_get_many(memcg, 1);
-> -}
-> -
->  static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
->  {
->  	mem_cgroup_id_put_many(memcg, 1);
-> -- 
-> 1.8.3.1
+UHR MICH HIER: https://www.youtube.com/watch?v=Z6ui8ZDQ6Ks
 
--- 
-Michal Hocko
-SUSE Labs
+Das ist dein Spendencode: [TS530342018]
+
+Antworten Sie mit dem SPENDE-CODE an diese 
+
+E-Mail:Tayebsouam.spende@gmail.com
+
+Ich hoffe, Sie und Ihre Familie glücklich zu machen.
+
+Grüße
+Herr Tayeb Souami
