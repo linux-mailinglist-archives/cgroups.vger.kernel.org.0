@@ -2,250 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EF6BB6DD2
-	for <lists+cgroups@lfdr.de>; Wed, 18 Sep 2019 22:38:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65861B6F57
+	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2019 00:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731607AbfIRUia (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Sep 2019 16:38:30 -0400
-Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:54832 "EHLO
-        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731565AbfIRUia (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Sep 2019 16:38:30 -0400
-X-Greylist: delayed 426 seconds by postgrey-1.27 at vger.kernel.org; Wed, 18 Sep 2019 16:38:29 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=4743; q=dns/txt; s=iport;
-  t=1568839108; x=1570048708;
-  h=from:to:cc:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=LxnNVUVCz0IPdS9jM9xgtwfqdBc09223wZEccBl4BYk=;
-  b=aX2PJX2u23E/euJm4pJO5iE17dt2mV1SpSQ6hV/oJD9R1wPeXvIEWFZC
-   Qiqae1yOzuOwId9s1o9YqY62ZjAK6C4J3Y5iD2N/DVuQ0GLbNGhkmF534
-   ZDv6I67+5zAAbgDp5g0r3/2cdG81S5g29TVTkv1l0PlMLHaWsnIMbOBBf
-   U=;
-IronPort-PHdr: =?us-ascii?q?9a23=3AjGSm/x3z0EXg08PmsmDT+zVfbzU7u7jyIg8e44?=
- =?us-ascii?q?YmjLQLaKm44pD+JxKGt+51ggrPWoPWo7JfhuzavrqoeFRI4I3J8RVgOIdJSw?=
- =?us-ascii?q?dDjMwXmwI6B8vQEk7yNv/vZiYSF8VZX1gj9Ha+YgBY?=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0BIAAC1koJd/4UNJK1jAxwBAQEEAQE?=
- =?us-ascii?q?HBAEBgVMHAQELAYFEJAUnA21WIAQLKgqHXwOEUoYomk+BLoEkA1QJAQEBDAE?=
- =?us-ascii?q?BIwoCAQGBS4J0AoMDIzQJDgIDCQEBBAEBAQIBBQRthS0MhU0WLgEBNwERARZ?=
- =?us-ascii?q?qJgEEAQ0NGoMBgWoDHQECDKVYAoE4iGGCJYF7gQIBAQWBBgEBg3sYghcDBhS?=
- =?us-ascii?q?BIAGMCBiBQD+BEUaFawKBOyhFgnaCJoxziC9elwEKgiKHBY4amSGOEIgPkHs?=
- =?us-ascii?q?CBAIEBQIOAQEFgVI4gVhwFYMnUBAUgU6BJwEIgkKKHAE2c4EpjHqBMAGBIgE?=
- =?us-ascii?q?B?=
-X-IronPort-AV: E=Sophos;i="5.64,522,1559520000"; 
-   d="scan'208";a="545866695"
-Received: from alln-core-11.cisco.com ([173.36.13.133])
-  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 18 Sep 2019 20:31:21 +0000
-Received: from XCH-ALN-018.cisco.com (xch-aln-018.cisco.com [173.36.7.28])
-        by alln-core-11.cisco.com (8.15.2/8.15.2) with ESMTPS id x8IKVLBE027715
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=FAIL)
-        for <cgroups@vger.kernel.org>; Wed, 18 Sep 2019 20:31:22 GMT
-Received: from xhs-rcd-001.cisco.com (173.37.227.246) by XCH-ALN-018.cisco.com
- (173.36.7.28) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Sep
- 2019 15:31:21 -0500
-Received: from xhs-aln-002.cisco.com (173.37.135.119) by xhs-rcd-001.cisco.com
- (173.37.227.246) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 18 Sep
- 2019 15:31:20 -0500
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (173.37.151.57)
- by xhs-aln-002.cisco.com (173.37.135.119) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Wed, 18 Sep 2019 15:31:20 -0500
+        id S1730490AbfIRWYZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Sep 2019 18:24:25 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23878 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727562AbfIRWYZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Sep 2019 18:24:25 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8IMAi56027355;
+        Wed, 18 Sep 2019 15:23:23 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=jorFgc9ZnWSadbbiIvozUV0N/52mi2w8mPxWWMYTL4Q=;
+ b=hCWf2ey6JI6cuwasm99wmuSOJ8wlXm4OCFwvIowcnkj5ptSUfKzUVQGxNhiZyoIX89U+
+ /o1efh9/LKt7TuH3gUIfRTeHoYv1HSaLuvej8CLr7uyhB9RtK8bozZtX+MVlzBH46ZtA
+ J2vjrmVKN/bS60Yt5x+OP7/A2qeX3rkaAro= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by mx0a-00082601.pphosted.com with ESMTP id 2v3vdqg876-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Wed, 18 Sep 2019 15:23:23 -0700
+Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
+ prn-hub05.TheFacebook.com (2620:10d:c081:35::129) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Wed, 18 Sep 2019 15:23:22 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Wed, 18 Sep 2019 15:23:22 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IRz7kpwuzrIbgDdJ5bhJuZPn48h2REMSImNyYRceRLWQz+65S8jpve7vqdRZa8/5KtaYmW8qDuVbN/+0FoEGyI4GdW4osCi/jG7zAjjX+FhbmvmkJYXyDMO0RHae/WumrYeOEFTkWEGiObgli8A04St2JAeqiBci/d7qzVvXdzWcE72cHo0FCdBeYza6rHJO0ND6jxmdLDgdepjMzErk78+gK7Ha6ZFSMihCSYFUZblRpdKSFDSeE0molWoBwRRMClz4GmzXgHgH5m+GZGm4A0nXm7OYy4sVUZ2qPgtAKUJ3LtQ5xnzz50I3wS46RTd3XHQZxiOYweDiYA2K5/whzQ==
+ b=KStx6Jw1XV0+i5Ju2ViguwNCIzzUHHVwManapXNFk3dnwdeTTLVIa7lDFfZAu5dt2/aFWQW3rao/yuMrs4j1HdobAL2HGpnXmQhYx+MX1kmWNZJuYZ1SnZELn7luIPaajPlR5bUIaDjVgEJn5jD/NZqLVBnDYqLEFU5rjvfI9DV8pv5O7b+HLezRyZTrpotpM2u5wWOLjbzSXmId9vLx1qzqiFHLdgk0wRNKS1jqf75qIUeXOMq7EqAxQrMKDJBx6n8LARcmP4NxUbfeTre1zM6E9YH9TMH54+OMCR6FYkzz+EJrA0g1qi+/HpI5MnVa+Zk3ENJbLH1tyxKv67fdJQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=moEkA7k1mqq/7L8BFws/Gd/FMO/o8Xo4Sf0FoV4RrFs=;
- b=eg+nwhHtEdNFQXJ3xEC7bjoWt02bFtmItJa5Eeslmk+U2+LPuAzxc2jYV0KC3TIfVtotp+3LNH1nOV12rvl9OB7thSHXfZq6ibwxZigW7i4vaVc6GErtCmU2Tg9NDqfWmukO07n6ifZtT20aH25bCmtv1CvPPiZw3vSc42OaQBDKa8PW0/sglyNrV/9QU6a45HGEnsRDjTpUYApHfe4lA629qOgw7WnIibhZGSG3kyGua3j5zIJ2eQqh1XdhB67/5lsVfmSWSyk1cJAdIM/h5uW5KApCICDR7uPIniK9ERahjtsOt4G4GoeEMuZic89Am2u361+0PAU6DonP52DiNA==
+ bh=jorFgc9ZnWSadbbiIvozUV0N/52mi2w8mPxWWMYTL4Q=;
+ b=MXsUjrer/k4/ZCeOlEMW+jbzHWlUBLHLbD3DxG2OuSPvKXOyMvC8YMJYPeJWtUXh/+85At6r2RWMxo13rGKAHsv/85nGOFE5F6CmxJFAyMTxy8qzbcGdzY0Das8emMo+uOf/AYoBqD6lg621oXUUxj+NkPQTCL1m9I0u06Wb+IfYLDol7P9JKq2fnYOenlnvqk1cCe0rSIzcAmHGrWIIMk44DUTBvHUXw0KUqHbJVw38uCQ0pAJeNoYX+o7IsnC2F6dtlyx/mxPFrLMSAFUcToZadMadZoSZJZROVn9lv1BvmxysH067lNSiiOcSBNQyQqqCAXGCj1J9n9khU8MNgg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
- s=selector2-cisco-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=moEkA7k1mqq/7L8BFws/Gd/FMO/o8Xo4Sf0FoV4RrFs=;
- b=l5fpJ8+C5bcjkP0/rAsj0Eagi1DilDedjSKXsISyVJNOWu3juSXBP1TNxD7oW6IeVV0OtWzfXD7pskcvKAQwC9UaF7t/izJzRySmwdJktWv0hFapU7W3aAvJ4NRooZUvTFBlTeDeTlDqFo9A4oc8uXZYK0E59eapb4iGzkCPA6E=
-Received: from BYAPR11MB2582.namprd11.prod.outlook.com (52.135.229.149) by
- BYAPR11MB3815.namprd11.prod.outlook.com (20.178.239.89) with Microsoft SMTP
+ bh=jorFgc9ZnWSadbbiIvozUV0N/52mi2w8mPxWWMYTL4Q=;
+ b=ds87+fGUcy8mHA5RdyrBUUeg0tpmRt8IlxEopsLAKAQULr2tDl4844CzmvLies8yY6Dw7EDzYeVpZomg9gwHNvbRE6SU85I4vl3EuXOhtzyQTg+24LEiLCme8g77TKnhRH199sxmd9zJf+nsMwISOGKx46VMUc/2enRvvx0iMm4=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB2833.namprd15.prod.outlook.com (20.178.218.83) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.20; Wed, 18 Sep 2019 20:31:18 +0000
-Received: from BYAPR11MB2582.namprd11.prod.outlook.com
- ([fe80::29b5:ea68:50:df31]) by BYAPR11MB2582.namprd11.prod.outlook.com
- ([fe80::29b5:ea68:50:df31%7]) with mapi id 15.20.2284.009; Wed, 18 Sep 2019
- 20:31:18 +0000
-From:   "Saeed Karimabadi (skarimab)" <skarimab@cisco.com>
-To:     Christoph Lameter <cl@linux.com>,
+ 15.20.2263.24; Wed, 18 Sep 2019 22:23:21 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::8174:3438:91db:ec29]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::8174:3438:91db:ec29%5]) with mapi id 15.20.2284.009; Wed, 18 Sep 2019
+ 22:23:21 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     "Saeed Karimabadi (skarimab)" <skarimab@cisco.com>
+CC:     Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
+        "David Rientjes" <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
         "linux-mm@kvack.org" <linux-mm@kvack.org>,
         Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-CC:     "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
-Subject: CGroup unused allocated slab objects will not get released 
-Thread-Topic: CGroup unused allocated slab objects will not get released 
-Thread-Index: AdVuYAXsyqrfLm5yRGqVq9iRkUoA5Q==
-Date:   Wed, 18 Sep 2019 20:31:18 +0000
-Message-ID: <BYAPR11MB2582482E28ACA901B35AF777CC8E0@BYAPR11MB2582.namprd11.prod.outlook.com>
+        "xe-linux-external(mailer list)" <xe-linux-external@cisco.com>
+Subject: Re: CGroup unused allocated slab objects will not get released
+Thread-Topic: CGroup unused allocated slab objects will not get released
+Thread-Index: AdVuYAXsyqrfLm5yRGqVq9iRkUoA5QAD6QWA
+Date:   Wed, 18 Sep 2019 22:23:21 +0000
+Message-ID: <20190918222315.GA16105@castle>
+References: <BYAPR11MB2582482E28ACA901B35AF777CC8E0@BYAPR11MB2582.namprd11.prod.outlook.com>
+In-Reply-To: <BYAPR11MB2582482E28ACA901B35AF777CC8E0@BYAPR11MB2582.namprd11.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
-X-Auto-Response-Suppress: DR, OOF, AutoReply
 X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=skarimab@cisco.com; 
-x-originating-ip: [128.107.241.181]
+x-clientproxiedby: MWHPR21CA0030.namprd21.prod.outlook.com
+ (2603:10b6:300:129::16) To BN8PR15MB2626.namprd15.prod.outlook.com
+ (2603:10b6:408:c7::28)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:180::e152]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ea6e79d9-1b7a-4885-6ac6-08d73c772949
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(5600167)(711020)(4605104)(1401327)(2017052603328)(7193020);SRVR:BYAPR11MB3815;
-x-ms-traffictypediagnostic: BYAPR11MB3815:
-x-ms-exchange-purlcount: 1
-x-ld-processed: 5ae1af62-9505-4097-a69a-c1553ef7840e,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BYAPR11MB3815426EDABDC0EDC3D65517CC8E0@BYAPR11MB3815.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-office365-filtering-correlation-id: d1b0ab54-ff0f-4a77-1129-08d73c86cfec
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BN8PR15MB2833;
+x-ms-traffictypediagnostic: BN8PR15MB2833:
+x-ms-exchange-purlcount: 3
+x-microsoft-antispam-prvs: <BN8PR15MB2833FA8AE794BB812ED875BEBE8E0@BN8PR15MB2833.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
 x-forefront-prvs: 01644DCF4A
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(136003)(346002)(39860400002)(396003)(376002)(199004)(189003)(186003)(6506007)(102836004)(4743002)(86362001)(476003)(2501003)(33656002)(66446008)(64756008)(66556008)(66476007)(76116006)(66946007)(8936002)(81166006)(81156014)(8676002)(3846002)(52536014)(486006)(5660300002)(316002)(2906002)(99286004)(7696005)(110136005)(6116002)(7736002)(6436002)(25786009)(256004)(478600001)(14454004)(66066001)(26005)(9686003)(966005)(74316002)(107886003)(4326008)(55016002)(6306002)(71200400001)(71190400001)(305945005)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:BYAPR11MB3815;H:BYAPR11MB2582.namprd11.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-received-spf: None (protection.outlook.com: cisco.com does not designate
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(7916004)(376002)(136003)(366004)(39860400002)(346002)(396003)(199004)(189003)(99286004)(6116002)(86362001)(1076003)(305945005)(52116002)(7416002)(66556008)(33716001)(6486002)(4326008)(486006)(66476007)(7736002)(71200400001)(316002)(64756008)(66446008)(6306002)(8936002)(66946007)(71190400001)(186003)(46003)(6436002)(76176011)(6512007)(229853002)(9686003)(14454004)(478600001)(11346002)(476003)(25786009)(6916009)(54906003)(102836004)(5660300002)(446003)(6246003)(33656002)(81166006)(966005)(81156014)(8676002)(386003)(2906002)(256004)(6506007);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2833;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: 2ZzXuo06nsr3c/9v7jTsAwFiS1AIHubofvXH5B7U7COgMSpIBgnKq4ivtNqnBPippskOD/erjFcUptn11fm/VTE4j5QQ0ghmfUBqoYyZEj0ECQiPaA1Cyyps83oxwJkb0YUYe0liNpnzb8+nj1OvEBktzEOnrKqCPtdcrhPJJdTr8IDGPczDXMCXgS1vqm9k/4hMC98hcQpGdcYP9XNPb0JSyOqro8myJwfb7XR+rwcUSOTiJOufSlwPkjSPbuDyMY0OJb1lRsh48EFV4x2BCk8bex4d2GRpqu7tb0nVoTlqyYkLM3s6H7eGzB1NNYJ7ZeILw0U4P9lootTPrBcMMewQHDxwqOmeVL+FHdV9iMxcmuGs4yrZd50YwP4SsiPjJlOVjYznATLwO793rVfiGS1slIcAd/++RK9HYnNfPOs=
+x-microsoft-antispam-message-info: k/3FBimWZ3X//TxW2fG3fymyA8dUKFk6TlFmgZ40MMwmoQbSyW/xD4LtwUPt56THx4BrGzWsF7DFAvjypKUhXxQ3RNCGNVD6zd7J86XRghVhgIA2Rwxf1j/G7LaOIuYh6ekcl+ARZleCsKkg2uiNWv3KVA4rIZJgVjK4oBu3z9sbJNYZRXGRdYRQ7bjAiA/2rnVAk0yEgE8al9k5B1gRfo4hui9I7RTuD1IT2Zap+Cbnk2QrPnPp/nJ9ZX4w1wHp7b4WLBxQGWPYVymw/ppLoENxG4BSa5sPr1jfW9go+jSdqVEv9m7j3Azg2EvzZkahVBwMzqWWURvbAiSBoU6HvukUXah+XUtHT9kLU7+1oTkXSSJzZy35/migKigBQh22bqkESDRtRnW0YL60OtTVsf5xOxF+hN8nKCIvpj9gZcc=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="iso-8859-1"
+Content-ID: <FE66DBCC21C40A4E821DE15D66FA409E@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: ea6e79d9-1b7a-4885-6ac6-08d73c772949
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2019 20:31:18.5737
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1b0ab54-ff0f-4a77-1129-08d73c86cfec
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Sep 2019 22:23:21.0901
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: byUh7KmPcGeJbzNLCT5BBMlTGey/A6veApT4G+/WnxUQLFVQC17xF/taW1YZ/96aFRTW96fopdV5nZASTEh1Xg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3815
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.36.7.28, xch-aln-018.cisco.com
-X-Outbound-Node: alln-core-11.cisco.com
+X-MS-Exchange-CrossTenant-userprincipalname: aYRPMd1GD7wWcqRjVMhJYtHT48fe1P7ANmaPQTx279/tEyNPmdBPZtkcY9vEY9vq
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2833
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.70,1.0.8
+ definitions=2019-09-18_10:2019-09-18,2019-09-18 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 mlxscore=0
+ spamscore=0 suspectscore=0 mlxlogscore=999 lowpriorityscore=0
+ clxscore=1011 malwarescore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1908290000 definitions=main-1909180187
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi =A0Kernel Maintainers,
+On Wed, Sep 18, 2019 at 08:31:18PM +0000, Saeed Karimabadi (skarimab) wrote=
+:
+> Hi =A0Kernel Maintainers,
+>=20
+> We are chasing an issue where slab allocator is not releasing task_struct=
+ slab objects allocated by cgroups=20
+> and we are wondering if this is a known issue or an expected behavior ?
+> If we stress test the system and spawn multiple tasks with different cgro=
+ups, number of active allocated=20
+> task_struct objects will increase but kernel will never release those mem=
+ory later on, even though if system=20
+> goes to the idle state with lower number of the running processes.
 
-We are chasing an issue where slab allocator is not releasing task_struct s=
-lab objects allocated by cgroups=20
-and we are wondering if this is a known issue or an expected behavior ?
-If we stress test the system and spawn multiple tasks with different cgroup=
-s, number of active allocated=20
-task_struct objects will increase but kernel will never release those memor=
-y later on, even though if system=20
-goes to the idle state with lower number of the running processes.
-To test this, we have prepared a bash script that would create 1000 cgroups=
- and it will spawn 100,000 bash=20
-tasks. The full script and its test result is available on github :
-=A0=A0=20
-https://github.com/saeedsk/slab-allocator-test
+Hi Saeed!
 
-Here is a quick snapshot of the test result before and after running multip=
-le concurrent tasks with different cgroups:
+I've recently proposed a new slab memory cgroup controller, which aims to s=
+olve
+the problem you're describing: https://lwn.net/Articles/798605/ . It also g=
+enerally
+reduces the amount of memory used by slabs.
 
-------------- system initial statistics -------------
-Slab:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 419196 kB
-SReclaimable:=A0=A0=A0=A0 123788 kB
-SUnreclaim:=A0=A0=A0=A0=A0=A0 295,408 kB
-# name=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <active_objs> <num_objs> <objsize> =
-<objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor>=
-=20
-		: slabdata <active_slabs> <num_slabs> <sharedavail>
-task_struct=A0=A0=A0=A0=A0=A0=A0=A0=A0 735=A0=A0=A0 990=A0=A0 5888=A0=A0=A0=
- 5=A0=A0=A0 8 : tunables=A0=A0=A0 0=A0=A0=A0 0=A0=A0=A0 0 : slabdata=A0=A0=
-=A0 198=A0=A0=A0 198=A0=A0=A0=A0=A0 0
-Number of running processes before starting the test : 334
+I've been told that not all e-mails in the patchset reached lkml,
+so, please, find the original patchset here:
+  https://github.com/rgushchin/linux/tree/new_slab.rfc
+and it's backport to the 5.3 release here:
+  https://github.com/rgushchin/linux/tree/new_slab.rfc.v5.3
 
-...... loading 100,000 time bounded tasks with 1000 mem cgroups ...........=
-...=20
-..... wait until are tasks are complete , normally within next 5 seconds ..=
-......
+If you can try it on your setup, I'd appreciate it a lot, and it also can
+help with merging it upstream soon.
 
-------------- after tasks are loaded and completed running  -------------
-Slab:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 948932 kB
-SReclaimable:=A0=A0=A0=A0 125816 kB
-SUnreclaim:=A0=A0=A0=A0=A0=A0 823,116 kB
-# name=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <active_objs> <num_objs> <objsize> =
-<objperslab> <pagesperslab> : tunables <limit> <batchcount> <sharedfactor>=
-=20
-		: slabdata <active_slabs> <num_slabs> <sharedavail>
-task_struct=A0=A0=A0=A0=A0=A0=A0 11404=A0 11665=A0=A0 5888=A0=A0=A0 5=A0=A0=
-=A0 8 : tunables=A0=A0=A0 0=A0=A0=A0 0=A0=A0=A0 0 : slabdata=A0=A0 2333=A0=
-=A0 2333=A0=A0=A0=A0=A0 0
-Number of running processes when the test is completed : 334
+Thank you!
 
-As it is shown above, number of active task_struct slabs has been increased=
- from 736 to 11404 objects=20
-during the test. System keeps 11404 task_struct objects in the idle time wh=
-ere only 334 tasks is running.=20
-This huge number of active task_struct slabs it is not normal and a huge fr=
-action of that memory can be -
-released to system memory pool. If we write to slab's shrink systf entry, t=
-hen kernel will release deactivated
-objects and it will free up the related memory, but it is not happening aut=
-omatically by kernel as it was=20
-expected.
-
-Following line is the command that would release those zombie objects:
-# for file in /sys/kernel/slab/*; do echo 1 > $file/shrink; done
-
-We know that some of slab caches are supposed to remain allocated until sys=
-tem really need that memory.=20
-So in one test we tried to consume all available system memory in a hope th=
-at kernel would release the above=20
-Memory but it didn't happened and "out of memory killer" started killing pr=
-ocesses and no memory got released=20
-by kernel slab allocator.
-
-In recent systemd releases, CGroup memory accounting has been enabled by de=
-fault and systemd will=20
-create multiple cgroups to run different software daemons. Although we have=
- called this test as=20
-an stress test but this situation may happen in normal system boot time whe=
-re systemd is trying
-to load and run multiple instances of programs daemons with different cgrou=
-ps.
-This issue only manifest itself when cgroup are actively in use. I've confi=
-rmed that this issue is present
- in Kernel V4.19.66, Kernel V5.0.0 (Ubuntu 19.04) and latest Kernel Release=
- V5.3.0.
-Any comment and or hint would be greatly appreciated.
-Here is some related kernel configuration while this test were done:
-
-$ grep SLAB  .config
-# CONFIG_SLAB is not set
-CONFIG_SLAB_MERGE_DEFAULT=3Dy
-# CONFIG_SLAB_FREELIST_RANDOM is not set
-# CONFIG_SLAB_FREELIST_HARDENED is not set
-
-#grep SLUB  .config
-CONFIG_SLUB_DEBUG=3Dy
-# CONFIG_SLUB_MEMCG_SYSFS_ON is not set
-CONFIG_SLUB=3Dy
-CONFIG_SLUB_CPU_PARTIAL=3Dy
-# CONFIG_SLUB_DEBUG_ON is not set
-# CONFIG_SLUB_STATS is not set
-
-$ grep KMEM  .config
-CONFIG_MEMCG_KMEM=3Dy
-# CONFIG_DEVKMEM is not set
-CONFIG_HAVE_DEBUG_KMEMLEAK=3Dy
-# CONFIG_DEBUG_KMEMLEAK is not set
-
-Thanks,
-Saeed Karimabadi
-Cisco Systems Inc.
-
-
-
+Roman
