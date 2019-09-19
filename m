@@ -2,239 +2,922 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C28BB7060
-	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2019 03:20:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8A5BB7140
+	for <lists+cgroups@lfdr.de>; Thu, 19 Sep 2019 03:53:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731489AbfISBTs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Sep 2019 21:19:48 -0400
-Received: from mx1.redhat.com ([209.132.183.28]:48704 "EHLO mx1.redhat.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727114AbfISBTs (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 18 Sep 2019 21:19:48 -0400
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mx1.redhat.com (Postfix) with ESMTPS id E6F8D308FC4A;
-        Thu, 19 Sep 2019 01:19:46 +0000 (UTC)
-Received: from madcap2.tricolour.ca (ovpn-112-19.phx2.redhat.com [10.3.112.19])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 9723A60C18;
-        Thu, 19 Sep 2019 01:19:31 +0000 (UTC)
-Date:   Wed, 18 Sep 2019 21:19:28 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     cgroups@vger.kernel.org,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Linux Audit <linux-audit@redhat.com>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux Kernel <linux-kernel@vger.kernel.org>,
-        Linux Network Development <netdev@vger.kernel.org>
-Cc:     mszeredi@redhat.com, Andy Lutomirski <luto@kernel.org>,
-        jlayton@redhat.com, Carlos O'Donell <carlos@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        David Howells <dhowells@redhat.com>,
-        Simo Sorce <simo@redhat.com>, trondmy@primarydata.com,
-        Eric Paris <eparis@parisplace.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>, dwalsh@redhat.com,
-        mpatel@redhat.com
-Subject: RFC(V4): Audit Kernel Container IDs
-Message-ID: <20190919011928.nsr4leqnomgumaac@madcap2.tricolour.ca>
+        id S2387772AbfISBxW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Sep 2019 21:53:22 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39584 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387841AbfISBxU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Sep 2019 21:53:20 -0400
+Received: by mail-oi1-f194.google.com with SMTP id w144so1370162oia.6
+        for <cgroups@vger.kernel.org>; Wed, 18 Sep 2019 18:53:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=FVNMGIQxrU4S60TP9x2ppS37tvso0QZ99Wlw9x9kuQM=;
+        b=IN6CC5Bwv8sNrrkLPkPD2nyCTBZcN5+RZfcgTXoOIM5Xz/HYN7XuLHq/oMbbYwu+SH
+         zklmySKYqZfaretjnWWvtZOG8iDRQE6JPYsw7AIOTobRWGK9I8kU5f9VOPQ6XEoBBUja
+         h8XDgimN6IG0GqMxUfTupUW2Ucuk74ab6oW/D8427BqqEOivMjrDsmyictN+kGJZYbgn
+         h1z2zm/Vo7L9WuzlZdUUBHCN+v+zc8duvdRnu9xoCPu1yYTSlOovLiNvE1HcD4FZSuQG
+         nlFoEHYjtGcca0uNz2Vr4d6pybxG0YDP+Lx6F4qWAXNUJZPUpHk3NrD9rIGZTRmUOuwT
+         oliw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=FVNMGIQxrU4S60TP9x2ppS37tvso0QZ99Wlw9x9kuQM=;
+        b=Mj5fMfJSqgZIuHH7LGKHKj13exRaCHD/FWke+2ATsEyFw42BwK3fY5T7RZTx0SgSeR
+         Yxs5GW2cUQ1d9g52Liig00QteISQF/ndOMb+L9vhEPg/mr9a5LZKkHXpKZipnbjc+DeL
+         3I3ORYo8969E2VhYZYossGWjFT3x49wTYRm4/max4fqg1xd1UDu+0LFS7yx+bnMw73IO
+         pxdn9aCbi1BsAaxFZTh/+5n7yFnI/OKCXERANS09HhdxRq5vkxoSd3UQSYCRx8CIQPUw
+         GmrW5hrX9YyjJkVGhiYGE2Hn2OerLFvI7c201sESncDAfZqHmMy7BZOuuvLHUYyromFK
+         6Mqw==
+X-Gm-Message-State: APjAAAWbinRCX/zSa8etOTaBX2bD/kd2yxpr/p7q5Q5rOTzTg2CCQpYR
+        mAt0X50/Q98O9bRhF92BdpKu20IMwfX8CuRBdRDrvg==
+X-Google-Smtp-Source: APXvYqzj41J34KRcZNU3Zya3nheWJUSQbRZDAsSU7Zx7QtNOIKuVrGCKXFYMMHZYQZ6jonDaFv4VuaLMhNJCrK/ekMc=
+X-Received: by 2002:aca:cf51:: with SMTP id f78mr640002oig.8.1568857997667;
+ Wed, 18 Sep 2019 18:53:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: NeoMutt/20180716
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
-X-Greylist: Sender IP whitelisted, not delayed by milter-greylist-4.5.16 (mx1.redhat.com [10.5.110.43]); Thu, 19 Sep 2019 01:19:47 +0000 (UTC)
+References: <20190910233146.206080-1-almasrymina@google.com>
+ <20190910233146.206080-9-almasrymina@google.com> <4240683f-9fa6-daf8-95ee-259667c87ef7@kernel.org>
+In-Reply-To: <4240683f-9fa6-daf8-95ee-259667c87ef7@kernel.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 18 Sep 2019 18:53:05 -0700
+Message-ID: <CAHS8izOnJtMFsevb1U0qiBsQsM+UxyO=1F49NKuGrZGwNAz8Yw@mail.gmail.com>
+Subject: Re: [PATCH v4 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation tests
+To:     shuah <shuah@kernel.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org,
+        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Containers are a userspace concept.  The kernel knows nothing of them.
+On Mon, Sep 16, 2019 at 6:52 PM shuah <shuah@kernel.org> wrote:
+>
+> On 9/10/19 5:31 PM, Mina Almasry wrote:
+> > The tests use both shared and private mapped hugetlb memory, and
+> > monitors the hugetlb usage counter as well as the hugetlb reservation
+> > counter. They test different configurations such as hugetlb memory usage
+> > via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
+> > MAP_POPULATE.
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > ---
+> >   tools/testing/selftests/vm/.gitignore         |   1 +
+> >   tools/testing/selftests/vm/Makefile           |   4 +
+> >   .../selftests/vm/charge_reserved_hugetlb.sh   | 440 ++++++++++++++++++
+> >   .../selftests/vm/write_hugetlb_memory.sh      |  22 +
+> >   .../testing/selftests/vm/write_to_hugetlbfs.c | 252 ++++++++++
+> >   5 files changed, 719 insertions(+)
+> >   create mode 100755 tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+> >   create mode 100644 tools/testing/selftests/vm/write_hugetlb_memory.sh
+> >   create mode 100644 tools/testing/selftests/vm/write_to_hugetlbfs.c
+> >
+> > diff --git a/tools/testing/selftests/vm/.gitignore b/tools/testing/selftests/vm/.gitignore
+> > index 31b3c98b6d34d..d3bed9407773c 100644
+> > --- a/tools/testing/selftests/vm/.gitignore
+> > +++ b/tools/testing/selftests/vm/.gitignore
+> > @@ -14,3 +14,4 @@ virtual_address_range
+> >   gup_benchmark
+> >   va_128TBswitch
+> >   map_fixed_noreplace
+> > +write_to_hugetlbfs
+> > diff --git a/tools/testing/selftests/vm/Makefile b/tools/testing/selftests/vm/Makefile
+> > index 9534dc2bc9295..8d37d5409b52c 100644
+> > --- a/tools/testing/selftests/vm/Makefile
+> > +++ b/tools/testing/selftests/vm/Makefile
+> > @@ -18,6 +18,7 @@ TEST_GEN_FILES += transhuge-stress
+> >   TEST_GEN_FILES += userfaultfd
+> >   TEST_GEN_FILES += va_128TBswitch
+> >   TEST_GEN_FILES += virtual_address_range
+> > +TEST_GEN_FILES += write_to_hugetlbfs
+> >
+> >   TEST_PROGS := run_vmtests
+> >
+> > @@ -29,3 +30,6 @@ include ../lib.mk
+> >   $(OUTPUT)/userfaultfd: LDLIBS += -lpthread
+> >
+> >   $(OUTPUT)/mlock-random-test: LDLIBS += -lcap
+> > +
+> > +# Why does adding $(OUTPUT)/ like above not apply this flag..?
+>
+> Can you verify the following and remove this comment, once you figure
+> out if you need $(OUTPUT)/
+> > +write_to_hugetlbfs: CFLAGS += -static
+>
+> It should. Did you test "make O=" and "KBUILD_OUTPUT" kselftest
+> use-cases?
+>
 
-The Linux audit system needs a way to be able to track the container
-provenance of events and actions.  Audit needs the kernel's help to do
-this.
+Turns out I don't need -static actually.
 
-The motivations are:
+> > diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+> > new file mode 100755
+> > index 0000000000000..09e90e8f6fab4
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+> > @@ -0,0 +1,440 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +set -e
+> > +
+> > +cgroup_path=/dev/cgroup/memory
+> > +if [[ ! -e $cgroup_path ]]; then
+> > +      mkdir -p $cgroup_path
+> > +      mount -t cgroup -o hugetlb,memory cgroup $cgroup_path
+> > +fi
+> > +
+>
+> Does this test need root access? If yes, please add root check
+> and skip the test when a non-root runs the test.
+>
+> > +cleanup () {
+> > +     echo $$ > $cgroup_path/tasks
+> > +
+> > +     set +e
+> > +     if [[ "$(pgrep write_to_hugetlbfs)" != "" ]]; then
+> > +           kill -2 write_to_hugetlbfs
+> > +           # Wait for hugetlbfs memory to get depleted.
+> > +           sleep 0.5
+>
+> This time looks arbitrary. How can you be sure it gets depleted?
+> Is there another way to check for it.
+>
+> > +     fi
+> > +     set -e
+> > +
+> > +     if [[ -e /mnt/huge ]]; then
+> > +           rm -rf /mnt/huge/*
+> > +           umount /mnt/huge || echo error
+> > +           rmdir /mnt/huge
+> > +     fi
+> > +     if [[ -e $cgroup_path/hugetlb_cgroup_test ]]; then
+> > +           rmdir $cgroup_path/hugetlb_cgroup_test
+> > +     fi
+> > +     if [[ -e $cgroup_path/hugetlb_cgroup_test1 ]]; then
+> > +           rmdir $cgroup_path/hugetlb_cgroup_test1
+> > +     fi
+> > +     if [[ -e $cgroup_path/hugetlb_cgroup_test2 ]]; then
+> > +           rmdir $cgroup_path/hugetlb_cgroup_test2
+> > +     fi
+> > +     echo 0 > /proc/sys/vm/nr_hugepages
+> > +     echo CLEANUP DONE
+> > +}
+> > +
+> > +cleanup
+> > +
+> > +function expect_equal() {
+> > +      local expected="$1"
+> > +      local actual="$2"
+> > +      local error="$3"
+> > +
+> > +      if [[ "$expected" != "$actual" ]]; then
+> > +         echo "expected ($expected) != actual ($actual): $3"
+> > +         cleanup
+> > +         exit 1
+> > +      fi
+> > +}
+> > +
+> > +function setup_cgroup() {
+> > +      local name="$1"
+> > +      local cgroup_limit="$2"
+> > +      local reservation_limit="$3"
+> > +
+> > +      mkdir $cgroup_path/$name
+> > +
+> > +      echo writing cgroup limit: "$cgroup_limit"
+> > +      echo "$cgroup_limit" > $cgroup_path/$name/hugetlb.2MB.limit_in_bytes
+> > +
+> > +      echo writing reseravation limit: "$reservation_limit"
+> > +      echo "$reservation_limit" > \
+> > +         $cgroup_path/$name/hugetlb.2MB.reservation_limit_in_bytes
+> > +      echo 0 > $cgroup_path/$name/cpuset.cpus
+> > +      echo 0 > $cgroup_path/$name/cpuset.mems
+> > +}
+> > +
+> > +function write_hugetlbfs_and_get_usage() {
+> > +      local cgroup="$1"
+> > +      local size="$2"
+> > +      local populate="$3"
+> > +      local write="$4"
+> > +      local path="$5"
+> > +      local method="$6"
+> > +      local private="$7"
+> > +      local expect_failure="$8"
+> > +
+> > +      # Function return values.
+> > +      reservation_failed=0
+> > +      oom_killed=0
+> > +      hugetlb_difference=0
+> > +      reserved_difference=0
+> > +
+> > +      local hugetlb_usage=$cgroup_path/$cgroup/hugetlb.2MB.usage_in_bytes
+> > +      local reserved_usage=$cgroup_path/$cgroup/hugetlb.2MB.reservation_usage_in_bytes
+> > +
+> > +      local hugetlb_before=$(cat $hugetlb_usage)
+> > +      local reserved_before=$(cat $reserved_usage)
+> > +
+> > +      echo
+> > +      echo Starting:
+> > +      echo hugetlb_usage="$hugetlb_before"
+> > +      echo reserved_usage="$reserved_before"
+> > +      echo expect_failure is "$expect_failure"
+> > +
+> > +      set +e
+> > +      if [[ "$method" == "1" ]] || [[ "$method" == 2 ]] || \
+> > +         [[ "$private" == "-r" ]] && [[ "$expect_failure" != 1 ]]; then
+> > +         bash write_hugetlb_memory.sh "$size" "$populate" "$write" \
+> > +               "$cgroup"  "$path" "$method" "$private" "-l" &
+> > +
+> > +         local write_result=$?
+> > +         # This sleep is to make sure that the script above has had enough
+> > +         # time to do its thing, since it runs in the background. This may
+> > +         # cause races...
+> > +         sleep 0.5
+>
+> I am not happy with these arbitrary sleep times, especially coupled with
+> the comment about races above. :)
+>
+> > +         echo write_result is $write_result
+> > +      else
+> > +         bash write_hugetlb_memory.sh "$size" "$populate" "$write" \
+> > +               "$cgroup"  "$path" "$method" "$private"
+> > +         local write_result=$?
+> > +      fi
+> > +      set -e
+> > +
+> > +      if [[ "$write_result" == 1 ]]; then
+> > +         reservation_failed=1
+> > +      fi
+> > +
+> > +      # On linus/master, the above process gets SIGBUS'd on oomkill, with
+> > +      # return code 135. On earlier kernels, it gets actual oomkill, with return
+> > +      # code 137, so just check for both conditions incase we're testing against
+>
+> in case
+>
+> > +      # an earlier kernel.
+> > +      if [[ "$write_result" == 135 ]] || [[ "$write_result" == 137 ]]; then
+>
+> Please add defines for these return values.
+>
 
-- A sysadmin needs to be able to filter unwanted, irrelevant or
-  unimportant messages before they fill the queue so that important
-  messages don't get lost.  This is a certification requirement.
+There is comment that explains this line. Not enough clarity?
 
-- Security claims need to be made about containers, requiring tracking
-  of actions within those containers to ensure compliance with
-  established security policies.
+> > +         oom_killed=1
+> > +      fi
+> > +
+> > +      local hugetlb_after=$(cat $hugetlb_usage)
+> > +      local reserved_after=$(cat $reserved_usage)
+> > +
+> > +      echo After write:
+> > +      echo hugetlb_usage="$hugetlb_after"
+> > +      echo reserved_usage="$reserved_after"
+> > +
+> > +      hugetlb_difference=$(($hugetlb_after - $hugetlb_before))
+> > +      reserved_difference=$(($reserved_after - $reserved_before))
+> > +}
+> > +
+> > +function cleanup_hugetlb_memory() {
+> > +      set +e
+> > +      if [[ "$(pgrep write_to_hugetlbfs)" != "" ]]; then
+> > +         echo kiling write_to_hugetlbfs
+> > +         killall -2 write_to_hugetlbfs
+> > +         # Wait for hugetlbfs memory to get depleted.
+> > +         sleep 0.5
+>
+> Sleep time? Rationale for this number?
+>
+> > +      fi
+> > +      set -e
+> > +
+> > +      if [[ -e /mnt/huge ]]; then
+> > +         rm -rf /mnt/huge/*
+> > +           umount /mnt/huge
+> > +           rmdir /mnt/huge
+> > +      fi
+> > +}
+> > +
+> > +function run_test() {
+> > +      local size="$1"
+> > +      local populate="$2"
+> > +      local write="$3"
+> > +      local cgroup_limit="$4"
+> > +      local reservation_limit="$5"
+> > +      local nr_hugepages="$6"
+> > +      local method="$7"
+> > +      local private="$8"
+> > +      local expect_failure="$9"
+> > +
+> > +      # Function return values.
+> > +      hugetlb_difference=0
+> > +      reserved_difference=0
+> > +      reservation_failed=0
+> > +      oom_killed=0
+> > +
+> > +      echo nr hugepages = "$nr_hugepages"
+> > +      echo "$nr_hugepages" > /proc/sys/vm/nr_hugepages
+> > +
+> > +      setup_cgroup "hugetlb_cgroup_test" "$cgroup_limit" "$reservation_limit"
+> > +
+> > +      mkdir -p /mnt/huge
+> > +      mount -t hugetlbfs \
+> > +         -o pagesize=2M,size=256M none /mnt/huge
+> > +
+> > +      write_hugetlbfs_and_get_usage "hugetlb_cgroup_test" "$size" "$populate" \
+> > +         "$write" "/mnt/huge/test" "$method" "$private" "$expect_failure"
+> > +
+> > +      cleanup_hugetlb_memory
+> > +
+> > +      local final_hugetlb=$(cat $cgroup_path/hugetlb_cgroup_test/hugetlb.2MB.usage_in_bytes)
+> > +      local final_reservation=$(cat $cgroup_path/hugetlb_cgroup_test/hugetlb.2MB.reservation_usage_in_bytes)
+> > +
+> > +      expect_equal "0" "$final_hugetlb" "final hugetlb is not zero"
+> > +      expect_equal "0" "$final_reservation" "final reservation is not zero"
+> > +}
+> > +
+> > +function run_multiple_cgroup_test() {
+> > +      local size1="$1"
+> > +      local populate1="$2"
+> > +      local write1="$3"
+> > +      local cgroup_limit1="$4"
+> > +      local reservation_limit1="$5"
+> > +
+> > +      local size2="$6"
+> > +      local populate2="$7"
+> > +      local write2="$8"
+> > +      local cgroup_limit2="$9"
+> > +      local reservation_limit2="${10}"
+> > +
+> > +      local nr_hugepages="${11}"
+> > +      local method="${12}"
+> > +      local private="${13}"
+> > +      local expect_failure="${14}"
+> > +
+> > +      # Function return values.
+> > +      hugetlb_difference1=0
+> > +      reserved_difference1=0
+> > +      reservation_failed1=0
+> > +      oom_killed1=0
+> > +
+> > +      hugetlb_difference2=0
+> > +      reserved_difference2=0
+> > +      reservation_failed2=0
+> > +      oom_killed2=0
+> > +
+> > +
+> > +      echo nr hugepages = "$nr_hugepages"
+> > +      echo "$nr_hugepages" > /proc/sys/vm/nr_hugepages
+> > +
+> > +      setup_cgroup "hugetlb_cgroup_test1" "$cgroup_limit1" "$reservation_limit1"
+> > +      setup_cgroup "hugetlb_cgroup_test2" "$cgroup_limit2" "$reservation_limit2"
+> > +
+> > +      mkdir -p /mnt/huge
+> > +      mount -t hugetlbfs \
+> > +         -o pagesize=2M,size=256M none /mnt/huge
+> > +
+> > +      write_hugetlbfs_and_get_usage "hugetlb_cgroup_test1" "$size1" \
+> > +         "$populate1" "$write1" "/mnt/huge/test1" "$method" "$private" \
+> > +         "$expect_failure"
+> > +
+> > +      hugetlb_difference1=$hugetlb_difference
+> > +      reserved_difference1=$reserved_difference
+> > +      reservation_failed1=$reservation_failed
+> > +      oom_killed1=$oom_killed
+> > +
+> > +      local cgroup1_hugetlb_usage=$cgroup_path/hugetlb_cgroup_test1/hugetlb.2MB.usage_in_bytes
+> > +      local cgroup1_reservation_usage=$cgroup_path/hugetlb_cgroup_test1/hugetlb.2MB.reservation_usage_in_bytes
+> > +      local cgroup2_hugetlb_usage=$cgroup_path/hugetlb_cgroup_test2/hugetlb.2MB.usage_in_bytes
+> > +      local cgroup2_reservation_usage=$cgroup_path/hugetlb_cgroup_test2/hugetlb.2MB.reservation_usage_in_bytes
+> > +
+> > +      local usage_before_second_write=$(cat $cgroup1_hugetlb_usage)
+> > +      local reservation_usage_before_second_write=$(cat \
+> > +         $cgroup1_reservation_usage)
+> > +
+> > +      write_hugetlbfs_and_get_usage "hugetlb_cgroup_test2" "$size2" \
+> > +         "$populate2" "$write2" "/mnt/huge/test2" "$method" "$private" \
+> > +         "$expect_failure"
+> > +
+> > +      hugetlb_difference2=$hugetlb_difference
+> > +      reserved_difference2=$reserved_difference
+> > +      reservation_failed2=$reservation_failed
+> > +      oom_killed2=$oom_killed
+> > +
+> > +      expect_equal "$usage_before_second_write" \
+> > +         "$(cat $cgroup1_hugetlb_usage)" "Usage changed."
+> > +      expect_equal "$reservation_usage_before_second_write" \
+> > +         "$(cat $cgroup1_reservation_usage)" "Reservation usage changed."
+> > +
+> > +      cleanup_hugetlb_memory
+> > +
+> > +      local final_hugetlb=$(cat $cgroup1_hugetlb_usage)
+> > +      local final_reservation=$(cat $cgroup1_reservation_usage)
+> > +
+> > +      expect_equal "0" "$final_hugetlb" \
+> > +         "hugetlbt_cgroup_test1 final hugetlb is not zero"
+> > +      expect_equal "0" "$final_reservation" \
+> > +         "hugetlbt_cgroup_test1 final reservation is not zero"
+> > +
+> > +      local final_hugetlb=$(cat $cgroup2_hugetlb_usage)
+> > +      local final_reservation=$(cat $cgroup2_reservation_usage)
+> > +
+> > +      expect_equal "0" "$final_hugetlb" \
+> > +         "hugetlb_cgroup_test2 final hugetlb is not zero"
+> > +      expect_equal "0" "$final_reservation" \
+> > +         "hugetlb_cgroup_test2 final reservation is not zero"
+> > +}
+> > +
+> > +for private in "" "-r" ; do
+> > +for populate in  "" "-o"; do
+> > +for method in 0 1 2; do
+> > +
+> > +# Skip mmap(MAP_HUGETLB | MAP_SHARED). Doesn't seem to be supported.
+> > +if [[ "$method" == 1 ]] && [[ "$private" == "" ]]; then
+> > +      continue
+> > +fi
+> > +
+> > +# Skip populated shmem tests. Doesn't seem to be supported.
+> > +if [[ "$method" == 2"" ]] && [[ "$populate" == "-o" ]]; then
+> > +      continue
+> > +fi
+> > +
+> > +cleanup
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test normal case.
+> > +echo private=$private, populate=$populate, method=$method
+> > +run_test $((10 * 1024 * 1024)) "$populate" "" $((20 * 1024 * 1024)) \
+> > +      $((20 * 1024 * 1024)) 10 "$method" "$private" "0"
+> > +
+> > +echo Memory charged to hugtlb=$hugetlb_difference
+> > +echo Memory charged to reservation=$reserved_difference
+> > +
+> > +if [[ "$populate" == "-o" ]]; then
+> > +      expect_equal "$((10 * 1024 * 1024))" "$hugetlb_difference" \
+> > +         "Reserved memory charged to hugetlb cgroup."
+> > +else
+> > +      expect_equal "0" "$hugetlb_difference" \
+> > +         "Reserved memory charged to hugetlb cgroup."
+> > +fi
+> > +
+> > +expect_equal "$((10 * 1024 * 1024))" "$reserved_difference" \
+> > +      "Reserved memory not charged to reservation usage."
+> > +echo 'PASS'
+> > +
+> > +cleanup
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test normal case with write.
+> > +echo private=$private, populate=$populate, method=$method
+> > +run_test $((10 * 1024 * 1024)) "$populate" '-w' $((20 * 1024 * 1024)) \
+> > +      $((20 * 1024 * 1024)) 10 "$method" "$private" "0"
+> > +
+> > +echo Memory charged to hugtlb=$hugetlb_difference
+> > +echo Memory charged to reservation=$reserved_difference
+> > +
+> > +expect_equal "$((10 * 1024 * 1024))" "$hugetlb_difference" \
+> > +      "Reserved memory charged to hugetlb cgroup."
+> > +expect_equal "$((10 * 1024 * 1024))" "$reserved_difference" \
+> > +      "Reserved memory not charged to reservation usage."
+> > +echo 'PASS'
+> > +
+> > +
+> > +cleanup
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test more than reservation case.
+> > +echo private=$private, populate=$populate, method=$method
+> > +run_test "$((10 * 1024 * 1024))" "$populate" '' "$((20 * 1024 * 1024))" \
+> > +      "$((5 * 1024 * 1024))" "10" "$method" "$private" "1"
+> > +
+> > +expect_equal "1" "$reservation_failed" "Reservation succeeded."
+> > +echo 'PASS'
+> > +
+> > +cleanup
+> > +
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test more than cgroup limit case.
+> > +echo private=$private, populate=$populate, method=$method
+> > +
+> > +# Not sure if shm memory can be cleaned up when the process gets sigbus'd.
+> > +if [[ "$method" != 2 ]]; then
+> > +      run_test $((10 * 1024 * 1024)) "$populate" "-w" $((5 * 1024 * 1024)) \
+> > +         $((20 * 1024 * 1024)) 10 "$method" "$private" "1"
+> > +
+> > +      expect_equal "1" "$oom_killed" "Not oom killed."
+> > +fi
+> > +echo 'PASS'
+> > +
+> > +cleanup
+> > +
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test normal case, multiple cgroups.
+> > +echo private=$private, populate=$populate, method=$method
+> > +run_multiple_cgroup_test "$((6 * 1024 * 1024))" "$populate" "" \
+> > +      "$((20 * 1024 * 1024))" "$((20 * 1024 * 1024))" "$((10 * 1024 * 1024))" \
+> > +      "$populate" "" "$((20 * 1024 * 1024))" "$((20 * 1024 * 1024))" "10" \
+> > +      "$method" "$private" "0"
+> > +
+> > +echo Memory charged to hugtlb1=$hugetlb_difference1
+> > +echo Memory charged to reservation1=$reserved_difference1
+> > +echo Memory charged to hugtlb2=$hugetlb_difference2
+> > +echo Memory charged to reservation2=$reserved_difference2
+> > +
+> > +expect_equal "$((6 * 1024 * 1024))" "$reserved_difference1" \
+> > +      "Incorrect reservations charged to cgroup 1."
+> > +expect_equal "$((10 * 1024 * 1024))" "$reserved_difference2" \
+> > +      "Incorrect reservation charged to cgroup 2."
+> > +if [[ "$populate" == "-o" ]]; then
+> > +      expect_equal "$((6 * 1024 * 1024))" "$hugetlb_difference1" \
+> > +         "Incorrect hugetlb charged to cgroup 1."
+> > +      expect_equal "$((10 * 1024 * 1024))" "$hugetlb_difference2" \
+> > +         "Incorrect hugetlb charged to cgroup 2."
+> > +else
+> > +      expect_equal "0" "$hugetlb_difference1" \
+> > +         "Incorrect hugetlb charged to cgroup 1."
+> > +      expect_equal "0" "$hugetlb_difference2" \
+> > +         "Incorrect hugetlb charged to cgroup 2."
+> > +fi
+> > +echo 'PASS'
+> > +
+> > +cleanup
+> > +echo
+> > +echo
+> > +echo
+> > +echo Test normal case with write, multiple cgroups.
+> > +echo private=$private, populate=$populate, method=$method
+> > +run_multiple_cgroup_test "$((6 * 1024 * 1024))" "$populate" "-w" \
+> > +      "$((20 * 1024 * 1024))" "$((20 * 1024 * 1024))" "$((10 * 1024 * 1024))" \
+> > +      "$populate" "-w" "$((20 * 1024 * 1024))" "$((20 * 1024 * 1024))" "10" \
+> > +      "$method" "$private" "0"
+> > +
+> > +echo Memory charged to hugtlb1=$hugetlb_difference1
+> > +echo Memory charged to reservation1=$reserved_difference1
+> > +echo Memory charged to hugtlb2=$hugetlb_difference2
+> > +echo Memory charged to reservation2=$reserved_difference2
+> > +
+> > +expect_equal "$((6 * 1024 * 1024))" "$hugetlb_difference1" \
+> > +      "Incorrect hugetlb charged to cgroup 1."
+> > +expect_equal "$((6 * 1024 * 1024))" "$reserved_difference1" \
+> > +      "Incorrect reservation charged to cgroup 1."
+> > +expect_equal "$((10 * 1024 * 1024))" "$hugetlb_difference2" \
+> > +      "Incorrect hugetlb charged to cgroup 2."
+> > +expect_equal "$((10 * 1024 * 1024))" "$reserved_difference2" \
+> > +      "Incorrected reservation charged to cgroup 2."
+> > +
+> > +echo 'PASS'
+> > +
+> > +done # private
+> > +done # populate
+> > +done # method
+> > +
+> > +umount $cgroup_path
+> > +rmdir $cgroup_path
+> > diff --git a/tools/testing/selftests/vm/write_hugetlb_memory.sh b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+> > new file mode 100644
+> > index 0000000000000..08f5fa5527cfd
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/vm/write_hugetlb_memory.sh
+> > @@ -0,0 +1,22 @@
+> > +#!/bin/sh
+> > +# SPDX-License-Identifier: GPL-2.0
+> > +
+> > +set -e
+> > +
+> > +size=$1
+> > +populate=$2
+> > +write=$3
+> > +cgroup=$4
+> > +path=$5
+> > +method=$6
+> > +private=$7
+> > +want_sleep=$8
+> > +
+> > +echo "Putting task in cgroup '$cgroup'"
+> > +echo $$ > /dev/cgroup/memory/"$cgroup"/tasks
+> > +
+> > +echo "Method is $method"
+> > +
+> > +set +e
+> > +./write_to_hugetlbfs -p "$path" -s "$size" "$write" "$populate" -m "$method" \
+> > +      "$private" "$want_sleep"
+> > diff --git a/tools/testing/selftests/vm/write_to_hugetlbfs.c b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+> > new file mode 100644
+> > index 0000000000000..f02a897427a97
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+> > @@ -0,0 +1,252 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +/*
+> > + * This program reserves and uses hugetlb memory, supporting a bunch of
+> > + * scenorios needed by the charged_reserved_hugetlb.sh test.
+>
+> Spelling?
+>
+> > + */
+> > +
+> > +#include <err.h>
+> > +#include <errno.h>
+> > +#include <signal.h>
+> > +#include <stdio.h>
+> > +#include <stdlib.h>
+> > +#include <string.h>
+> > +#include <unistd.h>
+> > +#include <fcntl.h>
+> > +#include <sys/types.h>
+> > +#include <sys/shm.h>
+> > +#include <sys/stat.h>
+> > +#include <sys/mman.h>
+> > +
+> > +/* Global definitions. */
+> > +enum method {
+> > +     HUGETLBFS,
+> > +     MMAP_MAP_HUGETLB,
+> > +     SHM,
+> > +     MAX_METHOD
+> > +};
+> > +
+> > +
+> > +/* Global variables. */
+> > +static const char *self;
+> > +static char *shmaddr;
+> > +static int shmid;
+> > +
+> > +/*
+> > + * Show usage and exit.
+> > + */
+> > +static void exit_usage(void)
+> > +{
+> > +
+> > +     printf("Usage: %s -p <path to hugetlbfs file> -s <size to map> "
+> > +             "[-m <0=hugetlbfs | 1=mmap(MAP_HUGETLB)>] [-l] [-r] "
+> > +             "[-o] [-w]\n", self);
+> > +     exit(EXIT_FAILURE);
+> > +}
+> > +
+> > +void sig_handler(int signo)
+> > +{
+> > +     printf("Received %d.\n", signo);
+> > +     if (signo == SIGINT) {
+> > +             printf("Deleting the memory\n");
+> > +             if (shmdt((const void *)shmaddr) != 0) {
+> > +                     perror("Detach failure");
+> > +                     shmctl(shmid, IPC_RMID, NULL);
+> > +                     exit(4);
+>
+> Is this a skip error code? Please note that kselftest framework
+> interprets this as a skipped test when returb value is 4.
+>
+This is not a kselftest framework binary. It's a tool to be called
+from charge_reserved_hugetlb.sh The exit value is just to make all the
+exits in this file return different codes so I can debug easier where
+the tool exited from. They don't actually mean anything. Is that OK?
 
-- It will be required to route messages from events local to an audit
-  daemon instance or host audit daemon instance.
+> > +             }
+> > +
+> > +             shmctl(shmid, IPC_RMID, NULL);
+> > +             printf("Done deleting the memory\n");
+> > +     }
+> > +     exit(2);
+>
+> What about this one? What does exit code 2 mean?
+>
+> > +}
+> > +
+> > +int main(int argc, char **argv)
+> > +{
+> > +     int fd = 0;
+> > +     int key = 0;
+> > +     int *ptr = NULL;
+> > +     int c = 0;
+> > +     int size = 0;
+> > +     char path[256] = "";
+> > +     enum method method = MAX_METHOD;
+> > +     int want_sleep = 0, private = 0;
+> > +     int populate = 0;
+> > +     int write = 0;
+> > +
+> > +     unsigned long i;
+> > +
+> > +
+> > +     if (signal(SIGINT, sig_handler) == SIG_ERR)
+> > +             err(1, "\ncan't catch SIGINT\n");
+> > +
+> > +     /* Parse command-line arguments. */
+> > +     setvbuf(stdout, NULL, _IONBF, 0);
+> > +     self = argv[0];
+> > +
+> > +     while ((c = getopt(argc, argv, "s:p:m:owlr")) != -1) {
+> > +             switch (c) {
+> > +             case 's':
+> > +                     size = atoi(optarg);
+> > +                     break;
+> > +             case 'p':
+> > +                     strncpy(path, optarg, sizeof(path));
+> > +                     break;
+> > +             case 'm':
+> > +                     if (atoi(optarg) >= MAX_METHOD) {
+> > +                             errno = EINVAL;
+> > +                             perror("Invalid -m.");
+> > +                             exit_usage();
+> > +                     }
+> > +                     method = atoi(optarg);
+> > +                     break;
+> > +             case 'o':
+> > +                     populate = 1;
+> > +                     break;
+> > +             case 'w':
+> > +                     write = 1;
+> > +                     break;
+> > +             case 'l':
+> > +                     want_sleep = 1;
+> > +                     break;
+> > +             case 'r':
+> > +                     private = 1;
+> > +                     break;
+> > +             default:
+> > +                     errno = EINVAL;
+> > +                     perror("Invalid arg");
+> > +                     exit_usage();
+> > +             }
+> > +     }
+> > +
+> > +     if (strncmp(path, "", sizeof(path)) != 0) {
+> > +             printf("Writing to this path: %s\n", path);
+> > +     } else {
+> > +             errno = EINVAL;
+> > +             perror("path not found");
+> > +             exit_usage();
+> > +     }
+> > +
+> > +     if (size != 0) {
+> > +             printf("Writing this size: %d\n", size);
+> > +     } else {
+> > +             errno = EINVAL;
+> > +             perror("size not found");
+> > +             exit_usage();
+> > +     }
+> > +
+> > +     if (!populate)
+> > +             printf("Not populating.\n");
+> > +     else
+> > +             printf("Populating.\n");
+> > +
+> > +     if (!write)
+> > +             printf("Not writing to memory.\n");
+> > +
+> > +     if (method == MAX_METHOD) {
+> > +             errno = EINVAL;
+> > +             perror("-m Invalid");
+> > +             exit_usage();
+> > +     } else
+> > +             printf("Using method=%d\n", method);
+> > +
+> > +     if (!private)
+> > +             printf("Shared mapping.\n");
+> > +     else
+> > +             printf("Private mapping.\n");
+> > +
+> > +
+> > +     switch (method) {
+> > +     case HUGETLBFS:
+> > +             printf("Allocating using HUGETLBFS.\n");
+> > +             fd = open(path, O_CREAT | O_RDWR, 0777);
+> > +             if (fd == -1)
+> > +                     err(1, "Failed to open file.");
+> > +
+> > +             ptr = mmap(NULL, size, PROT_READ | PROT_WRITE,
+> > +                     (private ? MAP_PRIVATE : MAP_SHARED) | (populate ?
+> > +                             MAP_POPULATE : 0), fd, 0);
+> > +
+> > +             if (ptr == MAP_FAILED) {
+> > +                     close(fd);
+> > +                     err(1, "Error mapping the file");
+> > +             }
+> > +             break;
+> > +     case MMAP_MAP_HUGETLB:
+> > +             printf("Allocating using MAP_HUGETLB.\n");
+> > +             ptr = mmap(NULL, size,
+> > +             PROT_READ | PROT_WRITE,
+> > +             (private ? (MAP_PRIVATE | MAP_ANONYMOUS) : MAP_SHARED) |
+> > +             MAP_HUGETLB | (populate ?
+> > +                     MAP_POPULATE : 0),
+> > +             -1, 0);
+> > +
+> > +             if (ptr == MAP_FAILED)
+> > +                     err(1, "mmap");
+> > +
+> > +             printf("Returned address is %p\n", ptr);
+> > +             break;
+> > +     case SHM:
+> > +             printf("Allocating using SHM.\n");
+> > +             shmid = shmget(key, size, SHM_HUGETLB | IPC_CREAT | SHM_R |
+> > +                             SHM_W);
+> > +             if (shmid < 0) {
+> > +                     shmid = shmget(++key, size, SHM_HUGETLB | IPC_CREAT |
+> > +                                     SHM_R | SHM_W);
+> > +                     if (shmid < 0)
+> > +                             err(1, "shmget");
+> > +
+> > +             }
+> > +             printf("shmid: 0x%x, shmget key:%d\n", shmid, key);
+> > +
+> > +             shmaddr = shmat(shmid, NULL, 0);
+> > +             if (shmaddr == (char *)-1) {
+> > +                     perror("Shared memory attach failure");
+> > +                     shmctl(shmid, IPC_RMID, NULL);
+> > +                     exit(2);
+> > +             }
+> > +             printf("shmaddr: %p\n", shmaddr);
+> > +
+> > +             break;
+> > +     default:
+> > +             errno = EINVAL;
+> > +             err(1, "Invalid method.");
+> > +     }
+> > +
+> > +     if (write) {
+> > +             printf("Writing to memory.\n");
+> > +             if (method != SHM) {
+> > +                     memset(ptr, 1, size);
+> > +             } else {
+> > +                     printf("Starting the writes:\n");
+> > +                     for (i = 0; i < size; i++) {
+> > +                             shmaddr[i] = (char)(i);
+> > +                             if (!(i % (1024 * 1024)))
+> > +                                     printf(".");
+> > +                     }
+> > +                     printf("\n");
+> > +
+> > +                     printf("Starting the Check...");
+> > +                     for (i = 0; i < size; i++)
+> > +                             if (shmaddr[i] != (char)i) {
+> > +                                     printf("\nIndex %lu mismatched\n", i);
+> > +                                     exit(3);
+> > +                             }
+> > +                     printf("Done.\n");
+> > +
+> > +
+> > +             }
+> > +     }
+> > +
+> > +     if (want_sleep) {
+> > +             /* Signal to caller that we're done. */
+> > +             printf("DONE\n");
+> > +
+> > +             /* Hold memory until external kill signal is delivered. */
+> > +             while (1)
+> > +                     sleep(100);
+>
+> Please don't add sleeps. This will hold up the kselftest run.
 
-- nsIDs were considered seriously, but turns out to be insufficient for
-  efficient filtering, routing, and tracking.
+This tool is meant to allocate a bunch of memory and hold it until the
+code in ./charge_reserved_hugetlb.sh checks that the usage is
+accounted for. charge_reserved_hugetlb.sh runs this tool in the
+background, and asks it to hold the memory until it verifies
+accounting, then asks it to delete the memory. It should not hold up a
+run.
 
-Since the concept of a container is entirely a userspace concept, a
-registration from the userspace container orchestration system initiates
-this.  This will define a point in time and a set of resources
-associated with a particular container with an audit container
-identifier.
+>
+> > +     }
+> > +
+> > +     close(fd);
+>
+> Is this close() necessary in all cases? Looks like MMAP_MAP_HUGETLB
+> is the only case that opens it.
+>
+> I am not sure if the error legs are correct.
+>
+> > +
+> > +     return 0;
+> > +}
+> > --
+> > 2.23.0.162.g0b9fbb3734-goog
+> >
+>
+> thanks,
+> -- Shuah
 
-The registration is a u64 representing the audit container identifier.
-
-This is written to a special file in a pseudo filesystem (proc, since
-PID tree already exists) representing a process that will become a
-parent process in that container.  This write might place restrictions
-on mount namespaces required to define a container, or at least careful
-checking of namespaces in the kernel to verify permissions of the
-orchestrator so it can't change its own container ID.  A bind mount of
-nsfs may be necessary in the container orchestrator's mount namespace.
-This write can only happen once per process.
-
-Note: The justification for using a u64 is that it minimizes the
-information printed in every audit record, reducing bandwidth and limits
-comparisons to a single u64 which will be faster and less error-prone.
-
-[ALT:
-The registration is a
-netlink message to the audit subsystem of type AUDIT_SET_CONTID with a
-data structure including a u32 representing the PID of the target
-process to become the parent process in that container and a
-u64 representing the audit container identifier.
-:ALT]
-
-Require CAP_AUDIT_CONTROL to be able to carry out the registration.  At
-that time, record the target container's user-supplied audit container
-identifier along with a target container's parent process (which may
-become the target container's "init" process) process ID (referenced
-from the initial PID namespace) in a new record AUDIT_CONTAINER_OP with
-a qualifying op=$action field.
-
-Issue a new auxilliary record AUDIT_CONTAINER_ID for each valid
-audit container identifier present on an auditable action or event.
-
-Forked and cloned processes inherit their parent's audit container
-identifier, referenced from the process' task_struct indirectly in the
-audit pointer to a struct audit_task_info.  Since the audit
-container identifier is inherited rather than written, it can still be
-written once.  This will prevent tampering while allowing nesting.
-
-Mimic setns(2) and return an error if the process has already initiated
-threading or forked since this registration should happen before the
-process execution is started by the orchestrator and hence should not
-yet have any threads or children.  If this is deemed overly restrictive,
-switch all of the target's threads and children to the new containerID.
-
-Trust the orchestrator to judiciously use and restrict CAP_AUDIT_CONTROL.
-
-The audit container identifier will be stored in a refcounted kernel
-object that is searchable in a hashtabled list for efficient access.
-This is so that multiple container orchestrators/engines can operate on
-one machine without danger of them trampling each other's audit
-container identifiers.  The owner of each container will also be stored
-to be able to permit tasks to be injected into an existing container
-only by its owner.
-
-The total number of containers can be restricted by a total count.
-
-To permit nesting containers, the target container must be a descendant
-process of the container orchestrator and the container's parent
-container (if set) will be stored in the audit container identifier
-kernel object.  Report the chain of contids back to the top level
-container of a process.  Filters will check the chain of contids back to
-the top container.
-
-The total depth of container nesting can be restricted.
-
-When a container ceases to exist because the last process in that
-container has exited log the fact to balance the registration action.  
-(This is likely needed for certification accountability.)
-
-At this point it appears unnecessary to add a container session
-identifier since this is all tracked from loginuid and sessionid to
-communicate with the container orchestrator to spawn an additional
-session into an existing container which would be logged.  It can be
-added at a later date without breaking API should it be deemed
-necessary.
-
-To permit container nesting beyond the initial user namespace, add a
-capcontid flag per process in its audit audit_task_info struct to store
-this ability communicated either via /proc/PID/capcontid or an audit
-netlink message type AUDIT_SET_CAPCONTID.
-
-The following namespace logging actions are not needed for certification
-purposes at this point, but are helpful for tracking namespace activity.
-These are auxilliary records that are associated with namespace
-manipulation syscalls unshare(2), clone(2) and setns(2), so the records
-will only show up if explicit syscall rules have been added to document
-this activity.
-
-Log the creation of every namespace, inheriting/adding its spawning
-process' audit container identifier(s), if applicable.  Include the
-spawning and spawned namespace IDs (device and inode number tuples).
-[AUDIT_NS_CREATE, AUDIT_NS_DESTROY] [clone(2), unshare(2), setns(2)]
-Note: At this point it appears only network namespaces may need to track
-container IDs apart from processes since incoming packets may cause an
-auditable event before being associated with a process.  Since a
-namespace can be shared by processes in different containers, the
-namespace will need to track all containers to which it has been
-assigned.
-
-Upon registration, the target process' namespace IDs (in the form of a
-nsfs device number and inode number tuple) will be recorded in an
-AUDIT_NS_INFO auxilliary record.
-
-Log the destruction of every namespace that is no longer used by any
-process, including the namespace IDs (device and inode number tuples).
-[AUDIT_NS_DESTROY] [process exit, unshare(2), setns(2)]
-
-Issue a new auxilliary record AUDIT_NS_CHANGE listing (opt: op=$action)
-the parent and child namespace IDs for any changes to a process'
-namespaces. [setns(2)]
-Note: It may be possible to combine AUDIT_NS_* record formats and
-distinguish them with an op=$action field depending on the fields
-required for each message type.
-
-The audit container identifier will need to be reaped from all
-implicated namespaces upon the destruction of a container.
-
-This namespace information adds supporting information for tracking
-events not attributable to specific processes.
-
-Changelog:
-
-(Upstream V4)
-- Add elaborated motivations.
-- Switch AUDIT_CONTAINER to AUDIT_CONTAINER_OP
-- Switch AUDIT_CONTAINER_INFO to AUDIT_CONTAINER_ID
-- Add capcontid to mimic CAP_AUDIT_CONTROL in non-init user namespaces
-- Check for max contid depth
-- Check for max contid quantity
-- Store the contid in a refcounted kernel object filed by hashtable
-  lists
-- Mediate contid registration between peer orchestrators
-- Allow injection of processes into an existing container by container
-  owner
-
-(Upstream V3)
-- switch back to u64 (from pmoore, can be expanded to u128 in future if
-  need arises without breaking API.  u32 was originally proposed, up to
-  c36 discussed)
-- write-once, but children inherit audit container identifier and can
-  then still be written once
-- switch to CAP_AUDIT_CONTROL
-- group namespace actions together, auxilliary records to namespace
-  operations.
-
-(Upstream V2)
-- switch from u64 to u128 UUID
-- switch from "signal" and "trigger" to "register"
-- restrict registration to single process or force all threads and
-  children into same container
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+Thanks for the review, I should be able to address everything else in
+the next patchset.
