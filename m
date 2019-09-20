@@ -2,188 +2,301 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D60CB85CF
-	for <lists+cgroups@lfdr.de>; Fri, 20 Sep 2019 00:25:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2DB8B89BD
+	for <lists+cgroups@lfdr.de>; Fri, 20 Sep 2019 05:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389629AbfISWY4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Sep 2019 18:24:56 -0400
-Received: from mail-pl1-f201.google.com ([209.85.214.201]:40569 "EHLO
-        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436514AbfISWYp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Sep 2019 18:24:45 -0400
-Received: by mail-pl1-f201.google.com with SMTP id f4so3085534plo.7
-        for <cgroups@vger.kernel.org>; Thu, 19 Sep 2019 15:24:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=1fNH/t1YSSHvbg8a3MxctDUNrINVVwuSB3u0kWY+VvE=;
-        b=okXtjjMugI2zY2ntgsy9f5ADQvXd32G/3xinqf6Q6DtZsN1MbYoRsonm/03yjd0/P+
-         MiIUVJ/TIT5XH2YKjfw0FvrBtAZwd5DM78evZ6y1x0tflJV48NyGtbgy/MY/hxd5k/Zc
-         3V9HjeyAmSr1BHpbXPnNTRrEmOoGHsqAiX3Ck/V8YaFH2UmsyObqtnMlM/LEM2sh6P3q
-         W0JqVYCmFHAWrwSTvjAAudRcEl5fiiFK2qODUwZWWBFv1tb1baNfEY5piUNaqnQJoX4r
-         sYGU1nFjv3MHx7pUHQxtV3lOoSFYliguYZydg0YOWMR0IC9U4uIEB4rXq6tv6XXwZu+0
-         5zNg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=1fNH/t1YSSHvbg8a3MxctDUNrINVVwuSB3u0kWY+VvE=;
-        b=LWfHjFdFKzb0CmXb4l08fg4fdlNwYvVLdLhicCV0Spsg+jcrSPbPDk3jS/8y5TNVfM
-         sq10GSheJXTXFbyhWmnXwVUxxv9fuJwl8O2E6Q5oy+0m9JVOr7dxIPG8NgE5s+D13lpU
-         GWMpnlKWO4J7CqiI8P33dQaLLmXPVz41YO31ytpcxIDW3gVG1pH6o7V4H/4zerj6PffF
-         b2QLLdclPyikiVpskwyZbD+XQhwFdjErA2CMSKM1qiD6x3eILeN3jfTJCJiwrNVRXjQu
-         1Jo6EgNiTNKnlpMmUy/uUD3sgZhCquMEToTv7KBwXjhnviH4ZCVGm/ZbcE1+sMZV4Z0b
-         nNxw==
-X-Gm-Message-State: APjAAAVZTqyomnmFddqaefCnI6fOqBD6Y9xI+QVk+YVikxE/XdKf7e4j
-        jbljs9ELk675RI4z2zJPRPHROHKBv++ybARzTQ==
-X-Google-Smtp-Source: APXvYqwVYmVYaJLBh2SrSRXW2EoYl9OM1kTw7+CtcNY8OPiNC3aAKR0Me26xzMapXcS6QkknLzni5XaRDPsqCd2NcA==
-X-Received: by 2002:a63:4451:: with SMTP id t17mr11796300pgk.128.1568931883911;
- Thu, 19 Sep 2019 15:24:43 -0700 (PDT)
-Date:   Thu, 19 Sep 2019 15:24:21 -0700
-In-Reply-To: <20190919222421.27408-1-almasrymina@google.com>
-Message-Id: <20190919222421.27408-8-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20190919222421.27408-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.23.0.351.gc4317032e6-goog
-Subject: [PATCH v5 7/7] hugetlb_cgroup: Add hugetlb_cgroup reservation docs
-From:   Mina Almasry <almasrymina@google.com>
-To:     mike.kravetz@oracle.com
-Cc:     shuah@kernel.org, almasrymina@google.com, rientjes@google.com,
-        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
-        khalid.aziz@oracle.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com,
-        mkoutny@suse.com, Hillf Danton <hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2394466AbfITDa6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Thu, 19 Sep 2019 23:30:58 -0400
+Received: from mta03.svc.cra.dublin.eircom.net ([159.134.118.145]:42066 "HELO
+        mta03.svc.cra.dublin.eircom.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with SMTP id S2390917AbfITDa5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Sep 2019 23:30:57 -0400
+Received: (qmail 42562 messnum 5297165 invoked from network[213.94.190.15/avas03.vendorsvc.cra.dublin.eircom.net]); 20 Sep 2019 03:30:50 -0000
+Received: from avas03.vendorsvc.cra.dublin.eircom.net (HELO avas03) (213.94.190.15)
+  by mta03.svc.cra.dublin.eircom.net (qp 42562) with SMTP; 20 Sep 2019 03:30:50 -0000
+Received: from vzmbx18.eircom.net ([86.43.60.98])
+        by Cloudmark Gateway with SMTP
+        id B9cDiqpxdHftSB9cDilgqx; Fri, 20 Sep 2019 04:29:49 +0100
+X-Spam-Flag: NO
+X-CNFS-Analysis: v=2.2 cv=bdwbaKHB c=1 sm=1 tr=0
+ a=e7gqILOnBbllteVy7xBg4A==:117 a=9cW_t1CCXrUA:10 a=FKkrIqjQGGEA:10
+ a=Y6LuG29ncYYA:10 a=yfcEdEpBjc8A:10 a=IkcTkHD0fZMA:10 a=x7bEGLp0ZPQA:10
+ a=d3O7RQJoAl0A:10 a=71gsE8y6TuEA:10 a=ZZnuYtJkoWoA:10 a=CjxXgO3LAAAA:8
+ a=HgbDHJuKAAAA:8 a=FoKqDkoD6yZa-kW7348A:9 a=_VonRIoaKIIUQ_Fd:21
+ a=n_-TkvZwdt2bZFU-:21 a=QEXdDO2ut3YA:10 a=uVEhrN3TaIwA:10
+Date:   Fri, 20 Sep 2019 04:29:49 +0100 (IST)
+From:   Miss Amanda Kipkalya Kones <mrsh12322@eircom.net>
+Reply-To: missamandakipkalyakones@yahoo.com
+Message-ID: <1307566757.3347.1568950189021.JavaMail.zimbra@eircom.net>
+Subject: Re: Reply
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+X-Originating-IP: [91.233.116.14]
+X-Mailer: Zimbra 8.6.0_GA_1242 (zclient/8.6.0_GA_1242)
+Thread-Topic: Reply
+Thread-Index: aoHsq6jmrIoRthTMqWjviDiOPvSVNg==
+X-CMAE-Envelope: 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
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add docs for how to use hugetlb_cgroup reservations, and their behavior.
+PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL ADDRESS ( missamandakipkalyakones@yahoo.com )
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-Acked-by: Hillf Danton <hdanton@sina.com>
 
----
- .../admin-guide/cgroup-v1/hugetlb.rst         | 85 ++++++++++++++++---
- 1 file changed, 74 insertions(+), 11 deletions(-)
+HELLO MY DEAR
 
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-index a3902aa253a9..70c10bd9a0b7 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -2,13 +2,6 @@
- HugeTLB Controller
- ==================
+I am writing this mail to you with tears and sorrow from my heart. With due respect trust and humanity, I appeal to you to exercise a little patience and read through my letter, I wish to contact you personally for a long term business relationship and investment assistance in your Country so I feel quite safe dealing with you in this important business having gone through your remarkable profile, honestly I am writing this email to you with pains, tears and sorrow from my heart, I will really like to have a good relationship with you and I have a special reason why I decided to contact you, I decided to contact you due to the urgency of my situation, My name is Miss Amanda Kipkalya Kones, 23yrs old female and I held from Kenya in East Africa. My father was the former Kenyan road Minister. He and Assistant Minister of Home Affairs Lorna Laboso had been on board the Cessna 210, which was headed to Kericho and crashed in a remote area called Kajong, in western Kenya. The plane crashed on the Tuesday 10th, June, 2008. You can read more about the crash through the below site:
 
--The HugeTLB controller allows to limit the HugeTLB usage per control group and
--enforces the controller limit during page fault. Since HugeTLB doesn't
--support page reclaim, enforcing the limit at page fault time implies that,
--the application will get SIGBUS signal if it tries to access HugeTLB pages
--beyond its limit. This requires the application to know beforehand how much
--HugeTLB pages it would require for its use.
--
- HugeTLB controller can be created by first mounting the cgroup filesystem.
+http://edition.cnn.com/2008/WORLD/africa/06/10/kenya.crash/index.html
 
- # mount -t cgroup -o hugetlb none /sys/fs/cgroup
-@@ -28,10 +21,14 @@ process (bash) into it.
+After the burial of my father, my stepmother and uncle conspired and sold my father's property to an Italian Expert rate which the shared the money among themselves and live nothing for me. I am constrained to contact you because of the abuse I am receiving from my wicked stepmother and uncle. They planned to take away all my late father's treasury and properties from me since the unexpected death of my beloved Father. Meanwhile I wanted to escape to the USA but they hide away my international passport and other valuable traveling documents. Luckily they did not discover where I kept my fathers File which contains important documents. So I decided to run to the refugee camp where I am presently seeking asylum under the United Nations High Commission for the Refugee here in Ouagadougou, Republic of Burkina Faso.
 
- Brief summary of control files::
+One faithful morning, I opened my father's briefcase and found out the documents which he has deposited huge amount of money in one bank in Burkina Faso with my name as the next of kin. I traveled to Burkina Faso to withdraw the money for a better life so that I can take care of myself and start a new life, on my arrival, the Bank Director whom I met in person told me that my father's instruction/will to the bank is that the money would only be release to me when I am married or present a trustee who will help me and invest the money overseas. I am in search of an honest and reliable person who will help me and stand as my trustee so that I will present him to the Bank for transfer of the money to his bank account overseas. I have chosen to contact you after my prayers and I believe that you will not betray my trust. But rather take me as your own sister or daughter.
 
-- hugetlb.<hugepagesize>.limit_in_bytes     # set/show limit of "hugepagesize" hugetlb usage
-- hugetlb.<hugepagesize>.max_usage_in_bytes # show max "hugepagesize" hugetlb  usage recorded
-- hugetlb.<hugepagesize>.usage_in_bytes     # show current usage for "hugepagesize" hugetlb
-- hugetlb.<hugepagesize>.failcnt		   # show the number of allocation failure due to HugeTLB limit
-+ hugetlb.<hugepagesize>.reservation_limit_in_bytes     # set/show limit of "hugepagesize" hugetlb reservations
-+ hugetlb.<hugepagesize>.reservation_max_usage_in_bytes # show max "hugepagesize" hugetlb reservations recorded
-+ hugetlb.<hugepagesize>.reservation_usage_in_bytes     # show current reservations for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.reservation_failcnt            # show the number of allocation failure due to HugeTLB reservation limit
-+ hugetlb.<hugepagesize>.limit_in_bytes                 # set/show limit of "hugepagesize" hugetlb faults
-+ hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepagesize" hugetlb  usage recorded
-+ hugetlb.<hugepagesize>.usage_in_bytes                 # show current usage for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.failcnt                        # show the number of allocation failure due to HugeTLB usage limit
+Although, you may wonder why I am so soon revealing myself to you without knowing you, well I will say that my mind convinced me that you may be the true person to help me. More so, my father of blessed memory deposited the sum of $6.7M ( Six Million seven Hundred Thousand Dollars ) in ISLAMIC GROUP AFRICAN DEVELOPMENT BANK BURKINA FASO with he used my name as the next of kin. However, I shall forward you with the necessary documents on confirmation of your acceptance to assist me for the transfer and statement of the fund in your country. As you will help me in an investment, and I will like to complete my studies, It is my intention to compensate you with 30% of the total money for your services and the balance shall be my capital in your establishment. As soon as I receive your positive response showing your interest I will put things into action immediately. In the light of the above. I shall appreciate an urgent message indicating your ability and willingness to handle this transaction sincerely.
 
- For a system supporting three hugepage sizes (64k, 32M and 1G), the control
- files include::
-@@ -40,11 +37,77 @@ files include::
-   hugetlb.1GB.max_usage_in_bytes
-   hugetlb.1GB.usage_in_bytes
-   hugetlb.1GB.failcnt
-+  hugetlb.1GB.reservation_limit_in_bytes
-+  hugetlb.1GB.reservation_max_usage_in_bytes
-+  hugetlb.1GB.reservation_usage_in_bytes
-+  hugetlb.1GB.reservation_failcnt
-   hugetlb.64KB.limit_in_bytes
-   hugetlb.64KB.max_usage_in_bytes
-   hugetlb.64KB.usage_in_bytes
-   hugetlb.64KB.failcnt
-+  hugetlb.64KB.reservation_limit_in_bytes
-+  hugetlb.64KB.reservation_max_usage_in_bytes
-+  hugetlb.64KB.reservation_usage_in_bytes
-+  hugetlb.64KB.reservation_failcnt
-   hugetlb.32MB.limit_in_bytes
-   hugetlb.32MB.max_usage_in_bytes
-   hugetlb.32MB.usage_in_bytes
-   hugetlb.32MB.failcnt
-+  hugetlb.32MB.reservation_limit_in_bytes
-+  hugetlb.32MB.reservation_max_usage_in_bytes
-+  hugetlb.32MB.reservation_usage_in_bytes
-+  hugetlb.32MB.reservation_failcnt
-+
-+
-+1. Reservation limits
-+
-+The HugeTLB controller allows to limit the HugeTLB reservations per control
-+group and enforces the controller limit at reservation time. Reservation limits
-+are superior to Page fault limits (see section 2), since Reservation limits are
-+enforced at reservation time, and never causes the application to get SIGBUS
-+signal. Instead, if the application is violating its limits, then it gets an
-+error on reservation time, i.e. the mmap or shmget return an error.
-+
-+
-+2. Page fault limits
-+
-+The HugeTLB controller allows to limit the HugeTLB usage (page fault) per
-+control group and enforces the controller limit during page fault. Since HugeTLB
-+doesn't support page reclaim, enforcing the limit at page fault time implies
-+that, the application will get SIGBUS signal if it tries to access HugeTLB
-+pages beyond its limit. This requires the application to know beforehand how
-+much HugeTLB pages it would require for its use.
-+
-+
-+3. Caveats with shared memory
-+
-+a. Charging and uncharging:
-+
-+For shared hugetlb memory, both hugetlb reservation and usage (page faults) are
-+charged to the first task that causes the memory to be reserved or faulted,
-+and all subsequent uses of this reserved or faulted memory is done without
-+charging.
-+
-+Shared hugetlb memory is only uncharged when it is unreserved or deallocated.
-+This is usually when the hugetlbfs file is deleted, and not when the task that
-+caused the reservation or fault has exited.
-+
-+b. Interaction between reservation limit and fault limit.
-+
-+Generally, it's not recommended to set both of the reservation limit and fault
-+limit in a cgroup. For private memory, the fault usage cannot exceed the
-+reservation usage, so if you set both, one of those limits will be useless.
-+Still, there is no kernel enforcement on setting both at the same time.
-+
-+For shared memory, a cgroup's fault usage may be greater than its reservation
-+usage, so some care needs to be taken. Consider this example:
-+
-+- Task A reserves 4 pages in a shared hugetlbfs file. Cgroup A will get
-+  4 reservations charged to it and no faults charged to it.
-+- Task B reserves and faults the same 4 pages as Task A. Cgroup B will get no
-+  reservation charge, but will get charged 4 faulted pages. If Cgroup B's limit
-+  is less than 4, then Task B will get a SIGBUS.
-+
-+For the above scenario, it's not recommended for the userspace to set both
-+reservation limits and fault limits, but it is still allowed to in case it sees
-+some use for it, such as safe gradual transitioning from one to the other.
---
-2.23.0.351.gc4317032e6-goog
+1. Can you handle this transfer for me?
+2. Can i trust you as a genuine friend?
+
+AWAITING YOUR URGENT AND POSITIVE RESPONSE, Please do keep this only to your self for now on till the bank will transfer the fund. I plead to you not to disclose it till I come over because I am afraid of my wicked stepmother who has threatened to kill me and have the money alone, I thank God Today that am out from my country (KENYA) but now In (Burkina Faso) where my father deposited these money with my name as the next of Kin. I have the documents for the claims.
+
+please reply me here ( missamandakipkalyakones@yahoo.com ) for a confidential discussions may be like that we can become best friends in future sorry for my pictures i will enclose it in my next mail and more about me when i hear from you okay i am living now in a refugee camp
+
+Kisses and warmest regards
+Yours Sincerely
+Miss Amanda Kipkalya Kones
+
+
+PLEASE CONTACT ME THROUGH MY PRIVATE EMAIL ADDRESS ( missamandakipkalyakones@yahoo.com )
