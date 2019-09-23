@@ -2,53 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C16BB356
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2019 14:08:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D29ADBBAB7
+	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2019 19:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2393767AbfIWMIa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 Sep 2019 08:08:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37788 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2391157AbfIWMIa (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 23 Sep 2019 08:08:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E42F6AE00;
-        Mon, 23 Sep 2019 12:08:28 +0000 (UTC)
-Date:   Mon, 23 Sep 2019 14:08:28 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: lot of MemAvailable but falling cache and raising PSI
-Message-ID: <20190923120828.GN6016@dhcp22.suse.cz>
-References: <20190910090241.GM2063@dhcp22.suse.cz>
- <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
- <20190910110741.GR2063@dhcp22.suse.cz>
- <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
- <20190910125756.GB2063@dhcp22.suse.cz>
- <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
- <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag>
- <20190910132418.GC2063@dhcp22.suse.cz>
- <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
- <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
+        id S2440198AbfIWRrr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 Sep 2019 13:47:47 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:33246 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389763AbfIWRrr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 Sep 2019 13:47:47 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NHdNbD090061;
+        Mon, 23 Sep 2019 17:47:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=yDskfBufBcPBjCvniq+DMnbkW78ezLoVWcAK8svPf2o=;
+ b=Ql5vbWG+kxg7x8Ups95HkSOCpzWtP7UKlTCD+zxH28gfZGKYH4Yz328gucDUXJT6oPmp
+ sE7fD3Qg9ORS/5vusZqCpWBJ8saeGwfEc2Ukl/I3/TKJDNqMl1CR4zZQmvxLgjIxelup
+ ueLksD8fC6fJO/x2UB2VAyzOmxIBGP9hVuOnBhqdWMJt2XaKKV/TBPTCcRVtaMquqUcI
+ MxmYdbpnJdI7rQHCOVdyEerxDxapTPEklcIX65jlGFbnaoOud9SjKHLp+aOcmPUlFSSj
+ GNrFmBAV4Vq7kil71S5KZV+zevmnZfeg8NtJtPc1EaOs39h4aYZiiZ43Qs+PIsEqNjeU AQ== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 2v5cgqrfg7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Sep 2019 17:47:37 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NHcuvX179186;
+        Mon, 23 Sep 2019 17:47:36 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 2v6yvptysg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 23 Sep 2019 17:47:36 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x8NHlW2K007596;
+        Mon, 23 Sep 2019 17:47:33 GMT
+Received: from [192.168.1.222] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 23 Sep 2019 10:47:32 -0700
+Subject: Re: [PATCH v5 0/7] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ limits
+To:     Mina Almasry <almasrymina@google.com>,
+        aneesh.kumar@linux.vnet.ibm.com
+Cc:     shuah@kernel.org, rientjes@google.com, shakeelb@google.com,
+        gthelen@google.com, akpm@linux-foundation.org,
+        khalid.aziz@oracle.com, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org, mkoutny@suse.com
+References: <20190919222421.27408-1-almasrymina@google.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3c73d2b7-f8d0-16bf-b0f0-86673c3e9ce3@oracle.com>
+Date:   Mon, 23 Sep 2019 10:47:30 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20190919222421.27408-1-almasrymina@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1908290000 definitions=main-1909230157
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
+ definitions=main-1909230157
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 19-09-19 12:21:15, Stefan Priebe - Profihost AG wrote:
-[...]
-> Which values should i collect now?
+On 9/19/19 3:24 PM, Mina Almasry wrote:
+> Patch series implements hugetlb_cgroup reservation usage and limits, which
+> track hugetlb reservations rather than hugetlb memory faulted in. Details of
+> the approach is 1/7.
 
-Collect the same tracepoints as in the past.
+Thanks for your continued efforts Mina.
 
+One thing that has bothered me with this approach from the beginning is that
+hugetlb reservations are related to, but somewhat distinct from hugetlb
+allocations.  The original (existing) huegtlb cgroup implementation does not
+take reservations into account.  This is an issue you are trying to address
+by adding a cgroup support for hugetlb reservations.  However, this new
+reservation cgroup ignores hugetlb allocations at fault time.
+
+I 'think' the whole purpose of any hugetlb cgroup is to manage the allocation
+of hugetlb pages.  Both the existing cgroup code and the reservation approach
+have what I think are some serious flaws.  Consider a system with 100 hugetlb
+pages available.  A sysadmin, has two groups A and B and wants to limit hugetlb
+usage to 50 pages each.
+
+With the existing implementation, a task in group A could create a mmap of
+100 pages in size and reserve all 100 pages.  Since the pages are 'reserved',
+nobody in group B can allocate ANY huge pages.  This is true even though
+no pages have been allocated in A (or B).
+
+With the reservation implementation, a task in group A could use MAP_NORESERVE
+and allocate all 100 pages without taking any reservations.
+
+As mentioned in your documentation, it would be possible to use both the
+existing (allocation) and new reservation cgroups together.  Perhaps if both
+are setup for the 50/50 split things would work a little better.
+
+However, instead of creating a new reservation crgoup how about adding
+reservation support to the existing allocation cgroup support.  One could
+even argue that a reservation is an allocation as it sets aside huge pages
+that can only be used for a specific purpose.  Here is something that
+may work.
+
+Starting with the existing allocation cgroup.
+- When hugetlb pages are reserved, the cgroup of the task making the
+  reservations is charged.  Tracking for the charged cgroup is done in the
+  reservation map in the same way proposed by this patch set.
+- At page fault time,
+  - If a reservation already exists for that specific area do not charge the
+    faulting task.  No tracking in page, just the reservation map.
+  - If no reservation exists, charge the group of the faulting task.  Tracking
+    of this information is in the page itself as implemented today.
+- When the hugetlb object is removed, compare the reservation map with any
+  allocated pages.  If cgroup tracking information exists in page, uncharge
+  that group.  Otherwise, unharge the group (if any) in the reservation map.
+
+One of the advantages of a separate reservation cgroup is that the existing
+code is unmodified.  Combining the two provides a more complete/accurate
+solution IMO.  But, it has the potential to break existing users.
+
+I really would like to get feedback from anyone that knows how the existing
+hugetlb cgroup controller may be used today.  Comments from Aneesh would
+be very welcome to know if reservations were considered in development of the
+existing code.
 -- 
-Michal Hocko
-SUSE Labs
+Mike Kravetz
