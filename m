@@ -2,207 +2,201 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B68ABBDE1
-	for <lists+cgroups@lfdr.de>; Mon, 23 Sep 2019 23:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F15E1BCBED
+	for <lists+cgroups@lfdr.de>; Tue, 24 Sep 2019 17:54:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390154AbfIWV1W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 23 Sep 2019 17:27:22 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:54304 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732345AbfIWV1W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 23 Sep 2019 17:27:22 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NLOf4V038659;
-        Mon, 23 Sep 2019 21:27:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=83jxGKqAi9Yk4jDwgF6P4FCc3JGos7ZpoO61f8oV08k=;
- b=i/ZJrc4YyWymOVjBHKVonztA+Qn77uS5ZklHaHlsaJsDt4VrFR+7NCP8O2CF6u6IEzgZ
- ZomLUvzCbGU1lW48gWBtWwCc4AG+dnAaJe/gig5jRK87MGEhjBzF37bhxP+evJsdKisE
- tw6B2gGmj4ysAZFWpv3HwTCj4E9f45364AhgeLp3xjL0S/qTWk5m6ww94oFpRe4Hhel/
- o7VWbvx51qC785DDxQd+69Dz2hqEiTBz/LZKB8cDdwBuPfeMTwyOxMkbIv0jGCurpC7J
- ouHOTbOg3qncq/ZiEIUIQxfaqZGsqSQa2YNYPjS6lo9RFHKuOzGBK+ylBD42w824LS2y sQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 2v5btpsqs8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Sep 2019 21:27:11 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x8NLO96L003669;
-        Mon, 23 Sep 2019 21:27:11 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 2v6yvq6keq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 23 Sep 2019 21:27:10 +0000
-Received: from abhmp0013.oracle.com (abhmp0013.oracle.com [141.146.116.19])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id x8NLR8Rf002944;
-        Mon, 23 Sep 2019 21:27:08 GMT
-Received: from [192.168.1.222] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 23 Sep 2019 14:27:08 -0700
-Subject: Re: [PATCH v5 0/7] hugetlb_cgroup: Add hugetlb_cgroup reservation
- limits
-To:     Mina Almasry <almasrymina@google.com>,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-References: <20190919222421.27408-1-almasrymina@google.com>
- <3c73d2b7-f8d0-16bf-b0f0-86673c3e9ce3@oracle.com>
- <CAHS8izOj2AT4tX-+Hcb8LB2TOUKJDHScDtJ80u4M6OWpwktq0g@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <a8e9c533-1593-35ee-e65d-1f2fc2b0fb48@oracle.com>
-Date:   Mon, 23 Sep 2019 14:27:06 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
-MIME-Version: 1.0
-In-Reply-To: <CAHS8izOj2AT4tX-+Hcb8LB2TOUKJDHScDtJ80u4M6OWpwktq0g@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+        id S2390621AbfIXPyv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Sep 2019 11:54:51 -0400
+Received: from mail-eopbgr820077.outbound.protection.outlook.com ([40.107.82.77]:63305
+        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2390477AbfIXPyu (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 24 Sep 2019 11:54:50 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gT8ds78fn/vFPx7qAg7767nmY7rvRZ+YBnHM8fReCUkN3CvwvaEuXjAHtPFxKkOPtxm06QF6dQBf5ymTeQGSEH1UHD1gKdWoBcORSmfW8rpZFVOrGMGQ7iJ6xm9vUKBkKcfn+Q2LocVcTVOJe4T+SB73ptCQ2tlReEDGzXKjx3hAPdNnugDiHFclA2/R0aTQvM9I5W5V598blHO+6Eg1/ypGkGOY9VamDL0ca0/1gUKONlJ/iKq1sPkjJ+BqBARcIyl5G6e+WxRpiGOrfhUZs1ZiyqKI/CjH9DdkLLc5N+wDaFbJglpQR1GTux+mwKxCQmKribUvURsHgop/WFDxZA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D4J/NmVXX5PWfofOcal7bDVRflzQD29HG9FHkGyhBDM=;
+ b=IMo/6JtwPYKA+eRIfahgrhqzipAH5A3T0qImBKFKOABy5AMvyVOM9L1tE4iRelGyPasd2nDyAFqSSb6NaC/2MTRVpb84rthKktHhxmU/DjRTKoZMLZUsoCtotXX19UZHSjmD6X+RqpsgGfaQR7KRaWesxlYl+WA/7ZAqepoXUmszeyTR8n0SfQLYZRb+XTC7Ko4Iv8jjO7xxH05T+KRv3aCkEO1lJOxgqUcAPzKCBVgF0Od0M5bp4YBsc3oaNwOBuS66ENWLmE5scRJbaMXwsXCCk1dGS0Ve/fEg0R0uX9HyTnpooYkJzsREa58SW3VG2qF7T+pn7huwfncsmPQMZA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=D4J/NmVXX5PWfofOcal7bDVRflzQD29HG9FHkGyhBDM=;
+ b=EM4LtK1XlhKGmF5viJ9Qzwc0AW7Nw/HgwQnZLWTWxR4M3D4iXMiyAUQo0erkD6EE0sikLQdMOP9XvLAb2NtBWgMxZ59jJ2Ja0Eo2uVIy7ZmV4VqVR3yxejbxRqdp8tHVnA2yjUFViSKAmEfvYmrchphL33As3TnFb7xTUrPRCW0=
+Received: from MN2PR12MB2911.namprd12.prod.outlook.com (20.179.80.85) by
+ MN2PR12MB3454.namprd12.prod.outlook.com (20.178.242.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2284.25; Tue, 24 Sep 2019 15:54:47 +0000
+Received: from MN2PR12MB2911.namprd12.prod.outlook.com
+ ([fe80::c8cf:fab8:48c1:8cee]) by MN2PR12MB2911.namprd12.prod.outlook.com
+ ([fe80::c8cf:fab8:48c1:8cee%7]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
+ 15:54:47 +0000
+From:   "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
+To:     "tj@kernel.org" <tj@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "airlied@redhat.com" <airlied@redhat.com>
+CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
+Subject: RE: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
+Thread-Topic: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
+Thread-Index: AQHVbLlix8wpR6fijka6GKZIrnMmXKc7BmWA
+Date:   Tue, 24 Sep 2019 15:54:47 +0000
+Message-ID: <MN2PR12MB2911F59E9B91AAD349B4E40F8C840@MN2PR12MB2911.namprd12.prod.outlook.com>
+References: <20190916180523.27341-1-Harish.Kasiviswanathan@amd.com>
+ <20190916180523.27341-4-Harish.Kasiviswanathan@amd.com>
+In-Reply-To: <20190916180523.27341-4-Harish.Kasiviswanathan@amd.com>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1909230179
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9389 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1909230179
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Harish.Kasiviswanathan@amd.com; 
+x-originating-ip: [165.204.55.251]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 75b40770-4807-4e07-7c77-08d741078685
+x-ms-office365-filtering-ht: Tenant
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MN2PR12MB3454;
+x-ms-traffictypediagnostic: MN2PR12MB3454:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <MN2PR12MB34545A0A61BE72F6016363F58C840@MN2PR12MB3454.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-forefront-prvs: 0170DAF08C
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(13464003)(189003)(199004)(25786009)(86362001)(3846002)(6116002)(186003)(4326008)(81156014)(2501003)(33656002)(81166006)(478600001)(26005)(76176011)(14454004)(8676002)(8936002)(99286004)(7696005)(53546011)(110136005)(54906003)(102836004)(6506007)(316002)(476003)(7736002)(9686003)(55016002)(486006)(74316002)(76116006)(66446008)(66556008)(66476007)(6436002)(14444005)(52536014)(2906002)(64756008)(305945005)(229853002)(71190400001)(71200400001)(66946007)(66066001)(256004)(11346002)(5660300002)(6246003)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR12MB3454;H:MN2PR12MB2911.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam-message-info: gn27aihubt4E0E8paVdK0E4NCwwTaTc3W3lv4AGvfECyJ3TLezwn5zvS0sIBuPAGJScxrXhNp73KG6uMA++w7+tbLVemVweRZ560ULjrgTnzACMc875RNYEmL53RQtU/yykvv7zcNVwXmSN30Q1mcAkwG0ih/ESOqRbRJ6iz6JpB8bncsn1rFl0i/9bevDxKXcWuH9ecpUpWubJizssytUXYcLWO2VLfFDaAddbdNdbWadlmxQUkcEbMhBMCVAZ0AyLZbkpteKypjhYu+dvgcYNJl4jmdiyMY7rtesPeOGrIvGt8JlbUs820GIUeAPmEJ+a6F3GMtTleQHEpZz3Zu2RiRKTJvrRio0OOnQA3cYgIFu6EdtHrB3goPm5JDB19VnlQ0i3ZUDQOl/XssZlINQX6SqlNmZNPRxJP9VzfweI=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75b40770-4807-4e07-7c77-08d741078685
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 15:54:47.2206
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ug3lEScd47osORLMSnRXHSoUxqvKmlQj5lWBbTQVsN/I5Cd4DtKS9neYkLkJSopqyCaRzyjtsTDEmRFf+CWV9Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3454
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/23/19 12:18 PM, Mina Almasry wrote:
-> On Mon, Sep 23, 2019 at 10:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->>
->> On 9/19/19 3:24 PM, Mina Almasry wrote:
->>> Patch series implements hugetlb_cgroup reservation usage and limits, which
->>> track hugetlb reservations rather than hugetlb memory faulted in. Details of
->>> the approach is 1/7.
->>
->> Thanks for your continued efforts Mina.
->>
-> 
-> And thanks for your reviews so far.
-> 
->> One thing that has bothered me with this approach from the beginning is that
->> hugetlb reservations are related to, but somewhat distinct from hugetlb
->> allocations.  The original (existing) huegtlb cgroup implementation does not
->> take reservations into account.  This is an issue you are trying to address
->> by adding a cgroup support for hugetlb reservations.  However, this new
->> reservation cgroup ignores hugetlb allocations at fault time.
->>
->> I 'think' the whole purpose of any hugetlb cgroup is to manage the allocation
->> of hugetlb pages.  Both the existing cgroup code and the reservation approach
->> have what I think are some serious flaws.  Consider a system with 100 hugetlb
->> pages available.  A sysadmin, has two groups A and B and wants to limit hugetlb
->> usage to 50 pages each.
->>
->> With the existing implementation, a task in group A could create a mmap of
->> 100 pages in size and reserve all 100 pages.  Since the pages are 'reserved',
->> nobody in group B can allocate ANY huge pages.  This is true even though
->> no pages have been allocated in A (or B).
->>
->> With the reservation implementation, a task in group A could use MAP_NORESERVE
->> and allocate all 100 pages without taking any reservations.
->>
->> As mentioned in your documentation, it would be possible to use both the
->> existing (allocation) and new reservation cgroups together.  Perhaps if both
->> are setup for the 50/50 split things would work a little better.
->>
->> However, instead of creating a new reservation crgoup how about adding
->> reservation support to the existing allocation cgroup support.  One could
->> even argue that a reservation is an allocation as it sets aside huge pages
->> that can only be used for a specific purpose.  Here is something that
->> may work.
->>
->> Starting with the existing allocation cgroup.
->> - When hugetlb pages are reserved, the cgroup of the task making the
->>   reservations is charged.  Tracking for the charged cgroup is done in the
->>   reservation map in the same way proposed by this patch set.
->> - At page fault time,
->>   - If a reservation already exists for that specific area do not charge the
->>     faulting task.  No tracking in page, just the reservation map.
->>   - If no reservation exists, charge the group of the faulting task.  Tracking
->>     of this information is in the page itself as implemented today.
->> - When the hugetlb object is removed, compare the reservation map with any
->>   allocated pages.  If cgroup tracking information exists in page, uncharge
->>   that group.  Otherwise, unharge the group (if any) in the reservation map.
->>
->> One of the advantages of a separate reservation cgroup is that the existing
->> code is unmodified.  Combining the two provides a more complete/accurate
->> solution IMO.  But, it has the potential to break existing users.
->>
->> I really would like to get feedback from anyone that knows how the existing
->> hugetlb cgroup controller may be used today.  Comments from Aneesh would
->> be very welcome to know if reservations were considered in development of the
->> existing code.
->> --
-> 
-> FWIW, I'm aware of the interaction with NORESERVE and my thoughts are:
-> 
-> AFAICT, the 2 counter approach we have here is strictly superior to
-> the 1 upgraded counter approach. Consider these points:
-> 
-> - From what I can tell so far, everything you can do with the 1
-> counter approach, you can do with the two counter approach by setting
-> both limit_in_bytes and reservation_limit_in_bytes to the limit value.
-> That will limit both reservations and at fault allocations.
-> 
-> - The 2 counter approach preserves existing usage of hugetlb cgroups,
-> so no need to muck around with reverting the feature some time from
-> now because of broken users. No existing users of hugetlb cgroups need
-> to worry about the effect of this on their usage.
-> 
-> - Users that use hugetlb memory strictly through reservations can use
-> only reservation_limit_in_bytes and enjoy cgroup limits that never
-> SIGBUS the application. This is our usage for example.
-> 
-> - The 2 counter approach provides more info to the sysadmin. The
-> sysadmin knows exactly how much reserved bytes there are via
-> reservation_usage_in_bytes, and how much actually in use bytes there
-> are via usage_in_bytes. They can even detect NORESERVE usage if
-> usage_in_bytes > reservation_usage_in_bytes. failcnt shows failed
-> reservations *and* failed allocations at fault, etc. All around better
-> debuggability when things go wrong. I think this is particularly
-> troubling for the 1 upgraded counter approach. That counter's
-> usage_in_bytes doesn't tell you if the usage came from reservations or
-> allocations at fault time.
-> 
-> - Honestly, I think the 2 counter approach is easier to document and
-> understand by the userspace? 1 counter that vaguely tracks both the
-> reservations and usage and decides whether or not to charge at fault
-> time seems hard to understand what really happened after something
-> goes wrong. 1 counter that tracks reservations and 1 counter that
-> tracks actual usage seem much simpler to digest, and provide better
-> visibility to what the cgroup is doing as I mentioned above.
-> 
-> I think it may be better if I keep the 2 counter approach but
-> thoroughly document the interaction between the existing counters and
-> NORESERVE. What do you think?
+Hi Tejun,
 
-I personally prefer the one counter approach only for the reason that it
-exposes less information about hugetlb reservations.  I was not around
-for the introduction of hugetlb reservations, but I have fixed several
-issues having to do with reservations.  IMO, reservations should be hidden
-from users as much as possible.  Others may disagree.
+Can you please review this? You and Roman acked this patch before. It will =
+be great if I can Reviewed-by, so that I can upstream this through Alex Deu=
+cher's amd-staging-drm-next and Dave Airlie's drm-next trees
 
-I really hope that Aneesh will comment.  He added the existing hugetlb
-cgroup code.  I was not involved in that effort, but it looks like there
-might have been some thought given to reservations in early versions of
-that code.  It would be interesting to get his perspective.
+Thanks,
+Harish
 
-Changes included in patch 4 (disable region_add file_region coalescing)
-would be needed in a one counter approach as well, so I do plan to
-review those changes.
--- 
-Mike Kravetz
+
+-----Original Message-----
+From: Kasiviswanathan, Harish <Harish.Kasiviswanathan@amd.com>=20
+Sent: Monday, September 16, 2019 2:06 PM
+To: tj@kernel.org; Deucher, Alexander <Alexander.Deucher@amd.com>; airlied@=
+redhat.com
+Cc: cgroups@vger.kernel.org; amd-gfx@lists.freedesktop.org; Kasiviswanathan=
+, Harish <Harish.Kasiviswanathan@amd.com>
+Subject: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
+
+For AMD compute (amdkfd) driver.
+
+All AMD compute devices are exported via single device node /dev/kfd. As
+a result devices cannot be controlled individually using device cgroup.
+
+AMD compute devices will rely on its graphics counterpart that exposes
+/dev/dri/renderN node for each device. For each task (based on its
+cgroup), KFD driver will check if /dev/dri/renderN node is accessible
+before exposing it.
+
+Change-Id: I9ae283df550b2c122d67870b0cfa316bfbf3b614
+Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+Acked-by: Tejun Heo <tj@kernel.org>
+Acked-by: Roman Gushchin <guro@fb.com>
+Signed-off-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
+---
+ include/linux/device_cgroup.h | 19 ++++---------------
+ security/device_cgroup.c      | 15 +++++++++++++--
+ 2 files changed, 17 insertions(+), 17 deletions(-)
+
+diff --git a/include/linux/device_cgroup.h b/include/linux/device_cgroup.h
+index 8557efe096dc..fa35b52e0002 100644
+--- a/include/linux/device_cgroup.h
++++ b/include/linux/device_cgroup.h
+@@ -12,26 +12,15 @@
+ #define DEVCG_DEV_ALL   4  /* this represents all devices */
+=20
+ #ifdef CONFIG_CGROUP_DEVICE
+-extern int __devcgroup_check_permission(short type, u32 major, u32 minor,
+-					short access);
++int devcgroup_check_permission(short type, u32 major, u32 minor,
++			       short access);
+ #else
+-static inline int __devcgroup_check_permission(short type, u32 major, u32 =
+minor,
+-					       short access)
++static inline int devcgroup_check_permission(short type, u32 major, u32 mi=
+nor,
++					     short access)
+ { return 0; }
+ #endif
+=20
+ #if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
+-static inline int devcgroup_check_permission(short type, u32 major, u32 mi=
+nor,
+-					     short access)
+-{
+-	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access);
+-
+-	if (rc)
+-		return -EPERM;
+-
+-	return __devcgroup_check_permission(type, major, minor, access);
+-}
+-
+ static inline int devcgroup_inode_permission(struct inode *inode, int mask=
+)
+ {
+ 	short type, access =3D 0;
+diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+index dc28914fa72e..04dd29bf7f06 100644
+--- a/security/device_cgroup.c
++++ b/security/device_cgroup.c
+@@ -801,8 +801,8 @@ struct cgroup_subsys devices_cgrp_subsys =3D {
+  *
+  * returns 0 on success, -EPERM case the operation is not permitted
+  */
+-int __devcgroup_check_permission(short type, u32 major, u32 minor,
+-				 short access)
++static int __devcgroup_check_permission(short type, u32 major, u32 minor,
++					short access)
+ {
+ 	struct dev_cgroup *dev_cgroup;
+ 	bool rc;
+@@ -824,3 +824,14 @@ int __devcgroup_check_permission(short type, u32 major=
+, u32 minor,
+=20
+ 	return 0;
+ }
++
++int devcgroup_check_permission(short type, u32 major, u32 minor, short acc=
+ess)
++{
++	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access);
++
++	if (rc)
++		return -EPERM;
++
++	return __devcgroup_check_permission(type, major, minor, access);
++}
++EXPORT_SYMBOL(devcgroup_check_permission);
+--=20
+2.17.1
+
