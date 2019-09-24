@@ -2,201 +2,252 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id F15E1BCBED
-	for <lists+cgroups@lfdr.de>; Tue, 24 Sep 2019 17:54:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82934BD05E
+	for <lists+cgroups@lfdr.de>; Tue, 24 Sep 2019 19:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390621AbfIXPyv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Sep 2019 11:54:51 -0400
-Received: from mail-eopbgr820077.outbound.protection.outlook.com ([40.107.82.77]:63305
-        "EHLO NAM01-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390477AbfIXPyu (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 24 Sep 2019 11:54:50 -0400
+        id S2394984AbfIXRNR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Sep 2019 13:13:17 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:1722 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2391323AbfIXRNR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Sep 2019 13:13:17 -0400
+Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x8OH3tHp020099;
+        Tue, 24 Sep 2019 10:13:10 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=oaNLN/OoQg0jn5YFYC9SRGx0oWJ1YJaT+a/tzQHnD+U=;
+ b=KLwDOAL2ZomwKGcWmle97dLICfTildSZLmsHZfsDdwDkCq6W3usOe9Jl7rEaaT5KDhiX
+ hvxGfKLleRNs1i7761JEjy8PFbBAtAFOPBkOUOShptPay6sjY46MilwJdqw9Se5mX/Kg
+ 0EnQAPClaaH0A/EOZykvuV0BQVcsLH+C+HY= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 2v7q7481tr-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 24 Sep 2019 10:13:10 -0700
+Received: from ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) by
+ ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Sep 2019 10:13:09 -0700
+Received: from ash-exhub202.TheFacebook.com (2620:10d:c0a8:83::6) by
+ ash-exopmbx201.TheFacebook.com (2620:10d:c0a8:83::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Tue, 24 Sep 2019 10:13:09 -0700
+Received: from NAM03-BY2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Tue, 24 Sep 2019 10:13:09 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=gT8ds78fn/vFPx7qAg7767nmY7rvRZ+YBnHM8fReCUkN3CvwvaEuXjAHtPFxKkOPtxm06QF6dQBf5ymTeQGSEH1UHD1gKdWoBcORSmfW8rpZFVOrGMGQ7iJ6xm9vUKBkKcfn+Q2LocVcTVOJe4T+SB73ptCQ2tlReEDGzXKjx3hAPdNnugDiHFclA2/R0aTQvM9I5W5V598blHO+6Eg1/ypGkGOY9VamDL0ca0/1gUKONlJ/iKq1sPkjJ+BqBARcIyl5G6e+WxRpiGOrfhUZs1ZiyqKI/CjH9DdkLLc5N+wDaFbJglpQR1GTux+mwKxCQmKribUvURsHgop/WFDxZA==
+ b=m/oNt7asAPvxNzYDbc4Shocw/tZXipSVtpWmJKFh6oxcAtHvqqbC5UzCFMf+JwcAoR74kfcKRK80CEfftVYIgk2s/Kx13HyXo1Ebl+zwUBv/CWTP5Y6XUhjzS6pEv3h1Br8tseeFD5nnSCv4EBGc3EXKeYZlSrGWwAy0ekIs2siydsUUrp/CAbIfnacBQsd1UBb7mxQwxt+besJ1+h3syGlSn78oq3JjC4zenez3iNmAM+Sj8enwGQAmjj9TK5Q+GQgk9KNKi/LZZCCEiEyORUMzi0RYWS1Hpnmch+JMp6ldHNfPKzJjxiB1Ti8aQu4DeVFYbvN07q+JTJpViNeJnw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D4J/NmVXX5PWfofOcal7bDVRflzQD29HG9FHkGyhBDM=;
- b=IMo/6JtwPYKA+eRIfahgrhqzipAH5A3T0qImBKFKOABy5AMvyVOM9L1tE4iRelGyPasd2nDyAFqSSb6NaC/2MTRVpb84rthKktHhxmU/DjRTKoZMLZUsoCtotXX19UZHSjmD6X+RqpsgGfaQR7KRaWesxlYl+WA/7ZAqepoXUmszeyTR8n0SfQLYZRb+XTC7Ko4Iv8jjO7xxH05T+KRv3aCkEO1lJOxgqUcAPzKCBVgF0Od0M5bp4YBsc3oaNwOBuS66ENWLmE5scRJbaMXwsXCCk1dGS0Ve/fEg0R0uX9HyTnpooYkJzsREa58SW3VG2qF7T+pn7huwfncsmPQMZA==
+ bh=oaNLN/OoQg0jn5YFYC9SRGx0oWJ1YJaT+a/tzQHnD+U=;
+ b=hGeEfnw0Lu7k0PoGQwHiCGj1z6ouj/wGHXuuDBX1BI8xhkEzgosfO0scUtiexdTJYzjmwOP2PqOM10D3BVQbgytfhoxzS5u1ZHoJ9qxTIuNQo0fAnFV5yh06N18+ZL6RANadxJzUp9WEhJLkXBd+x2Y9a8dZRwnV63lI3mTyny2RIkqmax78PgMfWXJak7TwjnMf0BOOJozwzrjQ7T+P9iI1fSrCJGFlntKI+CbRLRQPAlRH7d1KvUmywFtkAO3HIIQ5fNx/n34XsWdfwGyr1Vkpjnv0TH21JL+WgqJHLpY+cTy3Ey0b4z66Amz1u0ix3X3mQ+30CXjkqz/F0KG/Ag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=D4J/NmVXX5PWfofOcal7bDVRflzQD29HG9FHkGyhBDM=;
- b=EM4LtK1XlhKGmF5viJ9Qzwc0AW7Nw/HgwQnZLWTWxR4M3D4iXMiyAUQo0erkD6EE0sikLQdMOP9XvLAb2NtBWgMxZ59jJ2Ja0Eo2uVIy7ZmV4VqVR3yxejbxRqdp8tHVnA2yjUFViSKAmEfvYmrchphL33As3TnFb7xTUrPRCW0=
-Received: from MN2PR12MB2911.namprd12.prod.outlook.com (20.179.80.85) by
- MN2PR12MB3454.namprd12.prod.outlook.com (20.178.242.16) with Microsoft SMTP
+ bh=oaNLN/OoQg0jn5YFYC9SRGx0oWJ1YJaT+a/tzQHnD+U=;
+ b=kmeKRuJrCBlmYZM1r5o/P/WEAIK44GU5vbbE8cc2TY853SAJbpmFKxMAJ/JpglsamhbcCH6TUJVzvdbPEo8NKhMYKrwHE7Oecmai9tFH2lh+36TlW5wXERlqPao1lcsmHrr4+sZJx2cEE273n38jKffKKR+HgSIMZwvCEc5XMIE=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB2947.namprd15.prod.outlook.com (20.178.219.218) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2284.25; Tue, 24 Sep 2019 15:54:47 +0000
-Received: from MN2PR12MB2911.namprd12.prod.outlook.com
- ([fe80::c8cf:fab8:48c1:8cee]) by MN2PR12MB2911.namprd12.prod.outlook.com
- ([fe80::c8cf:fab8:48c1:8cee%7]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
- 15:54:47 +0000
-From:   "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
-To:     "tj@kernel.org" <tj@kernel.org>,
+ 15.20.2284.18; Tue, 24 Sep 2019 17:13:07 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::8174:3438:91db:ec29]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::8174:3438:91db:ec29%5]) with mapi id 15.20.2284.023; Tue, 24 Sep 2019
+ 17:13:07 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     "Kasiviswanathan, Harish" <Harish.Kasiviswanathan@amd.com>
+CC:     "tj@kernel.org" <tj@kernel.org>,
         "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "airlied@redhat.com" <airlied@redhat.com>
-CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "airlied@redhat.com" <airlied@redhat.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>
-Subject: RE: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
+Subject: Re: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
 Thread-Topic: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
-Thread-Index: AQHVbLlix8wpR6fijka6GKZIrnMmXKc7BmWA
-Date:   Tue, 24 Sep 2019 15:54:47 +0000
-Message-ID: <MN2PR12MB2911F59E9B91AAD349B4E40F8C840@MN2PR12MB2911.namprd12.prod.outlook.com>
+Thread-Index: AQHVbLlsnLqAQxP6tk+8o6W7mImx6qc7B1SAgAAV3oA=
+Date:   Tue, 24 Sep 2019 17:13:07 +0000
+Message-ID: <20190924171303.GA1978@tower.DHCP.thefacebook.com>
 References: <20190916180523.27341-1-Harish.Kasiviswanathan@amd.com>
  <20190916180523.27341-4-Harish.Kasiviswanathan@amd.com>
-In-Reply-To: <20190916180523.27341-4-Harish.Kasiviswanathan@amd.com>
+ <MN2PR12MB2911F59E9B91AAD349B4E40F8C840@MN2PR12MB2911.namprd12.prod.outlook.com>
+In-Reply-To: <MN2PR12MB2911F59E9B91AAD349B4E40F8C840@MN2PR12MB2911.namprd12.prod.outlook.com>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: spf=none (sender IP is )
- smtp.mailfrom=Harish.Kasiviswanathan@amd.com; 
-x-originating-ip: [165.204.55.251]
+x-clientproxiedby: BYAPR07CA0066.namprd07.prod.outlook.com
+ (2603:10b6:a03:60::43) To BN8PR15MB2626.namprd15.prod.outlook.com
+ (2603:10b6:408:c7::28)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::2:7406]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 75b40770-4807-4e07-7c77-08d741078685
-x-ms-office365-filtering-ht: Tenant
-x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4618075)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:MN2PR12MB3454;
-x-ms-traffictypediagnostic: MN2PR12MB3454:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MN2PR12MB34545A0A61BE72F6016363F58C840@MN2PR12MB3454.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-ms-office365-filtering-correlation-id: 82c7fe62-6b34-462b-09f1-08d7411277e0
+x-microsoft-antispam: BCL:0;PCL:0;RULEID:(2390118)(7020095)(4652040)(8989299)(5600167)(711020)(4605104)(1401327)(4534185)(4627221)(201703031133081)(201702281549075)(8990200)(2017052603328)(7193020);SRVR:BN8PR15MB2947;
+x-ms-traffictypediagnostic: BN8PR15MB2947:
+x-microsoft-antispam-prvs: <BN8PR15MB2947EB010434743900C4E633BE840@BN8PR15MB2947.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
 x-forefront-prvs: 0170DAF08C
-x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(13464003)(189003)(199004)(25786009)(86362001)(3846002)(6116002)(186003)(4326008)(81156014)(2501003)(33656002)(81166006)(478600001)(26005)(76176011)(14454004)(8676002)(8936002)(99286004)(7696005)(53546011)(110136005)(54906003)(102836004)(6506007)(316002)(476003)(7736002)(9686003)(55016002)(486006)(74316002)(76116006)(66446008)(66556008)(66476007)(6436002)(14444005)(52536014)(2906002)(64756008)(305945005)(229853002)(71190400001)(71200400001)(66946007)(66066001)(256004)(11346002)(5660300002)(6246003)(446003);DIR:OUT;SFP:1101;SCL:1;SRVR:MN2PR12MB3454;H:MN2PR12MB2911.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: amd.com does not designate
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(396003)(136003)(366004)(39860400002)(376002)(199004)(189003)(13464003)(486006)(256004)(33656002)(186003)(14444005)(71190400001)(14454004)(86362001)(8936002)(8676002)(305945005)(6246003)(71200400001)(6486002)(7736002)(316002)(229853002)(25786009)(81156014)(11346002)(46003)(6512007)(81166006)(476003)(6916009)(9686003)(5660300002)(53546011)(52116002)(446003)(66556008)(66446008)(66476007)(6436002)(64756008)(99286004)(102836004)(76176011)(66946007)(54906003)(2906002)(1076003)(478600001)(386003)(4326008)(6116002)(6506007);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2947;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam-message-info: gn27aihubt4E0E8paVdK0E4NCwwTaTc3W3lv4AGvfECyJ3TLezwn5zvS0sIBuPAGJScxrXhNp73KG6uMA++w7+tbLVemVweRZ560ULjrgTnzACMc875RNYEmL53RQtU/yykvv7zcNVwXmSN30Q1mcAkwG0ih/ESOqRbRJ6iz6JpB8bncsn1rFl0i/9bevDxKXcWuH9ecpUpWubJizssytUXYcLWO2VLfFDaAddbdNdbWadlmxQUkcEbMhBMCVAZ0AyLZbkpteKypjhYu+dvgcYNJl4jmdiyMY7rtesPeOGrIvGt8JlbUs820GIUeAPmEJ+a6F3GMtTleQHEpZz3Zu2RiRKTJvrRio0OOnQA3cYgIFu6EdtHrB3goPm5JDB19VnlQ0i3ZUDQOl/XssZlINQX6SqlNmZNPRxJP9VzfweI=
+x-microsoft-antispam-message-info: sbULqnyE8xwT7VH1xDgLVLOZL5kf5GfLomgZ7kDDFgoVjhRMZuAAW37eNuqfGWGwsQ5vDl+XCgWyZZ6w+LyPjjrKDyNj+WYSaZ9hjdvV2Zz3EeMLsyl9eqnw1ZvDYui2WOSB7A8xsswGPBZzabFh7YFoar/xrv4u/lQgTGE4sB/ONHxk8Bl2balhvMaiWNrd5Q06/ESI9uhaNbDV+7bK4Ic9oQWo0Xeq6/Ct2QlvkL87YRxZKUshVNNeooemT8zWlPMd9+6HOiOPQBIKGwrqfKo/2glaZYtPB0aUokypsvol4nZ+LtPEBVGi0b8KDXcMRfzT8pnwOKkn7ISXeuIHCQlaLab/krsiANxTiePuRZHsaWtdrAY32NZqXoErGH7UUS/Z2pnmvvxKtUb46DaJ0A6+n7AvN/vs1YbDzHNanQY=
+x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
+Content-ID: <4C5BA7C636460D4186CFC4B1FC662A53@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 75b40770-4807-4e07-7c77-08d741078685
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 15:54:47.2206
+X-MS-Exchange-CrossTenant-Network-Message-Id: 82c7fe62-6b34-462b-09f1-08d7411277e0
+X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Sep 2019 17:13:07.4531
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: ug3lEScd47osORLMSnRXHSoUxqvKmlQj5lWBbTQVsN/I5Cd4DtKS9neYkLkJSopqyCaRzyjtsTDEmRFf+CWV9Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR12MB3454
+X-MS-Exchange-CrossTenant-userprincipalname: QsiX5T32weTSms5ceOgaaL52iZO2EkX10FgnZPZxFt2DbSXYk9l6QXW5VbO9pKlk
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2947
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-09-24_07:2019-09-23,2019-09-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
+ clxscore=1011 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ mlxscore=0 impostorscore=0 phishscore=0 bulkscore=0 adultscore=0
+ spamscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-1908290000 definitions=main-1909240150
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+On Tue, Sep 24, 2019 at 03:54:47PM +0000, Kasiviswanathan, Harish wrote:
+> Hi Tejun,
+>=20
+> Can you please review this? You and Roman acked this patch before. It wil=
+l be great if I can Reviewed-by, so that I can upstream this through Alex D=
+eucher's amd-staging-drm-next and Dave Airlie's drm-next trees
+>=20
+> Thanks,
+> Harish
 
-Can you please review this? You and Roman acked this patch before. It will =
-be great if I can Reviewed-by, so that I can upstream this through Alex Deu=
-cher's amd-staging-drm-next and Dave Airlie's drm-next trees
+Hello, Harish!
 
-Thanks,
-Harish
+If it can help, please, feel free to use
+Reviewed-by: Roman Gushchin <guro@fb.com>
 
+Thanks!
 
------Original Message-----
-From: Kasiviswanathan, Harish <Harish.Kasiviswanathan@amd.com>=20
-Sent: Monday, September 16, 2019 2:06 PM
-To: tj@kernel.org; Deucher, Alexander <Alexander.Deucher@amd.com>; airlied@=
-redhat.com
-Cc: cgroups@vger.kernel.org; amd-gfx@lists.freedesktop.org; Kasiviswanathan=
-, Harish <Harish.Kasiviswanathan@amd.com>
-Subject: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
-
-For AMD compute (amdkfd) driver.
-
-All AMD compute devices are exported via single device node /dev/kfd. As
-a result devices cannot be controlled individually using device cgroup.
-
-AMD compute devices will rely on its graphics counterpart that exposes
-/dev/dri/renderN node for each device. For each task (based on its
-cgroup), KFD driver will check if /dev/dri/renderN node is accessible
-before exposing it.
-
-Change-Id: I9ae283df550b2c122d67870b0cfa316bfbf3b614
-Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Acked-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
----
- include/linux/device_cgroup.h | 19 ++++---------------
- security/device_cgroup.c      | 15 +++++++++++++--
- 2 files changed, 17 insertions(+), 17 deletions(-)
-
-diff --git a/include/linux/device_cgroup.h b/include/linux/device_cgroup.h
-index 8557efe096dc..fa35b52e0002 100644
---- a/include/linux/device_cgroup.h
-+++ b/include/linux/device_cgroup.h
-@@ -12,26 +12,15 @@
- #define DEVCG_DEV_ALL   4  /* this represents all devices */
-=20
- #ifdef CONFIG_CGROUP_DEVICE
--extern int __devcgroup_check_permission(short type, u32 major, u32 minor,
--					short access);
-+int devcgroup_check_permission(short type, u32 major, u32 minor,
-+			       short access);
- #else
--static inline int __devcgroup_check_permission(short type, u32 major, u32 =
+>=20
+>=20
+> -----Original Message-----
+> From: Kasiviswanathan, Harish <Harish.Kasiviswanathan@amd.com>=20
+> Sent: Monday, September 16, 2019 2:06 PM
+> To: tj@kernel.org; Deucher, Alexander <Alexander.Deucher@amd.com>; airlie=
+d@redhat.com
+> Cc: cgroups@vger.kernel.org; amd-gfx@lists.freedesktop.org; Kasiviswanath=
+an, Harish <Harish.Kasiviswanathan@amd.com>
+> Subject: [PATCH v2 3/4] device_cgroup: Export devcgroup_check_permission
+>=20
+> For AMD compute (amdkfd) driver.
+>=20
+> All AMD compute devices are exported via single device node /dev/kfd. As
+> a result devices cannot be controlled individually using device cgroup.
+>=20
+> AMD compute devices will rely on its graphics counterpart that exposes
+> /dev/dri/renderN node for each device. For each task (based on its
+> cgroup), KFD driver will check if /dev/dri/renderN node is accessible
+> before exposing it.
+>=20
+> Change-Id: I9ae283df550b2c122d67870b0cfa316bfbf3b614
+> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> Acked-by: Roman Gushchin <guro@fb.com>
+> Signed-off-by: Harish Kasiviswanathan <Harish.Kasiviswanathan@amd.com>
+> ---
+>  include/linux/device_cgroup.h | 19 ++++---------------
+>  security/device_cgroup.c      | 15 +++++++++++++--
+>  2 files changed, 17 insertions(+), 17 deletions(-)
+>=20
+> diff --git a/include/linux/device_cgroup.h b/include/linux/device_cgroup.=
+h
+> index 8557efe096dc..fa35b52e0002 100644
+> --- a/include/linux/device_cgroup.h
+> +++ b/include/linux/device_cgroup.h
+> @@ -12,26 +12,15 @@
+>  #define DEVCG_DEV_ALL   4  /* this represents all devices */
+> =20
+>  #ifdef CONFIG_CGROUP_DEVICE
+> -extern int __devcgroup_check_permission(short type, u32 major, u32 minor=
+,
+> -					short access);
+> +int devcgroup_check_permission(short type, u32 major, u32 minor,
+> +			       short access);
+>  #else
+> -static inline int __devcgroup_check_permission(short type, u32 major, u3=
+2 minor,
+> -					       short access)
+> +static inline int devcgroup_check_permission(short type, u32 major, u32 =
 minor,
--					       short access)
-+static inline int devcgroup_check_permission(short type, u32 major, u32 mi=
-nor,
-+					     short access)
- { return 0; }
- #endif
-=20
- #if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
--static inline int devcgroup_check_permission(short type, u32 major, u32 mi=
-nor,
--					     short access)
--{
--	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access);
--
--	if (rc)
--		return -EPERM;
--
--	return __devcgroup_check_permission(type, major, minor, access);
--}
--
- static inline int devcgroup_inode_permission(struct inode *inode, int mask=
-)
- {
- 	short type, access =3D 0;
-diff --git a/security/device_cgroup.c b/security/device_cgroup.c
-index dc28914fa72e..04dd29bf7f06 100644
---- a/security/device_cgroup.c
-+++ b/security/device_cgroup.c
-@@ -801,8 +801,8 @@ struct cgroup_subsys devices_cgrp_subsys =3D {
-  *
-  * returns 0 on success, -EPERM case the operation is not permitted
-  */
--int __devcgroup_check_permission(short type, u32 major, u32 minor,
--				 short access)
-+static int __devcgroup_check_permission(short type, u32 major, u32 minor,
-+					short access)
- {
- 	struct dev_cgroup *dev_cgroup;
- 	bool rc;
-@@ -824,3 +824,14 @@ int __devcgroup_check_permission(short type, u32 major=
-, u32 minor,
-=20
- 	return 0;
- }
-+
-+int devcgroup_check_permission(short type, u32 major, u32 minor, short acc=
-ess)
-+{
-+	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access);
-+
-+	if (rc)
-+		return -EPERM;
-+
-+	return __devcgroup_check_permission(type, major, minor, access);
-+}
-+EXPORT_SYMBOL(devcgroup_check_permission);
---=20
-2.17.1
-
+> +					     short access)
+>  { return 0; }
+>  #endif
+> =20
+>  #if defined(CONFIG_CGROUP_DEVICE) || defined(CONFIG_CGROUP_BPF)
+> -static inline int devcgroup_check_permission(short type, u32 major, u32 =
+minor,
+> -					     short access)
+> -{
+> -	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access=
+);
+> -
+> -	if (rc)
+> -		return -EPERM;
+> -
+> -	return __devcgroup_check_permission(type, major, minor, access);
+> -}
+> -
+>  static inline int devcgroup_inode_permission(struct inode *inode, int ma=
+sk)
+>  {
+>  	short type, access =3D 0;
+> diff --git a/security/device_cgroup.c b/security/device_cgroup.c
+> index dc28914fa72e..04dd29bf7f06 100644
+> --- a/security/device_cgroup.c
+> +++ b/security/device_cgroup.c
+> @@ -801,8 +801,8 @@ struct cgroup_subsys devices_cgrp_subsys =3D {
+>   *
+>   * returns 0 on success, -EPERM case the operation is not permitted
+>   */
+> -int __devcgroup_check_permission(short type, u32 major, u32 minor,
+> -				 short access)
+> +static int __devcgroup_check_permission(short type, u32 major, u32 minor=
+,
+> +					short access)
+>  {
+>  	struct dev_cgroup *dev_cgroup;
+>  	bool rc;
+> @@ -824,3 +824,14 @@ int __devcgroup_check_permission(short type, u32 maj=
+or, u32 minor,
+> =20
+>  	return 0;
+>  }
+> +
+> +int devcgroup_check_permission(short type, u32 major, u32 minor, short a=
+ccess)
+> +{
+> +	int rc =3D BPF_CGROUP_RUN_PROG_DEVICE_CGROUP(type, major, minor, access=
+);
+> +
+> +	if (rc)
+> +		return -EPERM;
+> +
+> +	return __devcgroup_check_permission(type, major, minor, access);
+> +}
+> +EXPORT_SYMBOL(devcgroup_check_permission);
+> --=20
+> 2.17.1
+>=20
