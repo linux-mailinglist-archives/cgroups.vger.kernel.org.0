@@ -2,203 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BA96FBD50B
-	for <lists+cgroups@lfdr.de>; Wed, 25 Sep 2019 00:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41524BE8A7
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2019 01:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411075AbfIXWmU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Sep 2019 18:42:20 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:46104 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410594AbfIXWmT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Sep 2019 18:42:19 -0400
-Received: by mail-oi1-f193.google.com with SMTP id k25so3151511oiw.13
-        for <cgroups@vger.kernel.org>; Tue, 24 Sep 2019 15:42:18 -0700 (PDT)
+        id S1727205AbfIYXCY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Sep 2019 19:02:24 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:43125 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726921AbfIYXCY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Sep 2019 19:02:24 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h126so195627qke.10;
+        Wed, 25 Sep 2019 16:02:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=tLGshlxIGKhLcXUM0uB8QvsR7iqHi3kS/y0xfRKm0lM=;
-        b=lyFd6NKLnJffQTtK5uJBQQ7012wiEa8kfPQp3MvPsNG1KoPM+uZ5DOeXAsSVsHhhYl
-         9PhbUGy760gbP3AbAI0haHWUjXeqJuV1Ff6KFLenze+pOgXpQNk/UUV6EMPzIh6GiERb
-         hkPoXs3KywobQJyS6dJIKtYbMWX+dcH1Z9IqG+y7mMINZC/6+WIH/ikyRo5vCTeBGtMw
-         +z5T43aRRTA4BWjxL/E1O6WpxSwYPEa0ucXaZC+shiZ3dJlTMl4CE/iJfpZYB6WvXsEA
-         dzUlZYOtCRyM+9PG+UnhpzsvSPW1o0SPzIAUOOhO0g+8rLEeXQY32mKBSxJefjDb4Fqr
-         01+w==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=J6xx84NYBZMzyAcWsbF/M7RN9YSA/RHntuLBn1Nqazg=;
+        b=SIfEzvpvUIu7/aCIY6SH2SkyCjOd9o0i5PqDvqyQHvE2InvTaTZQsVQCaxK5q1n/Cj
+         yumJMyFWRX5aLUZd6WU9ijwVcG7VOjbiBe83nr6b6ydDBgYuXARTJf9DFAPC08+spzNo
+         lUUQILezVaRYjlSnhG9eGY0RP1Hd2B2Vt9F8TaDReIT63toDYPKKzmTKEbTR868/tRhG
+         AlAKT1UT4L82ewB5aZ1Sz017fFwxNLGqgxsyPmzjD7ZzoHFV7NWhiDpx9tVnBa86/yP+
+         YgSGjq91jgvX1ZBsL/sJT2p9Dmg68iJXvjHCqi5Yt4gQ8UoZIivfDeKn7jA2r66/x0R5
+         ou0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=tLGshlxIGKhLcXUM0uB8QvsR7iqHi3kS/y0xfRKm0lM=;
-        b=KnkxhLTPybF9Q0cAD2W9VlUwoo028PHr16d8llEfVGWQke6Ebl96gt6oUeTIAZjMuk
-         FQ5D68D2uSkUQ8QkKXpMGJbFaRLyFG5ZAqrcqnN2YNoo6ssiKqlSy4+R+X2th75FVTdT
-         8zny+UgZy1tWNLG3vgK2PrpuWyfMoTBTIguR5PO+U3Z/EfnMSJvo6UwGYThyi6Kj6G8B
-         OIdokSOcz+ZwUJYDaaXRnSmlTuX6V/viF+5ys/1FqvD8sEwjHC9MI+Ughc+4shIsR4sL
-         afIjByyI5rxY6YgqmkObzXV/31iSwmaoaLSBTK+z8z+ABwqvfZcANCjRIQPd2Q7y2+E9
-         VwoQ==
-X-Gm-Message-State: APjAAAW0GVcJC51lCOiXdWFQsjoX9XMV490TeYa5u0K/9S9mv2jw76gv
-        JmnTo4tEeUu7lpPs9C0NtazHAZEB/J9Su2KfAq6vzg==
-X-Google-Smtp-Source: APXvYqxZVGBQ9fz0kE/sF2k3P1ldR0v+pdangCAO2sUHr3CUBMWxeLaBd7YBg+8LTTLq4F/kNZH0k88J0CYWN/h5nSs=
-X-Received: by 2002:aca:3954:: with SMTP id g81mr2235308oia.65.1569364937133;
- Tue, 24 Sep 2019 15:42:17 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=J6xx84NYBZMzyAcWsbF/M7RN9YSA/RHntuLBn1Nqazg=;
+        b=hPAp7SNGvOncwU8XdsEPoAA35NumTULvoxTqdRAyIx4/m2FizTJelAWE7Y6L0jSO0q
+         EWa5CFV3blOH3eBtHh1H6T9jC+da9qJ+XKoSq5aYsFQC7wfU5RPL/Mto58BBJ4e0U4c8
+         xPCJec/3mdfax7D/sLsRhl0mTvdqDVX0lAhdxyxF+1n86UEwen29KXcxl8RhQzbQUNFN
+         5+KN9rJRCPxNf3DgH2niORDrY4oc5uDHLKYKtaY2qHuyMXkAPw96NyXiNKkWGTvY4IPN
+         xXaAuFN0rDPHtlDStppFZ1DFAxJGTtwODzPh0tzyvsJ6ntl6l6ds5B7bzmyATTNET8ES
+         hMeg==
+X-Gm-Message-State: APjAAAWfKNdytNvl1XH6ZcOqZcupAD/LUMtK+Hl9sD2R2gZRYsxjkmYn
+        fZLKYkgHRgEyTe8iTzf92Yg=
+X-Google-Smtp-Source: APXvYqzlN0SByh/FHkgjqHVCuxYeLgWE2FPBsrHJAD9J0BHXXCNAE+h7pH/AOECmnivaxcM7ltQ9Ow==
+X-Received: by 2002:a37:ef11:: with SMTP id j17mr391810qkk.1.1569452542573;
+        Wed, 25 Sep 2019 16:02:22 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:a001])
+        by smtp.gmail.com with ESMTPSA id c41sm301087qte.8.2019.09.25.16.02.20
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Sep 2019 16:02:20 -0700 (PDT)
+Date:   Wed, 25 Sep 2019 16:02:07 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org
+Subject: [PATCH 1/3 for-5.4/block] iocost: better trace vrate changes
+Message-ID: <20190925230207.GI2233839@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-References: <20190919222421.27408-1-almasrymina@google.com>
- <3c73d2b7-f8d0-16bf-b0f0-86673c3e9ce3@oracle.com> <CAHS8izOj2AT4tX-+Hcb8LB2TOUKJDHScDtJ80u4M6OWpwktq0g@mail.gmail.com>
- <a8e9c533-1593-35ee-e65d-1f2fc2b0fb48@oracle.com>
-In-Reply-To: <a8e9c533-1593-35ee-e65d-1f2fc2b0fb48@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 24 Sep 2019 15:42:06 -0700
-Message-ID: <CAHS8izPfKQA8qTndyzWSm9fR_xJ=X-xmE+4P4K+ZFdxrYNuLBA@mail.gmail.com>
-Subject: Re: [PATCH v5 0/7] hugetlb_cgroup: Add hugetlb_cgroup reservation limits
-To:     Mike Kravetz <mike.kravetz@oracle.com>,
-        David Rientjes <rientjes@google.com>
-Cc:     Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        shuah <shuah@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 23, 2019 at 2:27 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 9/23/19 12:18 PM, Mina Almasry wrote:
-> > On Mon, Sep 23, 2019 at 10:47 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>
-> >> On 9/19/19 3:24 PM, Mina Almasry wrote:
-> >>> Patch series implements hugetlb_cgroup reservation usage and limits, which
-> >>> track hugetlb reservations rather than hugetlb memory faulted in. Details of
-> >>> the approach is 1/7.
-> >>
-> >> Thanks for your continued efforts Mina.
-> >>
-> >
-> > And thanks for your reviews so far.
-> >
-> >> One thing that has bothered me with this approach from the beginning is that
-> >> hugetlb reservations are related to, but somewhat distinct from hugetlb
-> >> allocations.  The original (existing) huegtlb cgroup implementation does not
-> >> take reservations into account.  This is an issue you are trying to address
-> >> by adding a cgroup support for hugetlb reservations.  However, this new
-> >> reservation cgroup ignores hugetlb allocations at fault time.
-> >>
-> >> I 'think' the whole purpose of any hugetlb cgroup is to manage the allocation
-> >> of hugetlb pages.  Both the existing cgroup code and the reservation approach
-> >> have what I think are some serious flaws.  Consider a system with 100 hugetlb
-> >> pages available.  A sysadmin, has two groups A and B and wants to limit hugetlb
-> >> usage to 50 pages each.
-> >>
-> >> With the existing implementation, a task in group A could create a mmap of
-> >> 100 pages in size and reserve all 100 pages.  Since the pages are 'reserved',
-> >> nobody in group B can allocate ANY huge pages.  This is true even though
-> >> no pages have been allocated in A (or B).
-> >>
-> >> With the reservation implementation, a task in group A could use MAP_NORESERVE
-> >> and allocate all 100 pages without taking any reservations.
-> >>
-> >> As mentioned in your documentation, it would be possible to use both the
-> >> existing (allocation) and new reservation cgroups together.  Perhaps if both
-> >> are setup for the 50/50 split things would work a little better.
-> >>
-> >> However, instead of creating a new reservation crgoup how about adding
-> >> reservation support to the existing allocation cgroup support.  One could
-> >> even argue that a reservation is an allocation as it sets aside huge pages
-> >> that can only be used for a specific purpose.  Here is something that
-> >> may work.
-> >>
-> >> Starting with the existing allocation cgroup.
-> >> - When hugetlb pages are reserved, the cgroup of the task making the
-> >>   reservations is charged.  Tracking for the charged cgroup is done in the
-> >>   reservation map in the same way proposed by this patch set.
-> >> - At page fault time,
-> >>   - If a reservation already exists for that specific area do not charge the
-> >>     faulting task.  No tracking in page, just the reservation map.
-> >>   - If no reservation exists, charge the group of the faulting task.  Tracking
-> >>     of this information is in the page itself as implemented today.
-> >> - When the hugetlb object is removed, compare the reservation map with any
-> >>   allocated pages.  If cgroup tracking information exists in page, uncharge
-> >>   that group.  Otherwise, unharge the group (if any) in the reservation map.
-> >>
-> >> One of the advantages of a separate reservation cgroup is that the existing
-> >> code is unmodified.  Combining the two provides a more complete/accurate
-> >> solution IMO.  But, it has the potential to break existing users.
-> >>
-> >> I really would like to get feedback from anyone that knows how the existing
-> >> hugetlb cgroup controller may be used today.  Comments from Aneesh would
-> >> be very welcome to know if reservations were considered in development of the
-> >> existing code.
-> >> --
-> >
-> > FWIW, I'm aware of the interaction with NORESERVE and my thoughts are:
-> >
-> > AFAICT, the 2 counter approach we have here is strictly superior to
-> > the 1 upgraded counter approach. Consider these points:
-> >
-> > - From what I can tell so far, everything you can do with the 1
-> > counter approach, you can do with the two counter approach by setting
-> > both limit_in_bytes and reservation_limit_in_bytes to the limit value.
-> > That will limit both reservations and at fault allocations.
-> >
-> > - The 2 counter approach preserves existing usage of hugetlb cgroups,
-> > so no need to muck around with reverting the feature some time from
-> > now because of broken users. No existing users of hugetlb cgroups need
-> > to worry about the effect of this on their usage.
-> >
-> > - Users that use hugetlb memory strictly through reservations can use
-> > only reservation_limit_in_bytes and enjoy cgroup limits that never
-> > SIGBUS the application. This is our usage for example.
-> >
-> > - The 2 counter approach provides more info to the sysadmin. The
-> > sysadmin knows exactly how much reserved bytes there are via
-> > reservation_usage_in_bytes, and how much actually in use bytes there
-> > are via usage_in_bytes. They can even detect NORESERVE usage if
-> > usage_in_bytes > reservation_usage_in_bytes. failcnt shows failed
-> > reservations *and* failed allocations at fault, etc. All around better
-> > debuggability when things go wrong. I think this is particularly
-> > troubling for the 1 upgraded counter approach. That counter's
-> > usage_in_bytes doesn't tell you if the usage came from reservations or
-> > allocations at fault time.
-> >
-> > - Honestly, I think the 2 counter approach is easier to document and
-> > understand by the userspace? 1 counter that vaguely tracks both the
-> > reservations and usage and decides whether or not to charge at fault
-> > time seems hard to understand what really happened after something
-> > goes wrong. 1 counter that tracks reservations and 1 counter that
-> > tracks actual usage seem much simpler to digest, and provide better
-> > visibility to what the cgroup is doing as I mentioned above.
-> >
-> > I think it may be better if I keep the 2 counter approach but
-> > thoroughly document the interaction between the existing counters and
-> > NORESERVE. What do you think?
->
-> I personally prefer the one counter approach only for the reason that it
-> exposes less information about hugetlb reservations.  I was not around
-> for the introduction of hugetlb reservations, but I have fixed several
-> issues having to do with reservations.  IMO, reservations should be hidden
-> from users as much as possible.  Others may disagree.
->
-> I really hope that Aneesh will comment.  He added the existing hugetlb
-> cgroup code.  I was not involved in that effort, but it looks like there
-> might have been some thought given to reservations in early versions of
-> that code.  It would be interesting to get his perspective.
->
-> Changes included in patch 4 (disable region_add file_region coalescing)
-> would be needed in a one counter approach as well, so I do plan to
-> review those changes.
+vrate_adj tracepoint traces vrate changes; however, it does so only
+when busy_level is non-zero.  busy_level turning to zero can sometimes
+be as interesting an event.  This patch also enables vrate_adj
+tracepoint on other vrate related events - busy_level changes and
+non-zero nr_lagging.
 
-OK, FWIW, the 1 counter approach should be sufficient for us, so I'm
-not really opposed. David, maybe chime in if you see a problem here?
-From the perspective of hiding reservations from the user as much as
-possible, it is an improvement.
+Signed-off-by: Tejun Heo <tj@kernel.org>
+---
+Hello, Jens.
 
-I'm only wary about changing the behavior of the current and having
-that regress applications. I'm hoping you and Aneesh can shed light on
-this.
+I've encountered vrate regulation issues while testing on a hard disk
+machine.  These are three patches to improve vrate adj visibility and
+fix the issue.
 
-> --
-> Mike Kravetz
+Thanks.
+
+ block/blk-iocost.c |    7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -1343,7 +1343,7 @@ static void ioc_timer_fn(struct timer_li
+ 	u32 ppm_wthr = MILLION - ioc->params.qos[QOS_WPPM];
+ 	u32 missed_ppm[2], rq_wait_pct;
+ 	u64 period_vtime;
+-	int i;
++	int prev_busy_level, i;
+ 
+ 	/* how were the latencies during the period? */
+ 	ioc_lat_stat(ioc, missed_ppm, &rq_wait_pct);
+@@ -1531,6 +1531,7 @@ skip_surplus_transfers:
+ 	 * and experiencing shortages but not surpluses, we're too stingy
+ 	 * and should increase vtime rate.
+ 	 */
++	prev_busy_level = ioc->busy_level;
+ 	if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
+ 	    missed_ppm[READ] > ppm_rthr ||
+ 	    missed_ppm[WRITE] > ppm_wthr) {
+@@ -1592,6 +1593,10 @@ skip_surplus_transfers:
+ 		atomic64_set(&ioc->vtime_rate, vrate);
+ 		ioc->inuse_margin_vtime = DIV64_U64_ROUND_UP(
+ 			ioc->period_us * vrate * INUSE_MARGIN_PCT, 100);
++	} else if (ioc->busy_level != prev_busy_level || nr_lagging) {
++		trace_iocost_ioc_vrate_adj(ioc, atomic64_read(&ioc->vtime_rate),
++					   &missed_ppm, rq_wait_pct, nr_lagging,
++					   nr_shortages, nr_surpluses);
+ 	}
+ 
+ 	ioc_refresh_params(ioc, false);
