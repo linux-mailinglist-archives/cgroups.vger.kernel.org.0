@@ -2,86 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 95499BEC5E
-	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2019 09:12:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28864BF218
+	for <lists+cgroups@lfdr.de>; Thu, 26 Sep 2019 13:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727480AbfIZHMm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Sep 2019 03:12:42 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:39068 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727996AbfIZHMm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Sep 2019 03:12:42 -0400
-Received: by mail-wm1-f66.google.com with SMTP id v17so1290568wml.4
-        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2019 00:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=u/+FmsO2fNzcsmYglT3xz6RDpSXgM0989c2PSz8Zvf4=;
-        b=VFGoxo+2NsxxwxjafuC2PpLHAFStjdosoGEbFmrM8SZ3rrImY4Sqc1/3J0DL/nSiek
-         cKXmLnyFis+D0MbKrVE0ATCMolB8ETO3TmYRdu83WYIqnQN2/9Kr879GEZ2XHDJJp0Np
-         sfEk1iSsp2VIf4BX2N7yHGkfOznLAcThCZOePG9i/g9qzTRvaEjv8bR5rGYL86uzXlQx
-         FVWTg05Jc+tDb3dA6Y661ABAFal9Jdn4j3GNAfXvyNBLm7YFtNgG3YtiZnpvk0ZpjpRu
-         SfIdUGBrMNXSt8Y7+NgK6sl1kd11BTn6K3rme6akMMJnevDRjfsXmJnf+0J+hfgcnGmm
-         f3BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=u/+FmsO2fNzcsmYglT3xz6RDpSXgM0989c2PSz8Zvf4=;
-        b=Qz4tfU4uiWEzPJDH6f2IByOKT4gyr+e0jp3b8E6x+CONGorwkbOwPUucmR4BQkokVv
-         Ejfbb5aOIL5A0ooZMQLCO9qTt6uqKRWFEz6nlKChsWex4hAz8bji9NuXTd8YPuxjuklI
-         JcWkOAtaHdN87zCg8F96ZaYe1A9QN8lMRGk02qO2oKdpV5ujeZ3h2pRRo/RhJTO8FEmM
-         aPPmVH7/rPSbm4T02RbSnAROoCloUL+JVOc/eniZNtOjLn++yNHuD0Bt9l42rLCCwtzj
-         yEgtrnHmghMqxgfnbTi73vzLcUdf+qBenPh54cr6veFALoqyAavlqwOaWfx3gWoX3ETa
-         MmaQ==
-X-Gm-Message-State: APjAAAV8+0LD+Lo1DU98yQzZRBh+cXSTgvLUU7BoerprjlxF1K0Vjm3E
-        0va+77di2xh7pbXmTw5ZS/YrLgmAL0w6PTzB
-X-Google-Smtp-Source: APXvYqxUdYUgUVi64u3ylV/Yid+SC9QyZEwS24BKb72e7Ncis6ktKTA6eLgV/hoc7bSxXa1p5PZeZg==
-X-Received: by 2002:a1c:7c15:: with SMTP id x21mr1547161wmc.36.1569481960055;
-        Thu, 26 Sep 2019 00:12:40 -0700 (PDT)
-Received: from [172.20.9.27] ([83.167.33.93])
-        by smtp.gmail.com with ESMTPSA id a14sm1398033wmm.44.2019.09.26.00.12.39
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 26 Sep 2019 00:12:39 -0700 (PDT)
-Subject: Re: [PATCH 1/3 for-5.4/block] iocost: better trace vrate changes
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org
-References: <20190925230207.GI2233839@devbig004.ftw2.facebook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <310739da-b606-6485-9979-9bc03a592265@kernel.dk>
-Date:   Thu, 26 Sep 2019 09:12:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1726188AbfIZLt4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Sep 2019 07:49:56 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50388 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725768AbfIZLt4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 26 Sep 2019 07:49:56 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A0D1EAEEC;
+        Thu, 26 Sep 2019 11:49:54 +0000 (UTC)
+Date:   Thu, 26 Sep 2019 13:49:53 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>, Tejun Heo <tj@kernel.org>,
+        Dennis Zhou <dennis@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Kernel Team <Kernel-team@fb.com>
+Subject: Re: [PATCH] mm: Proportional memory.{low,min} reclaim
+Message-ID: <20190926114953.GA1224@dhcp22.suse.cz>
+References: <20190124014455.GA6396@chrisdown.name>
+ <20190128210031.GA31446@castle.DHCP.thefacebook.com>
+ <20190128214213.GB15349@chrisdown.name>
+ <20190128215230.GA32069@castle.DHCP.thefacebook.com>
+ <20190715153527.86a3f6e65ecf5d501252dbf1@linux-foundation.org>
+ <20190716172459.GB16575@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <20190925230207.GI2233839@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190716172459.GB16575@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 9/26/19 1:02 AM, Tejun Heo wrote:
-> vrate_adj tracepoint traces vrate changes; however, it does so only
-> when busy_level is non-zero.  busy_level turning to zero can sometimes
-> be as interesting an event.  This patch also enables vrate_adj
-> tracepoint on other vrate related events - busy_level changes and
-> non-zero nr_lagging.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> ---
-> Hello, Jens.
-> 
-> I've encountered vrate regulation issues while testing on a hard disk
-> machine.  These are three patches to improve vrate adj visibility and
-> fix the issue.
+[Hmm, this one somehow slipped through. sorry about that]
 
-Applied 1-3 for 5.4, thanks Tejun.
+On Tue 16-07-19 13:24:59, Johannes Weiner wrote:
+> On Mon, Jul 15, 2019 at 03:35:27PM -0700, Andrew Morton wrote:
+> > On Mon, 28 Jan 2019 21:52:40 +0000 Roman Gushchin <guro@fb.com> wrote:
+> > 
+> > > > Hmm, this isn't really a common situation that I'd thought about, but it
+> > > > seems reasonable to make the boundaries when in low reclaim to be between
+> > > > min and low, rather than 0 and low. I'll add another patch with that. Thanks
+> > >
+> > > It's not a stopper, so I'm perfectly fine with a follow-up patch.
+> > 
+> > Did this happen?
+> > 
+> > I'm still trying to get this five month old patchset unstuck :(.  The
+> > review status is: 
+> > 
+> > [1/3] mm, memcg: proportional memory.{low,min} reclaim
+> > Acked-by: Johannes
+> > Reviewed-by: Roman
+> > 
+> > [2/3] mm, memcg: make memory.emin the baseline for utilisation determination
+> > Acked-by: Johannes
+> > 
+> > [3/3] mm, memcg: make scan aggression always exclude protection
+> > Reviewed-by: Roman
+> 
+> I forgot to send out the actual ack-tag on #, so I just did. I was
+> involved in the discussions that led to that patch, the code looks
+> good to me, and it's what we've been using internally for a while
+> without any hiccups.
+> 
+> > I do have a note here that mhocko intended to take a closer look but I
+> > don't recall whether that happened.
+> 
+> Michal acked #3 in 20190530065111.GC6703@dhcp22.suse.cz. Afaik not the
+> others, but #3 also doesn't make a whole lot of sense without #1...
+> 
+> > a) say what the hell and merge them or
+> > b) sit on them for another cycle or
+> > c) drop them and ask Chris for a resend so we can start again.
+> 
+> Michal, would you have time to take another look this week? Otherwise,
+> I think everyone who would review them has done so.
 
+I do not remember objecting to this particular patch. I also admit I do
+not remember much about it either. I am unlikely to get to review this
+in more depth these days.
+
+It seems more people have reviewed it already so just go ahead.
 -- 
-Jens Axboe
-
+Michal Hocko
+SUSE Labs
