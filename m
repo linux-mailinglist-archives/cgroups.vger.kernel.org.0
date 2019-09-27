@@ -2,170 +2,317 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A2AABBFC8C
-	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2019 02:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D940EC056D
+	for <lists+cgroups@lfdr.de>; Fri, 27 Sep 2019 14:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727542AbfI0Azm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Sep 2019 20:55:42 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34616 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725955AbfI0Azl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Sep 2019 20:55:41 -0400
-Received: by mail-oi1-f195.google.com with SMTP id 83so3807150oii.1
-        for <cgroups@vger.kernel.org>; Thu, 26 Sep 2019 17:55:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w6GtUWD65Sb2e3DNABoXgvvmVNvez3XhNPll/iTmngk=;
-        b=mWJcqqxG0yvWUhw/T7tKy9RfvCH7jcGWz8miRGuWvLmTwqKJ3ZfLN2t5FDY/5MGWhf
-         ksuRq1AECJHnDrA0xQt+a4UYEbD8UkzPJY+fqn/8NAyINpG17nBfdXvau2HnxCbKLB1Q
-         vf3nugrT7CDycCO9Lf4mLAu/WO/MIupOReMgVMjTF7NEWU6zQNqyxdetxF3YH28a1ZE7
-         /oE/UleTqIWRhPtcbsdoFfbHxLRkhc4HjmCAKBGLYDpgy3dSsWZK6MjWZWl9GC9MMWmC
-         drBPJKlLe2xE4nQfIjgf1D707tvSN6vOQoL8hN1DcuGOl6hhyjnrpkGzuysSkBASGQAo
-         R6gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w6GtUWD65Sb2e3DNABoXgvvmVNvez3XhNPll/iTmngk=;
-        b=RQw2EzwGNaSPhKR/1s54xupbp0Q0ksyJKDVSGopi0e8KfCwiuF6+4lr9LgdkBLoEnf
-         mEDZlN4/QaGp01WKdjIXneSyJEoeSAHoOx4KZKDH8yUFyfMPecAVy9gOf/ZyUqsKus+I
-         77CGnK55LleC1YWjgJ+5Xa1Lt0xG6bZaZaC1Ojvo3HqMuDtF4QLmvnusaW+uc0wIlr23
-         BKRfLhX0PmiQubUC8tPfO8wM9lMquoth8Sl0TVL83eWlQUv2s0ZqHEoHIZ9ISGH2FF4h
-         fra4HVp/1XFdr5AIB25CBRcpDRBIPN8U8VtpMBKr5kCaA0/CzqT5zLWdZUeYOKKp7B4z
-         w3sg==
-X-Gm-Message-State: APjAAAW4SWwlTclU8RqJnEP/MZw7IBrtErNTIFWkj0YboVfcXDJq5oMq
-        8YRfUYbnRWiQ6St//z8J5x4BCdYffwiZKuRGfFtP+w==
-X-Google-Smtp-Source: APXvYqxaOUtFksyd5tFVpugObKeftAVgGeD3PicNGLqGrAfqoaEha1rcj49CSeZUiGTh6XZYzJwpS6/fjcHQVM057qs=
-X-Received: by 2002:aca:cf51:: with SMTP id f78mr5004751oig.8.1569545740466;
- Thu, 26 Sep 2019 17:55:40 -0700 (PDT)
+        id S1727697AbfI0MqA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Sep 2019 08:46:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55868 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725992AbfI0Mp7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 27 Sep 2019 08:45:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id A5098B1B9;
+        Fri, 27 Sep 2019 12:45:56 +0000 (UTC)
+Subject: Re: lot of MemAvailable but falling cache and raising PSI
+To:     Stefan Priebe - Profihost AG <s.priebe@profihost.ag>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <52235eda-ffe2-721c-7ad7-575048e2d29d@profihost.ag>
+ <20190910082919.GL2063@dhcp22.suse.cz>
+ <132e1fd0-c392-c158-8f3a-20e340e542f0@profihost.ag>
+ <20190910090241.GM2063@dhcp22.suse.cz>
+ <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
+ <20190910110741.GR2063@dhcp22.suse.cz>
+ <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
+ <20190910125756.GB2063@dhcp22.suse.cz>
+ <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
+ <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag>
+ <20190910132418.GC2063@dhcp22.suse.cz>
+ <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
+ <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; prefer-encrypt=mutual; keydata=
+ mQINBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABtCBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PokCVAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJcbbyGBQkH8VTqAAoJECJPp+fMgqZkpGoP
+ /1jhVihakxw1d67kFhPgjWrbzaeAYOJu7Oi79D8BL8Vr5dmNPygbpGpJaCHACWp+10KXj9yz
+ fWABs01KMHnZsAIUytVsQv35DMMDzgwVmnoEIRBhisMYOQlH2bBn/dqBjtnhs7zTL4xtqEcF
+ 1hoUFEByMOey7gm79utTk09hQE/Zo2x0Ikk98sSIKBETDCl4mkRVRlxPFl4O/w8dSaE4eczH
+ LrKezaFiZOv6S1MUKVKzHInonrCqCNbXAHIeZa3JcXCYj1wWAjOt9R3NqcWsBGjFbkgoKMGD
+ usiGabetmQjXNlVzyOYdAdrbpVRNVnaL91sB2j8LRD74snKsV0Wzwt90YHxDQ5z3M75YoIdl
+ byTKu3BUuqZxkQ/emEuxZ7aRJ1Zw7cKo/IVqjWaQ1SSBDbZ8FAUPpHJxLdGxPRN8Pfw8blKY
+ 8mvLJKoF6i9T6+EmlyzxqzOFhcc4X5ig5uQoOjTIq6zhLO+nqVZvUDd2Kz9LMOCYb516cwS/
+ Enpi0TcZ5ZobtLqEaL4rupjcJG418HFQ1qxC95u5FfNki+YTmu6ZLXy+1/9BDsPuZBOKYpUm
+ 3HWSnCS8J5Ny4SSwfYPH/JrtberWTcCP/8BHmoSpS/3oL3RxrZRRVnPHFzQC6L1oKvIuyXYF
+ rkybPXYbmNHN+jTD3X8nRqo+4Qhmu6SHi3VquQENBFsZNQwBCACuowprHNSHhPBKxaBX7qOv
+ KAGCmAVhK0eleElKy0sCkFghTenu1sA9AV4okL84qZ9gzaEoVkgbIbDgRbKY2MGvgKxXm+kY
+ n8tmCejKoeyVcn9Xs0K5aUZiDz4Ll9VPTiXdf8YcjDgeP6/l4kHb4uSW4Aa9ds0xgt0gP1Xb
+ AMwBlK19YvTDZV5u3YVoGkZhspfQqLLtBKSt3FuxTCU7hxCInQd3FHGJT/IIrvm07oDO2Y8J
+ DXWHGJ9cK49bBGmK9B4ajsbe5GxtSKFccu8BciNluF+BqbrIiM0upJq5Xqj4y+Xjrpwqm4/M
+ ScBsV0Po7qdeqv0pEFIXKj7IgO/d4W2bABEBAAGJA3IEGAEKACYWIQSpQNQ0mSwujpkQPVAi
+ T6fnzIKmZAUCWxk1DAIbAgUJA8JnAAFACRAiT6fnzIKmZMB0IAQZAQoAHRYhBKZ2GgCcqNxn
+ k0Sx9r6Fd25170XjBQJbGTUMAAoJEL6Fd25170XjDBUH/2jQ7a8g+FC2qBYxU/aCAVAVY0NE
+ YuABL4LJ5+iWwmqUh0V9+lU88Cv4/G8fWwU+hBykSXhZXNQ5QJxyR7KWGy7LiPi7Cvovu+1c
+ 9Z9HIDNd4u7bxGKMpn19U12ATUBHAlvphzluVvXsJ23ES/F1c59d7IrgOnxqIcXxr9dcaJ2K
+ k9VP3TfrjP3g98OKtSsyH0xMu0MCeyewf1piXyukFRRMKIErfThhmNnLiDbaVy6biCLx408L
+ Mo4cCvEvqGKgRwyckVyo3JuhqreFeIKBOE1iHvf3x4LU8cIHdjhDP9Wf6ws1XNqIvve7oV+w
+ B56YWoalm1rq00yUbs2RoGcXmtX1JQ//aR/paSuLGLIb3ecPB88rvEXPsizrhYUzbe1TTkKc
+ 4a4XwW4wdc6pRPVFMdd5idQOKdeBk7NdCZXNzoieFntyPpAq+DveK01xcBoXQ2UktIFIsXey
+ uSNdLd5m5lf7/3f0BtaY//f9grm363NUb9KBsTSnv6Vx7Co0DWaxgC3MFSUhxzBzkJNty+2d
+ 10jvtwOWzUN+74uXGRYSq5WefQWqqQNnx+IDb4h81NmpIY/X0PqZrapNockj3WHvpbeVFAJ0
+ 9MRzYP3x8e5OuEuJfkNnAbwRGkDy98nXW6fKeemREjr8DWfXLKFWroJzkbAVmeIL0pjXATxr
+ +tj5JC0uvMrrXefUhXTo0SNoTsuO/OsAKOcVsV/RHHTwCDR2e3W8mOlA3QbYXsscgjghbuLh
+ J3oTRrOQa8tUXWqcd5A0+QPo5aaMHIK0UAthZsry5EmCY3BrbXUJlt+23E93hXQvfcsmfi0N
+ rNh81eknLLWRYvMOsrbIqEHdZBT4FHHiGjnck6EYx/8F5BAZSodRVEAgXyC8IQJ+UVa02QM5
+ D2VL8zRXZ6+wARKjgSrW+duohn535rG/ypd0ctLoXS6dDrFokwTQ2xrJiLbHp9G+noNTHSan
+ ExaRzyLbvmblh3AAznb68cWmM3WVkceWACUalsoTLKF1sGrrIBj5updkKkzbKOq5gcC5AQ0E
+ Wxk1NQEIAJ9B+lKxYlnKL5IehF1XJfknqsjuiRzj5vnvVrtFcPlSFL12VVFVUC2tT0A1Iuo9
+ NAoZXEeuoPf1dLDyHErrWnDyn3SmDgb83eK5YS/K363RLEMOQKWcawPJGGVTIRZgUSgGusKL
+ NuZqE5TCqQls0x/OPljufs4gk7E1GQEgE6M90Xbp0w/r0HB49BqjUzwByut7H2wAdiNAbJWZ
+ F5GNUS2/2IbgOhOychHdqYpWTqyLgRpf+atqkmpIJwFRVhQUfwztuybgJLGJ6vmh/LyNMRr8
+ J++SqkpOFMwJA81kpjuGR7moSrUIGTbDGFfjxmskQV/W/c25Xc6KaCwXah3OJ40AEQEAAYkC
+ PAQYAQoAJhYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJbGTU1AhsMBQkDwmcAAAoJECJPp+fM
+ gqZkPN4P/Ra4NbETHRj5/fM1fjtngt4dKeX/6McUPDIRuc58B6FuCQxtk7sX3ELs+1+w3eSV
+ rHI5cOFRSdgw/iKwwBix8D4Qq0cnympZ622KJL2wpTPRLlNaFLoe5PkoORAjVxLGplvQIlhg
+ miljQ3R63ty3+MZfkSVsYITlVkYlHaSwP2t8g7yTVa+q8ZAx0NT9uGWc/1Sg8j/uoPGrctml
+ hFNGBTYyPq6mGW9jqaQ8en3ZmmJyw3CHwxZ5FZQ5qc55xgshKiy8jEtxh+dgB9d8zE/S/UGI
+ E99N/q+kEKSgSMQMJ/CYPHQJVTi4YHh1yq/qTkHRX+ortrF5VEeDJDv+SljNStIxUdroPD29
+ 2ijoaMFTAU+uBtE14UP5F+LWdmRdEGS1Ah1NwooL27uAFllTDQxDhg/+LJ/TqB8ZuidOIy1B
+ xVKRSg3I2m+DUTVqBy7Lixo73hnW69kSjtqCeamY/NSu6LNP+b0wAOKhwz9hBEwEHLp05+mj
+ 5ZFJyfGsOiNUcMoO/17FO4EBxSDP3FDLllpuzlFD7SXkfJaMWYmXIlO0jLzdfwfcnDzBbPwO
+ hBM8hvtsyq8lq8vJOxv6XD6xcTtj5Az8t2JjdUX6SF9hxJpwhBU0wrCoGDkWp4Bbv6jnF7zP
+ Nzftr4l8RuJoywDIiJpdaNpSlXKpj/K6KrnyAI/joYc7
+Message-ID: <4f6f1bc9-08f4-d53a-8788-a761be769757@suse.cz>
+Date:   Fri, 27 Sep 2019 14:45:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.0
 MIME-Version: 1.0
-References: <20190919222421.27408-1-almasrymina@google.com>
- <3c73d2b7-f8d0-16bf-b0f0-86673c3e9ce3@oracle.com> <CAHS8izOj2AT4tX-+Hcb8LB2TOUKJDHScDtJ80u4M6OWpwktq0g@mail.gmail.com>
- <a8e9c533-1593-35ee-e65d-1f2fc2b0fb48@oracle.com> <CAHS8izPfKQA8qTndyzWSm9fR_xJ=X-xmE+4P4K+ZFdxrYNuLBA@mail.gmail.com>
- <alpine.DEB.2.21.1909261220150.39830@chino.kir.corp.google.com> <8f7db4f1-9c16-def5-79dc-d38d6b9d150e@oracle.com>
-In-Reply-To: <8f7db4f1-9c16-def5-79dc-d38d6b9d150e@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 26 Sep 2019 17:55:29 -0700
-Message-ID: <CAHS8izM3=ZDNukx5xhWmeJT+78Ekfff9J4s5Vqkqpx-DtH=C-A@mail.gmail.com>
-Subject: Re: [PATCH v5 0/7] hugetlb_cgroup: Add hugetlb_cgroup reservation limits
-To:     Mike Kravetz <mike.kravetz@oracle.com>, Tejun Heo <tj@kernel.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        shuah <shuah@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
+Content-Type: multipart/mixed;
+ boundary="------------E75BCE1904598614F43DF30C"
+Content-Language: en-US
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 26, 2019 at 2:23 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 9/26/19 12:28 PM, David Rientjes wrote:
-> > On Tue, 24 Sep 2019, Mina Almasry wrote:
-> >
-> >>> I personally prefer the one counter approach only for the reason that it
-> >>> exposes less information about hugetlb reservations.  I was not around
-> >>> for the introduction of hugetlb reservations, but I have fixed several
-> >>> issues having to do with reservations.  IMO, reservations should be hidden
-> >>> from users as much as possible.  Others may disagree.
-> >>>
-> >>> I really hope that Aneesh will comment.  He added the existing hugetlb
-> >>> cgroup code.  I was not involved in that effort, but it looks like there
-> >>> might have been some thought given to reservations in early versions of
-> >>> that code.  It would be interesting to get his perspective.
-> >>>
-> >>> Changes included in patch 4 (disable region_add file_region coalescing)
-> >>> would be needed in a one counter approach as well, so I do plan to
-> >>> review those changes.
-> >>
-> >> OK, FWIW, the 1 counter approach should be sufficient for us, so I'm
-> >> not really opposed. David, maybe chime in if you see a problem here?
-> >> From the perspective of hiding reservations from the user as much as
-> >> possible, it is an improvement.
-> >>
-> >> I'm only wary about changing the behavior of the current and having
-> >> that regress applications. I'm hoping you and Aneesh can shed light on
-> >> this.
-> >>
-> >
-> > I think neither Aneesh nor myself are going to be able to provide a
-> > complete answer on the use of hugetlb cgroup today, anybody could be using
-> > it without our knowledge and that opens up the possibility that combining
-> > the limits would adversely affect a real system configuration.
->
-> I agree that nobody can provide complete information on hugetlb cgroup usage
-> today.  My interest was in anything Aneesh could remember about development
-> of the current cgroup code.  It 'appears' that the idea of including
-> reservations or mmap ranges was considered or at least discussed.  But, those
-> discussions happened more than 7 years old and my searches are not providing
-> a complete picture.  My hope was that Aneesh may remember those discussions.
->
-> > If that is a possibility, I think we need to do some due diligence and try
-> > to deprecate allocation limits if possible.  One of the benefits to
-> > separate limits is that we can make reasonable steps to deprecating the
-> > actual allocation limits, if possible: we could add warnings about the
-> > deprecation of allocation limits and see if anybody complains.
-> >
-> > That could take the form of two separate limits or a tunable in the root
-> > hugetlb cgroup that defines whether the limits are for allocation or
-> > reservation.
-> >
-> > Combining them in the first pass seems to be very risky and could cause
-> > pain for users that will not detect this during an rc cycle and will
-> > report the issue only when their distro gets it.  Then we are left with no
-> > alternative other than stable backports and the separation of the limits
-> > anyway.
->
-> I agree that changing behavior of the existing controller is too risky.
-> Such a change is likely to break someone.
+This is a multi-part message in MIME format.
+--------------E75BCE1904598614F43DF30C
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 
-I'm glad we're converging on keeping the existing behavior unchanged.
+On 9/19/19 12:21 PM, Stefan Priebe - Profihost AG wrote:
+> Kernel 5.2.14 is now running since exactly 7 days and now we can easaly
+> view a trend i', not sure if i should post graphs.
+> 
+> Cache size is continuously shrinking while memfree is rising.
+> 
+> While there were 4,5GB free in avg in the beginnen we now have an avg of
+> 8GB free memory.
+> 
+> Cache has shrinked from avg 24G to avg 18G.
+> 
+> Memory pressure has rised from avg 0% to avg 0.1% - not much but if you
+> look at the graphs it's continuously rising while cache is shrinking and
+> memfree is rising.
 
-> The more I think about it, the
-> best way forward will be to retain the existing controller and create a
-> new controller that satisfies the new use cases.
+Hi, could you try the patch below? I suspect you're hitting a corner
+case where compaction_suitable() returns COMPACT_SKIPPED for the
+ZONE_DMA, triggering reclaim even if other zones have plenty of free
+memory. And should_continue_reclaim() then returns true until twice the
+requested page size is reclaimed (compact_gap()). That means 4MB
+reclaimed for each THP allocation attempt, which roughly matches the
+trace data you preovided previously.
 
-My guess is that a new controller needs to support cgroups-v2, which
-is fine. But can a new controller also support v1? Or is there a
-requirement that new controllers support *only* v2? I need whatever
-solution here to work on v1. Added Tejun to hopefully comment on this.
+The amplification to 4MB should be removed in patches merged for 5.4, so
+it would be only 32 pages reclaimed per THP allocation. The patch below
+tries to remove this corner case completely, and it should be more
+visible on your 5.2.x, so please apply it there.
 
->The question remains as
-> to what that new controller will be.  Does it control reservations only?
-> Is it a combination of reservations and allocations?  If a combined
-> controller will work for new use cases, that would be my preference.  Of
-> course, I have not prototyped such a controller so there may be issues when
-> we get into the details.  For a reservation only or combined controller,
-> the region_* changes proposed by Mina would be used.
+--------------E75BCE1904598614F43DF30C
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-mm-compaction-distinguish-when-compaction-is-impossi.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename*0="0001-mm-compaction-distinguish-when-compaction-is-impossi.pa";
+ filename*1="tch"
 
-Provided we keep the existing controller untouched, should the new
-controller track:
+From 565008042b759835d51703f1da9b335dc0404546 Mon Sep 17 00:00:00 2001
+From: Vlastimil Babka <vbabka@suse.cz>
+Date: Thu, 12 Sep 2019 13:40:46 +0200
+Subject: [PATCH] mm, compaction: distinguish when compaction is impossible
 
-1. only reservations, or
-2. both reservations and allocations for which no reservations exist
-(such as the MAP_NORESERVE case)?
+---
+ include/linux/compaction.h     |  7 ++++++-
+ include/trace/events/mmflags.h |  1 +
+ mm/compaction.c                | 16 +++++++++++++--
+ mm/vmscan.c                    | 36 ++++++++++++++++++++++++----------
+ 4 files changed, 47 insertions(+), 13 deletions(-)
 
-I like the 'both' approach. Seems to me a counter like that would work
-automatically regardless of whether the application is allocating
-hugetlb memory with NORESERVE or not. NORESERVE allocations cannot cut
-into reserved hugetlb pages, correct? If so, then applications that
-allocate with NORESERVE will get sigbused when they hit their limit,
-and applications that allocate without NORESERVE may get an error at
-mmap time but will always be within their limits while they access the
-mmap'd memory, correct? So the 'both' counter seems like a one size
-fits all.
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index 9569e7c786d3..6e624f482a08 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -17,8 +17,13 @@ enum compact_priority {
+ };
+ 
+ /* Return values for compact_zone() and try_to_compact_pages() */
+-/* When adding new states, please adjust include/trace/events/compaction.h */
++/* When adding new states, please adjust include/trace/events/mmflags.h */
+ enum compact_result {
++	/*
++	 * The zone is too small to provide the requested allocation even if
++	 * fully freed (i.e. ZONE_DMA for THP allocation due to lowmem reserves)
++	 */
++	COMPACT_IMPOSSIBLE,
+ 	/* For more detailed tracepoint output - internal to compaction */
+ 	COMPACT_NOT_SUITABLE_ZONE,
+ 	/*
+diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
+index a1675d43777e..557dad69a9db 100644
+--- a/include/trace/events/mmflags.h
++++ b/include/trace/events/mmflags.h
+@@ -170,6 +170,7 @@ IF_HAVE_VM_SOFTDIRTY(VM_SOFTDIRTY,	"softdirty"	)		\
+ 
+ #ifdef CONFIG_COMPACTION
+ #define COMPACTION_STATUS					\
++	EM( COMPACT_IMPOSSIBLE,		"impossible")		\
+ 	EM( COMPACT_SKIPPED,		"skipped")		\
+ 	EM( COMPACT_DEFERRED,		"deferred")		\
+ 	EM( COMPACT_CONTINUE,		"continue")		\
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 9e1b9acb116b..50a3dd2e2b6e 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -1948,6 +1948,7 @@ static enum compact_result compact_finished(struct compact_control *cc)
+ /*
+  * compaction_suitable: Is this suitable to run compaction on this zone now?
+  * Returns
++ *   COMPACT_IMPOSSIBLE If the allocation would fail even with all pages free
+  *   COMPACT_SKIPPED  - If there are too few free pages for compaction
+  *   COMPACT_SUCCESS  - If the allocation would succeed without compaction
+  *   COMPACT_CONTINUE - If compaction should run now
+@@ -1971,6 +1972,16 @@ static enum compact_result __compaction_suitable(struct zone *zone, int order,
+ 								alloc_flags))
+ 		return COMPACT_SUCCESS;
+ 
++	/*
++	 * If the allocation would not succeed even with a fully free zone
++	 * due to e.g. lowmem reserves, indicate that compaction can't possibly
++	 * help and it would be pointless to reclaim.
++	 */
++	watermark += 1UL << order;
++	if (!__zone_watermark_ok(zone, 0, watermark, classzone_idx,
++				 alloc_flags, zone_managed_pages(zone)))
++		return COMPACT_IMPOSSIBLE;
++
+ 	/*
+ 	 * Watermarks for order-0 must be met for compaction to be able to
+ 	 * isolate free pages for migration targets. This means that the
+@@ -2058,7 +2069,7 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+ 		available += zone_page_state_snapshot(zone, NR_FREE_PAGES);
+ 		compact_result = __compaction_suitable(zone, order, alloc_flags,
+ 				ac_classzone_idx(ac), available);
+-		if (compact_result != COMPACT_SKIPPED)
++		if (compact_result > COMPACT_SKIPPED)
+ 			return true;
+ 	}
+ 
+@@ -2079,7 +2090,8 @@ compact_zone(struct compact_control *cc, struct capture_control *capc)
+ 	ret = compaction_suitable(cc->zone, cc->order, cc->alloc_flags,
+ 							cc->classzone_idx);
+ 	/* Compaction is likely to fail */
+-	if (ret == COMPACT_SUCCESS || ret == COMPACT_SKIPPED)
++	if (ret == COMPACT_SUCCESS || ret == COMPACT_SKIPPED
++	    || ret == COMPACT_IMPOSSIBLE)
+ 		return ret;
+ 
+ 	/* huh, compaction_suitable is returning something unexpected */
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 910e02c793ff..20ba471a8454 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -2778,11 +2778,12 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+ }
+ 
+ /*
+- * Returns true if compaction should go ahead for a costly-order request, or
+- * the allocation would already succeed without compaction. Return false if we
+- * should reclaim first.
++ * Returns 1 if compaction should go ahead for a costly-order request, or the
++ * allocation would already succeed without compaction. Return 0 if we should
++ * reclaim first. Return -1 when compaction can't help at all due to zone being
++ * too small, which means there's no point in reclaim nor compaction.
+  */
+-static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
++static inline int compaction_ready(struct zone *zone, struct scan_control *sc)
+ {
+ 	unsigned long watermark;
+ 	enum compact_result suitable;
+@@ -2790,10 +2791,16 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
+ 	suitable = compaction_suitable(zone, sc->order, 0, sc->reclaim_idx);
+ 	if (suitable == COMPACT_SUCCESS)
+ 		/* Allocation should succeed already. Don't reclaim. */
+-		return true;
++		return 1;
+ 	if (suitable == COMPACT_SKIPPED)
+ 		/* Compaction cannot yet proceed. Do reclaim. */
+-		return false;
++		return 0;
++	if (suitable == COMPACT_IMPOSSIBLE)
++		/*
++		 * Compaction can't possibly help. So don't reclaim, but keep
++		 * checking other zones.
++		 */
++		return -1;
+ 
+ 	/*
+ 	 * Compaction is already possible, but it takes time to run and there
+@@ -2839,6 +2846,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+ 
+ 	for_each_zone_zonelist_nodemask(zone, z, zonelist,
+ 					sc->reclaim_idx, sc->nodemask) {
++		int compact_ready;
+ 		/*
+ 		 * Take care memory controller reclaiming has small influence
+ 		 * to global LRU.
+@@ -2858,10 +2866,18 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
+ 			 * page allocations.
+ 			 */
+ 			if (IS_ENABLED(CONFIG_COMPACTION) &&
+-			    sc->order > PAGE_ALLOC_COSTLY_ORDER &&
+-			    compaction_ready(zone, sc)) {
+-				sc->compaction_ready = true;
+-				continue;
++			    sc->order > PAGE_ALLOC_COSTLY_ORDER) {
++				compact_ready = compaction_ready(zone, sc);
++				if (compact_ready == 1) {
++					sc->compaction_ready = true;
++					continue;
++				} else if (compact_ready == -1) {
++					/*
++					 * In this zone, neither reclaim nor
++					 * compaction can help.
++					 */
++					continue;
++				}
+ 			}
+ 
+ 			/*
+-- 
+2.23.0
 
-I think the only sticking point left is whether an added controller
-can support both cgroup-v2 and cgroup-v1. If I could get confirmation
-on that I'll provide a patchset.
 
-> --
-> Mike Kravetz
+--------------E75BCE1904598614F43DF30C--
