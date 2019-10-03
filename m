@@ -2,22 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F5A5CA09E
-	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2019 16:51:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DC07CA9D8
+	for <lists+cgroups@lfdr.de>; Thu,  3 Oct 2019 19:21:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725907AbfJCOvM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Oct 2019 10:51:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42266 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729373AbfJCOvM (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 3 Oct 2019 10:51:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EFCF6B186;
-        Thu,  3 Oct 2019 14:51:09 +0000 (UTC)
-Date:   Thu, 3 Oct 2019 16:51:06 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Tejun Heo <tj@kernel.org>
+        id S2393188AbfJCRAX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 3 Oct 2019 13:00:23 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:35267 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392862AbfJCQp4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Oct 2019 12:45:56 -0400
+Received: by mail-qk1-f193.google.com with SMTP id w2so3044902qkf.2;
+        Thu, 03 Oct 2019 09:45:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=cY7dwSAZ/LRC+V3+VuDl/u0CtvPhkHUKtwYdGP4h8tM=;
+        b=hLGF2x3mry/9VP8Cgyatm0IMsLfiswwpsqSwtwh3Z2Hay6ZNSrYP6Hl5hSyR5M48qX
+         0IPsGhDFHmzedwYhjqPSKXxSwEpjaF1SjvuJ0FK0DlG2SceDEdslkMbvqyN5w454YJEj
+         OuwD5C0GKsFxYOH/fjS9taQ1Fao+rvVL7X1AVWbbtq3PQMNMju9lJvlRQgAV3ZyrxHfz
+         Zj6wGdAz4K8h7+DjIXPxytnFabB1ZqrIkvVfNl+Es1B4BNAEYSyFz5+rL/yTVGZXslMS
+         T9YRxz1/wbsN4CzseBltb1yCaLMVpoVxf5u9viLfyDTGM5uggapI2PAJl/M2cNZb9nJB
+         +HVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=cY7dwSAZ/LRC+V3+VuDl/u0CtvPhkHUKtwYdGP4h8tM=;
+        b=RMHT5/h6CUgdSc/0yRyZM0s0mVbobXvyVqfA+oKKvrAeSR4Lc0r6jyTSXT7e/P0E0X
+         GlgTldK6jN0y2Nm4cbGWWnoj2QyGAKbzSpgRk+F4qd8EwDXGRbOKXoFQ5JlKOATFhxw6
+         eTlfLkKVQrOi7qtzWnJML+OR33E056u/cGwHHVZttZRvMXLTCj+XIcwA6STFxZb40Aws
+         GkMdjKMGoVsp2XXJzVXaut/uITHYfcF6ek0S0F4Bcg/WhG/9+GYKGxDcbJosxAjHKvak
+         a3T4bmzlJKp8yXajbWn5eXrTVq+a8C/cmsn4la3dKs8goeqveg7LM6SU9o/k8XKooygR
+         X2Yw==
+X-Gm-Message-State: APjAAAVPjRvcNqvwQTuBqa+J1fViD7Nf7o1OM9epKhg6SJBx5u12wJxa
+        ZQTxKnrEg93PUXGG19MHNTM=
+X-Google-Smtp-Source: APXvYqwyDNBYMAZlSJRkUJmx4zksig6ZCgUKH4qEh9uQ/wdnO/i0VrSvc1T2/bEhZTtSydu35p/6UQ==
+X-Received: by 2002:ae9:e810:: with SMTP id a16mr5237472qkg.364.1570121154872;
+        Thu, 03 Oct 2019 09:45:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::3:9f72])
+        by smtp.gmail.com with ESMTPSA id c131sm1941291qke.24.2019.10.03.09.45.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 03 Oct 2019 09:45:54 -0700 (PDT)
+Date:   Thu, 3 Oct 2019 09:45:52 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc:     hannes@cmpxchg.org, clm@fb.com, dennisz@fb.com,
         Josef Bacik <jbacik@fb.com>, kernel-team@fb.com,
         newella@fb.com, lizefan@huawei.com, axboe@kernel.dk,
@@ -26,74 +57,39 @@ Cc:     hannes@cmpxchg.org, clm@fb.com, dennisz@fb.com,
         cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH 08/10] blkcg: implement blk-iocost
-Message-ID: <20191003145106.GC6678@blackbody.suse.cz>
+Message-ID: <20191003164552.GA3247445@devbig004.ftw2.facebook.com>
 References: <20190828220600.2527417-1-tj@kernel.org>
  <20190828220600.2527417-9-tj@kernel.org>
  <20190910125513.GA6399@blackbody.suse.cz>
  <20190910160855.GS2263813@devbig004.ftw2.facebook.com>
+ <20191003145106.GC6678@blackbody.suse.cz>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RIYY1s2vRbPFwWeW"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20190910160855.GS2263813@devbig004.ftw2.facebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191003145106.GC6678@blackbody.suse.cz>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
---RIYY1s2vRbPFwWeW
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On Thu, Oct 03, 2019 at 04:51:06PM +0200, Michal Koutný wrote:
+> > Initially, I put them under block device sysfs but it was too clumsy
+> > with different config file formats and all.
+> Do you have any more details on that? In the end, it all boils down to a
+> daemon/setup utility writing into the control files and it can use
+> whatever config files it decides, can't it?
 
-Hi (and apology for relatively late reply).
+Yeah, I mean, we can make any interface work.  So, there are two
+global knobs io.cost.model and io.cost.qos.  Of the tw, io.cost.model
+is okay to move under block device but the qos file gets weird because
+the content of the file is more resource control policies than device
+properties.
 
-On Tue, Sep 10, 2019 at 09:08:55AM -0700, Tejun Heo <tj@kernel.org> wrote:
-> I can implement the switching if so.
-I see the "conflict" is solved by the switching.
+Thanks.
 
-> Initially, I put them under block device sysfs but it was too clumsy
-> with different config file formats and all.
-Do you have any more details on that? In the end, it all boils down to a
-daemon/setup utility writing into the control files and it can use
-whatever config files it decides, can't it?
-
-> I think it's better to have global controller configs at the root
-> cgroup.
-I agree with the "global controller" configs, however, does it also hold
-for "global controller per-device" configs? They seem closer to the
-device than the controller. Potentially, the parameters could be used by
-some other consumers in the future. (I'm not opposing the current form,
-I just want to explore the space before an API is fixed.)
-
-
-> Not at all.  These are system-wide configs.  cgroup namespaces
-> shouldn't have anything which aren't in non-root cgroups.
-Thanks, I understand the cgroup namespaces are not meant to be
-transparent to their members.
-
-Michal
-
---RIYY1s2vRbPFwWeW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl2WCtEACgkQia1+riC5
-qSjb7A/+Iu+DwJIFVlA9ZTOkLBRLqBGA/Pca0wmt9zzvp+FOD10oV0eIcqC1rAt6
-RkQuosEn/7JRJ9Kk0XD/Add4ztMKQsYQMrvVTQwefwpbCudSzQ5Fc170yyo86qed
-6h40X+Y3l0NWQP5KKCNVtmboVaj7uiesPAOOzCyAgMfjvswg46vP1VxESys5DIhG
-r0WNGE6jUBrgbpYghS/lcP4DpLNVCpOqYYRiSEht+l17linh8CF/eTpeTE6idO7S
-3Aox0WMDSZ0ckuCmzFBJdR1WFh6mhd6Ij5eavtHasYsuJ/bjeDactxOua1mdpCGn
-fIpN8gAny7BFNYVmPKKtFxKaImbc4tpFu0FB+JdZeWNEKSwhY19URZk/JdTEN6c9
-u9jodAZXbCJ3jnj0M/2gAYMqR2hoW6bHYSQMj1mUy7TlWjxtKWzVdyZlNRejCp+9
-hUes/fZy2di3u93OF9czgtKEKBbgb6Q/xdHHr7mcSE+OzxKZiKKFpzM8ZYTZ70T3
-uYDo10yEJYFarwvW6JTHJYftMP5x7NQpJpFrMHEQWfOp+Vb2DwCcNtVEt9HL4OMQ
-uDCG2p6LA6MUAW1NB7n8OkI9VXk88gSG7C0r/LSinq5NXaQ0ztw+sz9wk3XOFCjq
-W4rQqKvckE/ME0N8IJCZbJUebVjhvGxFpgMgs123gDBVulQzl6U=
-=cftV
------END PGP SIGNATURE-----
-
---RIYY1s2vRbPFwWeW--
+-- 
+tejun
