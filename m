@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5879ACB8BA
-	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2019 12:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2599ACB8BD
+	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2019 12:58:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729147AbfJDK6F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Oct 2019 06:58:05 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55138 "EHLO mx1.suse.de"
+        id S1729908AbfJDK6G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Oct 2019 06:58:06 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55150 "EHLO mx1.suse.de"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725730AbfJDK6F (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 4 Oct 2019 06:58:05 -0400
+        id S1728848AbfJDK6G (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 4 Oct 2019 06:58:06 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id E917EABC6;
-        Fri,  4 Oct 2019 10:58:02 +0000 (UTC)
+        by mx1.suse.de (Postfix) with ESMTP id B060FAC26;
+        Fri,  4 Oct 2019 10:58:03 +0000 (UTC)
 From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To:     cgroups@vger.kernel.org
 Cc:     Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
         Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH 1/5] cgroup: Update comments about task exit path
-Date:   Fri,  4 Oct 2019 12:57:39 +0200
-Message-Id: <20191004105743.363-2-mkoutny@suse.com>
+Subject: [PATCH 2/5] cgroup: Optimize single thread migration
+Date:   Fri,  4 Oct 2019 12:57:40 +0200
+Message-Id: <20191004105743.363-3-mkoutny@suse.com>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20191004105743.363-1-mkoutny@suse.com>
 References: <20191004105743.363-1-mkoutny@suse.com>
@@ -34,90 +34,204 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We no longer take cgroup_mutex in cgroup_exit and the exiting tasks are
-not moved to init_css_set, reflect that in several comments to prevent
-confusion.
+There are reports of users who use thread migrations between cgroups and
+they report performance drop after d59cfc09c32a ("sched, cgroup: replace
+signal_struct->group_rwsem with a global percpu_rwsem"). The effect is
+pronounced on machines with more CPUs.
+
+The migration is affected by forking noise happening in the background,
+after the mentioned commit a migrating thread must wait for all
+(forking) processes on the system, not only of its threadgroup.
+
+There are several places that need to synchronize with migration:
+	a) do_exit,
+	b) de_thread,
+	c) copy_process,
+	d) cgroup_update_dfl_csses,
+	e) parallel migration (cgroup_{proc,thread}s_write).
+
+In the case of self-migrating thread, we relax the synchronization on
+cgroup_threadgroup_rwsem to avoid the cost of waiting. d) and e) are
+excluded with cgroup_mutex, c) does not matter in case of single thread
+migration and the executing thread cannot exec(2) or exit(2) while it is
+writing into cgroup.threads. In case of do_exit because of signal
+delivery, we either exit before the migration or finish the migration
+(of not yet PF_EXITING thread) and die afterwards.
+
+This patch handles only the case of self-migration by writing "0" into
+cgroup.threads. For simplicity, we always take cgroup_threadgroup_rwsem
+with numeric PIDs.
+
+This change improves migration dependent workload performance similar
+to per-signal_struct state.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- kernel/cgroup/cgroup.c | 29 +++++++++--------------------
- 1 file changed, 9 insertions(+), 20 deletions(-)
+ kernel/cgroup/cgroup-internal.h |  5 +++--
+ kernel/cgroup/cgroup-v1.c       |  5 +++--
+ kernel/cgroup/cgroup.c          | 39 +++++++++++++++++++++++++--------
+ 3 files changed, 36 insertions(+), 13 deletions(-)
 
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 809e34a3c017..90d1710fef6c 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -231,9 +231,10 @@ int cgroup_migrate(struct task_struct *leader, bool threadgroup,
+ 
+ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 		       bool threadgroup);
+-struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup)
++struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
++					     bool *locked)
+ 	__acquires(&cgroup_threadgroup_rwsem);
+-void cgroup_procs_write_finish(struct task_struct *task)
++void cgroup_procs_write_finish(struct task_struct *task, bool locked)
+ 	__releases(&cgroup_threadgroup_rwsem);
+ 
+ void cgroup_lock_and_drain_offline(struct cgroup *cgrp);
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 88006be40ea3..dd0b263430d5 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -514,12 +514,13 @@ static ssize_t __cgroup1_procs_write(struct kernfs_open_file *of,
+ 	struct task_struct *task;
+ 	const struct cred *cred, *tcred;
+ 	ssize_t ret;
++	bool locked;
+ 
+ 	cgrp = cgroup_kn_lock_live(of->kn, false);
+ 	if (!cgrp)
+ 		return -ENODEV;
+ 
+-	task = cgroup_procs_write_start(buf, threadgroup);
++	task = cgroup_procs_write_start(buf, threadgroup, &locked);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+@@ -541,7 +542,7 @@ static ssize_t __cgroup1_procs_write(struct kernfs_open_file *of,
+ 	ret = cgroup_attach_task(cgrp, task, threadgroup);
+ 
+ out_finish:
+-	cgroup_procs_write_finish(task);
++	cgroup_procs_write_finish(task, locked);
+ out_unlock:
+ 	cgroup_kn_unlock(of->kn);
+ 
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 753afbca549f..1488bb732902 100644
+index 1488bb732902..3f806dbe279b 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -899,8 +899,7 @@ static void css_set_move_task(struct task_struct *task,
- 		/*
- 		 * We are synchronized through cgroup_threadgroup_rwsem
- 		 * against PF_EXITING setting such that we can't race
--		 * against cgroup_exit() changing the css_set to
--		 * init_css_set and dropping the old one.
-+		 * against cgroup_exit()/cgroup_free() dropping the css_set.
- 		 */
- 		WARN_ON_ONCE(task->flags & PF_EXITING);
- 
-@@ -1430,9 +1429,8 @@ struct cgroup *task_cgroup_from_root(struct task_struct *task,
- 				     struct cgroup_root *root)
- {
- 	/*
--	 * No need to lock the task - since we hold cgroup_mutex the
--	 * task can't change groups, so the only thing that can happen
--	 * is that it exits and its css is set back to init_css_set.
-+	 * No need to lock the task - since we hold css_set_lock the
-+	 * task can't change groups.
- 	 */
- 	return cset_cgroup_from_root(task_css_set(task), root);
+@@ -2822,7 +2822,8 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ 	return ret;
  }
-@@ -6020,7 +6018,7 @@ void cgroup_post_fork(struct task_struct *child)
- 		struct css_set *cset;
  
- 		spin_lock_irq(&css_set_lock);
--		cset = task_css_set(current);
-+		cset = task_css_set(current); /* current is @child's parent */
- 		if (list_empty(&child->cg_list)) {
- 			get_css_set(cset);
- 			cset->nr_tasks++;
-@@ -6063,20 +6061,8 @@ void cgroup_post_fork(struct task_struct *child)
-  * cgroup_exit - detach cgroup from exiting task
-  * @tsk: pointer to task_struct of exiting process
-  *
-- * Description: Detach cgroup from @tsk and release it.
-- *
-- * Note that cgroups marked notify_on_release force every task in
-- * them to take the global cgroup_mutex mutex when exiting.
-- * This could impact scaling on very large systems.  Be reluctant to
-- * use notify_on_release cgroups where very high task exit scaling
-- * is required on large systems.
-+ * Description: Detach cgroup from @tsk.
-  *
-- * We set the exiting tasks cgroup to the root cgroup (top_cgroup).  We
-- * call cgroup_exit() while the task is still competent to handle
-- * notify_on_release(), then leave the task attached to the root cgroup in
-- * each hierarchy for the remainder of its exit.  No need to bother with
-- * init_css_set refcnting.  init_css_set never goes away and we can't race
-- * with migration path - PF_EXITING is visible to migration path.
-  */
- void cgroup_exit(struct task_struct *tsk)
+-struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup)
++struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup,
++					     bool *locked)
+ 	__acquires(&cgroup_threadgroup_rwsem)
  {
-@@ -6086,7 +6072,8 @@ void cgroup_exit(struct task_struct *tsk)
+ 	struct task_struct *tsk;
+@@ -2831,7 +2832,21 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup)
+ 	if (kstrtoint(strstrip(buf), 0, &pid) || pid < 0)
+ 		return ERR_PTR(-EINVAL);
  
- 	/*
- 	 * Unlink from @tsk from its css_set.  As migration path can't race
--	 * with us, we can check css_set and cg_list without synchronization.
-+	 * with us (thanks to cgroup_threadgroup_rwsem), we can check css_set
-+	 * and cg_list without synchronization.
- 	 */
- 	cset = task_css_set(tsk);
+-	percpu_down_write(&cgroup_threadgroup_rwsem);
++	/*
++	 * If we migrate a single thread, we don't care about threadgroup
++	 * stability. If the thread is `current`, it won't exit(2) under our
++	 * hands or change PID through exec(2). We exclude
++	 * cgroup_update_dfl_csses and other cgroup_{proc,thread}s_write
++	 * callers by cgroup_mutex.
++	 * Therefore, we can skip the global lock.
++	 */
++	lockdep_assert_held(&cgroup_mutex);
++	if (pid || threadgroup) {
++		percpu_down_write(&cgroup_threadgroup_rwsem);
++		*locked = true;
++	} else {
++		*locked = false;
++	}
  
-@@ -6102,6 +6089,8 @@ void cgroup_exit(struct task_struct *tsk)
+ 	rcu_read_lock();
+ 	if (pid) {
+@@ -2862,13 +2877,16 @@ struct task_struct *cgroup_procs_write_start(char *buf, bool threadgroup)
+ 	goto out_unlock_rcu;
  
- 		spin_unlock_irq(&css_set_lock);
- 	} else {
-+		/* Take reference to avoid freeing init_css_set in cgroup_free,
-+		 * see cgroup_fork(). */
- 		get_css_set(cset);
- 	}
+ out_unlock_threadgroup:
+-	percpu_up_write(&cgroup_threadgroup_rwsem);
++	if (*locked) {
++		percpu_up_write(&cgroup_threadgroup_rwsem);
++		*locked = false;
++	}
+ out_unlock_rcu:
+ 	rcu_read_unlock();
+ 	return tsk;
+ }
+ 
+-void cgroup_procs_write_finish(struct task_struct *task)
++void cgroup_procs_write_finish(struct task_struct *task, bool locked)
+ 	__releases(&cgroup_threadgroup_rwsem)
+ {
+ 	struct cgroup_subsys *ss;
+@@ -2877,7 +2895,8 @@ void cgroup_procs_write_finish(struct task_struct *task)
+ 	/* release reference from cgroup_procs_write_start() */
+ 	put_task_struct(task);
+ 
+-	percpu_up_write(&cgroup_threadgroup_rwsem);
++	if (locked)
++		percpu_up_write(&cgroup_threadgroup_rwsem);
+ 	for_each_subsys(ss, ssid)
+ 		if (ss->post_attach)
+ 			ss->post_attach();
+@@ -4752,12 +4771,13 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	struct cgroup *src_cgrp, *dst_cgrp;
+ 	struct task_struct *task;
+ 	ssize_t ret;
++	bool locked;
+ 
+ 	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
+ 
+-	task = cgroup_procs_write_start(buf, true);
++	task = cgroup_procs_write_start(buf, true, &locked);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+@@ -4775,7 +4795,7 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	ret = cgroup_attach_task(dst_cgrp, task, true);
+ 
+ out_finish:
+-	cgroup_procs_write_finish(task);
++	cgroup_procs_write_finish(task, locked);
+ out_unlock:
+ 	cgroup_kn_unlock(of->kn);
+ 
+@@ -4793,6 +4813,7 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	struct cgroup *src_cgrp, *dst_cgrp;
+ 	struct task_struct *task;
+ 	ssize_t ret;
++	bool locked;
+ 
+ 	buf = strstrip(buf);
+ 
+@@ -4800,7 +4821,7 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
+ 
+-	task = cgroup_procs_write_start(buf, false);
++	task = cgroup_procs_write_start(buf, false, &locked);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+@@ -4824,7 +4845,7 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	ret = cgroup_attach_task(dst_cgrp, task, false);
+ 
+ out_finish:
+-	cgroup_procs_write_finish(task);
++	cgroup_procs_write_finish(task, locked);
+ out_unlock:
+ 	cgroup_kn_unlock(of->kn);
  
 -- 
 2.21.0
