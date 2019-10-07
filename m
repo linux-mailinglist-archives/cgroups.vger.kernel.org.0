@@ -2,182 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DC33CB8C0
-	for <lists+cgroups@lfdr.de>; Fri,  4 Oct 2019 12:58:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41942CE49B
+	for <lists+cgroups@lfdr.de>; Mon,  7 Oct 2019 16:04:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730511AbfJDK6N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 4 Oct 2019 06:58:13 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55186 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725730AbfJDK6H (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 4 Oct 2019 06:58:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id D9295AD78;
-        Fri,  4 Oct 2019 10:58:05 +0000 (UTC)
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     cgroups@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH 5/5] selftests: cgroup: Run test_core under interfering stress
-Date:   Fri,  4 Oct 2019 12:57:43 +0200
-Message-Id: <20191004105743.363-6-mkoutny@suse.com>
-X-Mailer: git-send-email 2.21.0
-In-Reply-To: <20191004105743.363-1-mkoutny@suse.com>
-References: <20191004105743.363-1-mkoutny@suse.com>
+        id S1727975AbfJGOEk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Oct 2019 10:04:40 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:40283 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727685AbfJGOEk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Oct 2019 10:04:40 -0400
+Received: by mail-qt1-f196.google.com with SMTP id m61so8193388qte.7;
+        Mon, 07 Oct 2019 07:04:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=mpNfxUl1mCUdiXjigudrtwHaG1qAsCzBGZZW+s8y3Fo=;
+        b=Um7Uzaoy6WSIMMNIRXztMQowXtuRFa7RULiv7B9t5bBMGNXcozcvndCrdDyXlOfiPZ
+         Lq0/fy/VmhNyhoH8BCKnypBZ9GOl99U+VqFX4quLcIYC4A7UfXN7mJ+pQMgphzZ1QYrf
+         A/n3W1h5crEuesmUr9jYQI3o9hXR3So2qOBxqrINQ6fMNRHiu3yzeTePxIBzBYG85aPR
+         13AUWabvuF7GX2ePud2dCkGuJ9eyq4PBNikP2XbLEwE/o2gQHCK1pn2lPIxnlnAa+aR/
+         1J/kuQnVSnRHCp/SYbYipfo5WDD9cKYEKq/tqOGNoWBdpADyvE5Lqi7i26hK9O9eB2lo
+         ikqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=mpNfxUl1mCUdiXjigudrtwHaG1qAsCzBGZZW+s8y3Fo=;
+        b=ZyOJsuKEPQvInWWZ7x1MZbah2nmE91cI8IvTCg2OJQyVBArSQgGkIRkiDruiKhYFsW
+         nPzGPozLQgsxVhg9i8Csxd9jBaH97yqN8thE/fxNsNZLivSW08/HoA6IzHNmjr1vCUFf
+         1IiNQFgQbASeCt7R9siwJikAdyXIrLrdgpY2JymzCRrtfr1s+YQ6nIje4b5NKPqjkFtC
+         rIz1koz0zDZvvRKm8r+7L+nB083mMEni79LgoQAuB5fEDhCbselW53mJaMNEwTGMkllv
+         OfNZMuR6m28Pfp3AodbOmEqHuV6P4GqtfW4APgkXWHjt7DjNX6gYvI/Cj7wIXcvDkRmT
+         sIjQ==
+X-Gm-Message-State: APjAAAUCsqSI4EBmHRqwbXHyloGsG3qJjUwOD8oh062CLRT3VB8C+qtY
+        hrngX1vjtWae5G+A+bXdsOc=
+X-Google-Smtp-Source: APXvYqwPO+Nc3byElLX/MFKjYwBl57P51x05qK0mMVXxCG/r46I05iaMlsMB1rYASu4whzW/6iX9yQ==
+X-Received: by 2002:a0c:eb10:: with SMTP id j16mr26693246qvp.207.1570457077309;
+        Mon, 07 Oct 2019 07:04:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:a536])
+        by smtp.gmail.com with ESMTPSA id d69sm7580319qkc.87.2019.10.07.07.04.35
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Oct 2019 07:04:36 -0700 (PDT)
+Date:   Mon, 7 Oct 2019 07:04:33 -0700
+From:   Tejun Heo <tj@kernel.org>
+To:     Miaohe Lin <linmiaohe@huawei.com>
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mingfangsen@huawei.com
+Subject: Re: [PATCH] cgroup: short-circuit current_cgns_cgroup_from_root() on
+ the default hierarchy
+Message-ID: <20191007140433.GC3404308@devbig004.ftw2.facebook.com>
+References: <20190929080658.11430-1-linmiaohe@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20190929080658.11430-1-linmiaohe@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-test_core tests various cgroup creation/removal and task migration
-paths. Run the tests repeatedly with interfering noise (for lockdep
-checks). Currently, forking noise and subsystem enabled/disabled
-switching are the implemented noises.
+On Sun, Sep 29, 2019 at 04:06:58PM +0800, Miaohe Lin wrote:
+> Like commit 13d82fb77abb ("cgroup: short-circuit cset_cgroup_from_root() on
+> the default hierarchy"), short-circuit current_cgns_cgroup_from_root() on
+> the default hierarchy.
+> 
+> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- tools/testing/selftests/cgroup/Makefile       |   2 +
- tools/testing/selftests/cgroup/test_stress.sh |   4 +
- tools/testing/selftests/cgroup/with_stress.sh | 101 ++++++++++++++++++
- 3 files changed, 107 insertions(+)
- create mode 100755 tools/testing/selftests/cgroup/test_stress.sh
- create mode 100755 tools/testing/selftests/cgroup/with_stress.sh
+Applied to cgroup/for-5.5.
 
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index 1c9179400be0..66aafe1f5746 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -3,6 +3,8 @@ CFLAGS += -Wall -pthread
- 
- all:
- 
-+TEST_FILES     := with_stress.sh
-+TEST_PROGS     := test_stress.sh
- TEST_GEN_PROGS = test_memcontrol
- TEST_GEN_PROGS += test_core
- TEST_GEN_PROGS += test_freezer
-diff --git a/tools/testing/selftests/cgroup/test_stress.sh b/tools/testing/selftests/cgroup/test_stress.sh
-new file mode 100755
-index 000000000000..15d9d5896394
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_stress.sh
-@@ -0,0 +1,4 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+./with_stress.sh -s subsys -s fork ./test_core
-diff --git a/tools/testing/selftests/cgroup/with_stress.sh b/tools/testing/selftests/cgroup/with_stress.sh
-new file mode 100755
-index 000000000000..e28c35008f5b
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/with_stress.sh
-@@ -0,0 +1,101 @@
-+#!/bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+
-+# Kselftest framework requirement - SKIP code is 4.
-+ksft_skip=4
-+
-+stress_fork()
-+{
-+	while true ; do
-+		/usr/bin/true
-+		sleep 0.01
-+	done
-+}
-+
-+stress_subsys()
-+{
-+	local verb=+
-+	while true ; do
-+		echo $verb$subsys_ctrl >$sysfs/cgroup.subtree_control
-+		[ $verb = "+" ] && verb=- || verb=+
-+		# incommensurable period with other stresses
-+		sleep 0.011
-+	done
-+}
-+
-+init_and_check()
-+{
-+	sysfs=`mount -t cgroup2 | head -1 | awk '{ print $3 }'`
-+	if [ ! -d "$sysfs" ]; then
-+		echo "Skipping: cgroup2 is not mounted" >&2
-+		exit $ksft_skip
-+	fi
-+
-+	if ! echo +$subsys_ctrl >$sysfs/cgroup.subtree_control ; then
-+		echo "Skipping: cannot enable $subsys_ctrl in $sysfs" >&2
-+		exit $ksft_skip
-+	fi
-+
-+	if ! echo -$subsys_ctrl >$sysfs/cgroup.subtree_control ; then
-+		echo "Skipping: cannot disable $subsys_ctrl in $sysfs" >&2
-+		exit $ksft_skip
-+	fi
-+}
-+
-+declare -a stresses
-+declare -a stress_pids
-+duration=5
-+rc=0
-+subsys_ctrl=cpuset
-+sysfs=
-+
-+while getopts c:d:hs: opt; do
-+	case $opt in
-+	c)
-+		subsys_ctrl=$OPTARG
-+		;;
-+	d)
-+		duration=$OPTARG
-+		;;
-+	h)
-+		echo "Usage $0 [ -s stress ] ... [ -d duration ] [-c controller] cmd args .."
-+		echo -e "\t default duration $duration seconds"
-+		echo -e "\t default controller $subsys_ctrl"
-+		exit
-+		;;
-+	s)
-+		func=stress_$OPTARG
-+		if [ "x$(type -t $func)" != "xfunction" ] ; then
-+			echo "Unknown stress $OPTARG"
-+			exit 1
-+		fi
-+		stresses+=($func)
-+		;;
-+	esac
-+done
-+shift $((OPTIND - 1))
-+
-+init_and_check
-+
-+for s in ${stresses[*]} ; do
-+	$s &
-+	stress_pids+=($!)
-+done
-+
-+
-+time=0
-+start=$(date +%s)
-+
-+while [ $time -lt $duration ] ; do
-+	$*
-+	rc=$?
-+	[ $rc -eq 0 ] || break
-+	time=$(($(date +%s) - $start))
-+done
-+
-+for pid in ${stress_pids[*]} ; do
-+	kill -SIGTERM $pid
-+	wait $pid
-+done
-+
-+exit $rc
+Thanks.
+
 -- 
-2.21.0
-
+tejun
