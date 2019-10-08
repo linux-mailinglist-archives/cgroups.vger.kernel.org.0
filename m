@@ -2,1053 +2,354 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 544E4CFEF9
-	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2019 18:34:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 830F3D00DF
+	for <lists+cgroups@lfdr.de>; Tue,  8 Oct 2019 20:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729284AbfJHQd7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Oct 2019 12:33:59 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44711 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728083AbfJHQd7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Oct 2019 12:33:59 -0400
-Received: by mail-ed1-f67.google.com with SMTP id r16so16157947edq.11
-        for <cgroups@vger.kernel.org>; Tue, 08 Oct 2019 09:33:56 -0700 (PDT)
+        id S1726336AbfJHSzJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Oct 2019 14:55:09 -0400
+Received: from mail-eopbgr770087.outbound.protection.outlook.com ([40.107.77.87]:18914
+        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726098AbfJHSzJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 8 Oct 2019 14:55:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PRgObYWPS0xXAenqVfi+Y9SCMfPb0fQRpBigAIlKgArSTZGMlDtFafg5YuKFSpWN/mxsKSJXbGxMio2H/7l2ud+O5a7cH0AvJGGH/BVLqqervEI5E7bJIMIfK9bhcOpqxYI5y/AkCTYVSxsz69+W/96W+dH94Z9QVaqaG2ZRnsJ232rJaDosT+W0gajASOLrMOI8WpyqGtWXvVqwdfqFyWTJTnkJOG/BXqqjHjCHRLFuzyAq7vWlzGfZKz0mz4dlAmfruCeTOtg7mfXuK2oUCsZQd4R45Sqk/2wEMIQdZYF/aSo4J+NNJHgg0rU8xnDXUadUHquSis5kDSCQWsrgRw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZB9FHVVeA5Zh6il1FKV+ZNhuFmZWBOrZPraI3uFYejQ=;
+ b=AMgkAWiyHShZDVsZ3XJ/VS2Q+0FwwFcKY0QoY6HZ0oXUlKKKe79skQUqAXAbaFfxbifZFsmQ5xjlEuolFG13AU+zELOkyLRW1H6C6jASZm9yqVQHju/T+fxKG3Ft0ORKtqzHkI4X+EP4KjBP6m6oMW2FSEiBBEICv4VjX2qR+SRaUdQfPeyoIlDZ+mfFFw0+gPPPxVx6TTQwtwAry+SswZ+uFy9dx0iNMlHIODW8M24oUlqpHeGq5ADJCnTsWNltttS48hID5z7fvdEje3OqIFQM/hotExCj7yyTxwST5GBVDkkzlrBwjoJgCQ6QnwtSTZEk8nul6UiWx+vFg2hVMA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mi4y+dRBldbuTsQF9qb0low9dmwfEep2p/k5XBmMJE8=;
-        b=O9sl0D5zgbWSqWZyRObltxLYFpDF7A0AO/qHetkzpOGeEikJ7ykm5KqsLs9anUossG
-         s1r6w0+ul16JIrm5UxBLimh+GAQzfJgQaOy3ehYxM+95lpCoGERRcRzi1mBdY/egZ+MC
-         tuLyyCdeGXPLvMwBqxFfzdi3zIt/MMC675dP4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to:user-agent;
-        bh=mi4y+dRBldbuTsQF9qb0low9dmwfEep2p/k5XBmMJE8=;
-        b=ZIMNAbEyHe8XBaG3txRglBIAuNj87fcFTWa1QbLA+6hG6A5dVVClHK+lWOAyU0K5wG
-         nSD3yVoybLBBGz1RZq4KqN9UH9hg3hVdwtCOxCHXtGsKvhq0Hdz7XmfvrZF/H9816/nf
-         C8dmgK6brWA/1HZ12zu7D90oNGCkWGGQOZAmmhrl9m8jxUS4NeyW9w3TcQoAjjURuBbJ
-         X6GIVP7fTZ+uA8BW+45YbD+tGoeAuF0OmNjERWl0cXmpiaVKl/LTg08uj4NcCLcab6A1
-         mQcqlDR/hvy75LU/1UPVsbNVp7FFyQL8JMpqplNVnu3ustvv5UeuRlQcp5tHTUnDLB1u
-         KmgQ==
-X-Gm-Message-State: APjAAAWMw9791msmcCKXsPwEiTVG9EnD4lQaMk19MHBq23KjowLrRHpo
-        ZKxCgwy0YAxbhkS4DmYzWQdb+g==
-X-Google-Smtp-Source: APXvYqyJXcT9StkuYJ+gWcJkXAYMH3fPIULcNooaJosqfrewFMI9QRd1eiW+XOhR06QdGou4S580kg==
-X-Received: by 2002:aa7:d758:: with SMTP id a24mr11560040eds.61.1570552435143;
-        Tue, 08 Oct 2019 09:33:55 -0700 (PDT)
-Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
-        by smtp.gmail.com with ESMTPSA id f21sm3892802edt.52.2019.10.08.09.33.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2019 09:33:54 -0700 (PDT)
-Date:   Tue, 8 Oct 2019 18:33:51 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Qian Cai <cai@lca.pw>
-Cc:     akpm@linux-foundation.org, mingo@redhat.com, peterz@infradead.org,
-        will@kernel.org, linux-kernel@vger.kernel.org,
-        linux-api@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, sean@poorly.run, airlied@linux.ie,
-        daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        gregkh@linuxfoundation.org, jslaby@suse.com,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        intel-gfx@lists.freedesktop.org, tytso@mit.edu, jack@suse.com,
-        linux-ext4@vger.kernel.org, tj@kernel.org, mark@fasheh.com,
-        jlbec@evilplan.or, joseph.qi@linux.alibaba.com,
-        ocfs2-devel@oss.oracle.com, davem@davemloft.net, st@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        duyuyang@gmail.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, alexander.levin@microsoft.com
-Subject: Re: [PATCH -next] treewide: remove unused argument in lock_release()
-Message-ID: <20191008163351.GR16989@phenom.ffwll.local>
-Mail-Followup-To: Qian Cai <cai@lca.pw>, akpm@linux-foundation.org,
-        mingo@redhat.com, peterz@infradead.org, will@kernel.org,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        maarten.lankhorst@linux.intel.com, mripard@kernel.org,
-        sean@poorly.run, airlied@linux.ie, dri-devel@lists.freedesktop.org,
-        gregkh@linuxfoundation.org, jslaby@suse.com,
-        viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        joonas.lahtinen@linux.intel.com, rodrigo.vivi@intel.com,
-        intel-gfx@lists.freedesktop.org, tytso@mit.edu, jack@suse.com,
-        linux-ext4@vger.kernel.org, tj@kernel.org, mark@fasheh.com,
-        jlbec@evilplan.or, joseph.qi@linux.alibaba.com,
-        ocfs2-devel@oss.oracle.com, davem@davemloft.net, st@kernel.org,
-        daniel@iogearbox.net, netdev@vger.kernel.org, bpf@vger.kernel.org,
-        duyuyang@gmail.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, hannes@cmpxchg.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org, linux-mm@kvack.org,
-        alexander.levin@microsoft.com
-References: <1568909380-32199-1-git-send-email-cai@lca.pw>
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ZB9FHVVeA5Zh6il1FKV+ZNhuFmZWBOrZPraI3uFYejQ=;
+ b=bpBfp9L7Qgczj/nLhcTzfCXg+Mnypxz0tAprgGJxafeK0xeKNgC5OPEOyGdshkVUUXiOqCamkvAEaF2kuRuz5ItTBc0hq0rHsMspivZ8p1MXA4h8Z6E9OexIiT9EdUrbsHDmyDUb83KpTZ6b2feSnVp9w1MMiM2Pee3R9j9U/J4=
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.174.156) by
+ DM6PR12MB2923.namprd12.prod.outlook.com (20.179.104.17) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Tue, 8 Oct 2019 18:53:18 +0000
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::e56a:1c63:d6bd:8034]) by DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::e56a:1c63:d6bd:8034%4]) with mapi id 15.20.2327.025; Tue, 8 Oct 2019
+ 18:53:18 +0000
+From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
+To:     "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "y2kenny@gmail.com" <y2kenny@gmail.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Greathouse, Joseph" <Joseph.Greathouse@amd.com>,
+        "jsparks@cray.com" <jsparks@cray.com>,
+        "lkaplan@cray.com" <lkaplan@cray.com>,
+        "daniel@ffwll.ch" <daniel@ffwll.ch>
+Subject: Re: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
+ resource
+Thread-Topic: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
+ resource
+Thread-Index: AQHVXi/h1oN2voIWJ0+QRhZYbzbb9adRVuiA
+Date:   Tue, 8 Oct 2019 18:53:18 +0000
+Message-ID: <b3d2b3c1-8854-10ca-3e39-b3bef35bdfa9@amd.com>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com>
+ <20190829060533.32315-15-Kenny.Ho@amd.com>
+In-Reply-To: <20190829060533.32315-15-Kenny.Ho@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [165.204.55.251]
+user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
+x-clientproxiedby: YTXPR0101CA0022.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00::35) To DM6PR12MB3947.namprd12.prod.outlook.com
+ (2603:10b6:5:1cb::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Felix.Kuehling@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 58675d53-5e33-44dd-c47e-08d74c20c896
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: DM6PR12MB2923:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB29235D521231C18FA1EE4E69929A0@DM6PR12MB2923.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1303;
+x-forefront-prvs: 01842C458A
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(346002)(136003)(396003)(376002)(366004)(39860400002)(199004)(189003)(7736002)(58126008)(36756003)(86362001)(186003)(316002)(66476007)(66946007)(26005)(64756008)(110136005)(8936002)(6116002)(66556008)(2201001)(66446008)(31696002)(3846002)(102836004)(53546011)(6506007)(31686004)(99286004)(386003)(81166006)(81156014)(476003)(2616005)(11346002)(446003)(486006)(305945005)(52116002)(76176011)(8676002)(2501003)(229853002)(6512007)(6246003)(14454004)(256004)(2906002)(6486002)(66066001)(65956001)(65806001)(478600001)(6436002)(5660300002)(14444005)(25786009)(30864003)(71200400001)(71190400001)(921003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2923;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: UcW3mwp5iYMzktTmTOcC03ef9KEPBvJl6k6LSrd4sj0NaoMsHxhK3kSnr/41mDQDlpocUWOAZsxibHUZHzAdcWtimJFZGQJJ0ub6L5Q7wI+AE0WuJTd0xD07HonUlbtXuRCXEoRoBFoKerwW/sCZfBHqhhDGbCudFMsRha2Pa1WQ/DOHbiFKVSZ0bxo3uU9kSP+TrY57nS7Pvxjz3057JhwzC9Wqnp18V0Q6wuOZwq7lzTyytMS76a4j0JzF4smMXmei6k6WnBvzvaUEOto15cpSWLe1jlafjSaf+SS3fwZq0ncF7WqwgF3DvjozT14kEwDQrRZNUTBbcDJYSoqgpD5PhaP43u6FuWyTCmxJliSJgieudoV68p0UFmB33nrK/8l6HEJm5LoUCk3W4RNDIXDNFCtyYcbZTJz1D4+RxJE=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <BFF0B0B75D9B014FBA79C9708B255C3E@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1568909380-32199-1-git-send-email-cai@lca.pw>
-X-Operating-System: Linux phenom 5.2.0-2-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 58675d53-5e33-44dd-c47e-08d74c20c896
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2019 18:53:18.7081
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mLyt5b0db1pvnwShKf3XGlsWTVALDTnjJ2octR0RyRDDRPw97NAT6TPyI7LJ3UL5QRT0s/burs5GUIwp/5IpKQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2923
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 19, 2019 at 12:09:40PM -0400, Qian Cai wrote:
-> Since the commit b4adfe8e05f1 ("locking/lockdep: Remove unused argument
-> in __lock_release"), @nested is no longer used in lock_release(), so
-> remove it from all lock_release() calls and friends.
-> 
-> Signed-off-by: Qian Cai <cai@lca.pw>
-
-Ack on the concept and for the drm parts (and feel free to keep the ack if
-you inevitably have to respin this later on). Might result in some
-conflicts, but welp we need to keep Linus busy :-)
-
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
-> ---
->  drivers/gpu/drm/drm_connector.c               |  2 +-
->  drivers/gpu/drm/i915/gem/i915_gem_shrinker.c  |  6 +++---
->  drivers/gpu/drm/i915/gt/intel_engine_pm.c     |  2 +-
->  drivers/gpu/drm/i915/i915_request.c           |  2 +-
->  drivers/tty/tty_ldsem.c                       |  8 ++++----
->  fs/dcache.c                                   |  2 +-
->  fs/jbd2/transaction.c                         |  4 ++--
->  fs/kernfs/dir.c                               |  4 ++--
->  fs/ocfs2/dlmglue.c                            |  2 +-
->  include/linux/jbd2.h                          |  2 +-
->  include/linux/lockdep.h                       | 21 ++++++++++-----------
->  include/linux/percpu-rwsem.h                  |  4 ++--
->  include/linux/rcupdate.h                      |  2 +-
->  include/linux/rwlock_api_smp.h                | 16 ++++++++--------
->  include/linux/seqlock.h                       |  4 ++--
->  include/linux/spinlock_api_smp.h              |  8 ++++----
->  include/linux/ww_mutex.h                      |  2 +-
->  include/net/sock.h                            |  2 +-
->  kernel/bpf/stackmap.c                         |  2 +-
->  kernel/cpu.c                                  |  2 +-
->  kernel/locking/lockdep.c                      |  3 +--
->  kernel/locking/mutex.c                        |  4 ++--
->  kernel/locking/rtmutex.c                      |  6 +++---
->  kernel/locking/rwsem.c                        | 10 +++++-----
->  kernel/printk/printk.c                        | 10 +++++-----
->  kernel/sched/core.c                           |  2 +-
->  lib/locking-selftest.c                        | 24 ++++++++++++------------
->  mm/memcontrol.c                               |  2 +-
->  net/core/sock.c                               |  2 +-
->  tools/lib/lockdep/include/liblockdep/common.h |  3 +--
->  tools/lib/lockdep/include/liblockdep/mutex.h  |  2 +-
->  tools/lib/lockdep/include/liblockdep/rwlock.h |  2 +-
->  tools/lib/lockdep/preload.c                   | 16 ++++++++--------
->  33 files changed, 90 insertions(+), 93 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_connector.c b/drivers/gpu/drm/drm_connector.c
-> index 4c766624b20d..4a8b2e5c2af6 100644
-> --- a/drivers/gpu/drm/drm_connector.c
-> +++ b/drivers/gpu/drm/drm_connector.c
-> @@ -719,7 +719,7 @@ void drm_connector_list_iter_end(struct drm_connector_list_iter *iter)
->  		__drm_connector_put_safe(iter->conn);
->  		spin_unlock_irqrestore(&config->connector_list_lock, flags);
->  	}
-> -	lock_release(&connector_list_iter_dep_map, 0, _RET_IP_);
-> +	lock_release(&connector_list_iter_dep_map, _RET_IP_);
->  }
->  EXPORT_SYMBOL(drm_connector_list_iter_end);
->  
-> diff --git a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> index edd21d14e64f..1a51b3598d63 100644
-> --- a/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> +++ b/drivers/gpu/drm/i915/gem/i915_gem_shrinker.c
-> @@ -509,14 +509,14 @@ void i915_gem_shrinker_taints_mutex(struct drm_i915_private *i915,
->  		      I915_MM_SHRINKER, 0, _RET_IP_);
->  
->  	mutex_acquire(&mutex->dep_map, 0, 0, _RET_IP_);
-> -	mutex_release(&mutex->dep_map, 0, _RET_IP_);
-> +	mutex_release(&mutex->dep_map, _RET_IP_);
->  
-> -	mutex_release(&i915->drm.struct_mutex.dep_map, 0, _RET_IP_);
-> +	mutex_release(&i915->drm.struct_mutex.dep_map, _RET_IP_);
->  
->  	fs_reclaim_release(GFP_KERNEL);
->  
->  	if (unlock)
-> -		mutex_release(&i915->drm.struct_mutex.dep_map, 0, _RET_IP_);
-> +		mutex_release(&i915->drm.struct_mutex.dep_map, _RET_IP_);
->  }
->  
->  #define obj_to_i915(obj__) to_i915((obj__)->base.dev)
-> diff --git a/drivers/gpu/drm/i915/gt/intel_engine_pm.c b/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-> index 65b5ca74b394..7f647243b3b9 100644
-> --- a/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-> +++ b/drivers/gpu/drm/i915/gt/intel_engine_pm.c
-> @@ -52,7 +52,7 @@ static inline unsigned long __timeline_mark_lock(struct intel_context *ce)
->  static inline void __timeline_mark_unlock(struct intel_context *ce,
->  					  unsigned long flags)
->  {
-> -	mutex_release(&ce->timeline->mutex.dep_map, 0, _THIS_IP_);
-> +	mutex_release(&ce->timeline->mutex.dep_map, _THIS_IP_);
->  	local_irq_restore(flags);
->  }
->  
-> diff --git a/drivers/gpu/drm/i915/i915_request.c b/drivers/gpu/drm/i915/i915_request.c
-> index a53777dd371c..e1f1be4d0531 100644
-> --- a/drivers/gpu/drm/i915/i915_request.c
-> +++ b/drivers/gpu/drm/i915/i915_request.c
-> @@ -1456,7 +1456,7 @@ long i915_request_wait(struct i915_request *rq,
->  	dma_fence_remove_callback(&rq->fence, &wait.cb);
->  
->  out:
-> -	mutex_release(&rq->engine->gt->reset.mutex.dep_map, 0, _THIS_IP_);
-> +	mutex_release(&rq->engine->gt->reset.mutex.dep_map, _THIS_IP_);
->  	trace_i915_request_wait_end(rq);
->  	return timeout;
->  }
-> diff --git a/drivers/tty/tty_ldsem.c b/drivers/tty/tty_ldsem.c
-> index 60ff236a3d63..ce8291053af3 100644
-> --- a/drivers/tty/tty_ldsem.c
-> +++ b/drivers/tty/tty_ldsem.c
-> @@ -303,7 +303,7 @@ static int __ldsem_down_read_nested(struct ld_semaphore *sem,
->  	if (count <= 0) {
->  		lock_contended(&sem->dep_map, _RET_IP_);
->  		if (!down_read_failed(sem, count, timeout)) {
-> -			rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +			rwsem_release(&sem->dep_map, _RET_IP_);
->  			return 0;
->  		}
->  	}
-> @@ -322,7 +322,7 @@ static int __ldsem_down_write_nested(struct ld_semaphore *sem,
->  	if ((count & LDSEM_ACTIVE_MASK) != LDSEM_ACTIVE_BIAS) {
->  		lock_contended(&sem->dep_map, _RET_IP_);
->  		if (!down_write_failed(sem, count, timeout)) {
-> -			rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +			rwsem_release(&sem->dep_map, _RET_IP_);
->  			return 0;
->  		}
->  	}
-> @@ -390,7 +390,7 @@ void ldsem_up_read(struct ld_semaphore *sem)
->  {
->  	long count;
->  
-> -	rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
->  
->  	count = atomic_long_add_return(-LDSEM_READ_BIAS, &sem->count);
->  	if (count < 0 && (count & LDSEM_ACTIVE_MASK) == 0)
-> @@ -404,7 +404,7 @@ void ldsem_up_write(struct ld_semaphore *sem)
->  {
->  	long count;
->  
-> -	rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
->  
->  	count = atomic_long_add_return(-LDSEM_WRITE_BIAS, &sem->count);
->  	if (count < 0)
-> diff --git a/fs/dcache.c b/fs/dcache.c
-> index e88cf0554e65..f7931b682a0d 100644
-> --- a/fs/dcache.c
-> +++ b/fs/dcache.c
-> @@ -1319,7 +1319,7 @@ static void d_walk(struct dentry *parent, void *data,
->  
->  		if (!list_empty(&dentry->d_subdirs)) {
->  			spin_unlock(&this_parent->d_lock);
-> -			spin_release(&dentry->d_lock.dep_map, 1, _RET_IP_);
-> +			spin_release(&dentry->d_lock.dep_map, _RET_IP_);
->  			this_parent = dentry;
->  			spin_acquire(&this_parent->d_lock.dep_map, 0, 1, _RET_IP_);
->  			goto repeat;
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index bee8498d7792..b25ebdcabfa3 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -713,7 +713,7 @@ int jbd2__journal_restart(handle_t *handle, int nblocks, gfp_t gfp_mask)
->  	if (need_to_start)
->  		jbd2_log_start_commit(journal, tid);
->  
-> -	rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
-> +	rwsem_release(&journal->j_trans_commit_map, _THIS_IP_);
->  	handle->h_buffer_credits = nblocks;
->  	/*
->  	 * Restore the original nofs context because the journal restart
-> @@ -1848,7 +1848,7 @@ int jbd2_journal_stop(handle_t *handle)
->  			wake_up(&journal->j_wait_transaction_locked);
->  	}
->  
-> -	rwsem_release(&journal->j_trans_commit_map, 1, _THIS_IP_);
-> +	rwsem_release(&journal->j_trans_commit_map, _THIS_IP_);
->  
->  	if (wait_for_commit)
->  		err = jbd2_log_wait_commit(journal, tid);
-> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
-> index 6ebae6bbe6a5..c45b82feac9a 100644
-> --- a/fs/kernfs/dir.c
-> +++ b/fs/kernfs/dir.c
-> @@ -438,7 +438,7 @@ void kernfs_put_active(struct kernfs_node *kn)
->  		return;
->  
->  	if (kernfs_lockdep(kn))
-> -		rwsem_release(&kn->dep_map, 1, _RET_IP_);
-> +		rwsem_release(&kn->dep_map, _RET_IP_);
->  	v = atomic_dec_return(&kn->active);
->  	if (likely(v != KN_DEACTIVATED_BIAS))
->  		return;
-> @@ -476,7 +476,7 @@ static void kernfs_drain(struct kernfs_node *kn)
->  
->  	if (kernfs_lockdep(kn)) {
->  		lock_acquired(&kn->dep_map, _RET_IP_);
-> -		rwsem_release(&kn->dep_map, 1, _RET_IP_);
-> +		rwsem_release(&kn->dep_map, _RET_IP_);
->  	}
->  
->  	kernfs_drain_open_files(kn);
-> diff --git a/fs/ocfs2/dlmglue.c b/fs/ocfs2/dlmglue.c
-> index ad594fef2ab0..71975b9b142c 100644
-> --- a/fs/ocfs2/dlmglue.c
-> +++ b/fs/ocfs2/dlmglue.c
-> @@ -1687,7 +1687,7 @@ static void __ocfs2_cluster_unlock(struct ocfs2_super *osb,
->  	spin_unlock_irqrestore(&lockres->l_lock, flags);
->  #ifdef CONFIG_DEBUG_LOCK_ALLOC
->  	if (lockres->l_lockdep_map.key != NULL)
-> -		rwsem_release(&lockres->l_lockdep_map, 1, caller_ip);
-> +		rwsem_release(&lockres->l_lockdep_map, caller_ip);
->  #endif
->  }
->  
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 603fbc4e2f70..564793c24d12 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1170,7 +1170,7 @@ struct journal_s
->  #define jbd2_might_wait_for_commit(j) \
->  	do { \
->  		rwsem_acquire(&j->j_trans_commit_map, 0, 0, _THIS_IP_); \
-> -		rwsem_release(&j->j_trans_commit_map, 1, _THIS_IP_); \
-> +		rwsem_release(&j->j_trans_commit_map, _THIS_IP_); \
->  	} while (0)
->  
->  /* journal feature predicate functions */
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index b8a835fd611b..c50d01ef1414 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -349,8 +349,7 @@ extern void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
->  			 int trylock, int read, int check,
->  			 struct lockdep_map *nest_lock, unsigned long ip);
->  
-> -extern void lock_release(struct lockdep_map *lock, int nested,
-> -			 unsigned long ip);
-> +extern void lock_release(struct lockdep_map *lock, unsigned long ip);
->  
->  /*
->   * Same "read" as for lock_acquire(), except -1 means any.
-> @@ -428,7 +427,7 @@ static inline void lockdep_set_selftest_task(struct task_struct *task)
->  }
->  
->  # define lock_acquire(l, s, t, r, c, n, i)	do { } while (0)
-> -# define lock_release(l, n, i)			do { } while (0)
-> +# define lock_release(l, i)			do { } while (0)
->  # define lock_downgrade(l, i)			do { } while (0)
->  # define lock_set_class(l, n, k, s, i)		do { } while (0)
->  # define lock_set_subclass(l, s, i)		do { } while (0)
-> @@ -591,42 +590,42 @@ static inline void print_irqtrace_events(struct task_struct *curr)
->  
->  #define spin_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
->  #define spin_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
-> -#define spin_release(l, n, i)			lock_release(l, n, i)
-> +#define spin_release(l, i)			lock_release(l, i)
->  
->  #define rwlock_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
->  #define rwlock_acquire_read(l, s, t, i)		lock_acquire_shared_recursive(l, s, t, NULL, i)
-> -#define rwlock_release(l, n, i)			lock_release(l, n, i)
-> +#define rwlock_release(l, i)			lock_release(l, i)
->  
->  #define seqcount_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
->  #define seqcount_acquire_read(l, s, t, i)	lock_acquire_shared_recursive(l, s, t, NULL, i)
-> -#define seqcount_release(l, n, i)		lock_release(l, n, i)
-> +#define seqcount_release(l, i)			lock_release(l, i)
->  
->  #define mutex_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
->  #define mutex_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
-> -#define mutex_release(l, n, i)			lock_release(l, n, i)
-> +#define mutex_release(l, i)			lock_release(l, i)
->  
->  #define rwsem_acquire(l, s, t, i)		lock_acquire_exclusive(l, s, t, NULL, i)
->  #define rwsem_acquire_nest(l, s, t, n, i)	lock_acquire_exclusive(l, s, t, n, i)
->  #define rwsem_acquire_read(l, s, t, i)		lock_acquire_shared(l, s, t, NULL, i)
-> -#define rwsem_release(l, n, i)			lock_release(l, n, i)
-> +#define rwsem_release(l, i)			lock_release(l, i)
->  
->  #define lock_map_acquire(l)			lock_acquire_exclusive(l, 0, 0, NULL, _THIS_IP_)
->  #define lock_map_acquire_read(l)		lock_acquire_shared_recursive(l, 0, 0, NULL, _THIS_IP_)
->  #define lock_map_acquire_tryread(l)		lock_acquire_shared_recursive(l, 0, 1, NULL, _THIS_IP_)
-> -#define lock_map_release(l)			lock_release(l, 1, _THIS_IP_)
-> +#define lock_map_release(l)			lock_release(l, _THIS_IP_)
->  
->  #ifdef CONFIG_PROVE_LOCKING
->  # define might_lock(lock) 						\
->  do {									\
->  	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
->  	lock_acquire(&(lock)->dep_map, 0, 0, 0, 1, NULL, _THIS_IP_);	\
-> -	lock_release(&(lock)->dep_map, 0, _THIS_IP_);			\
-> +	lock_release(&(lock)->dep_map, _THIS_IP_);			\
->  } while (0)
->  # define might_lock_read(lock) 						\
->  do {									\
->  	typecheck(struct lockdep_map *, &(lock)->dep_map);		\
->  	lock_acquire(&(lock)->dep_map, 0, 0, 1, 1, NULL, _THIS_IP_);	\
-> -	lock_release(&(lock)->dep_map, 0, _THIS_IP_);			\
-> +	lock_release(&(lock)->dep_map, _THIS_IP_);			\
->  } while (0)
->  
->  #define lockdep_assert_irqs_enabled()	do {				\
-> diff --git a/include/linux/percpu-rwsem.h b/include/linux/percpu-rwsem.h
-> index 3998cdf9cd14..ad2ca2a89d5b 100644
-> --- a/include/linux/percpu-rwsem.h
-> +++ b/include/linux/percpu-rwsem.h
-> @@ -93,7 +93,7 @@ static inline void percpu_up_read(struct percpu_rw_semaphore *sem)
->  		__percpu_up_read(sem); /* Unconditional memory barrier */
->  	preempt_enable();
->  
-> -	rwsem_release(&sem->rw_sem.dep_map, 1, _RET_IP_);
-> +	rwsem_release(&sem->rw_sem.dep_map, _RET_IP_);
->  }
->  
->  extern void percpu_down_write(struct percpu_rw_semaphore *);
-> @@ -118,7 +118,7 @@ extern int __percpu_init_rwsem(struct percpu_rw_semaphore *,
->  static inline void percpu_rwsem_release(struct percpu_rw_semaphore *sem,
->  					bool read, unsigned long ip)
->  {
-> -	lock_release(&sem->rw_sem.dep_map, 1, ip);
-> +	lock_release(&sem->rw_sem.dep_map, ip);
->  #ifdef CONFIG_RWSEM_SPIN_ON_OWNER
->  	if (!read)
->  		atomic_long_set(&sem->rw_sem.owner, RWSEM_OWNER_UNKNOWN);
-> diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> index 75a2eded7aa2..269b31eab3d6 100644
-> --- a/include/linux/rcupdate.h
-> +++ b/include/linux/rcupdate.h
-> @@ -210,7 +210,7 @@ static inline void rcu_lock_acquire(struct lockdep_map *map)
->  
->  static inline void rcu_lock_release(struct lockdep_map *map)
->  {
-> -	lock_release(map, 1, _THIS_IP_);
-> +	lock_release(map, _THIS_IP_);
->  }
->  
->  extern struct lockdep_map rcu_lock_map;
-> diff --git a/include/linux/rwlock_api_smp.h b/include/linux/rwlock_api_smp.h
-> index 86ebb4bf9c6e..abfb53ab11be 100644
-> --- a/include/linux/rwlock_api_smp.h
-> +++ b/include/linux/rwlock_api_smp.h
-> @@ -215,14 +215,14 @@ static inline void __raw_write_lock(rwlock_t *lock)
->  
->  static inline void __raw_write_unlock(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_write_unlock(lock);
->  	preempt_enable();
->  }
->  
->  static inline void __raw_read_unlock(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_read_unlock(lock);
->  	preempt_enable();
->  }
-> @@ -230,7 +230,7 @@ static inline void __raw_read_unlock(rwlock_t *lock)
->  static inline void
->  __raw_read_unlock_irqrestore(rwlock_t *lock, unsigned long flags)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_read_unlock(lock);
->  	local_irq_restore(flags);
->  	preempt_enable();
-> @@ -238,7 +238,7 @@ static inline void __raw_read_unlock(rwlock_t *lock)
->  
->  static inline void __raw_read_unlock_irq(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_read_unlock(lock);
->  	local_irq_enable();
->  	preempt_enable();
-> @@ -246,7 +246,7 @@ static inline void __raw_read_unlock_irq(rwlock_t *lock)
->  
->  static inline void __raw_read_unlock_bh(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_read_unlock(lock);
->  	__local_bh_enable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
->  }
-> @@ -254,7 +254,7 @@ static inline void __raw_read_unlock_bh(rwlock_t *lock)
->  static inline void __raw_write_unlock_irqrestore(rwlock_t *lock,
->  					     unsigned long flags)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_write_unlock(lock);
->  	local_irq_restore(flags);
->  	preempt_enable();
-> @@ -262,7 +262,7 @@ static inline void __raw_write_unlock_irqrestore(rwlock_t *lock,
->  
->  static inline void __raw_write_unlock_irq(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_write_unlock(lock);
->  	local_irq_enable();
->  	preempt_enable();
-> @@ -270,7 +270,7 @@ static inline void __raw_write_unlock_irq(rwlock_t *lock)
->  
->  static inline void __raw_write_unlock_bh(rwlock_t *lock)
->  {
-> -	rwlock_release(&lock->dep_map, 1, _RET_IP_);
-> +	rwlock_release(&lock->dep_map, _RET_IP_);
->  	do_raw_write_unlock(lock);
->  	__local_bh_enable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
->  }
-> diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
-> index bcf4cf26b8c8..0491d963d47e 100644
-> --- a/include/linux/seqlock.h
-> +++ b/include/linux/seqlock.h
-> @@ -79,7 +79,7 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
->  
->  	local_irq_save(flags);
->  	seqcount_acquire_read(&l->dep_map, 0, 0, _RET_IP_);
-> -	seqcount_release(&l->dep_map, 1, _RET_IP_);
-> +	seqcount_release(&l->dep_map, _RET_IP_);
->  	local_irq_restore(flags);
->  }
->  
-> @@ -384,7 +384,7 @@ static inline void write_seqcount_begin(seqcount_t *s)
->  
->  static inline void write_seqcount_end(seqcount_t *s)
->  {
-> -	seqcount_release(&s->dep_map, 1, _RET_IP_);
-> +	seqcount_release(&s->dep_map, _RET_IP_);
->  	raw_write_seqcount_end(s);
->  }
->  
-> diff --git a/include/linux/spinlock_api_smp.h b/include/linux/spinlock_api_smp.h
-> index b762eaba4cdf..19a9be9d97ee 100644
-> --- a/include/linux/spinlock_api_smp.h
-> +++ b/include/linux/spinlock_api_smp.h
-> @@ -147,7 +147,7 @@ static inline void __raw_spin_lock(raw_spinlock_t *lock)
->  
->  static inline void __raw_spin_unlock(raw_spinlock_t *lock)
->  {
-> -	spin_release(&lock->dep_map, 1, _RET_IP_);
-> +	spin_release(&lock->dep_map, _RET_IP_);
->  	do_raw_spin_unlock(lock);
->  	preempt_enable();
->  }
-> @@ -155,7 +155,7 @@ static inline void __raw_spin_unlock(raw_spinlock_t *lock)
->  static inline void __raw_spin_unlock_irqrestore(raw_spinlock_t *lock,
->  					    unsigned long flags)
->  {
-> -	spin_release(&lock->dep_map, 1, _RET_IP_);
-> +	spin_release(&lock->dep_map, _RET_IP_);
->  	do_raw_spin_unlock(lock);
->  	local_irq_restore(flags);
->  	preempt_enable();
-> @@ -163,7 +163,7 @@ static inline void __raw_spin_unlock_irqrestore(raw_spinlock_t *lock,
->  
->  static inline void __raw_spin_unlock_irq(raw_spinlock_t *lock)
->  {
-> -	spin_release(&lock->dep_map, 1, _RET_IP_);
-> +	spin_release(&lock->dep_map, _RET_IP_);
->  	do_raw_spin_unlock(lock);
->  	local_irq_enable();
->  	preempt_enable();
-> @@ -171,7 +171,7 @@ static inline void __raw_spin_unlock_irq(raw_spinlock_t *lock)
->  
->  static inline void __raw_spin_unlock_bh(raw_spinlock_t *lock)
->  {
-> -	spin_release(&lock->dep_map, 1, _RET_IP_);
-> +	spin_release(&lock->dep_map, _RET_IP_);
->  	do_raw_spin_unlock(lock);
->  	__local_bh_enable_ip(_RET_IP_, SOFTIRQ_LOCK_OFFSET);
->  }
-> diff --git a/include/linux/ww_mutex.h b/include/linux/ww_mutex.h
-> index 3af7c0e03be5..d7554252404c 100644
-> --- a/include/linux/ww_mutex.h
-> +++ b/include/linux/ww_mutex.h
-> @@ -182,7 +182,7 @@ static inline void ww_acquire_done(struct ww_acquire_ctx *ctx)
->  static inline void ww_acquire_fini(struct ww_acquire_ctx *ctx)
->  {
->  #ifdef CONFIG_DEBUG_MUTEXES
-> -	mutex_release(&ctx->dep_map, 0, _THIS_IP_);
-> +	mutex_release(&ctx->dep_map, _THIS_IP_);
->  
->  	DEBUG_LOCKS_WARN_ON(ctx->acquired);
->  	if (!IS_ENABLED(CONFIG_PROVE_LOCKING))
-> diff --git a/include/net/sock.h b/include/net/sock.h
-> index 2c53f1a1d905..e46db0c846d2 100644
-> --- a/include/net/sock.h
-> +++ b/include/net/sock.h
-> @@ -1484,7 +1484,7 @@ static inline void sock_release_ownership(struct sock *sk)
->  		sk->sk_lock.owned = 0;
->  
->  		/* The sk_lock has mutex_unlock() semantics: */
-> -		mutex_release(&sk->sk_lock.dep_map, 1, _RET_IP_);
-> +		mutex_release(&sk->sk_lock.dep_map, _RET_IP_);
->  	}
->  }
->  
-> diff --git a/kernel/bpf/stackmap.c b/kernel/bpf/stackmap.c
-> index 052580c33d26..dcfe2d37ad15 100644
-> --- a/kernel/bpf/stackmap.c
-> +++ b/kernel/bpf/stackmap.c
-> @@ -338,7 +338,7 @@ static void stack_map_get_build_id_offset(struct bpf_stack_build_id *id_offs,
->  		 * up_read_non_owner(). The rwsem_release() is called
->  		 * here to release the lock from lockdep's perspective.
->  		 */
-> -		rwsem_release(&current->mm->mmap_sem.dep_map, 1, _RET_IP_);
-> +		rwsem_release(&current->mm->mmap_sem.dep_map, _RET_IP_);
->  	}
->  }
->  
-> diff --git a/kernel/cpu.c b/kernel/cpu.c
-> index e1967e9eddc2..97ed88e0cf72 100644
-> --- a/kernel/cpu.c
-> +++ b/kernel/cpu.c
-> @@ -336,7 +336,7 @@ static void lockdep_acquire_cpus_lock(void)
->  
->  static void lockdep_release_cpus_lock(void)
->  {
-> -	rwsem_release(&cpu_hotplug_lock.rw_sem.dep_map, 1, _THIS_IP_);
-> +	rwsem_release(&cpu_hotplug_lock.rw_sem.dep_map, _THIS_IP_);
->  }
->  
->  /*
-> diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
-> index 233459c03b5a..8123518f9045 100644
-> --- a/kernel/locking/lockdep.c
-> +++ b/kernel/locking/lockdep.c
-> @@ -4491,8 +4491,7 @@ void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
->  }
->  EXPORT_SYMBOL_GPL(lock_acquire);
->  
-> -void lock_release(struct lockdep_map *lock, int nested,
-> -			  unsigned long ip)
-> +void lock_release(struct lockdep_map *lock, unsigned long ip)
->  {
->  	unsigned long flags;
->  
-> diff --git a/kernel/locking/mutex.c b/kernel/locking/mutex.c
-> index 468a9b8422e3..5352ce50a97e 100644
-> --- a/kernel/locking/mutex.c
-> +++ b/kernel/locking/mutex.c
-> @@ -1091,7 +1091,7 @@ void __sched ww_mutex_unlock(struct ww_mutex *lock)
->  err_early_kill:
->  	spin_unlock(&lock->wait_lock);
->  	debug_mutex_free_waiter(&waiter);
-> -	mutex_release(&lock->dep_map, 1, ip);
-> +	mutex_release(&lock->dep_map, ip);
->  	preempt_enable();
->  	return ret;
->  }
-> @@ -1225,7 +1225,7 @@ static noinline void __sched __mutex_unlock_slowpath(struct mutex *lock, unsigne
->  	DEFINE_WAKE_Q(wake_q);
->  	unsigned long owner;
->  
-> -	mutex_release(&lock->dep_map, 1, ip);
-> +	mutex_release(&lock->dep_map, ip);
->  
->  	/*
->  	 * Release the lock before (potentially) taking the spinlock such that
-> diff --git a/kernel/locking/rtmutex.c b/kernel/locking/rtmutex.c
-> index 2874bf556162..851bbb10819d 100644
-> --- a/kernel/locking/rtmutex.c
-> +++ b/kernel/locking/rtmutex.c
-> @@ -1517,7 +1517,7 @@ int __sched rt_mutex_lock_interruptible(struct rt_mutex *lock)
->  	mutex_acquire(&lock->dep_map, 0, 0, _RET_IP_);
->  	ret = rt_mutex_fastlock(lock, TASK_INTERRUPTIBLE, rt_mutex_slowlock);
->  	if (ret)
-> -		mutex_release(&lock->dep_map, 1, _RET_IP_);
-> +		mutex_release(&lock->dep_map, _RET_IP_);
->  
->  	return ret;
->  }
-> @@ -1561,7 +1561,7 @@ int __sched __rt_mutex_futex_trylock(struct rt_mutex *lock)
->  				       RT_MUTEX_MIN_CHAINWALK,
->  				       rt_mutex_slowlock);
->  	if (ret)
-> -		mutex_release(&lock->dep_map, 1, _RET_IP_);
-> +		mutex_release(&lock->dep_map, _RET_IP_);
->  
->  	return ret;
->  }
-> @@ -1600,7 +1600,7 @@ int __sched rt_mutex_trylock(struct rt_mutex *lock)
->   */
->  void __sched rt_mutex_unlock(struct rt_mutex *lock)
->  {
-> -	mutex_release(&lock->dep_map, 1, _RET_IP_);
-> +	mutex_release(&lock->dep_map, _RET_IP_);
->  	rt_mutex_fastunlock(lock, rt_mutex_slowunlock);
->  }
->  EXPORT_SYMBOL_GPL(rt_mutex_unlock);
-> diff --git a/kernel/locking/rwsem.c b/kernel/locking/rwsem.c
-> index eef04551eae7..44e68761f432 100644
-> --- a/kernel/locking/rwsem.c
-> +++ b/kernel/locking/rwsem.c
-> @@ -1504,7 +1504,7 @@ int __sched down_read_killable(struct rw_semaphore *sem)
->  	rwsem_acquire_read(&sem->dep_map, 0, 0, _RET_IP_);
->  
->  	if (LOCK_CONTENDED_RETURN(sem, __down_read_trylock, __down_read_killable)) {
-> -		rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +		rwsem_release(&sem->dep_map, _RET_IP_);
->  		return -EINTR;
->  	}
->  
-> @@ -1546,7 +1546,7 @@ int __sched down_write_killable(struct rw_semaphore *sem)
->  
->  	if (LOCK_CONTENDED_RETURN(sem, __down_write_trylock,
->  				  __down_write_killable)) {
-> -		rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +		rwsem_release(&sem->dep_map, _RET_IP_);
->  		return -EINTR;
->  	}
->  
-> @@ -1573,7 +1573,7 @@ int down_write_trylock(struct rw_semaphore *sem)
->   */
->  void up_read(struct rw_semaphore *sem)
->  {
-> -	rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
->  	__up_read(sem);
->  }
->  EXPORT_SYMBOL(up_read);
-> @@ -1583,7 +1583,7 @@ void up_read(struct rw_semaphore *sem)
->   */
->  void up_write(struct rw_semaphore *sem)
->  {
-> -	rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +	rwsem_release(&sem->dep_map, _RET_IP_);
->  	__up_write(sem);
->  }
->  EXPORT_SYMBOL(up_write);
-> @@ -1639,7 +1639,7 @@ int __sched down_write_killable_nested(struct rw_semaphore *sem, int subclass)
->  
->  	if (LOCK_CONTENDED_RETURN(sem, __down_write_trylock,
->  				  __down_write_killable)) {
-> -		rwsem_release(&sem->dep_map, 1, _RET_IP_);
-> +		rwsem_release(&sem->dep_map, _RET_IP_);
->  		return -EINTR;
->  	}
->  
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index ca65327a6de8..c8be5a0f5259 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -248,7 +248,7 @@ static void __up_console_sem(unsigned long ip)
->  {
->  	unsigned long flags;
->  
-> -	mutex_release(&console_lock_dep_map, 1, ip);
-> +	mutex_release(&console_lock_dep_map, ip);
->  
->  	printk_safe_enter_irqsave(flags);
->  	up(&console_sem);
-> @@ -1679,20 +1679,20 @@ static int console_lock_spinning_disable_and_check(void)
->  	raw_spin_unlock(&console_owner_lock);
->  
->  	if (!waiter) {
-> -		spin_release(&console_owner_dep_map, 1, _THIS_IP_);
-> +		spin_release(&console_owner_dep_map, _THIS_IP_);
->  		return 0;
->  	}
->  
->  	/* The waiter is now free to continue */
->  	WRITE_ONCE(console_waiter, false);
->  
-> -	spin_release(&console_owner_dep_map, 1, _THIS_IP_);
-> +	spin_release(&console_owner_dep_map, _THIS_IP_);
->  
->  	/*
->  	 * Hand off console_lock to waiter. The waiter will perform
->  	 * the up(). After this, the waiter is the console_lock owner.
->  	 */
-> -	mutex_release(&console_lock_dep_map, 1, _THIS_IP_);
-> +	mutex_release(&console_lock_dep_map, _THIS_IP_);
->  	return 1;
->  }
->  
-> @@ -1746,7 +1746,7 @@ static int console_trylock_spinning(void)
->  	/* Owner will clear console_waiter on hand off */
->  	while (READ_ONCE(console_waiter))
->  		cpu_relax();
-> -	spin_release(&console_owner_dep_map, 1, _THIS_IP_);
-> +	spin_release(&console_owner_dep_map, _THIS_IP_);
->  
->  	printk_safe_exit_irqrestore(flags);
->  	/*
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index f9a1346a5fa9..f845693e8e75 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3105,7 +3105,7 @@ static inline void finish_task(struct task_struct *prev)
->  	 * do an early lockdep release here:
->  	 */
->  	rq_unpin_lock(rq, rf);
-> -	spin_release(&rq->lock.dep_map, 1, _THIS_IP_);
-> +	spin_release(&rq->lock.dep_map, _THIS_IP_);
->  #ifdef CONFIG_DEBUG_SPINLOCK
->  	/* this is a valid case when another task releases the spinlock */
->  	rq->lock.owner = next;
-> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-> index a1705545e6ac..14f44f59e733 100644
-> --- a/lib/locking-selftest.c
-> +++ b/lib/locking-selftest.c
-> @@ -1475,7 +1475,7 @@ static void ww_test_edeadlk_normal(void)
->  
->  	mutex_lock(&o2.base);
->  	o2.ctx = &t2;
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  
->  	WWAI(&t);
->  	t2 = t;
-> @@ -1500,7 +1500,7 @@ static void ww_test_edeadlk_normal_slow(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1527,7 +1527,7 @@ static void ww_test_edeadlk_no_unlock(void)
->  
->  	mutex_lock(&o2.base);
->  	o2.ctx = &t2;
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  
->  	WWAI(&t);
->  	t2 = t;
-> @@ -1551,7 +1551,7 @@ static void ww_test_edeadlk_no_unlock_slow(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1576,7 +1576,7 @@ static void ww_test_edeadlk_acquire_more(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1597,7 +1597,7 @@ static void ww_test_edeadlk_acquire_more_slow(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1618,11 +1618,11 @@ static void ww_test_edeadlk_acquire_more_edeadlk(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	mutex_lock(&o3.base);
-> -	mutex_release(&o3.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o3.base.dep_map, _THIS_IP_);
->  	o3.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1644,11 +1644,11 @@ static void ww_test_edeadlk_acquire_more_edeadlk_slow(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	mutex_lock(&o3.base);
-> -	mutex_release(&o3.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o3.base.dep_map, _THIS_IP_);
->  	o3.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1669,7 +1669,7 @@ static void ww_test_edeadlk_acquire_wrong(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> @@ -1694,7 +1694,7 @@ static void ww_test_edeadlk_acquire_wrong_slow(void)
->  	int ret;
->  
->  	mutex_lock(&o2.base);
-> -	mutex_release(&o2.base.dep_map, 1, _THIS_IP_);
-> +	mutex_release(&o2.base.dep_map, _THIS_IP_);
->  	o2.ctx = &t2;
->  
->  	WWAI(&t);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 1c4c08b45e44..3956ab6dba14 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1800,7 +1800,7 @@ static void mem_cgroup_oom_unlock(struct mem_cgroup *memcg)
->  	struct mem_cgroup *iter;
->  
->  	spin_lock(&memcg_oom_lock);
-> -	mutex_release(&memcg_oom_lock_dep_map, 1, _RET_IP_);
-> +	mutex_release(&memcg_oom_lock_dep_map, _RET_IP_);
->  	for_each_mem_cgroup_tree(iter, memcg)
->  		iter->oom_lock = false;
->  	spin_unlock(&memcg_oom_lock);
-> diff --git a/net/core/sock.c b/net/core/sock.c
-> index 07863edbe6fc..a988e70cdac5 100644
-> --- a/net/core/sock.c
-> +++ b/net/core/sock.c
-> @@ -521,7 +521,7 @@ int __sk_receive_skb(struct sock *sk, struct sk_buff *skb,
->  
->  		rc = sk_backlog_rcv(sk, skb);
->  
-> -		mutex_release(&sk->sk_lock.dep_map, 1, _RET_IP_);
-> +		mutex_release(&sk->sk_lock.dep_map, _RET_IP_);
->  	} else if (sk_add_backlog(sk, skb, sk->sk_rcvbuf)) {
->  		bh_unlock_sock(sk);
->  		atomic_inc(&sk->sk_drops);
-> diff --git a/tools/lib/lockdep/include/liblockdep/common.h b/tools/lib/lockdep/include/liblockdep/common.h
-> index a81d91d4fc78..a6d7ee5f18ba 100644
-> --- a/tools/lib/lockdep/include/liblockdep/common.h
-> +++ b/tools/lib/lockdep/include/liblockdep/common.h
-> @@ -42,8 +42,7 @@ void lockdep_init_map(struct lockdep_map *lock, const char *name,
->  void lock_acquire(struct lockdep_map *lock, unsigned int subclass,
->  			int trylock, int read, int check,
->  			struct lockdep_map *nest_lock, unsigned long ip);
-> -void lock_release(struct lockdep_map *lock, int nested,
-> -			unsigned long ip);
-> +void lock_release(struct lockdep_map *lock, unsigned long ip);
->  void lockdep_reset_lock(struct lockdep_map *lock);
->  void lockdep_register_key(struct lock_class_key *key);
->  void lockdep_unregister_key(struct lock_class_key *key);
-> diff --git a/tools/lib/lockdep/include/liblockdep/mutex.h b/tools/lib/lockdep/include/liblockdep/mutex.h
-> index 783dd0df06f9..bd106b82759b 100644
-> --- a/tools/lib/lockdep/include/liblockdep/mutex.h
-> +++ b/tools/lib/lockdep/include/liblockdep/mutex.h
-> @@ -42,7 +42,7 @@ static inline int liblockdep_pthread_mutex_lock(liblockdep_pthread_mutex_t *lock
->  
->  static inline int liblockdep_pthread_mutex_unlock(liblockdep_pthread_mutex_t *lock)
->  {
-> -	lock_release(&lock->dep_map, 0, (unsigned long)_RET_IP_);
-> +	lock_release(&lock->dep_map, (unsigned long)_RET_IP_);
->  	return pthread_mutex_unlock(&lock->mutex);
->  }
->  
-> diff --git a/tools/lib/lockdep/include/liblockdep/rwlock.h b/tools/lib/lockdep/include/liblockdep/rwlock.h
-> index 365762e3a1ea..6d5d2932bf4d 100644
-> --- a/tools/lib/lockdep/include/liblockdep/rwlock.h
-> +++ b/tools/lib/lockdep/include/liblockdep/rwlock.h
-> @@ -44,7 +44,7 @@ static inline int liblockdep_pthread_rwlock_rdlock(liblockdep_pthread_rwlock_t *
->  
->  static inline int liblockdep_pthread_rwlock_unlock(liblockdep_pthread_rwlock_t *lock)
->  {
-> -	lock_release(&lock->dep_map, 0, (unsigned long)_RET_IP_);
-> +	lock_release(&lock->dep_map, (unsigned long)_RET_IP_);
->  	return pthread_rwlock_unlock(&lock->rwlock);
->  }
->  
-> diff --git a/tools/lib/lockdep/preload.c b/tools/lib/lockdep/preload.c
-> index 76245d16196d..8f1adbe887b2 100644
-> --- a/tools/lib/lockdep/preload.c
-> +++ b/tools/lib/lockdep/preload.c
-> @@ -270,7 +270,7 @@ int pthread_mutex_lock(pthread_mutex_t *mutex)
->  	 */
->  	r = ll_pthread_mutex_lock(mutex);
->  	if (r)
-> -		lock_release(&__get_lock(mutex)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(mutex)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -284,7 +284,7 @@ int pthread_mutex_trylock(pthread_mutex_t *mutex)
->  	lock_acquire(&__get_lock(mutex)->dep_map, 0, 1, 0, 1, NULL, (unsigned long)_RET_IP_);
->  	r = ll_pthread_mutex_trylock(mutex);
->  	if (r)
-> -		lock_release(&__get_lock(mutex)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(mutex)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -295,7 +295,7 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex)
->  
->  	try_init_preload();
->  
-> -	lock_release(&__get_lock(mutex)->dep_map, 0, (unsigned long)_RET_IP_);
-> +	lock_release(&__get_lock(mutex)->dep_map, (unsigned long)_RET_IP_);
->  	/*
->  	 * Just like taking a lock, only in reverse!
->  	 *
-> @@ -355,7 +355,7 @@ int pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
->  	lock_acquire(&__get_lock(rwlock)->dep_map, 0, 0, 2, 1, NULL, (unsigned long)_RET_IP_);
->  	r = ll_pthread_rwlock_rdlock(rwlock);
->  	if (r)
-> -		lock_release(&__get_lock(rwlock)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(rwlock)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -369,7 +369,7 @@ int pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
->  	lock_acquire(&__get_lock(rwlock)->dep_map, 0, 1, 2, 1, NULL, (unsigned long)_RET_IP_);
->  	r = ll_pthread_rwlock_tryrdlock(rwlock);
->  	if (r)
-> -		lock_release(&__get_lock(rwlock)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(rwlock)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -383,7 +383,7 @@ int pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
->  	lock_acquire(&__get_lock(rwlock)->dep_map, 0, 1, 0, 1, NULL, (unsigned long)_RET_IP_);
->  	r = ll_pthread_rwlock_trywrlock(rwlock);
->  	if (r)
-> -                lock_release(&__get_lock(rwlock)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(rwlock)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -397,7 +397,7 @@ int pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
->  	lock_acquire(&__get_lock(rwlock)->dep_map, 0, 0, 0, 1, NULL, (unsigned long)_RET_IP_);
->  	r = ll_pthread_rwlock_wrlock(rwlock);
->  	if (r)
-> -		lock_release(&__get_lock(rwlock)->dep_map, 0, (unsigned long)_RET_IP_);
-> +		lock_release(&__get_lock(rwlock)->dep_map, (unsigned long)_RET_IP_);
->  
->  	return r;
->  }
-> @@ -408,7 +408,7 @@ int pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
->  
->          init_preload();
->  
-> -	lock_release(&__get_lock(rwlock)->dep_map, 0, (unsigned long)_RET_IP_);
-> +	lock_release(&__get_lock(rwlock)->dep_map, (unsigned long)_RET_IP_);
->  	r = ll_pthread_rwlock_unlock(rwlock);
->  	if (r)
->  		lock_acquire(&__get_lock(rwlock)->dep_map, 0, 0, 0, 1, NULL, (unsigned long)_RET_IP_);
-> -- 
-> 1.8.3.1
-> 
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+T24gMjAxOS0wOC0yOSAyOjA1IGEubS4sIEtlbm55IEhvIHdyb3RlOg0KPiBkcm0ubGdwdQ0KPiAg
+ICAgICAgICBBIHJlYWQtd3JpdGUgbmVzdGVkLWtleWVkIGZpbGUgd2hpY2ggZXhpc3RzIG9uIGFs
+bCBjZ3JvdXBzLg0KPiAgICAgICAgICBFYWNoIGVudHJ5IGlzIGtleWVkIGJ5IHRoZSBEUk0gZGV2
+aWNlJ3MgbWFqb3I6bWlub3IuDQo+DQo+ICAgICAgICAgIGxncHUgc3RhbmRzIGZvciBsb2dpY2Fs
+IEdQVSwgaXQgaXMgYW4gYWJzdHJhY3Rpb24gdXNlZCB0bw0KPiAgICAgICAgICBzdWJkaXZpZGUg
+YSBwaHlzaWNhbCBEUk0gZGV2aWNlIGZvciB0aGUgcHVycG9zZSBvZiByZXNvdXJjZQ0KPiAgICAg
+ICAgICBtYW5hZ2VtZW50Lg0KPg0KPiAgICAgICAgICBUaGUgbGdwdSBpcyBhIGRpc2NyZXRlIHF1
+YW50aXR5IHRoYXQgaXMgZGV2aWNlIHNwZWNpZmljIChpLmUuDQo+ICAgICAgICAgIHNvbWUgRFJN
+IGRldmljZXMgbWF5IGhhdmUgNjQgbGdwdXMgd2hpbGUgb3RoZXJzIG1heSBoYXZlIDEwMA0KPiAg
+ICAgICAgICBsZ3B1cy4pICBUaGUgbGdwdSBpcyBhIHNpbmdsZSBxdWFudGl0eSB3aXRoIHR3byBy
+ZXByZXNlbnRhdGlvbnMNCj4gICAgICAgICAgZGVub3RlZCBieSB0aGUgZm9sbG93aW5nIG5lc3Rl
+ZCBrZXlzLg0KPg0KPiAgICAgICAgICAgID09PT09ICAgICA9PT09PT09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09DQo+ICAgICAgICAgICAgY291bnQgICAgIFJlcHJlc2VudGluZyBs
+Z3B1IGFzIGFub255bW91cyByZXNvdXJjZQ0KPiAgICAgICAgICAgIGxpc3QgICAgICBSZXByZXNl
+bnRpbmcgbGdwdSBhcyBuYW1lZCByZXNvdXJjZQ0KPiAgICAgICAgICAgID09PT09ICAgICA9PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQo+DQo+ICAgICAgICAgIEZvciBl
+eGFtcGxlOg0KPiAgICAgICAgICAyMjY6MCBjb3VudD0yNTYgbGlzdD0wLTI1NQ0KPiAgICAgICAg
+ICAyMjY6MSBjb3VudD00IGxpc3Q9MCwyLDQsNg0KPiAgICAgICAgICAyMjY6MiBjb3VudD0zMiBs
+aXN0PTMyLTYzDQo+DQo+ICAgICAgICAgIGxncHUgaXMgcmVwcmVzZW50ZWQgYnkgYSBiaXRtYXAg
+YW5kIHVzZXMgdGhlIGJpdG1hcF9wYXJzZWxpc3QNCj4gICAgICAgICAga2VybmVsIGZ1bmN0aW9u
+IHNvIHRoZSBsaXN0IGtleSBpbnB1dCBmb3JtYXQgaXMgYQ0KPiAgICAgICAgICBjb21tYS1zZXBh
+cmF0ZWQgbGlzdCBvZiBkZWNpbWFsIG51bWJlcnMgYW5kIHJhbmdlcy4NCj4NCj4gICAgICAgICAg
+Q29uc2VjdXRpdmVseSBzZXQgYml0cyBhcmUgc2hvd24gYXMgdHdvIGh5cGhlbi1zZXBhcmF0ZWQg
+ZGVjaW1hbA0KPiAgICAgICAgICBudW1iZXJzLCB0aGUgc21hbGxlc3QgYW5kIGxhcmdlc3QgYml0
+IG51bWJlcnMgc2V0IGluIHRoZSByYW5nZS4NCj4gICAgICAgICAgT3B0aW9uYWxseSBlYWNoIHJh
+bmdlIGNhbiBiZSBwb3N0Zml4ZWQgdG8gZGVub3RlIHRoYXQgb25seSBwYXJ0cw0KPiAgICAgICAg
+ICBvZiBpdCBzaG91bGQgYmUgc2V0LiAgVGhlIHJhbmdlIHdpbGwgZGl2aWRlZCB0byBncm91cHMg
+b2YNCj4gICAgICAgICAgc3BlY2lmaWMgc2l6ZS4NCj4gICAgICAgICAgU3ludGF4OiByYW5nZTp1
+c2VkX3NpemUvZ3JvdXBfc2l6ZQ0KPiAgICAgICAgICBFeGFtcGxlOiAwLTEwMjM6Mi8yNTYgPT0+
+IDAsMSwyNTYsMjU3LDUxMiw1MTMsNzY4LDc2OQ0KPg0KPiAgICAgICAgICBUaGUgY291bnQga2V5
+IGlzIHRoZSBoYW1taW5nIHdlaWdodCAvIGh3ZWlnaHQgb2YgdGhlIGJpdG1hcC4NCj4NCj4gICAg
+ICAgICAgQm90aCBjb3VudCBhbmQgbGlzdCBhY2NlcHQgdGhlIG1heCBhbmQgZGVmYXVsdCBrZXl3
+b3Jkcy4NCj4NCj4gICAgICAgICAgU29tZSBEUk0gZGV2aWNlcyBtYXkgb25seSBzdXBwb3J0IGxn
+cHUgYXMgYW5vbnltb3VzIHJlc291cmNlcy4NCj4gICAgICAgICAgSW4gc3VjaCBjYXNlLCB0aGUg
+c2lnbmlmaWNhbmNlIG9mIHRoZSBwb3NpdGlvbiBvZiB0aGUgc2V0IGJpdHMNCj4gICAgICAgICAg
+aW4gbGlzdCB3aWxsIGJlIGlnbm9yZWQuDQo+DQo+ICAgICAgICAgIFRoaXMgbGdwdSByZXNvdXJj
+ZSBzdXBwb3J0cyB0aGUgJ2FsbG9jYXRpb24nIHJlc291cmNlDQo+ICAgICAgICAgIGRpc3RyaWJ1
+dGlvbiBtb2RlbC4NCj4NCj4gQ2hhbmdlLUlkOiBJMWFmY2FjZjM1Njc3MDkzMGM3ZjkyNWRmMDQz
+ZTUxYWQwNmNlYjk4ZQ0KPiBTaWduZWQtb2ZmLWJ5OiBLZW5ueSBIbyA8S2VubnkuSG9AYW1kLmNv
+bT4NCg0KVGhlIGRlc2NyaXB0aW9uIHNvdW5kcyByZWFzb25hYmxlIHRvIG1lIGFuZCBtYXBzIHdl
+bGwgdG8gdGhlIENVIG1hc2tpbmcgDQpmZWF0dXJlIGluIG91ciBHUFVzLg0KDQpJdCB3b3VsZCBh
+bHNvIGFsbG93IHVzIHRvIGRvIG1vcmUgY29hcnNlLWdyYWluZWQgbWFza2luZyBmb3IgZXhhbXBs
+ZSB0byANCmd1YXJhbnRlZSBiYWxhbmNlZCBhbGxvY2F0aW9uIG9mIENVcyBhY3Jvc3Mgc2hhZGVy
+IGVuZ2luZXMgb3IgDQpwYXJ0aXRpb25pbmcgb2YgbWVtb3J5IGJhbmR3aWR0aCBvciBDUCBwaXBl
+cyAoaWYgdGhhdCBpcyBzdXBwb3J0ZWQgYnkgDQp0aGUgaGFyZHdhcmUvZmlybXdhcmUpLg0KDQpJ
+IGNhbid0IGNvbW1lbnQgb24gdGhlIGNvZGUgYXMgSSdtIHVuZmFtaWxpYXIgd2l0aCB0aGUgZGV0
+YWlscyBvZiB0aGUgDQpjZ3JvdXAgY29kZS4NCg0KQWNrZWQtYnk6IEZlbGl4IEt1ZWhsaW5nIDxG
+ZWxpeC5LdWVobGluZ0BhbWQuY29tPg0KDQoNCj4gLS0tDQo+ICAgRG9jdW1lbnRhdGlvbi9hZG1p
+bi1ndWlkZS9jZ3JvdXAtdjIucnN0IHwgIDQ2ICsrKysrKysrDQo+ICAgaW5jbHVkZS9kcm0vZHJt
+X2Nncm91cC5oICAgICAgICAgICAgICAgIHwgICA0ICsNCj4gICBpbmNsdWRlL2xpbnV4L2Nncm91
+cF9kcm0uaCAgICAgICAgICAgICAgfCAgIDYgKysNCj4gICBrZXJuZWwvY2dyb3VwL2RybS5jICAg
+ICAgICAgICAgICAgICAgICAgfCAxMzUgKysrKysrKysrKysrKysrKysrKysrKysrDQo+ICAgNCBm
+aWxlcyBjaGFuZ2VkLCAxOTEgaW5zZXJ0aW9ucygrKQ0KPg0KPiBkaWZmIC0tZ2l0IGEvRG9jdW1l
+bnRhdGlvbi9hZG1pbi1ndWlkZS9jZ3JvdXAtdjIucnN0IGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1n
+dWlkZS9jZ3JvdXAtdjIucnN0DQo+IGluZGV4IDg3YTE5NTEzM2VhYS4uNTdmMTg0NjliZDc2IDEw
+MDY0NA0KPiAtLS0gYS9Eb2N1bWVudGF0aW9uL2FkbWluLWd1aWRlL2Nncm91cC12Mi5yc3QNCj4g
+KysrIGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9jZ3JvdXAtdjIucnN0DQo+IEBAIC0xOTU4
+LDYgKzE5NTgsNTIgQEAgRFJNIEludGVyZmFjZSBGaWxlcw0KPiAgIAlTZXQgbGFyZ2VzdCBhbGxv
+Y2F0aW9uIGZvciAvZGV2L2RyaS9jYXJkMSB0byA0TUINCj4gICAJZWNobyAiMjI2OjEgNG0iID4g
+ZHJtLmJ1ZmZlci5wZWFrLm1heA0KPiAgIA0KPiArICBkcm0ubGdwdQ0KPiArCUEgcmVhZC13cml0
+ZSBuZXN0ZWQta2V5ZWQgZmlsZSB3aGljaCBleGlzdHMgb24gYWxsIGNncm91cHMuDQo+ICsJRWFj
+aCBlbnRyeSBpcyBrZXllZCBieSB0aGUgRFJNIGRldmljZSdzIG1ham9yOm1pbm9yLg0KPiArDQo+
+ICsJbGdwdSBzdGFuZHMgZm9yIGxvZ2ljYWwgR1BVLCBpdCBpcyBhbiBhYnN0cmFjdGlvbiB1c2Vk
+IHRvDQo+ICsJc3ViZGl2aWRlIGEgcGh5c2ljYWwgRFJNIGRldmljZSBmb3IgdGhlIHB1cnBvc2Ug
+b2YgcmVzb3VyY2UNCj4gKwltYW5hZ2VtZW50Lg0KPiArDQo+ICsJVGhlIGxncHUgaXMgYSBkaXNj
+cmV0ZSBxdWFudGl0eSB0aGF0IGlzIGRldmljZSBzcGVjaWZpYyAoaS5lLg0KPiArCXNvbWUgRFJN
+IGRldmljZXMgbWF5IGhhdmUgNjQgbGdwdXMgd2hpbGUgb3RoZXJzIG1heSBoYXZlIDEwMA0KPiAr
+CWxncHVzLikgIFRoZSBsZ3B1IGlzIGEgc2luZ2xlIHF1YW50aXR5IHdpdGggdHdvIHJlcHJlc2Vu
+dGF0aW9ucw0KPiArCWRlbm90ZWQgYnkgdGhlIGZvbGxvd2luZyBuZXN0ZWQga2V5cy4NCj4gKw0K
+PiArCSAgPT09PT0gICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0N
+Cj4gKwkgIGNvdW50ICAgICBSZXByZXNlbnRpbmcgbGdwdSBhcyBhbm9ueW1vdXMgcmVzb3VyY2UN
+Cj4gKwkgIGxpc3QgICAgICBSZXByZXNlbnRpbmcgbGdwdSBhcyBuYW1lZCByZXNvdXJjZQ0KPiAr
+CSAgPT09PT0gICAgID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4g
+Kw0KPiArCUZvciBleGFtcGxlOg0KPiArCTIyNjowIGNvdW50PTI1NiBsaXN0PTAtMjU1DQo+ICsJ
+MjI2OjEgY291bnQ9NCBsaXN0PTAsMiw0LDYNCj4gKwkyMjY6MiBjb3VudD0zMiBsaXN0PTMyLTYz
+DQo+ICsNCj4gKwlsZ3B1IGlzIHJlcHJlc2VudGVkIGJ5IGEgYml0bWFwIGFuZCB1c2VzIHRoZSBi
+aXRtYXBfcGFyc2VsaXN0DQo+ICsJa2VybmVsIGZ1bmN0aW9uIHNvIHRoZSBsaXN0IGtleSBpbnB1
+dCBmb3JtYXQgaXMgYQ0KPiArCWNvbW1hLXNlcGFyYXRlZCBsaXN0IG9mIGRlY2ltYWwgbnVtYmVy
+cyBhbmQgcmFuZ2VzLg0KPiArDQo+ICsJQ29uc2VjdXRpdmVseSBzZXQgYml0cyBhcmUgc2hvd24g
+YXMgdHdvIGh5cGhlbi1zZXBhcmF0ZWQgZGVjaW1hbA0KPiArCW51bWJlcnMsIHRoZSBzbWFsbGVz
+dCBhbmQgbGFyZ2VzdCBiaXQgbnVtYmVycyBzZXQgaW4gdGhlIHJhbmdlLg0KPiArCU9wdGlvbmFs
+bHkgZWFjaCByYW5nZSBjYW4gYmUgcG9zdGZpeGVkIHRvIGRlbm90ZSB0aGF0IG9ubHkgcGFydHMN
+Cj4gKwlvZiBpdCBzaG91bGQgYmUgc2V0LiAgVGhlIHJhbmdlIHdpbGwgZGl2aWRlZCB0byBncm91
+cHMgb2YNCj4gKwlzcGVjaWZpYyBzaXplLg0KPiArCVN5bnRheDogcmFuZ2U6dXNlZF9zaXplL2dy
+b3VwX3NpemUNCj4gKwlFeGFtcGxlOiAwLTEwMjM6Mi8yNTYgPT0+IDAsMSwyNTYsMjU3LDUxMiw1
+MTMsNzY4LDc2OQ0KPiArDQo+ICsJVGhlIGNvdW50IGtleSBpcyB0aGUgaGFtbWluZyB3ZWlnaHQg
+LyBod2VpZ2h0IG9mIHRoZSBiaXRtYXAuDQo+ICsNCj4gKwlCb3RoIGNvdW50IGFuZCBsaXN0IGFj
+Y2VwdCB0aGUgbWF4IGFuZCBkZWZhdWx0IGtleXdvcmRzLg0KPiArDQo+ICsJU29tZSBEUk0gZGV2
+aWNlcyBtYXkgb25seSBzdXBwb3J0IGxncHUgYXMgYW5vbnltb3VzIHJlc291cmNlcy4NCj4gKwlJ
+biBzdWNoIGNhc2UsIHRoZSBzaWduaWZpY2FuY2Ugb2YgdGhlIHBvc2l0aW9uIG9mIHRoZSBzZXQg
+Yml0cw0KPiArCWluIGxpc3Qgd2lsbCBiZSBpZ25vcmVkLg0KPiArDQo+ICsJVGhpcyBsZ3B1IHJl
+c291cmNlIHN1cHBvcnRzIHRoZSAnYWxsb2NhdGlvbicgcmVzb3VyY2UNCj4gKwlkaXN0cmlidXRp
+b24gbW9kZWwuDQo+ICsNCj4gICBHRU0gQnVmZmVyIE93bmVyc2hpcA0KPiAgIH5+fn5+fn5+fn5+
+fn5+fn5+fn5+DQo+ICAgDQo+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fY2dyb3VwLmgg
+Yi9pbmNsdWRlL2RybS9kcm1fY2dyb3VwLmgNCj4gaW5kZXggNmQ5NzA3ZTFlYjcyLi5hOGQ2YmUw
+YjA3NWIgMTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvZHJtL2RybV9jZ3JvdXAuaA0KPiArKysgYi9p
+bmNsdWRlL2RybS9kcm1fY2dyb3VwLmgNCj4gQEAgLTYsNiArNiw3IEBADQo+ICAgDQo+ICAgI2lu
+Y2x1ZGUgPGxpbnV4L2Nncm91cF9kcm0uaD4NCj4gICAjaW5jbHVkZSA8bGludXgvd29ya3F1ZXVl
+Lmg+DQo+ICsjaW5jbHVkZSA8bGludXgvdHlwZXMuaD4NCj4gICAjaW5jbHVkZSA8ZHJtL3R0bS90
+dG1fYm9fYXBpLmg+DQo+ICAgI2luY2x1ZGUgPGRybS90dG0vdHRtX2JvX2RyaXZlci5oPg0KPiAg
+IA0KPiBAQCAtMjgsNiArMjksOSBAQCBzdHJ1Y3QgZHJtY2dfcHJvcHMgew0KPiAgIAlzNjQJCQlt
+ZW1faGlnaHNfZGVmYXVsdFtUVE1fUExfUFJJVisxXTsNCj4gICANCj4gICAJc3RydWN0IHdvcmtf
+c3RydWN0CSptZW1fcmVjbGFpbV93cVtUVE1fUExfUFJJVl07DQo+ICsNCj4gKwlpbnQJCQlsZ3B1
+X2NhcGFjaXR5Ow0KPiArICAgICAgICBERUNMQVJFX0JJVE1BUChsZ3B1X3Nsb3RzLCBNQVhfRFJN
+Q0dfTEdQVV9DQVBBQ0lUWSk7DQo+ICAgfTsNCj4gICANCj4gICAjaWZkZWYgQ09ORklHX0NHUk9V
+UF9EUk0NCj4gZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvY2dyb3VwX2RybS5oIGIvaW5jbHVk
+ZS9saW51eC9jZ3JvdXBfZHJtLmgNCj4gaW5kZXggYzU2Y2ZlNzRkMWE2Li43YjFjZmM0Y2U0YzMg
+MTAwNjQ0DQo+IC0tLSBhL2luY2x1ZGUvbGludXgvY2dyb3VwX2RybS5oDQo+ICsrKyBiL2luY2x1
+ZGUvbGludXgvY2dyb3VwX2RybS5oDQo+IEBAIC0xNCw2ICsxNCw4IEBADQo+ICAgLyogbGltaXQg
+ZGVmaW5lZCBwZXIgdGhlIHdheSBkcm1fbWlub3JfYWxsb2Mgb3BlcmF0ZXMgKi8NCj4gICAjZGVm
+aW5lIE1BWF9EUk1fREVWICg2NCAqIERSTV9NSU5PUl9SRU5ERVIpDQo+ICAgDQo+ICsjZGVmaW5l
+IE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZIDI1Ng0KPiArDQo+ICAgZW51bSBkcm1jZ19tZW1fYndf
+YXR0ciB7DQo+ICAgCURSTUNHX01FTV9CV19BVFRSX0JZVEVfTU9WRUQsIC8qIGZvciBjYWx1bGF0
+aW5nICdpbnN0YW50YW5lb3VzJyBidyAqLw0KPiAgIAlEUk1DR19NRU1fQldfQVRUUl9BQ0NVTV9V
+UywgIC8qIGZvciBjYWx1bGF0aW5nICdpbnN0YW50YW5lb3VzJyBidyAqLw0KPiBAQCAtMzIsNiAr
+MzQsNyBAQCBlbnVtIGRybWNnX3Jlc190eXBlIHsNCj4gICAJRFJNQ0dfVFlQRV9NRU1fUEVBSywN
+Cj4gICAJRFJNQ0dfVFlQRV9CQU5EV0lEVEgsDQo+ICAgCURSTUNHX1RZUEVfQkFORFdJRFRIX1BF
+UklPRF9CVVJTVCwNCj4gKwlEUk1DR19UWVBFX0xHUFUsDQo+ICAgCV9fRFJNQ0dfVFlQRV9MQVNU
+LA0KPiAgIH07DQo+ICAgDQo+IEBAIC01OCw2ICs2MSw5IEBAIHN0cnVjdCBkcm1jZ19kZXZpY2Vf
+cmVzb3VyY2Ugew0KPiAgIAlzNjQJCQltZW1fYndfc3RhdHNbX19EUk1DR19NRU1fQldfQVRUUl9M
+QVNUXTsNCj4gICAJczY0CQkJbWVtX2J3X2xpbWl0c19ieXRlc19pbl9wZXJpb2Q7DQo+ICAgCXM2
+NAkJCW1lbV9id19saW1pdHNfYXZnX2J5dGVzX3Blcl91czsNCj4gKw0KPiArCXM2NAkJCWxncHVf
+dXNlZDsNCj4gKwlERUNMQVJFX0JJVE1BUChsZ3B1X2FsbG9jYXRlZCwgTUFYX0RSTUNHX0xHUFVf
+Q0FQQUNJVFkpOw0KPiAgIH07DQo+ICAgDQo+ICAgLyoqDQo+IGRpZmYgLS1naXQgYS9rZXJuZWwv
+Y2dyb3VwL2RybS5jIGIva2VybmVsL2Nncm91cC9kcm0uYw0KPiBpbmRleCAwZWE3ZjA2MTllMjUu
+LjE4YzQzNjhlMmMyOSAxMDA2NDQNCj4gLS0tIGEva2VybmVsL2Nncm91cC9kcm0uYw0KPiArKysg
+Yi9rZXJuZWwvY2dyb3VwL2RybS5jDQo+IEBAIC05LDYgKzksNyBAQA0KPiAgICNpbmNsdWRlIDxs
+aW51eC9jZ3JvdXBfZHJtLmg+DQo+ICAgI2luY2x1ZGUgPGxpbnV4L2t0aW1lLmg+DQo+ICAgI2lu
+Y2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KPiArI2luY2x1ZGUgPGxpbnV4L2JpdG1hcC5oPg0KPiAg
+ICNpbmNsdWRlIDxkcm0vZHJtX2ZpbGUuaD4NCj4gICAjaW5jbHVkZSA8ZHJtL2RybV9kcnYuaD4N
+Cj4gICAjaW5jbHVkZSA8ZHJtL3R0bS90dG1fYm9fYXBpLmg+DQo+IEBAIC01Miw2ICs1Myw5IEBA
+IHN0YXRpYyBjaGFyIGNvbnN0ICptZW1fYndfYXR0cl9uYW1lc1tdID0gew0KPiAgICNkZWZpbmUg
+TUVNX0JXX0xJTUlUU19OQU1FX0FWRyAiYXZnX2J5dGVzX3Blcl91cyINCj4gICAjZGVmaW5lIE1F
+TV9CV19MSU1JVFNfTkFNRV9CVVJTVCAiYnl0ZXNfaW5fcGVyaW9kIg0KPiAgIA0KPiArI2RlZmlu
+ZSBMR1BVX0xJTUlUU19OQU1FX0xJU1QgImxpc3QiDQo+ICsjZGVmaW5lIExHUFVfTElNSVRTX05B
+TUVfQ09VTlQgImNvdW50Ig0KPiArDQo+ICAgc3RhdGljIHN0cnVjdCBkcm1jZyAqcm9vdF9kcm1j
+ZyBfX3JlYWRfbW9zdGx5Ow0KPiAgIA0KPiAgIHN0YXRpYyBpbnQgZHJtY2dfY3NzX2ZyZWVfZm4o
+aW50IGlkLCB2b2lkICpwdHIsIHZvaWQgKmRhdGEpDQo+IEBAIC0xMTUsNiArMTE5LDEwIEBAIHN0
+YXRpYyBpbmxpbmUgaW50IGluaXRfZHJtY2dfc2luZ2xlKHN0cnVjdCBkcm1jZyAqZHJtY2csIHN0
+cnVjdCBkcm1fZGV2aWNlICpkZXYpDQo+ICAgCWZvciAoaSA9IDA7IGkgPD0gVFRNX1BMX1BSSVY7
+IGkrKykNCj4gICAJCWRkci0+bWVtX2hpZ2hzW2ldID0gZGV2LT5kcm1jZ19wcm9wcy5tZW1faGln
+aHNfZGVmYXVsdFtpXTsNCj4gICANCj4gKwliaXRtYXBfY29weShkZHItPmxncHVfYWxsb2NhdGVk
+LCBkZXYtPmRybWNnX3Byb3BzLmxncHVfc2xvdHMsDQo+ICsJCQlNQVhfRFJNQ0dfTEdQVV9DQVBB
+Q0lUWSk7DQo+ICsJZGRyLT5sZ3B1X3VzZWQgPSBiaXRtYXBfd2VpZ2h0KGRkci0+bGdwdV9hbGxv
+Y2F0ZWQsIE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4gKw0KPiAgIAltdXRleF91bmxvY2so
+JmRldi0+ZHJtY2dfbXV0ZXgpOw0KPiAgIAlyZXR1cm4gMDsNCj4gICB9DQo+IEBAIC0yODAsNiAr
+Mjg4LDE0IEBAIHN0YXRpYyB2b2lkIGRybWNnX3ByaW50X2xpbWl0cyhzdHJ1Y3QgZHJtY2dfZGV2
+aWNlX3Jlc291cmNlICpkZHIsDQo+ICAgCQkJCU1FTV9CV19MSU1JVFNfTkFNRV9BVkcsDQo+ICAg
+CQkJCWRkci0+bWVtX2J3X2xpbWl0c19hdmdfYnl0ZXNfcGVyX3VzKTsNCj4gICAJCWJyZWFrOw0K
+PiArCWNhc2UgRFJNQ0dfVFlQRV9MR1BVOg0KPiArCQlzZXFfcHJpbnRmKHNmLCAiJXM9JWxsZCAl
+cz0lKnBibFxuIiwNCj4gKwkJCQlMR1BVX0xJTUlUU19OQU1FX0NPVU5ULA0KPiArCQkJCWRkci0+
+bGdwdV91c2VkLA0KPiArCQkJCUxHUFVfTElNSVRTX05BTUVfTElTVCwNCj4gKwkJCQlkZXYtPmRy
+bWNnX3Byb3BzLmxncHVfY2FwYWNpdHksDQo+ICsJCQkJZGRyLT5sZ3B1X2FsbG9jYXRlZCk7DQo+
+ICsJCWJyZWFrOw0KPiAgIAlkZWZhdWx0Og0KPiAgIAkJc2VxX3B1dHMoc2YsICJcbiIpOw0KPiAg
+IAkJYnJlYWs7DQo+IEBAIC0zMTQsNiArMzMwLDE1IEBAIHN0YXRpYyB2b2lkIGRybWNnX3ByaW50
+X2RlZmF1bHQoc3RydWN0IGRybWNnX3Byb3BzICpwcm9wcywNCj4gICAJCQkJTUVNX0JXX0xJTUlU
+U19OQU1FX0FWRywNCj4gICAJCQkJcHJvcHMtPm1lbV9id19hdmdfYnl0ZXNfcGVyX3VzX2RlZmF1
+bHQpOw0KPiAgIAkJYnJlYWs7DQo+ICsJY2FzZSBEUk1DR19UWVBFX0xHUFU6DQo+ICsJCXNlcV9w
+cmludGYoc2YsICIlcz0lZCAlcz0lKnBibFxuIiwNCj4gKwkJCQlMR1BVX0xJTUlUU19OQU1FX0NP
+VU5ULA0KPiArCQkJCWJpdG1hcF93ZWlnaHQocHJvcHMtPmxncHVfc2xvdHMsDQo+ICsJCQkJCXBy
+b3BzLT5sZ3B1X2NhcGFjaXR5KSwNCj4gKwkJCQlMR1BVX0xJTUlUU19OQU1FX0xJU1QsDQo+ICsJ
+CQkJcHJvcHMtPmxncHVfY2FwYWNpdHksDQo+ICsJCQkJcHJvcHMtPmxncHVfc2xvdHMpOw0KPiAr
+CQlicmVhazsNCj4gICAJZGVmYXVsdDoNCj4gICAJCXNlcV9wdXRzKHNmLCAiXG4iKTsNCj4gICAJ
+CWJyZWFrOw0KPiBAQCAtNDA3LDkgKzQzMiwyMSBAQCBzdGF0aWMgdm9pZCBkcm1jZ192YWx1ZV9h
+cHBseShzdHJ1Y3QgZHJtX2RldmljZSAqZGV2LCBzNjQgKmRzdCwgczY0IHZhbCkNCj4gICAJbXV0
+ZXhfdW5sb2NrKCZkZXYtPmRybWNnX211dGV4KTsNCj4gICB9DQo+ICAgDQo+ICtzdGF0aWMgdm9p
+ZCBkcm1jZ19sZ3B1X3ZhbHVlc19hcHBseShzdHJ1Y3QgZHJtX2RldmljZSAqZGV2LA0KPiArCQlz
+dHJ1Y3QgZHJtY2dfZGV2aWNlX3Jlc291cmNlICpkZHIsIHVuc2lnbmVkIGxvbmcgKnZhbCkNCj4g
+K3sNCj4gKw0KPiArCW11dGV4X2xvY2soJmRldi0+ZHJtY2dfbXV0ZXgpOw0KPiArCWJpdG1hcF9j
+b3B5KGRkci0+bGdwdV9hbGxvY2F0ZWQsIHZhbCwgTUFYX0RSTUNHX0xHUFVfQ0FQQUNJVFkpOw0K
+PiArCWRkci0+bGdwdV91c2VkID0gYml0bWFwX3dlaWdodChkZHItPmxncHVfYWxsb2NhdGVkLCBN
+QVhfRFJNQ0dfTEdQVV9DQVBBQ0lUWSk7DQo+ICsJbXV0ZXhfdW5sb2NrKCZkZXYtPmRybWNnX211
+dGV4KTsNCj4gK30NCj4gKw0KPiAgIHN0YXRpYyB2b2lkIGRybWNnX25lc3RlZF9saW1pdF9wYXJz
+ZShzdHJ1Y3Qga2VybmZzX29wZW5fZmlsZSAqb2YsDQo+ICAgCQlzdHJ1Y3QgZHJtX2RldmljZSAq
+ZGV2LCBjaGFyICphdHRycykNCj4gICB7DQo+ICsJREVDTEFSRV9CSVRNQVAodG1wX2JpdG1hcCwg
+TUFYX0RSTUNHX0xHUFVfQ0FQQUNJVFkpOw0KPiArCURFQ0xBUkVfQklUTUFQKGNoa19iaXRtYXAs
+IE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4gICAJZW51bSBkcm1jZ19yZXNfdHlwZSB0eXBl
+ID0NCj4gICAJCURSTUNHX0NURl9QUklWMlJFU1RZUEUob2ZfY2Z0KG9mKS0+cHJpdmF0ZSk7DQo+
+ICAgCXN0cnVjdCBkcm1jZyAqZHJtY2cgPSBjc3NfdG9fZHJtY2cob2ZfY3NzKG9mKSk7DQo+IEBA
+IC01MDEsNiArNTM4LDgzIEBAIHN0YXRpYyB2b2lkIGRybWNnX25lc3RlZF9saW1pdF9wYXJzZShz
+dHJ1Y3Qga2VybmZzX29wZW5fZmlsZSAqb2YsDQo+ICAgCQkJCWNvbnRpbnVlOw0KPiAgIAkJCX0N
+Cj4gICAJCQlicmVhazsgLyogRFJNQ0dfVFlQRV9NRU0gKi8NCj4gKwkJY2FzZSBEUk1DR19UWVBF
+X0xHUFU6DQo+ICsJCQlpZiAoc3RybmNtcChzbmFtZSwgTEdQVV9MSU1JVFNfTkFNRV9MSVNULCAy
+NTYpICYmDQo+ICsJCQkJc3RybmNtcChzbmFtZSwgTEdQVV9MSU1JVFNfTkFNRV9DT1VOVCwgMjU2
+KSApDQo+ICsJCQkJY29udGludWU7DQo+ICsNCj4gKyAgICAgICAgICAgICAgICAgICAgICAgIGlm
+ICghc3RyY21wKCJtYXgiLCBzdmFsKSB8fA0KPiArCQkJCQkhc3RyY21wKCJkZWZhdWx0Iiwgc3Zh
+bCkpIHsNCj4gKwkJCQlpZiAocGFyZW50ICE9IE5VTEwpDQo+ICsJCQkJCWRybWNnX2xncHVfdmFs
+dWVzX2FwcGx5KGRldiwgZGRyLA0KPiArCQkJCQkJcGFyZW50LT5kZXZfcmVzb3VyY2VzW21pbm9y
+XS0+DQo+ICsJCQkJCQlsZ3B1X2FsbG9jYXRlZCk7DQo+ICsJCQkJZWxzZQ0KPiArCQkJCQlkcm1j
+Z19sZ3B1X3ZhbHVlc19hcHBseShkZXYsIGRkciwNCj4gKwkJCQkJCXByb3BzLT5sZ3B1X3Nsb3Rz
+KTsNCj4gKw0KPiArCQkJCWNvbnRpbnVlOw0KPiArCQkJfQ0KPiArDQo+ICsJCQlpZiAoc3RybmNt
+cChzbmFtZSwgTEdQVV9MSU1JVFNfTkFNRV9DT1VOVCwgMjU2KSA9PSAwKSB7DQo+ICsJCQkJcF9t
+YXggPSBwYXJlbnQgPT0gTlVMTCA/IHByb3BzLT5sZ3B1X2NhcGFjaXR5Og0KPiArCQkJCQliaXRt
+YXBfd2VpZ2h0KA0KPiArCQkJCQlwYXJlbnQtPmRldl9yZXNvdXJjZXNbbWlub3JdLT4NCj4gKwkJ
+CQkJbGdwdV9hbGxvY2F0ZWQsIHByb3BzLT5sZ3B1X2NhcGFjaXR5KTsNCj4gKw0KPiArCQkJCXJj
+ID0gZHJtY2dfcHJvY2Vzc19saW1pdF9zNjRfdmFsKHN2YWwsDQo+ICsJCQkJCWZhbHNlLCBwX21h
+eCwgcF9tYXgsICZ2YWwpOw0KPiArDQo+ICsJCQkJaWYgKHJjIHx8IHZhbCA8IDApIHsNCj4gKwkJ
+CQkJZHJtY2dfcHJfY2Z0X2Vycihkcm1jZywgcmMsIGNmdF9uYW1lLA0KPiArCQkJCQkJCW1pbm9y
+KTsNCj4gKwkJCQkJY29udGludWU7DQo+ICsJCQkJfQ0KPiArDQo+ICsJCQkJYml0bWFwX3plcm8o
+dG1wX2JpdG1hcCwNCj4gKwkJCQkJCU1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4gKwkJCQli
+aXRtYXBfc2V0KHRtcF9iaXRtYXAsIDAsIHZhbCk7DQo+ICsJCQl9DQo+ICsNCj4gKwkJCWlmIChz
+dHJuY21wKHNuYW1lLCBMR1BVX0xJTUlUU19OQU1FX0xJU1QsIDI1NikgPT0gMCkgew0KPiArCQkJ
+CXJjID0gYml0bWFwX3BhcnNlbGlzdChzdmFsLCB0bXBfYml0bWFwLA0KPiArCQkJCQkJTUFYX0RS
+TUNHX0xHUFVfQ0FQQUNJVFkpOw0KPiArDQo+ICsJCQkJaWYgKHJjKSB7DQo+ICsJCQkJCWRybWNn
+X3ByX2NmdF9lcnIoZHJtY2csIHJjLCBjZnRfbmFtZSwNCj4gKwkJCQkJCQltaW5vcik7DQo+ICsJ
+CQkJCWNvbnRpbnVlOw0KPiArCQkJCX0NCj4gKw0KPiArICAgICAgICAgICAgICAgICAgICAgICAg
+CWJpdG1hcF9hbmRub3QoY2hrX2JpdG1hcCwgdG1wX2JpdG1hcCwNCj4gKwkJCQkJcHJvcHMtPmxn
+cHVfc2xvdHMsDQo+ICsJCQkJCU1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4gKw0KPiArICAg
+ICAgICAgICAgICAgICAgICAgICAgCWlmICghYml0bWFwX2VtcHR5KGNoa19iaXRtYXAsDQo+ICsJ
+CQkJCQlNQVhfRFJNQ0dfTEdQVV9DQVBBQ0lUWSkpIHsNCj4gKwkJCQkJZHJtY2dfcHJfY2Z0X2Vy
+cihkcm1jZywgMCwgY2Z0X25hbWUsDQo+ICsJCQkJCQkJbWlub3IpOw0KPiArCQkJCQljb250aW51
+ZTsNCj4gKwkJCQl9DQo+ICsJCQl9DQo+ICsNCj4gKw0KPiArICAgICAgICAgICAgICAgICAgICAg
+ICAgaWYgKHBhcmVudCAhPSBOVUxMKSB7DQo+ICsJCQkJYml0bWFwX2FuZChjaGtfYml0bWFwLCB0
+bXBfYml0bWFwLA0KPiArCQkJCXBhcmVudC0+ZGV2X3Jlc291cmNlc1ttaW5vcl0tPmxncHVfYWxs
+b2NhdGVkLA0KPiArCQkJCXByb3BzLT5sZ3B1X2NhcGFjaXR5KTsNCj4gKw0KPiArCQkJCWlmIChi
+aXRtYXBfZW1wdHkoY2hrX2JpdG1hcCwNCj4gKwkJCQkJCXByb3BzLT5sZ3B1X2NhcGFjaXR5KSkg
+ew0KPiArCQkJCQlkcm1jZ19wcl9jZnRfZXJyKGRybWNnLCAwLA0KPiArCQkJCQkJCWNmdF9uYW1l
+LCBtaW5vcik7DQo+ICsJCQkJCWNvbnRpbnVlOw0KPiArCQkJCX0NCj4gKwkJCX0NCj4gKw0KPiAr
+CQkJZHJtY2dfbGdwdV92YWx1ZXNfYXBwbHkoZGV2LCBkZHIsIHRtcF9iaXRtYXApOw0KPiArDQo+
+ICsJCQlicmVhazsgLyogRFJNQ0dfVFlQRV9MR1BVICovDQo+ICAgCQlkZWZhdWx0Og0KPiAgIAkJ
+CWJyZWFrOw0KPiAgIAkJfSAvKiBzd2l0Y2ggKHR5cGUpICovDQo+IEBAIC02MDYsNiArNzIwLDcg
+QEAgc3RhdGljIHNzaXplX3QgZHJtY2dfbGltaXRfd3JpdGUoc3RydWN0IGtlcm5mc19vcGVuX2Zp
+bGUgKm9mLCBjaGFyICpidWYsDQo+ICAgCQkJYnJlYWs7DQo+ICAgCQljYXNlIERSTUNHX1RZUEVf
+QkFORFdJRFRIOg0KPiAgIAkJY2FzZSBEUk1DR19UWVBFX01FTToNCj4gKwkJY2FzZSBEUk1DR19U
+WVBFX0xHUFU6DQo+ICAgCQkJZHJtY2dfbmVzdGVkX2xpbWl0X3BhcnNlKG9mLCBkbS0+ZGV2LCBz
+YXR0cik7DQo+ICAgCQkJYnJlYWs7DQo+ICAgCQlkZWZhdWx0Og0KPiBAQCAtNzMxLDYgKzg0Niwy
+MCBAQCBzdHJ1Y3QgY2Z0eXBlIGZpbGVzW10gPSB7DQo+ICAgCQkucHJpdmF0ZSA9IERSTUNHX0NU
+Rl9QUklWKERSTUNHX1RZUEVfQkFORFdJRFRILA0KPiAgIAkJCQkJCURSTUNHX0ZUWVBFX0RFRkFV
+TFQpLA0KPiAgIAl9LA0KPiArCXsNCj4gKwkJLm5hbWUgPSAibGdwdSIsDQo+ICsJCS5zZXFfc2hv
+dyA9IGRybWNnX3NlcV9zaG93LA0KPiArCQkud3JpdGUgPSBkcm1jZ19saW1pdF93cml0ZSwNCj4g
+KwkJLnByaXZhdGUgPSBEUk1DR19DVEZfUFJJVihEUk1DR19UWVBFX0xHUFUsDQo+ICsJCQkJCQlE
+Uk1DR19GVFlQRV9MSU1JVCksDQo+ICsJfSwNCj4gKwl7DQo+ICsJCS5uYW1lID0gImxncHUuZGVm
+YXVsdCIsDQo+ICsJCS5zZXFfc2hvdyA9IGRybWNnX3NlcV9zaG93LA0KPiArCQkuZmxhZ3MgPSBD
+RlRZUEVfT05MWV9PTl9ST09ULA0KPiArCQkucHJpdmF0ZSA9IERSTUNHX0NURl9QUklWKERSTUNH
+X1RZUEVfTEdQVSwNCj4gKwkJCQkJCURSTUNHX0ZUWVBFX0RFRkFVTFQpLA0KPiArCX0sDQo+ICAg
+CXsgfQkvKiB0ZXJtaW5hdGUgKi8NCj4gICB9Ow0KPiAgIA0KPiBAQCAtNzQ0LDYgKzg3MywxMCBA
+QCBzdHJ1Y3QgY2dyb3VwX3N1YnN5cyBkcm1fY2dycF9zdWJzeXMgPSB7DQo+ICAgDQo+ICAgc3Rh
+dGljIGlubGluZSB2b2lkIGRybWNnX3VwZGF0ZV9jZ190cmVlKHN0cnVjdCBkcm1fZGV2aWNlICpk
+ZXYpDQo+ICAgew0KPiArICAgICAgICBiaXRtYXBfemVybyhkZXYtPmRybWNnX3Byb3BzLmxncHVf
+c2xvdHMsIE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4gKyAgICAgICAgYml0bWFwX2ZpbGwo
+ZGV2LT5kcm1jZ19wcm9wcy5sZ3B1X3Nsb3RzLA0KPiArCQkJZGV2LT5kcm1jZ19wcm9wcy5sZ3B1
+X2NhcGFjaXR5KTsNCj4gKw0KPiAgIAkvKiBpbml0IGNncm91cHMgY3JlYXRlZCBiZWZvcmUgcmVn
+aXN0cmF0aW9uIChpLmUuIHJvb3QgY2dyb3VwKSAqLw0KPiAgIAlpZiAocm9vdF9kcm1jZyAhPSBO
+VUxMKSB7DQo+ICAgCQlzdHJ1Y3QgY2dyb3VwX3N1YnN5c19zdGF0ZSAqcG9zOw0KPiBAQCAtODAw
+LDYgKzkzMyw4IEBAIHZvaWQgZHJtY2dfZGV2aWNlX2Vhcmx5X2luaXQoc3RydWN0IGRybV9kZXZp
+Y2UgKmRldikNCj4gICAJZm9yIChpID0gMDsgaSA8PSBUVE1fUExfUFJJVjsgaSsrKQ0KPiAgIAkJ
+ZGV2LT5kcm1jZ19wcm9wcy5tZW1faGlnaHNfZGVmYXVsdFtpXSA9IFM2NF9NQVg7DQo+ICAgDQo+
+ICsJZGV2LT5kcm1jZ19wcm9wcy5sZ3B1X2NhcGFjaXR5ID0gTUFYX0RSTUNHX0xHUFVfQ0FQQUNJ
+VFk7DQo+ICsNCj4gICAJZHJtY2dfdXBkYXRlX2NnX3RyZWUoZGV2KTsNCj4gICB9DQo+ICAgRVhQ
+T1JUX1NZTUJPTChkcm1jZ19kZXZpY2VfZWFybHlfaW5pdCk7DQo=
