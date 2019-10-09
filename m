@@ -2,51 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAB8D1391
-	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2019 18:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB56DD13BC
+	for <lists+cgroups@lfdr.de>; Wed,  9 Oct 2019 18:11:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731475AbfJIQHA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Oct 2019 12:07:00 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:34577 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731234AbfJIQHA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Oct 2019 12:07:00 -0400
-Received: by mail-ed1-f68.google.com with SMTP id p10so2557895edq.1
-        for <cgroups@vger.kernel.org>; Wed, 09 Oct 2019 09:06:56 -0700 (PDT)
+        id S1729644AbfJIQLh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Oct 2019 12:11:37 -0400
+Received: from mail-eopbgr690089.outbound.protection.outlook.com ([40.107.69.89]:14350
+        "EHLO NAM04-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1731168AbfJIQLh (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 9 Oct 2019 12:11:37 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HVVr3sMP2yRIeV2Of1tte0srHoTV0h8eTTHoan25SrfGtuX/v914hHw2EqdPhwvc59GpgAxD+5fFE1jddzpt4l0/UEHZjMlldkpuo/cdiIwYnE677meZbeuzbUI91MpxuJYyZXZFF7ZqfkoAgKi0XvL0fq1jBh/3UcduE+wT4xICDQ/wtCRlsnBcdVnMSwOoULK3KRz8t9Tjl3TdqguQQwhc73Up61ijM37X/3Z/3gcmo+1EYDzvNtPG0NtukiBlhrNw7LPrqHyisA2VEG+QgpRBNQqStoQJj6GdF8hIIMFAJao7EwvmlIVHgOxQbVix8X8ybJ2A/tgQiIvpWiWFAA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fMg7mB8AxMFv6jat4q6tP9hm3esA6bqDZCTj3wrPYvs=;
+ b=F5ZgRBclDac/Q+IknmFVsbB2DWus7NuywzLzMd5iBbiMMtXyCMa1gGwzimzfO5uozB6x9/Im+JLGimSa6C3OOEEwM6C/FI1TgxrnOqXkrCHYpg3KAhsoaOzFNbu4jdKzlJiQEHJF1NUnHtqVqPElEv61qN3qsFvNmXZisecXmLtNWZPFwk2TkWDZN1WbzfGDPwU9Eg+x0sz9M4WhL8P7vmCIQtOPeANIH7dTLoQ+AVbL0Zl37seos6sic4EmgZg++td0lWNCp1ffEhP8ZrgD1xrrls5V3xna8wm2VgWKbtZYNdAUrcsBkyYmpxdxHLCCfGoNMslLSMZwTGkfsmd1qA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=WgjdvWgOLagIgEmMDnfLUUFkt/CiMBBLbiQnuzDeFo8=;
-        b=Bj4Iyliz2hh0NrFqbUidg2ag7wtsswtuzHCLz54bauUYMfyKdW/BmngLh8Aoslj/CU
-         qDcNkgIpxYPAQO7NrxDioJeFYuZZCbGwn+eTbdd+tOSyhZI4yG4se1piy32E/cRvrxLz
-         wnwTuRLlbWsJyB6cDgImraEpKbbl6/mwrc2qY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=WgjdvWgOLagIgEmMDnfLUUFkt/CiMBBLbiQnuzDeFo8=;
-        b=eywZ0VF4B74JanNhHRxA4fK+9KIJdKrCCR7Q6dIiM8DamrOiA/oDSTAISLc5ONcHhh
-         bX5xwZMFRC5IyUIuURV2z1n4BorMGkKtqkT5olwpyKjGo+MuDa0K9ga1QU0ziv4zxDK7
-         SbhBnz2RLhIIT19puibk1UGntKEdA8kYsQQrBgt4JzHfz4LNDJzeVDX1vTJhFQoltXuS
-         Ip1WfkcIBgk0O70e6f0Nw3O6RvPYPomE7BiFNje9oVN/1mUY0VPD1V45t7I+KLw+Mkgi
-         VSC7j4tv2/9vX14jXuQamkF1U4tIwzmpjFOkcE+/G4UgTUGN9wuXnRCdMw59QTRJh3ql
-         4TaA==
-X-Gm-Message-State: APjAAAVOQ4ynsLh/5dpYnYMh3G2UczpyDTMwusbfczMGM/Qd2Ji05Box
-        clZ6x6OoRfjI6KmXT4g4QyPydw==
-X-Google-Smtp-Source: APXvYqyuZohLeSpzWztkr2T1KKTB+XVi2pcKscokhxyYuYVKRhP9ieRmG4D7I5NKiLnB/HWjjqN/Lw==
-X-Received: by 2002:a05:6402:650:: with SMTP id u16mr3706065edx.211.1570637215934;
-        Wed, 09 Oct 2019 09:06:55 -0700 (PDT)
-Received: from phenom.ffwll.local (212-51-149-96.fiber7.init7.net. [212.51.149.96])
-        by smtp.gmail.com with ESMTPSA id i1sm320771ejv.92.2019.10.09.09.06.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Oct 2019 09:06:55 -0700 (PDT)
-Date:   Wed, 9 Oct 2019 18:06:52 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     "Kuehling, Felix" <Felix.Kuehling@amd.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>, "Ho, Kenny" <Kenny.Ho@amd.com>,
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fMg7mB8AxMFv6jat4q6tP9hm3esA6bqDZCTj3wrPYvs=;
+ b=g/PHUqKYVSCUzyM1xVbaK35LZ7X2NU2ayhYLNqOzxKAiwtJTdLRZgalxYi3P2T2BRoGkxZnTDiy6WXIl6Iltx1TjH5rE/+zinQoLlTVCfpT0kXptX3N2+qILdx64TGIWy4n+T+PrN7mg6EN7CHZxDPjCIUVZ++m91x3lnH24RlQ=
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.174.156) by
+ DM6PR12MB2891.namprd12.prod.outlook.com (20.179.71.153) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2347.16; Wed, 9 Oct 2019 15:53:42 +0000
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::e56a:1c63:d6bd:8034]) by DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::e56a:1c63:d6bd:8034%4]) with mapi id 15.20.2327.025; Wed, 9 Oct 2019
+ 15:53:42 +0000
+From:   "Kuehling, Felix" <Felix.Kuehling@amd.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+CC:     "Ho, Kenny" <Kenny.Ho@amd.com>,
         "y2kenny@gmail.com" <y2kenny@gmail.com>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
@@ -59,473 +50,363 @@ Cc:     Daniel Vetter <daniel@ffwll.ch>, "Ho, Kenny" <Kenny.Ho@amd.com>,
         "lkaplan@cray.com" <lkaplan@cray.com>
 Subject: Re: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
  resource
-Message-ID: <20191009160652.GO16989@phenom.ffwll.local>
+Thread-Topic: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
+ resource
+Thread-Index: AQHVXi/h1oN2voIWJ0+QRhZYbzbb9adRVuiAgAEGQICAAFH9AIAAAo+AgAAFXAA=
+Date:   Wed, 9 Oct 2019 15:53:42 +0000
+Message-ID: <c7812af4-7ec4-02bb-ff4c-21dd114cf38e@amd.com>
 References: <20190829060533.32315-1-Kenny.Ho@amd.com>
  <20190829060533.32315-15-Kenny.Ho@amd.com>
  <b3d2b3c1-8854-10ca-3e39-b3bef35bdfa9@amd.com>
  <20191009103153.GU16989@phenom.ffwll.local>
  <ee873e89-48fd-c4c9-1ce0-73965f4ad2ba@amd.com>
  <20191009153429.GI16989@phenom.ffwll.local>
- <c7812af4-7ec4-02bb-ff4c-21dd114cf38e@amd.com>
+In-Reply-To: <20191009153429.GI16989@phenom.ffwll.local>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [165.204.54.211]
+user-agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+x-clientproxiedby: YTOPR0101CA0032.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:15::45) To DM6PR12MB3947.namprd12.prod.outlook.com
+ (2603:10b6:5:1cb::28)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Felix.Kuehling@amd.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 36339ab7-8d6a-43d3-8f1a-08d74cd0dbee
+x-ms-office365-filtering-ht: Tenant
+x-ms-traffictypediagnostic: DM6PR12MB2891:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR12MB2891E14ABADB77A7D5DC9F1F92950@DM6PR12MB2891.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4941;
+x-forefront-prvs: 018577E36E
+x-forefront-antispam-report: SFV:NSPM;SFS:(10009020)(4636009)(376002)(39860400002)(396003)(136003)(346002)(366004)(199004)(189003)(81166006)(54906003)(65956001)(65806001)(81156014)(6916009)(66066001)(7736002)(6486002)(102836004)(36756003)(30864003)(58126008)(14444005)(256004)(8936002)(305945005)(71190400001)(5660300002)(71200400001)(8676002)(316002)(11346002)(14454004)(76176011)(478600001)(52116002)(99286004)(486006)(446003)(476003)(6246003)(186003)(86362001)(2906002)(386003)(6512007)(6436002)(6506007)(2616005)(31686004)(4326008)(31696002)(53546011)(6116002)(25786009)(3846002)(66556008)(64756008)(66446008)(66476007)(229853002)(26005)(66946007);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2891;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: oS3ToPWdepmY6/DoiLw+guXBpk+oU0nDop+mdVVmjzcNajS4YM2RAI6GIiQObKtw1+OIIyp84x3OSc6QupFuHU+xOTX7ltqCOB/hQwLcAjltht63mP1t1pP8933hMMv9UULIkbC61506mLSwxxr1gwrIYxHMo9VwcGXMUeHOThkkhqWQ+K7lYIJeDjt0pHoKR2yTUS6PQ4aAbypWjoJDqeqm4dLOQZex0GHQzLIZuk/wnJ9pqk9TTujcXocGLRgDsr7rLyCrKMuqY+mCQMEGOepwAsjYtl9lOn07LnIA/Pz6LfCrOkq5ReXXmRCOMPeRKRMQ9UINSNVTFt2WQz9s6QtrKGtyLAuXEwzgacvwP3AeVlGu666AZe9rsnfEGHTOmWZE4h5NR+6o7568+gJNp/IPmD+/yoyXwAXzndDH5Vc=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1194F9EC636FD342ADA64F4FF5D8961B@namprd12.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <c7812af4-7ec4-02bb-ff4c-21dd114cf38e@amd.com>
-X-Operating-System: Linux phenom 5.2.0-2-amd64 
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36339ab7-8d6a-43d3-8f1a-08d74cd0dbee
+X-MS-Exchange-CrossTenant-originalarrivaltime: 09 Oct 2019 15:53:42.4856
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 00KI5qras4qo6/XrALpWIj+MqjvOgHGs3E3WKWoOkKZjm1RV2H3MY2eAtCK0PhnG8cF9lMpV7AeidVZFvNhaOg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2891
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 09, 2019 at 03:53:42PM +0000, Kuehling, Felix wrote:
-> On 2019-10-09 11:34, Daniel Vetter wrote:
-> > On Wed, Oct 09, 2019 at 03:25:22PM +0000, Kuehling, Felix wrote:
-> >> On 2019-10-09 6:31, Daniel Vetter wrote:
-> >>> On Tue, Oct 08, 2019 at 06:53:18PM +0000, Kuehling, Felix wrote:
-> >>>> The description sounds reasonable to me and maps well to the CU masking
-> >>>> feature in our GPUs.
-> >>>>
-> >>>> It would also allow us to do more coarse-grained masking for example to
-> >>>> guarantee balanced allocation of CUs across shader engines or
-> >>>> partitioning of memory bandwidth or CP pipes (if that is supported by
-> >>>> the hardware/firmware).
-> >>> Hm, so this sounds like the definition for how this cgroup is supposed to
-> >>> work is "amd CU masking" (whatever that exactly is). And the abstract
-> >>> description is just prettification on top, but not actually the real
-> >>> definition you guys want.
-> >> I think you're reading this as the opposite of what I was trying to say.
-> >> Using CU masking is one possible implementation of LGPUs on AMD
-> >> hardware. It's the one that Kenny implemented at the end of this patch
-> >> series, and I pointed out some problems with that approach. Other ways
-> >> to partition the hardware into LGPUs are conceivable. For example we're
-> >> considering splitting it along the lines of shader engines, which is
-> >> more coarse-grain and would also affect memory bandwidth available to
-> >> each partition.
-> > If this is supposed to be useful for admins then "other ways to partition
-> > the hw are conceivable" is the problem. This should be unique&clear for
-> > admins/end-users. Reading the implementation details and realizing that
-> > the actual meaning is "amd CU masking" isn't good enough by far, since
-> > that's meaningless on any other hw.
-> >
-> > And if there's other ways to implement this cgroup for amd, it's also
-> > meaningless (to sysadmins/users) for amd hw.
-> >
-> >> We could also consider partitioning pipes in our command processor,
-> >> although that is not supported by our current CP scheduler firmware.
-> >>
-> >> The bottom line is, the LGPU model proposed by Kenny is quite abstract
-> >> and allows drivers implementing it a lot of flexibility depending on the
-> >> capability of their hardware and firmware. We haven't settled on a final
-> >> implementation choice even for AMD.
-> > That abstract model of essentially "anything goes" is the problem here
-> > imo. E.g. for cpu cgroups this would be similar to allowing the bitmaks to
-> > mean "cpu core" on one machine "physical die" on the next and maybe
-> > "hyperthread unit" on the 3rd. Useless for admins.
-> >
-> > So if we have a gpu bitmaks thing that might mean a command submissio pipe
-> > on one hw (maybe matching what vk exposed, maybe not), some compute unit
-> > mask on the next and something entirely different (e.g. intel has so
-> > called GT slices with compute cores + more stuff around) on the 3rd vendor
-> > then that's not useful for admins.
-> 
-> The goal is to partition GPU compute resources to eliminate as much 
-> resource contention as possible between different partitions. Different 
-> hardware will have different capabilities to implement this. No 
-> implementation will be perfect. For example, even with CPU cores that 
-> are supposedly well defined, you can still have different behaviours 
-> depending on CPU cache architectures, NUMA and thermal management across 
-> CPU cores. The admin will need some knowledge of their hardware 
-> architecture to understand those effects that are not described by the 
-> abstract model of cgroups.
-
-That's not the point I was making. For cpu cgroups there's a very well
-defined connection between the cpu bitmasks/numbers in cgroups and the cpu
-bitmasks you use in various system calls (they match). And that stuff
-works across vendors.
-
-We need the same for gpus.
-
-> The LGPU model is deliberately flexible, because GPU architectures are 
-> much less standardized than CPU architectures. Expecting a common model 
-> that is both very specific and applicable to to all GPUs is unrealistic, 
-> in my opinion.
-
-So pure abstraction isn't useful, we need to know what these bits mean.
-Since if they e.g. mean vk pipes, then maybe I shouldn't be using those vk
-pipes in my application anymore. Or we need to define that the userspace
-driver needs to filter out any pipes that arent' accessible (if that's
-possible, no idea).
-
-cgroups that essentially have pure hw depedent meaning aren't useful.
-Note: this is about the fundamental meaning, not about the more unclear
-isolation guarantees (which are indeed hw specific on different cpu
-platforms). We're not talking about "different gpus might have different
-amounts of shared caches bitween different bitmasks". We're talking
-"different gpus might assign completely differen meaning to these
-bitmasks".
--Daniel
-
-> 
-> Regards,
->    Felix
-> 
-> 
-> > -Daniel
-> >
-> >> Regards,
-> >>     Felix
-> >>
-> >>
-> >>> I think adding a cgroup which is that much depending upon the hw
-> >>> implementation of the first driver supporting it is not a good idea.
-> >>> -Daniel
-> >>>
-> >>>> I can't comment on the code as I'm unfamiliar with the details of the
-> >>>> cgroup code.
-> >>>>
-> >>>> Acked-by: Felix Kuehling <Felix.Kuehling@amd.com>
-> >>>>
-> >>>>
-> >>>>> ---
-> >>>>>     Documentation/admin-guide/cgroup-v2.rst |  46 ++++++++
-> >>>>>     include/drm/drm_cgroup.h                |   4 +
-> >>>>>     include/linux/cgroup_drm.h              |   6 ++
-> >>>>>     kernel/cgroup/drm.c                     | 135 ++++++++++++++++++++++++
-> >>>>>     4 files changed, 191 insertions(+)
-> >>>>>
-> >>>>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> >>>>> index 87a195133eaa..57f18469bd76 100644
-> >>>>> --- a/Documentation/admin-guide/cgroup-v2.rst
-> >>>>> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> >>>>> @@ -1958,6 +1958,52 @@ DRM Interface Files
-> >>>>>     	Set largest allocation for /dev/dri/card1 to 4MB
-> >>>>>     	echo "226:1 4m" > drm.buffer.peak.max
-> >>>>>     
-> >>>>> +  drm.lgpu
-> >>>>> +	A read-write nested-keyed file which exists on all cgroups.
-> >>>>> +	Each entry is keyed by the DRM device's major:minor.
-> >>>>> +
-> >>>>> +	lgpu stands for logical GPU, it is an abstraction used to
-> >>>>> +	subdivide a physical DRM device for the purpose of resource
-> >>>>> +	management.
-> >>>>> +
-> >>>>> +	The lgpu is a discrete quantity that is device specific (i.e.
-> >>>>> +	some DRM devices may have 64 lgpus while others may have 100
-> >>>>> +	lgpus.)  The lgpu is a single quantity with two representations
-> >>>>> +	denoted by the following nested keys.
-> >>>>> +
-> >>>>> +	  =====     ========================================
-> >>>>> +	  count     Representing lgpu as anonymous resource
-> >>>>> +	  list      Representing lgpu as named resource
-> >>>>> +	  =====     ========================================
-> >>>>> +
-> >>>>> +	For example:
-> >>>>> +	226:0 count=256 list=0-255
-> >>>>> +	226:1 count=4 list=0,2,4,6
-> >>>>> +	226:2 count=32 list=32-63
-> >>>>> +
-> >>>>> +	lgpu is represented by a bitmap and uses the bitmap_parselist
-> >>>>> +	kernel function so the list key input format is a
-> >>>>> +	comma-separated list of decimal numbers and ranges.
-> >>>>> +
-> >>>>> +	Consecutively set bits are shown as two hyphen-separated decimal
-> >>>>> +	numbers, the smallest and largest bit numbers set in the range.
-> >>>>> +	Optionally each range can be postfixed to denote that only parts
-> >>>>> +	of it should be set.  The range will divided to groups of
-> >>>>> +	specific size.
-> >>>>> +	Syntax: range:used_size/group_size
-> >>>>> +	Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
-> >>>>> +
-> >>>>> +	The count key is the hamming weight / hweight of the bitmap.
-> >>>>> +
-> >>>>> +	Both count and list accept the max and default keywords.
-> >>>>> +
-> >>>>> +	Some DRM devices may only support lgpu as anonymous resources.
-> >>>>> +	In such case, the significance of the position of the set bits
-> >>>>> +	in list will be ignored.
-> >>>>> +
-> >>>>> +	This lgpu resource supports the 'allocation' resource
-> >>>>> +	distribution model.
-> >>>>> +
-> >>>>>     GEM Buffer Ownership
-> >>>>>     ~~~~~~~~~~~~~~~~~~~~
-> >>>>>     
-> >>>>> diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
-> >>>>> index 6d9707e1eb72..a8d6be0b075b 100644
-> >>>>> --- a/include/drm/drm_cgroup.h
-> >>>>> +++ b/include/drm/drm_cgroup.h
-> >>>>> @@ -6,6 +6,7 @@
-> >>>>>     
-> >>>>>     #include <linux/cgroup_drm.h>
-> >>>>>     #include <linux/workqueue.h>
-> >>>>> +#include <linux/types.h>
-> >>>>>     #include <drm/ttm/ttm_bo_api.h>
-> >>>>>     #include <drm/ttm/ttm_bo_driver.h>
-> >>>>>     
-> >>>>> @@ -28,6 +29,9 @@ struct drmcg_props {
-> >>>>>     	s64			mem_highs_default[TTM_PL_PRIV+1];
-> >>>>>     
-> >>>>>     	struct work_struct	*mem_reclaim_wq[TTM_PL_PRIV];
-> >>>>> +
-> >>>>> +	int			lgpu_capacity;
-> >>>>> +        DECLARE_BITMAP(lgpu_slots, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>>     };
-> >>>>>     
-> >>>>>     #ifdef CONFIG_CGROUP_DRM
-> >>>>> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-> >>>>> index c56cfe74d1a6..7b1cfc4ce4c3 100644
-> >>>>> --- a/include/linux/cgroup_drm.h
-> >>>>> +++ b/include/linux/cgroup_drm.h
-> >>>>> @@ -14,6 +14,8 @@
-> >>>>>     /* limit defined per the way drm_minor_alloc operates */
-> >>>>>     #define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
-> >>>>>     
-> >>>>> +#define MAX_DRMCG_LGPU_CAPACITY 256
-> >>>>> +
-> >>>>>     enum drmcg_mem_bw_attr {
-> >>>>>     	DRMCG_MEM_BW_ATTR_BYTE_MOVED, /* for calulating 'instantaneous' bw */
-> >>>>>     	DRMCG_MEM_BW_ATTR_ACCUM_US,  /* for calulating 'instantaneous' bw */
-> >>>>> @@ -32,6 +34,7 @@ enum drmcg_res_type {
-> >>>>>     	DRMCG_TYPE_MEM_PEAK,
-> >>>>>     	DRMCG_TYPE_BANDWIDTH,
-> >>>>>     	DRMCG_TYPE_BANDWIDTH_PERIOD_BURST,
-> >>>>> +	DRMCG_TYPE_LGPU,
-> >>>>>     	__DRMCG_TYPE_LAST,
-> >>>>>     };
-> >>>>>     
-> >>>>> @@ -58,6 +61,9 @@ struct drmcg_device_resource {
-> >>>>>     	s64			mem_bw_stats[__DRMCG_MEM_BW_ATTR_LAST];
-> >>>>>     	s64			mem_bw_limits_bytes_in_period;
-> >>>>>     	s64			mem_bw_limits_avg_bytes_per_us;
-> >>>>> +
-> >>>>> +	s64			lgpu_used;
-> >>>>> +	DECLARE_BITMAP(lgpu_allocated, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>>     };
-> >>>>>     
-> >>>>>     /**
-> >>>>> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> >>>>> index 0ea7f0619e25..18c4368e2c29 100644
-> >>>>> --- a/kernel/cgroup/drm.c
-> >>>>> +++ b/kernel/cgroup/drm.c
-> >>>>> @@ -9,6 +9,7 @@
-> >>>>>     #include <linux/cgroup_drm.h>
-> >>>>>     #include <linux/ktime.h>
-> >>>>>     #include <linux/kernel.h>
-> >>>>> +#include <linux/bitmap.h>
-> >>>>>     #include <drm/drm_file.h>
-> >>>>>     #include <drm/drm_drv.h>
-> >>>>>     #include <drm/ttm/ttm_bo_api.h>
-> >>>>> @@ -52,6 +53,9 @@ static char const *mem_bw_attr_names[] = {
-> >>>>>     #define MEM_BW_LIMITS_NAME_AVG "avg_bytes_per_us"
-> >>>>>     #define MEM_BW_LIMITS_NAME_BURST "bytes_in_period"
-> >>>>>     
-> >>>>> +#define LGPU_LIMITS_NAME_LIST "list"
-> >>>>> +#define LGPU_LIMITS_NAME_COUNT "count"
-> >>>>> +
-> >>>>>     static struct drmcg *root_drmcg __read_mostly;
-> >>>>>     
-> >>>>>     static int drmcg_css_free_fn(int id, void *ptr, void *data)
-> >>>>> @@ -115,6 +119,10 @@ static inline int init_drmcg_single(struct drmcg *drmcg, struct drm_device *dev)
-> >>>>>     	for (i = 0; i <= TTM_PL_PRIV; i++)
-> >>>>>     		ddr->mem_highs[i] = dev->drmcg_props.mem_highs_default[i];
-> >>>>>     
-> >>>>> +	bitmap_copy(ddr->lgpu_allocated, dev->drmcg_props.lgpu_slots,
-> >>>>> +			MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +	ddr->lgpu_used = bitmap_weight(ddr->lgpu_allocated, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +
-> >>>>>     	mutex_unlock(&dev->drmcg_mutex);
-> >>>>>     	return 0;
-> >>>>>     }
-> >>>>> @@ -280,6 +288,14 @@ static void drmcg_print_limits(struct drmcg_device_resource *ddr,
-> >>>>>     				MEM_BW_LIMITS_NAME_AVG,
-> >>>>>     				ddr->mem_bw_limits_avg_bytes_per_us);
-> >>>>>     		break;
-> >>>>> +	case DRMCG_TYPE_LGPU:
-> >>>>> +		seq_printf(sf, "%s=%lld %s=%*pbl\n",
-> >>>>> +				LGPU_LIMITS_NAME_COUNT,
-> >>>>> +				ddr->lgpu_used,
-> >>>>> +				LGPU_LIMITS_NAME_LIST,
-> >>>>> +				dev->drmcg_props.lgpu_capacity,
-> >>>>> +				ddr->lgpu_allocated);
-> >>>>> +		break;
-> >>>>>     	default:
-> >>>>>     		seq_puts(sf, "\n");
-> >>>>>     		break;
-> >>>>> @@ -314,6 +330,15 @@ static void drmcg_print_default(struct drmcg_props *props,
-> >>>>>     				MEM_BW_LIMITS_NAME_AVG,
-> >>>>>     				props->mem_bw_avg_bytes_per_us_default);
-> >>>>>     		break;
-> >>>>> +	case DRMCG_TYPE_LGPU:
-> >>>>> +		seq_printf(sf, "%s=%d %s=%*pbl\n",
-> >>>>> +				LGPU_LIMITS_NAME_COUNT,
-> >>>>> +				bitmap_weight(props->lgpu_slots,
-> >>>>> +					props->lgpu_capacity),
-> >>>>> +				LGPU_LIMITS_NAME_LIST,
-> >>>>> +				props->lgpu_capacity,
-> >>>>> +				props->lgpu_slots);
-> >>>>> +		break;
-> >>>>>     	default:
-> >>>>>     		seq_puts(sf, "\n");
-> >>>>>     		break;
-> >>>>> @@ -407,9 +432,21 @@ static void drmcg_value_apply(struct drm_device *dev, s64 *dst, s64 val)
-> >>>>>     	mutex_unlock(&dev->drmcg_mutex);
-> >>>>>     }
-> >>>>>     
-> >>>>> +static void drmcg_lgpu_values_apply(struct drm_device *dev,
-> >>>>> +		struct drmcg_device_resource *ddr, unsigned long *val)
-> >>>>> +{
-> >>>>> +
-> >>>>> +	mutex_lock(&dev->drmcg_mutex);
-> >>>>> +	bitmap_copy(ddr->lgpu_allocated, val, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +	ddr->lgpu_used = bitmap_weight(ddr->lgpu_allocated, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +	mutex_unlock(&dev->drmcg_mutex);
-> >>>>> +}
-> >>>>> +
-> >>>>>     static void drmcg_nested_limit_parse(struct kernfs_open_file *of,
-> >>>>>     		struct drm_device *dev, char *attrs)
-> >>>>>     {
-> >>>>> +	DECLARE_BITMAP(tmp_bitmap, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +	DECLARE_BITMAP(chk_bitmap, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>>     	enum drmcg_res_type type =
-> >>>>>     		DRMCG_CTF_PRIV2RESTYPE(of_cft(of)->private);
-> >>>>>     	struct drmcg *drmcg = css_to_drmcg(of_css(of));
-> >>>>> @@ -501,6 +538,83 @@ static void drmcg_nested_limit_parse(struct kernfs_open_file *of,
-> >>>>>     				continue;
-> >>>>>     			}
-> >>>>>     			break; /* DRMCG_TYPE_MEM */
-> >>>>> +		case DRMCG_TYPE_LGPU:
-> >>>>> +			if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256) &&
-> >>>>> +				strncmp(sname, LGPU_LIMITS_NAME_COUNT, 256) )
-> >>>>> +				continue;
-> >>>>> +
-> >>>>> +                        if (!strcmp("max", sval) ||
-> >>>>> +					!strcmp("default", sval)) {
-> >>>>> +				if (parent != NULL)
-> >>>>> +					drmcg_lgpu_values_apply(dev, ddr,
-> >>>>> +						parent->dev_resources[minor]->
-> >>>>> +						lgpu_allocated);
-> >>>>> +				else
-> >>>>> +					drmcg_lgpu_values_apply(dev, ddr,
-> >>>>> +						props->lgpu_slots);
-> >>>>> +
-> >>>>> +				continue;
-> >>>>> +			}
-> >>>>> +
-> >>>>> +			if (strncmp(sname, LGPU_LIMITS_NAME_COUNT, 256) == 0) {
-> >>>>> +				p_max = parent == NULL ? props->lgpu_capacity:
-> >>>>> +					bitmap_weight(
-> >>>>> +					parent->dev_resources[minor]->
-> >>>>> +					lgpu_allocated, props->lgpu_capacity);
-> >>>>> +
-> >>>>> +				rc = drmcg_process_limit_s64_val(sval,
-> >>>>> +					false, p_max, p_max, &val);
-> >>>>> +
-> >>>>> +				if (rc || val < 0) {
-> >>>>> +					drmcg_pr_cft_err(drmcg, rc, cft_name,
-> >>>>> +							minor);
-> >>>>> +					continue;
-> >>>>> +				}
-> >>>>> +
-> >>>>> +				bitmap_zero(tmp_bitmap,
-> >>>>> +						MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +				bitmap_set(tmp_bitmap, 0, val);
-> >>>>> +			}
-> >>>>> +
-> >>>>> +			if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256) == 0) {
-> >>>>> +				rc = bitmap_parselist(sval, tmp_bitmap,
-> >>>>> +						MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +
-> >>>>> +				if (rc) {
-> >>>>> +					drmcg_pr_cft_err(drmcg, rc, cft_name,
-> >>>>> +							minor);
-> >>>>> +					continue;
-> >>>>> +				}
-> >>>>> +
-> >>>>> +                        	bitmap_andnot(chk_bitmap, tmp_bitmap,
-> >>>>> +					props->lgpu_slots,
-> >>>>> +					MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +
-> >>>>> +                        	if (!bitmap_empty(chk_bitmap,
-> >>>>> +						MAX_DRMCG_LGPU_CAPACITY)) {
-> >>>>> +					drmcg_pr_cft_err(drmcg, 0, cft_name,
-> >>>>> +							minor);
-> >>>>> +					continue;
-> >>>>> +				}
-> >>>>> +			}
-> >>>>> +
-> >>>>> +
-> >>>>> +                        if (parent != NULL) {
-> >>>>> +				bitmap_and(chk_bitmap, tmp_bitmap,
-> >>>>> +				parent->dev_resources[minor]->lgpu_allocated,
-> >>>>> +				props->lgpu_capacity);
-> >>>>> +
-> >>>>> +				if (bitmap_empty(chk_bitmap,
-> >>>>> +						props->lgpu_capacity)) {
-> >>>>> +					drmcg_pr_cft_err(drmcg, 0,
-> >>>>> +							cft_name, minor);
-> >>>>> +					continue;
-> >>>>> +				}
-> >>>>> +			}
-> >>>>> +
-> >>>>> +			drmcg_lgpu_values_apply(dev, ddr, tmp_bitmap);
-> >>>>> +
-> >>>>> +			break; /* DRMCG_TYPE_LGPU */
-> >>>>>     		default:
-> >>>>>     			break;
-> >>>>>     		} /* switch (type) */
-> >>>>> @@ -606,6 +720,7 @@ static ssize_t drmcg_limit_write(struct kernfs_open_file *of, char *buf,
-> >>>>>     			break;
-> >>>>>     		case DRMCG_TYPE_BANDWIDTH:
-> >>>>>     		case DRMCG_TYPE_MEM:
-> >>>>> +		case DRMCG_TYPE_LGPU:
-> >>>>>     			drmcg_nested_limit_parse(of, dm->dev, sattr);
-> >>>>>     			break;
-> >>>>>     		default:
-> >>>>> @@ -731,6 +846,20 @@ struct cftype files[] = {
-> >>>>>     		.private = DRMCG_CTF_PRIV(DRMCG_TYPE_BANDWIDTH,
-> >>>>>     						DRMCG_FTYPE_DEFAULT),
-> >>>>>     	},
-> >>>>> +	{
-> >>>>> +		.name = "lgpu",
-> >>>>> +		.seq_show = drmcg_seq_show,
-> >>>>> +		.write = drmcg_limit_write,
-> >>>>> +		.private = DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
-> >>>>> +						DRMCG_FTYPE_LIMIT),
-> >>>>> +	},
-> >>>>> +	{
-> >>>>> +		.name = "lgpu.default",
-> >>>>> +		.seq_show = drmcg_seq_show,
-> >>>>> +		.flags = CFTYPE_ONLY_ON_ROOT,
-> >>>>> +		.private = DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
-> >>>>> +						DRMCG_FTYPE_DEFAULT),
-> >>>>> +	},
-> >>>>>     	{ }	/* terminate */
-> >>>>>     };
-> >>>>>     
-> >>>>> @@ -744,6 +873,10 @@ struct cgroup_subsys drm_cgrp_subsys = {
-> >>>>>     
-> >>>>>     static inline void drmcg_update_cg_tree(struct drm_device *dev)
-> >>>>>     {
-> >>>>> +        bitmap_zero(dev->drmcg_props.lgpu_slots, MAX_DRMCG_LGPU_CAPACITY);
-> >>>>> +        bitmap_fill(dev->drmcg_props.lgpu_slots,
-> >>>>> +			dev->drmcg_props.lgpu_capacity);
-> >>>>> +
-> >>>>>     	/* init cgroups created before registration (i.e. root cgroup) */
-> >>>>>     	if (root_drmcg != NULL) {
-> >>>>>     		struct cgroup_subsys_state *pos;
-> >>>>> @@ -800,6 +933,8 @@ void drmcg_device_early_init(struct drm_device *dev)
-> >>>>>     	for (i = 0; i <= TTM_PL_PRIV; i++)
-> >>>>>     		dev->drmcg_props.mem_highs_default[i] = S64_MAX;
-> >>>>>     
-> >>>>> +	dev->drmcg_props.lgpu_capacity = MAX_DRMCG_LGPU_CAPACITY;
-> >>>>> +
-> >>>>>     	drmcg_update_cg_tree(dev);
-> >>>>>     }
-> >>>>>     EXPORT_SYMBOL(drmcg_device_early_init);
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+T24gMjAxOS0xMC0wOSAxMTozNCwgRGFuaWVsIFZldHRlciB3cm90ZToNCj4gT24gV2VkLCBPY3Qg
+MDksIDIwMTkgYXQgMDM6MjU6MjJQTSArMDAwMCwgS3VlaGxpbmcsIEZlbGl4IHdyb3RlOg0KPj4g
+T24gMjAxOS0xMC0wOSA2OjMxLCBEYW5pZWwgVmV0dGVyIHdyb3RlOg0KPj4+IE9uIFR1ZSwgT2N0
+IDA4LCAyMDE5IGF0IDA2OjUzOjE4UE0gKzAwMDAsIEt1ZWhsaW5nLCBGZWxpeCB3cm90ZToNCj4+
+Pj4gVGhlIGRlc2NyaXB0aW9uIHNvdW5kcyByZWFzb25hYmxlIHRvIG1lIGFuZCBtYXBzIHdlbGwg
+dG8gdGhlIENVIG1hc2tpbmcNCj4+Pj4gZmVhdHVyZSBpbiBvdXIgR1BVcy4NCj4+Pj4NCj4+Pj4g
+SXQgd291bGQgYWxzbyBhbGxvdyB1cyB0byBkbyBtb3JlIGNvYXJzZS1ncmFpbmVkIG1hc2tpbmcg
+Zm9yIGV4YW1wbGUgdG8NCj4+Pj4gZ3VhcmFudGVlIGJhbGFuY2VkIGFsbG9jYXRpb24gb2YgQ1Vz
+IGFjcm9zcyBzaGFkZXIgZW5naW5lcyBvcg0KPj4+PiBwYXJ0aXRpb25pbmcgb2YgbWVtb3J5IGJh
+bmR3aWR0aCBvciBDUCBwaXBlcyAoaWYgdGhhdCBpcyBzdXBwb3J0ZWQgYnkNCj4+Pj4gdGhlIGhh
+cmR3YXJlL2Zpcm13YXJlKS4NCj4+PiBIbSwgc28gdGhpcyBzb3VuZHMgbGlrZSB0aGUgZGVmaW5p
+dGlvbiBmb3IgaG93IHRoaXMgY2dyb3VwIGlzIHN1cHBvc2VkIHRvDQo+Pj4gd29yayBpcyAiYW1k
+IENVIG1hc2tpbmciICh3aGF0ZXZlciB0aGF0IGV4YWN0bHkgaXMpLiBBbmQgdGhlIGFic3RyYWN0
+DQo+Pj4gZGVzY3JpcHRpb24gaXMganVzdCBwcmV0dGlmaWNhdGlvbiBvbiB0b3AsIGJ1dCBub3Qg
+YWN0dWFsbHkgdGhlIHJlYWwNCj4+PiBkZWZpbml0aW9uIHlvdSBndXlzIHdhbnQuDQo+PiBJIHRo
+aW5rIHlvdSdyZSByZWFkaW5nIHRoaXMgYXMgdGhlIG9wcG9zaXRlIG9mIHdoYXQgSSB3YXMgdHJ5
+aW5nIHRvIHNheS4NCj4+IFVzaW5nIENVIG1hc2tpbmcgaXMgb25lIHBvc3NpYmxlIGltcGxlbWVu
+dGF0aW9uIG9mIExHUFVzIG9uIEFNRA0KPj4gaGFyZHdhcmUuIEl0J3MgdGhlIG9uZSB0aGF0IEtl
+bm55IGltcGxlbWVudGVkIGF0IHRoZSBlbmQgb2YgdGhpcyBwYXRjaA0KPj4gc2VyaWVzLCBhbmQg
+SSBwb2ludGVkIG91dCBzb21lIHByb2JsZW1zIHdpdGggdGhhdCBhcHByb2FjaC4gT3RoZXIgd2F5
+cw0KPj4gdG8gcGFydGl0aW9uIHRoZSBoYXJkd2FyZSBpbnRvIExHUFVzIGFyZSBjb25jZWl2YWJs
+ZS4gRm9yIGV4YW1wbGUgd2UncmUNCj4+IGNvbnNpZGVyaW5nIHNwbGl0dGluZyBpdCBhbG9uZyB0
+aGUgbGluZXMgb2Ygc2hhZGVyIGVuZ2luZXMsIHdoaWNoIGlzDQo+PiBtb3JlIGNvYXJzZS1ncmFp
+biBhbmQgd291bGQgYWxzbyBhZmZlY3QgbWVtb3J5IGJhbmR3aWR0aCBhdmFpbGFibGUgdG8NCj4+
+IGVhY2ggcGFydGl0aW9uLg0KPiBJZiB0aGlzIGlzIHN1cHBvc2VkIHRvIGJlIHVzZWZ1bCBmb3Ig
+YWRtaW5zIHRoZW4gIm90aGVyIHdheXMgdG8gcGFydGl0aW9uDQo+IHRoZSBodyBhcmUgY29uY2Vp
+dmFibGUiIGlzIHRoZSBwcm9ibGVtLiBUaGlzIHNob3VsZCBiZSB1bmlxdWUmY2xlYXIgZm9yDQo+
+IGFkbWlucy9lbmQtdXNlcnMuIFJlYWRpbmcgdGhlIGltcGxlbWVudGF0aW9uIGRldGFpbHMgYW5k
+IHJlYWxpemluZyB0aGF0DQo+IHRoZSBhY3R1YWwgbWVhbmluZyBpcyAiYW1kIENVIG1hc2tpbmci
+IGlzbid0IGdvb2QgZW5vdWdoIGJ5IGZhciwgc2luY2UNCj4gdGhhdCdzIG1lYW5pbmdsZXNzIG9u
+IGFueSBvdGhlciBody4NCj4NCj4gQW5kIGlmIHRoZXJlJ3Mgb3RoZXIgd2F5cyB0byBpbXBsZW1l
+bnQgdGhpcyBjZ3JvdXAgZm9yIGFtZCwgaXQncyBhbHNvDQo+IG1lYW5pbmdsZXNzICh0byBzeXNh
+ZG1pbnMvdXNlcnMpIGZvciBhbWQgaHcuDQo+DQo+PiBXZSBjb3VsZCBhbHNvIGNvbnNpZGVyIHBh
+cnRpdGlvbmluZyBwaXBlcyBpbiBvdXIgY29tbWFuZCBwcm9jZXNzb3IsDQo+PiBhbHRob3VnaCB0
+aGF0IGlzIG5vdCBzdXBwb3J0ZWQgYnkgb3VyIGN1cnJlbnQgQ1Agc2NoZWR1bGVyIGZpcm13YXJl
+Lg0KPj4NCj4+IFRoZSBib3R0b20gbGluZSBpcywgdGhlIExHUFUgbW9kZWwgcHJvcG9zZWQgYnkg
+S2VubnkgaXMgcXVpdGUgYWJzdHJhY3QNCj4+IGFuZCBhbGxvd3MgZHJpdmVycyBpbXBsZW1lbnRp
+bmcgaXQgYSBsb3Qgb2YgZmxleGliaWxpdHkgZGVwZW5kaW5nIG9uIHRoZQ0KPj4gY2FwYWJpbGl0
+eSBvZiB0aGVpciBoYXJkd2FyZSBhbmQgZmlybXdhcmUuIFdlIGhhdmVuJ3Qgc2V0dGxlZCBvbiBh
+IGZpbmFsDQo+PiBpbXBsZW1lbnRhdGlvbiBjaG9pY2UgZXZlbiBmb3IgQU1ELg0KPiBUaGF0IGFi
+c3RyYWN0IG1vZGVsIG9mIGVzc2VudGlhbGx5ICJhbnl0aGluZyBnb2VzIiBpcyB0aGUgcHJvYmxl
+bSBoZXJlDQo+IGltby4gRS5nLiBmb3IgY3B1IGNncm91cHMgdGhpcyB3b3VsZCBiZSBzaW1pbGFy
+IHRvIGFsbG93aW5nIHRoZSBiaXRtYWtzIHRvDQo+IG1lYW4gImNwdSBjb3JlIiBvbiBvbmUgbWFj
+aGluZSAicGh5c2ljYWwgZGllIiBvbiB0aGUgbmV4dCBhbmQgbWF5YmUNCj4gImh5cGVydGhyZWFk
+IHVuaXQiIG9uIHRoZSAzcmQuIFVzZWxlc3MgZm9yIGFkbWlucy4NCj4NCj4gU28gaWYgd2UgaGF2
+ZSBhIGdwdSBiaXRtYWtzIHRoaW5nIHRoYXQgbWlnaHQgbWVhbiBhIGNvbW1hbmQgc3VibWlzc2lv
+IHBpcGUNCj4gb24gb25lIGh3IChtYXliZSBtYXRjaGluZyB3aGF0IHZrIGV4cG9zZWQsIG1heWJl
+IG5vdCksIHNvbWUgY29tcHV0ZSB1bml0DQo+IG1hc2sgb24gdGhlIG5leHQgYW5kIHNvbWV0aGlu
+ZyBlbnRpcmVseSBkaWZmZXJlbnQgKGUuZy4gaW50ZWwgaGFzIHNvDQo+IGNhbGxlZCBHVCBzbGlj
+ZXMgd2l0aCBjb21wdXRlIGNvcmVzICsgbW9yZSBzdHVmZiBhcm91bmQpIG9uIHRoZSAzcmQgdmVu
+ZG9yDQo+IHRoZW4gdGhhdCdzIG5vdCB1c2VmdWwgZm9yIGFkbWlucy4NCg0KVGhlIGdvYWwgaXMg
+dG8gcGFydGl0aW9uIEdQVSBjb21wdXRlIHJlc291cmNlcyB0byBlbGltaW5hdGUgYXMgbXVjaCAN
+CnJlc291cmNlIGNvbnRlbnRpb24gYXMgcG9zc2libGUgYmV0d2VlbiBkaWZmZXJlbnQgcGFydGl0
+aW9ucy4gRGlmZmVyZW50IA0KaGFyZHdhcmUgd2lsbCBoYXZlIGRpZmZlcmVudCBjYXBhYmlsaXRp
+ZXMgdG8gaW1wbGVtZW50IHRoaXMuIE5vIA0KaW1wbGVtZW50YXRpb24gd2lsbCBiZSBwZXJmZWN0
+LiBGb3IgZXhhbXBsZSwgZXZlbiB3aXRoIENQVSBjb3JlcyB0aGF0IA0KYXJlIHN1cHBvc2VkbHkg
+d2VsbCBkZWZpbmVkLCB5b3UgY2FuIHN0aWxsIGhhdmUgZGlmZmVyZW50IGJlaGF2aW91cnMgDQpk
+ZXBlbmRpbmcgb24gQ1BVIGNhY2hlIGFyY2hpdGVjdHVyZXMsIE5VTUEgYW5kIHRoZXJtYWwgbWFu
+YWdlbWVudCBhY3Jvc3MgDQpDUFUgY29yZXMuIFRoZSBhZG1pbiB3aWxsIG5lZWQgc29tZSBrbm93
+bGVkZ2Ugb2YgdGhlaXIgaGFyZHdhcmUgDQphcmNoaXRlY3R1cmUgdG8gdW5kZXJzdGFuZCB0aG9z
+ZSBlZmZlY3RzIHRoYXQgYXJlIG5vdCBkZXNjcmliZWQgYnkgdGhlIA0KYWJzdHJhY3QgbW9kZWwg
+b2YgY2dyb3Vwcy4NCg0KVGhlIExHUFUgbW9kZWwgaXMgZGVsaWJlcmF0ZWx5IGZsZXhpYmxlLCBi
+ZWNhdXNlIEdQVSBhcmNoaXRlY3R1cmVzIGFyZSANCm11Y2ggbGVzcyBzdGFuZGFyZGl6ZWQgdGhh
+biBDUFUgYXJjaGl0ZWN0dXJlcy4gRXhwZWN0aW5nIGEgY29tbW9uIG1vZGVsIA0KdGhhdCBpcyBi
+b3RoIHZlcnkgc3BlY2lmaWMgYW5kIGFwcGxpY2FibGUgdG8gdG8gYWxsIEdQVXMgaXMgdW5yZWFs
+aXN0aWMsIA0KaW4gbXkgb3Bpbmlvbi4NCg0KUmVnYXJkcywNCiDCoCBGZWxpeA0KDQoNCj4gLURh
+bmllbA0KPg0KPj4gUmVnYXJkcywNCj4+ICAgwqAgRmVsaXgNCj4+DQo+Pg0KPj4+IEkgdGhpbmsg
+YWRkaW5nIGEgY2dyb3VwIHdoaWNoIGlzIHRoYXQgbXVjaCBkZXBlbmRpbmcgdXBvbiB0aGUgaHcN
+Cj4+PiBpbXBsZW1lbnRhdGlvbiBvZiB0aGUgZmlyc3QgZHJpdmVyIHN1cHBvcnRpbmcgaXQgaXMg
+bm90IGEgZ29vZCBpZGVhLg0KPj4+IC1EYW5pZWwNCj4+Pg0KPj4+PiBJIGNhbid0IGNvbW1lbnQg
+b24gdGhlIGNvZGUgYXMgSSdtIHVuZmFtaWxpYXIgd2l0aCB0aGUgZGV0YWlscyBvZiB0aGUNCj4+
+Pj4gY2dyb3VwIGNvZGUuDQo+Pj4+DQo+Pj4+IEFja2VkLWJ5OiBGZWxpeCBLdWVobGluZyA8RmVs
+aXguS3VlaGxpbmdAYW1kLmNvbT4NCj4+Pj4NCj4+Pj4NCj4+Pj4+IC0tLQ0KPj4+Pj4gICAgIERv
+Y3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvY2dyb3VwLXYyLnJzdCB8ICA0NiArKysrKysrKw0KPj4+
+Pj4gICAgIGluY2x1ZGUvZHJtL2RybV9jZ3JvdXAuaCAgICAgICAgICAgICAgICB8ICAgNCArDQo+
+Pj4+PiAgICAgaW5jbHVkZS9saW51eC9jZ3JvdXBfZHJtLmggICAgICAgICAgICAgIHwgICA2ICsr
+DQo+Pj4+PiAgICAga2VybmVsL2Nncm91cC9kcm0uYyAgICAgICAgICAgICAgICAgICAgIHwgMTM1
+ICsrKysrKysrKysrKysrKysrKysrKysrKw0KPj4+Pj4gICAgIDQgZmlsZXMgY2hhbmdlZCwgMTkx
+IGluc2VydGlvbnMoKykNCj4+Pj4+DQo+Pj4+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9h
+ZG1pbi1ndWlkZS9jZ3JvdXAtdjIucnN0IGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9jZ3Jv
+dXAtdjIucnN0DQo+Pj4+PiBpbmRleCA4N2ExOTUxMzNlYWEuLjU3ZjE4NDY5YmQ3NiAxMDA2NDQN
+Cj4+Pj4+IC0tLSBhL0RvY3VtZW50YXRpb24vYWRtaW4tZ3VpZGUvY2dyb3VwLXYyLnJzdA0KPj4+
+Pj4gKysrIGIvRG9jdW1lbnRhdGlvbi9hZG1pbi1ndWlkZS9jZ3JvdXAtdjIucnN0DQo+Pj4+PiBA
+QCAtMTk1OCw2ICsxOTU4LDUyIEBAIERSTSBJbnRlcmZhY2UgRmlsZXMNCj4+Pj4+ICAgICAJU2V0
+IGxhcmdlc3QgYWxsb2NhdGlvbiBmb3IgL2Rldi9kcmkvY2FyZDEgdG8gNE1CDQo+Pj4+PiAgICAg
+CWVjaG8gIjIyNjoxIDRtIiA+IGRybS5idWZmZXIucGVhay5tYXgNCj4+Pj4+ICAgICANCj4+Pj4+
+ICsgIGRybS5sZ3B1DQo+Pj4+PiArCUEgcmVhZC13cml0ZSBuZXN0ZWQta2V5ZWQgZmlsZSB3aGlj
+aCBleGlzdHMgb24gYWxsIGNncm91cHMuDQo+Pj4+PiArCUVhY2ggZW50cnkgaXMga2V5ZWQgYnkg
+dGhlIERSTSBkZXZpY2UncyBtYWpvcjptaW5vci4NCj4+Pj4+ICsNCj4+Pj4+ICsJbGdwdSBzdGFu
+ZHMgZm9yIGxvZ2ljYWwgR1BVLCBpdCBpcyBhbiBhYnN0cmFjdGlvbiB1c2VkIHRvDQo+Pj4+PiAr
+CXN1YmRpdmlkZSBhIHBoeXNpY2FsIERSTSBkZXZpY2UgZm9yIHRoZSBwdXJwb3NlIG9mIHJlc291
+cmNlDQo+Pj4+PiArCW1hbmFnZW1lbnQuDQo+Pj4+PiArDQo+Pj4+PiArCVRoZSBsZ3B1IGlzIGEg
+ZGlzY3JldGUgcXVhbnRpdHkgdGhhdCBpcyBkZXZpY2Ugc3BlY2lmaWMgKGkuZS4NCj4+Pj4+ICsJ
+c29tZSBEUk0gZGV2aWNlcyBtYXkgaGF2ZSA2NCBsZ3B1cyB3aGlsZSBvdGhlcnMgbWF5IGhhdmUg
+MTAwDQo+Pj4+PiArCWxncHVzLikgIFRoZSBsZ3B1IGlzIGEgc2luZ2xlIHF1YW50aXR5IHdpdGgg
+dHdvIHJlcHJlc2VudGF0aW9ucw0KPj4+Pj4gKwlkZW5vdGVkIGJ5IHRoZSBmb2xsb3dpbmcgbmVz
+dGVkIGtleXMuDQo+Pj4+PiArDQo+Pj4+PiArCSAgPT09PT0gICAgID09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT0NCj4+Pj4+ICsJICBjb3VudCAgICAgUmVwcmVzZW50aW5n
+IGxncHUgYXMgYW5vbnltb3VzIHJlc291cmNlDQo+Pj4+PiArCSAgbGlzdCAgICAgIFJlcHJlc2Vu
+dGluZyBsZ3B1IGFzIG5hbWVkIHJlc291cmNlDQo+Pj4+PiArCSAgPT09PT0gICAgID09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCj4+Pj4+ICsNCj4+Pj4+ICsJRm9yIGV4
+YW1wbGU6DQo+Pj4+PiArCTIyNjowIGNvdW50PTI1NiBsaXN0PTAtMjU1DQo+Pj4+PiArCTIyNjox
+IGNvdW50PTQgbGlzdD0wLDIsNCw2DQo+Pj4+PiArCTIyNjoyIGNvdW50PTMyIGxpc3Q9MzItNjMN
+Cj4+Pj4+ICsNCj4+Pj4+ICsJbGdwdSBpcyByZXByZXNlbnRlZCBieSBhIGJpdG1hcCBhbmQgdXNl
+cyB0aGUgYml0bWFwX3BhcnNlbGlzdA0KPj4+Pj4gKwlrZXJuZWwgZnVuY3Rpb24gc28gdGhlIGxp
+c3Qga2V5IGlucHV0IGZvcm1hdCBpcyBhDQo+Pj4+PiArCWNvbW1hLXNlcGFyYXRlZCBsaXN0IG9m
+IGRlY2ltYWwgbnVtYmVycyBhbmQgcmFuZ2VzLg0KPj4+Pj4gKw0KPj4+Pj4gKwlDb25zZWN1dGl2
+ZWx5IHNldCBiaXRzIGFyZSBzaG93biBhcyB0d28gaHlwaGVuLXNlcGFyYXRlZCBkZWNpbWFsDQo+
+Pj4+PiArCW51bWJlcnMsIHRoZSBzbWFsbGVzdCBhbmQgbGFyZ2VzdCBiaXQgbnVtYmVycyBzZXQg
+aW4gdGhlIHJhbmdlLg0KPj4+Pj4gKwlPcHRpb25hbGx5IGVhY2ggcmFuZ2UgY2FuIGJlIHBvc3Rm
+aXhlZCB0byBkZW5vdGUgdGhhdCBvbmx5IHBhcnRzDQo+Pj4+PiArCW9mIGl0IHNob3VsZCBiZSBz
+ZXQuICBUaGUgcmFuZ2Ugd2lsbCBkaXZpZGVkIHRvIGdyb3VwcyBvZg0KPj4+Pj4gKwlzcGVjaWZp
+YyBzaXplLg0KPj4+Pj4gKwlTeW50YXg6IHJhbmdlOnVzZWRfc2l6ZS9ncm91cF9zaXplDQo+Pj4+
+PiArCUV4YW1wbGU6IDAtMTAyMzoyLzI1NiA9PT4gMCwxLDI1NiwyNTcsNTEyLDUxMyw3NjgsNzY5
+DQo+Pj4+PiArDQo+Pj4+PiArCVRoZSBjb3VudCBrZXkgaXMgdGhlIGhhbW1pbmcgd2VpZ2h0IC8g
+aHdlaWdodCBvZiB0aGUgYml0bWFwLg0KPj4+Pj4gKw0KPj4+Pj4gKwlCb3RoIGNvdW50IGFuZCBs
+aXN0IGFjY2VwdCB0aGUgbWF4IGFuZCBkZWZhdWx0IGtleXdvcmRzLg0KPj4+Pj4gKw0KPj4+Pj4g
+KwlTb21lIERSTSBkZXZpY2VzIG1heSBvbmx5IHN1cHBvcnQgbGdwdSBhcyBhbm9ueW1vdXMgcmVz
+b3VyY2VzLg0KPj4+Pj4gKwlJbiBzdWNoIGNhc2UsIHRoZSBzaWduaWZpY2FuY2Ugb2YgdGhlIHBv
+c2l0aW9uIG9mIHRoZSBzZXQgYml0cw0KPj4+Pj4gKwlpbiBsaXN0IHdpbGwgYmUgaWdub3JlZC4N
+Cj4+Pj4+ICsNCj4+Pj4+ICsJVGhpcyBsZ3B1IHJlc291cmNlIHN1cHBvcnRzIHRoZSAnYWxsb2Nh
+dGlvbicgcmVzb3VyY2UNCj4+Pj4+ICsJZGlzdHJpYnV0aW9uIG1vZGVsLg0KPj4+Pj4gKw0KPj4+
+Pj4gICAgIEdFTSBCdWZmZXIgT3duZXJzaGlwDQo+Pj4+PiAgICAgfn5+fn5+fn5+fn5+fn5+fn5+
+fn4NCj4+Pj4+ICAgICANCj4+Pj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2RybS9kcm1fY2dyb3Vw
+LmggYi9pbmNsdWRlL2RybS9kcm1fY2dyb3VwLmgNCj4+Pj4+IGluZGV4IDZkOTcwN2UxZWI3Mi4u
+YThkNmJlMGIwNzViIDEwMDY0NA0KPj4+Pj4gLS0tIGEvaW5jbHVkZS9kcm0vZHJtX2Nncm91cC5o
+DQo+Pj4+PiArKysgYi9pbmNsdWRlL2RybS9kcm1fY2dyb3VwLmgNCj4+Pj4+IEBAIC02LDYgKzYs
+NyBAQA0KPj4+Pj4gICAgIA0KPj4+Pj4gICAgICNpbmNsdWRlIDxsaW51eC9jZ3JvdXBfZHJtLmg+
+DQo+Pj4+PiAgICAgI2luY2x1ZGUgPGxpbnV4L3dvcmtxdWV1ZS5oPg0KPj4+Pj4gKyNpbmNsdWRl
+IDxsaW51eC90eXBlcy5oPg0KPj4+Pj4gICAgICNpbmNsdWRlIDxkcm0vdHRtL3R0bV9ib19hcGku
+aD4NCj4+Pj4+ICAgICAjaW5jbHVkZSA8ZHJtL3R0bS90dG1fYm9fZHJpdmVyLmg+DQo+Pj4+PiAg
+ICAgDQo+Pj4+PiBAQCAtMjgsNiArMjksOSBAQCBzdHJ1Y3QgZHJtY2dfcHJvcHMgew0KPj4+Pj4g
+ICAgIAlzNjQJCQltZW1faGlnaHNfZGVmYXVsdFtUVE1fUExfUFJJVisxXTsNCj4+Pj4+ICAgICAN
+Cj4+Pj4+ICAgICAJc3RydWN0IHdvcmtfc3RydWN0CSptZW1fcmVjbGFpbV93cVtUVE1fUExfUFJJ
+Vl07DQo+Pj4+PiArDQo+Pj4+PiArCWludAkJCWxncHVfY2FwYWNpdHk7DQo+Pj4+PiArICAgICAg
+ICBERUNMQVJFX0JJVE1BUChsZ3B1X3Nsb3RzLCBNQVhfRFJNQ0dfTEdQVV9DQVBBQ0lUWSk7DQo+
+Pj4+PiAgICAgfTsNCj4+Pj4+ICAgICANCj4+Pj4+ICAgICAjaWZkZWYgQ09ORklHX0NHUk9VUF9E
+Uk0NCj4+Pj4+IGRpZmYgLS1naXQgYS9pbmNsdWRlL2xpbnV4L2Nncm91cF9kcm0uaCBiL2luY2x1
+ZGUvbGludXgvY2dyb3VwX2RybS5oDQo+Pj4+PiBpbmRleCBjNTZjZmU3NGQxYTYuLjdiMWNmYzRj
+ZTRjMyAxMDA2NDQNCj4+Pj4+IC0tLSBhL2luY2x1ZGUvbGludXgvY2dyb3VwX2RybS5oDQo+Pj4+
+PiArKysgYi9pbmNsdWRlL2xpbnV4L2Nncm91cF9kcm0uaA0KPj4+Pj4gQEAgLTE0LDYgKzE0LDgg
+QEANCj4+Pj4+ICAgICAvKiBsaW1pdCBkZWZpbmVkIHBlciB0aGUgd2F5IGRybV9taW5vcl9hbGxv
+YyBvcGVyYXRlcyAqLw0KPj4+Pj4gICAgICNkZWZpbmUgTUFYX0RSTV9ERVYgKDY0ICogRFJNX01J
+Tk9SX1JFTkRFUikNCj4+Pj4+ICAgICANCj4+Pj4+ICsjZGVmaW5lIE1BWF9EUk1DR19MR1BVX0NB
+UEFDSVRZIDI1Ng0KPj4+Pj4gKw0KPj4+Pj4gICAgIGVudW0gZHJtY2dfbWVtX2J3X2F0dHIgew0K
+Pj4+Pj4gICAgIAlEUk1DR19NRU1fQldfQVRUUl9CWVRFX01PVkVELCAvKiBmb3IgY2FsdWxhdGlu
+ZyAnaW5zdGFudGFuZW91cycgYncgKi8NCj4+Pj4+ICAgICAJRFJNQ0dfTUVNX0JXX0FUVFJfQUND
+VU1fVVMsICAvKiBmb3IgY2FsdWxhdGluZyAnaW5zdGFudGFuZW91cycgYncgKi8NCj4+Pj4+IEBA
+IC0zMiw2ICszNCw3IEBAIGVudW0gZHJtY2dfcmVzX3R5cGUgew0KPj4+Pj4gICAgIAlEUk1DR19U
+WVBFX01FTV9QRUFLLA0KPj4+Pj4gICAgIAlEUk1DR19UWVBFX0JBTkRXSURUSCwNCj4+Pj4+ICAg
+ICAJRFJNQ0dfVFlQRV9CQU5EV0lEVEhfUEVSSU9EX0JVUlNULA0KPj4+Pj4gKwlEUk1DR19UWVBF
+X0xHUFUsDQo+Pj4+PiAgICAgCV9fRFJNQ0dfVFlQRV9MQVNULA0KPj4+Pj4gICAgIH07DQo+Pj4+
+PiAgICAgDQo+Pj4+PiBAQCAtNTgsNiArNjEsOSBAQCBzdHJ1Y3QgZHJtY2dfZGV2aWNlX3Jlc291
+cmNlIHsNCj4+Pj4+ICAgICAJczY0CQkJbWVtX2J3X3N0YXRzW19fRFJNQ0dfTUVNX0JXX0FUVFJf
+TEFTVF07DQo+Pj4+PiAgICAgCXM2NAkJCW1lbV9id19saW1pdHNfYnl0ZXNfaW5fcGVyaW9kOw0K
+Pj4+Pj4gICAgIAlzNjQJCQltZW1fYndfbGltaXRzX2F2Z19ieXRlc19wZXJfdXM7DQo+Pj4+PiAr
+DQo+Pj4+PiArCXM2NAkJCWxncHVfdXNlZDsNCj4+Pj4+ICsJREVDTEFSRV9CSVRNQVAobGdwdV9h
+bGxvY2F0ZWQsIE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4+Pj4+ICAgICB9Ow0KPj4+Pj4g
+ICAgIA0KPj4+Pj4gICAgIC8qKg0KPj4+Pj4gZGlmZiAtLWdpdCBhL2tlcm5lbC9jZ3JvdXAvZHJt
+LmMgYi9rZXJuZWwvY2dyb3VwL2RybS5jDQo+Pj4+PiBpbmRleCAwZWE3ZjA2MTllMjUuLjE4YzQz
+NjhlMmMyOSAxMDA2NDQNCj4+Pj4+IC0tLSBhL2tlcm5lbC9jZ3JvdXAvZHJtLmMNCj4+Pj4+ICsr
+KyBiL2tlcm5lbC9jZ3JvdXAvZHJtLmMNCj4+Pj4+IEBAIC05LDYgKzksNyBAQA0KPj4+Pj4gICAg
+ICNpbmNsdWRlIDxsaW51eC9jZ3JvdXBfZHJtLmg+DQo+Pj4+PiAgICAgI2luY2x1ZGUgPGxpbnV4
+L2t0aW1lLmg+DQo+Pj4+PiAgICAgI2luY2x1ZGUgPGxpbnV4L2tlcm5lbC5oPg0KPj4+Pj4gKyNp
+bmNsdWRlIDxsaW51eC9iaXRtYXAuaD4NCj4+Pj4+ICAgICAjaW5jbHVkZSA8ZHJtL2RybV9maWxl
+Lmg+DQo+Pj4+PiAgICAgI2luY2x1ZGUgPGRybS9kcm1fZHJ2Lmg+DQo+Pj4+PiAgICAgI2luY2x1
+ZGUgPGRybS90dG0vdHRtX2JvX2FwaS5oPg0KPj4+Pj4gQEAgLTUyLDYgKzUzLDkgQEAgc3RhdGlj
+IGNoYXIgY29uc3QgKm1lbV9id19hdHRyX25hbWVzW10gPSB7DQo+Pj4+PiAgICAgI2RlZmluZSBN
+RU1fQldfTElNSVRTX05BTUVfQVZHICJhdmdfYnl0ZXNfcGVyX3VzIg0KPj4+Pj4gICAgICNkZWZp
+bmUgTUVNX0JXX0xJTUlUU19OQU1FX0JVUlNUICJieXRlc19pbl9wZXJpb2QiDQo+Pj4+PiAgICAg
+DQo+Pj4+PiArI2RlZmluZSBMR1BVX0xJTUlUU19OQU1FX0xJU1QgImxpc3QiDQo+Pj4+PiArI2Rl
+ZmluZSBMR1BVX0xJTUlUU19OQU1FX0NPVU5UICJjb3VudCINCj4+Pj4+ICsNCj4+Pj4+ICAgICBz
+dGF0aWMgc3RydWN0IGRybWNnICpyb290X2RybWNnIF9fcmVhZF9tb3N0bHk7DQo+Pj4+PiAgICAg
+DQo+Pj4+PiAgICAgc3RhdGljIGludCBkcm1jZ19jc3NfZnJlZV9mbihpbnQgaWQsIHZvaWQgKnB0
+ciwgdm9pZCAqZGF0YSkNCj4+Pj4+IEBAIC0xMTUsNiArMTE5LDEwIEBAIHN0YXRpYyBpbmxpbmUg
+aW50IGluaXRfZHJtY2dfc2luZ2xlKHN0cnVjdCBkcm1jZyAqZHJtY2csIHN0cnVjdCBkcm1fZGV2
+aWNlICpkZXYpDQo+Pj4+PiAgICAgCWZvciAoaSA9IDA7IGkgPD0gVFRNX1BMX1BSSVY7IGkrKykN
+Cj4+Pj4+ICAgICAJCWRkci0+bWVtX2hpZ2hzW2ldID0gZGV2LT5kcm1jZ19wcm9wcy5tZW1faGln
+aHNfZGVmYXVsdFtpXTsNCj4+Pj4+ICAgICANCj4+Pj4+ICsJYml0bWFwX2NvcHkoZGRyLT5sZ3B1
+X2FsbG9jYXRlZCwgZGV2LT5kcm1jZ19wcm9wcy5sZ3B1X3Nsb3RzLA0KPj4+Pj4gKwkJCU1BWF9E
+Uk1DR19MR1BVX0NBUEFDSVRZKTsNCj4+Pj4+ICsJZGRyLT5sZ3B1X3VzZWQgPSBiaXRtYXBfd2Vp
+Z2h0KGRkci0+bGdwdV9hbGxvY2F0ZWQsIE1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4+Pj4+
+ICsNCj4+Pj4+ICAgICAJbXV0ZXhfdW5sb2NrKCZkZXYtPmRybWNnX211dGV4KTsNCj4+Pj4+ICAg
+ICAJcmV0dXJuIDA7DQo+Pj4+PiAgICAgfQ0KPj4+Pj4gQEAgLTI4MCw2ICsyODgsMTQgQEAgc3Rh
+dGljIHZvaWQgZHJtY2dfcHJpbnRfbGltaXRzKHN0cnVjdCBkcm1jZ19kZXZpY2VfcmVzb3VyY2Ug
+KmRkciwNCj4+Pj4+ICAgICAJCQkJTUVNX0JXX0xJTUlUU19OQU1FX0FWRywNCj4+Pj4+ICAgICAJ
+CQkJZGRyLT5tZW1fYndfbGltaXRzX2F2Z19ieXRlc19wZXJfdXMpOw0KPj4+Pj4gICAgIAkJYnJl
+YWs7DQo+Pj4+PiArCWNhc2UgRFJNQ0dfVFlQRV9MR1BVOg0KPj4+Pj4gKwkJc2VxX3ByaW50Zihz
+ZiwgIiVzPSVsbGQgJXM9JSpwYmxcbiIsDQo+Pj4+PiArCQkJCUxHUFVfTElNSVRTX05BTUVfQ09V
+TlQsDQo+Pj4+PiArCQkJCWRkci0+bGdwdV91c2VkLA0KPj4+Pj4gKwkJCQlMR1BVX0xJTUlUU19O
+QU1FX0xJU1QsDQo+Pj4+PiArCQkJCWRldi0+ZHJtY2dfcHJvcHMubGdwdV9jYXBhY2l0eSwNCj4+
+Pj4+ICsJCQkJZGRyLT5sZ3B1X2FsbG9jYXRlZCk7DQo+Pj4+PiArCQlicmVhazsNCj4+Pj4+ICAg
+ICAJZGVmYXVsdDoNCj4+Pj4+ICAgICAJCXNlcV9wdXRzKHNmLCAiXG4iKTsNCj4+Pj4+ICAgICAJ
+CWJyZWFrOw0KPj4+Pj4gQEAgLTMxNCw2ICszMzAsMTUgQEAgc3RhdGljIHZvaWQgZHJtY2dfcHJp
+bnRfZGVmYXVsdChzdHJ1Y3QgZHJtY2dfcHJvcHMgKnByb3BzLA0KPj4+Pj4gICAgIAkJCQlNRU1f
+QldfTElNSVRTX05BTUVfQVZHLA0KPj4+Pj4gICAgIAkJCQlwcm9wcy0+bWVtX2J3X2F2Z19ieXRl
+c19wZXJfdXNfZGVmYXVsdCk7DQo+Pj4+PiAgICAgCQlicmVhazsNCj4+Pj4+ICsJY2FzZSBEUk1D
+R19UWVBFX0xHUFU6DQo+Pj4+PiArCQlzZXFfcHJpbnRmKHNmLCAiJXM9JWQgJXM9JSpwYmxcbiIs
+DQo+Pj4+PiArCQkJCUxHUFVfTElNSVRTX05BTUVfQ09VTlQsDQo+Pj4+PiArCQkJCWJpdG1hcF93
+ZWlnaHQocHJvcHMtPmxncHVfc2xvdHMsDQo+Pj4+PiArCQkJCQlwcm9wcy0+bGdwdV9jYXBhY2l0
+eSksDQo+Pj4+PiArCQkJCUxHUFVfTElNSVRTX05BTUVfTElTVCwNCj4+Pj4+ICsJCQkJcHJvcHMt
+PmxncHVfY2FwYWNpdHksDQo+Pj4+PiArCQkJCXByb3BzLT5sZ3B1X3Nsb3RzKTsNCj4+Pj4+ICsJ
+CWJyZWFrOw0KPj4+Pj4gICAgIAlkZWZhdWx0Og0KPj4+Pj4gICAgIAkJc2VxX3B1dHMoc2YsICJc
+biIpOw0KPj4+Pj4gICAgIAkJYnJlYWs7DQo+Pj4+PiBAQCAtNDA3LDkgKzQzMiwyMSBAQCBzdGF0
+aWMgdm9pZCBkcm1jZ192YWx1ZV9hcHBseShzdHJ1Y3QgZHJtX2RldmljZSAqZGV2LCBzNjQgKmRz
+dCwgczY0IHZhbCkNCj4+Pj4+ICAgICAJbXV0ZXhfdW5sb2NrKCZkZXYtPmRybWNnX211dGV4KTsN
+Cj4+Pj4+ICAgICB9DQo+Pj4+PiAgICAgDQo+Pj4+PiArc3RhdGljIHZvaWQgZHJtY2dfbGdwdV92
+YWx1ZXNfYXBwbHkoc3RydWN0IGRybV9kZXZpY2UgKmRldiwNCj4+Pj4+ICsJCXN0cnVjdCBkcm1j
+Z19kZXZpY2VfcmVzb3VyY2UgKmRkciwgdW5zaWduZWQgbG9uZyAqdmFsKQ0KPj4+Pj4gK3sNCj4+
+Pj4+ICsNCj4+Pj4+ICsJbXV0ZXhfbG9jaygmZGV2LT5kcm1jZ19tdXRleCk7DQo+Pj4+PiArCWJp
+dG1hcF9jb3B5KGRkci0+bGdwdV9hbGxvY2F0ZWQsIHZhbCwgTUFYX0RSTUNHX0xHUFVfQ0FQQUNJ
+VFkpOw0KPj4+Pj4gKwlkZHItPmxncHVfdXNlZCA9IGJpdG1hcF93ZWlnaHQoZGRyLT5sZ3B1X2Fs
+bG9jYXRlZCwgTUFYX0RSTUNHX0xHUFVfQ0FQQUNJVFkpOw0KPj4+Pj4gKwltdXRleF91bmxvY2so
+JmRldi0+ZHJtY2dfbXV0ZXgpOw0KPj4+Pj4gK30NCj4+Pj4+ICsNCj4+Pj4+ICAgICBzdGF0aWMg
+dm9pZCBkcm1jZ19uZXN0ZWRfbGltaXRfcGFyc2Uoc3RydWN0IGtlcm5mc19vcGVuX2ZpbGUgKm9m
+LA0KPj4+Pj4gICAgIAkJc3RydWN0IGRybV9kZXZpY2UgKmRldiwgY2hhciAqYXR0cnMpDQo+Pj4+
+PiAgICAgew0KPj4+Pj4gKwlERUNMQVJFX0JJVE1BUCh0bXBfYml0bWFwLCBNQVhfRFJNQ0dfTEdQ
+VV9DQVBBQ0lUWSk7DQo+Pj4+PiArCURFQ0xBUkVfQklUTUFQKGNoa19iaXRtYXAsIE1BWF9EUk1D
+R19MR1BVX0NBUEFDSVRZKTsNCj4+Pj4+ICAgICAJZW51bSBkcm1jZ19yZXNfdHlwZSB0eXBlID0N
+Cj4+Pj4+ICAgICAJCURSTUNHX0NURl9QUklWMlJFU1RZUEUob2ZfY2Z0KG9mKS0+cHJpdmF0ZSk7
+DQo+Pj4+PiAgICAgCXN0cnVjdCBkcm1jZyAqZHJtY2cgPSBjc3NfdG9fZHJtY2cob2ZfY3NzKG9m
+KSk7DQo+Pj4+PiBAQCAtNTAxLDYgKzUzOCw4MyBAQCBzdGF0aWMgdm9pZCBkcm1jZ19uZXN0ZWRf
+bGltaXRfcGFyc2Uoc3RydWN0IGtlcm5mc19vcGVuX2ZpbGUgKm9mLA0KPj4+Pj4gICAgIAkJCQlj
+b250aW51ZTsNCj4+Pj4+ICAgICAJCQl9DQo+Pj4+PiAgICAgCQkJYnJlYWs7IC8qIERSTUNHX1RZ
+UEVfTUVNICovDQo+Pj4+PiArCQljYXNlIERSTUNHX1RZUEVfTEdQVToNCj4+Pj4+ICsJCQlpZiAo
+c3RybmNtcChzbmFtZSwgTEdQVV9MSU1JVFNfTkFNRV9MSVNULCAyNTYpICYmDQo+Pj4+PiArCQkJ
+CXN0cm5jbXAoc25hbWUsIExHUFVfTElNSVRTX05BTUVfQ09VTlQsIDI1NikgKQ0KPj4+Pj4gKwkJ
+CQljb250aW51ZTsNCj4+Pj4+ICsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICBpZiAo
+IXN0cmNtcCgibWF4Iiwgc3ZhbCkgfHwNCj4+Pj4+ICsJCQkJCSFzdHJjbXAoImRlZmF1bHQiLCBz
+dmFsKSkgew0KPj4+Pj4gKwkJCQlpZiAocGFyZW50ICE9IE5VTEwpDQo+Pj4+PiArCQkJCQlkcm1j
+Z19sZ3B1X3ZhbHVlc19hcHBseShkZXYsIGRkciwNCj4+Pj4+ICsJCQkJCQlwYXJlbnQtPmRldl9y
+ZXNvdXJjZXNbbWlub3JdLT4NCj4+Pj4+ICsJCQkJCQlsZ3B1X2FsbG9jYXRlZCk7DQo+Pj4+PiAr
+CQkJCWVsc2UNCj4+Pj4+ICsJCQkJCWRybWNnX2xncHVfdmFsdWVzX2FwcGx5KGRldiwgZGRyLA0K
+Pj4+Pj4gKwkJCQkJCXByb3BzLT5sZ3B1X3Nsb3RzKTsNCj4+Pj4+ICsNCj4+Pj4+ICsJCQkJY29u
+dGludWU7DQo+Pj4+PiArCQkJfQ0KPj4+Pj4gKw0KPj4+Pj4gKwkJCWlmIChzdHJuY21wKHNuYW1l
+LCBMR1BVX0xJTUlUU19OQU1FX0NPVU5ULCAyNTYpID09IDApIHsNCj4+Pj4+ICsJCQkJcF9tYXgg
+PSBwYXJlbnQgPT0gTlVMTCA/IHByb3BzLT5sZ3B1X2NhcGFjaXR5Og0KPj4+Pj4gKwkJCQkJYml0
+bWFwX3dlaWdodCgNCj4+Pj4+ICsJCQkJCXBhcmVudC0+ZGV2X3Jlc291cmNlc1ttaW5vcl0tPg0K
+Pj4+Pj4gKwkJCQkJbGdwdV9hbGxvY2F0ZWQsIHByb3BzLT5sZ3B1X2NhcGFjaXR5KTsNCj4+Pj4+
+ICsNCj4+Pj4+ICsJCQkJcmMgPSBkcm1jZ19wcm9jZXNzX2xpbWl0X3M2NF92YWwoc3ZhbCwNCj4+
+Pj4+ICsJCQkJCWZhbHNlLCBwX21heCwgcF9tYXgsICZ2YWwpOw0KPj4+Pj4gKw0KPj4+Pj4gKwkJ
+CQlpZiAocmMgfHwgdmFsIDwgMCkgew0KPj4+Pj4gKwkJCQkJZHJtY2dfcHJfY2Z0X2Vycihkcm1j
+ZywgcmMsIGNmdF9uYW1lLA0KPj4+Pj4gKwkJCQkJCQltaW5vcik7DQo+Pj4+PiArCQkJCQljb250
+aW51ZTsNCj4+Pj4+ICsJCQkJfQ0KPj4+Pj4gKw0KPj4+Pj4gKwkJCQliaXRtYXBfemVybyh0bXBf
+Yml0bWFwLA0KPj4+Pj4gKwkJCQkJCU1BWF9EUk1DR19MR1BVX0NBUEFDSVRZKTsNCj4+Pj4+ICsJ
+CQkJYml0bWFwX3NldCh0bXBfYml0bWFwLCAwLCB2YWwpOw0KPj4+Pj4gKwkJCX0NCj4+Pj4+ICsN
+Cj4+Pj4+ICsJCQlpZiAoc3RybmNtcChzbmFtZSwgTEdQVV9MSU1JVFNfTkFNRV9MSVNULCAyNTYp
+ID09IDApIHsNCj4+Pj4+ICsJCQkJcmMgPSBiaXRtYXBfcGFyc2VsaXN0KHN2YWwsIHRtcF9iaXRt
+YXAsDQo+Pj4+PiArCQkJCQkJTUFYX0RSTUNHX0xHUFVfQ0FQQUNJVFkpOw0KPj4+Pj4gKw0KPj4+
+Pj4gKwkJCQlpZiAocmMpIHsNCj4+Pj4+ICsJCQkJCWRybWNnX3ByX2NmdF9lcnIoZHJtY2csIHJj
+LCBjZnRfbmFtZSwNCj4+Pj4+ICsJCQkJCQkJbWlub3IpOw0KPj4+Pj4gKwkJCQkJY29udGludWU7
+DQo+Pj4+PiArCQkJCX0NCj4+Pj4+ICsNCj4+Pj4+ICsgICAgICAgICAgICAgICAgICAgICAgICAJ
+Yml0bWFwX2FuZG5vdChjaGtfYml0bWFwLCB0bXBfYml0bWFwLA0KPj4+Pj4gKwkJCQkJcHJvcHMt
+PmxncHVfc2xvdHMsDQo+Pj4+PiArCQkJCQlNQVhfRFJNQ0dfTEdQVV9DQVBBQ0lUWSk7DQo+Pj4+
+PiArDQo+Pj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgCWlmICghYml0bWFwX2VtcHR5KGNo
+a19iaXRtYXAsDQo+Pj4+PiArCQkJCQkJTUFYX0RSTUNHX0xHUFVfQ0FQQUNJVFkpKSB7DQo+Pj4+
+PiArCQkJCQlkcm1jZ19wcl9jZnRfZXJyKGRybWNnLCAwLCBjZnRfbmFtZSwNCj4+Pj4+ICsJCQkJ
+CQkJbWlub3IpOw0KPj4+Pj4gKwkJCQkJY29udGludWU7DQo+Pj4+PiArCQkJCX0NCj4+Pj4+ICsJ
+CQl9DQo+Pj4+PiArDQo+Pj4+PiArDQo+Pj4+PiArICAgICAgICAgICAgICAgICAgICAgICAgaWYg
+KHBhcmVudCAhPSBOVUxMKSB7DQo+Pj4+PiArCQkJCWJpdG1hcF9hbmQoY2hrX2JpdG1hcCwgdG1w
+X2JpdG1hcCwNCj4+Pj4+ICsJCQkJcGFyZW50LT5kZXZfcmVzb3VyY2VzW21pbm9yXS0+bGdwdV9h
+bGxvY2F0ZWQsDQo+Pj4+PiArCQkJCXByb3BzLT5sZ3B1X2NhcGFjaXR5KTsNCj4+Pj4+ICsNCj4+
+Pj4+ICsJCQkJaWYgKGJpdG1hcF9lbXB0eShjaGtfYml0bWFwLA0KPj4+Pj4gKwkJCQkJCXByb3Bz
+LT5sZ3B1X2NhcGFjaXR5KSkgew0KPj4+Pj4gKwkJCQkJZHJtY2dfcHJfY2Z0X2Vycihkcm1jZywg
+MCwNCj4+Pj4+ICsJCQkJCQkJY2Z0X25hbWUsIG1pbm9yKTsNCj4+Pj4+ICsJCQkJCWNvbnRpbnVl
+Ow0KPj4+Pj4gKwkJCQl9DQo+Pj4+PiArCQkJfQ0KPj4+Pj4gKw0KPj4+Pj4gKwkJCWRybWNnX2xn
+cHVfdmFsdWVzX2FwcGx5KGRldiwgZGRyLCB0bXBfYml0bWFwKTsNCj4+Pj4+ICsNCj4+Pj4+ICsJ
+CQlicmVhazsgLyogRFJNQ0dfVFlQRV9MR1BVICovDQo+Pj4+PiAgICAgCQlkZWZhdWx0Og0KPj4+
+Pj4gICAgIAkJCWJyZWFrOw0KPj4+Pj4gICAgIAkJfSAvKiBzd2l0Y2ggKHR5cGUpICovDQo+Pj4+
+PiBAQCAtNjA2LDYgKzcyMCw3IEBAIHN0YXRpYyBzc2l6ZV90IGRybWNnX2xpbWl0X3dyaXRlKHN0
+cnVjdCBrZXJuZnNfb3Blbl9maWxlICpvZiwgY2hhciAqYnVmLA0KPj4+Pj4gICAgIAkJCWJyZWFr
+Ow0KPj4+Pj4gICAgIAkJY2FzZSBEUk1DR19UWVBFX0JBTkRXSURUSDoNCj4+Pj4+ICAgICAJCWNh
+c2UgRFJNQ0dfVFlQRV9NRU06DQo+Pj4+PiArCQljYXNlIERSTUNHX1RZUEVfTEdQVToNCj4+Pj4+
+ICAgICAJCQlkcm1jZ19uZXN0ZWRfbGltaXRfcGFyc2Uob2YsIGRtLT5kZXYsIHNhdHRyKTsNCj4+
+Pj4+ICAgICAJCQlicmVhazsNCj4+Pj4+ICAgICAJCWRlZmF1bHQ6DQo+Pj4+PiBAQCAtNzMxLDYg
+Kzg0NiwyMCBAQCBzdHJ1Y3QgY2Z0eXBlIGZpbGVzW10gPSB7DQo+Pj4+PiAgICAgCQkucHJpdmF0
+ZSA9IERSTUNHX0NURl9QUklWKERSTUNHX1RZUEVfQkFORFdJRFRILA0KPj4+Pj4gICAgIAkJCQkJ
+CURSTUNHX0ZUWVBFX0RFRkFVTFQpLA0KPj4+Pj4gICAgIAl9LA0KPj4+Pj4gKwl7DQo+Pj4+PiAr
+CQkubmFtZSA9ICJsZ3B1IiwNCj4+Pj4+ICsJCS5zZXFfc2hvdyA9IGRybWNnX3NlcV9zaG93LA0K
+Pj4+Pj4gKwkJLndyaXRlID0gZHJtY2dfbGltaXRfd3JpdGUsDQo+Pj4+PiArCQkucHJpdmF0ZSA9
+IERSTUNHX0NURl9QUklWKERSTUNHX1RZUEVfTEdQVSwNCj4+Pj4+ICsJCQkJCQlEUk1DR19GVFlQ
+RV9MSU1JVCksDQo+Pj4+PiArCX0sDQo+Pj4+PiArCXsNCj4+Pj4+ICsJCS5uYW1lID0gImxncHUu
+ZGVmYXVsdCIsDQo+Pj4+PiArCQkuc2VxX3Nob3cgPSBkcm1jZ19zZXFfc2hvdywNCj4+Pj4+ICsJ
+CS5mbGFncyA9IENGVFlQRV9PTkxZX09OX1JPT1QsDQo+Pj4+PiArCQkucHJpdmF0ZSA9IERSTUNH
+X0NURl9QUklWKERSTUNHX1RZUEVfTEdQVSwNCj4+Pj4+ICsJCQkJCQlEUk1DR19GVFlQRV9ERUZB
+VUxUKSwNCj4+Pj4+ICsJfSwNCj4+Pj4+ICAgICAJeyB9CS8qIHRlcm1pbmF0ZSAqLw0KPj4+Pj4g
+ICAgIH07DQo+Pj4+PiAgICAgDQo+Pj4+PiBAQCAtNzQ0LDYgKzg3MywxMCBAQCBzdHJ1Y3QgY2dy
+b3VwX3N1YnN5cyBkcm1fY2dycF9zdWJzeXMgPSB7DQo+Pj4+PiAgICAgDQo+Pj4+PiAgICAgc3Rh
+dGljIGlubGluZSB2b2lkIGRybWNnX3VwZGF0ZV9jZ190cmVlKHN0cnVjdCBkcm1fZGV2aWNlICpk
+ZXYpDQo+Pj4+PiAgICAgew0KPj4+Pj4gKyAgICAgICAgYml0bWFwX3plcm8oZGV2LT5kcm1jZ19w
+cm9wcy5sZ3B1X3Nsb3RzLCBNQVhfRFJNQ0dfTEdQVV9DQVBBQ0lUWSk7DQo+Pj4+PiArICAgICAg
+ICBiaXRtYXBfZmlsbChkZXYtPmRybWNnX3Byb3BzLmxncHVfc2xvdHMsDQo+Pj4+PiArCQkJZGV2
+LT5kcm1jZ19wcm9wcy5sZ3B1X2NhcGFjaXR5KTsNCj4+Pj4+ICsNCj4+Pj4+ICAgICAJLyogaW5p
+dCBjZ3JvdXBzIGNyZWF0ZWQgYmVmb3JlIHJlZ2lzdHJhdGlvbiAoaS5lLiByb290IGNncm91cCkg
+Ki8NCj4+Pj4+ICAgICAJaWYgKHJvb3RfZHJtY2cgIT0gTlVMTCkgew0KPj4+Pj4gICAgIAkJc3Ry
+dWN0IGNncm91cF9zdWJzeXNfc3RhdGUgKnBvczsNCj4+Pj4+IEBAIC04MDAsNiArOTMzLDggQEAg
+dm9pZCBkcm1jZ19kZXZpY2VfZWFybHlfaW5pdChzdHJ1Y3QgZHJtX2RldmljZSAqZGV2KQ0KPj4+
+Pj4gICAgIAlmb3IgKGkgPSAwOyBpIDw9IFRUTV9QTF9QUklWOyBpKyspDQo+Pj4+PiAgICAgCQlk
+ZXYtPmRybWNnX3Byb3BzLm1lbV9oaWdoc19kZWZhdWx0W2ldID0gUzY0X01BWDsNCj4+Pj4+ICAg
+ICANCj4+Pj4+ICsJZGV2LT5kcm1jZ19wcm9wcy5sZ3B1X2NhcGFjaXR5ID0gTUFYX0RSTUNHX0xH
+UFVfQ0FQQUNJVFk7DQo+Pj4+PiArDQo+Pj4+PiAgICAgCWRybWNnX3VwZGF0ZV9jZ190cmVlKGRl
+dik7DQo+Pj4+PiAgICAgfQ0KPj4+Pj4gICAgIEVYUE9SVF9TWU1CT0woZHJtY2dfZGV2aWNlX2Vh
+cmx5X2luaXQpOw0K
