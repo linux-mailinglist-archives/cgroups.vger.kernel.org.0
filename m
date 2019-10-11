@@ -2,81 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC8E4D4BAD
-	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2019 03:06:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A1CFD4DCA
+	for <lists+cgroups@lfdr.de>; Sat, 12 Oct 2019 08:54:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728486AbfJLBGR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 11 Oct 2019 21:06:17 -0400
-Received: from mx2a.mailbox.org ([80.241.60.219]:57995 "EHLO mx2a.mailbox.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726863AbfJLBGR (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 11 Oct 2019 21:06:17 -0400
-Received: from smtp2.mailbox.org (smtp2.mailbox.org [80.241.60.241])
-        (using TLSv1.2 with cipher ECDHE-RSA-CHACHA20-POLY1305 (256/256 bits))
-        (No client certificate requested)
-        by mx2a.mailbox.org (Postfix) with ESMTPS id B4EABA1585;
-        Sat, 12 Oct 2019 03:06:14 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at heinlein-support.de
-Received: from smtp2.mailbox.org ([80.241.60.241])
-        by hefe.heinlein-support.de (hefe.heinlein-support.de [91.198.250.172]) (amavisd-new, port 10030)
-        with ESMTP id HpnuEwOz63oE; Sat, 12 Oct 2019 03:06:11 +0200 (CEST)
-From:   Aleksa Sarai <cyphar@cyphar.com>
-To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Aleksa Sarai <cyphar@cyphar.com>, stable@vger.kernel.org
-Subject: [PATCH] cgroup: pids: use {READ,WRITE}_ONCE for pids->limit operations
-Date:   Sat, 12 Oct 2019 12:05:39 +1100
-Message-Id: <20191012010539.6131-1-cyphar@cyphar.com>
+        id S1729177AbfJLGxn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 12 Oct 2019 02:53:43 -0400
+Received: from [206.81.8.171] ([206.81.8.171]:46994 "EHLO varon.localdomain"
+        rhost-flags-FAIL-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728842AbfJLGxn (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 12 Oct 2019 02:53:43 -0400
+X-Greylist: delayed 46022 seconds by postgrey-1.27 at vger.kernel.org; Sat, 12 Oct 2019 02:53:43 EDT
+Received: from 127.0.0.1 (varon [127.0.0.1])
+        by varon.localdomain (Postfix) with SMTP id 7668A5533C4;
+        Fri, 11 Oct 2019 10:20:29 +0000 (UTC)
+Received: from [155.137.103.150] by 127.0.0.1 SMTP id ZBaKeY1V8N3CC2; Fri, 11 Oct 2019 10:13:32 +0000
+Message-ID: <48$k7nnoipy427vuxv$-$h-43b5su@uu6.m6.u.j.aq>
+From:   "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+Reply-To: "Mr Barrister Hans Erich" <dave@dbsoundfactory.com>
+To:     cfrdhhkap@gmail.com
+Subject: RE:PERSONAL LETTER FROM MRS RASHIA AMIRA ??
+Date:   Fri, 11 Oct 19 10:13:32 GMT
+X-Mailer: eGroups Message Poster
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/alternative;
+        boundary="C.F387.BA..3D"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Because pids->limit can be changed concurrently (but we don't want to
-take a lock because it would be needlessly expensive), use the
-appropriate memory barriers.
 
-Fixes: commit 49b786ea146f ("cgroup: implement the PIDs subsystem")
-Cc: stable@vger.kernel.org # v4.3+
-Signed-off-by: Aleksa Sarai <cyphar@cyphar.com>
----
- kernel/cgroup/pids.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+--C.F387.BA..3D
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
-index 8e513a573fe9..a726e4a20177 100644
---- a/kernel/cgroup/pids.c
-+++ b/kernel/cgroup/pids.c
-@@ -152,7 +152,7 @@ static int pids_try_charge(struct pids_cgroup *pids, int num)
- 		 * p->limit is %PIDS_MAX then we know that this test will never
- 		 * fail.
- 		 */
--		if (new > p->limit)
-+		if (new > READ_ONCE(p->limit))
- 			goto revert;
- 	}
- 
-@@ -277,7 +277,7 @@ static ssize_t pids_max_write(struct kernfs_open_file *of, char *buf,
- 	 * Limit updates don't need to be mutex'd, since it isn't
- 	 * critical that any racing fork()s follow the new limit.
- 	 */
--	pids->limit = limit;
-+	WRITE_ONCE(pids->limit, limit);
- 	return nbytes;
- }
- 
-@@ -285,7 +285,7 @@ static int pids_max_show(struct seq_file *sf, void *v)
- {
- 	struct cgroup_subsys_state *css = seq_css(sf);
- 	struct pids_cgroup *pids = css_pids(css);
--	int64_t limit = pids->limit;
-+	int64_t limit = READ_ONCE(pids->limit);
- 
- 	if (limit >= PIDS_MAX)
- 		seq_printf(sf, "%s\n", PIDS_MAX_STR);
--- 
-2.23.0
+Greetings
+
+My name is Barrister Hans Erich.
+
+I have a client who is interested to invest in your country, she is a well=
+ known politician in her country and deserve a lucrative investment partne=
+rship with you outside her country without any delay   Please can you mana=
+ge such investment please Kindly reply for further details.
+
+Your full nameS -----------
+
+
+Your urgent response will be appreciated
+
+Thank you and God bless you.
+
+Barrister Hans Erich
+
+Yours sincerely,
+Barrister Hans Erich
+
+--C.F387.BA..3D--
 
