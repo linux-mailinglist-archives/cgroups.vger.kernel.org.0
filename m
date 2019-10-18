@@ -2,74 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61E05DBEA0
-	for <lists+cgroups@lfdr.de>; Fri, 18 Oct 2019 09:44:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0E46DCBF3
+	for <lists+cgroups@lfdr.de>; Fri, 18 Oct 2019 18:53:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409616AbfJRHoj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Oct 2019 03:44:39 -0400
-Received: from zaovasilisa.ru ([88.200.194.99]:37528 "EHLO usrv.lan"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727388AbfJRHoj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 18 Oct 2019 03:44:39 -0400
-X-Greylist: delayed 40262 seconds by postgrey-1.27 at vger.kernel.org; Fri, 18 Oct 2019 03:44:38 EDT
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-        by usrv.lan (Postfix) with SMTP id 05D29182AC8;
-        Thu, 17 Oct 2019 17:01:06 +0400 (MSD)
-Received: from [246.144.217.41] by 127.0.0.1 id <2972452-39107>; Thu, 17 Oct 2019 11:52:59 -0100
-Message-ID: <339651826890q-x$7-6v@jq22t.32.4qac>
-From:   "Mr Ekrem Bayraktar" <dave@dbsoundfactory.com>
-Reply-To: "Mr Ekrem Bayraktar" <dave@dbsoundfactory.com>
-To:     cezlcqmrw@gmail.com
-Subject: MOTHERLESS CHILDREN IN YOUR CITY !!
-Date:   Thu, 17 Oct 19 11:52:59 GMT
-X-Mailer: Microsoft Outlook, Build 10.0.2616
-MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="EFA7_FB09FAD2"
-X-Priority: 3
-X-MSMail-Priority: Normal
+        id S2409164AbfJRQwp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Oct 2019 12:52:45 -0400
+Received: from mail-pg1-f202.google.com ([209.85.215.202]:35770 "EHLO
+        mail-pg1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390112AbfJRQwp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 18 Oct 2019 12:52:45 -0400
+Received: by mail-pg1-f202.google.com with SMTP id s1so4671937pgm.2
+        for <cgroups@vger.kernel.org>; Fri, 18 Oct 2019 09:52:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=yWD+8FP6D8DfujJ7rsI4O3txgqrFc1FsN7SOOiTmyZA=;
+        b=G7/uFZntGWL1Sd6i0OmT6HrejeSuZX5Fn71TrVkVfcXP2GghJpud+Fh0KwkgY9qgTd
+         d0mKZKqQojWelgXU2KA2wVtTPxOFvjtmWOYCDj8DW/lbI8CvU1Nd57uYJCACqLCOCJTY
+         28SD7bydR3Y8tPRCxNbR6pwed6lJE3zHpbF3670cjQGksrEgy/eFbvEzR+xnHQ9K4lX3
+         49Do0H5e7dcv8dthphBvsndxB7kIuILeUX3ksKUf/RkjTpHi7cIUlf0B7pc89HvhYcK+
+         bzcMgLZyJLWlWpjXtVpv78Zl3je0NfajuhkgdDPfzqWUQBd1jaYiFeOiDi7IabP60P/H
+         43sQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=yWD+8FP6D8DfujJ7rsI4O3txgqrFc1FsN7SOOiTmyZA=;
+        b=lbcTmsHub8WGeG2/2jGGMt/6lsnzZLbPTI4PXIWb5UUdMzAzqzgZGWIWp7jHzgEEjq
+         /hNYWDYo1dgs6fYo9KqMw8XrMDv7ARerO5uhaPCfTI2mc758hx5W121I0xfPcBus/sQ2
+         mOOY53ip76NwjK/GNk/2jsAnmhB7kYM2q1rwXbSzB6sf+tP4b2Pn4yUHmdnTXduYVXMJ
+         wpu3JRFNjst9XPoO64SoaOpPgc/yJf1ZtJcVNQfGtLeUOgNinrT36CYs0k88Pc6de5il
+         rryGuydwQgrsboVE3SobQEHVNbwsVD38M7a1TO955afGc/+gwtMN/xkpu/QV5A7qzSLm
+         aLrQ==
+X-Gm-Message-State: APjAAAXMeNQi6u4vaBXKyqsmS4kfdQ6qoq7pAdw+ppDHbQ793C/PuzIP
+        ypKO8sdE0akV5CI1q7NsHytBbpLItELlbg==
+X-Google-Smtp-Source: APXvYqw0AZIql94+DUFhLMqbDzyVhCnNkmLnU+LuFyUVmZOlZOlX79dC8N+AjV/sSoiuHomiIBHw5PgsWreDGA==
+X-Received: by 2002:a65:6408:: with SMTP id a8mr11107468pgv.357.1571417564005;
+ Fri, 18 Oct 2019 09:52:44 -0700 (PDT)
+Date:   Fri, 18 Oct 2019 09:52:31 -0700
+Message-Id: <20191018165231.249872-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.23.0.866.gb869b98d4c-goog
+Subject: [PATCH] mm: memcontrol: fix NULL-ptr deref in percpu stats flush
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Shakeel Butt <shakeelb@google.com>,
+        syzbot+515d5bcfe179cdf049b2@syzkaller.appspotmail.com,
+        Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        stable@vger.kernel.org, Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+__mem_cgroup_free() can be called on the failure path in
+mem_cgroup_alloc(). However memcg_flush_percpu_vmstats() and
+memcg_flush_percpu_vmevents() which are called from __mem_cgroup_free()
+access the fields of memcg which can potentially be null if called from
+failure path from mem_cgroup_alloc(). Indeed syzbot has reported the
+following crash:
 
---EFA7_FB09FAD2
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
+	R13: 00000000004bf27d R14: 00000000004db028 R15: 0000000000000003
+	kasan: CONFIG_KASAN_INLINE enabled
+	kasan: GPF could be caused by NULL-ptr deref or user memory access
+	general protection fault: 0000 [#1] PREEMPT SMP KASAN
+	CPU: 0 PID: 30393 Comm: syz-executor.1 Not tainted 5.4.0-rc2+ #0
+	Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+	RIP: 0010:memcg_flush_percpu_vmstats+0x4ae/0x930 mm/memcontrol.c:3436
+	Code: 05 41 89 c0 41 0f b6 04 24 41 38 c7 7c 08 84 c0 0f 85 5d 03 00 00 44 3b 05 33 d5 12 08 0f 83 e2 00 00 00 4c 89 f0 48 c1 e8 03 <42> 80 3c 28 00 0f 85 91 03 00 00 48 8b 85 10 fe ff ff 48 8b b0 90
+	RSP: 0018:ffff888095c27980 EFLAGS: 00010206
+	RAX: 0000000000000012 RBX: ffff888095c27b28 RCX: ffffc90008192000
+	RDX: 0000000000040000 RSI: ffffffff8340fae7 RDI: 0000000000000007
+	RBP: ffff888095c27be0 R08: 0000000000000000 R09: ffffed1013f0da33
+	R10: ffffed1013f0da32 R11: ffff88809f86d197 R12: fffffbfff138b760
+	R13: dffffc0000000000 R14: 0000000000000090 R15: 0000000000000007
+	FS:  00007f5027170700(0000) GS:ffff8880ae800000(0000) knlGS:0000000000000000
+	CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+	CR2: 0000000000710158 CR3: 00000000a7b18000 CR4: 00000000001406f0
+	DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+	DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+	Call Trace:
+	__mem_cgroup_free+0x1a/0x190 mm/memcontrol.c:5021
+	mem_cgroup_free mm/memcontrol.c:5033 [inline]
+	mem_cgroup_css_alloc+0x3a1/0x1ae0 mm/memcontrol.c:5160
+	css_create kernel/cgroup/cgroup.c:5156 [inline]
+	cgroup_apply_control_enable+0x44d/0xc40 kernel/cgroup/cgroup.c:3119
+	cgroup_mkdir+0x899/0x11b0 kernel/cgroup/cgroup.c:5401
+	kernfs_iop_mkdir+0x14d/0x1d0 fs/kernfs/dir.c:1124
+	vfs_mkdir+0x42e/0x670 fs/namei.c:3807
+	do_mkdirat+0x234/0x2a0 fs/namei.c:3830
+	__do_sys_mkdir fs/namei.c:3846 [inline]
+	__se_sys_mkdir fs/namei.c:3844 [inline]
+	__x64_sys_mkdir+0x5c/0x80 fs/namei.c:3844
+	do_syscall_64+0xfa/0x760 arch/x86/entry/common.c:290
+	entry_SYSCALL_64_after_hwframe+0x49/0xbe
+	RIP: 0033:0x459a59
+	Code: fd b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 cb b7 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+	RSP: 002b:00007f502716fc78 EFLAGS: 00000246 ORIG_RAX: 0000000000000053
+	RAX: ffffffffffffffda RBX: 00007f502716fc90 RCX: 0000000000459a59
+	RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000020000180
+	RBP: 000000000075bf20 R08: 0000000000000000 R09: 0000000000000000
+	R10: 0000000000000000 R11: 0000000000000246 R12: 00007f50271706d4
+	R13: 00000000004bf27d R14: 00000000004db028 R15: 0000000000000003
 
-Dear Sir / Madam
+Fixing this by moving the flush to mem_cgroup_free as there is no need
+to flush anything if we see failure in mem_cgroup_alloc().
 
+Reported-by: syzbot+515d5bcfe179cdf049b2@syzkaller.appspotmail.com
+Fixes: bb65f89b7d3d ("mm: memcontrol: flush percpu vmevents before releasing memcg")
+Fixes: c350a99ea2b1 ("mm: memcontrol: flush percpu vmstats before releasing memcg")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: <stable@vger.kernel.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 
+---
+ mm/memcontrol.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Since ever we left your country back to Canada , we have gotten Government=
- approval and we have been busying planning for the less privilege Childre=
-n projects.
-
-We are planning to release first batch of the funds $2,990,000.00 within 1=
-4 days for building an estate for motherless children in your city.
-
-I want you to use my mother;s company name to register this charity projec=
-t in your country after receiving the project funds.
-
-It must be registered as { Bayraktar Group Homeless Children Ltd }.
-
-
-Can you handle and supervise this big project ?
-Can you manager all the workers as a senior supervisor ?
-We want to be sure you can handle it before we proceed with this project.
-
-
-Please call me if you want to hear from us + 1-917 580 4919.
-Please can you manage such project please Kindly reply for further details=
-.
-
-Your full names-----------
-
-
-
-Ekrem Bayraktar.
-Bayraktar Shipping Group
-
---EFA7_FB09FAD2--
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index bdac56009a38..13cb4c1e9f2a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5014,12 +5014,6 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+ {
+ 	int node;
+ 
+-	/*
+-	 * Flush percpu vmstats and vmevents to guarantee the value correctness
+-	 * on parent's and all ancestor levels.
+-	 */
+-	memcg_flush_percpu_vmstats(memcg, false);
+-	memcg_flush_percpu_vmevents(memcg);
+ 	for_each_node(node)
+ 		free_mem_cgroup_per_node_info(memcg, node);
+ 	free_percpu(memcg->vmstats_percpu);
+@@ -5030,6 +5024,12 @@ static void __mem_cgroup_free(struct mem_cgroup *memcg)
+ static void mem_cgroup_free(struct mem_cgroup *memcg)
+ {
+ 	memcg_wb_domain_exit(memcg);
++	/*
++	 * Flush percpu vmstats and vmevents to guarantee the value correctness
++	 * on parent's and all ancestor levels.
++	 */
++	memcg_flush_percpu_vmstats(memcg, false);
++	memcg_flush_percpu_vmevents(memcg);
+ 	__mem_cgroup_free(memcg);
+ }
+ 
+-- 
+2.23.0.866.gb869b98d4c-goog
 
