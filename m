@@ -2,64 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 20DCAE0C92
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 21:28:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F1A9E0CB1
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 21:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731436AbfJVT20 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Oct 2019 15:28:26 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:13710 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727851AbfJVT20 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 15:28:26 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9MJRNXq029735;
-        Tue, 22 Oct 2019 12:28:17 -0700
+        id S1732894AbfJVTlH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Oct 2019 15:41:07 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:63162 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727851AbfJVTlH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 15:41:07 -0400
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id x9MJdquj013086;
+        Tue, 22 Oct 2019 12:40:56 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
  : date : message-id : references : in-reply-to : content-type : content-id
  : content-transfer-encoding : mime-version; s=facebook;
- bh=FYdrSghnpTrVWnv8inCzCSDuoKr2VRRzrJKqEkqq9L4=;
- b=nT5rgyasfm/GRrHl9os5wzPS1D3galfrU7P6fYM6XOeYof4eNV8A+A82jJE0v6QZ38fO
- 58KWPyR8vIH2O7MwFUnlE0ySurQwCpWPVWmnl1QS7buKXwWdE1lZ2b7QundiTA9CicEg
- MHdzLFCkfA5Qk5VLmIu4+af56DIn4E3CkoI= 
+ bh=Yyld/l3iBVpg6QGUiVTQuQUs4aorX0m4S27DlFqcmNs=;
+ b=SYwxQXRPkl8nwTl0GuaBzq0tuVBm5a9Uzy4picTsKpMBgZgI+YV2VFRWpBkwlLMQzyOV
+ Ovschpf4nDslPZwmZbJphYX5vs8DAWwfe6cHzCqLuETpj/S8IdMdqwfSh0ZtxMDSq+G8
+ YkmbQJmknSsx79LZrChPT3WLNxg8S9NZS1A= 
 Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2vsn68568f-3
+        by mx0a-00082601.pphosted.com with ESMTP id 2vsp6bw29u-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 22 Oct 2019 12:28:17 -0700
-Received: from ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) by
- ash-exhub102.TheFacebook.com (2620:10d:c0a8:82::f) with Microsoft SMTP Server
+        Tue, 22 Oct 2019 12:40:56 -0700
+Received: from ash-exhub103.TheFacebook.com (2620:10d:c0a8:82::c) by
+ ash-exhub201.TheFacebook.com (2620:10d:c0a8:83::7) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 22 Oct 2019 12:28:16 -0700
-Received: from ash-exhub104.TheFacebook.com (2620:10d:c0a8:82::d) by
- ash-exopmbx101.TheFacebook.com (2620:10d:c0a8:82::b) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Tue, 22 Oct 2019 12:28:16 -0700
-Received: from NAM05-DM3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.175) with Microsoft SMTP Server
+ 15.1.1713.5; Tue, 22 Oct 2019 12:40:55 -0700
+Received: from NAM03-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1713.5
- via Frontend Transport; Tue, 22 Oct 2019 12:28:16 -0700
+ via Frontend Transport; Tue, 22 Oct 2019 12:40:55 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fgzdZFZeEUqhWzpYLnWvoYBO9YFpeUGn5/TgjftZ9BPj+W0nlQIte7oZ6Ypn3bYfsA6hnfa37CKYptc++4z8hrGamlooS0/04wvWKd6BUv69c8SjHOPiH0GZfyE3x01xBOO74YNkErMrs5khYi9QvTBU4ebqpVAh12HkhDHlGA45yF2v1hqW2f+MY1qupQE4F3md1LA9zScfw86PmV/RioD8ySqm+co5av0+FY7kk89ywE7tYyefZDiayMIbahpQnO/ITnZl5v5sE5xIwOYIDqRtzPoY9p+CqD4USxPTDFzFtSSZWeR4Zd7ilL/Fmra/AdQZUzeLwP+WAwrOEt+3XA==
+ b=VjJiZFqWla+0G/TqcPwqsC7JvHgOpwmhKNYsMiHIVYKk6YKONt3spc7jbS9QbEWOYRqOyenW+xKg9+Q1cJNsD9WaOEHJqYBOMJzH62+xwFqwTyxE92nMB81ys1TyTlhzVnwG5F5tKY8k6x+AnHGmnDZi2TDA2F7B8FwGVGBYes0JQqQc5F/hxJkn0kK5p8IKm6P+cwvLU4OFqjgdhBE2x9sJgZgCwkI5wkojQhgfycJwxVkDkG4rMMFJ/TUeTqckprFBp7XYhCbNPJcq1Wmqh6y01QlW/PodBkdMyhRxg9a1REePn+Ry4maoxAzqHncrCNtjIobaFeqcWigx344LTg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FYdrSghnpTrVWnv8inCzCSDuoKr2VRRzrJKqEkqq9L4=;
- b=K+COjLpB2ysSPCRodq/4p+Yzsg40tVLPT0DUWhFiq1dCJnJYxhM/vcuMD35Yzd4ZCMQdLrqx1IKXrhUR4dV5QZXY8u63mq0kf+9piSwC1EDA2A2pMQh+GUEuUsaAZA7V78QzsKH1mgnXk7AMQd+bsRVPhGO1Dt9LaMDUJmTCLktJYSFWoVRnvZuz0blhWZjo5bCm6QqIlLOjSSDBOygC6iIOfAJWUAu9sVLj9sNey/RlWaSwfJbzfltnWwIAYiqvwhskVuFJ+fOV9uoh7BrK5jlt5WKVqtLwh1SwQcJr5h2SOTJMhmVq0x0kgXMU2rl9pjCodvycq0z7rBUXtEi5NQ==
+ bh=Yyld/l3iBVpg6QGUiVTQuQUs4aorX0m4S27DlFqcmNs=;
+ b=VDH80wAaXt5qNCTEhuvtxJ+BotRC+1djbABq7E9MaDwZl/iYsfear+xmSjyv8EK4q7OSF18bADqsvVRhnFgZysuEebQakiYovQwcw8wzQVmac/5h8C8nrncK/D8Ax7DjRlafWj2jwLwSfrEiRu8nmwCZejlHKAc6fYpKUSThkn2Z4+oOEoYG4XmL1+umur6Fh3NLCG7WK7EnjuZxuCnyN/duL9dezSaVx/oDfuTIzI9IFB8fRiJGPEVRzxN/EStI++LUkQqLAT9JWJh0pDKaptyeMZPDif2iDIdky68SSmTMVzdv/9lfr58mvUVTCJrc7qnP6Cm5K6RDMDhYuNcZag==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FYdrSghnpTrVWnv8inCzCSDuoKr2VRRzrJKqEkqq9L4=;
- b=Una0L7fSOawJP7MPiIhtD0V3KjPNiSymwxqX8OaCmmCUp5gZgnA7eBglKpTNeNWz54fahZq3N+5S8D1EswibpcSP+Sgy4DnkqR1tUHGQHomGKWPuOCPmhthQDgE7Y1Fo+VDRtUP0RafgLZkJlz8Jap0ClOduIlXNyqn6mMnbf9k=
+ bh=Yyld/l3iBVpg6QGUiVTQuQUs4aorX0m4S27DlFqcmNs=;
+ b=HMG1kpDaJc62VPqcM9TMTJ04d8XW0Wa7+abeJ7LKhAQoVV4Oiz7YCzeEahc3r/kLK3o4El58w3/bGcDPCDMC2U7sFSU4Q4CIKOMWwixXN977Qlwoj9qWoqN49R3VzIx0C1SBwU0fysJxZjkA/YDStH4DOQj1MP/YxbBAeijCQTI=
 Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
- BN8PR15MB3329.namprd15.prod.outlook.com (20.179.75.97) with Microsoft SMTP
+ BN8PR15MB2531.namprd15.prod.outlook.com (20.179.140.18) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2367.24; Tue, 22 Oct 2019 19:28:14 +0000
+ 15.20.2367.20; Tue, 22 Oct 2019 19:40:52 +0000
 Received: from BN8PR15MB2626.namprd15.prod.outlook.com
  ([fe80::3056:945b:e60e:e2e0]) by BN8PR15MB2626.namprd15.prod.outlook.com
  ([fe80::3056:945b:e60e:e2e0%6]) with mapi id 15.20.2367.022; Tue, 22 Oct 2019
- 19:28:14 +0000
+ 19:40:52 +0000
 From:   Roman Gushchin <guro@fb.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
 CC:     Andrew Morton <akpm@linux-foundation.org>,
@@ -68,125 +64,254 @@ CC:     Andrew Morton <akpm@linux-foundation.org>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Kernel Team <Kernel-team@fb.com>
-Subject: Re: [PATCH 3/8] mm: vmscan: move inactive_list_is_low() swap check to
- the caller
-Thread-Topic: [PATCH 3/8] mm: vmscan: move inactive_list_is_low() swap check
- to the caller
-Thread-Index: AQHViOfEBDjuAS+dyEG0t9yNg1bDT6dnC90A
-Date:   Tue, 22 Oct 2019 19:28:14 +0000
-Message-ID: <20191022192810.GC11461@tower.DHCP.thefacebook.com>
+Subject: Re: [PATCH 4/8] mm: vmscan: naming fixes: global_reclaim() and
+ sane_reclaim()
+Thread-Topic: [PATCH 4/8] mm: vmscan: naming fixes: global_reclaim() and
+ sane_reclaim()
+Thread-Index: AQHViOfGvfHB1RVNUEqJs289GMlc3qdnD2UA
+Date:   Tue, 22 Oct 2019 19:40:52 +0000
+Message-ID: <20191022194048.GA22721@tower.DHCP.thefacebook.com>
 References: <20191022144803.302233-1-hannes@cmpxchg.org>
- <20191022144803.302233-4-hannes@cmpxchg.org>
-In-Reply-To: <20191022144803.302233-4-hannes@cmpxchg.org>
+ <20191022144803.302233-5-hannes@cmpxchg.org>
+In-Reply-To: <20191022144803.302233-5-hannes@cmpxchg.org>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-x-clientproxiedby: MWHPR15CA0058.namprd15.prod.outlook.com
- (2603:10b6:301:4c::20) To BN8PR15MB2626.namprd15.prod.outlook.com
+x-clientproxiedby: MWHPR19CA0092.namprd19.prod.outlook.com
+ (2603:10b6:320:1f::30) To BN8PR15MB2626.namprd15.prod.outlook.com
  (2603:10b6:408:c7::28)
 x-ms-exchange-messagesentrepresentingtype: 1
 x-originating-ip: [2620:10d:c090:200::3:5d4e]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: f871d308-b000-4dd6-7ff9-08d75725fb7c
-x-ms-traffictypediagnostic: BN8PR15MB3329:
+x-ms-office365-filtering-correlation-id: fdd27fb6-956a-4bb8-e035-08d75727bf7b
+x-ms-traffictypediagnostic: BN8PR15MB2531:
 x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <BN8PR15MB33293D584A6D7ABC061CB691BE680@BN8PR15MB3329.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-microsoft-antispam-prvs: <BN8PR15MB2531D2CA013661572096CED0BE680@BN8PR15MB2531.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
 x-forefront-prvs: 01986AE76B
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(136003)(366004)(396003)(346002)(376002)(39860400002)(199004)(189003)(305945005)(66946007)(86362001)(66556008)(66446008)(66476007)(64756008)(33656002)(316002)(54906003)(7736002)(102836004)(386003)(6506007)(6916009)(6246003)(71200400001)(99286004)(478600001)(9686003)(76176011)(6436002)(25786009)(486006)(446003)(11346002)(229853002)(6486002)(6512007)(256004)(8936002)(14454004)(476003)(14444005)(8676002)(71190400001)(81156014)(81166006)(4326008)(186003)(6116002)(1076003)(5660300002)(46003)(2906002)(52116002);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB3329;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(396003)(346002)(39860400002)(136003)(376002)(366004)(199004)(189003)(43544003)(476003)(99286004)(66446008)(64756008)(14454004)(8936002)(86362001)(486006)(446003)(6436002)(6246003)(46003)(102836004)(6512007)(229853002)(186003)(76176011)(66476007)(66946007)(54906003)(9686003)(6116002)(8676002)(6486002)(66556008)(316002)(478600001)(305945005)(6916009)(81166006)(2906002)(7736002)(33656002)(6506007)(71190400001)(71200400001)(256004)(5660300002)(81156014)(52116002)(1076003)(386003)(25786009)(14444005)(4326008)(11346002);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB2531;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
 received-spf: None (protection.outlook.com: fb.com does not designate
  permitted sender hosts)
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: VPRdJVIp96FQGdDh6z13pWjOJmhQ5n4HBHQTYjvZouBaYAaQZGRvcC6NfyJgDxadqvW3d7Amu8myzNP4z0bKrvSFCjYC7Xzefm4svNHXKWfzyresk+OWmJfrs9EajijbEKhFCqmY8XEDAM9Shv9VFV6w89EzZIM/dbcMlg3yOA4Kvvt+CE2dtC+Y9IqaHp9FjYtqN53g7HYpD4n0smH2yVx/Ri3f8Y3pa/ZnWWeXH2Y6ItazMcKVOTFCazhahoSG6CHKInbDTqvcJi2y6hhif8F8sRiVnz2kDSrxa1ojcefavb7bO/DCL6nlaPisRIqmT6T1CbZ3lAk0ZoJdTl2kijA2MVd9pmPXIyblEB3tsJbDwVR9baNtpY9Hzdx1yQ0Qg33WJsrcsHXRN9Ci2TofL1KCqjSi2poe2KZSCS3SVLgr6TLURUofsdsupLrnwjwb
+x-microsoft-antispam-message-info: S1xwivGMTgQ9jPvZ9B9qn2S/Y0NbXHobPln2Z+pw9mggQ/K1bGVOHiD/tTWoQtlAs4fYAv5TcMbGvh7DZR/8BR+BMNT8vzmVkWOoAW/Gw76BlXaizF+KqrnahgjQsyW+PlJBlRvrhrObr4W1CsYWRV2/PnUwza73OP0RQWuQcFt/qXH7Yaa31wIX4I+PUhenTRcRFTha1zCgcvBmsTdSf3L5XIkMMLfh/aIMtY78/Z35ufKiMh0OKJJildmyV9ShMi4QIhFTHr4fHjrQcP9xUvfU8fYgkKKC0v+/WbOxv6DI5mmxMvsW6UGJnAV77YpemVlVTwPDc95YIDx5vSCz9aeGc6U8HUz+exMz+B+lkvICHf8DjDZAy4atq56/C1Ah6YPH64UN+lLs8G/9zzR5RsD8k25E13GMhZAjRACxhi/9vqyVzI5cpdFwmXog7OMN
 Content-Type: text/plain; charset="us-ascii"
-Content-ID: <4EC1CB5581D2114D956DF44FA235F099@namprd15.prod.outlook.com>
+Content-ID: <5AE45F65CD7F8B4B8921E2F7B23987C0@namprd15.prod.outlook.com>
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: f871d308-b000-4dd6-7ff9-08d75725fb7c
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2019 19:28:14.3639
+X-MS-Exchange-CrossTenant-Network-Message-Id: fdd27fb6-956a-4bb8-e035-08d75727bf7b
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2019 19:40:52.6390
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BRuFScnxkaNvnc9kAyRvHmgLfRs5IWboAtqL5AA/iuAmOvvWaEXCfzrFHkLJLJM2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3329
+X-MS-Exchange-CrossTenant-userprincipalname: DgA2byRF7afNhZBQTb7RsQvJvvTjSsHG0zaSNtGzkGp5Gd4ZTATQwOrK26eVgAWp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB2531
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
  definitions=2019-10-22_06:2019-10-22,2019-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 clxscore=1015
- impostorscore=0 phishscore=0 malwarescore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 mlxscore=0 suspectscore=0 spamscore=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0
+ impostorscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 clxscore=1015
+ priorityscore=1501 spamscore=0 bulkscore=0 malwarescore=0 adultscore=0
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1908290000 definitions=main-1910220163
+ engine=8.12.0-1908290000 definitions=main-1910220165
 X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 22, 2019 at 10:47:58AM -0400, Johannes Weiner wrote:
-> inactive_list_is_low() should be about one thing: checking the ratio
-> between inactive and active list. Kitchensink checks like the one for
-> swap space makes the function hard to use and modify its
-> callsites. Luckly, most callers already have an understanding of the
-> swap situation, so it's easy to clean up.
+On Tue, Oct 22, 2019 at 10:47:59AM -0400, Johannes Weiner wrote:
+> Seven years after introducing the global_reclaim() function, I still
+> have to double take when reading a callsite. I don't know how others
+> do it, this is a terrible name.
 >=20
-> get_scan_count() has its own, memcg-aware swap check, and doesn't even
-> get to the inactive_list_is_low() check on the anon list when there is
-> no swap space available.
+> Invert the meaning and rename it to cgroup_reclaim().
 >=20
-> shrink_list() is called on the results of get_scan_count(), so that
-> check is redundant too.
+> [ After all, "global reclaim" is just regular reclaim invoked from the
+>   page allocator. It's reclaim on behalf of a cgroup limit that is a
+>   special case of reclaim, and should be explicit - not the reverse. ]
 >=20
-> age_active_anon() has its own totalswap_pages check right before it
-> checks the list proportions.
->=20
-> The shrink_node_memcg() site is the only one that doesn't do its own
-> swap check. Add it there.
->=20
-> Then delete the swap check from inactive_list_is_low().
+> sane_reclaim() isn't very descriptive either: it tests whether we can
+> use the regular writeback throttling - available during regular page
+> reclaim or cgroup2 limit reclaim - or need to use the broken
+> wait_on_page_writeback() method. Use "writeback_throttling_sane()".
 >=20
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > ---
->  mm/vmscan.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>  mm/vmscan.c | 38 ++++++++++++++++++--------------------
+>  1 file changed, 18 insertions(+), 20 deletions(-)
 >=20
 > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index be3c22c274c1..622b77488144 100644
+> index 622b77488144..302dad112f75 100644
 > --- a/mm/vmscan.c
 > +++ b/mm/vmscan.c
-> @@ -2226,13 +2226,6 @@ static bool inactive_list_is_low(struct lruvec *lr=
-uvec, bool file,
->  	unsigned long refaults;
->  	unsigned long gb;
-> =20
-> -	/*
-> -	 * If we don't have swap space, anonymous page deactivation
-> -	 * is pointless.
-> -	 */
-> -	if (!file && !total_swap_pages)
-> -		return false;
-> -
->  	inactive =3D lruvec_lru_size(lruvec, inactive_lru, sc->reclaim_idx);
->  	active =3D lruvec_lru_size(lruvec, active_lru, sc->reclaim_idx);
-> =20
-> @@ -2653,7 +2646,7 @@ static void shrink_node_memcg(struct pglist_data *p=
-gdat, struct mem_cgroup *memc
->  	 * Even if we did not try to evict anon pages at all, we want to
->  	 * rebalance the anon lru active/inactive ratio.
->  	 */
-> -	if (inactive_list_is_low(lruvec, false, sc, true))
-> +	if (total_swap_pages && inactive_list_is_low(lruvec, false, sc, true))
->  		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
->  				   sc, LRU_ACTIVE_ANON);
+> @@ -239,13 +239,13 @@ static void unregister_memcg_shrinker(struct shrink=
+er *shrinker)
+>  	up_write(&shrinker_rwsem);
 >  }
-> --=20
-> 2.23.0
->=20
->=20
+> =20
+> -static bool global_reclaim(struct scan_control *sc)
+> +static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+> -	return !sc->target_mem_cgroup;
+> +	return sc->target_mem_cgroup;
+>  }
+
+Isn't targeted_reclaim() better?
+
+cgroup_reclaim() is also ok to me, but it sounds a bit like we reclaim
+from this specific cgroup. Also targeted/global is IMO a better opposition
+than cgroup/global (the latter reminds me days when there were global
+and cgroup LRUs).
+
+The rest of the patch looks good!
 
 Reviewed-by: Roman Gushchin <guro@fb.com>
 
-Thanks!
+> =20
+>  /**
+> - * sane_reclaim - is the usual dirty throttling mechanism operational?
+> + * writeback_throttling_sane - is the usual dirty throttling mechanism a=
+vailable?
+>   * @sc: scan_control in question
+>   *
+>   * The normal page dirty throttling mechanism in balance_dirty_pages() i=
+s
+> @@ -257,11 +257,9 @@ static bool global_reclaim(struct scan_control *sc)
+>   * This function tests whether the vmscan currently in progress can assu=
+me
+>   * that the normal dirty throttling mechanism is operational.
+>   */
+> -static bool sane_reclaim(struct scan_control *sc)
+> +static bool writeback_throttling_sane(struct scan_control *sc)
+>  {
+> -	struct mem_cgroup *memcg =3D sc->target_mem_cgroup;
+> -
+> -	if (!memcg)
+> +	if (!cgroup_reclaim(sc))
+>  		return true;
+>  #ifdef CONFIG_CGROUP_WRITEBACK
+>  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> @@ -302,12 +300,12 @@ static void unregister_memcg_shrinker(struct shrink=
+er *shrinker)
+>  {
+>  }
+> =20
+> -static bool global_reclaim(struct scan_control *sc)
+> +static bool cgroup_reclaim(struct scan_control *sc)
+>  {
+> -	return true;
+> +	return false;
+>  }
+> =20
+> -static bool sane_reclaim(struct scan_control *sc)
+> +static bool writeback_throttling_sane(struct scan_control *sc)
+>  {
+>  	return true;
+>  }
+> @@ -1227,7 +1225,7 @@ static unsigned long shrink_page_list(struct list_h=
+ead *page_list,
+>  				goto activate_locked;
+> =20
+>  			/* Case 2 above */
+> -			} else if (sane_reclaim(sc) ||
+> +			} else if (writeback_throttling_sane(sc) ||
+>  			    !PageReclaim(page) || !may_enter_fs) {
+>  				/*
+>  				 * This is slightly racy - end_page_writeback()
+> @@ -1821,7 +1819,7 @@ static int too_many_isolated(struct pglist_data *pg=
+dat, int file,
+>  	if (current_is_kswapd())
+>  		return 0;
+> =20
+> -	if (!sane_reclaim(sc))
+> +	if (!writeback_throttling_sane(sc))
+>  		return 0;
+> =20
+>  	if (file) {
+> @@ -1971,7 +1969,7 @@ shrink_inactive_list(unsigned long nr_to_scan, stru=
+ct lruvec *lruvec,
+>  	reclaim_stat->recent_scanned[file] +=3D nr_taken;
+> =20
+>  	item =3D current_is_kswapd() ? PGSCAN_KSWAPD : PGSCAN_DIRECT;
+> -	if (global_reclaim(sc))
+> +	if (!cgroup_reclaim(sc))
+>  		__count_vm_events(item, nr_scanned);
+>  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
+>  	spin_unlock_irq(&pgdat->lru_lock);
+> @@ -1985,7 +1983,7 @@ shrink_inactive_list(unsigned long nr_to_scan, stru=
+ct lruvec *lruvec,
+>  	spin_lock_irq(&pgdat->lru_lock);
+> =20
+>  	item =3D current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
+> -	if (global_reclaim(sc))
+> +	if (!cgroup_reclaim(sc))
+>  		__count_vm_events(item, nr_reclaimed);
+>  	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
+>  	reclaim_stat->recent_rotated[0] +=3D stat.nr_activate[0];
+> @@ -2309,7 +2307,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
+truct mem_cgroup *memcg,
+>  	 * using the memory controller's swap limit feature would be
+>  	 * too expensive.
+>  	 */
+> -	if (!global_reclaim(sc) && !swappiness) {
+> +	if (cgroup_reclaim(sc) && !swappiness) {
+>  		scan_balance =3D SCAN_FILE;
+>  		goto out;
+>  	}
+> @@ -2333,7 +2331,7 @@ static void get_scan_count(struct lruvec *lruvec, s=
+truct mem_cgroup *memcg,
+>  	 * thrashing file LRU becomes infinitely more attractive than
+>  	 * anon pages.  Try to detect this based on file LRU size.
+>  	 */
+> -	if (global_reclaim(sc)) {
+> +	if (!cgroup_reclaim(sc)) {
+>  		unsigned long pgdatfile;
+>  		unsigned long pgdatfree;
+>  		int z;
+> @@ -2564,7 +2562,7 @@ static void shrink_node_memcg(struct pglist_data *p=
+gdat, struct mem_cgroup *memc
+>  	 * abort proportional reclaim if either the file or anon lru has alread=
+y
+>  	 * dropped to zero at the first pass.
+>  	 */
+> -	scan_adjusted =3D (global_reclaim(sc) && !current_is_kswapd() &&
+> +	scan_adjusted =3D (!cgroup_reclaim(sc) && !current_is_kswapd() &&
+>  			 sc->priority =3D=3D DEF_PRIORITY);
+> =20
+>  	blk_start_plug(&plug);
+> @@ -2853,7 +2851,7 @@ static bool shrink_node(pg_data_t *pgdat, struct sc=
+an_control *sc)
+>  		 * Legacy memcg will stall in page writeback so avoid forcibly
+>  		 * stalling in wait_iff_congested().
+>  		 */
+> -		if (!global_reclaim(sc) && sane_reclaim(sc) &&
+> +		if (cgroup_reclaim(sc) && writeback_throttling_sane(sc) &&
+>  		    sc->nr.dirty && sc->nr.dirty =3D=3D sc->nr.congested)
+>  			set_memcg_congestion(pgdat, root, true);
+> =20
+> @@ -2948,7 +2946,7 @@ static void shrink_zones(struct zonelist *zonelist,=
+ struct scan_control *sc)
+>  		 * Take care memory controller reclaiming has small influence
+>  		 * to global LRU.
+>  		 */
+> -		if (global_reclaim(sc)) {
+> +		if (!cgroup_reclaim(sc)) {
+>  			if (!cpuset_zone_allowed(zone,
+>  						 GFP_KERNEL | __GFP_HARDWALL))
+>  				continue;
+> @@ -3048,7 +3046,7 @@ static unsigned long do_try_to_free_pages(struct zo=
+nelist *zonelist,
+>  retry:
+>  	delayacct_freepages_start();
+> =20
+> -	if (global_reclaim(sc))
+> +	if (!cgroup_reclaim(sc))
+>  		__count_zid_vm_events(ALLOCSTALL, sc->reclaim_idx, 1);
+> =20
+>  	do {
+> --=20
+> 2.23.0
+>=20
