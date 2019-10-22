@@ -2,261 +2,196 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 22347E027F
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 13:09:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74ECAE0338
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 13:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730718AbfJVLI7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Oct 2019 07:08:59 -0400
-Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:20847 "EHLO
-        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729458AbfJVLI7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 07:08:59 -0400
-Received: (qmail 12462 invoked from network); 22 Oct 2019 13:08:54 +0200
-X-Fcrdns: No
-Received: from phoffice.de-nserver.de (HELO [10.11.11.182]) (185.39.223.5)
-  (smtp-auth username hostmaster@profihost.com, mechanism plain)
-  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Tue, 22 Oct 2019 13:08:54 +0200
-X-GeoIP-Country: DE
-Subject: Re: lot of MemAvailable but falling cache and raising PSI
-To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
-        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
-References: <52235eda-ffe2-721c-7ad7-575048e2d29d@profihost.ag>
- <20190910082919.GL2063@dhcp22.suse.cz>
- <132e1fd0-c392-c158-8f3a-20e340e542f0@profihost.ag>
- <20190910090241.GM2063@dhcp22.suse.cz>
- <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
- <20190910110741.GR2063@dhcp22.suse.cz>
- <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
- <20190910125756.GB2063@dhcp22.suse.cz>
- <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
- <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag>
- <20190910132418.GC2063@dhcp22.suse.cz>
- <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
- <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
- <4f6f1bc9-08f4-d53a-8788-a761be769757@suse.cz>
- <76ad5b29-815b-3d87-cefa-ec5b222279f1@profihost.ag>
- <b82b9fcb-fa64-c36c-5ef5-cb2e4d64a51a@suse.cz>
- <1430bb64-ef9b-f6a1-fb2c-1ca351e7950e@profihost.ag>
- <f533e547-996d-5a05-5b25-92862c8f9057@suse.cz>
-From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
-Message-ID: <49b66382-2561-f46d-8106-b184ada3de3a@profihost.ag>
-Date:   Tue, 22 Oct 2019 13:08:54 +0200
+        id S2387774AbfJVLnx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Oct 2019 07:43:53 -0400
+Received: from [217.140.110.172] ([217.140.110.172]:50202 "EHLO foss.arm.com"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S2387729AbfJVLnx (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 22 Oct 2019 07:43:53 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07DE31045;
+        Tue, 22 Oct 2019 04:43:26 -0700 (PDT)
+Received: from [192.168.0.9] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 33B613F718;
+        Tue, 22 Oct 2019 04:43:24 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] sched/topology: Don't try to build empty sched
+ domains
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
+        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com, qperret@google.com,
+        stable@vger.kernel.org
+References: <20191015154250.12951-1-valentin.schneider@arm.com>
+ <20191015154250.12951-2-valentin.schneider@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <20dc939f-4102-334e-5fde-a442ee7eaa5e@arm.com>
+Date:   Tue, 22 Oct 2019 13:43:22 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <f533e547-996d-5a05-5b25-92862c8f9057@suse.cz>
+In-Reply-To: <20191015154250.12951-2-valentin.schneider@arm.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-works - thanks
+On 15/10/2019 17:42, Valentin Schneider wrote:
+> Turns out hotplugging CPUs that are in exclusive cpusets can lead to the
+> cpuset code feeding empty cpumasks to the sched domain rebuild machinery.
+> This leads to the following splat:
+> 
+> [   30.618174] Internal error: Oops: 96000004 [#1] PREEMPT SMP
+> [   30.623697] Modules linked in:
+> [   30.626731] CPU: 0 PID: 235 Comm: kworker/5:2 Not tainted 5.4.0-rc1-00005-g8d495477d62e #23
+> [   30.635003] Hardware name: ARM Juno development board (r0) (DT)
+> [   30.640877] Workqueue: events cpuset_hotplug_workfn
+> [   30.645713] pstate: 60000005 (nZCv daif -PAN -UAO)
+> [   30.650464] pc : build_sched_domains (./include/linux/arch_topology.h:23 kernel/sched/topology.c:1898 kernel/sched/topology.c:1969)
+> [   30.655126] lr : build_sched_domains (kernel/sched/topology.c:1966)
+> [...]
+> [   30.742047] Call trace:
+> [   30.744474] build_sched_domains (./include/linux/arch_topology.h:23 kernel/sched/topology.c:1898 kernel/sched/topology.c:1969)
+> [   30.748793] partition_sched_domains_locked (kernel/sched/topology.c:2250)
+> [   30.753971] rebuild_sched_domains_locked (./include/linux/bitmap.h:370 ./include/linux/cpumask.h:538 kernel/cgroup/cpuset.c:955 kernel/cgroup/cpuset.c:978 kernel/cgroup/cpuset.c:1019)
+> [   30.758977] rebuild_sched_domains (kernel/cgroup/cpuset.c:1032)
+> [   30.763209] cpuset_hotplug_workfn (kernel/cgroup/cpuset.c:3205 (discriminator 2))
+> [   30.767613] process_one_work (./arch/arm64/include/asm/jump_label.h:21 ./include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:114 kernel/workqueue.c:2274)
+> [   30.771586] worker_thread (./include/linux/compiler.h:199 ./include/linux/list.h:268 kernel/workqueue.c:2416)
+> [   30.775217] kthread (kernel/kthread.c:255)
+> [   30.778418] ret_from_fork (arch/arm64/kernel/entry.S:1167)
+> [ 30.781965] Code: f860dae2 912802d6 aa1603e1 12800000 (f8616853)
+> 
+> The faulty line in question is
+> 
+>   cap = arch_scale_cpu_capacity(cpumask_first(cpu_map));
+> 
+> and we're not checking the return value against nr_cpu_ids (we shouldn't
+> have to!), which leads to the above.
+> 
+> Prevent generate_sched_domains() from returning empty cpumasks, and add
+> some assertion in build_sched_domains() to scream bloody murder if it
+> happens again.
 
-Am 22.10.19 um 12:21 schrieb Vlastimil Babka:
-> On 10/22/19 12:02 PM, Stefan Priebe - Profihost AG wrote:
->>
->> Am 22.10.19 um 09:48 schrieb Vlastimil Babka:
->>> On 10/22/19 9:41 AM, Stefan Priebe - Profihost AG wrote:
->>>>> Hi, could you try the patch below? I suspect you're hitting a corner
->>>>> case where compaction_suitable() returns COMPACT_SKIPPED for the
->>>>> ZONE_DMA, triggering reclaim even if other zones have plenty of free
->>>>> memory. And should_continue_reclaim() then returns true until twice the
->>>>> requested page size is reclaimed (compact_gap()). That means 4MB
->>>>> reclaimed for each THP allocation attempt, which roughly matches the
->>>>> trace data you preovided previously.
->>>>>
->>>>> The amplification to 4MB should be removed in patches merged for 5.4, so
->>>>> it would be only 32 pages reclaimed per THP allocation. The patch below
->>>>> tries to remove this corner case completely, and it should be more
->>>>> visible on your 5.2.x, so please apply it there.
->>>>>
->>>> is there any reason to not apply that one on top of 4.19?
->>>>
->>>> Greets,
->>>> Stefan
->>>>
->>>
->>> It should work, cherrypicks fine without conflict here.
->>
->> OK but does not work ;-)
->>
->>
->> mm/compaction.c: In function '__compaction_suitable':
->> mm/compaction.c:1451:19: error: implicit declaration of function
->> 'zone_managed_pages'; did you mean 'node_spanned_pages'?
->> [-Werror=implicit-function-declaration]
->>       alloc_flags, zone_managed_pages(zone)))
->>                    ^~~~~~~~~~~~~~~~~~
->>                    node_spanned_pages
+First I thought we can do with a little less drama by only preventing
+arch_scale_cpu_capacity() from consuming >= nr_cpu_ids.
+
+@@ -1894,6 +1894,9 @@ static struct sched_domain_topology_level
+        struct sched_domain_topology_level *tl, *asym_tl = NULL;
+        unsigned long cap;
+
++       if (cpumask_empty(cpu_map))
++               return NULL;
++
+
+Until I tried to hp'ed in CPU4 after CPU4/5 had been hp'ed out (your
+example further below) and I got another:
+
+[   68.014564] Unable to handle kernel paging request at virtual address
+fffe8009903d8ee0
+...
+[   68.191293] Call trace:
+[   68.193712]  partition_sched_domains_locked+0x1a4/0x4a0
+[   68.198882]  rebuild_sched_domains_locked+0x4d0/0x7b0
+[   68.203880]  rebuild_sched_domains+0x24/0x40
+[   68.208104]  cpuset_hotplug_workfn+0xe0/0x5f8
+...
+
+@@ -2213,6 +2216,11 @@ void partition_sched_domains_locked(int
+ndoms_new, cpumask_var_t doms_new[],
+                               * will be recomputed in function
+                               * update_tasks_root_domain().
+                               */
++                             if (cpumask_empty(doms_cur[i]))
++                                    printk("doms_cur[%d] empty\n", i);
++
+                              rd = cpu_rq(cpumask_any(doms_cur[i]))->rd;
+
+doms_cur[i] is empty when hp'ing in CPU4 again.
+
+Your patch fixes this as well.
+
+Might be worth noting that this is not only about asym CPU capacity
+handling but missing checks after cpumask operations in case the cpuset
+is empty.
+
+> The above splat was obtained on my Juno r0 with:>
+>   cgcreate -g cpuset:asym
+>   cgset -r cpuset.cpus=0-3 asym
+>   cgset -r cpuset.mems=0 asym
+>   cgset -r cpuset.cpu_exclusive=1 asym
 > 
-> Ah, this?
+>   cgcreate -g cpuset:smp
+>   cgset -r cpuset.cpus=4-5 smp
+>   cgset -r cpuset.mems=0 smp
+>   cgset -r cpuset.cpu_exclusive=1 smp
 > 
-> ----8<----
-> From f1335e1c0d4b74205fc0cc40b5960223d6f1dec7 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Thu, 12 Sep 2019 13:40:46 +0200
-> Subject: [PATCH] WIP
+>   cgset -r cpuset.sched_load_balance=0 .
 > 
+>   echo 0 > /sys/devices/system/cpu/cpu4/online
+>   echo 0 > /sys/devices/system/cpu/cpu5/online
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: 05484e098448 ("sched/topology: Add SD_ASYM_CPUCAPACITY flag detection")
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  include/linux/compaction.h     |  7 ++++++-
->  include/trace/events/mmflags.h |  1 +
->  mm/compaction.c                | 16 +++++++++++++--
->  mm/vmscan.c                    | 36 ++++++++++++++++++++++++----------
->  4 files changed, 47 insertions(+), 13 deletions(-)
+>  kernel/cgroup/cpuset.c  | 8 ++++++++
+>  kernel/sched/topology.c | 5 ++++-
+>  2 files changed, 12 insertions(+), 1 deletion(-)
 > 
-> diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-> index 68250a57aace..2f3b331c5239 100644
-> --- a/include/linux/compaction.h
-> +++ b/include/linux/compaction.h
-> @@ -17,8 +17,13 @@ enum compact_priority {
->  };
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index c52bc91f882b..a859e5539440 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -817,6 +817,11 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>  		struct cpuset *a = csa[i];
+>  		int apn = a->pn;
 >  
->  /* Return values for compact_zone() and try_to_compact_pages() */
-> -/* When adding new states, please adjust include/trace/events/compaction.h */
-> +/* When adding new states, please adjust include/trace/events/mmflags.h */
->  enum compact_result {
-> +	/*
-> +	 * The zone is too small to provide the requested allocation even if
-> +	 * fully freed (i.e. ZONE_DMA for THP allocation due to lowmem reserves)
-> +	 */
-> +	COMPACT_IMPOSSIBLE,
->  	/* For more detailed tracepoint output - internal to compaction */
->  	COMPACT_NOT_SUITABLE_ZONE,
->  	/*
-> diff --git a/include/trace/events/mmflags.h b/include/trace/events/mmflags.h
-> index a81cffb76d89..d7aa9cece234 100644
-> --- a/include/trace/events/mmflags.h
-> +++ b/include/trace/events/mmflags.h
-> @@ -169,6 +169,7 @@ IF_HAVE_VM_SOFTDIRTY(VM_SOFTDIRTY,	"softdirty"	)		\
->  
->  #ifdef CONFIG_COMPACTION
->  #define COMPACTION_STATUS					\
-> +	EM( COMPACT_IMPOSSIBLE,		"impossible")		\
->  	EM( COMPACT_SKIPPED,		"skipped")		\
->  	EM( COMPACT_DEFERRED,		"deferred")		\
->  	EM( COMPACT_CONTINUE,		"continue")		\
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 5079ddbec8f9..7d2299c7faa2 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -1416,6 +1416,7 @@ static enum compact_result compact_finished(struct zone *zone,
->  /*
->   * compaction_suitable: Is this suitable to run compaction on this zone now?
->   * Returns
-> + *   COMPACT_IMPOSSIBLE If the allocation would fail even with all pages free
->   *   COMPACT_SKIPPED  - If there are too few free pages for compaction
->   *   COMPACT_SUCCESS  - If the allocation would succeed without compaction
->   *   COMPACT_CONTINUE - If compaction should run now
-> @@ -1439,6 +1440,16 @@ static enum compact_result __compaction_suitable(struct zone *zone, int order,
->  								alloc_flags))
->  		return COMPACT_SUCCESS;
->  
-> +	/*
-> +	 * If the allocation would not succeed even with a fully free zone
-> +	 * due to e.g. lowmem reserves, indicate that compaction can't possibly
-> +	 * help and it would be pointless to reclaim.
-> +	 */
-> +	watermark += 1UL << order;
-> +	if (!__zone_watermark_ok(zone, 0, watermark, classzone_idx,
-> +				 alloc_flags, zone->managed_pages))
-> +		return COMPACT_IMPOSSIBLE;
+> +		if (cpumask_empty(a->effective_cpus)) {
+> +			ndoms--;
+> +			continue;
+> +		}
 > +
->  	/*
->  	 * Watermarks for order-0 must be met for compaction to be able to
->  	 * isolate free pages for migration targets. This means that the
-> @@ -1526,7 +1537,7 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
->  		available += zone_page_state_snapshot(zone, NR_FREE_PAGES);
->  		compact_result = __compaction_suitable(zone, order, alloc_flags,
->  				ac_classzone_idx(ac), available);
-> -		if (compact_result != COMPACT_SKIPPED)
-> +		if (compact_result > COMPACT_SKIPPED)
->  			return true;
->  	}
+>  		for (j = 0; j < csn; j++) {
+>  			struct cpuset *b = csa[j];
+>  			int bpn = b->pn;
+> @@ -859,6 +864,9 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>  			continue;
+>  		}
 >  
-> @@ -1555,7 +1566,8 @@ static enum compact_result compact_zone(struct zone *zone, struct compact_contro
->  	ret = compaction_suitable(zone, cc->order, cc->alloc_flags,
->  							cc->classzone_idx);
->  	/* Compaction is likely to fail */
-> -	if (ret == COMPACT_SUCCESS || ret == COMPACT_SKIPPED)
-> +	if (ret == COMPACT_SUCCESS || ret == COMPACT_SKIPPED
-> +	    || ret == COMPACT_IMPOSSIBLE)
->  		return ret;
+> +		if (cpumask_empty(a->effective_cpus))
+> +			continue;
+> +
+>  		dp = doms[nslot];
 >  
->  	/* huh, compaction_suitable is returning something unexpected */
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index b37610c0eac6..7ad331a64fc5 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2849,11 +2849,12 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->  }
->  
->  /*
-> - * Returns true if compaction should go ahead for a costly-order request, or
-> - * the allocation would already succeed without compaction. Return false if we
-> - * should reclaim first.
-> + * Returns 1 if compaction should go ahead for a costly-order request, or the
-> + * allocation would already succeed without compaction. Return 0 if we should
-> + * reclaim first. Return -1 when compaction can't help at all due to zone being
-> + * too small, which means there's no point in reclaim nor compaction.
->   */
-> -static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
-> +static inline int compaction_ready(struct zone *zone, struct scan_control *sc)
+>  		if (nslot == ndoms) {
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index b5667a273bf6..9318acf1d1fe 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -1948,7 +1948,7 @@ static struct sched_domain_topology_level
+>  static int
+>  build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *attr)
 >  {
->  	unsigned long watermark;
->  	enum compact_result suitable;
-> @@ -2861,10 +2862,16 @@ static inline bool compaction_ready(struct zone *zone, struct scan_control *sc)
->  	suitable = compaction_suitable(zone, sc->order, 0, sc->reclaim_idx);
->  	if (suitable == COMPACT_SUCCESS)
->  		/* Allocation should succeed already. Don't reclaim. */
-> -		return true;
-> +		return 1;
->  	if (suitable == COMPACT_SKIPPED)
->  		/* Compaction cannot yet proceed. Do reclaim. */
-> -		return false;
-> +		return 0;
-> +	if (suitable == COMPACT_IMPOSSIBLE)
-> +		/*
-> +		 * Compaction can't possibly help. So don't reclaim, but keep
-> +		 * checking other zones.
-> +		 */
-> +		return -1;
+> -	enum s_alloc alloc_state;
+> +	enum s_alloc alloc_state = sa_none;
+>  	struct sched_domain *sd;
+>  	struct s_data d;
+>  	struct rq *rq = NULL;
+> @@ -1956,6 +1956,9 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>  	struct sched_domain_topology_level *tl_asym;
+>  	bool has_asym = false;
 >  
->  	/*
->  	 * Compaction is already possible, but it takes time to run and there
-> @@ -2910,6 +2917,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
->  
->  	for_each_zone_zonelist_nodemask(zone, z, zonelist,
->  					sc->reclaim_idx, sc->nodemask) {
-> +		int compact_ready;
->  		/*
->  		 * Take care memory controller reclaiming has small influence
->  		 * to global LRU.
-> @@ -2929,10 +2937,18 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
->  			 * page allocations.
->  			 */
->  			if (IS_ENABLED(CONFIG_COMPACTION) &&
-> -			    sc->order > PAGE_ALLOC_COSTLY_ORDER &&
-> -			    compaction_ready(zone, sc)) {
-> -				sc->compaction_ready = true;
-> -				continue;
-> +			    sc->order > PAGE_ALLOC_COSTLY_ORDER) {
-> +				compact_ready = compaction_ready(zone, sc);
-> +				if (compact_ready == 1) {
-> +					sc->compaction_ready = true;
-> +					continue;
-> +				} else if (compact_ready == -1) {
-> +					/*
-> +					 * In this zone, neither reclaim nor
-> +					 * compaction can help.
-> +					 */
-> +					continue;
-> +				}
->  			}
->  
->  			/*
+> +	if (WARN_ON(cpumask_empty(cpu_map)))
+> +		goto error;
+> +
+>  	alloc_state = __visit_domain_allocation_hell(&d, cpu_map);
+>  	if (alloc_state != sa_rootdomain)
+>  		goto error;
 > 
