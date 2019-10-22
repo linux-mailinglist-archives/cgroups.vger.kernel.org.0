@@ -2,57 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AD255E0D29
+	by mail.lfdr.de (Postfix) with ESMTP id 4473EE0D28
 	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 22:15:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389268AbfJVUPW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S2389347AbfJVUPW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Tue, 22 Oct 2019 16:15:22 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:38159 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387999AbfJVUPW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 16:15:22 -0400
-Received: by mail-qk1-f194.google.com with SMTP id p4so17575255qkf.5
-        for <cgroups@vger.kernel.org>; Tue, 22 Oct 2019 13:15:19 -0700 (PDT)
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:37785 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389341AbfJVUPV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 16:15:21 -0400
+Received: by mail-qt1-f195.google.com with SMTP id g50so14615411qtb.4
+        for <cgroups@vger.kernel.org>; Tue, 22 Oct 2019 13:15:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/6k43Ins8ShDUccC1LdBvMXrfhZMN86K2kUQuaiv7Mo=;
-        b=G6GQH0AR0jPSft2ppe6Krr/rZ5GlNjjcDjh8uq21Mch7IOkfMJPJ6y8CGYHqjeZnRv
-         Z82dyGlkUmpnrQUBDNlEbomTWJFZjTonGAtP+KWs1/C1lYr5lpWixX5fS4x8g1/pnjaI
-         l+2sZb8+h8PVY95WqVGA2Z3wHkTZ5GJmzwN6p8slt1PJfa3X9acHSQ9TwJh6O9hoz8yK
-         QoDS9inHtGfOdYETaFcmImy68omaIjrSwXUv00ynL3dDOGxlMHQeZN4xH1DKUj15Seb/
-         4B+CZLYcbnEkE5LYhr+FWPasz/NfM9n5wmSZzFIvbKNULO+4fsvtj9SnmUeuv1klLi0C
-         eunw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=SKH3PcY5YzXD6Qge68ymWg6Ins6ocLR9l5DfPryEBgk=;
+        b=KaaLg/bw88z77buICYAJEe5iw5ThIZJCDvLL4q2RSdmGOXSdlsryIy4UAPdKiR3U1i
+         TnF8jNwIgRKrMzBMH2cBT8Qyy9tg/M9wTtR3Wrx6e/JrVGOp77QhbBjRArE2l/meQdby
+         SOdO/mGWcTubS8kR90ln5IenSVxDk0WPTvDqpdaDO4iRAPQXIssKgsKkCTzxFI7D99tI
+         K/w9BneoewwmdaDHDt5q8QWenhYLUUAhYRi0GJm58lfdROEHZrbuhSNsUmJ7vhrTLZoB
+         TlgRns9OFeILnr1C45VJ/hBfpRmLpXl6WY6/23dwwSlktV02dZHRpDlk39xE/9wyzzJf
+         OKPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/6k43Ins8ShDUccC1LdBvMXrfhZMN86K2kUQuaiv7Mo=;
-        b=Fvt72EEyL9lAA4YUBTVest2XyYrNdCnm0mVcj59D27UWTaSLx4p9yE88fP4KhslARt
-         ETiF3otIbnFmrAOli7E7Flc+SiF6gDZP0855Q6ScrAURPPhT/OUF15e733lo0ipQCWs5
-         hwQC3ZXAjZCD2nzALufHmYH9UdohKGjnDghdhp4h7lK9FoqcZNLh/QGmMmGojGasy9GG
-         Oz/SljWXU4b4vugnuGkcYunRiEpOT/gDA+ZuCphGYQFjU9DsyoDpGAgONQQFfgDrixUy
-         3EwGXovxZr3nYD+KHqCH+zxYkcjkEfEFlxIFuzmC3ohJ6H/y/h6eUWtihdfr9hP7elEm
-         HvWA==
-X-Gm-Message-State: APjAAAX5saTDidxDCZ2260rKhw6tJBa+9et1UVKsUTUVITF7zwV2BtIg
-        ew+iw1n9v4+pH6Ggyzq/2UqRDd8HLnA=
-X-Google-Smtp-Source: APXvYqwf83Q3oMgxGQXXVkIgEXOw8vw6FhbO2OSQt0mKSX9kQGxr6dmirL8tHiP1nzutNQLLmqtnhw==
-X-Received: by 2002:a37:f70f:: with SMTP id q15mr4521717qkj.428.1571775319334;
-        Tue, 22 Oct 2019 13:15:19 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=SKH3PcY5YzXD6Qge68ymWg6Ins6ocLR9l5DfPryEBgk=;
+        b=o2rQvVLHDhxjJPF94UgCdeItDbfi5Gs+6BiKgGfHfzlouedQmVIHpeA0vdMvYt8sSl
+         Mu8zefOsmPHSuEs9QmvVzfYmhcbYyRPvbCuc+CyeJLkWPiBRuFEoScxTGVss6FbrF70v
+         QQ1lDS2bJHSgLeu2DfDnTsWX2iAGddtR9WtOavOEZODG6ngbjb79f8Az+BCFapP2CA50
+         m1dEGBokeLF31KrLnv2rzTa29yhlerrk2Dqsq4fGeIkv2xUS04Yvq9ECHdlvd4l4Ap2E
+         UHFPpS0trqyrfOZxJLRJkZXucEVtdE0gWdbMIgk5nhURqIhckQCoLxJNkkP6KhixosS9
+         3DdA==
+X-Gm-Message-State: APjAAAWSdJSx6zVtL1RiLUUcV80ZZk4jK1wxhzlI/YglsSL5rWasYnKt
+        tFUIfvjJQbi5YjTrxP456wECpA==
+X-Google-Smtp-Source: APXvYqwgUaBUtrSrtIlAxyDVz2P4+gAp3Nwe5EnwHYyjxxj2PszLHekWjQXPyQk3tbOPUN9yPnbdVQ==
+X-Received: by 2002:a0c:d0e1:: with SMTP id b30mr5126174qvh.197.1571775320721;
+        Tue, 22 Oct 2019 13:15:20 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:500::3:869e])
-        by smtp.gmail.com with ESMTPSA id d205sm11273855qke.96.2019.10.22.13.15.18
+        by smtp.gmail.com with ESMTPSA id e15sm7759814qkm.130.2019.10.22.13.15.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Oct 2019 13:15:18 -0700 (PDT)
+        Tue, 22 Oct 2019 13:15:20 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 1/2] mm: memcontrol: remove dead code from memory_max_write()
-Date:   Tue, 22 Oct 2019 16:15:17 -0400
-Message-Id: <20191022201518.341216-1-hannes@cmpxchg.org>
+Subject: [PATCH 2/2] mm: memcontrol: try harder to set a new memory.high
+Date:   Tue, 22 Oct 2019 16:15:18 -0400
+Message-Id: <20191022201518.341216-2-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.23.0
+In-Reply-To: <20191022201518.341216-1-hannes@cmpxchg.org>
+References: <20191022201518.341216-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
@@ -60,31 +62,103 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When the reclaim loop in memory_max_write() is ^C'd or similar, we set
-err to -EINTR. But we don't return err. Once the limit is set, we
-always return success (nbytes). Delete the dead code.
+Setting a memory.high limit below the usage makes almost no effort to
+shrink the cgroup to the new target size.
+
+While memory.high is a "soft" limit that isn't supposed to cause OOM
+situations, we should still try harder to meet a user request through
+persistent reclaim.
+
+For example, after setting a 10M memory.high on an 800M cgroup full of
+file cache, the usage shrinks to about 350M:
+
++ cat /cgroup/workingset/memory.current
+841568256
++ echo 10M
++ cat /cgroup/workingset/memory.current
+355729408
+
+This isn't exactly what the user would expect to happen. Setting the
+value a few more times eventually whittles the usage down to what we
+are asking for:
+
++ echo 10M
++ cat /cgroup/workingset/memory.current
+104181760
++ echo 10M
++ cat /cgroup/workingset/memory.current
+31801344
++ echo 10M
++ cat /cgroup/workingset/memory.current
+10440704
+
+To improve this, add reclaim retry loops to the memory.high write()
+callback, similar to what we do for memory.max, to make a reasonable
+effort that the usage meets the requested size after the call returns.
+
+Afterwards, a single write() to memory.high is enough in all but
+extreme cases:
+
++ cat /cgroup/workingset/memory.current
+841609216
++ echo 10M
++ cat /cgroup/workingset/memory.current
+10182656
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- mm/memcontrol.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ mm/memcontrol.c | 30 ++++++++++++++++++++++++------
+ 1 file changed, 24 insertions(+), 6 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 055975b0b3a3..ff90d4e7df37 100644
+index ff90d4e7df37..8090b4c99ac7 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -6122,10 +6122,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 		if (nr_pages <= max)
- 			break;
+@@ -6074,7 +6074,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 				 char *buf, size_t nbytes, loff_t off)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+-	unsigned long nr_pages;
++	unsigned int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
++	bool drained = false;
+ 	unsigned long high;
+ 	int err;
  
--		if (signal_pending(current)) {
--			err = -EINTR;
+@@ -6085,12 +6086,29 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 
+ 	memcg->high = high;
+ 
+-	nr_pages = page_counter_read(&memcg->memory);
+-	if (nr_pages > high)
+-		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+-					     GFP_KERNEL, true);
++	for (;;) {
++		unsigned long nr_pages = page_counter_read(&memcg->memory);
++		unsigned long reclaimed;
++
++		if (nr_pages <= high)
++			break;
++
 +		if (signal_pending(current))
- 			break;
--		}
++			break;
++
++		if (!drained) {
++			drain_all_stock(memcg);
++			drained = true;
++			continue;
++		}
++
++		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
++							 GFP_KERNEL, true);
++
++		if (!reclaimed && !nr_retries--)
++			break;
++	}
  
- 		if (!drained) {
- 			drain_all_stock(memcg);
+-	memcg_wb_domain_size_changed(memcg);
+ 	return nbytes;
+ }
+ 
 -- 
 2.23.0
 
