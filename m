@@ -2,170 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B3625DF604
-	for <lists+cgroups@lfdr.de>; Mon, 21 Oct 2019 21:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F77DFE85
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 09:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730115AbfJUT37 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Oct 2019 15:29:59 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:34513 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730106AbfJUT37 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Oct 2019 15:29:59 -0400
-Received: by mail-oi1-f196.google.com with SMTP id 83so12113009oii.1
-        for <cgroups@vger.kernel.org>; Mon, 21 Oct 2019 12:29:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=38DEAaPe7VPNtXQ2EseqbfEr1C+gTTQIPutRtKmtjCg=;
-        b=jqJNlerT/h0PB/yL2UqjliVjE/m9ZYB1YyN24nPa/HvH9kqLgg/UQ2jPkbYVK6v//M
-         6dlvQUaOWUhzVi21Uisi0ck9tehmlXxQmY9svr55XdkPCfZ3QNAbbbjkCt3aJF9rT3jZ
-         KqwC3rb+Q0U44fb236Fo5gIAlo19lc86VBZtIuITRWK4R0T/ZmefPz1JxZCBm71znt2T
-         ZQ/GO6j2pVlyTnzm6NhtvBfugCp4kKOVcMrmgfxPJcdD3vpH5x6DdYqKm99Wgq2P9a8R
-         ehLTNzh7cn5JOxuYkyr308NDoy0ddIIoZvUEhTub+mAUElgRAmbaIvxtjFPy+Ztzs1L2
-         ujeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=38DEAaPe7VPNtXQ2EseqbfEr1C+gTTQIPutRtKmtjCg=;
-        b=E7kiL4Zcp6MGGYEDrOjrpI3prqhnE66+PYTxpqbu1mpr8eMFsQD34G9ufIGIlAkXwY
-         kXhfM22Zqm6WetJ6GEpFPBFUR67xF4jke9VAUDa++hhQJv5ozlA707oH5XMbN29snb/9
-         vTKprabj9BjGSX6mN3WEH468Yi8Q94NC0B8ICDGDbeU+QxAryoHiERNTHexcn3Ovv1Pz
-         rmLU/FGEDSmfbsnLsBSClDbhe5xDQIbyuE31Jt2HN4Erxstlohbg1uIxmFHNVQl3kIKW
-         pIVVZXGgKmN0YiJmf4eyWfP3Xto6iw12TvwySMuAgZGvzMjQJAcTNors9EF7h7LTleys
-         2ETQ==
-X-Gm-Message-State: APjAAAW/VUNe1iFk4aE1I4MqOE9ZCmqK9WL6IyzPbb40EXnWgyH1Vyj2
-        hOtuV7nWXPfvpFiMEwjLdjDWM1anr5K1yIvDLif4FQ==
-X-Google-Smtp-Source: APXvYqxbPxZzkZHwY5QcQh0HnZYMEGGsQw6/YuNBbPoU8glOU8Gu39g3Wnxa+m3+qpb/t8IKAD9aL3mBWGEtxUO+vNE=
-X-Received: by 2002:aca:5f55:: with SMTP id t82mr20792170oib.65.1571686197480;
- Mon, 21 Oct 2019 12:29:57 -0700 (PDT)
+        id S2387966AbfJVHmA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Oct 2019 03:42:00 -0400
+Received: from cloud1-vm154.de-nserver.de ([178.250.10.56]:21697 "EHLO
+        cloud1-vm154.de-nserver.de" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2387962AbfJVHmA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 03:42:00 -0400
+Received: (qmail 23830 invoked from network); 22 Oct 2019 09:41:57 +0200
+X-Fcrdns: No
+Received: from phoffice.de-nserver.de (HELO [10.11.11.182]) (185.39.223.5)
+  (smtp-auth username hostmaster@profihost.com, mechanism plain)
+  by cloud1-vm154.de-nserver.de (qpsmtpd/0.92) with (ECDHE-RSA-AES256-GCM-SHA384 encrypted) ESMTPSA; Tue, 22 Oct 2019 09:41:57 +0200
+X-GeoIP-Country: DE
+Subject: Re: lot of MemAvailable but falling cache and raising PSI
+To:     Vlastimil Babka <vbabka@suse.cz>, Michal Hocko <mhocko@kernel.org>
+Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>, l.roehrs@profihost.ag,
+        cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>
+References: <52235eda-ffe2-721c-7ad7-575048e2d29d@profihost.ag>
+ <20190910082919.GL2063@dhcp22.suse.cz>
+ <132e1fd0-c392-c158-8f3a-20e340e542f0@profihost.ag>
+ <20190910090241.GM2063@dhcp22.suse.cz>
+ <743a047e-a46f-32fa-1fe4-a9bd8f09ed87@profihost.ag>
+ <20190910110741.GR2063@dhcp22.suse.cz>
+ <364d4c2e-9c9a-d8b3-43a8-aa17cccae9c7@profihost.ag>
+ <20190910125756.GB2063@dhcp22.suse.cz>
+ <d7448f13-899a-5805-bd36-8922fa17b8a9@profihost.ag>
+ <b1fe902f-fce6-1aa9-f371-ceffdad85968@profihost.ag>
+ <20190910132418.GC2063@dhcp22.suse.cz>
+ <d07620d9-4967-40fe-fa0f-be51f2459dc5@profihost.ag>
+ <2fe81a9e-5d29-79cf-f747-c66ae35defd0@profihost.ag>
+ <4f6f1bc9-08f4-d53a-8788-a761be769757@suse.cz>
+From:   Stefan Priebe - Profihost AG <s.priebe@profihost.ag>
+Message-ID: <76ad5b29-815b-3d87-cefa-ec5b222279f1@profihost.ag>
+Date:   Tue, 22 Oct 2019 09:41:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-References: <20191013003024.215429-1-almasrymina@google.com>
- <20191013003024.215429-5-almasrymina@google.com> <982efbbc-f795-5819-83a8-7d328537e070@oracle.com>
-In-Reply-To: <982efbbc-f795-5819-83a8-7d328537e070@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 21 Oct 2019 12:29:46 -0700
-Message-ID: <CAHS8izP5=6PFFkq7NMrXCS6x_oV8uNGO4hUM3uh8mBE+J-Y1TA@mail.gmail.com>
-Subject: Re: [PATCH v6 5/9] hugetlb: disable region_add file_region coalescing
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        khalid.aziz@oracle.com, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <4f6f1bc9-08f4-d53a-8788-a761be769757@suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: 7bit
+X-User-Auth: Auth by hostmaster@profihost.com through 185.39.223.5
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 21, 2019 at 12:02 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 10/12/19 5:30 PM, Mina Almasry wrote:
-> > A follow up patch in this series adds hugetlb cgroup uncharge info the
-> > file_region entries in resv->regions. The cgroup uncharge info may
-> > differ for different regions, so they can no longer be coalesced at
-> > region_add time. So, disable region coalescing in region_add in this
-> > patch.
-> >
-> > Behavior change:
-> >
-> > Say a resv_map exists like this [0->1], [2->3], and [5->6].
-> >
-> > Then a region_chg/add call comes in region_chg/add(f=0, t=5).
-> >
-> > Old code would generate resv->regions: [0->5], [5->6].
-> > New code would generate resv->regions: [0->1], [1->2], [2->3], [3->5],
-> > [5->6].
-> >
-> > Special care needs to be taken to handle the resv->adds_in_progress
-> > variable correctly. In the past, only 1 region would be added for every
-> > region_chg and region_add call. But now, each call may add multiple
-> > regions, so we can no longer increment adds_in_progress by 1 in region_chg,
-> > or decrement adds_in_progress by 1 after region_add or region_abort. Instead,
-> > region_chg calls add_reservation_in_range() to count the number of regions
-> > needed and allocates those, and that info is passed to region_add and
-> > region_abort to decrement adds_in_progress correctly.
-> >
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> >
-> > ---
-> >
-> > Changes in v6:
-> > - Fix bug in number of region_caches allocated by region_chg
-> >
-> > ---
-> >  mm/hugetlb.c | 256 +++++++++++++++++++++++++++++----------------------
-> >  1 file changed, 147 insertions(+), 109 deletions(-)
-> >
-> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-> > index 4a60d7d44b4c3..f9c1947925bb9 100644
-> > --- a/mm/hugetlb.c
-> > +++ b/mm/hugetlb.c
-> <snip>
-> > -static long region_chg(struct resv_map *resv, long f, long t)
-> > +static long region_chg(struct resv_map *resv, long f, long t,
-> > +                    long *out_regions_needed)
-> >  {
-> > +     struct file_region *trg = NULL;
-> >       long chg = 0;
-> >
-> > +     /* Allocate the maximum number of regions we're going to need for this
-> > +      * reservation. The maximum number of regions we're going to need is
-> > +      * (t - f) / 2 + 1, which corresponds to a region with alternating
-> > +      * reserved and unreserved pages.
-> > +      */
-> > +     *out_regions_needed = (t - f) / 2 + 1;
-> > +
-> >       spin_lock(&resv->lock);
-> > -retry_locked:
-> > -     resv->adds_in_progress++;
-> > +
-> > +     resv->adds_in_progress += *out_regions_needed;
-> >
-> >       /*
-> >        * Check for sufficient descriptors in the cache to accommodate
-> >        * the number of in progress add operations.
-> >        */
-> > -     if (resv->adds_in_progress > resv->region_cache_count) {
-> > -             struct file_region *trg;
-> > -
-> > -             VM_BUG_ON(resv->adds_in_progress - resv->region_cache_count > 1);
-> > +     while (resv->region_cache_count < resv->adds_in_progress) {
-> >               /* Must drop lock to allocate a new descriptor. */
-> > -             resv->adds_in_progress--;
-> >               spin_unlock(&resv->lock);
-> > -
-> >               trg = kmalloc(sizeof(*trg), GFP_KERNEL);
-> >               if (!trg)
-> >                       return -ENOMEM;
-> > @@ -393,9 +395,9 @@ static long region_chg(struct resv_map *resv, long f, long t)
-> >               spin_lock(&resv->lock);
-> >               list_add(&trg->link, &resv->region_cache);
-> >               resv->region_cache_count++;
-> > -             goto retry_locked;
-> >       }
->
->
-> I know that I suggested allocating the worst case number of entries, but this
-> is going to be too much of a hit for existing hugetlbfs users.  It is not
-> uncommon for DBs to have a shared areas in excess of 1TB mapped by hugetlbfs.
-> With this new scheme, the above while loop will allocate over a half million
-> file region entries and end up only using one.
->
-> I think we need to step back and come up with a different approach.  Let me
-> give it some more thought before throwing out ideas that may waste more of
-> your time.  Sorry.
+Hi,
+Am 27.09.19 um 14:45 schrieb Vlastimil Babka:
+> On 9/19/19 12:21 PM, Stefan Priebe - Profihost AG wrote:
+>> Kernel 5.2.14 is now running since exactly 7 days and now we can easaly
+>> view a trend i', not sure if i should post graphs.
+>>
+>> Cache size is continuously shrinking while memfree is rising.
+>>
+>> While there were 4,5GB free in avg in the beginnen we now have an avg of
+>> 8GB free memory.
+>>
+>> Cache has shrinked from avg 24G to avg 18G.
+>>
+>> Memory pressure has rised from avg 0% to avg 0.1% - not much but if you
+>> look at the graphs it's continuously rising while cache is shrinking and
+>> memfree is rising.
+> 
+> Hi, could you try the patch below? I suspect you're hitting a corner
+> case where compaction_suitable() returns COMPACT_SKIPPED for the
+> ZONE_DMA, triggering reclaim even if other zones have plenty of free
+> memory. And should_continue_reclaim() then returns true until twice the
+> requested page size is reclaimed (compact_gap()). That means 4MB
+> reclaimed for each THP allocation attempt, which roughly matches the
+> trace data you preovided previously.
+> 
+> The amplification to 4MB should be removed in patches merged for 5.4, so
+> it would be only 32 pages reclaimed per THP allocation. The patch below
+> tries to remove this corner case completely, and it should be more
+> visible on your 5.2.x, so please apply it there.
+> 
+is there any reason to not apply that one on top of 4.19?
 
-No problem at all. The other more reasonable option is to have it such
-that region_add allocates its own cache entries if it needs to, and
-the effect of that is that region_add may fail, so the callers must
-handle that possibility. Doesn't seem too difficult to handle.
+Greets,
+Stefan
 
-> --
-> Mike Kravetz
