@@ -2,98 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9BDE0420
-	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 14:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEAF7E056C
+	for <lists+cgroups@lfdr.de>; Tue, 22 Oct 2019 15:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388934AbfJVMqe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Oct 2019 08:46:34 -0400
-Received: from [217.140.110.172] ([217.140.110.172]:51644 "EHLO foss.arm.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1728346AbfJVMqe (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 22 Oct 2019 08:46:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C3248168F;
-        Tue, 22 Oct 2019 05:46:11 -0700 (PDT)
-Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 420CA3F71F;
-        Tue, 22 Oct 2019 05:46:10 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] sched/topology: Don't try to build empty sched
- domains
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        morten.rasmussen@arm.com, qperret@google.com,
-        stable@vger.kernel.org
-References: <20191015154250.12951-1-valentin.schneider@arm.com>
- <20191015154250.12951-2-valentin.schneider@arm.com>
- <20dc939f-4102-334e-5fde-a442ee7eaa5e@arm.com>
-From:   Valentin Schneider <valentin.schneider@arm.com>
-Message-ID: <b38c30cd-f990-dd98-b414-c284f8f32cfd@arm.com>
-Date:   Tue, 22 Oct 2019 13:46:08 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.8.0
+        id S1732115AbfJVNqF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Oct 2019 09:46:05 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:26568 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730540AbfJVNqE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 09:46:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571751963;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AZ2Lyz8vnWq4qiRDaCZkUIbSRXAGjuYLj75pS2gsmNI=;
+        b=NY+2VCjCiaheWshCAhwD0AZh8QhgqG4GLQn7rwMer1GedJycaK7Q43wIvJdH0QFYmGAgA8
+        MqZ/6kAfZxZKUVNX35nsiaY67C+E0P3by+ZQZXe+nrl24yOInztLndjRJF7FDYC/b+aWNd
+        JmtpXwGfP4BVFAIWmyukExSB2pu42mQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-323-meLleCh0PF2g2JXH-ncNiA-1; Tue, 22 Oct 2019 09:45:59 -0400
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A194980183E;
+        Tue, 22 Oct 2019 13:45:58 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.44])
+        by smtp.corp.redhat.com (Postfix) with SMTP id AAEB11001B22;
+        Tue, 22 Oct 2019 13:45:56 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Tue, 22 Oct 2019 15:45:58 +0200 (CEST)
+Date:   Tue, 22 Oct 2019 15:45:55 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Honglei Wang <honglei.wang@oracle.com>
+Cc:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, guro@fb.com
+Subject: Re: [PATCH] cgroup: freezer: don't change task and cgroups status
+ unnecessarily
+Message-ID: <20191022134555.GA5307@redhat.com>
+References: <20191021081826.8769-1-honglei.wang@oracle.com>
 MIME-Version: 1.0
-In-Reply-To: <20dc939f-4102-334e-5fde-a442ee7eaa5e@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191021081826.8769-1-honglei.wang@oracle.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+X-MC-Unique: meLleCh0PF2g2JXH-ncNiA-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 22/10/2019 12:43, Dietmar Eggemann wrote:
-> First I thought we can do with a little less drama by only preventing
-> arch_scale_cpu_capacity() from consuming >= nr_cpu_ids.
-> 
-> @@ -1894,6 +1894,9 @@ static struct sched_domain_topology_level
->         struct sched_domain_topology_level *tl, *asym_tl = NULL;
->         unsigned long cap;
-> 
-> +       if (cpumask_empty(cpu_map))
-> +               return NULL;
+On 10/21, Honglei Wang wrote:
+>
+> @@ -230,6 +230,15 @@ void cgroup_freezer_migrate_task(struct task_struct =
+*task,
+> +=09/*
+> +=09 * It's not necessary to do changes if both of the src and dst cgroup=
+s
+> +=09 * are not freeze and task is not frozen.
+> +=09 */
+> +=09if (!test_bit(CGRP_FREEZE, &src->flags) &&
+> +=09    !test_bit(CGRP_FREEZE, &dst->flags) &&
+> +=09    !task->frozen)
+> +=09=09return;
 > +
-> 
-> Until I tried to hp'ed in CPU4 after CPU4/5 had been hp'ed out (your
-> example further below) and I got another:
-> 
-> [   68.014564] Unable to handle kernel paging request at virtual address
-> fffe8009903d8ee0
-> ...
-> [   68.191293] Call trace:
-> [   68.193712]  partition_sched_domains_locked+0x1a4/0x4a0
-> [   68.198882]  rebuild_sched_domains_locked+0x4d0/0x7b0
-> [   68.203880]  rebuild_sched_domains+0x24/0x40
-> [   68.208104]  cpuset_hotplug_workfn+0xe0/0x5f8
-> ...
-> 
-> @@ -2213,6 +2216,11 @@ void partition_sched_domains_locked(int
-> ndoms_new, cpumask_var_t doms_new[],
->                                * will be recomputed in function
->                                * update_tasks_root_domain().
->                                */
-> +                             if (cpumask_empty(doms_cur[i]))
-> +                                    printk("doms_cur[%d] empty\n", i);
-> +
->                               rd = cpu_rq(cpumask_any(doms_cur[i]))->rd;
-> 
-> doms_cur[i] is empty when hp'ing in CPU4 again.
-> 
-> Your patch fixes this as well.
-> 
 
-Thanks for giving it a spin!
+If we want to optimize cgroup_freezer_migrate_task()... I am sure I missed
+something, but can't we do better ?
 
-> Might be worth noting that this is not only about asym CPU capacity
-> handling but missing checks after cpumask operations in case the cpuset
-> is empty.
+If a frozen task enters or leaves cgrp, this should never change the state
+of FROZEN bit?
 
-Aye, we end up saving whatever we're given (doms_cur = doms_new at the end
-of the rebuild). As you pointed out this is also an issue for the operation
-done by
+Oleg.
 
-  f9a25f776d78 ("cpusets: Rebuild root domain deadline accounting information")
+--- x/kernel/cgroup/freezer.c
++++ x/kernel/cgroup/freezer.c
+@@ -238,14 +238,14 @@ void cgroup_freezer_migrate_task(struct
+ =09if (task->frozen) {
+ =09=09cgroup_inc_frozen_cnt(dst);
+ =09=09cgroup_dec_frozen_cnt(src);
++=09} else {
++=09=09if (test_bit(CGRP_FREEZE, &src->flags))
++=09=09=09cgroup_update_frozen(src);
++=09=09if (test_bit(CGRP_FREEZE, &dst->flags)) {
++=09=09=09cgroup_update_frozen(dst);
++=09=09=09cgroup_freeze_task(task, true);
++=09=09}
+ =09}
+-=09cgroup_update_frozen(dst);
+-=09cgroup_update_frozen(src);
+-
+-=09/*
+-=09 * Force the task to the desired state.
+-=09 */
+-=09cgroup_freeze_task(task, test_bit(CGRP_FREEZE, &dst->flags));
+ }
+=20
+ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
 
-but it has been introduced after the asymmetry check, hence why I'm tagging
-the latter for stable.
