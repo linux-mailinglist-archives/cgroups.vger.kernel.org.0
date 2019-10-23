@@ -2,123 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C83A8E1E0B
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 16:25:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2794EE1F7E
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 17:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392185AbfJWOZA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Oct 2019 10:25:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39862 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725852AbfJWOZA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 23 Oct 2019 10:25:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6384FB422;
-        Wed, 23 Oct 2019 14:24:38 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 16:24:37 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 7/8] mm: vmscan: split shrink_node() into node part and
- memcgs part
-Message-ID: <20191023142437.GH17610@dhcp22.suse.cz>
-References: <20191022144803.302233-1-hannes@cmpxchg.org>
- <20191022144803.302233-8-hannes@cmpxchg.org>
+        id S2404071AbfJWPiq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 11:38:46 -0400
+Received: from [217.140.110.172] ([217.140.110.172]:55190 "EHLO foss.arm.com"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S2403912AbfJWPip (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 23 Oct 2019 11:38:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A714A3E8;
+        Wed, 23 Oct 2019 08:38:25 -0700 (PDT)
+Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 127083F718;
+        Wed, 23 Oct 2019 08:38:23 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
+        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
+        qperret@google.com
+Subject: [PATCH v4 0/2] sched/topology: Asymmetric topologies fixes
+Date:   Wed, 23 Oct 2019 16:37:43 +0100
+Message-Id: <20191023153745.19515-1-valentin.schneider@arm.com>
+X-Mailer: git-send-email 2.22.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191022144803.302233-8-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 22-10-19 10:48:02, Johannes Weiner wrote:
-> This function is getting long and unwieldy, split out the memcg bits.
-> 
-> The updated shrink_node() handles the generic (node) reclaim aspects:
->   - global vmpressure notifications
->   - writeback and congestion throttling
->   - reclaim/compaction management
->   - kswapd giving up on unreclaimable nodes
-> 
-> It then calls a new shrink_node_memcgs() which handles cgroup specifics:
->   - the cgroup tree traversal
->   - memory.low considerations
->   - per-cgroup slab shrinking callbacks
->   - per-cgroup vmpressure notifications
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Hi,
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+I got a nice splat while testing out the toggling of
+sched_asym_cpucapacity, so this is a cpuset fix plus a topology patch.
 
-> ---
->  mm/vmscan.c | 28 ++++++++++++++++++----------
->  1 file changed, 18 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index db073b40c432..65baa89740dd 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2722,18 +2722,10 @@ static bool pgdat_memcg_congested(pg_data_t *pgdat, struct mem_cgroup *memcg)
->  		(memcg && memcg_congested(pgdat, memcg));
->  }
->  
-> -static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
-> +static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  {
-> -	struct reclaim_state *reclaim_state = current->reclaim_state;
->  	struct mem_cgroup *root = sc->target_mem_cgroup;
-> -	unsigned long nr_reclaimed, nr_scanned;
-> -	bool reclaimable = false;
->  	struct mem_cgroup *memcg;
-> -again:
-> -	memset(&sc->nr, 0, sizeof(sc->nr));
-> -
-> -	nr_reclaimed = sc->nr_reclaimed;
-> -	nr_scanned = sc->nr_scanned;
->  
->  	memcg = mem_cgroup_iter(root, NULL, NULL);
->  	do {
-> @@ -2786,6 +2778,22 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->  			   sc->nr_reclaimed - reclaimed);
->  
->  	} while ((memcg = mem_cgroup_iter(root, memcg, NULL)));
-> +}
-> +
-> +static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
-> +{
-> +	struct reclaim_state *reclaim_state = current->reclaim_state;
-> +	struct mem_cgroup *root = sc->target_mem_cgroup;
-> +	unsigned long nr_reclaimed, nr_scanned;
-> +	bool reclaimable = false;
-> +
-> +again:
-> +	memset(&sc->nr, 0, sizeof(sc->nr));
-> +
-> +	nr_reclaimed = sc->nr_reclaimed;
-> +	nr_scanned = sc->nr_scanned;
-> +
-> +	shrink_node_memcgs(pgdat, sc);
->  
->  	if (reclaim_state) {
->  		sc->nr_reclaimed += reclaim_state->reclaimed_slab;
-> @@ -2793,7 +2801,7 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->  	}
->  
->  	/* Record the subtree's reclaim efficiency */
-> -	vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
-> +	vmpressure(sc->gfp_mask, root, true,
->  		   sc->nr_scanned - nr_scanned,
->  		   sc->nr_reclaimed - nr_reclaimed);
->  
-> -- 
-> 2.23.0
-> 
+Details are in the logs.
 
--- 
-Michal Hocko
-SUSE Labs
+v2 changes:
+  - Use static_branch_{inc,dec} rather than enable/disable
+
+v3 changes:
+  - New patch: add fix for empty cpumap in sched domain rebuild
+  - Move static_branch_dec outside of RCU read-side section (Quentin)
+
+v4 changes:
+  - Patch 1/2: Directly tweak the cpuset array (Dietmar)
+  - Patch 2/2: Add an example to the changelog (Dietmar)
+
+Cheers,
+Valentin
+
+Valentin Schneider (2):
+  sched/topology: Don't try to build empty sched domains
+  sched/topology: Allow sched_asym_cpucapacity to be disabled
+
+ kernel/cgroup/cpuset.c  |  3 ++-
+ kernel/sched/topology.c | 11 +++++++++--
+ 2 files changed, 11 insertions(+), 3 deletions(-)
+
+--
+2.22.0
+
