@@ -2,135 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59ADEE1F8A
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 17:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9672DE1FE0
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 17:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403913AbfJWPjO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Oct 2019 11:39:14 -0400
-Received: from [217.140.110.172] ([217.140.110.172]:55240 "EHLO foss.arm.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S2403757AbfJWPjO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 23 Oct 2019 11:39:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B93B0494;
-        Wed, 23 Oct 2019 08:38:46 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EDBF43F718;
-        Wed, 23 Oct 2019 08:38:44 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com, stable@vger.kernel.org,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
-Subject: [PATCH v4 2/2] sched/topology: Allow sched_asym_cpucapacity to be disabled
-Date:   Wed, 23 Oct 2019 16:37:45 +0100
-Message-Id: <20191023153745.19515-3-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.22.0
-In-Reply-To: <20191023153745.19515-1-valentin.schneider@arm.com>
-References: <20191023153745.19515-1-valentin.schneider@arm.com>
+        id S2406934AbfJWPqW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 11:46:22 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:34110 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406920AbfJWPqW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Oct 2019 11:46:22 -0400
+Received: by mail-qk1-f196.google.com with SMTP id f18so19588976qkm.1
+        for <cgroups@vger.kernel.org>; Wed, 23 Oct 2019 08:46:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=zwE9Z3/9LcARux9+B76rcKwvDcmouV9c6zymdxIVL7A=;
+        b=rp22pdO+QJHOU3Ho1UY7xorn4AuL580GE2ZqkiG4d0nMzXkU1MfXodmLe7hD1ECc7D
+         IMC7Vvg31Z/tmSkTKeeEmklazG16Zz/DPdfshuBOKlhM66xv44LcaukLTPllAgDPxKh4
+         W4x7z1ZcwGuVAvUiVdsJHQ9/Kvzfx/ygtO20SMcSux2IGgsogJHtQBXEIqbOsxDYt+Ky
+         hjkl01/xYV9eQ/viklG2tHO7G/RInBKIybiOtsUrJHphXUicWp0fhuvXW8fxwJ4593/j
+         vZWiwCQMkwTwVOTvxAwdaAXYBhqGp7zxO/3j8tKGXer3bofrn+ImDKl91U5K6RaR8+6T
+         yTng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=zwE9Z3/9LcARux9+B76rcKwvDcmouV9c6zymdxIVL7A=;
+        b=b51eZlxRm2fhNaXhF5/DIvjPzntUydVD5LJ7ISfPWA9L1313KnSNfU/BVbAkMFtQ2d
+         0bqJ6PYw+tx4pgu/WY0wzKSw+O7nzrMFf14zhofS3YQsuihrfdmv6intuQ80x4zTOEpv
+         LGR9H/wICdHNxlIgwHLlng2oY60KyLDYyn5aTbMq1hYixwbtzQLcLLt6b40eel/Mh/JH
+         kEZZwFPyjQrDsWMaTXxRiiptT0m23XwASWwqKHOvQh73UsowJ5ZZyIOJVWsNecSsP8jC
+         SAtwjmkQjxlYbvdV85dLgnDE0seLw7LllKiESP/iMT6l/1m3YFJkoYrNk+Bg4YOoYKDO
+         P1qw==
+X-Gm-Message-State: APjAAAWaiFFp58RC/xG2KAi7iqG2sdiWA7IGjpYffxGUKW+cNxyPhoiX
+        +nqvFbUy+tE0mvzlPjj4YsTgg7zTRNI=
+X-Google-Smtp-Source: APXvYqwpPwSqe1LKFk3kNgNKJTo9hCoU0ly3Tu3ZRRk/g8ZcsQfWZ5klMQOr6f4kbGjWBHGc2zlrRQ==
+X-Received: by 2002:a37:4f88:: with SMTP id d130mr9187473qkb.168.1571845580395;
+        Wed, 23 Oct 2019 08:46:20 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:500::2:c4de])
+        by smtp.gmail.com with ESMTPSA id h23sm11237712qkk.128.2019.10.23.08.46.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 23 Oct 2019 08:46:19 -0700 (PDT)
+Date:   Wed, 23 Oct 2019 11:46:18 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: fix network errors from failing
+ __GFP_ATOMIC charges
+Message-ID: <20191023154618.GA366316@cmpxchg.org>
+References: <20191022233708.365764-1-hannes@cmpxchg.org>
+ <20191023064012.GB754@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191023064012.GB754@dhcp22.suse.cz>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-While the static key is correctly initialized as being disabled, it will
-remain forever enabled once turned on. This means that if we start with an
-asymmetric system and hotplug out enough CPUs to end up with an SMP system,
-the static key will remain set - which is obviously wrong. We should detect
-this and turn off things like misfit migration and capacity aware wakeups.
+On Wed, Oct 23, 2019 at 08:40:12AM +0200, Michal Hocko wrote:
+> On Tue 22-10-19 19:37:08, Johannes Weiner wrote:
+> > While upgrading from 4.16 to 5.2, we noticed these allocation errors
+> > in the log of the new kernel:
+> > 
+> > [ 8642.253395] SLUB: Unable to allocate memory on node -1, gfp=0xa20(GFP_ATOMIC)
+> > [ 8642.269170]   cache: tw_sock_TCPv6(960:helper-logs), object size: 232, buffer size: 240, default order: 1, min order: 0
+> > [ 8642.293009]   node 0: slabs: 5, objs: 170, free: 0
+> > 
+> >         slab_out_of_memory+1
+> >         ___slab_alloc+969
+> >         __slab_alloc+14
+> >         kmem_cache_alloc+346
+> >         inet_twsk_alloc+60
+> >         tcp_time_wait+46
+> >         tcp_fin+206
+> >         tcp_data_queue+2034
+> >         tcp_rcv_state_process+784
+> >         tcp_v6_do_rcv+405
+> >         __release_sock+118
+> >         tcp_close+385
+> >         inet_release+46
+> >         __sock_release+55
+> >         sock_close+17
+> >         __fput+170
+> >         task_work_run+127
+> >         exit_to_usermode_loop+191
+> >         do_syscall_64+212
+> >         entry_SYSCALL_64_after_hwframe+68
+> > 
+> > accompanied by an increase in machines going completely radio silent
+> > under memory pressure.
+> 
+> This is really worrying because that suggests that something depends on
+> GFP_ATOMIC allocation which is fragile and broken. 
 
-As Quentin pointed out, having separate root domains makes this slightly
-trickier. We could have exclusive cpusets that create an SMP island - IOW,
-the domains within this root domain will not see any asymmetry. This means
-we can't just disable the key on domain destruction, we need to count how
-many asymmetric root domains we have.
+I don't think that is true. You cannot rely on a *single instance* of
+atomic allocations to succeed. But you have to be able to rely on that
+failure is temporary and there is a chance of succeeding eventually.
 
+Network is a good example. It retries transmits, but within reason. If
+you aren't able to process incoming packets for minutes, you might as
+well be dead.
 
-Consider the following example using Juno r0 which is 2+4 big.LITTLE, where
-two identical cpusets are created: they both span both big and LITTLE CPUs:
+> > One thing that changed since 4.16 is e699e2c6a654 ("net, mm: account
+> > sock objects to kmemcg"), which made these slab caches subject to
+> > cgroup memory accounting and control.
+> > 
+> > The problem with that is that cgroups, unlike the page allocator, do
+> > not maintain dedicated atomic reserves. As a cgroup's usage hovers at
+> > its limit, atomic allocations - such as done during network rx - can
+> > fail consistently for extended periods of time. The kernel is not able
+> > to operate under these conditions.
+> > 
+> > We don't want to revert the culprit patch, because it indeed tracks a
+> > potentially substantial amount of memory used by a cgroup.
+> > 
+> > We also don't want to implement dedicated atomic reserves for cgroups.
+> > There is no point in keeping a fixed margin of unused bytes in the
+> > cgroup's memory budget to accomodate a consumer that is impossible to
+> > predict - we'd be wasting memory and get into configuration headaches,
+> > not unlike what we have going with min_free_kbytes. We do this for
+> > physical mem because we have to, but cgroups are an accounting game.
+> > 
+> > Instead, account these privileged allocations to the cgroup, but let
+> > them bypass the configured limit if they have to. This way, we get the
+> > benefits of accounting the consumed memory and have it exert pressure
+> > on the rest of the cgroup, but like with the page allocator, we shift
+> > the burden of reclaimining on behalf of atomic allocations onto the
+> > regular allocations that can block.
+> 
+> On the other hand this would allow to break the isolation by an
+> unpredictable amount. Should we put a simple cap on how much we can go
+> over the limit. If the memcg limit reclaim is not able to keep up with
+> those overflows then even __GFP_ATOMIC allocations have to fail. What do
+> you think?
 
-    asym0    asym1
-  [       ][       ]
-   L  L  B  L  L  B
+I don't expect a big overrun in practice, and it appears that Google
+has been letting even NOWAIT allocations pass through without
+isolation issues. Likewise, we have been force-charging the skmem for
+a while now and it hasn't been an issue for reclaim to keep up.
 
-  cgcreate -g cpuset:asym0
-  cgset -r cpuset.cpus=0,1,3 asym0
-  cgset -r cpuset.mems=0 asym0
-  cgset -r cpuset.cpu_exclusive=1 asym0
-
-  cgcreate -g cpuset:asym1
-  cgset -r cpuset.cpus=2,4,5 asym1
-  cgset -r cpuset.mems=0 asym1
-  cgset -r cpuset.cpu_exclusive=1 asym1
-
-  cgset -r cpuset.sched_load_balance=0 .
-
-(the CPU numbering may look odd because on the Juno LITTLEs are CPUs 0,3-5
-and bigs are CPUs 1-2)
-
-If we make one of those SMP (IOW remove asymmetry) by e.g. hotplugging its
-big core, we would end up with an SMP cpuset and an asymmetric cpuset - the
-static key must remain set, because we still have one asymmetric root domain.
-
-With the above example, this could be done with:
-
-  echo 0 > /sys/devices/system/cpu/cpu2/online
-
-Which would result in:
-
-    asym0   asym1
-  [       ][    ]
-   L  L  B  L  L
-
-When both SMP and asymmetric cpusets are present, all CPUs will observe
-sched_asym_cpucapacity being set (it is system-wide), but not all CPUs
-observe asymmetry in their sched domain hierarchy:
-
-per_cpu(sd_asym_cpucapacity, <any CPU in asym0>) == <some SD at DIE level>
-per_cpu(sd_asym_cpucapacity, <any CPU in asym1>) == NULL
-
-
-Change the simple key enablement to an increment, and decrement the key
-counter when destroying domains that cover asymmetric CPUs.
-
-Cc: <stable@vger.kernel.org>
-Fixes: df054e8445a4 ("sched/topology: Add static_key for asymmetric CPU capacity optimizations")
-Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
----
- kernel/sched/topology.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 2e7af755e17a..6ec1e595b1d4 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -2026,7 +2026,7 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
- 	rcu_read_unlock();
- 
- 	if (has_asym)
--		static_branch_enable_cpuslocked(&sched_asym_cpucapacity);
-+		static_branch_inc_cpuslocked(&sched_asym_cpucapacity);
- 
- 	if (rq && sched_debug_enabled) {
- 		pr_info("root domain span: %*pbl (max cpu_capacity = %lu)\n",
-@@ -2121,9 +2121,12 @@ int sched_init_domains(const struct cpumask *cpu_map)
-  */
- static void detach_destroy_domains(const struct cpumask *cpu_map)
- {
-+	unsigned int cpu = cpumask_any(cpu_map);
- 	int i;
- 
-+	if (rcu_access_pointer(per_cpu(sd_asym_cpucapacity, cpu)))
-+		static_branch_dec_cpuslocked(&sched_asym_cpucapacity);
-+
- 	rcu_read_lock();
- 	for_each_cpu(i, cpu_map)
- 		cpu_attach_domain(NULL, &def_root_domain, i);
---
-2.22.0
-
+My experience from production is that it's a whole lot easier to debug
+something like a memory.max overrun than it is to debug a machine that
+won't respond to networking. So that's the side I would err on.
