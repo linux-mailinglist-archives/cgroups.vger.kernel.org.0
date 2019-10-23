@@ -2,87 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A41E193D
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 13:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E2F7E1C71
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 15:24:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390623AbfJWLqr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Oct 2019 07:46:47 -0400
-Received: from [217.140.110.172] ([217.140.110.172]:49266 "EHLO foss.arm.com"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S2390566AbfJWLqr (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 23 Oct 2019 07:46:47 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 864A4494;
-        Wed, 23 Oct 2019 04:46:24 -0700 (PDT)
-Received: from [192.168.0.9] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B41A03F6C4;
-        Wed, 23 Oct 2019 04:46:22 -0700 (PDT)
-Subject: Re: [PATCH v3 1/2] sched/topology: Don't try to build empty sched
- domains
-To:     Valentin Schneider <valentin.schneider@arm.com>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        morten.rasmussen@arm.com, qperret@google.com,
-        stable@vger.kernel.org
-References: <20191015154250.12951-1-valentin.schneider@arm.com>
- <20191015154250.12951-2-valentin.schneider@arm.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <9134acf7-69bb-403b-2e9c-0eb7fb7efabd@arm.com>
-Date:   Wed, 23 Oct 2019 13:46:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2405849AbfJWNYA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 09:24:00 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:38698 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2405848AbfJWNX7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Oct 2019 09:23:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1571837039;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XS65t5X8f5xPZoXspApVotMSsjhb2vM444RdBlH8BE4=;
+        b=Cpd3IysTdLJ1pdDRx5HVaMxpLCsWgwlNSuQUkmQa53Bnz/x7YkyXK0j6/sD4OBoh6NBRPg
+        Y8fTgMQvmGtf7kmk56x9ArghZVs6/Fht334b4OetJJJbQGZJtjsFvFlw1Y6f/g7SZVNotw
+        GT8iXFHP1kaTKFwys/UOdRc8eoDiox8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-144-nlJzw3kyPwCIKyrP1kuVCg-1; Wed, 23 Oct 2019 09:23:55 -0400
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 50B46476;
+        Wed, 23 Oct 2019 13:23:54 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.44])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 61A5760C83;
+        Wed, 23 Oct 2019 13:23:51 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Wed, 23 Oct 2019 15:23:54 +0200 (CEST)
+Date:   Wed, 23 Oct 2019 15:23:50 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Honglei Wang <honglei.wang@oracle.com>,
+        "tj@kernel.org" <tj@kernel.org>,
+        "lizefan@huawei.com" <lizefan@huawei.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
+Subject: Re: [PATCH] cgroup: freezer: don't change task and cgroups status
+ unnecessarily
+Message-ID: <20191023132350.GB14327@redhat.com>
+References: <20191021081826.8769-1-honglei.wang@oracle.com>
+ <20191022134555.GA5307@redhat.com>
+ <20191022173113.GD21381@tower.DHCP.thefacebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20191015154250.12951-2-valentin.schneider@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191022173113.GD21381@tower.DHCP.thefacebook.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-MC-Unique: nlJzw3kyPwCIKyrP1kuVCg-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 15/10/2019 17:42, Valentin Schneider wrote:
+On 10/22, Roman Gushchin wrote:
+>
+> On Tue, Oct 22, 2019 at 03:45:55PM +0200, Oleg Nesterov wrote:
+> >
+> > --- x/kernel/cgroup/freezer.c
+> > +++ x/kernel/cgroup/freezer.c
+> > @@ -238,14 +238,14 @@ void cgroup_freezer_migrate_task(struct
+> >  =09if (task->frozen) {
+> >  =09=09cgroup_inc_frozen_cnt(dst);
+> >  =09=09cgroup_dec_frozen_cnt(src);
+> > +=09} else {
+> > +=09=09if (test_bit(CGRP_FREEZE, &src->flags))
+> > +=09=09=09cgroup_update_frozen(src);
+> > +=09=09if (test_bit(CGRP_FREEZE, &dst->flags)) {
+> > +=09=09=09cgroup_update_frozen(dst);
+> > +=09=09=09cgroup_freeze_task(task, true);
+> > +=09=09}
+> >  =09}
+> > -=09cgroup_update_frozen(dst);
+> > -=09cgroup_update_frozen(src);
+>
+>
+> > -
+> > -=09/*
+> > -=09 * Force the task to the desired state.
+> > -=09 */
+> > -=09cgroup_freeze_task(task, test_bit(CGRP_FREEZE, &dst->flags));
+>
+> Hm, I'm not sure we can skip this part.
 
-[...]
+Neither me, but
 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index c52bc91f882b..a859e5539440 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -817,6 +817,11 @@ static int generate_sched_domains(cpumask_var_t **domains,
->  		struct cpuset *a = csa[i];
->  		int apn = a->pn;
->  
-> +		if (cpumask_empty(a->effective_cpus)) {
-> +			ndoms--;
-> +			continue;
-> +		}
-> +
->  		for (j = 0; j < csn; j++) {
->  			struct cpuset *b = csa[j];
->  			int bpn = b->pn;
-> @@ -859,6 +864,9 @@ static int generate_sched_domains(cpumask_var_t **domains,
->  			continue;
->  		}
->  
-> +		if (cpumask_empty(a->effective_cpus))
-> +			continue;
-> +
+> Imagine A->B migration, A has just been unfrozen, B is frozen.
+>
+> The task has JOBCTL_TRAP_FREEZE cleared, but task->frozen is still set.
+> Now we move the task to B. No one will set JOBCTL_TRAP_FREEZE again, so
+> the task will remain running.
+>
+> Is it a valid concern?
 
-Can you not just prevent that a cpuset pointer (cp) is added to the
-cpuset array (csa[]) in case cpumask_empty(cp->effective_cpus)?
+Not sure I understand... The patch doesn't remove cgroup_freeze_task(),
+it shifts it up, under the test_bit(CGRP_FREEZE, &dst).
 
-@@ -798,9 +800,14 @@ static int generate_sched_domains(cpumask_var_t
-**domains, cpumask_subset(cp->cpus_allowed, top_cpuset.effective_cpus))
-                        continue;
+Oleg.
 
--   if (is_sched_load_balance(cp))
-+   if (is_sched_load_balance(cp) && !cpumask_empty(cp->effective_cpus))
-            csa[csn++] = cp;
-
->  		dp = doms[nslot];
->  
->  		if (nslot == ndoms) {
-
-[...]
