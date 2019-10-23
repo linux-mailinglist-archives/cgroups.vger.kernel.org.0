@@ -2,171 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 82F6AE0FF9
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 04:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239A1E11CC
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 07:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388661AbfJWCS7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Oct 2019 22:18:59 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:49186 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725874AbfJWCS6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Oct 2019 22:18:58 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9N2If9L025023;
-        Wed, 23 Oct 2019 02:18:41 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=hiJnmuH7+gBHRQ2pa/IuH564nSeLhrw10ZSYHRl6tlg=;
- b=VCOdW1ngxhQi2ad9I/cfTbSuOcXbcdIS9JOaeKOUZU+G5Nf/r5y+wqSY9bfvXpVTN7aB
- h3JOPZOs1E4PEuBTGMSZjE9Q5jLqp+Hzz0fD907Unc9nvwmlN8/enkS76yhAy1KCs74z
- v0ZVZt2mMMynRxEg6Ml4vV+QaJMQen6yRyCnhpESB20UwOfRKPRUDsaYpATzhN/GvMpc
- DCb/EGNiVum25dwbUQNNynA4P3VGaRqRxmJHqo1LrH8XBZaBTNv+fZu+sSoJZ4kanf5+
- A4xnmAqxrfJAJiDYe5wFn953yl2sx+zJsz4Zd5nemU/YuWM2jWimkQyDP2fDjxHBkBhw kg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2vqu4qt56d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Oct 2019 02:18:41 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id x9N2IRcW194637;
-        Wed, 23 Oct 2019 02:18:40 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 2vsx2shdp5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 23 Oct 2019 02:18:40 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id x9N2IYAa021905;
-        Wed, 23 Oct 2019 02:18:35 GMT
-Received: from [10.182.71.227] (/10.182.71.227)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 22 Oct 2019 19:18:34 -0700
-Subject: Re: [PATCH] cgroup: freezer: don't change task and cgroups status
- unnecessarily
-To:     Roman Gushchin <guro@fb.com>
-Cc:     "tj@kernel.org" <tj@kernel.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "oleg@redhat.com" <oleg@redhat.com>
-References: <20191021081826.8769-1-honglei.wang@oracle.com>
- <20191021161453.GA3407@castle.DHCP.thefacebook.com>
-From:   Honglei Wang <honglei.wang@oracle.com>
-Message-ID: <4db30150-262d-b69f-3adf-4cc1be976119@oracle.com>
-Date:   Wed, 23 Oct 2019 10:18:48 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
-MIME-Version: 1.0
-In-Reply-To: <20191021161453.GA3407@castle.DHCP.thefacebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9418 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=938
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1908290000 definitions=main-1910230021
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9418 signatures=668684
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1908290000
- definitions=main-1910230021
+        id S1731026AbfJWFow (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 01:44:52 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:38416 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729233AbfJWFow (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Oct 2019 01:44:52 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 3so18273231wmi.3
+        for <cgroups@vger.kernel.org>; Tue, 22 Oct 2019 22:44:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Yxvk4JK0S6fOQxsokBnmhH3TcJSOZWVYOtlV6nQoCzM=;
+        b=IFQbUvYUvIHygSN9UBfOAvTiOyAzVBISTOa5oYkQV7XmGLlGYuvqaeduwqDjZf7K/e
+         SQDZFmJeyHwpYRriWd5Nw2SSe3qrPJifJuCW0PwujfTLdYgFxe+mBVIu5EjjpfFDas4b
+         ZFsJhWPjdQVgMj7ILlz3158WwsfWdOr4KiDokAQqJZsGMG+qn5d1YC6Ub6GHPn6fRbcR
+         VjLGYvNaCMSA/huILsbMGgR/4rntEmKbyAOGT9zdGIt4ElfUIX9yDoehNxnQ1B8zRBjK
+         D3+k9tktvAsX7k0YeKEdQ8+l3k2AFN/jC7+bAXc2YX9R2y8OKdKEqb0CDJ4jAEipvBZ0
+         d9Yg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=Yxvk4JK0S6fOQxsokBnmhH3TcJSOZWVYOtlV6nQoCzM=;
+        b=QK3bZqtyUhET7SZ+uxBWklhvWBNbcByRr39Gbr43qavmV/ET8PTNlW72hcWlngcyHK
+         5xgXyKceky5q4Gh2nY6C3kneKfyb+1GZXyRMs4ZrlbFl8Wuzgn/H3dTSPqVdfq3n2yqN
+         9we8ZdrF18HvRHHlPTnXUx94WqyFl3A4z/73bWtuj1F2DnhDHNZ87cQ8nvjx8Dhx2kT5
+         Bp5mPnkRLKYPF4/qc+rfDoM2fcqWRiLxEZEdBa47fTeypLF49sWyEC5k9VIDHwBNTtYL
+         EPeGGDds/hZwWprOaAzO/kGb7HoPotHP8I7ozCbKhfiW2XvOiOBqB1cQYbF50WMyzQSn
+         qvaA==
+X-Gm-Message-State: APjAAAV3fafq2SQrDpzyZSuUgHLN7VlAJv/tQLnnOEbpkoCkZekp2yOk
+        XPO9aLMZKQPuPRFhcycbdMqUQA==
+X-Google-Smtp-Source: APXvYqxWENcAhG3ml7y69a4emJVDFc6t3DUaWlnyAPA/Dv2uJdnijYtDiaKwsMRWVlPpsLWX9yZGeA==
+X-Received: by 2002:a1c:5f42:: with SMTP id t63mr445601wmb.163.1571809489836;
+        Tue, 22 Oct 2019 22:44:49 -0700 (PDT)
+Received: from [192.168.0.102] (84-33-74-57.dyn.eolo.it. [84.33.74.57])
+        by smtp.gmail.com with ESMTPSA id 200sm14202462wme.32.2019.10.22.22.44.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 22 Oct 2019 22:44:49 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.8\))
+Subject: Re: [PATCH 0/2] block, bfq: make bfq disable iocost and present a
+ double interface
+From:   Paolo Valente <paolo.valente@linaro.org>
+In-Reply-To: <19BC0425-559E-433A-ACAD-B12FA02E20E4@linaro.org>
+Date:   Wed, 23 Oct 2019 07:44:47 +0200
+Cc:     linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        noreply-spamdigest via bfq-iosched 
+        <bfq-iosched@googlegroups.com>, oleksandr@natalenko.name,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <94E51269-62DC-427A-A81C-3851ABC818BC@linaro.org>
+References: <20191001193316.3330-1-paolo.valente@linaro.org>
+ <19BC0425-559E-433A-ACAD-B12FA02E20E4@linaro.org>
+To:     Jens Axboe <axboe@kernel.dk>
+X-Mailer: Apple Mail (2.3445.104.8)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+ping
 
+> Il giorno 9 ott 2019, alle ore 16:25, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>=20
+> Jens, Tejun,
+> can we proceed with this double-interface solution?
+>=20
+> Thanks,
+> Paolo
+>=20
+>> Il giorno 1 ott 2019, alle ore 21:33, Paolo Valente =
+<paolo.valente@linaro.org> ha scritto:
+>>=20
+>> Hi Jens,
+>>=20
+>> the first patch in this series is Tejun's patch for making BFQ =
+disable
+>> io.cost. The second patch makes BFQ present both the bfq-prefixes
+>> parameters and non-prefixed parameters, as suggested by Tejun [1].
+>>=20
+>> In the first patch I've tried to use macros not to repeat code
+>> twice. checkpatch complains that these macros should be enclosed in
+>> parentheses. I don't see how to do it. I'm willing to switch to any
+>> better solution.
+>>=20
+>> Thanks,
+>> Paolo
+>>=20
+>> [1] https://lkml.org/lkml/2019/9/18/736
+>>=20
+>> Paolo Valente (1):
+>> block, bfq: present a double cgroups interface
+>>=20
+>> Tejun Heo (1):
+>> blkcg: Make bfq disable iocost when enabled
+>>=20
+>> Documentation/admin-guide/cgroup-v2.rst |   8 +-
+>> Documentation/block/bfq-iosched.rst     |  40 ++--
+>> block/bfq-cgroup.c                      | 260 =
+++++++++++++------------
+>> block/bfq-iosched.c                     |  32 +++
+>> block/blk-iocost.c                      |   5 +-
+>> include/linux/blk-cgroup.h              |   5 +
+>> kernel/cgroup/cgroup.c                  |   2 +
+>> 7 files changed, 201 insertions(+), 151 deletions(-)
+>>=20
+>> --
+>> 2.20.1
+>=20
 
-On 10/22/19 12:14 AM, Roman Gushchin wrote:
-> On Mon, Oct 21, 2019 at 04:18:26PM +0800, Honglei Wang wrote:
->> Seems it's not necessary to adjust the task state and revisit the
->> state of source and destination cgroups if the cgroups are not in
->> freeze state and the task itself is not frozen.
->>
->> Signed-off-by: Honglei Wang <honglei.wang@oracle.com>
-> 
-> Hello Honglei!
-> 
-> Overall the patch looks correct to me, but what's the goal of this change?
-> Do you see any performance difference in some tests?
-> Maybe you can use freezer tests from kselftests to show the difference?
-> 
-> Your patch will sightly change the behavior of the freezer if unfreezing
-> of a cgroup is racing with the task migration. The change is probably fine
-> (at least I can't imagine why not), and I'd totally support the patch,
-> if there is any performance benefit.
-> 
-> Thank you!
->
-
-Hi Roman,
-
-Thank you for your attention!
-
-When I debug another problem, I just happen add some debug print which 
-show me there are many tasks be woke up when moving tasks from one 
-cgroup to another. After a bit more test, I find there are hundreds of 
-task waking up happen even when the kernel boot up.
-
-All of these tasks are not in running state when they are moved into a 
-cgroup or moved from one to anther, and the movement itself is not the 
-signal to wake up these tasks. I feel it's waste that the whole wake-up 
-process have to be done for the tasks who are not supposed ready to put 
-into the runqueue...
-
-Then I think further, if somebody want to move huge amount of tasks from 
-one cgroup to another OR from the child cgroup to its parent before 
-remove it, more such waste happens. I do a test which move 1000 tasks 
-from child to parent via a script:
-
-without the code change:
-real 0m0.037s
-user 0m0.021s
-sys  0m0.016s
-
-with the code change:
-real 0m0.028s
-user 0m0.020s
-sys  0m0.008s
-
-it saves 50% time in system part (yes, 0.008s is not a big deal ;)).
-
-Does it make sense to you?
-
-Thank,
-Honglei
-
-
->> ---
->>   kernel/cgroup/freezer.c | 9 +++++++++
->>   1 file changed, 9 insertions(+)
->>
->> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
->> index 8cf010680678..2dd66551d9a6 100644
->> --- a/kernel/cgroup/freezer.c
->> +++ b/kernel/cgroup/freezer.c
->> @@ -230,6 +230,15 @@ void cgroup_freezer_migrate_task(struct task_struct *task,
->>   	if (task->flags & PF_KTHREAD)
->>   		return;
->>   
->> +	/*
->> +	 * It's not necessary to do changes if both of the src and dst cgroups
->> +	 * are not freeze and task is not frozen.
->                         ^^^
-> 		are not freezing?
-
-Will fix it in next version if we think this patch is necessary.
-
->> +	 */
->> +	if (!test_bit(CGRP_FREEZE, &src->flags) &&
->> +	    !test_bit(CGRP_FREEZE, &dst->flags) &&
->> +	    !task->frozen)
->> +		return;
->> +
->>   	/*
->>   	 * Adjust counters of freezing and frozen tasks.
->>   	 * Note, that if the task is frozen, but the destination cgroup is not
->> -- 
->> 2.17.0
->>
