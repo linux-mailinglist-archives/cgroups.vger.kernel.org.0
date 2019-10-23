@@ -2,149 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59BD9E1291
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 08:59:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD631E1497
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 10:46:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730146AbfJWG7w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Oct 2019 02:59:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44714 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727194AbfJWG7w (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 23 Oct 2019 02:59:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 2CC14B5D8;
-        Wed, 23 Oct 2019 06:59:50 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 08:59:49 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/2] mm: memcontrol: try harder to set a new memory.high
-Message-ID: <20191023065949.GD754@dhcp22.suse.cz>
-References: <20191022201518.341216-1-hannes@cmpxchg.org>
- <20191022201518.341216-2-hannes@cmpxchg.org>
+        id S2390353AbfJWIqR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 04:46:17 -0400
+Received: from [217.140.110.172] ([217.140.110.172]:44834 "EHLO foss.arm.com"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S2390034AbfJWIqR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 23 Oct 2019 04:46:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0A4AB332;
+        Wed, 23 Oct 2019 01:45:58 -0700 (PDT)
+Received: from [192.168.0.9] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB1E53F71A;
+        Wed, 23 Oct 2019 01:45:55 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] sched/topology: Allow sched_asym_cpucapacity to be
+ disabled
+To:     Valentin Schneider <valentin.schneider@arm.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
+        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com, qperret@google.com,
+        stable@vger.kernel.org
+References: <20191015154250.12951-1-valentin.schneider@arm.com>
+ <20191015154250.12951-3-valentin.schneider@arm.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <fb378e1c-4b13-5ac4-8c86-8422b5362c7b@arm.com>
+Date:   Wed, 23 Oct 2019 10:45:44 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191022201518.341216-2-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191015154250.12951-3-valentin.schneider@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 22-10-19 16:15:18, Johannes Weiner wrote:
-> Setting a memory.high limit below the usage makes almost no effort to
-> shrink the cgroup to the new target size.
+On 15/10/2019 17:42, Valentin Schneider wrote:
+> While the static key is correctly initialized as being disabled, it will
+> remain forever enabled once turned on. This means that if we start with an
+> asymmetric system and hotplug out enough CPUs to end up with an SMP system,
+> the static key will remain set - which is obviously wrong. We should detect
+> this and turn off things like misfit migration and capacity aware wakeups.
 > 
-> While memory.high is a "soft" limit that isn't supposed to cause OOM
-> situations, we should still try harder to meet a user request through
-> persistent reclaim.
-> 
-> For example, after setting a 10M memory.high on an 800M cgroup full of
-> file cache, the usage shrinks to about 350M:
-> 
-> + cat /cgroup/workingset/memory.current
-> 841568256
-> + echo 10M
-> + cat /cgroup/workingset/memory.current
-> 355729408
-> 
-> This isn't exactly what the user would expect to happen. Setting the
-> value a few more times eventually whittles the usage down to what we
-> are asking for:
-> 
-> + echo 10M
-> + cat /cgroup/workingset/memory.current
-> 104181760
-> + echo 10M
-> + cat /cgroup/workingset/memory.current
-> 31801344
-> + echo 10M
-> + cat /cgroup/workingset/memory.current
-> 10440704
-> 
-> To improve this, add reclaim retry loops to the memory.high write()
-> callback, similar to what we do for memory.max, to make a reasonable
-> effort that the usage meets the requested size after the call returns.
+> As Quentin pointed out, having separate root domains makes this slightly
+> trickier. We could have exclusive cpusets that create an SMP island - IOW,
+> the domains within this root domain will not see any asymmetry. This means
+> we need to count how many asymmetric root domains we have.
 
-That suggests that the reclaim couldn't meet the given reclaim target
-but later attempts just made it through. Is this due to amount of dirty
-pages or what prevented the reclaim to do its job?
+Could you make the example a little bit more obvious so we'll remember
+later the exact testcase?
 
-While I am not against the reclaim retry loop I would like to understand
-the underlying issue. Because if this is really about dirty memory then
-we should probably be more pro-active in flushing it. Otherwise the
-retry might not be of any help.
+We start with 2 asym (hmp) (CPU capacity) exclusive cpusets and we turn
+one into a sym (smp) exclusive cpuset via CPU hp.
 
-> Afterwards, a single write() to memory.high is enough in all but
-> extreme cases:
+This patch w/ extra debug on Juno [CPU0 - CPU5] = [L b b L L L]:
+
+root@juno:~# ./scripts/create_excl_cpusets3
+[   32.898483] detach_destroy_domains(): sched_asym_cpucapacity is
+disabled cpu_map=0-5
+[   32.906255] build_sched_domains(): sched_asym_cpucapacity is enabled
+cpu_map=0-1,3
+[   32.913813] build_sched_domains(): sched_asym_cpucapacity is enabled
+cpu_map=2,4-5
+root@juno:~# echo 0 > /sys/devices/system/cpu/cpu1/online
+[   62.709591] IRQ 2: no longer affine to CPU1
+[   62.713840] CPU1: shutdown
+[   62.716525] psci: CPU1 killed.
+root@juno:~# [   62.728779] detach_destroy_domains():
+sched_asym_cpucapacity still enabled cpu_map=0-1,3 <-- Your v1 would
+just have disabled sched_asym_cpucapacity here.
+
+A hint that systems with a mix of asym and sym CPU capacity rd's have to
+live with the fact that specific asym code is also enabled for the CPUs
+of the smp rd's wouldn't harm here.
+
+Reviewed-by: Dietmar Eggemann <dietmar.eggemann@arm.com>
+
+> Change the simple key enablement to an increment, and decrement the key
+> counter when destroying domains that cover asymmetric CPUs.
 > 
-> + cat /cgroup/workingset/memory.current
-> 841609216
-> + echo 10M
-> + cat /cgroup/workingset/memory.current
-> 10182656
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: <stable@vger.kernel.org>
+> Fixes: df054e8445a4 ("sched/topology: Add static_key for asymmetric CPU capacity optimizations")
+> Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
 > ---
->  mm/memcontrol.c | 30 ++++++++++++++++++++++++------
->  1 file changed, 24 insertions(+), 6 deletions(-)
+>  kernel/sched/topology.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ff90d4e7df37..8090b4c99ac7 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6074,7 +6074,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  				 char *buf, size_t nbytes, loff_t off)
+> diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
+> index 9318acf1d1fe..f0e730143380 100644
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -2029,7 +2029,7 @@ build_sched_domains(const struct cpumask *cpu_map, struct sched_domain_attr *att
+>  	rcu_read_unlock();
+>  
+>  	if (has_asym)
+> -		static_branch_enable_cpuslocked(&sched_asym_cpucapacity);
+> +		static_branch_inc_cpuslocked(&sched_asym_cpucapacity);
+>  
+>  	if (rq && sched_debug_enabled) {
+>  		pr_info("root domain span: %*pbl (max cpu_capacity = %lu)\n",
+> @@ -2125,7 +2125,10 @@ int sched_init_domains(const struct cpumask *cpu_map)
+>  static void detach_destroy_domains(const struct cpumask *cpu_map)
 >  {
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> -	unsigned long nr_pages;
-> +	unsigned int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
-> +	bool drained = false;
->  	unsigned long high;
->  	int err;
->  
-> @@ -6085,12 +6086,29 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  
->  	memcg->high = high;
->  
-> -	nr_pages = page_counter_read(&memcg->memory);
-> -	if (nr_pages > high)
-> -		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -					     GFP_KERNEL, true);
-> +	for (;;) {
-> +		unsigned long nr_pages = page_counter_read(&memcg->memory);
-> +		unsigned long reclaimed;
+>  	int i;
+> +	unsigned int cpu = cpumask_any(cpu_map);
 > +
-> +		if (nr_pages <= high)
-> +			break;
-> +
-> +		if (signal_pending(current))
-> +			break;
-> +
-> +		if (!drained) {
-> +			drain_all_stock(memcg);
-> +			drained = true;
-> +			continue;
-> +		}
-> +
-> +		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> +							 GFP_KERNEL, true);
-> +
-> +		if (!reclaimed && !nr_retries--)
-> +			break;
-> +	}
+> +	if (rcu_access_pointer(per_cpu(sd_asym_cpucapacity, cpu)))
+> +		static_branch_dec_cpuslocked(&sched_asym_cpucapacity);
 >  
-> -	memcg_wb_domain_size_changed(memcg);
->  	return nbytes;
->  }
->  
-> -- 
-> 2.23.0
-
--- 
-Michal Hocko
-SUSE Labs
+>  	rcu_read_lock();
+>  	for_each_cpu(i, cpu_map)
+> --
+> 2.22.0
