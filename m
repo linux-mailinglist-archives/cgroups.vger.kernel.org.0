@@ -2,101 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81BF3E1DAE
-	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 16:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAEA7E1DCB
+	for <lists+cgroups@lfdr.de>; Wed, 23 Oct 2019 16:12:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390356AbfJWOGq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Oct 2019 10:06:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49678 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2390333AbfJWOGp (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 23 Oct 2019 10:06:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id EEFC7AE04;
-        Wed, 23 Oct 2019 14:06:43 +0000 (UTC)
-Date:   Wed, 23 Oct 2019 16:06:42 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 3/8] mm: vmscan: move inactive_list_is_low() swap check
- to the caller
-Message-ID: <20191023140642.GD17610@dhcp22.suse.cz>
-References: <20191022144803.302233-1-hannes@cmpxchg.org>
- <20191022144803.302233-4-hannes@cmpxchg.org>
+        id S2406218AbfJWOMc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Oct 2019 10:12:32 -0400
+Received: from [217.140.110.172] ([217.140.110.172]:53276 "EHLO foss.arm.com"
+        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
+        id S2405316AbfJWOMb (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 23 Oct 2019 10:12:31 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A90CA492;
+        Wed, 23 Oct 2019 07:12:08 -0700 (PDT)
+Received: from [10.1.194.37] (e113632-lin.cambridge.arm.com [10.1.194.37])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B8C4A3F71F;
+        Wed, 23 Oct 2019 07:12:05 -0700 (PDT)
+Subject: Re: [PATCH v3 1/2] sched/topology: Don't try to build empty sched
+ domains
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
+        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
+        morten.rasmussen@arm.com, qperret@google.com,
+        stable@vger.kernel.org
+References: <20191015154250.12951-1-valentin.schneider@arm.com>
+ <20191015154250.12951-2-valentin.schneider@arm.com>
+ <9134acf7-69bb-403b-2e9c-0eb7fb7efabd@arm.com>
+From:   Valentin Schneider <valentin.schneider@arm.com>
+Message-ID: <595dc187-bbe7-bd24-a322-db0d777697c0@arm.com>
+Date:   Wed, 23 Oct 2019 15:12:03 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191022144803.302233-4-hannes@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <9134acf7-69bb-403b-2e9c-0eb7fb7efabd@arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 22-10-19 10:47:58, Johannes Weiner wrote:
-> inactive_list_is_low() should be about one thing: checking the ratio
-> between inactive and active list. Kitchensink checks like the one for
-> swap space makes the function hard to use and modify its
-> callsites. Luckly, most callers already have an understanding of the
-> swap situation, so it's easy to clean up.
+On 23/10/2019 12:46, Dietmar Eggemann wrote:
+> Can you not just prevent that a cpuset pointer (cp) is added to the
+> cpuset array (csa[]) in case cpumask_empty(cp->effective_cpus)?
 > 
-> get_scan_count() has its own, memcg-aware swap check, and doesn't even
-> get to the inactive_list_is_low() check on the anon list when there is
-> no swap space available.
+> @@ -798,9 +800,14 @@ static int generate_sched_domains(cpumask_var_t
+> **domains, cpumask_subset(cp->cpus_allowed, top_cpuset.effective_cpus))
+>                         continue;
 > 
-> shrink_list() is called on the results of get_scan_count(), so that
-> check is redundant too.
+> -   if (is_sched_load_balance(cp))
+> +   if (is_sched_load_balance(cp) && !cpumask_empty(cp->effective_cpus))
+>             csa[csn++] = cp;
 > 
-> age_active_anon() has its own totalswap_pages check right before it
-> checks the list proportions.
-> 
-> The shrink_node_memcg() site is the only one that doesn't do its own
-> swap check. Add it there.
-> 
-> Then delete the swap check from inactive_list_is_low().
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-OK, makes sense to me.
-Acked-by: Michal Hocko <mhocko@suse.com>
+I think you're right. Let me give it a shot and I'll spin a v4 with this +
+better changelog for the key.
 
-> ---
->  mm/vmscan.c | 9 +--------
->  1 file changed, 1 insertion(+), 8 deletions(-)
+>>  		dp = doms[nslot];
+>>  
+>>  		if (nslot == ndoms) {
 > 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index be3c22c274c1..622b77488144 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2226,13 +2226,6 @@ static bool inactive_list_is_low(struct lruvec *lruvec, bool file,
->  	unsigned long refaults;
->  	unsigned long gb;
->  
-> -	/*
-> -	 * If we don't have swap space, anonymous page deactivation
-> -	 * is pointless.
-> -	 */
-> -	if (!file && !total_swap_pages)
-> -		return false;
-> -
->  	inactive = lruvec_lru_size(lruvec, inactive_lru, sc->reclaim_idx);
->  	active = lruvec_lru_size(lruvec, active_lru, sc->reclaim_idx);
->  
-> @@ -2653,7 +2646,7 @@ static void shrink_node_memcg(struct pglist_data *pgdat, struct mem_cgroup *memc
->  	 * Even if we did not try to evict anon pages at all, we want to
->  	 * rebalance the anon lru active/inactive ratio.
->  	 */
-> -	if (inactive_list_is_low(lruvec, false, sc, true))
-> +	if (total_swap_pages && inactive_list_is_low(lruvec, false, sc, true))
->  		shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
->  				   sc, LRU_ACTIVE_ANON);
->  }
-> -- 
-> 2.23.0
-
--- 
-Michal Hocko
-SUSE Labs
+> [...]
+> 
