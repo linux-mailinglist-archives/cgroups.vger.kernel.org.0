@@ -2,94 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E02BEE4C8F
-	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2019 15:44:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C988E4EAD
+	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2019 16:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727044AbfJYNor (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Oct 2019 09:44:47 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:36064 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726453AbfJYNoq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Oct 2019 09:44:46 -0400
-Received: by mail-pf1-f196.google.com with SMTP id v19so1623940pfm.3
-        for <cgroups@vger.kernel.org>; Fri, 25 Oct 2019 06:44:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=GB66w5zMnO6g29s6wAcFRJIvcQvj59wk11SwJfYrvKA=;
-        b=Qq1IRmOU8QQXXK5dP7qVkmSaMc2yq7Rpi0+jYuWk5ryK9uF4E/5Q5RAo6IRi5rQpYO
-         MijLDpKbtbCl53iC6+V6cSZa6ckR+CG9NvnGZp30+L7k1AHj4QImzgeXM8RnK6zDGsxq
-         bVKbAvbgwnymLXAiH9nIW3DslByuA/r3z+vVz91vWhYVOQeXG4OoYJsj+3h4TlAZKdJD
-         jZjGj8QlSuEFEGqmfb6p9Jd2kqOSjwRtjpebArzGY1EAP86Y2gQqvnJ3LHir/ZHbMuIJ
-         ZLFAs2oRcdHHpbtABfKICAgOeJspOrdnp/ZB5wjPI65JZEcHb1rljP+Du8ppywyo5RBY
-         OAWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=GB66w5zMnO6g29s6wAcFRJIvcQvj59wk11SwJfYrvKA=;
-        b=er4hyfe9MUzPtzDkPoK33gMkxcGl0U8ivckT8mvArTWDl4e2UwEGgDsCq0/3sBrZuN
-         KiYcBovG2jReOiLNq0j8edjyhKJ8uHoGXDQNN4P616UHIqHDbn9qHfC8B+jbspbqh1kZ
-         Pzhqpj4fb3Y5n3/zsdNFQo3RPHA6AhmH2zoFWFVUU+LRwrxkypk+iJ7rIODKVsrkTPUI
-         /6H9YcMLmLoK+AQ/U+Ge9fW7B+kIfHLGTVanl52zPG6JdZ8Dm4gaPcld7A2oO6V+p72Q
-         pAEWeFgkao4PSJ3KKfmtvc2U8rVq+ceEi4Vtw8VQ573IMVhuy0/7pFZrlMs6YoeeL//7
-         5Dyg==
-X-Gm-Message-State: APjAAAXzd8rtxnn52Y30X09K2Frg/XW8r1Np2EZYWnrcsc1qFbL8V3aJ
-        ZzeB/IgDF2TN0kU9Thii6LHGxQ==
-X-Google-Smtp-Source: APXvYqyiEFjS0AsnLhLndE+VCdtmMKp2KjunxS32g/fNq7UVoFTUkMLRgGPV3k3rKDum27SdorNUaw==
-X-Received: by 2002:a17:90a:9f94:: with SMTP id o20mr4347710pjp.76.1572011086048;
-        Fri, 25 Oct 2019 06:44:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c090:180::553e])
-        by smtp.gmail.com with ESMTPSA id y17sm2913564pfo.171.2019.10.25.06.44.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 25 Oct 2019 06:44:45 -0700 (PDT)
-Date:   Fri, 25 Oct 2019 09:44:43 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 5/8] mm: vmscan: replace shrink_node() loop with a retry
- jump
-Message-ID: <20191025134443.GA385668@cmpxchg.org>
-References: <20191022144803.302233-1-hannes@cmpxchg.org>
- <20191022144803.302233-6-hannes@cmpxchg.org>
- <20191023141857.GF17610@dhcp22.suse.cz>
+        id S2389479AbfJYONj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Oct 2019 10:13:39 -0400
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:22296 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730752AbfJYONj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Oct 2019 10:13:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1572012817;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=NFKLs9tDQua90X4BBbVlmoEx/KurPRVIfH4NJ4epzNw=;
+        b=LI1Nc8nVvRWsP2mYyLTDLKEf6bZYDY4w4qPdgDi8AMkUVDvvVmsEKMvcgVhBH4xujAkUCx
+        TSDZLq14KS7biIOpioeEQOEfmo0QYLBAiDF4g3FWIJTKtwWFzIbfF0Gfyt3YWYvKz/xgaE
+        fTLPaoMgFQaRo1V/uCwpfuvJL9OJIyY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-293-ZY_157LsOCGTQVPvxfemLw-1; Fri, 25 Oct 2019 10:13:32 -0400
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 854C61005509;
+        Fri, 25 Oct 2019 14:13:30 +0000 (UTC)
+Received: from dhcp-27-174.brq.redhat.com (unknown [10.43.17.44])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 8E7755D9CA;
+        Fri, 25 Oct 2019 14:13:27 +0000 (UTC)
+Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
+        oleg@redhat.com; Fri, 25 Oct 2019 16:13:29 +0200 (CEST)
+Date:   Fri, 25 Oct 2019 16:13:25 +0200
+From:   Oleg Nesterov <oleg@redhat.com>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     Tejun Heo <tj@kernel.org>, dvyukov@google.com,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        akpm@linux-foundation.org, arnd@arndb.de, deepa.kernel@gmail.com,
+        ebiederm@xmission.com, elver@google.com, guro@fb.com,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        cgroups@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH cgroup/for-5.5] cgroup: remove
+ cgroup_enable_task_cg_lists() optimization
+Message-ID: <20191025141325.GB6020@redhat.com>
+References: <0000000000003b1e8005956939f1@google.com>
+ <20191021142111.GB1339@redhat.com>
+ <20191024190351.GD3622521@devbig004.ftw2.facebook.com>
+ <20191025125606.GI3622521@devbig004.ftw2.facebook.com>
+ <20191025133358.pxpzxkhqc3mboi5x@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+In-Reply-To: <20191025133358.pxpzxkhqc3mboi5x@wittgenstein>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+X-MC-Unique: ZY_157LsOCGTQVPvxfemLw-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
 Content-Disposition: inline
-In-Reply-To: <20191023141857.GF17610@dhcp22.suse.cz>
-User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 23, 2019 at 04:18:57PM +0200, Michal Hocko wrote:
-> On Tue 22-10-19 10:48:00, Johannes Weiner wrote:
-> > Most of the function body is inside a loop, which imposes an
-> > additional indentation and scoping level that makes the code a bit
-> > hard to follow and modify.
-> 
-> I do agree!
-> 
-> > The looping only happens in case of reclaim-compaction, which isn't
-> > the common case. So rather than adding yet another function level to
-> > the reclaim path and have every reclaim invocation go through a level
-> > that only exists for one specific cornercase, use a retry goto.
-> 
-> I would just keep the core logic in its own function and do the loop
-> around it rather than a goto retry. This is certainly a matter of taste
-> but I like a loop with an explicit condition much more than a if with
-> goto.
+On 10/25, Christian Brauner wrote:
+>
+> [+Dmitry]
+>
+> On Fri, Oct 25, 2019 at 05:56:06AM -0700, Tejun Heo wrote:
+> > On Thu, Oct 24, 2019 at 12:03:51PM -0700, Tejun Heo wrote:
+> > > cgroup_enable_task_cg_lists() is used to lazyily initialize task
+> > > cgroup associations on the first use to reduce fork / exit overheads
+> > > on systems which don't use cgroup.  Unfortunately, locking around it
+> > > has never been actually correct and its value is dubious given how th=
+e
+> > > vast majority of systems use cgroup right away from boot.
+> > >
+> > > This patch removes the optimization.  For now, replace the cg_list
+> > > based branches with WARN_ON_ONCE()'s to be on the safe side.  We can
+> > > simplify the logic further in the future.
+> > >
+> > > Signed-off-by: Tejun Heo <tj@kernel.org>
+> > > Reported-by: Oleg Nesterov <oleg@redhat.com>
+> >
+> > Applying to cgroup/for-5.5.
+>
+> The code you removed was the only place where task->flags was set from
+> !current.
 
-Yeah, as the changelog says, I'm intentionally putting the looping
-construct into the "cold path" of the code flow: we only loops in a
-very specific cornercase, and having the whole body in a loop, or
-creating another function nesting level for it suggests otherwise.
+No, that code doesn't modify task->flags. It checks PF_EXITING under sigloc=
+k
+but this makes no sense and can't avoid the race with cgroup_exit().
 
-A goto seems like the perfect tool to have a retry for one particular
-caller without muddying the code flow for the common call stack.
+> So I think this fixes the syzbot data-race report in:
+> https://lore.kernel.org/r/0000000000003b1e8005956939f1@google.com
 
-Matter of taste, I guess.
+No.
+
+Almost every usage of task->flags (load or sore) can be reported as "data r=
+ace".
+
+Say, you do
+
+=09if (task->flags & PF_KTHREAD)
+
+while this task does
+
+=09current->flags |=3D PF_FREEZER_SKIP;
+=09schedule().
+
+this is data race.
+
+Oleg.
+
