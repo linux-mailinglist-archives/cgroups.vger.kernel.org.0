@@ -2,173 +2,245 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50199E3D4B
-	for <lists+cgroups@lfdr.de>; Thu, 24 Oct 2019 22:29:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D69DE40EB
+	for <lists+cgroups@lfdr.de>; Fri, 25 Oct 2019 03:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728100AbfJXU3b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 24 Oct 2019 16:29:31 -0400
-Received: from mail-qk1-f201.google.com ([209.85.222.201]:40450 "EHLO
-        mail-qk1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727984AbfJXU3b (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Oct 2019 16:29:31 -0400
-Received: by mail-qk1-f201.google.com with SMTP id m189so34669qkc.7
-        for <cgroups@vger.kernel.org>; Thu, 24 Oct 2019 13:29:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=crbVUKdb6+CmoQ+3cFtG2k0oh3fF8DozMebl0jMBYx4=;
-        b=wWEpw+8DEEwTZRVN5PFHqCucuAvbZ2zTtNVo4evT8T6Jzdi2O3Iviat0njmkWkstTi
-         YKR+9iHY0hVfnQ2HXYEKyUwYKxkP4L20JNOq68oKuhQmne1tHw18+7kdvorsjnDjYPyE
-         ZH3SP0K1dqks5Qmeol/U37G0JHxznZbfQgSVuStRsZKlqVO3H2wCh7FjFiE7DgWd7vcC
-         5YSCzv8D/+a3I2A3Su2zZjyJ80r/i1CPRc3bESsAfKJt7p6PdWC+A73mTy1KbO8fWsXa
-         ct4hbt/WhtskW2FK4Beno2jZf8Nt/gViBU47Ho0AxiYGmn8Nb7YBe92oP0pI3vL4qr2t
-         EYPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=crbVUKdb6+CmoQ+3cFtG2k0oh3fF8DozMebl0jMBYx4=;
-        b=n+cGxxJKWb3wo7P7uaOo2BOTwU5Bp9XSCVMxiYii/0SbIBF1VL6hevxdmZ4SHbDVq9
-         ES2yiJHH/mObcLn358mSqd/6spJTU2NSLrsemsQB/MHdPnV18xBw+FKlRHwZhx5QWrbG
-         j441jo7v9h6vVAbSlBYeItf6KFNVYejIGGfZb/ZgKq/e1elB/KeR8O9TS25cOvWFdI+j
-         dEVtViMr9Koj9F0ZiwK564H1/rQFMSm0iGzVFFZOpS/8q5WI+aXbeat3qCPv5ZmGqctc
-         BPQEjPxMZsszL0ii3+BEbPM20ZQr+BuAGW7uOvbRDK7/v+GGlDfnXsVL4p3si8fXmlz5
-         2KVQ==
-X-Gm-Message-State: APjAAAX7GCu7dQ/nEdUYfkp+9wzFwg63FBpheRniNFScKoss/lYIVect
-        j+U2LTHRYI5j/pVfnMsufDYJcXVnG2E2vAi9CA==
-X-Google-Smtp-Source: APXvYqzGvs+JbS24C651jnNyN5/bp3XVxFTkpVbNRBZSUdxyZWVjEEMhfHBznWe9hPQc7sM2a9+fC0LXZ5ukQehqTw==
-X-Received: by 2002:a05:620a:20d2:: with SMTP id f18mr16114129qka.474.1571948969627;
- Thu, 24 Oct 2019 13:29:29 -0700 (PDT)
-Date:   Thu, 24 Oct 2019 13:28:58 -0700
-In-Reply-To: <20191024202858.95342-1-almasrymina@google.com>
-Message-Id: <20191024202858.95342-9-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20191024202858.95342-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.24.0.rc0.303.g954a862665-goog
-Subject: [PATCH v7 9/9] hugetlb_cgroup: Add hugetlb_cgroup reservation docs
-From:   Mina Almasry <almasrymina@google.com>
-To:     mike.kravetz@oracle.com
-Cc:     shuah@kernel.org, almasrymina@google.com, rientjes@google.com,
-        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
-        khalid.aziz@oracle.com, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com,
-        mkoutny@suse.com, Hillf Danton <hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S2388640AbfJYBRu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Oct 2019 21:17:50 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:4166 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2388515AbfJYBRt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Oct 2019 21:17:49 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id x9OJdLnT030060;
+        Thu, 24 Oct 2019 18:16:53 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
+ : date : message-id : references : in-reply-to : content-type : content-id
+ : content-transfer-encoding : mime-version; s=facebook;
+ bh=l4flFa18hW/haqSa2WZ5Q/gZakoCES+LDialWRhhLOY=;
+ b=TW4iP9j+/QO5TL2qEaky0UjlXhI7SbMma8RbDZzXRRh2RltjyFAhabW8ivlWJw236CcU
+ 9344K9kCUxr380KPA+zCEglceLeH+Ph8Fo2oJjD8lLhTIDkro4tqEArO3GTyZ83YimDi
+ ntY67YFA/fLmhvMJ3a2SQmPNdWQpE5Vfh6Q= 
+Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
+        by m0089730.ppops.net with ESMTP id 2vuja7s7jm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
+        Thu, 24 Oct 2019 18:16:52 -0700
+Received: from prn-hub05.TheFacebook.com (2620:10d:c081:35::129) by
+ prn-hub01.TheFacebook.com (2620:10d:c081:35::125) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
+ 15.1.1713.5; Thu, 24 Oct 2019 18:16:51 -0700
+Received: from NAM02-BL2-obe.outbound.protection.outlook.com (192.168.54.28)
+ by o365-in.thefacebook.com (192.168.16.29) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
+ via Frontend Transport; Thu, 24 Oct 2019 18:16:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=eYd9gnbmV3GU4LY3Uy4wwkKe7f7kI5n1XsQ16jIlR4rUaTlgzo2Bms9LDJiBcj3k4MfaoLxkKuiw6hWhvzP+qYeA5xIjGyMMdjZ+CXFkiV0oQKFJyAMwrV6/kCDLxHUgtYoQc/O4Aw4YwUXqgwcGQ84D7i3daSo7hGDCedl2DaReKuH/kzGxjZsZXOwDJTOjCGrxLpo/RCiV/PSAr3SmIVv9xnNK+70sr/S7dZlYGWEXA6m1MsljmF03IajRFbeWCKYQDF+KL9lKP9CGTyRQQv1uAjbAdsVWlaNUaH3LVPGD65C3VgYBq9N78Bw22QRu+F0nisG94v5eI/eBjYINuw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l4flFa18hW/haqSa2WZ5Q/gZakoCES+LDialWRhhLOY=;
+ b=LbsRuMSga+ycePtKfkZNKUhQinVEe9M6S6+PInd2rI4Xy1zJkYYROlSQ75bwUQWMT+ZcHMsRPeBjyI7DzSs3r4L0+NJ6wXFDFEKn7GkRSDom0Qk14a/ryfgNPoupf9ZpdtHObM4nBKHn93Xu8VAnd15F19CGa4CeIlrtQmAhIKx4ZX6cFOiPbXka5R+AAck9lOpHc354Md7AF01UwPqqYCF57+1wjowgS67K+cmNxgI2SExVUHa87ydBe49rWx+88XOHZofqjsPcTJhHMtATO6Xlc24Jx9sn9u59BLRhY3dRx7Oag9C/IvgcDL97+fE5XjkolHtA/ZPsVEPZRysO7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l4flFa18hW/haqSa2WZ5Q/gZakoCES+LDialWRhhLOY=;
+ b=RAEKv0MOPqrMTl4/pOVTpWHkQ01OyJX3EeH50OX2bdSH8MkRQg3osj3a4MPP17kCoTErPLSd5fyhCiwFU7OFlb7p2oxS8TLH3Fve1EWZNMdVgV/SnG1QjjccgnMr1uNsheJeFGo5KfQtXQ2B5rPRv79CDeClb8kFXeEMwDVR3uM=
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com (20.179.137.220) by
+ BN8PR15MB3218.namprd15.prod.outlook.com (20.179.73.90) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2387.20; Fri, 25 Oct 2019 01:16:50 +0000
+Received: from BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::3056:945b:e60e:e2e0]) by BN8PR15MB2626.namprd15.prod.outlook.com
+ ([fe80::3056:945b:e60e:e2e0%6]) with mapi id 15.20.2387.023; Fri, 25 Oct 2019
+ 01:16:49 +0000
+From:   Roman Gushchin <guro@fb.com>
+To:     Honglei Wang <honglei.wang@oracle.com>
+CC:     "tj@kernel.org" <tj@kernel.org>,
+        "lizefan@huawei.com" <lizefan@huawei.com>,
+        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "oleg@redhat.com" <oleg@redhat.com>
+Subject: Re: [PATCH] cgroup: freezer: don't change task and cgroups status
+ unnecessarily
+Thread-Topic: [PATCH] cgroup: freezer: don't change task and cgroups status
+ unnecessarily
+Thread-Index: AQHVh+gjYPie2GVScEWCWWzVFHDWDKdlRYeAgAI7EACAAxNUgA==
+Date:   Fri, 25 Oct 2019 01:16:49 +0000
+Message-ID: <20191025011645.GA16643@tower.DHCP.thefacebook.com>
+References: <20191021081826.8769-1-honglei.wang@oracle.com>
+ <20191021161453.GA3407@castle.DHCP.thefacebook.com>
+ <4db30150-262d-b69f-3adf-4cc1be976119@oracle.com>
+In-Reply-To: <4db30150-262d-b69f-3adf-4cc1be976119@oracle.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: MWHPR02CA0016.namprd02.prod.outlook.com
+ (2603:10b6:300:4b::26) To BN8PR15MB2626.namprd15.prod.outlook.com
+ (2603:10b6:408:c7::28)
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [2620:10d:c090:200::c513]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7cc529a1-6cd9-4df1-072f-08d758e902dd
+x-ms-traffictypediagnostic: BN8PR15MB3218:
+x-microsoft-antispam-prvs: <BN8PR15MB3218428BF25D8CFF19A1F362BE650@BN8PR15MB3218.namprd15.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 02015246A9
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(366004)(396003)(346002)(39860400002)(136003)(376002)(199004)(189003)(66946007)(8936002)(76176011)(66476007)(2906002)(46003)(316002)(6436002)(229853002)(186003)(14444005)(54906003)(9686003)(6246003)(256004)(6916009)(53546011)(486006)(4326008)(6506007)(386003)(6486002)(476003)(102836004)(11346002)(446003)(71200400001)(71190400001)(561944003)(33656002)(6512007)(14454004)(478600001)(81156014)(305945005)(7736002)(25786009)(8676002)(1076003)(81166006)(64756008)(5660300002)(86362001)(6116002)(66556008)(66446008)(52116002)(99286004);DIR:OUT;SFP:1102;SCL:1;SRVR:BN8PR15MB3218;H:BN8PR15MB2626.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+received-spf: None (protection.outlook.com: fb.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: ILhIZdGxoqAPN31IG0TedUQmQZfJxBN3iJNjmpS6lTTVifvZkgHQKVDOJvplsS22C0A83kNXG+pFO6fDQAOcVNG5t0po8r23t96j3WUJXgRY3QZAS/yP2On5BWQYoX6PAgqfvLc7PoTDUWtNCFTz1TMLGsMPqW0ZfujRILvKlBvZtYvAutDHlO2VE1E+E1DnT6zeMnq6iRKtxXTlFjAeV8kubW5LbGlHa21WGrh156fNtfKz+wdgVOITEqtyGfrQEXqoTyhzMPY4f+WywgMIxyKBobs6qJq5j4gu8IHA9Le6hLU43Urlgp8FAVcBdlIJdHUeG1pHWOJCZrHa2ZkWvrdQ0yDGaa0NmXwujNM7Zd1Kto1fVPsgpghGeWEsEkAxWQzdpSGzjJdm5rSnyP0q41GWF+wU6zisCp8zOwPYIdOY+GV76P1o7t5X7QsiQfGN
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <B58CEE4892F3EB459A325FD30230436D@namprd15.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cc529a1-6cd9-4df1-072f-08d758e902dd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2019 01:16:49.7277
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: w47UZbl5a8MwuGO0mdGS2yEg+zgOPk9OdHPTXtLr/ddXD2sA3pdaJcUQasK39MQ+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR15MB3218
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,1.0.8
+ definitions=2019-10-24_11:2019-10-23,2019-10-24 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0 spamscore=0
+ phishscore=0 adultscore=0 priorityscore=1501 malwarescore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1908290000 definitions=main-1910240184
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add docs for how to use hugetlb_cgroup reservations, and their behavior.
+On Wed, Oct 23, 2019 at 10:18:48AM +0800, Honglei Wang wrote:
+>=20
+>=20
+> On 10/22/19 12:14 AM, Roman Gushchin wrote:
+> > On Mon, Oct 21, 2019 at 04:18:26PM +0800, Honglei Wang wrote:
+> > > Seems it's not necessary to adjust the task state and revisit the
+> > > state of source and destination cgroups if the cgroups are not in
+> > > freeze state and the task itself is not frozen.
+> > >=20
+> > > Signed-off-by: Honglei Wang <honglei.wang@oracle.com>
+> >=20
+> > Hello Honglei!
+> >=20
+> > Overall the patch looks correct to me, but what's the goal of this chan=
+ge?
+> > Do you see any performance difference in some tests?
+> > Maybe you can use freezer tests from kselftests to show the difference?
+> >=20
+> > Your patch will sightly change the behavior of the freezer if unfreezin=
+g
+> > of a cgroup is racing with the task migration. The change is probably f=
+ine
+> > (at least I can't imagine why not), and I'd totally support the patch,
+> > if there is any performance benefit.
+> >=20
+> > Thank you!
+> >=20
+>=20
+> Hi Roman,
+>=20
+> Thank you for your attention!
+>=20
+> When I debug another problem, I just happen add some debug print which sh=
+ow
+> me there are many tasks be woke up when moving tasks from one cgroup to
+> another. After a bit more test, I find there are hundreds of task waking =
+up
+> happen even when the kernel boot up.
+>=20
+> All of these tasks are not in running state when they are moved into a
+> cgroup or moved from one to anther, and the movement itself is not the
+> signal to wake up these tasks. I feel it's waste that the whole wake-up
+> process have to be done for the tasks who are not supposed ready to put i=
+nto
+> the runqueue...
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
-Acked-by: Hillf Danton <hdanton@sina.com>
+Hello Honglei!
 
----
+I'm deeply sorry, I've missed your e-mail being thinking about the proposal
+from Oleg and various edge cases.
 
-Changes in v6:
-- Updated docs to reflect the new design based on a new counter that
-tracks both reservations and faults.
+I don't think saving 50% cpu time on migrating 1000 tasks is important,
+but not waking tasks without a reason looks as a perfect justification for
+the patch.
 
----
- .../admin-guide/cgroup-v1/hugetlb.rst         | 64 +++++++++++++++----
- 1 file changed, 53 insertions(+), 11 deletions(-)
+Please, fell free to use
+Acked-by: Roman Gushchin <guro@fb.com>
+after fixing the comment and adding some justification text to the commit
+message.
 
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-index a3902aa253a96..efb94e4db9d5a 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -2,13 +2,6 @@
- HugeTLB Controller
- ==================
+Thank you!
 
--The HugeTLB controller allows to limit the HugeTLB usage per control group and
--enforces the controller limit during page fault. Since HugeTLB doesn't
--support page reclaim, enforcing the limit at page fault time implies that,
--the application will get SIGBUS signal if it tries to access HugeTLB pages
--beyond its limit. This requires the application to know beforehand how much
--HugeTLB pages it would require for its use.
--
- HugeTLB controller can be created by first mounting the cgroup filesystem.
-
- # mount -t cgroup -o hugetlb none /sys/fs/cgroup
-@@ -28,10 +21,14 @@ process (bash) into it.
-
- Brief summary of control files::
-
-- hugetlb.<hugepagesize>.limit_in_bytes     # set/show limit of "hugepagesize" hugetlb usage
-- hugetlb.<hugepagesize>.max_usage_in_bytes # show max "hugepagesize" hugetlb  usage recorded
-- hugetlb.<hugepagesize>.usage_in_bytes     # show current usage for "hugepagesize" hugetlb
-- hugetlb.<hugepagesize>.failcnt		   # show the number of allocation failure due to HugeTLB limit
-+ hugetlb.<hugepagesize>.reservation_limit_in_bytes     # set/show limit of "hugepagesize" hugetlb reservations
-+ hugetlb.<hugepagesize>.reservation_max_usage_in_bytes # show max "hugepagesize" hugetlb reservations and no-reserve faults.
-+ hugetlb.<hugepagesize>.reservation_usage_in_bytes     # show current reservations and no-reserve faults for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.reservation_failcnt            # show the number of allocation failure due to HugeTLB reservation limit
-+ hugetlb.<hugepagesize>.limit_in_bytes                 # set/show limit of "hugepagesize" hugetlb faults
-+ hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepagesize" hugetlb  usage recorded
-+ hugetlb.<hugepagesize>.usage_in_bytes                 # show current usage for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.failcnt                        # show the number of allocation failure due to HugeTLB usage limit
-
- For a system supporting three hugepage sizes (64k, 32M and 1G), the control
- files include::
-@@ -40,11 +37,56 @@ files include::
-   hugetlb.1GB.max_usage_in_bytes
-   hugetlb.1GB.usage_in_bytes
-   hugetlb.1GB.failcnt
-+  hugetlb.1GB.reservation_limit_in_bytes
-+  hugetlb.1GB.reservation_max_usage_in_bytes
-+  hugetlb.1GB.reservation_usage_in_bytes
-+  hugetlb.1GB.reservation_failcnt
-   hugetlb.64KB.limit_in_bytes
-   hugetlb.64KB.max_usage_in_bytes
-   hugetlb.64KB.usage_in_bytes
-   hugetlb.64KB.failcnt
-+  hugetlb.64KB.reservation_limit_in_bytes
-+  hugetlb.64KB.reservation_max_usage_in_bytes
-+  hugetlb.64KB.reservation_usage_in_bytes
-+  hugetlb.64KB.reservation_failcnt
-   hugetlb.32MB.limit_in_bytes
-   hugetlb.32MB.max_usage_in_bytes
-   hugetlb.32MB.usage_in_bytes
-   hugetlb.32MB.failcnt
-+  hugetlb.32MB.reservation_limit_in_bytes
-+  hugetlb.32MB.reservation_max_usage_in_bytes
-+  hugetlb.32MB.reservation_usage_in_bytes
-+  hugetlb.32MB.reservation_failcnt
-+
-+
-+1. Reservation limits
-+
-+The HugeTLB controller allows to limit the HugeTLB reservations per control
-+group and enforces the controller limit at reservation time and at the fault of
-+hugetlb memory for which no reservation exists. Reservation limits
-+are superior to Page fault limits (see section 2), since Reservation limits are
-+enforced at reservation time (on mmap or shget), and never causes the
-+application to get SIGBUS signal if the memory was reserved before hand. For
-+MAP_NORESERVE allocations, the reservation limit behaves the same as the fault
-+limit, enforcing memory usage at fault time and causing the application to
-+receive a SIGBUS if it's crossing its limit.
-+
-+2. Page fault limits
-+
-+The HugeTLB controller allows to limit the HugeTLB usage (page fault) per
-+control group and enforces the controller limit during page fault. Since HugeTLB
-+doesn't support page reclaim, enforcing the limit at page fault time implies
-+that, the application will get SIGBUS signal if it tries to access HugeTLB
-+pages beyond its limit. This requires the application to know beforehand how
-+much HugeTLB pages it would require for its use.
-+
-+
-+3. Caveats with shared memory
-+
-+For shared hugetlb memory, both hugetlb reservation and page faults are charged
-+to the first task that causes the memory to be reserved or faulted, and all
-+subsequent uses of this reserved or faulted memory is done without charging.
-+
-+Shared hugetlb memory is only uncharged when it is unreserved or deallocated.
-+This is usually when the hugetlbfs file is deleted, and not when the task that
-+caused the reservation or fault has exited.
---
-2.24.0.rc0.303.g954a862665-goog
+>=20
+> Then I think further, if somebody want to move huge amount of tasks from =
+one
+> cgroup to another OR from the child cgroup to its parent before remove it=
+,
+> more such waste happens. I do a test which move 1000 tasks from child to
+> parent via a script:
+>=20
+> without the code change:
+> real 0m0.037s
+> user 0m0.021s
+> sys  0m0.016s
+>=20
+> with the code change:
+> real 0m0.028s
+> user 0m0.020s
+> sys  0m0.008s
+>=20
+> it saves 50% time in system part (yes, 0.008s is not a big deal ;)).
+>=20
+> Does it make sense to you?
+>=20
+> Thank,
+> Honglei
+>=20
+>=20
+> > > ---
+> > >   kernel/cgroup/freezer.c | 9 +++++++++
+> > >   1 file changed, 9 insertions(+)
+> > >=20
+> > > diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
+> > > index 8cf010680678..2dd66551d9a6 100644
+> > > --- a/kernel/cgroup/freezer.c
+> > > +++ b/kernel/cgroup/freezer.c
+> > > @@ -230,6 +230,15 @@ void cgroup_freezer_migrate_task(struct task_str=
+uct *task,
+> > >   	if (task->flags & PF_KTHREAD)
+> > >   		return;
+> > > +	/*
+> > > +	 * It's not necessary to do changes if both of the src and dst cgro=
+ups
+> > > +	 * are not freeze and task is not frozen.
+> >                         ^^^
+> > 		are not freezing?
+>=20
+> Will fix it in next version if we think this patch is necessary.
+>=20
+> > > +	 */
+> > > +	if (!test_bit(CGRP_FREEZE, &src->flags) &&
+> > > +	    !test_bit(CGRP_FREEZE, &dst->flags) &&
+> > > +	    !task->frozen)
+> > > +		return;
+> > > +
+> > >   	/*
+> > >   	 * Adjust counters of freezing and frozen tasks.
+> > >   	 * Note, that if the task is frozen, but the destination cgroup is=
+ not
+> > > --=20
+> > > 2.17.0
+> > >=20
