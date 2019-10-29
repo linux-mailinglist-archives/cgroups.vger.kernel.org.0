@@ -2,74 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 50450E8F79
-	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2019 19:46:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F20FE8F7D
+	for <lists+cgroups@lfdr.de>; Tue, 29 Oct 2019 19:47:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730110AbfJ2Sq6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 29 Oct 2019 14:46:58 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35519 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727358AbfJ2Sq6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Oct 2019 14:46:58 -0400
-Received: by mail-ot1-f66.google.com with SMTP id z6so10711821otb.2
-        for <cgroups@vger.kernel.org>; Tue, 29 Oct 2019 11:46:58 -0700 (PDT)
+        id S1731909AbfJ2Srp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 29 Oct 2019 14:47:45 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44876 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731896AbfJ2Srp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 29 Oct 2019 14:47:45 -0400
+Received: by mail-ot1-f65.google.com with SMTP id n48so10669702ota.11
+        for <cgroups@vger.kernel.org>; Tue, 29 Oct 2019 11:47:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ReWNXiQSJHk1Ohmt4ko0ZYhBstNAojS1cH/ggSlVoAI=;
-        b=Kn3CZE3xBzziKVWaQmk/w5rlpZO2GbLA16umwkgVooj88NX/DmIyNIa6Isn2UqLS3F
-         Fm+cD+GDopHSMsxgxlBeiPULD6tNKXBO67r0TMwCr/VOs30OEn5etwD5cMzd76l9ADJv
-         bEPEN4IhS26FRzf4+PXqg5MERXrdSITqMRw5E2dC1/uboYjloD56iI96ELRsUrcpxLP5
-         yc1s6tD8CjoBQyxKweBAhpoGiE7mzUtYafmLLspCafldR8G622VHkePlx/x8soweCzFX
-         PCQ7ktRLpjSRRT04ctRSkLGV/puDZijKegMjGo+KDZNPPwCZYRTuI5e1XHQlrNwIo8QJ
-         DbXg==
+        bh=8iGjeZAGX1vwWCY7RD/pFhK70PaPvjQNMWEcOJ4f58k=;
+        b=r87nwfKhRmusQ2AI4jfCx2coti/fu4ZQEHQ3FD0iPQABes7vumfaAmDTeItgrzkWgf
+         zPzBAwkyKboPREsnkiS7JZwOYYhkXpnmwGAi6kqPONQ3+47CISJJjViFhmgOBLi/QQ6/
+         heF7AbCxS9TTGYlvWzyMN3Xtmw1rnRvj9IabE8GQcqvkO0FVaof9+VGeSOvAsOYZqZyR
+         hM9RZMjycn3F9mtgj/By6XxuTO6gbzocaENO765b5d/XApcOB5KOEUKIphu1Ui+8d8JN
+         d4CAXFq5fx03GitosTDM7SM/AqpG01mRM38Nj0NRz0DjHH3q32eb5ke17m7SmLXe5rvm
+         ZsuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ReWNXiQSJHk1Ohmt4ko0ZYhBstNAojS1cH/ggSlVoAI=;
-        b=hPUA4svo0Szy06sb+RSLqqATGkSZ0fEe2fp8H7YYHpBblgGH1uBH63MOa07zT3J4lU
-         SWBINRixbD93vDliX6xKtak8L9GFQFG1gqFTgT3lDJ6G3YhR/O9fKgnNQrwPakRpguB9
-         pI1mKnc8YpNpha7QCRJodSoSJgjWVb3x5+6gWH80sBL7H1l8iTX/5engky3va7uNYmih
-         rPu0WFGpabaOgj6ytPgm5TQG+5Rj6OIetzLBOK+LoG3EOlmaMWhOh+QYiJ7S3UhcsMjw
-         N7I1lTg4aP56EjAer5sLilwp3uSlJtQnnIwTMNI7oZuy4NTWwb/zwVEeuSb2LLxuZtrw
-         Jdow==
-X-Gm-Message-State: APjAAAU82bLlSA4Yvp6LqQjupjnje9/N7RTdG1N4UMw04/JUsGhTA/HP
-        HNFFJcp1i6ZrrKTpkKYJhLyvQJ9M4DgOrfPDxFq0tA==
-X-Google-Smtp-Source: APXvYqwoXXMB6jQHL01y3ti03FRq/3phCHL6sPdA/P1ffR5g9Hi0PMIpVSujjn/UUi7eJJGETGQD8n0OnIo+4nmy1DA=
-X-Received: by 2002:a05:6830:1e8c:: with SMTP id n12mr4813345otr.360.1572374817658;
- Tue, 29 Oct 2019 11:46:57 -0700 (PDT)
+        bh=8iGjeZAGX1vwWCY7RD/pFhK70PaPvjQNMWEcOJ4f58k=;
+        b=ew05LjXGVeVVwlKKZZtwKaG2FzgZQBqMGL6yiDXJLIjcRco24pYWccNNpfkImK3km/
+         Aeg0AZQTMhCoha1RiPuj4QAqEUriavughVu9KV4HeZl6cb8bnHQujDzXG7zoj1SbR4M3
+         H8dioOURZZAoker/UexpzYqTUGaZOqs09klpvIkZ0F3q+O4xW0/n3hsXuwtrr+598Ivx
+         Rma5c4YwftXMKFLZwrqop2svXMIGHkqqkMaE/LnUuB2sjIdZVeMH8QFYeDlPpTHzSBSx
+         xOh2F9IDi/y5O70moxZtvoUckDMyXV1Nc1cYDoC19bLweE0SxRHwomQFXjnv7OJ4VBco
+         14sw==
+X-Gm-Message-State: APjAAAXGpW+G7WJt3SPYE5BJwJN7LRqvtNorWa6pzFpmhjZl1wWf1YQg
+        Qs1k0hSYZlhwPfIvH/kEpAGEkgu3zGo4I+dy8alUwg==
+X-Google-Smtp-Source: APXvYqxQm5uHFCWI33sMMjsd6j1hNQuGfWAFpKsDd478m9r7cbp5gNJOcZJB7olXWnLZqhrKZ5sp543en770ifApaNM=
+X-Received: by 2002:a9d:5e10:: with SMTP id d16mr17724258oti.191.1572374863908;
+ Tue, 29 Oct 2019 11:47:43 -0700 (PDT)
 MIME-Version: 1.0
 References: <20191029005405.201986-1-shakeelb@google.com> <20191029090347.GG31513@dhcp22.suse.cz>
- <CALvZod648GRvjd_LqViFzLRwxnzSrLZzjaNBOJju4xkDQkvrXw@mail.gmail.com> <20191029182802.GA193152@google.com>
-In-Reply-To: <20191029182802.GA193152@google.com>
+ <CALvZod648GRvjd_LqViFzLRwxnzSrLZzjaNBOJju4xkDQkvrXw@mail.gmail.com> <20191029183428.GA38233@cmpxchg.org>
+In-Reply-To: <20191029183428.GA38233@cmpxchg.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 29 Oct 2019 11:46:46 -0700
-Message-ID: <CALvZod7npAH0okM5HnsR-F6N6EF5eT6sfX-XVusrXVuBgZfh6Q@mail.gmail.com>
+Date:   Tue, 29 Oct 2019 11:47:32 -0700
+Message-ID: <CALvZod4HXGqa_obMTT_UGWnYTvaGutmF3_Xcg79URS1A5gR+xw@mail.gmail.com>
 Subject: Re: [PATCH] mm: memcontrol: fix data race in mem_cgroup_select_victim_node
-To:     Marco Elver <elver@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Greg Thelen <gthelen@google.com>,
-        syzbot+13f93c99c06988391efe@syzkaller.appspotmail.com
+        syzbot+13f93c99c06988391efe@syzkaller.appspotmail.com,
+        elver@google.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 29, 2019 at 11:28 AM Marco Elver <elver@google.com> wrote:
+On Tue, Oct 29, 2019 at 11:34 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
->
->
-> On Tue, 29 Oct 2019, Shakeel Butt wrote:
->
+> On Tue, Oct 29, 2019 at 11:09:29AM -0700, Shakeel Butt wrote:
 > > +Marco
 > >
 > > On Tue, Oct 29, 2019 at 2:03 AM Michal Hocko <mhocko@kernel.org> wrote:
@@ -103,13 +100,7 @@ On Tue, Oct 29, 2019 at 11:28 AM Marco Elver <elver@google.com> wrote:
 > > > > and modifies memcg->last_scanned_node without any synchrnonization. So,
 > > > > read and modify memcg->last_scanned_node with READ_ONCE()/WRITE_ONCE()
 > > > > to stop potential reordering.
->
-> Strictly speaking, READ_ONCE/WRITE_ONCE alone avoid various bad compiler
-> optimizations, including store tearing, load tearing, etc. This does not
-> add memory barriers to constrain memory ordering.  (If this code needs
-> some memory ordering guarantees w.r.t. previous loads/stores then this
-> alone is not enough.)
->
+> > >
 > > > I am sorry but I do not understand the problem and the fix. Why does the
 > > > race happen and why does _ONCE fixes it? There is still no
 > > > synchronization. Do you want to prevent from memcg->last_scanned_node
@@ -121,17 +112,26 @@ On Tue, Oct 29, 2019 at 11:28 AM Marco Elver <elver@google.com> wrote:
 > > worth to add an explicit lock. My aim was to make KCSAN happy here to
 > > look elsewhere for the concurrency bugs. However I see that it might
 > > complain next on memcg->scan_nodes.
+> >
+> > Now taking a step back, I am questioning the whole motivation behind
+> > mem_cgroup_select_victim_node(). Since we pass ZONELIST_FALLBACK
+> > zonelist to the reclaimer, the shrink_node will be called for all
+> > potential nodes. Also we don't short circuit the traversal of
+> > shrink_node for all nodes on nr_reclaimed and we scan (size_on_node >>
+> > priority) for all nodes, I don't see the reason behind having round
+> > robin order of node traversal.
 >
-> The plain concurrent reads/writes are a data race, which may manifest in
-> various undefined behaviour due to compiler optimizations. The _ONCE
-> will prevent these (KCSAN only reports data races).  Note that, "data
-> race" does not necessarily imply "race condition"; some data races are
-> race conditions (usually the more interesting bugs) -- but not *all*
-> data races are race conditions. If there is no race condition here that
-> warrants heavier synchronization (locking etc.), then this patch is all
-> that should be needed.
+> It's actually only very recently that we don't bail out of the reclaim
+> loop anymore - if I'm not missing anything, it was only 1ba6fc9af35b
+> ("mm: vmscan: do not share cgroup iteration between reclaimers") that
+> removed the last bailout condition on sc->nr_reclaimed.
 >
-> I can't comment on the rest.
+> > I am thinking of removing the whole mem_cgroup_select_victim_node()
+> > heuristic. Please let me know if there are any objections.
 >
+> In the current state, I don't see any reason to keep it, either. We
+> can always just start the zonelist walk from the current node.
+>
+> A nice cleanup, actually. Good catch!
 
-Thanks Marco for the explanation.
+Thanks, I will follow up with the removal of this heuristic.
