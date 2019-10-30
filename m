@@ -2,22 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F653EA2CE
-	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2019 18:53:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78246EA2FF
+	for <lists+cgroups@lfdr.de>; Wed, 30 Oct 2019 19:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726747AbfJ3RxK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Oct 2019 13:53:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59652 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727267AbfJ3RxK (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 30 Oct 2019 13:53:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id A713AACEF;
-        Wed, 30 Oct 2019 17:53:08 +0000 (UTC)
-Date:   Wed, 30 Oct 2019 18:53:02 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
+        id S1727799AbfJ3SHC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Oct 2019 14:07:02 -0400
+Received: from mail-pf1-f195.google.com ([209.85.210.195]:44256 "EHLO
+        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727792AbfJ3SHB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Oct 2019 14:07:01 -0400
+Received: by mail-pf1-f195.google.com with SMTP id q26so2103669pfn.11
+        for <cgroups@vger.kernel.org>; Wed, 30 Oct 2019 11:07:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=IAmQqO4bjeMP8pqof8/ZbpdZpz2QFcPnCQfgAz9Gnck=;
+        b=mtx4zkyH5XIQgQbFqvvhGqBLpk59n9jvsGvwkO1VfmeSBi1fZTkm2jd/OJyjYb00UW
+         s0eLLTypHsbreDef1db4Dqq/lLcoO7Y1Ijt4HNbZ+EeUGjZagKB9q7s2x6NaipcKhgx9
+         4WhVOz5bRE5CSJI+LSDVZQr8gKMXGq4mhuGp3lThS3s7dZss+t7ixyPJXf19hzBOb0YI
+         +ygYN0b1im2IVF2DbaB+QnHeBvBIZR00xvvEzU3MYvlmxAL9WkJsrGX3Cyc2l6CSlvE8
+         qU59DasqpWmvC1rofTblT3lxM1r1aBj7PmMqmcv29+qRc0d/PeGv1uLHDUQB8T6MRMGg
+         1M8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=IAmQqO4bjeMP8pqof8/ZbpdZpz2QFcPnCQfgAz9Gnck=;
+        b=sTVrfhwWcVc4DK96VLV/AX4GuhxtWinQfR5KaYQ+HDrj7Z/+eaeYglnC0IoijEizFg
+         B1CAcSUN5kKUgoQstFIyKfmHDpE1tYrJSV73SLaE196FNh5A2dt2EaXBpBI8bUoFyzs5
+         1r2yAsMhobzhLRSHukpkKK024rN48uqE4brQ7ICnpOafCcl7aykbWhjB6sp+kmXlFaFQ
+         a9zzAtPX+MDSnww6N9gWsCXxV+n2VvDerRajIgyoMobPlEnmwI76wqp9eWGdumUU5NPg
+         yOU6WzIDCFsek23thY3t4IV9+am+7ppj8jyZ/9lNhIjVQ2IIqvMOsolE54X0ngzfw/3u
+         hUEQ==
+X-Gm-Message-State: APjAAAVCnZt2TjRIzpMVOP3wxbDNoJa1bnki3i/Z6aCh8eVhwRIma0Zj
+        4dnxZTSWBJUEV+mGyOKof/Y0Vg==
+X-Google-Smtp-Source: APXvYqyuL6I1QOntSrYa2f/+wWesgVamPWyOs/9vuQ5B6aNOTIZp/FE+XjsshHgLyFI5Yj+uUd36SQ==
+X-Received: by 2002:a63:352:: with SMTP id 79mr853183pgd.4.1572458820720;
+        Wed, 30 Oct 2019 11:07:00 -0700 (PDT)
+Received: from localhost ([2620:10d:c090:180::78bd])
+        by smtp.gmail.com with ESMTPSA id c128sm573645pfc.166.2019.10.30.11.06.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Oct 2019 11:07:00 -0700 (PDT)
+Date:   Wed, 30 Oct 2019 14:06:58 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@kernel.org>
 Cc:     Shakeel Butt <shakeelb@google.com>,
         Greg Thelen <gthelen@google.com>, Roman Gushchin <guro@fb.com>,
         Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
@@ -25,74 +54,26 @@ Cc:     Shakeel Butt <shakeelb@google.com>,
         syzbot+13f93c99c06988391efe@syzkaller.appspotmail.com
 Subject: Re: [PATCH] mm: vmscan: memcontrol: remove
  mem_cgroup_select_victim_node()
-Message-ID: <20191030175302.GM31513@dhcp22.suse.cz>
+Message-ID: <20191030180658.GA46103@cmpxchg.org>
 References: <20191029234753.224143-1-shakeelb@google.com>
  <20191030174455.GA45135@cmpxchg.org>
+ <20191030175302.GM31513@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191030174455.GA45135@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20191030175302.GM31513@dhcp22.suse.cz>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 30-10-19 13:44:55, Johannes Weiner wrote:
-> On Tue, Oct 29, 2019 at 04:47:53PM -0700, Shakeel Butt wrote:
-> > Since commit 1ba6fc9af35b ("mm: vmscan: do not share cgroup iteration
-> > between reclaimers"), the memcg reclaim does not bail out earlier based
-> > on sc->nr_reclaimed and will traverse all the nodes. All the reclaimable
-> > pages of the memcg on all the nodes will be scanned relative to the
-> > reclaim priority. So, there is no need to maintain state regarding which
-> > node to start the memcg reclaim from. Also KCSAN complains data races in
-> > the code maintaining the state.
-> > 
-> > This patch effectively reverts the commit 889976dbcb12 ("memcg: reclaim
-> > memory from nodes in round-robin order") and the commit 453a9bf347f1
-> > ("memcg: fix numa scan information update to be triggered by memory
-> > event").
-> > 
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Reported-by: <syzbot+13f93c99c06988391efe@syzkaller.appspotmail.com>
+On Wed, Oct 30, 2019 at 06:53:02PM +0100, Michal Hocko wrote:
+> On Wed 30-10-19 13:44:55, Johannes Weiner wrote:
+> > Also, I think we should use sc.gfp_mask & ~__GFP_THISNODE, so that
+> > allocations with a physical node preference still do node-agnostic
+> > reclaim for the purpose of cgroup accounting.
 > 
-> Excellent, thanks Shakeel!
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> Just a request on this bit:
-> 
-> > @@ -3360,16 +3358,9 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
-> >  		.may_unmap = 1,
-> >  		.may_swap = may_swap,
-> >  	};
-> > +	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
-> >  
-> >  	set_task_reclaim_state(current, &sc.reclaim_state);
-> > -	/*
-> > -	 * Unlike direct reclaim via alloc_pages(), memcg's reclaim doesn't
-> > -	 * take care of from where we get pages. So the node where we start the
-> > -	 * scan does not need to be the current node.
-> > -	 */
-> > -	nid = mem_cgroup_select_victim_node(memcg);
-> > -
-> > -	zonelist = &NODE_DATA(nid)->node_zonelists[ZONELIST_FALLBACK];
-> 
-> This works, but it *is* somewhat fragile if we decide to add bail-out
-> conditions to reclaim again. And some numa nodes receiving slightly
-> less pressure than others could be quite tricky to debug.
-> 
-> Can we add a comment here that points out the assumption that the
-> zonelist walk is comprehensive, and that all nodes receive equal
-> reclaim pressure?
+> Do not we exclude that by GFP_RECLAIM_MASK already?
 
-Makes sense
- 
-> Also, I think we should use sc.gfp_mask & ~__GFP_THISNODE, so that
-> allocations with a physical node preference still do node-agnostic
-> reclaim for the purpose of cgroup accounting.
-
-Do not we exclude that by GFP_RECLAIM_MASK already?
-
--- 
-Michal Hocko
-SUSE Labs
+My bad, you're right. Scratch that, then. Thanks.
