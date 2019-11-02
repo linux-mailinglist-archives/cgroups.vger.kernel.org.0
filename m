@@ -2,76 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7894EECC2F
-	for <lists+cgroups@lfdr.de>; Sat,  2 Nov 2019 01:14:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D5D7ECF6F
+	for <lists+cgroups@lfdr.de>; Sat,  2 Nov 2019 16:16:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726230AbfKBAOe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 Nov 2019 20:14:34 -0400
-Received: from foss.arm.com ([217.140.110.172]:43058 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726023AbfKBAOe (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 1 Nov 2019 20:14:34 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C49721FB;
-        Fri,  1 Nov 2019 17:14:33 -0700 (PDT)
-Received: from e113632-lin.cambridge.arm.com (e113632-lin.cambridge.arm.com [10.1.194.37])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 1C9283F719;
-        Fri,  1 Nov 2019 17:14:32 -0700 (PDT)
-From:   Valentin Schneider <valentin.schneider@arm.com>
-To:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        mingo@kernel.org, peterz@infradead.org, vincent.guittot@linaro.org,
-        Dietmar.Eggemann@arm.com, morten.rasmussen@arm.com,
-        qperret@google.com,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-Subject: [PATCH] sched/topology, cpuset: Account for housekeeping CPUs to avoid empty cpumasks
-Date:   Sat,  2 Nov 2019 00:14:06 +0000
-Message-Id: <20191102001406.10208-1-valentin.schneider@arm.com>
-X-Mailer: git-send-email 2.22.0
+        id S1726450AbfKBPQh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 2 Nov 2019 11:16:37 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:42376 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726440AbfKBPQh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 2 Nov 2019 11:16:37 -0400
+Received: from mxbackcorp1o.mail.yandex.net (mxbackcorp1o.mail.yandex.net [IPv6:2a02:6b8:0:1a2d::301])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 941382E099D;
+        Sat,  2 Nov 2019 18:16:34 +0300 (MSK)
+Received: from vla1-5826f599457c.qloud-c.yandex.net (vla1-5826f599457c.qloud-c.yandex.net [2a02:6b8:c0d:35a1:0:640:5826:f599])
+        by mxbackcorp1o.mail.yandex.net (nwsmtp/Yandex) with ESMTP id UjI6F08SWn-GXjiaB0J;
+        Sat, 02 Nov 2019 18:16:34 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1572707794; bh=AR0posdeGGjRMOUjYp9dgJq5OCpwQBAAcmepPzGDKWg=;
+        h=Message-ID:Date:To:From:Subject:Cc;
+        b=X9dFktO77Na/G0mtC2+xSzpD1cMLgWOkM1P9fpb+ypv5Obc9xW91WTB8Mc1xm15fI
+         f+vjegUUhK0i7hnoRfJ+Na/UVVXYuRet+Jx2AzVkMEQdB23FUCLveNYbe34Rajfqob
+         WnSYBjjQfRvF4wy/a3HK7oM0Cf0Nz8wpJRNk4zps=
+Authentication-Results: mxbackcorp1o.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8554:53c0:3d75:2e8a])
+        by vla1-5826f599457c.qloud-c.yandex.net (nwsmtp/Yandex) with ESMTPSA id kxXcRS1iUB-GXVOVCeE;
+        Sat, 02 Nov 2019 18:16:33 +0300
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client certificate not present)
+Subject: [PATCH] mm/memcontrol: update documentation about invoking oom
+ killer
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Date:   Sat, 02 Nov 2019 18:16:33 +0300
+Message-ID: <157270779336.1961.6528158720593572480.stgit@buzz>
+User-Agent: StGit/0.17.1-dirty
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal noted that a cpuset's effective_cpus can be a non-empy mask, but
-because of the masking done with housekeeping_cpumask(HK_FLAG_DOMAIN)
-further down the line, we can still end up with an empty cpumask being
-passed down to partition_sched_domains_locked().
+Since commit 29ef680ae7c2 ("memcg, oom: move out_of_memory back to the
+charge path") memcg invokes oom killer not only for user page-faults.
+This means 0-order allocation will either succeed or task get killed.
 
-Do the proper thing and don't just check the mask is non-empty - check
-that its intersection with housekeeping_cpumask(HK_FLAG_DOMAIN) is
-non-empty.
-
-Fixes: cd1cb3350561 ("sched/topology: Don't try to build empty sched domains")
-Reported-by: Michal Koutný <mkoutny@suse.com>
-Signed-off-by: Valentin Schneider <valentin.schneider@arm.com>
+Fixes: 8e675f7af507 ("mm/oom_kill: count global and memory cgroup oom kills")
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 ---
- kernel/cgroup/cpuset.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/cgroup-v2.rst |    9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index c87ee6412b36..e4c10785dc7c 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -798,9 +798,14 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 		    cpumask_subset(cp->cpus_allowed, top_cpuset.effective_cpus))
- 			continue;
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 5361ebec3361..eb47815e137b 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1219,8 +1219,13 @@ PAGE_SIZE multiple when read back.
  
-+		/*
-+		 * Skip cpusets that would lead to an empty sched domain.
-+		 * That could be because effective_cpus is empty, or because
-+		 * it's only spanning CPUs outside the housekeeping mask.
-+		 */
- 		if (is_sched_load_balance(cp) &&
--		    !cpumask_empty(cp->effective_cpus))
-+		    cpumask_intersects(cp->effective_cpus,
-+				       housekeeping_cpumask(HK_FLAG_DOMAIN)))
- 			csa[csn++] = cp;
+ 		Failed allocation in its turn could be returned into
+ 		userspace as -ENOMEM or silently ignored in cases like
+-		disk readahead.  For now OOM in memory cgroup kills
+-		tasks iff shortage has happened inside page fault.
++		disk readahead.
++
++		Before 4.19 OOM in memory cgroup killed tasks iff
++		shortage has happened inside page fault, random
++		syscall may fail with ENOMEM or EFAULT. Since 4.19
++		failed memory cgroup allocation invokes oom killer and
++		keeps retrying until it succeeds.
  
- 		/* skip @cp's subtree if not a partition root */
---
-2.22.0
+ 		This event is not raised if the OOM killer is not
+ 		considered as an option, e.g. for failed high-order
 
