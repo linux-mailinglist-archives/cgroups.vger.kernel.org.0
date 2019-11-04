@@ -2,187 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D4D7EEE56
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 23:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A402EF17A
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2019 00:59:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390209AbfKDWIT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Nov 2019 17:08:19 -0500
-Received: from mga05.intel.com ([192.55.52.43]:15142 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390208AbfKDWIS (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 4 Nov 2019 17:08:18 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Nov 2019 14:08:18 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,268,1569308400"; 
-   d="scan'208";a="376477739"
-Received: from nperf12.hd.intel.com ([10.127.88.161])
-  by orsmga005.jf.intel.com with ESMTP; 04 Nov 2019 14:08:16 -0800
-From:   Brian Welty <brian.welty@intel.com>
-To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: [RFC PATCH] cgroup: Document interface files and rationale for DRM controller
-Date:   Mon,  4 Nov 2019 17:08:47 -0500
-Message-Id: <20191104220847.23283-1-brian.welty@intel.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1729830AbfKDX7w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Nov 2019 18:59:52 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:33196 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728602AbfKDX7w (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 18:59:52 -0500
+Received: by mail-qk1-f195.google.com with SMTP id 71so19533374qkl.0;
+        Mon, 04 Nov 2019 15:59:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id;
+        bh=1Zg4NM4L65BwHYcai+2O54GGM0p3wG4erjr6tQWRcZo=;
+        b=EBABFhcW/4CbrVfst7qrvYwEisArwJDXkGvHeGIs6q50PrJnHJsYbvayJGlGq3KFPI
+         s1dyozt349s6fP7eGa4SKiNQMtZZmJ/Tafth7BCNAHcSPDSFQUVShG7a2kEdoijrnqLe
+         +lpUXTAc6iK8jBglQ1YqbfIyS6oD2A5QBg0NEXjooUKmwLhN0WjMwEV8j+cN1s1RZSJp
+         8rQYYwjqqc/RcJIMdtCWB/7onffM5Be0FxtJlOpn9jSD10wzST0B5bIlzsreHPvpKK6V
+         vaNjDebun2eFoPmouATYyFMfr5zQz+FuvH94T3LPmWbZlAraLpT7W2JBRW0pYcVX4Miu
+         T0kw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id;
+        bh=1Zg4NM4L65BwHYcai+2O54GGM0p3wG4erjr6tQWRcZo=;
+        b=aXH/bpEa2xPZh57ulioOYqiwnJ31U7fVFFOFLPbdzJUDDE28CGPre6b1ZPTXvPw/Cw
+         vU1uaRJgMjnBA2NRIJ0R5LAyNSCS/LwRZ/YdHHe6q6CPWESshCQRmsMTn7IG4RJ6GMGf
+         amYwNtLw2PDHuUeF8spCA9pAoycg+zsq+w7mhFNSA9gjH4FB7FQkDm5UI85XyBz2e/EJ
+         AopNBtrYEIJdA7EHZfF7DzdRkHG2Txjr5MJag4F3tgbBgXyxGkWx3cMiz3v/yGBjhG2W
+         cdsnNi2L06rofiEorguxT8iztJx7FD4/JVqYo+NOCOnaRVs2Ku21rsUdtGh1Tw/16BEG
+         K0/Q==
+X-Gm-Message-State: APjAAAXvTeEOP31aVaWpUhyYMEUEVs1XIZpjL7AscC7OW6DbnPQmSQyR
+        mFMcDki+1nNnNfyNqi+PJDs=
+X-Google-Smtp-Source: APXvYqyO470Sq004l5fg3c7n/3iQQmGG0RKT1z9xS3mFcv4Oh3SjmYwNT8ncDyj2AGUUBLwNkB2Gbg==
+X-Received: by 2002:a05:620a:4cf:: with SMTP id 15mr13681116qks.445.1572911988979;
+        Mon, 04 Nov 2019 15:59:48 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::3:51f8])
+        by smtp.gmail.com with ESMTPSA id g83sm9059768qke.100.2019.11.04.15.59.48
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 04 Nov 2019 15:59:48 -0800 (PST)
+From:   Tejun Heo <tj@kernel.org>
+To:     gregkh@linuxfoundation.org
+Cc:     kernel-team@fb.com, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        namhyung@kernel.org, ast@kernel.org, daniel@iogearbox.net
+Subject: [PATCHSET cgroup/for-5.5] kernfs,cgroup: support 64bit inos and unify cgroup IDs
+Date:   Mon,  4 Nov 2019 15:59:34 -0800
+Message-Id: <20191104235944.3470866-1-tj@kernel.org>
+X-Mailer: git-send-email 2.17.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Here is one proposal for a set of interface files to be implemented in
-in a new DRM controller.  This is an alternate set of interface files
-than in the current v4 of DRM controller [1].  As there was not a clear
-consensus on the interface files and associated controls, it seems worth
-again considering if we should have a set of controls more consistent
-in functionality with what existing CPU and MEM controllers provide.
+Hello,
 
-This is in some respects a follow-up to my prior RFC series [2] where
-I attempted to implement per-device controls within existing cgroup
-subsystems.
+Currently, there are three IDs which are being used to identify a
+cgroup.
 
-The basic goal of that design was to reuse well known controls. Instead
-we can achieve that same goal, but by simply having the proposed DRM
-controller implement those same interface files with identical name.
-The intent being that equivalent functionality is then provided by the
-underlying GPU device driver.
+1. cgroup->id
+2. cgroupfs 32bit ino
+3. cgroupfs 32bit ino + 32bit gen
 
-Here is the rationale, repeated from proposed DRM controller documention:
-As an accelerator or GPU device is similar in many respects to a CPU
-with (or without) attached system memory, the design principle here is
-to clone existing controls from other controllers where those controls
-are used for the same fundamental purpose.  For example, rather than
-inventing new but similar controls for managing memory allocation and
-workload isolation and scheduling, we clone (in name and as possible in
-functionality) controls from following controllers: CPU, CPUSET, and MEM.
-The controls found in those controllers are well understood already by
-system administrators and the intent here is to provide these controls
-for use with accelarator and GPU devices via the DRM controller.
+All three IDs are visible to userland through different interfaces.
+This is very confusing and #1 can't even be resolved to cgroups from
+userland.
 
-RFC note:
-In fact, to make the above point more strongly, one suggestion is to
-rename this cgroup controller as XPU instead of the current DRM.
-This makes it clear this is not GPU-specific and no reason to make this
-restricted to drivers under drivers/gpu/drm/.
+A 64bit number is sufficient to identify a cgroup instance uniquely
+and ino_t is 64bit on all archs except for alpha.  There's no reason
+for three different IDs at all.  This patchset updates kernfs so that
+it supports 64bit ino and associated exportfs operations and unifies
+the cgroup IDs.
 
-[1] https://lists.freedesktop.org/archives/dri-devel/2019-August/233463.html
-[2] https://lists.freedesktop.org/archives/dri-devel/2019-May/216373.html
+* On 64bit ino archs, ino is kernfs node ID which is also the cgroup
+  ID.  The ino can be passed directly into open_by_handle_at(2) w/ the
+  new key type FILEID_KERNFS.  Backward compatibility is maintained
+  for FILEID_INO32_GEN keys.
 
-Signed-off-by: Brian Welty <brian.welty@intel.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 89 +++++++++++++++++++++++++
- 1 file changed, 89 insertions(+)
+* On 32bit ino archs, kernfs node ID is still 64bit and the cgroup ID.
+  ino is the low 32bits and gen is the high 32bits.  If the high
+  32bits is zero, open_by_handle_at(2) only matches the ino part of
+  the ID allowing userland to resolve inos to cgroups as long as
+  distinguishing recycled inos isn't necessary.
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5361ebec3361..2a713059ccbd 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2050,6 +2050,95 @@ RDMA Interface Files
- 	  mlx4_0 hca_handle=1 hca_object=20
- 	  ocrdma1 hca_handle=1 hca_object=23
- 
-+DRM
-+----
-+
-+The "drm" controller regulates the distribution and accounting of
-+resources within a GPU device (or other similar accelerator device), but
-+only those controlled by device drivers under drivers/gpu/drm/ and thus
-+which register with DRM.
-+
-+As an accelerator or GPU device is similar in many respects to a CPU
-+with (or without) attached system memory, the design principle here is
-+to clone existing controls from other controllers where those controls
-+are used for the same fundamental purpose.  For example, rather than
-+inventing new but similar controls for managing memory allocation and
-+workload isolation and scheduling, we clone (in name and as possible in
-+functionality) controls from following controllers: CPU, CPUSET, and MEM.
-+The controls found in those controllers are well understood already by
-+system administrators and the intent here is to provide these controls
-+for use with accelarator and GPU devices via the DRM controller.
-+
-+RFC note:
-+In fact, to make the above point more strongly, one suggestion is to
-+rename this cgroup controller as XPU instead of the current DRM.
-+This makes it clear this is not GPU-specific and no reason to make this
-+restricted to drivers under drivers/gpu/drm/.
-+
-+DRM Interface Files
-+~~~~~~~~~~~~~~~~~~~
-+
-+DRM controller supports usage of multiple DRM devices within a cgroup.
-+As such, for all interface files, output is keyed by device name and is
-+not ordered.
-+
-+The first set of control files are intended to clone functionality from
-+CPUSETs and thus provide a mechanism for assigning a set of workload
-+execution units and a set of attached memories to a cgroup in order to
-+provide resource isolation.  The term 'workload execution unit' is
-+unrealistic to have a common underlying hardware implementation across
-+all devices.  The intent is to represent the available set of hardware
-+resources that provides scheduling and/or partitioning of workloads, by
-+which potentially this maps to 'GPU cores' or to 'hardware engines'.
-+
-+  gpuset.units
-+  gpuset.units.effective
-+  gpuset.units.partition
-+
-+  gpuset.mems
-+  gpuset.mems.effective
-+  gpuset.mems.partition
-+
-+[As this is an RFC, each control above is not yet described.  For now,
-+please refer to CPUSET interface file documentation as these are intended
-+to provide equivalent functionality.]
-+
-+The next set of control files are intended to clone functionality from
-+CPU controller and thus provide a mechanism to influence workload
-+scheduling.
-+
-+  sched.max
-+  sched.stats
-+  sched.weight
-+  sched.weight.nice
-+
-+[As this is an RFC, each control above is not yet described.  For now,
-+please refer to CPU interface file documentation as these are intended
-+to provide equivalent functionality.]
-+
-+The next set of control files are intended to clone functionality from
-+the MEM controller and thus provide a mechanism for regulating allocation
-+and accounting of attached memory.  All memory amounts are in bytes.
-+
-+  memory.current
-+  memory.events
-+  memory.high
-+  memory.low
-+  memory.max
-+  memory.min
-+  memory.stat
-+  memory.swap.current
-+  memory.swap.max
-+
-+Potentially, with substantial justifciation, the above can be expanded
-+in the future with new memory.xxx.yyy set of controls for additional
-+memory 'types' or 'placement regions' that are unique from each other
-+and warrant separate controls, (such as memory.swap.yyy).
-+
-+[As this is an RFC, each control above is not yet described.  For now,
-+please refer to MEM interface file documentation as these are intended
-+to provide equivalent functionality.]
-+
- 
- Misc
- ----
--- 
-2.21.0
+This patchset contains the following 10 patches.
+
+ 0001-kernfs-fix-ino-wrap-around-detection.patch
+ 0002-writeback-use-ino_t-for-inodes-in-tracepoints.patch
+ 0003-netprio-use-css-ID-instead-of-cgroup-ID.patch
+ 0004-kernfs-use-dumber-locking-for-kernfs_find_and_get_no.patch
+ 0005-kernfs-kernfs_find_and_get_node_by_ino-should-only-l.patch
+ 0006-kernfs-convert-kernfs_node-id-from-union-kernfs_node.patch
+ 0007-kernfs-combine-ino-id-lookup-functions-into-kernfs_f.patch
+ 0008-kernfs-implement-custom-exportfs-ops-and-fid-type.patch
+ 0009-kernfs-use-64bit-inos-if-ino_t-is-64bit.patch
+ 0010-cgroup-use-cgrp-kn-id-as-the-cgroup-ID.patch
+
+0001 is a fix which should be backported through -stable.  0002 and
+0003 are prep patches.  0004-0009 make kernfs_node->id a u64 and use
+it as ino on 64bit ino archs.  0010 replaces cgroup->id with the
+kernfs node ID.
+
+Greg, how do you want to route the patches?  We can route 0001-0009
+through your tree and the last one through cgroup after pulling in.
+I'd be happy to route them all too.
+
+This patchset is also available in the following git branch.
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-unified-cgid
+
+diffstat follows.  Thanks.
+
+ fs/kernfs/dir.c                  |  101 +++++++++++++++++++-------------------
+ fs/kernfs/file.c                 |    4 -
+ fs/kernfs/inode.c                |    4 -
+ fs/kernfs/kernfs-internal.h      |    2 
+ fs/kernfs/mount.c                |  102 ++++++++++++++++++++++-----------------
+ include/linux/cgroup-defs.h      |   17 ------
+ include/linux/cgroup.h           |   26 ++++-----
+ include/linux/exportfs.h         |    5 +
+ include/linux/kernfs.h           |   57 ++++++++++++++-------
+ include/net/netprio_cgroup.h     |    2 
+ include/trace/events/cgroup.h    |    6 +-
+ include/trace/events/writeback.h |   92 +++++++++++++++++------------------
+ kernel/bpf/helpers.c             |    2 
+ kernel/bpf/local_storage.c       |    2 
+ kernel/cgroup/cgroup.c           |   81 ++++++++++--------------------
+ kernel/trace/blktrace.c          |   84 +++++++++++++++++---------------
+ net/core/filter.c                |    4 -
+ net/core/netprio_cgroup.c        |    8 +--
+ 18 files changed, 301 insertions(+), 298 deletions(-)
+
+--
+tejun
 
