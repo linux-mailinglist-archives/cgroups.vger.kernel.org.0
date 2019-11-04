@@ -2,101 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF93EE515
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 17:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E1BA5EE7C5
+	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 19:57:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728641AbfKDQtK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Nov 2019 11:49:10 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41634 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727989AbfKDQtK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 11:49:10 -0500
-Received: by mail-qk1-f193.google.com with SMTP id m125so18224326qkd.8;
-        Mon, 04 Nov 2019 08:49:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Tolm0KjoKvfRTvG4VjDhlcLgC6/zdCu4XmFbBPjTkwY=;
-        b=QDb28cZajsvYgqeWWWhRnDIReogocXA/kxJfrHS6albWdfSNMVrp+8MS/zWWV5k5+T
-         rNv853PHTXdFaUyuxjCXFUyIRcT4ZvKLScrh0pCo04OU5kBwlAITLvKP0d1iTcxYJE5a
-         qYIUCczhmyFKKcc2Sf3hIhNvHcN0fcrf7e+f3ZLWrccNxGJN7imun8WvZrw6VF+9OWBX
-         41opJ+xmjK2J1Nu+/iVZoCce5+jor1RKkjrOQ/bez2sFnLjFRPr9yM9pLYWx2bjPNNBz
-         +3lzIOElaS/CRtT7q/u4sXn9CX/MB357yZYyb1r718eM6SUk+k9Wr/oaYgKxq7kY+svp
-         Wrew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Tolm0KjoKvfRTvG4VjDhlcLgC6/zdCu4XmFbBPjTkwY=;
-        b=abp8Q0j4mmeuQNNW1JlGoBGx2fwZeuLi/P1+v97PervuC7HFA3sTHfLBENYha18TUs
-         8ATW3kIb/xwkay0jwsYAtbNfdIDMlBokhXBVO+BJoZCYMwEbiIDQjwTBfpiVczb/8H/3
-         15lBfcMbGIRsCk1rSFyOoduVelyocnLAAuHXu1kxD+nuHO8mGGcl8rzxa3Ijh83v6ikX
-         /eG8x5gn2V693VRQxgMnPx1CFEbFI9OF9pk6ivsBIGJ5of+6V33bAawIWiLFfPa/FkRr
-         xquDLNTQrST7L64UPIaP4Qbv0V6QYXsjb6VOlyiaFEuIoJQeYdJaQa3yPNmXMQ0sDb0D
-         vJSA==
-X-Gm-Message-State: APjAAAVmLRgEoOVxhkU2we9QgLkjXZ2eXRRdeIwJ59EO4bGqyK3PbYKu
-        0Z23aH7ObQGZjXgMnQtnUP4=
-X-Google-Smtp-Source: APXvYqw4k9V3X/BYQ3OocJr+kPDbvPDB7i3FPeL5D/TOiY0T67m3Q5y4DCjF9Sg77/M3iEa91YcomQ==
-X-Received: by 2002:a37:4cd5:: with SMTP id z204mr9625854qka.153.1572886147428;
-        Mon, 04 Nov 2019 08:49:07 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::3:51f8])
-        by smtp.gmail.com with ESMTPSA id d189sm8514447qkf.67.2019.11.04.08.49.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Nov 2019 08:49:06 -0800 (PST)
-Date:   Mon, 4 Nov 2019 08:49:03 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <liu.song.a23@gmail.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 0/2] cgroup: Sync cgroup id and inode number
-Message-ID: <20191104164903.GQ3622521@devbig004.ftw2.facebook.com>
-References: <20191104084520.398584-1-namhyung@kernel.org>
+        id S1728778AbfKDS5r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Nov 2019 13:57:47 -0500
+Received: from mx2.suse.de ([195.135.220.15]:35630 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1728510AbfKDS5r (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 4 Nov 2019 13:57:47 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 22F82ACB6;
+        Mon,  4 Nov 2019 18:57:45 +0000 (UTC)
+Date:   Mon, 4 Nov 2019 19:57:42 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Juri Lelli <juri.lelli@redhat.com>, mathieu.poirier@linaro.org
+Cc:     peterz@infradead.org, mingo@redhat.com, rostedt@goodmis.org,
+        tj@kernel.org, linux-kernel@vger.kernel.org,
+        luca.abeni@santannapisa.it, claudio@evidence.eu.com,
+        tommaso.cucinotta@santannapisa.it, bristot@redhat.com,
+        lizefan@huawei.com, longman@redhat.com, dietmar.eggemann@arm.com,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH v9 3/8] cpuset: Rebuild root domain deadline accounting
+ information
+Message-ID: <20191104185742.GC7827@blackbody.suse.cz>
+References: <20190719140000.31694-1-juri.lelli@redhat.com>
+ <20190719140000.31694-4-juri.lelli@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="ncSAzJYg3Aa9+CRW"
 Content-Disposition: inline
-In-Reply-To: <20191104084520.398584-1-namhyung@kernel.org>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20190719140000.31694-4-juri.lelli@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 05:45:18PM +0900, Namhyung Kim wrote:
-> Hello,
-> 
-> This patchset changes cgroup inode number and id management to be in
-> sync with kernfs.  The cgroup inode number is managed by kernfs but
-> cgroup id is allocated by a separate idr.  The idea is to have a
-> single id for internal usage, inode number and file handle which can
-> be accessed from userspace.  Actually this work is from Tejun who also
-> provided the idea.  I just took over the work and fixed some errors
-> and finally was able to run perf for testing.
-> 
-> The background of this work is that I want to add cgroup sampling
-> feature in the perf event subsystem.  As Tejun mentioned that using
-> cgroup id is not enough and it'd better using file handle instead.
-> But getting file handle in perf NMI handler is not possible so I want
-> to get the info from a cgroup node.
-> 
-> The first patch converted kernfs id into a single 64bit number and in
-> the second patch cgroup uses the kernfs id as cgroup id.
-> 
-> The patches are based on the for-next branch in Tejun's cgroup tree.
-> Tested with tools/testing/selftests/cgroup/test_stress.sh.
 
-Sorry about the delay.  I'm still working on the patch series and the
-draft patches currently posted aren't quite correct (e.g. netprio is
-now trying to allocate arrays which use u64 values as index and that
-u64 value can start with 33rd bit set from the get-go).
+--ncSAzJYg3Aa9+CRW
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-So, please hold on w/ this series for now.
+Hello.
 
-Thanks.
+I came across a cgroup_enable_task_cg_lists() call from the cpuset
+controller...
 
--- 
-tejun
+On Fri, Jul 19, 2019 at 03:59:55PM +0200, Juri Lelli <juri.lelli@redhat.com> wrote:
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> [...]
+> +static void rebuild_root_domains(void)
+> +{
+> +	struct cpuset *cs = NULL;
+> +	struct cgroup_subsys_state *pos_css;
+> +
+> +	lockdep_assert_held(&cpuset_mutex);
+> +	lockdep_assert_cpus_held();
+> +	lockdep_assert_held(&sched_domains_mutex);
+> +
+> +	cgroup_enable_task_cg_lists();
+...and I wonder why is it necessary to call at this place?
+
+(IIUC, before cpuset hierarchy is anywhere mounted it's mere top_cpuset,
+i.e. processing the top_cpuset alone is enough. And if anyone wants to
+create any non-root cpusets, they have to mount the hierachy first, i.e.
+no need to call cgroup_enable_task_cg_lists() manually. Also if I'm not
+overlooking anything, the race between hotplug and mount (more precisely
+new cpuset creation) should be synchronized by cpuset_mutex.)
+
+Thanks,
+Michal
+
+--ncSAzJYg3Aa9+CRW
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl3AdJ8ACgkQia1+riC5
+qSi+RA//fudY8YZhWshSdEbKhCAhyiKaBx3noxOAIsbI07smX9H3cCKqt/VuURNY
+jHy+43M9FQ1q3JnygVu5ldGgHUqXtuLugTA7oFSPVtATtHH37TLfpbUrspZBIUBp
+OTAJ3OHK2M1GlSCY++gA4KJ2XEI5cJQEc3UWK/pC2UGVlQ29V8UFa55ZQVnrO+pO
+EYoVOxlm9p6NoHjtgQ+xNXKjWfqGhrzl9L2VbxlGcBjP4Zkhdm7OE3VHZ6hwozH8
+2aTuKte+DuU9GvMqMkmqKJfWHDB/mPNVZOb6IwQx4OOtKfrE3PZKgklBAMp9bolZ
+nwmODQbvZDoUKplmYum/RwlIlKFfw5gVa8W/T6oVBytbNqgk+yrUCKZlOIEOwm1e
+SJ/AeA5TfKXk7KL/8giEUpRQJCl+egl+ZQFXRZjkzrEDQm9HlOaCJohL7CifK70w
+qjk9hkg4Gj9g01brD6qlcbi2ewALZqKjprsPcVOORG6FlF9CN25qypc0P2r+KfuP
+IfceIaEO3YolOxrJGY61eDKorEI3L+i2TTAhf4z3HEpf8lnaZl8C0TglGjlZy8F4
+k7l4hRJObilzKyjuxyC4pGRHKEKPsqnfP7g+AClPBKlpa77edYuswdOV+TPxmJWl
+KVhOnhZgRd8Iyq67vnHMN0aw6xFtSjWQC+Sxu5OuzLTfAOjUTEo=
+=VQRg
+-----END PGP SIGNATURE-----
+
+--ncSAzJYg3Aa9+CRW--
