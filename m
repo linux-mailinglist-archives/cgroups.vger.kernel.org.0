@@ -2,367 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B9CDEDABD
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 09:45:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7589EDDAC
+	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 12:27:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727500AbfKDIpq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Nov 2019 03:45:46 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:39656 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726441AbfKDIpp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 03:45:45 -0500
-Received: by mail-pg1-f193.google.com with SMTP id p12so10819481pgn.6;
-        Mon, 04 Nov 2019 00:45:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Syph87H+PWR18QYjllmdxGhZuk8s0DtHjperla50PXo=;
-        b=hro9ymQE+781KFysTfrK7uAaugf0CRUXCbjhZ6kOVCCI1t8RJ2kd16cLofrbmUQRiH
-         OG9PEzG1rVhss7LkrtV8RF1FttqA9vV2D5NbtP4U2DnKowz9HUznHdNZ6AHn+BNhb33s
-         1nm5n17UrYuLMflxIwjMgUAMd2wI7tPG/6rlG7upozPjQ27DpziiUt4ykZqWB2ODOE3T
-         StVr/zXP1xNTZ9nWZBWTQwAoWG2zxZGm4ge8HpDoqDpdqBWvjmGCo+mc9FDNY2YOJz0Z
-         C0JE+hA1YaTJp/Re2WTwN0LMVMY7MXGcgsuJ5bGC7EvccS66beFfjZXrBRJB2ozBgMMC
-         TIkA==
+        id S1727782AbfKDL1J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Nov 2019 06:27:09 -0500
+Received: from mail-il1-f199.google.com ([209.85.166.199]:41186 "EHLO
+        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727322AbfKDL1J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 06:27:09 -0500
+Received: by mail-il1-f199.google.com with SMTP id o185so15233816ila.8
+        for <cgroups@vger.kernel.org>; Mon, 04 Nov 2019 03:27:08 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=Syph87H+PWR18QYjllmdxGhZuk8s0DtHjperla50PXo=;
-        b=gAHJ8p7itLoFFaEnDA1kOEzfJ7qVGVbEbtiR13T5+T9Lpbs1DWP6/V7nw+WbVeiHlG
-         X1JGmmdVbQNuH4mVMrIznR6xuq/4sJi9IrbQDBXqRVYGLkTKmbvvlPTpSF/AuwM2uW+f
-         X/rH4/wW74cOZAKEkqeY9Uu8jylhqUxCl/OQpFo1FOGbEW5ynrBxb1Bwg4e0TlOw/OHd
-         FpmBbPb1FA2qkkfUvIklmM1Yz4DQk7Kg2hGr6ffGhaft8b+gVeeCxqG/DvbKM/2uSUpo
-         yfgvoY2H40uWb8eybqGZiQXCfNVssAjqqQONZ4ATNMjhNZtebiFzT7pZqQeyPX5CzXcP
-         hdIg==
-X-Gm-Message-State: APjAAAVvpYPGGsC5JM/y5p2253OEzUr3KV6XUIiWA1U96XH7n3ah+KSE
-        vI92D6ayFHwN6EeVO4OYS34=
-X-Google-Smtp-Source: APXvYqyNsV1FXbgXfpfA9cGfySs4wPL0F0cMfN3V/f04b3npnDTbXwv8gxcn/u+sIkKOyeT+GXYFfw==
-X-Received: by 2002:a62:305:: with SMTP id 5mr28634070pfd.67.1572857143863;
-        Mon, 04 Nov 2019 00:45:43 -0800 (PST)
-Received: from gaurie.seo.corp.google.com ([2401:fa00:d:0:1034:ec6b:8056:9e93])
-        by smtp.gmail.com with ESMTPSA id z16sm17010221pge.55.2019.11.04.00.45.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Nov 2019 00:45:43 -0800 (PST)
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Song Liu <liu.song.a23@gmail.com>, cgroups@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Neil Horman <nhorman@tuxdriver.com>, netdev@vger.kernel.org
-Subject: [PATCH v2 2/2] cgroup: Use 64bit id from kernfs
-Date:   Mon,  4 Nov 2019 17:45:20 +0900
-Message-Id: <20191104084520.398584-3-namhyung@kernel.org>
-X-Mailer: git-send-email 2.24.0.rc1.363.gb1bccd3e3d-goog
-In-Reply-To: <20191104084520.398584-1-namhyung@kernel.org>
-References: <20191104084520.398584-1-namhyung@kernel.org>
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=qF9HR4qzS9jnBK+P00Rhbp1bfWzTAJEf2Ve1RRYuzX4=;
+        b=ga+0Z9n9wSn+Q0eZ3jPFEY5WCrhTpGMRKIBzSBXvH5XgklUEUli32qk9P1qbVlsXWQ
+         oqLKArgIJt+BmCn2x+ePV67i6PSSeuIeOw0nT3qaiIzRonZ0vJUjx9qD7evxkB28NKl4
+         AAA/rhHGfbgOEcLitt/Q0yqPZ3SFx3KiUI/zYPydtFIODclHR7aUfi0f9lMGXRfMu330
+         nP7Ti+MQEKNb5SVl8Z6WAto99Lxh6fXPbpHYNlXqhM4AYCoyV0jtufjSoId5+8iGVNFt
+         jzWHTUNygRlCPZ89Wch0mTCK//S/UgtMQ0+EeeaLy0eWj0lZ1OgHPuavi6xCp8MMZr+n
+         xWLA==
+X-Gm-Message-State: APjAAAV1xQjMiBkAmqUYqzjmNhCQCj2f4tNc8PjXoErf95LCQZUhKDDc
+        WT46X3MpfjTXYddPV11FJbJ7jsNUSqFYl0i0C21DWZK0So7s
+X-Google-Smtp-Source: APXvYqw8Ad//aE67c6FaVCE42SnBm/lXPgXLQ09URqePH9Tj+lqgsbdFJJhIjdUkshVKcnjmmf7XG67UIzdUEYO8HqkrLTZIIK8f
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a5d:8789:: with SMTP id f9mr1078590ion.237.1572866828188;
+ Mon, 04 Nov 2019 03:27:08 -0800 (PST)
+Date:   Mon, 04 Nov 2019 03:27:08 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000092c2f10596839808@google.com>
+Subject: KCSAN: data-race in mem_cgroup_select_victim_node / mem_cgroup_select_victim_node
+From:   syzbot <syzbot+234d50ad314ef67bcd16@syzkaller.appspotmail.com>
+To:     cgroups@vger.kernel.org, elver@google.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        mhocko@kernel.org, syzkaller-bugs@googlegroups.com,
+        vdavydov.dev@gmail.com
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Tejun Heo <tj@kernel.org>
+Hello,
 
-Use 64 bit id allocated by kernfs instead of using its own idr since
-it seems not used for saving any information no more.  So let's get
-rid of the cgroup_idr from cgroup_root.
+syzbot found the following crash on:
 
-The index of netprio_map is also changed to u64.
+HEAD commit:    05f22368 x86, kcsan: Enable KCSAN for x86
+git tree:       https://github.com/google/ktsan.git kcsan
+console output: https://syzkaller.appspot.com/x/log.txt?x=1774c6c0e00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=87d111955f40591f
+dashboard link: https://syzkaller.appspot.com/bug?extid=234d50ad314ef67bcd16
+compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
 
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: Neil Horman <nhorman@tuxdriver.com>
-Cc: netdev@vger.kernel.org
-Signed-off-by: Tejun Heo <tj@kernel.org>
-[namhyung: split cgroup changes and fix netprio_map access]
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Unfortunately, I don't have any reproducer for this crash yet.
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+234d50ad314ef67bcd16@syzkaller.appspotmail.com
+
+==================================================================
+BUG: KCSAN: data-race in mem_cgroup_select_victim_node /  
+mem_cgroup_select_victim_node
+
+write to 0xffff88809fade9b0 of 4 bytes by task 8603 on cpu 0:
+  mem_cgroup_select_victim_node+0xb5/0x3d0 mm/memcontrol.c:1686
+  try_to_free_mem_cgroup_pages+0x175/0x4c0 mm/vmscan.c:3376
+  reclaim_high.constprop.0+0xf7/0x140 mm/memcontrol.c:2349
+  mem_cgroup_handle_over_high+0x96/0x180 mm/memcontrol.c:2430
+  tracehook_notify_resume include/linux/tracehook.h:197 [inline]
+  exit_to_usermode_loop+0x20c/0x2c0 arch/x86/entry/common.c:163
+  prepare_exit_to_usermode+0x180/0x1a0 arch/x86/entry/common.c:194
+  swapgs_restore_regs_and_return_to_usermode+0x0/0x40
+
+read to 0xffff88809fade9b0 of 4 bytes by task 7290 on cpu 1:
+  mem_cgroup_select_victim_node+0x92/0x3d0 mm/memcontrol.c:1675
+  try_to_free_mem_cgroup_pages+0x175/0x4c0 mm/vmscan.c:3376
+  reclaim_high.constprop.0+0xf7/0x140 mm/memcontrol.c:2349
+  mem_cgroup_handle_over_high+0x96/0x180 mm/memcontrol.c:2430
+  tracehook_notify_resume include/linux/tracehook.h:197 [inline]
+  exit_to_usermode_loop+0x20c/0x2c0 arch/x86/entry/common.c:163
+  prepare_exit_to_usermode+0x180/0x1a0 arch/x86/entry/common.c:194
+  swapgs_restore_regs_and_return_to_usermode+0x0/0x40
+
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 7290 Comm: syz-executor.1 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+==================================================================
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 1 PID: 7290 Comm: syz-executor.1 Not tainted 5.4.0-rc3+ #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS  
+Google 01/01/2011
+Call Trace:
+  __dump_stack lib/dump_stack.c:77 [inline]
+  dump_stack+0xf5/0x159 lib/dump_stack.c:113
+  panic+0x210/0x640 kernel/panic.c:221
+  kcsan_report.cold+0xc/0x10 kernel/kcsan/report.c:302
+  __kcsan_setup_watchpoint+0x32e/0x4a0 kernel/kcsan/core.c:411
+  __tsan_read4 kernel/kcsan/kcsan.c:35 [inline]
+  __tsan_read4+0x2c/0x30 kernel/kcsan/kcsan.c:35
+  mem_cgroup_select_victim_node+0x92/0x3d0 mm/memcontrol.c:1675
+  try_to_free_mem_cgroup_pages+0x175/0x4c0 mm/vmscan.c:3376
+  reclaim_high.constprop.0+0xf7/0x140 mm/memcontrol.c:2349
+  mem_cgroup_handle_over_high+0x96/0x180 mm/memcontrol.c:2430
+  tracehook_notify_resume include/linux/tracehook.h:197 [inline]
+  exit_to_usermode_loop+0x20c/0x2c0 arch/x86/entry/common.c:163
+  prepare_exit_to_usermode+0x180/0x1a0 arch/x86/entry/common.c:194
+  retint_user+0x8/0x8
+RIP: 0033:0x45862a
+Code: 48 85 db 74 b6 41 bc ca 00 00 00 eb 0c 0f 1f 00 48 8b 5b 08 48 85 db  
+74 a2 48 8b 3b 48 8b 47 10 48 85 c0 74 05 ff d0 48 8b 3b <f0> ff 4f 28 0f  
+94 c0 84 c0 74 db 8b 47 2c 85 c0 74 d4 45 31 d2 ba
+RSP: 002b:00007ffec3569600 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 00007ffec3569600 RCX: 00000000004584ca
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000a76d48
+RBP: 00007ffec3569640 R08: 0000000000000001 R09: 000000000269f940
+R10: 000000000269fc10 R11: 0000000000000246 R12: 00000000000000ca
+R13: 0000000000000079 R14: 0000000000000000 R15: 00007ffec3569690
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
 ---
- include/linux/cgroup-defs.h  | 18 +++--------
- include/net/netprio_cgroup.h |  8 ++---
- kernel/cgroup/cgroup.c       | 63 +++++++++++-------------------------
- net/core/netprio_cgroup.c    |  4 +--
- 4 files changed, 29 insertions(+), 64 deletions(-)
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 430e219e3aba..3811b3405ddc 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -354,15 +354,8 @@ struct cgroup {
- 
- 	unsigned long flags;		/* "unsigned long" so bitops work */
- 
--	/*
--	 * idr allocated in-hierarchy ID.
--	 *
--	 * ID 0 is not used, the ID of the root cgroup is always 1, and a
--	 * new cgroup will be assigned with a smallest available ID.
--	 *
--	 * Allocating/Removing ID must be protected by cgroup_mutex.
--	 */
--	int id;
-+	/* in-hierarchy ID allocated from kernfs */
-+	u64 id;
- 
- 	/*
- 	 * The depth this cgroup is at.  The root is at depth zero and each
-@@ -488,7 +481,7 @@ struct cgroup {
- 	struct cgroup_freezer_state freezer;
- 
- 	/* ids of the ancestors at each level including self */
--	int ancestor_ids[];
-+	u64 ancestor_ids[];
- };
- 
- /*
-@@ -509,7 +502,7 @@ struct cgroup_root {
- 	struct cgroup cgrp;
- 
- 	/* for cgrp->ancestor_ids[0] */
--	int cgrp_ancestor_id_storage;
-+	u64 cgrp_ancestor_id_storage;
- 
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
-@@ -520,9 +513,6 @@ struct cgroup_root {
- 	/* Hierarchy-specific flags */
- 	unsigned int flags;
- 
--	/* IDs for cgroups in this hierarchy */
--	struct idr cgroup_idr;
--
- 	/* The path to use for release notifications. */
- 	char release_agent_path[PATH_MAX];
- 
-diff --git a/include/net/netprio_cgroup.h b/include/net/netprio_cgroup.h
-index cfc9441ef074..cd7c17cf73c7 100644
---- a/include/net/netprio_cgroup.h
-+++ b/include/net/netprio_cgroup.h
-@@ -15,14 +15,14 @@
- #if IS_ENABLED(CONFIG_CGROUP_NET_PRIO)
- struct netprio_map {
- 	struct rcu_head rcu;
--	u32 priomap_len;
-+	u64 priomap_len;
- 	u32 priomap[];
- };
- 
--static inline u32 task_netprioidx(struct task_struct *p)
-+static inline u64 task_netprioidx(struct task_struct *p)
- {
- 	struct cgroup_subsys_state *css;
--	u32 idx;
-+	u64 idx;
- 
- 	rcu_read_lock();
- 	css = task_css(p, net_prio_cgrp_id);
-@@ -41,7 +41,7 @@ static inline void sock_update_netprioidx(struct sock_cgroup_data *skcd)
- 
- #else /* !CONFIG_CGROUP_NET_PRIO */
- 
--static inline u32 task_netprioidx(struct task_struct *p)
-+static inline u64 task_netprioidx(struct task_struct *p)
- {
- 	return 0;
- }
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index b5dcbee5aa6c..4dc0f86bb4c5 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1308,10 +1308,7 @@ static void cgroup_exit_root_id(struct cgroup_root *root)
- 
- void cgroup_free_root(struct cgroup_root *root)
- {
--	if (root) {
--		idr_destroy(&root->cgroup_idr);
--		kfree(root);
--	}
-+	kfree(root);
- }
- 
- static void cgroup_destroy_root(struct cgroup_root *root)
-@@ -1917,7 +1914,6 @@ void init_cgroup_root(struct cgroup_fs_context *ctx)
- 	atomic_set(&root->nr_cgrps, 1);
- 	cgrp->root = root;
- 	init_cgroup_housekeeping(cgrp);
--	idr_init(&root->cgroup_idr);
- 
- 	root->flags = ctx->flags;
- 	if (ctx->release_agent)
-@@ -1938,12 +1934,6 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 
- 	lockdep_assert_held(&cgroup_mutex);
- 
--	ret = cgroup_idr_alloc(&root->cgroup_idr, root_cgrp, 1, 2, GFP_KERNEL);
--	if (ret < 0)
--		goto out;
--	root_cgrp->id = ret;
--	root_cgrp->ancestor_ids[0] = ret;
--
- 	ret = percpu_ref_init(&root_cgrp->self.refcnt, css_release,
- 			      0, GFP_KERNEL);
- 	if (ret)
-@@ -1976,6 +1966,8 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 		goto exit_root_id;
- 	}
- 	root_cgrp->kn = root->kf_root->kn;
-+	root_cgrp->id = root_cgrp->kn->id;
-+	root_cgrp->ancestor_ids[0] = root_cgrp->id;
- 
- 	ret = css_populate_dir(&root_cgrp->self);
- 	if (ret)
-@@ -4987,9 +4979,6 @@ static void css_release_work_fn(struct work_struct *work)
- 			tcgrp->nr_dying_descendants--;
- 		spin_unlock_irq(&css_set_lock);
- 
--		cgroup_idr_remove(&cgrp->root->cgroup_idr, cgrp->id);
--		cgrp->id = -1;
--
- 		/*
- 		 * There are two control paths which try to determine
- 		 * cgroup from dentry without going through kernfs -
-@@ -5154,10 +5143,12 @@ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
-  * it isn't associated with its kernfs_node and doesn't have the control
-  * mask applied.
-  */
--static struct cgroup *cgroup_create(struct cgroup *parent)
-+static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
-+				    umode_t mode)
- {
- 	struct cgroup_root *root = parent->root;
- 	struct cgroup *cgrp, *tcgrp;
-+	struct kernfs_node *kn;
- 	int level = parent->level + 1;
- 	int ret;
- 
-@@ -5177,15 +5168,14 @@ static struct cgroup *cgroup_create(struct cgroup *parent)
- 			goto out_cancel_ref;
- 	}
- 
--	/*
--	 * Temporarily set the pointer to NULL, so idr_find() won't return
--	 * a half-baked cgroup.
--	 */
--	cgrp->id = cgroup_idr_alloc(&root->cgroup_idr, NULL, 2, 0, GFP_KERNEL);
--	if (cgrp->id < 0) {
--		ret = -ENOMEM;
-+	/* create the directory */
-+	kn = kernfs_create_dir(parent->kn, name, mode, cgrp);
-+	if (IS_ERR(kn)) {
-+		ret = PTR_ERR(kn);
- 		goto out_stat_exit;
- 	}
-+	cgrp->kn = kn;
-+	cgrp->id = kn->id;
- 
- 	init_cgroup_housekeeping(cgrp);
- 
-@@ -5195,7 +5185,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent)
- 
- 	ret = psi_cgroup_alloc(cgrp);
- 	if (ret)
--		goto out_idr_free;
-+		goto out_kernfs_remove;
- 
- 	ret = cgroup_bpf_inherit(cgrp);
- 	if (ret)
-@@ -5248,12 +5238,6 @@ static struct cgroup *cgroup_create(struct cgroup *parent)
- 	atomic_inc(&root->nr_cgrps);
- 	cgroup_get_live(parent);
- 
--	/*
--	 * @cgrp is now fully operational.  If something fails after this
--	 * point, it'll be released via the normal destruction path.
--	 */
--	cgroup_idr_replace(&root->cgroup_idr, cgrp, cgrp->id);
--
- 	/*
- 	 * On the default hierarchy, a child doesn't automatically inherit
- 	 * subtree_control from the parent.  Each is configured manually.
-@@ -5267,8 +5251,8 @@ static struct cgroup *cgroup_create(struct cgroup *parent)
- 
- out_psi_free:
- 	psi_cgroup_free(cgrp);
--out_idr_free:
--	cgroup_idr_remove(&root->cgroup_idr, cgrp->id);
-+out_kernfs_remove:
-+	kernfs_remove(cgrp->kn);
- out_stat_exit:
- 	if (cgroup_on_dfl(parent))
- 		cgroup_rstat_exit(cgrp);
-@@ -5305,7 +5289,6 @@ static bool cgroup_check_hierarchy_limits(struct cgroup *parent)
- int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- {
- 	struct cgroup *parent, *cgrp;
--	struct kernfs_node *kn;
- 	int ret;
- 
- 	/* do not accept '\n' to prevent making /proc/<pid>/cgroup unparsable */
-@@ -5321,27 +5304,19 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- 		goto out_unlock;
- 	}
- 
--	cgrp = cgroup_create(parent);
-+	cgrp = cgroup_create(parent, name, mode);
- 	if (IS_ERR(cgrp)) {
- 		ret = PTR_ERR(cgrp);
- 		goto out_unlock;
- 	}
- 
--	/* create the directory */
--	kn = kernfs_create_dir(parent->kn, name, mode, cgrp);
--	if (IS_ERR(kn)) {
--		ret = PTR_ERR(kn);
--		goto out_destroy;
--	}
--	cgrp->kn = kn;
--
- 	/*
- 	 * This extra ref will be put in cgroup_free_fn() and guarantees
- 	 * that @cgrp->kn is always accessible.
- 	 */
--	kernfs_get(kn);
-+	kernfs_get(cgrp->kn);
- 
--	ret = cgroup_kn_set_ugid(kn);
-+	ret = cgroup_kn_set_ugid(cgrp->kn);
- 	if (ret)
- 		goto out_destroy;
- 
-@@ -5356,7 +5331,7 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
- 	TRACE_CGROUP_PATH(mkdir, cgrp);
- 
- 	/* let's create and online css's */
--	kernfs_activate(kn);
-+	kernfs_activate(cgrp->kn);
- 
- 	ret = 0;
- 	goto out_unlock;
-diff --git a/net/core/netprio_cgroup.c b/net/core/netprio_cgroup.c
-index 256b7954b720..326d2d6b86e0 100644
---- a/net/core/netprio_cgroup.c
-+++ b/net/core/netprio_cgroup.c
-@@ -93,7 +93,7 @@ static int extend_netdev_table(struct net_device *dev, u32 target_idx)
- static u32 netprio_prio(struct cgroup_subsys_state *css, struct net_device *dev)
- {
- 	struct netprio_map *map = rcu_dereference_rtnl(dev->priomap);
--	int id = css->cgroup->id;
-+	u64 id = css->cgroup->id;
- 
- 	if (map && id < map->priomap_len)
- 		return map->priomap[id];
-@@ -113,7 +113,7 @@ static int netprio_set_prio(struct cgroup_subsys_state *css,
- 			    struct net_device *dev, u32 prio)
- {
- 	struct netprio_map *map;
--	int id = css->cgroup->id;
-+	u64 id = css->cgroup->id;
- 	int ret;
- 
- 	/* avoid extending priomap for zero writes */
--- 
-2.24.0.rc1.363.gb1bccd3e3d-goog
-
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
