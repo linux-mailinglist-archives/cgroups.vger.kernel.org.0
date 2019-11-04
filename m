@@ -2,193 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E12FFEEAF3
-	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 22:19:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D4D7EEE56
+	for <lists+cgroups@lfdr.de>; Mon,  4 Nov 2019 23:14:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729583AbfKDVTb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Nov 2019 16:19:31 -0500
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:41815 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729450AbfKDVTb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 16:19:31 -0500
-Received: by mail-ot1-f67.google.com with SMTP id 94so15697572oty.8
-        for <cgroups@vger.kernel.org>; Mon, 04 Nov 2019 13:19:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/8yU3O5k24h9e3PyFN4Dj6MFbBb6JVOj0JoMWY+S3AE=;
-        b=D9p5NchbwDhe9mp8NmRpUK2kC/a+iNk7mb4uEiZ8i732RHQD6+tLGJUqQxUtZVO/6E
-         cj1d8a4CJKXF8pG7Zq7JEeo0VUK3rLYbIqPfzCn9VAy0MLJ3rg/OY1kog7CQmyv2Amrc
-         JcgPRVvZUwSxwpa+ttmnJcoylJD3NkiLLnmjKjCHY/C1g4stQ8Ed1DyQrK1adfzuqzG0
-         UtqL7KFhK1ty8dRL3C+GxB04afBz9u4VTY09zYZBWWaqrssMfw3imLZpgVrl9CnzcqC5
-         01mxKNlxFe9J0MLshePp0EkD4m82n/DCA8btqZnttBF+d3W3jxDnTftdC5+8WtGvIWYe
-         1bqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/8yU3O5k24h9e3PyFN4Dj6MFbBb6JVOj0JoMWY+S3AE=;
-        b=JEkl6MFcOFds0xjt0rXsuvfSHoKXCZoaizxwsxL2dwOQo2PPLLkTodP7DCLMGvQ/89
-         BDGRKnV0BCjwbwFN74UelsQSgXMLKXNs+4TtYZrjTeaEgPxiMnsk4Pmxcpd5KzqzkOX+
-         8FAXg02dyr7EqBf+O722W469Mm4tB7pmIH+HGVDNrcMfApAu+CjzXS6s8kgtKQwWtX9Y
-         Wfu6QmEjYHrU7DHa5spx8wMS0rnub0ESkYFJ/R+rNQ0QeeAT3Kl70LTd82m9Z1Iy2PlG
-         6iFOcnjrL6hZiaPjMQB42xzi7O/m9L7gwryAQ341gAWoGYwN6ElGmILRcrvFBxO1SyVk
-         4GQw==
-X-Gm-Message-State: APjAAAUCQozBoNjCjgqpHBpJA1WaEX/Sn6b+PHaESQg381tjDqJcIg4U
-        KE7AaS/XLFaaUEnD+yOcOG7jocZpz6oOK+KzVE9Hpg==
-X-Google-Smtp-Source: APXvYqwoI3V0DEHS32l9wQXVJE8EeGtjkg4VAjYe1lFrEIq00wE4DXN1gIePuof1MESKaL2zUS9xhTdMaCNp6fuM05o=
-X-Received: by 2002:a9d:1c8f:: with SMTP id l15mr16022901ota.313.1572902369377;
- Mon, 04 Nov 2019 13:19:29 -0800 (PST)
+        id S2390209AbfKDWIT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 4 Nov 2019 17:08:19 -0500
+Received: from mga05.intel.com ([192.55.52.43]:15142 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390208AbfKDWIS (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 4 Nov 2019 17:08:18 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Nov 2019 14:08:18 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.68,268,1569308400"; 
+   d="scan'208";a="376477739"
+Received: from nperf12.hd.intel.com ([10.127.88.161])
+  by orsmga005.jf.intel.com with ESMTP; 04 Nov 2019 14:08:16 -0800
+From:   Brian Welty <brian.welty@intel.com>
+To:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Kenny Ho <Kenny.Ho@amd.com>,
+        Felix Kuehling <Felix.Kuehling@amd.com>,
+        Leon Romanovsky <leon@kernel.org>
+Subject: [RFC PATCH] cgroup: Document interface files and rationale for DRM controller
+Date:   Mon,  4 Nov 2019 17:08:47 -0500
+Message-Id: <20191104220847.23283-1-brian.welty@intel.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-References: <20191030013701.39647-1-almasrymina@google.com>
- <20191030013701.39647-5-almasrymina@google.com> <1c060bde-8d44-146c-6d67-a7b145aa1b59@oracle.com>
- <CAHS8izPTvybLq9Y9Fn6Z+hSc7gLP+goQ-ixzjxa1XJ-qhWM8ow@mail.gmail.com> <a5f991c8-3f74-6000-cbd3-09fb8626e3f5@oracle.com>
-In-Reply-To: <a5f991c8-3f74-6000-cbd3-09fb8626e3f5@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 4 Nov 2019 13:19:18 -0800
-Message-ID: <CAHS8izMYaHf-3zeVcM_73_KSMCpA5vds-NtRjNt0d8VsMfczQw@mail.gmail.com>
-Subject: Re: [PATCH v8 5/9] hugetlb: disable region_add file_region coalescing
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     shuah <shuah@kernel.org>, open list <linux-kernel@vger.kernel.org>,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 4, 2019 at 1:15 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 11/4/19 1:04 PM, Mina Almasry wrote:
-> > On Fri, Nov 1, 2019 at 4:23 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>
-> >> On 10/29/19 6:36 PM, Mina Almasry wrote:
-> >>>  static long add_reservation_in_range(struct resv_map *resv, long f, long t,
-> >>> -                                  bool count_only)
-> >>> +                                  long *regions_needed, bool count_only)
-> >>>  {
-> >>> -     long chg = 0;
-> >>> +     long add = 0;
-> >>>       struct list_head *head = &resv->regions;
-> >>> +     long last_accounted_offset = f;
-> >>>       struct file_region *rg = NULL, *trg = NULL, *nrg = NULL;
-> >>>
-> >>> -     /* Locate the region we are before or in. */
-> >>> -     list_for_each_entry (rg, head, link)
-> >>> -             if (f <= rg->to)
-> >>> -                     break;
-> >>> +     if (regions_needed)
-> >>> +             *regions_needed = 0;
-> >>>
-> >>> -     /* Round our left edge to the current segment if it encloses us. */
-> >>> -     if (f > rg->from)
-> >>> -             f = rg->from;
-> >>> -
-> >>> -     chg = t - f;
-> >>> +     /* In this loop, we essentially handle an entry for the range
-> >>> +      * [last_accounted_offset, rg->from), at every iteration, with some
-> >>> +      * bounds checking.
-> >>> +      */
-> >>> +     list_for_each_entry_safe(rg, trg, head, link) {
-> >>> +             /* Skip irrelevant regions that start before our range. */
-> >>> +             if (rg->from < f) {
-> >>> +                     /* If this region ends after the last accounted offset,
-> >>> +                      * then we need to update last_accounted_offset.
-> >>> +                      */
-> >>> +                     if (rg->to > last_accounted_offset)
-> >>> +                             last_accounted_offset = rg->to;
-> >>> +                     continue;
-> >>> +             }
-> >>>
-> >>> -     /* Check for and consume any regions we now overlap with. */
-> >>> -     nrg = rg;
-> >>> -     list_for_each_entry_safe (rg, trg, rg->link.prev, link) {
-> >>> -             if (&rg->link == head)
-> >>> -                     break;
-> >>> +             /* When we find a region that starts beyond our range, we've
-> >>> +              * finished.
-> >>> +              */
-> >>>               if (rg->from > t)
-> >>>                       break;
-> >>>
-> >>> -             /* We overlap with this area, if it extends further than
-> >>> -              * us then we must extend ourselves.  Account for its
-> >>> -              * existing reservation.
-> >>> +             /* Add an entry for last_accounted_offset -> rg->from, and
-> >>> +              * update last_accounted_offset.
-> >>>                */
-> >>> -             if (rg->to > t) {
-> >>> -                     chg += rg->to - t;
-> >>> -                     t = rg->to;
-> >>> +             if (rg->from > last_accounted_offset) {
-> >>> +                     add += rg->from - last_accounted_offset;
-> >>> +                     if (!count_only) {
-> >>> +                             nrg = get_file_region_entry_from_cache(
-> >>> +                                     resv, last_accounted_offset, rg->from);
-> >>> +                             list_add(&nrg->link, rg->link.prev);
-> >>> +                     } else if (regions_needed)
-> >>> +                             *regions_needed += 1;
-> >>>               }
-> >>> -             chg -= rg->to - rg->from;
-> >>>
-> >>> -             if (!count_only && rg != nrg) {
-> >>> -                     list_del(&rg->link);
-> >>> -                     kfree(rg);
-> >>> -             }
-> >>> +             last_accounted_offset = rg->to;
-> >>
-> >> That last assignment is unneeded.  Correct?
-> >>
-> >
-> > Not to make you nervous, but this assignment is needed.
-> >
-> > The basic idea is that there are 2 loop invariants here:
-> > 1. Everything before last_accounted_offset is filled in with file_regions.
-> > 2. rg points to the first region past last_account_offset.
-> >
-> > Each loop iteration compares rg->from to last_accounted_offset, and if
-> > there is a gap, it creates a new region to fill this gap. Then this
-> > assignment restores loop invariant #2 by assigning
-> > last_accounted_offset to rg->to, since now everything before rg->to is
-> > filled in with file_regions.
-> >
->
-> My apologies!
->
-> >>>       }
-> >>>
-> >>> -     if (!count_only) {
-> >>> -             nrg->from = f;
-> >>> -             nrg->to = t;
-> >>> +     /* Handle the case where our range extends beyond
-> >>> +      * last_accounted_offset.
-> >>> +      */
-> >>> +     if (last_accounted_offset < t) {
-> >>> +             add += t - last_accounted_offset;
-> >>> +             if (!count_only) {
-> >>> +                     nrg = get_file_region_entry_from_cache(
-> >>> +                             resv, last_accounted_offset, t);
-> >>> +                     list_add(&nrg->link, rg->link.prev);
-> >>> +             } else if (regions_needed)
-> >>> +                     *regions_needed += 1;
-> >>> +             last_accounted_offset = t;
->
-> The question about an unnecessary assignment was supposed to be
-> directed at the above line.
->
+Here is one proposal for a set of interface files to be implemented in
+in a new DRM controller.  This is an alternate set of interface files
+than in the current v4 of DRM controller [1].  As there was not a clear
+consensus on the interface files and associated controls, it seems worth
+again considering if we should have a set of controls more consistent
+in functionality with what existing CPU and MEM controllers provide.
 
-Oh, yes. That assignment is completely unnecessary; the function just
-exits after pretty much. Will remove, thanks!
+This is in some respects a follow-up to my prior RFC series [2] where
+I attempted to implement per-device controls within existing cgroup
+subsystems.
 
-> --
-> Mike Kravetz
->
->
-> >>>       }
-> >>>
-> >>> -     return chg;
-> >>> +     return add;
-> >>>  }
+The basic goal of that design was to reuse well known controls. Instead
+we can achieve that same goal, but by simply having the proposed DRM
+controller implement those same interface files with identical name.
+The intent being that equivalent functionality is then provided by the
+underlying GPU device driver.
+
+Here is the rationale, repeated from proposed DRM controller documention:
+As an accelerator or GPU device is similar in many respects to a CPU
+with (or without) attached system memory, the design principle here is
+to clone existing controls from other controllers where those controls
+are used for the same fundamental purpose.  For example, rather than
+inventing new but similar controls for managing memory allocation and
+workload isolation and scheduling, we clone (in name and as possible in
+functionality) controls from following controllers: CPU, CPUSET, and MEM.
+The controls found in those controllers are well understood already by
+system administrators and the intent here is to provide these controls
+for use with accelarator and GPU devices via the DRM controller.
+
+RFC note:
+In fact, to make the above point more strongly, one suggestion is to
+rename this cgroup controller as XPU instead of the current DRM.
+This makes it clear this is not GPU-specific and no reason to make this
+restricted to drivers under drivers/gpu/drm/.
+
+[1] https://lists.freedesktop.org/archives/dri-devel/2019-August/233463.html
+[2] https://lists.freedesktop.org/archives/dri-devel/2019-May/216373.html
+
+Signed-off-by: Brian Welty <brian.welty@intel.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 89 +++++++++++++++++++++++++
+ 1 file changed, 89 insertions(+)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 5361ebec3361..2a713059ccbd 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2050,6 +2050,95 @@ RDMA Interface Files
+ 	  mlx4_0 hca_handle=1 hca_object=20
+ 	  ocrdma1 hca_handle=1 hca_object=23
+ 
++DRM
++----
++
++The "drm" controller regulates the distribution and accounting of
++resources within a GPU device (or other similar accelerator device), but
++only those controlled by device drivers under drivers/gpu/drm/ and thus
++which register with DRM.
++
++As an accelerator or GPU device is similar in many respects to a CPU
++with (or without) attached system memory, the design principle here is
++to clone existing controls from other controllers where those controls
++are used for the same fundamental purpose.  For example, rather than
++inventing new but similar controls for managing memory allocation and
++workload isolation and scheduling, we clone (in name and as possible in
++functionality) controls from following controllers: CPU, CPUSET, and MEM.
++The controls found in those controllers are well understood already by
++system administrators and the intent here is to provide these controls
++for use with accelarator and GPU devices via the DRM controller.
++
++RFC note:
++In fact, to make the above point more strongly, one suggestion is to
++rename this cgroup controller as XPU instead of the current DRM.
++This makes it clear this is not GPU-specific and no reason to make this
++restricted to drivers under drivers/gpu/drm/.
++
++DRM Interface Files
++~~~~~~~~~~~~~~~~~~~
++
++DRM controller supports usage of multiple DRM devices within a cgroup.
++As such, for all interface files, output is keyed by device name and is
++not ordered.
++
++The first set of control files are intended to clone functionality from
++CPUSETs and thus provide a mechanism for assigning a set of workload
++execution units and a set of attached memories to a cgroup in order to
++provide resource isolation.  The term 'workload execution unit' is
++unrealistic to have a common underlying hardware implementation across
++all devices.  The intent is to represent the available set of hardware
++resources that provides scheduling and/or partitioning of workloads, by
++which potentially this maps to 'GPU cores' or to 'hardware engines'.
++
++  gpuset.units
++  gpuset.units.effective
++  gpuset.units.partition
++
++  gpuset.mems
++  gpuset.mems.effective
++  gpuset.mems.partition
++
++[As this is an RFC, each control above is not yet described.  For now,
++please refer to CPUSET interface file documentation as these are intended
++to provide equivalent functionality.]
++
++The next set of control files are intended to clone functionality from
++CPU controller and thus provide a mechanism to influence workload
++scheduling.
++
++  sched.max
++  sched.stats
++  sched.weight
++  sched.weight.nice
++
++[As this is an RFC, each control above is not yet described.  For now,
++please refer to CPU interface file documentation as these are intended
++to provide equivalent functionality.]
++
++The next set of control files are intended to clone functionality from
++the MEM controller and thus provide a mechanism for regulating allocation
++and accounting of attached memory.  All memory amounts are in bytes.
++
++  memory.current
++  memory.events
++  memory.high
++  memory.low
++  memory.max
++  memory.min
++  memory.stat
++  memory.swap.current
++  memory.swap.max
++
++Potentially, with substantial justifciation, the above can be expanded
++in the future with new memory.xxx.yyy set of controls for additional
++memory 'types' or 'placement regions' that are unique from each other
++and warrant separate controls, (such as memory.swap.yyy).
++
++[As this is an RFC, each control above is not yet described.  For now,
++please refer to MEM interface file documentation as these are intended
++to provide equivalent functionality.]
++
+ 
+ Misc
+ ----
+-- 
+2.21.0
+
