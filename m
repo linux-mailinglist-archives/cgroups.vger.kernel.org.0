@@ -2,123 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 93FAEEFE59
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2019 14:28:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2170F025C
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2019 17:09:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389014AbfKEN2D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Nov 2019 08:28:03 -0500
-Received: from charlotte.tuxdriver.com ([70.61.120.58]:48090 "EHLO
-        smtp.tuxdriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388963AbfKEN2D (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Nov 2019 08:28:03 -0500
-Received: from cpe-2606-a000-111b-43ee-0-0-0-115f.dyn6.twc.com ([2606:a000:111b:43ee::115f] helo=localhost)
-        by smtp.tuxdriver.com with esmtpsa (TLSv1:AES256-SHA:256)
-        (Exim 4.63)
-        (envelope-from <nhorman@tuxdriver.com>)
-        id 1iRys6-0006JO-OM; Tue, 05 Nov 2019 08:27:53 -0500
-Date:   Tue, 5 Nov 2019 08:27:41 -0500
-From:   Neil Horman <nhorman@tuxdriver.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     gregkh@linuxfoundation.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        lizefan@huawei.com, hannes@cmpxchg.org, namhyung@kernel.org,
-        ast@kernel.org, daniel@iogearbox.net,
-        "David S. Miller" <davem@davemloft.net>
-Subject: Re: [PATCH 03/10] netprio: use css ID instead of cgroup ID
-Message-ID: <20191105132741.GA27571@hmswarspite.think-freely.org>
-References: <20191104235944.3470866-1-tj@kernel.org>
- <20191104235944.3470866-4-tj@kernel.org>
+        id S2390057AbfKEQJ5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Nov 2019 11:09:57 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:39448 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389907AbfKEQJ5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Nov 2019 11:09:57 -0500
+Received: by mail-qk1-f193.google.com with SMTP id 15so21612942qkh.6;
+        Tue, 05 Nov 2019 08:09:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=me3lESL1ggtumWsSVDttQmUrbEo7485lmzzekY64N38=;
+        b=tPrZdHjJcV0IzlK9UurrMNrUsqfSlMSqpZQhPr+KB57uDynjOd2cTm7wzPG77+mtk+
+         hLy4rIuS5QDPxR2XJOLho/ugr6NpnXyf0z2qcsyEs1KXsWE9iEwSbsL5HK0pA0vxrdRX
+         RBmf7MvgZoeS34lShwgpJj4mMhwED4aY97WiHDCa09wdQQw3dEbBYj1qurBcXocQ253p
+         NOj/Fk6JB7X5eax98zJ3qHft9JtWqDZD4pM4D8np4axWPcwEM7cjLQ/Z8FzI96R6rpFz
+         2xv70RhmHogmpE1IRKYvm5C6SePm7MjU72MVcm51XYWQSpWchtuiI+mDMKCXRc9E8u76
+         4/YQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:user-agent;
+        bh=me3lESL1ggtumWsSVDttQmUrbEo7485lmzzekY64N38=;
+        b=KpHRn3rZ/zMv16JjZdT0yR6w8hqcq/VlHKUtlX06P9UWC2zwfUIdSofBle0SGwRwOf
+         8VW0JozIrgMk4/XugmHraM6DXcS0a7V4ybpBN7zORuLWdfOrfv110fI4bS7Zw92fk5/F
+         sORYFI9INa0wxRQwTRUdQXbbXno/QLgUTMzSzYQYYPYPRI8gR+FtsQV/lPfVYsZWoy4Y
+         6d3dQKH2L6p1bxVToiWxzDTuiZmQtuilg23rZOE40+K52rzCppoojGMQGbxI2fJJ0UiZ
+         rAJHxCuwKqFXOZ3bd2z65WalJRkX3LUxUgY8b51zNcydj0mH+f3cbvnQJFmluc5Rg0MT
+         HQrA==
+X-Gm-Message-State: APjAAAVkQ9okXWt1LYTEZ51SgAYDxMF3tUByfrLans5KFH9yqAxF6Naa
+        fiNc2v6ieSjusS0rZ3eOdIkm7xmA
+X-Google-Smtp-Source: APXvYqzLB/L7Dj+A7FHR7I7t9gslk7a7ssseyWvo6BBPcRa35boS1fXIjPGUdSu+UaCEGKaUJHUgAg==
+X-Received: by 2002:a05:620a:a85:: with SMTP id v5mr11569535qkg.471.1572970195651;
+        Tue, 05 Nov 2019 08:09:55 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:bc42])
+        by smtp.gmail.com with ESMTPSA id o2sm10936208qkf.68.2019.11.05.08.09.54
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 Nov 2019 08:09:55 -0800 (PST)
+Date:   Tue, 5 Nov 2019 08:09:51 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Roman Gushchin <guro@fb.com>, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, Josef Bacik <jbacik@fb.com>
+Subject: [PATCH block/for-5.4-fixes] blkcg: make blkcg_print_stat() print
+ stats only for online blkgs
+Message-ID: <20191105160951.GS3622521@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191104235944.3470866-4-tj@kernel.org>
-User-Agent: Mutt/1.12.1 (2019-06-15)
-X-Spam-Score: -2.9 (--)
-X-Spam-Status: No
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 03:59:37PM -0800, Tejun Heo wrote:
-> netprio uses cgroup ID to index the priority mapping table.  This is
-> currently okay as cgroup IDs are allocated using idr and packed.
-> However, cgroup IDs will be changed to use full 64bit range and won't
-> be packed making this impractical.  netprio doesn't care what type of
-> IDs it uses as long as they can identify the controller instances and
-> are packed.  Let's switch to css IDs instead of cgroup IDs.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Neil Horman <nhorman@tuxdriver.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> ---
-> Hello,
-> 
-> This is to prepare for kernfs 64bit ino support.  It'd be best to
-> route this with the rest of kernfs patchset.
-> 
-> Thanks.
-> 
->  include/net/netprio_cgroup.h | 2 +-
->  net/core/netprio_cgroup.c    | 8 ++++----
->  2 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/include/net/netprio_cgroup.h b/include/net/netprio_cgroup.h
-> index cfc9441ef074..dec7522b6ce1 100644
-> --- a/include/net/netprio_cgroup.h
-> +++ b/include/net/netprio_cgroup.h
-> @@ -26,7 +26,7 @@ static inline u32 task_netprioidx(struct task_struct *p)
->  
->  	rcu_read_lock();
->  	css = task_css(p, net_prio_cgrp_id);
-> -	idx = css->cgroup->id;
-> +	idx = css->id;
->  	rcu_read_unlock();
->  	return idx;
->  }
-> diff --git a/net/core/netprio_cgroup.c b/net/core/netprio_cgroup.c
-> index 256b7954b720..8881dd943dd0 100644
-> --- a/net/core/netprio_cgroup.c
-> +++ b/net/core/netprio_cgroup.c
-> @@ -93,7 +93,7 @@ static int extend_netdev_table(struct net_device *dev, u32 target_idx)
->  static u32 netprio_prio(struct cgroup_subsys_state *css, struct net_device *dev)
->  {
->  	struct netprio_map *map = rcu_dereference_rtnl(dev->priomap);
-> -	int id = css->cgroup->id;
-> +	int id = css->id;
->  
->  	if (map && id < map->priomap_len)
->  		return map->priomap[id];
-> @@ -113,7 +113,7 @@ static int netprio_set_prio(struct cgroup_subsys_state *css,
->  			    struct net_device *dev, u32 prio)
->  {
->  	struct netprio_map *map;
-> -	int id = css->cgroup->id;
-> +	int id = css->id;
->  	int ret;
->  
->  	/* avoid extending priomap for zero writes */
-> @@ -177,7 +177,7 @@ static void cgrp_css_free(struct cgroup_subsys_state *css)
->  
->  static u64 read_prioidx(struct cgroup_subsys_state *css, struct cftype *cft)
->  {
-> -	return css->cgroup->id;
-> +	return css->id;
->  }
->  
->  static int read_priomap(struct seq_file *sf, void *v)
-> @@ -237,7 +237,7 @@ static void net_prio_attach(struct cgroup_taskset *tset)
->  	struct cgroup_subsys_state *css;
->  
->  	cgroup_taskset_for_each(p, css, tset) {
-> -		void *v = (void *)(unsigned long)css->cgroup->id;
-> +		void *v = (void *)(unsigned long)css->id;
->  
->  		task_lock(p);
->  		iterate_fd(p->files, 0, update_netprio, v);
-> -- 
-> 2.17.1
-> 
-> 
-Acked-by: Neil Horman <nhorman@tuxdriver.com>
+blkcg_print_stat() iterates blkgs under RCU and doesn't test whether
+the blkg is online.  This can call into pd_stat_fn() on a pd which is
+still being initialized leading to an oops.
+
+The heaviest operation - recursively summing up rwstat counters - is
+already done while holding the queue_lock.  Expand queue_lock to cover
+the other operations and skip the blkg if it isn't online yet.  The
+online state is protected by both blkcg and queue locks, so this
+guarantees that only online blkgs are processed.
+
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Roman Gushchin <guro@fb.com>
+Cc: Josef Bacik <jbacik@fb.com>
+Fixes: 903d23f0a354 ("blk-cgroup: allow controllers to output their own stats")
+Cc: stable@vger.kernel.org # v4.19+
+---
+ block/blk-cgroup.c |   13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -934,9 +934,14 @@ static int blkcg_print_stat(struct seq_f
+ 		int i;
+ 		bool has_stats = false;
+ 
++		spin_lock_irq(&blkg->q->queue_lock);
++
++		if (!blkg->online)
++			goto skip;
++
+ 		dname = blkg_dev_name(blkg);
+ 		if (!dname)
+-			continue;
++			goto skip;
+ 
+ 		/*
+ 		 * Hooray string manipulation, count is the size written NOT
+@@ -946,8 +951,6 @@ static int blkcg_print_stat(struct seq_f
+ 		 */
+ 		off += scnprintf(buf+off, size-off, "%s ", dname);
+ 
+-		spin_lock_irq(&blkg->q->queue_lock);
+-
+ 		blkg_rwstat_recursive_sum(blkg, NULL,
+ 				offsetof(struct blkcg_gq, stat_bytes), &rwstat);
+ 		rbytes = rwstat.cnt[BLKG_RWSTAT_READ];
+@@ -960,8 +963,6 @@ static int blkcg_print_stat(struct seq_f
+ 		wios = rwstat.cnt[BLKG_RWSTAT_WRITE];
+ 		dios = rwstat.cnt[BLKG_RWSTAT_DISCARD];
+ 
+-		spin_unlock_irq(&blkg->q->queue_lock);
+-
+ 		if (rbytes || wbytes || rios || wios) {
+ 			has_stats = true;
+ 			off += scnprintf(buf+off, size-off,
+@@ -999,6 +1000,8 @@ static int blkcg_print_stat(struct seq_f
+ 				seq_commit(sf, -1);
+ 			}
+ 		}
++	skip:
++		spin_unlock_irq(&blkg->q->queue_lock);
+ 	}
+ 
+ 	rcu_read_unlock();
