@@ -2,115 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B600EEF1BA
-	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2019 01:15:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 46492EF567
+	for <lists+cgroups@lfdr.de>; Tue,  5 Nov 2019 07:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729636AbfKEAPI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 4 Nov 2019 19:15:08 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:42370 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729607AbfKEAPI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 4 Nov 2019 19:15:08 -0500
-Received: by mail-qt1-f196.google.com with SMTP id t20so11158138qtn.9
-        for <cgroups@vger.kernel.org>; Mon, 04 Nov 2019 16:15:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=FhaR1pzpDhD8Oj3r3+6NDw11m3VI6XnZi9HpX8QpwHA=;
-        b=LXCqzYpjO+5foQaI1XMgpMH6xWSPtZXtDolI8drNQXSmzupY2nc7zpsFcu8eon4tPe
-         ok5vdlJd0lhZsBx+sG/iEuHWS1e98sf1Sk2SW2Fxu62UULw5yguNpAovUqYDLxQUvoZo
-         Ik2HQk2BIFR7JlDnJcQjV5ZvnRo30KN7Bpn2yENPHfMbX32DtoyixXL5BSuCWLUyHFpd
-         DcWjEF77eeZp6urqdvt3aDTl1XUa6Zc64ve/56/8mWkAfxSP3e28hsV9LWATFSVTVoZV
-         WR9vQgG8Fq2fLhRCx5IqbWoIgmcMd8LImFD1IdooKcHvYCGihLssYULD9hkns+RWy1hY
-         uIJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FhaR1pzpDhD8Oj3r3+6NDw11m3VI6XnZi9HpX8QpwHA=;
-        b=IenvLZ/fTHv1ws2EjV/TEGldVMyFUlTHrNw5rXa/jDnqZuzKMsxvOiB911housB0ZP
-         BJ9lBg8Qoptt+CFDvbPdEbGzAlib8BOJISk5babRDLE9VvTkutmFpaNdLpM4YqND25ye
-         N6OtowSVqV/Ycv1Bt9IF9gbfAqMQupbtoqTDv/7u1bWtM79c2tcfI565dCeaBHYa3NGh
-         tiqBa4GnaFX72+XV5MbOeepxLA4xEWM7cL7pgpGpr0RmVwpfZRhGB2mLQgtefQfbICS3
-         4ah4Oz9qTIi0EMKPNi9O4vxXsVavTjvSZg5BELBgq9ozFfDHnEFZ3HYIi2c2ARDV73Yx
-         RLHQ==
-X-Gm-Message-State: APjAAAWd2X6FZ7q8wL/ZqEnXB3OYaH7xm5v+C54q0myuMiKf9VW4eODL
-        7Fi+HilcP1EehpngXUmyZWU=
-X-Google-Smtp-Source: APXvYqwH7VS2MjwpNjwcYETIPSxzZVeB9EKxaiZzQwpcyEfRW3GbbAvWA8ohLUEp0gqrzep911LCjQ==
-X-Received: by 2002:ac8:5350:: with SMTP id d16mr15380877qto.319.1572912907385;
-        Mon, 04 Nov 2019 16:15:07 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::3:51f8])
-        by smtp.gmail.com with ESMTPSA id q17sm14324139qtq.58.2019.11.04.16.15.06
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 04 Nov 2019 16:15:06 -0800 (PST)
-Date:   Mon, 4 Nov 2019 16:15:05 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Brian Welty <brian.welty@intel.com>
-Cc:     cgroups@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Leon Romanovsky <leon@kernel.org>
-Subject: Re: [RFC PATCH] cgroup: Document interface files and rationale for
- DRM controller
-Message-ID: <20191105001505.GR3622521@devbig004.ftw2.facebook.com>
-References: <20191104220847.23283-1-brian.welty@intel.com>
+        id S2387522AbfKEGKC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Nov 2019 01:10:02 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39870 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387454AbfKEGKC (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 5 Nov 2019 01:10:02 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 75FB4B160;
+        Tue,  5 Nov 2019 06:10:00 +0000 (UTC)
+Date:   Tue, 5 Nov 2019 07:09:59 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH] mm/memcontrol: update documentation about invoking oom
+ killer
+Message-ID: <20191105060959.GA22672@dhcp22.suse.cz>
+References: <157270779336.1961.6528158720593572480.stgit@buzz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191104220847.23283-1-brian.welty@intel.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <157270779336.1961.6528158720593572480.stgit@buzz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 04, 2019 at 05:08:47PM -0500, Brian Welty wrote:
-> +  gpuset.units
-> +  gpuset.units.effective
-> +  gpuset.units.partition
+On Sat 02-11-19 18:16:33, Konstantin Khlebnikov wrote:
+> Since commit 29ef680ae7c2 ("memcg, oom: move out_of_memory back to the
+> charge path") memcg invokes oom killer not only for user page-faults.
+> This means 0-order allocation will either succeed or task get killed.
+> 
+> Fixes: 8e675f7af507 ("mm/oom_kill: count global and memory cgroup oom kills")
+
+Is this really appropriate? 8e675f7af507 was correct at the time. It was
+29ef680ae7c2 that hasn't updated the documentation. I would just drop
+the Fixes tag.
+
+> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst |    9 +++++++--
+>  1 file changed, 7 insertions(+), 2 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 5361ebec3361..eb47815e137b 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1219,8 +1219,13 @@ PAGE_SIZE multiple when read back.
+>  
+>  		Failed allocation in its turn could be returned into
+>  		userspace as -ENOMEM or silently ignored in cases like
+> -		disk readahead.  For now OOM in memory cgroup kills
+> -		tasks iff shortage has happened inside page fault.
+> +		disk readahead.
 > +
-> +  gpuset.mems
-> +  gpuset.mems.effective
-> +  gpuset.mems.partition
-> +
-> +  sched.max
-> +  sched.stats
-> +  sched.weight
-> +  sched.weight.nice
-> +
-> +  memory.current
-> +  memory.events
-> +  memory.high
-> +  memory.low
-> +  memory.max
-> +  memory.min
-> +  memory.stat
-> +  memory.swap.current
-> +  memory.swap.max
+> +		Before 4.19 OOM in memory cgroup killed tasks iff
 
-I don't understand why it needs to replicate essentially *all* the
-interfaces that system resources are implementing from the get-go.
-Some of the above have intersecting functionalities and exist more for
-historical reasons and I fail to see how distinctions like min vs. low
-and high vs. max would make sense for gpus.  Also, why would it have a
-separate swap limit of its own?
+I would go with Kernels between 3.12 and 4.19 invoked the oom killer
+only if shortage has happened inside page fault.
 
-Please start with something small and intuitive.  I'm gonna nack
-anything which sprawls out like this.  Most likely, there's still a
-ton you guys need to work through to reach the resource model which is
-actually useful and trying to define a comprehensive interface upfront
-like this is gonna look really silly and will become an ugly drag by
-the time the problem space is actually understood.
-
-It doesn't seem like this is coming through but can you please start
-with a simple weight knob?
-
-Thanks.
+> +		shortage has happened inside page fault, random
+> +		syscall may fail with ENOMEM or EFAULT. Since 4.19
+> +		failed memory cgroup allocation invokes oom killer and
+> +		keeps retrying until it succeeds.
+>  
+>  		This event is not raised if the OOM killer is not
+>  		considered as an option, e.g. for failed high-order
 
 -- 
-tejun
+Michal Hocko
+SUSE Labs
