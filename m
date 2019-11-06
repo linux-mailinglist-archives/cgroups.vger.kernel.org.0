@@ -2,172 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D01D6F2016
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2019 21:50:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 295BFF2063
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2019 22:06:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732576AbfKFUuC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 6 Nov 2019 15:50:02 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:43122 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732414AbfKFUuB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Nov 2019 15:50:01 -0500
-Received: by mail-qk1-f194.google.com with SMTP id z23so566872qkj.10;
-        Wed, 06 Nov 2019 12:50:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=CiK8igEDVXgKaHvMads6gYnmVhNv244fVisSAjJVZyQ=;
-        b=L1igbyJIS3B3Z6CUwNO8Av0YgANed5N5Nac+ANz7oSf+L6b3WdT62vZknFaWMMHcto
-         yeHa5jGPJRCOXyTLOwq2RjTjSIFjqxWfke9qtXc2EWCRJZl8iTY8PuKsdkLuywa9qMXo
-         GUkxWVgHEuA0jWHXDQJtkKUPYDFOq5Y06GTwkgr1JPJILt5Pcc/CLL4bqhmkJtJYgRwz
-         JWVFI3EX9FJRqttzXCJVbIS5T7oxMsmG5p3M9WUDWTZoC6Xd7gbo0mXQ1ToeNkC9UGlm
-         2cpnIlYKVDXusG3s4V22kIvMBVmIOSjvYjcSne5VfMzjwJKOOAGAcwcrYXqO4YLcyx8M
-         P8GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:user-agent;
-        bh=CiK8igEDVXgKaHvMads6gYnmVhNv244fVisSAjJVZyQ=;
-        b=DNUTRyFsqiHELRMw1E5wykXqFthY60tX8Hd7IZ/sUAkMnFP0C6yI0RjSv+RZDPx1uv
-         gEn5a2NET2mjApEgqcAaHErYcnb/52MpKPEBipRIL9DsNzckUDk9AQFFpj2ahyHl04pn
-         ejKWtcOyrtP0ANYG0dxk8vFSGU6/TQKXbC941uQ/vx5ZLIn9qrbiieJ8zBlmeMernf1Q
-         AnQDaPJ3kQhs1f2lmEby8JCuBPOVKhurp07q2rj6Jpxsp/gJZoGAAcakeYpGW3G0oFVP
-         E6t5It0KcnDhdRszy+7i1muHgYN/kIXnalRlD1n2sWsX82YzK1vAWs5WTFHDmcLsmW1A
-         WO4Q==
-X-Gm-Message-State: APjAAAW7k7Iqf7/0xt0/zlLiS8UDZsEygvNrH8tnWqsHK7e5/4oe5D2i
-        4/rR45l5iPby4sqt4P5TEAiK1xob
-X-Google-Smtp-Source: APXvYqwOhnRWgIky9jY4TKVQ3orEZlRl3NtxCGDBiQzZ8OtIR+HX+drX7zMSWGgQ4QYDdxqUuhbovg==
-X-Received: by 2002:a05:620a:12cb:: with SMTP id e11mr4065334qkl.247.1573073399941;
-        Wed, 06 Nov 2019 12:49:59 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::5bd1])
-        by smtp.gmail.com with ESMTPSA id u189sm12924792qkd.62.2019.11.06.12.49.59
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 06 Nov 2019 12:49:59 -0800 (PST)
-Date:   Wed, 6 Nov 2019 12:49:57 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     cgroups@vger.kernel.org
-Cc:     Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH cgroup/for-5.5] cgroup: use cgroup->last_bstat instead of
- cgroup->bstat_pending for consistency
-Message-ID: <20191106204957.GT3622521@devbig004.ftw2.facebook.com>
+        id S1732644AbfKFVGv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 6 Nov 2019 16:06:51 -0500
+Received: from relay5-d.mail.gandi.net ([217.70.183.197]:38611 "EHLO
+        relay5-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732012AbfKFVGu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Nov 2019 16:06:50 -0500
+X-Originating-IP: 78.194.159.98
+Received: from gandi.net (unknown [78.194.159.98])
+        (Authenticated sender: thibaut@sautereau.fr)
+        by relay5-d.mail.gandi.net (Postfix) with ESMTPSA id 1E25D1C0003;
+        Wed,  6 Nov 2019 21:06:46 +0000 (UTC)
+Date:   Wed, 6 Nov 2019 22:06:46 +0100
+From:   Thibaut Sautereau <thibaut@sautereau.fr>
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        cgroups@vger.kernel.org
+Subject: Re: NULL pointer deref in put_fs_context with unprivileged LXC
+Message-ID: <20191106210646.GA1495@gandi.net>
+References: <20191010213512.GA875@gandi.net>
+ <20191011141403.ghjptf4nrttgg7jd@wittgenstein>
+ <20191105205830.GA871@gandi.net>
+ <20191106072407.GU26530@ZenIV.linux.org.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191106072407.GU26530@ZenIV.linux.org.uk>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-cgroup->bstat_pending is used to determine the base stat delta to
-propagate to the parent.  While correct, this is different from how
-percpu delta is determined for no good reason and the inconsistency
-makes the code more difficult to understand.
+On Wed, Nov 06, 2019 at 07:24:07AM +0000, Al Viro wrote:
+> On Tue, Nov 05, 2019 at 09:58:30PM +0100, Thibaut Sautereau wrote:
+> 
+> > > > 	BUG: kernel NULL pointer dereference, address: 0000000000000043
+> 
+> ERR_PTR(something)->d_sb, most likely.
+> 
+> > > > 	493		if (fc->root) {
+> > > > 	494			sb = fc->root->d_sb;
+> > > > 	495			dput(fc->root);
+> > > > 	496			fc->root = NULL;
+> > > > 	497			deactivate_super(sb);
+> > > > 	498		}
+> 
+> > 	fs_context: DEBUG: fc->root = fffffffffffffff3
+> > 	fs_context: DEBUG: fc->source = cgroup2
+> 
+> Yup.  That'd be ERR_PTR(-13), i.e. ERR_PTR(-EACCES).  Most likely
+> from
+>                 nsdentry = kernfs_node_dentry(cgrp->kn, sb);
+>                 dput(fc->root);
+>                 fc->root = nsdentry;
+>                 if (IS_ERR(nsdentry)) {
+>                         ret = PTR_ERR(nsdentry);
+>                         deactivate_locked_super(sb);
+>                 }
+> 
+> in cgroup_do_get_tree().  As a quick test, try to add fc->root = NULL;
+> next to that deactivate_locked_super(sb); inside the if (IS_ERR(...))
+> body and see if it helps; it's not the best way to fix it (I'd rather
+> go for
+>                 if (IS_ERR(nsdentry)) {
+>                         ret = PTR_ERR(nsdentry);
+>                         deactivate_locked_super(sb);
+> 			nsdentry = NULL;
+>                 }
+>                 fc->root = nsdentry;
+> ), but it would serve to verify that this is the source of that crap.
 
-This patch makes parent propagation delta calculation use the same
-method as percpu to global propagation.
+Yes, you're absolutely right. Your first suggestion fixes the bug, as
+well as your second one. Thanks!
 
-* cgroup_base_stat_accumulate() is renamed to cgroup_base_stat_add()
-  and cgroup_base_stat_sub() is added.
+By the way, I had just finished the bisection, confirming that
+71d883c37e8d ("cgroup_do_mount(): massage calling conventions") brought
+the issue.
 
-* percpu propagation calculation is updated to use the above helpers.
+Do you want me to send a patch or are you dealing with that?
 
-* cgroup->bstat_pending is replaced with cgroup->last_bstat and
-  updated to use the same calculation as percpu propagation.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
-Applying to cgroup/for-5.5.
-
-Thanks.
-
- include/linux/cgroup-defs.h |    2 -
- kernel/cgroup/rstat.c       |   46 +++++++++++++++++++++++---------------------
- 2 files changed, 26 insertions(+), 22 deletions(-)
-
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -458,7 +458,7 @@ struct cgroup {
- 	struct list_head rstat_css_list;
- 
- 	/* cgroup basic resource statistics */
--	struct cgroup_base_stat pending_bstat;	/* pending from children */
-+	struct cgroup_base_stat last_bstat;
- 	struct cgroup_base_stat bstat;
- 	struct prev_cputime prev_cputime;	/* for printing out cputime */
- 
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -304,44 +304,48 @@ void __init cgroup_rstat_boot(void)
-  * Functions for cgroup basic resource statistics implemented on top of
-  * rstat.
-  */
--static void cgroup_base_stat_accumulate(struct cgroup_base_stat *dst_bstat,
--					struct cgroup_base_stat *src_bstat)
-+static void cgroup_base_stat_add(struct cgroup_base_stat *dst_bstat,
-+				 struct cgroup_base_stat *src_bstat)
- {
- 	dst_bstat->cputime.utime += src_bstat->cputime.utime;
- 	dst_bstat->cputime.stime += src_bstat->cputime.stime;
- 	dst_bstat->cputime.sum_exec_runtime += src_bstat->cputime.sum_exec_runtime;
- }
- 
-+static void cgroup_base_stat_sub(struct cgroup_base_stat *dst_bstat,
-+				 struct cgroup_base_stat *src_bstat)
-+{
-+	dst_bstat->cputime.utime -= src_bstat->cputime.utime;
-+	dst_bstat->cputime.stime -= src_bstat->cputime.stime;
-+	dst_bstat->cputime.sum_exec_runtime -= src_bstat->cputime.sum_exec_runtime;
-+}
-+
- static void cgroup_base_stat_flush(struct cgroup *cgrp, int cpu)
- {
- 	struct cgroup *parent = cgroup_parent(cgrp);
- 	struct cgroup_rstat_cpu *rstatc = cgroup_rstat_cpu(cgrp, cpu);
--	struct task_cputime *last_cputime = &rstatc->last_bstat.cputime;
--	struct task_cputime cputime;
--	struct cgroup_base_stat delta;
-+	struct cgroup_base_stat cur, delta;
- 	unsigned seq;
- 
- 	/* fetch the current per-cpu values */
- 	do {
- 		seq = __u64_stats_fetch_begin(&rstatc->bsync);
--		cputime = rstatc->bstat.cputime;
-+		cur.cputime = rstatc->bstat.cputime;
- 	} while (__u64_stats_fetch_retry(&rstatc->bsync, seq));
- 
--	/* calculate the delta to propgate */
--	delta.cputime.utime = cputime.utime - last_cputime->utime;
--	delta.cputime.stime = cputime.stime - last_cputime->stime;
--	delta.cputime.sum_exec_runtime = cputime.sum_exec_runtime -
--					 last_cputime->sum_exec_runtime;
--	*last_cputime = cputime;
--
--	/* transfer the pending stat into delta */
--	cgroup_base_stat_accumulate(&delta, &cgrp->pending_bstat);
--	memset(&cgrp->pending_bstat, 0, sizeof(cgrp->pending_bstat));
--
--	/* propagate delta into the global stat and the parent's pending */
--	cgroup_base_stat_accumulate(&cgrp->bstat, &delta);
--	if (parent)
--		cgroup_base_stat_accumulate(&parent->pending_bstat, &delta);
-+	/* propagate percpu delta to global */
-+	delta = cur;
-+	cgroup_base_stat_sub(&delta, &rstatc->last_bstat);
-+	cgroup_base_stat_add(&cgrp->bstat, &delta);
-+	cgroup_base_stat_add(&rstatc->last_bstat, &delta);
-+
-+	/* propagate global delta to parent */
-+	if (parent) {
-+		delta = cgrp->bstat;
-+		cgroup_base_stat_sub(&delta, &cgrp->last_bstat);
-+		cgroup_base_stat_add(&parent->bstat, &delta);
-+		cgroup_base_stat_add(&cgrp->last_bstat, &delta);
-+	}
- }
- 
- static struct cgroup_rstat_cpu *
+-- 
+Thibaut
