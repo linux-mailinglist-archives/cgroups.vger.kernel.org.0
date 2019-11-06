@@ -2,116 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F12EF0AE1
-	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2019 01:08:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B571BF1026
+	for <lists+cgroups@lfdr.de>; Wed,  6 Nov 2019 08:24:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729595AbfKFAIX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Nov 2019 19:08:23 -0500
-Received: from mga17.intel.com ([192.55.52.151]:54144 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728410AbfKFAIX (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 5 Nov 2019 19:08:23 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 05 Nov 2019 16:08:23 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.68,271,1569308400"; 
-   d="scan'208";a="200947698"
-Received: from brianwel-mobl1.amr.corp.intel.com (HELO [10.24.15.137]) ([10.24.15.137])
-  by fmsmga007.fm.intel.com with ESMTP; 05 Nov 2019 16:08:22 -0800
-Subject: Re: [RFC PATCH] cgroup: Document interface files and rationale for
- DRM controller
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        dri-devel@lists.freedesktop.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Leon Romanovsky <leon@kernel.org>
-References: <20191104220847.23283-1-brian.welty@intel.com>
- <20191105001505.GR3622521@devbig004.ftw2.facebook.com>
-From:   Brian Welty <brian.welty@intel.com>
-Message-ID: <d565fc2c-0bd0-a85a-c7ce-12ee5393154d@intel.com>
-Date:   Tue, 5 Nov 2019 16:08:22 -0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1729311AbfKFHYK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 6 Nov 2019 02:24:10 -0500
+Received: from zeniv.linux.org.uk ([195.92.253.2]:56518 "EHLO
+        ZenIV.linux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728291AbfKFHYK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Nov 2019 02:24:10 -0500
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1iSFfj-0005CX-5l; Wed, 06 Nov 2019 07:24:07 +0000
+Date:   Wed, 6 Nov 2019 07:24:07 +0000
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Thibaut Sautereau <thibaut@sautereau.fr>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        dhowells@redhat.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>,
+        cgroups@vger.kernel.org
+Subject: Re: NULL pointer deref in put_fs_context with unprivileged LXC
+Message-ID: <20191106072407.GU26530@ZenIV.linux.org.uk>
+References: <20191010213512.GA875@gandi.net>
+ <20191011141403.ghjptf4nrttgg7jd@wittgenstein>
+ <20191105205830.GA871@gandi.net>
 MIME-Version: 1.0
-In-Reply-To: <20191105001505.GR3622521@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191105205830.GA871@gandi.net>
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, Nov 05, 2019 at 09:58:30PM +0100, Thibaut Sautereau wrote:
 
-On 11/4/2019 4:15 PM, Tejun Heo wrote:
-> On Mon, Nov 04, 2019 at 05:08:47PM -0500, Brian Welty wrote:
->> +  gpuset.units
->> +  gpuset.units.effective
->> +  gpuset.units.partition
->> +
->> +  gpuset.mems
->> +  gpuset.mems.effective
->> +  gpuset.mems.partition
->> +
->> +  sched.max
->> +  sched.stats
->> +  sched.weight
->> +  sched.weight.nice
->> +
->> +  memory.current
->> +  memory.events
->> +  memory.high
->> +  memory.low
->> +  memory.max
->> +  memory.min
->> +  memory.stat
->> +  memory.swap.current
->> +  memory.swap.max
-> 
-> I don't understand why it needs to replicate essentially *all* the
-> interfaces that system resources are implementing from the get-go.
-> Some of the above have intersecting functionalities and exist more for
-> historical reasons and I fail to see how distinctions like min vs. low
-> and high vs. max would make sense for gpus.  Also, why would it have a
-> separate swap limit of its own?
-> 
-> Please start with something small and intuitive.  I'm gonna nack
-> anything which sprawls out like this.  Most likely, there's still a
-> ton you guys need to work through to reach the resource model which is
-> actually useful and trying to define a comprehensive interface upfront
-> like this is gonna look really silly and will become an ugly drag by
-> the time the problem space is actually understood.
-> 
-> It doesn't seem like this is coming through but can you please start
-> with a simple weight knob?
-> 
-> Thanks.
-> 
+> > > 	BUG: kernel NULL pointer dereference, address: 0000000000000043
 
-Thanks Tejun for the feedback.
-I was more interested in hearing your thoughts on whether you like
-the approach to have a set of controls that are consistent with 
-some subset of the existing CPU/MEM ones.  Any feedback on this?
-Didn't really mean to suggest that all of these would be included
-from the start.
+ERR_PTR(something)->d_sb, most likely.
 
-Would you agree that this reduced set is a reasonable starting point?
-+  sched.weight
-+  memory.current
-+  memory.max
+> > > 	493		if (fc->root) {
+> > > 	494			sb = fc->root->d_sb;
+> > > 	495			dput(fc->root);
+> > > 	496			fc->root = NULL;
+> > > 	497			deactivate_super(sb);
+> > > 	498		}
 
-Thoughts on whether this should be very GPU-specific cgroups controller
-or should be more forward thinking to be useful for other 'accelerator'
-type devices as well?
+> 	fs_context: DEBUG: fc->root = fffffffffffffff3
+> 	fs_context: DEBUG: fc->source = cgroup2
 
-Thanks,
--Brian
+Yup.  That'd be ERR_PTR(-13), i.e. ERR_PTR(-EACCES).  Most likely
+from
+                nsdentry = kernfs_node_dentry(cgrp->kn, sb);
+                dput(fc->root);
+                fc->root = nsdentry;
+                if (IS_ERR(nsdentry)) {
+                        ret = PTR_ERR(nsdentry);
+                        deactivate_locked_super(sb);
+                }
 
-
-
+in cgroup_do_get_tree().  As a quick test, try to add fc->root = NULL;
+next to that deactivate_locked_super(sb); inside the if (IS_ERR(...))
+body and see if it helps; it's not the best way to fix it (I'd rather
+go for
+                if (IS_ERR(nsdentry)) {
+                        ret = PTR_ERR(nsdentry);
+                        deactivate_locked_super(sb);
+			nsdentry = NULL;
+                }
+                fc->root = nsdentry;
+), but it would serve to verify that this is the source of that crap.
