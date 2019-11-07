@@ -2,112 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 67787F3895
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 20:28:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B33A7F39DB
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 21:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbfKGT2w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Nov 2019 14:28:52 -0500
-Received: from mail-io1-f67.google.com ([209.85.166.67]:37096 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726275AbfKGT2v (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 14:28:51 -0500
-Received: by mail-io1-f67.google.com with SMTP id 1so3602202iou.4
-        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2019 11:28:49 -0800 (PST)
+        id S1727417AbfKGUxm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Nov 2019 15:53:42 -0500
+Received: from mail-pf1-f171.google.com ([209.85.210.171]:45959 "EHLO
+        mail-pf1-f171.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725924AbfKGUxl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 15:53:41 -0500
+Received: by mail-pf1-f171.google.com with SMTP id z4so3272726pfn.12
+        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2019 12:53:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LsQBOGT7wlBeTtd5DGVJ1cAFGBGmgxUQGz4CBk4TLCk=;
-        b=pVKXsw6iTlJ2Rzs/YUhd1cSagr7G85BPX4jvG88avd78mLhxpwKSuSup+KefjXgIzd
-         D99eKJyFKqrIcZz8kgmmwl8B7bGRqu8tHo6szfdV1XbTdJ6NW7Daw49AkY/gMmuKncRn
-         t5QMRH81Y3OOOXlCBRJRI8iZUCYzpSb4T3mleVCNGWEdUdF1GzrTwDjUe9aEUSneQL4B
-         uGtLuJbyPxquXYAPyeyX8vY0Bgl/FCPAwmmQGAHRZObaR2TK/+SlD7+smuzdVvztSDN1
-         xpINYOf1vFWkuiS8IiRdmGwfG3W5cTmNRSeHvQH6W7ubVPkL/J0BJfpWgkDHYxjfInUl
-         uxNQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hRiOqVqF7fkbNnBCdHcHlpMVwV+oaW2ZJ1zi2pGGke8=;
+        b=ePqqupRSQg4vkwjECEem6IB1+aU57zZva9VDVkIaaqP6DGkNxVKNuLmE0ilILpAalH
+         jMzJjfAYnwHRFBdxoRnP/AysWORHd+ahoj5f/tXDlrT2MBZZbbH+owvB3CnN3Iayg8bZ
+         J6paV8IauAo9Xtgmt1u4oaab8CuleD9F3fECDlOiaPXhcMpljSBdQ4/6spJeKkWNJehU
+         p/TZhlv1VEdVWXT48uBz0yIWk7QzNoAPsAs3AzRkhML1fCwK2d6Ss0c2FpYtjG2GdeKz
+         Ecvl0fQfiJvF4i0j2EVmbYO0SY2b8voSIBWd0NiBB9s19+6thn3VXdaFj5TBD2UyNiZ4
+         ZJ+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=LsQBOGT7wlBeTtd5DGVJ1cAFGBGmgxUQGz4CBk4TLCk=;
-        b=oaIV/6+MO7McMwpn0DERf+vqE4Dtgi4RbOmbIyVF7BwnCiG5W/dbL2mz7P21uAJ2Xq
-         nF0aYsRq9AftfeNw30AqyyHiroO9kU7DtgVYbmoYf8c+3Fpsu/iYvDiT7culZqmHQJ1Y
-         CHYW6h8S/XWy1cpzcopXv6bJo3DSZYQsFZ4LecigvpRHge9sml3uuJUGkBzW/Khs01nG
-         PvPYKztfODCkQJBDDMhcp3Q52Vc7Hb/Hie6gp47tnETxhTyE1hgWcf0n6e5h4DTeYdmh
-         fWoJEKqr4f5TAdVAMybWDaDbbKZ7avNaCeL9zA8pdhVivc63J42AurMTLX9PXSJGkCJ0
-         pmUw==
-X-Gm-Message-State: APjAAAVQcg4ot4YpaWtkC3u58ZCXJMG+HJUQzSSupJbvW3iG26f7vIri
-        k0MXe0onTsRQw+bVZpl5CgQk0g==
-X-Google-Smtp-Source: APXvYqytRM2OaAe3ZSxiJMqKi+CwRvtOJTQx6oa467TEQdWnroU8YHYetutKqI3f0YDuqGs+xrjF2A==
-X-Received: by 2002:a02:c9d2:: with SMTP id c18mr5844902jap.108.1573154929192;
-        Thu, 07 Nov 2019 11:28:49 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id r25sm437420ilb.16.2019.11.07.11.28.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Nov 2019 11:28:48 -0800 (PST)
-Subject: Re: [PATCHSET v2 block/for-next] blk-cgroup: use cgroup rstat for IO
- stats
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        hannes@cmpxchg.org, kernel-team@fb.com
-References: <20191107191804.3735303-1-tj@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <2a6dd76b-6063-92b9-7b20-97f69bb4b344@kernel.dk>
-Date:   Thu, 7 Nov 2019 12:28:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        bh=hRiOqVqF7fkbNnBCdHcHlpMVwV+oaW2ZJ1zi2pGGke8=;
+        b=BHi0FFaRwTrxT4LtIB+aHA6c0rYKnxAtgR2y6pAUJO7Mcc/auWIF3qCZgQHFgmTVzQ
+         sHGm9MJOqltXSVW5GTFeXz6cfH0P4vFGQdiwbQlTwueMDj+9NvSjGrLupyYo8qYcoBA0
+         gGL860AvtMFXkfBnGVvNFJEWAzWAcc9xFADmVjhfPtkevXrHU6AEOQr6C7oPufQhRdZN
+         8R6FKlKvkg7Mlt1zRBbfNqydAPUVOAMN6rYgbYPmkDmm2hMUj0M+ebDGGcSnNi6rdbLs
+         gGuoxYnczDd+KQTW2GcMJREuM3gRBIxMK+m7XdeBLjBRBNBTGLXhC5jrVRy6UDWFZVL+
+         UPpA==
+X-Gm-Message-State: APjAAAUGXuAeceO1C5VnGXr5qOtdcIedRep9xDN8AQLJ21fEpz1SaoFt
+        oFrNJPFBFGMiEMrwTQd7qTN5LA==
+X-Google-Smtp-Source: APXvYqx8xTAxYY/Su1yCNM4c3FuS3t23gN3HcTWSvbJ5dSw/TtaPxyTbdceDprP0HN7/X5xVMvk0Nw==
+X-Received: by 2002:a63:fc09:: with SMTP id j9mr6985037pgi.272.1573160018173;
+        Thu, 07 Nov 2019 12:53:38 -0800 (PST)
+Received: from localhost ([2620:10d:c090:200::3:3792])
+        by smtp.gmail.com with ESMTPSA id h186sm3937459pfb.63.2019.11.07.12.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2019 12:53:37 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 0/3] mm: fix page aging across multiple cgroups
+Date:   Thu,  7 Nov 2019 12:53:31 -0800
+Message-Id: <20191107205334.158354-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-In-Reply-To: <20191107191804.3735303-1-tj@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/7/19 12:17 PM, Tejun Heo wrote:
-> Hello,
-> 
-> v2: Build fix when !DEBUG.
-> 
-> blk-cgroup IO stats currently use blkg_rwstat which unforutnately
-> requires walking all descendants recursively on read.  On systems with
-> a large number of cgroups (dead or alive), this can make each stat
-> read a substantially expensive operation.
-> 
-> This patch updates blk-cgroup to use cgroup rstat which makes stat
-> reading O(# descendants which have been active since last reading)
-> instead of O(# descendants).
-> 
->   0001-bfq-iosched-relocate-bfqg_-rwstat-helpers.patch
->   0002-bfq-iosched-stop-using-blkg-stat_bytes-and-stat_ios.patch
->   0003-blk-throtl-stop-using-blkg-stat_bytes-and-stat_ios.patch
->   0004-blk-cgroup-remove-now-unused-blkg_print_stat_-bytes-.patch
->   0005-blk-cgroup-reimplement-basic-IO-stats-using-cgroup-r.patch
->   0006-blk-cgroup-separate-out-blkg_rwstat-under-CONFIG_BLK.patch
-> 
-> 0001-0003 make bfq-iosched and blk-throtl use their own blkg_rwstat to
-> track basic IO stats on cgroup1 instead of sharing blk-cgroup core's.
-> 0004 is a follow-up cleanup.
-> 
-> 0005 switches blk-cgroup to cgroup rstat.
-> 
-> 0006 moves blkg_rwstat to its own files and gate it under a config
-> option as it's now only used by blk-throtl and bfq-iosched.
-> 
-> The patchset is on top of
-> 
->    block/for-next  40afbe18b03a ("Merge branch 'for-5.5/drivers-post' into for-next")
-> + block/for-linus b0814361a25c ("blkcg: make blkcg_print_stat() print stats only for online blkgs")
-> 
-> and also available in the following git branch.
-> 
->   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-blkcg-rstat
+When applications are put into unconfigured cgroups for memory
+accounting purposes, the cgrouping itself should not change the
+behavior of the page reclaim code. We expect the VM to reclaim the
+coldest pages in the system. But right now the VM can reclaim hot
+pages in one cgroup while there is eligible cold cache in others.
 
-Thanks, applied!
+This is because one part of the reclaim algorithm isn't truly cgroup
+hierarchy aware: the inactive/active list balancing. That is the part
+that is supposed to protect hot cache data from one-off streaming IO.
 
--- 
-Jens Axboe
+The recursive cgroup reclaim scheme will scan and rotate the physical
+LRU lists of each eligible cgroup at the same rate in a round-robin
+fashion, thereby establishing a relative order among the pages of all
+those cgroups. However, the inactive/active balancing decisions are
+made locally within each cgroup, so when a cgroup is running low on
+cold pages, its hot pages will get reclaimed - even when sibling
+cgroups have plenty of cold cache eligible in the same reclaim run.
+
+For example:
+
+   [root@ham ~]# head -n1 /proc/meminfo 
+   MemTotal:        1016336 kB
+
+   [root@ham ~]# ./reclaimtest2.sh 
+   Establishing 50M active files in cgroup A...
+   Hot pages cached: 12800/12800 workingset-a
+   Linearly scanning through 18G of file data in cgroup B:
+   real    0m4.269s
+   user    0m0.051s
+   sys     0m4.182s
+   Hot pages cached: 134/12800 workingset-a
+
+The streaming IO in B, which doesn't benefit from caching at all,
+pushes out most of the workingset in A.
+
+Solution
+
+This series fixes the problem by elevating inactive/active balancing
+decisions to the toplevel of the reclaim run. This is either a cgroup
+that hit its limit, or straight-up global reclaim if there is physical
+memory pressure. From there, it takes a recursive view of the cgroup
+subtree to decide whether page deactivation is necessary.
+
+In the test above, the VM will then recognize that cgroup B has plenty
+of eligible cold cache, and that the hot pages in A can be spared:
+
+   [root@ham ~]# ./reclaimtest2.sh 
+   Establishing 50M active files in cgroup A...
+   Hot pages cached: 12800/12800 workingset-a
+   Linearly scanning through 18G of file data in cgroup B:
+   real    0m4.244s
+   user    0m0.064s
+   sys     0m4.177s
+   Hot pages cached: 12800/12800 workingset-a
+
+Implementation
+
+Whether active pages can be deactivated or not is influenced by two
+factors: the inactive list dropping below a minimum size relative to
+the active list, and the occurence of refaults.
+
+This patch series first moves refault detection to the reclaim root,
+then enforces the minimum inactive size based on a recursive view of
+the cgroup tree's LRUs.
+
+History
+
+Note that this actually never worked correctly in Linux cgroups. In
+the past it worked for global reclaim and leaf limit reclaim only (we
+used to have two physical LRU linkages per page), but it never worked
+for intermediate limit reclaim over multiple leaf cgroups.
+
+We're noticing this now because 1) we're putting everything into
+cgroups for accounting, not just the things we want to control and 2)
+we're moving away from leaf limits that invoke reclaim on individual
+cgroups, toward large tree reclaim, triggered by high-level limits, or
+physical memory pressure that is influenced by local protections such
+as memory.low and memory.min instead.
+
+Requirements
+
+These changes are based on v5.4-rc6-mmotm-2019-11-05-20-44.
+
+ include/linux/memcontrol.h |   5 +
+ include/linux/mmzone.h     |   4 +-
+ include/linux/swap.h       |   2 +-
+ mm/vmscan.c                | 269 +++++++++++++++++++++++++------------------
+ mm/workingset.c            |  72 +++++++++---
+ 5 files changed, 223 insertions(+), 129 deletions(-)
+
 
