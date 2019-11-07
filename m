@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2E6BF2598
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 03:51:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E637F2599
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 03:51:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733067AbfKGCv1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 6 Nov 2019 21:51:27 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:34718 "EHLO
+        id S1733048AbfKGCvf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 6 Nov 2019 21:51:35 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:44852 "EHLO
         mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732982AbfKGCv0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Nov 2019 21:51:26 -0500
-Received: by mail-oi1-f194.google.com with SMTP id l202so680435oig.1
-        for <cgroups@vger.kernel.org>; Wed, 06 Nov 2019 18:51:26 -0800 (PST)
+        with ESMTP id S1732732AbfKGCvf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 6 Nov 2019 21:51:35 -0500
+Received: by mail-oi1-f194.google.com with SMTP id s71so627141oih.11
+        for <cgroups@vger.kernel.org>; Wed, 06 Nov 2019 18:51:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZJgjLii01IGGdUCsYrzd4gYjlTvDiWueI/o8CqoLYI4=;
-        b=rlCeuEiCGh7lsXngMqUCH816OSSAwW5c+4c+hmAyE/ruz/i3CAd226pxUWdOkAwMV5
-         Y2vPchFkJoWzr8dSiKPbmMnzTpqFNJbj/npNbC+nwyeUh+2na5zPYMcupa7V219gY5QQ
-         n18znZB1l1X3eI473qpX5oK0eCLoYA1B+m8r/7RLgqyYxLeGsMSaAOjhI+N86Bf62IRp
-         UOSmS6XrKL8AfEu3nxL5/D2WQILh4cipww7Lqj2buj1l4CStbh2qig/SIowcQlgTPawz
-         SQDRqJ1/U/o4JxfoC54TRxE+NvVH3iM7YDzr9FAMUxVkuWmKtifVYfYytRvlQiN8++am
-         c88g==
+        bh=vV4g22IvRsy9ZewgLM3I0CDMQ/+H7R7jQFrGMyrOPjc=;
+        b=NoyhNB55MIZCIOG0XfMZmoN8uSPTzSusIA7XecKoZhUDQezKTzuJld9ththyRbJnq0
+         YoW/jJBrijPi7ms2JwP07f9nkbJJRUAglH4f/IeCmcNLdbhLZ0SIHvLZuIs5cRT0ehl+
+         n50X/4oeTHI0Sn5QsBvHQ1qcrPufmpkZY4WovCjZ+GZd9BiYpdLB2/7bY5rJ+Y2GFoU9
+         6hAGJxH9bJYXBKOSukSj4RE6w8VwpkGJCIZsXJsCQwtuP6THgrW8Jl8Ty+HH+As9JehL
+         vyiXcKLS8c3m/i8JE/44hS5fv/cd8+08lJJgG4qjvXBScJ3Ue2cRln03g80aqLw21VtC
+         M74w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZJgjLii01IGGdUCsYrzd4gYjlTvDiWueI/o8CqoLYI4=;
-        b=VqKohtbAC/GRfxmmfSxAbngCkl/nrTH8sZUiObkIFUlsRoLYuU+xA2L0AJtemvYilZ
-         FPkFLtUGFWm/7dklxbKZ2lUwdHm3gi4ZANi3Pcn1rvJir2qGaUbMQoVQCbC8ADq0e2gi
-         w9s25qzavZlahL5bewKXFMW66zdsJvxzw1M/N1XOTS7AwpwbvDU+MEU1XezeXn3EPiLz
-         O759GZenAIUBD7gayWjzEdviGctInux92Z/F29SZ/vLNo2l94+bXiWrpGF3UytOrVqz7
-         IiU9TwfA10vAoowh7Y2RYOrCgMf+Q/Ryg7pzjIZ6iGtp9Nmuj0Tm/SHarw80qtgvVwWr
-         JLKA==
-X-Gm-Message-State: APjAAAXn0ZFO7cz99n+1/ok0iySqdoGZqQheAMf2gWuI+WblTPPLfvIy
-        ezDekPmGt5TwstKXLkq5EmKrM30CHjn9feLRuT7wJg==
-X-Google-Smtp-Source: APXvYqxVb+X95mYEAd2Ugk1BumgEAruoupSYZRK2d7E+6AIUYLX4CVCCjXCrigXtcqjbBQQP/G/PAGC9+XuoVmpaskU=
-X-Received: by 2002:aca:f506:: with SMTP id t6mr1159853oih.69.1573095085224;
- Wed, 06 Nov 2019 18:51:25 -0800 (PST)
+        bh=vV4g22IvRsy9ZewgLM3I0CDMQ/+H7R7jQFrGMyrOPjc=;
+        b=Cs0mN5oAoY9o/pCbHaWKUM8CMQzF+84QfQRnFSEwcX3ceXDgG6OpP+FLuRACPuTUpw
+         jU7VOPKQqyfkxqo1EbaoKLhW8XaIgNleK1vU1X0oBWoJVM5Z4sEmOTET+uHp0yHIindL
+         tJxs+ySI6i2dUI3e8c7NB8TKmJm5iOcgdjoyflrJff2RBHlXGUNpumQuTjSOPgiTrCf0
+         5gZgRSD42/oyyIBAJZ0g/c90UlJs6nxWQUb7tIdUNznUeE3yoH2oeO5dyZjNjfSIaFuY
+         QsY6JTpJiMfR4WrpyrH4WxwdfMTh3/FS9b1zOYxsvuR2RxqwPYBvXXzRo3iiTRwwDAV1
+         J49g==
+X-Gm-Message-State: APjAAAVszC+1UMdy8z2xyrjiJSmMx4q9Hw4Xz9kpLtNGd08/FoTYMxam
+        N+++1ggirn8GKziOOral+sR2+25iK7il4bpOxBl/aQ==
+X-Google-Smtp-Source: APXvYqw1Q9OnVKchm8XCBthdRrIE4hL8As5AEttf6HR4+lXMPtPmTRfGSJT2W3m0DCJqs/36D7EzQZ1b/+RJK0FXJ7M=
+X-Received: by 2002:a05:6808:9ae:: with SMTP id e14mr1111258oig.79.1573095093430;
+ Wed, 06 Nov 2019 18:51:33 -0800 (PST)
 MIME-Version: 1.0
-References: <20190603210746.15800-1-hannes@cmpxchg.org> <20190603210746.15800-5-hannes@cmpxchg.org>
-In-Reply-To: <20190603210746.15800-5-hannes@cmpxchg.org>
+References: <20190603210746.15800-1-hannes@cmpxchg.org> <20190603210746.15800-6-hannes@cmpxchg.org>
+In-Reply-To: <20190603210746.15800-6-hannes@cmpxchg.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 6 Nov 2019 18:51:14 -0800
-Message-ID: <CALvZod4EyAX_Q-YdHkVOquL2dJYMYN7YNi3V0rZ0yDtB09SszQ@mail.gmail.com>
-Subject: Re: [PATCH 04/11] mm: vmscan: naming fixes: cgroup_reclaim() and writeback_working()
+Date:   Wed, 6 Nov 2019 18:51:22 -0800
+Message-ID: <CALvZod41w1XwwEhKoeSTJet1+WO8FXf3M_B4B08Q0DrbR51M0w@mail.gmail.com>
+Subject: Re: [PATCH 05/11] mm: vmscan: replace shrink_node() loop with a retry jump
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
@@ -61,28 +61,16 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 3, 2019 at 3:02 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Mon, Jun 3, 2019 at 3:05 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> Seven years after introducing the global_reclaim() function, I still
-> have to double take when reading a callsite. I don't know how others
-> do it. This is a terrible name.
+> Most of the function body is inside a loop, which imposes an
+> additional indentation and scoping level that makes the code a bit
+> hard to follow and modify.
 >
-> Invert the meaning and rename it to cgroup_reclaim().
->
-> [ After all, "global reclaim" is just regular reclaim invoked from the
->   page allocator. It's reclaim on behalf of a cgroup limit that is a
->   special case of reclaim, and should be explicit - not the reverse. ]
->
-
-Not really confusing for me at least but no objection on cgroup_reclaim().
-
-> sane_reclaim() isn't very descriptive either: it tests whether we can
-> use the regular writeback throttling - available during regular page
-> reclaim or cgroup2 limit reclaim - or need to use the broken
-> wait_on_page_writeback() method. Rename it to writeback_working().
-
-Totally agree here.
-
+> The looping only happens in case of reclaim-compaction, which isn't
+> the common case. So rather than adding yet another function level to
+> the reclaim path and have every reclaim invocation go through a level
+> that only exists for one specific cornercase, use a retry goto.
 >
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
@@ -90,150 +78,311 @@ Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
 
 > ---
->  mm/vmscan.c | 38 ++++++++++++++++++--------------------
->  1 file changed, 18 insertions(+), 20 deletions(-)
+>  mm/vmscan.c | 266 ++++++++++++++++++++++++++--------------------------
+>  1 file changed, 133 insertions(+), 133 deletions(-)
 >
 > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 69c4c82a9b5a..afd5e2432a8e 100644
+> index afd5e2432a8e..304974481146 100644
 > --- a/mm/vmscan.c
 > +++ b/mm/vmscan.c
-> @@ -239,13 +239,13 @@ static void unregister_memcg_shrinker(struct shrinker *shrinker)
->  #endif /* CONFIG_MEMCG_KMEM */
->
->  #ifdef CONFIG_MEMCG
-> -static bool global_reclaim(struct scan_control *sc)
-> +static bool cgroup_reclaim(struct scan_control *sc)
+> @@ -2672,164 +2672,164 @@ static bool pgdat_memcg_congested(pg_data_t *pgdat, struct mem_cgroup *memcg)
+>  static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
 >  {
-> -       return !sc->target_mem_cgroup;
-> +       return sc->target_mem_cgroup;
->  }
+>         struct reclaim_state *reclaim_state = current->reclaim_state;
+> +       struct mem_cgroup *root = sc->target_mem_cgroup;
+> +       struct mem_cgroup_reclaim_cookie reclaim = {
+> +               .pgdat = pgdat,
+> +               .priority = sc->priority,
+> +       };
+>         unsigned long nr_reclaimed, nr_scanned;
+>         bool reclaimable = false;
+> +       struct mem_cgroup *memcg;
 >
->  /**
-> - * sane_reclaim - is the usual dirty throttling mechanism operational?
-> + * writeback_working - is the usual dirty throttling mechanism unavailable?
->   * @sc: scan_control in question
->   *
->   * The normal page dirty throttling mechanism in balance_dirty_pages() is
-> @@ -257,11 +257,9 @@ static bool global_reclaim(struct scan_control *sc)
->   * This function tests whether the vmscan currently in progress can assume
->   * that the normal dirty throttling mechanism is operational.
->   */
-> -static bool sane_reclaim(struct scan_control *sc)
-> +static bool writeback_working(struct scan_control *sc)
->  {
-> -       struct mem_cgroup *memcg = sc->target_mem_cgroup;
+> -       do {
+> -               struct mem_cgroup *root = sc->target_mem_cgroup;
+> -               struct mem_cgroup_reclaim_cookie reclaim = {
+> -                       .pgdat = pgdat,
+> -                       .priority = sc->priority,
+> -               };
+> -               struct mem_cgroup *memcg;
 > -
-> -       if (!memcg)
-> +       if (!cgroup_reclaim(sc))
->                 return true;
->  #ifdef CONFIG_CGROUP_WRITEBACK
->         if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> @@ -293,12 +291,12 @@ static bool memcg_congested(pg_data_t *pgdat,
+> -               memset(&sc->nr, 0, sizeof(sc->nr));
+> +again:
+> +       memset(&sc->nr, 0, sizeof(sc->nr));
 >
->  }
->  #else
-> -static bool global_reclaim(struct scan_control *sc)
-> +static bool cgroup_reclaim(struct scan_control *sc)
->  {
-> -       return true;
-> +       return false;
->  }
+> -               nr_reclaimed = sc->nr_reclaimed;
+> -               nr_scanned = sc->nr_scanned;
+> +       nr_reclaimed = sc->nr_reclaimed;
+> +       nr_scanned = sc->nr_scanned;
 >
-> -static bool sane_reclaim(struct scan_control *sc)
-> +static bool writeback_working(struct scan_control *sc)
->  {
->         return true;
->  }
-> @@ -1211,7 +1209,7 @@ static unsigned long shrink_page_list(struct list_head *page_list,
->                                 goto activate_locked;
+> -               memcg = mem_cgroup_iter(root, NULL, &reclaim);
+> -               do {
+> -                       unsigned long reclaimed;
+> -                       unsigned long scanned;
+> +       memcg = mem_cgroup_iter(root, NULL, &reclaim);
+> +       do {
+> +               unsigned long reclaimed;
+> +               unsigned long scanned;
 >
->                         /* Case 2 above */
-> -                       } else if (sane_reclaim(sc) ||
-> +                       } else if (writeback_working(sc) ||
->                             !PageReclaim(page) || !may_enter_fs) {
->                                 /*
->                                  * This is slightly racy - end_page_writeback()
-> @@ -1806,7 +1804,7 @@ static int too_many_isolated(struct pglist_data *pgdat, int file,
->         if (current_is_kswapd())
->                 return 0;
->
-> -       if (!sane_reclaim(sc))
-> +       if (!writeback_working(sc))
->                 return 0;
->
->         if (file) {
-> @@ -1957,7 +1955,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
->         reclaim_stat->recent_scanned[file] += nr_taken;
->
->         item = current_is_kswapd() ? PGSCAN_KSWAPD : PGSCAN_DIRECT;
-> -       if (global_reclaim(sc))
-> +       if (!cgroup_reclaim(sc))
->                 __count_vm_events(item, nr_scanned);
->         __count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
->         spin_unlock_irq(&pgdat->lru_lock);
-> @@ -1971,7 +1969,7 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
->         spin_lock_irq(&pgdat->lru_lock);
->
->         item = current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
-> -       if (global_reclaim(sc))
-> +       if (!cgroup_reclaim(sc))
->                 __count_vm_events(item, nr_reclaimed);
->         __count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
->         reclaim_stat->recent_rotated[0] += stat.nr_activate[0];
-> @@ -2239,7 +2237,7 @@ static void get_scan_count(struct lruvec *lruvec, struct mem_cgroup *memcg,
->          * using the memory controller's swap limit feature would be
->          * too expensive.
->          */
-> -       if (!global_reclaim(sc) && !swappiness) {
-> +       if (cgroup_reclaim(sc) && !swappiness) {
->                 scan_balance = SCAN_FILE;
->                 goto out;
->         }
-> @@ -2263,7 +2261,7 @@ static void get_scan_count(struct lruvec *lruvec, struct mem_cgroup *memcg,
->          * thrashing file LRU becomes infinitely more attractive than
->          * anon pages.  Try to detect this based on file LRU size.
->          */
-> -       if (global_reclaim(sc)) {
-> +       if (!cgroup_reclaim(sc)) {
->                 unsigned long pgdatfile;
->                 unsigned long pgdatfree;
->                 int z;
-> @@ -2494,7 +2492,7 @@ static void shrink_node_memcg(struct pglist_data *pgdat, struct mem_cgroup *memc
->          * abort proportional reclaim if either the file or anon lru has already
->          * dropped to zero at the first pass.
->          */
-> -       scan_adjusted = (global_reclaim(sc) && !current_is_kswapd() &&
-> +       scan_adjusted = (!cgroup_reclaim(sc) && !current_is_kswapd() &&
->                          sc->priority == DEF_PRIORITY);
->
->         blk_start_plug(&plug);
-> @@ -2816,7 +2814,7 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
->                  * Legacy memcg will stall in page writeback so avoid forcibly
->                  * stalling in wait_iff_congested().
->                  */
-> -               if (!global_reclaim(sc) && sane_reclaim(sc) &&
-> +               if (cgroup_reclaim(sc) && writeback_working(sc) &&
->                     sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
->                         set_memcg_congestion(pgdat, root, true);
->
-> @@ -2911,7 +2909,7 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
->                  * Take care memory controller reclaiming has small influence
->                  * to global LRU.
->                  */
-> -               if (global_reclaim(sc)) {
-> +               if (!cgroup_reclaim(sc)) {
->                         if (!cpuset_zone_allowed(zone,
->                                                  GFP_KERNEL | __GFP_HARDWALL))
+> -                       switch (mem_cgroup_protected(root, memcg)) {
+> -                       case MEMCG_PROT_MIN:
+> -                               /*
+> -                                * Hard protection.
+> -                                * If there is no reclaimable memory, OOM.
+> -                                */
+> +               switch (mem_cgroup_protected(root, memcg)) {
+> +               case MEMCG_PROT_MIN:
+> +                       /*
+> +                        * Hard protection.
+> +                        * If there is no reclaimable memory, OOM.
+> +                        */
+> +                       continue;
+> +               case MEMCG_PROT_LOW:
+> +                       /*
+> +                        * Soft protection.
+> +                        * Respect the protection only as long as
+> +                        * there is an unprotected supply
+> +                        * of reclaimable memory from other cgroups.
+> +                        */
+> +                       if (!sc->memcg_low_reclaim) {
+> +                               sc->memcg_low_skipped = 1;
 >                                 continue;
-> @@ -3011,7 +3009,7 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
->  retry:
->         delayacct_freepages_start();
+> -                       case MEMCG_PROT_LOW:
+> -                               /*
+> -                                * Soft protection.
+> -                                * Respect the protection only as long as
+> -                                * there is an unprotected supply
+> -                                * of reclaimable memory from other cgroups.
+> -                                */
+> -                               if (!sc->memcg_low_reclaim) {
+> -                                       sc->memcg_low_skipped = 1;
+> -                                       continue;
+> -                               }
+> -                               memcg_memory_event(memcg, MEMCG_LOW);
+> -                               break;
+> -                       case MEMCG_PROT_NONE:
+> -                               /*
+> -                                * All protection thresholds breached. We may
+> -                                * still choose to vary the scan pressure
+> -                                * applied based on by how much the cgroup in
+> -                                * question has exceeded its protection
+> -                                * thresholds (see get_scan_count).
+> -                                */
+> -                               break;
+>                         }
+> -
+> -                       reclaimed = sc->nr_reclaimed;
+> -                       scanned = sc->nr_scanned;
+> -                       shrink_node_memcg(pgdat, memcg, sc);
+> -
+> -                       if (sc->may_shrinkslab) {
+> -                               shrink_slab(sc->gfp_mask, pgdat->node_id,
+> -                                   memcg, sc->priority);
+> -                       }
+> -
+> -                       /* Record the group's reclaim efficiency */
+> -                       vmpressure(sc->gfp_mask, memcg, false,
+> -                                  sc->nr_scanned - scanned,
+> -                                  sc->nr_reclaimed - reclaimed);
+> -
+> +                       memcg_memory_event(memcg, MEMCG_LOW);
+> +                       break;
+> +               case MEMCG_PROT_NONE:
+>                         /*
+> -                        * Kswapd have to scan all memory cgroups to fulfill
+> -                        * the overall scan target for the node.
+> -                        *
+> -                        * Limit reclaim, on the other hand, only cares about
+> -                        * nr_to_reclaim pages to be reclaimed and it will
+> -                        * retry with decreasing priority if one round over the
+> -                        * whole hierarchy is not sufficient.
+> +                        * All protection thresholds breached. We may
+> +                        * still choose to vary the scan pressure
+> +                        * applied based on by how much the cgroup in
+> +                        * question has exceeded its protection
+> +                        * thresholds (see get_scan_count).
+>                          */
+> -                       if (!current_is_kswapd() &&
+> -                                       sc->nr_reclaimed >= sc->nr_to_reclaim) {
+> -                               mem_cgroup_iter_break(root, memcg);
+> -                               break;
+> -                       }
+> -               } while ((memcg = mem_cgroup_iter(root, memcg, &reclaim)));
+> +                       break;
+> +               }
+> +
+> +               reclaimed = sc->nr_reclaimed;
+> +               scanned = sc->nr_scanned;
+> +               shrink_node_memcg(pgdat, memcg, sc);
 >
-> -       if (global_reclaim(sc))
-> +       if (!cgroup_reclaim(sc))
->                 __count_zid_vm_events(ALLOCSTALL, sc->reclaim_idx, 1);
+> -               if (reclaim_state) {
+> -                       sc->nr_reclaimed += reclaim_state->reclaimed_slab;
+> -                       reclaim_state->reclaimed_slab = 0;
+> +               if (sc->may_shrinkslab) {
+> +                       shrink_slab(sc->gfp_mask, pgdat->node_id,
+> +                                   memcg, sc->priority);
+>                 }
 >
->         do {
+> -               /* Record the subtree's reclaim efficiency */
+> -               vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> -                          sc->nr_scanned - nr_scanned,
+> -                          sc->nr_reclaimed - nr_reclaimed);
+> +               /* Record the group's reclaim efficiency */
+> +               vmpressure(sc->gfp_mask, memcg, false,
+> +                          sc->nr_scanned - scanned,
+> +                          sc->nr_reclaimed - reclaimed);
+>
+> -               if (sc->nr_reclaimed - nr_reclaimed)
+> -                       reclaimable = true;
+> +               /*
+> +                * Kswapd have to scan all memory cgroups to fulfill
+> +                * the overall scan target for the node.
+> +                *
+> +                * Limit reclaim, on the other hand, only cares about
+> +                * nr_to_reclaim pages to be reclaimed and it will
+> +                * retry with decreasing priority if one round over the
+> +                * whole hierarchy is not sufficient.
+> +                */
+> +               if (!current_is_kswapd() &&
+> +                   sc->nr_reclaimed >= sc->nr_to_reclaim) {
+> +                       mem_cgroup_iter_break(root, memcg);
+> +                       break;
+> +               }
+> +       } while ((memcg = mem_cgroup_iter(root, memcg, &reclaim)));
+>
+> -               if (current_is_kswapd()) {
+> -                       /*
+> -                        * If reclaim is isolating dirty pages under writeback,
+> -                        * it implies that the long-lived page allocation rate
+> -                        * is exceeding the page laundering rate. Either the
+> -                        * global limits are not being effective at throttling
+> -                        * processes due to the page distribution throughout
+> -                        * zones or there is heavy usage of a slow backing
+> -                        * device. The only option is to throttle from reclaim
+> -                        * context which is not ideal as there is no guarantee
+> -                        * the dirtying process is throttled in the same way
+> -                        * balance_dirty_pages() manages.
+> -                        *
+> -                        * Once a node is flagged PGDAT_WRITEBACK, kswapd will
+> -                        * count the number of pages under pages flagged for
+> -                        * immediate reclaim and stall if any are encountered
+> -                        * in the nr_immediate check below.
+> -                        */
+> -                       if (sc->nr.writeback && sc->nr.writeback == sc->nr.taken)
+> -                               set_bit(PGDAT_WRITEBACK, &pgdat->flags);
+> +       if (reclaim_state) {
+> +               sc->nr_reclaimed += reclaim_state->reclaimed_slab;
+> +               reclaim_state->reclaimed_slab = 0;
+> +       }
+>
+> -                       /*
+> -                        * Tag a node as congested if all the dirty pages
+> -                        * scanned were backed by a congested BDI and
+> -                        * wait_iff_congested will stall.
+> -                        */
+> -                       if (sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
+> -                               set_bit(PGDAT_CONGESTED, &pgdat->flags);
+> +       /* Record the subtree's reclaim efficiency */
+> +       vmpressure(sc->gfp_mask, sc->target_mem_cgroup, true,
+> +                  sc->nr_scanned - nr_scanned,
+> +                  sc->nr_reclaimed - nr_reclaimed);
+>
+> -                       /* Allow kswapd to start writing pages during reclaim.*/
+> -                       if (sc->nr.unqueued_dirty == sc->nr.file_taken)
+> -                               set_bit(PGDAT_DIRTY, &pgdat->flags);
+> +       if (sc->nr_reclaimed - nr_reclaimed)
+> +               reclaimable = true;
+>
+> -                       /*
+> -                        * If kswapd scans pages marked marked for immediate
+> -                        * reclaim and under writeback (nr_immediate), it
+> -                        * implies that pages are cycling through the LRU
+> -                        * faster than they are written so also forcibly stall.
+> -                        */
+> -                       if (sc->nr.immediate)
+> -                               congestion_wait(BLK_RW_ASYNC, HZ/10);
+> -               }
+> +       if (current_is_kswapd()) {
+> +               /*
+> +                * If reclaim is isolating dirty pages under writeback,
+> +                * it implies that the long-lived page allocation rate
+> +                * is exceeding the page laundering rate. Either the
+> +                * global limits are not being effective at throttling
+> +                * processes due to the page distribution throughout
+> +                * zones or there is heavy usage of a slow backing
+> +                * device. The only option is to throttle from reclaim
+> +                * context which is not ideal as there is no guarantee
+> +                * the dirtying process is throttled in the same way
+> +                * balance_dirty_pages() manages.
+> +                *
+> +                * Once a node is flagged PGDAT_WRITEBACK, kswapd will
+> +                * count the number of pages under pages flagged for
+> +                * immediate reclaim and stall if any are encountered
+> +                * in the nr_immediate check below.
+> +                */
+> +               if (sc->nr.writeback && sc->nr.writeback == sc->nr.taken)
+> +                       set_bit(PGDAT_WRITEBACK, &pgdat->flags);
+>
+>                 /*
+> -                * Legacy memcg will stall in page writeback so avoid forcibly
+> -                * stalling in wait_iff_congested().
+> +                * Tag a node as congested if all the dirty pages
+> +                * scanned were backed by a congested BDI and
+> +                * wait_iff_congested will stall.
+>                  */
+> -               if (cgroup_reclaim(sc) && writeback_working(sc) &&
+> -                   sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
+> -                       set_memcg_congestion(pgdat, root, true);
+> +               if (sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
+> +                       set_bit(PGDAT_CONGESTED, &pgdat->flags);
+> +
+> +               /* Allow kswapd to start writing pages during reclaim.*/
+> +               if (sc->nr.unqueued_dirty == sc->nr.file_taken)
+> +                       set_bit(PGDAT_DIRTY, &pgdat->flags);
+>
+>                 /*
+> -                * Stall direct reclaim for IO completions if underlying BDIs
+> -                * and node is congested. Allow kswapd to continue until it
+> -                * starts encountering unqueued dirty pages or cycling through
+> -                * the LRU too quickly.
+> +                * If kswapd scans pages marked marked for immediate
+> +                * reclaim and under writeback (nr_immediate), it
+> +                * implies that pages are cycling through the LRU
+> +                * faster than they are written so also forcibly stall.
+>                  */
+> -               if (!sc->hibernation_mode && !current_is_kswapd() &&
+> -                  current_may_throttle() && pgdat_memcg_congested(pgdat, root))
+> -                       wait_iff_congested(BLK_RW_ASYNC, HZ/10);
+> +               if (sc->nr.immediate)
+> +                       congestion_wait(BLK_RW_ASYNC, HZ/10);
+> +       }
+> +
+> +       /*
+> +        * Legacy memcg will stall in page writeback so avoid forcibly
+> +        * stalling in wait_iff_congested().
+> +        */
+> +       if (cgroup_reclaim(sc) && writeback_working(sc) &&
+> +           sc->nr.dirty && sc->nr.dirty == sc->nr.congested)
+> +               set_memcg_congestion(pgdat, root, true);
+> +
+> +       /*
+> +        * Stall direct reclaim for IO completions if underlying BDIs
+> +        * and node is congested. Allow kswapd to continue until it
+> +        * starts encountering unqueued dirty pages or cycling through
+> +        * the LRU too quickly.
+> +        */
+> +       if (!sc->hibernation_mode && !current_is_kswapd() &&
+> +           current_may_throttle() && pgdat_memcg_congested(pgdat, root))
+> +               wait_iff_congested(BLK_RW_ASYNC, HZ/10);
+>
+> -       } while (should_continue_reclaim(pgdat, sc->nr_reclaimed - nr_reclaimed,
+> -                                        sc->nr_scanned - nr_scanned, sc));
+> +       if (should_continue_reclaim(pgdat, sc->nr_reclaimed - nr_reclaimed,
+> +                                   sc->nr_scanned - nr_scanned, sc))
+> +               goto again;
+>
+>         /*
+>          * Kswapd gives up on balancing particular nodes after too
 > --
 > 2.21.0
 >
