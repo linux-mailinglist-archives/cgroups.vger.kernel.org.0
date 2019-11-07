@@ -2,749 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2563BF3865
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 20:18:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67787F3895
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 20:28:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726906AbfKGTS3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Nov 2019 14:18:29 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:33759 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726019AbfKGTSY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 14:18:24 -0500
-Received: by mail-qk1-f196.google.com with SMTP id 71so3066530qkl.0;
-        Thu, 07 Nov 2019 11:18:23 -0800 (PST)
+        id S1726896AbfKGT2w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Nov 2019 14:28:52 -0500
+Received: from mail-io1-f67.google.com ([209.85.166.67]:37096 "EHLO
+        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726275AbfKGT2v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 14:28:51 -0500
+Received: by mail-io1-f67.google.com with SMTP id 1so3602202iou.4
+        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2019 11:28:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=QE+dG2A0JV3/hEHPfyxjosOSTNZMxpMgY5UN3q7iv60=;
-        b=cnzrPUBTfJgcbYioR1pTTzMZRSIMIoRQVwEW4nhb4r0KNYMPcKbm0jIHLkO0HmSvin
-         F8WTQM/0IxynTfR9BlL75+C+bvQAoajeNAkn8gih5Q5WNRo7lnJUjUI/BCI/FWOziuqc
-         OI69O20GZvqwJR0x7KO9p0ebhYa8cf/PSBRv53WHafqqlr1hEX6rJB0bRp1jRyEtNHl5
-         VUJ8l7PPDmP70+nccoffZ8ETzCoVQOeBJVXMI+x02PQ6JXrEg4XTdHmsQtsLBAIibU9Q
-         e7/Bsp20bqfDuKNYgqw6pnyZNsUziAQmQAIB6h2EVcYyqBCdG0afG8SYo3u5qKcItZTy
-         akOA==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LsQBOGT7wlBeTtd5DGVJ1cAFGBGmgxUQGz4CBk4TLCk=;
+        b=pVKXsw6iTlJ2Rzs/YUhd1cSagr7G85BPX4jvG88avd78mLhxpwKSuSup+KefjXgIzd
+         D99eKJyFKqrIcZz8kgmmwl8B7bGRqu8tHo6szfdV1XbTdJ6NW7Daw49AkY/gMmuKncRn
+         t5QMRH81Y3OOOXlCBRJRI8iZUCYzpSb4T3mleVCNGWEdUdF1GzrTwDjUe9aEUSneQL4B
+         uGtLuJbyPxquXYAPyeyX8vY0Bgl/FCPAwmmQGAHRZObaR2TK/+SlD7+smuzdVvztSDN1
+         xpINYOf1vFWkuiS8IiRdmGwfG3W5cTmNRSeHvQH6W7ubVPkL/J0BJfpWgkDHYxjfInUl
+         uxNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references;
-        bh=QE+dG2A0JV3/hEHPfyxjosOSTNZMxpMgY5UN3q7iv60=;
-        b=UPS29DJOSa+peasyjxhuXJVA48X2zuFdhFsFFA8H1zAqxbVOjZKeWGge3ZigseRFYR
-         9kNFfKiymAc/ZLlXhJcGHLlOmwt+0axg6OriwwrzSzVrqQ/DYLkNmYMHzsXqXuGOmzql
-         nCXDsNtzQOJmmfUz7g4l8oSAW1dH7O/wbaReNrJqo90cRcDdCmEirjaFKppU5hAh2k67
-         GUukRh9+zH3ogTfptbW90cEW1QoGOj7qDW4kZ4N7PjCcVxxNBJXUvU7Q1oQLL3J9TiZu
-         LIeTZIGryPb6Srx5NcevOH65d9grrSPOEgYvts3NYTR40JwTYeTs7Rt2eBg//zdQAPCB
-         Utnw==
-X-Gm-Message-State: APjAAAUwtEAjFT2/36BflMQA0y8t/ZGXxsG0cIdKAPl5cEaCsL10GXcj
-        MMc8OV92dfX6PK5j/yFjJrw=
-X-Google-Smtp-Source: APXvYqxC11KnWSeiN5eMtkmkYbqRFY/l3kagiCasX3ICTl83gaDBeIVp0iYKh5Yvy+30IQ4kJid4RQ==
-X-Received: by 2002:a37:ae05:: with SMTP id x5mr4569104qke.243.1573154302813;
-        Thu, 07 Nov 2019 11:18:22 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:3f13])
-        by smtp.gmail.com with ESMTPSA id z17sm1355578qtq.69.2019.11.07.11.18.21
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LsQBOGT7wlBeTtd5DGVJ1cAFGBGmgxUQGz4CBk4TLCk=;
+        b=oaIV/6+MO7McMwpn0DERf+vqE4Dtgi4RbOmbIyVF7BwnCiG5W/dbL2mz7P21uAJ2Xq
+         nF0aYsRq9AftfeNw30AqyyHiroO9kU7DtgVYbmoYf8c+3Fpsu/iYvDiT7culZqmHQJ1Y
+         CHYW6h8S/XWy1cpzcopXv6bJo3DSZYQsFZ4LecigvpRHge9sml3uuJUGkBzW/Khs01nG
+         PvPYKztfODCkQJBDDMhcp3Q52Vc7Hb/Hie6gp47tnETxhTyE1hgWcf0n6e5h4DTeYdmh
+         fWoJEKqr4f5TAdVAMybWDaDbbKZ7avNaCeL9zA8pdhVivc63J42AurMTLX9PXSJGkCJ0
+         pmUw==
+X-Gm-Message-State: APjAAAVQcg4ot4YpaWtkC3u58ZCXJMG+HJUQzSSupJbvW3iG26f7vIri
+        k0MXe0onTsRQw+bVZpl5CgQk0g==
+X-Google-Smtp-Source: APXvYqytRM2OaAe3ZSxiJMqKi+CwRvtOJTQx6oa467TEQdWnroU8YHYetutKqI3f0YDuqGs+xrjF2A==
+X-Received: by 2002:a02:c9d2:: with SMTP id c18mr5844902jap.108.1573154929192;
+        Thu, 07 Nov 2019 11:28:49 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r25sm437420ilb.16.2019.11.07.11.28.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Nov 2019 11:18:22 -0800 (PST)
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk
+        Thu, 07 Nov 2019 11:28:48 -0800 (PST)
+Subject: Re: [PATCHSET v2 block/for-next] blk-cgroup: use cgroup rstat for IO
+ stats
+To:     Tejun Heo <tj@kernel.org>
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        hannes@cmpxchg.org, kernel-team@fb.com, Tejun Heo <tj@kernel.org>
-Subject: [PATCH 6/6] blk-cgroup: separate out blkg_rwstat under CONFIG_BLK_CGROUP_RWSTAT
-Date:   Thu,  7 Nov 2019 11:18:04 -0800
-Message-Id: <20191107191804.3735303-7-tj@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20191107191804.3735303-1-tj@kernel.org>
+        hannes@cmpxchg.org, kernel-team@fb.com
 References: <20191107191804.3735303-1-tj@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <2a6dd76b-6063-92b9-7b20-97f69bb4b344@kernel.dk>
+Date:   Thu, 7 Nov 2019 12:28:47 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
+MIME-Version: 1.0
+In-Reply-To: <20191107191804.3735303-1-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-blkg_rwstat is now only used by bfq-iosched and blk-throtl when on
-cgroup1.  Let's move it into its own files and gate it behind a config
-option.
+On 11/7/19 12:17 PM, Tejun Heo wrote:
+> Hello,
+> 
+> v2: Build fix when !DEBUG.
+> 
+> blk-cgroup IO stats currently use blkg_rwstat which unforutnately
+> requires walking all descendants recursively on read.  On systems with
+> a large number of cgroups (dead or alive), this can make each stat
+> read a substantially expensive operation.
+> 
+> This patch updates blk-cgroup to use cgroup rstat which makes stat
+> reading O(# descendants which have been active since last reading)
+> instead of O(# descendants).
+> 
+>   0001-bfq-iosched-relocate-bfqg_-rwstat-helpers.patch
+>   0002-bfq-iosched-stop-using-blkg-stat_bytes-and-stat_ios.patch
+>   0003-blk-throtl-stop-using-blkg-stat_bytes-and-stat_ios.patch
+>   0004-blk-cgroup-remove-now-unused-blkg_print_stat_-bytes-.patch
+>   0005-blk-cgroup-reimplement-basic-IO-stats-using-cgroup-r.patch
+>   0006-blk-cgroup-separate-out-blkg_rwstat-under-CONFIG_BLK.patch
+> 
+> 0001-0003 make bfq-iosched and blk-throtl use their own blkg_rwstat to
+> track basic IO stats on cgroup1 instead of sharing blk-cgroup core's.
+> 0004 is a follow-up cleanup.
+> 
+> 0005 switches blk-cgroup to cgroup rstat.
+> 
+> 0006 moves blkg_rwstat to its own files and gate it under a config
+> option as it's now only used by blk-throtl and bfq-iosched.
+> 
+> The patchset is on top of
+> 
+>    block/for-next  40afbe18b03a ("Merge branch 'for-5.5/drivers-post' into for-next")
+> + block/for-linus b0814361a25c ("blkcg: make blkcg_print_stat() print stats only for online blkgs")
+> 
+> and also available in the following git branch.
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-blkcg-rstat
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- block/Kconfig              |   4 +
- block/Kconfig.iosched      |   1 +
- block/Makefile             |   1 +
- block/bfq-iosched.h        |   2 +
- block/blk-cgroup-rwstat.c  | 129 ++++++++++++++++++++++++++++++
- block/blk-cgroup-rwstat.h  | 149 ++++++++++++++++++++++++++++++++++
- block/blk-cgroup.c         |  97 ----------------------
- block/blk-throttle.c       |   1 +
- include/linux/blk-cgroup.h | 159 -------------------------------------
- 9 files changed, 287 insertions(+), 256 deletions(-)
- create mode 100644 block/blk-cgroup-rwstat.c
- create mode 100644 block/blk-cgroup-rwstat.h
+Thanks, applied!
 
-diff --git a/block/Kconfig b/block/Kconfig
-index 41c0917ce622..c23094a14a2b 100644
---- a/block/Kconfig
-+++ b/block/Kconfig
-@@ -32,6 +32,9 @@ config BLK_RQ_ALLOC_TIME
- config BLK_SCSI_REQUEST
- 	bool
- 
-+config BLK_CGROUP_RWSTAT
-+	bool
-+
- config BLK_DEV_BSG
- 	bool "Block layer SG support v4"
- 	default y
-@@ -86,6 +89,7 @@ config BLK_DEV_ZONED
- config BLK_DEV_THROTTLING
- 	bool "Block layer bio throttling support"
- 	depends on BLK_CGROUP=y
-+	select BLK_CGROUP_RWSTAT
- 	---help---
- 	Block layer bio throttling support. It can be used to limit
- 	the IO rate to a device. IO rate policies are per cgroup and
-diff --git a/block/Kconfig.iosched b/block/Kconfig.iosched
-index b89310a022ad..7df14133adc8 100644
---- a/block/Kconfig.iosched
-+++ b/block/Kconfig.iosched
-@@ -31,6 +31,7 @@ config IOSCHED_BFQ
- config BFQ_GROUP_IOSCHED
-        bool "BFQ hierarchical scheduling support"
-        depends on IOSCHED_BFQ && BLK_CGROUP
-+       select BLK_CGROUP_RWSTAT
-        ---help---
- 
-        Enable hierarchical scheduling in BFQ, using the blkio
-diff --git a/block/Makefile b/block/Makefile
-index 9ef57ace90d4..205a5f2fef17 100644
---- a/block/Makefile
-+++ b/block/Makefile
-@@ -16,6 +16,7 @@ obj-$(CONFIG_BLK_SCSI_REQUEST)	+= scsi_ioctl.o
- obj-$(CONFIG_BLK_DEV_BSG)	+= bsg.o
- obj-$(CONFIG_BLK_DEV_BSGLIB)	+= bsg-lib.o
- obj-$(CONFIG_BLK_CGROUP)	+= blk-cgroup.o
-+obj-$(CONFIG_BLK_CGROUP_RWSTAT)	+= blk-cgroup-rwstat.o
- obj-$(CONFIG_BLK_DEV_THROTTLING)	+= blk-throttle.o
- obj-$(CONFIG_BLK_CGROUP_IOLATENCY)	+= blk-iolatency.o
- obj-$(CONFIG_BLK_CGROUP_IOCOST)	+= blk-iocost.o
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 2676c06218f1..9c82c1f35716 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -10,6 +10,8 @@
- #include <linux/hrtimer.h>
- #include <linux/blk-cgroup.h>
- 
-+#include "blk-cgroup-rwstat.h"
-+
- #define BFQ_IOPRIO_CLASSES	3
- #define BFQ_CL_IDLE_TIMEOUT	(HZ/5)
- 
-diff --git a/block/blk-cgroup-rwstat.c b/block/blk-cgroup-rwstat.c
-new file mode 100644
-index 000000000000..85d5790ac49b
---- /dev/null
-+++ b/block/blk-cgroup-rwstat.c
-@@ -0,0 +1,129 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Legacy blkg rwstat helpers enabled by CONFIG_BLK_CGROUP_RWSTAT.
-+ * Do not use in new code.
-+ */
-+#include "blk-cgroup-rwstat.h"
-+
-+int blkg_rwstat_init(struct blkg_rwstat *rwstat, gfp_t gfp)
-+{
-+	int i, ret;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++) {
-+		ret = percpu_counter_init(&rwstat->cpu_cnt[i], 0, gfp);
-+		if (ret) {
-+			while (--i >= 0)
-+				percpu_counter_destroy(&rwstat->cpu_cnt[i]);
-+			return ret;
-+		}
-+		atomic64_set(&rwstat->aux_cnt[i], 0);
-+	}
-+	return 0;
-+}
-+EXPORT_SYMBOL_GPL(blkg_rwstat_init);
-+
-+void blkg_rwstat_exit(struct blkg_rwstat *rwstat)
-+{
-+	int i;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+		percpu_counter_destroy(&rwstat->cpu_cnt[i]);
-+}
-+EXPORT_SYMBOL_GPL(blkg_rwstat_exit);
-+
-+/**
-+ * __blkg_prfill_rwstat - prfill helper for a blkg_rwstat
-+ * @sf: seq_file to print to
-+ * @pd: policy private data of interest
-+ * @rwstat: rwstat to print
-+ *
-+ * Print @rwstat to @sf for the device assocaited with @pd.
-+ */
-+u64 __blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
-+			 const struct blkg_rwstat_sample *rwstat)
-+{
-+	static const char *rwstr[] = {
-+		[BLKG_RWSTAT_READ]	= "Read",
-+		[BLKG_RWSTAT_WRITE]	= "Write",
-+		[BLKG_RWSTAT_SYNC]	= "Sync",
-+		[BLKG_RWSTAT_ASYNC]	= "Async",
-+		[BLKG_RWSTAT_DISCARD]	= "Discard",
-+	};
-+	const char *dname = blkg_dev_name(pd->blkg);
-+	u64 v;
-+	int i;
-+
-+	if (!dname)
-+		return 0;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+		seq_printf(sf, "%s %s %llu\n", dname, rwstr[i],
-+			   rwstat->cnt[i]);
-+
-+	v = rwstat->cnt[BLKG_RWSTAT_READ] +
-+		rwstat->cnt[BLKG_RWSTAT_WRITE] +
-+		rwstat->cnt[BLKG_RWSTAT_DISCARD];
-+	seq_printf(sf, "%s Total %llu\n", dname, v);
-+	return v;
-+}
-+EXPORT_SYMBOL_GPL(__blkg_prfill_rwstat);
-+
-+/**
-+ * blkg_prfill_rwstat - prfill callback for blkg_rwstat
-+ * @sf: seq_file to print to
-+ * @pd: policy private data of interest
-+ * @off: offset to the blkg_rwstat in @pd
-+ *
-+ * prfill callback for printing a blkg_rwstat.
-+ */
-+u64 blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
-+		       int off)
-+{
-+	struct blkg_rwstat_sample rwstat = { };
-+
-+	blkg_rwstat_read((void *)pd + off, &rwstat);
-+	return __blkg_prfill_rwstat(sf, pd, &rwstat);
-+}
-+EXPORT_SYMBOL_GPL(blkg_prfill_rwstat);
-+
-+/**
-+ * blkg_rwstat_recursive_sum - collect hierarchical blkg_rwstat
-+ * @blkg: blkg of interest
-+ * @pol: blkcg_policy which contains the blkg_rwstat
-+ * @off: offset to the blkg_rwstat in blkg_policy_data or @blkg
-+ * @sum: blkg_rwstat_sample structure containing the results
-+ *
-+ * Collect the blkg_rwstat specified by @blkg, @pol and @off and all its
-+ * online descendants and their aux counts.  The caller must be holding the
-+ * queue lock for online tests.
-+ *
-+ * If @pol is NULL, blkg_rwstat is at @off bytes into @blkg; otherwise, it
-+ * is at @off bytes into @blkg's blkg_policy_data of the policy.
-+ */
-+void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
-+		int off, struct blkg_rwstat_sample *sum)
-+{
-+	struct blkcg_gq *pos_blkg;
-+	struct cgroup_subsys_state *pos_css;
-+	unsigned int i;
-+
-+	lockdep_assert_held(&blkg->q->queue_lock);
-+
-+	rcu_read_lock();
-+	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
-+		struct blkg_rwstat *rwstat;
-+
-+		if (!pos_blkg->online)
-+			continue;
-+
-+		if (pol)
-+			rwstat = (void *)blkg_to_pd(pos_blkg, pol) + off;
-+		else
-+			rwstat = (void *)pos_blkg + off;
-+
-+		for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+			sum->cnt[i] = blkg_rwstat_read_counter(rwstat, i);
-+	}
-+	rcu_read_unlock();
-+}
-+EXPORT_SYMBOL_GPL(blkg_rwstat_recursive_sum);
-diff --git a/block/blk-cgroup-rwstat.h b/block/blk-cgroup-rwstat.h
-new file mode 100644
-index 000000000000..ee746919c41f
---- /dev/null
-+++ b/block/blk-cgroup-rwstat.h
-@@ -0,0 +1,149 @@
-+/* SPDX-License-Identifier: GPL-2.0
-+ *
-+ * Legacy blkg rwstat helpers enabled by CONFIG_BLK_CGROUP_RWSTAT.
-+ * Do not use in new code.
-+ */
-+#ifndef _BLK_CGROUP_RWSTAT_H
-+#define _BLK_CGROUP_RWSTAT_H
-+
-+#include <linux/blk-cgroup.h>
-+
-+enum blkg_rwstat_type {
-+	BLKG_RWSTAT_READ,
-+	BLKG_RWSTAT_WRITE,
-+	BLKG_RWSTAT_SYNC,
-+	BLKG_RWSTAT_ASYNC,
-+	BLKG_RWSTAT_DISCARD,
-+
-+	BLKG_RWSTAT_NR,
-+	BLKG_RWSTAT_TOTAL = BLKG_RWSTAT_NR,
-+};
-+
-+/*
-+ * blkg_[rw]stat->aux_cnt is excluded for local stats but included for
-+ * recursive.  Used to carry stats of dead children.
-+ */
-+struct blkg_rwstat {
-+	struct percpu_counter		cpu_cnt[BLKG_RWSTAT_NR];
-+	atomic64_t			aux_cnt[BLKG_RWSTAT_NR];
-+};
-+
-+struct blkg_rwstat_sample {
-+	u64				cnt[BLKG_RWSTAT_NR];
-+};
-+
-+static inline u64 blkg_rwstat_read_counter(struct blkg_rwstat *rwstat,
-+		unsigned int idx)
-+{
-+	return atomic64_read(&rwstat->aux_cnt[idx]) +
-+		percpu_counter_sum_positive(&rwstat->cpu_cnt[idx]);
-+}
-+
-+int blkg_rwstat_init(struct blkg_rwstat *rwstat, gfp_t gfp);
-+void blkg_rwstat_exit(struct blkg_rwstat *rwstat);
-+u64 __blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
-+			 const struct blkg_rwstat_sample *rwstat);
-+u64 blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
-+		       int off);
-+void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
-+		int off, struct blkg_rwstat_sample *sum);
-+
-+
-+/**
-+ * blkg_rwstat_add - add a value to a blkg_rwstat
-+ * @rwstat: target blkg_rwstat
-+ * @op: REQ_OP and flags
-+ * @val: value to add
-+ *
-+ * Add @val to @rwstat.  The counters are chosen according to @rw.  The
-+ * caller is responsible for synchronizing calls to this function.
-+ */
-+static inline void blkg_rwstat_add(struct blkg_rwstat *rwstat,
-+				   unsigned int op, uint64_t val)
-+{
-+	struct percpu_counter *cnt;
-+
-+	if (op_is_discard(op))
-+		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_DISCARD];
-+	else if (op_is_write(op))
-+		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_WRITE];
-+	else
-+		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_READ];
-+
-+	percpu_counter_add_batch(cnt, val, BLKG_STAT_CPU_BATCH);
-+
-+	if (op_is_sync(op))
-+		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_SYNC];
-+	else
-+		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_ASYNC];
-+
-+	percpu_counter_add_batch(cnt, val, BLKG_STAT_CPU_BATCH);
-+}
-+
-+/**
-+ * blkg_rwstat_read - read the current values of a blkg_rwstat
-+ * @rwstat: blkg_rwstat to read
-+ *
-+ * Read the current snapshot of @rwstat and return it in the aux counts.
-+ */
-+static inline void blkg_rwstat_read(struct blkg_rwstat *rwstat,
-+		struct blkg_rwstat_sample *result)
-+{
-+	int i;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+		result->cnt[i] =
-+			percpu_counter_sum_positive(&rwstat->cpu_cnt[i]);
-+}
-+
-+/**
-+ * blkg_rwstat_total - read the total count of a blkg_rwstat
-+ * @rwstat: blkg_rwstat to read
-+ *
-+ * Return the total count of @rwstat regardless of the IO direction.  This
-+ * function can be called without synchronization and takes care of u64
-+ * atomicity.
-+ */
-+static inline uint64_t blkg_rwstat_total(struct blkg_rwstat *rwstat)
-+{
-+	struct blkg_rwstat_sample tmp = { };
-+
-+	blkg_rwstat_read(rwstat, &tmp);
-+	return tmp.cnt[BLKG_RWSTAT_READ] + tmp.cnt[BLKG_RWSTAT_WRITE];
-+}
-+
-+/**
-+ * blkg_rwstat_reset - reset a blkg_rwstat
-+ * @rwstat: blkg_rwstat to reset
-+ */
-+static inline void blkg_rwstat_reset(struct blkg_rwstat *rwstat)
-+{
-+	int i;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++) {
-+		percpu_counter_set(&rwstat->cpu_cnt[i], 0);
-+		atomic64_set(&rwstat->aux_cnt[i], 0);
-+	}
-+}
-+
-+/**
-+ * blkg_rwstat_add_aux - add a blkg_rwstat into another's aux count
-+ * @to: the destination blkg_rwstat
-+ * @from: the source
-+ *
-+ * Add @from's count including the aux one to @to's aux count.
-+ */
-+static inline void blkg_rwstat_add_aux(struct blkg_rwstat *to,
-+				       struct blkg_rwstat *from)
-+{
-+	u64 sum[BLKG_RWSTAT_NR];
-+	int i;
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+		sum[i] = percpu_counter_sum_positive(&from->cpu_cnt[i]);
-+
-+	for (i = 0; i < BLKG_RWSTAT_NR; i++)
-+		atomic64_add(sum[i] + atomic64_read(&from->aux_cnt[i]),
-+			     &to->aux_cnt[i]);
-+}
-+#endif	/* _BLK_CGROUP_RWSTAT_H */
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index b3429be62057..708dea92dac8 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -561,103 +561,6 @@ u64 __blkg_prfill_u64(struct seq_file *sf, struct blkg_policy_data *pd, u64 v)
- }
- EXPORT_SYMBOL_GPL(__blkg_prfill_u64);
- 
--/**
-- * __blkg_prfill_rwstat - prfill helper for a blkg_rwstat
-- * @sf: seq_file to print to
-- * @pd: policy private data of interest
-- * @rwstat: rwstat to print
-- *
-- * Print @rwstat to @sf for the device assocaited with @pd.
-- */
--u64 __blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
--			 const struct blkg_rwstat_sample *rwstat)
--{
--	static const char *rwstr[] = {
--		[BLKG_RWSTAT_READ]	= "Read",
--		[BLKG_RWSTAT_WRITE]	= "Write",
--		[BLKG_RWSTAT_SYNC]	= "Sync",
--		[BLKG_RWSTAT_ASYNC]	= "Async",
--		[BLKG_RWSTAT_DISCARD]	= "Discard",
--	};
--	const char *dname = blkg_dev_name(pd->blkg);
--	u64 v;
--	int i;
--
--	if (!dname)
--		return 0;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		seq_printf(sf, "%s %s %llu\n", dname, rwstr[i],
--			   rwstat->cnt[i]);
--
--	v = rwstat->cnt[BLKG_RWSTAT_READ] +
--		rwstat->cnt[BLKG_RWSTAT_WRITE] +
--		rwstat->cnt[BLKG_RWSTAT_DISCARD];
--	seq_printf(sf, "%s Total %llu\n", dname, v);
--	return v;
--}
--EXPORT_SYMBOL_GPL(__blkg_prfill_rwstat);
--
--/**
-- * blkg_prfill_rwstat - prfill callback for blkg_rwstat
-- * @sf: seq_file to print to
-- * @pd: policy private data of interest
-- * @off: offset to the blkg_rwstat in @pd
-- *
-- * prfill callback for printing a blkg_rwstat.
-- */
--u64 blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
--		       int off)
--{
--	struct blkg_rwstat_sample rwstat = { };
--
--	blkg_rwstat_read((void *)pd + off, &rwstat);
--	return __blkg_prfill_rwstat(sf, pd, &rwstat);
--}
--EXPORT_SYMBOL_GPL(blkg_prfill_rwstat);
--
--/**
-- * blkg_rwstat_recursive_sum - collect hierarchical blkg_rwstat
-- * @blkg: blkg of interest
-- * @pol: blkcg_policy which contains the blkg_rwstat
-- * @off: offset to the blkg_rwstat in blkg_policy_data or @blkg
-- * @sum: blkg_rwstat_sample structure containing the results
-- *
-- * Collect the blkg_rwstat specified by @blkg, @pol and @off and all its
-- * online descendants and their aux counts.  The caller must be holding the
-- * queue lock for online tests.
-- *
-- * If @pol is NULL, blkg_rwstat is at @off bytes into @blkg; otherwise, it
-- * is at @off bytes into @blkg's blkg_policy_data of the policy.
-- */
--void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
--		int off, struct blkg_rwstat_sample *sum)
--{
--	struct blkcg_gq *pos_blkg;
--	struct cgroup_subsys_state *pos_css;
--	unsigned int i;
--
--	lockdep_assert_held(&blkg->q->queue_lock);
--
--	rcu_read_lock();
--	blkg_for_each_descendant_pre(pos_blkg, pos_css, blkg) {
--		struct blkg_rwstat *rwstat;
--
--		if (!pos_blkg->online)
--			continue;
--
--		if (pol)
--			rwstat = (void *)blkg_to_pd(pos_blkg, pol) + off;
--		else
--			rwstat = (void *)pos_blkg + off;
--
--		for (i = 0; i < BLKG_RWSTAT_NR; i++)
--			sum->cnt[i] = blkg_rwstat_read_counter(rwstat, i);
--	}
--	rcu_read_unlock();
--}
--EXPORT_SYMBOL_GPL(blkg_rwstat_recursive_sum);
--
- /* Performs queue bypass and policy enabled checks then looks up blkg. */
- static struct blkcg_gq *blkg_lookup_check(struct blkcg *blkcg,
- 					  const struct blkcg_policy *pol,
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 2d0fc73d9781..98233c9c65a8 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -12,6 +12,7 @@
- #include <linux/blktrace_api.h>
- #include <linux/blk-cgroup.h>
- #include "blk.h"
-+#include "blk-cgroup-rwstat.h"
- 
- /* Max dispatch from a group in 1 round */
- static int throtl_grp_quantum = 8;
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index 867ab391e409..48a66738143d 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -41,17 +41,6 @@ enum blkg_iostat_type {
- 	BLKG_IOSTAT_NR,
- };
- 
--enum blkg_rwstat_type {
--	BLKG_RWSTAT_READ,
--	BLKG_RWSTAT_WRITE,
--	BLKG_RWSTAT_SYNC,
--	BLKG_RWSTAT_ASYNC,
--	BLKG_RWSTAT_DISCARD,
--
--	BLKG_RWSTAT_NR,
--	BLKG_RWSTAT_TOTAL = BLKG_RWSTAT_NR,
--};
--
- struct blkcg_gq;
- 
- struct blkcg {
-@@ -82,19 +71,6 @@ struct blkg_iostat_set {
- 	struct blkg_iostat		last;
- };
- 
--/*
-- * blkg_[rw]stat->aux_cnt is excluded for local stats but included for
-- * recursive.  Used to carry stats of dead children.
-- */
--struct blkg_rwstat {
--	struct percpu_counter		cpu_cnt[BLKG_RWSTAT_NR];
--	atomic64_t			aux_cnt[BLKG_RWSTAT_NR];
--};
--
--struct blkg_rwstat_sample {
--	u64				cnt[BLKG_RWSTAT_NR];
--};
--
- /*
-  * A blkcg_gq (blkg) is association between a block cgroup (blkcg) and a
-  * request_queue (q).  This is used by blkcg policies which need to track
-@@ -223,13 +199,6 @@ int blkcg_activate_policy(struct request_queue *q,
- void blkcg_deactivate_policy(struct request_queue *q,
- 			     const struct blkcg_policy *pol);
- 
--static inline u64 blkg_rwstat_read_counter(struct blkg_rwstat *rwstat,
--		unsigned int idx)
--{
--	return atomic64_read(&rwstat->aux_cnt[idx]) +
--		percpu_counter_sum_positive(&rwstat->cpu_cnt[idx]);
--}
--
- const char *blkg_dev_name(struct blkcg_gq *blkg);
- void blkcg_print_blkgs(struct seq_file *sf, struct blkcg *blkcg,
- 		       u64 (*prfill)(struct seq_file *,
-@@ -237,12 +206,6 @@ void blkcg_print_blkgs(struct seq_file *sf, struct blkcg *blkcg,
- 		       const struct blkcg_policy *pol, int data,
- 		       bool show_total);
- u64 __blkg_prfill_u64(struct seq_file *sf, struct blkg_policy_data *pd, u64 v);
--u64 __blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
--			 const struct blkg_rwstat_sample *rwstat);
--u64 blkg_prfill_rwstat(struct seq_file *sf, struct blkg_policy_data *pd,
--		       int off);
--void blkg_rwstat_recursive_sum(struct blkcg_gq *blkg, struct blkcg_policy *pol,
--		int off, struct blkg_rwstat_sample *sum);
- 
- struct blkg_conf_ctx {
- 	struct gendisk			*disk;
-@@ -594,128 +557,6 @@ static inline void blkg_put(struct blkcg_gq *blkg)
- 		if (((d_blkg) = __blkg_lookup(css_to_blkcg(pos_css),	\
- 					      (p_blkg)->q, false)))
- 
--static inline int blkg_rwstat_init(struct blkg_rwstat *rwstat, gfp_t gfp)
--{
--	int i, ret;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++) {
--		ret = percpu_counter_init(&rwstat->cpu_cnt[i], 0, gfp);
--		if (ret) {
--			while (--i >= 0)
--				percpu_counter_destroy(&rwstat->cpu_cnt[i]);
--			return ret;
--		}
--		atomic64_set(&rwstat->aux_cnt[i], 0);
--	}
--	return 0;
--}
--
--static inline void blkg_rwstat_exit(struct blkg_rwstat *rwstat)
--{
--	int i;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		percpu_counter_destroy(&rwstat->cpu_cnt[i]);
--}
--
--/**
-- * blkg_rwstat_add - add a value to a blkg_rwstat
-- * @rwstat: target blkg_rwstat
-- * @op: REQ_OP and flags
-- * @val: value to add
-- *
-- * Add @val to @rwstat.  The counters are chosen according to @rw.  The
-- * caller is responsible for synchronizing calls to this function.
-- */
--static inline void blkg_rwstat_add(struct blkg_rwstat *rwstat,
--				   unsigned int op, uint64_t val)
--{
--	struct percpu_counter *cnt;
--
--	if (op_is_discard(op))
--		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_DISCARD];
--	else if (op_is_write(op))
--		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_WRITE];
--	else
--		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_READ];
--
--	percpu_counter_add_batch(cnt, val, BLKG_STAT_CPU_BATCH);
--
--	if (op_is_sync(op))
--		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_SYNC];
--	else
--		cnt = &rwstat->cpu_cnt[BLKG_RWSTAT_ASYNC];
--
--	percpu_counter_add_batch(cnt, val, BLKG_STAT_CPU_BATCH);
--}
--
--/**
-- * blkg_rwstat_read - read the current values of a blkg_rwstat
-- * @rwstat: blkg_rwstat to read
-- *
-- * Read the current snapshot of @rwstat and return it in the aux counts.
-- */
--static inline void blkg_rwstat_read(struct blkg_rwstat *rwstat,
--		struct blkg_rwstat_sample *result)
--{
--	int i;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		result->cnt[i] =
--			percpu_counter_sum_positive(&rwstat->cpu_cnt[i]);
--}
--
--/**
-- * blkg_rwstat_total - read the total count of a blkg_rwstat
-- * @rwstat: blkg_rwstat to read
-- *
-- * Return the total count of @rwstat regardless of the IO direction.  This
-- * function can be called without synchronization and takes care of u64
-- * atomicity.
-- */
--static inline uint64_t blkg_rwstat_total(struct blkg_rwstat *rwstat)
--{
--	struct blkg_rwstat_sample tmp = { };
--
--	blkg_rwstat_read(rwstat, &tmp);
--	return tmp.cnt[BLKG_RWSTAT_READ] + tmp.cnt[BLKG_RWSTAT_WRITE];
--}
--
--/**
-- * blkg_rwstat_reset - reset a blkg_rwstat
-- * @rwstat: blkg_rwstat to reset
-- */
--static inline void blkg_rwstat_reset(struct blkg_rwstat *rwstat)
--{
--	int i;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++) {
--		percpu_counter_set(&rwstat->cpu_cnt[i], 0);
--		atomic64_set(&rwstat->aux_cnt[i], 0);
--	}
--}
--
--/**
-- * blkg_rwstat_add_aux - add a blkg_rwstat into another's aux count
-- * @to: the destination blkg_rwstat
-- * @from: the source
-- *
-- * Add @from's count including the aux one to @to's aux count.
-- */
--static inline void blkg_rwstat_add_aux(struct blkg_rwstat *to,
--				       struct blkg_rwstat *from)
--{
--	u64 sum[BLKG_RWSTAT_NR];
--	int i;
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		sum[i] = percpu_counter_sum_positive(&from->cpu_cnt[i]);
--
--	for (i = 0; i < BLKG_RWSTAT_NR; i++)
--		atomic64_add(sum[i] + atomic64_read(&from->aux_cnt[i]),
--			     &to->aux_cnt[i]);
--}
--
- #ifdef CONFIG_BLK_DEV_THROTTLING
- extern bool blk_throtl_bio(struct request_queue *q, struct blkcg_gq *blkg,
- 			   struct bio *bio);
 -- 
-2.17.1
+Jens Axboe
 
