@@ -2,38 +2,38 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 94FA0F2EB8
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 14:01:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BFFF30E7
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 15:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388537AbfKGNBq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Nov 2019 08:01:46 -0500
-Received: from mga14.intel.com ([192.55.52.115]:15470 "EHLO mga14.intel.com"
+        id S1728568AbfKGOL4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Nov 2019 09:11:56 -0500
+Received: from mga18.intel.com ([134.134.136.126]:27155 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726873AbfKGNBq (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 7 Nov 2019 08:01:46 -0500
+        id S1726810AbfKGOL4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 7 Nov 2019 09:11:56 -0500
 X-Amp-Result: UNKNOWN
 X-Amp-Original-Verdict: FILE UNKNOWN
 X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Nov 2019 05:01:43 -0800
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga106.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 07 Nov 2019 06:11:50 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.68,278,1569308400"; 
-   d="gz'50?scan'50,208,50";a="233250644"
+   d="gz'50?scan'50,208,50";a="404109498"
 Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga002.fm.intel.com with ESMTP; 07 Nov 2019 05:01:41 -0800
+  by fmsmga006.fm.intel.com with ESMTP; 07 Nov 2019 06:11:48 -0800
 Received: from kbuild by lkp-server01 with local (Exim 4.89)
         (envelope-from <lkp@intel.com>)
-        id 1iShPy-0002Q0-2W; Thu, 07 Nov 2019 21:01:42 +0800
-Date:   Thu, 7 Nov 2019 21:01:08 +0800
+        id 1iSiVo-000A2C-Fu; Thu, 07 Nov 2019 22:11:48 +0800
+Date:   Thu, 7 Nov 2019 22:11:41 +0800
 From:   kbuild test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
 Cc:     kbuild-all@lists.01.org, cgroups@vger.kernel.org
-Subject: [cgroup:review-blkcg-rstat 2/6] block/bfq-cgroup.c:1245:15: error:
- 'bfqg_print_rwstat' undeclared here (not in a function); did you mean
- 'blkg_prfill_rwstat'?
-Message-ID: <201911072105.HDGPiQdP%lkp@intel.com>
+Subject: [cgroup:review-blkcg-rstat 4/6] block/bfq-cgroup.c:1288:15: error:
+ 'bfqg_print_rwstat_recursive' undeclared here (not in a function); did you
+ mean 'bfqg_print_rwstat'?
+Message-ID: <201911072215.zxvTbnkE%lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="76mvkez5eoratp34"
+Content-Type: multipart/mixed; boundary="lxyzna7ivdzajllp"
 Content-Disposition: inline
 X-Patchwork-Hint: ignore
 User-Agent: NeoMutt/20170113 (1.7.2)
@@ -43,19 +43,19 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---76mvkez5eoratp34
+--lxyzna7ivdzajllp
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 tree:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git review-blkcg-rstat
 head:   f86f96284bcfa2446930adb116ee42788e43a571
-commit: ca1d91e70679511777232393542c36736f74ec03 [2/6] bfq-iosched: stop using blkg->stat_bytes and ->stat_ios
+commit: daa8610d87782e3d7885a2c0a4de5687fc158cac [4/6] blk-cgroup: remove now unused blkg_print_stat_{bytes|ios}_recursive()
 config: s390-debug_defconfig (attached as .config)
 compiler: s390-linux-gcc (GCC) 7.4.0
 reproduce:
         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
         chmod +x ~/bin/make.cross
-        git checkout ca1d91e70679511777232393542c36736f74ec03
+        git checkout daa8610d87782e3d7885a2c0a4de5687fc158cac
         # save the attached .config to linux build tree
         GCC_VERSION=7.4.0 make.cross ARCH=s390 
 
@@ -64,155 +64,161 @@ Reported-by: kbuild test robot <lkp@intel.com>
 
 All errors (new ones prefixed by >>):
 
->> block/bfq-cgroup.c:1245:15: error: 'bfqg_print_rwstat' undeclared here (not in a function); did you mean 'blkg_prfill_rwstat'?
+   block/bfq-cgroup.c:1245:15: error: 'bfqg_print_rwstat' undeclared here (not in a function); did you mean 'blkg_prfill_rwstat'?
       .seq_show = bfqg_print_rwstat,
                   ^~~~~~~~~~~~~~~~~
                   blkg_prfill_rwstat
-   block/bfq-cgroup.c:1288:15: error: 'bfqg_print_rwstat_recursive' undeclared here (not in a function); did you mean 'blkg_print_stat_ios_recursive'?
+>> block/bfq-cgroup.c:1288:15: error: 'bfqg_print_rwstat_recursive' undeclared here (not in a function); did you mean 'bfqg_print_rwstat'?
       .seq_show = bfqg_print_rwstat_recursive,
                   ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-                  blkg_print_stat_ios_recursive
+                  bfqg_print_rwstat
 
-vim +1245 block/bfq-cgroup.c
+vim +1288 block/bfq-cgroup.c
 
-  1226	
-  1227	struct cftype bfq_blkcg_legacy_files[] = {
-  1228		{
-  1229			.name = "bfq.weight",
-  1230			.flags = CFTYPE_NOT_ON_ROOT,
-  1231			.seq_show = bfq_io_show_weight_legacy,
-  1232			.write_u64 = bfq_io_set_weight_legacy,
-  1233		},
-  1234		{
-  1235			.name = "bfq.weight_device",
-  1236			.flags = CFTYPE_NOT_ON_ROOT,
-  1237			.seq_show = bfq_io_show_weight,
-  1238			.write = bfq_io_set_weight,
-  1239		},
-  1240	
-  1241		/* statistics, covers only the tasks in the bfqg */
-  1242		{
-  1243			.name = "bfq.io_service_bytes",
-  1244			.private = offsetof(struct bfq_group, stats.bytes),
-> 1245			.seq_show = bfqg_print_rwstat,
-  1246		},
-  1247		{
-  1248			.name = "bfq.io_serviced",
-  1249			.private = offsetof(struct bfq_group, stats.ios),
-  1250			.seq_show = bfqg_print_rwstat,
-  1251		},
-  1252	#ifdef CONFIG_BFQ_CGROUP_DEBUG
-  1253		{
-  1254			.name = "bfq.time",
-  1255			.private = offsetof(struct bfq_group, stats.time),
-  1256			.seq_show = bfqg_print_stat,
-  1257		},
-  1258		{
-  1259			.name = "bfq.sectors",
-  1260			.seq_show = bfqg_print_stat_sectors,
-  1261		},
-  1262		{
-  1263			.name = "bfq.io_service_time",
-  1264			.private = offsetof(struct bfq_group, stats.service_time),
-  1265			.seq_show = bfqg_print_rwstat,
-  1266		},
-  1267		{
-  1268			.name = "bfq.io_wait_time",
-  1269			.private = offsetof(struct bfq_group, stats.wait_time),
-  1270			.seq_show = bfqg_print_rwstat,
-  1271		},
-  1272		{
-  1273			.name = "bfq.io_merged",
-  1274			.private = offsetof(struct bfq_group, stats.merged),
-  1275			.seq_show = bfqg_print_rwstat,
-  1276		},
-  1277		{
-  1278			.name = "bfq.io_queued",
-  1279			.private = offsetof(struct bfq_group, stats.queued),
-  1280			.seq_show = bfqg_print_rwstat,
-  1281		},
-  1282	#endif /* CONFIG_BFQ_CGROUP_DEBUG */
-  1283	
-  1284		/* the same statistics which cover the bfqg and its descendants */
-  1285		{
-  1286			.name = "bfq.io_service_bytes_recursive",
-  1287			.private = offsetof(struct bfq_group, stats.bytes),
-  1288			.seq_show = bfqg_print_rwstat_recursive,
-  1289		},
-  1290		{
-  1291			.name = "bfq.io_serviced_recursive",
-  1292			.private = offsetof(struct bfq_group, stats.ios),
-  1293			.seq_show = bfqg_print_rwstat_recursive,
-  1294		},
-  1295	#ifdef CONFIG_BFQ_CGROUP_DEBUG
-  1296		{
-  1297			.name = "bfq.time_recursive",
-  1298			.private = offsetof(struct bfq_group, stats.time),
-  1299			.seq_show = bfqg_print_stat_recursive,
-  1300		},
-  1301		{
-  1302			.name = "bfq.sectors_recursive",
-  1303			.seq_show = bfqg_print_stat_sectors_recursive,
-  1304		},
-  1305		{
-  1306			.name = "bfq.io_service_time_recursive",
-  1307			.private = offsetof(struct bfq_group, stats.service_time),
-  1308			.seq_show = bfqg_print_rwstat_recursive,
-  1309		},
-  1310		{
-  1311			.name = "bfq.io_wait_time_recursive",
-  1312			.private = offsetof(struct bfq_group, stats.wait_time),
-  1313			.seq_show = bfqg_print_rwstat_recursive,
-  1314		},
-  1315		{
-  1316			.name = "bfq.io_merged_recursive",
-  1317			.private = offsetof(struct bfq_group, stats.merged),
-  1318			.seq_show = bfqg_print_rwstat_recursive,
-  1319		},
-  1320		{
-  1321			.name = "bfq.io_queued_recursive",
-  1322			.private = offsetof(struct bfq_group, stats.queued),
-  1323			.seq_show = bfqg_print_rwstat_recursive,
-  1324		},
-  1325		{
-  1326			.name = "bfq.avg_queue_size",
-  1327			.seq_show = bfqg_print_avg_queue_size,
-  1328		},
-  1329		{
-  1330			.name = "bfq.group_wait_time",
-  1331			.private = offsetof(struct bfq_group, stats.group_wait_time),
-  1332			.seq_show = bfqg_print_stat,
-  1333		},
-  1334		{
-  1335			.name = "bfq.idle_time",
-  1336			.private = offsetof(struct bfq_group, stats.idle_time),
-  1337			.seq_show = bfqg_print_stat,
-  1338		},
-  1339		{
-  1340			.name = "bfq.empty_time",
-  1341			.private = offsetof(struct bfq_group, stats.empty_time),
-  1342			.seq_show = bfqg_print_stat,
-  1343		},
-  1344		{
-  1345			.name = "bfq.dequeue",
-  1346			.private = offsetof(struct bfq_group, stats.dequeue),
-  1347			.seq_show = bfqg_print_stat,
-  1348		},
-  1349	#endif	/* CONFIG_BFQ_CGROUP_DEBUG */
-  1350		{ }	/* terminate */
-  1351	};
-  1352	
+ea25da48086d3b Paolo Valente     2017-04-19  1226  
+ea25da48086d3b Paolo Valente     2017-04-19  1227  struct cftype bfq_blkcg_legacy_files[] = {
+ea25da48086d3b Paolo Valente     2017-04-19  1228  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1229  		.name = "bfq.weight",
+cf8929885de318 Jens Axboe        2019-06-10  1230  		.flags = CFTYPE_NOT_ON_ROOT,
+795fe54c2a8280 Fam Zheng         2019-08-28  1231  		.seq_show = bfq_io_show_weight_legacy,
+ea25da48086d3b Paolo Valente     2017-04-19  1232  		.write_u64 = bfq_io_set_weight_legacy,
+ea25da48086d3b Paolo Valente     2017-04-19  1233  	},
+795fe54c2a8280 Fam Zheng         2019-08-28  1234  	{
+795fe54c2a8280 Fam Zheng         2019-08-28  1235  		.name = "bfq.weight_device",
+795fe54c2a8280 Fam Zheng         2019-08-28  1236  		.flags = CFTYPE_NOT_ON_ROOT,
+795fe54c2a8280 Fam Zheng         2019-08-28  1237  		.seq_show = bfq_io_show_weight,
+795fe54c2a8280 Fam Zheng         2019-08-28  1238  		.write = bfq_io_set_weight,
+795fe54c2a8280 Fam Zheng         2019-08-28  1239  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1240  
+ea25da48086d3b Paolo Valente     2017-04-19  1241  	/* statistics, covers only the tasks in the bfqg */
+ea25da48086d3b Paolo Valente     2017-04-19  1242  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1243  		.name = "bfq.io_service_bytes",
+ca1d91e7067951 Tejun Heo         2019-11-06  1244  		.private = offsetof(struct bfq_group, stats.bytes),
+ca1d91e7067951 Tejun Heo         2019-11-06 @1245  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1246  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1247  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1248  		.name = "bfq.io_serviced",
+ca1d91e7067951 Tejun Heo         2019-11-06  1249  		.private = offsetof(struct bfq_group, stats.ios),
+ca1d91e7067951 Tejun Heo         2019-11-06  1250  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1251  	},
+8060c47ba853f1 Christoph Hellwig 2019-06-06  1252  #ifdef CONFIG_BFQ_CGROUP_DEBUG
+a33801e8b4735b Luca Miccio       2017-11-13  1253  	{
+a33801e8b4735b Luca Miccio       2017-11-13  1254  		.name = "bfq.time",
+a33801e8b4735b Luca Miccio       2017-11-13  1255  		.private = offsetof(struct bfq_group, stats.time),
+a33801e8b4735b Luca Miccio       2017-11-13  1256  		.seq_show = bfqg_print_stat,
+a33801e8b4735b Luca Miccio       2017-11-13  1257  	},
+a33801e8b4735b Luca Miccio       2017-11-13  1258  	{
+a33801e8b4735b Luca Miccio       2017-11-13  1259  		.name = "bfq.sectors",
+a33801e8b4735b Luca Miccio       2017-11-13  1260  		.seq_show = bfqg_print_stat_sectors,
+a33801e8b4735b Luca Miccio       2017-11-13  1261  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1262  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1263  		.name = "bfq.io_service_time",
+ea25da48086d3b Paolo Valente     2017-04-19  1264  		.private = offsetof(struct bfq_group, stats.service_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1265  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1266  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1267  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1268  		.name = "bfq.io_wait_time",
+ea25da48086d3b Paolo Valente     2017-04-19  1269  		.private = offsetof(struct bfq_group, stats.wait_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1270  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1271  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1272  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1273  		.name = "bfq.io_merged",
+ea25da48086d3b Paolo Valente     2017-04-19  1274  		.private = offsetof(struct bfq_group, stats.merged),
+ea25da48086d3b Paolo Valente     2017-04-19  1275  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1276  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1277  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1278  		.name = "bfq.io_queued",
+ea25da48086d3b Paolo Valente     2017-04-19  1279  		.private = offsetof(struct bfq_group, stats.queued),
+ea25da48086d3b Paolo Valente     2017-04-19  1280  		.seq_show = bfqg_print_rwstat,
+ea25da48086d3b Paolo Valente     2017-04-19  1281  	},
+8060c47ba853f1 Christoph Hellwig 2019-06-06  1282  #endif /* CONFIG_BFQ_CGROUP_DEBUG */
+ea25da48086d3b Paolo Valente     2017-04-19  1283  
+636b8fe86bede8 Angelo Ruocco     2019-04-08  1284  	/* the same statistics which cover the bfqg and its descendants */
+ea25da48086d3b Paolo Valente     2017-04-19  1285  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1286  		.name = "bfq.io_service_bytes_recursive",
+ca1d91e7067951 Tejun Heo         2019-11-06  1287  		.private = offsetof(struct bfq_group, stats.bytes),
+ca1d91e7067951 Tejun Heo         2019-11-06 @1288  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1289  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1290  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1291  		.name = "bfq.io_serviced_recursive",
+ca1d91e7067951 Tejun Heo         2019-11-06  1292  		.private = offsetof(struct bfq_group, stats.ios),
+ca1d91e7067951 Tejun Heo         2019-11-06  1293  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1294  	},
+8060c47ba853f1 Christoph Hellwig 2019-06-06  1295  #ifdef CONFIG_BFQ_CGROUP_DEBUG
+a33801e8b4735b Luca Miccio       2017-11-13  1296  	{
+a33801e8b4735b Luca Miccio       2017-11-13  1297  		.name = "bfq.time_recursive",
+a33801e8b4735b Luca Miccio       2017-11-13  1298  		.private = offsetof(struct bfq_group, stats.time),
+a33801e8b4735b Luca Miccio       2017-11-13  1299  		.seq_show = bfqg_print_stat_recursive,
+a33801e8b4735b Luca Miccio       2017-11-13  1300  	},
+a33801e8b4735b Luca Miccio       2017-11-13  1301  	{
+a33801e8b4735b Luca Miccio       2017-11-13  1302  		.name = "bfq.sectors_recursive",
+a33801e8b4735b Luca Miccio       2017-11-13  1303  		.seq_show = bfqg_print_stat_sectors_recursive,
+a33801e8b4735b Luca Miccio       2017-11-13  1304  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1305  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1306  		.name = "bfq.io_service_time_recursive",
+ea25da48086d3b Paolo Valente     2017-04-19  1307  		.private = offsetof(struct bfq_group, stats.service_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1308  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1309  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1310  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1311  		.name = "bfq.io_wait_time_recursive",
+ea25da48086d3b Paolo Valente     2017-04-19  1312  		.private = offsetof(struct bfq_group, stats.wait_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1313  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1314  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1315  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1316  		.name = "bfq.io_merged_recursive",
+ea25da48086d3b Paolo Valente     2017-04-19  1317  		.private = offsetof(struct bfq_group, stats.merged),
+ea25da48086d3b Paolo Valente     2017-04-19  1318  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1319  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1320  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1321  		.name = "bfq.io_queued_recursive",
+ea25da48086d3b Paolo Valente     2017-04-19  1322  		.private = offsetof(struct bfq_group, stats.queued),
+ea25da48086d3b Paolo Valente     2017-04-19  1323  		.seq_show = bfqg_print_rwstat_recursive,
+ea25da48086d3b Paolo Valente     2017-04-19  1324  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1325  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1326  		.name = "bfq.avg_queue_size",
+ea25da48086d3b Paolo Valente     2017-04-19  1327  		.seq_show = bfqg_print_avg_queue_size,
+ea25da48086d3b Paolo Valente     2017-04-19  1328  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1329  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1330  		.name = "bfq.group_wait_time",
+ea25da48086d3b Paolo Valente     2017-04-19  1331  		.private = offsetof(struct bfq_group, stats.group_wait_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1332  		.seq_show = bfqg_print_stat,
+ea25da48086d3b Paolo Valente     2017-04-19  1333  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1334  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1335  		.name = "bfq.idle_time",
+ea25da48086d3b Paolo Valente     2017-04-19  1336  		.private = offsetof(struct bfq_group, stats.idle_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1337  		.seq_show = bfqg_print_stat,
+ea25da48086d3b Paolo Valente     2017-04-19  1338  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1339  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1340  		.name = "bfq.empty_time",
+ea25da48086d3b Paolo Valente     2017-04-19  1341  		.private = offsetof(struct bfq_group, stats.empty_time),
+ea25da48086d3b Paolo Valente     2017-04-19  1342  		.seq_show = bfqg_print_stat,
+ea25da48086d3b Paolo Valente     2017-04-19  1343  	},
+ea25da48086d3b Paolo Valente     2017-04-19  1344  	{
+ea25da48086d3b Paolo Valente     2017-04-19  1345  		.name = "bfq.dequeue",
+ea25da48086d3b Paolo Valente     2017-04-19  1346  		.private = offsetof(struct bfq_group, stats.dequeue),
+ea25da48086d3b Paolo Valente     2017-04-19  1347  		.seq_show = bfqg_print_stat,
+ea25da48086d3b Paolo Valente     2017-04-19  1348  	},
+8060c47ba853f1 Christoph Hellwig 2019-06-06  1349  #endif	/* CONFIG_BFQ_CGROUP_DEBUG */
+ea25da48086d3b Paolo Valente     2017-04-19  1350  	{ }	/* terminate */
+ea25da48086d3b Paolo Valente     2017-04-19  1351  };
+ea25da48086d3b Paolo Valente     2017-04-19  1352  
+
+:::::: The code at line 1288 was first introduced by commit
+:::::: ca1d91e70679511777232393542c36736f74ec03 bfq-iosched: stop using blkg->stat_bytes and ->stat_ios
+
+:::::: TO: Tejun Heo <tj@kernel.org>
+:::::: CC: Tejun Heo <tj@kernel.org>
 
 ---
 0-DAY kernel test infrastructure                 Open Source Technology Center
 https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
 
---76mvkez5eoratp34
+--lxyzna7ivdzajllp
 Content-Type: application/gzip
 Content-Disposition: attachment; filename=".config.gz"
 Content-Transfer-Encoding: base64
 
-H4sICLP7w10AAy5jb25maWcAjDzbctw2su/5iinnZbe2kkiWrcS7pQeQBDnIkARNgCONXliK
+H4sICAkhxF0AAy5jb25maWcAjDzbctw2su/5iinnZbe2kkiWrcS7pQeQBDnIkARNgCONXliK
 PHZU0cUljXbj8/WnG+ClAYIcp1LWsLsBNBpAX0H++MOPK/Z6eHq4Odzd3tzff1t92T/un28O
 +0+rz3f3+/+sErkqpV7xROifgTi/e3z9+5eXsw8nq/c/n/188tPz7flqs39+3N+v4qfHz3df
 XqH13dPjDz/+AP//CMCHr9DR879X2Oine2z/05fb29U/sjj+5+rXn9/9fAKEsSxTkbVx3ArV
@@ -562,4 +568,4 @@ UoiRqGYcsSGJaX5EDCDURqzVRwQtiWdR4bmqvah+wJbbEV+u3uMkEDjHtJdnli2e5orFqGxU
 2tLhyMaD6lTcCt4fmzU+nreBUoT7AiNXC2K5mwt8ari8tG99ZTX6Nu4S1ER6Yi+Mue5oHIvk
 cAZgm4XSA64GbUVsXK9MVAl1esJmXJv9Hz3EX+ZyKwEA
 
---76mvkez5eoratp34--
+--lxyzna7ivdzajllp--
