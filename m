@@ -2,84 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C572F338B
-	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 16:40:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C75D6F3627
+	for <lists+cgroups@lfdr.de>; Thu,  7 Nov 2019 18:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387561AbfKGPkQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Nov 2019 10:40:16 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:39313 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726810AbfKGPkQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 10:40:16 -0500
-Received: by mail-qk1-f194.google.com with SMTP id 15so2352822qkh.6
-        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2019 07:40:15 -0800 (PST)
+        id S1730713AbfKGRsN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Nov 2019 12:48:13 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:38131 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730543AbfKGRsI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Nov 2019 12:48:08 -0500
+Received: by mail-pg1-f194.google.com with SMTP id 15so2513549pgh.5
+        for <cgroups@vger.kernel.org>; Thu, 07 Nov 2019 09:48:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=mm2/epRihIKWPzX981ZQ74VuNWr9mY2U9BJpefxbeoA=;
-        b=mm1pXS2UQNFqUv4FCXd+L3asjqhVc3jTaOC3EGc9U2Yc9E9kAhPeqiRs9xSSjJtGZu
-         eYDiJh4Tpm012lg5Dv4NqQ7xFAUVE45hbj+ZPGXu5QIQ9BoJ0/wCub6+Az7m6N8OyXeW
-         418VaXb2RC2lNuDF4UPxMu3QFw6YjoqHp6d8JdTKU8xNtAh5vYUFKSXqwCyfinO4RmzR
-         6LMv0SRN/GmedM2Uq3dKpHcT+scsdi+9AfNAC4JgTguTfKJvcE7WdD5zTHjtrWljHW4h
-         mVze6C4iue7GFr9DusGAt0zkQcNC6OIfuX5SlS2HcC16fEf/iBT6RBoToKRg0jKDwliZ
-         bE4Q==
+        bh=YQHzfatweJlvu9QRgWqn6mLupzORKF19rwgbns+H/Ko=;
+        b=G8fRkvwVCgK+5AnZZD/V83YvXyFilTUx9GafaEg/RlOfkWwhafnHdqdNeGKXLF/H6K
+         FDoIV9FDSYGiZwaMLLnBtT4HOWe9rvBSeoXdkoOt977x30UGwRbKIQD62Y3e0SHPGkJE
+         zj18IxkktF05wkCUiif3Tune+pTbQR19EfTWV8nDz4Wk+HvNaFZ82cJrX2VmWcejNZCG
+         /iA/y8UqcJOl8F5Lh91S8tMoq40Go993jzHkeaTYmeYHGrX9dqqW6SRh5BZnroMcF8Jn
+         BD77+M4HBjqEt44AKkO6oPWfH6+/na5b+Omr1i/uNPazTemCNSqER5sX4i6vu+vqbhQq
+         hrYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=mm2/epRihIKWPzX981ZQ74VuNWr9mY2U9BJpefxbeoA=;
-        b=Dizocmozd6qPsQFmQf3sE2QTPjRkMbhC/+7UyeGyMQ+kQ0jEliFHJEQPH6PHa9+eM7
-         ZpZNHegjDrAvhi071S+am+IQMdIXSw4361gnfv/cmTELq8uKwgTDuEYHy95dbz7PXkIb
-         kJ0p4qLd70RXgVUrZCjSTkgWSmKKv3F6NZueC30dmK/hZqZz85hCG+6iJzgbslA9+AX4
-         DwePJOsShtEbaZ7JpIqIsSRXSV+vULK/i5s1PdkxAMQxL52tTs+2w2XgGxEcPThln2bv
-         rvTKL/IuelsNLts+OGEGB6jJNispWy+E7JXAOs3uBO01w7HtYh1ocjN4a/TrCaJN+Tbr
-         THtg==
-X-Gm-Message-State: APjAAAXp0vLXDe5hWImYxmba/P4FY3SGcAkKD/L8o7lYE00bEzlQvgyT
-        t5y6iC2+8SKQigtRelLxFY0=
-X-Google-Smtp-Source: APXvYqz+D6TKPFiN62hkvkIxGSX13hn4vWM00CxNz+vxr6fQCE09iuSfBF0oUYc4U6nNux3ly3s9GQ==
-X-Received: by 2002:a37:4716:: with SMTP id u22mr3411242qka.495.1573141215122;
-        Thu, 07 Nov 2019 07:40:15 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:3f13])
-        by smtp.gmail.com with ESMTPSA id i4sm1228270qtp.57.2019.11.07.07.40.14
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Nov 2019 07:40:14 -0800 (PST)
-Date:   Thu, 7 Nov 2019 07:40:13 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Honglei Wang <honglei.wang@oracle.com>
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        guro@fb.com, oleg@redhat.com
-Subject: Re: [PATCH v2] cgroup: freezer: don't change task and cgroups status
- unnecessarily
-Message-ID: <20191107154013.GW3622521@devbig004.ftw2.facebook.com>
-References: <20191030081810.18997-1-honglei.wang@oracle.com>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=YQHzfatweJlvu9QRgWqn6mLupzORKF19rwgbns+H/Ko=;
+        b=RR6KDfTiCHQ6kPBraYHur4+orzJSnPsgchKRfxdBkxMzfh/NWSmef7xKt0dTQ521iH
+         RSO/zevBNb0C8bEYkFdWH1AHWwSuXAVZRHL4RZGRCZNZLqJS7WT6OYZvCPm42+885Bq4
+         jhgDW4rUF+lNWux1++hkEjd9aHpHXCEtLm0TY0p1sx73pKSqtKkKegI2RZCSagfRg2wM
+         9mrq72edVVoM6mYAOecPgGf8jtx34XWW45grd+kiSL5gloWO45Yy69PUw5POz2JHtidN
+         oFQKJTG97//eMktIbKdpOK6QC/rdFvfiDlafeq7wWvBF9H9NXDygZ0NLDGaOYLQWzTkt
+         guNw==
+X-Gm-Message-State: APjAAAWgYrpfj5mTIlG705GU9uyXpiYO3tkCCuGvj+cGMOflSFtO+dAe
+        54d8vrdPEgyJ907RrulLxUIS+w==
+X-Google-Smtp-Source: APXvYqzAqvPs1jX+juk9qWnYhY1RhnF/vPkdqQeAI9VIRBxgjUBTjIXOsZmOImIrN/73qLNmV/iXGQ==
+X-Received: by 2002:a63:6f47:: with SMTP id k68mr5759534pgc.92.1573148887304;
+        Thu, 07 Nov 2019 09:48:07 -0800 (PST)
+Received: from localhost ([199.201.64.133])
+        by smtp.gmail.com with ESMTPSA id t12sm3323606pgv.45.2019.11.07.09.48.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 Nov 2019 09:48:06 -0800 (PST)
+Date:   Thu, 7 Nov 2019 09:45:55 -0800
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH 00/11] mm: fix page aging across multiple cgroups
+Message-ID: <20191107174555.GA116752@cmpxchg.org>
+References: <20190603210746.15800-1-hannes@cmpxchg.org>
+ <CALvZod7821vuP_KcOKZkzKu-6b_kzDPrximi3E-Ld95fd=zbMg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191030081810.18997-1-honglei.wang@oracle.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <CALvZod7821vuP_KcOKZkzKu-6b_kzDPrximi3E-Ld95fd=zbMg@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 04:18:10PM +0800, Honglei Wang wrote:
-> It's not necessary to adjust the task state and revisit the state
-> of source and destination cgroups if the cgroups are not in freeze
-> state and the task itself is not frozen.
+On Wed, Nov 06, 2019 at 06:50:25PM -0800, Shakeel Butt wrote:
+> On Mon, Jun 3, 2019 at 2:59 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > When applications are put into unconfigured cgroups for memory
+> > accounting purposes, the cgrouping itself should not change the
+> > behavior of the page reclaim code. We expect the VM to reclaim the
+> > coldest pages in the system. But right now the VM can reclaim hot
+> > pages in one cgroup while there is eligible cold cache in others.
+> >
+> > This is because one part of the reclaim algorithm isn't truly cgroup
+> > hierarchy aware: the inactive/active list balancing. That is the part
+> > that is supposed to protect hot cache data from one-off streaming IO.
+> >
+> > The recursive cgroup reclaim scheme will scan and rotate the physical
+> > LRU lists of each eligible cgroup at the same rate in a round-robin
+> > fashion, thereby establishing a relative order among the pages of all
+> > those cgroups. However, the inactive/active balancing decisions are
+> > made locally within each cgroup, so when a cgroup is running low on
+> > cold pages, its hot pages will get reclaimed - even when sibling
+> > cgroups have plenty of cold cache eligible in the same reclaim run.
+> >
+> > For example:
+> >
+> >    [root@ham ~]# head -n1 /proc/meminfo
+> >    MemTotal:        1016336 kB
+> >
+> >    [root@ham ~]# ./reclaimtest2.sh
+> >    Establishing 50M active files in cgroup A...
+> >    Hot pages cached: 12800/12800 workingset-a
+> >    Linearly scanning through 18G of file data in cgroup B:
+> >    real    0m4.269s
+> >    user    0m0.051s
+> >    sys     0m4.182s
+> >    Hot pages cached: 134/12800 workingset-a
+> >
 > 
-> And in this scenario, it wakes up the task who's not supposed to be
-> ready to run.
-> 
-> Don't do the unnecessary task state adjustment can help stop waking
-> up the task without a reason.
-> 
-> Signed-off-by: Honglei Wang <honglei.wang@oracle.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+> Can you share reclaimtest2.sh as well? Maybe a selftest to
+> monitor/test future changes.
 
-Applied to cgroup/for-5.5.
+I wish it were more portable, but it really only does what it says in
+the log output, in a pretty hacky way, with all parameters hard-coded
+to my test environment:
 
-Thanks.
+---
 
--- 
-tejun
+#!/bin/bash
+
+# this should protect workingset-a from workingset-b
+
+set -e
+#set -x
+
+echo Establishing 50M active files in cgroup A...
+rmdir /cgroup/workingset-a 2>/dev/null || true
+mkdir /cgroup/workingset-a
+echo $$ > /cgroup/workingset-a/cgroup.procs
+rm -f workingset-a
+dd of=workingset-a bs=1M count=0 seek=50 2>/dev/null >/dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+cat workingset-a > /dev/null
+echo -n "Hot pages cached: "
+./mincore workingset-a
+
+echo -n Linearly scanning through 2G of file data cgroup B:
+rmdir /cgroup/workingset-b >/dev/null || true
+mkdir /cgroup/workingset-b
+echo $$ > /cgroup/workingset-b/cgroup.procs
+rm -f workingset-b
+dd of=workingset-b bs=1M count=0 seek=2048 2>/dev/null >/dev/null
+time (
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null
+  cat workingset-b > /dev/null )
+echo -n "Hot pages cached: "
+./mincore workingset-a
