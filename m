@@ -2,61 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E05A8F588A
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2019 21:42:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFF3EF58AB
+	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2019 21:43:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726670AbfKHUd7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Nov 2019 15:33:59 -0500
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:44051 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbfKHUd7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Nov 2019 15:33:59 -0500
-Received: by mail-qk1-f193.google.com with SMTP id m16so6442825qki.11;
-        Fri, 08 Nov 2019 12:33:58 -0800 (PST)
+        id S1732369AbfKHUiD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 Nov 2019 15:38:03 -0500
+Received: from mail-il1-f194.google.com ([209.85.166.194]:45544 "EHLO
+        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732348AbfKHUiC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Nov 2019 15:38:02 -0500
+Received: by mail-il1-f194.google.com with SMTP id o18so6272497ils.12
+        for <cgroups@vger.kernel.org>; Fri, 08 Nov 2019 12:38:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=JEl7MHfooVnkdLi8v3TIezCImYnxmfOnxwApEqq8ixc=;
+        b=ZzSf2ZaN48hhIn2FY9lEQ2ehFsQOk+G25WsmzmrcO2nKBGJR6l8Gl9TEEBIyI6IkE3
+         dWEi6T24mXOR4/DpTp4qqtf5ubHfiYruO/UuPBiYynu6RC6h8PZ8nErFrJVOeYm4IvN4
+         1jE8XW1akm+SfADBwg71RD7+eOcKr60dk6AXSDpBBquEY4QUQvE0Kul3cPRXKnh3Su31
+         n++1XSSqHdGppxoI8+kZWhuobBk4CC35VRbJM28EIQnqD+gooU1sQ4OTqFRAjzGQ4DwW
+         wPVM0w3id2ZLcr/oDjn7gcmdLFcrAJXpb8QT85RGp8P7DCT8f2/ip9dACHe1BOuFVzKb
+         Xp1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=1KDdGme2UpEFnmAhINmNhjFi/nc2G5wHiD2TrUpJv34=;
-        b=CunJdFg4BYDI2EEsdh5lxRmT8tBGpq/UrMt4JyZwzmKPhYvlNlUMTQ8HbaxqvapN6F
-         CDzClYV4sux3Hr69yN6fT8BQRHPERwDBm0VyUUqj7xVURP00jHwIDnmS1jmbNcanJBZr
-         R0f1UsK1rctLjHDTiI4Vza8N3r7Qm/oQvAtc7EdGhgau3x87AM9cCsr9OgfRMbIKwfVp
-         cRNSLWhJsjMjtSVSSqwIu81VlbOm6r3DyZuAdEaBN6PMzURJ/HmcVoTOgMOPxch/fhPV
-         upox07Xc+yASjEGBQp2x4q2dDRJXApT5SstGsr0nsg7wvR1jTb5gpo1mqzJw9KPdsuHO
-         zR/g==
-X-Gm-Message-State: APjAAAVLEuJWRCBRWVcGn3ueDj4yzU/1v0+/7/dsdulx7jHdnV1J7fBX
-        dgO8oc3XsB0ccTdVZC+AtMY=
-X-Google-Smtp-Source: APXvYqxqREgxuQljP90fvsWT+oy5Bd9idOzRJPHjiJXxA/cs0GRieMlRAKmjcPrpKDrr1n2JBBdcxA==
-X-Received: by 2002:a37:72c3:: with SMTP id n186mr11217923qkc.166.1573245238017;
-        Fri, 08 Nov 2019 12:33:58 -0800 (PST)
-Received: from dennisz-mbp ([2620:10d:c091:500::1:ac97])
-        by smtp.gmail.com with ESMTPSA id x64sm3263515qkd.88.2019.11.08.12.33.56
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=JEl7MHfooVnkdLi8v3TIezCImYnxmfOnxwApEqq8ixc=;
+        b=KSLh32upAe3x/a9hzcGIypxWXYlfO89fk3Wep0hWe0zq6s9cfTe2ip+ebmEdSGaUzD
+         cdhcYQ7NWlA72GZyFKgxRx5p5sy5nDex/8RQfgGN5cN1cJjUN3GBWO454Cywwi/uDBe4
+         be2cLnbbQQbuqtcDI27n4nhkdGFE22eZ1SO0wOoLiND4I9y1gSqPuSGqy0rB+a0ZGT6j
+         RXDoBKBoa+D4+vUYTzYdWRjhgLbvieueA1azPNWElQeoUlyllznn79sSrYEJiK2Z7A6r
+         VTXSRSMt20RS0470NrDPQ1OU2dYYMsUROErqFu1tkKTlDFRGAnXtXEiDNzQPQkrxqDlU
+         juyg==
+X-Gm-Message-State: APjAAAUgKyIzR/LRqaUIIUez9NFzDKkpwc6X+Xy26ZZ+Ke95vYdG35KF
+        2nHwRc9/1Yzuk3AYQFUpI7hMEg==
+X-Google-Smtp-Source: APXvYqwJyAVK0n/v7Zq4zCD+dYuwbfMcOLBEiB0PWi+ezOf1pDT8KJoFXIJeKROs7oQdoFi8XMTQBw==
+X-Received: by 2002:a92:1d08:: with SMTP id d8mr15079003ild.262.1573245481639;
+        Fri, 08 Nov 2019 12:38:01 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id x18sm552819iob.70.2019.11.08.12.37.59
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 08 Nov 2019 12:33:57 -0800 (PST)
-Date:   Fri, 8 Nov 2019 15:33:55 -0500
-From:   Dennis Zhou <dennis@kernel.org>
+        Fri, 08 Nov 2019 12:38:00 -0800 (PST)
+Subject: Re: [PATCH block/for-linus] cgroup,writeback: don't switch wbs
+ immediately on dead wbs if the memcg is dead
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, kernel-team@fb.com,
-        Li Zefan <lizefan@huawei.com>,
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel-team@fb.com, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>, Jan Kara <jack@suse.cz>,
         Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
         Dennis Zhou <dennis@kernel.org>
-Subject: Re: [PATCH block/for-linus] cgroup,writeback: don't switch wbs
- immediately on dead wbs if the memcg is dead
-Message-ID: <20191108203355.GA54333@dennisz-mbp>
 References: <20191108201829.GA3728460@devbig004.ftw2.facebook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <8efb0b3d-0b61-462e-d7f7-b66685fb5733@kernel.dk>
+Date:   Fri, 8 Nov 2019 13:37:58 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20191108201829.GA3728460@devbig004.ftw2.facebook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Nov 08, 2019 at 12:18:29PM -0800, Tejun Heo wrote:
+On 11/8/19 1:18 PM, Tejun Heo wrote:
 > cgroup writeback tries to refresh the associated wb immediately if the
 > current wb is dead.  This is to avoid keeping issuing IOs on the stale
 > wb after memcg - blkcg association has changed (ie. when blkcg got
@@ -77,40 +90,11 @@ On Fri, Nov 08, 2019 at 12:18:29PM -0800, Tejun Heo wrote:
 > 
 > This is a simplified version of the following two patches:
 > 
->  * https://lore.kernel.org/linux-mm/20190513183053.GA73423@dennisz-mbp/
->  * http://lkml.kernel.org/r/156355839560.2063.5265687291430814589.stgit@buzz
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
-> Cc: Dennis Zhou <dennis@kernel.org>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Fixes: e8a7abf5a5bd ("writeback: disassociate inodes from dying bdi_writebacks")
-> ---
->  fs/fs-writeback.c |    9 ++++++---
->  1 file changed, 6 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 8461a6322039..335607b8c5c0 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -576,10 +576,13 @@ void wbc_attach_and_unlock_inode(struct writeback_control *wbc,
->  	spin_unlock(&inode->i_lock);
->  
->  	/*
-> -	 * A dying wb indicates that the memcg-blkcg mapping has changed
-> -	 * and a new wb is already serving the memcg.  Switch immediately.
-> +	 * A dying wb indicates that either the blkcg associated with the
-> +	 * memcg changed or the associated memcg is dying.  In the first
-> +	 * case, a replacement wb should already be available and we should
-> +	 * refresh the wb immediately.  In the second case, trying to
-> +	 * refresh will keep failing.
->  	 */
-> -	if (unlikely(wb_dying(wbc->wb)))
-> +	if (unlikely(wb_dying(wbc->wb) && !css_is_dying(wbc->wb->memcg_css)))
->  		inode_switch_wbs(inode, wbc->wb_id);
->  }
->  EXPORT_SYMBOL_GPL(wbc_attach_and_unlock_inode);
+>   * https://lore.kernel.org/linux-mm/20190513183053.GA73423@dennisz-mbp/
+>   * http://lkml.kernel.org/r/156355839560.2063.5265687291430814589.stgit@buzz
 
-Acked-by: Dennis Zhou <dennis@kernel.org>
+Applied for 5.4, thanks.
 
-Thanks,
-Dennis
+-- 
+Jens Axboe
+
