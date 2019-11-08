@@ -2,77 +2,214 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A6F5F59D5
-	for <lists+cgroups@lfdr.de>; Fri,  8 Nov 2019 22:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A66E7F5BDB
+	for <lists+cgroups@lfdr.de>; Sat,  9 Nov 2019 00:36:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731555AbfKHV04 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 Nov 2019 16:26:56 -0500
-Received: from mail-qk1-f182.google.com ([209.85.222.182]:47031 "EHLO
-        mail-qk1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730989AbfKHV04 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Nov 2019 16:26:56 -0500
-Received: by mail-qk1-f182.google.com with SMTP id h15so6560341qka.13
-        for <cgroups@vger.kernel.org>; Fri, 08 Nov 2019 13:26:55 -0800 (PST)
+        id S1726640AbfKHXgL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 Nov 2019 18:36:11 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:42233 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726349AbfKHXgJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 Nov 2019 18:36:09 -0500
+Received: by mail-oi1-f193.google.com with SMTP id i185so6767363oif.9
+        for <cgroups@vger.kernel.org>; Fri, 08 Nov 2019 15:36:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=content-transfer-encoding:from:mime-version:subject:date:message-id
-         :references:cc:in-reply-to:to;
-        bh=E/re/TtVqjhhFyMNUDrEMQoMA+rNSBWgaDnjt6xblfc=;
-        b=BGsscPnI0I/AhxQtkp1ur0VrFYXf5H8Fg7QmP8nllWAk3LB+1xRvuro/YNq+Wi4p5F
-         3ZAD5u8+aHKV6BCRpJFppf3VuxZKf/sv7n021xyePsMo0qyk4ioIipKyJxsfny2R6RX3
-         muOR0J1B2kxQSzV9581+eZYOESV3d8dZz1I/0lFZM3rKt3ovoGT+VSWRIahQ6OsN3IV1
-         s8FtMLqcLzCVTjdBygGBm4m5G43Y6e3kQ7cTLWjekKCGP5ylAKVgqVGK8DUT21Ht4cN8
-         7GXkMXTsKy8U08dIiAi7+G9AKRSNl22O/wb8ep0nz17TwjAIvaYLFkN2KBK6QMSY1A7d
-         ming==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=iDoGjHfNdP7CEHEDPPCtVFhc3W4zkYgSKdJEK3JXJd0=;
+        b=qRfysVkEgETlDzoUQQSvtUASI7EhYk4fThC5U9CCPg2HA60AvRpiM+eIJuvxwJatts
+         Tt29h6e4CWwvEhnG0fQZe40G9jvAXzWnDzTDI64eIgPGJvok2bmvbQfVR9/3sVp9QX9p
+         FfCY41q4VHptJUL4iGEQz51Ho4eDYl8fICsTixxXqRpFm8sSEwIGBYgdkaefai/km3QD
+         HcYJD51fKf/gyEDlKrnkkWmeUA0hDDJhvA5HE9PoEVdK/raVrX9QAb9kuOIErEQe+T21
+         dHIPeBGlWj5RDGkH5INfq9PqIyUVyi/GfcpijHghJlEa2m5M7u0ogxH17Hk9vGJmaSLn
+         VgJw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:content-transfer-encoding:from:mime-version
-         :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=E/re/TtVqjhhFyMNUDrEMQoMA+rNSBWgaDnjt6xblfc=;
-        b=Jxm0lhv38QnlAK1uhoO27xWAZIi7L8AeRr3h8TwzZgeWeTshec3WyR2ojPWeoX2svT
-         3x5PM3N+Bi/jaQwemVsX5tinM+NV9CLkXQnR7GVna/E7OaXUfwwLPxFmH+hX+gvhYW/U
-         UxPTWCPE/UvjGbuhPc3T5isgiiLhiFRmgzp4MYBlr5KKaLyEn5xDkMpQoxUf0b7T/S8/
-         swRr8PXjjaVvHcZ6AJrF5Aa5pmyvaTTChrLDhA4plGHiVbCO3aK83WK+Z9xIxvGsf3mM
-         9MtuCelZrRtoCTew56DgB2fLjcI8q3ejEKTaDmdBK/bqglI3vaI/oe31OHi8ssOoHHh2
-         wjow==
-X-Gm-Message-State: APjAAAW1S0XDoRJnS4PaCGkoGpNdJ4BQ8iF5McKks1p1liG84EGzhw42
-        TF54+BkYUAovqdUbRrxeLfi7rA==
-X-Google-Smtp-Source: APXvYqyLA9raRCjGEtQ5L5aO6bE7f5z5e7jdeJYvdN/uTfRWHR1m08qA/W6lvIBR0YH8Zrl54083xw==
-X-Received: by 2002:a37:9d86:: with SMTP id g128mr11128288qke.191.1573248415230;
-        Fri, 08 Nov 2019 13:26:55 -0800 (PST)
-Received: from ?IPv6:2600:1000:b04c:9cbe:6d67:a89d:e323:d2c? ([2600:1000:b04c:9cbe:6d67:a89d:e323:d2c])
-        by smtp.gmail.com with ESMTPSA id o2sm3375987qte.79.2019.11.08.13.26.54
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 08 Nov 2019 13:26:54 -0800 (PST)
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-From:   Qian Cai <cai@lca.pw>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH -next] mm/vmscan: fix an undefined behavior for zone id
-Date:   Fri, 8 Nov 2019 16:26:52 -0500
-Message-Id: <64E60F6F-7582-427B-8DD5-EF97B1656F5A@lca.pw>
-References: <20191108204407.1435-1-cai@lca.pw>
-Cc:     mhocko@suse.com, hannes@cmpxchg.org, guro@fb.com,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20191108204407.1435-1-cai@lca.pw>
-To:     akpm@linux-foundation.org
-X-Mailer: iPhone Mail (17A878)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=iDoGjHfNdP7CEHEDPPCtVFhc3W4zkYgSKdJEK3JXJd0=;
+        b=UUMQ9CQO2RcaW7cBLp6HipgO542MeaejVbWjaNkO5CyIdZ6fp2W9RJ5IH0W1M4UesQ
+         /zZv97CttId50hISDKdSTOva7r5gW6DNhRoRn4sPdpGrk8BgejP6Vqera//0DoCIcCSQ
+         8Q0PBorENyat/mY+WU/fyK/9LHwdXuXdewIqMTeyUoXYKxEGQqbS5DHGTRKLkb1kWTNM
+         0jX+4SIA4YTM0N+BMaxPDTFuPy1DxCrYh89ERjh/ivt0JzgOBpSXRZWJwHRRiCZwEZme
+         iaTr4H6glGOUAJSP1d4Iw+vKL7xk2gZyH2vQbtxsMeeTIFImgu6kp1s+WzVt7rGJ8rA1
+         p0VQ==
+X-Gm-Message-State: APjAAAU1p2W0axZvgZgQTD43VSdOWQKkRppyDcQFex6hzvH9MhyDhGxf
+        xfh4w561cnyHBOK/W5dh/GdWMHYfzB9VW6sA7YLdOw==
+X-Google-Smtp-Source: APXvYqx5lVByzI30bfOZKF+9P00wWxnRqtrwswlwA7cd4uf7yQSeCTKB5Ykql4XWeoS0urkg89cB/9USVEYDE4mteLw=
+X-Received: by 2002:aca:1101:: with SMTP id 1mr12627382oir.103.1573256166162;
+ Fri, 08 Nov 2019 15:36:06 -0800 (PST)
+MIME-Version: 1.0
+References: <20191030013701.39647-1-almasrymina@google.com> <78f07acf-47ba-4fa5-34c2-78a17eb7c16f@oracle.com>
+In-Reply-To: <78f07acf-47ba-4fa5-34c2-78a17eb7c16f@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Fri, 8 Nov 2019 15:35:55 -0800
+Message-ID: <CAHS8izPp9aW=uxA2z6BLmRXgaiDVyKYvAbnrH0rcirN4wTD55g@mail.gmail.com>
+Subject: Re: [PATCH v8 1/9] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     shuah <shuah@kernel.org>, open list <linux-kernel@vger.kernel.org>,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org,
+        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
+        Hillf Danton <hdanton@sina.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Nov 7, 2019 at 3:42 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> Cc: Andrew
+> This series is getting closer to consideration for the mm tree.
+> Mina,
+> Be sure to cc Andrew with next version of series.
+>
 
+Absolutely!
 
-> On Nov 8, 2019, at 3:44 PM, Qian Cai <cai@lca.pw> wrote:
-> 
-> -    for (zid = 0; zid <= zone_idx; zid++) {
-> +    for (zid = 0; zid < zone_idx; zid++) {
->        struct zone *zone =
+> On 10/29/19 6:36 PM, Mina Almasry wrote:
+> > These counters will track hugetlb reservations rather than hugetlb
+> > memory faulted in. This patch only adds the counter, following patches
+> > add the charging and uncharging of the counter.
+>
+> I honestly am not sure the preferred method for including the overall
+> design in a commit message.  Certainly it should be in the first patch.
+> Perhaps, say this is patch 1 of a 9 patch series here.
+>
 
-Oops, I think here needs to be,
+Will do. I read somewhere I can't find right now it's better this way
+so that the useful information becomes part of the git log. If anyone
+has strong opinions on this I'll just go back to putting it into a
+cover letter.
 
-for (zid = 0; zid <= zone_idx && zid < MAX_NR_ZONES; zid++) {
+> > Problem:
+> > Currently tasks attempting to allocate more hugetlb memory than is available get
+> > a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
+> > However, if a task attempts to allocate hugetlb memory only more than its
+> > hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
+> > but will SIGBUS the task when it attempts to fault the memory in.
+> >
+> > We have developers interested in using hugetlb_cgroups, and they have expressed
+> > dissatisfaction regarding this behavior. We'd like to improve this
+> > behavior such that tasks violating the hugetlb_cgroup limits get an error on
+> > mmap/shmget time, rather than getting SIGBUS'd when they try to fault
+> > the excess memory in.
+> >
+> > The underlying problem is that today's hugetlb_cgroup accounting happens
+> > at hugetlb memory *fault* time, rather than at *reservation* time.
+> > Thus, enforcing the hugetlb_cgroup limit only happens at fault time, and
+> > the offending task gets SIGBUS'd.
+> >
+> > Proposed Solution:
+> > A new page counter named hugetlb.xMB.reservation_[limit|usage]_in_bytes. This
+> > counter has slightly different semantics than
+> > hugetlb.xMB.[limit|usage]_in_bytes:
+> >
+> > - While usage_in_bytes tracks all *faulted* hugetlb memory,
+> > reservation_usage_in_bytes tracks all *reserved* hugetlb memory and
+> > hugetlb memory faulted in without a prior reservation.
+> >
+> > - If a task attempts to reserve more memory than limit_in_bytes allows,
+> > the kernel will allow it to do so. But if a task attempts to reserve
+> > more memory than reservation_limit_in_bytes, the kernel will fail this
+> > reservation.
+> >
+> > This proposal is implemented in this patch series, with tests to verify
+> > functionality and show the usage. We also added cgroup-v2 support to
+> > hugetlb_cgroup so that the new use cases can be extended to v2.
+> >
+> > Alternatives considered:
+> > 1. A new cgroup, instead of only a new page_counter attached to
+> >    the existing hugetlb_cgroup. Adding a new cgroup seemed like a lot of code
+> >    duplication with hugetlb_cgroup. Keeping hugetlb related page counters under
+> >    hugetlb_cgroup seemed cleaner as well.
+> >
+> > 2. Instead of adding a new counter, we considered adding a sysctl that modifies
+> >    the behavior of hugetlb.xMB.[limit|usage]_in_bytes, to do accounting at
+> >    reservation time rather than fault time. Adding a new page_counter seems
+> >    better as userspace could, if it wants, choose to enforce different cgroups
+> >    differently: one via limit_in_bytes, and another via
+> >    reservation_limit_in_bytes. This could be very useful if you're
+> >    transitioning how hugetlb memory is partitioned on your system one
+> >    cgroup at a time, for example. Also, someone may find usage for both
+> >    limit_in_bytes and reservation_limit_in_bytes concurrently, and this
+> >    approach gives them the option to do so.
+> >
+> > Testing:
+>
+> I think that simply mentioning the use of hugetlbfs for regression testing
+> would be sufficient here.
+>
 
-to deal with this MAX_NR_ZONES special case.
+Will do.
+
+> > - Added tests passing.
+> > - libhugetlbfs tests mostly passing, but some tests have trouble with and
+> >   without this patch series. Seems environment issue rather than code:
+> >   - Overall results:
+> >     ********** TEST SUMMARY
+> >     *                      2M
+> >     *                      32-bit 64-bit
+> >     *     Total testcases:    84      0
+> >     *             Skipped:     0      0
+> >     *                PASS:    66      0
+> >     *                FAIL:    14      0
+> >     *    Killed by signal:     0      0
+> >     *   Bad configuration:     4      0
+> >     *       Expected FAIL:     0      0
+> >     *     Unexpected PASS:     0      0
+> >     *    Test not present:     0      0
+> >     * Strange test result:     0      0
+> >     **********
+>
+> It is curious that you only ran the tests for 32 bit applications.  Certainly
+> the more common case today is 64 bit.  I don't think there are any surprises
+> for you as I also have been running hugetlbfs on this series.
+
+I did run them, with similar results. I'll add them.
+
+> --
+> Mike Kravetz
+>
+> >   - Failing tests:
+> >     - elflink_rw_and_share_test("linkhuge_rw") segfaults with and without this
+> >       patch series.
+> >     - LD_PRELOAD=libhugetlbfs.so HUGETLB_MORECORE=yes malloc (2M: 32):
+> >       FAIL    Address is not hugepage
+> >     - LD_PRELOAD=libhugetlbfs.so HUGETLB_RESTRICT_EXE=unknown:malloc
+> >       HUGETLB_MORECORE=yes malloc (2M: 32):
+> >       FAIL    Address is not hugepage
+> >     - LD_PRELOAD=libhugetlbfs.so HUGETLB_MORECORE=yes malloc_manysmall (2M: 32):
+> >       FAIL    Address is not hugepage
+> >     - GLIBC_TUNABLES=glibc.malloc.tcache_count=0 LD_PRELOAD=libhugetlbfs.so
+> >       HUGETLB_MORECORE=yes heapshrink (2M: 32):
+> >       FAIL    Heap not on hugepages
+> >     - GLIBC_TUNABLES=glibc.malloc.tcache_count=0 LD_PRELOAD=libhugetlbfs.so
+> >       libheapshrink.so HUGETLB_MORECORE=yes heapshrink (2M: 32):
+> >       FAIL    Heap not on hugepages
+> >     - HUGETLB_ELFMAP=RW linkhuge_rw (2M: 32): FAIL    small_data is not hugepage
+> >     - HUGETLB_ELFMAP=RW HUGETLB_MINIMAL_COPY=no linkhuge_rw (2M: 32):
+> >       FAIL    small_data is not hugepage
+> >     - alloc-instantiate-race shared (2M: 32):
+> >       Bad configuration: sched_setaffinity(cpu1): Invalid argument -
+> >       FAIL    Child 1 killed by signal Killed
+> >     - shmoverride_linked (2M: 32):
+> >       FAIL    shmget failed size 2097152 from line 176: Invalid argument
+> >     - HUGETLB_SHM=yes shmoverride_linked (2M: 32):
+> >       FAIL    shmget failed size 2097152 from line 176: Invalid argument
+> >     - shmoverride_linked_static (2M: 32):
+> >       FAIL shmget failed size 2097152 from line 176: Invalid argument
+> >     - HUGETLB_SHM=yes shmoverride_linked_static (2M: 32):
+> >       FAIL shmget failed size 2097152 from line 176: Invalid argument
+> >     - LD_PRELOAD=libhugetlbfs.so shmoverride_unlinked (2M: 32):
+> >       FAIL shmget failed size 2097152 from line 176: Invalid argument
+> >     - LD_PRELOAD=libhugetlbfs.so HUGETLB_SHM=yes shmoverride_unlinked (2M: 32):
+> >       FAIL    shmget failed size 2097152 from line 176: Invalid argument
+> >
+> > [1]: https://www.kernel.org/doc/html/latest/vm/hugetlbfs_reserv.html
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > Acked-by: Hillf Danton <hdanton@sina.com>
