@@ -2,79 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56E7BF747F
-	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2019 14:05:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4397DF7495
+	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2019 14:14:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726957AbfKKNFX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Nov 2019 08:05:23 -0500
-Received: from mail-wm1-f51.google.com ([209.85.128.51]:40617 "EHLO
-        mail-wm1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726845AbfKKNFW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Nov 2019 08:05:22 -0500
-Received: by mail-wm1-f51.google.com with SMTP id f3so13111917wmc.5
-        for <cgroups@vger.kernel.org>; Mon, 11 Nov 2019 05:05:19 -0800 (PST)
+        id S1726845AbfKKNOd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Nov 2019 08:14:33 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:36879 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726913AbfKKNOc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Nov 2019 08:14:32 -0500
+Received: by mail-wm1-f45.google.com with SMTP id b17so4889069wmj.2
+        for <cgroups@vger.kernel.org>; Mon, 11 Nov 2019 05:14:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=ptfgZiJrJRT37KV6qx/ANFTtjHXD6glvvm6dcn8VVZI=;
-        b=BDGOjdrOiR/70UcRqMcVVH7VffzPCSZLLyoX5htmD99qQ65QbHEdi1A94TTEZKTGia
-         bu4YKgChFJqm9P5eaC7FDAyXwIxRw7WczK/jDbRGD+k2jvtrx4tcCibk7Aa52STDdVIb
-         iPIO1FJHqec/eDyz5qyxHqj3PBz5G2DEVuBfw=
+        bh=vSSh3GLhg1vsDC2+/ekTGoEZx+xBL7fSSkyIjDBus0Y=;
+        b=Hbv7vTAJaj3aLmwp1G2ep546uZEGDBhi+No53kbAa6wWPB2FUuSzQQNt4SsHuEN8GQ
+         HOkbiVLgICe1ia9awIe0L/ZyaHt8V5FNGkmWEjYcJ3MwIay/64IGOcm/mM1XU2XSBZHg
+         +NC8P6rEpo8CNdNh8I7JHCXqgbNRUvoRrrLk8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ptfgZiJrJRT37KV6qx/ANFTtjHXD6glvvm6dcn8VVZI=;
-        b=cqhDVo9Mq2iQ0Gq3/AkWdfTs5So4fsbiHVwWZJ+FJ5j6m5+2eRsnsvnKfEUjEHXnw3
-         qk+QbU61OM3BFTxStTjF4swRckJckaHBsGvYQKq3+AvyKgAEpIXH21j472L+QSSoGHAC
-         EFLchZ+iLVMffUjmzi+14rL+Wa9cFLlo3curQSdt4IKJ7E0/HWpmShxMTlJoqHBiSQN0
-         qdLGFnm9mAeTVWnqfCI8iNXvH+Y/AOgia0T1Ng87R4yQfQTK02TGeD8zpWvbgcKx7SHD
-         wX1utoZ5M6XihOsXUFgorHWnQWjMC3myvrQxWM82IkbXV8vo5DngWkBY3EmVV/W/C+j3
-         zqkQ==
-X-Gm-Message-State: APjAAAXc3SlS82wcGHv8kzQDmpT8ugH57Wp08edKLeah6mq5TGPf/tLG
-        CLhAUbIanhCPhsaBMpHqEDPK2w==
-X-Google-Smtp-Source: APXvYqymiSpQifawQQU3UdosjYX+3QNdQAwiUyDIgIP9zu5AyARgYX7U0WXOyuAEec5YlMqntyZ0Uw==
-X-Received: by 2002:a1c:544e:: with SMTP id p14mr19557371wmi.17.1573477518329;
-        Mon, 11 Nov 2019 05:05:18 -0800 (PST)
+        bh=vSSh3GLhg1vsDC2+/ekTGoEZx+xBL7fSSkyIjDBus0Y=;
+        b=LazaZUMo/BquzBiGV5A92eIic+dhRMxLDOC5J6YfFS5nMV6JMyWFZWengSPH1GDw+H
+         tisB3JzO/ZO2Qvm5YPiAnTpkdcPft7RENH2CmlRahSQK3NEfdLDnMT0geXIWwZIWnIIy
+         3ilOKWJ4WaVcROZTt64/I2haPPdreDhonr6lNSfrWLVHLiwAPOnIOn7PH19mm9niBWal
+         JgLh/Bg/bV+cQUchpwGbHbhA1G2PccCBuiHzEV33Sygq6UbLt8EQ68zoVjaoYnPfKaq+
+         fU/w/yOnSB5AavraOYQ+QWPtHpn2bM+e7Q6B8xGON1YPb6pJ/NXpdKZ7O6nDLc5Rct6X
+         tb5Q==
+X-Gm-Message-State: APjAAAUFWcz5zKqOFPJV1nLOxbaOUZrkuOhXk12S6TM218FnBeKNl1dJ
+        BB2Gs/U+SWNn6ZF/9K4I22Q/aw==
+X-Google-Smtp-Source: APXvYqyvhczbf2LwFCvdR3MOfU8SLKVDbuWW3StMeBDBW7wyn9GfgKvdjUBLmTzPLz1EDYVikGjX4g==
+X-Received: by 2002:a1c:60d7:: with SMTP id u206mr21398439wmb.101.1573478068839;
+        Mon, 11 Nov 2019 05:14:28 -0800 (PST)
 Received: from localhost ([2a01:4b00:8432:8a00:fa59:71ff:fe7e:8d21])
-        by smtp.gmail.com with ESMTPSA id u26sm14397929wmj.9.2019.11.11.05.05.17
+        by smtp.gmail.com with ESMTPSA id u13sm6150007wmm.45.2019.11.11.05.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2019 05:05:17 -0800 (PST)
-Date:   Mon, 11 Nov 2019 13:05:16 +0000
+        Mon, 11 Nov 2019 05:14:28 -0800 (PST)
+Date:   Mon, 11 Nov 2019 13:14:27 +0000
 From:   Chris Down <chris@chrisdown.name>
 To:     Qian Cai <cai@lca.pw>
 Cc:     akpm@linux-foundation.org, mhocko@suse.com, hannes@cmpxchg.org,
         guro@fb.com, linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [PATCH -next] mm/vmscan: fix an undefined behavior for zone id
-Message-ID: <20191111130516.GA891635@chrisdown.name>
+Message-ID: <20191111131427.GB891635@chrisdown.name>
 References: <20191108204407.1435-1-cai@lca.pw>
  <64E60F6F-7582-427B-8DD5-EF97B1656F5A@lca.pw>
+ <20191111130516.GA891635@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <64E60F6F-7582-427B-8DD5-EF97B1656F5A@lca.pw>
+In-Reply-To: <20191111130516.GA891635@chrisdown.name>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Qian Cai writes:
->> On Nov 8, 2019, at 3:44 PM, Qian Cai <cai@lca.pw> wrote:
->>
->> -    for (zid = 0; zid <= zone_idx; zid++) {
->> +    for (zid = 0; zid < zone_idx; zid++) {
->>        struct zone *zone =
->
->Oops, I think here needs to be,
->
->for (zid = 0; zid <= zone_idx && zid < MAX_NR_ZONES; zid++) {
->
->to deal with this MAX_NR_ZONES special case.
+Chris Down writes:
+>Ah, I just saw this in my local checkout and thought it was from my 
+>changes, until I saw it's also on clean mmots checkout. Thanks for the 
+>fixup!
 
-Ah, I just saw this in my local checkout and thought it was from my changes, 
-until I saw it's also on clean mmots checkout. Thanks for the fixup!
-
-Acked-by: Chris Down <chris@chrisdown.name>
+Also, does this mean we should change callers that may pass through 
+zone_idx=MAX_NR_ZONES to become MAX_NR_ZONES-1 in a separate commit, then 
+remove this interim fixup? I'm worried otherwise we might paper over real 
+issues in future.
