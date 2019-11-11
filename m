@@ -2,51 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 100E0F6C87
-	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2019 03:01:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3BBFF6C92
+	for <lists+cgroups@lfdr.de>; Mon, 11 Nov 2019 03:16:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbfKKCBd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 10 Nov 2019 21:01:33 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39613 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726743AbfKKCBd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 10 Nov 2019 21:01:33 -0500
-Received: by mail-wm1-f68.google.com with SMTP id t26so11599120wmi.4
-        for <cgroups@vger.kernel.org>; Sun, 10 Nov 2019 18:01:30 -0800 (PST)
+        id S1726743AbfKKCQG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 10 Nov 2019 21:16:06 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52367 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726742AbfKKCQF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 10 Nov 2019 21:16:05 -0500
+Received: by mail-wm1-f67.google.com with SMTP id l1so263783wme.2
+        for <cgroups@vger.kernel.org>; Sun, 10 Nov 2019 18:16:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=pIraveH9M4IQRe/B8PMSsshhHS2v0cCshL8v4Mmml5Y=;
-        b=iYfahLF9MiRGqnFWYK6Xzvua5fkhbUUx9943/Xz8bhuQ29gIGNjekcwwiiKj+2rQfK
-         8/Olgc4A7xV88xucLtoBlCKLnvn14IqtvI06RReFq9OsCqKR0OXI/VRpjE17E9AqXRez
-         m3N9Chw5z88111UcONLlfzCr3pg64pIiuNMO9B40hoVXI+95y2gc1gAOLerazbpL41GH
-         ZnM3Ez2wDKSjDFEADRB9MCDLzSitJq1n+vcapWgFlacIGR692lScVm65VgZ5iQ2WhjCB
-         A4o064biuvwrf3xuC/ixPp9nBtSahW9OaOzs2k7Yf3pf9xxHLn3NdODOcY/xszA2xw2U
-         yCIA==
+        bh=WDzEM7um5YXHV7DfTFl6vlrlu/R+pIZGxAqPnyd2jxE=;
+        b=ezNyM+nmiXU3EGQvJrPWUHQYXM3gIrFn0wauKoQMFEMUIoIEKqXu9tw0xBUAhhFw1A
+         lCZelybGArpIOrrLunvcT4taiLRT9NNNqXxRCVVQmrBPGePw4sDyHgqtN2wKKp4jF0bU
+         rxDwEMsWO08XnDLXUFs0RMYdxcLWIxTeCxLvmGV4QX7YdNDNULKLkTCQZK5/vbkMZa5d
+         iZnlIYtMFEG+0dqLYzdKh++ypdlwZD9/lE4KGk4lfahaNVfhH7gAww3saurgy6u1eWFM
+         F/Qsc7BzgvfoUR2zdRRi0IypQNaf9ZhdnYtF/8JuFVQaRSnBouNavhIC9A+6giE+53Tf
+         zeuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=pIraveH9M4IQRe/B8PMSsshhHS2v0cCshL8v4Mmml5Y=;
-        b=SVB8psUyd9M+56bOfZV4Cjri39htlqFl0jZfDjvFASa8KOYyB2xWkAtpdxMKThrGqV
-         skfMrqY4lXphN99fxwEzVaPGTkdOYtBmDL5AGMS5VYYKb/znQVZPk0bke9rF9AKvSBYT
-         X4YX1AeGte+6UHXaFaZJrbuzh1YarzDk+3boCtRC+Pu51DQVAdBxW1b6IajV+U9Masub
-         DgQs6tqpcV0WcSbD/Oyr2CTIjAkHtLNmKedUj3FLX6LwMRDcpKGga8lYl0hS06Zwbq6h
-         CsSPVHBGXaBiigDazCb/XOtZXVeNBDWDXV9WMToqBlhtIQh5FIdSPIIVj5pZkg1mR+Xu
-         xDSg==
-X-Gm-Message-State: APjAAAXAo1q6+rQ+MPTuS70/2UQuMQPKoUDVl43OkdOS+UEwItT4u7yL
-        /t3hSDHxP4NYscSpKknxPU6UW7w7cuABWzj2s+tLhw==
-X-Google-Smtp-Source: APXvYqwDpvdGrme6/0SE9kHnf+XYDpzCPwVS1enjRMK8PHxdPD0PDAxQZ/U3JvdR/7OpQNjF2t0Qzinq2O/kVZNaXJQ=
-X-Received: by 2002:a1c:8055:: with SMTP id b82mr18778062wmd.176.1573437689440;
- Sun, 10 Nov 2019 18:01:29 -0800 (PST)
+        bh=WDzEM7um5YXHV7DfTFl6vlrlu/R+pIZGxAqPnyd2jxE=;
+        b=kSD4Gvpa55PVKbn4Fcn1j/Yc032JxqFKwZRyMjmK1+LRFCVJ8p4em/4rx8PRFj0ZYa
+         YlJQHGOM01eFXcfo9A241qwFn+M041tJ45upSD5SZgvwXhlOiP+au4J21VBt0gApPXj6
+         efeGMRdfHSQOr1ucqyH5YetmKu5+RQYZwOQfyqncjBH0o2KAQb7x3JpzkX1x7Mntbr4i
+         pAGvFGILUs6pnom8WSadilS7zlpvdzagdjlKt9HnAmtvdoZ44ciGvDFxF8WI66/LWJxj
+         2CTSeLuOXs6dcvWs0vA61faOdFvgVw8q2Ei5NzHF9UiKd0zh39saLnIO2AFjE/S9Kh8p
+         Yyig==
+X-Gm-Message-State: APjAAAV7WKacMYAGt5B9ey0+ftL13dr5s2FvSqCmgTl/7ZZb7rEcnnlj
+        O2cQJ9y3+xuAf2IpRD2+ogca26cdVcFoNFDoOFC+iw==
+X-Google-Smtp-Source: APXvYqxw47Xe8Wlr2XyRjQr78egiE1R9DyvorBQBgb1GQVre3YtL4WSVCpA4hXG+tfYpg20NXBr+z8mI6ZWM7bVpDHE=
+X-Received: by 2002:a7b:ca4d:: with SMTP id m13mr17296996wml.21.1573438561538;
+ Sun, 10 Nov 2019 18:16:01 -0800 (PST)
 MIME-Version: 1.0
-References: <20191107205334.158354-1-hannes@cmpxchg.org> <20191107205334.158354-3-hannes@cmpxchg.org>
-In-Reply-To: <20191107205334.158354-3-hannes@cmpxchg.org>
+References: <20191107205334.158354-1-hannes@cmpxchg.org> <20191107205334.158354-4-hannes@cmpxchg.org>
+In-Reply-To: <20191107205334.158354-4-hannes@cmpxchg.org>
 From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Sun, 10 Nov 2019 18:01:18 -0800
-Message-ID: <CAJuCfpFtr9ODyOEJWt+=z=fnR0j8CJPSfhN+50N=d4SjLO-Z7A@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
+Date:   Sun, 10 Nov 2019 18:15:50 -0800
+Message-ID: <CAJuCfpHSTr8Vt+Tj-Hj4OBYHq1ucw7_B1VoVWKEHQVPHaMhUdA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mm: vmscan: enforce inactive:active ratio at the
+ reclaim root
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
@@ -63,325 +64,380 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Thu, Nov 7, 2019 at 12:53 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> We use refault information to determine whether the cache workingset
-> is stable or transitioning, and dynamically adjust the inactive:active
-> file LRU ratio so as to maximize protection from one-off cache during
-> stable periods, and minimize IO during transitions.
+> We split the LRU lists into inactive and an active parts to maximize
+> workingset protection while allowing just enough inactive cache space
+> to faciltate readahead and writeback for one-off file accesses (e.g. a
+> linear scan through a file, or logging); or just enough inactive anon
+> to maintain recent reference information when reclaim needs to swap.
 >
 > With cgroups and their nested LRU lists, we currently don't do this
 > correctly. While recursive cgroup reclaim establishes a relative LRU
-> order among the pages of all involved cgroups, refaults only affect
-> the local LRU order in the cgroup in which they are occuring. As a
-> result, cache transitions can take longer in a cgrouped system as the
-> active pages of sibling cgroups aren't challenged when they should be.
+> order among the pages of all involved cgroups, inactive:active size
+> decisions are done on a per-cgroup level. As a result, we'll reclaim a
+> cgroup's workingset when it doesn't have cold pages, even when one of
+> its siblings has plenty of it that should be reclaimed first.
 >
-> [ Right now, this is somewhat theoretical, because the siblings, under
->   continued regular reclaim pressure, should eventually run out of
->   inactive pages - and since inactive:active *size* balancing is also
->   done on a cgroup-local level, we will challenge the active pages
->   eventually in most cases. But the next patch will move that relative
->   size enforcement to the reclaim root as well, and then this patch
->   here will be necessary to propagate refault pressure to siblings. ]
+> For example: workload A has 50M worth of hot cache but doesn't do any
+> one-off file accesses; meanwhile, parallel workload B scans files and
+> rarely accesses the same page twice.
 >
-> This patch moves refault detection to the root of reclaim. Instead of
-> remembering the cgroup owner of an evicted page, remember the cgroup
-> that caused the reclaim to happen. When refaults later occur, they'll
-> correctly influence the cross-cgroup LRU order that reclaim follows.
+> If these workloads were to run in an uncgrouped system, A would be
+> protected from the high rate of cache faults from B. But if they were
+> put in parallel cgroups for memory accounting purposes, B's fast cache
+> fault rate would push out the hot cache pages of A. This is unexpected
+> and undesirable - the "scan resistance" of the page cache is broken.
+>
+> This patch moves inactive:active size balancing decisions to the root
+> of reclaim - the same level where the LRU order is established.
+>
+> It does this by looking at the recursize
 
-I spent some time thinking about the idea of calculating refault
-distance using target_memcg's inactive_age and then activating
-refaulted page in (possibly) another memcg and I am still having
-trouble convincing myself that this should work correctly. However I
-also was unable to convince myself otherwise... We use refault
-distance to calculate the deficit in inactive LRU space and then
-activate the refaulted page if that distance is less that
-active+inactive LRU size. However making that decision based on LRU
-sizes of one memcg and then activating the page in another one seems
-very counterintuitive to me. Maybe that's just me though...
+recursive?
 
+> size of the inactive and the
+> active file sets of the cgroup subtree at the beginning of the reclaim
+> cycle, and then making a decision - scan or skip active pages - that
+> applies throughout the entire run and to every cgroup involved.
 >
-> I.e. if global reclaim kicked out pages in some subgroup A/B/C, the
-> refault of those pages will challenge the global LRU order, and not
-> just the local order down inside C.
+> With that in place, in the test above, the VM will recognize that
+> there are plenty of inactive pages in the combined cache set of
+> workloads A and B and prefer the one-off cache in B over the hot pages
+> in A. The scan resistance of the cache is restored.
 >
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 > ---
->  include/linux/memcontrol.h |  5 +++
->  include/linux/swap.h       |  2 +-
->  mm/vmscan.c                | 32 ++++++++---------
->  mm/workingset.c            | 72 +++++++++++++++++++++++++++++---------
->  4 files changed, 77 insertions(+), 34 deletions(-)
+>  include/linux/mmzone.h |   4 +-
+>  mm/vmscan.c            | 185 ++++++++++++++++++++++++++---------------
+>  2 files changed, 118 insertions(+), 71 deletions(-)
 >
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 5b86287fa069..a7a0a1a5c8d5 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -901,6 +901,11 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
->         return &pgdat->__lruvec;
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 7a09087e8c77..454a230ad417 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -229,12 +229,12 @@ enum lru_list {
+>
+>  #define for_each_evictable_lru(lru) for (lru = 0; lru <= LRU_ACTIVE_FILE; lru++)
+>
+> -static inline int is_file_lru(enum lru_list lru)
+> +static inline bool is_file_lru(enum lru_list lru)
+>  {
+>         return (lru == LRU_INACTIVE_FILE || lru == LRU_ACTIVE_FILE);
 >  }
 >
-> +static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
-> +{
-> +       return NULL;
-> +}
-> +
->  static inline bool mm_match_cgroup(struct mm_struct *mm,
->                 struct mem_cgroup *memcg)
+> -static inline int is_active_lru(enum lru_list lru)
+> +static inline bool is_active_lru(enum lru_list lru)
 >  {
-> diff --git a/include/linux/swap.h b/include/linux/swap.h
-> index 063c0c1e112b..1e99f7ac1d7e 100644
-> --- a/include/linux/swap.h
-> +++ b/include/linux/swap.h
-> @@ -307,7 +307,7 @@ struct vma_swap_readahead {
->  };
->
->  /* linux/mm/workingset.c */
-> -void *workingset_eviction(struct page *page);
-> +void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg);
->  void workingset_refault(struct page *page, void *shadow);
->  void workingset_activation(struct page *page);
->
+>         return (lru == LRU_ACTIVE_ANON || lru == LRU_ACTIVE_FILE);
+>  }
 > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index e8dd601e1fad..527617ee9b73 100644
+> index 527617ee9b73..df859b1d583c 100644
 > --- a/mm/vmscan.c
 > +++ b/mm/vmscan.c
-> @@ -853,7 +853,7 @@ static pageout_t pageout(struct page *page, struct address_space *mapping)
->   * gets returned with a refcount of 0.
->   */
->  static int __remove_mapping(struct address_space *mapping, struct page *page,
-> -                           bool reclaimed)
-> +                           bool reclaimed, struct mem_cgroup *target_memcg)
->  {
->         unsigned long flags;
->         int refcount;
-> @@ -925,7 +925,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
->                  */
->                 if (reclaimed && page_is_file_cache(page) &&
->                     !mapping_exiting(mapping) && !dax_mapping(mapping))
-> -                       shadow = workingset_eviction(page);
-> +                       shadow = workingset_eviction(page, target_memcg);
->                 __delete_from_page_cache(page, shadow);
->                 xa_unlock_irqrestore(&mapping->i_pages, flags);
->
-> @@ -948,7 +948,7 @@ static int __remove_mapping(struct address_space *mapping, struct page *page,
->   */
->  int remove_mapping(struct address_space *mapping, struct page *page)
->  {
-> -       if (__remove_mapping(mapping, page, false)) {
-> +       if (__remove_mapping(mapping, page, false, NULL)) {
->                 /*
->                  * Unfreezing the refcount with 1 rather than 2 effectively
->                  * drops the pagecache ref for us without requiring another
-> @@ -1426,7 +1426,8 @@ static unsigned long shrink_page_list(struct list_head *page_list,
->
->                         count_vm_event(PGLAZYFREED);
->                         count_memcg_page_event(page, PGLAZYFREED);
-> -               } else if (!mapping || !__remove_mapping(mapping, page, true))
-> +               } else if (!mapping || !__remove_mapping(mapping, page, true,
-> +                                                        sc->target_mem_cgroup))
->                         goto keep_locked;
->
->                 unlock_page(page);
-> @@ -2189,6 +2190,7 @@ static bool inactive_list_is_low(struct lruvec *lruvec, bool file,
->         enum lru_list inactive_lru = file * LRU_FILE;
->         unsigned long inactive, active;
->         unsigned long inactive_ratio;
-> +       struct lruvec *target_lruvec;
->         unsigned long refaults;
->         unsigned long gb;
->
-> @@ -2200,8 +2202,9 @@ static bool inactive_list_is_low(struct lruvec *lruvec, bool file,
->          * is being established. Disable active list protection to get
->          * rid of the stale workingset quickly.
+> @@ -79,6 +79,13 @@ struct scan_control {
 >          */
-> -       refaults = lruvec_page_state_local(lruvec, WORKINGSET_ACTIVATE);
-> -       if (file && lruvec->refaults != refaults) {
-> +       target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
-> +       refaults = lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE);
-> +       if (file && target_lruvec->refaults != refaults) {
->                 inactive_ratio = 0;
->         } else {
->                 gb = (inactive + active) >> (30 - PAGE_SHIFT);
-> @@ -2973,19 +2976,14 @@ static void shrink_zones(struct zonelist *zonelist, struct scan_control *sc)
->         sc->gfp_mask = orig_mask;
->  }
+>         struct mem_cgroup *target_mem_cgroup;
 >
-> -static void snapshot_refaults(struct mem_cgroup *root_memcg, pg_data_t *pgdat)
-> +static void snapshot_refaults(struct mem_cgroup *target_memcg, pg_data_t *pgdat)
->  {
-> -       struct mem_cgroup *memcg;
-> -
-> -       memcg = mem_cgroup_iter(root_memcg, NULL, NULL);
-> -       do {
-> -               unsigned long refaults;
-> -               struct lruvec *lruvec;
-> +       struct lruvec *target_lruvec;
-> +       unsigned long refaults;
->
-> -               lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -               refaults = lruvec_page_state_local(lruvec, WORKINGSET_ACTIVATE);
-> -               lruvec->refaults = refaults;
-> -       } while ((memcg = mem_cgroup_iter(root_memcg, memcg, NULL)));
-> +       target_lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
-> +       refaults = lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE);
-> +       target_lruvec->refaults = refaults;
->  }
->
->  /*
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index e8212123c1c3..f0885d9f41cd 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -213,28 +213,53 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
->         *workingsetp = workingset;
->  }
->
-> +static void advance_inactive_age(struct mem_cgroup *memcg, pg_data_t *pgdat)
-> +{
-> +       /*
-> +        * Reclaiming a cgroup means reclaiming all its children in a
-> +        * round-robin fashion. That means that each cgroup has an LRU
-> +        * order that is composed of the LRU orders of its child
-> +        * cgroups; and every page has an LRU position not just in the
-> +        * cgroup that owns it, but in all of that group's ancestors.
-> +        *
-> +        * So when the physical inactive list of a leaf cgroup ages,
-> +        * the virtual inactive lists of all its parents, including
-> +        * the root cgroup's, age as well.
-> +        */
-> +       do {
-> +               struct lruvec *lruvec;
+> +       /* Can active pages be deactivated as part of reclaim? */
+> +#define DEACTIVATE_ANON 1
+> +#define DEACTIVATE_FILE 2
+> +       unsigned int may_deactivate:2;
+> +       unsigned int force_deactivate:1;
+> +       unsigned int skipped_deactivate:1;
 > +
-> +               lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> +               atomic_long_inc(&lruvec->inactive_age);
-> +       } while (memcg && (memcg = parent_mem_cgroup(memcg)));
+>         /* Writepage batching in laptop mode; RECLAIM_WRITE */
+>         unsigned int may_writepage:1;
+>
+> @@ -101,6 +108,9 @@ struct scan_control {
+>         /* One of the zones is ready for compaction */
+>         unsigned int compaction_ready:1;
+>
+> +       /* There is easily reclaimable cold cache in the current node */
+> +       unsigned int cache_trim_mode:1;
+> +
+>         /* The file pages on the current node are dangerously low */
+>         unsigned int file_is_tiny:1;
+>
+> @@ -2154,6 +2164,20 @@ unsigned long reclaim_pages(struct list_head *page_list)
+>         return nr_reclaimed;
+>  }
+>
+> +static unsigned long shrink_list(enum lru_list lru, unsigned long nr_to_scan,
+> +                                struct lruvec *lruvec, struct scan_control *sc)
+> +{
+> +       if (is_active_lru(lru)) {
+> +               if (sc->may_deactivate & (1 << is_file_lru(lru)))
+> +                       shrink_active_list(nr_to_scan, lruvec, sc, lru);
+> +               else
+> +                       sc->skipped_deactivate = 1;
+> +               return 0;
+> +       }
+> +
+> +       return shrink_inactive_list(nr_to_scan, lruvec, sc, lru);
 > +}
 > +
->  /**
->   * workingset_eviction - note the eviction of a page from memory
-> + * @target_memcg: the cgroup that is causing the reclaim
->   * @page: the page being evicted
->   *
->   * Returns a shadow entry to be stored in @page->mapping->i_pages in place
->   * of the evicted @page so that a later refault can be detected.
+>  /*
+>   * The inactive anon list should be small enough that the VM never has
+>   * to do too much work.
+> @@ -2182,59 +2206,25 @@ unsigned long reclaim_pages(struct list_head *page_list)
+>   *    1TB     101        10GB
+>   *   10TB     320        32GB
 >   */
-> -void *workingset_eviction(struct page *page)
-> +void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg)
+> -static bool inactive_list_is_low(struct lruvec *lruvec, bool file,
+> -                                struct scan_control *sc, bool trace)
+> +static bool inactive_is_low(struct lruvec *lruvec, enum lru_list inactive_lru)
 >  {
->         struct pglist_data *pgdat = page_pgdat(page);
-> -       struct mem_cgroup *memcg = page_memcg(page);
-> -       int memcgid = mem_cgroup_id(memcg);
->         unsigned long eviction;
->         struct lruvec *lruvec;
-> +       int memcgid;
+> -       enum lru_list active_lru = file * LRU_FILE + LRU_ACTIVE;
+> -       struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> -       enum lru_list inactive_lru = file * LRU_FILE;
+> +       enum lru_list active_lru = inactive_lru + LRU_ACTIVE;
+>         unsigned long inactive, active;
+>         unsigned long inactive_ratio;
+> -       struct lruvec *target_lruvec;
+> -       unsigned long refaults;
+>         unsigned long gb;
 >
->         /* Page is fully exclusive and pins page->mem_cgroup */
->         VM_BUG_ON_PAGE(PageLRU(page), page);
->         VM_BUG_ON_PAGE(page_count(page), page);
->         VM_BUG_ON_PAGE(!PageLocked(page), page);
+> -       inactive = lruvec_lru_size(lruvec, inactive_lru, sc->reclaim_idx);
+> -       active = lruvec_lru_size(lruvec, active_lru, sc->reclaim_idx);
+> +       inactive = lruvec_page_state(lruvec, inactive_lru);
+> +       active = lruvec_page_state(lruvec, active_lru);
 >
-> -       lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -       eviction = atomic_long_inc_return(&lruvec->inactive_age);
-> +       advance_inactive_age(page_memcg(page), pgdat);
-> +
-> +       lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
-> +       /* XXX: target_memcg can be NULL, go through lruvec */
-> +       memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
-> +       eviction = atomic_long_read(&lruvec->inactive_age);
->         return pack_shadow(memcgid, pgdat, eviction, PageWorkingset(page));
+> -       /*
+> -        * When refaults are being observed, it means a new workingset
+> -        * is being established. Disable active list protection to get
+> -        * rid of the stale workingset quickly.
+> -        */
+> -       target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
+> -       refaults = lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE);
+> -       if (file && target_lruvec->refaults != refaults) {
+> -               inactive_ratio = 0;
+> -       } else {
+> -               gb = (inactive + active) >> (30 - PAGE_SHIFT);
+> -               if (gb)
+> -                       inactive_ratio = int_sqrt(10 * gb);
+> -               else
+> -                       inactive_ratio = 1;
+> -       }
+> -
+> -       if (trace)
+> -               trace_mm_vmscan_inactive_list_is_low(pgdat->node_id, sc->reclaim_idx,
+> -                       lruvec_lru_size(lruvec, inactive_lru, MAX_NR_ZONES), inactive,
+> -                       lruvec_lru_size(lruvec, active_lru, MAX_NR_ZONES), active,
+> -                       inactive_ratio, file);
+> +       gb = (inactive + active) >> (30 - PAGE_SHIFT);
+> +       if (gb)
+> +               inactive_ratio = int_sqrt(10 * gb);
+> +       else
+> +               inactive_ratio = 1;
+>
+>         return inactive * inactive_ratio < active;
 >  }
 >
-> @@ -244,10 +269,13 @@ void *workingset_eviction(struct page *page)
->   * @shadow: shadow entry of the evicted page
->   *
->   * Calculates and evaluates the refault distance of the previously
-> - * evicted page in the context of the node it was allocated in.
-> + * evicted page in the context of the node and the memcg whose memory
-> + * pressure caused the eviction.
->   */
->  void workingset_refault(struct page *page, void *shadow)
->  {
-> +       struct mem_cgroup *eviction_memcg;
-> +       struct lruvec *eviction_lruvec;
->         unsigned long refault_distance;
->         struct pglist_data *pgdat;
->         unsigned long active_file;
-> @@ -277,12 +305,12 @@ void workingset_refault(struct page *page, void *shadow)
->          * would be better if the root_mem_cgroup existed in all
->          * configurations instead.
->          */
-> -       memcg = mem_cgroup_from_id(memcgid);
-> -       if (!mem_cgroup_disabled() && !memcg)
-> +       eviction_memcg = mem_cgroup_from_id(memcgid);
-> +       if (!mem_cgroup_disabled() && !eviction_memcg)
->                 goto out;
-> -       lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -       refault = atomic_long_read(&lruvec->inactive_age);
-> -       active_file = lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_ZONES);
-> +       eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
-> +       refault = atomic_long_read(&eviction_lruvec->inactive_age);
-> +       active_file = lruvec_page_state(eviction_lruvec, NR_ACTIVE_FILE);
+> -static unsigned long shrink_list(enum lru_list lru, unsigned long nr_to_scan,
+> -                                struct lruvec *lruvec, struct scan_control *sc)
+> -{
+> -       if (is_active_lru(lru)) {
+> -               if (inactive_list_is_low(lruvec, is_file_lru(lru), sc, true))
+> -                       shrink_active_list(nr_to_scan, lruvec, sc, lru);
+> -               return 0;
+> -       }
+> -
+> -       return shrink_inactive_list(nr_to_scan, lruvec, sc, lru);
+> -}
+> -
+>  enum scan_balance {
+>         SCAN_EQUAL,
+>         SCAN_FRACT,
+> @@ -2296,28 +2286,17 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
 >
 >         /*
->          * Calculate the refault distance
-> @@ -302,6 +330,17 @@ void workingset_refault(struct page *page, void *shadow)
+>          * If the system is almost out of file pages, force-scan anon.
+> -        * But only if there are enough inactive anonymous pages on
+> -        * the LRU. Otherwise, the small LRU gets thrashed.
 >          */
->         refault_distance = (refault - eviction) & EVICTION_MASK;
+> -       if (sc->file_is_tiny &&
+> -           !inactive_list_is_low(lruvec, false, sc, false) &&
+> -           lruvec_lru_size(lruvec, LRU_INACTIVE_ANON,
+> -                           sc->reclaim_idx) >> sc->priority) {
+> +       if (sc->file_is_tiny) {
+>                 scan_balance = SCAN_ANON;
+>                 goto out;
+>         }
+>
+>         /*
+> -        * If there is enough inactive page cache, i.e. if the size of the
+> -        * inactive list is greater than that of the active list *and* the
+> -        * inactive list actually has some pages to scan on this priority, we
+> -        * do not reclaim anything from the anonymous working set right now.
+> -        * Without the second condition we could end up never scanning an
+> -        * lruvec even if it has plenty of old anonymous pages unless the
+> -        * system is under heavy pressure.
+> +        * If there is enough inactive page cache, we do not reclaim
+> +        * anything from the anonymous working right now.
+>          */
+> -       if (!inactive_list_is_low(lruvec, true, sc, false) &&
+> -           lruvec_lru_size(lruvec, LRU_INACTIVE_FILE, sc->reclaim_idx) >> sc->priority) {
+> +       if (sc->cache_trim_mode) {
+>                 scan_balance = SCAN_FILE;
+>                 goto out;
+>         }
+> @@ -2582,7 +2561,7 @@ static void shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
+>          * Even if we did not try to evict anon pages at all, we want to
+>          * rebalance the anon lru active/inactive ratio.
+>          */
+> -       if (total_swap_pages && inactive_list_is_low(lruvec, false, sc, true))
+> +       if (total_swap_pages && inactive_is_low(lruvec, LRU_INACTIVE_ANON))
+>                 shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
+>                                    sc, LRU_ACTIVE_ANON);
+>  }
+> @@ -2722,6 +2701,7 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>         unsigned long nr_reclaimed, nr_scanned;
+>         struct lruvec *target_lruvec;
+>         bool reclaimable = false;
+> +       unsigned long file;
+>
+>         target_lruvec = mem_cgroup_lruvec(sc->target_mem_cgroup, pgdat);
+>
+> @@ -2731,6 +2711,44 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>         nr_reclaimed = sc->nr_reclaimed;
+>         nr_scanned = sc->nr_scanned;
 >
 > +       /*
-> +        * The activation decision for this page is made at the level
-> +        * where the eviction occurred, as that is where the LRU order
-> +        * during page reclaim is being determined.
-> +        *
-> +        * However, the cgroup that will own the page is the one that
-> +        * is actually experiencing the refault event.
+> +        * Target desirable inactive:active list ratios for the anon
+> +        * and file LRU lists.
 > +        */
-> +       memcg = get_mem_cgroup_from_mm(current->mm);
-> +       lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> +       if (!sc->force_deactivate) {
+> +               unsigned long refaults;
 > +
->         inc_lruvec_state(lruvec, WORKINGSET_REFAULT);
->
+> +               if (inactive_is_low(target_lruvec, LRU_INACTIVE_ANON))
+> +                       sc->may_deactivate |= DEACTIVATE_ANON;
+> +               else
+> +                       sc->may_deactivate &= ~DEACTIVATE_ANON;
+> +
+> +               /*
+> +                * When refaults are being observed, it means a new
+> +                * workingset is being established. Deactivate to get
+> +                * rid of any stale active pages quickly.
+> +                */
+> +               refaults = lruvec_page_state(target_lruvec,
+> +                                            WORKINGSET_ACTIVATE);
+> +               if (refaults != target_lruvec->refaults ||
+> +                   inactive_is_low(target_lruvec, LRU_INACTIVE_FILE))
+> +                       sc->may_deactivate |= DEACTIVATE_FILE;
+> +               else
+> +                       sc->may_deactivate &= ~DEACTIVATE_FILE;
+> +       } else
+> +               sc->may_deactivate = DEACTIVATE_ANON | DEACTIVATE_FILE;
+> +
+> +       /*
+> +        * If we have plenty of inactive file pages that aren't
+> +        * thrashing, try to reclaim those first before touching
+> +        * anonymous pages.
+> +        */
+> +       file = lruvec_page_state(target_lruvec, LRU_INACTIVE_FILE);
+> +       if (file >> sc->priority && !(sc->may_deactivate & DEACTIVATE_FILE))
+> +               sc->cache_trim_mode = 1;
+> +       else
+> +               sc->cache_trim_mode = 0;
+> +
 >         /*
-> @@ -310,10 +349,10 @@ void workingset_refault(struct page *page, void *shadow)
->          * the memory was available to the page cache.
+>          * Prevent the reclaimer from falling into the cache trap: as
+>          * cache pages start out inactive, every cache fault will tip
+> @@ -2741,10 +2759,9 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>          * anon pages.  Try to detect this based on file LRU size.
 >          */
->         if (refault_distance > active_file)
-> -               goto out;
-> +               goto out_memcg;
+>         if (!cgroup_reclaim(sc)) {
+> -               unsigned long file;
+> -               unsigned long free;
+> -               int z;
+>                 unsigned long total_high_wmark = 0;
+> +               unsigned long free, anon;
+> +               int z;
 >
->         SetPageActive(page);
-> -       atomic_long_inc(&lruvec->inactive_age);
-> +       advance_inactive_age(memcg, pgdat);
->         inc_lruvec_state(lruvec, WORKINGSET_ACTIVATE);
+>                 free = sum_zone_node_page_state(pgdat->node_id, NR_FREE_PAGES);
+>                 file = node_page_state(pgdat, NR_ACTIVE_FILE) +
+> @@ -2758,7 +2775,17 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+>                         total_high_wmark += high_wmark_pages(zone);
+>                 }
 >
->         /* Page was active prior to eviction */
-> @@ -321,6 +360,9 @@ void workingset_refault(struct page *page, void *shadow)
->                 SetPageWorkingset(page);
->                 inc_lruvec_state(lruvec, WORKINGSET_RESTORE);
->         }
+> -               sc->file_is_tiny = file + free <= total_high_wmark;
+> +               /*
+> +                * Consider anon: if that's low too, this isn't a
+> +                * runaway file reclaim problem, but rather just
+> +                * extreme pressure. Reclaim as per usual then.
+> +                */
+> +               anon = node_page_state(pgdat, NR_INACTIVE_ANON);
 > +
-> +out_memcg:
-> +       mem_cgroup_put(memcg);
->  out:
->         rcu_read_unlock();
->  }
-> @@ -332,7 +374,6 @@ void workingset_refault(struct page *page, void *shadow)
->  void workingset_activation(struct page *page)
+> +               sc->file_is_tiny =
+> +                       file + free <= total_high_wmark &&
+> +                       !(sc->may_deactivate & DEACTIVATE_ANON) &&
+> +                       anon >> sc->priority;
+
+The name of file_is_tiny flag seems to not correspond with its actual
+semantics anymore. Maybe rename it into "skip_file"?
+
+I'm confused about why !(sc->may_deactivate & DEACTIVATE_ANON) should
+be a prerequisite for skipping file LRU reclaim. IIUC this means we
+will skip reclaiming from file LRU only when anonymous page
+deactivation is not allowed. Could you please add a comment explaining
+this?
+
+>         }
+>
+>         shrink_node_memcgs(pgdat, sc);
+> @@ -3062,9 +3089,27 @@ static unsigned long do_try_to_free_pages(struct zonelist *zonelist,
+>         if (sc->compaction_ready)
+>                 return 1;
+>
+> +       /*
+> +        * We make inactive:active ratio decisions based on the node's
+> +        * composition of memory, but a restrictive reclaim_idx or a
+> +        * memory.low cgroup setting can exempt large amounts of
+> +        * memory from reclaim. Neither of which are very common, so
+> +        * instead of doing costly eligibility calculations of the
+> +        * entire cgroup subtree up front, we assume the estimates are
+> +        * good, and retry with forcible deactivation if that fails.
+> +        */
+> +       if (sc->skipped_deactivate) {
+> +               sc->priority = initial_priority;
+> +               sc->force_deactivate = 1;
+> +               sc->skipped_deactivate = 0;
+> +               goto retry;
+> +       }
+> +
+>         /* Untapped cgroup reserves?  Don't OOM, retry. */
+>         if (sc->memcg_low_skipped) {
+>                 sc->priority = initial_priority;
+> +               sc->force_deactivate = 0;
+> +               sc->skipped_deactivate = 0;
+>                 sc->memcg_low_reclaim = 1;
+>                 sc->memcg_low_skipped = 0;
+>                 goto retry;
+> @@ -3347,18 +3392,20 @@ static void age_active_anon(struct pglist_data *pgdat,
+>                                 struct scan_control *sc)
 >  {
 >         struct mem_cgroup *memcg;
-> -       struct lruvec *lruvec;
+> +       struct lruvec *lruvec;
 >
->         rcu_read_lock();
->         /*
-> @@ -345,8 +386,7 @@ void workingset_activation(struct page *page)
->         memcg = page_memcg_rcu(page);
->         if (!mem_cgroup_disabled() && !memcg)
->                 goto out;
-> -       lruvec = mem_cgroup_lruvec(memcg, page_pgdat(page));
-> -       atomic_long_inc(&lruvec->inactive_age);
-> +       advance_inactive_age(memcg, page_pgdat(page));
->  out:
->         rcu_read_unlock();
+>         if (!total_swap_pages)
+>                 return;
+>
+> +       lruvec = mem_cgroup_lruvec(NULL, pgdat);
+> +       if (!inactive_is_low(lruvec, LRU_INACTIVE_ANON))
+> +               return;
+> +
+>         memcg = mem_cgroup_iter(NULL, NULL, NULL);
+>         do {
+> -               struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> -
+> -               if (inactive_list_is_low(lruvec, false, sc, true))
+> -                       shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
+> -                                          sc, LRU_ACTIVE_ANON);
+> -
+> +               lruvec = mem_cgroup_lruvec(memcg, pgdat);
+> +               shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
+> +                                  sc, LRU_ACTIVE_ANON);
+>                 memcg = mem_cgroup_iter(NULL, memcg, NULL);
+>         } while (memcg);
 >  }
 > --
 > 2.24.0
