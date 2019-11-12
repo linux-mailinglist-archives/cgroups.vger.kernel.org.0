@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B2C3F9781
-	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 18:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CECEF9807
+	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 19:00:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726965AbfKLRpg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Nov 2019 12:45:36 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:42430 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726718AbfKLRpf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Nov 2019 12:45:35 -0500
-Received: by mail-qv1-f68.google.com with SMTP id c9so6715096qvz.9
-        for <cgroups@vger.kernel.org>; Tue, 12 Nov 2019 09:45:35 -0800 (PST)
+        id S1727239AbfKLSAW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Nov 2019 13:00:22 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:43156 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726738AbfKLSAW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Nov 2019 13:00:22 -0500
+Received: by mail-qk1-f193.google.com with SMTP id z23so15232639qkj.10
+        for <cgroups@vger.kernel.org>; Tue, 12 Nov 2019 10:00:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=SKH1z3odsh0dOqBa6+gRpBBgGUSs+RoaA3vn9y35Y60=;
-        b=ub/z2usVbtFPjwv5NwXjzZOGEt0DMd+Iqld9+xj+Yl6kgLI5sbPVNMFYOb8FphZv/b
-         BOH6/CImQShh5zf1106fe38oXqHRiOImx+m4x4mvAz4Qiv++Jict33McH/GHVy/Em7Cm
-         rxBENqSGDHcpOZgHBAKZTNDa9Kp7QPzrahLz2q2Siu7mCw4UbnAsPy6VJYwsQ8hizkIz
-         X2XmaOmYD5vh7g0N+ByQiR749Kio6CNFkkJXHceQLzfJNGFB3s3HYpC0QUXfvxl/yL//
-         kFFf8yaTa6YP9NebtFV7KnpIECtsJ3ZV+J0KSn7s/bPmFMlcMf3Zi99mkvW7tnZv2/Th
-         NXWQ==
+        bh=06+tOajz4B6gePUoYXEIPar3gvZ/gJqmbgnyOgTIPAU=;
+        b=ZQNd+lcnkEIXb4CIVCUUvF0shtw2ailj89aCGb0NVz9uUKnnUYfYju6n2m5EPh9upa
+         xxaH1JcRBZS05oi4qgAdE9Vtn1wbsYAsKC91Sa6KV3uU4jVyzCQ3msh6LHd8K20oyOX0
+         b17taRXMabKP1dKvpzPw8zj8rrahWqzoza8Hhs5SxQ9/qffyLciJXEv3mXIZGv7LIsyy
+         4ZR8FFIzTj7jW98nE7yYeYihDbvKD1xx5IxxVB2F/h2kqtc+KomQ916B3tFlQqQWbqF6
+         4k2QurV0KK7G4oJIbvG/LBxRoivl/07+p7Hc0GGnYJ5zip5Xet/r7DWNRmncK6lJF+MA
+         WGOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SKH1z3odsh0dOqBa6+gRpBBgGUSs+RoaA3vn9y35Y60=;
-        b=CeiJexkeaYeq9uTH/aw7fUqFDpaRGsulEZ4t+jCtbzW8LcDLUaVuBM16IwJcJ6fQSC
-         fTGalfd6xYsiXPoGhi/UuFVC040/5YyHTXmi+cp2XnRIJzYV7ZSBz9Yz8PxFViHhsjnw
-         rIUOdFeJS/bs8mZEvHcaiQ1ggQOz+ohzctwVz7xGuDLISzL7iGYERvFBd4R+wN7aST9E
-         fjekw5mg5jJ2RRAWE9BJwygp5DsyMXVei6MQDcArPGQECyuqa91ZNrrlDybwWHUJdXPX
-         QlyRzrZjrgh7phfjj34IENvfpaqB9meR10djEhiTXXEGmSez+tLJcf8qNnqHFvTCn9xy
-         SlIQ==
-X-Gm-Message-State: APjAAAXkdUk+uYsgRu7nLQBuDiKN1kBVhpTrwnk3MxzONU+wLPWuBaV8
-        WkyPwwICpTtZse9PfmiD/e1Zcw==
-X-Google-Smtp-Source: APXvYqx1IVJr4fbG3VE4xzwfF+4/eGG9CfF0SUyfwLgcuYPB9sFtW/qdTwELYrUt14O8oOUOEMMvHQ==
-X-Received: by 2002:ad4:5441:: with SMTP id h1mr17265157qvt.120.1573580734695;
-        Tue, 12 Nov 2019 09:45:34 -0800 (PST)
+        bh=06+tOajz4B6gePUoYXEIPar3gvZ/gJqmbgnyOgTIPAU=;
+        b=thDPEfLn3yM3G7pt0Tye6pJjwy35bwk1k//pFXxQXq/IZItWiAQRL74Emt8XkaTrc+
+         6dkjIUgK+tReygHH3cknDwU53NcXnPJp6zjnFFhkBK7i9UaFVr/d0+B5SZxXWs/YssBY
+         opPvemEykYCBYbSdapFU8lQjQYG1W8I2gxB7vl/Hp/5khW0qaJlRIjoWDR6X4WYvsLY9
+         2F2vV2Fr7bOcZx6bTYGjp0YtQSLfzt3aIBHDzF9EfPgHUHYUpfHU//MBNTf+DZwRGncu
+         geqzp9Deaxh0N31jfcsmhFPgnMynvMFpzjVoRG+IHBL9/KXA2vZWK1tLrhMxLTgsk5bu
+         uhdA==
+X-Gm-Message-State: APjAAAXsbMyYRD72EcFXjXpanR9S/MrnuyBNjg8AR3cAMyM5yzlUccH+
+        GielV/lU/mueR6EhOog1wzBaGw==
+X-Google-Smtp-Source: APXvYqxiYDIXtP651b4dXQUD1iQi7esDhbrkhOiZeP1WHRH8UaDSfzUtY9f7q2nHOmwq7dnCKDPp9Q==
+X-Received: by 2002:a37:a54c:: with SMTP id o73mr17251660qke.164.1573581621282;
+        Tue, 12 Nov 2019 10:00:21 -0800 (PST)
 Received: from localhost ([2620:10d:c091:500::aa8c])
-        by smtp.gmail.com with ESMTPSA id z5sm10649218qtm.9.2019.11.12.09.45.33
+        by smtp.gmail.com with ESMTPSA id u22sm9769196qtb.59.2019.11.12.10.00.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2019 09:45:33 -0800 (PST)
-Date:   Tue, 12 Nov 2019 12:45:33 -0500
+        Tue, 12 Nov 2019 10:00:20 -0800 (PST)
+Date:   Tue, 12 Nov 2019 13:00:19 -0500
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Suren Baghdasaryan <surenb@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
@@ -54,80 +54,83 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
         cgroups mailinglist <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
-Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
-Message-ID: <20191112174533.GA178331@cmpxchg.org>
+Subject: Re: [PATCH 3/3] mm: vmscan: enforce inactive:active ratio at the
+ reclaim root
+Message-ID: <20191112180019.GB178331@cmpxchg.org>
 References: <20191107205334.158354-1-hannes@cmpxchg.org>
- <20191107205334.158354-3-hannes@cmpxchg.org>
- <CAJuCfpFtr9ODyOEJWt+=z=fnR0j8CJPSfhN+50N=d4SjLO-Z7A@mail.gmail.com>
+ <20191107205334.158354-4-hannes@cmpxchg.org>
+ <CAJuCfpHSTr8Vt+Tj-Hj4OBYHq1ucw7_B1VoVWKEHQVPHaMhUdA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJuCfpFtr9ODyOEJWt+=z=fnR0j8CJPSfhN+50N=d4SjLO-Z7A@mail.gmail.com>
+In-Reply-To: <CAJuCfpHSTr8Vt+Tj-Hj4OBYHq1ucw7_B1VoVWKEHQVPHaMhUdA@mail.gmail.com>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Nov 10, 2019 at 06:01:18PM -0800, Suren Baghdasaryan wrote:
+On Sun, Nov 10, 2019 at 06:15:50PM -0800, Suren Baghdasaryan wrote:
 > On Thu, Nov 7, 2019 at 12:53 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > @@ -2758,7 +2775,17 @@ static bool shrink_node(pg_data_t *pgdat, struct scan_control *sc)
+> >                         total_high_wmark += high_wmark_pages(zone);
+> >                 }
 > >
-> > We use refault information to determine whether the cache workingset
-> > is stable or transitioning, and dynamically adjust the inactive:active
-> > file LRU ratio so as to maximize protection from one-off cache during
-> > stable periods, and minimize IO during transitions.
-> >
-> > With cgroups and their nested LRU lists, we currently don't do this
-> > correctly. While recursive cgroup reclaim establishes a relative LRU
-> > order among the pages of all involved cgroups, refaults only affect
-> > the local LRU order in the cgroup in which they are occuring. As a
-> > result, cache transitions can take longer in a cgrouped system as the
-> > active pages of sibling cgroups aren't challenged when they should be.
-> >
-> > [ Right now, this is somewhat theoretical, because the siblings, under
-> >   continued regular reclaim pressure, should eventually run out of
-> >   inactive pages - and since inactive:active *size* balancing is also
-> >   done on a cgroup-local level, we will challenge the active pages
-> >   eventually in most cases. But the next patch will move that relative
-> >   size enforcement to the reclaim root as well, and then this patch
-> >   here will be necessary to propagate refault pressure to siblings. ]
-> >
-> > This patch moves refault detection to the root of reclaim. Instead of
-> > remembering the cgroup owner of an evicted page, remember the cgroup
-> > that caused the reclaim to happen. When refaults later occur, they'll
-> > correctly influence the cross-cgroup LRU order that reclaim follows.
+> > -               sc->file_is_tiny = file + free <= total_high_wmark;
+> > +               /*
+> > +                * Consider anon: if that's low too, this isn't a
+> > +                * runaway file reclaim problem, but rather just
+> > +                * extreme pressure. Reclaim as per usual then.
+> > +                */
+> > +               anon = node_page_state(pgdat, NR_INACTIVE_ANON);
+> > +
+> > +               sc->file_is_tiny =
+> > +                       file + free <= total_high_wmark &&
+> > +                       !(sc->may_deactivate & DEACTIVATE_ANON) &&
+> > +                       anon >> sc->priority;
 > 
-> I spent some time thinking about the idea of calculating refault
-> distance using target_memcg's inactive_age and then activating
-> refaulted page in (possibly) another memcg and I am still having
-> trouble convincing myself that this should work correctly. However I
-> also was unable to convince myself otherwise... We use refault
-> distance to calculate the deficit in inactive LRU space and then
-> activate the refaulted page if that distance is less that
-> active+inactive LRU size. However making that decision based on LRU
-> sizes of one memcg and then activating the page in another one seems
-> very counterintuitive to me. Maybe that's just me though...
+> The name of file_is_tiny flag seems to not correspond with its actual
+> semantics anymore. Maybe rename it into "skip_file"?
 
-It's not activating in a random, unrelated memcg - it's the parental
-relationship that makes it work.
+I'm not a fan of file_is_tiny, but I also don't like skip_file. IMO
+it's better to have it describe a situation instead of an action, in
+case we later want to take additional action for that situation.
 
-If you have a cgroup tree
+Any other ideas? ;)
 
-	root
-         |
-         A
-        / \
-       B1 B2
+> I'm confused about why !(sc->may_deactivate & DEACTIVATE_ANON) should
+> be a prerequisite for skipping file LRU reclaim. IIUC this means we
+> will skip reclaiming from file LRU only when anonymous page
+> deactivation is not allowed. Could you please add a comment explaining
+> this?
 
-and reclaim is driven by a limit in A, we are reclaiming the pages in
-B1 and B2 as if they were on a single LRU list A (it's approximated by
-the round-robin reclaim and has some caveats, but that's the idea).
+The comment above this check tries to explain it: the definition of
+file being "tiny" is dependent on the availability of anon. It's a
+relative comparison.
 
-So when a page that belongs to B2 gets evicted, it gets evicted from
-virtual LRU list A. When it refaults later, we make the (in)active
-size and distance comparisons against virtual LRU list A as well.
+If file only has a few pages, and anon is easily reclaimable (does not
+require deactivation to reclaim pages), then file is "tiny" and we
+should go after the more plentiful anon pages.
 
-The pages on the physical LRU list B2 are not just ordered relative to
-its B2 peers, they are also ordered relative to the pages in B1. And
-that of course is necessary if we want fair competition between them
-under shared reclaim pressure from A.
+If anon is under duress, too, this preference doesn't make sense and
+we should just reclaim both lists equally, as per usual.
+
+Note that I'm not introducing this constraint, I'm just changing how
+it's implemented. From the patch:
+
+> >         /*
+> >          * If the system is almost out of file pages, force-scan anon.
+> > -        * But only if there are enough inactive anonymous pages on
+> > -        * the LRU. Otherwise, the small LRU gets thrashed.
+> >          */
+> > -       if (sc->file_is_tiny &&
+> > -           !inactive_list_is_low(lruvec, false, sc, false) &&
+> > -           lruvec_lru_size(lruvec, LRU_INACTIVE_ANON,
+> > -                           sc->reclaim_idx) >> sc->priority) {
+> > +       if (sc->file_is_tiny) {
+> >                 scan_balance = SCAN_ANON;
+> >                 goto out;
+> >         }
+
+So it's always been checking whether reclaim would deactivate anon,
+and whether inactive_anon has sufficient pages for this priority.
