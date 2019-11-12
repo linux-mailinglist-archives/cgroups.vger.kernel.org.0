@@ -2,103 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66832F98A5
-	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 19:30:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DC4B2F9904
+	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 19:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727020AbfKLSai (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Nov 2019 13:30:38 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52924 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726965AbfKLSah (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 12 Nov 2019 13:30:37 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 313B2ACBD;
-        Tue, 12 Nov 2019 18:30:35 +0000 (UTC)
-Date:   Tue, 12 Nov 2019 19:30:32 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chris Down <chris@chrisdown.name>, Qian Cai <cai@lca.pw>,
-        akpm@linux-foundation.org, guro@fb.com, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] mm/vmscan: fix an undefined behavior for zone id
-Message-ID: <20191112183032.GC512@dhcp22.suse.cz>
-References: <20191108204407.1435-1-cai@lca.pw>
- <64E60F6F-7582-427B-8DD5-EF97B1656F5A@lca.pw>
- <20191111130516.GA891635@chrisdown.name>
- <20191111131427.GB891635@chrisdown.name>
- <20191111132812.GK1396@dhcp22.suse.cz>
- <20191112145942.GA168812@cmpxchg.org>
- <20191112152750.GA512@dhcp22.suse.cz>
- <20191112161658.GF168812@cmpxchg.org>
- <20191112163156.GB512@dhcp22.suse.cz>
- <20191112182017.GB179587@cmpxchg.org>
+        id S1726965AbfKLSp6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Nov 2019 13:45:58 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:37324 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbfKLSp6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Nov 2019 13:45:58 -0500
+Received: by mail-wr1-f68.google.com with SMTP id t1so19726715wrv.4
+        for <cgroups@vger.kernel.org>; Tue, 12 Nov 2019 10:45:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=hxMhnNTPNMqUl9aYg/+q9b2xf6WaAQRl4vSfzI/n7p4=;
+        b=eLwd7Iy5L1mI4E21IClk5SY41lrRU+CDtVSYFCoaOR/KUjfehCrHpcwrUvhp5HmTAT
+         uhs0ezHEN43/gLsummGlDTM/iWi7hu/cK+YLg7/dcWasjaAw10a2+vjz46+e6Ll6PbEd
+         kk7UC9to+igCpH1Qy7B86f84kz2U9b0jeR7oGoeHgPuti9b6KYvUj9VoslJCfooG0qk/
+         72DcEX4NgQ9jNxxJ7WebVvv6PsNmtNSc3uYsBxmg6jwEtpuvxGLrflrVyJzoCJk2ByKe
+         9QVYH8BACYdUA2k9t12xq9WwexnMZMO5giUKpafTjobHbHZ3dpi4zK2f6QHCXUkyDnMY
+         G88g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=hxMhnNTPNMqUl9aYg/+q9b2xf6WaAQRl4vSfzI/n7p4=;
+        b=rPc5kNkn0KjMZvJz9J6r5tUxtyT14L0xPnZRQfvLFPtaQjodhLImUPJD4MiPpNfC2b
+         pX+NGxWb2hejcuSF35L93en9g5GNhqUt9B+J0/FWGCNWMiyKRLDmoSwsmfd+Q9yxDRBT
+         UjmdA05E8KgJ6zVCWI0CVOtg/pexEub/FvRvvLQ4PROSsIE9LdZ98ijn6JtO52EvcoBy
+         H9JmEjOoeyq6r6EG1K0+1kEzEhnIXJ126/1Pr+CPwn3kyv1tr/MC4gdcEaN+Y1R3aS4L
+         7T+xfJM0jgjYjgOuN7S7dDnvtD+OP+UG4iVuZqxSmu+5y0GnlyEhMH15UomR2QqkRIE+
+         WC4A==
+X-Gm-Message-State: APjAAAWp4yxGEKEprDJ9kHUaHhvmdK9s8gIvLeUovMR3wErxrrdwr+3a
+        3jqNe0u2fpm//2z780V9yvtntAVMH1K013AxXdWhuQ==
+X-Google-Smtp-Source: APXvYqwQYYci7I67aRBonFwOTDDHZvisnT9MPd62fmUFGWvgmGL1eI7K9On3FwQg9b+v550fPLGLr8uzThpKIIMkhe0=
+X-Received: by 2002:a5d:678c:: with SMTP id v12mr2383882wru.116.1573584355560;
+ Tue, 12 Nov 2019 10:45:55 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191112182017.GB179587@cmpxchg.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20191107205334.158354-1-hannes@cmpxchg.org> <20191107205334.158354-3-hannes@cmpxchg.org>
+ <CAJuCfpFtr9ODyOEJWt+=z=fnR0j8CJPSfhN+50N=d4SjLO-Z7A@mail.gmail.com> <20191112174533.GA178331@cmpxchg.org>
+In-Reply-To: <20191112174533.GA178331@cmpxchg.org>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 12 Nov 2019 10:45:44 -0800
+Message-ID: <CAJuCfpHSMcXOZ4zF7X3FVbnyOL_HNgepNYCYsVdcs_gT3Gtm3Q@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm <linux-mm@kvack.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, kernel-team@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 12-11-19 13:20:17, Johannes Weiner wrote:
-> On Tue, Nov 12, 2019 at 05:31:56PM +0100, Michal Hocko wrote:
-> > On Tue 12-11-19 11:16:58, Johannes Weiner wrote:
-> > > On Tue, Nov 12, 2019 at 04:27:50PM +0100, Michal Hocko wrote:
-> > > > lruvec_lru_size is explicitly documented to use MAX_NR_ZONES for all
-> > > > LRUs and git grep says there are more instances outside of
-> > > > get_scan_count. So all of them have to be fixed.
-> > > 
-> > > Which ones?
-> > > 
-> > > [hannes@computer linux]$ git grep lruvec_lru_size
-> > > include/linux/mmzone.h:extern unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx);
-> > > mm/vmscan.c: * lruvec_lru_size -  Returns the number of pages on the given LRU list.
-> > > mm/vmscan.c:unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone_idx)
-> > > mm/vmscan.c:    anon  = lruvec_lru_size(lruvec, LRU_ACTIVE_ANON, MAX_NR_ZONES - 1) +
-> > > mm/vmscan.c:            lruvec_lru_size(lruvec, LRU_INACTIVE_ANON, MAX_NR_ZONES - 1);
-> > > mm/vmscan.c:    file  = lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_ZONES - 1) +
-> > > mm/vmscan.c:            lruvec_lru_size(lruvec, LRU_INACTIVE_FILE, MAX_NR_ZONES - 1);
-> > > mm/vmscan.c:            lruvec_size = lruvec_lru_size(lruvec, lru, sc->reclaim_idx);
-> > > [hannes@computer linux]$
-> > 
-> > I have checked the Linus tree but now double checked with the current
-> > next
-> > $ git describe next/master
-> > next-20191112
-> > $ git grep "lruvec_lru_size.*MAX_NR_ZONES" next/master
-> > next/master:mm/vmscan.c:                        lruvec_lru_size(lruvec, inactive_lru, MAX_NR_ZONES), inactive,
-> > next/master:mm/vmscan.c:                        lruvec_lru_size(lruvec, active_lru, MAX_NR_ZONES), active,
-> > next/master:mm/vmscan.c:        anon  = lruvec_lru_size(lruvec, LRU_ACTIVE_ANON, MAX_NR_ZONES) +
-> > next/master:mm/vmscan.c:                lruvec_lru_size(lruvec, LRU_INACTIVE_ANON, MAX_NR_ZONES);
-> > next/master:mm/vmscan.c:        file  = lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_ZONES) +
-> > next/master:mm/vmscan.c:                lruvec_lru_size(lruvec, LRU_INACTIVE_FILE, MAX_NR_ZONES);
-> > next/master:mm/workingset.c:    active_file = lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_ZONES);
-> > 
-> > are there any changes which didn't make it to linux next yet?
-> 
-> Aaahh, that makes sense. I was looking at the latest mmots which
-> has
-> 
-> - mm: vmscan: detect file thrashing at the reclaim root
-> - mm: vmscan: enforce inactive:active ratio at the reclaim root
-> 
-> Those replace the inactive_is_low and the workingset callsites with
-> the recursive lruvec_page_state(). It looks like that isn't in next -
-> and while I hope it'll make it into 5.5, it might not. So we need a
-> fix that considers the other callsites as well.
-> 
-> Qian's patches that Andrew already has will be good then, as it
-> reduces the churn to those other callsites that are in flux.
-> 
-> We can clean things up when the dust settles.
+On Tue, Nov 12, 2019 at 9:45 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Sun, Nov 10, 2019 at 06:01:18PM -0800, Suren Baghdasaryan wrote:
+> > On Thu, Nov 7, 2019 at 12:53 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > >
+> > > We use refault information to determine whether the cache workingset
+> > > is stable or transitioning, and dynamically adjust the inactive:active
+> > > file LRU ratio so as to maximize protection from one-off cache during
+> > > stable periods, and minimize IO during transitions.
+> > >
+> > > With cgroups and their nested LRU lists, we currently don't do this
+> > > correctly. While recursive cgroup reclaim establishes a relative LRU
+> > > order among the pages of all involved cgroups, refaults only affect
+> > > the local LRU order in the cgroup in which they are occuring. As a
+> > > result, cache transitions can take longer in a cgrouped system as the
+> > > active pages of sibling cgroups aren't challenged when they should be.
+> > >
+> > > [ Right now, this is somewhat theoretical, because the siblings, under
+> > >   continued regular reclaim pressure, should eventually run out of
+> > >   inactive pages - and since inactive:active *size* balancing is also
+> > >   done on a cgroup-local level, we will challenge the active pages
+> > >   eventually in most cases. But the next patch will move that relative
+> > >   size enforcement to the reclaim root as well, and then this patch
+> > >   here will be necessary to propagate refault pressure to siblings. ]
+> > >
+> > > This patch moves refault detection to the root of reclaim. Instead of
+> > > remembering the cgroup owner of an evicted page, remember the cgroup
+> > > that caused the reclaim to happen. When refaults later occur, they'll
+> > > correctly influence the cross-cgroup LRU order that reclaim follows.
+> >
+> > I spent some time thinking about the idea of calculating refault
+> > distance using target_memcg's inactive_age and then activating
+> > refaulted page in (possibly) another memcg and I am still having
+> > trouble convincing myself that this should work correctly. However I
+> > also was unable to convince myself otherwise... We use refault
+> > distance to calculate the deficit in inactive LRU space and then
+> > activate the refaulted page if that distance is less that
+> > active+inactive LRU size. However making that decision based on LRU
+> > sizes of one memcg and then activating the page in another one seems
+> > very counterintuitive to me. Maybe that's just me though...
+>
+> It's not activating in a random, unrelated memcg - it's the parental
+> relationship that makes it work.
+>
+> If you have a cgroup tree
+>
+>         root
+>          |
+>          A
+>         / \
+>        B1 B2
+>
+> and reclaim is driven by a limit in A, we are reclaiming the pages in
+> B1 and B2 as if they were on a single LRU list A (it's approximated by
+> the round-robin reclaim and has some caveats, but that's the idea).
+>
+> So when a page that belongs to B2 gets evicted, it gets evicted from
+> virtual LRU list A. When it refaults later, we make the (in)active
+> size and distance comparisons against virtual LRU list A as well.
+>
+> The pages on the physical LRU list B2 are not just ordered relative to
+> its B2 peers, they are also ordered relative to the pages in B1. And
+> that of course is necessary if we want fair competition between them
+> under shared reclaim pressure from A.
 
-Yeah, while I am not really super happy about the code that is more
-complex than necessary the clean up can be done on top and we can also
-think about how to do it properly (I still haven't given up ;))
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks for clarification. The testcase in your description when group
+B has a large inactive cache which does not get reclaimed while its
+sibling group A has to drop its active cache got me under the
+impression that sibling cgroups (in your reply above B1 and B2) can
+cause memory pressure in each other. Maybe that's not a legit case and
+B1 would not cause pressure in B2 without causing pressure in their
+shared parent A? It now makes more sense to me and I want to confirm
+that is the case.
