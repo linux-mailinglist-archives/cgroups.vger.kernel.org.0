@@ -2,52 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D38F8533
-	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 01:30:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6215F8687
+	for <lists+cgroups@lfdr.de>; Tue, 12 Nov 2019 02:40:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726896AbfKLAaH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 Nov 2019 19:30:07 -0500
-Received: from mail.kernel.org ([198.145.29.99]:51754 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726887AbfKLAaH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 11 Nov 2019 19:30:07 -0500
-Subject: Re: [GIT PULL] cgroup fixes for v5.4-rc7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573518606;
-        bh=RqZ58pXyTwOBoreggkJiERbkQNHXSvU7CH9wxsfwQYo=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=lEeqwWbXl5oXSc9BMUnLxt8yjiQprQB515FX3ut2zjLsghw+7DnzQlm/oeQWtGhzn
-         YgpHHJKQcmDxp7E8EdJZ9+WoOi/0V6TjI3RhNuh0dQsgRaLTLQKhnbG0+emca+8omD
-         HYivfRXngFjobYr2ZJL0Fxm08h60k6euLZj5FVtI=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20191111202203.GC4163745@devbig004.ftw2.facebook.com>
-References: <20191111202203.GC4163745@devbig004.ftw2.facebook.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20191111202203.GC4163745@devbig004.ftw2.facebook.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.4-fixes
-X-PR-Tracked-Commit-Id: 937c6b27c73e02cd4114f95f5c37ba2c29fadba1
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: de620fb99ef2bd52b2c5bc52656e89dcfc0e223a
-Message-Id: <157351860653.22410.73967541645460298.pr-tracker-bot@kernel.org>
-Date:   Tue, 12 Nov 2019 00:30:06 +0000
+        id S1726906AbfKLBkU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 Nov 2019 20:40:20 -0500
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:34896 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726793AbfKLBkU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 Nov 2019 20:40:20 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R641e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=jiufei.xue@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0Thqegz6_1573522817;
+Received: from ali-186590e05fa3.local(mailfrom:jiufei.xue@linux.alibaba.com fp:SMTPD_---0Thqegz6_1573522817)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 12 Nov 2019 09:40:17 +0800
+Subject: Re: [PATCH] iocost: treat as root level when parents are activated
 To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, joseph.qi@linux.alibaba.com
+References: <1573457838-121361-1-git-send-email-jiufei.xue@linux.alibaba.com>
+ <20191111162538.GB4163745@devbig004.ftw2.facebook.com>
+From:   Jiufei Xue <jiufei.xue@linux.alibaba.com>
+Message-ID: <7be6fb71-7e08-e369-cbbe-678129cc62ff@linux.alibaba.com>
+Date:   Tue, 12 Nov 2019 09:38:57 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.13; rv:60.0)
+ Gecko/20100101 Thunderbird/60.7.0
+MIME-Version: 1.0
+In-Reply-To: <20191111162538.GB4163745@devbig004.ftw2.facebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Mon, 11 Nov 2019 12:22:03 -0800:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.4-fixes
+Hi Tejun,
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/de620fb99ef2bd52b2c5bc52656e89dcfc0e223a
+On 2019/11/12 上午12:25, Tejun Heo wrote:
+> Hello, Jiufei.
+> 
+> On Mon, Nov 11, 2019 at 03:37:18PM +0800, Jiufei Xue wrote:
+>> Internal nodes that issued IOs are treated as root when leaves are
+>> activated. However, leaf nodes can still be activated when internal
+>> nodes are active, leaving the sum of hweights exceeds HWEIGHT_WHOLE.
+>>
+>> I think we should also treat the leaf nodes as root while leaf-only
+>> constraint broken.
+> 
+> Hmm... I'm not sure this description makes sense.
+> 
+Should I change the description to something like this?
+"we should treat the leaf nodes as root while the parent are already activated".
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+>> @@ -1057,8 +1057,8 @@ static bool iocg_activate(struct ioc_gq *iocg, struct ioc_now *now)
+>>  	atomic64_set(&iocg->active_period, cur_period);
+>>  
+>>  	/* already activated or breaking leaf-only constraint? */
+>> -	for (i = iocg->level; i > 0; i--)
+>> -		if (!list_empty(&iocg->active_list))
+>> +	for (i = iocg->level - 1; i > 0; i--)
+>> +		if (!list_empty(&iocg->ancestors[i]->active_list))
+> 
+> But there's an obvious bug there as it's checking the same active_list
+> over and over again.  Shouldn't it be sth like the following instead?
+> 
+> 	if (!list_empty(&iocg->active_list))
+> 		goto succeed_unlock;
+
+iocg has already checked before, do you mean we should check it again
+after ioc->lock?
+
+> 	for (i = iocg->level - 1; i > 0; i--)
+> 		if (!list_empty(&iocg->ancestors[i]->active_list))
+> 			goto fail_unlock;
+> 
+> Thanks.
+>
+
+Thanks,
+Jiufei
