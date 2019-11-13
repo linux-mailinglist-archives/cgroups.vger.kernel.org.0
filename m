@@ -2,559 +2,370 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85532FAC1B
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2019 09:33:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BA3EFAF64
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2019 12:13:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725996AbfKMIdW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Nov 2019 03:33:22 -0500
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:41522 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725966AbfKMIdW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Nov 2019 03:33:22 -0500
-Received: from mxbackcorp1j.mail.yandex.net (mxbackcorp1j.mail.yandex.net [IPv6:2a02:6b8:0:1619::162])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id 4432E2E07AA;
-        Wed, 13 Nov 2019 11:33:15 +0300 (MSK)
-Received: from iva4-c987840161f8.qloud-c.yandex.net (iva4-c987840161f8.qloud-c.yandex.net [2a02:6b8:c0c:3da5:0:640:c987:8401])
-        by mxbackcorp1j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id f2K0MttTEw-XEp0cJh5;
-        Wed, 13 Nov 2019 11:33:15 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1573633995; bh=t1thZIVEu1WTfefubz+/FhHy09qTLth6L7ULHQ78cSs=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=gLG2El7uRmG80gCgITigzw+hRoAWqOQKBKJ3mmb6ZfoT2tnscJPo7guw7bEQky5ie
-         jYGXNejuwrnny8Zhd/R1O13KkhdAxpyumgMLlFapP1jrutRJ9scRSLGdRNaGFAevvX
-         Hsi2hiWstX54gauI4gbqK4pR6HWFX3xvMj8xK50o=
-Authentication-Results: mxbackcorp1j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-red.dhcp.yndx.net (dynamic-red.dhcp.yndx.net [2a02:6b8:0:40c:8554:53c0:3d75:2e8a])
-        by iva4-c987840161f8.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id oGayQzLKqq-XEVm8imI;
-        Wed, 13 Nov 2019 11:33:14 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH RFC] sched/fair: add burst to cgroup cpu bandwidth
- controller
-To:     Dave Chiluk <chiluk+linux@indeed.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Ben Segall <bsegall@google.com>,
-        Ingo Molnar <mingo@redhat.com>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>
-References: <157312875706.707.12248531434112979828.stgit@buzz>
- <CAC=E7cXaSya6YxqhuiLsNy1B9jdZ=7DwTgkJ9fXQ9LauLpjhSg@mail.gmail.com>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <67876463-727c-3381-abec-196f9d8462c7@yandex-team.ru>
-Date:   Wed, 13 Nov 2019 11:33:14 +0300
+        id S1727737AbfKMLNO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Nov 2019 06:13:14 -0500
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:43732 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727211AbfKMLNN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Nov 2019 06:13:13 -0500
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id xADBClhW112048;
+        Wed, 13 Nov 2019 05:12:47 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1573643567;
+        bh=h9xEOipiMSBQ/v/YefGIqpw3Ed/kooHBIiXxYAocdes=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=eb/OYO8tj7OL/hoc9y3kkSLZGYRPSyauoFl0nvlZLkXSLlidkeIxHd59CWgIUGvmS
+         f41UP9EQPfOwc3bknot3JcxNWnVoXdx1kH0vghsv5OZtmGAGX+xJOVurxDKIZfOqfQ
+         uIhR+z2uveXNHrJHmT3yP7lRV07R5t8uCqWjipW8=
+Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id xADBClMx003439
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 13 Nov 2019 05:12:47 -0600
+Received: from DLEE109.ent.ti.com (157.170.170.41) by DLEE105.ent.ti.com
+ (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3; Wed, 13
+ Nov 2019 05:12:29 -0600
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1847.3 via
+ Frontend Transport; Wed, 13 Nov 2019 05:12:29 -0600
+Received: from [172.24.190.215] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id xADBChi1006071;
+        Wed, 13 Nov 2019 05:12:44 -0600
+Subject: Re: [PATCH 5/6] blk-cgroup: reimplement basic IO stats using cgroup
+ rstat
+To:     Tejun Heo <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lizefan@huawei.com>,
+        <hannes@cmpxchg.org>, <kernel-team@fb.com>,
+        Dan Schatzberg <dschatzberg@fb.com>, Daniel Xu <dlxu@fb.com>
+References: <20191107191804.3735303-1-tj@kernel.org>
+ <20191107191804.3735303-6-tj@kernel.org>
+From:   Faiz Abbas <faiz_abbas@ti.com>
+Message-ID: <cd3ebcee-6819-a09b-aeba-de6817f32cde@ti.com>
+Date:   Wed, 13 Nov 2019 16:43:44 +0530
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
  Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <CAC=E7cXaSya6YxqhuiLsNy1B9jdZ=7DwTgkJ9fXQ9LauLpjhSg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
+In-Reply-To: <20191107191804.3735303-6-tj@kernel.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 13/11/2019 10.35, Dave Chiluk wrote:
-> I was going to write this exact patch, but you beat me to it.  I like
-> that it's sequestered into a separate setting.  This would be very
-> useful for interactive applications that have cfs bandwidth control
-> enabled *(cough* kubernetes).  Are you planning on submitting the
-> plumbing for this feature back into docker/containerd/lxc/other
-> container orchestrators?
+Hi,
 
-I haven't thought about that yet.
+On 08/11/19 12:48 AM, Tejun Heo wrote:
+> blk-cgroup has been using blkg_rwstat to track basic IO stats.
+> Unfortunately, reading recursive stats scales badly as itinvolves
+> walking all descendants.  On systems with a huge number of cgroups
+> (dead or alive), this can lead to substantial CPU cost when reading IO
+> stats.
+> 
+> This patch reimplements basic IO stats using cgroup rstat which uses
+> more memory but makes recursive stat reading O(# descendants which
+> have been active since last reading) instead of O(# descendants).
+> 
+> * blk-cgroup core no longer uses sync/async stats.  Introduce new stat
+>   enums - BLKG_IOSTAT_{READ|WRITE|DISCARD}.
+> 
+> * Add blkg_iostat[_set] which encapsulates byte and io stats, last
+>   values for propagation delta calculation and u64_stats_sync for
+>   correctness on 32bit archs.
+> 
+> * Update the new percpu stat counters directly and implement
+>   blkcg_rstat_flush() to implement propagation.
+> 
+> * blkg_print_stat() can now bring the stats up to date by calling
+>   cgroup_rstat_flush() and print them instead of directly summing up
+>   all descendants.
+> 
+> * It now allocates 96 bytes per cpu.  It used to be 40 bytes.
+> 
+> Signed-off-by: Tejun Heo <tj@kernel.org>
+> Cc: Dan Schatzberg <dschatzberg@fb.com>
+> Cc: Daniel Xu <dlxu@fb.com>
+> ---
 
-Burst size should have reasonable default, like quota for 4 periods.
-So, per-container configuration might be redundant.
+I bisected a Kernel OOPs issue to this patch on linux-next. Any idea why
+this is happening? Here is the log:
 
-> 
-> Also this is very similar in desired behavior to a patchset submitted
-> by Cong Wang https://lore.kernel.org/patchwork/patch/907450/
-> .Although, I like this implementation better due to it's simplicity.
-> I guess a lot of the simplification comes from not having to deal with
-> the expiration logic.
-> 
-> Additional comments inlined.  Documentation edits, and my preference
-> for a full burst bank on setting.
-> 
-> Otherwise looks good to me.
-> + Reviewed-by: Dave Chiluk <chiluk+linux@indeed.com>
-> 
-> I also tested this with my simple test application I use for
-> validating runtime accuracy https://github.com/indeedeng/fibtest.  And
-> everything looks reasonable here.  I'll try to do a bit more testing
-> but so far I'm happy.  Hopefully Ben will give a +1 to this as well.
+[   32.033025] 8<--- cut here ---
+[   32.036136] Unable to handle kernel paging request at virtual address
+2e83803c
+[   32.043637] pgd = 75330198
+[   32.046360] [2e83803c] *pgd=00000000
+[   32.050008] Internal error: Oops: 5 [#1] SMP ARM
+[   32.054647] Modules linked in:
+[   32.057724] CPU: 0 PID: 780 Comm: (systemd) Tainted: G        W
+  5.4.0-rc7-next-20191113 #172
+[   32.066893] Hardware name: Generic AM33XX (Flattened Device Tree)
+[   32.073026] PC is at cgroup_rstat_updated+0x30/0xe8
+[   32.077939] LR is at generic_make_request_checks+0x3d4/0x748
+[   32.083621] pc : [<c01e6f50>]    lr : [<c04af820>]    psr: a0040013
+[   32.089912] sp : ed9b3b78  ip : 2e838000  fp : ed826c00
+[   32.095156] r10: 00001000  r9 : 00000000  r8 : ff7ff428
+[   32.100402] r7 : c0d05148  r6 : c0d0554c  r5 : c0c8b9ec  r4 : edb26180
+[   32.106954] r3 : 2e838000  r2 : 2e838000  r1 : 00000000  r0 : eda32000
+[   32.113510] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM
+Segment none
+[   32.120674] Control: 10c5387d  Table: adac0019  DAC: 00000051
+[   32.126444] Process (systemd) (pid: 780, stack limit = 0x5087843c)
+[   32.132648] Stack: (0xed9b3b78 to 0xed9b4000)
+[   32.137022] 3b60:
+  edb26180 eee19550
+[   32.145237] 3b80: 2e838000 c0d05148 ff7ff428 c04af820 00000004
+00000800 0074e7f8 00000000
+[   32.153452] 3ba0: a0040093 c08d1798 00000000 80040093 00002000
+00000008 00000007 edb8168c
+[   32.161667] 3bc0: 00000000 00000000 ffffe000 71b97da9 00000022
+edb26180 c0d05148 00000008
+[   32.169882] 3be0: c0d05148 00000001 00000000 edb26180 00000000
+c04b0ad8 00000000 00000000
+[   32.178097] 3c00: edb81a00 ed826c00 ed826cc4 71b97da9 c0de2c7c
+edb26180 c0d05148 00000008
+[   32.186312] 3c20: 00000001 00000001 00000000 0005fcfd 00000000
+c04b0de0 c0de2c88 edb81600
+[   32.194526] 3c40: ed826800 0005fcfd 00000000 c04ce968 00001000
+c0d05148 edb26180 efd29a84
+[   32.202741] 3c60: 00000000 00000000 0005fcfd 71b97da9 ed9b3c7b
+00001000 00000001 00000001
+[   32.210956] 3c80: 00000001 00000001 00000000 0005fcfd 00000000
+c039bdb0 20040013 00000001
+[   32.219170] 3ca0: 00000001 00000000 0005fcfd 00000000 ed9b3cc0
+00000001 efd29a84 00000000
+[   32.227385] 3cc0: 00000000 ed9b3e04 edb26180 ec8421b0 00000001
+ec842100 0000000c ec8422b8
+[   32.235600] 3ce0: 0005fcfd 00000000 00000fff 00000000 ee2a7b40
+00080000 00000000 00112cca
+[   32.243814] 3d00: ec8422bc c02983e0 0005fcfd 00000000 00000000
+00000001 00000000 00000008
+[   32.252028] 3d20: 0005fcfd 00000000 00000000 eef82400 00000010
+00000000 00000004 ed9b3e88
+[   32.260242] 3d40: 00000000 ed9b3d68 00000000 00000003 00000000
+c0d05148 60040013 c01837f4
+[   32.268457] 3d60: 00000000 71b97da9 00000000 00000001 00000001
+c03783bc ec8422b8 ed9b3e04
+[   32.276671] 3d80: ed9b3e04 00000001 ec8422bc c0378404 00000001
+00000000 ec8421b0 c0255360
+[   32.284886] 3da0: eeee0000 ed9d2180 ed9b3da8 ed9b3da8 ed9b3db0
+ed9b3db0 00000000 71b97da9
+[   32.293101] 3dc0: 00000000 00000001 00000001 00000000 00000003
+ed9b3e04 00000000 00112cca
+[   32.301316] 3de0: ec8422bc c025563c 00112cca 00000000 00000000
+00000001 ec8422b8 ed9d2180
+[   32.309531] 3e00: ed9b3dfc ed9b3e04 ed9b3e04 71b97da9 ec8422b8
+ed9d21e8 ed9d2180 ec8422b8
+[   32.317746] 3e20: 00000000 00000001 ffffffff 00000000 ed9d2180
+c0255b8c 00000003 00000001
+[   32.325961] 3e40: ec8421b0 ed9b3f00 00000000 00000000 ec8422b8
+c024b73c 00000001 beba6ca0
+[   32.334175] 3e60: c0d05148 00000000 00000000 beba6ca0 ed9b3ee8
+ed9d2180 00000051 00000000
+[   32.342389] 3e80: ed9d21e8 00000001 ffffffff 00000fff 000081a4
+00000001 000003e8 000003e8
+[   32.350604] 3ea0: 00000000 00000000 00000000 71b97da9 000000d2
+ed9d2180 c0d05148 00000000
+[   32.358819] 3ec0: 00000000 ed9b3f78 00001000 00000000 00000000
+c02bdb6c 00001000 00020000
+[   32.367033] 3ee0: 0058b9c8 00001000 00000004 00000000 00001000
+ed9b3ee0 00000001 00000000
+[   32.375248] 3f00: ed9d2180 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[   32.383463] 3f20: 00000000 00000000 00000000 71b97da9 0058b9c8
+00000001 00001000 ed9b3f78
+[   32.391678] 3f40: ed9d2180 00000000 00000000 c02bdc78 00000000
+eda3ce1c eda3cc00 ed9d2180
+[   32.399893] 3f60: ed9d2180 c0d05148 0058b9c8 00001000 ed9b2000
+c02bdf68 00000000 00000000
+[   32.408107] 3f80: 000005e8 71b97da9 005868d8 b6c02f41 000005e8
+00000003 c0101204 00000003
+[   32.416322] 3fa0: 00000000 c01011e0 005868d8 b6c02f41 00000007
+0058b9c8 00001000 00000000
+[   32.424537] 3fc0: 005868d8 b6c02f41 000005e8 00000003 0000000a
+beba6e88 00000000 00000000
+[   32.432753] 3fe0: 00000000 beba6d24 b6c037e1 b6c3e4b8 40040030
+00000007 00000000 00000000
+[   32.440982] [<c01e6f50>] (cgroup_rstat_updated) from [<c04af820>]
+(generic_make_request_checks+0x3d4/0
+x748)
+[   32.450770] [<c04af820>] (generic_make_request_checks) from
+[<c04b0ad8>] (generic_make_request+0x1c/0x
+2e4)
+[   32.460468] [<c04b0ad8>] (generic_make_request) from [<c04b0de0>]
+(submit_bio+0x40/0x1b4)
+[   32.468686] [<c04b0de0>] (submit_bio) from [<c039bdb0>]
+(ext4_mpage_readpages+0x704/0x904)
+[   32.476995] [<c039bdb0>] (ext4_mpage_readpages) from [<c0378404>]
+(ext4_readpages+0x48/0x50)
+[   32.485481] [<c0378404>] (ext4_readpages) from [<c0255360>]
+(read_pages+0x50/0x154)
+[   32.493175] [<c0255360>] (read_pages) from [<c025563c>]
+(__do_page_cache_readahead+0x1d8/0x1f8)
+[   32.501914] [<c025563c>] (__do_page_cache_readahead) from
+[<c0255b8c>] (page_cache_sync_readahead+0xa0
+/0xf4)
+[   32.511799] [<c0255b8c>] (page_cache_sync_readahead) from
+[<c024b73c>] (generic_file_read_iter+0x75c/0
+xc40)
+[   32.521594] [<c024b73c>] (generic_file_read_iter) from [<c02bdb6c>]
+(__vfs_read+0x138/0x1bc)
+[   32.530073] [<c02bdb6c>] (__vfs_read) from [<c02bdc78>]
+(vfs_read+0x88/0x114)
+[   32.537241] [<c02bdc78>] (vfs_read) from [<c02bdf68>]
+(ksys_read+0x54/0xd0)
+[   32.544237] [<c02bdf68>] (ksys_read) from [<c01011e0>]
+(__sys_trace_return+0x0/0x20)
+[   32.552010] Exception stack(0xed9b3fa8 to 0xed9b3ff0)
+[   32.557085] 3fa0:                   005868d8 b6c02f41 00000007
+0058b9c8 00001000 00000000
+[   32.565300] 3fc0: 005868d8 b6c02f41 000005e8 00000003 0000000a
+beba6e88 00000000 00000000
+[   32.573512] 3fe0: 00000000 beba6d24 b6c037e1 b6c3e4b8
+[   32.578591] Code: ee073fba e7962101 e5903168 e0823003 (e593303c)
+[   32.584889] ---[ end trace 08d6b7172e3ff29b ]---
+[   32.797983] 8<--- cut here ---
+[   32.801090] Unable to handle kernel paging request at virtual address
+2e83803c
+[   32.808421] pgd = f285aa90
+[   32.811140] [2e83803c] *pgd=00000000
+[   32.814739] Internal error: Oops: 5 [#2] SMP ARM
+[   32.819378] Modules linked in:
+[   32.822453] CPU: 0 PID: 527 Comm: login Tainted: G      D W
+5.4.0-rc7-next-20191113 #172
+[   32.831273] Hardware name: Generic AM33XX (Flattened Device Tree)
+[   32.837406] PC is at cgroup_rstat_updated+0x30/0xe8
+[   32.842320] LR is at generic_make_request_checks+0x3d4/0x748
+[   32.848002] pc : [<c01e6f50>]    lr : [<c04af820>]    psr: a0070013
+[   32.854292] sp : edbdfb78  ip : 2e838000  fp : eda49c00
+[   32.859537] r10: 00001000  r9 : 00000000  r8 : ff7fff60
+[   32.864782] r7 : c0d05148  r6 : c0d0554c  r5 : c0c8b9ec  r4 : edd8c6c0
+[   32.871335] r3 : 2e838000  r2 : 2e838000  r1 : 00000000  r0 : ed9dec00
+[   32.877891] Flags: NzCv  IRQs on  FIQs on  Mode SVC_32  ISA ARM
+Segment none
+[   32.885056] Control: 10c5387d  Table: adb40019  DAC: 00000051
+[   32.890826] Process login (pid: 527, stack limit = 0x1deade48)
+[   32.896681] Stack: (0xedbdfb78 to 0xedbe0000)
+[   32.901056] fb60:
+  edd8c6c0 eee19550
+[   32.909271] fb80: 2e838000 c0d05148 ff7fff60 c04af820 c0d0554c
+c01023dc 0074e7f8 00000000
+[   32.917487] fba0: 0000000a ffff979f 00400100 71b97da9 ee81ba00
+ffffe000 00000000 c0d0554c
+[   32.925702] fbc0: c0c90e7c 00000000 c0d0554c 71b97da9 00000001
+edd8c6c0 c0d05148 00000008
+[   32.933916] fbe0: c0d05148 00000001 00000000 edd8c6c0 00000000
+c04b0ad8 00000000 c0101aec
+[   32.942130] fc00: 00000000 00000000 00001000 71b97da9 edd8c6c0
+edd8c6c0 c0d05148 00000008
+[   32.950345] fc20: 00000001 00000001 00000000 0005fba9 00000000
+c04b0de0 c04a8f24 c04a8340
+[   32.958560] fc40: 20070013 ffffffff 00000051 bf000000 00001000
+c0d05148 edd8c6c0 efd47fac
+[   32.966775] fc60: 00000000 00000000 0005fba9 71b97da9 edbdfc7b
+00001000 00000001 00000001
+[   32.974990] fc80: 00000001 00000001 00000000 0005fba9 00000000
+c039bdb0 20070013 00000001
+[   32.983204] fca0: 00000001 00000000 0005fba9 00000000 edbdfcc0
+00000001 efd47fac 00000000
+[   32.991418] fcc0: 00000000 edbdfe04 edd8c6c0 ec85dd70 00000001
+ec85dcc0 0000000c ec85de78
+[   32.999633] fce0: 0005fba9 00000000 00000fff 00000000 ee2a7b40
+00080000 00000000 00112cca
+[   33.007848] fd00: ec85de7c c02983e0 0005fba9 00000000 00000000
+00000001 00000000 00000008
+[   33.016061] fd20: 0005fba9 00000000 00000000 eef82400 00000010
+00000000 00000004 edbdfe88
+[   33.024276] fd40: 00000000 edbdfd68 00000000 00000003 00000000
+c0d05148 60070013 c01837f4
+[   33.032491] fd60: 00000000 71b97da9 00000000 00000001 00000001
+c03783bc ec85de78 edbdfe04
+[   33.040705] fd80: edbdfe04 00000001 ec85de7c c0378404 00000001
+00000000 ec85dd70 c0255360
+[   33.048919] fda0: eeee0000 ed952d80 edbdfda8 edbdfda8 edbdfdb0
+edbdfdb0 00000000 71b97da9
+[   33.057134] fdc0: 00000000 00000001 00000001 00000000 00000003
+edbdfe04 00000000 00112cca
+[   33.065348] fde0: ec85de7c c025563c 00112cca 00000000 00000000
+00000001 ec85de78 ed952d80
+[   33.073563] fe00: edbdfdfc edbdfe04 edbdfe04 71b97da9 ec85de78
+ed952de8 ed952d80 ec85de78
+[   33.081777] fe20: 00000000 00000001 ffffffff 00000000 ed952d80
+c0255b8c 00000003 00000001
+[   33.089992] fe40: ec85dd70 edbdff00 00000000 00000000 ec85de78
+c024b73c 00000001 00000041
+[   33.098206] fe60: ffffe000 00000000 00000000 00000000 edbdfee8
+ed952d80 00000000 00000000
+[   33.106422] fe80: ed952de8 00000001 ffffffff 00000fff edbdfe8c
+71b97da9 000003e8 00000004
+[   33.114637] fea0: edbdff70 c0d05148 00000001 71b97da9 edbde000
+ed952d80 c0d05148 00000000
+[   33.122852] fec0: 00000000 edbdff78 000003e8 00000000 00000000
+c02bdb6c 000003e8 00020000
+[   33.131066] fee0: 000365a8 000003e8 00000004 00000000 000003e8
+edbdfee0 00000001 00000000
+[   33.139280] ff00: ed952d80 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[   33.147495] ff20: 00000000 00000000 00000000 71b97da9 000365a8
+00000001 000003e8 edbdff78
+[   33.155709] ff40: ed952d80 00000000 00000000 c02bdc78 00000000
+edd7721c edd77000 ed952d80
+[   33.163923] ff60: ed952d80 c0d05148 000365a8 000003e8 edbde000
+c02bdf68 00000000 00000000
+[   33.172137] ff80: 00000000 71b97da9 000003e8 be9bb7ac 00000000
+00000003 c0101204 00000003
+[   33.180353] ffa0: 00000000 c01011e0 000003e8 be9bb7ac 00000004
+000365a8 000003e8 00000000
+[   33.188567] ffc0: 000003e8 be9bb7ac 00000000 00000003 00000004
+000365a8 b6d74d64 00000000
+[   33.196782] ffe0: 00000000 be9bb704 b6f7516c b6ef64b8 60070030
+00000004 00000000 00000000
+[   33.205010] [<c01e6f50>] (cgroup_rstat_updated) from [<c04af820>]
+(generic_make_request_checks+0x3d4/0
+x748)
+[   33.214800] [<c04af820>] (generic_make_request_checks) from
+[<c04b0ad8>] (generic_make_request+0x1c/0x
+2e4)
+[   33.224495] [<c04b0ad8>] (generic_make_request) from [<c04b0de0>]
+(submit_bio+0x40/0x1b4)
+[   33.232714] [<c04b0de0>] (submit_bio) from [<c039bdb0>]
+(ext4_mpage_readpages+0x704/0x904)
+[   33.241023] [<c039bdb0>] (ext4_mpage_readpages) from [<c0378404>]
+(ext4_readpages+0x48/0x50)
+[   33.249509] [<c0378404>] (ext4_readpages) from [<c0255360>]
+(read_pages+0x50/0x154)
+[   33.257203] [<c0255360>] (read_pages) from [<c025563c>]
+(__do_page_cache_readahead+0x1d8/0x1f8)
+[   33.265943] [<c025563c>] (__do_page_cache_readahead) from
+[<c0255b8c>] (page_cache_sync_readahead+0xa0
+/0xf4)
+[   33.275826] [<c0255b8c>] (page_cache_sync_readahead) from
+[<c024b73c>] (generic_file_read_iter+0x75c/0
+xc40)
+[   33.285621] [<c024b73c>] (generic_file_read_iter) from [<c02bdb6c>]
+(__vfs_read+0x138/0x1bc)
+[   33.294099] [<c02bdb6c>] (__vfs_read) from [<c02bdc78>]
+(vfs_read+0x88/0x114)
+[   33.301268] [<c02bdc78>] (vfs_read) from [<c02bdf68>]
+(ksys_read+0x54/0xd0)
+[   33.308264] [<c02bdf68>] (ksys_read) from [<c01011e0>]
+(__sys_trace_return+0x0/0x20)
+[   33.316038] Exception stack(0xedbdffa8 to 0xedbdfff0)
+[   33.321112] ffa0:                   000003e8 be9bb7ac 00000004
+000365a8 000003e8 00000000
+[   33.329327] ffc0: 000003e8 be9bb7ac 00000000 00000003 00000004
+000365a8 b6d74d64 00000000
+[   33.337540] ffe0: 00000000 be9bb704 b6f7516c b6ef64b8
+[   33.342619] Code: ee073fba e7962101 e5903168 e0823003 (e593303c)
+[   33.348850] ---[ end trace 08d6b7172e3ff29c ]---
 
-I've loaded it with fio, something like:
-fio --name=test --ioengine=cpuio --time_based=1 --runtime=600 --cpuload=10 --cpuchunks=100000 --numjobs=10
-
-Statistics in cpu.stat allows to see behaviour even without feedback from workload.
-
-Precise testing isn't trivial though - per-cpu slices adds much noise.
-
-> 
-> Thanks!
-> 
-> On Thu, Nov 7, 2019 at 6:12 AM Konstantin Khlebnikov
-> <khlebnikov@yandex-team.ru> wrote:
->>
->> Currently CFS bandwidth controller assigns cpu.cfs_quota_us runtime into
->> global pool every cpu.cfs_period_us. All unused runtime is expired.
->>
->> Since commit de53fd7aedb1 ("sched/fair: Fix low cpu usage with high
->> throttling by removing expiration of cpu-local slices") slice assigned
->> to cpu does not expire. This allows to serve tiny bursts (upto 1ms),
->> but this runtime pool is cpu-bound and not transferred between cpus.
->>
->> Setup for interactive workload with irregular cpu consumption have to set
->> quota according to relatively short spikes of cpu usage. This eliminates
->> possibility of control for average cpu usage. Increasing period and quota
->> proportionally for getting bigger runtime chunks is not an option because
->> if even bigger spike deplete global pool then execution will stuck until
->> end of period and next refill.
->>
->> This patch adds limited accumulation of unused runtime from past periods.
->> Accumulated runtime does not expire. It stays in global pool and could
->> be used by any cpu. Average cpu usage stays limited with quota / period,
->> but spiky workload could use more cpu power for a short period of time.
->>
->> Size of pool for burst runtime is set in attribute cpu.cfs_burst_us.
->> Default is 0, which reflects current behavior.
->>
->> Statistics for used bust runtime is shown in cpu.stat as "burst_time".
->>
->> Example setup:
->> cpu.cfs_period_us = 100ms
->> cpu.cfs_quota_us = 200ms
->> cpu.cfs_burst_us = 300ms
->>
->> Average cpu usage stays limited with 2 cpus (quota / period), but cgroup
->> could accumulate runtime (burst) and for 100ms could utilize up to 5 cpus
->> (quota / period + burst / 100ms), or 3 cpus for 300ms, an so on.
->>
->> Implementation is simple. All logic is in __refill_cfs_bandwidth_runtime().
->> The rest changes are interface for cgroup and cgroup2.
->>
->> For cgroup2 burst is set as third number in attribute cpu.max:
->> cpu.max = $QUOTA $PERIOD $BURST
->>
->> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
->> ---
->>   Documentation/admin-guide/cgroup-v2.rst |   15 +++--
->>   Documentation/scheduler/sched-bwc.rst   |    8 ++-
->>   kernel/sched/core.c                     |   88 +++++++++++++++++++++++++------
->>   kernel/sched/fair.c                     |   34 ++++++++++--
->>   kernel/sched/sched.h                    |    4 +
->>   5 files changed, 119 insertions(+), 30 deletions(-)
->>
->> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
->> index 5361ebec3361..8c3cc3d882ba 100644
->> --- a/Documentation/admin-guide/cgroup-v2.rst
->> +++ b/Documentation/admin-guide/cgroup-v2.rst
->> @@ -981,11 +981,12 @@ All time durations are in microseconds.
->>          - user_usec
->>          - system_usec
->>
->> -       and the following three when the controller is enabled:
->> +       and the following four when the controller is enabled:
->>
->>          - nr_periods
->>          - nr_throttled
->>          - throttled_usec
->> +       - burst_usec
->>
->>     cpu.weight
->>          A read-write single value file which exists on non-root
->> @@ -1006,16 +1007,18 @@ All time durations are in microseconds.
->>          the closest approximation of the current weight.
->>
->>     cpu.max
->> -       A read-write two value file which exists on non-root cgroups.
->> -       The default is "max 100000".
->> +       A read-write 1..3 values file which exists on non-root cgroups.
->> +       The default is "max 100000 0".
->>
->>          The maximum bandwidth limit.  It's in the following format::
->>
->> -         $MAX $PERIOD
->> +         $MAX $PERIOD $BURST
->>
->>          which indicates that the group may consume upto $MAX in each
->> -       $PERIOD duration.  "max" for $MAX indicates no limit.  If only
->> -       one number is written, $MAX is updated.
->> +       $PERIOD duration and accumulates upto $BURST time for bursts.
->> +
->> +       "max" for $MAX indicates no limit.
->> +       If only one number is written, $MAX is updated.
->>
->>     cpu.pressure
->>          A read-only nested-key file which exists on non-root cgroups.
->> diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
->> index 9801d6b284b1..5f1cac7b2d44 100644
->> --- a/Documentation/scheduler/sched-bwc.rst
->> +++ b/Documentation/scheduler/sched-bwc.rst
->> @@ -27,12 +27,14 @@ Quota and period are managed within the cpu subsystem via cgroupfs.
->>
->>   cpu.cfs_quota_us: the total available run-time within a period (in microseconds)
->>   cpu.cfs_period_us: the length of a period (in microseconds)
->> +cpu.cfs_burst_us: the maxumum size of burst run-time pool (in microseconds)
-> 
-> maxumum -> maximum
-> 
->>   cpu.stat: exports throttling statistics [explained further below]
->>
->>   The default values are::
->>
->>          cpu.cfs_period_us=100ms
->> -       cpu.cfs_quota=-1
->> +       cpu.cfs_quota_us=-1
->> +       cpu.cfs_burst_us=0
->>
->>   A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
->>   bandwidth restriction in place, such a group is described as an unconstrained
->> @@ -51,6 +53,9 @@ and return the group to an unconstrained state once more.
->>   Any updates to a group's bandwidth specification will result in it becoming
->>   unthrottled if it is in a constrained state.
->>
->> +Writing positive value into cpu.cfs_burst_us allows to allcumulate unused
->> +run-time (upto this value) and use it later in addition to assigned quota.
-> Writing positive value into cpu.cfs_burst_us allows unused quota to
-> accumulate up to this value and be used later in addition to assigned
-> quota.
-> 
->> +
->>   System wide settings
->>   --------------------
->>   For efficiency run-time is transferred between the global pool and CPU local
->> @@ -75,6 +80,7 @@ cpu.stat:
->>   - nr_throttled: Number of times the group has been throttled/limited.
->>   - throttled_time: The total time duration (in nanoseconds) for which entities
->>     of the group have been throttled.
->> +- burst_time: The total running time consumed from burst pool.
->>
->>   This interface is read-only.
->>
->> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
->> index dd05a378631a..010b79c45200 100644
->> --- a/kernel/sched/core.c
->> +++ b/kernel/sched/core.c
->> @@ -7354,7 +7354,8 @@ static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
->>
->>   static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
->>
->> -static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
->> +static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
->> +                               u64 burst)
->>   {
->>          int i, ret = 0, runtime_enabled, runtime_was_enabled;
->>          struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
->> @@ -7399,12 +7400,13 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
->>          raw_spin_lock_irq(&cfs_b->lock);
->>          cfs_b->period = ns_to_ktime(period);
->>          cfs_b->quota = quota;
->> -
->> -       __refill_cfs_bandwidth_runtime(cfs_b);
->> +       cfs_b->burst = burst;
-> 
-> + cfs_b->burst_runtime = burst;
-> I think we should default to a full burst bank.  After all, during
-> startup applications very likely to need additional CPU.  This is a
-> regular pain point for our applications..  By providing burst bank
-> early we help to mitigate slow start-up times for cpu limited
-> applications.
-
-Makes sense.
-
-> 
->>
->>          /* Restart the period timer (if active) to handle new period expiry: */
->> -       if (runtime_enabled)
->> +       if (runtime_enabled) {
->> +               __refill_cfs_bandwidth_runtime(cfs_b);
->>                  start_cfs_bandwidth(cfs_b);
->> +       }
->>
->>          raw_spin_unlock_irq(&cfs_b->lock);
->>
->> @@ -7432,9 +7434,10 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
->>
->>   static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
->>   {
->> -       u64 quota, period;
->> +       u64 quota, period, burst;
->>
->>          period = ktime_to_ns(tg->cfs_bandwidth.period);
->> +       burst = tg->cfs_bandwidth.burst;
->>          if (cfs_quota_us < 0)
->>                  quota = RUNTIME_INF;
->>          else if ((u64)cfs_quota_us <= U64_MAX / NSEC_PER_USEC)
->> @@ -7442,7 +7445,7 @@ static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
->>          else
->>                  return -EINVAL;
->>
->> -       return tg_set_cfs_bandwidth(tg, period, quota);
->> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
->>   }
->>
->>   static long tg_get_cfs_quota(struct task_group *tg)
->> @@ -7460,15 +7463,16 @@ static long tg_get_cfs_quota(struct task_group *tg)
->>
->>   static int tg_set_cfs_period(struct task_group *tg, long cfs_period_us)
->>   {
->> -       u64 quota, period;
->> +       u64 quota, period, burst;
->>
->>          if ((u64)cfs_period_us > U64_MAX / NSEC_PER_USEC)
->>                  return -EINVAL;
->>
->>          period = (u64)cfs_period_us * NSEC_PER_USEC;
->>          quota = tg->cfs_bandwidth.quota;
->> +       burst = tg->cfs_bandwidth.burst;
->>
->> -       return tg_set_cfs_bandwidth(tg, period, quota);
->> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
->>   }
->>
->>   static long tg_get_cfs_period(struct task_group *tg)
->> @@ -7481,6 +7485,28 @@ static long tg_get_cfs_period(struct task_group *tg)
->>          return cfs_period_us;
->>   }
->>
->> +static long tg_get_cfs_burst(struct task_group *tg)
->> +{
->> +       u64 cfs_burst_us = tg->cfs_bandwidth.burst;
->> +
->> +       do_div(cfs_burst_us, NSEC_PER_USEC);
->> +       return cfs_burst_us;
->> +}
->> +
->> +static int tg_set_cfs_burst(struct task_group *tg, long cfs_burst_us)
->> +{
->> +       u64 quota, period, burst;
->> +
->> +       if ((u64)cfs_burst_us > U64_MAX / NSEC_PER_USEC)
->> +               return -EINVAL;
->> +
->> +       period = ktime_to_ns(tg->cfs_bandwidth.period);
->> +       quota = tg->cfs_bandwidth.quota;
->> +       burst = (u64)cfs_burst_us * NSEC_PER_USEC;
->> +
->> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
->> +}
->> +
->>   static s64 cpu_cfs_quota_read_s64(struct cgroup_subsys_state *css,
->>                                    struct cftype *cft)
->>   {
->> @@ -7505,6 +7531,18 @@ static int cpu_cfs_period_write_u64(struct cgroup_subsys_state *css,
->>          return tg_set_cfs_period(css_tg(css), cfs_period_us);
->>   }
->>
->> +static u64 cpu_cfs_burst_read_u64(struct cgroup_subsys_state *css,
->> +                                 struct cftype *cft)
->> +{
->> +       return tg_get_cfs_burst(css_tg(css));
->> +}
->> +
->> +static int cpu_cfs_burst_write_u64(struct cgroup_subsys_state *css,
->> +                                  struct cftype *cftype, u64 cfs_burst_us)
->> +{
->> +       return tg_set_cfs_burst(css_tg(css), cfs_burst_us);
->> +}
->> +
->>   struct cfs_schedulable_data {
->>          struct task_group *tg;
->>          u64 period, quota;
->> @@ -7596,6 +7634,7 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
->>          seq_printf(sf, "nr_periods %d\n", cfs_b->nr_periods);
->>          seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
->>          seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
->> +       seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
->>
->>          if (schedstat_enabled() && tg != &root_task_group) {
->>                  u64 ws = 0;
->> @@ -7657,6 +7696,11 @@ static struct cftype cpu_legacy_files[] = {
->>                  .read_u64 = cpu_cfs_period_read_u64,
->>                  .write_u64 = cpu_cfs_period_write_u64,
->>          },
->> +       {
->> +               .name = "cfs_burst_us",
->> +               .read_u64 = cpu_cfs_burst_read_u64,
->> +               .write_u64 = cpu_cfs_burst_write_u64,
->> +       },
->>          {
->>                  .name = "stat",
->>                  .seq_show = cpu_cfs_stat_show,
->> @@ -7699,15 +7743,20 @@ static int cpu_extra_stat_show(struct seq_file *sf,
->>                  struct task_group *tg = css_tg(css);
->>                  struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
->>                  u64 throttled_usec;
->> +               u64 burst_usec;
->>
->>                  throttled_usec = cfs_b->throttled_time;
->>                  do_div(throttled_usec, NSEC_PER_USEC);
->>
->> +               burst_usec = cfs_b->burst_time;
->> +               do_div(burst_usec, NSEC_PER_USEC);
->> +
->>                  seq_printf(sf, "nr_periods %d\n"
->>                             "nr_throttled %d\n"
->> -                          "throttled_usec %llu\n",
->> +                          "throttled_usec %llu\n"
->> +                          "burst_usec %llu\n",
->>                             cfs_b->nr_periods, cfs_b->nr_throttled,
->> -                          throttled_usec);
->> +                          throttled_usec, burst_usec);
->>          }
->>   #endif
->>          return 0;
->> @@ -7777,26 +7826,29 @@ static int cpu_weight_nice_write_s64(struct cgroup_subsys_state *css,
->>   #endif
->>
->>   static void __maybe_unused cpu_period_quota_print(struct seq_file *sf,
->> -                                                 long period, long quota)
->> +                                                 long period, long quota,
->> +                                                 long burst)
->>   {
->>          if (quota < 0)
->>                  seq_puts(sf, "max");
->>          else
->>                  seq_printf(sf, "%ld", quota);
->>
->> -       seq_printf(sf, " %ld\n", period);
->> +       seq_printf(sf, " %ld %ld\n", period, burst);
->>   }
->>
->>   /* caller should put the current value in *@periodp before calling */
->>   static int __maybe_unused cpu_period_quota_parse(char *buf,
->> -                                                u64 *periodp, u64 *quotap)
->> +                                                u64 *periodp, u64 *quotap,
->> +                                                s64 *burstp)
->>   {
->>          char tok[21];   /* U64_MAX */
->>
->> -       if (sscanf(buf, "%20s %llu", tok, periodp) < 1)
->> +       if (sscanf(buf, "%20s %llu %llu", tok, periodp, burstp) < 1)
->>                  return -EINVAL;
->>
->>          *periodp *= NSEC_PER_USEC;
->> +       *burstp *= NSEC_PER_USEC;
->>
->>          if (sscanf(tok, "%llu", quotap))
->>                  *quotap *= NSEC_PER_USEC;
->> @@ -7813,7 +7865,8 @@ static int cpu_max_show(struct seq_file *sf, void *v)
->>   {
->>          struct task_group *tg = css_tg(seq_css(sf));
->>
->> -       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg));
->> +       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg),
->> +                              tg_get_cfs_burst(tg));
->>          return 0;
->>   }
->>
->> @@ -7822,12 +7875,13 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
->>   {
->>          struct task_group *tg = css_tg(of_css(of));
->>          u64 period = tg_get_cfs_period(tg);
->> +       s64 burst = tg_get_cfs_burst(tg);
->>          u64 quota;
->>          int ret;
->>
->> -       ret = cpu_period_quota_parse(buf, &period, &quota);
->> +       ret = cpu_period_quota_parse(buf, &period, &quota, &burst);
->>          if (!ret)
->> -               ret = tg_set_cfs_bandwidth(tg, period, quota);
->> +               ret = tg_set_cfs_bandwidth(tg, period, quota, burst);
->>          return ret ?: nbytes;
->>   }
->>   #endif
->> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
->> index 682a754ea3e1..26b8dac67c79 100644
->> --- a/kernel/sched/fair.c
->> +++ b/kernel/sched/fair.c
->> @@ -4353,16 +4353,26 @@ static inline u64 sched_cfs_bandwidth_slice(void)
->>   }
->>
->>   /*
->> - * Replenish runtime according to assigned quota. We use sched_clock_cpu
->> - * directly instead of rq->clock to avoid adding additional synchronization
->> - * around rq->lock.
->> + * Replenish runtime according to assigned quota.
->> + * Called only if quota != RUNTIME_INF.
->>    *
->>    * requires cfs_b->lock
->>    */
->>   void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
->>   {
->> -       if (cfs_b->quota != RUNTIME_INF)
->> -               cfs_b->runtime = cfs_b->quota;
->> +       u64 runtime = cfs_b->runtime;
->> +
->> +       /*
->> +        * Preserve past runtime up to burst size. If remaining runtime lower
->> +        * than previous burst runtime then account delta as used burst time.
->> +        */
->> +       if (runtime > cfs_b->burst)
->> +               runtime = cfs_b->burst;
->> +       else if (runtime < cfs_b->burst_runtime)
->> +               cfs_b->burst_time += cfs_b->burst_runtime - runtime;
->> +
->> +       cfs_b->burst_runtime = runtime;
->> +       cfs_b->runtime = runtime + cfs_b->quota;
->>   }
->>
->>   static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
->> @@ -4968,6 +4978,9 @@ void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->>          cfs_b->runtime = 0;
->>          cfs_b->quota = RUNTIME_INF;
->>          cfs_b->period = ns_to_ktime(default_cfs_period());
->> +       cfs_b->burst = 0;
->> +       cfs_b->burst_runtime = 0;
->> +       cfs_b->burst_time = 0;
->>
->>          INIT_LIST_HEAD(&cfs_b->throttled_cfs_rq);
->>          hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED);
->> @@ -4986,14 +4999,23 @@ static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq)
->>
->>   void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->>   {
->> +       u64 overrun;
->> +
->>          lockdep_assert_held(&cfs_b->lock);
->>
->>          if (cfs_b->period_active)
->>                  return;
->>
->>          cfs_b->period_active = 1;
->> -       hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
->> +       overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
->>          hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
->> +
->> +       /*
->> +        * Refill runtime for periods of inactivity and current.
->> +        * __refill_cfs_bandwidth_runtime() will cut excess.
->> +        */
->> +       cfs_b->runtime += cfs_b->quota * overrun;
->> +       __refill_cfs_bandwidth_runtime(cfs_b);
->>   }
->>
->>   static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
->> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
->> index 0db2c1b3361e..eaecd7298f80 100644
->> --- a/kernel/sched/sched.h
->> +++ b/kernel/sched/sched.h
->> @@ -344,10 +344,14 @@ struct cfs_bandwidth {
->>          struct hrtimer          slack_timer;
->>          struct list_head        throttled_cfs_rq;
->>
->> +       u64                     burst;
->> +       u64                     burst_runtime;
->> +
->>          /* Statistics: */
->>          int                     nr_periods;
->>          int                     nr_throttled;
->>          u64                     throttled_time;
->> +       u64                     burst_time;
->>   #endif
->>   };
->>
->>
+Thanks,
+Faiz
