@@ -2,112 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F529FB1A7
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2019 14:45:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BBF9FB4DC
+	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2019 17:20:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726186AbfKMNpG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Nov 2019 08:45:06 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51770 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726010AbfKMNpG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Nov 2019 08:45:06 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
-        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=zRi6DLbBkEdEozkjZm98oVK/x7aADkM+iJVk1EnTFWk=; b=eLUpbLpu+7Mqv1XqZbOAstW1Xr
-        s3S9M4qabuNrKeHjr+aMtQQTUqyJI+s3ZAcWxGGHoOLFIGkzrOpj7FV2i53sWElgDVbC8aR6ahCw4
-        RBdV5TnpKLElNuiyfEOEHdptZ1Paw4v6/YHhRda6W3KlU4ay0toajZfXkccooGszCUXu/yLxgAaC/
-        pFK9jKjJHT0Yqv57ZjYInT11Yq0q2yNowES80QxjYTVAK0ETrYGnpDUU1t5IkbFEWy6JC/g55VRZ8
-        Y+YCQRbkdtBuG2DTLd8Fj+26ap7yNVh1HvvGzY2S79eh+sc42JHFGRS0kewhOnmDsZICEEYfZx3N+
-        TuByAZvw==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iUsxC-0003wY-TT; Wed, 13 Nov 2019 13:45:02 +0000
-Date:   Wed, 13 Nov 2019 05:45:02 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v2 4/8] mm/lru: only change the lru_lock iff page's
- lruvec is different
-Message-ID: <20191113134502.GD7934@bombadil.infradead.org>
-References: <1573567588-47048-1-git-send-email-alex.shi@linux.alibaba.com>
- <1573567588-47048-5-git-send-email-alex.shi@linux.alibaba.com>
- <20191112143624.GA7934@bombadil.infradead.org>
- <297ad71c-081c-f7e1-d640-8720a0eeeeba@linux.alibaba.com>
+        id S1728248AbfKMQUt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Nov 2019 11:20:49 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33874 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726363AbfKMQUt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Nov 2019 11:20:49 -0500
+Received: by mail-qk1-f194.google.com with SMTP id 205so2258774qkk.1;
+        Wed, 13 Nov 2019 08:20:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BgjpAWhUsNd321xRdgYc+Qsl4mTKgPBuEJhT5kvzP4c=;
+        b=PPgZ/DfOQB2NdizWDHzrIuVUEf8lBy5hSeDWmvmPCeyUkUklrL10lTD5KA6FChpjJk
+         kPksEM7ZmApk1toieecuIDOk7KFS1fhjpApBmNvVSZzFjkvJVAQ31AuFO8iULfoM4UtH
+         gYn9GmcrpKv0N74kANWg4byXvPDpLaWpHNPXCHxXNXCPiSnuJPONT3M9dRh7npXlX/S2
+         l5VMxmzbf0PGS35IDtk8OvtUdhVOl7cQ0NHtyRBXPI9nkdcSN6ePYPphtWkLcAuWQs7I
+         iHZ8e5FmgdP8ExQg/4+tAZfBJIZSf/ki5R8vx4YdqR0CkEwBw86wNSYUmtD4Tj23jFKt
+         RjKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BgjpAWhUsNd321xRdgYc+Qsl4mTKgPBuEJhT5kvzP4c=;
+        b=rOFXIrwE+G/cKR9p6UKkZeADwp50qA6JBfPx4J8w/+yStztRK3bYKPJm6rHAUVm62p
+         JPxq0F0JWuWFnRgmhpkzNV3O8wdQYRRPqKdu+DTlyuIccORrhvmJoM3AolxtcZrBMkAT
+         nRDmTh89i2AodRQ2olkSoFKccemWgz4zqOZGyxqAGl07KPEVkY2nKQC94nJxzhDtpwR5
+         iVAF4cfuDX3bnm1/ELfG9QstO97S/p3u9VyyaJDbMw6ZO0oYWcf7dh1ZjSmTALpYGI1v
+         PGryjdRAVqQ8R1StT6l4dBsmVNdzuf1pe/TAsKwTZGKe6JH4HP1zBGMGjRlCDfe+3O2l
+         CgMA==
+X-Gm-Message-State: APjAAAUAqSedTDgPLGFlKta4Az8rLlhuurHyGbdeXCOjRd6AYk3oSoRk
+        Bt7pIyxROTM2q6/ggWKLq7s=
+X-Google-Smtp-Source: APXvYqwAYh9N8uNHYxxAjGuaXY45395Am/9P7k3KMvmn4xfHfq+KlMAQkHWozUCPX54oGMDPFlzMiA==
+X-Received: by 2002:a37:a7c6:: with SMTP id q189mr3022192qke.469.1573662048230;
+        Wed, 13 Nov 2019 08:20:48 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:69f2])
+        by smtp.gmail.com with ESMTPSA id k3sm1112686qkj.119.2019.11.13.08.20.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 Nov 2019 08:20:47 -0800 (PST)
+Date:   Wed, 13 Nov 2019 08:20:45 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Jiufei Xue <jiufei.xue@linux.alibaba.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, joseph.qi@linux.alibaba.com
+Subject: Re: [PATCH] iocost: check active_list of all the ancestors in
+ iocg_activate()
+Message-ID: <20191113162045.GH4163745@devbig004.ftw2.facebook.com>
+References: <1573629691-6619-1-git-send-email-jiufei.xue@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <297ad71c-081c-f7e1-d640-8720a0eeeeba@linux.alibaba.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <1573629691-6619-1-git-send-email-jiufei.xue@linux.alibaba.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 13, 2019 at 10:26:24AM +0800, Alex Shi wrote:
-> 在 2019/11/12 下午10:36, Matthew Wilcox 写道:
-> > On Tue, Nov 12, 2019 at 10:06:24PM +0800, Alex Shi wrote:
-> >> +/* Don't lock again iff page's lruvec locked */
-> >> +static inline struct lruvec *relock_page_lruvec_irq(struct page *page,
-> >> +					struct lruvec *locked_lruvec)
-> >> +{
-> >> +	struct pglist_data *pgdat = page_pgdat(page);
-> >> +	struct lruvec *lruvec;
-> >> +
-> >> +	rcu_read_lock();
-> >> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> >> +
-> >> +	if (locked_lruvec == lruvec) {
-> >> +		rcu_read_unlock();
-> >> +		return lruvec;
-> >> +	}
-> >> +	rcu_read_unlock();
-> > 
-> > Why not simply:
-> > 
-> > 	rcu_read_lock();
-> > 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> > 	rcu_read_unlock();
-> > 
-> > 	if (locked_lruvec == lruvec)
+On Wed, Nov 13, 2019 at 03:21:31PM +0800, Jiufei Xue wrote:
+> There is a bug that checking the same active_list over and over again
+> in iocg_activate(). The intention of the code was checking whether all
+> the ancestors and self have already been activated. So fix it.
 > 
-> The rcu_read_unlock here is for guarding the locked_lruvec/lruvec comparsion.
-> Otherwise memcg/lruvec maybe changed, like, from memcg migration etc. I guess.
+> Signed-off-by: Jiufei Xue <jiufei.xue@linux.alibaba.com>
 
-How does holding the RCU lock guard the comparison?  You're comparing two
-pointers for equality.  Nothing any other CPU can do at this point will
-change the results of that comparison.
+Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
+Acked-by: Tejun Heo <tj@kernel.org>
 
-> > Also, why are you bothering to re-enable interrupts here?  Surely if
-> > you're holding lock A with interrupts disabled , you can just drop lock A,
-> > acquire lock B and leave the interrupts alone.  That way you only need
-> > one of this variety of function, and not the separate irq/irqsave variants.
-> > 
-> 
-> Thanks for the suggestion! Yes, if only do re-lock, it's better to leave the irq unchanging. but, when the locked_lruvec is NULL, it become a first time lock which irq or irqsave are different. Thus, in combined function we need a nother parameter to indicate if it do irqsaving. So comparing to a extra/indistinct parameter, I guess 2 inline functions would be a bit more simple/cleary? 
+Jens, can you please apply this patch?
 
-Ah, right, I missed the "if it's not held" case.
+Thans.
+
+-- 
+tejun
