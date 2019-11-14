@@ -2,87 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC50AFCFF2
-	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2019 21:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E673DFD0F4
+	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2019 23:31:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726592AbfKNU5O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Nov 2019 15:57:14 -0500
-Received: from mail-io1-f65.google.com ([209.85.166.65]:37888 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726567AbfKNU5O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Nov 2019 15:57:14 -0500
-Received: by mail-io1-f65.google.com with SMTP id i13so8422364ioj.5
-        for <cgroups@vger.kernel.org>; Thu, 14 Nov 2019 12:57:13 -0800 (PST)
+        id S1726613AbfKNWbd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Nov 2019 17:31:33 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36056 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726319AbfKNWbc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Nov 2019 17:31:32 -0500
+Received: by mail-qk1-f196.google.com with SMTP id d13so6524405qko.3;
+        Thu, 14 Nov 2019 14:31:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+zRyTXSqsn14PHcbRVeqya++muSJS/9tbPO2TQmYKyI=;
-        b=JXthpDS2Apo9bS0yseA7zp9cQw9BxxKl98mjs8tYCAgoOE4ohNuBJLekoHzyc743rY
-         4IkJz78r92cUaMzbva9yPNFGwfk4K9GseDXO4VFknvUyZAFHHKWwazXA+d6w1uEbL5ve
-         BbYnJTsWAHNlK3hHjq1F9BZ6x6T8YLDBtXx2hAU5q/E68FIqwZ/L51u+hp1ka0hvhfLC
-         OHKKKQT+Ew9UuECOdPsVsflaR2mWIZYjmXitwmP0aBZ4rEgEQclcPFshMzKyTQrjHg6W
-         UONoKPO+Rhs31wA2jBrleq64lpOQ3gUzxMhlp0pqUKR7ba84Joms5gIvk31xyua1cY1o
-         MRNg==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=qyKgxDIoS90Bkq4dmLrHtgbONXS0B4JMDXYzM2TILvI=;
+        b=GjsvHBt7MeaEC6ypDHcPMK+s4FU+jBrqyBph1dVSDP6GI5ClRgEmnDD2Hk2fNzRKfP
+         z1IBWzaXJeLT1ubyYe0TtRTwRHibve7KSwuFU33vAAOEpobMcSrWuQ3RkD3VWfOXdiw+
+         /F6IS2oY+rtMYJbeX32d60XzvRfhF6RTC+Yo7K8KSxkwrnBg+/QuORoDoyMOkTLoTiCS
+         cYMhyizV/A9PpsvWwZCI7AtDdcMg+ynVXanL2cPjXHkTxdbe2sU7/EbnEdoX9XBFAdkT
+         Ek/6EdXl/XqBOKYkXJzKA/M2VGzSA5+TFpXf43Fkow8BNPoSwm0aO5y6L6wtVTBapJo/
+         0gSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+zRyTXSqsn14PHcbRVeqya++muSJS/9tbPO2TQmYKyI=;
-        b=Ea+6BUfQv6sifa/vl+aDcjyhlFRRR+MQRzVCn5UXePyVzGHlpghzUeHm8JrHS1DhGn
-         cZl5XA7KPia3TNPW4uwdzMelq1YXLqN3zwYHbUeNkfwZGwFxNS9tTwPi/2KpwI/NsO41
-         gwhY+p+6s4upzSRxO2SWxSTpZIn+zacVBQckVGX2C2fwLWoaEm+jRZNlit3mcyqAqQ4G
-         utlk43IjxSWBA8F0/F5ZE1MMtkqYpViVOjuErOcdF6i6J3BVOIBkIQOOFQ8PcqPY94ci
-         tURSYb5P7YlZ/cZ2icG8xlsqK8wJb/1BO/pGWCGWMQbGTQvDEH3Ynmxxnv4hKYRNp/Ge
-         yNjg==
-X-Gm-Message-State: APjAAAWl8HIFR2BKHWQ8yUA9yNFYljyiqlclVCGB5QBO6/obetqzdx7Z
-        pSQOhFXFmsbEtGbw0oS9hUGX4w==
-X-Google-Smtp-Source: APXvYqza24GgqwgSnIzFlA6lqAbdIACAyJMIKBue2pGr3gGh6xt7XisuDUJ1ildp0zfFEJ21CmzsJA==
-X-Received: by 2002:a02:742a:: with SMTP id o42mr9402201jac.24.1573765032948;
-        Thu, 14 Nov 2019 12:57:12 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id q144sm654621iod.64.2019.11.14.12.57.11
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qyKgxDIoS90Bkq4dmLrHtgbONXS0B4JMDXYzM2TILvI=;
+        b=m/GkTU1fFS/OKHazpmz3e6CS8rbYVrz4mt+zLgmvC0RDMrFiFO0+lSbkNjU8XHuspD
+         zzaSLRYp5Q/F9DFcoAGXtc0Mf9om1BFn7oLDWgav81P9HQxeoysOICqZ7l2yhGmZBBAV
+         fwHNJczx22qjPSzP7jy9ksY+m0muAGrAcJQ1ORGfRFNTvfZX3zKsO/nknmuFoPPR+9mN
+         cH3SAcvajm3c/+SZQGjZaplkdrdPEhNBLSm0/TOqdnl3vOCN1L1ivzZJ3+dkqFHS5U9T
+         uE6WGR2VdZzVbR0fp5c1IVjxRBf5hvr1luv3fneJ4lcdv5edh8DswBKvdeGVKJQSgE2B
+         QyAA==
+X-Gm-Message-State: APjAAAUYXrsN0Tabx4LZej/OxlCfpQ3D4iW/F6ZKlBbI7Ty8XTOAZ5AV
+        i/hcDAcLQUsZah+D7JpssHk=
+X-Google-Smtp-Source: APXvYqytpqrP2AH8JJZOMk4LKbZkA401xnv/6PKzXgmJCV3xg7WdX/M+YdK/OO21loAmQxwc/gwY8A==
+X-Received: by 2002:a37:d02:: with SMTP id 2mr10040528qkn.307.1573770691207;
+        Thu, 14 Nov 2019 14:31:31 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:69f2])
+        by smtp.gmail.com with ESMTPSA id 80sm530624qkh.108.2019.11.14.14.31.29
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 12:57:12 -0800 (PST)
-Subject: Re: [PATCH] iocost: check active_list of all the ancestors in
- iocg_activate()
-To:     Tejun Heo <tj@kernel.org>,
-        Jiufei Xue <jiufei.xue@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        joseph.qi@linux.alibaba.com
-References: <1573629691-6619-1-git-send-email-jiufei.xue@linux.alibaba.com>
- <20191113162045.GH4163745@devbig004.ftw2.facebook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e07d068c-5b30-6327-d8df-1be42bcf943a@kernel.dk>
-Date:   Thu, 14 Nov 2019 13:57:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        Thu, 14 Nov 2019 14:31:30 -0800 (PST)
+Date:   Thu, 14 Nov 2019 14:31:28 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Faiz Abbas <faiz_abbas@ti.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, kernel-team@fb.com,
+        Dan Schatzberg <dschatzberg@fb.com>, Daniel Xu <dlxu@fb.com>
+Subject: [PATCH block/for-next] blk-cgroup: cgroup_rstat_updated() shouldn't
+ be called on cgroup1
+Message-ID: <20191114223128.GM4163745@devbig004.ftw2.facebook.com>
+References: <20191107191804.3735303-1-tj@kernel.org>
+ <20191107191804.3735303-6-tj@kernel.org>
+ <cd3ebcee-6819-a09b-aeba-de6817f32cde@ti.com>
+ <20191113163501.GI4163745@devbig004.ftw2.facebook.com>
 MIME-Version: 1.0
-In-Reply-To: <20191113162045.GH4163745@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191113163501.GI4163745@devbig004.ftw2.facebook.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/13/19 9:20 AM, Tejun Heo wrote:
-> On Wed, Nov 13, 2019 at 03:21:31PM +0800, Jiufei Xue wrote:
->> There is a bug that checking the same active_list over and over again
->> in iocg_activate(). The intention of the code was checking whether all
->> the ancestors and self have already been activated. So fix it.
->>
->> Signed-off-by: Jiufei Xue <jiufei.xue@linux.alibaba.com>
-> 
-> Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
-> Acked-by: Tejun Heo <tj@kernel.org>
-> 
-> Jens, can you please apply this patch?
+Currently, cgroup rstat is supported only on cgroup2 hierarchy and
+rstat functions shouldn't be called on cgroup1 cgroups.  While
+converting blk-cgroup core statistics to rstat, f73316482977
+("blk-cgroup: reimplement basic IO stats using cgroup rstat")
+accidentally ended up calling cgroup_rstat_updated() on cgroup1
+cgroups causing crashes.
 
-Applied for 5.4, thanks.
+Longer term, we probably should add cgroup1 support to rstat but for
+now let's mask the call directly.
 
--- 
-Jens Axboe
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Fixes: f73316482977 ("blk-cgroup: reimplement basic IO stats using cgroup rstat")
+---
+ include/linux/blk-cgroup.h |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
+index 48a66738143d..19394c77ed99 100644
+--- a/include/linux/blk-cgroup.h
++++ b/include/linux/blk-cgroup.h
+@@ -626,7 +626,8 @@ static inline bool blkcg_bio_issue_check(struct request_queue *q,
+ 		bis->cur.ios[rwd]++;
+ 
+ 		u64_stats_update_end(&bis->sync);
+-		cgroup_rstat_updated(blkg->blkcg->css.cgroup, cpu);
++		if (cgroup_subsys_on_dfl(io_cgrp_subsys))
++			cgroup_rstat_updated(blkg->blkcg->css.cgroup, cpu);
+ 		put_cpu();
+ 	}
+ 
