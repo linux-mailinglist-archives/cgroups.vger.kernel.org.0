@@ -2,88 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AEB7FB530
-	for <lists+cgroups@lfdr.de>; Wed, 13 Nov 2019 17:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8E0DFBFF5
+	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2019 07:01:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727628AbfKMQfF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Nov 2019 11:35:05 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:40739 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726410AbfKMQfE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Nov 2019 11:35:04 -0500
-Received: by mail-qk1-f196.google.com with SMTP id z16so2273178qkg.7;
-        Wed, 13 Nov 2019 08:35:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=xw70SBRGAaKGorTOjyeR6fitBzy2xSe0xSXfhKyCYgw=;
-        b=kj0MzPKjmxb6LkA5WODTubivaZMgIS8X26k0mzw6XP2i9yAcO04LIN9rVGgnfQmd6/
-         f9TaOH9Bf4CAOxWZjNlkJlSKJHIJtWIhZyhkTC9be9KPdifLHL6H/Z7SR0kmc+/fz4Mw
-         gga/oVwgGWwO6D4OfREV7QKGHXfKeu0IqA4GP7+h7VF/bKhv3p8NB6gS5XbWF4e1wod8
-         chadrZd0U5tDrlWH3PWu+UBlzxeeVZ1d9PHmrR3fW9Wae1erjTeS66w0U0kxGhj2kqln
-         0GHonYrvpvuOr9yHqFfjd1MKb7WZZan/VB5u1SZNjqrr/LC9Vculiqq24sz9vT+IAyRG
-         ckvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=xw70SBRGAaKGorTOjyeR6fitBzy2xSe0xSXfhKyCYgw=;
-        b=cTud0RQCwjpoWJKN14Ig2arfd+n520XrBv+JQA3l+E4H6QFPJimbRYNaJwO6b4h3/6
-         FaKau37mg8omb8jbNVF3qRkXjD4pkHXsMZExmGS6q/2A4I9CQOB6VUlFGX+7dVoEKFKq
-         gwQXurzLxdql3Dvu5YTYHYDt7oBaWYI2w8nYxj/ZaCAUIpQcmapZ/JG/vGVA1fMbYXbk
-         nwU7MWUlVvIdSxSz89qtAmk2QHirLL+xsLqHCycS+B7QzBdblNGhYWeS75MAu1ZOwqlF
-         rP662w4YShR76hctnqcTFCqLmZ0BjgIZ3xtKaUJeWnHd2c0EWHocF63w0Mnu0NEyAmyY
-         07WQ==
-X-Gm-Message-State: APjAAAVRJj5Vb7b6rC6XU0hQgcngqIca4BcSczItXQy0We++YTI+uS+1
-        YYmk31S1LMEUpZ0PMaMkCV8=
-X-Google-Smtp-Source: APXvYqykNYpe6UzqswVm0KftnXRPm84RMllxQFqx5nmhaks2To3+wsDwa4AeQmJxVovj1vsjhFyGWg==
-X-Received: by 2002:ae9:c10c:: with SMTP id z12mr3241761qki.411.1573662903573;
-        Wed, 13 Nov 2019 08:35:03 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:69f2])
-        by smtp.gmail.com with ESMTPSA id x11sm1542637qtk.93.2019.11.13.08.35.02
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 13 Nov 2019 08:35:02 -0800 (PST)
-Date:   Wed, 13 Nov 2019 08:35:01 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Faiz Abbas <faiz_abbas@ti.com>
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lizefan@huawei.com, hannes@cmpxchg.org, kernel-team@fb.com,
-        Dan Schatzberg <dschatzberg@fb.com>, Daniel Xu <dlxu@fb.com>
-Subject: Re: [PATCH 5/6] blk-cgroup: reimplement basic IO stats using cgroup
- rstat
-Message-ID: <20191113163501.GI4163745@devbig004.ftw2.facebook.com>
-References: <20191107191804.3735303-1-tj@kernel.org>
- <20191107191804.3735303-6-tj@kernel.org>
- <cd3ebcee-6819-a09b-aeba-de6817f32cde@ti.com>
+        id S1725807AbfKNGBP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Nov 2019 01:01:15 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:41196 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725601AbfKNGBP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Nov 2019 01:01:15 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=29;SR=0;TI=SMTPD_---0Ti1eLE7_1573711266;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Ti1eLE7_1573711266)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 14 Nov 2019 14:01:07 +0800
+Subject: Re: [PATCH v2 4/8] mm/lru: only change the lru_lock iff page's lruvec
+ is different
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1573567588-47048-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1573567588-47048-5-git-send-email-alex.shi@linux.alibaba.com>
+ <20191112143624.GA7934@bombadil.infradead.org>
+ <297ad71c-081c-f7e1-d640-8720a0eeeeba@linux.alibaba.com>
+ <20191113134502.GD7934@bombadil.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ba11d04a-def4-10b3-0b4e-4194e0ee2318@linux.alibaba.com>
+Date:   Thu, 14 Nov 2019 14:01:06 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cd3ebcee-6819-a09b-aeba-de6817f32cde@ti.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191113134502.GD7934@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
 
-Can you please see whether the following patch fixes the issue?
 
-Thanks.
+在 2019/11/13 下午9:45, Matthew Wilcox 写道:
+>>> Why not simply:
+>>>
+>>> 	rcu_read_lock();
+>>> 	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>>> 	rcu_read_unlock();
+>>>
+>>> 	if (locked_lruvec == lruvec)
+>> The rcu_read_unlock here is for guarding the locked_lruvec/lruvec comparsion.
+>> Otherwise memcg/lruvec maybe changed, like, from memcg migration etc. I guess.
+> How does holding the RCU lock guard the comparison?  You're comparing two
+> pointers for equality.  Nothing any other CPU can do at this point will
+> change the results of that comparison.
+> 
 
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index 48a66738143d..19394c77ed99 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -626,7 +626,8 @@ static inline bool blkcg_bio_issue_check(struct request_queue *q,
- 		bis->cur.ios[rwd]++;
- 
- 		u64_stats_update_end(&bis->sync);
--		cgroup_rstat_updated(blkg->blkcg->css.cgroup, cpu);
-+		if (cgroup_subsys_on_dfl(io_cgrp_subsys))
-+			cgroup_rstat_updated(blkg->blkcg->css.cgroup, cpu);
- 		put_cpu();
- 	}
- 
+Hi Matthew, Thanks for reply!
+
+The reason of guarding lruvec compasion here is a bit undistinct, in fact, it guards the page's memcg from free/migrate etc, since the lruvec is kind of binding to each of memcg. The detailed explanation could be found in lock_page_memcg().
+
+Thanks
+Alex
