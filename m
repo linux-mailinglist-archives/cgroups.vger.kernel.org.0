@@ -2,100 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9C7FCEAE
-	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2019 20:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC50AFCFF2
+	for <lists+cgroups@lfdr.de>; Thu, 14 Nov 2019 21:57:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726613AbfKNTVV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Nov 2019 14:21:21 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:41314 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726533AbfKNTVV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Nov 2019 14:21:21 -0500
-Received: by mail-qt1-f195.google.com with SMTP id o3so8030927qtj.8;
-        Thu, 14 Nov 2019 11:21:20 -0800 (PST)
+        id S1726592AbfKNU5O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Nov 2019 15:57:14 -0500
+Received: from mail-io1-f65.google.com ([209.85.166.65]:37888 "EHLO
+        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726567AbfKNU5O (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Nov 2019 15:57:14 -0500
+Received: by mail-io1-f65.google.com with SMTP id i13so8422364ioj.5
+        for <cgroups@vger.kernel.org>; Thu, 14 Nov 2019 12:57:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=V8JOYrhFKJZsjLpy3zbICgm56f832zoaBb4LCM6R/wE=;
-        b=SSPWq/TOhRhkWt64BoCNntBWMb/TucJ3AIdHYBXY2nyWahkTra09hFT8GSEsnolfnM
-         xD4C/j9iKWF72fTVou2+nt+/RsWRC+pDpOOaOTEmLX/TiN06RAsPWbN1SGpX2IGMDH+A
-         5WlVvsj2+2L0ufhWln/MYkO13Ie8z2hOaGr6N6H1Sw3QVcIaSwEbn/pxeaKEc8NZMTIq
-         5xmtxuj3Rk2WBNAhicO9mPb+pg7s8lub70oiaCN0Kwe6rdb92t+SjQvGsMiyB2THTDrc
-         uSN/dNw4lQuOeskHze8uTQtjD5stAKCzHc0EPVaiszH2k3oZ1IH0C37Lguc88/qZe+wV
-         R6vw==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=+zRyTXSqsn14PHcbRVeqya++muSJS/9tbPO2TQmYKyI=;
+        b=JXthpDS2Apo9bS0yseA7zp9cQw9BxxKl98mjs8tYCAgoOE4ohNuBJLekoHzyc743rY
+         4IkJz78r92cUaMzbva9yPNFGwfk4K9GseDXO4VFknvUyZAFHHKWwazXA+d6w1uEbL5ve
+         BbYnJTsWAHNlK3hHjq1F9BZ6x6T8YLDBtXx2hAU5q/E68FIqwZ/L51u+hp1ka0hvhfLC
+         OHKKKQT+Ew9UuECOdPsVsflaR2mWIZYjmXitwmP0aBZ4rEgEQclcPFshMzKyTQrjHg6W
+         UONoKPO+Rhs31wA2jBrleq64lpOQ3gUzxMhlp0pqUKR7ba84Joms5gIvk31xyua1cY1o
+         MRNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=V8JOYrhFKJZsjLpy3zbICgm56f832zoaBb4LCM6R/wE=;
-        b=Rf+4J2z7DIg7bnJI7n2umYXkPS/m3ckbAAqnfXPqEfGGgZtf/c+dGOFEDPBYU2Z1nh
-         mYNpMFZM79J8qq2sh6YrwIlKI7UgnotTGCT9pyUMBfXB2Fs3aFAPlXYIRnMUFQWdmIg7
-         ijC1gh7hu6wSRELHUMU0VsiYsPOdMxCl7ebJfE8XblqDrjf+QWppYrx5/tHxxKyhogvI
-         xQVOXQyFwHJ0FtZIAAobBIkMjglzCleDh2yT6g9fhPqdJKg0McVWtJ0IUwjO0CyjlHga
-         gmkeSm+UioIAiwtwMWv/yW59v2lnJua175GddHLBNqqDUT57fCq6IN+H5fQou7jaKh89
-         tfug==
-X-Gm-Message-State: APjAAAVJMJhUOhErReQLjuYdGHkVc1YkbMEHlKT2xzxWEZxlJhXaN84q
-        B0siGNxRUNemq3rF0t+j85ZxxumK
-X-Google-Smtp-Source: APXvYqxVA9c1jZyC24DjlRcVync5U+FaGqLYy/aPEeYMXGzICKoGfSyzC9htmCREvDbO5rhSKYBOgQ==
-X-Received: by 2002:ac8:698d:: with SMTP id o13mr9863131qtq.68.1573759280316;
-        Thu, 14 Nov 2019 11:21:20 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:69f2])
-        by smtp.gmail.com with ESMTPSA id 130sm3062273qkd.33.2019.11.14.11.21.19
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=+zRyTXSqsn14PHcbRVeqya++muSJS/9tbPO2TQmYKyI=;
+        b=Ea+6BUfQv6sifa/vl+aDcjyhlFRRR+MQRzVCn5UXePyVzGHlpghzUeHm8JrHS1DhGn
+         cZl5XA7KPia3TNPW4uwdzMelq1YXLqN3zwYHbUeNkfwZGwFxNS9tTwPi/2KpwI/NsO41
+         gwhY+p+6s4upzSRxO2SWxSTpZIn+zacVBQckVGX2C2fwLWoaEm+jRZNlit3mcyqAqQ4G
+         utlk43IjxSWBA8F0/F5ZE1MMtkqYpViVOjuErOcdF6i6J3BVOIBkIQOOFQ8PcqPY94ci
+         tURSYb5P7YlZ/cZ2icG8xlsqK8wJb/1BO/pGWCGWMQbGTQvDEH3Ynmxxnv4hKYRNp/Ge
+         yNjg==
+X-Gm-Message-State: APjAAAWl8HIFR2BKHWQ8yUA9yNFYljyiqlclVCGB5QBO6/obetqzdx7Z
+        pSQOhFXFmsbEtGbw0oS9hUGX4w==
+X-Google-Smtp-Source: APXvYqza24GgqwgSnIzFlA6lqAbdIACAyJMIKBue2pGr3gGh6xt7XisuDUJ1ildp0zfFEJ21CmzsJA==
+X-Received: by 2002:a02:742a:: with SMTP id o42mr9402201jac.24.1573765032948;
+        Thu, 14 Nov 2019 12:57:12 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id q144sm654621iod.64.2019.11.14.12.57.11
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 14 Nov 2019 11:21:19 -0800 (PST)
-Date:   Thu, 14 Nov 2019 11:21:18 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     jack@suse.cz, gregkh@linuxfoundation.org, cgroups@vger.kernel.org,
-        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
-        borntraeger@de.ibm.com, linux-s390@vger.kernel.org,
-        axboe@kernel.dk, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH -next] writeback: fix -Wformat compilation warnings
-Message-ID: <20191114192118.GK4163745@devbig004.ftw2.facebook.com>
-References: <1573751861-10303-1-git-send-email-cai@lca.pw>
+        Thu, 14 Nov 2019 12:57:12 -0800 (PST)
+Subject: Re: [PATCH] iocost: check active_list of all the ancestors in
+ iocg_activate()
+To:     Tejun Heo <tj@kernel.org>,
+        Jiufei Xue <jiufei.xue@linux.alibaba.com>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        joseph.qi@linux.alibaba.com
+References: <1573629691-6619-1-git-send-email-jiufei.xue@linux.alibaba.com>
+ <20191113162045.GH4163745@devbig004.ftw2.facebook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e07d068c-5b30-6327-d8df-1be42bcf943a@kernel.dk>
+Date:   Thu, 14 Nov 2019 13:57:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1573751861-10303-1-git-send-email-cai@lca.pw>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <20191113162045.GH4163745@devbig004.ftw2.facebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Nov 14, 2019 at 12:17:41PM -0500, Qian Cai wrote:
-> The commit f05499a06fb4 ("writeback: use ino_t for inodes in
-> tracepoints") introduced a lot of GCC compilation warnings on s390,
+On 11/13/19 9:20 AM, Tejun Heo wrote:
+> On Wed, Nov 13, 2019 at 03:21:31PM +0800, Jiufei Xue wrote:
+>> There is a bug that checking the same active_list over and over again
+>> in iocg_activate(). The intention of the code was checking whether all
+>> the ancestors and self have already been activated. So fix it.
+>>
+>> Signed-off-by: Jiufei Xue <jiufei.xue@linux.alibaba.com>
 > 
-> In file included from ./include/trace/define_trace.h:102,
->                  from ./include/trace/events/writeback.h:904,
->                  from fs/fs-writeback.c:82:
-> ./include/trace/events/writeback.h: In function
-> 'trace_raw_output_writeback_page_template':
-> ./include/trace/events/writeback.h:76:12: warning: format '%lu' expects
-> argument of type 'long unsigned int', but argument 4 has type 'ino_t'
-> {aka 'unsigned int'} [-Wformat=]
->   TP_printk("bdi %s: ino=%lu index=%lu",
->             ^~~~~~~~~~~~~~~~~~~~~~~~~~~
-> ./include/trace/trace_events.h:360:22: note: in definition of macro
-> 'DECLARE_EVENT_CLASS'
->   trace_seq_printf(s, print);     \
->                       ^~~~~
-> ./include/trace/events/writeback.h:76:2: note: in expansion of macro
-> 'TP_printk'
->   TP_printk("bdi %s: ino=%lu index=%lu",
->   ^~~~~~~~~
+> Fixes: 7caa47151ab2 ("blkcg: implement blk-iocost")
+> Acked-by: Tejun Heo <tj@kernel.org>
 > 
-> Fix them by adding necessary casts where ino_t could be either "unsigned
-> int" or "unsigned long".
-> 
-> Fixes: f05499a06fb4 ("writeback: use ino_t for inodes in tracepoints")
-> Signed-off-by: Qian Cai <cai@lca.pw>
+> Jens, can you please apply this patch?
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
+Applied for 5.4, thanks.
 
 -- 
-tejun
+Jens Axboe
+
