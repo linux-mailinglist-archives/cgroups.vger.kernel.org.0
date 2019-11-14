@@ -2,92 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 389B3FD83B
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2019 09:58:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 066F1FE019
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2019 15:31:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727281AbfKOI65 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Nov 2019 03:58:57 -0500
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:38044 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727275AbfKOI64 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Nov 2019 03:58:56 -0500
-Received: by mail-lj1-f196.google.com with SMTP id v8so9847953ljh.5
-        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2019 00:58:55 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z+pg9wj7yRXgLDbaXk97MrdYcFuUJiaocpSFiWUQa1o=;
-        b=UTHgI7il6nkwPJ5t8b7FMh0XJmESz0IGK7rLutWB2vw6I0WyJlHZc5HzSJe9OJO/Ja
-         cy90XKj0jyihqQIuf3/Ck0cF/JNi8a+GasJC5mVdphNQ7QLH8qwoPiyf5YOLM25O8vUE
-         e8HS4mV64/idioykbqun7VK9SHxe/G39ajtZOMaPkNT4mZiM3aHLURCdjKP3qGnV9YAF
-         qZfzHyhsp1iwHI3ganjVtmXZ/Z8kRYHYojIyVFx6IdWBhExFxC+EmY3F7bcGcsbuVv1A
-         3GVwJ9NAqejEzjvYAnJylfaw7p8QaRTdtXztlHIoB5j4SiHJJMjpmlprWqNwfzWFc3or
-         IsUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z+pg9wj7yRXgLDbaXk97MrdYcFuUJiaocpSFiWUQa1o=;
-        b=Ic6iW0tUKa1nlDUcK9vqYLRjGYBTF5VM66JnypLapN8UZruL6vJ6QKa0p2IPcp3xiS
-         pe90vGVHRc+3Ai3SsyMMO7P7QDZL5VGU8ehXVrsJ7OEATbaJQoRIY59IiCDqBSi98iI7
-         nfFKwZ0vTi5+joXF5WtO+eb0CvKsQzSPXligDFCHD6PhdO+RW+LjIur278AqKvWXHtKX
-         Noo761fIH4/Vn4yEzKn8boh+H7QePqPWwqXNbdTNuIYev7LsQRI/9CvHtUFmz8zeMLVu
-         Y7mtFAqiFozf7cm67159VXrQg7Wg8MkSTp/JyutrDZiWlxzzbS9oykNJMAAWp8tU3ttD
-         qE/g==
-X-Gm-Message-State: APjAAAVlWph6/88Jy/54i8OhynidtlhnHJ11/DFSmxiT2FQXDAnsW9nN
-        kApK6X06LvRHtNQiBPBSFjwtwJrpiiId6LMO2sV18w==
-X-Google-Smtp-Source: APXvYqwIDdyPqvILxslSpTDagXqgZxcyneXp6w20bE5evFxcLeT7zIkuP+8wNFzYA/MQKGJ1IfoewtfpTYYk4NobWk0=
-X-Received: by 2002:a2e:888a:: with SMTP id k10mr10290408lji.195.1573808334796;
- Fri, 15 Nov 2019 00:58:54 -0800 (PST)
+        id S1727443AbfKOObn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Nov 2019 09:31:43 -0500
+Received: from mail.hgs.gob.ec ([190.214.19.83]:53252 "HELO mail.hgs.gob.ec"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with SMTP
+        id S1727380AbfKOObn (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 15 Nov 2019 09:31:43 -0500
+X-Greylist: delayed 48030 seconds by postgrey-1.27 at vger.kernel.org; Fri, 15 Nov 2019 09:31:32 EST
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hgs.gob.ec (Postfix) with ESMTP id 70B78A73DB9;
+        Thu, 14 Nov 2019 16:34:07 -0500 (-05)
+Received: from mail.hgs.gob.ec ([127.0.0.1])
+        by localhost (mail.hgs.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id nC2JdAvlFjZi; Thu, 14 Nov 2019 16:34:06 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.hgs.gob.ec (Postfix) with ESMTP id 69F34A70E64;
+        Thu, 14 Nov 2019 16:33:02 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.hgs.gob.ec 69F34A70E64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hgs.gob.ec;
+        s=DD120D66-D63F-11E9-9729-9452E74E1CB4; t=1573767182;
+        bh=oYeOwTtTK4mcRNNK0JGL7ZOgP8mm7StpJG1pujYq4Z0=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=ktsAm69/dORze2wISIJAkX2sOG16H7yv1cNEwwc/XwNPV84jW4KZWO24DUsA5f0z8
+         qY7L2Myi6rLSqS0a6bxPpEeOhWiH3hcCo0vyN+NkRNCw60rrFiDSKWXv+0KZk/l9Em
+         VZQq3XrqGpB8sv0CnOlYhT4fWxNW+GwEdtasKdkAevcH+qwRzqiKdlghkFRhTuMS10
+         /fFugonUbOnylzcBHEKlMNCRGS7VPsM14EjXATGkU1Hw5yb1qBhu4a4mm3Gamz7N3W
+         hkSYpiq4f1qAs7sBHdZses3BcOhdkCX9wtavb6phZpzQDQEHNmKCNKeQtvJex1qGsQ
+         GrVcEDCV75ynw==
+X-Virus-Scanned: amavisd-new at hgs.gob.ec
+Received: from mail.hgs.gob.ec ([127.0.0.1])
+        by localhost (mail.hgs.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id 4dZP0ka1-tqW; Thu, 14 Nov 2019 16:33:02 -0500 (-05)
+Received: from [10.32.142.65] (unknown [105.4.7.6])
+        by mail.hgs.gob.ec (Postfix) with ESMTPSA id B9A7BA6F0B9;
+        Thu, 14 Nov 2019 16:31:44 -0500 (-05)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <CA+G9fYviReoG+gq=Jm8yQOMd01j2opae5p+VTGGMK7aLn0xWgw@mail.gmail.com>
- <20191114224213.GN4163745@devbig004.ftw2.facebook.com>
-In-Reply-To: <20191114224213.GN4163745@devbig004.ftw2.facebook.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 15 Nov 2019 14:28:43 +0530
-Message-ID: <CA+G9fYu-w+3qgkGet4B4NeBxQNaXoWij49j0WRwPAYELgakb6w@mail.gmail.com>
-Subject: Re: linux-next: arm32: beagleboard x15: WARNING: CPU: 0 PID: 0 at
- /usr/src/kernel/kernel/cgroup/cgroup.c:1969 cgroup_setup_root+0x36c/0x4e8
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        namhyung@kernel.org, open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org, lizefan@huawei.com,
-        hannes@cmpxchg.org, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000=2E000_Euro?=
+To:     Recipients <dietetica@hgs.gob.ec>
+From:   ''Charles jackson'' <dietetica@hgs.gob.ec>
+Date:   Thu, 14 Nov 2019 23:31:33 +0200
+Reply-To: charlesjacksonjr001@gmail.com
+Message-Id: <20191114213144.B9A7BA6F0B9@mail.hgs.gob.ec>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+Lieber Freund,
 
-On Fri, 15 Nov 2019 at 04:12, Tejun Heo <tj@kernel.org> wrote:
-> > [    0.015402] WARNING: CPU: 0 PID: 0 at /usr/src/kernel/kernel/cgroup/cgroup.c:1969
-> > cgroup_setup_root+0x36c/0x4e8
-> ...
-> > [    0.015726] [<c053ac48>] (cgroup_setup_root) from [<c1c2a260>]
-> > (cgroup_init+0x108/0x560)
->
-> So, that's saying that the initial kernfs_node ino allocation returned
-> something other than 1.  Hmmm... x86_32 works fine.  What does the
-> following say?
->
-> # mkdir -p /tmp/cgroup2
-> # mount -t cgroup2 none /tmp/cgroup2
-> # ls -lid /tmp/cgroup2
+Ich bin Herr Charles W Jackson, North Carolina, Vereinigte Staaten von Amer=
+ika, der Mega-Gewinner von 344 Millionen US-Dollar. Beim Mega-Millions-Jack=
+pot spende ich an 5 zuf&auml;llige Personen. Wenn Sie diese E-Mail erhalten=
+, wurde Ihre E-Mail zu einem Spinball, den ich am h&auml;ufigsten verteilt =
+habe von meinem Verm&ouml;gen an eine Reihe von Wohlt&auml;tigkeitsorganisa=
+tionen. Ich habe mich freiwillig entschlossen, Ihnen als einer der ausgew&a=
+uml;hlten 5 einen Betrag von &euro; 2.000.000,00 zu spenden, um meine Gewin=
+ne zu &uuml;berpr&uuml;fen.
+Dies ist Ihr Spendencode: [CJ530342019]
 
+www.youtube.com/watch?v=3DBSr8myiLPMQ
 
- mkdir -p /tmp/cgroup2
- mount -t cgroup2 none /tmp/cgroup2
- ls -lid /tmp/cgroup2
- 1 dr-xr-xr-x 5 root root 0 Nov 15 08:00 /tmp/cgroup2
+Antworten Sie auf diese E-Mail mit dem SPENDER-CODE: =
 
 
-Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/1011451#L1170
+charlesjacksonjr001@gmail.com
 
-- Naresh
+Ich hoffe, Sie und Ihre Familie gl&uuml;cklich zu machen
+
+Sch&ouml;ne Gr&uuml;&szlig;e
+Mr. Charles Jackson
