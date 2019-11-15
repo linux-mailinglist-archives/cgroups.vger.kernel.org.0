@@ -2,85 +2,184 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A43FE1A9
-	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2019 16:42:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48F33FE245
+	for <lists+cgroups@lfdr.de>; Fri, 15 Nov 2019 17:07:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727540AbfKOPmc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Nov 2019 10:42:32 -0500
-Received: from mail-ed1-f66.google.com ([209.85.208.66]:36678 "EHLO
-        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727526AbfKOPmc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Nov 2019 10:42:32 -0500
-Received: by mail-ed1-f66.google.com with SMTP id f7so7682530edq.3
-        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2019 07:42:31 -0800 (PST)
+        id S1727644AbfKOQH3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Nov 2019 11:07:29 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:46156 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727564AbfKOQH2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Nov 2019 11:07:28 -0500
+Received: by mail-pl1-f193.google.com with SMTP id l4so4942138plt.13
+        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2019 08:07:26 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=KBIiOkJfInZi0cbTBZFJ/asbXzwl6isny3bfSKAfAW6qInK9iGC7HxhULy7zbH/wEi
-         iIIkRzzNAJzlDnvftvi7OHDoL7HMsmAOvoUll9T0mE03vSHVXwLVL+OjS0Y9D0PNkKCt
-         GR6eUqhHS2aMhrNngNiVnctr36xLaOSJJ5a0M7dMToXbolxBYjeUO1alwoC7Ffd8Yq7R
-         e05DG7i6Kg+ady2OUw1AKYM270LVYIe4kvBkmngNl3WZXNYdVyC0okaFzxa/NZ7FVKUG
-         ZUMumfzkRPf3g52Jd2YVxMtfmx0iYnPRDr0MLhzwP/gwXr4PQU9WZuBbFObKGPwlAs+c
-         /7yg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=1MDIj/Ne5pWo+qodnUOYNjkosiDdOXlcWKy8+ElVdyg=;
+        b=HzFBCREP8wXPZZXgWF27J4qUzWH5xoBUAuAtElEVPcSC+Ki7U/c5SUXGvYZa01flfV
+         YDHshfhjrztIe8xP8xPhd0nx9YE4eVyuCblRCwS1pg7oij+8FE1TrEk6Jj+fNx6W+AHI
+         IYJZHmpNmtsc6G8iFGqUHRz8muPDmz4HrNqZ0zvq6vfgirhS0QoZnsj8w6jFmfHkfh7U
+         4+cd6pqvCvowO/FlGZ1B/OCnQxWPbEIlFGrWe1Ss8FEf4VixRWYaqnJ/T8tNNgV4NOiC
+         GIYUSUi39Pu5pVdEbudq/SadJ+Hy2Pg2kisrZ/lT3gydRjxhPK7Lg+wUJrhxZoUP8mHx
+         qhhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=X5NAAOrJ3bS32ihsXavVCESX6DNfXdWEE7aVqtLVIHM=;
-        b=e0kl4z0SgSktH80KOxssfnpr5o8NNlzUiEsz17ZONhG4LB/aB0Wlsdgpkt6bu4pFnR
-         YZqcQ/ccqMVaKDNhya8On7KVfmefIx0YBtj6E1ss1e9PvgfzZsKEZdYUZk/RXqcKAgBu
-         VCANhEYxl/oXMTVqqY5fdLTfm7PooUEwEd/N5NPGMUxj593dLAi6JgxXGjJUr+hjjzrL
-         XxNYCrfxsWiWeBVhBVxCLk3oNtVzd9vEMeJFM1K5/HCD5JSNjQ3q52p0puz6C5ogX0Xo
-         ljinMEXZgrDOu27B1LvuZpFSSF/gnSRPP1qP2OBsR39H0hbTEynTSacHQonrOyYk6Ytx
-         3UTA==
-X-Gm-Message-State: APjAAAVfFkVFQYqVAOM2by45mBk0ZWLEoSBEP8F660ZNOG/hv7qZjcNa
-        ZknLQXjh/StAh1YLw3HYTDuX6cGEFPlyEGTXNss=
-X-Google-Smtp-Source: APXvYqyovrcpY1flg4wXq+dFRQjCZfzy95NvkABatDHL06I9SYE0g8C9jSfU8Xwmb3ob8EyNvYemH1OV7FJQ3GayXwg=
-X-Received: by 2002:a17:906:4e94:: with SMTP id v20mr1848775eju.34.1573832550338;
- Fri, 15 Nov 2019 07:42:30 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=1MDIj/Ne5pWo+qodnUOYNjkosiDdOXlcWKy8+ElVdyg=;
+        b=ha0r70g0HiaFpbF7KQCeUFZvH5rH4Wy8pkN9IIvIGAkisEpeBanzlyvE0qIh0dPvqK
+         HiBAuzNn76dLaFXOrYUZpw1WVwySpkiHoirRzIV4LlO++822gzIqoGmPG+5n7QoGvNP+
+         5nWNnNdqL8nbjE7ihuxD5/u6xYi1Tu9z/KJ5kwusCtr9GmvgIcPRPAqvCfX8HC8Mz36J
+         OX7Akd7F+1T6QPYnYge56SMC2UTdPSuauo9OkgzHn3XdfSeaDNN3ApUDuIygXb/fqhFT
+         KkREfQDYSho9qQ94M522wxfqKEeV1MupFFcWXzF4uSZyOST0+uTFjxpsjatbTkeitS7f
+         zo4g==
+X-Gm-Message-State: APjAAAXTe0PtPWGytkIaxsJVp/LhTPHliCMMZU7x4aEVi9Zs4LudiSlV
+        qrgnfxVvaZtDXzpbr6dR+6GOLw==
+X-Google-Smtp-Source: APXvYqwrOAVOnU7OMk5MtyPLxWlFt3r9kNrFgnMuuxt45gS8mFGw7nKAnqWdVJyx+preTg6WeyxjEA==
+X-Received: by 2002:a17:902:322:: with SMTP id 31mr4544289pld.244.1573834045491;
+        Fri, 15 Nov 2019 08:07:25 -0800 (PST)
+Received: from localhost ([2620:10d:c090:180::a9db])
+        by smtp.gmail.com with ESMTPSA id v10sm10527644pfg.11.2019.11.15.08.07.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2019 08:07:24 -0800 (PST)
+Date:   Fri, 15 Nov 2019 11:07:22 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Rik van Riel <riel@surriel.com>,
+        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
+Message-ID: <20191115160722.GA309754@cmpxchg.org>
+References: <20191107205334.158354-1-hannes@cmpxchg.org>
+ <20191107205334.158354-3-hannes@cmpxchg.org>
+ <CALvZod5y2NPPg=24q33=ktQqwyUsH1gpwHgROe5z_P+tW74SDw@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6402:1118:0:0:0:0 with HTTP; Fri, 15 Nov 2019 07:42:29
- -0800 (PST)
-Reply-To: moneygram.1820@outlook.fr
-From:   "Ms.Mary Coster" <eco.bank1204@gmail.com>
-Date:   Fri, 15 Nov 2019 16:42:29 +0100
-Message-ID: <CAOE+jABzYHbcH0MDaYfVyrGH=xmD4X97ZSqsTrXaQ0LmcLd9Ng@mail.gmail.com>
-Subject: Contact Mr. John Dave Director, Money Gram to pick up your first
- Money Gram payment $5000.00 today.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod5y2NPPg=24q33=ktQqwyUsH1gpwHgROe5z_P+tW74SDw@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Attn, Dear
-Goodnews, I have deposited your transfer total amount US$4.8million
-Dollars with Money Gram this morning. we agreed you will be receiving
-it $5000.00 daily.
-Contact Mr. John Dave Director, Money Gram to pick up your first Money
-Gram payment $5000.00 today.
-Contact Person; Mr. John Dave Director, Money Gram,International
-Remittance-Benin
-Email; moneygram.1820@outlook.fr
-Telephone; +229 62619517
-Please re-confirm your address to him once again such as listed below.
-1.Your Full Name..............................
-2.Address.........................
-3.Country....................
-4.Sex.........................................
-5.Your telephone numbers..........................
-6. Copy of your ID...........................
-This is to avoid sending your funds to wrong person, He is waiting to
-hear from you urgent today.
-Let me know once you pick up your transfer $5000.00 today.
-Finally, Note I have paid for the service fees, but only money will
-send to him is $90.00 transfer fee before you can pick up the transfer
-today.
-Ask, Mr. John Dave Director, Money Gram to give you direction where to
-send your transfer fee $90.00 only to Him Immediately so that you can
-pick up $5000.00 us dollars today.
-Thanks for undrstanding.
-Mary Coster
-m.coster@aol.com
+On Thu, Nov 14, 2019 at 03:47:59PM -0800, Shakeel Butt wrote:
+> On Thu, Nov 7, 2019 at 12:53 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > We use refault information to determine whether the cache workingset
+> > is stable or transitioning, and dynamically adjust the inactive:active
+> > file LRU ratio so as to maximize protection from one-off cache during
+> > stable periods, and minimize IO during transitions.
+> >
+> > With cgroups and their nested LRU lists, we currently don't do this
+> > correctly. While recursive cgroup reclaim establishes a relative LRU
+> > order among the pages of all involved cgroups, refaults only affect
+> > the local LRU order in the cgroup in which they are occuring. As a
+> > result, cache transitions can take longer in a cgrouped system as the
+> > active pages of sibling cgroups aren't challenged when they should be.
+> >
+> > [ Right now, this is somewhat theoretical, because the siblings, under
+> >   continued regular reclaim pressure, should eventually run out of
+> >   inactive pages - and since inactive:active *size* balancing is also
+> >   done on a cgroup-local level, we will challenge the active pages
+> >   eventually in most cases. But the next patch will move that relative
+> >   size enforcement to the reclaim root as well, and then this patch
+> >   here will be necessary to propagate refault pressure to siblings. ]
+> >
+> > This patch moves refault detection to the root of reclaim. Instead of
+> > remembering the cgroup owner of an evicted page, remember the cgroup
+> > that caused the reclaim to happen. When refaults later occur, they'll
+> > correctly influence the cross-cgroup LRU order that reclaim follows.
+> 
+> Can you please explain how "they'll correctly influence"? I see that
+> if the refaulted page was evicted due to pressure in some ancestor,
+> then that's ancestor's refault distance and active file size will be
+> used to decide to activate the refaulted page but how that is
+> influencing cross-cgroup LRUs?
+
+I take it the next patch answered your question: Activating a page
+inside a cgroup has an effect on how it's reclaimed relative to pages
+in sibling cgroups. So the influence part isn't new with this change -
+it's about recognizing that an activation has an effect on a wider
+scope than just the local cgroup, and considering that scope when
+making the decision whether to activate or not.
+
+> > @@ -302,6 +330,17 @@ void workingset_refault(struct page *page, void *shadow)
+> >          */
+> >         refault_distance = (refault - eviction) & EVICTION_MASK;
+> >
+> > +       /*
+> > +        * The activation decision for this page is made at the level
+> > +        * where the eviction occurred, as that is where the LRU order
+> > +        * during page reclaim is being determined.
+> > +        *
+> > +        * However, the cgroup that will own the page is the one that
+> > +        * is actually experiencing the refault event.
+> > +        */
+> > +       memcg = get_mem_cgroup_from_mm(current->mm);
+> 
+> Why not page_memcg(page)? page is locked.
+
+Nice catch! Indeed, the page is charged and locked at this point, so
+we don't have to do another lookup and refcounting dance here.
+
+Delta patch:
+
+---
+
+From 8984f37f3e88b1b39c7d6470b313730093b24474 Mon Sep 17 00:00:00 2001
+From: Johannes Weiner <hannes@cmpxchg.org>
+Date: Fri, 15 Nov 2019 09:14:04 -0500
+Subject: [PATCH] mm: vmscan: detect file thrashing at the reclaim root fix
+
+Shakeel points out that the page is locked and already charged by the
+time we call workingset_refault(). Instead of doing another cgroup
+lookup and reference from current->mm we can simply use page_memcg().
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/workingset.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/mm/workingset.c b/mm/workingset.c
+index f0885d9f41cd..474186b76ced 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -338,7 +338,7 @@ void workingset_refault(struct page *page, void *shadow)
+ 	 * However, the cgroup that will own the page is the one that
+ 	 * is actually experiencing the refault event.
+ 	 */
+-	memcg = get_mem_cgroup_from_mm(current->mm);
++	memcg = page_memcg(page);
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 
+ 	inc_lruvec_state(lruvec, WORKINGSET_REFAULT);
+@@ -349,7 +349,7 @@ void workingset_refault(struct page *page, void *shadow)
+ 	 * the memory was available to the page cache.
+ 	 */
+ 	if (refault_distance > active_file)
+-		goto out_memcg;
++		goto out;
+ 
+ 	SetPageActive(page);
+ 	advance_inactive_age(memcg, pgdat);
+@@ -360,9 +360,6 @@ void workingset_refault(struct page *page, void *shadow)
+ 		SetPageWorkingset(page);
+ 		inc_lruvec_state(lruvec, WORKINGSET_RESTORE);
+ 	}
+-
+-out_memcg:
+-	mem_cgroup_put(memcg);
+ out:
+ 	rcu_read_unlock();
+ }
+-- 
+2.24.0
+
