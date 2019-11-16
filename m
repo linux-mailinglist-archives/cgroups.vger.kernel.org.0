@@ -2,137 +2,132 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 596FEFEA82
-	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2019 05:38:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E39EFEAEF
+	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2019 07:28:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727361AbfKPEiP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Nov 2019 23:38:15 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:34932 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727323AbfKPEiP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Nov 2019 23:38:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=NcGo6y3a7xQQOSK5TngZP8uR7CqYMj91tUhuMqf+9Ns=; b=KJtGujYNRdJwEveOIs3XLtio4
-        XHcsmagpcP1yaA2N+7UrIE8V88n7OW4Do7IfTCYeR+d4q8v+G3r8Zir+Cp+wqGKc7HcyXxooyXm1i
-        jUE+uYz62ZT+621BjFs/KBU3haXSa51WqN5sxZOr6xU5RH76Y/Sz5sUAwn8r5wYzwdM5mfHtQUUs2
-        ZrfmLVkLLS3h61l7VCJuzpkz68DUwA0bDfpS9kSDMtYs2EMRC5HTkOW19cMl/t9SIEyiGCRFhHR5D
-        Twd3LrtrHICHuFYKljsa+iVV+hFFYEI2DXYCf/BJPck0X727I4xYwpczptlMf5e6Dk3CiwXvaYxO3
-        s/HDUXKow==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iVpqY-00079E-6F; Sat, 16 Nov 2019 04:38:06 +0000
-Date:   Fri, 15 Nov 2019 20:38:06 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v3 3/7] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20191116043806.GD20752@bombadil.infradead.org>
-References: <1573874106-23802-1-git-send-email-alex.shi@linux.alibaba.com>
- <1573874106-23802-4-git-send-email-alex.shi@linux.alibaba.com>
+        id S1726243AbfKPG2s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 16 Nov 2019 01:28:48 -0500
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:39474 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725776AbfKPG2r (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 16 Nov 2019 01:28:47 -0500
+Received: by mail-oi1-f195.google.com with SMTP id v138so10680249oif.6
+        for <cgroups@vger.kernel.org>; Fri, 15 Nov 2019 22:28:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=x6J0isZQHyJs2DrQydkqyktOVewrDtoAG6sLNljnc8o=;
+        b=ds/yTXh6/ej0deTlmg0Wf+HJq81afq++LbAIEYRM1Io96xJ1ODG3OqvHeBWHEo/T4z
+         VfTFsAUv3uuHun2bhemwzDi/b38W+LPrMfTK5Jp4QR5O1vp6FQkBjWuYX6DRVNMUVlpg
+         pGlhm2Ln8qOyjhYoMS7ObVBR+eOZ/ampFt04oQFB02vv3mbRm9Wp3grLqtgSXBgQD/ZI
+         33QsdPlRHlq/68ChvEMO7PgA8fCDWU3WG4RnVUqvlqjcY97h5D+vkvDi2obaO0dzz7db
+         RRev2gKBaWw/p8OYK3k/1s/tnj8k1wg0+55J3eeV+ck2KgFXOU31HceFgAUDxi+x4yMZ
+         33Zw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=x6J0isZQHyJs2DrQydkqyktOVewrDtoAG6sLNljnc8o=;
+        b=TtXvjBzuBY7Qb4WbbPpkvIXzDVKWNp//P5gaCnpoB74M16WUrR0N8gtaxGeAN5CJTE
+         kWSwFX9R9FzV3xoZv1b2rF7xFpQjdklpssuKb/a4MyXu26LmNTRmJhIpRX0ZbbNepxCm
+         ep627ucD0Qa5o5tkIOwMuf6VFX1lD7MJjTA0X90GCtmuArMGkAEwYAhSZmMJsA967UA2
+         y947/MU1J+btc46MEjYjMZFFxwZF6UHtOta/kyVGsVFsv3NljJAr3VFyHkP/VNVtrCo+
+         kcwunbA4ypZkqGwOysg5mLtmU6yySqsrCZmgdeE3myCWHv5FUT1X1maYAsym/CGdIAMB
+         FIcw==
+X-Gm-Message-State: APjAAAUQ498QQ99pHib1+Ek1gs01Gyy1koWT1Avc6r6LNyjznYRFO/Zz
+        mzHWNthY8WwNe3RfvpK2TQDdC8T2ow6936XrAnLJtw==
+X-Google-Smtp-Source: APXvYqx5m4pdYig8DD+m1t7wvcy1mCcaITh+t2RzgZY7YOJ9ckjbLoiqINDaze7TlNWJVZuCzupzggJ79vL1ja/dT9w=
+X-Received: by 2002:aca:f1c5:: with SMTP id p188mr10735867oih.125.1573885725077;
+ Fri, 15 Nov 2019 22:28:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1573874106-23802-4-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+References: <1573874106-23802-1-git-send-email-alex.shi@linux.alibaba.com> <1573874106-23802-2-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1573874106-23802-2-git-send-email-alex.shi@linux.alibaba.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 15 Nov 2019 22:28:34 -0800
+Message-ID: <CALvZod77568+TozRXpERDDap__jbj+oJBY8zD=UBd40XNJC2zg@mail.gmail.com>
+Subject: Re: [PATCH v3 1/7] mm/lru: add per lruvec lock for memcg
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Arun KS <arunks@codeaurora.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Nov 16, 2019 at 11:15:02AM +0800, Alex Shi wrote:
-> This is the main patch to replace per node lru_lock with per memcg
-> lruvec lock. It also fold the irqsave flags into lruvec.
+On Fri, Nov 15, 2019 at 7:15 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+> Currently memcg still use per node pgdat->lru_lock to guard its lruvec.
+> That causes some lru_lock contention in a high container density system.
+>
+> If we can use per lruvec lock, that could relief much of the lru_lock
+> contention.
+>
+> The later patches will replace the pgdat->lru_lock with lruvec->lru_lock
+> and show the performance benefit by benchmarks.
 
-I have to say, I don't love the part where we fold the irqsave flags
-into the lruvec.  I know it saves us an argument, but it opens up the
-possibility of mismatched expectations.  eg we currently have:
+Merge this patch with actual usage. No need to have a separate patch.
 
-static void __split_huge_page(struct page *page, struct list_head *list,
-			struct lruvec *lruvec, pgoff_t end)
-{
-...
-	spin_unlock_irqrestore(&lruvec->lru_lock, lruvec->irqflags);
-
-so if we introduce a new caller, we have to be certain that this caller
-is also using lock_page_lruvec_irqsave() and not lock_page_lruvec_irq().
-I can't think of a way to make the compiler enforce that, and if we don't,
-then we can get some odd crashes with interrupts being unexpectedly
-enabled or disabled, depending on how ->irqflags was used last.
-
-So it makes the code more subtle.  And that's not a good thing.
-
-> +static inline struct lruvec *lock_page_lruvec_irq(struct page *page,
-> +						struct pglist_data *pgdat)
-> +{
-> +	struct lruvec *lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +
-> +	spin_lock_irq(&lruvec->lru_lock);
-> +
-> +	return lruvec;
-> +}
-
-...
-
-> +static struct lruvec *lock_page_lru(struct page *page, int *isolated)
->  {
->  	pg_data_t *pgdat = page_pgdat(page);
-> +	struct lruvec *lruvec = lock_page_lruvec_irq(page, pgdat);
->  
-> -	spin_lock_irq(&pgdat->lru_lock);
->  	if (PageLRU(page)) {
-> -		struct lruvec *lruvec;
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  		ClearPageLRU(page);
->  		del_page_from_lru_list(page, lruvec, page_lru(page));
->  		*isolated = 1;
->  	} else
->  		*isolated = 0;
-> +
-> +	return lruvec;
->  }
-
-But what if the page is !PageLRU?  What lruvec did we just lock?
-According to the comments on mem_cgroup_page_lruvec(),
-
- * This function is only safe when following the LRU page isolation
- * and putback protocol: the LRU lock must be held, and the page must
- * either be PageLRU() or the caller must have isolated/allocated it.
-
-and now it's being called in order to find out which LRU lock to take.
-So this comment needs to be updated, if it's wrong, or this patch has
-a race.
-
+>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Michal Hocko <mhocko@suse.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Wei Yang <richard.weiyang@gmail.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Arun KS <arunks@codeaurora.org>
+> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  include/linux/mmzone.h | 2 ++
+>  mm/mmzone.c            | 1 +
+>  2 files changed, 3 insertions(+)
+>
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 07b784ffbb14..a13b8a602ee5 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -267,6 +267,8 @@ struct lruvec {
+>         unsigned long                   refaults;
+>         /* Various lruvec state flags (enum lruvec_flags) */
+>         unsigned long                   flags;
+> +       /* per lruvec lru_lock for memcg */
+> +       spinlock_t                      lru_lock;
+>  #ifdef CONFIG_MEMCG
+>         struct pglist_data *pgdat;
+>  #endif
+> diff --git a/mm/mmzone.c b/mm/mmzone.c
+> index 4686fdc23bb9..3750a90ed4a0 100644
+> --- a/mm/mmzone.c
+> +++ b/mm/mmzone.c
+> @@ -91,6 +91,7 @@ void lruvec_init(struct lruvec *lruvec)
+>         enum lru_list lru;
+>
+>         memset(lruvec, 0, sizeof(struct lruvec));
+> +       spin_lock_init(&lruvec->lru_lock);
+>
+>         for_each_lru(lru)
+>                 INIT_LIST_HEAD(&lruvec->lists[lru]);
+> --
+> 1.8.3.1
+>
