@@ -2,46 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F4FFFA1F
-	for <lists+cgroups@lfdr.de>; Sun, 17 Nov 2019 15:09:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA1E4FFAFF
+	for <lists+cgroups@lfdr.de>; Sun, 17 Nov 2019 18:53:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726184AbfKQOJQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 17 Nov 2019 09:09:16 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:59090 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726037AbfKQOJP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Nov 2019 09:09:15 -0500
+        id S1726069AbfKQRxc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Nov 2019 12:53:32 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:44810 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1726032AbfKQRxc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Nov 2019 12:53:32 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1573999753;
+        s=mimecast20190719; t=1574013210;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding;
         bh=z3jThtnFHn+u2Zbntihdur7DaqZTHatfWOLXJf5lMaI=;
-        b=ZK6WU3pIB3z5PCk6NE7sbDAUa9ppvQuZK1HhHh3QS8fj0vR3J9rBfpvexTVJyrhKvYgvH/
-        UytZS5zosBMt87s2ip7mi6hD9KdWBMlQsVGSdyOg8Fk3p0dw0RHJA4Mswa4qTZtEITGgXi
-        STP/t/LxDDGLRDUD0WQsI6TIy1uppP0=
+        b=hKldtxHmsTEIRR6bmHRZGcY+opT7OOPCfEpGOpdy6lcAw/klCIhBUjvZq9EQsaVmtdoOEE
+        mnWA4r65DYfBml51V5JZ3BoLpE6HwCPI4Z6ZIPn+pnsZB5DnHzaHxe5ELxwKDSrFsSDCxd
+        93SmEpqvQ1tUCHDVfdCDgGCxa5e5gss=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-6JacbFZ6Mbyq1yJB19xQJA-1; Sun, 17 Nov 2019 09:09:12 -0500
+ us-mta-173-fKrGSsigMlm1CY9tzT5iOA-1; Sun, 17 Nov 2019 12:53:28 -0500
 Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E66D31005500;
-        Sun, 17 Nov 2019 14:09:10 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 615281800D4F;
+        Sun, 17 Nov 2019 17:53:27 +0000 (UTC)
 Received: from localhost (dhcp-12-102.nay.redhat.com [10.66.12.102])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EAF16090B;
-        Sun, 17 Nov 2019 14:09:10 +0000 (UTC)
-Date:   Sun, 17 Nov 2019 22:16:59 +0800
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CBE6D60900;
+        Sun, 17 Nov 2019 17:53:26 +0000 (UTC)
+Date:   Mon, 18 Nov 2019 02:01:15 +0800
 From:   Zorro Lang <zlang@redhat.com>
 To:     linux-block@vger.kernel.org
-Cc:     cgroups@vger.kernel.org, bfoster@vger.kernel.org,
+Cc:     bfoster@redhat.com, cgroups@vger.kernel.org,
         fstests@vger.kernel.org
-Subject: Question about block cgroup for disk partition
-Message-ID: <20191117141658.GP3802@dhcp-12-102.nay.redhat.com>
+Subject: Qestion about block cgroup for disk partition
+Message-ID: <20191117180114.GQ3802@dhcp-12-102.nay.redhat.com>
 MIME-Version: 1.0
 User-Agent: Mutt/1.10.1 (2018-07-13)
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: 6JacbFZ6Mbyq1yJB19xQJA-1
+X-MC-Unique: fKrGSsigMlm1CY9tzT5iOA-1
 X-Mimecast-Spam-Score: 0
 Content-Type: text/plain; charset=WINDOWS-1252
 Content-Transfer-Encoding: quoted-printable
