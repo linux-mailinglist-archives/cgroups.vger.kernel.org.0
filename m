@@ -2,114 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 06D1BFF27E
-	for <lists+cgroups@lfdr.de>; Sat, 16 Nov 2019 17:20:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E6BD8FF8D4
+	for <lists+cgroups@lfdr.de>; Sun, 17 Nov 2019 12:03:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729634AbfKPQT2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 Nov 2019 11:19:28 -0500
-Received: from mail.kernel.org ([198.145.29.99]:52324 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729306AbfKPPqJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sat, 16 Nov 2019 10:46:09 -0500
-Received: from sasha-vm.mshome.net (unknown [50.234.116.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 275CF2086A;
-        Sat, 16 Nov 2019 15:46:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1573919168;
-        bh=iLeu/7+A59mHww5wMPQ7+f/gfyrQdTMOJFAQRguBkd0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GKnIuVN5+bvLWzD2MSCnXJpfOgeMH2FO6qQ/ZfW2zvmu3H1sq+c+0QyPugSJqgyVw
-         jOKcDOhWex0NbNfBv09PpiR1ESQHMY+a7qJHxpdhxkTDz4El9yKomOyS4FPPb5K+w8
-         jy5FZvTOFDGZaCbNo/MfySuLuC0KcNlHhLVQ5oyQ=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Roman Gushchin <guro@fb.com>, Mike Galbraith <efault@gmx.de>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 4.19 178/237] mm: handle no memcg case in memcg_kmem_charge() properly
-Date:   Sat, 16 Nov 2019 10:40:13 -0500
-Message-Id: <20191116154113.7417-178-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191116154113.7417-1-sashal@kernel.org>
-References: <20191116154113.7417-1-sashal@kernel.org>
+        id S1726198AbfKQLDW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Nov 2019 06:03:22 -0500
+Received: from mail-pj1-f66.google.com ([209.85.216.66]:40100 "EHLO
+        mail-pj1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725974AbfKQLDW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Nov 2019 06:03:22 -0500
+Received: by mail-pj1-f66.google.com with SMTP id ep1so663293pjb.7;
+        Sun, 17 Nov 2019 03:03:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=oidSitOSx3wz/zOT9+cz4soIOB6y/ZqJ5xkv2u37mMg=;
+        b=jJEJMNfRpHtXmJckbTZB9ZNHCq2xiXBw90gY9gIbEXxRovl7hLntxcbbaAJAf2ud+b
+         MXSNvcdZDb+0nshW/ucfoHsxQ8QRBHxgRSL5szZH88Wyc09iVGespARjnFZ+xtCUCsX4
+         QeAd9DLUmgCNls3d3COIAwF12Lgg3kyUymoZejLgB9wVH8w6evTKORKdk+n2d5Jftvcc
+         FPi2UbmDvlAMhMpG6uftA5lkaa/oMW3HLrOKZHXfX9i8BLGQF/9S3WakXBP3t1bJi7+u
+         HaMNelmGG9FA6kvTeLFdgDEtFNwk5rBux4rm6+hvJms+0BAmsI1d43UY0aYqS79CZYDL
+         tCeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oidSitOSx3wz/zOT9+cz4soIOB6y/ZqJ5xkv2u37mMg=;
+        b=MbiDtHiaPsQQIqzy439+cXoNePJfpmrpAB6XZbFEvkN2BLTCgLM5tt3TtRlPAZsEjU
+         leFTFk+7AqBtEcqVS0eJ/OKp/cdbRI4izOhDygfSfrvAqk0IanPXHVrgq0PZHI847hCh
+         f9g4dH5mi3Rq/rUNot2FPX+9oPeTRW+xb0E6ZjecvjjOMAqVOgHYWA4fzBvQoUGWmDCZ
+         MRx8K2a5OI3GLWkSNFXWwAnBTH7QqSiCPMnUkctG5yppFUMgB9KyK6vNYo4RsCLAV5JP
+         uddddY+L1cMsrXB8g5aB8fcfYrcFaO1fbyRUOS5UMTi5nYBsWm4dlt3Fyryv1ML/KNQF
+         b5YQ==
+X-Gm-Message-State: APjAAAWBn+fiQnhuPErPN+8cKsMBEunoqB9mQ76bC439FCDUTBIImuV/
+        R28Cy5Ovy39qR+vOyT7RNw==
+X-Google-Smtp-Source: APXvYqx+d4UcV0qPDI11BREyaM8WXS2PpgQ5hEDrsy14K2J9lpPJH9GED3bAD68F8Q4kG1EIrj8SUg==
+X-Received: by 2002:a17:90a:cc18:: with SMTP id b24mr30970268pju.141.1573988601826;
+        Sun, 17 Nov 2019 03:03:21 -0800 (PST)
+Received: from [172.24.28.130] ([203.100.54.194])
+        by smtp.gmail.com with ESMTPSA id w2sm18153667pfj.22.2019.11.17.03.03.19
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Nov 2019 03:03:21 -0800 (PST)
+Subject: Re: [PATCH v8 5/9] hugetlb: disable region_add file_region coalescing
+To:     Mina Almasry <almasrymina@google.com>, mike.kravetz@oracle.com
+Cc:     shuah@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        aneesh.kumar@linux.vnet.ibm.com
+References: <20191030013701.39647-1-almasrymina@google.com>
+ <20191030013701.39647-5-almasrymina@google.com>
+From:   Wenkuan Wang <wwk0817@gmail.com>
+Message-ID: <010d5a90-3ebf-30e5-8829-a61f01b6f620@gmail.com>
+Date:   Sun, 17 Nov 2019 19:03:16 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191030013701.39647-5-almasrymina@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Roman Gushchin <guro@fb.com>
 
-[ Upstream commit e68599a3c3ad0f3171a7cb4e48aa6f9a69381902 ]
 
-Mike Galbraith reported a regression caused by the commit 9b6f7e163cd0
-("mm: rework memcg kernel stack accounting") on a system with
-"cgroup_disable=memory" boot option: the system panics with the following
-stack trace:
+On 10/30/19 9:36 AM, Mina Almasry wrote:
+> /* Must be called with resv->lock held. Calling this with count_only == true
+> * will count the number of pages to be added but will not modify the linked
+> - * list.
+> + * list. If regions_needed != NULL and count_only == true, then regions_needed
+> + * will indicate the number of file_regions needed in the cache to carry out to
+> + * add the regions for this range.
+> */
+> static long add_reservation_in_range(struct resv_map *resv, long f, long t,
 
-  BUG: unable to handle kernel NULL pointer dereference at 00000000000000f8
-  PGD 0 P4D 0
-  Oops: 0002 [#1] PREEMPT SMP PTI
-  CPU: 0 PID: 1 Comm: systemd Not tainted 4.19.0-preempt+ #410
-  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS ?-20180531_142017-buildhw-08.phx2.fed4
-  RIP: 0010:page_counter_try_charge+0x22/0xc0
-  Code: 41 5d c3 c3 0f 1f 40 00 0f 1f 44 00 00 48 85 ff 0f 84 a7 00 00 00 41 56 48 89 f8 49 89 fe 49
-  Call Trace:
-   try_charge+0xcb/0x780
-   memcg_kmem_charge_memcg+0x28/0x80
-   memcg_kmem_charge+0x8b/0x1d0
-   copy_process.part.41+0x1ca/0x2070
-   _do_fork+0xd7/0x3d0
-   do_syscall_64+0x5a/0x180
-   entry_SYSCALL_64_after_hwframe+0x49/0xbe
+Hi Mina,
 
-The problem occurs because get_mem_cgroup_from_current() returns the NULL
-pointer if memory controller is disabled.  Let's check if this is a case
-at the beginning of memcg_kmem_charge() and just return 0 if
-mem_cgroup_disabled() returns true.  This is how we handle this case in
-many other places in the memory controller code.
+Would you please share which tree this patch set used? this patch 5/9 can't be
+applied with Linus's tree and add_reservation_in_range can't be found.
 
-Link: http://lkml.kernel.org/r/20181029215123.17830-1-guro@fb.com
-Fixes: 9b6f7e163cd0 ("mm: rework memcg kernel stack accounting")
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reported-by: Mike Galbraith <efault@gmx.de>
-Acked-by: Rik van Riel <riel@surriel.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks
+Wenkuan
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e0f7b94a4e9bc..b3220d2102461 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2678,7 +2678,7 @@ int memcg_kmem_charge(struct page *page, gfp_t gfp, int order)
- 	struct mem_cgroup *memcg;
- 	int ret = 0;
- 
--	if (memcg_kmem_bypass())
-+	if (mem_cgroup_disabled() || memcg_kmem_bypass())
- 		return 0;
- 
- 	memcg = get_mem_cgroup_from_current();
--- 
-2.20.1
-
+> - bool count_only)
+> + long *regions_needed, bool count_only)
+> {
+> - long chg = 0;
+> + long add = 0;
+> struct list_head *head = &resv->regions;
+> + long last_accounted_offset = f;
+> struct file_region *rg = NULL, *trg = NULL, *nrg = NULL;
+> - /* Locate the region we are before or
