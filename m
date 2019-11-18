@@ -2,78 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A6C1008D3
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2019 17:00:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D47231008EA
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2019 17:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726761AbfKRQAo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Nov 2019 11:00:44 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:36422 "EHLO
+        id S1727010AbfKRQL3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Nov 2019 11:11:29 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:41135 "EHLO
         mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726654AbfKRQAo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Nov 2019 11:00:44 -0500
-Received: by mail-qv1-f68.google.com with SMTP id cv8so6591961qvb.3;
-        Mon, 18 Nov 2019 08:00:44 -0800 (PST)
+        with ESMTP id S1727007AbfKRQL3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Nov 2019 11:11:29 -0500
+Received: by mail-qv1-f68.google.com with SMTP id g18so6756814qvp.8
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2019 08:11:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=dGjbHgjF0W1b+dELdkoZ7B3L1JrYsAni92y6q3z5/FE=;
-        b=di4C7Z2zvQUq2pHY6TUUzLqSiEt9/bLv1Ph0DwW5GqtMpLNFg1Pktx/z/GnrNHEthd
-         Ui8CGj0PhcU8u4+374VwlDbMAlVEvnUbsD5hNRM2/hQsUVWR0BeAf4XYFxKKedLzwW3B
-         Xi4bVNSTvow7scHY0aC9DxHafzneE2vwVmMn9HGHgOVY2UoxLWJkbsbMLDVLTUPWn+iN
-         d1AT+u/KGWCC9hI/cDDqjKgCQFctMZ1JSgs64xm3v5ZWuMFRYl6Be70fdZ+TQ6WCIRQI
-         eU794I2pWW8u7KVfnFIznShljSZTY1ypXMJgeWz2gxRWbreI69oZOTOEGqtpLJUdxuap
-         7FyA==
+        bh=j0SqAQT8llYIw4e/49l3a9ohNbFeVl5zPNeEm/Wp4s0=;
+        b=D4nk0Siou5s/cqdoqRqvYGa8zjueKxO+SjyVZm6/zT83sFfDUd2SnGh1k9QnwDRDrx
+         CH6WGIyRKE0rF+mnWZMd8pHyYqF+YLfdNHGtqMo/fOoR4AXXtBL0Cj7J0CMVPjVHqH1A
+         5p89M+K8M+qZDQsxCDXAtPbwLRRrKzSr3XyWyZ95bNw/QI/aHZbmCL8249BGxWEd1uNi
+         NmxnkCqIoZnTJ4pMiiNzMsyDF7nPDvcgoyhCtivfuijsRgBIc92NpnNww90o0JoHuJom
+         W1UH6Cibz2Uc69M0LwpMJivjKj1PUsQuKOhtJZg9yyVl2bQ6Et0jog0H3A2vuFx+O7mN
+         fvRQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dGjbHgjF0W1b+dELdkoZ7B3L1JrYsAni92y6q3z5/FE=;
-        b=FyZDMt8uvN6HyesaBdGttTxEz1/P5QiNI3bP+0bypH0agoQGSFxZjC2P/Dg3SUwNFd
-         MJrMpp5DT0HGF20VAUJUcUch5XQApvyYRwvd87tViNNLd20o5tow/k1GYG8s7HsR0Fi+
-         yf6cDWnPtO9X3CC1X+KL0doOTvokkPSMq23RLnxec1NM3uhLmfuQuUvYWs2Xq0zllJ0w
-         SB8Engt6OFmf+bWG0x+tDuaO83JGnTYw6/BL8LPttQBFvSTOo14HeR+Ffy3/MnGA9xZz
-         TYINod658f0g9vt9zRqNxalW+Cy8tUmGN/R2gQrfYzRP/ruQWY/0RHL2WuJkyFTtxomQ
-         AqEg==
-X-Gm-Message-State: APjAAAVImFXMm304x80dgKRUUzScD4y81SdupKk5mQFIvtniZCWYjiW5
-        bIm9jL9ixSLHh3uyTnVfC3Y=
-X-Google-Smtp-Source: APXvYqzAvIz0mWDXvlrm4wiWFX1y56FXmHKVJfOVX86U6TWJDAM7fzgvyiQr9bPvB0WZo9KVXYk2lw==
-X-Received: by 2002:a0c:cd8b:: with SMTP id v11mr26925478qvm.66.1574092843284;
-        Mon, 18 Nov 2019 08:00:43 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::3:ed5d])
-        by smtp.gmail.com with ESMTPSA id r29sm10969991qtb.63.2019.11.18.08.00.42
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 18 Nov 2019 08:00:42 -0800 (PST)
-Date:   Mon, 18 Nov 2019 08:00:41 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, kernel-team@fb.com
-Subject: Re: [PATCH] docs: cgroup: mm: Fix spelling of "list"
-Message-ID: <20191118160041.GU4163745@devbig004.ftw2.facebook.com>
-References: <20191111144438.GA11327@chrisdown.name>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=j0SqAQT8llYIw4e/49l3a9ohNbFeVl5zPNeEm/Wp4s0=;
+        b=IXPdEQZQzxMy+0V6Pu1JEYMavNFasRzXE27REU1Z1R38eEKeHT/fSy/AFI9ogJBokr
+         XI4/Z4qDPL0bd4PJ+sXfxQbUNsAyDwmDs655ngRPKpXVE3jodnIP/3FXWltIQCKnYNe7
+         qWDHDXzgmFs+aTFaa27rdADs3Glp4h7MqWSRyJ98NOFLRq8T9XbsIT3uCQcCiHziwDKi
+         iZluLzJThZRxcW4bdcGdwMjXsaX2OJ+hYrQZa7Up1h7TNwFenyBfl/KR3gSS539Nbisc
+         PzDWwJ76gTLlj1RvMObLf6co8zZ6La7QAN8YSwZLnO6u+1+c9uCgyuksoWa+2xKqiQjL
+         gnnQ==
+X-Gm-Message-State: APjAAAV8J1jaCq+mdwF0jS8WbPgbXRQhpeSvgn65FmbseW6lTXijw/IM
+        LsX8b8Y1nR8bCHvPx4XcSkTgaQ==
+X-Google-Smtp-Source: APXvYqyvK7ktIXppKh1dR704A5mqOwl/diTd0Fr4GO7WaTkdgkBup/M3IW20e4uuZ1GlgXiw9mZ32w==
+X-Received: by 2002:a0c:fa50:: with SMTP id k16mr10774204qvo.172.1574093487963;
+        Mon, 18 Nov 2019 08:11:27 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::1:1113])
+        by smtp.gmail.com with ESMTPSA id i4sm10125597qtp.57.2019.11.18.08.11.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Nov 2019 08:11:26 -0800 (PST)
+Date:   Mon, 18 Nov 2019 11:11:26 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v3 3/7] mm/lru: replace pgdat lru_lock with lruvec lock
+Message-ID: <20191118161126.GB365174@cmpxchg.org>
+References: <1573874106-23802-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1573874106-23802-4-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191111144438.GA11327@chrisdown.name>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+In-Reply-To: <1573874106-23802-4-git-send-email-alex.shi@linux.alibaba.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 11, 2019 at 02:44:38PM +0000, Chris Down wrote:
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: kernel-team@fb.com
+On Sat, Nov 16, 2019 at 11:15:02AM +0800, Alex Shi wrote:
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 62470325f9bc..cf274739e619 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1246,6 +1246,42 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
+>  	return lruvec;
+>  }
+>  
+> +struct lruvec *lock_page_lruvec_irq(struct page *page,
+> +					struct pglist_data *pgdat)
+> +{
+> +	struct lruvec *lruvec;
+> +
+> +again:
+> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+> +	spin_lock_irq(&lruvec->lru_lock);
 
-Applied to cgroup/for-5.5.
+This isn't safe. Nothing prevents the page from being moved to a
+different memcg in between these two operations, and the lruvec having
+been freed by the time you try to acquire the spinlock.
 
-Thanks.
+You need to use the rcu lock to dereference page->mem_cgroup and its
+lruvec when coming from the page like this.
 
--- 
-tejun
+You also need to use page_memcg_rcu() to insert the appropriate
+lockless access barriers, which mem_cgroup_page_lruvec() does not do
+since it's designed for use with pgdat->lru_lock.
