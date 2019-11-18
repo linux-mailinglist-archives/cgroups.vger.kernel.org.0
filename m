@@ -2,71 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AC70E1005BA
-	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2019 13:37:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AB42100871
+	for <lists+cgroups@lfdr.de>; Mon, 18 Nov 2019 16:41:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726704AbfKRMhy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 Nov 2019 07:37:54 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:33934 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726506AbfKRMhy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Nov 2019 07:37:54 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0TiTcDe._1574080666;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TiTcDe._1574080666)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 18 Nov 2019 20:37:46 +0800
-Subject: Re: [PATCH v3 1/7] mm/lru: add per lruvec lock for memcg
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Arun KS <arunks@codeaurora.org>
-References: <1573874106-23802-1-git-send-email-alex.shi@linux.alibaba.com>
- <1573874106-23802-2-git-send-email-alex.shi@linux.alibaba.com>
- <CALvZod77568+TozRXpERDDap__jbj+oJBY8zD=UBd40XNJC2zg@mail.gmail.com>
- <e707fd66-16c2-8523-dd8b-860b5b6bb11d@linux.alibaba.com>
- <20191118120815.GF20752@bombadil.infradead.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <512d72e0-7b1d-4424-7cc4-7b963b9cbc7f@linux.alibaba.com>
-Date:   Mon, 18 Nov 2019 20:37:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
- Gecko/20100101 Thunderbird/60.9.1
+        id S1726631AbfKRPlR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 Nov 2019 10:41:17 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:43183 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726216AbfKRPlR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 18 Nov 2019 10:41:17 -0500
+Received: by mail-io1-f68.google.com with SMTP id r2so14094413iot.10
+        for <cgroups@vger.kernel.org>; Mon, 18 Nov 2019 07:41:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=LDK9yK9BoIJXiRshGH8S+ARb//vvA/0NHK9tQB/EqPk=;
+        b=JaQ3lkdxJbg8bC1c3jS+KwvIPC4OYHwwfxOOr83yS4U4QDzFNnWNlZ/p8PuJ96np2E
+         fSAKxEDc8Nlw46j0x8sDTkmy8rEIthr/WFem2d8bAl0iNj18msLAPp9+Qqw8SvjrYFOj
+         3EJP2rizmnWjpUQ81QDQLHav2Tp5HVA4u81MwCU4l9mmA08xnqINakg2qQ0Qqif/jPDU
+         cj76eJwfOZnRj3nWeBGiV/PEuiL0fSFQfPs36u/4sn+YKAJg5MIM0MMYKTeugndAPPka
+         ajIMC8PlwEyo22uO2Ji9NNlBpygJnk5UjX4ca26Yx50OfsMWk84dbtjiEcKRS6BQEBNE
+         yt5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=LDK9yK9BoIJXiRshGH8S+ARb//vvA/0NHK9tQB/EqPk=;
+        b=CaBvja2q167P+MtnzU9fsAGlFgmyz3PJy5Ar/ql+NLH6Bvp9Ja55si3J42fRQNK2Xb
+         jTq8N4jn57t06xmeYE+HjqyWk5xy78cYcVQGt/TOx0neB5FM0N4nkCaYXPI8oXemGbaa
+         Ohe/R0wCGAw+cBZ+BR5jBF2OnVOVMEdM4q/6MiZSju7aNL2z9S1t33A71MnInqrUuv84
+         bx7Ohjbjk6U/9ARQCnV1ILt2MBiBMczvD3JV+D/HdMsppF1H3q/VA37koIh2ipQba9b6
+         ZrwvHKi+kolr8a4tdURYIJZY3lKfhx61FS94gO9zyAzkoy+Q1Ph3hl1JK2PnimypgKu2
+         M+QA==
+X-Gm-Message-State: APjAAAWyVfNg4yX5TrUf8txSkXDxnglaO/Jd8/UoEBt5xBuhr/WyDsiN
+        b1GEg3W1weOLLj8O0OV27u5ywA==
+X-Google-Smtp-Source: APXvYqwof3l/MsVfP7ktJ3h+n1HCG5pvVXBQdOFvhVIS26ekBuLo1YKhPDa/JlQ2jH5waDFiOTh3+Q==
+X-Received: by 2002:a6b:c0c7:: with SMTP id q190mr9712406iof.256.1574091676102;
+        Mon, 18 Nov 2019 07:41:16 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id u6sm4612045ilm.22.2019.11.18.07.41.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Nov 2019 07:41:15 -0800 (PST)
+Subject: Re: [PATCH block/for-next] blk-cgroup: cgroup_rstat_updated()
+ shouldn't be called on cgroup1
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Faiz Abbas <faiz_abbas@ti.com>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, kernel-team@fb.com,
+        Dan Schatzberg <dschatzberg@fb.com>, Daniel Xu <dlxu@fb.com>
+References: <20191107191804.3735303-1-tj@kernel.org>
+ <20191107191804.3735303-6-tj@kernel.org>
+ <cd3ebcee-6819-a09b-aeba-de6817f32cde@ti.com>
+ <20191113163501.GI4163745@devbig004.ftw2.facebook.com>
+ <20191114223128.GM4163745@devbig004.ftw2.facebook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <091022e8-e6a1-178d-80cd-b2a070d3519f@kernel.dk>
+Date:   Mon, 18 Nov 2019 08:41:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-In-Reply-To: <20191118120815.GF20752@bombadil.infradead.org>
+In-Reply-To: <20191114223128.GM4163745@devbig004.ftw2.facebook.com>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On 11/14/19 3:31 PM, Tejun Heo wrote:
+> Currently, cgroup rstat is supported only on cgroup2 hierarchy and
+> rstat functions shouldn't be called on cgroup1 cgroups.  While
+> converting blk-cgroup core statistics to rstat, f73316482977
+> ("blk-cgroup: reimplement basic IO stats using cgroup rstat")
+> accidentally ended up calling cgroup_rstat_updated() on cgroup1
+> cgroups causing crashes.
+> 
+> Longer term, we probably should add cgroup1 support to rstat but for
+> now let's mask the call directly.
 
+Applied, thanks.
 
-在 2019/11/18 下午8:08, Matthew Wilcox 写道:
->>> Merge this patch with actual usage. No need to have a separate patch.
->> Thanks for comment, Shakeel!
->>
->> Yes, but considering the 3rd, huge and un-splitable patch of actully replacing, I'd rather to pull sth out from 
->> it. Ty to make patches a bit more readable, Do you think so?
-> This method of splitting the patches doesn't help with the reviewability of
-> the patch series.
+-- 
+Jens Axboe
 
-Hi Matthew,
-
-Thanks for comments!
-I will fold them into the 3rd patch as you are all insist on this. :)
-
-Thanks
-Alex
