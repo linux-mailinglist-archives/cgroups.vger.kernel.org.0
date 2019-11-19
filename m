@@ -2,51 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8781F1028D9
-	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2019 17:05:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA4B5102927
+	for <lists+cgroups@lfdr.de>; Tue, 19 Nov 2019 17:20:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727822AbfKSQFA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Nov 2019 11:05:00 -0500
-Received: from mail-qk1-f195.google.com ([209.85.222.195]:33850 "EHLO
-        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727728AbfKSQE7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Nov 2019 11:04:59 -0500
-Received: by mail-qk1-f195.google.com with SMTP id 205so18293887qkk.1
-        for <cgroups@vger.kernel.org>; Tue, 19 Nov 2019 08:04:58 -0800 (PST)
+        id S1727509AbfKSQUB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Nov 2019 11:20:01 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:42960 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726307AbfKSQUB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Nov 2019 11:20:01 -0500
+Received: by mail-qk1-f194.google.com with SMTP id i3so6336659qkk.9
+        for <cgroups@vger.kernel.org>; Tue, 19 Nov 2019 08:20:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=ERJD83QXVwqnYgYCzdb0bwkiShGx05+e+BAlf5zZbPQ=;
-        b=diRMc+R/wv6O/zk5sdqMsYxdrOTmEtcK0piBIQlHb+EQf9wKsiMHHHi50G+BtrGxIp
-         g8XHgXZ4v0DxazaNoJ7EPyK/XdKNVRXKTKahGH1S3OCcVJSD1f1j0CBDGEnMkQmBr18f
-         5ZEe/pCPanQf8JN/v1mRs9ndYKZ7ySQWOozgfKll3FDFUTncarXPng3kASzB4s7lJllW
-         S1yfmOkaJPz3MxL6xQwkHXy4hk10MW5mWKr+5VeSD3abLpxHDAVozL6iitP1R5gp/8iL
-         3HXiy6FzPmMHX86MujgxMaCQn+LSk8cJs4Na3TUGePFMc08J7yCgWW+vk9Ipbt7W7sXr
-         BIGA==
+         :content-disposition:in-reply-to:user-agent;
+        bh=P9Nm0dmtDONqzZOiG8f0kC+bAXI7b+Ydc24QnuYX/wc=;
+        b=z9ODofZLwVJ5kMknpHKRESiJDZBNi3Pyza7Lc9GUeJNHofrQ86wibU3eFnsO2CVIu+
+         IfAgM62vq+764hz0qZ7RurgWgkiidhrvNyqW6ve6XTcrt1pa0T+IBaQFh6GvVNqcIXBF
+         Ufy2rTPODX34yXNizSAi3WtQarGWeLPCoeXXJKP8I0Cb0CRRWpEy9NOqkoaP9VmwY9h1
+         cD8j9AgPTXAvnN73paddQAX1/NUY7TjJhO4MrEwcGMLbJNfqlaFEN76hxgxI1sUPxUoF
+         rpTdJBr0sBkYiM5s7RkzXWL86X/Ms+STXj4E4DantEgdps6LghwvRYO6bCdspBkQ3lot
+         zPnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=ERJD83QXVwqnYgYCzdb0bwkiShGx05+e+BAlf5zZbPQ=;
-        b=jV9o6wLDR4WpfxNBAOK2zLq9muB9CTUvnPlcT5DxmWoBptNJ1dHAOsTQBT+Bmzu73r
-         mQ3PuWs8UBcH3jIcRTqF55JUyOCvShdkacrFse9BELwES4yMvr7bMR9K7sJOX6BLetb+
-         DSwiRF3RVELuM21MqdtZK/FDGEKmDiXrSqtR/Kv1d7FqKpPsd0ItdPHKoKiddumf0GkY
-         s6CNg5L7Vbjel/bTkQeuh9y+VlV4VBVoL/AHqF5HcfCioIURMpc1D5affgsGo3WLRt+O
-         xzzDkkOqfsb/Cq0YWTs0n2gfXSSMUGdYVTQBMuEFY+RnN8ykhvG7DJV1Np3ynWwGrhLK
-         MJww==
-X-Gm-Message-State: APjAAAW0Pby/tw3V1ozbHn3GpMt/37F6kJtNmSJ+VZXWCVpGKwgF0xpN
-        welIPLDk6QHGxQIFyMu+m5dHRg==
-X-Google-Smtp-Source: APXvYqw2v6bJSWDxeCEnbqqPppvc1Yj0ecfqEFC8U014BmTqGMukbhvOKTq4flu3nm9BfpSxWaEy6g==
-X-Received: by 2002:a37:6105:: with SMTP id v5mr30624171qkb.40.1574179498147;
-        Tue, 19 Nov 2019 08:04:58 -0800 (PST)
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=P9Nm0dmtDONqzZOiG8f0kC+bAXI7b+Ydc24QnuYX/wc=;
+        b=Tfx/F8aPbSMRSxl03hAmIr+R3gtb655hLsUDUtneUpXZk8tjH1Ui6I8dB+9jW+SroB
+         Vb7ILN0girWgj+oorVw4lJjnMC8FxH7Br0x3axiUFxsvr8lW5Rsaygpgbdh/mCDBao+M
+         AK3VXi95vVjPSolMdqho5qt4J7adYaIGP+tdB3fPfK1MsIsgAGCJ5QakkMxusYbp/0Q7
+         zIjWRl7RkvrJitbw51Nhthyqe9xEfg85jy1BdY5SmTWCgCeR2micipmgRVjQX6DWkgcJ
+         LDbmSGTUsh84NnXSexI1r+xtXoKqbRO+xBenIM2pS7mbAK/u8vJbegjOkA1B7elF5iV3
+         6nLA==
+X-Gm-Message-State: APjAAAXCrKboMy5vOkgRtIDGvvqtNyY9P6qm7ePCbAuJDo0Uz0DWS6Pv
+        sTMkid0iJl47DpTSKQ4DBYryQA==
+X-Google-Smtp-Source: APXvYqwl+S9iMasVSXI1muFO2L+Fzgo4inTTJLcO5OXE6vDvUnuWsZ5UkRMSK4/30PNMVIetjQqjxw==
+X-Received: by 2002:a05:620a:226:: with SMTP id u6mr29793788qkm.393.1574180400357;
+        Tue, 19 Nov 2019 08:20:00 -0800 (PST)
 Received: from localhost ([2620:10d:c091:500::c7ac])
-        by smtp.gmail.com with ESMTPSA id a18sm10612742qkc.2.2019.11.19.08.04.57
+        by smtp.gmail.com with ESMTPSA id a7sm10253897qka.136.2019.11.19.08.19.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Nov 2019 08:04:57 -0800 (PST)
-Date:   Tue, 19 Nov 2019 11:04:56 -0500
+        Tue, 19 Nov 2019 08:19:59 -0800 (PST)
+Date:   Tue, 19 Nov 2019 11:19:58 -0500
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Alex Shi <alex.shi@linux.alibaba.com>
 Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
@@ -54,173 +52,83 @@ Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
         khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
         yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        shakeelb@google.com, Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
         Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Jann Horn <jannh@google.com>,
+        Logan Gunthorpe <logang@deltatee.com>,
+        Souptick Joarder <jrdr.linux@gmail.com>,
+        Ralph Campbell <rcampbell@nvidia.com>,
+        "Tobin C. Harding" <tobin@kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Oscar Salvador <osalvador@suse.de>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Arun KS <arunks@codeaurora.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        Josef Bacik <josef@toxicpanda.com>,
         "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
         =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
         Kirill Tkhai <ktkhai@virtuozzo.com>,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v4 3/9] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20191119160456.GD382712@cmpxchg.org>
+Subject: Re: [PATCH v4 9/9] mm/lru: revise the comments of lru_lock
+Message-ID: <20191119161958.GE382712@cmpxchg.org>
 References: <1574166203-151975-1-git-send-email-alex.shi@linux.alibaba.com>
- <1574166203-151975-4-git-send-email-alex.shi@linux.alibaba.com>
+ <1574166203-151975-10-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <1574166203-151975-4-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1574166203-151975-10-git-send-email-alex.shi@linux.alibaba.com>
 User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 19, 2019 at 08:23:17PM +0800, Alex Shi wrote:
-> This patchset move lru_lock into lruvec, give a lru_lock for each of
-> lruvec, thus bring a lru_lock for each of memcg per node.
+On Tue, Nov 19, 2019 at 08:23:23PM +0800, Alex Shi wrote:
+> Since we changed the pgdat->lru_lock to lruvec->lru_lock, it's time to
+> fix the incorrect comments in code. Also fixed some zone->lru_lock comment
+> error from ancient time. etc.
 > 
-> This is the main patch to replace per node lru_lock with per memcg
-> lruvec lock.
-> 
-> We introduce function lock_page_lruvec, it's same as vanilla pgdat lock
-> when memory cgroup unset, w/o memcg, the function will keep repin the
-> lruvec's lock to guard from page->mem_cgroup changes in page
-> migrations between memcgs. (Thanks Hugh Dickins and Konstantin
-> Khlebnikov reminder on this. Than the core logical is same as their
-> previous patchs)
-> 
-> According to Daniel Jordan's suggestion, I run 64 'dd' with on 32
-> containers on my 2s* 8 core * HT box with the modefied case:
->   https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> 
-> With this and later patches, the dd performance is 144MB/s, the vanilla
-> kernel performance is 123MB/s. 17% performance increased.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Roman Gushchin <guro@fb.com>
-> Cc: Shakeel Butt <shakeelb@google.com>
-> Cc: Chris Down <chris@chrisdown.name>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Mel Gorman <mgorman@techsingularity.net>
-> Cc: Vlastimil Babka <vbabka@suse.cz>
-> Cc: Qian Cai <cai@lca.pw>
-> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-> Cc: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-> Cc: "Jérôme Glisse" <jglisse@redhat.com>
-> Cc: Andrea Arcangeli <aarcange@redhat.com>
-> Cc: Yang Shi <yang.shi@linux.alibaba.com>
-> Cc: David Rientjes <rientjes@google.com>
-> Cc: "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
-> Cc: swkhack <swkhack@gmail.com>
-> Cc: "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>
-> Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
-> Cc: Stephen Rothwell <sfr@canb.auug.org.au>
-> Cc: Colin Ian King <colin.king@canonical.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Peng Fan <peng.fan@nxp.com>
-> Cc: Nikolay Borisov <nborisov@suse.com>
-> Cc: Ira Weiny <ira.weiny@intel.com>
-> Cc: Kirill Tkhai <ktkhai@virtuozzo.com>
-> Cc: Yafang Shao <laoar.shao@gmail.com>
-> Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: cgroups@vger.kernel.org
-> ---
->  include/linux/memcontrol.h | 24 +++++++++++++++
->  include/linux/mmzone.h     |  2 ++
->  mm/compaction.c            | 67 ++++++++++++++++++++++++++++-------------
->  mm/huge_memory.c           | 15 ++++------
->  mm/memcontrol.c            | 75 +++++++++++++++++++++++++++++++++++-----------
->  mm/mlock.c                 | 31 ++++++++++---------
->  mm/mmzone.c                |  1 +
->  mm/page_idle.c             |  5 ++--
->  mm/swap.c                  | 74 +++++++++++++++++++--------------------------
->  mm/vmscan.c                | 58 +++++++++++++++++------------------
->  10 files changed, 214 insertions(+), 138 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 5b86287fa069..9538253998a6 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -418,6 +418,10 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  
->  struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
->  
-> +struct lruvec *lock_page_lruvec_irq(struct page *, struct pglist_data *);
-> +struct lruvec *lock_page_lruvec_irqsave(struct page *, struct pglist_data *,
-> +					unsigned long*);
-> +
->  struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
->  
->  struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
-> @@ -901,6 +905,26 @@ static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
->  	return &pgdat->__lruvec;
->  }
->  
-> +static inline struct lruvec *lock_page_lruvec_irq(struct page *page,
-> +						struct pglist_data *pgdat)
-> +{
-> +	struct lruvec *lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +
-> +	spin_lock_irq(&lruvec->lru_lock);
-> +
-> +	return lruvec;
+> Originally-from: Hugh Dickins <hughd@google.com>
 
-While this works in practice, it looks wrong because it doesn't follow
-the mem_cgroup_page_lruvec() rules.
+You can resubmit a patch written by somebody else, but you need to
+preserve authorship such that git can attribute it properly:
 
-Please open-code spin_lock_irq(&pgdat->__lruvec->lru_lock) instead.
+	From: Hugh Dickins <hughd@google.com>
 
-> @@ -1246,6 +1245,46 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
->  	return lruvec;
->  }
->  
-> +struct lruvec *lock_page_lruvec_irq(struct page *page,
-> +					struct pglist_data *pgdat)
-> +{
-> +	struct lruvec *lruvec;
-> +
-> +again:
-> +	rcu_read_lock();
-> +	lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +	spin_lock_irq(&lruvec->lru_lock);
-> +	rcu_read_unlock();
+in the patch header, as well as
 
-The spinlock doesn't prevent the lruvec from being freed.
+	Signed-off-by: Hugh Dickins <hughd@google.com>
 
-You deleted the rules from the mem_cgroup_page_lruvec() documentation,
-but they still apply: if the page is already !PageLRU() by the time
-you get here, it could get reclaimed or migrated to another cgroup,
-and that can free the memcg/lruvec. Merely having the lru_lock held
-does not prevent this.
+in the changelog tags. It should look something like this:
 
-Either the page needs to be locked, or the page needs to be PageLRU
-with the lru_lock held to prevent somebody else from isolating
-it. Otherwise, the lruvec is not safe to use.
+---
+From: Hugh Dickins <hughd@google.com>
+Subject: [PATCH] mm/memcg: update lru_lock Doc and comments
+
+Update scattered references from "zone_lru_lock" to "lruvec->lru_lock"
+(in low-level descriptions) or "lruvec lock" (where that reads better).
+
+In the course of doing so, update lock ordering comments in mm/rmap.c
+and mm/filemap.c and Documentation/cgroups/memory.txt - slightly, with
+no attempt to be complete (swap_lock, in particular, left out-of-date).
+Remove allusions to set_page_dirty under page_remove_rmap: gone in v3.9.
+
+memcg_test.txt looks quite out-of-date: just give LRU a short paragraph.
+Replaced zone by node throughout unevictable-lru.txt (except for stats).
+Leave Documentation/locking/lockstat.txt untouched this time: it doesn't
+matter if that still refers to zone->lru_lock, along with other history.
+
+I struggled to understand the comment above move_pages_to_lru() (surely
+it never calls page_referenced()), and eventually realized that most of
+it had got separated from shrink_active_list(): move that comment back.
+
+Signed-off-by: Hugh Dickins <hughd@google.com>
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+---
