@@ -2,139 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D5F881045E3
-	for <lists+cgroups@lfdr.de>; Wed, 20 Nov 2019 22:39:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C111A104869
+	for <lists+cgroups@lfdr.de>; Thu, 21 Nov 2019 03:06:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726132AbfKTVje (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Nov 2019 16:39:34 -0500
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:33693 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726083AbfKTVje (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Nov 2019 16:39:34 -0500
-Received: by mail-qt1-f196.google.com with SMTP id y39so1264131qty.0
-        for <cgroups@vger.kernel.org>; Wed, 20 Nov 2019 13:39:33 -0800 (PST)
+        id S1725956AbfKUCGV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Nov 2019 21:06:21 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:43789 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725819AbfKUCGV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Nov 2019 21:06:21 -0500
+Received: by mail-pl1-f195.google.com with SMTP id a18so764618plm.10
+        for <cgroups@vger.kernel.org>; Wed, 20 Nov 2019 18:06:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=F4UOOlylYKA4x5XwS/IcSHBpAnEOvDZz0DmXXFZBpcA=;
-        b=HWlZvj1c8bNqbGRODv0AgUEGYJvuTzXv3y+PxWcWyLnvLfcKURUZIzxXfU266k3473
-         zbm+2dXSBVQG2y2z1Oz1GVrmV3K4GqVzfEG7zivXUO+Tam1zvCqDHyjQpjdWw5WCQwLm
-         lzbmvkCSZzNFsiSddiHgU/kP3GzsDD8kMA6FBzb/GPXKxoZTvK43OXZwWhrLYABsdeLv
-         GZzAl8OT/xf1vbkEt4gyPza/zcf80oiyWvZOoFYYtZA3z2QPhwDT+f6UtVa8Ol7zZ6Xd
-         Z9ETSaZqziR1SUsWpnqyTYIPJuX9pTSwaZV0jCr+JJoXoHoF6WNgYWqzHywVVMTJWeDm
-         6YrQ==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=uo9mEPcaYcwnzYyWGiXlb2tEqoly25jIf2ri/BJ7dDw=;
+        b=Am9AlC+yrXpYjI9tLZJABP+RtHy2I4MpTU3JDy2quw9lARH0E9nsUx5sZLzW3WsDXO
+         MTT+d/n1iXXdDWbHu/+5ZNlEjJkBCfuMGQ0lkn8Y7lm/Tzm4N0xy3n8V3/0Et0gCoKEN
+         La77ktcLIHHNXLrDobr2UBGIDQa807YwOkRStoKCQx7d8nF5nRTY9eGyAdB04aZCf5yD
+         rO4aRJlugOJko5ct311BHN7FOI/OtYpsdzrpnaN7mckQkPbFwVkF+LgJJq63UARVC8nL
+         O2ZgCy5Q6Agt+f5TU+Sl3EUB3XFTfODjPAndMGYek+NU+pNGWBS4nA0GY5D6/JQ4Jzi9
+         BNsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=F4UOOlylYKA4x5XwS/IcSHBpAnEOvDZz0DmXXFZBpcA=;
-        b=oePGPfb+hl9olLkIghNAyL37rjC1km6r7k8B4BPo7MokNoAIRjLyZeih+3zSJzHbtT
-         w1KX2uhx7q4JQ0geniUe9bSHKJiLmHlRv+XyhggW1noliRME17rr+cROPMEjas6H/oAv
-         xK+l/bAS3PTJbDScHAqs12crG2XR8iA4KziYHXn0KHEqDFDCaBFbnIjBR2z0c9OnN/s/
-         Vrcg6VGLx0kFRgrRnycPiChbxsNinX2Nspu0PJynw0g6i/78ytuu9pxxaw6cXHEc2haI
-         qr2h8c56kf/Lq93oHdmRoflxMJyloMbT9sZ1EwhuaCUp9AVvYhFxqeAI+NOcjP/tht2d
-         ksyw==
-X-Gm-Message-State: APjAAAUOOSLknzNNEbRmfsT25DIF6XfDG0/a13NrGhlqLdTIjxvUnOCk
-        42MOQjqd4me15gqTFXsNS6P53g==
-X-Google-Smtp-Source: APXvYqylwjRzk+9exZgAIoBdfXGoEfLJGEmoJMQ2QoZKaVar53f/0Ed1XtazpN8A8Z6EAMlIaWC4vw==
-X-Received: by 2002:ac8:6697:: with SMTP id d23mr4730012qtp.32.1574285973134;
-        Wed, 20 Nov 2019 13:39:33 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::6900])
-        by smtp.gmail.com with ESMTPSA id l11sm199918qtq.20.2019.11.20.13.39.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2019 13:39:32 -0800 (PST)
-Date:   Wed, 20 Nov 2019 16:39:31 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Subject: Re: [PATCH] mm: fix unsafe page -> lruvec lookups with cgroup charge
- migration
-Message-ID: <20191120213931.GB428283@cmpxchg.org>
-References: <20191120165847.423540-1-hannes@cmpxchg.org>
- <CALvZod50AanTCNkTVSptU+Hg--69j6OuKdc04UPs4Vf64DkGiw@mail.gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=uo9mEPcaYcwnzYyWGiXlb2tEqoly25jIf2ri/BJ7dDw=;
+        b=PP53iRlwBFjaHGmS1kbvOqFMglzKO72kRBqYbKmpmx65JiGQp0/sJaRBi7K0yd60GS
+         e3tqe9n0l445HAv/Cihcpf0xFiresmH5ziULiHtI27OSOvvirxO1Rn0sJxspm8lkR5ob
+         MWTz6XfmE7/YnxVNBO7AqRLYLwCR9CSDOow5wqEtTniLzZ/6bd/iLPqcnHY/OPlJ0XVm
+         pQaS1BrqsXw9zXyGGW+WeUwUHwkGL1tMwDwclOwri4chGz0sTiKPTgxov72Asbf6d853
+         2PgtC4XTmAKQCkLMIz7rrQX1ZzF1wunAJiQdOdX0OA2n68IzTkX1oAWYZOgDAZGVHxZH
+         eajQ==
+X-Gm-Message-State: APjAAAUOVPY5XJba13nr6DwyxwTkGoe6s3wshj3pqxILkCcB218rbYLW
+        zsMXq6ba7OLq/Oh2OnQ9QWkEzA==
+X-Google-Smtp-Source: APXvYqytngQq8IjjeiFBpEFRQm5zInwYRJW6QSTLANZYdx6eBrIH2RFe+esQWcWUc+a6h1YGF2wf6w==
+X-Received: by 2002:a17:90a:ec13:: with SMTP id l19mr8419701pjy.0.1574301978779;
+        Wed, 20 Nov 2019 18:06:18 -0800 (PST)
+Received: from [192.168.1.188] ([66.219.217.79])
+        by smtp.gmail.com with ESMTPSA id s15sm541405pjp.3.2019.11.20.18.06.16
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 20 Nov 2019 18:06:17 -0800 (PST)
+Subject: Re: [PATCH -next] writeback: fix -Wformat compilation warnings
+To:     Qian Cai <cai@lca.pw>, Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     jack@suse.cz, gregkh@linuxfoundation.org, cgroups@vger.kernel.org,
+        heiko.carstens@de.ibm.com, gor@linux.ibm.com,
+        borntraeger@de.ibm.com, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20191114192118.GK4163745@devbig004.ftw2.facebook.com>
+ <9D52EBB0-BE48-4C59-9145-857C3247B20D@lca.pw>
+ <20191115145540.GP4163745@devbig004.ftw2.facebook.com>
+ <1574279778.9585.15.camel@lca.pw>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <26dc5699-9223-3e35-65f3-955fef7a990a@kernel.dk>
+Date:   Wed, 20 Nov 2019 16:17:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod50AanTCNkTVSptU+Hg--69j6OuKdc04UPs4Vf64DkGiw@mail.gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <1574279778.9585.15.camel@lca.pw>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 20, 2019 at 12:31:06PM -0800, Shakeel Butt wrote:
-> On Wed, Nov 20, 2019 at 8:58 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > While reviewing the "per lruvec lru_lock for memcg" series, Hugh and I
-> > noticed two places in the existing code where the page -> memcg ->
-> > lruvec lookup can result in a use-after-free bug. This affects cgroup1
-> > setups that have charge migration enabled.
-> >
-> > To pin page->mem_cgroup, callers need to either have the page locked,
-> > an exclusive refcount (0), or hold the lru_lock and "own" PageLRU
-> > (either ensure it's set, or be the one to hold the page in isolation)
-> > to make cgroup migration fail the isolation step.
+On 11/20/19 12:56 PM, Qian Cai wrote:
+> On Fri, 2019-11-15 at 06:55 -0800, Tejun Heo wrote:
+>> On Thu, Nov 14, 2019 at 07:26:21PM -0500, Qian Cai wrote:
+>>>
+>>>
+>>>> On Nov 14, 2019, at 2:21 PM, Tejun Heo <tj@kernel.org> wrote:
+>>>>
+>>>> Acked-by: Tejun Heo <tj@kernel.org>
+>>>
+>>> Tejun, suppose you will take this patch via your tree together with the series or should I Cc Andrew who normally handle this file?
+>>
+>> Patches in this area usually goes through Jens's block tree.
 > 
-> I think we should add the above para in the comments for better visibility.
-
-Good idea. I'm attaching a delta patch below.
-
-> > Reported-by: Hugh Dickins <hughd@google.com>
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> I remember that last time Jens had no interests in picking up trivial patches
+> like this one. See the commit d1a445d3b86c ("include/trace/events/writeback.h:
+> fix -Wstringop-truncation warnings").
 > 
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Andrew, care to pick up this again?
+> 
+> https://lore.kernel.org/lkml/1573751861-10303-1-git-send-email-cai@lca.pw/
 
-Thanks!
+I'm fine with picking it up, this one isn't trivial and it's fixing
+warnings. But I didn't (and don't) carry f05499a06fb4 in my tree,
+so it'd be more logical to funnel this one through the tree that
+has the offending commit.
 
----
-From 73b58ce09009cce668ea97d9e047611c60e95bd6 Mon Sep 17 00:00:00 2001
-From: Johannes Weiner <hannes@cmpxchg.org>
-Date: Wed, 20 Nov 2019 16:36:03 -0500
-Subject: [PATCH] mm: fix unsafe page -> lruvec lookups with cgroup charge
- migration fix
-
-Better document the mem_cgroup_page_lruvec() caller requirements.
-
-Suggested-by: Shakeel Butt <shakeelb@google.com>
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 15 ++++++++++++---
- 1 file changed, 12 insertions(+), 3 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 50f5bc55fcec..2d700fa0d7f4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1202,9 +1202,18 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-  * @page: the page
-  * @pgdat: pgdat of the page
-  *
-- * This function is only safe when following the LRU page isolation
-- * and putback protocol: the LRU lock must be held, and the page must
-- * either be PageLRU() or the caller must have isolated/allocated it.
-+ * NOTE: The returned lruvec is only stable if the calling context has
-+ * the page->mem_cgroup pinned! This is accomplished by satisfying one
-+ * of the following criteria:
-+ *
-+ *    a) have the @page locked
-+ *    b) have an exclusive reference to @page (e.g. refcount 0)
-+ *    c) hold the lru_lock and "own" the PageLRU (meaning either ensure
-+ *       it's set, or be the one to hold the page in isolation)
-+ *
-+ * Otherwise, the page could be freed or moved out of the memcg,
-+ * thereby releasing its reference on the memcg and potentially
-+ * freeing it and its lruvecs in the process.
-  */
- struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
- {
 -- 
-2.24.0
+Jens Axboe
 
