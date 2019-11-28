@@ -2,65 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EA07310C57C
-	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2019 09:54:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 669E110CDDD
+	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2019 18:26:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbfK1IyR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Nov 2019 03:54:17 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:44952 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbfK1IyQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 Nov 2019 03:54:16 -0500
-Received: by mail-io1-f68.google.com with SMTP id j20so28029590ioo.11
-        for <cgroups@vger.kernel.org>; Thu, 28 Nov 2019 00:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=tCu3O/6O00WFWsFV4ooWAFMNrptMOp09LtqZtJMNFv73plPqzqrZXcGPsz/p1edM9g
-         QWCtnP8NELvtDL4/W6ts5r5x1DXbRLrKpSGmUq6QouEV9huMDjRFA/2Xkf5mk8nWzDEf
-         y3u3vzSofpJQo6N/vvuaZv1F6QQ6SFcWBIQCpLO3OJVtv/ViuT1/L1od+lbsJVzvflWK
-         7K9bSkPppGwagbux6tyUQrRdC+cXYMTTl+nU/myIDo4b3qLFwcMVlydqNodGItlNSTND
-         hHrasLAMIhr1xeeb72H4cnxXfWfVokeupyonyAOiIBepHLUBkZZNW3/xpZV+W+bvmeqz
-         MFOw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
-        b=Mcixm6+0bKgwkr3B4x4PxaEr3sj5YVEbnNa8Qyop2sWHeGYcJ5Rhc6LaqAp8+zZqE8
-         7uI1k+qYS0h53t7TEZK4Kpey19cPLIO0SOZK+3SrDTgC1gNW2D3Cc4N2TTOvAcj6KA28
-         iyG4ACEEwXslpwmmVAj0BWwoaUaAkYTcUvw6CUKHm3ur2ab9o93LEGMGpasxxYxlDIxn
-         zw7rVohXpvmu3z3LkKHFhHfRTsNmkHqHvjoBwoAEpnDfFydZsaifffigylXj3piuyjx9
-         GBxfA/9zzf39HaKfO8LJmguxhUwcmzWDlVXhMrSk/6dajZ9C/9DbkPgibLNE/MuQTP/A
-         5EQQ==
-X-Gm-Message-State: APjAAAVZVlREC8hfWdT+rEQfRQTdQhWY6xTzk5ojd9mEXt+xNDeWRSLY
-        xRHMghzHvawVEiaKH8ASAj/1zgVnw2DyVgDJM1o=
-X-Google-Smtp-Source: APXvYqwLidXKyCfL1/wK0WHvem9vQ0UF3RdYr1tr8mh/Oq2UOeDUlvAvsxBa+21JBDNhfE1igWMQBRRXz+/hyyBV/fU=
-X-Received: by 2002:a6b:ec08:: with SMTP id c8mr10180199ioh.257.1574931254132;
- Thu, 28 Nov 2019 00:54:14 -0800 (PST)
+        id S1726609AbfK1R00 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 Nov 2019 12:26:26 -0500
+Received: from mx2.suse.de ([195.135.220.15]:56404 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726594AbfK1R00 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 28 Nov 2019 12:26:26 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 6B9A2AE20;
+        Thu, 28 Nov 2019 17:26:24 +0000 (UTC)
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     cgroups@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH] cgroup/pids: Make pids.events notifications affine to pids.max
+Date:   Thu, 28 Nov 2019 18:26:12 +0100
+Message-Id: <20191128172612.10259-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Received: by 2002:a4f:e12:0:0:0:0:0 with HTTP; Thu, 28 Nov 2019 00:54:13 -0800 (PST)
-Reply-To: robertandersongood1@gmail.com
-From:   robert anderson <robertandersongood7@gmail.com>
-Date:   Thu, 28 Nov 2019 00:54:13 -0800
-Message-ID: <CAE=WtcTwBq3U0nsOf-aPN48t3PcUmQo50xokTJi=4KL_9trBMA@mail.gmail.com>
-Subject: Dear friend, My name is Bar.robert anderson I am an attorney and a
- private account manager to my late client. In the Year 2014, my client by
- name Mr. Carlos, passed away,The reason why I contacted you is because you
- bear the same last name with the deceased, and I can present you as the
- beneficiary and next of kin to my late client funds then you will stand as
- his next of kin and claim the funds. leaving behind a cash inheritance of
- seven Million Five Hundred Thousand United States Dollars (US$7.500,000,00).My
- late client and bosom friend grew up in a "Motherless Babies Home". He had no
- family, no beneficiary nor next of kin to the inheritance Funds left behind
- at the Bank. You should contact me through my private email address:
- robertandersonhappy1@gmail.com Best Regards, Bar. robert anderson
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Currently, when pids.max limit is breached in the hierarchy, the event
+is counted and reported in the cgroup where the forking task resides.
+
+The proper hierarchical behavior is to count and report the event in the
+cgroup whose limit is being exceeded. Apply this behavior in the default
+hierarchy.
+
+Reasons for RFC:
+
+1) If anyone has adjusted their readings to this behavior, this is a BC
+   break.
+
+2) This solves no reported bug, just a spotted inconsistency.
+
+3) One step further would be to distinguish pids.events and
+   pids.events.local for proper hierarchical counting. (The current
+   behavior wouldn't match neither though.)
+
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ kernel/cgroup/pids.c | 21 ++++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
+index 138059eb730d..5fc34d8b8f60 100644
+--- a/kernel/cgroup/pids.c
++++ b/kernel/cgroup/pids.c
+@@ -140,7 +140,7 @@ static void pids_charge(struct pids_cgroup *pids, int num)
+  * the new value to exceed the hierarchical limit. Returns 0 if the charge
+  * succeeded, otherwise -EAGAIN.
+  */
+-static int pids_try_charge(struct pids_cgroup *pids, int num)
++static int pids_try_charge(struct pids_cgroup *pids, int num, struct pids_cgroup **fail)
+ {
+ 	struct pids_cgroup *p, *q;
+ 
+@@ -153,8 +153,10 @@ static int pids_try_charge(struct pids_cgroup *pids, int num)
+ 		 * p->limit is %PIDS_MAX then we know that this test will never
+ 		 * fail.
+ 		 */
+-		if (new > limit)
++		if (new > limit) {
++			*fail = p;
+ 			goto revert;
++		}
+ 	}
+ 
+ 	return 0;
+@@ -217,20 +219,25 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
+ static int pids_can_fork(struct task_struct *task)
+ {
+ 	struct cgroup_subsys_state *css;
+-	struct pids_cgroup *pids;
++	struct pids_cgroup *pids, *pids_over_limit;
+ 	int err;
+ 
+ 	css = task_css_check(current, pids_cgrp_id, true);
+ 	pids = css_pids(css);
+-	err = pids_try_charge(pids, 1);
++	err = pids_try_charge(pids, 1, &pids_over_limit);
+ 	if (err) {
++		/* Backwards compatibility on v1 where events were notified in
++		 * leaves. */
++		if (!cgroup_subsys_on_dfl(pids_cgrp_subsys))
++			pids_over_limit = pids;
++
+ 		/* Only log the first time events_limit is incremented. */
+-		if (atomic64_inc_return(&pids->events_limit) == 1) {
++		if (atomic64_inc_return(&pids_over_limit->events_limit) == 1) {
+ 			pr_info("cgroup: fork rejected by pids controller in ");
+-			pr_cont_cgroup_path(css->cgroup);
++			pr_cont_cgroup_path(pids_over_limit->css.cgroup);
+ 			pr_cont("\n");
+ 		}
+-		cgroup_file_notify(&pids->events_file);
++		cgroup_file_notify(&pids_over_limit->events_file);
+ 	}
+ 	return err;
+ }
+-- 
+2.24.0
 
