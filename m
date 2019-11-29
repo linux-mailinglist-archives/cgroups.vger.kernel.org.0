@@ -2,115 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 669E110CDDD
-	for <lists+cgroups@lfdr.de>; Thu, 28 Nov 2019 18:26:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BE7C10D12E
+	for <lists+cgroups@lfdr.de>; Fri, 29 Nov 2019 07:00:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726609AbfK1R00 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 Nov 2019 12:26:26 -0500
-Received: from mx2.suse.de ([195.135.220.15]:56404 "EHLO mx1.suse.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726594AbfK1R00 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 28 Nov 2019 12:26:26 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx1.suse.de (Postfix) with ESMTP id 6B9A2AE20;
-        Thu, 28 Nov 2019 17:26:24 +0000 (UTC)
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     cgroups@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] cgroup/pids: Make pids.events notifications affine to pids.max
-Date:   Thu, 28 Nov 2019 18:26:12 +0100
-Message-Id: <20191128172612.10259-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.24.0
+        id S1725892AbfK2GAt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Nov 2019 01:00:49 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:34805 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725860AbfK2GAt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Nov 2019 01:00:49 -0500
+Received: by mail-wm1-f65.google.com with SMTP id j18so8898244wmk.1
+        for <cgroups@vger.kernel.org>; Thu, 28 Nov 2019 22:00:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q6sEJMkRXu7hSu+qr1ZpIJGkAq9uE1tMvK5+NCK55eg=;
+        b=nhHXPijILiV784INV/SjVLc2zu+3GpgU4p1vIxj4gYrjylVVlPKYMTFrH8pkMwKy86
+         +raTzJbjpP7b1wjMtAr/GCUyIMfNzn0f3gLciIPmOBtGBYiTzjcC0L9P1Ils3y+Mi1ox
+         UukcJYbKjryHaVKKx28Y5xTrA373pz4aifxWp6gHBGyFD93dk53YUSWEK5QD2jlmqJTn
+         ou7J7C0kM6WfI4AoqUVhShtWCQmRxSr6jlVq8OIhe+AR0jfOs9vzHlSkc9riBJOfxqry
+         Y5SeSb2vV6RQveP+mm19ynMIoiYHr0u0avDAeAKc5Gwdo4DRz2XvfRfn5KSNlcuMlIe8
+         ZvaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q6sEJMkRXu7hSu+qr1ZpIJGkAq9uE1tMvK5+NCK55eg=;
+        b=g4YGKAY5Ohqdgck+mhsOTKrKT1P8KhijC76J/cD6ijXCv4PpGodgVOiEg2h5QilLuP
+         BedzqcT3DwSURLrvRyWD8oOdOnA2v0CvTh9ge2375RWzAE6m1/sFMbtPQzj8ngkq8p0Z
+         rR0VhNMBoM3jZjLSOrNWkGGDtjBro06nJuGe2osf3xfzjOqMbeb1VbWUXmVQbXiDC8qF
+         cK6oCHxNTD743OHJDqsEDUFgTtVr9dokYSZAr+8Bi2yhfMYWvvUxclC0uT7fb58sPv2C
+         CaeRN5Ptpz2qoEF0orcq6+e6FCYC6h2Z4haCTf7tnEIIZmsfvLEnr6hglREzZx3Tg1kN
+         L2VQ==
+X-Gm-Message-State: APjAAAXwEgKAEIj4UkXRRSBBbdigzds0bdsUXP1prGla3grXYW89Urhb
+        pJpM1ZNgHmnzuzMDBxmag1lmSk2vdI7F6UvMit8=
+X-Google-Smtp-Source: APXvYqzQY8nI5SjRf3vbkML66dR52hVRuAwaoIiPFMnxNz/dkE8c/gs6gZOSDIpGX+HePBykztRMnjcfBaBDWBidTGQ=
+X-Received: by 2002:a7b:c75a:: with SMTP id w26mr12371703wmk.18.1575007247161;
+ Thu, 28 Nov 2019 22:00:47 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190829060533.32315-3-Kenny.Ho@amd.com>
+ <20191001143106.GA4749@blackbody.suse.cz>
+In-Reply-To: <20191001143106.GA4749@blackbody.suse.cz>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 29 Nov 2019 01:00:36 -0500
+Message-ID: <CAOWid-ewvs-c-z_WW+Cx=Jaf0p8ZAwkWCkq2E8Xkj+2HvfNjaA@mail.gmail.com>
+Subject: Re: [PATCH RFC v4 02/16] cgroup: Introduce cgroup for drm subsystem
+To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com, Daniel Vetter <daniel@ffwll.ch>,
+        Tejun Heo <tj@kernel.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, when pids.max limit is breached in the hierarchy, the event
-is counted and reported in the cgroup where the forking task resides.
+On Tue, Oct 1, 2019 at 10:31 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
+:
+> On Thu, Aug 29, 2019 at 02:05:19AM -0400, Kenny Ho <Kenny.Ho@amd.com> wro=
+te:
+> > +struct cgroup_subsys drm_cgrp_subsys =3D {
+> > +     .css_alloc      =3D drmcg_css_alloc,
+> > +     .css_free       =3D drmcg_css_free,
+> > +     .early_init     =3D false,
+> > +     .legacy_cftypes =3D files,
+> Do you really want to expose the DRM controller on v1 hierarchies (where
+> threads of one process can be in different cgroups, or children cgroups
+> compete with their parents)?
 
-The proper hierarchical behavior is to count and report the event in the
-cgroup whose limit is being exceeded. Apply this behavior in the default
-hierarchy.
+(Sorry for the delay, I have been distracted by something else.)
+Yes, I am hoping to make the functionality as widely available as
+possible since the ecosystem is still transitioning to v2.  Do you see
+inherent problem with this approach?
 
-Reasons for RFC:
+Regards,
+Kenny
 
-1) If anyone has adjusted their readings to this behavior, this is a BC
-   break.
 
-2) This solves no reported bug, just a spotted inconsistency.
-
-3) One step further would be to distinguish pids.events and
-   pids.events.local for proper hierarchical counting. (The current
-   behavior wouldn't match neither though.)
-
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- kernel/cgroup/pids.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
-index 138059eb730d..5fc34d8b8f60 100644
---- a/kernel/cgroup/pids.c
-+++ b/kernel/cgroup/pids.c
-@@ -140,7 +140,7 @@ static void pids_charge(struct pids_cgroup *pids, int num)
-  * the new value to exceed the hierarchical limit. Returns 0 if the charge
-  * succeeded, otherwise -EAGAIN.
-  */
--static int pids_try_charge(struct pids_cgroup *pids, int num)
-+static int pids_try_charge(struct pids_cgroup *pids, int num, struct pids_cgroup **fail)
- {
- 	struct pids_cgroup *p, *q;
- 
-@@ -153,8 +153,10 @@ static int pids_try_charge(struct pids_cgroup *pids, int num)
- 		 * p->limit is %PIDS_MAX then we know that this test will never
- 		 * fail.
- 		 */
--		if (new > limit)
-+		if (new > limit) {
-+			*fail = p;
- 			goto revert;
-+		}
- 	}
- 
- 	return 0;
-@@ -217,20 +219,25 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
- static int pids_can_fork(struct task_struct *task)
- {
- 	struct cgroup_subsys_state *css;
--	struct pids_cgroup *pids;
-+	struct pids_cgroup *pids, *pids_over_limit;
- 	int err;
- 
- 	css = task_css_check(current, pids_cgrp_id, true);
- 	pids = css_pids(css);
--	err = pids_try_charge(pids, 1);
-+	err = pids_try_charge(pids, 1, &pids_over_limit);
- 	if (err) {
-+		/* Backwards compatibility on v1 where events were notified in
-+		 * leaves. */
-+		if (!cgroup_subsys_on_dfl(pids_cgrp_subsys))
-+			pids_over_limit = pids;
-+
- 		/* Only log the first time events_limit is incremented. */
--		if (atomic64_inc_return(&pids->events_limit) == 1) {
-+		if (atomic64_inc_return(&pids_over_limit->events_limit) == 1) {
- 			pr_info("cgroup: fork rejected by pids controller in ");
--			pr_cont_cgroup_path(css->cgroup);
-+			pr_cont_cgroup_path(pids_over_limit->css.cgroup);
- 			pr_cont("\n");
- 		}
--		cgroup_file_notify(&pids->events_file);
-+		cgroup_file_notify(&pids_over_limit->events_file);
- 	}
- 	return err;
- }
--- 
-2.24.0
-
+>
+> > +     .dfl_cftypes    =3D files,
+> > +};
+>
+> Just asking,
+> Michal
