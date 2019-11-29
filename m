@@ -2,144 +2,410 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id AE91E10DA78
-	for <lists+cgroups@lfdr.de>; Fri, 29 Nov 2019 21:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7645310DB4B
+	for <lists+cgroups@lfdr.de>; Fri, 29 Nov 2019 22:46:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727040AbfK2UKw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Nov 2019 15:10:52 -0500
-Received: from mail-eopbgr720065.outbound.protection.outlook.com ([40.107.72.65]:26432
-        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1727030AbfK2UKw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 29 Nov 2019 15:10:52 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fYVXlRCcPEi3SJj4XEgl8MuubaWPpFAP47R24yzNBDjuSHvve3Tz3eSZQ30gRBs/sigeRZJpftdF/qjGH0DAI7f23PBfIKip48/nmaJieZ7QS0u9qqX5YHWOacE2r063Qq6q6FZuFsk1P+eT+LZP01F26cttIfP31zKu62HMgtdRjrAA5wopam8+skhht+SV8m0y6zRtcRhyjScZYf4fRt6m2ASAURVPWhuo6Xiak4vOlMCg3DrXJbIjApF9+TNg0AUSD0QZEdZbcF7A9HvQ65t2Hbta/3HVcjYRQQQ+QYO41DVoFFrGwGF7TINR5P0y1HaW4Fre8ByL22OHdzn3oQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PMYoh1L/nswRC5J2bak673j2tmP7BBtku0I9XjgiYqk=;
- b=lypjIIVQwR9xwprXekNWJmhngezlZGCydQvJit+NXj/cUaABvoDI2NTaWL8IowRUbh2/4xKPd0kLGxNtnm/ijKw5szsQ9eystYaWRv/Y21sNbmTiVLs19gq4oiHgcTEBjgmj3lknXmSn6A36wgS7LB//JBtmOHPUqS+s6/YUE4lDAlfvKh+NRILts0yZ8MLWqqiqvaSy2/+2pQJbQAUlsWJyie/rkYoev/hYMCo3j/OO2DFq0IdlxTjPQ3/1bzIa/z4mOmPTTzyPu3owLmH6VBEZGiOWj3Sfhb/oRrUuMn+WryD2cvpIBlgvjw39byIstGw4AaSA1m//4ubDCkAOqQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PMYoh1L/nswRC5J2bak673j2tmP7BBtku0I9XjgiYqk=;
- b=i9CVAI7Oy3ODfM1ewx4UkaQJZI3PVbe0JajgEr3nKnomkbi/hmfgw1iCGneCg1ECq3QbLznrxuOhi7fyiP+zFXK64ZnGcov82NOWZDggz4LE1dRUft2mjed1Ij+d9xgHmH0U4Je6oJLC35tMybfGiHDMsF6c/B2swIjgHCv/NlY=
-Authentication-Results: spf=none (sender IP is )
- smtp.mailfrom=Felix.Kuehling@amd.com; 
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.175.222) by
- DM6PR12MB2985.namprd12.prod.outlook.com (20.178.29.146) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2474.19; Fri, 29 Nov 2019 20:10:10 +0000
-Received: from DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::a099:6fd7:e4d6:f560]) by DM6PR12MB3947.namprd12.prod.outlook.com
- ([fe80::a099:6fd7:e4d6:f560%3]) with mapi id 15.20.2495.014; Fri, 29 Nov 2019
- 20:10:10 +0000
-Subject: Re: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
- resource
-To:     "tj@kernel.org" <tj@kernel.org>, Daniel Vetter <daniel@ffwll.ch>
-Cc:     "Ho, Kenny" <Kenny.Ho@amd.com>,
-        "y2kenny@gmail.com" <y2kenny@gmail.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
-        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
-        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
-        "Koenig, Christian" <Christian.Koenig@amd.com>,
-        "Greathouse, Joseph" <Joseph.Greathouse@amd.com>,
-        "jsparks@cray.com" <jsparks@cray.com>,
-        "lkaplan@cray.com" <lkaplan@cray.com>
-References: <20190829060533.32315-1-Kenny.Ho@amd.com>
- <20190829060533.32315-15-Kenny.Ho@amd.com>
- <b3d2b3c1-8854-10ca-3e39-b3bef35bdfa9@amd.com>
- <20191009103153.GU16989@phenom.ffwll.local>
- <ee873e89-48fd-c4c9-1ce0-73965f4ad2ba@amd.com>
- <20191009153429.GI16989@phenom.ffwll.local>
- <c7812af4-7ec4-02bb-ff4c-21dd114cf38e@amd.com>
- <20191009160652.GO16989@phenom.ffwll.local>
- <20191011171247.GC18794@devbig004.ftw2.facebook.com>
-From:   Felix Kuehling <felix.kuehling@amd.com>
-Organization: AMD Inc.
-Message-ID: <1a31dded-b386-0da4-3ff7-d6f4e767de75@amd.com>
-Date:   Fri, 29 Nov 2019 15:10:08 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
-In-Reply-To: <20191011171247.GC18794@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-ClientProxiedBy: YTXPR0101CA0052.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b00:1::29) To DM6PR12MB3947.namprd12.prod.outlook.com
- (2603:10b6:5:148::30)
+        id S1727154AbfK2VqS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Nov 2019 16:46:18 -0500
+Received: from relay.sw.ru ([185.231.240.75]:55174 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727130AbfK2VqS (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 29 Nov 2019 16:46:18 -0500
+Received: from [192.168.15.202] (helo=snorch.sw.ru)
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <ptikhomirov@virtuozzo.com>)
+        id 1iao5C-0000P5-Md; Sat, 30 Nov 2019 00:45:46 +0300
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Subject: [PATCH] mm: fix hanging shrinker management on long do_shrink_slab
+Date:   Sat, 30 Nov 2019 00:45:41 +0300
+Message-Id: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
-X-Originating-IP: [165.204.55.251]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 6e6666af-1926-46be-4847-08d7750822ac
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2985:|DM6PR12MB2985:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB29853C0AA791BEE793E1CA2F92460@DM6PR12MB2985.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 0236114672
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(199004)(189003)(2501003)(446003)(81166006)(81156014)(44832011)(31686004)(14444005)(11346002)(2616005)(110136005)(316002)(65956001)(186003)(58126008)(4001150100001)(50466002)(47776003)(6246003)(66556008)(53546011)(229853002)(8676002)(386003)(6506007)(52116002)(36916002)(2486003)(7736002)(26005)(76176011)(23676004)(54906003)(66946007)(3846002)(478600001)(6436002)(5660300002)(6512007)(99286004)(305945005)(14454004)(36756003)(86362001)(4326008)(8936002)(65806001)(31696002)(66476007)(66066001)(6116002)(25786009)(2870700001)(2906002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2985;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: amd.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: n7iRlcVK7cQeD4EjASIAnb9LKO5IgEKyH/B8MwLfgqnYbtfg9KJr1ezIf+7gCgCsKVjpB4m14y30Irx2ST9fAsv5cafDoN/5eDfqnCKxn7V8vxAX/zze8dV0QjDr+oDs/cKXoC8hU8Ko0bIX0sSrBScjl/ewDXqDBpquoxIs9TFKVykOCF+WuwePwCPbIs6p+2hwhDf2h9l05FaZDWoLKj/20yevB8QB1P332aksaFCG9/asCOGEa7/GBmVJB63QFdEkUzOdjy82uGjGvfGh0jZYp7ZjJUPp5axnWRua5mGrWDRk0A+acH1QeXVztFSA55lMUJ3cG1WtCcOoo1GjU9MhxyQomNbovjPbYaqsMb9QeetFte04R3DtaI7WRGhrsJ7nBwKyJ6sPqEUAsmcDODaCy7yAd663QcqGEsUCvFTJmRWBUPD0j4uEmHEPJO2V
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6666af-1926-46be-4847-08d7750822ac
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2019 20:10:09.9527
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: d8uB+9auv5bMZc2Uv5tshH9huEm/p8QGwQZkZTRRln/umqtDRZERTtgS4GoV7Zn9hfW2Mq41VIf6QIuUYaqyuw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2985
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2019-10-11 1:12 p.m., tj@kernel.org wrote:
-> Hello, Daniel.
->
-> On Wed, Oct 09, 2019 at 06:06:52PM +0200, Daniel Vetter wrote:
->> That's not the point I was making. For cpu cgroups there's a very well
->> defined connection between the cpu bitmasks/numbers in cgroups and the cpu
->> bitmasks you use in various system calls (they match). And that stuff
->> works across vendors.
-> Please note that there are a lot of limitations even to cpuset.
-> Affinity is easy to implement and seems attractive in terms of
-> absolute isolation but it's inherently cumbersome and limited in
-> granularity and can lead to surprising failure modes where contention
-> on one cpu can't be resolved by the load balancer and leads to system
-> wide slowdowns / stalls caused by the dependency chain anchored at the
-> affinity limited tasks.
->
-> Maybe this is a less of a problem for gpu workloads but in general the
-> more constraints are put on scheduling, the more likely is the system
-> to develop twisted dependency chains while other parts of the system
-> are sitting idle.
->
-> How does scheduling currently work when there are competing gpu
-> workloads?  There gotta be some fairness provision whether that's unit
-> allocation based or time slicing, right?
+We have a problem that shrinker_rwsem can be held for a long time for
+read in shrink_slab, at the same time any process which is trying to
+manage shrinkers hangs.
 
-The scheduling of competing workloads on GPUs is handled in hardware and 
-firmware. The Linux kernel and driver are not really involved. We have 
-some knobs we can tweak in the driver (queue and pipe priorities, 
-resource reservations for certain types of workloads), but they are 
-pretty HW-specific and I wouldn't make any claims about fairness.
+The shrinker_rwsem is taken in shrink_slab while traversing shrinker_list.
+It tries to shrink something on nfs (hard) but nfs server is dead at
+these moment already and rpc will never succeed. Generally any shrinker
+can take significant time to do_shrink_slab, so it's a bad idea to hold
+the list lock here.
 
-Regards,
-   Felix
+We have a similar problem in shrink_slab_memcg, except that we are
+traversing shrinker_map+shrinker_idr there.
 
->    If that's the case, it might
-> be best to implement proportional control on top of that.
-> Work-conserving mechanisms are the most versatile, easiest to use and
-> least likely to cause regressions.
->
-> Thanks.
->
+The idea of the patch is to inc a refcount to the chosen shrinker so it
+won't disappear and release shrinker_rwsem while we are in
+do_shrink_slab, after that we will reacquire shrinker_rwsem, dec
+the refcount and continue the traversal.
+
+We also need a wait_queue so that unregister_shrinker can wait for the
+refcnt to become zero. Only after these we can safely remove the
+shrinker from list and idr, and free the shrinker.
+
+I've reproduced the nfs hang in do_shrink_slab with the patch applied on
+ms kernel, all other mount/unmount pass fine without any hang.
+
+Here is a reproduction on kernel without patch:
+
+1) Setup nfs on server node with some files in it (e.g. 200)
+
+[server]# cat /etc/exports
+/vz/nfs2 *(ro,no_root_squash,no_subtree_check,async)
+
+2) Hard mount it on client node
+
+[client]# mount -ohard 10.94.3.40:/vz/nfs2 /mnt
+
+3) Open some (e.g. 200) files on the mount
+
+[client]# for i in $(find /mnt/ -type f | head -n 200); \
+  do setsid sleep 1000 &>/dev/null <$i & done
+
+4) Kill all openers
+
+[client]# killall sleep -9
+
+5) Put your network cable out on client node
+
+6) Drop caches on the client, it will hang on nfs while holding
+  shrinker_rwsem lock for read
+
+[client]# echo 3 > /proc/sys/vm/drop_caches
+
+  crash> bt ...
+  PID: 18739  TASK: ...  CPU: 3   COMMAND: "bash"
+   #0 [...] __schedule at ...
+   #1 [...] schedule at ...
+   #2 [...] rpc_wait_bit_killable at ... [sunrpc]
+   #3 [...] __wait_on_bit at ...
+   #4 [...] out_of_line_wait_on_bit at ...
+   #5 [...] _nfs4_proc_delegreturn at ... [nfsv4]
+   #6 [...] nfs4_proc_delegreturn at ... [nfsv4]
+   #7 [...] nfs_do_return_delegation at ... [nfsv4]
+   #8 [...] nfs4_evict_inode at ... [nfsv4]
+   #9 [...] evict at ...
+  #10 [...] dispose_list at ...
+  #11 [...] prune_icache_sb at ...
+  #12 [...] super_cache_scan at ...
+  #13 [...] do_shrink_slab at ...
+  #14 [...] shrink_slab at ...
+  #15 [...] drop_slab_node at ...
+  #16 [...] drop_slab at ...
+  #17 [...] drop_caches_sysctl_handler at ...
+  #18 [...] proc_sys_call_handler at ...
+  #19 [...] vfs_write at ...
+  #20 [...] ksys_write at ...
+  #21 [...] do_syscall_64 at ...
+  #22 [...] entry_SYSCALL_64_after_hwframe at ...
+
+7) All other mount/umount activity now hangs with no luck to take
+  shrinker_rwsem for write.
+
+[client]# mount -t tmpfs tmpfs /tmp
+
+  crash> bt ...
+  PID: 5464   TASK: ...  CPU: 3   COMMAND: "mount"
+   #0 [...] __schedule at ...
+   #1 [...] schedule at ...
+   #2 [...] rwsem_down_write_slowpath at ...
+   #3 [...] prealloc_shrinker at ...
+   #4 [...] alloc_super at ...
+   #5 [...] sget at ...
+   #6 [...] mount_nodev at ...
+   #7 [...] legacy_get_tree at ...
+   #8 [...] vfs_get_tree at ...
+   #9 [...] do_mount at ...
+  #10 [...] ksys_mount at ...
+  #11 [...] __x64_sys_mount at ...
+  #12 [...] do_syscall_64 at ...
+  #13 [...] entry_SYSCALL_64_after_hwframe at ...
+
+That is on almost clean and almost mainstream Fedora kernel:
+
+[client]# uname -a
+Linux snorch 5.3.8-200.snorch.fc30.x86_64 #1 SMP Mon Nov 11 16:01:15 MSK
+  2019 x86_64 x86_64 x86_64 GNU/Linux
+
+Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+---
+ include/linux/memcontrol.h |   6 +++
+ include/linux/shrinker.h   |   6 +++
+ mm/memcontrol.c            |  16 ++++++
+ mm/vmscan.c                | 107 ++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 134 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index ae703ea3ef48..3717b94b6aa5 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1348,6 +1348,8 @@ extern int memcg_expand_shrinker_maps(int new_id);
+ 
+ extern void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+ 				   int nid, int shrinker_id);
++extern void memcg_clear_shrinker_bit(struct mem_cgroup *memcg,
++				     int nid, int shrinker_id);
+ #else
+ #define mem_cgroup_sockets_enabled 0
+ static inline void mem_cgroup_sk_alloc(struct sock *sk) { };
+@@ -1361,6 +1363,10 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+ 					  int nid, int shrinker_id)
+ {
+ }
++static inline void memcg_clear_shrinker_bit(struct mem_cgroup *memcg,
++					    int nid, int shrinker_id)
++{
++}
+ #endif
+ 
+ struct kmem_cache *memcg_kmem_get_cache(struct kmem_cache *cachep);
+diff --git a/include/linux/shrinker.h b/include/linux/shrinker.h
+index 0f80123650e2..dd3bb43ed58d 100644
+--- a/include/linux/shrinker.h
++++ b/include/linux/shrinker.h
+@@ -2,6 +2,9 @@
+ #ifndef _LINUX_SHRINKER_H
+ #define _LINUX_SHRINKER_H
+ 
++#include <linux/refcount.h>
++#include <linux/wait.h>
++
+ /*
+  * This struct is used to pass information from page reclaim to the shrinkers.
+  * We consolidate the values for easier extention later.
+@@ -75,6 +78,9 @@ struct shrinker {
+ #endif
+ 	/* objs pending delete, per node */
+ 	atomic_long_t *nr_deferred;
++
++	refcount_t refcnt;
++	wait_queue_head_t wq;
+ };
+ #define DEFAULT_SEEKS 2 /* A good number if you don't know better. */
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 01f3f8b665e9..81f45124feb7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -442,6 +442,22 @@ void memcg_set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
+ 	}
+ }
+ 
++void memcg_clear_shrinker_bit(struct mem_cgroup *memcg,
++			      int nid, int shrinker_id)
++{
++	struct memcg_shrinker_map *map;
++
++	/*
++	 * The map for refcounted memcg can only be freed in
++	 * memcg_free_shrinker_map_rcu so we can safely protect
++	 * map with rcu_read_lock.
++	 */
++	rcu_read_lock();
++	map = rcu_dereference(memcg->nodeinfo[nid]->shrinker_map);
++	clear_bit(shrinker_id, map->map);
++	rcu_read_unlock();
++}
++
+ /**
+  * mem_cgroup_css_from_page - css of the memcg associated with a page
+  * @page: page of interest
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index ee4eecc7e1c2..59e46d65e902 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -393,6 +393,13 @@ int prealloc_shrinker(struct shrinker *shrinker)
+ 	if (!shrinker->nr_deferred)
+ 		return -ENOMEM;
+ 
++	/*
++	 * Shrinker is not yet visible through shrinker_idr or shrinker_list,
++	 * so no locks required for initialization.
++	 */
++	refcount_set(&shrinker->refcnt, 1);
++	init_waitqueue_head(&shrinker->wq);
++
+ 	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
+ 		if (prealloc_memcg_shrinker(shrinker))
+ 			goto free_deferred;
+@@ -411,6 +418,9 @@ void free_prealloced_shrinker(struct shrinker *shrinker)
+ 	if (!shrinker->nr_deferred)
+ 		return;
+ 
++	/* The shrinker shouldn't be used at these point. */
++	WARN_ON(!refcount_dec_and_test(&shrinker->refcnt));
++
+ 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+ 		unregister_memcg_shrinker(shrinker);
+ 
+@@ -447,6 +457,15 @@ void unregister_shrinker(struct shrinker *shrinker)
+ {
+ 	if (!shrinker->nr_deferred)
+ 		return;
++
++	/*
++	 * If refcnt is not zero we need to wait these shrinker to finish all
++	 * it's do_shrink_slab() calls.
++	 */
++	if (!refcount_dec_and_test(&shrinker->refcnt))
++		wait_event(shrinker->wq,
++			   (refcount_read(&shrinker->refcnt) == 0));
++
+ 	if (shrinker->flags & SHRINKER_MEMCG_AWARE)
+ 		unregister_memcg_shrinker(shrinker);
+ 	down_write(&shrinker_rwsem);
+@@ -454,6 +473,9 @@ void unregister_shrinker(struct shrinker *shrinker)
+ 	up_write(&shrinker_rwsem);
+ 	kfree(shrinker->nr_deferred);
+ 	shrinker->nr_deferred = NULL;
++
++	/* Pairs with rcu_read_lock in put_shrinker() */
++	synchronize_rcu();
+ }
+ EXPORT_SYMBOL(unregister_shrinker);
+ 
+@@ -589,6 +611,42 @@ static unsigned long do_shrink_slab(struct shrink_control *shrinkctl,
+ 	return freed;
+ }
+ 
++struct shrinker *get_shrinker(struct shrinker *shrinker)
++{
++	/*
++	 * Pairs with refcnt dec in unregister_shrinker(), if refcnt is zero
++	 * these shrinker is already in the middle of unregister_shrinker() and
++	 * we can't use it.
++	 */
++	if (!refcount_inc_not_zero(&shrinker->refcnt))
++		shrinker = NULL;
++	return shrinker;
++}
++
++void put_shrinker(struct shrinker *shrinker)
++{
++	/*
++	 * The rcu_read_lock pairs with synchronize_rcu() in
++	 * unregister_shrinker(), so that the shrinker is not freed
++	 * before the wake_up.
++	 */
++	rcu_read_lock();
++	if (!refcount_dec_and_test(&shrinker->refcnt)) {
++		/*
++		 * Pairs with smp_mb in
++		 * wait_event()->prepare_to_wait()
++		 */
++		smp_mb();
++		/*
++		 * If refcnt becomes zero, we already have an
++		 * unregister_shrinker() waiting for us to finish.
++		 */
++		if (waitqueue_active(&shrinker->wq))
++			wake_up(&shrinker->wq);
++	}
++	rcu_read_unlock();
++}
++
+ #ifdef CONFIG_MEMCG
+ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 			struct mem_cgroup *memcg, int priority)
+@@ -628,9 +686,23 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 		    !(shrinker->flags & SHRINKER_NONSLAB))
+ 			continue;
+ 
++		/*
++		 * Take a refcnt on a shrinker so that it can't be freed or
++		 * removed from shrinker_idr (and shrinker_list). These way we
++		 * can safely release shrinker_rwsem.
++		 *
++		 * We need to release shrinker_rwsem here as do_shrink_slab can
++		 * take too much time to finish (e.g. on nfs). And holding
++		 * global shrinker_rwsem can block registring and unregistring
++		 * of shrinkers.
++		 */
++		if (!get_shrinker(shrinker))
++			continue;
++		up_read(&shrinker_rwsem);
++
+ 		ret = do_shrink_slab(&sc, shrinker, priority);
+ 		if (ret == SHRINK_EMPTY) {
+-			clear_bit(i, map->map);
++			memcg_clear_shrinker_bit(memcg, nid, i);
+ 			/*
+ 			 * After the shrinker reported that it had no objects to
+ 			 * free, but before we cleared the corresponding bit in
+@@ -655,6 +727,22 @@ static unsigned long shrink_slab_memcg(gfp_t gfp_mask, int nid,
+ 		}
+ 		freed += ret;
+ 
++		/*
++		 * Re-aquire shrinker_rwsem, put refcount and reload
++		 * shrinker_map as it can be modified in
++		 * memcg_expand_one_shrinker_map if new shrinkers
++		 * were registred in the meanwhile.
++		 */
++		if (!down_read_trylock(&shrinker_rwsem)) {
++			freed = freed ? : 1;
++			put_shrinker(shrinker);
++			return freed;
++		}
++		put_shrinker(shrinker);
++		map = rcu_dereference_protected(
++				memcg->nodeinfo[nid]->shrinker_map,
++				true);
++
+ 		if (rwsem_is_contended(&shrinker_rwsem)) {
+ 			freed = freed ? : 1;
+ 			break;
+@@ -719,10 +807,27 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
+ 			.memcg = memcg,
+ 		};
+ 
++		/* See comment in shrink_slab_memcg. */
++		if (!get_shrinker(shrinker))
++			continue;
++		up_read(&shrinker_rwsem);
++
+ 		ret = do_shrink_slab(&sc, shrinker, priority);
+ 		if (ret == SHRINK_EMPTY)
+ 			ret = 0;
+ 		freed += ret;
++
++		/*
++		 * We can safely continue traverse of the shrinker_list as
++		 * our shrinker is still on the list due to refcount.
++		 */
++		if (!down_read_trylock(&shrinker_rwsem)) {
++			freed = freed ? : 1;
++			put_shrinker(shrinker);
++			goto out;
++		}
++		put_shrinker(shrinker);
++
+ 		/*
+ 		 * Bail out if someone want to register a new shrinker to
+ 		 * prevent the regsitration from being stalled for long periods
+-- 
+2.21.0
+
