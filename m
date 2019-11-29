@@ -2,144 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C0D110D1C3
-	for <lists+cgroups@lfdr.de>; Fri, 29 Nov 2019 08:18:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE91E10DA78
+	for <lists+cgroups@lfdr.de>; Fri, 29 Nov 2019 21:10:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726652AbfK2HSc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 Nov 2019 02:18:32 -0500
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:54543 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725856AbfK2HSb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 Nov 2019 02:18:31 -0500
-Received: by mail-wm1-f68.google.com with SMTP id b11so12995254wmj.4
-        for <cgroups@vger.kernel.org>; Thu, 28 Nov 2019 23:18:28 -0800 (PST)
+        id S1727040AbfK2UKw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 Nov 2019 15:10:52 -0500
+Received: from mail-eopbgr720065.outbound.protection.outlook.com ([40.107.72.65]:26432
+        "EHLO NAM05-CO1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727030AbfK2UKw (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 29 Nov 2019 15:10:52 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fYVXlRCcPEi3SJj4XEgl8MuubaWPpFAP47R24yzNBDjuSHvve3Tz3eSZQ30gRBs/sigeRZJpftdF/qjGH0DAI7f23PBfIKip48/nmaJieZ7QS0u9qqX5YHWOacE2r063Qq6q6FZuFsk1P+eT+LZP01F26cttIfP31zKu62HMgtdRjrAA5wopam8+skhht+SV8m0y6zRtcRhyjScZYf4fRt6m2ASAURVPWhuo6Xiak4vOlMCg3DrXJbIjApF9+TNg0AUSD0QZEdZbcF7A9HvQ65t2Hbta/3HVcjYRQQQ+QYO41DVoFFrGwGF7TINR5P0y1HaW4Fre8ByL22OHdzn3oQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PMYoh1L/nswRC5J2bak673j2tmP7BBtku0I9XjgiYqk=;
+ b=lypjIIVQwR9xwprXekNWJmhngezlZGCydQvJit+NXj/cUaABvoDI2NTaWL8IowRUbh2/4xKPd0kLGxNtnm/ijKw5szsQ9eystYaWRv/Y21sNbmTiVLs19gq4oiHgcTEBjgmj3lknXmSn6A36wgS7LB//JBtmOHPUqS+s6/YUE4lDAlfvKh+NRILts0yZ8MLWqqiqvaSy2/+2pQJbQAUlsWJyie/rkYoev/hYMCo3j/OO2DFq0IdlxTjPQ3/1bzIa/z4mOmPTTzyPu3owLmH6VBEZGiOWj3Sfhb/oRrUuMn+WryD2cvpIBlgvjw39byIstGw4AaSA1m//4ubDCkAOqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=tkeRI2yNVRyfmG+HaLVXwFnLxkVjrmIZNI8y9X6UAY0=;
-        b=a3EfmTdZwnX8sB+JVaRBSQ/mLoNcsXV7erm4NRvfI36MMemPkiPg8g+UQJKe8tfrkR
-         lk8HbZY655P4W+5GQgWS5EcElRLTOqRB3h6okLDUw5j3iLYQgVenVOFuuE8dzBjkPlaG
-         Nasc8+UnfNjgPmTt04pDG37HpwgQGyARGlUKpg/G4njgOxyxFIOgbegUbAJKkwpg6iIS
-         lQQyTyZcymoFGLYX9HNQeiQhQO2yatTTK1hV/T8ouwwaGGfjBCniqjW8OMDn+g3knRkp
-         yhhZo7AYsShmOnABthUFBvWrIdJYxcRofbztlDO7MXL8JhJxxuy1uVSxf3Rbv28KJKFK
-         oAHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tkeRI2yNVRyfmG+HaLVXwFnLxkVjrmIZNI8y9X6UAY0=;
-        b=o8BF7l2wdWwhWHNBt3Vm0Tk0C1Mnb5XehUqOmIC1BEQuzIYD0X8/yPWalieV+YEQTy
-         XHmUx0J/K1v+/jteuDexm4GVOHMnhE7Q/nnVtJ7Zfc2CypKcjLOsN/HqVTfOZtMbj9FU
-         W2rvynMgcC3aSNQCgOCZ4+Np/4BZOvkRe+C3UoW4b8Oj6e4eSR9TNNon4zeEwSkCJdWD
-         GIOHHRGdeyXRpYuHKhnsKpfrChrmyKqsT7pimQYqABY11cbQ716MD4az93H20IssKJz5
-         0fATvYs0Sg7puf9UyhXMQZDq1IJuvEDM4+EN8OYZ9JrpXAQC1QoAE26lDCpDBKp+L9Pj
-         VPZg==
-X-Gm-Message-State: APjAAAUQcdjXGM60FUNBMQdvp+3ulq6OYSDylHRzM9W1RDiHqC6LSHpz
-        K7cG/WB6t6Tk1eKe2E7D+c8tkSPC5/pIE4RD1W8=
-X-Google-Smtp-Source: APXvYqzT32qHBZuzjCjX33Dg4+GU6F5DyFwzn3B8bpFRr4BM0kkJOpw1uOFVI1WyG4NlW0pdHQwEJTYh54sxKRLk2as=
-X-Received: by 2002:a1c:5603:: with SMTP id k3mr13924771wmb.150.1575011907203;
- Thu, 28 Nov 2019 23:18:27 -0800 (PST)
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PMYoh1L/nswRC5J2bak673j2tmP7BBtku0I9XjgiYqk=;
+ b=i9CVAI7Oy3ODfM1ewx4UkaQJZI3PVbe0JajgEr3nKnomkbi/hmfgw1iCGneCg1ECq3QbLznrxuOhi7fyiP+zFXK64ZnGcov82NOWZDggz4LE1dRUft2mjed1Ij+d9xgHmH0U4Je6oJLC35tMybfGiHDMsF6c/B2swIjgHCv/NlY=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Felix.Kuehling@amd.com; 
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com (10.255.175.222) by
+ DM6PR12MB2985.namprd12.prod.outlook.com (20.178.29.146) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2474.19; Fri, 29 Nov 2019 20:10:10 +0000
+Received: from DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::a099:6fd7:e4d6:f560]) by DM6PR12MB3947.namprd12.prod.outlook.com
+ ([fe80::a099:6fd7:e4d6:f560%3]) with mapi id 15.20.2495.014; Fri, 29 Nov 2019
+ 20:10:10 +0000
+Subject: Re: [PATCH RFC v4 14/16] drm, cgroup: Introduce lgpu as DRM cgroup
+ resource
+To:     "tj@kernel.org" <tj@kernel.org>, Daniel Vetter <daniel@ffwll.ch>
+Cc:     "Ho, Kenny" <Kenny.Ho@amd.com>,
+        "y2kenny@gmail.com" <y2kenny@gmail.com>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+        "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        "Greathouse, Joseph" <Joseph.Greathouse@amd.com>,
+        "jsparks@cray.com" <jsparks@cray.com>,
+        "lkaplan@cray.com" <lkaplan@cray.com>
+References: <20190829060533.32315-1-Kenny.Ho@amd.com>
+ <20190829060533.32315-15-Kenny.Ho@amd.com>
+ <b3d2b3c1-8854-10ca-3e39-b3bef35bdfa9@amd.com>
+ <20191009103153.GU16989@phenom.ffwll.local>
+ <ee873e89-48fd-c4c9-1ce0-73965f4ad2ba@amd.com>
+ <20191009153429.GI16989@phenom.ffwll.local>
+ <c7812af4-7ec4-02bb-ff4c-21dd114cf38e@amd.com>
+ <20191009160652.GO16989@phenom.ffwll.local>
+ <20191011171247.GC18794@devbig004.ftw2.facebook.com>
+From:   Felix Kuehling <felix.kuehling@amd.com>
+Organization: AMD Inc.
+Message-ID: <1a31dded-b386-0da4-3ff7-d6f4e767de75@amd.com>
+Date:   Fri, 29 Nov 2019 15:10:08 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.1
+In-Reply-To: <20191011171247.GC18794@devbig004.ftw2.facebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-ClientProxiedBy: YTXPR0101CA0052.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b00:1::29) To DM6PR12MB3947.namprd12.prod.outlook.com
+ (2603:10b6:5:148::30)
 MIME-Version: 1.0
-References: <20190829060533.32315-1-Kenny.Ho@amd.com> <20190829060533.32315-8-Kenny.Ho@amd.com>
- <20191001142957.GK6694@blackbody.suse.cz>
-In-Reply-To: <20191001142957.GK6694@blackbody.suse.cz>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Fri, 29 Nov 2019 02:18:15 -0500
-Message-ID: <CAOWid-diGR6bkygGO7gMQauNSCApxFwgYPunHGWGTXFKV8KkJg@mail.gmail.com>
-Subject: Re: [PATCH RFC v4 07/16] drm, cgroup: Add total GEM buffer allocation limit
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com, Daniel Vetter <daniel@ffwll.ch>,
-        Tejun Heo <tj@kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [165.204.55.251]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 6e6666af-1926-46be-4847-08d7750822ac
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2985:|DM6PR12MB2985:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB29853C0AA791BEE793E1CA2F92460@DM6PR12MB2985.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-Forefront-PRVS: 0236114672
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(199004)(189003)(2501003)(446003)(81166006)(81156014)(44832011)(31686004)(14444005)(11346002)(2616005)(110136005)(316002)(65956001)(186003)(58126008)(4001150100001)(50466002)(47776003)(6246003)(66556008)(53546011)(229853002)(8676002)(386003)(6506007)(52116002)(36916002)(2486003)(7736002)(26005)(76176011)(23676004)(54906003)(66946007)(3846002)(478600001)(6436002)(5660300002)(6512007)(99286004)(305945005)(14454004)(36756003)(86362001)(4326008)(8936002)(65806001)(31696002)(66476007)(66066001)(6116002)(25786009)(2870700001)(2906002)(6486002);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2985;H:DM6PR12MB3947.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: n7iRlcVK7cQeD4EjASIAnb9LKO5IgEKyH/B8MwLfgqnYbtfg9KJr1ezIf+7gCgCsKVjpB4m14y30Irx2ST9fAsv5cafDoN/5eDfqnCKxn7V8vxAX/zze8dV0QjDr+oDs/cKXoC8hU8Ko0bIX0sSrBScjl/ewDXqDBpquoxIs9TFKVykOCF+WuwePwCPbIs6p+2hwhDf2h9l05FaZDWoLKj/20yevB8QB1P332aksaFCG9/asCOGEa7/GBmVJB63QFdEkUzOdjy82uGjGvfGh0jZYp7ZjJUPp5axnWRua5mGrWDRk0A+acH1QeXVztFSA55lMUJ3cG1WtCcOoo1GjU9MhxyQomNbovjPbYaqsMb9QeetFte04R3DtaI7WRGhrsJ7nBwKyJ6sPqEUAsmcDODaCy7yAd663QcqGEsUCvFTJmRWBUPD0j4uEmHEPJO2V
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6e6666af-1926-46be-4847-08d7750822ac
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Nov 2019 20:10:09.9527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: d8uB+9auv5bMZc2Uv5tshH9huEm/p8QGwQZkZTRRln/umqtDRZERTtgS4GoV7Zn9hfW2Mq41VIf6QIuUYaqyuw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2985
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 1, 2019 at 10:30 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
-> On Thu, Aug 29, 2019 at 02:05:24AM -0400, Kenny Ho <Kenny.Ho@amd.com> wro=
-te:
-> > drm.buffer.default
-> >         A read-only flat-keyed file which exists on the root cgroup.
-> >         Each entry is keyed by the drm device's major:minor.
-> >
-> >         Default limits on the total GEM buffer allocation in bytes.
-> What is the purpose of this attribute (and alikes for other resources)?
-> I can't see it being set differently but S64_MAX in
-> drmcg_device_early_init.
-
-cgroup has a number of conventions and one of which is the idea of a
-default.  The idea here is to allow for device specific defaults.  For
-this specific resource, I can probably not expose it since it's not
-particularly useful, but for other resources (such as the lgpu
-resource) the concept of a default is useful (for example, different
-devices can have different number of lgpu.)
-
-
-> > +static ssize_t drmcg_limit_write(struct kernfs_open_file *of, char *bu=
-f,
-> > [...]
-> > +             switch (type) {
-> > +             case DRMCG_TYPE_BO_TOTAL:
-> > +                     p_max =3D parent =3D=3D NULL ? S64_MAX :
-> > +                             parent->dev_resources[minor]->
-> > +                             bo_limits_total_allocated;
-> > +
-> > +                     rc =3D drmcg_process_limit_s64_val(sattr, true,
-> > +                             props->bo_limits_total_allocated_default,
-> > +                             p_max,
-> > +                             &val);
-> IIUC, this allows initiating the particular limit value based either on
-> parent or the default per-device value. This is alas rather an
-> antipattern. The most stringent limit on the path from a cgroup to the
-> root should be applied at the charging time. However, the child should
-> not inherit the verbatim value from the parent (may race with parent and
-> it won't be updated upon parent change).
-I think this was a mistake during one of my refactor and I shrunk the
-critical section protected by a mutex a bit too much.  But you are
-right in the sense that I don't propagate the limits downward to the
-children when the parent's limit is updated.  But from the user
-interface perspective, wouldn't this be confusing?  When a sysadmin
-sets a limit using the 'max' keyword, the value would be a global one
-even though the actual allowable maximum for the particular cgroup is
-less in reality because of the ancestor cgroups?  (If this is the
-established norm, I am ok to go along but seems confusing to me.)  I
-am probably missing something because as I implemented this, the 'max'
-and 'default' semantic has been confusing to me especially for the
-children cgroups due to the context of the ancestors.
-
-> You already do the appropriate hierarchical check in
-> drmcg_try_chb_bo_alloc, so the parent propagation could be simply
-> dropped if I'm not mistaken.
-I will need to double check.  But I think interaction between parent
-and children (or perhaps between siblings) will be needed eventually
-because there seems to be a desire to implement "weight" type of
-resource.  Also, from performance perspective, wouldn't it make more
-sense to make sure the limits are set correctly during configuration
-than to have to check all the cgroups up through the parents?  I don't
-have comprehensive knowledge of the implementation of other cgroup
-controllers so if more experience folks can comment that would be
-great.  (Although, I probably should just do one approach instead of
-doing both... or 1.5.)
-
+On 2019-10-11 1:12 p.m., tj@kernel.org wrote:
+> Hello, Daniel.
 >
-> Also, I can't find how the read of
-> parent->dev_resources[minor]->bo_limits_total_allocated and its
-> concurrent update are synchronized (i.e. someone writing
-> buffer.total.max for parent and child in parallel). (It may just my
-> oversight.)
-This is probably the refactor mistake I mentioned earlier.
+> On Wed, Oct 09, 2019 at 06:06:52PM +0200, Daniel Vetter wrote:
+>> That's not the point I was making. For cpu cgroups there's a very well
+>> defined connection between the cpu bitmasks/numbers in cgroups and the cpu
+>> bitmasks you use in various system calls (they match). And that stuff
+>> works across vendors.
+> Please note that there are a lot of limitations even to cpuset.
+> Affinity is easy to implement and seems attractive in terms of
+> absolute isolation but it's inherently cumbersome and limited in
+> granularity and can lead to surprising failure modes where contention
+> on one cpu can't be resolved by the load balancer and leads to system
+> wide slowdowns / stalls caused by the dependency chain anchored at the
+> affinity limited tasks.
+>
+> Maybe this is a less of a problem for gpu workloads but in general the
+> more constraints are put on scheduling, the more likely is the system
+> to develop twisted dependency chains while other parts of the system
+> are sitting idle.
+>
+> How does scheduling currently work when there are competing gpu
+> workloads?  There gotta be some fairness provision whether that's unit
+> allocation based or time slicing, right?
+
+The scheduling of competing workloads on GPUs is handled in hardware and 
+firmware. The Linux kernel and driver are not really involved. We have 
+some knobs we can tweak in the driver (queue and pipe priorities, 
+resource reservations for certain types of workloads), but they are 
+pretty HW-specific and I wouldn't make any claims about fairness.
 
 Regards,
-Kenny
+   Felix
+
+>    If that's the case, it might
+> be best to implement proportional control on top of that.
+> Work-conserving mechanisms are the most versatile, easiest to use and
+> least likely to cause regressions.
+>
+> Thanks.
+>
