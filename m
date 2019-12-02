@@ -2,168 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 75D5110ED49
-	for <lists+cgroups@lfdr.de>; Mon,  2 Dec 2019 17:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0120310EFD0
+	for <lists+cgroups@lfdr.de>; Mon,  2 Dec 2019 20:11:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727533AbfLBQg4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Dec 2019 11:36:56 -0500
-Received: from relay.sw.ru ([185.231.240.75]:49556 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727420AbfLBQg4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 2 Dec 2019 11:36:56 -0500
-Received: from dhcp-172-16-25-5.sw.ru ([172.16.25.5])
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <aryabinin@virtuozzo.com>)
-        id 1ibogM-0004V9-06; Mon, 02 Dec 2019 19:36:18 +0300
-Subject: Re: [PATCH] mm: fix hanging shrinker management on long
- do_shrink_slab
-To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Konstantin Khorenko <khorenko@virtuozzo.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-nfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org
-References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
-From:   Andrey Ryabinin <aryabinin@virtuozzo.com>
-Message-ID: <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
-Date:   Mon, 2 Dec 2019 19:36:03 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1727586AbfLBTLF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Dec 2019 14:11:05 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:42473 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727556AbfLBTLE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Dec 2019 14:11:04 -0500
+Received: by mail-qt1-f195.google.com with SMTP id j5so865556qtq.9;
+        Mon, 02 Dec 2019 11:11:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=Cwz6dYY9z4DxZQ5/f+vTSU4IwIt72HsTGUbyi+vmDkI=;
+        b=eHpXuxnoiIv7Vq2GQyfaaWZbunEntyK6amEKPxAgDXh2F7i6pgY5JOrOxmRYBWA/bK
+         SLP1DHchXwPfowdj5JvhSMqHWJ7QFOLj7S2hSIL6q74qGRvBlMbVhdd4v4Zy4ytfu78z
+         UeCcDaZGD86MzV5eApmB6/1ivXULShR+kN92UZjAxReIvbkora7ad9nnH48Ft6hy1IGB
+         olUfx22vze29Uq/6Ds41WgDpod/ax0ksHshy1zaH+DEUGhmxJeAa06AQaEhB2fDCukYe
+         htwTeqMbepZamefzWks0AUPXeBloI9/BFb2Y472dRAJOIRWU41rsOUmWavuiJf9QETF5
+         H6eg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=Cwz6dYY9z4DxZQ5/f+vTSU4IwIt72HsTGUbyi+vmDkI=;
+        b=iNFpKIzq4nhD/jF6u8QGpkirLbcT23v+bRQjLgkSQlzrkQmUQ6rFrLFzaKmdJXUxcT
+         h30xXIwQ3UKoLgmcF3D0tXfCWM6Dz89cj/LdKo4oPEXPzqrePRsEnsldXm4ET0q4ovjW
+         4ipHMM1LCv4j8Tw8RTl/eaMZSYhVFv9m80DMc4/Jz4aeo98yS4/7+Wh5zJv1wXSYlNGc
+         S/MskOBQ5HyW6cFLyGOnVYO/X9ussVl4J+RUhsOt0npHo0MaDfZdBAnysY2rmiqkXbeb
+         fzJhHez7/O4WCtKuwKlZhrwSpQ/pssyvl7hEw/Czr0JbRnO7IEhxVwGEQHle3YXDen7A
+         U6sw==
+X-Gm-Message-State: APjAAAWvxfvzXg7KkiTxHRpT/BqiujHZMKYd/7s8ESAEXWZauLan4zBz
+        ejqXUU0pSz5aaAxxU+CWTxE=
+X-Google-Smtp-Source: APXvYqx8mht7nynmOddR27kQYNBnjL0lmPtURqUSmMWCZ7Pxu9OQ7QGVWDcztUiQd3M9LLP//0a/4w==
+X-Received: by 2002:ac8:745a:: with SMTP id h26mr992039qtr.192.1575313863412;
+        Mon, 02 Dec 2019 11:11:03 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::1:c909])
+        by smtp.gmail.com with ESMTPSA id s189sm269559qke.41.2019.12.02.11.11.02
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Dec 2019 11:11:02 -0800 (PST)
+Date:   Mon, 2 Dec 2019 11:11:00 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH] cgroup/pids: Make pids.events notifications affine
+ to pids.max
+Message-ID: <20191202191100.GF16681@devbig004.ftw2.facebook.com>
+References: <20191128172612.10259-1-mkoutny@suse.com>
 MIME-Version: 1.0
-In-Reply-To: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20191128172612.10259-1-mkoutny@suse.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
-On 11/30/19 12:45 AM, Pavel Tikhomirov wrote:
-> We have a problem that shrinker_rwsem can be held for a long time for
-> read in shrink_slab, at the same time any process which is trying to
-> manage shrinkers hangs.
+On Thu, Nov 28, 2019 at 06:26:12PM +0100, Michal Koutný wrote:
+> Currently, when pids.max limit is breached in the hierarchy, the event
+> is counted and reported in the cgroup where the forking task resides.
 > 
-> The shrinker_rwsem is taken in shrink_slab while traversing shrinker_list.
-> It tries to shrink something on nfs (hard) but nfs server is dead at
-> these moment already and rpc will never succeed. Generally any shrinker
-> can take significant time to do_shrink_slab, so it's a bad idea to hold
-> the list lock here.
+> The proper hierarchical behavior is to count and report the event in the
+> cgroup whose limit is being exceeded. Apply this behavior in the default
+> hierarchy.
 > 
-> We have a similar problem in shrink_slab_memcg, except that we are
-> traversing shrinker_map+shrinker_idr there.
+> Reasons for RFC:
 > 
-> The idea of the patch is to inc a refcount to the chosen shrinker so it
-> won't disappear and release shrinker_rwsem while we are in
-> do_shrink_slab, after that we will reacquire shrinker_rwsem, dec
-> the refcount and continue the traversal.
+> 1) If anyone has adjusted their readings to this behavior, this is a BC
+>    break.
 > 
-> We also need a wait_queue so that unregister_shrinker can wait for the
-> refcnt to become zero. Only after these we can safely remove the
-> shrinker from list and idr, and free the shrinker.
+> 2) This solves no reported bug, just a spotted inconsistency.
 > 
-> I've reproduced the nfs hang in do_shrink_slab with the patch applied on
-> ms kernel, all other mount/unmount pass fine without any hang.
-> 
-> Here is a reproduction on kernel without patch:
-> 
-> 1) Setup nfs on server node with some files in it (e.g. 200)
-> 
-> [server]# cat /etc/exports
-> /vz/nfs2 *(ro,no_root_squash,no_subtree_check,async)
-> 
-> 2) Hard mount it on client node
-> 
-> [client]# mount -ohard 10.94.3.40:/vz/nfs2 /mnt
-> 
-> 3) Open some (e.g. 200) files on the mount
-> 
-> [client]# for i in $(find /mnt/ -type f | head -n 200); \
->   do setsid sleep 1000 &>/dev/null <$i & done
-> 
-> 4) Kill all openers
-> 
-> [client]# killall sleep -9
-> 
-> 5) Put your network cable out on client node
-> 
-> 6) Drop caches on the client, it will hang on nfs while holding
->   shrinker_rwsem lock for read
-> 
-> [client]# echo 3 > /proc/sys/vm/drop_caches
-> 
->   crash> bt ...
->   PID: 18739  TASK: ...  CPU: 3   COMMAND: "bash"
->    #0 [...] __schedule at ...
->    #1 [...] schedule at ...
->    #2 [...] rpc_wait_bit_killable at ... [sunrpc]
->    #3 [...] __wait_on_bit at ...
->    #4 [...] out_of_line_wait_on_bit at ...
->    #5 [...] _nfs4_proc_delegreturn at ... [nfsv4]
->    #6 [...] nfs4_proc_delegreturn at ... [nfsv4]
->    #7 [...] nfs_do_return_delegation at ... [nfsv4]
->    #8 [...] nfs4_evict_inode at ... [nfsv4]
->    #9 [...] evict at ...
->   #10 [...] dispose_list at ...
->   #11 [...] prune_icache_sb at ...
->   #12 [...] super_cache_scan at ...
->   #13 [...] do_shrink_slab at ...
->   #14 [...] shrink_slab at ...
->   #15 [...] drop_slab_node at ...
->   #16 [...] drop_slab at ...
->   #17 [...] drop_caches_sysctl_handler at ...
->   #18 [...] proc_sys_call_handler at ...
->   #19 [...] vfs_write at ...
->   #20 [...] ksys_write at ...
->   #21 [...] do_syscall_64 at ...
->   #22 [...] entry_SYSCALL_64_after_hwframe at ...
-> 
-> 7) All other mount/umount activity now hangs with no luck to take
->   shrinker_rwsem for write.
-> 
-> [client]# mount -t tmpfs tmpfs /tmp
-> 
->   crash> bt ...
->   PID: 5464   TASK: ...  CPU: 3   COMMAND: "mount"
->    #0 [...] __schedule at ...
->    #1 [...] schedule at ...
->    #2 [...] rwsem_down_write_slowpath at ...
->    #3 [...] prealloc_shrinker at ...
->    #4 [...] alloc_super at ...
->    #5 [...] sget at ...
->    #6 [...] mount_nodev at ...
->    #7 [...] legacy_get_tree at ...
->    #8 [...] vfs_get_tree at ...
->    #9 [...] do_mount at ...
->   #10 [...] ksys_mount at ...
->   #11 [...] __x64_sys_mount at ...
->   #12 [...] do_syscall_64 at ...
->   #13 [...] entry_SYSCALL_64_after_hwframe at ...
-> 
- 
+> 3) One step further would be to distinguish pids.events and
+>    pids.events.local for proper hierarchical counting. (The current
+>    behavior wouldn't match neither though.)
 
-I don't think this patch solves the problem, it only fixes one minor symptom of it.
-The actual problem here the reclaim hang in the nfs.
-It means that any process, including kswapd, may go into nfs inode reclaim and stuck there.
+Yeah this is incosistent with memcg but there max / high events are
+essentially useless because that doesn't indicate actual limit breach.
+Both events are interesting - which cgroup's limit was reached and who
+suffered because of that.
 
-Even mount() itself has GFP_KERNEL allocations in its path, so it still might stuck there even with your patch.
+So, maybe sth like the following?
 
-I think this should be handled on nfs/vfs level by making  inode eviction during reclaim more asynchronous.
+1. Make max event propagate hierarchically.  This is a behavior change
+   but also an obvious bug fix.  Given that internal cgroups don't
+   have processes in cgroup2, maybe it's safe enough?
+
+2. Add another (hierarchical, of course) event which counts the number
+   of fork rejects.  I can't think of a good name.  Any ideas?
+
+Thanks.
+
+-- 
+tejun
