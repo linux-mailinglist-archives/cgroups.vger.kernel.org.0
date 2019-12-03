@@ -2,82 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 440AA110584
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 20:52:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 837D41105B5
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 21:09:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726640AbfLCTwj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Dec 2019 14:52:39 -0500
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:50500 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726564AbfLCTwj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Dec 2019 14:52:39 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1575402758;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=XWYPRN+TzChldxqtpzTWCuALs03Cz0VNhtiJFHJ1TaE=;
-        b=K0NhsZjzcHlSK60LhkGBxsKvM4qr86OxMoJXG08VMD7GosFC4/VmcqGAaL24rWnfc4LIAu
-        dTOnxMtuLG9mBJLNP11I7EUEv6gKgM8m3y3uHrjVP9f8Tqumzb0BEkZjHffcQzVnDaL684
-        Ac2reQSy+NJJlIG95NKYEi14sS+ZRdA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-QmD-GqlENV6FTYwCy0hAkQ-1; Tue, 03 Dec 2019 14:52:34 -0500
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 71936800D41;
-        Tue,  3 Dec 2019 19:52:32 +0000 (UTC)
-Received: from localhost (ovpn-116-76.ams2.redhat.com [10.36.116.76])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F123F1D1;
-        Tue,  3 Dec 2019 19:52:31 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, mike.kravetz@oracle.com, tj@kernel.org,
-        lizefan@huawei.com, hannes@cmpxchg.org, almasrymina@google.com
+        id S1726549AbfLCUJw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Dec 2019 15:09:52 -0500
+Received: from mail-qv1-f66.google.com ([209.85.219.66]:43617 "EHLO
+        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726079AbfLCUJw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Dec 2019 15:09:52 -0500
+Received: by mail-qv1-f66.google.com with SMTP id p2so2095693qvo.10
+        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2019 12:09:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=8j5eaTbArjU+gt/UFtQsGIvW7rflsGybMnC0YTzcNT0=;
+        b=suNwMn3Y2gXVzpQ5Ip6UH7UmtwKaEHQM3JEssF8a2/qJNMy+Y3KOkDr31LTRJKOKF6
+         FmRrud+5h+JL0GTQukwkBA/2MHM3YXSP8rGoAAq9gj1+kX7OGBlit8Q7uaFFJJcG4Ubq
+         f+feuvLIiqDxVOYBDNYXcGmkANdVjFfZP2CD8fOpmD3pgEkAyjOB3hlTHEheOOBpmMy7
+         xPbmXR2k90U4Q/FDO2c5vJH+hnkHyqvl09RQMnXKs3ehSu51Jn5QyXFJ1LVFjqXzzR74
+         0CPWJ7BbddTVBhrUUSyXlH+2wOZtiy+jh43wmodpq+9zrz5uHZzI4AFQb36y6IDjkkL2
+         le1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=8j5eaTbArjU+gt/UFtQsGIvW7rflsGybMnC0YTzcNT0=;
+        b=pJIwj540EKXODzKnnJ5IYDGiaWb8BEqkurMi851MAnvamWVwkAM6pzJJY0r+Trh0S7
+         85C5wLOUMBY64s5XzPixu/PFm340nh6rRy6a/PVMnziQY0IDX7GG5TKqvtoQYUHRAJjH
+         CcxddA+8HE1ykGDEYf8Cyi79vYbkzxZNdHkEDBKBRFlkvE2owK9s8w+uPE+P7nHiN2tI
+         ObTLf0M636TECRqxr50oUZ3i5XG1tK7zejSHfHhyjrFUttgmkzAwznTCwjnbIoCO64bD
+         ciZHuLHykrwpYtlt4YCvPWBcnv2eLJw86AMLmDR3K7+RnfnIBuqIjj44aumzEeDA6lOH
+         q2qQ==
+X-Gm-Message-State: APjAAAVK0q1zbeXLJKlcDkuiuHl2+QWvgrn+g+4Re41/4r50/ICjQadi
+        XJDoGZkpT7QeV2CKu8qFR8C4Pw==
+X-Google-Smtp-Source: APXvYqzOxsL7Hjtn21Q+m787V9Gv8BM/WLP3V8fGhMA3plOM9Nea9qSTrseec71+IsZp8t3OwsxFiQ==
+X-Received: by 2002:a0c:ec08:: with SMTP id y8mr7175041qvo.13.1575403791387;
+        Tue, 03 Dec 2019 12:09:51 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::3:cbfe])
+        by smtp.gmail.com with ESMTPSA id d25sm2342905qtm.67.2019.12.03.12.09.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Dec 2019 12:09:50 -0800 (PST)
+Date:   Tue, 3 Dec 2019 15:09:49 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        cgroups@vger.kernel.org, tj@kernel.org, lizefan@huawei.com,
+        almasrymina@google.com
 Subject: Re: [PATCH v3] mm: hugetlb controller for cgroups v2
+Message-ID: <20191203200949.GA1619@cmpxchg.org>
 References: <20191127124446.1542764-1-gscrivan@redhat.com>
-        <20191203144602.GB20677@blackbody.suse.cz>
-Date:   Tue, 03 Dec 2019 20:52:30 +0100
-In-Reply-To: <20191203144602.GB20677@blackbody.suse.cz> ("Michal
- =?utf-8?Q?Koutn=C3=BD=22's?=
-        message of "Tue, 3 Dec 2019 15:46:02 +0100")
-Message-ID: <87lfrti3up.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.2 (gnu/linux)
+ <20191203144602.GB20677@blackbody.suse.cz>
+ <59c7e7a2-e8bb-c7b8-d7ec-1996ef350482@oracle.com>
+ <87pnh5i3zn.fsf@redhat.com>
 MIME-Version: 1.0
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
-X-MC-Unique: QmD-GqlENV6FTYwCy0hAkQ-1
-X-Mimecast-Spam-Score: 0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87pnh5i3zn.fsf@redhat.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Koutn=C3=BD <mkoutny@suse.com> writes:
+On Tue, Dec 03, 2019 at 08:49:32PM +0100, Giuseppe Scrivano wrote:
+> Mike Kravetz <mike.kravetz@oracle.com> writes:
+> 
+> > On 12/3/19 6:46 AM, Michal Koutný wrote:
+> >> Hello.
+> >> 
+> >> On Wed, Nov 27, 2019 at 01:44:46PM +0100, Giuseppe Scrivano <gscrivan@redhat.com> wrote:
+> >>> - hugetlb.<hugepagesize>.current
+> >>> - hugetlb.<hugepagesize>.max
+> >>> - hugetlb.<hugepagesize>.events
+> >> Just out of curiosity (perhaps addressed to Mike), does this naming
+> >> account for the potential future split between reservations and
+> >> allocations charges?
+> >
+> > Mina has been working/pushing the effort to add reservations to cgroup
+> > accounting and would be the one to ask.  However, it does seem that the
+> > names here should be created in anticipation of adding reservations in
+> > the future.  So, perhaps something like:
+> >
+> > hugetlb_usage.<hugepagesize>.current
+> >
+> > with the new functionality having names like
+> >
+> > hugetlb_reserves.<hugepagesize>.current
+> 
+> that seems to be very different than other cgroup v2 file names.
 
-> 1) Is that on purpose that the events_file (and hence notifications) are
-> shared across various huge page sizes?
->
-> 2) Note that page_counter_try_charge checks hierarchically all counters
-> (not just the current h_cg's) and the limit may also be hit in an
-> ancestor (the third argument). I.e. the notification should be triggered
-> in the cgroup that actually crossed the limit.
->
-> Furthermore, the hierarchical and local events. I suggest looking at
-> memcg_memory_event for comparison.
->
-> If I take one step back. Is there a consumer for these events? I can see
-> the reasoning is the analogy with memcg's limits and events [1] but
-> wouldn't be a mere .stats file enough?
+Yes, let's not add two separate controller names.
 
-just an error on my side.  Thanks for the hint, I'll take a look at the
-existing controller.  If everyone agrees I'll split events in two files:
+> Should it be something like?
+> 
+> hugetlb.<hugepagesize>.current_usage
+> hugetlb.<hugepagesize>.current_reserves
 
-- hugetlb.<SIZE>.events
-- hugetlb.<SIZE>.events.local
+Why not
 
-Giuseppe
+hugetlb.<hugepagesize>.current to indicate memory actively in use by
+allocations and
 
+hugetlb.<hugepagesize>.reserve to indicate explicit reserves by the
+hugetlb subsystem?
