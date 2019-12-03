@@ -2,100 +2,198 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D12A10EFE3
-	for <lists+cgroups@lfdr.de>; Mon,  2 Dec 2019 20:14:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6C110F3D7
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 01:14:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727973AbfLBTOk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Dec 2019 14:14:40 -0500
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:46031 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727967AbfLBTOk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Dec 2019 14:14:40 -0500
-Received: by mail-qv1-f68.google.com with SMTP id c2so299903qvp.12
-        for <cgroups@vger.kernel.org>; Mon, 02 Dec 2019 11:14:40 -0800 (PST)
+        id S1725954AbfLCAOK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Dec 2019 19:14:10 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:46149 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725957AbfLCAOJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Dec 2019 19:14:09 -0500
+Received: by mail-oi1-f194.google.com with SMTP id a124so1519848oii.13
+        for <cgroups@vger.kernel.org>; Mon, 02 Dec 2019 16:14:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=QIwY2zPo3ipb4HjrxhdMR+nMxJM+BtZphU9RF6iDWeU=;
-        b=TvFns/ZrhMMvvKw4xSqFeBbOm3xLJ3LdC6WG77/3x7nQJkVazjKafuDUdNO3tPdkaO
-         IQvLpcGQEQTu78eLkQoY8CGRR6caHMUmy6qEsLPEft/bCWZDOq9N+YJI38GxygJ2cYvV
-         RxQqhCUY1Y+DRbLvhZeC6pM2z1GPCGD2QTHqbV5o6E/59krKxPT9+j58A4d0jQXUB/f8
-         WmSZ12On6OUXjzH9ukX0PHCRsSWWwO7wG54OlDFXhSr8ICv5ELG0PN+lzC//7iGoRFOU
-         CVsyBKPlob68Fwwo3yeQoEawwG+GB4rSmQu9N611J3VlVvJD8BH+HR3XMgro8itIVVrR
-         aKbQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=jU8zQM7dQsl7j+C2HShiZHxrCqA16lgqBbZmIQjuFsE=;
+        b=UdtIHWXsgA1cgpVIddyD/Sekot8kmzIvm9AkSrHSOZneyL3PfXwLCGrfd2C7oZrezJ
+         e8qaDNGxII/RljQThXGhEK53xQlKGoHxvaU6wwSyag3/jkfaemJH/tfN/uNdLN94XfOL
+         aVFVvIau+de3pcuRbNR7xT4Zu8AUADkU1oGkw1GizVGGrbAZB7rMydqYyNTn5c5au9iu
+         YF28TyNBvvlTW+2V6dmrnMmGITVDsNi6ylMGS8G0Ym7Rx20w4FJf7W18LzPkd4ix1ubm
+         lTY6XBoQjMu5H2nB1yRLjVmVwFFJbQN437b5r37RMCynvnUwjOF/bmGTunHUMdy83uvP
+         3eeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=QIwY2zPo3ipb4HjrxhdMR+nMxJM+BtZphU9RF6iDWeU=;
-        b=YTSUC1a1jn0oG3M7pmcNxgWpBZVYFMOVkr3DJ+bs3QDjzIficIw3rmOFYBDvuPCXvn
-         MHJc2a6H8kSgGmFLrgwzFzTtMfgtmz4fcrGpPhZBpDQont02/lJEgNVukz7qC2X3IGFN
-         SGmBLeoG7mZhv1jgaBD80sv7w8bLgVuocapb+7Khk4taIaaBSlfndI6sX1S6Cz9GFxMD
-         z7r0n0Z8l0saIU0g9g2Gf80KHriJpTaQ1F728ChZr1Hok5cJWWvqInYayBMrkUZfUDXy
-         h2iugzjChrnWTVXF20K7Iij85e2Py+JkbTG/jec6SB0FiaO2TFsYkha6d/mkrSQbNIie
-         jIpA==
-X-Gm-Message-State: APjAAAX42wNTw+3uAqABoXeYSHxz0MjmLQH2ZMkdD63DFiEE/aL3hoL+
-        BydghWGZnIfjnHkxfF9s9o0=
-X-Google-Smtp-Source: APXvYqxlV4KPPBpwnmKUj99p+IArO+a+uhEWMvRZMhQZytthgNgfB57f9MGSo2YD2rbVnoE4GYregw==
-X-Received: by 2002:a05:6214:1709:: with SMTP id db9mr711187qvb.68.1575314079340;
-        Mon, 02 Dec 2019 11:14:39 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::1:c909])
-        by smtp.gmail.com with ESMTPSA id i17sm231520qtm.53.2019.12.02.11.14.38
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 02 Dec 2019 11:14:38 -0800 (PST)
-Date:   Mon, 2 Dec 2019 11:14:36 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Kenny Ho <Kenny.Ho@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com, Daniel Vetter <daniel@ffwll.ch>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH RFC v4 02/16] cgroup: Introduce cgroup for drm subsystem
-Message-ID: <20191202191436.GG16681@devbig004.ftw2.facebook.com>
-References: <20190829060533.32315-1-Kenny.Ho@amd.com>
- <20190829060533.32315-3-Kenny.Ho@amd.com>
- <20191001143106.GA4749@blackbody.suse.cz>
- <CAOWid-ewvs-c-z_WW+Cx=Jaf0p8ZAwkWCkq2E8Xkj+2HvfNjaA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=jU8zQM7dQsl7j+C2HShiZHxrCqA16lgqBbZmIQjuFsE=;
+        b=KwN+oW5AY+ycquag4qD4s43w/ZUvV0AKZNY3qh5CfYnhVG8j+jnLksYrSdD0OkeQJT
+         SvuICjvwKHOI8sYbTbkFETTiLbadTyuTG/V8pj8z8llNbY0xvyR3gJynvJHoGlOB4etQ
+         myAqzL8BY95Cv9NmWSFgIrBS1uoGGwNiqIJ7SOV9H85lyNejKP46qBqyJFaD9zqkfER/
+         YJT+cblBTiJlTne9fjzrfsaCMeug12AgTtLOOq3EWijT8QWFXXCyRIufcYoX0lEUz+HI
+         shr/ixyOsYAXkqZJ6fiQmfiO5ifRl4mZdLqincJFxfFyyMVncVDuvNnbbs5mwOJoFCwY
+         6V8A==
+X-Gm-Message-State: APjAAAWszhEATCHXub19KHOEjIPkBGAAeYfV3CUnBgKWi+KcRadVMcG4
+        YQJ3HC4qgHns/UKvFvAldJXnAxH7RqYnakaNXpctB9HqcNo=
+X-Google-Smtp-Source: APXvYqxHMoMNJtSea2KbnT6kI5KkGt3Sur+DvCkMAz+DyiTipaX++WIG/yH7EvjF/HQkpI5hCJ3YCuHSS9BQklKkN6Y=
+X-Received: by 2002:aca:670b:: with SMTP id z11mr1401696oix.79.1575332047908;
+ Mon, 02 Dec 2019 16:14:07 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOWid-ewvs-c-z_WW+Cx=Jaf0p8ZAwkWCkq2E8Xkj+2HvfNjaA@mail.gmail.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com> <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
+In-Reply-To: <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 2 Dec 2019 16:13:56 -0800
+Message-ID: <CALvZod7rhaOBUNR=Pt5a1vAEPimrwN=41dmDD9dekCGztAe=NQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: fix hanging shrinker management on long do_shrink_slab
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Nov 29, 2019 at 01:00:36AM -0500, Kenny Ho wrote:
-> On Tue, Oct 1, 2019 at 10:31 AM Michal Koutný <mkoutny@suse.com> wrote:
-> > On Thu, Aug 29, 2019 at 02:05:19AM -0400, Kenny Ho <Kenny.Ho@amd.com> wrote:
-> > > +struct cgroup_subsys drm_cgrp_subsys = {
-> > > +     .css_alloc      = drmcg_css_alloc,
-> > > +     .css_free       = drmcg_css_free,
-> > > +     .early_init     = false,
-> > > +     .legacy_cftypes = files,
-> > Do you really want to expose the DRM controller on v1 hierarchies (where
-> > threads of one process can be in different cgroups, or children cgroups
-> > compete with their parents)?
-> 
-> (Sorry for the delay, I have been distracted by something else.)
-> Yes, I am hoping to make the functionality as widely available as
-> possible since the ecosystem is still transitioning to v2.  Do you see
-> inherent problem with this approach?
+On Mon, Dec 2, 2019 at 8:37 AM Andrey Ryabinin <aryabinin@virtuozzo.com> wrote:
+>
+>
+> On 11/30/19 12:45 AM, Pavel Tikhomirov wrote:
+> > We have a problem that shrinker_rwsem can be held for a long time for
+> > read in shrink_slab, at the same time any process which is trying to
+> > manage shrinkers hangs.
+> >
+> > The shrinker_rwsem is taken in shrink_slab while traversing shrinker_list.
+> > It tries to shrink something on nfs (hard) but nfs server is dead at
+> > these moment already and rpc will never succeed. Generally any shrinker
+> > can take significant time to do_shrink_slab, so it's a bad idea to hold
+> > the list lock here.
+> >
+> > We have a similar problem in shrink_slab_memcg, except that we are
+> > traversing shrinker_map+shrinker_idr there.
+> >
+> > The idea of the patch is to inc a refcount to the chosen shrinker so it
+> > won't disappear and release shrinker_rwsem while we are in
+> > do_shrink_slab, after that we will reacquire shrinker_rwsem, dec
+> > the refcount and continue the traversal.
+> >
+> > We also need a wait_queue so that unregister_shrinker can wait for the
+> > refcnt to become zero. Only after these we can safely remove the
+> > shrinker from list and idr, and free the shrinker.
+> >
+> > I've reproduced the nfs hang in do_shrink_slab with the patch applied on
+> > ms kernel, all other mount/unmount pass fine without any hang.
+> >
+> > Here is a reproduction on kernel without patch:
+> >
+> > 1) Setup nfs on server node with some files in it (e.g. 200)
+> >
+> > [server]# cat /etc/exports
+> > /vz/nfs2 *(ro,no_root_squash,no_subtree_check,async)
+> >
+> > 2) Hard mount it on client node
+> >
+> > [client]# mount -ohard 10.94.3.40:/vz/nfs2 /mnt
+> >
+> > 3) Open some (e.g. 200) files on the mount
+> >
+> > [client]# for i in $(find /mnt/ -type f | head -n 200); \
+> >   do setsid sleep 1000 &>/dev/null <$i & done
+> >
+> > 4) Kill all openers
+> >
+> > [client]# killall sleep -9
+> >
+> > 5) Put your network cable out on client node
+> >
+> > 6) Drop caches on the client, it will hang on nfs while holding
+> >   shrinker_rwsem lock for read
+> >
+> > [client]# echo 3 > /proc/sys/vm/drop_caches
+> >
+> >   crash> bt ...
+> >   PID: 18739  TASK: ...  CPU: 3   COMMAND: "bash"
+> >    #0 [...] __schedule at ...
+> >    #1 [...] schedule at ...
+> >    #2 [...] rpc_wait_bit_killable at ... [sunrpc]
+> >    #3 [...] __wait_on_bit at ...
+> >    #4 [...] out_of_line_wait_on_bit at ...
+> >    #5 [...] _nfs4_proc_delegreturn at ... [nfsv4]
+> >    #6 [...] nfs4_proc_delegreturn at ... [nfsv4]
+> >    #7 [...] nfs_do_return_delegation at ... [nfsv4]
+> >    #8 [...] nfs4_evict_inode at ... [nfsv4]
+> >    #9 [...] evict at ...
+> >   #10 [...] dispose_list at ...
+> >   #11 [...] prune_icache_sb at ...
+> >   #12 [...] super_cache_scan at ...
+> >   #13 [...] do_shrink_slab at ...
+> >   #14 [...] shrink_slab at ...
+> >   #15 [...] drop_slab_node at ...
+> >   #16 [...] drop_slab at ...
+> >   #17 [...] drop_caches_sysctl_handler at ...
+> >   #18 [...] proc_sys_call_handler at ...
+> >   #19 [...] vfs_write at ...
+> >   #20 [...] ksys_write at ...
+> >   #21 [...] do_syscall_64 at ...
+> >   #22 [...] entry_SYSCALL_64_after_hwframe at ...
+> >
+> > 7) All other mount/umount activity now hangs with no luck to take
+> >   shrinker_rwsem for write.
+> >
+> > [client]# mount -t tmpfs tmpfs /tmp
+> >
+> >   crash> bt ...
+> >   PID: 5464   TASK: ...  CPU: 3   COMMAND: "mount"
+> >    #0 [...] __schedule at ...
+> >    #1 [...] schedule at ...
+> >    #2 [...] rwsem_down_write_slowpath at ...
+> >    #3 [...] prealloc_shrinker at ...
+> >    #4 [...] alloc_super at ...
+> >    #5 [...] sget at ...
+> >    #6 [...] mount_nodev at ...
+> >    #7 [...] legacy_get_tree at ...
+> >    #8 [...] vfs_get_tree at ...
+> >    #9 [...] do_mount at ...
+> >   #10 [...] ksys_mount at ...
+> >   #11 [...] __x64_sys_mount at ...
+> >   #12 [...] do_syscall_64 at ...
+> >   #13 [...] entry_SYSCALL_64_after_hwframe at ...
+> >
+>
+>
+> I don't think this patch solves the problem, it only fixes one minor symptom of it.
+> The actual problem here the reclaim hang in the nfs.
+> It means that any process, including kswapd, may go into nfs inode reclaim and stuck there.
+>
+> Even mount() itself has GFP_KERNEL allocations in its path, so it still might stuck there even with your patch.
+>
+> I think this should be handled on nfs/vfs level by making  inode eviction during reclaim more asynchronous.
 
-Integrating with memcg could be more challenging on cgroup1.  That's
-one of the reasons why e.g. cgroup-aware pagecache writeback is only
-on cgroup2.
+Though I agree that we should be fixing shrinkers to not get stuck
+(and be more async), I still think the problem this patch is solving
+is worth fixing. On machines running multiple workloads, one job stuck
+in slab shrinker and blocking all other unrelated jobs wanting
+shrinker_rwsem, breaks the isolation and causes DoS.
 
--- 
-tejun
+Shakeel
