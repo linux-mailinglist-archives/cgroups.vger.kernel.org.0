@@ -2,91 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2E110FD75
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 13:15:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 739ED11008C
+	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 15:46:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725997AbfLCMP6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Dec 2019 07:15:58 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:54909 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725907AbfLCMP6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Dec 2019 07:15:58 -0500
-Received: by mail-wm1-f65.google.com with SMTP id b11so2691979wmj.4
-        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2019 04:15:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=okI+WKXZnivApTS1Oqi6dD5Ms0rFCprYxF1H61WduWk=;
-        b=uRwSJFp8F2Xs4ZmfGBW3rHRhkNGbAsUoV8+YXAud+M1W2MCkibBAzeb1TVLrXBAVD9
-         meS7B7DVlntAV9cvoY6AvuRFREiZpKnTwsWAcg4UDU9SXptqAI4OcFhqNSsxLcfYSL2B
-         t6I9uPCRhChi/inT3cUQzVwxug7eBJopstpC8gfj95gJldEdB8dFI6N85GrTOzT/mBXL
-         loUHuO5Vi52Fu9edp6s5Yg67lXAvoWjAfiDU652a7WqZC27qB6G/BoxBAxlm7O08NsLE
-         b7DazQXbgCRx866vltVMH4uvsYESvkfMK76UFc7DNDtJIoefYXJvUM7h2wPXyN/ZdLYW
-         5nBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=okI+WKXZnivApTS1Oqi6dD5Ms0rFCprYxF1H61WduWk=;
-        b=jY76m+FinVFINh4ZYzY6QDkW3+H7JVptVIjpsaS+wlM2+IxoErEzNZZwmlbQIV9rHC
-         KfIwZuDQ5R8UyL+2LEm0pdApO2YX2qjvocTiXoMg7M0L7RaULfqZeYovji9uCKcnyyV7
-         q+cBoqv+MU/gWoXaikeP24N1cUeMPm/QyQjzz2Q89nZr2XcRTTO5g7i5MmF7WHR6g09y
-         ODhNf1nlr32Iz1BFUTwKpoxHZP6TNzB6Nlbm9jI/WEv4gyRBe70mYso3/q5D+iYIOz50
-         Hd0q+Jy2p2XAT0aCzQ28ySoeveX+MuxOupJxPp/tP5GUt7oYkeQApWvHwL1ln9PM1zgr
-         EeKA==
-X-Gm-Message-State: APjAAAWJvX9W52IEnf+8p+FcNTTjlwAFBOHZm2SHWW8Js2GMA1BJyjLl
-        v/p+dHQ4i6MGgL5/o49WruJA93t37SFF0H2DKE8=
-X-Google-Smtp-Source: APXvYqx6pH7fHWbn1nEDFVPkn/8XzuBqMczlLfJ1d45Ub2+qZEvllM14QsAQn0n1XcL7vSze92haULuuPHEwSwi9OpQ=
-X-Received: by 2002:a1c:7910:: with SMTP id l16mr14378980wme.27.1575375356054;
- Tue, 03 Dec 2019 04:15:56 -0800 (PST)
+        id S1726057AbfLCOqH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Dec 2019 09:46:07 -0500
+Received: from mx2.suse.de ([195.135.220.15]:41932 "EHLO mx1.suse.de"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1725848AbfLCOqH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 3 Dec 2019 09:46:07 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx1.suse.de (Postfix) with ESMTP id 7067BB3E5;
+        Tue,  3 Dec 2019 14:46:05 +0000 (UTC)
+Date:   Tue, 3 Dec 2019 15:46:02 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     cgroups@vger.kernel.org, mike.kravetz@oracle.com, tj@kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, almasrymina@google.com
+Subject: Re: [PATCH v3] mm: hugetlb controller for cgroups v2
+Message-ID: <20191203144602.GB20677@blackbody.suse.cz>
+References: <20191127124446.1542764-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-Received: by 2002:a5d:678b:0:0:0:0:0 with HTTP; Tue, 3 Dec 2019 04:15:55 -0800 (PST)
-Reply-To: eddywilliam0002@gmail.com
-From:   eddy william <edohkossibrice@gmail.com>
-Date:   Tue, 3 Dec 2019 13:15:55 +0100
-Message-ID: <CAPn8y9+GA4A5LCXEtM+tYDCb4oiwn3V6kwz_4bxcFhQVcgzdKQ@mail.gmail.com>
-Subject: hello
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="5I6of5zJg18YgZEa"
+Content-Disposition: inline
+In-Reply-To: <20191127124446.1542764-1-gscrivan@redhat.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hallo
 
-Mein Name ist Eddy William. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
-Ihnen anbieten
-die n=C3=A4chsten Verwandten zu meinem Klienten. Sie erben die Summe von
-($8,5 Millionen US-Dollar)
-Dollar, die mein Kunde vor seinem Tod in der Bank gelassen hat.
+--5I6of5zJg18YgZEa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Mein Mandant ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau
-bei einem Autounfall ums Leben gekommen ist
-und nur Sohn. Ich werde mit 50% des Gesamtfonds berechtigt sein, w=C3=A4hre=
-nd 50%
-sein f=C3=BCr dich.
-Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
-Informationen: eddywilliam0002gmail.com
+Hello.
 
-Vielen Dank im Voraus,
-Mr. Eddy William,
+On Wed, Nov 27, 2019 at 01:44:46PM +0100, Giuseppe Scrivano <gscrivan@redhat.com> wrote:
+> - hugetlb.<hugepagesize>.current
+> - hugetlb.<hugepagesize>.max
+> - hugetlb.<hugepagesize>.events
+Just out of curiosity (perhaps addressed to Mike), does this naming
+account for the potential future split between reservations and
+allocations charges?
 
 
+> --- a/mm/hugetlb_cgroup.c
+> +++ b/mm/hugetlb_cgroup.c
+> [...]
+> -	if (!page_counter_try_charge(&h_cg->hugepage[idx], nr_pages, &counter))
+> +	if (!page_counter_try_charge(&h_cg->hugepage[idx], nr_pages,
+> +				     &counter)) {
+>  		ret = -ENOMEM;
+> +		cgroup_file_notify(&h_cg->events_file);
+> +	}
+Two notes to this:
 
-Hello
+1) Is that on purpose that the events_file (and hence notifications) are
+shared across various huge page sizes?
 
-My name is Eddy William I am a lawyer by profession. I wish to offer you
-the next of kin to my client. You will inherit the sum of ($8.5 Million)
-dollars my client left in the bank before his death.
+2) Note that page_counter_try_charge checks hierarchically all counters
+(not just the current h_cg's) and the limit may also be hit in an
+ancestor (the third argument). I.e. the notification should be triggered
+in the cgroup that actually crossed the limit.
 
-My client is a citizen of your country who died in auto crash with his wife
-and only son. I will be entitled with 50% of the total fund while 50% will
-be for you.
-Please contact my private email here for more details:eddywilliam0002gmail.=
-com
+Furthermore, the hierarchical and local events. I suggest looking at
+memcg_memory_event for comparison.
 
-Many thanks in advance,
-Mr.Eddy William,
+If I take one step back. Is there a consumer for these events? I can see
+the reasoning is the analogy with memcg's limits and events [1] but
+wouldn't be a mere .stats file enough?
+
+
+Michal
+
+--5I6of5zJg18YgZEa
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl3mdSUACgkQia1+riC5
+qSi4FQ/6AmVXKsiXrPTZi6eddz5knKiEFqvat7K7GDIWWdrMURm4f2VOLDR97pZy
+7QX7yxlMNwNYEZg9kr+YWsinLS3vu+uFUNrlDe5qQKeOLD7Cas+xpPljmpTCb1CG
+NGMS4ZvadRs/crx25rRBpr5jeuCgQ1E3Wz9rI02vjSlKigQBNWj08dwqzl+jIbXy
+TR+jj8FYVOllU68ysdETRPDzLg7Hk4WOsEk8hxcH3yyl4kiZ6+d6bNSvUAYi7Dbb
+3ijzQ3wXGYjT1pSvq5j9Gcv1JkBP06y/oxuVyog1shRyR6I5YPOQtEjasFPvlt22
+TfFtpXtqOjlkeQP1Hx7jJ2Yr20KOAJTstitsN7QvOQFG+FSO4037B6mBfvRYHfTu
+3ju1PP+ZiOBaC9j1u/I+mB93sydbihzB7ifP1J8N+0KU1HV8sa9LJukBb9Ul8NY5
+9mGpj3ppnJZpaMO3RqShOO8G98Nu/lhUy/z9RcA/AXW0lMGHWoYKW4LsSFHB0ZkP
+GhmjKiGrzX0H0h145FcHOZAuc5XOYQv1bvNZx6+8bF6GuYXrhKHiffbZZyU6qtp8
+K1oQWFwod7kmN5h1LyZ06zafCe3kklwoohS7JzoLn/d0fV4egp8N0EntytNzjYxt
+DbHKGhxuvb1Sd+YiisVS2xAu0NQynqYF9QCtcGSSwbtqKG9452Y=
+=lIVH
+-----END PGP SIGNATURE-----
+
+--5I6of5zJg18YgZEa--
