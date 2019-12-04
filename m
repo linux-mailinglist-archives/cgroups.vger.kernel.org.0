@@ -2,104 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B10311060F
-	for <lists+cgroups@lfdr.de>; Tue,  3 Dec 2019 21:39:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF74A112541
+	for <lists+cgroups@lfdr.de>; Wed,  4 Dec 2019 09:35:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727118AbfLCUjt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Dec 2019 15:39:49 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45099 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726990AbfLCUjs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Dec 2019 15:39:48 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 59so4176926otp.12
-        for <cgroups@vger.kernel.org>; Tue, 03 Dec 2019 12:39:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=TGmijfS6iSqM9KNxZcHiJyNkLTmThtV5XCWkRCQWVYs=;
-        b=f5o1+0L0Sf9SKSSXRpltKFpUmDY9v9d4OPBGeUL1tcWG+ntceFhAKBbGAS+Ka1VsCj
-         rNeGx8TbAC9xCPqZg2UuaDrSkWW6eUN/hR+Rl24bkP76jRN8y654xHICahZ3HYWRLXWP
-         oQTybo7NQhmDI+GONXRHzF3oHXVJssbIiNDyy9vPrMHgsy8Ifwn2KGt0vUggugFH7Cs1
-         3wMIOdAaNA3X98P7iq4G8y7vlNtpyz4buqs2Pg9vH/0fRoSBl+ILozwVGi/kJ3QpyFpD
-         kB7AaiO+kPYH5TwQbgAYdRntoQHic6wBwu4phx/nJ5eOyFap0uCo3aTAC294Ig/Epxtl
-         9VtQ==
+        id S1727009AbfLDIfT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Dec 2019 03:35:19 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43511 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbfLDIfS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Dec 2019 03:35:18 -0500
+Received: by mail-wr1-f65.google.com with SMTP id d16so2804122wre.10;
+        Wed, 04 Dec 2019 00:35:16 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=TGmijfS6iSqM9KNxZcHiJyNkLTmThtV5XCWkRCQWVYs=;
-        b=tEoLd2CeBcdlpbhx550kEbld6wqtxiYfFEvCvGFCv+SZpaTQ0/FkIlkodzavNdhRIa
-         gvFZ73RNCVwZFEBUZPNEGm1m2ohkOFYws4sUhUNCgyHhMI8AsBsuJzcdmGWkAXWo25gg
-         Ych3KqFbjpxD3kVxlQIgVjZmuHnShRjPVuyF/96ei3fVR/f9CGb5eBTNSb6SqrYxZ3xp
-         J3c6tzGKXpWwIUXIGKsnotoDCCMddjAB3FVkaWM3keBORbbRpUheQyNak1YJTRAp6IWn
-         CEVh2lP+/zoHfyOGEMl+nSLoVseVIysfNPmtrqN455bDOVnZ2YaVPyuF8xbJhw8EUq1Y
-         wrFA==
-X-Gm-Message-State: APjAAAXk//NqpFEI4PXvqyN0WyJaipmF8phibXQwnN+prE1seu8ZpFV/
-        meTBfD2tA0E2OwIIJLRvA6YdQLTRZbRrE9UussESyw==
-X-Google-Smtp-Source: APXvYqxRQ1EMVWDoiegNksxCbye5qpsxZFjdFdiVzEUPYQ0cFOskn77EmlKD4CK80tz8VoFKDnYVNyTRN1RSUatqEnQ=
-X-Received: by 2002:a9d:6649:: with SMTP id q9mr4620266otm.313.1575405587532;
- Tue, 03 Dec 2019 12:39:47 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=qV8BnIZcKdGe8g/B3hjF/qhzHGhiwqhh1CS3JHi7+oY=;
+        b=dJ+iOk0nrjo08ouSvTi9Phu9bYVfP8B8lGOK/FxWccFa2S09GSt6sHQiSJDY6in7o5
+         NToXPggo/i+sF+YzJiwmccXWyU+Nwx9BjbqbIt0WMJtYpj9FMaSf2LWoiCJ7bBKk+s+1
+         l3uNBaMfXJ4dRGOuTYXJv/10g0JbwUAtA+DJFdWRDi3J/OAW7STpDI3BYwRDopvI3TFD
+         utOyn4i/biUJEO6L3RcgQFatG/yOPY9NZ8Tf/m4jo4V5OJCPPyEiq0QqAi1YFjn2xjf9
+         t53xVNVBrBnXNoGaay+S2E9Zw47aeJKCia6EA1t4MVsOZipgiEeDhpUosN8Y25K2232K
+         y4zg==
+X-Gm-Message-State: APjAAAUIrOt11L1Fbxzp80aAYKzvADJKdr4um+qZ3F2u1bphyq4cgagH
+        gvUcxW5vYkJrnhSnxDv7ZHE=
+X-Google-Smtp-Source: APXvYqzFdwhcGWtledJWcOOqneG+EdFvBn9gWujUMfZNGoZusAuGEFf87XEmN8KRoxRmuwTOLCbijA==
+X-Received: by 2002:adf:dd52:: with SMTP id u18mr2622697wrm.131.1575448515963;
+        Wed, 04 Dec 2019 00:35:15 -0800 (PST)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id w13sm7529074wru.38.2019.12.04.00.35.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2019 00:35:15 -0800 (PST)
+Date:   Wed, 4 Dec 2019 09:35:14 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>
+Subject: Re: [PATCH] mm: fix hanging shrinker management on long
+ do_shrink_slab
+Message-ID: <20191204083514.GC25242@dhcp22.suse.cz>
+References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
 MIME-Version: 1.0
-References: <20191127124446.1542764-1-gscrivan@redhat.com> <20191203144602.GB20677@blackbody.suse.cz>
- <59c7e7a2-e8bb-c7b8-d7ec-1996ef350482@oracle.com>
-In-Reply-To: <59c7e7a2-e8bb-c7b8-d7ec-1996ef350482@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 3 Dec 2019 12:39:36 -0800
-Message-ID: <CAHS8izOegERV08QJ=GgsvPLWmQieYcsNccwucyMY_HOuX12wRw@mail.gmail.com>
-Subject: Re: [PATCH v3] mm: hugetlb controller for cgroups v2
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Dec 3, 2019 at 11:43 AM Mike Kravetz <mike.kravetz@oracle.com> wrot=
-e:
->
-> On 12/3/19 6:46 AM, Michal Koutn=C3=BD wrote:
-> > Hello.
-> >
-> > On Wed, Nov 27, 2019 at 01:44:46PM +0100, Giuseppe Scrivano <gscrivan@r=
-edhat.com> wrote:
-> >> - hugetlb.<hugepagesize>.current
-> >> - hugetlb.<hugepagesize>.max
-> >> - hugetlb.<hugepagesize>.events
-> > Just out of curiosity (perhaps addressed to Mike), does this naming
-> > account for the potential future split between reservations and
-> > allocations charges?
->
-> Mina has been working/pushing the effort to add reservations to cgroup
-> accounting and would be the one to ask.  However, it does seem that the
-> names here should be created in anticipation of adding reservations in
-> the future.  So, perhaps something like:
->
-> hugetlb_usage.<hugepagesize>.current
->
-> with the new functionality having names like
->
-> hugetlb_reserves.<hugepagesize>.current
+On Sat 30-11-19 00:45:41, Pavel Tikhomirov wrote:
+> We have a problem that shrinker_rwsem can be held for a long time for
+> read in shrink_slab, at the same time any process which is trying to
+> manage shrinkers hangs.
+> 
+> The shrinker_rwsem is taken in shrink_slab while traversing shrinker_list.
+> It tries to shrink something on nfs (hard) but nfs server is dead at
+> these moment already and rpc will never succeed. Generally any shrinker
+> can take significant time to do_shrink_slab, so it's a bad idea to hold
+> the list lock here.
 
-I was thinking I'll just rebase my patches on top of this patch and
-add the files for the reservations myself, since Guiseppe doesn't have
-an implementation of that locally so the files would be dummies (or
-maybe they would mirror the current counters).
+Yes, this is a known problem and people have already tried to address it
+in the past. Have you checked previous attempts? SRCU based one
+http://lkml.kernel.org/r/153365347929.19074.12509495712735843805.stgit@localhost.localdomain
+but I believe there were others (I only had this one in my notes).
+Please make sure to Cc Dave Chinner when posting a next version because
+he had some concerns about the change of the behavior.
 
-But if Guiseppe is adding them then that's fine too. I would prefer names:
+> We have a similar problem in shrink_slab_memcg, except that we are
+> traversing shrinker_map+shrinker_idr there.
+> 
+> The idea of the patch is to inc a refcount to the chosen shrinker so it
+> won't disappear and release shrinker_rwsem while we are in
+> do_shrink_slab, after that we will reacquire shrinker_rwsem, dec
+> the refcount and continue the traversal.
 
-hugetlb.<hugepagesize>.current_reservations
-hugetlb.<hugepagesize>.max_reservations
+The reference count part makes sense to me. RCU role needs a better
+explanation. Also do you have any reason to not use completion for
+the final step? Openconding essentially the same concept sounds a bit
+awkward to me.
 
-Note that reservations need both a current and a max that is distinct
-from the allocation current and max, because users may want to set a
-limit on only the reservation counter or allocation counter.
+> We also need a wait_queue so that unregister_shrinker can wait for the
+> refcnt to become zero. Only after these we can safely remove the
+> shrinker from list and idr, and free the shrinker.
+[...]
+>   crash> bt ...
+>   PID: 18739  TASK: ...  CPU: 3   COMMAND: "bash"
+>    #0 [...] __schedule at ...
+>    #1 [...] schedule at ...
+>    #2 [...] rpc_wait_bit_killable at ... [sunrpc]
+>    #3 [...] __wait_on_bit at ...
+>    #4 [...] out_of_line_wait_on_bit at ...
+>    #5 [...] _nfs4_proc_delegreturn at ... [nfsv4]
+>    #6 [...] nfs4_proc_delegreturn at ... [nfsv4]
+>    #7 [...] nfs_do_return_delegation at ... [nfsv4]
+>    #8 [...] nfs4_evict_inode at ... [nfsv4]
+>    #9 [...] evict at ...
+>   #10 [...] dispose_list at ...
+>   #11 [...] prune_icache_sb at ...
+>   #12 [...] super_cache_scan at ...
+>   #13 [...] do_shrink_slab at ...
 
-> --
-> Mike Kravetz
+Are NFS people aware of this? Because this is simply not acceptable
+behavior. Memory reclaim cannot be block indefinitely or for a long
+time. There must be a way to simply give up if the underlying inode
+cannot be reclaimed.
+
+I still have to think about the proposed solution. It sounds a bit over
+complicated to me.
+-- 
+Michal Hocko
+SUSE Labs
