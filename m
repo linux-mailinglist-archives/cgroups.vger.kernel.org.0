@@ -2,152 +2,474 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 515601138FA
-	for <lists+cgroups@lfdr.de>; Thu,  5 Dec 2019 01:51:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B2011404D
+	for <lists+cgroups@lfdr.de>; Thu,  5 Dec 2019 12:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728011AbfLEAvq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Dec 2019 19:51:46 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:60164 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728419AbfLEAvq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Dec 2019 19:51:46 -0500
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id xB4NuUEf027865;
-        Wed, 4 Dec 2019 16:51:44 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=facebook;
- bh=Q+26R79wCdvnCpgC7hkhkgA2onrQ5wdaxf7ZwR8lGOk=;
- b=fQX2HH+WDG1fa7AN3qBfJQy1KLYGVfLddUU3hIZvQgomMTFJQauTSe3zQ3BP2poaQbwI
- rz7nY5+Oe6cVUCfiebYsPmcIl36RnuLOG5xXpc0INOPPOofULtorroGbbeDwlLTjg/PM
- xUqU8bgo6gS/AuqP8bwdvO8wM3KoA7qdAp8= 
-Received: from mail.thefacebook.com (mailout.thefacebook.com [199.201.64.23])
-        by m0001303.ppops.net with ESMTP id 2wp7khvvc8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 04 Dec 2019 16:51:44 -0800
-Received: from prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) by
- prn-hub03.TheFacebook.com (2620:10d:c081:35::127) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 4 Dec 2019 16:51:43 -0800
-Received: from prn-hub02.TheFacebook.com (2620:10d:c081:35::126) by
- prn-mbx01.TheFacebook.com (2620:10d:c081:6::15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.1.1713.5; Wed, 4 Dec 2019 16:51:43 -0800
-Received: from NAM04-CO1-obe.outbound.protection.outlook.com (192.168.54.28)
- by o365-in.thefacebook.com (192.168.16.26) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.1.1713.5
- via Frontend Transport; Wed, 4 Dec 2019 16:51:43 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EexdWZsD1TI+fAyatnN7cDWqmBs6XxwQB7T/GwxVIFdH1jgA2IPzeY8UkFbGSXxdRQ0NtmSIHAi9yOAAol9Rgf9QmvLbZBT73GuCxQGVQShMEuIqVkmA6h1SXz0ESHgLVTt2H3IwAJpaTQnKvrIM6JtQaqVmD/bSq/9A20bp6wKpLl1SuHoc9SZcJffM35PO8VnP1F6QkEurRfZ7JTBPO/xOtTZ+3U99/8Xy/I8YFkpV3B9qMK2eBY37BDmaGwKmbtuhlPafivO3bjKe0k51FKqOXBSUY9P/8wikwT4muCQTBIkw67z3RGRvFkaQWqEZzSX0SS4XYhZJkPwtIuAWhA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+26R79wCdvnCpgC7hkhkgA2onrQ5wdaxf7ZwR8lGOk=;
- b=ZpyvUAekPrnB6SsuNnEDZ8xzDsYJGM+cfWQz5ZOzFl6VwUE4lkL+BixO1kjuMZuWjuixpT8QOCRL+HP8q7rm/bnKQqvCMWNLSRajQwYYpzm/cZ3ag2p9f9LHsHXe32wEvQBflpz1IFZBswEjZ5iLFS+O8Zbxy8qYEqq96yLDdW6ciBjy6k/cYv3XPR7Tuf8ClvCVp9q8WhzBokrlmdb8tRGxBtiGn7v46VNKHh1omfj3Ww8DjO0v1g6zr5hnB9frZk4Xf6AQbISjNI3zBigl7LwE1bSn7hrdcc6J+kn6VQ9nzmWYRP8D8anXx/duJ6AVFYiX5HFzAxbVx/3JUhv8hA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Q+26R79wCdvnCpgC7hkhkgA2onrQ5wdaxf7ZwR8lGOk=;
- b=OhmImlMywdaqvTxmoooDiS0b+S7IkbF1F7VVwlkZUrXO2JZdq9Skz2BY8grAMfHIwaHnEDiTQia2BnJk0g7GrkVo6l0vkpQF4/6p5Zc6o5YDDG6A/mvAYJ8ihxFCyOAfPpnaEDBUXNM6obASBmpW40OVNQyXHxoCc11Ixd9LI7U=
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.155.147) by
- BYAPR15MB2951.namprd15.prod.outlook.com (20.178.237.88) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2516.14; Thu, 5 Dec 2019 00:51:30 +0000
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::8cc8:bdb1:a9c7:7f60]) by BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::8cc8:bdb1:a9c7:7f60%3]) with mapi id 15.20.2495.026; Thu, 5 Dec 2019
- 00:51:30 +0000
-From:   Roman Gushchin <guro@fb.com>
-To:     Kenny Ho <y2kenny@gmail.com>
-CC:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: Question about device cgroup v2
-Thread-Topic: Question about device cgroup v2
-Thread-Index: AQHVqv8Rj/Jm7ok6m0a9KTvaBNGsJKeqtkAA
-Date:   Thu, 5 Dec 2019 00:51:30 +0000
-Message-ID: <20191205005126.GA7159@localhost.localdomain>
-References: <CAOWid-cR0ZqTja6rBjBcBLUwSFR2i3ZczTGOxpQFgvBSF0xLjQ@mail.gmail.com>
-In-Reply-To: <CAOWid-cR0ZqTja6rBjBcBLUwSFR2i3ZczTGOxpQFgvBSF0xLjQ@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-clientproxiedby: CO2PR06CA0056.namprd06.prod.outlook.com
- (2603:10b6:104:3::14) To BYAPR15MB2631.namprd15.prod.outlook.com
- (2603:10b6:a03:150::19)
-x-ms-exchange-messagesentrepresentingtype: 1
-x-originating-ip: [2620:10d:c090:180::a843]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 2247b31a-2bec-4b96-086c-08d7791d442d
-x-ms-traffictypediagnostic: BYAPR15MB2951:
-x-microsoft-antispam-prvs: <BYAPR15MB295154359241D5F84403ED36BE5C0@BYAPR15MB2951.namprd15.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:10000;
-x-forefront-prvs: 02426D11FE
-x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(39860400002)(366004)(346002)(396003)(376002)(136003)(189003)(199004)(11346002)(7736002)(14444005)(305945005)(71200400001)(8936002)(81166006)(81156014)(6916009)(86362001)(33656002)(71190400001)(9686003)(6512007)(6246003)(1411001)(6436002)(2906002)(6116002)(6486002)(229853002)(8676002)(6506007)(102836004)(186003)(478600001)(52116002)(25786009)(1076003)(14454004)(4326008)(66946007)(99286004)(76176011)(5660300002)(64756008)(66476007)(66446008)(66556008)(316002);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2951;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-received-spf: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: pZnfdJWQt8k2HU7VxTSyShhII/1qwb70uk0But8aK1kbhsgKVJMVvC7kAEbMLf+JKg8TbX98aWea0w/VdPv8EM4j39G/nNDEFIrnFFW2qyH60noiQF5ukOrnyxWOqTvtnQdKQkWhruBISv7OAdDxIx7znxKf9Rir+KfdIb+1u8kiFggkwIequ2zfJtn+z3pVkil+B+3tc9tAwcHZkABvteu1C44PG4FoX4EgPJrxB+AMsS8YWynSK+LcBjNIBfZKskn5O8WfSXXl0Nhha/Q1H0G7L+c7m04ttEuLyWsWzgywi1+/+h8E5U/eKBI9z/F0k+0hYaFuJ6vqZaHgcMkW1iqEE8HFYLEasL1vBpqYxhq/eFRXS2xjmTYp+9VaFl8j9D/vCNZ1anuQMpZ/1c7+l/mq0TNFdZ4lZ5O0Crvqb9rYq/dp5DMw7j/skELWB6al
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <A933E1B29D3B844C941DC442FE934AEF@namprd15.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1729096AbfLELrz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Dec 2019 06:47:55 -0500
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:21890 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1729099AbfLELrz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Dec 2019 06:47:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1575546473;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=P17d4dfyUKSiPqNIIcb24EAHc4CxaqXdrPU59huJIaM=;
+        b=ZuP32Fz5iQ/2SIMYl/Fjv4n5hRgodHwjZ4L2RiVZnkTtma1xCHMH4uJIxbtBBPaCCI7tfa
+        RpLZwDG6RuxKUMFAZpe0rmT5gQtGi049+5Sl+vzGJp0bYnWmEvJtkU2DOaWIKw8tkiT5IQ
+        mhVCN40kXY3ytEUzwECIdHdG9E5ItL4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-360-r0ivcwmWOkejI_dKMPKR9w-1; Thu, 05 Dec 2019 06:47:50 -0500
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E61F5800D54;
+        Thu,  5 Dec 2019 11:47:48 +0000 (UTC)
+Received: from helium.redhat.com (unknown [10.36.118.80])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9029F60126;
+        Thu,  5 Dec 2019 11:47:46 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     cgroups@vger.kernel.org
+Cc:     mike.kravetz@oracle.com, tj@kernel.org, mkoutny@suse.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, gscrivan@redhat.com,
+        almasrymina@google.com
+Subject: [PATCH v4] mm: hugetlb controller for cgroups v2
+Date:   Thu,  5 Dec 2019 12:47:39 +0100
+Message-Id: <20191205114739.12294-1-gscrivan@redhat.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2247b31a-2bec-4b96-086c-08d7791d442d
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 Dec 2019 00:51:30.5166
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: n4uva8g3Lu0zLF9EvIBJfjW8vnlJ7Cix/vDlpzu06EEKBb8zrxpZiDvJThJ1/+UH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2951
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.95,18.0.572
- definitions=2019-12-04_04:2019-12-04,2019-12-04 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 suspectscore=0
- lowpriorityscore=0 mlxlogscore=999 spamscore=0 bulkscore=0 adultscore=0
- priorityscore=1501 impostorscore=0 clxscore=1011 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1910280000 definitions=main-1912040197
-X-FB-Internal: deliver
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+X-MC-Unique: r0ivcwmWOkejI_dKMPKR9w-1
+X-Mimecast-Spam-Score: 0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 04, 2019 at 07:00:07PM -0500, Kenny Ho wrote:
-> Hi,
->=20
-> I have been reading cgroup v2 for device cgroup along with bpf cgroup
-> and have some questions.  For bpf cgroup, is it typical to not have a
-> default bpf program to define "normal" behaviour?  Is it fair to say
-> that, for device cgroup in v2, if it's not for the v1 implementation
-> as the catch-all, userspace applications like container runtimes will
-> have to supply their own bpf program in order to get the same
-> functionality in v1?
+In the effort of supporting cgroups v2 into Kubernetes, I stumped on
+the lack of the hugetlb controller.
 
-Hi!
+When the controller is enabled, it exposes three new files for each
+hugetlb size on non-root cgroups:
 
-Yeah, there is no "default" program, partially because there is no default
-bpf infrastructure to distribute and load bpf programs (or at least there
-was no such infrastructure at the moment when the controller was introduced=
-).
+- hugetlb.<hugepagesize>.current
+- hugetlb.<hugepagesize>.max
+- hugetlb.<hugepagesize>.events
+- hugetlb.<hugepagesize>.events.local
 
-Also, it's not clear to me how such a program should look like. Should it b=
-e
-a bpf program which relies on data in a bpf map? But then you'll need some
-convenient way to modify the data in the map. Maybe it can be a standalone =
-tool,
-which composes and loads bpf programs depending on ploicies. A library?
+The differences with the legacy hierarchy are in the file names and
+using the value "max" instead of "-1" to disable a limit.
 
-I agree, that to some extent cgroup v2 interface is less easy to use
-(at the first time), but it's more flexible at the end. I'm not sure there
-are many users who use the device controller directly.
+The file .limit_in_bytes is renamed to .max.
 
-Modern versions of systemd do support the cgroup v2 device controller,
-so my assumption is that the majority of users will be covered by systemd.
+The file .usage_in_bytes is renamed to .usage.
 
-Thanks!
+.failcnt is not provided as a single file anymore, but its value can
+be read through the new flat-keyed files .events and .events.local,
+through the "max" key.
+
+Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+---
+v4:
+  - fix .events file to record and notify all the events in the sub
+    directories
+  - add .events.local file to record events only in the current cgroup
+
+v3: https://www.spinics.net/lists/cgroups/msg23922.html
+  - simplify hugetlb_cgroup_read_u64_max and drop dead code
+  - notify changes to the .events file
+
+v2: https://www.spinics.net/lists/cgroups/msg23917.html
+  - dropped max_usage_in_bytes and renamed .stats::failcnt to .events::max
+
+v1: https://www.spinics.net/lists/cgroups/msg23893.html
+
+Documentation/admin-guide/cgroup-v2.rst |  29 ++++
+ include/linux/hugetlb.h                 |   3 +-
+ mm/hugetlb_cgroup.c                     | 194 ++++++++++++++++++++++--
+ 3 files changed, 214 insertions(+), 12 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-=
+guide/cgroup-v2.rst
+index 0636bcb60b5a..3f801461f0f3 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -61,6 +61,8 @@ v1 is available under Documentation/admin-guide/cgroup-v1=
+/.
+      5-6. Device
+      5-7. RDMA
+        5-7-1. RDMA Interface Files
++     5-8. HugeTLB
++       5.8-1. HugeTLB Interface Files
+      5-8. Misc
+        5-8-1. perf_event
+      5-N. Non-normative information
+@@ -2056,6 +2058,33 @@ RDMA Interface Files
+ =09  mlx4_0 hca_handle=3D1 hca_object=3D20
+ =09  ocrdma1 hca_handle=3D1 hca_object=3D23
+=20
++HugeTLB
++-------
++
++The HugeTLB controller allows to limit the HugeTLB usage per control group=
+ and
++enforces the controller limit during page fault.
++
++HugeTLB Interface Files
++~~~~~~~~~~~~~~~~~~~~~~~
++
++  hugetlb.<hugepagesize>.current
++=09Show current usage for "hugepagesize" hugetlb.  It exists for all
++=09the cgroup except root.
++
++  hugetlb.<hugepagesize>.max
++=09Set/show the hard limit of "hugepagesize" hugetlb usage.
++=09The default value is "max".  It exists for all the cgroup except root.
++
++  hugetlb.<hugepagesize>.events
++=09A read-only flat-keyed file which exists on non-root cgroups.
++
++=09  max
++=09=09The number of allocation failure due to HugeTLB limit
++
++  hugetlb.<hugepagesize>.events.local
++=09Similar to hugetlb.<hugepagesize>.events but the fields in the file
++=09are local to the cgroup i.e. not hierarchical. The file modified event
++=09generated on this file reflects only the local events.
+=20
+ Misc
+ ----
+diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+index 31d4920994b9..1e897e4168ac 100644
+--- a/include/linux/hugetlb.h
++++ b/include/linux/hugetlb.h
+@@ -432,7 +432,8 @@ struct hstate {
+ =09unsigned int surplus_huge_pages_node[MAX_NUMNODES];
+ #ifdef CONFIG_CGROUP_HUGETLB
+ =09/* cgroup control files */
+-=09struct cftype cgroup_files[5];
++=09struct cftype cgroup_files_dfl[5];
++=09struct cftype cgroup_files_legacy[5];
+ #endif
+ =09char name[HSTATE_NAME_LEN];
+ };
+diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+index 2ac38bdc18a1..0a46cb2d18ff 100644
+--- a/mm/hugetlb_cgroup.c
++++ b/mm/hugetlb_cgroup.c
+@@ -3,6 +3,10 @@
+  * Copyright IBM Corporation, 2012
+  * Author Aneesh Kumar K.V <aneesh.kumar@linux.vnet.ibm.com>
+  *
++ * Cgroup v2
++ * Copyright (C) 2019 Red Hat, Inc.
++ * Author: Giuseppe Scrivano <gscrivan@redhat.com>
++ *
+  * This program is free software; you can redistribute it and/or modify it
+  * under the terms of version 2.1 of the GNU Lesser General Public License
+  * as published by the Free Software Foundation.
+@@ -19,12 +23,27 @@
+ #include <linux/hugetlb.h>
+ #include <linux/hugetlb_cgroup.h>
+=20
++enum hugetlb_memory_event {
++=09HUGETLB_MAX,
++=09HUGETLB_NR_MEMORY_EVENTS,
++};
++
+ struct hugetlb_cgroup {
+ =09struct cgroup_subsys_state css;
++
+ =09/*
+ =09 * the counter to account for hugepages from hugetlb.
+ =09 */
+ =09struct page_counter hugepage[HUGE_MAX_HSTATE];
++
++=09atomic_long_t events[HUGE_MAX_HSTATE][HUGETLB_NR_MEMORY_EVENTS];
++=09atomic_long_t events_local[HUGE_MAX_HSTATE][HUGETLB_NR_MEMORY_EVENTS];
++
++=09/* Handle for "hugetlb.events" */
++=09struct cgroup_file events_file[HUGE_MAX_HSTATE];
++
++=09/* Handle for "hugetlb.events.local" */
++=09struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
+ };
+=20
+ #define MEMFILE_PRIVATE(x, val)=09(((x) << 16) | (val))
+@@ -178,6 +197,19 @@ static void hugetlb_cgroup_css_offline(struct cgroup_s=
+ubsys_state *css)
+ =09} while (hugetlb_cgroup_have_usage(h_cg));
+ }
+=20
++static inline void hugetlb_event(struct hugetlb_cgroup *hugetlb, int idx,
++=09=09=09=09 enum hugetlb_memory_event event)
++{
++=09atomic_long_inc(&hugetlb->events_local[idx][event]);
++=09cgroup_file_notify(&hugetlb->events_local_file[idx]);
++
++=09do {
++=09=09atomic_long_inc(&hugetlb->events[idx][event]);
++=09=09cgroup_file_notify(&hugetlb->events_file[idx]);
++=09} while ((hugetlb =3D parent_hugetlb_cgroup(hugetlb)) &&
++=09=09 !hugetlb_cgroup_is_root(hugetlb));
++}
++
+ int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+ =09=09=09=09 struct hugetlb_cgroup **ptr)
+ {
+@@ -202,8 +234,11 @@ int hugetlb_cgroup_charge_cgroup(int idx, unsigned lon=
+g nr_pages,
+ =09}
+ =09rcu_read_unlock();
+=20
+-=09if (!page_counter_try_charge(&h_cg->hugepage[idx], nr_pages, &counter))
++=09if (!page_counter_try_charge(&h_cg->hugepage[idx], nr_pages,
++=09=09=09=09     &counter)) {
+ =09=09ret =3D -ENOMEM;
++=09=09hugetlb_event(h_cg, idx, HUGETLB_MAX);
++=09}
+ =09css_put(&h_cg->css);
+ done:
+ =09*ptr =3D h_cg;
+@@ -283,10 +318,45 @@ static u64 hugetlb_cgroup_read_u64(struct cgroup_subs=
+ys_state *css,
+ =09}
+ }
+=20
++static int hugetlb_cgroup_read_u64_max(struct seq_file *seq, void *v)
++{
++=09int idx;
++=09u64 val;
++=09struct cftype *cft =3D seq_cft(seq);
++=09unsigned long limit;
++=09struct page_counter *counter;
++=09struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_css(seq));
++
++=09idx =3D MEMFILE_IDX(cft->private);
++=09counter =3D &h_cg->hugepage[idx];
++
++=09limit =3D round_down(PAGE_COUNTER_MAX,
++=09=09=09   1 << huge_page_order(&hstates[idx]));
++
++=09switch (MEMFILE_ATTR(cft->private)) {
++=09case RES_USAGE:
++=09=09val =3D (u64)page_counter_read(counter);
++=09=09seq_printf(seq, "%llu\n", val * PAGE_SIZE);
++=09=09break;
++=09case RES_LIMIT:
++=09=09val =3D (u64)counter->max;
++=09=09if (val =3D=3D limit)
++=09=09=09seq_puts(seq, "max\n");
++=09=09else
++=09=09=09seq_printf(seq, "%llu\n", val * PAGE_SIZE);
++=09=09break;
++=09default:
++=09=09BUG();
++=09}
++
++=09return 0;
++}
++
+ static DEFINE_MUTEX(hugetlb_limit_mutex);
+=20
+ static ssize_t hugetlb_cgroup_write(struct kernfs_open_file *of,
+-=09=09=09=09    char *buf, size_t nbytes, loff_t off)
++=09=09=09=09    char *buf, size_t nbytes, loff_t off,
++=09=09=09=09    const char *max)
+ {
+ =09int ret, idx;
+ =09unsigned long nr_pages;
+@@ -296,7 +366,7 @@ static ssize_t hugetlb_cgroup_write(struct kernfs_open_=
+file *of,
+ =09=09return -EINVAL;
+=20
+ =09buf =3D strstrip(buf);
+-=09ret =3D page_counter_memparse(buf, "-1", &nr_pages);
++=09ret =3D page_counter_memparse(buf, max, &nr_pages);
+ =09if (ret)
+ =09=09return ret;
+=20
+@@ -316,6 +386,18 @@ static ssize_t hugetlb_cgroup_write(struct kernfs_open=
+_file *of,
+ =09return ret ?: nbytes;
+ }
+=20
++static ssize_t hugetlb_cgroup_write_legacy(struct kernfs_open_file *of,
++=09=09=09=09=09   char *buf, size_t nbytes, loff_t off)
++{
++=09return hugetlb_cgroup_write(of, buf, nbytes, off, "-1");
++}
++
++static ssize_t hugetlb_cgroup_write_dfl(struct kernfs_open_file *of,
++=09=09=09=09=09char *buf, size_t nbytes, loff_t off)
++{
++=09return hugetlb_cgroup_write(of, buf, nbytes, off, "max");
++}
++
+ static ssize_t hugetlb_cgroup_reset(struct kernfs_open_file *of,
+ =09=09=09=09    char *buf, size_t nbytes, loff_t off)
+ {
+@@ -350,7 +432,36 @@ static char *mem_fmt(char *buf, int size, unsigned lon=
+g hsize)
+ =09return buf;
+ }
+=20
+-static void __init __hugetlb_cgroup_file_init(int idx)
++static int __hugetlb_events_show(struct seq_file *seq, bool local)
++{
++=09int idx;
++=09long max;
++=09struct cftype *cft =3D seq_cft(seq);
++=09struct hugetlb_cgroup *h_cg =3D hugetlb_cgroup_from_css(seq_css(seq));
++
++=09idx =3D MEMFILE_IDX(cft->private);
++
++=09if (local)
++=09=09max =3D atomic_long_read(&h_cg->events_local[idx][HUGETLB_MAX]);
++=09else
++=09=09max =3D atomic_long_read(&h_cg->events[idx][HUGETLB_MAX]);
++
++=09seq_printf(seq, "max %lu\n", max);
++
++=09return 0;
++}
++
++static int hugetlb_events_show(struct seq_file *seq, void *v)
++{
++=09return __hugetlb_events_show(seq, false);
++}
++
++static int hugetlb_events_local_show(struct seq_file *seq, void *v)
++{
++=09return __hugetlb_events_show(seq, true);
++}
++
++static void __init __hugetlb_cgroup_file_dfl_init(int idx)
+ {
+ =09char buf[32];
+ =09struct cftype *cft;
+@@ -360,38 +471,93 @@ static void __init __hugetlb_cgroup_file_init(int idx=
+)
+ =09mem_fmt(buf, 32, huge_page_size(h));
+=20
+ =09/* Add the limit file */
+-=09cft =3D &h->cgroup_files[0];
++=09cft =3D &h->cgroup_files_dfl[0];
++=09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.max", buf);
++=09cft->private =3D MEMFILE_PRIVATE(idx, RES_LIMIT);
++=09cft->seq_show =3D hugetlb_cgroup_read_u64_max;
++=09cft->write =3D hugetlb_cgroup_write_dfl;
++=09cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++=09/* Add the current usage file */
++=09cft =3D &h->cgroup_files_dfl[1];
++=09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.current", buf);
++=09cft->private =3D MEMFILE_PRIVATE(idx, RES_USAGE);
++=09cft->seq_show =3D hugetlb_cgroup_read_u64_max;
++=09cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++=09/* Add the events file */
++=09cft =3D &h->cgroup_files_dfl[2];
++=09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events", buf);
++=09cft->private =3D MEMFILE_PRIVATE(idx, 0);
++=09cft->seq_show =3D hugetlb_events_show;
++=09cft->file_offset =3D offsetof(struct hugetlb_cgroup, events_file[idx]),
++=09cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++=09/* Add the events.local file */
++=09cft =3D &h->cgroup_files_dfl[3];
++=09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events.local", buf);
++=09cft->private =3D MEMFILE_PRIVATE(idx, 0);
++=09cft->seq_show =3D hugetlb_events_local_show;
++=09cft->file_offset =3D offsetof(struct hugetlb_cgroup,
++=09=09=09=09    events_local_file[idx]),
++=09cft->flags =3D CFTYPE_NOT_ON_ROOT;
++
++=09/* NULL terminate the last cft */
++=09cft =3D &h->cgroup_files_dfl[4];
++=09memset(cft, 0, sizeof(*cft));
++
++=09WARN_ON(cgroup_add_dfl_cftypes(&hugetlb_cgrp_subsys,
++=09=09=09=09       h->cgroup_files_dfl));
++}
++
++static void __init __hugetlb_cgroup_file_legacy_init(int idx)
++{
++=09char buf[32];
++=09struct cftype *cft;
++=09struct hstate *h =3D &hstates[idx];
++
++=09/* format the size */
++=09mem_fmt(buf, 32, huge_page_size(h));
++
++=09/* Add the limit file */
++=09cft =3D &h->cgroup_files_legacy[0];
+ =09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.limit_in_bytes", buf);
+ =09cft->private =3D MEMFILE_PRIVATE(idx, RES_LIMIT);
+ =09cft->read_u64 =3D hugetlb_cgroup_read_u64;
+-=09cft->write =3D hugetlb_cgroup_write;
++=09cft->write =3D hugetlb_cgroup_write_legacy;
+=20
+ =09/* Add the usage file */
+-=09cft =3D &h->cgroup_files[1];
++=09cft =3D &h->cgroup_files_legacy[1];
+ =09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.usage_in_bytes", buf);
+ =09cft->private =3D MEMFILE_PRIVATE(idx, RES_USAGE);
+ =09cft->read_u64 =3D hugetlb_cgroup_read_u64;
+=20
+ =09/* Add the MAX usage file */
+-=09cft =3D &h->cgroup_files[2];
++=09cft =3D &h->cgroup_files_legacy[2];
+ =09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.max_usage_in_bytes", buf);
+ =09cft->private =3D MEMFILE_PRIVATE(idx, RES_MAX_USAGE);
+ =09cft->write =3D hugetlb_cgroup_reset;
+ =09cft->read_u64 =3D hugetlb_cgroup_read_u64;
+=20
+ =09/* Add the failcntfile */
+-=09cft =3D &h->cgroup_files[3];
++=09cft =3D &h->cgroup_files_legacy[3];
+ =09snprintf(cft->name, MAX_CFTYPE_NAME, "%s.failcnt", buf);
+ =09cft->private  =3D MEMFILE_PRIVATE(idx, RES_FAILCNT);
+ =09cft->write =3D hugetlb_cgroup_reset;
+ =09cft->read_u64 =3D hugetlb_cgroup_read_u64;
+=20
+ =09/* NULL terminate the last cft */
+-=09cft =3D &h->cgroup_files[4];
++=09cft =3D &h->cgroup_files_legacy[4];
+ =09memset(cft, 0, sizeof(*cft));
+=20
+ =09WARN_ON(cgroup_add_legacy_cftypes(&hugetlb_cgrp_subsys,
+-=09=09=09=09=09  h->cgroup_files));
++=09=09=09=09=09  h->cgroup_files_legacy));
++}
++
++static void __init __hugetlb_cgroup_file_init(int idx)
++{
++=09__hugetlb_cgroup_file_dfl_init(idx);
++=09__hugetlb_cgroup_file_legacy_init(idx);
+ }
+=20
+ void __init hugetlb_cgroup_file_init(void)
+@@ -433,8 +599,14 @@ void hugetlb_cgroup_migrate(struct page *oldhpage, str=
+uct page *newhpage)
+ =09return;
+ }
+=20
++static struct cftype hugetlb_files[] =3D {
++=09{} /* terminate */
++};
++
+ struct cgroup_subsys hugetlb_cgrp_subsys =3D {
+ =09.css_alloc=09=3D hugetlb_cgroup_css_alloc,
+ =09.css_offline=09=3D hugetlb_cgroup_css_offline,
+ =09.css_free=09=3D hugetlb_cgroup_css_free,
++=09.dfl_cftypes=09=3D hugetlb_files,
++=09.legacy_cftypes=09=3D hugetlb_files,
+ };
+--=20
+2.23.0
+
