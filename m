@@ -2,97 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CDEA91142B8
-	for <lists+cgroups@lfdr.de>; Thu,  5 Dec 2019 15:31:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C85EE114ACA
+	for <lists+cgroups@lfdr.de>; Fri,  6 Dec 2019 03:10:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729099AbfLEObp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Dec 2019 09:31:45 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:38436 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729236AbfLEObp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Dec 2019 09:31:45 -0500
-Received: by mail-il1-f196.google.com with SMTP id u17so3172654ilq.5
-        for <cgroups@vger.kernel.org>; Thu, 05 Dec 2019 06:31:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IgyIZsGkXhOyBGMyNdc+KtFv0dlQd6LCRsvdmK8SA0g=;
-        b=svyy6NwwJUkG/aeIXKq3I1AJRSl/zcAzFj/2K4qqOekw1HPZXlVHMmxE2dKZPOpsGt
-         cDTd2XPf/blqMySJiA6shLmjkgbxBjMjzbWhuybvaoFwbntoiH9TWhxO07jpHbclN24K
-         0Nyra51whuUFSsSWGioTWRLyFTX5w685UgljNeyDLL+Mw1Ip3XsnhJfBiP3yae/2p2yK
-         hinQfBLQPUvnLgmu636PXmuSvv3k3F/6UQZn0IWu/0YH/XI5v8Du9DOsxzgr0/3u+MoV
-         54G1n2x1uTI5sTgtJwuFF6AOpqx23bWVU4innrWyRarSZQd3AohCLEXccY/F32KSK7Lw
-         RA5w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IgyIZsGkXhOyBGMyNdc+KtFv0dlQd6LCRsvdmK8SA0g=;
-        b=eEyxk2RiCtvLDSonb3NsgvR4FfwEEdX/n5rwy0CrFKmCYh+H8x9d7+fr6Cl9jN444M
-         j21aDsgujOnOZZm0rRQSBvuyeDhZvpGozL+t+Ets10t6JuE5m+2p794etYiQR8hKdIQp
-         oN4XUgfAsMFSDOKx/7O/C3TqM5HglFlfVGQyW0bf0K5+b127oRFu7PGiH3vp948zSlvO
-         XsBL5GC0Pb6SHQoNZtf1OrH22TwAC0d84aDY2hZCAcgPHqUrt2Iw0mBNqwyEOjzlrxtL
-         dS6ZNw694BH7jvN+y16AFAVVqQruHPb/cJCYbhje46wbPBEh34lwsxhele4U452rSGuq
-         BMMQ==
-X-Gm-Message-State: APjAAAWgJ4xuMieBLrBvnhztPtsVWcj6A8YXgl2Wp4jvAy6zXH7YlKEX
-        cPTMdmB2vnVDZY3B6eQXW5X5NfcxaKFZWw==
-X-Google-Smtp-Source: APXvYqxKm4XTwpnmBxasLpscBwsKRGggIS1DPAW/S2dfY1PoBHeecBwtM6YRFC4VKAlru82BkoxYYg==
-X-Received: by 2002:a92:84ce:: with SMTP id y75mr8736595ilk.93.1575556304231;
-        Thu, 05 Dec 2019 06:31:44 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id s23sm2850121ild.48.2019.12.05.06.31.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 05 Dec 2019 06:31:42 -0800 (PST)
-Subject: Re: [PATCH] bfq-iosched: Ensure bio->bi_blkg is valid before using it
-To:     Hou Tao <houtao1@huawei.com>, linux-block@vger.kernel.org,
-        tj@kernel.org
-Cc:     paolo.valente@linaro.org, cgroups@vger.kernel.org
-References: <20191205125311.40616-1-houtao1@huawei.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <0f828dd3-c0d4-3a7f-8531-dc9ccfd18e32@kernel.dk>
-Date:   Thu, 5 Dec 2019 07:31:41 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.1
+        id S1726067AbfLFCKH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Dec 2019 21:10:07 -0500
+Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:45500 "EHLO
+        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726065AbfLFCKH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Dec 2019 21:10:07 -0500
+Received: from dread.disaster.area (pa49-179-150-192.pa.nsw.optusnet.com.au [49.179.150.192])
+        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 4B22F7EA9DE;
+        Fri,  6 Dec 2019 13:09:54 +1100 (AEDT)
+Received: from dave by dread.disaster.area with local (Exim 4.92.3)
+        (envelope-from <david@fromorbit.com>)
+        id 1id345-0007fT-Ps; Fri, 06 Dec 2019 13:09:53 +1100
+Date:   Fri, 6 Dec 2019 13:09:53 +1100
+From:   Dave Chinner <david@fromorbit.com>
+To:     Andrey Ryabinin <aryabinin@virtuozzo.com>
+Cc:     Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        linux-nfs@vger.kernel.org,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] mm: fix hanging shrinker management on long
+ do_shrink_slab
+Message-ID: <20191206020953.GS2695@dread.disaster.area>
+References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
+ <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
 MIME-Version: 1.0
-In-Reply-To: <20191205125311.40616-1-houtao1@huawei.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Optus-CM-Score: 0
+X-Optus-CM-Analysis: v=2.3 cv=W5xGqiek c=1 sm=1 tr=0
+        a=ZXpxJgW8/q3NVgupyyvOCQ==:117 a=ZXpxJgW8/q3NVgupyyvOCQ==:17
+        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
+        a=7-415B0cAAAA:8 a=qrpnvERzZt7yDo6Pn0wA:9 a=CjuIK1q_8ugA:10
+        a=biEYGPWJfzWAr4FL6Ov7:22
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/5/19 5:53 AM, Hou Tao wrote:
-> bio->bi_blkg will be NULL when the issue of the request
-> has bypassed the block layer as shown in the following oops:
-> 
->  Internal error: Oops: 96000005 [#1] SMP
->  CPU: 17 PID: 2996 Comm: scsi_id Not tainted 5.4.0 #4
->  Call trace:
->   percpu_counter_add_batch+0x38/0x4c8
->   bfqg_stats_update_legacy_io+0x9c/0x280
->   bfq_insert_requests+0xbac/0x2190
->   blk_mq_sched_insert_request+0x288/0x670
->   blk_execute_rq_nowait+0x140/0x178
->   blk_execute_rq+0x8c/0x140
->   sg_io+0x604/0x9c0
->   scsi_cmd_ioctl+0xe38/0x10a8
->   scsi_cmd_blk_ioctl+0xac/0xe8
->   sd_ioctl+0xe4/0x238
->   blkdev_ioctl+0x590/0x20e0
->   block_ioctl+0x60/0x98
->   do_vfs_ioctl+0xe0/0x1b58
->   ksys_ioctl+0x80/0xd8
->   __arm64_sys_ioctl+0x40/0x78
->   el0_svc_handler+0xc4/0x270
-> 
-> so ensure its validity before using it.
+[please cc me on future shrinker infrastructure modifications]
 
-Applied, thanks.
+On Mon, Dec 02, 2019 at 07:36:03PM +0300, Andrey Ryabinin wrote:
+> 
+> On 11/30/19 12:45 AM, Pavel Tikhomirov wrote:
+> > We have a problem that shrinker_rwsem can be held for a long time for
+> > read in shrink_slab, at the same time any process which is trying to
+> > manage shrinkers hangs.
+> > 
+> > The shrinker_rwsem is taken in shrink_slab while traversing shrinker_list.
+> > It tries to shrink something on nfs (hard) but nfs server is dead at
+> > these moment already and rpc will never succeed. Generally any shrinker
+> > can take significant time to do_shrink_slab, so it's a bad idea to hold
+> > the list lock here.
 
+registering/unregistering a shrinker is not a performance critical
+task. If a shrinker is blocking for a long time, then we need to
+work to fix the shrinker implementation because blocking is a much
+bigger problem than just register/unregister.
+
+> > The idea of the patch is to inc a refcount to the chosen shrinker so it
+> > won't disappear and release shrinker_rwsem while we are in
+> > do_shrink_slab, after that we will reacquire shrinker_rwsem, dec
+> > the refcount and continue the traversal.
+
+This is going to cause a *lot* of traffic on the shrinker rwsem.
+It's already a pretty hot lock on large machines under memory
+pressure (think thousands of tasks all doing direct reclaim across
+hundreds of CPUs), and so changing them to cycle the rwsem on every
+shrinker that will only make this worse. Esepcially when we consider
+that there may be hundreds to thousands of registered shrinker
+instances on large machines.
+
+As an example of how frequent cycling of a global lock in shrinker
+instances causes issues, we used to take references to superblock
+shrinker count invocations to guarantee existence. This was found to
+be a scalability limitation when lots of near-empty superblocks were
+present in a system (see commit d23da150a37c ("fs/superblock: avoid
+locking counting inodes and dentries before reclaiming them")).
+
+This alleviated the problem for a while, but soon we had problems
+with just taking a reference to the superblock in the callbacks that
+did actual work. Hence we changed it to just take a per-superblock
+rwsem to get rid of the global sb_lock spinlock in this path. See
+commit eb6ef3df4faa ("trylock_super(): replacement for
+grab_super_passive()". Now we don't have a scalability problem.
+
+IOWs, we already know that cycling a global rwsem on every
+individual shrinker invocation is going to cause noticable
+scalability problems. Hence I don't think that this sort of "cycle
+the global rwsem faster to reduce [un]register latency" solution is
+going to fly because of the runtime performance regressions it will
+introduce....
+
+> I don't think this patch solves the problem, it only fixes one minor symptom of it.
+> The actual problem here the reclaim hang in the nfs.
+
+The nfs client is waiting on the NFS server to respond. It may
+actually be that the server has hung, not the client...
+
+> It means that any process, including kswapd, may go into nfs inode reclaim and stuck there.
+
+*nod*
+
+> I think this should be handled on nfs/vfs level by making  inode eviction during reclaim more asynchronous.
+
+That's what we are trying to do with similar blocking based issues
+in XFS inode reclaim. It's not simple, though, because these days
+memory reclaim is like a bowl full of spaghetti covered with a
+delicious sauce of non-obvious heuristics and broken
+functionality....
+
+Cheers,
+
+Dave.
 -- 
-Jens Axboe
-
+Dave Chinner
+david@fromorbit.com
