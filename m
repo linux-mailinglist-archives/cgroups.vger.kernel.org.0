@@ -2,115 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 86BE7117D17
-	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2019 02:21:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E98E118703
+	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2019 12:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727387AbfLJBUw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Dec 2019 20:20:52 -0500
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:57265 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727059AbfLJBUw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Dec 2019 20:20:52 -0500
-Received: from dread.disaster.area (pa49-195-139-249.pa.nsw.optusnet.com.au [49.195.139.249])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id 67CED7EA394;
-        Tue, 10 Dec 2019 12:20:37 +1100 (AEDT)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1ieUCa-0006iz-IA; Tue, 10 Dec 2019 12:20:36 +1100
-Date:   Tue, 10 Dec 2019 12:20:36 +1100
-From:   Dave Chinner <david@fromorbit.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Pavel Tikhomirov <ptikhomirov@virtuozzo.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Konstantin Khorenko <khorenko@virtuozzo.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        linux-nfs@vger.kernel.org,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH] mm: fix hanging shrinker management on long
- do_shrink_slab
-Message-ID: <20191210012036.GB19213@dread.disaster.area>
-References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
- <4e2d959a-0b0e-30aa-59b4-8e37728e9793@virtuozzo.com>
- <20191206020953.GS2695@dread.disaster.area>
- <CALvZod4YrnLLbaqTrZR92Y45rd4G+UzcqrkwAptJGJ2Kc8i6Og@mail.gmail.com>
+        id S1727598AbfLJLsH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Dec 2019 06:48:07 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:43389 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727421AbfLJLsH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Dec 2019 06:48:07 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R351e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0TkXAQar_1575978470;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TkXAQar_1575978470)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 10 Dec 2019 19:47:51 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com, hannes@cmpxchg.org
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>
+Subject: [PATCH v5 0/8] per lruvec lru_lock for memcg
+Date:   Tue, 10 Dec 2019 19:46:16 +0800
+Message-Id: <1575978384-222381-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod4YrnLLbaqTrZR92Y45rd4G+UzcqrkwAptJGJ2Kc8i6Og@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=LYdCFQXi c=1 sm=1 tr=0
-        a=KoypXv6BqLCQNZUs2nCMWg==:117 a=KoypXv6BqLCQNZUs2nCMWg==:17
-        a=jpOVt7BSZ2e4Z31A5e1TngXxSK0=:19 a=kj9zAlcOel0A:10 a=pxVhFHJ0LMsA:10
-        a=7-415B0cAAAA:8 a=x8hb-4BqU8MrIrHTnBsA:9 a=CjuIK1q_8ugA:10
-        a=biEYGPWJfzWAr4FL6Ov7:22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Dec 06, 2019 at 09:11:25AM -0800, Shakeel Butt wrote:
-> On Thu, Dec 5, 2019 at 6:10 PM Dave Chinner <david@fromorbit.com> wrote:
-> > If a shrinker is blocking for a long time, then we need to
-> > work to fix the shrinker implementation because blocking is a much
-> > bigger problem than just register/unregister.
-> >
-> 
-> Yes, we should be fixing the implementations of all shrinkers and yes
-> it is bigger issue but we can also fix register/unregister isolation
-> issue in parallel. Fixing all shrinkers would a tedious and long task
-> and we should not block fixing isolation issue on it.
+Hi all,
 
-"fixing all shrinkers" is a bit of hyperbole - you've identified
-only one instance where blocking is causing you problems. Indeed,
-most shrinkers are already non-blocking and won't cause you any
-problems at all.
+Sorry for send out later.
 
-> > IOWs, we already know that cycling a global rwsem on every
-> > individual shrinker invocation is going to cause noticable
-> > scalability problems. Hence I don't think that this sort of "cycle
-> > the global rwsem faster to reduce [un]register latency" solution is
-> > going to fly because of the runtime performance regressions it will
-> > introduce....
-> >
-> 
-> I agree with your scalability concern (though others would argue to
-> first demonstrate the issue before adding more sophisticated scalable
-> code).
+This patchset move lru_lock into lruvec, give a lru_lock for each of
+lruvec, thus bring a lru_lock for each of memcg per node.
 
-Look at the git history. We *know* this is a problem, so anyone
-arguing that we have to prove it can go take a long walk of a short
-plank....
+This is the main patch to replace per node lru_lock with per memcg
+lruvec lock.
 
-> Most memory reclaim code is written without the performance or
-> scalability concern, maybe we should switch our thinking.
+We introduces function lock_page_lruvec, which will lock the page's
+memcg and then memcg's lruvec->lru_lock. (Thanks Johannes Weiner,
+Hugh Dickins and Konstantin Khlebnikov suggestion/reminder)
 
-I think there's a lot of core mm and other developers that would
-disagree with you there. With respect to shrinkers, we've been
-directly concerned about performance and scalability of the
-individual instances as well as the infrastructure for at least the
-last decade....
+According to Daniel Jordan's suggestion, I run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+  https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
 
-Cheers,
+With this and later patches, the readtwice performance increases about
+80% with containers, but w/o memcg the readtwice performance drops
+about 5%.(and another 5% drops with the last debug patch). Slighty
+better than v4.(about 6% drop w/o memcg)
 
-Dave.
+Considering the memcg move task path:
+   mem_cgroup_move_task:
+     mem_cgroup_move_charge:
+	lru_add_drain_all();
+	atomic_inc(&mc.from->moving_account); //ask lruvec's move_lock
+	synchronize_rcu();
+	walk_parge_range: do charge_walk_ops(mem_cgroup_move_charge_pte_range):
+	   isolate_lru_page();
+	   mem_cgroup_move_account(page,)
+		spin_lock(&from->move_lock) 
+		page->mem_cgroup = to;
+		spin_unlock(&from->move_lock) 
+	   putback_lru_page(page)
+
+to guard 'page->mem_cgroup = to' by to_vec->lru_lock has the similar effect with
+move_lock. So for performance reason, both solutions are same.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought the same idea
+7 years ago.
+
+Thanks all the comments from Hugh Dickins, Konstantin Khlebnikov, Daniel Jordan, 
+Johannes Weiner, Mel Gorman, Shakeel Butt, Rong Chen, Fengguang Wu, Yun Wang etc.
+and some testing support from Intel 0days!
+
+v5,
+  a, locking page's memcg according JohannesW suggestion
+  b, using macro for non memcg, according to Johanness and Metthew's suggestion.
+
+v4: 
+  a, fix the page->mem_cgroup dereferencing issue, thanks Johannes Weiner
+  b, remove the irqsave flags changes, thanks Metthew Wilcox
+  c, merge/split patches for better understanding and bisection purpose
+
+v3: rebase on linux-next, and fold the relock fix patch into introduceing patch
+
+v2: bypass a performance regression bug and fix some function issues
+
+v1: initial version, aim testing show 5% performance increase
+
+
+Alex Shi (7):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/mlock: optimize munlock_pagevec by relocking
+  mm/swap: only change the lru_lock iff page's lruvec is different
+  mm/pgdat: remove pgdat lru_lock
+  mm/lru: debug checking for page memcg moving and lock_page_memcg
+
+Hugh Dickins (1):
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst | 15 +---
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  6 +-
+ Documentation/trace/events-kmem.rst                |  2 +-
+ Documentation/vm/unevictable-lru.rst               | 22 ++---
+ include/linux/memcontrol.h                         | 63 ++++++++++++++
+ include/linux/mm_types.h                           |  2 +-
+ include/linux/mmzone.h                             |  5 +-
+ mm/compaction.c                                    | 59 ++++++++-----
+ mm/filemap.c                                       |  4 +-
+ mm/huge_memory.c                                   | 18 ++--
+ mm/memcontrol.c                                    | 88 +++++++++++++++-----
+ mm/mlock.c                                         | 28 +++----
+ mm/mmzone.c                                        |  1 +
+ mm/page_alloc.c                                    |  1 -
+ mm/page_idle.c                                     |  7 +-
+ mm/rmap.c                                          |  2 +-
+ mm/swap.c                                          | 75 +++++++----------
+ mm/vmscan.c                                        | 97 ++++++++++++----------
+ 18 files changed, 300 insertions(+), 195 deletions(-)
+
 -- 
-Dave Chinner
-david@fromorbit.com
+1.8.3.1
+
