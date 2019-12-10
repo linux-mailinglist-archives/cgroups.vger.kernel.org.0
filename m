@@ -2,19 +2,19 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F36A118717
-	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2019 12:49:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E387118705
+	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2019 12:48:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727761AbfLJLso (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Dec 2019 06:48:44 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:52377 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727219AbfLJLso (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Dec 2019 06:48:44 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R361e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0TkX5wtb_1575978473;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TkX5wtb_1575978473)
+        id S1727407AbfLJLsL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Dec 2019 06:48:11 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38675 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727525AbfLJLsI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Dec 2019 06:48:08 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R301e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0TkXAoo._1575978473;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TkXAoo._1575978473)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 10 Dec 2019 19:47:53 +0800
+          Tue, 10 Dec 2019 19:47:54 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-mm@kvack.org, akpm@linux-foundation.org,
@@ -23,12 +23,19 @@ To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         yang.shi@linux.alibaba.com, willy@infradead.org,
         shakeelb@google.com, hannes@cmpxchg.org
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH v5 5/8] mm/swap: only change the lru_lock iff page's lruvec is different
-Date:   Tue, 10 Dec 2019 19:46:21 +0800
-Message-Id: <1575978384-222381-6-git-send-email-alex.shi@linux.alibaba.com>
+        Vlastimil Babka <vbabka@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Arun KS <arunks@codeaurora.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        Alexander Potapenko <glider@google.com>
+Subject: [PATCH v5 6/8] mm/pgdat: remove pgdat lru_lock
+Date:   Tue, 10 Dec 2019 19:46:22 +0800
+Message-Id: <1575978384-222381-7-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1575978384-222381-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1575978384-222381-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -37,63 +44,57 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since we introduced relock_page_lruvec, we could use it in more place
-to reduce spin_locks.
+Now pgdat.lru_lock was replaced by lruvec lock. It's not used anymore.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
-Cc: Yafang Shao <laoar.shao@gmail.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Michal Hocko <mhocko@suse.com>
 Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Wei Yang <richard.weiyang@gmail.com>
+Cc: Arun KS <arunks@codeaurora.org>
+Cc: Oscar Salvador <osalvador@suse.de>
+Cc: Mike Rapoport <rppt@linux.vnet.ibm.com>
+Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Cc: Pavel Tatashin <pasha.tatashin@soleen.com>
+Cc: Alexander Potapenko <glider@google.com>
 Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 Cc: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
 ---
- mm/swap.c | 14 ++++++--------
- 1 file changed, 6 insertions(+), 8 deletions(-)
+ include/linux/mmzone.h | 1 -
+ mm/page_alloc.c        | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 97e108be4f92..84a845968e1d 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -196,11 +196,12 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
- 	for (i = 0; i < pagevec_count(pvec); i++) {
- 		struct page *page = pvec->pages[i];
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index a13b8a602ee5..a9334c8d42c8 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -734,7 +734,6 @@ struct deferred_split {
  
--		lruvec = lock_page_lruvec_irqsave(page, &flags);
-+		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
+ 	/* Write-intensive fields used by page reclaim */
+ 	ZONE_PADDING(_pad1_)
+-	spinlock_t		lru_lock;
  
- 		(*move_fn)(page, lruvec, arg);
--		unlock_page_lruvec_irqrestore(lruvec, flags);
- 	}
-+	if (lruvec)
-+		unlock_page_lruvec_irqrestore(lruvec, flags);
+ #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
+ 	/*
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f5ecbacb0e04..e8f2c8f755f4 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6803,7 +6803,6 @@ static void __meminit pgdat_init_internals(struct pglist_data *pgdat)
+ 	init_waitqueue_head(&pgdat->pfmemalloc_wait);
  
- 	release_pages(pvec->pages, pvec->nr);
- 	pagevec_reinit(pvec);
-@@ -819,14 +820,11 @@ void release_pages(struct page **pages, int nr)
- 		}
+ 	pgdat_page_ext_init(pgdat);
+-	spin_lock_init(&pgdat->lru_lock);
+ 	lruvec_init(&pgdat->__lruvec);
+ }
  
- 		if (PageLRU(page)) {
--			struct lruvec *new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+			struct lruvec *pre_lruvec = lruvec;
- 
--			if (new_lruvec != lruvec) {
--				if (lruvec)
--					unlock_page_lruvec_irqrestore(lruvec, flags);
-+			lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
-+			if (pre_lruvec != lruvec)
- 				lock_batch = 0;
--				lruvec = lock_page_lruvec_irqsave(page, &flags);
--			}
- 
- 			VM_BUG_ON_PAGE(!PageLRU(page), page);
- 			__ClearPageLRU(page);
 -- 
 1.8.3.1
 
