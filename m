@@ -2,89 +2,157 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 587B311957A
-	for <lists+cgroups@lfdr.de>; Tue, 10 Dec 2019 22:21:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EE8E11A334
+	for <lists+cgroups@lfdr.de>; Wed, 11 Dec 2019 04:52:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728852AbfLJVLu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Dec 2019 16:11:50 -0500
-Received: from mail.kernel.org ([198.145.29.99]:35012 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728847AbfLJVLt (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 10 Dec 2019 16:11:49 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D1CEE246BF;
-        Tue, 10 Dec 2019 21:11:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1576012308;
-        bh=tAbFYOoxcn51RpAMI0jKgF/Wshvkc/kFB0GWGJLeoG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=U6lpSmT7lRZteQcPbzSJgxrw2k8vooZf45pspkmzmQVY7tDEZLgHWyY3EYkEg4qxA
-         2USyNP5vcmXhVFiPmQzqH8cZUpu8P163HJDAQXwN3OCpbOZ2HjAAeMSETsOlyDevOS
-         8gjEHMS91QPIA2lKcTIGWR0aRDAsRN63XA5qc9D0=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Honglei Wang <honglei.wang@oracle.com>,
-        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 244/350] cgroup: freezer: don't change task and cgroups status unnecessarily
-Date:   Tue, 10 Dec 2019 16:05:49 -0500
-Message-Id: <20191210210735.9077-205-sashal@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20191210210735.9077-1-sashal@kernel.org>
-References: <20191210210735.9077-1-sashal@kernel.org>
+        id S1726717AbfLKDwp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Dec 2019 22:52:45 -0500
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54312 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726642AbfLKDwo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Dec 2019 22:52:44 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0TkapNAY_1576036356;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TkapNAY_1576036356)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 11 Dec 2019 11:52:37 +0800
+Subject: Re: [PATCH v5 2/8] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, shakeelb@google.com,
+        hannes@cmpxchg.org, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1575978384-222381-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1575978384-222381-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20191210134133.GI32169@bombadil.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <b86dc335-fad6-01a1-77ba-3d2a9d5c4c22@linux.alibaba.com>
+Date:   Wed, 11 Dec 2019 11:51:47 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.1
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+In-Reply-To: <20191210134133.GI32169@bombadil.infradead.org>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Honglei Wang <honglei.wang@oracle.com>
 
-[ Upstream commit 742e8cd3e1ba6f19cad6d912f8d469df5557d0fd ]
 
-It's not necessary to adjust the task state and revisit the state
-of source and destination cgroups if the cgroups are not in freeze
-state and the task itself is not frozen.
+ÔÚ 2019/12/10 ÏÂÎç9:41, Matthew Wilcox Ð´µÀ:
+> On Tue, Dec 10, 2019 at 07:46:18PM +0800, Alex Shi wrote:
+>> -static void lock_page_lru(struct page *page, int *isolated)
+>> +static struct lruvec *lock_page_lru(struct page *page, int *isolated)
+>>  {
+>> -	pg_data_t *pgdat = page_pgdat(page);
+>> +	struct lruvec *lruvec = lock_page_lruvec_irq(page);
+>>  
+>> -	spin_lock_irq(&pgdat->lru_lock);
+>>  	if (PageLRU(page)) {
+>> -		struct lruvec *lruvec;
+>>  
+>> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>>  		ClearPageLRU(page);
+>>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>>  		*isolated = 1;
+>>  	} else
+>>  		*isolated = 0;
+>> +
+>> +	return lruvec;
+>>  }
+> 
+> I still don't understand how this is supposed to work for !PageLRU
+> pages.  Which lruvec have you locked if this page isn't on an LRU?
+> 
 
-And in this scenario, it wakes up the task who's not supposed to be
-ready to run.
+Good question. We could just fold it under PageLRU and no meaning changes.
+Is this better to has this patch?
 
-Don't do the unnecessary task state adjustment can help stop waking
-up the task without a reason.
+Thanks
+Alex
 
-Signed-off-by: Honglei Wang <honglei.wang@oracle.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/cgroup/freezer.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+commit 0f4b66d4a42397d57638352b738c3f9658003e44
+Author: Alex Shi <alex.shi@linux.alibaba.com>
+Date:   Wed Dec 11 11:31:53 2019 +0800
 
-diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-index 8cf0106806789..3984dd6b8ddbc 100644
---- a/kernel/cgroup/freezer.c
-+++ b/kernel/cgroup/freezer.c
-@@ -230,6 +230,15 @@ void cgroup_freezer_migrate_task(struct task_struct *task,
- 	if (task->flags & PF_KTHREAD)
- 		return;
- 
-+	/*
-+	 * It's not necessary to do changes if both of the src and dst cgroups
-+	 * are not freezing and task is not frozen.
-+	 */
-+	if (!test_bit(CGRP_FREEZE, &src->flags) &&
-+	    !test_bit(CGRP_FREEZE, &dst->flags) &&
-+	    !task->frozen)
-+		return;
-+
- 	/*
- 	 * Adjust counters of freezing and frozen tasks.
- 	 * Note, that if the task is frozen, but the destination cgroup is not
--- 
-2.20.1
+    mm/memcg: fold lock in lock_page_lru
 
+    According to the calling path of commit_charge, the lrucare is bound
+    with PageLRU, so we could just fold it under PageLRU. This has no
+    functional change.
+
+    Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+    Cc: Johannes Weiner <hannes@cmpxchg.org>
+    Cc: Michal Hocko <mhocko@kernel.org>
+    Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+    Cc: Andrew Morton <akpm@linux-foundation.org>
+    Cc: cgroups@vger.kernel.org
+    Cc: linux-mm@kvack.org
+    Cc: linux-kernel@vger.kernel.org
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 833df0ce1bc1..4fe2252cf437 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2622,9 +2622,10 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+
+ static struct lruvec *lock_page_lru(struct page *page, int *isolated)
+ {
+-       struct lruvec *lruvec = lock_page_lruvec_irq(page);
++       struct lruvec *lruvec = NULL;
+
+        if (PageLRU(page)) {
++               lruvec = lock_page_lruvec_irq(page);
+
+                ClearPageLRU(page);
+                del_page_from_lru_list(page, lruvec, page_lru(page));
+@@ -2638,17 +2639,18 @@ static struct lruvec *lock_page_lru(struct page *page, int *isolated)
+ static void unlock_page_lru(struct page *page, int isolated,
+                                struct lruvec *locked_lruvec)
+ {
+-       struct lruvec *lruvec;
++       if (isolated) {
++               struct lruvec *lruvec;
+
+-       unlock_page_lruvec_irq(locked_lruvec);
+-       lruvec = lock_page_lruvec_irq(page);
++               if (locked_lruvec)
++                       unlock_page_lruvec_irq(locked_lruvec);
++               lruvec = lock_page_lruvec_irq(page);
+
+-       if (isolated) {
+                VM_BUG_ON_PAGE(PageLRU(page), page);
+                SetPageLRU(page);
+                add_page_to_lru_list(page, lruvec, page_lru(page));
++               unlock_page_lruvec_irq(lruvec);
+        }
+-       unlock_page_lruvec_irq(lruvec);
+ }
+
+ static void commit_charge(struct page *page, struct mem_cgroup *memcg,
