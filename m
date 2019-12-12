@@ -2,125 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 714B211D17C
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 16:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 768C811D23E
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 17:27:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729416AbfLLPwa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Dec 2019 10:52:30 -0500
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:34537 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729247AbfLLPwa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 10:52:30 -0500
-Received: by mail-lf1-f67.google.com with SMTP id l18so2093628lfc.1;
-        Thu, 12 Dec 2019 07:52:29 -0800 (PST)
+        id S1729862AbfLLQ11 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Dec 2019 11:27:27 -0500
+Received: from mail-io1-f51.google.com ([209.85.166.51]:35323 "EHLO
+        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729839AbfLLQ11 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 11:27:27 -0500
+Received: by mail-io1-f51.google.com with SMTP id v18so3452837iol.2
+        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2019 08:27:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=dpmXptq7OKBhaK+45aA6Sk+usjB5L4G2Vmog6jpDgyw=;
-        b=odlBjnFPGX0ZO9arATJ1dR4Dz6rZUqHjHcaxZBNYqlZX2Z4Hg9kbk7mf7gpCD9kim7
-         Cmv9vvmlMr0uHJlwOpcMeXOT0JQzjLoYWNu2yE0cE/wSbxyMxl7+JlaA770IfQFuXGgy
-         Z6OCe241nCddn01WXs3uDHiub16yE45CSU6VJzBormOFoKGjCqi1KJ5a1YkhpcTHSIOv
-         QRC/Jejx8czwzgsXG8nrYtutuCBil92CpOv0BbSKi7jKWGeRj9V1yMBKV1I9SSLLM3Tn
-         9l7mUqDn1BR3A6cXZKDPp9edo1UqaB/gy9ZBCrJ05tR2KIXiUdFMlV332edd0CmZVM65
-         qx2w==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=L2CjDVtbtRmSS9p/ZMC2e8zHEfBbFA8EoUfM5bDUuwA=;
+        b=T6xkncOLY8LZ+5xON4nDUfI/fzvqKg69ZBb0XfMIjL9EDlMcrpyTzYV3jPEUECIu7e
+         /6VePkJbfJ02IxgtjhVi7zhODL3RzicRz8RUUxTG9FMA0/+l2gwHg1lkXa+9Xz19lG5P
+         RIW0WHds+gFZXVLHMoYOU2aVxFfugcJGN8+IRth7RzCBvBQvkKfr6RZdZFv3XFAGcEv8
+         0jvtGdkjF2LOv6J2oK0OhlmGZ96TS3op6ZjE2hRprquRNtnWc1QVP2D5xZElq0NP++dH
+         FdY9uKj1DamP/Cer06/nmE/izvRIUNoXzSdvxib0JD4MDAk3nsjsBw7M9wgtvidm7gjA
+         sI2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dpmXptq7OKBhaK+45aA6Sk+usjB5L4G2Vmog6jpDgyw=;
-        b=LDCJwTB3ZJuOA00DOBZfvMUeooHZf9S0CcJTEQASRIRfgeri6JP/4wE8eL41PO6mlc
-         pdiEYMFOVVIEHeU5VThXT7IUOXOs4/+qAyydRnrBpCqQQpOQmVRPIhaspgVu0mKZfln8
-         JPWDPuVJ0Pq5XRIvmzdPYPy39VlCldUFEGJx5Fsk3a8UtUQf7ubXFUt7Yr8ts1midPve
-         EpKy4NvR6t3deBFLfEqjlt+FA19LAdt51gDzDH4SmQCnCtPHRqg6Zgl9/itVUZKTBtPn
-         OyPCJIfml5ABizfuMo5Oi+RaqHqa+8oJivsJ6duV5llAuUGKTkzXuCZ4L8yuLkDG/Psc
-         fr8A==
-X-Gm-Message-State: APjAAAXkE7BZvpBTYU1GyeEYy8ENL+75/EjnYykyYpa66JOImMALg8pT
-        uB4PsNqG/V0s6I3oMNO6HlDREr44hmY=
-X-Google-Smtp-Source: APXvYqzFK4v4EprOD6qHgt4SYo7PSKA5G5ZJKA0TczYCgPK7+CLGPgYLsBnoMIF3Xc6+nibJ5bdsrQ==
-X-Received: by 2002:a17:906:3796:: with SMTP id n22mr10391919ejc.222.1576165947318;
-        Thu, 12 Dec 2019 07:52:27 -0800 (PST)
-Received: from ls00508.pb.local ([2001:1438:4010:2540:1467:8db0:560a:58ea])
-        by smtp.gmail.com with ESMTPSA id f25sm166950ejx.76.2019.12.12.07.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Dec 2019 07:52:26 -0800 (PST)
-From:   jgq516@gmail.com
-X-Google-Original-From: guoqing.jiang@cloud.ionos.com
-To:     tj@kernel.org, axboe@kernel.dk
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=L2CjDVtbtRmSS9p/ZMC2e8zHEfBbFA8EoUfM5bDUuwA=;
+        b=CeqLZU3U1dGqnlLtrUJ4zQjeAXLsFi+6xrveGvIpTXjIkfC8yiobNuL4rM9g+sa5/j
+         j/CwLxOgtrv8QZ78I/zIPFfmtb2sfYxaa9pf1/m6dIXZf1umL8Sv1rct0Gp9k+mYJ3WP
+         EPvH4hj695RbKQNPumi5N41zPS0Xe6D9RnMvbv4CIXsGRM5cDkeuEWq/ReAMegB6vJrd
+         1KtheyL6h4rKzheoUvJMUOCVDqfJaFfW7dZYr1znmB8q8gQmIqr5bCxLSGlRNdseMtd5
+         Zw4te89LRHBdxNYz7Wacj1v6Y4fyYX6keUtrxdAyJUNNg2Dg2la0M56FCfWwUytbLH4+
+         OLVg==
+X-Gm-Message-State: APjAAAV8Ro+5FOdtcfPFR3zyrt38Og5+QqIxCmL2hFk0GezWRtGpoexX
+        D4IQt7Y7KhGj1SnQ3Zsa1VZWZQ==
+X-Google-Smtp-Source: APXvYqxoJV4anqq+qDAdhKogptjDsSD2zTMOztmiodrLP2ZIGIITw+1PsHhlCWyUyDRKNb2x5gMkZA==
+X-Received: by 2002:a05:6638:304:: with SMTP id w4mr8644279jap.81.1576168046416;
+        Thu, 12 Dec 2019 08:27:26 -0800 (PST)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id k7sm1836770ilg.49.2019.12.12.08.27.25
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Dec 2019 08:27:25 -0800 (PST)
+Subject: Re: [PATCH v2] blk-cgroup: remove blkcg_drain_queue
+To:     jgq516@gmail.com, tj@kernel.org
 Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
         Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-Subject: [PATCH v2] blk-cgroup: remove blkcg_drain_queue
-Date:   Thu, 12 Dec 2019 16:52:00 +0100
-Message-Id: <20191212155200.13403-1-guoqing.jiang@cloud.ionos.com>
-X-Mailer: git-send-email 2.17.1
+References: <20191212155200.13403-1-guoqing.jiang@cloud.ionos.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <3f8133d5-fb25-a588-3cd8-b3b6dbfae4c8@kernel.dk>
+Date:   Thu, 12 Dec 2019 09:27:24 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
+MIME-Version: 1.0
+In-Reply-To: <20191212155200.13403-1-guoqing.jiang@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+On 12/12/19 8:52 AM, jgq516@gmail.com wrote:
+> From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+> 
+> Since blk_drain_queue had already been removed, so this function
+> is not needed anymore.
 
-Since blk_drain_queue had already been removed, so this function
-is not needed anymore.
+Applied, thanks.
 
-Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
----
-v2 changes:
-1. remove blkcg_drain_queue in header file.
-
- block/blk-cgroup.c         | 20 --------------------
- include/linux/blk-cgroup.h |  2 --
- 2 files changed, 22 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 708dea92dac8..a229b94d5390 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -1061,26 +1061,6 @@ int blkcg_init_queue(struct request_queue *q)
- 	return PTR_ERR(blkg);
- }
- 
--/**
-- * blkcg_drain_queue - drain blkcg part of request_queue
-- * @q: request_queue to drain
-- *
-- * Called from blk_drain_queue().  Responsible for draining blkcg part.
-- */
--void blkcg_drain_queue(struct request_queue *q)
--{
--	lockdep_assert_held(&q->queue_lock);
--
--	/*
--	 * @q could be exiting and already have destroyed all blkgs as
--	 * indicated by NULL root_blkg.  If so, don't confuse policies.
--	 */
--	if (!q->root_blkg)
--		return;
--
--	blk_throtl_drain(q);
--}
--
- /**
-  * blkcg_exit_queue - exit and release blkcg part of request_queue
-  * @q: request_queue being released
-diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
-index 19394c77ed99..e4a6949fd171 100644
---- a/include/linux/blk-cgroup.h
-+++ b/include/linux/blk-cgroup.h
-@@ -188,7 +188,6 @@ struct blkcg_gq *__blkg_lookup_create(struct blkcg *blkcg,
- struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
- 				    struct request_queue *q);
- int blkcg_init_queue(struct request_queue *q);
--void blkcg_drain_queue(struct request_queue *q);
- void blkcg_exit_queue(struct request_queue *q);
- 
- /* Blkio controller policy registration */
-@@ -720,7 +719,6 @@ static inline struct blkcg_gq *blkg_lookup(struct blkcg *blkcg, void *key) { ret
- static inline struct blkcg_gq *blk_queue_root_blkg(struct request_queue *q)
- { return NULL; }
- static inline int blkcg_init_queue(struct request_queue *q) { return 0; }
--static inline void blkcg_drain_queue(struct request_queue *q) { }
- static inline void blkcg_exit_queue(struct request_queue *q) { }
- static inline int blkcg_policy_register(struct blkcg_policy *pol) { return 0; }
- static inline void blkcg_policy_unregister(struct blkcg_policy *pol) { }
 -- 
-2.17.1
+Jens Axboe
 
