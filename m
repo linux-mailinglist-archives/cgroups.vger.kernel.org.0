@@ -2,77 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 768C811D23E
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 17:27:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 274AF11D6F7
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 20:21:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729862AbfLLQ11 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Dec 2019 11:27:27 -0500
-Received: from mail-io1-f51.google.com ([209.85.166.51]:35323 "EHLO
-        mail-io1-f51.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729839AbfLLQ11 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 11:27:27 -0500
-Received: by mail-io1-f51.google.com with SMTP id v18so3452837iol.2
-        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2019 08:27:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=L2CjDVtbtRmSS9p/ZMC2e8zHEfBbFA8EoUfM5bDUuwA=;
-        b=T6xkncOLY8LZ+5xON4nDUfI/fzvqKg69ZBb0XfMIjL9EDlMcrpyTzYV3jPEUECIu7e
-         /6VePkJbfJ02IxgtjhVi7zhODL3RzicRz8RUUxTG9FMA0/+l2gwHg1lkXa+9Xz19lG5P
-         RIW0WHds+gFZXVLHMoYOU2aVxFfugcJGN8+IRth7RzCBvBQvkKfr6RZdZFv3XFAGcEv8
-         0jvtGdkjF2LOv6J2oK0OhlmGZ96TS3op6ZjE2hRprquRNtnWc1QVP2D5xZElq0NP++dH
-         FdY9uKj1DamP/Cer06/nmE/izvRIUNoXzSdvxib0JD4MDAk3nsjsBw7M9wgtvidm7gjA
-         sI2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=L2CjDVtbtRmSS9p/ZMC2e8zHEfBbFA8EoUfM5bDUuwA=;
-        b=CeqLZU3U1dGqnlLtrUJ4zQjeAXLsFi+6xrveGvIpTXjIkfC8yiobNuL4rM9g+sa5/j
-         j/CwLxOgtrv8QZ78I/zIPFfmtb2sfYxaa9pf1/m6dIXZf1umL8Sv1rct0Gp9k+mYJ3WP
-         EPvH4hj695RbKQNPumi5N41zPS0Xe6D9RnMvbv4CIXsGRM5cDkeuEWq/ReAMegB6vJrd
-         1KtheyL6h4rKzheoUvJMUOCVDqfJaFfW7dZYr1znmB8q8gQmIqr5bCxLSGlRNdseMtd5
-         Zw4te89LRHBdxNYz7Wacj1v6Y4fyYX6keUtrxdAyJUNNg2Dg2la0M56FCfWwUytbLH4+
-         OLVg==
-X-Gm-Message-State: APjAAAV8Ro+5FOdtcfPFR3zyrt38Og5+QqIxCmL2hFk0GezWRtGpoexX
-        D4IQt7Y7KhGj1SnQ3Zsa1VZWZQ==
-X-Google-Smtp-Source: APXvYqxoJV4anqq+qDAdhKogptjDsSD2zTMOztmiodrLP2ZIGIITw+1PsHhlCWyUyDRKNb2x5gMkZA==
-X-Received: by 2002:a05:6638:304:: with SMTP id w4mr8644279jap.81.1576168046416;
-        Thu, 12 Dec 2019 08:27:26 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id k7sm1836770ilg.49.2019.12.12.08.27.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Dec 2019 08:27:25 -0800 (PST)
-Subject: Re: [PATCH v2] blk-cgroup: remove blkcg_drain_queue
-To:     jgq516@gmail.com, tj@kernel.org
-Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-References: <20191212155200.13403-1-guoqing.jiang@cloud.ionos.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <3f8133d5-fb25-a588-3cd8-b3b6dbfae4c8@kernel.dk>
-Date:   Thu, 12 Dec 2019 09:27:24 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1730338AbfLLTVd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Dec 2019 14:21:33 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([207.211.31.120]:29183 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730168AbfLLTVd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 14:21:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1576178492;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=MNdyMW+9R8OjH9E5NWw9gkGV5v5acY4lW0YP7ujMB0E=;
+        b=NfqDMtZcgm+bY6GhH+D8YG4hIRhPb4AIYonR96XQcH1dWC8lqt6MUTP3fzRcBiSfEttuL3
+        d087b3bSYuLExcuA1w2bpPjHsIMF+xrDnlccER0+v2JSNsvr5raMy4a4rUGFngxCtuwfUR
+        r6R+WoNDW5VPFAwaMFhPK7F7j4x65Rg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-gONwxeXJPHq7Tws4H7DOtw-1; Thu, 12 Dec 2019 14:21:27 -0500
+X-MC-Unique: gONwxeXJPHq7Tws4H7DOtw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C770F477;
+        Thu, 12 Dec 2019 19:21:24 +0000 (UTC)
+Received: from localhost (ovpn-116-111.ams2.redhat.com [10.36.116.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4637410013A1;
+        Thu, 12 Dec 2019 19:21:23 +0000 (UTC)
+From:   Giuseppe Scrivano <gscrivan@redhat.com>
+To:     cgroups@vger.kernel.org
+Cc:     mike.kravetz@oracle.com, tj@kernel.org, mkoutny@suse.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, almasrymina@google.com
+Subject: Re: [PATCH v4] mm: hugetlb controller for cgroups v2
+References: <20191205114739.12294-1-gscrivan@redhat.com>
+Date:   Thu, 12 Dec 2019 20:21:21 +0100
+In-Reply-To: <20191205114739.12294-1-gscrivan@redhat.com> (Giuseppe Scrivano's
+        message of "Thu, 5 Dec 2019 12:47:39 +0100")
+Message-ID: <87fthpl58u.fsf@redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.2 (gnu/linux)
 MIME-Version: 1.0
-In-Reply-To: <20191212155200.13403-1-guoqing.jiang@cloud.ionos.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/12/19 8:52 AM, jgq516@gmail.com wrote:
-> From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
-> 
-> Since blk_drain_queue had already been removed, so this function
-> is not needed anymore.
+Giuseppe Scrivano <gscrivan@redhat.com> writes:
 
-Applied, thanks.
+> In the effort of supporting cgroups v2 into Kubernetes, I stumped on
+> the lack of the hugetlb controller.
+>
+> When the controller is enabled, it exposes three new files for each
+> hugetlb size on non-root cgroups:
+>
+> - hugetlb.<hugepagesize>.current
+> - hugetlb.<hugepagesize>.max
+> - hugetlb.<hugepagesize>.events
+> - hugetlb.<hugepagesize>.events.local
+>
+> The differences with the legacy hierarchy are in the file names and
+> using the value "max" instead of "-1" to disable a limit.
+>
+> The file .limit_in_bytes is renamed to .max.
+>
+> The file .usage_in_bytes is renamed to .usage.
+>
+> .failcnt is not provided as a single file anymore, but its value can
+> be read through the new flat-keyed files .events and .events.local,
+> through the "max" key.
+>
+> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> ---
+> v4:
+>   - fix .events file to record and notify all the events in the sub
+>     directories
+>   - add .events.local file to record events only in the current cgroup
+>
+> v3: https://www.spinics.net/lists/cgroups/msg23922.html
+>   - simplify hugetlb_cgroup_read_u64_max and drop dead code
+>   - notify changes to the .events file
+>
+> v2: https://www.spinics.net/lists/cgroups/msg23917.html
+>   - dropped max_usage_in_bytes and renamed .stats::failcnt to .events::max
+>
+> v1: https://www.spinics.net/lists/cgroups/msg23893.html
 
--- 
-Jens Axboe
+is there anything I could do to move this forward?
+
+Thanks,
+Giuseppe
 
