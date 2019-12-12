@@ -2,76 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B78611CC6F
-	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 12:43:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D2E9811CF60
+	for <lists+cgroups@lfdr.de>; Thu, 12 Dec 2019 15:09:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729039AbfLLLnU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Dec 2019 06:43:20 -0500
-Received: from mail-il1-f196.google.com ([209.85.166.196]:44948 "EHLO
-        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726492AbfLLLnU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 06:43:20 -0500
-Received: by mail-il1-f196.google.com with SMTP id z12so1722182iln.11
-        for <cgroups@vger.kernel.org>; Thu, 12 Dec 2019 03:43:19 -0800 (PST)
+        id S1729584AbfLLOJE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Dec 2019 09:09:04 -0500
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:36582 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729603AbfLLOJD (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Dec 2019 09:09:03 -0500
+Received: by mail-ed1-f65.google.com with SMTP id j17so1925138edp.3;
+        Thu, 12 Dec 2019 06:09:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=YAwJgUH5RQkH3idjqMvC56MC8tzHFjjSfPGzAFX1Q2g=;
-        b=ETmqaJeU3nzLUeIb/i+MkO/6oYuQ2YIca61zMNa+pAPu3MGfe3JmCDymdjD0xqKsR9
-         rBbXWjOFZfuU/IvD8yfTeMra8bxz5nDioEodXH8GnGUeWGNWhQowFCBvzVduWtAaeUV7
-         UtCp2OCgeHOmLVxlat25KNqshPBoR3CmeLQYiQZ0C/8DNzFlQZ6aenoK1wXJ6l7Dysh1
-         hwgI3bs3jCK+AN3ZgEnFmwCCBZdKvP4CswyiqwLPuEcYeegmtE+Em748+pVQusOOvG+w
-         3C36Zv5r5J3l0/Wjdp7Zf0MUUpPjBCToOx1Y6OmtK4jo1TAayiJrocGEoZCNo7BB80fT
-         nHNg==
+        h=from:to:cc:subject:date:message-id;
+        bh=g2DYtG1fBQ6px3ecWGYXwRbrai1LWXOdFTpOAsDGfMA=;
+        b=IcKACO99Ks3RgKSrUbaA0GGiGyKBCvFovRFwVe1pDl/xs3Zyc7TrdApXSxyW7ME2K5
+         OfzIv2ettywGHllWbr6/IEz4wxv6cpmAWZwf40u94HMrbipL9toeyAXJe76IBU+6efRu
+         BpYF5khnUbidCdQZ5DMIkmDo6LCiDfbQyhuJlnEjs+VMdMasXRCaGr5vz6vZDH5ra4aJ
+         raC8HX7N04zpKHlF7CHPB1I538t1geYpw5wHPRW2Om08sQtpVKFeSd4R8NZ+oTKPI+Fh
+         J7xsbn91E74q/1SGkitYFRznDUbFrrG4pstFjlHCjSMvkbJMlrbP8qz9+QDaxSo7xBd6
+         mcVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=YAwJgUH5RQkH3idjqMvC56MC8tzHFjjSfPGzAFX1Q2g=;
-        b=d/FJUvHNr44b7HCSwHxK29wP6+seVnj9wxyjsPhHUS7uvmbDUx6S+36JxRJ5VZegKR
-         mczg6J4V7kwWfylzF4867mQyYDDcxAoq2LTq6443LZEPW6P6mgQO0vbJn+XJY+aPDIns
-         Tat+Eh7CovKRZmX9igYn9qcCTdRycq8GDBO5Qs01fRArKBaiEZYypjChsTke4Qt+/Pbg
-         Pei7YdKzS1l0IscYnT6DgsH17tjbNnZ+jESd4DNhy4XlMDl0/sPGs1TjOXdHPOObVxdl
-         RIc/P3+jDGnQEsAR/+BOg/c0OBRBaSCOrbfAUqY2aptYIPWepBDsUdepzj5NeIG3nHU5
-         Gq7Q==
-X-Gm-Message-State: APjAAAWWOMdK9TocGLPilcU9CtdQearD9eo31e5eBVTw32HJrKcQS8xK
-        8RtOsSXmxJL34A9MS7bd8wiCM0/CcIjITyG/osk=
-X-Google-Smtp-Source: APXvYqzv68IM9P/OElxQ67KizI2hvBaaxnu800VXoddVplYOLFtL5NxH9mn7zdp1LUvXqdAlDCoC/mf7zmi+Er3u4+A=
-X-Received: by 2002:a05:6e02:80c:: with SMTP id u12mr7802964ilm.273.1576150999423;
- Thu, 12 Dec 2019 03:43:19 -0800 (PST)
-MIME-Version: 1.0
-Reply-To: bashamzebdani@gmail.com
-Received: by 2002:a6b:5019:0:0:0:0:0 with HTTP; Thu, 12 Dec 2019 03:43:18
- -0800 (PST)
-From:   "Mr.Basham Zebdani" <bashamzebdani@gmail.com>
-Date:   Thu, 12 Dec 2019 03:43:18 -0800
-X-Google-Sender-Auth: CzG9h3-C5RilrYXqRyBmvRMDAbY
-Message-ID: <CAEc9XGHgVS_VpbN5rdhN-jYGNS_Et5Mx4FQKaSu1ANywu+OuaA@mail.gmail.com>
-Subject: PRODUCT SUPPLY
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=g2DYtG1fBQ6px3ecWGYXwRbrai1LWXOdFTpOAsDGfMA=;
+        b=PSiwiCcc6HK2bmIQNwadte6HxpQtoHgLDU4/UqnNO1Bzsw12j8CCfGXzzSiQNvNwSs
+         0nVbw4fx0sroERD6DNaORWvaupICneW4wa7lq+ut2x+hl/ZxwtQYzl4m+wC7/QrAZCpu
+         PjWmoL13bTO8ppcgMBKanXKt3sQdEpSmSEdEX5durGgqCNFcPLgnxqecgifQrMlY2xIU
+         0qFm2L5t0vgfEtl3J1Pl1441tY8kFZmDuvI5J6zD+mVERY/uHmL/N/6andrv5igWYIQ1
+         aRaYHChNCJ31cXzbCgiNaysK6QsxSfjTN9Rw3dnDj5Am9AvGlVxIQYY+Pe+4RhBLORZf
+         5zwA==
+X-Gm-Message-State: APjAAAVs0pGEhzrrLIuqx5TLNVAETJ/LkUzu1nQR2T2fAIKGH0BWdkiX
+        S5l2WxemUGlOyvQakXJkfL4=
+X-Google-Smtp-Source: APXvYqzNyuKExjH6wzzsVG/QW2WyQAYOCJrKIfhXr3uRP0h9cMPnVR5DfEkhn6LaZDdCYEsXz77dRQ==
+X-Received: by 2002:a50:ac71:: with SMTP id w46mr9724440edc.27.1576159741910;
+        Thu, 12 Dec 2019 06:09:01 -0800 (PST)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:1467:8db0:560a:58ea])
+        by smtp.gmail.com with ESMTPSA id cw10sm157774ejb.56.2019.12.12.06.09.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Dec 2019 06:09:01 -0800 (PST)
+From:   jgq516@gmail.com
+X-Google-Original-From: guoqing.jiang@cloud.ionos.com
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCH] blk-cgroup: remove blkcg_drain_queue
+Date:   Thu, 12 Dec 2019 15:08:51 +0100
+Message-Id: <20191212140851.19107-1-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear Sir/ Madam,
+From: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
 
-I am writing  you from  the Republic of Burkina Faso for  trade
-inquiry. I want to send you a request for quote. Please send me your
-brochure,  product catalog and pricing information.
+Since blk_drain_queue had already been removed, so this function
+is not needed anymore.
 
-Also tell me your nearest sales  office to Burkina Faso. We hope to
-build a long term business relationship with your respective  company
-therefore your information and cooperation will be much  appreciated.
+Signed-off-by: Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+---
+ block/blk-cgroup.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
 
-Please do not hesitate to contact me if you need any further
-information or help from our side and hope to hear from you soon.
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 708dea92dac8..a229b94d5390 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1061,26 +1061,6 @@ int blkcg_init_queue(struct request_queue *q)
+ 	return PTR_ERR(blkg);
+ }
+ 
+-/**
+- * blkcg_drain_queue - drain blkcg part of request_queue
+- * @q: request_queue to drain
+- *
+- * Called from blk_drain_queue().  Responsible for draining blkcg part.
+- */
+-void blkcg_drain_queue(struct request_queue *q)
+-{
+-	lockdep_assert_held(&q->queue_lock);
+-
+-	/*
+-	 * @q could be exiting and already have destroyed all blkgs as
+-	 * indicated by NULL root_blkg.  If so, don't confuse policies.
+-	 */
+-	if (!q->root_blkg)
+-		return;
+-
+-	blk_throtl_drain(q);
+-}
+-
+ /**
+  * blkcg_exit_queue - exit and release blkcg part of request_queue
+  * @q: request_queue being released
+-- 
+2.17.1
 
-Mr, Basham Zebdani
-
-Basham Zebdani Et Commerce Sarl.
-NO. 816, Avenue Joseph Ki-Zerbo .
-Ouagadougou 101 Burkina Faso.
-
-Cell Phone, +226 55667447
