@@ -2,104 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E46A411E1ED
-	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2019 11:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B495F11EB13
+	for <lists+cgroups@lfdr.de>; Fri, 13 Dec 2019 20:22:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725906AbfLMK32 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 Dec 2019 05:29:28 -0500
-Received: from us-smtp-1.mimecast.com ([207.211.31.81]:25578 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1725793AbfLMK32 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Dec 2019 05:29:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576232967;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=2Z0TFM5AXk7Qoe9QkAjK90diNXEHkvPDf5Fst1MN3bw=;
-        b=gueH7XEJVqzxXzEq+DwJIdbgpNEN0VqBA/dySNV5s5cHG7NaNRcgoh982SiGwqf7fVDj+M
-        8FewdeTd0C1i9l8pELkrLed9gkojZW78DYJYU+TJZv31bpyGlO4o5/hFhkId1kg6shudtm
-        RcgKucIOgHYy6FiEiImCS/WEqynuekM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-kzsbzHV0OEq78RFk8GrISA-1; Fri, 13 Dec 2019 05:29:23 -0500
-X-MC-Unique: kzsbzHV0OEq78RFk8GrISA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 26722800D41;
-        Fri, 13 Dec 2019 10:29:22 +0000 (UTC)
-Received: from localhost (ovpn-116-111.ams2.redhat.com [10.36.116.111])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id AD17A60BA8;
-        Fri, 13 Dec 2019 10:29:21 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        tj@kernel.org, mkoutny@suse.com, lizefan@huawei.com,
-        almasrymina@google.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH v4] mm: hugetlb controller for cgroups v2
-References: <20191205114739.12294-1-gscrivan@redhat.com>
-        <20191212194148.GB163236@cmpxchg.org>
-        <2a203549-5fe6-f13f-7d96-7e33d88327c1@oracle.com>
-Date:   Fri, 13 Dec 2019 11:29:20 +0100
-In-Reply-To: <2a203549-5fe6-f13f-7d96-7e33d88327c1@oracle.com> (Mike Kravetz's
-        message of "Thu, 12 Dec 2019 15:18:47 -0800")
-Message-ID: <8736doldrz.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.2 (gnu/linux)
+        id S1728455AbfLMTWI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 13 Dec 2019 14:22:08 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:36212 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728800AbfLMTWH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Dec 2019 14:22:07 -0500
+Received: by mail-qk1-f196.google.com with SMTP id a203so137929qkc.3
+        for <cgroups@vger.kernel.org>; Fri, 13 Dec 2019 11:22:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Md8aPp7pWyGuw5IIpUNdRQgPAvuPZuMepp2Ahz2Nx4M=;
+        b=wgSZLGRUOXwzFB4dfBnzTeSU23C7S7RRsjtSNusnCzXmKwnqrtYtHchbbxHW6dqapq
+         MjghPETHNvKrpaC4P42jqcAt5wpcqzU0OADzTYo1e7xY99FcQTby3wlOrGvEBtpkc3L2
+         6G0T1SS8d+6LQjg38Y2yKe6cLvZylqzSJ+aEhVQjCpBshBp3/jeI6QsuKw3DcOyxqTBC
+         MsKge1RHa22f8HtCjtNI02qMb+YOCDmCOgVfeMTTv/2eA/4D6h9d1lEZPJxI6dUoIiQa
+         sp8jbhVfvh+id58flVOEQZM5L+C5XnCBhhgjSG85RPGD9hI6Pm1nbl37bI40mNck5b3M
+         gQpw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Md8aPp7pWyGuw5IIpUNdRQgPAvuPZuMepp2Ahz2Nx4M=;
+        b=FOaCc1EEzaTzdZXNpaHQr25QNpt+S2h5emH5k/e86rFgPfNlvDUyzstWYCAPjvcymc
+         irJQfzW84bNbrIN2GxaFpo15TF1YbiZP9FV5j7WRAQJiQmE+eYOI5mTHizbO8rZn+Smk
+         0UJMI7JL3e0k1ViKuAz9fDOmpUqWqGQUBEiscDQFUHexJH0pm/OEkXqs/ueFeLn/+TgN
+         z35Q0pKbf+N3gLL6s1Rj8r/9eACtDgTEt0OhAasxs98M2j99Ow+10MY4GgE1cFic/QAX
+         bUpWNGZHaR9vPQx0+ImjsIrsm5lOmPw46ZZZMb9m0TfiRBolBY05PDBzxtZT7GdQojeq
+         khOQ==
+X-Gm-Message-State: APjAAAUBqRYuT/nTPaXuzklchMq+AA/0DIJKpFmMSGeCi2E5lkMwGDR4
+        AZav+4/oODHnjzSYpyskNuGVaw==
+X-Google-Smtp-Source: APXvYqw3FXp7YEWHaxT92Q3RIcSBkI/2b737GDnuzflnKDpEga0bi1FPxsejP17D7pOITWtyao4ogA==
+X-Received: by 2002:ae9:c112:: with SMTP id z18mr6555577qki.145.1576264926538;
+        Fri, 13 Dec 2019 11:22:06 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id c37sm3735674qta.56.2019.12.13.11.22.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Dec 2019 11:22:05 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 0/3] mm: memcontrol: recursive memory protection
+Date:   Fri, 13 Dec 2019 14:21:55 -0500
+Message-Id: <20191213192158.188939-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.24.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Mike Kravetz <mike.kravetz@oracle.com> writes:
+The current memory.low (and memory.min) semantics require protection
+to be assigned to a cgroup in an untinterrupted chain from the
+top-level cgroup all the way to the leaf.
 
-> On 12/12/19 11:41 AM, Johannes Weiner wrote:
->> [CC Andrew]
->> 
->> Andrew, can you pick up this patch please?
->> 
->> On Thu, Dec 05, 2019 at 12:47:39PM +0100, Giuseppe Scrivano wrote:
->>> In the effort of supporting cgroups v2 into Kubernetes, I stumped on
->>> the lack of the hugetlb controller.
->>>
->>> When the controller is enabled, it exposes three new files for each
->
-> Nit, there are four files now that you added "events.local"
->
->>> hugetlb size on non-root cgroups:
->>>
->>> - hugetlb.<hugepagesize>.current
->>> - hugetlb.<hugepagesize>.max
->>> - hugetlb.<hugepagesize>.events
->>> - hugetlb.<hugepagesize>.events.local
->>>
->>> The differences with the legacy hierarchy are in the file names and
->>> using the value "max" instead of "-1" to disable a limit.
->>>
->>> The file .limit_in_bytes is renamed to .max.
->>>
->>> The file .usage_in_bytes is renamed to .usage.
->> 
->> Minor point: that should be ".current" rather than ".usage"
->> 
->>> .failcnt is not provided as a single file anymore, but its value can
->>> be read through the new flat-keyed files .events and .events.local,
->>> through the "max" key.
->>>
->>> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
->> 
->> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
->
-> Since this has no impacts on core hugetlb code, and appears to do what is
-> needed for cgroups v2, you can add:
->
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+In practice, we want to protect entire cgroup subtrees from each other
+(system management software vs. workload), but we would like the VM to
+balance memory optimally *within* each subtree, without having to make
+explicit weight allocations among individual components. The current
+semantics make that impossible.
 
-thanks for the reviews, I've fixed the commit message and sent the
-updated version.
+This patch series extends memory.low/min such that the knobs apply
+recursively to the entire subtree. Users can still assign explicit
+protection to subgroups, but if they don't, the protection set by the
+parent cgroup will be distributed dynamically such that children
+compete freely - as if no memory control were enabled inside the
+subtree - but enjoy protection from neighboring trees.
 
-Giuseppe
+Patch #1 fixes an existing bug that can give a cgroup tree more
+protection than it should receive as per ancestor configuration.
+
+Patch #2 simplifies and documents the existing code to make it easier
+to reason about the changes in the next patch.
+
+Patch #3 finally implements recursive memory protection semantics.
+
+Because of a risk of regressing legacy setups, the new semantics are
+hidden behind a cgroup2 mount option, 'memory_recursiveprot'.
+
+More details in patch #3.
+
+ Documentation/admin-guide/cgroup-v2.rst |  11 ++
+ include/linux/cgroup-defs.h             |   5 +
+ kernel/cgroup/cgroup.c                  |  17 ++-
+ mm/memcontrol.c                         | 241 +++++++++++++++++++-----------
+ mm/page_counter.c                       |  12 +-
+ 5 files changed, 190 insertions(+), 96 deletions(-)
+
 
