@@ -2,95 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8072120539
-	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2019 13:16:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BDE4A12065E
+	for <lists+cgroups@lfdr.de>; Mon, 16 Dec 2019 13:55:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727453AbfLPMOh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Dec 2019 07:14:37 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:57468 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727427AbfLPMOg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Dec 2019 07:14:36 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=cJuNyiJ6x2GmYYoz1Gvq9PWu1CKComrXo+DxXGJQ3kE=; b=WkHus4CkcBNFVoG84isWKSEOd
-        RozRAuZWCdoYEDviJCWowXeaBRF2NBjp2g+BCGy2DbC7PxVBPdYxYC/qAoyQIJOe7P6Q7zPC1+W3x
-        mqaVqhCaH6fkD4m5t+4LpI17CQ/4gIAYT8rrRhqSr67/+W5yl8xmfxFI35Ka0AQqf26tWwcArkM+w
-        wPcKnDawJabaXS4XiexrIXicQ2YEHJFqKLfU8aYKGsQe4r8SyCAlzLfH8hkWOdrG72a+hDrm6C1Sl
-        uYBbGjoOufC9SmziLadJpk/RWsLmyf8x9sp2PiMAwvfIz2NMAOzwxiCknWzlbJKiflpdzLncbh6aX
-        LfVG7y3XQ==;
-Received: from willy by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1igpGd-0000r1-I8; Mon, 16 Dec 2019 12:14:32 +0000
-Date:   Mon, 16 Dec 2019 04:14:27 -0800
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, shakeelb@google.com,
-        hannes@cmpxchg.org, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v6 02/10] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20191216121427.GZ32169@bombadil.infradead.org>
-References: <1576488386-32544-1-git-send-email-alex.shi@linux.alibaba.com>
- <1576488386-32544-3-git-send-email-alex.shi@linux.alibaba.com>
+        id S1727553AbfLPMxr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Dec 2019 07:53:47 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:43761 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727512AbfLPMxr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Dec 2019 07:53:47 -0500
+Received: by mail-ed1-f67.google.com with SMTP id dc19so4879368edb.10
+        for <cgroups@vger.kernel.org>; Mon, 16 Dec 2019 04:53:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=tDwS+iNU9JGSp+goJy4t4RaGpR/i+KbC6rKWKCSOga0=;
+        b=LU2zi/oY/TydcxuA/91rpBX1hRiu/V0lUMsXLc9dq28Ck/gYoa7xVQOblzlvnZt7Fy
+         MV2g70BEy2jjA5q4cZeQzrh1hgHayfsBrTsdoIhUHj6yJ0bJVVFBmuiAbcxPBsqoST3Q
+         Z56Mxdw03te69wdXKYcDDoFsfNMCNof+VwPxTvmR28Selo7Lx53VwwKhXQcNdNU39t/G
+         F9mQnRgn/fS0D3vfgDU+oqiE37D7X3V8PaVvcUttMDTQqw39PhvrbfaNxSpdp+a4zlzw
+         +lVv9xIkcQ9cdmzVieenJmkO/ZSzQhz/eq2XJZd5fZ1nVbOehASJN6KkJT1B4D192J9c
+         9IHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=tDwS+iNU9JGSp+goJy4t4RaGpR/i+KbC6rKWKCSOga0=;
+        b=Z/XanVKsq1jx4qniHfOOY+xrYuurK1WxzBmq5di06eDAT68xnm0SmnMk3cgOeMiUX6
+         zmdBqsRvn9PWh+5ftTQyZQ5j+F5D6fUXCVmAHdjRIARoyAzkICT6Jtnje+IzLwivzjCE
+         b0S2qBsqXAjShAo0EHe3skI2PwaHN1Oc4UpU0WWs4nxthCqEU7QBZ6gJTnx6bHLh5zhE
+         XvDGx/BAF3gnkr0g3DDxlOABLQgDOU3i+Dk3gHZ4OB5Lpw/jyjenFdTkLm1CQKB0DMod
+         wDACCJ71UguFRT3Jp5aon4NtXYEWOlftrcaIM3rJ0X8nbe3AHd8m7TsrPjPnPf8MsyCg
+         JM0g==
+X-Gm-Message-State: APjAAAV9IMNcJb5yNj2UmcCeAIIykKKikK8OdX2kGFJRM9UAVrEgf5qt
+        RNHYfFXlZh9w6Nj+fJcaOCwn/mIseEGIXanOg34=
+X-Google-Smtp-Source: APXvYqz4ECBPOqkSw1PFZgdUh/oFZ6Zs2WW0zgO7JiSe8wYhHuUDVl6W3g/p1I/vzcG3ZoLb3dlMRpKHS0wLhM8ZkN4=
+X-Received: by 2002:a17:906:e0c5:: with SMTP id gl5mr16224608ejb.283.1576500825569;
+ Mon, 16 Dec 2019 04:53:45 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1576488386-32544-3-git-send-email-alex.shi@linux.alibaba.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Mon, 16 Dec 2019 04:53:45
+ -0800 (PST)
+Reply-To: moneygram.1820@outlook.fr
+From:   "Mrs. ALAN UDE, Official Director.Money Gram-Benin" 
+        <eco.bank1204@gmail.com>
+Date:   Mon, 16 Dec 2019 13:53:45 +0100
+Message-ID: <CAOE+jABLJF+T-eDPm-eUnJ7Q8_pG1xr8TLC36EQznG+Z=gDXwA@mail.gmail.com>
+Subject: Why did you authorized Mrs. Lyndia Paulson to receive your funds
+ $4.800.000 us dollars from this office?,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 16, 2019 at 05:26:18PM +0800, Alex Shi wrote:
-> -static void lock_page_lru(struct page *page, int *isolated)
-> +static struct lruvec *lock_page_lru(struct page *page, int *isolated)
->  {
-> -	pg_data_t *pgdat = page_pgdat(page);
-> +	struct lruvec *lruvec = lock_page_lruvec_irq(page);
->  
-> -	spin_lock_irq(&pgdat->lru_lock);
->  	if (PageLRU(page)) {
-> -		struct lruvec *lruvec;
->  
-> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
->  		ClearPageLRU(page);
->  		del_page_from_lru_list(page, lruvec, page_lru(page));
->  		*isolated = 1;
->  	} else
->  		*isolated = 0;
-> +
-> +	return lruvec;
->  }
+MONEY GRAM.
+AROPORT INTL DE COTONOU COTONOU.
+Office of Mrs. ALAN UDE.
 
-You still didn't fix this function.  Go back and look at my comment from
-the last time you sent this patch set.
+Attn,Dear Funds beneficiary.
+
+I am Mrs. ALAN UDE., Official Director.Money Gram-Benin
+Confirm to us urgent,
+Why  did you authorized Mrs. Lyndia Paulson to receive your funds
+$4.800.000 us dollars from this office?, I need your urgent response
+now because this woman contacted us again this morning with all her
+mailing address stating that you are very ill, meanwhile you have
+advised her to claim the funds on your behalf, i am real confuse now,
+and i need to hear from you urgent before our office will release your
+transfer to this woman,
+Here is the address she forward to us this morning where your funds
+will be transfer to her.Please do you know this address?
+
+Full name, Mrs. Lyndia Paulson
+Address. 21644 Vaca Dr.
+Eckert Colorado 81418
+Country. USA
+
+Also i want you to know that we have cut down the transfer fees to
+$23.00 only for your help, to enable you afford it,
+this is because we need all our real customers to receive their funds
+before the end of this year 2019, due after this physical year 2019,
+all remaining and unclaimed funds in our office will be cancelled, so
+you are advised to try and send the remaining $23.00 today so that you
+can pick up your first $US5000.00 immediately today,
+I promise you with all of my life, no more fees, this $23.00 is the
+last fee you will pay to receive your transfer now, once i receive it,
+you must pick up first $US5000.00 at your Money Gram today,
+and i will send you another US$5000.00 tomorrow morning, i just plan
+to make sure that you receive at least $100,000.00 US Dollars before
+the Christmas day, to enable you celebrate a good Christmas with your
+family. Note Iam only here to help you out and make sure you did not
+lose your transfer total amount of $4.8m us dollars to Mrs. Lyndia
+Paulson ok.
+So try and send the $23.00 today once you receive this email ok. God
+bless you, it is your time to rejoice and be happy forever.
+Send the transfer fee $23.00 to us by Money Gram.
+
+Receiver's Name--------Alan Ude
+Country------Benin
+City address-----Cotonou
+Amount------23.00 dollars Only
+Text  Question---------Honest
+Answer-----------------Trust
+
+Thanks
+I wait for your urgent response
+Mrs. ALAN UDE., Official Director.Money Gram-Benin
