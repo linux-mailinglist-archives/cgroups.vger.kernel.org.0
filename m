@@ -2,85 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 81F5C121EC9
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 00:10:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48413122181
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 02:30:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726699AbfLPXKf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Dec 2019 18:10:35 -0500
-Received: from mail-io1-f68.google.com ([209.85.166.68]:40614 "EHLO
-        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726587AbfLPXKe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Dec 2019 18:10:34 -0500
-Received: by mail-io1-f68.google.com with SMTP id x1so8897128iop.7
-        for <cgroups@vger.kernel.org>; Mon, 16 Dec 2019 15:10:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=dCnC/jfvEWt+z7fAdBW+xSdl7SEaUneQSHaq+EB0tW8=;
-        b=A860KQ4K3o5h8+6NmyV0mWqxB7G9iucprwDUlid50DJIt930o0EdvyrIQmDddU8BU/
-         bII7+rThzGEDdo1NoanT+8dfcEbll4RsPU/2r2erpSocVBIUD8HBJv/ZJ1ydcHCtI1Np
-         V5hqkNOaMZx3TmRNaZ1sCyvu6URHi990RaWsTjZd+axtL0dF6DkRNbqZoRcqmNkY3QEg
-         /8Ycnsxw0i50SdGvYuPFBq+MGZ3yMfzTwU5bQEeG8LS4MaZ+3mbDQgvVmTM7dSPBmjhD
-         lNQlUwedlAFoXrSrY7l3oXi86KE2p/ZLiYZxfh48oTu9MZ9P07dNtHABxC7j6VZJvVAt
-         3M8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dCnC/jfvEWt+z7fAdBW+xSdl7SEaUneQSHaq+EB0tW8=;
-        b=kv/UgHc8CcIh8btb5nFoyKK0dvJXVlSdA1xrtPM2aMhIGx+9gzQakrq6HEmi6+U3wB
-         fMaUI+GmYOmEMSuar2SbgyNcv55LNuV+4iQFRuHk0F/Jm6evRPjlVdGNtXC4ewiL/fNT
-         +dXgnjxHzxWUtacYi1SYkkLtCbFOI4kSCcexKgfBxQjaoDNPljzP34TSRtg1UlbHBgpf
-         MjaGk5ncOFpwU4XkQch8CjKbrBx/51Rmp0Pu+s2FpYJwM0RuKD9U/I1e7kyoz17QE9QA
-         P6sSapjQ97IongTat3BF0p811SDY0uyKQU5XwuPOgLzqhSaw0agyeKVKH4sIalq5r7Bq
-         fPAA==
-X-Gm-Message-State: APjAAAWgc1kJ0CbgCsQu86ye3F/6ZU5oapTpRKSHi5v0cSJvln6z5xyW
-        mDhHcE53Y0SQNyRkYyjo9ouvjQ==
-X-Google-Smtp-Source: APXvYqzbm6Awsl5NFoCXB4S8ZwNWX05gmf9fBekjP0vGzfoTbJRwv3EC4ru2y7C/PxbU2pyATedezQ==
-X-Received: by 2002:a5d:875a:: with SMTP id k26mr1430389iol.45.1576537833871;
-        Mon, 16 Dec 2019 15:10:33 -0800 (PST)
-Received: from [192.168.1.159] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id h71sm6259626ila.30.2019.12.16.15.10.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Dec 2019 15:10:33 -0800 (PST)
-Subject: Re: [PATCH block/for-5.5-fixes] iocost: over-budget forced IOs should
- schedule async delay
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-block@vger.kernel.org, kernel-team@fb.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Josef Bacik <josef@toxicpanda.com>
-References: <20191216213400.GA2914998@devbig004.ftw2.facebook.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <fc474a2f-4e1b-8c9f-06bf-b479f7455c77@kernel.dk>
-Date:   Mon, 16 Dec 2019 16:10:32 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S1726610AbfLQBaW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Dec 2019 20:30:22 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:49797 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726591AbfLQBaW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Dec 2019 20:30:22 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R291e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0Tl9Rv9Q_1576546213;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Tl9Rv9Q_1576546213)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Dec 2019 09:30:14 +0800
+Subject: Re: [PATCH v6 02/10] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, shakeelb@google.com,
+        hannes@cmpxchg.org, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1576488386-32544-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1576488386-32544-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20191216121427.GZ32169@bombadil.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <286c11c2-480f-37d6-e9fe-91822f862cd6@linux.alibaba.com>
+Date:   Tue, 17 Dec 2019 09:30:13 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.1
 MIME-Version: 1.0
-In-Reply-To: <20191216213400.GA2914998@devbig004.ftw2.facebook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20191216121427.GZ32169@bombadil.infradead.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/16/19 2:34 PM, Tejun Heo wrote:
-> When over-budget IOs are force-issued through root cgroup,
-> iocg_kick_delay() adjusts the async delay accordingly but doesn't
-> actually schedule async throttle for the issuing task.  This bug is
-> pretty well masked because sooner or later the offending threads are
-> gonna get directly throttled on regular IOs or have async delay
-> scheduled by mem_cgroup_throttle_swaprate().
+
+
+ÔÚ 2019/12/16 ÏÂÎç8:14, Matthew Wilcox Ð´µÀ:
+> On Mon, Dec 16, 2019 at 05:26:18PM +0800, Alex Shi wrote:
+>> -static void lock_page_lru(struct page *page, int *isolated)
+>> +static struct lruvec *lock_page_lru(struct page *page, int *isolated)
+>>  {
+>> -	pg_data_t *pgdat = page_pgdat(page);
+>> +	struct lruvec *lruvec = lock_page_lruvec_irq(page);
+>>  
+>> -	spin_lock_irq(&pgdat->lru_lock);
+>>  	if (PageLRU(page)) {
+>> -		struct lruvec *lruvec;
+>>  
+>> -		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>>  		ClearPageLRU(page);
+>>  		del_page_from_lru_list(page, lruvec, page_lru(page));
+>>  		*isolated = 1;
+>>  	} else
+>>  		*isolated = 0;
+>> +
+>> +	return lruvec;
+>>  }
 > 
-> However, it can affect control quality on filesystem metadata heavy
-> operations.  Let's fix it by invoking blkcg_schedule_throttle() when
-> iocg_kick_delay() says async delay is needed.
+> You still didn't fix this function.  Go back and look at my comment from
+> the last time you sent this patch set.
+> 
 
-Applied, thanks Tejun.
+Sorry for the misunderstanding. I guess what your want is fold the patch 9th into this, is that right?
+Any comments for the 9th patch?
 
--- 
-Jens Axboe
-
+Thanks
+Alex
