@@ -2,110 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D2D61230C1
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 16:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C5B0123550
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 19:59:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726933AbfLQPqh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Dec 2019 10:46:37 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:46560 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726191AbfLQPqh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Dec 2019 10:46:37 -0500
-Received: by mail-wr1-f67.google.com with SMTP id z7so11789153wrl.13;
-        Tue, 17 Dec 2019 07:46:35 -0800 (PST)
+        id S1726742AbfLQS7L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Dec 2019 13:59:11 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:43463 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726623AbfLQS7L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Dec 2019 13:59:11 -0500
+Received: by mail-ot1-f68.google.com with SMTP id p8so14868572oth.10
+        for <cgroups@vger.kernel.org>; Tue, 17 Dec 2019 10:59:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/GuEcWgmH8GSMgVXr9VICJPrCyyD1ZEQYnQQLjsft8o=;
+        b=rl/oAX4qVCMrFffhXlv/5htCZYq7vkckVH30ic55rGb/8tSMrnECYFFPjs8MToYwrw
+         t2AT7/auNaL5lsEOaDh/BxRUa6D+c76fYeBlqBEx8ka8uvBMzQ8dnIOkalTgGfhopW05
+         JLsXZwZMFfEvKEm+Ecpfv0c8lXSzi/IPh+jKbuIZUtSzKl4NQ2dJndvBhhXB/i5T3c8u
+         61pvKy4QF0cE0NYkEJHG5ZJI0tpoWpeiGJ5p24iGpUppkaAgKJtDfk0gUoLH3D1Q7eX8
+         +QcD6pFIJIzxU4g21JHuGG7s5I4KmPiLLKEIZqYYPz/L36QQdOZZa+aWrqszuSn99y+P
+         Yerw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=TuQqZHZA7F8zrUioSoTgrl1c8FOUxjce+qXhdDt9T1Q=;
-        b=AxubpVzRcqYzO7BrUu3OqNk1eBOT7Cj+ci/3E5dMeMz276EcjSYNagr5/yfUPyh/Ze
-         rG9A2JiltDk5it4ZI2OBm6Je4UucyaJbWs2SJUQdtroCIk063fPinJSb8xZNhqRSyvFq
-         9dCDHs3hwJcTJb7y/Exzzkajbsz0WLVUK/6CWoRU2Ypa9MJFABSQE7BYl6b4XxAvg4um
-         vITqTiwPYbGASobeL1OeQZb+oMgvLJ8w/l1pVqgzETuCOpjwal8h+tvTghnaHDFkcx4X
-         uGPMGWJ6eU9bQ2fn14YEq0yesGQIpn086/io/XFMwgo6ilv0mbQirzTWWkkPKuDbC20f
-         HF+Q==
-X-Gm-Message-State: APjAAAVuf+1O6w1NoOz536FnS2lUgK7RJc3St7oaGqlQrLQGQpHznSHY
-        NMsHXguU2CGBdfObs9J5UI4=
-X-Google-Smtp-Source: APXvYqyaLlXC8wOzGI//HEchY8EnBI7KhMkSmqaaisJZeWL/y3zxtl1RZBwyNF+AYAa4cVtyJryIXw==
-X-Received: by 2002:adf:f2d0:: with SMTP id d16mr36372586wrp.110.1576597595052;
-        Tue, 17 Dec 2019 07:46:35 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id z8sm26075799wrq.22.2019.12.17.07.46.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Dec 2019 07:46:34 -0800 (PST)
-Date:   Tue, 17 Dec 2019 16:46:33 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Qian Cai <cai@lca.pw>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol.c: move mem_cgroup_id_get_many under
- CONFIG_MMU
-Message-ID: <20191217154633.GE7272@dhcp22.suse.cz>
-References: <20191217135440.GB58496@chrisdown.name>
- <392D7C59-5538-4A9B-8974-DB0B64880C2C@lca.pw>
- <20191217144652.GA7272@dhcp22.suse.cz>
- <20191217150921.GA136178@chrisdown.name>
- <20191217151931.GD7272@dhcp22.suse.cz>
- <20191217152814.GB136178@chrisdown.name>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/GuEcWgmH8GSMgVXr9VICJPrCyyD1ZEQYnQQLjsft8o=;
+        b=L+hKAHwWJmY6E5brPCr32TxfLFUWaBlEjnUtgzKUMrjAShaKSBUnoZc/0JgiQRsesI
+         2nYB9dPgB4jx1/oS1xMii3POl/P4NVMlYc2txxXY30+olEwpNs967bJdZz9IwZRleUOZ
+         Ajef2AJgt6KsAguCAPimogQf2KLLFgN+ZE8osK6bSgpWRvF7GyEZN34ebu7sqW1ZikCx
+         LXHyUPwPs4BvZV2rcbBlCHBr6Kf3/hWQiHdmTOXlITBCmu/ZuNAGiOY5xyNhB84qH27i
+         LENkR7zCXqCXm/uEpyaIo2M95ki+xfOFLiEvhi58NY5ivdlY8lsB1gnuiIT2GvLyaaSr
+         8Dew==
+X-Gm-Message-State: APjAAAXSHX/9sD1yC29PvTR0xi1msSAbGBKKDaSFN0JBEQhwr3o8fI49
+        zuwB0zKzPpCRmE6355XrQ6GIad1D5e5gr3gQq5B5Sw==
+X-Google-Smtp-Source: APXvYqzn14cgZdbrNiNKGP2PLVEDxr0Kc8DyA/BuA8A2jwNgB7dwZN6iX18f1r9MbTrDThnbL9srwzVqCzIbZN6BnQE=
+X-Received: by 2002:a9d:2028:: with SMTP id n37mr41096073ota.127.1576609149853;
+ Tue, 17 Dec 2019 10:59:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191217152814.GB136178@chrisdown.name>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+References: <20191216193831.540953-1-gscrivan@redhat.com> <20191216204348.GF2196666@devbig004.ftw2.facebook.com>
+ <20191216132747.1f02af9da0d7fa6a3e5e6c70@linux-foundation.org>
+ <CAHS8izP1hrDOyjjWOu2xoy=-8Jz_in3ZiMVzvXb+pReOAyLc8w@mail.gmail.com> <87bls7jfwc.fsf@redhat.com>
+In-Reply-To: <87bls7jfwc.fsf@redhat.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 17 Dec 2019 10:58:58 -0800
+Message-ID: <CAHS8izM8oFmAKpH4gSotyrLy6tBUqGiO+Kxx-bAes=ceEbjorw@mail.gmail.com>
+Subject: Re: [PATCH v6] mm: hugetlb controller for cgroups v2
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 17-12-19 15:28:14, Chris Down wrote:
-> Michal Hocko writes:
-> > On Tue 17-12-19 15:09:21, Chris Down wrote:
-> > [...]
-> > > (Side note: I'm moderately baffled that a tightly scoped __maybe_unused is
-> > > considered sinister but somehow disabling -Wunused-function is on the table
-> > > :-))
-> > 
-> > Well, I usually do not like to see __maybe_unused because that is prone
-> > to bit-rot and loses its usefulness. Looking into the recent git logs
-> > most -Wunused-function led to the code removal (which is really good
-> > but the compiler is likely to do that already so the overall impact is
-> > not that large) or more ifdefery. I do not really see many instance of
-> > __maybe_unused.
-> 
-> Hmm, but __maybe_unused is easy to find and document the reasons behind
-> nearby, and then reevaluate at some later time. On the other hand, it's much
-> *harder* to reevaluate which functions actually are unused in the long term
-> if we remove -Wunused-function, because enabling it to find candidates will
-> result in an incredibly amount of noise from those who have missed unused
-> functions previously due to the lack of the warning.
+On Tue, Dec 17, 2019 at 4:27 AM Giuseppe Scrivano <gscrivan@redhat.com> wrote:
+>
+> Mina Almasry <almasrymina@google.com> writes:
+>
+> > On Mon, Dec 16, 2019 at 1:27 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> >>
+> >> On Mon, 16 Dec 2019 12:43:48 -0800 Tejun Heo <tj@kernel.org> wrote:
+> >>
+> >> > On Mon, Dec 16, 2019 at 08:38:31PM +0100, Giuseppe Scrivano wrote:
+> >> > > In the effort of supporting cgroups v2 into Kubernetes, I stumped on
+> >> > > the lack of the hugetlb controller.
+> >> > >
+> >> > > When the controller is enabled, it exposes four new files for each
+> >> > > hugetlb size on non-root cgroups:
+> >> > >
+> >> > > - hugetlb.<hugepagesize>.current
+> >> > > - hugetlb.<hugepagesize>.max
+> >> > > - hugetlb.<hugepagesize>.events
+> >> > > - hugetlb.<hugepagesize>.events.local
+> >> > >
+> >> > > The differences with the legacy hierarchy are in the file names and
+> >> > > using the value "max" instead of "-1" to disable a limit.
+> >> > >
+> >> > > The file .limit_in_bytes is renamed to .max.
+> >> > >
+> >> > > The file .usage_in_bytes is renamed to .current.
+> >> > >
+> >> > > .failcnt is not provided as a single file anymore, but its value can
+> >> > > be read through the new flat-keyed files .events and .events.local,
+> >> > > through the "max" key.
+> >> > >
+> >> > > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> >> >
+> >> > Acked-by: Tejun Heo <tj@kernel.org>
+> >> >
+> >> > This can go through either the mm tree or the cgroup tree.  If Andrew
+> >> > doesn't pick it up in several days, I'll apply it to cgroup/for-5.6.
+> >> >
+> >>
+> >> Thanks, I grabbed it.
+> >>
+> >> Giuseppe, yuo presumably have test code lying around.  Do you have
+> >> something which can be tossed together for tools/testing/selftests/?
+> >> Presumably under cgroup/.
+> >>
+> >> We don't seem to have much in the way of selftest code for cgroups.  I
+> >> wonder why.
+> >
+> > Just FYI I have a patch series in review that does a hefty bit of
+> > modifications to hugetlb_cgroup, and that comes with a decent bit of
+> > tests for hugetlb cgroup (and only hugetlb cgroups, I'm not looking
+> > into memcg tests or cgroup tests in general):
+> > https://lkml.org/lkml/2019/10/29/1203
+> >
+> > If Giuseppe adds tests for hugetlb cgroup v2 that would be great, but
+> > if not, a decent bit of hugetlb cgroup tests should be coming your way
+> > as my series gets reviewed.
+>
+> I've some code I've used to test the hugetlb cgroup that I can clean up
+> and include in the selftests.
+>
+> Mina, are you going to rebase your patchset?  I can add new tests for
+> cgroup v2 on top of yours.
+>
 
-I usually git grep for the function and that covers many cases. But
-realistically, I am more than skeptical people are going to do a regular
-cleanup like that. And that is the biggest deal with this annotation.
-Once it gets marked it will just stay that way and potentially get
-really unused eventually. So the overall benefit is close the zero in
-that case.
+Yep, I'm working on that now and addressing comments from my last
+iteration. I should be able to send it out for review before the end
+of the week.
 
-Maybe dropping -Wunused-function is an overreaction. Git log shows there
-has been some code removed which is probably the most viable reaction to
-those reports. Maybe we just want to add those for W=1 or something like
-that.
-
-> Maybe Qian is right and we should just ignore such patches, but I think that
-> comes with its own risks that we will alienate perfectly well intentioned
-> new contributors to mm without them having any idea why we did that.
-
-I believe that both possitive and negative reaction to _any_ patch has
-to be properly justified - same applies to the patch itself. A warning
-report/fix is not an expcetion. In this particular case it has been pointed
-out that the reported function is a general purpose one which just
-happens to be used only for CONFIG_SWAP (rather than CONFIG_MMU) and
-using additional ifdeferry is likely not going to help long term.
--- 
-Michal Hocko
-SUSE Labs
+> Regards,
+> Giuseppe
+>
