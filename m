@@ -2,124 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B86DA122B78
-	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 13:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99850122C93
+	for <lists+cgroups@lfdr.de>; Tue, 17 Dec 2019 14:11:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727866AbfLQM15 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Dec 2019 07:27:57 -0500
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:20302 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727775AbfLQM15 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Dec 2019 07:27:57 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576585676;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uvWqfrkB3tYp4gw6CTTKcHLhfdHVPlflZaaCSTeR6/E=;
-        b=XX++q6ZYSKPgF1djXu31Ra538oehj3xIMwLoOJGSSFh2J1Fn6K0269BxioEsLCGkmdhtsR
-        1/yvAKELXecUkortIsEUl1rCdrRUF9U4VxddevBoRIcgEYW8RmevaFbDOS9G4Jx3QZM1VR
-        vsOno4nU1KTD2+lPkny4vtO/ynj8GN8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-380-6E3ESDy4Ny6kCTtFNLJ28Q-1; Tue, 17 Dec 2019 07:27:51 -0500
-X-MC-Unique: 6E3ESDy4Ny6kCTtFNLJ28Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BEE7A593A1;
-        Tue, 17 Dec 2019 12:27:49 +0000 (UTC)
-Received: from localhost (ovpn-116-109.ams2.redhat.com [10.36.116.109])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1CDE85D9C9;
-        Tue, 17 Dec 2019 12:27:48 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH v6] mm: hugetlb controller for cgroups v2
-References: <20191216193831.540953-1-gscrivan@redhat.com>
-        <20191216204348.GF2196666@devbig004.ftw2.facebook.com>
-        <20191216132747.1f02af9da0d7fa6a3e5e6c70@linux-foundation.org>
-        <CAHS8izP1hrDOyjjWOu2xoy=-8Jz_in3ZiMVzvXb+pReOAyLc8w@mail.gmail.com>
-Date:   Tue, 17 Dec 2019 13:27:47 +0100
-In-Reply-To: <CAHS8izP1hrDOyjjWOu2xoy=-8Jz_in3ZiMVzvXb+pReOAyLc8w@mail.gmail.com>
-        (Mina Almasry's message of "Mon, 16 Dec 2019 13:49:24 -0800")
-Message-ID: <87bls7jfwc.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.2 (gnu/linux)
+        id S1727736AbfLQNL2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Dec 2019 08:11:28 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:36181 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726962AbfLQNL2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Dec 2019 08:11:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0TlCXr4r_1576588278;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TlCXr4r_1576588278)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 17 Dec 2019 21:11:19 +0800
+Subject: Re: [PATCH v6 02/10] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, shakeelb@google.com,
+        hannes@cmpxchg.org, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1576488386-32544-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1576488386-32544-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20191216121427.GZ32169@bombadil.infradead.org>
+ <286c11c2-480f-37d6-e9fe-91822f862cd6@linux.alibaba.com>
+ <20191217021613.GB32169@bombadil.infradead.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <a7b5c7bb-022f-60de-2d61-696915df002a@linux.alibaba.com>
+Date:   Tue, 17 Dec 2019 21:11:18 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:60.0)
+ Gecko/20100101 Thunderbird/60.9.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <20191217021613.GB32169@bombadil.infradead.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Mina Almasry <almasrymina@google.com> writes:
 
-> On Mon, Dec 16, 2019 at 1:27 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->>
->> On Mon, 16 Dec 2019 12:43:48 -0800 Tejun Heo <tj@kernel.org> wrote:
->>
->> > On Mon, Dec 16, 2019 at 08:38:31PM +0100, Giuseppe Scrivano wrote:
->> > > In the effort of supporting cgroups v2 into Kubernetes, I stumped on
->> > > the lack of the hugetlb controller.
->> > >
->> > > When the controller is enabled, it exposes four new files for each
->> > > hugetlb size on non-root cgroups:
->> > >
->> > > - hugetlb.<hugepagesize>.current
->> > > - hugetlb.<hugepagesize>.max
->> > > - hugetlb.<hugepagesize>.events
->> > > - hugetlb.<hugepagesize>.events.local
->> > >
->> > > The differences with the legacy hierarchy are in the file names and
->> > > using the value "max" instead of "-1" to disable a limit.
->> > >
->> > > The file .limit_in_bytes is renamed to .max.
->> > >
->> > > The file .usage_in_bytes is renamed to .current.
->> > >
->> > > .failcnt is not provided as a single file anymore, but its value can
->> > > be read through the new flat-keyed files .events and .events.local,
->> > > through the "max" key.
->> > >
->> > > Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
->> >
->> > Acked-by: Tejun Heo <tj@kernel.org>
->> >
->> > This can go through either the mm tree or the cgroup tree.  If Andrew
->> > doesn't pick it up in several days, I'll apply it to cgroup/for-5.6.
->> >
->>
->> Thanks, I grabbed it.
->>
->> Giuseppe, yuo presumably have test code lying around.  Do you have
->> something which can be tossed together for tools/testing/selftests/?
->> Presumably under cgroup/.
->>
->> We don't seem to have much in the way of selftest code for cgroups.  I
->> wonder why.
->
-> Just FYI I have a patch series in review that does a hefty bit of
-> modifications to hugetlb_cgroup, and that comes with a decent bit of
-> tests for hugetlb cgroup (and only hugetlb cgroups, I'm not looking
-> into memcg tests or cgroup tests in general):
-> https://lkml.org/lkml/2019/10/29/1203
->
-> If Giuseppe adds tests for hugetlb cgroup v2 that would be great, but
-> if not, a decent bit of hugetlb cgroup tests should be coming your way
-> as my series gets reviewed.
 
-I've some code I've used to test the hugetlb cgroup that I can clean up
-and include in the selftests.
+在 2019/12/17 上午10:16, Matthew Wilcox 写道:
+>>> You still didn't fix this function.  Go back and look at my comment from
+>>> the last time you sent this patch set.
+>>>
+>> Sorry for the misunderstanding. I guess what your want is fold the patch 9th into this, is that right?
+>> Any comments for the 9th patch?
+> I didn't get as far as looking at the ninth patch because I saw this
+> one was wrong and stopped looking.  This is not the first time *with
+> this patch set* that you've been told to *fix the patch*, not submit
+> something that's broken and fix it in a later patch.
+> 
+> I'll look at patch 9 later.
 
-Mina, are you going to rebase your patchset?  I can add new tests for
-cgroup v2 on top of yours.
 
-Regards,
-Giuseppe
+Thanks a lot for the nice cocaching and quick response!
+
+What the problem for me here is I didn't find a bug here. From the commit_charge's explanations and mem_cgroup_commit_charge comments, as well as call path when lrucare is ture, The lock is just to guard the task migration(which would be lead to move_account) So, It's just a clean up to give up locking when !PageLRU in patch 9. And even w/o patch 9, the page just locked root_mem_cgroup's lru_lock, same as old function does, while the page isn't on any LRU. Useless, but it's still safe.
+
+Do you mind to point out anything else I missed?
+
+Thanks a lot!
+Alex
 
