@@ -2,96 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E458124AB3
-	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2019 16:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA01124F79
+	for <lists+cgroups@lfdr.de>; Wed, 18 Dec 2019 18:38:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727001AbfLRPJT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Dec 2019 10:09:19 -0500
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:36891 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726980AbfLRPJT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Dec 2019 10:09:19 -0500
-Received: by mail-ed1-f68.google.com with SMTP id cy15so1933482edb.4
-        for <cgroups@vger.kernel.org>; Wed, 18 Dec 2019 07:09:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=BUyAQDh7exKhn9qjYkbpJcbPzvWcZEbGfZUTtw695Mk=;
-        b=EXRUqt890oOTgcUXFX4+xNLF+AHG26H7xwKIY10A1CyF0xZ371iHx4Y0WRYYX7wOm8
-         vw4jph5D7Q4PewCfWPhaurLW62mKhJNwbJdVwpFfPXQEg5JNeAJpvpZvX5+PirVUZ4RG
-         qExc1Du+++dU/SuG2ZCQquOSJAHNo2NDO4nJN4LNK7J9ds23iPqOXoowiI2fFco+UEEv
-         9+AwTS8iQcEJSGRkY35X9a1TglZVm1mWjAQFAvv1udvMsnWQ3dD5BB9hITpkcc1gr3h5
-         hzdTudJiXl1ZFP73vvHfyyylFNV1PTkAVyrfjaHx2sPSKudXrdFNXRdM+pBFgzT6us1t
-         XItw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=BUyAQDh7exKhn9qjYkbpJcbPzvWcZEbGfZUTtw695Mk=;
-        b=KyOYphNljnBHJlbUs1oEUlkRendXBfI63l0Nsr04e97+dU89p5qAnP5vaAzOa8lbT9
-         P2QYhRQrwTXCxBqgINIzaeHqxD2Hp63DBy7VBl80wYKpZCj9sCfScsSmbJcob2Ukiy4s
-         ebU5uxrOf1KmoSDnS9AeiU2N/9GrCJQ7B23qWJuhu3gYusevwzUxS1z0nM8YLkfN5OhQ
-         QnIor/FVLDlJNyeuq6AHDjGC4zmTPKVF/C4vqRxJHBP3EMoCEJpf4PgJ1ETL1Q8FRwVu
-         xDa4d30/aDbEgfYgZ9J6YVmCI4FOHFyy44hvuupo1ww2BIXT5r5BnByaeKGntVrK8XOL
-         6lhg==
-X-Gm-Message-State: APjAAAU3p3WgABw0rUzRuMGEwc314XHpQsfwDZ5Pn3x78c7jwQy8ceeg
-        ML1YM62EbJWJjgVhtsS+xeXIjWsLjjfjBVGkHgY=
-X-Google-Smtp-Source: APXvYqxNk7R+J5uh4fQUowBkg3n0DBJbsPdtukPPnWrOyuiz2Aipmgj2/cSptl+MwUAXaW6pDBZjSTuvP2IYfQ1NzPA=
-X-Received: by 2002:a05:6402:1858:: with SMTP id v24mr2910854edy.203.1576681757169;
- Wed, 18 Dec 2019 07:09:17 -0800 (PST)
+        id S1727298AbfLRRiQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Dec 2019 12:38:16 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:40845 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727185AbfLRRiQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Dec 2019 12:38:16 -0500
+Received: from host.242.234.23.62.rev.coltfrance.com ([62.23.234.242] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1ihdGo-00046Q-Mf; Wed, 18 Dec 2019 17:37:58 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH 1/3] cgroup: unify attach permission checking
+Date:   Wed, 18 Dec 2019 18:35:14 +0100
+Message-Id: <20191218173516.7875-2-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191218173516.7875-1-christian.brauner@ubuntu.com>
+References: <20191218173516.7875-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Wed, 18 Dec 2019 07:09:16
- -0800 (PST)
-Reply-To: dhl.expresscourier102156@outlook.fr
-From:   "MS. MARYANNA B. THOMASON" <eco.bank1204@gmail.com>
-Date:   Wed, 18 Dec 2019 16:09:16 +0100
-Message-ID: <CAOE+jACff5z-AB+o_ymc5cfmXp43Wa0fDPkxZRAjSreW=15mtw@mail.gmail.com>
-Subject: =?UTF-8?Q?Urgent_delivery_Notification_of_your_ATM_MASTER_CARD?=
-        =?UTF-8?Q?_Amount=2C=2415=2E800=E2=80=99000=E2=80=9900=2C?=
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Attn Dear.
+The core codepaths to check whether a process can be attached to a
+cgroup are the same for threads and thread-group leaders. Only a small
+piece of code verifying that source and destination cgroup are in the
+same domain differentiates the thread permission checking from
+thread-group leader permission checking.
+Since cgroup_migrate_vet_dst() only matters cgroup2 - it is a noop on
+cgroup1 - we can move it out of cgroup_attach_task().
+All checks can now be consolidated into a new helper
+cgroup_attach_permissions() callable from both cgroup_procs_write() and
+cgroup_threads_write().
 
-Urgent delivery Notification of your ATM MASTER CARD Amount,$15.800=E2=80=
-=99000=E2=80=9900,
-,
-Dhl-Benin is ready for delivery of your ATM Master card worth $15.800=E2=80=
-=99000=E2=80=9900,
-as approved this morning, Date, 18/12/2019. Through the Intruction
-from INTERNATIONAL MONETARY FUNDS, I.M.F official Directors.
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+ kernel/cgroup/cgroup.c | 46 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
 
-REGISTRATION NO :EG58945
-PARCEL NUMBER: 140479
-Delivery Schuleded now,
-Finally all we required from you is your ATM Card Proccessing Delivery
-fees $19.00 only which you must send to this DHL service to enable us
-dispatch the parcel to your destination today.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..5ee06c1f7456 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2719,11 +2719,7 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ {
+ 	DEFINE_CGROUP_MGCTX(mgctx);
+ 	struct task_struct *task;
+-	int ret;
+-
+-	ret = cgroup_migrate_vet_dst(dst_cgrp);
+-	if (ret)
+-		return ret;
++	int ret = 0;
+ 
+ 	/* look up all src csets */
+ 	spin_lock_irq(&css_set_lock);
+@@ -4690,6 +4686,33 @@ static int cgroup_procs_write_permission(struct cgroup *src_cgrp,
+ 	return 0;
+ }
+ 
++static inline bool cgroup_same_domain(const struct cgroup *src_cgrp,
++				      const struct cgroup *dst_cgrp)
++{
++	return src_cgrp->dom_cgrp == dst_cgrp->dom_cgrp;
++}
++
++static int cgroup_attach_permissions(struct cgroup *src_cgrp,
++				     struct cgroup *dst_cgrp,
++				     struct super_block *sb, bool thread)
++{
++	int ret;
++
++	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
++	if (ret)
++		return ret;
++
++	ret = cgroup_migrate_vet_dst(dst_cgrp);
++	if (ret)
++		return ret;
++
++	if (thread &&
++	    !cgroup_same_domain(src_cgrp->dom_cgrp, dst_cgrp->dom_cgrp))
++		ret = -EOPNOTSUPP;
++
++	return 0;
++}
++
+ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 				  char *buf, size_t nbytes, loff_t off)
+ {
+@@ -4712,8 +4735,8 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+ 	spin_unlock_irq(&css_set_lock);
+ 
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, true);
+ 	if (ret)
+ 		goto out_finish;
+ 
+@@ -4757,16 +4780,11 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	spin_unlock_irq(&css_set_lock);
+ 
+ 	/* thread migrations follow the cgroup.procs delegation rule */
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, true);
+ 	if (ret)
+ 		goto out_finish;
+ 
+-	/* and must be contained in the same domain */
+-	ret = -EOPNOTSUPP;
+-	if (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp)
+-		goto out_finish;
+-
+ 	ret = cgroup_attach_task(dst_cgrp, task, false);
+ 
+ out_finish:
+-- 
+2.24.0
 
-Here is our receiving payment details.
-You are advised to send it Via Money Gram Service.
-
-Receiver's Name--------Alan Ude
-Country-------Benin Republic.
-City/ Address--------Cotonou
-Test Question--------In God
-Answer-------We Trust
-Amount------------$US19.00 only
-Mtcn-------------
-Sender's Name-------
-
-Your delivery  ATM card worth $15.800=E2=80=99000=E2=80=9900,
-Is Due for delivery to your address today upon confirmation of
-required fee from you asap.
-
-Call us on this phone number for any inquiry. +229 62819378
-Awaiting your urgent response.
-
-MS. MARYANNA B. THOMASON, Shipment director, DHL Express
-Courier Company-Benin
