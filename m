@@ -2,28 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DF9F61257F6
-	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 00:46:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F001258A6
+	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 01:40:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726559AbfLRXqh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Dec 2019 18:46:37 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50217 "EHLO
+        id S1726559AbfLSAj7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Dec 2019 19:39:59 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:51080 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbfLRXqh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Dec 2019 18:46:37 -0500
+        with ESMTP id S1726518AbfLSAj7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Dec 2019 19:39:59 -0500
 Received: from [213.220.153.21] (helo=wittgenstein)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1ihj1W-0008Pp-4V; Wed, 18 Dec 2019 23:46:34 +0000
-Date:   Thu, 19 Dec 2019 00:46:33 +0100
+        id 1ihjr9-0002Ra-Ac; Thu, 19 Dec 2019 00:39:55 +0000
+Date:   Thu, 19 Dec 2019 01:39:54 +0100
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tejun Heo <tj@kernel.org>
 Cc:     Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
 Subject: Re: [PATCH 1/3] cgroup: unify attach permission checking
-Message-ID: <20191218234632.3xpobnq6efprohal@wittgenstein>
+Message-ID: <20191219003953.y26rclexqwijxmvz@wittgenstein>
 References: <20191218173516.7875-1-christian.brauner@ubuntu.com>
  <20191218173516.7875-2-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
@@ -89,6 +89,11 @@ On Wed, Dec 18, 2019 at 06:35:14PM +0100, Christian Brauner wrote:
 > +				     struct super_block *sb, bool thread)
 > +{
 > +	int ret;
+
+This needs to be
+
+ret = 0
+
 > +
 > +	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
 > +	if (ret)
@@ -103,18 +108,7 @@ On Wed, Dec 18, 2019 at 06:35:14PM +0100, Christian Brauner wrote:
 > +		ret = -EOPNOTSUPP;
 > +
 > +	return 0;
-> +}
-> +
->  static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
->  				  char *buf, size_t nbytes, loff_t off)
->  {
-> @@ -4712,8 +4735,8 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
->  	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
->  	spin_unlock_irq(&css_set_lock);
->  
-> -	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
-> -					    of->file->f_path.dentry->d_sb);
-> +	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
-> +					of->file->f_path.dentry->d_sb, true);
 
-typo: s/true/false/
+and this
+
+return ret;
