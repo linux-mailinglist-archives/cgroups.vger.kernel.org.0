@@ -2,70 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A18126E1E
-	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 20:41:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F1C1126E61
+	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 21:07:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727328AbfLSTl4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 19 Dec 2019 14:41:56 -0500
-Received: from standard7.doveserver.com ([67.220.187.210]:40717 "EHLO
-        standard7.doveserver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727218AbfLSTl4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Dec 2019 14:41:56 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=joeblasc0.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Message-ID:Date:Subject:To:From:Reply-To:Sender:Cc:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=5nz6drlcwLkkcnrPddyhNVU4n5QUNNiisMSZ45MDcC0=; b=ojUfTeLt5ene6CqZ0HXQLO10aG
-        BVJtRGLyQHDevCBUqMTY/ioBaI08eq13sSNjHLV8yxKvRCoGh+A/aoC/XHi+HinKL93rXGOwsOHQ6
-        dG2ILULJllKGLT7cSsPQmJM5v/Pl+YoQYnV0RTXEMf1WCdcrWGD6c8Z6LUt1sLr1IICFtm70KkDEK
-        utZ7BJoFhm92WR6m7Z4yUL61VRKywlpxogP7gyDg+AcErjOI8/k8YZO3ZnRfiGSlgWwZTwinLz5QO
-        4EJGs0seuT+USA34Rp2lrt94HjulGZE633zTuBmXgzapVq1s2sn96xzFBlN/GCmv48U82xzwdvRaX
-        sqp2/NKg==;
-Received: from [172.107.168.105] (port=50321 helo=gmail.com)
-        by standard7.doveserver.com with esmtpsa (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256)
-        (Exim 4.92)
-        (envelope-from <info@gmail.com>)
-        id 1ihnzE-00DYXa-Be
-        for cgroups@vger.kernel.org; Thu, 19 Dec 2019 06:04:32 +0100
-Reply-To: songlile110@gmail.com
-From:   Mr Lili <info@gmail.com>
-To:     cgroups@vger.kernel.org
-Subject: hello
-Date:   18 Dec 2019 23:07:09 -0800
-Message-ID: <20191218230708.4AD1604D734CA36A@gmail.com>
+        id S1726948AbfLSUHa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Dec 2019 15:07:30 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:42157 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726906AbfLSUH3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Dec 2019 15:07:29 -0500
+Received: by mail-qv1-f68.google.com with SMTP id dc14so2722964qvb.9
+        for <cgroups@vger.kernel.org>; Thu, 19 Dec 2019 12:07:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYiIu2mk1O8LA2y0MiTcNVGhftZjp6jwMi9mmwJQac4=;
+        b=fj3AGRXKmJEfNgQiRcISC7HVWkSocovlBpyW/qprUYO7Mqg0zHOgkFsuEL7bj09x0e
+         GNo2GUYrsgl7gu9dZcbcOreUdSZizGPe/8vnYBkegdu2BxjdPOUvTm4HQ1/a3N5I0rXy
+         9qpO/VYJ59U2ZDJGyC2A1xNdpYrFDsJ9gEb5CkN+86hhOcJ6Cn8RTlBgbbxf4iDPI0Tg
+         YA+xDeChfCuXtKz4PvRQ6A8oZN68sfPVub+RuWdmP+SXFjeLsXVA8d9CtSWvc4YGlADS
+         a3oNuCkGPu+UUDyczUUDqcEq9SzvZUSvXzvruEBOZhoP+9RWO3jTbPYNnqin1YdpVr/y
+         er1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=oYiIu2mk1O8LA2y0MiTcNVGhftZjp6jwMi9mmwJQac4=;
+        b=g/5KHvZZBrQHc40PxvIVHvf0aMP7ETika25ru0w+nrMRf0AMCqYcNt/u1foL684dT+
+         7c3i+wAdngC5cNlXGXiCss2VCCVsWgaziqMOme05dU4EIyW6THXHJGQGQJ+RlaIHRdMv
+         OoIZY5M5I39oII8QmeI5/AlWFv/N9BY0CsaiEfdhUP3SIvRKBi9KIOjTxp4qAUSAClP4
+         bCZBqO8l5m6fJyVRes4zI1xC4okI1iqQJaRWsZwsPSbgkMaYAUtk2gfleEqtanWrefxf
+         5XIJgn6LRGrAxYw8pqYPBJcOmMrqNmIeG/O7MwlE5m3PqURVqGq90enuOxzztIuzhaQQ
+         qjiA==
+X-Gm-Message-State: APjAAAX9ChBiz38HcC5N5N1BQc4x9wZS6rLej4sKsS0jja19Zv8I0NGx
+        8Du8JRY4IpznSC6nehcMghdbkw==
+X-Google-Smtp-Source: APXvYqw9MlnwX1RpRt+FpodJ+Md/4AlRpjp73kv5sZLkkuJshWziV52bT3S99wB33K3ObJsu/FL+bg==
+X-Received: by 2002:ad4:450a:: with SMTP id k10mr8841247qvu.136.1576786048621;
+        Thu, 19 Dec 2019 12:07:28 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::91a1])
+        by smtp.gmail.com with ESMTPSA id g21sm1995456qkl.116.2019.12.19.12.07.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Dec 2019 12:07:27 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH v2 0/3] mm: memcontrol: recursive memory protection
+Date:   Thu, 19 Dec 2019 15:07:15 -0500
+Message-Id: <20191219200718.15696-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - standard7.doveserver.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - gmail.com
-X-Get-Message-Sender-Via: standard7.doveserver.com: authenticated_id: 4thuser@joeblasc0.com
-X-Authenticated-Sender: standard7.doveserver.com: 4thuser@joeblasc0.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Changes since v1:
+- improved Changelogs based on the discussion with Roman. Thanks!
+- fix div0 when recursive & fixed protection is combined
+- fix an unused compiler warning
 
-My name is Mr.Song Lile (I work with a Bank as an account officer=20
-in the
-Treasury/Credit Control Unit) I want to solicit your attention to=20
-receive the money on my behalf.
-The purpose of my contacting you is because you live in outside=20
-Hong Kong.
-When you reply this message, I will send you the full details and=20
-more
-information about myself and the funds.
-Thank you.
-Kindest regards,
-Mr.Song Lile
-songlile110@gmail.com
+The current memory.low (and memory.min) semantics require protection
+to be assigned to a cgroup in an untinterrupted chain from the
+top-level cgroup all the way to the leaf.
+
+In practice, we want to protect entire cgroup subtrees from each other
+(system management software vs. workload), but we would like the VM to
+balance memory optimally *within* each subtree, without having to make
+explicit weight allocations among individual components. The current
+semantics make that impossible.
+
+This patch series extends memory.low/min such that the knobs apply
+recursively to the entire subtree. Users can still assign explicit
+protection to subgroups, but if they don't, the protection set by the
+parent cgroup will be distributed dynamically such that children
+compete freely - as if no memory control were enabled inside the
+subtree - but enjoy protection from neighboring trees.
+
+Patch #1 fixes an existing bug that can give a cgroup tree more
+protection than it should receive as per ancestor configuration.
+
+Patch #2 simplifies and documents the existing code to make it easier
+to reason about the changes in the next patch.
+
+Patch #3 finally implements recursive memory protection semantics.
+
+Because of a risk of regressing legacy setups, the new semantics are
+hidden behind a cgroup2 mount option, 'memory_recursiveprot'.
+
+More details in patch #3.
+
+ Documentation/admin-guide/cgroup-v2.rst |  11 ++
+ include/linux/cgroup-defs.h             |   5 +
+ kernel/cgroup/cgroup.c                  |  17 ++-
+ mm/memcontrol.c                         | 243 +++++++++++++++++++-----------
+ mm/page_counter.c                       |  12 +-
+ 5 files changed, 192 insertions(+), 96 deletions(-)
+
+
