@@ -2,325 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 97201125D34
-	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 10:04:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50FFC125EBF
+	for <lists+cgroups@lfdr.de>; Thu, 19 Dec 2019 11:20:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726591AbfLSJEl convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 19 Dec 2019 04:04:41 -0500
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:38427 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726692AbfLSJEl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 19 Dec 2019 04:04:41 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=14;SR=0;TI=SMTPD_---0TlL37Kz_1576746267;
-Received: from 30.30.208.2(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TlL37Kz_1576746267)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 19 Dec 2019 17:04:28 +0800
-Content-Type: text/plain;
-        charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
-From:   teawater <teawaterz@linux.alibaba.com>
-In-Reply-To: <CALOAHbCU2GHfupDRovk3Wvv=+qJr8sWO3tpu1upug=LM+VO1Og@mail.gmail.com>
-Date:   Thu, 19 Dec 2019 17:04:27 +0800
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+        id S1726636AbfLSKUn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 19 Dec 2019 05:20:43 -0500
+Received: from mail-eopbgr50106.outbound.protection.outlook.com ([40.107.5.106]:15822
+        "EHLO EUR03-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726609AbfLSKUm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 19 Dec 2019 05:20:42 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HZC2J5fvoenTKovOz46TxztEnbado9zvKxu4y5hF8qRsz7mcxvrvp+qVQ1nxjEY3A+3TDurIyz9FZFRXOhujMctsJlCPFbTPxa7EyLt5E/jGinc0N6pACzCZr1SqnTGcbFMiZ3kn1YcrrL5t8JmpA+Qveg/7M9lXmji5nIvbHrc3wxxmyb9Z1mxlXGoGR+VDBmsjmvGb0XXvyJZsj117QGq63wJusqhGJxgh6/YGOQ0346cmTextEPXN0AttgkbBmO5SbLJRgT9aURcQ1v0KET2NeWBDmYHQt56RJDR9sPvpp/2TjPwj6oBf8WiQAwv7mBmeW76HnP/zT/KZPiUdJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TtkYFAswgpeW4bYzMVnB81wWPf33dBH6xah3ankjxp0=;
+ b=LPs2XAcOL7H2NEgIRMiC9rOXw2htuODOyPp/Xg7Kizlh4iDfBCNhNm+V3Svfgf6v6HwuV3JUwcKpzUHjh8ArMwcxo1Cm9TQ5JUbapH9VliocGVQ+js+uloB/a/UtzGk11ZsHHAHtX0+kHyf4UeX33BhUqFsIeIz8zrUqSh/NKb5bWhh4ufhucbfX9VNc2DUk+ytJJOO62CIBxAFWrE4KklSgoZAuJG7H5ZcfMAD3Qyz7PcQLyaareouyi1sVXYcIx27g3QkOvtKBJoKItgmqyxs4atkP69RUvmOkYOktBH4AceZK/3jpOUf2BwR6PFYDFNtnPpfhJmokjP2WVBVW2w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TtkYFAswgpeW4bYzMVnB81wWPf33dBH6xah3ankjxp0=;
+ b=VdXIGn7giOiIBq4VTeWWsCPT6dyFQkH4zAGq5w7FwnlhlHTuSaHRVwlsXy/pQpCSxhInwpNiGNykImxk6ZE6wH3rdNsv8oe9rNgbcHHZV9g87CaLSm6SOTcWitgX6zIj7Ip22niIjOM7THTp7ffw4YxbHTC6jPYDeeZyAuqQy+M=
+Received: from AM0PR08MB5332.eurprd08.prod.outlook.com (52.132.212.72) by
+ AM0PR08MB3457.eurprd08.prod.outlook.com (20.177.108.21) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2538.18; Thu, 19 Dec 2019 10:20:36 +0000
+Received: from AM0PR08MB5332.eurprd08.prod.outlook.com
+ ([fe80::6555:db6a:995c:ac0f]) by AM0PR08MB5332.eurprd08.prod.outlook.com
+ ([fe80::6555:db6a:995c:ac0f%3]) with mapi id 15.20.2559.012; Thu, 19 Dec 2019
+ 10:20:36 +0000
+From:   Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+To:     Michal Hocko <mhocko@kernel.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
         Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
         Chris Down <chris@chrisdown.name>,
         Yang Shi <yang.shi@linux.alibaba.com>,
-        Tejun Heo <tj@kernel.org>, tglx@linutronix.de,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Transfer-Encoding: 8BIT
-Message-Id: <23317BFD-8C0F-4CC7-A97B-DF339F83DCBA@linux.alibaba.com>
-References: <1576662179-16861-1-git-send-email-teawaterz@linux.alibaba.com>
- <CALOAHbCU2GHfupDRovk3Wvv=+qJr8sWO3tpu1upug=LM+VO1Og@mail.gmail.com>
-To:     Yafang Shao <laoar.shao@gmail.com>
-X-Mailer: Apple Mail (2.3445.104.11)
+        Tejun Heo <tj@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
+        Konstantin Khorenko <khorenko@virtuozzo.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Dave Chinner <david@fromorbit.com>,
+        Trond Myklebust <trond.myklebust@hammerspace.com>,
+        Anna Schumaker <anna.schumaker@netapp.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Subject: Re: [PATCH] mm: fix hanging shrinker management on long
+ do_shrink_slab
+Thread-Topic: [PATCH] mm: fix hanging shrinker management on long
+ do_shrink_slab
+Thread-Index: AQHVpv50iUgQuqhqn0Cemimr1eLSWKeprYIAgBewZYA=
+Date:   Thu, 19 Dec 2019 10:20:36 +0000
+Message-ID: <f3fb2869-e89f-707b-c6e2-05d6e3abfb74@virtuozzo.com>
+References: <20191129214541.3110-1-ptikhomirov@virtuozzo.com>
+ <20191204083514.GC25242@dhcp22.suse.cz>
+In-Reply-To: <20191204083514.GC25242@dhcp22.suse.cz>
+Accept-Language: ru-RU, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-clientproxiedby: HE1PR07CA0034.eurprd07.prod.outlook.com
+ (2603:10a6:7:66::20) To AM0PR08MB5332.eurprd08.prod.outlook.com
+ (2603:10a6:208:17e::8)
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=ptikhomirov@virtuozzo.com; 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-originating-ip: [185.231.240.5]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: f514c111-ce10-40ac-c7da-08d7846d1686
+x-ms-traffictypediagnostic: AM0PR08MB3457:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <AM0PR08MB3457A32B374259B919CF5145B7520@AM0PR08MB3457.eurprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-forefront-prvs: 0256C18696
+x-forefront-antispam-report: SFV:NSPM;SFS:(10019020)(346002)(136003)(376002)(366004)(396003)(39830400003)(189003)(199004)(2616005)(71200400001)(7416002)(8676002)(8936002)(5660300002)(186003)(316002)(31696002)(4326008)(64756008)(6916009)(52116002)(66476007)(66946007)(53546011)(6506007)(966005)(6486002)(6512007)(478600001)(66446008)(86362001)(2906002)(31686004)(81156014)(81166006)(54906003)(66556008)(26005)(36756003);DIR:OUT;SFP:1102;SCL:1;SRVR:AM0PR08MB3457;H:AM0PR08MB5332.eurprd08.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: virtuozzo.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: WTN05Lng1ED5ExQjKPfY7FeUGxrEoRmP+ZwVv0K64CGxhWN/udsFRmwV1OUYLzrsPFBEXfsKBQOI8vIGyv768ccWYGeOBBgh7Mh31yhZt/dT6dS76zfT7o+T+waWLS52P16XTNJhk25WPfq/XhxmpoP32V+BDx4vtt4TGby6fIMY7VyCu5qFgtWzWAT9USiALyZn3E//Npe29+7XVLBLDPXiq8kQ5arZyauy/6oll2BZ9BTl5sFkDoQoP2UagYSbaidOteZGIlHzeikiN/Gs1OqzdPDO9j3lXP2c6k8EwA2UFyZ2GF1H88xBNLPehRBj+AH7SW5npheOpjoIBfP8+Zcg+b4+mYVBzRCZduzM97oI/dfVa+hsmN/+6uinPZIfQKWVjo60ps1OCmOjBUzQxKXku6pQ6SHLyrKX/d9L78SjgNlPaQDqnE9ffhv384pdaqWme0LqO6bs72VtwKlzgHrczpnInh+xSQRxX8paM4s=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <E579F461D779494A9D996861C06D6344@eurprd08.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f514c111-ce10-40ac-c7da-08d7846d1686
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Dec 2019 10:20:36.1662
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Z/XOvXs1vLO+Cw2UNR93Ndcne6jdsv5xUQ+iqX3AwtXcUf05xIQUGZH1Z8jubYcVmNAqIrVUgohZ7v/xKdrjrdkAEarEvv+lldDjH469ErQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR08MB3457
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-> 在 2019年12月18日，18:47，Yafang Shao <laoar.shao@gmail.com> 写道：
-> 
-> On Wed, Dec 18, 2019 at 5:44 PM Hui Zhu <teawaterz@linux.alibaba.com> wrote:
->> 
->> Currently, memcg has some config to limit memory usage and config
->> the shrink behavior.
->> In the memory-constrained environment, put different priority tasks
->> into different cgroups with different memory limits to protect the
->> performance of the high priority tasks.  Because the global memory
->> shrink will affect the performance of all tasks.  The memory limit
->> cgroup can make shrink happen inside the cgroup.  Then it can decrease
->> the memory shrink of the high priority task to protect its performance.
->> 
->> But the memory footprint of the task is not static.  It will change as
->> the working pressure changes.  And the version changes will affect it too.
->> Then set the appropriate memory limit to decrease the global memory shrink
->> is a difficult job and lead to wasted memory or performance loss sometimes.
->> 
->> This commit adds global shrink priority to memcg to try to handle this
->> problem.
->> The default global shrink priority of each cgroup is DEF_PRIORITY.
->> Its behavior in global shrink is not changed.
->> And when global shrink priority of a cgroup is smaller than DEF_PRIORITY,
->> its memory will be shrink when memcg->global_shrink_priority greater than
->> or equal to sc->priority.
->> 
-> 
-> Just a kind reminder that sc->priority is really propotional, rather
-> than priority.
-> The relcaimer scans (total_size >> priority) pages at once.
-> If the relcaimer can't relaim enough memory, it will decrease
-> sc->priority and scan MEMCGs again until the sc->pirority drops to 0.
-> (sc->priority is really a misleading wording. )
-> So comparing the memcg priority with  sc->priority may cause unexpected issues.
-> 
->> The following is an example to use global shrink priority in a VM that
->> has 2 CPUs, 1G memory and 4G swap:
->> # These are test shells that call usemem that get from
->> # https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git
->> cat 1.sh
->> sleep 9999
->> # -s 3600: Sleep 3600 seconds after test complete then usemem will
->> # not release the memory at once.
->> # -Z:  read memory again after access the memory.
->> # The first time access memory need shrink memory to allocate page.
->> # Then the access speed of high priority will not increase a lot.
->> # The read again speed of high priority will increase.
->> # $((850 * 1024 * 1024 + 8)): Different sizes are used to distinguish
->> # the results of the two tests.
->> usemem -s 3600 -Z -a -n 1 $((850 * 1024 * 1024 + 8))
->> cat 2.sh
->> sleep 9999
->> usemem -s 3600 -Z -a -n 1 $((850 * 1024 * 1024))
->> 
->> # Setup swap
->> swapon /swapfile
->> # Setup 2 cgroups
->> mkdir /sys/fs/cgroup/memory/t1/
->> mkdir /sys/fs/cgroup/memory/t2/
->> 
->> # Run tests with same global shrink priority
->> cat /sys/fs/cgroup/memory/t1/memory.global_shrink_priority
->> 12
->> cat /sys/fs/cgroup/memory/t2/memory.global_shrink_priority
->> 12
->> echo $$ > /sys/fs/cgroup/memory/t1/cgroup.procs
->> sh 1.sh &
->> echo $$ > /sys/fs/cgroup/memory/t2/cgroup.procs
->> sh 2.sh &
->> echo $$ > /sys/fs/cgroup/memory/cgroup.procs
->> killall sleep
->> # This the test results
->> 1002700800 bytes / 2360359 usecs = 414852 KB/s
->> 1002700809 bytes / 2676181 usecs = 365894 KB/s
->> read again 891289600 bytes / 13515142 usecs = 64401 KB/s
->> read again 891289608 bytes / 13252268 usecs = 65679 KB/s
->> killall usemem
->> 
->> # Run tests with 12 and 8
->> cat /sys/fs/cgroup/memory/t1/memory.global_shrink_priority
->> 12
->> echo 8 > /sys/fs/cgroup/memory/t2/memory.global_shrink_priority
->> echo $$ > /sys/fs/cgroup/memory/t1/cgroup.procs
->> sh 1.sh &
->> echo $$ > /sys/fs/cgroup/memory/t2/cgroup.procs
->> sh 2.sh &
->> echo $$ > /sys/fs/cgroup/memory/cgroup.procs
->> killall sleep
->> # This the test results
->> 1002700800 bytes / 1809056 usecs = 541276 KB/s
->> 1002700809 bytes / 2184337 usecs = 448282 KB/s
->> read again 891289600 bytes / 6666224 usecs = 130568 KB/s
->> read again 891289608 bytes / 9171440 usecs = 94903 KB/s
->> killall usemem
->> 
->> # This is the test results of 12 and 6
->> 1002700800 bytes / 1827914 usecs = 535692 KB/s
->> 1002700809 bytes / 2135124 usecs = 458615 KB/s
->> read again 891289600 bytes / 1498419 usecs = 580878 KB/s
->> read again 891289608 bytes / 7328362 usecs = 118771 KB/s
->> 
->> Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
->> ---
->> include/linux/memcontrol.h |  2 ++
->> mm/memcontrol.c            | 32 ++++++++++++++++++++++++++++++++
->> mm/vmscan.c                | 39 ++++++++++++++++++++++++++++++++++++---
->> 3 files changed, 70 insertions(+), 3 deletions(-)
->> 
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index a7a0a1a5..8ad2437 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -244,6 +244,8 @@ struct mem_cgroup {
->>        /* OOM-Killer disable */
->>        int             oom_kill_disable;
->> 
->> +       s8 global_shrink_priority;
->> +
->>        /* memory.events and memory.events.local */
->>        struct cgroup_file events_file;
->>        struct cgroup_file events_local_file;
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index c5b5f74..39fdc84 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -4646,6 +4646,32 @@ static ssize_t memcg_write_event_control(struct kernfs_open_file *of,
->>        return ret;
->> }
->> 
->> +static ssize_t mem_global_shrink_priority_write(struct kernfs_open_file *of,
->> +                               char *buf, size_t nbytes, loff_t off)
->> +{
->> +       struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
->> +       s8 val;
->> +       int ret;
->> +
->> +       ret = kstrtos8(buf, 0, &val);
->> +       if (ret < 0)
->> +               return ret;
->> +       if (val > DEF_PRIORITY)
->> +               return -EINVAL;
->> +
->> +       memcg->global_shrink_priority = val;
->> +
->> +       return nbytes;
->> +}
->> +
->> +static s64 mem_global_shrink_priority_read(struct cgroup_subsys_state *css,
->> +                                       struct cftype *cft)
->> +{
->> +       struct mem_cgroup *memcg = mem_cgroup_from_css(css);
->> +
->> +       return memcg->global_shrink_priority;
->> +}
->> +
->> static struct cftype mem_cgroup_legacy_files[] = {
->>        {
->>                .name = "usage_in_bytes",
->> @@ -4774,6 +4800,11 @@ static struct cftype mem_cgroup_legacy_files[] = {
->>                .write = mem_cgroup_reset,
->>                .read_u64 = mem_cgroup_read_u64,
->>        },
->> +       {
->> +               .name = "global_shrink_priority",
->> +               .write = mem_global_shrink_priority_write,
->> +               .read_s64 = mem_global_shrink_priority_read,
->> +       },
->>        { },    /* terminate */
->> };
->> 
->> @@ -4996,6 +5027,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->> 
->>        memcg->high = PAGE_COUNTER_MAX;
->>        memcg->soft_limit = PAGE_COUNTER_MAX;
->> +       memcg->global_shrink_priority = DEF_PRIORITY;
->>        if (parent) {
->>                memcg->swappiness = mem_cgroup_swappiness(parent);
->>                memcg->oom_kill_disable = parent->oom_kill_disable;
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 74e8edc..5e11d45 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -2637,17 +2637,33 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
->>        return inactive_lru_pages > pages_for_compaction;
->> }
->> 
->> +static bool get_is_global_shrink(struct scan_control *sc)
->> +{
->> +       if (!sc->target_mem_cgroup ||
->> +               mem_cgroup_is_root(sc->target_mem_cgroup))
->> +               return true;
->> +
->> +       return false;
->> +}
->> +
->> static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->> {
->>        struct mem_cgroup *target_memcg = sc->target_mem_cgroup;
->>        struct mem_cgroup *memcg;
->> +       bool is_global_shrink = get_is_global_shrink(sc);
->> 
->>        memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
->>        do {
->> -               struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> +               struct lruvec *lruvec;
->>                unsigned long reclaimed;
->>                unsigned long scanned;
->> 
->> +               if (is_global_shrink &&
->> +                       memcg->global_shrink_priority < sc->priority)
->> +                       continue;
->> +
->> +               lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> +
->>                switch (mem_cgroup_protected(target_memcg, memcg)) {
->>                case MEMCG_PROT_MIN:
->>                        /*
->> @@ -2682,11 +2698,21 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->>                reclaimed = sc->nr_reclaimed;
->>                scanned = sc->nr_scanned;
->> 
->> +               if (is_global_shrink &&
->> +                       memcg->global_shrink_priority != DEF_PRIORITY)
->> +                       sc->priority += DEF_PRIORITY
->> +                                       - memcg->global_shrink_priority;
->> +
-> 
-> For example.
-> In this case this memcg can't do full scan.
-> This behavior is similar with a hard protect(memroy.min), which may
-> cause unexpected OOM under memory pressure.
-> 
-> Pls. correct me if I misunderstand you.
-
-Thanks and agree with you.
-Low priority task should do more shrink if the high priority task is ignored.
-
-Best,
-Hui
-
-> 
->>                shrink_lruvec(lruvec, sc);
->> 
->>                shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
->>                            sc->priority);
->> 
->> +               if (is_global_shrink &&
->> +                       memcg->global_shrink_priority != DEF_PRIORITY)
->> +                       sc->priority -= DEF_PRIORITY
->> +                                       - memcg->global_shrink_priority;
->> +
->>                /* Record the group's reclaim efficiency */
->>                vmpressure(sc->gfp_mask, memcg, false,
->>                           sc->nr_scanned - scanned,
->> @@ -3395,11 +3421,18 @@ static void age_active_anon(struct pglist_data *pgdat,
->> 
->>        memcg = mem_cgroup_iter(NULL, NULL, NULL);
->>        do {
->> +               if (memcg->global_shrink_priority < sc->priority)
->> +                       continue;
->> +
->>                lruvec = mem_cgroup_lruvec(memcg, pgdat);
->> +               /*
->> +                * Not set sc->priority according even if this is
->> +                * a global shrink because nr_to_scan is set to
->> +                * SWAP_CLUSTER_MAX and there is not other part use it.
->> +                */
->>                shrink_active_list(SWAP_CLUSTER_MAX, lruvec,
->>                                   sc, LRU_ACTIVE_ANON);
->> -               memcg = mem_cgroup_iter(NULL, memcg, NULL);
->> -       } while (memcg);
->> +       } while ((memcg = mem_cgroup_iter(NULL, memcg, NULL)));
->> }
->> 
->> static bool pgdat_watermark_boosted(pg_data_t *pgdat, int classzone_idx)
->> --
->> 2.7.4
-
+DQoNCk9uIDEyLzQvMTkgMTE6MzUgQU0sIE1pY2hhbCBIb2NrbyB3cm90ZToNCj4gT24gU2F0IDMw
+LTExLTE5IDAwOjQ1OjQxLCBQYXZlbCBUaWtob21pcm92IHdyb3RlOg0KPj4gV2UgaGF2ZSBhIHBy
+b2JsZW0gdGhhdCBzaHJpbmtlcl9yd3NlbSBjYW4gYmUgaGVsZCBmb3IgYSBsb25nIHRpbWUgZm9y
+DQo+PiByZWFkIGluIHNocmlua19zbGFiLCBhdCB0aGUgc2FtZSB0aW1lIGFueSBwcm9jZXNzIHdo
+aWNoIGlzIHRyeWluZyB0bw0KPj4gbWFuYWdlIHNocmlua2VycyBoYW5ncy4NCj4+DQo+PiBUaGUg
+c2hyaW5rZXJfcndzZW0gaXMgdGFrZW4gaW4gc2hyaW5rX3NsYWIgd2hpbGUgdHJhdmVyc2luZyBz
+aHJpbmtlcl9saXN0Lg0KPj4gSXQgdHJpZXMgdG8gc2hyaW5rIHNvbWV0aGluZyBvbiBuZnMgKGhh
+cmQpIGJ1dCBuZnMgc2VydmVyIGlzIGRlYWQgYXQNCj4+IHRoZXNlIG1vbWVudCBhbHJlYWR5IGFu
+ZCBycGMgd2lsbCBuZXZlciBzdWNjZWVkLiBHZW5lcmFsbHkgYW55IHNocmlua2VyDQo+PiBjYW4g
+dGFrZSBzaWduaWZpY2FudCB0aW1lIHRvIGRvX3Nocmlua19zbGFiLCBzbyBpdCdzIGEgYmFkIGlk
+ZWEgdG8gaG9sZA0KPj4gdGhlIGxpc3QgbG9jayBoZXJlLg0KPiANCj4gWWVzLCB0aGlzIGlzIGEg
+a25vd24gcHJvYmxlbSBhbmQgcGVvcGxlIGhhdmUgYWxyZWFkeSB0cmllZCB0byBhZGRyZXNzIGl0
+DQo+IGluIHRoZSBwYXN0LiBIYXZlIHlvdSBjaGVja2VkIHByZXZpb3VzIGF0dGVtcHRzPyBTUkNV
+IGJhc2VkIG9uZQ0KPiBodHRwOi8vbGttbC5rZXJuZWwub3JnL3IvMTUzMzY1MzQ3OTI5LjE5MDc0
+LjEyNTA5NDk1NzEyNzM1ODQzODA1LnN0Z2l0QGxvY2FsaG9zdC5sb2NhbGRvbWFpbg0KPiBidXQg
+SSBiZWxpZXZlIHRoZXJlIHdlcmUgb3RoZXJzIChJIG9ubHkgaGFkIHRoaXMgb25lIGluIG15IG5v
+dGVzKS4NCj4gUGxlYXNlIG1ha2Ugc3VyZSB0byBDYyBEYXZlIENoaW5uZXIgd2hlbiBwb3N0aW5n
+IGEgbmV4dCB2ZXJzaW9uIGJlY2F1c2UNCj4gaGUgaGFkIHNvbWUgY29uY2VybnMgYWJvdXQgdGhl
+IGNoYW5nZSBvZiB0aGUgYmVoYXZpb3IuDQoNClRoZSBhcHByb2FjaCBvZiB0aGUgcGF0Y2ggeW91
+IGFyZSByZWZlcmVuY2luZyBpcyBxdWlldCBkaWZmZXJlbnQsIGl0IA0Kd2lsbCBzdGlsbCBob2xk
+IGdsb2JhbCBzcmN1X3JlYWRfbG9jaygmc3JjdSkgd2hlbiBkaXZpbmcgaW4gDQpkb19zaHJpbmtf
+c2xhYiBhbmQgaGFuZ2luZyBuZnMgd2lsbCBzdGlsbCBibG9jayBhbGwgW3VuXXJlZ2lzdGVyX3No
+cmlua2VyLg0KDQo+IA0KPj4gV2UgaGF2ZSBhIHNpbWlsYXIgcHJvYmxlbSBpbiBzaHJpbmtfc2xh
+Yl9tZW1jZywgZXhjZXB0IHRoYXQgd2UgYXJlDQo+PiB0cmF2ZXJzaW5nIHNocmlua2VyX21hcCtz
+aHJpbmtlcl9pZHIgdGhlcmUuDQo+Pg0KPj4gVGhlIGlkZWEgb2YgdGhlIHBhdGNoIGlzIHRvIGlu
+YyBhIHJlZmNvdW50IHRvIHRoZSBjaG9zZW4gc2hyaW5rZXIgc28gaXQNCj4+IHdvbid0IGRpc2Fw
+cGVhciBhbmQgcmVsZWFzZSBzaHJpbmtlcl9yd3NlbSB3aGlsZSB3ZSBhcmUgaW4NCj4+IGRvX3No
+cmlua19zbGFiLCBhZnRlciB0aGF0IHdlIHdpbGwgcmVhY3F1aXJlIHNocmlua2VyX3J3c2VtLCBk
+ZWMNCj4+IHRoZSByZWZjb3VudCBhbmQgY29udGludWUgdGhlIHRyYXZlcnNhbC4NCj4gDQo+IFRo
+ZSByZWZlcmVuY2UgY291bnQgcGFydCBtYWtlcyBzZW5zZSB0byBtZS4gUkNVIHJvbGUgbmVlZHMg
+YSBiZXR0ZXINCj4gZXhwbGFuYXRpb24uDQoNCkkgaGF2ZSAyIHJjdSdzIGluIHBhdGNoLCAxLXN0
+IGlzIHRvIHByb3RlY3Qgc2hyaW5rZXJfbWFwIHNhbWUgYXMgaXQgd2FzIA0KYmVmb3JlIGluIG1l
+bWNnX3NldF9zaHJpbmtlcl9iaXQsIDItbmQgaXMgdG8gcHJvdGVjdCBzaHJpbmtlciBzdHJ1Y3Qg
+aW4gDQpwdXRfc2hyaW5rZXIgZnJvbSBiZWluZyBmcmVlZCwgYXMgdW5yZWdpc3Rlcl9zaHJpbmtl
+ciBjYW4gc2VlIHJlZmNudD09MCANCndpdGhvdXQgYWN0dWFsbHkgZ29pbmcgdG8gc2NoZWR1bGUo
+KS4NCg0KPiBBbHNvIGRvIHlvdSBoYXZlIGFueSByZWFzb24gdG8gbm90IHVzZSBjb21wbGV0aW9u
+IGZvcg0KPiB0aGUgZmluYWwgc3RlcD8gT3BlbmNvbmRpbmcgZXNzZW50aWFsbHkgdGhlIHNhbWUg
+Y29uY2VwdCBzb3VuZHMgYSBiaXQNCj4gYXdrd2FyZCB0byBtZS4NCg0KVGhhbmtzIGZvciBhIGdv
+b2QgaGludCwgZnJvbSB0aGUgZmlyc3QgZ2xhbmNlIHdlIGNhbiByZXdvcmsgd2FpdF9ldmVudCAN
+CnBhcnQgdG8gd2FpdF9mb3JfY29tcGxldGlvbi4NCg0KPiANCj4+IFdlIGFsc28gbmVlZCBhIHdh
+aXRfcXVldWUgc28gdGhhdCB1bnJlZ2lzdGVyX3Nocmlua2VyIGNhbiB3YWl0IGZvciB0aGUNCj4+
+IHJlZmNudCB0byBiZWNvbWUgemVyby4gT25seSBhZnRlciB0aGVzZSB3ZSBjYW4gc2FmZWx5IHJl
+bW92ZSB0aGUNCj4+IHNocmlua2VyIGZyb20gbGlzdCBhbmQgaWRyLCBhbmQgZnJlZSB0aGUgc2hy
+aW5rZXIuDQo+IFsuLi5dDQo+PiAgICBjcmFzaD4gYnQgLi4uDQo+PiAgICBQSUQ6IDE4NzM5ICBU
+QVNLOiAuLi4gIENQVTogMyAgIENPTU1BTkQ6ICJiYXNoIg0KPj4gICAgICMwIFsuLi5dIF9fc2No
+ZWR1bGUgYXQgLi4uDQo+PiAgICAgIzEgWy4uLl0gc2NoZWR1bGUgYXQgLi4uDQo+PiAgICAgIzIg
+Wy4uLl0gcnBjX3dhaXRfYml0X2tpbGxhYmxlIGF0IC4uLiBbc3VucnBjXQ0KPj4gICAgICMzIFsu
+Li5dIF9fd2FpdF9vbl9iaXQgYXQgLi4uDQo+PiAgICAgIzQgWy4uLl0gb3V0X29mX2xpbmVfd2Fp
+dF9vbl9iaXQgYXQgLi4uDQo+PiAgICAgIzUgWy4uLl0gX25mczRfcHJvY19kZWxlZ3JldHVybiBh
+dCAuLi4gW25mc3Y0XQ0KPj4gICAgICM2IFsuLi5dIG5mczRfcHJvY19kZWxlZ3JldHVybiBhdCAu
+Li4gW25mc3Y0XQ0KPj4gICAgICM3IFsuLi5dIG5mc19kb19yZXR1cm5fZGVsZWdhdGlvbiBhdCAu
+Li4gW25mc3Y0XQ0KPj4gICAgICM4IFsuLi5dIG5mczRfZXZpY3RfaW5vZGUgYXQgLi4uIFtuZnN2
+NF0NCj4+ICAgICAjOSBbLi4uXSBldmljdCBhdCAuLi4NCj4+ICAgICMxMCBbLi4uXSBkaXNwb3Nl
+X2xpc3QgYXQgLi4uDQo+PiAgICAjMTEgWy4uLl0gcHJ1bmVfaWNhY2hlX3NiIGF0IC4uLg0KPj4g
+ICAgIzEyIFsuLi5dIHN1cGVyX2NhY2hlX3NjYW4gYXQgLi4uDQo+PiAgICAjMTMgWy4uLl0gZG9f
+c2hyaW5rX3NsYWIgYXQgLi4uDQo+IA0KPiBBcmUgTkZTIHBlb3BsZSBhd2FyZSBvZiB0aGlzPyBC
+ZWNhdXNlIHRoaXMgaXMgc2ltcGx5IG5vdCBhY2NlcHRhYmxlDQo+IGJlaGF2aW9yLiBNZW1vcnkg
+cmVjbGFpbSBjYW5ub3QgYmUgYmxvY2sgaW5kZWZpbml0ZWx5IG9yIGZvciBhIGxvbmcNCj4gdGlt
+ZS4gVGhlcmUgbXVzdCBiZSBhIHdheSB0byBzaW1wbHkgZ2l2ZSB1cCBpZiB0aGUgdW5kZXJseWlu
+ZyBpbm9kZQ0KPiBjYW5ub3QgYmUgcmVjbGFpbWVkLg0KDQpTb3JyeSB0aGF0IEkgZGlkbid0IGNj
+IG5mcyBwZW9wbGUgZnJvbSB0aGUgYmVnaW5pbmcuDQoNCj4gDQo+IEkgc3RpbGwgaGF2ZSB0byB0
+aGluayBhYm91dCB0aGUgcHJvcG9zZWQgc29sdXRpb24uIEl0IHNvdW5kcyBhIGJpdCBvdmVyDQo+
+IGNvbXBsaWNhdGVkIHRvIG1lLg0KPiANCg0KLS0gDQpCZXN0IHJlZ2FyZHMsIFRpa2hvbWlyb3Yg
+UGF2ZWwNClNvZnR3YXJlIERldmVsb3BlciwgVmlydHVvenpvLg0K
