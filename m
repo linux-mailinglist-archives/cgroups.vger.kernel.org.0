@@ -2,78 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 848F21276B6
-	for <lists+cgroups@lfdr.de>; Fri, 20 Dec 2019 08:48:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1092E127A16
+	for <lists+cgroups@lfdr.de>; Fri, 20 Dec 2019 12:37:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726327AbfLTHsy convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Fri, 20 Dec 2019 02:48:54 -0500
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:37385 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726210AbfLTHsy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Dec 2019 02:48:54 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TlPlhLn_1576828129;
-Received: from 30.30.208.24(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TlPlhLn_1576828129)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 20 Dec 2019 15:48:50 +0800
-Content-Type: text/plain;
-        charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
-From:   teawater <teawaterz@linux.alibaba.com>
-In-Reply-To: <20191219112618.GA72828@chrisdown.name>
-Date:   Fri, 20 Dec 2019 15:48:49 +0800
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, shakeelb@google.com,
-        Yang Shi <yang.shi@linux.alibaba.com>, tj@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1A189775-3B43-4C49-B827-15D001C2D2FC@linux.alibaba.com>
-References: <1576662179-16861-1-git-send-email-teawaterz@linux.alibaba.com>
- <20191218140952.GA255739@chrisdown.name>
- <25AA9500-B249-42C2-B162-2B8D4EE83BB0@linux.alibaba.com>
- <20191219112618.GA72828@chrisdown.name>
-To:     Chris Down <chris@chrisdown.name>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1727258AbfLTLht (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Dec 2019 06:37:49 -0500
+Received: from mail-wm1-f68.google.com ([209.85.128.68]:53923 "EHLO
+        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727184AbfLTLht (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Dec 2019 06:37:49 -0500
+Received: by mail-wm1-f68.google.com with SMTP id m24so8595226wmc.3;
+        Fri, 20 Dec 2019 03:37:47 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=+xqrG/Fr+lk5K0m1pptDnTQOO1AdoG749ulUXApgoJo=;
+        b=PjsD4G79liFs7IK7ZIxgjW2sIjJcOIfF+7D7HWaxyXYhsvxdmoVfdm6JcF9Nx73Z1R
+         TyohPsE7Cu/VZJ6zF2X2we0ZT2jojRde9jJfztrNF1L9GVPHyFe3RYwUudRcgyekELW7
+         WWXZIM1jZeqvL8Yy6TCLojYuNcVEnswyssEMe20oFdgX42rcvIczqRv9XBzTHRxT83u5
+         hhIWjkdJM2TGxu0+lr6k7jao1sKPUuH89boBbj0Xkz65zGTtkIfasMH1zfZFFOYiPnhr
+         OoDuK7ugzv4yViuSre3YsmfCaAtgKUuU6yhXNxzqdhXHOoPZtudqwCZgY5BTrZQvfn/u
+         qm4w==
+X-Gm-Message-State: APjAAAVe85pwyqnDUtNdqIXch42djNI2d3K2fmoy/mJ61rsZto6pDFNk
+        HUWg7i/y0H0UrHFADaryFlc=
+X-Google-Smtp-Source: APXvYqxea3sQYL0zemf/BDfh/Fngl+lzOAoLU0x312PESG6f2yo0GmWBhUf3frSoVwbx7/PQps66Kg==
+X-Received: by 2002:a1c:638a:: with SMTP id x132mr16983341wmb.43.1576841866625;
+        Fri, 20 Dec 2019 03:37:46 -0800 (PST)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id f1sm9955905wrp.93.2019.12.20.03.37.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2019 03:37:45 -0800 (PST)
+Date:   Fri, 20 Dec 2019 12:37:44 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     =?utf-8?B?5b2t5b+X5Yia?= <zgpeng.linux@gmail.com>
+Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, Shakeel Butt <shakeelb@google.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, zgpeng <zgpeng@tencent.com>
+Subject: Re: [PATCH] oom: choose a more suitable process to kill while all
+ processes are not killable
+Message-ID: <20191220113744.GF20332@dhcp22.suse.cz>
+References: <1576823172-25943-1-git-send-email-zgpeng.linux@gmail.com>
+ <20191220071334.GB20332@dhcp22.suse.cz>
+ <CAE5vP3mHjdM-PwjUURwXgZDfgQ0b2BbgHkWZCHe-ysSmZ58pFw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAE5vP3mHjdM-PwjUURwXgZDfgQ0b2BbgHkWZCHe-ysSmZ58pFw@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+[Please do not top post]
 
+On Fri 20-12-19 17:56:20, å½­å¿—åˆš wrote:
+> certainly.
+> 
+> Steps to reproduce:
+> (1)Create a mm cgroup and set memory.limit_in_bytes
+> (2)Move the bash process to the newly created cgroup, and set the
+> oom_score_adj of the  bash process to -998.
+> (3)In bash, start multiple processes, each process consumes different
+> memory until cgroup oom is triggered.
+> 
+> The triggered phenomenon is shown below. We can see that when cgroup oom
+> happened, process 23777 was killed, but in fact, 23772 consumes more memory;
+> 
+> [  591.000970] Tasks state (memory values in pages):
+> [  591.000970] [  pid  ]   uid  tgid total_vm      rss pgtables_bytes swapents oom_score_adj name
+> [  591.000973] [  23344]     0 23344     2863      923    61440        0        -998 bash
+> [  591.000975] [  23714]     0 23714    27522    25935   258048        0        -998 test
+> [  591.000976] [  23772]     0 23772   104622   103032   876544        0        -998 test
 
-> ÔÚ 2019Äê12ÔÂ19ÈÕ£¬19:26£¬Chris Down <chris@chrisdown.name> Ð´µÀ£º
-> 
-> Hi Hui,
-> 
-> teawater writes:
->> Memory.min, low, high can affect the global shrink behavior.  They can help task keep some pages to help protect performance.
->> 
->> But what I want is the low priority tasks (the tasks that performance is not very important) do more shrink first.  And when low priority tasks doesn¡¯t have enough pages to be dropped and system need more free page, shrink the high priority task¡¯s pages.  Because at this time, system¡¯s stable is more important than the performance of priority task.
->> With memory.min and memory.low, I have no idea to config them to support this.  That is why I add global shrink priority.
-> 
-> For sure, that's what I'm suggesting you use memory.{min,low} for -- you define some subset of the cgroup hierarchy as "protected", and then you bias reclaim away from protected cgroups (and thus *towards* unprotected cgroups) by biasing the size of LRU scanning. See my patch that went into 5.4 and the examples in the commit message:
-> 
->    commit 9783aa9917f8ae24759e67bf882f1aba32fe4ea1
->    Author: Chris Down <chris@chrisdown.name>
->    Date:   Sun Oct 6 17:58:32 2019 -0700
-> 
->        mm, memcg: proportional memory.{low,min} reclaim
-> 
-> You can see how we're using memory.{low,min} to achieve this in this case study[0]. It's not exactly equivalent technically to your solution, but the end goals are similar.
-> 
-> Thanks,
-> 
-> Chris
-> 
-> 0: https://facebookmicrosites.github.io/cgroup2/docs/overview.html#case-study-the-fbtax2-project
+points = 103032 + 0 + 876544/4096 = 103246
 
-Hi Chris,
+> [  591.000978] [  23777]     0 23777    78922    77335   667648        0        -998 test
 
-Really appreciate for your help.  I will try to use it handle my problem.
+points = 77335 + 0 + 667648/4096 = 77498
 
-Best,
-Hui
+It is not clear what is the actual hard limit but let's assume that
+rss+page_tables is the only charged memory (or at least the majority of
+it). That would be 207680 so the normalized oom_score_adj would be
+-206586 which is way too big for both tasks so from the OOM killer
+perspective both tasks are equal.
+
+The question is whether this is a bug or a (mis)feature. The
+oom_score_adj je documented as follows:
+Documentation/filesystems/proc.txt
+: Consequently, it is very simple for userspace to define the amount of memory to
+: consider for each task.  Setting a /proc/<pid>/oom_score_adj value of +500, for
+: example, is roughly equivalent to allowing the remainder of tasks sharing the
+: same system, cpuset, mempolicy, or memory controller resources to use at least
+: 50% more memory.  A value of -500, on the other hand, would be roughly
+: equivalent to discounting 50% of the task's allowed memory from being considered
+: as scoring against the task.
+
+Which implies that we are talking about the budget based on a usable
+memory (aka hard limit in this case). I do agree that the semantic is
+awkward. I know there are usecases which try to use the existing scheme
+for oom_score_adj to fine tune oom decisions and I am worried your patch
+might break those.
+
+That being said, I am not sure this change is safe wrt. to backward
+compatibility. I would rather recommend to not using oom_score_adj for
+anything but OOM_SCORE_ADJ_MIN resp OOM_SCORE_ADJ_MAX.
+-- 
+Michal Hocko
+SUSE Labs
