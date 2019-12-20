@@ -2,68 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7117A127658
-	for <lists+cgroups@lfdr.de>; Fri, 20 Dec 2019 08:13:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848F21276B6
+	for <lists+cgroups@lfdr.de>; Fri, 20 Dec 2019 08:48:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbfLTHNh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Dec 2019 02:13:37 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45464 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726651AbfLTHNh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Dec 2019 02:13:37 -0500
-Received: by mail-wr1-f66.google.com with SMTP id j42so8309245wrj.12;
-        Thu, 19 Dec 2019 23:13:36 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=FOQzWpHfx4pdEUl4NggtZJqU0xFxHqL/b5XZR3ZC39E=;
-        b=QkGVKx++/WV6H4PtmjKdkwN4r8XbhV9bLtp6el9zG87BCvk5DoWsjDhTEFV5beMA8m
-         LlOvVMuzWcxKCQv55Gv0rx9sYHQC6bpIZtfhTtBoFaEzRpcAKXg73PpNUbH+lNmpJOeL
-         Z/eB//GPeKU/fuXX6XOod/hyCb1wzssu21pH6byoydZQm0hmA9PygZOoBRVjfP3oHuc3
-         nubRBDhGb4CQtGpoEc948GLFBb6ZOI0UfYM5IfUicJho+FQrDZVdJPC0gJDYLxboZkz+
-         P0ZrFAOofGhKbALH81zsPwjn1RyOguKxLCDZEtxudLFl8vlRoTJnGh1EoXTLsR7Gvh5J
-         w+6g==
-X-Gm-Message-State: APjAAAXxQkJ2Bb4F2HNrer0N+buuIof3L4PqFiYjfg9dIDz7EfBJldkR
-        eAIBN3t0y03IGFcUBpeOkXGdF83n
-X-Google-Smtp-Source: APXvYqw7CXurc2quSgaz5A798GccKKbvTrl6mO4b61Y+BCiP1i/FuiRxu1BeUhnZUrnAQZU6IO1TwQ==
-X-Received: by 2002:adf:f7c4:: with SMTP id a4mr13025777wrq.332.1576826015587;
-        Thu, 19 Dec 2019 23:13:35 -0800 (PST)
-Received: from localhost (ip-37-188-150-151.eurotel.cz. [37.188.150.151])
-        by smtp.gmail.com with ESMTPSA id g7sm8987211wrq.21.2019.12.19.23.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Dec 2019 23:13:34 -0800 (PST)
-Date:   Fri, 20 Dec 2019 08:13:34 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     zgpeng.linux@gmail.com
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, shakeelb@google.com, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        zgpeng <zgpeng@tencent.com>
-Subject: Re: [PATCH] oom: choose a more suitable process to kill while all
- processes are not killable
-Message-ID: <20191220071334.GB20332@dhcp22.suse.cz>
-References: <1576823172-25943-1-git-send-email-zgpeng.linux@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1576823172-25943-1-git-send-email-zgpeng.linux@gmail.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        id S1726327AbfLTHsy convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 20 Dec 2019 02:48:54 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:37385 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726210AbfLTHsy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Dec 2019 02:48:54 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TlPlhLn_1576828129;
+Received: from 30.30.208.24(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TlPlhLn_1576828129)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Dec 2019 15:48:50 +0800
+Content-Type: text/plain;
+        charset=gb2312
+Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
+Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
+From:   teawater <teawaterz@linux.alibaba.com>
+In-Reply-To: <20191219112618.GA72828@chrisdown.name>
+Date:   Fri, 20 Dec 2019 15:48:49 +0800
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, shakeelb@google.com,
+        Yang Shi <yang.shi@linux.alibaba.com>, tj@kernel.org,
+        tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <1A189775-3B43-4C49-B827-15D001C2D2FC@linux.alibaba.com>
+References: <1576662179-16861-1-git-send-email-teawaterz@linux.alibaba.com>
+ <20191218140952.GA255739@chrisdown.name>
+ <25AA9500-B249-42C2-B162-2B8D4EE83BB0@linux.alibaba.com>
+ <20191219112618.GA72828@chrisdown.name>
+To:     Chris Down <chris@chrisdown.name>
+X-Mailer: Apple Mail (2.3445.104.11)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 20-12-19 14:26:12, zgpeng.linux@gmail.com wrote:
-> From: zgpeng <zgpeng@tencent.com>
-> 
-> It has been found in multiple business scenarios that when a oom occurs
-> in a cgroup, the process that consumes the most memory in the cgroup is 
-> not killed first. Analysis of the reasons found that each process in the
-> cgroup oom_score_adj is set to -998, oom_badness in the calculation of 
-> points, if points is negative, uniformly set it to 1.
 
-Can you provide an example of the oom report?
--- 
-Michal Hocko
-SUSE Labs
+
+> 在 2019年12月19日，19:26，Chris Down <chris@chrisdown.name> 写道：
+> 
+> Hi Hui,
+> 
+> teawater writes:
+>> Memory.min, low, high can affect the global shrink behavior.  They can help task keep some pages to help protect performance.
+>> 
+>> But what I want is the low priority tasks (the tasks that performance is not very important) do more shrink first.  And when low priority tasks doesn’t have enough pages to be dropped and system need more free page, shrink the high priority task’s pages.  Because at this time, system’s stable is more important than the performance of priority task.
+>> With memory.min and memory.low, I have no idea to config them to support this.  That is why I add global shrink priority.
+> 
+> For sure, that's what I'm suggesting you use memory.{min,low} for -- you define some subset of the cgroup hierarchy as "protected", and then you bias reclaim away from protected cgroups (and thus *towards* unprotected cgroups) by biasing the size of LRU scanning. See my patch that went into 5.4 and the examples in the commit message:
+> 
+>    commit 9783aa9917f8ae24759e67bf882f1aba32fe4ea1
+>    Author: Chris Down <chris@chrisdown.name>
+>    Date:   Sun Oct 6 17:58:32 2019 -0700
+> 
+>        mm, memcg: proportional memory.{low,min} reclaim
+> 
+> You can see how we're using memory.{low,min} to achieve this in this case study[0]. It's not exactly equivalent technically to your solution, but the end goals are similar.
+> 
+> Thanks,
+> 
+> Chris
+> 
+> 0: https://facebookmicrosites.github.io/cgroup2/docs/overview.html#case-study-the-fbtax2-project
+
+Hi Chris,
+
+Really appreciate for your help.  I will try to use it handle my problem.
+
+Best,
+Hui
