@@ -2,113 +2,151 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42F94128351
-	for <lists+cgroups@lfdr.de>; Fri, 20 Dec 2019 21:37:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 75E361291D9
+	for <lists+cgroups@lfdr.de>; Mon, 23 Dec 2019 07:18:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727422AbfLTUhB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Dec 2019 15:37:01 -0500
-Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:34626 "EHLO
-        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1727413AbfLTUhB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Dec 2019 15:37:01 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1576874220;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4jjRnLYjGrqgF7WL+aNzr4dW0tQZdCM9Qqr1PxQyLYQ=;
-        b=CPOUv+luqofKZe6ideEHXXcBsW3L4JPJKOxZSWOLEzNIqorxihmH7DX20/QiFvEZbw/oXY
-        OgeIexMwwdPL7Ar5aOK9UdWOWoTzXsiVY82r9FG3pokzhelvGsYqgUssOYcpmM2i0t7DnD
-        GX2/D6kcUnlioYNtT4iC4Q0Fdivl1jU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-432-eyXY7Fg4MeWQIpg8Nlm4TQ-1; Fri, 20 Dec 2019 15:36:57 -0500
-X-MC-Unique: eyXY7Fg4MeWQIpg8Nlm4TQ-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 676271005513;
-        Fri, 20 Dec 2019 20:36:54 +0000 (UTC)
-Received: from dhcp-27-174.brq.redhat.com (ovpn-204-70.brq.redhat.com [10.40.204.70])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 899A17C839;
-        Fri, 20 Dec 2019 20:36:51 +0000 (UTC)
-Received: by dhcp-27-174.brq.redhat.com (nbSMTP-1.00) for uid 1000
-        oleg@redhat.com; Fri, 20 Dec 2019 21:36:54 +0100 (CET)
-Date:   Fri, 20 Dec 2019 21:36:50 +0100
-From:   Oleg Nesterov <oleg@redhat.com>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S1726027AbfLWGSR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 23 Dec 2019 01:18:17 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54082 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725811AbfLWGSR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 23 Dec 2019 01:18:17 -0500
+Received: from [172.58.139.225] (helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1ijH2i-0003zo-R2; Mon, 23 Dec 2019 06:18:13 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
         Li Zefan <lizefan@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH 2/3] clone3: allow spawning processes into cgroups
-Message-ID: <20191220203650.GA15133@redhat.com>
-References: <20191218173516.7875-1-christian.brauner@ubuntu.com>
- <20191218173516.7875-3-christian.brauner@ubuntu.com>
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH v2 1/3] cgroup: unify attach permission checking
+Date:   Mon, 23 Dec 2019 07:15:02 +0100
+Message-Id: <20191223061504.28716-2-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.24.0
+In-Reply-To: <20191223061504.28716-1-christian.brauner@ubuntu.com>
+References: <20191223061504.28716-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20191218173516.7875-3-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/18, Christian Brauner wrote:
->
-> This adds support for creating a process in a different cgroup than its
-> parent.
+The core codepaths to check whether a process can be attached to a
+cgroup are the same for threads and thread-group leaders. Only a small
+piece of code verifying that source and destination cgroup are in the
+same domain differentiates the thread permission checking from
+thread-group leader permission checking.
+Since cgroup_migrate_vet_dst() only matters cgroup2 - it is a noop on
+cgroup1 - we can move it out of cgroup_attach_task().
+All checks can now be consolidated into a new helper
+cgroup_attach_permissions() callable from both cgroup_procs_write() and
+cgroup_threads_write().
 
-Cough... I will not comment the intent ;) I can't review the cgroup patches
-anyway.
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v1 */
+Link: https://lore.kernel.org/r/20191218173516.7875-2-christian.brauner@ubuntu.com
 
-However,
+/* v2 */
+- Christian Brauner <christian.brauner@ubuntu.com>:
+  - Fix return value of cgroup_attach_permissions. It used to return 0
+    when it should've returned -EOPNOTSUPP.
+  - Fix call to cgroup_attach_permissions() in cgroup_procs_write(). It
+    accidently specified that a thread was moved causing an additional
+    check for domain-group equality to be executed that is not needed.
+---
+ kernel/cgroup/cgroup.c | 46 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
 
-> +int cgroup_lock_fork(struct kernel_clone_args *kargs)
-> +	__acquires(&cgroup_mutex)
-> +{
-> +	struct cgroup *cgrp;
-> +
-> +	if (!(kargs->flags & CLONE_INTO_CGROUP))
-> +		return 0;
-> +
-> +	cgrp = kargs->cgrp;
-> +	if (!cgrp)
-> +		return 0;
-> +
-> +	mutex_lock(&cgroup_mutex);
-> +
-> +	if (!cgroup_is_dead(cgrp))
-> +		return 0;
-> +
-> +	mutex_unlock(&cgroup_mutex);
-> +	return -ENODEV;
-
-...
-
-> @@ -2172,7 +2172,7 @@ static __latent_entropy struct task_struct *copy_process(
->  	 * between here and cgroup_post_fork() if an organisation operation is in
->  	 * progress.
->  	 */
-> -	retval = cgroup_can_fork(p);
-> +	retval = cgroup_can_fork(current, p, args);
->  	if (retval)
->  		goto bad_fork_cgroup_threadgroup_change_end;
->  
-> @@ -2226,6 +2226,10 @@ static __latent_entropy struct task_struct *copy_process(
->  		goto bad_fork_cancel_cgroup;
->  	}
->  
-> +	retval = cgroup_lock_fork(args);
-
-mutex_lock() under spin_lock() ??
-
-
-just in case, note that mutex_lock(&cgroup_mutex) is not safe even under
-cgroup_threadgroup_change_begin(), this can deadlock.
-
-Oleg.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..ad1f9fea5c14 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2719,11 +2719,7 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ {
+ 	DEFINE_CGROUP_MGCTX(mgctx);
+ 	struct task_struct *task;
+-	int ret;
+-
+-	ret = cgroup_migrate_vet_dst(dst_cgrp);
+-	if (ret)
+-		return ret;
++	int ret = 0;
+ 
+ 	/* look up all src csets */
+ 	spin_lock_irq(&css_set_lock);
+@@ -4690,6 +4686,33 @@ static int cgroup_procs_write_permission(struct cgroup *src_cgrp,
+ 	return 0;
+ }
+ 
++static inline bool cgroup_same_domain(const struct cgroup *src_cgrp,
++				      const struct cgroup *dst_cgrp)
++{
++	return src_cgrp->dom_cgrp == dst_cgrp->dom_cgrp;
++}
++
++static int cgroup_attach_permissions(struct cgroup *src_cgrp,
++				     struct cgroup *dst_cgrp,
++				     struct super_block *sb, bool thread)
++{
++	int ret = 0;
++
++	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
++	if (ret)
++		return ret;
++
++	ret = cgroup_migrate_vet_dst(dst_cgrp);
++	if (ret)
++		return ret;
++
++	if (thread &&
++	    !cgroup_same_domain(src_cgrp->dom_cgrp, dst_cgrp->dom_cgrp))
++		ret = -EOPNOTSUPP;
++
++	return ret;
++}
++
+ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 				  char *buf, size_t nbytes, loff_t off)
+ {
+@@ -4712,8 +4735,8 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+ 	spin_unlock_irq(&css_set_lock);
+ 
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, false);
+ 	if (ret)
+ 		goto out_finish;
+ 
+@@ -4757,16 +4780,11 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	spin_unlock_irq(&css_set_lock);
+ 
+ 	/* thread migrations follow the cgroup.procs delegation rule */
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, true);
+ 	if (ret)
+ 		goto out_finish;
+ 
+-	/* and must be contained in the same domain */
+-	ret = -EOPNOTSUPP;
+-	if (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp)
+-		goto out_finish;
+-
+ 	ret = cgroup_attach_task(dst_cgrp, task, false);
+ 
+ out_finish:
+-- 
+2.24.0
 
