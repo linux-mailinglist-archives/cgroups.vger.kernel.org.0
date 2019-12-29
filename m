@@ -2,26 +2,48 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B52012C28C
-	for <lists+cgroups@lfdr.de>; Sun, 29 Dec 2019 14:39:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 848DE12C29B
+	for <lists+cgroups@lfdr.de>; Sun, 29 Dec 2019 15:02:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726189AbfL2Njc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Sun, 29 Dec 2019 08:39:32 -0500
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39894 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726160AbfL2Njb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 29 Dec 2019 08:39:31 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07486;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TmAx.Hp_1577626765;
-Received: from 30.39.3.192(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TmAx.Hp_1577626765)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 29 Dec 2019 21:39:26 +0800
-Content-Type: text/plain;
-        charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
-From:   teawater <teawaterz@linux.alibaba.com>
-In-Reply-To: <20191219112618.GA72828@chrisdown.name>
-Date:   Sun, 29 Dec 2019 21:38:00 +0800
+        id S1726425AbfL2OCo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 29 Dec 2019 09:02:44 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35503 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726410AbfL2OCo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 29 Dec 2019 09:02:44 -0500
+Received: by mail-wm1-f65.google.com with SMTP id p17so12278191wmb.0
+        for <cgroups@vger.kernel.org>; Sun, 29 Dec 2019 06:02:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tVdSh5eigGfpfZbcGPOwFmTu1bT8ccSTdspsY1KsgDw=;
+        b=QYExPAlecIZL1gnZxQC2xAYNOQMYgcCITRyrl9YRy7vqXB90bkcdXQ0PNNPKj+EfIY
+         XbxHnw6z/MYyt8nlFYs49bKYSGMGMdpvYQ4QZkCFEDPLndQdvuyJElvqaxMHi909zBA1
+         Yn5uZ2Ws6avDpxFA76+O6cfBw5jIPVmBer4XQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=tVdSh5eigGfpfZbcGPOwFmTu1bT8ccSTdspsY1KsgDw=;
+        b=qpuhlkGAfWu1sEZIeHm+IqeWIBwVKGI8cvCxKpxY3CGZc8AHdI9HLwio5WMLjqfH8L
+         JRrPbz4HcvV2sWNLo9XynXmOfSkOTOn9xjGua8Cp8yqIJLEVBBd5E9r4AjOjpxp2zA+p
+         fHsGkZw/W6ji5mFwYgYK+GhMPO6LCazCwZ1P43iDurescCocU+jFaba3aNM3T/VWhSLg
+         UBmYS9ODkMlaJrQsBTyTl8HE9lB40v2batuHsUdn1XxOcT++duqLfg750A23K6pR9vsc
+         wA003kjJP0o5rq6JIfIa+IxrLM0vNftQvEt759X+BiF09wQdj5Jnz9DrAzIQ9Mp7s0+U
+         bloA==
+X-Gm-Message-State: APjAAAVIvYhmn1eB1yrh5R3La0XFitclYsSNj52y13LPmeaMBe8EZ8mS
+        lvPgOtEWRTC5abZT+3v18ffPNw==
+X-Google-Smtp-Source: APXvYqzNnjbex6gASub1IyimjZc4FxGDCLJz7YROfS76oah0trC8AF8rFLAB3RLixdYFxjp7xmhazg==
+X-Received: by 2002:a1c:5444:: with SMTP id p4mr28918356wmi.33.1577628162525;
+        Sun, 29 Dec 2019 06:02:42 -0800 (PST)
+Received: from localhost ([185.69.145.27])
+        by smtp.gmail.com with ESMTPSA id d16sm44864362wrg.27.2019.12.29.06.02.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Dec 2019 06:02:41 -0800 (PST)
+Date:   Sun, 29 Dec 2019 14:02:40 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     teawater <teawaterz@linux.alibaba.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
@@ -31,59 +53,40 @@ Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Yang Shi <yang.shi@linux.alibaba.com>, tj@kernel.org,
         tglx@linutronix.de, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <1E6A7BC4-A983-4C65-9DA9-4D3A26D4D31D@linux.alibaba.com>
+Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
+Message-ID: <20191229140240.GB612003@chrisdown.name>
 References: <1576662179-16861-1-git-send-email-teawaterz@linux.alibaba.com>
  <20191218140952.GA255739@chrisdown.name>
  <25AA9500-B249-42C2-B162-2B8D4EE83BB0@linux.alibaba.com>
  <20191219112618.GA72828@chrisdown.name>
-To:     Chris Down <chris@chrisdown.name>
-X-Mailer: Apple Mail (2.3445.104.11)
+ <1E6A7BC4-A983-4C65-9DA9-4D3A26D4D31D@linux.alibaba.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <1E6A7BC4-A983-4C65-9DA9-4D3A26D4D31D@linux.alibaba.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi Hui,
 
+teawater writes:
+>In the memory-constrained and complex multitasking environment such as an Android system may require more complex performance priority.
+>For example, the tasks of app in the font, they need high priority because low priority will affect the user experience at once.
+>The tasks of app in background should have lower priority than the first one.  And sometime, each app should have different priority.  Because some apps are frequently used.  They should have high priority than other background apps.
+>The daemons should have lower priority than background apps.  Because most of them will not affect the user experience.
 
-> 在 2019年12月19日，19:26，Chris Down <chris@chrisdown.name> 写道：
-> 
-> Hi Hui,
-> 
-> teawater writes:
->> Memory.min, low, high can affect the global shrink behavior.  They can help task keep some pages to help protect performance.
->> 
->> But what I want is the low priority tasks (the tasks that performance is not very important) do more shrink first.  And when low priority tasks doesn’t have enough pages to be dropped and system need more free page, shrink the high priority task’s pages.  Because at this time, system’s stable is more important than the performance of priority task.
->> With memory.min and memory.low, I have no idea to config them to support this.  That is why I add global shrink priority.
-> 
-> For sure, that's what I'm suggesting you use memory.{min,low} for -- you define some subset of the cgroup hierarchy as "protected", and then you bias reclaim away from protected cgroups (and thus *towards* unprotected cgroups) by biasing the size of LRU scanning. See my patch that went into 5.4 and the examples in the commit message:
-> 
->    commit 9783aa9917f8ae24759e67bf882f1aba32fe4ea1
->    Author: Chris Down <chris@chrisdown.name>
->    Date:   Sun Oct 6 17:58:32 2019 -0700
-> 
->        mm, memcg: proportional memory.{low,min} reclaim
-> 
-> You can see how we're using memory.{low,min} to achieve this in this case study[0]. It's not exactly equivalent technically to your solution, but the end goals are similar.
-> 
-> Thanks,
-> 
-> Chris
-> 
-> 0: https://facebookmicrosites.github.io/cgroup2/docs/overview.html#case-study-the-fbtax2-project
+In general I don't think it's meaningful to speculate about whether it would 
+help or not without data and evidence gathering. It would really depend on how 
+the system is composed overall. Is this a real problem you're seeing, or just 
+something hypothetical?
 
-Hi Chris,
+If there is a real case to discuss, we can certainly discuss it. That said, at 
+the very least I think the API needs to be easier to reason about rather than 
+just exposing mm internals, and there needs to be a demonstration that it 
+solves a real problem and existing controls are insufficient :-)
 
-I have another idea about global shrink priority.
+Thanks,
 
-In the memory-constrained and complex multitasking environment such as an Android system may require more complex performance priority.
-For example, the tasks of app in the font, they need high priority because low priority will affect the user experience at once.
-The tasks of app in background should have lower priority than the first one.  And sometime, each app should have different priority.  Because some apps are frequently used.  They should have high priority than other background apps.
-The daemons should have lower priority than background apps.  Because most of them will not affect the user experience.
-
-Do you think this environment is suitable for global shrink priority.
-
-Best,
-Hui
-
-
+Chris
