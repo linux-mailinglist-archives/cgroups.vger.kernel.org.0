@@ -2,71 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8555912CC26
-	for <lists+cgroups@lfdr.de>; Mon, 30 Dec 2019 04:32:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC1812DC41
+	for <lists+cgroups@lfdr.de>; Wed,  1 Jan 2020 00:05:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727079AbfL3Dcr convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Sun, 29 Dec 2019 22:32:47 -0500
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:54162 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727065AbfL3Dcr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 29 Dec 2019 22:32:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TmDf8Rf_1577676757;
-Received: from 127.0.0.1(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TmDf8Rf_1577676757)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 30 Dec 2019 11:32:43 +0800
-Content-Type: text/plain;
-        charset=gb2312
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Subject: Re: [PATCH] mm: vmscan: memcg: Add global shrink priority
-From:   teawater <teawaterz@linux.alibaba.com>
-In-Reply-To: <20191229140240.GB612003@chrisdown.name>
-Date:   Mon, 30 Dec 2019 11:32:36 +0800
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>, tj@kernel.org,
-        tglx@linutronix.de, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <07AF5F95-23CB-4A7E-A9DA-8F67E22A7195@linux.alibaba.com>
-References: <1576662179-16861-1-git-send-email-teawaterz@linux.alibaba.com>
- <20191218140952.GA255739@chrisdown.name>
- <25AA9500-B249-42C2-B162-2B8D4EE83BB0@linux.alibaba.com>
- <20191219112618.GA72828@chrisdown.name>
- <1E6A7BC4-A983-4C65-9DA9-4D3A26D4D31D@linux.alibaba.com>
- <20191229140240.GB612003@chrisdown.name>
-To:     Chris Down <chris@chrisdown.name>
-X-Mailer: Apple Mail (2.3445.104.11)
+        id S1727079AbfLaXFQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Dec 2019 18:05:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:54352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727031AbfLaXFQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 31 Dec 2019 18:05:16 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C29C206E0;
+        Tue, 31 Dec 2019 23:05:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1577833515;
+        bh=2JRDEcONOOpeU0TxkjV7WoTCxeEf9fZaWWxMhwx7i8o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=MRddLrwYS3egNicCrnLw9LAAmaqqevPs4Ss/3/JtxisDiy01nCs2CsIvKPioA/l6N
+         pHwlAnwDnZkgDa37ZpauBUhVd5ELv4fybysP9M7sUxY35hNWTScoYqRGoH8pRWOw9b
+         YdpRaUNRvib77Pmt+6vVPW285q1Umj9w2d7O0Vbo=
+Date:   Tue, 31 Dec 2019 15:05:14 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@techsingularity.net, tj@kernel.org,
+        hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, shakeelb@google.com, hannes@cmpxchg.org
+Subject: Re: [PATCH v7 00/10] per lruvec lru_lock for memcg
+Message-Id: <20191231150514.61c2b8c8354320f09b09f377@linux-foundation.org>
+In-Reply-To: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Wed, 25 Dec 2019 17:04:16 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
 
+> This patchset move lru_lock into lruvec, give a lru_lock for each of
+> lruvec, thus bring a lru_lock for each of memcg per node.
 
-> 在 2019年12月29日，22:02，Chris Down <chris@chrisdown.name> 写道：
-> 
-> Hi Hui,
-> 
-> teawater writes:
->> In the memory-constrained and complex multitasking environment such as an Android system may require more complex performance priority.
->> For example, the tasks of app in the font, they need high priority because low priority will affect the user experience at once.
->> The tasks of app in background should have lower priority than the first one.  And sometime, each app should have different priority.  Because some apps are frequently used.  They should have high priority than other background apps.
->> The daemons should have lower priority than background apps.  Because most of them will not affect the user experience.
-> 
-> In general I don't think it's meaningful to speculate about whether it would help or not without data and evidence gathering. It would really depend on how the system is composed overall. Is this a real problem you're seeing, or just something hypothetical?
-> 
-> If there is a real case to discuss, we can certainly discuss it. That said, at the very least I think the API needs to be easier to reason about rather than just exposing mm internals, and there needs to be a demonstration that it solves a real problem and existing controls are insufficient :-)
-> 
-> Thanks,
-> 
-> Chris
+I see that there has been plenty of feedback on previous versions, but
+no acked/reviewed tags as yet.
 
-Thanks!  Agree with you.
+I think I'll take a pass for now, see what the audience feedback looks
+like ;)
 
-Best,
-Hui
