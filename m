@@ -2,93 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD5D13129A
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jan 2020 14:10:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 094CA1312C5
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jan 2020 14:24:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgAFNKY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jan 2020 08:10:24 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:55794 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725787AbgAFNKY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jan 2020 08:10:24 -0500
-Received: by mail-wm1-f66.google.com with SMTP id q9so14886680wmj.5;
-        Mon, 06 Jan 2020 05:10:22 -0800 (PST)
+        id S1726173AbgAFNYk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jan 2020 08:24:40 -0500
+Received: from mail-wm1-f45.google.com ([209.85.128.45]:37975 "EHLO
+        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725821AbgAFNYk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jan 2020 08:24:40 -0500
+Received: by mail-wm1-f45.google.com with SMTP id u2so15234111wmc.3
+        for <cgroups@vger.kernel.org>; Mon, 06 Jan 2020 05:24:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wC9BOXYjk4udfBrvJm6JGmvN7DTg2mdl9SY6BiiM5CI=;
+        b=P8pk1o9y6+tG5KTqZ9qfFyt85i2CdbvG8XOjpzH+VC1HkPFsLurbZEyYmkqNh4UWcL
+         Eux3W369x5DtVrAYs80Bc1RAmUy6R70BJT8sQX3DdDeJZ0mV0VAsZwbqETyluYbf+uTl
+         koNyRRhxh4i5PhdlCabKLdZQ3LgVHGQS9sW0c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Vu9QJE4YseoFoORr+glUnjER2lum2n5Fmao9NtM3PIE=;
-        b=Qmry3npL+uon2eJcq/7lWfUMhGOxfaYkcOlq8is/UEYqFdbferfFuKRHJZ675o3jrd
-         Y61+wgDSJPdA2QAQ0Rc+y+A3nveYHZ3D5sPZqZhBslXiPv3gtTWMwN7A+rcQa+fjWP9j
-         YkHRM5Ge/kyJggZhKUKzDo7ubTAN2PYSRcNxuy4hqcpaE0ldf8PSlUMVNeXQSDDc22r2
-         Eio8o2M9j2vOZx/IDlk6Tb758rvqlZ6hU/bcJqvA5oJamegJwgzRtlHFBS/G0joR0G5r
-         4k3SifP/bol/7q3ebUzDZEEnKHOeD091OX0eIP2EG+cJPAIBkBIMp1tlr7eepAEIAX57
-         k6cA==
-X-Gm-Message-State: APjAAAUvewkARNni9YRnnjOWZ4szCyXNssJaVV5fkbW8nwJJ4Xp/0IT1
-        RBdeL/CLaAuiOUeVRIEDdNAgwg4a
-X-Google-Smtp-Source: APXvYqy98p6Gbv57CrgSCBw3//qlqbjd/XfXAeKhQJgUAMjp7jA95LuY+c3vWDw4ljcd4TFaL06olQ==
-X-Received: by 2002:a1c:4d03:: with SMTP id o3mr34937526wmh.164.1578316222081;
-        Mon, 06 Jan 2020 05:10:22 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id b137sm23650193wme.26.2020.01.06.05.10.21
+         :mime-version:content-disposition:in-reply-to;
+        bh=wC9BOXYjk4udfBrvJm6JGmvN7DTg2mdl9SY6BiiM5CI=;
+        b=i5C212uJ44ikFI9YQJnz9y2ZfJD1XfHg+72QEJ6HNcG90xOnPCc1UA2AL2HY5Q35Bz
+         XcQKJiyZtiZxskKkCMrHDt2hNkBCOTMqcnJGSrMwsxg1fzYbnrTJBASswcFKC9sNIQp3
+         XWbBnK/XvkWAHN4nje7W5aQDlIfz4ZP9Idj7S0VZtE7GAAWm0LkcDXFfrrD2ianrTvCN
+         QV+pAIMIB4ndE5l5U61LcwZA5fLSGPRYNJ7FM2UvCz8H31kxXggui6Zi/fy/AHN3GJpu
+         6T7lNU++qfoqtjDVFdn49lrphDPnAD7yXQwkp5H7RTY3gqGUMizU4ny2ZsGdqQkHgjJC
+         okow==
+X-Gm-Message-State: APjAAAW0ROTFTuUl+eZgGIG8YVy4bN6UxjgOn50/VNHImU9mUGp+3E8g
+        3SZS3ks+tvRVEV7Q29zADChRRg==
+X-Google-Smtp-Source: APXvYqxiB5J5yZSQ8qnPvaI29s4X3LKS+PySqiuL7STuXEvvcVUEmF6Z+6C0eNwuDiq3exnvuiyqIg==
+X-Received: by 2002:a1c:6a07:: with SMTP id f7mr35558851wmc.171.1578317077752;
+        Mon, 06 Jan 2020 05:24:37 -0800 (PST)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id b137sm23689296wme.26.2020.01.06.05.24.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2020 05:10:21 -0800 (PST)
-Date:   Mon, 6 Jan 2020 14:10:20 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
+        Mon, 06 Jan 2020 05:24:37 -0800 (PST)
+Date:   Mon, 6 Jan 2020 13:24:36 +0000
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
 Cc:     Hui Zhu <teawater@gmail.com>, hannes@cmpxchg.org,
         vdavydov.dev@gmail.com, akpm@linux-foundation.org,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Hui Zhu <teawaterz@linux.alibaba.com>
+        linux-mm@kvack.org
 Subject: Re: [RFC] memcg: Add swappiness to cgroup2
-Message-ID: <20200106131020.GC9198@dhcp22.suse.cz>
+Message-ID: <20200106132436.GC361303@chrisdown.name>
 References: <1577252208-32419-1-git-send-email-teawater@gmail.com>
  <20191225140546.GA311630@chrisdown.name>
+ <20200106131020.GC9198@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20191225140546.GA311630@chrisdown.name>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20200106131020.GC9198@dhcp22.suse.cz>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 25-12-19 14:05:46, Chris Down wrote:
-> Hi Hui,
-> 
-> Hui Zhu writes:
-> > Even if cgroup2 has swap.max, swappiness is still a very useful config.
-> > This commit add swappiness to cgroup2.
-> 
-> When submitting patches like this, it's important to explain *why* you want
-> it and what evidence there is. For example, how should one use this to
-> compose a reasonable system? Why aren't existing protection controls
-> sufficient for your use case? Where's the data?
+Michal Hocko writes:
+>I am not really sure I agree here though. Swappiness has been
+>traditionally more about workload because it has been believed that it
+>is a preference of the workload whether the anonymous or disk based
+>memory is more important. Whether this is a good interface is debatable
+>of course but time has shown that it is extremely hard to tune.
 
-Agreed!
-
-> Also, why would swappiness be something cgroup-specific instead of
-> hardware-specific, when desired swappiness is really largely about the
-> hardware you have in your system?
-
-I am not really sure I agree here though. Swappiness has been
-traditionally more about workload because it has been believed that it
-is a preference of the workload whether the anonymous or disk based
-memory is more important. Whether this is a good interface is debatable
-of course but time has shown that it is extremely hard to tune.
-
-Not to mention that swappiness has been ignored for years for vast
-majority workloads because of the highly biased file LRU reclaim.
-
-At the time when cgroup v2 was introduced it'd been claimed that we
-do not want to copy the v1 swappiness logic because of the semantic
-shortcomings and that a better tuning should developed in future
-replacing even the global knob. AFAIR Johannes wanted to have a refault
-vs. cost based file/anon balancing.
-
-The lack of a sensible hierarchical behavior has been even a stronger
-argument.
--- 
-Michal Hocko
-SUSE Labs
+Sure, it can theoretically be hardware- and workload-specific -- I don't think 
+we disagree here. The reason I suggest it's a generally hardware-specific 
+tunable rather than a workload-specific tunable is it's pretty rare to see 
+anyone who's meaningfully used it for workload-specific tuning :-)
