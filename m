@@ -2,74 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 094CA1312C5
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jan 2020 14:24:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E733C1315E8
+	for <lists+cgroups@lfdr.de>; Mon,  6 Jan 2020 17:18:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726173AbgAFNYk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jan 2020 08:24:40 -0500
-Received: from mail-wm1-f45.google.com ([209.85.128.45]:37975 "EHLO
-        mail-wm1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725821AbgAFNYk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jan 2020 08:24:40 -0500
-Received: by mail-wm1-f45.google.com with SMTP id u2so15234111wmc.3
-        for <cgroups@vger.kernel.org>; Mon, 06 Jan 2020 05:24:38 -0800 (PST)
+        id S1726560AbgAFQSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 6 Jan 2020 11:18:46 -0500
+Received: from mail-io1-f66.google.com ([209.85.166.66]:39528 "EHLO
+        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726477AbgAFQSp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jan 2020 11:18:45 -0500
+Received: by mail-io1-f66.google.com with SMTP id c16so19316370ioh.6;
+        Mon, 06 Jan 2020 08:18:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wC9BOXYjk4udfBrvJm6JGmvN7DTg2mdl9SY6BiiM5CI=;
-        b=P8pk1o9y6+tG5KTqZ9qfFyt85i2CdbvG8XOjpzH+VC1HkPFsLurbZEyYmkqNh4UWcL
-         Eux3W369x5DtVrAYs80Bc1RAmUy6R70BJT8sQX3DdDeJZ0mV0VAsZwbqETyluYbf+uTl
-         koNyRRhxh4i5PhdlCabKLdZQ3LgVHGQS9sW0c=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1iBF+C1NHazjfiJGahas8jIgSGj241V/MA8/jj2HpLE=;
+        b=ScZ+BLpeYEmcBri4/E40jt+m15BKdbAIG7h7sy3ejJj/Dtb+nL8mk9HYuTan58Ac5v
+         1jtRC/XgW9iWes1rejXCb5Nkiv5JXH6T9ZGxBYCL+6tKO6G18SbfNq01Hee7NCjGU29q
+         sPkjPpV3m1fQxCSNdaOmoqXu4lvyH7Q5dXDZKFCvLTwrQW1XaQf0NumtQUoDu2227ya2
+         DfJoLQvdnFKa7/6WrrmLuPVLOmX1NyFUKfWqUg8DzsYodq7qhN3ILwABQCrq9awbO9fu
+         r430448Ffc4Qp7BbEPtygBu1l6bcwp97AvALV4Cn3puvjnJCSlDYaTHUm59DJXzKmGPX
+         vWyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wC9BOXYjk4udfBrvJm6JGmvN7DTg2mdl9SY6BiiM5CI=;
-        b=i5C212uJ44ikFI9YQJnz9y2ZfJD1XfHg+72QEJ6HNcG90xOnPCc1UA2AL2HY5Q35Bz
-         XcQKJiyZtiZxskKkCMrHDt2hNkBCOTMqcnJGSrMwsxg1fzYbnrTJBASswcFKC9sNIQp3
-         XWbBnK/XvkWAHN4nje7W5aQDlIfz4ZP9Idj7S0VZtE7GAAWm0LkcDXFfrrD2ianrTvCN
-         QV+pAIMIB4ndE5l5U61LcwZA5fLSGPRYNJ7FM2UvCz8H31kxXggui6Zi/fy/AHN3GJpu
-         6T7lNU++qfoqtjDVFdn49lrphDPnAD7yXQwkp5H7RTY3gqGUMizU4ny2ZsGdqQkHgjJC
-         okow==
-X-Gm-Message-State: APjAAAW0ROTFTuUl+eZgGIG8YVy4bN6UxjgOn50/VNHImU9mUGp+3E8g
-        3SZS3ks+tvRVEV7Q29zADChRRg==
-X-Google-Smtp-Source: APXvYqxiB5J5yZSQ8qnPvaI29s4X3LKS+PySqiuL7STuXEvvcVUEmF6Z+6C0eNwuDiq3exnvuiyqIg==
-X-Received: by 2002:a1c:6a07:: with SMTP id f7mr35558851wmc.171.1578317077752;
-        Mon, 06 Jan 2020 05:24:37 -0800 (PST)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id b137sm23689296wme.26.2020.01.06.05.24.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Jan 2020 05:24:37 -0800 (PST)
-Date:   Mon, 6 Jan 2020 13:24:36 +0000
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Hui Zhu <teawater@gmail.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC] memcg: Add swappiness to cgroup2
-Message-ID: <20200106132436.GC361303@chrisdown.name>
-References: <1577252208-32419-1-git-send-email-teawater@gmail.com>
- <20191225140546.GA311630@chrisdown.name>
- <20200106131020.GC9198@dhcp22.suse.cz>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1iBF+C1NHazjfiJGahas8jIgSGj241V/MA8/jj2HpLE=;
+        b=GZQ1w8XmTm9Ht6miyey856EK2nPlhFQIf3FUC2xQQPWkacn/ZKYmxn8zvotIMzwXHg
+         CyiSuKUI2pBrtMb2hLxsgAFJYUeB+v0RknYNHpJ5UAWjqNnppiY4ozJmlYady6HR91Kx
+         4b647hUP+GzPNKyg9BaqLI1ltbrVntjSVtTW+hk+983ew6NLLRn0SssFYt0IStSOdvt2
+         dtL5Tbrex8sNC26FA3pMWeZTHoL/jfrgSu/W2DI0V09tr6+LYH3ftbOOXm2KkRgGi5VF
+         rLULkJkefmHkZavXnzj+d1h31xvRyk5KHHvNn0wA0SspNXQ5oflAoGGb3IhwSKPG5+zw
+         gwQw==
+X-Gm-Message-State: APjAAAXwzN7EZdWQB2LuHJvLAaGfjP7kZqAdnk5Up6uwn/djq5s24NUw
+        DTNzRJ91Dxzddgff5ojxJmuiBVb7h1JLYf6sGAi4oO/8v5A=
+X-Google-Smtp-Source: APXvYqzuPLiJ4vUg0YkwQhUHnUnwKKB/CsT/pr8SpYnnKWoouOidOXCDH2ImDMv0T/GGKjlvg+D0xcL+eVRS4FkS4C8=
+X-Received: by 2002:a5d:80d9:: with SMTP id h25mr63343225ior.97.1578327524845;
+ Mon, 06 Jan 2020 08:18:44 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200106131020.GC9198@dhcp22.suse.cz>
+References: <20200103143407.1089-1-richardw.yang@linux.intel.com>
+In-Reply-To: <20200103143407.1089-1-richardw.yang@linux.intel.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 6 Jan 2020 08:18:34 -0800
+Message-ID: <CAKgT0Uf+EP8yGf93=R3XK0Y=0To0KQDys0O1BkG-Odej3Rwj5A@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: thp: grab the lock before manipulation defer list
+To:     Wei Yang <richardw.yang@linux.intel.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>, vdavydov.dev@gmail.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        cgroups@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Hocko writes:
->I am not really sure I agree here though. Swappiness has been
->traditionally more about workload because it has been believed that it
->is a preference of the workload whether the anonymous or disk based
->memory is more important. Whether this is a good interface is debatable
->of course but time has shown that it is extremely hard to tune.
+On Fri, Jan 3, 2020 at 6:34 AM Wei Yang <richardw.yang@linux.intel.com> wrote:
+>
+> As all the other places, we grab the lock before manipulate the defer list.
+> Current implementation may face a race condition.
+>
+> Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
+>
+> Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
+>
+> ---
+> I notice the difference during code reading and just confused about the
+> difference. No specific test is done since limited knowledge about cgroup.
+>
+> Maybe I miss something important?
+> ---
+>  mm/memcontrol.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index bc01423277c5..62b7ec34ef1a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5368,12 +5368,12 @@ static int mem_cgroup_move_account(struct page *page,
+>         }
+>
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       spin_lock(&from->deferred_split_queue.split_queue_lock);
+>         if (compound && !list_empty(page_deferred_list(page))) {
+> -               spin_lock(&from->deferred_split_queue.split_queue_lock);
+>                 list_del_init(page_deferred_list(page));
+>                 from->deferred_split_queue.split_queue_len--;
+> -               spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>         }
+> +       spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>  #endif
+>         /*
+>          * It is safe to change page->mem_cgroup here because the page
 
-Sure, it can theoretically be hardware- and workload-specific -- I don't think 
-we disagree here. The reason I suggest it's a generally hardware-specific 
-tunable rather than a workload-specific tunable is it's pretty rare to see 
-anyone who's meaningfully used it for workload-specific tuning :-)
+So I suspect the lock placement has to do with the compound boolean
+value passed to the function.
+
+One thing you might want to do is pull the "if (compound)" check out
+and place it outside of the spinlock check. It would then simplify
+this signficantly so it is something like
+if (compound) {
+  spin_lock();
+  list = page_deferred_list(page);
+  if (!list_empty(list)) {
+    list_del_init(list);
+    from->..split_queue_len--;
+  }
+  spin_unlock();
+}
+
+Same for the block below. I would pull the check for compound outside
+of the spinlock call since it is a value that shouldn't change and
+would eliminate an unnecessary lock in the non-compound case.
+
+> @@ -5385,13 +5385,13 @@ static int mem_cgroup_move_account(struct page *page,
+>         page->mem_cgroup = to;
+>
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> +       spin_lock(&to->deferred_split_queue.split_queue_lock);
+>         if (compound && list_empty(page_deferred_list(page))) {
+> -               spin_lock(&to->deferred_split_queue.split_queue_lock);
+>                 list_add_tail(page_deferred_list(page),
+>                               &to->deferred_split_queue.split_queue);
+>                 to->deferred_split_queue.split_queue_len++;
+> -               spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>         }
+> +       spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>  #endif
+>
+>         spin_unlock_irqrestore(&from->move_lock, flags);
+> --
