@@ -2,79 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 29551132186
-	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2020 09:38:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76A2A132B1D
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jan 2020 17:32:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgAGIiM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Jan 2020 03:38:12 -0500
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:53885 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726514AbgAGIiM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jan 2020 03:38:12 -0500
-Received: by mail-wm1-f67.google.com with SMTP id m24so17955766wmc.3;
-        Tue, 07 Jan 2020 00:38:10 -0800 (PST)
+        id S1728215AbgAGQcJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jan 2020 11:32:09 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39471 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728196AbgAGQcJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jan 2020 11:32:09 -0500
+Received: by mail-qk1-f194.google.com with SMTP id c16so43166931qko.6;
+        Tue, 07 Jan 2020 08:32:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EXsf8J2QF1KRZGOWtWEWKs3DqNsHO+r1D8ycqowGQlM=;
+        b=bpRgbibs09Jn+oJ4pkmpZxvOzcsIbPknZDJvb/ZdoOwcbUl9jZGlIt0DfiIaEjT6QW
+         coEf6/E77CcxXC0xbC5PJ9s8eHtuBzuJbpxgQsoSHTc8rM+L+nrZrWeNcln8h4wFFx7S
+         F4a8YQE+xax5Y0q9xJYPR86MejdYk2Zy/hUn4t9Ile5YLCPWnpWI87S1iyvUflERv8nt
+         RSGna/fvRYXretBqqkt2E/XeQj5hWAkmx50e05o3/Ub/lC/1VePZ5YZDLnzx6Hy8ogzl
+         nKXDeEDrCYfqM3MEU7bINrBeoab7FcgNIrE6VNqZF7MfYIQNuSrlyziWX2lNyXRJhZT+
+         wavw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=SGM8vCSlpFGCG/2t5WreFm3qVTUhAAZYlmJ6tgri9vo=;
-        b=TpYgjrWHZZsEgNbyHx+xRC7GQHx1H0BNGlOyCWxkPJrben0Wc1r/4mhEUmI8M1WDOY
-         DgZfmpceEExgmWU5wOtxvmbdRMooIiGDelvi218eRus2O6sCrSACT4UyrfoZiF8nDzsc
-         Jes4alkpsBeptNfJ9SqWF/OwzikL8cJiQGGebx9ZKveQLFzboQiyDXoW+X32+cumDNNW
-         fFmYf7iANSCKoJlnCKdzezyyMeDholyNddZ5xy2HPg9qu9YU45iMGhkyMkf7QgT8Tj4A
-         4QoA6BWRZltG0NVnXuSgh0QAr6027pFd5KWpShwvZWh0LuvL6j4J2h/zZR1omb9/h+4F
-         WScA==
-X-Gm-Message-State: APjAAAUE/Ck/PgkS3LcFEhHXaBfUJ9ncVI9teQLGkgQWHbXbh/0Uz4Nk
-        XJNYjUC/2PyVgkR0MJfou1g=
-X-Google-Smtp-Source: APXvYqy0l2pPimu0jmfAhj7eC6jxjBqL6qeDNUL2ENjX4Pdxdm00JiUu0Ra5iiAEjLelBdmYD4+x6w==
-X-Received: by 2002:a05:600c:141:: with SMTP id w1mr38077892wmm.61.1578386289713;
-        Tue, 07 Jan 2020 00:38:09 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id w19sm25365788wmc.22.2020.01.07.00.38.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 07 Jan 2020 00:38:08 -0800 (PST)
-Date:   Tue, 7 Jan 2020 09:38:08 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Wei Yang <richardw.yang@linux.intel.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, yang.shi@linux.alibaba.com
-Subject: Re: [RFC PATCH] mm: thp: grab the lock before manipulation defer list
-Message-ID: <20200107083808.GC32178@dhcp22.suse.cz>
-References: <20200103143407.1089-1-richardw.yang@linux.intel.com>
- <20200106102345.GE12699@dhcp22.suse.cz>
- <20200107012241.GA15341@richard>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EXsf8J2QF1KRZGOWtWEWKs3DqNsHO+r1D8ycqowGQlM=;
+        b=fgY9PTJ1ViMpW79JU3Zl+k9YVx+UmXhtGzwo6AcD90gIpFHrFdIIzHwlvmuPeHmAbu
+         VC6gjxMwcfEer0wovAqtPrdOk+UwH1eOrl+CTgy32y4Ek69nwI8S8jLe1L1IGLKqixoR
+         OW5tmRSTQSL1Wk2wXpiGIv3d/Dcijob1VQlmu/B/u2FuWFNZkDz0uJgiP91TS6ATEYfu
+         kXXYH4c1geJe3V6+LWtj5WvelX1bArgIA4dITIqKy5v10lMnBRVmKppWvHjF6TnLVWQ3
+         se+E+LA3C/xFPE+IRXtbSPrd8aAXTxe6zowILuY/3NcR+RtCNx8n5uUCq4FB559aCLI6
+         B4Qw==
+X-Gm-Message-State: APjAAAUIEmYpBZmyVLZ4PvQcqo0B9+WsPlhCaNhegAS9nNXXBwsS4HL9
+        Kq81YwH60P6XKCf5lrXRc2E=
+X-Google-Smtp-Source: APXvYqwybjAi8YN4FFFB7QbiJ2hGqTqTi6cQVSEkO05FxJafjonWgsWKkRoLAyBRFjP2z0/ZU110Qw==
+X-Received: by 2002:a05:620a:1592:: with SMTP id d18mr174878qkk.80.1578414727473;
+        Tue, 07 Jan 2020 08:32:07 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:4305])
+        by smtp.gmail.com with ESMTPSA id l35sm121588qtl.12.2020.01.07.08.32.06
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 07 Jan 2020 08:32:06 -0800 (PST)
+Date:   Tue, 7 Jan 2020 08:32:04 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Christian Brauner <christian.brauner@ubuntu.com>
+Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ingo Molnar <mingo@redhat.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] clone3: allow spawning processes into cgroups
+Message-ID: <20200107163204.GB2677547@devbig004.ftw2.facebook.com>
+References: <20191223061504.28716-1-christian.brauner@ubuntu.com>
+ <20191223061504.28716-3-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200107012241.GA15341@richard>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+In-Reply-To: <20191223061504.28716-3-christian.brauner@ubuntu.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 07-01-20 09:22:41, Wei Yang wrote:
-> On Mon, Jan 06, 2020 at 11:23:45AM +0100, Michal Hocko wrote:
-> >On Fri 03-01-20 22:34:07, Wei Yang wrote:
-> >> As all the other places, we grab the lock before manipulate the defer list.
-> >> Current implementation may face a race condition.
-> >
-> >Please always make sure to describe the effect of the change. Why a racy
-> >list_empty check matters?
-> >
-> 
-> Hmm... access the list without proper lock leads to many bad behaviors.
+On Mon, Dec 23, 2019 at 07:15:03AM +0100, Christian Brauner wrote:
+> +static struct cgroup *cgroup_get_from_file(struct file *f)
+> +{
+> +	struct cgroup_subsys_state *css;
+> +	struct cgroup *cgrp;
+> +
+> +	css = css_tryget_online_from_dir(f->f_path.dentry, NULL);
+> +	if (IS_ERR(css))
+> +		return ERR_CAST(css);
+> +
+> +	cgrp = css->cgroup;
+> +	if (!cgroup_on_dfl(cgrp)) {
+> +		cgroup_put(cgrp);
+> +		return ERR_PTR(-EBADF);
+> +	}
+> +
+> +	return cgrp;
+> +}
 
-My point is that the changelog should describe that bad behavior.
+It's minor but can you put this refactoring into a separate patch?
 
-> For example, if we grab the lock after checking list_empty, the page may
-> already be removed from list in split_huge_page_list. And then list_del_init
-> would trigger bug.
+...
+> +static int cgroup_css_set_fork(struct task_struct *parent,
+> +			       struct kernel_clone_args *kargs)
+> +	__acquires(&cgroup_mutex) __acquires(&cgroup_threadgroup_rwsem)
+> +{
+> +	int ret;
+> +	struct cgroup *dst_cgrp = NULL, *src_cgrp;
+> +	struct css_set *cset;
+> +	struct super_block *sb;
+> +	struct file *f;
+> +
+> +	if (kargs->flags & CLONE_INTO_CGROUP) {
+> +		ret = mutex_lock_killable(&cgroup_mutex);
+> +		if (ret)
+> +			return ret;
+> +	}
 
-And how does list_empty check under the lock guarantee that the page is
-on the deferred list?
+I don't think this is necessary.  cgroup_mutex should always only be
+held for a finite enough time; otherwise, processes would get stuck on
+random cgroupfs accesses or even /proc/self/cgroup.
+
+...
+> +	spin_lock_irq(&css_set_lock);
+> +	src_cgrp = task_cgroup_from_root(parent, &cgrp_dfl_root);
+> +	spin_unlock_irq(&css_set_lock);
+
+You can simply do cset->dfl_root here, which is consistent with other
+code paths which know that they want the dfl cgroup.
+
+> +	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp, sb,
+> +					!!(kargs->flags & CLONE_THREAD));
+> +	if (ret)
+> +		goto err;
+
+So, the existing perm check depends on the fact that for the write
+operation to have started, it already should have passed write perm
+check on the destination cgroup.procs file.  We're missing that here,
+so we prolly need to check that explicitly.
+
+> @@ -214,13 +215,21 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
+> +static int pids_can_fork(struct task_struct *parent, struct task_struct *child,
+> +			 struct kernel_clone_args *args)
+>  {
+> +	struct css_set *new_cset = NULL;
+>  	struct cgroup_subsys_state *css;
+>  	struct pids_cgroup *pids;
+>  	int err;
+>  
+> -	css = task_css_check(current, pids_cgrp_id, true);
+> +	if (args)
+> +		new_cset = args->cset;
+> +
+> +	if (!new_cset)
+> +		css = task_css_check(current, pids_cgrp_id, true);
+> +	else
+> +		css = new_cset->subsys[pids_cgrp_id];
+
+Heh, this kinda sucks.  Would it be better to pass in the new css into
+the callbacks rather than clone args?
+
+> diff --git a/kernel/fork.c b/kernel/fork.c
+> index 2508a4f238a3..1604552f7cd3 100644
+> --- a/kernel/fork.c
+> +++ b/kernel/fork.c
+> @@ -2165,16 +2165,15 @@ static __latent_entropy struct task_struct *copy_process(
+>  	INIT_LIST_HEAD(&p->thread_group);
+>  	p->task_works = NULL;
+>  
+> -	cgroup_threadgroup_change_begin(current);
+>  	/*
+>  	 * Ensure that the cgroup subsystem policies allow the new process to be
+>  	 * forked. It should be noted the the new process's css_set can be changed
+>  	 * between here and cgroup_post_fork() if an organisation operation is in
+>  	 * progress.
+>  	 */
+> -	retval = cgroup_can_fork(p);
+> +	retval = cgroup_can_fork(current, p, args);
+>  	if (retval)
+> -		goto bad_fork_cgroup_threadgroup_change_end;
+> +		goto bad_fork_put_pidfd;
+>  
+>  	/*
+>  	 * From this point on we must avoid any synchronous user-space
+
+Maybe we can move these changes into a prep patch together with the
+get_from_file change so that this patch only contains the actual
+feature implementation?
+
+Other than that, looks good to me.  Once the above review points are
+addressed and Oleg is okay with it, I'll be happy to route this
+through the cgroup tree.
+
+Thanks so much for working on this.  This is really cool.
+
 -- 
-Michal Hocko
-SUSE Labs
+tejun
