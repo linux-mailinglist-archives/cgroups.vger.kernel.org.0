@@ -2,26 +2,25 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A7C21135133
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 03:03:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F06FA1351D8
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 04:18:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727703AbgAICDV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Jan 2020 21:03:21 -0500
-Received: from mga05.intel.com ([192.55.52.43]:23303 "EHLO mga05.intel.com"
+        id S1727927AbgAIDSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Jan 2020 22:18:23 -0500
+Received: from mga12.intel.com ([192.55.52.136]:33749 "EHLO mga12.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727417AbgAICDU (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 8 Jan 2020 21:03:20 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
+        id S1727549AbgAIDSX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 8 Jan 2020 22:18:23 -0500
+X-Amp-Result: UNSCANNABLE
 X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Jan 2020 18:03:20 -0800
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 08 Jan 2020 19:18:22 -0800
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.69,412,1571727600"; 
-   d="scan'208";a="226168050"
+   d="scan'208";a="421652315"
 Received: from richard.sh.intel.com (HELO localhost) ([10.239.159.54])
-  by fmsmga001.fm.intel.com with ESMTP; 08 Jan 2020 18:03:18 -0800
-Date:   Thu, 9 Jan 2020 10:03:19 +0800
+  by fmsmga005.fm.intel.com with ESMTP; 08 Jan 2020 19:18:20 -0800
+Date:   Thu, 9 Jan 2020 11:18:21 +0800
 From:   Wei Yang <richardw.yang@linux.intel.com>
 To:     Michal Hocko <mhocko@kernel.org>
 Cc:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
@@ -30,7 +29,7 @@ Cc:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         yang.shi@linux.alibaba.com
 Subject: Re: [RFC PATCH] mm: thp: grab the lock before manipulation defer list
-Message-ID: <20200109020319.GB31041@richard>
+Message-ID: <20200109031821.GA5206@richard>
 Reply-To: Wei Yang <richardw.yang@linux.intel.com>
 References: <20200103143407.1089-1-richardw.yang@linux.intel.com>
  <20200106102345.GE12699@dhcp22.suse.cz>
@@ -87,40 +86,32 @@ On Wed, Jan 08, 2020 at 10:40:41AM +0100, Michal Hocko wrote:
 >	    operation1
 >	    unlock
 >
-
-Nice, I would prepare a changelog like this.
-
 >and what is the effect of the race - e.g. a crash, data corruption,
 >pointless attempt for operation1 which fails with user visible effect
 >etc.
->This helps reviewers and everybody reading the code in the future to
->understand the locking scheme.
->
->> To me, grab the lock before accessing the critical section is obvious.
->
->It might be obvious but in many cases it is useful to minimize the
->locking and do a potentially race check before the lock is taken if the
->resulting operation can handle that.
->
->> list_empty and list_del should be the critical section. And the
->> lock should protect the whole critical section instead of part of it.
->
->I am not disputing that. What I am trying to say is that the changelog
->should described the problem in the first place.
->
->Moreover, look at the code you are trying to fix. Sure extending the
->locking seem straightforward but does it result in a correct code
->though? See my question in the previous email. How do we know that the
->page is actually enqued in a non-empty list?
 
-I may not get your point for the last sentence.
+Hi, Michal, here is my attempt for an example. Hope this one looks good to
+you.
 
-The list_empty() doesn't check the queue is empty but check the list, here is
-the page, is not enqueued into any list. Is this your concern?
 
->-- 
->Michal Hocko
->SUSE Labs
+    For example, the potential race would be:
+    
+        CPU1                      CPU2
+        mem_cgroup_move_account   split_huge_page_to_list
+          !list_empty
+                                    lock
+                                    !list_empty
+                                    list_del
+                                    unlock
+          lock
+          # !list_empty might not hold anymore
+          list_del_init
+          unlock
+    
+    When this sequence happens, the list_del_init() in
+    mem_cgroup_move_account() would crash since the page is already been
+    removed by list_del in split_huge_page_to_list().
+
 
 -- 
 Wei Yang
