@@ -2,112 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A49F135B65
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 15:31:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80124135C31
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 16:06:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728448AbgAIObk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Jan 2020 09:31:40 -0500
-Received: from mga02.intel.com ([134.134.136.20]:62611 "EHLO mga02.intel.com"
+        id S1730560AbgAIPGI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Jan 2020 10:06:08 -0500
+Received: from mx2.suse.de ([195.135.220.15]:53916 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727854AbgAIObk (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 9 Jan 2020 09:31:40 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga101.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 09 Jan 2020 06:31:38 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,414,1571727600"; 
-   d="scan'208";a="254610972"
-Received: from richard.sh.intel.com (HELO localhost) ([10.239.159.54])
-  by fmsmga002.fm.intel.com with ESMTP; 09 Jan 2020 06:31:37 -0800
-From:   Wei Yang <richardw.yang@linux.intel.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com,
-        yang.shi@linux.alibaba.com, alexander.duyck@gmail.com,
-        rientjes@google.com, Wei Yang <richardw.yang@linux.intel.com>
-Subject: [Patch v2] mm: thp: grab the lock before manipulation defer list
-Date:   Thu,  9 Jan 2020 22:30:54 +0800
-Message-Id: <20200109143054.13203-1-richardw.yang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1728346AbgAIPGI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 9 Jan 2020 10:06:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7E64DAE34;
+        Thu,  9 Jan 2020 15:06:06 +0000 (UTC)
+From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To:     cgroups@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: [PATCH] cgroup: Prevent double killing of css when enabling threaded cgroup
+Date:   Thu,  9 Jan 2020 16:05:59 +0100
+Message-Id: <20200109150559.14457-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.24.1
+In-Reply-To: <20191219022716.o7vxxia6o67tyfmf@wittgenstein>
+References: <20191219022716.o7vxxia6o67tyfmf@wittgenstein>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As all the other places, we grab the lock before manipulate the defer list.
-Current implementation may face a race condition.
+The test_cgcore_no_internal_process_constraint_on_threads selftest when
+running with subsystem controlling noise triggers two warnings:
 
-For example, the potential race would be:
+> [  597.443115] WARNING: CPU: 1 PID: 28167 at kernel/cgroup/cgroup.c:3131 cgroup_apply_control_enable+0xe0/0x3f0
+> [  597.443413] WARNING: CPU: 1 PID: 28167 at kernel/cgroup/cgroup.c:3177 cgroup_apply_control_disable+0xa6/0x160
 
-    CPU1                      CPU2
-    mem_cgroup_move_account   split_huge_page_to_list
-      !list_empty
-                                lock
-                                !list_empty
-                                list_del
-                                unlock
-      lock
-      # !list_empty might not hold anymore
-      list_del_init
-      unlock
+Both stem from a call to cgroup_type_write. The first warning was also
+triggered by syzkaller.
 
-When this sequence happens, the list_del_init() in
-mem_cgroup_move_account() would crash if CONFIG_DEBUG_LIST since the
-page is already been removed by list_del in split_huge_page_to_list().
+When we're switching cgroup to threaded mode shortly after a subsystem
+was disabled on it, we can see the respective subsystem css dying there.
 
-Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
+The warning in cgroup_apply_control_enable is harmless in this case
+since we're not adding new subsys anyway.
+The warning in cgroup_apply_control_disable indicates an attempt to kill
+css of recently disabled subsystem repeatedly.
 
-Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
-Acked-by: David Rientjes <rientjes@google.com>
+The commit prevents these situations by making cgroup_type_write wait
+for all dying csses to go away before re-applying subtree controls.
+When at it, the locations of WARN_ON_ONCE calls are moved so that
+warning is triggered only when we are about to misuse the dying css.
 
+Reported-by: syzbot+5493b2a54d31d6aea629@syzkaller.appspotmail.com
+Reported-by: Christian Brauner <christian.brauner@ubuntu.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
-v2:
-  * move check on compound outside suggested by Alexander
-  * an example of the race condition, suggested by Michal
----
- mm/memcontrol.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+ kernel/cgroup/cgroup.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index bc01423277c5..1492eefe4f3c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5368,10 +5368,12 @@ static int mem_cgroup_move_account(struct page *page,
- 	}
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 53098c1d45e2..97cc713079df 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3054,8 +3054,6 @@ static int cgroup_apply_control_enable(struct cgroup *cgrp)
+ 		for_each_subsys(ss, ssid) {
+ 			struct cgroup_subsys_state *css = cgroup_css(dsct, ss);
  
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (compound && !list_empty(page_deferred_list(page))) {
-+	if (compound) {
- 		spin_lock(&from->deferred_split_queue.split_queue_lock);
--		list_del_init(page_deferred_list(page));
--		from->deferred_split_queue.split_queue_len--;
-+		if (!list_empty(page_deferred_list(page))) {
-+			list_del_init(page_deferred_list(page));
-+			from->deferred_split_queue.split_queue_len--;
-+		}
- 		spin_unlock(&from->deferred_split_queue.split_queue_lock);
- 	}
- #endif
-@@ -5385,11 +5387,13 @@ static int mem_cgroup_move_account(struct page *page,
- 	page->mem_cgroup = to;
+-			WARN_ON_ONCE(css && percpu_ref_is_dying(&css->refcnt));
+-
+ 			if (!(cgroup_ss_mask(dsct) & (1 << ss->id)))
+ 				continue;
  
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (compound && list_empty(page_deferred_list(page))) {
-+	if (compound) {
- 		spin_lock(&to->deferred_split_queue.split_queue_lock);
--		list_add_tail(page_deferred_list(page),
--			      &to->deferred_split_queue.split_queue);
--		to->deferred_split_queue.split_queue_len++;
-+		if (list_empty(page_deferred_list(page))) {
-+			list_add_tail(page_deferred_list(page),
-+				      &to->deferred_split_queue.split_queue);
-+			to->deferred_split_queue.split_queue_len++;
-+		}
- 		spin_unlock(&to->deferred_split_queue.split_queue_lock);
- 	}
- #endif
+@@ -3065,6 +3063,8 @@ static int cgroup_apply_control_enable(struct cgroup *cgrp)
+ 					return PTR_ERR(css);
+ 			}
+ 
++			WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt));
++
+ 			if (css_visible(css)) {
+ 				ret = css_populate_dir(css);
+ 				if (ret)
+@@ -3100,11 +3100,11 @@ static void cgroup_apply_control_disable(struct cgroup *cgrp)
+ 		for_each_subsys(ss, ssid) {
+ 			struct cgroup_subsys_state *css = cgroup_css(dsct, ss);
+ 
+-			WARN_ON_ONCE(css && percpu_ref_is_dying(&css->refcnt));
+-
+ 			if (!css)
+ 				continue;
+ 
++			WARN_ON_ONCE(percpu_ref_is_dying(&css->refcnt));
++
+ 			if (css->parent &&
+ 			    !(cgroup_ss_mask(dsct) & (1 << ss->id))) {
+ 				kill_css(css);
+@@ -3391,7 +3391,8 @@ static ssize_t cgroup_type_write(struct kernfs_open_file *of, char *buf,
+ 	if (strcmp(strstrip(buf), "threaded"))
+ 		return -EINVAL;
+ 
+-	cgrp = cgroup_kn_lock_live(of->kn, false);
++	/* drain dying csses before we re-apply (threaded) subtree control */
++	cgrp = cgroup_kn_lock_live(of->kn, true);
+ 	if (!cgrp)
+ 		return -ENOENT;
+ 
 -- 
-2.17.1
+2.24.1
 
