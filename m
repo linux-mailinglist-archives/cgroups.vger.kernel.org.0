@@ -2,72 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C7BA9136081
-	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 19:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C5BD13609C
+	for <lists+cgroups@lfdr.de>; Thu,  9 Jan 2020 19:58:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388578AbgAISwE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Jan 2020 13:52:04 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:38906 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388517AbgAISwE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Jan 2020 13:52:04 -0500
-Received: by mail-pl1-f193.google.com with SMTP id f20so2905473plj.5
-        for <cgroups@vger.kernel.org>; Thu, 09 Jan 2020 10:52:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=2BBH+3AnXzeFa/U3IS7qGFZcMtEqxZT7wCj3mRBcmeM=;
-        b=eklIOp+zakQC1CE30sXqMuWzAwbyxZX8INDxq4BFkauoMMbdQ17lXR/YY65/cbXQ45
-         WaN7oI/vJTlxvxToHdamg6mLQomJzQulnRCGUbZceY2CzjGzTD8sJeTKHRgIKWwwEevq
-         rYiw6LQC0MJ7yxDH44OqGwqt74Nt03fWbVUE+CV+sFa+mMVT9MXWSPjDJB9QEKeWbMkS
-         pu/xIlbtYzrdTy2A0YpgtvbfD6SPFwyDz7bhKJdo/Fqrxw9RrPP9Ya2Lv6KnwMa3B29w
-         Q4qCIzysKksxVLY80Wshbr7UR+tk8nkzbwA6lSE1ht7jWyXNE8DH00YJQGQzk4S8T1hZ
-         jd3A==
+        id S1730403AbgAIS6t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Jan 2020 13:58:49 -0500
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:39576 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729054AbgAIS6t (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Jan 2020 13:58:49 -0500
+Received: by mail-wm1-f67.google.com with SMTP id 20so4018496wmj.4;
+        Thu, 09 Jan 2020 10:58:48 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=2BBH+3AnXzeFa/U3IS7qGFZcMtEqxZT7wCj3mRBcmeM=;
-        b=B0grMWtndxvJmiKjd29KeJ7secDYNV4pIKsLJ6QIXBMA7BtgU6ZZXkNI4jODwxkKSv
-         94W/tw5xsdrHfw41HztFtQQTSo0iwjfk4zQYSSgqLqXN5mkNQb/Y6blxWP/pqhTe/7WP
-         EvHs7zY1nk84vUekMQMIhxw8tfrjrR8AzUhaITWIwdjTJ9TDwUMk4Zg52PuiZpPU5Nr6
-         OUtvGqn54BXa1xSL5Dz0/gkuetnNaEcMPDcDOm/cOi0OxUyXNvs82KXjRaPnk2qr+xZO
-         5psL7ZMMUqecYMIL78cMYe4Whf60qKssu2sxXplqsKOGQ+8yV+BHl0Yyqeph/9dqHRz7
-         TyjA==
-X-Gm-Message-State: APjAAAXvA4UaiYD+rUTdFBUaHj3i2QZFvq9Ci+R24R9CTn7pBOQ5kvDN
-        EkRIwh9cfJyJXX6qD8t+GkogBQ==
-X-Google-Smtp-Source: APXvYqzu1AT5fUNssLnQhi7nJ1GkArk3aIGlfIGILpdyhzsUwYdHio63+zgbvvMa4cim9caHMu4yxw==
-X-Received: by 2002:a17:902:6bc3:: with SMTP id m3mr12900090plt.185.1578595923103;
-        Thu, 09 Jan 2020 10:52:03 -0800 (PST)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id y14sm8351242pfe.147.2020.01.09.10.52.02
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MLlNWsBXrOryBNtAajsP6p+tnqNK4xK0vs1yNExUT74=;
+        b=dXpGQDDRjIlA+gLoIO93LYwxU1Y3f0diNv9ORZMRHK7jKbQTMTjT5D1ewnvkK6Nhu2
+         Kb3xIZ3ErRMeqoKcXC7X20g/E6GtJnb/yzGcNVgNLIVnzSHiR9fUCfNk9cezky0hmtrK
+         fhMH1A7xwmRNHLYewxSACECZVg0jx0QwpOVyN8Wg916K449RG4nstfu2o9GtJQL2Qol5
+         LehQ319GGwSoRsobCfNAPYfZvWy07RCock6CgXNnORwve13m+1zagA5oLZmjVIZ9rFU0
+         ZOaB8wGfVEN5kZvlWEFYBWRZwGZwL9q6X6nPIQ2nUA/kPIBAE6zZ8VVCj89DrUjyVb3J
+         L17w==
+X-Gm-Message-State: APjAAAVH89ZqYZKg2fsw8gWARow2VdL/H8/IuqDvJ+NWtnepSLCAFTOM
+        d9kBbTYxQoKgCCu56VvO/AU=
+X-Google-Smtp-Source: APXvYqxJvw5/CUhjdAN8kmCIJe1AG6KRvRw2pvb/+xrKwKH1l+cWQxudUwXlSn+EWHzV35YjdU4xBA==
+X-Received: by 2002:a7b:cd0a:: with SMTP id f10mr6730175wmj.56.1578596327589;
+        Thu, 09 Jan 2020 10:58:47 -0800 (PST)
+Received: from localhost (ip-37-188-146-105.eurotel.cz. [37.188.146.105])
+        by smtp.gmail.com with ESMTPSA id q19sm3631897wmc.12.2020.01.09.10.58.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 09 Jan 2020 10:52:02 -0800 (PST)
-Date:   Thu, 9 Jan 2020 10:52:01 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
+        Thu, 09 Jan 2020 10:58:46 -0800 (PST)
+Date:   Thu, 9 Jan 2020 19:58:44 +0100
+From:   Michal Hocko <mhocko@kernel.org>
 To:     Wei Yang <richardw.yang@linux.intel.com>
-cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
         akpm@linux-foundation.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
-        alexander.duyck@gmail.com
-Subject: Re: [Patch v2] mm: thp: grab the lock before manipulation defer
- list
-In-Reply-To: <20200109143054.13203-1-richardw.yang@linux.intel.com>
-Message-ID: <alpine.DEB.2.21.2001091051160.57374@chino.kir.corp.google.com>
+        alexander.duyck@gmail.com, rientjes@google.com
+Subject: Re: [Patch v2] mm: thp: grab the lock before manipulation defer list
+Message-ID: <20200109185844.GW4951@dhcp22.suse.cz>
 References: <20200109143054.13203-1-richardw.yang@linux.intel.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200109143054.13203-1-richardw.yang@linux.intel.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 9 Jan 2020, Wei Yang wrote:
-
+On Thu 09-01-20 22:30:54, Wei Yang wrote:
 > As all the other places, we grab the lock before manipulate the defer list.
 > Current implementation may face a race condition.
 > 
@@ -94,8 +81,59 @@ On Thu, 9 Jan 2020, Wei Yang wrote:
 > Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
 > Acked-by: David Rientjes <rientjes@google.com>
 
-Thanks Wei!
+Thanks a lot for the changelog approvements!
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Andrew, I'd also suggest:
+> 
+> ---
+> v2:
+>   * move check on compound outside suggested by Alexander
+>   * an example of the race condition, suggested by Michal
+> ---
+>  mm/memcontrol.c | 18 +++++++++++-------
+>  1 file changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index bc01423277c5..1492eefe4f3c 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5368,10 +5368,12 @@ static int mem_cgroup_move_account(struct page *page,
+>  	}
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	if (compound && !list_empty(page_deferred_list(page))) {
+> +	if (compound) {
+>  		spin_lock(&from->deferred_split_queue.split_queue_lock);
+> -		list_del_init(page_deferred_list(page));
+> -		from->deferred_split_queue.split_queue_len--;
+> +		if (!list_empty(page_deferred_list(page))) {
+> +			list_del_init(page_deferred_list(page));
+> +			from->deferred_split_queue.split_queue_len--;
+> +		}
+>  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>  	}
+>  #endif
+> @@ -5385,11 +5387,13 @@ static int mem_cgroup_move_account(struct page *page,
+>  	page->mem_cgroup = to;
+>  
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	if (compound && list_empty(page_deferred_list(page))) {
+> +	if (compound) {
+>  		spin_lock(&to->deferred_split_queue.split_queue_lock);
+> -		list_add_tail(page_deferred_list(page),
+> -			      &to->deferred_split_queue.split_queue);
+> -		to->deferred_split_queue.split_queue_len++;
+> +		if (list_empty(page_deferred_list(page))) {
+> +			list_add_tail(page_deferred_list(page),
+> +				      &to->deferred_split_queue.split_queue);
+> +			to->deferred_split_queue.split_queue_len++;
+> +		}
+>  		spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>  	}
+>  #endif
+> -- 
+> 2.17.1
 
-Cc: stable@vger.kernel.org # 5.4+
+-- 
+Michal Hocko
+SUSE Labs
