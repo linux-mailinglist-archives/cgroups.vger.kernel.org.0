@@ -2,75 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4307013652B
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2020 03:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E511366DE
+	for <lists+cgroups@lfdr.de>; Fri, 10 Jan 2020 06:44:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730604AbgAJCCo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 9 Jan 2020 21:02:44 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:43352 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730359AbgAJCCo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Jan 2020 21:02:44 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TnHSHFe_1578621761;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TnHSHFe_1578621761)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 10 Jan 2020 10:02:42 +0800
-Subject: Re: [PATCH v7 00/10] per lruvec lru_lock for memcg
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     hannes@cmpxchg.org
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com
-References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com>
- <20191231150514.61c2b8c8354320f09b09f377@linux-foundation.org>
- <944f0f6a-466a-7ce3-524c-f6db86fd0891@linux.alibaba.com>
-Message-ID: <d2efad94-750b-3298-8859-84bccc6ecf06@linux.alibaba.com>
-Date:   Fri, 10 Jan 2020 10:01:27 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1726718AbgAJFoe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Jan 2020 00:44:34 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:44730 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbgAJFod (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Jan 2020 00:44:33 -0500
+Received: by mail-qv1-f65.google.com with SMTP id n8so248984qvg.11
+        for <cgroups@vger.kernel.org>; Thu, 09 Jan 2020 21:44:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=CujXTZrfnwgl+lP0idEmoaConOHkz174HmrwKf6UTYImGIXmTN11GacXGsL7f6E4Z8
+         ZaQtukteNbOPLb4X/0MzXfw6cSayDJxHYFskh83TMjkGznr9d6pGxftY+5ifUUc5PtXc
+         FaUYXCJb/iwNJEXMinOydsfy45FM/wYwf2pvoVzM86Gk/lAvNhgdgxd3iQFEilqgJ4Sd
+         FGkvZN04Xa1x1kMDxrxaPJldrpRkVfaTHfEGFtu+NyEIaRhR60QMcl6EGHmxbjCuKRxT
+         n0HG/pmVRlKyXUp3+ZpyfmWsiMvybsR9Ywdywwg1Dd6jVi0H5OHUzSCoZzGsWXVKiOp9
+         XFDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Rjbe3pVeMfYVPdmVklZ4b2stSqI32LIYp+bn/8NyJvk=;
+        b=JkKfYuiN6Ufa9goFY9LeS3Z1GBqpkiBlnuboFLrlRcnzMmp5EqlolHhrRAl9kmMVL6
+         D2RWrnjyy6FdJKsp3GgHtITV6avwjvEA2oKcGIyrtY2cCKO7phe71hGKv1iHwoDYOWs7
+         po/TdnTEP0xBlr74CyKtAvrrhreqojSQUol9Dt3IlOT+6FxTaUQk2NT7n5VataQMBH9F
+         4ZDVRzMwU6xY7d/flWOQRMHirFYomtwDklqnOz8NNdLv3gPyBfEeiLhX7oWR1qU38oH4
+         gF40LZecb1K4FjR/GTtQS6WlpcxdidpZNLu7S/sM4jNSB7ZhvsjGkv3hJbY+ALIBjvIc
+         cKaQ==
+X-Gm-Message-State: APjAAAUfPoUzN0c28qha71W8Yg0a3AbNAITPhqE7iO2IXUQ2V1xUlSya
+        2uk5AJ+VgDI/GWhrTX64FAbGLH5MaAJ16vD6qOg=
+X-Google-Smtp-Source: APXvYqwO3KiE+IMBS5ih6DBnr+9Y7BLEqUWuva5tzlesVGMS4yumrvBFjxty9zQiCDqPJF4NciaMFcdxiLHNTl4r3iY=
+X-Received: by 2002:a0c:aacb:: with SMTP id g11mr1156038qvb.108.1578635072882;
+ Thu, 09 Jan 2020 21:44:32 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <944f0f6a-466a-7ce3-524c-f6db86fd0891@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a0c:f94e:0:0:0:0:0 with HTTP; Thu, 9 Jan 2020 21:44:32 -0800 (PST)
+Reply-To: rickschaech@gmail.com
+From:   Rick Schaech <cicija016@gmail.com>
+Date:   Fri, 10 Jan 2020 01:44:32 -0400
+Message-ID: <CAERxQtRa-Mx2btoCV+byH_9EpArJWPLYX65ejom-L4j1jK8eaw@mail.gmail.com>
+Subject: I wait for your swift response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Dear, I'm Mr Rick Schaech, I am the General Account Auditor, Though i
+know we have not meet each other before but sometimes in life God have
+a reason of bringing two people from two different countries together
+as business partners or life partners.
 
+My dear friend, I have the sum of 15.7 Million USD i wish to put in
+your name due to the death of my late client who died several years
+ago as his next of kin column still remain blank. Though the internet
+medium is highly abuse these days but am assuring you that this
+transaction is legitimate and I am contacting you that we may have a
+deal, note for your cooperation and collaboration 40% of the sum will
+be for you while the other 60% will be for me as well. I wait for your
+swift response for more details. please forward your response to my
+personal E-mail: rickschaech@gmail.com
 
-在 2020/1/2 下午6:21, Alex Shi 写道:
-> 
-> 
-> 在 2020/1/1 上午7:05, Andrew Morton 写道:
->> On Wed, 25 Dec 2019 17:04:16 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>
->>> This patchset move lru_lock into lruvec, give a lru_lock for each of
->>> lruvec, thus bring a lru_lock for each of memcg per node.
->>
->> I see that there has been plenty of feedback on previous versions, but
->> no acked/reviewed tags as yet.
->>
->> I think I'll take a pass for now, see what the audience feedback looks
->> like ;)
->>
-> 
-
-Hi Johannes,
-
-Any comments of this version? :)
-
-Thanks
-Alex
-
-> 
-> Thanks a lot! Andrew.
-> 
-> Please drop the 10th patch since it's for debug only and cost performance drop.
-> 
-> Best regards & Happy new year! :)
-> Alex
-> 
+Yours sincerely,
+Rick Schaech.
