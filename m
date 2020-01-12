@@ -2,144 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D994213848E
-	for <lists+cgroups@lfdr.de>; Sun, 12 Jan 2020 03:33:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D1221386CF
+	for <lists+cgroups@lfdr.de>; Sun, 12 Jan 2020 15:40:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731983AbgALC3H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 11 Jan 2020 21:29:07 -0500
-Received: from mga01.intel.com ([192.55.52.88]:37031 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1731982AbgALC3G (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sat, 11 Jan 2020 21:29:06 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 11 Jan 2020 18:29:05 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.69,423,1571727600"; 
-   d="scan'208";a="218389651"
-Received: from richard.sh.intel.com (HELO localhost) ([10.239.159.54])
-  by fmsmga007.fm.intel.com with ESMTP; 11 Jan 2020 18:29:03 -0800
-Date:   Sun, 12 Jan 2020 10:28:58 +0800
-From:   Wei Yang <richardw.yang@linux.intel.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
-        alexander.duyck@gmail.com, rientjes@google.com
-Subject: Re: [Patch v2] mm: thp: grab the lock before manipulation defer list
-Message-ID: <20200112022858.GA17733@richard>
-Reply-To: Wei Yang <richardw.yang@linux.intel.com>
-References: <20200109143054.13203-1-richardw.yang@linux.intel.com>
- <20200111000352.efy6krudecpshezh@box>
+        id S1733014AbgALOke (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 12 Jan 2020 09:40:34 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:46573 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733010AbgALOke (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 12 Jan 2020 09:40:34 -0500
+Received: by mail-wr1-f68.google.com with SMTP id z7so6035964wrl.13
+        for <cgroups@vger.kernel.org>; Sun, 12 Jan 2020 06:40:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=Zew0qCBOJ0VmXHsuwJP1AiZ1Z2i9wTSReno/oQHxpVs=;
+        b=n7UK4O4oF6xFvh2HP29o+oa9n4EuCuwmcWIybnCyx25Htt4+sMGHjb3e4lzlxAagE2
+         NYTfrfEvxiMDPHgGoth0Z/24h1lxT4EFP0wRdOTD09+7h5xnx5evw9Y0Pbg+YNkRScUo
+         u/p9XcoZdAxVn1ZEwzrFWBti3vuvw+dUlaTgXTO7raZdsQ1NRTA5CM7JuJokPPn6u2cQ
+         lRQlOkwc3/9DW/dShgp864iatKeOecy/FKt4Mjbwage0myxf6Do+YY+tRYyKhWceWSfE
+         pX4volvChMnG7Ewei6yQoihag21aWLMNSovCKptvYUoSw/lIlq2VRRPmZp/eEspC1xZu
+         Ts4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=Zew0qCBOJ0VmXHsuwJP1AiZ1Z2i9wTSReno/oQHxpVs=;
+        b=qAh2Olv6dg7oiLe8dTy28Db1ViWeC9WbuY+CpGkkhIJiOFLSaTmF/TFeE4ksgPLVgO
+         0xoReKDMtegnW0poOq3Nqf/IScveLF3ir2uzQqlbGXXCLjaWW2cvm+tQMApD/ARoqMwT
+         GlDflkcr1xS6VrSqsQ1y8qZxmwoylBGNF+VAYETMyBmJO+7McqsdR77aKya9/WOirFFp
+         mJarPevF2sP67WJ2Ho6cjmKXQG6vJiI2fIhm7lMzeCAtYfSeAxzt7HEURXCPVVqWGv5E
+         G0XxLRkzpKQZBQfbQZzRPvu2go88qoKqjLlKeXi7jieXtV1olQmGq9o4Ya7R0zR99Ln4
+         z8ZA==
+X-Gm-Message-State: APjAAAWhBl3HQkYZV7Cs7XtIO7tTiGEptAyL+4700iLLPfwu6l468yp7
+        LOMPheykbWRH9HRUgPuIdI8DyZMGOv/nLCXpEWE=
+X-Google-Smtp-Source: APXvYqx5bTrghwLh/FFfRSHBGgfLgOGdHlTic5Lm2aK0W4DgyVYLFb/ikksexH5Hrz8UJ4VYWPFY34w1utqP2prIobI=
+X-Received: by 2002:a5d:68cf:: with SMTP id p15mr13972058wrw.31.1578840032470;
+ Sun, 12 Jan 2020 06:40:32 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200111000352.efy6krudecpshezh@box>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Received: by 2002:a5d:6505:0:0:0:0:0 with HTTP; Sun, 12 Jan 2020 06:40:32
+ -0800 (PST)
+Reply-To: salim.salif@mail.com
+From:   "Mr." <ss7088482@gmail.com>
+Date:   Sun, 12 Jan 2020 15:40:32 +0100
+Message-ID: <CAO0-ukqsRyyx2ycFthHLxe7qsjDtB0cLdeW=t6NTziKepS-qvw@mail.gmail.com>
+Subject: .Mr._____.s.allm .___Salif,.,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jan 11, 2020 at 03:03:52AM +0300, Kirill A. Shutemov wrote:
->On Thu, Jan 09, 2020 at 10:30:54PM +0800, Wei Yang wrote:
->> As all the other places, we grab the lock before manipulate the defer list.
->> Current implementation may face a race condition.
->> 
->> For example, the potential race would be:
->> 
->>     CPU1                      CPU2
->>     mem_cgroup_move_account   split_huge_page_to_list
->>       !list_empty
->>                                 lock
->>                                 !list_empty
->>                                 list_del
->>                                 unlock
->>       lock
->>       # !list_empty might not hold anymore
->>       list_del_init
->>       unlock
->
->I don't think this particular race is possible. Both parties take page
->lock before messing with deferred queue, but anytway:
+Good Day
 
-I am afraid not. Page lock is per page, while defer queue is per pgdate or
-memcg.
+I am Mr.sallm Salif, a regional managing director (CORIS BANK
+INTERNATIONAL) Ouagadougou Burkina Faso, in my department we have
+US$9,500.0000 million united state dollars, to transfer into your
+account as a dormant fund.If you are interested to use this fund to
+help the orphans around the world contact and send me your personal
+information for more details:
+Your full names..........
+Your country of origin..........
+Your occupation..........
+Your Age..........
+Your Mobile Number..........
 
-It is possible two page in the same pgdate or memcg grab page lock
-respectively and then access the same defer queue concurrently.
-
->
->Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->
->> 
->> When this sequence happens, the list_del_init() in
->> mem_cgroup_move_account() would crash if CONFIG_DEBUG_LIST since the
->> page is already been removed by list_del in split_huge_page_to_list().
->> 
->> Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
->> 
->> Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
->> Acked-by: David Rientjes <rientjes@google.com>
->> 
->> ---
->> v2:
->>   * move check on compound outside suggested by Alexander
->>   * an example of the race condition, suggested by Michal
->> ---
->>  mm/memcontrol.c | 18 +++++++++++-------
->>  1 file changed, 11 insertions(+), 7 deletions(-)
->> 
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index bc01423277c5..1492eefe4f3c 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -5368,10 +5368,12 @@ static int mem_cgroup_move_account(struct page *page,
->>  	}
->>  
->>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> -	if (compound && !list_empty(page_deferred_list(page))) {
->> +	if (compound) {
->>  		spin_lock(&from->deferred_split_queue.split_queue_lock);
->> -		list_del_init(page_deferred_list(page));
->> -		from->deferred_split_queue.split_queue_len--;
->> +		if (!list_empty(page_deferred_list(page))) {
->> +			list_del_init(page_deferred_list(page));
->> +			from->deferred_split_queue.split_queue_len--;
->> +		}
->>  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
->>  	}
->>  #endif
->> @@ -5385,11 +5387,13 @@ static int mem_cgroup_move_account(struct page *page,
->>  	page->mem_cgroup = to;
->>  
->>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> -	if (compound && list_empty(page_deferred_list(page))) {
->> +	if (compound) {
->>  		spin_lock(&to->deferred_split_queue.split_queue_lock);
->> -		list_add_tail(page_deferred_list(page),
->> -			      &to->deferred_split_queue.split_queue);
->> -		to->deferred_split_queue.split_queue_len++;
->> +		if (list_empty(page_deferred_list(page))) {
->> +			list_add_tail(page_deferred_list(page),
->> +				      &to->deferred_split_queue.split_queue);
->> +			to->deferred_split_queue.split_queue_len++;
->> +		}
->>  		spin_unlock(&to->deferred_split_queue.split_queue_lock);
->>  	}
->>  #endif
->> -- 
->> 2.17.1
->> 
->> 
->
->-- 
-> Kirill A. Shutemov
-
--- 
-Wei Yang
-Help you, Help me
+Best Regards
+Mr.sallm Salif,
