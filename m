@@ -2,144 +2,198 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C3493139AAA
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 21:21:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7BF4139B10
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 22:04:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726530AbgAMUVH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 15:21:07 -0500
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33665 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726086AbgAMUVH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 15:21:07 -0500
-Received: by mail-pl1-f194.google.com with SMTP id ay11so4268555plb.0
-        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 12:21:07 -0800 (PST)
+        id S1728757AbgAMVEA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 16:04:00 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:33825 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728748AbgAMVEA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 16:04:00 -0500
+Received: by mail-ot1-f66.google.com with SMTP id a15so10382141otf.1
+        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 13:03:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=bIaxZyK0QJpQTL/WgrEd8VP6JHOxc9uUiVT69OkfGfs=;
-        b=Cho5Xgy5zKREtQuKz+/bSZ0g+gIyHdz2p24Yfmsxr7CAccjr5kcYpqbgOvKvI1tvOi
-         0Pw3+2nxm7aPkD+pmpl/OIX7moakvPw2GOjM30vb5vz5mSO0dN7irc5zX92k8ZNLh5FZ
-         C+9K7yYtuDy4lOut09g3xyF2lbu0OFZDC34OWJr2lBCTa1hJaiygNIy2lV4Jj8HzXOkA
-         lE1ma7JDpwMYDBQyQSniSv3xsKGxjIIbQCruULLZa0ItRSSKET5yRX8Vl3N174N8zYr1
-         Ixn4VH4adsnqXjKH5qgXYxbPbyK5p0X3/nAOowu2RukAy8WC22V/2K4DHpY87DfNUPGr
-         zJDw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a6fQoWKJePVhPWHTKpI3UfM75sgp66BpFErJzPrrlOw=;
+        b=cs4vSMl8h6zduSExyq25DSHp/lH2D9ZZUB2ze/QkMCedj/FoGVuWSqKZL6UJ8UTe3x
+         taygDD20N5lqR8w2jR83hzYodnsJEkg3c1Atvk/fLCDExtDwXFMXKWIzlRYeCwRrIu1A
+         QKiMKkPj9JNOOvLJvuCQf2px2XyAK4NxLXTv642+m/nl4R5plSBMMCQzFnBPR2CywzdT
+         oVB01h9esuzW+eabBVFNvIaVLzMWJx3EBtDGwzTVPHOTrFyxf2QXL3BOqhmh3E996IRd
+         bGJ/LyGnfU2A1xuSz/EyJT6le9ylV4hOTDhEHaU8rjagJx6VxrP/bfzR9A3P9srdhxav
+         HR7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=bIaxZyK0QJpQTL/WgrEd8VP6JHOxc9uUiVT69OkfGfs=;
-        b=Yk9+P90jpsPlhyfwqImu+KJYxwGEsxPTORL7QPKrkJ+QZq3XhSv4QL145tr+YIoXxr
-         eW0mmMa/SYZzmS+zEtLyIXrGlUGrPh68zwYdoe/nbALEMBVQ6uQpnWEFtW5rlU14yQ56
-         QJKcNMOGg5IrF42ViH4XbhzNos1T3msMqNCNeU/a9MjtSBAss3l6mCNiK5Av5b14LcdP
-         fEn24TlNYqcWV3zR1SA0s6AczgOsK5q8ztNCz75PFgQRqb7mD2waRVE+bKYZ6E0s4+M1
-         f0yd5TrwTz+29zg/z3csFh3GPdpwgS6Y937VtKyHLyYkB5lTgPh8d4F42Vea7b9NLCx5
-         TCSA==
-X-Gm-Message-State: APjAAAUIRgOuj4OjvlKNtvo9Zs2FWtHLkoPHSNxB4qw/OrLEAZjUG332
-        4y5Wkww1A6qnrOw3BMCtWI5nww==
-X-Google-Smtp-Source: APXvYqz63b0w80w/6x4HYHZY8yCvMeX3CjLxshGz0cPA+oMJSNaR8BhdRUhjA82WiAoUwJBS4TcRcg==
-X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr23348884pjs.69.1578946866353;
-        Mon, 13 Jan 2020 12:21:06 -0800 (PST)
-Received: from [100.112.92.218] ([104.133.9.106])
-        by smtp.gmail.com with ESMTPSA id c17sm14862042pfi.104.2020.01.13.12.21.05
-        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
-        Mon, 13 Jan 2020 12:21:05 -0800 (PST)
-Date:   Mon, 13 Jan 2020 12:20:48 -0800 (PST)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>, hannes@cmpxchg.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com
-Subject: Re: [PATCH v7 00/10] per lruvec lru_lock for memcg
-In-Reply-To: <24d671ac-36ef-8883-ad94-1bd497d46783@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2001131157500.1084@eggly.anvils>
-References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com> <20191231150514.61c2b8c8354320f09b09f377@linux-foundation.org> <944f0f6a-466a-7ce3-524c-f6db86fd0891@linux.alibaba.com> <d2efad94-750b-3298-8859-84bccc6ecf06@linux.alibaba.com>
- <alpine.LSU.2.11.2001130032170.1103@eggly.anvils> <24d671ac-36ef-8883-ad94-1bd497d46783@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a6fQoWKJePVhPWHTKpI3UfM75sgp66BpFErJzPrrlOw=;
+        b=DIiDvPInI3U/oqWyDivvhUk8m09oIHvmtrDMLqEdtJRtCW/n42Gw8svyFGdYjDaHv2
+         6AGDSimJFDfSoJNoRxcTE5vK8enP6nF6havVQKjnVhFygTh4c7cwVYz08rnyVskkYSrD
+         Gyehs34lGFwoAuXkrQiuwq7hrKtJHkkGLeF2W9ZCysrv0Zd3b4orRuwZo2o8Y4hG7P6O
+         ZXeT9sq0nMGCvtxWspChly7GqXpF9jlPOAnDf48iRgIsxtDXMPMRIpHU9W7QRrlbYW5h
+         HDjKO71MS7ATqNqS806mEQygqG+ti+IsA+YBYSZMv7B+Z21jxOP7hRXON44JGc2jA2UI
+         +WIA==
+X-Gm-Message-State: APjAAAXdVKRhrAGmdXvbZpMdVva7oRVH4ydTtD3/KNJ/rui3kIi0du+C
+        f7ECl1W2CTygpC81u3lF98QsWc1Zid/wNmIKp4VYcw==
+X-Google-Smtp-Source: APXvYqzSJv0guVRdYaC4Mv//BEhlnnIgzybsKfPL1UpJTSHOQsnlrx7vu2g8YuBGQFU18WK2zQ1Cu/q9zAmUFfmNVZw=
+X-Received: by 2002:a9d:2028:: with SMTP id n37mr15039312ota.127.1578949439221;
+ Mon, 13 Jan 2020 13:03:59 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1359013247-1578946865=:1084"
+References: <20191217231615.164161-1-almasrymina@google.com> <817e2c4b-4c72-09f9-22ea-bbaf97584161@oracle.com>
+In-Reply-To: <817e2c4b-4c72-09f9-22ea-bbaf97584161@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Mon, 13 Jan 2020 13:03:48 -0800
+Message-ID: <CAHS8izNs24KOaRuQkVUuZZUh42rvkyBXJEJYrHNf9bLFnZEXCg@mail.gmail.com>
+Subject: Re: [PATCH v9 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Hillf Danton <hdanton@sina.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Mon, Jan 13, 2020 at 10:44 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 12/17/19 3:16 PM, Mina Almasry wrote:
+> > These counters will track hugetlb reservations rather than hugetlb
+> > memory faulted in. This patch only adds the counter, following patches
+> > add the charging and uncharging of the counter.
+> >
+> > This is patch 1 of an 8 patch series.
+> >
+> > Problem:
+> > Currently tasks attempting to allocate more hugetlb memory than is available get
+> > a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
+> > However, if a task attempts to allocate hugetlb memory only more than its
+> > hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
+> > but will SIGBUS the task when it attempts to fault the memory in.
+> >
+> > We have developers interested in using hugetlb_cgroups, and they have expressed
+> > dissatisfaction regarding this behavior. We'd like to improve this
+> > behavior such that tasks violating the hugetlb_cgroup limits get an error on
+> > mmap/shmget time, rather than getting SIGBUS'd when they try to fault
+> > the excess memory in.
+> >
+> > The underlying problem is that today's hugetlb_cgroup accounting happens
+> > at hugetlb memory *fault* time, rather than at *reservation* time.
+> > Thus, enforcing the hugetlb_cgroup limit only happens at fault time, and
+> > the offending task gets SIGBUS'd.
+> >
+> > Proposed Solution:
+> > A new page counter named hugetlb.xMB.reservation_[limit|usage]_in_bytes. This
+> > counter has slightly different semantics than
+> > hugetlb.xMB.[limit|usage]_in_bytes:
+> >
+> > - While usage_in_bytes tracks all *faulted* hugetlb memory,
+> > reservation_usage_in_bytes tracks all *reserved* hugetlb memory and
+> > hugetlb memory faulted in without a prior reservation.
+>
+> To me, this implies that 'faults without reservations' could cause
+> reservation usage to exceed reservation limit?  Or, does the faulting
+> process get a SIGBUS because of the reservation limit even though it
+> is not using reservations?
+>
+> We shall see in subsequent patches.
+>
 
---0-1359013247-1578946865=:1084
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+The design we went with based on previous discussions is as follows:
+hugetlb pages faulted without a prior reservation get accounted at
+fault time, rather than reservation time, and if the fault causes the
+counter to cross the limit, the charge fails, hence the fault fails,
+hence the process gets sigbus'd.
 
-On Mon, 13 Jan 2020, Alex Shi wrote:
-> =E5=9C=A8 2020/1/13 =E4=B8=8B=E5=8D=884:48, Hugh Dickins =E5=86=99=E9=81=
-=93:
-> >=20
-> > I (Hugh) tried to test it on v5.5-rc5, but did not get very far at all =
--
-> > perhaps because my particular interest tends towards tmpfs and swap,
-> > and swap always made trouble for lruvec lock - one of the reasons why
-> > our patches were more complicated than you thought necessary.
-> >=20
-> > Booted a smallish kernel in mem=3D700M with 1.5G of swap, with intentio=
-n
-> > of running small kernel builds in tmpfs and in ext4-on-loop-on-tmpfs
-> > (losetup was the last command started but I doubt it played much part):
-> >=20
-> > mount -t tmpfs -o size=3D470M tmpfs /tst
-> > cp /dev/zero /tst
-> > losetup /dev/loop0 /tst/zero
->=20
-> Hi Hugh,
->=20
-> Many thanks for the testing!
->=20
-> I am trying to reproduce your testing, do above 3 steps, then build kerne=
-l with 'make -j 8' on my qemu. but cannot reproduce the problem with this v=
-7 version or with v8 version, https://github.com/alexshi/linux/tree/lru-nex=
-t, which fixed the bug KK mentioned, like the following.=20
-> my qemu vmm like this:
->=20
-> [root@debug010000002015 ~]# mount -t tmpfs -o size=3D470M tmpfs /tst
-> [root@debug010000002015 ~]# cp /dev/zero /tst
-> cp: error writing =E2=80=98/tst/zero=E2=80=99: No space left on device
-> cp: failed to extend =E2=80=98/tst/zero=E2=80=99: No space left on device
-> [root@debug010000002015 ~]# losetup /dev/loop0 /tst/zero
-> [root@debug010000002015 ~]# cat /proc/cmdline
-> earlyprintk=3DttyS0 root=3D/dev/sda1 console=3DttyS0 debug crashkernel=3D=
-128M printk.devkmsg=3Don
->=20
-> my kernel configed with MEMCG/MEMCG_SWAP with xfs rootimage, and compilin=
-g kernel under ext4. Could you like to share your kernel config and detaile=
-d reproduce steps with me? And would you like to try my new version from ab=
-ove github link in your convenient?
+This means that one counter I'm adding here can cover both use cases:
+if the userspace uses MAP_NORESERVE, then their memory is accounted at
+fault time and they may get sigbus'd. If the userspace does *not* use
+MAP_NORESERVE, then their memory is charged at reservation (mmap) time
+and should be completely immune to runtime sigbus, unless they do
+something really weird like reserve a bunch of memory, punch a hole in
+the reserved memory, lower their limit, then fault in memory from the
+hole.
 
-I tried with the mods you had appended, from [PATCH v7 02/10]
-discussion with Konstantion: no, still crashes in a similar way.
+> >
+> > - If a task attempts to reserve more memory than limit_in_bytes allows,
+> > the kernel will allow it to do so. But if a task attempts to reserve
+> > more memory than reservation_limit_in_bytes, the kernel will fail this
+> > reservation.
+> >
+> > This proposal is implemented in this patch series, with tests to verify
+> > functionality and show the usage. We also added cgroup-v2 support to
+> > hugetlb_cgroup so that the new use cases can be extended to v2.
+>
+> As previously discussed, cgroup-v2 support for hugetlb_cgroup will exist
+> before this patch series.
+>
 
-Does your github tree have other changes too?  I see it says "Latest
-commit e05d0dd 22 days ago", which doesn't seem to fit.  Afraid I
-don't have time to test many variations.
+Yes, this will be fixed in the next iteration.
 
-It looks like, in my case, systemd was usually jumping in and doing
-something with shmem (perhaps via memfd) that read back from swap
-and triggered the crash without any further intervention from me.
+> >
+> > Alternatives considered:
+> > 1. A new cgroup, instead of only a new page_counter attached to
+> >    the existing hugetlb_cgroup. Adding a new cgroup seemed like a lot of code
+> >    duplication with hugetlb_cgroup. Keeping hugetlb related page counters under
+> >    hugetlb_cgroup seemed cleaner as well.
+> >
+> > 2. Instead of adding a new counter, we considered adding a sysctl that modifies
+> >    the behavior of hugetlb.xMB.[limit|usage]_in_bytes, to do accounting at
+> >    reservation time rather than fault time. Adding a new page_counter seems
+> >    better as userspace could, if it wants, choose to enforce different cgroups
+> >    differently: one via limit_in_bytes, and another via
+> >    reservation_limit_in_bytes. This could be very useful if you're
+> >    transitioning how hugetlb memory is partitioned on your system one
+> >    cgroup at a time, for example. Also, someone may find usage for both
+> >    limit_in_bytes and reservation_limit_in_bytes concurrently, and this
+> >    approach gives them the option to do so.
+> >
+> > Testing:
+> > - Added tests passing.
+> > - Used libhugetlbfs for regression testing.
+> >
+> > [1]: https://www.kernel.org/doc/html/latest/vm/hugetlbfs_reserv.html
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > Acked-by: Hillf Danton <hdanton@sina.com>
+>
+> I think the ACK by Hillf happened some time back.  You may want to check
+> to see if it still applies.
+>
 
-So please try booting with mem=3D700M and 1.5G swap,
-mount -t tmpfs -o size=3D470M tmpfs /tst
-cp /dev/zero /tst; cp /tst/zero /dev/null
+Yes, will remove the ack in the next iteration. I'll re-add it if Hilf
+reviews again.
 
-That's enough to crash it for me, without getting into any losetup or
-systemd complications. But you might have to adjust the numbers to be
-sure of writing out and reading back from swap.
+> >
+> > ---
+> >  include/linux/hugetlb.h |   4 +-
+> >  mm/hugetlb_cgroup.c     | 116 +++++++++++++++++++++++++++++++++++-----
+> >  2 files changed, 106 insertions(+), 14 deletions(-)
+>
+> Only one minor nit in the code.
+>
+> You made this cleanup,
+> @@ -472,7 +519,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
+>         struct hstate *h = &hstates[idx];
+>
+>         /* format the size */
+> -       mem_fmt(buf, 32, huge_page_size(h));
+> +       mem_fmt(buf, sizeof(buf), huge_page_size(h));
+>
+>         /* Add the limit file */
+>         cft = &h->cgroup_files_dfl[0];
+>
+> But did not make the same cleanup in __hugetlb_cgroup_file_legacy_init()
 
-It's swap to SSD in my case, don't think that matters. I happen to
-run with swappiness 100 (precisely to help generate swap problems),
-but swappiness 60 is good enough to get these crashes.
+Will be fixed in the next iteration.
 
-Hugh
---0-1359013247-1578946865=:1084--
+> --
+> Mike Kravetz
