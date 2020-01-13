@@ -2,39 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26805139141
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 13:46:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F064139157
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 13:49:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726399AbgAMMq5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 07:46:57 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:37633 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725832AbgAMMq5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 07:46:57 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TndsAqh_1578919612;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TndsAqh_1578919612)
+        id S1726480AbgAMMs7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 07:48:59 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:42003 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726946AbgAMMs6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 07:48:58 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Tne44Ij_1578919732;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Tne44Ij_1578919732)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Jan 2020 20:46:52 +0800
-Subject: Re: [PATCH v7 00/10] per lruvec lru_lock for memcg
-To:     Hugh Dickins <hughd@google.com>
-Cc:     hannes@cmpxchg.org, Andrew Morton <akpm@linux-foundation.org>,
+          Mon, 13 Jan 2020 20:48:53 +0800
+Subject: Re: [PATCH v7 02/10] mm/memcg: fold lru_lock in lock_page_lru
+To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, shakeelb@google.com, hannes@cmpxchg.org
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
 References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com>
- <20191231150514.61c2b8c8354320f09b09f377@linux-foundation.org>
- <944f0f6a-466a-7ce3-524c-f6db86fd0891@linux.alibaba.com>
- <d2efad94-750b-3298-8859-84bccc6ecf06@linux.alibaba.com>
- <alpine.LSU.2.11.2001130032170.1103@eggly.anvils>
+ <1577264666-246071-3-git-send-email-alex.shi@linux.alibaba.com>
+ <36d7e390-a3d1-908c-d181-4a9e9c8d3d98@yandex-team.ru>
+ <952d02c2-8aa5-40bb-88bb-c43dee65c8bc@linux.alibaba.com>
+ <2ba8a04e-d8e0-1d50-addc-dbe1b4d8e0f1@yandex-team.ru>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <24d671ac-36ef-8883-ad94-1bd497d46783@linux.alibaba.com>
-Date:   Mon, 13 Jan 2020 20:45:25 +0800
+Message-ID: <a095d80d-8e34-c84f-e4be-085a5aae1929@linux.alibaba.com>
+Date:   Mon, 13 Jan 2020 20:47:25 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2001130032170.1103@eggly.anvils>
+In-Reply-To: <2ba8a04e-d8e0-1d50-addc-dbe1b4d8e0f1@yandex-team.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
@@ -44,60 +45,71 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-在 2020/1/13 下午4:48, Hugh Dickins 写道:
-> On Fri, 10 Jan 2020, Alex Shi wrote:
->> 在 2020/1/2 下午6:21, Alex Shi 写道:
->>> 在 2020/1/1 上午7:05, Andrew Morton 写道:
->>>> On Wed, 25 Dec 2019 17:04:16 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+在 2020/1/13 下午5:55, Konstantin Khlebnikov 写道:
 >>>>
->>>>> This patchset move lru_lock into lruvec, give a lru_lock for each of
->>>>> lruvec, thus bring a lru_lock for each of memcg per node.
->>>>
->>>> I see that there has been plenty of feedback on previous versions, but
->>>> no acked/reviewed tags as yet.
->>>>
->>>> I think I'll take a pass for now, see what the audience feedback looks
->>>> like ;)
->>>>
+>>>> index c5b5f74cfd4d..0ad10caabc3d 100644
+>>>> --- a/mm/memcontrol.c
+>>>> +++ b/mm/memcontrol.c
+>>>> @@ -2572,12 +2572,11 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
+>>>>      static void lock_page_lru(struct page *page, int *isolated)
+>>>>    {
+>>>> -    pg_data_t *pgdat = page_pgdat(page);
+>>>> -
+>>>> -    spin_lock_irq(&pgdat->lru_lock);
+>>>>        if (PageLRU(page)) {
+>>>> +        pg_data_t *pgdat = page_pgdat(page);
+>>>>            struct lruvec *lruvec;
+>>>>    +        spin_lock_irq(&pgdat->lru_lock);
 >>>
+>>> That's wrong. Here PageLRU must be checked again under lru_lock.
+>> Hi, Konstantin,
 >>
->> Hi Johannes,
->>
->> Any comments of this version? :)
+>> For logical remain, we can get the lock and then release for !PageLRU.
+>> but I still can figure out the problem scenario. Would like to give more hints?
 > 
-> I (Hugh) tried to test it on v5.5-rc5, but did not get very far at all -
-> perhaps because my particular interest tends towards tmpfs and swap,
-> and swap always made trouble for lruvec lock - one of the reasons why
-> our patches were more complicated than you thought necessary.
+> That's trivial race: page could be isolated from lru between
 > 
-> Booted a smallish kernel in mem=700M with 1.5G of swap, with intention
-> of running small kernel builds in tmpfs and in ext4-on-loop-on-tmpfs
-> (losetup was the last command started but I doubt it played much part):
-> 
-> mount -t tmpfs -o size=470M tmpfs /tst
-> cp /dev/zero /tst
-> losetup /dev/loop0 /tst/zero
+> if (PageLRU(page))
+> and
+> spin_lock_irq(&pgdat->lru_lock);
 
-Hi Hugh,
-
-Many thanks for the testing!
-
-I am trying to reproduce your testing, do above 3 steps, then build kernel with 'make -j 8' on my qemu. but cannot reproduce the problem with this v7 version or with v8 version, https://github.com/alexshi/linux/tree/lru-next, which fixed the bug KK mentioned, like the following. 
-my qemu vmm like this:
-
-[root@debug010000002015 ~]# mount -t tmpfs -o size=470M tmpfs /tst
-[root@debug010000002015 ~]# cp /dev/zero /tst
-cp: error writing ‘/tst/zero’: No space left on device
-cp: failed to extend ‘/tst/zero’: No space left on device
-[root@debug010000002015 ~]# losetup /dev/loop0 /tst/zero
-[root@debug010000002015 ~]# cat /proc/cmdline
-earlyprintk=ttyS0 root=/dev/sda1 console=ttyS0 debug crashkernel=128M printk.devkmsg=on
-
-my kernel configed with MEMCG/MEMCG_SWAP with xfs rootimage, and compiling kernel under ext4. Could you like to share your kernel config and detailed reproduce steps with me? And would you like to try my new version from above github link in your convenient?
+yes, it could be a problem. guess the following change could helpful:
+I will update it in new version.
 
 Thanks a lot!
-Alex 
+Alex
 
+-static void lock_page_lru(struct page *page, int *isolated)
+-{
+-       pg_data_t *pgdat = page_pgdat(page);
+-
+-       spin_lock_irq(&pgdat->lru_lock);
+-       if (PageLRU(page)) {
+-               struct lruvec *lruvec;
+-
+-               lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-               ClearPageLRU(page);
+-               del_page_from_lru_list(page, lruvec, page_lru(page));
+-               *isolated = 1;
+-       } else
+-               *isolated = 0;
+-}
+-
+-static void unlock_page_lru(struct page *page, int isolated)
+-{
+-       pg_data_t *pgdat = page_pgdat(page);
+-
+-       if (isolated) {
+-               struct lruvec *lruvec;
+-
+-               lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-               VM_BUG_ON_PAGE(PageLRU(page), page);
+-               SetPageLRU(page);
+-               add_page_to_lru_list(page, lruvec, page_lru(page));
+-       }
+-       spin_unlock_irq(&pgdat->lru_lock);
+-}
+-
  static void commit_charge(struct page *page, struct mem_cgroup *memcg,
                           bool lrucare)
  {
@@ -141,32 +153,3 @@ Alex
 +               unlock_page_lruvec_irq(lruvec);
 +       }
  }
-> 
-> and kernel crashed on the
-> 
-> VM_BUG_ON_PAGE(lruvec_memcg(lruvec) != page->mem_cgroup, page);
-> kernel BUG at mm/memcontrol.c:1268!
-> lock_page_lruvec_irqsave
-> relock_page_lruvec_irqsave
-> pagevec_lru_move_fn
-> __pagevec_lru_add
-> lru_add_drain_cpu
-> lru_add_drain
-> swap_cluster_readahead
-> shmem_swapin
-> shmem_swapin_page
-> shmem_getpage_gfp
-> shmem_getpage
-> shmem_write_begin
-> generic_perform_write
-> __generic_file_write_iter
-> generic_file_write_iter
-> new_sync_write
-> __vfs_write
-> vfs_write
-> ksys_write
-> __x86_sys_write
-> do_syscall_64
-> 
-> Hugh
-> 
