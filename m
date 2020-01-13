@@ -2,154 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F064139157
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 13:49:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 95EEE1394EB
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 16:37:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgAMMs7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 07:48:59 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:42003 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726946AbgAMMs6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 07:48:58 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=15;SR=0;TI=SMTPD_---0Tne44Ij_1578919732;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Tne44Ij_1578919732)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Jan 2020 20:48:53 +0800
-Subject: Re: [PATCH v7 02/10] mm/memcg: fold lru_lock in lock_page_lru
-To:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, shakeelb@google.com, hannes@cmpxchg.org
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com>
- <1577264666-246071-3-git-send-email-alex.shi@linux.alibaba.com>
- <36d7e390-a3d1-908c-d181-4a9e9c8d3d98@yandex-team.ru>
- <952d02c2-8aa5-40bb-88bb-c43dee65c8bc@linux.alibaba.com>
- <2ba8a04e-d8e0-1d50-addc-dbe1b4d8e0f1@yandex-team.ru>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <a095d80d-8e34-c84f-e4be-085a5aae1929@linux.alibaba.com>
-Date:   Mon, 13 Jan 2020 20:47:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.3.1
+        id S1728670AbgAMPhN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 10:37:13 -0500
+Received: from mail-bn7nam10on2067.outbound.protection.outlook.com ([40.107.92.67]:34257
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727286AbgAMPhN (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 13 Jan 2020 10:37:13 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IKG6L57PrOWf7nNdwGYDLji9wv5BsrEPPgidcDQeSVA7LPTqt5z9q8qki77jG+XUu2NWKCJzxgU/EVZhA/KqYl8aQnXDCgjYqF503W0Y9XtenY7XEMbkXylUug2fyNbqQXXCiL+awp/j7EV1FIMHYKEXKbalp24owCTDV15A886qThxQLRQQv5KxiXbEIAq8ddHeic1v3Zb5NoozpIcNCrDHGPUDIqF/G1mh/iWHKvxEMNxJAQmQz9LThurh8rGVIpvmFTgZcXoQcU7OofHGoDtg5dGaCt5fsqcE11z9pj0YbH6/6+pxi23Zk0JFEQoz/ntXOJm5fqm1lKLbE/Sknw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rsmRFEVmj30XrwddG2qG6+/9LY7okiYo3z6I6OKGbrs=;
+ b=k3wUn7Sm/p1eM8oj3vDw1KUZLUQySKRao0dXgSGGlajEW/mjBPejDq6un4Slx++bQZ379AbtqZH54QjYNTqy33tIL2eTxX/GRpBwnAb5n2O+7MBuy+R1shHMGJqp0w4BcV24FGULZ5A8wiflhFECZQjdaEURkODdXR6rngCyG/+PNNI4kEx43YUZVW4IofJ7ZjZdvXkPTDr2hV7pZBmz4GxLGJAn22XjapmX/XCM8wzkKgYdKhke+KUzm8NVkOWA4rPnQLxeSJHiLgui3dwBwCBLtY968ZDRlc613owIIJJ2PgIMtCnWKXNB7rpcodJ5JgR1oRVSNXT1aAOcc4rH7A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rsmRFEVmj30XrwddG2qG6+/9LY7okiYo3z6I6OKGbrs=;
+ b=derinofgmcsleCAXhujSxeIKTxTl2BzgWy+LVErHA29fDH2jrgZT60u4tanLCqHi05pQiT2Vcp9ND265z/Szh2rn8o4q/0X0/NG4Q9WNRtGVqPoIkSrjflFK+XlmhgNasTzdMYDUY2lMG5ft3kI14ELG9WR0ddT3cyt+bBhkzFk=
+Authentication-Results: spf=none (sender IP is )
+ smtp.mailfrom=Qiang.Yu@amd.com; 
+Received: from SN6PR12MB2702.namprd12.prod.outlook.com (52.135.101.144) by
+ SN6PR12MB2685.namprd12.prod.outlook.com (52.135.99.33) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2623.9; Mon, 13 Jan 2020 15:37:10 +0000
+Received: from SN6PR12MB2702.namprd12.prod.outlook.com
+ ([fe80::d46f:d4ae:d96d:ef70]) by SN6PR12MB2702.namprd12.prod.outlook.com
+ ([fe80::d46f:d4ae:d96d:ef70%5]) with mapi id 15.20.2623.015; Mon, 13 Jan 2020
+ 15:37:10 +0000
+From:   Qiang Yu <qiang.yu@amd.com>
+To:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>,
+        Christian Koenig <christian.koenig@amd.com>,
+        Huang Rui <ray.huang@amd.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Kenny Ho <kenny.ho@amd.com>,
+        Qiang Yu <qiang.yu@amd.com>
+Subject: [PATCH RFC 0/3] mm/memcontrol drm/ttm: charge ttm buffer backed by system memory
+Date:   Mon, 13 Jan 2020 23:35:40 +0800
+Message-Id: <20200113153543.24957-1-qiang.yu@amd.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-ClientProxiedBy: SG2PR0302CA0024.apcprd03.prod.outlook.com
+ (2603:1096:3:2::34) To SN6PR12MB2702.namprd12.prod.outlook.com
+ (2603:10b6:805:6c::16)
 MIME-Version: 1.0
-In-Reply-To: <2ba8a04e-d8e0-1d50-addc-dbe1b4d8e0f1@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Received: from localhost.localdomain (221.239.222.115) by SG2PR0302CA0024.apcprd03.prod.outlook.com (2603:1096:3:2::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2644.10 via Frontend Transport; Mon, 13 Jan 2020 15:37:06 +0000
+X-Mailer: git-send-email 2.17.1
+X-Originating-IP: [221.239.222.115]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 718f5000-eeb8-477c-9e2b-08d7983e746b
+X-MS-TrafficTypeDiagnostic: SN6PR12MB2685:|SN6PR12MB2685:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <SN6PR12MB2685ECA91C63E5C10BAEBBD28F350@SN6PR12MB2685.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-Forefront-PRVS: 028166BF91
+X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10009020)(4636009)(396003)(136003)(366004)(39860400002)(346002)(376002)(199004)(189003)(86362001)(4326008)(478600001)(1076003)(81156014)(5660300002)(81166006)(8936002)(8676002)(36756003)(6512007)(6486002)(66946007)(66476007)(66556008)(2906002)(956004)(26005)(6506007)(44832011)(6666004)(54906003)(316002)(186003)(52116002)(16526019)(69590400006)(2616005);DIR:OUT;SFP:1101;SCL:1;SRVR:SN6PR12MB2685;H:SN6PR12MB2702.namprd12.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
+Received-SPF: None (protection.outlook.com: amd.com does not designate
+ permitted sender hosts)
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C0Mscc4SaGo0WoNDKG7OeJ0AJotO7uJB3M6l0Ufk1IH3P9Pi0JQ8OJCLoJDtgOkZCs8+ohZDatwRDuCSHYauuDFhFh9xegUmiWp5RCqOLzHkTRrs/YmJe4vVETGiDLroxliJG/1kT4xseRr0steGjB1Kck8/X/bnDkTAUfUoSBoO+Tz5i1Pzp/XvXHzjTO6E09/RlaE/Clqo6zz0wT1sncb+gTLD80lzmB7Ne0zDN/7yAOfFjvP0984zRi8u7POg5w8aq9lg99VzOHNrZomlYKD80iXHkPCn+Hrqlf+2dt2weehLacUivLv3IvC8BpHFJMcgghcV2vl+YiZq3BVdGl7QWFGivuopjyB7CROcTQJBCjP7vA1DoBBztJ97Eockyk54KBozGgkQ9g6nm0vscfp92iJgfDWT64V5BOqY6mEuiUotnZhgUcBTCM2JtHz9DsRYysjGcNSAtCm5vD1Uj1Ilzzl450qDY7KlsQofAo3qf1omuO5CR5+0c1M0HqKZ
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 718f5000-eeb8-477c-9e2b-08d7983e746b
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2020 15:37:10.7297
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: DEPP1630dug7ii2JVSKE+6w0bX0mW2AQjlZR1hQKy4wyPxe42Pk03AqOy3PKgwFS
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR12MB2685
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Buffers created by GPU driver could be huge (often several MB and even hundred
+or thousand MB). Some GPU driver call drm_gem_get_pages() which uses shmem to
+allocate these buffers which will charge memcg already, while some GPU driver
+like amdgpu use TTM which just allocate these system memory backed buffers with
+alloc_pages() so won't charge memcg currently.
 
+Not like pure kernel memory, GPU buffer need to be mapped to user space for user
+filling data and command then let GPU hardware consume these buffers. So it is
+not proper to use memcg kmem by adding __GFP_ACCOUNT to alloc_pages gfp flags.
 
-在 2020/1/13 下午5:55, Konstantin Khlebnikov 写道:
->>>>
->>>> index c5b5f74cfd4d..0ad10caabc3d 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -2572,12 +2572,11 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
->>>>      static void lock_page_lru(struct page *page, int *isolated)
->>>>    {
->>>> -    pg_data_t *pgdat = page_pgdat(page);
->>>> -
->>>> -    spin_lock_irq(&pgdat->lru_lock);
->>>>        if (PageLRU(page)) {
->>>> +        pg_data_t *pgdat = page_pgdat(page);
->>>>            struct lruvec *lruvec;
->>>>    +        spin_lock_irq(&pgdat->lru_lock);
->>>
->>> That's wrong. Here PageLRU must be checked again under lru_lock.
->> Hi, Konstantin,
->>
->> For logical remain, we can get the lock and then release for !PageLRU.
->> but I still can figure out the problem scenario. Would like to give more hints?
-> 
-> That's trivial race: page could be isolated from lru between
-> 
-> if (PageLRU(page))
-> and
-> spin_lock_irq(&pgdat->lru_lock);
+Another reason is back memory of GPU buffer may be allocated latter after the
+buffer object is created, and even in other processes. So we need to record the
+memcg when buffer object creation, then charge it latter when needed.
 
-yes, it could be a problem. guess the following change could helpful:
-I will update it in new version.
+TTM will use a page pool acting as a cache for write-combine/no-cache pages.
+So adding new GFP flags for alloc_pages also does not work.
 
-Thanks a lot!
-Alex
+Qiang Yu (3):
+  mm: memcontrol: add mem_cgroup_(un)charge_drvmem
+  mm: memcontrol: record driver memory statistics
+  drm/ttm: support memcg for ttm_tt
 
--static void lock_page_lru(struct page *page, int *isolated)
--{
--       pg_data_t *pgdat = page_pgdat(page);
--
--       spin_lock_irq(&pgdat->lru_lock);
--       if (PageLRU(page)) {
--               struct lruvec *lruvec;
--
--               lruvec = mem_cgroup_page_lruvec(page, pgdat);
--               ClearPageLRU(page);
--               del_page_from_lru_list(page, lruvec, page_lru(page));
--               *isolated = 1;
--       } else
--               *isolated = 0;
--}
--
--static void unlock_page_lru(struct page *page, int isolated)
--{
--       pg_data_t *pgdat = page_pgdat(page);
--
--       if (isolated) {
--               struct lruvec *lruvec;
--
--               lruvec = mem_cgroup_page_lruvec(page, pgdat);
--               VM_BUG_ON_PAGE(PageLRU(page), page);
--               SetPageLRU(page);
--               add_page_to_lru_list(page, lruvec, page_lru(page));
--       }
--       spin_unlock_irq(&pgdat->lru_lock);
--}
--
- static void commit_charge(struct page *page, struct mem_cgroup *memcg,
-                          bool lrucare)
- {
--       int isolated;
-+       struct lruvec *lruvec = NULL;
+ drivers/gpu/drm/ttm/ttm_bo.c         | 10 +++++
+ drivers/gpu/drm/ttm/ttm_page_alloc.c | 18 ++++++++-
+ drivers/gpu/drm/ttm/ttm_tt.c         |  3 ++
+ include/drm/ttm/ttm_bo_api.h         |  5 +++
+ include/drm/ttm/ttm_tt.h             |  4 ++
+ include/linux/memcontrol.h           | 22 +++++++++++
+ mm/memcontrol.c                      | 58 ++++++++++++++++++++++++++++
+ 7 files changed, 119 insertions(+), 1 deletion(-)
 
-        VM_BUG_ON_PAGE(page->mem_cgroup, page);
+-- 
+2.17.1
 
-@@ -2612,8 +2617,16 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg,
-         * In some cases, SwapCache and FUSE(splice_buf->radixtree), the page
-         * may already be on some other mem_cgroup's LRU.  Take care of it.
-         */
--       if (lrucare)
--               lock_page_lru(page, &isolated);
-+       if (lrucare) {
-+               lruvec = lock_page_lruvec_irq(page);
-+               if (likely(PageLRU(page))) {
-+                       ClearPageLRU(page);
-+                       del_page_from_lru_list(page, lruvec, page_lru(page));
-+               } else {
-+                       unlock_page_lruvec_irq(lruvec);
-+                       lruvec = NULL;
-+               }
-+       }
-
-        /*
-         * Nobody should be changing or seriously looking at
-@@ -2631,8 +2644,15 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg,
-         */
-        page->mem_cgroup = memcg;
-
--       if (lrucare)
--               unlock_page_lru(page, isolated);
-+       if (lrucare && lruvec) {
-+               unlock_page_lruvec_irq(lruvec);
-+               lruvec = lock_page_lruvec_irq(page);
-+
-+               VM_BUG_ON_PAGE(PageLRU(page), page);
-+               SetPageLRU(page);
-+               add_page_to_lru_list(page, lruvec, page_lru(page));
-+               unlock_page_lruvec_irq(lruvec);
-+       }
- }
