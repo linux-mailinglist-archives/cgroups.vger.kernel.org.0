@@ -2,183 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B84DE139925
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 19:44:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3493139AAA
+	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 21:21:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728669AbgAMSoS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 13:44:18 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:58918 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728664AbgAMSoS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 13:44:18 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00DIhSuM014798;
-        Mon, 13 Jan 2020 18:44:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=58bZpuiFAks0nyTSTapJdzHryQVmx7OwYqtXIuvSXB4=;
- b=TEFnciVLOWX1iv14uTDL8MJpviCcdFoR7s5SF/pkyIHJbsjDrBA43BxejJUzkyMsqYo2
- 3BNGaD6rBHVKjN1eeWN3d3SvxY5MlynKEI8hPWrYD89c2qawHaaJFWHxtgGwcelSNtwo
- CxvRdHxgB9UBA1yJ/qFmyGjkVXcI0mvERL3mnmhzC/C7y+C53Q96d4kwWKrhYLwP8rxo
- eCIS8QTjlBr27FDDINdjhvYGgRSQb14fPIWQLl92Frf3HFsVDGU/SOji65IuLZms2rt1
- BIVGnYVaDAgYJ4PQGqSA9DIiHaYUT0anDaPgMjWRVlDR3zwoWUSQhl4XgjGxSnKXmprb NA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2130.oracle.com with ESMTP id 2xf74s0vcd-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jan 2020 18:44:04 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00DIhpix077970;
-        Mon, 13 Jan 2020 18:44:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2xfqu50evu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 13 Jan 2020 18:44:04 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 00DIhEAn028860;
-        Mon, 13 Jan 2020 18:43:14 GMT
-Received: from [192.168.1.206] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 13 Jan 2020 10:43:14 -0800
-Subject: Re: [PATCH v9 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
- counter
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     shuah@kernel.org, rientjes@google.com, shakeelb@google.com,
-        gthelen@google.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        aneesh.kumar@linux.vnet.ibm.com, mkoutny@suse.com,
-        Hillf Danton <hdanton@sina.com>
-References: <20191217231615.164161-1-almasrymina@google.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <817e2c4b-4c72-09f9-22ea-bbaf97584161@oracle.com>
-Date:   Mon, 13 Jan 2020 10:43:12 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1726530AbgAMUVH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 15:21:07 -0500
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33665 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726086AbgAMUVH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 15:21:07 -0500
+Received: by mail-pl1-f194.google.com with SMTP id ay11so4268555plb.0
+        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 12:21:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=bIaxZyK0QJpQTL/WgrEd8VP6JHOxc9uUiVT69OkfGfs=;
+        b=Cho5Xgy5zKREtQuKz+/bSZ0g+gIyHdz2p24Yfmsxr7CAccjr5kcYpqbgOvKvI1tvOi
+         0Pw3+2nxm7aPkD+pmpl/OIX7moakvPw2GOjM30vb5vz5mSO0dN7irc5zX92k8ZNLh5FZ
+         C+9K7yYtuDy4lOut09g3xyF2lbu0OFZDC34OWJr2lBCTa1hJaiygNIy2lV4Jj8HzXOkA
+         lE1ma7JDpwMYDBQyQSniSv3xsKGxjIIbQCruULLZa0ItRSSKET5yRX8Vl3N174N8zYr1
+         Ixn4VH4adsnqXjKH5qgXYxbPbyK5p0X3/nAOowu2RukAy8WC22V/2K4DHpY87DfNUPGr
+         zJDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=bIaxZyK0QJpQTL/WgrEd8VP6JHOxc9uUiVT69OkfGfs=;
+        b=Yk9+P90jpsPlhyfwqImu+KJYxwGEsxPTORL7QPKrkJ+QZq3XhSv4QL145tr+YIoXxr
+         eW0mmMa/SYZzmS+zEtLyIXrGlUGrPh68zwYdoe/nbALEMBVQ6uQpnWEFtW5rlU14yQ56
+         QJKcNMOGg5IrF42ViH4XbhzNos1T3msMqNCNeU/a9MjtSBAss3l6mCNiK5Av5b14LcdP
+         fEn24TlNYqcWV3zR1SA0s6AczgOsK5q8ztNCz75PFgQRqb7mD2waRVE+bKYZ6E0s4+M1
+         f0yd5TrwTz+29zg/z3csFh3GPdpwgS6Y937VtKyHLyYkB5lTgPh8d4F42Vea7b9NLCx5
+         TCSA==
+X-Gm-Message-State: APjAAAUIRgOuj4OjvlKNtvo9Zs2FWtHLkoPHSNxB4qw/OrLEAZjUG332
+        4y5Wkww1A6qnrOw3BMCtWI5nww==
+X-Google-Smtp-Source: APXvYqz63b0w80w/6x4HYHZY8yCvMeX3CjLxshGz0cPA+oMJSNaR8BhdRUhjA82WiAoUwJBS4TcRcg==
+X-Received: by 2002:a17:90a:7345:: with SMTP id j5mr23348884pjs.69.1578946866353;
+        Mon, 13 Jan 2020 12:21:06 -0800 (PST)
+Received: from [100.112.92.218] ([104.133.9.106])
+        by smtp.gmail.com with ESMTPSA id c17sm14862042pfi.104.2020.01.13.12.21.05
+        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Mon, 13 Jan 2020 12:21:05 -0800 (PST)
+Date:   Mon, 13 Jan 2020 12:20:48 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+cc:     Hugh Dickins <hughd@google.com>, hannes@cmpxchg.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com
+Subject: Re: [PATCH v7 00/10] per lruvec lru_lock for memcg
+In-Reply-To: <24d671ac-36ef-8883-ad94-1bd497d46783@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2001131157500.1084@eggly.anvils>
+References: <1577264666-246071-1-git-send-email-alex.shi@linux.alibaba.com> <20191231150514.61c2b8c8354320f09b09f377@linux-foundation.org> <944f0f6a-466a-7ce3-524c-f6db86fd0891@linux.alibaba.com> <d2efad94-750b-3298-8859-84bccc6ecf06@linux.alibaba.com>
+ <alpine.LSU.2.11.2001130032170.1103@eggly.anvils> <24d671ac-36ef-8883-ad94-1bd497d46783@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-In-Reply-To: <20191217231615.164161-1-almasrymina@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001130151
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9499 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001130151
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-1359013247-1578946865=:1084"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/17/19 3:16 PM, Mina Almasry wrote:
-> These counters will track hugetlb reservations rather than hugetlb
-> memory faulted in. This patch only adds the counter, following patches
-> add the charging and uncharging of the counter.
-> 
-> This is patch 1 of an 8 patch series.
-> 
-> Problem:
-> Currently tasks attempting to allocate more hugetlb memory than is available get
-> a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
-> However, if a task attempts to allocate hugetlb memory only more than its
-> hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
-> but will SIGBUS the task when it attempts to fault the memory in.
-> 
-> We have developers interested in using hugetlb_cgroups, and they have expressed
-> dissatisfaction regarding this behavior. We'd like to improve this
-> behavior such that tasks violating the hugetlb_cgroup limits get an error on
-> mmap/shmget time, rather than getting SIGBUS'd when they try to fault
-> the excess memory in.
-> 
-> The underlying problem is that today's hugetlb_cgroup accounting happens
-> at hugetlb memory *fault* time, rather than at *reservation* time.
-> Thus, enforcing the hugetlb_cgroup limit only happens at fault time, and
-> the offending task gets SIGBUS'd.
-> 
-> Proposed Solution:
-> A new page counter named hugetlb.xMB.reservation_[limit|usage]_in_bytes. This
-> counter has slightly different semantics than
-> hugetlb.xMB.[limit|usage]_in_bytes:
-> 
-> - While usage_in_bytes tracks all *faulted* hugetlb memory,
-> reservation_usage_in_bytes tracks all *reserved* hugetlb memory and
-> hugetlb memory faulted in without a prior reservation.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-To me, this implies that 'faults without reservations' could cause
-reservation usage to exceed reservation limit?  Or, does the faulting
-process get a SIGBUS because of the reservation limit even though it
-is not using reservations?
+--0-1359013247-1578946865=:1084
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-We shall see in subsequent patches.
+On Mon, 13 Jan 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/1/13 =E4=B8=8B=E5=8D=884:48, Hugh Dickins =E5=86=99=E9=81=
+=93:
+> >=20
+> > I (Hugh) tried to test it on v5.5-rc5, but did not get very far at all =
+-
+> > perhaps because my particular interest tends towards tmpfs and swap,
+> > and swap always made trouble for lruvec lock - one of the reasons why
+> > our patches were more complicated than you thought necessary.
+> >=20
+> > Booted a smallish kernel in mem=3D700M with 1.5G of swap, with intentio=
+n
+> > of running small kernel builds in tmpfs and in ext4-on-loop-on-tmpfs
+> > (losetup was the last command started but I doubt it played much part):
+> >=20
+> > mount -t tmpfs -o size=3D470M tmpfs /tst
+> > cp /dev/zero /tst
+> > losetup /dev/loop0 /tst/zero
+>=20
+> Hi Hugh,
+>=20
+> Many thanks for the testing!
+>=20
+> I am trying to reproduce your testing, do above 3 steps, then build kerne=
+l with 'make -j 8' on my qemu. but cannot reproduce the problem with this v=
+7 version or with v8 version, https://github.com/alexshi/linux/tree/lru-nex=
+t, which fixed the bug KK mentioned, like the following.=20
+> my qemu vmm like this:
+>=20
+> [root@debug010000002015 ~]# mount -t tmpfs -o size=3D470M tmpfs /tst
+> [root@debug010000002015 ~]# cp /dev/zero /tst
+> cp: error writing =E2=80=98/tst/zero=E2=80=99: No space left on device
+> cp: failed to extend =E2=80=98/tst/zero=E2=80=99: No space left on device
+> [root@debug010000002015 ~]# losetup /dev/loop0 /tst/zero
+> [root@debug010000002015 ~]# cat /proc/cmdline
+> earlyprintk=3DttyS0 root=3D/dev/sda1 console=3DttyS0 debug crashkernel=3D=
+128M printk.devkmsg=3Don
+>=20
+> my kernel configed with MEMCG/MEMCG_SWAP with xfs rootimage, and compilin=
+g kernel under ext4. Could you like to share your kernel config and detaile=
+d reproduce steps with me? And would you like to try my new version from ab=
+ove github link in your convenient?
 
-> 
-> - If a task attempts to reserve more memory than limit_in_bytes allows,
-> the kernel will allow it to do so. But if a task attempts to reserve
-> more memory than reservation_limit_in_bytes, the kernel will fail this
-> reservation.
-> 
-> This proposal is implemented in this patch series, with tests to verify
-> functionality and show the usage. We also added cgroup-v2 support to
-> hugetlb_cgroup so that the new use cases can be extended to v2.
+I tried with the mods you had appended, from [PATCH v7 02/10]
+discussion with Konstantion: no, still crashes in a similar way.
 
-As previously discussed, cgroup-v2 support for hugetlb_cgroup will exist
-before this patch series.
+Does your github tree have other changes too?  I see it says "Latest
+commit e05d0dd 22 days ago", which doesn't seem to fit.  Afraid I
+don't have time to test many variations.
 
-> 
-> Alternatives considered:
-> 1. A new cgroup, instead of only a new page_counter attached to
->    the existing hugetlb_cgroup. Adding a new cgroup seemed like a lot of code
->    duplication with hugetlb_cgroup. Keeping hugetlb related page counters under
->    hugetlb_cgroup seemed cleaner as well.
-> 
-> 2. Instead of adding a new counter, we considered adding a sysctl that modifies
->    the behavior of hugetlb.xMB.[limit|usage]_in_bytes, to do accounting at
->    reservation time rather than fault time. Adding a new page_counter seems
->    better as userspace could, if it wants, choose to enforce different cgroups
->    differently: one via limit_in_bytes, and another via
->    reservation_limit_in_bytes. This could be very useful if you're
->    transitioning how hugetlb memory is partitioned on your system one
->    cgroup at a time, for example. Also, someone may find usage for both
->    limit_in_bytes and reservation_limit_in_bytes concurrently, and this
->    approach gives them the option to do so.
-> 
-> Testing:
-> - Added tests passing.
-> - Used libhugetlbfs for regression testing.
-> 
-> [1]: https://www.kernel.org/doc/html/latest/vm/hugetlbfs_reserv.html
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Acked-by: Hillf Danton <hdanton@sina.com>
+It looks like, in my case, systemd was usually jumping in and doing
+something with shmem (perhaps via memfd) that read back from swap
+and triggered the crash without any further intervention from me.
 
-I think the ACK by Hillf happened some time back.  You may want to check
-to see if it still applies.
+So please try booting with mem=3D700M and 1.5G swap,
+mount -t tmpfs -o size=3D470M tmpfs /tst
+cp /dev/zero /tst; cp /tst/zero /dev/null
 
-> 
-> ---
->  include/linux/hugetlb.h |   4 +-
->  mm/hugetlb_cgroup.c     | 116 +++++++++++++++++++++++++++++++++++-----
->  2 files changed, 106 insertions(+), 14 deletions(-)
+That's enough to crash it for me, without getting into any losetup or
+systemd complications. But you might have to adjust the numbers to be
+sure of writing out and reading back from swap.
 
-Only one minor nit in the code.
+It's swap to SSD in my case, don't think that matters. I happen to
+run with swappiness 100 (precisely to help generate swap problems),
+but swappiness 60 is good enough to get these crashes.
 
-You made this cleanup,
-@@ -472,7 +519,7 @@ static void __init __hugetlb_cgroup_file_dfl_init(int idx)
-        struct hstate *h = &hstates[idx];
-
-        /* format the size */
--       mem_fmt(buf, 32, huge_page_size(h));
-+       mem_fmt(buf, sizeof(buf), huge_page_size(h));
-
-        /* Add the limit file */
-        cft = &h->cgroup_files_dfl[0];
-
-But did not make the same cleanup in __hugetlb_cgroup_file_legacy_init()
--- 
-Mike Kravetz
+Hugh
+--0-1359013247-1578946865=:1084--
