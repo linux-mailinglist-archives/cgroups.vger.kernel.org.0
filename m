@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E4B9139E81
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2020 01:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76C78139E91
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2020 01:48:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgANApo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 19:45:44 -0500
-Received: from mail-pf1-f195.google.com ([209.85.210.195]:45788 "EHLO
-        mail-pf1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728998AbgANApn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 19:45:43 -0500
-Received: by mail-pf1-f195.google.com with SMTP id 2so5688511pfg.12
-        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 16:45:43 -0800 (PST)
+        id S1728851AbgANAsi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 19:48:38 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:46202 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728778AbgANAsh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 19:48:37 -0500
+Received: by mail-pg1-f196.google.com with SMTP id z124so5522839pgb.13
+        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 16:48:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=taoDDoIQd/KDhx/ME1q1/0HEQhaZ03k7OPfFEXTFTWI=;
-        b=qdWq8+7ssthCT4ZwYEBV3D7z/AN+fBXHEEyXGCSncOju1fE9W4iIPkkwOOB5UtgY8R
-         P5g56E8RpmjWzq7S/YNrb1PyvkpQTIFk77pfELIi9danh9A1eqh/tt3xxgcLolZpH6Yj
-         kbkMI75NdT+jKVlH0Fzl1KGJzM2JlESa2RkHsXd41rBKUSakzpaY9MBuO+1zp5PiSdAV
-         XP7HySQSrDXb4EXAzSTgAluzOF16em5odoZAJxkE2R+A0hIIQUsy9KroM+FNMjAOzw4B
-         lzD6NMomNkQjnwsZZEStVKY65XRgCJ8sFGxxGHOCjuffQPQmOcYaqlkH/kE/oJd1j/XJ
-         lHfA==
+        bh=ANoh8uEOm+gmkt+50LunFAVjJew2LvqnFtto+wxCdzA=;
+        b=EIJTvGsSDiqJOKnxxqwUUm7ON/pxRF/Iw9epIVmqhs0PtXyaeT1+6YJNK88D1q3wU1
+         PGDDHVr/nHr2tKVTneq/1tZK0Lgua6Y3amEdx12flXktjw43k4MPa8GVdezL24+pJuOB
+         4FzXZvW4Rokk8BUUx9dGu8wxYJkh/Cscc1wpUn3PAcCRKDQ8ZK7KEmRUEmcq67E6AJW9
+         aU4xYMyBwEKfjvnbLzFzzXt0IJWxZ73lAjk6fdL0NUNBLQEVNSzPoob1CxfbPn9uL+e8
+         KwDPS/hMnvImDwr5iR+h0E6Q7jyLiG8ZmM9AK3cSlTrvQMnLWltShhFSnRKb4YdORW3S
+         gGeA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=taoDDoIQd/KDhx/ME1q1/0HEQhaZ03k7OPfFEXTFTWI=;
-        b=HPKN12v8iyOGP1xtuMSqdWTdl4x6ZFIgDAPDZDC0kdyAm1NY5rmBzXPsrglLQCU/6I
-         rDt8FY6UWMMHN8awx1tpCSyLsRHpveazgXHDtaWInMr6weZIes/chWHnqiu1BBL2M0dp
-         s4WIqyC60q98yWL07dCPFMQGgO4DkKAP029fwFlPQdInM0K9T/l3YdLx88WJR2KaJt3t
-         0tDBMviQUTL0grE3b1T0Mp7P0TykgiRGA34yhIFcHzQtBa9lc9kkV7T12Lp4sUb0DV4F
-         Rj5bnRACSWlsI9yNI1KxxsMeJb2eLEydA3LYrNPby1yhqIqw21jREKURl/i8HjlSCwjQ
-         5vKw==
-X-Gm-Message-State: APjAAAVwmFxz6lDA/svWXEbrEZXbaY15a7FFCUbozZxJvQI9SHe6+5Yt
-        XDcMZDSoWlCnA7C7fO9PuWG9jQ==
-X-Google-Smtp-Source: APXvYqzlieBjdsA5yjKF+61x1017s2/mWKVZrCIM3a4XhPJ4emBmTB8HB3LH5NMBxJPMyfDX4E1t7A==
-X-Received: by 2002:a63:f643:: with SMTP id u3mr22700736pgj.291.1578962742431;
-        Mon, 13 Jan 2020 16:45:42 -0800 (PST)
+        bh=ANoh8uEOm+gmkt+50LunFAVjJew2LvqnFtto+wxCdzA=;
+        b=P96b01PsLHpoEuG13LAABE9KdIutkT5CFr84K/Bt7EukBXkjhri3PI+AK3aFksPegl
+         x9xqZmAb3LFxPgZrBWY2AP3jnMRvhnlMol5ex7gE87gh4OI7vepWz8LN1pPYwNPWDx+u
+         KsxIJMUQOlZsVmsGuluvZgDmqQDVFe5mHoALf0Si5S4Gw85h3eyy9XQ+6IV513Ws+YSY
+         mSf6qCzCT6L36vz650vLt9hvJEPQ9lTlSsJYytOKeSaeNU89OkDTEv/wJwXKAvbrs1u/
+         ifZhsoyWS+gxlRGUGXWoqwknhrEdS6H79p6zV9H13jA0tPdaV2SWOf5wtKD2Vqs/onbg
+         be9g==
+X-Gm-Message-State: APjAAAVN5n5Xu01Q0CL2hA+KFHrMaMwclgUBbyb1o95YZTbMnNsd1wdQ
+        iWQX6CdR1WjMwCOIynp/2Fym1w==
+X-Google-Smtp-Source: APXvYqyPYQdmGDDkV8IAUUEG/A+rUbsnIqabZaWz7RE4Jt4GCpQM28LKvdsUgn9QB5r73njTXVY3VA==
+X-Received: by 2002:a65:5788:: with SMTP id b8mr23688309pgr.324.1578962916999;
+        Mon, 13 Jan 2020 16:48:36 -0800 (PST)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id z19sm15034750pfn.49.2020.01.13.16.45.41
+        by smtp.gmail.com with ESMTPSA id z11sm16093204pfk.96.2020.01.13.16.48.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2020 16:45:41 -0800 (PST)
-Date:   Mon, 13 Jan 2020 16:45:41 -0800 (PST)
+        Mon, 13 Jan 2020 16:48:36 -0800 (PST)
+Date:   Mon, 13 Jan 2020 16:48:35 -0800 (PST)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
 To:     Mina Almasry <almasrymina@google.com>
@@ -52,13 +52,11 @@ cc:     mike.kravetz@oracle.com, shuah@kernel.org, shakeelb@google.com,
         gthelen@google.com, akpm@linux-foundation.org,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        aneesh.kumar@linux.vnet.ibm.com, mkoutny@suse.com,
-        Hillf Danton <hdanton@sina.com>
-Subject: Re: [PATCH v9 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
- counter
-In-Reply-To: <20191217231615.164161-1-almasrymina@google.com>
-Message-ID: <alpine.DEB.2.21.2001131624240.164268@chino.kir.corp.google.com>
-References: <20191217231615.164161-1-almasrymina@google.com>
+        aneesh.kumar@linux.vnet.ibm.com, mkoutny@suse.com
+Subject: Re: [PATCH v9 6/8] hugetlb_cgroup: support noreserve mappings
+In-Reply-To: <20191217231615.164161-6-almasrymina@google.com>
+Message-ID: <alpine.DEB.2.21.2001131646490.164268@chino.kir.corp.google.com>
+References: <20191217231615.164161-1-almasrymina@google.com> <20191217231615.164161-6-almasrymina@google.com>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -69,89 +67,74 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Tue, 17 Dec 2019, Mina Almasry wrote:
 
-> These counters will track hugetlb reservations rather than hugetlb
-> memory faulted in. This patch only adds the counter, following patches
-> add the charging and uncharging of the counter.
+> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> index 39eb2fa53a420..3e94f5c2d7cd4 100644
+> --- a/mm/hugetlb.c
+> +++ b/mm/hugetlb.c
+> @@ -1367,6 +1367,9 @@ void free_huge_page(struct page *page)
+>  	clear_page_huge_active(page);
+>  	hugetlb_cgroup_uncharge_page(hstate_index(h), pages_per_huge_page(h),
+>  				     page, false);
+> +	hugetlb_cgroup_uncharge_page(hstate_index(h), pages_per_huge_page(h),
+> +				     page, true);
+> +
+>  	if (restore_reserve)
+>  		h->resv_huge_pages++;
 > 
-> This is patch 1 of an 8 patch series.
+> @@ -2189,10 +2192,19 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+>  			gbl_chg = 1;
+>  	}
 > 
-> Problem:
-> Currently tasks attempting to allocate more hugetlb memory than is available get
-> a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
-> However, if a task attempts to allocate hugetlb memory only more than its
-> hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
-> but will SIGBUS the task when it attempts to fault the memory in.
-> 
+> +	/* If this allocation is not consuming a reservation, charge it now.
+> +	 */
+> +	if (map_chg || avoid_reserve || !vma_resv_map(vma)) {
 
-I think it's subtle, but the use of the word "allocate" instead of using 
-"reserve" might be confusing here.  Might want to reword it.
+These conditions are checked three times in this function, maybe better 
+set a bool on the stack and use it throughout the function to guarantee it 
+remains consistent?
 
-> We have developers interested in using hugetlb_cgroups, and they have expressed
-> dissatisfaction regarding this behavior. We'd like to improve this
-> behavior such that tasks violating the hugetlb_cgroup limits get an error on
-> mmap/shmget time, rather than getting SIGBUS'd when they try to fault
-> the excess memory in.
-> 
+bool deferred_reserve = !vma_resv_map(vma) || map_chg || avoid_reserve;
 
-I'm not sure the developers are interested in being restricted by 
-hugetlb_cgroups :)  I think users get constrained by hugetlb_cgroup so the 
-developers are interested in the failure more: do we want to SIGBUS at 
-fault and not be allowed an opportunity to influence that (today) or do we 
-want to fallback to non-hugetlbfs memory and just keep going (tomorrow, 
-after your patchset).
-
-> The underlying problem is that today's hugetlb_cgroup accounting happens
-> at hugetlb memory *fault* time, rather than at *reservation* time.
-> Thus, enforcing the hugetlb_cgroup limit only happens at fault time, and
-> the offending task gets SIGBUS'd.
+> +		ret = hugetlb_cgroup_charge_cgroup(idx, pages_per_huge_page(h),
+> +						   &h_cg, true);
+> +		if (ret)
+> +			goto out_subpool_put;
+> +	}
+> +
+>  	ret = hugetlb_cgroup_charge_cgroup(idx, pages_per_huge_page(h), &h_cg,
+>  					   false);
+>  	if (ret)
+> -		goto out_subpool_put;
+> +		goto out_uncharge_cgroup_reservation;
 > 
-> Proposed Solution:
-> A new page counter named hugetlb.xMB.reservation_[limit|usage]_in_bytes. This
-> counter has slightly different semantics than
-> hugetlb.xMB.[limit|usage]_in_bytes:
+>  	spin_lock(&hugetlb_lock);
+>  	/*
+> @@ -2216,6 +2228,14 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+>  	}
+>  	hugetlb_cgroup_commit_charge(idx, pages_per_huge_page(h), h_cg, page,
+>  				     false);
+> +	/* If allocation is not consuming a reservation, also store the
+> +	 * hugetlb_cgroup pointer on the page.
+> +	 */
+> +	if (!vma_resv_map(vma) || map_chg || avoid_reserve) {
+> +		hugetlb_cgroup_commit_charge(idx, pages_per_huge_page(h), h_cg,
+> +					     page, true);
+> +	}
+> +
+>  	spin_unlock(&hugetlb_lock);
 > 
-
-Is there a max_usage_in_bytes equivalent?  It's a page_counter so I assume 
-it's easy to support.
-
-I'll defer the naming to Mike here, "rsvd" seems to be the hugetlb way of 
-saying "reserved".
-
-> - While usage_in_bytes tracks all *faulted* hugetlb memory,
-> reservation_usage_in_bytes tracks all *reserved* hugetlb memory and
-> hugetlb memory faulted in without a prior reservation.
+>  	set_page_private(page, (unsigned long)spool);
+> @@ -2241,6 +2261,10 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+>  out_uncharge_cgroup:
+>  	hugetlb_cgroup_uncharge_cgroup(idx, pages_per_huge_page(h), h_cg,
+>  				       false);
+> +out_uncharge_cgroup_reservation:
+> +	if (map_chg || avoid_reserve || !vma_resv_map(vma))
+> +		hugetlb_cgroup_uncharge_cgroup(idx, pages_per_huge_page(h),
+> +					       h_cg, true);
+>  out_subpool_put:
+>  	if (map_chg || avoid_reserve)
+>  		hugepage_subpool_put_pages(spool, 1);
+> --
+> 2.24.1.735.g03f4e72817-goog
 > 
-> - If a task attempts to reserve more memory than limit_in_bytes allows,
-> the kernel will allow it to do so. But if a task attempts to reserve
-> more memory than reservation_limit_in_bytes, the kernel will fail this
-> reservation.
-> 
-> This proposal is implemented in this patch series, with tests to verify
-> functionality and show the usage. We also added cgroup-v2 support to
-> hugetlb_cgroup so that the new use cases can be extended to v2.
-> 
-> Alternatives considered:
-> 1. A new cgroup, instead of only a new page_counter attached to
->    the existing hugetlb_cgroup. Adding a new cgroup seemed like a lot of code
->    duplication with hugetlb_cgroup. Keeping hugetlb related page counters under
->    hugetlb_cgroup seemed cleaner as well.
-> 
-> 2. Instead of adding a new counter, we considered adding a sysctl that modifies
->    the behavior of hugetlb.xMB.[limit|usage]_in_bytes, to do accounting at
->    reservation time rather than fault time. Adding a new page_counter seems
->    better as userspace could, if it wants, choose to enforce different cgroups
->    differently: one via limit_in_bytes, and another via
->    reservation_limit_in_bytes. This could be very useful if you're
->    transitioning how hugetlb memory is partitioned on your system one
->    cgroup at a time, for example. Also, someone may find usage for both
->    limit_in_bytes and reservation_limit_in_bytes concurrently, and this
->    approach gives them the option to do so.
-> 
-> Testing:
-> - Added tests passing.
-> - Used libhugetlbfs for regression testing.
-> 
-> [1]: https://www.kernel.org/doc/html/latest/vm/hugetlbfs_reserv.html
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Acked-by: Hillf Danton <hdanton@sina.com>
