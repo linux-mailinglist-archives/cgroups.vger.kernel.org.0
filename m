@@ -2,89 +2,198 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB68139C58
-	for <lists+cgroups@lfdr.de>; Mon, 13 Jan 2020 23:21:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE472139E7D
+	for <lists+cgroups@lfdr.de>; Tue, 14 Jan 2020 01:45:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728935AbgAMWVp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Jan 2020 17:21:45 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:36531 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726530AbgAMWVp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 17:21:45 -0500
-Received: by mail-ot1-f66.google.com with SMTP id m2so5723262otq.3
-        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 14:21:45 -0800 (PST)
+        id S1729147AbgANApk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Jan 2020 19:45:40 -0500
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:37849 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729072AbgANApk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Jan 2020 19:45:40 -0500
+Received: by mail-pg1-f193.google.com with SMTP id q127so5545251pga.4
+        for <cgroups@vger.kernel.org>; Mon, 13 Jan 2020 16:45:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ex3UFTMAEfhKx0guG0nwsJE0zOFUmspUTiiCdQZAYOo=;
-        b=AZkS3aHZwBxsqylTsn1eEWpbfT0deg5vrOTs7LiyGB8g1lnK6FH2+UfYXBWvkY6ULv
-         L2AahUncm3u08u2KnFq3IkcZNVLL+0q4Df/VS2nMgtdTEfhMV6UmkKoHEo30LFduORFW
-         lNtWDDlPGuB18xsIfzirjOzb5FUEr8JVFbQ9lixTPZk9w8y2vYfwtQWfryXPkGPPJmEo
-         tw1PmN8C9ibxP8UQDb/8CkVIA+vS9SZrs1AqtZyUwsA44pNP5dS4Vm06VWqn+YiWccoj
-         7cM9PqJcK+T1kfuzzQlB+nt4mJ/rZmLAEFfmiWh12bHooq+Vhe2YKTYhcZvmM4l2p4UK
-         Lc6w==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=P0mMZ+uVbY36jjIU4US3NKX9DBFeOyvgQMQCr5rLz/c=;
+        b=WWfWUtXoJx3LBANTRNfQDRZ1Ip0bzLjUlmwufJVLaIZ+JCgVK9U5BYULTGq1Iru4CC
+         vPQVPlZYpSQxAd6oerw6i+b7of8zwFuol9DujpiIba4uYf5e3McibU904W6bm/R13X/+
+         KU2okbjhAbtrSISfsZh0YDrfC16OiAOUjE1a4Wv8kNaA657TPTz7X+QURxE6jJQs8zw+
+         HrCCZCcOp0u0fKRF6VJMVhHMGewKfmuLzxH4M6KCHunh+hqfea/12CpV4F6Y3PNQ9G+a
+         pjQSh2URriqsoLS9QCwzrjalA8rMXDpjqYBJKeBA/CSX3zgAXVxJwCreh7OaDeXOg7lo
+         jmcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ex3UFTMAEfhKx0guG0nwsJE0zOFUmspUTiiCdQZAYOo=;
-        b=JKJDHKmrtD4bEdTfIkuzEM1BIFARbkl8yZtZb5bz/zaVdyENeAjhfL3UE6t8nMei+z
-         2X53W7O7eaU0t+d9QQZbZQaPjHOuvIFisl/+RZboxCyhvFLZcxdhvx2/IBaiBC/ahRYz
-         VMk/jukJwCcEJhPwnJyA3e3rEfD7NgbJSBaYW1WFOPyo8O59brS5a+5Y1bwkPxrffd/0
-         V8ejFd9ZBAVsa+2j3t5zhDoS+pqPfTVHwSyhXaaZSQ/oqLbOax8Fyvc95v/J2dGAfmQ1
-         oHATKHzFfIlpHtngDCarZBxwMCCg/haL3AXHL+czbKXUSAi656PQOgmsfQeMuOxNZte7
-         9mUw==
-X-Gm-Message-State: APjAAAXySYDdx+kbsRQf3zUoP95BHZWlX2uD7jeTuEBYYL6HZHSe/q6l
-        i6TxeugJ15FisT2Cq8n6ZJOhbV0Aqnh97jrTwZUF2A==
-X-Google-Smtp-Source: APXvYqyrwZQq75+I2BdkZCiafYfDDHWMS1tOXED+Q+CkQ89ZkgEcOJ+i4XsDk7VSWnoOQlqxRkrnw6Hl75zqF784lYs=
-X-Received: by 2002:a9d:2c68:: with SMTP id f95mr15033850otb.33.1578954104459;
- Mon, 13 Jan 2020 14:21:44 -0800 (PST)
-MIME-Version: 1.0
-References: <20191217231615.164161-1-almasrymina@google.com>
- <817e2c4b-4c72-09f9-22ea-bbaf97584161@oracle.com> <CAHS8izNs24KOaRuQkVUuZZUh42rvkyBXJEJYrHNf9bLFnZEXCg@mail.gmail.com>
- <a78595a8-448c-14bb-a54b-9be685f36388@oracle.com>
-In-Reply-To: <a78595a8-448c-14bb-a54b-9be685f36388@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 13 Jan 2020 14:21:33 -0800
-Message-ID: <CAHS8izMT2vNASsR2H+3-4XN=+EkAEpS-LJ_UouaAa7iUfbLBhQ@mail.gmail.com>
-Subject: Re: [PATCH v9 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=P0mMZ+uVbY36jjIU4US3NKX9DBFeOyvgQMQCr5rLz/c=;
+        b=IQVSy0kQUgA0JFxphRzVTf5bk17qNpK0+kvpMIi3YwJXlMMC2a+Z/mEBqfnlsr49aT
+         ZaUiSFwb75JTpTXFc4BXqrKL0gg0CksMbXMvqBoGNShKfoqkjCmAWJYUNs0vrqdI4KiG
+         M+f4iTvwXgQPmU6nuDKjbYwKWU2dZDsjKEb/GeHj+JBwnxVBG2yx1uthSxEnN6xJJrac
+         uPcTXCmhL6sXydJr1nMREio126Ge+VQEfFeauhZxLRhGuVz7/VPqH+vSUd/jYb4XoQtM
+         BejIjQ1Dw42Do/PC8ZwwOyKIHnATt1MIRp+AtWSMcGhNZZxJcv0suN5Jebb3EM5vyQnC
+         qgsQ==
+X-Gm-Message-State: APjAAAUEj8zz2pbCEa8uHaywtM/55DU526kOYkHUXcqEU6fmEOjNGMX8
+        KtF9qiDCqdzmAy3Iqup6mXsozA==
+X-Google-Smtp-Source: APXvYqxVsPBfW1my8VenrcDRI9hRmRpdii0xSQUfZkkfY5D+N47unpBWBkkHVi+TozXjhdDePfCEhA==
+X-Received: by 2002:aa7:9aa7:: with SMTP id x7mr6814242pfi.78.1578962739257;
+        Mon, 13 Jan 2020 16:45:39 -0800 (PST)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id g8sm15490727pfh.43.2020.01.13.16.45.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Jan 2020 16:45:38 -0800 (PST)
+Date:   Mon, 13 Jan 2020 16:45:37 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
 To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+cc:     Mina Almasry <almasrymina@google.com>, shuah@kernel.org,
+        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
+        aneesh.kumar@linux.vnet.ibm.com, mkoutny@suse.com
+Subject: Re: [PATCH v9 2/8] hugetlb_cgroup: add interface for charge/uncharge
+ hugetlb reservations
+In-Reply-To: <0855cae0-872e-0727-aa7c-55051d8f0871@oracle.com>
+Message-ID: <alpine.DEB.2.21.2001131642270.164268@chino.kir.corp.google.com>
+References: <20191217231615.164161-1-almasrymina@google.com> <20191217231615.164161-2-almasrymina@google.com> <0855cae0-872e-0727-aa7c-55051d8f0871@oracle.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> >> On 12/17/19 3:16 PM, Mina Almasry wrote:
-> >
-> > The design we went with based on previous discussions is as follows:
-> > hugetlb pages faulted without a prior reservation get accounted at
-> > fault time, rather than reservation time, and if the fault causes the
-> > counter to cross the limit, the charge fails, hence the fault fails,
-> > hence the process gets sigbus'd.
->
-> Ok, sorry I did not recall the design discussion.
->
+On Mon, 13 Jan 2020, Mike Kravetz wrote:
 
-No worries! It has indeed been a while since that discussion.
+> > diff --git a/mm/hugetlb_cgroup.c b/mm/hugetlb_cgroup.c
+> > index 35415af9ed26f..b03270b0d5833 100644
+> > --- a/mm/hugetlb_cgroup.c
+> > +++ b/mm/hugetlb_cgroup.c
+> > @@ -96,8 +96,12 @@ static inline bool hugetlb_cgroup_have_usage(struct hugetlb_cgroup *h_cg)
+> >  	int idx;
+> > 
+> >  	for (idx = 0; idx < hugetlb_max_hstate; idx++) {
+> > -		if (page_counter_read(&h_cg->hugepage[idx]))
+> > +		if (page_counter_read(
+> > +			    hugetlb_cgroup_get_counter(h_cg, idx, true)) ||
+> > +		    page_counter_read(
+> > +			    hugetlb_cgroup_get_counter(h_cg, idx, false))) {
+> >  			return true;
+> > +		}
+> >  	}
+> >  	return false;
+> >  }
+> > @@ -108,18 +112,32 @@ static void hugetlb_cgroup_init(struct hugetlb_cgroup *h_cgroup,
+> >  	int idx;
+> > 
+> >  	for (idx = 0; idx < HUGE_MAX_HSTATE; idx++) {
+> > -		struct page_counter *counter = &h_cgroup->hugepage[idx];
+> > -		struct page_counter *parent = NULL;
+> > +		struct page_counter *fault_parent = NULL;
+> > +		struct page_counter *reserved_parent = NULL;
+> >  		unsigned long limit;
+> >  		int ret;
+> > 
+> > -		if (parent_h_cgroup)
+> > -			parent = &parent_h_cgroup->hugepage[idx];
+> > -		page_counter_init(counter, parent);
+> > +		if (parent_h_cgroup) {
+> > +			fault_parent = hugetlb_cgroup_get_counter(
+> > +				parent_h_cgroup, idx, false);
+> > +			reserved_parent = hugetlb_cgroup_get_counter(
+> > +				parent_h_cgroup, idx, true);
+> > +		}
+> > +		page_counter_init(hugetlb_cgroup_get_counter(h_cgroup, idx,
+> > +							     false),
+> > +				  fault_parent);
+> > +		page_counter_init(hugetlb_cgroup_get_counter(h_cgroup, idx,
+> > +							     true),
+> > +				  reserved_parent);
+> > 
+> >  		limit = round_down(PAGE_COUNTER_MAX,
+> >  				   1 << huge_page_order(&hstates[idx]));
+> > -		ret = page_counter_set_max(counter, limit);
+> > +
+> > +		ret = page_counter_set_max(
+> > +			hugetlb_cgroup_get_counter(h_cgroup, idx, false),
+> > +			limit);
+> > +		ret = page_counter_set_max(
+> > +			hugetlb_cgroup_get_counter(h_cgroup, idx, true), limit);
+> >  		VM_BUG_ON(ret);
+> 
+> The second page_counter_set_max() call overwrites ret before the check in
+> VM_BUG_ON().
+> 
+> >  	}
+> >  }
+> > @@ -149,7 +167,6 @@ static void hugetlb_cgroup_css_free(struct cgroup_subsys_state *css)
+> >  	kfree(h_cgroup);
+> >  }
+> > 
+> > -
+> >  /*
+> >   * Should be called with hugetlb_lock held.
+> >   * Since we are holding hugetlb_lock, pages cannot get moved from
+> > @@ -165,7 +182,7 @@ static void hugetlb_cgroup_move_parent(int idx, struct hugetlb_cgroup *h_cg,
+> >  	struct hugetlb_cgroup *page_hcg;
+> >  	struct hugetlb_cgroup *parent = parent_hugetlb_cgroup(h_cg);
+> > 
+> > -	page_hcg = hugetlb_cgroup_from_page(page);
+> > +	page_hcg = hugetlb_cgroup_from_page(page, false);
+> >  	/*
+> >  	 * We can have pages in active list without any cgroup
+> >  	 * ie, hugepage with less than 3 pages. We can safely
+> > @@ -184,7 +201,7 @@ static void hugetlb_cgroup_move_parent(int idx, struct hugetlb_cgroup *h_cg,
+> >  	/* Take the pages off the local counter */
+> >  	page_counter_cancel(counter, nr_pages);
+> > 
+> > -	set_hugetlb_cgroup(page, parent);
+> > +	set_hugetlb_cgroup(page, parent, false);
+> >  out:
+> >  	return;
+> >  }
+> > @@ -227,7 +244,7 @@ static inline void hugetlb_event(struct hugetlb_cgroup *hugetlb, int idx,
+> >  }
+> > 
+> >  int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+> > -				 struct hugetlb_cgroup **ptr)
+> > +				 struct hugetlb_cgroup **ptr, bool reserved)
+> >  {
+> >  	int ret = 0;
+> >  	struct page_counter *counter;
+> > @@ -250,13 +267,20 @@ int hugetlb_cgroup_charge_cgroup(int idx, unsigned long nr_pages,
+> >  	}
+> >  	rcu_read_unlock();
+> > 
+> > -	if (!page_counter_try_charge(&h_cg->hugepage[idx], nr_pages,
+> > -				     &counter)) {
+> > +	if (!page_counter_try_charge(hugetlb_cgroup_get_counter(h_cg, idx,
+> > +								reserved),
+> > +				     nr_pages, &counter)) {
+> >  		ret = -ENOMEM;
+> >  		hugetlb_event(hugetlb_cgroup_from_counter(counter, idx), idx,
+> >  			      HUGETLB_MAX);
+> > +		css_put(&h_cg->css);
+> > +		goto done;
+> >  	}
+> > -	css_put(&h_cg->css);
+> > +	/* Reservations take a reference to the css because they do not get
+> > +	 * reparented.
+> 
+> I'm hoping someone with more cgroup knowledge can comment on this and any
+> consequences of not reparenting reservations.  We previously talked about
+> why reparenting would be very difficult/expensive.  I understand why you are
+> nopt doing it.  Just do not fully understand what needs to be done from the
+> cgroup side.
+> 
 
-> > This means that one counter I'm adding here can cover both use cases:
-> > if the userspace uses MAP_NORESERVE, then their memory is accounted at
-> > fault time and they may get sigbus'd.
->
-> Let's make sure this is clearly documented.  Someone could be surprised
-> if their application not using reserves gets a SIGBUS because there is a
-> reserve limit.
-
-I have some stuff on that already in the docs patch, but I'll beef
-that section up to ensure there is no confusion.
+I don't see any description of how hugetlb_cgroup currently acts wrt 
+reparenting in the last patch in the series and how this is the same or 
+different for reservations.  I think the discussion that is referenced 
+here is probably lost in some previous posting of the series.  I think 
+it's particularly useful information that the end user will need to know 
+about for its handling so it would benefit from some documentation in the 
+last patch.
