@@ -2,212 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D270613B6D6
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 02:27:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CB86E13B823
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 04:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgAOB1S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Jan 2020 20:27:18 -0500
-Received: from mail-pl1-f202.google.com ([209.85.214.202]:34525 "EHLO
-        mail-pl1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729080AbgAOB1M (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jan 2020 20:27:12 -0500
-Received: by mail-pl1-f202.google.com with SMTP id x22so6044740pll.1
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2020 17:27:12 -0800 (PST)
+        id S1728890AbgAOD05 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Jan 2020 22:26:57 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:40204 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728884AbgAOD05 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jan 2020 22:26:57 -0500
+Received: by mail-pj1-f68.google.com with SMTP id bg7so6974311pjb.5
+        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2020 19:26:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=h8U2qNtEFbaq+hBB/JCIu5FRCXJjzgS5K1PNEW4ZKws=;
-        b=DdORwNw0ndB7yPDnt8tT0WEqtdwD8V4r97JqJT/LXfvkDwe5s1Q21YiAh1Gty98/b0
-         UViZadY+jCLv9/GwljHX1EpDUv/iKm4sPdChU0zjoMGyXN7zg1cbfcpgPdzbX5qTrdF/
-         dbKOqYdZjkBCfPZQQ1YxpKX6DhhfqJq+713oEumbz1oluyU8GfaKlJqBtya86kphQBPp
-         hQ6z3xF6QIrMNetm1VyXpVPsEnkMLh9SXbwVlRZzxr3OVTLRib9eqf1oTPYa4qshTYex
-         xOfkILN202JFeCcVen+QZ9LO1j+FVNwWsgKIETR7mXnbAXLRN4ALA87go3rMV94BSNjZ
-         9NZA==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Iae/mJgVCLpfLGSuYynupuWE+Z4MahohKNOA3VuWzvQ=;
+        b=bpGcNk0KuEcv+Ht10XLkBn/HP68yrADkbQzthX19bcUJf/xKxwL4QilvYOrq63iLtP
+         QXHGouASBxogJp3LM3yUP91HjYlur9dWJbk1ZdvMkGziZgmXfsEb4avARPSYrYz4rAi2
+         OvLl6gWqyFfYMDOctvwF2bIE93PVsy8D7diUVOYObx1xhI1j8NNS0J3jP1ta1FEOYUhN
+         fJkqV4C0RQGqlxMN8DMVvJKf7dAkzkAKKtQ1NBTJvxMf445Hmw2mTio4MwQ4BCYmKke0
+         akfN3Qikj18K8eS4W8yDU5sAvOYFxPTnfoLGu4VRBE1cm/xaJ5NtSGJk5PobXwkuqimc
+         oTRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=h8U2qNtEFbaq+hBB/JCIu5FRCXJjzgS5K1PNEW4ZKws=;
-        b=rz+o5RrevDKMyM7q0m5xH6xwynwYQz4wIYb5MivVNh8dgTYTie7uynoAM90vJF0UkP
-         Mpwrntgi9yI3hxn3MjmfxFni/xsedwNaBjP9uDSp4COkLGZ9+o456+Cwz6Dz1/DbZQ2X
-         r2e99aMxPLafRTDqH29Kx5xXjzMqFoIOYYeov/UKKbFUeyhqT2k8qEKKCpFdilTvs7gx
-         jt+UBld/PsB3vglgAEnaYv4ogR3yGEtv+LSHNsmdG/acCYuI3uRJZznUnZpZiF9q5gVg
-         nZ39rEjGXwK/aZnZ8UXdk2niz/LXMKibyizI5epCdVlgS12hqzzxH0iRjq8oeATTsoQe
-         Ht7g==
-X-Gm-Message-State: APjAAAU/wfXhPFOyYVL2lqpvpLhkS+aRLv5AP6wxskESVta+jxbcMrRK
-        7Q6hMoy9SJa/WHNssyMSQscfSdSFYCFOdKjetA==
-X-Google-Smtp-Source: APXvYqxmMi2/ACArgSv7fIgXtolIquE4UCUC/iP8qxu7HL4rR76nCNRpBZfD1IoYHxOtfCJxpCr2SfVY1MIWGdoxtA==
-X-Received: by 2002:a63:4b49:: with SMTP id k9mr30074514pgl.269.1579051631919;
- Tue, 14 Jan 2020 17:27:11 -0800 (PST)
-Date:   Tue, 14 Jan 2020 17:26:51 -0800
-In-Reply-To: <20200115012651.228058-1-almasrymina@google.com>
-Message-Id: <20200115012651.228058-8-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20200115012651.228058-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.25.0.rc1.283.g88dfdc4193-goog
-Subject: [PATCH v10 8/8] hugetlb_cgroup: Add hugetlb_cgroup reservation docs
-From:   Mina Almasry <almasrymina@google.com>
-To:     mike.kravetz@oracle.com, rientjes@google.com, shakeelb@google.com
-Cc:     shuah@kernel.org, almasrymina@google.com, gthelen@google.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Iae/mJgVCLpfLGSuYynupuWE+Z4MahohKNOA3VuWzvQ=;
+        b=BRa+74MfO3QjW/QMR0t4Fz7HtE5kyi/SdJlBrrzs/zo/5TS3riPPyqfouT1kyiN/sv
+         AI2rT7JtnT1mLoaCdqQUOfenX7Od2QO6BDxoasRGwSxJyFQ+/MAsKOyOr98cyHEgiVSl
+         blAHGxycwY1NCfucx97d/zAWTG9FFMYN4zdweS5D6q5q9XS136a4K17aRey79HMaN5oR
+         qvSMZnRhGTJPEZfOX2FXJt3dAaUSiY/gwJOE0kCWQHKklRwUuupt+WYiK/Sqe8SFE621
+         SYcK8lurjZ3GB9I8iSnul01pu1NbDwQvzcDFmS84hKsGFkoBSmy0BNMtSaIPtxIOuXfd
+         eP7w==
+X-Gm-Message-State: APjAAAWW/24HxyOGnjGpwEQEPDQZDVgHy5sSvzD5Nl4UNJUtS55oTw3o
+        f/VQRMJRDI9gCJyzOjrCmgKelA==
+X-Google-Smtp-Source: APXvYqwymAKsgPxc8cksJon02QT8iWkblHOgN2DfaxP7yMktruZkpOMfqWcYVlLtqQMUC1ww0gHogA==
+X-Received: by 2002:a17:902:7e49:: with SMTP id a9mr22409863pln.230.1579058815911;
+        Tue, 14 Jan 2020 19:26:55 -0800 (PST)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id a6sm18050644pgg.25.2020.01.14.19.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Jan 2020 19:26:54 -0800 (PST)
+Date:   Tue, 14 Jan 2020 19:26:53 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Wei Yang <richardw.yang@linux.intel.com>
+cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@kernel.org>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com,
+        yang.shi@linux.alibaba.com, alexander.duyck@gmail.com
+Subject: Re: [Patch v2] mm: thp: grab the lock before manipulation defer
+ list
+In-Reply-To: <20200115010722.GA4916@richard>
+Message-ID: <alpine.DEB.2.21.2001141924330.114086@chino.kir.corp.google.com>
+References: <20200109143054.13203-1-richardw.yang@linux.intel.com> <20200111000352.efy6krudecpshezh@box> <20200114093122.GH19428@dhcp22.suse.cz> <20200114103112.o6ozdbkfnzdsc2ke@box> <20200114105921.eo2vdwikrvtt3gkb@box> <20200115010722.GA4916@richard>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add docs for how to use hugetlb_cgroup reservations, and their behavior.
+On Wed, 15 Jan 2020, Wei Yang wrote:
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+> >split_huge_page_to_list() has page lock taken.
+> >
+> >free_transhuge_page() is in the free path and doesn't susceptible to the
+> >race.
+> >
+> >deferred_split_scan() is trickier. list_move() should be safe against
+> >list_empty() as it will not produce false-positive list_empty().
+> >list_del_init() *should* (correct me if I'm wrong) be safe because the page
+> >is freeing and memcg will not touch the page anymore.
+> >
+> >deferred_split_huge_page() is a problematic one. It called from
+> >page_remove_rmap() path witch does require page lock. I don't see any
+> >obvious way to exclude race with mem_cgroup_move_account() here.
+> >Anybody else?
+> 
+> If my understanding is correct, the reason is deferred_split_huge_page()
+> doesn't has page lock taken, right?
+> 
 
----
-
-Changes in v10:
-- Clarify reparenting behavior.
-- Reword benefits of reservation limits.
-Changes in v6:
-- Updated docs to reflect the new design based on a new counter that
-tracks both reservations and faults.
-
----
- .../admin-guide/cgroup-v1/hugetlb.rst         | 103 ++++++++++++++++--
- 1 file changed, 92 insertions(+), 11 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-index a3902aa253a96..00dd4daf55f19 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -2,13 +2,6 @@
- HugeTLB Controller
- ==================
-
--The HugeTLB controller allows to limit the HugeTLB usage per control group and
--enforces the controller limit during page fault. Since HugeTLB doesn't
--support page reclaim, enforcing the limit at page fault time implies that,
--the application will get SIGBUS signal if it tries to access HugeTLB pages
--beyond its limit. This requires the application to know beforehand how much
--HugeTLB pages it would require for its use.
--
- HugeTLB controller can be created by first mounting the cgroup filesystem.
-
- # mount -t cgroup -o hugetlb none /sys/fs/cgroup
-@@ -28,10 +21,14 @@ process (bash) into it.
-
- Brief summary of control files::
-
-- hugetlb.<hugepagesize>.limit_in_bytes     # set/show limit of "hugepagesize" hugetlb usage
-- hugetlb.<hugepagesize>.max_usage_in_bytes # show max "hugepagesize" hugetlb  usage recorded
-- hugetlb.<hugepagesize>.usage_in_bytes     # show current usage for "hugepagesize" hugetlb
-- hugetlb.<hugepagesize>.failcnt		   # show the number of allocation failure due to HugeTLB limit
-+ hugetlb.<hugepagesize>.resv.limit_in_bytes            # set/show limit of "hugepagesize" hugetlb reservations
-+ hugetlb.<hugepagesize>.resv.max_usage_in_bytes        # show max "hugepagesize" hugetlb reservations and no-reserve faults
-+ hugetlb.<hugepagesize>.resv.usage_in_bytes            # show current reservations and no-reserve faults for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.resv.failcnt                   # show the number of allocation failure due to HugeTLB reservation limit
-+ hugetlb.<hugepagesize>.limit_in_bytes                 # set/show limit of "hugepagesize" hugetlb faults
-+ hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepagesize" hugetlb  usage recorded
-+ hugetlb.<hugepagesize>.usage_in_bytes                 # show current usage for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.failcnt                        # show the number of allocation failure due to HugeTLB usage limit
-
- For a system supporting three hugepage sizes (64k, 32M and 1G), the control
- files include::
-@@ -40,11 +37,95 @@ files include::
-   hugetlb.1GB.max_usage_in_bytes
-   hugetlb.1GB.usage_in_bytes
-   hugetlb.1GB.failcnt
-+  hugetlb.1GB.resv.limit_in_bytes
-+  hugetlb.1GB.resv.max_usage_in_bytes
-+  hugetlb.1GB.resv.usage_in_bytes
-+  hugetlb.1GB.resv.failcnt
-   hugetlb.64KB.limit_in_bytes
-   hugetlb.64KB.max_usage_in_bytes
-   hugetlb.64KB.usage_in_bytes
-   hugetlb.64KB.failcnt
-+  hugetlb.64KB.resv.limit_in_bytes
-+  hugetlb.64KB.resv.max_usage_in_bytes
-+  hugetlb.64KB.resv.usage_in_bytes
-+  hugetlb.64KB.resv.failcnt
-   hugetlb.32MB.limit_in_bytes
-   hugetlb.32MB.max_usage_in_bytes
-   hugetlb.32MB.usage_in_bytes
-   hugetlb.32MB.failcnt
-+  hugetlb.32MB.resv.limit_in_bytes
-+  hugetlb.32MB.resv.max_usage_in_bytes
-+  hugetlb.32MB.resv.usage_in_bytes
-+  hugetlb.32MB.resv.failcnt
-+
-+
-+1. Page fault accounting
-+
-+hugetlb.<hugepagesize>.limit_in_bytes
-+hugetlb.<hugepagesize>.max_usage_in_bytes
-+hugetlb.<hugepagesize>.usage_in_bytes
-+hugetlb.<hugepagesize>.failcnt
-+
-+The HugeTLB controller allows users to limit the HugeTLB usage (page fault) per
-+control group and enforces the limit during page fault. Since HugeTLB
-+doesn't support page reclaim, enforcing the limit at page fault time implies
-+that, the application will get SIGBUS signal if it tries to fault in HugeTLB
-+pages beyond its limit. Therefore the application needs to know exactly how many
-+HugeTLB pages it uses before hand, and the sysadmin needs to make sure that
-+there are enough available on the machine for all the users to avoid processes
-+getting SIGBUS.
-+
-+
-+2. Reservation accounting
-+
-+hugetlb.<hugepagesize>.resv.limit_in_bytes
-+hugetlb.<hugepagesize>.resv.max_usage_in_bytes
-+hugetlb.<hugepagesize>.resv.usage_in_bytes
-+hugetlb.<hugepagesize>.resv.failcnt
-+
-+The HugeTLB controller allows to limit the HugeTLB reservations per control
-+group and enforces the controller limit at reservation time and at the fault of
-+HugeTLB memory for which no reservation exists. Since reservation limits are
-+enforced at reservation time (on mmap or shget), reservation limits never causes
-+the application to get SIGBUS signal if the memory was reserved before hand. For
-+MAP_NORESERVE allocations, the reservation limit behaves the same as the fault
-+limit, enforcing memory usage at fault time and causing the application to
-+receive a SIGBUS if it's crossing its limit.
-+
-+Reservation limits are superior to page fault limits described above, since
-+reservation limits are enforced at reservation time (on mmap or shget), and
-+never causes the application to get SIGBUS signal if the memory was reserved
-+before hand. This allows for easier fallback to alternatives such as
-+non-HugeTLB memory for example. In the case of page fault accounting, it's very
-+hard to avoid processes getting SIGBUS since the sysadmin needs precisely know
-+the HugeTLB usage of all the tasks in the system and make sure there is enough
-+pages to satisfy all requests. Avoiding tasks getting SIGBUS on overcommited
-+systems is practically impossible with page fault accounting.
-+
-+
-+3. Caveats with shared memory
-+
-+For shared HugeTLB memory, both HugeTLB reservation and page faults are charged
-+to the first task that causes the memory to be reserved or faulted, and all
-+subsequent uses of this reserved or faulted memory is done without charging.
-+
-+Shared HugeTLB memory is only uncharged when it is unreserved or deallocated.
-+This is usually when the HugeTLB file is deleted, and not when the task that
-+caused the reservation or fault has exited.
-+
-+
-+4. Caveats with HugeTLB cgroup offline.
-+
-+When a HugeTLB cgroup goes offline with some reservations or faults still
-+charged to it, the behavior is as follows:
-+
-+- The fault charges are charged to the parent HugeTLB cgroup (reparented),
-+- the reservation charges remain on the offline HugeTLB cgroup.
-+
-+This means that if a HugeTLB cgroup gets offlined while there is still HugeTLB
-+reservations charged to it, that cgroup persists as a zombie until all HugeTLB
-+reservations are uncharged. HugeTLB reservations behave in this manner to match
-+the memory controller whose cgroups also persist as zombie until all charged
-+memory is uncharged. Also, the tracking of HugeTLB reservations is a bit more
-+complex compared to the tracking of HugeTLB faults, so it is significantly
-+harder to reparent reservations at offline time.
---
-2.25.0.rc1.283.g88dfdc4193-goog
+I think the fix that you have proposed has inspired some deeper looks at 
+the locking around the deferred split queue and the hope was that perhaps 
+this could be protected by the page lock but it was found that at least in 
+one path that isn't taken.  So I believe your fix is still needed and any 
+possible optimizations in this area can be proposed on top.
