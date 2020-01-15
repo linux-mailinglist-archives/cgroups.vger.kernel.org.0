@@ -2,71 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56DF113C897
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 16:59:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85E1C13C8CA
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 17:07:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728946AbgAOP7R (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Jan 2020 10:59:17 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41803 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgAOP7Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jan 2020 10:59:16 -0500
-Received: by mail-qt1-f193.google.com with SMTP id k40so16152499qtk.8;
-        Wed, 15 Jan 2020 07:59:15 -0800 (PST)
+        id S1726418AbgAOQHu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Jan 2020 11:07:50 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:38866 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728949AbgAOQHt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jan 2020 11:07:49 -0500
+Received: by mail-qt1-f195.google.com with SMTP id c24so5413327qtp.5;
+        Wed, 15 Jan 2020 08:07:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=BHlo4uJGdkpMotzf6l1LEH0nK2SaURIBMqF7pq0+cPE=;
-        b=LwRP9gLUlXJubGXbdTk+FhYOQlXwRmMsHlEe55cVAnjtJ90OQMIoErVrPpruu18dlX
-         gk9SxqoS+xp621iP9KezoinvlIWqxdUruCqdIjGT0wMVd8oFC9Hg0l/mGm/aa6G5lQnS
-         myUuH1Il7L7qvg1vzJD0Vh6JhzHuENKoLY8+i/CJDR+TmGEE48+64nxI9QGLCtwwK9vi
-         7Tj+N4LP7dU3wf5k7tQAeD5e2WyyViFDeBQwyWar+u9GbQ43KtAhQveaJbuzQ9yweZvN
-         izYsaa3bnk/z3Y6bjHTITWkMD1RyD3Vg5f9jUU4DXO63KMPxIx07fcmj0nmVRg/5LRSS
-         y6Qw==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=zSIfSAzXaUnmeHj5yAo3f8W68OERKqDK+WA3I8DQXME=;
+        b=djnWz5Uv5uxqmn8ZPz8gXmpXymRwdVRfn2Ka203Vjcor3GCoGHr4bsAzTivzjFgh6U
+         qt/PLBVgXNj39rkovMYAxr5MF2wYd7D1+Yjilxz02n8uXjasXFbCy4q2YPMX0PGg9Q7v
+         AFifPDmKFtqeQ5zKZkysF5IAlIlXIeTd/hR03AhLB7eM7sj1erDyBl6wQXZRkYGb04Qc
+         bbJD7lp2zBvZqlWNllNjM1DJCYEHr14B0QQmorF72OTclYQWbKGU8GwceQF01uoCFeuJ
+         PyGvhCAJEeDDu1VnZ2Dtc4Q53lNCP8LEMHDLfgq8EWFk/DBWB8cK2hTbyI/Ixct35Pyg
+         iNxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=BHlo4uJGdkpMotzf6l1LEH0nK2SaURIBMqF7pq0+cPE=;
-        b=LhpnTN02moswEOb9AfvF8UhCUM07KAotWZykBhcn9f/L9ZYjx5U5k7CNcGNyXTdWMu
-         7WAtneN34UiZm6+HrVvkrew61dXS3Uf8ie+p8luC1K8ewGur7KxHt3z5aaZ0Eg/F4xI6
-         q4hbBzg1g6O+7npB5ply+w/Mx0ChwP6zBuD2v8UAwzPMPmhIreAwPJKIlKV7ceopyhbm
-         RjYzP4gzClMgdEcf1iJDURi/brt+wRoUPoGEyGCgaR0L6QbPyKvnrNJE3vDI4tikWFAt
-         ThNi/ciqFstK+swatp6LDi1gFUeljJPiFCqy1oH+4nYFiq8pG5VWn7i0n+zsmUyAlYCP
-         UOwQ==
-X-Gm-Message-State: APjAAAU8vko+G/1NQoSxSKyOxq0awDmjfFd4xoXd7etHKn+yAEDbN0ha
-        qjbgC1XDZdXoV7nyjd4HBhU=
-X-Google-Smtp-Source: APXvYqx4Z3lHPtwvrtxcO6zVWqLJaCDt7Qbk0m1L8KWW+WW80dlHwOOW1mXWqDSr2W0Elhf4GX3+WQ==
-X-Received: by 2002:ac8:6747:: with SMTP id n7mr4221929qtp.224.1579103955239;
-        Wed, 15 Jan 2020 07:59:15 -0800 (PST)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=zSIfSAzXaUnmeHj5yAo3f8W68OERKqDK+WA3I8DQXME=;
+        b=iZexNFORkrGNHZSx8DbOh33CUdI2LntyDKfUrL9hF6PpI2L2ZlOo7XBDmbAnxhhGaw
+         gpV0xL6uUWZBfBmVzUaYvq4huXBfubTmcN6M5U/KOemrMzCvpIqxOuBxmgJf/BerViPZ
+         yLeUUYdMxniOOllQl/Je6dLi9d6OwJ/yewWHqEm3qz36cexI8MnDAX/8GkjCT2S2meN0
+         bomCX5/IZgYraY/Au5kgoeUhab7ihlIqkeuLsZ/Fjqp+8VVhyBQ71obn5OBMFg2b3UP6
+         IsfxsZXiGr5VP1FlbaWKkw+lebxmTj7PFl0tTd9OXpHq89/omDtMT6qKCyIgC1xxcqqm
+         lsgw==
+X-Gm-Message-State: APjAAAVoMIs84YHDIyoPrIiu8P5+GKbmu2D08dPIjrpU8IYih9TV2KEB
+        RkuNAAgl35RpyeF3zlOPMAouwsNYwao=
+X-Google-Smtp-Source: APXvYqwaOY/q4re19MhwRUa9NQCI8Rv79UWbxsm5d1zjBr1b8VHAGwijlXdLYJlD+sB8r6wQNbmHqA==
+X-Received: by 2002:ac8:3510:: with SMTP id y16mr4288551qtb.6.1579104468267;
+        Wed, 15 Jan 2020 08:07:48 -0800 (PST)
 Received: from localhost ([2620:10d:c091:500::2:1e68])
-        by smtp.gmail.com with ESMTPSA id s1sm8496365qkm.84.2020.01.15.07.59.14
+        by smtp.gmail.com with ESMTPSA id n4sm9344056qti.55.2020.01.15.08.07.47
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jan 2020 07:59:14 -0800 (PST)
-Date:   Wed, 15 Jan 2020 07:59:12 -0800
+        Wed, 15 Jan 2020 08:07:47 -0800 (PST)
+Date:   Wed, 15 Jan 2020 08:07:46 -0800
 From:   Tejun Heo <tj@kernel.org>
-To:     Chen Zhou <chenzhou10@huawei.com>
-Cc:     lizefan@huawei.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cgroup: fix function name in comment
-Message-ID: <20200115155912.GE2677547@devbig004.ftw2.facebook.com>
-References: <20200110072320.85605-1-chenzhou10@huawei.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>
+Subject: Re: [PATCH] cgroup: Prevent double killing of css when enabling
+ threaded cgroup
+Message-ID: <20200115160746.GG2677547@devbig004.ftw2.facebook.com>
+References: <20191219022716.o7vxxia6o67tyfmf@wittgenstein>
+ <20200109150559.14457-1-mkoutny@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200110072320.85605-1-chenzhou10@huawei.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200109150559.14457-1-mkoutny@suse.com>
 User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 10, 2020 at 03:23:20PM +0800, Chen Zhou wrote:
-> Function name cgroup_rstat_cpu_pop_upated() in comment should be
-> cgroup_rstat_cpu_pop_updated().
-> 
-> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
+On Thu, Jan 09, 2020 at 04:05:59PM +0100, Michal Koutný wrote:
+> The commit prevents these situations by making cgroup_type_write wait
+> for all dying csses to go away before re-applying subtree controls.
+> When at it, the locations of WARN_ON_ONCE calls are moved so that
+> warning is triggered only when we are about to misuse the dying css.
 
 Applied to cgroup/for-5.6.
 
