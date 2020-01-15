@@ -2,94 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CB86E13B823
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 04:27:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 56DF113C897
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 16:59:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728890AbgAOD05 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Jan 2020 22:26:57 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:40204 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728884AbgAOD05 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jan 2020 22:26:57 -0500
-Received: by mail-pj1-f68.google.com with SMTP id bg7so6974311pjb.5
-        for <cgroups@vger.kernel.org>; Tue, 14 Jan 2020 19:26:56 -0800 (PST)
+        id S1728946AbgAOP7R (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Jan 2020 10:59:17 -0500
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:41803 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726501AbgAOP7Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jan 2020 10:59:16 -0500
+Received: by mail-qt1-f193.google.com with SMTP id k40so16152499qtk.8;
+        Wed, 15 Jan 2020 07:59:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=Iae/mJgVCLpfLGSuYynupuWE+Z4MahohKNOA3VuWzvQ=;
-        b=bpGcNk0KuEcv+Ht10XLkBn/HP68yrADkbQzthX19bcUJf/xKxwL4QilvYOrq63iLtP
-         QXHGouASBxogJp3LM3yUP91HjYlur9dWJbk1ZdvMkGziZgmXfsEb4avARPSYrYz4rAi2
-         OvLl6gWqyFfYMDOctvwF2bIE93PVsy8D7diUVOYObx1xhI1j8NNS0J3jP1ta1FEOYUhN
-         fJkqV4C0RQGqlxMN8DMVvJKf7dAkzkAKKtQ1NBTJvxMf445Hmw2mTio4MwQ4BCYmKke0
-         akfN3Qikj18K8eS4W8yDU5sAvOYFxPTnfoLGu4VRBE1cm/xaJ5NtSGJk5PobXwkuqimc
-         oTRw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=BHlo4uJGdkpMotzf6l1LEH0nK2SaURIBMqF7pq0+cPE=;
+        b=LwRP9gLUlXJubGXbdTk+FhYOQlXwRmMsHlEe55cVAnjtJ90OQMIoErVrPpruu18dlX
+         gk9SxqoS+xp621iP9KezoinvlIWqxdUruCqdIjGT0wMVd8oFC9Hg0l/mGm/aa6G5lQnS
+         myUuH1Il7L7qvg1vzJD0Vh6JhzHuENKoLY8+i/CJDR+TmGEE48+64nxI9QGLCtwwK9vi
+         7Tj+N4LP7dU3wf5k7tQAeD5e2WyyViFDeBQwyWar+u9GbQ43KtAhQveaJbuzQ9yweZvN
+         izYsaa3bnk/z3Y6bjHTITWkMD1RyD3Vg5f9jUU4DXO63KMPxIx07fcmj0nmVRg/5LRSS
+         y6Qw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=Iae/mJgVCLpfLGSuYynupuWE+Z4MahohKNOA3VuWzvQ=;
-        b=BRa+74MfO3QjW/QMR0t4Fz7HtE5kyi/SdJlBrrzs/zo/5TS3riPPyqfouT1kyiN/sv
-         AI2rT7JtnT1mLoaCdqQUOfenX7Od2QO6BDxoasRGwSxJyFQ+/MAsKOyOr98cyHEgiVSl
-         blAHGxycwY1NCfucx97d/zAWTG9FFMYN4zdweS5D6q5q9XS136a4K17aRey79HMaN5oR
-         qvSMZnRhGTJPEZfOX2FXJt3dAaUSiY/gwJOE0kCWQHKklRwUuupt+WYiK/Sqe8SFE621
-         SYcK8lurjZ3GB9I8iSnul01pu1NbDwQvzcDFmS84hKsGFkoBSmy0BNMtSaIPtxIOuXfd
-         eP7w==
-X-Gm-Message-State: APjAAAWW/24HxyOGnjGpwEQEPDQZDVgHy5sSvzD5Nl4UNJUtS55oTw3o
-        f/VQRMJRDI9gCJyzOjrCmgKelA==
-X-Google-Smtp-Source: APXvYqwymAKsgPxc8cksJon02QT8iWkblHOgN2DfaxP7yMktruZkpOMfqWcYVlLtqQMUC1ww0gHogA==
-X-Received: by 2002:a17:902:7e49:: with SMTP id a9mr22409863pln.230.1579058815911;
-        Tue, 14 Jan 2020 19:26:55 -0800 (PST)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id a6sm18050644pgg.25.2020.01.14.19.26.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jan 2020 19:26:54 -0800 (PST)
-Date:   Tue, 14 Jan 2020 19:26:53 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Wei Yang <richardw.yang@linux.intel.com>
-cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@kernel.org>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kirill.shutemov@linux.intel.com,
-        yang.shi@linux.alibaba.com, alexander.duyck@gmail.com
-Subject: Re: [Patch v2] mm: thp: grab the lock before manipulation defer
- list
-In-Reply-To: <20200115010722.GA4916@richard>
-Message-ID: <alpine.DEB.2.21.2001141924330.114086@chino.kir.corp.google.com>
-References: <20200109143054.13203-1-richardw.yang@linux.intel.com> <20200111000352.efy6krudecpshezh@box> <20200114093122.GH19428@dhcp22.suse.cz> <20200114103112.o6ozdbkfnzdsc2ke@box> <20200114105921.eo2vdwikrvtt3gkb@box> <20200115010722.GA4916@richard>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=BHlo4uJGdkpMotzf6l1LEH0nK2SaURIBMqF7pq0+cPE=;
+        b=LhpnTN02moswEOb9AfvF8UhCUM07KAotWZykBhcn9f/L9ZYjx5U5k7CNcGNyXTdWMu
+         7WAtneN34UiZm6+HrVvkrew61dXS3Uf8ie+p8luC1K8ewGur7KxHt3z5aaZ0Eg/F4xI6
+         q4hbBzg1g6O+7npB5ply+w/Mx0ChwP6zBuD2v8UAwzPMPmhIreAwPJKIlKV7ceopyhbm
+         RjYzP4gzClMgdEcf1iJDURi/brt+wRoUPoGEyGCgaR0L6QbPyKvnrNJE3vDI4tikWFAt
+         ThNi/ciqFstK+swatp6LDi1gFUeljJPiFCqy1oH+4nYFiq8pG5VWn7i0n+zsmUyAlYCP
+         UOwQ==
+X-Gm-Message-State: APjAAAU8vko+G/1NQoSxSKyOxq0awDmjfFd4xoXd7etHKn+yAEDbN0ha
+        qjbgC1XDZdXoV7nyjd4HBhU=
+X-Google-Smtp-Source: APXvYqx4Z3lHPtwvrtxcO6zVWqLJaCDt7Qbk0m1L8KWW+WW80dlHwOOW1mXWqDSr2W0Elhf4GX3+WQ==
+X-Received: by 2002:ac8:6747:: with SMTP id n7mr4221929qtp.224.1579103955239;
+        Wed, 15 Jan 2020 07:59:15 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:1e68])
+        by smtp.gmail.com with ESMTPSA id s1sm8496365qkm.84.2020.01.15.07.59.14
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 15 Jan 2020 07:59:14 -0800 (PST)
+Date:   Wed, 15 Jan 2020 07:59:12 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Chen Zhou <chenzhou10@huawei.com>
+Cc:     lizefan@huawei.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix function name in comment
+Message-ID: <20200115155912.GE2677547@devbig004.ftw2.facebook.com>
+References: <20200110072320.85605-1-chenzhou10@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200110072320.85605-1-chenzhou10@huawei.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 15 Jan 2020, Wei Yang wrote:
-
-> >split_huge_page_to_list() has page lock taken.
-> >
-> >free_transhuge_page() is in the free path and doesn't susceptible to the
-> >race.
-> >
-> >deferred_split_scan() is trickier. list_move() should be safe against
-> >list_empty() as it will not produce false-positive list_empty().
-> >list_del_init() *should* (correct me if I'm wrong) be safe because the page
-> >is freeing and memcg will not touch the page anymore.
-> >
-> >deferred_split_huge_page() is a problematic one. It called from
-> >page_remove_rmap() path witch does require page lock. I don't see any
-> >obvious way to exclude race with mem_cgroup_move_account() here.
-> >Anybody else?
+On Fri, Jan 10, 2020 at 03:23:20PM +0800, Chen Zhou wrote:
+> Function name cgroup_rstat_cpu_pop_upated() in comment should be
+> cgroup_rstat_cpu_pop_updated().
 > 
-> If my understanding is correct, the reason is deferred_split_huge_page()
-> doesn't has page lock taken, right?
-> 
+> Signed-off-by: Chen Zhou <chenzhou10@huawei.com>
 
-I think the fix that you have proposed has inspired some deeper looks at 
-the locking around the deferred split queue and the hope was that perhaps 
-this could be protected by the page lock but it was found that at least in 
-one path that isn't taken.  So I believe your fix is still needed and any 
-possible optimizations in this area can be proposed on top.
+Applied to cgroup/for-5.6.
+
+Thanks.
+
+-- 
+tejun
