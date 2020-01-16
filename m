@@ -2,82 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 85E1C13C8CA
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jan 2020 17:07:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E7F0613D187
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 02:31:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726418AbgAOQHu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Jan 2020 11:07:50 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:38866 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728949AbgAOQHt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jan 2020 11:07:49 -0500
-Received: by mail-qt1-f195.google.com with SMTP id c24so5413327qtp.5;
-        Wed, 15 Jan 2020 08:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=zSIfSAzXaUnmeHj5yAo3f8W68OERKqDK+WA3I8DQXME=;
-        b=djnWz5Uv5uxqmn8ZPz8gXmpXymRwdVRfn2Ka203Vjcor3GCoGHr4bsAzTivzjFgh6U
-         qt/PLBVgXNj39rkovMYAxr5MF2wYd7D1+Yjilxz02n8uXjasXFbCy4q2YPMX0PGg9Q7v
-         AFifPDmKFtqeQ5zKZkysF5IAlIlXIeTd/hR03AhLB7eM7sj1erDyBl6wQXZRkYGb04Qc
-         bbJD7lp2zBvZqlWNllNjM1DJCYEHr14B0QQmorF72OTclYQWbKGU8GwceQF01uoCFeuJ
-         PyGvhCAJEeDDu1VnZ2Dtc4Q53lNCP8LEMHDLfgq8EWFk/DBWB8cK2hTbyI/Ixct35Pyg
-         iNxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to:user-agent;
-        bh=zSIfSAzXaUnmeHj5yAo3f8W68OERKqDK+WA3I8DQXME=;
-        b=iZexNFORkrGNHZSx8DbOh33CUdI2LntyDKfUrL9hF6PpI2L2ZlOo7XBDmbAnxhhGaw
-         gpV0xL6uUWZBfBmVzUaYvq4huXBfubTmcN6M5U/KOemrMzCvpIqxOuBxmgJf/BerViPZ
-         yLeUUYdMxniOOllQl/Je6dLi9d6OwJ/yewWHqEm3qz36cexI8MnDAX/8GkjCT2S2meN0
-         bomCX5/IZgYraY/Au5kgoeUhab7ihlIqkeuLsZ/Fjqp+8VVhyBQ71obn5OBMFg2b3UP6
-         IsfxsZXiGr5VP1FlbaWKkw+lebxmTj7PFl0tTd9OXpHq89/omDtMT6qKCyIgC1xxcqqm
-         lsgw==
-X-Gm-Message-State: APjAAAVoMIs84YHDIyoPrIiu8P5+GKbmu2D08dPIjrpU8IYih9TV2KEB
-        RkuNAAgl35RpyeF3zlOPMAouwsNYwao=
-X-Google-Smtp-Source: APXvYqwaOY/q4re19MhwRUa9NQCI8Rv79UWbxsm5d1zjBr1b8VHAGwijlXdLYJlD+sB8r6wQNbmHqA==
-X-Received: by 2002:ac8:3510:: with SMTP id y16mr4288551qtb.6.1579104468267;
-        Wed, 15 Jan 2020 08:07:48 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:1e68])
-        by smtp.gmail.com with ESMTPSA id n4sm9344056qti.55.2020.01.15.08.07.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 Jan 2020 08:07:47 -0800 (PST)
-Date:   Wed, 15 Jan 2020 08:07:46 -0800
-From:   Tejun Heo <tj@kernel.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH] cgroup: Prevent double killing of css when enabling
- threaded cgroup
-Message-ID: <20200115160746.GG2677547@devbig004.ftw2.facebook.com>
-References: <20191219022716.o7vxxia6o67tyfmf@wittgenstein>
- <20200109150559.14457-1-mkoutny@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200109150559.14457-1-mkoutny@suse.com>
-User-Agent: Mutt/1.5.21 (2010-09-15)
+        id S1729414AbgAPBbQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Jan 2020 20:31:16 -0500
+Received: from mga03.intel.com ([134.134.136.65]:37250 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729043AbgAPBbQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 15 Jan 2020 20:31:16 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jan 2020 17:31:15 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,323,1574150400"; 
+   d="scan'208";a="213906940"
+Received: from unknown (HELO localhost) ([10.239.159.54])
+  by orsmga007.jf.intel.com with ESMTP; 15 Jan 2020 17:31:13 -0800
+From:   Wei Yang <richardw.yang@linux.intel.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, ktkhai@virtuozzo.com,
+        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
+        rientjes@google.com, Wei Yang <richardw.yang@linux.intel.com>,
+        stable@vger.kernel.org
+Subject: [Patch v3] mm: thp: grab the lock before manipulation defer list
+Date:   Thu, 16 Jan 2020 09:31:00 +0800
+Message-Id: <20200116013100.7679-1-richardw.yang@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jan 09, 2020 at 04:05:59PM +0100, Michal Koutný wrote:
-> The commit prevents these situations by making cgroup_type_write wait
-> for all dying csses to go away before re-applying subtree controls.
-> When at it, the locations of WARN_ON_ONCE calls are moved so that
-> warning is triggered only when we are about to misuse the dying css.
+As all the other places, we grab the lock before manipulate the defer list.
+Current implementation may face a race condition.
 
-Applied to cgroup/for-5.6.
+For example, the potential race would be:
 
-Thanks.
+    CPU1                      CPU2
+    mem_cgroup_move_account   deferred_split_huge_page
+      list_empty
+                                lock
+                                list_empty
+                                list_add_tail
+                                unlock
+      lock
+      # list_empty might not hold anymore
+      list_add_tail
+      unlock
 
+When this sequence happens, the list_add_tail() in
+mem_cgroup_move_account() corrupt the list since which is already been
+added to some split_queue in split_huge_page_to_list().
+
+Besides this, David Rientjes points out the split_queue_len would be in
+a wrong state, which would be a significant issue for shrinkers.
+
+Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
+
+Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
+Cc: <stable@vger.kernel.org>    [5.4+]
+
+---
+v3:
+  * remove all review/ack tag since rewrite the changelog
+  * use deferred_split_huge_page as the example of race
+  * add cc stable 5.4+ tag as suggested by David Rientjes
+
+v2:
+  * move check on compound outside suggested by Alexander
+  * an example of the race condition, suggested by Michal
+---
+ mm/memcontrol.c | 18 +++++++++++-------
+ 1 file changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index c5b5f74cfd4d..6450bbe394e2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5360,10 +5360,12 @@ static int mem_cgroup_move_account(struct page *page,
+ 	}
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	if (compound && !list_empty(page_deferred_list(page))) {
++	if (compound) {
+ 		spin_lock(&from->deferred_split_queue.split_queue_lock);
+-		list_del_init(page_deferred_list(page));
+-		from->deferred_split_queue.split_queue_len--;
++		if (!list_empty(page_deferred_list(page))) {
++			list_del_init(page_deferred_list(page));
++			from->deferred_split_queue.split_queue_len--;
++		}
+ 		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+ 	}
+ #endif
+@@ -5377,11 +5379,13 @@ static int mem_cgroup_move_account(struct page *page,
+ 	page->mem_cgroup = to;
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	if (compound && list_empty(page_deferred_list(page))) {
++	if (compound) {
+ 		spin_lock(&to->deferred_split_queue.split_queue_lock);
+-		list_add_tail(page_deferred_list(page),
+-			      &to->deferred_split_queue.split_queue);
+-		to->deferred_split_queue.split_queue_len++;
++		if (list_empty(page_deferred_list(page))) {
++			list_add_tail(page_deferred_list(page),
++				      &to->deferred_split_queue.split_queue);
++			to->deferred_split_queue.split_queue_len++;
++		}
+ 		spin_unlock(&to->deferred_split_queue.split_queue_lock);
+ 	}
+ #endif
 -- 
-tejun
+2.17.1
+
