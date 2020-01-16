@@ -2,121 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E7F0613D187
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 02:31:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C40E13D26F
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 04:05:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729414AbgAPBbQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Jan 2020 20:31:16 -0500
-Received: from mga03.intel.com ([134.134.136.65]:37250 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729043AbgAPBbQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 15 Jan 2020 20:31:16 -0500
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 15 Jan 2020 17:31:15 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,323,1574150400"; 
-   d="scan'208";a="213906940"
-Received: from unknown (HELO localhost) ([10.239.159.54])
-  by orsmga007.jf.intel.com with ESMTP; 15 Jan 2020 17:31:13 -0800
-From:   Wei Yang <richardw.yang@linux.intel.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, ktkhai@virtuozzo.com,
-        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        rientjes@google.com, Wei Yang <richardw.yang@linux.intel.com>,
-        stable@vger.kernel.org
-Subject: [Patch v3] mm: thp: grab the lock before manipulation defer list
-Date:   Thu, 16 Jan 2020 09:31:00 +0800
-Message-Id: <20200116013100.7679-1-richardw.yang@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
+        id S1730350AbgAPDFO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Jan 2020 22:05:14 -0500
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:47068 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730244AbgAPDFO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jan 2020 22:05:14 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TnrEHFy_1579143910;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TnrEHFy_1579143910)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 16 Jan 2020 11:05:11 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com, hannes@cmpxchg.org
+Subject: [PATCH v8 00/10] per lruvec lru_lock for memcg
+Date:   Thu, 16 Jan 2020 11:04:59 +0800
+Message-Id: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-As all the other places, we grab the lock before manipulate the defer list.
-Current implementation may face a race condition.
+Hi all,
 
-For example, the potential race would be:
+This patchset move lru_lock into lruvec, give a lru_lock for each of
+lruvec, thus bring a lru_lock for each of memcg per node. So on a large
+node machine, each of memcg don't need suffer from per node pgdat->lru_lock
+waiting. They could go fast with their self lru_lock.
 
-    CPU1                      CPU2
-    mem_cgroup_move_account   deferred_split_huge_page
-      list_empty
-                                lock
-                                list_empty
-                                list_add_tail
-                                unlock
-      lock
-      # list_empty might not hold anymore
-      list_add_tail
-      unlock
+We introduce function lock_page_lruvec, which will lock the page's
+memcg and then memcg's lruvec->lru_lock(Thanks Johannes Weiner,
+Hugh Dickins and Konstantin Khlebnikov suggestion/reminder) to replace
+old pgdat->lru_lock.
 
-When this sequence happens, the list_add_tail() in
-mem_cgroup_move_account() corrupt the list since which is already been
-added to some split_queue in split_huge_page_to_list().
+Following Daniel Jordan's suggestion, I run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+  https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
 
-Besides this, David Rientjes points out the split_queue_len would be in
-a wrong state, which would be a significant issue for shrinkers.
+With this patchset, the readtwice performance increased about 80%
+with containers. And no performance drops w/o container.
 
-Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
+Another way to guard move_account is by lru_lock instead of move_lock 
+Considering the memcg move task path:
+   mem_cgroup_move_task:
+     mem_cgroup_move_charge:
+	lru_add_drain_all();
+	atomic_inc(&mc.from->moving_account); //ask lruvec's move_lock
+	synchronize_rcu();
+	walk_parge_range: do charge_walk_ops(mem_cgroup_move_charge_pte_range):
+	   isolate_lru_page();
+	   mem_cgroup_move_account(page,)
+		spin_lock(&from->move_lock) 
+		page->mem_cgroup = to;
+		spin_unlock(&from->move_lock) 
+	   putback_lru_page(page)
 
-Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
-Cc: <stable@vger.kernel.org>    [5.4+]
+to guard 'page->mem_cgroup = to' by to_vec->lru_lock has the similar effect with
+move_lock. So for performance reason, both solutions are same.
 
----
-v3:
-  * remove all review/ack tag since rewrite the changelog
-  * use deferred_split_huge_page as the example of race
-  * add cc stable 5.4+ tag as suggested by David Rientjes
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought the same idea
+8 years ago.
 
-v2:
-  * move check on compound outside suggested by Alexander
-  * an example of the race condition, suggested by Michal
----
- mm/memcontrol.c | 18 +++++++++++-------
- 1 file changed, 11 insertions(+), 7 deletions(-)
+Thanks all the comments from Hugh Dickins, Konstantin Khlebnikov, Daniel Jordan, 
+Johannes Weiner, Mel Gorman, Shakeel Butt, Rong Chen, Fengguang Wu, Yun Wang etc.
+and some testing support from Intel 0days!
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c5b5f74cfd4d..6450bbe394e2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5360,10 +5360,12 @@ static int mem_cgroup_move_account(struct page *page,
- 	}
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (compound && !list_empty(page_deferred_list(page))) {
-+	if (compound) {
- 		spin_lock(&from->deferred_split_queue.split_queue_lock);
--		list_del_init(page_deferred_list(page));
--		from->deferred_split_queue.split_queue_len--;
-+		if (!list_empty(page_deferred_list(page))) {
-+			list_del_init(page_deferred_list(page));
-+			from->deferred_split_queue.split_queue_len--;
-+		}
- 		spin_unlock(&from->deferred_split_queue.split_queue_lock);
- 	}
- #endif
-@@ -5377,11 +5379,13 @@ static int mem_cgroup_move_account(struct page *page,
- 	page->mem_cgroup = to;
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--	if (compound && list_empty(page_deferred_list(page))) {
-+	if (compound) {
- 		spin_lock(&to->deferred_split_queue.split_queue_lock);
--		list_add_tail(page_deferred_list(page),
--			      &to->deferred_split_queue.split_queue);
--		to->deferred_split_queue.split_queue_len++;
-+		if (list_empty(page_deferred_list(page))) {
-+			list_add_tail(page_deferred_list(page),
-+				      &to->deferred_split_queue.split_queue);
-+			to->deferred_split_queue.split_queue_len++;
-+		}
- 		spin_unlock(&to->deferred_split_queue.split_queue_lock);
- 	}
- #endif
+v8,
+  a, redo lock_page_lru cleanup as Konstantin Khlebnikov suggested.
+  b, fix a bug in lruvec_memcg_debug, reported by Hugh Dickins
+
+v7,
+  a, rebase on v5.5-rc3, 
+  b, move the lock_page_lru() clean up before lock replace.
+
+v6, 
+  a, rebase on v5.5-rc2, and redo performance testing.
+  b, pick up Johanness' comments change and a lock_page_lru cleanup.
+
+v5,
+  a, locking page's memcg according JohannesW suggestion
+  b, using macro for non memcg, according to Metthew's suggestion.
+
+v4: 
+  a, fix the page->mem_cgroup dereferencing issue, thanks Johannes Weiner
+  b, remove the irqsave flags changes, thanks Metthew Wilcox
+  c, merge/split patches for better understanding and bisection purpose
+
+v3: rebase on linux-next, and fold the relock fix patch into introducing patch
+
+v2: bypass a performance regression bug and fix some function issues
+
+v1: initial version, aim testing show 5% performance increase on a 16 threads box.
+
+
+Alex Shi (9):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/memcg: fold lock_page_lru into commit_charge
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/mlock: optimize munlock_pagevec by relocking
+  mm/swap: only change the lru_lock iff page's lruvec is different
+  mm/pgdat: remove pgdat lru_lock
+  mm/lru: add debug checking for page memcg moving
+  mm/memcg: add debug checking in lock_page_memcg
+
+Hugh Dickins (1):
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +--
+ Documentation/admin-guide/cgroup-v1/memory.rst     |   6 +-
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 ++--
+ include/linux/memcontrol.h                         |  68 ++++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   5 +-
+ mm/compaction.c                                    |  57 ++++++----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  18 ++--
+ mm/memcontrol.c                                    | 115 ++++++++++++++-------
+ mm/mlock.c                                         |  28 ++---
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   7 +-
+ mm/rmap.c                                          |   2 +-
+ mm/swap.c                                          |  75 ++++++--------
+ mm/vmscan.c                                        | 115 ++++++++++++---------
+ 18 files changed, 326 insertions(+), 217 deletions(-)
+
 -- 
-2.17.1
+1.8.3.1
 
