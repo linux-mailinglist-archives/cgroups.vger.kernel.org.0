@@ -2,153 +2,179 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEF1213FBEF
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 23:02:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB55513FC5C
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 23:45:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388264AbgAPWCC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jan 2020 17:02:02 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:50470 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729263AbgAPWCC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 17:02:02 -0500
-Received: by mail-pj1-f65.google.com with SMTP id r67so2201004pjb.0
-        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2020 14:02:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=3l1bLmmeM9s291uP94O9U/aPjNKzd/SwoB7qzxFa1R0=;
-        b=pZIi5sE/9TH17JjoL4l5dJZZrLpm7nc9kqlJkmnnzJuXTFlpU/YTZtduls0CTZLNQm
-         E6ll5YpO8ByoE0nF7TJYBSt49NmIhu3tapebJ0GHzTHlrn11c9dfl4pg11YGNTtRTxRR
-         g6ct6R0KdTbp94x6U595KvssLi8FgrCtpq3PPgsq7ZGsbVAGcsoE8WV0gRTaMptR7kLu
-         Avzv6iRXqtNfuUucdsVE8Dx8aZKT07u4EELR1eoXNKnKFbnCN1FSuHa3xuv9FxuzLVhY
-         UCe+3l+fC3JBlJNBgau4SWMziDCNmnvE5ZBSRsIY9lzxnRJqtiLV5b10eh8jS8HfF/jk
-         VwwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=3l1bLmmeM9s291uP94O9U/aPjNKzd/SwoB7qzxFa1R0=;
-        b=pOXLQgNnSdKwkbGSefNLSESTgSbAwlGIipJr3uDgeJm2zW/nkFVGwaKKH6CmG+qxWa
-         v3ClvZx2lQ8Oc3HQ/isvt/6+JC84drBv+WbaAgTYPEmfEHoEkXa4FrFjVjisHncJR8oD
-         N696E8p7m2sy40/6XkQYcUDNlh+o/lXCV8OC3++R0Urxvh0Jy+VjGr8yzt5xfuWxL/1d
-         dzcjTxM7PZ0w9UVfhqIWM08q2zX7sDvCHIONnBLeFRNqnn7uicoSUDM0X9Uw9HgmXkaK
-         SSOyUxmiI5D2sg4F8VqDDHfXPnoZsOaIxBr6BSUpYjjWeg+JLZZfK9IO3QfGJpp2MmHP
-         oQjw==
-X-Gm-Message-State: APjAAAWPCNlv2WSXg4qjkW5PNwb1VUHQ9NLLEHQsafuZOj103WAysOn8
-        +OibJyHOyIf7UKdXx+yfyob8Ym/RKvE=
-X-Google-Smtp-Source: APXvYqzz/Iq1AFC0H0qPvPoBp1sq2GZeTe9qAtImzX2gAXb3xw+Gl7BruUV5FjWVCYBAKEETDQCciw==
-X-Received: by 2002:a17:90a:238b:: with SMTP id g11mr1756480pje.128.1579212121109;
-        Thu, 16 Jan 2020 14:02:01 -0800 (PST)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id v4sm26425893pff.174.2020.01.16.14.02.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 14:02:00 -0800 (PST)
-Date:   Thu, 16 Jan 2020 14:01:59 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>
-cc:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
-        yang.shi@linux.alibaba.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        alexander.duyck@gmail.com, stable@vger.kernel.org
-Subject: Re: [Patch v3] mm: thp: grab the lock before manipulation defer
- list
-In-Reply-To: <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
-Message-ID: <alpine.DEB.2.21.2001161357240.109233@chino.kir.corp.google.com>
-References: <20200116013100.7679-1-richardw.yang@linux.intel.com> <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S2390083AbgAPWo7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jan 2020 17:44:59 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:43012 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732417AbgAPWo6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 17:44:58 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00GMcQbe059559;
+        Thu, 16 Jan 2020 22:44:50 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=jlzdnATHqqaoRnZjE+SFSnSnRkAzXmaHY4RqPn2GR14=;
+ b=Hb3TDPh83eiTfrX6Rmpx/FtUaekfBHuaXEkqSQU3gyu4w+ATUwFA9Z6N8AdSNh/mfyJ/
+ XKSNvGJ6mOHHCrwI9Dq0fHCsLbg6Z/guPvZlAqt+Q+1p6BY8Wz7cGuDiAr9kmmG19tss
+ kDzNdcWehvTlQ53be0RNk1ZxEYvVo03BQeCQ7dAnA+JEGfMxSv+PAffV1eQTcbZ8ADSQ
+ hbET9KgS1x/+fDtnS+JxuXAlcEVwgp3UvQv/B7JMW7l8ItY+FJDHzdleu3E57tozfGGE
+ hYDS+uA3y6Y20pq/21gAeMm477K7JJkwgEGgQnZqJTxANQjOda6Rq3dLaSugaf+c0qDa gA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 2xf73ywhy2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jan 2020 22:44:49 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00GMdQt8015176;
+        Thu, 16 Jan 2020 22:44:48 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 2xj61nc4gv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 16 Jan 2020 22:44:48 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00GMili4017672;
+        Thu, 16 Jan 2020 22:44:47 GMT
+Received: from [192.168.1.206] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 16 Jan 2020 14:44:47 -0800
+Subject: Re: [PATCH v10 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ counter
+To:     Mina Almasry <almasrymina@google.com>, rientjes@google.com,
+        shakeelb@google.com
+Cc:     shuah@kernel.org, gthelen@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        aneesh.kumar@linux.vnet.ibm.com
+References: <20200115012651.228058-1-almasrymina@google.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <bbc968ae-b379-c207-268e-16004d9cff96@oracle.com>
+Date:   Thu, 16 Jan 2020 14:44:45 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200115012651.228058-1-almasrymina@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001160181
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9502 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001160181
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 16 Jan 2020, Kirill Tkhai wrote:
+On 1/14/20 5:26 PM, Mina Almasry wrote:
+> These counters will track hugetlb reservations rather than hugetlb
+> memory faulted in. This patch only adds the counter, following patches
+> add the charging and uncharging of the counter.
+> 
+> This is patch 1 of an 8 patch series.
+> 
+> Problem:
+> Currently tasks attempting to reserve more hugetlb memory than is available get
+> a failure at mmap/shmget time. This is thanks to Hugetlbfs Reservations [1].
+> However, if a task attempts to reserve hugetlb memory only more than its
 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index c5b5f74cfd4d..6450bbe394e2 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -5360,10 +5360,12 @@ static int mem_cgroup_move_account(struct page *page,
-> >  	}
-> >  
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -	if (compound && !list_empty(page_deferred_list(page))) {
-> > +	if (compound) {
-> >  		spin_lock(&from->deferred_split_queue.split_queue_lock);
-> > -		list_del_init(page_deferred_list(page));
-> > -		from->deferred_split_queue.split_queue_len--;
-> > +		if (!list_empty(page_deferred_list(page))) {
-> > +			list_del_init(page_deferred_list(page));
-> > +			from->deferred_split_queue.split_queue_len--;
-> > +		}
-> >  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
-> >  	}
-> >  #endif
-> > @@ -5377,11 +5379,13 @@ static int mem_cgroup_move_account(struct page *page,
-> >  	page->mem_cgroup = to;
-> >  
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -	if (compound && list_empty(page_deferred_list(page))) {
-> > +	if (compound) {
-> >  		spin_lock(&to->deferred_split_queue.split_queue_lock);
-> > -		list_add_tail(page_deferred_list(page),
-> > -			      &to->deferred_split_queue.split_queue);
-> > -		to->deferred_split_queue.split_queue_len++;
-> > +		if (list_empty(page_deferred_list(page))) {
-> > +			list_add_tail(page_deferred_list(page),
-> > +				      &to->deferred_split_queue.split_queue);
-> > +			to->deferred_split_queue.split_queue_len++;
-> > +		}
-> >  		spin_unlock(&to->deferred_split_queue.split_queue_lock);
-> >  	}
-> >  #endif
-> 
-> The patch looks OK for me. But there is another question. I forget, why we unconditionally
-> add a page with empty deferred list to deferred_split_queue. Shouldn't we also check that
-> it was initially in the list? Something like:
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d4394ae4e5be..0be0136adaa6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5289,6 +5289,7 @@ static int mem_cgroup_move_account(struct page *page,
->  	struct pglist_data *pgdat;
->  	unsigned long flags;
->  	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
-> +	bool split = false;
->  	int ret;
->  	bool anon;
->  
-> @@ -5346,6 +5347,7 @@ static int mem_cgroup_move_account(struct page *page,
->  		if (!list_empty(page_deferred_list(page))) {
->  			list_del_init(page_deferred_list(page));
->  			from->deferred_split_queue.split_queue_len--;
-> +			split = true;
->  		}
->  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
->  	}
-> @@ -5360,7 +5362,7 @@ static int mem_cgroup_move_account(struct page *page,
->  	page->mem_cgroup = to;
->  
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -	if (compound) {
-> +	if (compound && split) {
->  		spin_lock(&to->deferred_split_queue.split_queue_lock);
->  		if (list_empty(page_deferred_list(page))) {
->  			list_add_tail(page_deferred_list(page),
-> 
+*reword*
+However, if a task attempts to reserve more hugetlb memory than its
 
-I think that's a good point, especially considering that the current code 
-appears to unconditionally place any compound page on the deferred split 
-queue of the destination memcg.  The correct list that it should appear 
-on, I believe, depends on whether the pmd has been split for the process 
-being moved: note the MC_TARGET_PAGE caveat in 
-mem_cgroup_move_charge_pte_range() that does not move the charge for 
-compound pages with split pmds.  So when mem_cgroup_move_account() is 
-called with compound == true, we're moving the charge of the entire 
-compound page: why would it appear on that memcg's deferred split queue?
+> hugetlb_cgroup limit allows, the kernel will allow the mmap/shmget call,
+> but will SIGBUS the task when it attempts to fault the memory in.
+
+*reword*
+but will SIGBUS the task when it attempts to fault in the  excess memory.
+
+> 
+> We have users hitting their hugetlb_cgroup limits and thus we've been
+> looking at this failure mode. We'd like to improve this behavior such that users
+> violating the hugetlb_cgroup limits get an error on mmap/shmget time, rather
+> than getting SIGBUS'd when they try to fault the excess memory in. This
+> gives the user an opportunity to fallback more gracefully to
+> non-hugetlbfs memory for example.
+> 
+> The underlying problem is that today's hugetlb_cgroup accounting happens
+> at hugetlb memory *fault* time, rather than at *reservation* time.
+> Thus, enforcing the hugetlb_cgroup limit only happens at fault time, and
+> the offending task gets SIGBUS'd.
+> 
+> Proposed Solution:
+> A new page counter named
+> 'hugetlb.xMB.reservation_[limit|usage|max_usage]_in_bytes'. This counter has
+> slightly different semantics than
+
+You changed the name to 'hugetlb.xMB.resv_[limit|usage|max_usage]_in_bytes'
+in the code, but left this description.
+
+Also, David suggested 'rsvd' as the abbreviation to use here.  I would also
+prefer that name to be consistent with other hugetlb interfaces.
+
+> 'hugetlb.xMB.[limit|usage|max_usage]_in_bytes':
+> 
+> - While usage_in_bytes tracks all *faulted* hugetlb memory,
+> reservation_usage_in_bytes tracks all *reserved* hugetlb memory and
+> hugetlb memory faulted in without a prior reservation.
+> 
+> - If a task attempts to reserve more memory than limit_in_bytes allows,
+> the kernel will allow it to do so. But if a task attempts to reserve
+> more memory than reservation_limit_in_bytes, the kernel will fail this
+> reservation.
+> 
+> This proposal is implemented in this patch series, with tests to verify
+> functionality and show the usage.
+> 
+> Alternatives considered:
+> 1. A new cgroup, instead of only a new page_counter attached to
+>    the existing hugetlb_cgroup. Adding a new cgroup seemed like a lot of code
+>    duplication with hugetlb_cgroup. Keeping hugetlb related page counters under
+>    hugetlb_cgroup seemed cleaner as well.
+> 
+> 2. Instead of adding a new counter, we considered adding a sysctl that modifies
+>    the behavior of hugetlb.xMB.[limit|usage]_in_bytes, to do accounting at
+>    reservation time rather than fault time. Adding a new page_counter seems
+>    better as userspace could, if it wants, choose to enforce different cgroups
+>    differently: one via limit_in_bytes, and another via
+>    reservation_limit_in_bytes. This could be very useful if you're
+>    transitioning how hugetlb memory is partitioned on your system one
+>    cgroup at a time, for example. Also, someone may find usage for both
+>    limit_in_bytes and reservation_limit_in_bytes concurrently, and this
+>    approach gives them the option to do so.
+> 
+> Testing:
+> - Added tests passing.
+> - Used libhugetlbfs for regression testing.
+> 
+> [1]: https://www.kernel.org/doc/html/latest/vm/hugetlbfs_reserv.html
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> 
+> ---
+> Changes in v10:
+> - Renamed reservation_* to resv.*
+> 
+> ---
+>  include/linux/hugetlb.h |   4 +-
+>  mm/hugetlb_cgroup.c     | 115 +++++++++++++++++++++++++++++++++++-----
+>  2 files changed, 104 insertions(+), 15 deletions(-)
+
+The code looks fine to me.
+
+With the commit message and naming updates, I will add a Reviewed-by:
+
+Please do wait a few/several days before sending a revised edition to
+make sure we get all feedback.  I really would like to get comments from
+people more familiar with cgroups.
+
+-- 
+Mike Kravetz
