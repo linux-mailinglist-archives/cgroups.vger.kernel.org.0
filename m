@@ -2,202 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC6E13FBBA
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 22:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEF1213FBEF
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jan 2020 23:02:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731354AbgAPVw2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jan 2020 16:52:28 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45846 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730655AbgAPVw1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 16:52:27 -0500
-Received: by mail-qt1-f193.google.com with SMTP id w30so20171757qtd.12
-        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2020 13:52:26 -0800 (PST)
+        id S2388264AbgAPWCC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jan 2020 17:02:02 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:50470 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729263AbgAPWCC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 17:02:02 -0500
+Received: by mail-pj1-f65.google.com with SMTP id r67so2201004pjb.0
+        for <cgroups@vger.kernel.org>; Thu, 16 Jan 2020 14:02:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1EPeaAWRHa3RqqVLE9V4P9RIEcd6DQc7GzxP/f3LSY8=;
-        b=pvoJqtb58UypA494k7e14Z/xF8dKTjCFQB5xrlRUEpMWeAvPGdidXZ3yHaXcT0YpKu
-         v2V/e0BD9I8DY8puJ2BDqEqX1ja8rDobR9dLaheJPHxT4kHLBYfzbLa9mzRR5IUwpF8g
-         Q3by2hhrdMs233i0rjpLcHSobd+mwy1pPHZHrnJWx5YXCTRCp8TXO7RO25gKDbg3XCFT
-         37sWyUI7eYw7asc4Ydg04fWVmbfWhMhPsx1G83m87eBEjno02m/tQ8faZ8RAWUixevG8
-         Kbsg6XSwa/9JLxJDte8JUiODB4Puy4/a3z0aYgt9LotNGmjGkAupnUIL+b4bgLewYoAe
-         hprw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=3l1bLmmeM9s291uP94O9U/aPjNKzd/SwoB7qzxFa1R0=;
+        b=pZIi5sE/9TH17JjoL4l5dJZZrLpm7nc9kqlJkmnnzJuXTFlpU/YTZtduls0CTZLNQm
+         E6ll5YpO8ByoE0nF7TJYBSt49NmIhu3tapebJ0GHzTHlrn11c9dfl4pg11YGNTtRTxRR
+         g6ct6R0KdTbp94x6U595KvssLi8FgrCtpq3PPgsq7ZGsbVAGcsoE8WV0gRTaMptR7kLu
+         Avzv6iRXqtNfuUucdsVE8Dx8aZKT07u4EELR1eoXNKnKFbnCN1FSuHa3xuv9FxuzLVhY
+         UCe+3l+fC3JBlJNBgau4SWMziDCNmnvE5ZBSRsIY9lzxnRJqtiLV5b10eh8jS8HfF/jk
+         VwwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1EPeaAWRHa3RqqVLE9V4P9RIEcd6DQc7GzxP/f3LSY8=;
-        b=gxMt0MEnqyBPVVZUtR3qFgWw495VVs4G4xDjgXLWzhgMs1o1KaYb3o2TUiRNWoM+jp
-         fC1aWbkOe3FmrTJr2FCuhg53SG7GWoB0hsCNTPfWbrDWVkfGyuS2eoqDU/3owds3bFZg
-         VNQ1qq860XSf2lVIF9xSUxj7zp5G1oheojPlzkzSgLTvcU0Ga2TDIybFDvzD+g2v0FlV
-         6fFUL5LSQjKsQyOmmgm8gAxfkVI4S2KL//FVdG5o81dFY/kN8U3WlrgVaLqe93ms7c3l
-         lzyOfwNIu4jL5tYQzzqm5KQfk15svRtMTiJgNYSKDlLfnn0JSVYwiigDo1w+ZI9MKwKN
-         /qng==
-X-Gm-Message-State: APjAAAXBTSA5jJqvHBvPei8IqwYipK908xXGfiYQydW1jFHwYPneP4t9
-        v+PFnNyPkc1I1RkJ6dSjatB+4w==
-X-Google-Smtp-Source: APXvYqwdiK5kPAwKKwtquFeHOhHDxJ/ciVj0Toj/HU7dSRU5hDED+afwb10tRc0rfRHmciYc+V3+fg==
-X-Received: by 2002:ac8:4050:: with SMTP id j16mr4499483qtl.171.1579211545067;
-        Thu, 16 Jan 2020 13:52:25 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::ae73])
-        by smtp.gmail.com with ESMTPSA id h1sm12179841qte.42.2020.01.16.13.52.23
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=3l1bLmmeM9s291uP94O9U/aPjNKzd/SwoB7qzxFa1R0=;
+        b=pOXLQgNnSdKwkbGSefNLSESTgSbAwlGIipJr3uDgeJm2zW/nkFVGwaKKH6CmG+qxWa
+         v3ClvZx2lQ8Oc3HQ/isvt/6+JC84drBv+WbaAgTYPEmfEHoEkXa4FrFjVjisHncJR8oD
+         N696E8p7m2sy40/6XkQYcUDNlh+o/lXCV8OC3++R0Urxvh0Jy+VjGr8yzt5xfuWxL/1d
+         dzcjTxM7PZ0w9UVfhqIWM08q2zX7sDvCHIONnBLeFRNqnn7uicoSUDM0X9Uw9HgmXkaK
+         SSOyUxmiI5D2sg4F8VqDDHfXPnoZsOaIxBr6BSUpYjjWeg+JLZZfK9IO3QfGJpp2MmHP
+         oQjw==
+X-Gm-Message-State: APjAAAWPCNlv2WSXg4qjkW5PNwb1VUHQ9NLLEHQsafuZOj103WAysOn8
+        +OibJyHOyIf7UKdXx+yfyob8Ym/RKvE=
+X-Google-Smtp-Source: APXvYqzz/Iq1AFC0H0qPvPoBp1sq2GZeTe9qAtImzX2gAXb3xw+Gl7BruUV5FjWVCYBAKEETDQCciw==
+X-Received: by 2002:a17:90a:238b:: with SMTP id g11mr1756480pje.128.1579212121109;
+        Thu, 16 Jan 2020 14:02:01 -0800 (PST)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id v4sm26425893pff.174.2020.01.16.14.02.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 16 Jan 2020 13:52:23 -0800 (PST)
-Date:   Thu, 16 Jan 2020 16:52:22 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20200116215222.GA64230@cmpxchg.org>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
+        Thu, 16 Jan 2020 14:02:00 -0800 (PST)
+Date:   Thu, 16 Jan 2020 14:01:59 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Kirill Tkhai <ktkhai@virtuozzo.com>
+cc:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, kirill.shutemov@linux.intel.com,
+        yang.shi@linux.alibaba.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        alexander.duyck@gmail.com, stable@vger.kernel.org
+Subject: Re: [Patch v3] mm: thp: grab the lock before manipulation defer
+ list
+In-Reply-To: <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
+Message-ID: <alpine.DEB.2.21.2001161357240.109233@chino.kir.corp.google.com>
+References: <20200116013100.7679-1-richardw.yang@linux.intel.com> <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jan 16, 2020 at 11:05:02AM +0800, Alex Shi wrote:
-> @@ -948,10 +956,20 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
->  			goto isolate_fail;
+On Thu, 16 Jan 2020, Kirill Tkhai wrote:
+
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c5b5f74cfd4d..6450bbe394e2 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -5360,10 +5360,12 @@ static int mem_cgroup_move_account(struct page *page,
+> >  	}
+> >  
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -	if (compound && !list_empty(page_deferred_list(page))) {
+> > +	if (compound) {
+> >  		spin_lock(&from->deferred_split_queue.split_queue_lock);
+> > -		list_del_init(page_deferred_list(page));
+> > -		from->deferred_split_queue.split_queue_len--;
+> > +		if (!list_empty(page_deferred_list(page))) {
+> > +			list_del_init(page_deferred_list(page));
+> > +			from->deferred_split_queue.split_queue_len--;
+> > +		}
+> >  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+> >  	}
+> >  #endif
+> > @@ -5377,11 +5379,13 @@ static int mem_cgroup_move_account(struct page *page,
+> >  	page->mem_cgroup = to;
+> >  
+> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> > -	if (compound && list_empty(page_deferred_list(page))) {
+> > +	if (compound) {
+> >  		spin_lock(&to->deferred_split_queue.split_queue_lock);
+> > -		list_add_tail(page_deferred_list(page),
+> > -			      &to->deferred_split_queue.split_queue);
+> > -		to->deferred_split_queue.split_queue_len++;
+> > +		if (list_empty(page_deferred_list(page))) {
+> > +			list_add_tail(page_deferred_list(page),
+> > +				      &to->deferred_split_queue.split_queue);
+> > +			to->deferred_split_queue.split_queue_len++;
+> > +		}
+> >  		spin_unlock(&to->deferred_split_queue.split_queue_lock);
+> >  	}
+> >  #endif
+> 
+> The patch looks OK for me. But there is another question. I forget, why we unconditionally
+> add a page with empty deferred list to deferred_split_queue. Shouldn't we also check that
+> it was initially in the list? Something like:
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index d4394ae4e5be..0be0136adaa6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5289,6 +5289,7 @@ static int mem_cgroup_move_account(struct page *page,
+>  	struct pglist_data *pgdat;
+>  	unsigned long flags;
+>  	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
+> +	bool split = false;
+>  	int ret;
+>  	bool anon;
 >  
-> +		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> +
->  		/* If we already hold the lock, we can skip some rechecking */
-> -		if (!locked) {
-> -			locked = compact_lock_irqsave(&pgdat->lru_lock,
-> -								&flags, cc);
-> +		if (lruvec != locked_lruvec) {
-> +			struct mem_cgroup *memcg = lock_page_memcg(page);
-> +
-> +			if (locked_lruvec) {
-> +				unlock_page_lruvec_irqrestore(locked_lruvec, flags);
-> +				locked_lruvec = NULL;
-> +			}
-> +			/* reget lruvec with a locked memcg */
-> +			lruvec = mem_cgroup_lruvec(memcg, page_pgdat(page));
-> +			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
-> +			locked_lruvec = lruvec;
+> @@ -5346,6 +5347,7 @@ static int mem_cgroup_move_account(struct page *page,
+>  		if (!list_empty(page_deferred_list(page))) {
+>  			list_del_init(page_deferred_list(page));
+>  			from->deferred_split_queue.split_queue_len--;
+> +			split = true;
+>  		}
+>  		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>  	}
+> @@ -5360,7 +5362,7 @@ static int mem_cgroup_move_account(struct page *page,
+>  	page->mem_cgroup = to;
 >  
->  			/* Try get exclusive access under lock */
->  			if (!skip_updated) {
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -	if (compound) {
+> +	if (compound && split) {
+>  		spin_lock(&to->deferred_split_queue.split_queue_lock);
+>  		if (list_empty(page_deferred_list(page))) {
+>  			list_add_tail(page_deferred_list(page),
+> 
 
-In a previous review, I pointed out the following race condition
-between page charging and compaction:
-
-compaction:				generic_file_buffered_read:
-
-					page_cache_alloc()
-
-!PageBuddy()
-
-lock_page_lruvec(page)
-  lruvec = mem_cgroup_page_lruvec()
-  spin_lock(&lruvec->lru_lock)
-  if lruvec != mem_cgroup_page_lruvec()
-    goto again
-
-					add_to_page_cache_lru()
-					  mem_cgroup_commit_charge()
-					    page->mem_cgroup = foo
-					  lru_cache_add()
-					    __pagevec_lru_add()
-					      SetPageLRU()
-
-if PageLRU(page):
-  __isolate_lru_page()
-
-As far as I can see, you have not addressed this. You have added
-lock_page_memcg(), but that prevents charged pages from moving between
-cgroups, it does not prevent newly allocated pages from being charged.
-
-It doesn't matter how many times you check the lruvec before and after
-locking - if you're looking at a free page, it might get allocated,
-charged and put on a new lruvec after you're done checking, and then
-you isolate a page from an unlocked lruvec.
-
-You simply cannot serialize on page->mem_cgroup->lruvec when
-page->mem_cgroup isn't stable. You need to serialize on the page
-itself, one way or another, to make this work.
-
-
-So here is a crazy idea that may be worth exploring:
-
-Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
-linked list.
-
-Can we make PageLRU atomic and use it to stabilize the lru_lock
-instead, and then use the lru_lock only serialize list operations?
-
-I.e. in compaction, you'd do
-
-	if (!TestClearPageLRU(page))
-		goto isolate_fail;
-	/*
-	 * We isolated the page's LRU state and thereby locked out all
-	 * other isolators, including cgroup page moving, page reclaim,
-	 * page freeing etc. That means page->mem_cgroup is now stable
-	 * and we can safely look up the correct lruvec and take the
-	 * page off its physical LRU list.
-	 */
-	lruvec = mem_cgroup_page_lruvec(page);
-	spin_lock_irq(&lruvec->lru_lock);
-	del_page_from_lru_list(page, lruvec, page_lru(page));
-
-Putback would mostly remain the same (although you could take the
-PageLRU setting out of the list update locked section, as long as it's
-set after the page is physically linked):
-
-	/* LRU isolation pins page->mem_cgroup */
-	lruvec = mem_cgroup_page_lruvec(page)
-	spin_lock_irq(&lruvec->lru_lock);
-	add_page_to_lru_list(...);
-	spin_unlock_irq(&lruvec->lru_lock);
-
-	SetPageLRU(page);
-
-And you'd have to carefully review and rework other sites that rely on
-PageLRU: reclaim, __page_cache_release(), __activate_page() etc.
-
-Especially things like activate_page(), which used to only check
-PageLRU to shuffle the page on the LRU list would now have to briefly
-clear PageLRU and then set it again afterwards.
-
-However, aside from a bit more churn in those cases, and the
-unfortunate additional atomic operations, I currently can't think of a
-fundamental reason why this wouldn't work.
-
-Hugh, what do you think?
+I think that's a good point, especially considering that the current code 
+appears to unconditionally place any compound page on the deferred split 
+queue of the destination memcg.  The correct list that it should appear 
+on, I believe, depends on whether the pmd has been split for the process 
+being moved: note the MC_TARGET_PAGE caveat in 
+mem_cgroup_move_charge_pte_range() that does not move the charge for 
+compound pages with split pmds.  So when mem_cgroup_move_account() is 
+called with compound == true, we're moving the charge of the entire 
+compound page: why would it appear on that memcg's deferred split queue?
