@@ -2,73 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 684BE140FA9
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 18:12:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FFC2140FD4
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 18:28:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727008AbgAQRMd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jan 2020 12:12:33 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:50460 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726603AbgAQRMd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 12:12:33 -0500
-Received: from ip5f5bd679.dynamic.kabel-deutschland.de ([95.91.214.121] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1isVAb-0007V1-EI; Fri, 17 Jan 2020 17:12:29 +0000
-Date:   Fri, 17 Jan 2020 18:12:28 +0100
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ingo Molnar <mingo@redhat.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] clone3: allow spawning processes into cgroups
-Message-ID: <20200117171228.evtvrny3v7zjcocd@wittgenstein>
-References: <20191223061504.28716-1-christian.brauner@ubuntu.com>
- <20191223061504.28716-3-christian.brauner@ubuntu.com>
- <20200107163204.GB2677547@devbig004.ftw2.facebook.com>
- <20200108180906.l4mvtdmh7nm2z7sc@wittgenstein>
- <20200116122944.nj3e66eusxu6sb44@wittgenstein>
- <20200117165311.GH2677547@devbig004.ftw2.facebook.com>
+        id S1726970AbgAQR2K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jan 2020 12:28:10 -0500
+Received: from mail-qt1-f195.google.com ([209.85.160.195]:44003 "EHLO
+        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726684AbgAQR2K (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 12:28:10 -0500
+Received: by mail-qt1-f195.google.com with SMTP id d18so22328496qtj.10;
+        Fri, 17 Jan 2020 09:28:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=YJBe+PR1JTzkbV6VdX/ClFM8UuTfYuVGKNcb10Up+LM=;
+        b=DbHiqO+e6kYuR6bMRUFqkRzJXzREnc/t8WeVUwNtwBq0US0ALqFtfBS3k8Ar5PzFae
+         jpbiR7Ax+NvFzgNUZfzP6b4KBWdJJ8us7/sDH5Tiro8mnHYZM1bos9P/GDhAcxVHXG4b
+         +CqRW+gbtb40Tq4JQ9+XfDuAtGc8xx7XWoPbLCDa9sXO0xSMc54OuWYlMPO3hMfg3xGs
+         R6SRfw70eNBH9z1vinkvQf3Pkmv//DOGZzpDO/JeaaQZKfMlTJoC34/zqw6bnCacSApd
+         hf6+skAgQQBrKH5W5od7c18HNBincCZTYsXdKlpO3ehhcjXZitzgNqPGCAFsoZlAoM4q
+         MvUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=YJBe+PR1JTzkbV6VdX/ClFM8UuTfYuVGKNcb10Up+LM=;
+        b=dlGsDK2AVaRbvusaEwWxDibqJoeiK/AU65ivacLnjYcLGTxCD6VYhitgt2zmk+hptR
+         MfK5Oi0TydvTAPAOfCqkA0RFxuYxHppwz0DY3K8zZDAOCrmo2XSvJ/m+pMI6IwnGzJ3y
+         SGRJWwfxMcy8YdtctsVJvBwnB9dEEBhgpnYmAGhMnJEpQXDOwCUNl/gq5CnEuzmoJL0k
+         /yqZPr8pRF7NKkW8KEjAUO3/EY5/P912PucbXcLVztykPCI9Xb68AjnO9Vpc8aFwyRYI
+         jyGDqZvtzS6wVXn4eLQ8CGW9qjlt4QVINVasnkVXUJv4QvU1qyJFmUCOCtS6vNzRb+1Q
+         jRLg==
+X-Gm-Message-State: APjAAAWFfcXNO2Ha9g7lMIHhylEmtT4DU5RLAyl3XBSPtrOy+d9nyvEq
+        YV5glm5kx1vtcdMj/2m6AGU=
+X-Google-Smtp-Source: APXvYqz2O/xFh6ygdxVfF7TRwAgb6tMQGsH1goOEKwF730KRP0mdEDko+yi0ag0UIHTaUnjOw9qRYQ==
+X-Received: by 2002:aed:2150:: with SMTP id 74mr8430727qtc.323.1579282089045;
+        Fri, 17 Jan 2020 09:28:09 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::1:7d10])
+        by smtp.gmail.com with ESMTPSA id r37sm13251937qtj.44.2020.01.17.09.28.08
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 17 Jan 2020 09:28:08 -0800 (PST)
+Date:   Fri, 17 Jan 2020 09:28:06 -0800
+From:   Tejun Heo <tj@kernel.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     cgroups@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>, alex.shi@linux.alibaba.com,
+        guro@fb.com, kernel-team@android.com, linger.lee@mediatek.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
+        shuah@kernel.org, tomcherry@google.com
+Subject: Re: [PATCH 2/3] cgroup: Iterate tasks that did not finish do_exit()
+Message-ID: <20200117172806.GK2677547@devbig004.ftw2.facebook.com>
+References: <20200116043612.52782-1-surenb@google.com>
+ <20200117151533.12381-1-mkoutny@suse.com>
+ <20200117151533.12381-3-mkoutny@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20200117165311.GH2677547@devbig004.ftw2.facebook.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200117151533.12381-3-mkoutny@suse.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 08:53:11AM -0800, Tejun Heo wrote:
-> Hello, Christian.
+On Fri, Jan 17, 2020 at 04:15:32PM +0100, Michal Koutný wrote:
+> PF_EXITING is set earlier than actual removal from css_set when a task
+> is exitting. This can confuse cgroup.procs readers who see no PF_EXITING
+> tasks, however, rmdir is checking against css_set membership so it can
+> transitionally fail with EBUSY.
 > 
-> Sorry about late reply.
-> 
-> On Thu, Jan 16, 2020 at 01:29:44PM +0100, Christian Brauner wrote:
-> > Could it be that you misread cgroup_attach_permissions()? Because it
-> > does check for write permissions on the destination cgroup.procs file.
-> > That's why I've added the cgroup_get_from_file() helper. :) See:
-> > 
-> > static int cgroup_attach_permissions(struct cgroup *src_cgrp,
-> > 				     struct cgroup *dst_cgrp,
-> > 				     struct super_block *sb, bool thread)
-> > {
-> > 	int ret = 0;
-> > 
-> > 	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
-> > 	if (ret)
-> > 		return ret;
-> 
-> So, if you look at cgroup_procs_write_permission(), it's only checking
-> the write perm of the common ancestor, not the destination because it
-> assumes that the destination is already checked by the vfs layer, and
-> we need to check both.
+> Fix this by listing tasks that weren't unlinked from css_set active
+> lists.
+> It may happen that other users of the task iterator (without
+> CSS_TASK_ITER_PROCS) spot a PF_EXITING task before cgroup_exit(). This
+> is equal to the state before commit c03cd7738a83 ("cgroup: Include dying
+> leaders with live threads in PROCS iterations") but it may be reviewed
+> later.
 
-Ok, gimme 20 min.
+Yeah, this looks fine to me.  Any chance you can order this before the
+clean up so that we can mark it for -stable.
 
-Thanks!
-Christian
+Thanks.
+
+-- 
+tejun
