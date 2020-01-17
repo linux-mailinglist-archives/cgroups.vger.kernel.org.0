@@ -2,99 +2,176 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BD4140966
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 12:59:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F76A140B58
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 14:46:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726885AbgAQL7j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jan 2020 06:59:39 -0500
-Received: from mail-wm1-f43.google.com ([209.85.128.43]:33770 "EHLO
-        mail-wm1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726785AbgAQL7j (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 06:59:39 -0500
-Received: by mail-wm1-f43.google.com with SMTP id d139so9345971wmd.0;
-        Fri, 17 Jan 2020 03:59:37 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=udlU6SpvxzvjKHENifeUg1Az8MLTSzxnXtnR1+RwbnI=;
-        b=RJ1UNoEvmG3Oqy2LAy3L4HjXT2D3EBRlZoMfHXg5zEJKnyZjbd4g0z4Jm7t/Ixg7dy
-         f2L/zv2GfX4blABsESuzUKstOf8ecHxINhy2f4h7kKBKVyFF6FIu6QHy0EbUlFWAbHRM
-         NBD4NiJ2gmfNfBtMQsEXUGqyug8E3gWRZFbiyaj06VNpaXK4Od0Qdbri84ilXa3rWvdy
-         /JfvkIcWefEB7i1PrnCF1rF5jKd0Zm92EMrO1F0tPSCkYv3qH9CpA5EpzOM6p7GSgVR7
-         N0/n9jkkIAA0zqPNTmTTDIMfrJU6DyjB81dcItUyv/b+boSmq1O1VbGDsX/GaDp/b/yF
-         sKNg==
-X-Gm-Message-State: APjAAAVSZ/xU+DNPBM9/J48yR/m0N9SoVsHiGmDhFffE/h/EuqyVu91e
-        Mt9ziUKNDH2l61uAtTxMVRU=
-X-Google-Smtp-Source: APXvYqwN5WxNfeK4SlgaL8V1bxIdZmgc9Q8OC8cG1RNh4NYAGxptEVaBGdfHAAy+NA3Rdh0s+BxZiA==
-X-Received: by 2002:a1c:1d1:: with SMTP id 200mr4248107wmb.181.1579262377136;
-        Fri, 17 Jan 2020 03:59:37 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id o129sm9364730wmb.1.2020.01.17.03.59.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 03:59:36 -0800 (PST)
-Date:   Fri, 17 Jan 2020 12:59:35 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Kirill Tkhai <ktkhai@virtuozzo.com>, g@suse.cz,
-        kirill.shutemov@linux.intel.com
-Cc:     David Rientjes <rientjes@google.com>,
-        Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.or,
-        yang.shi@linux.alibaba.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        alexander.duyck@gmail.com, stable@vger.kernel.org
-Subject: Re: [Patch v3] mm: thp: grab the lock before manipulation defer list
-Message-ID: <20200117115935.GW19428@dhcp22.suse.cz>
-References: <20200116013100.7679-1-richardw.yang@linux.intel.com>
- <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
- <alpine.DEB.2.21.2001161357240.109233@chino.kir.corp.google.com>
- <20200117091002.GM19428@dhcp22.suse.cz>
- <b67fe2bb-e7a6-29fe-925e-dd1ae176cc4b@virtuozzo.com>
- <alpine.DEB.2.21.2001170132090.20618@chino.kir.corp.google.com>
- <11ba0af7-c2b2-83f9-ac55-7793cedb8028@virtuozzo.com>
+        id S1726942AbgAQNqw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jan 2020 08:46:52 -0500
+Received: from mga03.intel.com ([134.134.136.65]:17698 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726903AbgAQNqw (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 17 Jan 2020 08:46:52 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 05:46:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,330,1574150400"; 
+   d="scan'208";a="214477683"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga007.jf.intel.com with ESMTP; 17 Jan 2020 05:46:50 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1isRxa-0000tQ-4Q; Fri, 17 Jan 2020 21:46:50 +0800
+Date:   Fri, 17 Jan 2020 21:46:02 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [cgroup:for-next] BUILD SUCCESS
+ 0c10e327ee039a156c0cbc2ddbf2a1f7d5e23633
+Message-ID: <5e21ba9a.icP53A8EWz388FmS%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <11ba0af7-c2b2-83f9-ac55-7793cedb8028@virtuozzo.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 17-01-20 12:42:05, Kirill Tkhai wrote:
-> On 17.01.2020 12:32, David Rientjes wrote:
-> > On Fri, 17 Jan 2020, Kirill Tkhai wrote:
-> > 
-> >>>> I think that's a good point, especially considering that the current code 
-> >>>> appears to unconditionally place any compound page on the deferred split 
-> >>>> queue of the destination memcg.  The correct list that it should appear 
-> >>>> on, I believe, depends on whether the pmd has been split for the process 
-> >>>> being moved: note the MC_TARGET_PAGE caveat in 
-> >>>> mem_cgroup_move_charge_pte_range() that does not move the charge for 
-> >>>> compound pages with split pmds.  So when mem_cgroup_move_account() is 
-> >>>> called with compound == true, we're moving the charge of the entire 
-> >>>> compound page: why would it appear on that memcg's deferred split queue?
-> >>>
-> >>> I believe Kirill asked how do we know that the page should be actually
-> >>> added to the deferred list just from the list_empty check. In other
-> >>> words what if the page hasn't been split at all?
-> >>
-> >> Yes, I'm talking about this. Function mem_cgroup_move_account() adds every
-> >> huge page to the deferred list, while we need to do that only for pages,
-> >> which are queued for splitting...
-> >>
-> > 
-> > Yup, and that appears broken before Wei's patch.  Since we only migrate 
-> > charges of entire compound pages (we have a mapping pmd, the underlying 
-> > page cannot be split), it should not appear on the deferred split queue 
-> > for any memcg, right?
-> 
-> Hm. Can't a huge page be mapped in two tasks:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git  for-next
+branch HEAD: 0c10e327ee039a156c0cbc2ddbf2a1f7d5e23633  Merge branch 'for-5.6' into for-next
 
-It can but it will get charged to only of the initially. I haven't
-checked the THP code in that aspect but from what I remember subpages
-shouldn't refer to different memcgs. Kirill Shutemov?
--- 
-Michal Hocko
-SUSE Labs
+elapsed time: 1960m
+
+configs tested: 121
+configs skipped: 1
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                             defconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+s390                              allnoconfig
+s390                             alldefconfig
+s390                          debug_defconfig
+s390                             allmodconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+s390                             allyesconfig
+csky                 randconfig-a001-20200117
+openrisc             randconfig-a001-20200117
+s390                 randconfig-a001-20200117
+sh                   randconfig-a001-20200117
+xtensa               randconfig-a001-20200117
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+alpha                               defconfig
+csky                                defconfig
+nds32                             allnoconfig
+nds32                               defconfig
+c6x                              allyesconfig
+c6x                        evmc6678_defconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+arc                  randconfig-a001-20200116
+arm                  randconfig-a001-20200116
+arm64                randconfig-a001-20200116
+ia64                 randconfig-a001-20200116
+powerpc              randconfig-a001-20200116
+sparc                randconfig-a001-20200116
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                               rhel-7.6
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm64                               defconfig
+ia64                                defconfig
+i386                              allnoconfig
+i386                                defconfig
+i386                             alldefconfig
+parisc                        c3000_defconfig
+parisc                         b180_defconfig
+parisc                              defconfig
+parisc                            allnoconfig
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+sparc64              randconfig-a001-20200117
+microblaze           randconfig-a001-20200117
+nios2                randconfig-a001-20200117
+c6x                  randconfig-a001-20200117
+h8300                randconfig-a001-20200117
+ia64                             allmodconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+ia64                             alldefconfig
+alpha                randconfig-a001-20200116
+m68k                 randconfig-a001-20200116
+mips                 randconfig-a001-20200116
+nds32                randconfig-a001-20200116
+parisc               randconfig-a001-20200116
+riscv                randconfig-a001-20200116
+sparc64                          allmodconfig
+sparc                            allyesconfig
+sparc64                          allyesconfig
+sparc                               defconfig
+sparc64                           allnoconfig
+sparc64                             defconfig
+parisc                            allyesonfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+x86_64               randconfig-d001-20200116
+x86_64               randconfig-d002-20200116
+x86_64               randconfig-d003-20200116
+i386                 randconfig-d001-20200116
+i386                 randconfig-d002-20200116
+i386                 randconfig-d003-20200116
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+
+---
+0-DAY kernel test infrastructure                 Open Source Technology Center
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org Intel Corporation
