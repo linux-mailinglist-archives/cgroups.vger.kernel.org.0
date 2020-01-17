@@ -2,114 +2,237 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEABF1413FA
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 23:16:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 53CBC141400
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 23:20:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgAQWQX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jan 2020 17:16:23 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:60148 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726861AbgAQWQX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 17:16:23 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00HM8HXd150359;
-        Fri, 17 Jan 2020 22:09:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2019-08-05;
- bh=HFFGUnfSqVWShYbKt3p582lD3bfMPINDrNFPG0jJqvE=;
- b=kW1I3h9CqDB0WI8iNf10+m0iPa1caxU1I2lL1DtfW2t6Uujt+6MaHhDAA108OOEPPtMf
- goLIn+mP/rVpqL+EO+HM0B7wM5FQpwXMNqCmaqcrB6Z600IT925wNPtfUgkBRPg35LZM
- Mo3dMDUo92fmDi4WY7wvg2kCn4OK3T3EzCi9VB+NxluNT0ym96Ld1u4W/C9uk8KvsMGr
- ALkR6o/MlhLR0mM5EhBRvTo5MSi/0IRdQQoo4d7fwn4ZOJsqxEcP9dswoYez6M29dLuT
- +cn9qJ0lC19z4UEYkqRZLSynbDNwNVrxZ4aMQ/66dfOuMU/4COFYdA4k5s46rgjTEbHD 5A== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2xf74037wy-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jan 2020 22:09:48 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00HM8mVc008512;
-        Fri, 17 Jan 2020 22:09:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 2xjxm9pau4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 17 Jan 2020 22:09:47 +0000
-Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00HM9iG3027286;
-        Fri, 17 Jan 2020 22:09:44 GMT
-Received: from [192.168.1.206] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 17 Jan 2020 14:09:44 -0800
-Subject: Re: [PATCH v9 3/8] hugetlb_cgroup: add reservation accounting for
- private mappings
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>
-References: <20191217231615.164161-1-almasrymina@google.com>
- <20191217231615.164161-3-almasrymina@google.com>
- <dec1ccd5-5973-c498-f2fe-390c1c51b2d0@oracle.com>
- <CAHS8izMzXpNMCmFh_SD7n+4+rj3QTqyRfeWQyXAhFo1-qV4iEQ@mail.gmail.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <0ea993b0-af18-cee8-527e-f6df7e76b0be@oracle.com>
-Date:   Fri, 17 Jan 2020 14:09:42 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.3.1
+        id S1726901AbgAQWU3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jan 2020 17:20:29 -0500
+Received: from mga09.intel.com ([134.134.136.24]:16792 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726857AbgAQWU3 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 17 Jan 2020 17:20:29 -0500
+X-Amp-Result: UNKNOWN
+X-Amp-Original-Verdict: FILE UNKNOWN
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga102.jf.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 17 Jan 2020 14:18:51 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,331,1574150400"; 
+   d="scan'208";a="424631108"
+Received: from richard.sh.intel.com (HELO localhost) ([10.239.159.54])
+  by fmsmga005.fm.intel.com with ESMTP; 17 Jan 2020 14:18:48 -0800
+Date:   Sat, 18 Jan 2020 06:18:59 +0800
+From:   Wei Yang <richardw.yang@linux.intel.com>
+To:     Yang Shi <yang.shi@linux.alibaba.com>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        David Rientjes <rientjes@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        kirill.shutemov@linux.intel.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        alexander.duyck@gmail.com, stable@vger.kernel.org
+Subject: Re: [Patch v3] mm: thp: grab the lock before manipulation defer list
+Message-ID: <20200117221859.GA29229@richard>
+Reply-To: Wei Yang <richardw.yang@linux.intel.com>
+References: <20200116013100.7679-1-richardw.yang@linux.intel.com>
+ <0bb34c4a-97c7-0b3c-cf43-8af6cf9c4396@virtuozzo.com>
+ <alpine.DEB.2.21.2001161357240.109233@chino.kir.corp.google.com>
+ <20200117091002.GM19428@dhcp22.suse.cz>
+ <alpine.DEB.2.21.2001170125350.20618@chino.kir.corp.google.com>
+ <20200117153839.pcnfomzuaha3dafh@box>
+ <4d117021-da90-6069-1991-4df2249567f8@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izMzXpNMCmFh_SD7n+4+rj3QTqyRfeWQyXAhFo1-qV4iEQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9503 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
- phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.0.1-1911140001 definitions=main-2001170170
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9503 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
- suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
- lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
- definitions=main-2001170170
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4d117021-da90-6069-1991-4df2249567f8@linux.alibaba.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/14/20 2:52 PM, Mina Almasry wrote:
-> On Mon, Jan 13, 2020 at 4:55 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->>> +#ifdef CONFIG_CGROUP_HUGETLB
->>> +     /*
->>> +      * Since we check for HPAGE_RESV_OWNER above, this must a private
->>> +      * mapping, and these values should be none-zero, and should point to
->>> +      * the hugetlb_cgroup counter to uncharge for this reservation.
->>> +      */
->>> +     WARN_ON(!resv->reservation_counter);
->>> +     WARN_ON(!resv->pages_per_hpage);
->>> +     WARN_ON(!resv->css);
->>
->> I was once again wondering if these were always non-NULL for private mappings.
->> It seems that reservation_counter (h_gc) would be NULL in these cases from
->> these early checks in hugetlb_cgroup_charge_cgroup().
->>
-> 
-> You are right. I'm fixing in v10 the code and comments to account for
-> h_cg potentially being NULL, but I'm having trouble testing. Looking
-> at the code, I'm a bit confused by the checks. Seems to me
-> hugetlb_cgroup_disabled() is the same as #ifdef CONFIG_CGROUP_HUGETLB;
-> I can't find a way to enable the Kconfig but have that return false
-> unless I hack the code.
+On Fri, Jan 17, 2020 at 11:17:38AM -0800, Yang Shi wrote:
+>
+>
+>On 1/17/20 7:38 AM, Kirill A. Shutemov wrote:
+>> On Fri, Jan 17, 2020 at 01:31:50AM -0800, David Rientjes wrote:
+>> > On Fri, 17 Jan 2020, Michal Hocko wrote:
+>> > 
+>> > > On Thu 16-01-20 14:01:59, David Rientjes wrote:
+>> > > > On Thu, 16 Jan 2020, Kirill Tkhai wrote:
+>> > > > 
+>> > > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> > > > > > index c5b5f74cfd4d..6450bbe394e2 100644
+>> > > > > > --- a/mm/memcontrol.c
+>> > > > > > +++ b/mm/memcontrol.c
+>> > > > > > @@ -5360,10 +5360,12 @@ static int mem_cgroup_move_account(struct page *page,
+>> > > > > >   	}
+>> > > > > >   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> > > > > > -	if (compound && !list_empty(page_deferred_list(page))) {
+>> > > > > > +	if (compound) {
+>> > > > > >   		spin_lock(&from->deferred_split_queue.split_queue_lock);
+>> > > > > > -		list_del_init(page_deferred_list(page));
+>> > > > > > -		from->deferred_split_queue.split_queue_len--;
+>> > > > > > +		if (!list_empty(page_deferred_list(page))) {
+>> > > > > > +			list_del_init(page_deferred_list(page));
+>> > > > > > +			from->deferred_split_queue.split_queue_len--;
+>> > > > > > +		}
+>> > > > > >   		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>> > > > > >   	}
+>> > > > > >   #endif
+>> > > > > > @@ -5377,11 +5379,13 @@ static int mem_cgroup_move_account(struct page *page,
+>> > > > > >   	page->mem_cgroup = to;
+>> > > > > >   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> > > > > > -	if (compound && list_empty(page_deferred_list(page))) {
+>> > > > > > +	if (compound) {
+>> > > > > >   		spin_lock(&to->deferred_split_queue.split_queue_lock);
+>> > > > > > -		list_add_tail(page_deferred_list(page),
+>> > > > > > -			      &to->deferred_split_queue.split_queue);
+>> > > > > > -		to->deferred_split_queue.split_queue_len++;
+>> > > > > > +		if (list_empty(page_deferred_list(page))) {
+>> > > > > > +			list_add_tail(page_deferred_list(page),
+>> > > > > > +				      &to->deferred_split_queue.split_queue);
+>> > > > > > +			to->deferred_split_queue.split_queue_len++;
+>> > > > > > +		}
+>> > > > > >   		spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>> > > > > >   	}
+>> > > > > >   #endif
+>> > > > > The patch looks OK for me. But there is another question. I forget, why we unconditionally
+>> > > > > add a page with empty deferred list to deferred_split_queue. Shouldn't we also check that
+>> > > > > it was initially in the list? Something like:
+>> > > > > 
+>> > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> > > > > index d4394ae4e5be..0be0136adaa6 100644
+>> > > > > --- a/mm/memcontrol.c
+>> > > > > +++ b/mm/memcontrol.c
+>> > > > > @@ -5289,6 +5289,7 @@ static int mem_cgroup_move_account(struct page *page,
+>> > > > >   	struct pglist_data *pgdat;
+>> > > > >   	unsigned long flags;
+>> > > > >   	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
+>> > > > > +	bool split = false;
+>> > > > >   	int ret;
+>> > > > >   	bool anon;
+>> > > > > @@ -5346,6 +5347,7 @@ static int mem_cgroup_move_account(struct page *page,
+>> > > > >   		if (!list_empty(page_deferred_list(page))) {
+>> > > > >   			list_del_init(page_deferred_list(page));
+>> > > > >   			from->deferred_split_queue.split_queue_len--;
+>> > > > > +			split = true;
+>> > > > >   		}
+>> > > > >   		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>> > > > >   	}
+>> > > > > @@ -5360,7 +5362,7 @@ static int mem_cgroup_move_account(struct page *page,
+>> > > > >   	page->mem_cgroup = to;
+>> > > > >   #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> > > > > -	if (compound) {
+>> > > > > +	if (compound && split) {
+>> > > > >   		spin_lock(&to->deferred_split_queue.split_queue_lock);
+>> > > > >   		if (list_empty(page_deferred_list(page))) {
+>> > > > >   			list_add_tail(page_deferred_list(page),
+>> > > > > 
+>> > > > I think that's a good point, especially considering that the current code
+>> > > > appears to unconditionally place any compound page on the deferred split
+>> > > > queue of the destination memcg.  The correct list that it should appear
+>> > > > on, I believe, depends on whether the pmd has been split for the process
+>> > > > being moved: note the MC_TARGET_PAGE caveat in
+>> > > > mem_cgroup_move_charge_pte_range() that does not move the charge for
+>> > > > compound pages with split pmds.  So when mem_cgroup_move_account() is
+>> > > > called with compound == true, we're moving the charge of the entire
+>> > > > compound page: why would it appear on that memcg's deferred split queue?
+>> > > I believe Kirill asked how do we know that the page should be actually
+>> > > added to the deferred list just from the list_empty check. In other
+>> > > words what if the page hasn't been split at all?
+>> > > 
+>> > Right, and I don't think that it necessarily is and the second
+>> > conditional in Wei's patch will always succeed unless we have raced.  That
+>> > patch is for a lock concern but I think Kirill's question has uncovered
+>> > something more interesting.
+>> > 
+>> > Kirill S would definitely be best to answer Kirill T's question, but from
+>> > my understanding when mem_cgroup_move_account() is called with
+>> > compound == true that we always have an intact pmd (we never migrate
+>> > partial page charges for pages on the deferred split queue with the
+>> > current charge migration implementation) and thus the underlying page is
+>> > not eligible to be split and shouldn't be on the deferred split queue.
+>> > 
+>> > In other words, a page being on the deferred split queue for a memcg
+>> > should only happen when it is charged to that memcg.  (This wasn't the
+>> > case when we only had per-node split queues.)  I think that's currently
+>> > broken in mem_cgroup_move_account() before Wei's patch.
+>> Right. It's broken indeed.
+>
+>Hmm... Yes, definitely. I wasn't realized this at the first place.
+>
+>> 
+>> We are dealing with anon page here. And it cannot be on deferred list as
+>> long as it's mapped with PMD. We cannot get compound == true &&
+>> !list_empty() on the (first) enter to the function. Any PMD-mapped page
+>> will be put onto deferred by the function. This is wrong.
+>> 
+>> The fix is not obvious.
+>> 
+>> This comment got in mem_cgroup_move_charge_pte_range() my attention:
+>> 
+>> 			/*
+>> 			 * We can have a part of the split pmd here. Moving it
+>> 			 * can be done but it would be too convoluted so simply
+>> 			 * ignore such a partial THP and keep it in original
+>> 			 * memcg. There should be somebody mapping the head.
+>> 			 */
+>> 
+>> That's exactly the case we care about: PTE-mapped THP that has to be split
+>> under load. We don't move charge of them between memcgs and therefore we
+>> should not move the page to different memcg.
+>> 
+>> I guess this will do the trick :P
+>
+>It seems correct to me. In addition, memcg move charge just move PMD mapped
+>THP, the THP should be never on the deferred split queue of "from" if it is
+>PMD mapped, so actually we don't have to move it to the deferred split queue
+>of "to".
+>
 
-What about the boot options?
+Well, I got the point.
 
-cgroup_disable=
-cgroup_no_v1=
+Since Kirill S found the correct solution, should I prepare v3 or Kirill will
+send it?
+
+>> 
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index c5b5f74cfd4d..e87ee4c10f6e 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -5359,14 +5359,6 @@ static int mem_cgroup_move_account(struct page *page,
+>>   		__mod_lruvec_state(to_vec, NR_WRITEBACK, nr_pages);
+>>   	}
+>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> -	if (compound && !list_empty(page_deferred_list(page))) {
+>> -		spin_lock(&from->deferred_split_queue.split_queue_lock);
+>> -		list_del_init(page_deferred_list(page));
+>> -		from->deferred_split_queue.split_queue_len--;
+>> -		spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>> -	}
+>> -#endif
+>>   	/*
+>>   	 * It is safe to change page->mem_cgroup here because the page
+>>   	 * is referenced, charged, and isolated - we can't race with
+>> @@ -5376,16 +5368,6 @@ static int mem_cgroup_move_account(struct page *page,
+>>   	/* caller should have done css_get */
+>>   	page->mem_cgroup = to;
+>> -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> -	if (compound && list_empty(page_deferred_list(page))) {
+>> -		spin_lock(&to->deferred_split_queue.split_queue_lock);
+>> -		list_add_tail(page_deferred_list(page),
+>> -			      &to->deferred_split_queue.split_queue);
+>> -		to->deferred_split_queue.split_queue_len++;
+>> -		spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>> -	}
+>> -#endif
+>> -
+>>   	spin_unlock_irqrestore(&from->move_lock, flags);
+>>   	ret = 0;
 
 -- 
-Mike Kravetz
+Wei Yang
+Help you, Help me
