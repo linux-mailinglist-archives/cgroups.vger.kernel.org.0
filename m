@@ -2,755 +2,405 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A2891400CE
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 01:22:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A45AB1400C0
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 01:22:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731992AbgAQAVw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S1732267AbgAQAVw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Thu, 16 Jan 2020 19:21:52 -0500
-Received: from youngberry.canonical.com ([91.189.89.112]:54613 "EHLO
+Received: from youngberry.canonical.com ([91.189.89.112]:54618 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729625AbgAQAVv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 19:21:51 -0500
+        with ESMTP id S1728963AbgAQAVw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jan 2020 19:21:52 -0500
 Received: from ip5f5bd663.dynamic.kabel-deutschland.de ([95.91.214.99] helo=localhost.localdomain)
         by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.86_2)
         (envelope-from <christian.brauner@ubuntu.com>)
-        id 1isFOW-0001a1-Sa; Fri, 17 Jan 2020 00:21:49 +0000
+        id 1isFOX-0001a1-G3; Fri, 17 Jan 2020 00:21:49 +0000
 From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tejun Heo <tj@kernel.org>
 Cc:     Oleg Nesterov <oleg@redhat.com>,
         Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org
-Subject: [PATCH v3 4/5] clone3: allow spawning processes into cgroups
-Date:   Fri, 17 Jan 2020 01:21:42 +0100
-Message-Id: <20200117002143.15559-5-christian.brauner@ubuntu.com>
+        Roman Gushchin <guro@fb.com>, Shuah Khan <shuah@kernel.org>,
+        cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH v3 5/5] selftests/cgroup: add tests for cloning into cgroups
+Date:   Fri, 17 Jan 2020 01:21:43 +0100
+Message-Id: <20200117002143.15559-6-christian.brauner@ubuntu.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200117002143.15559-1-christian.brauner@ubuntu.com>
 References: <20200117002143.15559-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This adds support for creating a process in a different cgroup than its
-parent. Callers can limit and account processes and threads right from
-the moment they are spawned:
-- A service manager can directly spawn new services into dedicated
-  cgroups.
-- A process can be directly created in a frozen cgroup and will be
-  frozen as well.
-- The initial accounting jitter experienced by process supervisors and
-  daemons is eliminated with this.
-- Threaded applications or even thread implementations can choose to
-  create a specific cgroup layout where each thread is spawned
-  directly into a dedicated cgroup.
+Expand the cgroup test-suite to include tests for CLONE_INTO_CGROUP.
+This adds the following tests:
+- CLONE_INTO_CGROUP manages to clone a process directly into a correctly
+  delegated cgroup
+- CLONE_INTO_CGROUP fails to clone a process into a cgroup that has been
+  removed after we've opened an fd to it
+- CLONE_INTO_CGROUP fails to clone a process into an invalid domain
+  cgroup
+- CLONE_INTO_CGROUP adheres to the no internal process constraint
+- CLONE_INTO_CGROUP works with the freezer feature
 
-This feature is limited to the unified hierarchy. Callers need to pass
-an directory file descriptor for the target cgroup. The caller can
-choose to pass an O_PATH file descriptor. All usual migration
-restrictions apply, i.e. there can be no processes in inner nodes. In
-general, creating a process directly in a target cgroup adheres to all
-migration restrictions.
-
+Cc: Roman Gushchin <guro@fb.com>
 Cc: Tejun Heo <tj@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Li Zefan <lizefan@huawei.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Shuah Khan <shuah@kernel.org>
 Cc: cgroups@vger.kernel.org
+Cc: linux-kselftest@vger.kernel.org
 Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
 ---
 /* v1 */
-Link: https://lore.kernel.org/r/20191218173516.7875-3-christian.brauner@ubuntu.com
+Link: https://lore.kernel.org/r/20191218173516.7875-4-christian.brauner@ubuntu.com
 
 /* v2 */
-Link: https://lore.kernel.org/r/20191223061504.28716-3-christian.brauner@ubuntu.com
-- Oleg Nesterov <oleg@redhat.com>:
-  - prevent deadlock from wrong locking order
-- Christian Brauner <christian.brauner@ubuntu.com>:
-  - Rework locking. In the previous patch version we would have already
-    acquired the cgroup_threadgroup_rwsem before we grabbed cgroup mutex
-    we need to hold when CLONE_INTO_CGROUP is specified. This meant we
-    could deadlock with other codepaths that all require it to be done
-    the other way around. Fix this by first grabbing cgroup mutex when
-    CLONE_INTO_CGROUP is specified and then grabbing
-    cgroup_threadgroup_rwsem unconditionally after. This way we don't
-    require the cgroup mutex be held in codepaths that don't need it.
-  - Switch from mutex_lock() to mutex_lock_killable().
+Link: https://lore.kernel.org/r/20191223061504.28716-4-christian.brauner@ubuntu.com
+unchanged
 
 /* v3 */
-- Tejun Heo <tj@kernel.org>:
-  - s/mutex_lock_killable()/mutex_lock()/ because it should only ever
-    be held for a short time:
-    diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-    index a9fedcfeae4b..d68d3fb6af1d 100644
-    --- a/kernel/cgroup/cgroup.c
-    +++ b/kernel/cgroup/cgroup.c
-    @@ -5927,11 +5927,8 @@ static int cgroup_css_set_fork(struct task_struct *parent,
-            struct super_block *sb;
-            struct file *f;
-
-    -       if (kargs->flags & CLONE_INTO_CGROUP) {
-    -               ret = mutex_lock_killable(&cgroup_mutex);
-    -               if (ret)
-    -                       return ret;
-    -       }
-    +       if (kargs->flags & CLONE_INTO_CGROUP)
-    +               mutex_lock(&cgroup_mutex);
-
-            cgroup_threadgroup_change_begin(parent);
-  - s/task_cgroup_from_root/cset->dfl_cgrp/:
-    diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-    index d68d3fb6af1d..3ceef006d144 100644
-    --- a/kernel/cgroup/cgroup.c
-    +++ b/kernel/cgroup/cgroup.c
-    @@ -5922,7 +5922,7 @@ static int cgroup_css_set_fork(struct task_struct *parent,
-            __acquires(&cgroup_mutex) __acquires(&cgroup_threadgroup_rwsem)
-     {
-            int ret;
-    -       struct cgroup *dst_cgrp = NULL, *src_cgrp;
-    +       struct cgroup *dst_cgrp = NULL;
-            struct css_set *cset;
-            struct super_block *sb;
-            struct file *f;
-    @@ -5956,11 +5956,7 @@ static int cgroup_css_set_fork(struct task_struct *parent,
-                    goto err;
-            }
-
-    -       spin_lock_irq(&css_set_lock);
-    -       src_cgrp = task_cgroup_from_root(parent, &cgrp_dfl_cgrp);
-    -       spin_unlock_irq(&css_set_lock);
-    -
-    -       ret = cgroup_attach_permissions(src_cgrp, dst_cgrp, sb,
-    +       ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
-                                            !!(kargs->flags & CLONE_THREAD));
-            if (ret)
-                    goto err;
-  - pass struct css_set instead of struct kernel_clone_args into cgroup
-    fork subsystem callbacks:
-    diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-    index cd848c6bac4a..058bb16d073f 100644
-    --- a/include/linux/cgroup-defs.h
-    +++ b/include/linux/cgroup-defs.h
-    @@ -630,9 +630,8 @@ struct cgroup_subsys {
-     	void (*attach)(struct cgroup_taskset *tset);
-     	void (*post_attach)(void);
-     	int (*can_fork)(struct task_struct *parent, struct task_struct *child,
-    -			struct kernel_clone_args *kargs);
-    -	void (*cancel_fork)(struct task_struct *child,
-    -			    struct kernel_clone_args *kargs);
-    +			struct css_set *cset);
-    +	void (*cancel_fork)(struct task_struct *child, struct css_set *cset);
-     	void (*fork)(struct task_struct *task);
-     	void (*exit)(struct task_struct *task);
-     	void (*release)(struct task_struct *task);
-    diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-    index 3ceef006d144..2ac1c37a3fcb 100644
-    --- a/kernel/cgroup/cgroup.c
-    +++ b/kernel/cgroup/cgroup.c
-    @@ -6044,7 +6044,7 @@ int cgroup_can_fork(struct task_struct *parent, struct task_struct *child,
-     		return ret;
-
-     	do_each_subsys_mask(ss, i, have_canfork_callback) {
-    -		ret = ss->can_fork(parent, child, kargs);
-    +		ret = ss->can_fork(parent, child, kargs->cset);
-     		if (ret)
-     			goto out_revert;
-     	} while_each_subsys_mask();
-    @@ -6056,7 +6056,7 @@ int cgroup_can_fork(struct task_struct *parent, struct task_struct *child,
-     		if (j >= i)
-     			break;
-     		if (ss->cancel_fork)
-    -			ss->cancel_fork(child, kargs);
-    +			ss->cancel_fork(child, kargs->cset);
-     	}
-
-     	cgroup_css_set_put_fork(parent, kargs);
-    @@ -6082,7 +6082,7 @@ void cgroup_cancel_fork(struct task_struct *parent, struct task_struct *child,
-
-     	for_each_subsys(ss, i)
-     		if (ss->cancel_fork)
-    -			ss->cancel_fork(child, kargs);
-    +			ss->cancel_fork(child, kargs->cset);
-
-     	cgroup_css_set_put_fork(parent, kargs);
-     }
-    diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
-    index e5955bc1fb00..4e7c8819c8df 100644
-    --- a/kernel/cgroup/pids.c
-    +++ b/kernel/cgroup/pids.c
-    @@ -216,20 +216,16 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
-      * on cgroup_threadgroup_change_begin() held by the copy_process().
-      */
-     static int pids_can_fork(struct task_struct *parent, struct task_struct *child,
-    -			 struct kernel_clone_args *args)
-    +			 struct css_set *cset)
-     {
-    -	struct css_set *new_cset = NULL;
-     	struct cgroup_subsys_state *css;
-     	struct pids_cgroup *pids;
-     	int err;
-
-    -	if (args)
-    -		new_cset = args->cset;
-    -
-    -	if (!new_cset)
-    -		css = task_css_check(current, pids_cgrp_id, true);
-    +	if (cset)
-    +		css = cset->subsys[pids_cgrp_id];
-     	else
-    -		css = new_cset->subsys[pids_cgrp_id];
-    +		css = task_css_check(current, pids_cgrp_id, true);
-     	pids = css_pids(css);
-     	err = pids_try_charge(pids, 1);
-     	if (err) {
-    @@ -244,20 +240,15 @@ static int pids_can_fork(struct task_struct *parent, struct task_struct *child,
-     	return err;
-     }
-
-    -static void pids_cancel_fork(struct task_struct *task,
-    -			     struct kernel_clone_args *args)
-    +static void pids_cancel_fork(struct task_struct *task, struct css_set *cset)
-     {
-    -	struct css_set *new_cset = NULL;
-     	struct cgroup_subsys_state *css;
-     	struct pids_cgroup *pids;
-
-    -	if (args)
-    -		new_cset = args->cset;
-    -
-    -	if (!new_cset)
-    -		css = task_css_check(current, pids_cgrp_id, true);
-    +	if (cset)
-    +		css = cset->subsys[pids_cgrp_id];
-     	else
-    -		css = new_cset->subsys[pids_cgrp_id];
-    +		css = task_css_check(current, pids_cgrp_id, true);
-     	pids = css_pids(css);
-     	pids_uncharge(pids, 1);
-     }
-- Michal Koutný <mkoutny@suse.com>:
-  - update comment for cgroup_fork()
-  - if CLONE_NEWCGROUP and CLONE_INTO_CGROUP is requested, set the
-    root_cset of the new cgroup namespace to the child's cset
+unchanged
 ---
- include/linux/cgroup-defs.h |   6 +-
- include/linux/cgroup.h      |  20 ++--
- include/linux/sched/task.h  |   4 +
- include/uapi/linux/sched.h  |   5 +
- kernel/cgroup/cgroup.c      | 185 +++++++++++++++++++++++++++++++-----
- kernel/cgroup/pids.c        |  16 +++-
- kernel/fork.c               |  13 ++-
- 7 files changed, 208 insertions(+), 41 deletions(-)
+ tools/testing/selftests/cgroup/Makefile       |   6 +-
+ tools/testing/selftests/cgroup/cgroup_util.c  | 126 ++++++++++++++++++
+ tools/testing/selftests/cgroup/cgroup_util.h  |   4 +
+ tools/testing/selftests/cgroup/test_core.c    |  64 +++++++++
+ .../selftests/clone3/clone3_selftests.h       |  19 ++-
+ 5 files changed, 214 insertions(+), 5 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 63097cb243cb..058bb16d073f 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -33,6 +33,7 @@ struct kernfs_ops;
- struct kernfs_open_file;
- struct seq_file;
- struct poll_table_struct;
-+struct kernel_clone_args;
+diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+index 66aafe1f5746..967f268fde74 100644
+--- a/tools/testing/selftests/cgroup/Makefile
++++ b/tools/testing/selftests/cgroup/Makefile
+@@ -11,6 +11,6 @@ TEST_GEN_PROGS += test_freezer
  
- #define MAX_CGROUP_TYPE_NAMELEN 32
- #define MAX_CGROUP_ROOT_NAMELEN 64
-@@ -628,8 +629,9 @@ struct cgroup_subsys {
- 	void (*cancel_attach)(struct cgroup_taskset *tset);
- 	void (*attach)(struct cgroup_taskset *tset);
- 	void (*post_attach)(void);
--	int (*can_fork)(struct task_struct *task);
--	void (*cancel_fork)(struct task_struct *task);
-+	int (*can_fork)(struct task_struct *parent, struct task_struct *child,
-+			struct css_set *cset);
-+	void (*cancel_fork)(struct task_struct *child, struct css_set *cset);
- 	void (*fork)(struct task_struct *task);
- 	void (*exit)(struct task_struct *task);
- 	void (*release)(struct task_struct *task);
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 5349465bfac1..dfd5e095f4ee 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -27,6 +27,8 @@
+ include ../lib.mk
  
- #include <linux/cgroup-defs.h>
+-$(OUTPUT)/test_memcontrol: cgroup_util.c
+-$(OUTPUT)/test_core: cgroup_util.c
+-$(OUTPUT)/test_freezer: cgroup_util.c
++$(OUTPUT)/test_memcontrol: cgroup_util.c ../clone3/clone3_selftests.h
++$(OUTPUT)/test_core: cgroup_util.c ../clone3/clone3_selftests.h
++$(OUTPUT)/test_freezer: cgroup_util.c ../clone3/clone3_selftests.h
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.c b/tools/testing/selftests/cgroup/cgroup_util.c
+index 8f7131dcf1ff..8a637ca7d73a 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/cgroup_util.c
+@@ -15,6 +15,7 @@
+ #include <unistd.h>
  
-+struct kernel_clone_args;
-+
- #ifdef CONFIG_CGROUPS
+ #include "cgroup_util.h"
++#include "../clone3/clone3_selftests.h"
  
- /*
-@@ -122,11 +124,14 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
- 
- void cgroup_fork(struct task_struct *p);
- extern int cgroup_can_fork(struct task_struct *parent,
--			   struct task_struct *child);
-+			   struct task_struct *child,
-+			   struct kernel_clone_args *kargs);
- extern void cgroup_cancel_fork(struct task_struct *parent,
--			       struct task_struct *child);
-+			       struct task_struct *child,
-+			       struct kernel_clone_args *kargs);
- extern void cgroup_post_fork(struct task_struct *parent,
--			     struct task_struct *child);
-+			     struct task_struct *child,
-+			     struct kernel_clone_args *kargs);
- void cgroup_exit(struct task_struct *p);
- void cgroup_release(struct task_struct *p);
- void cgroup_free(struct task_struct *p);
-@@ -711,11 +716,14 @@ static inline int cgroupstats_build(struct cgroupstats *stats,
- 
- static inline void cgroup_fork(struct task_struct *p) {}
- static inline int cgroup_can_fork(struct task_struct *parent,
--				  struct task_struct *child) { return 0; }
-+				  struct task_struct *child,
-+				  struct kernel_clone_args *kargs) { return 0; }
- static inline void cgroup_cancel_fork(struct task_struct *parent,
--			       struct task_struct *child) {};
-+				      struct task_struct *child,
-+				      struct kernel_clone_args *kargs) {};
- static inline void cgroup_post_fork(struct task_struct *parent,
--				    struct task_struct *child) {};
-+				    struct task_struct *child,
-+				    struct kernel_clone_args *kargs) {};
- static inline void cgroup_exit(struct task_struct *p) {}
- static inline void cgroup_release(struct task_struct *p) {}
- static inline void cgroup_free(struct task_struct *p) {}
-diff --git a/include/linux/sched/task.h b/include/linux/sched/task.h
-index f1879884238e..38359071236a 100644
---- a/include/linux/sched/task.h
-+++ b/include/linux/sched/task.h
-@@ -13,6 +13,7 @@
- struct task_struct;
- struct rusage;
- union thread_union;
-+struct css_set;
- 
- /* All the bits taken by the old clone syscall. */
- #define CLONE_LEGACY_FLAGS 0xffffffffULL
-@@ -29,6 +30,9 @@ struct kernel_clone_args {
- 	pid_t *set_tid;
- 	/* Number of elements in *set_tid */
- 	size_t set_tid_size;
-+	int cgroup;
-+	struct cgroup *cgrp;
-+	struct css_set *cset;
- };
- 
- /*
-diff --git a/include/uapi/linux/sched.h b/include/uapi/linux/sched.h
-index 4a0217832464..08620c220f30 100644
---- a/include/uapi/linux/sched.h
-+++ b/include/uapi/linux/sched.h
-@@ -35,6 +35,7 @@
- 
- /* Flags for the clone3() syscall. */
- #define CLONE_CLEAR_SIGHAND 0x100000000ULL /* Clear any signal handler and reset to SIG_DFL. */
-+#define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
- 
- #ifndef __ASSEMBLY__
- /**
-@@ -75,6 +76,8 @@
-  * @set_tid_size: This defines the size of the array referenced
-  *                in @set_tid. This cannot be larger than the
-  *                kernel's limit of nested PID namespaces.
-+ * @cgroup:       If CLONE_INTO_CGROUP is specified set this to
-+ *                a file descriptor for the cgroup.
-  *
-  * The structure is versioned by size and thus extensible.
-  * New struct members must go at the end of the struct and
-@@ -91,11 +94,13 @@ struct clone_args {
- 	__aligned_u64 tls;
- 	__aligned_u64 set_tid;
- 	__aligned_u64 set_tid_size;
-+	__aligned_u64 cgroup;
- };
- #endif
- 
- #define CLONE_ARGS_SIZE_VER0 64 /* sizeof first published struct */
- #define CLONE_ARGS_SIZE_VER1 80 /* sizeof second published struct */
-+#define CLONE_ARGS_SIZE_VER2 88 /* sizeof third published struct */
- 
- /*
-  * Scheduling policies
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 49d8cf087e10..adf82c306dce 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5873,8 +5873,7 @@ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
-  * @child: pointer to task_struct of forking parent process.
-  *
-  * A task is associated with the init_css_set until cgroup_post_fork()
-- * attaches it to the parent's css_set.  Empty cg_list indicates that
-- * @child isn't holding reference to its css_set.
-+ * attaches it to the target css_set.
-  */
- void cgroup_fork(struct task_struct *child)
+ static ssize_t read_text(const char *path, char *buf, size_t max_len)
  {
-@@ -5900,26 +5899,151 @@ static struct cgroup *cgroup_get_from_file(struct file *f)
- 	return cgrp;
+@@ -331,12 +332,112 @@ int cg_run(const char *cgroup,
+ 	}
  }
  
-+/**
-+ * cgroup_css_set_fork - find or create a css_set for a child process
-+ * @parent: the parent of the child process
-+ * @kargs: the arguments passed to create the child process
-+ *
-+ * This functions finds or creates a new css_set which the child
-+ * process will be attached to in cgroup_post_fork(). By default,
-+ * the child process will be given the same css_set as its parent.
-+ *
-+ * If CLONE_INTO_CGROUP is specified this function will try to find an
-+ * existing css_set which includes the request cgroup and if not create
-+ * a new css_set that the child will be attached to. If this function
-+ * succeeds it will hold cgroup_threadgroup_rwsem on return. If
-+ * CLONE_INTO_CGROUP is requested this function will grab cgroup mutex
-+ * before grabbing cgroup_threadgroup_rwsem and will hold a reference
-+ * to the target cgroup.
-+ */
-+static int cgroup_css_set_fork(struct task_struct *parent,
-+			       struct kernel_clone_args *kargs)
-+	__acquires(&cgroup_mutex) __acquires(&cgroup_threadgroup_rwsem)
++pid_t clone_into_cgroup(int cgroup_fd)
++{
++#ifdef CLONE_ARGS_SIZE_VER2
++	pid_t pid;
++
++	struct clone_args args = {
++		.flags = CLONE_INTO_CGROUP,
++		.exit_signal = SIGCHLD,
++		.cgroup = cgroup_fd,
++	};
++
++	pid = sys_clone3(&args, sizeof(struct clone_args));
++	/*
++	 * Verify that this is a genuine test failure:
++	 * ENOSYS -> clone3() not available
++	 * E2BIG  -> CLONE_INTO_CGROUP not available
++	 */
++	if (pid < 0 && (errno == ENOSYS || errno == E2BIG))
++		goto pretend_enosys;
++
++	return pid;
++
++pretend_enosys:
++#endif
++	errno = ENOSYS;
++	return -ENOSYS;
++}
++
++int clone_reap(pid_t pid, int options)
 +{
 +	int ret;
-+	struct cgroup *dst_cgrp = NULL;
-+	struct css_set *cset;
-+	struct super_block *sb;
-+	struct file *f;
++	siginfo_t info = {
++		.si_signo = 0,
++	};
 +
-+	if (kargs->flags & CLONE_INTO_CGROUP)
-+		mutex_lock(&cgroup_mutex);
-+
-+	cgroup_threadgroup_change_begin(parent);
-+
-+	spin_lock_irq(&css_set_lock);
-+	cset = task_css_set(parent);
-+	get_css_set(cset);
-+	spin_unlock_irq(&css_set_lock);
-+
-+	if (!(kargs->flags & CLONE_INTO_CGROUP)) {
-+		kargs->cset = cset;
-+		return 0;
++again:
++	ret = waitid(P_PID, pid, &info, options | __WALL | __WNOTHREAD);
++	if (ret < 0) {
++		if (errno == EINTR)
++			goto again;
++		return -1;
 +	}
 +
-+	f = fget_raw(kargs->cgroup);
-+	if (!f) {
-+		ret = -EBADF;
-+		goto err;
-+	}
-+	sb = f->f_path.dentry->d_sb;
-+
-+	dst_cgrp = cgroup_get_from_file(f);
-+	if (IS_ERR(dst_cgrp)) {
-+		ret = PTR_ERR(dst_cgrp);
-+		dst_cgrp = NULL;
-+		goto err;
++	if (options & WEXITED) {
++		if (WIFEXITED(info.si_status))
++			return WEXITSTATUS(info.si_status);
 +	}
 +
-+	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
-+					!!(kargs->flags & CLONE_THREAD));
-+	if (ret)
-+		goto err;
-+
-+	kargs->cset = find_css_set(cset, dst_cgrp);
-+	if (!kargs->cset) {
-+		ret = -ENOMEM;
-+		goto err;
++	if (options & WSTOPPED) {
++		if (WIFSTOPPED(info.si_status))
++			return WSTOPSIG(info.si_status);
 +	}
 +
-+	if (cgroup_is_dead(dst_cgrp)) {
-+		ret = -ENODEV;
-+		goto err;
++	if (options & WCONTINUED) {
++		if (WIFCONTINUED(info.si_status))
++			return 0;
 +	}
 +
-+	put_css_set(cset);
-+	fput(f);
-+	kargs->cgrp = dst_cgrp;
-+	return ret;
-+
-+err:
-+	cgroup_threadgroup_change_end(parent);
-+	mutex_unlock(&cgroup_mutex);
-+	if (f)
-+		fput(f);
-+	if (dst_cgrp)
-+		cgroup_put(dst_cgrp);
-+	put_css_set(cset);
-+	return ret;
++	return -1;
 +}
 +
-+/**
-+ * cgroup_css_set_put_fork - drop references we took during fork
-+ * @parent: the parent of the child process
-+ * @kargs: the arguments passed to create the child process
-+ *
-+ * Drop references to the prepared css_set and target cgroup if
-+ * CLONE_INTO_CGROUP was requested. This function can only be
-+ * called before fork()'s point of no return.
-+ */
-+static void cgroup_css_set_put_fork(struct task_struct *parent,
-+				    struct kernel_clone_args *kargs)
-+	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
++int dirfd_open_opath(const char *dir)
 +{
-+	cgroup_threadgroup_change_end(parent);
-+
-+	if (kargs->flags & CLONE_INTO_CGROUP) {
-+		struct cgroup *cgrp = kargs->cgrp;
-+		struct css_set *cset = kargs->cset;
-+
-+		mutex_unlock(&cgroup_mutex);
-+
-+		if (cset) {
-+			put_css_set(cset);
-+			kargs->cset = NULL;
-+		}
-+
-+		if (cgrp) {
-+			cgroup_put(cgrp);
-+			kargs->cgrp = NULL;
-+		}
-+	}
++	return open(dir, O_DIRECTORY | O_CLOEXEC | O_NOFOLLOW | O_PATH);
 +}
 +
- /**
-  * cgroup_can_fork - called on a new task before the process is exposed
-  * @parent: the parent process of @child
-  * @child: the child process of @parent
-  * @kargs: the arguments passed to create the child process
-  *
-+ * This prepares a new css_set for the child process which the child will
-+ * be attached to in cgroup_post_fork().
-  * This calls the subsystem can_fork() callbacks. If the cgroup_can_fork()
-  * callback returns an error, the fork aborts with that error code. This
-  * allows for a cgroup subsystem to conditionally allow or deny new forks.
-  */
--int cgroup_can_fork(struct task_struct *parent, struct task_struct *child)
--	__acquires(&cgroup_threadgroup_rwsem) __releases(&cgroup_threadgroup_rwsem)
-+int cgroup_can_fork(struct task_struct *parent, struct task_struct *child,
-+			struct kernel_clone_args *kargs)
++#define close_prot_errno(fd)                                                   \
++	if (fd >= 0) {                                                         \
++		int _e_ = errno;                                               \
++		close(fd);                                                     \
++		errno = _e_;                                                   \
++	}
++
++static int clone_into_cgroup_run_nowait(const char *cgroup,
++					int (*fn)(const char *cgroup, void *arg),
++					void *arg)
++{
++	int cgroup_fd;
++	pid_t pid;
++
++	cgroup_fd =  dirfd_open_opath(cgroup);
++	if (cgroup_fd < 0)
++		return -1;
++
++	pid = clone_into_cgroup(cgroup_fd);
++	close_prot_errno(cgroup_fd);
++	if (pid == 0)
++		exit(fn(cgroup, arg));
++
++	return pid;
++}
++
+ int cg_run_nowait(const char *cgroup,
+ 		  int (*fn)(const char *cgroup, void *arg),
+ 		  void *arg)
  {
- 	struct cgroup_subsys *ss;
- 	int i, j, ret;
+ 	int pid;
  
--	cgroup_threadgroup_change_begin(parent);
-+	ret = cgroup_css_set_fork(parent, kargs);
-+	if (ret)
-+		return ret;
++	pid = clone_into_cgroup_run_nowait(cgroup, fn, arg);
++	if (pid > 0)
++		return pid;
++
++	/* Genuine test failure. */
++	if (pid < 0 && errno != ENOSYS)
++		return -1;
++
+ 	pid = fork();
+ 	if (pid == 0) {
+ 		char buf[64];
+@@ -450,3 +551,28 @@ int proc_read_strstr(int pid, bool thread, const char *item, const char *needle)
  
- 	do_each_subsys_mask(ss, i, have_canfork_callback) {
--		ret = ss->can_fork(child);
-+		ret = ss->can_fork(parent, child, kargs->cset);
- 		if (ret)
- 			goto out_revert;
- 	} while_each_subsys_mask();
-@@ -5931,34 +6055,35 @@ int cgroup_can_fork(struct task_struct *parent, struct task_struct *child)
- 		if (j >= i)
- 			break;
- 		if (ss->cancel_fork)
--			ss->cancel_fork(child);
-+			ss->cancel_fork(child, kargs->cset);
- 	}
+ 	return strstr(buf, needle) ? 0 : -1;
+ }
++
++int clone_into_cgroup_run_wait(const char *cgroup)
++{
++	int cgroup_fd;
++	pid_t pid;
++
++	cgroup_fd =  dirfd_open_opath(cgroup);
++	if (cgroup_fd < 0)
++		return -1;
++
++	pid = clone_into_cgroup(cgroup_fd);
++	close_prot_errno(cgroup_fd);
++	if (pid < 0)
++		return -1;
++
++	if (pid == 0)
++		exit(EXIT_SUCCESS);
++
++	/*
++	 * We don't care whether this fails. We only care whether the initial
++	 * clone succeeded.
++	 */
++	(void)clone_reap(pid, WEXITED);
++	return 0;
++}
+diff --git a/tools/testing/selftests/cgroup/cgroup_util.h b/tools/testing/selftests/cgroup/cgroup_util.h
+index 49c54fbdb229..5a1305dd1f0b 100644
+--- a/tools/testing/selftests/cgroup/cgroup_util.h
++++ b/tools/testing/selftests/cgroup/cgroup_util.h
+@@ -50,3 +50,7 @@ extern int cg_wait_for_proc_count(const char *cgroup, int count);
+ extern int cg_killall(const char *cgroup);
+ extern ssize_t proc_read_text(int pid, bool thread, const char *item, char *buf, size_t size);
+ extern int proc_read_strstr(int pid, bool thread, const char *item, const char *needle);
++extern pid_t clone_into_cgroup(int cgroup_fd);
++extern int clone_reap(pid_t pid, int options);
++extern int clone_into_cgroup_run_wait(const char *cgroup);
++extern int dirfd_open_opath(const char *dir);
+diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
+index c5ca669feb2b..96e016ccafe0 100644
+--- a/tools/testing/selftests/cgroup/test_core.c
++++ b/tools/testing/selftests/cgroup/test_core.c
+@@ -25,8 +25,11 @@
+ static int test_cgcore_populated(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
++	int err;
+ 	char *cg_test_a = NULL, *cg_test_b = NULL;
+ 	char *cg_test_c = NULL, *cg_test_d = NULL;
++	int cgroup_fd = -EBADF;
++	pid_t pid;
  
--	cgroup_threadgroup_change_end(parent);
-+	cgroup_css_set_put_fork(parent, kargs);
+ 	cg_test_a = cg_name(root, "cg_test_a");
+ 	cg_test_b = cg_name(root, "cg_test_a/cg_test_b");
+@@ -78,6 +81,52 @@ static int test_cgcore_populated(const char *root)
+ 	if (cg_read_strcmp(cg_test_d, "cgroup.events", "populated 0\n"))
+ 		goto cleanup;
  
++	/* Test that we can directly clone into a new cgroup. */
++	cgroup_fd = dirfd_open_opath(cg_test_d);
++	if (cgroup_fd < 0)
++		goto cleanup;
++
++	pid = clone_into_cgroup(cgroup_fd);
++	if (pid < 0) {
++		if (errno == ENOSYS)
++			goto cleanup_pass;
++		goto cleanup;
++	}
++
++	if (pid == 0) {
++		if (raise(SIGSTOP))
++			exit(EXIT_FAILURE);
++		exit(EXIT_SUCCESS);
++	}
++
++	err = cg_read_strcmp(cg_test_d, "cgroup.events", "populated 1\n");
++
++	(void)clone_reap(pid, WSTOPPED);
++	(void)kill(pid, SIGCONT);
++	(void)clone_reap(pid, WEXITED);
++
++	if (err)
++		goto cleanup;
++
++	if (cg_read_strcmp(cg_test_d, "cgroup.events", "populated 0\n"))
++		goto cleanup;
++
++	/* Remove cgroup. */
++	if (cg_test_d) {
++		cg_destroy(cg_test_d);
++		free(cg_test_d);
++		cg_test_d = NULL;
++	}
++
++	pid = clone_into_cgroup(cgroup_fd);
++	if (pid < 0)
++		goto cleanup_pass;
++	if (pid == 0)
++		exit(EXIT_SUCCESS);
++	(void)clone_reap(pid, WEXITED);
++	goto cleanup;
++
++cleanup_pass:
+ 	ret = KSFT_PASS;
+ 
+ cleanup:
+@@ -93,6 +142,8 @@ static int test_cgcore_populated(const char *root)
+ 	free(cg_test_c);
+ 	free(cg_test_b);
+ 	free(cg_test_a);
++	if (cgroup_fd >= 0)
++		close(cgroup_fd);
  	return ret;
  }
  
- /**
--  * cgroup_cancel_fork - called if a fork failed after cgroup_can_fork()
--  * @parent: the parent process of @child
--  * @child: the child process of @parent
--  * @kargs: the arguments passed to create the child process
--  *
--  * This calls the cancel_fork() callbacks if a fork failed *after*
--  * cgroup_can_fork() succeded.
--  */
--void cgroup_cancel_fork(struct task_struct *parent, struct task_struct *child)
--	__releases(&cgroup_threadgroup_rwsem)
-+ * cgroup_cancel_fork - called if a fork failed after cgroup_can_fork()
-+ * @parent: the parent process of @child
-+ * @child: the child process of @parent
-+ * @kargs: the arguments passed to create the child process
-+ *
-+ * This calls the cancel_fork() callbacks if a fork failed *after*
-+ * cgroup_can_fork() succeded and cleans up references we took to
-+ * prepare a new css_set for the child process in cgroup_can_fork().
-+ */
-+void cgroup_cancel_fork(struct task_struct *parent, struct task_struct *child,
-+			struct kernel_clone_args *kargs)
- {
- 	struct cgroup_subsys *ss;
- 	int i;
+@@ -136,6 +187,16 @@ static int test_cgcore_invalid_domain(const char *root)
+ 	if (errno != EOPNOTSUPP)
+ 		goto cleanup;
  
- 	for_each_subsys(ss, i)
- 		if (ss->cancel_fork)
--			ss->cancel_fork(child);
-+			ss->cancel_fork(child, kargs->cset);
- 
--	cgroup_threadgroup_change_end(parent);
-+	cgroup_css_set_put_fork(parent, kargs);
- }
- 
- /**
-@@ -5970,18 +6095,17 @@ void cgroup_cancel_fork(struct task_struct *parent, struct task_struct *child)
-  * Attach the child process to its css_set calling the subsystem fork()
-  * callbacks.
-  */
--void cgroup_post_fork(struct task_struct *parent, struct task_struct *child)
--	__releases(&cgroup_threadgroup_rwsem)
-+void cgroup_post_fork(struct task_struct *parent, struct task_struct *child,
-+		      struct kernel_clone_args *kargs)
-+	__releases(&cgroup_threadgroup_rwsem) __releases(&cgroup_mutex)
- {
- 	struct cgroup_subsys *ss;
--	struct css_set *cset;
-+	struct css_set *cset = kargs->cset;
- 	int i;
- 
- 	spin_lock_irq(&css_set_lock);
- 
- 	WARN_ON_ONCE(!list_empty(&child->cg_list));
--	cset = task_css_set(current); /* current is @child's parent */
--	get_css_set(cset);
- 	cset->nr_tasks++;
- 	css_set_move_task(child, NULL, cset, false);
- 
-@@ -6016,6 +6140,17 @@ void cgroup_post_fork(struct task_struct *parent, struct task_struct *child)
- 	} while_each_subsys_mask();
- 
- 	cgroup_threadgroup_change_end(parent);
++	if (!clone_into_cgroup_run_wait(child))
++		goto cleanup;
 +
-+	if (kargs->flags & CLONE_INTO_CGROUP) {
-+		mutex_unlock(&cgroup_mutex);
++	if (errno == ENOSYS)
++		goto cleanup_pass;
 +
-+		cgroup_put(kargs->cgrp);
-+		kargs->cgrp = NULL;
-+	}
++	if (errno != EOPNOTSUPP)
++		goto cleanup;
 +
-+	/* Make the new cset the root_cset of the new cgroup namespace. */
-+	if (kargs->flags & CLONE_NEWCGROUP)
-+		child->nsproxy->cgroup_ns->root_cset = cset;
- }
++cleanup_pass:
+ 	ret = KSFT_PASS;
  
- /**
-diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
-index 138059eb730d..4e7c8819c8df 100644
---- a/kernel/cgroup/pids.c
-+++ b/kernel/cgroup/pids.c
-@@ -33,6 +33,7 @@
- #include <linux/atomic.h>
- #include <linux/cgroup.h>
- #include <linux/slab.h>
-+#include <linux/sched/task.h>
+ cleanup:
+@@ -345,6 +406,9 @@ static int test_cgcore_internal_process_constraint(const char *root)
+ 	if (!cg_enter_current(parent))
+ 		goto cleanup;
  
- #define PIDS_MAX (PID_MAX_LIMIT + 1ULL)
- #define PIDS_MAX_STR "max"
-@@ -214,13 +215,17 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
-  * task_css_check(true) in pids_can_fork() and pids_cancel_fork() relies
-  * on cgroup_threadgroup_change_begin() held by the copy_process().
-  */
--static int pids_can_fork(struct task_struct *task)
-+static int pids_can_fork(struct task_struct *parent, struct task_struct *child,
-+			 struct css_set *cset)
- {
- 	struct cgroup_subsys_state *css;
- 	struct pids_cgroup *pids;
- 	int err;
- 
--	css = task_css_check(current, pids_cgrp_id, true);
-+	if (cset)
-+		css = cset->subsys[pids_cgrp_id];
-+	else
-+		css = task_css_check(current, pids_cgrp_id, true);
- 	pids = css_pids(css);
- 	err = pids_try_charge(pids, 1);
- 	if (err) {
-@@ -235,12 +240,15 @@ static int pids_can_fork(struct task_struct *task)
- 	return err;
- }
- 
--static void pids_cancel_fork(struct task_struct *task)
-+static void pids_cancel_fork(struct task_struct *task, struct css_set *cset)
- {
- 	struct cgroup_subsys_state *css;
- 	struct pids_cgroup *pids;
- 
--	css = task_css_check(current, pids_cgrp_id, true);
-+	if (cset)
-+		css = cset->subsys[pids_cgrp_id];
-+	else
-+		css = task_css_check(current, pids_cgrp_id, true);
- 	pids = css_pids(css);
- 	pids_uncharge(pids, 1);
- }
-diff --git a/kernel/fork.c b/kernel/fork.c
-index c76758dbd594..15d6576ad8c0 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -2171,7 +2171,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	 * between here and cgroup_post_fork() if an organisation operation is in
- 	 * progress.
- 	 */
--	retval = cgroup_can_fork(current, p);
-+	retval = cgroup_can_fork(current, p, args);
- 	if (retval)
- 		goto bad_fork_put_pidfd;
- 
-@@ -2278,7 +2278,7 @@ static __latent_entropy struct task_struct *copy_process(
- 	write_unlock_irq(&tasklist_lock);
- 
- 	proc_fork_connector(p);
--	cgroup_post_fork(current, p);
-+	cgroup_post_fork(current, p, args);
- 	perf_event_fork(p);
- 
- 	trace_task_newtask(p, clone_flags);
-@@ -2289,7 +2289,7 @@ static __latent_entropy struct task_struct *copy_process(
- bad_fork_cancel_cgroup:
- 	spin_unlock(&current->sighand->siglock);
- 	write_unlock_irq(&tasklist_lock);
--	cgroup_cancel_fork(current, p);
-+	cgroup_cancel_fork(current, p, args);
- bad_fork_put_pidfd:
- 	if (clone_flags & CLONE_PIDFD) {
- 		fput(pidfile);
-@@ -2618,6 +2618,9 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
- 		     !valid_signal(args.exit_signal)))
- 		return -EINVAL;
- 
-+	if ((args.flags & CLONE_INTO_CGROUP) && args.cgroup < 0)
-+		return -EINVAL;
++	if (!clone_into_cgroup_run_wait(parent))
++		goto cleanup;
 +
- 	*kargs = (struct kernel_clone_args){
- 		.flags		= args.flags,
- 		.pidfd		= u64_to_user_ptr(args.pidfd),
-@@ -2628,6 +2631,7 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
- 		.stack_size	= args.stack_size,
- 		.tls		= args.tls,
- 		.set_tid_size	= args.set_tid_size,
-+		.cgroup		= args.cgroup,
- 	};
+ 	ret = KSFT_PASS;
  
- 	if (args.set_tid &&
-@@ -2671,7 +2675,8 @@ static inline bool clone3_stack_valid(struct kernel_clone_args *kargs)
- static bool clone3_args_valid(struct kernel_clone_args *kargs)
+ cleanup:
+diff --git a/tools/testing/selftests/clone3/clone3_selftests.h b/tools/testing/selftests/clone3/clone3_selftests.h
+index a3f2c8ad8bcc..91c1a78ddb39 100644
+--- a/tools/testing/selftests/clone3/clone3_selftests.h
++++ b/tools/testing/selftests/clone3/clone3_selftests.h
+@@ -5,12 +5,24 @@
+ 
+ #define _GNU_SOURCE
+ #include <sched.h>
++#include <linux/sched.h>
++#include <linux/types.h>
+ #include <stdint.h>
+ #include <syscall.h>
+-#include <linux/types.h>
++#include <sys/wait.h>
++
++#include "../kselftest.h"
+ 
+ #define ptr_to_u64(ptr) ((__u64)((uintptr_t)(ptr)))
+ 
++#ifndef CLONE_INTO_CGROUP
++#define CLONE_INTO_CGROUP 0x200000000ULL /* Clone into a specific cgroup given the right permissions. */
++#endif
++
++#ifndef CLONE_ARGS_SIZE_VER0
++#define CLONE_ARGS_SIZE_VER0 64
++#endif
++
+ #ifndef __NR_clone3
+ #define __NR_clone3 -1
+ struct clone_args {
+@@ -22,10 +34,13 @@ struct clone_args {
+ 	__aligned_u64 stack;
+ 	__aligned_u64 stack_size;
+ 	__aligned_u64 tls;
++#define CLONE_ARGS_SIZE_VER1 80
+ 	__aligned_u64 set_tid;
+ 	__aligned_u64 set_tid_size;
++#define CLONE_ARGS_SIZE_VER2 88
++	__aligned_u64 cgroup;
+ };
+-#endif
++#endif /* __NR_clone3 */
+ 
+ static pid_t sys_clone3(struct clone_args *args, size_t size)
  {
- 	/* Verify that no unknown flags are passed along. */
--	if (kargs->flags & ~(CLONE_LEGACY_FLAGS | CLONE_CLEAR_SIGHAND))
-+	if (kargs->flags &
-+	    ~(CLONE_LEGACY_FLAGS | CLONE_CLEAR_SIGHAND | CLONE_INTO_CGROUP))
- 		return false;
- 
- 	/*
 -- 
 2.25.0
 
