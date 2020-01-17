@@ -2,120 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9154D140FE4
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 18:30:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8499114108B
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jan 2020 19:12:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726897AbgAQRa3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jan 2020 12:30:29 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:39378 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726763AbgAQRa3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 12:30:29 -0500
-Received: by mail-wm1-f65.google.com with SMTP id 20so8448639wmj.4
-        for <cgroups@vger.kernel.org>; Fri, 17 Jan 2020 09:30:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=s/Igl7jec5R8DMF3nyQFihy0XoNH7LpzgEc781wHBbE=;
-        b=IfI2V2VjiHDEyMxVeB6DJUwZfuJaVSwdWaVbiW2tG1VzG5iMe4Fmndr3Dh8Y5KaF7g
-         SbVP5Ca373H4SpjZNwlaPj0ajlmO5/0RXj4cboBUBjlynN2ihp0sj5+LxlF9hYR3Gs5D
-         5Qv2rZh4Yzvc8lS4UP3Ac5LRe5cw1v+Y0yJdR8pwwdPPusdbhjfrDBsi13y8DYwoaakI
-         cuAz6BXfPrsKPA1w9FiWbzNzE9zzgpb3Rr4pw20A0bJZFGooUMKUtslJ3QXvxVnMh650
-         IIszWgCEmch4wXJw0b3IsDeqswH27TUpZ2/KnyYvteCdFYD5butLob8faQQd6VS5iI6D
-         fZyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=s/Igl7jec5R8DMF3nyQFihy0XoNH7LpzgEc781wHBbE=;
-        b=uQZxyaQJesqBqohN17ycUJt/HaYZb6Jk7rpFMuKkzrCY3K0JwKLiFhG/UXZiJAH24c
-         aEKNq2v67RR7WGv8DwusQJXb99YnCpp3utshay/OW6YbnxV8PZdZH5Qt3zR1dpIlh/jq
-         cBB+xnJfwZmMWuMay349uMvzfN0n7ppHz7fqCP1pF1Aqs1bYdAtxrQ7RRDU5LPnLM0Aq
-         wfANXlM/ig4xN5cxYDS+MTdX/xjUCYQGtR/gdTSDDIoYqL4BGvMLDZXyK/X5WAi+vEz9
-         geWfTF7dPKM9X6orNCQbPorFRWSMwR2LkvBvs48wMFJ187X+Q2vc3XkbZehiosn/EN9w
-         80uw==
-X-Gm-Message-State: APjAAAWdAPUahnPevEnr+MdSekrPBsq/QCck6kh1JWoLm0kSwnPsuAt6
-        eWDHMhPxGgY9plCfbi/zD8/MK74o9XJPren+FPBJAw==
-X-Google-Smtp-Source: APXvYqzRUf0wuugbvneoW29gNcVYmOiCM6ix6iVR1pyh/dPBzXnBInYEBfLi/RQ7RKNXoAYeNH1N+QN4jkAc1zvQ3nI=
-X-Received: by 2002:a1c:7e0b:: with SMTP id z11mr5822249wmc.88.1579282226314;
- Fri, 17 Jan 2020 09:30:26 -0800 (PST)
+        id S1729050AbgAQSMu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jan 2020 13:12:50 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:52137 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729252AbgAQSM3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 13:12:29 -0500
+Received: from ip5f5bd679.dynamic.kabel-deutschland.de ([95.91.214.121] helo=localhost.localdomain)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1isW6b-0005Yu-Pt; Fri, 17 Jan 2020 18:12:25 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [PATCH v4 1/6] cgroup: unify attach permission checking
+Date:   Fri, 17 Jan 2020 19:12:14 +0100
+Message-Id: <20200117181219.14542-2-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200117181219.14542-1-christian.brauner@ubuntu.com>
+References: <20200117181219.14542-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-References: <20200116043612.52782-1-surenb@google.com> <20200117151533.12381-1-mkoutny@suse.com>
-In-Reply-To: <20200117151533.12381-1-mkoutny@suse.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 17 Jan 2020 09:30:15 -0800
-Message-ID: <CAJuCfpHkOz1LmygyxC9VxXux8_TFmEGr-BsAs-EadKt=AkZyiQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] cgroup: Iterate tasks that did not finish do_exit()
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     cgroups mailinglist <cgroups@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        alex.shi@linux.alibaba.com, Roman Gushchin <guro@fb.com>,
-        kernel-team <kernel-team@android.com>,
-        JeiFeng Lee <linger.lee@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, matthias.bgg@gmail.com,
-        shuah@kernel.org, Tom Cherry <tomcherry@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Michal,
+The core codepaths to check whether a process can be attached to a
+cgroup are the same for threads and thread-group leaders. Only a small
+piece of code verifying that source and destination cgroup are in the
+same domain differentiates the thread permission checking from
+thread-group leader permission checking.
+Since cgroup_migrate_vet_dst() only matters cgroup2 - it is a noop on
+cgroup1 - we can move it out of cgroup_attach_task().
+All checks can now be consolidated into a new helper
+cgroup_attach_permissions() callable from both cgroup_procs_write() and
+cgroup_threads_write().
 
-On Fri, Jan 17, 2020 at 7:15 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> Hi,
-> I was looking into the issue and came up with an alternative solution tha=
-t
-> changes task iteration to be consistent with cgroup_is_populated() check =
-and
-> moving the responsibility to check PF_EXITING on the consumers of iterato=
-r API.
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v1 */
+Link: https://lore.kernel.org/r/20191218173516.7875-2-christian.brauner@ubuntu.com
 
-Yeah, that was my first thought which basically reverts a part of
-c03cd7738a83. When I first brought up this issue in the other email
-thread, Tejun's comment was "the right thing to do is allowing
-destruction of cgroups w/ only
-dead processes in it". I assumed, maybe incorrectly, that the desire
-here is not to include dying processes into cgroup.procs but to allow
-cgroups with dying processes to be deleted.
+/* v2 */
+Link: https://lore.kernel.org/r/20191223061504.28716-2-christian.brauner@ubuntu.com
+- Christian Brauner <christian.brauner@ubuntu.com>:
+  - Fix return value of cgroup_attach_permissions. It used to return 0
+    when it should've returned -EOPNOTSUPP.
+  - Fix call to cgroup_attach_permissions() in cgroup_procs_write(). It
+    accidently specified that a thread was moved causing an additional
+    check for domain-group equality to be executed that is not needed.
 
-To be clear, either way is fine with me since both ways solve the
-issue and this way the code is definitely simpler. I'll rerun the
-tests with your patches just to confirm the issue is gone.
-Thanks!
+/* v3 */
+Link: https://lore.kernel.org/r/20200117002143.15559-2-christian.brauner@ubuntu.com
+unchanged
 
-> I haven't check your approach thoroughly, however, it appears to me it
-> complicates (already non-trivial) cgroup destruction path. I ran your sel=
-ftest
-> on the iterators approach and it proved working.
->
->
-> Michal Koutn=C3=BD (2):
->   cgroup: Unify css_set task lists
->   cgroup: Iterate tasks that did not finish do_exit()
->
-> Suren Baghdasaryan (1):
->   kselftest/cgroup: add cgroup destruction test
->
->  include/linux/cgroup-defs.h                |  15 ++-
->  include/linux/cgroup.h                     |   4 +-
->  kernel/cgroup/cgroup.c                     |  86 ++++++++--------
->  kernel/cgroup/debug.c                      |  16 ++-
->  tools/testing/selftests/cgroup/test_core.c | 113 +++++++++++++++++++++
->  5 files changed, 176 insertions(+), 58 deletions(-)
->
-> --
-> 2.24.1
->
-> --
-> To unsubscribe from this group and stop receiving emails from it, send an=
- email to kernel-team+unsubscribe@android.com.
->
+/* v4 */
+unchanged
+---
+ kernel/cgroup/cgroup.c | 46 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 32 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..ad1f9fea5c14 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2719,11 +2719,7 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ {
+ 	DEFINE_CGROUP_MGCTX(mgctx);
+ 	struct task_struct *task;
+-	int ret;
+-
+-	ret = cgroup_migrate_vet_dst(dst_cgrp);
+-	if (ret)
+-		return ret;
++	int ret = 0;
+ 
+ 	/* look up all src csets */
+ 	spin_lock_irq(&css_set_lock);
+@@ -4690,6 +4686,33 @@ static int cgroup_procs_write_permission(struct cgroup *src_cgrp,
+ 	return 0;
+ }
+ 
++static inline bool cgroup_same_domain(const struct cgroup *src_cgrp,
++				      const struct cgroup *dst_cgrp)
++{
++	return src_cgrp->dom_cgrp == dst_cgrp->dom_cgrp;
++}
++
++static int cgroup_attach_permissions(struct cgroup *src_cgrp,
++				     struct cgroup *dst_cgrp,
++				     struct super_block *sb, bool thread)
++{
++	int ret = 0;
++
++	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
++	if (ret)
++		return ret;
++
++	ret = cgroup_migrate_vet_dst(dst_cgrp);
++	if (ret)
++		return ret;
++
++	if (thread &&
++	    !cgroup_same_domain(src_cgrp->dom_cgrp, dst_cgrp->dom_cgrp))
++		ret = -EOPNOTSUPP;
++
++	return ret;
++}
++
+ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 				  char *buf, size_t nbytes, loff_t off)
+ {
+@@ -4712,8 +4735,8 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+ 	spin_unlock_irq(&css_set_lock);
+ 
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, false);
+ 	if (ret)
+ 		goto out_finish;
+ 
+@@ -4757,16 +4780,11 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	spin_unlock_irq(&css_set_lock);
+ 
+ 	/* thread migrations follow the cgroup.procs delegation rule */
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, true);
+ 	if (ret)
+ 		goto out_finish;
+ 
+-	/* and must be contained in the same domain */
+-	ret = -EOPNOTSUPP;
+-	if (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp)
+-		goto out_finish;
+-
+ 	ret = cgroup_attach_task(dst_cgrp, task, false);
+ 
+ out_finish:
+-- 
+2.25.0
+
