@@ -2,92 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 49DF71415A7
-	for <lists+cgroups@lfdr.de>; Sat, 18 Jan 2020 04:11:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C16141622
+	for <lists+cgroups@lfdr.de>; Sat, 18 Jan 2020 06:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730562AbgARDLL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jan 2020 22:11:11 -0500
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:33585 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727033AbgARDLL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jan 2020 22:11:11 -0500
-Received: by mail-pl1-f193.google.com with SMTP id ay11so10642966plb.0;
-        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=kCkFnYkawO75Slclr1NGNbFjc/K/Z8ax1mgdyxXyluc=;
-        b=kFFMSn6GQbVrsB7xcz6GHNYsvWVsZtZLtyarkvcW4Qjn8R2Vlklx5fkrNTwwRZulTD
-         Jjnj/FKMP1+IzHx8ruolwTiB6z+Z3Y8NZWo1QTXIis3LaKm2v0/NYOdnner2pO9hrV3U
-         Ock9seKbMjAL63Xn7eeqrCFS6F4e3bYHJIFHESFv0x7zzpG5oh2xf5aR0alR+kcSYnxC
-         LG9Aeugqhvwf/kv2MkGt9FH7Y2RXdgoKAowTagWQUeVtagogRbE2cDQ/xhduU5oOB2Hz
-         CMgcvKpqoCE6iquWtUM+Fqj57BHjyIdrVoGA6eEf5Rud/K6I9FFqrL1asp7kDWRlW57+
-         0S7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kCkFnYkawO75Slclr1NGNbFjc/K/Z8ax1mgdyxXyluc=;
-        b=tNriiQ+07mMGuSyUF0fx0w37zTSkJkcm1GrJHzD+Y6zxRRSPiioxQuyqBinszD9Zas
-         OLwL8ZN1aVVWpYHkYx0xhVaJ3Yl9NdOiHTNj0EVhemEfQgdoc013qhyj8q2a6nAkilzg
-         XXf2NUWktlYFbGhPnqpDMSKQv8keTLvg7R7DKmxS1HPFELRGA4jj7g0kdt1QKCFbm62O
-         Fi2XPA8SYXAwYvTgMSPgoagl6BWLNIiwHQq3nUWWETvYpn7PLx2aFPoYkn33UGmkmm8W
-         1HfgndZDieQQrRdC1nzHazsj97lDZzMKmMdQqKhLUqSMGsfh4yeQiZK2LUShwN5zOMkW
-         12iQ==
-X-Gm-Message-State: APjAAAWKhmhYkbBH2DSXObZCZoGFZPsHvXXkNN8eAj9qf68SHO2ieJc6
-        rGRGMk4ks7oDxlwroW0HMg==
-X-Google-Smtp-Source: APXvYqzrX/dzjceNK2YxPQDFBmGY7ox/l+PSYdFJ8XUj9ddhcLLJUTQk19QT+CBkmgvu/QeymGKONg==
-X-Received: by 2002:a17:902:848f:: with SMTP id c15mr2751205plo.182.1579317070565;
-        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
-Received: from madhuparna-HP-Notebook.nitk.ac.in ([2402:3a80:1ee0:feca:40cf:944c:98dd:69a3])
-        by smtp.gmail.com with ESMTPSA id g8sm30478701pfh.43.2020.01.17.19.11.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jan 2020 19:11:10 -0800 (PST)
-From:   madhuparnabhowmik10@gmail.com
-To:     tj@kernel.org, lizefan@huawei.com
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, rcu@vger.kernel.org, frextrite@gmail.com,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Subject: [PATCH] cgroup.c: Use built-in RCU list checking
-Date:   Sat, 18 Jan 2020 08:40:51 +0530
-Message-Id: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1725536AbgARFbF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 Jan 2020 00:31:05 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:60911 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725385AbgARFbF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Jan 2020 00:31:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0To.f-S7_1579325449;
+Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0To.f-S7_1579325449)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 18 Jan 2020 13:31:00 +0800
+Subject: Re: [Patch v4] mm: thp: remove the defer list related code since this
+ will not happen
+From:   Yang Shi <yang.shi@linux.alibaba.com>
+To:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, ktkhai@virtuozzo.com,
+        kirill.shutemov@linux.intel.com
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
+        rientjes@google.com, stable@vger.kernel.org
+References: <20200117233836.3434-1-richardw.yang@linux.intel.com>
+ <e73272a8-87e9-5e22-4f78-588b640f4fc4@linux.alibaba.com>
+Message-ID: <25e1226a-9cce-6a75-f0e9-b42f5afa22da@linux.alibaba.com>
+Date:   Fri, 17 Jan 2020 21:30:45 -0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
+ Gecko/20100101 Thunderbird/52.7.0
+MIME-Version: 1.0
+In-Reply-To: <e73272a8-87e9-5e22-4f78-588b640f4fc4@linux.alibaba.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-list_for_each_entry_rcu has built-in RCU and lock checking.
-Pass cond argument to list_for_each_entry_rcu() to silence
-false lockdep warning when  CONFIG_PROVE_RCU_LIST is enabled
-by default.
 
-Even though the function css_next_child() already checks if
-cgroup_mutex or rcu_read_lock() is held using
-cgroup_assert_mutex_or_rcu_locked(), there is a need to pass
-cond to list_for_each_entry_rcu() to avoid false positive
-lockdep warning.
+On 1/17/20 4:57 PM, Yang Shi wrote:
+>
+>
+> On 1/17/20 3:38 PM, Wei Yang wrote:
+>> If compound is true, this means it is a PMD mapped THP. Which implies
+>> the page is not linked to any defer list. So the first code chunk will
+>> not be executed.
+>>
+>> Also with this reason, it would not be proper to add this page to a
+>> defer list. So the second code chunk is not correct.
+>>
+>> Based on this, we should remove the defer list related code.
+>>
+>> Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg 
+>> aware")
+>>
+>> Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
+>> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+>> Cc: <stable@vger.kernel.org>    [5.4+]
+>>
+>> ---
+>> v4:
+>>    * finally we identified the related code is not necessary and not
+>>      correct, just remove it
+>>    * thanks to Kirill T first spot some problem
+>
+> Thanks for debugging and figuring this out. Acked-by: Yang Shi 
+> <yang.shi@linux.alibaba.com>
 
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
----
- kernel/cgroup/cgroup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+BTW, the patch itself is fine, but the subject looks really confusing. 
+It sounds like we would remove all deferred list code. I'd suggest 
+rephrase it to:
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 735af8f15f95..c2959764ad95 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4152,7 +4152,8 @@ struct cgroup_subsys_state *css_next_child(struct cgroup_subsys_state *pos,
- 	} else if (likely(!(pos->flags & CSS_RELEASED))) {
- 		next = list_entry_rcu(pos->sibling.next, struct cgroup_subsys_state, sibling);
- 	} else {
--		list_for_each_entry_rcu(next, &parent->children, sibling)
-+		list_for_each_entry_rcu(next, &parent->children, sibling,
-+					lockdep_is_held(&cgroup_mutex))
- 			if (next->serial_nr > pos->serial_nr)
- 				break;
- 	}
--- 
-2.17.1
+mm: thp: don't need care deferred split queue in memcg charge move path
+
+>
+>> v3:
+>>    * remove all review/ack tag since rewrite the changelog
+>>    * use deferred_split_huge_page as the example of race
+>>    * add cc stable 5.4+ tag as suggested by David Rientjes
+>>
+>> v2:
+>>    * move check on compound outside suggested by Alexander
+>>    * an example of the race condition, suggested by Michal
+>> ---
+>>   mm/memcontrol.c | 18 ------------------
+>>   1 file changed, 18 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 6c83cf4ed970..27c231bf4565 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -5340,14 +5340,6 @@ static int mem_cgroup_move_account(struct page 
+>> *page,
+>>           __mod_lruvec_state(to_vec, NR_WRITEBACK, nr_pages);
+>>       }
+>>   -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> -    if (compound && !list_empty(page_deferred_list(page))) {
+>> - spin_lock(&from->deferred_split_queue.split_queue_lock);
+>> -        list_del_init(page_deferred_list(page));
+>> -        from->deferred_split_queue.split_queue_len--;
+>> - spin_unlock(&from->deferred_split_queue.split_queue_lock);
+>> -    }
+>> -#endif
+>>       /*
+>>        * It is safe to change page->mem_cgroup here because the page
+>>        * is referenced, charged, and isolated - we can't race with
+>> @@ -5357,16 +5349,6 @@ static int mem_cgroup_move_account(struct page 
+>> *page,
+>>       /* caller should have done css_get */
+>>       page->mem_cgroup = to;
+>>   -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+>> -    if (compound && list_empty(page_deferred_list(page))) {
+>> - spin_lock(&to->deferred_split_queue.split_queue_lock);
+>> -        list_add_tail(page_deferred_list(page),
+>> - &to->deferred_split_queue.split_queue);
+>> -        to->deferred_split_queue.split_queue_len++;
+>> - spin_unlock(&to->deferred_split_queue.split_queue_lock);
+>> -    }
+>> -#endif
+>> -
+>>       spin_unlock_irqrestore(&from->move_lock, flags);
+>>         ret = 0;
+>
 
