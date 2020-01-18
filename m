@@ -2,129 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09C16141622
-	for <lists+cgroups@lfdr.de>; Sat, 18 Jan 2020 06:31:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D6991417A9
+	for <lists+cgroups@lfdr.de>; Sat, 18 Jan 2020 14:31:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725536AbgARFbF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 18 Jan 2020 00:31:05 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:60911 "EHLO
-        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725385AbgARFbF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Jan 2020 00:31:05 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=yang.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0To.f-S7_1579325449;
-Received: from US-143344MP.local(mailfrom:yang.shi@linux.alibaba.com fp:SMTPD_---0To.f-S7_1579325449)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 18 Jan 2020 13:31:00 +0800
-Subject: Re: [Patch v4] mm: thp: remove the defer list related code since this
- will not happen
-From:   Yang Shi <yang.shi@linux.alibaba.com>
-To:     Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, ktkhai@virtuozzo.com,
-        kirill.shutemov@linux.intel.com
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        rientjes@google.com, stable@vger.kernel.org
-References: <20200117233836.3434-1-richardw.yang@linux.intel.com>
- <e73272a8-87e9-5e22-4f78-588b640f4fc4@linux.alibaba.com>
-Message-ID: <25e1226a-9cce-6a75-f0e9-b42f5afa22da@linux.alibaba.com>
-Date:   Fri, 17 Jan 2020 21:30:45 -0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:52.0)
- Gecko/20100101 Thunderbird/52.7.0
+        id S1729043AbgARNbs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 Jan 2020 08:31:48 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:42621 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726933AbgARNbs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Jan 2020 08:31:48 -0500
+Received: by mail-ot1-f65.google.com with SMTP id 66so24933758otd.9
+        for <cgroups@vger.kernel.org>; Sat, 18 Jan 2020 05:31:47 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=NvAZUv5ZGB55ThY+bLBf8tvOip6guzklAz3av6cc2wU=;
+        b=Vdy8nBomsFYZdEXV6c6jIFrpRLJCNpLnmoOs0hsw+v/OpYcnh1Et58gFUy42gH2DSI
+         mqDQACEuS0OAy87PahznB2vXiw2bkO6ie4/Y7yhyWChBjHDdHQ2RR6+J8QQZP8kdnn4R
+         z1ttCRWNpAJdtjRw5FNoM0d4qrPDHx0obCEVs1ZHIL8hCTT45CE+FDxM5U6imcIMyV/m
+         4sSHaBkOeuLQiRdVZinj/M7y4wobJiZGHLwzUf+o+2FFh3n7bMFXcFRI+gU1Y+nB6k5O
+         zCSfKAs5cQz4gUM5xOl3EpEDqJWQssjgngdcjfLFAyaoP8Fq6UID+kZn0fUPJ7iQwQeJ
+         /tOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=NvAZUv5ZGB55ThY+bLBf8tvOip6guzklAz3av6cc2wU=;
+        b=uMtLzjY+saPWFDt7y5UOMg/qH4e2LIchIC5p/uv1y7CPQmlQL6/delfIRafJYi5RFR
+         9l2VU9NBDHwg7D5yvJCcxmJV0STCvWD81k9IMZdgxBs+iwrtRhwN7At1tpMIUchiZZyA
+         DyJjKONNo9ov8VdP5dwFvml5PE2zZs40ZFiNOBU6XnpGRxkZ3Phjyg7mxmqPTmxii31n
+         l9MEZESPV1AcZ/sSvfbJruM47Hf0iAHkWk3goOM+LFg+SPXDE213hpD1Jam8Pm4m1rCc
+         qSAgdFhRAOh5WRCka5ZqJaZUT21z/qLZiC+EQknNGi5Is4r8+YeVEEFPsHKO36RCg/Ms
+         lqXg==
+X-Gm-Message-State: APjAAAWIf+0Vk8NUsM7Ta5a0SfVdsUfTK2Pf4mnj1aDUJIWm0U0KtJGO
+        KJcPe+1KDnk36au9MUkd5N5ifqwQhlfZTstGL6Q=
+X-Google-Smtp-Source: APXvYqy23R8J/J75h0bY7u0ee02CKdxsB+mdMCyAdYQCwfSMdPDdxWMtZx6t/AtAyJd4tuyHrt4qJ75U7+wYA1HXJtQ=
+X-Received: by 2002:a9d:6418:: with SMTP id h24mr4074220otl.172.1579354307060;
+ Sat, 18 Jan 2020 05:31:47 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <e73272a8-87e9-5e22-4f78-588b640f4fc4@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Received: by 2002:a9d:775a:0:0:0:0:0 with HTTP; Sat, 18 Jan 2020 05:31:46
+ -0800 (PST)
+Reply-To: mr.mahmouda@yahoo.com
+From:   "Mr.Mahmoud Abbas" <mrmikemoore10@gmail.com>
+Date:   Sat, 18 Jan 2020 13:31:46 +0000
+Message-ID: <CAEytMeyx=d2vgVtP7aX07Y=xzkPMs7ApyfLUdbs57z47+vfoYQ@mail.gmail.com>
+Subject: The amount involved is (USD 10,500,000.00)
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+--=20
+Dear Friend,
 
+I am Mr.Mahmoud Abbas, the accountant personal confident to Dr. S=C3=B2ng W=
+=C3=A1ng
+who died together with his wife Dr. Mrs. Lee W=C3=A1ng in a plane crash on =
+the
+1st Oct. 2003 on their way to attend wedding in Boston. Dr. S=C3=B2ng W=C3=
+=A1ng, is
+an Chinese, a physician and industrialist, he died without having any
+beneficiary to his assets including his account here in Burkina Faso which
+he opened in one of the Bank in the year 2000 as his personal savings for
+the purpose of expansion and development of his company before his untimely
+death in 2003.
 
-On 1/17/20 4:57 PM, Yang Shi wrote:
->
->
-> On 1/17/20 3:38 PM, Wei Yang wrote:
->> If compound is true, this means it is a PMD mapped THP. Which implies
->> the page is not linked to any defer list. So the first code chunk will
->> not be executed.
->>
->> Also with this reason, it would not be proper to add this page to a
->> defer list. So the second code chunk is not correct.
->>
->> Based on this, we should remove the defer list related code.
->>
->> Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg 
->> aware")
->>
->> Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
->> Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> Cc: <stable@vger.kernel.org>    [5.4+]
->>
->> ---
->> v4:
->>    * finally we identified the related code is not necessary and not
->>      correct, just remove it
->>    * thanks to Kirill T first spot some problem
->
-> Thanks for debugging and figuring this out. Acked-by: Yang Shi 
-> <yang.shi@linux.alibaba.com>
+The amount involved is (USD 10,500,000.00) Ten Million Five Hundred
+Thousand USD, no other person knows about this account, I am contacting you
+for us to transfer this funds to your account as the beneficiary,) but I
+don't know any foreigner, I am only contacting you as a foreigner because
+this money can not be approved to a local person here.
 
-BTW, the patch itself is fine, but the subject looks really confusing. 
-It sounds like we would remove all deferred list code. I'd suggest 
-rephrase it to:
+Reply urgently so that I will inform you the next step to take urgently.
 
-mm: thp: don't need care deferred split queue in memcg charge move path
+Sincerely,
 
->
->> v3:
->>    * remove all review/ack tag since rewrite the changelog
->>    * use deferred_split_huge_page as the example of race
->>    * add cc stable 5.4+ tag as suggested by David Rientjes
->>
->> v2:
->>    * move check on compound outside suggested by Alexander
->>    * an example of the race condition, suggested by Michal
->> ---
->>   mm/memcontrol.c | 18 ------------------
->>   1 file changed, 18 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 6c83cf4ed970..27c231bf4565 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -5340,14 +5340,6 @@ static int mem_cgroup_move_account(struct page 
->> *page,
->>           __mod_lruvec_state(to_vec, NR_WRITEBACK, nr_pages);
->>       }
->>   -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> -    if (compound && !list_empty(page_deferred_list(page))) {
->> - spin_lock(&from->deferred_split_queue.split_queue_lock);
->> -        list_del_init(page_deferred_list(page));
->> -        from->deferred_split_queue.split_queue_len--;
->> - spin_unlock(&from->deferred_split_queue.split_queue_lock);
->> -    }
->> -#endif
->>       /*
->>        * It is safe to change page->mem_cgroup here because the page
->>        * is referenced, charged, and isolated - we can't race with
->> @@ -5357,16 +5349,6 @@ static int mem_cgroup_move_account(struct page 
->> *page,
->>       /* caller should have done css_get */
->>       page->mem_cgroup = to;
->>   -#ifdef CONFIG_TRANSPARENT_HUGEPAGE
->> -    if (compound && list_empty(page_deferred_list(page))) {
->> - spin_lock(&to->deferred_split_queue.split_queue_lock);
->> -        list_add_tail(page_deferred_list(page),
->> - &to->deferred_split_queue.split_queue);
->> -        to->deferred_split_queue.split_queue_len++;
->> - spin_unlock(&to->deferred_split_queue.split_queue_lock);
->> -    }
->> -#endif
->> -
->>       spin_unlock_irqrestore(&from->move_lock, flags);
->>         ret = 0;
->
+Mr.Mahmoud Abbas.
 
+Reply to this e-mail addess:mr.mahmouda@yahoo.com
