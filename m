@@ -2,284 +2,154 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C727141B3D
-	for <lists+cgroups@lfdr.de>; Sun, 19 Jan 2020 03:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F9EE141DA1
+	for <lists+cgroups@lfdr.de>; Sun, 19 Jan 2020 12:33:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727573AbgASCrY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 18 Jan 2020 21:47:24 -0500
-Received: from mail-vk1-f196.google.com ([209.85.221.196]:33649 "EHLO
-        mail-vk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727561AbgASCrY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Jan 2020 21:47:24 -0500
-Received: by mail-vk1-f196.google.com with SMTP id i78so7698757vke.0
-        for <cgroups@vger.kernel.org>; Sat, 18 Jan 2020 18:47:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=toJ/dnCaKUSYfpH7tLiOydB3QUX8Gl8IYduDGUuWEgM=;
-        b=PnMv387GbmMOGujE1lDwixDkYb4ixdfXzDrv2X6l5ZcYUl0I5vxsJeAUrMQbeNwkac
-         A71NTX+4Pv76cdrabckoePKN1bx3hhnmfgEzMp8Fe4T1a75MpHY3CD/Ysu4rxVRO7J5I
-         NT0/60FeNRS+5DzjZQpbbntsTqzOQeYiULNa1ldeGZJfpXGKNgVoYRG5e12qSxpz/xpj
-         vN7HYTNo0xLEXLcxx3PB5r1SvycuYRQn199WTJpsy322n+mSPdReOUPxRkOy2Om/JRjM
-         UC19iCH4hBSqrjYPdrPAIRiVMdihp1+YMTgHaVpkaGEXC75ccV0404uS1iKtV1401G7T
-         gfFg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=toJ/dnCaKUSYfpH7tLiOydB3QUX8Gl8IYduDGUuWEgM=;
-        b=NpapATyFhQ/QtdeE0oyxDrmigWl4L5jiGVa/v1jDui2oejNDFlVAX5KU/hAlLBIY5Z
-         L7c+PHsygWnyAhIVJjDRY/U2M5S1mGGolSN8FTC1yFAUXjDQyBcNaBolCSOJXSjgG1nv
-         RPhIeIA879RyJSfPJp1srsYf5lb7cjB2iKGVH9YRkkUTnbsQ1rf0A6wfjY+7zQyHO9MJ
-         fBwQDcN9oswvi8KEW4TC9mw2VeYThbcVtifSk77+SE0rJdjHL4DeOyLaMwtqh5iDtYAp
-         ShpvZB6eEXMJlw0/P4OC2e/yy1pqMcIwH02KLjj7OT+E/Gcoaa8wJVRoUyKSH2DAtuic
-         0vYQ==
-X-Gm-Message-State: APjAAAU0JVxgkHjjJnVE0atGjK0ifbT41E/C3oAaGV6v62jEB91hDUF2
-        7nZuoRgSeZz7IojKWrtdpnkQAzWndRaHnBf2gmoDPejC
-X-Google-Smtp-Source: APXvYqwGG6ncU/DsmC8PKCzZb+17/D+wcLK8GRPL5vs0sLXHwXUSBA6llHcXMMVV6d/ckr21GKacOYh9/x/4SYS0J1I=
-X-Received: by 2002:a1f:db81:: with SMTP id s123mr25585681vkg.45.1579402042030;
- Sat, 18 Jan 2020 18:47:22 -0800 (PST)
+        id S1726843AbgASLd5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 19 Jan 2020 06:33:57 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:34199 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726816AbgASLd5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 19 Jan 2020 06:33:57 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04452;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0To5Mgrg_1579433626;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0To5Mgrg_1579433626)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sun, 19 Jan 2020 19:33:48 +0800
+Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
+ <20200116215222.GA64230@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <36a55567-a701-ad6c-e4ea-79fd2021a648@linux.alibaba.com>
+Date:   Sun, 19 Jan 2020 19:32:02 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-References: <20200113153543.24957-1-qiang.yu@amd.com> <20200113153543.24957-4-qiang.yu@amd.com>
- <f2075f28-94a2-1206-ba58-a3a6a32393f3@amd.com>
-In-Reply-To: <f2075f28-94a2-1206-ba58-a3a6a32393f3@amd.com>
-From:   Qiang Yu <yuq825@gmail.com>
-Date:   Sun, 19 Jan 2020 10:47:10 +0800
-Message-ID: <CAKGbVbv7P-S_NUYpqQ5opDbXBHRb4rq6m95372nOuZ8kMvGnBQ@mail.gmail.com>
-Subject: Re: [PATCH RFC 3/3] drm/ttm: support memcg for ttm_tt
-To:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-Cc:     Qiang Yu <qiang.yu@amd.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        cgroups@vger.kernel.org,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        David Airlie <airlied@linux.ie>, Kenny Ho <kenny.ho@amd.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Huang Rui <ray.huang@amd.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20200116215222.GA64230@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 13, 2020 at 11:56 PM Christian K=C3=B6nig
-<christian.koenig@amd.com> wrote:
->
-> Am 13.01.20 um 16:35 schrieb Qiang Yu:
-> > Charge TTM allocated system memory to memory cgroup which will
-> > limit the memory usage of a group of processes.
->
-> NAK to the whole approach. This belongs into the GEM or driver layer,
-> but not into TTM.
->
-Sorry for responding late.
 
-GEM layer seems not a proper place to handle this as:
-1. it is not aware of the back storage (system mem or device mem) unless
-we add this information up to GEM which I think is not appropriate
-2. system memory allocated by GEM with drm_gem_get_pages() is already
-charged to memcg, it's only the ttm system memory not charged to memcg
+> In a previous review, I pointed out the following race condition
+> between page charging and compaction:
+> 
+> compaction:				generic_file_buffered_read:
+> 
+> 					page_cache_alloc()
+> 
+> !PageBuddy()
+> 
+> lock_page_lruvec(page)
+>   lruvec = mem_cgroup_page_lruvec()
+>   spin_lock(&lruvec->lru_lock)
+>   if lruvec != mem_cgroup_page_lruvec()
+>     goto again
+> 
+> 					add_to_page_cache_lru()
+> 					  mem_cgroup_commit_charge()
+> 					    page->mem_cgroup = foo
+> 					  lru_cache_add()
+> 					    __pagevec_lru_add()
+> 					      SetPageLRU()
+> 
+> if PageLRU(page):
+>   __isolate_lru_page()
+> 
+> As far as I can see, you have not addressed this. You have added
+> lock_page_memcg(), but that prevents charged pages from moving between
+> cgroups, it does not prevent newly allocated pages from being charged.
+> 
 
-Implement in driver like amdgpu is an option. But seems the problem is insi=
-de
-TTM which does not charge pages allocated by itself to memcg, won't it be
-better to solve it in TTM so that all drivers using it can benefit? Or you =
-just
-think we should not rely on memcg for GPU system memory limitation?
+yes, it's my fault to oversee this problem.
 
-> > The memory is always charged to the control group of task which
-> > create this buffer object and when it's created. For example,
-> > when a buffer is created by process A and exported to process B,
-> > then process B populate this buffer, the memory is still charged
-> > to process A's memcg; if a buffer is created by process A when in
-> > memcg B, then A is moved to memcg C and populate this buffer, it
-> > will charge memcg B.
->
-> This is actually the most common use case for graphics application where
-> the X server allocates most of the backing store.
->
-> So we need a better handling than just accounting the memory to whoever
-> allocated it first.
->
-You mean the application based on DRI2 and X11 protocol draw? I think this
-is still reasonable to charge xserver for the memory, because xserver alloc=
-ate
-the buffer and share to application which is its design and implementation
-nature. With DRI3, the buffer is allocated by application, also
-suitable for this
-approach.
+...
 
-Regards,
-Qiang
+> 
+> So here is a crazy idea that may be worth exploring:
+> 
+> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+> linked list.
+> 
+> Can we make PageLRU atomic and use it to stabilize the lru_lock
+> instead, and then use the lru_lock only serialize list operations?
+> 
 
-> Regards,
-> Christian.
->
-> >
-> > Signed-off-by: Qiang Yu <qiang.yu@amd.com>
-> > ---
-> >   drivers/gpu/drm/ttm/ttm_bo.c         | 10 ++++++++++
-> >   drivers/gpu/drm/ttm/ttm_page_alloc.c | 18 +++++++++++++++++-
-> >   drivers/gpu/drm/ttm/ttm_tt.c         |  3 +++
-> >   include/drm/ttm/ttm_bo_api.h         |  5 +++++
-> >   include/drm/ttm/ttm_tt.h             |  4 ++++
-> >   5 files changed, 39 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.=
-c
-> > index 8d91b0428af1..4e64846ee523 100644
-> > --- a/drivers/gpu/drm/ttm/ttm_bo.c
-> > +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> > @@ -42,6 +42,7 @@
-> >   #include <linux/module.h>
-> >   #include <linux/atomic.h>
-> >   #include <linux/dma-resv.h>
-> > +#include <linux/memcontrol.h>
-> >
-> >   static void ttm_bo_global_kobj_release(struct kobject *kobj);
-> >
-> > @@ -162,6 +163,10 @@ static void ttm_bo_release_list(struct kref *list_=
-kref)
-> >       if (!ttm_bo_uses_embedded_gem_object(bo))
-> >               dma_resv_fini(&bo->base._resv);
-> >       mutex_destroy(&bo->wu_mutex);
-> > +#ifdef CONFIG_MEMCG
-> > +     if (bo->memcg)
-> > +             css_put(&bo->memcg->css);
-> > +#endif
-> >       bo->destroy(bo);
-> >       ttm_mem_global_free(&ttm_mem_glob, acc_size);
-> >   }
-> > @@ -1330,6 +1335,11 @@ int ttm_bo_init_reserved(struct ttm_bo_device *b=
-dev,
-> >       }
-> >       atomic_inc(&ttm_bo_glob.bo_count);
-> >
-> > +#ifdef CONFIG_MEMCG
-> > +     if (bo->type =3D=3D ttm_bo_type_device)
-> > +             bo->memcg =3D mem_cgroup_driver_get_from_current();
-> > +#endif
-> > +
-> >       /*
-> >        * For ttm_bo_type_device buffers, allocate
-> >        * address space from the device.
-> > diff --git a/drivers/gpu/drm/ttm/ttm_page_alloc.c b/drivers/gpu/drm/ttm=
-/ttm_page_alloc.c
-> > index b40a4678c296..ecd1831a1d38 100644
-> > --- a/drivers/gpu/drm/ttm/ttm_page_alloc.c
-> > +++ b/drivers/gpu/drm/ttm/ttm_page_alloc.c
-> > @@ -42,7 +42,7 @@
-> >   #include <linux/seq_file.h> /* for seq_printf */
-> >   #include <linux/slab.h>
-> >   #include <linux/dma-mapping.h>
-> > -
-> > +#include <linux/memcontrol.h>
-> >   #include <linux/atomic.h>
-> >
-> >   #include <drm/ttm/ttm_bo_driver.h>
-> > @@ -1045,6 +1045,11 @@ ttm_pool_unpopulate_helper(struct ttm_tt *ttm, u=
-nsigned mem_count_update)
-> >       ttm_put_pages(ttm->pages, ttm->num_pages, ttm->page_flags,
-> >                     ttm->caching_state);
-> >       ttm->state =3D tt_unpopulated;
-> > +
-> > +#ifdef CONFIG_MEMCG
-> > +     if (ttm->memcg)
-> > +             mem_cgroup_uncharge_drvmem(ttm->memcg, ttm->num_pages);
-> > +#endif
-> >   }
-> >
-> >   int ttm_pool_populate(struct ttm_tt *ttm, struct ttm_operation_ctx *c=
-tx)
-> > @@ -1059,6 +1064,17 @@ int ttm_pool_populate(struct ttm_tt *ttm, struct=
- ttm_operation_ctx *ctx)
-> >       if (ttm_check_under_lowerlimit(mem_glob, ttm->num_pages, ctx))
-> >               return -ENOMEM;
-> >
-> > +#ifdef CONFIG_MEMCG
-> > +     if (ttm->memcg) {
-> > +             gfp_t gfp_flags =3D GFP_USER;
-> > +             if (ttm->page_flags & TTM_PAGE_FLAG_NO_RETRY)
-> > +                     gfp_flags |=3D __GFP_RETRY_MAYFAIL;
-> > +             ret =3D mem_cgroup_charge_drvmem(ttm->memcg, gfp_flags, t=
-tm->num_pages);
-> > +             if (ret)
-> > +                     return ret;
-> > +     }
-> > +#endif
-> > +
-> >       ret =3D ttm_get_pages(ttm->pages, ttm->num_pages, ttm->page_flags=
-,
-> >                           ttm->caching_state);
-> >       if (unlikely(ret !=3D 0)) {
-> > diff --git a/drivers/gpu/drm/ttm/ttm_tt.c b/drivers/gpu/drm/ttm/ttm_tt.=
-c
-> > index e0e9b4f69db6..1acb153084e1 100644
-> > --- a/drivers/gpu/drm/ttm/ttm_tt.c
-> > +++ b/drivers/gpu/drm/ttm/ttm_tt.c
-> > @@ -233,6 +233,9 @@ void ttm_tt_init_fields(struct ttm_tt *ttm, struct =
-ttm_buffer_object *bo,
-> >       ttm->state =3D tt_unpopulated;
-> >       ttm->swap_storage =3D NULL;
-> >       ttm->sg =3D bo->sg;
-> > +#ifdef CONFIG_MEMCG
-> > +     ttm->memcg =3D bo->memcg;
-> > +#endif
-> >   }
-> >
-> >   int ttm_tt_init(struct ttm_tt *ttm, struct ttm_buffer_object *bo,
-> > diff --git a/include/drm/ttm/ttm_bo_api.h b/include/drm/ttm/ttm_bo_api.=
-h
-> > index 65e399d280f7..95a08e81a73e 100644
-> > --- a/include/drm/ttm/ttm_bo_api.h
-> > +++ b/include/drm/ttm/ttm_bo_api.h
-> > @@ -54,6 +54,8 @@ struct ttm_place;
-> >
-> >   struct ttm_lru_bulk_move;
-> >
-> > +struct mem_cgroup;
-> > +
-> >   /**
-> >    * struct ttm_bus_placement
-> >    *
-> > @@ -180,6 +182,9 @@ struct ttm_buffer_object {
-> >       void (*destroy) (struct ttm_buffer_object *);
-> >       unsigned long num_pages;
-> >       size_t acc_size;
-> > +#ifdef CONFIG_MEMCG
-> > +     struct mem_cgroup *memcg;
-> > +#endif
-> >
-> >       /**
-> >       * Members not needing protection.
-> > diff --git a/include/drm/ttm/ttm_tt.h b/include/drm/ttm/ttm_tt.h
-> > index c0e928abf592..10fb5a557b95 100644
-> > --- a/include/drm/ttm/ttm_tt.h
-> > +++ b/include/drm/ttm/ttm_tt.h
-> > @@ -33,6 +33,7 @@ struct ttm_tt;
-> >   struct ttm_mem_reg;
-> >   struct ttm_buffer_object;
-> >   struct ttm_operation_ctx;
-> > +struct mem_cgroup;
-> >
-> >   #define TTM_PAGE_FLAG_WRITE           (1 << 3)
-> >   #define TTM_PAGE_FLAG_SWAPPED         (1 << 4)
-> > @@ -116,6 +117,9 @@ struct ttm_tt {
-> >               tt_unbound,
-> >               tt_unpopulated,
-> >       } state;
-> > +#ifdef CONFIG_MEMCG
-> > +     struct mem_cgroup *memcg;
-> > +#endif
-> >   };
-> >
-> >   /**
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+Sounds a good idea. I will try this.
+
+Thanks
+Alex
+
+> I.e. in compaction, you'd do
+> 
+> 	if (!TestClearPageLRU(page))
+> 		goto isolate_fail;
+> 	/*
+> 	 * We isolated the page's LRU state and thereby locked out all
+> 	 * other isolators, including cgroup page moving, page reclaim,
+> 	 * page freeing etc. That means page->mem_cgroup is now stable
+> 	 * and we can safely look up the correct lruvec and take the
+> 	 * page off its physical LRU list.
+> 	 */
+> 	lruvec = mem_cgroup_page_lruvec(page);
+> 	spin_lock_irq(&lruvec->lru_lock);
+> 	del_page_from_lru_list(page, lruvec, page_lru(page));
+> 
+> Putback would mostly remain the same (although you could take the
+> PageLRU setting out of the list update locked section, as long as it's
+> set after the page is physically linked):
+> 
+> 	/* LRU isolation pins page->mem_cgroup */
+> 	lruvec = mem_cgroup_page_lruvec(page)
+> 	spin_lock_irq(&lruvec->lru_lock);
+> 	add_page_to_lru_list(...);
+> 	spin_unlock_irq(&lruvec->lru_lock);
+> 
+> 	SetPageLRU(page);
+> 
+> And you'd have to carefully review and rework other sites that rely on
+> PageLRU: reclaim, __page_cache_release(), __activate_page() etc.
+> 
+> Especially things like activate_page(), which used to only check
+> PageLRU to shuffle the page on the LRU list would now have to briefly
+> clear PageLRU and then set it again afterwards.
+> 
+> However, aside from a bit more churn in those cases, and the
+> unfortunate additional atomic operations, I currently can't think of a
+> fundamental reason why this wouldn't work.
+> 
+> Hugh, what do you think?
+> 
