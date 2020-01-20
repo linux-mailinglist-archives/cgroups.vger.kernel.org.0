@@ -2,133 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E0151424E1
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2020 09:17:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 48CD5142B6C
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jan 2020 14:00:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726125AbgATIRC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jan 2020 03:17:02 -0500
-Received: from mga01.intel.com ([192.55.52.88]:38466 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726039AbgATIRC (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 20 Jan 2020 03:17:02 -0500
-X-Amp-Result: UNKNOWN
-X-Amp-Original-Verdict: FILE UNKNOWN
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 20 Jan 2020 00:17:01 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,341,1574150400"; 
-   d="scan'208";a="258624482"
-Received: from richard.sh.intel.com (HELO localhost) ([10.239.159.54])
-  by fmsmga002.fm.intel.com with ESMTP; 20 Jan 2020 00:17:00 -0800
-Date:   Mon, 20 Jan 2020 16:17:10 +0800
-From:   Wei Yang <richardw.yang@linux.intel.com>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, ktkhai@virtuozzo.com,
-        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        stable@vger.kernel.org
-Subject: Re: [Patch v4] mm: thp: remove the defer list related code since
- this will not happen
-Message-ID: <20200120081710.GA18028@richard>
-Reply-To: Wei Yang <richardw.yang@linux.intel.com>
-References: <20200117233836.3434-1-richardw.yang@linux.intel.com>
- <20200118145421.0ab96d5d9bea21a3339d52fe@linux-foundation.org>
- <alpine.DEB.2.21.2001181525250.27051@chino.kir.corp.google.com>
- <20200120072237.GA18451@dhcp22.suse.cz>
+        id S1727047AbgATNAG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jan 2020 08:00:06 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:48280 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726619AbgATNAF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jan 2020 08:00:05 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07417;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0ToETcqo_1579525195;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0ToETcqo_1579525195)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Jan 2020 20:59:57 +0800
+Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
+        Chris Down <chris@chrisdown.name>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        swkhack <swkhack@gmail.com>,
+        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Colin Ian King <colin.king@canonical.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
+ <20200116215222.GA64230@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <9ee80b68-a78f-714a-c727-1f6d2b4f87ea@linux.alibaba.com>
+Date:   Mon, 20 Jan 2020 20:58:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200120072237.GA18451@dhcp22.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200116215222.GA64230@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 08:22:37AM +0100, Michal Hocko wrote:
->On Sat 18-01-20 15:36:06, David Rientjes wrote:
->> On Sat, 18 Jan 2020, Andrew Morton wrote:
->> 
->> > On Sat, 18 Jan 2020 07:38:36 +0800 Wei Yang <richardw.yang@linux.intel.com> wrote:
->> > 
->> > > If compound is true, this means it is a PMD mapped THP. Which implies
->> > > the page is not linked to any defer list. So the first code chunk will
->> > > not be executed.
->> > > 
->> > > Also with this reason, it would not be proper to add this page to a
->> > > defer list. So the second code chunk is not correct.
->> > > 
->> > > Based on this, we should remove the defer list related code.
->> > > 
->> > > Fixes: 87eaceb3faa5 ("mm: thp: make deferred split shrinker memcg aware")
->> > > 
->> > > Signed-off-by: Wei Yang <richardw.yang@linux.intel.com>
->> > > Suggested-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
->> > > Cc: <stable@vger.kernel.org>    [5.4+]
->> > 
->> > This patch is identical to "mm: thp: grab the lock before manipulating
->> > defer list", which is rather confusing.  Please let people know when
->> > this sort of thing is done.
->> > 
->> > The earlier changelog mentioned a possible race condition.  This
->> > changelog does not.  In fact this changelog fails to provide any
->> > description of any userspace-visible runtime effects of the bug. 
->> > Please send along such a description for inclusion, as always.
->> > 
->> 
->> The locking concern that Wei was originally looking at is no longer an 
->> issue because we determined that the code in question could simply be 
->> removed.
->> 
->> I think the following can be added to the changelog:
->> 
->> ----->o-----
->> 
->> When migrating memcg charges of thp memory, there are two possibilities:
->> 
->>  (1) The underlying compound page is mapped by a pmd and thus does is not 
->>      on a deferred split queue (it's mapped), or
->> 
->>  (2) The compound page is not mapped by a pmd and is awaiting split on a
->>      deferred split queue.
->> 
->> The current charge migration implementation does *not* migrate charges for 
->> thp memory on the deferred split queue, it only migrates charges for pages 
->> that are mapped by a pmd.
->> 
->> Thus, to migrate charges, the underlying compound page cannot be on a 
->> deferred split queue; no list manipulation needs to be done in 
->> mem_cgroup_move_account().
->> 
->> With the current code, the underlying compound page is moved to the 
->> deferred split queue of the memcg its memory is not charged to, so 
->> susbequent reclaim will consider these pages for the wrong memcg.  Remove 
->> the deferred split queue handling in mem_cgroup_move_account() entirely.
->
->I believe this still doesn't describe the underlying problem to the full
->extent. What happens with the page on the deferred list when it
->shouldn't be there in fact? Unless I am missing something deferred_split_scan
->will simply split that huge page. Which is a bit unfortunate but nothing
->really critical. This should be mentioned in the changelog.
->
 
-Per my understanding, if we do the split when it is not necessary, we
-probably have a lower performance due to tlb miss. For others, I don't see the
-impact.
 
->With that clarified, feel free to add
->
->Acked-by: Michal Hocko <mhocko@suse.com>
->
->-- 
->Michal Hocko
->SUSE Labs
+ÔÚ 2020/1/17 ÉÏÎç5:52, Johannes Weiner Ð´µÀ:
 
--- 
-Wei Yang
-Help you, Help me
+> You simply cannot serialize on page->mem_cgroup->lruvec when
+> page->mem_cgroup isn't stable. You need to serialize on the page
+> itself, one way or another, to make this work.
+> 
+> 
+> So here is a crazy idea that may be worth exploring:
+> 
+> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+> linked list.
+> 
+> Can we make PageLRU atomic and use it to stabilize the lru_lock
+> instead, and then use the lru_lock only serialize list operations?
+> 
+
+Hi Johannes,
+
+I am trying to figure out the solution of atomic PageLRU, but is 
+blocked by the following sitations, when PageLRU and lru list was protected
+together under lru_lock, the PageLRU could be a indicator if page on lru list
+But now seems it can't be the indicator anymore.
+Could you give more clues of stabilization usage of PageLRU?
+  
+
+__page_cache_release/release_pages/compaction            __pagevec_lru_add
+if (TestClearPageLRU(page))                              if (!PageLRU())
+                                                                lruvec_lock();
+                                                                list_add();
+        			                                lruvec_unlock();
+        			                                SetPageLRU() //position 1
+        lock_page_lruvec_irqsave(page, &flags);
+        del_page_from_lru_list(page, lruvec, ..);
+        unlock_page_lruvec_irqrestore(lruvec, flags);
+                                                                SetPageLRU() //position 2
+Thanks a lot!
+Alex
+
+> I.e. in compaction, you'd do
+> 
+> 	if (!TestClearPageLRU(page))
+> 		goto isolate_fail;
+> 	/*
+> 	 * We isolated the page's LRU state and thereby locked out all
+> 	 * other isolators, including cgroup page moving, page reclaim,
+> 	 * page freeing etc. That means page->mem_cgroup is now stable
+> 	 * and we can safely look up the correct lruvec and take the
+> 	 * page off its physical LRU list.
+> 	 */
+> 	lruvec = mem_cgroup_page_lruvec(page);
+> 	spin_lock_irq(&lruvec->lru_lock);
+> 	del_page_from_lru_list(page, lruvec, page_lru(page));
+> 
+> Putback would mostly remain the same (although you could take the
+> PageLRU setting out of the list update locked section, as long as it's
+> set after the page is physically linked):
+> 
+> 	/* LRU isolation pins page->mem_cgroup */
+> 	lruvec = mem_cgroup_page_lruvec(page)
+> 	spin_lock_irq(&lruvec->lru_lock);
+> 	add_page_to_lru_list(...);
+> 	spin_unlock_irq(&lruvec->lru_lock);
+> 
+> 	SetPageLRU(page);
+> 
+> And you'd have to carefully review and rework other sites that rely on
+> PageLRU: reclaim, __page_cache_release(), __activate_page() etc.
+> 
+> Especially things like activate_page(), which used to only check
+> PageLRU to shuffle the page on the LRU list would now have to briefly
+> clear PageLRU and then set it again afterwards.
+> 
+> However, aside from a bit more churn in those cases, and the
+> unfortunate additional atomic operations, I currently can't think of a
+> fundamental reason why this wouldn't work.
+> 
+> Hugh, what do you think?
+> 
