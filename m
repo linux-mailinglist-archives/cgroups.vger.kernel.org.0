@@ -2,186 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D085144120
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2020 17:00:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD6D14436C
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jan 2020 18:39:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729045AbgAUQAJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Jan 2020 11:00:09 -0500
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:36547 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728852AbgAUQAJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jan 2020 11:00:09 -0500
-Received: by mail-pf1-f196.google.com with SMTP id x184so1715975pfb.3
-        for <cgroups@vger.kernel.org>; Tue, 21 Jan 2020 08:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=RGHqVegSf46OSrC+vq5Pv4eGAqLOtAwhyN30PfSx9gU=;
-        b=zoinFZ0mYrahd5Hl1dR/pT8vt/qq41K+qA8Hu0uEzs6mlFAFNlvnAch12rsopzsna0
-         MNXC+r7/nPCC9+9CUKJwbajVlDzmdO6Qgu+H3wuh85tZslqyxdccc4VrsLuTqhRfyDyd
-         MGVpXxoWhYOpTRPzk6Z62zIvWWq9vGnpCkB/mRCo54/h0TzeVtku4lgq589YqsBHdkbJ
-         dnHSE4oCmvIZnG4aEQ3l4mcwVPt9P7qoGGUTGBqLcU8WjhYHGZFAjN9MF1ZnenLyrxVD
-         VMWieaMITU5HC9uhCOAsCsHkG3XVRElBFX2UKbnzLw9BhbBEG3q0JF9z3KxmQ6wWDu4Q
-         GiaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=RGHqVegSf46OSrC+vq5Pv4eGAqLOtAwhyN30PfSx9gU=;
-        b=akokAaG9luaNiNvwMJoDKzbJ5jH1wRb2zg8ctnJqxxN9lfyZiyQAMiTYCwgFzGiEMd
-         km3HcswzFxa2Kq9ZssQn8h36dgCuO46NhcQiOrvOV8WR5qVnA8tTCGIKL4+hRLp3561p
-         fbew82aVf4GGJ0MELMTYwQTkzxcK1IUe7SS61JwZngjmZJ92yeFhz8Ioc/Ff0zW4Z0oT
-         ZDcJUiM7c4eBfSmZDVq5T0CO5JoIiNjLm2rnQ/RPHqkgJhRTEznsyWAuNqiKMnt4MBTC
-         T02NU+F//XxUe7PKV/6O44pVG80kkFvSyFso+G3Oo3r4VFBIKtKpMLOWs7GnfAx5eNAR
-         VVHQ==
-X-Gm-Message-State: APjAAAWB8SnSscWkTQyr+YnOvkSamISfDvSkwEJ/EQIJEMvCe8N42h5f
-        5OlqZcw63Pu+IE28jaMBYZlVFA==
-X-Google-Smtp-Source: APXvYqxuVoSpYzHo96UzVZPSuSADBuFnCVj4+LOj72UvgSuwSuN2rKsj1LKEx0Md+mb4O0Cvw/uxpQ==
-X-Received: by 2002:a62:8782:: with SMTP id i124mr5101047pfe.22.1579622408512;
-        Tue, 21 Jan 2020 08:00:08 -0800 (PST)
-Received: from localhost ([2620:10d:c090:180::f3e0])
-        by smtp.gmail.com with ESMTPSA id o98sm4261120pjb.15.2020.01.21.08.00.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 21 Jan 2020 08:00:07 -0800 (PST)
-Date:   Tue, 21 Jan 2020 11:00:05 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-Message-ID: <20200121160005.GA69293@cmpxchg.org>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
- <9ee80b68-a78f-714a-c727-1f6d2b4f87ea@linux.alibaba.com>
+        id S1728901AbgAURjk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Jan 2020 12:39:40 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:47014 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728186AbgAURjj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jan 2020 12:39:39 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00LHdHO1144487;
+        Tue, 21 Jan 2020 17:39:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2019-08-05;
+ bh=GG6WIccmd9sIWr73fCRX2fzl49mGcIF9RR7vAcARjHw=;
+ b=KLOKH0CgknIgvxGOnve2mE7gkeOOLcEQNs5ZmyjXPnWXi3/vLi3kswnRadiPSnD+j2Qj
+ GDttFsqnqHClOZmYkbKHjGj8OPpR3dO+uz9eevq5v6uGAVBMp5axtAQF0NPJzxhTGOe8
+ BaFOSRShXM5Ei/c1IVpY/sLI33jpe1b2OqqiDbPzr6LOczNyjtLF2x5xIcVyc0ddixZt
+ EvxiAHFKy37k+nGfHzC++B2llXjyVak35hDGQGZeOYqQp0hsOOJ0lRPYuDYuWhsEa9WD
+ Fy7owrR/ZAMZO8d0rcfhPgxgfSp4A9RQL/arhwY7OqcPUvkgJlMRD5Q+c4KLUoPBYnWh 5A== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2xktnr6gjs-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jan 2020 17:39:30 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.27/8.16.0.27) with SMTP id 00LHd7dD038057;
+        Tue, 21 Jan 2020 17:39:30 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 2xnsj51f1t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 21 Jan 2020 17:39:29 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 00LHcWML020095;
+        Tue, 21 Jan 2020 17:38:32 GMT
+Received: from [192.168.1.206] (/71.63.128.209)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 21 Jan 2020 09:38:32 -0800
+Subject: Re: [PATCH v9 4/8] hugetlb: disable region_add file_region coalescing
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     shuah@kernel.org, rientjes@google.com, shakeelb@google.com,
+        gthelen@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        aneesh.kumar@linux.vnet.ibm.com, mkoutny@suse.com
+References: <20191217231615.164161-1-almasrymina@google.com>
+ <20191217231615.164161-4-almasrymina@google.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <2afb05c1-8d85-a0cf-aad1-041054aad529@oracle.com>
+Date:   Tue, 21 Jan 2020 09:38:29 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
+In-Reply-To: <20191217231615.164161-4-almasrymina@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <9ee80b68-a78f-714a-c727-1f6d2b4f87ea@linux.alibaba.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9507 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 mlxscore=0 mlxlogscore=916
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.0.1-1911140001 definitions=main-2001210136
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9507 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 malwarescore=0
+ suspectscore=0 phishscore=0 bulkscore=0 spamscore=0 clxscore=1015
+ lowpriorityscore=0 mlxscore=0 impostorscore=0 mlxlogscore=948 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.0.1-1911140001
+ definitions=main-2001210136
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 20, 2020 at 08:58:09PM +0800, Alex Shi wrote:
+On 12/17/19 3:16 PM, Mina Almasry wrote:
+> A follow up patch in this series adds hugetlb cgroup uncharge info the
+
+*nit*
+A follow up patch in this series adds hugetlb cgroup uncharge info to the
+
+> file_region entries in resv->regions. The cgroup uncharge info may
+> differ for different regions, so they can no longer be coalesced at
+> region_add time. So, disable region coalescing in region_add in this
+> patch.
 > 
+> Behavior change:
 > 
-> 在 2020/1/17 上午5:52, Johannes Weiner 写道:
+> Say a resv_map exists like this [0->1], [2->3], and [5->6].
 > 
-> > You simply cannot serialize on page->mem_cgroup->lruvec when
-> > page->mem_cgroup isn't stable. You need to serialize on the page
-> > itself, one way or another, to make this work.
-> > 
-> > 
-> > So here is a crazy idea that may be worth exploring:
-> > 
-> > Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
-> > linked list.
-> > 
-> > Can we make PageLRU atomic and use it to stabilize the lru_lock
-> > instead, and then use the lru_lock only serialize list operations?
-> > 
+> Then a region_chg/add call comes in region_chg/add(f=0, t=5).
 > 
-> Hi Johannes,
+> Old code would generate resv->regions: [0->5], [5->6].
+> New code would generate resv->regions: [0->1], [1->2], [2->3], [3->5],
+> [5->6].
 > 
-> I am trying to figure out the solution of atomic PageLRU, but is 
-> blocked by the following sitations, when PageLRU and lru list was protected
-> together under lru_lock, the PageLRU could be a indicator if page on lru list
-> But now seems it can't be the indicator anymore.
-> Could you give more clues of stabilization usage of PageLRU?
+> Special care needs to be taken to handle the resv->adds_in_progress
+> variable correctly. In the past, only 1 region would be added for every
+> region_chg and region_add call. But now, each call may add multiple
+> regions, so we can no longer increment adds_in_progress by 1 in region_chg,
+> or decrement adds_in_progress by 1 after region_add or region_abort. Instead,
+> region_chg calls add_reservation_in_range() to count the number of regions
+> needed and allocates those, and that info is passed to region_add and
+> region_abort to decrement adds_in_progress correctly.
+> 
+> We've also modified the assumption that region_add after region_chg
+> never fails. region_chg now pre-allocates at least 1 region for
+> region_add. If region_add needs more regions than region_chg has
+> allocated for it, then it may fail.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-There are two types of PageLRU checks: optimistic and deterministic.
+Thanks for the updated comments.  Still,
+Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 
-The check in activate_page() for example is optimistic and the result
-unstable, but that's okay, because if we miss a page here and there
-it's not the end of the world.
-
-But the check in __activate_page() is deterministic, because we need
-to be sure before del_page_from_lru_list(). Currently it's made
-deterministic by testing under the lock: whoever acquires the lock
-first gets to touch the LRU state. The same can be done with an atomic
-TestClearPagLRU: whoever clears the flag first gets to touch the LRU
-state (the lock is then only acquired to not corrupt the linked list,
-in case somebody adds or removes a different page at the same time).
-
-I.e. in my proposal, if you want to get a stable read of PageLRU, you
-have to clear it atomically. But AFAICS, everybody who currently does
-need a stable read either already clears it or can easily be converted
-to clear it and then set it again (like __activate_page and friends).
-
-> __page_cache_release/release_pages/compaction            __pagevec_lru_add
-> if (TestClearPageLRU(page))                              if (!PageLRU())
->                                                                 lruvec_lock();
->                                                                 list_add();
->         			                                lruvec_unlock();
->         			                                SetPageLRU() //position 1
->         lock_page_lruvec_irqsave(page, &flags);
->         del_page_from_lru_list(page, lruvec, ..);
->         unlock_page_lruvec_irqrestore(lruvec, flags);
->                                                                 SetPageLRU() //position 2
-
-Hm, that's not how __pagevec_lru_add() looks. In fact,
-__pagevec_lru_add_fn() has a BUG_ON(PageLRU).
-
-That's because only one thread can own the isolation state at a time.
-
-If PageLRU is set, only one thread can claim it. Right now, whoever
-takes the lock first and clears it wins. When we replace it with
-TestClearPageLRU, it's the same thing: only one thread can win.
-
-And you cannot set PageLRU, unless you own it. Either you isolated the
-page using TestClearPageLRU, or you allocated a new page.
-
-So you can have multiple threads trying to isolate a page from the LRU
-list, hence the atomic testclear. But no two threads should ever be
-racing to add a page to the LRU list, because only one thread can own
-the isolation state.
-
-With the atomic PageLRU flag, the sequence would be this:
-
-__pagevec_lru_add:
-
-  BUG_ON(PageLRU()) // Caller *must* own the isolation state
-
-  lruvec_lock()     // The lruvec is stable, because changing
-                    // page->mem_cgroup requires owning the
-                    // isolation state (PageLRU) and we own it
-
-  list_add()        // Linked list protected by lru_lock
-
-  lruvec_unlock()
-
-  SetPageLRU()      // The page has been added to the linked
-                    // list, give up our isolation state. Once
-                    // this flag becomes visible, other threads
-                    // can isolate the page from the LRU list
+-- 
+Mike Kravetz
