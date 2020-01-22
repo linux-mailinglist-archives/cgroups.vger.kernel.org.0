@@ -2,103 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCE37145E34
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jan 2020 22:41:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF9FC145F3C
+	for <lists+cgroups@lfdr.de>; Thu, 23 Jan 2020 00:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgAVVlF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Jan 2020 16:41:05 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46228 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725827AbgAVVlF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jan 2020 16:41:05 -0500
-Received: by mail-ot1-f66.google.com with SMTP id r9so730086otp.13
-        for <cgroups@vger.kernel.org>; Wed, 22 Jan 2020 13:41:04 -0800 (PST)
+        id S1725911AbgAVXjT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Jan 2020 18:39:19 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:38671 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgAVXjT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jan 2020 18:39:19 -0500
+Received: by mail-pg1-f194.google.com with SMTP id a33so358407pgm.5
+        for <cgroups@vger.kernel.org>; Wed, 22 Jan 2020 15:39:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qOzfGqLG1EaX/BWFSgUwOINS0Jq9ooncgkzx4R9Fkjs=;
-        b=Uy+ZTjJfUlZLEz9nBqJA+AJ5BgXd3gd9QKk3PWvXePIqFK+wVr304OtF1bJDyP2N7g
-         mS7cLdycg8D73Dp03VE3E7oDA3DYW3pNzAZ1yx241PRvXI3pE3DtGl8nplDnFzl4YUFr
-         LcruTZ1svCVSRyH3T74SE6O2PMp9S3dooiQq5KivdjnFqIctU1uarYLle986EgnqUzb0
-         bc1JZCPNUvlyWEqBlM5Bz4eheeVNabuK8ZAELah3ChGuDRMORFJL3S52sJHiVc+HakJj
-         Y0C4jtiflOEdNn84T0us+pv/W2wsUGxcuq+DH/aNBJaG4MihkgPIMUkexpaEWku4D+OP
-         sPPg==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=YNvajkPj2BUn62eVSIlq+7puNDrKQpZK5MXXRGczBsE=;
+        b=WZJFiO4NDHzrXRTXfEk15plzqfBCf/XF0WnvEGStfqkfZ8Fj/EQr8PPvQ1mLAYqSCP
+         v+tE914RPXI/94X6Y2Ek89gj39gHYxA1NTi3sKa6IgtxsqR7fEYjau6jIW00dazgJtqm
+         NZx1MnFTfqkmUSUZZeskkvhavOEJCNt5fV+mYrZt5vPpBAD/vBNFA/RgfJYLX8D9PJaA
+         G3KnjIHOycLCS+ldcv/ah1Uk5FmX3GkTjliBdERDyczvEhEsSyWkRdr9Dv0Y86tQcqZ1
+         /LhnvAT2PoZqjNrkdXKx4QNEIv+ukhBvwK0989ik3JobGkgCQ3qE+FM9Wjg3YeOp+dJQ
+         Gk/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qOzfGqLG1EaX/BWFSgUwOINS0Jq9ooncgkzx4R9Fkjs=;
-        b=JMJwELMFO/5h2Db6k0RvU//tcqGAl71r5lHjFKQ1mS5fjmIiACBEG+3GuBKCK2trH+
-         rxWXPcJAsq1Vkyje0BFDy+T89EgruaxbIWuQT4QW0J2x9XOqYVB0pVbyjIzQCQ+TPyOy
-         Jg4r5hRvEzPOPFE80QV5s3xaqJtvizoDSoeoWcJHi2jMmlHLOxFfRHHdduKhkRGKOKRQ
-         KL9JtXfGyizlB6COkI7tXs8EI6/JDtSk49HaoUxON64tbI2lXiHwlck8RY7DyaWIeVI5
-         AegPq1I1QoHNofR3ar7tRulJMMRs14s3eYzbxjtjmPmEB9YjCWKhUcgRtxBetKnttKiS
-         Kabg==
-X-Gm-Message-State: APjAAAUpPX7UXea8uTRuNf7WNfaQH7lufuDrVq3K7Q+S4OO09Xt92wEQ
-        tzQm+4iz1kjxk+xUggmn7GBzP/YHn/y1JqPdWCihYA==
-X-Google-Smtp-Source: APXvYqwxp52P8zgMm37e71Q9sRyxqMixiN3l7LI9gB48YlOY70kKTaPjXcqibQ1mgc8A1BHkogOu17hYZ4cpUJn8mkc=
-X-Received: by 2002:a9d:518b:: with SMTP id y11mr8491975otg.349.1579729264223;
- Wed, 22 Jan 2020 13:41:04 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=YNvajkPj2BUn62eVSIlq+7puNDrKQpZK5MXXRGczBsE=;
+        b=Dgn+svFXHkOVvRAyfjGTKHq5KUkE60jR2e5ugOsnuJZFU4y14/MyF0FT9/ZWaK2LGu
+         3RWSheHrDFSb8KO0JZPOa0QebTpbDpG7pJd4ohP0S3CNBXeZXUaxd0gedKUhyN1eMTw+
+         mt6caSIFUhnPAxBSyneBRp6uwM00PKyi1iMqifKPRcWdx7UQWyTN4MISHVxlq3B0eRZl
+         1M9un1d4siN702Wseth/VHECbTAPYDrDeg0wSg2/uK07W/1fxM4pdfjieFOFWP2UEiaz
+         /UyFCvDqpDTGvJgaql96n7bE77v4XOHKoRk9Rak+5FX2KEd2BgN+deNv9YfmTTzZf4UF
+         oG9Q==
+X-Gm-Message-State: APjAAAXSNDm/B3t2m+MEhA5/jJkeiSQSZuJ7ArGkLNgCIpAavlNp0ujK
+        zalTN7ZW5E2jFohza8G3j0h3fw==
+X-Google-Smtp-Source: APXvYqzYKfqD7EIYVVlkhEXDYVigv+4+OFhdSez6pqm4NRA/CZmbpyFtyH7DKP240xSGf/Xi6bieBA==
+X-Received: by 2002:a62:e80a:: with SMTP id c10mr4833932pfi.91.1579736358110;
+        Wed, 22 Jan 2020 15:39:18 -0800 (PST)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id m101sm98110pje.13.2020.01.22.15.39.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 22 Jan 2020 15:39:17 -0800 (PST)
+Date:   Wed, 22 Jan 2020 15:39:16 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Michal Hocko <mhocko@kernel.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, ktkhai@virtuozzo.com,
+        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
+        stable@vger.kernel.org
+Subject: Re: [Patch v4] mm: thp: remove the defer list related code since
+ this will not happen
+In-Reply-To: <20200122081406.GO29276@dhcp22.suse.cz>
+Message-ID: <alpine.DEB.2.21.2001221534510.159514@chino.kir.corp.google.com>
+References: <20200117233836.3434-1-richardw.yang@linux.intel.com> <20200118145421.0ab96d5d9bea21a3339d52fe@linux-foundation.org> <alpine.DEB.2.21.2001181525250.27051@chino.kir.corp.google.com> <20200120072237.GA18451@dhcp22.suse.cz>
+ <alpine.DEB.2.21.2001201307520.259466@chino.kir.corp.google.com> <20200120212726.GB29276@dhcp22.suse.cz> <alpine.DEB.2.21.2001211500250.157547@chino.kir.corp.google.com> <20200122081406.GO29276@dhcp22.suse.cz>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-References: <20191217231615.164161-1-almasrymina@google.com>
- <20191217231615.164161-3-almasrymina@google.com> <dec1ccd5-5973-c498-f2fe-390c1c51b2d0@oracle.com>
- <CAHS8izMzXpNMCmFh_SD7n+4+rj3QTqyRfeWQyXAhFo1-qV4iEQ@mail.gmail.com> <0ea993b0-af18-cee8-527e-f6df7e76b0be@oracle.com>
-In-Reply-To: <0ea993b0-af18-cee8-527e-f6df7e76b0be@oracle.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Wed, 22 Jan 2020 13:40:53 -0800
-Message-ID: <CAHS8izOj7s+UnMvGzFAC6ympjfxvxybQk7Z_BVRyjj3Z4a1q+Q@mail.gmail.com>
-Subject: Re: [PATCH v9 3/8] hugetlb_cgroup: add reservation accounting for
- private mappings
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        Aneesh Kumar <aneesh.kumar@linux.vnet.ibm.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Hillf Danton <hdanton@sina.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 17, 2020 at 2:09 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> On 1/14/20 2:52 PM, Mina Almasry wrote:
-> > On Mon, Jan 13, 2020 at 4:55 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
-> >>> +#ifdef CONFIG_CGROUP_HUGETLB
-> >>> +     /*
-> >>> +      * Since we check for HPAGE_RESV_OWNER above, this must a private
-> >>> +      * mapping, and these values should be none-zero, and should point to
-> >>> +      * the hugetlb_cgroup counter to uncharge for this reservation.
-> >>> +      */
-> >>> +     WARN_ON(!resv->reservation_counter);
-> >>> +     WARN_ON(!resv->pages_per_hpage);
-> >>> +     WARN_ON(!resv->css);
-> >>
-> >> I was once again wondering if these were always non-NULL for private mappings.
-> >> It seems that reservation_counter (h_gc) would be NULL in these cases from
-> >> these early checks in hugetlb_cgroup_charge_cgroup().
-> >>
-> >
-> > You are right. I'm fixing in v10 the code and comments to account for
-> > h_cg potentially being NULL, but I'm having trouble testing. Looking
-> > at the code, I'm a bit confused by the checks. Seems to me
-> > hugetlb_cgroup_disabled() is the same as #ifdef CONFIG_CGROUP_HUGETLB;
-> > I can't find a way to enable the Kconfig but have that return false
-> > unless I hack the code.
->
-> What about the boot options?
->
-> cgroup_disable=
-> cgroup_no_v1=
+On Wed, 22 Jan 2020, Michal Hocko wrote:
 
-Thanks, cgroup_disable=hugetlb does it. I ran the the libhugetlbfs
-tests with patchset v10 and it passed, so it seems the latest version
-of the patch should be fine. Of course my hugetlb cgroup tests fail
-outright when hugetlb cgroups are disabled so those don't say anything
-useful.
+> > The current code in 5.4 from commit 87eaceb3faa59 places any migrated 
+> > compound page onto the deferred split queue of the destination memcg 
+> > regardless of whether it has a mapping pmd 
+> > (list_empty(page_deferred_list()) was already false) or it does not have a 
+> > mapping pmd (but is now on the wrong queue).  For the latter, 
+> > can_split_huge_page() can help for the actual split but not for the 
+> > removal of the page that is now erroneously on the queue.
+> 
+> Does that mean that those fully mapped THPs are not going to be split?
+> 
+
+It believe it should but deferred_split_scan() also won't take it off the 
+wrong split queue so it will remain there and any other checks for 
+page_deferred_list(page) will succeed.
+
+> > For the former, 
+> > memcg reclaim would not see the pages that it should split under memcg 
+> > pressure so we'll see the same memcg oom conditions we saw before the 
+> > deferred split shrinker became SHRINKER_MEMCG_AWARE: unnecessary ooms.
+> 
+> OK, this is yet another user visibile effect and it would be better to
+> mention it explicitly in the changelog. 
+> 
+
+Ok, feel free to add to the last paragraph:
+
+Memcg reclaim would not see the compound pages that it should split under 
+memcg pressure so we'll otherwise see the same memcg oom conditions we saw 
+before the deferred split shrinker became SHRINKER_MEMCG_AWARE: 
+unnecessary ooms.
