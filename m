@@ -2,102 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CF9FC145F3C
-	for <lists+cgroups@lfdr.de>; Thu, 23 Jan 2020 00:39:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8373414643C
+	for <lists+cgroups@lfdr.de>; Thu, 23 Jan 2020 10:15:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725911AbgAVXjT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Jan 2020 18:39:19 -0500
-Received: from mail-pg1-f194.google.com ([209.85.215.194]:38671 "EHLO
-        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgAVXjT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jan 2020 18:39:19 -0500
-Received: by mail-pg1-f194.google.com with SMTP id a33so358407pgm.5
-        for <cgroups@vger.kernel.org>; Wed, 22 Jan 2020 15:39:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=YNvajkPj2BUn62eVSIlq+7puNDrKQpZK5MXXRGczBsE=;
-        b=WZJFiO4NDHzrXRTXfEk15plzqfBCf/XF0WnvEGStfqkfZ8Fj/EQr8PPvQ1mLAYqSCP
-         v+tE914RPXI/94X6Y2Ek89gj39gHYxA1NTi3sKa6IgtxsqR7fEYjau6jIW00dazgJtqm
-         NZx1MnFTfqkmUSUZZeskkvhavOEJCNt5fV+mYrZt5vPpBAD/vBNFA/RgfJYLX8D9PJaA
-         G3KnjIHOycLCS+ldcv/ah1Uk5FmX3GkTjliBdERDyczvEhEsSyWkRdr9Dv0Y86tQcqZ1
-         /LhnvAT2PoZqjNrkdXKx4QNEIv+ukhBvwK0989ik3JobGkgCQ3qE+FM9Wjg3YeOp+dJQ
-         Gk/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=YNvajkPj2BUn62eVSIlq+7puNDrKQpZK5MXXRGczBsE=;
-        b=Dgn+svFXHkOVvRAyfjGTKHq5KUkE60jR2e5ugOsnuJZFU4y14/MyF0FT9/ZWaK2LGu
-         3RWSheHrDFSb8KO0JZPOa0QebTpbDpG7pJd4ohP0S3CNBXeZXUaxd0gedKUhyN1eMTw+
-         mt6caSIFUhnPAxBSyneBRp6uwM00PKyi1iMqifKPRcWdx7UQWyTN4MISHVxlq3B0eRZl
-         1M9un1d4siN702Wseth/VHECbTAPYDrDeg0wSg2/uK07W/1fxM4pdfjieFOFWP2UEiaz
-         /UyFCvDqpDTGvJgaql96n7bE77v4XOHKoRk9Rak+5FX2KEd2BgN+deNv9YfmTTzZf4UF
-         oG9Q==
-X-Gm-Message-State: APjAAAXSNDm/B3t2m+MEhA5/jJkeiSQSZuJ7ArGkLNgCIpAavlNp0ujK
-        zalTN7ZW5E2jFohza8G3j0h3fw==
-X-Google-Smtp-Source: APXvYqzYKfqD7EIYVVlkhEXDYVigv+4+OFhdSez6pqm4NRA/CZmbpyFtyH7DKP240xSGf/Xi6bieBA==
-X-Received: by 2002:a62:e80a:: with SMTP id c10mr4833932pfi.91.1579736358110;
-        Wed, 22 Jan 2020 15:39:18 -0800 (PST)
-Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id m101sm98110pje.13.2020.01.22.15.39.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Jan 2020 15:39:17 -0800 (PST)
-Date:   Wed, 22 Jan 2020 15:39:16 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Michal Hocko <mhocko@kernel.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richardw.yang@linux.intel.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, ktkhai@virtuozzo.com,
-        kirill.shutemov@linux.intel.com, yang.shi@linux.alibaba.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, alexander.duyck@gmail.com,
-        stable@vger.kernel.org
-Subject: Re: [Patch v4] mm: thp: remove the defer list related code since
- this will not happen
-In-Reply-To: <20200122081406.GO29276@dhcp22.suse.cz>
-Message-ID: <alpine.DEB.2.21.2001221534510.159514@chino.kir.corp.google.com>
-References: <20200117233836.3434-1-richardw.yang@linux.intel.com> <20200118145421.0ab96d5d9bea21a3339d52fe@linux-foundation.org> <alpine.DEB.2.21.2001181525250.27051@chino.kir.corp.google.com> <20200120072237.GA18451@dhcp22.suse.cz>
- <alpine.DEB.2.21.2001201307520.259466@chino.kir.corp.google.com> <20200120212726.GB29276@dhcp22.suse.cz> <alpine.DEB.2.21.2001211500250.157547@chino.kir.corp.google.com> <20200122081406.GO29276@dhcp22.suse.cz>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        id S1726205AbgAWJPr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Jan 2020 04:15:47 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23058 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726118AbgAWJPq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Jan 2020 04:15:46 -0500
+Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00N9EqlU040453
+        for <cgroups@vger.kernel.org>; Thu, 23 Jan 2020 04:15:45 -0500
+Received: from e06smtp05.uk.ibm.com (e06smtp05.uk.ibm.com [195.75.94.101])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2xp9462qug-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Thu, 23 Jan 2020 04:15:45 -0500
+Received: from localhost
+        by e06smtp05.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
+        Thu, 23 Jan 2020 09:15:43 -0000
+Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
+        by e06smtp05.uk.ibm.com (192.168.101.135) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Thu, 23 Jan 2020 09:15:38 -0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00N9FbuE41353368
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 23 Jan 2020 09:15:37 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 831D14C040;
+        Thu, 23 Jan 2020 09:15:37 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 90CD54C04A;
+        Thu, 23 Jan 2020 09:15:35 +0000 (GMT)
+Received: from [9.124.35.38] (unknown [9.124.35.38])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 23 Jan 2020 09:15:35 +0000 (GMT)
+Subject: Re: [PATCH v10 7/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ tests
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     mike.kravetz@oracle.com, rientjes@google.com, shakeelb@google.com,
+        shuah@kernel.org, gthelen@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
+        aneesh.kumar@linux.vnet.ibm.com
+References: <20200115012651.228058-1-almasrymina@google.com>
+ <20200115012651.228058-7-almasrymina@google.com>
+From:   Sandipan Das <sandipan@linux.ibm.com>
+Date:   Thu, 23 Jan 2020 14:45:34 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20200115012651.228058-7-almasrymina@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20012309-0020-0000-0000-000003A33EF7
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20012309-0021-0000-0000-000021FAD787
+Message-Id: <7ce6d59f-fd73-c529-2ad6-edda9937966d@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-01-23_01:2020-01-23,2020-01-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ impostorscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ lowpriorityscore=0 mlxlogscore=982 suspectscore=0 clxscore=1011
+ spamscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1910280000 definitions=main-2001230079
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 22 Jan 2020, Michal Hocko wrote:
+Hi,
 
-> > The current code in 5.4 from commit 87eaceb3faa59 places any migrated 
-> > compound page onto the deferred split queue of the destination memcg 
-> > regardless of whether it has a mapping pmd 
-> > (list_empty(page_deferred_list()) was already false) or it does not have a 
-> > mapping pmd (but is now on the wrong queue).  For the latter, 
-> > can_split_huge_page() can help for the actual split but not for the 
-> > removal of the page that is now erroneously on the queue.
+On 15/01/20 6:56 am, Mina Almasry wrote:
+> The tests use both shared and private mapped hugetlb memory, and
+> monitors the hugetlb usage counter as well as the hugetlb reservation
+> counter. They test different configurations such as hugetlb memory usage
+> via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
+> MAP_POPULATE.
 > 
-> Does that mean that those fully mapped THPs are not going to be split?
+> Also add test for hugetlb reservation reparenting, since this is
+> a subtle issue.
 > 
-
-It believe it should but deferred_split_scan() also won't take it off the 
-wrong split queue so it will remain there and any other checks for 
-page_deferred_list(page) will succeed.
-
-> > For the former, 
-> > memcg reclaim would not see the pages that it should split under memcg 
-> > pressure so we'll see the same memcg oom conditions we saw before the 
-> > deferred split shrinker became SHRINKER_MEMCG_AWARE: unnecessary ooms.
-> 
-> OK, this is yet another user visibile effect and it would be better to
-> mention it explicitly in the changelog. 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 > 
 
-Ok, feel free to add to the last paragraph:
+For powerpc64, either 16MB/16GB or 2MB/1GB huge pages are supported depending
+on the MMU type (Hash or Radix). I was just running these tests on a powerpc64
+system with Hash MMU and ran into problems because the tests assume that the
+hugepage size is always 2MB. Can you determine the huge page size at runtime?
 
-Memcg reclaim would not see the compound pages that it should split under 
-memcg pressure so we'll otherwise see the same memcg oom conditions we saw 
-before the deferred split shrinker became SHRINKER_MEMCG_AWARE: 
-unnecessary ooms.
+
+- Sandipan
+
