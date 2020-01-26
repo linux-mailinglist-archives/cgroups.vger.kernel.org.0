@@ -2,172 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 35302149171
-	for <lists+cgroups@lfdr.de>; Fri, 24 Jan 2020 23:57:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DB68149A33
+	for <lists+cgroups@lfdr.de>; Sun, 26 Jan 2020 11:46:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387481AbgAXW5F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 24 Jan 2020 17:57:05 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:45418 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729401AbgAXW5E (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 24 Jan 2020 17:57:04 -0500
-Received: by mail-wr1-f66.google.com with SMTP id j42so3902823wrj.12
-        for <cgroups@vger.kernel.org>; Fri, 24 Jan 2020 14:57:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=fNqODm3MPzAsBSCY9n8l1wXAgR4AKgIMTb5pUp7NU0U=;
-        b=srTj1j2mPK8t2sakwkD7rQEbDNeFFM9BwDp93dCsDs1Q20oZf59EZmlmAzOPPdf+4y
-         YxcM9llvhHsbhRScaQhg5pfhZuQ5EK2Wiabt848H4kBft/yOeKD0KfLCT/l9W4a5Y1L4
-         Ws4qptwOggL7bhfng7gBhzPp9HhaA+aTg36WNq74YBut1qhS4L/ZTMqXR3HYzj9r7FGA
-         g3OhV0aJtCq6S5MwW9QcBqn3UQ760IxL5+/lie2pPtU7H3eL61wmjRFYGCWegua4o7px
-         G9xsghTqHOYLmfB+t0+5wgQJi9Xa2XH6e7g4cwoQw8CdIX7jxs00HjMp1GrSPYPF2HYQ
-         4/Jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=fNqODm3MPzAsBSCY9n8l1wXAgR4AKgIMTb5pUp7NU0U=;
-        b=SOhByOd5RTrBgWn34/NwVaacFZxSiNZPpj+oCwQkrDYeBAqpPL33qqQpfk8icMfW2f
-         RqS6xM8+yzUVtea0cvgEiuJEjUXXnCPTcbXIbL6MtXZTqnYjbjhD8ysl/YB3LBMZr6le
-         RqNe7vCA66Xko62Kbv5A8BgbBFvqtJyhmzfWJww8U2f44JLPoClqNj6SFIKwOX6wCj2S
-         TfTjtoF8NBuijEZhkNkZZ1PbbaJFlQsXla+I/wrXzsQKXvwB5b+Z/8AGLB+743gzSygo
-         MHbG/tayyOq7miIo+iAmVjFiuHaZZo6rBGwACTa4+d2heBxikfwpHIRmMtVb3mG90Qky
-         KvpA==
-X-Gm-Message-State: APjAAAW+N0CdMF56vh642uiNBfFs7aWGmkiYkYDRywWdtslGiAyTQHMu
-        O7dUqoFQi6slg1b/LkX7KMhCrEBEQ5A/NpDF/n8/5AqVqgI=
-X-Google-Smtp-Source: APXvYqzP4FnUZ8kt/z6sTrHwXtHilzjV/goyThoHUZqMef+SOku7Q5F6lD4mv864jnI2/qV48MsRq4J931iUvo8aLpk=
-X-Received: by 2002:adf:e887:: with SMTP id d7mr6634585wrm.162.1579906622211;
- Fri, 24 Jan 2020 14:57:02 -0800 (PST)
+        id S1729366AbgAZKqD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 26 Jan 2020 05:46:03 -0500
+Received: from relay.sw.ru ([185.231.240.75]:37976 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729353AbgAZKqC (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 26 Jan 2020 05:46:02 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1ivfQI-0007Tv-2g; Sun, 26 Jan 2020 13:45:46 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH 0/2] cgroup: seq_file .next functions should increase position
+ index
+To:     cgroups@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Message-ID: <195bf4c6-2246-b816-f18f-110b156a9341@virtuozzo.com>
+Date:   Sun, 26 Jan 2020 13:45:45 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-References: <20200120145635.GA30904@blackbody.suse.cz> <20200124114017.8363-1-mkoutny@suse.com>
- <20200124114017.8363-2-mkoutny@suse.com>
-In-Reply-To: <20200124114017.8363-2-mkoutny@suse.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Fri, 24 Jan 2020 14:56:51 -0800
-Message-ID: <CAJuCfpGjC=YwY=oNnYFNDp2nCuR9YhSU95=xbbeoDEheemte+Q@mail.gmail.com>
-Subject: Re: [PATCH v2 1/3] cgroup: Iterate tasks that did not finish do_exit()
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     cgroups mailinglist <cgroups@vger.kernel.org>,
-        alex.shi@linux.alibaba.com, Roman Gushchin <guro@fb.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kernel-team <kernel-team@android.com>,
-        JeiFeng Lee <linger.lee@mediatek.com>,
-        linux-arm-kernel@lists.infradead.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-kselftest@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, Li Zefan <lizefan@huawei.com>,
-        matthias.bgg@gmail.com, shuah@kernel.org,
-        Tejun Heo <tj@kernel.org>, Tom Cherry <tomcherry@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 24, 2020 at 3:40 AM Michal Koutn=C3=BD <mkoutny@suse.com> wrote=
-:
->
-> PF_EXITING is set earlier than actual removal from css_set when a task
-> is exitting. This can confuse cgroup.procs readers who see no PF_EXITING
-> tasks, however, rmdir is checking against css_set membership so it can
-> transitionally fail with EBUSY.
->
-> Fix this by listing tasks that weren't unlinked from css_set active
-> lists.
-> It may happen that other users of the task iterator (without
-> CSS_TASK_ITER_PROCS) spot a PF_EXITING task before cgroup_exit(). This
-> is equal to the state before commit c03cd7738a83 ("cgroup: Include dying
-> leaders with live threads in PROCS iterations") but it may be reviewed
-> later.
->
-> Reported-by: Suren Baghdasaryan <surenb@google.com>
-> Fixes: c03cd7738a83 ("cgroup: Include dying leaders with live threads in =
-PROCS iterations")
-> Signed-off-by: Michal Koutn=C3=BD <mkoutny@suse.com>
-> ---
->  include/linux/cgroup.h |  1 +
->  kernel/cgroup/cgroup.c | 23 ++++++++++++++++-------
->  2 files changed, 17 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index d7ddebd0cdec..e75d2191226b 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -62,6 +62,7 @@ struct css_task_iter {
->         struct list_head                *mg_tasks_head;
->         struct list_head                *dying_tasks_head;
->
-> +       struct list_head                *cur_tasks_head;
->         struct css_set                  *cur_cset;
->         struct css_set                  *cur_dcset;
->         struct task_struct              *cur_task;
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 735af8f15f95..a6e3619e013b 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -4404,12 +4404,16 @@ static void css_task_iter_advance_css_set(struct =
-css_task_iter *it)
->                 }
->         } while (!css_set_populated(cset) && list_empty(&cset->dying_task=
-s));
->
-> -       if (!list_empty(&cset->tasks))
-> +       if (!list_empty(&cset->tasks)) {
->                 it->task_pos =3D cset->tasks.next;
-> -       else if (!list_empty(&cset->mg_tasks))
-> +               it->cur_tasks_head =3D &cset->tasks;
-> +       } else if (!list_empty(&cset->mg_tasks)) {
->                 it->task_pos =3D cset->mg_tasks.next;
-> -       else
-> +               it->cur_tasks_head =3D &cset->mg_tasks;
-> +       } else {
->                 it->task_pos =3D cset->dying_tasks.next;
-> +               it->cur_tasks_head =3D &cset->dying_tasks;
-> +       }
->
->         it->tasks_head =3D &cset->tasks;
->         it->mg_tasks_head =3D &cset->mg_tasks;
-> @@ -4467,10 +4471,14 @@ static void css_task_iter_advance(struct css_task=
-_iter *it)
->                 else
->                         it->task_pos =3D it->task_pos->next;
->
-> -               if (it->task_pos =3D=3D it->tasks_head)
-> +               if (it->task_pos =3D=3D it->tasks_head) {
->                         it->task_pos =3D it->mg_tasks_head->next;
-> -               if (it->task_pos =3D=3D it->mg_tasks_head)
-> +                       it->cur_tasks_head =3D it->mg_tasks_head;
-> +               }
-> +               if (it->task_pos =3D=3D it->mg_tasks_head) {
->                         it->task_pos =3D it->dying_tasks_head->next;
-> +                       it->cur_tasks_head =3D it->dying_tasks_head;
-> +               }
->                 if (it->task_pos =3D=3D it->dying_tasks_head)
->                         css_task_iter_advance_css_set(it);
->         } else {
-> @@ -4489,11 +4497,12 @@ static void css_task_iter_advance(struct css_task=
-_iter *it)
->                         goto repeat;
->
->                 /* and dying leaders w/o live member threads */
-> -               if (!atomic_read(&task->signal->live))
-> +               if (it->cur_tasks_head =3D=3D it->dying_tasks_head &&
-> +                   !atomic_read(&task->signal->live))
->                         goto repeat;
->         } else {
->                 /* skip all dying ones */
-> -               if (task->flags & PF_EXITING)
-> +               if (it->cur_tasks_head =3D=3D it->dying_tasks_head)
->                         goto repeat;
->         }
->  }
-> --
-> 2.24.1
->
+In Aug 2018 NeilBrown noticed 
+commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+"Some ->next functions do not increment *pos when they return NULL...
+Note that such ->next functions are buggy and should be fixed. 
+A simple demonstration is
+   
+dd if=/proc/swaps bs=1000 skip=1
+    
+Choose any block size larger than the size of /proc/swaps.  This will
+always show the whole last line of /proc/swaps"
 
-Tested-by: Suren Baghdasaryan <surenb@google.com>
+Described problem is still actual. If you make lseek into middle of last output line 
+following read will output end of last line and whole last line once again.
 
-Thanks!
+$ dd if=/proc/swaps bs=1  # usual output
+Filename				Type		Size	Used	Priority
+/dev/dm-0                               partition	4194812	97536	-2
+104+0 records in
+104+0 records out
+104 bytes copied
+
+$ dd if=/proc/swaps bs=40 skip=1    # last line was generated twice
+dd: /proc/swaps: cannot skip to specified offset
+v/dm-0                               partition	4194812	97536	-2
+/dev/dm-0                               partition	4194812	97536	-2 
+3+1 records in
+3+1 records out
+131 bytes copied
+
+There are lot of other affected files, I've found 30+ including
+/proc/net/ip_tables_matches and /proc/sysvipc/*
+
+This patch set fixes the problem in cgroup-related files
+
+https://bugzilla.kernel.org/show_bug.cgi?id=206283
+
+Vasily Averin (2):
+  cgroup_pidlist_next should update position index
+  cgroup_procs_next should increase position index
+
+ kernel/cgroup/cgroup-v1.c | 1 +
+ kernel/cgroup/cgroup.c    | 6 +++++-
+ 2 files changed, 6 insertions(+), 1 deletion(-)
+
+-- 
+1.8.3.1
+
