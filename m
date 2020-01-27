@@ -2,79 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FBDA149A35
-	for <lists+cgroups@lfdr.de>; Sun, 26 Jan 2020 11:46:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B619A14ABC1
+	for <lists+cgroups@lfdr.de>; Mon, 27 Jan 2020 22:47:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729372AbgAZKqP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 26 Jan 2020 05:46:15 -0500
-Received: from relay.sw.ru ([185.231.240.75]:37994 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729353AbgAZKqP (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sun, 26 Jan 2020 05:46:15 -0500
-Received: from vvs-ws.sw.ru ([172.16.24.21])
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1ivfQg-0007UW-68; Sun, 26 Jan 2020 13:46:11 +0300
-From:   Vasily Averin <vvs@virtuozzo.com>
-Subject: [PATCH] __cgroup_procs_start cleanup
-To:     cgroups@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Message-ID: <029e25db-1176-3d45-4384-5c06e92ac130@virtuozzo.com>
-Date:   Sun, 26 Jan 2020 13:46:09 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726080AbgA0Vrx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Jan 2020 16:47:53 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:46535 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgA0Vrx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Jan 2020 16:47:53 -0500
+Received: by mail-qv1-f65.google.com with SMTP id y2so1415461qvu.13;
+        Mon, 27 Jan 2020 13:47:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=vBfb6b7TVkkhFizHEZ1B5meaSInahJG+9I7ajoLipOE=;
+        b=LsCWSTOZ34ymj9MtQDPlDQ7Rx/wZx0JHqXIESlklpvDlbafAnvNcpqkNpgvsz2yWa1
+         TIQVSJw7s7fllV15gSsadCaOQJWXISlNQyxP5SIJpXJwC3Gug9vfsuVbDYqMMawaM++w
+         ojFtihhP9giu3uc0FuaFx7kA/3pHKbzCmkJVn+zDjqlJdGTn08F6OooO2RwQ/EA0PkvF
+         gIaavzW3YXAUmH2iU3W2g8GuOb00m56aFL6rwlcGwSDH50DpsBkyF52iauvuXzG0v0bK
+         ttZrZ29mhwFKl2QXqN8H+rj312o3E+i6AUYzk5oxH0ZjiuyK+T3fU4A8g3p81wOBdGN1
+         h9IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition:content-transfer-encoding;
+        bh=vBfb6b7TVkkhFizHEZ1B5meaSInahJG+9I7ajoLipOE=;
+        b=gdYGNZGJDhXl6G8BrK1lQvpmlE7Goyrf5D1o51wkimSPADp+HewpRZezRk6eq+o27a
+         l2Ce0PyvJWT0Y/TweehyjxgPnHMI1qGQ3Knq+YsodS2JI1tstvTgQyASD7GybCgSgv3v
+         uKbcQ1bzBboY9HygVoP1nCZlnRiaV5L2lqVc2fZ5qYtSRnHt+9l0oUzfDm12v0TzWM9X
+         jNDUWVCL5+vIStxWvC2sbKgQco8rptW6pBXWu8GyfPj3QQsFo2IfoISPA22GYcX1fy+p
+         Cnm3R6y/VR/ckcDgiu+KxPDnHl3z4/z33WrBm63nQnFgZKexh/Lm76KdyZMn9jvwVzro
+         GdGg==
+X-Gm-Message-State: APjAAAVPQmneVdvXHDwOeSia2526ZpuC0rSm4eOURlhrZ86OFllTqEFn
+        RROIAcsBQTC/2XeYZoHq5dA=
+X-Google-Smtp-Source: APXvYqyCpi/Y7G1sPuVgc3HDbzujsB0JEfikRYxPimFmOlwDR7fH9H4ph4c9m+UyUxvW3EoOqtSMig==
+X-Received: by 2002:ad4:42aa:: with SMTP id e10mr13363491qvr.92.1580161671794;
+        Mon, 27 Jan 2020 13:47:51 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::19d])
+        by smtp.gmail.com with ESMTPSA id d22sm4661752qtp.37.2020.01.27.13.47.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 27 Jan 2020 13:47:49 -0800 (PST)
+Date:   Mon, 27 Jan 2020 16:47:49 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.6-rc1
+Message-ID: <20200127214749.GC180576@mtj.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-__cgroup_procs_start() makes an extra cgroup_procs_next() call and skip current entry
+Hello, Linus.
 
-[test@localhost ~]$ dd if=/sys/fs/cgroup/cgroup.procs bs=8 count=1
-2
-3
-4
-5
-1+0 records in
-1+0 records out
-8 bytes copied, 0,000267297 s, 29,9 kB/s
-[test@localhost ~]$ dd if=/sys/fs/cgroup/cgroup.procs bs=1 count=8
-2
-4 <<< NB! 3 was skipped
-6 <<<    ... and 5 too
-8 <<<    ... and 7 
-8+0 records in
-8+0 records out
-8 bytes copied, 5,2123e-05 s, 153 kB/s
-[test@localhost ~]$ mount | grep cgroup
-cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
-[test@localhost ~]$ uname -a
-Linux localhost.localdomain 5.4.7-200.fc31.x86_64 #1 SMP Tue Dec 31 22:25:12 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
+* cgroup2 interface for hugetlb controller. I think this was the last
+  remaining bit which was missing from cgroup2.
 
-Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
----
- kernel/cgroup/cgroup.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+* Fixes for race and a spurious warning in threaded cgroup handling.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 8361eac..f79ec3b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4628,7 +4628,8 @@ static void *__cgroup_procs_start(struct seq_file *s, loff_t *pos,
- 	} else if (!(*pos)++) {
- 		css_task_iter_end(it);
- 		css_task_iter_start(&cgrp->self, iter_flags, it);
--	}
-+	} else
-+		return it->cur_task;
- 
- 	return cgroup_procs_next(s, NULL, NULL);
- }
+* Other minor changes.
+
+Thanks.
+
+The following changes since commit 6afa873170a612b2b9e392c19c523ed8aae6fbc9:
+
+  Merge tag 'linux-kselftest-5.5-rc2' of git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest (2019-12-16 10:06:04 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.6
+
+for you to fetch changes up to 9ea37e24d4a95dd934a0600d65caa25e409705bb:
+
+  iocost: Fix iocost_monitor.py due to helper type mismatch (2020-01-17 11:54:35 -0800)
+
+----------------------------------------------------------------
+Chen Zhou (1):
+      cgroup: fix function name in comment
+
+Giuseppe Scrivano (1):
+      mm: hugetlb controller for cgroups v2
+
+Michal Koutný (1):
+      cgroup: Prevent double killing of css when enabling threaded cgroup
+
+Tejun Heo (1):
+      iocost: Fix iocost_monitor.py due to helper type mismatch
+
+ Documentation/admin-guide/cgroup-v2.rst |  29 +++++
+ include/linux/hugetlb.h                 |   3 +-
+ kernel/cgroup/cgroup.c                  |  11 +-
+ kernel/cgroup/rstat.c                   |   2 +-
+ mm/hugetlb_cgroup.c                     | 198 ++++++++++++++++++++++++++++++--
+ tools/cgroup/iocost_monitor.py          |   4 +-
+ 6 files changed, 227 insertions(+), 20 deletions(-)
+
 -- 
-1.8.3.1
-
+tejun
