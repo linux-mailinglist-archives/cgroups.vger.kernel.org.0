@@ -2,94 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 12ED914CDF0
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2020 17:08:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F89E14D237
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2020 22:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726840AbgA2QIA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Jan 2020 11:08:00 -0500
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:40050 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726766AbgA2QIA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Jan 2020 11:08:00 -0500
-Received: by mail-pf1-f193.google.com with SMTP id q8so8640693pfh.7;
-        Wed, 29 Jan 2020 08:08:00 -0800 (PST)
+        id S1727364AbgA2VAS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Jan 2020 16:00:18 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:43861 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727244AbgA2VAS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Jan 2020 16:00:18 -0500
+Received: by mail-pl1-f193.google.com with SMTP id p11so421947plq.10
+        for <cgroups@vger.kernel.org>; Wed, 29 Jan 2020 13:00:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=8JqRhiDOHvgPoZeVnB2/bI1P2RUwGdHALzeY09zc6AU=;
-        b=ub6sLpwwTWJc0DJT5UDWjzIwiugnQZno6L7yV/YzPZ8PqzySLQXrh33ibMBqECPhJD
-         i9qOjKCFkLgTXci2siKMJV8UPCXQp64Lyq1A1WUISGnU8/VjWj/5CSaxVIoRiykTHk1p
-         JPKxjK2SB0vZgMmpC4PEnEqnqzkH1P0ggO2vuTFS+ycnVNAXDMjdpH2IcFE9er0hsq2n
-         1f/zNiMjsiyUqIDoHgijiNx8MFfRWO6nS6mwZ7mfh/xk0B22tJ4KUfJ8+19iGNKxOV68
-         NFdruNQIX4Qj4BMlPk4Rwuf/xEYyeCne9qEkSUEnt8UGY1tYI1t/6sQAeJKSE8jU0w4Y
-         j04w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=mMHj7VQFJ/ru51SSc9JWwA5eIS4YpdouqCmEJIqSD3s=;
+        b=gO1MuPCCzwJo6EXl1niF9Nc6Pd0XCURfNhJmEtuV0mF/2PRgvb2nXlZ62BvLzbgPoJ
+         /x315s7W8W6TGg1qsy73Xm1Ujmx5N5x95A6L3xwbMJ5yzCz3tQv0+qN1xm+ac1uvJ3qi
+         oq6FQIEde4mQG6wOn36dCV1T6iCQS7C10HI7Q0zEWfHyRrLwKycChsZC9pCTeFOK/XgS
+         MLxk35KrU1T1sWDXMp3CHH2kJRQex6cDy2WqUJfkbYKhBWRmVrIhPTxQnYjpUQzrzjtf
+         qKIm5qzhJMeVt9kj4Ugt4QQYIaUGtoOTXRQDvinBq0xHktYy+sMx//j60z5CIZEFB73T
+         pTyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=8JqRhiDOHvgPoZeVnB2/bI1P2RUwGdHALzeY09zc6AU=;
-        b=kXZEuvF514Mo6cAPdfLbLhFxU/lJNY1W+Pa890LFlcuoHWmLR5FNfC5lQECGmYGo17
-         fLvscdfRaq+zBatRYxo74ec3w3IbwFFn8hOXu9ED+UIk1nBf93Ae4a7ANtmDCR2CB1RT
-         R4BN+7xTV7jPzzElxLryBVTB4FaATiGAlG7uuH+t47tRPGCAUB8CHD8YSTtxLwmigVHR
-         zZMSQ+1fE4h4LnLs3LdIavPNUZ2ePRiaxOJ5HXZPSp+LFTftyHy2qKh+dD/jjxlVorTG
-         egRAUU57ERWIu+7WoApM8S2J92GBfzeql8Dn0z28ScbP+OXFWgMTBIXCZzOpU9fN6BMo
-         d14Q==
-X-Gm-Message-State: APjAAAVP5cYLJWiwVNmWnUXFep/jQD2uyGhl5FpgnGOqQxcuFqz8mM9n
-        tJOBWmb8vdLyVHlXZchFuQ==
-X-Google-Smtp-Source: APXvYqxfZP/dEAKdniyQQ5yUDQhVGpJiIk1VxKKDOMBaGSKoI02Ozrv7wvSI+HYbEIFUY+8k8SvIFA==
-X-Received: by 2002:a63:c747:: with SMTP id v7mr21375207pgg.291.1580314080050;
-        Wed, 29 Jan 2020 08:08:00 -0800 (PST)
-Received: from madhuparna-HP-Notebook ([2402:3a80:1ee5:e7da:d421:7a49:b2e4:2bd6])
-        by smtp.gmail.com with ESMTPSA id u3sm3129608pjv.32.2020.01.29.08.07.55
-        (version=TLS1_2 cipher=ECDHE-RSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 29 Jan 2020 08:07:59 -0800 (PST)
-From:   Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-X-Google-Original-From: Madhuparna Bhowmik <change_this_user_name@gmail.com>
-Date:   Wed, 29 Jan 2020 21:37:52 +0530
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     madhuparnabhowmik10@gmail.com, tj@kernel.org, lizefan@huawei.com,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        joel@joelfernandes.org, rcu@vger.kernel.org, frextrite@gmail.com
-Subject: Re: [PATCH] cgroup.c: Use built-in RCU list checking
-Message-ID: <20200129160752.GA15913@madhuparna-HP-Notebook>
-References: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
- <20200129142255.GE11384@blackbody.suse.cz>
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=mMHj7VQFJ/ru51SSc9JWwA5eIS4YpdouqCmEJIqSD3s=;
+        b=cdumN9yA9V16cOxxAfNnYIFumTBCIxIItj3AJWOlN6ybcE7uRqs3Nf6t//ErtM4DA+
+         dDocMSrtBhMfGfKTDVxtAEUfrPmpBgWgruO6Nk7RpvZ+uDB+Azi+iHpCIFJ6t3RBEIW5
+         sIMhi8IsL4ndj+3eJIhzlNgd+ixr5mLUqljFY2o+o+Iz9RIuG1n20OdTL9Jgs3pW1bIh
+         xppnqmbBO3LpoP7eXcDPfPBI9zbVOXZ+mIuGeQpP+kcgX2clkhgtZ2MaM7PvHVesHG3S
+         8ZrU2JuIePdMCZGE2bYwA2bLiIS3b8ZpJu/1ypSBDV4FRTxYHbffj5okJv+xUPMIZwaB
+         Fg2A==
+X-Gm-Message-State: APjAAAXAf4wtEQAwJPI1R2qiG6RDQgwKQcZ+0eCeGRCF8BO8vO7eDXt7
+        1KFumlg6Mn4XCQIo5pljW/d3kw==
+X-Google-Smtp-Source: APXvYqwwsgYkaH1FxmcBL16bgFwn1K3P9bSw/X5rfK8KXL1891FWdD3zVJE8MVHT+EKF+0rVog6gng==
+X-Received: by 2002:a17:902:264:: with SMTP id 91mr1284534plc.335.1580331617669;
+        Wed, 29 Jan 2020 13:00:17 -0800 (PST)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id z18sm3730466pfk.19.2020.01.29.13.00.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Jan 2020 13:00:17 -0800 (PST)
+Date:   Wed, 29 Jan 2020 13:00:16 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Sandipan Das <sandipan@linux.ibm.com>
+cc:     Mina Almasry <almasrymina@google.com>, mike.kravetz@oracle.com,
+        shakeelb@google.com, shuah@kernel.org, gthelen@google.com,
+        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com
+Subject: Re: [PATCH v10 7/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ tests
+In-Reply-To: <7ce6d59f-fd73-c529-2ad6-edda9937966d@linux.ibm.com>
+Message-ID: <alpine.DEB.2.21.2001291257510.175731@chino.kir.corp.google.com>
+References: <20200115012651.228058-1-almasrymina@google.com> <20200115012651.228058-7-almasrymina@google.com> <7ce6d59f-fd73-c529-2ad6-edda9937966d@linux.ibm.com>
+User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200129142255.GE11384@blackbody.suse.cz>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jan 29, 2020 at 03:22:55PM +0100, Michal Koutný wrote:
-> Hello.
-> 
-> On Sat, Jan 18, 2020 at 08:40:51AM +0530, madhuparnabhowmik10@gmail.com wrote:
-> > From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Thu, 23 Jan 2020, Sandipan Das wrote:
+
+> > The tests use both shared and private mapped hugetlb memory, and
+> > monitors the hugetlb usage counter as well as the hugetlb reservation
+> > counter. They test different configurations such as hugetlb memory usage
+> > via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
+> > MAP_POPULATE.
 > > 
-> > list_for_each_entry_rcu has built-in RCU and lock checking.
-> > Pass cond argument to list_for_each_entry_rcu() to silence
-> > false lockdep warning when  CONFIG_PROVE_RCU_LIST is enabled
-> > by default.
-> I assume if you've seen the RCU warning, you haven't seen the warning
-> from cgroup_assert_mutex_or_rcu_locked() above. 
->
-No, I haven't seen any warning from cgroup_assert_mutex_or_rcu_locked(),
-I am just doing the conversions to prevent any false lockdep warnings
-because of CONFIG_PROVE_RCU_LIST in the future.
-
-> The patch makes sense to me from the consistency POV.
+> > Also add test for hugetlb reservation reparenting, since this is
+> > a subtle issue.
+> > 
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > 
 > 
-Thank you,
-Madhuparna
-
-> Acked-by: Michal Koutný <mkoutny@suse.com>
+> For powerpc64, either 16MB/16GB or 2MB/1GB huge pages are supported depending
+> on the MMU type (Hash or Radix). I was just running these tests on a powerpc64
+> system with Hash MMU and ran into problems because the tests assume that the
+> hugepage size is always 2MB. Can you determine the huge page size at runtime?
 > 
-> Michal
+
+I assume this is only testing failures of the tools/testing/selftests 
+additions that hardcode 2MB paths and not a kernel problem?  In other 
+words, you can still boot, reserve, alloc, and free hugetlb pages on ppc 
+after this patchset without using the selftests?
