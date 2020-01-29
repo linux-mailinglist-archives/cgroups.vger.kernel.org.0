@@ -2,98 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5066014C8D7
-	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2020 11:40:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C24F14CB14
+	for <lists+cgroups@lfdr.de>; Wed, 29 Jan 2020 14:04:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726116AbgA2KkA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Jan 2020 05:40:00 -0500
-Received: from relay.sw.ru ([185.231.240.75]:34384 "EHLO relay.sw.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726091AbgA2KkA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 29 Jan 2020 05:40:00 -0500
-Received: from vvs-ws.sw.ru ([172.16.24.21])
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <vvs@virtuozzo.com>)
-        id 1iwkl1-00010J-VO; Wed, 29 Jan 2020 13:39:40 +0300
-Subject: Re: [PATCH 0/2] cgroup: seq_file .next functions should increase
- position index
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-References: <195bf4c6-2246-b816-f18f-110b156a9341@virtuozzo.com>
- <20200128172737.GA21791@blackbody.suse.cz>
-From:   Vasily Averin <vvs@virtuozzo.com>
-Message-ID: <6d044e01-9794-fe22-ac74-fd01b024a5f1@virtuozzo.com>
-Date:   Wed, 29 Jan 2020 13:39:39 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1726605AbgA2NE6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Jan 2020 08:04:58 -0500
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:42826 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726069AbgA2NE6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Jan 2020 08:04:58 -0500
+Received: by mail-ed1-f67.google.com with SMTP id e10so18510202edv.9
+        for <cgroups@vger.kernel.org>; Wed, 29 Jan 2020 05:04:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=c1/YMg9isHpSTBtaPSiSToGt+1W79DVOjeJFvzJl1Oc=;
+        b=VYa1YN9CuZ8alMypwtYPCFf/ZR0t9GW0R/ViI4Aihr4dE5sJq1PahLH3dNJGEhrlfz
+         yTzs8AyN1x45gC5EaEkgnI9GpbJuhG1Sq1XtXc1KulMwCYskgyiGtaBinMGp7awnp0TA
+         i/DkVg7H21F8aVndj6Z0u035BGza6tlk3r6aEJHI5uwvL5hRnkDaVVSL1J6c6eobcSDh
+         DMpaVk/0CR3IWpbxlUWsahyYuBZMSI1mnkY4t3y/VXYEf3rVNIt9GIfxcy/ZBjzN2SR8
+         HjAsKEFx8mLOPUNrxYsuD3K7d1jitK2vJCU7kNbrRmpMuUrdQITZAXfWHTVK2Tl41T0s
+         R5eA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=c1/YMg9isHpSTBtaPSiSToGt+1W79DVOjeJFvzJl1Oc=;
+        b=P8F5GuBBJcUaM4RapwESpFFpSw91jJgEUqvz1IU3UOwFyEUIzf/ND0xQAYcAmyxxYL
+         AlXyBnstpMbeQjhzdXHZKZkNwQQeAxSArHKtkRnvBNhF5XyB6ncx9vAS8hgeydYT9+ud
+         JwXmcEI9LoJVCnRoyACzSyrO6cLVyH6mxJNFF+4ZaRk/2cfglyMm25aiz39XBGJxgRHv
+         ZxgmWtxplzI/aarinNBt3uxoqOn2S4tbzLcgPHoJ/+qu09SQcWSBSc12QlPQftbsEaWk
+         Kg6Ln/aZCxoag+v9lQmAjN8eJWB6jcZYmI/cht8mjNtCW9y1wzh9Qmvj/9ZMeG5aUvYx
+         QYZA==
+X-Gm-Message-State: APjAAAXSVy/eAmfrDiluHLfE33YK6uKZg/Q7O0MQpzcuU0LDb6TMZT3Y
+        LuE9lCKcLjHNWCfkQYX74XXH8MLZx7HVFO/zHvQ=
+X-Google-Smtp-Source: APXvYqwHvBKTHuYX2bQyF6ZrfQN7lgqGipWuqqgoy77wPWUAyT34K31ZU9P1Petud5g1X+yAk2J5ffdDBPLi2iszk8I=
+X-Received: by 2002:a17:906:e299:: with SMTP id gg25mr7181233ejb.333.1580303096679;
+ Wed, 29 Jan 2020 05:04:56 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200128172737.GA21791@blackbody.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6402:22dc:0:0:0:0 with HTTP; Wed, 29 Jan 2020 05:04:55
+ -0800 (PST)
+Reply-To: mcclainejohn.13@gmail.com
+From:   MS Elliott Crawford <eco.bank1204@gmail.com>
+Date:   Wed, 29 Jan 2020 14:04:55 +0100
+Message-ID: <CAOE+jAAt=ux2n2SGiOUHTPxjhYw+Gz2908A1Q8odqieGwDyPXA@mail.gmail.com>
+Subject: Did you finally authorized Mrs. Elizabeth Bungalows to receive your
+ transfer $99.8 million US dollars from the World Bank NY?
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/28/20 8:27 PM, Michal Koutný wrote:
-> I agree with your changes, however, I have some suggestions:
-> 
-> 1) squash [PATCH 2/2] "cgroup_procs_next should increase position index"
->    and [PATCH] "__cgroup_procs_start cleanup"
->    - make it clear in the commit message that it's fixing the small
->      buffer listing, it's not a mere cleanup(!)
-> 2) for completeness, I propose squashing also this change (IOW,
->    cgroup_procs_start should only initialize the iterator, not move it):
+Attn,Dear Funds Beneficiary.
+Did you finally authorized Mrs. Elizabeth Bungalows to receive your
+transfer $99.8 million US dollars from the World Bank NY?
+Please If you did not sent this woman to make the claim on your
+behalf, kindly Contact Diplomatic Agent, Mr. Mcclaine John to receive
+your ATM CARD worth $99.8 million US dollars United States Dollars .
+text Him on this telephone number (203) 493-7703
+urgent to avoid Him delivering your funds to Mrs. Elizabeth Bungalows
 
-got it
-
-> 3) I was not able to reproduce the corrupted listing into small buffer
->    on v1 hierarchy, i.e. the [PATCH 1/2] "cgroup_pidlist_next should update
->    position index" log message should just explain the change is to
->    satisfy seq_file iterator requirements.
-
-[root@localhost ~]# uname -a
-Linux localhost.localdomain 5.4.7-200.fc31.x86_64 #1 SMP Tue Dec 31 22:25:12 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
-[root@localhost ~]# mount | grep cgroup
-cgroup2 on /sys/fs/cgroup type cgroup2 (rw,nosuid,nodev,noexec,relatime,seclabel,nsdelegate)
-cgroup on /mnt type cgroup (rw,relatime,seclabel,cpu)
-
-[root@localhost ~]# dd if=/mnt/cgroup.procs bs=1  # normal output
-...
-1294
-1295
-1296
-1304
-1382
-584+0 records in
-584+0 records out
-584 bytes copied, 0.00281916 s, 207 kB/s
-
-[root@localhost ~]# dd if=/mnt/cgroup.procs bs=581 skip=1  # read after lseek in middle of last line
-dd: /mnt/cgroup.procs: cannot skip to specified offset
-83  <<< generates end of last line
-1383  <<< ... and whole last line once again
-0+1 records in
-0+1 records out
-8 bytes copied, 0.000171759 s, 46.6 kB/s
-
-[root@localhost ~]# dd if=/mnt/cgroup.procs bs=1000 skip=1  # read after lseek beyond end of file
-dd: /mnt/cgroup.procs: cannot skip to specified offset
-1386  <<< generates last line anyway
-0+1 records in
-0+1 records out
-5 bytes copied, 0.000198117 s, 25.2 kB/s
-
-    
-> I can send my complete diffs if the suggestions are unclear.
-> 
-> Michal
-> 
-> P.S. I really recommend using `git send-email` for sending out the
-> patches, it makes mail threading more readable.
-
-thank you, will resent v2 
-   Vasily Averin
+Thanks
+MS Elliott Crawford
+Secretary World Bank NY.
