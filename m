@@ -2,99 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 402F514D658
-	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2020 07:11:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C521014D90E
+	for <lists+cgroups@lfdr.de>; Thu, 30 Jan 2020 11:35:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgA3GL2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Jan 2020 01:11:28 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:33254 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725923AbgA3GL0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Jan 2020 01:11:26 -0500
-Received: from pps.filterd (m0098394.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 00U67jd8140101
-        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2020 01:11:25 -0500
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2xueh6tbga-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <cgroups@vger.kernel.org>; Thu, 30 Jan 2020 01:11:24 -0500
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
-        Thu, 30 Jan 2020 06:11:22 -0000
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (9.149.109.198)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Thu, 30 Jan 2020 06:11:18 -0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 00U6BHM541353262
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 30 Jan 2020 06:11:17 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C43B8AE059;
-        Thu, 30 Jan 2020 06:11:17 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DECFCAE057;
-        Thu, 30 Jan 2020 06:11:15 +0000 (GMT)
-Received: from [9.124.35.38] (unknown [9.124.35.38])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 30 Jan 2020 06:11:15 +0000 (GMT)
-Subject: Re: [PATCH v10 7/8] hugetlb_cgroup: Add hugetlb_cgroup reservation
- tests
-To:     David Rientjes <rientjes@google.com>
-Cc:     Mina Almasry <almasrymina@google.com>, mike.kravetz@oracle.com,
-        shakeelb@google.com, shuah@kernel.org, gthelen@google.com,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org, aneesh.kumar@linux.vnet.ibm.com
-References: <20200115012651.228058-1-almasrymina@google.com>
- <20200115012651.228058-7-almasrymina@google.com>
- <7ce6d59f-fd73-c529-2ad6-edda9937966d@linux.ibm.com>
- <alpine.DEB.2.21.2001291257510.175731@chino.kir.corp.google.com>
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Date:   Thu, 30 Jan 2020 11:41:15 +0530
+        id S1727257AbgA3Keq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Jan 2020 05:34:46 -0500
+Received: from relay.sw.ru ([185.231.240.75]:50162 "EHLO relay.sw.ru"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727091AbgA3Keq (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 30 Jan 2020 05:34:46 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1ix79i-00045Z-1H; Thu, 30 Jan 2020 13:34:38 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH v2 0/2 RESEND] cgroup: seq_file .next functions should
+ increase position index
+To:     cgroups@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+References: <20200128172737.GA21791@blackbody.suse.cz>
+Message-ID: <91c15d7c-a831-e409-2fba-93ecfef5e85c@virtuozzo.com>
+Date:   Thu, 30 Jan 2020 13:34:36 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <alpine.DEB.2.21.2001291257510.175731@chino.kir.corp.google.com>
+In-Reply-To: <20200128172737.GA21791@blackbody.suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20013006-0028-0000-0000-000003D5AD16
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20013006-0029-0000-0000-00002499FA94
-Message-Id: <98c83a41-b864-5950-488c-443f6ef60b91@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-01-30_01:2020-01-28,2020-01-30 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 mlxscore=0
- clxscore=1015 lowpriorityscore=0 suspectscore=2 impostorscore=0
- adultscore=0 malwarescore=0 bulkscore=0 phishscore=0 priorityscore=1501
- mlxlogscore=856 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2001300040
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi David,
+v2 changes:
+- improved patch description
+- cgroupv2 patch includes fix for __cgroup_procs_start(), advised by Michal Koutný
 
-On 30/01/20 2:30 am, David Rientjes wrote:
-> On Thu, 23 Jan 2020, Sandipan Das wrote:
-> 
->> For powerpc64, either 16MB/16GB or 2MB/1GB huge pages are supported depending
->> on the MMU type (Hash or Radix). I was just running these tests on a powerpc64
->> system with Hash MMU and ran into problems because the tests assume that the
->> hugepage size is always 2MB. Can you determine the huge page size at runtime?
->>
-> 
-> I assume this is only testing failures of the tools/testing/selftests 
-> additions that hardcode 2MB paths and not a kernel problem?  In other 
-> words, you can still boot, reserve, alloc, and free hugetlb pages on ppc 
-> after this patchset without using the selftests?
-> 
+In Aug 2018 NeilBrown noticed 
+commit 1f4aace60b0e ("fs/seq_file.c: simplify seq_file iteration code and interface")
+"Some ->next functions do not increment *pos when they return NULL...
+Note that such ->next functions are buggy and should be fixed. 
+A simple demonstration is
+   
+dd if=/proc/swaps bs=1000 skip=1
+    
+Choose any block size larger than the size of /proc/swaps.  This will
+always show the whole last line of /proc/swaps"
 
-Yes, its just the hardcoded paths. I didn't run into any kernel problems.
+Described problem is still actual. If you make lseek into middle of last output line 
+following read will output end of last line and whole last line once again.
 
-- Sandipan
+$ dd if=/proc/swaps bs=1  # usual output
+Filename				Type		Size	Used	Priority
+/dev/dm-0                               partition	4194812	97536	-2
+104+0 records in
+104+0 records out
+104 bytes copied
+
+$ dd if=/proc/swaps bs=40 skip=1    # last line was generated twice
+dd: /proc/swaps: cannot skip to specified offset
+v/dm-0                               partition	4194812	97536	-2
+/dev/dm-0                               partition	4194812	97536	-2 
+3+1 records in
+3+1 records out
+131 bytes copied
+
+There are lot of other affected files, I've found 30+ including
+/proc/net/ip_tables_matches and /proc/sysvipc/*
+
+This patch set fixes the problem in cgroup-related files
+
+Vasily Averin (2):
+  cgroup-v1: cgroup_pidlist_next should update position index
+  cgroup: cgroup_procs_next should increase position index
+
+ kernel/cgroup/cgroup-v1.c |  1 +
+ kernel/cgroup/cgroup.c    | 10 +++++++---
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+-- 
+1.8.3.1
 
