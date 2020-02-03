@@ -2,51 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4D01512CC
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 00:16:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B03721512DE
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 00:18:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726474AbgBCXQc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Feb 2020 18:16:32 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34384 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726369AbgBCXQc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Feb 2020 18:16:32 -0500
-Received: by mail-ot1-f66.google.com with SMTP id a15so15386431otf.1
-        for <cgroups@vger.kernel.org>; Mon, 03 Feb 2020 15:16:32 -0800 (PST)
+        id S1727124AbgBCXSF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Feb 2020 18:18:05 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:36942 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727205AbgBCXSE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Feb 2020 18:18:04 -0500
+Received: by mail-oi1-f196.google.com with SMTP id q84so16571589oic.4
+        for <cgroups@vger.kernel.org>; Mon, 03 Feb 2020 15:18:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Gsc+LSdKFmfEHsLu/PX4b/f2W5uTYqD7V4ZzUh0Ir80=;
-        b=PuWaEsvTmioKz64Q7uPVIOp/N9rPTq6akD7fqQtuRHWmOto7GXFjEFiiaZpfiF2Oxm
-         iiczLvMdxA7gX9/mjBZ8ZtnwN2sHqrC4OBRhqMuKo/g8CFJUF+GRekmD2R+YG1Iv8ntP
-         fvondbVEOz76kPzh9Un/lXTwJbkoWs/H0ReXrgjISGWRnNPuEoN9WDxUbtR5u29xfZkT
-         oAskXk7P2RCKYytwQ3FeJKx5ywr9hbBBXemLv/eTKuTK7Wqc8IrNS1TLr78w9ZSqkxGE
-         M2MJ58f6NMmbvet66LP8q6Ze6KZ4eCoAqPGksDNrj2NLgtH1atGYQqMO7zviLvsOv0oa
-         pnWQ==
+        bh=4S8vHNwaTJoy9iVF47eyFtZHq86ah3z1R3R7OSO3+2M=;
+        b=P9vxuWfA+Xz9O02Hf3pPI55HK5oO3beJiNSR+DkSHarWvGckjpVxj3+V9IaIcAJtZW
+         mL9Vq5fV6HDoY5T3XjZwRYKZLxdyCMu0xYN0cx5DzBXtkfW6vhkiA1BBfH7tc+MnyXlT
+         ooGWOmIwhM4GBBfvs9TLPhmk/Eq8kz7ojqO1i+vD6/wUHy2iP6866ydb5+Y6V0VY7xWD
+         a/YvrUcthf9AcOfwYbCSNM7QKCs55X7EkSbGzpe2VhlEnkcQX70cj2cTugm1D9SnjfYm
+         s+cZHlRxeIrDbRqXpGiNjtXGTQGo5xThTMF5DlS+ke3zqph4Cmd8k4bTjnhD35NTohrd
+         vuOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Gsc+LSdKFmfEHsLu/PX4b/f2W5uTYqD7V4ZzUh0Ir80=;
-        b=VJ71bKTI9gLm/mw9sSC+pZnGQWCl3mIEXuI9cfl+ghr2CP5p6fDSOI3NqXDc3K2CSF
-         5D8kjCFZY0yxwO6iDQlZuo6daWh5PaFIFaQ/8rlT5ZY7oxrq1jACU+Qub9b8uQTe4lwB
-         QNSl8EVdYIWe5uDYOY8340jdTLWWiOU3jSJk99gtBKYy5aBFVGAJarXVRIPfv824HpRW
-         SLVVpzdGWdsA+8ZejNwbiho6DZDma5adjjdvRfDIY5EZgCW2NQGt/n7ya+XaSpw8Ne/R
-         PdlzlUSiwdhEmOhHqLQVAW1kIcFg4rgliEedKuEvCXK/Ig5jN3/JhfR30qfjp3LUTRW6
-         9SUA==
-X-Gm-Message-State: APjAAAWeC8+4OWxaDbjKOJIVnEhT6NsgFFpZRNpbbk3J/t96MLQW+DA0
-        0sjtj5y8fJAMJfKVQ6mmxTX97qbKL7ODQvSX8KD2dw==
-X-Google-Smtp-Source: APXvYqxks0BGaZknNqKFAhn+gbM4R5qvozx7t1UrbqkSMA2wJouCmnamEYFBah6ouIgs/03HiorFYLE+SdLRPuvskdA=
-X-Received: by 2002:a9d:518b:: with SMTP id y11mr18610845otg.349.1580771791890;
- Mon, 03 Feb 2020 15:16:31 -0800 (PST)
+        bh=4S8vHNwaTJoy9iVF47eyFtZHq86ah3z1R3R7OSO3+2M=;
+        b=nipyyZ4A8Q8+bIHCamX2/c1ZIm/dOz8Ys59clEKyxP8H6AMZFddQWYwBvY47yeREAc
+         20InRbXhVpgio5VlfNCi4VBdJNps41WJTJhyQIfHltX2QRzOC1Kt0lORHuVp4VQayhqg
+         RvILsvohEbinVEmbYeHMHV32mykFoszK7jIpkULTN4u/VPlnsJu71sRKV2xHYs6tg7pu
+         hLqt5vRSkg4+TsmfZNQKOrSsTDNnfGmV+aa9jadshlvYKrILcrIMBVkFYamjIGaJjZWK
+         oXCbKa66SpZHdVA7RZHZ//QRXYXIHbUNVH+mxDU13pebKWOKWW4AbcASZYfSHKChUcu3
+         RVUA==
+X-Gm-Message-State: APjAAAVrrnBag0r467nme+1wG1XvL9CophWY2XWihBuQ5sXgW5FPReWE
+        UnGXULw5WvxH6UnKTF8DUPywNbBSWMgZaaDyP2jdjw==
+X-Google-Smtp-Source: APXvYqyuj43djmIIaXiJRQDMfPEY4O5rvJgfItz8Cm1XFY7pfC3bE45El1OJ8nh1wyvDG/uukiMcMl2vAZyBV5IHz8Y=
+X-Received: by 2002:a05:6808:7dd:: with SMTP id f29mr1176345oij.67.1580771883610;
+ Mon, 03 Feb 2020 15:18:03 -0800 (PST)
 MIME-Version: 1.0
-References: <20200115012651.228058-1-almasrymina@google.com> <alpine.DEB.2.21.2001291303230.175731@chino.kir.corp.google.com>
-In-Reply-To: <alpine.DEB.2.21.2001291303230.175731@chino.kir.corp.google.com>
+References: <20200115012651.228058-1-almasrymina@google.com>
+ <20200115012651.228058-3-almasrymina@google.com> <alpine.DEB.2.21.2001291323270.175731@chino.kir.corp.google.com>
+In-Reply-To: <alpine.DEB.2.21.2001291323270.175731@chino.kir.corp.google.com>
 From:   Mina Almasry <almasrymina@google.com>
-Date:   Mon, 3 Feb 2020 15:16:21 -0800
-Message-ID: <CAHS8izNq17U6i-RzHZ6tCOVQza_CGngJc0X2ZmqPHTH7y4kfdg@mail.gmail.com>
-Subject: Re: [PATCH v10 1/8] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+Date:   Mon, 3 Feb 2020 15:17:52 -0800
+Message-ID: <CAHS8izPNmO8urNCfVeMU1QnhGsrtg1CNLKXaL_VMe9jB6dtfyA@mail.gmail.com>
+Subject: Re: [PATCH v10 3/8] hugetlb_cgroup: add reservation accounting for
+ private mappings
 To:     David Rientjes <rientjes@google.com>
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>,
         Shakeel Butt <shakeelb@google.com>, shuah <shuah@kernel.org>,
@@ -61,44 +63,121 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> > Proposed Solution:
-> > A new page counter named
-> > 'hugetlb.xMB.reservation_[limit|usage|max_usage]_in_bytes'. This counter has
-> > slightly different semantics than
-> > 'hugetlb.xMB.[limit|usage|max_usage]_in_bytes':
+On Wed, Jan 29, 2020 at 1:28 PM David Rientjes <rientjes@google.com> wrote:
+>
+> On Tue, 14 Jan 2020, Mina Almasry wrote:
+>
+> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > index dea6143aa0685..5491932ea5758 100644
+> > --- a/include/linux/hugetlb.h
+> > +++ b/include/linux/hugetlb.h
+> > @@ -46,6 +46,16 @@ struct resv_map {
+> >       long adds_in_progress;
+> >       struct list_head region_cache;
+> >       long region_cache_count;
+> > +#ifdef CONFIG_CGROUP_HUGETLB
+> > +     /*
+> > +      * On private mappings, the counter to uncharge reservations is stored
+> > +      * here. If these fields are 0, then either the mapping is shared, or
+> > +      * cgroup accounting is disabled for this resv_map.
+> > +      */
+> > +     struct page_counter *reservation_counter;
+> > +     unsigned long pages_per_hpage;
+> > +     struct cgroup_subsys_state *css;
+> > +#endif
+> >  };
+> >  extern struct resv_map *resv_map_alloc(void);
+> >  void resv_map_release(struct kref *ref);
+> > diff --git a/include/linux/hugetlb_cgroup.h b/include/linux/hugetlb_cgroup.h
+> > index eab8a70d5bcb5..8c320accefe87 100644
+> > --- a/include/linux/hugetlb_cgroup.h
+> > +++ b/include/linux/hugetlb_cgroup.h
+> > @@ -25,6 +25,33 @@ struct hugetlb_cgroup;
+> >  #define HUGETLB_CGROUP_MIN_ORDER     2
 > >
->
-> Changelog looks like it needs to be updated with the new resv naming.
->
-
-I updated to the rsvd naming, which you suggested earlier and Mike
-agreed was better.
-
+> >  #ifdef CONFIG_CGROUP_HUGETLB
+> > +enum hugetlb_memory_event {
+> > +     HUGETLB_MAX,
+> > +     HUGETLB_NR_MEMORY_EVENTS,
+> > +};
 > > +
-> >  static inline
-> >  struct hugetlb_cgroup *hugetlb_cgroup_from_css(struct cgroup_subsys_state *s)
-> >  {
+> > +struct hugetlb_cgroup {
+> > +     struct cgroup_subsys_state css;
+> > +
+> > +     /*
+> > +      * the counter to account for hugepages from hugetlb.
+> > +      */
+> > +     struct page_counter hugepage[HUGE_MAX_HSTATE];
+> > +
+> > +     /*
+> > +      * the counter to account for hugepage reservations from hugetlb.
+> > +      */
+> > +     struct page_counter reserved_hugepage[HUGE_MAX_HSTATE];
+> > +
+> > +     atomic_long_t events[HUGE_MAX_HSTATE][HUGETLB_NR_MEMORY_EVENTS];
+> > +     atomic_long_t events_local[HUGE_MAX_HSTATE][HUGETLB_NR_MEMORY_EVENTS];
+> > +
+> > +     /* Handle for "hugetlb.events" */
+> > +     struct cgroup_file events_file[HUGE_MAX_HSTATE];
+> > +
+> > +     /* Handle for "hugetlb.events.local" */
+> > +     struct cgroup_file events_local_file[HUGE_MAX_HSTATE];
+> > +};
+> >
+> >  static inline struct hugetlb_cgroup *hugetlb_cgroup_from_page(struct page *page,
+> >                                                             bool reserved)
+> > diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+> > index 62a4cf3db4090..f1b63946ee95c 100644
+> > --- a/mm/hugetlb.c
+> > +++ b/mm/hugetlb.c
+> > @@ -666,6 +666,17 @@ struct resv_map *resv_map_alloc(void)
+> >       INIT_LIST_HEAD(&resv_map->regions);
+> >
+> >       resv_map->adds_in_progress = 0;
+> > +#ifdef CONFIG_CGROUP_HUGETLB
+> > +     /*
+> > +      * Initialize these to 0. On shared mappings, 0's here indicate these
+> > +      * fields don't do cgroup accounting. On private mappings, these will be
+> > +      * re-initialized to the proper values, to indicate that hugetlb cgroup
+> > +      * reservations are to be un-charged from here.
+> > +      */
+> > +     resv_map->reservation_counter = NULL;
+> > +     resv_map->pages_per_hpage = 0;
+> > +     resv_map->css = NULL;
+> > +#endif
 >
-> Small nit: hugetlb_cgroup_get_counter(), to me, implies incrementing a
-> reference count, perhaps a better name would be in order.  No strong
-> preference.
+> Might be better to extract out a resv_map_init() that does the
+> initialization when CONFIG_CGROUP_HUGETLB is enabled?  Could be used here
+> as well as hugetlb_reserve_pages().
+>
+> >
+> >       INIT_LIST_HEAD(&resv_map->region_cache);
+> >       list_add(&rg->link, &resv_map->region_cache);
+> > @@ -3194,7 +3205,11 @@ static void hugetlb_vm_op_close(struct vm_area_struct *vma)
+> >
+> >       reserve = (end - start) - region_count(resv, start, end);
+> >
+> > -     kref_put(&resv->refs, resv_map_release);
+> > +#ifdef CONFIG_CGROUP_HUGETLB
+> > +     hugetlb_cgroup_uncharge_counter(resv->reservation_counter,
+> > +                                     (end - start) * resv->pages_per_hpage,
+> > +                                     resv->css);
+> > +#endif
+> >
+> >       if (reserve) {
+> >               /*
+>
+> Mike has given is Reviewed-by so likely not a big concern for the generic
+> hugetlb code, but I was wondering if we can reduce the number of #ifdef's
+> if we defined a CONFIG_CGROUP_HUGETLB helper to take the resv, end, and
+> start?  If CONFIG_CGROUP_HUGETLB is defined, it converts into the above,
+> otherwise it's a no-op and we don't run into any compile errors because we
+> are accessing fields that don't exist without the option.
 >
 
-Changed
-> >       /* Add the events file */
-> > -     cft = &h->cgroup_files_dfl[2];
-> > +     cft = &h->cgroup_files_dfl[4];
-> >       snprintf(cft->name, MAX_CFTYPE_NAME, "%s.events", buf);
-> >       cft->private = MEMFILE_PRIVATE(idx, 0);
-> >       cft->seq_show = hugetlb_events_show;
->
-> Any cleanup to __hugetlb_cgroup_file_dfl_init() and
-> __hugetlb_cgroup_file_legacy_init() that is possible would be great in a
-> follow-up patch :)
->
+Yes wherever possible I refactored the code a bit to remove #ifdefs in
+the middle of hugetlb logic.
 
-Will do!
-
-> Other than that, this looks very straight forward.
+> Otherwise looks good!
 >
 > Acked-by: David Rientjes <rientjes@google.com>
