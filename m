@@ -2,238 +2,318 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 59341151E43
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 17:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A747715218F
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 21:37:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727311AbgBDQ0v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Feb 2020 11:26:51 -0500
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12300 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727290AbgBDQ0v (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 11:26:51 -0500
-Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 014GEedT090836
-        for <cgroups@vger.kernel.org>; Tue, 4 Feb 2020 11:26:50 -0500
-Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 2xxn924xae-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 11:26:49 -0500
-Received: from localhost
-        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
-        Tue, 4 Feb 2020 16:26:48 -0000
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
-        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Tue, 4 Feb 2020 16:26:44 -0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 014GQhfj59769072
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 Feb 2020 16:26:43 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id E7DD811C04C;
-        Tue,  4 Feb 2020 16:26:42 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 14F9411C04A;
-        Tue,  4 Feb 2020 16:26:40 +0000 (GMT)
-Received: from [9.199.41.160] (unknown [9.199.41.160])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  4 Feb 2020 16:26:39 +0000 (GMT)
-Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
- tests
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     mike.kravetz@oracle.com, shuah@kernel.org, rientjes@google.com,
-        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
-References: <20200203232248.104733-1-almasrymina@google.com>
- <20200203232248.104733-8-almasrymina@google.com>
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Date:   Tue, 4 Feb 2020 21:56:38 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1727480AbgBDUhL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Feb 2020 15:37:11 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:42130 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727461AbgBDUhL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 15:37:11 -0500
+Received: by mail-oi1-f194.google.com with SMTP id j132so19845376oih.9
+        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 12:37:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6IyvgOStPbIhT6yjCRAzBxT2FlMGgx/EgK7HsJDgeo4=;
+        b=QLz9JJhBPuHe6f0G61EgXxR/Rh7pt49RfVDHpihIpKgM2B64PSACBcxasl7axt4l8D
+         jSQmdsyxNVg5mDU6HR1QncKJMFnSKUsY/7zxfCR4W+vpCXgYAJ+DXJ1e7gt6nDd7jcDd
+         KAqv+StTGFTTQxFsipvCth8LX5JnSU3pXISVp5EUx6vUR/AwJ340q+LvLGPY+dMPS8z0
+         8G9gEmrVXvqHnkNkkyg6UlIv3v5lZAOHfFGB4/QSJ/3pVmrcnAd86xsDbW7BPxbC6uLS
+         /WT430SySM05tGhc2+8I477Dw+WYArLRKXCOP6NdlISDeNyNVozCvNQ45MbDH5yGYAs9
+         k92Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6IyvgOStPbIhT6yjCRAzBxT2FlMGgx/EgK7HsJDgeo4=;
+        b=gfsE4kibJxBdQj5jQi1070D643SeoRSufpB+WoOwP5ITw2uDwkr6Uv//58vJD2BaiR
+         OpUH7OnxCu9emadAU8MmRjcucZIyYzqMqEVGSqdImpQn59jtqlO8vpXi2qyknwW2z0Z4
+         Iuv0GhytOtvRRJH/xluLRAsVACCdRDDDtOe/2jG9f+CwwoKT2SnDL8lQcVHTDfbVScTB
+         UkYZWMF38CAdw/tflqJLgyS0rHSUL8RLzhFogJjGJBVyuQ0QnJcOjxOzc4hFuUajwuXx
+         WBuXV/3le2q2b/JF2Ab8HQIjZCiMFikPL3CyDyYwKrGdNRwoAcJ6ZV039MqS6Wljl1Wx
+         VyCA==
+X-Gm-Message-State: APjAAAX7Y6aFtFhy1A5cOzriAOeetEFxC1vnDXWcEnlO15uK0JXppty+
+        XKZJIojd+4PSMg5m12sWRiIdCAg9V3OXanDXjLZR4g==
+X-Google-Smtp-Source: APXvYqyJPGQtUbcLKV30ftv+EHVGej6UEganAn2adi3OT3fx2VIaYznLhDPHHtkdJUNX5jcWHkJNRy7I9Nr/3VkZ1d0=
+X-Received: by 2002:a05:6808:7dd:: with SMTP id f29mr572486oij.67.1580848629368;
+ Tue, 04 Feb 2020 12:37:09 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <20200203232248.104733-8-almasrymina@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20020416-4275-0000-0000-0000039DE5A1
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20020416-4276-0000-0000-000038B20D7F
-Message-Id: <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-04_05:2020-02-04,2020-02-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
- mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 phishscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-1911200001 definitions=main-2002040108
+References: <20200203232248.104733-1-almasrymina@google.com>
+ <20200203232248.104733-8-almasrymina@google.com> <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
+In-Reply-To: <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Tue, 4 Feb 2020 12:36:57 -0800
+Message-ID: <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
+Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation tests
+To:     Sandipan Das <sandipan@linux.ibm.com>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
+Content-Type: multipart/mixed; boundary="00000000000003c7ea059dc601fb"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Mina,
+--00000000000003c7ea059dc601fb
+Content-Type: text/plain; charset="UTF-8"
 
-On 04/02/20 4:52 am, Mina Almasry wrote:
-> The tests use both shared and private mapped hugetlb memory, and
-> monitors the hugetlb usage counter as well as the hugetlb reservation
-> counter. They test different configurations such as hugetlb memory usage
-> via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
-> MAP_POPULATE.
-> 
-> Also add test for hugetlb reservation reparenting, since this is
-> a subtle issue.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Cc: sandipan@linux.ibm.com
-> 
-> ---
-> 
-> Changes in v11:
-> - Modify test to not assume 2MB hugepage size.
-> - Updated resv.* to rsvd.*
-> Changes in v10:
-> - Updated tests to resv.* name changes.
-> Changes in v9:
-> - Added tests for hugetlb reparenting.
-> - Make tests explicitly support cgroup v1 and v2 via script argument.
-> Changes in v6:
-> - Updates tests for cgroups-v2 and NORESERVE allocations.
-> 
+On Tue, Feb 4, 2020 at 8:26 AM Sandipan Das <sandipan@linux.ibm.com> wrote:
+>
+>
+> There are still a couple of places where 2MB page size is being used.
+> These are my workarounds to get the tests running on ppc64.
+>
 
-There are still a couple of places where 2MB page size is being used.
-These are my workarounds to get the tests running on ppc64.
+Thanks for the changes!
 
-diff --git a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-index 2be672c2b311..d11d1febccc3 100755
---- a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-+++ b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
-@@ -29,6 +29,15 @@ if [[ ! -e $CGROUP_ROOT ]]; then
-   fi
- fi
- 
-+function get_machine_hugepage_size() {
-+  hpz=$(grep -i hugepagesize /proc/meminfo)
-+  kb=${hpz:14:-3}
-+  mb=$(($kb / 1024))
-+  echo $mb
-+}
-+
-+MB=$(get_machine_hugepage_size)
-+
- function cleanup() {
-   echo cleanup
-   set +e
-@@ -67,7 +76,7 @@ function assert_state() {
-   fi
- 
-   local actual_a_hugetlb
--  actual_a_hugetlb="$(cat "$CGROUP_ROOT"/a/hugetlb.2MB.$usage_file)"
-+  actual_a_hugetlb="$(cat "$CGROUP_ROOT"/a/hugetlb.${MB}MB.$usage_file)"
-   if [[ $actual_a_hugetlb -lt $(($expected_a_hugetlb - $tolerance)) ]] ||
-     [[ $actual_a_hugetlb -gt $(($expected_a_hugetlb + $tolerance)) ]]; then
-     echo actual a hugetlb = $((${actual_a_hugetlb%% *} / 1024 / 1024)) MB
-@@ -95,7 +104,7 @@ function assert_state() {
-   fi
- 
-   local actual_b_hugetlb
--  actual_b_hugetlb="$(cat "$CGROUP_ROOT"/a/b/hugetlb.2MB.$usage_file)"
-+  actual_b_hugetlb="$(cat "$CGROUP_ROOT"/a/b/hugetlb.${MB}MB.$usage_file)"
-   if [[ $actual_b_hugetlb -lt $(($expected_b_hugetlb - $tolerance)) ]] ||
-     [[ $actual_b_hugetlb -gt $(($expected_b_hugetlb + $tolerance)) ]]; then
-     echo actual b hugetlb = $((${actual_b_hugetlb%% *} / 1024 / 1024)) MB
-@@ -152,7 +161,7 @@ write_hugetlbfs() {
- 
- set -e
- 
--size=$((2 * 1024 * 1024 * 25)) # 50MB = 25 * 2MB hugepages.
-+size=$((${MB} * 1024 * 1024 * 25)) # 50MB = 25 * 2MB hugepages.
- 
- cleanup
+> Also I had missed running charge_reserved_hugetlb.sh the last time.
+> Right now, it stops at the following scenario.
+>
+> Test normal case with write.
+> private=, populate=, method=2, reserve=
+> nr hugepages = 10
+> writing cgroup limit: 83886080
+> writing reseravation limit: 83886080
+>
+> Starting:
+> hugetlb_usage=0
+> reserved_usage=0
+> expect_failure is 0
+> Putting task in cgroup 'hugetlb_cgroup_test'
+> Method is 2
+> Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
+> Writing to this path: /mnt/huge/test
+> Writing this size: 83886080
+> Not populating.
+> Using method=2
+> Shared mapping.
+> RESERVE mapping.
+> Allocating using SHM.
+> shmid: 0x5, shmget key:0
+> shmaddr: 0x7dfffb000000
+> Writing to memory.
+> Starting the writes:
+> .write_result is 0
+> .After write:
+> hugetlb_usage=16777216
+> reserved_usage=83886080
+> ....kiling write_to_hugetlbfs
+> ...Received 2.
+> Deleting the memory
+> Done deleting the memory
+> 16777216
+> 83886080
+> Memory charged to hugtlb=16777216
+> Memory charged to reservation=83886080
+> expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
+> CLEANUP DONE
+>
+>
 
-diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-index fa82a66e497a..ca98ad229b75 100755
+So the problem in this log seems to be that this log line is missing:
+    echo Waiting for hugetlb memory to reach size $size.
+
+The way the test works is that it starts a process that writes the
+hugetlb memory, then it *should* wait until the memory is written,
+then it should record the cgroup accounting and kill the process. It
+seems from your log that the wait doesn't happen, so the test
+continues before the background process has had time to write the
+memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
+never gets called in your log.
+
+Can you try this additional attached diff on top of your changes? I
+attached the diff and pasted the same here, hopefully one works for
+you:
+
+diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+index efd68093ce3e9..18d33684faade 100755
 --- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
 +++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-@@ -226,7 +226,7 @@ function write_hugetlbfs_and_get_usage() {
- function cleanup_hugetlb_memory() {
+@@ -169,19 +169,36 @@ function write_hugetlbfs_and_get_usage() {
+   echo reserved_usage="$reserved_before"
+   echo expect_failure is "$expect_failure"
+
++  output=$(mktemp)
+   set +e
+   if [[ "$method" == "1" ]] || [[ "$method" == 2 ]] ||
+     [[ "$private" == "-r" ]] && [[ "$expect_failure" != 1 ]]; then
+
+     bash write_hugetlb_memory.sh "$size" "$populate" "$write" \
+-      "$cgroup" "$path" "$method" "$private" "-l" "$reserve" &
++      "$cgroup" "$path" "$method" "$private" "-l" "$reserve" 2>&1 |
+tee $output &
+
+     local write_result=$?
++    local write_pid=$!
+
+-    if [[ "$reserve" != "-n" ]]; then
+-      wait_for_hugetlb_memory_to_get_reserved "$cgroup" "$size"
+-    elif [[ "$populate" == "-o" ]] || [[ "$write" == "-w" ]]; then
++    until grep -q -i "DONE" $output; do
++      echo waiting for DONE signal.
++      if ! ps $write_pid > /dev/null
++      then
++        echo "FAIL: The write died"
++        cleanup
++        exit 1
++      fi
++      sleep 0.5
++    done
++
++    echo ================= write_hugetlb_memory.sh output is:
++    cat $output
++    echo ================= end output.
++
++    if [[ "$populate" == "-o" ]] || [[ "$write" == "-w" ]]; then
+       wait_for_hugetlb_memory_to_get_written "$cgroup" "$size"
++    elif [[ "$reserve" != "-n" ]]; then
++      wait_for_hugetlb_memory_to_get_reserved "$cgroup" "$size"
+     else
+       # This case doesn't produce visible effects, but we still have
+       # to wait for the async process to start and execute...
+@@ -227,7 +244,7 @@ function cleanup_hugetlb_memory() {
    set +e
    local cgroup="$1"
--  if [[ "$(pgrep write_to_hugetlbfs)" != "" ]]; then
-+  if [[ "$(pgrep -f write_to_hugetlbfs)" != "" ]]; then
-     echo kiling write_to_hugetlbfs
+   if [[ "$(pgrep -f write_to_hugetlbfs)" != "" ]]; then
+-    echo kiling write_to_hugetlbfs
++    echo killing write_to_hugetlbfs
      killall -2 write_to_hugetlbfs
      wait_for_hugetlb_memory_to_get_depleted $cgroup
-@@ -264,7 +264,7 @@ function run_test() {
-   setup_cgroup "hugetlb_cgroup_test" "$cgroup_limit" "$reservation_limit"
- 
-   mkdir -p /mnt/huge
--  mount -t hugetlbfs -o pagesize=2M,size=256M none /mnt/huge
-+  mount -t hugetlbfs -o pagesize=${MB}M,size=256M none /mnt/huge
- 
-   write_hugetlbfs_and_get_usage "hugetlb_cgroup_test" "$size" "$populate" \
-     "$write" "/mnt/huge/test" "$method" "$private" "$expect_failure" \
-@@ -318,7 +318,7 @@ function run_multiple_cgroup_test() {
-   setup_cgroup "hugetlb_cgroup_test2" "$cgroup_limit2" "$reservation_limit2"
- 
-   mkdir -p /mnt/huge
--  mount -t hugetlbfs -o pagesize=2M,size=256M none /mnt/huge
-+  mount -t hugetlbfs -o pagesize=${MB}M,size=256M none /mnt/huge
- 
-   write_hugetlbfs_and_get_usage "hugetlb_cgroup_test1" "$size1" \
-     "$populate1" "$write1" "/mnt/huge/test1" "$method" "$private" \
+   fi
+diff --git a/tools/testing/selftests/vm/write_to_hugetlbfs.c
+b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+index 85811c3384a10..7f75ad5f7b580 100644
+--- a/tools/testing/selftests/vm/write_to_hugetlbfs.c
++++ b/tools/testing/selftests/vm/write_to_hugetlbfs.c
+@@ -207,13 +207,13 @@ int main(int argc, char **argv)
+  }
+  printf("shmid: 0x%x, shmget key:%d\n", shmid, key);
 
----
+- shmaddr = shmat(shmid, NULL, 0);
+- if (shmaddr == (char *)-1) {
++ ptr = shmat(shmid, NULL, 0);
++ if (ptr == (int *)-1) {
+  perror("Shared memory attach failure");
+  shmctl(shmid, IPC_RMID, NULL);
+  exit(2);
+  }
+- printf("shmaddr: %p\n", shmaddr);
++ printf("shmaddr: %p\n", ptr);
 
-Also I had missed running charge_reserved_hugetlb.sh the last time.
-Right now, it stops at the following scenario.
+  break;
+  default:
+@@ -223,25 +223,7 @@ int main(int argc, char **argv)
 
-Test normal case with write.
-private=, populate=, method=2, reserve=
-nr hugepages = 10
-writing cgroup limit: 83886080
-writing reseravation limit: 83886080
+  if (write) {
+  printf("Writing to memory.\n");
+- if (method != SHM) {
+- memset(ptr, 1, size);
+- } else {
+- printf("Starting the writes:\n");
+- for (i = 0; i < size; i++) {
+- shmaddr[i] = (char)(i);
+- if (!(i % (1024 * 1024)))
+- printf(".");
+- }
+- printf("\n");
+-
+- printf("Starting the Check...");
+- for (i = 0; i < size; i++)
+- if (shmaddr[i] != (char)i) {
+- printf("\nIndex %lu mismatched\n", i);
+- exit(3);
+- }
+- printf("Done.\n");
+- }
++ memset(ptr, 1, size);
+  }
 
-Starting:
-hugetlb_usage=0
-reserved_usage=0
-expect_failure is 0
-Putting task in cgroup 'hugetlb_cgroup_test'
-Method is 2
-Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
-Writing to this path: /mnt/huge/test
-Writing this size: 83886080
-Not populating.
-Using method=2
-Shared mapping.
-RESERVE mapping.
-Allocating using SHM.
-shmid: 0x5, shmget key:0
-shmaddr: 0x7dfffb000000
-Writing to memory.
-Starting the writes:
-.write_result is 0
-.After write:
-hugetlb_usage=16777216
-reserved_usage=83886080
-....kiling write_to_hugetlbfs
-...Received 2.
-Deleting the memory
-Done deleting the memory
-16777216
-83886080
-Memory charged to hugtlb=16777216
-Memory charged to reservation=83886080
-expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
-CLEANUP DONE
+  if (want_sleep) {
+@@ -253,7 +235,7 @@ int main(int argc, char **argv)
+  sleep(100);
+  }
 
+- switch (method == HUGETLBFS) {
++ if (method == HUGETLBFS) {
+  close(fd);
+  }
 
-The other test script (hugetlb_reparenting_test.sh) passes.
-Did not observe anything unusual with hugepage accounting
-either.
+--00000000000003c7ea059dc601fb
+Content-Type: text/x-patch; charset="US-ASCII"; name="fix-ppc-hugetlb-test.patch"
+Content-Disposition: attachment; filename="fix-ppc-hugetlb-test.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_k68c6d8o0>
+X-Attachment-Id: f_k68c6d8o0
 
-
-- Sandipan
-
+ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3ZtL2NoYXJnZV9yZXNlcnZlZF9o
+dWdldGxiLnNoIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1
+Z2V0bGIuc2gKaW5kZXggZWZkNjgwOTNjZTNlOS4uMThkMzM2ODRmYWFkZSAxMDA3NTUKLS0tIGEv
+dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1Z2V0bGIuc2gKKysr
+IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1Z2V0bGIuc2gK
+QEAgLTE2OSwxOSArMTY5LDM2IEBAIGZ1bmN0aW9uIHdyaXRlX2h1Z2V0bGJmc19hbmRfZ2V0X3Vz
+YWdlKCkgewogICBlY2hvIHJlc2VydmVkX3VzYWdlPSIkcmVzZXJ2ZWRfYmVmb3JlIgogICBlY2hv
+IGV4cGVjdF9mYWlsdXJlIGlzICIkZXhwZWN0X2ZhaWx1cmUiCgorICBvdXRwdXQ9JChta3RlbXAp
+CiAgIHNldCArZQogICBpZiBbWyAiJG1ldGhvZCIgPT0gIjEiIF1dIHx8IFtbICIkbWV0aG9kIiA9
+PSAyIF1dIHx8CiAgICAgW1sgIiRwcml2YXRlIiA9PSAiLXIiIF1dICYmIFtbICIkZXhwZWN0X2Zh
+aWx1cmUiICE9IDEgXV07IHRoZW4KCiAgICAgYmFzaCB3cml0ZV9odWdldGxiX21lbW9yeS5zaCAi
+JHNpemUiICIkcG9wdWxhdGUiICIkd3JpdGUiIFwKLSAgICAgICIkY2dyb3VwIiAiJHBhdGgiICIk
+bWV0aG9kIiAiJHByaXZhdGUiICItbCIgIiRyZXNlcnZlIiAmCisgICAgICAiJGNncm91cCIgIiRw
+YXRoIiAiJG1ldGhvZCIgIiRwcml2YXRlIiAiLWwiICIkcmVzZXJ2ZSIgMj4mMSB8IHRlZSAkb3V0
+cHV0ICYKCiAgICAgbG9jYWwgd3JpdGVfcmVzdWx0PSQ/CisgICAgbG9jYWwgd3JpdGVfcGlkPSQh
+CgotICAgIGlmIFtbICIkcmVzZXJ2ZSIgIT0gIi1uIiBdXTsgdGhlbgotICAgICAgd2FpdF9mb3Jf
+aHVnZXRsYl9tZW1vcnlfdG9fZ2V0X3Jlc2VydmVkICIkY2dyb3VwIiAiJHNpemUiCi0gICAgZWxp
+ZiBbWyAiJHBvcHVsYXRlIiA9PSAiLW8iIF1dIHx8IFtbICIkd3JpdGUiID09ICItdyIgXV07IHRo
+ZW4KKyAgICB1bnRpbCBncmVwIC1xIC1pICJET05FIiAkb3V0cHV0OyBkbworICAgICAgZWNobyB3
+YWl0aW5nIGZvciBET05FIHNpZ25hbC4KKyAgICAgIGlmICEgcHMgJHdyaXRlX3BpZCA+IC9kZXYv
+bnVsbAorICAgICAgdGhlbgorICAgICAgICBlY2hvICJGQUlMOiBUaGUgd3JpdGUgZGllZCIKKyAg
+ICAgICAgY2xlYW51cAorICAgICAgICBleGl0IDEKKyAgICAgIGZpCisgICAgICBzbGVlcCAwLjUK
+KyAgICBkb25lCisKKyAgICBlY2hvID09PT09PT09PT09PT09PT09IHdyaXRlX2h1Z2V0bGJfbWVt
+b3J5LnNoIG91dHB1dCBpczoKKyAgICBjYXQgJG91dHB1dAorICAgIGVjaG8gPT09PT09PT09PT09
+PT09PT0gZW5kIG91dHB1dC4KKworICAgIGlmIFtbICIkcG9wdWxhdGUiID09ICItbyIgXV0gfHwg
+W1sgIiR3cml0ZSIgPT0gIi13IiBdXTsgdGhlbgogICAgICAgd2FpdF9mb3JfaHVnZXRsYl9tZW1v
+cnlfdG9fZ2V0X3dyaXR0ZW4gIiRjZ3JvdXAiICIkc2l6ZSIKKyAgICBlbGlmIFtbICIkcmVzZXJ2
+ZSIgIT0gIi1uIiBdXTsgdGhlbgorICAgICAgd2FpdF9mb3JfaHVnZXRsYl9tZW1vcnlfdG9fZ2V0
+X3Jlc2VydmVkICIkY2dyb3VwIiAiJHNpemUiCiAgICAgZWxzZQogICAgICAgIyBUaGlzIGNhc2Ug
+ZG9lc24ndCBwcm9kdWNlIHZpc2libGUgZWZmZWN0cywgYnV0IHdlIHN0aWxsIGhhdmUKICAgICAg
+ICMgdG8gd2FpdCBmb3IgdGhlIGFzeW5jIHByb2Nlc3MgdG8gc3RhcnQgYW5kIGV4ZWN1dGUuLi4K
+QEAgLTIyNyw3ICsyNDQsNyBAQCBmdW5jdGlvbiBjbGVhbnVwX2h1Z2V0bGJfbWVtb3J5KCkgewog
+ICBzZXQgK2UKICAgbG9jYWwgY2dyb3VwPSIkMSIKICAgaWYgW1sgIiQocGdyZXAgLWYgd3JpdGVf
+dG9faHVnZXRsYmZzKSIgIT0gIiIgXV07IHRoZW4KLSAgICBlY2hvIGtpbGluZyB3cml0ZV90b19o
+dWdldGxiZnMKKyAgICBlY2hvIGtpbGxpbmcgd3JpdGVfdG9faHVnZXRsYmZzCiAgICAga2lsbGFs
+bCAtMiB3cml0ZV90b19odWdldGxiZnMKICAgICB3YWl0X2Zvcl9odWdldGxiX21lbW9yeV90b19n
+ZXRfZGVwbGV0ZWQgJGNncm91cAogICBmaQpkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxm
+dGVzdHMvdm0vd3JpdGVfdG9faHVnZXRsYmZzLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92
+bS93cml0ZV90b19odWdldGxiZnMuYwppbmRleCA4NTgxMWMzMzg0YTEwLi43Zjc1YWQ1ZjdiNTgw
+IDEwMDY0NAotLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92bS93cml0ZV90b19odWdldGxi
+ZnMuYworKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92bS93cml0ZV90b19odWdldGxiZnMu
+YwpAQCAtMjA3LDEzICsyMDcsMTMgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2KQog
+CQl9CiAJCXByaW50Zigic2htaWQ6IDB4JXgsIHNobWdldCBrZXk6JWRcbiIsIHNobWlkLCBrZXkp
+OwoKLQkJc2htYWRkciA9IHNobWF0KHNobWlkLCBOVUxMLCAwKTsKLQkJaWYgKHNobWFkZHIgPT0g
+KGNoYXIgKiktMSkgeworCQlwdHIgPSBzaG1hdChzaG1pZCwgTlVMTCwgMCk7CisJCWlmIChwdHIg
+PT0gKGludCAqKS0xKSB7CiAJCQlwZXJyb3IoIlNoYXJlZCBtZW1vcnkgYXR0YWNoIGZhaWx1cmUi
+KTsKIAkJCXNobWN0bChzaG1pZCwgSVBDX1JNSUQsIE5VTEwpOwogCQkJZXhpdCgyKTsKIAkJfQot
+CQlwcmludGYoInNobWFkZHI6ICVwXG4iLCBzaG1hZGRyKTsKKwkJcHJpbnRmKCJzaG1hZGRyOiAl
+cFxuIiwgcHRyKTsKCiAJCWJyZWFrOwogCWRlZmF1bHQ6CkBAIC0yMjMsMjUgKzIyMyw3IEBAIGlu
+dCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikKCiAJaWYgKHdyaXRlKSB7CiAJCXByaW50Zigi
+V3JpdGluZyB0byBtZW1vcnkuXG4iKTsKLQkJaWYgKG1ldGhvZCAhPSBTSE0pIHsKLQkJCW1lbXNl
+dChwdHIsIDEsIHNpemUpOwotCQl9IGVsc2UgewotCQkJcHJpbnRmKCJTdGFydGluZyB0aGUgd3Jp
+dGVzOlxuIik7Ci0JCQlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSsrKSB7Ci0JCQkJc2htYWRkcltp
+XSA9IChjaGFyKShpKTsKLQkJCQlpZiAoIShpICUgKDEwMjQgKiAxMDI0KSkpCi0JCQkJCXByaW50
+ZigiLiIpOwotCQkJfQotCQkJcHJpbnRmKCJcbiIpOwotCi0JCQlwcmludGYoIlN0YXJ0aW5nIHRo
+ZSBDaGVjay4uLiIpOwotCQkJZm9yIChpID0gMDsgaSA8IHNpemU7IGkrKykKLQkJCQlpZiAoc2ht
+YWRkcltpXSAhPSAoY2hhcilpKSB7Ci0JCQkJCXByaW50ZigiXG5JbmRleCAlbHUgbWlzbWF0Y2hl
+ZFxuIiwgaSk7Ci0JCQkJCWV4aXQoMyk7Ci0JCQkJfQotCQkJcHJpbnRmKCJEb25lLlxuIik7Ci0J
+CX0KKwkJbWVtc2V0KHB0ciwgMSwgc2l6ZSk7CiAJfQoKIAlpZiAod2FudF9zbGVlcCkgewpAQCAt
+MjUzLDcgKzIzNSw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikKIAkJCXNsZWVw
+KDEwMCk7CiAJfQoKLQlzd2l0Y2ggKG1ldGhvZCA9PSBIVUdFVExCRlMpIHsKKwlpZiAobWV0aG9k
+ID09IEhVR0VUTEJGUykgewogCQljbG9zZShmZCk7CiAJfQo=
+--00000000000003c7ea059dc601fb--
