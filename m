@@ -2,51 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A747715218F
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 21:37:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D5C2152261
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 23:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727480AbgBDUhL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Feb 2020 15:37:11 -0500
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:42130 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727461AbgBDUhL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 15:37:11 -0500
-Received: by mail-oi1-f194.google.com with SMTP id j132so19845376oih.9
-        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 12:37:10 -0800 (PST)
+        id S1727468AbgBDWdl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Feb 2020 17:33:41 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45331 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727500AbgBDWdl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 17:33:41 -0500
+Received: by mail-ot1-f66.google.com with SMTP id 59so37556otp.12
+        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 14:33:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=6IyvgOStPbIhT6yjCRAzBxT2FlMGgx/EgK7HsJDgeo4=;
-        b=QLz9JJhBPuHe6f0G61EgXxR/Rh7pt49RfVDHpihIpKgM2B64PSACBcxasl7axt4l8D
-         jSQmdsyxNVg5mDU6HR1QncKJMFnSKUsY/7zxfCR4W+vpCXgYAJ+DXJ1e7gt6nDd7jcDd
-         KAqv+StTGFTTQxFsipvCth8LX5JnSU3pXISVp5EUx6vUR/AwJ340q+LvLGPY+dMPS8z0
-         8G9gEmrVXvqHnkNkkyg6UlIv3v5lZAOHfFGB4/QSJ/3pVmrcnAd86xsDbW7BPxbC6uLS
-         /WT430SySM05tGhc2+8I477Dw+WYArLRKXCOP6NdlISDeNyNVozCvNQ45MbDH5yGYAs9
-         k92Q==
+        bh=r4vakGMhq6osED8dfnagmL3LnH1bwD9GWqExnkD8isg=;
+        b=nsFcX+UkIOs3W64Y+ii8sN4utrUNClWWK5j8fLw1Ozps4Upa29eosAErByGTJMMSqn
+         Uf54fKPlPvLy5rfQ9BS358JoA3gtI3jRPeOyoIzrFbZSX8/bmN5BY7kBdDXJ6C8KwkR0
+         9i8ASESnQJDGufhIdNEgD9F9netV75Xy/p+TGbhvSsb6/ewtPCOO2S64aoJ9fnpC7UKY
+         jFombvtN7ivWbvbzKzGqbC8qRE58Ytm3Yjx1iGJNsOFNfC8IrPVmU6sPiPncRg2RYTMw
+         pYaT+e7IB6zBYtbxpTG8uREOPXipUZkLdLF+1xsoG8xZvthYb28fCvuwZokw362nmqfi
+         y07g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=6IyvgOStPbIhT6yjCRAzBxT2FlMGgx/EgK7HsJDgeo4=;
-        b=gfsE4kibJxBdQj5jQi1070D643SeoRSufpB+WoOwP5ITw2uDwkr6Uv//58vJD2BaiR
-         OpUH7OnxCu9emadAU8MmRjcucZIyYzqMqEVGSqdImpQn59jtqlO8vpXi2qyknwW2z0Z4
-         Iuv0GhytOtvRRJH/xluLRAsVACCdRDDDtOe/2jG9f+CwwoKT2SnDL8lQcVHTDfbVScTB
-         UkYZWMF38CAdw/tflqJLgyS0rHSUL8RLzhFogJjGJBVyuQ0QnJcOjxOzc4hFuUajwuXx
-         WBuXV/3le2q2b/JF2Ab8HQIjZCiMFikPL3CyDyYwKrGdNRwoAcJ6ZV039MqS6Wljl1Wx
-         VyCA==
-X-Gm-Message-State: APjAAAX7Y6aFtFhy1A5cOzriAOeetEFxC1vnDXWcEnlO15uK0JXppty+
-        XKZJIojd+4PSMg5m12sWRiIdCAg9V3OXanDXjLZR4g==
-X-Google-Smtp-Source: APXvYqyJPGQtUbcLKV30ftv+EHVGej6UEganAn2adi3OT3fx2VIaYznLhDPHHtkdJUNX5jcWHkJNRy7I9Nr/3VkZ1d0=
-X-Received: by 2002:a05:6808:7dd:: with SMTP id f29mr572486oij.67.1580848629368;
- Tue, 04 Feb 2020 12:37:09 -0800 (PST)
+        bh=r4vakGMhq6osED8dfnagmL3LnH1bwD9GWqExnkD8isg=;
+        b=BCVvWLvf3m/YaoeWLqEMZM5r3YPO5SMaFLuvfl+Bx2qV5xvtNkLZcGe7hW27Vi5a2y
+         rzVHwrTdgibs2W+5e4JdyLvGQWdfoEGvIpsmiXf3h725VIOlaiSSwl7sDCTo5F+Bx+pM
+         BH4H+gHrGj1EswLoPZ1TD+v4CZhraFWRBUSeZEMbUxbFGeH46hKLXKZCDDePE1oqqI/Y
+         stibqfda49hDYqTtsi60uQKvgxRj7iQeiuqwrrjI1Mw4Q5MTiC0wTLzP1nMdF1dJz/U4
+         V3MT5QXYpsc0UFEwK6Qr3vyeBUVdKFp6bzhRW0HBQwaHfDv3OK4Osk14miHJyqYzPBdN
+         Itcw==
+X-Gm-Message-State: APjAAAXHNjsyxeFh0SshjmeQwtzRUOPbyQUoDomsUNCRavcan9NguId8
+        TmYFTCaPCC9f2B1lIT4XaTFffUcYGlgKnfpQ14vq7w==
+X-Google-Smtp-Source: APXvYqwAB6r7PiMCLRtXLPkmBSmepkc4OT2+jLlJkQ9zZgPfaqu9E0ylfzzT6UFq8J3qZq5LgZpjdufN9HeUGzf+FTk=
+X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr23746990oto.355.1580855620419;
+ Tue, 04 Feb 2020 14:33:40 -0800 (PST)
 MIME-Version: 1.0
 References: <20200203232248.104733-1-almasrymina@google.com>
  <20200203232248.104733-8-almasrymina@google.com> <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
-In-Reply-To: <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
+ <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
+In-Reply-To: <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
 From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 4 Feb 2020 12:36:57 -0800
-Message-ID: <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
+Date:   Tue, 4 Feb 2020 14:33:29 -0800
+Message-ID: <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
 Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation tests
 To:     Sandipan Das <sandipan@linux.ibm.com>
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
@@ -56,264 +57,83 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000003c7ea059dc601fb"
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---00000000000003c7ea059dc601fb
-Content-Type: text/plain; charset="UTF-8"
-
-On Tue, Feb 4, 2020 at 8:26 AM Sandipan Das <sandipan@linux.ibm.com> wrote:
+On Tue, Feb 4, 2020 at 12:36 PM Mina Almasry <almasrymina@google.com> wrote:
 >
+> On Tue, Feb 4, 2020 at 8:26 AM Sandipan Das <sandipan@linux.ibm.com> wrote:
+> >
+> >
+> > There are still a couple of places where 2MB page size is being used.
+> > These are my workarounds to get the tests running on ppc64.
+> >
 >
-> There are still a couple of places where 2MB page size is being used.
-> These are my workarounds to get the tests running on ppc64.
+> Thanks for the changes!
+>
+> > Also I had missed running charge_reserved_hugetlb.sh the last time.
+> > Right now, it stops at the following scenario.
+> >
+> > Test normal case with write.
+> > private=, populate=, method=2, reserve=
+> > nr hugepages = 10
+> > writing cgroup limit: 83886080
+> > writing reseravation limit: 83886080
+> >
+> > Starting:
+> > hugetlb_usage=0
+> > reserved_usage=0
+> > expect_failure is 0
+> > Putting task in cgroup 'hugetlb_cgroup_test'
+> > Method is 2
+> > Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
+> > Writing to this path: /mnt/huge/test
+> > Writing this size: 83886080
+> > Not populating.
+> > Using method=2
+> > Shared mapping.
+> > RESERVE mapping.
+> > Allocating using SHM.
+> > shmid: 0x5, shmget key:0
+> > shmaddr: 0x7dfffb000000
+> > Writing to memory.
+> > Starting the writes:
+> > .write_result is 0
+> > .After write:
+> > hugetlb_usage=16777216
+> > reserved_usage=83886080
+> > ....kiling write_to_hugetlbfs
+> > ...Received 2.
+> > Deleting the memory
+> > Done deleting the memory
+> > 16777216
+> > 83886080
+> > Memory charged to hugtlb=16777216
+> > Memory charged to reservation=83886080
+> > expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
+> > CLEANUP DONE
+> >
+> >
+>
+> So the problem in this log seems to be that this log line is missing:
+>     echo Waiting for hugetlb memory to reach size $size.
+>
+> The way the test works is that it starts a process that writes the
+> hugetlb memory, then it *should* wait until the memory is written,
+> then it should record the cgroup accounting and kill the process. It
+> seems from your log that the wait doesn't happen, so the test
+> continues before the background process has had time to write the
+> memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
+> never gets called in your log.
+>
+> Can you try this additional attached diff on top of your changes? I
+> attached the diff and pasted the same here, hopefully one works for
+> you:
 >
 
-Thanks for the changes!
-
-> Also I had missed running charge_reserved_hugetlb.sh the last time.
-> Right now, it stops at the following scenario.
->
-> Test normal case with write.
-> private=, populate=, method=2, reserve=
-> nr hugepages = 10
-> writing cgroup limit: 83886080
-> writing reseravation limit: 83886080
->
-> Starting:
-> hugetlb_usage=0
-> reserved_usage=0
-> expect_failure is 0
-> Putting task in cgroup 'hugetlb_cgroup_test'
-> Method is 2
-> Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
-> Writing to this path: /mnt/huge/test
-> Writing this size: 83886080
-> Not populating.
-> Using method=2
-> Shared mapping.
-> RESERVE mapping.
-> Allocating using SHM.
-> shmid: 0x5, shmget key:0
-> shmaddr: 0x7dfffb000000
-> Writing to memory.
-> Starting the writes:
-> .write_result is 0
-> .After write:
-> hugetlb_usage=16777216
-> reserved_usage=83886080
-> ....kiling write_to_hugetlbfs
-> ...Received 2.
-> Deleting the memory
-> Done deleting the memory
-> 16777216
-> 83886080
-> Memory charged to hugtlb=16777216
-> Memory charged to reservation=83886080
-> expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
-> CLEANUP DONE
->
->
-
-So the problem in this log seems to be that this log line is missing:
-    echo Waiting for hugetlb memory to reach size $size.
-
-The way the test works is that it starts a process that writes the
-hugetlb memory, then it *should* wait until the memory is written,
-then it should record the cgroup accounting and kill the process. It
-seems from your log that the wait doesn't happen, so the test
-continues before the background process has had time to write the
-memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
-never gets called in your log.
-
-Can you try this additional attached diff on top of your changes? I
-attached the diff and pasted the same here, hopefully one works for
-you:
-
-diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-index efd68093ce3e9..18d33684faade 100755
---- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-+++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
-@@ -169,19 +169,36 @@ function write_hugetlbfs_and_get_usage() {
-   echo reserved_usage="$reserved_before"
-   echo expect_failure is "$expect_failure"
-
-+  output=$(mktemp)
-   set +e
-   if [[ "$method" == "1" ]] || [[ "$method" == 2 ]] ||
-     [[ "$private" == "-r" ]] && [[ "$expect_failure" != 1 ]]; then
-
-     bash write_hugetlb_memory.sh "$size" "$populate" "$write" \
--      "$cgroup" "$path" "$method" "$private" "-l" "$reserve" &
-+      "$cgroup" "$path" "$method" "$private" "-l" "$reserve" 2>&1 |
-tee $output &
-
-     local write_result=$?
-+    local write_pid=$!
-
--    if [[ "$reserve" != "-n" ]]; then
--      wait_for_hugetlb_memory_to_get_reserved "$cgroup" "$size"
--    elif [[ "$populate" == "-o" ]] || [[ "$write" == "-w" ]]; then
-+    until grep -q -i "DONE" $output; do
-+      echo waiting for DONE signal.
-+      if ! ps $write_pid > /dev/null
-+      then
-+        echo "FAIL: The write died"
-+        cleanup
-+        exit 1
-+      fi
-+      sleep 0.5
-+    done
-+
-+    echo ================= write_hugetlb_memory.sh output is:
-+    cat $output
-+    echo ================= end output.
-+
-+    if [[ "$populate" == "-o" ]] || [[ "$write" == "-w" ]]; then
-       wait_for_hugetlb_memory_to_get_written "$cgroup" "$size"
-+    elif [[ "$reserve" != "-n" ]]; then
-+      wait_for_hugetlb_memory_to_get_reserved "$cgroup" "$size"
-     else
-       # This case doesn't produce visible effects, but we still have
-       # to wait for the async process to start and execute...
-@@ -227,7 +244,7 @@ function cleanup_hugetlb_memory() {
-   set +e
-   local cgroup="$1"
-   if [[ "$(pgrep -f write_to_hugetlbfs)" != "" ]]; then
--    echo kiling write_to_hugetlbfs
-+    echo killing write_to_hugetlbfs
-     killall -2 write_to_hugetlbfs
-     wait_for_hugetlb_memory_to_get_depleted $cgroup
-   fi
-diff --git a/tools/testing/selftests/vm/write_to_hugetlbfs.c
-b/tools/testing/selftests/vm/write_to_hugetlbfs.c
-index 85811c3384a10..7f75ad5f7b580 100644
---- a/tools/testing/selftests/vm/write_to_hugetlbfs.c
-+++ b/tools/testing/selftests/vm/write_to_hugetlbfs.c
-@@ -207,13 +207,13 @@ int main(int argc, char **argv)
-  }
-  printf("shmid: 0x%x, shmget key:%d\n", shmid, key);
-
-- shmaddr = shmat(shmid, NULL, 0);
-- if (shmaddr == (char *)-1) {
-+ ptr = shmat(shmid, NULL, 0);
-+ if (ptr == (int *)-1) {
-  perror("Shared memory attach failure");
-  shmctl(shmid, IPC_RMID, NULL);
-  exit(2);
-  }
-- printf("shmaddr: %p\n", shmaddr);
-+ printf("shmaddr: %p\n", ptr);
-
-  break;
-  default:
-@@ -223,25 +223,7 @@ int main(int argc, char **argv)
-
-  if (write) {
-  printf("Writing to memory.\n");
-- if (method != SHM) {
-- memset(ptr, 1, size);
-- } else {
-- printf("Starting the writes:\n");
-- for (i = 0; i < size; i++) {
-- shmaddr[i] = (char)(i);
-- if (!(i % (1024 * 1024)))
-- printf(".");
-- }
-- printf("\n");
--
-- printf("Starting the Check...");
-- for (i = 0; i < size; i++)
-- if (shmaddr[i] != (char)i) {
-- printf("\nIndex %lu mismatched\n", i);
-- exit(3);
-- }
-- printf("Done.\n");
-- }
-+ memset(ptr, 1, size);
-  }
-
-  if (want_sleep) {
-@@ -253,7 +235,7 @@ int main(int argc, char **argv)
-  sleep(100);
-  }
-
-- switch (method == HUGETLBFS) {
-+ if (method == HUGETLBFS) {
-  close(fd);
-  }
-
---00000000000003c7ea059dc601fb
-Content-Type: text/x-patch; charset="US-ASCII"; name="fix-ppc-hugetlb-test.patch"
-Content-Disposition: attachment; filename="fix-ppc-hugetlb-test.patch"
-Content-Transfer-Encoding: base64
-Content-ID: <f_k68c6d8o0>
-X-Attachment-Id: f_k68c6d8o0
-
-ZGlmZiAtLWdpdCBhL3Rvb2xzL3Rlc3Rpbmcvc2VsZnRlc3RzL3ZtL2NoYXJnZV9yZXNlcnZlZF9o
-dWdldGxiLnNoIGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1
-Z2V0bGIuc2gKaW5kZXggZWZkNjgwOTNjZTNlOS4uMThkMzM2ODRmYWFkZSAxMDA3NTUKLS0tIGEv
-dG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1Z2V0bGIuc2gKKysr
-IGIvdG9vbHMvdGVzdGluZy9zZWxmdGVzdHMvdm0vY2hhcmdlX3Jlc2VydmVkX2h1Z2V0bGIuc2gK
-QEAgLTE2OSwxOSArMTY5LDM2IEBAIGZ1bmN0aW9uIHdyaXRlX2h1Z2V0bGJmc19hbmRfZ2V0X3Vz
-YWdlKCkgewogICBlY2hvIHJlc2VydmVkX3VzYWdlPSIkcmVzZXJ2ZWRfYmVmb3JlIgogICBlY2hv
-IGV4cGVjdF9mYWlsdXJlIGlzICIkZXhwZWN0X2ZhaWx1cmUiCgorICBvdXRwdXQ9JChta3RlbXAp
-CiAgIHNldCArZQogICBpZiBbWyAiJG1ldGhvZCIgPT0gIjEiIF1dIHx8IFtbICIkbWV0aG9kIiA9
-PSAyIF1dIHx8CiAgICAgW1sgIiRwcml2YXRlIiA9PSAiLXIiIF1dICYmIFtbICIkZXhwZWN0X2Zh
-aWx1cmUiICE9IDEgXV07IHRoZW4KCiAgICAgYmFzaCB3cml0ZV9odWdldGxiX21lbW9yeS5zaCAi
-JHNpemUiICIkcG9wdWxhdGUiICIkd3JpdGUiIFwKLSAgICAgICIkY2dyb3VwIiAiJHBhdGgiICIk
-bWV0aG9kIiAiJHByaXZhdGUiICItbCIgIiRyZXNlcnZlIiAmCisgICAgICAiJGNncm91cCIgIiRw
-YXRoIiAiJG1ldGhvZCIgIiRwcml2YXRlIiAiLWwiICIkcmVzZXJ2ZSIgMj4mMSB8IHRlZSAkb3V0
-cHV0ICYKCiAgICAgbG9jYWwgd3JpdGVfcmVzdWx0PSQ/CisgICAgbG9jYWwgd3JpdGVfcGlkPSQh
-CgotICAgIGlmIFtbICIkcmVzZXJ2ZSIgIT0gIi1uIiBdXTsgdGhlbgotICAgICAgd2FpdF9mb3Jf
-aHVnZXRsYl9tZW1vcnlfdG9fZ2V0X3Jlc2VydmVkICIkY2dyb3VwIiAiJHNpemUiCi0gICAgZWxp
-ZiBbWyAiJHBvcHVsYXRlIiA9PSAiLW8iIF1dIHx8IFtbICIkd3JpdGUiID09ICItdyIgXV07IHRo
-ZW4KKyAgICB1bnRpbCBncmVwIC1xIC1pICJET05FIiAkb3V0cHV0OyBkbworICAgICAgZWNobyB3
-YWl0aW5nIGZvciBET05FIHNpZ25hbC4KKyAgICAgIGlmICEgcHMgJHdyaXRlX3BpZCA+IC9kZXYv
-bnVsbAorICAgICAgdGhlbgorICAgICAgICBlY2hvICJGQUlMOiBUaGUgd3JpdGUgZGllZCIKKyAg
-ICAgICAgY2xlYW51cAorICAgICAgICBleGl0IDEKKyAgICAgIGZpCisgICAgICBzbGVlcCAwLjUK
-KyAgICBkb25lCisKKyAgICBlY2hvID09PT09PT09PT09PT09PT09IHdyaXRlX2h1Z2V0bGJfbWVt
-b3J5LnNoIG91dHB1dCBpczoKKyAgICBjYXQgJG91dHB1dAorICAgIGVjaG8gPT09PT09PT09PT09
-PT09PT0gZW5kIG91dHB1dC4KKworICAgIGlmIFtbICIkcG9wdWxhdGUiID09ICItbyIgXV0gfHwg
-W1sgIiR3cml0ZSIgPT0gIi13IiBdXTsgdGhlbgogICAgICAgd2FpdF9mb3JfaHVnZXRsYl9tZW1v
-cnlfdG9fZ2V0X3dyaXR0ZW4gIiRjZ3JvdXAiICIkc2l6ZSIKKyAgICBlbGlmIFtbICIkcmVzZXJ2
-ZSIgIT0gIi1uIiBdXTsgdGhlbgorICAgICAgd2FpdF9mb3JfaHVnZXRsYl9tZW1vcnlfdG9fZ2V0
-X3Jlc2VydmVkICIkY2dyb3VwIiAiJHNpemUiCiAgICAgZWxzZQogICAgICAgIyBUaGlzIGNhc2Ug
-ZG9lc24ndCBwcm9kdWNlIHZpc2libGUgZWZmZWN0cywgYnV0IHdlIHN0aWxsIGhhdmUKICAgICAg
-ICMgdG8gd2FpdCBmb3IgdGhlIGFzeW5jIHByb2Nlc3MgdG8gc3RhcnQgYW5kIGV4ZWN1dGUuLi4K
-QEAgLTIyNyw3ICsyNDQsNyBAQCBmdW5jdGlvbiBjbGVhbnVwX2h1Z2V0bGJfbWVtb3J5KCkgewog
-ICBzZXQgK2UKICAgbG9jYWwgY2dyb3VwPSIkMSIKICAgaWYgW1sgIiQocGdyZXAgLWYgd3JpdGVf
-dG9faHVnZXRsYmZzKSIgIT0gIiIgXV07IHRoZW4KLSAgICBlY2hvIGtpbGluZyB3cml0ZV90b19o
-dWdldGxiZnMKKyAgICBlY2hvIGtpbGxpbmcgd3JpdGVfdG9faHVnZXRsYmZzCiAgICAga2lsbGFs
-bCAtMiB3cml0ZV90b19odWdldGxiZnMKICAgICB3YWl0X2Zvcl9odWdldGxiX21lbW9yeV90b19n
-ZXRfZGVwbGV0ZWQgJGNncm91cAogICBmaQpkaWZmIC0tZ2l0IGEvdG9vbHMvdGVzdGluZy9zZWxm
-dGVzdHMvdm0vd3JpdGVfdG9faHVnZXRsYmZzLmMgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92
-bS93cml0ZV90b19odWdldGxiZnMuYwppbmRleCA4NTgxMWMzMzg0YTEwLi43Zjc1YWQ1ZjdiNTgw
-IDEwMDY0NAotLS0gYS90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92bS93cml0ZV90b19odWdldGxi
-ZnMuYworKysgYi90b29scy90ZXN0aW5nL3NlbGZ0ZXN0cy92bS93cml0ZV90b19odWdldGxiZnMu
-YwpAQCAtMjA3LDEzICsyMDcsMTMgQEAgaW50IG1haW4oaW50IGFyZ2MsIGNoYXIgKiphcmd2KQog
-CQl9CiAJCXByaW50Zigic2htaWQ6IDB4JXgsIHNobWdldCBrZXk6JWRcbiIsIHNobWlkLCBrZXkp
-OwoKLQkJc2htYWRkciA9IHNobWF0KHNobWlkLCBOVUxMLCAwKTsKLQkJaWYgKHNobWFkZHIgPT0g
-KGNoYXIgKiktMSkgeworCQlwdHIgPSBzaG1hdChzaG1pZCwgTlVMTCwgMCk7CisJCWlmIChwdHIg
-PT0gKGludCAqKS0xKSB7CiAJCQlwZXJyb3IoIlNoYXJlZCBtZW1vcnkgYXR0YWNoIGZhaWx1cmUi
-KTsKIAkJCXNobWN0bChzaG1pZCwgSVBDX1JNSUQsIE5VTEwpOwogCQkJZXhpdCgyKTsKIAkJfQot
-CQlwcmludGYoInNobWFkZHI6ICVwXG4iLCBzaG1hZGRyKTsKKwkJcHJpbnRmKCJzaG1hZGRyOiAl
-cFxuIiwgcHRyKTsKCiAJCWJyZWFrOwogCWRlZmF1bHQ6CkBAIC0yMjMsMjUgKzIyMyw3IEBAIGlu
-dCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikKCiAJaWYgKHdyaXRlKSB7CiAJCXByaW50Zigi
-V3JpdGluZyB0byBtZW1vcnkuXG4iKTsKLQkJaWYgKG1ldGhvZCAhPSBTSE0pIHsKLQkJCW1lbXNl
-dChwdHIsIDEsIHNpemUpOwotCQl9IGVsc2UgewotCQkJcHJpbnRmKCJTdGFydGluZyB0aGUgd3Jp
-dGVzOlxuIik7Ci0JCQlmb3IgKGkgPSAwOyBpIDwgc2l6ZTsgaSsrKSB7Ci0JCQkJc2htYWRkcltp
-XSA9IChjaGFyKShpKTsKLQkJCQlpZiAoIShpICUgKDEwMjQgKiAxMDI0KSkpCi0JCQkJCXByaW50
-ZigiLiIpOwotCQkJfQotCQkJcHJpbnRmKCJcbiIpOwotCi0JCQlwcmludGYoIlN0YXJ0aW5nIHRo
-ZSBDaGVjay4uLiIpOwotCQkJZm9yIChpID0gMDsgaSA8IHNpemU7IGkrKykKLQkJCQlpZiAoc2ht
-YWRkcltpXSAhPSAoY2hhcilpKSB7Ci0JCQkJCXByaW50ZigiXG5JbmRleCAlbHUgbWlzbWF0Y2hl
-ZFxuIiwgaSk7Ci0JCQkJCWV4aXQoMyk7Ci0JCQkJfQotCQkJcHJpbnRmKCJEb25lLlxuIik7Ci0J
-CX0KKwkJbWVtc2V0KHB0ciwgMSwgc2l6ZSk7CiAJfQoKIAlpZiAod2FudF9zbGVlcCkgewpAQCAt
-MjUzLDcgKzIzNSw3IEBAIGludCBtYWluKGludCBhcmdjLCBjaGFyICoqYXJndikKIAkJCXNsZWVw
-KDEwMCk7CiAJfQoKLQlzd2l0Y2ggKG1ldGhvZCA9PSBIVUdFVExCRlMpIHsKKwlpZiAobWV0aG9k
-ID09IEhVR0VUTEJGUykgewogCQljbG9zZShmZCk7CiAJfQo=
---00000000000003c7ea059dc601fb--
+I got my hands on a machine with 16MB default hugepage size and
+charge_reserved_hugetlb.sh passes now after my changes. Please let me
+know if you still run into issues.
