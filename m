@@ -2,214 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 121A6151328
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 00:23:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 897BB151478
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 04:11:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727310AbgBCXXe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Feb 2020 18:23:34 -0500
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:45096 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727252AbgBCXXd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Feb 2020 18:23:33 -0500
-Received: by mail-pf1-f202.google.com with SMTP id x21so10307369pfp.12
-        for <cgroups@vger.kernel.org>; Mon, 03 Feb 2020 15:23:33 -0800 (PST)
+        id S1726924AbgBDDLh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Feb 2020 22:11:37 -0500
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:35480 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726834AbgBDDLh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Feb 2020 22:11:37 -0500
+Received: by mail-qk1-f196.google.com with SMTP id q15so16591962qki.2;
+        Mon, 03 Feb 2020 19:11:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=Rh1VpC3lsdIyERHgh3jf8eKCiFmpm7UqZQ8YvTrqfM4=;
-        b=lJWoiLvA5ULX2YkzsX59NYhbVWkttrtaHjNvm+zEAsK007W39kDP276kPfC/zR+NtU
-         aePkES0Rxh5xuYJ0x7300FCQN9Q7L/hKYezwbrxsdRe39AcNr5SKgiG6eccjEfZ8+dvw
-         JCn8Gmz4+W0picdlbmEZiN0L7LxhEsSemsiXX+3rwXMUf++r39DrPjtPJBTX6e+UF5he
-         W3sQ8KRPRyTetp1On8GbNCyrreub4TaeVJ8sFff84dJ+7lh9zCh/DF3SYI5+LncPzWpl
-         if9Qf6Qf26NXkRPufOS7uofgDKn370jEFmEJnxfQbhIyyfQyvjgByJSrliDxrBevdTb8
-         NvVg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AQPvBn3+mpVQXLNFO7ln9Q3PQvFlywhORrkpfNdpRp4=;
+        b=lx/YInbrNokwp5yZHxjAiGDoPWM9E2DKV37xld9nufJgcj4+Tu1yfL43ucz5nevePk
+         LnNz27D4HpwIJGOaTtk8C0MnOYpbcXav3fJZY1FTPUOUG1wd2ISFOdZw4aXORQ0UotB3
+         aPQMrXfuZ9/XNp4AIJOLGII5exFcPoOrViq9q3w3ZpzwInKdATwSVGJjkuJJyU6XRao4
+         Y/ce3+O/FdwAZchKSzYBNHF22kFxA7zs3yzQfoJnOmxc+h6c/dZPdPxpon6xN25l17HF
+         UyJS4pIwV5OLOvhsvCt4lMEbafQFOGDHUXmz8sdLPFUjMFAtgWdOkMEVYcwKUhSU7XO6
+         wLZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=Rh1VpC3lsdIyERHgh3jf8eKCiFmpm7UqZQ8YvTrqfM4=;
-        b=XV3yezIMkAep+qqRHalJz8Euj4UUtTVoEFU09mW3WoELQr0HpxfYn65Naqu0PDg9hc
-         VbOhg7hPMbEClmWUafT/hsp9NAxTVAfZ022v94GtVqPc8qG21Mz0XXO+X1EZtoUR1Dt9
-         NOpPms5VG+ImAGKUl4W+W1JTaKKdASLO0MoN+QPPkp2vNgVY2WyL2rCOdyeocsmCFRRl
-         +U9ylAZPEzHDFQaMtAO+YPjk2epYv8j6RO9woXaZY6kC34rBocfWTrZ7tBXDqaEeyOHy
-         +9A3S2cmPbtSo2tfZaxuyKkwyMaaANnmmNPw3UQ5k5c139c3en+NTwG8ijNs754d/gci
-         zuXQ==
-X-Gm-Message-State: APjAAAUVx+iFrLPTWCPc1HPmxhKfFHKuJNXIdpptG+tHbLg7h9YH2a6a
-        O8I4ieaKwofHXQ1dwag3uVQc19KSAedMf9cmPA==
-X-Google-Smtp-Source: APXvYqyekQ/PTvIbKgAeQuqpAu36PLUFRW8ivPd8SpnZY9lBMOLs4YjQ+LBgcv2HhoAHddwfBPPKUnTSwWhf0kgjhQ==
-X-Received: by 2002:a63:6787:: with SMTP id b129mr28057788pgc.103.1580772212242;
- Mon, 03 Feb 2020 15:23:32 -0800 (PST)
-Date:   Mon,  3 Feb 2020 15:22:48 -0800
-In-Reply-To: <20200203232248.104733-1-almasrymina@google.com>
-Message-Id: <20200203232248.104733-9-almasrymina@google.com>
-Mime-Version: 1.0
-References: <20200203232248.104733-1-almasrymina@google.com>
-X-Mailer: git-send-email 2.25.0.341.g760bfbb309-goog
-Subject: [PATCH v11 9/9] hugetlb_cgroup: Add hugetlb_cgroup reservation docs
-From:   Mina Almasry <almasrymina@google.com>
-To:     mike.kravetz@oracle.com
-Cc:     shuah@kernel.org, almasrymina@google.com, rientjes@google.com,
-        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AQPvBn3+mpVQXLNFO7ln9Q3PQvFlywhORrkpfNdpRp4=;
+        b=F6zcQsi+r4uYlfqOUPpOqk0hjz16J2kh/PrHfnXx0lTUFVP7k60sI0Knww8Wns6d4o
+         x/keRPgcESYv0a9V+BLQXGG2bHqrNMY8jSK3g0rUKk4PGxGVI4Nz6FVd0qc7DFZIGms6
+         n7bkPwFlRr0gpyZF6FnOIHskCrPAbrSKV7WlFvA3C6JQThzylog75lldJm7nnAUzU+OQ
+         G3weri47nvReL9SEdMxpcbPn+LLqbZhqm0Rnx1axZ8qvGd71nefrWpr70Kan2OBm6cuC
+         LAfBvoy8C2xMWE0C3iWUnBpJrw0YlI4Evmw5ThWCFI6LPU7KqiqnEu4xAPVN5K0F+1Vt
+         AG7w==
+X-Gm-Message-State: APjAAAUe7F4k2styQt+S9rVfPmBcabM3aN2syTthFIR/40sevAuAXVTJ
+        N64YdLpkzBkTMPFbQ7kleKMPv1//cAT/P533SmjM5pG5
+X-Google-Smtp-Source: APXvYqwLxRaEyV3jwYdLDHu21TDE2JoYFeQudgfpqPsVtLg1JHeGtIi431wOJ0Z8XJYxLgSzUWQB3rh7Kr+aDHb0gag=
+X-Received: by 2002:ae9:e10e:: with SMTP id g14mr27537827qkm.430.1580785896457;
+ Mon, 03 Feb 2020 19:11:36 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1580211965.git.zhangweiping@didiglobal.com>
+ <c044e71afa25fdf65ca9abd21f8a5032e1b424eb.1580211965.git.zhangweiping@didiglobal.com>
+ <871rrevfmz.fsf@nanos.tec.linutronix.de>
+In-Reply-To: <871rrevfmz.fsf@nanos.tec.linutronix.de>
+From:   Weiping Zhang <zwp10758@gmail.com>
+Date:   Tue, 4 Feb 2020 11:11:25 +0800
+Message-ID: <CAA70yB7ThwiaGFkM6J-cja4OcD0oH_6KTwH7vpmp9mVG0Xte4w@mail.gmail.com>
+Subject: Re: [PATCH v4 4/5] genirq/affinity: allow driver's discontigous
+ affinity set
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Weiping Zhang <zhangweiping@didiglobal.com>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>, keith.busch@intel.com,
+        Minwoo Im <minwoo.im.dev@gmail.com>,
+        "Nadolski, Edmund" <edmund.nadolski@intel.com>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-nvme@lists.infradead.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add docs for how to use hugetlb_cgroup reservations, and their behavior.
+Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2020=E5=B9=B42=E6=9C=881=E6=
+=97=A5=E5=91=A8=E5=85=AD =E4=B8=8B=E5=8D=885:19=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Weiping Zhang <zhangweiping@didiglobal.com> writes:
+>
+> > nvme driver will add 4 sets for supporting NVMe weighted round robin,
+> > and some of these sets may be empty(depends on user configuration),
+> > so each particular set is assigned one static index for avoiding the
+> > management trouble, then the empty set will be been by
+> > irq_create_affinity_masks().
+>
+> What's the point of an empty interrupt set in the first place? This does
+> not make sense and smells like a really bad hack.
+>
+> Can you please explain in detail why this is required and why it
+> actually makes sense?
+>
+Hi Thomas,
+Sorry to late reply, I will post new patch to avoid creating empty sets.
+In this version, nvme add extra 4 sets, because nvme will split its
+io queues into 7 parts (poll, default, read, wrr_low, wrr_medium,
+wrr_high, wrr_urgent),
+the poll queues does not use irq, so nvme will has at most 6 irq sets.
+And nvme driver use
+two variables(dev->io_queues[index] and affd->set_size[index]) to
+track how many queues/irqs
+in each part. And the user may set some queues count to 0, for example:
+nvme use 96 io queues.
 
-Signed-off-by: Mina Almasry <almasrymina@google.com>
+default
+dev->io_queues[0]=3D90
+affd->set_size[0] =3D 90
 
----
+read
+dev->io_queues[1]=3D0
+affd->set_size[1] =3D 0
 
-Changes in v11:
-- Changed resv.* to rsvd.*
-Changes in v10:
-- Clarify reparenting behavior.
-- Reword benefits of reservation limits.
-Changes in v6:
-- Updated docs to reflect the new design based on a new counter that
-tracks both reservations and faults.
+wrr low
+dev->io_queues[2]=3D0
+affd->set_size[2] =3D 0
 
----
- .../admin-guide/cgroup-v1/hugetlb.rst         | 103 ++++++++++++++++--
- 1 file changed, 92 insertions(+), 11 deletions(-)
+wrr medium
+dev->io_queues[3]=3D0
+affd->set_size[3] =3D 0
 
-diff --git a/Documentation/admin-guide/cgroup-v1/hugetlb.rst b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-index a3902aa253a96..338f2c7d7a1cd 100644
---- a/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-+++ b/Documentation/admin-guide/cgroup-v1/hugetlb.rst
-@@ -2,13 +2,6 @@
- HugeTLB Controller
- ==================
+wrr high
+dev->io_queues[4]=3D6
+affd->set_size[4] =3D 6
 
--The HugeTLB controller allows to limit the HugeTLB usage per control group and
--enforces the controller limit during page fault. Since HugeTLB doesn't
--support page reclaim, enforcing the limit at page fault time implies that,
--the application will get SIGBUS signal if it tries to access HugeTLB pages
--beyond its limit. This requires the application to know beforehand how much
--HugeTLB pages it would require for its use.
--
- HugeTLB controller can be created by first mounting the cgroup filesystem.
+wrr urgent
+dev->io_queues[5]=3D0
+affd->set_size[5] =3D 0
 
- # mount -t cgroup -o hugetlb none /sys/fs/cgroup
-@@ -28,10 +21,14 @@ process (bash) into it.
+In this case the index from 1 to 3 will has 0 irqs.
 
- Brief summary of control files::
+But actually, it's no need to use fixed index for io_queues and set_size,
+nvme just tells irq engine, how many irq_sets it has, and how may irqs
+in each set,
+so i will post V5 to solve this problem.
+        nr_sets =3D 1;
+        dev->io_queues[HCTX_TYPE_DEFAULT] =3D nr_default;
+        affd->set_size[nr_sets - 1] =3D nr_default;
+        dev->io_queues[HCTX_TYPE_READ] =3D nr_read;
+        if (nr_read) {
+                nr_sets++;
+                affd->set_size[nr_sets - 1] =3D nr_read;
+        }
+        dev->io_queues[HCTX_TYPE_WRR_LOW] =3D nr_wrr_low;
+        if (nr_wrr_low) {
+                nr_sets++;
+                affd->set_size[nr_sets - 1] =3D nr_wrr_low;
+        }
+        dev->io_queues[HCTX_TYPE_WRR_MEDIUM] =3D nr_wrr_medium;
+        if (nr_wrr_medium) {
+                nr_sets++;
+                affd->set_size[nr_sets - 1] =3D nr_wrr_medium;
+        }
+        dev->io_queues[HCTX_TYPE_WRR_HIGH] =3D nr_wrr_high;
+        if (nr_wrr_high) {
+                nr_sets++;
+                affd->set_size[nr_sets - 1] =3D nr_wrr_high;
+        }
+        dev->io_queues[HCTX_TYPE_WRR_URGENT] =3D nr_wrr_urgent;
+        if (nr_wrr_urgent) {
+                nr_sets++;
+                affd->set_size[nr_sets - 1] =3D nr_wrr_urgent;
+        }
+        affd->nr_sets =3D nr_sets;
 
-- hugetlb.<hugepagesize>.limit_in_bytes     # set/show limit of "hugepagesize" hugetlb usage
-- hugetlb.<hugepagesize>.max_usage_in_bytes # show max "hugepagesize" hugetlb  usage recorded
-- hugetlb.<hugepagesize>.usage_in_bytes     # show current usage for "hugepagesize" hugetlb
-- hugetlb.<hugepagesize>.failcnt		   # show the number of allocation failure due to HugeTLB limit
-+ hugetlb.<hugepagesize>.rsvd.limit_in_bytes            # set/show limit of "hugepagesize" hugetlb reservations
-+ hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes        # show max "hugepagesize" hugetlb reservations and no-reserve faults
-+ hugetlb.<hugepagesize>.rsvd.usage_in_bytes            # show current reservations and no-reserve faults for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.rsvd.failcnt                   # show the number of allocation failure due to HugeTLB reservation limit
-+ hugetlb.<hugepagesize>.limit_in_bytes                 # set/show limit of "hugepagesize" hugetlb faults
-+ hugetlb.<hugepagesize>.max_usage_in_bytes             # show max "hugepagesize" hugetlb  usage recorded
-+ hugetlb.<hugepagesize>.usage_in_bytes                 # show current usage for "hugepagesize" hugetlb
-+ hugetlb.<hugepagesize>.failcnt                        # show the number of allocation failure due to HugeTLB usage limit
-
- For a system supporting three hugepage sizes (64k, 32M and 1G), the control
- files include::
-@@ -40,11 +37,95 @@ files include::
-   hugetlb.1GB.max_usage_in_bytes
-   hugetlb.1GB.usage_in_bytes
-   hugetlb.1GB.failcnt
-+  hugetlb.1GB.rsvd.limit_in_bytes
-+  hugetlb.1GB.rsvd.max_usage_in_bytes
-+  hugetlb.1GB.rsvd.usage_in_bytes
-+  hugetlb.1GB.rsvd.failcnt
-   hugetlb.64KB.limit_in_bytes
-   hugetlb.64KB.max_usage_in_bytes
-   hugetlb.64KB.usage_in_bytes
-   hugetlb.64KB.failcnt
-+  hugetlb.64KB.rsvd.limit_in_bytes
-+  hugetlb.64KB.rsvd.max_usage_in_bytes
-+  hugetlb.64KB.rsvd.usage_in_bytes
-+  hugetlb.64KB.rsvd.failcnt
-   hugetlb.32MB.limit_in_bytes
-   hugetlb.32MB.max_usage_in_bytes
-   hugetlb.32MB.usage_in_bytes
-   hugetlb.32MB.failcnt
-+  hugetlb.32MB.rsvd.limit_in_bytes
-+  hugetlb.32MB.rsvd.max_usage_in_bytes
-+  hugetlb.32MB.rsvd.usage_in_bytes
-+  hugetlb.32MB.rsvd.failcnt
-+
-+
-+1. Page fault accounting
-+
-+hugetlb.<hugepagesize>.limit_in_bytes
-+hugetlb.<hugepagesize>.max_usage_in_bytes
-+hugetlb.<hugepagesize>.usage_in_bytes
-+hugetlb.<hugepagesize>.failcnt
-+
-+The HugeTLB controller allows users to limit the HugeTLB usage (page fault) per
-+control group and enforces the limit during page fault. Since HugeTLB
-+doesn't support page reclaim, enforcing the limit at page fault time implies
-+that, the application will get SIGBUS signal if it tries to fault in HugeTLB
-+pages beyond its limit. Therefore the application needs to know exactly how many
-+HugeTLB pages it uses before hand, and the sysadmin needs to make sure that
-+there are enough available on the machine for all the users to avoid processes
-+getting SIGBUS.
-+
-+
-+2. Reservation accounting
-+
-+hugetlb.<hugepagesize>.rsvd.limit_in_bytes
-+hugetlb.<hugepagesize>.rsvd.max_usage_in_bytes
-+hugetlb.<hugepagesize>.rsvd.usage_in_bytes
-+hugetlb.<hugepagesize>.rsvd.failcnt
-+
-+The HugeTLB controller allows to limit the HugeTLB reservations per control
-+group and enforces the controller limit at reservation time and at the fault of
-+HugeTLB memory for which no reservation exists. Since reservation limits are
-+enforced at reservation time (on mmap or shget), reservation limits never causes
-+the application to get SIGBUS signal if the memory was reserved before hand. For
-+MAP_NORESERVE allocations, the reservation limit behaves the same as the fault
-+limit, enforcing memory usage at fault time and causing the application to
-+receive a SIGBUS if it's crossing its limit.
-+
-+Reservation limits are superior to page fault limits described above, since
-+reservation limits are enforced at reservation time (on mmap or shget), and
-+never causes the application to get SIGBUS signal if the memory was reserved
-+before hand. This allows for easier fallback to alternatives such as
-+non-HugeTLB memory for example. In the case of page fault accounting, it's very
-+hard to avoid processes getting SIGBUS since the sysadmin needs precisely know
-+the HugeTLB usage of all the tasks in the system and make sure there is enough
-+pages to satisfy all requests. Avoiding tasks getting SIGBUS on overcommited
-+systems is practically impossible with page fault accounting.
-+
-+
-+3. Caveats with shared memory
-+
-+For shared HugeTLB memory, both HugeTLB reservation and page faults are charged
-+to the first task that causes the memory to be reserved or faulted, and all
-+subsequent uses of this reserved or faulted memory is done without charging.
-+
-+Shared HugeTLB memory is only uncharged when it is unreserved or deallocated.
-+This is usually when the HugeTLB file is deleted, and not when the task that
-+caused the reservation or fault has exited.
-+
-+
-+4. Caveats with HugeTLB cgroup offline.
-+
-+When a HugeTLB cgroup goes offline with some reservations or faults still
-+charged to it, the behavior is as follows:
-+
-+- The fault charges are charged to the parent HugeTLB cgroup (reparented),
-+- the reservation charges remain on the offline HugeTLB cgroup.
-+
-+This means that if a HugeTLB cgroup gets offlined while there is still HugeTLB
-+reservations charged to it, that cgroup persists as a zombie until all HugeTLB
-+reservations are uncharged. HugeTLB reservations behave in this manner to match
-+the memory controller whose cgroups also persist as zombie until all charged
-+memory is uncharged. Also, the tracking of HugeTLB reservations is a bit more
-+complex compared to the tracking of HugeTLB faults, so it is significantly
-+harder to reparent reservations at offline time.
---
-2.25.0.341.g760bfbb309-goog
+Thanks
+Weiping
