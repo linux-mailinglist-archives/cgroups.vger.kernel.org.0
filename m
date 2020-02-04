@@ -2,91 +2,238 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A52B151D7C
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 16:42:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59341151E43
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 17:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727317AbgBDPmJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Feb 2020 10:42:09 -0500
-Received: from mail.kernel.org ([198.145.29.99]:56872 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727290AbgBDPmJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 4 Feb 2020 10:42:09 -0500
-Received: from redsun51.ssa.fujisawa.hgst.com (unknown [199.255.47.7])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 6310720674;
-        Tue,  4 Feb 2020 15:42:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1580830928;
-        bh=BjJC7k92nscSHgX3QEP5TLsEjNIcUbWPSbm8tJPQCms=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=vDF1etBtRok8p/4+IjEevyVwRJwKpsalx/+GC/Bk2GJ74irf9F6c/odDItuYwXFMI
-         1I3YruT5lJl36VvIxUcSqTsUyYzKlMoTqc2uwQEE2UmAQT5DIJPCOT2Xv03TzC57KJ
-         RRVAxNfhvxGZP2J/g+wn4CSC7JHif4ES6SMGAnDA=
-Date:   Wed, 5 Feb 2020 00:42:00 +0900
-From:   Keith Busch <kbusch@kernel.org>
-To:     axboe@kernel.dk, tj@kernel.org, hch@lst.de, bvanassche@acm.org,
-        minwoo.im.dev@gmail.com, tglx@linutronix.de, ming.lei@redhat.com,
-        edmund.nadolski@intel.com, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v5 0/4] Add support Weighted Round Robin for blkcg and
- nvme
-Message-ID: <20200204154200.GA5831@redsun51.ssa.fujisawa.hgst.com>
-References: <cover.1580786525.git.zhangweiping@didiglobal.com>
+        id S1727311AbgBDQ0v (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Feb 2020 11:26:51 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:12300 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727290AbgBDQ0v (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 11:26:51 -0500
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 014GEedT090836
+        for <cgroups@vger.kernel.org>; Tue, 4 Feb 2020 11:26:50 -0500
+Received: from e06smtp01.uk.ibm.com (e06smtp01.uk.ibm.com [195.75.94.97])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 2xxn924xae-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 11:26:49 -0500
+Received: from localhost
+        by e06smtp01.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
+        Tue, 4 Feb 2020 16:26:48 -0000
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (9.149.109.197)
+        by e06smtp01.uk.ibm.com (192.168.101.131) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Tue, 4 Feb 2020 16:26:44 -0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 014GQhfj59769072
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 Feb 2020 16:26:43 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id E7DD811C04C;
+        Tue,  4 Feb 2020 16:26:42 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 14F9411C04A;
+        Tue,  4 Feb 2020 16:26:40 +0000 (GMT)
+Received: from [9.199.41.160] (unknown [9.199.41.160])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  4 Feb 2020 16:26:39 +0000 (GMT)
+Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ tests
+To:     Mina Almasry <almasrymina@google.com>
+Cc:     mike.kravetz@oracle.com, shuah@kernel.org, rientjes@google.com,
+        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
+References: <20200203232248.104733-1-almasrymina@google.com>
+ <20200203232248.104733-8-almasrymina@google.com>
+From:   Sandipan Das <sandipan@linux.ibm.com>
+Date:   Tue, 4 Feb 2020 21:56:38 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cover.1580786525.git.zhangweiping@didiglobal.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+In-Reply-To: <20200203232248.104733-8-almasrymina@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20020416-4275-0000-0000-0000039DE5A1
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20020416-4276-0000-0000-000038B20D7F
+Message-Id: <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-04_05:2020-02-04,2020-02-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 suspectscore=0
+ mlxscore=0 adultscore=0 mlxlogscore=999 spamscore=0 impostorscore=0
+ lowpriorityscore=0 clxscore=1015 priorityscore=1501 phishscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-1911200001 definitions=main-2002040108
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 04, 2020 at 11:30:45AM +0800, Weiping Zhang wrote:
-> This series try to add Weighted Round Robin for block cgroup and nvme
-> driver. When multiple containers share a single nvme device, we want
-> to protect IO critical container from not be interfernced by other
-> containers. We add blkio.wrr interface to user to control their IO
-> priority. The blkio.wrr accept five level priorities, which contains
-> "urgent", "high", "medium", "low" and "none", the "none" is used for
-> disable WRR for this cgroup.
+Hi Mina,
 
-The NVMe protocol really doesn't define WRR to be a mechanism to mitigate
-interference, though. It defines credits among the weighted queues
-only for command fetching, and an urgent strict priority class that
-starves the rest. It has nothing to do with how the controller should
-prioritize completion of those commands, even if it may be reasonable to
-assume influencing when the command is fetched should affect its
-completion.
+On 04/02/20 4:52 am, Mina Almasry wrote:
+> The tests use both shared and private mapped hugetlb memory, and
+> monitors the hugetlb usage counter as well as the hugetlb reservation
+> counter. They test different configurations such as hugetlb memory usage
+> via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
+> MAP_POPULATE.
+> 
+> Also add test for hugetlb reservation reparenting, since this is
+> a subtle issue.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
+> Cc: sandipan@linux.ibm.com
+> 
+> ---
+> 
+> Changes in v11:
+> - Modify test to not assume 2MB hugepage size.
+> - Updated resv.* to rsvd.*
+> Changes in v10:
+> - Updated tests to resv.* name changes.
+> Changes in v9:
+> - Added tests for hugetlb reparenting.
+> - Make tests explicitly support cgroup v1 and v2 via script argument.
+> Changes in v6:
+> - Updates tests for cgroups-v2 and NORESERVE allocations.
+> 
 
-On the "weighted" strict priority, there's nothing separating "high"
-from "low" other than the name: the "set features" credit assignment
-can invert which queues have higher command fetch rates such that the
-"low" is favoured over the "high".
+There are still a couple of places where 2MB page size is being used.
+These are my workarounds to get the tests running on ppc64.
 
-There's no protection against the "urgent" class starving others: normal
-IO will timeout and trigger repeated controller resets, while polled IO
-will consume 100% of CPU cycles without making any progress if we make
-this type of queue available without any additional code to ensure the
-host behaves..
+diff --git a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
+index 2be672c2b311..d11d1febccc3 100755
+--- a/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
++++ b/tools/testing/selftests/vm/hugetlb_reparenting_test.sh
+@@ -29,6 +29,15 @@ if [[ ! -e $CGROUP_ROOT ]]; then
+   fi
+ fi
+ 
++function get_machine_hugepage_size() {
++  hpz=$(grep -i hugepagesize /proc/meminfo)
++  kb=${hpz:14:-3}
++  mb=$(($kb / 1024))
++  echo $mb
++}
++
++MB=$(get_machine_hugepage_size)
++
+ function cleanup() {
+   echo cleanup
+   set +e
+@@ -67,7 +76,7 @@ function assert_state() {
+   fi
+ 
+   local actual_a_hugetlb
+-  actual_a_hugetlb="$(cat "$CGROUP_ROOT"/a/hugetlb.2MB.$usage_file)"
++  actual_a_hugetlb="$(cat "$CGROUP_ROOT"/a/hugetlb.${MB}MB.$usage_file)"
+   if [[ $actual_a_hugetlb -lt $(($expected_a_hugetlb - $tolerance)) ]] ||
+     [[ $actual_a_hugetlb -gt $(($expected_a_hugetlb + $tolerance)) ]]; then
+     echo actual a hugetlb = $((${actual_a_hugetlb%% *} / 1024 / 1024)) MB
+@@ -95,7 +104,7 @@ function assert_state() {
+   fi
+ 
+   local actual_b_hugetlb
+-  actual_b_hugetlb="$(cat "$CGROUP_ROOT"/a/b/hugetlb.2MB.$usage_file)"
++  actual_b_hugetlb="$(cat "$CGROUP_ROOT"/a/b/hugetlb.${MB}MB.$usage_file)"
+   if [[ $actual_b_hugetlb -lt $(($expected_b_hugetlb - $tolerance)) ]] ||
+     [[ $actual_b_hugetlb -gt $(($expected_b_hugetlb + $tolerance)) ]]; then
+     echo actual b hugetlb = $((${actual_b_hugetlb%% *} / 1024 / 1024)) MB
+@@ -152,7 +161,7 @@ write_hugetlbfs() {
+ 
+ set -e
+ 
+-size=$((2 * 1024 * 1024 * 25)) # 50MB = 25 * 2MB hugepages.
++size=$((${MB} * 1024 * 1024 * 25)) # 50MB = 25 * 2MB hugepages.
+ 
+ cleanup
 
-On the driver implementation, the number of module parameters being
-added here is problematic. We already have 2 special classes of queues,
-and defining this at the module level is considered too coarse when
-the system has different devices on opposite ends of the capability
-spectrum. For example, users want polled queues for the fast devices,
-and none for the slower tier. We just don't have a good mechanism to
-define per-controller resources, and more queue classes will make this
-problem worse.
+diff --git a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+index fa82a66e497a..ca98ad229b75 100755
+--- a/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
++++ b/tools/testing/selftests/vm/charge_reserved_hugetlb.sh
+@@ -226,7 +226,7 @@ function write_hugetlbfs_and_get_usage() {
+ function cleanup_hugetlb_memory() {
+   set +e
+   local cgroup="$1"
+-  if [[ "$(pgrep write_to_hugetlbfs)" != "" ]]; then
++  if [[ "$(pgrep -f write_to_hugetlbfs)" != "" ]]; then
+     echo kiling write_to_hugetlbfs
+     killall -2 write_to_hugetlbfs
+     wait_for_hugetlb_memory_to_get_depleted $cgroup
+@@ -264,7 +264,7 @@ function run_test() {
+   setup_cgroup "hugetlb_cgroup_test" "$cgroup_limit" "$reservation_limit"
+ 
+   mkdir -p /mnt/huge
+-  mount -t hugetlbfs -o pagesize=2M,size=256M none /mnt/huge
++  mount -t hugetlbfs -o pagesize=${MB}M,size=256M none /mnt/huge
+ 
+   write_hugetlbfs_and_get_usage "hugetlb_cgroup_test" "$size" "$populate" \
+     "$write" "/mnt/huge/test" "$method" "$private" "$expect_failure" \
+@@ -318,7 +318,7 @@ function run_multiple_cgroup_test() {
+   setup_cgroup "hugetlb_cgroup_test2" "$cgroup_limit2" "$reservation_limit2"
+ 
+   mkdir -p /mnt/huge
+-  mount -t hugetlbfs -o pagesize=2M,size=256M none /mnt/huge
++  mount -t hugetlbfs -o pagesize=${MB}M,size=256M none /mnt/huge
+ 
+   write_hugetlbfs_and_get_usage "hugetlb_cgroup_test1" "$size1" \
+     "$populate1" "$write1" "/mnt/huge/test1" "$method" "$private" \
 
-On the blk-mq side, this implementation doesn't work with the IO
-schedulers. If one is in use, requests may be reordered such that a
-request on your high-priority hctx may be dispatched later than more
-recent ones associated with lower priority. I don't think that's what
-you'd want to happen, so priority should be considered with schedulers
-too.
+---
 
-But really, though, NVMe's WRR is too heavy weight and difficult to use.
-The techincal work group can come up with something better, but it looks
-like they've lost interest in TPAR 4011 (no discussion in 2 years, afaics).
+Also I had missed running charge_reserved_hugetlb.sh the last time.
+Right now, it stops at the following scenario.
+
+Test normal case with write.
+private=, populate=, method=2, reserve=
+nr hugepages = 10
+writing cgroup limit: 83886080
+writing reseravation limit: 83886080
+
+Starting:
+hugetlb_usage=0
+reserved_usage=0
+expect_failure is 0
+Putting task in cgroup 'hugetlb_cgroup_test'
+Method is 2
+Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
+Writing to this path: /mnt/huge/test
+Writing this size: 83886080
+Not populating.
+Using method=2
+Shared mapping.
+RESERVE mapping.
+Allocating using SHM.
+shmid: 0x5, shmget key:0
+shmaddr: 0x7dfffb000000
+Writing to memory.
+Starting the writes:
+.write_result is 0
+.After write:
+hugetlb_usage=16777216
+reserved_usage=83886080
+....kiling write_to_hugetlbfs
+...Received 2.
+Deleting the memory
+Done deleting the memory
+16777216
+83886080
+Memory charged to hugtlb=16777216
+Memory charged to reservation=83886080
+expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
+CLEANUP DONE
+
+
+The other test script (hugetlb_reparenting_test.sh) passes.
+Did not observe anything unusual with hugepage accounting
+either.
+
+
+- Sandipan
+
