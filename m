@@ -2,80 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FF6E151A21
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 12:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EE35151CD1
+	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 16:01:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727067AbgBDLyC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Feb 2020 06:54:02 -0500
-Received: from bombadil.infradead.org ([198.137.202.133]:51718 "EHLO
-        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727040AbgBDLyC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 06:54:02 -0500
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=iUu18RYN80bzMMLTjBJu6yIsP2v0nDSnUCJt6N21n6A=; b=KVQzzxEwjH+T/QHWi2sBA9hSk6
-        3YEa05Z7jzH6PZOqAtx4/80TcdwU6pRdSk3UvqNI1dESExgcgU2hjTDEsqQmuyiYsTDnja/tuV3st
-        3RmlufXrmB7hhAKpM0FEgnpJygQRQYRvW4Q4ykMQulQ8ZYF48NxRwKxawmmhDojuEdD4JdRyIcj4N
-        NTx9eVuWxbmDL2N5LFEycSeQT//85aGCNXPB+CK6skMQ9QS3TW3c0S9Rr/w1hATzWkrqaTKAt1dGm
-        Qfa+g7v+keGDGVuq6+CWBBrBPkPQ6g6NLiIKKTPEAHnA3ueQON4a/Cc4uEPOJzhbBBzXoZ2h35PAX
-        qEaDf1Rg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by bombadil.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1iywm9-00060d-Sw; Tue, 04 Feb 2020 11:53:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D983F30257C;
-        Tue,  4 Feb 2020 12:52:05 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 483C720247145; Tue,  4 Feb 2020 12:53:51 +0100 (CET)
-Date:   Tue, 4 Feb 2020 12:53:51 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
+        id S1727290AbgBDPBu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 4 Feb 2020 10:01:50 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:54206 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727258AbgBDPBt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 10:01:49 -0500
+Received: from ip5f5bf7ec.dynamic.kabel-deutschland.de ([95.91.247.236] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1iyzhx-0003UX-Je; Tue, 04 Feb 2020 15:01:45 +0000
+Date:   Tue, 4 Feb 2020 16:01:44 +0100
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
         Tejun Heo <tj@kernel.org>, Oleg Nesterov <oleg@redhat.com>,
         Ingo Molnar <mingo@redhat.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org
 Subject: Re: [PATCH v5 5/6] clone3: allow spawning processes into cgroups
-Message-ID: <20200204115351.GD14879@hirez.programming.kicks-ass.net>
+Message-ID: <20200204150144.fojbdmuyr7bnvgnj@wittgenstein>
 References: <20200121154844.411-1-christian.brauner@ubuntu.com>
  <20200121154844.411-6-christian.brauner@ubuntu.com>
+ <20200204115351.GD14879@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200121154844.411-6-christian.brauner@ubuntu.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20200204115351.GD14879@hirez.programming.kicks-ass.net>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 21, 2020 at 04:48:43PM +0100, Christian Brauner wrote:
-> This adds support for creating a process in a different cgroup than its
-> parent. Callers can limit and account processes and threads right from
-> the moment they are spawned:
-> - A service manager can directly spawn new services into dedicated
->   cgroups.
-> - A process can be directly created in a frozen cgroup and will be
->   frozen as well.
-> - The initial accounting jitter experienced by process supervisors and
->   daemons is eliminated with this.
-> - Threaded applications or even thread implementations can choose to
->   create a specific cgroup layout where each thread is spawned
->   directly into a dedicated cgroup.
+On Tue, Feb 04, 2020 at 12:53:51PM +0100, Peter Zijlstra wrote:
+> On Tue, Jan 21, 2020 at 04:48:43PM +0100, Christian Brauner wrote:
+> > This adds support for creating a process in a different cgroup than its
+> > parent. Callers can limit and account processes and threads right from
+> > the moment they are spawned:
+> > - A service manager can directly spawn new services into dedicated
+> >   cgroups.
+> > - A process can be directly created in a frozen cgroup and will be
+> >   frozen as well.
+> > - The initial accounting jitter experienced by process supervisors and
+> >   daemons is eliminated with this.
+> > - Threaded applications or even thread implementations can choose to
+> >   create a specific cgroup layout where each thread is spawned
+> >   directly into a dedicated cgroup.
+> > 
+> > This feature is limited to the unified hierarchy. Callers need to pass
+> > an directory file descriptor for the target cgroup. The caller can
+> > choose to pass an O_PATH file descriptor. All usual migration
+> > restrictions apply, i.e. there can be no processes in inner nodes. In
+> > general, creating a process directly in a target cgroup adheres to all
+> > migration restrictions.
 > 
-> This feature is limited to the unified hierarchy. Callers need to pass
-> an directory file descriptor for the target cgroup. The caller can
-> choose to pass an O_PATH file descriptor. All usual migration
-> restrictions apply, i.e. there can be no processes in inner nodes. In
-> general, creating a process directly in a target cgroup adheres to all
-> migration restrictions.
+> AFAICT, he *big* win here is avoiding the write side of the
+> cgroup_threadgroup_rwsem. Or am I mis-reading the patch?
 
-AFAICT, he *big* win here is avoiding the write side of the
-cgroup_threadgroup_rwsem. Or am I mis-reading the patch?
+No, you're absolutely right. I just didn't bother putting implementation
+specifics in the cover letter and I probably should have. So thanks for
+pointing that out!
 
-That global lock is what makes moving tasks/threads around super
-expensive, avoiding that by use of this clone() variant wins the day.
+> 
+> That global lock is what makes moving tasks/threads around super
+> expensive, avoiding that by use of this clone() variant wins the day.
+
+:)
+Christian
