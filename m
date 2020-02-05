@@ -2,54 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5C2152261
-	for <lists+cgroups@lfdr.de>; Tue,  4 Feb 2020 23:33:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7ADEC1530F3
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 13:42:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727468AbgBDWdl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 4 Feb 2020 17:33:41 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45331 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727500AbgBDWdl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 4 Feb 2020 17:33:41 -0500
-Received: by mail-ot1-f66.google.com with SMTP id 59so37556otp.12
-        for <cgroups@vger.kernel.org>; Tue, 04 Feb 2020 14:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=r4vakGMhq6osED8dfnagmL3LnH1bwD9GWqExnkD8isg=;
-        b=nsFcX+UkIOs3W64Y+ii8sN4utrUNClWWK5j8fLw1Ozps4Upa29eosAErByGTJMMSqn
-         Uf54fKPlPvLy5rfQ9BS358JoA3gtI3jRPeOyoIzrFbZSX8/bmN5BY7kBdDXJ6C8KwkR0
-         9i8ASESnQJDGufhIdNEgD9F9netV75Xy/p+TGbhvSsb6/ewtPCOO2S64aoJ9fnpC7UKY
-         jFombvtN7ivWbvbzKzGqbC8qRE58Ytm3Yjx1iGJNsOFNfC8IrPVmU6sPiPncRg2RYTMw
-         pYaT+e7IB6zBYtbxpTG8uREOPXipUZkLdLF+1xsoG8xZvthYb28fCvuwZokw362nmqfi
-         y07g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=r4vakGMhq6osED8dfnagmL3LnH1bwD9GWqExnkD8isg=;
-        b=BCVvWLvf3m/YaoeWLqEMZM5r3YPO5SMaFLuvfl+Bx2qV5xvtNkLZcGe7hW27Vi5a2y
-         rzVHwrTdgibs2W+5e4JdyLvGQWdfoEGvIpsmiXf3h725VIOlaiSSwl7sDCTo5F+Bx+pM
-         BH4H+gHrGj1EswLoPZ1TD+v4CZhraFWRBUSeZEMbUxbFGeH46hKLXKZCDDePE1oqqI/Y
-         stibqfda49hDYqTtsi60uQKvgxRj7iQeiuqwrrjI1Mw4Q5MTiC0wTLzP1nMdF1dJz/U4
-         V3MT5QXYpsc0UFEwK6Qr3vyeBUVdKFp6bzhRW0HBQwaHfDv3OK4Osk14miHJyqYzPBdN
-         Itcw==
-X-Gm-Message-State: APjAAAXHNjsyxeFh0SshjmeQwtzRUOPbyQUoDomsUNCRavcan9NguId8
-        TmYFTCaPCC9f2B1lIT4XaTFffUcYGlgKnfpQ14vq7w==
-X-Google-Smtp-Source: APXvYqwAB6r7PiMCLRtXLPkmBSmepkc4OT2+jLlJkQ9zZgPfaqu9E0ylfzzT6UFq8J3qZq5LgZpjdufN9HeUGzf+FTk=
-X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr23746990oto.355.1580855620419;
- Tue, 04 Feb 2020 14:33:40 -0800 (PST)
-MIME-Version: 1.0
-References: <20200203232248.104733-1-almasrymina@google.com>
- <20200203232248.104733-8-almasrymina@google.com> <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
- <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
-In-Reply-To: <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Tue, 4 Feb 2020 14:33:29 -0800
-Message-ID: <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
-Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation tests
-To:     Sandipan Das <sandipan@linux.ibm.com>
+        id S1726308AbgBEMmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 07:42:52 -0500
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42702 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726575AbgBEMmt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 07:42:49 -0500
+Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 015CeErJ123259
+        for <cgroups@vger.kernel.org>; Wed, 5 Feb 2020 07:42:48 -0500
+Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 2xyhpxppu2-1
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
+        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 07:42:48 -0500
+Received: from localhost
+        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
+        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
+        Wed, 5 Feb 2020 12:42:45 -0000
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
+        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
+        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
+        Wed, 5 Feb 2020 12:42:41 -0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 015CgeOC65339608
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 5 Feb 2020 12:42:40 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5B17CA4055;
+        Wed,  5 Feb 2020 12:42:40 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 812F4A404D;
+        Wed,  5 Feb 2020 12:42:38 +0000 (GMT)
+Received: from [9.124.35.38] (unknown [9.124.35.38])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed,  5 Feb 2020 12:42:38 +0000 (GMT)
+From:   Sandipan Das <sandipan@linux.ibm.com>
+Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ tests
+To:     Mina Almasry <almasrymina@google.com>
 Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Shakeel Butt <shakeelb@google.com>,
@@ -57,83 +50,64 @@ Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+References: <20200203232248.104733-1-almasrymina@google.com>
+ <20200203232248.104733-8-almasrymina@google.com>
+ <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
+ <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
+ <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
+Date:   Wed, 5 Feb 2020 18:12:37 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+In-Reply-To: <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+x-cbid: 20020512-0028-0000-0000-000003D79F6C
+X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
+x-cbparentid: 20020512-0029-0000-0000-0000249BFDDC
+Message-Id: <a980c9f7-2759-45a7-1add-89a390b79b39@linux.ibm.com>
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
+ definitions=2020-02-05_03:2020-02-04,2020-02-05 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ impostorscore=0 mlxscore=0 phishscore=0 suspectscore=0 spamscore=0
+ bulkscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002050101
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 4, 2020 at 12:36 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Tue, Feb 4, 2020 at 8:26 AM Sandipan Das <sandipan@linux.ibm.com> wrote:
-> >
-> >
-> > There are still a couple of places where 2MB page size is being used.
-> > These are my workarounds to get the tests running on ppc64.
-> >
->
-> Thanks for the changes!
->
-> > Also I had missed running charge_reserved_hugetlb.sh the last time.
-> > Right now, it stops at the following scenario.
-> >
-> > Test normal case with write.
-> > private=, populate=, method=2, reserve=
-> > nr hugepages = 10
-> > writing cgroup limit: 83886080
-> > writing reseravation limit: 83886080
-> >
-> > Starting:
-> > hugetlb_usage=0
-> > reserved_usage=0
-> > expect_failure is 0
-> > Putting task in cgroup 'hugetlb_cgroup_test'
-> > Method is 2
-> > Executing ./write_to_hugetlbfs -p /mnt/huge/test -s 83886080 -w  -m 2  -l
-> > Writing to this path: /mnt/huge/test
-> > Writing this size: 83886080
-> > Not populating.
-> > Using method=2
-> > Shared mapping.
-> > RESERVE mapping.
-> > Allocating using SHM.
-> > shmid: 0x5, shmget key:0
-> > shmaddr: 0x7dfffb000000
-> > Writing to memory.
-> > Starting the writes:
-> > .write_result is 0
-> > .After write:
-> > hugetlb_usage=16777216
-> > reserved_usage=83886080
-> > ....kiling write_to_hugetlbfs
-> > ...Received 2.
-> > Deleting the memory
-> > Done deleting the memory
-> > 16777216
-> > 83886080
-> > Memory charged to hugtlb=16777216
-> > Memory charged to reservation=83886080
-> > expected (83886080) != actual (16777216): Reserved memory charged to hugetlb cgroup.
-> > CLEANUP DONE
-> >
-> >
->
-> So the problem in this log seems to be that this log line is missing:
->     echo Waiting for hugetlb memory to reach size $size.
->
-> The way the test works is that it starts a process that writes the
-> hugetlb memory, then it *should* wait until the memory is written,
-> then it should record the cgroup accounting and kill the process. It
-> seems from your log that the wait doesn't happen, so the test
-> continues before the background process has had time to write the
-> memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
-> never gets called in your log.
->
-> Can you try this additional attached diff on top of your changes? I
-> attached the diff and pasted the same here, hopefully one works for
-> you:
->
+Hi,
 
-I got my hands on a machine with 16MB default hugepage size and
-charge_reserved_hugetlb.sh passes now after my changes. Please let me
-know if you still run into issues.
+On 05/02/20 4:03 am, Mina Almasry wrote:
+> On Tue, Feb 4, 2020 at 12:36 PM Mina Almasry <almasrymina@google.com> wrote:
+>>
+>> So the problem in this log seems to be that this log line is missing:
+>>     echo Waiting for hugetlb memory to reach size $size.
+>>
+>> The way the test works is that it starts a process that writes the
+>> hugetlb memory, then it *should* wait until the memory is written,
+>> then it should record the cgroup accounting and kill the process. It
+>> seems from your log that the wait doesn't happen, so the test
+>> continues before the background process has had time to write the
+>> memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
+>> never gets called in your log.
+>>
+>> Can you try this additional attached diff on top of your changes? I
+>> attached the diff and pasted the same here, hopefully one works for
+>> you:
+>> ...
+> 
+> I got my hands on a machine with 16MB default hugepage size and
+> charge_reserved_hugetlb.sh passes now after my changes. Please let me
+> know if you still run into issues.
+> 
+
+With your updates, the tests are passing. Ran the tests on a ppc64 system
+that uses radix MMU (2MB hugepages) and everything passed there as well.
+
+- Sandipan
+
