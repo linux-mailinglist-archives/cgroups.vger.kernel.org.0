@@ -2,142 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C3D1535E0
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 18:03:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C45D15363A
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 18:19:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727454AbgBERDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 12:03:54 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:42699 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727394AbgBERDy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 12:03:54 -0500
-Received: by mail-pg1-f196.google.com with SMTP id w21so1249574pgl.9
-        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 09:03:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=BpKT67FLDttHow1r3K4wuKV8cB597M2lQmxM3PivZvk=;
-        b=brNPJ8bc7c6wFuqJgrS1FFBkILkxYNu0YhqjEyJ1g6cXJT7J7RE1XxdExWiWTzVNQ2
-         O16cxlFkBHFKZAdktZey/jmg6fFkZ393oJzaucgu9b8RGTBsTVlIHogCWnIw61Sg2yGu
-         OdKiBSAx+cx2fGz9i5Lny5MWk+HwwyxwAicOtQ27Jf3PVoy21aOiJPxGG7qvtx805Ixi
-         b+m5JOOUL1SI5HIQ5rhWj5JDMJXGEoTwcU7gSB5RKAmN6y09v+pYZtUyqmjzgI2NnutI
-         eAadYYs8sScqxUHq1dOfRz6EMyFO8F/qMMatvhbXRCInJZcGuKBfleOiEc0lCCzbgcsJ
-         /G3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=BpKT67FLDttHow1r3K4wuKV8cB597M2lQmxM3PivZvk=;
-        b=cSVFyLppxF/IVtyffldroCdmZvIbX9xHRpT/wsLK4ffeFxXoyfNnVg6t588mrJ8AZi
-         6xbhvfxdpORFEggyj7Hoe/184S/ZCBRV7FPcW0dsjJK/UPSy9cJlS6ii138EhlqCv1Uo
-         vDMsf97UCafqrW/eS6OASID/FcdiJclZczOxCllQxWDEcn02SrCyhZNVsTNz65O409s3
-         b4m2NDNFD4VqDr1mVjVufacND8DKrgTCKpcAgFNW1GA3Wrl8nzOTt/P9BhPDj+Gk+Gly
-         VmB4zUcAXsghqdeLyn1iU/+MAwRh4UaMQ/v8OSgiBMXHYjf3af0JvKAhrKXJiTggdffw
-         WAYw==
-X-Gm-Message-State: APjAAAUOfwzv6Lk6ygAw7Va+4tPv4NDv5S+tedhQ4jne6W8qy63KzUlm
-        H04U0IZdl+ap+X1HE493Z+0=
-X-Google-Smtp-Source: APXvYqxn6FeaB04gqdT1mPp5BP8n4x4iJSO9O3ISmNzIV2riJ/yQZ+OASfMH90A2V1+KNeE4TTkVuA==
-X-Received: by 2002:a63:d658:: with SMTP id d24mr23059303pgj.73.1580922233345;
-        Wed, 05 Feb 2020 09:03:53 -0800 (PST)
-Received: from dev.localdomain ([203.100.54.194])
-        by smtp.gmail.com with ESMTPSA id i3sm51209pfg.94.2020.02.05.09.03.47
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Feb 2020 09:03:51 -0800 (PST)
-From:   Yafang Shao <laoar.shao@gmail.com>
-To:     tj@kernel.org, vdavydov.dev@gmail.com
+        id S1727085AbgBERTT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 12:19:19 -0500
+Received: from us-smtp-delivery-1.mimecast.com ([205.139.110.120]:43641 "EHLO
+        us-smtp-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1727083AbgBERTT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 12:19:19 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1580923157;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+        bh=gIyB4KCgThCAN1Ny4WvXktKwaa2MWcRreFTLvoHvsE0=;
+        b=Yz8Sb8f1Ywqf9q8P9XbuM5jSqdFvd++E86E0a2hfusFBph/TLY2hyD8xl37cO4iEJmEmal
+        3apMS3bF87xK0+gAm/t7LixyYvGQ9P7lqRJEo4KVO5opFwbJ0d+ehTSjaoY9HQO/UpJS+6
+        jeFLQHvllp19McpGd1IHCXHfifbz2nY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-158-5D56aHdRORG5H8_7TR0RIg-1; Wed, 05 Feb 2020 12:19:03 -0500
+X-MC-Unique: 5D56aHdRORG5H8_7TR0RIg-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B985A8010C4;
+        Wed,  5 Feb 2020 17:19:00 +0000 (UTC)
+Received: from [10.36.116.217] (ovpn-116-217.ams2.redhat.com [10.36.116.217])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AE8A55D9E2;
+        Wed,  5 Feb 2020 17:18:57 +0000 (UTC)
+Subject: Re: [PATCH] mm, memcg: fix build error around the usage of
+ kmem_caches
+To:     Yafang Shao <laoar.shao@gmail.com>, tj@kernel.org,
+        vdavydov.dev@gmail.com
 Cc:     hannes@cmpxchg.org, mhocko@kernel.org, akpm@linux-foundation.org,
         cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Yafang Shao <laoar.shao@gmail.com>
-Subject: [PATCH] mm, memcg: fix build error around the usage of kmem_caches
-Date:   Wed,  5 Feb 2020 12:03:35 -0500
-Message-Id: <1580922215-5272-1-git-send-email-laoar.shao@gmail.com>
-X-Mailer: git-send-email 1.8.3.1
+        iamjoonsoo.kim@lge.com, cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <1580922215-5272-1-git-send-email-laoar.shao@gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Autocrypt: addr=david@redhat.com; prefer-encrypt=mutual; keydata=
+ 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
+Organization: Red Hat GmbH
+Message-ID: <1ef8ee2e-0f50-fcd6-ae13-d6524fcf9764@redhat.com>
+Date:   Wed, 5 Feb 2020 18:18:56 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.3.1
+MIME-Version: 1.0
+In-Reply-To: <1580922215-5272-1-git-send-email-laoar.shao@gmail.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When I manually set default n to MEMCG_KMEM in init/Kconfig, bellow error
-occurs,
+On 05.02.20 18:03, Yafang Shao wrote:
+> When I manually set default n to MEMCG_KMEM in init/Kconfig, bellow error
+> occurs,
+> 
+> mm/slab_common.c: In function 'memcg_slab_start':
+> mm/slab_common.c:1530:30: error: 'struct mem_cgroup' has no member named
+> 'kmem_caches'
+>   return seq_list_start(&memcg->kmem_caches, *pos);
+>                               ^
+> mm/slab_common.c: In function 'memcg_slab_next':
+> mm/slab_common.c:1537:32: error: 'struct mem_cgroup' has no member named
+> 'kmem_caches'
+>   return seq_list_next(p, &memcg->kmem_caches, pos);
+>                                 ^
+> mm/slab_common.c: In function 'memcg_slab_show':
+> mm/slab_common.c:1551:16: error: 'struct mem_cgroup' has no member named
+> 'kmem_caches'
+>   if (p == memcg->kmem_caches.next)
+>                 ^
+>   CC      arch/x86/xen/smp.o
+> mm/slab_common.c: In function 'memcg_slab_start':
+> mm/slab_common.c:1531:1: warning: control reaches end of non-void function
+> [-Wreturn-type]
+>  }
+>  ^
+> mm/slab_common.c: In function 'memcg_slab_next':
+> mm/slab_common.c:1538:1: warning: control reaches end of non-void function
+> [-Wreturn-type]
+>  }
+>  ^
+> 
+> That's because kmem_caches is defined only when CONFIG_MEMCG_KMEM is set,
+> while memcg_slab_start() will use it no matter CONFIG_MEMCG_KMEM is defined
+> or not.
+> 
+> By the way, the reason I mannuly undefined CONFIG_MEMCG_KMEM is to verify
+> whether my some other code change is still stable when CONFIG_MEMCG_KMEM is
+> not set. Unfortunately, the existing code has been already unstable since
+> v4.11.
+> 
+> Fixes: bc2791f857e1 ("slab: link memcg kmem_caches on their associated memory cgroup")
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
+> ---
+>  mm/memcontrol.c  | 2 ++
+>  mm/slab_common.c | 2 +-
+>  2 files changed, 3 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6f6dc8712e39..43f0125b45bb 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4723,6 +4723,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
+>  		.write = mem_cgroup_reset,
+>  		.read_u64 = mem_cgroup_read_u64,
+>  	},
+> +#ifdef CONFIG_MEMCG_KMEM
+>  #if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
 
-mm/slab_common.c: In function 'memcg_slab_start':
-mm/slab_common.c:1530:30: error: 'struct mem_cgroup' has no member named
-'kmem_caches'
-  return seq_list_start(&memcg->kmem_caches, *pos);
-                              ^
-mm/slab_common.c: In function 'memcg_slab_next':
-mm/slab_common.c:1537:32: error: 'struct mem_cgroup' has no member named
-'kmem_caches'
-  return seq_list_next(p, &memcg->kmem_caches, pos);
-                                ^
-mm/slab_common.c: In function 'memcg_slab_show':
-mm/slab_common.c:1551:16: error: 'struct mem_cgroup' has no member named
-'kmem_caches'
-  if (p == memcg->kmem_caches.next)
-                ^
-  CC      arch/x86/xen/smp.o
-mm/slab_common.c: In function 'memcg_slab_start':
-mm/slab_common.c:1531:1: warning: control reaches end of non-void function
-[-Wreturn-type]
- }
- ^
-mm/slab_common.c: In function 'memcg_slab_next':
-mm/slab_common.c:1538:1: warning: control reaches end of non-void function
-[-Wreturn-type]
- }
- ^
+Not sure if
 
-That's because kmem_caches is defined only when CONFIG_MEMCG_KMEM is set,
-while memcg_slab_start() will use it no matter CONFIG_MEMCG_KMEM is defined
-or not.
+#if defined(CONFIG_MEMCG_KMEM) && \
+    (defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
 
-By the way, the reason I mannuly undefined CONFIG_MEMCG_KMEM is to verify
-whether my some other code change is still stable when CONFIG_MEMCG_KMEM is
-not set. Unfortunately, the existing code has been already unstable since
-v4.11.
+is preffered
 
-Fixes: bc2791f857e1 ("slab: link memcg kmem_caches on their associated memory cgroup")
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
----
- mm/memcontrol.c  | 2 ++
- mm/slab_common.c | 2 +-
- 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6f6dc8712e39..43f0125b45bb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4723,6 +4723,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 		.write = mem_cgroup_reset,
- 		.read_u64 = mem_cgroup_read_u64,
- 	},
-+#ifdef CONFIG_MEMCG_KMEM
- #if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
- 	{
- 		.name = "kmem.slabinfo",
-@@ -4731,6 +4732,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
- 		.seq_stop = memcg_slab_stop,
- 		.seq_show = memcg_slab_show,
- 	},
-+#endif
- #endif
- 	{
- 		.name = "kmem.tcp.limit_in_bytes",
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 1907cb2903c7..5282f881d2f5 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1521,7 +1521,7 @@ void dump_unreclaimable_slab(void)
- 	mutex_unlock(&slab_mutex);
- }
- 
--#if defined(CONFIG_MEMCG)
-+#if defined(CONFIG_MEMCG_KMEM)
- void *memcg_slab_start(struct seq_file *m, loff_t *pos)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 -- 
-2.14.1
+Thanks,
+
+David / dhildenb
 
