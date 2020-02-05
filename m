@@ -2,266 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0078815321E
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 14:44:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C3D1535E0
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 18:03:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727104AbgBENoo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 08:44:44 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52290 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727441AbgBENom (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 5 Feb 2020 08:44:42 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 6B8DCAFBB;
-        Wed,  5 Feb 2020 13:44:39 +0000 (UTC)
-From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To:     cgroups@vger.kernel.org
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 3/3] selftests: cgroup: Add basic tests for pids controller
-Date:   Wed,  5 Feb 2020 14:44:26 +0100
-Message-Id: <20200205134426.10570-4-mkoutny@suse.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200205134426.10570-1-mkoutny@suse.com>
-References: <20191128172612.10259-1-mkoutny@suse.com>
- <20200205134426.10570-1-mkoutny@suse.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S1727454AbgBERDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 12:03:54 -0500
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:42699 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727394AbgBERDy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 12:03:54 -0500
+Received: by mail-pg1-f196.google.com with SMTP id w21so1249574pgl.9
+        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 09:03:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=BpKT67FLDttHow1r3K4wuKV8cB597M2lQmxM3PivZvk=;
+        b=brNPJ8bc7c6wFuqJgrS1FFBkILkxYNu0YhqjEyJ1g6cXJT7J7RE1XxdExWiWTzVNQ2
+         O16cxlFkBHFKZAdktZey/jmg6fFkZ393oJzaucgu9b8RGTBsTVlIHogCWnIw61Sg2yGu
+         OdKiBSAx+cx2fGz9i5Lny5MWk+HwwyxwAicOtQ27Jf3PVoy21aOiJPxGG7qvtx805Ixi
+         b+m5JOOUL1SI5HIQ5rhWj5JDMJXGEoTwcU7gSB5RKAmN6y09v+pYZtUyqmjzgI2NnutI
+         eAadYYs8sScqxUHq1dOfRz6EMyFO8F/qMMatvhbXRCInJZcGuKBfleOiEc0lCCzbgcsJ
+         /G3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=BpKT67FLDttHow1r3K4wuKV8cB597M2lQmxM3PivZvk=;
+        b=cSVFyLppxF/IVtyffldroCdmZvIbX9xHRpT/wsLK4ffeFxXoyfNnVg6t588mrJ8AZi
+         6xbhvfxdpORFEggyj7Hoe/184S/ZCBRV7FPcW0dsjJK/UPSy9cJlS6ii138EhlqCv1Uo
+         vDMsf97UCafqrW/eS6OASID/FcdiJclZczOxCllQxWDEcn02SrCyhZNVsTNz65O409s3
+         b4m2NDNFD4VqDr1mVjVufacND8DKrgTCKpcAgFNW1GA3Wrl8nzOTt/P9BhPDj+Gk+Gly
+         VmB4zUcAXsghqdeLyn1iU/+MAwRh4UaMQ/v8OSgiBMXHYjf3af0JvKAhrKXJiTggdffw
+         WAYw==
+X-Gm-Message-State: APjAAAUOfwzv6Lk6ygAw7Va+4tPv4NDv5S+tedhQ4jne6W8qy63KzUlm
+        H04U0IZdl+ap+X1HE493Z+0=
+X-Google-Smtp-Source: APXvYqxn6FeaB04gqdT1mPp5BP8n4x4iJSO9O3ISmNzIV2riJ/yQZ+OASfMH90A2V1+KNeE4TTkVuA==
+X-Received: by 2002:a63:d658:: with SMTP id d24mr23059303pgj.73.1580922233345;
+        Wed, 05 Feb 2020 09:03:53 -0800 (PST)
+Received: from dev.localdomain ([203.100.54.194])
+        by smtp.gmail.com with ESMTPSA id i3sm51209pfg.94.2020.02.05.09.03.47
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 05 Feb 2020 09:03:51 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     tj@kernel.org, vdavydov.dev@gmail.com
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, akpm@linux-foundation.org,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH] mm, memcg: fix build error around the usage of kmem_caches
+Date:   Wed,  5 Feb 2020 12:03:35 -0500
+Message-Id: <1580922215-5272-1-git-send-email-laoar.shao@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This commit adds (and wires in) new test program for checking basic pids
-controller functionality -- restricting tasks in a cgroup and correct
-event counting.
+When I manually set default n to MEMCG_KMEM in init/Kconfig, bellow error
+occurs,
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
+mm/slab_common.c: In function 'memcg_slab_start':
+mm/slab_common.c:1530:30: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  return seq_list_start(&memcg->kmem_caches, *pos);
+                              ^
+mm/slab_common.c: In function 'memcg_slab_next':
+mm/slab_common.c:1537:32: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  return seq_list_next(p, &memcg->kmem_caches, pos);
+                                ^
+mm/slab_common.c: In function 'memcg_slab_show':
+mm/slab_common.c:1551:16: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  if (p == memcg->kmem_caches.next)
+                ^
+  CC      arch/x86/xen/smp.o
+mm/slab_common.c: In function 'memcg_slab_start':
+mm/slab_common.c:1531:1: warning: control reaches end of non-void function
+[-Wreturn-type]
+ }
+ ^
+mm/slab_common.c: In function 'memcg_slab_next':
+mm/slab_common.c:1538:1: warning: control reaches end of non-void function
+[-Wreturn-type]
+ }
+ ^
+
+That's because kmem_caches is defined only when CONFIG_MEMCG_KMEM is set,
+while memcg_slab_start() will use it no matter CONFIG_MEMCG_KMEM is defined
+or not.
+
+By the way, the reason I mannuly undefined CONFIG_MEMCG_KMEM is to verify
+whether my some other code change is still stable when CONFIG_MEMCG_KMEM is
+not set. Unfortunately, the existing code has been already unstable since
+v4.11.
+
+Fixes: bc2791f857e1 ("slab: link memcg kmem_caches on their associated memory cgroup")
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- tools/testing/selftests/cgroup/Makefile    |   8 +-
- tools/testing/selftests/cgroup/test_pids.c | 188 +++++++++++++++++++++
- 2 files changed, 193 insertions(+), 3 deletions(-)
- create mode 100644 tools/testing/selftests/cgroup/test_pids.c
+ mm/memcontrol.c  | 2 ++
+ mm/slab_common.c | 2 +-
+ 2 files changed, 3 insertions(+), 1 deletion(-)
 
-diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
-index 66aafe1f5746..15a8578f40b4 100644
---- a/tools/testing/selftests/cgroup/Makefile
-+++ b/tools/testing/selftests/cgroup/Makefile
-@@ -5,12 +5,14 @@ all:
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6f6dc8712e39..43f0125b45bb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4723,6 +4723,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 		.write = mem_cgroup_reset,
+ 		.read_u64 = mem_cgroup_read_u64,
+ 	},
++#ifdef CONFIG_MEMCG_KMEM
+ #if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
+ 	{
+ 		.name = "kmem.slabinfo",
+@@ -4731,6 +4732,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 		.seq_stop = memcg_slab_stop,
+ 		.seq_show = memcg_slab_show,
+ 	},
++#endif
+ #endif
+ 	{
+ 		.name = "kmem.tcp.limit_in_bytes",
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 1907cb2903c7..5282f881d2f5 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1521,7 +1521,7 @@ void dump_unreclaimable_slab(void)
+ 	mutex_unlock(&slab_mutex);
+ }
  
- TEST_FILES     := with_stress.sh
- TEST_PROGS     := test_stress.sh
--TEST_GEN_PROGS = test_memcontrol
--TEST_GEN_PROGS += test_core
-+TEST_GEN_PROGS = test_core
- TEST_GEN_PROGS += test_freezer
-+TEST_GEN_PROGS += test_memcontrol
-+TEST_GEN_PROGS += test_pids
- 
- include ../lib.mk
- 
--$(OUTPUT)/test_memcontrol: cgroup_util.c
- $(OUTPUT)/test_core: cgroup_util.c
- $(OUTPUT)/test_freezer: cgroup_util.c
-+$(OUTPUT)/test_memcontrol: cgroup_util.c
-+$(OUTPUT)/test_pids: cgroup_util.c
-diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
-new file mode 100644
-index 000000000000..6545d81f2838
---- /dev/null
-+++ b/tools/testing/selftests/cgroup/test_pids.c
-@@ -0,0 +1,188 @@
-+// SPDX-License-Identifier: GPL-2.0
-+#define _GNU_SOURCE
-+
-+#include <errno.h>
-+#include <linux/limits.h>
-+#include <signal.h>
-+#include <string.h>
-+#include <sys/stat.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+
-+#include "../kselftest.h"
-+#include "cgroup_util.h"
-+
-+static int run_success(const char *cgroup, void *arg)
-+{
-+	return 0;
-+}
-+
-+static int run_pause(const char *cgroup, void *arg)
-+{
-+	return pause();
-+}
-+
-+/*
-+ * This test checks that pids.max prevents forking new children above the
-+ * specified limit in the cgroup.
-+ */
-+static int test_pids_max(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_pids;
-+	int pid;
-+
-+
-+	cg_pids = cg_name(root, "pids_test");
-+	if (!cg_pids)
-+		goto cleanup;
-+
-+	if (cg_create(cg_pids))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_pids, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_write(cg_pids, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_pids))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_pids, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_pids, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	cg_destroy(cg_pids);
-+	free(cg_pids);
-+
-+	return ret;
-+}
-+
-+/*
-+ * This test checks that while pids.max prevents forking new children above the
-+ * specified limit in the cgroup appropriate events are generated in the
-+ * hiearchy.
-+ */
-+static int test_pids_events(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *cg_parent = NULL, *cg_child = NULL;
-+	int pid;
-+
-+
-+	cg_parent = cg_name(root, "pids_parent");
-+	cg_child = cg_name(cg_parent, "pids_child");
-+	if (!cg_parent || !cg_child)
-+		goto cleanup;
-+
-+	if (cg_create(cg_parent))
-+		goto cleanup;
-+	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
-+		goto cleanup;
-+	if (cg_create(cg_child))
-+		goto cleanup;
-+
-+	if (cg_write(cg_parent, "pids.max", "2"))
-+		goto cleanup;
-+
-+	if (cg_read_strcmp(cg_child, "pids.max", "max\n"))
-+		goto cleanup;
-+
-+	if (cg_enter_current(cg_child))
-+		goto cleanup;
-+
-+	pid = cg_run_nowait(cg_child, run_pause, NULL);
-+	if (pid < 0)
-+		goto cleanup;
-+
-+	if (cg_run_nowait(cg_child, run_success, NULL) != -1 || errno != EAGAIN)
-+		goto cleanup;
-+
-+	if (kill(pid, SIGINT))
-+		goto cleanup;
-+
-+
-+	if (cg_read_key_long(cg_child, "pids.events", "max ") != 0)
-+		goto cleanup;
-+	if (cg_read_key_long(cg_child, "pids.events", "max.imposed ") != 1)
-+		goto cleanup;
-+
-+	if (cg_read_key_long(cg_parent, "pids.events", "max ") != 1)
-+		goto cleanup;
-+	if (cg_read_key_long(cg_parent, "pids.events", "max.imposed ") != 1)
-+		goto cleanup;
-+
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	cg_enter_current(root);
-+	if (cg_child)
-+		cg_destroy(cg_child);
-+	if (cg_parent)
-+		cg_destroy(cg_parent);
-+	free(cg_child);
-+	free(cg_parent);
-+
-+	return ret;
-+}
-+
-+
-+
-+#define T(x) { x, #x }
-+struct pids_test {
-+	int (*fn)(const char *root);
-+	const char *name;
-+} tests[] = {
-+	T(test_pids_max),
-+	T(test_pids_events),
-+};
-+#undef T
-+
-+int main(int argc, char **argv)
-+{
-+	char root[PATH_MAX];
-+	int i, ret = EXIT_SUCCESS;
-+
-+	if (cg_find_unified_root(root, sizeof(root)))
-+		ksft_exit_skip("cgroup v2 isn't mounted\n");
-+
-+	/*
-+	 * Check that pids controller is available:
-+	 * pids is listed in cgroup.controllers
-+	 */
-+	if (cg_read_strstr(root, "cgroup.controllers", "pids"))
-+		ksft_exit_skip("pids controller isn't available\n");
-+
-+	if (cg_read_strstr(root, "cgroup.subtree_control", "pids"))
-+		if (cg_write(root, "cgroup.subtree_control", "+pids"))
-+			ksft_exit_skip("Failed to set pids controller\n");
-+
-+	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-+		switch (tests[i].fn(root)) {
-+		case KSFT_PASS:
-+			ksft_test_result_pass("%s\n", tests[i].name);
-+			break;
-+		case KSFT_SKIP:
-+			ksft_test_result_skip("%s\n", tests[i].name);
-+			break;
-+		default:
-+			ret = EXIT_FAILURE;
-+			ksft_test_result_fail("%s\n", tests[i].name);
-+			break;
-+		}
-+	}
-+
-+	return ret;
-+}
+-#if defined(CONFIG_MEMCG)
++#if defined(CONFIG_MEMCG_KMEM)
+ void *memcg_slab_start(struct seq_file *m, loff_t *pos)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 -- 
-2.24.1
+2.14.1
 
