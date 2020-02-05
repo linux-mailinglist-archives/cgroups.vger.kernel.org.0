@@ -2,112 +2,166 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7ADEC1530F3
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 13:42:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C22171531CB
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 14:27:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgBEMmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 07:42:52 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:42702 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726575AbgBEMmt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 07:42:49 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 015CeErJ123259
-        for <cgroups@vger.kernel.org>; Wed, 5 Feb 2020 07:42:48 -0500
-Received: from e06smtp07.uk.ibm.com (e06smtp07.uk.ibm.com [195.75.94.103])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 2xyhpxppu2-1
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NOT)
-        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 07:42:48 -0500
-Received: from localhost
-        by e06smtp07.uk.ibm.com with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted
-        for <cgroups@vger.kernel.org> from <sandipan@linux.ibm.com>;
-        Wed, 5 Feb 2020 12:42:45 -0000
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (9.149.109.194)
-        by e06smtp07.uk.ibm.com (192.168.101.137) with IBM ESMTP SMTP Gateway: Authorized Use Only! Violators will be prosecuted;
-        (version=TLSv1/SSLv3 cipher=AES256-GCM-SHA384 bits=256/256)
-        Wed, 5 Feb 2020 12:42:41 -0000
-Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 015CgeOC65339608
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 Feb 2020 12:42:40 GMT
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5B17CA4055;
-        Wed,  5 Feb 2020 12:42:40 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 812F4A404D;
-        Wed,  5 Feb 2020 12:42:38 +0000 (GMT)
-Received: from [9.124.35.38] (unknown [9.124.35.38])
-        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 Feb 2020 12:42:38 +0000 (GMT)
-From:   Sandipan Das <sandipan@linux.ibm.com>
-Subject: Re: [PATCH v11 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
- tests
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
-References: <20200203232248.104733-1-almasrymina@google.com>
- <20200203232248.104733-8-almasrymina@google.com>
- <0fa5d77c-d115-1e30-cb17-d6a48c916922@linux.ibm.com>
- <CAHS8izPobKi_w8R4pTt_UyfxzBJJYuNUw+Z6hgFfvZ1Xma__YA@mail.gmail.com>
- <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
-Date:   Wed, 5 Feb 2020 18:12:37 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S1728121AbgBEN0t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 08:26:49 -0500
+Received: from youngberry.canonical.com ([91.189.89.112]:56952 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728053AbgBEN0s (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 08:26:48 -0500
+Received: from ip5f5bf7ec.dynamic.kabel-deutschland.de ([95.91.247.236] helo=wittgenstein.fritz.box)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1izKhY-00035h-Hv; Wed, 05 Feb 2020 13:26:44 +0000
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>
+Cc:     Oleg Nesterov <oleg@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Subject: [PATCH v6 1/6] cgroup: unify attach permission checking
+Date:   Wed,  5 Feb 2020 14:26:18 +0100
+Message-Id: <20200205132623.670015-2-christian.brauner@ubuntu.com>
+X-Mailer: git-send-email 2.25.0
+In-Reply-To: <20200205132623.670015-1-christian.brauner@ubuntu.com>
+References: <20200205132623.670015-1-christian.brauner@ubuntu.com>
 MIME-Version: 1.0
-In-Reply-To: <CAHS8izNmSYumXpYXT1d8tAm36=-BRjXqdCDjLB6UNMwn5xhPZg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-x-cbid: 20020512-0028-0000-0000-000003D79F6C
-X-IBM-AV-DETECTION: SAVI=unused REMOTE=unused XFE=unused
-x-cbparentid: 20020512-0029-0000-0000-0000249BFDDC
-Message-Id: <a980c9f7-2759-45a7-1add-89a390b79b39@linux.ibm.com>
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-05_03:2020-02-04,2020-02-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
- impostorscore=0 mlxscore=0 phishscore=0 suspectscore=0 spamscore=0
- bulkscore=0 lowpriorityscore=0 mlxlogscore=999 clxscore=1015 adultscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002050101
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+The core codepaths to check whether a process can be attached to a
+cgroup are the same for threads and thread-group leaders. Only a small
+piece of code verifying that source and destination cgroup are in the
+same domain differentiates the thread permission checking from
+thread-group leader permission checking.
+Since cgroup_migrate_vet_dst() only matters cgroup2 - it is a noop on
+cgroup1 - we can move it out of cgroup_attach_task().
+All checks can now be consolidated into a new helper
+cgroup_attach_permissions() callable from both cgroup_procs_write() and
+cgroup_threads_write().
 
-On 05/02/20 4:03 am, Mina Almasry wrote:
-> On Tue, Feb 4, 2020 at 12:36 PM Mina Almasry <almasrymina@google.com> wrote:
->>
->> So the problem in this log seems to be that this log line is missing:
->>     echo Waiting for hugetlb memory to reach size $size.
->>
->> The way the test works is that it starts a process that writes the
->> hugetlb memory, then it *should* wait until the memory is written,
->> then it should record the cgroup accounting and kill the process. It
->> seems from your log that the wait doesn't happen, so the test
->> continues before the background process has had time to write the
->> memory properly. Essentially wait_for_hugetlb_memory_to_get_written()
->> never gets called in your log.
->>
->> Can you try this additional attached diff on top of your changes? I
->> attached the diff and pasted the same here, hopefully one works for
->> you:
->> ...
-> 
-> I got my hands on a machine with 16MB default hugepage size and
-> charge_reserved_hugetlb.sh passes now after my changes. Please let me
-> know if you still run into issues.
-> 
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Li Zefan <lizefan@huawei.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: cgroups@vger.kernel.org
+Acked-by: Michal Koutný <mkoutny@suse.com>
+Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
+---
+/* v1 */
+Link: https://lore.kernel.org/r/20191218173516.7875-2-christian.brauner@ubuntu.com
 
-With your updates, the tests are passing. Ran the tests on a ppc64 system
-that uses radix MMU (2MB hugepages) and everything passed there as well.
+/* v2 */
+Link: https://lore.kernel.org/r/20191223061504.28716-2-christian.brauner@ubuntu.com
+- Christian Brauner <christian.brauner@ubuntu.com>:
+  - Fix return value of cgroup_attach_permissions. It used to return 0
+    when it should've returned -EOPNOTSUPP.
+  - Fix call to cgroup_attach_permissions() in cgroup_procs_write(). It
+    accidently specified that a thread was moved causing an additional
+    check for domain-group equality to be executed that is not needed.
 
-- Sandipan
+/* v3 */
+Link: https://lore.kernel.org/r/20200117002143.15559-2-christian.brauner@ubuntu.com
+unchanged
+
+/* v4 */
+Link: https://lore.kernel.org/r/20200117181219.14542-2-christian.brauner@ubuntu.com
+unchanged
+
+/* v5 */
+Link: https://lore.kernel.org/r/20200121154844.411-2-christian.brauner@ubuntu.com
+unchanged
+
+/* v6 */
+- Michal Koutný <mkoutny@suse.com>:
+  - Invert logic to use threadgroup argument to match other codepaths.
+---
+ kernel/cgroup/cgroup.c | 39 +++++++++++++++++++++++++--------------
+ 1 file changed, 25 insertions(+), 14 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 735af8f15f95..5f84177e2065 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2719,11 +2719,7 @@ int cgroup_attach_task(struct cgroup *dst_cgrp, struct task_struct *leader,
+ {
+ 	DEFINE_CGROUP_MGCTX(mgctx);
+ 	struct task_struct *task;
+-	int ret;
+-
+-	ret = cgroup_migrate_vet_dst(dst_cgrp);
+-	if (ret)
+-		return ret;
++	int ret = 0;
+ 
+ 	/* look up all src csets */
+ 	spin_lock_irq(&css_set_lock);
+@@ -4690,6 +4686,26 @@ static int cgroup_procs_write_permission(struct cgroup *src_cgrp,
+ 	return 0;
+ }
+ 
++static int cgroup_attach_permissions(struct cgroup *src_cgrp,
++				     struct cgroup *dst_cgrp,
++				     struct super_block *sb, bool threadgroup)
++{
++	int ret = 0;
++
++	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp, sb);
++	if (ret)
++		return ret;
++
++	ret = cgroup_migrate_vet_dst(dst_cgrp);
++	if (ret)
++		return ret;
++
++	if (!threadgroup && (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp))
++		ret = -EOPNOTSUPP;
++
++	return ret;
++}
++
+ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 				  char *buf, size_t nbytes, loff_t off)
+ {
+@@ -4712,8 +4728,8 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+ 	spin_unlock_irq(&css_set_lock);
+ 
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, true);
+ 	if (ret)
+ 		goto out_finish;
+ 
+@@ -4757,16 +4773,11 @@ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 	spin_unlock_irq(&css_set_lock);
+ 
+ 	/* thread migrations follow the cgroup.procs delegation rule */
+-	ret = cgroup_procs_write_permission(src_cgrp, dst_cgrp,
+-					    of->file->f_path.dentry->d_sb);
++	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
++					of->file->f_path.dentry->d_sb, false);
+ 	if (ret)
+ 		goto out_finish;
+ 
+-	/* and must be contained in the same domain */
+-	ret = -EOPNOTSUPP;
+-	if (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp)
+-		goto out_finish;
+-
+ 	ret = cgroup_attach_task(dst_cgrp, task, false);
+ 
+ out_finish:
+-- 
+2.25.0
 
