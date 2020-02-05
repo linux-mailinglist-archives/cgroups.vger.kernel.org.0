@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 09CB515321C
-	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 14:44:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0078815321E
+	for <lists+cgroups@lfdr.de>; Wed,  5 Feb 2020 14:44:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726308AbgBENom (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 08:44:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:52282 "EHLO mx2.suse.de"
+        id S1727104AbgBENoo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 08:44:44 -0500
+Received: from mx2.suse.de ([195.135.220.15]:52290 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727104AbgBENom (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        id S1727441AbgBENom (ORCPT <rfc822;cgroups@vger.kernel.org>);
         Wed, 5 Feb 2020 08:44:42 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 5E321AFAC;
+        by mx2.suse.de (Postfix) with ESMTP id 6B8DCAFBB;
         Wed,  5 Feb 2020 13:44:39 +0000 (UTC)
 From:   =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
 To:     cgroups@vger.kernel.org
 Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Aleksa Sarai <cyphar@cyphar.com>, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH v2 2/3] cgroup/pids: Make event counters hierarchical
-Date:   Wed,  5 Feb 2020 14:44:25 +0100
-Message-Id: <20200205134426.10570-3-mkoutny@suse.com>
+Subject: [RFC PATCH v2 3/3] selftests: cgroup: Add basic tests for pids controller
+Date:   Wed,  5 Feb 2020 14:44:26 +0100
+Message-Id: <20200205134426.10570-4-mkoutny@suse.com>
 X-Mailer: git-send-email 2.24.1
 In-Reply-To: <20200205134426.10570-1-mkoutny@suse.com>
 References: <20191128172612.10259-1-mkoutny@suse.com>
@@ -35,93 +35,233 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pids.events file should honor the hierarchy, so make the events
-propagate from their origin up to the root on the unified hierarchy. The
-legacy hierarchy behavior remains the same.
+This commit adds (and wires in) new test program for checking basic pids
+controller functionality -- restricting tasks in a cgroup and correct
+event counting.
 
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst |  4 ++-
- kernel/cgroup/pids.c                    | 44 ++++++++++++++++---------
- 2 files changed, 31 insertions(+), 17 deletions(-)
+ tools/testing/selftests/cgroup/Makefile    |   8 +-
+ tools/testing/selftests/cgroup/test_pids.c | 188 +++++++++++++++++++++
+ 2 files changed, 193 insertions(+), 3 deletions(-)
+ create mode 100644 tools/testing/selftests/cgroup/test_pids.c
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 38edeb79c2d8..5dda08f268b7 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1819,7 +1819,9 @@ PID Interface Files
-   pids.events
- 	A read-only flat-keyed file which exists on non-root cgroups.  Unless
- 	specified otherwise, a value change in this file generates a file modified
--	event. The following entries are defined.
-+	event. Fields in this file are hierarchical and the file modified event
-+	can be generated due to an event down the hierarchy. The following
-+	entries are defined.
+diff --git a/tools/testing/selftests/cgroup/Makefile b/tools/testing/selftests/cgroup/Makefile
+index 66aafe1f5746..15a8578f40b4 100644
+--- a/tools/testing/selftests/cgroup/Makefile
++++ b/tools/testing/selftests/cgroup/Makefile
+@@ -5,12 +5,14 @@ all:
  
- 	  max
- 		The number of times the limit of the cgroup was hit.
-diff --git a/kernel/cgroup/pids.c b/kernel/cgroup/pids.c
-index bbfb2fb56029..5d65b36931cd 100644
---- a/kernel/cgroup/pids.c
-+++ b/kernel/cgroup/pids.c
-@@ -223,6 +223,33 @@ static void pids_cancel_attach(struct cgroup_taskset *tset)
- 	}
- }
+ TEST_FILES     := with_stress.sh
+ TEST_PROGS     := test_stress.sh
+-TEST_GEN_PROGS = test_memcontrol
+-TEST_GEN_PROGS += test_core
++TEST_GEN_PROGS = test_core
+ TEST_GEN_PROGS += test_freezer
++TEST_GEN_PROGS += test_memcontrol
++TEST_GEN_PROGS += test_pids
  
-+static void pids_event(struct pids_cgroup *pids_forking,
-+		       struct pids_cgroup *pids_over_limit)
+ include ../lib.mk
+ 
+-$(OUTPUT)/test_memcontrol: cgroup_util.c
+ $(OUTPUT)/test_core: cgroup_util.c
+ $(OUTPUT)/test_freezer: cgroup_util.c
++$(OUTPUT)/test_memcontrol: cgroup_util.c
++$(OUTPUT)/test_pids: cgroup_util.c
+diff --git a/tools/testing/selftests/cgroup/test_pids.c b/tools/testing/selftests/cgroup/test_pids.c
+new file mode 100644
+index 000000000000..6545d81f2838
+--- /dev/null
++++ b/tools/testing/selftests/cgroup/test_pids.c
+@@ -0,0 +1,188 @@
++// SPDX-License-Identifier: GPL-2.0
++#define _GNU_SOURCE
++
++#include <errno.h>
++#include <linux/limits.h>
++#include <signal.h>
++#include <string.h>
++#include <sys/stat.h>
++#include <sys/types.h>
++#include <unistd.h>
++
++#include "../kselftest.h"
++#include "cgroup_util.h"
++
++static int run_success(const char *cgroup, void *arg)
 +{
-+	struct pids_cgroup *p;
-+	bool limit = false;
-+
-+	for (p = pids_forking; parent_pids(p); p = parent_pids(p)) {
-+		/* Only log the first time events_limit_imposed is incremented. */
-+		if (atomic64_inc_return(&p->events_limit_imposed) == 1 &&
-+		    p == pids_forking) {
-+			pr_info("cgroup: fork rejected by pids controller in ");
-+			pr_cont_cgroup_path(p->css.cgroup);
-+			pr_cont("\n");
-+		}
-+
-+		if (p == pids_over_limit)
-+			limit = true;
-+		if (limit)
-+			atomic64_inc(&p->events_limit);
-+
-+		cgroup_file_notify(&p->events_file);
-+		/* Events are only notified in pids_forking on v1 */
-+		if (!cgroup_subsys_on_dfl(pids_cgrp_subsys))
-+			break;
-+	}
++	return 0;
 +}
 +
- /*
-  * task_css_check(true) in pids_can_fork() and pids_cancel_fork() relies
-  * on cgroup_threadgroup_change_begin() held by the copy_process().
-@@ -237,22 +264,7 @@ static int pids_can_fork(struct task_struct *task)
- 	pids = css_pids(css);
- 	err = pids_try_charge(pids, 1, &pids_over_limit);
- 	if (err) {
--		/* Backwards compatibility on v1 where events were notified in
--		 * leaves. */
--		if (!cgroup_subsys_on_dfl(pids_cgrp_subsys))
--			pids_over_limit = pids;
--
--		/* Only log the first time events_limit_imposed is incremented. */
--		if (atomic64_inc_return(&pids->events_limit_imposed) == 1) {
--			pr_info("cgroup: fork rejected by pids controller in ");
--			pr_cont_cgroup_path(pids->css.cgroup);
--			pr_cont("\n");
--		}
--		atomic64_inc(&pids_over_limit->events_limit);
--
--		cgroup_file_notify(&pids->events_file);
--		if (pids_over_limit != pids)
--			cgroup_file_notify(&pids_over_limit->events_file);
-+		pids_event(pids, pids_over_limit);
- 	}
- 	return err;
- }
++static int run_pause(const char *cgroup, void *arg)
++{
++	return pause();
++}
++
++/*
++ * This test checks that pids.max prevents forking new children above the
++ * specified limit in the cgroup.
++ */
++static int test_pids_max(const char *root)
++{
++	int ret = KSFT_FAIL;
++	char *cg_pids;
++	int pid;
++
++
++	cg_pids = cg_name(root, "pids_test");
++	if (!cg_pids)
++		goto cleanup;
++
++	if (cg_create(cg_pids))
++		goto cleanup;
++
++	if (cg_read_strcmp(cg_pids, "pids.max", "max\n"))
++		goto cleanup;
++
++	if (cg_write(cg_pids, "pids.max", "2"))
++		goto cleanup;
++
++	if (cg_enter_current(cg_pids))
++		goto cleanup;
++
++	pid = cg_run_nowait(cg_pids, run_pause, NULL);
++	if (pid < 0)
++		goto cleanup;
++
++	if (cg_run_nowait(cg_pids, run_success, NULL) != -1 || errno != EAGAIN)
++		goto cleanup;
++
++	if (kill(pid, SIGINT))
++		goto cleanup;
++
++	ret = KSFT_PASS;
++
++cleanup:
++	cg_enter_current(root);
++	cg_destroy(cg_pids);
++	free(cg_pids);
++
++	return ret;
++}
++
++/*
++ * This test checks that while pids.max prevents forking new children above the
++ * specified limit in the cgroup appropriate events are generated in the
++ * hiearchy.
++ */
++static int test_pids_events(const char *root)
++{
++	int ret = KSFT_FAIL;
++	char *cg_parent = NULL, *cg_child = NULL;
++	int pid;
++
++
++	cg_parent = cg_name(root, "pids_parent");
++	cg_child = cg_name(cg_parent, "pids_child");
++	if (!cg_parent || !cg_child)
++		goto cleanup;
++
++	if (cg_create(cg_parent))
++		goto cleanup;
++	if (cg_write(cg_parent, "cgroup.subtree_control", "+pids"))
++		goto cleanup;
++	if (cg_create(cg_child))
++		goto cleanup;
++
++	if (cg_write(cg_parent, "pids.max", "2"))
++		goto cleanup;
++
++	if (cg_read_strcmp(cg_child, "pids.max", "max\n"))
++		goto cleanup;
++
++	if (cg_enter_current(cg_child))
++		goto cleanup;
++
++	pid = cg_run_nowait(cg_child, run_pause, NULL);
++	if (pid < 0)
++		goto cleanup;
++
++	if (cg_run_nowait(cg_child, run_success, NULL) != -1 || errno != EAGAIN)
++		goto cleanup;
++
++	if (kill(pid, SIGINT))
++		goto cleanup;
++
++
++	if (cg_read_key_long(cg_child, "pids.events", "max ") != 0)
++		goto cleanup;
++	if (cg_read_key_long(cg_child, "pids.events", "max.imposed ") != 1)
++		goto cleanup;
++
++	if (cg_read_key_long(cg_parent, "pids.events", "max ") != 1)
++		goto cleanup;
++	if (cg_read_key_long(cg_parent, "pids.events", "max.imposed ") != 1)
++		goto cleanup;
++
++
++	ret = KSFT_PASS;
++
++cleanup:
++	cg_enter_current(root);
++	if (cg_child)
++		cg_destroy(cg_child);
++	if (cg_parent)
++		cg_destroy(cg_parent);
++	free(cg_child);
++	free(cg_parent);
++
++	return ret;
++}
++
++
++
++#define T(x) { x, #x }
++struct pids_test {
++	int (*fn)(const char *root);
++	const char *name;
++} tests[] = {
++	T(test_pids_max),
++	T(test_pids_events),
++};
++#undef T
++
++int main(int argc, char **argv)
++{
++	char root[PATH_MAX];
++	int i, ret = EXIT_SUCCESS;
++
++	if (cg_find_unified_root(root, sizeof(root)))
++		ksft_exit_skip("cgroup v2 isn't mounted\n");
++
++	/*
++	 * Check that pids controller is available:
++	 * pids is listed in cgroup.controllers
++	 */
++	if (cg_read_strstr(root, "cgroup.controllers", "pids"))
++		ksft_exit_skip("pids controller isn't available\n");
++
++	if (cg_read_strstr(root, "cgroup.subtree_control", "pids"))
++		if (cg_write(root, "cgroup.subtree_control", "+pids"))
++			ksft_exit_skip("Failed to set pids controller\n");
++
++	for (i = 0; i < ARRAY_SIZE(tests); i++) {
++		switch (tests[i].fn(root)) {
++		case KSFT_PASS:
++			ksft_test_result_pass("%s\n", tests[i].name);
++			break;
++		case KSFT_SKIP:
++			ksft_test_result_skip("%s\n", tests[i].name);
++			break;
++		default:
++			ret = EXIT_FAILURE;
++			ksft_test_result_fail("%s\n", tests[i].name);
++			break;
++		}
++	}
++
++	return ret;
++}
 -- 
 2.24.1
 
