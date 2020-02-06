@@ -2,137 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DA18153C7C
-	for <lists+cgroups@lfdr.de>; Thu,  6 Feb 2020 02:16:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C6DF9153CBC
+	for <lists+cgroups@lfdr.de>; Thu,  6 Feb 2020 02:43:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727474AbgBFBQY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 20:16:24 -0500
-Received: from mail-io1-f66.google.com ([209.85.166.66]:38386 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727170AbgBFBQY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 20:16:24 -0500
-Received: by mail-io1-f66.google.com with SMTP id s24so4435807iog.5
-        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 17:16:23 -0800 (PST)
+        id S1727415AbgBFBn4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 5 Feb 2020 20:43:56 -0500
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:40352 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727605AbgBFBnz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 20:43:55 -0500
+Received: by mail-oi1-f194.google.com with SMTP id a142so2951298oii.7
+        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 17:43:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=chLy6GSqBy+/ujDvuDbaQr9IHlDEdCi1z2Q2e8diLQ8=;
-        b=qWv+0a7lMviAtTjNnAhSW6ND/5nGN3RodZOnsMKnv4AJkUYAklJ2g2Fp/S9s2S3JAu
-         blKHSdIES0qLGdq9AVfz0GTp4ieYwFM9pCQ15JXZ4/XpRO2U92IWzP7fd9vsvDuZ/g7J
-         uRcWMALZxvOEjC82DQ8heQ/0A/MczdlTIBmzUhp++Rv61anYp/wCgmXimFB1PTdpW8rU
-         yRhnxVoRLu0h4XKmosThqKaWJUPQN6UKmL8vzFEa3eiQYytIiyNmjiCsjiSDITJFUMJ4
-         x01FFn3M6VPUGBKl5VjlLoO3RIEOQvi+5sSbnvkE9qgJhBUMNt94/DeX8XH+CxdD4idu
-         ATQA==
+        bh=rSnhPc5sm1WKX1AxY5ecWiqStcBUxMiXywxGfVIJb3s=;
+        b=hASTENvQqDefynTK3/vPCP/JkgvLwj9TJiEC2KANfBjieXUCLbbJfgFb70CSl/h83z
+         iyWGWjOz4tmmSIm397EoWDsVhES3vq0zkHC5G5EGe5VJjXCqr7AkD86ECgwEo/5q0UTF
+         L5koUiwcvP4A3K4/dOMmYL+zCNVKb1K3ADX8bfLwh5rd5G+4ohXyQU8ov/3BhHpEr21D
+         sibOcthDDa1c/SkgDfSJbmDZaiBTSmGhm3++rP6osHO4gOPP5OhPfHvZUU+4eOIsrJjD
+         WQeP9qF/Sw4MIVCx+iXVf1QlAvw0Hy07hLYY9cmunHVp6AMkyt/cih1uWc8NwQDRhEeZ
+         zhSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=chLy6GSqBy+/ujDvuDbaQr9IHlDEdCi1z2Q2e8diLQ8=;
-        b=GO0N7fUUWLF90xLWtPj/O6Gjn2WI/Rz2skC7NaZd2erNXo4ImFHfy1y3F+9RxO0rcS
-         wyaeb4iGEGO8oLOLKWf08VchjR9hBWChkwkecPw0i73lWs+jxlwO02Mk212KPjNHLRgs
-         Bk128mLaClU8tWo8Nw8n/I2rfNCy+lHM0+t812veqd+fHz6R8Cfc92QJxplzIYXQZI01
-         8Fnfynv2da6Ov3Ool4XSPiGlW8keZtg4/7K2AW24Qgm2+Xy5nhl9R50LLfIr0ShADL7d
-         YOfHOhZMiO8/N+uCzNkwr6TfAJlW0ULNuPTt3cgWt7YZCEG1/VOww8nIfcD7VnwZ1yk7
-         nsRg==
-X-Gm-Message-State: APjAAAViJiJcUnhWLfM1GbqNRNvimc2HoT9Arxuq8G/YYVHQwxZNqZUm
-        m8GqvH1eUG7tTbDlkhNePk2DSWEvq+bHpwiOObw=
-X-Google-Smtp-Source: APXvYqwHAYTsP7K7B+ndhHTLjs1zcYiD+XgnPum5jlyC/WP191Q7r08iYsK7BnakPsyGQ1hVMPveJNHAqT5WyrVnzvg=
-X-Received: by 2002:a02:c558:: with SMTP id g24mr31475604jaj.81.1580951783272;
- Wed, 05 Feb 2020 17:16:23 -0800 (PST)
+        bh=rSnhPc5sm1WKX1AxY5ecWiqStcBUxMiXywxGfVIJb3s=;
+        b=YKrzD5kL0dB2WNzNyWN/FdpNxpVmImN1qv8DrrdLWQnqEflE+6DtQwmmMHtCyp8Akr
+         oZuv6W0ZGyDzA9piYThLtQ1TPZmys8MItVbkZ3vYN0pQW0KuHkBqKyABt36/aLBYV2TA
+         Dr4f1wTG/fHuBVFMmDampRj0MeSdtd0B6Rw/elAvz17V8RfSVwnMkvHzTjLeO4kHMRRP
+         hTCES21BWdYx++pWCAtFQl+c+fKS3pAIwN/3pJXy8I6SyhwWOHM4jDIxDD8kDZu0kriw
+         oBvl6eayxMnSaMT4jLUpL0XJWnAOdnrHbAMIpYapkrWq2Z3OgVP4+LqxsLo8cqp37FmT
+         DfSw==
+X-Gm-Message-State: APjAAAVq3Y5BxG8PPHaSDeX+6FyV1Xo1hYnV/jk+fEpi+XmOodLPQftv
+        SPE9fIHwKSqgONa7QahfL9uDhKCXCuTAyoGkJ4/1uw==
+X-Google-Smtp-Source: APXvYqz+vL5vVc3c3EqGorwKWyApF85gPLUz0qAt0tCjSSmjl8jJi5+mOSnq4Lof7/Jvq/soGG7yZ4hZZPC28aas1Qs=
+X-Received: by 2002:aca:d6c8:: with SMTP id n191mr5503972oig.103.1580953434139;
+ Wed, 05 Feb 2020 17:43:54 -0800 (PST)
 MIME-Version: 1.0
-References: <1580922215-5272-1-git-send-email-laoar.shao@gmail.com> <1ef8ee2e-0f50-fcd6-ae13-d6524fcf9764@redhat.com>
-In-Reply-To: <1ef8ee2e-0f50-fcd6-ae13-d6524fcf9764@redhat.com>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 6 Feb 2020 09:15:47 +0800
-Message-ID: <CALOAHbDaHifzkf8ZVBdNr60hkuke8aapsHwh8Fb9+BPJ5M==Uw@mail.gmail.com>
-Subject: Re: [PATCH] mm, memcg: fix build error around the usage of kmem_caches
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+References: <20200203232248.104733-1-almasrymina@google.com>
+ <20200203232248.104733-4-almasrymina@google.com> <cd457f80-2624-f524-36ce-f11b56b30f8a@oracle.com>
+In-Reply-To: <cd457f80-2624-f524-36ce-f11b56b30f8a@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Wed, 5 Feb 2020 17:43:43 -0800
+Message-ID: <CAHS8izONQEGMHJVR3cpgbn+LbYZ9eYa4jNkOwkCYwpGBHXHm8Q@mail.gmail.com>
+Subject: Re: [PATCH v11 4/9] hugetlb: disable region_add file_region coalescing
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>, penberg@kernel.org,
-        David Rientjes <rientjes@google.com>, iamjoonsoo.kim@lge.com,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+        open list <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 6, 2020 at 1:19 AM David Hildenbrand <david@redhat.com> wrote:
+On Wed, Feb 5, 2020 at 3:57 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
 >
-> On 05.02.20 18:03, Yafang Shao wrote:
-> > When I manually set default n to MEMCG_KMEM in init/Kconfig, bellow error
-> > occurs,
+> On 2/3/20 3:22 PM, Mina Almasry wrote:
+> > A follow up patch in this series adds hugetlb cgroup uncharge info the
+> > file_region entries in resv->regions. The cgroup uncharge info may
+> > differ for different regions, so they can no longer be coalesced at
+> > region_add time. So, disable region coalescing in region_add in this
+> > patch.
 > >
-> > mm/slab_common.c: In function 'memcg_slab_start':
-> > mm/slab_common.c:1530:30: error: 'struct mem_cgroup' has no member named
-> > 'kmem_caches'
-> >   return seq_list_start(&memcg->kmem_caches, *pos);
-> >                               ^
-> > mm/slab_common.c: In function 'memcg_slab_next':
-> > mm/slab_common.c:1537:32: error: 'struct mem_cgroup' has no member named
-> > 'kmem_caches'
-> >   return seq_list_next(p, &memcg->kmem_caches, pos);
-> >                                 ^
-> > mm/slab_common.c: In function 'memcg_slab_show':
-> > mm/slab_common.c:1551:16: error: 'struct mem_cgroup' has no member named
-> > 'kmem_caches'
-> >   if (p == memcg->kmem_caches.next)
-> >                 ^
-> >   CC      arch/x86/xen/smp.o
-> > mm/slab_common.c: In function 'memcg_slab_start':
-> > mm/slab_common.c:1531:1: warning: control reaches end of non-void function
-> > [-Wreturn-type]
-> >  }
-> >  ^
-> > mm/slab_common.c: In function 'memcg_slab_next':
-> > mm/slab_common.c:1538:1: warning: control reaches end of non-void function
-> > [-Wreturn-type]
-> >  }
-> >  ^
+> > Behavior change:
 > >
-> > That's because kmem_caches is defined only when CONFIG_MEMCG_KMEM is set,
-> > while memcg_slab_start() will use it no matter CONFIG_MEMCG_KMEM is defined
-> > or not.
+> > Say a resv_map exists like this [0->1], [2->3], and [5->6].
 > >
-> > By the way, the reason I mannuly undefined CONFIG_MEMCG_KMEM is to verify
-> > whether my some other code change is still stable when CONFIG_MEMCG_KMEM is
-> > not set. Unfortunately, the existing code has been already unstable since
-> > v4.11.
+> > Then a region_chg/add call comes in region_chg/add(f=0, t=5).
 > >
-> > Fixes: bc2791f857e1 ("slab: link memcg kmem_caches on their associated memory cgroup")
-> > Cc: Tejun Heo <tj@kernel.org>
-> > Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> > Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> > ---
-> >  mm/memcontrol.c  | 2 ++
-> >  mm/slab_common.c | 2 +-
-> >  2 files changed, 3 insertions(+), 1 deletion(-)
+> > Old code would generate resv->regions: [0->5], [5->6].
+> > New code would generate resv->regions: [0->1], [1->2], [2->3], [3->5],
+> > [5->6].
 > >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 6f6dc8712e39..43f0125b45bb 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -4723,6 +4723,7 @@ static struct cftype mem_cgroup_legacy_files[] = {
-> >               .write = mem_cgroup_reset,
-> >               .read_u64 = mem_cgroup_read_u64,
-> >       },
-> > +#ifdef CONFIG_MEMCG_KMEM
-> >  #if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
+> > Special care needs to be taken to handle the resv->adds_in_progress
+> > variable correctly. In the past, only 1 region would be added for every
+> > region_chg and region_add call. But now, each call may add multiple
+> > regions, so we can no longer increment adds_in_progress by 1 in region_chg,
+> > or decrement adds_in_progress by 1 after region_add or region_abort. Instead,
+> > region_chg calls add_reservation_in_range() to count the number of regions
+> > needed and allocates those, and that info is passed to region_add and
+> > region_abort to decrement adds_in_progress correctly.
+> >
+> > We've also modified the assumption that region_add after region_chg
+> > never fails. region_chg now pre-allocates at least 1 region for
+> > region_add. If region_add needs more regions than region_chg has
+> > allocated for it, then it may fail.
+> >
+> > Signed-off-by: Mina Almasry <almasrymina@google.com>
+> > Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
 >
-> Not sure if
->
-> #if defined(CONFIG_MEMCG_KMEM) && \
->     (defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
->
-> is preffered
+> This is the same as the previous version.  My late comment was that we
+> need to rethink the disabling of region coalescing.  This is especially
+> important for private mappings where there will be one region for huge
+> page.  I know that you are working on this issue.  Please remove my
+> Reviewed-by: when sending out the next version.
 >
 
-Seems better. Thanks for your suggestion.
+Yes to address that there is a new patch in the series, which
+re-enables the coalescing when the hugetlb cgroup uncharge info is the
+same. I guess it could be squashed with this one but I thought it was
+better to implement that patch on top of the patch that enabled shared
+accounting, because that is the patch that sets hugetlb cgroup info on
+the file region entries.
 
-Thanks
-Yafang
+Let me know what you think.
+
+> Thanks,
+> --
+> Mike Kravetz
