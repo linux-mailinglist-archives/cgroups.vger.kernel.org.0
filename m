@@ -2,139 +2,136 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 25D39153DB7
-	for <lists+cgroups@lfdr.de>; Thu,  6 Feb 2020 04:49:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 866CC153EB6
+	for <lists+cgroups@lfdr.de>; Thu,  6 Feb 2020 07:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727662AbgBFDtz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 5 Feb 2020 22:49:55 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:37246 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727572AbgBFDtz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 5 Feb 2020 22:49:55 -0500
-Received: by mail-qk1-f196.google.com with SMTP id 21so4223372qky.4
-        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 19:49:55 -0800 (PST)
+        id S1727842AbgBFGYp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 6 Feb 2020 01:24:45 -0500
+Received: from mail-pg1-f194.google.com ([209.85.215.194]:44949 "EHLO
+        mail-pg1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727787AbgBFGYp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 6 Feb 2020 01:24:45 -0500
+Received: by mail-pg1-f194.google.com with SMTP id g3so2208638pgs.11
+        for <cgroups@vger.kernel.org>; Wed, 05 Feb 2020 22:24:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lca.pw; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxANxXZU2Rk08XG2GluKfdDTwnG/dy9QREjJ+P1sSFM=;
-        b=MLKCqRTIDJqkhl7bnIkVnVSnJFpwKsqgEiDQwlNrFCQVi5/4n8Qxyk9uCiV+BL7lvm
-         GrJojoMdU/xDt+4HbWyb3xfWCz3ssFMhOMWLJV2yL6WiMUpfdbbGkOXvQklllnl0mfND
-         DqhPzDIeVzszTkvquwmJfmcs4hilCFBaVzcU290i8Zfsyf+D7saadnUkDOwXZio+y8ik
-         +d6N2a2XpmVwP/qN2gyVaLF8WlaSGWDayMvsCvAnO554cPyrGo9wBQeE0gYtyuWhpxF2
-         TgVi4G1D/l6fv7/2d4ENp1YAmAl0tHCXJBdP84QD7Un0/bVKY4m7IM5/VRduP+vfrVde
-         /KRw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=/1bdNiZJIydaWvbrtyH2cphn9JXElXk4UNnoRdYAoVM=;
+        b=S6UT1M/BpxTAsLy7VAYYrV0XE+HCnpjf5/tIb0M/BJzc81azLQsQPDULX4l0jBQ+x+
+         knwojt+ABNutej6LLsdLCsKPksWVNt2QlTOXd6+WbqV9WIVBSIFD7y431wcnyqsAfJMx
+         9AodrNAaKaHcGtFzrH5aix931reqqGQ1AWMObD+kF23tdZ9kGKmaI4mtRdHo6wtyxFj5
+         ueUJh4NEMVWAyRS3+o9fmYyrTda2YfgThtZZrOPbEGrWxUPLbgH7W2MyivYCaa6TG7g3
+         9u21VuOWj88Qb6P54JNHEtviAFqUaydn47sxv8sOdFEr1bUdBU1MVv2aJQhPIx1MJFkB
+         FRfA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jxANxXZU2Rk08XG2GluKfdDTwnG/dy9QREjJ+P1sSFM=;
-        b=HWkxlTFFfmADbYBMAP3IXID3PSHBKuPnMNuNAwqpsQ4tV9FAFXjRWuh/PIjE7ShTXs
-         2GjYq+u4CJDhKuVKuB5/mHXYAYjZ7+Ai/AoRWfKxEqLKK0AtwZ/OVeZrf95ubXLLEtRY
-         TDFuQnfz7Ectzrm9mf+c9J+gBE4Q263TPILOweanvzZed5RmufPWJKKFYy9drpNDYWYO
-         nt5aMMFCUXQIVCmhIO8ikW3CJLvnBxZGFkiVKtUZYynh95S+623W1TcnHZqCxbBlNOQl
-         PvwiAS5LY0BhdMyV+IOQnVAkdkp4VkHbR4tvtYjerjsCmbYDIcvX1VqgZR58+XE7jNKK
-         kWNA==
-X-Gm-Message-State: APjAAAXnv3hYrOvuSFVL1r4ZB4flKI/YOzg0037e10eZgCSX5ovhFraQ
-        GRtkuo4Wphg1JRmqdRkuFg7yUg==
-X-Google-Smtp-Source: APXvYqymOeTH53oOrgC3D/ksozhvjOxvOHWHxZkJqVLIUdwJiCdAeHCXvM6a0syHyqAcF4IUEyfPsg==
-X-Received: by 2002:a37:9c0f:: with SMTP id f15mr816980qke.297.1580960994405;
-        Wed, 05 Feb 2020 19:49:54 -0800 (PST)
-Received: from ovpn-120-236.rdu2.redhat.com (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id x16sm811123qki.110.2020.02.05.19.49.53
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=/1bdNiZJIydaWvbrtyH2cphn9JXElXk4UNnoRdYAoVM=;
+        b=r+ivLTSDeSh3JZXcf7bYuWoKzjYk3bIrIg53F5113WcdwiCTz6pkqwQw28OCWcoAhw
+         8oiFuAYXuk1OQWERK5PRxE5NGYVzpoPAQySHRkrM3KFLJDiSXABG3X2iZ9wTd2GdfEPH
+         TIZIguJJcN1BMF7MzvbHCOvLSWiyuTUJMUoyFbJL8XAMeTRYAMcXZZSrJknZ7wS2PhZ0
+         /4p+7sTr8xpXUB66PJHukEwT4iUhVXEE7//e5Tyvfy5vbsZYDdwd91bsMz+mohv8odB/
+         8mNM9AsmNPSDyDYFUv1MO7fvNcr1t2/aE15gHg+hSJd+dcBwvD+4PlgNw8Mgd2YMbYxK
+         bZhQ==
+X-Gm-Message-State: APjAAAWxt03pX9an06ML6onjJb3JcKS2VXk8QI7McX4NUwSHmNc+aup5
+        kpOxg0FnJrh1Zk9kvALRUQM=
+X-Google-Smtp-Source: APXvYqwIakWMoDr+aJ+5xLAxwuk0XHTwsxRnX3XgoW2voWoUAyyMSlo5Ll/Q/fokLjEGKMb+jxXcLg==
+X-Received: by 2002:a63:2782:: with SMTP id n124mr1940907pgn.188.1580970284570;
+        Wed, 05 Feb 2020 22:24:44 -0800 (PST)
+Received: from dev.localdomain ([203.100.54.194])
+        by smtp.gmail.com with ESMTPSA id i68sm1644186pfe.173.2020.02.05.22.24.40
         (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 Feb 2020 19:49:53 -0800 (PST)
-From:   Qian Cai <cai@lca.pw>
-To:     akpm@linux-foundation.org
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Qian Cai <cai@lca.pw>
-Subject: [PATCH] mm/memcontrol: fix a data race in scan count
-Date:   Wed,  5 Feb 2020 22:49:45 -0500
-Message-Id: <20200206034945.2481-1-cai@lca.pw>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122.2)
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Wed, 05 Feb 2020 22:24:43 -0800 (PST)
+From:   Yafang Shao <laoar.shao@gmail.com>
+To:     david@redhat.com, tj@kernel.org, vdavydov.dev@gmail.com
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, akpm@linux-foundation.org,
+        cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Yafang Shao <laoar.shao@gmail.com>
+Subject: [PATCH v2] mm, memcg: fix build error around the usage of kmem_caches
+Date:   Thu,  6 Feb 2020 01:24:20 -0500
+Message-Id: <1580970260-2045-1-git-send-email-laoar.shao@gmail.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-struct mem_cgroup_per_node mz.lru_zone_size[zone_idx][lru] could be
-accessed concurrently as noticed by KCSAN,
+When I manually set default n to MEMCG_KMEM in init/Kconfig, bellow error
+occurs,
 
- BUG: KCSAN: data-race in lruvec_lru_size / mem_cgroup_update_lru_size
+mm/slab_common.c: In function 'memcg_slab_start':
+mm/slab_common.c:1530:30: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  return seq_list_start(&memcg->kmem_caches, *pos);
+                              ^
+mm/slab_common.c: In function 'memcg_slab_next':
+mm/slab_common.c:1537:32: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  return seq_list_next(p, &memcg->kmem_caches, pos);
+                                ^
+mm/slab_common.c: In function 'memcg_slab_show':
+mm/slab_common.c:1551:16: error: 'struct mem_cgroup' has no member named
+'kmem_caches'
+  if (p == memcg->kmem_caches.next)
+                ^
+  CC      arch/x86/xen/smp.o
+mm/slab_common.c: In function 'memcg_slab_start':
+mm/slab_common.c:1531:1: warning: control reaches end of non-void function
+[-Wreturn-type]
+ }
+ ^
+mm/slab_common.c: In function 'memcg_slab_next':
+mm/slab_common.c:1538:1: warning: control reaches end of non-void function
+[-Wreturn-type]
+ }
+ ^
 
- write to 0xffff9c804ca285f8 of 8 bytes by task 50951 on cpu 12:
-  mem_cgroup_update_lru_size+0x11c/0x1d0
-  mem_cgroup_update_lru_size at mm/memcontrol.c:1266
-  isolate_lru_pages+0x6a9/0xf30
-  shrink_active_list+0x123/0xcc0
-  shrink_lruvec+0x8fd/0x1380
-  shrink_node+0x317/0xd80
-  do_try_to_free_pages+0x1f7/0xa10
-  try_to_free_pages+0x26c/0x5e0
-  __alloc_pages_slowpath+0x458/0x1290
-  __alloc_pages_nodemask+0x3bb/0x450
-  alloc_pages_vma+0x8a/0x2c0
-  do_anonymous_page+0x170/0x700
-  __handle_mm_fault+0xc9f/0xd00
-  handle_mm_fault+0xfc/0x2f0
-  do_page_fault+0x263/0x6f9
-  page_fault+0x34/0x40
+That's because kmem_caches is defined only when CONFIG_MEMCG_KMEM is set,
+while memcg_slab_start() will use it no matter CONFIG_MEMCG_KMEM is defined
+or not.
 
- read to 0xffff9c804ca285f8 of 8 bytes by task 50964 on cpu 95:
-  lruvec_lru_size+0xbb/0x270
-  mem_cgroup_get_zone_lru_size at include/linux/memcontrol.h:536
-  (inlined by) lruvec_lru_size at mm/vmscan.c:326
-  shrink_lruvec+0x1d0/0x1380
-  shrink_node+0x317/0xd80
-  do_try_to_free_pages+0x1f7/0xa10
-  try_to_free_pages+0x26c/0x5e0
-  __alloc_pages_slowpath+0x458/0x1290
-  __alloc_pages_nodemask+0x3bb/0x450
-  alloc_pages_current+0xa6/0x120
-  alloc_slab_page+0x3b1/0x540
-  allocate_slab+0x70/0x660
-  new_slab+0x46/0x70
-  ___slab_alloc+0x4ad/0x7d0
-  __slab_alloc+0x43/0x70
-  kmem_cache_alloc+0x2c3/0x420
-  getname_flags+0x4c/0x230
-  getname+0x22/0x30
-  do_sys_openat2+0x205/0x3b0
-  do_sys_open+0x9a/0xf0
-  __x64_sys_openat+0x62/0x80
-  do_syscall_64+0x91/0xb47
-  entry_SYSCALL_64_after_hwframe+0x49/0xbe
+By the way, the reason I mannuly undefined CONFIG_MEMCG_KMEM is to verify
+whether my some other code change is still stable when CONFIG_MEMCG_KMEM is
+not set. Unfortunately, the existing code has been already unstable since
+v4.11.
 
- Reported by Kernel Concurrency Sanitizer on:
- CPU: 95 PID: 50964 Comm: cc1 Tainted: G        W  O L    5.5.0-next-20200204+ #6
- Hardware name: HPE ProLiant DL385 Gen10/ProLiant DL385 Gen10, BIOS A40 07/10/2019
-
-The write is under lru_lock, but the read is done as lockless. The scan
-count is used to determine how aggressively the anon and file LRU lists
-should be scanned. Load tearing could generate an inefficient heuristic,
-so fix it by adding READ_ONCE() for the read.
-
-Signed-off-by: Qian Cai <cai@lca.pw>
+Fixes: bc2791f857e1 ("slab: link memcg kmem_caches on their associated memory cgroup")
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
 ---
- include/linux/memcontrol.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ mm/memcontrol.c  | 3 ++-
+ mm/slab_common.c | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index a7a0a1a5c8d5..e8734dabbc61 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -533,7 +533,7 @@ unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
- 	struct mem_cgroup_per_node *mz;
- 
- 	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
--	return mz->lru_zone_size[zone_idx][lru];
-+	return READ_ONCE(mz->lru_zone_size[zone_idx][lru]);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6f6dc8712e39..a94b1a737bc0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4723,7 +4723,8 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 		.write = mem_cgroup_reset,
+ 		.read_u64 = mem_cgroup_read_u64,
+ 	},
+-#if defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG)
++#if defined(CONFIG_MEMCG_KMEM) && \
++	(defined(CONFIG_SLAB) || defined(CONFIG_SLUB_DEBUG))
+ 	{
+ 		.name = "kmem.slabinfo",
+ 		.seq_start = memcg_slab_start,
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index 1907cb2903c7..5282f881d2f5 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -1521,7 +1521,7 @@ void dump_unreclaimable_slab(void)
+ 	mutex_unlock(&slab_mutex);
  }
  
- void mem_cgroup_handle_over_high(void);
+-#if defined(CONFIG_MEMCG)
++#if defined(CONFIG_MEMCG_KMEM)
+ void *memcg_slab_start(struct seq_file *m, loff_t *pos)
+ {
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
 -- 
-2.21.0 (Apple Git-122.2)
+2.14.1
 
