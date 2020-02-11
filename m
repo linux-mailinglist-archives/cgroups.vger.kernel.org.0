@@ -2,74 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id C8AA0158D93
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 12:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A2331590BF
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 14:54:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727778AbgBKLcb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Feb 2020 06:32:31 -0500
-Received: from relay.sw.ru ([185.231.240.75]:54258 "EHLO relay.sw.ru"
+        id S1729821AbgBKNyv convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Tue, 11 Feb 2020 08:54:51 -0500
+Received: from mail.kernel.org ([198.145.29.99]:50760 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727692AbgBKLcb (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 11 Feb 2020 06:32:31 -0500
-Received: from dhcp-172-16-24-104.sw.ru ([172.16.24.104])
-        by relay.sw.ru with esmtp (Exim 4.92.3)
-        (envelope-from <ktkhai@virtuozzo.com>)
-        id 1j1Tlz-0007Lf-8u; Tue, 11 Feb 2020 14:32:11 +0300
-Subject: Re: [PATCH] memcg: lost css_put in memcg_expand_shrinker_maps()
-To:     Vasily Averin <vvs@virtuozzo.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-References: <c98414fb-7e1f-da0f-867a-9340ec4bd30b@virtuozzo.com>
-From:   Kirill Tkhai <ktkhai@virtuozzo.com>
-Message-ID: <995ffe9f-14c6-39ea-31b9-52194fa1da54@virtuozzo.com>
-Date:   Tue, 11 Feb 2020 14:32:10 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.2
+        id S1729598AbgBKNyr (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 11 Feb 2020 08:54:47 -0500
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 716F8214DB;
+        Tue, 11 Feb 2020 13:54:45 +0000 (UTC)
+Date:   Tue, 11 Feb 2020 08:54:43 -0500
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     =?UTF-8?B?546L6LSH?= <yun.wang@linux.alibaba.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        "open list:SCHEDULER" <linux-kernel@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+Subject: Re: [RFC] why can't dynamic isolation just like the static way
+Message-ID: <20200211085443.2a112c03@gandalf.local.home>
+In-Reply-To: <fed10a26-7423-23b5-316c-c74d354870dd@linux.alibaba.com>
+References: <fed10a26-7423-23b5-316c-c74d354870dd@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <c98414fb-7e1f-da0f-867a-9340ec4bd30b@virtuozzo.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11.02.2020 14:20, Vasily Averin wrote:
-> for_each_mem_cgroup() increases css reference counter for memory cgroup
-> and requires to use mem_cgroup_iter_break() if the walk is cancelled.
-> 
-> Cc: stable@vger.kernel.org
-> Fixes commit 0a4465d34028("mm, memcg: assign memcg-aware shrinkers bitmap to memcg")
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-Acked-by: Kirill Tkhai <ktkhai@virtuozzo.com>
+You forgot to include the cgroup maintainers.
 
-Thanks!
+-- Steve
 
-> ---
->  mm/memcontrol.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+
+On Tue, 11 Feb 2020 16:17:34 +0800
+王贇 <yun.wang@linux.alibaba.com> wrote:
+
+> Hi, folks
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6c83cf4..e2da615 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -409,8 +409,10 @@ int memcg_expand_shrinker_maps(int new_id)
->  		if (mem_cgroup_is_root(memcg))
->  			continue;
->  		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
-> -		if (ret)
-> +		if (ret) {
-> +			mem_cgroup_iter_break(NULL, memcg);
->  			goto unlock;
-> +		}
->  	}
->  unlock:
->  	if (!ret)
+> We are dealing with isolcpus these days and try to do the isolation
+> dynamically.
 > 
+> The kernel doc lead us into the cpuset.sched_load_balance, it's fine
+> to achieve the dynamic isolation with it, however we got problem with
+> the systemd stuff.
+> 
+> It's keeping create cgroup with sched_load_balance enabled on default,
+> while the cpus are overlapped with the isolated ones, which lead into
+> sched domain rebuild and these cpus become non-isolated.
+> 
+> We're just looking forward an easy way to dynamic isolate some cpus,
+> just like the isolation parameter, but sched_load_balance forcing us
+> to dealing with the management of cgroups, we really don't get the
+> point in here...
+> 
+> Why do we have to mix the isolation with cgroups? Why not just provide
+> a proc entry to read cpumask and rebuild the domains?
+> 
+> Please let us know if there is any good reason to make the dynamic
+> isolation in that way, appreciated in advance :-)
+> 
+> Regards,
+> Michael Wang
 
