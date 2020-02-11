@@ -2,53 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2E81587BD
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 02:10:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DFBA158D70
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 12:20:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727665AbgBKBKZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 10 Feb 2020 20:10:25 -0500
-Received: from mail.kernel.org ([198.145.29.99]:59872 "EHLO mail.kernel.org"
+        id S1728219AbgBKLUf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Feb 2020 06:20:35 -0500
+Received: from relay.sw.ru ([185.231.240.75]:53864 "EHLO relay.sw.ru"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727641AbgBKBKZ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 10 Feb 2020 20:10:25 -0500
-Subject: Re: [GIT PULL] cgroup fix for v5.6-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1581383425;
-        bh=guCa2llgRydWfRl+c7oA1nbkgyMewINUy/9UmgXfW5E=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=cjj1Yopaow2AIBEyw7jSrcBzsAtrcznLw5WuhPfwESJNNd/OFCLehxY6AwMChwevL
-         Fvt3UWMWykSN2DdIbC5b2wFbKw2haJZysOQHcw3Bi+E5SZ3uSs8kqN0qjBS3BUBJ7+
-         ZCoxD/Nr+/c1u359mDekzkZ/05Ix+MrHMsaVEQas=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20200210225512.GA9161@mtj.thefacebook.com>
-References: <20200210225512.GA9161@mtj.thefacebook.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20200210225512.GA9161@mtj.thefacebook.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.6-fixes
-X-PR-Tracked-Commit-Id: 0cd9d33ace336bc424fc30944aa3defd6786e4fe
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0a679e13ea30f85a1aef0669ee0c5a9fd7860b34
-Message-Id: <158138342496.12297.2527992854131955626.pr-tracker-bot@kernel.org>
-Date:   Tue, 11 Feb 2020 01:10:24 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org
+        id S1728165AbgBKLUe (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 11 Feb 2020 06:20:34 -0500
+Received: from vvs-ws.sw.ru ([172.16.24.21])
+        by relay.sw.ru with esmtp (Exim 4.92.3)
+        (envelope-from <vvs@virtuozzo.com>)
+        id 1j1TaN-0007J1-JY; Tue, 11 Feb 2020 14:20:12 +0300
+From:   Vasily Averin <vvs@virtuozzo.com>
+Subject: [PATCH] memcg: lost css_put in memcg_expand_shrinker_maps()
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Message-ID: <c98414fb-7e1f-da0f-867a-9340ec4bd30b@virtuozzo.com>
+Date:   Tue, 11 Feb 2020 14:20:10 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Mon, 10 Feb 2020 17:55:12 -0500:
+for_each_mem_cgroup() increases css reference counter for memory cgroup
+and requires to use mem_cgroup_iter_break() if the walk is cancelled.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.6-fixes
+Cc: stable@vger.kernel.org
+Fixes commit 0a4465d34028("mm, memcg: assign memcg-aware shrinkers bitmap to memcg")
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0a679e13ea30f85a1aef0669ee0c5a9fd7860b34
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+---
+ mm/memcontrol.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-Thank you!
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6c83cf4..e2da615 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -409,8 +409,10 @@ int memcg_expand_shrinker_maps(int new_id)
+ 		if (mem_cgroup_is_root(memcg))
+ 			continue;
+ 		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
+-		if (ret)
++		if (ret) {
++			mem_cgroup_iter_break(NULL, memcg);
+ 			goto unlock;
++		}
+ 	}
+ unlock:
+ 	if (!ret)
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.wiki.kernel.org/userdoc/prtracker
+1.8.3.1
+
