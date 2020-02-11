@@ -2,145 +2,193 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 189C3159225
-	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 15:44:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E8C3159552
+	for <lists+cgroups@lfdr.de>; Tue, 11 Feb 2020 17:47:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730240AbgBKOop (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Feb 2020 09:44:45 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:23004 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727728AbgBKOop (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Feb 2020 09:44:45 -0500
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 01BEibMc019066;
-        Tue, 11 Feb 2020 06:44:40 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=898GNIYJYiCvxqLwhhSO7pZniKBGW1/77sws03+Vo/o=;
- b=hEWH7kaFExfm/zUnj507655AaP9x3dZlggEInPKOfljx8ZauVJ8Y4d35MCWPmpYw+7GN
- lHhqzEHITYOLqYeWGpKqXbBcjhbx5s0nDfd+crnQJo91VjzpdC+weA6aiWS8LuULh3XH
- QCdxxo0qvk5JHdnPuDVEbvDaAI5iU7rCl1s= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2y1ucuwy1t-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 11 Feb 2020 06:44:39 -0800
-Received: from NAM04-BN3-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Tue, 11 Feb 2020 06:44:09 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iJKZq1TpRSk7+CDkU6E3byTczC3y2TzLHAG/uGHYro8wjnSQNvcXivjlOFhIqTE8ZMWbf6gb/Xjjph3k2N4o+zjAbOR35jOvNqfZO3KBIyjVzIwAJblVvHBCP1iy4u/GsoNxHUUVIFzmUP+cN+/Bj4nPEVp35hZpOALi8ANWymgClARDpA7eURjLbOW74LmQAKwa82l235VB5yoeV2wKToIYrdvwKCZnRnN85NbehD0tr3+NfJBPyRlRfmEKxwSdQJ2/e0PGELLRb2aSjtHmKn/k+GmIO+P1MFZGAyEwcIEUYJtALBoOgg61Or/lwgv4aiFdaEO93S+6HWktBCvp7g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=898GNIYJYiCvxqLwhhSO7pZniKBGW1/77sws03+Vo/o=;
- b=WS/NqLtMeITHwhBaLYn11zhCV1hMUmk4NnIOy3GLVnzTeFypFRfUuXwLap35FEaixcxWcbNEktf+PKlBnwRLLR7b91VxhJgUve9k3ICpyb80cf3TWutVAwRfT6msdsfViZlZOB07qq7FE+fLpusbT33c52/4een/C0enAYYTQq4QPjOHiP8OSW1jM3hIyWtqVmiGmHZp2mE894krR0RCFkPopAkMd626iiG43+gVOT6cYkTOueMVNooDBqF7F8ukKuO7waO5B9ShPboWrRiKGOjVYfBL5ZR1UXXZ7qQbi+AKWlU9UUvmmpCPQKS6PzvWhFxvrhhoi1VyQ94zbdoQ8A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=898GNIYJYiCvxqLwhhSO7pZniKBGW1/77sws03+Vo/o=;
- b=PRK9wpjp32GGpnjmCOX3Xnv2J2D7h42S/QfStXYrZYmvSTlz377kqWZFVTF4ydHkaHp3apT9Zvru/qI9pk89SUhEfDk5Aa+XXB6Z5jp0Oddct1EZQkGA2YHaY5N+9CP0NgfpvrmEQkBKT36/k69S1H257CKy6wrO123WoSCLilw=
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.155.147) by
- BYAPR15MB2293.namprd15.prod.outlook.com (52.135.194.13) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2707.26; Tue, 11 Feb 2020 14:44:08 +0000
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::ccb6:a331:77d8:d308]) by BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::ccb6:a331:77d8:d308%7]) with mapi id 15.20.2707.030; Tue, 11 Feb 2020
- 14:44:08 +0000
-Date:   Tue, 11 Feb 2020 06:44:04 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH] memcg: lost css_put in memcg_expand_shrinker_maps()
-Message-ID: <20200211144404.GB480760@tower.DHCP.thefacebook.com>
-References: <c98414fb-7e1f-da0f-867a-9340ec4bd30b@virtuozzo.com>
+        id S1729881AbgBKQr6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Feb 2020 11:47:58 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:39803 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728188AbgBKQr6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Feb 2020 11:47:58 -0500
+Received: by mail-wm1-f65.google.com with SMTP id c84so4418455wme.4;
+        Tue, 11 Feb 2020 08:47:57 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=CMl+mRO9Zvf2SDJ75RJRDZjMrbhk+aBHXg/UK4B09DA=;
+        b=dChStUK8diMq2NGB+3sU0pNMSbHY4g8JxRBOwn5oxx2J07qo9MeLYByf3n2AYIWRFr
+         RizTB4uBHV/59FlSEW3G5ZfUNi8AvMm2Qxng4EhZXH8bHw0rZ9dlq7PTV5g4S2R4SWXY
+         fOtUnLqRP/0xV1+Xxwz8ReYJiNeDJHZ58J9JV2GPNPlitMCdz8WH3pPp5tBiTH2KvIOy
+         LocKwZIrMfFyMe6qnSpeD2Q2U5YdGYqZ/btVr78opI43VCF7CEWcyLQF/6DcUPdXbIaj
+         4WP981yYPv/AKOSUZRWPj5V2bySp9w+l2bojOgr6ao6jGrA9JgD4nk59HXleEbYE+Lr8
+         sOSA==
+X-Gm-Message-State: APjAAAVijj2Mrx3D+YElmZOGTWyWaXtqHqDRS4/cie6JTBUDbSKHQchA
+        n0RPlk7Qx7ad3CMPb++tdf83tBld
+X-Google-Smtp-Source: APXvYqyRmpnV0x90UnxeJU/1d5i6cXU6wvw0RqwIVycsFRl5ODFQlgFraCMrIyXLjxV9s936/PfKjA==
+X-Received: by 2002:a1c:b603:: with SMTP id g3mr6892696wmf.133.1581439676118;
+        Tue, 11 Feb 2020 08:47:56 -0800 (PST)
+Received: from localhost (ip-37-188-227-72.eurotel.cz. [37.188.227.72])
+        by smtp.gmail.com with ESMTPSA id x11sm4418883wmg.46.2020.02.11.08.47.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Feb 2020 08:47:55 -0800 (PST)
+Date:   Tue, 11 Feb 2020 17:47:53 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 3/3] mm: memcontrol: recursive memory.low protection
+Message-ID: <20200211164753.GQ10636@dhcp22.suse.cz>
+References: <20191219200718.15696-1-hannes@cmpxchg.org>
+ <20191219200718.15696-4-hannes@cmpxchg.org>
+ <20200130170020.GZ24244@dhcp22.suse.cz>
+ <20200203215201.GD6380@cmpxchg.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c98414fb-7e1f-da0f-867a-9340ec4bd30b@virtuozzo.com>
-X-ClientProxiedBy: MWHPR13CA0028.namprd13.prod.outlook.com
- (2603:10b6:300:95::14) To BYAPR15MB2631.namprd15.prod.outlook.com
- (2603:10b6:a03:150::19)
-MIME-Version: 1.0
-Received: from tower.DHCP.thefacebook.com (2620:10d:c090:200::bfd8) by MWHPR13CA0028.namprd13.prod.outlook.com (2603:10b6:300:95::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.14 via Frontend Transport; Tue, 11 Feb 2020 14:44:07 +0000
-X-Originating-IP: [2620:10d:c090:200::bfd8]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a5c95efd-68f3-4d04-c342-08d7af00d9b5
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2293:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB229344813438A1463B1927B7BE180@BYAPR15MB2293.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1284;
-X-Forefront-PRVS: 0310C78181
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(376002)(366004)(39860400002)(136003)(346002)(396003)(189003)(199004)(6916009)(52116002)(9686003)(7696005)(316002)(2906002)(478600001)(16526019)(86362001)(4744005)(186003)(4326008)(66556008)(66476007)(66946007)(6506007)(33656002)(5660300002)(6666004)(1076003)(55016002)(54906003)(81156014)(8676002)(8936002)(81166006);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2293;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lVdRHvgG/WSo51r2htXHUwuBE045EDN9kFRbbR6uByc9zPuxdyHdVyQ8xPXaCOmngKqwMlwPVl9OVSa2Zw+cJP4Z/Vc8JmmLa1MD6R7DzZ36yuAd1gvmGtkVfRWiu6MnCknrPLO8qWXaMwSGdH+fyfqW89kdpvFiT62vJwXX17L+Tkn5e1UMoMmDonnNeVoxSWtUYn4Z68mH5wnTgRQfnDsH3qsGiZTwptfwfBo4DbSv2/ws/j3BJeZqkg6+zLcEC0N/7w/H647wqFQGSJHid84UQLiIyNUKkCbNu51xXyR7etm+RRdv3+ubIQ9/BdZwd5l452P5w4lTVN26haNdpqWf+aRSwJQlpv+U873F6nMHUlE+kPkzloW2JeOwHPda4YARXozKv06EPlj6HurGztzz/TI2Ktu9H7MmKXdTyclvvFJJYsvscd6jJLmxwBka
-X-MS-Exchange-AntiSpam-MessageData: 3ojg/oXu3wxMkgX4TvYCx5IR6f5P9xP+8Ij0aMef1QnymGbmAaZJYkGiSVZ24N3Ut864mRXOZJBTr/TCtsxSvSCxtgNNK/S3veKm8XHPGhS0+dy/piQMr48c/MGEdcSMrXBHWdmND/dw/AddwblEEk49CVwgOCcRiGo1qywTAnU=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a5c95efd-68f3-4d04-c342-08d7af00d9b5
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Feb 2020 14:44:08.6911
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3VHlS1HsCaLjFMf7HEQpQdWjf1g3uidq/0z1XUikFh1f+CdQ/0pnPFvHJntT3IU7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2293
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-11_04:2020-02-10,2020-02-11 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- impostorscore=0 malwarescore=0 mlxlogscore=978 mlxscore=0 suspectscore=1
- lowpriorityscore=0 phishscore=0 bulkscore=0 clxscore=1011 spamscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2002110111
-X-FB-Internal: deliver
+In-Reply-To: <20200203215201.GD6380@cmpxchg.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 11, 2020 at 02:20:10PM +0300, Vasily Averin wrote:
-> for_each_mem_cgroup() increases css reference counter for memory cgroup
-> and requires to use mem_cgroup_iter_break() if the walk is cancelled.
+On Mon 03-02-20 16:52:01, Johannes Weiner wrote:
+> On Thu, Jan 30, 2020 at 06:00:20PM +0100, Michal Hocko wrote:
+> > On Thu 19-12-19 15:07:18, Johannes Weiner wrote:
+> > > Right now, the effective protection of any given cgroup is capped by
+> > > its own explicit memory.low setting, regardless of what the parent
+> > > says. The reasons for this are mostly historical and ease of
+> > > implementation: to make delegation of memory.low safe, effective
+> > > protection is the min() of all memory.low up the tree.
+> > > 
+> > > Unfortunately, this limitation makes it impossible to protect an
+> > > entire subtree from another without forcing the user to make explicit
+> > > protection allocations all the way to the leaf cgroups - something
+> > > that is highly undesirable in real life scenarios.
+> > > 
+> > > Consider memory in a data center host. At the cgroup top level, we
+> > > have a distinction between system management software and the actual
+> > > workload the system is executing. Both branches are further subdivided
+> > > into individual services, job components etc.
+> > > 
+> > > We want to protect the workload as a whole from the system management
+> > > software, but that doesn't mean we want to protect and prioritize
+> > > individual workload wrt each other. Their memory demand can vary over
+> > > time, and we'd want the VM to simply cache the hottest data within the
+> > > workload subtree. Yet, the current memory.low limitations force us to
+> > > allocate a fixed amount of protection to each workload component in
+> > > order to get protection from system management software in
+> > > general. This results in very inefficient resource distribution.
+> > 
+> > I do agree that configuring the reclaim protection is not an easy task.
+> > Especially in a deeper reclaim hierarchy. systemd tends to create a deep
+> > and commonly shared subtrees. So having a protected workload really
+> > requires to be put directly into a new first level cgroup in practice
+> > AFAICT. That is a simpler example though. Just imagine you want to
+> > protect a certain user slice.
 > 
-> Cc: stable@vger.kernel.org
-> Fixes commit 0a4465d34028("mm, memcg: assign memcg-aware shrinkers bitmap to memcg")
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+> Can you elaborate a bit on this? I don't quite understand the two
+> usecases you are contrasting here.
 
-Reviewed-by: Roman Gushchin <guro@fb.com>
-
-Thank you!
-
-> ---
->  mm/memcontrol.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+Essentially this is about two different usecases. The first one is about
+protecting a hierarchy and spreading the protection among different
+workloads and the second is how to protect an inner memcg without
+configuring protection all the way up the hierarchy.
+ 
+> > You seem to be facing a different problem though IIUC. You know how much
+> > memory you want to protect and you do not have to care about the cgroup
+> > hierarchy up but you do not know/care how to distribute that protection
+> > among workloads running under that protection. I agree that this is a
+> > reasonable usecase.
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6c83cf4..e2da615 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -409,8 +409,10 @@ int memcg_expand_shrinker_maps(int new_id)
->  		if (mem_cgroup_is_root(memcg))
->  			continue;
->  		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
-> -		if (ret)
-> +		if (ret) {
-> +			mem_cgroup_iter_break(NULL, memcg);
->  			goto unlock;
-> +		}
->  	}
->  unlock:
->  	if (!ret)
-> -- 
-> 1.8.3.1
+> I'm not sure I'm parsing this right, but the use case is this:
 > 
+> When I'm running a multi-component workload on a host without any
+> cgrouping, the individual components compete over the host's memory
+> based on rate of allocation, how often they reference their memory and
+> so forth. It's a need-based distribution of pages, and the weight can
+> change as demand changes throughout the life of the workload.
+> 
+> If I now stick several of such workloads into a containerized
+> environment, I want to use memory.low to assign each workload as a
+> whole a chunk of memory it can use - I don't want to assign fixed-size
+> subchunks to each individual component of each workload! I want the
+> same free competition *within* the workload while setting clear rules
+> for competition *between* the different workloads.
+
+Yeah, that matches my understanding of the problem your are trying to
+solve here.
+> 
+> [ What I can do today to achieve this is disable the memory controller
+>   for the subgroups. When I do this, all pages of the workload are on
+>   one single LRU that is protected by one single memory.low.
+> 
+>   But obviously I lose any detailed accounting as well.
+> 
+>   This patch allows me to have the same recursive protection semantics
+>   while retaining accounting. ]
+> 
+> > Those both problems however show that we have a more general
+> > configurability problem for both leaf and intermediate nodes. They are
+> > both a result of strong requirements imposed by delegation as you have
+> > noted above. I am thinking didn't we just go too rigid here?
+> 
+> The requirement for delegation is that child groups cannot claim more
+> than the parent affords. Is that the restriction you are referring to?
+
+yes.
+
+> > Delegation points are certainly a security boundary and they should
+> > be treated like that but do we really need a strong containment when
+> > the reclaim protection is under admin full control? Does the admin
+> > really have to reconfigure a large part of the hierarchy to protect a
+> > particular subtree?
+> > 
+> > I do not have a great answer on how to implement this unfortunately. The
+> > best I could come up with was to add a "$inherited_protection" magic
+> > value to distinguish from an explicit >=0 protection. What's the
+> > difference? $inherited_protection would be a default and it would always
+> > refer to the closest explicit protection up the hierarchy (with 0 as a
+> > default if there is none defined).
+> >         A
+> >        / \
+> >       B   C (low=10G)
+> >          / \
+> >         D   E (low = 5G)
+> > 
+> > A, B don't get any protection (low=0). C gets protection (10G) and
+> > distributes the pressure to D, E when in excess. D inherits (low=10G)
+> > and E overrides the protection to 5G.
+> > 
+> > That would help both usecases AFAICS while the delegation should be
+> > still possible (configure the delegation point with an explicit
+> > value). I have very likely not thought that through completely.  Does
+> > that sound like a completely insane idea?
+> > 
+> > Or do you think that the two usecases are simply impossible to handle
+> > at the same time?
+> 
+> Doesn't my patch accomplish this?
+
+Unless I am missing something then I am afraid it doesn't. Say you have a
+default systemd cgroup deployment (aka deeper cgroup hierarchy with
+slices and scopes) and now you want to grant a reclaim protection on a
+leaf cgroup (or even a whole slice that is not really important). All the
+hierarchy up the tree has the protection set to 0 by default, right? You
+simply cannot get that protection. You would need to configure the
+protection up the hierarchy and that is really cumbersome.
+
+> Any cgroup or group of cgroups still cannot claim more than the
+> ancestral protection for the subtree. If a cgroup says 10G, the sum of
+> all children's protection will never exceed that. This ensures
+> delegation is safe.
+
+Right. And delegation usecase really requres that. No question about
+that. I am merely arguing that if you do not delegate then this is way
+too strict.
+-- 
+Michal Hocko
+SUSE Labs
