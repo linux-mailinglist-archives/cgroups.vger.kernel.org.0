@@ -2,210 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 129CD15A657
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2020 11:29:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2183C15AE31
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2020 18:08:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbgBLK3e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Feb 2020 05:29:34 -0500
-Received: from mail-pj1-f68.google.com ([209.85.216.68]:50671 "EHLO
-        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725710AbgBLK3d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Feb 2020 05:29:33 -0500
-Received: by mail-pj1-f68.google.com with SMTP id r67so711805pjb.0;
-        Wed, 12 Feb 2020 02:29:33 -0800 (PST)
+        id S1727054AbgBLRI3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Feb 2020 12:08:29 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:37564 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728098AbgBLRI3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Feb 2020 12:08:29 -0500
+Received: by mail-qk1-f195.google.com with SMTP id c188so2763036qkg.4
+        for <cgroups@vger.kernel.org>; Wed, 12 Feb 2020 09:08:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qrIu8Jkz2wpM8W+TP78G0aZpBZ0BfsPMDbCMB5VExMA=;
-        b=ocN5cXNduPet9cp95r3WX9wfcOziPCbCA38D+muLWQZxVfN+cKGWIRGGpDKAl2qa/V
-         wIF3jMZOaR5DiOYtF2+HFK7aLBBZMyw1DpAqrNqVBjeN35IFK7mm4ntm2DmiKH0A62zz
-         19rTmJECA3NVqEaNP5Z+vx+fFUd7V7WNo/RTwtDu1QgoFIKJjY9+tH+Go+fopGDoGidd
-         ZxHrEZ1gtfYY/0stPSVHsl3ViE+mg0GM4SLr7PM11zXODfuEcGEsJ1xUyDSkm4m1HAaX
-         UuqQkdj0N2i4AWMCWbJCvLMwObhxld4Uw07ShioK14zNBX+u50AtDypMP3WGMCbO3C5V
-         8k1w==
+         :content-disposition:in-reply-to;
+        bh=HsBl5rMluvvE/pco2RfgwIL5+jpMuMRec38m/p38OMc=;
+        b=O6bqdQqB754/215opJE3M7EUYVTUIhhbCE2lNZaklstLauxL4cB6U5Lkm8nLa6ai+V
+         M6T/WjrYmfRSVrpnvIulIoWhLs9eS8Y55Aariv3m4POcoSqfrPc52/AL5HHw49GU3aro
+         q9emBN3umt3HPcAAZjNvc7ea18lJ/hn8Q3S4jrizD022B9CE+zN+WAsr6FS6zAPsSER0
+         lkBBVZbw1FZR9AD9LiyKVVyyqDxsGlA8Ky4TnhMZQhNdW8OGVXr8cXXeIQ1SLHE1IhDD
+         yb2N6V11ijw8SEjuvEiC7qqWBmpm6xRnSyJIfQPhV6KRUx6DOyATDYdS8rZ1mEZvPFQy
+         lORA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qrIu8Jkz2wpM8W+TP78G0aZpBZ0BfsPMDbCMB5VExMA=;
-        b=EIL9ayllQ9SC9YNQGaMno5EaHavP5ktaUMNl4yIei1L2OOdIFuYC0zSMuRhvfFtxBI
-         kLDNC8mYIBXiB2+gXz4a1FTEjpbY8Sg9FTSStZhG1rdMbj8dLv8LpTOKg5tFLEHhC+7N
-         LKbR2JomhtcSXPqgTN8SC41bg+X3vBNI6q6IZgngzmz5V+Ih6+xHFIJOcpdyoGOUqMTy
-         nZK5rixxGqLJBrB22MUrm6YbyeqrAgCdNjDBfVl9FGxxx/UTTiLNPJwzoDVsnXrQRIEj
-         wisw//89pULr50BJDiXHunFu/nTPGI81BHMgpMfJpWIFCcoZJtdj+1lNeT15e0SoRf6D
-         Pjyw==
-X-Gm-Message-State: APjAAAVGhibNBXvxmsw35MJJUbhnkD3gZ/nBxboEY/dVBY934Q8m9/1f
-        CMO9dD5AWWU6Hf1F+7T+qWM=
-X-Google-Smtp-Source: APXvYqyZg2aspnp+u07UAHUYTj5c7CClLBkt7whw5m0aEIu2PvYwuhc7QRe+Gm4SqRfn6ljk8E+Y0A==
-X-Received: by 2002:a17:90a:e28e:: with SMTP id d14mr9592350pjz.56.1581503373136;
-        Wed, 12 Feb 2020 02:29:33 -0800 (PST)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id f8sm6535563pjg.28.2020.02.12.02.29.29
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 12 Feb 2020 02:29:32 -0800 (PST)
-Date:   Wed, 12 Feb 2020 19:28:19 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
+         :mime-version:content-disposition:in-reply-to;
+        bh=HsBl5rMluvvE/pco2RfgwIL5+jpMuMRec38m/p38OMc=;
+        b=TSf0suOl3TGj1hAD0su0U5uTNt8BEGJk/qWYLBKUlvtubOwgzol0LZh1q947QnI61v
+         DP+hO0yLDF2DBlF55fVbc4T4YLq2zVlRQ+ag4N7x0yvOgxBsHTrCJnnsyldaO1ARgTZj
+         p8zDPFqkUxpWAoULZut4sCgs5A1luNC5eBV3J/6K7AUrqUIPN6JIKPLRnoLVj7bI+6fy
+         2ZmNZ6LjM3o5zZWKgSHjIgYmG5K6768Xpgh8RpZgCMlmi8zvlruQVVf6spUu3S6Oa6G5
+         Fcpv9qFG7lZCW2pLoPfi4uEBxRvWOs5vRTzYJOUYCmlZncF4wguHSDfUjYFsbCT9hkHw
+         /QZA==
+X-Gm-Message-State: APjAAAWvMsYtiu7sbDctHa3UEo6M0wxh6BJ3IEJH/bjfaP7NQiQBD3FD
+        w4JqA3kVRfjXraWKpC5w2vo7zxIBUpY=
+X-Google-Smtp-Source: APXvYqzFArg0u7ixTyn9XIaPgPpptQEFElmY295g4IC8sWja/fFRjB35UdOOImoT6soG8zmA6a9W0w==
+X-Received: by 2002:a37:e409:: with SMTP id y9mr12047308qkf.352.1581527307550;
+        Wed, 12 Feb 2020 09:08:27 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::2:26be])
+        by smtp.gmail.com with ESMTPSA id o6sm495462qkk.53.2020.02.12.09.08.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Feb 2020 09:08:26 -0800 (PST)
+Date:   Wed, 12 Feb 2020 12:08:26 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Michal Hocko <mhocko@kernel.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
-Message-ID: <20200212102817.GA18107@js1304-desktop>
-References: <20191107205334.158354-1-hannes@cmpxchg.org>
- <20191107205334.158354-3-hannes@cmpxchg.org>
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 3/3] mm: memcontrol: recursive memory.low protection
+Message-ID: <20200212170826.GC180867@cmpxchg.org>
+References: <20191219200718.15696-1-hannes@cmpxchg.org>
+ <20191219200718.15696-4-hannes@cmpxchg.org>
+ <20200130170020.GZ24244@dhcp22.suse.cz>
+ <20200203215201.GD6380@cmpxchg.org>
+ <20200211164753.GQ10636@dhcp22.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20191107205334.158354-3-hannes@cmpxchg.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <20200211164753.GQ10636@dhcp22.suse.cz>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Johannes.
+On Tue, Feb 11, 2020 at 05:47:53PM +0100, Michal Hocko wrote:
+> Unless I am missing something then I am afraid it doesn't. Say you have a
+> default systemd cgroup deployment (aka deeper cgroup hierarchy with
+> slices and scopes) and now you want to grant a reclaim protection on a
+> leaf cgroup (or even a whole slice that is not really important). All the
+> hierarchy up the tree has the protection set to 0 by default, right? You
+> simply cannot get that protection. You would need to configure the
+> protection up the hierarchy and that is really cumbersome.
 
-When I tested my patchset on v5.5, I found that my patchset doesn't
-work as intended. I tracked down the issue and this patch would be the
-reason of unintended work. I don't fully understand the patchset so I
-could be wrong. Please let me ask some questions.
+Okay, I think I know what you mean. Let's say you have a tree like
+this:
 
-On Thu, Nov 07, 2019 at 12:53:33PM -0800, Johannes Weiner wrote:
-...snip...
-> -static void snapshot_refaults(struct mem_cgroup *root_memcg, pg_data_t *pgdat)
-> +static void snapshot_refaults(struct mem_cgroup *target_memcg, pg_data_t *pgdat)
->  {
-> -	struct mem_cgroup *memcg;
-> -
-> -	memcg = mem_cgroup_iter(root_memcg, NULL, NULL);
-> -	do {
-> -		unsigned long refaults;
-> -		struct lruvec *lruvec;
-> +	struct lruvec *target_lruvec;
-> +	unsigned long refaults;
->  
-> -		lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -		refaults = lruvec_page_state_local(lruvec, WORKINGSET_ACTIVATE);
-> -		lruvec->refaults = refaults;
-> -	} while ((memcg = mem_cgroup_iter(root_memcg, memcg, NULL)));
-> +	target_lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
-> +	refaults = lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE);
-> +	target_lruvec->refaults = refaults;
+                          A
+                         / \
+                        B1  B2
+                       / \   \
+                      C1 C2   C3
 
-Is it correct to just snapshot the refault for the target memcg? I
-think that we need to snapshot the refault for all the child memcgs
-since we have traversed all the child memcgs with the refault count
-that is aggregration of all the child memcgs. If next reclaim happens
-from the child memcg, workingset transition that is already considered
-could be considered again.
+and there is no actual delegation point - everything belongs to the
+same user / trust domain. C1 sets memory.low to 10G, but its parents
+set nothing. You're saying we should honor the 10G protection during
+global and limit reclaims anywhere in the tree?
 
->  }
->  
->  /*
-> diff --git a/mm/workingset.c b/mm/workingset.c
-> index e8212123c1c3..f0885d9f41cd 100644
-> --- a/mm/workingset.c
-> +++ b/mm/workingset.c
-> @@ -213,28 +213,53 @@ static void unpack_shadow(void *shadow, int *memcgidp, pg_data_t **pgdat,
->  	*workingsetp = workingset;
->  }
->  
-> +static void advance_inactive_age(struct mem_cgroup *memcg, pg_data_t *pgdat)
-> +{
-> +	/*
-> +	 * Reclaiming a cgroup means reclaiming all its children in a
-> +	 * round-robin fashion. That means that each cgroup has an LRU
-> +	 * order that is composed of the LRU orders of its child
-> +	 * cgroups; and every page has an LRU position not just in the
-> +	 * cgroup that owns it, but in all of that group's ancestors.
-> +	 *
-> +	 * So when the physical inactive list of a leaf cgroup ages,
-> +	 * the virtual inactive lists of all its parents, including
-> +	 * the root cgroup's, age as well.
-> +	 */
-> +	do {
-> +		struct lruvec *lruvec;
-> +
-> +		lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> +		atomic_long_inc(&lruvec->inactive_age);
-> +	} while (memcg && (memcg = parent_mem_cgroup(memcg)));
-> +}
-> +
->  /**
->   * workingset_eviction - note the eviction of a page from memory
-> + * @target_memcg: the cgroup that is causing the reclaim
->   * @page: the page being evicted
->   *
->   * Returns a shadow entry to be stored in @page->mapping->i_pages in place
->   * of the evicted @page so that a later refault can be detected.
->   */
-> -void *workingset_eviction(struct page *page)
-> +void *workingset_eviction(struct page *page, struct mem_cgroup *target_memcg)
->  {
->  	struct pglist_data *pgdat = page_pgdat(page);
-> -	struct mem_cgroup *memcg = page_memcg(page);
-> -	int memcgid = mem_cgroup_id(memcg);
->  	unsigned long eviction;
->  	struct lruvec *lruvec;
-> +	int memcgid;
->  
->  	/* Page is fully exclusive and pins page->mem_cgroup */
->  	VM_BUG_ON_PAGE(PageLRU(page), page);
->  	VM_BUG_ON_PAGE(page_count(page), page);
->  	VM_BUG_ON_PAGE(!PageLocked(page), page);
->  
-> -	lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -	eviction = atomic_long_inc_return(&lruvec->inactive_age);
-> +	advance_inactive_age(page_memcg(page), pgdat);
-> +
-> +	lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
-> +	/* XXX: target_memcg can be NULL, go through lruvec */
-> +	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
-> +	eviction = atomic_long_read(&lruvec->inactive_age);
->  	return pack_shadow(memcgid, pgdat, eviction, PageWorkingset(page));
->  }
->  
-> @@ -244,10 +269,13 @@ void *workingset_eviction(struct page *page)
->   * @shadow: shadow entry of the evicted page
->   *
->   * Calculates and evaluates the refault distance of the previously
-> - * evicted page in the context of the node it was allocated in.
-> + * evicted page in the context of the node and the memcg whose memory
-> + * pressure caused the eviction.
->   */
->  void workingset_refault(struct page *page, void *shadow)
->  {
-> +	struct mem_cgroup *eviction_memcg;
-> +	struct lruvec *eviction_lruvec;
->  	unsigned long refault_distance;
->  	struct pglist_data *pgdat;
->  	unsigned long active_file;
-> @@ -277,12 +305,12 @@ void workingset_refault(struct page *page, void *shadow)
->  	 * would be better if the root_mem_cgroup existed in all
->  	 * configurations instead.
->  	 */
-> -	memcg = mem_cgroup_from_id(memcgid);
-> -	if (!mem_cgroup_disabled() && !memcg)
-> +	eviction_memcg = mem_cgroup_from_id(memcgid);
-> +	if (!mem_cgroup_disabled() && !eviction_memcg)
->  		goto out;
-> -	lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> -	refault = atomic_long_read(&lruvec->inactive_age);
-> -	active_file = lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_ZONES);
-> +	eviction_lruvec = mem_cgroup_lruvec(eviction_memcg, pgdat);
-> +	refault = atomic_long_read(&eviction_lruvec->inactive_age);
-> +	active_file = lruvec_page_state(eviction_lruvec, NR_ACTIVE_FILE);
+Now let's consider there is a delegation point at B1: we set up and
+trust B1, but not its children. What effect would the C1 protection
+have then? Would we ignore it during global and A reclaim, but honor
+it when there is B1 limit reclaim?
 
-Do we need to use the aggregation LRU count of all the child memcgs?
-AFAIU, refault here is the aggregation counter of all the related
-memcgs. Without using the aggregation count for LRU, active_file could
-be so small than the refault distance and refault cannot happen
-correctly.
+Doing an explicit downward propagation from the root to C1 *could* be
+tedious, but I can't think of a scenario where it's completely
+impossible. Especially because we allow proportional distribution when
+the limit is overcommitted and you don't have to be 100% accurate.
 
-Thanks.
+And the clarity that comes with being explicit is an asset too,
+IMO. Since it has an effect at the reclaim level, it's not a bad thing
+to have that effect *visible* in the settings at that level as well:
+the protected memory doesn't come out of thin air, it's delegated down
+from the top where memory pressure originates.
+
+My patch is different. It allows a configuration that simply isn't
+possible today: protecting C1 and C2 from C3, without having to
+protect C1 and C2 from each other.
+
+So I don't think requiring an uninterrupted, authorized chain of
+protection from the top is necessarily wrong. In fact, I think it has
+benefits. But requiring the protection chain to go all the way to the
+leaves for it to have any effect, that is a real problem, and it can't
+be worked around.
