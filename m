@@ -2,81 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2626515B370
-	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2020 23:12:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1052315B372
+	for <lists+cgroups@lfdr.de>; Wed, 12 Feb 2020 23:14:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728185AbgBLWMw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Feb 2020 17:12:52 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:36713 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727564AbgBLWMw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Feb 2020 17:12:52 -0500
-Received: by mail-qk1-f194.google.com with SMTP id w25so3752284qki.3;
-        Wed, 12 Feb 2020 14:12:51 -0800 (PST)
+        id S1727564AbgBLWOa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 12 Feb 2020 17:14:30 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45672 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728603AbgBLWO3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Feb 2020 17:14:29 -0500
+Received: by mail-qk1-f193.google.com with SMTP id a2so3691525qko.12;
+        Wed, 12 Feb 2020 14:14:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=htZSNJ3oIZAPreJh5xh8HpLPmxowkMMDY5AHwsIFPU4=;
-        b=JgbLnHXZBEJ6fny9Cf39uzWywqhTZCEc9XA7HjonBYcbbBVxey3E8jGB1bPKWVrUdH
-         MDi2aKPGMfYktEAwxum6w8vAcuQKbRKfvpUwLIGwLk3/YmeHtcygHekDiNYf5+9Q3/ti
-         zacH6LhE208pGea8c9ESgsdYtAeXB4ezKvDfBqcv9jlPHtgoFYltXKi/V/yrcVbYwnku
-         X3bNAPwE8YMLtOxeeS52qw2JNI4UFj3sP6w3f4vVctpZ6uj6fLe0Dq1xLddiXOyyjYKa
-         A7dAQszw4h0EP/fqdq1NQXGkBCDWNQkAIM2qeUiWaw6Udu9cErLrvXzo/wABUaU4uD/W
-         FynQ==
+        bh=5wn2A1jq0XAt6mjZPfnCGuSlCgwymyCtNgjaq2MIIL0=;
+        b=HxEDbSsr9BgQr15mCFJj3TWx3sPLSUD5N0qYHcOx8MwhQiP8y3Tk9tBhxRFMFAYY81
+         hJSaxoCfVkUEYhuG6xPSj2HdgdvdQY7DBc3EBu0eP0Fvc7Ecv4/6RPLUqQUlMekefnnY
+         1sK5x721YdF2+BxwX/kHdJrC6z4VFFECqzlEubpnCEVRrcIfvskSDtn4JHPwOyC1SdBv
+         opFqzlqR0GqYEDFVbmCbWasZErcV1JHRWnaAzu97nTJ0JY10CfXNed1I7VoBTJgV8Idw
+         WPzxiITJLJgL6k6pD4TmeGWYbAfK54WeGZ7hJtYoNiRLf/YRw6uLL6hsA2C8JIsOt2IE
+         PYGg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=htZSNJ3oIZAPreJh5xh8HpLPmxowkMMDY5AHwsIFPU4=;
-        b=C8Ug9jH40vk/5pOkGXLTSN/WguOooEey+REBbI+2iIUTN2uxPLNkKZGvhY0Sp9gKd7
-         Hj1CXoLsgoJ37DgbaGne3XbEL1wq16vuDY/z5IBqdy3pHaGE3X+E0cwtCrIDfehoTLoe
-         wRdl6nRWoFt8UBdCJsTcOnoY9Jl8zwNLLlqZxMd2lexFoq/qGZn0XXtmdgYdJMwC9pRg
-         WGKt9mJyQmU0GaNw5aVSqT2mh0YzBrFbgRCfxeeV78Cc+Mff8Oh4treBG2ONXdQ86sgF
-         APPFD4AplKowj6pOW0fLdgEW4x73zPsJVvLm2SK2pe066HFgkHfloKOGKhKTFZozi3X4
-         vpiw==
-X-Gm-Message-State: APjAAAVnT4EexUst0eXASEkUF/m/dwJX4gr+i708UbDXnx2quqLLkrkq
-        0VS7mvYiimykdhIOxq0vLMA=
-X-Google-Smtp-Source: APXvYqxE4NIyH0FkdpRmw+1I/jpCPC2PqJQ0htb5y8JgKDlczdQUhN+kVKDtAJ65cv4fAthi3gls5g==
-X-Received: by 2002:a05:620a:90d:: with SMTP id v13mr13066419qkv.332.1581545570921;
-        Wed, 12 Feb 2020 14:12:50 -0800 (PST)
+        bh=5wn2A1jq0XAt6mjZPfnCGuSlCgwymyCtNgjaq2MIIL0=;
+        b=tJkhbXd0s+3zN1cf/6gko7xum/31ZmHdD/nyzRGLSgd46eaheh1ITPL3IPT5enaIOB
+         kCdIPn9nSyb9aEh2aAeCx1mUlrt+Y6JDimPQ7AQoVFlyQ4JjSekYxv/If6tApWULbUew
+         LHsO1Jd1z0iBM7XK3jr8eZsdIz9+S9NplXknPs8cYtQ8UalrXlcekBJ8nLlD3p6PnU7u
+         3DkDq0ErADeVp9v2fjsYckkv1zHoshijt8zyUOgT6yWUvIyZrWfqt8svuuse/zKe16bZ
+         Cx5eJghUAxtOi8VUct9Hp3MqBL47mvVYnbsjrOJNXZ3sDCEGQ7IN8TB2LOO1c+hTtboG
+         cM8A==
+X-Gm-Message-State: APjAAAUksVU6rFAQ8covPyC6hk54Egz94OvIXTdFiTD+8mKE6PtWrC0b
+        DrcbfZN0sbWK5DMwWEl1wmI5jSlwfIM=
+X-Google-Smtp-Source: APXvYqxBrptXhkwFDgbeO/elgSRqVvK1OUQEDwSn8e9zYFd9G4ZZNllDzPAQIM5TSnUFGy9G6B1WVw==
+X-Received: by 2002:ae9:eb49:: with SMTP id b70mr10802147qkg.307.1581545668777;
+        Wed, 12 Feb 2020 14:14:28 -0800 (PST)
 Received: from localhost ([2620:10d:c091:500::1:985a])
-        by smtp.gmail.com with ESMTPSA id r3sm288026qtc.85.2020.02.12.14.12.50
+        by smtp.gmail.com with ESMTPSA id p19sm284083qte.81.2020.02.12.14.14.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 14:12:50 -0800 (PST)
-Date:   Wed, 12 Feb 2020 17:12:49 -0500
+        Wed, 12 Feb 2020 14:14:28 -0800 (PST)
+Date:   Wed, 12 Feb 2020 17:14:27 -0500
 From:   Tejun Heo <tj@kernel.org>
-To:     madhuparnabhowmik10@gmail.com
-Cc:     lizefan@huawei.com, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, joel@joelfernandes.org,
-        rcu@vger.kernel.org, frextrite@gmail.com
-Subject: Re: [PATCH] cgroup.c: Use built-in RCU list checking
-Message-ID: <20200212221249.GJ80993@mtj.thefacebook.com>
-References: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
+To:     Prateek Sood <prsood@codeaurora.org>
+Cc:     peterz@infradead.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpuset: Make cpuset hotplug synchronous
+Message-ID: <20200212221427.GK80993@mtj.thefacebook.com>
+References: <1579878449-10164-1-git-send-email-prsood@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200118031051.28776-1-madhuparnabhowmik10@gmail.com>
+In-Reply-To: <1579878449-10164-1-git-send-email-prsood@codeaurora.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jan 18, 2020 at 08:40:51AM +0530, madhuparnabhowmik10@gmail.com wrote:
-> From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On Fri, Jan 24, 2020 at 08:37:29PM +0530, Prateek Sood wrote:
+> Convert cpuset_hotplug_workfn() into synchronous call for cpu hotplug
+> path. For memory hotplug path it still gets queued as a work item.
 > 
-> list_for_each_entry_rcu has built-in RCU and lock checking.
-> Pass cond argument to list_for_each_entry_rcu() to silence
-> false lockdep warning when  CONFIG_PROVE_RCU_LIST is enabled
-> by default.
+> Since cpuset_hotplug_workfn() can be made synchronous for cpu hotplug
+> path, it is not required to wait for cpuset hotplug while thawing
+> processes.
 > 
-> Even though the function css_next_child() already checks if
-> cgroup_mutex or rcu_read_lock() is held using
-> cgroup_assert_mutex_or_rcu_locked(), there is a need to pass
-> cond to list_for_each_entry_rcu() to avoid false positive
-> lockdep warning.
-> 
-> Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+> Signed-off-by: Prateek Sood <prsood@codeaurora.org>
 
 Applied to cgroup/for-5.7.
 
