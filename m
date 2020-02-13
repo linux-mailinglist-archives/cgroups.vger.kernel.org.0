@@ -2,265 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E681E15B5AB
-	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2020 01:07:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 047AA15BA33
+	for <lists+cgroups@lfdr.de>; Thu, 13 Feb 2020 08:40:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729246AbgBMAH6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 12 Feb 2020 19:07:58 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:46676 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727117AbgBMAH5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 12 Feb 2020 19:07:57 -0500
-Received: by mail-qt1-f194.google.com with SMTP id e21so3061078qtp.13;
-        Wed, 12 Feb 2020 16:07:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Xp7j+w+mSRWprEP7jKf4yInMPuuxYmE0Jx4GMGEDPCQ=;
-        b=jmvVOhaXi+4hUwokVKiclEzfFZs0kumgKecddVwQJ6W4BYeb4eunfR42QH1BanKgXe
-         MWQhbMX2xwNbvy0w6kTd2sh93gkpDWROStsMnfu41dD9mtVfKl5N/rEJCKmqqY4aoAcn
-         kpev9dqGLS1dzO5YtQPFJGED458NEkCaq8BEWGqGQcyVhuH/okSHYJfODuu/8aZmP4cG
-         C3ZXndp9Fcx2UthovyxMFXfFmE7hwC77Y/SZbgnh3Ul4OJATixPYCRxJfupisKXfC2C1
-         oGZSd76/0NwAuj1H3V+4klnwdDUYqolEtgnvSXfBSw3iRwkHKOmYNLCadx1UHUFV8fTN
-         Nsbw==
+        id S1729803AbgBMHkz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Feb 2020 02:40:55 -0500
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:39928 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729748AbgBMHky (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Feb 2020 02:40:54 -0500
+Received: by mail-wr1-f65.google.com with SMTP id y11so5368233wrt.6;
+        Wed, 12 Feb 2020 23:40:53 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Xp7j+w+mSRWprEP7jKf4yInMPuuxYmE0Jx4GMGEDPCQ=;
-        b=hDWJu8nIZL3fgb9prQlc26AjjMLjIS+Wo6ek49B06wKhiHNNSYvS8HHenfKSIoX7Fo
-         bcQuFahDq3lNBxXkgWjol8r4JT0y+u0inv1D9AXEPVs3AlAa++nAbDiK0qpV50NAwBKp
-         ePRUTOKhF3WXH2tjnPXVS5/USjRctDtd5fSQslpTmvIrS9FSXe9yiNFUZiKb1Id6alnG
-         umFOMFrbVpVEouzntkVsAu4l5n8PpkLDXe3JJEq3F210q6DYLF/5uUFVDL/j2ApCGcA6
-         +60RFlHXWqH4VUxcruwhCBZS/5RZdTIUIOWkw5QFDMYzLICK0BvCUwYGXScKpEbVlxnn
-         L+0A==
-X-Gm-Message-State: APjAAAWp1lQ3k5fkr1kLyhjdNiiAhRJNbbaiLKt4ckZ6dPejCRK0hRVA
-        aKFW0T+eePXffa2emsuWbHg=
-X-Google-Smtp-Source: APXvYqxkglYm+ctYrqwr6O5FMziGEB0S7P4tMND0bpObW7mupop3DlvqhOJzX02e+LxNJ9Ob5nbkpw==
-X-Received: by 2002:ac8:3ac3:: with SMTP id x61mr9574212qte.25.1581552475996;
-        Wed, 12 Feb 2020 16:07:55 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::1:985a])
-        by smtp.gmail.com with ESMTPSA id 64sm312550qkh.98.2020.02.12.16.07.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VikzcxuvzZjt5786Kga/OPgmPI0d+YsoVj/K9eGOyeU=;
+        b=YgI3HI5cSF8KJ4tbw0den80EJ8B3PR1GvpLbw1XB4feFW0fhSFsYZYLGhvK29x1IK8
+         m3121tX2knkWjSGTgUfuRISYxAeu4DghfGLMuv0umcjVH8xLczqTMg/MssxFDQ1wiImQ
+         Pl73yTSmbHP5+2ow9hc4W4kPkqkdO/UrAPIfKhV4i8avByEnEDEDyPX9qJlXXDfUfaR7
+         znkn9AXn1k2d+v+KeASI4zyo1+WzoRaL6LoGy1bY0MqiQySez+EegRGagbrJlXoy9IgC
+         kvSOq2xtpLtXKZX+y1tuSl88LAKMQBV+gtlPGRRJR/OUq8Ww/6qV59DRicTigo3DZUl4
+         v8tA==
+X-Gm-Message-State: APjAAAX0X/JAzkcVn4SxBlXiemEVCBvtL8+mfdnskA8saQlwZcnfUoCx
+        LH3euM3671z+Bi5kRQNvnpc=
+X-Google-Smtp-Source: APXvYqxKmZsq/EnT/yDwMIc+CtkJTjfoRHXWLR4Gm98glFGipcPyrbjpdbh0emtezP9vHCwVFkIj9w==
+X-Received: by 2002:adf:f084:: with SMTP id n4mr19962569wro.200.1581579652792;
+        Wed, 12 Feb 2020 23:40:52 -0800 (PST)
+Received: from localhost (ip-37-188-133-87.eurotel.cz. [37.188.133.87])
+        by smtp.gmail.com with ESMTPSA id q1sm1708500wrw.5.2020.02.12.23.40.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Feb 2020 16:07:55 -0800 (PST)
-Date:   Wed, 12 Feb 2020 19:07:54 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Dan Schatzberg <dschatzberg@fb.com>
-Cc:     Jens Axboe <axboe@kernel.dk>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH 2/2] loop: charge i/o per cgroup
-Message-ID: <20200213000754.GD88887@mtj.thefacebook.com>
-References: <20200205223348.880610-1-dschatzberg@fb.com>
- <20200205223348.880610-3-dschatzberg@fb.com>
+        Wed, 12 Feb 2020 23:40:51 -0800 (PST)
+Date:   Thu, 13 Feb 2020 08:40:49 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Tejun Heo <tj@kernel.org>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH v2 3/3] mm: memcontrol: recursive memory.low protection
+Message-ID: <20200213074049.GA31689@dhcp22.suse.cz>
+References: <20191219200718.15696-1-hannes@cmpxchg.org>
+ <20191219200718.15696-4-hannes@cmpxchg.org>
+ <20200130170020.GZ24244@dhcp22.suse.cz>
+ <20200203215201.GD6380@cmpxchg.org>
+ <20200211164753.GQ10636@dhcp22.suse.cz>
+ <20200212170826.GC180867@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200205223348.880610-3-dschatzberg@fb.com>
+In-Reply-To: <20200212170826.GC180867@cmpxchg.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed 12-02-20 12:08:26, Johannes Weiner wrote:
+> On Tue, Feb 11, 2020 at 05:47:53PM +0100, Michal Hocko wrote:
+> > Unless I am missing something then I am afraid it doesn't. Say you have a
+> > default systemd cgroup deployment (aka deeper cgroup hierarchy with
+> > slices and scopes) and now you want to grant a reclaim protection on a
+> > leaf cgroup (or even a whole slice that is not really important). All the
+> > hierarchy up the tree has the protection set to 0 by default, right? You
+> > simply cannot get that protection. You would need to configure the
+> > protection up the hierarchy and that is really cumbersome.
+> 
+> Okay, I think I know what you mean. Let's say you have a tree like
+> this:
+> 
+>                           A
+>                          / \
+>                         B1  B2
+>                        / \   \
+>                       C1 C2   C3
+> 
+> and there is no actual delegation point - everything belongs to the
+> same user / trust domain. C1 sets memory.low to 10G, but its parents
+> set nothing. You're saying we should honor the 10G protection during
+> global and limit reclaims anywhere in the tree?
 
-On Wed, Feb 05, 2020 at 02:33:48PM -0800, Dan Schatzberg wrote:
-> -static int loop_kthread_worker_fn(void *worker_ptr)
-> -{
-> -	current->flags |= PF_LESS_THROTTLE | PF_MEMALLOC_NOIO;
-> -	return kthread_worker_fn(worker_ptr);
-> +	flush_workqueue(lo->workqueue);
-> +	destroy_workqueue(lo->workqueue);
+No, only in the C1 which sets the limit, because that is the woriking
+set we want to protect.
 
-destroy_workqueue() implies draining, so the explicit flush isn't
-necessary.
+> Now let's consider there is a delegation point at B1: we set up and
+> trust B1, but not its children. What effect would the C1 protection
+> have then? Would we ignore it during global and A reclaim, but honor
+> it when there is B1 limit reclaim?
 
->  static int loop_prepare_queue(struct loop_device *lo)
->  {
-> +	lo->workqueue = alloc_workqueue("loop%d",
-> +					WQ_FREEZABLE | WQ_MEM_RECLAIM |
-> +					WQ_HIGHPRI,
-> +					lo->lo_number);
-> +	if (IS_ERR(lo->workqueue))
->  		return -ENOMEM;
+In the scheme with the inherited protection it would act as the gate
+and require an explicit low limit setup defaulting to 0 if none is
+specified.
 
-Given that these can be pretty cpu intensive and a single work item
-can be saturated by multiple cpus keepings queueing bios, it probably
-would be better to use an unbound workqueue (WQ_UNBOUND) and let the
-scheduler figure out.
+> Doing an explicit downward propagation from the root to C1 *could* be
+> tedious, but I can't think of a scenario where it's completely
+> impossible. Especially because we allow proportional distribution when
+> the limit is overcommitted and you don't have to be 100% accurate.
 
-> +struct loop_worker {
-> +	struct rb_node rb_node;
-> +	struct work_struct work;
-> +	struct list_head cmd_list;
-> +	struct loop_device *lo;
-> +	int css_id;
-> +};
-> +
-> +static void loop_workfn(struct work_struct *work);
-> +static void loop_rootcg_workfn(struct work_struct *work);
-> +
-> +static void loop_queue_on_rootcg_locked(struct loop_device *lo,
-> +					struct loop_cmd *cmd)
-> +{
+So let's see how that works in practice, say a multi workload setup
+with a complex/deep cgroup hierachies (e.g. your above example). No
+delegation point this time.
 
-lockdep_assert_held() here?
+C1 asks for low=1G while using 500M, C3 low=100M using 80M.  B1 and
+B2 are completely independent workloads and the same applies to C2 which
+doesn't ask for any protection at all? C2 uses 100M. Now the admin has
+to propagate protection upwards so B1 low=1G, B2 low=100M and A low=1G,
+right? Let's say we have a global reclaim due to external pressure that
+originates from outside of A hierarchy (it is not overcommited on the
+protection).
 
-> +	list_add_tail(&cmd->list_entry, &lo->rootcg_cmd_list);
-> +	if (list_is_first(&cmd->list_entry, &lo->rootcg_cmd_list))
-> +		queue_work(lo->workqueue, &lo->rootcg_work);
+Unless I miss something C2 would get a protection even though nobody
+asked for it.
 
-I'd just call queue_work() without the preceding check. Trying to
-requeue an active work item is pretty cheap.
+> And the clarity that comes with being explicit is an asset too,
+> IMO. Since it has an effect at the reclaim level, it's not a bad thing
+> to have that effect *visible* in the settings at that level as well:
+> the protected memory doesn't come out of thin air, it's delegated down
+> from the top where memory pressure originates.
 
-> +}
-> +
-> +static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
-> +{
-> +	struct rb_node **node = &(lo->worker_tree.rb_node), *parent = NULL;
-                                 ^
-                                 This isn't necessary, right?
+So how are we going to deal with hierarchies where the actual workload
+of interest is a leaf deeper in the hierarchy and the upper levels of
+the hierarchy are shared between unrelated workloads?  Look at how
+systemd organizes system into cgroups for example (slices vs. scopes)
+and say you want to add a protection to a single user or a service.
+ 
+> My patch is different. It allows a configuration that simply isn't
+> possible today: protecting C1 and C2 from C3, without having to
+> protect C1 and C2 from each other.
+> 
+> So I don't think requiring an uninterrupted, authorized chain of
+> protection from the top is necessarily wrong. In fact, I think it has
+> benefits. But requiring the protection chain to go all the way to the
+> leaves for it to have any effect, that is a real problem, and it can't
+> be worked around.
 
-> +	struct loop_worker *cur_worker, *worker = NULL;
-> +	int css_id = 0;
-> +
-> +	if (cmd->blk_css)
-
-We usually use blkcg_css as the name.
-
-> +		css_id = cmd->blk_css->id;
-> +
-> +	spin_lock_irq(&lo->lo_lock);
-> +
-> +	if (!css_id) {
-> +		loop_queue_on_rootcg_locked(lo, cmd);
-> +		goto out;
-> +	}
-> +	node = &(lo->worker_tree.rb_node);
-> +
-> +	while (*node) {
-> +		parent = *node;
-> +		cur_worker = container_of(*node, struct loop_worker, rb_node);
-> +		if (cur_worker->css_id == css_id) {
-> +			worker = cur_worker;
-> +			break;
-> +		} else if (cur_worker->css_id < 0) {
-> +			node = &((*node)->rb_left);
-                                 ^
-                                I'd keep only the inner parentheses.
-
-> +		} else {
-> +			node = &((*node)->rb_right);
-> +		}
-> +	}
-> +	if (worker) {
-> +		list_add_tail(&cmd->list_entry, &worker->cmd_list);
-
-Maybe goto and unindent else block?
-
-> +	} else {
-> +		worker = kmalloc(sizeof(struct loop_worker), GFP_NOIO);
-
-I think the gpf flag combo you wanna use is GFP_NOWAIT | __GFP_NOWARN
-- we don't wanna enter direct reclaim from here or generate warnings.
-Also, I personally tend to use kzalloc() for small stuff by default as
-it doesn't really cost anything while making things easier / safer
-later when adding new fields, but up to you.
-
-> +		/*
-> +		 * In the event we cannot allocate a worker, just
-> +		 * queue on the rootcg worker
-> +		 */
-> +		if (!worker) {
-> +			loop_queue_on_rootcg_locked(lo, cmd);
-> +			goto out;
-> +		}
-> +		worker->css_id = css_id;
-
-Maybe blkcg_css_id would be clearer? Your call for sure tho.
-
-> +		INIT_WORK(&worker->work, loop_workfn);
-> +		INIT_LIST_HEAD(&worker->cmd_list);
-> +		worker->lo = lo;
-> +		rb_link_node(&worker->rb_node, parent, node);
-> +		rb_insert_color(&worker->rb_node, &lo->worker_tree);
-> +		list_add_tail(&cmd->list_entry, &worker->cmd_list);
-> +		queue_work(lo->workqueue, &worker->work);
-
-It might be better to share the above two lines between existing and
-new worker paths. I think you're missing queue_work() for the former.
-
-> @@ -1942,6 +2006,9 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
->  	struct request *rq = blk_mq_rq_from_pdu(cmd);
->  	const bool write = op_is_write(req_op(rq));
->  	struct loop_device *lo = rq->q->queuedata;
-> +#ifdef CONFIG_MEMCG
-> +	struct cgroup_subsys_state *mem_css;
-
-memcg_css is what we've been using; however, I kinda like blk/mem_css.
-Maybe we should rename the others. Please feel free to leave as-is.
-
-> @@ -1958,26 +2041,50 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
->  	}
->  }
->  
-> +static void loop_process_work(struct loop_worker *worker,
-> +			struct list_head *cmd_list, struct loop_device *lo)
->  {
-> +	int orig_flags = current->flags;
-> +	struct loop_cmd *cmd;
-> +
-> +	while (1) {
-> +		spin_lock_irq(&lo->lo_lock);
-> +		if (list_empty(cmd_list)) {
-
-Maybe break here and cleanup at the end of the function?
-
-> +			if (worker)
-> +				rb_erase(&worker->rb_node, &lo->worker_tree);
-> +			spin_unlock_irq(&lo->lo_lock);
-> +			kfree(worker);
-> +			current->flags = orig_flags;
-
-I wonder whether we wanna keep them around for a bit. A lot of IO
-patterns involve brief think times between accesses and this would be
-constantly creating and destroying constantly.
-
-> +			return;
-> +		}
->  
-> +		cmd = container_of(
-> +			cmd_list->next, struct loop_cmd, list_entry);
-> +		list_del(cmd_list->next);
-> +		spin_unlock_irq(&lo->lo_lock);
-> +		current->flags |= PF_LESS_THROTTLE | PF_MEMALLOC_NOIO;
-
-I think we can set this at the head of the function and
-
-> +		loop_handle_cmd(cmd);
-> +		current->flags = orig_flags;
-
-restore them before returning.
-
-> @@ -587,6 +587,7 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
->  	rcu_read_unlock();
->  	return css;
->  }
-> +EXPORT_SYMBOL_GPL(cgroup_get_e_css);
-
-Can you please mention the above in the changelog? Also, it'd be great
-to have rationales there too.
-
-Thanks.
-
+Yes I do agree that the problem you are dealing with is slightly
+different. My main point was that you are already introducing a new
+semantic which is not fully backward compatible and I figured we have
+more problems in the area and maybe we can introduce a semantic to
+handle both above mentioned scenarios while doing that.
 -- 
-tejun
+Michal Hocko
+SUSE Labs
