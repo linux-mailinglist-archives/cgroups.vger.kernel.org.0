@@ -2,23 +2,23 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5639215F0ED
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 18:59:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F01E15F0DA
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 18:59:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387628AbgBNR6S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 12:58:18 -0500
-Received: from mail-eopbgr680082.outbound.protection.outlook.com ([40.107.68.82]:17279
-        "EHLO NAM04-BN3-obe.outbound.protection.outlook.com"
+        id S2388181AbgBNP5Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 10:57:16 -0500
+Received: from mail-dm6nam12on2045.outbound.protection.outlook.com ([40.107.243.45]:34744
+        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1729882AbgBNP5O (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 14 Feb 2020 10:57:14 -0500
+        id S1730636AbgBNP5P (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 14 Feb 2020 10:57:15 -0500
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=I6B86umGFIGimbvRam7c9HTA22+ad0bbwk7/UrQxe1E5sdaV5upRfrQWDKyq3a3ELqHHUGrA6vy6L1X0mphzG1X5AdDGBvIML8ZEjnEB26N6En9Fb2wOFdIJdyMgeQx9PiIuLJe7lZ54vXTNamIdaSdiG92uoaevPURI577OCWvbzz1VnmYk/ntZakTSHrkIECGmCs4juVtVTjFtAC7fsu/RfRJnrXTDFjMOj6zpa7N4BLAt3MgzuFqbXyF0CfnnWBtmrLHQJLc+RpdmdXNFylK7GLtnmCrxLYlADFUwmPKLNocmakIC2TaHZF/NVWJwWDtlwrzB9x7JmHgJC1hYcQ==
+ b=UbDipHM4+zZL6clrE8DP+RxMtwqJddR4J84Kn7AO7JwcBRN0vcEj2kweWkmcpHQhuKcxn5Y2gs5Q7jcDdBVOSRKW/xx/vTLd3s/EP8X3+oz+FsCx/0D2rmlU73TCeCDYhcgDHSff2dPJSiBzzBIPcSRq7XV2QInJExAJeI66J5ofSH1xVtlMcRMbkAw6ZcGyvkhK7zD3aVlSN6pfYVvXiWjY20S3a0i9PutrDx5tWBxbdV2+Cy96QbsY/jHJqC1QXrDs7heotjZziSSOOBrKKxNBfryBBflYGJmp0aYTPSlcPJzyKdj2aqrP7+CFbfJq7DJKq6kZ2liVkN6y+vY0Pw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IE8lLucDYfCrdS9utv/BkKHREyx2rBrFyW9gbmx+UyI=;
- b=PTW0h5KMffo8FiLxLhkiJkGPCjxdQVI1xylN3nkYfITf09JgmNpwhO6zSzhZpggYwx93ypEnIbDLdXiJcq5Jvqa8akL6/7LlQLb7Tl+JhS3OX/h8y7K6Asm/1soBD8ifOL+CR/L9KDz/wDqowuRXFb2q4/9uvuaOtNAMcpf1fJLJk0A+hUessLNmCXV1T36h8sLc4L9BcWmKMP7rIvKTDHLXlZnsUVsL9RlLBA/wUYUzqkRc91WiAyKaHfeO6SO1MBB/uLl6stu0+awPMujZdyw+f7HlHeKDPQJ3fcu8SfNWv7RX4LzjEeOJisT74ouPgfjWTDg7bNdrCOfkRlAJwQ==
+ bh=R9GfjKmC6WE9KgF6VLgLnREHgTv0N9zlsmLGWtvhZZk=;
+ b=IotRfZPL57F7HMX+1O1mW0nemPPJ6LKECVEY7UcGyu9Hb7Gf39W0Nx51alAYTyhdbn//fKzau5lVlp2lbuoSjTOu2oi++6u/uWv5WvZQ3QtGbL4RfNGGyoUwDW7Z/GaGB/kqRyIK2hyQognM2hF2qtb4mSqh9kxL1POOCKRtuMYnAoJ1Yb5mG70rGIj4WuMln1W8P5kirQP0id5x+bCeKrllcYxNUQv1Mz0B0Klw080Ld8d6730hw9A1+B9wTUZ96VAbr/Xndss0d3m5phrnRpHcrWE899fJXodv0zwTZdj7/ULol5h+/oX+zTX780h7Ejeb8bg87Gtuas/1KN5KLA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
  165.204.84.17) smtp.rcpttodomain=gmail.com smtp.mailfrom=amd.com;
  dmarc=permerror action=none header.from=amd.com; dkim=none (message not
@@ -26,18 +26,18 @@ ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none (sender ip is
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IE8lLucDYfCrdS9utv/BkKHREyx2rBrFyW9gbmx+UyI=;
- b=EB1T3tPfKYaLCKOYfeK0VTXNJx+lzUCXoJVwUOVPrpbG7K6oUN0eaXUYGqd642r0Eht8eof6ozsl+BuU8X8wbllSuc2CMWaSPVi0XUPfRqI03j0wC1Kx7yQa5mCzKT8JWuLU/psjojDoNivFBa7x+CQ3ZAF6JXzJOXzUjgei2DE=
+ bh=R9GfjKmC6WE9KgF6VLgLnREHgTv0N9zlsmLGWtvhZZk=;
+ b=JllNquCxGdAyRzGcbJyQgkkiuFrHa/7lIhyBCSeyUqYXGGaCUtGxLZYJekFw8HceqmrcQuQLICMA2hAnkEsfNmSEbYLPnIpxXPc5ZqUz4YGPyfaMpvGlkY2u+knAWb1zfihsbAixou99R8gJMA6WvmefqsC9OmgUW1PIUOMRUEk=
 Received: from SN1PR12CA0078.namprd12.prod.outlook.com (2603:10b6:802:20::49)
- by MW2PR12MB2428.namprd12.prod.outlook.com (2603:10b6:907:6::25) with
+ by DM6PR12MB2873.namprd12.prod.outlook.com (2603:10b6:5:18a::32) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.23; Fri, 14 Feb
- 2020 15:57:08 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2707.29; Fri, 14 Feb
+ 2020 15:57:12 +0000
 Received: from BN8NAM11FT029.eop-nam11.prod.protection.outlook.com
  (2a01:111:f400:7eae::208) by SN1PR12CA0078.outlook.office365.com
  (2603:10b6:802:20::49) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.22 via Frontend
- Transport; Fri, 14 Feb 2020 15:57:08 +0000
+ Transport; Fri, 14 Feb 2020 15:57:12 +0000
 Authentication-Results: spf=none (sender IP is 165.204.84.17)
  smtp.mailfrom=amd.com; gmail.com; dkim=none (message not signed)
  header.d=none;gmail.com; dmarc=permerror action=none header.from=amd.com;
@@ -46,14 +46,14 @@ Received-SPF: None (protection.outlook.com: amd.com does not designate
 Received: from SATLEXMB01.amd.com (165.204.84.17) by
  BN8NAM11FT029.mail.protection.outlook.com (10.13.177.68) with Microsoft SMTP
  Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.2729.22 via Frontend Transport; Fri, 14 Feb 2020 15:57:08 +0000
+ 15.20.2729.22 via Frontend Transport; Fri, 14 Feb 2020 15:57:12 +0000
 Received: from SATLEXMB02.amd.com (10.181.40.143) by SATLEXMB01.amd.com
  (10.181.40.142) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Fri, 14 Feb
- 2020 09:57:08 -0600
+ 2020 09:57:11 -0600
 Received: from yuho-zbook.amd.com (10.180.168.240) by SATLEXMB02.amd.com
  (10.181.40.143) with Microsoft SMTP Server id 15.1.1713.5 via Frontend
- Transport; Fri, 14 Feb 2020 09:57:07 -0600
+ Transport; Fri, 14 Feb 2020 09:57:10 -0600
 From:   Kenny Ho <Kenny.Ho@amd.com>
 To:     <y2kenny@gmail.com>, <cgroups@vger.kernel.org>,
         <dri-devel@lists.freedesktop.org>, <amd-gfx@lists.freedesktop.org>,
@@ -63,9 +63,9 @@ To:     <y2kenny@gmail.com>, <cgroups@vger.kernel.org>,
         <lkaplan@cray.com>, <daniel@ffwll.ch>, <nirmoy.das@amd.com>,
         <damon.mcdougall@amd.com>, <juan.zuniga-anaya@amd.com>
 CC:     Kenny Ho <Kenny.Ho@amd.com>
-Subject: [PATCH 01/11] cgroup: Introduce cgroup for drm subsystem
-Date:   Fri, 14 Feb 2020 10:56:40 -0500
-Message-ID: <20200214155650.21203-2-Kenny.Ho@amd.com>
+Subject: [PATCH 04/11] drm, cgroup: Add total GEM buffer allocation stats
+Date:   Fri, 14 Feb 2020 10:56:43 -0500
+Message-ID: <20200214155650.21203-5-Kenny.Ho@amd.com>
 X-Mailer: git-send-email 2.25.0
 In-Reply-To: <20200214155650.21203-1-Kenny.Ho@amd.com>
 References: <20200214155650.21203-1-Kenny.Ho@amd.com>
@@ -74,285 +74,434 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EOPAttributedMessage: 0
 X-MS-Office365-Filtering-HT: Tenant
-X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(39860400002)(136003)(376002)(396003)(346002)(428003)(189003)(199004)(186003)(86362001)(5660300002)(7696005)(26005)(8936002)(2616005)(81156014)(110136005)(426003)(356004)(6666004)(8676002)(81166006)(4326008)(36756003)(70586007)(316002)(70206006)(478600001)(336012)(6636002)(1076003)(2906002)(921003)(83996005)(2101003)(1121003);DIR:OUT;SFP:1101;SCL:1;SRVR:MW2PR12MB2428;H:SATLEXMB01.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;MX:1;A:1;
+X-Forefront-Antispam-Report: CIP:165.204.84.17;IPV:;CTRY:US;EFV:NLI;SFV:NSPM;SFS:(10009020)(4636009)(346002)(396003)(39860400002)(136003)(376002)(428003)(189003)(199004)(1076003)(7696005)(8676002)(478600001)(2906002)(30864003)(70586007)(81156014)(186003)(8936002)(316002)(70206006)(81166006)(356004)(110136005)(6666004)(26005)(86362001)(36756003)(336012)(4326008)(426003)(2616005)(6636002)(5660300002)(921003)(1121003)(2101003)(83996005);DIR:OUT;SFP:1101;SCL:1;SRVR:DM6PR12MB2873;H:SATLEXMB01.amd.com;FPR:;SPF:None;LANG:en;PTR:InfoDomainNonexistent;MX:1;A:1;
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 5c56c5ed-2b38-4082-1b3e-08d7b1668bca
-X-MS-TrafficTypeDiagnostic: MW2PR12MB2428:
-X-Microsoft-Antispam-PRVS: <MW2PR12MB2428E4A1FC3EB89BF95CED0C83150@MW2PR12MB2428.namprd12.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 9fee3391-cac0-4995-b70f-08d7b1668dee
+X-MS-TrafficTypeDiagnostic: DM6PR12MB2873:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB28735612014EA149BFB49D1683150@DM6PR12MB2873.namprd12.prod.outlook.com>
 X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-Forefront-PRVS: 03137AC81E
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 687Vh3NMemC7b1hvhqCp6VqKTORvVH9bwj2sIUvrHdZe8R52BwqJH7GfNrRQ/px6l5md7FK01HzRLpls81kKpImwNDRTEnYcloNbRrZD5XzXXBANEVTicsvc1jWx+sxinzo6L5Rlmhr29sDxEbYQqabr6c4pdAHalskMs0dr1ckBcJ4KreZw+1fhm/9tOPX2uVI0mfclHGhL3LtIRDwj+OCjsUFAihiOo9ZApHtc63PxrYXU44ZIefg1mRVUjS7DORNo6XM/z0ieEHk0gxHAs+iR26BXBS6CX4ebxT9XR7/re0H5hf+nACXmTzVxlPu7FvYuPveT4OI3uQ2rkcs+Xpn1Z2ZMz/O361Lr6/FNmN1krucB/+QJ1ddcxPWzVAH+hO9jyLN4EBITcPHmdUZ8bwZ3lHuZYx9jS05ZqKj5K0/PuXmceR4eEJEpo76KsMbkJ3u9YJ3JZ5dfAtJovdDgWqZq2UqIKWJ9pP6yQgSViPc7DdhKyo7FzkEldBB1DDTsZJAEliL2IBvjNrv+yugLKuniIa5911k//m+BuJ/gnFY=
+X-Microsoft-Antispam-Message-Info: D3HEl3tv9gHdkVFsUkpqW6XjlR/BflZuBTU+oxvGyuD3oio69wX2z+BkW8BMg6A8pDA5zjaEimsB4wW1ESea3z/7itcilmHLwrJ6ADYnJoVGLlbaTFxw7AiBKdQVPyg99j6/85l1qf+/1VpN6fNWMLixLekGXU8Hm/YrvxQ2GVQ6ivc/vFeuMx98zPwby8+NaYmMn8A9ntLfOZbaVe2+KuPXdvj0A2Q6/Bu8olJYjBsSZnKIfRs6PVit0lsIIYcqPEwJjzYaRY9IhjCei+Jr4la+6flbnrHO3FnrRPCsjydn7RdDA30uabjqueZqEn2us1wMbY5dmNt0fHkzXwZ4fXY8G84Oya0G6ZJ7qdDckRelFRGOHZnQ8RSWCqfF/GN2z1/HpOqkRdfCYvmH96Ao3yWJoXo/ypQqMi1ff99FhJIgOMUSiJ0/LvNiXkrPQMJa4kmpX9vEK0CGbfFzLlnQAADSHMGgk0fD6/iJBlFxtTDSKQcceOcEFHEOUVDhiZNh9BBQRvKD+iQ9J8SsRMjQuV0xLOe8DCpr930skYKnzs8=
 X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2020 15:57:08.5843
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2020 15:57:12.1806
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c56c5ed-2b38-4082-1b3e-08d7b1668bca
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9fee3391-cac0-4995-b70f-08d7b1668dee
 X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
 X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB01.amd.com]
 X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW2PR12MB2428
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2873
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-With the increased importance of machine learning, data science and
-other cloud-based applications, GPUs are already in production use in
-data centers today.  Existing GPU resource management is very coarse
-grain, however, as sysadmins are only able to distribute workload on a
-per-GPU basis.  An alternative is to use GPU virtualization (with or
-without SRIOV) but it generally acts on the entire GPU instead of the
-specific resources in a GPU.  With a drm cgroup controller, we can
-enable alternate, fine-grain, sub-GPU resource management (in addition
-to what may be available via GPU virtualization.)
+The drm resource being measured here is the GEM buffer objects.  User
+applications allocate and free these buffers.  In addition, a process
+can allocate a buffer and share it with another process.  The consumer
+of a shared buffer can also outlive the allocator of the buffer.
 
-Change-Id: Ia90aed8c4cb89ff20d8216a903a765655b44fc9a
+For the purpose of cgroup accounting and limiting, ownership of the
+buffer is deemed to be the cgroup for which the allocating process
+belongs to.  There is one cgroup stats per drm device.  Each allocation
+is charged to the owning cgroup as well as all its ancestors.
+
+Similar to the memory cgroup, migrating a process to a different cgroup
+does not move the GEM buffer usages that the process started while in
+previous cgroup, to the new cgroup.
+
+The following is an example to illustrate some of the operations.  Given
+the following cgroup hierarchy (The letters are cgroup names with R
+being the root cgroup.  The numbers in brackets are processes.  The
+processes are placed with cgroup's 'No Internal Process Constraint' in
+mind, so no process is placed in cgroup B.)
+
+R (4, 5) ------ A (6)
+ \
+  B ---- C (7,8)
+   \
+    D (9)
+
+Here is a list of operation and the associated effect on the size
+track by the cgroups (for simplicity, each buffer is 1 unit in size.)
+
+==  ==  ==  ==  ==  ===================================================
+R   A   B   C   D   Ops
+==  ==  ==  ==  ==  ===================================================
+1   0   0   0   0   4 allocated a buffer
+1   0   0   0   0   4 shared a buffer with 5
+1   0   0   0   0   4 shared a buffer with 9
+2   0   1   0   1   9 allocated a buffer
+3   0   2   1   1   7 allocated a buffer
+3   0   2   1   1   7 shared a buffer with 8
+3   0   2   1   1   7 sharing with 9
+3   0   2   1   1   7 release a buffer
+3   0   2   1   1   7 migrate to cgroup D
+3   0   2   1   1   9 release a buffer from 7
+2   0   1   0   1   8 release a buffer from 7 (last ref to shared buf)
+==  ==  ==  ==  ==  ===================================================
+
+drm.buffer.stats
+        A read-only flat-keyed file which exists on all cgroups.  Each
+        entry is keyed by the drm device's major:minor.
+
+        Total GEM buffer allocation in bytes.
+
+Change-Id: Ibc1f646ca7dbc588e2d11802b156b524696a23e7
 Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 18 ++++-
- Documentation/cgroup-v1/drm.rst         |  1 +
- include/linux/cgroup_drm.h              | 92 +++++++++++++++++++++++++
- include/linux/cgroup_subsys.h           |  4 ++
- init/Kconfig                            |  5 ++
- kernel/cgroup/Makefile                  |  1 +
- kernel/cgroup/drm.c                     | 42 +++++++++++
- 7 files changed, 161 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/cgroup-v1/drm.rst
- create mode 100644 include/linux/cgroup_drm.h
- create mode 100644 kernel/cgroup/drm.c
+ Documentation/admin-guide/cgroup-v2.rst |  50 +++++++++-
+ drivers/gpu/drm/drm_gem.c               |   9 ++
+ include/drm/drm_cgroup.h                |  16 +++
+ include/drm/drm_gem.h                   |  10 ++
+ include/linux/cgroup_drm.h              |   6 ++
+ kernel/cgroup/drm.c                     | 126 ++++++++++++++++++++++++
+ 6 files changed, 216 insertions(+), 1 deletion(-)
 
 diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 5361ebec3361..384db8df0f30 100644
+index 384db8df0f30..2d8162c109f3 100644
 --- a/Documentation/admin-guide/cgroup-v2.rst
 +++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -61,8 +61,10 @@ v1 is available under Documentation/admin-guide/cgroup-v1/.
-      5-6. Device
-      5-7. RDMA
+@@ -63,6 +63,7 @@ v1 is available under Documentation/admin-guide/cgroup-v1/.
         5-7-1. RDMA Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-8. DRM
-+       5-8-1. DRM Interface Files
-+     5-9. Misc
-+       5-9-1. perf_event
+      5-8. DRM
+        5-8-1. DRM Interface Files
++       5-8-2. GEM Buffer Ownership
+      5-9. Misc
+        5-9-1. perf_event
       5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2051,6 +2053,18 @@ RDMA Interface Files
- 	  ocrdma1 hca_handle=1 hca_object=23
+@@ -2062,7 +2063,54 @@ of DRM (Direct Rendering Manager) and GPU-related resources.
+ DRM Interface Files
+ ~~~~~~~~~~~~~~~~~~~~
  
- 
-+DRM
-+---
+-TODO
++  drm.buffer.stats
++	A read-only flat-keyed file which exists on all cgroups.  Each
++	entry is keyed by the drm device's major:minor.
 +
-+The "drm" controller regulates the distribution and accounting of
-+of DRM (Direct Rendering Manager) and GPU-related resources.
++	Total GEM buffer allocation in bytes.
 +
-+DRM Interface Files
++GEM Buffer Ownership
 +~~~~~~~~~~~~~~~~~~~~
 +
-+TODO
++For the purpose of cgroup accounting and limiting, ownership of the
++buffer is deemed to be the cgroup for which the allocating process
++belongs to.  There is one cgroup stats per drm device.  Each allocation
++is charged to the owning cgroup as well as all its ancestors.
 +
++Similar to the memory cgroup, migrating a process to a different cgroup
++does not move the GEM buffer usages that the process started while in
++previous cgroup, to the new cgroup.
 +
++The following is an example to illustrate some of the operations.  Given
++the following cgroup hierarchy (The letters are cgroup names with R
++being the root cgroup.  The numbers in brackets are processes.  The
++processes are placed with cgroup's 'No Internal Process Constraint' in
++mind, so no process is placed in cgroup B.)
++
++R (4, 5) ------ A (6)
++ \
++  B ---- C (7,8)
++   \
++    D (9)
++
++Here is a list of operation and the associated effect on the size
++track by the cgroups (for simplicity, each buffer is 1 unit in size.)
++
++==  ==  ==  ==  ==  ===================================================
++R   A   B   C   D   Ops
++==  ==  ==  ==  ==  ===================================================
++1   0   0   0   0   4 allocated a buffer
++1   0   0   0   0   4 shared a buffer with 5
++1   0   0   0   0   4 shared a buffer with 9
++2   0   1   0   1   9 allocated a buffer
++3   0   2   1   1   7 allocated a buffer
++3   0   2   1   1   7 shared a buffer with 8
++3   0   2   1   1   7 sharing with 9
++3   0   2   1   1   7 release a buffer
++3   0   2   1   1   7 migrate to cgroup D
++3   0   2   1   1   9 release a buffer from 7
++2   0   1   0   1   8 release a buffer from 7 (last ref to shared buf)
++==  ==  ==  ==  ==  ===================================================
+ 
+ 
  Misc
- ----
- 
-diff --git a/Documentation/cgroup-v1/drm.rst b/Documentation/cgroup-v1/drm.rst
-new file mode 100644
-index 000000000000..5f5658e1f5ed
---- /dev/null
-+++ b/Documentation/cgroup-v1/drm.rst
-@@ -0,0 +1 @@
-+Please see ../cgroup-v2.rst for details
-diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-new file mode 100644
-index 000000000000..ba7981ac3afc
---- /dev/null
-+++ b/include/linux/cgroup_drm.h
-@@ -0,0 +1,92 @@
-+/* SPDX-License-Identifier: MIT
-+ * Copyright 2019 Advanced Micro Devices, Inc.
-+ */
-+#ifndef _CGROUP_DRM_H
-+#define _CGROUP_DRM_H
-+
-+#include <linux/cgroup.h>
-+
-+#ifdef CONFIG_CGROUP_DRM
-+
-+/**
-+ * The DRM cgroup controller data structure.
-+ */
-+struct drmcg {
-+	struct cgroup_subsys_state	css;
-+};
-+
-+/**
-+ * css_to_drmcg - get the corresponding drmcg ref from a cgroup_subsys_state
-+ * @css: the target cgroup_subsys_state
-+ *
-+ * Return: DRM cgroup that contains the @css
-+ */
-+static inline struct drmcg *css_to_drmcg(struct cgroup_subsys_state *css)
-+{
-+	return css ? container_of(css, struct drmcg, css) : NULL;
-+}
-+
-+/**
-+ * drmcg_get - get the drmcg reference that a task belongs to
-+ * @task: the target task
-+ *
-+ * This increase the reference count of the css that the @task belongs to
-+ *
-+ * Return: reference to the DRM cgroup the task belongs to
-+ */
-+static inline struct drmcg *drmcg_get(struct task_struct *task)
-+{
-+	return css_to_drmcg(task_get_css(task, drm_cgrp_id));
-+}
-+
-+/**
-+ * drmcg_put - put a drmcg reference
-+ * @drmcg: the target drmcg
-+ *
-+ * Put a reference obtained via drmcg_get
-+ */
-+static inline void drmcg_put(struct drmcg *drmcg)
-+{
-+	if (drmcg)
-+		css_put(&drmcg->css);
-+}
-+
-+/**
-+ * drmcg_parent - find the parent of a drm cgroup
-+ * @cg: the target drmcg
-+ *
-+ * This does not increase the reference count of the parent cgroup
-+ *
-+ * Return: parent DRM cgroup of @cg
-+ */
-+static inline struct drmcg *drmcg_parent(struct drmcg *cg)
-+{
-+	return css_to_drmcg(cg->css.parent);
-+}
-+
-+#else /* CONFIG_CGROUP_DRM */
-+
-+struct drmcg {
-+};
-+
-+static inline struct drmcg *css_to_drmcg(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
-+static inline struct drmcg *drmcg_get(struct task_struct *task)
-+{
-+	return NULL;
-+}
-+
-+static inline void drmcg_put(struct drmcg *drmcg)
-+{
-+}
-+
-+static inline struct drmcg *drmcg_parent(struct drmcg *cg)
-+{
-+	return NULL;
-+}
-+
-+#endif	/* CONFIG_CGROUP_DRM */
-+#endif	/* _CGROUP_DRM_H */
-diff --git a/include/linux/cgroup_subsys.h b/include/linux/cgroup_subsys.h
-index acb77dcff3b4..ddedad809e8b 100644
---- a/include/linux/cgroup_subsys.h
-+++ b/include/linux/cgroup_subsys.h
-@@ -61,6 +61,10 @@ SUBSYS(pids)
- SUBSYS(rdma)
- #endif
- 
-+#if IS_ENABLED(CONFIG_CGROUP_DRM)
-+SUBSYS(drm)
-+#endif
-+
- /*
-  * The following subsystems are not supported on the default hierarchy.
-  */
-diff --git a/init/Kconfig b/init/Kconfig
-index b4daad2bac23..8ea6bcfbe5e9 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -981,6 +981,11 @@ config CGROUP_RDMA
- 	  Attaching processes with active RDMA resources to the cgroup
- 	  hierarchy is allowed even if can cross the hierarchy's limit.
- 
-+config CGROUP_DRM
-+	bool "DRM controller (EXPERIMENTAL)"
-+	help
-+	  Provides accounting and enforcement of resources in the DRM subsystem.
-+
- config CGROUP_FREEZER
- 	bool "Freezer controller"
- 	help
-diff --git a/kernel/cgroup/Makefile b/kernel/cgroup/Makefile
-index 5d7a76bfbbb7..31f186f58121 100644
---- a/kernel/cgroup/Makefile
-+++ b/kernel/cgroup/Makefile
-@@ -4,5 +4,6 @@ obj-y := cgroup.o rstat.o namespace.o cgroup-v1.o freezer.o
- obj-$(CONFIG_CGROUP_FREEZER) += legacy_freezer.o
- obj-$(CONFIG_CGROUP_PIDS) += pids.o
- obj-$(CONFIG_CGROUP_RDMA) += rdma.o
-+obj-$(CONFIG_CGROUP_DRM) += drm.o
- obj-$(CONFIG_CPUSETS) += cpuset.o
- obj-$(CONFIG_CGROUP_DEBUG) += debug.o
-diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-new file mode 100644
-index 000000000000..e97861b3cb30
---- /dev/null
-+++ b/kernel/cgroup/drm.c
-@@ -0,0 +1,42 @@
-+// SPDX-License-Identifier: MIT
-+// Copyright 2019 Advanced Micro Devices, Inc.
-+#include <linux/slab.h>
-+#include <linux/cgroup.h>
+diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+index 2f2b889096b0..d158470edd98 100644
+--- a/drivers/gpu/drm/drm_gem.c
++++ b/drivers/gpu/drm/drm_gem.c
+@@ -38,6 +38,7 @@
+ #include <linux/dma-buf.h>
+ #include <linux/mem_encrypt.h>
+ #include <linux/pagevec.h>
 +#include <linux/cgroup_drm.h>
+ 
+ #include <drm/drm.h>
+ #include <drm/drm_device.h>
+@@ -46,6 +47,7 @@
+ #include <drm/drm_gem.h>
+ #include <drm/drm_print.h>
+ #include <drm/drm_vma_manager.h>
++#include <drm/drm_cgroup.h>
+ 
+ #include "drm_internal.h"
+ 
+@@ -164,6 +166,9 @@ void drm_gem_private_object_init(struct drm_device *dev,
+ 		obj->resv = &obj->_resv;
+ 
+ 	drm_vma_node_reset(&obj->vma_node);
 +
-+static struct drmcg *root_drmcg __read_mostly;
++	obj->drmcg = drmcg_get(current);
++	drmcg_chg_bo_alloc(obj->drmcg, dev, size);
+ }
+ EXPORT_SYMBOL(drm_gem_private_object_init);
+ 
+@@ -957,6 +962,10 @@ drm_gem_object_release(struct drm_gem_object *obj)
+ 		fput(obj->filp);
+ 
+ 	dma_resv_fini(&obj->_resv);
 +
-+static void drmcg_css_free(struct cgroup_subsys_state *css)
++	drmcg_unchg_bo_alloc(obj->drmcg, obj->dev, obj->size);
++	drmcg_put(obj->drmcg);
++
+ 	drm_gem_free_mmap_offset(obj);
+ }
+ EXPORT_SYMBOL(drm_gem_object_release);
+diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
+index fda426fba035..1eb3012e16a1 100644
+--- a/include/drm/drm_cgroup.h
++++ b/include/drm/drm_cgroup.h
+@@ -26,6 +26,12 @@ void drmcg_unregister_dev(struct drm_device *dev);
+ 
+ void drmcg_device_early_init(struct drm_device *device);
+ 
++void drmcg_chg_bo_alloc(struct drmcg *drmcg, struct drm_device *dev,
++		size_t size);
++
++void drmcg_unchg_bo_alloc(struct drmcg *drmcg, struct drm_device *dev,
++		size_t size);
++
+ #else
+ 
+ struct drmcg_props {
+@@ -53,5 +59,15 @@ static inline void drmcg_device_early_init(struct drm_device *device)
+ {
+ }
+ 
++static inline void drmcg_chg_bo_alloc(struct drmcg *drmcg,
++		struct drm_device *dev,	size_t size)
 +{
-+	struct drmcg *drmcg = css_to_drmcg(css);
-+
-+	kfree(drmcg);
 +}
 +
-+static struct cgroup_subsys_state *
-+drmcg_css_alloc(struct cgroup_subsys_state *parent_css)
++static inline void drmcg_unchg_bo_alloc(struct drmcg *drmcg,
++		struct drm_device *dev,	size_t size)
 +{
-+	struct drmcg *parent = css_to_drmcg(parent_css);
++}
++
+ #endif /* CONFIG_CGROUP_DRM */
+ #endif /* __DRM_CGROUP_H__ */
+diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+index 97a48165642c..6ac7018923f7 100644
+--- a/include/drm/drm_gem.h
++++ b/include/drm/drm_gem.h
+@@ -312,6 +312,16 @@ struct drm_gem_object {
+ 	 *
+ 	 */
+ 	const struct drm_gem_object_funcs *funcs;
++
++	/**
++	 * @drmcg:
++	 *
++	 * DRM cgroup this GEM object belongs to.
++	 *
++	 * This is used to track and limit the amount of GEM objects a user
++	 * can allocate.
++	 */
 +	struct drmcg *drmcg;
+ };
+ 
+ /**
+diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+index 2014097eb75c..174ab50701ef 100644
+--- a/include/linux/cgroup_drm.h
++++ b/include/linux/cgroup_drm.h
+@@ -11,6 +11,11 @@
+ /* limit defined per the way drm_minor_alloc operates */
+ #define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
+ 
++enum drmcg_res_type {
++	DRMCG_TYPE_BO_TOTAL,
++	__DRMCG_TYPE_LAST,
++};
 +
-+	drmcg = kzalloc(sizeof(struct drmcg), GFP_KERNEL);
-+	if (!drmcg)
-+		return ERR_PTR(-ENOMEM);
+ #ifdef CONFIG_CGROUP_DRM
+ 
+ /**
+@@ -18,6 +23,7 @@
+  */
+ struct drmcg_device_resource {
+ 	/* for per device stats */
++	s64			bo_stats_total_allocated;
+ };
+ 
+ /**
+diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
+index 30fd9aeffbe7..425566753a5c 100644
+--- a/kernel/cgroup/drm.c
++++ b/kernel/cgroup/drm.c
+@@ -13,6 +13,7 @@
+ #include <drm/drm_file.h>
+ #include <drm/drm_drv.h>
+ #include <drm/drm_device.h>
++#include <drm/drm_ioctl.h>
+ #include <drm/drm_cgroup.h>
+ 
+ static struct drmcg *root_drmcg __read_mostly;
+@@ -26,6 +27,18 @@ static struct drm_minor (*(*acquire_drm_minor)(unsigned int minor_id));
+ 
+ static void (*put_drm_dev)(struct drm_device *dev);
+ 
++#define DRMCG_CTF_PRIV_SIZE 3
++#define DRMCG_CTF_PRIV_MASK GENMASK((DRMCG_CTF_PRIV_SIZE - 1), 0)
++#define DRMCG_CTF_PRIV(res_type, f_type)  ((res_type) <<\
++		DRMCG_CTF_PRIV_SIZE | (f_type))
++#define DRMCG_CTF_PRIV2RESTYPE(priv) ((priv) >> DRMCG_CTF_PRIV_SIZE)
++#define DRMCG_CTF_PRIV2FTYPE(priv) ((priv) & DRMCG_CTF_PRIV_MASK)
 +
-+	if (!parent)
-+		root_drmcg = drmcg;
 +
-+	return &drmcg->css;
++enum drmcg_file_type {
++	DRMCG_FTYPE_STATS,
++};
++
+ /**
+  * drmcg_bind - Bind DRM subsystem to cgroup subsystem
+  * @acq_dm: function pointer to the drm_minor_acquire function
+@@ -252,7 +265,66 @@ drmcg_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	return &drmcg->css;
+ }
+ 
++static void drmcg_print_stats(struct drmcg_device_resource *ddr,
++		struct seq_file *sf, enum drmcg_res_type type)
++{
++	if (ddr == NULL) {
++		seq_puts(sf, "\n");
++		return;
++	}
++
++	switch (type) {
++	case DRMCG_TYPE_BO_TOTAL:
++		seq_printf(sf, "%lld\n", ddr->bo_stats_total_allocated);
++		break;
++	default:
++		seq_puts(sf, "\n");
++		break;
++	}
 +}
 +
-+struct cftype files[] = {
-+	{ }	/* terminate */
-+};
++static int drmcg_seq_show_fn(int id, void *ptr, void *data)
++{
++	struct drm_minor *minor = ptr;
++	struct seq_file *sf = data;
++	struct drmcg *drmcg = css_to_drmcg(seq_css(sf));
++	enum drmcg_file_type f_type =
++		DRMCG_CTF_PRIV2FTYPE(seq_cft(sf)->private);
++	enum drmcg_res_type type =
++		DRMCG_CTF_PRIV2RESTYPE(seq_cft(sf)->private);
++	struct drmcg_device_resource *ddr;
 +
-+struct cgroup_subsys drm_cgrp_subsys = {
-+	.css_alloc	= drmcg_css_alloc,
-+	.css_free	= drmcg_css_free,
-+	.early_init	= false,
-+	.legacy_cftypes	= files,
-+	.dfl_cftypes	= files,
-+};
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return 0;
++
++	ddr = drmcg->dev_resources[minor->index];
++
++	seq_printf(sf, "%d:%d ", DRM_MAJOR, minor->index);
++
++	switch (f_type) {
++	case DRMCG_FTYPE_STATS:
++		drmcg_print_stats(ddr, sf, type);
++		break;
++	default:
++		seq_puts(sf, "\n");
++		break;
++	}
++
++	return 0;
++}
++
++int drmcg_seq_show(struct seq_file *sf, void *v)
++{
++	return drm_minor_for_each(&drmcg_seq_show_fn, sf);
++}
++
+ struct cftype files[] = {
++	{
++		.name = "buffer.total.stats",
++		.seq_show = drmcg_seq_show,
++		.private = DRMCG_CTF_PRIV(DRMCG_TYPE_BO_TOTAL,
++						DRMCG_FTYPE_STATS),
++	},
+ 	{ }	/* terminate */
+ };
+ 
+@@ -276,3 +348,57 @@ void drmcg_device_early_init(struct drm_device *dev)
+ 	drmcg_update_cg_tree(dev);
+ }
+ EXPORT_SYMBOL(drmcg_device_early_init);
++
++/**
++ * drmcg_chg_bo_alloc - charge GEM buffer usage for a device and cgroup
++ * @drmcg: the DRM cgroup to be charged to
++ * @dev: the device the usage should be charged to
++ * @size: size of the GEM buffer to be accounted for
++ *
++ * This function should be called when a new GEM buffer is allocated to account
++ * for the utilization.  This should not be called when the buffer is shared (
++ * the GEM buffer's reference count being incremented.)
++ */
++void drmcg_chg_bo_alloc(struct drmcg *drmcg, struct drm_device *dev,
++		size_t size)
++{
++	struct drmcg_device_resource *ddr;
++	int devIdx = dev->primary->index;
++
++	if (drmcg == NULL)
++		return;
++
++	mutex_lock(&dev->drmcg_mutex);
++	for ( ; drmcg != NULL; drmcg = drmcg_parent(drmcg)) {
++		ddr = drmcg->dev_resources[devIdx];
++
++		ddr->bo_stats_total_allocated += (s64)size;
++	}
++	mutex_unlock(&dev->drmcg_mutex);
++}
++EXPORT_SYMBOL(drmcg_chg_bo_alloc);
++
++/**
++ * drmcg_unchg_bo_alloc -
++ * @drmcg: the DRM cgroup to uncharge from
++ * @dev: the device the usage should be removed from
++ * @size: size of the GEM buffer to be accounted for
++ *
++ * This function should be called when the GEM buffer is about to be freed (
++ * not simply when the GEM buffer's reference count is being decremented.)
++ */
++void drmcg_unchg_bo_alloc(struct drmcg *drmcg, struct drm_device *dev,
++		size_t size)
++{
++	int devIdx = dev->primary->index;
++
++	if (drmcg == NULL)
++		return;
++
++	mutex_lock(&dev->drmcg_mutex);
++	for ( ; drmcg != NULL; drmcg = drmcg_parent(drmcg))
++		drmcg->dev_resources[devIdx]->bo_stats_total_allocated
++			-= (s64)size;
++	mutex_unlock(&dev->drmcg_mutex);
++}
++EXPORT_SYMBOL(drmcg_unchg_bo_alloc);
 -- 
 2.25.0
 
