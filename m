@@ -2,189 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF8215CF67
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 02:17:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5597A15D296
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 08:13:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727609AbgBNBRs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Feb 2020 20:17:48 -0500
-Received: from mail-il1-f195.google.com ([209.85.166.195]:45845 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727604AbgBNBRr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Feb 2020 20:17:47 -0500
-Received: by mail-il1-f195.google.com with SMTP id p8so6668108iln.12;
-        Thu, 13 Feb 2020 17:17:47 -0800 (PST)
+        id S1728833AbgBNHNA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 02:13:00 -0500
+Received: from mail-pg1-f201.google.com ([209.85.215.201]:45694 "EHLO
+        mail-pg1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726048AbgBNHNA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 02:13:00 -0500
+Received: by mail-pg1-f201.google.com with SMTP id c2so5515882pga.12
+        for <cgroups@vger.kernel.org>; Thu, 13 Feb 2020 23:12:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=X1rUbbk5eSi/RPUfUTIVpYH2GwBV8H1jUAjzu+pVHyM=;
-        b=gbZ6FcplDBHiAEulkuso5ll5gdmYYNALxEiNfJPbgUQJzqp5Hr73oBkRdE8+jbq8Hr
-         rYTgJ9Zd5ZGkMLSr3gGEbKqllTFSCHBTo0JsdLa1MjrztRe38LWfLxBltiEBfcllz6qF
-         xx1PzIeoOoIZhzR5DVoYmZp5qiW+Nh0bS8XB1BN3BDLkcJk3utWVtkrcQt3eC5GAOlm+
-         pGCYWW6e0BBV1rGBknKtohqKld6cGV+9CZ13olsdim8mYe5/zay51ZNAE0cig9IXQTuM
-         y9xYCUNMj9FNuopMkInsN/7fCmhkvj5DhKpJ6m/nq30JcU6CIRvrSV0NIWQEw8qVipKK
-         69Mg==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=GUW2iSWVcQnIpjOPNE/ThNp+Hs+3dImvwMIhxUppeuc=;
+        b=X/KjJzEFSqSYWdSfML7JzS6n8HILLSQQiXHtsSRI37f+n9WVM5YZMoHTy7mrHn4gGG
+         hiPLZs7adC6g14eb5Li+tsysiLOlk8Tm2QXpXorPLvcipOR2ey7hQGzHi/U4dnqIMYqe
+         znIerMU7p8tjZjFbH0Zc0oTlRND+PiTNe3d94aV6gKKoRrlRGnwcmXmydkAf852PDJcU
+         wDUPiEnhJ7CO/mAQ39rQ+aGDyE0+Nwcqt9EtBy2NyB7VfJIBImkoe3Xcq668JvykU6aJ
+         QuJrqgKAcgR/YnrcmcwLhj9TFG9UrPEwL70sB3KLjiV9T3OsyGpnREhIXRMROfT7Q7A3
+         yvEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=X1rUbbk5eSi/RPUfUTIVpYH2GwBV8H1jUAjzu+pVHyM=;
-        b=VhyGrbv8QkfS+PljojJGsNCHmKKy/mzq2945YSACInu69AlVzbMgaNSsMiZY3exbR/
-         kH1RWaD8zdy7KHxM8eJu1x+FFvTQokN3wCXNmeSZeDZoYfO27QRuzl5Lc5w7CrFD5GXQ
-         nsonwy65o7luL3geXSdK3LcocHk2TQtcFaZhlBNvewPFZO58SdMjKt3t4+yALQlff7Zg
-         8d4pBvVQP853lZ6NCirCOu4tcoxR3jrKYZA7jESCgXXWhpeBmUYxodrLRHNuw4Iyb1c1
-         ifFN2VJjFpKVFsWEdjpFduq07XwekYT47KyVxexDoKrGLs1Bbsea+xpHk6a790A7jI+j
-         Juaw==
-X-Gm-Message-State: APjAAAV+ILiJOjlBinqweml9AwYTsD+hmxj4dSxmQrYDNO9WtZ4zY+9Z
-        uxhN5PkdjQvxSTC+3iU1geWQgbta6sFMHdKv2h0=
-X-Google-Smtp-Source: APXvYqxwxFCj6n+1QMs138xtb6xzqoB8/piWann9YVdb28UDFyW/hYLkv9lslL+PtIqjR89Z0iCaBeUCRIev8K5CFCg=
-X-Received: by 2002:a92:8656:: with SMTP id g83mr750858ild.9.1581643066684;
- Thu, 13 Feb 2020 17:17:46 -0800 (PST)
-MIME-Version: 1.0
-References: <20191107205334.158354-1-hannes@cmpxchg.org> <20191107205334.158354-3-hannes@cmpxchg.org>
- <20200212102817.GA18107@js1304-desktop> <20200212181834.GD180867@cmpxchg.org>
-In-Reply-To: <20200212181834.GD180867@cmpxchg.org>
-From:   Joonsoo Kim <js1304@gmail.com>
-Date:   Fri, 14 Feb 2020 10:17:35 +0900
-Message-ID: <CAAmzW4OSgYYZQuxkiL4UjCp97SnL+Ott7FB9__txQjGjO8UFmw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: vmscan: detect file thrashing at the reclaim root
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Rik van Riel <riel@surriel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        kernel-team@fb.com
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=GUW2iSWVcQnIpjOPNE/ThNp+Hs+3dImvwMIhxUppeuc=;
+        b=lRBx77HfHpxP8wCrCUPWmvGGv2d9oINtq/qNG+gCSqmWwYr39TJdA1Yr5webexktM5
+         MKKRnxxgIDsCnkzq81wiEf2nHxkCTGVcVpj95Cr3t2gFVRDiCGRyGr9/CNZGlGq6UJ4d
+         fXD6KYs2vUVmjFjhmpVvpD0KJg6D5lOYiSPYCYngnp7gaubawqBFj6It10EZi4a7gjLC
+         MApaMVZ6pfXWPmVRkjiJMz1a4LGvO3I1QZfhwcit7mbhmRb1NS8dVXqzW6AiolABmFzj
+         t1EpxJ+bhC6/VB/D2M5md+5bBrNmiqnU/rfM49p72nDXZ4tyRAeqe9nb7CbobqauBMym
+         0+0Q==
+X-Gm-Message-State: APjAAAUU20vcuoLYzBwKZEpIqE0ucpGb1XZnlm8aQa4fMXDJGj2hdar/
+        hGcKtaGFWQGx8MUM43vQ/SCSXjVJzwpTOA==
+X-Google-Smtp-Source: APXvYqwI3Y/jbP9VtSLYI93+92eWNZSPA3hRBkyh1+IdbC3I0JAFFYLTnNgS9Bb7M2Rhd12CMf5e5s0E8x8kmQ==
+X-Received: by 2002:a63:451b:: with SMTP id s27mr1904601pga.233.1581664378417;
+ Thu, 13 Feb 2020 23:12:58 -0800 (PST)
+Date:   Thu, 13 Feb 2020 23:12:33 -0800
+Message-Id: <20200214071233.100682-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+Subject: [PATCH] memcg: net: do not associate sock with unrelated memcg
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Eric Dumazet <edumazet@google.com>
+Cc:     Greg Thelen <gthelen@google.com>, Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-2020=EB=85=84 2=EC=9B=94 13=EC=9D=BC (=EB=AA=A9) =EC=98=A4=EC=A0=84 3:18, J=
-ohannes Weiner <hannes@cmpxchg.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> On Wed, Feb 12, 2020 at 07:28:19PM +0900, Joonsoo Kim wrote:
-> > Hello, Johannes.
-> >
-> > When I tested my patchset on v5.5, I found that my patchset doesn't
-> > work as intended. I tracked down the issue and this patch would be the
-> > reason of unintended work. I don't fully understand the patchset so I
-> > could be wrong. Please let me ask some questions.
-> >
-> > On Thu, Nov 07, 2019 at 12:53:33PM -0800, Johannes Weiner wrote:
-> > ...snip...
-> > > -static void snapshot_refaults(struct mem_cgroup *root_memcg, pg_data=
-_t *pgdat)
-> > > +static void snapshot_refaults(struct mem_cgroup *target_memcg, pg_da=
-ta_t *pgdat)
-> > >  {
-> > > -   struct mem_cgroup *memcg;
-> > > -
-> > > -   memcg =3D mem_cgroup_iter(root_memcg, NULL, NULL);
-> > > -   do {
-> > > -           unsigned long refaults;
-> > > -           struct lruvec *lruvec;
-> > > +   struct lruvec *target_lruvec;
-> > > +   unsigned long refaults;
-> > >
-> > > -           lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
-> > > -           refaults =3D lruvec_page_state_local(lruvec, WORKINGSET_A=
-CTIVATE);
-> > > -           lruvec->refaults =3D refaults;
-> > > -   } while ((memcg =3D mem_cgroup_iter(root_memcg, memcg, NULL)));
-> > > +   target_lruvec =3D mem_cgroup_lruvec(target_memcg, pgdat);
-> > > +   refaults =3D lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE=
-);
-> > > +   target_lruvec->refaults =3D refaults;
-> >
-> > Is it correct to just snapshot the refault for the target memcg? I
-> > think that we need to snapshot the refault for all the child memcgs
-> > since we have traversed all the child memcgs with the refault count
-> > that is aggregration of all the child memcgs. If next reclaim happens
-> > from the child memcg, workingset transition that is already considered
-> > could be considered again.
->
-> Good catch, you're right! We have to update all cgroups in the tree,
-> like we used to. However, we need to use lruvec_page_state() instead
-> of _local, because we do recursive comparisons in shrink_node()! So
-> it's not a clean revert of that hunk.
->
-> Does this patch here fix the problem you are seeing?
+We are testing network memory accounting in our setup and noticed
+inconsistent network memory usage and often unrelated memcgs network
+usage correlates with testing workload. On further inspection, it seems
+like mem_cgroup_sk_alloc() is broken in irq context specially for
+cgroup v1.
 
-I found that my problem comes from my mistake.
-Sorry for bothering you!
+mem_cgroup_sk_alloc() can be called in irq context and kind
+of assumes that it can only happen from sk_clone_lock() and the source
+sock object has already associated memcg. However in cgroup v1, where
+network memory accounting is opt-in, the source sock can be not
+associated with any memcg and the new cloned sock can get associated
+with unrelated interrupted memcg.
 
-Anyway, following hunk looks correct to me.
+Cgroup v2 can also suffer if the source sock object was created by
+process in the root memcg or if sk_alloc() is called in irq context.
+The fix is to just do nothing in interrupt.
 
-Acked-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Fixes: 2d7580738345 ("mm: memcontrol: consolidate cgroup socket tracking")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index c82e9831003f..e7431518db13 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2993,12 +2993,17 @@ static void shrink_zones(struct zonelist *zonelis=
-t, struct scan_control *sc)
->
->  static void snapshot_refaults(struct mem_cgroup *target_memcg, pg_data_t=
- *pgdat)
->  {
-> -       struct lruvec *target_lruvec;
-> -       unsigned long refaults;
-> +       struct mem_cgroup *memcg;
->
-> -       target_lruvec =3D mem_cgroup_lruvec(target_memcg, pgdat);
-> -       refaults =3D lruvec_page_state(target_lruvec, WORKINGSET_ACTIVATE=
-);
-> -       target_lruvec->refaults =3D refaults;
-> +       memcg =3D mem_cgroup_iter(target_memcg, NULL, NULL);
-> +       do {
-> +               unsigned long refaults;
-> +               struct lruvec *lruvec;
-> +
-> +               lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
-> +               refaults =3D lruvec_page_state(lruvec, WORKINGSET_ACTIVAT=
-E);
-> +               lruvec->refaults =3D refaults;
-> +       } while ((memcg =3D mem_cgroup_iter(target_memcg, memcg, NULL)));
->  }
->
->  /*
->
-> > > @@ -277,12 +305,12 @@ void workingset_refault(struct page *page, void=
- *shadow)
-> > >      * would be better if the root_mem_cgroup existed in all
-> > >      * configurations instead.
-> > >      */
-> > > -   memcg =3D mem_cgroup_from_id(memcgid);
-> > > -   if (!mem_cgroup_disabled() && !memcg)
-> > > +   eviction_memcg =3D mem_cgroup_from_id(memcgid);
-> > > +   if (!mem_cgroup_disabled() && !eviction_memcg)
-> > >             goto out;
-> > > -   lruvec =3D mem_cgroup_lruvec(memcg, pgdat);
-> > > -   refault =3D atomic_long_read(&lruvec->inactive_age);
-> > > -   active_file =3D lruvec_lru_size(lruvec, LRU_ACTIVE_FILE, MAX_NR_Z=
-ONES);
-> > > +   eviction_lruvec =3D mem_cgroup_lruvec(eviction_memcg, pgdat);
-> > > +   refault =3D atomic_long_read(&eviction_lruvec->inactive_age);
-> > > +   active_file =3D lruvec_page_state(eviction_lruvec, NR_ACTIVE_FILE=
-);
-> >
-> > Do we need to use the aggregation LRU count of all the child memcgs?
-> > AFAIU, refault here is the aggregation counter of all the related
-> > memcgs. Without using the aggregation count for LRU, active_file could
-> > be so small than the refault distance and refault cannot happen
-> > correctly.
->
-> lruvec_page_state() *is* aggregated for all child memcgs (as opposed
-> to lruvec_page_state_local()), so that comparison looks correct to me.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 63bb6a2aab81..f500da82bfe8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6697,6 +6697,10 @@ void mem_cgroup_sk_alloc(struct sock *sk)
+ 		return;
+ 	}
+ 
++	/* Do not associate the sock with unrelated interrupted task's memcg. */
++	if (in_interrupt())
++		return;
++
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_task(current);
+ 	if (memcg == root_mem_cgroup)
+-- 
+2.25.0.265.gbab2e86ba0-goog
 
-Thanks for informing this.
-I have checked lruvec_page_state() but not mod_lruvec_state() so cannot
-find that counter is the aggregated value.
-
-Thanks.
