@@ -2,63 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CFC9715E85D
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 17:59:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F6B015E9B6
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 18:08:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394384AbgBNQ7l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 11:59:41 -0500
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44976 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394342AbgBNQ7i (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 11:59:38 -0500
-Received: by mail-ed1-f67.google.com with SMTP id g19so11930019eds.11
-        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 08:59:35 -0800 (PST)
+        id S2404224AbgBNRIw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 12:08:52 -0500
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:52464 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404074AbgBNRIv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 12:08:51 -0500
+Received: by mail-wm1-f65.google.com with SMTP id p9so10703275wmc.2
+        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 09:08:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jlekstrand-net.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=zQET2SWePAJHC5EHLg4nL/UHPX4TOmdQlwDQSD1yBRU=;
-        b=jxaDxrhTS2j/WU6i6mWG1dncKx/D05CV5ryV0kK43IO1YI14tc8bK+TW5WaEBW+WW9
-         9aKHpU0z+5yJc32jHo2Ai0DLDakL0YS0brdcNRTIAeXMEeQqTHHIfxYnBe3N5H5pe6LZ
-         pfa6rf4t33ie+jgBu4T/jqkzQpoBVCjbh0O8oyZfWsh6iVybWL45Uwep/F6I7/+Nhny1
-         AykU27vVEgaPcFuyEHdXHPe9WRfTjbBXD90LMkkXOwHmUmWFiVF8DkKDxsRjO7gva/Rg
-         nqH/wvz9zmFHTACXFf3MB1yK/jj/qiv7xqbvkbuBZ0jbEDDHg9ApVR1zt3sHMJ9dt9TZ
-         hAPw==
+        bh=Rc05Jw2jcIY6Tk9luxB2qNAUA7nD4IKbOzgJ1s31oiE=;
+        b=pFBKb/sDm28yjbGME9ToZOVxKo+vZjURKMiQiVVwKAHHdJenwCwfcTgQN6H+QZdIiN
+         MSvrwkXI7T/Plxn9sstDgcj8GREI11QHsk9wMiz7BuNxWTpEJqEjGEXdvqj0/Vo8PWyy
+         iqvojITR+6eEL8llKf+IvkIZLdmPH1fx2c/EZDyw2i8P/YWHYo4jpTMFK4469WTpKzBP
+         1uA6QAmaABBIBgUCj4jpqxXgtn6xGqqKOQnrNE8DaYMmCaQZYkPcMYRXtx7OYpadhPyx
+         no+t7bWO8tY6B0LJ18svDOEpHc1Vw60QOVd2YZz6yI8Re+RrrrQDCyjJkidwOuqksFL9
+         bf/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=zQET2SWePAJHC5EHLg4nL/UHPX4TOmdQlwDQSD1yBRU=;
-        b=LtDau7ugKwNP9g+qtoFUAai0xEXQkP9JypWFw2H8IYEYvL7F0hvto6a/CVQcqRPAzJ
-         BAKBJTqNCpWGLR/F52Ft4iqO9O/2D9tJI4KAtJ4CLy3lDc+2/EagomVnbmykSxgK3P2y
-         NRI22HMc+X+3VBtJrwW+/IThxL/YLKh/QB+dfVlP8BjPXBV2XcQ4uim6j01f3DzHXAtl
-         qH/z8FXt4UJK36XFa3a5Hul/iOfqVcxz9efAhisfuxTsG316E8HJHhCR6yu3DWE3vHkW
-         6+fxNzuCA1Z4pmMGNuhu5zbw1wfus31dre+hZVkc+z/YqFB6Gr+69WcaQY7ryjvXnE86
-         thDA==
-X-Gm-Message-State: APjAAAWmOdCz1KOeL/6ph5cxyWyQVu7EswVrJwSZtO4h1xtQHeufViah
-        u3smr/wSB9C3tbMvvfnDOugo3nJroFE0QNqZXJKeIg==
-X-Google-Smtp-Source: APXvYqyi3xELtjIUkFA5b+C9V1wlrG14ep02SLUR8oDHucg/EPaG/bs9LwQcW5Dtf8EkVYEGXfIGJCng3QXNsvaF6fQ=
-X-Received: by 2002:aa7:d1cf:: with SMTP id g15mr3644699edp.301.1581699574677;
- Fri, 14 Feb 2020 08:59:34 -0800 (PST)
+        bh=Rc05Jw2jcIY6Tk9luxB2qNAUA7nD4IKbOzgJ1s31oiE=;
+        b=TbazYt1JfXSA4mooZEddxQIiEmjJZVQ4nQ5qAL/ImbpxnVcc01Hqb7opqIrHNEWeXc
+         9PKOOiQta6d2XosBCOlw6Tjylkriz5HgzCephd1gte4HPH87TbTNkvV8FNWOvyx5DHyG
+         lE0jdvVcBuv7Ag1Q4MirWrkmLXUyr9D127836wsWhh32HGPMmJuqrQnfL77eW5i23hVp
+         OM6LXbsdht4233/An/07MEHHxCIw+NPn7omTGpKq0zl+1L0YFZLbU6p5WHJS89D0l9bc
+         HqSijrL940mF13IpW4YiOIAcdN/HQb4uEsLQeNjj/ZRyucNK33q5niEEVU51z9G5bIYY
+         1YOA==
+X-Gm-Message-State: APjAAAUqv3plNzCY7xwDonJ+ZGZrGnzO1qIYz/h8/vQAfji7+LF9wsRP
+        2BYjTF4Eb3+4La0kj281xHHyWQSUkfbU/mNMO4A=
+X-Google-Smtp-Source: APXvYqzDYkAXWHlMjJQQqQnNjPeK3kngzOJN7NluLKc9FNLZKlt1F4AROJCv/t0dbx6tVJ7cvw2RJepqrGxGviwE3Ag=
+X-Received: by 2002:a1c:65d6:: with SMTP id z205mr5484074wmb.38.1581700127007;
+ Fri, 14 Feb 2020 09:08:47 -0800 (PST)
 MIME-Version: 1.0
 References: <20200214155650.21203-1-Kenny.Ho@amd.com> <20200214155650.21203-10-Kenny.Ho@amd.com>
  <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
 In-Reply-To: <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
-From:   Jason Ekstrand <jason@jlekstrand.net>
-Date:   Fri, 14 Feb 2020 10:59:23 -0600
-Message-ID: <CAOFGe94=vqFEU_ULyoQ=WPz-JjcOEXTkrY8W7SsF2QeOxBfWEg@mail.gmail.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Fri, 14 Feb 2020 12:08:35 -0500
+Message-ID: <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
 Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
-To:     Kenny Ho <Kenny.Ho@amd.com>
-Cc:     y2kenny@gmail.com, cgroups@vger.kernel.org,
+To:     Jason Ekstrand <jason@jlekstrand.net>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        tj@kernel.org, alexander.deucher@amd.com,
+        Tejun Heo <tj@kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
         =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        felix.kuehling@amd.com, joseph.greathouse@amd.com,
-        jsparks@cray.com, lkaplan@cray.com,
-        Daniel Vetter <daniel@ffwll.ch>, nirmoy.das@amd.com,
-        damon.mcdougall@amd.com, juan.zuniga-anaya@amd.com
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com, Daniel Vetter <daniel@ffwll.ch>,
+        nirmoy.das@amd.com, damon.mcdougall@amd.com,
+        juan.zuniga-anaya@amd.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
@@ -66,15 +68,20 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 10:44 AM Jason Ekstrand <jason@jlekstrand.net> wrot=
+Hi Jason,
+
+Thanks for the review.
+
+On Fri, Feb 14, 2020 at 11:44 AM Jason Ekstrand <jason@jlekstrand.net> wrot=
 e:
 >
 > Pardon my ignorance but I'm a bit confused by this.  What is a "logical G=
 PU"?  What are we subdividing?  Are we carving up memory?  Compute power?  =
 Both?
->
-> If it's carving up memory, why aren't we just measuring it in megabytes?
->
+
+The intention is compute but it is up to the individual drm driver to decid=
+e.
+
 > If it's carving up compute power, what's actually being carved up?  Time?=
   Execution units/waves/threads?  Even if that's the case, what advantage d=
 oes it give to have it in terms of a fixed set of lgpus where each cgroup g=
@@ -82,25 +89,33 @@ ets to pick a fixed set.  Does affinity matter that much?  Why not just say=
  how many waves the GPU supports and that they have to be allocated in chun=
 ks of 16 waves (pulling a number out of thin air) and let the cgroup specif=
 y how many waves it wants.
-
-One more question:  If I'm a userspace driver, and there are 14 lgpus
-allocated to my cgroup, does that mean I have 14 GPUs?  Or does that
-mean I have one GPU with 14 units of compute power?
-
+>
 > Don't get me wrong here.  I'm all for the notion of being able to use cgr=
 oups to carve up GPU compute resources.  However, this sounds to me like th=
 e most AMD-specific solution possible.  We (Intel) could probably do some s=
 ort of carving up as well but we'd likely want to do it with preemption and=
  time-slicing rather than handing out specific EUs.
 
-Ok, so "most AMD-specific solution possible" probably wasn't fair.
-However, it does seem like an unnecessarily rigid solution to me.
-Maybe there's something I'm not getting?
+This has been discussed in the RFC before
+(https://www.spinics.net/lists/cgroups/msg23469.html.)  As mentioned
+before, the idea of a compute unit is hardly an AMD specific thing as
+it is in the OpenCL standard and part of the architecture of many
+different vendors.  In addition, the interface presented here supports
+Intel's use case.  What you described is what I considered as the
+"anonymous resources" view of the lgpu.  What you/Intel can do, is to
+register your device to drmcg to have 100 lgpu and users can specify
+simply by count.  So if they want to allocate 5% for a cgroup, they
+would set count=3D5.  Per the documentation in this patch: "Some DRM
+devices may only support lgpu as anonymous resources.  In such case,
+the significance of the position of the set bits in list will be
+ignored."  What Intel does with the user expressed configuration of "5
+out of 100" is entirely up to Intel (time slice if you like, change to
+specific EUs later if you like, or make it driver configurable to
+support both if you like.)
 
---Jason
+Regards,
+Kenny
 
-> --Jason
->
 >
 > On Fri, Feb 14, 2020 at 9:57 AM Kenny Ho <Kenny.Ho@amd.com> wrote:
 >>
