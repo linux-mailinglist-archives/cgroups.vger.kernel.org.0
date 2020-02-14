@@ -2,60 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D700D15F9EA
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 23:44:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 398E015F9F3
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 23:48:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727901AbgBNWok (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 17:44:40 -0500
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:33352 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726164AbgBNWok (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 17:44:40 -0500
-Received: by mail-ot1-f65.google.com with SMTP id w6so1497878otk.0
-        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 14:44:39 -0800 (PST)
+        id S1727827AbgBNWs6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 17:48:58 -0500
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:46840 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726164AbgBNWs6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 17:48:58 -0500
+Received: by mail-oi1-f193.google.com with SMTP id a22so10951912oid.13
+        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 14:48:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=BieUm8+5YIDYgpe+FhMyY8gKnYdFr8G076ODKkZnCSI=;
-        b=L3eP57FHmgpwX0BXPjR4dUwWPeYx6VHKH+dC4bF26fzsa3xP9s0imlWA+E6uN0S05K
-         6yf51tiwkAerV/SJR1fGiA7Wr7WLGZ+zBOxXt4Qenpn5rfbjKgPm/mIibXFJTTd1Tp8t
-         Bq0p5XsdziD0E4io0BuEe8rJgP3xOcdLDCN8eS8l52k8BwSaxsGA+Wt0tRIEeIquIIJ2
-         auK+UxC6K6JqgIfyOGPbbekMOBylIsf5X7uNHK4QhAbHdShRHe/5UFvUjzVGbTfgjopB
-         SV18xbWZSDFVHxHJtWH3a/dtf1SPGdnTpCqTw50f6gi648Gtjpk6CtDMj2n25/NpIiJR
-         DBRw==
+        bh=TgoIP7Jshrn2duDl/cLkfq4CVlTeMc4BWp5pc4aKy4o=;
+        b=MhgOWYPob9S6aZV6qa2b7vLLaVDvt275tODnygTV/CKd8wZi8f724KWNlUCRxs5mjH
+         DCM690tw83yBr2LORN0E+j9ll5bD4HHOlWoWsl86QrhEuZIsmxOjBealBDm00d5vtezR
+         vUaYfoe/EyPW0Yufblun637lPw3LqF5RI0rMvLWN47ZAf9ujyHXOjVyP4Qfo2c271JS9
+         7rUY48zxABcoVUIkQPtg+0T4o5KmUJuvDUzJxKTBOgxeCBg2ZxJDuziggGbCQ9scH07Z
+         1lMwyvU0Aa05SCjGeSZN7Mw6D5wbI4rvxo452JwFeUFIe8Ry6FtSz9LrvBReh5+rLGI4
+         jBsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=BieUm8+5YIDYgpe+FhMyY8gKnYdFr8G076ODKkZnCSI=;
-        b=fMmQOG7QFiSX9z44GPdoQlRw6k181dbOTr7TLlUmCgcxpHeBGDLUI2Kd4e5imjQ/an
-         3Nskjqxj1tNYtssTplhZnRZAD6iViQtIho7sueMfeX+Y8+FbDY3tOOIQlLtrRTffxBxx
-         VhsxWWVOn+RncIUhISEUV1njzlyDAzV3ZkTX5t7Nsd973nwODQWGmBaIPEKYKfKhQ9XK
-         7HFpsM5wcWQg1sTNpW7bRksm2X3GRq77pgmXkpNlLxnWAVGcJ1p2IWokF46WrkeAZSRw
-         dyltxhtyrOrNEYcVadtniq76iImjNiiIqE1Qe3SzWIBg6DY+NH5ymlsvFxCjur5ffvy2
-         8FOg==
-X-Gm-Message-State: APjAAAW5SuYMiPZIk8FewD4f3Euui7NOHNfMcfdC+6GhQ9rgaPfef6fk
-        Hqpb4g/SrSHXc/sHtmSscBs7HHFUUV/sE5ywFloMvA==
-X-Google-Smtp-Source: APXvYqwtMloELc8yyjiKROZUWk9iBobR5zrhOA3kDqcmzqBo65VARWEAjndXv65IUMTNhasNaouQOIRld/mI5menbbA=
-X-Received: by 2002:a05:6830:1e2b:: with SMTP id t11mr4117327otr.81.1581720279231;
- Fri, 14 Feb 2020 14:44:39 -0800 (PST)
+        bh=TgoIP7Jshrn2duDl/cLkfq4CVlTeMc4BWp5pc4aKy4o=;
+        b=US2HtBXRYIYle4EG2/UfBvGkXMgTpS5D6q00wwCfyZEieUK2ELUKfJ16uCde2sj93H
+         GoENO4YoAj4VmKx3uAk3fHGT/W3L162/YFpCKGNqui0UbX7Vr3hnSBz72iDjaQ9ymfj7
+         1Wleqm8OA0gRXlhKi5Bbo19LuJR31oZAP9NFuVfjBG8ZfxcA/lSN7BfECPb5i/OomCvh
+         Y2vMgO8o2i8ahiP4Mc+7kry2gVAumLBrdOz3hcfEBFbwtSWZA70WCnc+TgLgT5TlM0Pb
+         kNUxkzca3VyjXWCsv6iHpFGQqoqeOWNHzUNOCKBv+uZFgZs09lqM9hwOC3c2AdyglvN/
+         om8A==
+X-Gm-Message-State: APjAAAUpde2//siLF3zvdnBHN8rDy9yfNlgvJzLrMXBKpszI3MI3V3Gm
+        OfusfKOvMXD9SWvwG4lrNtMc9QluxOcM8qYmgCPA8w==
+X-Google-Smtp-Source: APXvYqxFBb2HQnzGcPUG6cOYpfmJqP7PlimlMr1+iPFrbiJ4dnvduE/oWnmZgKQGPbeT3ha1e9ByvWDejgMmMZKdE+Y=
+X-Received: by 2002:aca:6542:: with SMTP id j2mr3470435oiw.69.1581720536963;
+ Fri, 14 Feb 2020 14:48:56 -0800 (PST)
 MIME-Version: 1.0
-References: <20200214222415.181467-1-shakeelb@google.com> <20200214223303.GA60585@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200214223303.GA60585@carbon.dhcp.thefacebook.com>
+References: <20200214222415.181467-1-shakeelb@google.com> <CANn89iLe7KVjaechEhtV4=QRy4s8qBQDiX9e8LX_xq8tunrQNA@mail.gmail.com>
+In-Reply-To: <CANn89iLe7KVjaechEhtV4=QRy4s8qBQDiX9e8LX_xq8tunrQNA@mail.gmail.com>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 14 Feb 2020 14:44:28 -0800
-Message-ID: <CALvZod5Vbua5=J6p2RDqmdJTC3D234zy41t-DHrL=qWMjh_OdA@mail.gmail.com>
+Date:   Fri, 14 Feb 2020 14:48:46 -0800
+Message-ID: <CALvZod5RoE3V7HteKqqDEfCgY8pDok6PWHrpu8trB1vyuK2UHA@mail.gmail.com>
 Subject: Re: [PATCH v2] cgroup: memcg: net: do not associate sock with
  unrelated cgroup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Eric Dumazet <edumazet@google.com>, Tejun Heo <tj@kernel.org>,
+To:     Eric Dumazet <edumazet@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
         Greg Thelen <gthelen@google.com>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Roman Gushchin <guro@fb.com>,
         LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
@@ -63,9 +63,10 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 2:33 PM Roman Gushchin <guro@fb.com> wrote:
+On Fri, Feb 14, 2020 at 2:38 PM Eric Dumazet <edumazet@google.com> wrote:
 >
-> On Fri, Feb 14, 2020 at 02:24:15PM -0800, Shakeel Butt wrote:
+> On Fri, Feb 14, 2020 at 2:24 PM Shakeel Butt <shakeelb@google.com> wrote:
+> >
 > > We are testing network memory accounting in our setup and noticed
 > > inconsistent network memory usage and often unrelated cgroups network
 > > usage correlates with testing workload. On further inspection, it
@@ -82,51 +83,18 @@ On Fri, Feb 14, 2020 at 2:33 PM Roman Gushchin <guro@fb.com> wrote:
 > > Cgroup v2 can also suffer if the source sock object was created by
 > > process in the root cgroup or if sk_alloc() is called in irq context.
 > > The fix is to just do nothing in interrupt.
-> >
-> > Fixes: 2d7580738345 ("mm: memcontrol: consolidate cgroup socket tracking")
-> > Fixes: d979a39d7242 ("cgroup: duplicate cgroup reference when cloning sockets")
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > ---
-> >
-> > Changes since v1:
-> > - Fix cgroup_sk_alloc() too.
-> >
-> >  kernel/cgroup/cgroup.c | 4 ++++
-> >  mm/memcontrol.c        | 4 ++++
-> >  2 files changed, 8 insertions(+)
-> >
-> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> > index 9a8a5ded3c48..46e5f5518fba 100644
-> > --- a/kernel/cgroup/cgroup.c
-> > +++ b/kernel/cgroup/cgroup.c
-> > @@ -6449,6 +6449,10 @@ void cgroup_sk_alloc(struct sock_cgroup_data *skcd)
-> >               return;
-> >       }
-> >
-> > +     /* Do not associate the sock with unrelated interrupted task's memcg. */
->                                                                        ^^^^^
->                                                                        cgroup?
-> > +     if (in_interrupt())
-> > +             return;
-> > +
-> >       rcu_read_lock();
-> >
-> >       while (true) {
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 63bb6a2aab81..f500da82bfe8 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6697,6 +6697,10 @@ void mem_cgroup_sk_alloc(struct sock *sk)
-> >               return;
-> >       }
 >
-> Can you, please, include the stacktrace into the commit log?
-> Except a minor typo (see above),
-> Reviewed-by: Roman Gushchin <guro@fb.com>
->
-> A really good catch.
+> So, when will the association be done ?
+> At accept() time ?
+> Is it done already ?
 >
 
-Thanks, I will add the stack trace and fix the typo.
+I think in the current code if the association is skipped at
+allocation time then the sock will remain unassociated for its
+lifetime.
+
+Maybe we can add the association in the later stages but it seems like
+it is not a simple task i.e. edbe69ef2c90f ("Revert "defer call to
+mem_cgroup_sk_alloc()"").
 
 Shakeel
