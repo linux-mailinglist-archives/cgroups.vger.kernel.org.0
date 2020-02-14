@@ -2,102 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3504B15EFA3
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 18:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AEA1C15F561
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 19:39:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389203AbgBNRtM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 12:49:12 -0500
-Received: from mail-ed1-f65.google.com ([209.85.208.65]:42766 "EHLO
-        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390032AbgBNRtJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 12:49:09 -0500
-Received: by mail-ed1-f65.google.com with SMTP id e10so12113800edv.9
-        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 09:49:07 -0800 (PST)
+        id S1729591AbgBNSeI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 13:34:08 -0500
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:39145 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729575AbgBNSeI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 13:34:08 -0500
+Received: by mail-wr1-f68.google.com with SMTP id y11so12022166wrt.6
+        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 10:34:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jlekstrand-net.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=VCKPbbT0sT/BX4J6H81+BCxuWuxOcW2XwAeJoWuJnU8=;
-        b=njyDWzh1v2QU5Hj0QpxTqKbIju0F5IodS018xuZ7yOBFHkojdzZaeyWLBlC2AcOUeJ
-         JcV5oVZZoiSlhNmgBxVlBHeA1FjmfhyOj7o3gQ2cG2TQtSZJb2n/YyrA3VThlWFVn5BV
-         FG1cGccmwxRTVvIVmPjATMhmSJhittKO6QJUIWbTjX6zwWDus/q+QWy6WHFPnW/+QyEB
-         woFNRYtPls6eYeZvrp7Hmx5iJwCTIpSY7OfYl/aoN14dDCcpD88nqjeMV8dUIfqaMeop
-         qRjMaiQXjChSV0boCPzyHm1sRuRBtak6bZbmENeGxTMcGUZWw/QaKncQQOL+ycnqDMnw
-         7M0A==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=UwfUwACS9lqkj3jN/nWrwyFfyHnffMJ00TYHBUfg53Y=;
+        b=U69au+APJ1LoyLjDLVw4jIOypYLHnbPhS8AJZ6mH385uTLbaYReOLPRoUlG3jtkZC6
+         IxywgoREuAft+TUjDx0dkZf5yUf6lOslI6W02amj1M7zoyv0vs13ug8aeRcUaUTgP+ak
+         bSBx8milEO2Ds/W263lvrxQnVebh+WO+TuVP8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=VCKPbbT0sT/BX4J6H81+BCxuWuxOcW2XwAeJoWuJnU8=;
-        b=QxZVqyvMv8E1efRFVCimScwIEn78F4Vi6c0uRxcdKf6QoPIN+NL3era2U861/Fgaqy
-         NL0NlfBvXq6YJwHGEMkf0BTn5z8wijdoimg7Nfn+c7+WOPYipFbUjosmKtlk3Vq+idcX
-         hH6+3XRnJP1zzT9glorb1rboucxElt6GdohYQ7qAb/ZZo5pwBxHv4dPi/VbInYAZyQ2g
-         VglSLWla4qwqUwuTm7SVldd/XmFd8huDsjSlOeiDiJ04U96j5kMnkw9BRGM8RDuH8gmt
-         aL4qkPjqTlVNVJaWoBJ8KSM+P1Uc2hhN30uzhv1p3cNf1savazCeSrmNaYIgG/rAeW5n
-         GzlQ==
-X-Gm-Message-State: APjAAAUMF5qfiji4Q/x8PQm+PtcGPxMeFTjTj82WMxMFznK7wA4kBMZo
-        TEEz/X6y7kc+0uFgWdmZXd7IgNO96daZh890xD0hHg==
-X-Google-Smtp-Source: APXvYqxe5ZUKNFPBU1VrXMLpcaCdIeZwtOqnRVLyFTcbQ/wuhkcfNMvFPj1LXqGsA+OZjVtfi4X4Xsfww8rveNo/muo=
-X-Received: by 2002:aa7:d1cf:: with SMTP id g15mr3863068edp.301.1581702545936;
- Fri, 14 Feb 2020 09:49:05 -0800 (PST)
-MIME-Version: 1.0
-References: <20200214155650.21203-1-Kenny.Ho@amd.com> <20200214155650.21203-10-Kenny.Ho@amd.com>
- <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com> <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
-In-Reply-To: <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
-From:   Jason Ekstrand <jason@jlekstrand.net>
-Date:   Fri, 14 Feb 2020 11:48:54 -0600
-Message-ID: <CAOFGe97nwqtuvskxSTrYC2hWN26yjaZ1OT4eAPj0NsBhU2zeuQ@mail.gmail.com>
-Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UwfUwACS9lqkj3jN/nWrwyFfyHnffMJ00TYHBUfg53Y=;
+        b=CIw+4PSXe3boszTxdLojisGrHPSw6CElyg0+0XuQQhIjuqa/n5LuI5AyVrnLciMZEm
+         48AmXjja8/yALVnJoZV+uHjcdqqZMzuNUDKCX4PRQsnS80EN6MwUe+FrF7Ikh0pplU5n
+         Aw2qkueAcJjpfeDy8Lqb6m0m9a+MtRp8HO9LV0rXHnjmOs8ZDS7dOlR+NapeMaHwKN7+
+         8D8c4N4nZ1L+Wr7b8uZmrFZTiGrgk/xKTPMFPNxX3xlZouOaNm3iWZovgCCkaY8clLGT
+         ici3mVAa0eLaUWSrJ94xgcHasRDI3B0UhNOkvHW3KvAH4NAsvmESNIqZ+Utz46vZLSmn
+         tqMg==
+X-Gm-Message-State: APjAAAUuSedIL8qaptZAuH328wChO0Gc9s1V+MVSZeXCQ0U6Mj2EJyFR
+        dfAfvOmOvGpxmFXI3qE1adoWOg==
+X-Google-Smtp-Source: APXvYqwIX9LifhT25+mg97VIdBCqzA6dbvrpsuDCmSMHMY6JgNtChB2aZmSLBK+r5NvC6rYPWu26rw==
+X-Received: by 2002:a5d:5381:: with SMTP id d1mr5186923wrv.259.1581705244924;
+        Fri, 14 Feb 2020 10:34:04 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z4sm8083190wrt.47.2020.02.14.10.34.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Feb 2020 10:34:03 -0800 (PST)
+Date:   Fri, 14 Feb 2020 19:34:01 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
 To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+Cc:     Jason Ekstrand <jason@jlekstrand.net>, Kenny Ho <Kenny.Ho@amd.com>,
+        cgroups@vger.kernel.org,
         Maling list - DRI developers 
         <dri-devel@lists.freedesktop.org>,
         amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
         Tejun Heo <tj@kernel.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         "Kuehling, Felix" <felix.kuehling@amd.com>,
         "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
         lkaplan@cray.com, Daniel Vetter <daniel@ffwll.ch>,
         nirmoy.das@amd.com, damon.mcdougall@amd.com,
         juan.zuniga-anaya@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
+Message-ID: <20200214183401.GY2363188@phenom.ffwll.local>
+References: <20200214155650.21203-1-Kenny.Ho@amd.com>
+ <20200214155650.21203-10-Kenny.Ho@amd.com>
+ <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
+ <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
+X-Operating-System: Linux phenom 5.3.0-3-amd64 
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 11:08 AM Kenny Ho <y2kenny@gmail.com> wrote:
->
+On Fri, Feb 14, 2020 at 12:08:35PM -0500, Kenny Ho wrote:
 > Hi Jason,
->
+> 
 > Thanks for the review.
->
-> On Fri, Feb 14, 2020 at 11:44 AM Jason Ekstrand <jason@jlekstrand.net> wr=
-ote:
+> 
+> On Fri, Feb 14, 2020 at 11:44 AM Jason Ekstrand <jason@jlekstrand.net> wrote:
 > >
-> > Pardon my ignorance but I'm a bit confused by this.  What is a "logical=
- GPU"?  What are we subdividing?  Are we carving up memory?  Compute power?=
-  Both?
->
-> The intention is compute but it is up to the individual drm driver to dec=
-ide.
->
-> > If it's carving up compute power, what's actually being carved up?  Tim=
-e?  Execution units/waves/threads?  Even if that's the case, what advantage=
- does it give to have it in terms of a fixed set of lgpus where each cgroup=
- gets to pick a fixed set.  Does affinity matter that much?  Why not just s=
-ay how many waves the GPU supports and that they have to be allocated in ch=
-unks of 16 waves (pulling a number out of thin air) and let the cgroup spec=
-ify how many waves it wants.
+> > Pardon my ignorance but I'm a bit confused by this.  What is a "logical GPU"?  What are we subdividing?  Are we carving up memory?  Compute power?  Both?
+> 
+> The intention is compute but it is up to the individual drm driver to decide.
+
+I think guidance from Tejun in previos discussions was pretty clear that
+he expects cgroups to be both a) standardized and c) sufficient clear
+meaning that end-users have a clear understanding of what happens when
+they change the resource allocation.
+
+I'm not sure lgpu here, at least as specified, passes either. But I also
+don't have much clue, so pulled Jason in - he understands how this all
+gets reflected to userspace apis a lot better than me.
+-Daniel
+
+
+> 
+> > If it's carving up compute power, what's actually being carved up?  Time?  Execution units/waves/threads?  Even if that's the case, what advantage does it give to have it in terms of a fixed set of lgpus where each cgroup gets to pick a fixed set.  Does affinity matter that much?  Why not just say how many waves the GPU supports and that they have to be allocated in chunks of 16 waves (pulling a number out of thin air) and let the cgroup specify how many waves it wants.
 > >
-> > Don't get me wrong here.  I'm all for the notion of being able to use c=
-groups to carve up GPU compute resources.  However, this sounds to me like =
-the most AMD-specific solution possible.  We (Intel) could probably do some=
- sort of carving up as well but we'd likely want to do it with preemption a=
-nd time-slicing rather than handing out specific EUs.
->
+> > Don't get me wrong here.  I'm all for the notion of being able to use cgroups to carve up GPU compute resources.  However, this sounds to me like the most AMD-specific solution possible.  We (Intel) could probably do some sort of carving up as well but we'd likely want to do it with preemption and time-slicing rather than handing out specific EUs.
+> 
 > This has been discussed in the RFC before
 > (https://www.spinics.net/lists/cgroups/msg23469.html.)  As mentioned
 > before, the idea of a compute unit is hardly an AMD specific thing as
@@ -107,38 +109,17 @@ nd time-slicing rather than handing out specific EUs.
 > "anonymous resources" view of the lgpu.  What you/Intel can do, is to
 > register your device to drmcg to have 100 lgpu and users can specify
 > simply by count.  So if they want to allocate 5% for a cgroup, they
-> would set count=3D5.  Per the documentation in this patch: "Some DRM
+> would set count=5.  Per the documentation in this patch: "Some DRM
 > devices may only support lgpu as anonymous resources.  In such case,
 > the significance of the position of the set bits in list will be
 > ignored."  What Intel does with the user expressed configuration of "5
 > out of 100" is entirely up to Intel (time slice if you like, change to
 > specific EUs later if you like, or make it driver configurable to
 > support both if you like.)
-
-Sure, there's an OpenCL thing.  However, just because there's an
-OpenCL thing doesn't mean that it's as standardized as it looks. :-(
-In particular,
-
- 1. The OpenCL thing has a query first to ask the driver what kind of
-carving up of the GPU is allowed
- 2. When clCreateSubdevices is called, the type of partitioning is
-specified so they can specifically ask for devices grouped by shared
-L2 cache, for instance.
- 3. Just because the API exists and everyone implements it doesn't
-mean that everyone implements it usefully.  From my reading of the
-spec, it looks like the API is very much designed towards a CPU
-implementation of OpenCL.  The Intel OpenCL GPU compute drivers, for
-instance, implement it as a total no-op and no real sub-dividing is
-allowed.
-
-That said, that doesn't necessarily mean that carving up units of
-compute power is a bad plan.  It's just unclear (as Daniel said on the
-above referenced chain) what those units mean.  Maybe it's ok if they
-mean nothing or if their meaning is HW-specific?
-
+> 
 > Regards,
 > Kenny
->
+> 
 > >
 > > On Fri, Feb 14, 2020 at 9:57 AM Kenny Ho <Kenny.Ho@amd.com> wrote:
 > >>
@@ -158,25 +139,21 @@ mean nothing or if their meaning is HW-specific?
 > >>       lgpus.)  The lgpu is a single quantity that can be allocated
 > >>       in three different ways denoted by the following nested keys.
 > >>
-> >>         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+> >>         =====     ==============================================
 > >>         weight    Allocate by proportion in relationship with
 > >>                   active sibling cgroups
 > >>         count     Allocate by amount statically, treat lgpu as
 > >>                   anonymous resources
 > >>         list      Allocate statically, treat lgpu as named
 > >>                   resource
-> >>         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D
+> >>         =====     ==============================================
 > >>
 > >>       For example:
-> >>       226:0 weight=3D100 count=3D256 list=3D0-255
-> >>       226:1 weight=3D100 count=3D4 list=3D0,2,4,6
-> >>       226:2 weight=3D100 count=3D32 list=3D32-63
-> >>       226:3 weight=3D100 count=3D0 list=3D
-> >>       226:4 weight=3D500 count=3D0 list=3D
+> >>       226:0 weight=100 count=256 list=0-255
+> >>       226:1 weight=100 count=4 list=0,2,4,6
+> >>       226:2 weight=100 count=32 list=32-63
+> >>       226:3 weight=100 count=0 list=
+> >>       226:4 weight=500 count=0 list=
 > >>
 > >>       lgpu is represented by a bitmap and uses the bitmap_parselist
 > >>       kernel function so the list key input format is a
@@ -188,7 +165,7 @@ mean nothing or if their meaning is HW-specific?
 > >>       of it should be set.  The range will divided to groups of
 > >>       specific size.
 > >>       Syntax: range:used_size/group_size
-> >>       Example: 0-1023:2/256 =3D=3D> 0,1,256,257,512,513,768,769
+> >>       Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
 > >>
 > >>       The count key is the hamming weight / hweight of the bitmap.
 > >>
@@ -199,22 +176,19 @@ mean nothing or if their meaning is HW-specific?
 > >>       in list will be ignored.
 > >>
 > >>       The weight quantity is only in effect when static allocation
-> >>       is not used (by setting count=3D0) for this cgroup.  The weight
+> >>       is not used (by setting count=0) for this cgroup.  The weight
 > >>       quantity distributes lgpus that are not statically allocated by
 > >>       the siblings.  For example, given siblings cgroupA, cgroupB and
 > >>       cgroupC for a DRM device that has 64 lgpus, if cgroupA occupies
 > >>       0-63, no lgpu is available to be distributed by weight.
-> >>       Similarly, if cgroupA has list=3D0-31 and cgroupB has list=3D16-=
-63,
+> >>       Similarly, if cgroupA has list=0-31 and cgroupB has list=16-63,
 > >>       cgroupC will be starved if it tries to allocate by weight.
 > >>
-> >>       On the other hand, if cgroupA has weight=3D100 count=3D0, cgroup=
-B
-> >>       has list=3D16-47, and cgroupC has weight=3D100 count=3D0, then 3=
-2
+> >>       On the other hand, if cgroupA has weight=100 count=0, cgroupB
+> >>       has list=16-47, and cgroupC has weight=100 count=0, then 32
 > >>       lgpus are available to be distributed evenly between cgroupA
 > >>       and cgroupC.  In drm.lgpu.effective, cgroupA will have
-> >>       list=3D0-15 and cgroupC will have list=3D48-63.
+> >>       list=0-15 and cgroupC will have list=48-63.
 > >>
 > >>       This lgpu resource supports the 'allocation' and 'weight'
 > >>       resource distribution model.
@@ -235,12 +209,10 @@ B
 > >>  Documentation/admin-guide/cgroup-v2.rst |  80 ++++++
 > >>  include/drm/drm_cgroup.h                |   3 +
 > >>  include/linux/cgroup_drm.h              |  22 ++
-> >>  kernel/cgroup/drm.c                     | 324 +++++++++++++++++++++++=
--
+> >>  kernel/cgroup/drm.c                     | 324 +++++++++++++++++++++++-
 > >>  4 files changed, 427 insertions(+), 2 deletions(-)
 > >>
-> >> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/a=
-dmin-guide/cgroup-v2.rst
+> >> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
 > >> index ce5dc027366a..d8a41956e5c7 100644
 > >> --- a/Documentation/admin-guide/cgroup-v2.rst
 > >> +++ b/Documentation/admin-guide/cgroup-v2.rst
@@ -264,40 +236,33 @@ dmin-guide/cgroup-v2.rst
 > >> +       lgpus.)  The lgpu is a single quantity that can be allocated
 > >> +        in three different ways denoted by the following nested keys.
 > >> +
-> >> +         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +         =====     ==============================================
 > >> +         weight    Allocate by proportion in relationship with
 > >> +                    active sibling cgroups
 > >> +         count     Allocate by amount statically, treat lgpu as
 > >> +                    anonymous resources
 > >> +         list      Allocate statically, treat lgpu as named
 > >> +                    resource
-> >> +         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
+> >> +         =====     ==============================================
 > >> +
 > >> +       For example:
-> >> +       226:0 weight=3D100 count=3D256 list=3D0-255
-> >> +       226:1 weight=3D100 count=3D4 list=3D0,2,4,6
-> >> +       226:2 weight=3D100 count=3D32 list=3D32-63
-> >> +       226:3 weight=3D100 count=3D0 list=3D
-> >> +       226:4 weight=3D500 count=3D0 list=3D
+> >> +       226:0 weight=100 count=256 list=0-255
+> >> +       226:1 weight=100 count=4 list=0,2,4,6
+> >> +       226:2 weight=100 count=32 list=32-63
+> >> +       226:3 weight=100 count=0 list=
+> >> +       226:4 weight=500 count=0 list=
 > >> +
 > >> +       lgpu is represented by a bitmap and uses the bitmap_parselist
 > >> +       kernel function so the list key input format is a
 > >> +       comma-separated list of decimal numbers and ranges.
 > >> +
-> >> +       Consecutively set bits are shown as two hyphen-separated decim=
-al
-> >> +       numbers, the smallest and largest bit numbers set in the range=
-.
-> >> +       Optionally each range can be postfixed to denote that only par=
-ts
+> >> +       Consecutively set bits are shown as two hyphen-separated decimal
+> >> +       numbers, the smallest and largest bit numbers set in the range.
+> >> +       Optionally each range can be postfixed to denote that only parts
 > >> +       of it should be set.  The range will divided to groups of
 > >> +       specific size.
 > >> +       Syntax: range:used_size/group_size
-> >> +       Example: 0-1023:2/256 =3D=3D> 0,1,256,257,512,513,768,769
+> >> +       Example: 0-1023:2/256 ==> 0,1,256,257,512,513,768,769
 > >> +
 > >> +       The count key is the hamming weight / hweight of the bitmap.
 > >> +
@@ -308,26 +273,19 @@ ts
 > >> +       in list will be ignored.
 > >> +
 > >> +       The weight quantity is only in effect when static allocation
-> >> +       is not used (by setting count=3D0) for this cgroup.  The weigh=
-t
-> >> +       quantity distributes lgpus that are not statically allocated b=
-y
-> >> +       the siblings.  For example, given siblings cgroupA, cgroupB an=
-d
-> >> +       cgroupC for a DRM device that has 64 lgpus, if cgroupA occupie=
-s
+> >> +       is not used (by setting count=0) for this cgroup.  The weight
+> >> +       quantity distributes lgpus that are not statically allocated by
+> >> +       the siblings.  For example, given siblings cgroupA, cgroupB and
+> >> +       cgroupC for a DRM device that has 64 lgpus, if cgroupA occupies
 > >> +       0-63, no lgpu is available to be distributed by weight.
-> >> +       Similarly, if cgroupA has list=3D0-31 and cgroupB has list=3D1=
-6-63,
+> >> +       Similarly, if cgroupA has list=0-31 and cgroupB has list=16-63,
 > >> +       cgroupC will be starved if it tries to allocate by weight.
 > >> +
-> >> +       On the other hand, if cgroupA has weight=3D100 count=3D0, cgro=
-upB
-> >> +       has list=3D16-47, and cgroupC has weight=3D100 count=3D0, then=
- 32
+> >> +       On the other hand, if cgroupA has weight=100 count=0, cgroupB
+> >> +       has list=16-47, and cgroupC has weight=100 count=0, then 32
 > >> +       lgpus are available to be distributed evenly between cgroupA
 > >> +       and cgroupC.  In drm.lgpu.effective, cgroupA will have
-> >> +       list=3D0-15 and cgroupC will have list=3D48-63.
+> >> +       list=0-15 and cgroupC will have list=48-63.
 > >> +
 > >> +       This lgpu resource supports the 'allocation' and 'weight'
 > >> +       resource distribution model.
@@ -387,8 +345,7 @@ upB
 > >> +        * Logical GPU
 > >> +        *
 > >> +        * *_cfg are properties configured by users
-> >> +        * *_eff are the effective properties being applied to the har=
-dware
+> >> +        * *_eff are the effective properties being applied to the hardware
 > >> +         * *_stg is used to calculate _eff before applying to _eff
 > >> +        * after considering the entire hierarchy
 > >> +        */
@@ -427,9 +384,8 @@ dware
 > >>  /**
 > >>   * drmcg_bind - Bind DRM subsystem to cgroup subsystem
 > >>   * @acq_dm: function pointer to the drm_minor_acquire function
-> >> @@ -98,6 +103,13 @@ static inline int init_drmcg_single(struct drmcg *=
-drmcg, struct drm_device *dev)
-> >>         ddr->bo_limits_peak_allocated =3D
+> >> @@ -98,6 +103,13 @@ static inline int init_drmcg_single(struct drmcg *drmcg, struct drm_device *dev)
+> >>         ddr->bo_limits_peak_allocated =
 > >>                 dev->drmcg_props.bo_limits_peak_allocated_default;
 > >>
 > >> +       bitmap_copy(ddr->lgpu_cfg, dev->drmcg_props.lgpu_slots,
@@ -437,13 +393,12 @@ drmcg, struct drm_device *dev)
 > >> +       bitmap_copy(ddr->lgpu_stg, dev->drmcg_props.lgpu_slots,
 > >> +                       MAX_DRMCG_LGPU_CAPACITY);
 > >> +
-> >> +       ddr->lgpu_weight_cfg =3D CGROUP_WEIGHT_DFL;
+> >> +       ddr->lgpu_weight_cfg = CGROUP_WEIGHT_DFL;
 > >> +
 > >>         return 0;
 > >>  }
 > >>
-> >> @@ -121,6 +133,120 @@ static inline void drmcg_update_cg_tree(struct d=
-rm_device *dev)
+> >> @@ -121,6 +133,120 @@ static inline void drmcg_update_cg_tree(struct drm_device *dev)
 > >>         mutex_unlock(&cgroup_mutex);
 > >>  }
 > >>
@@ -452,67 +407,57 @@ rm_device *dev)
 > >> +               const unsigned long *free_weighted,
 > >> +               struct drmcg *parent_drmcg)
 > >> +{
-> >> +       int capacity =3D dev->drmcg_props.lgpu_capacity;
+> >> +       int capacity = dev->drmcg_props.lgpu_capacity;
 > >> +       DECLARE_BITMAP(lgpu_unused, MAX_DRMCG_LGPU_CAPACITY);
 > >> +       DECLARE_BITMAP(lgpu_by_weight, MAX_DRMCG_LGPU_CAPACITY);
 > >> +       struct drmcg_device_resource *parent_ddr;
 > >> +       struct drmcg_device_resource *ddr;
-> >> +       int minor =3D dev->primary->index;
+> >> +       int minor = dev->primary->index;
 > >> +       struct cgroup_subsys_state *pos;
 > >> +       struct drmcg *child;
-> >> +       s64 weight_sum =3D 0;
+> >> +       s64 weight_sum = 0;
 > >> +       s64 unused;
 > >> +
-> >> +       parent_ddr =3D parent_drmcg->dev_resources[minor];
+> >> +       parent_ddr = parent_drmcg->dev_resources[minor];
 > >> +
 > >> +       if (bitmap_empty(parent_ddr->lgpu_cfg, capacity))
-> >> +               /* no static cfg, use weight for calculating the effec=
-tive */
-> >> +               bitmap_copy(parent_ddr->lgpu_stg, free_weighted, capac=
-ity);
+> >> +               /* no static cfg, use weight for calculating the effective */
+> >> +               bitmap_copy(parent_ddr->lgpu_stg, free_weighted, capacity);
 > >> +       else
-> >> +               /* lgpu statically configured, use the overlap as effe=
-ctive */
+> >> +               /* lgpu statically configured, use the overlap as effective */
 > >> +               bitmap_and(parent_ddr->lgpu_stg, free_static,
 > >> +                               parent_ddr->lgpu_cfg, capacity);
 > >> +
-> >> +       /* calculate lgpu available for distribution by weight for chi=
-ldren */
+> >> +       /* calculate lgpu available for distribution by weight for children */
 > >> +       bitmap_copy(lgpu_unused, parent_ddr->lgpu_stg, capacity);
 > >> +       css_for_each_child(pos, &parent_drmcg->css) {
-> >> +               child =3D css_to_drmcg(pos);
-> >> +               ddr =3D child->dev_resources[minor];
+> >> +               child = css_to_drmcg(pos);
+> >> +               ddr = child->dev_resources[minor];
 > >> +
 > >> +               if (bitmap_empty(ddr->lgpu_cfg, capacity))
-> >> +                       /* no static allocation, participate in weight=
- dist */
-> >> +                       weight_sum +=3D ddr->lgpu_weight_cfg;
+> >> +                       /* no static allocation, participate in weight dist */
+> >> +                       weight_sum += ddr->lgpu_weight_cfg;
 > >> +               else
-> >> +                       /* take out statically allocated lgpu by sibli=
-ngs */
-> >> +                       bitmap_andnot(lgpu_unused, lgpu_unused, ddr->l=
-gpu_cfg,
+> >> +                       /* take out statically allocated lgpu by siblings */
+> >> +                       bitmap_andnot(lgpu_unused, lgpu_unused, ddr->lgpu_cfg,
 > >> +                                       capacity);
 > >> +       }
 > >> +
-> >> +       unused =3D bitmap_weight(lgpu_unused, capacity);
+> >> +       unused = bitmap_weight(lgpu_unused, capacity);
 > >> +
 > >> +       css_for_each_child(pos, &parent_drmcg->css) {
-> >> +               child =3D css_to_drmcg(pos);
-> >> +               ddr =3D child->dev_resources[minor];
+> >> +               child = css_to_drmcg(pos);
+> >> +               ddr = child->dev_resources[minor];
 > >> +
 > >> +               bitmap_zero(lgpu_by_weight, capacity);
-> >> +               /* no static allocation, participate in weight distrib=
-ution */
+> >> +               /* no static allocation, participate in weight distribution */
 > >> +               if (bitmap_empty(ddr->lgpu_cfg, capacity)) {
 > >> +                       int c;
-> >> +                       int p =3D 0;
+> >> +                       int p = 0;
 > >> +
-> >> +                       for (c =3D ddr->lgpu_weight_cfg * unused / wei=
-ght_sum;
+> >> +                       for (c = ddr->lgpu_weight_cfg * unused / weight_sum;
 > >> +                                       c > 0; c--) {
-> >> +                               p =3D find_next_bit(lgpu_unused, capac=
-ity, p);
+> >> +                               p = find_next_bit(lgpu_unused, capacity, p);
 > >> +                               if (p < capacity) {
 > >> +                                       clear_bit(p, lgpu_unused);
 > >> +                                       set_bit(p, lgpu_by_weight);
@@ -521,45 +466,39 @@ ity, p);
 > >> +
 > >> +               }
 > >> +
-> >> +               drmcg_calculate_effective_lgpu(dev, parent_ddr->lgpu_s=
-tg,
+> >> +               drmcg_calculate_effective_lgpu(dev, parent_ddr->lgpu_stg,
 > >> +                               lgpu_by_weight, child);
 > >> +       }
 > >> +}
 > >> +
 > >> +static void drmcg_apply_effective_lgpu(struct drm_device *dev)
 > >> +{
-> >> +       int capacity =3D dev->drmcg_props.lgpu_capacity;
-> >> +       int minor =3D dev->primary->index;
+> >> +       int capacity = dev->drmcg_props.lgpu_capacity;
+> >> +       int minor = dev->primary->index;
 > >> +       struct drmcg_device_resource *ddr;
 > >> +       struct cgroup_subsys_state *pos;
 > >> +       struct drmcg *drmcg;
 > >> +
-> >> +       if (root_drmcg =3D=3D NULL) {
-> >> +               WARN_ON(root_drmcg =3D=3D NULL);
+> >> +       if (root_drmcg == NULL) {
+> >> +               WARN_ON(root_drmcg == NULL);
 > >> +               return;
 > >> +       }
 > >> +
 > >> +       rcu_read_lock();
 > >> +
-> >> +       /* process the entire cgroup tree from root to simplify the al=
-gorithm */
-> >> +       drmcg_calculate_effective_lgpu(dev, dev->drmcg_props.lgpu_slot=
-s,
+> >> +       /* process the entire cgroup tree from root to simplify the algorithm */
+> >> +       drmcg_calculate_effective_lgpu(dev, dev->drmcg_props.lgpu_slots,
 > >> +                       dev->drmcg_props.lgpu_slots, root_drmcg);
 > >> +
 > >> +       /* apply changes to effective only if there is a change */
 > >> +       css_for_each_descendant_pre(pos, &root_drmcg->css) {
-> >> +               drmcg =3D css_to_drmcg(pos);
-> >> +               ddr =3D drmcg->dev_resources[minor];
+> >> +               drmcg = css_to_drmcg(pos);
+> >> +               ddr = drmcg->dev_resources[minor];
 > >> +
-> >> +               if (!bitmap_equal(ddr->lgpu_stg, ddr->lgpu_eff, capaci=
-ty)) {
-> >> +                       bitmap_copy(ddr->lgpu_eff, ddr->lgpu_stg, capa=
-city);
-> >> +                       ddr->lgpu_count_eff =3D
-> >> +                               bitmap_weight(ddr->lgpu_eff, capacity)=
-;
+> >> +               if (!bitmap_equal(ddr->lgpu_stg, ddr->lgpu_eff, capacity)) {
+> >> +                       bitmap_copy(ddr->lgpu_eff, ddr->lgpu_stg, capacity);
+> >> +                       ddr->lgpu_count_eff =
+> >> +                               bitmap_weight(ddr->lgpu_eff, capacity);
 > >> +               }
 > >> +       }
 > >> +       rcu_read_unlock();
@@ -582,23 +521,19 @@ city);
 > >>   * @dev: DRM device
 > >> @@ -143,7 +269,13 @@ void drmcg_register_dev(struct drm_device *dev)
 > >>         {
-> >>                 dev->driver->drmcg_custom_init(dev, &dev->drmcg_props)=
-;
+> >>                 dev->driver->drmcg_custom_init(dev, &dev->drmcg_props);
 > >>
-> >> +               WARN_ON(dev->drmcg_props.lgpu_capacity !=3D
-> >> +                               bitmap_weight(dev->drmcg_props.lgpu_sl=
-ots,
+> >> +               WARN_ON(dev->drmcg_props.lgpu_capacity !=
+> >> +                               bitmap_weight(dev->drmcg_props.lgpu_slots,
 > >> +                                       MAX_DRMCG_LGPU_CAPACITY));
 > >> +
 > >>                 drmcg_update_cg_tree(dev);
 > >> +
-> >> +               drmcg_apply_effective(DRMCG_TYPE_LGPU, dev, root_drmcg=
-);
+> >> +               drmcg_apply_effective(DRMCG_TYPE_LGPU, dev, root_drmcg);
 > >>         }
 > >>         mutex_unlock(&drmcg_mutex);
 > >>  }
-> >> @@ -297,7 +429,8 @@ static void drmcg_print_stats(struct drmcg_device_=
-resource *ddr,
+> >> @@ -297,7 +429,8 @@ static void drmcg_print_stats(struct drmcg_device_resource *ddr,
 > >>  }
 > >>
 > >>  static void drmcg_print_limits(struct drmcg_device_resource *ddr,
@@ -606,28 +541,25 @@ resource *ddr,
 > >> +               struct seq_file *sf, enum drmcg_res_type type,
 > >> +               struct drm_device *dev)
 > >>  {
-> >>         if (ddr =3D=3D NULL) {
+> >>         if (ddr == NULL) {
 > >>                 seq_puts(sf, "\n");
-> >> @@ -311,6 +444,25 @@ static void drmcg_print_limits(struct drmcg_devic=
-e_resource *ddr,
+> >> @@ -311,6 +444,25 @@ static void drmcg_print_limits(struct drmcg_device_resource *ddr,
 > >>         case DRMCG_TYPE_BO_PEAK:
-> >>                 seq_printf(sf, "%lld\n", ddr->bo_limits_peak_allocated=
-);
+> >>                 seq_printf(sf, "%lld\n", ddr->bo_limits_peak_allocated);
 > >>                 break;
 > >> +       case DRMCG_TYPE_LGPU:
-> >> +               seq_printf(sf, "%s=3D%lld %s=3D%d %s=3D%*pbl\n",
+> >> +               seq_printf(sf, "%s=%lld %s=%d %s=%*pbl\n",
 > >> +                               LGPU_LIMITS_NAME_WEIGHT,
 > >> +                               ddr->lgpu_weight_cfg,
 > >> +                               LGPU_LIMITS_NAME_COUNT,
 > >> +                               bitmap_weight(ddr->lgpu_cfg,
-> >> +                                       dev->drmcg_props.lgpu_capacity=
-),
+> >> +                                       dev->drmcg_props.lgpu_capacity),
 > >> +                               LGPU_LIMITS_NAME_LIST,
 > >> +                               dev->drmcg_props.lgpu_capacity,
 > >> +                               ddr->lgpu_cfg);
 > >> +               break;
 > >> +       case DRMCG_TYPE_LGPU_EFF:
-> >> +               seq_printf(sf, "%s=3D%lld %s=3D%*pbl\n",
+> >> +               seq_printf(sf, "%s=%lld %s=%*pbl\n",
 > >> +                               LGPU_LIMITS_NAME_COUNT,
 > >> +                               ddr->lgpu_count_eff,
 > >> +                               LGPU_LIMITS_NAME_LIST,
@@ -637,13 +569,12 @@ e_resource *ddr,
 > >>         default:
 > >>                 seq_puts(sf, "\n");
 > >>                 break;
-> >> @@ -329,6 +481,17 @@ static void drmcg_print_default(struct drmcg_prop=
-s *props,
+> >> @@ -329,6 +481,17 @@ static void drmcg_print_default(struct drmcg_props *props,
 > >>                 seq_printf(sf, "%lld\n",
 > >>                         props->bo_limits_peak_allocated_default);
 > >>                 break;
 > >> +       case DRMCG_TYPE_LGPU:
-> >> +               seq_printf(sf, "%s=3D%d %s=3D%d %s=3D%*pbl\n",
+> >> +               seq_printf(sf, "%s=%d %s=%d %s=%*pbl\n",
 > >> +                               LGPU_LIMITS_NAME_WEIGHT,
 > >> +                               CGROUP_WEIGHT_DFL,
 > >> +                               LGPU_LIMITS_NAME_COUNT,
@@ -656,8 +587,7 @@ s *props,
 > >>         default:
 > >>                 seq_puts(sf, "\n");
 > >>                 break;
-> >> @@ -358,7 +521,7 @@ static int drmcg_seq_show_fn(int id, void *ptr, vo=
-id *data)
+> >> @@ -358,7 +521,7 @@ static int drmcg_seq_show_fn(int id, void *ptr, void *data)
 > >>                 drmcg_print_stats(ddr, sf, type);
 > >>                 break;
 > >>         case DRMCG_FTYPE_LIMIT:
@@ -665,10 +595,8 @@ id *data)
 > >> +               drmcg_print_limits(ddr, sf, type, minor->dev);
 > >>                 break;
 > >>         case DRMCG_FTYPE_DEFAULT:
-> >>                 drmcg_print_default(&minor->dev->drmcg_props, sf, type=
-);
-> >> @@ -415,6 +578,115 @@ static int drmcg_process_limit_s64_val(char *sva=
-l, bool is_mem,
+> >>                 drmcg_print_default(&minor->dev->drmcg_props, sf, type);
+> >> @@ -415,6 +578,115 @@ static int drmcg_process_limit_s64_val(char *sval, bool is_mem,
 > >>         return rc;
 > >>  }
 > >>
@@ -677,14 +605,14 @@ l, bool is_mem,
 > >> +{
 > >> +       DECLARE_BITMAP(tmp_bitmap, MAX_DRMCG_LGPU_CAPACITY);
 > >> +       DECLARE_BITMAP(chk_bitmap, MAX_DRMCG_LGPU_CAPACITY);
-> >> +       enum drmcg_res_type type =3D
+> >> +       enum drmcg_res_type type =
 > >> +               DRMCG_CTF_PRIV2RESTYPE(of_cft(of)->private);
-> >> +       struct drmcg *drmcg =3D css_to_drmcg(of_css(of));
-> >> +       struct drmcg_props *props =3D &dev->drmcg_props;
-> >> +       char *cft_name =3D of_cft(of)->name;
-> >> +       int minor =3D dev->primary->index;
-> >> +       char *nested =3D strstrip(attrs);
-> >> +       struct drmcg_device_resource *ddr =3D
+> >> +       struct drmcg *drmcg = css_to_drmcg(of_css(of));
+> >> +       struct drmcg_props *props = &dev->drmcg_props;
+> >> +       char *cft_name = of_cft(of)->name;
+> >> +       int minor = dev->primary->index;
+> >> +       char *nested = strstrip(attrs);
+> >> +       struct drmcg_device_resource *ddr =
 > >> +               drmcg->dev_resources[minor];
 > >> +       char *attr;
 > >> +       char sname[256];
@@ -692,84 +620,66 @@ l, bool is_mem,
 > >> +       s64 val;
 > >> +       int rc;
 > >> +
-> >> +       while (nested !=3D NULL) {
-> >> +               attr =3D strsep(&nested, " ");
+> >> +       while (nested != NULL) {
+> >> +               attr = strsep(&nested, " ");
 > >> +
-> >> +               if (sscanf(attr, "%255[^=3D]=3D%255[^=3D]", sname, sva=
-l) !=3D 2)
+> >> +               if (sscanf(attr, "%255[^=]=%255[^=]", sname, sval) != 2)
 > >> +                       continue;
 > >> +
 > >> +               switch (type) {
 > >> +               case DRMCG_TYPE_LGPU:
-> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256)=
- &&
-> >> +                               strncmp(sname, LGPU_LIMITS_NAME_COUNT,=
- 256) &&
-> >> +                               strncmp(sname, LGPU_LIMITS_NAME_WEIGHT=
-, 256))
+> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256) &&
+> >> +                               strncmp(sname, LGPU_LIMITS_NAME_COUNT, 256) &&
+> >> +                               strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, 256))
 > >> +                               continue;
 > >> +
-> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, 25=
-6) &&
+> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, 256) &&
 > >> +                                       (!strcmp("max", sval) ||
 > >> +                                       !strcmp("default", sval))) {
-> >> +                               bitmap_copy(ddr->lgpu_cfg, props->lgpu=
-_slots,
+> >> +                               bitmap_copy(ddr->lgpu_cfg, props->lgpu_slots,
 > >> +                                               props->lgpu_capacity);
 > >> +
 > >> +                               continue;
 > >> +                       }
 > >> +
-> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, 25=
-6) =3D=3D 0) {
-> >> +                               rc =3D drmcg_process_limit_s64_val(sva=
-l,
+> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, 256) == 0) {
+> >> +                               rc = drmcg_process_limit_s64_val(sval,
 > >> +                                       false, CGROUP_WEIGHT_DFL,
 > >> +                                       CGROUP_WEIGHT_MAX, &val);
 > >> +
 > >> +                               if (rc || val < CGROUP_WEIGHT_MIN ||
-> >> +                                               val > CGROUP_WEIGHT_MA=
-X) {
-> >> +                                       drmcg_pr_cft_err(drmcg, rc, cf=
-t_name,
+> >> +                                               val > CGROUP_WEIGHT_MAX) {
+> >> +                                       drmcg_pr_cft_err(drmcg, rc, cft_name,
 > >> +                                                       minor);
 > >> +                                       continue;
 > >> +                               }
 > >> +
-> >> +                               ddr->lgpu_weight_cfg =3D val;
+> >> +                               ddr->lgpu_weight_cfg = val;
 > >> +                               continue;
 > >> +                       }
 > >> +
-> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_COUNT, 256=
-) =3D=3D 0) {
-> >> +                               rc =3D drmcg_process_limit_s64_val(sva=
-l,
+> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_COUNT, 256) == 0) {
+> >> +                               rc = drmcg_process_limit_s64_val(sval,
 > >> +                                       false, props->lgpu_capacity,
 > >> +                                       props->lgpu_capacity, &val);
 > >> +
 > >> +                               if (rc || val < 0) {
-> >> +                                       drmcg_pr_cft_err(drmcg, rc, cf=
-t_name,
+> >> +                                       drmcg_pr_cft_err(drmcg, rc, cft_name,
 > >> +                                                       minor);
 > >> +                                       continue;
 > >> +                               }
 > >> +
 > >> +                               bitmap_zero(tmp_bitmap,
-> >> +                                               MAX_DRMCG_LGPU_CAPACIT=
-Y);
+> >> +                                               MAX_DRMCG_LGPU_CAPACITY);
 > >> +                               bitmap_set(tmp_bitmap, 0, val);
 > >> +                       }
 > >> +
-> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256)=
- =3D=3D 0) {
-> >> +                               rc =3D bitmap_parselist(sval, tmp_bitm=
-ap,
-> >> +                                               MAX_DRMCG_LGPU_CAPACIT=
-Y);
+> >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 256) == 0) {
+> >> +                               rc = bitmap_parselist(sval, tmp_bitmap,
+> >> +                                               MAX_DRMCG_LGPU_CAPACITY);
 > >> +
 > >> +                               if (rc) {
-> >> +                                       drmcg_pr_cft_err(drmcg, rc, cf=
-t_name,
+> >> +                                       drmcg_pr_cft_err(drmcg, rc, cft_name,
 > >> +                                                       minor);
 > >> +                                       continue;
 > >> +                               }
@@ -778,14 +688,11 @@ t_name,
 > >> +                                       props->lgpu_slots,
 > >> +                                       MAX_DRMCG_LGPU_CAPACITY);
 > >> +
-> >> +                               /* user setting does not intersect wit=
-h
+> >> +                               /* user setting does not intersect with
 > >> +                                * available lgpu */
 > >> +                               if (!bitmap_empty(chk_bitmap,
-> >> +                                               MAX_DRMCG_LGPU_CAPACIT=
-Y)) {
-> >> +                                       drmcg_pr_cft_err(drmcg, 0, cft=
-_name,
+> >> +                                               MAX_DRMCG_LGPU_CAPACITY)) {
+> >> +                                       drmcg_pr_cft_err(drmcg, 0, cft_name,
 > >> +                                                       minor);
 > >> +                                       continue;
 > >> +                               }
@@ -803,13 +710,11 @@ _name,
 > >> +
 > >> +
 > >>  /**
-> >>   * drmcg_limit_write - parse cgroup interface files to obtain user co=
-nfig
+> >>   * drmcg_limit_write - parse cgroup interface files to obtain user config
 > >>   *
-> >> @@ -499,9 +771,15 @@ static ssize_t drmcg_limit_write(struct kernfs_op=
-en_file *of, char *buf,
+> >> @@ -499,9 +771,15 @@ static ssize_t drmcg_limit_write(struct kernfs_open_file *of, char *buf,
 > >>
-> >>                         ddr->bo_limits_peak_allocated =3D val;
+> >>                         ddr->bo_limits_peak_allocated = val;
 > >>                         break;
 > >> +               case DRMCG_TYPE_LGPU:
 > >> +                       drmcg_nested_limit_parse(of, dm->dev, sattr);
@@ -823,28 +728,28 @@ en_file *of, char *buf,
 > >>                 mutex_unlock(&dm->dev->drmcg_mutex);
 > >>
 > >>                 mutex_lock(&drmcg_mutex);
-> >> @@ -560,12 +838,51 @@ struct cftype files[] =3D {
-> >>                 .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_BO_COUNT,
+> >> @@ -560,12 +838,51 @@ struct cftype files[] = {
+> >>                 .private = DRMCG_CTF_PRIV(DRMCG_TYPE_BO_COUNT,
 > >>                                                 DRMCG_FTYPE_STATS),
 > >>         },
 > >> +       {
-> >> +               .name =3D "lgpu",
-> >> +               .seq_show =3D drmcg_seq_show,
-> >> +               .write =3D drmcg_limit_write,
-> >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
+> >> +               .name = "lgpu",
+> >> +               .seq_show = drmcg_seq_show,
+> >> +               .write = drmcg_limit_write,
+> >> +               .private = DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
 > >> +                                               DRMCG_FTYPE_LIMIT),
 > >> +       },
 > >> +       {
-> >> +               .name =3D "lgpu.default",
-> >> +               .seq_show =3D drmcg_seq_show,
-> >> +               .flags =3D CFTYPE_ONLY_ON_ROOT,
-> >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
+> >> +               .name = "lgpu.default",
+> >> +               .seq_show = drmcg_seq_show,
+> >> +               .flags = CFTYPE_ONLY_ON_ROOT,
+> >> +               .private = DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
 > >> +                                               DRMCG_FTYPE_DEFAULT),
 > >> +       },
 > >> +       {
-> >> +               .name =3D "lgpu.effective",
-> >> +               .seq_show =3D drmcg_seq_show,
-> >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU_EFF,
+> >> +               .name = "lgpu.effective",
+> >> +               .seq_show = drmcg_seq_show,
+> >> +               .private = DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU_EFF,
 > >> +                                               DRMCG_FTYPE_LIMIT),
 > >> +       },
 > >>         { }     /* terminate */
@@ -852,10 +757,10 @@ en_file *of, char *buf,
 > >>
 > >> +static int drmcg_online_fn(int id, void *ptr, void *data)
 > >> +{
-> >> +       struct drm_minor *minor =3D ptr;
-> >> +       struct drmcg *drmcg =3D data;
+> >> +       struct drm_minor *minor = ptr;
+> >> +       struct drmcg *drmcg = data;
 > >> +
-> >> +       if (minor->type !=3D DRM_MINOR_PRIMARY)
+> >> +       if (minor->type != DRM_MINOR_PRIMARY)
 > >> +               return 0;
 > >> +
 > >> +       drmcg_apply_effective(DRMCG_TYPE_LGPU, minor->dev, drmcg);
@@ -865,26 +770,22 @@ en_file *of, char *buf,
 > >> +
 > >> +static int drmcg_css_online(struct cgroup_subsys_state *css)
 > >> +{
-> >> +       return drm_minor_for_each(&drmcg_online_fn, css_to_drmcg(css))=
-;
+> >> +       return drm_minor_for_each(&drmcg_online_fn, css_to_drmcg(css));
 > >> +}
 > >> +
-> >>  struct cgroup_subsys drm_cgrp_subsys =3D {
-> >>         .css_alloc      =3D drmcg_css_alloc,
-> >>         .css_free       =3D drmcg_css_free,
-> >> +       .css_online     =3D drmcg_css_online,
-> >>         .early_init     =3D false,
-> >>         .legacy_cftypes =3D files,
-> >>         .dfl_cftypes    =3D files,
-> >> @@ -585,6 +902,9 @@ void drmcg_device_early_init(struct drm_device *de=
-v)
-> >>         dev->drmcg_props.bo_limits_total_allocated_default =3D S64_MAX=
-;
-> >>         dev->drmcg_props.bo_limits_peak_allocated_default =3D S64_MAX;
+> >>  struct cgroup_subsys drm_cgrp_subsys = {
+> >>         .css_alloc      = drmcg_css_alloc,
+> >>         .css_free       = drmcg_css_free,
+> >> +       .css_online     = drmcg_css_online,
+> >>         .early_init     = false,
+> >>         .legacy_cftypes = files,
+> >>         .dfl_cftypes    = files,
+> >> @@ -585,6 +902,9 @@ void drmcg_device_early_init(struct drm_device *dev)
+> >>         dev->drmcg_props.bo_limits_total_allocated_default = S64_MAX;
+> >>         dev->drmcg_props.bo_limits_peak_allocated_default = S64_MAX;
 > >>
-> >> +       dev->drmcg_props.lgpu_capacity =3D MAX_DRMCG_LGPU_CAPACITY;
-> >> +       bitmap_fill(dev->drmcg_props.lgpu_slots, MAX_DRMCG_LGPU_CAPACI=
-TY);
+> >> +       dev->drmcg_props.lgpu_capacity = MAX_DRMCG_LGPU_CAPACITY;
+> >> +       bitmap_fill(dev->drmcg_props.lgpu_slots, MAX_DRMCG_LGPU_CAPACITY);
 > >> +
 > >>         drmcg_update_cg_tree(dev);
 > >>  }
@@ -896,3 +797,8 @@ TY);
 > >> dri-devel mailing list
 > >> dri-devel@lists.freedesktop.org
 > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
