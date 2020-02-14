@@ -2,140 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id E3C0815F8E7
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 22:47:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DAD915F8FD
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 22:52:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729102AbgBNVrp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 16:47:45 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:53094 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729434AbgBNVro (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 16:47:44 -0500
-Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
-        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 01ELiSHo018210;
-        Fri, 14 Feb 2020 13:47:38 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=piEDK3sQ58eGY88b0/ZoEju6n9YkDVBjwZwW0orWUZc=;
- b=Nir3ex2agghP9Ed5QjdUx56ukqp2kn9k+JkuhD0a/nGfW0uYNlEGyLl7oD9PnREtL/je
- AYsNky2Pwa7LOXcI+MFkqjD+ss4EFBvLYonnv9rBFAOAQ2R61N5rDwedy7970QuI1gFe
- /iTzSNUJb3bXnh0WQOgGqRmHOr53qYH79ig= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0089730.ppops.net with ESMTP id 2y5x9p9rnk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 14 Feb 2020 13:47:38 -0800
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1779.2; Fri, 14 Feb 2020 13:47:37 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=kMKktoaF1IOxW54uInQ/BBY6ukrwNpSEsYGbXWfgWmg3FLb7d+J3EivaiesZPP6HVUV17IgDIg3+XVOyC7m3bLXf2cSJHp0CAUqtbggvXS3eP0BxGFieuWwGHxVFESxMJLevcp4iC0iFIIuyWnZt1oRGpTkoOGbuoHzYulrbVq8oGTXP/3hpzPkfxBADrMADj4DUNG5p2rX+aEpkphiWezTXltBnTFMs6JaxhB1iHFjC+k9w5BKl+qJenJkVVn1O6w1zVtz4yQUBdDF7w+n4VYou8r9RzB0pr37alPAsUkOvWjDJYOeslVL5fnjOyy19xBngTMym3dtrNPFLILG2Fg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=piEDK3sQ58eGY88b0/ZoEju6n9YkDVBjwZwW0orWUZc=;
- b=m5hkPQMV/kxqFfWs1nuzJXqAfuGfkxuz2law7LRxZAtAMGOtRsepSuOT4B4HuCWuVkfN5L7cdVptVwU/xSz68GYem819+WxnIx7iM70VEYuskmE2CBG15PgQi+EO9ZsEe4nA0Ogjx3koFnJk4w0SmV7n70HtDTYQo3FaEy7V6VtMjnIfJTkNX6M9uqYzWNJ76ZzITURY6qoWJDRmxINoycQJh9tj9wWXcd+LhK8PafnivM+8cjjhExU//N72b4Gvt18xLiOdu2SPlyNio7YVgoLEhv2htENH7mSX2R2joAQpJNX/95fuI/XH7TTf/YG769PPujV/NVVOc6z1gNtfcQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=piEDK3sQ58eGY88b0/ZoEju6n9YkDVBjwZwW0orWUZc=;
- b=bBQfcFyNWqOmDbVEkww4oMNcUKDrez8i2Prqf/aouOklZ31aQvtjKEr6SNR27+56SoQg5jL1qQQBN7tXB5Men73i6Zi3/qOpJqzQoGG/LVr8Aj0xXwSTwuQUFlawu97ruwk+NuC4SQcRD+YkpvtjsUXYHgPB/TjgTcQkGw1iNuE=
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com (20.179.155.147) by
- BYAPR15MB2263.namprd15.prod.outlook.com (52.135.195.155) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.2729.22; Fri, 14 Feb 2020 21:47:35 +0000
-Received: from BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::ccb6:a331:77d8:d308]) by BYAPR15MB2631.namprd15.prod.outlook.com
- ([fe80::ccb6:a331:77d8:d308%7]) with mapi id 15.20.2707.031; Fri, 14 Feb 2020
- 21:47:35 +0000
-Date:   Fri, 14 Feb 2020 13:47:30 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S1729600AbgBNVw6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 16:52:58 -0500
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44150 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728911AbgBNVw6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 16:52:58 -0500
+Received: by mail-ot1-f65.google.com with SMTP id h9so10541671otj.11
+        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 13:52:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tfz71M/wdFurvbEGy7B2dsQgM4lhgzxbWoyk5L4uqZg=;
+        b=oCrWK9faCv0eyCNkLHw7uqHtAPxK7shw63hdimWtDt1Z0/z/heha6UoXD+HQb5LFB6
+         AT72xYfkh2cwCRfta4dPbxRTH9zaChSs5wmXq/Sa88WhzEXaXWURqRd3BnfyqTnMgqyJ
+         feADgzXJNTIrayAEFAFvoQ1OiMQ9PYqhQA7HhT65EajieK0BLj0iGsvvzaCr4rQjnwzS
+         OvinxUmAro358jWX0bhmBKbP1ebGn+iFBnvtlJPtLQfvBi4WE0z+zN0/BYDRarBlDdJy
+         8Bcm6NKPBShaNu5Unkp6rFUZyngflBI5t85w/SbkiTZAakpsS0GPJZ1+DvzMwDcu4spv
+         3jOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tfz71M/wdFurvbEGy7B2dsQgM4lhgzxbWoyk5L4uqZg=;
+        b=G6TCX5rP3q4ufAoxXt9AKwnGs2Ph6Kte0emkK2t4GfHIFczgGgfNLjkD0VxSc9r0qV
+         xuWE7XyVPyl+Scko34iJrjV2SYzfQe+lJTA27XxvqlhtJsP5qRPa9BzP+IU/9cX6TSrx
+         n/T4bd2xC9VpI5sL29YC3oaxJyfcOotFw1FsOGURh5k+FHSdl6kv3hOtq6+LTQTUIDrL
+         clkgDfRSFV0turP1I1Aw3fgn1WxWUDJe5C8BdQ+6I9ZM7Y1VVvJ8e5qmi0IqtI4qr8xi
+         YgjXHYBLXNv5ds1UD5pGReH82bN088Le0BpjSVWprJ3wAIDnzlQO8sbUUfxxqDDnGcht
+         hp3Q==
+X-Gm-Message-State: APjAAAVf/xpmJWQUoF6kRgQ7RsT+acYPRn1jvBVmyDjqZZhE8DAQHuKj
+        +MfB29dKXVBw2XbGI/GVRhwzjpFa5mVC735AkRPTxA==
+X-Google-Smtp-Source: APXvYqwes6IDSgTZ+5dDGo6PkrHSOiVjFbV51t6Z5ISM9HZ58CtfnhEz5I51yjlbxeFhVVn4Sm9FGeIz9ygn1oGSUf8=
+X-Received: by 2002:a9d:6ac2:: with SMTP id m2mr3967181otq.191.1581717176988;
+ Fri, 14 Feb 2020 13:52:56 -0800 (PST)
+MIME-Version: 1.0
+References: <20200214071233.100682-1-shakeelb@google.com> <20200214214730.GA99109@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20200214214730.GA99109@carbon.DHCP.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 14 Feb 2020 13:52:46 -0800
+Message-ID: <CALvZod4sum32d_ujFrRFhBVrE6TmhHrwWu=LPX+mG0urD4w80w@mail.gmail.com>
+Subject: Re: [PATCH] memcg: net: do not associate sock with unrelated memcg
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Eric Dumazet <edumazet@google.com>,
         Greg Thelen <gthelen@google.com>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: net: do not associate sock with unrelated memcg
-Message-ID: <20200214214730.GA99109@carbon.DHCP.thefacebook.com>
-References: <20200214071233.100682-1-shakeelb@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200214071233.100682-1-shakeelb@google.com>
-X-ClientProxiedBy: MWHPR17CA0069.namprd17.prod.outlook.com
- (2603:10b6:300:93::31) To BYAPR15MB2631.namprd15.prod.outlook.com
- (2603:10b6:a03:150::19)
-MIME-Version: 1.0
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:500::7:3162) by MWHPR17CA0069.namprd17.prod.outlook.com (2603:10b6:300:93::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2729.22 via Frontend Transport; Fri, 14 Feb 2020 21:47:34 +0000
-X-Originating-IP: [2620:10d:c090:500::7:3162]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 94f5196d-5c87-4eaa-b801-08d7b1978077
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2263:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2263229D93F7B15DB4AFA385BE150@BYAPR15MB2263.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 03137AC81E
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(39860400002)(396003)(366004)(136003)(376002)(346002)(199004)(189003)(16526019)(33656002)(7696005)(52116002)(9686003)(55016002)(186003)(81166006)(54906003)(478600001)(8936002)(81156014)(316002)(8676002)(7416002)(4326008)(86362001)(66946007)(6506007)(6916009)(2906002)(6666004)(5660300002)(66556008)(1076003)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:BYAPR15MB2263;H:BYAPR15MB2631.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: YIkluUCsrMkYs3e7Ov3cnv0SeLWdS08ZSa6d11Sehx9US4PmKlG+Rz1nJ/kYqljUyJJwyiuSuT9Svyz/IhGlDbR/ITZBOaLrkWvR32TwvDBygQ//kkY6aCulezNdm+9BH1/jKSswXsg+qE5Iue9chHsrj78Ii6QFcvGK8gTkMQsNojpcXnEgfK0fUVr6Mi4Vcsx/+kp4sCjEtQVsMczlynlqQ8qwha/R2DjoVp0rU8uFdMEUvxe7fdRmN5wnNPd7QYSijML5OT4+KWXHD3BE0iA1ICD+cQqJ3leiAdJ8X2OoUgU+7tUKScYjqNBXokgprRK54K3MXxanNPJcyhuKAU6DYq/ZMu+OgAWEAoPjIWTwUODHootalJt8xi+kzk9H1eJ4h0X5gcV6zlOiYUjYE4++R5KgN+kz5ERDaY+ohgMhftaljlOEbcR3iVC1tcyq
-X-MS-Exchange-AntiSpam-MessageData: 00Fx1XrI+7ddk7D33gpAXgmhY0KPhngn9En2+4LCeu1N10uTsfJHN+Y/J8PxEFvVnT3Vu6VdhTXa90AHNRAWa6sgaqKSaH5Lfv9IeB8r+mK+KdtDnYkJaiaUR76pINQmVL64w5lobzM2Okgu92Tverl4CityllyPsGtjtlkJKAHAgsLbfRcYtNaz7u96Cz0N
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94f5196d-5c87-4eaa-b801-08d7b1978077
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Feb 2020 21:47:35.1011
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gZDwy2j0sttJMKsaMybBNYyuTOclH26BgHxD4pbkROHR4qWUUNoZGLnjedINl2B3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2263
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-02-14_08:2020-02-14,2020-02-14 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- lowpriorityscore=0 clxscore=1011 priorityscore=1501 mlxscore=0
- malwarescore=0 mlxlogscore=886 bulkscore=0 adultscore=0 spamscore=0
- phishscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2001150001 definitions=main-2002140159
-X-FB-Internal: deliver
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Shakeel!
+On Fri, Feb 14, 2020 at 1:47 PM Roman Gushchin <guro@fb.com> wrote:
+>
+> Hello, Shakeel!
+>
+> On Thu, Feb 13, 2020 at 11:12:33PM -0800, Shakeel Butt wrote:
+> > We are testing network memory accounting in our setup and noticed
+> > inconsistent network memory usage and often unrelated memcgs network
+> > usage correlates with testing workload. On further inspection, it seems
+> > like mem_cgroup_sk_alloc() is broken in irq context specially for
+> > cgroup v1.
+>
+> A great catch!
+>
+> >
+> > mem_cgroup_sk_alloc() can be called in irq context and kind
+> > of assumes that it can only happen from sk_clone_lock() and the source
+> > sock object has already associated memcg. However in cgroup v1, where
+> > network memory accounting is opt-in, the source sock can be not
+> > associated with any memcg and the new cloned sock can get associated
+> > with unrelated interrupted memcg.
+> >
+> > Cgroup v2 can also suffer if the source sock object was created by
+> > process in the root memcg or if sk_alloc() is called in irq context.
+>
+> Do you mind sharing a call trace?
+>
 
-On Thu, Feb 13, 2020 at 11:12:33PM -0800, Shakeel Butt wrote:
-> We are testing network memory accounting in our setup and noticed
-> inconsistent network memory usage and often unrelated memcgs network
-> usage correlates with testing workload. On further inspection, it seems
-> like mem_cgroup_sk_alloc() is broken in irq context specially for
-> cgroup v1.
+Sure, see below. I added a dump_stack() in mem_cgroup_sk_alloc().
 
-A great catch!
+[  647.255327] CPU: 68 PID: 15859 Comm: ssh Tainted: G           O
+ 5.6.0-smp-DEV #1
+[  647.255328] Hardware name: ...
+[  647.255328] Call Trace:
+[  647.255329]  <IRQ>
+[  647.255333]  dump_stack+0x57/0x75
+[  647.255336]  mem_cgroup_sk_alloc+0xe9/0xf0
+[  647.255337]  sk_clone_lock+0x2a7/0x420
+[  647.255339]  inet_csk_clone_lock+0x1b/0x110
+[  647.255340]  tcp_create_openreq_child+0x23/0x3b0
+[  647.255342]  tcp_v6_syn_recv_sock+0x88/0x730
+[  647.255343]  tcp_check_req+0x429/0x560
+[  647.255345]  tcp_v6_rcv+0x72d/0xa40
+[  647.255347]  ip6_protocol_deliver_rcu+0xc9/0x400
+[  647.255348]  ip6_input+0x44/0xd0
+[  647.255349]  ? ip6_protocol_deliver_rcu+0x400/0x400
+[  647.255350]  ip6_rcv_finish+0x71/0x80
+[  647.255351]  ipv6_rcv+0x5b/0xe0
+[  647.255352]  ? ip6_sublist_rcv+0x2e0/0x2e0
+[  647.255354]  process_backlog+0x108/0x1e0
+[  647.255355]  net_rx_action+0x26b/0x460
+[  647.255357]  __do_softirq+0x104/0x2a6
+[  647.255358]  do_softirq_own_stack+0x2a/0x40
+[  647.255359]  </IRQ>
+[  647.255361]  do_softirq.part.19+0x40/0x50
+[  647.255362]  __local_bh_enable_ip+0x51/0x60
+[  647.255363]  ip6_finish_output2+0x23d/0x520
+[  647.255365]  ? ip6table_mangle_hook+0x55/0x160
+[  647.255366]  __ip6_finish_output+0xa1/0x100
+[  647.255367]  ip6_finish_output+0x30/0xd0
+[  647.255368]  ip6_output+0x73/0x120
+[  647.255369]  ? __ip6_finish_output+0x100/0x100
+[  647.255370]  ip6_xmit+0x2e3/0x600
+[  647.255372]  ? ipv6_anycast_cleanup+0x50/0x50
+[  647.255373]  ? inet6_csk_route_socket+0x136/0x1e0
+[  647.255374]  ? skb_free_head+0x1e/0x30
+[  647.255375]  inet6_csk_xmit+0x95/0xf0
+[  647.255377]  __tcp_transmit_skb+0x5b4/0xb20
+[  647.255378]  __tcp_send_ack.part.60+0xa3/0x110
+[  647.255379]  tcp_send_ack+0x1d/0x20
+[  647.255380]  tcp_rcv_state_process+0xe64/0xe80
+[  647.255381]  ? tcp_v6_connect+0x5d1/0x5f0
+[  647.255383]  tcp_v6_do_rcv+0x1b1/0x3f0
+[  647.255384]  ? tcp_v6_do_rcv+0x1b1/0x3f0
+[  647.255385]  __release_sock+0x7f/0xd0
+[  647.255386]  release_sock+0x30/0xa0
+[  647.255388]  __inet_stream_connect+0x1c3/0x3b0
+[  647.255390]  ? prepare_to_wait+0xb0/0xb0
+[  647.255391]  inet_stream_connect+0x3b/0x60
+[  647.255394]  __sys_connect+0x101/0x120
+[  647.255395]  ? __sys_getsockopt+0x11b/0x140
+[  647.255397]  __x64_sys_connect+0x1a/0x20
+[  647.255398]  do_syscall_64+0x51/0x200
+[  647.255399]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[  647.255401] RIP: 0033:0x7f45464fcd50
 
-> 
-> mem_cgroup_sk_alloc() can be called in irq context and kind
-> of assumes that it can only happen from sk_clone_lock() and the source
-> sock object has already associated memcg. However in cgroup v1, where
-> network memory accounting is opt-in, the source sock can be not
-> associated with any memcg and the new cloned sock can get associated
-> with unrelated interrupted memcg.
-> 
-> Cgroup v2 can also suffer if the source sock object was created by
-> process in the root memcg or if sk_alloc() is called in irq context.
+> Also, shouldn't cgroup_sk_alloc() be changed in a similar way?
+>
 
-Do you mind sharing a call trace?
+I will check cgroup_sk_alloc() too.
 
-Also, shouldn't cgroup_sk_alloc() be changed in a similar way?
-
-Thanks!
-
-Roman
+Thanks,
+Shakeel
