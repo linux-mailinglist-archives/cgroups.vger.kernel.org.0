@@ -2,911 +2,579 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3CC15F626
-	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 19:51:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D41F015F634
+	for <lists+cgroups@lfdr.de>; Fri, 14 Feb 2020 19:56:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729573AbgBNSvu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 14 Feb 2020 13:51:50 -0500
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36908 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728859AbgBNSvu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 13:51:50 -0500
-Received: by mail-wr1-f67.google.com with SMTP id w15so12095890wru.4
-        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 10:51:45 -0800 (PST)
+        id S1729577AbgBNSzb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Feb 2020 13:55:31 -0500
+Received: from mail-pl1-f193.google.com ([209.85.214.193]:42375 "EHLO
+        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728859AbgBNSzb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Feb 2020 13:55:31 -0500
+Received: by mail-pl1-f193.google.com with SMTP id e8so4045320plt.9
+        for <cgroups@vger.kernel.org>; Fri, 14 Feb 2020 10:55:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ikQXKcsF3Gob7KzmD6dmWmAwfxdpbqe4u57iz+TtkQU=;
-        b=jLpB7Grga0+IUhbkdNJ/kipRr5z4eM8YKipZpF8LAVAA1DJtwN93Nu8Ne1QQKk166E
-         qT6PbdaVUIuE2lOoADoJpeu9hFF33zi2Ui1TOHXqkAJLJNqyOWT6evxgNDeyzqJs0W+r
-         Zj+Clc1oGjwaSr6njP1givNp1ZWPjgJTC2Q9znMD48ezsBvfAWqHbZF4d0+b4oinHGgh
-         9VCbnmO5wXdF30HHvDwNQ+e5oBldOd34Rsb2xdxS4f7pRDYCLClFhgB1Bj63831ZOTjh
-         rN3Ky/LN3Tuw/aJdxQ0th1PGxq7iAkLALcP/1pOobUNDevn9XuOVxSlEPGceZj1dpHH+
-         tEbg==
+        d=google.com; s=20161025;
+        h=from:to:cc:subject:references:date:in-reply-to:message-id
+         :user-agent:mime-version;
+        bh=N5mJwRVM7fV7U1L+8IEzdcgxN+R5zfGAOZeQcK9YsIo=;
+        b=IiF97q+loSxxQER85qTwEXbkVqh1t0bf9563sVJjghWsxitRD7AmlPyuKmQjb42DeQ
+         w+Sk0aFBVOZZiCst42XZvWlTFFa+d/dwyXMu6RSaImfccRlUiVu/poOUqcrn2XOK+LTQ
+         8h1Qjotpx9b++2ZGxZGGh7RUMnDD5Ns8zjO5Oo2kTAle6LcsOx34EUrhlixD/PRXViYw
+         hu4FBa6SOHxg1v9qPPPsdESl5IGaDFJez9NV1Bg6woROuK7K5VAEg6VWlbjRbYyFTE41
+         XTWCKoQ7bNpV/8tNzzEwY65tK4fTzCZO3pJ3aiLOn5qcFvzhaPEF1+4eK7xPSY8VHvS2
+         4pXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ikQXKcsF3Gob7KzmD6dmWmAwfxdpbqe4u57iz+TtkQU=;
-        b=rpY3HCGsUbqHKxYgsqQ/JnNEBTSd0rTS75pABZv4Xg1OR74ni0mbTRAGQyYWVATs6I
-         QDhA3GZA6dpHjEG2rFY4q6AFNeAIPGtRyuqdEVX8Ax6RkL8wS4wiBkUGpmcg+DhdoSF8
-         LIo/pNeXuJPKJaIZIEYxSn9CloAcNVGruK1gBxibmrUGT5t29Nlp6SzDRKpK2UjTZpra
-         qUIEYlZlnGAUYeOqtjLJ9m2gurBUDtu2vCYy/3kv2lFVS/q9SZ0I6PaSlXV4GEI+G4RZ
-         mT7A+1fsq05DflRhp4KBPLQIX6YCW7zmzNqjHkMQWvzwrpn87nmXZd815/7U5tl33Lam
-         44zw==
-X-Gm-Message-State: APjAAAWpr5mMSabUnjwitK+jxCkxTWP0Or7fIOQVRsFlzPmLts/lP2k2
-        n5AFhEbwp+QVuTwERHhoUiXph2BZ6ZqQmzjYF9U=
-X-Google-Smtp-Source: APXvYqyMnXTSQV0vNhUjGYyrDojlyEkLJz+DwCEHtjNtaXhzx2XPy7/ZeYVK/n1+oGGLt6meBilkOrUWnceEwuQZPZM=
-X-Received: by 2002:a5d:4a89:: with SMTP id o9mr5192671wrq.32.1581706304584;
- Fri, 14 Feb 2020 10:51:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:references:date:in-reply-to
+         :message-id:user-agent:mime-version;
+        bh=N5mJwRVM7fV7U1L+8IEzdcgxN+R5zfGAOZeQcK9YsIo=;
+        b=h6SPY0Y+08YdmMPnlwYKSTfqHP1cgARKeP7mPDEGeKL3iMLQi5yppIbCrjCElF2//7
+         0ZZULRAOm6PADSWq19DfdydUk/msnL+8yn2jfDj1bn60r6edrNR8EZFZmdAHKT/Cycfq
+         jCy1p7B91zdXfW3YF4KjCNDKlPe4SSwP5JGf6FPXVhL7NUnFYwCznKoq9KQs2JH8avHz
+         g9lwSZV1/eEts1LgsK0vNVp63HZ69UxiVh3yVLXgXV0H8l97b0SsQH0L4PVNjHI9cUGO
+         OtgwqaGYzWZd+rldetprQqXHejdyO7HxPKt8zxxPnF8U2AkLj59mZidf9yi555HWpiur
+         WNxg==
+X-Gm-Message-State: APjAAAW1Gd6yL9Imr7a5sErRgqW8e/LXjKECThGUHT5wNAc5WkrwZO0E
+        4I18PxSOjcx8fymynvYpn8Q7RA==
+X-Google-Smtp-Source: APXvYqxn7k+ha9ICZN6ZFVtlnbPTys8L7osTI3fg1f25KNNw/VvdndRuO7t2xq728CEK/5v/pcHR2A==
+X-Received: by 2002:a17:902:8b89:: with SMTP id ay9mr4590333plb.309.1581706530065;
+        Fri, 14 Feb 2020 10:55:30 -0800 (PST)
+Received: from bsegall-linux.svl.corp.google.com.localhost ([2620:15c:2cd:202:39d7:98b3:2536:e93f])
+        by smtp.gmail.com with ESMTPSA id a21sm7933083pgd.12.2020.02.14.10.55.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Feb 2020 10:55:29 -0800 (PST)
+From:   bsegall@google.com
+To:     Dave Chiluk <chiluk+linux@indeed.com>
+Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>
+Subject: Re: [PATCH v2] sched/fair: add burst to cgroup cpu bandwidth controller
+References: <157476581065.5793.4518979877345136813.stgit@buzz>
+        <CAC=E7cU8TeNHDRnrHiFxmiHUKviVU9KaDvMq-U16VRgcohg6-w@mail.gmail.com>
+Date:   Fri, 14 Feb 2020 10:55:19 -0800
+In-Reply-To: <CAC=E7cU8TeNHDRnrHiFxmiHUKviVU9KaDvMq-U16VRgcohg6-w@mail.gmail.com>
+        (Dave Chiluk's message of "Fri, 14 Feb 2020 09:13:08 -0600")
+Message-ID: <xm268sl5uhgo.fsf@bsegall-linux.svl.corp.google.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
 MIME-Version: 1.0
-References: <20200214155650.21203-1-Kenny.Ho@amd.com> <20200214155650.21203-10-Kenny.Ho@amd.com>
- <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
- <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com> <20200214183401.GY2363188@phenom.ffwll.local>
-In-Reply-To: <20200214183401.GY2363188@phenom.ffwll.local>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Fri, 14 Feb 2020 13:51:32 -0500
-Message-ID: <CAOWid-caJHeXUnQv3MOi=9U+vdBLfewN+CrA-7jRrz0VXqatbQ@mail.gmail.com>
-Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Jason Ekstrand <jason@jlekstrand.net>, Kenny Ho <Kenny.Ho@amd.com>,
-        cgroups@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Tejun Heo <tj@kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com, nirmoy.das@amd.com, damon.mcdougall@amd.com,
-        juan.zuniga-anaya@amd.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 1:34 PM Daniel Vetter <daniel@ffwll.ch> wrote:
->
-> I think guidance from Tejun in previos discussions was pretty clear that
-> he expects cgroups to be both a) standardized and c) sufficient clear
-> meaning that end-users have a clear understanding of what happens when
-> they change the resource allocation.
->
-> I'm not sure lgpu here, at least as specified, passes either.
+Dave Chiluk <chiluk+linux@indeed.com> writes:
 
-I disagree (at least on the characterization of the feedback
-provided.)  I believe this series satisfied the sprite of Tejun's
-guidance so far (the weight knob for lgpu, for example, was
-specifically implemented base on his input.)  But, I will let Tejun
-speak for himself after he considered the implementation in detail.
+> @Ben Segall, @Ingo Molnar, @Peter Zijlstra : This would be really
+> useful, can you please voice your concerns/frustrations so they can be
+> addressed?  This should help increasing density of our bursty
+> web-applications.
 
-Regards,
-Kenny
+I seem to have missed this in my inbox.
 
-
-> But I also
-> don't have much clue, so pulled Jason in - he understands how this all
-> gets reflected to userspace apis a lot better than me.
-> -Daniel
+>
+> @Konstantin, please add a reviewed by by-line.  As I don't do this
+> regularly, I need all the attribution I can get.
+> Reviewed-by: Dave Chiluk <chiluk+linux@indeed.com>
+>
+> Thanks,
+> Dave
 >
 >
-> >
-> > > If it's carving up compute power, what's actually being carved up?  T=
-ime?  Execution units/waves/threads?  Even if that's the case, what advanta=
-ge does it give to have it in terms of a fixed set of lgpus where each cgro=
-up gets to pick a fixed set.  Does affinity matter that much?  Why not just=
- say how many waves the GPU supports and that they have to be allocated in =
-chunks of 16 waves (pulling a number out of thin air) and let the cgroup sp=
-ecify how many waves it wants.
-> > >
-> > > Don't get me wrong here.  I'm all for the notion of being able to use=
- cgroups to carve up GPU compute resources.  However, this sounds to me lik=
-e the most AMD-specific solution possible.  We (Intel) could probably do so=
-me sort of carving up as well but we'd likely want to do it with preemption=
- and time-slicing rather than handing out specific EUs.
-> >
-> > This has been discussed in the RFC before
-> > (https://www.spinics.net/lists/cgroups/msg23469.html.)  As mentioned
-> > before, the idea of a compute unit is hardly an AMD specific thing as
-> > it is in the OpenCL standard and part of the architecture of many
-> > different vendors.  In addition, the interface presented here supports
-> > Intel's use case.  What you described is what I considered as the
-> > "anonymous resources" view of the lgpu.  What you/Intel can do, is to
-> > register your device to drmcg to have 100 lgpu and users can specify
-> > simply by count.  So if they want to allocate 5% for a cgroup, they
-> > would set count=3D5.  Per the documentation in this patch: "Some DRM
-> > devices may only support lgpu as anonymous resources.  In such case,
-> > the significance of the position of the set bits in list will be
-> > ignored."  What Intel does with the user expressed configuration of "5
-> > out of 100" is entirely up to Intel (time slice if you like, change to
-> > specific EUs later if you like, or make it driver configurable to
-> > support both if you like.)
-> >
-> > Regards,
-> > Kenny
-> >
-> > >
-> > > On Fri, Feb 14, 2020 at 9:57 AM Kenny Ho <Kenny.Ho@amd.com> wrote:
-> > >>
-> > >> drm.lgpu
-> > >>       A read-write nested-keyed file which exists on all cgroups.
-> > >>       Each entry is keyed by the DRM device's major:minor.
-> > >>
-> > >>       lgpu stands for logical GPU, it is an abstraction used to
-> > >>       subdivide a physical DRM device for the purpose of resource
-> > >>       management.  This file stores user configuration while the
-> > >>       drm.lgpu.effective reflects the actual allocation after
-> > >>       considering the relationship between the cgroups and their
-> > >>       configurations.
-> > >>
-> > >>       The lgpu is a discrete quantity that is device specific (i.e.
-> > >>       some DRM devices may have 64 lgpus while others may have 100
-> > >>       lgpus.)  The lgpu is a single quantity that can be allocated
-> > >>       in three different ways denoted by the following nested keys.
-> > >>
-> > >>         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > >>         weight    Allocate by proportion in relationship with
-> > >>                   active sibling cgroups
-> > >>         count     Allocate by amount statically, treat lgpu as
-> > >>                   anonymous resources
-> > >>         list      Allocate statically, treat lgpu as named
-> > >>                   resource
-> > >>         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-> > >>
-> > >>       For example:
-> > >>       226:0 weight=3D100 count=3D256 list=3D0-255
-> > >>       226:1 weight=3D100 count=3D4 list=3D0,2,4,6
-> > >>       226:2 weight=3D100 count=3D32 list=3D32-63
-> > >>       226:3 weight=3D100 count=3D0 list=3D
-> > >>       226:4 weight=3D500 count=3D0 list=3D
-> > >>
-> > >>       lgpu is represented by a bitmap and uses the bitmap_parselist
-> > >>       kernel function so the list key input format is a
-> > >>       comma-separated list of decimal numbers and ranges.
-> > >>
-> > >>       Consecutively set bits are shown as two hyphen-separated decim=
-al
-> > >>       numbers, the smallest and largest bit numbers set in the range=
-.
-> > >>       Optionally each range can be postfixed to denote that only par=
-ts
-> > >>       of it should be set.  The range will divided to groups of
-> > >>       specific size.
-> > >>       Syntax: range:used_size/group_size
-> > >>       Example: 0-1023:2/256 =3D=3D> 0,1,256,257,512,513,768,769
-> > >>
-> > >>       The count key is the hamming weight / hweight of the bitmap.
-> > >>
-> > >>       Weight, count and list accept the max and default keywords.
-> > >>
-> > >>       Some DRM devices may only support lgpu as anonymous resources.
-> > >>       In such case, the significance of the position of the set bits
-> > >>       in list will be ignored.
-> > >>
-> > >>       The weight quantity is only in effect when static allocation
-> > >>       is not used (by setting count=3D0) for this cgroup.  The weigh=
-t
-> > >>       quantity distributes lgpus that are not statically allocated b=
-y
-> > >>       the siblings.  For example, given siblings cgroupA, cgroupB an=
-d
-> > >>       cgroupC for a DRM device that has 64 lgpus, if cgroupA occupie=
-s
-> > >>       0-63, no lgpu is available to be distributed by weight.
-> > >>       Similarly, if cgroupA has list=3D0-31 and cgroupB has list=3D1=
-6-63,
-> > >>       cgroupC will be starved if it tries to allocate by weight.
-> > >>
-> > >>       On the other hand, if cgroupA has weight=3D100 count=3D0, cgro=
-upB
-> > >>       has list=3D16-47, and cgroupC has weight=3D100 count=3D0, then=
- 32
-> > >>       lgpus are available to be distributed evenly between cgroupA
-> > >>       and cgroupC.  In drm.lgpu.effective, cgroupA will have
-> > >>       list=3D0-15 and cgroupC will have list=3D48-63.
-> > >>
-> > >>       This lgpu resource supports the 'allocation' and 'weight'
-> > >>       resource distribution model.
-> > >>
-> > >> drm.lgpu.effective
-> > >>       A read-only nested-keyed file which exists on all cgroups.
-> > >>       Each entry is keyed by the DRM device's major:minor.
-> > >>
-> > >>       lgpu stands for logical GPU, it is an abstraction used to
-> > >>       subdivide a physical DRM device for the purpose of resource
-> > >>       management.  This file reflects the actual allocation after
-> > >>       considering the relationship between the cgroups and their
-> > >>       configurations in drm.lgpu.
-> > >>
-> > >> Change-Id: Idde0ef9a331fd67bb9c7eb8ef9978439e6452488
-> > >> Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
-> > >> ---
-> > >>  Documentation/admin-guide/cgroup-v2.rst |  80 ++++++
-> > >>  include/drm/drm_cgroup.h                |   3 +
-> > >>  include/linux/cgroup_drm.h              |  22 ++
-> > >>  kernel/cgroup/drm.c                     | 324 +++++++++++++++++++++=
-++-
-> > >>  4 files changed, 427 insertions(+), 2 deletions(-)
-> > >>
-> > >> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation=
-/admin-guide/cgroup-v2.rst
-> > >> index ce5dc027366a..d8a41956e5c7 100644
-> > >> --- a/Documentation/admin-guide/cgroup-v2.rst
-> > >> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > >> @@ -2120,6 +2120,86 @@ DRM Interface Files
-> > >>         Set largest allocation for /dev/dri/card1 to 4MB
-> > >>         echo "226:1 4m" > drm.buffer.peak.max
-> > >>
-> > >> +  drm.lgpu
-> > >> +       A read-write nested-keyed file which exists on all cgroups.
-> > >> +       Each entry is keyed by the DRM device's major:minor.
-> > >> +
-> > >> +       lgpu stands for logical GPU, it is an abstraction used to
-> > >> +       subdivide a physical DRM device for the purpose of resource
-> > >> +       management.  This file stores user configuration while the
-> > >> +        drm.lgpu.effective reflects the actual allocation after
-> > >> +        considering the relationship between the cgroups and their
-> > >> +        configurations.
-> > >> +
-> > >> +       The lgpu is a discrete quantity that is device specific (i.e=
-.
-> > >> +       some DRM devices may have 64 lgpus while others may have 100
-> > >> +       lgpus.)  The lgpu is a single quantity that can be allocated
-> > >> +        in three different ways denoted by the following nested key=
-s.
-> > >> +
-> > >> +         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >> +         weight    Allocate by proportion in relationship with
-> > >> +                    active sibling cgroups
-> > >> +         count     Allocate by amount statically, treat lgpu as
-> > >> +                    anonymous resources
-> > >> +         list      Allocate statically, treat lgpu as named
-> > >> +                    resource
-> > >> +         =3D=3D=3D=3D=3D     =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > >> +
-> > >> +       For example:
-> > >> +       226:0 weight=3D100 count=3D256 list=3D0-255
-> > >> +       226:1 weight=3D100 count=3D4 list=3D0,2,4,6
-> > >> +       226:2 weight=3D100 count=3D32 list=3D32-63
-> > >> +       226:3 weight=3D100 count=3D0 list=3D
-> > >> +       226:4 weight=3D500 count=3D0 list=3D
-> > >> +
-> > >> +       lgpu is represented by a bitmap and uses the bitmap_parselis=
-t
-> > >> +       kernel function so the list key input format is a
-> > >> +       comma-separated list of decimal numbers and ranges.
-> > >> +
-> > >> +       Consecutively set bits are shown as two hyphen-separated dec=
-imal
-> > >> +       numbers, the smallest and largest bit numbers set in the ran=
-ge.
-> > >> +       Optionally each range can be postfixed to denote that only p=
-arts
-> > >> +       of it should be set.  The range will divided to groups of
-> > >> +       specific size.
-> > >> +       Syntax: range:used_size/group_size
-> > >> +       Example: 0-1023:2/256 =3D=3D> 0,1,256,257,512,513,768,769
-> > >> +
-> > >> +       The count key is the hamming weight / hweight of the bitmap.
-> > >> +
-> > >> +       Weight, count and list accept the max and default keywords.
-> > >> +
-> > >> +       Some DRM devices may only support lgpu as anonymous resource=
-s.
-> > >> +       In such case, the significance of the position of the set bi=
-ts
-> > >> +       in list will be ignored.
-> > >> +
-> > >> +       The weight quantity is only in effect when static allocation
-> > >> +       is not used (by setting count=3D0) for this cgroup.  The wei=
-ght
-> > >> +       quantity distributes lgpus that are not statically allocated=
- by
-> > >> +       the siblings.  For example, given siblings cgroupA, cgroupB =
-and
-> > >> +       cgroupC for a DRM device that has 64 lgpus, if cgroupA occup=
-ies
-> > >> +       0-63, no lgpu is available to be distributed by weight.
-> > >> +       Similarly, if cgroupA has list=3D0-31 and cgroupB has list=
-=3D16-63,
-> > >> +       cgroupC will be starved if it tries to allocate by weight.
-> > >> +
-> > >> +       On the other hand, if cgroupA has weight=3D100 count=3D0, cg=
-roupB
-> > >> +       has list=3D16-47, and cgroupC has weight=3D100 count=3D0, th=
-en 32
-> > >> +       lgpus are available to be distributed evenly between cgroupA
-> > >> +       and cgroupC.  In drm.lgpu.effective, cgroupA will have
-> > >> +       list=3D0-15 and cgroupC will have list=3D48-63.
-> > >> +
-> > >> +       This lgpu resource supports the 'allocation' and 'weight'
-> > >> +       resource distribution model.
-> > >> +
-> > >> +  drm.lgpu.effective
-> > >> +       A read-only nested-keyed file which exists on all cgroups.
-> > >> +       Each entry is keyed by the DRM device's major:minor.
-> > >> +
-> > >> +       lgpu stands for logical GPU, it is an abstraction used to
-> > >> +       subdivide a physical DRM device for the purpose of resource
-> > >> +       management.  This file reflects the actual allocation after
-> > >> +        considering the relationship between the cgroups and their
-> > >> +        configurations in drm.lgpu.
-> > >> +
-> > >>  GEM Buffer Ownership
-> > >>  ~~~~~~~~~~~~~~~~~~~~
-> > >>
-> > >> diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
-> > >> index 2b41d4d22e33..619a110cc748 100644
-> > >> --- a/include/drm/drm_cgroup.h
-> > >> +++ b/include/drm/drm_cgroup.h
-> > >> @@ -17,6 +17,9 @@ struct drmcg_props {
-> > >>
-> > >>         s64                     bo_limits_total_allocated_default;
-> > >>         s64                     bo_limits_peak_allocated_default;
-> > >> +
-> > >> +       int                     lgpu_capacity;
-> > >> +       DECLARE_BITMAP(lgpu_slots, MAX_DRMCG_LGPU_CAPACITY);
-> > >>  };
-> > >>
-> > >>  void drmcg_bind(struct drm_minor (*(*acq_dm)(unsigned int minor_id)=
-),
-> > >> diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-> > >> index eae400f3d9b4..bb09704e7f71 100644
-> > >> --- a/include/linux/cgroup_drm.h
-> > >> +++ b/include/linux/cgroup_drm.h
-> > >> @@ -11,10 +11,14 @@
-> > >>  /* limit defined per the way drm_minor_alloc operates */
-> > >>  #define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
-> > >>
-> > >> +#define MAX_DRMCG_LGPU_CAPACITY 256
-> > >> +
-> > >>  enum drmcg_res_type {
-> > >>         DRMCG_TYPE_BO_TOTAL,
-> > >>         DRMCG_TYPE_BO_PEAK,
-> > >>         DRMCG_TYPE_BO_COUNT,
-> > >> +       DRMCG_TYPE_LGPU,
-> > >> +       DRMCG_TYPE_LGPU_EFF,
-> > >>         __DRMCG_TYPE_LAST,
-> > >>  };
-> > >>
-> > >> @@ -32,6 +36,24 @@ struct drmcg_device_resource {
-> > >>         s64                     bo_limits_peak_allocated;
-> > >>
-> > >>         s64                     bo_stats_count_allocated;
-> > >> +
-> > >> +       /**
-> > >> +        * Logical GPU
-> > >> +        *
-> > >> +        * *_cfg are properties configured by users
-> > >> +        * *_eff are the effective properties being applied to the h=
-ardware
-> > >> +         * *_stg is used to calculate _eff before applying to _eff
-> > >> +        * after considering the entire hierarchy
-> > >> +        */
-> > >> +       DECLARE_BITMAP(lgpu_stg, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       /* user configurations */
-> > >> +       s64                     lgpu_weight_cfg;
-> > >> +       DECLARE_BITMAP(lgpu_cfg, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       /* effective lgpu for the cgroup after considering
-> > >> +        * relationship with other cgroup
-> > >> +        */
-> > >> +       s64                     lgpu_count_eff;
-> > >> +       DECLARE_BITMAP(lgpu_eff, MAX_DRMCG_LGPU_CAPACITY);
-> > >>  };
-> > >>
-> > >>  /**
-> > >> diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-> > >> index 5fcbbc13fa1c..a4e88a3704bb 100644
-> > >> --- a/kernel/cgroup/drm.c
-> > >> +++ b/kernel/cgroup/drm.c
-> > >> @@ -9,6 +9,7 @@
-> > >>  #include <linux/seq_file.h>
-> > >>  #include <linux/mutex.h>
-> > >>  #include <linux/kernel.h>
-> > >> +#include <linux/bitmap.h>
-> > >>  #include <linux/cgroup_drm.h>
-> > >>  #include <drm/drm_file.h>
-> > >>  #include <drm/drm_drv.h>
-> > >> @@ -41,6 +42,10 @@ enum drmcg_file_type {
-> > >>         DRMCG_FTYPE_DEFAULT,
-> > >>  };
-> > >>
-> > >> +#define LGPU_LIMITS_NAME_LIST "list"
-> > >> +#define LGPU_LIMITS_NAME_COUNT "count"
-> > >> +#define LGPU_LIMITS_NAME_WEIGHT "weight"
-> > >> +
-> > >>  /**
-> > >>   * drmcg_bind - Bind DRM subsystem to cgroup subsystem
-> > >>   * @acq_dm: function pointer to the drm_minor_acquire function
-> > >> @@ -98,6 +103,13 @@ static inline int init_drmcg_single(struct drmcg=
- *drmcg, struct drm_device *dev)
-> > >>         ddr->bo_limits_peak_allocated =3D
-> > >>                 dev->drmcg_props.bo_limits_peak_allocated_default;
-> > >>
-> > >> +       bitmap_copy(ddr->lgpu_cfg, dev->drmcg_props.lgpu_slots,
-> > >> +                       MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       bitmap_copy(ddr->lgpu_stg, dev->drmcg_props.lgpu_slots,
-> > >> +                       MAX_DRMCG_LGPU_CAPACITY);
-> > >> +
-> > >> +       ddr->lgpu_weight_cfg =3D CGROUP_WEIGHT_DFL;
-> > >> +
-> > >>         return 0;
-> > >>  }
-> > >>
-> > >> @@ -121,6 +133,120 @@ static inline void drmcg_update_cg_tree(struct=
- drm_device *dev)
-> > >>         mutex_unlock(&cgroup_mutex);
-> > >>  }
-> > >>
-> > >> +static void drmcg_calculate_effective_lgpu(struct drm_device *dev,
-> > >> +               const unsigned long *free_static,
-> > >> +               const unsigned long *free_weighted,
-> > >> +               struct drmcg *parent_drmcg)
-> > >> +{
-> > >> +       int capacity =3D dev->drmcg_props.lgpu_capacity;
-> > >> +       DECLARE_BITMAP(lgpu_unused, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       DECLARE_BITMAP(lgpu_by_weight, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       struct drmcg_device_resource *parent_ddr;
-> > >> +       struct drmcg_device_resource *ddr;
-> > >> +       int minor =3D dev->primary->index;
-> > >> +       struct cgroup_subsys_state *pos;
-> > >> +       struct drmcg *child;
-> > >> +       s64 weight_sum =3D 0;
-> > >> +       s64 unused;
-> > >> +
-> > >> +       parent_ddr =3D parent_drmcg->dev_resources[minor];
-> > >> +
-> > >> +       if (bitmap_empty(parent_ddr->lgpu_cfg, capacity))
-> > >> +               /* no static cfg, use weight for calculating the eff=
-ective */
-> > >> +               bitmap_copy(parent_ddr->lgpu_stg, free_weighted, cap=
-acity);
-> > >> +       else
-> > >> +               /* lgpu statically configured, use the overlap as ef=
-fective */
-> > >> +               bitmap_and(parent_ddr->lgpu_stg, free_static,
-> > >> +                               parent_ddr->lgpu_cfg, capacity);
-> > >> +
-> > >> +       /* calculate lgpu available for distribution by weight for c=
-hildren */
-> > >> +       bitmap_copy(lgpu_unused, parent_ddr->lgpu_stg, capacity);
-> > >> +       css_for_each_child(pos, &parent_drmcg->css) {
-> > >> +               child =3D css_to_drmcg(pos);
-> > >> +               ddr =3D child->dev_resources[minor];
-> > >> +
-> > >> +               if (bitmap_empty(ddr->lgpu_cfg, capacity))
-> > >> +                       /* no static allocation, participate in weig=
-ht dist */
-> > >> +                       weight_sum +=3D ddr->lgpu_weight_cfg;
-> > >> +               else
-> > >> +                       /* take out statically allocated lgpu by sib=
-lings */
-> > >> +                       bitmap_andnot(lgpu_unused, lgpu_unused, ddr-=
->lgpu_cfg,
-> > >> +                                       capacity);
-> > >> +       }
-> > >> +
-> > >> +       unused =3D bitmap_weight(lgpu_unused, capacity);
-> > >> +
-> > >> +       css_for_each_child(pos, &parent_drmcg->css) {
-> > >> +               child =3D css_to_drmcg(pos);
-> > >> +               ddr =3D child->dev_resources[minor];
-> > >> +
-> > >> +               bitmap_zero(lgpu_by_weight, capacity);
-> > >> +               /* no static allocation, participate in weight distr=
-ibution */
-> > >> +               if (bitmap_empty(ddr->lgpu_cfg, capacity)) {
-> > >> +                       int c;
-> > >> +                       int p =3D 0;
-> > >> +
-> > >> +                       for (c =3D ddr->lgpu_weight_cfg * unused / w=
-eight_sum;
-> > >> +                                       c > 0; c--) {
-> > >> +                               p =3D find_next_bit(lgpu_unused, cap=
-acity, p);
-> > >> +                               if (p < capacity) {
-> > >> +                                       clear_bit(p, lgpu_unused);
-> > >> +                                       set_bit(p, lgpu_by_weight);
-> > >> +                               }
-> > >> +                       }
-> > >> +
-> > >> +               }
-> > >> +
-> > >> +               drmcg_calculate_effective_lgpu(dev, parent_ddr->lgpu=
-_stg,
-> > >> +                               lgpu_by_weight, child);
-> > >> +       }
-> > >> +}
-> > >> +
-> > >> +static void drmcg_apply_effective_lgpu(struct drm_device *dev)
-> > >> +{
-> > >> +       int capacity =3D dev->drmcg_props.lgpu_capacity;
-> > >> +       int minor =3D dev->primary->index;
-> > >> +       struct drmcg_device_resource *ddr;
-> > >> +       struct cgroup_subsys_state *pos;
-> > >> +       struct drmcg *drmcg;
-> > >> +
-> > >> +       if (root_drmcg =3D=3D NULL) {
-> > >> +               WARN_ON(root_drmcg =3D=3D NULL);
-> > >> +               return;
-> > >> +       }
-> > >> +
-> > >> +       rcu_read_lock();
-> > >> +
-> > >> +       /* process the entire cgroup tree from root to simplify the =
-algorithm */
-> > >> +       drmcg_calculate_effective_lgpu(dev, dev->drmcg_props.lgpu_sl=
-ots,
-> > >> +                       dev->drmcg_props.lgpu_slots, root_drmcg);
-> > >> +
-> > >> +       /* apply changes to effective only if there is a change */
-> > >> +       css_for_each_descendant_pre(pos, &root_drmcg->css) {
-> > >> +               drmcg =3D css_to_drmcg(pos);
-> > >> +               ddr =3D drmcg->dev_resources[minor];
-> > >> +
-> > >> +               if (!bitmap_equal(ddr->lgpu_stg, ddr->lgpu_eff, capa=
-city)) {
-> > >> +                       bitmap_copy(ddr->lgpu_eff, ddr->lgpu_stg, ca=
-pacity);
-> > >> +                       ddr->lgpu_count_eff =3D
-> > >> +                               bitmap_weight(ddr->lgpu_eff, capacit=
-y);
-> > >> +               }
-> > >> +       }
-> > >> +       rcu_read_unlock();
-> > >> +}
-> > >> +
-> > >> +static void drmcg_apply_effective(enum drmcg_res_type type,
-> > >> +               struct drm_device *dev, struct drmcg *changed_drmcg)
-> > >> +{
-> > >> +       switch (type) {
-> > >> +       case DRMCG_TYPE_LGPU:
-> > >> +               drmcg_apply_effective_lgpu(dev);
-> > >> +               break;
-> > >> +       default:
-> > >> +               break;
-> > >> +       }
-> > >> +}
-> > >> +
-> > >>  /**
-> > >>   * drmcg_register_dev - register a DRM device for usage in drm cgro=
-up
-> > >>   * @dev: DRM device
-> > >> @@ -143,7 +269,13 @@ void drmcg_register_dev(struct drm_device *dev)
-> > >>         {
-> > >>                 dev->driver->drmcg_custom_init(dev, &dev->drmcg_prop=
-s);
-> > >>
-> > >> +               WARN_ON(dev->drmcg_props.lgpu_capacity !=3D
-> > >> +                               bitmap_weight(dev->drmcg_props.lgpu_=
-slots,
-> > >> +                                       MAX_DRMCG_LGPU_CAPACITY));
-> > >> +
-> > >>                 drmcg_update_cg_tree(dev);
-> > >> +
-> > >> +               drmcg_apply_effective(DRMCG_TYPE_LGPU, dev, root_drm=
-cg);
-> > >>         }
-> > >>         mutex_unlock(&drmcg_mutex);
-> > >>  }
-> > >> @@ -297,7 +429,8 @@ static void drmcg_print_stats(struct drmcg_devic=
-e_resource *ddr,
-> > >>  }
-> > >>
-> > >>  static void drmcg_print_limits(struct drmcg_device_resource *ddr,
-> > >> -               struct seq_file *sf, enum drmcg_res_type type)
-> > >> +               struct seq_file *sf, enum drmcg_res_type type,
-> > >> +               struct drm_device *dev)
-> > >>  {
-> > >>         if (ddr =3D=3D NULL) {
-> > >>                 seq_puts(sf, "\n");
-> > >> @@ -311,6 +444,25 @@ static void drmcg_print_limits(struct drmcg_dev=
-ice_resource *ddr,
-> > >>         case DRMCG_TYPE_BO_PEAK:
-> > >>                 seq_printf(sf, "%lld\n", ddr->bo_limits_peak_allocat=
-ed);
-> > >>                 break;
-> > >> +       case DRMCG_TYPE_LGPU:
-> > >> +               seq_printf(sf, "%s=3D%lld %s=3D%d %s=3D%*pbl\n",
-> > >> +                               LGPU_LIMITS_NAME_WEIGHT,
-> > >> +                               ddr->lgpu_weight_cfg,
-> > >> +                               LGPU_LIMITS_NAME_COUNT,
-> > >> +                               bitmap_weight(ddr->lgpu_cfg,
-> > >> +                                       dev->drmcg_props.lgpu_capaci=
-ty),
-> > >> +                               LGPU_LIMITS_NAME_LIST,
-> > >> +                               dev->drmcg_props.lgpu_capacity,
-> > >> +                               ddr->lgpu_cfg);
-> > >> +               break;
-> > >> +       case DRMCG_TYPE_LGPU_EFF:
-> > >> +               seq_printf(sf, "%s=3D%lld %s=3D%*pbl\n",
-> > >> +                               LGPU_LIMITS_NAME_COUNT,
-> > >> +                               ddr->lgpu_count_eff,
-> > >> +                               LGPU_LIMITS_NAME_LIST,
-> > >> +                               dev->drmcg_props.lgpu_capacity,
-> > >> +                               ddr->lgpu_eff);
-> > >> +               break;
-> > >>         default:
-> > >>                 seq_puts(sf, "\n");
-> > >>                 break;
-> > >> @@ -329,6 +481,17 @@ static void drmcg_print_default(struct drmcg_pr=
-ops *props,
-> > >>                 seq_printf(sf, "%lld\n",
-> > >>                         props->bo_limits_peak_allocated_default);
-> > >>                 break;
-> > >> +       case DRMCG_TYPE_LGPU:
-> > >> +               seq_printf(sf, "%s=3D%d %s=3D%d %s=3D%*pbl\n",
-> > >> +                               LGPU_LIMITS_NAME_WEIGHT,
-> > >> +                               CGROUP_WEIGHT_DFL,
-> > >> +                               LGPU_LIMITS_NAME_COUNT,
-> > >> +                               bitmap_weight(props->lgpu_slots,
-> > >> +                                       props->lgpu_capacity),
-> > >> +                               LGPU_LIMITS_NAME_LIST,
-> > >> +                               props->lgpu_capacity,
-> > >> +                               props->lgpu_slots);
-> > >> +               break;
-> > >>         default:
-> > >>                 seq_puts(sf, "\n");
-> > >>                 break;
-> > >> @@ -358,7 +521,7 @@ static int drmcg_seq_show_fn(int id, void *ptr, =
-void *data)
-> > >>                 drmcg_print_stats(ddr, sf, type);
-> > >>                 break;
-> > >>         case DRMCG_FTYPE_LIMIT:
-> > >> -               drmcg_print_limits(ddr, sf, type);
-> > >> +               drmcg_print_limits(ddr, sf, type, minor->dev);
-> > >>                 break;
-> > >>         case DRMCG_FTYPE_DEFAULT:
-> > >>                 drmcg_print_default(&minor->dev->drmcg_props, sf, ty=
-pe);
-> > >> @@ -415,6 +578,115 @@ static int drmcg_process_limit_s64_val(char *s=
-val, bool is_mem,
-> > >>         return rc;
-> > >>  }
-> > >>
-> > >> +static void drmcg_nested_limit_parse(struct kernfs_open_file *of,
-> > >> +               struct drm_device *dev, char *attrs)
-> > >> +{
-> > >> +       DECLARE_BITMAP(tmp_bitmap, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       DECLARE_BITMAP(chk_bitmap, MAX_DRMCG_LGPU_CAPACITY);
-> > >> +       enum drmcg_res_type type =3D
-> > >> +               DRMCG_CTF_PRIV2RESTYPE(of_cft(of)->private);
-> > >> +       struct drmcg *drmcg =3D css_to_drmcg(of_css(of));
-> > >> +       struct drmcg_props *props =3D &dev->drmcg_props;
-> > >> +       char *cft_name =3D of_cft(of)->name;
-> > >> +       int minor =3D dev->primary->index;
-> > >> +       char *nested =3D strstrip(attrs);
-> > >> +       struct drmcg_device_resource *ddr =3D
-> > >> +               drmcg->dev_resources[minor];
-> > >> +       char *attr;
-> > >> +       char sname[256];
-> > >> +       char sval[256];
-> > >> +       s64 val;
-> > >> +       int rc;
-> > >> +
-> > >> +       while (nested !=3D NULL) {
-> > >> +               attr =3D strsep(&nested, " ");
-> > >> +
-> > >> +               if (sscanf(attr, "%255[^=3D]=3D%255[^=3D]", sname, s=
-val) !=3D 2)
-> > >> +                       continue;
-> > >> +
-> > >> +               switch (type) {
-> > >> +               case DRMCG_TYPE_LGPU:
-> > >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 25=
-6) &&
-> > >> +                               strncmp(sname, LGPU_LIMITS_NAME_COUN=
-T, 256) &&
-> > >> +                               strncmp(sname, LGPU_LIMITS_NAME_WEIG=
-HT, 256))
-> > >> +                               continue;
-> > >> +
-> > >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, =
-256) &&
-> > >> +                                       (!strcmp("max", sval) ||
-> > >> +                                       !strcmp("default", sval))) {
-> > >> +                               bitmap_copy(ddr->lgpu_cfg, props->lg=
-pu_slots,
-> > >> +                                               props->lgpu_capacity=
-);
-> > >> +
-> > >> +                               continue;
-> > >> +                       }
-> > >> +
-> > >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_WEIGHT, =
-256) =3D=3D 0) {
-> > >> +                               rc =3D drmcg_process_limit_s64_val(s=
-val,
-> > >> +                                       false, CGROUP_WEIGHT_DFL,
-> > >> +                                       CGROUP_WEIGHT_MAX, &val);
-> > >> +
-> > >> +                               if (rc || val < CGROUP_WEIGHT_MIN ||
-> > >> +                                               val > CGROUP_WEIGHT_=
-MAX) {
-> > >> +                                       drmcg_pr_cft_err(drmcg, rc, =
-cft_name,
-> > >> +                                                       minor);
-> > >> +                                       continue;
-> > >> +                               }
-> > >> +
-> > >> +                               ddr->lgpu_weight_cfg =3D val;
-> > >> +                               continue;
-> > >> +                       }
-> > >> +
-> > >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_COUNT, 2=
-56) =3D=3D 0) {
-> > >> +                               rc =3D drmcg_process_limit_s64_val(s=
-val,
-> > >> +                                       false, props->lgpu_capacity,
-> > >> +                                       props->lgpu_capacity, &val);
-> > >> +
-> > >> +                               if (rc || val < 0) {
-> > >> +                                       drmcg_pr_cft_err(drmcg, rc, =
-cft_name,
-> > >> +                                                       minor);
-> > >> +                                       continue;
-> > >> +                               }
-> > >> +
-> > >> +                               bitmap_zero(tmp_bitmap,
-> > >> +                                               MAX_DRMCG_LGPU_CAPAC=
-ITY);
-> > >> +                               bitmap_set(tmp_bitmap, 0, val);
-> > >> +                       }
-> > >> +
-> > >> +                       if (strncmp(sname, LGPU_LIMITS_NAME_LIST, 25=
-6) =3D=3D 0) {
-> > >> +                               rc =3D bitmap_parselist(sval, tmp_bi=
-tmap,
-> > >> +                                               MAX_DRMCG_LGPU_CAPAC=
-ITY);
-> > >> +
-> > >> +                               if (rc) {
-> > >> +                                       drmcg_pr_cft_err(drmcg, rc, =
-cft_name,
-> > >> +                                                       minor);
-> > >> +                                       continue;
-> > >> +                               }
-> > >> +
-> > >> +                               bitmap_andnot(chk_bitmap, tmp_bitmap=
-,
-> > >> +                                       props->lgpu_slots,
-> > >> +                                       MAX_DRMCG_LGPU_CAPACITY);
-> > >> +
-> > >> +                               /* user setting does not intersect w=
-ith
-> > >> +                                * available lgpu */
-> > >> +                               if (!bitmap_empty(chk_bitmap,
-> > >> +                                               MAX_DRMCG_LGPU_CAPAC=
-ITY)) {
-> > >> +                                       drmcg_pr_cft_err(drmcg, 0, c=
-ft_name,
-> > >> +                                                       minor);
-> > >> +                                       continue;
-> > >> +                               }
-> > >> +                       }
-> > >> +
-> > >> +                       bitmap_copy(ddr->lgpu_cfg, tmp_bitmap,
-> > >> +                                       props->lgpu_capacity);
-> > >> +
-> > >> +                       break; /* DRMCG_TYPE_LGPU */
-> > >> +               default:
-> > >> +                       break;
-> > >> +               } /* switch (type) */
-> > >> +       }
-> > >> +}
-> > >> +
-> > >> +
-> > >>  /**
-> > >>   * drmcg_limit_write - parse cgroup interface files to obtain user =
-config
-> > >>   *
-> > >> @@ -499,9 +771,15 @@ static ssize_t drmcg_limit_write(struct kernfs_=
-open_file *of, char *buf,
-> > >>
-> > >>                         ddr->bo_limits_peak_allocated =3D val;
-> > >>                         break;
-> > >> +               case DRMCG_TYPE_LGPU:
-> > >> +                       drmcg_nested_limit_parse(of, dm->dev, sattr)=
-;
-> > >> +                       break;
-> > >>                 default:
-> > >>                         break;
-> > >>                 }
-> > >> +
-> > >> +               drmcg_apply_effective(type, dm->dev, drmcg);
-> > >> +
-> > >>                 mutex_unlock(&dm->dev->drmcg_mutex);
-> > >>
-> > >>                 mutex_lock(&drmcg_mutex);
-> > >> @@ -560,12 +838,51 @@ struct cftype files[] =3D {
-> > >>                 .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_BO_COUNT,
-> > >>                                                 DRMCG_FTYPE_STATS),
-> > >>         },
-> > >> +       {
-> > >> +               .name =3D "lgpu",
-> > >> +               .seq_show =3D drmcg_seq_show,
-> > >> +               .write =3D drmcg_limit_write,
-> > >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
-> > >> +                                               DRMCG_FTYPE_LIMIT),
-> > >> +       },
-> > >> +       {
-> > >> +               .name =3D "lgpu.default",
-> > >> +               .seq_show =3D drmcg_seq_show,
-> > >> +               .flags =3D CFTYPE_ONLY_ON_ROOT,
-> > >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU,
-> > >> +                                               DRMCG_FTYPE_DEFAULT)=
-,
-> > >> +       },
-> > >> +       {
-> > >> +               .name =3D "lgpu.effective",
-> > >> +               .seq_show =3D drmcg_seq_show,
-> > >> +               .private =3D DRMCG_CTF_PRIV(DRMCG_TYPE_LGPU_EFF,
-> > >> +                                               DRMCG_FTYPE_LIMIT),
-> > >> +       },
-> > >>         { }     /* terminate */
-> > >>  };
-> > >>
-> > >> +static int drmcg_online_fn(int id, void *ptr, void *data)
-> > >> +{
-> > >> +       struct drm_minor *minor =3D ptr;
-> > >> +       struct drmcg *drmcg =3D data;
-> > >> +
-> > >> +       if (minor->type !=3D DRM_MINOR_PRIMARY)
-> > >> +               return 0;
-> > >> +
-> > >> +       drmcg_apply_effective(DRMCG_TYPE_LGPU, minor->dev, drmcg);
-> > >> +
-> > >> +       return 0;
-> > >> +}
-> > >> +
-> > >> +static int drmcg_css_online(struct cgroup_subsys_state *css)
-> > >> +{
-> > >> +       return drm_minor_for_each(&drmcg_online_fn, css_to_drmcg(css=
-));
-> > >> +}
-> > >> +
-> > >>  struct cgroup_subsys drm_cgrp_subsys =3D {
-> > >>         .css_alloc      =3D drmcg_css_alloc,
-> > >>         .css_free       =3D drmcg_css_free,
-> > >> +       .css_online     =3D drmcg_css_online,
-> > >>         .early_init     =3D false,
-> > >>         .legacy_cftypes =3D files,
-> > >>         .dfl_cftypes    =3D files,
-> > >> @@ -585,6 +902,9 @@ void drmcg_device_early_init(struct drm_device *=
-dev)
-> > >>         dev->drmcg_props.bo_limits_total_allocated_default =3D S64_M=
-AX;
-> > >>         dev->drmcg_props.bo_limits_peak_allocated_default =3D S64_MA=
-X;
-> > >>
-> > >> +       dev->drmcg_props.lgpu_capacity =3D MAX_DRMCG_LGPU_CAPACITY;
-> > >> +       bitmap_fill(dev->drmcg_props.lgpu_slots, MAX_DRMCG_LGPU_CAPA=
-CITY);
-> > >> +
-> > >>         drmcg_update_cg_tree(dev);
-> > >>  }
-> > >>  EXPORT_SYMBOL(drmcg_device_early_init);
-> > >> --
-> > >> 2.25.0
-> > >>
-> > >> _______________________________________________
-> > >> dri-devel mailing list
-> > >> dri-devel@lists.freedesktop.org
-> > >> https://lists.freedesktop.org/mailman/listinfo/dri-devel
->
-> --
-> Daniel Vetter
-> Software Engineer, Intel Corporation
-> http://blog.ffwll.ch
+> On Tue, Nov 26, 2019 at 4:56 AM Konstantin Khlebnikov
+> <khlebnikov@yandex-team.ru> wrote:
+>>
+>> Currently CFS bandwidth controller assigns cpu.cfs_quota_us runtime into
+>> global pool every cpu.cfs_period_us. All unused runtime is expired.
+>>
+>> Since commit de53fd7aedb1 ("sched/fair: Fix low cpu usage with high
+>> throttling by removing expiration of cpu-local slices") slice assigned
+>> to cpu does not expire. This allows to serve tiny bursts (upto 1ms),
+>> but this runtime pool is cpu-bound and not transferred between cpus.
+>>
+>> Setup for interactive workload with irregular cpu consumption have to set
+>> quota according to relatively short spikes of cpu usage. This eliminates
+>> possibility of control for average cpu usage. Increasing period and quota
+>> proportionally for getting bigger runtime chunks is not an option because
+>> if even bigger spike deplete global pool then execution will stuck until
+>> end of period and next refill.
+>>
+>> This patch adds limited accumulation of unused runtime from past periods.
+>> Accumulated runtime does not expire. It stays in global pool and could be
+>> used by any cpu. Average cpu usage stays limited with quota / period,
+>> but spiky workload could use more cpu power for a short period of time.
+>>
+>> Size of pool for burst runtime is set in attribute cpu.cfs_burst_us.
+>> Default is 0, which reflects current behavior.
+>>
+>> Statistics for used bust runtime is shown in cpu.stat as "burst_time".
+>>
+>> Example setup:
+>>
+>> cpu.cfs_period_us = 100000
+>> cpu.cfs_quota_us = 200000
+>> cpu.cfs_burst_us = 300000
+>>
+>> Average cpu usage stays limited with 2 cpus (quota / period), but cgroup
+>> could accumulate runtime (burst) and for 100ms could utilize up to 5 cpus
+>> (quota / period + burst / 100ms), or 3 cpus for 300ms, an so on.
+>>
+>> For example, in this cgroup sample workload with bursts:
+>>
+>> fio --name=test --ioengine=cpuio --time_based=1 --runtime=600 \
+>>            --cpuload=10 --cpuchunks=100000 --numjobs=5
+>>
+>> has 50% average cpu usage without throttling. Without enabling bursts
+>> same command can utilize only 25% cpu and 25% time will be throttled.
+>>
+>> Implementation is simple. All logic is in __refill_cfs_bandwidth_runtime().
+>> Burst pool is kept in common pool thus runtime distribution is unchanged.
+>> The rest changes are interface for cgroup and cgroup2.
+>>
+>> For cgroup2 burst is set as third number in attribute cpu.max:
+>> cpu.max = $QUOTA $PERIOD $BURST
+>>
+>> At changing setup cgroup gets full charge of runtime and burst runtime.
+>>
+>> Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+>> Cc: Dave Chiluk <chiluk+linux@indeed.com>
+>> Cc: Cong Wang <xiyou.wangcong@gmail.com>
+
+I'm not sure that starting with full burst runtime is best, though it
+definitely seems likely to be one of those things where sometimes it's
+what you want and sometimes it's not.
+
+Reviewed-by: Ben Segall <bsegall@google.com>
+
+>>
+>> ---
+>>
+>> v2: fix spelling, add refilling burst runtime at changing setup per Dave Chiluk
+>>
+>> v1: https://lore.kernel.org/lkml/157312875706.707.12248531434112979828.stgit@buzz/
+>>
+>> Cong Wang proposed similar feature: https://lore.kernel.org/patchwork/patch/907450/
+>> But with changing default behavior and without statistics.
+>> ---
+>>  Documentation/admin-guide/cgroup-v2.rst |   15 +++--
+>>  Documentation/scheduler/sched-bwc.rst   |    8 ++-
+>>  kernel/sched/core.c                     |   94 +++++++++++++++++++++++++------
+>>  kernel/sched/fair.c                     |   34 +++++++++--
+>>  kernel/sched/sched.h                    |    4 +
+>>  5 files changed, 124 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+>> index 5361ebec3361..8c3cc3d882ba 100644
+>> --- a/Documentation/admin-guide/cgroup-v2.rst
+>> +++ b/Documentation/admin-guide/cgroup-v2.rst
+>> @@ -981,11 +981,12 @@ All time durations are in microseconds.
+>>         - user_usec
+>>         - system_usec
+>>
+>> -       and the following three when the controller is enabled:
+>> +       and the following four when the controller is enabled:
+>>
+>>         - nr_periods
+>>         - nr_throttled
+>>         - throttled_usec
+>> +       - burst_usec
+>>
+>>    cpu.weight
+>>         A read-write single value file which exists on non-root
+>> @@ -1006,16 +1007,18 @@ All time durations are in microseconds.
+>>         the closest approximation of the current weight.
+>>
+>>    cpu.max
+>> -       A read-write two value file which exists on non-root cgroups.
+>> -       The default is "max 100000".
+>> +       A read-write 1..3 values file which exists on non-root cgroups.
+>> +       The default is "max 100000 0".
+>>
+>>         The maximum bandwidth limit.  It's in the following format::
+>>
+>> -         $MAX $PERIOD
+>> +         $MAX $PERIOD $BURST
+>>
+>>         which indicates that the group may consume upto $MAX in each
+>> -       $PERIOD duration.  "max" for $MAX indicates no limit.  If only
+>> -       one number is written, $MAX is updated.
+>> +       $PERIOD duration and accumulates upto $BURST time for bursts.
+>> +
+>> +       "max" for $MAX indicates no limit.
+>> +       If only one number is written, $MAX is updated.
+
+Might want to change this to "Fields that aren't provided are left with
+the old values" or something.
+
+>>
+>>    cpu.pressure
+>>         A read-only nested-key file which exists on non-root cgroups.
+>> diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
+>> index 9801d6b284b1..59de2ebe11b3 100644
+>> --- a/Documentation/scheduler/sched-bwc.rst
+>> +++ b/Documentation/scheduler/sched-bwc.rst
+>> @@ -27,12 +27,14 @@ Quota and period are managed within the cpu subsystem via cgroupfs.
+>>
+>>  cpu.cfs_quota_us: the total available run-time within a period (in microseconds)
+>>  cpu.cfs_period_us: the length of a period (in microseconds)
+>> +cpu.cfs_burst_us: the maxumum size of burst run-time pool (in microseconds)
+>>  cpu.stat: exports throttling statistics [explained further below]
+>>
+>>  The default values are::
+>>
+>>         cpu.cfs_period_us=100ms
+>> -       cpu.cfs_quota=-1
+>> +       cpu.cfs_quota_us=-1
+>> +       cpu.cfs_burst_us=0
+>>
+>>  A value of -1 for cpu.cfs_quota_us indicates that the group does not have any
+>>  bandwidth restriction in place, such a group is described as an unconstrained
+>> @@ -51,6 +53,9 @@ and return the group to an unconstrained state once more.
+>>  Any updates to a group's bandwidth specification will result in it becoming
+>>  unthrottled if it is in a constrained state.
+>>
+>> +Writing positive value into cpu.cfs_burst_us allows unused quota to
+>> +accumulate up to this value and be used later in addition to assigned quota.
+>> +
+>>  System wide settings
+>>  --------------------
+>>  For efficiency run-time is transferred between the global pool and CPU local
+>> @@ -75,6 +80,7 @@ cpu.stat:
+>>  - nr_throttled: Number of times the group has been throttled/limited.
+>>  - throttled_time: The total time duration (in nanoseconds) for which entities
+>>    of the group have been throttled.
+>> +- burst_time: The total running time consumed from burst pool.
+>>
+>>  This interface is read-only.
+>>
+>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>> index 44123b4d14e8..c4c8ef521e7c 100644
+>> --- a/kernel/sched/core.c
+>> +++ b/kernel/sched/core.c
+>> @@ -7364,7 +7364,8 @@ static const u64 min_cfs_quota_period = 1 * NSEC_PER_MSEC; /* 1ms */
+>>
+>>  static int __cfs_schedulable(struct task_group *tg, u64 period, u64 runtime);
+>>
+>> -static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>> +static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota,
+>> +                               u64 burst)
+>>  {
+>>         int i, ret = 0, runtime_enabled, runtime_was_enabled;
+>>         struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+>> @@ -7409,12 +7410,17 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>>         raw_spin_lock_irq(&cfs_b->lock);
+>>         cfs_b->period = ns_to_ktime(period);
+>>         cfs_b->quota = quota;
+>> +       cfs_b->burst = burst;
+>>
+>> -       __refill_cfs_bandwidth_runtime(cfs_b);
+>> -
+>> -       /* Restart the period timer (if active) to handle new period expiry: */
+>> -       if (runtime_enabled)
+>> +       /*
+>> +        * Restart the period timer (if active) to handle new period expiry.
+>> +        * And refill runtime and burst-runtime to full charge.
+>> +        */
+>> +       if (runtime_enabled) {
+>> +               cfs_b->burst_runtime = burst;
+>> +               cfs_b->runtime = quota + burst;
+>>                 start_cfs_bandwidth(cfs_b);
+>> +       }
+>>
+>>         raw_spin_unlock_irq(&cfs_b->lock);
+>>
+>> @@ -7442,9 +7448,10 @@ static int tg_set_cfs_bandwidth(struct task_group *tg, u64 period, u64 quota)
+>>
+>>  static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+>>  {
+>> -       u64 quota, period;
+>> +       u64 quota, period, burst;
+>>
+>>         period = ktime_to_ns(tg->cfs_bandwidth.period);
+>> +       burst = tg->cfs_bandwidth.burst;
+>>         if (cfs_quota_us < 0)
+>>                 quota = RUNTIME_INF;
+>>         else if ((u64)cfs_quota_us <= U64_MAX / NSEC_PER_USEC)
+>> @@ -7452,7 +7459,7 @@ static int tg_set_cfs_quota(struct task_group *tg, long cfs_quota_us)
+>>         else
+>>                 return -EINVAL;
+>>
+>> -       return tg_set_cfs_bandwidth(tg, period, quota);
+>> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
+>>  }
+>>
+>>  static long tg_get_cfs_quota(struct task_group *tg)
+>> @@ -7470,15 +7477,16 @@ static long tg_get_cfs_quota(struct task_group *tg)
+>>
+>>  static int tg_set_cfs_period(struct task_group *tg, long cfs_period_us)
+>>  {
+>> -       u64 quota, period;
+>> +       u64 quota, period, burst;
+>>
+>>         if ((u64)cfs_period_us > U64_MAX / NSEC_PER_USEC)
+>>                 return -EINVAL;
+>>
+>>         period = (u64)cfs_period_us * NSEC_PER_USEC;
+>>         quota = tg->cfs_bandwidth.quota;
+>> +       burst = tg->cfs_bandwidth.burst;
+>>
+>> -       return tg_set_cfs_bandwidth(tg, period, quota);
+>> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
+>>  }
+>>
+>>  static long tg_get_cfs_period(struct task_group *tg)
+>> @@ -7491,6 +7499,28 @@ static long tg_get_cfs_period(struct task_group *tg)
+>>         return cfs_period_us;
+>>  }
+>>
+>> +static long tg_get_cfs_burst(struct task_group *tg)
+>> +{
+>> +       u64 cfs_burst_us = tg->cfs_bandwidth.burst;
+>> +
+>> +       do_div(cfs_burst_us, NSEC_PER_USEC);
+>> +       return cfs_burst_us;
+>> +}
+>> +
+>> +static int tg_set_cfs_burst(struct task_group *tg, long cfs_burst_us)
+>> +{
+>> +       u64 quota, period, burst;
+>> +
+>> +       if ((u64)cfs_burst_us > U64_MAX / NSEC_PER_USEC)
+>> +               return -EINVAL;
+>> +
+>> +       period = ktime_to_ns(tg->cfs_bandwidth.period);
+>> +       quota = tg->cfs_bandwidth.quota;
+>> +       burst = (u64)cfs_burst_us * NSEC_PER_USEC;
+>> +
+>> +       return tg_set_cfs_bandwidth(tg, period, quota, burst);
+>> +}
+>> +
+>>  static s64 cpu_cfs_quota_read_s64(struct cgroup_subsys_state *css,
+>>                                   struct cftype *cft)
+>>  {
+>> @@ -7515,6 +7545,18 @@ static int cpu_cfs_period_write_u64(struct cgroup_subsys_state *css,
+>>         return tg_set_cfs_period(css_tg(css), cfs_period_us);
+>>  }
+>>
+>> +static u64 cpu_cfs_burst_read_u64(struct cgroup_subsys_state *css,
+>> +                                 struct cftype *cft)
+>> +{
+>> +       return tg_get_cfs_burst(css_tg(css));
+>> +}
+>> +
+>> +static int cpu_cfs_burst_write_u64(struct cgroup_subsys_state *css,
+>> +                                  struct cftype *cftype, u64 cfs_burst_us)
+>> +{
+>> +       return tg_set_cfs_burst(css_tg(css), cfs_burst_us);
+>> +}
+>> +
+>>  struct cfs_schedulable_data {
+>>         struct task_group *tg;
+>>         u64 period, quota;
+>> @@ -7606,6 +7648,7 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+>>         seq_printf(sf, "nr_periods %d\n", cfs_b->nr_periods);
+>>         seq_printf(sf, "nr_throttled %d\n", cfs_b->nr_throttled);
+>>         seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
+>> +       seq_printf(sf, "burst_time %llu\n", cfs_b->burst_time);
+>>
+>>         if (schedstat_enabled() && tg != &root_task_group) {
+>>                 u64 ws = 0;
+>> @@ -7667,6 +7710,11 @@ static struct cftype cpu_legacy_files[] = {
+>>                 .read_u64 = cpu_cfs_period_read_u64,
+>>                 .write_u64 = cpu_cfs_period_write_u64,
+>>         },
+>> +       {
+>> +               .name = "cfs_burst_us",
+>> +               .read_u64 = cpu_cfs_burst_read_u64,
+>> +               .write_u64 = cpu_cfs_burst_write_u64,
+>> +       },
+>>         {
+>>                 .name = "stat",
+>>                 .seq_show = cpu_cfs_stat_show,
+>> @@ -7709,15 +7757,20 @@ static int cpu_extra_stat_show(struct seq_file *sf,
+>>                 struct task_group *tg = css_tg(css);
+>>                 struct cfs_bandwidth *cfs_b = &tg->cfs_bandwidth;
+>>                 u64 throttled_usec;
+>> +               u64 burst_usec;
+>>
+>>                 throttled_usec = cfs_b->throttled_time;
+>>                 do_div(throttled_usec, NSEC_PER_USEC);
+>>
+>> +               burst_usec = cfs_b->burst_time;
+>> +               do_div(burst_usec, NSEC_PER_USEC);
+>> +
+>>                 seq_printf(sf, "nr_periods %d\n"
+>>                            "nr_throttled %d\n"
+>> -                          "throttled_usec %llu\n",
+>> +                          "throttled_usec %llu\n"
+>> +                          "burst_usec %llu\n",
+>>                            cfs_b->nr_periods, cfs_b->nr_throttled,
+>> -                          throttled_usec);
+>> +                          throttled_usec, burst_usec);
+>>         }
+>>  #endif
+>>         return 0;
+>> @@ -7787,26 +7840,29 @@ static int cpu_weight_nice_write_s64(struct cgroup_subsys_state *css,
+>>  #endif
+>>
+>>  static void __maybe_unused cpu_period_quota_print(struct seq_file *sf,
+>> -                                                 long period, long quota)
+>> +                                                 long period, long quota,
+>> +                                                 long burst)
+>>  {
+>>         if (quota < 0)
+>>                 seq_puts(sf, "max");
+>>         else
+>>                 seq_printf(sf, "%ld", quota);
+>>
+>> -       seq_printf(sf, " %ld\n", period);
+>> +       seq_printf(sf, " %ld %ld\n", period, burst);
+>>  }
+>>
+>>  /* caller should put the current value in *@periodp before calling */
+>>  static int __maybe_unused cpu_period_quota_parse(char *buf,
+>> -                                                u64 *periodp, u64 *quotap)
+>> +                                                u64 *periodp, u64 *quotap,
+>> +                                                s64 *burstp)
+>>  {
+>>         char tok[21];   /* U64_MAX */
+>>
+>> -       if (sscanf(buf, "%20s %llu", tok, periodp) < 1)
+>> +       if (sscanf(buf, "%20s %llu %llu", tok, periodp, burstp) < 1)
+>>                 return -EINVAL;
+>>
+>>         *periodp *= NSEC_PER_USEC;
+>> +       *burstp *= NSEC_PER_USEC;
+>>
+>>         if (sscanf(tok, "%llu", quotap))
+>>                 *quotap *= NSEC_PER_USEC;
+>> @@ -7823,7 +7879,8 @@ static int cpu_max_show(struct seq_file *sf, void *v)
+>>  {
+>>         struct task_group *tg = css_tg(seq_css(sf));
+>>
+>> -       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg));
+>> +       cpu_period_quota_print(sf, tg_get_cfs_period(tg), tg_get_cfs_quota(tg),
+>> +                              tg_get_cfs_burst(tg));
+>>         return 0;
+>>  }
+>>
+>> @@ -7832,12 +7889,13 @@ static ssize_t cpu_max_write(struct kernfs_open_file *of,
+>>  {
+>>         struct task_group *tg = css_tg(of_css(of));
+>>         u64 period = tg_get_cfs_period(tg);
+>> +       s64 burst = tg_get_cfs_burst(tg);
+>>         u64 quota;
+>>         int ret;
+>>
+>> -       ret = cpu_period_quota_parse(buf, &period, &quota);
+>> +       ret = cpu_period_quota_parse(buf, &period, &quota, &burst);
+>>         if (!ret)
+>> -               ret = tg_set_cfs_bandwidth(tg, period, quota);
+>> +               ret = tg_set_cfs_bandwidth(tg, period, quota, burst);
+>>         return ret ?: nbytes;
+>>  }
+>>  #endif
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 69a81a5709ff..f32b72496932 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -4353,16 +4353,26 @@ static inline u64 sched_cfs_bandwidth_slice(void)
+>>  }
+>>
+>>  /*
+>> - * Replenish runtime according to assigned quota. We use sched_clock_cpu
+>> - * directly instead of rq->clock to avoid adding additional synchronization
+>> - * around rq->lock.
+>> + * Replenish runtime according to assigned quota.
+>> + * Called only if quota != RUNTIME_INF.
+>>   *
+>>   * requires cfs_b->lock
+>>   */
+>>  void __refill_cfs_bandwidth_runtime(struct cfs_bandwidth *cfs_b)
+>>  {
+>> -       if (cfs_b->quota != RUNTIME_INF)
+>> -               cfs_b->runtime = cfs_b->quota;
+>> +       u64 runtime = cfs_b->runtime;
+>> +
+>> +       /*
+>> +        * Preserve past runtime up to burst size. If remaining runtime lower
+>> +        * than previous burst runtime then account delta as used burst time.
+>> +        */
+>> +       if (runtime > cfs_b->burst)
+>> +               runtime = cfs_b->burst;
+>> +       else if (runtime < cfs_b->burst_runtime)
+>> +               cfs_b->burst_time += cfs_b->burst_runtime - runtime;
+>> +
+>> +       cfs_b->burst_runtime = runtime;
+>> +       cfs_b->runtime = runtime + cfs_b->quota;
+>>  }
+>>
+>>  static inline struct cfs_bandwidth *tg_cfs_bandwidth(struct task_group *tg)
+>> @@ -4968,6 +4978,9 @@ void init_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+>>         cfs_b->runtime = 0;
+>>         cfs_b->quota = RUNTIME_INF;
+>>         cfs_b->period = ns_to_ktime(default_cfs_period());
+>> +       cfs_b->burst = 0;
+>> +       cfs_b->burst_runtime = 0;
+>> +       cfs_b->burst_time = 0;
+>>
+>>         INIT_LIST_HEAD(&cfs_b->throttled_cfs_rq);
+>>         hrtimer_init(&cfs_b->period_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS_PINNED);
+>> @@ -4986,14 +4999,23 @@ static void init_cfs_rq_runtime(struct cfs_rq *cfs_rq)
+>>
+>>  void start_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+>>  {
+>> +       u64 overrun;
+>> +
+>>         lockdep_assert_held(&cfs_b->lock);
+>>
+>>         if (cfs_b->period_active)
+>>                 return;
+>>
+>>         cfs_b->period_active = 1;
+>> -       hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
+>> +       overrun = hrtimer_forward_now(&cfs_b->period_timer, cfs_b->period);
+>>         hrtimer_start_expires(&cfs_b->period_timer, HRTIMER_MODE_ABS_PINNED);
+>> +
+>> +       /*
+>> +        * Refill runtime for periods of inactivity and current.
+>> +        * __refill_cfs_bandwidth_runtime() will cut excess.
+>> +        */
+>> +       cfs_b->runtime += cfs_b->quota * overrun;
+
+Overflow in 584 years, even cpu-years, is probably fine. And we skip
+refill on the period we stop the timer, so this isn't off by one, though
+it might be worth mentioning that in the comment.
+
+>> +       __refill_cfs_bandwidth_runtime(cfs_b);
+>>  }
+>>
+>>  static void destroy_cfs_bandwidth(struct cfs_bandwidth *cfs_b)
+>> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+>> index c8870c5bd7df..6edf6155e4f6 100644
+>> --- a/kernel/sched/sched.h
+>> +++ b/kernel/sched/sched.h
+>> @@ -344,10 +344,14 @@ struct cfs_bandwidth {
+>>         struct hrtimer          slack_timer;
+>>         struct list_head        throttled_cfs_rq;
+>>
+>> +       u64                     burst;
+>> +       u64                     burst_runtime;
+>> +
+>>         /* Statistics: */
+>>         int                     nr_periods;
+>>         int                     nr_throttled;
+>>         u64                     throttled_time;
+>> +       u64                     burst_time;
+>>  #endif
+>>  };
+>>
+>>
