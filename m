@@ -2,61 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BE11160153
-	for <lists+cgroups@lfdr.de>; Sun, 16 Feb 2020 02:21:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C77A160156
+	for <lists+cgroups@lfdr.de>; Sun, 16 Feb 2020 02:25:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727740AbgBPBVu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 15 Feb 2020 20:21:50 -0500
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:44073 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726697AbgBPBVu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 15 Feb 2020 20:21:50 -0500
-Received: by mail-pg1-f193.google.com with SMTP id g3so7010017pgs.11
-        for <cgroups@vger.kernel.org>; Sat, 15 Feb 2020 17:21:50 -0800 (PST)
+        id S1726634AbgBPBZP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 15 Feb 2020 20:25:15 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:53516 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726389AbgBPBZP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 15 Feb 2020 20:25:15 -0500
+Received: by mail-pj1-f68.google.com with SMTP id n96so5626761pjc.3
+        for <cgroups@vger.kernel.org>; Sat, 15 Feb 2020 17:25:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=ZdGxk1PBOKOGawhQcLNZeyTj/xo8WHGgfqy1y6yzHoY=;
-        b=VPkrR4aAn3aJbX9HSDDpW0USRaDzSdhdN+om9MlIpf6mSMxKE35qtR6HicoM83bMWF
-         89aYUdl45Sd9QDTwpOs1ibLUQ0VqCTwOaZnAyXwClrb0QZ3LqHT2DQKNTGE5B0JeCzlw
-         xQ06CSwG/XgtL+KBooQLph9KI5KyG3IdZ6tVc6PU/RveF/3awRvdk5p/6qyOHDdjX3GT
-         gv4LGYBtF7uptKcEPBwSoE47pJuBGW2azc0j4bCn+Z332aoPAvIzfVn+DrIRIMqnLzFf
-         YDR5Zfn0kFCTx9DMfbNdSbbwquq8tvMk73seGGqxATgAE501P6q3vyVnpSJA1VctTYP0
-         heFQ==
+        bh=LqZnlLjYXByu2d6oczewxnnow4SoLrPRaLAQ85cZs38=;
+        b=ek3rwVmXj8vmK4TuGeFA7GZoFc3SKRxyUg3Z2Utr4BYFXjER4M9c9s+39gzUc1NB8k
+         1b6/SZzqs107NzNUoJBcA7iGGny1ry6WtZq+L+AB2PnJF8Lj/mKZF1JohFm0Y8aXW0OA
+         wGfh1TZZ7MhOkF0cUh3XiBJA3MVKURpjnx1PzlxYCQkwMjCpJ5uvfuAyo4SU66KnkpBt
+         r/XyJSTlFKfkLQwKcGZK292JszBSePd4FDonFuwuFE5W0QaeYrlbO5JGjsCaU5bWTVvY
+         DTutPkpEy0ocnVJL21xAK+pOpW1lYUfWii6GP7GLgkKleg4WTF2siEg2yODyj9tNkCO0
+         k7NQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=ZdGxk1PBOKOGawhQcLNZeyTj/xo8WHGgfqy1y6yzHoY=;
-        b=mtZTFGTbcUmpoZMGMpQcO4RWTukdOCXgr+7l3U7nQF3bvc6EcQ0T182+dfWd1lUW0K
-         V54qBOQ1oygR7+DcbnxRoNVcp4XPYM0caLqSWLvDsMZ4zw2fN0W8Jma8hnS5P31SqUH6
-         577aiTAyl9LEENrmvfyLLeEBX13XJpjo4tRGoqduasOigAmMxGn4kZbVUdSVsK49pM0R
-         v7QBYZiNQfbIP/YrpcMczD0TGQ7wCOGmDcTjq3aRh1vHtmR6JiDcSoNO5et2wnIUnDjg
-         uAQ6m5XKE9mDktYHaHC0ShgKYS+3wyxrKrzY1KIo3lEClczJYlOeHDTsL5cQfviLhIzg
-         c9eQ==
-X-Gm-Message-State: APjAAAXo9zU2B7Q6lBOpPlrC6UKSS7O4LKJ7ttMAmqQwZ4wLcmNF1qQs
-        QC4a7bZMfmWfhqhqXKUuvlrq8w==
-X-Google-Smtp-Source: APXvYqwoLzYHO2Gi/QE5EcOl6jXQX5heYxareWbnikLCtYc4q3Ka3yDvQBaUmfxTlHxMIiSuHEeoRw==
-X-Received: by 2002:a63:e257:: with SMTP id y23mr11028582pgj.104.1581816109493;
-        Sat, 15 Feb 2020 17:21:49 -0800 (PST)
+        bh=LqZnlLjYXByu2d6oczewxnnow4SoLrPRaLAQ85cZs38=;
+        b=SNhJYhGvznL/RWcU14vf/NWXZ+A9x1aV0j33DsX5GXS+hi5D8grUNqcOTobwQf4ZJF
+         pXfXXD62vFi+TR3hR969VqVglBJXL2pXpPXg87CpHt8YjugxrZOKprHjBmLHaYlqkJWI
+         8YnUki/3lNXWznsEv6BoEtkac04jYPfLGo++W/bBi/gdol3bSykxH38lmL4nnViOuK6H
+         ZxQM7S9qGMNbjddRuN4dEdqQnNUVik9g3AeC6Pm64fp4rcfAh11lPn/oT5+k1PLf5MHS
+         rNUfZmMD/S3FBjd+NNJEnGoqi6CZP+F9HzsWk/V7M6i3bep1JWRh0AYU+nGCL7evGg2o
+         lPqw==
+X-Gm-Message-State: APjAAAWG/3/XoNybTYyrsYc7Jk/1FNBZH5nW8YD/cAS37mT1my49uxV/
+        V8gXtiM7QfJc7qkqM3F5R40GAw==
+X-Google-Smtp-Source: APXvYqwHXywkOkQgp2LWEyG9sypU7ULnSQp/BrlHu7Jw6ed6dn29Ne2Z0W8U3orPeg+BG0oyfyZmPQ==
+X-Received: by 2002:a17:90a:f012:: with SMTP id bt18mr12302718pjb.8.1581816314194;
+        Sat, 15 Feb 2020 17:25:14 -0800 (PST)
 Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
-        by smtp.gmail.com with ESMTPSA id d1sm11803545pgj.79.2020.02.15.17.21.48
+        by smtp.gmail.com with ESMTPSA id r8sm11390168pjo.22.2020.02.15.17.25.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 15 Feb 2020 17:21:48 -0800 (PST)
-Date:   Sat, 15 Feb 2020 17:21:48 -0800 (PST)
+        Sat, 15 Feb 2020 17:25:13 -0800 (PST)
+Date:   Sat, 15 Feb 2020 17:25:13 -0800 (PST)
 From:   David Rientjes <rientjes@google.com>
 X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-cc:     Mina Almasry <almasrymina@google.com>, shuah@kernel.org,
-        shakeelb@google.com, gthelen@google.com, akpm@linux-foundation.org,
+To:     Mina Almasry <almasrymina@google.com>
+cc:     mike.kravetz@oracle.com, shuah@kernel.org, shakeelb@google.com,
+        gthelen@google.com, Andrew Morton <akpm@linux-foundation.org>,
         linux-kernel@vger.kernel.org, linux-mm@kvack.org,
         linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v12 2/9] hugetlb_cgroup: add interface for charge/uncharge
- hugetlb reservations
-In-Reply-To: <791880db-bdb0-8d34-ea9a-be6e4996fc0d@oracle.com>
-Message-ID: <alpine.DEB.2.21.2002151720540.244463@chino.kir.corp.google.com>
-References: <20200211213128.73302-1-almasrymina@google.com> <20200211213128.73302-2-almasrymina@google.com> <791880db-bdb0-8d34-ea9a-be6e4996fc0d@oracle.com>
+Subject: Re: [PATCH v12 4/9] hugetlb: disable region_add file_region
+ coalescing
+In-Reply-To: <20200211213128.73302-4-almasrymina@google.com>
+Message-ID: <alpine.DEB.2.21.2002151724510.244463@chino.kir.corp.google.com>
+References: <20200211213128.73302-1-almasrymina@google.com> <20200211213128.73302-4-almasrymina@google.com>
 User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
 MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
@@ -65,27 +65,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, 14 Feb 2020, Mike Kravetz wrote:
+On Tue, 11 Feb 2020, Mina Almasry wrote:
 
-> On 2/11/20 1:31 PM, Mina Almasry wrote:
-> > Augments hugetlb_cgroup_charge_cgroup to be able to charge hugetlb
-> > usage or hugetlb reservation counter.
-> > 
-> > Adds a new interface to uncharge a hugetlb_cgroup counter via
-> > hugetlb_cgroup_uncharge_counter.
-> > 
-> > Integrates the counter with hugetlb_cgroup, via hugetlb_cgroup_init,
-> > hugetlb_cgroup_have_usage, and hugetlb_cgroup_css_offline.
-> > 
-> > Signed-off-by: Mina Almasry <almasrymina@google.com>
-> > 
+> A follow up patch in this series adds hugetlb cgroup uncharge info the
+> file_region entries in resv->regions. The cgroup uncharge info may
+> differ for different regions, so they can no longer be coalesced at
+> region_add time. So, disable region coalescing in region_add in this
+> patch.
 > 
-> Thanks for the suggested changes.  It will make the code easier to
-> read and understand.
+> Behavior change:
 > 
-> Acked-by: Mike Kravetz <mike.kravetz@oracle.com
+> Say a resv_map exists like this [0->1], [2->3], and [5->6].
 > 
-
-Agreed, thanks Mina!
+> Then a region_chg/add call comes in region_chg/add(f=0, t=5).
+> 
+> Old code would generate resv->regions: [0->5], [5->6].
+> New code would generate resv->regions: [0->1], [1->2], [2->3], [3->5],
+> [5->6].
+> 
+> Special care needs to be taken to handle the resv->adds_in_progress
+> variable correctly. In the past, only 1 region would be added for every
+> region_chg and region_add call. But now, each call may add multiple
+> regions, so we can no longer increment adds_in_progress by 1 in region_chg,
+> or decrement adds_in_progress by 1 after region_add or region_abort. Instead,
+> region_chg calls add_reservation_in_range() to count the number of regions
+> needed and allocates those, and that info is passed to region_add and
+> region_abort to decrement adds_in_progress correctly.
+> 
+> We've also modified the assumption that region_add after region_chg
+> never fails. region_chg now pre-allocates at least 1 region for
+> region_add. If region_add needs more regions than region_chg has
+> allocated for it, then it may fail.
+> 
+> Signed-off-by: Mina Almasry <almasrymina@google.com>
 
 Acked-by: David Rientjes <rientjes@google.com>
