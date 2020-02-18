@@ -2,75 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C63C161C04
-	for <lists+cgroups@lfdr.de>; Mon, 17 Feb 2020 20:56:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E63A162800
+	for <lists+cgroups@lfdr.de>; Tue, 18 Feb 2020 15:21:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728736AbgBQT44 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Feb 2020 14:56:56 -0500
-Received: from mail-il1-f194.google.com ([209.85.166.194]:40474 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728108AbgBQT4z (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Feb 2020 14:56:55 -0500
-Received: by mail-il1-f194.google.com with SMTP id i7so15286309ilr.7
-        for <cgroups@vger.kernel.org>; Mon, 17 Feb 2020 11:56:55 -0800 (PST)
+        id S1726442AbgBROVF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Feb 2020 09:21:05 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:33521 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726655AbgBROVE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Feb 2020 09:21:04 -0500
+Received: by mail-qk1-f194.google.com with SMTP id h4so19652934qkm.0
+        for <cgroups@vger.kernel.org>; Tue, 18 Feb 2020 06:21:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=indeed.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=anZc7OW31U8MO5ygkvDDyIY0GQBGMdLs3iSe01Jj7l0=;
-        b=sGkUgr2hS2qh3wTv0ktQzRELdeLNVOJRw8PZLR83DdUf9jRoBChFnzmLtAXvRX0ad9
-         C4Vpbg4AjpwXtzZGSDBzumuHuXBm77L3DHxhhI4bCkVQkbZZHcIkB0lMVmzQJM/WKLFk
-         YOMXm8H4OMQC1q+U1UmngJUHT7IGElm9QTtHI=
+        d=lca.pw; s=google;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=oQ5uMvj46YJt8du9hHYIxA2AHiZ2qf4UtK0vshdPA7k=;
+        b=pVwRuh4BaTn8YPjr2IxIwRAmmQKxPSCA61udn+YRyUJNFsLAVCbihPsf7i75uhUwbr
+         +0fs1RaV4qLf9li0eukOM5+LEaNAwgkcriWirfC0RF6txXF1SBd8esVOjADSEoZO+Wr0
+         /X01M29q8Bi1V8jFSz2+vsig87KwPaoILhBOuAUkTvLaO+AZ7yOXfWej+eBeJXiLuyg7
+         FJGgckZGhgHDiGaof0+31va7N2CnPPuELXoWnsc1ctExVXUBp9Qbbxngeea1NHJmLFUa
+         Fdpjgmod1Ih1wjBMZnE5deA9PivD7MmcRKe6cQoK6wOoF0Pc26hA+6PbHq5IdbLEtNDP
+         pXhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=anZc7OW31U8MO5ygkvDDyIY0GQBGMdLs3iSe01Jj7l0=;
-        b=lUJ3FwfX3w24DvoDknKJVR6ipz7ddl63304ThPC7g2vtGdx6rU2gbQ1ckE7qw5+ao/
-         DExnPovDgcYBWNBBQA5ACCDjv+kI/cLIXVtoFDIPwF5LNlngqX4wEn9fjO/NXl0uensj
-         R+SbHC9iFMj6WBdX/Ndq1blpLLcn2BvARCiKn9g9/svbGI0UCd34MBtyfKLVwsOn1LwN
-         G7DuJvM3XDwfH24mk+/UvUhmUSaIcCvgwEt/psp9dw6vrqzgBjr47fLVHFAy/WxlWHKS
-         2I68k3k9+9MfFiC699+qg/gY8y/LP1GvMZPeMmeRm8tAL6GOUsIimwlsSKJdBJDKdzbE
-         1Szg==
-X-Gm-Message-State: APjAAAVOFRDmdA1Jeigo6jG89NmBq2fVXYDXcdCpSu4FEo3f7/UU/SBN
-        TPtJgSNOYIfQHYJLptGotaea1ZBxdGNKeIC7SIlK2w==
-X-Google-Smtp-Source: APXvYqwBzoyntxTeoQ1/iTsKDa+b39U1AxBVdktu7QkWK/jPttX+KkBytSdqwTI1f4OywKIQ1y1o8mbNHj/TDBXsYEw=
-X-Received: by 2002:a92:9c52:: with SMTP id h79mr15265830ili.213.1581969415072;
- Mon, 17 Feb 2020 11:56:55 -0800 (PST)
-MIME-Version: 1.0
-References: <157476581065.5793.4518979877345136813.stgit@buzz>
- <CAC=E7cU8TeNHDRnrHiFxmiHUKviVU9KaDvMq-U16VRgcohg6-w@mail.gmail.com> <xm268sl5uhgo.fsf@bsegall-linux.svl.corp.google.com>
-In-Reply-To: <xm268sl5uhgo.fsf@bsegall-linux.svl.corp.google.com>
-From:   Dave Chiluk <chiluk+linux@indeed.com>
-Date:   Mon, 17 Feb 2020 13:56:29 -0600
-Message-ID: <CAC=E7cUgALi4g19GsDZQemHafQfaSpjY1XUo3Swrv_g1PaWejQ@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/fair: add burst to cgroup cpu bandwidth controller
-To:     Ben Segall <bsegall@google.com>
-Cc:     Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>, Mel Gorman <mgorman@suse.de>,
-        Cong Wang <xiyou.wangcong@gmail.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=oQ5uMvj46YJt8du9hHYIxA2AHiZ2qf4UtK0vshdPA7k=;
+        b=jyM/uJLd3TpBnv8FaulNR3NfDb2nq0FD7rrqsGKuUt/cy/zT1Xe+QpZZe6TVYt5lur
+         39UIz4dr7B65UKSFMebrbawy56gH6HCS+++j4JgZgy+l8rd1Frd1lWlZV1jJgUSOsES3
+         JMYF6CB2n1zN87K8JEA/8PMO/87QRgJno1bh+/EmbdssXZ87/D3SjJApiKPdSGJm0d2R
+         6+lNQb0g6aYJWm5dkOJi80zz8qPYBKWa/1rFbIQm8g9eXDIi/pIOk3b2FsxRrNtWUGjt
+         DL0jjfl+8k0UrxA4QcuC7n0gvv4Pl3AvfAOWYafFjpPXWaxBoq1+Shfr3y42NfqAF/u2
+         hUxw==
+X-Gm-Message-State: APjAAAVuYYgooSYjw/v2G/diTET7XfVdkprHaTo2J2HVuUP1IueU7bFh
+        IhFfcgUGTxQe8j61eitgGQMq3A==
+X-Google-Smtp-Source: APXvYqzi+ZyeIa0ShCT4V+bcuLrOAzliPevTmxjHuIzAagLNkXUxzGqFIjS23L1FVBe5nLBjzfoN0w==
+X-Received: by 2002:a37:9186:: with SMTP id t128mr17685805qkd.180.1582035661956;
+        Tue, 18 Feb 2020 06:21:01 -0800 (PST)
+Received: from dhcp-41-57.bos.redhat.com (nat-pool-bos-t.redhat.com. [66.187.233.206])
+        by smtp.gmail.com with ESMTPSA id s8sm1936681qkm.88.2020.02.18.06.21.00
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 18 Feb 2020 06:21:01 -0800 (PST)
+Message-ID: <1582035660.7365.90.camel@lca.pw>
+Subject: Re: [PATCH v12 1/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
+ counter
+From:   Qian Cai <cai@lca.pw>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Mina Almasry <almasrymina@google.com>
+Cc:     mike.kravetz@oracle.com, shuah@kernel.org, rientjes@google.com,
+        shakeelb@google.com, gthelen@google.com,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org
+Date:   Tue, 18 Feb 2020 09:21:00 -0500
+In-Reply-To: <20200211151906.637d1703e4756066583b89da@linux-foundation.org>
+References: <20200211213128.73302-1-almasrymina@google.com>
+         <20200211151906.637d1703e4756066583b89da@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.22.6 (3.22.6-10.el7) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 12:55 PM <bsegall@google.com> wrote:
-> I'm not sure that starting with full burst runtime is best, though it
-> definitely seems likely to be one of those things where sometimes it's
-> what you want and sometimes it's not.
+On Tue, 2020-02-11 at 15:19 -0800, Andrew Morton wrote:
+> On Tue, 11 Feb 2020 13:31:20 -0800 Mina Almasry <almasrymina@google.com> wrote:
+> 
+> > These counters will track hugetlb reservations rather than hugetlb
+> > memory faulted in. This patch only adds the counter, following patches
+> > add the charging and uncharging of the counter.
+> 
+> We're still pretty thin on review here, but as it's v12 and Mike
+> appears to be signed up to look at this work, I'll add them to -next to
+> help move things forward.
+> 
 
-We (Indeed) definitely want to start with a full burst bank in most
-cases, as this would help with slow/throttled start-up times for our
-Jitted and interpreter-based language applications.  I agree that it
-would be nice to have it be configurable.
+Reverted the whole series on the top of next-20200217 fixed a crash below (I
+don't see anything in next-20200218 would make any differences).
 
-Dave.
-fyi.  Unfortunately, this e-mail may be temporarily turned off for the
-next few weeks, I apologize in advance for any bounced messages to me.
+[ 7933.691114][T35046] LTP: starting hugemmap06
+[ 7933.806377][T14355] ------------[ cut here ]------------
+[ 7933.806541][T14355] kernel BUG at mm/hugetlb.c:490!
+VM_BUG_ON(t - f <= 1);
+[ 7933.806562][T14355] Oops: Exception in kernel mode, sig: 5 [#1]
+[ 7933.806573][T14355] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256
+DEBUG_PAGEALLOC NUMA PowerNV
+[ 7933.806594][T14355] Modules linked in: kvm_hv kvm brd ext4 crc16 mbcache jbd2
+loop ip_tables x_tables xfs sd_mod bnx2x ahci mdio libahci tg3 libata libphy
+firmware_class dm_mirror dm_region_hash dm_log dm_mod [last unloaded:
+binfmt_misc]
+[ 7933.806651][T14355] CPU: 54 PID: 14355 Comm: hugemmap06 Tainted:
+G           O      5.6.0-rc2-next-20200217 #1
+[ 7933.806674][T14355] NIP:  c00000000040d22c LR: c00000000040d210 CTR:
+0000000000000000
+[ 7933.806696][T14355] REGS: c0000014b71ef660 TRAP: 0700   Tainted:
+G           O       (5.6.0-rc2-next-20200217)
+[ 7933.806727][T14355] MSR:  900000000282b033
+<SF,HV,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 22022228  XER: 00000000
+[ 7933.806772][T14355] CFAR: c00000000040cbec IRQMASK: 0 
+[ 7933.806772][T14355] GPR00: c00000000040d210 c0000014b71ef8f0 c000000001657000
+0000000000000001 
+[ 7933.806772][T14355] GPR04: 0000000000000012 0000000000000013 0000000000000000
+0000000000000000 
+[ 7933.806772][T14355] GPR08: 0000000000000002 0000000000000002 0000000000000001
+0000000000000036 
+[ 7933.806772][T14355] GPR12: 0000000022022222 c000001ffffd3d00 00007fffad670000
+00007fffa4bc0000 
+[ 7933.806772][T14355] GPR16: 0000000000000000 c000000001567178 c0000014b71efa50
+0000000000000000 
+[ 7933.806772][T14355] GPR20: 0000000000000000 0000000000000013 0000000000000012
+0000000000000001 
+[ 7933.806772][T14355] GPR24: c0000019f74cd270 5deadbeef0000100 5deadbeef0000122
+c0000019f74cd2c0 
+[ 7933.806772][T14355] GPR28: 0000000000000001 c0000019f74cd268 c0000014b71ef918
+0000000000000001 
+[ 7933.806961][T14355] NIP [c00000000040d22c] region_add+0x11c/0x3a0
+[ 7933.806980][T14355] LR [c00000000040d210] region_add+0x100/0x3a0
+[ 7933.807008][T14355] Call Trace:
+[ 7933.807024][T14355] [c0000014b71ef8f0] [c00000000040d210]
+region_add+0x100/0x3a0 (unreliable)
+[ 7933.807056][T14355] [c0000014b71ef9b0] [c00000000040e0c8]
+__vma_reservation_common+0x148/0x210
+__vma_reservation_common at mm/hugetlb.c:2150
+[ 7933.807087][T14355] [c0000014b71efa20] [c0000000004132a0]
+alloc_huge_page+0x350/0x830
+alloc_huge_page at mm/hugetlb.c:2359
+[ 7933.807100][T14355] [c0000014b71efad0] [c0000000004168f8]
+hugetlb_no_page+0x158/0xcb0
+[ 7933.807113][T14355] [c0000014b71efc20] [c000000000417bc8]
+hugetlb_fault+0x678/0xb30
+[ 7933.807136][T14355] [c0000014b71efcd0] [c0000000003b1de4]
+handle_mm_fault+0x444/0x450
+[ 7933.807158][T14355] [c0000014b71efd20] [c000000000070b1c]
+__do_page_fault+0x2bc/0xfd0
+[ 7933.807181][T14355] [c0000014b71efe20] [c00000000000aa88]
+handle_page_fault+0x10/0x30
+[ 7933.807201][T14355] Instruction dump:
+[ 7933.807209][T14355] 38c00000 7ea5ab78 7ec4b378 7fa3eb78 4bfff80d e9210020
+e91d0050 e95d0068 
+[ 7933.807232][T14355] 7d3c4850 7d294214 7faa4800 409c0238 <0b170000> 7f03c378
+4858c005 60000000 
+[ 7933.807267][T14355] ---[ end trace 7560275de5f409f8 ]---
+[ 7933.905258][T14355] 
+[ 7934.905339][T14355] Kernel panic - not syncing: Fatal exception
