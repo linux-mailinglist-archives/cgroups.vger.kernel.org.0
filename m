@@ -2,240 +2,268 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D32C6164D70
-	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 19:12:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28B2C164DB0
+	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 19:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726691AbgBSSM1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Feb 2020 13:12:27 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:41442 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726605AbgBSSM0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 13:12:26 -0500
-Received: by mail-qk1-f196.google.com with SMTP id d11so988235qko.8
-        for <cgroups@vger.kernel.org>; Wed, 19 Feb 2020 10:12:21 -0800 (PST)
+        id S1726634AbgBSScg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Feb 2020 13:32:36 -0500
+Received: from mail-pj1-f74.google.com ([209.85.216.74]:51292 "EHLO
+        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726609AbgBSScf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 13:32:35 -0500
+Received: by mail-pj1-f74.google.com with SMTP id z5so674305pjt.1
+        for <cgroups@vger.kernel.org>; Wed, 19 Feb 2020 10:32:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nyHLiC8XkwcyLqR3rLu/BwGv+w1mXfzRj/lTpFIDBKk=;
-        b=GkTPctej1MwDF6qrQTa6Bd5b3GEMii0/4ZyyoxUUxSVK4yrAFiTPNUkV9khKirjNjO
-         lFDwLo4wsvoC6/B1DDUizFlvfN1+WWtaqgWi/dqZJ9Z8CZveyMpxwBLgytas4Yn+2Uc3
-         Zuurs21A/VIiEmkLD9OohUUj/FiGGL+hG1hnIdL9AoWmoc/gil5ltV68GjMX+g1fnDq+
-         i/8uY7ZU3xANLsmzcJI/zwX+vq8svSYZikeiMmC/vdmpTR2gYM5p/7jvug5Ciks+H39r
-         O1M7vDcsrpHuOqOaZuNZINoAIhGcM6fltA2fDVsAeeAxuAIvKOxGrtQ4FgMm+OFKpFWL
-         P3Pw==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=zFruNTKZBAM8RkLpTspdsuM2wT5ff3lBQN6EhMK/Qfs=;
+        b=nZo1hfcm/opYasop1hhcJdvlI7Hd58D/ghHgn6ziaB7sOH5bRpIcqSxkKEAiSQBr2L
+         rXeKmlDaDHIOo7qmdUez3nIJdpiOMWZ4F1Zk4kK2toKh0dyCr4BaYArxc1MQ7YNnr9Vt
+         t6xNia7JOHOyr88t3SAudJtU/OaXuGX+FADLu2SDEcD6AIesqTXQuPuLtw+s4GVluJk6
+         FV7f5eY6SbC+zRBGB2lUvUB/4pHwGjnvjaa+jklZ5S3qWgBel8XccGjLA2jpQqTIAuQ7
+         UGxu7jfJ5Zpp7/FpQh/7h+7WMevcjeNEq5nNbzdnZhBFRStGiD6XNk2anBdaUo5Stdbz
+         Pj3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nyHLiC8XkwcyLqR3rLu/BwGv+w1mXfzRj/lTpFIDBKk=;
-        b=gID4LXvPHBg/LZ8aaj/krilvKoHfTNkX8XuP6CP8dd0fR7d6jq5zijn6S5mpfF5YTG
-         nKx90QIJTukFMJyE6Nk0eC7+WWnWXlMuYNiB2hpe1iX2rHARh8uKy/PtVwtGctQNH5PJ
-         m2FHh6JaborgZ4Kyf+LUy+0jrVeYdidJ+9Y2V8F8BdC6sdfYnGhUHjB/9xl769901FiA
-         /mXIm+Giwoq/Tlz75O3/y79pVWms8MIIdBXVHRLpPelWsFAXBr2LdsziYYTWfkxAXVZb
-         wq+WiDv6WsfGRL2/F4lcyFtUEJAGK4jUHny3LVHqVPmJGgFBIcszjPmjN/PMGOiJv+V2
-         1R+w==
-X-Gm-Message-State: APjAAAVa74Kfqs1iLl3hcsuaWmG2nisqhvsaIPAeOG4ES+SXoz8COE1Q
-        dY0C1D9pzWGPxtdWvkpV9/FuMg==
-X-Google-Smtp-Source: APXvYqxQP+2JZAwmgpbQaOmHN+mZFY9huQzZ0AFJMd+VQkazsqk7kclEYBq/LhoeD2GTcppz0tsQvw==
-X-Received: by 2002:a05:620a:222d:: with SMTP id n13mr24920245qkh.268.1582135940510;
-        Wed, 19 Feb 2020 10:12:20 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:3bde])
-        by smtp.gmail.com with ESMTPSA id t23sm361021qto.88.2020.02.19.10.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 10:12:19 -0800 (PST)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Tejun Heo <tj@kernel.org>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH] mm: memcontrol: asynchronous reclaim for memory.high
-Date:   Wed, 19 Feb 2020 13:12:19 -0500
-Message-Id: <20200219181219.54356-1-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.24.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=zFruNTKZBAM8RkLpTspdsuM2wT5ff3lBQN6EhMK/Qfs=;
+        b=X4VcZeA64ukEmz1c4cD3naeJXbVk8FaoAozlI17lzzPtmiy9nCZGOc55Fp9asbeI9K
+         U2uXvVU5ujdkSaN4PgyQeqHvi/O3MLH7n7wbrzxtnYYHW6ItFk2TlGZNtJhQ6j/O81pP
+         LEuusIhsM4IL/YEhNnL4YFGfDuHfRQXUFWloMJnAFKdP3iVw6lgLuT8vS6gxN4dZejHM
+         4PN9Xy2sNx5EE1bWa4nCAaSAaOj4Z1z7EV+WMXMtfqLK3PNcGU29nxHaUYUI4IR02wcS
+         xzf19EkjscLRQ2VCQ4HwwYeHXI2FJ/ImYNUlM4FShnB+2ntt7gboP+Chbcq4Fz6jJVWP
+         i2+Q==
+X-Gm-Message-State: APjAAAWumdj+qsrMZt8fjtLxBhrnsLNsq8QFbeYs6zELLZHpIO2xFDbf
+        UY5ibMGEStfchSHOLGGMOxc1OhKEzt0=
+X-Google-Smtp-Source: APXvYqxhvcKVw/diJCynlqB2lru85+53G3ZpgZcqbCpYVEhha2J9sASo3WL4GOAjY/i8V+Vj8zO6KgdEM0A=
+X-Received: by 2002:a65:67c5:: with SMTP id b5mr5600943pgs.138.1582137155236;
+ Wed, 19 Feb 2020 10:32:35 -0800 (PST)
+Date:   Wed, 19 Feb 2020 10:32:31 -0800
+Message-Id: <20200219183231.50985-1-balejs@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+Subject: [PATCH] cgroup-v1: freezer: optionally killable freezer
+From:   Marco Ballesio <balejs@google.com>
+To:     tj@kernel.org, guro@fb.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lizefan@huawei.com,
+        hannes@cmpxchg.org, corbet@lwn.net, rjw@rjwysocki.net,
+        pavel@ucw.cz, len.brown@intel.com, linux-doc@vger.kernel.org,
+        linux-pm@vger.kernel.org, minchan@google.com, surenb@google.com,
+        dancol@google.com
+Cc:     Marco Ballesio <balejs@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We have received regression reports from users whose workloads moved
-into containers and subsequently encountered new latencies. For some
-users these were a nuisance, but for some it meant missing their SLA
-response times. We tracked those delays down to cgroup limits, which
-inject direct reclaim stalls into the workload where previously all
-reclaim was handled my kswapd.
+The cgroup v2 freezer allows killing frozen processes without the need
+to unfreeze them first. This is not possible with the v1 freezer, where
+processes are to be unfrozen prior any pending kill signals to take effect.
 
-This patch adds asynchronous reclaim to the memory.high cgroup limit
-while keeping direct reclaim as a fallback. In our testing, this
-eliminated all direct reclaim from the affected workload.
+Add a configurable option to allow killing frozen tasks in a way similar to
+cgroups v2. Change the status of frozen tasks to TASK_INTERRUPTIBLE and reset
+their PF_FROZEN flag on pending fatal signals.
 
-memory.high has a grace buffer of about 4% between when it becomes
-exceeded and when allocating threads get throttled. We can use the
-same buffer for the async reclaimer to operate in. If the worker
-cannot keep up and the grace buffer is exceeded, allocating threads
-will fall back to direct reclaim before getting throttled.
+Use the run-time configurable option freezer.killable to enable killability,
+preserve the pre-existing behavior by default.
 
-For irq-context, there's already async memory.high enforcement. Re-use
-that work item for all allocating contexts, but switch it to the
-unbound workqueue so reclaim work doesn't compete with the workload.
-The work item is per cgroup, which means the workqueue infrastructure
-will create at maximum one worker thread per reclaiming cgroup.
-
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Marco Ballesio <balejs@google.com>
 ---
- mm/memcontrol.c | 60 +++++++++++++++++++++++++++++++++++++------------
- mm/vmscan.c     | 10 +++++++--
- 2 files changed, 54 insertions(+), 16 deletions(-)
+ .../cgroup-v1/freezer-subsystem.rst           | 12 ++++
+ include/linux/freezer.h                       |  1 +
+ kernel/cgroup/legacy_freezer.c                | 69 ++++++++++++++++++-
+ kernel/freezer.c                              | 20 +++++-
+ 4 files changed, 98 insertions(+), 4 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index cf02e3ef3ed9..bad838d9c2bb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1446,6 +1446,10 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 	seq_buf_printf(&s, "pgsteal %lu\n",
- 		       memcg_events(memcg, PGSTEAL_KSWAPD) +
- 		       memcg_events(memcg, PGSTEAL_DIRECT));
-+	seq_buf_printf(&s, "pgscan_direct %lu\n",
-+		       memcg_events(memcg, PGSCAN_DIRECT));
-+	seq_buf_printf(&s, "pgsteal_direct %lu\n",
-+		       memcg_events(memcg, PGSTEAL_DIRECT));
- 	seq_buf_printf(&s, "%s %lu\n", vm_event_name(PGACTIVATE),
- 		       memcg_events(memcg, PGACTIVATE));
- 	seq_buf_printf(&s, "%s %lu\n", vm_event_name(PGDEACTIVATE),
-@@ -2235,10 +2239,19 @@ static void reclaim_high(struct mem_cgroup *memcg,
+diff --git a/Documentation/admin-guide/cgroup-v1/freezer-subsystem.rst b/Documentation/admin-guide/cgroup-v1/freezer-subsystem.rst
+index 582d3427de3f..06485ae9dccd 100644
+--- a/Documentation/admin-guide/cgroup-v1/freezer-subsystem.rst
++++ b/Documentation/admin-guide/cgroup-v1/freezer-subsystem.rst
+@@ -94,6 +94,18 @@ The following cgroupfs files are created by cgroup freezer.
+   Shows the parent-state.  0 if none of the cgroup's ancestors is
+   frozen; otherwise, 1.
  
- static void high_work_func(struct work_struct *work)
++* freezer.killable: Read-write
++
++  When read, returns the killable state of a cgroup - "1" if frozen
++  tasks will respond to fatal signals, or "0" if they won't.
++
++  When written, this property sets the killable state of the cgroup.
++  A value equal to "1" will switch the state of all frozen tasks in
++  the cgroup to TASK_INTERRUPTIBLE (similarly to cgroup v2) and will
++  make them react to fatal signals. A value of "0" will switch the
++  state of frozen tasks to TASK_UNINTERRUPTIBLE and they won't respond
++  to signals unless thawed or unfrozen.
++
+ The root cgroup is non-freezable and the above interface files don't
+ exist.
+ 
+diff --git a/include/linux/freezer.h b/include/linux/freezer.h
+index 21f5aa0b217f..1443810ac2bf 100644
+--- a/include/linux/freezer.h
++++ b/include/linux/freezer.h
+@@ -72,6 +72,7 @@ extern bool set_freezable(void);
+ 
+ #ifdef CONFIG_CGROUP_FREEZER
+ extern bool cgroup_freezing(struct task_struct *task);
++extern bool cgroup_freezer_killable(struct task_struct *task);
+ #else /* !CONFIG_CGROUP_FREEZER */
+ static inline bool cgroup_freezing(struct task_struct *task)
  {
-+	unsigned long high, usage;
- 	struct mem_cgroup *memcg;
+diff --git a/kernel/cgroup/legacy_freezer.c b/kernel/cgroup/legacy_freezer.c
+index 08236798d173..5bbc26c4b822 100644
+--- a/kernel/cgroup/legacy_freezer.c
++++ b/kernel/cgroup/legacy_freezer.c
+@@ -35,6 +35,7 @@ enum freezer_state_flags {
+ 	CGROUP_FREEZING_SELF	= (1 << 1), /* this freezer is freezing */
+ 	CGROUP_FREEZING_PARENT	= (1 << 2), /* the parent freezer is freezing */
+ 	CGROUP_FROZEN		= (1 << 3), /* this and its descendants frozen */
++	CGROUP_FREEZER_KILLABLE = (1 << 4), /* frozen pocesses can be killed */
  
- 	memcg = container_of(work, struct mem_cgroup, high_work);
--	reclaim_high(memcg, MEMCG_CHARGE_BATCH, GFP_KERNEL);
-+
-+	high = READ_ONCE(memcg->high);
-+	usage = page_counter_read(&memcg->memory);
-+
-+	if (usage <= high)
-+		return;
-+
-+	set_worker_desc("cswapd/%llx", cgroup_id(memcg->css.cgroup));
-+	reclaim_high(memcg, usage - high, GFP_KERNEL);
+ 	/* mask for all FREEZING flags */
+ 	CGROUP_FREEZING		= CGROUP_FREEZING_SELF | CGROUP_FREEZING_PARENT,
+@@ -73,6 +74,17 @@ bool cgroup_freezing(struct task_struct *task)
+ 	return ret;
  }
  
- /*
-@@ -2304,15 +2317,22 @@ void mem_cgroup_handle_over_high(void)
- 	unsigned long pflags;
- 	unsigned long penalty_jiffies, overage;
- 	unsigned int nr_pages = current->memcg_nr_pages_over_high;
-+	bool tried_direct_reclaim = false;
- 	struct mem_cgroup *memcg;
- 
- 	if (likely(!nr_pages))
- 		return;
- 
--	memcg = get_mem_cgroup_from_mm(current->mm);
--	reclaim_high(memcg, nr_pages, GFP_KERNEL);
- 	current->memcg_nr_pages_over_high = 0;
- 
-+	memcg = get_mem_cgroup_from_mm(current->mm);
-+	high = READ_ONCE(memcg->high);
-+recheck:
-+	usage = page_counter_read(&memcg->memory);
++bool cgroup_freezer_killable(struct task_struct *task)
++{
++	bool ret;
 +
-+	if (usage <= high)
++	rcu_read_lock();
++	ret = task_freezer(task)->state & CGROUP_FREEZER_KILLABLE;
++	rcu_read_unlock();
++
++	return ret;
++}
++
+ static const char *freezer_state_strs(unsigned int state)
+ {
+ 	if (state & CGROUP_FROZEN)
+@@ -111,9 +123,15 @@ static int freezer_css_online(struct cgroup_subsys_state *css)
+ 
+ 	freezer->state |= CGROUP_FREEZER_ONLINE;
+ 
+-	if (parent && (parent->state & CGROUP_FREEZING)) {
+-		freezer->state |= CGROUP_FREEZING_PARENT | CGROUP_FROZEN;
+-		atomic_inc(&system_freezing_cnt);
++	if (parent) {
++		if (parent->state & CGROUP_FREEZER_KILLABLE)
++			freezer->state |= CGROUP_FREEZER_KILLABLE;
++
++		if (parent->state & CGROUP_FREEZING) {
++			freezer->state |= CGROUP_FREEZING_PARENT |
++					CGROUP_FROZEN;
++			atomic_inc(&system_freezing_cnt);
++		}
+ 	}
+ 
+ 	mutex_unlock(&freezer_mutex);
+@@ -450,6 +468,45 @@ static u64 freezer_parent_freezing_read(struct cgroup_subsys_state *css,
+ 	return (bool)(freezer->state & CGROUP_FREEZING_PARENT);
+ }
+ 
++static u64 freezer_killable_read(struct cgroup_subsys_state *css,
++				     struct cftype *cft)
++{
++	struct freezer *freezer = css_freezer(css);
++
++	return (bool)(freezer->state & CGROUP_FREEZER_KILLABLE);
++}
++
++static int freezer_killable_write(struct cgroup_subsys_state *css,
++				      struct cftype *cft, u64 val)
++{
++	struct freezer *freezer = css_freezer(css);
++
++	if (val > 1)
++		return -EINVAL;
++
++	mutex_lock(&freezer_mutex);
++
++	if (val == !!(freezer->state & CGROUP_FREEZER_KILLABLE))
 +		goto out;
 +
- 	/*
- 	 * memory.high is breached and reclaim is unable to keep up. Throttle
- 	 * allocators proactively to slow down excessive growth.
-@@ -2325,12 +2345,6 @@ void mem_cgroup_handle_over_high(void)
- 	 * overage amount.
- 	 */
- 
--	usage = page_counter_read(&memcg->memory);
--	high = READ_ONCE(memcg->high);
--
--	if (usage <= high)
--		goto out;
--
- 	/*
- 	 * Prevent division by 0 in overage calculation by acting as if it was a
- 	 * threshold of 1 page
-@@ -2369,6 +2383,16 @@ void mem_cgroup_handle_over_high(void)
- 	if (penalty_jiffies <= HZ / 100)
- 		goto out;
- 
-+	/*
-+	 * It's possible async reclaim just isn't able to keep
-+	 * up. Before we go to sleep, try direct reclaim.
-+	 */
-+	if (!tried_direct_reclaim) {
-+		reclaim_high(memcg, nr_pages, GFP_KERNEL);
-+		tried_direct_reclaim = true;
-+		goto recheck;
-+	}
++	if (val)
++		freezer->state |= CGROUP_FREEZER_KILLABLE;
++	else
++		freezer->state &= ~CGROUP_FREEZER_KILLABLE;
 +
- 	/*
- 	 * If we exit early, we're guaranteed to die (since
- 	 * schedule_timeout_killable sets TASK_KILLABLE). This means we don't
-@@ -2544,13 +2568,21 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 */
- 	do {
- 		if (page_counter_read(&memcg->memory) > memcg->high) {
-+			/*
-+			 * Kick off the async reclaimer, which should
-+			 * be doing most of the work to avoid latency
-+			 * in the workload. But also check in on its
-+			 * progress before resuming to userspace, in
-+			 * case we need to do direct reclaim, or even
-+			 * throttle the allocating thread if reclaim
-+			 * cannot keep up with allocation demand.
-+			 */
-+			queue_work(system_unbound_wq, &memcg->high_work);
- 			/* Don't bother a random interrupted task */
--			if (in_interrupt()) {
--				schedule_work(&memcg->high_work);
--				break;
-+			if (!in_interrupt()) {
-+				current->memcg_nr_pages_over_high += batch;
-+				set_notify_resume(current);
- 			}
--			current->memcg_nr_pages_over_high += batch;
--			set_notify_resume(current);
++
++	/*
++	 * Let __refrigerator spin once for each task to set it into the
++	 * appropriate state.
++	 */
++	unfreeze_cgroup(freezer);
++
++out:
++	mutex_unlock(&freezer_mutex);
++
++	return 0;
++}
++
+ static struct cftype files[] = {
+ 	{
+ 		.name = "state",
+@@ -467,6 +524,12 @@ static struct cftype files[] = {
+ 		.flags = CFTYPE_NOT_ON_ROOT,
+ 		.read_u64 = freezer_parent_freezing_read,
+ 	},
++	{
++		.name = "killable",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.write_u64 = freezer_killable_write,
++		.read_u64 = freezer_killable_read,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+diff --git a/kernel/freezer.c b/kernel/freezer.c
+index dc520f01f99d..92de1bfe62cf 100644
+--- a/kernel/freezer.c
++++ b/kernel/freezer.c
+@@ -42,6 +42,9 @@ bool freezing_slow_path(struct task_struct *p)
+ 	if (test_tsk_thread_flag(p, TIF_MEMDIE))
+ 		return false;
+ 
++	if (cgroup_freezer_killable(p) && fatal_signal_pending(p))
++		return false;
++
+ 	if (pm_nosig_freezing || cgroup_freezing(p))
+ 		return true;
+ 
+@@ -63,7 +66,12 @@ bool __refrigerator(bool check_kthr_stop)
+ 	pr_debug("%s entered refrigerator\n", current->comm);
+ 
+ 	for (;;) {
+-		set_current_state(TASK_UNINTERRUPTIBLE);
++		bool killable = cgroup_freezer_killable(current);
++
++		if (killable)
++			set_current_state(TASK_INTERRUPTIBLE);
++		else
++			set_current_state(TASK_UNINTERRUPTIBLE);
+ 
+ 		spin_lock_irq(&freezer_lock);
+ 		current->flags |= PF_FROZEN;
+@@ -75,6 +83,16 @@ bool __refrigerator(bool check_kthr_stop)
+ 		if (!(current->flags & PF_FROZEN))
  			break;
- 		}
- 	} while ((memcg = parent_mem_cgroup(memcg)));
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 74e8edce83ca..d6085115c7f2 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1947,7 +1947,10 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
- 	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
- 	reclaim_stat->recent_scanned[file] += nr_taken;
+ 		was_frozen = true;
++
++		/*
++		 * Now we're sure that there is no pending fatal signal.
++		 * Clear TIF_SIGPENDING to not get out of schedule()
++		 * immediately (if there is a non-fatal signal pending), and
++		 * put the task into sleep.
++		 */
++		if (killable)
++			clear_thread_flag(TIF_SIGPENDING);
++
+ 		schedule();
+ 	}
  
--	item = current_is_kswapd() ? PGSCAN_KSWAPD : PGSCAN_DIRECT;
-+	if (current_is_kswapd() || (cgroup_reclaim(sc) && current_work()))
-+		item = PGSCAN_KSWAPD;
-+	else
-+		item = PGSCAN_DIRECT;
- 	if (!cgroup_reclaim(sc))
- 		__count_vm_events(item, nr_scanned);
- 	__count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
-@@ -1961,7 +1964,10 @@ shrink_inactive_list(unsigned long nr_to_scan, struct lruvec *lruvec,
- 
- 	spin_lock_irq(&pgdat->lru_lock);
- 
--	item = current_is_kswapd() ? PGSTEAL_KSWAPD : PGSTEAL_DIRECT;
-+	if (current_is_kswapd() || (cgroup_reclaim(sc) && current_work()))
-+		item = PGSTEAL_KSWAPD;
-+	else
-+		item = PGSTEAL_DIRECT;
- 	if (!cgroup_reclaim(sc))
- 		__count_vm_events(item, nr_reclaimed);
- 	__count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
 -- 
-2.24.1
+2.25.0.265.gbab2e86ba0-goog
 
