@@ -2,51 +2,56 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1868B164A0D
-	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 17:21:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AB6B164A54
+	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 17:29:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726659AbgBSQV2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Feb 2020 11:21:28 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:42886 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726648AbgBSQV2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 11:21:28 -0500
-Received: by mail-qk1-f196.google.com with SMTP id o28so617535qkj.9
-        for <cgroups@vger.kernel.org>; Wed, 19 Feb 2020 08:21:27 -0800 (PST)
+        id S1726672AbgBSQ3D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Feb 2020 11:29:03 -0500
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41652 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726652AbgBSQ3D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 11:29:03 -0500
+Received: by mail-wr1-f66.google.com with SMTP id c9so1249813wrw.8
+        for <cgroups@vger.kernel.org>; Wed, 19 Feb 2020 08:29:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1IjE5f3DRWrL7DyNrD/EPrz9NqvpJo1LzwPmSu0Loyo=;
-        b=Y0xUdyvI/KOwgnUyUAXVRQts2j2UDpi0MSoQ8O0ZIpFCbCbLaplKvU5pIrb49CIcHK
-         Oko/yr/AtoCn2I7wP1Yz/l85vKpPmPYS2VLT7dy7v+KArYcmNL6mvY79eopcTfkaMHlR
-         6ad0zsqSYvukfQwQMDKXW3o2M1y+7ZLCHho3eH9+XHp9GDKhBElQTtLcwPW1OzZqDG+o
-         ey+6JO61zvRaKvwJ1VNS2Jvb4aETsOQDmV7IiKJxQwWThbSwQ3VPR/0SGwTsSc5081+r
-         p4IwL9I721gfQnwgUof/i3OQS3UBN6v3KV2bdrPVFgNPBL/Fy8ditUJoByLUoc/wDrIn
-         VXEQ==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ge/4+ByC0/Mud4KiwRUU53N7gO/qK6WBDI8vObP1gB8=;
+        b=nDEVLs/IIZtpORix+sjwoMjmtO3ZAlRhhQOEfU0Q3KD5K86wBr1q0mJXuabDlIvOQn
+         bWxkMy74M7+LpTozg1bTdVroNdJeMZB86wLHLvmgqG6hPqBEbJLuSIxO98UyMi2CO2Cg
+         F/qVeSmjj3CsDqfixTLub97ue2qI8iicYlfld0biO2Ij6QI08x5vVOTJ2cc6XWa9oaIt
+         KWkrOo9yjogrswdLtiCsg4MTzFw6YueFqqNbfHkDY73ocDk8GXU2a2GGvtFWVfqqp1NX
+         WZOgptcWjxiTjC17ZwO0BXYsXIiY9nsntQ3a1wjPCFgL1BLE9yWYBAi5JGRkGUCdWl/j
+         qdbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1IjE5f3DRWrL7DyNrD/EPrz9NqvpJo1LzwPmSu0Loyo=;
-        b=lkmBf6++hfCZTK/L97Y8vL5L5604val86OkMQxZ5YupBlxtXOMuBjStUJ34YscROcn
-         X43g+o6nn79xxrpOV0vhrE+Freldr9b35gjsgk0ZAR1+1fXBQoyTxOWANecBEqFQ3/3c
-         5NxeFYZZYnH4prSjMB5I9PEGzXlbd8ZAqdiFZYqEByCSKI5olZeOcU6efQKEk53mDRqa
-         PLUnVjW0y0cGU/gLpCO31u/xBnl9XRdmGplRImDj67/yO1u1xs75y+pnQFH6qa0m00PE
-         yRPrGv5zlN7tog5lN+S3iV5j3Yj6D6IY4QRvshtvijw07P9QZUWZ+O2sD4CUVEf9EdII
-         o/SQ==
-X-Gm-Message-State: APjAAAV5F7rad6SzH/Pe+WhYxsRgpidWDOKKmQa46Io48TS6FFn6MApv
-        TCTb7G8iK/FlfD1A0VYPj6ruNA==
-X-Google-Smtp-Source: APXvYqx3pDhfMLHjqJZav0TSJad25iHzflnIoh0HNoBZKgS2hYkzGuQm5PMiuKy/xxFf6JF9qCXKSw==
-X-Received: by 2002:ae9:ed41:: with SMTP id c62mr23816689qkg.403.1582129287358;
-        Wed, 19 Feb 2020 08:21:27 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:3bde])
-        by smtp.gmail.com with ESMTPSA id n4sm210781qti.55.2020.02.19.08.21.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 08:21:26 -0800 (PST)
-Date:   Wed, 19 Feb 2020 11:21:25 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Kenny Ho <y2kenny@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ge/4+ByC0/Mud4KiwRUU53N7gO/qK6WBDI8vObP1gB8=;
+        b=H1jR0+qYG6+N//VB+zpg27FPK+/rwYqXHYncr0MqenIO63eQ6Mzr4X9eRPjg91lWE8
+         ZJrcC79S/lCGsa0V7+W9mhrPmxgcjEI/40XUg8beiCXUPjlJJCMkHcEnp+fJ/S7KY8gn
+         jCcuC/QhWRdHa87aY3zPuDpkZJ1f440SMuZi9vLToRNgkXGg64rNzex9W/npflzVr4ph
+         +NR2HXXiM2/MlvbsT67NY1zvPqSvnCFvQDufz+9pOIykS6pJBGUDrk3SG9T0+Vhj9W1r
+         eZL9QtnncsB7CCMx051u3K+k6eFWo9a879GnHnQxcn5ZEIg6QEkqbqdgFcPVn/Zf9cDb
+         zmRw==
+X-Gm-Message-State: APjAAAW7/OFsXAfnK4/uctcZPNGHLgWzjlFg1h4hKKysYb+1+RWrQsaU
+        r2yh+LFp08t8oFmpkG9skgoXBHwIu8GNFH1MSQVI9hnHsFg=
+X-Google-Smtp-Source: APXvYqyP+L9+XOLBDf5SEUNbZhoITOmxettkhcIIuxzCeHf43MW2BeliuAzIc4CO4JF7Ah7P3g9oJtkoiotJv45DS9Y=
+X-Received: by 2002:adf:cd03:: with SMTP id w3mr37455254wrm.191.1582129741265;
+ Wed, 19 Feb 2020 08:29:01 -0800 (PST)
+MIME-Version: 1.0
+References: <20200214155650.21203-1-Kenny.Ho@amd.com> <20200214155650.21203-10-Kenny.Ho@amd.com>
+ <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
+ <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
+ <20200214183401.GY2363188@phenom.ffwll.local> <CAOWid-caJHeXUnQv3MOi=9U+vdBLfewN+CrA-7jRrz0VXqatbQ@mail.gmail.com>
+ <20200214191754.GA218629@mtj.thefacebook.com> <20200219161850.GB13406@cmpxchg.org>
+In-Reply-To: <20200219161850.GB13406@cmpxchg.org>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Wed, 19 Feb 2020 11:28:48 -0500
+Message-ID: <CAOWid-e=7V4TUqK_h5Gs9dUXqH-Vgr-Go8c1dCkMux98Vdd1sQ@mail.gmail.com>
+Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
+To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Tejun Heo <tj@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
         Jason Ekstrand <jason@jlekstrand.net>,
         Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
@@ -54,42 +59,29 @@ Cc:     Tejun Heo <tj@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
         <dri-devel@lists.freedesktop.org>,
         amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         "Kuehling, Felix" <felix.kuehling@amd.com>,
         "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
         lkaplan@cray.com, nirmoy.das@amd.com, damon.mcdougall@amd.com,
         juan.zuniga-anaya@amd.com
-Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
-Message-ID: <20200219162125.GC13406@cmpxchg.org>
-References: <20200214155650.21203-1-Kenny.Ho@amd.com>
- <20200214155650.21203-10-Kenny.Ho@amd.com>
- <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
- <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
- <20200214183401.GY2363188@phenom.ffwll.local>
- <CAOWid-caJHeXUnQv3MOi=9U+vdBLfewN+CrA-7jRrz0VXqatbQ@mail.gmail.com>
- <20200214191754.GA218629@mtj.thefacebook.com>
- <CAOWid-dA2Ad-FTZDDLOs4pperYbsru9cknSuXo_2ajpPbQH0Xg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-dA2Ad-FTZDDLOs4pperYbsru9cknSuXo_2ajpPbQH0Xg@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 14, 2020 at 03:28:40PM -0500, Kenny Ho wrote:
-> On Fri, Feb 14, 2020 at 2:17 PM Tejun Heo <tj@kernel.org> wrote:
-> > Also, a rather trivial high level question. Is drm a good controller
-> > name given that other controller names are like cpu, memory, io?
-> 
-> There was a discussion about naming early in the RFC (I believe
-> RFCv2), the consensuses then was to use drmcg to align with the drm
-> subsystem.  I have no problem renaming it to gpucg  or something
-> similar if that is the last thing that's blocking acceptance.  For
-> now, I would like to get some clarity on the implementation before
-> having more code churn.
+On Wed, Feb 19, 2020 at 11:18 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Yes, I'd go with absolute units when it comes to memory, because it's
+> not a renewable resource like CPU and IO, and so we do have cliff
+> behavior around the edge where you transition from ok to not-enough.
+>
+> memory.low is a bit in flux right now, so if anything is unclear
+> around its semantics, please feel free to reach out.
 
-As far as precedence goes, we named the other controllers after the
-resources they control rather than the subsystem: cpu instead of
-scheduler, memory instead of mm, io instead of block layer etc.
+I am not familiar with the discussion, would you point me to a
+relevant thread please?  In addition, is there some kind of order of
+preference for implementing low vs high vs max?
+
+Regards,
+Kenny
