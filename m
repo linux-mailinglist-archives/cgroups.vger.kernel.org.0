@@ -2,104 +2,122 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 63F5416485C
-	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 16:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90E951648F8
+	for <lists+cgroups@lfdr.de>; Wed, 19 Feb 2020 16:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726788AbgBSPTZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Feb 2020 10:19:25 -0500
-Received: from mail-qk1-f172.google.com ([209.85.222.172]:37388 "EHLO
-        mail-qk1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726634AbgBSPTZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 10:19:25 -0500
-Received: by mail-qk1-f172.google.com with SMTP id c188so438187qkg.4;
-        Wed, 19 Feb 2020 07:19:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=SUXofl/MO5dWKqPfuAcBzgvKEpVFwkTb4AVbcHvWhdc=;
-        b=qPicIwGzMD/HopbeCVkjoisZLYQAfbLcyi1p0R1hAaHnso/AF0eu8g8vXlN6X9FEtL
-         7fECFrXeR75PQ2/4EVbfDkXZbWXLnCZr7B4njrFd2xev//SFJ56qpIS7cTAGwLOppIW+
-         6QoIEKm0kuX4X1tDUjofK4Xwep6ZNvUTyo3/6OkUYns5edz9MSvCBMcFqSaIEeLPNjYc
-         jVK5cC7Qcho1lEs9bINnbQ/2tR+4alIRjxDZ/mm7X8VPxSrCXF1CXFjBGBewsAJyrwt1
-         BBtqD47i/ja6Hd9VM80jRs/6hlKZn+c7PApQ4oKjv//RN+EflbPUKgkHwt4/RA+hrmHd
-         IHPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=SUXofl/MO5dWKqPfuAcBzgvKEpVFwkTb4AVbcHvWhdc=;
-        b=HWAOpTO7ZNjNKwr2YAwDJfjuOeHSRSzsl3H7v1Iqmnk/VCy+1+NnLVVS4KuY7lbuvX
-         70cOhi0yEN7SHaH1Mrd6D8mk7tfeTqsWxT3olHhHF0mm5Ddps26/GLxTjYFq7ob/dVDf
-         FY4Cxpq2IWoZFiturh++kfxZP6OMQ4i+uHMkOIG24dW7qHhckysR69TRVVwNhID8OlwC
-         IPCRX19/dNQqmLwdC2kLbDRQWMvqUuA7ZL/5QKXVX/bKYGJKiF9w4VLLI0wR281Jdy1H
-         fevu+r4A8AyIkHxSzlA550i9tkpa4rs/AX7tL/hlwbO5amG0oDJYomLUvUTIfWZe+539
-         V3Fw==
-X-Gm-Message-State: APjAAAWu3e1f6qIrZG91bexIKj6Nt4PHB/5L4g6ROWijFMhBeJ+K/Eyy
-        jfFMS1wOFaoAmuOaGbnwy+4=
-X-Google-Smtp-Source: APXvYqz4XQB8eDF2DfUmb5+BpK601xOFtKM68l7/bbHY+fI8/esjoy0xFswzTchxq8tI/vgvXmPh7w==
-X-Received: by 2002:a37:7245:: with SMTP id n66mr25311079qkc.202.1582125563903;
-        Wed, 19 Feb 2020 07:19:23 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::2:e7ce])
-        by smtp.gmail.com with ESMTPSA id o10sm117547qtp.38.2020.02.19.07.19.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 19 Feb 2020 07:19:23 -0800 (PST)
-Date:   Wed, 19 Feb 2020 10:19:22 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
+        id S1726593AbgBSPnH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Feb 2020 10:43:07 -0500
+Received: from mail.efficios.com ([167.114.26.124]:34226 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726523AbgBSPnH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Feb 2020 10:43:07 -0500
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 22FC92493D0;
+        Wed, 19 Feb 2020 10:43:06 -0500 (EST)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id qqBOxOztdkJl; Wed, 19 Feb 2020 10:43:05 -0500 (EST)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id DB6D92492E5;
+        Wed, 19 Feb 2020 10:43:05 -0500 (EST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com DB6D92492E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1582126985;
+        bh=F+/vdu5pAZWzqj4UTYnyy130uOCt0HluNqHg8+kURaY=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=Dn2LM6/Ip3rOfbochDsUS8wZ5WDY0vgo8z2AYSbk/UEtRPEdKAKNZalD9xkxRRKGG
+         xIebRmZTqKeFBhD85KZF1HIZiyhw8M1zvsluupHf9evznni7VJGHnht76y6JiVzKBw
+         aVeHKq0QBG3vlSIr135Dxuw2yJ9NWPZGdyQHVrhEkbzkPtmlTDJvv1oST5+iqQmeJG
+         rLerfJviGIxtX950z4ZjIIpnXx+FmMvnrM681XsDw8GjLPtPdqVbKDwlJskZzxmSHX
+         B2eVbOHejv+y3bffPOgPUo5mG3tpIfgTsGybTSCitYBycMIYwRWulrVAimntrIU3qP
+         MiiBdphPSe9bA==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id T1ZgeZhYgiln; Wed, 19 Feb 2020 10:43:05 -0500 (EST)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id D09DF2490F7;
+        Wed, 19 Feb 2020 10:43:05 -0500 (EST)
+Date:   Wed, 19 Feb 2020 10:43:05 -0500 (EST)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Li Zefan <lizefan@huawei.com>, cgroups <cgroups@vger.kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>
+Message-ID: <1589496945.670.1582126985824.JavaMail.zimbra@efficios.com>
+In-Reply-To: <20200219151922.GB698990@mtj.thefacebook.com>
+References: <1251528473.590671.1579196495905.JavaMail.zimbra@efficios.com> <1317969050.4131.1581955387909.JavaMail.zimbra@efficios.com> <20200219151922.GB698990@mtj.thefacebook.com>
 Subject: Re: [regression] cpuset: offlined CPUs removed from affinity masks
-Message-ID: <20200219151922.GB698990@mtj.thefacebook.com>
-References: <1251528473.590671.1579196495905.JavaMail.zimbra@efficios.com>
- <1317969050.4131.1581955387909.JavaMail.zimbra@efficios.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1317969050.4131.1581955387909.JavaMail.zimbra@efficios.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3901 (ZimbraWebClient - FF72 (Linux)/8.8.15_GA_3895)
+Thread-Topic: cpuset: offlined CPUs removed from affinity masks
+Thread-Index: 8hu3vhHS2xBMmIYziNvdsmK+FYUi6Q==
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+----- On Feb 19, 2020, at 10:19 AM, Tejun Heo tj@kernel.org wrote:
 
-On Mon, Feb 17, 2020 at 11:03:07AM -0500, Mathieu Desnoyers wrote:
-> Hi,
+> Hello,
 > 
-> Adding Tejun and the cgroups mailing list in CC for this cpuset regression I
-> reported last month.
+> On Mon, Feb 17, 2020 at 11:03:07AM -0500, Mathieu Desnoyers wrote:
+>> Hi,
+>> 
+>> Adding Tejun and the cgroups mailing list in CC for this cpuset regression I
+>> reported last month.
+>> 
+>> Thanks,
+>> 
+>> Mathieu
+>> 
+>> ----- On Jan 16, 2020, at 12:41 PM, Mathieu Desnoyers
+>> mathieu.desnoyers@efficios.com wrote:
+>> 
+>> > Hi,
+>> > 
+>> > I noticed the following regression with CONFIG_CPUSET=y. Note that
+>> > I am not using cpusets at all (only using the root cpuset I'm given
+>> > at boot), it's just configured in. I am currently working on a 5.2.5
+>> > kernel. I am simply combining use of taskset(1) (setting the affinity
+>> > mask of a process) and cpu hotplug. The result is that with
+>> > CONFIG_CPUSET=y, setting the affinity mask including an offline CPU number
+>> > don't keep that CPU in the affinity mask, and it is never put back when the
+>> > CPU comes back online. CONFIG_CPUSET=n behaves as expected, and puts back
+>> > the CPU into the affinity mask reported to user-space when it comes back
+>> > online.
 > 
-> Thanks,
-> 
-> Mathieu
-> 
-> ----- On Jan 16, 2020, at 12:41 PM, Mathieu Desnoyers mathieu.desnoyers@efficios.com wrote:
-> 
-> > Hi,
-> > 
-> > I noticed the following regression with CONFIG_CPUSET=y. Note that
-> > I am not using cpusets at all (only using the root cpuset I'm given
-> > at boot), it's just configured in. I am currently working on a 5.2.5
-> > kernel. I am simply combining use of taskset(1) (setting the affinity
-> > mask of a process) and cpu hotplug. The result is that with
-> > CONFIG_CPUSET=y, setting the affinity mask including an offline CPU number
-> > don't keep that CPU in the affinity mask, and it is never put back when the
-> > CPU comes back online. CONFIG_CPUSET=n behaves as expected, and puts back
-> > the CPU into the affinity mask reported to user-space when it comes back
-> > online.
+> Because cpuset operations irreversibly change task affinity masks
+> rather than masking them dynamically, the interaction has always been
+> kinda broken. Hmm... Are there older kernel vesions which behave
+> differently? Off the top of my head, I can't think of sth which could
+> have changed that behavior recently but I could easily be missing
+> something.
 
-Because cpuset operations irreversibly change task affinity masks
-rather than masking them dynamically, the interaction has always been
-kinda broken. Hmm... Are there older kernel vesions which behave
-differently? Off the top of my head, I can't think of sth which could
-have changed that behavior recently but I could easily be missing
-something.
+Hi Tejun,
 
-Thanks.
+The regression I'm talking about here is that CONFIG_CPUSET=y changes the
+behavior of the sched_setaffinify system call, which existed prior to
+cpusets.
+
+sched_setaffinity should behave in the same way for kernels configured with
+CONFIG_CPUSET=y or CONFIG_CPUSET=n.
+
+The fact that cpuset decides to irreversibly change the task affinity mask
+may not be considered a regression if it has always done that, but changing
+the behavior of sched_setaffinity seems to fit the definition of a regression.
+
+Thanks,
+
+Mathieu
+
 
 -- 
-tejun
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
