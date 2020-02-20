@@ -2,107 +2,158 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26708166188
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 16:56:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F65216637D
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 17:52:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728414AbgBTP4x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 10:56:53 -0500
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:45118 "EHLO
+        id S1728064AbgBTQwY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 11:52:24 -0500
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:46704 "EHLO
         mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728460AbgBTP4x (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 10:56:53 -0500
-Received: by mail-qk1-f194.google.com with SMTP id a2so3965723qko.12;
-        Thu, 20 Feb 2020 07:56:52 -0800 (PST)
+        with ESMTP id S1727709AbgBTQwY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 11:52:24 -0500
+Received: by mail-qk1-f194.google.com with SMTP id u124so4153718qkh.13;
+        Thu, 20 Feb 2020 08:52:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WrIAIkuYfbohT4URY+WT9f9IMynxvVzhUx7hJqz7oAk=;
-        b=ESOkYp4wOyqNJWtsVeoAd/ssWk0nvkvCqnwMaCaF3sumNcZ7bZUGH+0ucazaesndy0
-         yirD6ztauUJJvTh2k0qQOCMIuSy8y0I5Op0djhJN8tXc86SkhYb3GRAvPH0Xdg20PLhR
-         tkP4CLoOD5zcFyv/N+6KLjwu32UptfltbOtBQhs2lFBq9bhdey1qQykNbSqzme1HWTvF
-         YJKe9824y9fv3QDFnPj2iRvGn8faVc36cGixbcfn6JihAAnsRa6TRztLTkXfYeKmfck4
-         JQ0bQjj5RuwY3aPQVQLPJ5lDRI+ouoTLCgEgk4zeilfjXu6dAxWPxxTsm/zvTFmQrkVB
-         y1rw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6XRtdyMfa57xpaqGTGErpzosHOBJSLkhLdrjsJIgZOk=;
+        b=GMVJvohK6Uqosdx++Q1UIJDcIwc443iVBHapmNkU3PGw0Gp/Zvb4sb4UC5bp2Vqnjh
+         3CNcPOyt+wKRKUoubWndo5lXBiYketttaeW/0TFZNT506r2ehW2MDLqDwKxIN4eTRL6l
+         Bbe/9ss0aC0grEW3nn0C41VmK4UZ0iE4dj4Z897q8UHKgHY2T1n9bsgu9G2OYcIDvx+B
+         u5klU2+Lw4xtVQXGaop6kWnEt+i2w3JLr/ZPKKBW51NDmVrAy3ZO3uQda80EIss6Qyv+
+         H/1orrfd8yQMyvriQ2xSQnzBmiCfFYpDXHVpOfkmdv3fLAt2kdPWJQVF2RC+gEgheTWP
+         kuGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=WrIAIkuYfbohT4URY+WT9f9IMynxvVzhUx7hJqz7oAk=;
-        b=JZjH+GfTO+qhT4RqZgv/Nro+yYKDSYRQMNWbe8StRtYrtDXcoEDREy3YS2NYcT8q1G
-         4tUrFPnDViVwxAqzk6vA7+AIHPE1u1FzW59Mrd/vAI2OqTunE7DnwciZ3IboEu0jTaN2
-         uC0bnRtTsdIh01226K74aYyaehAbojJLCDN36pmDPNzqRldxD0pR1MneZvIy1V7Nlh46
-         wKegmJratMlleWlAHtwJTr0665t8hgCgbKaHTxpbW15+Nctszza880Spad7J1Wp5ronM
-         EtxVoKnoiDctjDUbITWZjqIL//k9nO2QsBkgrRcp0rCtH6yEvIPKVT9y864kQcyYUpTb
-         V53w==
-X-Gm-Message-State: APjAAAUz/7k9alrbtjVRIOGEETlMmBN93uiXFNZmwjLSAKDn+Z3ACfTJ
-        MyfzMx/eQDjdLXNu/1SfVyQ=
-X-Google-Smtp-Source: APXvYqxl2VFYhPNB5rqU5j+Wp99qIWsjSoVAVV6XHVaiOidOGQt4AO4LYzBpRqNGmdzKRoW3+dg+/w==
-X-Received: by 2002:a05:620a:31b:: with SMTP id s27mr28175423qkm.105.1582214212209;
-        Thu, 20 Feb 2020 07:56:52 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::5e31])
-        by smtp.gmail.com with ESMTPSA id x66sm57180qkb.101.2020.02.20.07.56.51
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=6XRtdyMfa57xpaqGTGErpzosHOBJSLkhLdrjsJIgZOk=;
+        b=G+EkzMfZLK8JIobcXun6VIP5s7QRHkO1Bv4yvlOk8MXrANg7RORytf8UoAF6LyO1Rr
+         6BMToaBWkhWcHosSTRoBPN6aydx2E864HdkWJh0ltLCVyZqg7xJnNXEyApZEPN17ItLO
+         HO91Eg4XB0emI85axoUGr+faTwdXXbqu0VHIm3SlBZdy9mvRo1Y9cPm96bUwd0JKhb5q
+         Ut9dyapJ1fc5TRPzT5MfFbfpE+hwxCb9THjz01T4pIyFLdX3ux9a6e5TRBfCw6c5Qb9Q
+         MyQiQDjmkl4eVRbIxEaQ7aZ1KgVx3MfBR0O9x+TaCXN0+PXQ7q7IhSTJy1JUk9eaOidf
+         seDw==
+X-Gm-Message-State: APjAAAUgs6fGLRLAL5hLdJjSKy14Cab87f2QoD26ARJjzgsupZpSX+Nm
+        XssfXb1fToPloa5MQwMS9PI=
+X-Google-Smtp-Source: APXvYqy4l4khgWGFmnhDAt5LoEZMVrOKFHi8JHSfYZBxEDUKoj4Q/uPqL9B528B9p2SSMSXiU0yT2A==
+X-Received: by 2002:a37:a08f:: with SMTP id j137mr28457353qke.467.1582217543184;
+        Thu, 20 Feb 2020 08:52:23 -0800 (PST)
+Received: from dschatzberg-fedora-PC0Y6AEN.thefacebook.com ([2620:10d:c091:500::3:edb0])
+        by smtp.gmail.com with ESMTPSA id t55sm43567qte.24.2020.02.20.08.52.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 07:56:51 -0800 (PST)
-Date:   Thu, 20 Feb 2020 10:56:51 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Thu, 20 Feb 2020 08:52:22 -0800 (PST)
+From:   Dan Schatzberg <schatzberg.dan@gmail.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm: memcontrol: asynchronous reclaim for memory.high
-Message-ID: <20200220155651.GG698990@mtj.thefacebook.com>
-References: <20200219181219.54356-1-hannes@cmpxchg.org>
- <20200219183731.GC11847@dhcp22.suse.cz>
- <20200219191618.GB54486@cmpxchg.org>
- <20200219195332.GE11847@dhcp22.suse.cz>
- <20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com>
- <20200219220859.GF54486@cmpxchg.org>
- <20200220154524.dql3i5brnjjwecft@ca-dmjordan1.us.oracle.com>
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        linux-block@vger.kernel.org (open list:BLOCK LAYER),
+        linux-kernel@vger.kernel.org (open list),
+        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH v3 0/3] Charge loop device i/o to issuing cgroup
+Date:   Thu, 20 Feb 2020 11:51:50 -0500
+Message-Id: <cover.1582216294.git.schatzberg.dan@gmail.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200220154524.dql3i5brnjjwecft@ca-dmjordan1.us.oracle.com>
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 10:45:24AM -0500, Daniel Jordan wrote:
-> Ok, consistency with io and memory is one advantage to doing it that way.
-> Creating kthreads in cgroups also seems viable so far, and it's unclear whether
-> either approach is significantly simpler or more maintainable than the other,
-> at least to me.
+Changes since V2:
 
-The problem with separate kthread approach is that many of these work
-units are tiny, and cgroup membership might not be known or doesn't
-agree with the processing context from the beginning
+* Deferred destruction of workqueue items so in the common case there
+  is no allocation needed
 
-For example, the ownership of network packets can't be determined till
-processing has progressed quite a bit in shared contexts and each item
-too small to bounce around. The only viable way I can think of
-splitting aggregate overhead according to the number of packets (or
-some other trivially measureable quntity) processed.
+Changes since V1:
 
-Anything sitting in reclaim layer is the same. Reclaim should be
-charged to the cgroup whose memory is reclaimed *but* shouldn't block
-other cgroups which are waiting for that memory. It has to happen in
-the context of the highest priority entity waiting for memory but the
-costs incurred must be charged to the memory owners.
+* Split out and reordered patches so cgroup charging changes are
+  separate from kworker -> workqueue change
 
-So, one way or the other, I think we'll need back charging and once
-back charging is needed for big ticket items like network and reclaim,
-it's kinda silly to use separate mechanisms for other stuff.
+* Add mem_css to struct loop_cmd to simplify logic
 
-> Is someone on your side working on remote charging right now?  I was planning
-> to post an RFD comparing these soon and it would make sense to include them.
+The loop device runs all i/o to the backing file on a separate kworker
+thread which results in all i/o being charged to the root cgroup. This
+allows a loop device to be used to trivially bypass resource limits
+and other policy. This patch series fixes this gap in accounting.
 
-It's been on the to do list but nobody is working on it yet.
+A simple script to demonstrate this behavior on cgroupv2 machine:
 
-Thanks.
+'''
+#!/bin/bash
+set -e
+
+CGROUP=/sys/fs/cgroup/test.slice
+LOOP_DEV=/dev/loop0
+
+if [[ ! -d $CGROUP ]]
+then
+    sudo mkdir $CGROUP
+fi
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit to tmpfs -> OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+dd if=/dev/zero of=/tmp/file bs=1M count=256" || true
+
+grep oom_kill $CGROUP/memory.events
+
+# Set a memory limit, write more than that limit through loopback
+# device -> no OOM kill
+sudo unshare -m bash -c "
+echo \$\$ > $CGROUP/cgroup.procs;
+echo 0 > $CGROUP/memory.swap.max;
+echo 64M > $CGROUP/memory.max;
+mount -t tmpfs -o size=512m tmpfs /tmp;
+truncate -s 512m /tmp/backing_file
+losetup $LOOP_DEV /tmp/backing_file
+dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
+losetup -D $LOOP_DEV" || true
+
+grep oom_kill $CGROUP/memory.events
+'''
+
+Naively charging cgroups could result in priority inversions through
+the single kworker thread in the case where multiple cgroups are
+reading/writing to the same loop device. This patch series does some
+minor modification to the loop driver so that each cgroup can make
+forward progress independently to avoid this inversion.
+
+With this patch series applied, the above script triggers OOM kills
+when writing through the loop device as expected.
+
+Dan Schatzberg (3):
+  loop: Use worker per cgroup instead of kworker
+  mm: Charge active memcg when no mm is set
+  loop: Charge i/o to mem and blk cg
+
+ drivers/block/loop.c       | 229 +++++++++++++++++++++++++++++++------
+ drivers/block/loop.h       |  14 ++-
+ include/linux/memcontrol.h |   6 +
+ kernel/cgroup/cgroup.c     |   1 +
+ mm/memcontrol.c            |  11 +-
+ mm/shmem.c                 |   2 +-
+ 6 files changed, 217 insertions(+), 46 deletions(-)
 
 -- 
-tejun
+2.17.1
+
