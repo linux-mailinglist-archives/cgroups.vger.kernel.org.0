@@ -2,111 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E0D5166712
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 20:23:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FA241667B3
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 20:55:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728685AbgBTTXM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 14:23:12 -0500
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:40263 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728390AbgBTTXM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 14:23:12 -0500
-Received: by mail-ot1-f68.google.com with SMTP id i6so4746643otr.7
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 11:23:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Bk1eIitMT2MS22kRJrkHf2a6nr5vMQhVA+AkCVP3xms=;
-        b=aTmzlFn5tqMffO4aaSdqSmOjwnlwPlhLBMDWmHM5hEgVohGoR95LIESWPin+FgU3m5
-         6SBKmIyXfz3mR7ZJGUztrCkEqttjywHypYPY01n74LbVdLtnW3lI3mGg/tCdRKylIrWc
-         Jq7asmZQKCD4pm93CxVIrFT9tn3nfGJqSSm8Vsd6HIo/Kcxe7LRKiOXtJ1R+KmDSgYri
-         yOJUHQv1/vVwu32bZ3WZIRFgjHFVUSuwrRUtJOBVFSUsAgNS/5PGnC2AW02w3iZZp4zg
-         Ia0U7nlOur/8FVS0Sgvy3hruRsr6xz+P5Rcb6cHozsula5vu8Q6sy6WkorjtHYEKafsR
-         OD5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Bk1eIitMT2MS22kRJrkHf2a6nr5vMQhVA+AkCVP3xms=;
-        b=R7d6ybtyyfS7q70PnOH40kPcvWgrYSkBYzvORwr0h7Od9gcm37T9J3KopIUsQPhHHA
-         NJ6WMBgeEme7qELi4nt5OCPuCIzVcjh3M4yPPzm+Z0KdeMg+aEvpn3QDKBmReFzxW/8d
-         8GHKRNm/mNIajuW5qvB1Fc2yt0rPD34NoPFa5/bovckxHcjLiN5GakL4U5IhfZHBvD5R
-         2cnugkLfhBa7A8yW0RT6n3YvA38OSeasaSfkrlzDbQo83fmbHstRaVQIdSJ9i1ZP2Oo8
-         QSsuKpEhvzlkI9xF+AqcP8fAcjU0v9yNwhB68Uo3zdiNLtLX2TqdZgt2gPBOJL22Xrzd
-         IPZA==
-X-Gm-Message-State: APjAAAViuvcETXx4UtgilJPj5W4ZJPvyBRVRqbcMuYUp3xh0kjBQ0+Jd
-        rjxN9+4Rk8jyPP2dONNZJWfAVoJ0qRjDmV4Xh+j8FQ==
-X-Google-Smtp-Source: APXvYqzc0r7mnwBlUc3tSqHO71Kmj09WeY278uUEiCztDiRqODK1P9Hy8XAqcMq8l4Nh1mPh3JVbkAAfzAHEF3HNj0E=
-X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr24990667oto.355.1582226589659;
- Thu, 20 Feb 2020 11:23:09 -0800 (PST)
+        id S1728759AbgBTTzh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 14:55:37 -0500
+Received: from userp2130.oracle.com ([156.151.31.86]:49684 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728448AbgBTTzh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 14:55:37 -0500
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01KJms1Z022382;
+        Thu, 20 Feb 2020 19:55:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Oeqn/msELu44gc9TzxVpdR7IAGtxbC8EWYVF6nQT3jA=;
+ b=k3zCKzyqek3pblqv98woSoLvFhc6jomamI50XiH6WcMl8o/NKBWg5FP45OC9wyyrA8DZ
+ ewFwmrXB+/8Y/yEIhisarEHRnQCQ+Ugt/IOlO3UjjyzBotUQYa6Ih8LpO+fW45LQGa3h
+ PHPNVxuiiUTWkbYIFAgC45rzzcmR3+1pqy4kfOevEf5bAxFt41h/4rAI53vYFRVikvpG
+ M+C0OyuOz2qtmZkavplVeLA9HFE9h4AsybtU8FmZCOqN2ZGwoD4vg4dzehCeYnUH75I2
+ wPiJuEOFoOAwFaH5ry2l8yosH4bV1KBA8GxHwjjrqJJ12nR6424UoBgU0LYqbtR/f09o 4Q== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2130.oracle.com with ESMTP id 2y8uddc447-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Feb 2020 19:55:25 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01KJm6Bb100952;
+        Thu, 20 Feb 2020 19:55:25 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 2y8ud6v9fm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Feb 2020 19:55:25 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01KJtIre029033;
+        Thu, 20 Feb 2020 19:55:21 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 20 Feb 2020 11:55:18 -0800
+Date:   Thu, 20 Feb 2020 14:55:35 -0500
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>
+Subject: Re: [PATCH] mm: memcontrol: asynchronous reclaim for memory.high
+Message-ID: <20200220195535.7xblt45akld6eftj@ca-dmjordan1.us.oracle.com>
+References: <20200219181219.54356-1-hannes@cmpxchg.org>
+ <20200219183731.GC11847@dhcp22.suse.cz>
+ <20200219191618.GB54486@cmpxchg.org>
+ <20200219195332.GE11847@dhcp22.suse.cz>
+ <20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com>
+ <20200219220859.GF54486@cmpxchg.org>
+ <20200220154524.dql3i5brnjjwecft@ca-dmjordan1.us.oracle.com>
+ <20200220155651.GG698990@mtj.thefacebook.com>
+ <20200220182326.ubcjycaubgykiy6e@ca-dmjordan1.us.oracle.com>
+ <20200220184545.GH698990@mtj.thefacebook.com>
 MIME-Version: 1.0
-References: <20200211213128.73302-1-almasrymina@google.com>
- <20200211151906.637d1703e4756066583b89da@linux-foundation.org>
- <CAHS8izPUFQWq3PzhhRzp7u11173_-cmRkNuQWEswS51Xz6ZM0Q@mail.gmail.com> <20200219130648.83e6810848774c6fd649c445@linux-foundation.org>
-In-Reply-To: <20200219130648.83e6810848774c6fd649c445@linux-foundation.org>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Thu, 20 Feb 2020 11:22:58 -0800
-Message-ID: <CAHS8izN_FJektipBwiLsCO8ysMTM7k=CR_k3OV7+_y0ZbrGw+A@mail.gmail.com>
-Subject: Re: [PATCH v12 1/9] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
-        cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200220184545.GH698990@mtj.thefacebook.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=694 mlxscore=0
+ adultscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002200143
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 impostorscore=0
+ mlxlogscore=757 malwarescore=0 mlxscore=0 suspectscore=0
+ priorityscore=1501 bulkscore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002200143
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 19, 2020 at 1:06 PM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Wed, 19 Feb 2020 11:05:41 -0800 Mina Almasry <almasrymina@google.com> wrote:
->
-> > On Tue, Feb 11, 2020 at 3:19 PM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > >
-> > > On Tue, 11 Feb 2020 13:31:20 -0800 Mina Almasry <almasrymina@google.com> wrote:
-> > >
-> > > > These counters will track hugetlb reservations rather than hugetlb
-> > > > memory faulted in. This patch only adds the counter, following patches
-> > > > add the charging and uncharging of the counter.
-> > >
-> > > We're still pretty thin on review here, but as it's v12 and Mike
-> > > appears to be signed up to look at this work, I'll add them to -next to
-> > > help move things forward.
-> > >
-> >
-> > Hi Andrew,
-> >
-> > Since the patches were merged into -next there have been build fixes
-> > and test fixes and some review comments. Would you like me to submit
-> > *new* patches to address these, or would you like me to squash the
-> > fixes into my existing patch series and submit another iteration of
-> > the patch series?
->
-> What you did worked OK ;)
->
-> Please check the end result next time I release a kernel.
+On Thu, Feb 20, 2020 at 01:45:45PM -0500, Tejun Heo wrote:
+> The setup cost can be lazy optimized but it'd still have to bounce the
+> tiny pieces of work to different threads instead of processing them in
+> one fell swoop from the same context, which most likely is gonna be
+> untenably expensive.
 
-Thanks Andrew! Things definitely moved along after the patchseries got
-into -next :D
+I see, your last mail is clearer now.  If it's easy to do, a pointer to where
+this happens would help so we're on the same page.
 
-By my count I think all my patches outside of the tests patch have
-been acked or reviewed. When you have a chance I have a couple of
-questions:
-
-1. For the non-tests patch, anything pending on those preventing
-eventual submission to linus's tree?
-2. For the tests patch, I only have a Tested-by from Sandipan. Is that
-good enough? If the worst comes to worst and I don't get a review on
-that patch I would rather (if possible) that 'tests' patch can be
-dropped while I nag folks for a review, rather than block submission
-of the entire patch series. I ask because it's been out for review for
-some time and it's the one I got least discussion on so I'm not sure
-I'll have a review by the time it's needed.
-
-Thanks again!
+thanks,
+Daniel
