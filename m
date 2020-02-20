@@ -2,214 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A41E9165FDE
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 15:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 060C316613B
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 16:45:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728072AbgBTOl6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 09:41:58 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:45262 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728051AbgBTOl6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 09:41:58 -0500
-Received: by mail-qt1-f193.google.com with SMTP id d9so2981582qte.12
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 06:41:57 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KgbFEoscP48mjVdnl3aSH+kUhdeWQePC7wbq6bCa4AI=;
-        b=l51yhkuYtGjX8vKxaBvsS/B8GZzoCQr91t6X70oS24fKcX6vJmPlWYHVbH4cB3pjl0
-         5qs4wzApaOlZuHtPSnm8fZhN9OtFb/+ehbVoV5pR+PXhGahDzS60vF7nWbnZPI4ti8v3
-         5CFjdvUwF2//teO1Oz8M9yB7KX/AT0nxUuVCwnl4LfukO00wgIFbWtkTsyRjq7pThyUn
-         SyODh0ewSHxw/Ai/JXo2rIwKG0+LHLyVOF6QyHFXLFbIRyGgcXByyHfFdH3+rDfMrZSm
-         t6MdatyRR+5T8vJBkUuk2eR4bf7+AG4MqffGfFnSAvSJSJN/SgifddKfeQDb8i2lA78s
-         z1ww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KgbFEoscP48mjVdnl3aSH+kUhdeWQePC7wbq6bCa4AI=;
-        b=sO+bzKr74YuCsugXAPfv8sZ8PJm5MTzIG49D3zM4FyWhm6shYRHORctu46/cBlpK2z
-         WrBigkmUYkkqYKuJDYU19rVzaQHRb674kLVPDe8JvHVOjPNK24qPJXXGgdg53ifm4W6z
-         4KTigp1oHUCxcgVOXic4QFXjiEXM7rOwxQdi+eJDx+Huwy4v7sPtC4j0o4DV+HF0wFr4
-         kmawVo/r6HYmIj779yFhvTvCTGeDHpKszMHjpKBJBqHU6AvprCfpcn/HAu4wra86lWSj
-         51MRb4GzlnQ5T8CNS9uT+bzvjNDxJXyHnEsOR11vJbYHp69UJhvQh6jORY+RhDqMgtF0
-         pOdg==
-X-Gm-Message-State: APjAAAXo1fYkyXOg+1l/Eqe47p1RAIvOXFK4u9jBdQ01assIhmmOJ/kD
-        qBBeYT99blKZq5N1z8r4q/YEyA==
-X-Google-Smtp-Source: APXvYqwEv/5U/QFxIfjUoLGU9KuOmPp21CM34cBTZ3WJpeLXohEa/5gRM0HCWC3li/taBpa8gEHzzg==
-X-Received: by 2002:ac8:34b2:: with SMTP id w47mr26126481qtb.142.1582209716681;
-        Thu, 20 Feb 2020 06:41:56 -0800 (PST)
-Received: from localhost (pool-108-27-252-85.nycmny.fios.verizon.net. [108.27.252.85])
-        by smtp.gmail.com with ESMTPSA id z27sm1813153qtv.11.2020.02.20.06.41.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 06:41:55 -0800 (PST)
-Date:   Thu, 20 Feb 2020 09:41:54 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1728305AbgBTPp2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 10:45:28 -0500
+Received: from userp2120.oracle.com ([156.151.31.85]:46632 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728289AbgBTPp2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 10:45:28 -0500
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01KFiIcd099708;
+        Thu, 20 Feb 2020 15:45:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=Y/mFiU18EBtEaH5OMEwxs9bxgqWYfXtQzQK0tFNuMzw=;
+ b=XprjFRSGHt9YYCnNDTczDtIfli1Y+O0kphL/RPJ7I/vvYbyoTdaA1k7XDRwMMwTP/Ep1
+ hbkicNFvU3h3mL1nxqwsStgwBHHm7xKuv8BRKCjsKk+/shspPr7QLuFwEga05GMILil/
+ lpmK0g3v68WyUD6IVAGWlNImDuBofRSqpfwWBSRGnKDCDKSIpZPmC0qftkTCdsqfLEAo
+ TTpib+H965bQ77e7+qK1sTetoeqCydFYn9Azer0fHM66/tQASZ+b18g7ApOtSYIhbNWx
+ mD1DK+7ka2X3aQXR0sRZBnAEtPzBjuEAkon+WWWtdBYiTr7m9rxkevDzDEHyreVlaHn6 lQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 2y8ud1ahwd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Feb 2020 15:45:13 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01KFfeTV191382;
+        Thu, 20 Feb 2020 15:45:12 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by userp3020.oracle.com with ESMTP id 2y8ud435jg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 20 Feb 2020 15:45:12 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 01KFj7WR029782;
+        Thu, 20 Feb 2020 15:45:07 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 20 Feb 2020 07:45:07 -0800
+Date:   Thu, 20 Feb 2020 10:45:24 -0500
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
         Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Peter Zijlstra <peterz@infradead.org>
 Subject: Re: [PATCH] mm: memcontrol: asynchronous reclaim for memory.high
-Message-ID: <20200220144154.GA61895@cmpxchg.org>
+Message-ID: <20200220154524.dql3i5brnjjwecft@ca-dmjordan1.us.oracle.com>
 References: <20200219181219.54356-1-hannes@cmpxchg.org>
  <20200219183731.GC11847@dhcp22.suse.cz>
  <20200219191618.GB54486@cmpxchg.org>
  <20200219195332.GE11847@dhcp22.suse.cz>
- <20200219211735.GD54486@cmpxchg.org>
- <20200220094639.GD20509@dhcp22.suse.cz>
+ <20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com>
+ <20200219220859.GF54486@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200220094639.GD20509@dhcp22.suse.cz>
+In-Reply-To: <20200219220859.GF54486@cmpxchg.org>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 suspectscore=0 adultscore=0 spamscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2001150001 definitions=main-2002200115
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 phishscore=0
+ impostorscore=0 mlxlogscore=999 clxscore=1015 adultscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
+ definitions=main-2002200115
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 20, 2020 at 10:46:39AM +0100, Michal Hocko wrote:
-> On Wed 19-02-20 16:17:35, Johannes Weiner wrote:
++Peter
+
+On Wed, Feb 19, 2020 at 05:08:59PM -0500, Johannes Weiner wrote:
+> On Wed, Feb 19, 2020 at 04:41:12PM -0500, Daniel Jordan wrote:
 > > On Wed, Feb 19, 2020 at 08:53:32PM +0100, Michal Hocko wrote:
 > > > On Wed 19-02-20 14:16:18, Johannes Weiner wrote:
-> [...]
-> > > > [ This is generally work in process: for example, if you isolate
-> > > >   workloads with memory.low, kswapd cpu time isn't accounted to the
-> > > >   cgroup that causes it. Swap IO issued by kswapd isn't accounted to
-> > > >   the group that is getting swapped.
-> > > 
-> > > Well, kswapd is a system activity and as such it is acceptable that it
-> > > is accounted to the system. But in this case we are talking about a
-> > > memcg configuration which influences all other workloads by stealing CPU
-> > > cycles from them 
+> > > > On Wed, Feb 19, 2020 at 07:37:31PM +0100, Michal Hocko wrote:
+> > > > > On Wed 19-02-20 13:12:19, Johannes Weiner wrote:
+> > > > > > This patch adds asynchronous reclaim to the memory.high cgroup limit
+> > > > > > while keeping direct reclaim as a fallback. In our testing, this
+> > > > > > eliminated all direct reclaim from the affected workload.
+> > > > > 
+> > > > > Who is accounted for all the work? Unless I am missing something this
+> > > > > just gets hidden in the system activity and that might hurt the
+> > > > > isolation. I do see how moving the work to a different context is
+> > > > > desirable but this work has to be accounted properly when it is going to
+> > > > > become a normal mode of operation (rather than a rare exception like the
+> > > > > existing irq context handling).
+> > > > 
+> > > > Yes, the plan is to account it to the cgroup on whose behalf we're
+> > > > doing the work.
 > > 
-> > From a user perspective this isn't a meaningful distinction.
+> > How are you planning to do that?
 > > 
-> > If I partition my memory among containers and one cgroup is acting
-> > out, I would want the culprit to be charged for the cpu cycles the
-> > reclaim is causing. Whether I divide my machine up using memory.low or
-> > using memory.max doesn't really matter: I'm choosing between the two
-> > based on a *memory policy* I want to implement - work-conserving vs
-> > non-conserving. I shouldn't have to worry about the kernel tracking
-> > CPU cycles properly in the respective implementations of these knobs.
+> > I've been thinking about how to account a kernel thread's CPU usage to a cgroup
+> > on and off while working on the parallelizing Michal mentions below.  A few
+> > approaches are described here:
 > > 
-> > So kswapd is very much a cgroup-attributable activity, *especially* if
-> > I'm using memory.low to delineate different memory domains.
+> > https://lore.kernel.org/linux-mm/20200212224731.kmss6o6agekkg3mw@ca-dmjordan1.us.oracle.com/
 > 
-> While I understand what you are saying I do not think this is easily
-> achievable with the current implementation. The biggest problem I can
-> see is that you do not have a clear information who to charge for
-> the memory shortage on a particular NUMA node with a pure low limit
-> based balancing because the limit is not NUMA aware. Besides that the
-> origin of the memory pressure might be outside of any memcg.  You can
-> punish/account all memcgs in excess in some manner, e.g. proportionally
-> to their size/excess but I am not really sure how fair that will
-> be. Sounds like an interesting project but also sounds like tangent to
-> this patch.
-> 
-> High/Max limits are quite different because they are dealing with
-> the internal memory pressure and you can attribute it to the
-> cgroup/hierarchy which is in excess. There is a clear domain to reclaim
-> from. This is an easier model to reason about IMHO.
-
-They're not different. memory.low is just a usage limit that happens
-to be enforcecd lazily rather than immediately.
-
-If I'm setting memory.high or memory.max and I allocate beyond it, my
-memory will be reclaimed with the limit as the target.
-
-If I'm setting memory.low and I allocate beyond it, my memory will
-eventually be reclaimed with the limit as the target.
-
-In either case, the cgroup who allocated the memory that is being
-reclaimed is the one obviously responsible for the reclaim work. Why
-would the time of limit enforcement change that?
-
-If on the other hand an allocation reclaims you below your limit, such
-as can happen with a NUMA-bound allocation, whether it's high, max, or
-low, then that's their cost to pay. But it's not really that important
-what we do in that case - the memcg settings aren't NUMA aware so that
-whole scenario is out of the purview of the controller anyway.
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index d6085115c7f2..24fe6e9e64b1 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2651,6 +2651,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 	memcg = mem_cgroup_iter(target_memcg, NULL, NULL);
- 	do {
- 		struct lruvec *lruvec = mem_cgroup_lruvec(memcg, pgdat);
-+		bool account_cpu = current_is_kswapd() || current_work();
- 		unsigned long reclaimed;
- 		unsigned long scanned;
- 
-@@ -2673,6 +2674,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 				continue;
- 			}
- 			memcg_memory_event(memcg, MEMCG_LOW);
-+			account_cpu = false;
- 			break;
- 		case MEMCG_PROT_NONE:
- 			/*
-@@ -2688,11 +2690,17 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
- 		reclaimed = sc->nr_reclaimed;
- 		scanned = sc->nr_scanned;
- 
-+		if (account_cpu)
-+			use_cpu_of_cgroup(memcg->css.cgroup);
-+
- 		shrink_lruvec(lruvec, sc);
- 
- 		shrink_slab(sc->gfp_mask, pgdat->node_id, memcg,
- 			    sc->priority);
- 
-+		if (account_cpu)
-+			unuse_cpu_of_cgroup();
-+
- 		/* Record the group's reclaim efficiency */
- 		vmpressure(sc->gfp_mask, memcg, false,
- 			   sc->nr_scanned - scanned,
-
-
-> > > without much throttling on the consumer side - especially when the
-> > > memory is reclaimable without a lot of sleeping or contention on
-> > > locks etc.
-> > 
-> > The limiting factor on the consumer side is IO. Reading a page is way
-> > more costly than reclaiming it, which is why we built our isolation
-> > stack starting with memory and IO control and are only now getting to
-> > working on proper CPU isolation.
-> > 
-> > > I am absolutely aware that we will never achieve a perfect isolation due
-> > > to all sorts of shared data structures, lock contention and what not but
-> > > this patch alone just allows spill over to unaccounted work way too
-> > > easily IMHO.
-> > 
-> > I understand your concern about CPU cycles escaping, and I share
-> > it. My point is that this patch isn't adding a problem that isn't
-> > already there, nor is it that much of a practical concern at the time
-> > of this writing given the state of CPU isolation in general.
-> 
-> I beg to differ here. Ppu controller should be able to isolate user
-> contexts performing high limit reclaim now. Your patch is changing that
-> functionality to become unaccounted for a large part and that might be
-> seen as a regression for those workloads which partition the system by
-> using high limit and also rely on cpu controller because workloads are
-> CPU sensitive.
+> What we do for the IO controller is execute the work unthrottled but
+> charge the cgroup on whose behalf we are executing with whatever cost
+> or time or bandwith that was incurred. The cgroup will pay off this
+> debt when it requests more of that resource.
 >
-> Without the CPU controller support this patch is not complete and I do
-> not see an absolute must to marge it ASAP because it is not a regression
-> fix or something we cannot live without.
+[snip code pointers]
 
-I think you're still thinking in a cgroup1 reality, where you would
-set a memory limit in isolation and then eat a ton of CPU pushing up
-against it.
+Thanks!  Figuring out how the io controllers dealt with remote charging was on
+my list, this makes it easier.
 
-In comprehensive isolation setups implemented in cgroup2, "heavily"
-reclaimed containers are primarily IO bound on page faults, refaults,
-writeback. The reclaim cost is a small part of it, and as I said, in a
-magnitude range for which the CPU controller is currently too heavy.
+> The plan for the CPU controller is similar. When a remote execution
+> begins, flush the current runtime accumulated (update_curr) and
+> associate the current thread with another cgroup (similar to
+> current->active_memcg); when remote execution is done, flush the
+> runtime delta to that cgroup and unset the remote context.
 
-We can carry this patch out of tree until the CPU controller is fixed,
-but I think the reasoning to keep it out is not actually based on the
-practical reality of a cgroup2 world.
+Ok, consistency with io and memory is one advantage to doing it that way.
+Creating kthreads in cgroups also seems viable so far, and it's unclear whether
+either approach is significantly simpler or more maintainable than the other,
+at least to me.
+
+Is someone on your side working on remote charging right now?  I was planning
+to post an RFD comparing these soon and it would make sense to include them.
