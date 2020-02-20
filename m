@@ -2,91 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD494166683
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 19:45:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E0D5166712
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 20:23:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728315AbgBTSpr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 13:45:47 -0500
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:41259 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728111AbgBTSpr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 13:45:47 -0500
-Received: by mail-qt1-f193.google.com with SMTP id l21so3617558qtr.8;
-        Thu, 20 Feb 2020 10:45:47 -0800 (PST)
+        id S1728685AbgBTTXM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 14:23:12 -0500
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:40263 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728390AbgBTTXM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 14:23:12 -0500
+Received: by mail-ot1-f68.google.com with SMTP id i6so4746643otr.7
+        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 11:23:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ajjnncCD8dG0G18fVGbEVN7FP1csi2qzGtdLhYXXJTU=;
-        b=k/vpOSde9bMUoOkP1G2/1I25Nn9Pkv0cytj97/bjAuSIclk+m4KQ9S0ziULuviFMs9
-         c6vb59sXLtBdSul8JNMDN9b22s/HaXZqEDqZVUUgXxNzpc7+RQuul8Lh87CBQrY8TG3b
-         yeVKaW3Bcp9oIDJS2uYK6b0btASzCNPTQaNt4mwNERLhrW2G+KqIsbMBhMm9SXREycvV
-         j/K7EMs16439ppT5r1FvGQRPftTQKxEEa69Oq9TofNUu2SJGZM7OqXVNPpPTYwvgce4v
-         wW8oxpMW8jTdFf8kowzQY6+ON6pmqStIvwfyWeN0NhVNmwZhaMHrCqR6Xy/TfGZu19ch
-         YULQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Bk1eIitMT2MS22kRJrkHf2a6nr5vMQhVA+AkCVP3xms=;
+        b=aTmzlFn5tqMffO4aaSdqSmOjwnlwPlhLBMDWmHM5hEgVohGoR95LIESWPin+FgU3m5
+         6SBKmIyXfz3mR7ZJGUztrCkEqttjywHypYPY01n74LbVdLtnW3lI3mGg/tCdRKylIrWc
+         Jq7asmZQKCD4pm93CxVIrFT9tn3nfGJqSSm8Vsd6HIo/Kcxe7LRKiOXtJ1R+KmDSgYri
+         yOJUHQv1/vVwu32bZ3WZIRFgjHFVUSuwrRUtJOBVFSUsAgNS/5PGnC2AW02w3iZZp4zg
+         Ia0U7nlOur/8FVS0Sgvy3hruRsr6xz+P5Rcb6cHozsula5vu8Q6sy6WkorjtHYEKafsR
+         OD5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ajjnncCD8dG0G18fVGbEVN7FP1csi2qzGtdLhYXXJTU=;
-        b=MiRq1M5z2j8Q9wqPG6frhWM+vPmm7WO6XyCCCs/Tkm+ipxqpG7nxmbtmnTxbw6orvV
-         L5/Ljy5/uDNrRftJNHdUqtsyFRd4cSGn8eZPrX4hgtYWBwRg1uXLmumZkoSVhauxnVqW
-         QzBoHYp5aad9hI4Ong2BMmZEq9mVkEesJEtCjQ0yTN0Dzc/M2LMyRXLYqWVeYgsDkNbh
-         UMmuFXr+pd4jg/ReTrOaj/yw1mXdZjxqfHMb+3wzCu4njHXRPMdZwuQvpjOj8ymSCtmw
-         Q8HVtmWsg234cz5o3AUV+AqHQ6q3wJ0QSwoctPZO9F02qUr70pD6BJPRCZp1fnid3J8D
-         sc5g==
-X-Gm-Message-State: APjAAAVEAyNUc9I0VTRjqQ/EL+4ly9eTOpgY56rZoYBULxIXD+HBp07s
-        YNassZs/2UiOtopRp1L2YsQ=
-X-Google-Smtp-Source: APXvYqwr8QZEGjR+02xUZfnyfEhH/c3g1ZpRFCpisQx2XA9vthKAPCCYNwk1zQ/xPc6ejfIm8rgcFQ==
-X-Received: by 2002:ac8:6054:: with SMTP id k20mr27102688qtm.92.1582224346333;
-        Thu, 20 Feb 2020 10:45:46 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::55b1])
-        by smtp.gmail.com with ESMTPSA id z1sm194156qtq.69.2020.02.20.10.45.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 10:45:45 -0800 (PST)
-Date:   Thu, 20 Feb 2020 13:45:45 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] mm: memcontrol: asynchronous reclaim for memory.high
-Message-ID: <20200220184545.GH698990@mtj.thefacebook.com>
-References: <20200219181219.54356-1-hannes@cmpxchg.org>
- <20200219183731.GC11847@dhcp22.suse.cz>
- <20200219191618.GB54486@cmpxchg.org>
- <20200219195332.GE11847@dhcp22.suse.cz>
- <20200219214112.4kt573kyzbvmbvn3@ca-dmjordan1.us.oracle.com>
- <20200219220859.GF54486@cmpxchg.org>
- <20200220154524.dql3i5brnjjwecft@ca-dmjordan1.us.oracle.com>
- <20200220155651.GG698990@mtj.thefacebook.com>
- <20200220182326.ubcjycaubgykiy6e@ca-dmjordan1.us.oracle.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Bk1eIitMT2MS22kRJrkHf2a6nr5vMQhVA+AkCVP3xms=;
+        b=R7d6ybtyyfS7q70PnOH40kPcvWgrYSkBYzvORwr0h7Od9gcm37T9J3KopIUsQPhHHA
+         NJ6WMBgeEme7qELi4nt5OCPuCIzVcjh3M4yPPzm+Z0KdeMg+aEvpn3QDKBmReFzxW/8d
+         8GHKRNm/mNIajuW5qvB1Fc2yt0rPD34NoPFa5/bovckxHcjLiN5GakL4U5IhfZHBvD5R
+         2cnugkLfhBa7A8yW0RT6n3YvA38OSeasaSfkrlzDbQo83fmbHstRaVQIdSJ9i1ZP2Oo8
+         QSsuKpEhvzlkI9xF+AqcP8fAcjU0v9yNwhB68Uo3zdiNLtLX2TqdZgt2gPBOJL22Xrzd
+         IPZA==
+X-Gm-Message-State: APjAAAViuvcETXx4UtgilJPj5W4ZJPvyBRVRqbcMuYUp3xh0kjBQ0+Jd
+        rjxN9+4Rk8jyPP2dONNZJWfAVoJ0qRjDmV4Xh+j8FQ==
+X-Google-Smtp-Source: APXvYqzc0r7mnwBlUc3tSqHO71Kmj09WeY278uUEiCztDiRqODK1P9Hy8XAqcMq8l4Nh1mPh3JVbkAAfzAHEF3HNj0E=
+X-Received: by 2002:a9d:7b4e:: with SMTP id f14mr24990667oto.355.1582226589659;
+ Thu, 20 Feb 2020 11:23:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200220182326.ubcjycaubgykiy6e@ca-dmjordan1.us.oracle.com>
+References: <20200211213128.73302-1-almasrymina@google.com>
+ <20200211151906.637d1703e4756066583b89da@linux-foundation.org>
+ <CAHS8izPUFQWq3PzhhRzp7u11173_-cmRkNuQWEswS51Xz6ZM0Q@mail.gmail.com> <20200219130648.83e6810848774c6fd649c445@linux-foundation.org>
+In-Reply-To: <20200219130648.83e6810848774c6fd649c445@linux-foundation.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 20 Feb 2020 11:22:58 -0800
+Message-ID: <CAHS8izN_FJektipBwiLsCO8ysMTM7k=CR_k3OV7+_y0ZbrGw+A@mail.gmail.com>
+Subject: Re: [PATCH v12 1/9] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Mike Kravetz <mike.kravetz@oracle.com>, shuah <shuah@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Wed, Feb 19, 2020 at 1:06 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+>
+> On Wed, 19 Feb 2020 11:05:41 -0800 Mina Almasry <almasrymina@google.com> wrote:
+>
+> > On Tue, Feb 11, 2020 at 3:19 PM Andrew Morton <akpm@linux-foundation.org> wrote:
+> > >
+> > > On Tue, 11 Feb 2020 13:31:20 -0800 Mina Almasry <almasrymina@google.com> wrote:
+> > >
+> > > > These counters will track hugetlb reservations rather than hugetlb
+> > > > memory faulted in. This patch only adds the counter, following patches
+> > > > add the charging and uncharging of the counter.
+> > >
+> > > We're still pretty thin on review here, but as it's v12 and Mike
+> > > appears to be signed up to look at this work, I'll add them to -next to
+> > > help move things forward.
+> > >
+> >
+> > Hi Andrew,
+> >
+> > Since the patches were merged into -next there have been build fixes
+> > and test fixes and some review comments. Would you like me to submit
+> > *new* patches to address these, or would you like me to squash the
+> > fixes into my existing patch series and submit another iteration of
+> > the patch series?
+>
+> What you did worked OK ;)
+>
+> Please check the end result next time I release a kernel.
 
-On Thu, Feb 20, 2020 at 01:23:26PM -0500, Daniel Jordan wrote:
-> The amount of work wouldn't seem to matter as long as the kernel thread stays
-> in the cgroup and lives long enough.  There's only the one-time cost of
-> attaching it when it's forked.  That seems doable for unbound workqueues (the
-> async reclaim), but may not be for the network packets.
+Thanks Andrew! Things definitely moved along after the patchseries got
+into -next :D
 
-The setup cost can be lazy optimized but it'd still have to bounce the
-tiny pieces of work to different threads instead of processing them in
-one fell swoop from the same context, which most likely is gonna be
-untenably expensive.
+By my count I think all my patches outside of the tests patch have
+been acked or reviewed. When you have a chance I have a couple of
+questions:
 
-Thanks.
+1. For the non-tests patch, anything pending on those preventing
+eventual submission to linus's tree?
+2. For the tests patch, I only have a Tested-by from Sandipan. Is that
+good enough? If the worst comes to worst and I don't get a review on
+that patch I would rather (if possible) that 'tests' patch can be
+dropped while I nag folks for a review, rather than block submission
+of the entire patch series. I ask because it's been out for review for
+some time and it's the one I got least discussion on so I'm not sure
+I'll have a review by the time it's needed.
 
--- 
-tejun
+Thanks again!
