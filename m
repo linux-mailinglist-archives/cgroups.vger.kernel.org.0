@@ -2,58 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A33B016654D
-	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 18:50:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 10EA01665FE
+	for <lists+cgroups@lfdr.de>; Thu, 20 Feb 2020 19:14:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728429AbgBTRuF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 12:50:05 -0500
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:36554 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728318AbgBTRuF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 12:50:05 -0500
-Received: by mail-qt1-f195.google.com with SMTP id t13so3491107qto.3
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 09:50:05 -0800 (PST)
+        id S1728542AbgBTSO5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 13:14:57 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:44059 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727553AbgBTSO5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 13:14:57 -0500
+Received: by mail-ot1-f66.google.com with SMTP id h9so4532074otj.11
+        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 10:14:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9LcvSEumTmXyuKFplLOO57e96BKQQeEk4RY39TL+hio=;
-        b=VHirKNJDDO682guKBEd7Lh4Sdhh51LWyOruN25/r3aHd6uttqamXF0Y2SA7SURFcGF
-         9L68VvTMCycQxV8a8PVSRKwVlrRBX6dROpPZI2+TYVXxntJtO4mJrARFdxtJn8K2f0LX
-         7jmviilTZKEOD7cXwUqgwwYTXTAlVCWI4H8HphGY1AyOS0JkzhcsRMoHBwScPbu+Eghl
-         lr3mqrpjO/hI6Mqqpdz1bwAZpagS8xbsNMtYg/gVu4+EkG2nZ7e+seyK7JK9UOIIsSbW
-         iktcaKz88wwRW8q1+2Iz7hLBH+IFUEheTfhVWoJQBx196zKDvstwAtnve1heQWmWVFey
-         OZHA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uUKdgkaufxLmLYOt3TduZTiePIKaOkl8sejxXEeQJug=;
+        b=uEXDpSnvxNGx/1g8in8h2Lps6UF2cwI0Ci30lm3NqVXZaApTkzuDK+720dgSH9vb6k
+         KPzL7duyHh9m0BqEDV45tazOognY/d0scMRdl2OcG1JPE/lSbuZQK0NgSRFEE6JZ1ocE
+         bqLEMcVwBuFDRo16e9ImN9DFgGBbY4Rh3WKWen7Cz5Tan7f1NIIGTAN0UdCsrXlhKb2x
+         xp82sXN5MddaQ9Fo3jlxRRZOvEG5C3dmzkLPX1is1Moe0S017U8Ajd4vA0J68kr+ivdJ
+         DDHGyxImOHKFItW4eCZUYeAX2LdHOyh93fukcpNbkzLACAa56EL81Jnugc/MS1xxyks7
+         aVSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9LcvSEumTmXyuKFplLOO57e96BKQQeEk4RY39TL+hio=;
-        b=LTSmcgkzeMSACPYC/RTcpO/OXxuAD47iNg1l5ZQ6lw97lkQAaduKYUaQslL6ODfdCz
-         +cu/RriSMfP01+hegVPrvCQRwkRaTeB/CNhD4ipGBx5UBhTGEbBjBsHy08RGJAendBZ1
-         GKHlxIA4rR2a5Ij5AYWv2JzBsbgkoj8pKtrFKTiAFP2mcRCX72vYtaE2Fs+7aBefioaB
-         LOp3x5iOnuYldtzdU8pVGK2ruBZEfoodPfNDS+gqQWoYRXCdKWOWVRYP20j6KygVxBJg
-         2Bncz/04rujytk2iQB9i7L54mqT8R9WWLDoYca8q2s6ckXDlV10q4NX2ODaEwUkbpvt2
-         AT9g==
-X-Gm-Message-State: APjAAAW22TYM8jqwBdSyeWlwIABlbNc/PRNuC4bneXJTVUSjNOJYlc4U
-        aB5eM7I431mLXhKFmgBjV70rIw==
-X-Google-Smtp-Source: APXvYqzbtO/RIeVYLc6mfivNPQO8ldS0h+Q0UAxefaixOy8FmrW7r/AiWxWUfsQFv7WDc0SriYliDw==
-X-Received: by 2002:ac8:1ac1:: with SMTP id h1mr27444991qtk.255.1582221004432;
-        Thu, 20 Feb 2020 09:50:04 -0800 (PST)
-Received: from localhost ([2620:10d:c091:500::1:3504])
-        by smtp.gmail.com with ESMTPSA id 65sm123024qtc.4.2020.02.20.09.50.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Feb 2020 09:50:03 -0800 (PST)
-Date:   Thu, 20 Feb 2020 12:50:02 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uUKdgkaufxLmLYOt3TduZTiePIKaOkl8sejxXEeQJug=;
+        b=D39VUkmeIOkQ+WibBLnnuiywBTaGxopeVxhwH2jb/tNlyc/DK/f975ItIckN4YSHIf
+         Sl54CF5tMaraTHfyxdc7n3eD8/Sa3pf8QtsWAK7IQxhqQB9mRTaC6r7ZrnRhpEC5RXa/
+         a/V6tAmaas+eDzsHCCylab9RANA68RJIsI1CVBymFCitfzmsszzuyQaoZVWoO0bEfPUQ
+         fjHakWufaRTDFlmpc7SQW4Qzp7tN7oloJPtfORMp5Zd7T1SGVd5Amblurw5GSr2o/R8j
+         rmX7qiny/t18ABGwv+pDEsE22Y+0Pt4+hzYf440IGTs2gezWAiP9Uo12G7u/z4YM+cAT
+         zOLA==
+X-Gm-Message-State: APjAAAUn4OwnyM8pcSEQm+ZY6meM6vxAqqkFrLzvNFS6uvORNVvrSuZ/
+        gTm42AdiAr6Db2ZKS7ZA+p9rpzXeoEmMLxJUENEl8A==
+X-Google-Smtp-Source: APXvYqwEhtHawQMBwvmDc5WZ+GbpmKPP7mgN5ZpRyswR3p1ZNH4wKythp6ijBG51PHDBpY+92/+km74sS2lSGrcqxRE=
+X-Received: by 2002:a05:6830:11:: with SMTP id c17mr24335278otp.360.1582222496058;
+ Thu, 20 Feb 2020 10:14:56 -0800 (PST)
+MIME-Version: 1.0
+References: <cover.1582216294.git.schatzberg.dan@gmail.com> <0a27b6fcbd1f7af104d7f4cf0adc6a31e0e7dd19.1582216294.git.schatzberg.dan@gmail.com>
+In-Reply-To: <0a27b6fcbd1f7af104d7f4cf0adc6a31e0e7dd19.1582216294.git.schatzberg.dan@gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 20 Feb 2020 10:14:45 -0800
+Message-ID: <CALvZod5bDQvYHTMCHoWbhiEbcBs4KATv=QLdjjivJ33kb6ZY+w@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] mm: Charge active memcg when no mm is set
 To:     Dan Schatzberg <schatzberg.dan@gmail.com>
 Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
         Chris Down <chris@chrisdown.name>,
         Yang Shi <yang.shi@linux.alibaba.com>,
         Thomas Gleixner <tglx@linutronix.de>,
@@ -62,68 +63,90 @@ Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
         "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
         "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
         <linux-mm@kvack.org>
-Subject: Re: [PATCH v3 1/3] loop: Use worker per cgroup instead of kworker
-Message-ID: <20200220175002.GJ54486@cmpxchg.org>
-References: <cover.1582216294.git.schatzberg.dan@gmail.com>
- <118a1bd99d12f1980c7fc01ab732b40ffd8f0537.1582216294.git.schatzberg.dan@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <118a1bd99d12f1980c7fc01ab732b40ffd8f0537.1582216294.git.schatzberg.dan@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello Dan,
+On Thu, Feb 20, 2020 at 8:52 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
+>
+> memalloc_use_memcg() worked for kernel allocations but was silently
+> ignored for user pages.
+>
+> This patch establishes a precedence order for who gets charged:
+>
+> 1. If there is a memcg associated with the page already, that memcg is
+>    charged. This happens during swapin.
+>
+> 2. If an explicit mm is passed, mm->memcg is charged. This happens
+>    during page faults, which can be triggered in remote VMs (eg gup).
+>
+> 3. Otherwise consult the current process context. If it has configured
+>    a current->active_memcg, use that.
 
-On Thu, Feb 20, 2020 at 11:51:51AM -0500, Dan Schatzberg wrote:
-> +static void loop_process_work(struct loop_worker *worker,
-> +			struct list_head *cmd_list, struct loop_device *lo)
-> +{
-> +	int orig_flags = current->flags;
-> +	struct loop_cmd *cmd;
-> +
-> +	current->flags |= PF_LESS_THROTTLE | PF_MEMALLOC_NOIO;
-> +	while (1) {
-> +		spin_lock_irq(&lo->lo_lock);
-> +		if (list_empty(cmd_list))
-> +			break;
-> +
-> +		cmd = container_of(
-> +			cmd_list->next, struct loop_cmd, list_entry);
-> +		list_del(cmd_list->next);
-> +		spin_unlock_irq(&lo->lo_lock);
-> +		loop_handle_cmd(cmd);
-> +		cond_resched();
-> +	}
+What if css_tryget_online(current->active_memcg) in
+get_mem_cgroup_from_current() fails? Do we want to change this to
+css_tryget() and even if that fails should we fallback to
+root_mem_cgroup or current->mm->memcg?
 
-The loop structure tripped me up, because it's not immediately obvious
-that the lock will be held coming out. How about the following to make
-the lock section stand out visually?
-
-	spin_lock_irq(&lo->lo_lock);
-	while (!list_empty(cmd_list)) {
-		cmd = container_of(cmd_list->next, struct loop_cmd, list_entry);
-		list_del(&cmd->list_entry);
-		spin_unlock_irq(&lo->lo_lock);		
-
-		loop_handle_cmd(cmd);
-		cond_resched();
-
-		spin_lock_irq(&lo->lo_lock);
-	}
-
-> -	loop_handle_cmd(cmd);
-> +	/*
-> +	 * We only add to the idle list if there are no pending cmds
-> +	 * *and* the worker will not run again which ensures that it
-> +	 * is safe to free any worker on the idle list
-> +	 */
-> +	if (worker && !work_pending(&worker->work)) {
-> +		worker->last_ran_at = jiffies;
-> +		list_add_tail(&worker->idle_list, &lo->idle_worker_list);
-> +		loop_set_timer(lo);
-> +	}
-> +	spin_unlock_irq(&lo->lo_lock);
-> +	current->flags = orig_flags;
+> Otherwise, current->mm->memcg.
+>
+> Previously, if a NULL mm was passed to mem_cgroup_try_charge (case 3) it
+> would always charge the root cgroup. Now it looks up the current
+> active_memcg first (falling back to charging the root cgroup if not
+> set).
+>
+> Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Tejun Heo <tj@kernel.org>
+> ---
+>  mm/memcontrol.c | 11 ++++++++---
+>  mm/shmem.c      |  2 +-
+>  2 files changed, 9 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 6f6dc8712e39..b174aff4f069 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6317,7 +6317,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+>   * @compound: charge the page as compound or small page
+>   *
+>   * Try to charge @page to the memcg that @mm belongs to, reclaiming
+> - * pages according to @gfp_mask if necessary.
+> + * pages according to @gfp_mask if necessary. If @mm is NULL, try to
+> + * charge to the active memcg.
+>   *
+>   * Returns 0 on success, with *@memcgp pointing to the charged memcg.
+>   * Otherwise, an error code is returned.
+> @@ -6361,8 +6362,12 @@ int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
+>                 }
+>         }
+>
+> -       if (!memcg)
+> -               memcg = get_mem_cgroup_from_mm(mm);
+> +       if (!memcg) {
+> +               if (!mm)
+> +                       memcg = get_mem_cgroup_from_current();
+> +               else
+> +                       memcg = get_mem_cgroup_from_mm(mm);
+> +       }
+>
+>         ret = try_charge(memcg, gfp_mask, nr_pages);
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index c8f7540ef048..7c7f5acf89d6 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1766,7 +1766,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>         }
+>
+>         sbinfo = SHMEM_SB(inode->i_sb);
+> -       charge_mm = vma ? vma->vm_mm : current->mm;
+> +       charge_mm = vma ? vma->vm_mm : NULL;
+>
+>         page = find_lock_entry(mapping, index);
+>         if (xa_is_value(page)) {
+> --
+> 2.17.1
+>
