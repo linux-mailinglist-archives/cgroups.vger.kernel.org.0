@@ -2,187 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D7A7166C7C
-	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 02:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F4CC166C7E
+	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 02:53:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729412AbgBUBqP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 20:46:15 -0500
-Received: from mail-pf1-f202.google.com ([209.85.210.202]:55694 "EHLO
-        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729371AbgBUBqO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 20:46:14 -0500
-Received: by mail-pf1-f202.google.com with SMTP id 63so267731pfw.22
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 17:46:13 -0800 (PST)
+        id S1729226AbgBUBxE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 20:53:04 -0500
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:43734 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729045AbgBUBxE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 20:53:04 -0500
+Received: by mail-oi1-f196.google.com with SMTP id p125so69302oif.10
+        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 17:53:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=xLJCE+WP3PASd3UrRxF3qiVrZ1pzKkDvTRCVik5oYEE=;
-        b=FvdQRRIy9EhndFkfG8c7L1JC79xxr49qRgxDTOqjN1ZqKg9ra42OHMjAOC73FQVSrq
-         sGN5pfPB0NrpJ/l5GjnfRx5jkq158sKJzwnTGMPWedgf6jk2/RA+uJ/stgORzXGY+lPJ
-         fVV7UIDz8zpp6XMrJPK7uk7z6bDccei8kt5sI3bSpXKTkL5paFnbxc1ScetBR28ARcoS
-         oxjhh35ll27ODbJzN8jQb+mTnbrfuKwECza5Tob9hBqsyRUzWhC+q7I+SIyGGKKzC2vE
-         XzDbnVY3TyVxuMhEXNfUU/BiRH8ndJ7ZyTiQN4F2E9r+0SW8Q4/0GVO+z+Hj+IHmpcbS
-         a4eQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ed/ULQux6UGHmXOZ5IaN1TKuoav4MaQaUXExci3Yy7w=;
+        b=fipejZ7K5WnG6SXrZ80ASoZ5TGGWl3vqTWYavMHSfZT7FhkAJuDP3Gec4Y8Tkc3kIq
+         k+A+MtU9VEay6hpyl0nPlsALIfsWzjSJvl34jvi5nKYHrF3Likd8E1NzpI54bCq0hD13
+         uZ2cVBG3xy/XXl4Zj6WnwhXA0K0RV3imaPJCS2huh9A2C7yAQVs5+Y0/7u/qzd89Drzu
+         JdE6BgUkerPnKyyMLGbh0RnHJb/kOTgPmRfue4kT4IQ6owDzY4mXgTqtjrrj8ctMhc1L
+         zjuAstA0xMpKN0ZnxRlpECVKfTbLlWKwoMOOfZWYGzEw33Z7AbtQ6oMixuUnYRC6Zxye
+         iQVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=xLJCE+WP3PASd3UrRxF3qiVrZ1pzKkDvTRCVik5oYEE=;
-        b=P31XPYww3kh20GCc8e5klLio5shrWx/vNsznuS0VxRPM41meRsuGS9Aiq1n7eiaz+X
-         KzFVS2jPpBAN6JxpjvtAE2Y4hqsJUgGOeKmK1UlssxBi60g5E4gfvmvQeHBtmmWTPIAL
-         lGhTPnmdHYM0Ekb/6D1c7r6SY4ldZd0I5MDxL4Kl8yU5U+AmVv7aTyJjvsYz6ZY/sqV5
-         5FscYR5QzpaGfEAzcVZpF//Izt75DIrs+0U20xyhPhOoUcuEOsffl8T/Si/fTdh3meM+
-         YBGadI0Y244U7idHnzpXg0cqWNIrRuKAuA73Ls9pdTFLYTSaxK1JoVk3WZH4WqqTnfGj
-         Jc3A==
-X-Gm-Message-State: APjAAAU5FcBgClofKPX2lLXHsutnqCPTxxmQZmTLDbT1s1j5p7TEcif+
-        UavhA+xodbkkhI+39VhWdtT06Y9Q8PLvOA==
-X-Google-Smtp-Source: APXvYqygmEuq7SjYCPLZaN18bxaEWVkJ7PMBfLfV3V5rhO+MNhAWl7lLX5VdqwKanTED/sme0DvL1dt3NaOm7A==
-X-Received: by 2002:a63:fd48:: with SMTP id m8mr9933454pgj.80.1582249572500;
- Thu, 20 Feb 2020 17:46:12 -0800 (PST)
-Date:   Thu, 20 Feb 2020 17:46:04 -0800
-Message-Id: <20200221014604.126118-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
-Subject: [PATCH v3] cgroup: memcg: net: do not associate sock with unrelated cgroup
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Eric Dumazet <edumazet@google.com>, Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ed/ULQux6UGHmXOZ5IaN1TKuoav4MaQaUXExci3Yy7w=;
+        b=FYpKcmKTxjgidnUA0shF8PN9ZPonVZdV15xYVSZSEOdYjdQ9DVozaWGcn0KPRUF/o1
+         IJ56Lk9+c2Us0CQgH3fOnGpO/Hl4U+2EOIA05tH/P4eIfmt6TihqpNDuIptjdDvuiNOM
+         fVNnFFkQ9N4CoX4uxf1G3ilwLCgwsCbvAnTtfdYFPJdySh7eNWJR3jWuBi7JD25vuuSj
+         Gnp7evEKKa01bs5D25wku78jTUhX71HzARtqe8v1IQ9oWh/W0znoPMYIb6iVnSg5BYwy
+         JEODAXqtVZrFUwW4KNN3uYNvQgJnCD9YGvVRmZHEF8MSp+h/CQz9qd1Z0Vo7hpvlHLiC
+         4Nng==
+X-Gm-Message-State: APjAAAVKJv2NvzQJ3+1wcQ6waNiXhxx5tKrh93pYwb8jvRDr54cuKswN
+        6fI0Nf7PijXLOE7A/FoFXjX6l3uFzMt8Jlowi9emPw==
+X-Google-Smtp-Source: APXvYqzPP8CwfNhvNCN6ImhUwktGGsfq3wy3xd04wzn27NwLa10gpu4eB4YRS8qbHOtGI0P5++1xMs1VCaKfkK4w0TQ=
+X-Received: by 2002:a54:4086:: with SMTP id i6mr61878oii.65.1582249983496;
+ Thu, 20 Feb 2020 17:53:03 -0800 (PST)
+MIME-Version: 1.0
+References: <20200211213128.73302-1-almasrymina@google.com>
+ <20200211151906.637d1703e4756066583b89da@linux-foundation.org>
+ <CAHS8izPUFQWq3PzhhRzp7u11173_-cmRkNuQWEswS51Xz6ZM0Q@mail.gmail.com>
+ <20200219130648.83e6810848774c6fd649c445@linux-foundation.org>
+ <CAHS8izN_FJektipBwiLsCO8ysMTM7k=CR_k3OV7+_y0ZbrGw+A@mail.gmail.com>
+ <20200220162813.aea8a14fe050473b73440323@linux-foundation.org> <0cdd654b-a1f6-fea2-e448-209fbbe14b5c@oracle.com>
+In-Reply-To: <0cdd654b-a1f6-fea2-e448-209fbbe14b5c@oracle.com>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 20 Feb 2020 17:52:52 -0800
+Message-ID: <CAHS8izPZPDB=nK9Sm3znXxegSSr8Qf4NU5MiDcBb8EAF53LPLg@mail.gmail.com>
+Subject: Re: [PATCH v12 1/9] hugetlb_cgroup: Add hugetlb_cgroup reservation counter
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        shuah <shuah@kernel.org>, David Rientjes <rientjes@google.com>,
+        Shakeel Butt <shakeelb@google.com>,
         Greg Thelen <gthelen@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>, linux-kselftest@vger.kernel.org,
+        cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We are testing network memory accounting in our setup and noticed
-inconsistent network memory usage and often unrelated cgroups network
-usage correlates with testing workload. On further inspection, it
-seems like mem_cgroup_sk_alloc() and cgroup_sk_alloc() are broken in
-IRQ context specially for cgroup v1.
+On Thu, Feb 20, 2020 at 4:41 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 2/20/20 4:28 PM, Andrew Morton wrote:
+> > It all looks pretty good and I expect we can get everything into
+> > 5.7-rc1, unless some issues pop up.
+> >
 
-mem_cgroup_sk_alloc() and cgroup_sk_alloc() can be called in IRQ context
-and kind of assumes that this can only happen from sk_clone_lock()
-and the source sock object has already associated cgroup. However in
-cgroup v1, where network memory accounting is opt-in, the source sock
-can be unassociated with any cgroup and the new cloned sock can get
-associated with unrelated interrupted cgroup.
+Awesome! I'll be on the lookout for issues.
 
-Cgroup v2 can also suffer if the source sock object was created by
-process in the root cgroup or if sk_alloc() is called in IRQ context.
-The fix is to just do nothing in interrupt.
+Folks that reviewed (and especially Mike), thank you so much for the
+patient reviews!
 
-WARNING: Please note that about half of the TCP sockets are allocated
-from the IRQ context, so, memory used by such sockets will not be
-accouted by the memcg.
-
-The stack trace of mem_cgroup_sk_alloc() from IRQ-context:
-
-CPU: 70 PID: 12720 Comm: ssh Tainted:  5.6.0-smp-DEV #1
-Hardware name: ...
-Call Trace:
- <IRQ>
- dump_stack+0x57/0x75
- mem_cgroup_sk_alloc+0xe9/0xf0
- sk_clone_lock+0x2a7/0x420
- inet_csk_clone_lock+0x1b/0x110
- tcp_create_openreq_child+0x23/0x3b0
- tcp_v6_syn_recv_sock+0x88/0x730
- tcp_check_req+0x429/0x560
- tcp_v6_rcv+0x72d/0xa40
- ip6_protocol_deliver_rcu+0xc9/0x400
- ip6_input+0x44/0xd0
- ? ip6_protocol_deliver_rcu+0x400/0x400
- ip6_rcv_finish+0x71/0x80
- ipv6_rcv+0x5b/0xe0
- ? ip6_sublist_rcv+0x2e0/0x2e0
- process_backlog+0x108/0x1e0
- net_rx_action+0x26b/0x460
- __do_softirq+0x104/0x2a6
- do_softirq_own_stack+0x2a/0x40
- </IRQ>
- do_softirq.part.19+0x40/0x50
- __local_bh_enable_ip+0x51/0x60
- ip6_finish_output2+0x23d/0x520
- ? ip6table_mangle_hook+0x55/0x160
- __ip6_finish_output+0xa1/0x100
- ip6_finish_output+0x30/0xd0
- ip6_output+0x73/0x120
- ? __ip6_finish_output+0x100/0x100
- ip6_xmit+0x2e3/0x600
- ? ipv6_anycast_cleanup+0x50/0x50
- ? inet6_csk_route_socket+0x136/0x1e0
- ? skb_free_head+0x1e/0x30
- inet6_csk_xmit+0x95/0xf0
- __tcp_transmit_skb+0x5b4/0xb20
- __tcp_send_ack.part.60+0xa3/0x110
- tcp_send_ack+0x1d/0x20
- tcp_rcv_state_process+0xe64/0xe80
- ? tcp_v6_connect+0x5d1/0x5f0
- tcp_v6_do_rcv+0x1b1/0x3f0
- ? tcp_v6_do_rcv+0x1b1/0x3f0
- __release_sock+0x7f/0xd0
- release_sock+0x30/0xa0
- __inet_stream_connect+0x1c3/0x3b0
- ? prepare_to_wait+0xb0/0xb0
- inet_stream_connect+0x3b/0x60
- __sys_connect+0x101/0x120
- ? __sys_getsockopt+0x11b/0x140
- __x64_sys_connect+0x1a/0x20
- do_syscall_64+0x51/0x200
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Fixes: 2d7580738345 ("mm: memcontrol: consolidate cgroup socket tracking")
-Fixes: d979a39d7242 ("cgroup: duplicate cgroup reference when cloning sockets")
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
----
-Changes since v2:
-- Added a warning.
-- Fixed a typo.
-- Added the stacktrace.
-
-Changes since v1:
-- Fix cgroup_sk_alloc() too.
-
- kernel/cgroup/cgroup.c | 4 ++++
- mm/memcontrol.c        | 4 ++++
- 2 files changed, 8 insertions(+)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 9a8a5ded3c48..ef7630cb9749 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -6449,6 +6449,10 @@ void cgroup_sk_alloc(struct sock_cgroup_data *skcd)
- 		return;
- 	}
- 
-+	/* Don't associate the sock with unrelated interrupted task's cgroup. */
-+	if (in_interrupt())
-+		return;
-+
- 	rcu_read_lock();
- 
- 	while (true) {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 63bb6a2aab81..f500da82bfe8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6697,6 +6697,10 @@ void mem_cgroup_sk_alloc(struct sock *sk)
- 		return;
- 	}
- 
-+	/* Do not associate the sock with unrelated interrupted task's memcg. */
-+	if (in_interrupt())
-+		return;
-+
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_task(current);
- 	if (memcg == root_mem_cgroup)
--- 
-2.25.0.265.gbab2e86ba0-goog
-
+> > It's unclear to me whether
+> > http://lkml.kernel.org/r/CAHS8izOTipknnYaKz=FdzL-7yW-Z61ck1yPnYWixyMSJuTUYLQ@mail.gmail.com
+> > was going to result in an update?
+>
+> Yes there was,
+>
+> https://lore.kernel.org/linux-mm/20200219233610.13808-1-almasrymina@google.com/
+>
+> BTW, I've been through the selftest code at a high level.  Not at the level
+> of detail Shuah may provide.  I am just happy that Mina provided a relatively
+> comprehensive test for this new functionality.  Will give it an ACK shortly.
+> --
+> Mike Kravetz
