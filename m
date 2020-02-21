@@ -2,113 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 271D4166F62
-	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 07:00:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4124167A3A
+	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 11:11:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgBUGAJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Feb 2020 01:00:09 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:51703 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725973AbgBUGAJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Feb 2020 01:00:09 -0500
-Received: by mail-wm1-f66.google.com with SMTP id t23so404792wmi.1
-        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 22:00:08 -0800 (PST)
+        id S1727966AbgBUKLH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Feb 2020 05:11:07 -0500
+Received: from mail-ed1-f49.google.com ([209.85.208.49]:40034 "EHLO
+        mail-ed1-f49.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727150AbgBUKLH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Feb 2020 05:11:07 -0500
+Received: by mail-ed1-f49.google.com with SMTP id p3so1658059edx.7
+        for <cgroups@vger.kernel.org>; Fri, 21 Feb 2020 02:11:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=H7aXQTqmLNxvdPr5mBNnJfbo38LB1xJHVHK2rWbKEqw=;
-        b=MOqfv/kaObHJEU4A0mnaFSEPVoAQ+XzGpPBw1qUzIDChC2bV5Xis329ghi0OSMUe2T
-         YhVicpLrQndbQZs6riGjFqTmtdy+EMbG4jyCnKVus42lLRijK/C+rJhfwsU1A1+dZ2oq
-         x9Iy53HEEPilEHf0enrdVhBui0Cuk44XNN8OwtHBWBHJG4b2EaSDPRDTxw6C8lUt5zYA
-         mHMjTP2udC0KW3zyt6aJmu5BQahyQw6PpXAAISnMF6MG4/nYxe6+8f552zlV89Bl8i8e
-         Rq9Iqy2Y+S2iwCZPuVrxEqWRujTeaoMDyqLddd6W1ztvZrcj+S68m6+yNug0QMoHvJop
-         m+Pg==
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=FjtfCRHY9v6XHD4pU2h4TnMHXhccWvEUMu4kOVTNwBk=;
+        b=srZ+048+M4kAEgtBwsGjMF9HRYGvM9sgu6yUIerMi+kRbM2JSJErJD3OU2ml9Llh6M
+         Dfw/VdRRxedulSxQ4HKFrYP9FSKWEwE/1GvUEajVvwIZZd57LZ2/gJ4uyqvBGuLCngDr
+         nVgGH1sxWf986TDivYxA4Wqif4iKI6vSwXzyXTYHMrUq9eSTuiSYjhVDPLA5t/1IYbjt
+         kiC3PcikfVggQihKsXKM4B4oCyLFjcEDP+iMqL5gkclba+dlAtk8QGCejHqJtDBFqICd
+         rpPpoR2uUvhC51AHuw6+t6heCI4tmFrzmEQ5d+R1HRo8vqfp18KxhJ24smtMT+iJKxh/
+         ch1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=H7aXQTqmLNxvdPr5mBNnJfbo38LB1xJHVHK2rWbKEqw=;
-        b=lDQkRoXbR1RNm7xbJY6n4hHqDfrVodbYfulQ2/viMDKI2rdYzBGBihNO+/kriGbWRh
-         357wfZP9u5LJlIBjSXDj2GRvgJHo9Enbl0b5aypzsk2isn+R0Ek3mXbgNEvDUSOk6MtK
-         T3Cfn2Ys1boA/5mhD1md00q+27f5sVVH1UnCdDRFCbHly5Qjf/VZFEkBsJBfd92uwnjM
-         vBmCH8rrSWbbe2kmS5NIMZ5+2n7MdxCHtydIiMQkBuPDNfMFeI7WukRM+lis0AUdpnS6
-         72HI7cJKA1rgMvPyfVN0Qj/vvRmZn/yIOtThqFX+wj0Lo4fkxzMrYxfNXyDr9+MyjkdE
-         Rkqg==
-X-Gm-Message-State: APjAAAVhFm3n0hE92gNvr/PiI5wLdpc2OakN5QIl7oX8ejzBVrHtZtMK
-        XzIFziddPMrxYTmN6lQ3dAlDu98lHmeG/VjZWhs=
-X-Google-Smtp-Source: APXvYqwUciNnVQPNEXNeyIwx5TVfT9GtH4vdeEDW/3kEC5yZ72E+38Ud0AgtP2twlUA6naX2Ps2iMF7lw5IFwrkqRMQ=
-X-Received: by 2002:a1c:9602:: with SMTP id y2mr1420482wmd.23.1582264807381;
- Thu, 20 Feb 2020 22:00:07 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=FjtfCRHY9v6XHD4pU2h4TnMHXhccWvEUMu4kOVTNwBk=;
+        b=RwDFd9Xv61t34ijvBVlk5KSm+BvoUTdyyGNKj3mc+Tc2DVhO9KezlIjurNpUMg9laR
+         o3YSRQ/g1C49XIXQEufWUx175Qr0/1iRGKty/gykpm5TW+LC+4I/pRXyvs8PB+fS93vH
+         2+l5Rsk2rjkTv7EhqMtLQNSpHZYTNWNSO4Mz1Z8n1J+a0UMUOdQXzNRdPJ0WxgS+a6ir
+         7tRXaF7vWC5ywEuqquYkW4BMaXY2bkbE8AzdYD3Ymh83ELSJZinH5s0XsxP4OGjHSyvg
+         JEWMZQK8JP0gkF9/Sy2iC9bLd5vUmKXKsUrsct9k+MW8lWxO0UltqwBpG3Q+bq9QgmX8
+         sSpg==
+X-Gm-Message-State: APjAAAVzZa159fxXlzQr9X/qk01xJnBmma5nrQH7YLzxxIyWI8I7PuZ0
+        ecHHk6W+fRw/PNc2odDZrHUQxqYjoXn9jv59PA==
+X-Google-Smtp-Source: APXvYqwm94oOHbxin8rMrsVsfHO5ofjiAOJukl3BZBlsSpsH0o4EeErv6reUaXyEeCoYTAFen/eiOdonAAhGJyxP4pA=
+X-Received: by 2002:a17:906:2799:: with SMTP id j25mr32499918ejc.216.1582279865756;
+ Fri, 21 Feb 2020 02:11:05 -0800 (PST)
 MIME-Version: 1.0
-References: <20200214155650.21203-1-Kenny.Ho@amd.com> <20200214155650.21203-10-Kenny.Ho@amd.com>
- <CAOFGe96N5gG+08rQCRC+diHKDAfxPFYEnVxDS8_udvjcBYgsPg@mail.gmail.com>
- <CAOWid-f62Uv=GZXX2V2BsQGM5A1JJG_qmyrOwd=KwZBx_sr-bg@mail.gmail.com>
- <20200214183401.GY2363188@phenom.ffwll.local> <CAOWid-caJHeXUnQv3MOi=9U+vdBLfewN+CrA-7jRrz0VXqatbQ@mail.gmail.com>
- <20200214191754.GA218629@mtj.thefacebook.com> <20200219161850.GB13406@cmpxchg.org>
- <CAOWid-e=7V4TUqK_h5Gs9dUXqH-Vgr-Go8c1dCkMux98Vdd1sQ@mail.gmail.com> <20200219183841.GA54486@cmpxchg.org>
-In-Reply-To: <20200219183841.GA54486@cmpxchg.org>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Fri, 21 Feb 2020 00:59:55 -0500
-Message-ID: <CAOWid-dLs079jHAVoDeJ2Ung1Tti0Jszhd-0D2RYPOjuWnTprQ@mail.gmail.com>
-Subject: Re: [PATCH 09/11] drm, cgroup: Introduce lgpu as DRM cgroup resource
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Daniel Vetter <daniel@ffwll.ch>,
-        Jason Ekstrand <jason@jlekstrand.net>,
-        Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx mailing list <amd-gfx@lists.freedesktop.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
-        lkaplan@cray.com, nirmoy.das@amd.com, damon.mcdougall@amd.com,
-        juan.zuniga-anaya@amd.com
+Reply-To: jack.rufon@gmail.com
+Received: by 2002:a50:fa04:0:0:0:0:0 with HTTP; Fri, 21 Feb 2020 02:11:05
+ -0800 (PST)
+From:   Dr Jack Rufon <jack.rufon@gmail.com>
+Date:   Fri, 21 Feb 2020 02:11:05 -0800
+X-Google-Sender-Auth: JP315OJ7WPi7ZtUrhZWkSlSPy48
+Message-ID: <CACt2eLsJcgCXtTeWo2sRBLL0TQauASjBFNOOMrzr5uDVeXyFaw@mail.gmail.com>
+Subject: Dear Friend,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks, I will take a look.
+My name is Dr.Jack.Rufon; I got your address in Burkina Faso chamber
+of commerce through details. I need your urgent assistance in
+Transferring the sum of (22.5000,000)Million Dollars fund which
+Belongs to our deceased customer who died in A plane crash, since the
+Death of this our customer the money has been in our bank without
+Claim. I want to release the money to you as the deceased NEXT OF KIN
+For the benefit of both of us. By indicating your interest I will send
+you the full details on how the business will be executed. I need to
+Hear from you urgent so that I will give you more information
+regarding this transaction.
 
-Regards,
-Kenny
+Waiting for your urgent response so that we will starts immediately.
 
-On Wed, Feb 19, 2020 at 1:38 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Feb 19, 2020 at 11:28:48AM -0500, Kenny Ho wrote:
-> > On Wed, Feb 19, 2020 at 11:18 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > >
-> > > Yes, I'd go with absolute units when it comes to memory, because it's
-> > > not a renewable resource like CPU and IO, and so we do have cliff
-> > > behavior around the edge where you transition from ok to not-enough.
-> > >
-> > > memory.low is a bit in flux right now, so if anything is unclear
-> > > around its semantics, please feel free to reach out.
-> >
-> > I am not familiar with the discussion, would you point me to a
-> > relevant thread please?
->
-> Here is a cleanup patch, not yet merged, that documents the exact
-> semantics and behavioral considerations:
->
-> https://lore.kernel.org/linux-mm/20191213192158.188939-3-hannes@cmpxchg.org/
->
-> But the high-level idea is this: you assign each cgroup or cgroup
-> subtree a chunk of the resource that it's guaranteed to be able to
-> consume. It *can* consume beyond that threshold if available, but that
-> overage may get reclaimed again if somebody else needs it instead.
->
-> This allows you to do a ballpark distribution of the resource between
-> different workloads, while the kernel retains the ability to optimize
-> allocation of spare resources - because in practice, workload demand
-> varies over time, workloads disappear and new ones start up etc.
->
-> > In addition, is there some kind of order of preference for
-> > implementing low vs high vs max?
->
-> If you implement only one allocation model, the preference would be on
-> memory.low. Limits are rigid and per definition waste resources, so in
-> practice we're moving away from them.
+Thanks,
+Dr.Jack.Rufon.
