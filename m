@@ -2,95 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DF1166C22
-	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 01:52:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D7A7166C7C
+	for <lists+cgroups@lfdr.de>; Fri, 21 Feb 2020 02:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729473AbgBUAw1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Feb 2020 19:52:27 -0500
-Received: from userp2120.oracle.com ([156.151.31.85]:39284 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729365AbgBUAw1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 19:52:27 -0500
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01L0mFqs130067;
-        Fri, 21 Feb 2020 00:52:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=2MiF4dVUkc3MWcos/LfkCVZBhlj/IhF6lAwfrxFDkGk=;
- b=Qa/xiybLHd9cEcexFOZ9pJSEyObVBONrKnMXTPyepXmHtEcZ0bI8S2QysIO7RX225It1
- GV6xK+t8Os/XZwfWhTLbjC6Y4kkhaGDG/WWkfcGy4Prfan1HaRuVt2b0kdQmLopqCsmM
- jpTBHsFVTPUPxXj2f7xrUhrV2qCPNQi7mqZywiB1bbt4Uoe2Yc+YYxYxWq1+PAg1yz/g
- m1aaox0KZqCxqI32t4HD7dImClbktug79H6ia/EQsHGSGazTd3BNaO7pb/Pwtimq+OFP
- jyR/2voIMwtNuCNLAHav/1Da3gWJce50nOQjUvZf8zCL+9QGDNtHBmUridNFR37s0lCa xw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 2y8ud1ddep-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Feb 2020 00:52:20 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 01L0m0ML055753;
-        Fri, 21 Feb 2020 00:52:19 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 2y8ud7d62h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Feb 2020 00:52:19 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 01L0qILt004986;
-        Fri, 21 Feb 2020 00:52:18 GMT
-Received: from [192.168.1.206] (/71.63.128.209)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 20 Feb 2020 16:52:18 -0800
-Subject: Re: [PATCH v12 8/9] hugetlb_cgroup: Add hugetlb_cgroup reservation
- tests
-To:     Mina Almasry <almasrymina@google.com>
-Cc:     shuah@kernel.org, rientjes@google.com, shakeelb@google.com,
-        gthelen@google.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kselftest@vger.kernel.org, cgroups@vger.kernel.org,
-        sandipan@linux.ibm.com
-References: <20200211213128.73302-1-almasrymina@google.com>
- <20200211213128.73302-8-almasrymina@google.com>
-From:   Mike Kravetz <mike.kravetz@oracle.com>
-Message-ID: <bfb05dfa-4b01-df19-9698-777cae2e78d2@oracle.com>
-Date:   Thu, 20 Feb 2020 16:52:16 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
-MIME-Version: 1.0
-In-Reply-To: <20200211213128.73302-8-almasrymina@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxlogscore=999 mlxscore=0
- adultscore=0 spamscore=0 suspectscore=0 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002210003
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9537 signatures=668685
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- suspectscore=0 bulkscore=0 spamscore=0 priorityscore=1501 phishscore=0
- impostorscore=0 mlxlogscore=999 clxscore=1011 adultscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2001150001
- definitions=main-2002210003
+        id S1729412AbgBUBqP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Feb 2020 20:46:15 -0500
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:55694 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729371AbgBUBqO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Feb 2020 20:46:14 -0500
+Received: by mail-pf1-f202.google.com with SMTP id 63so267731pfw.22
+        for <cgroups@vger.kernel.org>; Thu, 20 Feb 2020 17:46:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=xLJCE+WP3PASd3UrRxF3qiVrZ1pzKkDvTRCVik5oYEE=;
+        b=FvdQRRIy9EhndFkfG8c7L1JC79xxr49qRgxDTOqjN1ZqKg9ra42OHMjAOC73FQVSrq
+         sGN5pfPB0NrpJ/l5GjnfRx5jkq158sKJzwnTGMPWedgf6jk2/RA+uJ/stgORzXGY+lPJ
+         fVV7UIDz8zpp6XMrJPK7uk7z6bDccei8kt5sI3bSpXKTkL5paFnbxc1ScetBR28ARcoS
+         oxjhh35ll27ODbJzN8jQb+mTnbrfuKwECza5Tob9hBqsyRUzWhC+q7I+SIyGGKKzC2vE
+         XzDbnVY3TyVxuMhEXNfUU/BiRH8ndJ7ZyTiQN4F2E9r+0SW8Q4/0GVO+z+Hj+IHmpcbS
+         a4eQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=xLJCE+WP3PASd3UrRxF3qiVrZ1pzKkDvTRCVik5oYEE=;
+        b=P31XPYww3kh20GCc8e5klLio5shrWx/vNsznuS0VxRPM41meRsuGS9Aiq1n7eiaz+X
+         KzFVS2jPpBAN6JxpjvtAE2Y4hqsJUgGOeKmK1UlssxBi60g5E4gfvmvQeHBtmmWTPIAL
+         lGhTPnmdHYM0Ekb/6D1c7r6SY4ldZd0I5MDxL4Kl8yU5U+AmVv7aTyJjvsYz6ZY/sqV5
+         5FscYR5QzpaGfEAzcVZpF//Izt75DIrs+0U20xyhPhOoUcuEOsffl8T/Si/fTdh3meM+
+         YBGadI0Y244U7idHnzpXg0cqWNIrRuKAuA73Ls9pdTFLYTSaxK1JoVk3WZH4WqqTnfGj
+         Jc3A==
+X-Gm-Message-State: APjAAAU5FcBgClofKPX2lLXHsutnqCPTxxmQZmTLDbT1s1j5p7TEcif+
+        UavhA+xodbkkhI+39VhWdtT06Y9Q8PLvOA==
+X-Google-Smtp-Source: APXvYqygmEuq7SjYCPLZaN18bxaEWVkJ7PMBfLfV3V5rhO+MNhAWl7lLX5VdqwKanTED/sme0DvL1dt3NaOm7A==
+X-Received: by 2002:a63:fd48:: with SMTP id m8mr9933454pgj.80.1582249572500;
+ Thu, 20 Feb 2020 17:46:12 -0800 (PST)
+Date:   Thu, 20 Feb 2020 17:46:04 -0800
+Message-Id: <20200221014604.126118-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+Subject: [PATCH v3] cgroup: memcg: net: do not associate sock with unrelated cgroup
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Eric Dumazet <edumazet@google.com>, Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2/11/20 1:31 PM, Mina Almasry wrote:
-> The tests use both shared and private mapped hugetlb memory, and
-> monitors the hugetlb usage counter as well as the hugetlb reservation
-> counter. They test different configurations such as hugetlb memory usage
-> via hugetlbfs, or MAP_HUGETLB, or shmget/shmat, and with and without
-> MAP_POPULATE.
-> 
-> Also add test for hugetlb reservation reparenting, since this is
-> a subtle issue.
-> 
-> Signed-off-by: Mina Almasry <almasrymina@google.com>
-> Cc: sandipan@linux.ibm.com
+We are testing network memory accounting in our setup and noticed
+inconsistent network memory usage and often unrelated cgroups network
+usage correlates with testing workload. On further inspection, it
+seems like mem_cgroup_sk_alloc() and cgroup_sk_alloc() are broken in
+IRQ context specially for cgroup v1.
 
-Thanks for adding the tests.  At a high level, I do not see any issues.
+mem_cgroup_sk_alloc() and cgroup_sk_alloc() can be called in IRQ context
+and kind of assumes that this can only happen from sk_clone_lock()
+and the source sock object has already associated cgroup. However in
+cgroup v1, where network memory accounting is opt-in, the source sock
+can be unassociated with any cgroup and the new cloned sock can get
+associated with unrelated interrupted cgroup.
 
-Acked-by: Mike Kravetz <mike.kravetz@oracle.com>
+Cgroup v2 can also suffer if the source sock object was created by
+process in the root cgroup or if sk_alloc() is called in IRQ context.
+The fix is to just do nothing in interrupt.
+
+WARNING: Please note that about half of the TCP sockets are allocated
+from the IRQ context, so, memory used by such sockets will not be
+accouted by the memcg.
+
+The stack trace of mem_cgroup_sk_alloc() from IRQ-context:
+
+CPU: 70 PID: 12720 Comm: ssh Tainted:  5.6.0-smp-DEV #1
+Hardware name: ...
+Call Trace:
+ <IRQ>
+ dump_stack+0x57/0x75
+ mem_cgroup_sk_alloc+0xe9/0xf0
+ sk_clone_lock+0x2a7/0x420
+ inet_csk_clone_lock+0x1b/0x110
+ tcp_create_openreq_child+0x23/0x3b0
+ tcp_v6_syn_recv_sock+0x88/0x730
+ tcp_check_req+0x429/0x560
+ tcp_v6_rcv+0x72d/0xa40
+ ip6_protocol_deliver_rcu+0xc9/0x400
+ ip6_input+0x44/0xd0
+ ? ip6_protocol_deliver_rcu+0x400/0x400
+ ip6_rcv_finish+0x71/0x80
+ ipv6_rcv+0x5b/0xe0
+ ? ip6_sublist_rcv+0x2e0/0x2e0
+ process_backlog+0x108/0x1e0
+ net_rx_action+0x26b/0x460
+ __do_softirq+0x104/0x2a6
+ do_softirq_own_stack+0x2a/0x40
+ </IRQ>
+ do_softirq.part.19+0x40/0x50
+ __local_bh_enable_ip+0x51/0x60
+ ip6_finish_output2+0x23d/0x520
+ ? ip6table_mangle_hook+0x55/0x160
+ __ip6_finish_output+0xa1/0x100
+ ip6_finish_output+0x30/0xd0
+ ip6_output+0x73/0x120
+ ? __ip6_finish_output+0x100/0x100
+ ip6_xmit+0x2e3/0x600
+ ? ipv6_anycast_cleanup+0x50/0x50
+ ? inet6_csk_route_socket+0x136/0x1e0
+ ? skb_free_head+0x1e/0x30
+ inet6_csk_xmit+0x95/0xf0
+ __tcp_transmit_skb+0x5b4/0xb20
+ __tcp_send_ack.part.60+0xa3/0x110
+ tcp_send_ack+0x1d/0x20
+ tcp_rcv_state_process+0xe64/0xe80
+ ? tcp_v6_connect+0x5d1/0x5f0
+ tcp_v6_do_rcv+0x1b1/0x3f0
+ ? tcp_v6_do_rcv+0x1b1/0x3f0
+ __release_sock+0x7f/0xd0
+ release_sock+0x30/0xa0
+ __inet_stream_connect+0x1c3/0x3b0
+ ? prepare_to_wait+0xb0/0xb0
+ inet_stream_connect+0x3b/0x60
+ __sys_connect+0x101/0x120
+ ? __sys_getsockopt+0x11b/0x140
+ __x64_sys_connect+0x1a/0x20
+ do_syscall_64+0x51/0x200
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+Fixes: 2d7580738345 ("mm: memcontrol: consolidate cgroup socket tracking")
+Fixes: d979a39d7242 ("cgroup: duplicate cgroup reference when cloning sockets")
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+---
+Changes since v2:
+- Added a warning.
+- Fixed a typo.
+- Added the stacktrace.
+
+Changes since v1:
+- Fix cgroup_sk_alloc() too.
+
+ kernel/cgroup/cgroup.c | 4 ++++
+ mm/memcontrol.c        | 4 ++++
+ 2 files changed, 8 insertions(+)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9a8a5ded3c48..ef7630cb9749 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6449,6 +6449,10 @@ void cgroup_sk_alloc(struct sock_cgroup_data *skcd)
+ 		return;
+ 	}
+ 
++	/* Don't associate the sock with unrelated interrupted task's cgroup. */
++	if (in_interrupt())
++		return;
++
+ 	rcu_read_lock();
+ 
+ 	while (true) {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 63bb6a2aab81..f500da82bfe8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6697,6 +6697,10 @@ void mem_cgroup_sk_alloc(struct sock *sk)
+ 		return;
+ 	}
+ 
++	/* Do not associate the sock with unrelated interrupted task's memcg. */
++	if (in_interrupt())
++		return;
++
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_task(current);
+ 	if (memcg == root_mem_cgroup)
 -- 
-Mike Kravetz
+2.25.0.265.gbab2e86ba0-goog
+
