@@ -2,117 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D2C2169F40
-	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2020 08:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52DFF16AB6A
+	for <lists+cgroups@lfdr.de>; Mon, 24 Feb 2020 17:29:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727168AbgBXH3S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Feb 2020 02:29:18 -0500
-Received: from mail-yw1-f68.google.com ([209.85.161.68]:39654 "EHLO
-        mail-yw1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725792AbgBXH3R (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Feb 2020 02:29:17 -0500
-Received: by mail-yw1-f68.google.com with SMTP id h126so4808222ywc.6
-        for <cgroups@vger.kernel.org>; Sun, 23 Feb 2020 23:29:17 -0800 (PST)
+        id S1727619AbgBXQ3J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Feb 2020 11:29:09 -0500
+Received: from mail-qv1-f65.google.com ([209.85.219.65]:39942 "EHLO
+        mail-qv1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727177AbgBXQ3J (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Feb 2020 11:29:09 -0500
+Received: by mail-qv1-f65.google.com with SMTP id q9so4378401qvu.7
+        for <cgroups@vger.kernel.org>; Mon, 24 Feb 2020 08:29:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pu7YZUk9S4E/pNGkKq9v6WlWWKovjGT+ogGtMRUpTlY=;
-        b=cT1aVW9aEmNffyJsbSnpD1pePBSTJmnbrzeS1G1xYMa+f/EI6Ix7TCrDA2k7COPesT
-         nCNnqeSTzMOzj9Dop4WbLhHHv4N6u/cpIlGFjewYNHHviMvEopaL5JfcJWNiNYOy828a
-         5q0KS5TdQWwz9hJAk7r952F3mLit5GROR1edHOg1LGu+yE8oWQ3LB3TLurElJ+N/IUhS
-         yJOqnGyl9XxLMZrwR8wmW/j6Hkht8FySi7RJe6fJtKM5dYhMdn9bTuo8r9THb3skjq7K
-         /3mYHGC5MFfzeDS085t/m1H8wI9bVvbmxd3lRfq7AH9PkcpWJXQWmBQKz0NmH5Zm2SVy
-         CC+g==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ayL/a+KEUEgG8kUr32wkz/zkDzUV2JeP3xXHo8B3UmY=;
+        b=H70cCu9pyk/xG3LyHYdYjgRM9JXlOdn+iavwajhfdD56D1QKqyTUIY2WkWWtme6T0R
+         X0EtycCQX0mfKuXRA6ip6+B1shl+Y6MAmt8aVaNkw+P3d2QwiRZOY4VAilSFo2tH6GIQ
+         8uEVQQOlAQDRDWY2xyGEK8Q0x9rigYd6AkhIDBvgupLxMxT8V29iDdKekTkoNVIIZNPd
+         7015RAXtidGAd5WyQQRSIZmwrkqDA9hCTOs1MQAWoZxLPA70GcMdUahyXRINEk0eQgq/
+         9IVdQi0vJuUcoWegqbsfRr+0WWwFJ+hfJsYJI+qic+gun0s6YEN3aVVEXUYixc8DAe2r
+         K4cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pu7YZUk9S4E/pNGkKq9v6WlWWKovjGT+ogGtMRUpTlY=;
-        b=mZ0ownhvWfzL6dMhzYRP212YBPWNAW8s61lBAPuv9ugy6+DxDetqAQOxxAMR6gDKYD
-         SawAUKaz5CyWgJQXiUmJwMaU1Dn9PoD04y8q7+2uut8QUGfg4DrgjDtxPK9i3G+xWG0Y
-         bnWKN+WbDnYhpdwoSa/SJJ85CigxhICIQvETVAFmnWYmdFHcgq7ZVwOXvKRBgZNocr9r
-         9T2oTkub1v/UKm5VDiu/SF+wCUVaiVT8s8pOLllSPXL4cr11aDnI3C7GDEFamnAal+yX
-         FxeUtpPV1Rzjyjou+ijnIr0woZ0NnlzbOU1VI7t467mvNE4QB3tyhe0IOlBrYPyMDKH3
-         B00g==
-X-Gm-Message-State: APjAAAWj7KzmX9EOuymn0SVSdNgOjbzPBuvvl2K3qUzuJsj6Qdv3zNSX
-        i8NFnn0vbQdC1nnkQ7schTluJQ5yYDBkR4HDBFIcaA==
-X-Google-Smtp-Source: APXvYqxZIwuqqBEDmmlfQUkUBgpzYL2C3CpS2lE4a1qMVtMJH7Paj2i9si0t8xcdBW8R0TX6IMVC8K2dWXRjAM3RHXU=
-X-Received: by 2002:a81:3a06:: with SMTP id h6mr39722556ywa.170.1582529356484;
- Sun, 23 Feb 2020 23:29:16 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ayL/a+KEUEgG8kUr32wkz/zkDzUV2JeP3xXHo8B3UmY=;
+        b=rSosvQbTzxNaxg9rLGWufhCNUPb+4RIpq6AZ6JN8mwyBx6rsCLHOyy4eDPNx21D5SX
+         n02iYZEqW1YY3ZupCT6T3xgTJ9e8P8RBNEmIwiXUuJ91kCz6oOv/rMNQiV0nwwhZtEn9
+         CNiZ7Y0b4Ro5w92HuGU/MQA7MJDX/MVMH1WR4NEsvdrFZi/Ly64qQKgDpiLkEmUTvoUt
+         YMzXC/SjusA6qpQAse8IbGcKL0CgugCAn5VFNpsLCwoEM7WBro8k+l8KFcwyL+IuVspN
+         KlNpne68Rp22Y0XM1FPSiZHK3IeWujwpPh26k4Q1vDYaKBX9YsQ7svzLmFyWyZkMzDBY
+         jbbw==
+X-Gm-Message-State: APjAAAWuK+dljIvUUcLMV44gQXrfxBmEsjloeb10wksrj8oxmw2kbsoP
+        GY+q/ZrQZwwZq2sh1lL6sF8BZW1WL4M=
+X-Google-Smtp-Source: APXvYqx0pL8vfqPmQyNgg4FDblN91V9G8PXmIWaM6qg3/8YLstc1EGv3MDjK1Z35pn05cPP4mT77ew==
+X-Received: by 2002:a0c:ed32:: with SMTP id u18mr45645692qvq.2.1582561748197;
+        Mon, 24 Feb 2020 08:29:08 -0800 (PST)
+Received: from localhost ([2620:10d:c091:500::1:e64b])
+        by smtp.gmail.com with ESMTPSA id y91sm6291011qtd.13.2020.02.24.08.29.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Feb 2020 08:29:07 -0800 (PST)
+Date:   Mon, 24 Feb 2020 11:29:06 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: fix psi_show() crash on 32bit ino archs
+Message-ID: <20200224162906.GB1674@cmpxchg.org>
+References: <20200224030007.3990-1-cai@lca.pw>
 MIME-Version: 1.0
-References: <20200222010456.40635-1-shakeelb@google.com>
-In-Reply-To: <20200222010456.40635-1-shakeelb@google.com>
-From:   Eric Dumazet <edumazet@google.com>
-Date:   Sun, 23 Feb 2020 23:29:04 -0800
-Message-ID: <CANn89iJ2CWSeLp-+mfBLWKNdS2vw=r1iLFtWhyzav_SYcjFrAg@mail.gmail.com>
-Subject: Re: [PATCH] net: memcg: late association of sock to memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        netdev <netdev@vger.kernel.org>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        linux-mm <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200224030007.3990-1-cai@lca.pw>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 21, 2020 at 5:05 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> If a TCP socket is allocated in IRQ context or cloned from unassociated
-> (i.e. not associated to a memcg) in IRQ context then it will remain
-> unassociated for its whole life. Almost half of the TCPs created on the
-> system are created in IRQ context, so, memory used by suck sockets will
-> not be accounted by the memcg.
->
-> This issue is more widespread in cgroup v1 where network memory
-> accounting is opt-in but it can happen in cgroup v2 if the source socket
-> for the cloning was created in root memcg.
->
-> To fix the issue, just do the late association of the unassociated
-> sockets at accept() time in the process context and then force charge
-> the memory buffer already reserved by the socket.
->
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> ---
->  net/ipv4/inet_connection_sock.c | 7 +++++++
->  1 file changed, 7 insertions(+)
->
-> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> index a4db79b1b643..df9c8ef024a2 100644
-> --- a/net/ipv4/inet_connection_sock.c
-> +++ b/net/ipv4/inet_connection_sock.c
-> @@ -482,6 +482,13 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
->                 }
->                 spin_unlock_bh(&queue->fastopenq.lock);
->         }
-> +
-> +       if (mem_cgroup_sockets_enabled && !newsk->sk_memcg) {
-> +               mem_cgroup_sk_alloc(newsk);
-> +               if (newsk->sk_memcg)
-> +                       mem_cgroup_charge_skmem(newsk->sk_memcg,
-> +                                       sk_mem_pages(newsk->sk_forward_alloc));
+On Sun, Feb 23, 2020 at 10:00:07PM -0500, Qian Cai wrote:
+> Similar to the commit d7495343228f ("cgroup: fix incorrect
+> WARN_ON_ONCE() in cgroup_setup_root()"), cgroup_id(root_cgrp) does not
+> equal to 1 on 32bit ino archs which triggers all sorts of issues with
+> psi_show() on s390x. For example,
+> 
+>  BUG: KASAN: slab-out-of-bounds in collect_percpu_times+0x2d0/
+>  Read of size 4 at addr 000000001e0ce000 by task read_all/3667
+>  collect_percpu_times+0x2d0/0x798
+>  psi_show+0x7c/0x2a8
+>  seq_read+0x2ac/0x830
+>  vfs_read+0x92/0x150
+>  ksys_read+0xe2/0x188
+>  system_call+0xd8/0x2b4
+> 
+> Fix it by using cgroup_ino().
+> 
+> Fixes: 743210386c03 ("cgroup: use cgrp->kn->id as the cgroup ID")
+> Signed-off-by: Qian Cai <cai@lca.pw>
 
-I am not sure what you  are trying to do here.
-
-sk->sk_forward_alloc is not the total amount of memory used by a TCP socket.
-It is only some part that has been reserved, but not yet consumed.
-
-For example, every skb that has been stored in TCP receive queue or
-out-of-order queue might have
-used memory.
-
-I guess that if we assume that  a not yet accepted socket can not have
-any outstanding data in its transmit queue,
-you need to use sk->sk_rmem_alloc as well.
-
-To test this patch, make sure to add a delay before accept(), so that
-2MB worth of data can be queued before accept() happens.
-
-Thanks.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
