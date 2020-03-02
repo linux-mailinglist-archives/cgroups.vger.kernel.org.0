@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BB149175908
-	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2020 12:02:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C6D517591A
+	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2020 12:02:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727521AbgCBLBE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Mar 2020 06:01:04 -0500
-Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:54179 "EHLO
+        id S1727334AbgCBLCd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Mar 2020 06:02:33 -0500
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:57766 "EHLO
         out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgCBLBD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Mar 2020 06:01:03 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R421e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0TrR9JV8_1583146855;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TrR9JV8_1583146855)
+        by vger.kernel.org with ESMTP id S1726448AbgCBLBC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Mar 2020 06:01:02 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04396;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0TrQxdI3_1583146856;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TrQxdI3_1583146856)
           by smtp.aliyun-inc.com(127.0.0.1);
           Mon, 02 Mar 2020 19:00:56 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
@@ -22,12 +22,12 @@ To:     cgroups@vger.kernel.org, akpm@linux-foundation.org,
         yang.shi@linux.alibaba.com, willy@infradead.org,
         hannes@cmpxchg.org, lkp@intel.com
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 06/20] mm/thp: narrow lru locking
-Date:   Mon,  2 Mar 2020 19:00:16 +0800
-Message-Id: <1583146830-169516-7-git-send-email-alex.shi@linux.alibaba.com>
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: [PATCH v9 07/20] mm/lru: introduce TestClearPageLRU
+Date:   Mon,  2 Mar 2020 19:00:17 +0800
+Message-Id: <1583146830-169516-8-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -36,109 +36,157 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Lru locking just guard the lru list and subpage's Mlocked. Including
-other things can't give help just delay the locking release. So narrow
-the locking for early lock release and better code meaning.
+Combined PageLRU check and ClearPageLRU into one function by new
+introduced func TestClearPageLRU. This function will be used as page
+isolation precondition.
 
+No functional change yet.
+
+Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
-Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
 ---
- mm/huge_memory.c | 17 +++++++----------
- 1 file changed, 7 insertions(+), 10 deletions(-)
+ include/linux/page-flags.h |  1 +
+ mm/memcontrol.c            |  4 ++--
+ mm/mlock.c                 |  3 +--
+ mm/swap.c                  |  8 ++------
+ mm/vmscan.c                | 19 +++++++++----------
+ 5 files changed, 15 insertions(+), 20 deletions(-)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 599367d25fca..3835f87d03fd 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -2542,13 +2542,14 @@ static void __split_huge_page_tail(struct page *head, int tail,
+diff --git a/include/linux/page-flags.h b/include/linux/page-flags.h
+index 1bf83c8fcaa7..5cb155f3191e 100644
+--- a/include/linux/page-flags.h
++++ b/include/linux/page-flags.h
+@@ -318,6 +318,7 @@ static inline void page_init_poison(struct page *page, size_t size)
+ PAGEFLAG(Dirty, dirty, PF_HEAD) TESTSCFLAG(Dirty, dirty, PF_HEAD)
+ 	__CLEARPAGEFLAG(Dirty, dirty, PF_HEAD)
+ PAGEFLAG(LRU, lru, PF_HEAD) __CLEARPAGEFLAG(LRU, lru, PF_HEAD)
++	TESTCLEARFLAG(LRU, lru, PF_HEAD)
+ PAGEFLAG(Active, active, PF_HEAD) __CLEARPAGEFLAG(Active, active, PF_HEAD)
+ 	TESTCLEARFLAG(Active, active, PF_HEAD)
+ PAGEFLAG(Workingset, workingset, PF_HEAD)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 875e2aebcde7..f8419f3436a8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2588,9 +2588,8 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg,
+ 		pgdat = page_pgdat(page);
+ 		spin_lock_irq(&pgdat->lru_lock);
+ 
+-		if (PageLRU(page)) {
++		if (TestClearPageLRU(page)) {
+ 			lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-			ClearPageLRU(page);
+ 			del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		} else
+ 			spin_unlock_irq(&pgdat->lru_lock);
+@@ -2613,6 +2612,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg,
+ 
+ 	if (lrucare && lruvec) {
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
++
+ 		VM_BUG_ON_PAGE(PageLRU(page), page);
+ 		SetPageLRU(page);
+ 		add_page_to_lru_list(page, lruvec, page_lru(page));
+diff --git a/mm/mlock.c b/mm/mlock.c
+index a72c1eeded77..03b3a5d99ad7 100644
+--- a/mm/mlock.c
++++ b/mm/mlock.c
+@@ -108,13 +108,12 @@ void mlock_vma_page(struct page *page)
+  */
+ static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
+ {
+-	if (PageLRU(page)) {
++	if (TestClearPageLRU(page)) {
+ 		struct lruvec *lruvec;
+ 
+ 		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+ 		if (getpage)
+ 			get_page(page);
+-		ClearPageLRU(page);
+ 		del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		return true;
+ 	}
+diff --git a/mm/swap.c b/mm/swap.c
+index 1ac24fc35d6b..8e71bdd04a1a 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -59,15 +59,13 @@
+  */
+ static void __page_cache_release(struct page *page)
+ {
+-	if (PageLRU(page)) {
++	if (TestClearPageLRU(page)) {
+ 		pg_data_t *pgdat = page_pgdat(page);
+ 		struct lruvec *lruvec;
+ 		unsigned long flags;
+ 
+ 		spin_lock_irqsave(&pgdat->lru_lock, flags);
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-		VM_BUG_ON_PAGE(!PageLRU(page), page);
+-		__ClearPageLRU(page);
+ 		del_page_from_lru_list(page, lruvec, page_off_lru(page));
+ 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+ 	}
+@@ -831,7 +829,7 @@ void release_pages(struct page **pages, int nr)
+ 			continue;
+ 		}
+ 
+-		if (PageLRU(page)) {
++		if (TestClearPageLRU(page)) {
+ 			struct pglist_data *pgdat = page_pgdat(page);
+ 
+ 			if (pgdat != locked_pgdat) {
+@@ -844,8 +842,6 @@ void release_pages(struct page **pages, int nr)
+ 			}
+ 
+ 			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
+-			VM_BUG_ON_PAGE(!PageLRU(page), page);
+-			__ClearPageLRU(page);
+ 			del_page_from_lru_list(page, lruvec, page_off_lru(page));
+ 		}
+ 
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index dcdd33f65f43..8958454d50fe 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -1751,21 +1751,20 @@ int isolate_lru_page(struct page *page)
+ 	VM_BUG_ON_PAGE(!page_count(page), page);
+ 	WARN_RATELIMIT(PageTail(page), "trying to isolate tail page");
+ 
+-	if (PageLRU(page)) {
++	get_page(page);
++	if (TestClearPageLRU(page)) {
+ 		pg_data_t *pgdat = page_pgdat(page);
+ 		struct lruvec *lruvec;
++		int lru = page_lru(page);
+ 
+-		spin_lock_irq(&pgdat->lru_lock);
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-		if (PageLRU(page)) {
+-			int lru = page_lru(page);
+-			get_page(page);
+-			ClearPageLRU(page);
+-			del_page_from_lru_list(page, lruvec, lru);
+-			ret = 0;
+-		}
++		spin_lock_irq(&pgdat->lru_lock);
++		del_page_from_lru_list(page, lruvec, lru);
+ 		spin_unlock_irq(&pgdat->lru_lock);
+-	}
++		ret = 0;
++	} else
++		put_page(page);
++
+ 	return ret;
  }
  
- static void __split_huge_page(struct page *page, struct list_head *list,
--		pgoff_t end, unsigned long flags)
-+				pgoff_t end)
- {
- 	struct page *head = compound_head(page);
- 	pg_data_t *pgdat = page_pgdat(head);
- 	struct lruvec *lruvec;
- 	struct address_space *swap_cache = NULL;
- 	unsigned long offset = 0;
-+	unsigned long flags;
- 	int i;
- 
- 	lruvec = mem_cgroup_page_lruvec(head, pgdat);
-@@ -2564,6 +2565,9 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_lock(&swap_cache->i_pages);
- 	}
- 
-+	/* Lru list would be changed, don't care head's LRU bit. */
-+	spin_lock_irqsave(&pgdat->lru_lock, flags);
-+
- 	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
- 		__split_huge_page_tail(head, i, lruvec, list);
- 		/* Some pages can be beyond i_size: drop them from page cache */
-@@ -2581,6 +2585,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 					head + i, 0);
- 		}
- 	}
-+	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
- 
- 	ClearPageCompound(head);
- 
-@@ -2601,8 +2606,6 @@ static void __split_huge_page(struct page *page, struct list_head *list,
- 		xa_unlock(&head->mapping->i_pages);
- 	}
- 
--	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
--
- 	remap_page(head);
- 
- 	for (i = 0; i < HPAGE_PMD_NR; i++) {
-@@ -2740,13 +2743,11 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
- int split_huge_page_to_list(struct page *page, struct list_head *list)
- {
- 	struct page *head = compound_head(page);
--	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
- 	struct deferred_split *ds_queue = get_deferred_split_queue(head);
- 	struct anon_vma *anon_vma = NULL;
- 	struct address_space *mapping = NULL;
- 	int count, mapcount, extra_pins, ret;
- 	bool mlocked;
--	unsigned long flags;
- 	pgoff_t end;
- 
- 	VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
-@@ -2812,9 +2813,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 	if (mlocked)
- 		lru_add_drain();
- 
--	/* prevent PageLRU to go away from under us, and freeze lru stats */
--	spin_lock_irqsave(&pgdata->lru_lock, flags);
--
- 	if (mapping) {
- 		XA_STATE(xas, &mapping->i_pages, page_index(head));
- 
-@@ -2844,7 +2842,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 				__dec_node_page_state(head, NR_FILE_THPS);
- 		}
- 
--		__split_huge_page(page, list, end, flags);
-+		__split_huge_page(page, list, end);
- 		if (PageSwapCache(head)) {
- 			swp_entry_t entry = { .val = page_private(head) };
- 
-@@ -2863,7 +2861,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
- 		spin_unlock(&ds_queue->split_queue_lock);
- fail:		if (mapping)
- 			xa_unlock(&mapping->i_pages);
--		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
- 		remap_page(head);
- 		ret = -EBUSY;
- 	}
 -- 
 1.8.3.1
 
