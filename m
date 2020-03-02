@@ -2,97 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 632B7174E55
-	for <lists+cgroups@lfdr.de>; Sun,  1 Mar 2020 17:20:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F971758D6
+	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2020 12:00:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726811AbgCAQUK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 1 Mar 2020 11:20:10 -0500
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:38719 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726490AbgCAQUK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 1 Mar 2020 11:20:10 -0500
-Received: by mail-pg1-f196.google.com with SMTP id d6so4148846pgn.5
-        for <cgroups@vger.kernel.org>; Sun, 01 Mar 2020 08:20:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ol996i7Ly7uLXMGPOcxJk9a2/P7UfTmFHb83woUuOo4=;
-        b=BmBgW1BXpb61N9UVhWc3UCobtjZmRY8cfjAit8K3GJNut56umMykryyzI9AzxVCNPu
-         zOEVDsY3sT4UDzTHMxTNl9cA7M9jDoCm9XTPeWxZcTzpfVvX/4GlQyjehDQw0YtTjoWL
-         EB9DXjWAslee7XYEPpiMDSk/CpSA8B7PG1YgEGGc+U8RJWtG64RB7rrOGqzA7b4rQS5s
-         omthZP5UEN5t/YqPCx4Z7BD6vT2yjRFsX2lYXKeIaPmSzb2BFnmgmLEeGuprZ4xHPtlk
-         MsDaZbTpDj609q6Y8zXZ0uP9KGKGRdg1t2ky59PPhmZPGZJqesifD/zmyl5NnA3qyDyZ
-         FcaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ol996i7Ly7uLXMGPOcxJk9a2/P7UfTmFHb83woUuOo4=;
-        b=AqO91zeRtVYp89WJGftoYtoH3LmStmPz0ndEQkLVt13Iu2FCLIeP34M99EbKQhxvfT
-         MCV0QvwT2rioGC/qIrZ9WdXIqlawcn7vouTRpD9r8iOs25HTPMPw2M+9QnIrRCtZq4HD
-         qQywu2E0Ln02zbXHVKfhK55zRBAjBoBJmxwL8YpVMpXzkgH+M/xdKjMeCJZY0Mq+nfpo
-         KiL0Y/SHkvpi2EV4OZIdj53suoWROD1ZfX7Ym1svnm4LLGolVchmwwDa4/PGGe/5VWxc
-         5LRAdc9Q2KRX6r2Sznva4wp+MiPuFBM+5HxC2mYHd5D2suz+7vJl4QaZgpV9gj0kjjKK
-         6DUw==
-X-Gm-Message-State: APjAAAUbl0qfc0wYGa1xAF9/XegCBd8E09OFHTldhetmHmgMm5pMUkkX
-        PoeVq4Pyd05u6Y6RgK5GHZYI5I1G2ZkAdw==
-X-Google-Smtp-Source: APXvYqybwsty6KbQzUZw6ydXZynsFTmZ7U2b15x7Sf8aB1XCoBDm81Hv5r+UKknAcAJrYKKAt382gA==
-X-Received: by 2002:a65:6147:: with SMTP id o7mr15882420pgv.442.1583079609158;
-        Sun, 01 Mar 2020 08:20:09 -0800 (PST)
-Received: from google.com ([2620:15c:211:202:ae26:61fb:e2f3:92e7])
-        by smtp.gmail.com with ESMTPSA id e2sm9004532pjs.25.2020.03.01.08.20.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 01 Mar 2020 08:20:08 -0800 (PST)
-Date:   Sun, 1 Mar 2020 08:20:03 -0800
-From:   Marco Ballesio <balejs@google.com>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     tj@kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        hannes@cmpxchg.org, corbet@lwn.net, rjw@rjwysocki.net,
-        pavel@ucw.cz, len.brown@intel.com, linux-doc@vger.kernel.org,
-        linux-pm@vger.kernel.org, minchan@google.com, surenb@google.com,
-        dancol@google.com
-Subject: Re: [PATCH] cgroup-v1: freezer: optionally killable freezer
-Message-ID: <20200301162003.GA186618@google.com>
-References: <20200219183231.50985-1-balejs@google.com>
- <20200229005131.GB9813@google.com>
- <20200229184300.GA484762@carbon.DHCP.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200229184300.GA484762@carbon.DHCP.thefacebook.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+        id S1726793AbgCBLA4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Mar 2020 06:00:56 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:33361 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725802AbgCBLA4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Mar 2020 06:00:56 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R441e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=12;SR=0;TI=SMTPD_---0TrQmbeZ_1583146852;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TrQmbeZ_1583146852)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 02 Mar 2020 19:00:53 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     cgroups@vger.kernel.org, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>
+Subject: [PATCH v9 00/21] per lruvec lru_lock for memcg
+Date:   Mon,  2 Mar 2020 19:00:10 +0800
+Message-Id: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Feb 29, 2020 at 10:43:00AM -0800, Roman Gushchin wrote:
-> On Fri, Feb 28, 2020 at 04:51:31PM -0800, Marco Ballesio wrote:
-> > Hi all,
-> > 
-> > did anyone have time to look into my proposal and, in case, are there
-> > any suggestions, ideas or comments about it?
-> 
-> Hello, Marco!
-> 
-> I'm sorry, somehow I missed the original letter.
-> 
-> In general the cgroup v1 interface is considered frozen. Are there any particular
-> reasons why you want to extend the v1 freezer rather than use the v2 version of it?
-> 
-> You don't even need to fully convert to cgroup v2 in order to do it, some v1
-> controllers can still be used.
-> 
-> Thanks!
-> 
-> Roman
+Hi all,
 
-Hi Roman,
+This patchset mainly includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
 
-When compared with backports of v2 features and their dependency chains, this
-patch would be easier to carry in Android common. The potential is to have
-killability for frozen processes on hw currently in use.
+The keypoint of this patchset is moving lru_lock into lruvec, give a 
+lru_lock for each of lruvec, thus bring a lru_lock for each of memcg 
+per node. So on a large node machine, each of memcg don't suffer from
+per node pgdat->lru_lock waiting. They could go fast with their self
+lru_lock now.
 
-Marco
+Since lruvec belongs to each memcg, the critical point is to keep
+page's memcg stable, so we take PageLRU as its isolation's precondition.
+Thanks for Johannes Weiner help and suggestion!
+
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+  https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang.
+
+v9,
+  a, use TestCleanPageLRU as page isolation's precondition, that
+     resolved the page's memcg stable problem, Thanks Johannes Weiner!
+  b, few more code clean up patches
+
+v8,
+  a, redo lock_page_lru cleanup as Konstantin Khlebnikov suggested.
+  b, fix a bug in lruvec_memcg_debug, reported by Hugh Dickins
+
+...
+
+v1: initial version, aim testing show 5% performance increase on a 16 threads box.
+
+Alex Shi (19):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/memcg: fold lock_page_lru into commit_charge
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: narrow lru locking
+  mm/lru: introduce TestClearPageLRU
+  mm/lru: add page isolation precondition in __isolate_lru_page
+  mm/mlock: ClearPageLRU before get lru lock in munlock page isolation
+  mm/lru: take PageLRU first in moving page between lru lists
+  mm/memcg: move SetPageLRU out of lru_lock in commit_charge
+  mm/mlock: clean up __munlock_isolate_lru_page
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/mlock: optimize munlock_pagevec by relocking
+  mm/swap: only change the lru_lock iff page's lruvec is different
+  mm/pgdat: remove pgdat lru_lock
+  mm/lru: add debug checking for page memcg moving
+  mm/memcg: add debug checking in lock_page_memcg
+
+Hugh Dickins (1):
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |   8 +-
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/memcontrol.h                         |  77 ++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   5 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   6 +-
+ mm/compaction.c                                    |  78 ++++++----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  54 +++++--
+ mm/memcontrol.c                                    | 110 +++++++++-----
+ mm/mlock.c                                         |  88 ++++++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   2 +-
+ mm/swap.c                                          | 160 +++++++-------------
+ mm/vmscan.c                                        | 163 +++++++++++----------
+ 20 files changed, 446 insertions(+), 361 deletions(-)
+
+-- 
+1.8.3.1
+
