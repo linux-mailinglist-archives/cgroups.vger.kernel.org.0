@@ -2,79 +2,66 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8EF177C5D
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 17:52:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E78C61781A0
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 20:02:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730379AbgCCQvH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Mar 2020 11:51:07 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:37210 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727507AbgCCQvH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 11:51:07 -0500
-Received: by mail-ot1-f66.google.com with SMTP id b3so3700545otp.4
-        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2020 08:51:06 -0800 (PST)
+        id S2387917AbgCCSEK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Mar 2020 13:04:10 -0500
+Received: from mail-io1-f68.google.com ([209.85.166.68]:35929 "EHLO
+        mail-io1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387825AbgCCSEJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 13:04:09 -0500
+Received: by mail-io1-f68.google.com with SMTP id d15so4652563iog.3
+        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2020 10:04:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qHOn5vqQErDHAkJzL6biRHoTSOSlgdzSHmMDR1rwOSw=;
-        b=PrhC/74bze2iem1KsYtIHMvUu/v2Av2MYk8EydsyRsT6ErJ1YQjmNh0R/wDKNLwWyQ
-         giq1Pswj3xm3xsbBxVlb00LD6jgh8VspNAcUdojVVHgzs6YNMORKfgfiLcxXKihiD2U4
-         VPumlwmRJK94sUJBBlqZZYGZUQDwIbA2T5iHVgWPvH96kjWeV0LugsEESIk6ALCIRDQm
-         RBXbpHeIFbrG+TdqIZuAbNbugBhyCIMZGQaFYAf3mlAz6FH7d7jAZcPCS1yweB7G38bo
-         a3New9pxIAHaKb1Yr5Al4Jz6nhSG737F7DafcGI95pWkYx4GRRGQsLd7Cs4k3E6agMnj
-         8xSg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=FnB/r9+FDv+kyBCcqQVXqofWc6d7QYjVW5tJwjvn4nbIniT9S4G29Uz7+V8k3LwZFz
+         4x2OSJOZuLX/+ubxq2CTWjch3QMp3dq/uSSJ+g5TvgbfDsZPkx7hYzsK7SXgfwn7yGq/
+         +w+mSaAhaU0JZYW8TBfN6BVeEyBZUq2Aw64c2JSQTzU+z/BuRkzax6vnZLfn9SNuZl/N
+         qCTaws6C8dAWHN7Ffu7z4ye/+R/XgcATTUxUmzNIPJB4koQsQ6C3L/QsdbF1LmETraTr
+         vPFCB+Dca/k/EkbWVuCQMgs4Ae/LzJQOLFApZoslMqZQHV6Iwzd8IVWaei/E1MzPmIt/
+         oqQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qHOn5vqQErDHAkJzL6biRHoTSOSlgdzSHmMDR1rwOSw=;
-        b=Do89e4A79gij66W4uIXKbO5g3vspgqXK1jJ77TpLHRCKFDYdd/E6TGl9bL3q+vYC91
-         5vUVCUhlX6I3I7TredNSTY/md5dHUZINUJKfYeFM6kRrDH+VN4lQEwq29D/7hXzEstMI
-         zgdAeJalTYQHNrU93xQzXY914TcSf6LopOkJ96wdamBoJbEAcp/w5gX8RKMtzYuIZ3Cd
-         NdqTS5zhpp30NT80nVBsBqFMS2eIlttCGhCAOc+qnB62hQx/iNgBWjcS7Lb2zYNViE35
-         RB6Hu9LZdzj4DIln/M+houiOGucaVo8FXVkFH4L2UmpytX6KUm4pWBiYfaL80mXRJysn
-         Rajw==
-X-Gm-Message-State: ANhLgQ1VnymHtCVKDKLdhOfiTd4lj6CAzfgoCm06CVTd4uSbx8VtmAGx
-        RWQzbNn8HzQKFnUetKUHJjWO/2N6wFgT4bGW5+4gx5Q5
-X-Google-Smtp-Source: ADFU+vs5bHTlzYDWcHBa7hol10zll+6LrbecnEkuqNf6A/g6QQbYC6octS5rirZT91tqzWiEaJRDmLwA3XoTOV7oDBs=
-X-Received: by 2002:a05:6830:118c:: with SMTP id u12mr3866768otq.124.1583254265433;
- Tue, 03 Mar 2020 08:51:05 -0800 (PST)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=42VRx4KA+cD1ZZnhz/34yl/kjJSKnU+ahvHX6e7S6BM=;
+        b=pkP1tBeHZVAewCZs4trm/4KwBsTuAj/0xwXwU7AOHnLdrOKKYv7DF8pF2BAPt5PbMv
+         ueBuWwEKFSZM63aPEWOm4yiAyYeM1HerB51oqZJW5NquTH9gTtqsHcT5+qJ1FeVx8O5b
+         k0/C2HBiwagwD2NwdoE4OuyPnveTcHRvhIikc3kf9vHNdBPOihLr0Xylee8BQiEocbET
+         BbGKNRCgC5vYvCWURD3lktKpBmrT7kVIGeFN60G6NpK/pzGK71f2z6fod15LW6ZDoXlH
+         jr2YLVfh+eI9QV28vu4Ako9cOASdDORkXNC9L+hj1kQglpfCd6C7eRebrMLmBEkgvAJW
+         u10Q==
+X-Gm-Message-State: ANhLgQ3yiwevIXgVJQmrBobiAz5FMrs4+jCn1b+XOuZgmU5zqqwuPkjS
+        8ID6jsgs26tAX5SGmsLwKwdVZtE/b/wlqIoR/2M=
+X-Google-Smtp-Source: ADFU+vvhFiDNYEkAReB2prZhGFvXWfbii5WQwbvq11AasF3zqcToqDlUiHUBtviSEtI5qgsJfEo6GILvsbXsss/X6Mk=
+X-Received: by 2002:a6b:6011:: with SMTP id r17mr4807493iog.220.1583258649054;
+ Tue, 03 Mar 2020 10:04:09 -0800 (PST)
 MIME-Version: 1.0
-References: <20200303013901.32150-1-dxu@dxuuu.xyz>
-In-Reply-To: <20200303013901.32150-1-dxu@dxuuu.xyz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 3 Mar 2020 08:50:54 -0800
-Message-ID: <CALvZod5m3otRRqcLBebbgiZbhoYWAMbMg+ESkacJuj64OP=H4Q@mail.gmail.com>
-Subject: Re: [PATCH 0/2] Support user xattrs in cgroupfs
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Team <kernel-team@fb.com>
+Received: by 2002:a02:9f04:0:0:0:0:0 with HTTP; Tue, 3 Mar 2020 10:04:08 -0800 (PST)
+Reply-To: dr.challynoah@gmail.com
+From:   DR CHALLY NOAH <mayorabrahamedge404@gmail.com>
+Date:   Tue, 3 Mar 2020 19:04:08 +0100
+Message-ID: <CALqVJWdXJcMQZ-FQOwWRjPaGGuiSCR8DdCk25i_UkoWhDkJ3zw@mail.gmail.com>
+Subject: Hello Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Daniel,
-
-On Mon, Mar 2, 2020 at 5:42 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
->
-> User extended attributes are useful as metadata storage for kernfs
-> consumers like cgroups. Especially in the case of cgroups, it is useful
-> to have a central metadata store that multiple processes/services can
-> use to coordinate actions.
->
-> A concrete example is for userspace out of memory killers. We want to
-> let delegated cgroup subtree owners (running as non-root) to be able to
-> say "please avoid killing this cgroup". In server environments this is
-> less important as everyone is running as root.
-
-I would recommend removing the "everyone is running as root" statement
-as it is not generally true.
-
-Shakeel
+Hello Dear,
+What Have Kept You Waiting To Claim Your $600,000.00 USD Compensation Award?
+This said fund was issued out by the UNITED NATIONS To compensate
+you.Please If You Have Not Claim Your Fund (Award),Kindly contact me
+at   DR.CHALLYNOAH@GMAIL.COM   for further details on how to proceed your
+fund (award)release to you or better still reply back Immediately You
+Receive This Information For An Urgent Confirmation And Release Of Your
+Fund To You Without Delays, as your email was listed among those to be
+compensated this year.Congratulations..
+Best Regards,
+Dr Chally Noah.
+Minister Of Finance On Foreign Remittance:
