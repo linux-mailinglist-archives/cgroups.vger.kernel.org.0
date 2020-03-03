@@ -2,55 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC4517726C
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 10:32:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5127517726D
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 10:32:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727820AbgCCJcs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Mar 2020 04:32:48 -0500
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:33759 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727644AbgCCJcs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 04:32:48 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04446;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0TrXu9-Z_1583227964;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TrXu9-Z_1583227964)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 03 Mar 2020 17:32:44 +0800
-Subject: Re: [PATCH v9 00/21] per lruvec lru_lock for memcg
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     cgroups@vger.kernel.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        Fengguang Wu <fengguang.wu@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>
-References: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200302141202.91d88e8b730b194a8bd8fa7d@linux-foundation.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <59634b5f-b1b2-3b1d-d845-fd15565fcad4@linux.alibaba.com>
-Date:   Tue, 3 Mar 2020 17:32:44 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1727909AbgCCJcy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Mar 2020 04:32:54 -0500
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:43598 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727644AbgCCJcy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 04:32:54 -0500
+Received: by mail-wr1-f67.google.com with SMTP id h9so2449125wrr.10;
+        Tue, 03 Mar 2020 01:32:53 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=XYpfou3pNPf/l+cdS9KAFxciOnURpc9US/Ck720UZHw=;
+        b=aqzLeWQfRDVvrZa298Hwxwy6HOoMmC3nQqu87aPqpd4t7Py35ZgwNoAgLQoxE9FCaM
+         qgw51japeUWQn+BYQLbDhcq21A98ki0WViEdYDI2gDnrm/ryTwoFvpyiy/ofuprUB7lE
+         6e+7QX1JE8j2aErOcWfb0YYNlid5n+U6vdXE3/AVDTEvHTMRpjAlgGM1Ke2q4MqH112Z
+         YvK4RAyKqF19iIs2ME4K4yshAFCzdEgIOfliIxX4MIVziY2DEyEaviU2O/sFBOSLyAyD
+         yftjwRDMrXWpLUpdKE0BjF2MWHhQsln22h/j4GTqJMVxadFzAo07ObRVBj3JF2SxqU1E
+         NSjA==
+X-Gm-Message-State: ANhLgQ1W269+2rpTNpBQ1yfAQCXEncVrMMPk0PyXMeeqlkxfMpIn57T3
+        dFy78rMMZtSZZDqa1QJQVCg=
+X-Google-Smtp-Source: ADFU+vtF+RbwIjqore5UHIM7atEL0jn316nOITsQv4Z2OqwFH4XPXNTPD5ODK8h9prUeZDx1qzGkkA==
+X-Received: by 2002:a5d:4088:: with SMTP id o8mr4722346wrp.144.1583227972535;
+        Tue, 03 Mar 2020 01:32:52 -0800 (PST)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id f17sm12224197wrm.3.2020.03.03.01.32.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2020 01:32:51 -0800 (PST)
+Date:   Tue, 3 Mar 2020 10:32:51 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] memcg: css_tryget_online cleanups
+Message-ID: <20200303093251.GD4380@dhcp22.suse.cz>
+References: <20200302203109.179417-1-shakeelb@google.com>
 MIME-Version: 1.0
-In-Reply-To: <20200302141202.91d88e8b730b194a8bd8fa7d@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200302203109.179417-1-shakeelb@google.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Mon 02-03-20 12:31:09, Shakeel Butt wrote:
+> Currently multiple locations in memcg code, css_tryget_online() is being
+> used. However it doesn't matter whether the cgroup is online for the
+> callers. Online used to matter when we had reparenting on offlining and
+> we needed a way to prevent new ones from showing up.
+> 
+> The failure case for couple of these css_tryget_online usage is to
+> fallback to root_mem_cgroup which kind of make bypassing the memcg
+> limits possible for some workloads. For example creating an inotify
+> group in a subcontainer and then deleting that container after moving the
+> process to a different container will make all the event objects
+> allocated for that group to the root_mem_cgroup. So, using
+> css_tryget_online() is dangerous for such cases.
+> 
+> Two locations still use the online version. The swapin of offlined
+> memcg's pages and the memcg kmem cache creation. The kmem cache indeed
+> needs the online version as the kernel does the reparenting of memcg
+> kmem caches. For the swapin case, it has been left for later as the
+> fallback is not really that concerning.
 
+Could you be more specific about the swap in case please?
 
-ÔÚ 2020/3/3 ÉÏÎç6:12, Andrew Morton Ð´µÀ:
->> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
->> and Yun Wang.
-> I'm not seeing a lot of evidence of review and test activity yet.  But
-> I think I'll grab patches 01-06 as they look like fairly
-> straightforward improvements.
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-cc Fengguang and Rong Chen
+Other than that nothing really jumped at me although I have to confess
+that I am far from deeply familiar with the sk_buff charging path.
 
-I did some local functional testing and kselftest, they all look fine. 0day only warn me if some case failed. Is it no news is good news? :)
+Acked-by: Michal Hocko <mhocko@suse.com>
+> ---
+> 
+> Changes since v1:
+> - replaced WARN_ON with WARN_ON_ONCE
+> 
+>  mm/memcontrol.c | 14 +++++++++-----
+>  1 file changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 62b574d0cd3c..75d8883bf975 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -656,7 +656,7 @@ __mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+>  	 */
+>  	__mem_cgroup_remove_exceeded(mz, mctz);
+>  	if (!soft_limit_excess(mz->memcg) ||
+> -	    !css_tryget_online(&mz->memcg->css))
+> +	    !css_tryget(&mz->memcg->css))
+>  		goto retry;
+>  done:
+>  	return mz;
+> @@ -961,7 +961,8 @@ struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
+>  		return NULL;
+>  
+>  	rcu_read_lock();
+> -	if (!memcg || !css_tryget_online(&memcg->css))
+> +	/* Page should not get uncharged and freed memcg under us. */
+> +	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+>  		memcg = root_mem_cgroup;
+>  	rcu_read_unlock();
+>  	return memcg;
+> @@ -974,10 +975,13 @@ EXPORT_SYMBOL(get_mem_cgroup_from_page);
+>  static __always_inline struct mem_cgroup *get_mem_cgroup_from_current(void)
+>  {
+>  	if (unlikely(current->active_memcg)) {
+> -		struct mem_cgroup *memcg = root_mem_cgroup;
+> +		struct mem_cgroup *memcg;
+>  
+>  		rcu_read_lock();
+> -		if (css_tryget_online(&current->active_memcg->css))
+> +		/* current->active_memcg must hold a ref. */
+> +		if (WARN_ON_ONCE(!css_tryget(&current->active_memcg->css)))
+> +			memcg = root_mem_cgroup;
+> +		else
+>  			memcg = current->active_memcg;
+>  		rcu_read_unlock();
+>  		return memcg;
+> @@ -6732,7 +6736,7 @@ void mem_cgroup_sk_alloc(struct sock *sk)
+>  		goto out;
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg->tcpmem_active)
+>  		goto out;
+> -	if (css_tryget_online(&memcg->css))
+> +	if (css_tryget(&memcg->css))
+>  		sk->sk_memcg = memcg;
+>  out:
+>  	rcu_read_unlock();
+> -- 
+> 2.25.0.265.gbab2e86ba0-goog
 
-Thanks
-Alex
+-- 
+Michal Hocko
+SUSE Labs
