@@ -2,84 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F55177951
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 15:42:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D8EF177C5D
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2020 17:52:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729071AbgCCOkm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Mar 2020 09:40:42 -0500
-Received: from s3.sipsolutions.net ([144.76.43.62]:56410 "EHLO
-        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728933AbgCCOkm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 09:40:42 -0500
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.93)
-        (envelope-from <benjamin@sipsolutions.net>)
-        id 1j98iu-00Cx1r-G6; Tue, 03 Mar 2020 15:40:40 +0100
-Message-ID: <24bd31cdaa3ea945908bc11cea05d6aae6929240.camel@sipsolutions.net>
-Subject: Re: [BUG] NULL pointer de-ref when setting io.cost.qos on LUKS
- devices
-From:   Benjamin Berg <benjamin@sipsolutions.net>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Date:   Tue, 03 Mar 2020 15:40:38 +0100
-In-Reply-To: <20200303141902.GB189690@mtj.thefacebook.com> (sfid-20200303_151905_302479_14795E89)
-References: <1dbdcbb0c8db70a08aac467311a80abcf7779575.camel@sipsolutions.net>
-         <20200303141902.GB189690@mtj.thefacebook.com>
-         (sfid-20200303_151905_302479_14795E89)
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-j4uCKWQWPoDS0sEousKX"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        id S1730379AbgCCQvH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Mar 2020 11:51:07 -0500
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:37210 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727507AbgCCQvH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 11:51:07 -0500
+Received: by mail-ot1-f66.google.com with SMTP id b3so3700545otp.4
+        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2020 08:51:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qHOn5vqQErDHAkJzL6biRHoTSOSlgdzSHmMDR1rwOSw=;
+        b=PrhC/74bze2iem1KsYtIHMvUu/v2Av2MYk8EydsyRsT6ErJ1YQjmNh0R/wDKNLwWyQ
+         giq1Pswj3xm3xsbBxVlb00LD6jgh8VspNAcUdojVVHgzs6YNMORKfgfiLcxXKihiD2U4
+         VPumlwmRJK94sUJBBlqZZYGZUQDwIbA2T5iHVgWPvH96kjWeV0LugsEESIk6ALCIRDQm
+         RBXbpHeIFbrG+TdqIZuAbNbugBhyCIMZGQaFYAf3mlAz6FH7d7jAZcPCS1yweB7G38bo
+         a3New9pxIAHaKb1Yr5Al4Jz6nhSG737F7DafcGI95pWkYx4GRRGQsLd7Cs4k3E6agMnj
+         8xSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qHOn5vqQErDHAkJzL6biRHoTSOSlgdzSHmMDR1rwOSw=;
+        b=Do89e4A79gij66W4uIXKbO5g3vspgqXK1jJ77TpLHRCKFDYdd/E6TGl9bL3q+vYC91
+         5vUVCUhlX6I3I7TredNSTY/md5dHUZINUJKfYeFM6kRrDH+VN4lQEwq29D/7hXzEstMI
+         zgdAeJalTYQHNrU93xQzXY914TcSf6LopOkJ96wdamBoJbEAcp/w5gX8RKMtzYuIZ3Cd
+         NdqTS5zhpp30NT80nVBsBqFMS2eIlttCGhCAOc+qnB62hQx/iNgBWjcS7Lb2zYNViE35
+         RB6Hu9LZdzj4DIln/M+houiOGucaVo8FXVkFH4L2UmpytX6KUm4pWBiYfaL80mXRJysn
+         Rajw==
+X-Gm-Message-State: ANhLgQ1VnymHtCVKDKLdhOfiTd4lj6CAzfgoCm06CVTd4uSbx8VtmAGx
+        RWQzbNn8HzQKFnUetKUHJjWO/2N6wFgT4bGW5+4gx5Q5
+X-Google-Smtp-Source: ADFU+vs5bHTlzYDWcHBa7hol10zll+6LrbecnEkuqNf6A/g6QQbYC6octS5rirZT91tqzWiEaJRDmLwA3XoTOV7oDBs=
+X-Received: by 2002:a05:6830:118c:: with SMTP id u12mr3866768otq.124.1583254265433;
+ Tue, 03 Mar 2020 08:51:05 -0800 (PST)
 MIME-Version: 1.0
+References: <20200303013901.32150-1-dxu@dxuuu.xyz>
+In-Reply-To: <20200303013901.32150-1-dxu@dxuuu.xyz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 3 Mar 2020 08:50:54 -0800
+Message-ID: <CALvZod5m3otRRqcLBebbgiZbhoYWAMbMg+ESkacJuj64OP=H4Q@mail.gmail.com>
+Subject: Re: [PATCH 0/2] Support user xattrs in cgroupfs
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi Daniel,
 
---=-j4uCKWQWPoDS0sEousKX
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, Mar 2, 2020 at 5:42 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+>
+> User extended attributes are useful as metadata storage for kernfs
+> consumers like cgroups. Especially in the case of cgroups, it is useful
+> to have a central metadata store that multiple processes/services can
+> use to coordinate actions.
+>
+> A concrete example is for userspace out of memory killers. We want to
+> let delegated cgroup subtree owners (running as non-root) to be able to
+> say "please avoid killing this cgroup". In server environments this is
+> less important as everyone is running as root.
 
-On Tue, 2020-03-03 at 09:19 -0500, Tejun Heo wrote:
-> Hello,
->=20
-> On Tue, Mar 03, 2020 at 03:13:10PM +0100, Benjamin Berg wrote:
-> > so, I tried to set io.latency for some cgroups for the root device,
-> > which is ext4 inside LVM inside LUKS.
->=20
-> It's pointless on compound devices. I think the right thing to do here
-> is disallowing to enable it on those devices.
+I would recommend removing the "everyone is running as root" statement
+as it is not generally true.
 
-I believe systemd tries to resolve to /dev/sda but that seems to fail
-for me. So I think there is a bug in that code; I'll verify that and
-submit a fix if so.
-
-Which device should actually be selected? Is it /dev/sda or the mapper
-device that / is mounted from?
-
-Benjamin
-
---=-j4uCKWQWPoDS0sEousKX
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCAAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAl5ebGYACgkQq6ZWhpmF
-Y3DTFw//VcGWBCbgwz1EKl5qv3UCTAc1Ra0D+vtWN6PD21vXyMF+gU4yrxIF5ZO4
-aW4FwhM0MgmrBRsgew/6pH1TkIsE8bIlh1h8fi921ISOVYygvu0QRKuQ6Gll1trA
-+yS+J9e9NrDAio1xPkopG/Lf/ZiyO9a88aeiGckEQ7j3xXEW4pCM42gttYoLugh3
-qVI8vTvj1Ns0SCQ/qq25UH2Tk5h7IUA4efmNbeZElDGRBBAKhSGNg4r9zLZFVdU9
-4PPQ69jBTXjK5uB2x6DuroH5vYHOlJcRb0yaZpFOMqbk5QoaXfi094gKBVllqdLB
-hAI0P3lR64xQhmSkP7J4Y8zkhDQMKiCFxbJDAk6a/HQmYSb3fc7tX7yBljZWI2HK
-Cthf7MGU3+ElqevQ8a/bglssB8Rw1ufoxOgh1TDDRSRVXmRm2szUY2V/EVQYqlT/
-aqpogxLDCYKluvn6N6wAGLV1hPIeuUo6Ld34f0lcA69c/dccdBQ+CCM6ToAHvfMl
-+YQAN6cN2mV1iRKzjq3O3beVV1ueoOtaHDKbuHy22c7SqRx1mwZUuyydfuGpLNSv
-djo9Y9LPMBVL+hHkDNNtHFmV7vguTEqirD6nnoKj/HtUofyS9o/Ylh9EOhkr1eMi
-9Q4cjZG2ydksugCidpVDL1ZbkeeFNH5OnJ4ZIWH0lvCy3y0dzHo=
-=NGp6
------END PGP SIGNATURE-----
-
---=-j4uCKWQWPoDS0sEousKX--
-
+Shakeel
