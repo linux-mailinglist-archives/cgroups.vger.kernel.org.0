@@ -2,95 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BCFF3178725
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 01:47:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24B50178825
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 03:21:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728179AbgCDArB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Mar 2020 19:47:01 -0500
-Received: from mail.kernel.org ([198.145.29.99]:54830 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727725AbgCDArB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 3 Mar 2020 19:47:01 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B8A8206D5;
-        Wed,  4 Mar 2020 00:47:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1583282820;
-        bh=0+z7LmhvpR+/tgnsx78xZlf6Xtp1MPhvcA49EP7cCI8=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=gZdLAc3WmWRNXUh+LZD6fQ5PyaHfnkDYaLIo61uBfxx0u8qzP2R4ycU1QbdfHqXGt
-         J+vL7N6dGXfyeVQAmdm1/Q/isaW3dosacn6BLaG1+8JZhMSJt2zoPP+NvcFbOtPJVU
-         ReV40WQ5Vda3VQTcXJHT1TrT5dMjuCAkxdt0+EEg=
-Date:   Tue, 3 Mar 2020 16:46:59 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     cgroups@vger.kernel.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v9 07/20] mm/lru: introduce TestClearPageLRU
-Message-Id: <20200303164659.b3a30ab9d68c9ed82299a29c@linux-foundation.org>
-In-Reply-To: <9cacdc21-9c1f-2a17-05cb-e9cf2959cef5@linux.alibaba.com>
-References: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
-        <1583146830-169516-8-git-send-email-alex.shi@linux.alibaba.com>
-        <20200302141144.b30abe0d89306fd387e13a92@linux-foundation.org>
-        <9cacdc21-9c1f-2a17-05cb-e9cf2959cef5@linux.alibaba.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+        id S2387550AbgCDCVX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Mar 2020 21:21:23 -0500
+Received: from mail-pl1-f201.google.com ([209.85.214.201]:43427 "EHLO
+        mail-pl1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387488AbgCDCVX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Mar 2020 21:21:23 -0500
+Received: by mail-pl1-f201.google.com with SMTP id d9so159868plo.10
+        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2020 18:21:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=+xah7E//6pVRKdaZXmFI1T6nfuFUo9iVXUkHyM4jmQo=;
+        b=TZwFCinuj11xZdNvspmekDI0x79O/EQihOSSmxMSVxtrpfdyMQkBRLLvD95CEFCzpX
+         LLJPxfEnWDkieQxh7QIxWxbToGfC+DMpLfbgM4udxeAy8K5yQHCP1k4fD6xZVxK51r2m
+         uCNK6OZd3TSqEautzdRJCITCLeqff8iyKCZFyG01AxM0dPjwy0pwIyjdDBheYzwyIB3M
+         b21oYiHUF7a9PAjanaiCpWH4aFMeYD4jjLh872JSJ0BGqqi1PHtAr+BikLaErcxfrWv+
+         U1c2HZsQTLpu4Y39JF9rjKug9K9KM/Wd6WgOrSRcCsD9Dn0Qs8DAYqL4Shs4nsmMLQXh
+         vgFQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=+xah7E//6pVRKdaZXmFI1T6nfuFUo9iVXUkHyM4jmQo=;
+        b=bEG1PdroJusFP0iehPqXMtWFzDtEYmflcV/2bHMYW1wP4KC8zUKk1Xt27ITVQGQEgF
+         SblexzmK/ADwtQ9ytio1069GBaOYzVIOPCeQaLsFY9vN1pFRntZ+2MC2t6bvWF+ckDM+
+         no8jYZhDbckwFmzMxbRFZc9vuaChkOYndtfJ2OUIsoCUiTkk/NUX+gewLngHaDLXOTaH
+         iCyR9IHHcVIqRLlQpZdWwoZ319WUXsrd6hOtdGGr3OloBbEdAkHXZ9JboyMHgojd9kZ6
+         wK729GVsKzeN9WdlMjWSGOlzRJOZiMScLupemg2Jimfw81pBfgj8SE5W6sL8yzB5JONx
+         utww==
+X-Gm-Message-State: ANhLgQ1bZCrsUaiAJ4dXVNrM06imFfdPAUhK/I13/NPtYd8a7kxi5dEg
+        O89B+SCIEuEevfw5FxbOwC+fMJ71CEEn/w==
+X-Google-Smtp-Source: ADFU+vu8OtgDgAEEtoJCrBqXEjW+PtdPObK6IdK9ihXt3F3QrY5fhSy5oyuvRqAnRLJJE4WOR6O7U3lAP9UJDA==
+X-Received: by 2002:a63:731c:: with SMTP id o28mr418425pgc.139.1583288481764;
+ Tue, 03 Mar 2020 18:21:21 -0800 (PST)
+Date:   Tue,  3 Mar 2020 18:20:58 -0800
+Message-Id: <20200304022058.248270-1-shakeelb@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
+Subject: [PATCH] memcg: optimize memory.numa_stat like memory.stat
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 3 Mar 2020 12:11:34 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+Currently reading memory.numa_stat traverses the underlying memcg tree
+multiple times to accumulate the stats to present the hierarchical view
+of the memcg tree. However the kernel already maintains the hierarchical
+view of the stats and use it in memory.stat. Just use the same mechanism
+in memory.numa_stat as well.
 
-> 
-> 
-> 在 2020/3/3 上午6:11, Andrew Morton 写道:
-> >> -		if (PageLRU(page)) {
-> >> +		if (TestClearPageLRU(page)) {
-> >>  			lruvec = mem_cgroup_page_lruvec(page, pgdat);
-> >> -			ClearPageLRU(page);
-> >>  			del_page_from_lru_list(page, lruvec, page_lru(page));
-> >>  		} else
-> > 
-> > The code will now get exclusive access of the page->flags cacheline and
-> > will dirty that cacheline, even for !PageLRU() pages.  What is the
-> > performance impact of this?
-> > 
-> 
-> Hi Andrew,
-> 
-> Thanks a lot for comments!
-> 
-> I was tested the whole patchset with fengguang's case-lru-file-readtwice
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/
-> which is most sensitive case on PageLRU I found. There are no clear performance
-> drop.
-> 
-> On this single patch, I just test the same case again, there is still no perf
-> drop. some data is here on my 96 threads machine:
-> 
-> 		no lock_dep	w lock_dep and few other debug option
-> w this patch, 	50.96MB/s		32.93MB/s
-> w/o this patch, 50.50MB/s		33.53MB/s
-> 
-> 
+I ran a simple benchmark which reads root_mem_cgroup's memory.numa_stat
+file in the presense of 10000 memcgs. The results are:
 
-Well, any difference would be small and the numbers did get a bit
-lower, albeit probably within the margin of error.
+Without the patch:
+$ time cat /dev/cgroup/memory/memory.numa_stat > /dev/null
 
-But you know, if someone were to send a patch which micro-optimized
-some code by replacing 'TestClearXXX()' with `if PageXXX()
-ClearPageXXX()', I would happily merge it!
+real    0m0.700s
+user    0m0.001s
+sys     0m0.697s
 
-Is this change essential to the overall patchset?  If not, I'd be
-inclined to skip it?
+With the patch:
+$ time cat /dev/cgroup/memory/memory.numa_stat > /dev/null
+
+real    0m0.001s
+user    0m0.001s
+sys     0m0.000s
+
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 52 +++++++++++++++++++++++++------------------------
+ 1 file changed, 27 insertions(+), 25 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 63bb6a2aab81..d5485fa8a345 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3614,32 +3614,40 @@ static int mem_cgroup_move_charge_write(struct cgroup_subsys_state *css,
+ #define LRU_ALL	     ((1 << NR_LRU_LISTS) - 1)
+ 
+ static unsigned long mem_cgroup_node_nr_lru_pages(struct mem_cgroup *memcg,
+-					   int nid, unsigned int lru_mask)
++				int nid, unsigned int lru_mask, bool tree)
+ {
+ 	struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+ 	unsigned long nr = 0;
+ 	enum lru_list lru;
++	unsigned long (*page_state)(struct lruvec *lruvec,
++				    enum node_stat_item idx);
+ 
+ 	VM_BUG_ON((unsigned)nid >= nr_node_ids);
+ 
++	page_state = tree ? lruvec_page_state : lruvec_page_state_local;
++
+ 	for_each_lru(lru) {
+ 		if (!(BIT(lru) & lru_mask))
+ 			continue;
+-		nr += lruvec_page_state_local(lruvec, NR_LRU_BASE + lru);
++		nr += page_state(lruvec, NR_LRU_BASE + lru);
+ 	}
+ 	return nr;
+ }
+ 
+ static unsigned long mem_cgroup_nr_lru_pages(struct mem_cgroup *memcg,
+-					     unsigned int lru_mask)
++					     unsigned int lru_mask,
++					     bool tree)
+ {
+ 	unsigned long nr = 0;
+ 	enum lru_list lru;
++	unsigned long (*page_state)(struct mem_cgroup *memcg, int idx);
++
++	page_state = tree ? memcg_page_state : memcg_page_state_local;
+ 
+ 	for_each_lru(lru) {
+ 		if (!(BIT(lru) & lru_mask))
+ 			continue;
+-		nr += memcg_page_state_local(memcg, NR_LRU_BASE + lru);
++		nr += page_state(memcg, NR_LRU_BASE + lru);
+ 	}
+ 	return nr;
+ }
+@@ -3659,34 +3667,28 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ 	};
+ 	const struct numa_stat *stat;
+ 	int nid;
+-	unsigned long nr;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+ 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+-		nr = mem_cgroup_nr_lru_pages(memcg, stat->lru_mask);
+-		seq_printf(m, "%s=%lu", stat->name, nr);
+-		for_each_node_state(nid, N_MEMORY) {
+-			nr = mem_cgroup_node_nr_lru_pages(memcg, nid,
+-							  stat->lru_mask);
+-			seq_printf(m, " N%d=%lu", nid, nr);
+-		}
++		seq_printf(m, "%s=%lu", stat->name,
++			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
++						   false));
++		for_each_node_state(nid, N_MEMORY)
++			seq_printf(m, " N%d=%lu", nid,
++				   mem_cgroup_node_nr_lru_pages(memcg, nid,
++							stat->lru_mask, false));
+ 		seq_putc(m, '\n');
+ 	}
+ 
+ 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+-		struct mem_cgroup *iter;
+-
+-		nr = 0;
+-		for_each_mem_cgroup_tree(iter, memcg)
+-			nr += mem_cgroup_nr_lru_pages(iter, stat->lru_mask);
+-		seq_printf(m, "hierarchical_%s=%lu", stat->name, nr);
+-		for_each_node_state(nid, N_MEMORY) {
+-			nr = 0;
+-			for_each_mem_cgroup_tree(iter, memcg)
+-				nr += mem_cgroup_node_nr_lru_pages(
+-					iter, nid, stat->lru_mask);
+-			seq_printf(m, " N%d=%lu", nid, nr);
+-		}
++
++		seq_printf(m, "hierarchical_%s=%lu", stat->name,
++			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
++						   true));
++		for_each_node_state(nid, N_MEMORY)
++			seq_printf(m, " N%d=%lu", nid,
++				   mem_cgroup_node_nr_lru_pages(memcg, nid,
++							stat->lru_mask, true));
+ 		seq_putc(m, '\n');
+ 	}
+ 
+-- 
+2.25.0.265.gbab2e86ba0-goog
 
