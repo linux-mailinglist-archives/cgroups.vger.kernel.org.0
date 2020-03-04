@@ -2,62 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C71D17954D
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:30:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EF14179582
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:39:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729841AbgCDQas (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 11:30:48 -0500
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:43192 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726764AbgCDQar (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:30:47 -0500
-Received: by mail-qk1-f196.google.com with SMTP id q18so2190917qki.10
-        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2020 08:30:46 -0800 (PST)
+        id S1729739AbgCDQjZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Mar 2020 11:39:25 -0500
+Received: from mail-qt1-f194.google.com ([209.85.160.194]:36446 "EHLO
+        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729689AbgCDQjZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:39:25 -0500
+Received: by mail-qt1-f194.google.com with SMTP id t13so1841572qto.3;
+        Wed, 04 Mar 2020 08:39:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=K4BeHblYXMy0jWZevx0X7etvY4HSc10p3TfF4SsNt5M=;
-        b=iVS3T6wquyX/FWV1nq/cJXE2LdWrz8AEhTgPW18XqQ2ELQwisn/W76smiuCyICLB0p
-         TAuQJ0fJRabTH6jMTNK89S9FTpC0JKCVgih+m7VKtN3BbfzMX/0U9DD9oJxdQQaMs1+C
-         zs4xCYDaiTiEpGJHW+QzoVI5K5OsoD1PUSS2ibvwrty7ZE4fPVPlPAz8WNaU0lDKXhmO
-         j7JKPSrzzP94Ky2NJN++LguGAGKgi7x7IwtHmQgSC5Xat8yN8aCJvvCeYWf6zYkD0/Np
-         0MEaHYzQyScqzH0QmIfa0tFkWIJc1v8+pveYzECCi8suYzEonyDvZlXMknoNkof7QBOt
-         RxCA==
+         :content-disposition:in-reply-to;
+        bh=Q41tiblFE54JAr5vC6itpkRF9zh1xfIn6lFKVFQ8hPE=;
+        b=jgpGs27cukeF4u6jimr8YXOzqdUGDnBvlaasW3APkR/3ylULaFPdFft2i7tjdKMoug
+         K6v0nKjw50uodI+joOgqp920D8ANct5b0St90yLhBMiPOSfBrwMO9U+phnqmFMuzglpg
+         884HqvfXDMjsXb50UTyzG34uXIQ9eJS65e+7fP2KA5Irn35utXNDG9ekv2KX/eIEX7gQ
+         a04loJYII0g/hCdWfBKxsGrEygu86tSmz6TSKkuydhhucErZcw0NdksFDxA1hMOXyQ6E
+         deVaNCkiC1C/Oli/G4zom94cs+cxd+ivOZIY2MGkg3jUkAjZQ8LR7OXBXHkOao9nR4y8
+         pTIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=K4BeHblYXMy0jWZevx0X7etvY4HSc10p3TfF4SsNt5M=;
-        b=pQDdVNPGzRKyHnY5R5XSoQa41M9kpt9azBaab9p+6f0xquBVSjeIZ5UJ4vKze7rlCm
-         Kb0t5ZK1UQ7CIFoOV/j2XQhHa/HZPzHtczgtoas8ubY9LfqmaQbTmhsrxtq5sTJYGPzo
-         erE9M6R8Mrwild+L3Tsr8gT83VDVJfVklqDLKs0fMXjmlWha/LOc6PtXVMbduKNBjMF5
-         YCa0oKc3YH3wI6MaGGcLJogM/2fwOUbVFsR+mTcm/+tG37w6gqcLX3PsxYuDmwLFFVfi
-         g5gZRjFI69WjSL22ASU9GpjPwOLQJplBDGRKUiXA0jxKewC1pFtvkTbzaXo4TY/31sFz
-         gvRQ==
-X-Gm-Message-State: ANhLgQ2p246L1shXBIJjiuJoooSLoz3UxeepCP6NyBWGcn5R/Dk+lRw8
-        Qygci0mJBxeu4FjEXWF8UryZUYtcsTY=
-X-Google-Smtp-Source: ADFU+vsWAl8Llot94c7MeH+hc39to+NLcgycHlu+sCcv/afdavFw0EEZd5NGLAN1fj9gX5kSNrw1Qw==
-X-Received: by 2002:ae9:f205:: with SMTP id m5mr3787154qkg.152.1583339446004;
-        Wed, 04 Mar 2020 08:30:46 -0800 (PST)
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Q41tiblFE54JAr5vC6itpkRF9zh1xfIn6lFKVFQ8hPE=;
+        b=YVf2OU0VHl4IFnpEn9Zw6W8eTH4JdWYPlkLXKXpAZxTbt4I5wAIjZEYv0Qvhn0aAaP
+         gJ+EqpXZbmC2u/3AtY71PQsb1PbG2w+H/n+g9xRKypCnUSKjJ3dxY0UwWl3OKvVnXBZx
+         wdvVze1wGjY/b5sNQTKPhz/zTO1Vg9uVgav/UZLMueYy0+wEJhtPQeXOglSh6VWCd7hH
+         KcK91Yp6HQSZwx5ihtbdl8cGQ9YHcMyg2gUJi1x2T17PvXrM9R+BTH6mb/mn+ZKZPe6d
+         vg6za9tqhjC6/nC7HTMJ5mpV9NQtNPxQbWdlyKczrRWvAYnCJF3+OVnw7B1VKOyImXw6
+         ckmg==
+X-Gm-Message-State: ANhLgQ3QakZem5zRdZWgIlNe6+tUbrDNxkXcHB+tTFsfdc+EtFFYvUcW
+        on5ZtWQ3Rsdz0vT01XjQQdS1j7mnC/A=
+X-Google-Smtp-Source: ADFU+vv6B6uHErWbe6EYCVm4UjJigrIY9oE2hn3aI/w5O4AOCgONkkVZPGldpOis+jjjZWdPotLDnA==
+X-Received: by 2002:ac8:e45:: with SMTP id j5mr117129qti.215.1583339964277;
+        Wed, 04 Mar 2020 08:39:24 -0800 (PST)
 Received: from localhost ([71.172.127.161])
-        by smtp.gmail.com with ESMTPSA id i91sm14577151qtd.70.2020.03.04.08.30.44
+        by smtp.gmail.com with ESMTPSA id d1sm1903151qtn.78.2020.03.04.08.39.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 08:30:45 -0800 (PST)
-Date:   Wed, 4 Mar 2020 11:30:44 -0500
+        Wed, 04 Mar 2020 08:39:23 -0800 (PST)
+Date:   Wed, 4 Mar 2020 11:39:22 -0500
 From:   Tejun Heo <tj@kernel.org>
-To:     Benjamin Berg <benjamin@sipsolutions.net>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: Memory reclaim protection and cgroup nesting (desktop use)
-Message-ID: <20200304163044.GF189690@mtj.thefacebook.com>
-References: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     cgroups@vger.kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 1/2] kernfs: Add option to enable user xattrs
+Message-ID: <20200304163922.GG189690@mtj.thefacebook.com>
+References: <C11FYO0Q9WJU.2MLRRFOQ3E878@dlxu-fedora-R90QNFJV>
+ <C11GC2SN5D18.2S00I3KONE9ZE@dlxu-fedora-R90QNFJV>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
+In-Reply-To: <C11GC2SN5D18.2S00I3KONE9ZE@dlxu-fedora-R90QNFJV>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -65,111 +65,30 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-(cc'ing Johannes and quoting whole msg)
+On Tue, Mar 03, 2020 at 11:37:28AM -0800, Daniel Xu wrote:
+> It looks like in fs/xattr.c:setxattr, there is already:
+> 
+>     ...
+>     if (size) {
+>         if (size > XATTR_SIZE_MAX)
+>             return -E2BIG;
+>     ...
+> 
+> where XATTR_SIZE_MAX is defined as 64k. Do you want it even smaller?
 
-On Wed, Mar 04, 2020 at 10:44:44AM +0100, Benjamin Berg wrote:
-> Hi,
-> 
-> TL;DR: I seem to need memory.min/memory.max to be set on each child
-> cgroup and not just the parents. Is this expected?
+Oh, I missed that. Order 5 allocations can still be on the big side
+tho. Ideally, something like the following?
 
-Yes, currently. However, v5.7+ will have a cgroup2 mount option to
-propagate protection automatically.
+* Total number of bytes limit as the primary limit so that we can say
+  that for a given cgroup user xattrs don't consume more than X bytes.
+  We can pick an arbitrary number which is large enough for most use
+  cases but not too big. e.g. 128k or whatever.
 
-  https://lore.kernel.org/linux-mm/20191219200718.15696-4-hannes@cmpxchg.org/
+* Total number of xattrs limit. Again, some arbitrary not too low, not
+  too high limit.
 
-> I have been experimenting with using cgroups to protect a GNOME
-> session. The intention is that the GNOME Shell itself and important
-> other services remain responsive, even if the application workload is
-> thrashing. The long term goal here is to bridge the time until an OOM
-> killer like oomd would get the system back into normal conditions using
-> memory pressure information.
-> 
-> Note that I have done these tests without any swap and with huge
-> memory.min/memory.low values. I consider this scenario pathological,
-> however, it seems like a reasonable way to really exercise the cgroup
-> reclaim protection logic.
-
-It's incomplete and more brittle in that the kernel has to treat a
-large portion of memory usage as essentially memlocked.
-
-> The resulting cgroup hierarchy looked something like:
-> 
-> -.slice
-> ├─user.slice
-> │ └─user-1000.slice
-> │   ├─user@1000.service
-> │   │ ├─session.slice
-> │   │ │ ├─gsd-*.service
-> │   │ │ │ └─208803 /usr/libexec/gsd-rfkill
-> │   │ │ ├─gnome-shell-wayland.service
-> │   │ │ │ ├─208493 /usr/bin/gnome-shell
-> │   │ │ │ ├─208549 /usr/bin/Xwayland :0 -rootless -noreset -accessx -core -auth /run/user/1000/.mutter-Xwayla>
-> │   │ │ │ └─ …
-> │   │ └─apps.slice
-> │   │   ├─gnome-launched-tracker-miner-fs.desktop-208880.scope
-> │   │   │ └─208880 /usr/libexec/tracker-miner-fs
-> │   │   ├─dbus-:1.2-org.gnome.OnlineAccounts@0.service
-> │   │   │ └─208668 /usr/libexec/goa-daemon
-> │   │   ├─flatpak-org.gnome.Fractal-210350.scope
-> │   │   ├─gnome-terminal-server.service
-> │   │   │ ├─209261 /usr/libexec/gnome-terminal-server
-> │   │   │ ├─209434 bash
-> │   │   │ └─ … including the test load i.e. "make -j32" of a C++ code
-> 
-> 
-> I also enabled the CPU and IO controllers in my tests, but I don't
-> think that is as relevant. The main thing is that I set
-
-CPU control isn't but IO is. Without working IO isolation, it's
-relatively easy to drive the system into the ground given enough
-stress ouside the protected area.
-
->   memory.min: 2GiB
->   memory.low: 4GiB
-> 
-> using systemd on all of
-> 
->  * user.slice,
->  * user-1000.slice,
->  * user@1000.slice,
->  * session.slice and
->  * everything inside session.slice
->    (i.e. gnome-shell-wayland.service, gsd-*.service, …)
-> 
-> excluding apps.slice from protection.
-> 
-> (In a realistic scenario I expect to have swap and then reserving maybe
-> a few hundred MiB; DAMON might help with finding good values.)
-
-What's DAMON?
-
-> At that point, the protection started working pretty much flawlessly.
-> i.e. my gnome-shell would continue to run without major page faulting
-> even though everything in apps.slice was thrashing heavily. The
-> mouse/keyboard remained completely responsive, and interacting with
-> applications ended up working much better thanks to knowing where input
-> was going. Even if the applications themselves took seconds to react.
-> 
-> So far, so good. What surprises me is that I needed to set the
-> protection on the child cgroups (i.e. gnome-shell-wayland.service).
-> Without this, it would not work (reliably) and my gnome-shell would
-> still have a lot of re-faults to load libraries and other mmap'ed data
-> back into memory (I used "perf --no-syscalls -F" to trace this and
-> observed these to be repeatedly for the same pages loading e.g.
-> functions for execution).
-> 
-> Due to accounting effects, I would expect re-faults to happen up to one
-> time in this scenario. At that point the page in question will be
-> accounted against the shell's cgroup and reclaim protection could kick
-> in. Unfortunately, that did not seem to happen unless the shell's
-> cgroup itself had protections and not just all of its parents.
-> 
-> Is it expected that I need to set limits on each child?
-
-Yes, right now, memory.low needs to be configured all the way down to
-the leaf to be effective, which can be rather cumbersome. As written
-above, future kernels will be easier to work with in this respect.
+* Switch to kvmalloc() for attr allocation so that we don't have to
+  worry about high order allocations.
 
 Thanks.
 
