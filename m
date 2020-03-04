@@ -2,80 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA18178D92
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 10:37:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5410A178DAF
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 10:44:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729131AbgCDJhk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 04:37:40 -0500
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:48469 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729112AbgCDJhk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 04:37:40 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04452;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0TrdAbQ3_1583314652;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TrdAbQ3_1583314652)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 04 Mar 2020 17:37:32 +0800
-Subject: Re: [PATCH v9 07/20] mm/lru: introduce TestClearPageLRU
-To:     Rong Chen <rong.a.chen@intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com>
- <1583146830-169516-8-git-send-email-alex.shi@linux.alibaba.com>
- <20200302141144.b30abe0d89306fd387e13a92@linux-foundation.org>
- <9cacdc21-9c1f-2a17-05cb-e9cf2959cef5@linux.alibaba.com>
- <20200303164659.b3a30ab9d68c9ed82299a29c@linux-foundation.org>
- <6d155f79-8ba2-b322-4e92-311e7be98f79@linux.alibaba.com>
- <20200304090301.GB5972@shao2-debian>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <60d253bb-33d0-4328-bfde-3b7c26435cde@linux.alibaba.com>
-Date:   Wed, 4 Mar 2020 17:37:31 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.4.1
+        id S1729131AbgCDJox (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Mar 2020 04:44:53 -0500
+Received: from s3.sipsolutions.net ([144.76.43.62]:49122 "EHLO
+        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728946AbgCDJox (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 04:44:53 -0500
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <benjamin@sipsolutions.net>)
+        id 1j9QaA-00FLQ5-7t; Wed, 04 Mar 2020 10:44:50 +0100
+Message-ID: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
+Subject: Memory reclaim protection and cgroup nesting (desktop use)
+From:   Benjamin Berg <benjamin@sipsolutions.net>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org
+Date:   Wed, 04 Mar 2020 10:44:44 +0100
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-X/bjWAe/RYw/yZnfBd4v"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <20200304090301.GB5972@shao2-debian>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
+--=-X/bjWAe/RYw/yZnfBd4v
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-在 2020/3/4 下午5:03, Rong Chen 写道:
->> Hi Andrew,
->>
->> Thanks a lot for comments!
->> Yes, this patch is essential for all next.
->>
->> Consider the normal memory testing would focus on user page, that probabably with PageLRU. 
->>
->> Fengguang's vm-scalibicase-small-allocs which used a lots vm_area_struct slab, which may
->> got some impact. 0day/Cheng Rong is working on the test. In my roughly testing, it may drop 5% on my
->> 96threads/394GB machine.
->>
->> Thanks
->> Alex
-> Hi,
-> 
-> We only tested one case and found a slight regression of vm-scalability.median from this patch set:
-> 
-> Test case: small allocs
-> =========================================================================================
-> compiler/cpufreq_governor/kconfig/rootfs/runtime/tbox_group/test/testcase/ucode:
->   gcc-7/performance/x86_64-rhel-7.6/debian-x86_64-20191114.cgz/300s/lkp-ivb-d02/small-allocs/vm-scalability/0x21
+Hi,
 
-It's a very acceptable result!
+TL;DR: I seem to need memory.min/memory.max to be set on each child
+cgroup and not just the parents. Is this expected?
 
-Thanks a lot for so quick testing! I believe your results would be far more stable than me. :)
 
-(My testing show quit different result in 2 reboot(1.3% or 6.6% drop). Maybe sth wrong for me in this case.)
+I have been experimenting with using cgroups to protect a GNOME
+session. The intention is that the GNOME Shell itself and important
+other services remain responsive, even if the application workload is
+thrashing. The long term goal here is to bridge the time until an OOM
+killer like oomd would get the system back into normal conditions using
+memory pressure information.
 
-Thanks for your report!
-Alex
+Note that I have done these tests without any swap and with huge
+memory.min/memory.low values. I consider this scenario pathological,
+however, it seems like a reasonable way to really exercise the cgroup
+reclaim protection logic.
+
+The resulting cgroup hierarchy looked something like:
+
+-.slice
+=E2=94=9C=E2=94=80user.slice
+=E2=94=82 =E2=94=94=E2=94=80user-1000.slice
+=E2=94=82   =E2=94=9C=E2=94=80user@1000.service
+=E2=94=82   =E2=94=82 =E2=94=9C=E2=94=80session.slice
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=9C=E2=94=80gsd-*.service
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=82 =E2=94=94=E2=94=80208803 /usr/lib=
+exec/gsd-rfkill
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=9C=E2=94=80gnome-shell-wayland.servi=
+ce
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=82 =E2=94=9C=E2=94=80208493 /usr/bin=
+/gnome-shell
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=82 =E2=94=9C=E2=94=80208549 /usr/bin=
+/Xwayland :0 -rootless -noreset -accessx -core -auth /run/user/1000/.mutter=
+-Xwayla>
+=E2=94=82   =E2=94=82 =E2=94=82 =E2=94=82 =E2=94=94=E2=94=80 =E2=80=A6
+=E2=94=82   =E2=94=82 =E2=94=94=E2=94=80apps.slice
+=E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80gnome-launched-tracker-miner-fs.d=
+esktop-208880.scope
+=E2=94=82   =E2=94=82   =E2=94=82 =E2=94=94=E2=94=80208880 /usr/libexec/tra=
+cker-miner-fs
+=E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80dbus-:1.2-org.gnome.OnlineAccount=
+s@0.service
+=E2=94=82   =E2=94=82   =E2=94=82 =E2=94=94=E2=94=80208668 /usr/libexec/goa=
+-daemon
+=E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80flatpak-org.gnome.Fractal-210350.=
+scope
+=E2=94=82   =E2=94=82   =E2=94=9C=E2=94=80gnome-terminal-server.service
+=E2=94=82   =E2=94=82   =E2=94=82 =E2=94=9C=E2=94=80209261 /usr/libexec/gno=
+me-terminal-server
+=E2=94=82   =E2=94=82   =E2=94=82 =E2=94=9C=E2=94=80209434 bash
+=E2=94=82   =E2=94=82   =E2=94=82 =E2=94=94=E2=94=80 =E2=80=A6 including th=
+e test load i.e. "make -j32" of a C++ code
+
+
+I also enabled the CPU and IO controllers in my tests, but I don't
+think that is as relevant. The main thing is that I set
+  memory.min: 2GiB
+  memory.low: 4GiB
+
+using systemd on all of
+
+ * user.slice,
+ * user-1000.slice,
+ * user@1000.slice,
+ * session.slice and
+ * everything inside session.slice
+   (i.e. gnome-shell-wayland.service, gsd-*.service, =E2=80=A6)
+
+excluding apps.slice from protection.
+
+(In a realistic scenario I expect to have swap and then reserving maybe
+a few hundred MiB; DAMON might help with finding good values.)
+
+
+At that point, the protection started working pretty much flawlessly.
+i.e. my gnome-shell would continue to run without major page faulting
+even though everything in apps.slice was thrashing heavily. The
+mouse/keyboard remained completely responsive, and interacting with
+applications ended up working much better thanks to knowing where input
+was going. Even if the applications themselves took seconds to react.
+
+So far, so good. What surprises me is that I needed to set the
+protection on the child cgroups (i.e. gnome-shell-wayland.service).
+Without this, it would not work (reliably) and my gnome-shell would
+still have a lot of re-faults to load libraries and other mmap'ed data
+back into memory (I used "perf --no-syscalls -F" to trace this and
+observed these to be repeatedly for the same pages loading e.g.
+functions for execution).
+
+Due to accounting effects, I would expect re-faults to happen up to one
+time in this scenario. At that point the page in question will be
+accounted against the shell's cgroup and reclaim protection could kick
+in. Unfortunately, that did not seem to happen unless the shell's
+cgroup itself had protections and not just all of its parents.
+
+Is it expected that I need to set limits on each child?
+
+Benjamin
+
+--=-X/bjWAe/RYw/yZnfBd4v
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAl5feI0ACgkQq6ZWhpmF
+Y3AWGw/9HeiEx6iQ3yGu+Al2MmjgsXcOk3kpHJshbHFACzCT89QaAaHUMfUen3yV
+MUe92csEBuIcRVf0qMFvgMHpcHNT+O8K5aymgw+Hhs74MveMs2qyi1RQ0lw6ooqo
+qABY6uLspyZWQxzgIlJmIzZvlKUwS07CR7SulBBYxtRQSrdsHIq9J/R0Wpt9RD7L
+QI5cWpPqCm8GlqBbtGyaK78kN00oS1LlivSsdMbPEffDZG4XCsJv2+BQDLgiFfPu
+KlropNo+djQVQ/ccLa4ZXxIC0uoxVZbU6hy4D3G6xLckqmRN5xEWQmtjRS/4NMz8
+LH9eD1/j2rv4jcoIhndWtqNGy8xSaN72HK9Cor9sujud4qZkUS2oG30m5BQEtSM8
+nwJETv4euIP1bVw9URoEtt3Rwli9DuBVoTBUSJGtu8JfopNdezwckfldCGe0Hekg
+R99dsqpKf+kThq29tRfRcbCPZU7Lrkn3/lPIBpJEf9VZuL8mx70j+mouSBWSA8R4
+HHXxkzDU9YBneROgcFgjAOgrhM54pcfAIRexbmjJX1jiZ2WkurfO6QlaNsT54Vkz
+fto8/aE+MIR5qBmAFWRbmypZVOL1Od/j0X7w2CmDavOcDQqdS25BoHSvpTBITjYM
+bfLrEnh7CjStdaXNLIBbY3Orbzz5MNkXolqsKtLM2DKE3vqtSVQ=
+=YegP
+-----END PGP SIGNATURE-----
+
+--=-X/bjWAe/RYw/yZnfBd4v--
+
