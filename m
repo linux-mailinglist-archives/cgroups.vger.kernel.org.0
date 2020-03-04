@@ -2,93 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EF14179582
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:39:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EF71179589
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:42:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729739AbgCDQjZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 11:39:25 -0500
-Received: from mail-qt1-f194.google.com ([209.85.160.194]:36446 "EHLO
-        mail-qt1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729689AbgCDQjZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:39:25 -0500
-Received: by mail-qt1-f194.google.com with SMTP id t13so1841572qto.3;
-        Wed, 04 Mar 2020 08:39:25 -0800 (PST)
+        id S1729811AbgCDQmI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Mar 2020 11:42:08 -0500
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:45215 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729762AbgCDQmI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:42:08 -0500
+Received: by mail-qk1-f193.google.com with SMTP id z12so2227231qkg.12
+        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2020 08:42:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Q41tiblFE54JAr5vC6itpkRF9zh1xfIn6lFKVFQ8hPE=;
-        b=jgpGs27cukeF4u6jimr8YXOzqdUGDnBvlaasW3APkR/3ylULaFPdFft2i7tjdKMoug
-         K6v0nKjw50uodI+joOgqp920D8ANct5b0St90yLhBMiPOSfBrwMO9U+phnqmFMuzglpg
-         884HqvfXDMjsXb50UTyzG34uXIQ9eJS65e+7fP2KA5Irn35utXNDG9ekv2KX/eIEX7gQ
-         a04loJYII0g/hCdWfBKxsGrEygu86tSmz6TSKkuydhhucErZcw0NdksFDxA1hMOXyQ6E
-         deVaNCkiC1C/Oli/G4zom94cs+cxd+ivOZIY2MGkg3jUkAjZQ8LR7OXBXHkOao9nR4y8
-         pTIQ==
+        bh=0xLBL5fJTc5AsUQPy+WSwVwS7vBKnygmPmF5kHtg+Ko=;
+        b=JphAytlDLBqcavrEVXy4D+clSdLG2pVQ4Y2FDvGxgP1eYafwN2BgQyrmHd/m1j2EMy
+         XoEpWt39eUtxargjw6ERdE8tFwlleRpoM6V+skpSS4BGl1/6SLlj1SsCqwFjXCuhLkOc
+         6Qbk+dx1Mn5nqQNwgcVNUTF662gbRJqeXMwEtgLE/rr+AqJWKyGVunibVo0v0VFjWGuY
+         l2WjaUuHbgVEbtKZlJFPCixJXAKkVg9LDKA6uICAsFSvQwrw6mxT60AsjL2lBgm9Fqn0
+         bVOK3H/IhhzfnFZ79b1uD8SJsUFzpuLHdwJWmU5gVyIJstRv3OIZfKslcZpafLFQVdKB
+         mBtg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=Q41tiblFE54JAr5vC6itpkRF9zh1xfIn6lFKVFQ8hPE=;
-        b=YVf2OU0VHl4IFnpEn9Zw6W8eTH4JdWYPlkLXKXpAZxTbt4I5wAIjZEYv0Qvhn0aAaP
-         gJ+EqpXZbmC2u/3AtY71PQsb1PbG2w+H/n+g9xRKypCnUSKjJ3dxY0UwWl3OKvVnXBZx
-         wdvVze1wGjY/b5sNQTKPhz/zTO1Vg9uVgav/UZLMueYy0+wEJhtPQeXOglSh6VWCd7hH
-         KcK91Yp6HQSZwx5ihtbdl8cGQ9YHcMyg2gUJi1x2T17PvXrM9R+BTH6mb/mn+ZKZPe6d
-         vg6za9tqhjC6/nC7HTMJ5mpV9NQtNPxQbWdlyKczrRWvAYnCJF3+OVnw7B1VKOyImXw6
-         ckmg==
-X-Gm-Message-State: ANhLgQ3QakZem5zRdZWgIlNe6+tUbrDNxkXcHB+tTFsfdc+EtFFYvUcW
-        on5ZtWQ3Rsdz0vT01XjQQdS1j7mnC/A=
-X-Google-Smtp-Source: ADFU+vv6B6uHErWbe6EYCVm4UjJigrIY9oE2hn3aI/w5O4AOCgONkkVZPGldpOis+jjjZWdPotLDnA==
-X-Received: by 2002:ac8:e45:: with SMTP id j5mr117129qti.215.1583339964277;
-        Wed, 04 Mar 2020 08:39:24 -0800 (PST)
+        bh=0xLBL5fJTc5AsUQPy+WSwVwS7vBKnygmPmF5kHtg+Ko=;
+        b=AZOmwEW51lLu0KaTP3jVD4nuQPDglzi/pKESKg7OlxfmP8vieQwLoubodwoSWOG6Jk
+         wtd3pU2cXOq1+fqZsbT/N0XAi9PFipIy3Pg5uprG4G5LhG5LqmLje8F9L9xN2hr/L7rb
+         arqNaadv7EUzXf5riWysUfNfA1xNwJCaKuyW2dyG++YP7dOqPYo3DYB/p4/j9T4+OHcS
+         dOXSMPLR5JdkmyjMvJ6E+D3zeQYWH5kvp20oviZAULD+qAqirCVQEIni5xa73A0ZF08X
+         rYksxzhVJgAHxIYcm2boikwVgOZZCk+GrInwNkpGJV4jGJfAPRaVJ5j+i5yX76v9px1N
+         rAgg==
+X-Gm-Message-State: ANhLgQ0r3Fa5aVQZ7VCvG4aer2OXHMOq6LpKm+uSZRdl57ctsosGTv2F
+        GKOVNsPU0zsy53lYtdvFC4Y=
+X-Google-Smtp-Source: ADFU+vuuP42wsq5zNvjSD/o3x2JeeThSpEUCJYY72NhISUzYwpkrFwZm38Ui/kbiGobZZSWCVUwB0g==
+X-Received: by 2002:a05:620a:15b3:: with SMTP id f19mr3602310qkk.15.1583340126981;
+        Wed, 04 Mar 2020 08:42:06 -0800 (PST)
 Received: from localhost ([71.172.127.161])
-        by smtp.gmail.com with ESMTPSA id d1sm1903151qtn.78.2020.03.04.08.39.23
+        by smtp.gmail.com with ESMTPSA id t6sm14177750qke.57.2020.03.04.08.42.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 08:39:23 -0800 (PST)
-Date:   Wed, 4 Mar 2020 11:39:22 -0500
+        Wed, 04 Mar 2020 08:42:06 -0800 (PST)
+Date:   Wed, 4 Mar 2020 11:42:05 -0500
 From:   Tejun Heo <tj@kernel.org>
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     cgroups@vger.kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 1/2] kernfs: Add option to enable user xattrs
-Message-ID: <20200304163922.GG189690@mtj.thefacebook.com>
-References: <C11FYO0Q9WJU.2MLRRFOQ3E878@dlxu-fedora-R90QNFJV>
- <C11GC2SN5D18.2S00I3KONE9ZE@dlxu-fedora-R90QNFJV>
+To:     Benjamin Berg <benjamin@sipsolutions.net>
+Cc:     cgroups@vger.kernel.org
+Subject: Re: [BUG] NULL pointer de-ref when setting io.cost.qos on LUKS
+ devices
+Message-ID: <20200304164205.GH189690@mtj.thefacebook.com>
+References: <1dbdcbb0c8db70a08aac467311a80abcf7779575.camel@sipsolutions.net>
+ <20200303141902.GB189690@mtj.thefacebook.com>
+ <24bd31cdaa3ea945908bc11cea05d6aae6929240.camel@sipsolutions.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <C11GC2SN5D18.2S00I3KONE9ZE@dlxu-fedora-R90QNFJV>
+In-Reply-To: <24bd31cdaa3ea945908bc11cea05d6aae6929240.camel@sipsolutions.net>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hello, Benjamin.
 
-On Tue, Mar 03, 2020 at 11:37:28AM -0800, Daniel Xu wrote:
-> It looks like in fs/xattr.c:setxattr, there is already:
+On Tue, Mar 03, 2020 at 03:40:38PM +0100, Benjamin Berg wrote:
+> I believe systemd tries to resolve to /dev/sda but that seems to fail
+> for me. So I think there is a bug in that code; I'll verify that and
+> submit a fix if so.
 > 
->     ...
->     if (size) {
->         if (size > XATTR_SIZE_MAX)
->             return -E2BIG;
->     ...
-> 
-> where XATTR_SIZE_MAX is defined as 64k. Do you want it even smaller?
+> Which device should actually be selected? Is it /dev/sda or the mapper
+> device that / is mounted from?
 
-Oh, I missed that. Order 5 allocations can still be on the big side
-tho. Ideally, something like the following?
+Right now, the situation isn't great with dm. When pagecache
+writebacks go through dm, in some cases including dm-crypt, the cgroup
+ownership information is completely lost and all writes end up being
+issued as the root cgroup, so it breaks down when dm is in use.
 
-* Total number of bytes limit as the primary limit so that we can say
-  that for a given cgroup user xattrs don't consume more than X bytes.
-  We can pick an arbitrary number which is large enough for most use
-  cases but not too big. e.g. 128k or whatever.
-
-* Total number of xattrs limit. Again, some arbitrary not too low, not
-  too high limit.
-
-* Switch to kvmalloc() for attr allocation so that we don't have to
-  worry about high order allocations.
+In the longer term, what we wanna do is controlling at physical
+devices (sda here) and then updating dm so that it can maintain and
+propagate the ownership correctly but we aren't there yet.
 
 Thanks.
 
