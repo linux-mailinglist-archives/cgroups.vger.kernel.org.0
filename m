@@ -2,105 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EEF61795C0
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:53:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 110821795C2
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2020 17:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726661AbgCDQxp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 11:53:45 -0500
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:36738 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725765AbgCDQxp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:53:45 -0500
-Received: by mail-wm1-f66.google.com with SMTP id g83so2599836wme.1;
-        Wed, 04 Mar 2020 08:53:43 -0800 (PST)
+        id S1726275AbgCDQyI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Mar 2020 11:54:08 -0500
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36262 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725765AbgCDQyI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 11:54:08 -0500
+Received: by mail-qk1-f195.google.com with SMTP id u25so2311172qkk.3;
+        Wed, 04 Mar 2020 08:54:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=c88Dz2GMYmBaIJfWXLGPh6kIgnpIJOOvRiVNkjl0F5E=;
+        b=PrTpbleqZjdc5H+btD7PF3LTHDcueQrwRgAVlPZdUuc+ZYH14SyBvd9/LxxSkDELvJ
+         71YSsAm+kuGWjtBbs5qpMqAFEdI05FCAe8lkx3YlMdrXoPGItoqFoab+/mRuS6Pr3dCa
+         9PPlaypFNsA5jw4c7XZjFxaM/v2Ne3vjxe3u2Ox2f6hoAxy9l9Ebs8Lvzoc3gPH0fJW7
+         M4HeM3dOw1FJ6w2M3o4h6MpZ7tMYNCLBB2+eZkep5tDwsWkxpLeVMbFVoOx1VdTYkseT
+         MBAn+E3KpPYWD7T4+/HD8d0pGB/xEp8LNdSo04BT9z+mUBYC7pulu3ubejpjDf97Te5P
+         LgcA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9rthIHoO9WYjIeblpibGccs1Xx6gpCOxnW4ZP2a/gaI=;
-        b=FSFB3ksVA2joFhOkeDEPMJLvySl97AX2sQLQKOX3jH94yhgjIleNT/oFzy/CmPu536
-         v2E6+sFEYIM5OAQoHFf7HORrKk0mcB9L01YEjXnRwH8Vg0opFbMjGJk8gHsevS3SC/E4
-         oXEFYX3T3ItWHMZeYXoHnqS9W3VfbL0dwu93dZwu8megfOtUL5RYRS0QNInjpH+Teld4
-         7EM612uUpU4ByW8znpqUXm+yON2cOFlVkk+ipg3xXV8aZJjHm5VyjOV5nf85hS5z9Vm1
-         o5Ug59i3gwtB9CFwnMeNhIL1t692arEv3T2TW1JKF7dDhJOxes9FID6kiRm1Czooop4d
-         CVqA==
-X-Gm-Message-State: ANhLgQ22Bzhh/N1HfhAtsdSH72hqNToJl4ogCcasQZSZ/3gxrtLOmtgf
-        KgyGP6mZ88n+qF1ecbtQ4zg=
-X-Google-Smtp-Source: ADFU+vvadTAwlgWmHKFUQufY81fr5wffpBTL2DPa8yHmyED8QcKerjwMWDGiTqW5s9WFSaAyOPO1qg==
-X-Received: by 2002:a1c:2d4f:: with SMTP id t76mr4412820wmt.60.1583340819177;
-        Wed, 04 Mar 2020 08:53:39 -0800 (PST)
-Received: from localhost (ip-37-188-250-99.eurotel.cz. [37.188.250.99])
-        by smtp.gmail.com with ESMTPSA id n11sm6649329wrw.11.2020.03.04.08.53.37
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=c88Dz2GMYmBaIJfWXLGPh6kIgnpIJOOvRiVNkjl0F5E=;
+        b=VidKBWb7c9JNapmLWqarLyT79zVwrP8DJOzWngxVqggggw5FdbNhkh14pwNC73X1Xt
+         piJRXJbTFROeizToqnOG051vksr0Aogc2R4svQFSqriVybuyHPBuBWpEGViVXn80yV7a
+         DowwS4Fh7WqcaNfOPLHfkemkBVicx04YRAsgvBDBeB6m/ptqFzSfm/mhiVc6YMFHNexv
+         bbFwBFp1COo00RMYjfpGZd+7UZD4sEMHvBRMDQhps3Fml+yjW+6kOpb4uv8pCOPHb3Au
+         wJdS37YF5z+fDlcfLyYxeDNUG3laEJmu+qt3mglB6YejX5vy61sukiT6TF5WU1TsVMVc
+         2jRA==
+X-Gm-Message-State: ANhLgQ3UGIzP0p6ISnfGZ1MnuoxpqDxPi2ljX+e6WKOazFBcNCPsLumD
+        0/wtIaiW7N4YjPQOuhKPfFo=
+X-Google-Smtp-Source: ADFU+vsX96AJwSm1NN34tV+wgpaH4J4Ama5yloqs452bOiL4yNz32zayD6HbEiGfN4SbE//2DDhVQw==
+X-Received: by 2002:a05:620a:747:: with SMTP id i7mr3695138qki.375.1583340847261;
+        Wed, 04 Mar 2020 08:54:07 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:16fa])
+        by smtp.gmail.com with ESMTPSA id y38sm14734225qth.18.2020.03.04.08.54.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Mar 2020 08:53:38 -0800 (PST)
-Date:   Wed, 4 Mar 2020 17:53:36 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: Make mem_cgroup_id_get_many dependent on MMU and
- MEMCG_SWAP
-Message-ID: <20200304165336.GO16139@dhcp22.suse.cz>
-References: <20200304142348.48167-1-vincenzo.frascino@arm.com>
+        Wed, 04 Mar 2020 08:54:06 -0800 (PST)
+Date:   Wed, 4 Mar 2020 11:54:05 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Tycho Andersen <tycho@tycho.ws>
+Cc:     cgroups@vger.kernel.org, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Serge Hallyn <serge@hallyn.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup1: don't call release_agent when it is ""
+Message-ID: <20200304165405.GI189690@mtj.thefacebook.com>
+References: <20200219190129.6899-1-tycho@tycho.ws>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200304142348.48167-1-vincenzo.frascino@arm.com>
+In-Reply-To: <20200219190129.6899-1-tycho@tycho.ws>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 04-03-20 14:23:48, Vincenzo Frascino wrote:
-> mem_cgroup_id_get_many() is currently used only when MMU or MEMCG_SWAP
-> configuration options are enabled. Having them disabled triggers the
-> following warning at compile time:
+On Wed, Feb 19, 2020 at 12:01:29PM -0700, Tycho Andersen wrote:
+> Older (and maybe current) versions of systemd set release_agent to "" when
+> shutting down, but do not set notify_on_release to 0.
 > 
-> linux/mm/memcontrol.c:4797:13: warning: ‘mem_cgroup_id_get_many’ defined
-> but not used [-Wunused-function]
->  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned
->  int n)
+> Since 64e90a8acb85 ("Introduce STATIC_USERMODEHELPER to mediate
+> call_usermodehelper()"), we filter out such calls when the user mode helper
+> path is "". However, when used in conjunction with an actual (i.e. non "")
+> STATIC_USERMODEHELPER, the path is never "", so the real usermode helper
+> will be called with argv[0] == "".
 > 
-> Make mem_cgroup_id_get_many() dependent on MMU and MEMCG_SWAP to address
-> the issue.
+> Let's avoid this by not invoking the release_agent when it is "".
+> 
+> Signed-off-by: Tycho Andersen <tycho@tycho.ws>
 
-A similar patch has been proposed recently
-http://lkml.kernel.org/r/87fthjh2ib.wl-kuninori.morimoto.gx@renesas.com.
-The conclusion was that the warning is not really worth adding code.
+Applied to cgroup/for-5.6-fixes.
 
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Signed-off-by: Vincenzo Frascino <vincenzo.frascino@arm.com>
-> ---
->  mm/memcontrol.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d09776cd6e10..628cebeb4bdd 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -4794,10 +4794,12 @@ static void mem_cgroup_id_remove(struct mem_cgroup *memcg)
->  	}
->  }
->  
-> +#if defined(CONFIG_MEMCG_SWAP) || defined(CONFIG_MMU)
->  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n)
->  {
->  	refcount_add(n, &memcg->id.ref);
->  }
-> +#endif
->  
->  static void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
->  {
-> -- 
-> 2.25.1
+Thanks.
 
 -- 
-Michal Hocko
-SUSE Labs
+tejun
