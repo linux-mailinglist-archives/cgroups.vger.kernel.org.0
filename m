@@ -2,110 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A42117A905
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 16:39:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 774FD17AA31
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 17:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726889AbgCEPjv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 10:39:51 -0500
-Received: from mail-qv1-f42.google.com ([209.85.219.42]:41807 "EHLO
-        mail-qv1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726048AbgCEPjv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 10:39:51 -0500
-Received: by mail-qv1-f42.google.com with SMTP id s15so2596152qvn.8
-        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 07:39:50 -0800 (PST)
+        id S1726251AbgCEQJc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 11:09:32 -0500
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:44365 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726183AbgCEQJc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 11:09:32 -0500
+Received: by mail-qv1-f68.google.com with SMTP id b13so2634358qvt.11
+        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 08:09:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PHq9PaeVGtyudk0wOTWZY80KOkaKDj/XvNUNHTcU/hU=;
-        b=st265gUVi6yGmxIN+nyLlX9bI0TZYas/Sz1TACzRXEO0WsuHyBBHN+VJCFf49CjWOK
-         O/Kqo75c9VQGL/OBHP+jKGyGvguT1v4JDGpgwSqbi8BlLcePzstMqZu3B7ljA0i0m1zn
-         Pn9/sKYplZJfqEPkySASJ2XYQCboTZZSQIgqYReLFiukIgvov+qJnOdVPb52daw8SipC
-         ZKlqq0Xs0QXTo/Q79Lijg7YZCvpe9D/p1yf1i+oTH0TeNV3ju4wZSgYs15DjwMm4QIdB
-         GJwSOhKCZ08ksO0b2LR2UOP0tHQN+hmJwB0KKr9R8E1XQykMTfuObZfEeVhcEQ9KRscb
-         zAVQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=YFJQskCNWVXuMbTVUr/PuWgn4wVuFnn3nZZ9fMSzuBk=;
+        b=O+9wu3BfAMHUjSBZqShEq7hMfSVcLTfHQH3cPXWeDLhMdWns+lMT2fjlIuVY1xcidZ
+         r4aOTQjLqDmz1oGNL0DlWKypSa0m3yZsnU98baSb735BbZLpwMdBa8ezdluL9EQhAfjQ
+         WrqEGLIjEEzTA76rzJUhPVQYxwdyqC/HlQ5i15gGol/dcdcCgy5ZTMSn9xCotqoHeL/z
+         LVSdPNoJnFMfy2TqYVXGDzx2e2K2xAWeZ4P34/1bZNcK28XlUjpfu0FAZ5QWJBKKgIRG
+         8xBuG8dS2XEPA3p/3jNDBn8jVaTwqUBnDUKjRsG9drVZQl30An7O+5aTkA+ooVkatlL1
+         ceLg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=PHq9PaeVGtyudk0wOTWZY80KOkaKDj/XvNUNHTcU/hU=;
-        b=eK6TfkEsB01V1173IMq227rvBLnHawjf3iXzMp86wnSSHtoXs0/2k69OdP/EueF0+a
-         ZU+TuaqzBcTrj8trhZkFdCaPx6HMcqu8xGVWRQ+6atQjBOGEIfx/MgYTBvqYtJMcuFQC
-         OQzpFSlyQOHnvndclsYmkYK4WJLb8EF9n4zrQUHQXpgM2IuDnK5gSRoTh/JTT2/yybLA
-         AfN4QlMReHCaVJ5r3T50xnrjLKTZX+0iWKH/6L85BxkbDaFr2b5lEXlCpKVwzUGf10c0
-         9iqafjq9tlIJurO9LWA518ojbK3/fJKQ1ZWFvgNlZc4uHcNq24AnDaqQtk79X6SovUaN
-         KSSQ==
-X-Gm-Message-State: ANhLgQ1HaIeYJbSrLc51z6lt9w9usx7rDEWnDoPVL2dNX1QfI9mZF2Mk
-        sL/37F8/gHrDC/oL2mcqHIc=
-X-Google-Smtp-Source: ADFU+vsusAzsBilBFjI2IBRT4Sfk+DxKTs5DRQsO4Wm7pe1X3aYRLzAkICbGN7BYLfq09B8rXsH7ng==
-X-Received: by 2002:ad4:58ea:: with SMTP id di10mr2868486qvb.101.1583422789703;
-        Thu, 05 Mar 2020 07:39:49 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:e7c7])
-        by smtp.gmail.com with ESMTPSA id u49sm15111060qtj.42.2020.03.05.07.39.48
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=YFJQskCNWVXuMbTVUr/PuWgn4wVuFnn3nZZ9fMSzuBk=;
+        b=iHPNx9zycXfjsX+IXck08RnM+4/sEkZLGyupRTxuJG9ElXDrV4N58uJTeYzxvWeAlb
+         MWjkGv1Q5fGRV1u27cLZcqaDlSPbdgc3xdNJ6nC7qPX/c/0EYWfQlYffzwoGxV6lFXkt
+         DD9w3UbE3Dz1bRHAT5NKvyuzFkOLU7q+/ntYSpOC3yRufDbCH+qgEb7j0yXbyBZBJ+mz
+         0kut7lAsdizTVm75hKD0jogCv043qV/FtWIKzWEg/nCjim+vUgDZCnw/6m4TylScOJxh
+         y3ADy+44rdieGZZp5tHq1FCCo3lhIXoinY3dMITyb4GST7qpbb8hG3s1mNHa1RbcU1uT
+         JSzw==
+X-Gm-Message-State: ANhLgQ3VJO9ccbf9zb/IW+rQ06nNXTR/5U8BHdNKTUrn/SON20eFdU07
+        0zhg49Q3rY6j7iChLS/ceVz7ZD9kXuI=
+X-Google-Smtp-Source: ADFU+vtZefeykjoi6XK4ZnTYc/+LRGud/nqzFl3SaKgi4mOWBmWqaGlmlg6yNMVJUNRNWWa06BMDeQ==
+X-Received: by 2002:ad4:510f:: with SMTP id g15mr7140943qvp.105.1583424571027;
+        Thu, 05 Mar 2020 08:09:31 -0800 (PST)
+Received: from localhost (pool-96-232-200-60.nycmny.fios.verizon.net. [96.232.200.60])
+        by smtp.gmail.com with ESMTPSA id j1sm13031066qtd.66.2020.03.05.08.09.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 07:39:49 -0800 (PST)
-Date:   Thu, 5 Mar 2020 10:39:48 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Benjamin Berg <benjamin@sipsolutions.net>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: Memory reclaim protection and cgroup nesting (desktop use)
-Message-ID: <20200305153948.GB6939@mtj.thefacebook.com>
-References: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
- <20200304163044.GF189690@mtj.thefacebook.com>
- <4d3e00457bba40b25f3ac4fd376ba7306ffc4e68.camel@sipsolutions.net>
- <20200305145554.GA5897@mtj.thefacebook.com>
- <7ce3aa9cf6f7501ce2ce6057a03a40cd5e126efd.camel@sipsolutions.net>
+        Thu, 05 Mar 2020 08:09:30 -0800 (PST)
+Date:   Thu, 5 Mar 2020 11:09:29 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] mm: Make mem_cgroup_id_get_many dependent on MMU and
+ MEMCG_SWAP
+Message-ID: <20200305160929.GA1166@cmpxchg.org>
+References: <20200304142348.48167-1-vincenzo.frascino@arm.com>
+ <20200304165336.GO16139@dhcp22.suse.cz>
+ <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <7ce3aa9cf6f7501ce2ce6057a03a40cd5e126efd.camel@sipsolutions.net>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Benjamin.
-
-On Thu, Mar 05, 2020 at 04:27:19PM +0100, Benjamin Berg wrote:
-> > Changing memory limits dynamically can lead to pretty abrupt system
-> > behaviors depending on how big the swing is but memory.low and io/cpu
-> > weights should behave fine.
+On Thu, Mar 05, 2020 at 09:49:23AM +0000, Vincenzo Frascino wrote:
+> Hi Michal,
 > 
-> Right, we'll need some daemon to handle this, so we could even smooth
-> out any change over a period of time. But it seems like that will not
-> be needed. I don't expect we'll want to change anything beyond
-> memory.low and io/cpu weights.
-
-Yeah, you don't need to baby memory.low and io/cpu weights at all.
-
-> > Sounds great. In our experience, what would help quite a lot is using
-> > per-application cgroups more (e.g. containing each application as user
-> > services) so that one misbehaving command can't overwhelm the session
-> > and eventually when oomd has to kick in, it can identify and kill only
-> > the culprit application rather than the whole session.
+> On 3/4/20 4:53 PM, Michal Hocko wrote:
+> > On Wed 04-03-20 14:23:48, Vincenzo Frascino wrote:
+> >> mem_cgroup_id_get_many() is currently used only when MMU or MEMCG_SWAP
+> >> configuration options are enabled. Having them disabled triggers the
+> >> following warning at compile time:
+> >>
+> >> linux/mm/memcontrol.c:4797:13: warning: ‘mem_cgroup_id_get_many’ defined
+> >> but not used [-Wunused-function]
+> >>  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned
+> >>  int n)
+> >>
+> >> Make mem_cgroup_id_get_many() dependent on MMU and MEMCG_SWAP to address
+> >> the issue.
+> > 
+> > A similar patch has been proposed recently
+> > http://lkml.kernel.org/r/87fthjh2ib.wl-kuninori.morimoto.gx@renesas.com.
+> > The conclusion was that the warning is not really worth adding code.
+> > 
 > 
-> We are already trying to do this in GNOME. :)
+> Thank you for pointing this out, I was not aware of it. I understand that you
+> are against "#ifdeffery" in this case, but isn't it the case of adding at least
+> __maybe_unused? This would prevent people from reporting it over and over again
+> and you to have to push them back :) Let me know what do you think, in case I am
+> happy to change my patch accordingly.
 
-Awesome.
+I would ack a patch that adds __maybe_unused.
 
-> Right now GNOME is only moving processes into cgroups after launching
-> them though (i.e. transient systemd scopes).
+This is a tiny function. If we keep it around a few releases after
+removing the last user, it costs us absolutely nothing. Eventually
+somebody will notice and send a patch to remove it. No big deal.
 
-Even just that would be plenty helpful.
+There is, however, real cost in keeping bogus warnings around and
+telling people to ignore them. It's actively lowering the
+signal-to-noise ratio and normalizing warnings to developers. That's
+the kind of thing that will actually hide problems in the kernel.
 
-> But, the goal here is to improve it further and launch all
-> applications directly using systemd (i.e. as systemd services). systemd
-> itself is going to define some standards to facilitate everything. And
-> we'll probably also need to update some XDG standards.
-> 
-> So, there are some plans already, but many details have not been solved
-> yet. But at least KDE and GNOME people are looking into integrating
-> well with systemd.
-
-Sounds great. Please let us know if there's anything we can help with.
-
-Thanks.
-
--- 
-tejun
+We know that the function can be unused in certain scenarios. It's
+silly to let the compiler continue to warn about it. That's exactly
+what __maybe_unused is for, so let's use it here.
