@@ -2,96 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EEFEB179D4F
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 02:29:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F620179D7A
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 02:36:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725776AbgCEB3m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 20:29:42 -0500
-Received: from out3-smtp.messagingengine.com ([66.111.4.27]:57235 "EHLO
-        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725773AbgCEB3m (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 20:29:42 -0500
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 355FA21C46;
-        Wed,  4 Mar 2020 20:29:41 -0500 (EST)
-Received: from imap35 ([10.202.2.85])
-  by compute4.internal (MEProxy); Wed, 04 Mar 2020 20:29:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=T9JaF4sGM4j6APTDjyVGLfdoZyWnOlU
-        PZp/Hqn+ZrA8=; b=y1apH15KPMNh2yNs/t38MuiG9vqULi0LjWZ8Ury1oTimMXN
-        hX5b54APNeUiFQdR8N5YAT9tHIxCn7eVzuDYjh1yo586pzuq4Vs6XSlQphYATqlJ
-        akFK/WIxGNNIxnGCwCOnVISQxbl/7KRPhFH14XD9tsDb5bXUfJR6TsRTVlq5rgyc
-        jd9NYf5Vjmq+S5lq7I3SYqXfE+E86CqnYEUE1QOcvAcJB2CHocXxi0kpzjHllyEV
-        x+YHqeFvrCKv3jDYaTjxjxcSqpDUg9nibza8Bt0vpm+PqrzF0nhdojGD9y32SgE8
-        GtaeSukZXFag/JTYElWPcTXYwkgGsXT7xq7HgDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=T9JaF4
-        sGM4j6APTDjyVGLfdoZyWnOlUPZp/Hqn+ZrA8=; b=ZYnJu/Wq3I5F4OKn/ROuu4
-        sZ2gB/Y+V8sfwnXZ0RaE3s/AJhQLc0THe9jvAlNiTOYL4jnCTtAKN9ZW/wTtezWR
-        KUGPnSaAOAttEvL0iFN7JAe3JTLygMONl/Wcov0s92NmjAf2BZN+fFy3PAg9HJSR
-        zmHVvxkXpwTuKuDFfnfJkbqpxMK4Anb85YYKozLeOplZt0n5/9jh2SDpAJBl1eOI
-        eApMgsTWcQTlUOoarKQvsaizLwYqJ5AKFGLxt6AwiRyVRy6W0MSz+j5Ms58UiU41
-        75Ax1rxAbx4xz8uj6Be8UOkIA1QPnhUvxP8eeYaHEYOn+NDxlVpauBBtkEfTKH9g
-        ==
-X-ME-Sender: <xms:A1ZgXoX3rnPnO1tBWcGFHhuAmJY_qcuarAeJ5qkZQdocccim2YNfZw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddtledgfeefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdludejmdenucfjughrpefofgggkfgjfhffhffvufgtsehttdertder
-    redtnecuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihii
-    eqnecuffhomhgrihhnpehlfihnrdhnvghtpdhgihhthhhusgdrtghomhenucevlhhushht
-    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegugihusegugihuuhhurd
-    ighiii
-X-ME-Proxy: <xmx:A1ZgXly3OSpLGX2_XVD5Muw4qf7wdXKpyPUcbTPWGwxM4HccEXEDyA>
-    <xmx:A1ZgXgrtDEPpGuKiQiw-ggCcVRxGjDcxsgQ8qV51jmtsh1BNjauFFg>
-    <xmx:A1ZgXtHrF2pkBFlHs0eXneWgowE9Q5hz1qQFo9YMXtBiHsCWARbgDA>
-    <xmx:BVZgXiypN1i-M2wBd7mw9zKy5w9oupbblJyg7T1KtRTuMcDxp6kcBg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 308E214C010C; Wed,  4 Mar 2020 20:29:39 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.1.7-988-g326a76f-fmstable-20200305v1
-Mime-Version: 1.0
-Message-Id: <5e0c59bd-ad59-4999-9a41-4239b96b1fc9@www.fastmail.com>
-In-Reply-To: <20200304171051.GK189690@mtj.thefacebook.com>
-References: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
- <20200304163044.GF189690@mtj.thefacebook.com>
- <20200304100231.2213a982@lwn.net>
- <20200304171051.GK189690@mtj.thefacebook.com>
-Date:   Wed, 04 Mar 2020 17:29:18 -0800
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Tejun Heo" <tj@kernel.org>, "Jonathan Corbet" <corbet@lwn.net>
-Cc:     "Benjamin Berg" <benjamin@sipsolutions.net>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        "Johannes Weiner" <hannes@cmpxchg.org>
-Subject: Re: Memory reclaim protection and cgroup nesting (desktop use)
-Content-Type: text/plain
+        id S1726874AbgCEBg1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Mar 2020 20:36:27 -0500
+Received: from mail-yw1-f67.google.com ([209.85.161.67]:34805 "EHLO
+        mail-yw1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725818AbgCEBg1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 20:36:27 -0500
+Received: by mail-yw1-f67.google.com with SMTP id o186so4151108ywc.1
+        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2020 17:36:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=elDmLeR3tSgLpvdXEISH+Yu3WidaDgNW2ZcPOQFDsvs=;
+        b=qpBkUIA0/1+0YcJbMBGaG8rOed8G3LMa8MzpE1iD4ZC8ek6Q4lrDBzOybqocgiC8ob
+         pD6WeVVKh2BrPywSmiLG7dpp8JIQYNNi+jxLH18jArlOXzg5VGKDJMXdGwTHBHDQ8hIv
+         Up/QUizz6DzXVj8LhxLpAan2Qu1FG6cek6scVfjIvAoiAqaKvmPxhv+XDvSORpOjfuBi
+         ZoiH8XmqL5hXI6+JaSLfPGCiAcZv7R6R3aCCTJReb8W8iX+QYTFS7EO/pUg9UwaqHC1N
+         2Q4c+pmU8wSNqQbt09St9MSEFR0ydlw40nbYRgMGnxJ51Bpjv/hshzy0f6psUhQeXXAF
+         AFnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=elDmLeR3tSgLpvdXEISH+Yu3WidaDgNW2ZcPOQFDsvs=;
+        b=DGc0F3nhxwy7rv8kKUKao0XBmzZQeDjbl5I8nSwdBVEYN46ncWaiweNnNenQsEXayU
+         V0HaQbsftoIz0xwav8L2PDGi4X0M6SC1gGBUrlyYC9UUYo0Lml9oKqTbXGeXQ6aId6en
+         FicTwEh0jicUF/RdOG1Wxlnm5N3ox3wbtVWIrKrLcVDjTMq6TLvchDjbINvfyq+i7zmU
+         cdmWEhB9G+DKR3pUL1Mhj2u3OSj9+5macboN8YfHmDJAn5osTa5loLA81mAOHbfNwC2Y
+         UWbVZ8PQF2ECdFgRzSqmw5fNFEX7tzyvZPLvLoTQpAbB/nbH/TwDOCa3Yi7Ws4Su76zn
+         Ba4w==
+X-Gm-Message-State: ANhLgQ1lWhgYnapJh0g/X7CfU8shxlGVkXkt3jwi405bWDBbUztDBuI+
+        6zr1Fi3hPK0YHJSfgQY2AqWNd70fiSAbxYPdrmiyQA==
+X-Google-Smtp-Source: ADFU+vuVaTqAVDE0CXkgK9awzGSjwhPp2A3NtG4PdPRMu5B1+xOJ8wW8fF0AXsLV3KV9AODiOn4iHNOp9PhZYzCUhi0=
+X-Received: by 2002:a25:bd0a:: with SMTP id f10mr5121241ybk.173.1583372185987;
+ Wed, 04 Mar 2020 17:36:25 -0800 (PST)
+MIME-Version: 1.0
+References: <20200304233856.257891-1-shakeelb@google.com>
+In-Reply-To: <20200304233856.257891-1-shakeelb@google.com>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Wed, 4 Mar 2020 17:36:14 -0800
+Message-ID: <CANn89i+TiiLKsE7k4TyRqr03uNPW=UpkvpXL1LVWvTmhE_AUpA@mail.gmail.com>
+Subject: Re: [PATCH v2] net: memcg: late association of sock to memcg
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 4, 2020, at 9:10 AM, Tejun Heo wrote:
-> On Wed, Mar 04, 2020 at 10:02:31AM -0700, Jonathan Corbet wrote:
-> > On Wed, 4 Mar 2020 11:30:44 -0500
-> > Tejun Heo <tj@kernel.org> wrote:
-> > 
-> > > > (In a realistic scenario I expect to have swap and then reserving maybe
-> > > > a few hundred MiB; DAMON might help with finding good values.)  
-> > > 
-> > > What's DAMON?
-> > 
-> > 	https://lwn.net/Articles/812707/
-> 
-> Ah, thanks a lot for the link. That's neat. For determining workload
-> size, we're using senpai:
-> 
->  https://github.com/facebookincubator/senpai
-[...]
+On Wed, Mar 4, 2020 at 3:39 PM Shakeel Butt <shakeelb@google.com> wrote:
+>
+> If a TCP socket is allocated in IRQ context or cloned from unassociated
+> (i.e. not associated to a memcg) in IRQ context then it will remain
+> unassociated for its whole life. Almost half of the TCPs created on the
+> system are created in IRQ context, so, memory used by such sockets will
+> not be accounted by the memcg.
+>
+> This issue is more widespread in cgroup v1 where network memory
+> accounting is opt-in but it can happen in cgroup v2 if the source socket
+> for the cloning was created in root memcg.
+>
+> To fix the issue, just do the late association of the unassociated
+> sockets at accept() time in the process context and then force charge
+> the memory buffer already reserved by the socket.
+>
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> ---
+> Changes since v1:
+> - added sk->sk_rmem_alloc to initial charging.
+> - added synchronization to get memory usage and set sk_memcg race-free.
+>
+>  net/ipv4/inet_connection_sock.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+>
+> diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
+> index a4db79b1b643..7bcd657cd45e 100644
+> --- a/net/ipv4/inet_connection_sock.c
+> +++ b/net/ipv4/inet_connection_sock.c
+> @@ -482,6 +482,25 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
+>                 }
+>                 spin_unlock_bh(&queue->fastopenq.lock);
+>         }
+> +
+> +       if (mem_cgroup_sockets_enabled && !newsk->sk_memcg) {
+> +               int amt;
+> +
+> +               /* atomically get the memory usage and set sk->sk_memcg. */
+> +               lock_sock(newsk);
+> +
+> +               /* The sk has not been accepted yet, no need to look at
+> +                * sk->sk_wmem_queued.
+> +                */
+> +               amt = sk_mem_pages(newsk->sk_forward_alloc +
+> +                                  atomic_read(&sk->sk_rmem_alloc));
+> +               mem_cgroup_sk_alloc(newsk);
+> +
+> +               release_sock(newsk);
+> +
+> +               if (newsk->sk_memcg)
 
-For reference, senpai is currently deployed as an oomd plugin:
-https://github.com/facebookincubator/oomd/blob/master/src/oomd/plugins/Senpai.cpp .
+Most sockets in accept queue should have amt == 0, so maybe avoid
+calling this thing only when amt == 0 ?
 
-The python version might be a bit out of date -- Johannes probably knows.
+Also  I would release_sock(newsk) after this, otherwise incoming
+packets could mess with newsk->sk_forward_alloc
+
+if (amt && newsk->sk_memcg)
+      mem_cgroup_charge_skmem(newsk->sk_memcg, amt);
+release_sock(newsk);
+
+Also, I wonder if     mem_cgroup_charge_skmem() has been used at all
+these last four years
+on arches with PAGE_SIZE != 4096
+
+( SK_MEM_QUANTUM is not anymore PAGE_SIZE, but 4096)
+
+
+
+> +                       mem_cgroup_charge_skmem(newsk->sk_memcg, amt);
+> +       }
+>  out:
+>         release_sock(sk);
+>         if (req)
+> --
+> 2.25.0.265.gbab2e86ba0-goog
+>
