@@ -2,87 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 1214517A357
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 11:46:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E5F8B17A3C2
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 12:11:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726049AbgCEKqC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 05:46:02 -0500
-Received: from foss.arm.com ([217.140.110.172]:47014 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725912AbgCEKqB (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 5 Mar 2020 05:46:01 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0F47731B;
-        Thu,  5 Mar 2020 02:46:01 -0800 (PST)
-Received: from [192.168.1.161] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 09CC03F6C4;
-        Thu,  5 Mar 2020 02:45:59 -0800 (PST)
-Subject: Re: [PATCH] mm: Make mem_cgroup_id_get_many dependent on MMU and
- MEMCG_SWAP
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-References: <20200304142348.48167-1-vincenzo.frascino@arm.com>
- <20200304165336.GO16139@dhcp22.suse.cz>
- <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
- <20200305100023.GR16139@dhcp22.suse.cz>
-From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
-Message-ID: <acf13158-40a3-4027-f36a-25d24efe3242@arm.com>
-Date:   Thu, 5 Mar 2020 10:46:21 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S1725953AbgCELLC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 06:11:02 -0500
+Received: from ulan.pagasa.dost.gov.ph ([202.90.128.205]:46382 "EHLO
+        mailgw.pagasa.dost.gov.ph" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727322AbgCELLB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 06:11:01 -0500
+X-Greylist: delayed 1309 seconds by postgrey-1.27 at vger.kernel.org; Thu, 05 Mar 2020 06:11:00 EST
+Received: from webmail.pagasa.dost.int ([10.10.11.8])
+        by mailgw.pagasa.dost.gov.ph  with ESMTP id 025Alwuf006367-025Alwuh006367
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 5 Mar 2020 18:47:58 +0800
+Received: from localhost (localhost [127.0.0.1])
+        by webmail.pagasa.dost.int (Postfix) with ESMTP id 4A7912981C2F;
+        Thu,  5 Mar 2020 18:47:58 +0800 (PST)
+Received: from webmail.pagasa.dost.int ([127.0.0.1])
+        by localhost (webmail.pagasa.dost.int [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id GbHgjfMOWW41; Thu,  5 Mar 2020 18:47:57 +0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by webmail.pagasa.dost.int (Postfix) with ESMTP id 39FFF2981C2D;
+        Thu,  5 Mar 2020 18:47:57 +0800 (PST)
+DKIM-Filter: OpenDKIM Filter v2.10.3 webmail.pagasa.dost.int 39FFF2981C2D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pagasa.dost.gov.ph;
+        s=96B9A03E-48B0-11EA-A7E8-92F42F537CE2; t=1583405277;
+        bh=RC75T5p3JPNk7JUNB+lH0UfaFQO1Ac584gPL3SIL6h8=;
+        h=Date:From:Message-ID:MIME-Version;
+        b=JZYpvdvTt5CbJkit04pA5NkbKT7xfWQNTw8OqYeZGItzSHoGlQp67gP7+ZlcmaNgp
+         ALg1zWU9Kol1u6TrlwS+54JNx4z1acuc10Mx4tu0rtLA7Yk1LQexoD1JS32uUBHunN
+         0zrcOWmtTjsSioY464/v1DYc5NNPC6WuIhkROf4o=
+X-Virus-Scanned: amavisd-new at pagasa.dost.int
+Received: from webmail.pagasa.dost.int ([127.0.0.1])
+        by localhost (webmail.pagasa.dost.int [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id GLfI9DOEPLUY; Thu,  5 Mar 2020 18:47:57 +0800 (PST)
+Received: from webmail.pagasa.dost.int (webmail.pagasa.dost.int [10.11.1.8])
+        by webmail.pagasa.dost.int (Postfix) with ESMTP id 594B32981BFF;
+        Thu,  5 Mar 2020 18:47:55 +0800 (PST)
+Date:   Thu, 5 Mar 2020 18:47:55 +0800 (PST)
+From:   "Juanito S. Galang" <juanito.galang@pagasa.dost.gov.ph>
+Message-ID: <2031491795.3575199.1583405275334.JavaMail.zimbra@pagasa.dost.gov.ph>
+Subject: 
 MIME-Version: 1.0
-In-Reply-To: <20200305100023.GR16139@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Zimbra 8.8.15_GA_3899 (ZimbraWebClient - GC79 (Win)/8.8.15_GA_3895)
+Thread-Index: XACCu5+60kc7HJNpbBRvJEwj7zB6bA==
+Thread-Topic: 
+X-FEAS-DKIM: Valid
+Authentication-Results: mailgw.pagasa.dost.gov.ph;
+        dkim=pass header.i=@pagasa.dost.gov.ph
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Michal,
 
-On 3/5/20 10:00 AM, Michal Hocko wrote:
-> On Thu 05-03-20 09:49:23, Vincenzo Frascino wrote:
->> Hi Michal,
->>
->> On 3/4/20 4:53 PM, Michal Hocko wrote:
->>> On Wed 04-03-20 14:23:48, Vincenzo Frascino wrote:
->>>> mem_cgroup_id_get_many() is currently used only when MMU or MEMCG_SWAP
->>>> configuration options are enabled. Having them disabled triggers the
->>>> following warning at compile time:
->>>>
->>>> linux/mm/memcontrol.c:4797:13: warning: ‘mem_cgroup_id_get_many’ defined
->>>> but not used [-Wunused-function]
->>>>  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned
->>>>  int n)
->>>>
->>>> Make mem_cgroup_id_get_many() dependent on MMU and MEMCG_SWAP to address
->>>> the issue.
->>>
->>> A similar patch has been proposed recently
->>> http://lkml.kernel.org/r/87fthjh2ib.wl-kuninori.morimoto.gx@renesas.com.
->>> The conclusion was that the warning is not really worth adding code.
->>>
->>
->> Thank you for pointing this out, I was not aware of it. I understand that you
->> are against "#ifdeffery" in this case, but isn't it the case of adding at least
->> __maybe_unused? This would prevent people from reporting it over and over again
->> and you to have to push them back :) Let me know what do you think, in case I am
->> happy to change my patch accordingly.
-> 
-> We have discussed __maybe_unused in the email thread as well. I am not a
-> great fan of that as mentioed there.
-> 
 
-I am aware of this. I was just exploring if there was a possibility of
-addressing the warning, since if we leave all the warnings in scenarios like
-randconfig can cause confusion in between real and non real issues.
-Is there anything we can do?
-
--- 
-Regards,
-Vincenzo
+Herzlichen Gl=C3=BCckwunsch Lieber Beg=C3=BCnstigter,Sie erhalten diese E-M=
+ail von der Robert Bailey Foundation. Ich bin ein pensionierter Regierungsa=
+ngestellter aus Harlem und ein Gewinner des Powerball Lottery Jackpot im We=
+rt von 343,8 Millionen US-Dollar. Ich bin der gr=C3=B6=C3=9Fte Jackpot-Gewi=
+nner in der Geschichte der New Yorker Lotterie im US-Bundesstaat Amerika. I=
+ch habe diese Lotterie am 27. Oktober 2018 gewonnen und m=C3=B6chte Sie dar=
+=C3=BCber informieren, dass Google in Zusammenarbeit mit Microsoft Ihre "E-=
+Mail-Adresse" auf meine Bitte, einen Spendenbetrag von 3.000.000,00 Million=
+en Euro zu erhalten, =C3=BCbermittelt hat. Ich spende diese 3 Millionen Eur=
+o an Sie, um den Wohlt=C3=A4tigkeitsheimen und armen Menschen in Ihrer Geme=
+inde zu helfen, damit wir die Welt f=C3=BCr alle verbessern k=C3=B6nnen.Wei=
+tere Informationen finden Sie auf der folgenden Website, damit Sie nicht sk=
+eptisch sind
+Diese Spende von 3 Mio. EUR.https://nypost.com/2018/11/14/meet-the-winner-o=
+f-the-biggest-lottery-jackpot-in-new-york-history/Sie k=C3=B6nnen auch mein=
+ YouTube f=C3=BCr mehr Best=C3=A4tigung aufpassen:
+https://www.youtube.com/watch?v=3DH5vT18Ysavc
+Bitte beachten Sie, dass alle Antworten an (robertdonation7@gmail.com=C2=A0=
+ ) gesendet werden, damit wir das k=C3=B6nnen
+Fahren Sie fort, um das gespendete Geld an Sie zu =C3=BCberweisen.E-Mail: r=
+obertdonation7@gmail.comFreundliche Gr=C3=BC=C3=9Fe,
+Robert Bailey
+* * * * * * * * * * * * * * * *
+Powerball Jackpot Gewinner
