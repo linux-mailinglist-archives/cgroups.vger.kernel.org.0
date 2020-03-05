@@ -2,152 +2,260 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 0131A179EC9
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 05:54:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37031179F75
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 06:45:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgCEEyr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Mar 2020 23:54:47 -0500
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:35197 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725975AbgCEEyr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Mar 2020 23:54:47 -0500
-Received: by mail-ot1-f66.google.com with SMTP id v10so4478579otp.2
-        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2020 20:54:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wxMB2pp+9PjI13jJjWt8ByuXtWLK+X9MK3SPC71Gnu4=;
-        b=tJ/6smOavDVAgu3Gdv6UPcaz/ASw6W4rh6d3f/b7iBjY6Foxfv6i1G0OlFGnI0h645
-         wA0vSFhrAVZuAr2PJDr9E4WHV/usr5bRjaixTFpn8JjPp3QzkHVa+tncWWsSfQ9gGU/O
-         6OCZybxu/Ly8SyivT03y5Svx2ipVvnyrSkVDGOiGek+CA3OhEXmERwV4mxW5DXyzwWmt
-         ODfNLKdcYqr5PNNI8tKVwTv4MkqptJjbpXUwR/rR/dN19neY/vhWLvyoY2YrNTsIPkvP
-         nKghJJEO1ErZxQXjl2DWtHTDR4Lk8Iahf874jvpX4hFCMpZlNuHHd8+wXH5Jn3IHb92E
-         JRsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wxMB2pp+9PjI13jJjWt8ByuXtWLK+X9MK3SPC71Gnu4=;
-        b=DrVxFgnP3L44zKnzF8c0pxF9gVujuN4eSbcqZAlX3uzVjEhxaB1NiIsNDp39s0tzhs
-         u2vUbk1xUUXZV3w0UcDRTZlxBfuGeT+YQXHHvHeXglwbrk4+dd1knqZlhWweuD3nVvPD
-         Z+eABovxUkm0XY4Z75VDVo11jK8RvLVEQ6ouxIAzddqPR5fCCfg6g9ocM+b9rXq94jD5
-         WuLJMHspzwGGnIPEh9UNffaCc8aHZUfT25/9Ykgnl4E2TqjxCY9CJ0jjRnhiDgYWKQes
-         8o6lbZjGHwfwColABic/902Xi8UmGtSD5lojC9xpEWfH8ew5GEf+BoIXuuMVw2rblF+T
-         72Ww==
-X-Gm-Message-State: ANhLgQ1RIwvoenCW7du8fXGXhl8MX3kvF94d/meclsKCPCnSmAIymWbq
-        zktjK6S1iskt2qKp8cRFynoWLqUG0pzeyFXxhIJ/sQ==
-X-Google-Smtp-Source: ADFU+vsA/fXuJ3IRHxsfbCJ4aVofj1cKFBMR9e3ak4P1jFEdSsgTVK8BlhVGbuvdGoUrb3G4k+2cTTJNUxh+RFfBW2k=
-X-Received: by 2002:a9d:6:: with SMTP id 6mr5250710ota.191.1583384085099; Wed,
- 04 Mar 2020 20:54:45 -0800 (PST)
+        id S1725903AbgCEFpD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 00:45:03 -0500
+Received: from mga14.intel.com ([192.55.52.115]:30889 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725858AbgCEFpD (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 5 Mar 2020 00:45:03 -0500
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 04 Mar 2020 21:45:02 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.70,516,1574150400"; 
+   d="scan'208";a="413407071"
+Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
+  by orsmga005.jf.intel.com with ESMTP; 04 Mar 2020 21:45:00 -0800
+Received: from kbuild by lkp-server01 with local (Exim 4.89)
+        (envelope-from <lkp@intel.com>)
+        id 1j9jJb-000BR7-Jn; Thu, 05 Mar 2020 13:44:59 +0800
+Date:   Thu, 05 Mar 2020 13:44:01 +0800
+From:   kbuild test robot <lkp@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [cgroup:for-5.6-fixes] BUILD SUCCESS
+ 2e5383d7904e60529136727e49629a82058a5607
+Message-ID: <5e6091a1.ABRnbR70IvPFWFaE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-References: <20200304233856.257891-1-shakeelb@google.com> <CANn89i+TiiLKsE7k4TyRqr03uNPW=UpkvpXL1LVWvTmhE_AUpA@mail.gmail.com>
- <CALvZod7MSXGsV6nDngWS+mS-5tfu0ww3aJyXQ8GV2hRkEEcYDg@mail.gmail.com> <CANn89iJF3vSNG=uw5=-Knu48dKpceqXyYLm8z6d7aDoxaGDgTw@mail.gmail.com>
-In-Reply-To: <CANn89iJF3vSNG=uw5=-Knu48dKpceqXyYLm8z6d7aDoxaGDgTw@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 4 Mar 2020 20:54:34 -0800
-Message-ID: <CALvZod7ksLOKkTLN9RZnALUYziCfO6vCtu1ivhWqG3RNUwVjXw@mail.gmail.com>
-Subject: Re: [PATCH v2] net: memcg: late association of sock to memcg
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>, linux-mm <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 4, 2020 at 8:38 PM Eric Dumazet <edumazet@google.com> wrote:
->
-> On Wed, Mar 4, 2020 at 6:19 PM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > On Wed, Mar 4, 2020 at 5:36 PM Eric Dumazet <edumazet@google.com> wrote:
-> > >
-> > > On Wed, Mar 4, 2020 at 3:39 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > > >
-> > > > If a TCP socket is allocated in IRQ context or cloned from unassociated
-> > > > (i.e. not associated to a memcg) in IRQ context then it will remain
-> > > > unassociated for its whole life. Almost half of the TCPs created on the
-> > > > system are created in IRQ context, so, memory used by such sockets will
-> > > > not be accounted by the memcg.
-> > > >
-> > > > This issue is more widespread in cgroup v1 where network memory
-> > > > accounting is opt-in but it can happen in cgroup v2 if the source socket
-> > > > for the cloning was created in root memcg.
-> > > >
-> > > > To fix the issue, just do the late association of the unassociated
-> > > > sockets at accept() time in the process context and then force charge
-> > > > the memory buffer already reserved by the socket.
-> > > >
-> > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > > > ---
-> > > > Changes since v1:
-> > > > - added sk->sk_rmem_alloc to initial charging.
-> > > > - added synchronization to get memory usage and set sk_memcg race-free.
-> > > >
-> > > >  net/ipv4/inet_connection_sock.c | 19 +++++++++++++++++++
-> > > >  1 file changed, 19 insertions(+)
-> > > >
-> > > > diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-> > > > index a4db79b1b643..7bcd657cd45e 100644
-> > > > --- a/net/ipv4/inet_connection_sock.c
-> > > > +++ b/net/ipv4/inet_connection_sock.c
-> > > > @@ -482,6 +482,25 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
-> > > >                 }
-> > > >                 spin_unlock_bh(&queue->fastopenq.lock);
-> > > >         }
-> > > > +
-> > > > +       if (mem_cgroup_sockets_enabled && !newsk->sk_memcg) {
-> > > > +               int amt;
-> > > > +
-> > > > +               /* atomically get the memory usage and set sk->sk_memcg. */
-> > > > +               lock_sock(newsk);
-> > > > +
-> > > > +               /* The sk has not been accepted yet, no need to look at
-> > > > +                * sk->sk_wmem_queued.
-> > > > +                */
-> > > > +               amt = sk_mem_pages(newsk->sk_forward_alloc +
-> > > > +                                  atomic_read(&sk->sk_rmem_alloc));
-> > > > +               mem_cgroup_sk_alloc(newsk);
-> > > > +
-> > > > +               release_sock(newsk);
-> > > > +
-> > > > +               if (newsk->sk_memcg)
-> > >
-> > > Most sockets in accept queue should have amt == 0, so maybe avoid
-> > > calling this thing only when amt == 0 ?
-> > >
-> >
-> > Thanks, will do in the next version. BTW I have tested with adding
-> > mdelay() here and running iperf3 and I did see non-zero amt.
-> >
-> > > Also  I would release_sock(newsk) after this, otherwise incoming
-> > > packets could mess with newsk->sk_forward_alloc
-> > >
-> >
-> > I think that is fine. Once sk->sk_memcg is set then
-> > mem_cgroup_charge_skmem() will be called for new incoming packets.
-> > Here we just need to call mem_cgroup_charge_skmem() with amt before
-> > sk->sk_memcg was set.
->
->
-> Unfortunately, as soon as release_sock(newsk) is done, incoming
-> packets can be fed to the socket,
-> and completely change memory usage of the socket.
->
-> For example, the whole queue might have been zapped, or collapsed, if
-> we receive a RST packet,
-> or if memory pressure asks us to prune the out of order queue.
->
-> So you might charge something, then never uncharge it, since at
-> close() time the socket will have zero bytes to uncharge.
->
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git  for-5.6-fixes
+branch HEAD: 2e5383d7904e60529136727e49629a82058a5607  cgroup1: don't call release_agent when it is ""
 
-Ok, thanks for the explanation. I will fix this in the next version.
+elapsed time: 768m
+
+configs tested: 205
+configs skipped: 0
+
+The following configs have been built successfully.
+More configs may be tested in the coming days.
+
+arm                              allmodconfig
+arm                               allnoconfig
+arm                              allyesconfig
+arm64                            allmodconfig
+arm64                             allnoconfig
+arm64                            allyesconfig
+arm                         at91_dt_defconfig
+arm                           efm32_defconfig
+arm                          exynos_defconfig
+arm                        multi_v5_defconfig
+arm                        multi_v7_defconfig
+arm                        shmobile_defconfig
+arm                           sunxi_defconfig
+arm64                               defconfig
+sparc                            allyesconfig
+s390                             alldefconfig
+c6x                        evmc6678_defconfig
+ia64                                defconfig
+powerpc                             defconfig
+ia64                             allmodconfig
+i386                              allnoconfig
+i386                             alldefconfig
+i386                             allyesconfig
+i386                                defconfig
+ia64                             alldefconfig
+ia64                              allnoconfig
+ia64                             allyesconfig
+c6x                              allyesconfig
+nios2                         10m50_defconfig
+nios2                         3c120_defconfig
+openrisc                    or1ksim_defconfig
+openrisc                 simple_smp_defconfig
+xtensa                       common_defconfig
+xtensa                          iss_defconfig
+nds32                               defconfig
+nds32                             allnoconfig
+csky                                defconfig
+alpha                               defconfig
+h8300                     edosk2674_defconfig
+h8300                    h8300h-sim_defconfig
+h8300                       h8s-sim_defconfig
+m68k                             allmodconfig
+m68k                       m5475evb_defconfig
+m68k                          multi_defconfig
+m68k                           sun3_defconfig
+arc                              allyesconfig
+arc                                 defconfig
+microblaze                      mmu_defconfig
+microblaze                    nommu_defconfig
+powerpc                           allnoconfig
+powerpc                       ppc64_defconfig
+powerpc                          rhel-kconfig
+mips                           32r2_defconfig
+mips                         64r6el_defconfig
+mips                             allmodconfig
+mips                              allnoconfig
+mips                             allyesconfig
+mips                      fuloong2e_defconfig
+mips                      malta_kvm_defconfig
+parisc                            allnoconfig
+parisc                generic-64bit_defconfig
+parisc                generic-32bit_defconfig
+parisc                           allyesconfig
+x86_64               randconfig-a001-20200305
+x86_64               randconfig-a002-20200305
+x86_64               randconfig-a003-20200305
+i386                 randconfig-a001-20200305
+i386                 randconfig-a002-20200305
+i386                 randconfig-a003-20200305
+x86_64               randconfig-a001-20200304
+x86_64               randconfig-a002-20200304
+x86_64               randconfig-a003-20200304
+i386                 randconfig-a001-20200304
+i386                 randconfig-a002-20200304
+i386                 randconfig-a003-20200304
+alpha                randconfig-a001-20200305
+m68k                 randconfig-a001-20200305
+mips                 randconfig-a001-20200305
+nds32                randconfig-a001-20200305
+parisc               randconfig-a001-20200305
+riscv                randconfig-a001-20200305
+riscv                randconfig-a001-20200304
+alpha                randconfig-a001-20200304
+m68k                 randconfig-a001-20200304
+nds32                randconfig-a001-20200304
+mips                 randconfig-a001-20200304
+parisc               randconfig-a001-20200304
+c6x                  randconfig-a001-20200304
+h8300                randconfig-a001-20200304
+microblaze           randconfig-a001-20200304
+nios2                randconfig-a001-20200304
+sparc64              randconfig-a001-20200304
+c6x                  randconfig-a001-20200305
+h8300                randconfig-a001-20200305
+microblaze           randconfig-a001-20200305
+nios2                randconfig-a001-20200305
+sparc64              randconfig-a001-20200305
+sh                   randconfig-a001-20200304
+openrisc             randconfig-a001-20200304
+csky                 randconfig-a001-20200304
+s390                 randconfig-a001-20200304
+xtensa               randconfig-a001-20200304
+x86_64               randconfig-b001-20200304
+x86_64               randconfig-b002-20200304
+x86_64               randconfig-b003-20200304
+i386                 randconfig-b001-20200304
+i386                 randconfig-b002-20200304
+i386                 randconfig-b003-20200304
+x86_64               randconfig-b001-20200305
+x86_64               randconfig-b002-20200305
+x86_64               randconfig-b003-20200305
+i386                 randconfig-b001-20200305
+i386                 randconfig-b002-20200305
+i386                 randconfig-b003-20200305
+x86_64               randconfig-c001-20200305
+x86_64               randconfig-c002-20200305
+x86_64               randconfig-c003-20200305
+i386                 randconfig-c001-20200305
+i386                 randconfig-c002-20200305
+i386                 randconfig-c003-20200305
+x86_64               randconfig-c001-20200304
+x86_64               randconfig-c002-20200304
+x86_64               randconfig-c003-20200304
+i386                 randconfig-c001-20200304
+i386                 randconfig-c002-20200304
+i386                 randconfig-c003-20200304
+x86_64               randconfig-d001-20200304
+x86_64               randconfig-d002-20200304
+x86_64               randconfig-d003-20200304
+i386                 randconfig-d001-20200304
+i386                 randconfig-d002-20200304
+i386                 randconfig-d003-20200304
+x86_64               randconfig-e001-20200304
+x86_64               randconfig-e002-20200304
+x86_64               randconfig-e003-20200304
+i386                 randconfig-e001-20200304
+i386                 randconfig-e002-20200304
+i386                 randconfig-e003-20200304
+x86_64               randconfig-e001-20200305
+x86_64               randconfig-e002-20200305
+x86_64               randconfig-e003-20200305
+i386                 randconfig-e001-20200305
+i386                 randconfig-e002-20200305
+i386                 randconfig-e003-20200305
+x86_64               randconfig-f001-20200304
+x86_64               randconfig-f002-20200304
+x86_64               randconfig-f003-20200304
+i386                 randconfig-f001-20200304
+i386                 randconfig-f002-20200304
+i386                 randconfig-f003-20200304
+x86_64               randconfig-g001-20200304
+x86_64               randconfig-g002-20200304
+x86_64               randconfig-g003-20200304
+i386                 randconfig-g001-20200304
+i386                 randconfig-g002-20200304
+i386                 randconfig-g003-20200304
+x86_64               randconfig-h001-20200305
+x86_64               randconfig-h002-20200305
+x86_64               randconfig-h003-20200305
+i386                 randconfig-h001-20200305
+i386                 randconfig-h002-20200305
+i386                 randconfig-h003-20200305
+x86_64               randconfig-h001-20200304
+x86_64               randconfig-h002-20200304
+x86_64               randconfig-h003-20200304
+i386                 randconfig-h001-20200304
+i386                 randconfig-h002-20200304
+i386                 randconfig-h003-20200304
+arc                  randconfig-a001-20200304
+arm                  randconfig-a001-20200304
+arm64                randconfig-a001-20200304
+ia64                 randconfig-a001-20200304
+powerpc              randconfig-a001-20200304
+sparc                randconfig-a001-20200304
+riscv                            allmodconfig
+riscv                             allnoconfig
+riscv                            allyesconfig
+riscv                               defconfig
+riscv                    nommu_virt_defconfig
+riscv                          rv32_defconfig
+s390                             allmodconfig
+s390                              allnoconfig
+s390                             allyesconfig
+s390                          debug_defconfig
+s390                                defconfig
+s390                       zfcpdump_defconfig
+sh                               allmodconfig
+sh                                allnoconfig
+sh                          rsk7269_defconfig
+sh                  sh7785lcr_32bit_defconfig
+sh                            titan_defconfig
+sparc                               defconfig
+sparc64                          allmodconfig
+sparc64                           allnoconfig
+sparc64                          allyesconfig
+sparc64                             defconfig
+um                                  defconfig
+um                             i386_defconfig
+um                           x86_64_defconfig
+x86_64                              fedora-25
+x86_64                                  kexec
+x86_64                                    lkp
+x86_64                                   rhel
+x86_64                         rhel-7.2-clear
+x86_64                               rhel-7.6
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
