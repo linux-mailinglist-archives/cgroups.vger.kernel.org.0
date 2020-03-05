@@ -2,91 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 969F817A2BB
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 11:02:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A38017A323
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 11:31:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727070AbgCEKA1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 05:00:27 -0500
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37958 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727049AbgCEKA0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 05:00:26 -0500
-Received: by mail-wm1-f65.google.com with SMTP id u9so5004430wml.3;
-        Thu, 05 Mar 2020 02:00:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=N+VHYLrvI+7e0ZVMs5A2YwvXMlQT1Gheq6HEnWaXrHg=;
-        b=bhyksl/2dsNRmdBN5+5IiXymbHl3MnUtSSq7uoI1qNzqAbKktR97O0QY4ngO6yBIXl
-         Fcfhmnw31EaYAdgnRSCb6o6TarDXeLq3+1GyHQHEAQoZcvdGX7AfIKnBaZ4Lfba5YDRz
-         3OUfoZxt8m2YtXo4iXO69ksFpf/MOEL9urYFdVgZboBDteLAqIDCt4Xs2dBwODjE+Woi
-         SD/7WhGiPxCkT35LgHtoWpxdsVh0reff7DjUhGrh2bYObZPrzpoCOHtNzgv61kY0AdTn
-         Nj5euNAbnfCG5RdCGRT1SYnUz9hDk6v4Yg1aduBDGuJIA5tS7UyzUIkR1yBwBt6MB1uV
-         dXTg==
-X-Gm-Message-State: ANhLgQ10h5UM/MqBv3IyVHgd1FKmdv1Tj2uX1J2Mk3rgAaQUsC88mKt4
-        xsM+vyVH2clz4LjzF7VH9Cw=
-X-Google-Smtp-Source: ADFU+vsjaigYaEU+QZdTj0scvF+IN/q3UIp8DX+Zj1RxoQokICpr/pwGVXS7WJffS4KX2QC2pN6duQ==
-X-Received: by 2002:a1c:7c08:: with SMTP id x8mr8419345wmc.71.1583402424648;
-        Thu, 05 Mar 2020 02:00:24 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id 25sm8514392wmg.30.2020.03.05.02.00.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 02:00:23 -0800 (PST)
-Date:   Thu, 5 Mar 2020 11:00:23 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Vincenzo Frascino <vincenzo.frascino@arm.com>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] mm: Make mem_cgroup_id_get_many dependent on MMU and
- MEMCG_SWAP
-Message-ID: <20200305100023.GR16139@dhcp22.suse.cz>
-References: <20200304142348.48167-1-vincenzo.frascino@arm.com>
- <20200304165336.GO16139@dhcp22.suse.cz>
- <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
+        id S1725897AbgCEKbf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 05:31:35 -0500
+Received: from s3.sipsolutions.net ([144.76.43.62]:59740 "EHLO
+        sipsolutions.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725880AbgCEKbf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 05:31:35 -0500
+Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
+        (Exim 4.93)
+        (envelope-from <benjamin@sipsolutions.net>)
+        id 1j9nmv-000mJW-Bd; Thu, 05 Mar 2020 11:31:33 +0100
+Message-ID: <71515f7a143937ab9ab11625485659bb7288f024.camel@sipsolutions.net>
+Subject: Re: [BUG] NULL pointer de-ref when setting io.cost.qos on LUKS
+ devices
+From:   Benjamin Berg <benjamin@sipsolutions.net>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org
+Date:   Thu, 05 Mar 2020 11:31:29 +0100
+In-Reply-To: <20200304164205.GH189690@mtj.thefacebook.com> (sfid-20200304_174209_151624_50E7536A)
+References: <1dbdcbb0c8db70a08aac467311a80abcf7779575.camel@sipsolutions.net>
+         <20200303141902.GB189690@mtj.thefacebook.com>
+         <24bd31cdaa3ea945908bc11cea05d6aae6929240.camel@sipsolutions.net>
+         <20200304164205.GH189690@mtj.thefacebook.com>
+         (sfid-20200304_174209_151624_50E7536A)
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-mcjR0yXznIKw1TEhCYUl"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 05-03-20 09:49:23, Vincenzo Frascino wrote:
-> Hi Michal,
-> 
-> On 3/4/20 4:53 PM, Michal Hocko wrote:
-> > On Wed 04-03-20 14:23:48, Vincenzo Frascino wrote:
-> >> mem_cgroup_id_get_many() is currently used only when MMU or MEMCG_SWAP
-> >> configuration options are enabled. Having them disabled triggers the
-> >> following warning at compile time:
-> >>
-> >> linux/mm/memcontrol.c:4797:13: warning: ‘mem_cgroup_id_get_many’ defined
-> >> but not used [-Wunused-function]
-> >>  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned
-> >>  int n)
-> >>
-> >> Make mem_cgroup_id_get_many() dependent on MMU and MEMCG_SWAP to address
-> >> the issue.
-> > 
-> > A similar patch has been proposed recently
-> > http://lkml.kernel.org/r/87fthjh2ib.wl-kuninori.morimoto.gx@renesas.com.
-> > The conclusion was that the warning is not really worth adding code.
-> > 
-> 
-> Thank you for pointing this out, I was not aware of it. I understand that you
-> are against "#ifdeffery" in this case, but isn't it the case of adding at least
-> __maybe_unused? This would prevent people from reporting it over and over again
-> and you to have to push them back :) Let me know what do you think, in case I am
-> happy to change my patch accordingly.
 
-We have discussed __maybe_unused in the email thread as well. I am not a
-great fan of that as mentioed there.
--- 
-Michal Hocko
-SUSE Labs
+--=-mcjR0yXznIKw1TEhCYUl
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2020-03-04 at 11:42 -0500, Tejun Heo wrote:
+> [SNIP]
+>=20
+> Right now, the situation isn't great with dm. When pagecache
+> writebacks go through dm, in some cases including dm-crypt, the cgroup
+> ownership information is completely lost and all writes end up being
+> issued as the root cgroup, so it breaks down when dm is in use.
+
+Fair enough.
+
+> In the longer term, what we wanna do is controlling at physical
+> devices (sda here) and then updating dm so that it can maintain and
+> propagate the ownership correctly but we aren't there yet.
+
+Perfect, so what I am seeing is really just a small systemd bug. Thansk
+for confirming, I'll submit a patch to fix it.
+
+Benjamin
+
+--=-mcjR0yXznIKw1TEhCYUl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEED2NO4vMS33W8E4AFq6ZWhpmFY3AFAl5g1QEACgkQq6ZWhpmF
+Y3DEqg//VPcO2qUEZ7XODL8iSVDhK1pGXv5KSILnsiTyDXo4wHPND3tNcpOAceU+
+l1fufTA2LMbXtH1BMPmlEL/lMQK27IUss0J3PyihPBWjdC31KTpxixCr/61mERo6
+zQSnGGUYoNsVwyMP8kl5DcNFscY42fOcnx5Ot5GdfYrw35Lqniv7OctQyCXU5vAD
+MeEbW2jE7J8vusMMr4Bn68fIUuXYLE1Thx0FIn4HtH9mpyQsfyXFDGqq/92AHbsS
+SpP3H+iVjOf0v5oAV+0NZMu6HE5o+g36HpvS4UzODdLynfYkmFPcwoxpfUQ9bDT/
+Yrv7uAUvlikRekvPNo3TBg3Yh8oIuri+tVvTZzgdnldyDPU8RhQjd6q11XR7OASb
+tFONjiI5w2xzLmuY96R7KHac31O0zEmNDpYSGOx56HCLu7gx4mkU4usdDB0IqRbZ
+iawu0jvpwRhneDW3p5mQDm2DMRcAuAAX9NviezqktvRkzfwgJyeyeQzhwEy24a2J
+cgVAT6f5KVi+JE0NWaCS17GIL2vPmRB/pbbE6KIi9+5ZFRtby6ppU6W8QLXb5c8d
+jzcgIMuL2HB/YWCqvMR4ZQukPD/TnaCvLiA8zof1PboGXh7vPxMPfoladjCUEFS7
+IPA2B4YjF3TZtr8AIqgmi5qrg+BCJVtaKp0shvrpJzA1v5SDsqU=
+=PIRG
+-----END PGP SIGNATURE-----
+
+--=-mcjR0yXznIKw1TEhCYUl--
+
