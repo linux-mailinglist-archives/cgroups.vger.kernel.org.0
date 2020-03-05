@@ -2,78 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DBA1217A233
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 10:24:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620AA17A277
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 10:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgCEJYx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 04:24:53 -0500
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37089 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgCEJYx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 04:24:53 -0500
-Received: by mail-wr1-f66.google.com with SMTP id 6so633019wre.4;
-        Thu, 05 Mar 2020 01:24:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=9vQe482RUcHrdGZKLAu+qnIPkFKqJ2yT+5bmZriPGCE=;
-        b=lQzxOf8yOWc6PG9MHj5wgW8Dic/cZzPKOLWDZU8i0OI13222+2yL5cH5K9uMz5XLrN
-         eOrcj9uNZ2AG7CDKV8RU6aZVgdloNQ63iyD5bkqT+w/Mv3LCrvWBbULbFf0zNu2AiVNz
-         afGdjrIokl4jpG0eJ/4CJyZcNHuIfiVqq+zbf5/W2XSc4KD8gy2hsyvRrgM+kJo9/zTs
-         RFeaGo5WuFzfmHdRsMcPIhDmb7FTXxNgug/36LpCGUUZxblKG2zU6I51EMnV0MrYNk0A
-         IeDHqFTbDFEXqYysLsZglmWgiZGRblhG0N3efdVT4qIH4dMVgga71o79rw0oWC4jU7g4
-         TPvg==
-X-Gm-Message-State: ANhLgQ1Q8mpT+trJIASFK1YyTaiQHELJCQC5zYYweJs/6k7HNn7Nk9he
-        tkjJzcqdUkWV56OVPs1t2JEaxkOY
-X-Google-Smtp-Source: ADFU+vvqdBUB33jqLEFP4NDcqKysj/IfEmhB8jpmFa+xqd50R/xS6n1SmUdsZTIOV3TA19m3kIXQZQ==
-X-Received: by 2002:a5d:54ce:: with SMTP id x14mr8898569wrv.353.1583400289434;
-        Thu, 05 Mar 2020 01:24:49 -0800 (PST)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id w16sm9863676wrp.8.2020.03.05.01.24.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Mar 2020 01:24:48 -0800 (PST)
-Date:   Thu, 5 Mar 2020 10:24:47 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     brookxu <brookxu.cn@gmail.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: fix NULL pointer dereference in
- __mem_cgroup_usage_unregister_event
-Message-ID: <20200305092447.GQ16139@dhcp22.suse.cz>
-References: <5ee35fe7-2a90-ae71-9100-3f2833cbf252@gmail.com>
+        id S1725912AbgCEJtE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 04:49:04 -0500
+Received: from foss.arm.com ([217.140.110.172]:46020 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725897AbgCEJtE (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 5 Mar 2020 04:49:04 -0500
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B221531B;
+        Thu,  5 Mar 2020 01:49:03 -0800 (PST)
+Received: from [192.168.1.161] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 420DB3F6C4;
+        Thu,  5 Mar 2020 01:49:02 -0800 (PST)
+Subject: Re: [PATCH] mm: Make mem_cgroup_id_get_many dependent on MMU and
+ MEMCG_SWAP
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+References: <20200304142348.48167-1-vincenzo.frascino@arm.com>
+ <20200304165336.GO16139@dhcp22.suse.cz>
+From:   Vincenzo Frascino <vincenzo.frascino@arm.com>
+Message-ID: <8c489836-b824-184e-7cfe-25e55ab73000@arm.com>
+Date:   Thu, 5 Mar 2020 09:49:23 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+In-Reply-To: <20200304165336.GO16139@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5ee35fe7-2a90-ae71-9100-3f2833cbf252@gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thank you for the report!
+Hi Michal,
 
-On Thu 05-03-20 13:52:03, brookxu wrote:
-> One eventfd monitors multiple memory thresholds of cgroup, closing it, the
-> system will delete related events. Before all events are deleted, another
-> eventfd monitors the cgroup's memory threshold.
-
-Could you describe the race scenario please? Ideally 
+On 3/4/20 4:53 PM, Michal Hocko wrote:
+> On Wed 04-03-20 14:23:48, Vincenzo Frascino wrote:
+>> mem_cgroup_id_get_many() is currently used only when MMU or MEMCG_SWAP
+>> configuration options are enabled. Having them disabled triggers the
+>> following warning at compile time:
+>>
+>> linux/mm/memcontrol.c:4797:13: warning: â€˜mem_cgroup_id_get_manyâ€™ defined
+>> but not used [-Wunused-function]
+>>  static void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned
+>>  int n)
+>>
+>> Make mem_cgroup_id_get_many() dependent on MMU and MEMCG_SWAP to address
+>> the issue.
 > 
-> As a result, thresholds->primary[] is not empty, but thresholds->sparse[]
-> is NULL, __mem_cgroup_usage_unregister_event() leading to a crash:
+> A similar patch has been proposed recently
+> http://lkml.kernel.org/r/87fthjh2ib.wl-kuninori.morimoto.gx@renesas.com.
+> The conclusion was that the warning is not really worth adding code.
 > 
-> [  138.925809] BUG: unable to handle kernel NULL pointer dereference at 0000000000000004
-> [  138.926817] IP: [<ffffffff8116c9b7>] mem_cgroup_usage_unregister_event+0xd7/0x1f0
-> [  138.927701] PGD 73bce067 PUD 76ff3067 PMD 0
-> [  138.928384] Oops: 0002 [#1] SMP
-> [  138.935218] CPU: 1 PID: 14 Comm: kworker/1:0 Not tainted 3.10.107-1-tlinux2-0047 #1
 
-Also you seem to be running a very old kernel. Does the problem exist in
-the current Vanilla kernel?
+Thank you for pointing this out, I was not aware of it. I understand that you
+are against "#ifdeffery" in this case, but isn't it the case of adding at least
+__maybe_unused? This would prevent people from reporting it over and over again
+and you to have to push them back :) Let me know what do you think, in case I am
+happy to change my patch accordingly.
+
+[...]
+
 -- 
-Michal Hocko
-SUSE Labs
+Regards,
+Vincenzo
