@@ -2,91 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B431F17A895
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 16:12:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C60817A8BA
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 16:20:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726300AbgCEPMk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 10:12:40 -0500
-Received: from mail-pf1-f169.google.com ([209.85.210.169]:40965 "EHLO
-        mail-pf1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726233AbgCEPMk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 10:12:40 -0500
-Received: by mail-pf1-f169.google.com with SMTP id z65so2405620pfz.8
-        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 07:12:40 -0800 (PST)
+        id S1726351AbgCEPUZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 10:20:25 -0500
+Received: from mail-qt1-f178.google.com ([209.85.160.178]:44373 "EHLO
+        mail-qt1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726142AbgCEPUY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 10:20:24 -0500
+Received: by mail-qt1-f178.google.com with SMTP id h16so4372264qtr.11
+        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 07:20:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=0admXbkeoND1jB4YkR5jDFX42s3DFHa7Q+/Pf5rMHxg=;
+        b=dJ2qpBCFGhzqmF9KAojSaaJXA6caHwbTwtepgtX4hoRV3GshwPgGWkjF/pjEhhksLo
+         77swNzS8tc5Or1BssMWTMsI/RfvLXMFg8An8cc9XNlvfIoCNVPoUhqEfRSKSDeYcn7zG
+         dbjo4MOTwYXYsMXylSk2vrqTN4aJpDjJQpZoOUR/Js5M51yfgtuls1UNPcAYLEfXqcjS
+         ncpR6ia/zTgUEaSrW3Vk1flwXJyuOfPnILYfgTWVRMcEkzzvPGbTvU+u0fI2P3+H8eIe
+         t4i/LDSO/n6h/hhDa8r+i3t4hoRuwh6pWqGhq+4mtzdQBSMnLMv0U9QXpl2Ssi0fERuF
+         lvlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=YoKRP6AlFeZSOfeR+XgZTehlo3ejZ8ZBqovWas3AC9M=;
-        b=ELuPVGg0BPJ6mcaWkfE2kiSvg/R06fO8lmsgdsuySM4AxISIXmGLz0EzmuVxc7bSp6
-         sQTRznjEtDOjuiEUAy3ctm1M/iQQeUlNVR/MwfkkaYeqDyPLGN4i7b3VdyLv3C8NPrTJ
-         3stTJaAydVP08CB7WZicv3VZhD3oktbPNZmCXkxLP39m3zej6YWWy2YN0WrJjlfcT95R
-         WdvOxsIoD8G+SMTfPg1acQudilPUOLCjbRAO3fHNqG/PbGEUCPBjvkWF/13fCVUzc7Ed
-         4t22NJ79hXUw6PghZD9O6eqTOhWOOzPKIEfEtbMp+iObuZP7w40AsaRBSWPWDdG/G1EP
-         Rqiw==
-X-Gm-Message-State: ANhLgQ3GiwkS90TgPbzUu7oo32nV7cT5BPd4Xoa5Fr3nuCreRVrcRTpe
-        Y5mCjG8/SqPtrgNz1NkSxAEcCmMKXKmfNX4+fCg=
-X-Google-Smtp-Source: ADFU+vtLX/tZ+/U3zSYl1Z2e0d2Tz1W1Qz1BeOzi0kSy5h2KSaRFqpVZI3PNZLWvYGXmyH8Faio3gexq2DacoY1zZJc=
-X-Received: by 2002:a62:1dc6:: with SMTP id d189mr8952053pfd.153.1583421159293;
- Thu, 05 Mar 2020 07:12:39 -0800 (PST)
-MIME-Version: 1.0
-References: <d4826b9e568f1ab7df19f94c409df11956a8e262.camel@sipsolutions.net>
- <20200304163044.GF189690@mtj.thefacebook.com> <4d3e00457bba40b25f3ac4fd376ba7306ffc4e68.camel@sipsolutions.net>
- <20200305145554.GA5897@mtj.thefacebook.com>
-In-Reply-To: <20200305145554.GA5897@mtj.thefacebook.com>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=0admXbkeoND1jB4YkR5jDFX42s3DFHa7Q+/Pf5rMHxg=;
+        b=ZMhVIcBy+aY+Eapzpwmyo4WadMvUG+1sQtoNj5kC3LVrY4sCgWtW6GQR6PGo/p4UW2
+         pTw2dcCKL+nFicDI9HRkbaEfwtAPO6Z9BN8Y7KWDoA1jIfLun9J0ekNKov0Yy7HZcW7G
+         xbcgB7LrRR0NZIgj/hyUFENYXB2gx7tQUhzvkv31gbCL/UwvjGcsuCiRXqRa/8Cki/Cz
+         TM95aGvKYqDxnSLwkMjLkcFbIuwDD2flrPPwfe5xjulUf7IiVTbl2qTAXxfXDmAXwgcn
+         Rqo49gtNuHhs2g7OqgYwhW0ocYrh1gPDcf4njFMMjnc21+3QLzI52kh9ADbsSf/YJXgf
+         oa+Q==
+X-Gm-Message-State: ANhLgQ2zKE0GCYq5r8kpX1nkEiwK/jpB+yas3+evC6Mrqlt23FGh/qCi
+        Zk6IdVpk6N43tcUibnrYqTU=
+X-Google-Smtp-Source: ADFU+vvIaffiZDXUvvIjtxhNbcW3R9trE/U3TJ0GFD4O2nLDazcgr/TxDHLGjz9jldUZR8sOabJXYQ==
+X-Received: by 2002:aed:3fa3:: with SMTP id s32mr7477922qth.10.1583421623645;
+        Thu, 05 Mar 2020 07:20:23 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:e7c7])
+        by smtp.gmail.com with ESMTPSA id 69sm886089qki.131.2020.03.05.07.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Mar 2020 07:20:22 -0800 (PST)
+Date:   Thu, 5 Mar 2020 10:20:21 -0500
 From:   Tejun Heo <tj@kernel.org>
-Date:   Thu, 5 Mar 2020 10:12:28 -0500
-Message-ID: <CAOS58YM-HtmxwD7Q7g6ZzGsOJ_vWjHwb=7qpUwuZQEdeRrBifw@mail.gmail.com>
-Subject: Re: Memory reclaim protection and cgroup nesting (desktop use)
 To:     Benjamin Berg <benjamin@sipsolutions.net>
-Cc:     Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     cgroups@vger.kernel.org
+Subject: Re: [BUG] NULL pointer de-ref when setting io.cost.qos on LUKS
+ devices
+Message-ID: <20200305152021.GA6939@mtj.thefacebook.com>
+References: <1dbdcbb0c8db70a08aac467311a80abcf7779575.camel@sipsolutions.net>
+ <20200303141902.GB189690@mtj.thefacebook.com>
+ <24bd31cdaa3ea945908bc11cea05d6aae6929240.camel@sipsolutions.net>
+ <20200304164205.GH189690@mtj.thefacebook.com>
+ <71515f7a143937ab9ab11625485659bb7288f024.camel@sipsolutions.net>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <71515f7a143937ab9ab11625485659bb7288f024.camel@sipsolutions.net>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 05, 2020 at 09:55:54AM -0500, Tejun Heo wrote:
-> Changing memory limits dynamically can lead to pretty abrupt system
-> behaviors depending on how big the swing is but memory.low and io/cpu
-> weights should behave fine.
+Hello,
 
-A couple more things which might be helpful.
+On Thu, Mar 05, 2020 at 11:31:29AM +0100, Benjamin Berg wrote:
+> > In the longer term, what we wanna do is controlling at physical
+> > devices (sda here) and then updating dm so that it can maintain and
+> > propagate the ownership correctly but we aren't there yet.
+> 
+> Perfect, so what I am seeing is really just a small systemd bug. Thansk
+> for confirming, I'll submit a patch to fix it.
 
-* memory.min/low are pretty forgiving. Semantically what it tells the
-  kernel is "reclaim this guy as if the protected amount isn't being
-  consumed" - if a cgroup consumes 8G and has 4G protection, it'd get
-  the same reclaim pressure as a sibling whose consuming 4G without
-  protection. While the range of "good" configuration is pretty wide,
-  you can definitely push it too far to the point the rest of the
-  system has to compete too hard for memory. In practice, setting
-  memory protection to something like 50-75% of expected allocation
-  seems to work well - it provides ample protection while allowing the
-  system to be flexible when it needs to be. One important thing that
-  we learned is that as resource configuration gets more rigid, it can
-  also become more brittle.
+IO control is a bit confusing right now. Here's the breakdown.
 
-* As for io.weight (and cpu.weight too), while prioritization is
-  meaningful, what matters the most is avoiding situations where one
-  consumer overwhelms the device. Simply configuring io.cost correctly
-  and enabling it with default weights may achieve majority of the
-  benefits even without specific weight configurations. Please note
-  that IO control has quite a bit of requirements to function
-  correctly - it currently works well only on btrfs on physical (not
-  md or dm) devices with all other IO controllers and wbt disabled.
-  Hopefully, we'll be able to relax the requirements in the future but
-  we aren't there yet.
+* There are four controllers - io.latency, io.cost, io.max and bfq's
+  weight implementation.
 
-With both memory and IO set up and oomd watching out for swap
-depletion, our configurations show almost complete resource isolation
-where no matter what we do in unprotected portion of the system it
-doesn't affect the performance of the protected portion much even when
-the protected portion is running resource hungry latency sensitive
-workloads.
+* io.latency and io.cost when combined with btrfs can control all IOs
+  including metadata IOs and writebacks while avoiding priority
+  inversions.
+
+* wbt may interfere with IO control. It can be disabled with "echo 0 >
+  /sys/block/DEV/queue/wbt_lat_usec".
+
+* io.latency is useful to protect one thing against everything else
+  but it gets tricky when multiple entities competing at different
+  priority levels.
+
+* io.cost is what we're verifying against and deploying. While
+  system-level configuration is a bit involved
+  (/sys/fs/cgroup/io.cost.model and /sys/fs/cgroup/io.cost.qos).
+  Actual cgroup configuration is really simple. Simply enabling IO
+  controller and leaving all weights at default often can achieve most
+  of what's needed.
 
 Thanks.
 
-
---
+-- 
 tejun
