@@ -2,122 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id A152217B013
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 21:55:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 711D517B078
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2020 22:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726080AbgCEUzf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 15:55:35 -0500
-Received: from mail-pj1-f74.google.com ([209.85.216.74]:59937 "EHLO
-        mail-pj1-f74.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgCEUzf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 15:55:35 -0500
-Received: by mail-pj1-f74.google.com with SMTP id z5so3425583pjq.9
-        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 12:55:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=mljG1c45tyBHCNvH//AiEZZTlDTTk3P0kV7UDMwCvTs=;
-        b=DiLLZ921cvStv9VpgT9chw1u+67yb+Jf1wZHKgKeRrtR6Vd+VVjzBFoE3075eabKkB
-         vL9Q1THdoudDtlzUB2SlXnPecVbbuAg124mgQ8cq9H95q1YMiqQXbrNKd7dT2fAnUn3n
-         dPRVeotMzxE6Byy9sl8GMe1jbOn5REl2Dx/4Jw3dbu3R5Z0VldYTbblzUPZ/nq/hvU5m
-         UW41Z7wBfxhTTlXQkI1TtX3zZrz8D1ZvUtgjIr8/MH5OdVN/TMfeA6uQ38HLwN+syvBs
-         NSC1Z9sBv8MySgOXqKr3+c5YO5Dh9yruYybkpx5dtHt7G3kaEndhLvrvjxgKLh+C3qkQ
-         DSTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=mljG1c45tyBHCNvH//AiEZZTlDTTk3P0kV7UDMwCvTs=;
-        b=VAbEJXQTIkywaM2xxCDVlyLkh1Xd8gIfI60831S5dzEnKk/6V+yxde+Z+26mJVaGKK
-         GIpcwW1lgtPhh4npCGGPUi9tMLk120y6lfYqg1MNQevXzPV1eFar56abBUf89vzU01tt
-         8hsiLwJH2eV+dZ3tUNmjJsDMWGxflhadh6UP9LHwzYrOpgCylylMRd6RjOyXhK9mO3rh
-         sfPVlhken5xAsysehSizqc79x/DIJpW2VWiOOfMp7PMUV44Eo6RAfX7Y7edCQ2ab+oYQ
-         AB0ZrELWsOkVTifFm2ceMpw5M12xhZ+2UkiW7u0RoIMlrNg8K433rf4JmocqDqVJOqXN
-         /s8g==
-X-Gm-Message-State: ANhLgQ36BtE73kffd1oETKAxxZPFXil+KRBZWvkkGtfgkC+7GXTN6Say
-        WJ8NrLLzImnEEvqxiFLMI4YdTG7dWaHhjg==
-X-Google-Smtp-Source: ADFU+vtVGz7DVOErF5e2OURgUg2ecxIgD7Eb6KdrmeesDbmcr0yLA+SUXXXVg19kGdyFzvBxzDpSLTmT/w31sA==
-X-Received: by 2002:a63:74b:: with SMTP id 72mr19359pgh.320.1583441733885;
- Thu, 05 Mar 2020 12:55:33 -0800 (PST)
-Date:   Thu,  5 Mar 2020 12:55:25 -0800
-Message-Id: <20200305205525.245058-1-shakeelb@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.25.0.265.gbab2e86ba0-goog
-Subject: [PATCH v3] net: memcg: late association of sock to memcg
-From:   Shakeel Butt <shakeelb@google.com>
-To:     Eric Dumazet <edumazet@google.com>, Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726243AbgCEVQx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 16:16:53 -0500
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42779 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726067AbgCEVQw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 16:16:52 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailout.nyi.internal (Postfix) with ESMTP id 2C24221F30;
+        Thu,  5 Mar 2020 16:16:51 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 05 Mar 2020 16:16:51 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm2; bh=XdQ+RswJL5NMl40GJb5WlNSbRs
+        qA/OCEL8OeWLu2sac=; b=1DIq3i5Mt+pRb3sS1NWiHTIjIc5XjG+qFV/shkSg7t
+        5ImiieuJc4T4WVs/zoYa7Opp1+m7pH9G1ywxke1GdTvSA0D6G96Ypqyn224PyUdS
+        Dt0umj6zdkKMZ2YGrmwIAWok2NXr9Tku7MZZtrV7BF9vat0KOt2ivalobkI+wEso
+        /LLMrwm9UlLUAeBQBqRUIcfQ6o83Sh+jJT+f7KkmmIRKgglgu3duqYD56XcrfG68
+        wv9M2S9gYjpsDSJC90uC2Yog1ruukVZKUc4ItroCh99rAi4mD/I9mMc8Ly+b4GYP
+        1wErySk6oWNXkoObGVZnuPKyPUbfTkgGwPotTBU0tczw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=XdQ+RswJL5NMl40GJ
+        b5WlNSbRsqA/OCEL8OeWLu2sac=; b=0OTpwfocD7+OQI1L/9PVGL6W/rkk4lJ5y
+        v1IhvdOz0k7PzDsjzl/lDBL7ZRH4VLbYmc7cy7u3SGOEvXfKEiP63tOzyLWPu270
+        bbgUhagy20rsMqAc962xRxJWU5KjqJn6TPwNSh7KvCeu/EvMU5wgzXiZDMzGnapu
+        286DLXK2xBiqxQAlitIsFKACqGingzdu0HEuZkA43ztVr7xD2U6ALuvefGASqIhr
+        9J1fdZOLlmJacgqwjZdHv9qXxFBF5qbEZzkpRvAozkJhetGr6MWhbHXbztqnQWiq
+        zbkIILNl6BCnf/PEXKGRjRSOE7gqQUHkQsl/Q7mh7y677UxS1AF0A==
+X-ME-Sender: <xms:QWxhXvufCl5LLvh4p7IDvwtoIPvWOGRcX32ZjEkKiKVoMPgy2yPpfA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddutddgudehudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecukfhppeduieefrdduudegrddufedvrddunecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhu
+    uhdrgiihii
+X-ME-Proxy: <xmx:QWxhXlBrp9PbfGlIhWaCtCW88XfMO5wBCM-Mgd6c5LcJ5XbC6Q_Kag>
+    <xmx:QWxhXoMUI_ZlbcZ1RRIZg8CuoqW5UVWuHAr2wY4JY-h4AhbXcXkyKA>
+    <xmx:QWxhXg3WDzctGthjck1v_tjKYQirNQyaJWH6Lk2_yzml0Cay8k6vcg>
+    <xmx:Q2xhXkz98o39WExgDbaqENUSLugCyw4Kg8daYR6N_Rc8GOQki4txqw>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.132.1])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E630B30612AF;
+        Thu,  5 Mar 2020 16:16:48 -0500 (EST)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     cgroups@vger.kernel.org, tj@kernel.org, lizefan@huawei.com,
+        hannes@cmpxchg.org
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, shakeelb@google.com,
+        linux-kernel@vger.kernel.org, gregkh@linuxfoundation.org,
+        kernel-team@fb.com
+Subject: [PATCH v2 0/4] Support user xattrs in cgroupfs
+Date:   Thu,  5 Mar 2020 13:16:28 -0800
+Message-Id: <20200305211632.15369-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-If a TCP socket is allocated in IRQ context or cloned from unassociated
-(i.e. not associated to a memcg) in IRQ context then it will remain
-unassociated for its whole life. Almost half of the TCPs created on the
-system are created in IRQ context, so, memory used by such sockets will
-not be accounted by the memcg.
+User extended attributes are useful as metadata storage for kernfs
+consumers like cgroups. Especially in the case of cgroups, it is useful
+to have a central metadata store that multiple processes/services can
+use to coordinate actions.
 
-This issue is more widespread in cgroup v1 where network memory
-accounting is opt-in but it can happen in cgroup v2 if the source socket
-for the cloning was created in root memcg.
+A concrete example is for userspace out of memory killers. We want to
+let delegated cgroup subtree owners (running as non-root) to be able to
+say "please avoid killing this cgroup". This is especially important for
+desktop linux as delegated subtrees owners are less likely to run as
+root.
 
-To fix the issue, just do the late association of the unassociated
-sockets at accept() time in the process context and then force charge
-the memory buffer already reserved by the socket.
+The first two commits set up some stuff for the third commit which
+intro introduce a new flag, KERNFS_ROOT_SUPPORT_USER_XATTR,
+that lets kernfs consumers enable user xattr support. The final commit
+turns on user xattr support for cgroupfs.
 
-Signed-off-by: Shakeel Butt <shakeelb@google.com>
----
-Changes since v2:
-- Additional check for charging.
-- Release the sock after charging.
+Changes from v1:
+- use kvmalloc for xattr values
+- modify simple_xattr_set to return removed size
+- add accounting for total user xattr size per cgroup
 
-Changes since v1:
-- added sk->sk_rmem_alloc to initial charging.
-- added synchronization to get memory usage and set sk_memcg race-free.
+Daniel Xu (4):
+  kernfs: kvmalloc xattr value instead of kmalloc
+  kernfs: Add removed_size out param for simple_xattr_set
+  kernfs: Add option to enable user xattrs
+  cgroupfs: Support user xattrs
 
- net/ipv4/inet_connection_sock.c | 20 ++++++++++++++++++++
- 1 file changed, 20 insertions(+)
+ fs/kernfs/inode.c           | 91 ++++++++++++++++++++++++++++++++++++-
+ fs/kernfs/kernfs-internal.h |  2 +
+ fs/xattr.c                  | 17 +++++--
+ include/linux/kernfs.h      | 11 ++++-
+ include/linux/xattr.h       |  3 +-
+ kernel/cgroup/cgroup.c      |  3 +-
+ mm/shmem.c                  |  2 +-
+ 7 files changed, 119 insertions(+), 10 deletions(-)
 
-diff --git a/net/ipv4/inet_connection_sock.c b/net/ipv4/inet_connection_sock.c
-index a4db79b1b643..5face55cf818 100644
---- a/net/ipv4/inet_connection_sock.c
-+++ b/net/ipv4/inet_connection_sock.c
-@@ -482,6 +482,26 @@ struct sock *inet_csk_accept(struct sock *sk, int flags, int *err, bool kern)
- 		}
- 		spin_unlock_bh(&queue->fastopenq.lock);
- 	}
-+
-+	if (mem_cgroup_sockets_enabled && !newsk->sk_memcg) {
-+		int amt;
-+
-+		/* atomically get the memory usage, set and charge the
-+		 * sk->sk_memcg.
-+		 */
-+		lock_sock(newsk);
-+
-+		/* The sk has not been accepted yet, no need to look at
-+		 * sk->sk_wmem_queued.
-+		 */
-+		amt = sk_mem_pages(newsk->sk_forward_alloc +
-+				   atomic_read(&sk->sk_rmem_alloc));
-+		mem_cgroup_sk_alloc(newsk);
-+		if (newsk->sk_memcg && amt)
-+			mem_cgroup_charge_skmem(newsk->sk_memcg, amt);
-+
-+		release_sock(newsk);
-+	}
- out:
- 	release_sock(sk);
- 	if (req)
 -- 
-2.25.0.265.gbab2e86ba0-goog
+2.21.1
 
