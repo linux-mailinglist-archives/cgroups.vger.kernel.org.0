@@ -2,198 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E91417B421
-	for <lists+cgroups@lfdr.de>; Fri,  6 Mar 2020 03:01:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B25217B456
+	for <lists+cgroups@lfdr.de>; Fri,  6 Mar 2020 03:16:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726485AbgCFCBB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Mar 2020 21:01:01 -0500
-Received: from mail-qv1-f66.google.com ([209.85.219.66]:37336 "EHLO
-        mail-qv1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726368AbgCFCBA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 21:01:00 -0500
-Received: by mail-qv1-f66.google.com with SMTP id c19so280039qvv.4
-        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 18:01:00 -0800 (PST)
+        id S1726382AbgCFCQI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Mar 2020 21:16:08 -0500
+Received: from mail-pj1-f68.google.com ([209.85.216.68]:53791 "EHLO
+        mail-pj1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726897AbgCFCQI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Mar 2020 21:16:08 -0500
+Received: by mail-pj1-f68.google.com with SMTP id cx7so398423pjb.3
+        for <cgroups@vger.kernel.org>; Thu, 05 Mar 2020 18:16:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VeO2EZIb5m/L0A9vgmfNDVgncGhqhLgXvsUkGV6aqvA=;
-        b=uxGOYgK1IdIGDyGIR3Dx2CqMLJbgbDsEUdttRirJgkrlcl9hXB1z7sJ2DZBqAr6YTE
-         BUPWYtv8JfYFGuly+vFMh3gvDClK7DLTkdprk1SJEQk7+BtcRFan5HfBB6WZ0kXJ+3mz
-         D+ZXReMVat2VBR5uS92YT9bMPLZ8Fgl+ZC219uJHsz4MbK7OSc4yp2krRF5i6dvn8m3M
-         +OnG195qdb1TLa84J8PRI+DxPPJFclr3vOea0vooX4xeiZF12yMHf8724jwd/5UH8ILw
-         k1AYduG1HLKtLPrKKbCRUkwgWqtPs2WMy1yw0El5SpU3eipVvisCjeCxUjBRFYR5fCIP
-         g1uw==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=z2MtYmeH2j2KewserLKK2k6VMHRwOlZRf+3/F4kq+Sk=;
+        b=PVpkrCMCy0ZsCjsLfnfGd/4xzJJq7apSm7Px0RwrucCbeqa2OpumEJYeZ6x9brHl12
+         pNGT2d8lsIo9HbDQ/KWXgZhA4vQmL0Ji856oTphf/TpQPCUL13BWLMdsH9i8+8WQLsyw
+         Oz4C8pa9qEtansov8FD965ZXuFygcd6108Mk4pcCpYfdHrvY5rI6XXqrFKLmcMn9hp4q
+         4+voMfhA9eqB4fK4n9VoHhYzqKd2gQcE4ccSS1iwp8E4gMb0xaMZB8eA0xAZku9pLSli
+         nh/GSl1mvYadLyYx6yGpyq6o4QpfFhPdfHaRNVP1LEPvnCJh/jBtReyX9S1nc0Tg/7tV
+         ecMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VeO2EZIb5m/L0A9vgmfNDVgncGhqhLgXvsUkGV6aqvA=;
-        b=XTQkdv+PyRZhInJEmgMXS1g57Z3WT5lO76+dUF3ldwhI30ebrCdiiBGW/jsMCa62Od
-         kAv5cULAr5OJIPU0DRp4JCwbG3vP0Wm+47DcrnHfTdKlG8se2ac8bHcHYN5ctdou/g80
-         e+ijlGaF8BjGHGoJG+vxq1NR7iaHAZgDO/fEQOSvTESGzcR3CJfK366ED3T1YshECBMv
-         fsAS7X9EVXfVXVtEGEsa1xoTQwDUzy8Ws8/35UMRrytawwcvVVdpCmeJhvFLPuNK3vc+
-         ecO3iUpL9CbPS/yYJP6f2FP33Xs9XTtsN08a0LaphpTv9gX1z23GoWy7DtqXZYE9q5rk
-         VV0A==
-X-Gm-Message-State: ANhLgQ2Mp2oJAxvCdf41XKREv59dKThQzCT0qR3wKGFrpse/9hEpZUGX
-        /I/qrOY3U96VoHhi6NvDMQSsgeJ5S60hxeRfSEacyQ==
-X-Google-Smtp-Source: ADFU+vuwJAO3rUmSH2HK7VnJM/1Ph8otZl4E9Gi+YPq5BoY7+1A0E3Iil9ed3jefaB4EktsddkyQhXAMqItq1MReKes=
-X-Received: by 2002:ad4:5673:: with SMTP id bm19mr1026874qvb.231.1583460059385;
- Thu, 05 Mar 2020 18:00:59 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=z2MtYmeH2j2KewserLKK2k6VMHRwOlZRf+3/F4kq+Sk=;
+        b=CfeDHSGdR0W9SVf7t73E4/FNFOR80z52ynfCUeEA7GCHdsQTlTa8A0cfBgt1Kg0tZj
+         SUNMUhdY56qL1GLR7Yn/E08tlrgmOu/tRZH5IueU+A91VrsUwt/OEHsEJ11/oItQedDj
+         mK1gWgA4TPNVczBJsSoOm6Bza+Nal3Iwt5myVBa6D/1o+RlDxETCrJaj3KNrr9wy+BoL
+         bTw/9dhcAt5eyJqwDvByRQu18zk9NkrS7mA3GMio/tc+/YX4l/2uNtGy0Vv2NUHnZyMk
+         jSJabayaewXNufpYdAOiTOC49cyyIfXUHzsHzJwYsJ9rLX5ICjJ8gD5K425Ts36+Tyfo
+         vnlA==
+X-Gm-Message-State: ANhLgQ0UvEHtHwhZ2aP3UmQn2wdpKBZqpNYVkOfn3dJ8h+2x+LN7v8Xq
+        AT3HYbJ8MvoI549WTiCnChHBIw==
+X-Google-Smtp-Source: ADFU+vsxYxL5yf/ce8z75wcVJZ949vaEaCge8Blvf1JHNJK858IIKa6k4hhsMKoeSQ5GqK42jErAUQ==
+X-Received: by 2002:a17:90a:d101:: with SMTP id l1mr1201947pju.130.1583460966067;
+        Thu, 05 Mar 2020 18:16:06 -0800 (PST)
+Received: from [100.112.92.218] ([104.133.9.106])
+        by smtp.gmail.com with ESMTPSA id a19sm7334404pjs.22.2020.03.05.18.16.04
+        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Thu, 05 Mar 2020 18:16:05 -0800 (PST)
+Date:   Thu, 5 Mar 2020 18:15:40 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Andew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>
+cc:     cgroups@vger.kernel.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        Fengguang Wu <fengguang.wu@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>
+Subject: Re: [PATCH v9 00/21] per lruvec lru_lock for memcg
+In-Reply-To: <59634b5f-b1b2-3b1d-d845-fd15565fcad4@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2003051642580.1190@eggly.anvils>
+References: <1583146830-169516-1-git-send-email-alex.shi@linux.alibaba.com> <20200302141202.91d88e8b730b194a8bd8fa7d@linux-foundation.org> <59634b5f-b1b2-3b1d-d845-fd15565fcad4@linux.alibaba.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-References: <20200228010134.42866-1-joshdon@google.com> <20200304182139.GO2596@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200304182139.GO2596@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Thu, 5 Mar 2020 18:00:47 -0800
-Message-ID: <CABk29NsOUwALWCGpVoTBE7536XiunwjGoAvxU6my55XeH+NCdA@mail.gmail.com>
-Subject: Re: [PATCH] sched/cpuset: distribute tasks within affinity masks
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, Paul Turner <pjt@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-1920851028-1583460965=:1190"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for the comments, I discussed further with Paul.  We agree with
-simplifying this into a new cpumask macro, and thus cutting down the
-changes needed directly in core.c.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Why? Changelog doesn't seem to give a reason for adding another
-> interface.
+--0-1920851028-1583460965=:1190
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-The new interface was to selectively enable distribution for specific
-paths.  For some paths, we wanted to run on prev_cpu if in mask.
-However, as described below, this concern is no longer relevant, I'll
-remove the extra interface.
+On Tue, 3 Mar 2020, Alex Shi wrote:
+> =E5=9C=A8 2020/3/3 =E4=B8=8A=E5=8D=886:12, Andrew Morton =E5=86=99=E9=81=
+=93:
+> >> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu=
+,
+> >> and Yun Wang.
+> > I'm not seeing a lot of evidence of review and test activity yet.  But
+> > I think I'll grab patches 01-06 as they look like fairly
+> > straightforward improvements.
+>=20
+> cc Fengguang and Rong Chen
+>=20
+> I did some local functional testing and kselftest, they all look fine.
+> 0day only warn me if some case failed. Is it no news is good news? :)
 
-> I don't really buy the argument why that shortcut is problematic; it's
-> all averages anyway, and keeping a task on a CPU where it's already
-> running seems like a win.
+And now the bad news.
 
-It made sense for our use case at the time, but in general we agree
-that it is fine to leave things where they are if possible.
+Andrew, please revert those six (or seven as they ended up in mmotm).
+5.6-rc4-mm1 without them runs my tmpfs+loop+swapping+memcg+ksm kernel
+build loads fine (did four hours just now), but 5.6-rc4-mm1 itself
+crashed just after starting - seconds or minutes I didn't see,
+but it did not complete an iteration.
 
-On Wed, Mar 4, 2020 at 10:21 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Feb 27, 2020 at 05:01:34PM -0800, Josh Don wrote:
-> > diff --git a/include/linux/sched.h b/include/linux/sched.h
-> > index 04278493bf15..a2aab6a8a794 100644
-> > --- a/include/linux/sched.h
-> > +++ b/include/linux/sched.h
-> > @@ -1587,6 +1587,8 @@ extern int task_can_attach(struct task_struct *p, const struct cpumask *cs_cpus_
-> >  #ifdef CONFIG_SMP
-> >  extern void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask);
-> >  extern int set_cpus_allowed_ptr(struct task_struct *p, const struct cpumask *new_mask);
-> > +extern int set_cpus_allowed_ptr_distribute(struct task_struct *p,
-> > +                             const struct cpumask *new_mask);
->
-> Why? Changelog doesn't seem to give a reason for adding another
-> interface.
->
-> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> > index 1a9983da4408..2336d6d66016 100644
-> > --- a/kernel/sched/core.c
-> > +++ b/kernel/sched/core.c
-> > @@ -1612,6 +1612,32 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-> >               set_next_task(rq, p);
-> >  }
-> >
-> > +static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
-> > +
-> > +/*
-> > + * Returns an arbitrary cpu within *srcp1 & srcp2
-> > + *
-> > + * Iterated calls using the same srcp1 and srcp2, passing the previous cpu each
-> > + * time, will be distributed within their intersection.
-> > + */
-> > +static int distribute_to_new_cpumask(const struct cpumask *src1p,
-> > +                                  const struct cpumask *src2p)
-> > +{
-> > +     int next, prev;
-> > +
-> > +     /* NOTE: our first selection will skip 0. */
-> > +     prev = __this_cpu_read(distribute_cpu_mask_prev);
-> > +
-> > +     next = cpumask_next_and(prev, src1p, src2p);
-> > +     if (next >= nr_cpu_ids)
-> > +             next = cpumask_first_and(src1p, src2p);
-> > +
-> > +     if (next < nr_cpu_ids)
-> > +             __this_cpu_write(distribute_cpu_mask_prev, next);
-> > +
-> > +     return next;
-> > +}
->
-> That's a valid implementation of cpumask_any_and(), it just has a really
-> weird name.
->
-> >  /*
-> >   * Change a given task's CPU affinity. Migrate the thread to a
-> >   * proper CPU and schedule it away if the CPU it's executing on
-> > @@ -1621,11 +1647,11 @@ void do_set_cpus_allowed(struct task_struct *p, const struct cpumask *new_mask)
-> >   * task must not exit() & deallocate itself prematurely. The
-> >   * call is not atomic; no spinlocks may be held.
-> >   */
-> > -static int __set_cpus_allowed_ptr(struct task_struct *p,
-> > +static int __set_cpus_allowed_ptr(struct task_struct *p, bool distribute_cpus,
-> >                                 const struct cpumask *new_mask, bool check)
-> >  {
-> >       const struct cpumask *cpu_valid_mask = cpu_active_mask;
-> > -     unsigned int dest_cpu;
-> > +     unsigned int dest_cpu, prev_cpu;
-> >       struct rq_flags rf;
-> >       struct rq *rq;
-> >       int ret = 0;
-> > @@ -1652,8 +1678,33 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
-> >       if (cpumask_equal(p->cpus_ptr, new_mask))
-> >               goto out;
-> >
-> > -     dest_cpu = cpumask_any_and(cpu_valid_mask, new_mask);
-> > -     if (dest_cpu >= nr_cpu_ids) {
-> > +     if (!cpumask_intersects(new_mask, cpu_valid_mask)) {
-> > +             ret = -EINVAL;
-> > +             goto out;
-> > +     }
-> > +
-> > +     prev_cpu = task_cpu(p);
-> > +     if (distribute_cpus) {
-> > +             dest_cpu = distribute_to_new_cpumask(new_mask,
-> > +                                                  cpu_valid_mask);
-> > +     } else {
-> > +             /*
-> > +              * Can the task run on the task's current CPU? If so, we're
-> > +              * done.
-> > +              *
-> > +              * We only enable this short-circuit in the case that we're
-> > +              * not trying to distribute tasks.  As we may otherwise not
-> > +              * distribute away from a loaded CPU, or make duplicate
-> > +              * assignments to it.
-> > +              */
-> > +             if (cpumask_test_cpu(prev_cpu, new_mask))
-> > +                     dest_cpu = prev_cpu;
-> > +             else
-> > +                     dest_cpu = cpumask_any_and(cpu_valid_mask, new_mask);
-> > +     }
->
-> That all seems overly complicated; what is wrong with just this:
->
->         dest_cpu = cpumask_any_and_fancy(cpu_valid_mask, new_mask);
->
-> I don't really buy the argument why that shortcut is problematic; it's
-> all averages anyway, and keeping a task on a CPU where it's already
-> running seems like a win.
->
-> > +     /* May have raced with cpu_down */
-> > +     if (unlikely(dest_cpu >= nr_cpu_ids)) {
-> >               ret = -EINVAL;
-> >               goto out;
-> >       }
+I thought maybe those six would be harmless (though I've not looked
+at them at all); but knew already that the full series is not good yet:
+I gave it a try over 5.6-rc4 on Monday, and crashed very soon on simpler
+testing, in different ways from what hits mmotm.
+
+The first thing wrong with the full set was when I tried tmpfs+loop+
+swapping kernel builds in "mem=3D700M cgroup_disabled=3Dmemory", of course
+with CONFIG_DEBUG_LIST=3Dy. That soon collapsed in a splurge of OOM kills
+and list_del corruption messages: __list_del_entry_valid < list_del <
+__page_cache_release < __put_page < put_page < __try_to_reclaim_swap <
+free_swap_and_cache < shmem_free_swap < shmem_undo_range.
+
+When I next tried with "mem=3D1G" and memcg enabled (but not being used),
+that managed some iterations, no OOM kills, no list_del warnings (was
+it swapping? perhaps, perhaps not, I was trying to go easy on it just
+to see if "cgroup_disabled=3Dmemory" had been the problem); but when
+rebooting after that, again list_del corruption messages and crash
+(I didn't note them down).
+
+So I didn't take much notice of what the mmotm crash backtrace showed
+(but IIRC shmem and swap were in it).
+
+Alex, I'm afraid you're focusing too much on performance results,
+without doing the basic testing needed - I thought we had given you
+some hints on the challenging areas (swapping, move_charge_at_immigrate,
+page migration) when we attached a *correctly working* 5.3 version back
+on 23rd August:
+
+https://lore.kernel.org/linux-mm/alpine.LSU.2.11.1908231736001.16920@eggly.=
+anvils/
+
+(Correctly working, except missing two patches I'd mistakenly dropped
+as unnecessary in earlier rebases: but our discussions with Johannes
+later showed to be very necessary, though their races rarely seen.)
+
+I have not had the time (and do not expect to have the time) to review
+your series: maybe it's one or two small fixes away from being complete,
+or maybe it's still fundamentally flawed, I do not know.  I had naively
+hoped that you would help with a patchset that worked, rather than
+cutting it down into something which does not.
+
+Submitting your series to routine testing is much easier for me than
+reviewing it: but then, yes, it's a pity that I don't find the time
+to report the results on intervening versions, which also crashed.
+
+What I have to do now, is set aside time today and tomorrow, to package
+up the old scripts I use, describe them and their environment, and send
+them to you (cc akpm in case I fall under a bus): so that you can
+reproduce the crashes for yourself, and get to work on them.
+
+Hugh
+--0-1920851028-1583460965=:1190--
