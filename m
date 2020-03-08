@@ -2,52 +2,30 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C07217D0FE
-	for <lists+cgroups@lfdr.de>; Sun,  8 Mar 2020 04:18:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7261917D103
+	for <lists+cgroups@lfdr.de>; Sun,  8 Mar 2020 04:20:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726266AbgCHDS3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Mar 2020 22:18:29 -0500
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:53506 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgCHDS3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 22:18:29 -0500
-Received: by mail-pj1-f65.google.com with SMTP id l36so57689pjb.3;
-        Sat, 07 Mar 2020 19:18:29 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YlUcTsthp1jT+o6f6NANQqT+eCJYTM4ae8wXuy/WzUk=;
-        b=ECVc7jtBxuJMkBzqO7pgWcK0ajgrKB9b5cqpx18D9ofoE0+Ficc+pZhn2tDmOBGhHm
-         ZVhdh2zoNOCi88ZF9Mo22agCA8qknCa0WBHft1UVXwcWfauUh7NKOp6/I5N8oDqe+IbM
-         T7U3/kZubkFdMqZAAwtAY5bGj+38XnBreO/uZR1DDtlVYO46n0vozBkYqPVjnpvuDFV7
-         FLmKwafHM6gwYy3cQh4knRZVbDOWjPm2cuJUqwGUu1YiWDW+25SfuU+PnbXmL9ww3DQs
-         vqmQJseyhqZ0wb56pQn33955HJBES20I2ZeOIVlmKIWrxHBLCqBE8k8kTO8hR10uL4lq
-         Stdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YlUcTsthp1jT+o6f6NANQqT+eCJYTM4ae8wXuy/WzUk=;
-        b=T/N+6LEav6EbjZ56CCqy0sGL2V9suvQLWaODb34GdCJwIuNQHjbQ2iRPyOt90K7u6P
-         sZHvg05uKG16gx78HuuGe/5a6wDYpV1r1Q8YHlBgPVlSFAm9inR+TE60WQDtCuwmvn47
-         4UEouP+OSC72EGsyqy/9zvjt0L5KOHuAwsXBqHDgb3sCbXknjiaPecQsySCT8V08TY88
-         ypVcQu1RQGl9nYnUGNQs9WMSSRGb0BTJIdCdfXuupC30QKGa3ienOXwwkeD0QDoHKoSk
-         GVuLRHUJ09vQEIns+MGcdD7ZflxxZT5yHuXWl0BMf26LZ/uxQ+Kgpx2nBtZt4CTKxI0K
-         yf6A==
-X-Gm-Message-State: ANhLgQ0ltvJ9OTMPKMJoAAgiFQq7l4As3065LecA0JMCOksgm5fXg1Oq
-        P/lw9sd9U0jEvWahalWlU2E=
-X-Google-Smtp-Source: ADFU+vsTZipAN3SvKwN7VtGyO9BLqotNK0eK1y6C+EGAAdE5g2COWd703JhBPJtBCcVT1Sl0cyqrxw==
-X-Received: by 2002:a17:90b:3542:: with SMTP id lt2mr10788454pjb.96.1583637508436;
-        Sat, 07 Mar 2020 19:18:28 -0800 (PST)
-Received: from localhost (194.99.30.125.dy.iij4u.or.jp. [125.30.99.194])
-        by smtp.gmail.com with ESMTPSA id 186sm26726915pfz.145.2020.03.07.19.18.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Mar 2020 19:18:27 -0800 (PST)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Sun, 8 Mar 2020 12:18:25 +0900
-To:     Joe Perches <joe@perches.com>
+        id S1726330AbgCHDUp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Mar 2020 22:20:45 -0500
+Received: from smtprelay0208.hostedemail.com ([216.40.44.208]:39390 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726174AbgCHDUp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 22:20:45 -0500
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E3356180A5B05;
+        Sun,  8 Mar 2020 03:20:43 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3351:3622:3876:3877:4321:5007:6114:6642:6742:10004:10400:10848:11026:11232:11473:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14659:21080:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: night89_5d7274ac97a01
+X-Filterd-Recvd-Size: 1736
+Received: from XPS-9350.home (unknown [47.151.143.254])
+        (Authenticated sender: joe@perches.com)
+        by omf11.hostedemail.com (Postfix) with ESMTPA;
+        Sun,  8 Mar 2020 03:20:42 +0000 (UTC)
+Message-ID: <bfc9f9b69681c3ef285bf11b6506fa5b42b5917a.camel@perches.com>
+Subject: Re: [PATCH] mm: Use fallthrough;
+From:   Joe Perches <joe@perches.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
@@ -58,47 +36,36 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org
-Subject: Re: [PATCH] mm: Use fallthrough;
-Message-ID: <20200308031825.GB1125@jagdpanzerIV.localdomain>
+Date:   Sat, 07 Mar 2020 19:19:04 -0800
+In-Reply-To: <20200308031634.GA1125@jagdpanzerIV.localdomain>
 References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
+         <20200308031634.GA1125@jagdpanzerIV.localdomain>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On (20/03/06 23:58), Joe Perches wrote:
-[..]
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -907,7 +907,6 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
->  
->  	switch (p->mode) {
->  	case MPOL_BIND:
-> -		/* Fall through */
->  	case MPOL_INTERLEAVE:
->  		*nodes = p->v.nodes;
->  		break;
-> @@ -2092,7 +2091,6 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
->  		break;
->  
->  	case MPOL_BIND:
-> -		/* Fall through */
->  	case MPOL_INTERLEAVE:
->  		*mask =  mempolicy->v.nodes;
->  		break;
-> @@ -2359,7 +2357,6 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
->  
->  	switch (a->mode) {
->  	case MPOL_BIND:
-> -		/* Fall through */
->  	case MPOL_INTERLEAVE:
->  		return !!nodes_equal(a->v.nodes, b->v.nodes);
->  	case MPOL_PREFERRED:
+On Sun, 2020-03-08 at 12:16 +0900, Sergey Senozhatsky wrote:
+> On (20/03/06 23:58), Joe Perches wrote:
+> [..]
+> > --- a/mm/zsmalloc.c
+> > +++ b/mm/zsmalloc.c
+> > @@ -424,7 +424,7 @@ static void *zs_zpool_map(void *pool, unsigned long handle,
+> >  	case ZPOOL_MM_WO:
+> >  		zs_mm = ZS_MM_WO;
+> >  		break;
+> > -	case ZPOOL_MM_RW: /* fall through */
+> > +	case ZPOOL_MM_RW:
+> >  	default:
+> >  		zs_mm = ZS_MM_RW;
+> >  		break;
+> 
+> Seems like missing fallthrough; for ZPOOL_MM_RW?
 
-Ditto. This doesn't convert /* Fall through */ to fallthrough;
+Consecutive case labels do not need an interleaving fallthrough
 
-	-ss
+
