@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3905417D0FA
-	for <lists+cgroups@lfdr.de>; Sun,  8 Mar 2020 04:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C07217D0FE
+	for <lists+cgroups@lfdr.de>; Sun,  8 Mar 2020 04:18:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgCHDQk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Mar 2020 22:16:40 -0500
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:43318 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgCHDQk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 22:16:40 -0500
-Received: by mail-pl1-f195.google.com with SMTP id f8so2568810plt.10;
-        Sat, 07 Mar 2020 19:16:39 -0800 (PST)
+        id S1726266AbgCHDS3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Mar 2020 22:18:29 -0500
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:53506 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726252AbgCHDS3 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 22:18:29 -0500
+Received: by mail-pj1-f65.google.com with SMTP id l36so57689pjb.3;
+        Sat, 07 Mar 2020 19:18:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:date:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=1Nb+0eCJ+RmZWTIi/A28JTvkScuDbfRdl791J3v1ybU=;
-        b=gyNFz1js4P3o2fO/Z1TjzVYoqZoqx1LLxetnlManqDFo7XnMcpxZihlmGqOGBDbrbo
-         77+5HSZQ5rEo9o06ipb2DYJpyy97T/f8n8DI1fK/AxVr38p/w5nREwHd8W0C5mwYbo5N
-         fKAq9qk1qOmVlHcc3vCwUU6TJki/1mKOkx5PkdMBkke4PCWhtz6MF5DjrQgBY4aOKiJK
-         bydU0stJCgmMNFiH3vYn6FxdnIhqm8Z2DMGzuuUhNRQV8hLpq/8Y+fqCXmanPBsyFl+o
-         Izra9FkQJisCTFoZ8wuvbg5xqiSD9QehRlKbVOeXqaQbCKuNqxaJvcH+e3kFUa//u061
-         o3dg==
+        bh=YlUcTsthp1jT+o6f6NANQqT+eCJYTM4ae8wXuy/WzUk=;
+        b=ECVc7jtBxuJMkBzqO7pgWcK0ajgrKB9b5cqpx18D9ofoE0+Ficc+pZhn2tDmOBGhHm
+         ZVhdh2zoNOCi88ZF9Mo22agCA8qknCa0WBHft1UVXwcWfauUh7NKOp6/I5N8oDqe+IbM
+         T7U3/kZubkFdMqZAAwtAY5bGj+38XnBreO/uZR1DDtlVYO46n0vozBkYqPVjnpvuDFV7
+         FLmKwafHM6gwYy3cQh4knRZVbDOWjPm2cuJUqwGUu1YiWDW+25SfuU+PnbXmL9ww3DQs
+         vqmQJseyhqZ0wb56pQn33955HJBES20I2ZeOIVlmKIWrxHBLCqBE8k8kTO8hR10uL4lq
+         Stdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=1Nb+0eCJ+RmZWTIi/A28JTvkScuDbfRdl791J3v1ybU=;
-        b=ZBzKWsVw2tIBxpDCUZtFfm/NV6YIUzrQQnzHaJSI4jG0LPKtbS98gC9tIOApR26soX
-         RLCSTiMbIE2bFxJJ3mIqU5Yglorp3kMgA58Istz4w8ojkqw6qL+y27zDFPkZlMoLE33t
-         A2j4s+HUi9ompNW2jMfoa1psZ9ZXhTOZVIt9HCUTiZi0RcY6j+hmjlxt6d4oz3bwvfN5
-         YYWfnDTommixe+8XqZE72xe12TYXhhoc1DMGYImt0Ig//XZUPuXwg+39SjVJPOdz5X4u
-         WHc+XWP+2/Mwpv6oWrghkSheztmutZDLQhR37MYeOgnBZtfh4wYvBBOJEvEs6BrQV0Xx
-         8Ibw==
-X-Gm-Message-State: ANhLgQ2yCMMJyVTAYGdgze8N60VR3bF1TIdeuBS6+3+juSeeM5IGVtI9
-        yD3tPcgKEZs7d0dOoWNAEOI=
-X-Google-Smtp-Source: ADFU+vts8NPW5NBCO1lUnAWQ7WDcIE6VGZBSRZMrlz6A1oA0ssnEhcatOqsJVHJlRZxqXyJO5QQeDQ==
-X-Received: by 2002:a17:902:8d8a:: with SMTP id v10mr9810813plo.90.1583637398563;
-        Sat, 07 Mar 2020 19:16:38 -0800 (PST)
+        bh=YlUcTsthp1jT+o6f6NANQqT+eCJYTM4ae8wXuy/WzUk=;
+        b=T/N+6LEav6EbjZ56CCqy0sGL2V9suvQLWaODb34GdCJwIuNQHjbQ2iRPyOt90K7u6P
+         sZHvg05uKG16gx78HuuGe/5a6wDYpV1r1Q8YHlBgPVlSFAm9inR+TE60WQDtCuwmvn47
+         4UEouP+OSC72EGsyqy/9zvjt0L5KOHuAwsXBqHDgb3sCbXknjiaPecQsySCT8V08TY88
+         ypVcQu1RQGl9nYnUGNQs9WMSSRGb0BTJIdCdfXuupC30QKGa3ienOXwwkeD0QDoHKoSk
+         GVuLRHUJ09vQEIns+MGcdD7ZflxxZT5yHuXWl0BMf26LZ/uxQ+Kgpx2nBtZt4CTKxI0K
+         yf6A==
+X-Gm-Message-State: ANhLgQ0ltvJ9OTMPKMJoAAgiFQq7l4As3065LecA0JMCOksgm5fXg1Oq
+        P/lw9sd9U0jEvWahalWlU2E=
+X-Google-Smtp-Source: ADFU+vsTZipAN3SvKwN7VtGyO9BLqotNK0eK1y6C+EGAAdE5g2COWd703JhBPJtBCcVT1Sl0cyqrxw==
+X-Received: by 2002:a17:90b:3542:: with SMTP id lt2mr10788454pjb.96.1583637508436;
+        Sat, 07 Mar 2020 19:18:28 -0800 (PST)
 Received: from localhost (194.99.30.125.dy.iij4u.or.jp. [125.30.99.194])
-        by smtp.gmail.com with ESMTPSA id s18sm13679394pjp.24.2020.03.07.19.16.36
+        by smtp.gmail.com with ESMTPSA id 186sm26726915pfz.145.2020.03.07.19.18.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 07 Mar 2020 19:16:37 -0800 (PST)
+        Sat, 07 Mar 2020 19:18:27 -0800 (PST)
 From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
 X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Sun, 8 Mar 2020 12:16:34 +0900
+Date:   Sun, 8 Mar 2020 12:18:25 +0900
 To:     Joe Perches <joe@perches.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -59,7 +59,7 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org
 Subject: Re: [PATCH] mm: Use fallthrough;
-Message-ID: <20200308031634.GA1125@jagdpanzerIV.localdomain>
+Message-ID: <20200308031825.GB1125@jagdpanzerIV.localdomain>
 References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -72,18 +72,33 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On (20/03/06 23:58), Joe Perches wrote:
 [..]
-> --- a/mm/zsmalloc.c
-> +++ b/mm/zsmalloc.c
-> @@ -424,7 +424,7 @@ static void *zs_zpool_map(void *pool, unsigned long handle,
->  	case ZPOOL_MM_WO:
->  		zs_mm = ZS_MM_WO;
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -907,7 +907,6 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
+>  
+>  	switch (p->mode) {
+>  	case MPOL_BIND:
+> -		/* Fall through */
+>  	case MPOL_INTERLEAVE:
+>  		*nodes = p->v.nodes;
 >  		break;
-> -	case ZPOOL_MM_RW: /* fall through */
-> +	case ZPOOL_MM_RW:
->  	default:
->  		zs_mm = ZS_MM_RW;
+> @@ -2092,7 +2091,6 @@ bool init_nodemask_of_mempolicy(nodemask_t *mask)
 >  		break;
+>  
+>  	case MPOL_BIND:
+> -		/* Fall through */
+>  	case MPOL_INTERLEAVE:
+>  		*mask =  mempolicy->v.nodes;
+>  		break;
+> @@ -2359,7 +2357,6 @@ bool __mpol_equal(struct mempolicy *a, struct mempolicy *b)
+>  
+>  	switch (a->mode) {
+>  	case MPOL_BIND:
+> -		/* Fall through */
+>  	case MPOL_INTERLEAVE:
+>  		return !!nodes_equal(a->v.nodes, b->v.nodes);
+>  	case MPOL_PREFERRED:
 
-Seems like missing fallthrough; for ZPOOL_MM_RW?
+Ditto. This doesn't convert /* Fall through */ to fallthrough;
 
 	-ss
