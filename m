@@ -2,190 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCF5B17D025
-	for <lists+cgroups@lfdr.de>; Sat,  7 Mar 2020 22:05:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3905417D0FA
+	for <lists+cgroups@lfdr.de>; Sun,  8 Mar 2020 04:16:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726267AbgCGVFO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Mar 2020 16:05:14 -0500
-Received: from mail-io1-f71.google.com ([209.85.166.71]:38168 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726098AbgCGVFM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 16:05:12 -0500
-Received: by mail-io1-f71.google.com with SMTP id x2so3970465iog.5
-        for <cgroups@vger.kernel.org>; Sat, 07 Mar 2020 13:05:11 -0800 (PST)
+        id S1726174AbgCHDQk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Mar 2020 22:16:40 -0500
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:43318 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726138AbgCHDQk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Mar 2020 22:16:40 -0500
+Received: by mail-pl1-f195.google.com with SMTP id f8so2568810plt.10;
+        Sat, 07 Mar 2020 19:16:39 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1Nb+0eCJ+RmZWTIi/A28JTvkScuDbfRdl791J3v1ybU=;
+        b=gyNFz1js4P3o2fO/Z1TjzVYoqZoqx1LLxetnlManqDFo7XnMcpxZihlmGqOGBDbrbo
+         77+5HSZQ5rEo9o06ipb2DYJpyy97T/f8n8DI1fK/AxVr38p/w5nREwHd8W0C5mwYbo5N
+         fKAq9qk1qOmVlHcc3vCwUU6TJki/1mKOkx5PkdMBkke4PCWhtz6MF5DjrQgBY4aOKiJK
+         bydU0stJCgmMNFiH3vYn6FxdnIhqm8Z2DMGzuuUhNRQV8hLpq/8Y+fqCXmanPBsyFl+o
+         Izra9FkQJisCTFoZ8wuvbg5xqiSD9QehRlKbVOeXqaQbCKuNqxaJvcH+e3kFUa//u061
+         o3dg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=O1ccFeNcaK8O1b3uUp4LiaEXL8aJeslQL+A0Zwji8U0=;
-        b=ddziGx1EvIcJ7KNRgUYfMCfvf66pSLJoNAftKwpzUsZAhtqJVrGE7YELLi0vGG56KP
-         glRf0JBsaFXJ1W1EG2LEU/K2mKr6HIntKOxoyI+cY5xVmpSti7eApl/VNlNx9HDDkzmh
-         fvrB/BxjNOuk1EzQVTNyHIO7TSIxbEHx/eVWXi4IbElH9SKp1ZgRucuNpVsjraJDv7Bs
-         nLXThoyCfR9RxHDwWNp3Lc2UGbJ/rfQtsfttbVmYWsTYgIQxxwglaHhGo/EKxnuXnm6T
-         ggIURzIkk46vSkrot9Y2PjGrcs223y/g4iHkPlBQXTeh4hgY3ltE1eIuZFArWNlt63Wz
-         +VQg==
-X-Gm-Message-State: ANhLgQ3RTIw3VMkoQ7JjGVGN1yTP2s79I+2TW/+XWPxB2UrUWf2IxjLh
-        t7kgICrEZJSg+f1ZAp/I3kKRWhNVTQM8YRPQNlYEB1v5fFCc
-X-Google-Smtp-Source: ADFU+vuUZiUcXNLMejnvQX9m1BhaeK/4+otxEb29NkXyHXCgmY51ipzqKu0Rt6/WI/MsIsqGUJQaCqk4xGwKgwwhj0Wn6XLSF8CH
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1Nb+0eCJ+RmZWTIi/A28JTvkScuDbfRdl791J3v1ybU=;
+        b=ZBzKWsVw2tIBxpDCUZtFfm/NV6YIUzrQQnzHaJSI4jG0LPKtbS98gC9tIOApR26soX
+         RLCSTiMbIE2bFxJJ3mIqU5Yglorp3kMgA58Istz4w8ojkqw6qL+y27zDFPkZlMoLE33t
+         A2j4s+HUi9ompNW2jMfoa1psZ9ZXhTOZVIt9HCUTiZi0RcY6j+hmjlxt6d4oz3bwvfN5
+         YYWfnDTommixe+8XqZE72xe12TYXhhoc1DMGYImt0Ig//XZUPuXwg+39SjVJPOdz5X4u
+         WHc+XWP+2/Mwpv6oWrghkSheztmutZDLQhR37MYeOgnBZtfh4wYvBBOJEvEs6BrQV0Xx
+         8Ibw==
+X-Gm-Message-State: ANhLgQ2yCMMJyVTAYGdgze8N60VR3bF1TIdeuBS6+3+juSeeM5IGVtI9
+        yD3tPcgKEZs7d0dOoWNAEOI=
+X-Google-Smtp-Source: ADFU+vts8NPW5NBCO1lUnAWQ7WDcIE6VGZBSRZMrlz6A1oA0ssnEhcatOqsJVHJlRZxqXyJO5QQeDQ==
+X-Received: by 2002:a17:902:8d8a:: with SMTP id v10mr9810813plo.90.1583637398563;
+        Sat, 07 Mar 2020 19:16:38 -0800 (PST)
+Received: from localhost (194.99.30.125.dy.iij4u.or.jp. [125.30.99.194])
+        by smtp.gmail.com with ESMTPSA id s18sm13679394pjp.24.2020.03.07.19.16.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 07 Mar 2020 19:16:37 -0800 (PST)
+From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Date:   Sun, 8 Mar 2020 12:16:34 +0900
+To:     Joe Perches <joe@perches.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH] mm: Use fallthrough;
+Message-ID: <20200308031634.GA1125@jagdpanzerIV.localdomain>
+References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:d09:: with SMTP id 9mr8484060iln.191.1583615110700;
- Sat, 07 Mar 2020 13:05:10 -0800 (PST)
-Date:   Sat, 07 Mar 2020 13:05:10 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000022640205a04a20d8@google.com>
-Subject: linux-next test error: BUG: using __this_cpu_read() in preemptible
- code in __mod_memcg_state
-From:   syzbot <syzbot+826543256ed3b8c37f62@syzkaller.appspotmail.com>
-To:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, mhocko@kernel.org,
-        syzkaller-bugs@googlegroups.com, vdavydov.dev@gmail.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On (20/03/06 23:58), Joe Perches wrote:
+[..]
+> --- a/mm/zsmalloc.c
+> +++ b/mm/zsmalloc.c
+> @@ -424,7 +424,7 @@ static void *zs_zpool_map(void *pool, unsigned long handle,
+>  	case ZPOOL_MM_WO:
+>  		zs_mm = ZS_MM_WO;
+>  		break;
+> -	case ZPOOL_MM_RW: /* fall through */
+> +	case ZPOOL_MM_RW:
+>  	default:
+>  		zs_mm = ZS_MM_RW;
+>  		break;
 
-syzbot found the following crash on:
+Seems like missing fallthrough; for ZPOOL_MM_RW?
 
-HEAD commit:    b86a6a24 Add linux-next specific files for 20200306
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=1766b731e00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9c79dccc623ccc6f
-dashboard link: https://syzkaller.appspot.com/bug?extid=826543256ed3b8c37f62
-compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-
-Unfortunately, I don't have any reproducer for this crash yet.
-
-IMPORTANT: if you fix the bug, please add the following tag to the commit:
-Reported-by: syzbot+826543256ed3b8c37f62@syzkaller.appspotmail.com
-
-check_preemption_disabled: 3 callbacks suppressed
-BUG: using __this_cpu_read() in preemptible [00000000] code: syz-fuzzer/9432
-caller is __mod_memcg_state+0x27/0x1a0 mm/memcontrol.c:689
-CPU: 1 PID: 9432 Comm: syz-fuzzer Not tainted 5.6.0-rc4-next-20200306-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- __this_cpu_preempt_check.cold+0x84/0x90 lib/smp_processor_id.c:64
- __mod_memcg_state+0x27/0x1a0 mm/memcontrol.c:689
- __split_huge_page mm/huge_memory.c:2575 [inline]
- split_huge_page_to_list+0x124b/0x3380 mm/huge_memory.c:2862
- split_huge_page include/linux/huge_mm.h:167 [inline]
- madvise_free_huge_pmd+0x873/0xb90 mm/huge_memory.c:1766
- madvise_free_pte_range+0x6ff/0x2650 mm/madvise.c:584
- walk_pmd_range mm/pagewalk.c:89 [inline]
- walk_pud_range mm/pagewalk.c:160 [inline]
- walk_p4d_range mm/pagewalk.c:193 [inline]
- walk_pgd_range mm/pagewalk.c:229 [inline]
- __walk_page_range+0xcfb/0x2070 mm/pagewalk.c:331
- walk_page_range+0x1bd/0x3a0 mm/pagewalk.c:427
- madvise_free_single_vma+0x384/0x550 mm/madvise.c:731
- madvise_dontneed_free mm/madvise.c:819 [inline]
- madvise_vma mm/madvise.c:958 [inline]
- do_madvise mm/madvise.c:1161 [inline]
- do_madvise+0x5ba/0x1b80 mm/madvise.c:1084
- __do_sys_madvise mm/madvise.c:1189 [inline]
- __se_sys_madvise mm/madvise.c:1187 [inline]
- __x64_sys_madvise+0xae/0x120 mm/madvise.c:1187
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x460bf7
-Code: 8b 24 24 48 8b 6c 24 10 48 83 c4 18 c3 cc cc cc cc cc cc 48 8b 7c 24 08 48 8b 74 24 10 8b 54 24 18 48 c7 c0 1c 00 00 00 0f 05 <89> 44 24 20 c3 cc cc cc cc 48 8b 7c 24 08 8b 74 24 10 8b 54 24 14
-RSP: 002b:00007ffd6e086670 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 0000000000460bf7
-RDX: 0000000000000008 RSI: 000000000000a000 RDI: 000000c00029a000
-RBP: 00007ffd6e0866b0 R08: 000000c000200000 R09: 000000c0002a4000
-R10: 00007fffffffffff R11: 0000000000000246 R12: 0000000000000007
-R13: 00007f30cae546d0 R14: 0000000000000080 R15: 00000000000000fa
-BUG: using __this_cpu_add() in preemptible [00000000] code: syz-fuzzer/9432
-caller is __mod_memcg_state+0xca/0x1a0 mm/memcontrol.c:697
-CPU: 1 PID: 9432 Comm: syz-fuzzer Not tainted 5.6.0-rc4-next-20200306-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- __this_cpu_preempt_check.cold+0x84/0x90 lib/smp_processor_id.c:64
- __mod_memcg_state+0xca/0x1a0 mm/memcontrol.c:697
- __split_huge_page mm/huge_memory.c:2575 [inline]
- split_huge_page_to_list+0x124b/0x3380 mm/huge_memory.c:2862
- split_huge_page include/linux/huge_mm.h:167 [inline]
- madvise_free_huge_pmd+0x873/0xb90 mm/huge_memory.c:1766
- madvise_free_pte_range+0x6ff/0x2650 mm/madvise.c:584
- walk_pmd_range mm/pagewalk.c:89 [inline]
- walk_pud_range mm/pagewalk.c:160 [inline]
- walk_p4d_range mm/pagewalk.c:193 [inline]
- walk_pgd_range mm/pagewalk.c:229 [inline]
- __walk_page_range+0xcfb/0x2070 mm/pagewalk.c:331
- walk_page_range+0x1bd/0x3a0 mm/pagewalk.c:427
- madvise_free_single_vma+0x384/0x550 mm/madvise.c:731
- madvise_dontneed_free mm/madvise.c:819 [inline]
- madvise_vma mm/madvise.c:958 [inline]
- do_madvise mm/madvise.c:1161 [inline]
- do_madvise+0x5ba/0x1b80 mm/madvise.c:1084
- __do_sys_madvise mm/madvise.c:1189 [inline]
- __se_sys_madvise mm/madvise.c:1187 [inline]
- __x64_sys_madvise+0xae/0x120 mm/madvise.c:1187
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x460bf7
-Code: 8b 24 24 48 8b 6c 24 10 48 83 c4 18 c3 cc cc cc cc cc cc 48 8b 7c 24 08 48 8b 74 24 10 8b 54 24 18 48 c7 c0 1c 00 00 00 0f 05 <89> 44 24 20 c3 cc cc cc cc 48 8b 7c 24 08 8b 74 24 10 8b 54 24 14
-RSP: 002b:00007ffd6e086670 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 0000000000460bf7
-RDX: 0000000000000008 RSI: 000000000000a000 RDI: 000000c00029a000
-RBP: 00007ffd6e0866b0 R08: 000000c000200000 R09: 000000c0002a4000
-R10: 00007fffffffffff R11: 0000000000000246 R12: 0000000000000007
-R13: 00007f30cae546d0 R14: 0000000000000080 R15: 00000000000000fa
-BUG: using __this_cpu_write() in preemptible [00000000] code: syz-fuzzer/9432
-caller is __mod_memcg_state+0x87/0x1a0 mm/memcontrol.c:702
-CPU: 1 PID: 9432 Comm: syz-fuzzer Not tainted 5.6.0-rc4-next-20200306-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x188/0x20d lib/dump_stack.c:118
- check_preemption_disabled lib/smp_processor_id.c:47 [inline]
- __this_cpu_preempt_check.cold+0x84/0x90 lib/smp_processor_id.c:64
- __mod_memcg_state+0x87/0x1a0 mm/memcontrol.c:702
- __split_huge_page mm/huge_memory.c:2575 [inline]
- split_huge_page_to_list+0x124b/0x3380 mm/huge_memory.c:2862
- split_huge_page include/linux/huge_mm.h:167 [inline]
- madvise_free_huge_pmd+0x873/0xb90 mm/huge_memory.c:1766
- madvise_free_pte_range+0x6ff/0x2650 mm/madvise.c:584
- walk_pmd_range mm/pagewalk.c:89 [inline]
- walk_pud_range mm/pagewalk.c:160 [inline]
- walk_p4d_range mm/pagewalk.c:193 [inline]
- walk_pgd_range mm/pagewalk.c:229 [inline]
- __walk_page_range+0xcfb/0x2070 mm/pagewalk.c:331
- walk_page_range+0x1bd/0x3a0 mm/pagewalk.c:427
- madvise_free_single_vma+0x384/0x550 mm/madvise.c:731
- madvise_dontneed_free mm/madvise.c:819 [inline]
- madvise_vma mm/madvise.c:958 [inline]
- do_madvise mm/madvise.c:1161 [inline]
- do_madvise+0x5ba/0x1b80 mm/madvise.c:1084
- __do_sys_madvise mm/madvise.c:1189 [inline]
- __se_sys_madvise mm/madvise.c:1187 [inline]
- __x64_sys_madvise+0xae/0x120 mm/madvise.c:1187
- do_syscall_64+0xf6/0x7d0 arch/x86/entry/common.c:295
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
-RIP: 0033:0x460bf7
-Code: 8b 24 24 48 8b 6c 24 10 48 83 c4 18 c3 cc cc cc cc cc cc 48 8b 7c 24 08 48 8b 74 24 10 8b 54 24 18 48 c7 c0 1c 00 00 00 0f 05 <89> 44 24 20 c3 cc cc cc cc 48 8b 7c 24 08 8b 74 24 10 8b 54 24 14
-RSP: 002b:00007ffd6e086670 EFLAGS: 00000246 ORIG_RAX: 000000000000001c
-RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 0000000000460bf7
-RDX: 0000000000000008 RSI: 000000000000a000 RDI: 000000c00029a000
-RBP: 00007ffd6e0866b0 R08: 000000c000200000 R09: 000000c0002a4000
-R10: 00007fffffffffff R11: 0000000000000246 R12: 0000000000000007
-R13: 00007f30cae546d0 R14: 0000000000000080 R15: 00000000000000fa
-
-
----
-This bug is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this bug report. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+	-ss
