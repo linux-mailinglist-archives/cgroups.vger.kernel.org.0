@@ -2,54 +2,31 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 66B8017D889
-	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2020 05:15:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D657217D8A5
+	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2020 05:52:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726027AbgCIEP4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Mar 2020 00:15:56 -0400
-Received: from mail-pg1-f193.google.com ([209.85.215.193]:43132 "EHLO
-        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725956AbgCIEP4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Mar 2020 00:15:56 -0400
-Received: by mail-pg1-f193.google.com with SMTP id u12so4097757pgb.10;
-        Sun, 08 Mar 2020 21:15:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=jAoReLNBniwrpa0uZH66RQ2ZZJ/sNHlyqQJ+mmk89mc=;
-        b=sBKY5ixcRQOrBOp/pyft+S4zvUPqjKpmc1HKbQidmstpOHLfoLeJUB1bAXwWgVi69/
-         pj8YKammOpCOOeWyV1Xxbdv/T3MXi30h8eRzLa2mPwqNTAJb+gLZaopAGcW3uUeLI812
-         dMdtMcbJQ8HRq2UZj1N1Zi+t69UXv6EIX8g1b7sTXNHHrmRvJ2kgfR5MqM/9Y1q8UNof
-         uYQIYzxhqeBGzDigDR6Wn8ClhubyphvMXYhQIXuwUuo4ZO7FrS6xBMn+oQsK1fNrtVtE
-         XddnpDf4RfwwEI/eLAd43eEaVqe2VOWsY1xL8HM6rHNTAq4TaJFBfX8Ext1Sr/dfMQDw
-         xv1w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=jAoReLNBniwrpa0uZH66RQ2ZZJ/sNHlyqQJ+mmk89mc=;
-        b=ekDaYCDTwLis9hGBx0GI1oZB3anFtM2rY0IZtVQFQwPVBmwCSiJSY7IuBSbrktndc6
-         bvbTZtMgMIJhW+G9KmJpo9h52oSYwRuGVOON6fY+RYCph17MfHof9Mo9sasI/BeRe0pF
-         Y7gAmhwAFDVNzyYjZ/6EpA5QrNrPDbfXj5mH63w9aDQ6t6CABAQSkfZAilDTq8CsX5/9
-         S2b0A4ekKwcW2rdUk1rv1eRajV9A7kS+JWfSl32O4ctRWrDQkUbrlGEu5K0J8nfYIP9O
-         KLrtv8uPJ0xqovhyr7o/TtlpvnTlSYYy08Swwjo6pD/TQY0la4LMiAuepAuGwvZpart4
-         duMg==
-X-Gm-Message-State: ANhLgQ3E2T7ja8HMHbYfcBkHLvvQcinsnkksZkp8sCZFaFHt9q7CPGJY
-        N2Kf3dpzRhWrJlJxr46UJ6o=
-X-Google-Smtp-Source: ADFU+vthYSO4whGtyJkvhi5ehKTwuNj8TmTNW7ywtWsnfm7afsf05M5urNVmcZjEuJEY90+DirFWAQ==
-X-Received: by 2002:a63:2701:: with SMTP id n1mr14600491pgn.332.1583727355102;
-        Sun, 08 Mar 2020 21:15:55 -0700 (PDT)
-Received: from localhost ([2a00:79e1:abc:f604:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id cq15sm16910709pjb.31.2020.03.08.21.15.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Mar 2020 21:15:54 -0700 (PDT)
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-X-Google-Original-From: Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Date:   Mon, 9 Mar 2020 13:15:51 +0900
-To:     Joe Perches <joe@perches.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1725956AbgCIEwu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Mar 2020 00:52:50 -0400
+Received: from smtprelay0131.hostedemail.com ([216.40.44.131]:36497 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725811AbgCIEwu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Mar 2020 00:52:50 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 4D777837F24A;
+        Mon,  9 Mar 2020 04:52:49 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3867:3870:3872:3874:4321:5007:6742:7903:10004:10400:10848:11026:11232:11658:11914:12297:12740:12760:12895:13019:13069:13095:13311:13357:13439:14096:14097:14659:14721:21080:21433:21627:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: note65_52936ebc40606
+X-Filterd-Recvd-Size: 2288
+Received: from XPS-9350.home (unknown [47.154.118.177])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Mon,  9 Mar 2020 04:52:47 +0000 (UTC)
+Message-ID: <84f3c9891d4e89909d5537f34ea9d75de339c415.camel@perches.com>
+Subject: Re: [PATCH] mm: Use fallthrough;
+From:   Joe Perches <joe@perches.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
@@ -59,37 +36,50 @@ Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org
-Subject: Re: [PATCH] mm: Use fallthrough;
-Message-ID: <20200309041551.GA1765@jagdpanzerIV.localdomain>
+Date:   Sun, 08 Mar 2020 21:51:07 -0700
+In-Reply-To: <20200309041551.GA1765@jagdpanzerIV.localdomain>
 References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
- <20200308031825.GB1125@jagdpanzerIV.localdomain>
- <5f297e8995b22c9ccf06d4d0a04f7d9a37d3cd77.camel@perches.com>
+         <20200308031825.GB1125@jagdpanzerIV.localdomain>
+         <5f297e8995b22c9ccf06d4d0a04f7d9a37d3cd77.camel@perches.com>
+         <20200309041551.GA1765@jagdpanzerIV.localdomain>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5f297e8995b22c9ccf06d4d0a04f7d9a37d3cd77.camel@perches.com>
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On (20/03/07 19:54), Joe Perches wrote:
-> On Sun, 2020-03-08 at 12:18 +0900, Sergey Senozhatsky wrote:
-> > On (20/03/06 23:58), Joe Perches wrote:
-> > [..]
-> > > --- a/mm/mempolicy.c
-> > > +++ b/mm/mempolicy.c
-> > > @@ -907,7 +907,6 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
-> > >  
-> > >  	switch (p->mode) {
-> > >  	case MPOL_BIND:
-> > > -		/* Fall through */
-> > >  	case MPOL_INTERLEAVE:
+On Mon, 2020-03-09 at 13:15 +0900, Sergey Senozhatsky wrote:
+> On (20/03/07 19:54), Joe Perches wrote:
+> > On Sun, 2020-03-08 at 12:18 +0900, Sergey Senozhatsky wrote:
+> > > On (20/03/06 23:58), Joe Perches wrote:
+> > > [..]
+> > > > --- a/mm/mempolicy.c
+> > > > +++ b/mm/mempolicy.c
+> > > > @@ -907,7 +907,6 @@ static void get_policy_nodemask(struct mempolicy *p, nodemask_t *nodes)
+> > > >  
+> > > >  	switch (p->mode) {
+> > > >  	case MPOL_BIND:
+> > > > -		/* Fall through */
+> > > >  	case MPOL_INTERLEAVE:
+> > 
+> > Consecutive case labels do not need an interleaving fallthrough;
+> > 
+> > ie: ditto
 > 
-> Consecutive case labels do not need an interleaving fallthrough;
-> 
-> ie: ditto
+> I see. Shall this be mentioned in the commit message, maybe?
 
-I see. Shall this be mentioned in the commit message, maybe?
+<shrug, maybe>  I've no real opinion about that necessity.
 
-	-ss
+fallthrough commments are relatively rarely used as a
+separating element between case labels.
+
+It's by far most common to just have consecutive case labels
+without any other content.
+
+It's somewhere between 500:1 to 1000:1 in the kernel.
+
+
+
