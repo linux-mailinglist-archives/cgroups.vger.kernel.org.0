@@ -2,119 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BD95517DDB9
-	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2020 11:35:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A0AA817E128
+	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2020 14:28:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726071AbgCIKfC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Mar 2020 06:35:02 -0400
-Received: from mail-lf1-f67.google.com ([209.85.167.67]:43902 "EHLO
-        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgCIKfC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Mar 2020 06:35:02 -0400
-Received: by mail-lf1-f67.google.com with SMTP id q9so558202lfc.10
-        for <cgroups@vger.kernel.org>; Mon, 09 Mar 2020 03:35:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=c/mZkIa4u1GFEY/oYjmFc+FR8PHQ8RKEpzXuSA50f5s=;
-        b=uiIEUaP2Gnx4DXJ410e7KkMpKbVJptDoEJTP7GyXAgBDXX17tDwoYdwV2sfzwX63VJ
-         vyHz+OoKN0Cy/N/YpAThB9gV8cjYl54ussz5QaJzoxPQPd+IFm8H+35E3a6tF/5qPDOZ
-         Sv1qT9rybKMzF8Oq1OtclWe1he11Bruh+O36bRMuLckWRd5Q3DXOEONnkYGgIdCLs+Nb
-         TnGQ+cCWij1TW9yI+yw4xEoNnWant1k2eNtAdK4wK2Jx5iICwlWmzXKB2GSWiuKWfVZe
-         Ddz0qOQHguNTNTnNAXcgopx6GGZd5pIA28ZK4S6HDsUZcqoFzeLiYHEVAkx6yDDfTIMT
-         Y5KA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=c/mZkIa4u1GFEY/oYjmFc+FR8PHQ8RKEpzXuSA50f5s=;
-        b=rl4zJ2DzknPKq0pxPEY7a/VgT9ggFXLeX34k7klOogOom8Fk9kN1PxKQf848r3LKVM
-         KGMva4K/OgIetpEz9KJdpq8fH5OIaWyyZ4IEfHaXJLnLI3DiwDoN8R/bXloGeSdDUXa2
-         OK6r+iVvTni+/PDweSgVdEHsIU1zUdSyWswoKxw40yJlUn8mGPI6Yy2eHmNXegykTwfB
-         AFBrwOQEOtN8pQk0ZDVPao9EWeYd6vA2I+cMJ7QIlc1RqFO5YeKPBLmXW8PcA01GyHZH
-         tba7rGGJ2xGs5oOEVdBASb/0+aDFDbHBCJSVXj0EoQBj2NyS/dJlX12ix6fHlfZTuTQ/
-         upcg==
-X-Gm-Message-State: ANhLgQ16UTx0nAmWKgJZ+jQ6MmhjMnaEGOZP+XEN1HDmswfcvuNUkB2R
-        4RyWRYBkKvWm6TzqO+9I8C6+y3s+RdvqzHTdJIk=
-X-Google-Smtp-Source: ADFU+vvTO+GjruFrygCV93VYgRI688iOxAOnopf6UXQrG2dcTwQH4gKzd27I+ldNAxxDZOTPKEnx0SNG1P2NNxTdZBc=
-X-Received: by 2002:ac2:5b47:: with SMTP id i7mr9178865lfp.181.1583750099195;
- Mon, 09 Mar 2020 03:34:59 -0700 (PDT)
+        id S1726384AbgCIN2B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Mar 2020 09:28:01 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:36207 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726659AbgCIN2B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Mar 2020 09:28:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0Ts81o5L_1583760421;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0Ts81o5L_1583760421)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 09 Mar 2020 21:27:01 +0800
+Subject: Re: linux-next test error: BUG: using __this_cpu_read() in
+ preemptible code in __mod_memcg_state
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        syzbot <syzbot+826543256ed3b8c37f62@syzkaller.appspotmail.com>
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org,
+        syzkaller-bugs@googlegroups.com, vdavydov.dev@gmail.com
+References: <00000000000022640205a04a20d8@google.com>
+ <20200309092423.2ww3aw6yfyce7yty@box>
+ <5b1196be-09ce-51f7-f5e7-63f2e597f91e@linux.alibaba.com>
+Message-ID: <d3fb0593-e483-3b69-bf2c-99ad6cd03567@linux.alibaba.com>
+Date:   Mon, 9 Mar 2020 21:26:59 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.4.1
 MIME-Version: 1.0
-Received: by 2002:a05:651c:39b:0:0:0:0 with HTTP; Mon, 9 Mar 2020 03:34:58
- -0700 (PDT)
-Reply-To: robertandersonhappy1@gmail.com
-From:   robert <ekeulp003@gmail.com>
-Date:   Mon, 9 Mar 2020 03:34:58 -0700
-Message-ID: <CAOFU0L+ohbvBLQ4W9QJNYxODsAz7UUsZxo7caqSJji3qjm4Rmg@mail.gmail.com>
-Subject: good
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+In-Reply-To: <5b1196be-09ce-51f7-f5e7-63f2e597f91e@linux.alibaba.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-MTE1Mi81MDAwDQoqINCS0L3QuNC80LDQvdC40LU6INCx0LXQvdC10YTQuNGG0LjQsNGAICoNCg0K
-KiDQodC+0L7QsdGJ0LjRgtC1LCDRh9GC0L4g0LzRiyDQv9C+0LvRg9GH0LjQu9C4INGD0YLQstC1
-0YDQttC00LXQvdC90YvQuSDRhNCw0LnQuyDQvtC/0LvQsNGC0Ysg0L7RgiBGRURFUkFMDQrQnNCY
-0J3QmNCh0KLQldCg0KHQotCS0J4g0KTQmNCd0JDQndCh0J7QkiDRgdC+0LLQvNC10YHRgtC90L4g
-0YEg0JzQtdC20LTRg9C90LDRgNC+0LTQvdGL0Lwg0LLQsNC70Y7RgtC90YvQvCDRhNC+0L3QtNC+
-0LwgKNCc0JLQpCkNCtC60L7QvNC/0LXQvdGB0LDRhtC40Y8g0LbQtdGA0YLQstCw0Lwg0LzQvtGI
-0LXQvdC90LjRh9C10YHRgtCy0LAg0Lgg0LLQsNGIINCw0LTRgNC10YEg0Y3Qu9C10LrRgtGA0L7Q
-vdC90L7QuSDQv9C+0YfRgtGLINCy0YXQvtC00LjRgiDQsiDRgdC/0LjRgdC+0LoNCtC20LXRgNGC
-0LLRiy4gKg0KDQoqINCvINC/0LjRiNGDLCDRh9GC0L7QsdGLINGB0L7QvtCx0YnQuNGC0Ywg0LLQ
-sNC8LCDRh9GC0L4g0LzRiyDQsdGD0LTQtdC8INC+0YLQv9GA0LDQstC70Y/RgtGMINCy0LDQvCAk
-IDUwMDAuMDBVU0QNCtC10LbQtdC00L3QtdCy0L3QviDRgQ0K0L3QsNGIINC+0YTQuNGBINC30LTQ
-tdGB0YwsINGC0LDQuiDQutCw0Log0LzRiyDQv9C+0LvRg9GH0LjQu9C4INC80LDQvdC00LDRgiDQ
-vdCwINC/0LXRgNC10LTQsNGH0YMg0LLQsNGI0LXQs9C+INC/0L7Qu9C90L7Qs9C+DQrQutC+0LzQ
-v9C10L3RgdCw0YbQuNC+0L3QvdGL0Lkg0L/Qu9Cw0YLQtdC2INCyINGA0LDQt9C80LXRgNC1IDgw
-MCAwMDAg0LTQvtC70LvQsNGA0L7QsiDQodCo0JAg0JzQtdC20LTRg9C90LDRgNC+0LTQvdGL0LwN
-CtCy0LDQu9GO0YLQvdGL0Lwg0YTQvtC90LTQvtC8DQoo0JzQktCkKSDQuCDQpNC10LTQtdGA0LDQ
-u9GM0L3QvtC1INC80LjQvdC40YHRgtC10YDRgdGC0LLQviDRhNC40L3QsNC90YHQvtCyLiDQktCw
-0Ygg0LvQuNGH0L3Ri9C5INC40LTQtdC90YLQuNGE0LjQutCw0YbQuNC+0L3QvdGL0Lkg0L3QvtC8
-0LXRgA0K0L/RgNC10LTQvtGB0YLQsNCy0LvQtdC90L4g0LrQvtC80LDQvdC00L7QuSBJLk0uRiBD
-UFAwOTIwVEcuICoNCg0KKiDQktC+0YIg0LjQvdGE0L7RgNC80LDRhtC40Y8g0L7QsSDQvtC/0LvQ
-sNGC0LUsINC60L7RgtC+0YDRg9GOINC80Ysg0LHRg9C00LXQvCDQuNGB0L/QvtC70YzQt9C+0LLQ
-sNGC0Ywg0LTQu9GPINC/0LXRgNC10YHRi9C70LrQuCDQstCw0YjQtdCz0L4NCtC10LbQtdC00L3Q
-tdCy0L3Ri9C5INC/0LXRgNC10LLQvtC0LiAqDQoNCiog0JjQvNGPINC+0YLQv9GA0LDQstC40YLQ
-tdC70Y86INCh0LjQvdGC0LjRjyDQmNC00LXQvSAqDQoqINCS0L7Qv9GA0L7RgTog0J7Qv9C70LDR
-gtCwICoNCiog0J7RgtCy0LXRgjog0JTQsCAqDQoqINCh0YPQvNC80LA6IDUgMDAwLDAwINC00L7Q
-u9C70LDRgNC+0LIg0KHQqNCQICoNCiog0JPQvtGA0L7QtDog0JvQvtC80LUgKg0KKiDQodGC0YDQ
-sNC90LA6INCi0L7Qs9C+ICoNCg0KKiDQn9Cg0JjQnNCV0KfQkNCd0JjQlTogTVRDTiDQsdGD0LTQ
-tdGCINC+0YLQv9GA0LDQstC70LXQvSDQstCw0Lwg0L/QvtGB0LvQtSDQstCw0YjQtdCz0L4g0L7R
-gtCy0LXRgtCwINC4INC/0L7QtNGC0LLQtdGA0LbQtNC10L3QuNGPDQrQmNC90YTQvtGA0LzQsNGG
-0LjRjyDQviDQstCw0YjQtdC8INC/0L7Qu9GD0YfQsNGC0LXQu9C1LCDRh9GC0L7QsdGLINC40LfQ
-sdC10LbQsNGC0Ywg0L3QtdC/0YDQsNCy0LjQu9GM0L3QvtC5INC/0LXRgNC10LTQsNGH0LguICoN
-Cg0KKiDQnNGLINC20LTQtdC8INCy0LDRiNC10LPQviDRgdGA0L7Rh9C90L7Qs9C+INC+0YLQstC1
-0YLQsCDQv9C+INGN0YLQvtC80YMg0LDQtNGA0LXRgdGDDQoobWlzc2N5bnRoaWFlZGVuNTZAZ21h
-aWwuY29tIDxtaXNzY3ludGhpYWVkZW41NkBnbWFpbC5jb20+KSwg0YfRgtC+0LHRiyDQv9C+0LfQ
-stC+0LvQuNGC0Ywg0L3QsNC8DQrQv9GA0L7QtNC+0LvQttC40YLRjCDQvtC/0LvQsNGC0YMuICoN
-Cg0KKtCY0YHQutGA0LXQvdC90LUg0LLQsNGILCoNCg0KKtCg0YPQutC+0LLQvtC00LjRgtC10LvR
-jCDRhNC40LvQuNCw0LvQsDoqDQoqINCc0LjRgdGBINCh0LjQvdGC0LjRjyDQmNC00LXQvSAqDQoq
-IFZuaW1hbml5ZTogYmVuZWZpdHNpYXIgKg0KDQoqIFNvb2JzaGNoaXRlLCBjaHRvIG15IHBvbHVj
-aGlsaSB1dHZlcnpoZGVubnl5IGZheWwgb3BsYXR5IG90IEZFREVSQUwNCk1JTklTVEVSU1RWTyBG
-SU5BTlNPViBzb3ZtZXN0bm8gcyBNZXpoZHVuYXJvZG55bSB2YWx5dXRueW0gZm9uZG9tIChNVkYp
-DQprb21wZW5zYXRzaXlhIHpoZXJ0dmFtIG1vc2hlbm5pY2hlc3R2YSBpIHZhc2ggYWRyZXMgZWxl
-a3Ryb25ub3kgcG9jaHR5DQp2a2hvZGl0IHYgc3Bpc29rDQp6aGVydHZ5LiAqDQoNCiogWUEgcGlz
-aHUsIGNodG9ieSBzb29ic2hjaGl0JyB2YW0sIGNodG8gbXkgYnVkZW0gb3RwcmF2bHlhdCcgdmFt
-ICQNCjUwMDAuMDBVU0QgeWV6aGVkbmV2bm8gcw0KbmFzaCBvZmlzIHpkZXMnLCB0YWsga2FrIG15
-IHBvbHVjaGlsaSBtYW5kYXQgbmEgcGVyZWRhY2h1IHZhc2hlZ28gcG9sbm9nbw0Ka29tcGVuc2F0
-c2lvbm55eSBwbGF0ZXpoIHYgcmF6bWVyZSA4MDAgMDAwIGRvbGxhcm92IFNTSEENCk1lemhkdW5h
-cm9kbnltIHZhbHl1dG55bSBmb25kb20NCihNVkYpIGkgRmVkZXJhbCdub3llIG1pbmlzdGVyc3R2
-byBmaW5hbnNvdi4gVmFzaCBsaWNobnl5DQppZGVudGlmaWthdHNpb25ueXkgbm9tZXINCnByZWRv
-c3Rhdmxlbm8ga29tYW5kb3kgSS5NLkYgQ1BQMDkyMFRHLiAqDQoNCiogVm90IGluZm9ybWF0c2l5
-YSBvYiBvcGxhdGUsIGtvdG9ydXl1IG15IGJ1ZGVtIGlzcG9sJ3pvdmF0JyBkbHlhDQpwZXJlc3ls
-a2kgdmFzaGVnbw0KeWV6aGVkbmV2bnl5IHBlcmV2b2QuICoNCg0KKiBJbXlhIG90cHJhdml0ZWx5
-YTogU2ludGl5YSBJZGVuICoNCiogVm9wcm9zOiBPcGxhdGEgKg0KKiBPdHZldDogRGEgKg0KKiBT
-dW1tYTogNSAwMDAsMDAgZG9sbGFyb3YgU1NIQSAqDQoqIEdvcm9kOiBMb21lICoNCiogU3RyYW5h
-OiBUb2dvICoNCg0KKiBQUklNRUNIQU5JWWU6IE1UQ04gYnVkZXQgb3RwcmF2bGVuIHZhbSBwb3Ns
-ZSB2YXNoZWdvIG90dmV0YSBpIHBvZHR2ZXJ6aGRlbml5YQ0KSW5mb3JtYXRzaXlhIG8gdmFzaGVt
-IHBvbHVjaGF0ZWxlLCBjaHRvYnkgaXpiZXpoYXQnIG5lcHJhdmlsJ25veSBwZXJlZGFjaGkuICoN
-Cg0KKiBNeSB6aGRlbSB2YXNoZWdvIHNyb2Nobm9nbyBvdHZldGEgcG8gZXRvbXUgYWRyZXN1DQoo
-bWlzc2N5bnRoaWFlZGVuNTZAZ21haWwuY29tIDxtaXNzY3ludGhpYWVkZW41NkBnbWFpbC5jb20+
-KSwgY2h0b2J5DQpwb3p2b2xpdCcgbmFtDQpwcm9kb2x6aGl0JyBvcGxhdHUuICoNCg0KKklza3Jl
-bm5lIHZhc2gsKg0KDQoqUnVrb3ZvZGl0ZWwnIGZpbGlhbGE6Kg0KKiBNaXNzIFNpbnRpeWEgSWRl
-biAqDQpBZmZpY2hlciBwbHVzDQpFbnZveWVyIGRlcyBjb21tZW50YWlyZXMNCkhpc3RvcmlxdWUN
-CkVucmVnaXN0csOpDQpDb21tdW5hdXTDqQ0K
+
+
+在 2020/3/9 下午5:56, Alex Shi 写道:
+> 
+> 
+> 在 2020/3/9 下午5:24, Kirill A. Shutemov 写道:
+>>> check_preemption_disabled: 3 callbacks suppressed
+>>> BUG: using __this_cpu_read() in preemptible [00000000] code: syz-fuzzer/9432
+>>> caller is __mod_memcg_state+0x27/0x1a0 mm/memcontrol.c:689
+>>> CPU: 1 PID: 9432 Comm: syz-fuzzer Not tainted 5.6.0-rc4-next-20200306-syzkaller #0
+>>> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+>>> Call Trace:
+>>>  __dump_stack lib/dump_stack.c:77 [inline]
+>>>  dump_stack+0x188/0x20d lib/dump_stack.c:118
+>>>  check_preemption_disabled lib/smp_processor_id.c:47 [inline]
+>>>  __this_cpu_preempt_check.cold+0x84/0x90 lib/smp_processor_id.c:64
+>>>  __mod_memcg_state+0x27/0x1a0 mm/memcontrol.c:689
+>>>  __split_huge_page mm/huge_memory.c:2575 [inline]
+>>>  split_huge_page_to_list+0x124b/0x3380 mm/huge_memory.c:2862
+>>>  split_huge_page include/linux/huge_mm.h:167 [inline]
+>> It looks like a regression due to c8cba0cc2a80 ("mm/thp: narrow lru
+>> locking").
+> 
+> yes, I guess so.
+
+Yes, it is a stupid mistake to pull out lock for __mod_memcg_state which
+should be in a lock.
+
+revert this patch should be all fine, since ClearPageCompound and page_ref_inc
+later may related with lru_list valid issue in release_pges.
+
+
+Sorry for the disaster!
+
+Alex
