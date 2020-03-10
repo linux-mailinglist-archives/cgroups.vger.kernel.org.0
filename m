@@ -2,87 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D24CE17F604
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 12:17:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C99A517F692
+	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 12:44:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726777AbgCJLRP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 07:17:15 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:37841 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726971AbgCJLRO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 07:17:14 -0400
-Received: by mail-wr1-f66.google.com with SMTP id 6so15332298wre.4;
-        Tue, 10 Mar 2020 04:17:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hMeYQLjzGBbtQiC8mAcdXgfjl4PT8fCW6CmTjHRY5u4=;
-        b=ST3E6xJFYBuU0kajH+iJyGJhMRZzyEx1lCvyrh+CpSinJ7Opb6PVGmYNqLgoD5yFDd
-         c89Uo/JG/+h9PDC6R+oYzIfGatcu9GQnPM0fAjWwCMqzOSFqdjwfH7PQLc1pu4UFrYQa
-         x4AUfe9hCOWZiFyIr4WW/gcRKzrhzg0P4Mlg6QmkJDD0UJYGNzeFS5x0PUD+hiiw0WWW
-         YDCpL+lwwYI426xGKBntuMJ15RCTMpN/eBojWZ4v/XZDP72aZgj1/hTzXwEnLtTNtb8O
-         10KCAmCzkRepVgWJNDrAGYPu7AD2YV5gvE4OVJcmM0yNS8wOEcJtGxjebJodpIHhB/iY
-         2A0A==
-X-Gm-Message-State: ANhLgQ0yhfUeJ3ERRAniBHi4AJaoHgasmgKdn2IUffeT/i34W8CcT7+E
-        lUMjGXjeo8wfYAUE8oguiiLUOYUj
-X-Google-Smtp-Source: ADFU+vvwMGbod/4+O259JslpdYAISzZQ2Ja6Zj9n5SvnGOf2IeBIQt9CdyH0FQcsl015TRgEW+7DEw==
-X-Received: by 2002:a5d:4685:: with SMTP id u5mr25849575wrq.69.1583839032708;
-        Tue, 10 Mar 2020 04:17:12 -0700 (PDT)
-Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
-        by smtp.gmail.com with ESMTPSA id 5sm11485857wrh.10.2020.03.10.04.17.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 04:17:11 -0700 (PDT)
-Date:   Tue, 10 Mar 2020 12:17:10 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     brookxu <brookxu.cn@gmail.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] memcg: fix NULL pointer dereference in
- __mem_cgroup_usage_unregister_event
-Message-ID: <20200310111710.GF8447@dhcp22.suse.cz>
-References: <077a6f67-aefa-4591-efec-f2f3af2b0b02@gmail.com>
- <20200310094836.GD8447@dhcp22.suse.cz>
- <20200310104149.5c3pc75y6ny5hixb@box>
+        id S1726205AbgCJLoQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 07:44:16 -0400
+Received: from mail.11d01.mspz7.gob.ec ([190.152.145.91]:46352 "EHLO
+        mail.11d01.mspz7.gob.ec" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726265AbgCJLoQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 07:44:16 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id 9CEA12F7248C;
+        Tue, 10 Mar 2020 04:06:19 -0500 (-05)
+Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id LjgU0e4lJ0Ec; Tue, 10 Mar 2020 04:06:19 -0500 (-05)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTP id 487272F7027E;
+        Tue, 10 Mar 2020 03:39:57 -0500 (-05)
+DKIM-Filter: OpenDKIM Filter v2.9.2 mail.11d01.mspz7.gob.ec 487272F7027E
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=11d01.mspz7.gob.ec;
+        s=50CBC7E4-8BED-11E9-AF6C-F1A741A224D3; t=1583829598;
+        bh=o+H3O7n1+zJcXo0FhJs7spyf8HmE4ClnBa/Y2Gk0DL0=;
+        h=Content-Type:MIME-Version:Content-Transfer-Encoding:Subject:To:
+         From:Date:Reply-To:Message-Id;
+        b=VZCHdDjBKsghbgt4+L0H1IE8VVeOEAIXjdMygHSgGHQktYZ7kq/IhB7UQFPvRAppw
+         b9DpZ/tll7ORAMrBcmYG8++gpmZB1AK3OVKP6DLV1fq4cSu4P62JLnd4qB84gahC7I
+         PJUChjVgrdg/n8erzB0wOsVXmrrCAF1rEQNog8mQ=
+X-Virus-Scanned: amavisd-new at 11d01.mspz7.gob.ec
+Received: from mail.11d01.mspz7.gob.ec ([127.0.0.1])
+        by localhost (mail.11d01.mspz7.gob.ec [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id ZSNQnXf_CKIS; Tue, 10 Mar 2020 03:39:56 -0500 (-05)
+Received: from [10.19.167.32] (unknown [105.0.4.171])
+        by mail.11d01.mspz7.gob.ec (Postfix) with ESMTPSA id 82A612F6976A;
+        Tue, 10 Mar 2020 03:10:25 -0500 (-05)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310104149.5c3pc75y6ny5hixb@box>
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: =?utf-8?q?Wohlt=C3=A4tigkeitsspende_von_2=2E000=2E000_Millionen_Euro?=
+To:     Recipients <ronald.pena@11d01.mspz7.gob.ec>
+From:   ''Michael weirsky'' <ronald.pena@11d01.mspz7.gob.ec>
+Date:   Tue, 10 Mar 2020 10:39:53 +0200
+Reply-To: mikeweirskyspende@gmail.com
+Message-Id: <20200310081026.82A612F6976A@mail.11d01.mspz7.gob.ec>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 10-03-20 13:41:49, Kirill A. Shutemov wrote:
-> On Tue, Mar 10, 2020 at 10:48:36AM +0100, Michal Hocko wrote:
-> > [Cc Kirill, I didn't realize he has implemented this code]
-> 
-> My first non-trivial mm contribution :P
+Lieber Freund,
 
-Everybody has to pay for sins of youth :p
+Ich bin Herr Mike Weirsky, New Jersey, Vereinigte Staaten von Amerika, der =
+Mega-Gewinner von $ 273million In Mega Millions Jackpot, spende ich an 5 zu=
+f=C3=A4llige Personen, wenn Sie diese E-Mail erhalten, dann wurde Ihre E-Ma=
+il nach einem Spinball ausgew=C3=A4hlt.Ich habe den gr=C3=B6=C3=9Ften Teil =
+meines Verm=C3=B6gens auf eine Reihe von Wohlt=C3=A4tigkeitsorganisationen =
+und Organisationen verteilt.Ich habe mich freiwillig dazu entschieden, die =
+Summe von =E2=82=AC 2.000.000,00 an Sie als eine der ausgew=C3=A4hlten 5 zu=
+ spenden, um meine Gewinne zu =C3=BCberpr=C3=BCfen.
+Das ist dein Spendencode: [MW530342019]
+www.youtube.com/watch?v=3Dun8yRTmrYMY
 
-[...]
+Antworten Sie mit dem SPENDE-CODE an diese =
 
-> > It seems that the code has been broken since 2c488db27b61 ("memcg: clean
-> > up memory thresholds"). We've had 371528caec55 ("mm: memcg: Correct
-> > unregistring of events attached to the same eventfd") but it didn't
-> > catch this case for some reason. Unless I am missing something the code
-> > was broken back then already. Kirill please double check after me.
-> 
-> I think the issue exitsted before 2c488db27b61. The fields had different
-> names back then.
-> 
-> The logic to make unregister never-fail is added in 907860ed381a
-> ("cgroups: make cftype.unregister_event() void-returning"). I believe the
-> Fixes should point there.
 
-Yes, you seem to be right. It doesn't make a difference much as both
-went in to the same kernel but a proper Fixes tag is really valuable.
+E-Mail:mikeweirskyspende@gmail.com
 
-Thanks for looking into that.
+Ich hoffe, Sie und Ihre Familie gl=C3=BCcklich zu machen.
 
--- 
-Michal Hocko
-SUSE Labs
+Gr=C3=BC=C3=9Fe
+Herr Mike Weirsky
