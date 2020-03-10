@@ -2,103 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 60C7A17F5CD
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 12:12:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D24CE17F604
+	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 12:17:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726252AbgCJLMO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 07:12:14 -0400
-Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:42301 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726186AbgCJLMO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 07:12:14 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E15B6837F24D;
-        Tue, 10 Mar 2020 11:12:12 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:6119:6742:7903:8531:9389:10004:10400:10848:11026:11232:11473:11658:11914:12050:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14659:14721:21080:21324:21433:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: worm72_6a6262640771f
-X-Filterd-Recvd-Size: 2949
-Received: from XPS-9350.home (unknown [47.151.143.254])
-        (Authenticated sender: joe@perches.com)
-        by omf06.hostedemail.com (Postfix) with ESMTPA;
-        Tue, 10 Mar 2020 11:12:10 +0000 (UTC)
-Message-ID: <7e2471ed71a42d74c0dbd9f2197034f5163d0eda.camel@perches.com>
-Subject: Re: [PATCH] mm: Use fallthrough;
-From:   Joe Perches <joe@perches.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Nitin Gupta <ngupta@vflare.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Date:   Tue, 10 Mar 2020 04:10:29 -0700
-In-Reply-To: <20200309064806.GB46830@google.com>
-References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
-         <20200308031825.GB1125@jagdpanzerIV.localdomain>
-         <5f297e8995b22c9ccf06d4d0a04f7d9a37d3cd77.camel@perches.com>
-         <20200309041551.GA1765@jagdpanzerIV.localdomain>
-         <84f3c9891d4e89909d5537f34ea9d75de339c415.camel@perches.com>
-         <20200309062046.GA46830@google.com> <20200309064806.GB46830@google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.34.1-2 
+        id S1726777AbgCJLRP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 07:17:15 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:37841 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726971AbgCJLRO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 07:17:14 -0400
+Received: by mail-wr1-f66.google.com with SMTP id 6so15332298wre.4;
+        Tue, 10 Mar 2020 04:17:13 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hMeYQLjzGBbtQiC8mAcdXgfjl4PT8fCW6CmTjHRY5u4=;
+        b=ST3E6xJFYBuU0kajH+iJyGJhMRZzyEx1lCvyrh+CpSinJ7Opb6PVGmYNqLgoD5yFDd
+         c89Uo/JG/+h9PDC6R+oYzIfGatcu9GQnPM0fAjWwCMqzOSFqdjwfH7PQLc1pu4UFrYQa
+         x4AUfe9hCOWZiFyIr4WW/gcRKzrhzg0P4Mlg6QmkJDD0UJYGNzeFS5x0PUD+hiiw0WWW
+         YDCpL+lwwYI426xGKBntuMJ15RCTMpN/eBojWZ4v/XZDP72aZgj1/hTzXwEnLtTNtb8O
+         10KCAmCzkRepVgWJNDrAGYPu7AD2YV5gvE4OVJcmM0yNS8wOEcJtGxjebJodpIHhB/iY
+         2A0A==
+X-Gm-Message-State: ANhLgQ0yhfUeJ3ERRAniBHi4AJaoHgasmgKdn2IUffeT/i34W8CcT7+E
+        lUMjGXjeo8wfYAUE8oguiiLUOYUj
+X-Google-Smtp-Source: ADFU+vvwMGbod/4+O259JslpdYAISzZQ2Ja6Zj9n5SvnGOf2IeBIQt9CdyH0FQcsl015TRgEW+7DEw==
+X-Received: by 2002:a5d:4685:: with SMTP id u5mr25849575wrq.69.1583839032708;
+        Tue, 10 Mar 2020 04:17:12 -0700 (PDT)
+Received: from localhost (prg-ext-pat.suse.com. [213.151.95.130])
+        by smtp.gmail.com with ESMTPSA id 5sm11485857wrh.10.2020.03.10.04.17.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Mar 2020 04:17:11 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 12:17:10 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     brookxu <brookxu.cn@gmail.com>, hannes@cmpxchg.org,
+        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCHv2] memcg: fix NULL pointer dereference in
+ __mem_cgroup_usage_unregister_event
+Message-ID: <20200310111710.GF8447@dhcp22.suse.cz>
+References: <077a6f67-aefa-4591-efec-f2f3af2b0b02@gmail.com>
+ <20200310094836.GD8447@dhcp22.suse.cz>
+ <20200310104149.5c3pc75y6ny5hixb@box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200310104149.5c3pc75y6ny5hixb@box>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 2020-03-09 at 15:48 +0900, Sergey Senozhatsky wrote:
-> On (20/03/09 15:20), Sergey Senozhatsky wrote:
-> [..]
-> > > <shrug, maybe>  I've no real opinion about that necessity.
-> > > 
-> > > fallthrough commments are relatively rarely used as a
-> > > separating element between case labels.
-> > > 
-> > > It's by far most common to just have consecutive case labels
-> > > without any other content.
-> > > 
-> > > It's somewhere between 500:1 to 1000:1 in the kernel.
-> > 
-> > I thought that those labels were used by some static code analysis
-> > tools, so that the removal of some labels raised questions. But I
-> > don't think I have opinions otherwise.
+On Tue 10-03-20 13:41:49, Kirill A. Shutemov wrote:
+> On Tue, Mar 10, 2020 at 10:48:36AM +0100, Michal Hocko wrote:
+> > [Cc Kirill, I didn't realize he has implemented this code]
 > 
-> ... I guess GCC counts as a static code analysis tool :)
-> 
-> Looking at previous commits, people wanted to have proper 'fall through'
-> 
-> 
->     Replace "fallthru" with a proper "fall through" annotation.
->     This fix is part of the ongoing efforts to enabling
->     -Wimplicit-fallthrough
-> 
-> ---
-> 
-> -       case ZPOOL_MM_RW: /* fallthru */
-> +       case ZPOOL_MM_RW: /* fall through */
+> My first non-trivial mm contribution :P
 
-That conversion was unnecessary.
-(there are still 6 /* fallthru */ comments in today's kernel)
+Everybody has to pay for sins of youth :p
 
-There are tens of thousands of consecutive case labels without
-interleaving fallthrough comments in the kernel like:
+[...]
 
-	switch (foo) {
-	case BAR:
-	case BAZ:
-		do_something();
-		break;
-	default:
-		something_else();
-		break;
-	}
+> > It seems that the code has been broken since 2c488db27b61 ("memcg: clean
+> > up memory thresholds"). We've had 371528caec55 ("mm: memcg: Correct
+> > unregistring of events attached to the same eventfd") but it didn't
+> > catch this case for some reason. Unless I am missing something the code
+> > was broken back then already. Kirill please double check after me.
+> 
+> I think the issue exitsted before 2c488db27b61. The fields had different
+> names back then.
+> 
+> The logic to make unregister never-fail is added in 907860ed381a
+> ("cgroups: make cftype.unregister_event() void-returning"). I believe the
+> Fixes should point there.
 
-So gcc and clang handle consecutive cases without fallthrough
-without uselessly emitting warnings just fine.
+Yes, you seem to be right. It doesn't make a difference much as both
+went in to the same kernel but a proper Fixes tag is really valuable.
 
+Thanks for looking into that.
+
+-- 
+Michal Hocko
+SUSE Labs
