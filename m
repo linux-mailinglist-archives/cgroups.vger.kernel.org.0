@@ -2,61 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 33AA3180B9F
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 23:34:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D72DB180BA7
+	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 23:35:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727729AbgCJWeK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 18:34:10 -0400
-Received: from shards.monkeyblade.net ([23.128.96.9]:43350 "EHLO
-        shards.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726273AbgCJWeJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 18:34:09 -0400
-Received: from localhost (unknown [IPv6:2601:601:9f00:477::3d5])
-        (using TLSv1 with cipher AES256-SHA (256/256 bits))
-        (Client did not present a certificate)
-        (Authenticated sender: davem-davemloft)
-        by shards.monkeyblade.net (Postfix) with ESMTPSA id EF38A14BBE02E;
-        Tue, 10 Mar 2020 15:34:08 -0700 (PDT)
-Date:   Tue, 10 Mar 2020 15:34:08 -0700 (PDT)
-Message-Id: <20200310.153408.209273615201195266.davem@davemloft.net>
-To:     shakeelb@google.com
-Cc:     edumazet@google.com, guro@fb.com, hannes@cmpxchg.org,
-        mhocko@kernel.org, gthelen@google.com, akpm@linux-foundation.org,
-        kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org,
-        netdev@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] net: memcg: late association of sock to memcg
-From:   David Miller <davem@davemloft.net>
-In-Reply-To: <20200310051606.33121-2-shakeelb@google.com>
-References: <20200310051606.33121-1-shakeelb@google.com>
-        <20200310051606.33121-2-shakeelb@google.com>
-X-Mailer: Mew version 6.8 on Emacs 26.1
-Mime-Version: 1.0
-Content-Type: Text/Plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
-X-Greylist: Sender succeeded SMTP AUTH, not delayed by milter-greylist-4.5.12 (shards.monkeyblade.net [149.20.54.216]); Tue, 10 Mar 2020 15:34:09 -0700 (PDT)
+        id S1727733AbgCJWfJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 18:35:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726273AbgCJWfI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 10 Mar 2020 18:35:08 -0400
+Subject: Re: [GIT PULL] cgroup fixes for v5.6-rc5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1583879708;
+        bh=OiyOwPBVVsas1wr/EMz3KIDf/El4Sdt80DfMU4nueaI=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=KzZcV/6pdNuM5Vfj24L6tV5gCNCdVVhFUyIYd6UY7i3kfqf4ftpFgP7WXcL1k0r9i
+         /2FtboX6xtBA7rytUsTTMD+ZmcpbQu/Cp7dCvD7tBt2hKZs2rRYfSkEJ6oYJxbfL9Z
+         0ufL/w+zbHyXy6Y4VajDQlbMnus5cSbvpBa/8TjM=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20200310144107.GC79873@mtj.duckdns.org>
+References: <20200310144107.GC79873@mtj.duckdns.org>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20200310144107.GC79873@mtj.duckdns.org>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.6-fixes
+X-PR-Tracked-Commit-Id: 2e5383d7904e60529136727e49629a82058a5607
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: e941484541036ba3652b658ed5536c7bca5bdb89
+Message-Id: <158387970815.8298.8296123785213357417.pr-tracker-bot@kernel.org>
+Date:   Tue, 10 Mar 2020 22:35:08 +0000
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Shakeel Butt <shakeelb@google.com>
-Date: Mon,  9 Mar 2020 22:16:06 -0700
+The pull request you sent on Tue, 10 Mar 2020 10:41:07 -0400:
 
-> If a TCP socket is allocated in IRQ context or cloned from unassociated
-> (i.e. not associated to a memcg) in IRQ context then it will remain
-> unassociated for its whole life. Almost half of the TCPs created on the
-> system are created in IRQ context, so, memory used by such sockets will
-> not be accounted by the memcg.
-> 
-> This issue is more widespread in cgroup v1 where network memory
-> accounting is opt-in but it can happen in cgroup v2 if the source socket
-> for the cloning was created in root memcg.
-> 
-> To fix the issue, just do the association of the sockets at the accept()
-> time in the process context and then force charge the memory buffer
-> already used and reserved by the socket.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.6-fixes
 
-Applied and queued up for -stable.
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/e941484541036ba3652b658ed5536c7bca5bdb89
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.wiki.kernel.org/userdoc/prtracker
