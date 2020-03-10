@@ -2,222 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id BC64717F53C
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 11:41:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 60C7A17F5CD
+	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 12:12:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgCJKlx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 06:41:53 -0400
-Received: from mail-lj1-f196.google.com ([209.85.208.196]:39513 "EHLO
-        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726197AbgCJKlw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 06:41:52 -0400
-Received: by mail-lj1-f196.google.com with SMTP id f10so13517165ljn.6
-        for <cgroups@vger.kernel.org>; Tue, 10 Mar 2020 03:41:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=0vZawaTqWCz2V8Z7mamXXKPhhUtkT0sw/sdFRGO2vlw=;
-        b=rfN6Lx7BOmqQhhOcLZn74EbzqdvStmveWhgz/2wPqRS6Vsou7fptHHWEIrnS4TE5yp
-         JTpNP9cVTh9+ScV8dItrwHNxAxXeH2M366CwIpOP/wfCYI8Lr6gWHzuSx2wtV3+CotGf
-         vS8wvdPooB2/guIp7F2u9RYKDRt/5+8VJfG61EPWc1IiA6LEanZkA62sFK/IyPHDj3c4
-         XISld2tme2+mLRcphKCh3phxQo89djJLpcsShu4ldtlDr+zRUmlW7K6sHnBNcoi5Waik
-         td79ng96wZGYcrIub2d9UrMG4QLXkEFBlTDCdk8EaNGbiEKhTJBuuRRONadmzh/i9mG0
-         Nigw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=0vZawaTqWCz2V8Z7mamXXKPhhUtkT0sw/sdFRGO2vlw=;
-        b=Un6U/9a0GzIXC4tm2bWF4sKHkX9OQiaj8aOC/hDTv6Rwei1q8W3WuHaU4JBkvcDB9l
-         6fbsrXeSyFW/cjEX983XhZtU35X/YGG3zVCfL07LOixJMX0qfBFGsCnopJXa+tod0ksM
-         LuFXBSNweuxC3ga/0FDu0aGSqfgmD1CF35ji8Zu2rZcQWyFDNwDyT0zf8Y3ruTpFGOod
-         1h6rrOdN83ElaQ8GAdFI+5ilCU5H+6Y+00nHoy2EvoICu0ljZuw4Kj/CVTKAvLxsVggW
-         dYpoK68HPnsLqW7XPQBtQZp0E3bJRj0SdM4TH0UE6rmsTmtxvV3IBqmXfdri6nWChy1f
-         QJ3g==
-X-Gm-Message-State: ANhLgQ2bI6BM+zfYZj9A0RoZcKWfRTH9YqVx4AF0eO2qYLoLyuMHymUf
-        /9o21Fvagmhc9hakTHuiFEgL2rfuPrw=
-X-Google-Smtp-Source: ADFU+vtWe5qAVNKXwQBYPCtcvZJH5it9LZ15Lowysh7WzMF8KSRZeQGnQWR4Gbgv9g0YFkPOui+jIA==
-X-Received: by 2002:a2e:7c03:: with SMTP id x3mr12742730ljc.104.1583836909643;
-        Tue, 10 Mar 2020 03:41:49 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id h2sm2079300ljm.103.2020.03.10.03.41.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Mar 2020 03:41:48 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 27FEF1013FA; Tue, 10 Mar 2020 13:41:49 +0300 (+03)
-Date:   Tue, 10 Mar 2020 13:41:49 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     brookxu <brookxu.cn@gmail.com>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, akpm@linux-foundation.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCHv2] memcg: fix NULL pointer dereference in
- __mem_cgroup_usage_unregister_event
-Message-ID: <20200310104149.5c3pc75y6ny5hixb@box>
-References: <077a6f67-aefa-4591-efec-f2f3af2b0b02@gmail.com>
- <20200310094836.GD8447@dhcp22.suse.cz>
+        id S1726252AbgCJLMO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 07:12:14 -0400
+Received: from smtprelay0006.hostedemail.com ([216.40.44.6]:42301 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726186AbgCJLMO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 07:12:14 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id E15B6837F24D;
+        Tue, 10 Mar 2020 11:12:12 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4605:5007:6119:6742:7903:8531:9389:10004:10400:10848:11026:11232:11473:11658:11914:12050:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14096:14097:14659:14721:21080:21324:21433:21451:21627:30012:30054:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: worm72_6a6262640771f
+X-Filterd-Recvd-Size: 2949
+Received: from XPS-9350.home (unknown [47.151.143.254])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Tue, 10 Mar 2020 11:12:10 +0000 (UTC)
+Message-ID: <7e2471ed71a42d74c0dbd9f2197034f5163d0eda.camel@perches.com>
+Subject: Re: [PATCH] mm: Use fallthrough;
+From:   Joe Perches <joe@perches.com>
+To:     Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Nitin Gupta <ngupta@vflare.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Date:   Tue, 10 Mar 2020 04:10:29 -0700
+In-Reply-To: <20200309064806.GB46830@google.com>
+References: <f62fea5d10eb0ccfc05d87c242a620c261219b66.camel@perches.com>
+         <20200308031825.GB1125@jagdpanzerIV.localdomain>
+         <5f297e8995b22c9ccf06d4d0a04f7d9a37d3cd77.camel@perches.com>
+         <20200309041551.GA1765@jagdpanzerIV.localdomain>
+         <84f3c9891d4e89909d5537f34ea9d75de339c415.camel@perches.com>
+         <20200309062046.GA46830@google.com> <20200309064806.GB46830@google.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.34.1-2 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200310094836.GD8447@dhcp22.suse.cz>
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 10:48:36AM +0100, Michal Hocko wrote:
-> [Cc Kirill, I didn't realize he has implemented this code]
-
-My first non-trivial mm contribution :P
-
-> On Fri 06-03-20 09:02:02, brookxu wrote:
-> > From: Chunguang Xu <brookxu@tencent.com>
+On Mon, 2020-03-09 at 15:48 +0900, Sergey Senozhatsky wrote:
+> On (20/03/09 15:20), Sergey Senozhatsky wrote:
+> [..]
+> > > <shrug, maybe>  I've no real opinion about that necessity.
+> > > 
+> > > fallthrough commments are relatively rarely used as a
+> > > separating element between case labels.
+> > > 
+> > > It's by far most common to just have consecutive case labels
+> > > without any other content.
+> > > 
+> > > It's somewhere between 500:1 to 1000:1 in the kernel.
 > > 
-> > An eventfd monitors multiple memory thresholds of the cgroup, closes them,
-> > the kernel deletes all events related to this eventfd. Before all events
-> > are deleted, another eventfd monitors the memory threshold of this cgroup,
-> > leading to a crash:
-> > 
-> > [  135.675108] BUG: kernel NULL pointer dereference, address: 0000000000000004
-> > [  135.675350] #PF: supervisor write access in kernel mode
-> > [  135.675579] #PF: error_code(0x0002) - not-present page
-> > [  135.675816] PGD 800000033058e067 P4D 800000033058e067 PUD 3355ce067 PMD 0
-> > [  135.676080] Oops: 0002 [#1] SMP PTI
-> > [  135.676332] CPU: 2 PID: 14012 Comm: kworker/2:6 Kdump: loaded Not tainted 5.6.0-rc4 #3
-> > [  135.676610] Hardware name: LENOVO 20AWS01K00/20AWS01K00, BIOS GLET70WW (2.24 ) 05/21/2014
-> > [  135.676909] Workqueue: events memcg_event_remove
-> > [  135.677192] RIP: 0010:__mem_cgroup_usage_unregister_event+0xb3/0x190
-> > [  135.677825] RSP: 0018:ffffb47e01c4fe18 EFLAGS: 00010202
-> > [  135.678186] RAX: 0000000000000001 RBX: ffff8bb223a8a000 RCX: 0000000000000001
-> > [  135.678548] RDX: 0000000000000001 RSI: ffff8bb22fb83540 RDI: 0000000000000001
-> > [  135.678912] RBP: ffffb47e01c4fe48 R08: 0000000000000000 R09: 0000000000000010
-> > [  135.679287] R10: 000000000000000c R11: 071c71c71c71c71c R12: ffff8bb226aba880
-> > [  135.679670] R13: ffff8bb223a8a480 R14: 0000000000000000 R15: 0000000000000000
-> > [  135.680066] FS:  0000000000000000(0000) GS:ffff8bb242680000(0000) knlGS:0000000000000000
-> > [  135.680475] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [  135.680894] CR2: 0000000000000004 CR3: 000000032c29c003 CR4: 00000000001606e0
-> > [  135.681325] Call Trace:
-> > [  135.681763]  memcg_event_remove+0x32/0x90
-> > [  135.682209]  process_one_work+0x172/0x380
-> > [  135.682657]  worker_thread+0x49/0x3f0
-> > [  135.683111]  kthread+0xf8/0x130
-> > [  135.683570]  ? max_active_store+0x80/0x80
-> > [  135.684034]  ? kthread_bind+0x10/0x10
-> > [  135.684506]  ret_from_fork+0x35/0x40
-> > [  135.689733] CR2: 0000000000000004
-> > 
-> > We can reproduce this problem in the following ways:
-> >  
-> > 1. We create a new cgroup subdirectory and a new eventfd, and then we
-> >    monitor multiple memory thresholds of the cgroup through this eventfd.
-> > 2. closing this eventfd, and __mem_cgroup_usage_unregister_event () will be
-> >    called multiple times to delete all events related to this eventfd.
-> > 
-> > The first time __mem_cgroup_usage_unregister_event() is called, the kernel
-> > will clear all items related to this eventfd in thresholds-> primary.Since
-> > there is currently only one eventfd, thresholds-> primary becomes empty,
-> > so the kernel will set thresholds-> primary and hresholds-> spare to NULL.
-
-						    ^ typo
-
-> > If at this time, the user creates a new eventfd and monitor the memory
-> > threshold of this cgroup, kernel will re-initialize thresholds-> primary.
-> > Then when __mem_cgroup_usage_unregister_event () is called for the second
-> > time, because thresholds-> primary is not empty, the system will access
-> > thresholds-> spare, but thresholds-> spare is NULL, which will trigger a
-> > crash.
-> > 
-> > In general, the longer it takes to delete all events related to this
-> > eventfd, the easier it is to trigger this problem.
-> > 
-> > The solution is to check whether the thresholds associated with the eventfd
-> > has been cleared when deleting the event. If so, we do nothing.
-> > 
-> > Signed-off-by: Chunguang Xu <brookxu@tencent.com>
+> > I thought that those labels were used by some static code analysis
+> > tools, so that the removal of some labels raised questions. But I
+> > don't think I have opinions otherwise.
 > 
-> The fix looks reasonable to me
-> Acked-by: Michal Hocko <mhocko@suse.com>
-
-Agreed. Two typos have to be addressed.
-
-Acked-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-
-> It seems that the code has been broken since 2c488db27b61 ("memcg: clean
-> up memory thresholds"). We've had 371528caec55 ("mm: memcg: Correct
-> unregistring of events attached to the same eventfd") but it didn't
-> catch this case for some reason. Unless I am missing something the code
-> was broken back then already. Kirill please double check after me.
-
-I think the issue exitsted before 2c488db27b61. The fields had different
-names back then.
-
-The logic to make unregister never-fail is added in 907860ed381a
-("cgroups: make cftype.unregister_event() void-returning"). I believe the
-Fixes should point there.
-
+> ... I guess GCC counts as a static code analysis tool :)
 > 
-> So if I am not wrong then we want
-> Fixes: 2c488db27b61 ("memcg: clean up memory thresholds")
-> Cc: stable
+> Looking at previous commits, people wanted to have proper 'fall through'
 > 
-> sounds appropriate because this seems to be user trigerable.
 > 
-> Thanks for preparing the patch!
+>     Replace "fallthru" with a proper "fall through" annotation.
+>     This fix is part of the ongoing efforts to enabling
+>     -Wimplicit-fallthrough
 > 
-> Btw. you should double check your email sender because it seemed to
-> whitespace damaged the patch (\t -> spaces). Please use git send-email
-> instead.
+> ---
 > 
-> > ---
-> >  mm/memcontrol.c | 10 ++++++++--
-> >  1 file changed, 8 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index d09776c..4575a58 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -4027,7 +4027,7 @@ static void __mem_cgroup_usage_unregister_event(struct mem_cgroup *memcg,
-> >      struct mem_cgroup_thresholds *thresholds;
-> >      struct mem_cgroup_threshold_ary *new;
-> >      unsigned long usage;
-> > -    int i, j, size;
-> > +    int i, j, size, entries;
-> >  
-> >      mutex_lock(&memcg->thresholds_lock);
-> >  
-> > @@ -4047,12 +4047,18 @@ static void __mem_cgroup_usage_unregister_event(struct mem_cgroup *memcg,
-> >      __mem_cgroup_threshold(memcg, type == _MEMSWAP);
-> >  
-> >      /* Calculate new number of threshold */
-> > -    size = 0;
-> > +    size = entries = 0;
-> >      for (i = 0; i < thresholds->primary->size; i++) {
-> >          if (thresholds->primary->entries[i].eventfd != eventfd)
-> >              size++;
-> > +        else
-> > +            entries++;
-> >      }
-> >  
-> > +    /* If items related to eventfd have been cleared, nothing to do */
+> -       case ZPOOL_MM_RW: /* fallthru */
+> +       case ZPOOL_MM_RW: /* fall through */
 
-	       ^ "no items" ?
+That conversion was unnecessary.
+(there are still 6 /* fallthru */ comments in today's kernel)
 
-> > +    if (!entries)
-> > +        goto unlock;
-> > +
-> >      new = thresholds->spare;
-> >  
-> >      /* Set thresholds array to NULL if we don't have thresholds */
-> > -- 
-> > 1.8.3.1
-> 
-> -- 
-> Michal Hocko
-> SUSE Labs
+There are tens of thousands of consecutive case labels without
+interleaving fallthrough comments in the kernel like:
 
--- 
- Kirill A. Shutemov
+	switch (foo) {
+	case BAR:
+	case BAZ:
+		do_something();
+		break;
+	default:
+		something_else();
+		break;
+	}
+
+So gcc and clang handle consecutive cases without fallthrough
+without uselessly emitting warnings just fine.
+
