@@ -2,111 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 401BB18094D
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 21:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A9C18095B
+	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 21:42:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726271AbgCJUkP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 16:40:15 -0400
-Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:50569 "EHLO
-        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726100AbgCJUkP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 16:40:15 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 57C2A930;
-        Tue, 10 Mar 2020 16:40:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Tue, 10 Mar 2020 16:40:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
-        content-transfer-encoding:content-type:in-reply-to:date:cc
-        :subject:from:to:message-id; s=fm2; bh=8WvbRILYPoYcT8dxosBEiC8oW
-        xw+zHTO76bbxckt8n8=; b=ZTdTsBQqnGlN82GljZ7ESrmeyYE+fTjgey4UhMzpJ
-        3N4fMDtH9kyzIGOx7nzUYnSKc7bXucBB8PkuCIq/jwR/fFicp7c1o20WDkFIcL9O
-        qax6PFx9BpgRnJgmLcC8T9bfhHyanrIqjCaHZAExqUaNRYiWoM1YLg7Fytzh+FHT
-        Y6rUSTgvbrsCTnuGM/vOM5f+6Jh3xYQ4l5fgxQ2ce1bA5XdPxMStWzD+/zZmv/UK
-        JHOd23JYCyC3yqwNz+MOXJczPOceZyk93e+7MhjWeQgKmGa1GgwmPVUvO8/54BES
-        dhXMJPlxelF1uvg4t1fYU2ypuDHhXw8HTQhoLXEf377Hw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=8WvbRI
-        LYPoYcT8dxosBEiC8oWxw+zHTO76bbxckt8n8=; b=QyL8Hee7vDR49szK/qplbo
-        DJgRHYUR7BLgBMCqGnNi/yEhTbWK1F/Vxm27DH6xOSTGZ9qBEYoxCcjOJBJaUTVg
-        IzNoXjRmOi2WsGj3pKFybI4t6AVpxuCwTA85KAhFFKkCjPn8FR7m6RJmz6swNKJd
-        mZgUS1XKDKNK5osuEmg/WeawvyjNGbZqYw0g5qvhMTJxVf0ueop8qfBJn0R6SQTw
-        bg8QbkSCePE+YAZx2Vwa+EGoz0OGTG3XFVhgh+t+czA922S9NdxdeJUdnJ5HLRBS
-        V0EPPoRtMjQSK1DhY2HRuRwCvbPtjdLtdJ6mVYZzbVwpnGz2lSsu0i8pnxw8JthQ
-        ==
-X-ME-Sender: <xms:KvtnXgFs-_XVzzMRlvmy1bjTd8Lla2kFeC7DUQIbNVvJSGexithkWg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddvtddgudefvdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enfghrlhcuvffnffculdejtddmnecujfgurhepgfgtjgffuffhvffksehtqhertddttdej
-    necuhfhrohhmpedfffgrnhhivghlucgiuhdfuceougiguhesugiguhhuuhdrgiihiieqne
-    cukfhppeduieefrdduudegrddufedvrddunecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdrgiihii
-X-ME-Proxy: <xmx:KvtnXqg1JUtLw_VLSVuqYV3WOOUqv8S4lG7JM09lmiqoSj7eM4ZdKw>
-    <xmx:KvtnXqmyp3gH0CR7g6EK0Ti3JvUPxdsA1viCZgxZm6lFmRPCoqi7_g>
-    <xmx:KvtnXrdrAshGVQBQe2kkLgNqmg4Ply9P_uKFW9j724oGFheM6DHJZQ>
-    <xmx:LftnXnH0hzH8R6XDCjjPQMaFcDr7LXFchhul-4VbrlK0_CZq_AcIjg>
-Received: from localhost (unknown [163.114.132.1])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 42A4E328005E;
-        Tue, 10 Mar 2020 16:40:09 -0400 (EDT)
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Originaldate: Tue Mar 10, 2020 at 12:40 PM
-Originalfrom: "Shakeel Butt" <shakeelb@google.com>
-Original: =?utf-8?q?Hi_Daniel,
- =0D=0A=0D=0AOn_Thu,_Mar_5,_2020_at_1:16_PM_Daniel_Xu_?=
- =?utf-8?q?<dxu@dxuuu.xyz>_wrote:=0D=0A>=0D=0A>_It's_not_really_necessary_?=
- =?utf-8?q?to_have_contiguous_physical_memory_for_xattr=0D=0A>_values._We_?=
- =?utf-8?q?no_longer_need_to_worry_about_higher_order_allocations=0D=0A>_f?=
- =?utf-8?q?ailing_with_kvmalloc,_especially_because_the_xattr_size_limit_i?=
- =?utf-8?q?s_at=0D=0A>_64K.=0D=0A>=0D=0A>_Signed-off-by:_Daniel_Xu_<dxu@dx?=
- =?utf-8?q?uuu.xyz>=0D=0A=0D=0AThe_patch_looks_fine_to_me._However_the_com?=
- =?utf-8?q?mit_message_is_too_cryptic=0D=0Ai.e._hard_to_get_the_motivation?=
- =?utf-8?q?_behind_the_change.=0D=0A?=
-In-Reply-To: <CALvZod62gypsxCYOpGsR6SWwp7roh8eEEKvZ8WNFtjB0bH=okg@mail.gmail.com>
-Date:   Tue, 10 Mar 2020 13:40:08 -0700
-Cc:     "Cgroups" <cgroups@vger.kernel.org>, "Tejun Heo" <tj@kernel.org>,
-        "Li Zefan" <lizefan@huawei.com>,
-        "Johannes Weiner" <hannes@cmpxchg.org>,
-        "LKML" <linux-kernel@vger.kernel.org>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Kernel Team" <kernel-team@fb.com>
+        id S1726307AbgCJUmK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 16:42:10 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:37397 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727528AbgCJUmJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 16:42:09 -0400
+Received: by mail-ot1-f67.google.com with SMTP id b3so14603923otp.4
+        for <cgroups@vger.kernel.org>; Tue, 10 Mar 2020 13:42:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/deQQvgAa+oP9j87xo/rUZaCa5U0Y9db6yvuNAirEL0=;
+        b=Ai8FMPZwPDU7dLeUmmQ5IrGiGriK5BF4c8C/goY7nt9A9p0gwe5maK+FI7+io4/LeT
+         TH75Po6PkJ8cLhul21gKVq5bWmL9bTskL2/wNLmg/UhfqLGQmIZTlDwwzbG4bhIx/8Wv
+         nl67KGQquy1o2acEsx4cOKOda/SY8w9A9rZBy4UxDDi2XSDeodDuMiMmGE448FGGfIHQ
+         US1d67PAbkslxP0i5Ev6LK+9hnyhEL4jnDxjpu/dzCkvxOA6VRtuB0PUXr6qtk9lROVD
+         NYYE3TiPoonSAGo6CIxmgX00jAcsnM1upezPCYcMpmmNna94s8ehKfcP/zP+lB6K5b1w
+         sjHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/deQQvgAa+oP9j87xo/rUZaCa5U0Y9db6yvuNAirEL0=;
+        b=HrpfsoMZdfBBo1onTvbXEbCZywzznHiFaLffuPA7IHEqkcQ9d04uNroHrsaQ2auknD
+         Oh18/bivUitpEueUWInADsnm4ZDRToIpYrB7t4DTDHoAbhsZJxoLdO81U6/EKebL/JXD
+         VRexsCGyg3vHr+XKBoQVWIWFsZ2tizA6F2nmALUcBAoH6NSrn5v2eXiyOtSZYyYresk9
+         mHwcb384U4tZQdaCjzpx61sk8l1Jk21jARWnmBRHjzxAfI1LSHYXbvTsLVtFKYdqhiTY
+         HRqQKpOQyztOycKGOCz3HkReuJvI+jbhxzS8nUygyp12bC9KEWzux/3LwUoq+vG1opHK
+         0TOQ==
+X-Gm-Message-State: ANhLgQ2232tq/zpLKPrGH9YFrPjU2mJWj1er1Isi0YRBqSjzdUtZUiRe
+        RNsRdfh6XJ7QnGcsvF+k2CvBs35yCyWvJe9Cg36rHg==
+X-Google-Smtp-Source: ADFU+vtGvITp2sg+JZTjjfj9Q4pfx+/tRU62/dj4Jx5MF0ePB3TZaCSIkHsvrMO5+nTGln9aZv0pNAz+jfn/4+0y8w0=
+X-Received: by 2002:a05:6830:118c:: with SMTP id u12mr17412267otq.124.1583872928122;
+ Tue, 10 Mar 2020 13:42:08 -0700 (PDT)
+MIME-Version: 1.0
+References: <CALvZod62gypsxCYOpGsR6SWwp7roh8eEEKvZ8WNFtjB0bH=okg@mail.gmail.com>
+ <C17G1V88F2XD.EQFO8E8QX1YO@dlxu-fedora-R90QNFJV>
+In-Reply-To: <C17G1V88F2XD.EQFO8E8QX1YO@dlxu-fedora-R90QNFJV>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 10 Mar 2020 13:41:57 -0700
+Message-ID: <CALvZod6mcoKTqi=OvyHQLbm1LszijDV-traf4Rx9oXmLSZe-Gg@mail.gmail.com>
 Subject: Re: [PATCH v2 1/4] kernfs: kvmalloc xattr value instead of kmalloc
-From:   "Daniel Xu" <dxu@dxuuu.xyz>
-To:     "Shakeel Butt" <shakeelb@google.com>
-Message-Id: <C17G1V88F2XD.EQFO8E8QX1YO@dlxu-fedora-R90QNFJV>
+To:     Daniel Xu <dxu@dxuuu.xyz>
+Cc:     Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Shakeel,
-
-On Tue Mar 10, 2020 at 12:40 PM, Shakeel Butt wrote:
-> Hi Daniel,
+On Tue, Mar 10, 2020 at 1:40 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
 >
->=20
-> On Thu, Mar 5, 2020 at 1:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> Hi Shakeel,
+>
+> On Tue Mar 10, 2020 at 12:40 PM, Shakeel Butt wrote:
+> > Hi Daniel,
 > >
-> > It's not really necessary to have contiguous physical memory for xattr
-> > values. We no longer need to worry about higher order allocations
-> > failing with kvmalloc, especially because the xattr size limit is at
-> > 64K.
 > >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> > On Thu, Mar 5, 2020 at 1:16 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+> > >
+> > > It's not really necessary to have contiguous physical memory for xattr
+> > > values. We no longer need to worry about higher order allocations
+> > > failing with kvmalloc, especially because the xattr size limit is at
+> > > 64K.
+> > >
+> > > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> >
+> >
+> > The patch looks fine to me. However the commit message is too cryptic
+> > i.e. hard to get the motivation behind the change.
+> >
 >
->=20
-> The patch looks fine to me. However the commit message is too cryptic
-> i.e. hard to get the motivation behind the change.
+> Thanks for taking a look. The real reason I did it was because Tejun
+> said so :).
+>
+> Tejun, is there a larger reason?
 >
 
-Thanks for taking a look. The real reason I did it was because Tejun
-said so :).
-
-Tejun, is there a larger reason?
-
-
-Thanks,
-Daniel
+I understand the reason. I am just suggesting to rephrase it to be more clear.
