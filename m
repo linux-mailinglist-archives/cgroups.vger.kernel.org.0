@@ -2,199 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 05572181ABD
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2020 15:05:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 902AB181D9C
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2020 17:18:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729584AbgCKOFj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Mar 2020 10:05:39 -0400
-Received: from foss.arm.com ([217.140.110.172]:50170 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729531AbgCKOFi (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 11 Mar 2020 10:05:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D6DF831B;
-        Wed, 11 Mar 2020 07:05:37 -0700 (PDT)
-Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 01A633F67D;
-        Wed, 11 Mar 2020 07:05:35 -0700 (PDT)
-Date:   Wed, 11 Mar 2020 14:05:33 +0000
-From:   Qais Yousef <qais.yousef@arm.com>
-To:     Josh Don <joshdon@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Paul Turner <pjt@google.com>
-Subject: Re: [PATCH v2] sched/cpuset: distribute tasks within affinity masks
-Message-ID: <20200311140533.pclgecwhbpqzyrks@e107158-lin.cambridge.arm.com>
-References: <20200311010113.136465-1-joshdon@google.com>
+        id S1730052AbgCKQSA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Mar 2020 12:18:00 -0400
+Received: from sonic307-30.consmr.mail.bf2.yahoo.com ([74.6.134.229]:40970
+        "EHLO sonic307-30.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1730122AbgCKQR7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Mar 2020 12:17:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1583943478; bh=S3FOFVZUCXKfYNwR68LIUeoh2UzhKu7X+maqzkwCi4s=; h=Date:From:Reply-To:Subject:References:From:Subject; b=J7avR1EpYdb4cHcTTW2zwnNDCs7mEpaClMJx1U4VXYTq3fFv+XZv/XIHhV8lt6iEj0ydc+wSykakROEaEEFGLPXCV6T46gjWdHM39eHM3FF4tA5VFOunQ0PpX6EpGo9tRsaY4WJM1h2rHCAsSyI+Xfp87LWEiuYN7Yh6vzcVSvO+EFInCKp+VMlv34s9vKq8yrFH8F/afQEz0cdTQ+hZnZfdNf+KgeSnI6dMTMyCO+VLAUvpJicpAWvu/ldDrUrKx1FH4khlGwMGFSzpyOe98xcs0jOMcGQPZsJ8zOrgHwbr2cbLpCgi8Expde739LyIDXRtfX6kGomYFnEM8FJ27g==
+X-YMail-OSG: GjR8NMcVM1mEcDpQ_aGaCIWsarzy4jE.BtDPLMz7BxZF8ZuiQn0vPexe1U_7hK1
+ lwwO3upSkyBzSYceUYOcadfGEGZ_HXTfR3uOVQ9gWOaGUrY0XPxCler0Kp.0CC0gZFzX8tl1ueWp
+ kxxbN2bHM9tbMia53XohQJg_rBnHLx5b7DMMGPjxiw4Lh7ERUBgu.rO4IujfOcXXp.RGoCUa8vOr
+ Wh6Y2hM3R0jHJpRizhmfi063wjYruJLoiinfraZN8hCfDmfcpwQWVPxLysOYgNF74SSdOv1I668B
+ jZjuwrHQJQYg0RgPwkgtwiL1E.cZx5NTX7fPJSdohGzd3sdozgREw9rbe_33HgjJR0vzPLFmDPC4
+ 7EXfk4DQowfm8s.xE3zIC3dK7A5GmFe6IoVm0kFflQn_MPeoB3sM4muBhoa8LrQ9mDtTeiiCSsZM
+ Wag2i.cKQxjhWhcPn44Z.OB3ovdzNTL6fiefHOeDM240qsYnKd9U3j34SrofdU2OUzY6qwclgjFD
+ IAfnk_5_7kaiuIFyg2r2XoI_61gvpsvc6i2AH8PvCRziLpECnm6wUcq69Vlm0aiSq2TzNZJ29hHu
+ LTmd0oRXoNWEM8ry1aV3GNv0yaKAV08kl0OrP39DV69eDh.L5gmee7dDRR2POpnxprn2DaJIH9xM
+ pqewpIks2u3xWR29S0C2csXp7au_R6uZdL.v_cNLVyz.j5J5poawd5PCrngTHcSFmVYcHUu2JwFZ
+ ix30kcmQNeYf1yzKb_K1UxjpogiauaiB2mThI_lAA9BPVc09h3cozufr.xVuWAx7vExR4ZDjdgBU
+ 896537hqeqSzV29GkrqxKgplXwbt9RyKf5iE87lQqklm7rOwumIhmCz6gPiLFt42ms.aWbO2K9Bq
+ XFOkl2AP9uNiblMoE4qJI35G4Uj9kqycHgad.Dk.OuY3jIog0H7KQkTKDo53AD3R7DwU1ouyeYIB
+ 0i6VDPq3yKUcbqaBqH0E_BkgPZSt0Nnh0RMuWWCSqlSFawt9s0U.tuM_Xw8.gTnpGSrJBO35Z2Rm
+ lxc3q4RgRtePDPugCqet_kh5elrHBxSQhO7QPp8.n0YCwBuARxLYM75IrXSbNv62eAuHx0JWKdmA
+ mdaX7hwE5cO13eN87oHJbJXoyrf9hg1XPrnEUGFd6PJHCcwlO0uojCYzNJ_0HjTq7ij.w3RqMMw1
+ 3XweBwDZVgpxPDSZwn2WoLQlCpGSPcfuWY9tndrzPGeByq_lX0xkP1rAHRL90HcvSLLjngcoVJ02
+ F_LOa0_WayoW6mR1NfrsTUl1iZC1asunu2hQfoBaamxBRMv19xfxUgH.qjC7WPQ0bUDKb4gA2SNP
+ wxyOr9nEoTzaw7JK0CYqAMYtgvqyu
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic307.consmr.mail.bf2.yahoo.com with HTTP; Wed, 11 Mar 2020 16:17:58 +0000
+Date:   Wed, 11 Mar 2020 16:15:57 +0000 (UTC)
+From:   Mark Joseph <markjoseph01000@gmail.com>
+Reply-To: markjoseph0100@gmail.com
+Message-ID: <388082792.2176480.1583943357259@mail.yahoo.com>
+Subject: Dear Friend,
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20200311010113.136465-1-joshdon@google.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <388082792.2176480.1583943357259.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.15342 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 03/10/20 18:01, Josh Don wrote:
-> From: Paul Turner <pjt@google.com>
-> 
-> Currently, when updating the affinity of tasks via either cpusets.cpus,
-> or, sched_setaffinity(); tasks not currently running within the newly
-> specified mask will be arbitrarily assigned to the first CPU within the
-> mask.
-> 
-> This (particularly in the case that we are restricting masks) can
-> result in many tasks being assigned to the first CPUs of their new
-> masks.
-> 
-> This:
->  1) Can induce scheduling delays while the load-balancer has a chance to
->     spread them between their new CPUs.
->  2) Can antogonize a poor load-balancer behavior where it has a
->     difficult time recognizing that a cross-socket imbalance has been
->     forced by an affinity mask.
-> 
-> This change adds a new cpumask interface to allow iterated calls to
-> distribute within the intersection of the provided masks.
-> 
-> The cases that this mainly affects are:
-> - modifying cpuset.cpus
-> - when tasks join a cpuset
-> - when modifying a task's affinity via sched_setaffinity(2)
-> 
-> Co-developed-by: Josh Don <joshdon@google.com>
-> Signed-off-by: Josh Don <joshdon@google.com>
-> Signed-off-by: Paul Turner <pjt@google.com>
+Dear=C2=A0Friend,
 
-This actually helps me fix a similar problem I faced in RT [1]. If multiple RT
-tasks wakeup at the same time we get a 'thundering herd' issue where they all
-end up going to the same CPU, just to be pushed out again.
+I=C2=A0am=C2=A0Mr.=C2=A0Mark=C2=A0Joseph=C2=A0a=C2=A0banker=C2=A0in=C2=A0Ou=
+agadougou,=C2=A0Burkina=C2=A0Faso=C2=A0.I=C2=A0Discovered=C2=A0the=C2=A0sum=
+=C2=A0of=C2=A0seven=C2=A0million,=C2=A0two=C2=A0hundred=C2=A0thousand=C2=A0=
+dollars=C2=A0(usd7.2)=C2=A0belonging=C2=A0to=C2=A0a=C2=A0deceased=C2=A0cust=
+omer=C2=A0of=C2=A0this=C2=A0bank=C2=A0the=C2=A0fund=C2=A0has=C2=A0been=C2=
+=A0lying=C2=A0in=C2=A0a=C2=A0suspense=C2=A0account=C2=A0without=C2=A0anybod=
+y=C2=A0coming=C2=A0to=C2=A0put=C2=A0claim=C2=A0over=C2=A0the=C2=A0money=C2=
+=A0since=C2=A0the=C2=A0account=C2=A0late=C2=A0owner=C2=A0from=C2=A0Lebanese=
+=C2=A0who=C2=A0was=C2=A0involved=C2=A0in=C2=A0terrorist=C2=A0attacks=C2=A0i=
+n=C2=A0month=C2=A0of=C2=A0January=C2=A015th=C2=A02016.
 
-Beside this will help fix another problem for RT tasks fitness, which is
-a manifestation of the problem above. If two tasks wake up at the same time and
-they happen to run on a little cpu (but request to run on a big one), one of
-them will end up being migrated because find_lowest_rq() will return the first
-cpu in the mask for both tasks.
+Therefore,=C2=A0I=C2=A0am=C2=A0soliciting=C2=A0for=C2=A0your=C2=A0assistanc=
+e=C2=A0to=C2=A0come=C2=A0forward=C2=A0as=C2=A0the=C2=A0next=C2=A0of=C2=A0ki=
+n.=C2=A0I=C2=A0have=C2=A0agreed=C2=A0that=C2=A040%=C2=A0of=C2=A0this=C2=A0m=
+oney=C2=A0will=C2=A0be=C2=A0for=C2=A0you=C2=A0as=C2=A0the=C2=A0beneficiary=
+=C2=A0respect=C2=A0of=C2=A0the=C2=A0provision=C2=A0of=C2=A0your=C2=A0accoun=
+t=C2=A0and=C2=A0service=C2=A0rendered,=C2=A060%=C2=A0will=C2=A0be=C2=A0for=
+=C2=A0me.=C2=A0Then=C2=A0immediately=C2=A0the=C2=A0money=C2=A0transferred=
+=C2=A0to=C2=A0your=C2=A0account=C2=A0from=C2=A0this=C2=A0bank,=C2=A0I=C2=A0=
+will=C2=A0proceed=C2=A0to=C2=A0your=C2=A0country=C2=A0for=C2=A0the=C2=A0sha=
+ring=C2=A0of=C2=A0the=C2=A0fund.=C2=A0=C2=A0If=C2=A0you=C2=A0think=C2=A0you=
+=C2=A0are=C2=A0capable=C2=A0and=C2=A0will=C2=A0be=C2=A0committed=C2=A0to=C2=
+=A0making=C2=A0this=C2=A0deal=C2=A0successes=C2=A0contact=C2=A0me=C2=A0thro=
+ugh=C2=A0me=C2=A0for=C2=A0more=C2=A0details=C2=A0to=C2=A0confirm=C2=A0your=
+=C2=A0interest.
 
-I tested the API (not the change in sched/core.c) and it looks good to me.
-
-> ---
-> v2:
-> - Moved the "distribute" implementation to a new
-> cpumask_any_and_distribute() function
-> - No longer move a task if it is already running on an allowed cpu
-> 
->  include/linux/cpumask.h |  7 +++++++
->  kernel/sched/core.c     |  7 ++++++-
->  lib/cpumask.c           | 29 +++++++++++++++++++++++++++++
->  3 files changed, 42 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
-> index d5cc88514aee..f0d895d6ac39 100644
-> --- a/include/linux/cpumask.h
-> +++ b/include/linux/cpumask.h
-> @@ -194,6 +194,11 @@ static inline unsigned int cpumask_local_spread(unsigned int i, int node)
->  	return 0;
->  }
->  
-> +static inline int cpumask_any_and_distribute(const struct cpumask *src1p,
-> +					     const struct cpumask *src2p) {
-> +	return cpumask_next_and(-1, src1p, src2p);
-> +}
-
-nit: cpumask_first_and() is better here?
-
-It might be a good idea to split the API from the user too.
-
-Anyway, for the API.
-
-Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-Tested-by: Qais Yousef <qais.yousef@arm.com>
-
-Thanks
-
---
-Qais Yousef
-
-[1] https://lore.kernel.org/lkml/20200219140243.wfljmupcrwm2jelo@e107158-lin/
-
-> +
->  #define for_each_cpu(cpu, mask)			\
->  	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
->  #define for_each_cpu_not(cpu, mask)		\
-> @@ -245,6 +250,8 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
->  int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
->  int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
->  unsigned int cpumask_local_spread(unsigned int i, int node);
-> +int cpumask_any_and_distribute(const struct cpumask *src1p,
-> +			       const struct cpumask *src2p);
->  
->  /**
->   * for_each_cpu - iterate over every cpu in a mask
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 1a9983da4408..fc6f2bec7d44 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -1652,7 +1652,12 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
->  	if (cpumask_equal(p->cpus_ptr, new_mask))
->  		goto out;
->  
-> -	dest_cpu = cpumask_any_and(cpu_valid_mask, new_mask);
-> +	/*
-> +	 * Picking a ~random cpu helps in cases where we are changing affinity
-> +	 * for groups of tasks (ie. cpuset), so that load balancing is not
-> +	 * immediately required to distribute the tasks within their new mask.
-> +	 */
-> +	dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, new_mask);
->  	if (dest_cpu >= nr_cpu_ids) {
->  		ret = -EINVAL;
->  		goto out;
-> diff --git a/lib/cpumask.c b/lib/cpumask.c
-> index 0cb672eb107c..fb22fb266f93 100644
-> --- a/lib/cpumask.c
-> +++ b/lib/cpumask.c
-> @@ -232,3 +232,32 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
->  	BUG();
->  }
->  EXPORT_SYMBOL(cpumask_local_spread);
-> +
-> +static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
-> +
-> +/**
-> + * Returns an arbitrary cpu within srcp1 & srcp2.
-> + *
-> + * Iterated calls using the same srcp1 and srcp2 will be distributed within
-> + * their intersection.
-> + *
-> + * Returns >= nr_cpu_ids if the intersection is empty.
-> + */
-> +int cpumask_any_and_distribute(const struct cpumask *src1p,
-> +			       const struct cpumask *src2p)
-> +{
-> +	int next, prev;
-> +
-> +	/* NOTE: our first selection will skip 0. */
-> +	prev = __this_cpu_read(distribute_cpu_mask_prev);
-> +
-> +	next = cpumask_next_and(prev, src1p, src2p);
-> +	if (next >= nr_cpu_ids)
-> +		next = cpumask_first_and(src1p, src2p);
-> +
-> +	if (next < nr_cpu_ids)
-> +		__this_cpu_write(distribute_cpu_mask_prev, next);
-> +
-> +	return next;
-> +}
-> +EXPORT_SYMBOL(cpumask_any_and_distribute);
-> -- 
-> 2.25.1.481.gfbce0eb801-goog
-> 
+Yours=C2=A0faithful,
+Mr.=C2=A0Mark=C2=A0Joseph
