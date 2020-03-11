@@ -2,136 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 61FE3180BBD
-	for <lists+cgroups@lfdr.de>; Tue, 10 Mar 2020 23:39:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D335180D11
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2020 02:01:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726293AbgCJWjl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Mar 2020 18:39:41 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60670 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726273AbgCJWjl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 18:39:41 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 02AMZQDa015520;
-        Tue, 10 Mar 2020 15:38:57 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=42eT40sFP+9KYDh+3vlLMH6rGIDplm/89EAughFcMVA=;
- b=L82H7GjHGpJCnOI268kTXJLkR3CNE74iPQCm+69ckcxQStB3NUQ4Phajn6ocHyhmnaDf
- Ro2IuLRRiT/kvmyLG9vJubm2LHmj+UcX+Ac3RkhbCMpsvckdJ9Ydv64VZMGkT+8eVllt
- 1pdYnPxADX03eCJJmLihfuPnNppMNwsQXak= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 2yp8rdukmy-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 10 Mar 2020 15:38:57 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Tue, 10 Mar 2020 15:38:53 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Nv6aHqhprFrXEhfztQbGesNenKcqtwwc0obOBmX0rsJXECF78am/O76pZa7CwrJomp9g1PO7FAq75eyVD7U+xCnIuNwwisLFeke6YmF2VwVHviLtZFRv3QZNCL/ydh2rhfLcVtUj4V2bcIHB0ny1IMkNOlvxSrl++nOLuc7TmB5rRHMTAGdG3Un+q0p5po7Y6alYp2RmpL+fljckcg2A6C2xzD6j/jVioF3HZjqk2FHVPK1HTJ+s3C1S8vDKUsGbkklaeplo2/cfbVIHMNoQGW39mkIzy2KXKGTd32OtlbS7pWbbDETj9xnYWkddgSXGA6eI5ZG2AwUQbjJx8ScUZA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=42eT40sFP+9KYDh+3vlLMH6rGIDplm/89EAughFcMVA=;
- b=fBrcq5G1zqidubQySPbL9Z2J4ap3Ngsvgk47f2kTf/l7IOHN+Ympzn6CK1TSx0LynF/blSO6YJ0qDah0iP/NOxdkha0TX64u5ZlkY+KUb8a71TROSbZUQkZkbkN9uGM4aHRRtEKfIZZxWyERc+q3RW/3uKGb6z2HRcT0xirQwWQi/dr2MB2cQe7y4ZRaq55ZVCKF+oGLpOohwa59pI+ITEJNTbjoqt78UDQZQSscFHlSM2MvPgzcHd/TYDYhrjhXF9QhcxNM/Zn/cc0TWiGgm2w7Iqmngomwsrc3M3Ms3BQeMqkFsNH1QZrQ2SC4JhqddLiGx9j0QSKRN92r92zkRA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=42eT40sFP+9KYDh+3vlLMH6rGIDplm/89EAughFcMVA=;
- b=c72SQQxyvs++c/j1hyQWztpgf0VyEleupBRvc2UjSD2k/hJ04gwl4VomcvlySCZPT8GRZFBO6NGPnYRLjcdhAgVOU1lCCe8qsj8W89+GZEKpwxR9yj0YHlNNwPP46dWzLnUEo2pZJ0X5tFknmMsiG7+Y/VVRJCB15EdRR9UaETc=
-Received: from MWHPR15MB1661.namprd15.prod.outlook.com (2603:10b6:300:124::23)
- by MWHPR15MB1566.namprd15.prod.outlook.com (2603:10b6:300:bc::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2793.16; Tue, 10 Mar
- 2020 22:38:53 +0000
-Received: from MWHPR15MB1661.namprd15.prod.outlook.com
- ([fe80::f930:6bf2:6d2:93ef]) by MWHPR15MB1661.namprd15.prod.outlook.com
- ([fe80::f930:6bf2:6d2:93ef%8]) with mapi id 15.20.2793.013; Tue, 10 Mar 2020
- 22:38:52 +0000
-Date:   Tue, 10 Mar 2020 15:38:48 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Eric Dumazet <edumazet@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v4 2/2] net: memcg: late association of sock to memcg
-Message-ID: <20200310223848.GC96999@carbon.dhcp.thefacebook.com>
-References: <20200310051606.33121-1-shakeelb@google.com>
- <20200310051606.33121-2-shakeelb@google.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200310051606.33121-2-shakeelb@google.com>
-X-ClientProxiedBy: MWHPR21CA0048.namprd21.prod.outlook.com
- (2603:10b6:300:129::34) To MWHPR15MB1661.namprd15.prod.outlook.com
- (2603:10b6:300:124::23)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:9c9e) by MWHPR21CA0048.namprd21.prod.outlook.com (2603:10b6:300:129::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2814.9 via Frontend Transport; Tue, 10 Mar 2020 22:38:51 +0000
-X-Originating-IP: [2620:10d:c090:400::5:9c9e]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a0f6f206-86cc-4562-40fa-08d7c543cf26
-X-MS-TrafficTypeDiagnostic: MWHPR15MB1566:
-X-Microsoft-Antispam-PRVS: <MWHPR15MB1566E92A07585E336C99D79BBEFF0@MWHPR15MB1566.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-Forefront-PRVS: 033857D0BD
-X-Forefront-Antispam-Report: SFV:NSPM;SFS:(10019020)(396003)(136003)(376002)(366004)(39860400002)(346002)(199004)(189003)(7416002)(7696005)(8936002)(6916009)(66556008)(66946007)(81156014)(81166006)(66476007)(8676002)(86362001)(52116002)(186003)(16526019)(33656002)(6506007)(55016002)(316002)(5660300002)(2906002)(54906003)(9686003)(4326008)(6666004)(1076003)(478600001)(4744005);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR15MB1566;H:MWHPR15MB1661.namprd15.prod.outlook.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;MX:1;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mIFDXct3aIYWBozDCNcls7dc6Q2RLzWAk/M3v3T7KqTwtrYofb4Y+kf1A60QqVN813TuMgV6ePfFx/dm6Z+oWWP/9qBo1qr5muBeZxrg1WZ7ya2uN8pf+s+WSMWwIPm08t5Za1ecxDnEkk0mszQD3QbDHYgLtjwiGlMglAEPlDz0CW9bgmry44DAMdT4ia7VpU7awQn5FwThqA4zuG9cCudcM/8cNpqq+nfnFV0bV2a0qF7OLkJWPXvgsU1z5XysoUVsTMbDgKQfo4UeWOysvGK7Zv7gnYnLFNDnn0QDGcOoj7mOLjq3uc8cgKTZ9jZP2rRRaDM0P12bwNLO9PJq0J8uu8OGm17hfYfMzco2Q0o2DInGb3+iGs3hYC7nhWV6rqo7jvzIxGjoW3kR9JPSS9KirHaYJ+1lcI87J/Sgnuu8ZSsC2Wo8nx+eFkcDLzls
-X-MS-Exchange-AntiSpam-MessageData: Z8Fcm8pu81+Qr6nkJJ8zWoqOTav2BZ1L1+eDmCHVUeYNcUJ6ZxEXQTUytztRZxULI12U9Xi9R6okpI+AEppcWWMkzlzkNodkLJ9ad5lDHIfsYF0wxfIjt2IX2C9pxF+sOYlcvvQz71BrzoIhmIEpWAoGntFroZYos4gRMwUVqPV5dvn0KtFCynVdwHKh+G5C
-X-MS-Exchange-CrossTenant-Network-Message-Id: a0f6f206-86cc-4562-40fa-08d7c543cf26
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2020 22:38:52.7954
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Ag1QunNnWanVuLruO49RlKExIiP1u1incKgWJPiNvb9gJgx5eeHIneXaJtqM1JLq
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR15MB1566
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.572
- definitions=2020-03-10_16:2020-03-10,2020-03-10 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- priorityscore=1501 impostorscore=0 spamscore=0 bulkscore=0 suspectscore=1
- clxscore=1015 malwarescore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=999
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2001150001 definitions=main-2003100134
-X-FB-Internal: deliver
+        id S1727893AbgCKBBm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Mar 2020 21:01:42 -0400
+Received: from mail-pf1-f202.google.com ([209.85.210.202]:34238 "EHLO
+        mail-pf1-f202.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727397AbgCKBBm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Mar 2020 21:01:42 -0400
+Received: by mail-pf1-f202.google.com with SMTP id s13so236971pfe.1
+        for <cgroups@vger.kernel.org>; Tue, 10 Mar 2020 18:01:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=uFju+yiXs54MdHtgioQYAx/aRo0/p25DSWXwTL9KVhU=;
+        b=RGcqqP2HhuPpq5mYsqQ1M/+GX4ukKpmw6wJTxII3zvx2Bf104CkLRTUii4yFizR6Bg
+         2wg1xwQZBz5v7mn91rdSOig5iFIA8pad9iTMrm9EqHXRC50XxovDweSCklDbYBJlQ2d3
+         T8BG94oZMiucIeoDoU5DVQWBfDLDa6mNSXqmBZhFdwHof4avq/PZ3c4vpH4u8TFUFZkX
+         bwhJIoZeHDiX9QCUudRaZhuqqUG7RLYxF9D49/SqlQqRxRgA3b027mTdfzZSmIiGwp1g
+         COztLez1h6t1oDDuHe2qbuCNyz0ovGiDKTyDCrxZeDCifF50x/oAmDH+zz99mPxXzsRJ
+         KIvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=uFju+yiXs54MdHtgioQYAx/aRo0/p25DSWXwTL9KVhU=;
+        b=d/SvtO+POIQbJxXHzNP+rc/659TiMVssJz8V2d244T38JsEs8lTVUEuGsQOkGP3jiw
+         IuB526d/f+O5dLYEM7cJ4IUCM/prUlHMjVSd7+uWlrDNbtn+Lm2se9GezoS1ivHbcou8
+         /iy0X8mPaL25Ptt+B5tppG1PQ7W3TdPmot3lQt8FEkbmZIMFIDGKk+bMMpu/ZFCxiqdT
+         azW/74ffoRObmYoXxvk2YQhsy+tWfgvyQOOFiTYg7BMSSzUHKy6sLsNWPozewTdv9F1P
+         4sdtgM94JGItgKOaL2B4FLTu6kAQ4ltuG8kSx4r9b3FwdGXr7O6FCbtZBJTGaLxqSs+J
+         7zdA==
+X-Gm-Message-State: ANhLgQ3RyDOx5/bIRSeIjPhK4luDdX+uroG0w2ybxOSUKZshM+wL2uG7
+        3zBtnMLKyKNTaAm5NSIhsUaPHmTzl81g
+X-Google-Smtp-Source: ADFU+vtv1JcbFOuxbcyBd07owGiwiL/aoKg6YUYaLuhfUd5CE/FpUdrKIM2Q6j8dUNWjsJCdTgYWsI0mToUt
+X-Received: by 2002:a17:90b:238e:: with SMTP id mr14mr686812pjb.146.1583888498905;
+ Tue, 10 Mar 2020 18:01:38 -0700 (PDT)
+Date:   Tue, 10 Mar 2020 18:01:13 -0700
+Message-Id: <20200311010113.136465-1-joshdon@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.25.1.481.gfbce0eb801-goog
+Subject: [PATCH v2] sched/cpuset: distribute tasks within affinity masks
+From:   Josh Don <joshdon@google.com>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Paul Turner <pjt@google.com>, Josh Don <joshdon@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Mar 09, 2020 at 10:16:06PM -0700, Shakeel Butt wrote:
-> If a TCP socket is allocated in IRQ context or cloned from unassociated
-> (i.e. not associated to a memcg) in IRQ context then it will remain
-> unassociated for its whole life. Almost half of the TCPs created on the
-> system are created in IRQ context, so, memory used by such sockets will
-> not be accounted by the memcg.
-> 
-> This issue is more widespread in cgroup v1 where network memory
-> accounting is opt-in but it can happen in cgroup v2 if the source socket
-> for the cloning was created in root memcg.
-> 
-> To fix the issue, just do the association of the sockets at the accept()
-> time in the process context and then force charge the memory buffer
-> already used and reserved by the socket.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+From: Paul Turner <pjt@google.com>
 
-Reviewed-by: Roman Gushchin <guro@fb.com>
+Currently, when updating the affinity of tasks via either cpusets.cpus,
+or, sched_setaffinity(); tasks not currently running within the newly
+specified mask will be arbitrarily assigned to the first CPU within the
+mask.
 
-Thank you!
+This (particularly in the case that we are restricting masks) can
+result in many tasks being assigned to the first CPUs of their new
+masks.
+
+This:
+ 1) Can induce scheduling delays while the load-balancer has a chance to
+    spread them between their new CPUs.
+ 2) Can antogonize a poor load-balancer behavior where it has a
+    difficult time recognizing that a cross-socket imbalance has been
+    forced by an affinity mask.
+
+This change adds a new cpumask interface to allow iterated calls to
+distribute within the intersection of the provided masks.
+
+The cases that this mainly affects are:
+- modifying cpuset.cpus
+- when tasks join a cpuset
+- when modifying a task's affinity via sched_setaffinity(2)
+
+Co-developed-by: Josh Don <joshdon@google.com>
+Signed-off-by: Josh Don <joshdon@google.com>
+Signed-off-by: Paul Turner <pjt@google.com>
+---
+v2:
+- Moved the "distribute" implementation to a new
+cpumask_any_and_distribute() function
+- No longer move a task if it is already running on an allowed cpu
+
+ include/linux/cpumask.h |  7 +++++++
+ kernel/sched/core.c     |  7 ++++++-
+ lib/cpumask.c           | 29 +++++++++++++++++++++++++++++
+ 3 files changed, 42 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/cpumask.h b/include/linux/cpumask.h
+index d5cc88514aee..f0d895d6ac39 100644
+--- a/include/linux/cpumask.h
++++ b/include/linux/cpumask.h
+@@ -194,6 +194,11 @@ static inline unsigned int cpumask_local_spread(unsigned int i, int node)
+ 	return 0;
+ }
+ 
++static inline int cpumask_any_and_distribute(const struct cpumask *src1p,
++					     const struct cpumask *src2p) {
++	return cpumask_next_and(-1, src1p, src2p);
++}
++
+ #define for_each_cpu(cpu, mask)			\
+ 	for ((cpu) = 0; (cpu) < 1; (cpu)++, (void)mask)
+ #define for_each_cpu_not(cpu, mask)		\
+@@ -245,6 +250,8 @@ static inline unsigned int cpumask_next_zero(int n, const struct cpumask *srcp)
+ int cpumask_next_and(int n, const struct cpumask *, const struct cpumask *);
+ int cpumask_any_but(const struct cpumask *mask, unsigned int cpu);
+ unsigned int cpumask_local_spread(unsigned int i, int node);
++int cpumask_any_and_distribute(const struct cpumask *src1p,
++			       const struct cpumask *src2p);
+ 
+ /**
+  * for_each_cpu - iterate over every cpu in a mask
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 1a9983da4408..fc6f2bec7d44 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -1652,7 +1652,12 @@ static int __set_cpus_allowed_ptr(struct task_struct *p,
+ 	if (cpumask_equal(p->cpus_ptr, new_mask))
+ 		goto out;
+ 
+-	dest_cpu = cpumask_any_and(cpu_valid_mask, new_mask);
++	/*
++	 * Picking a ~random cpu helps in cases where we are changing affinity
++	 * for groups of tasks (ie. cpuset), so that load balancing is not
++	 * immediately required to distribute the tasks within their new mask.
++	 */
++	dest_cpu = cpumask_any_and_distribute(cpu_valid_mask, new_mask);
+ 	if (dest_cpu >= nr_cpu_ids) {
+ 		ret = -EINVAL;
+ 		goto out;
+diff --git a/lib/cpumask.c b/lib/cpumask.c
+index 0cb672eb107c..fb22fb266f93 100644
+--- a/lib/cpumask.c
++++ b/lib/cpumask.c
+@@ -232,3 +232,32 @@ unsigned int cpumask_local_spread(unsigned int i, int node)
+ 	BUG();
+ }
+ EXPORT_SYMBOL(cpumask_local_spread);
++
++static DEFINE_PER_CPU(int, distribute_cpu_mask_prev);
++
++/**
++ * Returns an arbitrary cpu within srcp1 & srcp2.
++ *
++ * Iterated calls using the same srcp1 and srcp2 will be distributed within
++ * their intersection.
++ *
++ * Returns >= nr_cpu_ids if the intersection is empty.
++ */
++int cpumask_any_and_distribute(const struct cpumask *src1p,
++			       const struct cpumask *src2p)
++{
++	int next, prev;
++
++	/* NOTE: our first selection will skip 0. */
++	prev = __this_cpu_read(distribute_cpu_mask_prev);
++
++	next = cpumask_next_and(prev, src1p, src2p);
++	if (next >= nr_cpu_ids)
++		next = cpumask_first_and(src1p, src2p);
++
++	if (next < nr_cpu_ids)
++		__this_cpu_write(distribute_cpu_mask_prev, next);
++
++	return next;
++}
++EXPORT_SYMBOL(cpumask_any_and_distribute);
+-- 
+2.25.1.481.gfbce0eb801-goog
+
