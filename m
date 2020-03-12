@@ -2,73 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 56CB0183AFF
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 22:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CF805183B02
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 22:06:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726984AbgCLVD6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 17:03:58 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:44206 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbgCLVD6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 17:03:58 -0400
-Received: by mail-oi1-f195.google.com with SMTP id d62so7014188oia.11
-        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 14:03:57 -0700 (PDT)
+        id S1726964AbgCLVG7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 17:06:59 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:36690 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726922AbgCLVG7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 17:06:59 -0400
+Received: by mail-ot1-f68.google.com with SMTP id j14so7887315otq.3
+        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=XGC2JJk9vuAk10qDqdB2GLLddE8al5n+2YMC135z7/8=;
-        b=MFTyMtEC8VknjT1M8lTiyfKxTFtMZJGkKIC0Q3oqOBDGa3g7UxELEJgqZr7dTBhnIG
-         ixxjSyj0q8phoYnlMZJjGME2GUQgh5pAAf63BjeJByJJ4nZMO2g6msnLMwkVnTSld628
-         vXs1tw38JrliwAzoTQUwm3ZeVer/mVXmouFDIIUPlCeQb2Nnr2ECpnwVzd8Jffnq847L
-         QiNrse6GGv2M8iuU1adL+6yqgUds3KlBE9zfU7rjhCZkAWZ684caGPSNeM+QM5CCAgI5
-         LkUHNmV2YZhICiXf1Xvd3CowoD/bfyFvW7OM0jlAFTbwuSoxJyiwC8MhcFET48g1KhFy
-         su1Q==
+        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
+        b=f+l+gXIKYD8ZqIsbSKM4dLqAUjD21JGnao8P6oy+6Zmm9Rb8AXN6l/tS4s9RT9ecgP
+         8OTh+Gt18uKCXrL2agzWwd/jaz4kTY1PcHwRp8AM/PzPPozlKad5X4ZfeHipH/tIBjxa
+         99BbLEDknWH+7czLa5Ds6pxh1qQr+8L/YyNq5vH159Q93v9ftJQBMYn9MTLI0ylozz0g
+         SxF6JBvVR6aRYy+G/pWJCbP5kvTgAoAwODj4DnUgeTdzCZUniI5BUzeE45A4/CVcJor4
+         PJTNqoA2uuZZ4WpMILVN15YTIvUc7nqvO81ayj7Ez+wssmSZmgvM6o862uS0AIZwCaSh
+         XIig==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=XGC2JJk9vuAk10qDqdB2GLLddE8al5n+2YMC135z7/8=;
-        b=CkbfYiSkLYtQD3ZJe1hP9krgBKbOSTnbRxeJyQJ9g8SPSLLy/vPpmoY4PS0SQwEdHb
-         gHzoGb2gynPEz4Oh11zhK7arDSdwLA6AypQ4epFNfYUgDMI0b4nH2t1xGyUuDy0VJKca
-         cFfSxRFgyJY+SyF+6bMao/5GuN0socXvogSy8RQCJ59mOOiEv2w+ge5+HrZM0ctI2nG1
-         ZB6aB9MwNZpET6r5eQFsSiS1KPXau5RwvKNsdZ5lU2jdWCuIIygi7IVTNjHsjC81eXu7
-         XFYsfu/glgtNInaJTcegwkTUPnhB0symKjKwYkeNxEwoUYtiXoR7BtrxeIcLbHNJmTUe
-         JRiQ==
-X-Gm-Message-State: ANhLgQ0uyjacrJFZiX3fMsd8+DqGO5VuhLYqy8A0JxjQTcusN/BDCKih
-        YhqQXKkmc9NtaEw1SgBB23kM7B3MRbjt9qfNAOIjGA==
-X-Google-Smtp-Source: ADFU+vsc3vO05FGfi/ND84Ilaqg41EiWNNRIsnEqcq/qsjLaZwPkhAcV8pix0fNnG+HiTSuwtbRWD5cE0PfcNmiU3Bg=
-X-Received: by 2002:aca:4b56:: with SMTP id y83mr4412506oia.142.1584047036932;
- Thu, 12 Mar 2020 14:03:56 -0700 (PDT)
+        bh=gjIF8laC9ymQN6dGPb1ZYido+iVLQSJ80e27qnd6uTA=;
+        b=PYpGcI4aQXXJU+A8oJaN5ICLlZmEVk/+BgAqtTRnjj6Y3fJUoWa1e5+ecQUFA3LDry
+         XnaNjF4o1LTqKw2+R0fYvMZxchjdE1GOhymIx92ToLGp9Yiq2dzbyMLq/NcBKhKascrq
+         BX4pw9qTxbfRByW5nqqEjNT6gf9Aq6En3AZ3OWQHSY8CevhPwVqQb2GnnszEKHO0aBMu
+         WupOhCVURwyfiuABvaAD/GH77hqFPTDspPabYjH94COicb5rTkVCGa3QWngg7q4siKRX
+         m/ZF1ezPqMlphqwZvRHc0DLkmkBdvEBhRVva0Ahrdz2BI/6uLZdopj5GlxXTJu6A2erJ
+         zX/g==
+X-Gm-Message-State: ANhLgQ1XCaT0Ms1AVJrG7pXkR+VMQKiN+dEG7Sd/FVJQ8WVgYnYJIHLi
+        AQr1qHLnnDfpGGKjZ5aiiYTsYMA/uxo6RFfj57Q4iQKIXF4=
+X-Google-Smtp-Source: ADFU+vuorKp4Am1Eft4fdcP1G8Nf7OvlWyXXPJjJAuw2HysSDIhCcZVTlSzqZ6RrA6JxKhMxZ3B+h9vZHTYAu4IJG2I=
+X-Received: by 2002:a9d:c24:: with SMTP id 33mr8191344otr.355.1584047218074;
+ Thu, 12 Mar 2020 14:06:58 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200312200317.31736-1-dxu@dxuuu.xyz> <20200312200317.31736-2-dxu@dxuuu.xyz>
-In-Reply-To: <20200312200317.31736-2-dxu@dxuuu.xyz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 12 Mar 2020 14:03:46 -0700
-Message-ID: <CALvZod6TxCGiJbPo-4R_qXC7OqWS0LgRRWZwvbaPbWMDRyt0Zg@mail.gmail.com>
-Subject: Re: [PATCH v3 1/4] kernfs: kvmalloc xattr value instead of kmalloc
-To:     Daniel Xu <dxu@dxuuu.xyz>
-Cc:     Cgroups <cgroups@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Kernel Team <kernel-team@fb.com>
+References: <00000000000041c6c205a08225dc@google.com> <20200312182826.GG79873@mtj.duckdns.org>
+In-Reply-To: <20200312182826.GG79873@mtj.duckdns.org>
+From:   Mina Almasry <almasrymina@google.com>
+Date:   Thu, 12 Mar 2020 14:06:47 -0700
+Message-ID: <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
+Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
+To:     Tejun Heo <tj@kernel.org>
+Cc:     syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, andriin@fb.com,
+        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
+        christian@brauner.io, daniel@iogearbox.net,
+        Johannes Weiner <hannes@cmpxchg.org>, kafai@fb.com,
+        open list <linux-kernel@vger.kernel.org>,
+        Li Zefan <lizefan@huawei.com>, netdev@vger.kernel.org,
+        sfr@canb.auug.org.au, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, yhs@fb.com
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 1:03 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
+On Thu, Mar 12, 2020 at 11:28 AM Tejun Heo <tj@kernel.org> wrote:
 >
-> xattr values have a 64k maximum size. This can result in an order 4
-> kmalloc request which can be difficult to fulfill. Since xattrs do not
-> need physically contiguous memory, we can switch to kvmalloc and not
-> have to worry about higher order allocations failing.
+> On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
+> > Hello,
+> >
+> > syzbot found the following crash on:
+> >
+> > HEAD commit:    c99b17ac Add linux-next specific files for 20200225
+> > git tree:       linux-next
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
+> > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
+> >
+> > The bug was bisected to:
+> >
+> > commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
+> > Author: Mina Almasry <almasrymina@google.com>
+> > Date:   Thu Feb 20 03:55:30 2020 +0000
+> >
+> >     hugetlb_cgroup: add accounting for shared mappings
 >
-> Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
+> Mina, can you please take a look at this?
+>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Gah, I missed the original syzbot email but I just saw this. I'll take a look.
+
+> Thanks.
+
+>
+> --
+> tejun
