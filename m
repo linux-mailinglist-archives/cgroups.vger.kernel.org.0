@@ -2,110 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EB861839C4
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 20:47:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 636A5183A6C
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 21:13:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726483AbgCLTrw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 15:47:52 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45420 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725268AbgCLTrw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 15:47:52 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 1E7C4283B3D;
-        Thu, 12 Mar 2020 15:47:51 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id aOQH6xH2AcoZ; Thu, 12 Mar 2020 15:47:50 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id ABCFB283B3C;
-        Thu, 12 Mar 2020 15:47:50 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com ABCFB283B3C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1584042470;
-        bh=A1HR5wx2ul5UN/781Z2t5qlpWkPcTJFFf8FZtwQy6S0=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=I7XIwjfakzD+Ifo0HlzHk72yMKTKFW2SQR4uZPsMLjCFAmT7H1X/5XqyV/9FAMR2X
-         DM+oMyxtBE/rnPjt2hW3PHY0fE2DtI2XgYspcckeHbnchZwyywjLDAL1q4e3ksB/6O
-         snuzo2y365fmrlkxdgMu6d0AgnN1i4koJP5A5ytLg83TOm2AbvaOpV7QZf9FX+tCQT
-         VKCU7vvkuDNQe7FCkW89i/BkBJckT6wuK2DWcKceDq6A4DYE17lKOklXKgQHzv/Zot
-         ln1eVE+etQHwwZrsd+kaVMlfnJ3OYrGZvNIxNx68XFgZ887Oo7/wao7M1PUiCsFU96
-         bhr2lRGbzncQA==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id TLyBoLL87IdR; Thu, 12 Mar 2020 15:47:50 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id 9B88F283B3A;
-        Thu, 12 Mar 2020 15:47:50 -0400 (EDT)
-Date:   Thu, 12 Mar 2020 15:47:50 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Li Zefan <lizefan@huawei.com>, cgroups <cgroups@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Message-ID: <1289608777.27165.1584042470528.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20200312182618.GE79873@mtj.duckdns.org>
-References: <1251528473.590671.1579196495905.JavaMail.zimbra@efficios.com> <20200219154740.GD698990@mtj.thefacebook.com> <59426509.702.1582127435733.JavaMail.zimbra@efficios.com> <20200219155202.GE698990@mtj.thefacebook.com> <1358308409.804.1582128519523.JavaMail.zimbra@efficios.com> <20200219161222.GF698990@mtj.thefacebook.com> <316507033.21078.1583597207356.JavaMail.zimbra@efficios.com> <20200312182618.GE79873@mtj.duckdns.org>
-Subject: Re: [regression] cpuset: offlined CPUs removed from affinity masks
+        id S1727020AbgCLUNR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 16:13:17 -0400
+Received: from wnew3-smtp.messagingengine.com ([64.147.123.17]:47913 "EHLO
+        wnew3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726859AbgCLUNR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 16:13:17 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.west.internal (Postfix) with ESMTP id 01F5F546;
+        Thu, 12 Mar 2020 16:03:38 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 12 Mar 2020 16:03:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=kNlnuwMcimuimNS6Jo1KZfG1Ry
+        Ya0T1T2FyiTi3yhps=; b=szEVJrm30FaD/kg1b6gDlqEtraYtSwmmiY99s5I0da
+        DGUOk1qh1OTE09WdC6mLCLKvnwvNQut4O/x60UwuZF4IDFwe3jmdgt/8LA9PYTGD
+        kxwzKXmI4aT5CzKTneRyiWrqeXubeJinvsZrpuZfntHWrYr8PYuAYUvRyrYxDEr2
+        hhTTUQGpHFh8T6sX9+fBSSVQVA8nMYCrDcR6kubfb7RsvM+WNwrxjfI1xVdgcrea
+        U3YW+agBt8/SnuDAR2xYvx0GQ09XxKv0GYhAD5BuiVr/B71wLCwZn6X/lTYjTLAf
+        +BhqrA2wa3KYPCHTzrzURJ4oSKGowhYTKTJf3UaEne6Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=kNlnuwMcimuimNS6J
+        o1KZfG1RyYa0T1T2FyiTi3yhps=; b=Jq26f0WXtdpISQKByHKqy5pAnBoRJ3Gq2
+        TLHcfPYJ0vOXBN+fiXG7IZoDj1nizaIeL6OzZ78ov0gLRplTCraQjqZm5Q+zS/dK
+        KZ5oMk2HpTRhEdRi+51+VcCtOwBGJC+3YlCVg0OYmynLAskLqJ5O9IicBq6/znfS
+        ByaiitijbhLihNKL29Z2wghfO88KgV2dES7tzhiZ6Ul8q+ZZDbdyQxhDoKrgGV8J
+        o3rNJJYkWvbdsD8SWkFJ+a3YVW0j81ireEdTP+u/AIFSEWTV5Y8iPQOzSwflsZOP
+        JCIz4ODcvsP9CLJtcLMhFJjDKa2CmR3v7rtCpsIcsbeQAAmeSSMaQ==
+X-ME-Sender: <xms:mZVqXlbRhW-UuPS_KxqETWxRqLabam2TiEgNR6d9a17xpIeXbMh3BA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedugedruddvhedgudefgecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecufghrlhcuvffnffculdejtddmnecujfgurhephf
+    fvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeffrghnihgvlhcuighuuceougig
+    uhesugiguhhuuhdrgiihiieqnecukfhppeduieefrdduudegrddufedvrdegnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhu
+    uhdrgiihii
+X-ME-Proxy: <xmx:mZVqXrig4A0ckLE0JYOoxNg_NGvedkfPYh-tWWeK3CBW5KEivumZ_g>
+    <xmx:mZVqXs_QJ23jGJuvpMThk2jfEwocc3ZgTUZq32wKEhq7t2Wdl-O2qw>
+    <xmx:mZVqXjP1ZdrsTmgMIiQRfAjTXvxUS17DQEMqh9NEC_Z5bzuHTMS9IA>
+    <xmx:mpVqXnCuAq27hps2dOvVcSyHqa3DnmJCH3kINbzC6y4mvZnY03hwP1fiZqY>
+Received: from dlxu-fedora-R90QNFJV.thefacebook.com (unknown [163.114.132.4])
+        by mail.messagingengine.com (Postfix) with ESMTPA id E4D863060F09;
+        Thu, 12 Mar 2020 16:03:35 -0400 (EDT)
+From:   Daniel Xu <dxu@dxuuu.xyz>
+To:     cgroups@vger.kernel.org, tj@kernel.org, lizefan@huawei.com,
+        hannes@cmpxchg.org, viro@zeniv.linux.org.uk
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, shakeelb@google.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        gregkh@linuxfoundation.org, kernel-team@fb.com
+Subject: [PATCH v3 0/4] Support user xattrs in cgroupfs
+Date:   Thu, 12 Mar 2020 13:03:13 -0700
+Message-Id: <20200312200317.31736-1-dxu@dxuuu.xyz>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3901 (ZimbraWebClient - FF73 (Linux)/8.8.15_GA_3895)
-Thread-Topic: cpuset: offlined CPUs removed from affinity masks
-Thread-Index: FByLWuKCPlzdKGK72QNzb8rkGcc4gA==
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
------ On Mar 12, 2020, at 2:26 PM, Tejun Heo tj@kernel.org wrote:
+User extended attributes are useful as metadata storage for kernfs
+consumers like cgroups. Especially in the case of cgroups, it is useful
+to have a central metadata store that multiple processes/services can
+use to coordinate actions.
 
-> Hello,
-> 
-> On Sat, Mar 07, 2020 at 11:06:47AM -0500, Mathieu Desnoyers wrote:
->> Looking into solving this, one key issue seems to get in the way: cpuset
->> appear to care about not allowing to create a cpuset which has no currently
->> active CPU where to run, e.g.:
-> ...
->> Clearly, there is an intent that cpusets take the active mask into
->> account to prohibit creating an empty cpuset, but nothing prevents
->> cpu hotplug from creating an empty cpuset.
->> 
->> I wonder how to solve this inconsistency ?
-> 
-> Please try cpuset in cgroup2. It shouldn't have those issues.
+A concrete example is for userspace out of memory killers. We want to
+let delegated cgroup subtree owners (running as non-root) to be able to
+say "please avoid killing this cgroup". This is especially important for
+desktop linux as delegated subtrees owners are less likely to run as
+root.
 
-After figuring how to use cgroup2 (systemd.unified_cgroup_hierarchy=1 boot
-parameter helped tremendously), and testing similar scenarios, it indeed
-seems to have a much saner behavior than cgroup1.
+The first two commits set up some stuff for the third commit which
+intro introduce a new flag, KERNFS_ROOT_SUPPORT_USER_XATTR,
+that lets kernfs consumers enable user xattr support. The final commit
+turns on user xattr support for cgroupfs.
 
-Considering that the allowed cpu mask is weird wrt cgroup1 and cpu hotplug,
-and that cgroup2 allows thread-level granularity, it does not make much sense
-to prevent the pin_on_cpu() system call I am working on from pinning
-on cpus which are not present in the allowed mask.
+Changes from v2:
+- Rephrased commit message for "kernfs: kvmalloc xattr value instead of
+  kmalloc"
 
-I'm currently investigating approaches that would detect situations
-where a thread is pinned onto a CPU which is not part of its allowed
-mask, and set the task prio at MAX_PRIO-1 (the lowest fair priority
-possible) in those cases.
+Changes from v1:
+- use kvmalloc for xattr values
+- modify simple_xattr_set to return removed size
+- add accounting for total user xattr size per cgroup
 
-The basic idea is to allow applications to pin to every possible cpu, but
-not allow them to use this to consume a lot of cpu time on CPUs they
-are not allowed to run.
+Daniel Xu (4):
+  kernfs: kvmalloc xattr value instead of kmalloc
+  kernfs: Add removed_size out param for simple_xattr_set
+  kernfs: Add option to enable user xattrs
+  cgroupfs: Support user xattrs
 
-Thoughts ?
+Daniel Xu (4):
+  kernfs: kvmalloc xattr value instead of kmalloc
+  kernfs: Add removed_size out param for simple_xattr_set
+  kernfs: Add option to enable user xattrs
+  cgroupfs: Support user xattrs
 
-Thanks,
-
-Mathieu
-
+ fs/kernfs/inode.c           | 91 ++++++++++++++++++++++++++++++++++++-
+ fs/kernfs/kernfs-internal.h |  2 +
+ fs/xattr.c                  | 17 +++++--
+ include/linux/kernfs.h      | 11 ++++-
+ include/linux/xattr.h       |  3 +-
+ kernel/cgroup/cgroup.c      |  3 +-
+ mm/shmem.c                  |  2 +-
+ 7 files changed, 119 insertions(+), 10 deletions(-)
 
 -- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+2.21.1
+
