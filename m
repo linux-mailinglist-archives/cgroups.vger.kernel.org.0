@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 9702E183659
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 17:41:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C8EC71837A2
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 18:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726469AbgCLQlk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 12:41:40 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54422 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726464AbgCLQlk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 12:41:40 -0400
-Received: by mail-wm1-f66.google.com with SMTP id n8so6833742wmc.4
-        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 09:41:39 -0700 (PDT)
+        id S1726387AbgCLRcs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 13:32:48 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:39980 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726299AbgCLRcs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 13:32:48 -0400
+Received: by mail-wr1-f50.google.com with SMTP id f3so1574415wrw.7
+        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 10:32:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=N2Uu/Isy7NWEK22NJk3FeLyFIU8DnOEsZiiSW7A75uw=;
-        b=t7xkgWzL7lP8/guUn9rLcXqc2L/I8M4mdPLj2rg4UyMUaDhBh7A5BFsyNeuUrfj5Sy
-         sZUf9YD87y994A6gKWXRpHFpH80VKHCF7N3X/4Pv5qvlLvmKlvIqQmk2yNsoJjceEcwr
-         RTAWrygWaUxgm6QfhsJnWIPCeHwo+bWOupSI0=
+        bh=EMQBFUEliM01ip8eYZWL54ZvB7/WFqSxm3Itb84CtRE=;
+        b=k+rsyxmleUdEKNf2d3kL7o7aiIxuTWtLn6o1bdXxge9PXpxV5wPfTKxhslPzkpG0Ar
+         G5gSlzvijsb4gXxQfcmGRT1CfQ9MAD/nDqTxMBpLtubU80R8hfLmLGOjuZEo1pkWHAVw
+         etC0c1ppz8Vikx3F9E4p63Pul+eZweVNu48ZM=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
          :content-disposition;
-        bh=N2Uu/Isy7NWEK22NJk3FeLyFIU8DnOEsZiiSW7A75uw=;
-        b=YvbK/wc1aO84GBqh28LP7xTstTgyFESMOI9Doonmk/B/p231tZiC9tBfFHmKllDhMJ
-         I9QYSsr/QwqwBRT6DTBS8UnP3X2L+5lW72jyPAFEJXGTg5uzhckZs2m63oSUftEwsigR
-         EkmB7b97fI9T96OqanphIaETZqx7zHYHC6J++PbtubRB5IQmtEIXuMFFYBCQ1Z6jocqV
-         yEdIJXWqMaKmF7lK5jpj1byPr5m4sG+DHGnKGG/z+tpxef0b1T+H8UKr1HPODQ1JXaIl
-         DkJOIv97Rt01QAMd+zAA1OYjzsXzZ7fPGBQwSHQbGzdJ5THLMQtCxSvZ8St3c2+yz9Rw
-         fQOw==
-X-Gm-Message-State: ANhLgQ1jZj5aLkq+161tNWujYc5vV+aQ+6AUAIyyEc4oA8hXPb7PxwhJ
-        6jYIdslFEHVHJYJ1EZYg/I+szA==
-X-Google-Smtp-Source: ADFU+vvlNP+sTGWtwglGQNPghD1uV2b6E7MyhcfHEsjAve9zJzNS72Sz6SK5JO+Zicct59iWDQt/KQ==
-X-Received: by 2002:a1c:5585:: with SMTP id j127mr5652787wmb.35.1584031298224;
-        Thu, 12 Mar 2020 09:41:38 -0700 (PDT)
+        bh=EMQBFUEliM01ip8eYZWL54ZvB7/WFqSxm3Itb84CtRE=;
+        b=gKGg51th4CqvskFGwJSEKmkEe6E0DalTPtHS6FV1YLuYQU4E9w/8qvCg7/23Nof8w3
+         F8Cst7Hs+tltnJbMEw8dg7XzsNYdbda0spwwRt4PskGpBNgyF3Pd1FhHJLUbvUXpVwx0
+         tMo3XFOV31LddSbB6wqshdqhXW885ymv2JsVMd3MoOe3JmaYyhleuV1MllUNSM3JD3Pd
+         sLz1PpUInDKL3sj/cGWE4GzNs7onp7MwfT+WFVqtxikYGW0KjHHjHrEw6kxxxdPvVY5L
+         L/c2Gjnzng9YMZPlg8/wtzC+cI+JufoQjONSZ6marIFRxXcgP08IPAEAS+iJ/rAX4rPZ
+         DSRA==
+X-Gm-Message-State: ANhLgQ0QXosASADMv9YeMcOsbGlpNZ1NGD8reA6ZTUqTSqxFN8d9S4W6
+        Sf3uvUNx9Q7XHaVrcEohGgsLJw==
+X-Google-Smtp-Source: ADFU+vt8M+ruZvYsAkNQLctYbvXMo4M+2Rv3wILfwgIvL/SQim+R4gGlI7lWWyLUelfDqApMTDzS9w==
+X-Received: by 2002:adf:bb81:: with SMTP id q1mr11942344wrg.110.1584034366244;
+        Thu, 12 Mar 2020 10:32:46 -0700 (PDT)
 Received: from localhost ([89.32.122.5])
-        by smtp.gmail.com with ESMTPSA id m19sm12906711wmc.34.2020.03.12.09.41.37
+        by smtp.gmail.com with ESMTPSA id o9sm78936300wrw.20.2020.03.12.10.32.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 09:41:37 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 16:41:37 +0000
+        Thu, 12 Mar 2020 10:32:45 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 17:32:45 +0000
 From:   Chris Down <chris@chrisdown.name>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH] mm, memcg: Bypass high reclaim iteration for cgroup
- hierarchy root
-Message-ID: <20200312164137.GA1753625@chrisdown.name>
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH 0/6] mm, memcg: cgroup v2 tunable load/store tearing fixes
+Message-ID: <cover.1584034301.git.chris@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
@@ -57,35 +57,18 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The root of the hierarchy cannot have high set, so we will never reclaim
-based on it. This makes that clearer and avoids another entry.
+Chris Down (6):
+  mm, memcg: Prevent memory.high load/store tearing
+  mm, memcg: Prevent memory.max load tearing
+  mm, memcg: Prevent memory.low load/store tearing
+  mm, memcg: Prevent memory.min load/store tearing
+  mm, memcg: Prevent memory.swap.max load tearing
+  mm, memcg: Prevent mem_cgroup_protected store tearing
 
-Signed-off-by: Chris Down <chris@chrisdown.name>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: linux-mm@kvack.org
-Cc: cgroups@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: kernel-team@fb.com
----
- mm/memcontrol.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ mm/memcontrol.c   | 42 ++++++++++++++++++++++--------------------
+ mm/page_counter.c | 17 +++++++++++------
+ 2 files changed, 33 insertions(+), 26 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 63bb6a2aab81..ab9d24a657b9 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2232,7 +2232,8 @@ static void reclaim_high(struct mem_cgroup *memcg,
- 			continue;
- 		memcg_memory_event(memcg, MEMCG_HIGH);
- 		try_to_free_mem_cgroup_pages(memcg, nr_pages, gfp_mask, true);
--	} while ((memcg = parent_mem_cgroup(memcg)));
-+	} while ((memcg = parent_mem_cgroup(memcg)) &&
-+		 !mem_cgroup_is_root(memcg));
- }
- 
- static void high_work_func(struct work_struct *work)
 -- 
 2.25.1
 
