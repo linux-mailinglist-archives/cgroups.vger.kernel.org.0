@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D26901837A8
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 18:34:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 672871837AB
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 18:34:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726390AbgCLRdE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 13:33:04 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46392 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726475AbgCLRdE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 13:33:04 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n15so8534634wrw.13
-        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 10:33:03 -0700 (PDT)
+        id S1726636AbgCLRdL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 13:33:11 -0400
+Received: from mail-wm1-f65.google.com ([209.85.128.65]:35973 "EHLO
+        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726548AbgCLRdL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 13:33:11 -0400
+Received: by mail-wm1-f65.google.com with SMTP id g62so7309896wme.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 10:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Wi04zoB+1lwUS/JkrIWiJtz6qrlQUGWxV2d3AofBbt4=;
-        b=qdHoaPhxQicwt6H3R0TCGLXYf5k3L9ooFg374fONxjv8C3rvNxgZwp+11xl3vl5riH
-         0+LwXAumxpp4RyUzxzdWqtEjG5BG9CDRPl4N6+xAtMsl5UUdZ8hz2enRswBOwYzfdka9
-         XGBadlITdSJeRvdGcod95gw7PRehSEFfoQdJU=
+        bh=XlHPYdHYVGL+ZH9Fy2ExhyAo23ZIkMLKS1ZUcqxxQY0=;
+        b=up0/TKVQ7COgyqEd0H7isdZkegQuEbx6al4+9E95wP3QiMQsdxvH9836eQ+LluSIC5
+         RrbHhXsGGbJAFQXjNgehCBmeLiF93Sg8ahlpsQiK3ct/C8obWCIZR0CUU9z9GnAc5QUt
+         /KMm82i4Ln7WBp4XE3Bm+5wpBL7eIdIAKbhSk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Wi04zoB+1lwUS/JkrIWiJtz6qrlQUGWxV2d3AofBbt4=;
-        b=MWJfpHxEWT0u1UXgY7AzJzAFOgM3S3hXwFGTbTy6u+auYawhsTzTVm7zv/Wo+1GURC
-         GupPJGuzvCsJX5i0FkyoSmvVx59CF8tcbHndbNtSKkNIyiJgwdEmOpd61bi/0fUCnJlO
-         fp/IYn4I6e0YiJ5dy4a1svRqbOLMfmBo08hpm3zTWpzWHj1Lqe4ovWNDfQki+R0uxdgX
-         BK7jwmHvM/EOWUnCcNwUgffI0nGI/3/0P0Q61WL1Q8wIbg+Uwi7b55Mym4hE78KP+gwD
-         CE7HtVFN4w4mKqbfOGjR/unebppV5L04pw1ug+6u5Vtc7NAm2uGbLoW6KLNtnpY3mgre
-         8ggA==
-X-Gm-Message-State: ANhLgQ26YsaUIM0KFcaTXYDMHiRu+FXIRHHMNUnj1TsObhdUASTT6zyD
-        lO5DFOJiQpkbiB/4A7ahPW9Hqg==
-X-Google-Smtp-Source: ADFU+vs6lh4JtrMC8cO3JiGvHgD7AQUqQmn80t3o/bMOWdGzTkGWTWbLaTayMV0C4e7AmUIfCKkQxw==
-X-Received: by 2002:adf:e4ca:: with SMTP id v10mr11831736wrm.305.1584034382407;
-        Thu, 12 Mar 2020 10:33:02 -0700 (PDT)
+        bh=XlHPYdHYVGL+ZH9Fy2ExhyAo23ZIkMLKS1ZUcqxxQY0=;
+        b=mBHX4IGmP3cJ0VMHj12E8XoBpS/nu/tzfUG9Ymr4s51icja5Oi4f9aKlPCGbVW/a+f
+         hHVRWC144/zIHq6VwEoHZKm1aFxeWkbsvN8bLVeIqdHe2fDLWAkNpGoSwRbpkJy5lkwc
+         gRwAs2u83p9KMoUYIN14JALmGaxwdMhpqI6vuBNsoTIWHLFStNifIEo0ezWIo+ktaTPp
+         mVoAJHcoh4y5ME8ZEqyqsInXiHxvIfmwG+WB0+jmWjLoLtED9vZZUQUjvOeVnvBpcKTx
+         o/Kvo/ebhkmnPDctABONTb6eh3fzhbyxQ64aRLG19SklivS+9mLbG1LMLAM5D2X4059f
+         cZ4A==
+X-Gm-Message-State: ANhLgQ0w1Jpx5WVjktOcmEmGpk32f1KPgNVNH2hHDtaWNFUNUBKNUuOy
+        rI6SOU6Y55EPkn7Fe+Q/UQqSUg==
+X-Google-Smtp-Source: ADFU+vvMEQBOPd6Zfe5WzhxMWesz4iewNlgOu1pm6OgWwYpcAaCXRS0o8aM/RRSitF4y+VwXVIB6pw==
+X-Received: by 2002:a1c:7d88:: with SMTP id y130mr6104452wmc.5.1584034388539;
+        Thu, 12 Mar 2020 10:33:08 -0700 (PDT)
 Received: from localhost ([89.32.122.5])
-        by smtp.gmail.com with ESMTPSA id s7sm9500905wro.10.2020.03.12.10.33.01
+        by smtp.gmail.com with ESMTPSA id l17sm14887319wmg.23.2020.03.12.10.33.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 10:33:01 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 17:33:01 +0000
+        Thu, 12 Mar 2020 10:33:08 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 17:33:07 +0000
 From:   Chris Down <chris@chrisdown.name>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
         Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 3/6] mm, memcg: Prevent memory.low load/store tearing
-Message-ID: <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
+Subject: [PATCH 4/6] mm, memcg: Prevent memory.min load/store tearing
+Message-ID: <e809b4e6b0c1626dac6945970de06409a180ee65.1584034301.git.chris@chrisdown.name>
 References: <cover.1584034301.git.chris@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -73,63 +73,62 @@ Cc: cgroups@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: kernel-team@fb.com
 ---
- mm/memcontrol.c   | 4 ++--
- mm/page_counter.c | 9 ++++++---
- 2 files changed, 8 insertions(+), 5 deletions(-)
+ mm/memcontrol.c   |  4 ++--
+ mm/page_counter.c | 10 ++++++----
+ 2 files changed, 8 insertions(+), 6 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index aca2964ea494..c85a304fa4a1 100644
+index c85a304fa4a1..e0ed790a2a8c 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -6262,7 +6262,7 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+@@ -6261,7 +6261,7 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+ 	if (!usage)
  		return MEMCG_PROT_NONE;
  
- 	emin = memcg->memory.min;
--	elow = memcg->memory.low;
-+	elow = READ_ONCE(memcg->memory.low);
+-	emin = memcg->memory.min;
++	emin = READ_ONCE(memcg->memory.min);
+ 	elow = READ_ONCE(memcg->memory.low);
  
  	parent = parent_mem_cgroup(memcg);
- 	/* No parent means a non-hierarchical mode on v1 memcg */
-@@ -6291,7 +6291,7 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
- 	if (elow && parent_elow) {
- 		unsigned long low_usage, siblings_low_usage;
+@@ -6277,7 +6277,7 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+ 	if (emin && parent_emin) {
+ 		unsigned long min_usage, siblings_min_usage;
  
--		low_usage = min(usage, memcg->memory.low);
-+		low_usage = min(usage, READ_ONCE(memcg->memory.low));
- 		siblings_low_usage = atomic_long_read(
- 			&parent->memory.children_low_usage);
+-		min_usage = min(usage, memcg->memory.min);
++		min_usage = min(usage, READ_ONCE(memcg->memory.min));
+ 		siblings_min_usage = atomic_long_read(
+ 			&parent->memory.children_min_usage);
  
 diff --git a/mm/page_counter.c b/mm/page_counter.c
-index 50184929b61f..18b7f779f2e2 100644
+index 18b7f779f2e2..ae471c7d255f 100644
 --- a/mm/page_counter.c
 +++ b/mm/page_counter.c
-@@ -17,6 +17,7 @@ static void propagate_protected_usage(struct page_counter *c,
+@@ -17,14 +17,16 @@ static void propagate_protected_usage(struct page_counter *c,
  				      unsigned long usage)
  {
  	unsigned long protected, old_protected;
-+	unsigned long low;
+-	unsigned long low;
++	unsigned long low, min;
  	long delta;
  
  	if (!c->parent)
-@@ -34,8 +35,10 @@ static void propagate_protected_usage(struct page_counter *c,
- 			atomic_long_add(delta, &c->parent->children_min_usage);
- 	}
+ 		return;
  
--	if (c->low || atomic_long_read(&c->low_usage)) {
--		if (usage <= c->low)
-+	low = READ_ONCE(c->low);
+-	if (c->min || atomic_long_read(&c->min_usage)) {
+-		if (usage <= c->min)
++	min = READ_ONCE(c->min);
 +
-+	if (low || atomic_long_read(&c->low_usage)) {
-+		if (usage <= low)
++	if (min || atomic_long_read(&c->min_usage)) {
++		if (usage <= min)
  			protected = usage;
  		else
  			protected = 0;
-@@ -231,7 +234,7 @@ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages)
+@@ -217,7 +219,7 @@ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages)
  {
  	struct page_counter *c;
  
--	counter->low = nr_pages;
-+	WRITE_ONCE(counter->low, nr_pages);
+-	counter->min = nr_pages;
++	WRITE_ONCE(counter->min, nr_pages);
  
  	for (c = counter; c; c = c->parent)
  		propagate_protected_usage(c, atomic_long_read(&c->usage));
