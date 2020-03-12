@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 672861837AE
+	by mail.lfdr.de (Postfix) with ESMTP id DBDDA1837AF
 	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 18:34:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726548AbgCLRdP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 13:33:15 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:40740 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726691AbgCLRdO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 13:33:14 -0400
-Received: by mail-wr1-f65.google.com with SMTP id f3so1576033wrw.7
-        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 10:33:13 -0700 (PDT)
+        id S1726557AbgCLRdS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 13:33:18 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:42907 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726695AbgCLRdS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 13:33:18 -0400
+Received: by mail-wr1-f66.google.com with SMTP id v11so8565634wrm.9
+        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2020 10:33:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chrisdown.name; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=urzcg1/zbcSllHCQ82ap2K/ib0OV1jVM8zTOxSBSSFk=;
-        b=L2f+CaL9yyAPG75AYGECf5KTcw7S8M4rdsMmRBSZMeGR8jRzPXKEG698E3haidM1SB
-         EphvHD/U1lU3Tsfx19T+saKeeS1FVjHvlGAnaixK8Xiuvpf85YAi1FH8cmHHyStdVQ6x
-         s3ChNGG7YtV2ejMML1Tln752ExwS8WXNN1Xzw=
+        bh=NoiaqPMaLbyoL7WcV9VE9eKkmobOKnQ4L0s3bngIbSs=;
+        b=qaWsULht3bWoY5iXQLEcDGdBTFV6hjN7lpV33RTCtB3xWc1PLX/WRxZQohX8Xrl/9w
+         UmohlrmtFgTmdaoEpFrPYYLSu55234z8uvo9TnjcyiBJbYmm2fJpmw10ZPHUC3T9G4Z3
+         CvKX3yFDACoE48iNQsDgNcSOYv8fqeVuxR4Rk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=urzcg1/zbcSllHCQ82ap2K/ib0OV1jVM8zTOxSBSSFk=;
-        b=FPr75fXxRr/pT6xV1aGEhpodtxq7S/fE0KDNSB1BKsUs0aNMSKKb1otNX7MuGdTA+/
-         6wLlrWxNlH+N45toLUYYfXR/rZ3F3UElrTVRcyzkiOOGI9Wwjop6UwhZEpOBp4AxkzAQ
-         setEStnJCVH6kJRg/QP+Dw4hlHMSsGvdFIEG92T7wAziL3N3gn/6EqHK1Mtdnvn7pm1R
-         ned5+BT/K88DnUZ2QbS4UI+lM1HGGrG7cFsGRcZnx+ployTN268o0UtUj2tpknmVVLSm
-         a3NfBC4mEu0DNnHWgOBig427sZYfj1t7HAuMtnCJmpkOYlu+W8Avq1lCjjWC2yovhMRd
-         VuIQ==
-X-Gm-Message-State: ANhLgQ3YO49vVcMhia0YAB9htqamR1qvcvH2E8dVnoPO4+O7sZ6EeJpq
-        w1cYNj1dOW/5wfcivbKrxtRFZg==
-X-Google-Smtp-Source: ADFU+vsFeyzbj5Xi2Wyqn57AJA4UE5JVSsw2uGMltfcBbAOKBHZZOyTjRytBGKPSYXhiCWlTxa3BBA==
-X-Received: by 2002:a5d:410a:: with SMTP id l10mr11343394wrp.380.1584034392630;
-        Thu, 12 Mar 2020 10:33:12 -0700 (PDT)
+        bh=NoiaqPMaLbyoL7WcV9VE9eKkmobOKnQ4L0s3bngIbSs=;
+        b=Rxx27OaBaphEj7vWsoq88rB22uZ7/b98/aBeq0sVf1LOOd+X14dPEsagkoX7Gt9cvZ
+         wJF1XINIit+K1WZUvtXeZYEH2DofYr8dADGaN2agA1L1vrnXiGf7wqxQfouztRstk9C4
+         QrFC+BBJ9RkEqRvzjWFHIqZEt+a/c5O4GQR1w5yWfuKIZbyID6kxW6Kr1oMVjnAH5MoI
+         T7weIppYChi8v3gOdAp3v8LLhMaG+LuOq92k02Baa6ZSPyBFFmQ7KFT2HYebl1M7JK6R
+         xXXITxlEs80QVePyGbG5KX88rOyRYHSTABoOyjT/npiNyoday1hZNXSbjaT/ysz9CG+w
+         2RLw==
+X-Gm-Message-State: ANhLgQ2rI7V2VebEtaNaAg0/qT1oB9YTJ7ai/Ett+AfgDXiYssjYAiMg
+        ilDgwtl0Ai0FWadQGI3GQGvJzw==
+X-Google-Smtp-Source: ADFU+vvYbyeKzXBtFBZm5+Qqw3wXcJUdTLliut8wUu0quaYaNk9IXP08ecLQIM8cttCro0Cmn5Mn+Q==
+X-Received: by 2002:a5d:63c7:: with SMTP id c7mr11956491wrw.384.1584034396977;
+        Thu, 12 Mar 2020 10:33:16 -0700 (PDT)
 Received: from localhost ([89.32.122.5])
-        by smtp.gmail.com with ESMTPSA id s28sm106147wrb.42.2020.03.12.10.33.12
+        by smtp.gmail.com with ESMTPSA id o3sm14396506wme.36.2020.03.12.10.33.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 10:33:12 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 17:33:11 +0000
+        Thu, 12 Mar 2020 10:33:16 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 17:33:16 +0000
 From:   Chris Down <chris@chrisdown.name>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
         Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 5/6] mm, memcg: Prevent memory.swap.max load tearing
-Message-ID: <bbec2c3d822217334855c8877a9d28b2a6d395fb.1584034301.git.chris@chrisdown.name>
+Subject: [PATCH 6/6] mm, memcg: Prevent mem_cgroup_protected store tearing
+Message-ID: <d1e9fbc0379fe8db475d82c8b6fbe048876e12ae.1584034301.git.chris@chrisdown.name>
 References: <cover.1584034301.git.chris@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
@@ -60,8 +60,11 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The write side of this is xchg()/smp_mb(), so that's all good. Just a
-few sites missing a READ_ONCE.
+The read side of this is all protected, but we can still tear if
+multiple iterations of mem_cgroup_protected are going at the same time.
+
+There's some intentional racing in mem_cgroup_protected which is ok, but
+load/store tearing should be avoided.
 
 Signed-off-by: Chris Down <chris@chrisdown.name>
 Cc: Andrew Morton <akpm@linux-foundation.org>
@@ -73,41 +76,24 @@ Cc: cgroups@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org
 Cc: kernel-team@fb.com
 ---
- mm/memcontrol.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e0ed790a2a8c..57048a38c75d 100644
+index 57048a38c75d..e9af606238ab 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1511,7 +1511,7 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		pr_info("swap: usage %llukB, limit %llukB, failcnt %lu\n",
- 			K((u64)page_counter_read(&memcg->swap)),
--			K((u64)memcg->swap.max), memcg->swap.failcnt);
-+			K((u64)READ_ONCE(memcg->swap.max)), memcg->swap.failcnt);
- 	else {
- 		pr_info("memory+swap: usage %llukB, limit %llukB, failcnt %lu\n",
- 			K((u64)page_counter_read(&memcg->memsw)),
-@@ -1544,7 +1544,7 @@ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
- 		unsigned long swap_max;
- 
- 		memsw_max = memcg->memsw.max;
--		swap_max = memcg->swap.max;
-+		swap_max = READ_ONCE(memcg->swap.max);
- 		swap_max = min(swap_max, (unsigned long)total_swap_pages);
- 		max = min(max + swap_max, memsw_max);
+@@ -6301,8 +6301,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
  	}
-@@ -7025,7 +7025,8 @@ bool mem_cgroup_swap_full(struct page *page)
- 		return false;
  
- 	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg))
--		if (page_counter_read(&memcg->swap) * 2 >= memcg->swap.max)
-+		if (page_counter_read(&memcg->swap) * 2 >=
-+		    READ_ONCE(memcg->swap.max))
- 			return true;
+ exit:
+-	memcg->memory.emin = emin;
+-	memcg->memory.elow = elow;
++	WRITE_ONCE(memcg->memory.emin, emin);
++	WRITE_ONCE(memcg->memory.elow, elow);
  
- 	return false;
+ 	if (usage <= emin)
+ 		return MEMCG_PROT_MIN;
 -- 
 2.25.1
 
