@@ -2,93 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CCB161838AC
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 19:28:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A5778183966
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 20:25:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726504AbgCLS2c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 14:28:32 -0400
-Received: from mail-qk1-f196.google.com ([209.85.222.196]:46198 "EHLO
-        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgCLS2c (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 14:28:32 -0400
-Received: by mail-qk1-f196.google.com with SMTP id f28so7891523qkk.13;
-        Thu, 12 Mar 2020 11:28:30 -0700 (PDT)
+        id S1726729AbgCLTZk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 15:25:40 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45491 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726594AbgCLTZk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 15:25:40 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c145so8230743qke.12;
+        Thu, 12 Mar 2020 12:25:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Z1+jrFk0l780LY82KtgQMlOjuOPnOSNUeBpKHT6Qy6g=;
-        b=Im3J3CT7QT/G7DEOXBPU5qa5NpzXZfgFk285tuuYBMicpySswnkSvESZnO6jErqFRd
-         UPjDpp+0r/vIODgW1k2ShKCiqBy9MmTZB95AFcHg6b7GeSpKBLUrNugoVoATGkaO79DP
-         mcRtqwQ/zX3X63/A+7p6exSokHYdR7eIJBUgv5B5sY+P2DtU9pohuGZNPHsQfo0VFSI2
-         VxQkQ/6aIBCgeOjZES4EHfdnoV985yMvsQIIreKQVnp8LIh6qsdqDWBCyvkBNnEKbegw
-         eLunF7LsF0q/MWSdI3ei6mjKA8959FeSB1VKEpCNXBnaDb99LSD6iiIueYU9p8geMzQv
-         814Q==
+        bh=kSRZhT64+sxW9xDyUZ3l/rkvlLGuZc8V6ZIjw4qfv1c=;
+        b=c8JNPsVOXsaM4NWGf5pmxx6t2jZJ9I/3H+dCm28qDP91leSkivH4V1ku7Ah5fTzuIr
+         mDDxhTl0Z+3F/VqMr32cZhGDAVLTkEfnUpc4To6HefgYByEn9GROeiJp9SWAP5U2KjIi
+         CgELBvkumf8LAQpOk8GAtfQaKbCH5SfoCD4YVX05pYHi9SyL8qi5Sne/gvQh3mZNZ1e3
+         V6UH2z3SAj3jKoS9kgVFWJKTYWcdHeXVYMBOlkdd2PNfDpqkYnBLFKZiZhOJp4y63QOy
+         IASsb0FnjvJnnpl47Dr6siPjMTSjxO7SWShEsI7guYWLZSwqRuwQg61K7PiPPhbEeYrQ
+         JhQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=Z1+jrFk0l780LY82KtgQMlOjuOPnOSNUeBpKHT6Qy6g=;
-        b=I8ZDFnRMX4pvkgU2j0u0yY/djLRsHaPgEUY9wJNY4owkPY555l7HuYl3/q2Y9egQVO
-         k8YiEj4CC0vC55Vji9SY1XbZc7J/OL9Iv+QT6BxMbHVXNFqc2ce9U0ViWHLOXFlzaxPP
-         M+6r2cR457B/quC8+6wqWCxjBjkK43ZP1872rJuvehmqy+urzd2oIRDz3LU0cmTVDIXH
-         TeSJRV7x2vj1IjPKDAKNjb5SgY4TlcuVwqtqwmlGaRqAeBTkxqAFV44L9zTK3sjWGkMq
-         gCy4xpnOqjlYJYOCWP23JPNOoaA/X7mayP5ca0X0j7IPXg7bz8au34RN1w8iPClQnojl
-         794w==
-X-Gm-Message-State: ANhLgQ3Xp8s1GHOhRqkUNmUwrspEKU0pHJQqMLwkI20oP+2ydtW5vSb/
-        a8LgbCy0AlzPugVi/mbIbW4=
-X-Google-Smtp-Source: ADFU+vt9JCwr3OZM0QDXDy3zEeWocBIU5GDRQ52/xx5BmZffX9syssLvIR6XyxNZEWqjxRiPw4/j+w==
-X-Received: by 2002:a37:b146:: with SMTP id a67mr1341985qkf.473.1584037710282;
-        Thu, 12 Mar 2020 11:28:30 -0700 (PDT)
+        bh=kSRZhT64+sxW9xDyUZ3l/rkvlLGuZc8V6ZIjw4qfv1c=;
+        b=FeiDaT562XjHc8BEfWJT6tv8kqP16g0f4hIyxIHQgwyN4xqhiJd/Zbu0jbJ05ejo10
+         Gra9YZuVAo/ExEZlpUGdEXckV3b5/9pLDWHE+Tkv5rIGqcF6bSh/CW7qT3UI3qS3nQIC
+         u1uTjqHjg2HolD6oPVKXHLmbcT3i0O8n02gRPRhr9s7MSj+lMAdJZAXELgZ4KtMWgdF6
+         agYo4U4/kCduVsO/LOkSNw5NkaAwxmDyBARtkJOt3u+mtKMhmFzH7ADQDq1yPH7PGMPt
+         qGwRWwJ+VmnGHhfpCWEE9Hphphk3HT2bXLzty+hhjxg/18LyGnyXGfu3otk55U/QSXvc
+         FVAA==
+X-Gm-Message-State: ANhLgQ3wwHUHliLo9SpK3s2lrQ6FRvGMiFXSYHcmUVjSB6fNW7elR1IP
+        BPiXpMuI5Lh9F74kYyFhVL0=
+X-Google-Smtp-Source: ADFU+vsS5KiJCU3u790VoKYOUkboPasr6G6il/55PNJnytScZCIzv4iI8x7Dyh/tFk12qggdPkw9hw==
+X-Received: by 2002:a37:b903:: with SMTP id j3mr9406595qkf.62.1584041138942;
+        Thu, 12 Mar 2020 12:25:38 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::fec8])
-        by smtp.gmail.com with ESMTPSA id h5sm11049665qkc.118.2020.03.12.11.28.29
+        by smtp.gmail.com with ESMTPSA id f16sm1124454qtk.61.2020.03.12.12.25.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 11:28:29 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 14:28:26 -0400
+        Thu, 12 Mar 2020 12:25:38 -0700 (PDT)
+Date:   Thu, 12 Mar 2020 15:25:34 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     almasrymina@google.com,
-        syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, andriin@fb.com, ast@kernel.org,
-        bpf@vger.kernel.org, cgroups@vger.kernel.org, christian@brauner.io,
-        daniel@iogearbox.net, hannes@cmpxchg.org, kafai@fb.com,
-        linux-kernel@vger.kernel.org, lizefan@huawei.com,
-        netdev@vger.kernel.org, sfr@canb.auug.org.au,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
-Message-ID: <20200312182826.GG79873@mtj.duckdns.org>
-References: <00000000000041c6c205a08225dc@google.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Subject: Re: [GIT PULL] cgroup fixes for v5.6-rc5
+Message-ID: <20200312192534.GI79873@mtj.duckdns.org>
+References: <20200310144107.GC79873@mtj.duckdns.org>
+ <CAHk-=wi=5p6s_BmPAg5EF8Joe5d-6iAjQq6-Le7+xf5Gq-ZTfw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <00000000000041c6c205a08225dc@google.com>
+In-Reply-To: <CAHk-=wi=5p6s_BmPAg5EF8Joe5d-6iAjQq6-Le7+xf5Gq-ZTfw@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following crash on:
-> 
-> HEAD commit:    c99b17ac Add linux-next specific files for 20200225
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
-> dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
-> compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
-> 
-> The bug was bisected to:
-> 
-> commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
-> Author: Mina Almasry <almasrymina@google.com>
-> Date:   Thu Feb 20 03:55:30 2020 +0000
-> 
->     hugetlb_cgroup: add accounting for shared mappings
+Hello, Linus.
 
-Mina, can you please take a look at this?
+On Tue, Mar 10, 2020 at 03:14:13PM -0700, Linus Torvalds wrote:
+> On Tue, Mar 10, 2020 at 7:41 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > * Empty release_agent handling fix.
+> 
+> Pulled. However, I gagged a bit when I saw the code:
+> 
+>         if (!pathbuf || !agentbuf || !strlen(agentbuf))
+
+Hahaha, yeah, I can see that. I think it might have been copied from
+the commit it refers to - 64e90a8acb85 which contains the following
+snippet.
+
+       /*
+        * If there is no binary for us to call, then just return and get out of
+        * here.  This allows us to set STATIC_USERMODEHELPER_PATH to "" and
+        * disable all call_usermodehelper() calls.
+        */
+       if (strlen(sub_info->path) == 0)
+               goto out;
+
+> Also, wouldn't it be nice to test for the empty string before you even
+> bother to kstrdup() it? Even before you
+
+Let me restructure the code a bit.
+
+> Finally, shouldn't we technically hold the release_agent_path_lock
+> while looking at it?
+
+The release_agent_path is protected by both locks - cgroup_mutex and
+release_agent_path_lock, so readers can hold either cgroup_mutex or
+the path_lock. Here, it's holding the mutex, so it should be fine.
+IIRC, it used to be protected by cgroup_mutex (or whatever was
+equivalent) and the extra lock was added to break some cyclic
+dependency. Hmm... might as well drop the cgroup_mutex protection and
+always use the spinlock.
+
+> Small details, and I've taken the pull, but the lack of locking does
+> seem to be an actual (if perhaps fairly theoretical) bug, no?
+
+Will queue cleanup patches for the next window.
 
 Thanks.
 
