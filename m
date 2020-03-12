@@ -2,57 +2,36 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AF6F183B33
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 22:19:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B27A183BE3
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2020 23:05:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726481AbgCLVT2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 12 Mar 2020 17:19:28 -0400
-Received: from mail-qk1-f193.google.com ([209.85.222.193]:41719 "EHLO
-        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726442AbgCLVT2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 12 Mar 2020 17:19:28 -0400
-Received: by mail-qk1-f193.google.com with SMTP id b5so8852818qkh.8;
-        Thu, 12 Mar 2020 14:19:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=JTXt1OEkKePago7QylMBAyiYQ7S4tVDId/6muJlv8kg=;
-        b=WDSCCAorJeZ6KuiLgpb2NOSuo5qVP6GWOxv/Q3FR28T2zL7W+mcqNlfnGGZhnDWjJc
-         FbZic2wgZZBaJR4YRNQSIU1F7PdbMnH7lg5OIEUOQuGEYXKc3nFeMbkcZyc/3GBYpteA
-         8I1D7Ld0Ly3b1oXygzubVBMi69vuzBm+ilXd+LUMJx279TKgeV/XMGmyZGfatd8/qv+c
-         dVGuv+qOx23jt+V0u+FdAv69c0ytBhKqK8LKxHlGISNGM/YYv8fdSgL7VRpOvFiGsK87
-         4VUhQ8APCO0bRvlsbyb6gdOpwfnTHjJ2nuAaWaRjR4Olio4yjE4sifW/bgIOjL0SCgwv
-         IXkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=JTXt1OEkKePago7QylMBAyiYQ7S4tVDId/6muJlv8kg=;
-        b=blQ5FdEn9sWcCGasb5yQvUb+/930u7q67SPMcIEjUWTEOVefx47ErJyOXbIWuopN6n
-         mJ9u9eQMK+RkXcEVCSR8djcm0OiWCa2SeEU+U2qZcy7PuKDbl4xzgKBkOdxggbw3HstJ
-         1bLki5qsiCcMxU4E1IWqhxkI5gPmkLm3fLuViXEsU0lHTqrcYl/jvlUHgQT44KCuRuta
-         5BQhZPq4kynUiVnv3KHHTHhApgYSJuWwDJaU2mzogcVbwU2TaqTWIKYHiKYb7Kf5ZAmo
-         eGq+b53bT0kp2PEUa9WJmFy+Ws96lJNE8ULtXjlctpQyhipTF+Fet/DOv41CNxDhLP4o
-         FeNg==
-X-Gm-Message-State: ANhLgQ0NwxWkE5bJ4ruNZ1cdWxyhlc8fX8FyykOV6+3pYGGBpWb4kXlM
-        I81kA70Y2Sny65X0hiEKWhc=
-X-Google-Smtp-Source: ADFU+vtLQ4Uz70cBIlKU4EfvGH0QxhB+QttLTVZQ6WocnigSOkUapTHzj1v5eXA4FAacFoogpLM6vw==
-X-Received: by 2002:a37:8b45:: with SMTP id n66mr9701127qkd.380.1584047966472;
-        Thu, 12 Mar 2020 14:19:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::25ed])
-        by smtp.gmail.com with ESMTPSA id b8sm21267063qte.52.2020.03.12.14.19.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2020 14:19:25 -0700 (PDT)
-Date:   Thu, 12 Mar 2020 17:19:24 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     gregkh@linuxfoundation.org, Daniel Xu <dxu@dxuuu.xyz>
-Cc:     cgroups@vger.kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        viro@zeniv.linux.org.uk, shakeelb@google.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
+        id S1726534AbgCLWFR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 12 Mar 2020 18:05:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41076 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726514AbgCLWFR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 12 Mar 2020 18:05:17 -0400
+Received: from localhost (83-86-89-107.cable.dynamic.v4.ziggo.nl [83.86.89.107])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A673206CD;
+        Thu, 12 Mar 2020 22:05:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584050716;
+        bh=BTpIEKtjB3xS8Vr88vILZ1/PyE+yHgP6lcXkkl1uiTg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hlCHVt9vSpN0nO4WKoQ4CaiSFxd7Cb27vMQY8jGeM8rNWy8Bb9999bcCaochj/gD4
+         FzTgBR79rC4+rMZIU1QDDKzSTa6AJ5118ZkPjhrKz/UJ+0IfLRlT3xH3g9sEh8UM9x
+         mvRtV6WEU7YoOoURFCPmg+iQbVkT94X3HzJ5V5zA=
+Date:   Thu, 12 Mar 2020 23:05:12 +0100
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Daniel Xu <dxu@dxuuu.xyz>, cgroups@vger.kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, viro@zeniv.linux.org.uk,
+        shakeelb@google.com, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH v3 0/4] Support user xattrs in cgroupfs
-Message-ID: <20200312211924.GB1967398@mtj.thefacebook.com>
+Message-ID: <20200312220512.GA614185@kroah.com>
 References: <20200312200317.31736-1-dxu@dxuuu.xyz>
  <20200312211735.GA1967398@mtj.thefacebook.com>
 MIME-Version: 1.0
@@ -65,16 +44,15 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 On Thu, Mar 12, 2020 at 05:17:35PM -0400, Tejun Heo wrote:
+> Hello,
+> 
+> Daniel, the patchset looks good to me. Thanks a lot for working on
+> this.
+> 
 > Greg, provided that there aren't further objections, how do you wanna
 > route the patches? I'd be happy to take them through cgroup tree but
 > any tree is fine by me.
 
-Ooh, in case they get routed thorugh another tree, for the whole
-series:
+Sure, feel free to take them through your tree:
 
-  Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
