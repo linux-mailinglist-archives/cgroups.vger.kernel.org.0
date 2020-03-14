@@ -2,106 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id EB8971851C0
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2020 23:43:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2447F185873
+	for <lists+cgroups@lfdr.de>; Sun, 15 Mar 2020 03:09:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726684AbgCMWnW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 13 Mar 2020 18:43:22 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:37837 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726681AbgCMWnW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 13 Mar 2020 18:43:22 -0400
-Received: by mail-oi1-f195.google.com with SMTP id w13so11218320oih.4
-        for <cgroups@vger.kernel.org>; Fri, 13 Mar 2020 15:43:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MFjCvufz4qYwDEr+hp+Lr4gi77q6/a3rGxqdBQ0RGh0=;
-        b=hXcW2YUeO7771pgMZQkpwWmDZERH1p2Fm3PKienj099vaUMe3Qcl+GfrrGnyRTugmy
-         hOnPmmf61cOuY/9YM1n1YJDgIF/bzZkQ/SKe2ooZAlXOFVBwIbdf8NnqTwiRIUPwuyDu
-         gq3dsr7QjFlNCbKk0FVRt2dnIYW73J+gylAUjLTdaMQSAQ/34Wi3jetakzQOmExGLLbw
-         8OEa3IZy8OX7Im6ZIDSkOYCwptISjIO0eg7A4GLNypa3yVBcCLvJb7t8YlEPeGHfRL5j
-         ldPvDbHUiWlCrcDekAFVZa0WqguFkec5Hxe/880sV0TtxrYvDnRso7ck3UIuBr42iaBG
-         4qsA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MFjCvufz4qYwDEr+hp+Lr4gi77q6/a3rGxqdBQ0RGh0=;
-        b=ThitjwXxoR7ZpuDUFb1uWAxdHAwgUPx8/iBDR52enGuzu6QGlmjpQVDNSzoZsPOjQj
-         /OnYdctUSGR4PgMub0JZRdleE72R7sXAwcy1oxymnWOwzjtE2GqAKkOMTzrJBqwqmGyO
-         GI6R0SWp+mRZ/4WYCXAARzrNXkuVMf/W8qO8nBxu688hcXPnrSMW7MWPoLlqZBqfVDIo
-         8+dyizW6sZDOtk+G/lwUeyp67X+8zJvq8QSnYOFTQn2GPSFXbgivjR+bChUJ1eQfm3Uo
-         UIZd422l5CfmanS7SZN2OJ8/IJns2+f/BHsB9PN0vzlU9gIrTNqgRkVWmS8Kx2YZG1g1
-         E0jA==
-X-Gm-Message-State: ANhLgQ3f4hGvUks8QF+BjeGOI9B1XJPb/1q571XVQIGfDNQZFiuRh86X
-        QKFlEgGMsUGyfV7LPT29LIJ40V0f2w0Ue4Ku7EhDpA==
-X-Google-Smtp-Source: ADFU+vu+OfEsMq89LMh75rmdjIo6Q7EXHa3Lgmr7926DPHs9q0A+YwV4vMORWl7jzo+TXKve5DGWJy0n+ni2SxD6TA0=
-X-Received: by 2002:aca:5155:: with SMTP id f82mr9178692oib.103.1584139399757;
- Fri, 13 Mar 2020 15:43:19 -0700 (PDT)
+        id S1726893AbgCOCJo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 14 Mar 2020 22:09:44 -0400
+Received: from correo.santafe.edu.ar ([200.12.192.40]:55362 "EHLO
+        correo.santafe.edu.ar" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726599AbgCOCJo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 14 Mar 2020 22:09:44 -0400
+Received: from correo.santafe.edu.ar (localhost [127.0.0.1])
+        by correo.santafe.edu.ar (Postfix) with ESMTP id 48fh9n75NXz54p4
+        for <cgroups@vger.kernel.org>; Sat, 14 Mar 2020 09:06:21 -0300 (-03)
+Authentication-Results: correo.santafe.edu.ar (amavisd-new);
+        dkim=pass (1024-bit key) reason="pass (just generated, assumed good)"
+        header.d=santafe.edu.ar
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=santafe.edu.ar;
+         h=content-transfer-encoding:organization:message-id:user-agent
+        :reply-to:subject:subject:to:from:from:date:date:content-type
+        :content-type:mime-version; s=dkim; t=1584187581; x=1586779582;
+         bh=Ch8MeA3o5Ps+sTgYQ/2xKYhD8wOfsokQchWDCmvcX0s=; b=s7qN+x/CMNeM
+        eCSdSsJ6b4wyAprM1oHnEe8cZKXvJWXM39NFXUDMxL3AL8F50/JJT9cgySvqQZ4N
+        PLQ/Vq4q15Ie+nXAK5k0Q2UiLlSoVvcimvRvK20aQXTQlPtLhRlv9vush1yP4u5L
+        bWb7Pxqh9kSYW01Ur1S9v/AW9uwmW94=
+X-Virus-Scanned: Debian amavisd-new at debian9-asiserver.santafe.gob.ar
+Received: from correo.santafe.edu.ar ([127.0.0.1])
+        by correo.santafe.edu.ar (correo.santafe.edu.ar [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id YrasnRPtXBEI for <cgroups@vger.kernel.org>;
+        Sat, 14 Mar 2020 09:06:21 -0300 (-03)
+Received: from localhost (localhost [127.0.0.1])
+        by correo.santafe.edu.ar (Postfix) with ESMTPSA id 48fh4Z64pwz54gT;
+        Sat, 14 Mar 2020 09:01:50 -0300 (-03)
 MIME-Version: 1.0
-References: <00000000000041c6c205a08225dc@google.com> <20200312182826.GG79873@mtj.duckdns.org>
- <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
-In-Reply-To: <CAHS8izPySSO07dHi3OZ_1uXjmMCGnNMWey+o-qwFM7GnD7oSHw@mail.gmail.com>
-From:   Mina Almasry <almasrymina@google.com>
-Date:   Fri, 13 Mar 2020 15:43:08 -0700
-Message-ID: <CAHS8izMpBXsv_fvy5Qw8CcjBivpfgec+r39+aFScgNDtUTdSqA@mail.gmail.com>
-Subject: Re: KASAN: slab-out-of-bounds Read in cgroup_file_notify
-To:     Tejun Heo <tj@kernel.org>, Giuseppe Scrivano <gscrivan@redhat.com>
-Cc:     syzbot <syzbot+cac0c4e204952cf449b1@syzkaller.appspotmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>, andriin@fb.com,
-        ast@kernel.org, bpf@vger.kernel.org, cgroups@vger.kernel.org,
-        christian@brauner.io, daniel@iogearbox.net,
-        Johannes Weiner <hannes@cmpxchg.org>, kafai@fb.com,
-        open list <linux-kernel@vger.kernel.org>,
-        Li Zefan <lizefan@huawei.com>, netdev@vger.kernel.org,
-        sfr@canb.auug.org.au, songliubraving@fb.com,
-        syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Date:   Sat, 14 Mar 2020 13:01:46 +0100
+From:   Acaceres <acaceres@santafe.edu.ar>
+To:     undisclosed-recipients:;
+Subject: AW:
+Reply-To: niklaszennstromcare@gmail.com
+User-Agent: Roundcube Webmail
+Message-ID: <352b96d6adce71894fc39c5e486c4e6e@santafe.edu.ar>
+X-Sender: acaceres@santafe.edu.ar
+Organization: niklaszennstromcare@gmail.com
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 2:06 PM Mina Almasry <almasrymina@google.com> wrote:
->
-> On Thu, Mar 12, 2020 at 11:28 AM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > On Tue, Mar 10, 2020 at 08:55:14AM -0700, syzbot wrote:
-> > > Hello,
-> > >
-> > > syzbot found the following crash on:
-> > >
-> > > HEAD commit:    c99b17ac Add linux-next specific files for 20200225
-> > > git tree:       linux-next
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=1610d70de00000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=6b7ebe4bd0931c45
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=cac0c4e204952cf449b1
-> > > compiler:       gcc (GCC) 9.0.0 20181231 (experimental)
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1242e1fde00000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1110d70de00000
-> > >
-> > > The bug was bisected to:
-> > >
-> > > commit 6863de00e5400b534cd4e3869ffbc8f94da41dfc
-> > > Author: Mina Almasry <almasrymina@google.com>
-> > > Date:   Thu Feb 20 03:55:30 2020 +0000
-> > >
-> > >     hugetlb_cgroup: add accounting for shared mappings
-> >
-> > Mina, can you please take a look at this?
-> >
->
-> Gah, I missed the original syzbot email but I just saw this. I'll take a look.
->
 
-This was easy enough to track down, I just sent out a fix:
-https://lore.kernel.org/linux-mm/20200313223920.124230-1-almasrymina@google.com
 
-BTW, even though this was bisected to my patch, the root cause seems
-to be a mistake in commit faced7e0806cf ("mm: hugetlb controller for
-cgroups v2"), which is not only in linux-next but also in linus's tree
-(I did not check if it's in stable). If my fix is reviewed, the patch
-should be sent there as well. I'll make the same comment on the above
-thread as well.
+--=20
+Sch=C3=B6nen Tag,
+
+Herr Niklas Zennstr=C3=B6m, ein schwedischer Wirtschaftsmagnat, Investor =
+und=20
+Philanthrop, der weltweit rund =C2=A3208.3 Millionen Pfund an=20
+Menschenrechtsorganisationen / Wohlt=C3=A4tigkeitsorganisationen gespende=
+t=20
+hat, hat sich ebenfalls verpflichtet, den Rest von 25% in diesem Jahr=20
+2020 zu verschenken, und Ihre E-Mail erfolgte nach dem Zufallsprinzip=20
+Das Team von Google Inc. wurde als aktiver Web-Nutzer ausgew=C3=A4hlt, um=
+=20
+eine Spende in H=C3=B6he von $1 Million USD im Rahmen des=20
+Wohlt=C3=A4tigkeitsprojekts Zennstr=C3=B6m Philanthropies zu erhalten. Bi=
+tte=20
+best=C3=A4tigen Sie den Besitz Ihrer E-Mail-Adresse, indem Sie sich per=20
+E-Mail an Niklas Zennstr=C3=B6m wenden: niklaszennstromcare@gmail.com =C2=
+=A0F=C3=BCr=20
+den Anspruch
+
+Name des Ansprechpartners: Herr Niklas Zennstr=C3=B6m
