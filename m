@@ -2,258 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D0F28186714
-	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2020 09:54:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 43A9E186DE1
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2020 15:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730131AbgCPIyt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Mar 2020 04:54:49 -0400
-Received: from mga09.intel.com ([134.134.136.24]:19833 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730287AbgCPIyt (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 16 Mar 2020 04:54:49 -0400
-IronPort-SDR: hPFHYFde9Iwxq8SkX7PNTSzEtwathlgeCpkaIbyhowAuPrwgkISYTZAn9wVMfzpD+JSbC6EUj2
- iP7JELUY6wkA==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2020 01:54:48 -0700
-IronPort-SDR: E7EOXPAHcUbSwINJTdd64dO1nyFsC3YJlW5FSt/ug5XW3RlxjYtWsibGP379V4FPy4k8Y+TW4O
- Fn2hlmY6GcRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,559,1574150400"; 
-   d="scan'208";a="235963689"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 16 Mar 2020 01:54:46 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jDlWH-0009cJ-ST; Mon, 16 Mar 2020 16:54:45 +0800
-Date:   Mon, 16 Mar 2020 16:54:25 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.7] BUILD SUCCESS
- e7b20d97967c2995700041f0348ea33047e5c942
-Message-ID: <5e6f3ec1.q/qfKzDVYp5BKut0%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1731591AbgCPOyX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Mar 2020 10:54:23 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:45507 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731566AbgCPOyX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Mar 2020 10:54:23 -0400
+Received: by mail-wr1-f68.google.com with SMTP id t2so11552487wrx.12;
+        Mon, 16 Mar 2020 07:54:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/2V8TQXmTbu4k1la5PWpjE8lHIj1Vj9s/Np+8xl7UF4=;
+        b=QJiqsEhFflhvczsU53Va+zwCkp27faC2Cf9KtIGZci3R5Yi/6zbcV11kxDAA8ULsT9
+         UOXAG+cILu6DGAuLVK2JmFkIi4AEZJ+5TPjuegvPmwerR+ze7spBEU9UdsHbcJtny88/
+         4yZU9UWm1j1+5bfYef4Sdaz+Pp8GKaZS9wnQoWcwZpIZuNcEDqiDEgL5/r+ytyZowR59
+         QnRPcyNHJCtyA9YysKdmdrNXP7z0WCDGrhemV2f/b3Z+L4Zd02kF8uY7eZjJQJ2aJsWu
+         KtTqi/rRNiTiHYWsVcdSd3Oo9J8E2nB/64KwL6G4H84f/QWprM3kQcE0ZmswLVSe0cZG
+         5K7g==
+X-Gm-Message-State: ANhLgQ22jQs49QheZNaoNoBz8hMuInyG00yxKVyD9DO34lGrrLmeccl0
+        /jubtfmjOhu/fm2OoCui1Lk=
+X-Google-Smtp-Source: ADFU+vtODJApMfC6Yi/mTwQNn0Ud1XnGoYxLez+QcBseednYGX1TM8nnlpyX9JwgtL3XxxRE+6RtmA==
+X-Received: by 2002:adf:fcce:: with SMTP id f14mr24285905wrs.200.1584370459969;
+        Mon, 16 Mar 2020 07:54:19 -0700 (PDT)
+Received: from localhost ([37.188.132.163])
+        by smtp.gmail.com with ESMTPSA id q11sm227926wrp.53.2020.03.16.07.54.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Mar 2020 07:54:19 -0700 (PDT)
+Date:   Mon, 16 Mar 2020 15:54:16 +0100
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/6] mm, memcg: Prevent memory.high load/store tearing
+Message-ID: <20200316145416.GM11482@dhcp22.suse.cz>
+References: <cover.1584034301.git.chris@chrisdown.name>
+ <2f66f7038ed1d4688e59de72b627ae0ea52efa83.1584034301.git.chris@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <2f66f7038ed1d4688e59de72b627ae0ea52efa83.1584034301.git.chris@chrisdown.name>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git  for-5.7
-branch HEAD: e7b20d97967c2995700041f0348ea33047e5c942  cgroup: Restructure release_agent_path handling
+On Thu 12-03-20 17:32:51, Chris Down wrote:
+> A mem_cgroup's high attribute can be concurrently set at the same time
+> as we are trying to read it -- for example, if we are in
+> memory_high_write at the same time as we are trying to do high reclaim.
 
-elapsed time: 5039m
+I assume this is a replace all kinda patch because css_alloc shouldn't
+really be a subject to races. I am not sure about css_reset but it
+sounds like a safe as well.
 
-configs tested: 199
-configs skipped: 0
+That being said I do not object because this cannot be harmful but it
+would be nice to mention that in the changelog just in case somebody
+wonders about this in future.
+ 
+> Signed-off-by: Chris Down <chris@chrisdown.name>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Roman Gushchin <guro@fb.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: linux-mm@kvack.org
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: kernel-team@fb.com
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                           efm32_defconfig
-arm                         at91_dt_defconfig
-arm                        shmobile_defconfig
-arm64                               defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                           sunxi_defconfig
-arm                        multi_v7_defconfig
-sparc                            allyesconfig
-i386                             allyesconfig
-openrisc                    or1ksim_defconfig
-openrisc                 simple_smp_defconfig
-s390                             allmodconfig
-parisc                generic-32bit_defconfig
-s390                             alldefconfig
-um                                  defconfig
-ia64                                defconfig
-powerpc                             defconfig
-s390                                defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-nds32                               defconfig
-h8300                     edosk2674_defconfig
-h8300                    h8300h-sim_defconfig
-h8300                       h8s-sim_defconfig
-m68k                             allmodconfig
-m68k                       m5475evb_defconfig
-m68k                          multi_defconfig
-m68k                           sun3_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200313
-x86_64               randconfig-a002-20200313
-x86_64               randconfig-a003-20200313
-i386                 randconfig-a001-20200313
-i386                 randconfig-a002-20200313
-i386                 randconfig-a003-20200313
-x86_64               randconfig-a001-20200311
-x86_64               randconfig-a002-20200311
-x86_64               randconfig-a003-20200311
-i386                 randconfig-a001-20200311
-i386                 randconfig-a002-20200311
-i386                 randconfig-a003-20200311
-alpha                randconfig-a001-20200312
-m68k                 randconfig-a001-20200312
-mips                 randconfig-a001-20200312
-nds32                randconfig-a001-20200312
-parisc               randconfig-a001-20200312
-riscv                randconfig-a001-20200312
-c6x                  randconfig-a001-20200312
-h8300                randconfig-a001-20200312
-microblaze           randconfig-a001-20200312
-nios2                randconfig-a001-20200312
-sparc64              randconfig-a001-20200312
-csky                 randconfig-a001-20200316
-openrisc             randconfig-a001-20200316
-s390                 randconfig-a001-20200316
-sh                   randconfig-a001-20200316
-xtensa               randconfig-a001-20200316
-csky                 randconfig-a001-20200312
-openrisc             randconfig-a001-20200312
-s390                 randconfig-a001-20200312
-sh                   randconfig-a001-20200312
-xtensa               randconfig-a001-20200312
-x86_64               randconfig-b001-20200311
-x86_64               randconfig-b002-20200311
-x86_64               randconfig-b003-20200311
-i386                 randconfig-b001-20200311
-i386                 randconfig-b002-20200311
-i386                 randconfig-b003-20200311
-x86_64               randconfig-c001-20200311
-x86_64               randconfig-c002-20200311
-x86_64               randconfig-c003-20200311
-i386                 randconfig-c001-20200311
-i386                 randconfig-c002-20200311
-i386                 randconfig-c003-20200311
-x86_64               randconfig-c001-20200313
-x86_64               randconfig-c002-20200313
-x86_64               randconfig-c003-20200313
-i386                 randconfig-c001-20200313
-i386                 randconfig-c002-20200313
-i386                 randconfig-c003-20200313
-x86_64               randconfig-d001-20200313
-x86_64               randconfig-d002-20200313
-x86_64               randconfig-d003-20200313
-i386                 randconfig-d001-20200313
-i386                 randconfig-d002-20200313
-i386                 randconfig-d003-20200313
-x86_64               randconfig-d001-20200316
-x86_64               randconfig-d002-20200316
-x86_64               randconfig-d003-20200316
-i386                 randconfig-d001-20200316
-i386                 randconfig-d002-20200316
-i386                 randconfig-d003-20200316
-x86_64               randconfig-e001-20200316
-x86_64               randconfig-e002-20200316
-x86_64               randconfig-e003-20200316
-i386                 randconfig-e001-20200316
-i386                 randconfig-e002-20200316
-i386                 randconfig-e003-20200316
-x86_64               randconfig-e001-20200312
-x86_64               randconfig-e002-20200312
-x86_64               randconfig-e003-20200312
-i386                 randconfig-e001-20200312
-i386                 randconfig-e002-20200312
-i386                 randconfig-e003-20200312
-x86_64               randconfig-e003-20200313
-i386                 randconfig-e003-20200313
-i386                 randconfig-e002-20200313
-x86_64               randconfig-e002-20200313
-x86_64               randconfig-e001-20200313
-i386                 randconfig-e001-20200313
-x86_64               randconfig-f001-20200312
-x86_64               randconfig-f002-20200312
-x86_64               randconfig-f003-20200312
-i386                 randconfig-f001-20200312
-i386                 randconfig-f002-20200312
-i386                 randconfig-f003-20200312
-x86_64               randconfig-h001-20200312
-x86_64               randconfig-h002-20200312
-x86_64               randconfig-h003-20200312
-i386                 randconfig-h001-20200312
-i386                 randconfig-h002-20200312
-i386                 randconfig-h003-20200312
-x86_64               randconfig-h001-20200316
-x86_64               randconfig-h002-20200316
-x86_64               randconfig-h003-20200316
-i386                 randconfig-h001-20200316
-i386                 randconfig-h002-20200316
-i386                 randconfig-h003-20200316
-arc                  randconfig-a001-20200312
-arm                  randconfig-a001-20200312
-arm64                randconfig-a001-20200312
-ia64                 randconfig-a001-20200312
-powerpc              randconfig-a001-20200312
-sparc                randconfig-a001-20200312
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                       zfcpdump_defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
+> ---
+>  mm/memcontrol.c | 13 +++++++------
+>  1 file changed, 7 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 63bb6a2aab81..d32d3c0a16d4 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2228,7 +2228,7 @@ static void reclaim_high(struct mem_cgroup *memcg,
+>  			 gfp_t gfp_mask)
+>  {
+>  	do {
+> -		if (page_counter_read(&memcg->memory) <= memcg->high)
+> +		if (page_counter_read(&memcg->memory) <= READ_ONCE(memcg->high))
+>  			continue;
+>  		memcg_memory_event(memcg, MEMCG_HIGH);
+>  		try_to_free_mem_cgroup_pages(memcg, nr_pages, gfp_mask, true);
+> @@ -2545,7 +2545,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	 * reclaim, the cost of mismatch is negligible.
+>  	 */
+>  	do {
+> -		if (page_counter_read(&memcg->memory) > memcg->high) {
+> +		if (page_counter_read(&memcg->memory) > READ_ONCE(memcg->high)) {
+>  			/* Don't bother a random interrupted task */
+>  			if (in_interrupt()) {
+>  				schedule_work(&memcg->high_work);
+> @@ -4257,7 +4257,8 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+>  	*pheadroom = PAGE_COUNTER_MAX;
+>  
+>  	while ((parent = parent_mem_cgroup(memcg))) {
+> -		unsigned long ceiling = min(memcg->memory.max, memcg->high);
+> +		unsigned long ceiling = min(memcg->memory.max,
+> +					    READ_ONCE(memcg->high));
+>  		unsigned long used = page_counter_read(&memcg->memory);
+>  
+>  		*pheadroom = min(*pheadroom, ceiling - min(ceiling, used));
+> @@ -4978,7 +4979,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+>  	if (!memcg)
+>  		return ERR_PTR(error);
+>  
+> -	memcg->high = PAGE_COUNTER_MAX;
+> +	WRITE_ONCE(memcg->high, PAGE_COUNTER_MAX);
+>  	memcg->soft_limit = PAGE_COUNTER_MAX;
+>  	if (parent) {
+>  		memcg->swappiness = mem_cgroup_swappiness(parent);
+> @@ -5131,7 +5132,7 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+>  	page_counter_set_max(&memcg->tcpmem, PAGE_COUNTER_MAX);
+>  	page_counter_set_min(&memcg->memory, 0);
+>  	page_counter_set_low(&memcg->memory, 0);
+> -	memcg->high = PAGE_COUNTER_MAX;
+> +	WRITE_ONCE(memcg->high, PAGE_COUNTER_MAX);
+>  	memcg->soft_limit = PAGE_COUNTER_MAX;
+>  	memcg_wb_domain_size_changed(memcg);
+>  }
+> @@ -5947,7 +5948,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  	if (err)
+>  		return err;
+>  
+> -	memcg->high = high;
+> +	WRITE_ONCE(memcg->high, high);
+>  
+>  	for (;;) {
+>  		unsigned long nr_pages = page_counter_read(&memcg->memory);
+> -- 
+> 2.25.1
+> 
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+-- 
+Michal Hocko
+SUSE Labs
