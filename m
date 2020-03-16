@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D02D218631D
-	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2020 03:42:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B230518629B
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2020 03:39:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729995AbgCPCkP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 Mar 2020 22:40:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
+        id S1730220AbgCPCiU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 Mar 2020 22:38:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38738 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729753AbgCPCeH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sun, 15 Mar 2020 22:34:07 -0400
+        id S1729989AbgCPCew (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 15 Mar 2020 22:34:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12772206E9;
-        Mon, 16 Mar 2020 02:34:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8BEA62073E;
+        Mon, 16 Mar 2020 02:34:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584326047;
-        bh=cffXXnGE5zy+o0fQH1NWf2WJWAmcQ27vougEbStwcsU=;
+        s=default; t=1584326091;
+        bh=OGv4NJMH6egSO3CM+oM4/EP7ikbuiFpvtEs66GSlFxA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xjsVeYfcWjO9C279RjU3/chEWtdpX8INw1vpxs6vBl5SeWXCiwZ8N8+bZ/KA6I4t/
-         4xGDERwyVn6wRYLWVb9vshoy7tuWROknbvdhUfzCmMjcKf6Omn5tkc6FEpkAbZyRRu
-         jAOvyLQ7ZVkE5/MTLu8Q2D70nvLEn7VRs7msW0gw=
+        b=Nal4SxkVifYfOzHjgZJOKQfGU7HRzJMLKeFkO1olo2uVviykxF0hkN/YOHASBbYu+
+         jLzA/8pcWUoqurVRMgqVHMXKJ4hgnfblRF6PXTqjLy2VEi+CpFjUq9P+5x1gXwxugW
+         JWgdaJy7rJh0NyThkAk+3GEl34YqoYZIQw+AOpsI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Carlo Nonato <carlo.nonato95@gmail.com>,
@@ -30,12 +30,12 @@ Cc:     Carlo Nonato <carlo.nonato95@gmail.com>,
         Paolo Valente <paolo.valente@linaro.org>,
         Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.5 39/41] block, bfq: fix overwrite of bfq_group pointer in bfq_find_set_group()
-Date:   Sun, 15 Mar 2020 22:33:17 -0400
-Message-Id: <20200316023319.749-39-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 34/35] block, bfq: fix overwrite of bfq_group pointer in bfq_find_set_group()
+Date:   Sun, 15 Mar 2020 22:34:10 -0400
+Message-Id: <20200316023411.1263-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200316023319.749-1-sashal@kernel.org>
-References: <20200316023319.749-1-sashal@kernel.org>
+In-Reply-To: <20200316023411.1263-1-sashal@kernel.org>
+References: <20200316023411.1263-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -78,10 +78,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 5a64607ce7744..facbf4db19428 100644
+index d0e36d6522649..86cd718e0380b 100644
 --- a/block/bfq-cgroup.c
 +++ b/block/bfq-cgroup.c
-@@ -610,12 +610,13 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
+@@ -593,12 +593,13 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
  	 */
  	entity = &bfqg->entity;
  	for_each_entity(entity) {
