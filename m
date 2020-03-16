@@ -2,66 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 65695185C6C
-	for <lists+cgroups@lfdr.de>; Sun, 15 Mar 2020 13:43:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D02D218631D
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2020 03:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728484AbgCOMnE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 Mar 2020 08:43:04 -0400
-Received: from mail-wm1-f68.google.com ([209.85.128.68]:39996 "EHLO
-        mail-wm1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728469AbgCOMnE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 Mar 2020 08:43:04 -0400
-Received: by mail-wm1-f68.google.com with SMTP id z12so5832344wmf.5
-        for <cgroups@vger.kernel.org>; Sun, 15 Mar 2020 05:43:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=uV8chY4Biaq2olTIOJyy4iiFi27MH72hbX5d0FEE70c=;
-        b=fNfi/MkNKg6sXGe2s0CB2pc2ol46hrBrYqA5d3Rz1N9vOqkyIQkHuICyicH4+QmeyC
-         /Lg5k0Gv7ixEKIsJXTBnIC3fxkTGtP3CAR7PhTWNlrAHEfhjhRJaGalhoo4RAx+SMwv1
-         jRpjwvJIorBDYsKnEUQixaVrEKyeavbdHzNCF3fHnDfG3jpTocmevulT31bPfDVh8DMr
-         WdqxgpYYtZBZzxfYQzEnflvai9szhhIzGD3EAn+UjjmYYS9T2B/h0V27r3rSmVRWSILi
-         VksUx0UoEJMsw54t0OZyw781X3LVoYzTH6JrEFhBqcjueqoPjiuG/6s1PivADhw2RgJn
-         GLZA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=uV8chY4Biaq2olTIOJyy4iiFi27MH72hbX5d0FEE70c=;
-        b=SbTCy1oEIsZTQGk99KsZ3tRPFZdWywRVIcFuBUyAn9SILucKdHFIMJjz+/JvpBC3Uq
-         eO+3H7avhe3eGlOrQt2VxnpEjrTxsplg/fJXzL1hLhcfs13td3mRVFxKevfWWH2VcSs0
-         bx/rbPgsYCW7ZEVinTM8+nk8CdrPrIuILa0i4AZADMF1yADcq/HTq7Ea7TIgWgFdcyuJ
-         E8riWlsVAfQvZ4WfmwgbXklb8EVPmExgV5178X3ksqDRBWF9oudzGbNTuGfGVRuFvmAV
-         d/vfnGg1ajbtzHrkg7WnLSegxfVaAIqOjdZ3SxcT5n9L76TZE2nsROscdqJ1h//gd54C
-         XxcQ==
-X-Gm-Message-State: ANhLgQ29ECeBmfrSeS4xW4w6NLg9FkJAH69LC4m78OHa8wjmwB24hhpT
-        PAJWG//dnm42pEicHxXvGQ8lFh8qIWGA5aTCFwE=
-X-Google-Smtp-Source: ADFU+vvHdBB/YVjVHRE/L2SbfW5mNFeCAkj+K/WuNjwQU0WlkykqYTs80nynOvdvRAZ9LGPvWicyaOi8CcGXs21Wijs=
-X-Received: by 2002:a1c:8108:: with SMTP id c8mr21724071wmd.50.1584276183381;
- Sun, 15 Mar 2020 05:43:03 -0700 (PDT)
+        id S1729995AbgCPCkP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 15 Mar 2020 22:40:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37284 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729753AbgCPCeH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 15 Mar 2020 22:34:07 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 12772206E9;
+        Mon, 16 Mar 2020 02:34:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1584326047;
+        bh=cffXXnGE5zy+o0fQH1NWf2WJWAmcQ27vougEbStwcsU=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=xjsVeYfcWjO9C279RjU3/chEWtdpX8INw1vpxs6vBl5SeWXCiwZ8N8+bZ/KA6I4t/
+         4xGDERwyVn6wRYLWVb9vshoy7tuWROknbvdhUfzCmMjcKf6Omn5tkc6FEpkAbZyRRu
+         jAOvyLQ7ZVkE5/MTLu8Q2D70nvLEn7VRs7msW0gw=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Carlo Nonato <carlo.nonato95@gmail.com>,
+        Kwon Je Oh <kwonje.oh2@gmail.com>,
+        Paolo Valente <paolo.valente@linaro.org>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.5 39/41] block, bfq: fix overwrite of bfq_group pointer in bfq_find_set_group()
+Date:   Sun, 15 Mar 2020 22:33:17 -0400
+Message-Id: <20200316023319.749-39-sashal@kernel.org>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20200316023319.749-1-sashal@kernel.org>
+References: <20200316023319.749-1-sashal@kernel.org>
 MIME-Version: 1.0
-Reply-To: mrshenritapieres1@gmail.com
-Received: by 2002:adf:afc6:0:0:0:0:0 with HTTP; Sun, 15 Mar 2020 05:43:02
- -0700 (PDT)
-From:   Henrita Pieres <piereshenrita61@gmail.com>
-Date:   Sun, 15 Mar 2020 05:43:02 -0700
-X-Google-Sender-Auth: g0b71slqh_peb969IJLZmEAm-6M
-Message-ID: <CADbBREB+ZN0DExnu3wUvczX6Q1gz_sJ1LQg28hR=VL+jDSjnQg@mail.gmail.com>
-Subject: Dearest One,
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello.
-I am Mrs. Henrita Pieres 64 years old located in France. Let me trust
-and believe you can handle this project...I have been diagnosed with
-Esophageal cancer. i want to invest in humanitarian & Charity in your
-country with sum of $4.5 Million, Reply me for more details
+From: Carlo Nonato <carlo.nonato95@gmail.com>
 
-Hope to hear from you soon.
+[ Upstream commit 14afc59361976c0ba39e3a9589c3eaa43ebc7e1d ]
 
-Yours Faithfully,
-Mrs. Henrita Pieres
+The bfq_find_set_group() function takes as input a blkcg (which represents
+a cgroup) and retrieves the corresponding bfq_group, then it updates the
+bfq internal group hierarchy (see comments inside the function for why
+this is needed) and finally it returns the bfq_group.
+In the hierarchy update cycle, the pointer holding the correct bfq_group
+that has to be returned is mistakenly used to traverse the hierarchy
+bottom to top, meaning that in each iteration it gets overwritten with the
+parent of the current group. Since the update cycle stops at root's
+children (depth = 2), the overwrite becomes a problem only if the blkcg
+describes a cgroup at a hierarchy level deeper than that (depth > 2). In
+this case the root's child that happens to be also an ancestor of the
+correct bfq_group is returned. The main consequence is that processes
+contained in a cgroup at depth greater than 2 are wrongly placed in the
+group described above by BFQ.
+
+This commits fixes this problem by using a different bfq_group pointer in
+the update cycle in order to avoid the overwrite of the variable holding
+the original group reference.
+
+Reported-by: Kwon Je Oh <kwonje.oh2@gmail.com>
+Signed-off-by: Carlo Nonato <carlo.nonato95@gmail.com>
+Signed-off-by: Paolo Valente <paolo.valente@linaro.org>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ block/bfq-cgroup.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
+
+diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
+index 5a64607ce7744..facbf4db19428 100644
+--- a/block/bfq-cgroup.c
++++ b/block/bfq-cgroup.c
+@@ -610,12 +610,13 @@ struct bfq_group *bfq_find_set_group(struct bfq_data *bfqd,
+ 	 */
+ 	entity = &bfqg->entity;
+ 	for_each_entity(entity) {
+-		bfqg = container_of(entity, struct bfq_group, entity);
+-		if (bfqg != bfqd->root_group) {
+-			parent = bfqg_parent(bfqg);
++		struct bfq_group *curr_bfqg = container_of(entity,
++						struct bfq_group, entity);
++		if (curr_bfqg != bfqd->root_group) {
++			parent = bfqg_parent(curr_bfqg);
+ 			if (!parent)
+ 				parent = bfqd->root_group;
+-			bfq_group_set_parent(bfqg, parent);
++			bfq_group_set_parent(curr_bfqg, parent);
+ 		}
+ 	}
+ 
+-- 
+2.20.1
+
