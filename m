@@ -2,240 +2,250 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2789E187853
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2020 04:59:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB001889B1
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2020 17:03:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726575AbgCQD7e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 16 Mar 2020 23:59:34 -0400
-Received: from mga05.intel.com ([192.55.52.43]:25789 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726416AbgCQD7e (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 16 Mar 2020 23:59:34 -0400
-IronPort-SDR: aAj3AKJ/RT4GDapOpYl+XoHNMHPtnxktzI5YuxorBKZJMBNgzI950eogrM5RqSU1v0cgavcuks
- kMfe4SX6EdYg==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2020 20:59:34 -0700
-IronPort-SDR: iECEUq1tbbCtx2oVlb2RlK0khdtSj6wjs/9TULg97iXzsMXvAgeXT2A73+TcURxIEK1KQQaRez
- To2SY0EXtOXw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.70,562,1574150400"; 
-   d="scan'208";a="355241439"
-Received: from lkp-server01.sh.intel.com (HELO lkp-server01) ([10.239.97.150])
-  by fmsmga001.fm.intel.com with ESMTP; 16 Mar 2020 20:59:32 -0700
-Received: from kbuild by lkp-server01 with local (Exim 4.89)
-        (envelope-from <lkp@intel.com>)
-        id 1jE3O8-000Dfr-5g; Tue, 17 Mar 2020 11:59:32 +0800
-Date:   Tue, 17 Mar 2020 11:59:04 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-next] BUILD SUCCESS
- 6fc331767f41ccccf49c91298feec9e86f465b1d
-Message-ID: <5e704b08.dgOBa52y+x4mvcu5%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726294AbgCQQDf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 17 Mar 2020 12:03:35 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:43926 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbgCQQDf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Mar 2020 12:03:35 -0400
+Received: by mail-wr1-f65.google.com with SMTP id b2so20169736wrj.10
+        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2020 09:03:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tMlGQGB+oYIlvMnPFJA29Wh4mauBA+V5dYoIlJY/HjU=;
+        b=ajqy5VxbiZhBU4ZMxi2OTNC+faAUWjenp6ED1Z/nHjog28ZsIZOfOK3yScSzAxR8/9
+         vN9koPIUOW7wRReoiVRjniN5eYCkjRHosIgoe0YTFU+aZz0Xnd7W/sJdUxaDDA/8jDYQ
+         PG/LJbtM1o6f9BxMJVHGlPRpJ/dmYpF/9MO4JgIhQ5+yD5z1uoK44Z5Sr0V91UcxuiMm
+         JBO/tyUtEbqVDJ2aMYx0CcjFdc1qQQhGx0F4W3ceJd8z6QNrsdVflC4RTmVycfasTr3G
+         3Ehpk83HdS9XA7K6+dJaAjHiqj9QyZuJVjv4ooKuQ9p6R6WLSVZmLauM9huxKpDZt8rI
+         BYDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tMlGQGB+oYIlvMnPFJA29Wh4mauBA+V5dYoIlJY/HjU=;
+        b=rn2jgsnXmTx7BC/AMQDI2qxrEJzMU2A5AXLBEIruVIfUUPCc9yBCzVzjCQrmsQhwme
+         HD+4/EI56CBXnni714Dtbjd12bNfon7DmrmuhzGjYvkTWaFKVWoH5Vt6Ozogv9+NjWOA
+         YttvKQiI2vBmhH1PYbjt791KDbeMXGRVO7kErpFS3B1OsnDKutavY22xm5q9sZy9Rw+2
+         HMSQObtyC4RQViFyF5u3dk6+X5sScngGfDdRw63/nx9NZ26WC3bwUhVhAB/1F0SDSf4R
+         lefPNMK4CMhWhrW7RPvx9eqZrdB6FIwRB9rUCjqxoknsqQlFit4fYxjHIcbtZNoOxiA+
+         Br3Q==
+X-Gm-Message-State: ANhLgQ2TO/YBFlnDXvezCYRA87v7uu4HE40UlII4AM3p4sHFtLj3brWT
+        VgxWzPbUZqP3iu9l4whHtYPfkNH0a0li9N1z4eo=
+X-Google-Smtp-Source: ADFU+vsqwhvP7+qXd84mEv/VN8m5wm44CR7fv9zlZqVVuCj/DXAKBr6PfrnXrQEAQpARXuRJVeTnAZeLkJ+L0mlrcks=
+X-Received: by 2002:a5d:6091:: with SMTP id w17mr6747515wrt.402.1584461012473;
+ Tue, 17 Mar 2020 09:03:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <20200226190152.16131-1-Kenny.Ho@amd.com>
+In-Reply-To: <20200226190152.16131-1-Kenny.Ho@amd.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Tue, 17 Mar 2020 12:03:20 -0400
+Message-ID: <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
+Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
+To:     Kenny Ho <Kenny.Ho@amd.com>, Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git  for-next
-branch HEAD: 6fc331767f41ccccf49c91298feec9e86f465b1d  Merge branch 'for-5.7' into for-next
+Hi Tejun,
 
-elapsed time: 483m
+What's your thoughts on this latest series?
 
-configs tested: 181
-configs skipped: 0
+Regards,
+Kenny
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-arm                              allmodconfig
-arm                               allnoconfig
-arm                              allyesconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm64                            allyesconfig
-arm                         at91_dt_defconfig
-arm                           efm32_defconfig
-arm                          exynos_defconfig
-arm                        multi_v5_defconfig
-arm                        multi_v7_defconfig
-arm                        shmobile_defconfig
-arm                           sunxi_defconfig
-arm64                               defconfig
-sparc                            allyesconfig
-um                                  defconfig
-m68k                           sun3_defconfig
-nds32                               defconfig
-s390                       zfcpdump_defconfig
-openrisc                    or1ksim_defconfig
-i386                              allnoconfig
-i386                             alldefconfig
-i386                             allyesconfig
-i386                                defconfig
-ia64                             alldefconfig
-ia64                             allmodconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-ia64                                defconfig
-c6x                              allyesconfig
-c6x                        evmc6678_defconfig
-nios2                         10m50_defconfig
-nios2                         3c120_defconfig
-openrisc                 simple_smp_defconfig
-xtensa                       common_defconfig
-xtensa                          iss_defconfig
-alpha                               defconfig
-csky                                defconfig
-nds32                             allnoconfig
-h8300                       h8s-sim_defconfig
-h8300                     edosk2674_defconfig
-m68k                       m5475evb_defconfig
-m68k                             allmodconfig
-h8300                    h8300h-sim_defconfig
-m68k                          multi_defconfig
-arc                              allyesconfig
-arc                                 defconfig
-microblaze                      mmu_defconfig
-microblaze                    nommu_defconfig
-powerpc                           allnoconfig
-powerpc                             defconfig
-powerpc                       ppc64_defconfig
-powerpc                          rhel-kconfig
-mips                           32r2_defconfig
-mips                         64r6el_defconfig
-mips                             allmodconfig
-mips                              allnoconfig
-mips                             allyesconfig
-mips                      fuloong2e_defconfig
-mips                      malta_kvm_defconfig
-parisc                            allnoconfig
-parisc                           allyesconfig
-parisc                generic-32bit_defconfig
-parisc                generic-64bit_defconfig
-x86_64               randconfig-a001-20200316
-x86_64               randconfig-a002-20200316
-x86_64               randconfig-a003-20200316
-i386                 randconfig-a001-20200316
-i386                 randconfig-a002-20200316
-i386                 randconfig-a003-20200316
-alpha                randconfig-a001-20200316
-m68k                 randconfig-a001-20200316
-mips                 randconfig-a001-20200316
-nds32                randconfig-a001-20200316
-parisc               randconfig-a001-20200316
-riscv                randconfig-a001-20200316
-alpha                randconfig-a001-20200317
-m68k                 randconfig-a001-20200317
-mips                 randconfig-a001-20200317
-nds32                randconfig-a001-20200317
-parisc               randconfig-a001-20200317
-riscv                randconfig-a001-20200317
-c6x                  randconfig-a001-20200316
-h8300                randconfig-a001-20200316
-microblaze           randconfig-a001-20200316
-nios2                randconfig-a001-20200316
-sparc64              randconfig-a001-20200316
-csky                 randconfig-a001-20200316
-openrisc             randconfig-a001-20200316
-s390                 randconfig-a001-20200316
-sh                   randconfig-a001-20200316
-xtensa               randconfig-a001-20200316
-csky                 randconfig-a001-20200317
-openrisc             randconfig-a001-20200317
-s390                 randconfig-a001-20200317
-sh                   randconfig-a001-20200317
-xtensa               randconfig-a001-20200317
-x86_64               randconfig-b001-20200316
-x86_64               randconfig-b002-20200316
-x86_64               randconfig-b003-20200316
-i386                 randconfig-b001-20200316
-i386                 randconfig-b002-20200316
-i386                 randconfig-b003-20200316
-x86_64               randconfig-c001-20200316
-x86_64               randconfig-c002-20200316
-x86_64               randconfig-c003-20200316
-i386                 randconfig-c001-20200316
-i386                 randconfig-c002-20200316
-i386                 randconfig-c003-20200316
-x86_64               randconfig-d001-20200316
-x86_64               randconfig-d002-20200316
-x86_64               randconfig-d003-20200316
-i386                 randconfig-d001-20200316
-i386                 randconfig-d002-20200316
-i386                 randconfig-d003-20200316
-x86_64               randconfig-e001-20200316
-x86_64               randconfig-e002-20200316
-x86_64               randconfig-e003-20200316
-i386                 randconfig-e001-20200316
-i386                 randconfig-e002-20200316
-i386                 randconfig-e003-20200316
-x86_64               randconfig-f001-20200316
-x86_64               randconfig-f002-20200316
-x86_64               randconfig-f003-20200316
-i386                 randconfig-f001-20200316
-i386                 randconfig-f002-20200316
-i386                 randconfig-f003-20200316
-x86_64               randconfig-g001-20200316
-x86_64               randconfig-g002-20200316
-x86_64               randconfig-g003-20200316
-i386                 randconfig-g001-20200316
-i386                 randconfig-g002-20200316
-i386                 randconfig-g003-20200316
-x86_64               randconfig-h001-20200317
-x86_64               randconfig-h002-20200317
-x86_64               randconfig-h003-20200317
-i386                 randconfig-h001-20200317
-i386                 randconfig-h002-20200317
-i386                 randconfig-h003-20200317
-x86_64               randconfig-h001-20200316
-x86_64               randconfig-h002-20200316
-x86_64               randconfig-h003-20200316
-i386                 randconfig-h001-20200316
-i386                 randconfig-h002-20200316
-i386                 randconfig-h003-20200316
-arc                  randconfig-a001-20200316
-arm                  randconfig-a001-20200316
-arm64                randconfig-a001-20200316
-ia64                 randconfig-a001-20200316
-powerpc              randconfig-a001-20200316
-sparc                randconfig-a001-20200316
-riscv                            allmodconfig
-riscv                             allnoconfig
-riscv                            allyesconfig
-riscv                               defconfig
-riscv                    nommu_virt_defconfig
-riscv                          rv32_defconfig
-s390                             alldefconfig
-s390                             allmodconfig
-s390                              allnoconfig
-s390                             allyesconfig
-s390                          debug_defconfig
-s390                                defconfig
-sh                               allmodconfig
-sh                                allnoconfig
-sh                          rsk7269_defconfig
-sh                  sh7785lcr_32bit_defconfig
-sh                            titan_defconfig
-sparc                               defconfig
-sparc64                          allmodconfig
-sparc64                           allnoconfig
-sparc64                          allyesconfig
-sparc64                             defconfig
-um                             i386_defconfig
-um                           x86_64_defconfig
-x86_64                              fedora-25
-x86_64                                  kexec
-x86_64                                    lkp
-x86_64                                   rhel
-x86_64                         rhel-7.2-clear
-x86_64                               rhel-7.6
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+On Wed, Feb 26, 2020 at 2:02 PM Kenny Ho <Kenny.Ho@amd.com> wrote:
+>
+> This is a submission for the introduction of a new cgroup controller for the drm subsystem follow a series of RFCs [v1, v2, v3, v4]
+>
+> Changes from PR v1
+> * changed cgroup controller name from drm to gpu
+> * removed lgpu
+> * added compute.weight resources, clarified resources being distributed as partitions of compute device
+>
+> PR v1: https://www.spinics.net/lists/cgroups/msg24479.html
+>
+> Changes from the RFC base on the feedbacks:
+> * drop all drm.memory.* related implementation and focus only on buffer and lgpu
+> * add weight resource type for logical gpu (lgpu)
+> * uncoupled drmcg device iteration from drm_minor
+>
+> I'd also like to highlight the fact that these patches are currently released under MIT/X11 license aligning with the norm of the drm subsystem, but I am working to have the cgroup parts release under GPLv2 to align with the norm of the cgroup subsystem.
+>
+> RFC:
+> [v1]: https://lists.freedesktop.org/archives/dri-devel/2018-November/197106.html
+> [v2]: https://www.spinics.net/lists/cgroups/msg22074.html
+> [v3]: https://lists.freedesktop.org/archives/amd-gfx/2019-June/036026.html
+> [v4]: https://patchwork.kernel.org/cover/11120371/
+>
+> Changes since the start of RFC are as follows:
+>
+> v4:
+> Unchanged (no review needed)
+> * drm.memory.*/ttm resources (Patch 9-13, I am still working on memory bandwidth
+> and shrinker)
+> Base on feedbacks on v3:
+> * update nominclature to drmcg
+> * embed per device drmcg properties into drm_device
+> * split GEM buffer related commits into stats and limit
+> * rename function name to align with convention
+> * combined buffer accounting and check into a try_charge function
+> * support buffer stats without limit enforcement
+> * removed GEM buffer sharing limitation
+> * updated documentations
+> New features:
+> * introducing logical GPU concept
+> * example implementation with AMD KFD
+>
+> v3:
+> Base on feedbacks on v2:
+> * removed .help type file from v2
+> * conform to cgroup convention for default and max handling
+> * conform to cgroup convention for addressing device specific limits (with major:minor)
+> New function:
+> * adopted memparse for memory size related attributes
+> * added macro to marshall drmcgrp cftype private ?(DRMCG_CTF_PRIV, etc.)
+> * added ttm buffer usage stats (per cgroup, for system, tt, vram.)
+> * added ttm buffer usage limit (per cgroup, for vram.)
+> * added per cgroup bandwidth stats and limiting (burst and average bandwidth)
+>
+> v2:
+> * Removed the vendoring concepts
+> * Add limit to total buffer allocation
+> * Add limit to the maximum size of a buffer allocation
+>
+> v1: cover letter
+>
+> The purpose of this patch series is to start a discussion for a generic cgroup
+> controller for the drm subsystem.  The design proposed here is a very early
+> one.  We are hoping to engage the community as we develop the idea.
+>
+> Backgrounds
+> ===========
+> Control Groups/cgroup provide a mechanism for aggregating/partitioning sets of
+> tasks, and all their future children, into hierarchical groups with specialized
+> behaviour, such as accounting/limiting the resources which processes in a
+> cgroup can access[1].  Weights, limits, protections, allocations are the main
+> resource distribution models.  Existing cgroup controllers includes cpu,
+> memory, io, rdma, and more.  cgroup is one of the foundational technologies
+> that enables the popular container application deployment and management method.
+>
+> Direct Rendering Manager/drm contains code intended to support the needs of
+> complex graphics devices. Graphics drivers in the kernel may make use of DRM
+> functions to make tasks like memory management, interrupt handling and DMA
+> easier, and provide a uniform interface to applications.  The DRM has also
+> developed beyond traditional graphics applications to support compute/GPGPU
+> applications.
+>
+> Motivations
+> ===========
+> As GPU grow beyond the realm of desktop/workstation graphics into areas like
+> data center clusters and IoT, there are increasing needs to monitor and
+> regulate GPU as a resource like cpu, memory and io.
+>
+> Matt Roper from Intel began working on similar idea in early 2018 [2] for the
+> purpose of managing GPU priority using the cgroup hierarchy.  While that
+> particular use case may not warrant a standalone drm cgroup controller, there
+> are other use cases where having one can be useful [3].  Monitoring GPU
+> resources such as VRAM and buffers, CU (compute unit [AMD's nomenclature])/EU
+> (execution unit [Intel's nomenclature]), GPU job scheduling [4] can help
+> sysadmins get a better understanding of the applications usage profile.
+> Further usage regulations of the aforementioned resources can also help sysadmins
+> optimize workload deployment on limited GPU resources.
+>
+> With the increased importance of machine learning, data science and other
+> cloud-based applications, GPUs are already in production use in data centers
+> today [5,6,7].  Existing GPU resource management is very course grain, however,
+> as sysadmins are only able to distribute workload on a per-GPU basis [8].  An
+> alternative is to use GPU virtualization (with or without SRIOV) but it
+> generally acts on the entire GPU instead of the specific resources in a GPU.
+> With a drm cgroup controller, we can enable alternate, fine-grain, sub-GPU
+> resource management (in addition to what may be available via GPU
+> virtualization.)
+>
+> In addition to production use, the DRM cgroup can also help with testing
+> graphics application robustness by providing a mean to artificially limit DRM
+> resources availble to the applications.
+>
+>
+> Challenges
+> ==========
+> While there are common infrastructure in DRM that is shared across many vendors
+> (the scheduler [4] for example), there are also aspects of DRM that are vendor
+> specific.  To accommodate this, we borrowed the mechanism used by the cgroup to
+> handle different kinds of cgroup controller.
+>
+> Resources for DRM are also often device (GPU) specific instead of system
+> specific and a system may contain more than one GPU.  For this, we borrowed
+> some of the ideas from RDMA cgroup controller.
+>
+> Approach
+> ========
+> To experiment with the idea of a DRM cgroup, we would like to start with basic
+> accounting and statistics, then continue to iterate and add regulating
+> mechanisms into the driver.
+>
+> [1] https://www.kernel.org/doc/Documentation/cgroup-v1/cgroups.txt
+> [2] https://lists.freedesktop.org/archives/intel-gfx/2018-January/153156.html
+> [3] https://www.spinics.net/lists/cgroups/msg20720.html
+> [4] https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/scheduler
+> [5] https://kubernetes.io/docs/tasks/manage-gpus/scheduling-gpus/
+> [6] https://blog.openshift.com/gpu-accelerated-sql-queries-with-postgresql-pg-strom-in-openshift-3-10/
+> [7] https://github.com/RadeonOpenCompute/k8s-device-plugin
+> [8] https://github.com/kubernetes/kubernetes/issues/52757
+>
+> Kenny Ho (11):
+>   cgroup: Introduce cgroup for drm subsystem
+>   drm, cgroup: Bind drm and cgroup subsystem
+>   drm, cgroup: Initialize drmcg properties
+>   drm, cgroup: Add total GEM buffer allocation stats
+>   drm, cgroup: Add peak GEM buffer allocation stats
+>   drm, cgroup: Add GEM buffer allocation count stats
+>   drm, cgroup: Add total GEM buffer allocation limit
+>   drm, cgroup: Add peak GEM buffer allocation limit
+>   drm, cgroup: Add compute as gpu cgroup resource
+>   drm, cgroup: add update trigger after limit change
+>   drm/amdgpu: Integrate with DRM cgroup
+>
+>  Documentation/admin-guide/cgroup-v2.rst       | 138 ++-
+>  Documentation/cgroup-v1/drm.rst               |   1 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_amdkfd.h    |   4 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_drv.c       |  48 +
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_object.c    |   6 +-
+>  drivers/gpu/drm/amd/amdkfd/kfd_chardev.c      |   7 +
+>  drivers/gpu/drm/amd/amdkfd/kfd_priv.h         |   3 +
+>  .../amd/amdkfd/kfd_process_queue_manager.c    | 153 +++
+>  drivers/gpu/drm/drm_drv.c                     |  12 +
+>  drivers/gpu/drm/drm_gem.c                     |  16 +-
+>  include/drm/drm_cgroup.h                      |  81 ++
+>  include/drm/drm_device.h                      |   7 +
+>  include/drm/drm_drv.h                         |  19 +
+>  include/drm/drm_gem.h                         |  12 +-
+>  include/linux/cgroup_drm.h                    | 138 +++
+>  include/linux/cgroup_subsys.h                 |   4 +
+>  init/Kconfig                                  |   5 +
+>  kernel/cgroup/Makefile                        |   1 +
+>  kernel/cgroup/drm.c                           | 913 ++++++++++++++++++
+>  19 files changed, 1563 insertions(+), 5 deletions(-)
+>  create mode 100644 Documentation/cgroup-v1/drm.rst
+>  create mode 100644 include/drm/drm_cgroup.h
+>  create mode 100644 include/linux/cgroup_drm.h
+>  create mode 100644 kernel/cgroup/drm.c
+>
+> --
+> 2.25.0
+>
