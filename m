@@ -2,102 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F59918909D
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2020 22:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4DD41895F2
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2020 07:42:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726936AbgCQVfp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 17 Mar 2020 17:35:45 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:38506 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726476AbgCQVfo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 17 Mar 2020 17:35:44 -0400
-Received: by mail-qv1-f68.google.com with SMTP id p60so11773496qva.5
-        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2020 14:35:44 -0700 (PDT)
+        id S1726682AbgCRGmO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Mar 2020 02:42:14 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:41135 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726478AbgCRGmO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 18 Mar 2020 02:42:14 -0400
+Received: by mail-ot1-f66.google.com with SMTP id s15so24419027otq.8
+        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2020 23:42:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ftj10VLsYaiA6T3F2kq6t1b/UKFGKg8xJC5CD9CHAZg=;
-        b=S2s7zvMjdQS2YL59qrGpnLepk5Dx85cXsRT8C8oanXXydslCXFue7WW16zAr2sbNWt
-         GS0Ow5CjYtZ0ItjiAm9xGPsgxXdFUCAJLI4+BU6pp066EycbGudGs8YJ9oGWz77drJfs
-         L5qDqxz/TFwYKR1g0hglZEOej9vrYI3LtRPk6gSO+og/Du5tsULTG1eEzxNiuI57m0te
-         B6Q4cTJ+swdm/VASYkZ9awnNV54Y/orFynKe+GXK/Gu5WMJElMCmGcSjBW0kxQ5hEHHh
-         7lFSnHZBE7WwssCb/3Qtg++PwYrQe9HkJrDA9mL3+MwrF02zhjMZn8VqA97fPiEtH+IZ
-         Gagg==
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=XMk7CTaZQupJ1qH+A42fo8Q7jwUlR/A3P5M/Inq4ppo=;
+        b=C8wDXksaWKcpsQ/++MWL0rZ4dd6pg4nr6Xgw7XNHwUb7M1J0WcISlReq2l6qLqzCfo
+         Q99E4fK2OW7lMUqg+5X1SimaioS+Fj13zd6iLaFlVgSSZU3QaGbcTLtPi0hTgcvtiZss
+         PQJRmxpmQuNuHvMAIfHCaRk/yT2yGt1z+MtdtXX67iluBzq6zaJoCBNAhL4xnrHBzEAF
+         Tvmoc/V/TrpmErN5iPKrobQ1BCc3XIqSvk1fn0wiG4M7Q+dcEdljSb3qLQYGGKHf81hc
+         pWfLIe5Attig71wTZy46sd5u/cBrc9P8EIaaHgXeoer3610wbBsVR2yHJFKN4GhGYAI+
+         xvkg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ftj10VLsYaiA6T3F2kq6t1b/UKFGKg8xJC5CD9CHAZg=;
-        b=MlFCZQV8TI1Cwrq2kNjhb/ZUxZuSCwVRkZaoIcQ402icIqjFvOKuXQ9BseHRTDALRE
-         eBzq5S6G2g94KjW6u3AMhVkN7Nw969ED8Q7qyeoZveGtwmD3btWQ1b/+ANzdlCheB9RZ
-         bMPxBQ/C+rADaP2v3PtIZLYFOB/v3b1aZKcpOoVaWB6zKHIcNlW9Xa13KDXzGJRNKzGQ
-         YhtQQa6sgmZA69d3QG6CLBBAwUtzjZN8nMzHjN27KPmUfBXKJLpoprXODfvIztGelOB0
-         TEsjHbRzb9wkAKLe2twshngGppm6qiXII1rxqecDHJVv3GbUCrLwnDDmP+qvFQR69zeO
-         /A7g==
-X-Gm-Message-State: ANhLgQ0PVW05c9aWUU9XhpZT4nQ2z671WfHsPClWwh4QygVMIcB67HAs
-        SAWmezpgv6UK6K8DK71HYOj9F1fjVzhdKz4XZPEVzQ==
-X-Google-Smtp-Source: ADFU+vteq0N9A+Ax9G/lHv2IvYDFjANhuTLDBzWS09Z2TaGDN+s13dYsW5dbXbP546/H8CuvFENNy9K6khQE9KFvC28=
-X-Received: by 2002:ad4:54d4:: with SMTP id j20mr1205826qvx.75.1584480943367;
- Tue, 17 Mar 2020 14:35:43 -0700 (PDT)
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=XMk7CTaZQupJ1qH+A42fo8Q7jwUlR/A3P5M/Inq4ppo=;
+        b=P1ncgkCJqOb9V3JU2JCoa0fJaPFXX1Sme+H+sYDgXlR4GVDaPMBB66tVkLqullvFSa
+         NCKypIMUj45YDGf5WQc0WbB/1jYT4pPO8wKLGYmhwn95l/sXRgOEHW+VzN6ssDVeW4Sn
+         vJ0A/nzmPZqR6ci4Z8bM8y+3uueVPMR1c0/p2/ReRAmh6ASrMpkXgav8TewJfZ+RWl0z
+         K9b/x04fCqTwQBP7Q6TDClYu13cOzgYtcpzQ6CIavgBK+r7PZO/M0LEUM9DAxwuA1wTQ
+         DLw2ptGUKCmEQ5zObR58b5XPle1jAZW3vtq7jpSDJmsI6ri2vQyxeQgEcHLGPgbopWZe
+         6TtQ==
+X-Gm-Message-State: ANhLgQ3ej9YCWl5YqgeHgo+mss1YCWT14Mjq3uGQMtOujeRyPeucql2C
+        ZYRgvk474Ya/x8DNTKHm8BhBGo0Zz3wKsJNy1Po=
+X-Google-Smtp-Source: ADFU+vsFvjqXlqnILou/yAsZTfmXVeFznh0gW4xbhoTDOqnidRrYX4BNJDhp4zeO/xjC/7HNgVC/gslJGm9B2ashgTk=
+X-Received: by 2002:a9d:c69:: with SMTP id 96mr2752644otr.77.1584513733716;
+ Tue, 17 Mar 2020 23:42:13 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200311010113.136465-1-joshdon@google.com> <20200311140533.pclgecwhbpqzyrks@e107158-lin.cambridge.arm.com>
- <20200317192401.GE20713@hirez.programming.kicks-ass.net>
-In-Reply-To: <20200317192401.GE20713@hirez.programming.kicks-ass.net>
-From:   Josh Don <joshdon@google.com>
-Date:   Tue, 17 Mar 2020 14:35:32 -0700
-Message-ID: <CABk29NuAYvkqNmZZ6cjZBC6=hv--2siPPjZG-BUpNewxm02O6A@mail.gmail.com>
-Subject: Re: [PATCH v2] sched/cpuset: distribute tasks within affinity masks
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Qais Yousef <qais.yousef@arm.com>, Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        cgroups@vger.kernel.org, Paul Turner <pjt@google.com>
+Received: by 2002:a4a:e058:0:0:0:0:0 with HTTP; Tue, 17 Mar 2020 23:42:12
+ -0700 (PDT)
+Reply-To: mrs.suzanmark12@yahoo.com
+From:   Mr David Nicholas <dhldepartmen2744@gmail.com>
+Date:   Wed, 18 Mar 2020 07:42:12 +0100
+Message-ID: <CAE7iwnx3qb9Bhjb1pwB0QBG3KRnjWszZZq5pfm0H8=7L_8FjYg@mail.gmail.com>
+Subject: ATTN: My Dear
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 11, 2020 at 7:05 AM Qais Yousef <qais.yousef@arm.com> wrote:
->
-> This actually helps me fix a similar problem I faced in RT [1]. If multiple RT
-> tasks wakeup at the same time we get a 'thundering herd' issue where they all
-> end up going to the same CPU, just to be pushed out again.
->
-> Beside this will help fix another problem for RT tasks fitness, which is
-> a manifestation of the problem above. If two tasks wake up at the same time and
-> they happen to run on a little cpu (but request to run on a big one), one of
-> them will end up being migrated because find_lowest_rq() will return the first
-> cpu in the mask for both tasks.
->
-> I tested the API (not the change in sched/core.c) and it looks good to me.
+ATTN: My Dear
 
-Nice, glad that the API already has another use case. Thanks for taking a look.
+Good news,The BRITISH HIGH COMMISSION has actually verified and discovered
+that your payment has been unnecessarily Delayed by corrupt officials of the
+Company who are Trying to divert your fund of $4,700.000.00 Million
+into their private
+accounts. Therefore we have obtained an irrevocable payment guarantee on your
+Payment with the Bank to make your payment through our new ATM VISA CARD
+system which you can use to withdraw your money in any ATM MACHINE around your
+area.
 
-> nit: cpumask_first_and() is better here?
+So we are here by inviting you to our office to pick up your ATM VISA CARD but
+if you cannot be able to come down here in our office in person be inform that
+you are going to pay for shipping fee of your ATM visa CARD, so if you are
+unable to come down here then you are required to update us so that we will
+proceed with the necessary arrangement for the delivery of your ATM VISA CARD.
 
-Yea, I would also prefer to use it, but the definition of
-cpumask_first_and() follows this section, as it itself uses
-cpumask_next_and().
+As of now be informed that all arrangement has been done and the ATM VISA CARD
+has be in your name, but to RE-ACTIVATE the ATM Card you have to forward your
+current information as requested below to the bank for the ATM Card re-
+activcation, then we will send you the ATM CARD for your immediate use.
 
-> It might be a good idea to split the API from the user too.
+Here are the information you have to forward to the bank:
+1. Your Full Names:______
+2. Postal Address:_______
+3. Direct Cell Numbers:_______
+4. Sex:_____
+5.Age:_____
+6. Occupation:________
+7.Nationality:________
+8.Whatsapp Number______
 
-Not sure what you mean by this, could you clarify?
+Therefore you are advised to contact Bank accountant Manager Mrs.Susan Mark
 
-On Tue, Mar 17, 2020 at 12:24 PM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> > Anyway, for the API.
-> >
-> > Reviewed-by: Qais Yousef <qais.yousef@arm.com>
-> > Tested-by: Qais Yousef <qais.yousef@arm.com>
->
-> Thanks guys!
+CONTACT PERSON: Mrs.Susan Mark
+E-mail:( mrs.suzanmark22@gmail.com )
 
-Thanks Peter, any other comments or are you happy with merging this patch as-is?
+Mr David Nicholas
