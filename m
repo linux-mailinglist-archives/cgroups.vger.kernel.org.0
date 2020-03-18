@@ -2,37 +2,37 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E0B618A4C1
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2020 21:57:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 944AE18A4DA
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2020 21:57:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728351AbgCRUze (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 18 Mar 2020 16:55:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55998 "EHLO mail.kernel.org"
+        id S1728567AbgCRU4R (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 18 Mar 2020 16:56:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57076 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728348AbgCRUzd (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 18 Mar 2020 16:55:33 -0400
+        id S1728560AbgCRU4P (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 18 Mar 2020 16:56:15 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 12B3D20BED;
-        Wed, 18 Mar 2020 20:55:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id E682B208E4;
+        Wed, 18 Mar 2020 20:56:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1584564932;
-        bh=CZB+KZiYdArxmr34T50wC1U0sriUX3k/RvRcHsuKGS4=;
+        s=default; t=1584564974;
+        bh=BEppHJSF0Q3dBGNXBQdv4LxwkkElFKHdTM/3CINeEuA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=phPvVC6O5fVNmxyP1UYkBIAzD33fMGIIHF8aPMjiVW0dLx/sI+pQnHDVA0uGSNGWb
-         1KSdtD8d9ap4om8glS8LVf7/mePVgsW/XS9vbyBY5sRbEoB0/qdUTPtPHqMUGl5FKv
-         b98hzqeK7owxdsupzgerKz/diFpjzi28YhnnWdYs=
+        b=JAhG2WE7QPgbCPCmC7Nk7orbcE19Eg6e5+t8jYEFmiDQ6PvhY4XNEXlV4WQ8Ttcme
+         dEKPvavz3L7wNMM6jrnuvNllWtEC937E1OvY9Q7b4+ofS0FX+crKDnu6tLIhXdGtav
+         s27cSkCWAwLrPSAc67MfF9Dq3mglfO9aKdsgfQZg=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Tycho Andersen <tycho@tycho.ws>, Tejun Heo <tj@kernel.org>,
         Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 19/37] cgroup1: don't call release_agent when it is ""
-Date:   Wed, 18 Mar 2020 16:54:51 -0400
-Message-Id: <20200318205509.17053-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.14 16/28] cgroup1: don't call release_agent when it is ""
+Date:   Wed, 18 Mar 2020 16:55:43 -0400
+Message-Id: <20200318205555.17447-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20200318205509.17053-1-sashal@kernel.org>
-References: <20200318205509.17053-1-sashal@kernel.org>
+In-Reply-To: <20200318205555.17447-1-sashal@kernel.org>
+References: <20200318205555.17447-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -65,10 +65,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
-index c9628b9a41d23..dd8bdbfbbde1e 100644
+index d148965180893..545f29c5268d7 100644
 --- a/kernel/cgroup/cgroup-v1.c
 +++ b/kernel/cgroup/cgroup-v1.c
-@@ -812,7 +812,7 @@ void cgroup1_release_agent(struct work_struct *work)
+@@ -824,7 +824,7 @@ void cgroup1_release_agent(struct work_struct *work)
  
  	pathbuf = kmalloc(PATH_MAX, GFP_KERNEL);
  	agentbuf = kstrdup(cgrp->root->release_agent_path, GFP_KERNEL);
