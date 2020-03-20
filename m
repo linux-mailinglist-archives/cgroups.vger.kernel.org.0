@@ -2,124 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D52D118CF46
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2020 14:44:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A9D1018D8DB
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2020 21:10:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727265AbgCTNod (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 20 Mar 2020 09:44:33 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:36852 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726843AbgCTNod (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Mar 2020 09:44:33 -0400
-Received: by mail-wr1-f67.google.com with SMTP id 31so1534465wrs.3;
-        Fri, 20 Mar 2020 06:44:30 -0700 (PDT)
+        id S1726773AbgCTUKr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Mar 2020 16:10:47 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:41791 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726912AbgCTUKr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Mar 2020 16:10:47 -0400
+Received: by mail-pg1-f196.google.com with SMTP id b1so3620336pgm.8
+        for <cgroups@vger.kernel.org>; Fri, 20 Mar 2020 13:10:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=8wBJM863apF0IwOPmO9fuaOOqzaQw306izkJnc0/fII=;
+        b=fvAklPMvJlNS9vNQhJdK1AuiQZmkjC9vvIRMZAQNcvfDDWR0w81khYqp5RiIul11WS
+         WNDSy3c75Luwy9fag1iFfAx9/w70boBzrfy11P7KavWhZ+KyL4ceLQOJRHR1B3zrPJUZ
+         qdClxBt0eYYcn70/mYeISAvctswbPnd48V7CRpzrwo3NX8m/mAo6R6EhXlXVD9++v7TH
+         uYxvLdjJRlOBxjGld2ZPPSL3GxoFznoZ8mkQV+c9Q3N7U+vOYd5Lmjf43xm/r76g91X/
+         AUhtUkfSWDvveqHe5UZzR9+cCVaNJjrJ+Pco0WFaX1iLxXn9O15Mu5/ruLY0L6YUn2/+
+         4ONQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=JoMCT/BRNQiPNC0aagaWJkcjnStn6MMheHBwrTllAYE=;
-        b=PlUnHyS+XQ1zkv5WMm+aXYF7W7FzC81HX92HNNkkUW1HCS8GL9MTThfjoq90cMHCvV
-         sjEdbBjITa5PigGXXCaFqMhvFvyUSvv2Pn/TYRLDzdTA1eCtXVrn+VV5U/54dJCsHmId
-         c23VxxumlkR8rzrJQIBhL7AEE7QL2gfC7SOjsAbdJe1dIRZAjIjY1ReFbZaplUVJhuJ9
-         wac2o6cJ7E1zR3soErNRKhymEejgvmzSlw0HLezlpI3g3D1TLsGQ95TEsFna1cy0AH3X
-         AZ1Vk7g5sOiocHEkVLxLR6LumB15QLkJO8z70Fuy8PvgVYtSAUlzOLoRtf7pesN/pVOY
-         lX/Q==
-X-Gm-Message-State: ANhLgQ1m5WoX/GbiOYFg+MknCMjl0I2Ac6QKsJEjjce9W5ditOXQAbsn
-        A/0g819CBbvlHNee3LMsRSs=
-X-Google-Smtp-Source: ADFU+vvNQ+OVi0CDztzjk8c5YtCs3frJ0uwb28VpsQJngNtXMbSTyMNx7K5uLhR9puA4Gim3tpbQtg==
-X-Received: by 2002:adf:914e:: with SMTP id j72mr11378978wrj.109.1584711870045;
-        Fri, 20 Mar 2020 06:44:30 -0700 (PDT)
-Received: from localhost (ip-37-188-140-107.eurotel.cz. [37.188.140.107])
-        by smtp.gmail.com with ESMTPSA id n63sm4850139wmf.6.2020.03.20.06.44.28
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=8wBJM863apF0IwOPmO9fuaOOqzaQw306izkJnc0/fII=;
+        b=NoSvBzpNUhu+aEvMlmo+rfv+yCh1kAUxpQuHw41PYYCnJdcKwJtRumehUWWIgk8JpK
+         zsSYi7pAkabqBkwfFh4EiLgtH12hHtqw4KvxAL+zXbtUwUETTBp/H96S+o4ENWl2ovz6
+         8r0YIBUZLNVdQQH5dNuIxcnr/5KS0RGlAaQhck3HtWSXU73UPKTNDLGC03zMKYvIRJ8C
+         WuJAP6OX+Ti8tm45izV/19eEa9W7/fSQHVUL1euVK7DwhXvmXTDlqnGLoQ5ZSLqGI+xJ
+         nL660BglGXEFZAINuNzjGDm4GdzFBtPV+7aJGBdjGlDrzL8iTlX6e3UmZggpBA0g2CgE
+         85Fw==
+X-Gm-Message-State: ANhLgQ2cUpcK1UJMJ4RN+YH+QeUwvPK1LCDYtGU/+oqrcS0SktNPD2Nq
+        r6ZsoI3unvosD1VvIkNCMxHqCQ==
+X-Google-Smtp-Source: ADFU+vt4bqdyXNnRbChIEYqGnF9tjkMzkpQ2TcoyY685E+bmpfFRtb9zrOeEKlZxBHUT4jtOCkI9MQ==
+X-Received: by 2002:a63:4d6:: with SMTP id 205mr10113365pge.10.1584735044151;
+        Fri, 20 Mar 2020 13:10:44 -0700 (PDT)
+Received: from google.com ([2620:15c:211:202:ae26:61fb:e2f3:92e7])
+        by smtp.gmail.com with ESMTPSA id t142sm5878431pgb.31.2020.03.20.13.10.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Mar 2020 06:44:29 -0700 (PDT)
-Date:   Fri, 20 Mar 2020 14:44:28 +0100
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Ivan Teterevkov <ivan.teterevkov@nutanix.com>
-Cc:     "rientjes@google.com" <rientjes@google.com>,
-        "willy@infradead.org" <willy@infradead.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "corbet@lwn.net" <corbet@lwn.net>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "guro@fb.com" <guro@fb.com>,
-        "shakeelb@google.com" <shakeelb@google.com>,
-        "chris@chrisdown.name" <chris@chrisdown.name>,
-        "yang.shi@linux.alibaba.com" <yang.shi@linux.alibaba.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "minchan@kernel.org" <minchan@kernel.org>,
-        "ying.huang@intel.com" <ying.huang@intel.com>,
-        "ziqian.lzq@antfin.com" <ziqian.lzq@antfin.com>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Jonathan Davies <jond@nutanix.com>
-Subject: Re: [RFC] memcg: fix default behaviour of non-overridden
- memcg.swappiness
-Message-ID: <20200320134428.GG24409@dhcp22.suse.cz>
-References: <BL0PR02MB560170CD4D4245D4B89BC22EE9F40@BL0PR02MB5601.namprd02.prod.outlook.com>
+        Fri, 20 Mar 2020 13:10:43 -0700 (PDT)
+Date:   Fri, 20 Mar 2020 13:10:38 -0700
+From:   Marco Ballesio <balejs@google.com>
+To:     Daniel Colascione <dancol@google.com>
+Cc:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        cgroups@vger.kernel.org,
+        linux-kernel <linux-kernel@vger.kernel.org>, lizefan@huawei.com,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jonathan Corbet <corbet@lwn.net>, rjw@rjwysocki.net,
+        Pavel Machek <pavel@ucw.cz>, len.brown@intel.com,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        linux-pm@vger.kernel.org, Minchan Kim <minchan@google.com>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH] cgroup-v1: freezer: optionally killable freezer
+Message-ID: <20200320201038.GB79184@google.com>
+References: <20200219183231.50985-1-balejs@google.com>
+ <20200303134855.GA186184@mtj.thefacebook.com>
+ <CAKOZuevzE=0Oa8gn--rkVJ8t69S+o2vK--pki65XXg6EVuOhMQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <BL0PR02MB560170CD4D4245D4B89BC22EE9F40@BL0PR02MB5601.namprd02.prod.outlook.com>
+In-Reply-To: <CAKOZuevzE=0Oa8gn--rkVJ8t69S+o2vK--pki65XXg6EVuOhMQ@mail.gmail.com>
+User-Agent: Mutt/1.12.2 (2019-09-21)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 19-03-20 17:38:30, Ivan Teterevkov wrote:
-> This patch tries to resolve uncertainty around the memcg.swappiness when
-> it's not overridden by the user: shall there be the latest vm_swappiness
-> or the value captured at the moment when the cgroup was created?
+On Wed, Mar 11, 2020 at 10:46:15AM -0700, Daniel Colascione wrote:
+> On Tue, Mar 3, 2020 at 5:48 AM Tejun Heo <tj@kernel.org> wrote:
+> >
+> > Hello,
+> >
+> > On Wed, Feb 19, 2020 at 10:32:31AM -0800, Marco Ballesio wrote:
+> > > @@ -94,6 +94,18 @@ The following cgroupfs files are created by cgroup freezer.
+> > >    Shows the parent-state.  0 if none of the cgroup's ancestors is
+> > >    frozen; otherwise, 1.
+> > >
+> > > +* freezer.killable: Read-write
+> > > +
+> > > +  When read, returns the killable state of a cgroup - "1" if frozen
+> > > +  tasks will respond to fatal signals, or "0" if they won't.
+> > > +
+> > > +  When written, this property sets the killable state of the cgroup.
+> > > +  A value equal to "1" will switch the state of all frozen tasks in
+> > > +  the cgroup to TASK_INTERRUPTIBLE (similarly to cgroup v2) and will
+> > > +  make them react to fatal signals. A value of "0" will switch the
+> > > +  state of frozen tasks to TASK_UNINTERRUPTIBLE and they won't respond
+> > > +  to signals unless thawed or unfrozen.
+> >
+> > As Roman said, I'm not too sure about adding a new cgroup1 freezer
+> > interface at this point. If we do this, *maybe* a mount option would
+> > be more minimal?
 > 
-> I'm sitting on the fence with regards to this patch because cgroup v1 is
-> considered legacy nowadays and the semantics of "swappiness" is already
-> overwhelmed. However, the patch might be considered as a "fix" because
-> looking at the documentation [1] one might have the impression that it's
-> the latest /proc/sys/vm/swappiness value that should be found in the
-> memcg.swappiness unless it's overridden or inherited from a cgroup where
-> it was overridden when the given cgroup was created.
+> I'd still prefer a cgroup flag. A mount option is a bigger
+> compatibility risk and isn't really any simpler than another cgroup
+> flag. A mount option will affect anything using the cgroup mount
+> point, potentially turning non-killable frozen processes into killable
+> ones unexpectedly. (Sure, you could mount multiple times, but only one
+> location is canonical, and that's the one that's going to get the flag
+> flipped.) A per-cgroup flag allows people to opt into the new behavior
+> only in specific contexts, so it's safer.
 
-Could you be more specific what makes you think this? Let me quote the
-whole thing here
-: 5.3 swappiness
-: --------------
-: 
-: Overrides /proc/sys/vm/swappiness for the particular group. The tunable
-: in the root cgroup corresponds to the global swappiness setting.
-: 
-: Please note that unlike during the global reclaim, limit reclaim
-: enforces that 0 swappiness really prevents from any swapping even if
-: there is a swap storage available. This might lead to memcg OOM killer
-: if there are no file pages to reclaim.
+It might also be desirable for userland to have a way to modify the behavior of
+an already mounted v1 freezer.
 
-I do not want to pick on words here but to me it sounds this tunable is
-clearly documented as the explicit override for the global value. The
-root memcg corresponds to the global limit because root tends to be
-special in many other aspects. But in general, the semantic of knobs is
-that they do not unexpectedly change their values without an explicit
-user/admin intervention.
-> 
-> Also, shall this magic -1 be exposed to the user? I think it's a "no",
-> but what if the user wants to un-override the memcg.swappiness...
-
-If we are to use such a semantic then it absolutely has to be an opt-in
-behavior and expressed in some way to the user space (e.g. a symbolic
-name referring to the global setting).
-> 
-> What do you reckon?
-
-I am not convinced we need it. There would have to be a real life
-usecase that cannot really work with the current semantic. I remember
-that this has been brought up when discussing early swappiness
-initialization [1]. But it seems there is a much better solution for
-that problem [2].
-
-[1] http://lkml.kernel.org/r/BL0PR02MB560167492CA4094C91589930E9FC0@BL0PR02MB5601.namprd02.prod.outlook.com
-[2] http://lkml.kernel.org/r/20200317132105.24555-1-vbabka@suse.cz
--- 
-Michal Hocko
-SUSE Labs
+Tejun, would it be acceptable to have a flag but disable it by default, hiding
+it behind a kernel configuration option?
