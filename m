@@ -2,73 +2,202 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 954E518DE85
-	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2020 08:31:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 26AF9190B00
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2020 11:32:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728110AbgCUHbd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 21 Mar 2020 03:31:33 -0400
-Received: from sonic310-13.consmr.mail.bf2.yahoo.com ([74.6.135.123]:46725
-        "EHLO sonic310-13.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727961AbgCUHbd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 21 Mar 2020 03:31:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1584775892; bh=NajTNMrfMLb6UXcjRhYpYerQX8PtVBLz0oFgaMINSWY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=obTQG8qF6HNlu7+/kqf5ifdwdrQYpriwNBGDI8WJa9Tm3GBcg++lYF9xXgyAEnlxqDhnCeDpxVLf32r+BTqP2AalpB0KIwu+XOGK3AvmvY8XTF/Sl5wD2o4c25Oa+7gaDz1MJatYcxHhGmMW+zsDiUWiou6P30Jlq/spo94if69ScIvkGeC8hresg2SaEmHD3DtDj0H69Qg22S+PCTc3kB3qF5d4+qwidp6/ckGYgDyZzOc2TtttB86WPMMuSbNwfv6uPd+Iqk5ouQT92byIvq3BOszE8L340f4c9DLcucd7hWke7z7o8x9gBQvtEiTvizOZKE5DG81wHFBDIsf7rw==
-X-YMail-OSG: ekc.G0wVM1kMZWIZ8pVshmiA3GwqVGRprnOfmf7ira6N5UGkZY4tDZ_3JlUj65B
- iof1kAqEgnLorRaJMY73oQL.zIcusquQ3fO022I5yRw.JzGc_B2aDz9YPjYfcnk_Bm9yJa2rx_EJ
- zsoiNWrsmXVfPoptwts_P6wVsPpknURCPKFCzSrGojOhjJ5fgwJNjyXv5TvGxnFsiGRXvV1M86FX
- KxWnIRUdjoQ.85nZ_ZU.jmH365xqraLQKGZl34Nmev6t_lvEQWFzndRRtsW.arleNo1LW03MBOB4
- _tg6FtVgHfKAtUCy1L2NEvWNlVMe_yar_cuumDGmEN6qUq61nUSoQisB73_0sInlF0eymGSem_t1
- uVOwEx0zmGWwk7V1L7SXL5ae1rgqUKq71Gy2EdIzHK3HVulTiUCd7n7BZ6XVYp.z_huzAqk0LS0G
- MxqK3aXDTKXuY7NJStY_AhrRnCv.klncLnUYanEVRYo6BY01u5T8RsEVn8pQSH0kANlVlRNiVC7I
- V30gL_wVJ08nZJGXVVl3rFfiKRpbtqEIyGVK6C1ePgvPwyBf5gTMejVERvWm0wFC5Kcsin4tMejt
- LkcKm55QUVysjLh_wUrOdQsGH.AKvee_8XriU3E_yjMlhamY10bwjRFcWZc5Jo89qtMpa5yonR6d
- aVy3jQ_2iaJKDmX9iIjvZN4vU0weYBgRyz5ZPmReh9RdnPGgnW4quk3bpXs3YLh7VcRZv8HB6LjL
- Jogm.8F5FsJ6bi7kbBEQYKZUFXGfl6sE10CRwuFgnVjVY7Rc2kmFaOuIGfk2AtssEgaKv7UOXZxl
- qcSIb.VEISjQA6ieUZJbTQ0v32_oq1qL1tv_pgGnwg1vMFRzFNqrd.W8.6v2._DOEvz1tCMIx6IG
- bYUz8QztXNITjf_0WrX494KYcKGW6M2AQKQ03O3Kij6.uNRjmPAblP1_UwfAzqjC9sDJlk6Y.TO.
- UELko7gK9wIXYGgiLtGTKNCRTMnez4_TFnB3cFfHOJ.BQ.1P6h2LP6LTbf64wVEEF6CFGqSOcvOf
- 7h3GRejUgntvJbJzplLOb13oNVwQYdbt_vUB09_EDcFJKUVbxo2rOnkJ8mKyu6V_ppTHHVKU_Mwc
- 23lJlgu7Qwe9dAlFJArZginMD7ZawMlWE2P_uqLN.ThmbTXxAYFJRaVq1T.F8l6IyQIkzGbpAPdw
- AD7l7fDpq5X8LZNydMqaCfYKRck0JE9QqO3ay_So3IZxlkkj8N0NJQDv4G4nmaVybKpft6dX4CUX
- XTyt98uvmsQ3oc9DmOwzqDoVw4_Ska5_IT4xxmQtbr6jFBL.xtvrGIojQICvKNZQVC6P4vEHWgA-
- -
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.bf2.yahoo.com with HTTP; Sat, 21 Mar 2020 07:31:32 +0000
-Date:   Sat, 21 Mar 2020 07:31:30 +0000 (UTC)
-From:   Ms lisa Hugh <lisahugh531@gmail.com>
-Reply-To: ms.lisahugh000@gmail.com
-Message-ID: <1871145584.11548.1584775890875@mail.yahoo.com>
-Subject: BUSINESS CO-OPERATION.
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1871145584.11548.1584775890875.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15511 YMailNodin Mozilla/5.0 (Windows NT 6.1; rv:74.0) Gecko/20100101 Firefox/74.0
-To:     unlisted-recipients:; (no To-header on input)
+        id S1727273AbgCXKcP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Mar 2020 06:32:15 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:52655 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726167AbgCXKcP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Mar 2020 06:32:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R471e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=teawaterz@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0TtVTLwS_1585045921;
+Received: from localhost(mailfrom:teawaterz@linux.alibaba.com fp:SMTPD_---0TtVTLwS_1585045921)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 24 Mar 2020 18:32:06 +0800
+From:   Hui Zhu <teawater@gmail.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, hughd@google.com,
+        yang.shi@linux.alibaba.com, kirill@shutemov.name,
+        dan.j.williams@intel.com, aneesh.kumar@linux.ibm.com,
+        sean.j.christopherson@intel.com, thellstrom@vmware.com,
+        guro@fb.com, shakeelb@google.com, chris@chrisdown.name,
+        tj@kernel.org, tglx@linutronix.de, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Hui Zhu <teawater@gmail.com>, Hui Zhu <teawaterz@linux.alibaba.com>
+Subject: [PATCH] mm, memcg: Add memory.transparent_hugepage_disabled
+Date:   Tue, 24 Mar 2020 18:31:56 +0800
+Message-Id: <1585045916-27339-1-git-send-email-teawater@gmail.com>
+X-Mailer: git-send-email 2.7.4
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+/sys/kernel/mm/transparent_hugepage/enabled is the only interface to
+control if the application can use THP in system level.
+Sometime, we would not want an application use THP even if
+transparent_hugepage/enabled is set to "always" or "madvise" because
+thp may need more cpu and memory resources in some cases.
 
+This commit add a new interface memory.transparent_hugepage_disabled
+in memcg.
+When it set to 1, the application inside the cgroup cannot use THP
+except dax.
 
-Dear Friend,
+Signed-off-by: Hui Zhu <teawaterz@linux.alibaba.com>
+---
+ include/linux/huge_mm.h    | 18 ++++++++++++++++--
+ include/linux/memcontrol.h |  2 ++
+ mm/memcontrol.c            | 42 ++++++++++++++++++++++++++++++++++++++++++
+ mm/shmem.c                 |  4 ++++
+ 4 files changed, 64 insertions(+), 2 deletions(-)
 
-I am Ms Lisa hugh, work with the department of Audit and accounting manager here in the Bank(B.O.A).
+diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
+index 5aca3d1..fd81479 100644
+--- a/include/linux/huge_mm.h
++++ b/include/linux/huge_mm.h
+@@ -91,6 +91,16 @@ extern bool is_vma_temporary_stack(struct vm_area_struct *vma);
+ 
+ extern unsigned long transparent_hugepage_flags;
+ 
++#ifdef CONFIG_MEMCG
++extern bool memcg_transparent_hugepage_disabled(struct vm_area_struct *vma);
++#else
++static inline bool
++memcg_transparent_hugepage_disabled(struct vm_area_struct *vma)
++{
++	return false;
++}
++#endif
++
+ /*
+  * to be used on vmas which are known to support THP.
+  * Use transparent_hugepage_enabled otherwise
+@@ -106,8 +116,6 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 	if (test_bit(MMF_DISABLE_THP, &vma->vm_mm->flags))
+ 		return false;
+ 
+-	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG))
+-		return true;
+ 	/*
+ 	 * For dax vmas, try to always use hugepage mappings. If the kernel does
+ 	 * not support hugepages, fsdax mappings will fallback to PAGE_SIZE
+@@ -117,6 +125,12 @@ static inline bool __transparent_hugepage_enabled(struct vm_area_struct *vma)
+ 	if (vma_is_dax(vma))
+ 		return true;
+ 
++	if (memcg_transparent_hugepage_disabled(vma))
++		return false;
++
++	if (transparent_hugepage_flags & (1 << TRANSPARENT_HUGEPAGE_FLAG))
++		return true;
++
+ 	if (transparent_hugepage_flags &
+ 				(1 << TRANSPARENT_HUGEPAGE_REQ_MADV_FLAG))
+ 		return !!(vma->vm_flags & VM_HUGEPAGE);
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index a7a0a1a5..abc3142 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -320,6 +320,8 @@ struct mem_cgroup {
+ 
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 	struct deferred_split deferred_split_queue;
++
++	bool transparent_hugepage_disabled;
+ #endif
+ 
+ 	struct mem_cgroup_per_node *nodeinfo[0];
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7a4bd8b..b6d91b6 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5011,6 +5011,14 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	if (parent) {
+ 		memcg->swappiness = mem_cgroup_swappiness(parent);
+ 		memcg->oom_kill_disable = parent->oom_kill_disable;
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++		memcg->transparent_hugepage_disabled
++			= parent->transparent_hugepage_disabled;
++#endif
++	} else {
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++		memcg->transparent_hugepage_disabled = false;
++#endif
+ 	}
+ 	if (parent && parent->use_hierarchy) {
+ 		memcg->use_hierarchy = true;
+@@ -6126,6 +6134,24 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+ 	return nbytes;
+ }
+ 
++static u64 transparent_hugepage_disabled_read(struct cgroup_subsys_state *css,
++					      struct cftype *cft)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
++
++	return memcg->transparent_hugepage_disabled;
++}
++
++static int transparent_hugepage_disabled_write(struct cgroup_subsys_state *css,
++					       struct cftype *cft, u64 val)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
++
++	memcg->transparent_hugepage_disabled = !!val;
++
++	return 0;
++}
++
+ static struct cftype memory_files[] = {
+ 	{
+ 		.name = "current",
+@@ -6179,6 +6205,12 @@ static struct cftype memory_files[] = {
+ 		.seq_show = memory_oom_group_show,
+ 		.write = memory_oom_group_write,
+ 	},
++	{
++		.name = "transparent_hugepage_disabled",
++		.flags = CFTYPE_NOT_ON_ROOT,
++		.read_u64 = transparent_hugepage_disabled_read,
++		.write_u64 = transparent_hugepage_disabled_write,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+@@ -6787,6 +6819,16 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 	refill_stock(memcg, nr_pages);
+ }
+ 
++bool memcg_transparent_hugepage_disabled(struct vm_area_struct *vma)
++{
++	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(vma->vm_mm);
++
++	if (memcg && memcg->transparent_hugepage_disabled)
++		return true;
++
++	return false;
++}
++
+ static int __init cgroup_memory(char *s)
+ {
+ 	char *token;
+diff --git a/mm/shmem.c b/mm/shmem.c
+index aad3ba7..253b63b 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1810,6 +1810,10 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+ 		goto alloc_nohuge;
+ 	if (shmem_huge == SHMEM_HUGE_DENY || sgp_huge == SGP_NOHUGE)
+ 		goto alloc_nohuge;
++#ifdef CONFIG_TRANSPARENT_HUGEPAGE
++	if (memcg_transparent_hugepage_disabled(vma))
++		goto alloc_nohuge;
++#endif
+ 	if (shmem_huge == SHMEM_HUGE_FORCE)
+ 		goto alloc_huge;
+ 	switch (sbinfo->huge) {
+-- 
+2.7.4
 
-Please i need your assistance for the transferring of thIs fund to your bank account for both of us benefit for life time investment, amount (US$4.5M DOLLARS).
-
-I have every inquiry details to make the bank believe you and release the fund in within 5 banking working days with your full co-operation with me for success.
-
-Note/ 50% for you why 50% for me after success of the transfer to your bank account.
-
-Below information is what i need from you so will can be reaching each other
-
-1)Full name ...
-2)Private telephone number...
-3)Age...
-4)Nationality...
-5)Occupation ...
-
-
-Thanks.
-
-Ms Lisa hugh.
