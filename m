@@ -2,83 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 42745191913
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2020 19:27:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 703EE191964
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2020 19:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727806AbgCXS13 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Mar 2020 14:27:29 -0400
-Received: from mail-qt1-f174.google.com ([209.85.160.174]:41760 "EHLO
-        mail-qt1-f174.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727769AbgCXS13 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Mar 2020 14:27:29 -0400
-Received: by mail-qt1-f174.google.com with SMTP id i3so11982879qtv.8;
-        Tue, 24 Mar 2020 11:27:28 -0700 (PDT)
+        id S1727543AbgCXSqg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Mar 2020 14:46:36 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:39730 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727379AbgCXSqg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Mar 2020 14:46:36 -0400
+Received: by mail-qk1-f194.google.com with SMTP id b62so11077036qkf.6
+        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2020 11:46:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:subject:message-id:references:mime-version
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=x+AJ73g67Lv+1tYqp3JK2cKPMpi2aKN3Up6Cs52zqao=;
-        b=vPcBHMCUcEGWwF6ReF3V5Oj14G9fzThxHKTmhQWjdrqvvIU9w3190k+I52sQr16+Ij
-         oLI36ieeOKdcMESeKCP0s24tJvKWfCQUYwfrD41UAeIb0gw84GL36gxKS0INNJBA5pzu
-         y5iXEEJRgq7+T+bK1a76JZ/eLF7uVGK7Be8OZlrMhcSQ28zyswt2Lwj3o3NDu8M04eBq
-         jbpWIyfyWojPE0y1UPULVXZCGWsxOa4n1gQa07TQR0uAgB2ZDs+J/hPstNCRW6pycLVy
-         VbFTImV9nQ8yIf6tFuqUAFcBDKV2V3X9WYdzJ7gF4668/MFNL0sPsMeCdVxmyPlTzz/Q
-         qdMA==
+        bh=AGxmNy0595sT346CYB2mgtexQzuM2HSrDde9cVbZJuU=;
+        b=M3QHtiDCjMkqKxWvyPl5FUJxxKx7+N4EaFCnKutVLtNtajUcahJKaZa0ow/Iz8n8vF
+         +cTaGUSAx07luD6LuXpFlfEyxpVpWMxDTX6hfLOgkEyqWH71CUYPYpwYunw3m6+byoEx
+         cqbsc7zfXkij/jLcSsAEnxMTyFJjLdeavZ1Vu5ZDBOCL+eZt1qHzjhNGrsKYVzKVUObo
+         38MQ0gVgqyJ+wkY2WkU09z+gDjseha8Lgmr3Dty97if7NGwSTgddMDnEHu1RZkix40Ar
+         GrX/0NCKWzRn+Dyf06srWhJwYIjlEymtoDhdE1UJmOXKCEqW3hgArIGXUehAAFjZC8Tk
+         Mw+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:subject:message-id
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=x+AJ73g67Lv+1tYqp3JK2cKPMpi2aKN3Up6Cs52zqao=;
-        b=Y81SfIWoaqUMGHkvL5Jo9bngKltXm3EaZdHBhHotQPj1pqZyvpJAU9EbtIJzYoK2h/
-         vlEHncxsBXlibPNQkDqg41Yi7BVdenF7zfRNbWiFY0pGPz/m13t1n8T7fKk1Pbd97ydx
-         atCu8Dqf5uLTe2d02jhigDj8qbfjUXeZCCJVMfeeHngKOzjra2wkI5K/neQFb3JNCANP
-         bpf8CBr2YEpHo/o6LYWnli5Wmw7/B3+SFYDnlFiLj8Dm5ljHOn7Lgm5WBvhZsSDoVb0X
-         pF6aq+krep3W/r2jfXSj+LiBOogOpxVJI6AJlxcXB6/6vb8PP5gBaXGyUQg8yqRdzL6S
-         7jAg==
-X-Gm-Message-State: ANhLgQ27peiFbTNy8LhCgv9EVlowLgSri4CUO2QEwBi5hi28u9aalDY4
-        zpFoAqxOHwMZfXGT6q3cs6M=
-X-Google-Smtp-Source: ADFU+vtmcT7gz4S7OovLma2taKH6A60dohcmWOI2PX7RmOQhGId2yOdfxujTItaPvCUIUDDsyNnl8w==
-X-Received: by 2002:ac8:3148:: with SMTP id h8mr28064345qtb.341.1585074447461;
-        Tue, 24 Mar 2020 11:27:27 -0700 (PDT)
+        bh=AGxmNy0595sT346CYB2mgtexQzuM2HSrDde9cVbZJuU=;
+        b=Sbe8uSGVCSnsAbgpll6HAoL7+ucBN5dtRqIl2ftnUSzHA1cyUjCrFhrc1aTVrz9mec
+         P5y+1lQdFyXEAWcw257cvu7iPTvJLbcugACIlZ0VhQypbmXldlkQJOgQNiwa4tF5ozBm
+         cOsMkkNDzpJT3Z1qXjLwUGcwgEMJRp8qoYBb9saCUFza6D+OZhs1fzp1+07B1eXb38YN
+         KfOzuj4KfwLrybzx0anYwqfTdydnThY0hyXPiInMAqy1el3JafYmc/vfwWYsvS0BAwr7
+         IQqcH6Q7I2T2v7Y07f4N9JcvfiirV6DjW0i+0pqRJoTGN2WffFtoWUYUerPDKwlN8lO5
+         QKOQ==
+X-Gm-Message-State: ANhLgQ029pHcgVbk5En6mbaZgN+66jaYbrsW9bgcRjABa4+icXLD4qPK
+        zDSeE8SCcskGsbuGY1y17DI=
+X-Google-Smtp-Source: ADFU+vuG6EX8tZxW4p8BDfczrKaQLJMVhUXpXjJG5GIXYcXSAN+m6g533OhQ2NhTef+FX2Bno+4vPg==
+X-Received: by 2002:a37:715:: with SMTP id 21mr28007993qkh.435.1585075595497;
+        Tue, 24 Mar 2020 11:46:35 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::19c2])
-        by smtp.gmail.com with ESMTPSA id r3sm14029528qkd.3.2020.03.24.11.27.26
+        by smtp.gmail.com with ESMTPSA id j39sm8143061qtk.96.2020.03.24.11.46.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 11:27:27 -0700 (PDT)
-Date:   Tue, 24 Mar 2020 14:27:25 -0400
+        Tue, 24 Mar 2020 11:46:34 -0700 (PDT)
+Date:   Tue, 24 Mar 2020 14:46:33 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RFC 0/3] blkcg: add blk-iotrack
-Message-ID: <20200324182725.GG162390@mtj.duckdns.org>
-References: <cover.1584728740.git.zhangweiping@didiglobal.com>
+To:     Kenny Ho <y2kenny@gmail.com>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        "Kuehling, Felix" <felix.kuehling@amd.com>,
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com
+Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
+Message-ID: <20200324184633.GH162390@mtj.duckdns.org>
+References: <20200226190152.16131-1-Kenny.Ho@amd.com>
+ <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1584728740.git.zhangweiping@didiglobal.com>
+In-Reply-To: <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Mar 21, 2020 at 09:20:36AM +0800, Weiping Zhang wrote:
-> The user space tool, which called iotrack, used to collect these basic
-> io statistics and then generate more valuable metrics at cgroup level.
-> From iotrack, you can get a cgroup's percentile for io, bytes,
-> total_time and disk_time of the whole disk. It can easily to evaluate
-> the real weight of the weight based policy(bfq, blk-iocost).
-> There are lots of metrics for read and write generate by iotrack,
-> for more details, please visit: https://github.com/dublio/iotrack.
-> 
-> Test result for two fio with randread 4K,
-> test1 cgroup bfq weight = 800
-> test2 cgroup bfq weight = 100
-> 
-> Device      io/s   MB/s    %io    %MB    %tm   %dtm  %d2c %hit0 %hit1 %hit2 %hit3 %hit4 %hit5  %hit6  %hit7 cgroup
-> nvme1n1 44588.00 174.17 100.00 100.00 100.00 100.00 38.46  0.25 45.27 95.90 98.33 99.47 99.85  99.92  99.95 /
-> nvme1n1 30206.00 117.99  67.74  67.74  29.44  67.29 87.90  0.35 47.82 99.22 99.98 99.99 99.99 100.00 100.00 /test1
-> nvme1n1 14370.00  56.13  32.23  32.23  70.55  32.69 17.82  0.03 39.89 88.92 94.88 98.37 99.53  99.77  99.85 /test2
+On Tue, Mar 17, 2020 at 12:03:20PM -0400, Kenny Ho wrote:
+> What's your thoughts on this latest series?
 
-Maybe this'd be better done with bpf?
+My overall impression is that the feedbacks aren't being incorporated throughly
+/ sufficiently.
+
+Thanks.
 
 -- 
 tejun
