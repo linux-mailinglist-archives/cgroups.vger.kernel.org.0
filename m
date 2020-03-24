@@ -2,78 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 703EE191964
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2020 19:48:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AD2E191970
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2020 19:49:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727543AbgCXSqg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Mar 2020 14:46:36 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:39730 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727379AbgCXSqg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Mar 2020 14:46:36 -0400
-Received: by mail-qk1-f194.google.com with SMTP id b62so11077036qkf.6
-        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2020 11:46:36 -0700 (PDT)
+        id S1727382AbgCXStl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Mar 2020 14:49:41 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:34010 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727379AbgCXStl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Mar 2020 14:49:41 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 26so3199129wmk.1
+        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2020 11:49:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=AGxmNy0595sT346CYB2mgtexQzuM2HSrDde9cVbZJuU=;
-        b=M3QHtiDCjMkqKxWvyPl5FUJxxKx7+N4EaFCnKutVLtNtajUcahJKaZa0ow/Iz8n8vF
-         +cTaGUSAx07luD6LuXpFlfEyxpVpWMxDTX6hfLOgkEyqWH71CUYPYpwYunw3m6+byoEx
-         cqbsc7zfXkij/jLcSsAEnxMTyFJjLdeavZ1Vu5ZDBOCL+eZt1qHzjhNGrsKYVzKVUObo
-         38MQ0gVgqyJ+wkY2WkU09z+gDjseha8Lgmr3Dty97if7NGwSTgddMDnEHu1RZkix40Ar
-         GrX/0NCKWzRn+Dyf06srWhJwYIjlEymtoDhdE1UJmOXKCEqW3hgArIGXUehAAFjZC8Tk
-         Mw+w==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+Bn2txemVnNW3tHUFGp2WOb1jH3UpeSV6hCDyIGrExc=;
+        b=RNFkkhe84ZEGayHB8baD92NZqRNYMXvMXE6mRhmjiQa6+aEXFVM7MbYvmyJIdKpcyL
+         P0Kt/3R2vW84P4s/9DAgLdNeg35C5fOZkjEhyT13/ZCUR+gG626E0DClz8eIGUTN4nKh
+         kPtmyz2MZ8OtHGbxKYWz0+VZ3mQ3xF5qLTcUcbUjDvhp3hca4DAJ/qNdW2MiOi5eR3i0
+         RLCdb2fIDqmg5ainr8H58LNrwP4j2Jnrr8FDHiGROvKA7RIu/LOsoSvLChS7sTz6LFpj
+         ywjdBuh7EW9/2VFW49Duuk5GS0Htz5fgT9QzmpTW7cYC62W0m/UhGfP0tDnBfRz2EzUV
+         K6dQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=AGxmNy0595sT346CYB2mgtexQzuM2HSrDde9cVbZJuU=;
-        b=Sbe8uSGVCSnsAbgpll6HAoL7+ucBN5dtRqIl2ftnUSzHA1cyUjCrFhrc1aTVrz9mec
-         P5y+1lQdFyXEAWcw257cvu7iPTvJLbcugACIlZ0VhQypbmXldlkQJOgQNiwa4tF5ozBm
-         cOsMkkNDzpJT3Z1qXjLwUGcwgEMJRp8qoYBb9saCUFza6D+OZhs1fzp1+07B1eXb38YN
-         KfOzuj4KfwLrybzx0anYwqfTdydnThY0hyXPiInMAqy1el3JafYmc/vfwWYsvS0BAwr7
-         IQqcH6Q7I2T2v7Y07f4N9JcvfiirV6DjW0i+0pqRJoTGN2WffFtoWUYUerPDKwlN8lO5
-         QKOQ==
-X-Gm-Message-State: ANhLgQ029pHcgVbk5En6mbaZgN+66jaYbrsW9bgcRjABa4+icXLD4qPK
-        zDSeE8SCcskGsbuGY1y17DI=
-X-Google-Smtp-Source: ADFU+vuG6EX8tZxW4p8BDfczrKaQLJMVhUXpXjJG5GIXYcXSAN+m6g533OhQ2NhTef+FX2Bno+4vPg==
-X-Received: by 2002:a37:715:: with SMTP id 21mr28007993qkh.435.1585075595497;
-        Tue, 24 Mar 2020 11:46:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::19c2])
-        by smtp.gmail.com with ESMTPSA id j39sm8143061qtk.96.2020.03.24.11.46.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2020 11:46:34 -0700 (PDT)
-Date:   Tue, 24 Mar 2020 14:46:33 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Kenny Ho <y2kenny@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+Bn2txemVnNW3tHUFGp2WOb1jH3UpeSV6hCDyIGrExc=;
+        b=Jrc2lg/zbXs9aRbj4BK6k1xJOvMmK29RD1BHb8+FIbU6tW+V4IcFgArRoNb4O1emc0
+         wKBlrJ6ZbepRp8f5u3Ej4/TfhQFqkUREvFyyQ0OYo3wJ9Ko0YCqX9D2YA4LDGAe6hcdV
+         nwzr5eb5w+XaEpjoS8D209FaQwzjwsRb05eYK8KMeKfXh7+tfXmPoffkOMRS/+wRxEcP
+         Ux2oDDudrIbapLl1WkvsAwCvP48hxjpr20oif352ZQ7Pd2RONnnC01fJEE4lEqowk3Qu
+         9iLSKNTIgye4DNT6t0pO9bkxU+tt48hpNHnoPeM377M4nnRcqCUns1F0Y5q3ho6HVf15
+         OcjQ==
+X-Gm-Message-State: ANhLgQ0XlVJXrit4K1UocDJ7mDbTZ7E3ZM8dwfe/LsI6V1GByBa5H1bl
+        8zo+OTEPLe/fpSxt2YzmTFtx398h4i8xTvmkcbM=
+X-Google-Smtp-Source: ADFU+vty6Yk31S5LF9YuvRPGLvF8AD8PNX2XXzN0Pdgf/WbZp30NoFPvgvWxHl9AOuzF24qwOvjqBS8ND5KRrr4tzUk=
+X-Received: by 2002:a7b:c386:: with SMTP id s6mr7501165wmj.104.1585075779201;
+ Tue, 24 Mar 2020 11:49:39 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200226190152.16131-1-Kenny.Ho@amd.com> <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
+ <20200324184633.GH162390@mtj.duckdns.org>
+In-Reply-To: <20200324184633.GH162390@mtj.duckdns.org>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Tue, 24 Mar 2020 14:49:27 -0400
+Message-ID: <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
+Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         "Kuehling, Felix" <felix.kuehling@amd.com>,
         "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com
-Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
-Message-ID: <20200324184633.GH162390@mtj.duckdns.org>
-References: <20200226190152.16131-1-Kenny.Ho@amd.com>
- <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Mar 17, 2020 at 12:03:20PM -0400, Kenny Ho wrote:
-> What's your thoughts on this latest series?
+Hi Tejun,
 
-My overall impression is that the feedbacks aren't being incorporated throughly
-/ sufficiently.
+Can you elaborate more on what are the missing pieces?
 
-Thanks.
+Regards,
+Kenny
 
--- 
-tejun
+On Tue, Mar 24, 2020 at 2:46 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> On Tue, Mar 17, 2020 at 12:03:20PM -0400, Kenny Ho wrote:
+> > What's your thoughts on this latest series?
+>
+> My overall impression is that the feedbacks aren't being incorporated throughly
+> / sufficiently.
+>
+> Thanks.
+>
+> --
+> tejun
