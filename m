@@ -2,75 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 41D9F1921CD
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2020 08:38:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D8A1928DA
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2020 13:49:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726072AbgCYHiT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Mar 2020 03:38:19 -0400
-Received: from sonic309-15.consmr.mail.bf2.yahoo.com ([74.6.129.125]:41601
-        "EHLO sonic309-15.consmr.mail.bf2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725907AbgCYHiT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Mar 2020 03:38:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1585121897; bh=YdDyVS9QBRPCiN2YYZ/cryZSa6YEXSJJY6ujWZ06LZ8=; h=Date:From:Reply-To:Subject:References:From:Subject; b=dsneZpzzwrH06ECcu4nAV5X4jM1zdLsX9J1wUWYy61P49nlPgp9I5GEzZU9amw3tR1x/ImYWQFyjr9qdNT8fwsoI/cNo2hWHr7msEht1WphRCMwutW1fJXK6BgF5xj9oZiP3nshLr2GkhtpmqOg3CCWLd5sVB83JLdfqqiocZ9v6oieZXC4UKSad8B8dwjnzMAOrJg/JAeQcolvSPboXCJPp4N5tP/sTIf6HOCp6osjAGinF5kBZ2Pw6c8cGk9CrVgA7jmSzW1VH51hZSCgjQUwD/IyXAtO8fR/88IFd4AzxyMcAaN/oHPYele20HWy3OiLH9aOjt+XNr8sYvkzq4Q==
-X-YMail-OSG: uWSBrNMVM1mXV_Lg8Cus8eKSgmWKIgnJ0z7C2xK2IbzO41zWkKbPcgT7gO7RNbd
- UBiYRWdYTqGcMfEuhpJLj5X1yNXYGGpskN6raLp9u4XCgGvunUiknMCQBLqho5nnXSliqgmPXVon
- PKAhzrZ_4tdbrTjHB5RHJmeSKiLRzUkAyMbJuaIdZOWnoGcsFf89vD2RNHYyjnG3yVg_PPFCkIuN
- 20ODt.kJuscihQJZprmzPo_B9Dkf_XUYFfkixaAxwBlB41KoquVMMujNJaH_8yWlOh9fq7jE6sGm
- X2eEPw9a5nnJh2C1xGsZBuVnVJxjSeua8gCbiCckqKJPHEWeHWyprGsfnhhQg5dsmYcfESllYj4H
- x_QZoFW3KSee3NDG42zQeh4ddNCWAMkQ2agw8zlus3V5eWw8qbfiyidBre8I.k4cwqgECYhz6UIL
- .7Utmy7jTdxlAJjidZpEOl4vTNhwSfLxgNsOBePyDNq57auzXOWGKid52NpsaR2dpan8pGgUJD_w
- zDTNsW7hbf51NtOA53aom_IfCIBWJClzMlpdy93qqao3ucHDfe2qtUllB9wTAxkZJI.OGWxZbHZn
- j5Cli._sRgXxuaE8rlaK3rcg1WDqUtqkzBRcD60LIVD9SMff717zr62V_GWx6FWyRF1P3iTnjIX8
- 35WxcGVr75p0K8lTe9rDLPxZS1gpKObp0WnY8RzHKYQMEoZjmXRf99PYwl4kvc22jWPjeIlqRp5h
- ViWaAj88Mlzg1YUI52XL5EsYfixTLJcv9KSTqtnuKLEqows_rxaKTmzHQlZqBRGMiE3Uw69.Bay_
- Buc5L1Ek3N6X2lvfkw6GGdn8KwD03xThi8oncP5BxrcXxiCSp59OnT7m2AIFZ14Bo9z4iVcqdjSk
- njmPwBCvcIAFEGJvoJPzlYu0Ty6b.HAwjtx_KIdJ69TeD3G_cjVw47XN0EJgSwk2V3K6A_ruzJAb
- Na7evbg9nuqOFft4Wd.pZFoM1Y2uhWY56gsgTL4dpCgp1q9WcvATW.q3pT56tNI_C6C03aUc2.hO
- vkX1FR14XMd.WqWmWN.uu2Br01VVZR7BfdyDB_IBA2z4U_FatehNP7H8GOj.CHixU_90H8h222gU
- 6fq3CjEC9U_03XYaaP6J5xQ7Xt_6AQy5zOk6UfWRCx.4eVQXezMFmVxELHWlqbSaUw6iodmGI9_B
- klAIk0YCmUbsbtIERWyZG9qR3d1_GHk88rixOtRAY_VJBN7yFq6fshr3en3DS4oBQWVKbN.dHPKv
- MrdCSrXBy5YdF69X9gkJvS25DNdMSK7sG6xwSi56KS3RHrcI7uXEUHIaAd5V8kaXtUWP0HBUx2nV
- thr2VOw4C8wNsL8x4joIb8Nhh
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic309.consmr.mail.bf2.yahoo.com with HTTP; Wed, 25 Mar 2020 07:38:17 +0000
-Date:   Wed, 25 Mar 2020 07:38:14 +0000 (UTC)
-From:   Mr Moussa Dauda <officefilelee@gmail.com>
-Reply-To: mrmoussadaudaa@gmail.com
-Message-ID: <822316687.1110237.1585121894168@mail.yahoo.com>
-Subject: I await your urgent response immediately.
+        id S1727451AbgCYMth (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Mar 2020 08:49:37 -0400
+Received: from mail-qv1-f50.google.com ([209.85.219.50]:44080 "EHLO
+        mail-qv1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726998AbgCYMth (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Mar 2020 08:49:37 -0400
+Received: by mail-qv1-f50.google.com with SMTP id f7so910762qvr.11;
+        Wed, 25 Mar 2020 05:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=iz+O4JY70/I6593EiYb3vc9QehOFE8IiCgzzBxiW4a8=;
+        b=eKBMcEjgLZnyeEd11yYfakt9CIsppElK+QY7MTSFwKvXZW/YKZ7ZmTS5bsV3G/bC3d
+         6/JF2+vOQUDQl5o2zVCDog0GopXRG3lV5vxmUKLSTjuqKceWTb1biDHq9++h+QCjOszV
+         OyOdMIHPmW4OAWDXt3LmJ3qe1I8DI3PbkD1L4LucYNKQyJlRVF/K1xiLq8ormRElmWnk
+         DaVEtB5gGmmHTDQEdWWDwY4sVf1gSQ2+9X2bSbmaOLVEcFCTazyz+PQlezXPGNPqxsri
+         00nFyYipB7MDDMxrstPkCW0VMiE/aLDqivvyhOAFvLuZZxPncSSEzxJC22sWBemBPf8q
+         Bumw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=iz+O4JY70/I6593EiYb3vc9QehOFE8IiCgzzBxiW4a8=;
+        b=lGXeUakr1e/8FxSEkxWxev1SdKJv3I2c9OY/HLTrxCRcm+XmSiFCuynBZSJvu82NaA
+         3aC6ptk2IfX3YX1iNoUZWXXniBZstci0uftEnAhR6D8GsusSXOpirRGwta/3M+GGLUfd
+         zHv5n/lUcNhl+YsKfqTenaul0CwqKTiX4L+AYxG9wwYw8H/4gWCsNklOrciqIOLhW1tP
+         lC7U3Mj0Ch8z8JE72Gs1u4PzUWuRPtbP/VDf/oLIirwucaEbo2D7RQU2B4sgln0paJzt
+         Zx3qjlvPrnePHpN9n4hdRFFhsu45w+LQdRtCXytXqZFHvEJ80Zd0SFlR22wdIWjemN6L
+         WTDg==
+X-Gm-Message-State: ANhLgQ32CiwUJqcTKFpAcaMS/4+WbC1woOE+YDRa/FcrKJx2KrkyOb3n
+        5fYgpqs/6sxtVCFQiN8PqJpHnsd43bDH6dtFLmD8hzXHYwY=
+X-Google-Smtp-Source: ADFU+vsty0PfeBjsXXPyBQ1ZiWxEC3jTwTYvNjh4h8Px8HLr/oAJn5U9IcjMz5ooQ10q6+FwSEY8DYseUI8RlJ6Umek=
+X-Received: by 2002:a05:6214:11ec:: with SMTP id e12mr2946998qvu.89.1585140575879;
+ Wed, 25 Mar 2020 05:49:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <822316687.1110237.1585121894168.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.15518 YMailNodin Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:74.0) Gecko/20100101 Firefox/74.0
-To:     unlisted-recipients:; (no To-header on input)
+References: <cover.1584728740.git.zhangweiping@didiglobal.com> <20200324182725.GG162390@mtj.duckdns.org>
+In-Reply-To: <20200324182725.GG162390@mtj.duckdns.org>
+From:   Weiping Zhang <zwp10758@gmail.com>
+Date:   Wed, 25 Mar 2020 20:49:24 +0800
+Message-ID: <CAA70yB7a7VjgPLObe-rzfV0dLAumeUVy0Dps+dY5r-Guq2Susg@mail.gmail.com>
+Subject: Re: [RFC 0/3] blkcg: add blk-iotrack
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Tejun Heo <tj@kernel.org> =E4=BA=8E2020=E5=B9=B43=E6=9C=8825=E6=97=A5=E5=91=
+=A8=E4=B8=89 =E4=B8=8A=E5=8D=882:27=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Sat, Mar 21, 2020 at 09:20:36AM +0800, Weiping Zhang wrote:
+> > The user space tool, which called iotrack, used to collect these basic
+> > io statistics and then generate more valuable metrics at cgroup level.
+> > From iotrack, you can get a cgroup's percentile for io, bytes,
+> > total_time and disk_time of the whole disk. It can easily to evaluate
+> > the real weight of the weight based policy(bfq, blk-iocost).
+> > There are lots of metrics for read and write generate by iotrack,
+> > for more details, please visit: https://github.com/dublio/iotrack.
+> >
+> > Test result for two fio with randread 4K,
+> > test1 cgroup bfq weight =3D 800
+> > test2 cgroup bfq weight =3D 100
+> >
+> > Device      io/s   MB/s    %io    %MB    %tm   %dtm  %d2c %hit0 %hit1 %=
+hit2 %hit3 %hit4 %hit5  %hit6  %hit7 cgroup
+> > nvme1n1 44588.00 174.17 100.00 100.00 100.00 100.00 38.46  0.25 45.27 9=
+5.90 98.33 99.47 99.85  99.92  99.95 /
+> > nvme1n1 30206.00 117.99  67.74  67.74  29.44  67.29 87.90  0.35 47.82 9=
+9.22 99.98 99.99 99.99 100.00 100.00 /test1
+> > nvme1n1 14370.00  56.13  32.23  32.23  70.55  32.69 17.82  0.03 39.89 8=
+8.92 94.88 98.37 99.53  99.77  99.85 /test2
+>
+> Maybe this'd be better done with bpf?
+>
+Hi Tejun,
 
+How about support both iotrack and bpf?
+If it's ok I want to add bpf support in another patchset, I saw that
+iocost_monitor.py was base on drgn, maybe write a new script
+"biotrack" base on drgn.
 
-Dear Good Friend,
+For this patchset, iotrack can work well, I'm using it to monitor
+block cgroup for
+selecting a proper io isolation policy.
 
-Good Day,
-
-I am Mr. Moussa Dauda, Director In charge of Auditing and accounting department of Bank Of Africa, BOA, I hope that you will not betray or expose this trust and confident that i am about to repose on you for the mutual benefit of our both families.
-
-I need your urgent assistance in transferring the sum of TEN MILLION FIVE HUNDRED THOUSAND UNITED STATES DOLLARS, U$10,500.000.00, immediately to your account anywhere you chose.
-
-This is a very highly secret, i will like you to please keep this proposal as a top secret or delete it if you are not interested, upon receipt of your reply, i will send to you more details about this business deal.
-
-I will also direct you on how this deal will be done without any problem; you must understand that this is 100% free from risk.
-
-Therefore my questions are:
-
-1. Can you handle this project?
-2. Can I give you this trust?
-If yes, get back to me immediately.
-
-Try and get back to me with this my private email address ( mrmoussadaudaa@gmail.com )
-
-I will be waiting to hear from you immediately.
-
-Regards
-Mr. Moussa Dauda.
+Thanks a ton
+Weiping
+> --
+> tejun
