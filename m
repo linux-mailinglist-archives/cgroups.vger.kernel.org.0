@@ -2,57 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 143FC194B29
-	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2020 23:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D73A6194E67
+	for <lists+cgroups@lfdr.de>; Fri, 27 Mar 2020 02:27:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727547AbgCZWD6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Mar 2020 18:03:58 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:56053 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727473AbgCZWD5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Mar 2020 18:03:57 -0400
-Received: by mail-wm1-f67.google.com with SMTP id z5so9029209wml.5
-        for <cgroups@vger.kernel.org>; Thu, 26 Mar 2020 15:03:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CVqQ7MESPq+AdE5FevBfn8AolxVmIzRfASYgM+H4STI=;
-        b=szyVRdKUxChTizOYbqe+xujjj60j68XNY2SNyiTfGDb2FOQdOSEPl8zDMtKzEbkOEZ
-         jtQCP5i4iuVP5zMrvcycKgn+qO0lKj6TLMeJBhnVXT7oeJu21WuKDaUh+y8ixfdNBFQE
-         6oFyY3Q/46KVNkl3A8NeA+LMUYdpO7Slu4Tee/ERY9zUHc82YMPuRjGkqdBeKwfxRCqI
-         KqUxD+S3Z4nw18kpiJmpbKA3PX2nTDSUVzJgPVy956S23Br/VEIcdC+LK3Daw9ljv9+8
-         qhXItEAmwk5k03a/QD0NnuHKpqd5PPMt7j1aOKfkpLTyiT23voWFEOtliyOSwkXqS9x8
-         b3Bw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CVqQ7MESPq+AdE5FevBfn8AolxVmIzRfASYgM+H4STI=;
-        b=TfXCWGaw1HijlaJhhfNIIAgBfsTaqG8qQJdhSyxhZ8YNbM1EvyWpiFEXswRSJD5sYX
-         RTM1vrejAyiI7GuUScXzaKlVdadD/oM7hmeQECtFWKU8zNzQ/DMIMehw0eybUNYtJ5ha
-         /YUdpoi+2rzrvOlCc0ubJeUgG1jws35ajLQngGGHF4nRnjD6fsxag0bGJR3tbm44vQb0
-         fSiXMiRfS4kAMmBKr9+dtb8m9OxyPQeiMZG9Hu65Q+S46Lgvmz7LNBNcSOtKk0Az2bhL
-         UfrBKh8aSJyO8ndXROgGebZnnhv6lfWpWUknbOJ3pvR7NAKVhyzz7rlduqUDhABMnKXT
-         Rzmw==
-X-Gm-Message-State: ANhLgQ1evFTQibID+ct7LfdNSJR4Av9JDbDAKP/7JmjoxgED5QDn4YkW
-        en6rkrCmaHKbO0b4lpn4D/LpMfPUXtvY4zP5YI4QXw==
-X-Google-Smtp-Source: ADFU+vvMOIE+L0ZTf7lmFa3S++2BBLAB6zolh3w3IlymO56zrtRps0+OWtJzfllf8QITGyf0P7J6Gml1J+knvxy+Wb8=
-X-Received: by 2002:adf:b60d:: with SMTP id f13mr12155953wre.12.1585260235721;
- Thu, 26 Mar 2020 15:03:55 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200326191623.129285-1-joel@joelfernandes.org>
- <20200326192035.GO162390@mtj.duckdns.org> <20200326194448.GA133524@google.com>
- <972a5c1b-6721-ac20-cec5-617af67e617d@redhat.com> <CAPz6YkVUsDz456z8-X2G_EDd-uet1rRNnh2sDUpdcoWp_fkDDw@mail.gmail.com>
- <e9093ab2-f61f-edf1-5da7-fce5101d6dbf@redhat.com>
-In-Reply-To: <e9093ab2-f61f-edf1-5da7-fce5101d6dbf@redhat.com>
-From:   Sonny Rao <sonnyrao@google.com>
-Date:   Thu, 26 Mar 2020 15:03:42 -0700
-Message-ID: <CAPz6YkXVYJBow-6G023eaDEKFORPh3AKQb6gfrM8XX8=bdXL2A@mail.gmail.com>
+        id S1727817AbgC0B1D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 26 Mar 2020 21:27:03 -0400
+Received: from us-smtp-delivery-74.mimecast.com ([216.205.24.74]:24232 "EHLO
+        us-smtp-delivery-74.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727122AbgC0B1D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Mar 2020 21:27:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1585272422;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MUJ4EFBey4RnBsubrV8OieVsspJ5+/9YngaSQHIcXsM=;
+        b=FmAGWk3pfgjcv7CMqfecffcpZ52rcWYxrPNQk5dMBUa8NJGCyKXmvAwURhF5+kQ4UVrTXu
+        XwgELMgErEGWB0FIVO815I8FgezE9ujIdxwm+bUNEFh18rc8JJdSRBik1GxhZnKjgnWws3
+        pt6Lgp/ckK+BcT8FBsnfDsg6uTNmQJY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-305-4cO3SvUDMUK6LNiuW7ZcNA-1; Thu, 26 Mar 2020 21:26:58 -0400
+X-MC-Unique: 4cO3SvUDMUK6LNiuW7ZcNA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A6AA6800D6C;
+        Fri, 27 Mar 2020 01:26:55 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-117-112.rdu2.redhat.com [10.10.117.112])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 73F9C60BF3;
+        Fri, 27 Mar 2020 01:26:52 +0000 (UTC)
 Subject: Re: [PATCH RFC] cpuset: Make cpusets get restored on hotplug
-To:     Waiman Long <longman@redhat.com>
-Cc:     Joel Fernandes <joel@joelfernandes.org>, Tejun Heo <tj@kernel.org>,
-        linux-kernel@vger.kernel.org, Dmitry Shmidt <dimitrysh@google.com>,
+To:     Joel Fernandes <joel@joelfernandes.org>, Tejun Heo <tj@kernel.org>
+Cc:     Sonny Rao <sonnyrao@google.com>, linux-kernel@vger.kernel.org,
+        Dmitry Shmidt <dimitrysh@google.com>,
         Amit Pundir <amit.pundir@linaro.org>, kernel-team@android.com,
         Jesse Barnes <jsbarnes@google.com>, vpillai@digitalocean.com,
         Peter Zijlstra <peterz@infradead.org>,
@@ -60,41 +44,57 @@ Cc:     Joel Fernandes <joel@joelfernandes.org>, Tejun Heo <tj@kernel.org>,
         Greg Kerr <kerrnel@google.com>, cgroups@vger.kernel.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Li Zefan <lizefan@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+References: <20200326191623.129285-1-joel@joelfernandes.org>
+ <20200326192035.GO162390@mtj.duckdns.org>
+ <20200326194448.GA133524@google.com>
+ <972a5c1b-6721-ac20-cec5-617af67e617d@redhat.com>
+ <CAPz6YkVUsDz456z8-X2G_EDd-uet1rRNnh2sDUpdcoWp_fkDDw@mail.gmail.com>
+ <20200326201649.GQ162390@mtj.duckdns.org>
+ <20200326202340.GA146657@google.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <592d4120-0b42-4607-5efd-fb2d4d29f0cc@redhat.com>
+Date:   Thu, 26 Mar 2020 21:26:51 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
+MIME-Version: 1.0
+In-Reply-To: <20200326202340.GA146657@google.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 2:47 PM Waiman Long <longman@redhat.com> wrote:
->
-> On 3/26/20 4:05 PM, Sonny Rao wrote:
-> >> I think Tejun is concerned about a change in the default behavior of
-> >> cpuset v1.
-> >>
-> >> There is a special v2 mode for cpuset that is enabled by the mount
-> >> option "cpuset_v2_mode". This causes the cpuset v1 to adopt some of the
-> >> v2 behavior. I introduced this v2 mode a while back to address, I think,
-> >> a similar concern. Could you try that to see if it is able to address
-> >> your problem? If not, you can make some code adjustment within the
-> >> framework of the v2 mode. As long as it is an opt-in, I think we are
-> >> open to further change.
-> > I am surprised if anyone actually wants this behavior, we (Chrome OS)
-> > found out about it accidentally, and then found that Android had been
-> > carrying a patch to fix it.  And if it were a desirable behavior then
-> > why isn't it an option in v2?
-> >
-> I am a bit confused. The v2 mode make cpuset v1 behaves more like cpuset
-> v2. The original v1 behavior has some obvious issue that was fixed in
-> v2. So what v2 option are you talking about?
+On 3/26/20 4:23 PM, Joel Fernandes wrote:
+> On Thu, Mar 26, 2020 at 04:18:59PM -0400, Tejun Heo wrote: >> On Thu, Mar 26, 2020 at 01:05:04PM -0700, Sonny Rao wrote: >>> I am
+surprised if anyone actually wants this behavior, we (Chrome >>> OS) >>
+>> The behavior is silly but consistent in that it doesn't allow empty
+>> active cpusets and it has been like that for many many years now. >>
+>>> found out about it accidentally, and then found that Android had >>>
+been carrying a patch to fix it. And if it were a desirable >>> behavior
+then why isn't it an option in v2? >> >> Nobody is saying it's a good
+behavior (hence the change in cgroup2) >> and there are situations where
+changing things like this is >> justifiable, but, here: >> >> * The
+proposed change makes the interface inconsistent and does so >>
+unconditionally on what is now a mostly legacy interface. >> >> * There
+already is a newer version of the interface which includes >> the
+desired behavior. >> >> * I forgot but as Waiman pointed out, you can
+even opt-in to the >> new behavior, which is more comprehensive without
+the >> inconsitencies, while staying on cgroup1. > > Thank you Tejun,
+Waiman and Sonny. I confirmed the cgroup_v2_mode > option fixes cgroup
+v1's broken behavior. > > We will use this mount option on our systems
+to fix it.
+I am glad that it works for you.
 
-I was merely pointing out the behavior of the v1 implementation is so
-undesirable that it wasn't kept at all in v2.  IMHO, it's a bug that
-should be fixed, and I think it's possible to keep the old behavior if
-all cpus are offlined, but since you've added this option we can use
-it instead.
+I think the problem is that the v2_mode mount option is not that well
+documented. Maybe I should send a patch to add some some description
+about it in cgroup-v2.rst or cgroup-v1/cpusets.rst.
 
->
-> Regards,
-> Longman
->
+Cheers,
+Longman
+
+
+
