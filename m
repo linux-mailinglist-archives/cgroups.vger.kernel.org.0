@@ -2,106 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 050281965DB
-	for <lists+cgroups@lfdr.de>; Sat, 28 Mar 2020 12:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED0A1973AF
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2020 07:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726283AbgC1Lu2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 28 Mar 2020 07:50:28 -0400
-Received: from mail-qk1-f194.google.com ([209.85.222.194]:35562 "EHLO
-        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726252AbgC1Lu2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 28 Mar 2020 07:50:28 -0400
-Received: by mail-qk1-f194.google.com with SMTP id k13so13820929qki.2
-        for <cgroups@vger.kernel.org>; Sat, 28 Mar 2020 04:50:27 -0700 (PDT)
+        id S1728451AbgC3FK5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 30 Mar 2020 01:10:57 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:45245 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727706AbgC3FK5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Mar 2020 01:10:57 -0400
+Received: by mail-qk1-f195.google.com with SMTP id c145so17700382qke.12
+        for <cgroups@vger.kernel.org>; Sun, 29 Mar 2020 22:10:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=PXOaWkf6K2Whqr4tczFKE+1Lhm0x7YcGQ6GGzYXABXQ=;
-        b=wruyawcvW8FYxDeUaH/b3sR9f8qVFJNMds5GXrlnCIL4b4t3MHPibhHne7Za5AesWp
-         +oZnYwJyHBF7rLaEj3+xRg7T5fJxnvcgCaXvzW/j0ZoW8S8LGz7HY/9cmXGJaWBhgnkX
-         3ev0sjOfZuxAiXphJs4iPsEiSx26FWby11+kM=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=82B0OONv9gwbZlPp43NzThDz2fRV+KRFwafOQ16joDw=;
+        b=s9jtCS94kCN/jYjdtzn8a2YKBsc2mvnifnTDB6WPABwoQuZUwXAhaVibFOIRt97XpV
+         JQAodm99uWZvjp6gs9RdZE+UZMxPA37nnsaFB4CPAjIe9H6HwwWbPY1ih8xiE42FBtf9
+         Ruq+Lpifv5i0Wcuf27eaCifTXwGqSgE1U+kvGpiDQHii4IrUGUb7wIyPtJS+xZjwntxZ
+         9ogJ/+NtM9DRSzxEeTGZQszewP2M5iuIl+41+95jlNlQrOJFYvMa8k0xhZCS9qC6jgUi
+         StUDIB8OnS6335ot/Go0DQnx+WWpV6rFS5lFiZ4O8dKEkzbgPqgQnYHw2EAIxw0/aKyS
+         Tqbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=PXOaWkf6K2Whqr4tczFKE+1Lhm0x7YcGQ6GGzYXABXQ=;
-        b=VcDdBbCZm+xdxSULTI/r4dplWPS6bQya2OIzXSVjzLFrPU4M/LubA6Ps6hzTBVa4se
-         v5MNVvDifkjEEHas1/EDybgyESVT/S9N15PWxIYl+SdtcCgMo5SZ9Po0bkZ7tbZy+1xf
-         yxYPTw/8rkGM3EcZaqAJLM022UgtV8LEdWzcAEkg8jDSxKGdngmltQUXliPpgnaK2iU/
-         FDhRjB//ZuZEhfJQ0YdznluxC6eyit5FQgFoSEOv5KzJv4e/WPv5ddBowxgSh4Sa7eBe
-         kfkVzhfGoDvZoBVLHJaCi1bFB1mFIzxRUU7KFH2m8qDXMdPZu8Fs1nuEFFTpRQl/ZF48
-         95cA==
-X-Gm-Message-State: ANhLgQ1sg7+zh2JMu/+cz/woXAJaZ9DOOLg2XogtqCxYW77S006evCnc
-        qJRndteeNSzfFG3OFqxYCbvqXQ==
-X-Google-Smtp-Source: ADFU+vuJZg9x4i3uIawWWwhUP6qOTLg47eTiVN4Q7Bu5YZJWAls9LsVdqiTybdkCsbmFuWW5s7NtMg==
-X-Received: by 2002:a37:4d88:: with SMTP id a130mr1086530qkb.443.1585396227212;
-        Sat, 28 Mar 2020 04:50:27 -0700 (PDT)
-Received: from localhost ([2620:15c:6:12:9c46:e0da:efbf:69cc])
-        by smtp.gmail.com with ESMTPSA id q1sm6610470qtn.69.2020.03.28.04.50.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 28 Mar 2020 04:50:26 -0700 (PDT)
-Date:   Sat, 28 Mar 2020 07:50:26 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jonathan Corbet <corbet@lwn.net>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        Sonny Rao <sonnyrao@google.com>
-Subject: Re: [PATCH] docs: cgroup-v1: Document the cpuset_v2_mode mount option
-Message-ID: <20200328115026.GA135587@google.com>
-References: <20200328014748.24140-1-longman@redhat.com>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=82B0OONv9gwbZlPp43NzThDz2fRV+KRFwafOQ16joDw=;
+        b=k/4z9CV4supCBAJoYOIQHGEbQ6SxKZP+DANU+GSSwj1BZG4CCcwaa5i5U0bYz4nNr5
+         pVCxZObUW+4qHir5vVeUCx58pZ1F6RJBteAeDr/PWcxRJpr17qrgza+wtjUmg0zbwH6m
+         PaNDU/idQ3u6BoNiTj7jWrpvXs9I0UQDTsfcCtFpZR9GwdRMR+4Y3uFg5YoYjLqGg5O+
+         RlknWn5PNcT/I6OE+WdnR4ewSQvokmjOlvxO+EkHX2pDNjd7sdHYAGlBbPP1k9wL9qUg
+         chLtlN0/KTqlzhuJhG1mx8DKukyZVYim/ccFRcRxp9cIneynunPranYuyTZRCIdLQqv3
+         rd5A==
+X-Gm-Message-State: ANhLgQ3iZj6KiqA4q576GCdetUmJArRVfF/YwM2zsHA9mdjJUtbNSxig
+        UTD7IUAHgjWseiQMjPFyNPwAnu3RaQCZKg5AvJo=
+X-Google-Smtp-Source: ADFU+vusEm4WJH4o4DHOepe7ZgL0faRvbybbWE9GKaxiHxImevTU2DpI82Y6QH92M6EBBd9d0pI/TVuuBe7vZ3eqIcw=
+X-Received: by 2002:a05:620a:401:: with SMTP id 1mr9728048qkp.465.1585545056315;
+ Sun, 29 Mar 2020 22:10:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200328014748.24140-1-longman@redhat.com>
-User-Agent: Mutt/1.12.2 (2019-09-21)
+Received: by 2002:ac8:3181:0:0:0:0:0 with HTTP; Sun, 29 Mar 2020 22:10:55
+ -0700 (PDT)
+Reply-To: maryalice00.12@postribe.com
+From:   "maryalice - maryalice:" <maryalice00.06@gmail.com>
+Date:   Mon, 30 Mar 2020 03:10:55 -0200
+Message-ID: <CAJrXg5Q7WjdNq8Ugzckh2G+XYiBeutBXPUPYVbWrmB4DTS4CiA@mail.gmail.com>
+Subject: Reply For More Details.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Mar 27, 2020 at 09:47:48PM -0400, Waiman Long wrote:
-> The cpuset in cgroup v1 accepts a special "cpuset_v2_mode" mount
-> option that make cpuset.cpus and cpuset.mems behave more like those in
-> cgroup v2.  Document it to make other people more aware of this feature
-> that can be useful in some circumstances.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+-- 
+My dear,
 
-Acked-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+I am Mrs Maryalice Williams, I want to send you donation of two
+million seven hundred thousand Dollars ($2.7M) for volunteer projects
+in your country due to my ill health that could not permit me. Kindly
+reply for more details, and also send me the following details, as per
+below, your full Name ..........,  Address...........,
+Age...............,  Occupation ...............
 
-thanks,
-
- - Joel
-
-> ---
->  Documentation/admin-guide/cgroup-v1/cpusets.rst | 11 +++++++++++
->  1 file changed, 11 insertions(+)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> index 86a6ae995d54..7ade3abd342a 100644
-> --- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> +++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-> @@ -223,6 +223,17 @@ cpu_online_mask using a CPU hotplug notifier, and the mems file
->  automatically tracks the value of node_states[N_MEMORY]--i.e.,
->  nodes with memory--using the cpuset_track_online_nodes() hook.
->  
-> +The cpuset.effective_cpus and cpuset.effective_mems files are
-> +normally read-only copies of cpuset.cpus and cpuset.mems files
-> +respectively.  If the cpuset cgroup filesystem is mounted with the
-> +special "cpuset_v2_mode" option, the behavior of these files will become
-> +similar to the corresponding files in cpuset v2.  In other words, hotplug
-> +events will not change cpuset.cpus and cpuset.mems.  Those events will
-> +only affect cpuset.effective_cpus and cpuset.effective_mems which show
-> +the actual cpus and memory nodes that are currently used by this cpuset.
-> +See Documentation/admin-guide/cgroup-v2.rst for more information about
-> +cpuset v2 behavior.
-> +
->  
->  1.4 What are exclusive cpusets ?
->  --------------------------------
-> -- 
-> 2.18.1
-> 
+Remain blessed,
+Mrs. Maryalice Williams.
