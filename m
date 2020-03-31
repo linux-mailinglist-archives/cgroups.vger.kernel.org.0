@@ -2,66 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id D59A919998C
-	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 17:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6D6199A28
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 17:47:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730105AbgCaPZg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Mar 2020 11:25:36 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:40197 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730521AbgCaPZg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 11:25:36 -0400
-Received: by mail-wr1-f67.google.com with SMTP id u10so26501752wro.7
-        for <cgroups@vger.kernel.org>; Tue, 31 Mar 2020 08:25:35 -0700 (PDT)
+        id S1730607AbgCaPry (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Mar 2020 11:47:54 -0400
+Received: from mail-qt1-f196.google.com ([209.85.160.196]:40985 "EHLO
+        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727703AbgCaPry (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 11:47:54 -0400
+Received: by mail-qt1-f196.google.com with SMTP id i3so18680835qtv.8;
+        Tue, 31 Mar 2020 08:47:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YTzVrLlnv/U861L9j2OH30y80LBa/uThEvzXvP/gh2c=;
-        b=MX3SlhqtOgu7+xXPL0VtCywalercn8WvcRrstjEE7UrqsuB7MOfCn54non2gPg5X59
-         uLet+fnVhtkcLmoWl91/g5RA8oxVdZsQT8JOjXegkF08l25QW2YHmBU2fGuolcm2oQCG
-         THSGdBz4PAgk6GtfOmO2lXmtTDQFqofruA8cA=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=S+cb3bISW4bZmT92F1j7Pnq/uvLuSPQAD/l0XluG3es=;
+        b=CZ/zV+JpODQPLEkTvr5bV1RtBpJRe9fHt7rTi1ZlaBgKVi9+wGb7JWDMSyVv0LFEsD
+         o7PNPQNrt5OdGEe2WyyKKey7Y+vGvDbN3ZH4ABhpa4VnHcXwOIxT7GUBNx/KZLCkmWEk
+         lrVuQgPUpgsHRfGXRvtQO3g0TW5D0OAiH81tJGPLzmcM0WGR4NBc/+UWiH2Z1VKmj6Gp
+         mUinuOWxNArJRaIiJVjAmIbvhJuf9+2XxQZh8Bx8SBloKhJWEPzEszXl58bmi8CifTLw
+         nT3J0bmpXMxgKhC6fTOKnt6huiA+8g/NT10Ysn2FSkTRzgZBVwIgHoorZyCh5XjndMoQ
+         EmHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YTzVrLlnv/U861L9j2OH30y80LBa/uThEvzXvP/gh2c=;
-        b=ABWXLfXeseGRML9ZRu9MnxtLe3DUh4yzzE4s74IBQFbTlb88KqULYvc91Ct7Y1qWCt
-         ix8W8zwZsiEb6PtNGF3eSTp3m1FptTqmQoouY9YTn7zGAWdoQXcudTBvbza7sADQXoVd
-         Jd6Jc1QxXO9D7QLgG5Zarv3wB6aMhe0XDz7TP5P7QPHf1p7bOJn7oL7zHGRnTCPcJHVm
-         uCK9zTTn1VYJx+fEnKDQhIpFmDbcTtbCVH3Be2FHh/f6LGQqAUVvk3WZl8gtsBxqmu17
-         UOEOnxP+ncJl3pIGHb31lU8RvmPYlYGgF+SP4DsCZzq77wMKszrqzkib5OKBJrdQ2WLn
-         s4Mg==
-X-Gm-Message-State: ANhLgQ0ufoRbenW6vGMi8oDHuuQPerA5fD01N+E/PYHPQdj1/DS0oJj6
-        fh9SHVsgvDPZxYLDqsk4x5LYIw==
-X-Google-Smtp-Source: ADFU+vtwJF1/nQQsqo4I3dRj5KZv3ZcoTKSDqx3vwC8HQz+R1N9Nja42TBa60n4K9gVoKNdsr+oLCw==
-X-Received: by 2002:adf:f68b:: with SMTP id v11mr20090187wrp.270.1585668335013;
-        Tue, 31 Mar 2020 08:25:35 -0700 (PDT)
-Received: from localhost ([2620:10d:c092:180::1:27bd])
-        by smtp.gmail.com with ESMTPSA id u22sm4278976wmu.43.2020.03.31.08.25.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 08:25:34 -0700 (PDT)
-Date:   Tue, 31 Mar 2020 16:25:34 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: Do not high throttle allocators based on
- wraparound
-Message-ID: <20200331152534.GA972283@chrisdown.name>
-References: <20200331152424.GA1019937@chrisdown.name>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S+cb3bISW4bZmT92F1j7Pnq/uvLuSPQAD/l0XluG3es=;
+        b=bnvLL4zLzmTWj2wEelTUM0jQvjTMNWA3KKP5sI+4aXODXwLJuTL6Zhrt2qRVuzn22n
+         ypxeVzoNkadvzPlGnmpBV9cKlsL6uYj0/T0cL0JS6UnZTNm2W9zlU/cQ+D1BnzNx9v3j
+         UMuAGJUZsS5EL6KxvGtDhhLpzSMrpgjgvwhGtErTDlJzlKK7lv+oIOULX7lY61OHS5w/
+         TYmS4W9+gf3icDJotsm/2GBJFwOChyM2x3/zX78m63YC9/cvt/ZOa36mZLl1IGotGmll
+         fVe2PGjWDNbXBCXtMxPmR0uHECjdEVwtkPkRFS8Pd0j3C2VlxXjmij/Mun1fuQvrVIkH
+         F6tA==
+X-Gm-Message-State: ANhLgQ35zGSctUMPYbdCBLvHGBrPnZphncq883aFlI509lOO+8RoYpDq
+        Ol1d8NSN28dL5IqQgmIYyYcTbrTAf7o9xOM44jY=
+X-Google-Smtp-Source: ADFU+vueFmwtyA1v+7pm/DjQa8uSCIHLcdiNP3fePAGUXFX+W1vqv3fkaAD0xsN2YQXUI2KJCFntt5b47zvPrwXIakg=
+X-Received: by 2002:ac8:18c3:: with SMTP id o3mr5923041qtk.49.1585669672947;
+ Tue, 31 Mar 2020 08:47:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200331152424.GA1019937@chrisdown.name>
+References: <cover.1580786525.git.zhangweiping@didiglobal.com>
+ <20200204154200.GA5831@redsun51.ssa.fujisawa.hgst.com> <CAA70yB5qAj8YnNiPVD5zmPrrTr0A0F3v2cC6t2S1Fb0kiECLfw@mail.gmail.com>
+ <CAA70yB62_6JD_8dJTGPjnjJfyJSa1xqiCVwwNYtsTCUXQR5uCA@mail.gmail.com> <20200331143635.GS162390@mtj.duckdns.org>
+In-Reply-To: <20200331143635.GS162390@mtj.duckdns.org>
+From:   Weiping Zhang <zwp10758@gmail.com>
+Date:   Tue, 31 Mar 2020 23:47:41 +0800
+Message-ID: <CAA70yB51=VQrL+2wC+DL8cYmGVACb2_w5UHc4XFn7MgZjUJaeg@mail.gmail.com>
+Subject: Re: [PATCH v5 0/4] Add support Weighted Round Robin for blkcg and nvme
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        Christoph Hellwig <hch@lst.de>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Minwoo Im <minwoo.im.dev@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ming Lei <ming.lei@redhat.com>,
+        "Nadolski, Edmund" <edmund.nadolski@intel.com>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-nvme@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Andrew, this is a pretty bad one that could definitely affect memory.high 
-users. We should probably expedite it going in.
+Tejun Heo <tj@kernel.org> =E4=BA=8E2020=E5=B9=B43=E6=9C=8831=E6=97=A5=E5=91=
+=A8=E4=BA=8C =E4=B8=8B=E5=8D=8810:36=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Hello, Weiping.
+>
+> On Tue, Mar 31, 2020 at 02:17:06PM +0800, Weiping Zhang wrote:
+> > Recently I do some cgroup io weight testing,
+> > https://github.com/dublio/iotrack/wiki/cgroup-io-weight-test
+> > I think a proper io weight policy
+> > should consider high weight cgroup's iops, latency and also take whole
+> > disk's throughput
+> > into account, that is to say, the policy should do more carfully trade
+> > off between cgroup's
+> > IO performance and whole disk's throughput. I know one policy cannot
+> > do all things perfectly,
+> > but from the test result nvme-wrr can work well.
+>
+> That's w/o iocost QoS targets configured, right? iocost should be able to
+> achieve similar results as wrr with QoS configured.
+>
+Yes, I have not set Qos target.
+> > From the following test result, nvme-wrr work well for both cgroup's
+> > latency, iops, and whole
+> > disk's throughput.
+>
+> As I wrote before, the issues I see with wrr are the followings.
+>
+> * Hardware dependent. Some will work ok or even fantastic. Many others wi=
+ll do
+>   horribly.
+>
+> * Lack of configuration granularity. We can't configure it granular enoug=
+h to
+>   serve hierarchical configuration.
+>
+> * Likely not a huge problem with the deep QD of nvmes but lack of queue d=
+epth
+>   control can lead to loss of latency control and thus loss of protection=
+ for
+>   low concurrency workloads when pitched against workloads which can satu=
+rate
+>   QD.
+>
+> All that said, given the feature is available, I don't see any reason to =
+not
+> allow to use it, but I don't think it fits the cgroup interface model giv=
+en the
+> hardware dependency and coarse granularity. For these cases, I think the =
+right
+> thing to do is using cgroups to provide tagging information - ie. build a
+> dedicated interface which takes cgroup fd or ino as the tag and associate
+> configurations that way. There already are other use cases which use cgro=
+up this
+> way (e.g. perf).
+>
+Do you means drop the "io.wrr" or "blkio.wrr" in cgroup, and use a
+dedicated interface
+like /dev/xxx or /proc/xxx?
 
-Sorry for the trouble, especially on a -stable patch...
+I see the perf code:
+struct fd f =3D fdget(fd)
+struct cgroup_subsys_state *css =3D
+css_tryget_online_from_dir(f.file->f_path.dentry,
+        &perf_event_cgrp_subsys);
+
+Looks can be applied to block cgroup in same way.
+
+Thanks your help.
