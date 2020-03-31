@@ -2,59 +2,71 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B0B3D198EE1
-	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 10:55:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B491E19910C
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 11:16:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726528AbgCaIzC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Mar 2020 04:55:02 -0400
-Received: from mail-vs1-f65.google.com ([209.85.217.65]:34385 "EHLO
-        mail-vs1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726299AbgCaIzB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 04:55:01 -0400
-Received: by mail-vs1-f65.google.com with SMTP id b5so13015733vsb.1
-        for <cgroups@vger.kernel.org>; Tue, 31 Mar 2020 01:55:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=Vs/DM+SoIXamEZB9CKVNjwFMgswFrfgEXLq0Uqykpf0=;
-        b=BoSd6+SxEmwKFwObFRh28R9hKpCaSTaHOEo6s+MrsT8uRs4rzywLGTlpMm1KMbwp4t
-         pO1wpULgTRmnnEM9IoUvrWqo/WUAvfzShxrdVlKaboKhRAAqhtHN90jeS6JCub6ONWpp
-         Jb3s3nIZcHDNiwAIIcHlN7mWH5A49mmdDwtX2UJ8mCxDxcLUUEaM61tSBLN8csnKS8o8
-         r48JigRgYaEi/xBi38wk7DxFp7i9IgJkxy27giMU4/Y+pGYAGKNNJzygNVDJnHMRry4p
-         K20MPq6L5yOA0jh6gvrknK35D4B3woBwo70zdvFwtDYSrMXBGlKdPzPgzDAQX2/oCpgW
-         w4Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=Vs/DM+SoIXamEZB9CKVNjwFMgswFrfgEXLq0Uqykpf0=;
-        b=MC3ddfej41AZLMnALgPKHBIsfkvNrAAzp48C5rb0N8knymsQ2IE/QPdoquKckTQL5O
-         gptrG4ZcVLbvX2uwHi9bcDDxq0h+0yKjJENuq7dVMQOOxV+CGoQBFLB+HmmM5bCx5/7Y
-         TJGMHcB6/GPNpwWMqIVr1w79Ij0YzeldZyiFIc+ncRA86ovIKYqNBSDEYq70lrnVGwMT
-         KnjVB2cKNu7VXEiIlA55WILClzBG1KafTvZsr+2+4xjfnhfotHbZZwEsQ6MrnH8KPBYq
-         8gko7affBEkKFfYSHG/X15gQHJMWpze4jFbhN4G9SNR2C7zovSyvQ8lu2v5L826PIyID
-         yOxw==
-X-Gm-Message-State: AGi0PuZfyHn441Pu3Ivp5T5oZp64ZOJq9lYsXsqlQjVnRTlbUHebZMx4
-        4wZyifUReLugi1yTwD5jl11UqxKErZBcA6JaeuQ=
-X-Google-Smtp-Source: APiQypL0s1gYHH8Ui+sj44/qihIeFRaRN5aJc9cQRhhL7rTt6VjT9SYlKeCT0APKLmZ+4OZOe6VBxGH3vQvjVNrAILM=
-X-Received: by 2002:a67:70c2:: with SMTP id l185mr10829149vsc.123.1585644901100;
- Tue, 31 Mar 2020 01:55:01 -0700 (PDT)
+        id S1731888AbgCaJQq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Mar 2020 05:16:46 -0400
+Received: from bombadil.infradead.org ([198.137.202.133]:59586 "EHLO
+        bombadil.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731927AbgCaJQp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 05:16:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Transfer-Encoding
+        :Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+        Sender:Reply-To:Content-ID:Content-Description;
+        bh=dAEAaiyYMafUZFXucEHFMwj9eNivSkJsj+WW8FmIfy0=; b=WDE48/qkkHgSzTYDWPtabW2BIr
+        QId90vMWhyZ52q84KyJn1KuMAWJMJlgbm9nleLyenJATRTgWQTOPXCI2lrEmA2Wc2PzCqdHsyPsHF
+        ePZB7DcFSeEIbLRsUZXU44hSzXY2ouUh4MfwnTFG+rD36iMKNqL87gb71OGczLhq6a2iXvtvIx73o
+        6hFwaOmKiJUoC05xpHEjbJOS1LOYg9GJgw3jHCZtoBL2PxnZ5qFF2c6TVZHtHPQ6Y+P3nHrg51PK4
+        PNCU65ImZZS0Qn4A+1QdIlrBcyfwqAmQssODULy2UAERzJcY7UeOiGlKlFn5lhnBDrtrL+7RiGPqV
+        dekOQ0Tg==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1jJD0m-0004fI-3F; Tue, 31 Mar 2020 09:16:44 +0000
+Date:   Tue, 31 Mar 2020 02:16:44 -0700
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Weiping Zhang <zwp10758@gmail.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
+        linux-block@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [RFC PATCH v2 2/3] bio: track timestamp of submitting bio the
+ disk driver
+Message-ID: <20200331091644.GB12040@infradead.org>
+References: <20200327062859.GA12588@192.168.3.9>
+ <20200331082505.GA14655@infradead.org>
+ <CAA70yB5cWESKW600Lwoi8toPaiDtOVH53P8GSou6uukmX5mvgQ@mail.gmail.com>
 MIME-Version: 1.0
-Received: by 2002:a05:6102:507:0:0:0:0 with HTTP; Tue, 31 Mar 2020 01:55:00
- -0700 (PDT)
-Reply-To: tawabaliki19@gmail.com
-From:   Tawa Balikie <firstlegalwilliams6@gmail.com>
-Date:   Tue, 31 Mar 2020 04:55:00 -0400
-Message-ID: <CAPvMNqSZdZ_5f9=hvGMW8qD+PNXz+KTKvMOdrvNwcOXECCu0tg@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA70yB5cWESKW600Lwoi8toPaiDtOVH53P8GSou6uukmX5mvgQ@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Greetings! I wish to bring to your notice a profitable financial deal
-i want to discuss with you, Please confirm the receipt of this email
-for more details.
-Thanks,
+On Tue, Mar 31, 2020 at 04:45:33PM +0800, Weiping Zhang wrote:
+> Christoph Hellwig <hch@infradead.org> 于2020年3月31日周二 下午4:25写道：
+> >
+> > On Fri, Mar 27, 2020 at 02:28:59PM +0800, Weiping Zhang wrote:
+> > > Change-Id: Ibb9caf20616f83e111113ab5c824c05930c0e523
+> > > Signed-off-by: Weiping Zhang <zhangweiping@didiglobal.com>
+> >
+> > This needs a commit description and loose the weird change id.
+> >
+> OK, I rewirte commit description, it record the timestamp of issue bio
+> to the disk driver,
+> then we can get the delta time in rq_qos_done_bio. It's same as the D2C time
+> of blktrace.
+> > I also think oyu need to fins a way to not bloat the bio even more,
+> > cgroup is a really bad offender for bio size.
+> struct request {
+>     u64 io_start_time_ns;
+> also record this timestamp, I'll check if we can use it.
+
+But except for a few exceptions bios are never issued directly to the
+driver, requests are.  And the few exception (rsxx, umem) probably should
+be rewritten to use requests.  And with generic_{start,end}_io_acct we
+already have helpers to track bio based stats, which we should not
+duplicate just for cgroups.
