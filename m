@@ -2,119 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DC821998AC
-	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 16:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B55F199980
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2020 17:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730935AbgCaOgj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 31 Mar 2020 10:36:39 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:38800 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730887AbgCaOgj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 10:36:39 -0400
-Received: by mail-qt1-f196.google.com with SMTP id z12so18476367qtq.5;
-        Tue, 31 Mar 2020 07:36:38 -0700 (PDT)
+        id S1726595AbgCaPY3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 31 Mar 2020 11:24:29 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:43642 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730521AbgCaPY2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 31 Mar 2020 11:24:28 -0400
+Received: by mail-wr1-f66.google.com with SMTP id m11so20631339wrx.10
+        for <cgroups@vger.kernel.org>; Tue, 31 Mar 2020 08:24:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=g8eJTubDOpnYx+MtqM441enT6egVrVa4bYoBdzCqVy0=;
-        b=VWvb+6VE6Bc3z/zRovKdw8FPguqnvnIL0uwajhY5uXtucaCe7G5c85lThPb8hTYhn9
-         PHL8UjRnU/deAljnmmbMJgW8hSM1swVCyNW2OW6VVgfDQlYLeOzIN1ms85bXnrPLVjfp
-         gURscr2MPffBwbRimGGc39gyNwgkkPSUHcXIpF981uDN/xVlURsl2L+jZJHEP9Q6N2/U
-         0RmjKDv3e33dDDCV6KBvznLJ9FFRCF2gp7g8UX6Ot84jVjOCu1VjPLF4rq4xCRpxW6/m
-         xc+sGYdo5GiXmo7cVGmvFQ5PPwcti5+DYPEvSt181iW17IaYwwGdANqpdxCjzS8sEHn/
-         kPWQ==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=6PtH4wzWMiH5JmxAt904ilpPuqtvXlZEsu04wa6si/k=;
+        b=P8qu2lfTpI9t1V10h5AQtX1pY3rsMg/xWtmYiBZTO8QwsPjlZ48gV9R/FoFJmeJWE0
+         6N9UVOHFvpnOaSH+7UMgcWEAHiG7XS3XGxcYf4DGWJ7JjdHdvf5MBmfs7Auv00Bns8rd
+         7JaAJ9XeB4dUlJrtAGbvmVJaQ85yG05sxP8nA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=g8eJTubDOpnYx+MtqM441enT6egVrVa4bYoBdzCqVy0=;
-        b=p2z33e1X1QCWg5UJcJ40p32az7HmOhhQ+krihBHODRsU2eqFNsCGBMVaDsV/mkgEJ5
-         69U2R+Syu+LcNT+plViFjguW+TcrXVhBdjK+ZBI2kAT6yNkKbg2P+czlhUPAwSRncy89
-         b7dk0T/mGQ3KSLHuQdHfPQfWHaZ9ERJqvNHnK0aJwA1EuM9wNguhK1SEyakUzbOnPhCm
-         d8SsGCldVUiBBG1dhpuW2XpgdOYQ4+Fj48XIYjHBOmGDG+Q+5tntbZh7m8qeyQoJRBRP
-         VnBoLE1q+m7w/vHLE2egKUTzKk7g8bBHbp7iViQ0zev5xabRa1a8sDozSmyr0yahgCqY
-         B/Ag==
-X-Gm-Message-State: ANhLgQ2DW9W0fRrSD84kpIuzawy4gLTBBy2BW4mgcaB82bWgqX6Ox+mT
-        cY5H4Kzze666ma2zUqvXVQg=
-X-Google-Smtp-Source: ADFU+vuHaX3R0Rod/OfU4HzywP3xMCDKTEorvnNns5X0xjYEKqcjXzXOibbmborAYzSd8CwlUgvZ7g==
-X-Received: by 2002:aed:3c10:: with SMTP id t16mr5340804qte.45.1585665397860;
-        Tue, 31 Mar 2020 07:36:37 -0700 (PDT)
-Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id 199sm12602372qkm.7.2020.03.31.07.36.36
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=6PtH4wzWMiH5JmxAt904ilpPuqtvXlZEsu04wa6si/k=;
+        b=oFgmzZQIlRpGZ3D719h3A1LtrKvf3LOThJT//feTYk9my46U0KMAELYRuWgsW+inLH
+         lGYRXDQ9rcG3htt+brkH1NQXS9HtUi7rSXjk0zPh7qRjMLWVCjP/uzmbUt2xaqYQJCPF
+         aDIZvRdHg1XwcgsGCyUCzjFVKAZSnP0SeaZszE+lwEn1VRfQg1JInHu/goO5QcmYjZ0N
+         Rt0uPoQAfcITqcgmF7cy028AYjxfkutz3fw9U7Q41vwNIeKNmdUtl8ZPecg1oGsuXoYe
+         hM7ZMLEADjveWzbCoqrnE+wHBKko4PRmE9wpzfnz+hxu2MsGsO9HeZ0AtzNfBfBQphGb
+         MRmg==
+X-Gm-Message-State: ANhLgQ2weYUH3NWEETeczLfFMEsD8fJzcaPcGe4366Sz9AOqE+HKN0N8
+        yFA28Pt2QOz+B0JQqTcXSTIoGGPmJtHyuA==
+X-Google-Smtp-Source: ADFU+vtjJzo7Yj3p4RVYdBmh1TnRGKbfJ5JHTuYQ43/PgPGuhocYfvkpQbIjq4OT3R2JrnctZq7ssQ==
+X-Received: by 2002:adf:9465:: with SMTP id 92mr21029231wrq.122.1585668265184;
+        Tue, 31 Mar 2020 08:24:25 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:180::1:27bd])
+        by smtp.gmail.com with ESMTPSA id c7sm27386436wrn.49.2020.03.31.08.24.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 31 Mar 2020 07:36:37 -0700 (PDT)
-Date:   Tue, 31 Mar 2020 10:36:35 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Weiping Zhang <zwp10758@gmail.com>
-Cc:     Keith Busch <kbusch@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Christoph Hellwig <hch@lst.de>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Minwoo Im <minwoo.im.dev@gmail.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ming Lei <ming.lei@redhat.com>,
-        "Nadolski, Edmund" <edmund.nadolski@intel.com>,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-nvme@lists.infradead.org
-Subject: Re: [PATCH v5 0/4] Add support Weighted Round Robin for blkcg and
- nvme
-Message-ID: <20200331143635.GS162390@mtj.duckdns.org>
-References: <cover.1580786525.git.zhangweiping@didiglobal.com>
- <20200204154200.GA5831@redsun51.ssa.fujisawa.hgst.com>
- <CAA70yB5qAj8YnNiPVD5zmPrrTr0A0F3v2cC6t2S1Fb0kiECLfw@mail.gmail.com>
- <CAA70yB62_6JD_8dJTGPjnjJfyJSa1xqiCVwwNYtsTCUXQR5uCA@mail.gmail.com>
+        Tue, 31 Mar 2020 08:24:24 -0700 (PDT)
+Date:   Tue, 31 Mar 2020 16:24:24 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm, memcg: Do not high throttle allocators based on
+ wraparound
+Message-ID: <20200331152424.GA1019937@chrisdown.name>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAA70yB62_6JD_8dJTGPjnjJfyJSa1xqiCVwwNYtsTCUXQR5uCA@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Weiping.
+From: Jakub Kicinski <kuba@kernel.org>
 
-On Tue, Mar 31, 2020 at 02:17:06PM +0800, Weiping Zhang wrote:
-> Recently I do some cgroup io weight testing,
-> https://github.com/dublio/iotrack/wiki/cgroup-io-weight-test
-> I think a proper io weight policy
-> should consider high weight cgroup's iops, latency and also take whole
-> disk's throughput
-> into account, that is to say, the policy should do more carfully trade
-> off between cgroup's
-> IO performance and whole disk's throughput. I know one policy cannot
-> do all things perfectly,
-> but from the test result nvme-wrr can work well.
+If a cgroup violates its memory.high constraints, we may end
+up unduly penalising it. For example, for the following hierarchy:
 
-That's w/o iocost QoS targets configured, right? iocost should be able to
-achieve similar results as wrr with QoS configured.
+A:   max high, 20 usage
+A/B: 9 high, 10 usage
+A/C: max high, 10 usage
 
-> From the following test result, nvme-wrr work well for both cgroup's
-> latency, iops, and whole
-> disk's throughput.
+We would end up doing the following calculation below when calculating
+high delay for A/B:
 
-As I wrote before, the issues I see with wrr are the followings.
+A/B: 10 - 9 = 1...
+A:   20 - PAGE_COUNTER_MAX = 21, so set max_overage to 21.
 
-* Hardware dependent. Some will work ok or even fantastic. Many others will do
-  horribly.
+This gets worse with higher disparities in usage in the parent.
 
-* Lack of configuration granularity. We can't configure it granular enough to
-  serve hierarchical configuration.
+I have no idea how this disappeared from the final version of the patch,
+but it is certainly Not Good(tm). This wasn't obvious in testing
+because, for a simple cgroup hierarchy with only one child, the result
+is usually roughly the same. It's only in more complex hierarchies that
+things go really awry (although still, the effects are limited to a
+maximum of 2 seconds in schedule_timeout_killable at a maximum).
 
-* Likely not a huge problem with the deep QD of nvmes but lack of queue depth
-  control can lead to loss of latency control and thus loss of protection for
-  low concurrency workloads when pitched against workloads which can saturate
-  QD.
+[chris@chrisdown.name: changelog]
 
-All that said, given the feature is available, I don't see any reason to not
-allow to use it, but I don't think it fits the cgroup interface model given the
-hardware dependency and coarse granularity. For these cases, I think the right
-thing to do is using cgroups to provide tagging information - ie. build a
-dedicated interface which takes cgroup fd or ino as the tag and associate
-configurations that way. There already are other use cases which use cgroup this
-way (e.g. perf).
+Fixes: e26733e0d0ec ("mm, memcg: throttle allocators based on ancestral memory.high")
+Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Signed-off-by: Chris Down <chris@chrisdown.name>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: stable@vger.kernel.org # 5.4.x
+---
+ mm/memcontrol.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks.
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index eecf003b0c56..75a978307863 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2336,6 +2336,9 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+ 		usage = page_counter_read(&memcg->memory);
+ 		high = READ_ONCE(memcg->high);
+ 
++		if (usage <= high)
++			continue;
++
+ 		/*
+ 		 * Prevent division by 0 in overage calculation by acting as if
+ 		 * it was a threshold of 1 page
 -- 
-tejun
+2.26.0
+
