@@ -2,68 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 26C3619B9D3
-	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2020 03:23:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B18719BA13
+	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2020 04:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732543AbgDBBXI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Apr 2020 21:23:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732462AbgDBBXI (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 Apr 2020 21:23:08 -0400
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BA5A20675;
-        Thu,  2 Apr 2020 01:23:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1585790587;
-        bh=/XWfr8B2+Gdq9aBiaTze7oFSffBCOQXALgeP7OSUoQQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=M+kfbZ9UrQu3G+ELPmQ1UpQH6jzItlc6P2SWjstji9UaUSHoI42uhLz0GCrHwnyx/
-         ZwI8RIGgcPMexnOXuBDWj4+S+SxyZPVlNjjQ0mkCAeQ4t7v7YUjvLhrUdv5sSQOl4I
-         vy4yB6xaC3seVhG8xKwbIV0+jkhCZBTUuL4EW8tc=
-Date:   Wed, 1 Apr 2020 18:23:06 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Michal Hocko <mhocko@kernel.org>
-Subject: Re: [PATCH] mm, memcg: Bypass high reclaim iteration for cgroup
- hierarchy root
-Message-Id: <20200401182306.724698b74692b5d31f66ad10@linux-foundation.org>
-In-Reply-To: <20200312164137.GA1753625@chrisdown.name>
-References: <20200312164137.GA1753625@chrisdown.name>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1732732AbgDBCAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Apr 2020 22:00:36 -0400
+Received: from mail-qv1-f68.google.com ([209.85.219.68]:35231 "EHLO
+        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732537AbgDBCAf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Apr 2020 22:00:35 -0400
+Received: by mail-qv1-f68.google.com with SMTP id q73so936683qvq.2
+        for <cgroups@vger.kernel.org>; Wed, 01 Apr 2020 19:00:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=qfoLXrnqNbdNMc/qg2fQn2VjZnT5IOOCPmT892IlYdk=;
+        b=cKiCEtpAG53uMWAllPIubuUVMZlkf3zGEeenWXGZmNb+BHlxsZBGyKew+FTU9oQ0DK
+         McD3eNpxPXKTXQPqLWrgQdam04yznD9HI+ZfpUVD4+6oU/EnkDneahxLSct/AcGOF4gG
+         uheCdgHsaoKysYe8jmBDL5RQYET+jwYiCS8TGbjMxhAArzztsmCasWUrhDVQx5cbzEiC
+         46MaPsstwXUfybIOU50IHy4Ix+1AtX+LmS7afvx+O+PlAXsZ+jUibdRobmcBTI6f7Jxi
+         MgjCUnelx9ep+I9n1ADEJjzAxCwlrKMWRT47dVTrQnjx7fRr/mKa6yMLmmnXJqb/GFsW
+         Zg4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=qfoLXrnqNbdNMc/qg2fQn2VjZnT5IOOCPmT892IlYdk=;
+        b=qg9i8aeU7RfTEOM6lT+0ezsjQOQZh5hbfBb9CL6bWfSSLCqYLrPuoDAItkxwhLaxN1
+         dMoOv5npr1VNXb/YwvGYMJUPXJHx7Sj/OW757nfwq76GrGaapA2SZt5HwhDI6tbjs4ga
+         jZK6RjWKTvEuior4L96qFK9GOFx3xMtASlcH4ME63sbELABBMtJQ0b/qOv8GxwjTrj0S
+         qZZ4zFuoaO9bii8653qQYXh9L81OAGMvNhErzTc4acAAdYwt1x0YXGV1DdYM1pw/4OFZ
+         1S5Kpr8yD2MZTJqhcuyHdsn0TpMf2sxBSZ4voUSQFRikfxG2IxUHtGQ9pGIPlUqJO9j/
+         Egug==
+X-Gm-Message-State: AGi0PuakvukMVyErHAwxcaVtJxP/IaFvG83gHAZUYMbYTfQAyQpwDtUy
+        AGl9ivBZiQkX8JfopvvWZ535Tw==
+X-Google-Smtp-Source: APiQypKt76w7m6e5xoRV81SkiAPCm2e1rthecIHWTZSulTpArjqfbhWp7Y/79CYWcsS260luE96bsg==
+X-Received: by 2002:a0c:90aa:: with SMTP id p39mr1075930qvp.38.1585792834408;
+        Wed, 01 Apr 2020 19:00:34 -0700 (PDT)
+Received: from [192.168.1.153] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id s56sm2889238qtk.9.2020.04.01.19.00.33
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Apr 2020 19:00:33 -0700 (PDT)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: Deadlock due to "cpuset: Make cpuset hotplug synchronous"
+From:   Qian Cai <cai@lca.pw>
+In-Reply-To: <20200325191922.GM162390@mtj.duckdns.org>
+Date:   Wed, 1 Apr 2020 22:00:31 -0400
+Cc:     Prateek Sood <prsood@codeaurora.org>,
+        Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <6AD62381-394F-4742-816B-12DE67DE9788@lca.pw>
+References: <F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw>
+ <20200325191922.GM162390@mtj.duckdns.org>
+To:     Tejun Heo <tj@kernel.org>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 12 Mar 2020 16:41:37 +0000 Chris Down <chris@chrisdown.name> wrote:
 
-> The root of the hierarchy cannot have high set, so we will never reclaim
-> based on it. This makes that clearer and avoids another entry.
-> 
-> ...
->
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2232,7 +2232,8 @@ static void reclaim_high(struct mem_cgroup *memcg,
->  			continue;
->  		memcg_memory_event(memcg, MEMCG_HIGH);
->  		try_to_free_mem_cgroup_pages(memcg, nr_pages, gfp_mask, true);
-> -	} while ((memcg = parent_mem_cgroup(memcg)));
-> +	} while ((memcg = parent_mem_cgroup(memcg)) &&
-> +		 !mem_cgroup_is_root(memcg));
->  }
->  
->  static void high_work_func(struct work_struct *work)
 
-Does someone have time to review this one?
+> On Mar 25, 2020, at 3:19 PM, Tejun Heo <tj@kernel.org> wrote:
+>=20
+> On Wed, Mar 25, 2020 at 03:16:56PM -0400, Qian Cai wrote:
+>> The linux-next commit a49e4629b5ed (=E2=80=9Ccpuset: Make cpuset =
+hotplug synchronous=E2=80=9D)
+>> introduced real deadlocks with CPU hotplug as showed in the lockdep =
+splat, since it is
+>> now making a relation from cpu_hotplug_lock =E2=80=94> cgroup_mutex.
+>=20
+> Prateek, can you please take a look? Given that the merge window is =
+just around
+> the corner, we might have to revert and retry later if it can't be =
+resolved
+> quickly.
 
-Thanks.
+Tejun, can you back off this commit now given it seems nobody is trying =
+to rescue it?
+
