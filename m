@@ -2,85 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id DCB0E19C5A4
-	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2020 17:18:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2ACCE19D477
+	for <lists+cgroups@lfdr.de>; Fri,  3 Apr 2020 11:56:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388795AbgDBPSy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 2 Apr 2020 11:18:54 -0400
-Received: from mail-qv1-f68.google.com ([209.85.219.68]:34467 "EHLO
-        mail-qv1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388781AbgDBPSy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 2 Apr 2020 11:18:54 -0400
-Received: by mail-qv1-f68.google.com with SMTP id s18so1850616qvn.1
-        for <cgroups@vger.kernel.org>; Thu, 02 Apr 2020 08:18:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=X4md8GfFb/AZLlmWivRcEwSCP4uBimc7oKbXY4Cuzbs=;
-        b=L/SnQjBfnp5fEn4nBLMR6OIrZCUsqaFG32VM3D8P0P8Lj/uoYnjkRyEnuYvXsJsAKt
-         c4igzrWSnvwBSj3E7mr0QbuhFJhboCmmv66EkfRKM8dykWur9UCs7QjwYmhFzRp4O+A4
-         SnrLBfG8ir/Oio7mvh4OgFCEi2cahY9VIyMpFSkHRdm41lB0/v0GSq1mKWVd2TiCyBlN
-         hI6cIgvd6bBViEDgjTfBgb3PQnim/I28LCR10Uk8FN4kj7u9VdBwqKzsszZNJndU/ap/
-         B/jD43fEcMR1E7yUPLdB4B9rCGNhvxza6rn5dvPkZt/C61cv9D6z0rzi3GwPV+Lp5T9D
-         VM4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=X4md8GfFb/AZLlmWivRcEwSCP4uBimc7oKbXY4Cuzbs=;
-        b=WwoImRfiFlsMwdZRs/H18XOKNVOxrnVIyqmWLFjYF5kgOOfQZuinMeY1Tfh3wOQIKF
-         fyRCjCueeL1OXQ/OEv/SAFcGSDkJLYfLKH7c6FXWBxHC9eUBCGXdbraJDmvTl1uNd9L/
-         p5Ha5zHMmLq3emRpF7mE+EidJaFZJmUiO78yvZ8rlEjOjBCvvwBtDyiA+uyKr5PbC+ZY
-         g4x8/bH0+sMwGf5JfjU/yD7hy8Argw93JwxsCWKzf+2JsbssROSogvQ4P72rHA7UY/c9
-         bfJSZeknsBCGtwvZCO2fP4+0cPZhpS1cpL6U0IraHM5jnaHyKvfzcdayg1uL/82N9esI
-         5aLA==
-X-Gm-Message-State: AGi0PuZsb33XFzzuqKzN49lgIehWq/SePQDAiI5QF1zfPcVLECG7ikQ4
-        pMPwM1Od6HDm9mfmaNchP36oWw==
-X-Google-Smtp-Source: APiQypL5Dn4DcQmenazeGPmJARieWyi3C0ntxFpd4l0Ao5mKkYmQaN0AZVEOfdy/PupIGM0JUmOwRg==
-X-Received: by 2002:ad4:55cd:: with SMTP id bt13mr3597389qvb.111.1585840733984;
-        Thu, 02 Apr 2020 08:18:53 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::11c9])
-        by smtp.gmail.com with ESMTPSA id z66sm3721863qkb.94.2020.04.02.08.18.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2020 08:18:53 -0700 (PDT)
-Date:   Thu, 2 Apr 2020 11:18:52 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: Bypass high reclaim iteration for cgroup
- hierarchy root
-Message-ID: <20200402151852.GD2089@cmpxchg.org>
-References: <20200312164137.GA1753625@chrisdown.name>
+        id S2389297AbgDCJ4g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Apr 2020 05:56:36 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:55240 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727792AbgDCJ4g (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Apr 2020 05:56:36 -0400
+Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 63E8D2E0B0E;
+        Fri,  3 Apr 2020 12:56:32 +0300 (MSK)
+Received: from myt4-18a966dbd9be.qloud-c.yandex.net (myt4-18a966dbd9be.qloud-c.yandex.net [2a02:6b8:c00:12ad:0:640:18a9:66db])
+        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id E5QFmAImMn-uVNK4SJG;
+        Fri, 03 Apr 2020 12:56:32 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1585907792; bh=quoFiDMrc4n64AIBxbW1ayY5jdo/MDfLHVb25p4vCC0=;
+        h=Message-ID:Subject:To:From:Date:Cc;
+        b=qfW4f15gWBYhHThlb6i7AgwCc9v26b0hEDJ8cy40bXs5eVJKV6dpInZkz3DcGxcdp
+         Ie2esvZimeok6tAjsZgmVd2DsR9t7SxHYvCAp65argc/j3dqJ8BUOkgjNnLkEk/zHR
+         sTpRoYpL5qrjJVNEdfLcWhdcmkW88Lju8xzivL+0=
+Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from unknown (unknown [2a02:6b8:b080:7115::1:c])
+        by myt4-18a966dbd9be.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id ZJWyyT8QkH-uVW4dxLT;
+        Fri, 03 Apr 2020 12:56:31 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Date:   Fri, 3 Apr 2020 12:56:27 +0300
+From:   Dmitry Yakunin <zeil@yandex-team.ru>
+To:     davem@davemloft.net, netdev@vger.kernel.org
+Cc:     khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
+        bpf@vger.kernel.org
+Subject: [PATCH v3 net] inet_diag: add cgroup id attribute
+Message-ID: <20200403095627.GA85072@yandex-team.ru>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200312164137.GA1753625@chrisdown.name>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 12, 2020 at 04:41:37PM +0000, Chris Down wrote:
-> The root of the hierarchy cannot have high set, so we will never reclaim
-> based on it. This makes that clearer and avoids another entry.
-> 
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: linux-mm@kvack.org
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: kernel-team@fb.com
+This patch adds cgroup v2 ID to common inet diag message attributes.
+Cgroup v2 ID is kernfs ID (ino or ino+gen). This attribute allows filter
+inet diag output by cgroup ID obtained by name_to_handle_at() syscall.
+When net_cls or net_prio cgroup is activated this ID is equal to 1 (root
+cgroup ID) for newly created sockets.
 
-This makes sense, memory.high doesn't exist on the root.
+Some notes about this ID:
 
-And the mem_cgroup_is_root() check, a simple pointer comparison, is
-cheaper than reading the page_counter atomic and memcg->high (which we
-already know to be PAGE_COUNTER_MAX).
+1) gets initialized in socket() syscall
+2) incoming socket gets ID from listening socket
+   (not during accept() syscall)
+3) not changed when process get moved to another cgroup
+4) can point to deleted cgroup (refcounting)
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+v2:
+  - use CONFIG_SOCK_CGROUP_DATA instead if CONFIG_CGROUPS
+
+v3:
+  - fix attr size by using nla_total_size_64bit() (Eric Dumazet)
+  - more detailed commit message (Konstantin Khlebnikov)
+
+Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
+Reviewed-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+---
+ include/linux/inet_diag.h      | 6 +++++-
+ include/uapi/linux/inet_diag.h | 1 +
+ net/ipv4/inet_diag.c           | 7 +++++++
+ 3 files changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/include/linux/inet_diag.h b/include/linux/inet_diag.h
+index c91cf2d..0696f86 100644
+--- a/include/linux/inet_diag.h
++++ b/include/linux/inet_diag.h
+@@ -66,7 +66,11 @@ static inline size_t inet_diag_msg_attrs_size(void)
+ 		+ nla_total_size(1)  /* INET_DIAG_SKV6ONLY */
+ #endif
+ 		+ nla_total_size(4)  /* INET_DIAG_MARK */
+-		+ nla_total_size(4); /* INET_DIAG_CLASS_ID */
++		+ nla_total_size(4)  /* INET_DIAG_CLASS_ID */
++#ifdef CONFIG_SOCK_CGROUP_DATA
++		+ nla_total_size_64bit(sizeof(u64))  /* INET_DIAG_CGROUP_ID */
++#endif
++		;
+ }
+ int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
+ 			     struct inet_diag_msg *r, int ext,
+diff --git a/include/uapi/linux/inet_diag.h b/include/uapi/linux/inet_diag.h
+index a1ff345..dc87ad6 100644
+--- a/include/uapi/linux/inet_diag.h
++++ b/include/uapi/linux/inet_diag.h
+@@ -154,6 +154,7 @@ enum {
+ 	INET_DIAG_CLASS_ID,	/* request as INET_DIAG_TCLASS */
+ 	INET_DIAG_MD5SIG,
+ 	INET_DIAG_ULP_INFO,
++	INET_DIAG_CGROUP_ID,
+ 	__INET_DIAG_MAX,
+ };
+ 
+diff --git a/net/ipv4/inet_diag.c b/net/ipv4/inet_diag.c
+index 8c83775..17e3c52 100644
+--- a/net/ipv4/inet_diag.c
++++ b/net/ipv4/inet_diag.c
+@@ -161,6 +161,13 @@ int inet_diag_msg_attrs_fill(struct sock *sk, struct sk_buff *skb,
+ 			goto errout;
+ 	}
+ 
++#ifdef CONFIG_SOCK_CGROUP_DATA
++	if (nla_put_u64_64bit(skb, INET_DIAG_CGROUP_ID,
++			      cgroup_id(sock_cgroup_ptr(&sk->sk_cgrp_data)),
++			      INET_DIAG_PAD))
++		goto errout;
++#endif
++
+ 	r->idiag_uid = from_kuid_munged(user_ns, sock_i_uid(sk));
+ 	r->idiag_inode = sock_i_ino(sk);
+ 
+-- 
+2.7.4
+
