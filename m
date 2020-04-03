@@ -2,94 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D5E519D993
-	for <lists+cgroups@lfdr.de>; Fri,  3 Apr 2020 16:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0281F19D997
+	for <lists+cgroups@lfdr.de>; Fri,  3 Apr 2020 16:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404090AbgDCOz2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Apr 2020 10:55:28 -0400
-Received: from mail-qt1-f195.google.com ([209.85.160.195]:34654 "EHLO
-        mail-qt1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404079AbgDCOz1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Apr 2020 10:55:27 -0400
-Received: by mail-qt1-f195.google.com with SMTP id 14so6387839qtp.1;
-        Fri, 03 Apr 2020 07:55:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=WueqobVTQhcuC12qhXxBjSlUXTsOjQxipqHLExYdXc0=;
-        b=r1b480yVF4TVvjrmu9e9b50NuC47Vk3m0YSl40WOSeQXq8lJeps/ADO+KJNjeKJzJj
-         aGGZJZfUuaq3cRlitmPYQ2IQv77nhZDHwTOFW4atm0XMsImQWiDGLolaa9PagsIpXjgb
-         EM2oNoZdvmXAhaoNA0X7jbbK3rIy8dL8zcXGxbVDVblZmNjnIRyoagBiqvD5Wg0DfMft
-         Je19HLCWupm6dDLYgsaD2ZSvaSjPdO2mdFOlfM68Q7pRDcuIodjlvnxsEyHv1ozQY4VN
-         td2ZZZmZjc3IOVeCUgGknW+DVuUoBKjpERAgu440DgNTZua5AIfvoANdbzhN23UAUpXq
-         kuTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=WueqobVTQhcuC12qhXxBjSlUXTsOjQxipqHLExYdXc0=;
-        b=WTC2VyVjGW6Bdvq3uq0HhQ47SRmgpyi/1gnYae1brmpJjJu6sZl3g3I3hb/F2E5ZeC
-         etMDHQIH2F1+wobgxul9kwd0jbDqCPvnDBAzMacKgmF3r+7kVXvG5zLMCgiBO4GIW/8j
-         sTqQlbS7tRSTQ4Cx1h1oA6Y/eChuL3fbSXwVii1dDTtfsr5I4r1dFBz9xAvABbJYHZBE
-         yYnAWHHDd8n8kGvnnY3+/cIO7EYo9hChd2BsaElLClCQpwIhuDu4V1hvU9Fk4FdweaKo
-         Syg/MxHOr4qelEze3qy5F9/z58rn5oG2ZomyOeJo8n/yQljBWhax6K9bmDkiUWuO2p5O
-         fDVA==
-X-Gm-Message-State: AGi0PuZkh6d23U1jHy707FK6BcAfWXvHZjZUk75s4QeK+Db1wDVQzqi6
-        M9mbOTUB4nsrgd8qWaBd19A=
-X-Google-Smtp-Source: APiQypIWYRFn9PmjXGuhOXLCtTNa/5UW/zyNPX9KmNkdo6y3Q3MtaY+o4pitao0ov7CK3dInjarMMg==
-X-Received: by 2002:ac8:2f15:: with SMTP id j21mr8898994qta.55.1585925726184;
-        Fri, 03 Apr 2020 07:55:26 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::842b])
-        by smtp.gmail.com with ESMTPSA id f188sm3895379qkd.101.2020.04.03.07.55.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2020 07:55:25 -0700 (PDT)
-Date:   Fri, 3 Apr 2020 10:55:23 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Qais Yousef <qais.yousef@arm.com>
-Cc:     Qian Cai <cai@lca.pw>, Prateek Sood <prsood@codeaurora.org>,
-        Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: Deadlock due to "cpuset: Make cpuset hotplug synchronous"
-Message-ID: <20200403145523.GC162390@mtj.duckdns.org>
-References: <F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw>
- <20200325191922.GM162390@mtj.duckdns.org>
- <20200326101529.xh763j5frq2r7mqv@e107158-lin>
+        id S2404122AbgDCO4G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Apr 2020 10:56:06 -0400
+Received: from forwardcorp1j.mail.yandex.net ([5.45.199.163]:54324 "EHLO
+        forwardcorp1j.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2404117AbgDCO4F (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Apr 2020 10:56:05 -0400
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1j.mail.yandex.net (Yandex) with ESMTP id 8AA382E14B4;
+        Fri,  3 Apr 2020 17:56:02 +0300 (MSK)
+Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id ysZoBl8NAD-u19ewH8K;
+        Fri, 03 Apr 2020 17:56:02 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1585925762; bh=Q7u3ANbO873KS0xB1AbSi27nApxQH0XfixpEWRWSarw=;
+        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
+        b=J6f1621N+JkGjuHiNs0fLjRg3rqlb5JEvKks79Yh6gBTXRN8g2wXq65tTVJ1QCYf2
+         WIumpNhxdwK8ZKcQ/IkNJNH93yaiVHKhcjr5LiC++PYqpLxnEdqiRCIaegB/5Uxaxa
+         ZkZiPi4CFs9Nj9IPk0+iAWwQpvYwovMIBYVKmWZg=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from unknown (unknown [2a02:6b8:b080:8910::1:6])
+        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id yQV6sUDxJj-u1WWXO1Z;
+        Fri, 03 Apr 2020 17:56:01 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: Re: [PATCH v3 net] inet_diag: add cgroup id attribute
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Dmitry Yakunin <zeil@yandex-team.ru>, davem@davemloft.net,
+        netdev@vger.kernel.org, cgroups@vger.kernel.org,
+        bpf@vger.kernel.org
+References: <20200403095627.GA85072@yandex-team.ru>
+ <20200403133817.GW162390@mtj.duckdns.org>
+ <c28be8aa-d91c-3827-7e99-f92ad05ef6f1@yandex-team.ru>
+ <20200403144505.GZ162390@mtj.duckdns.org>
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+Message-ID: <20ba0af2-66df-00da-104a-512990c316d8@yandex-team.ru>
+Date:   Fri, 3 Apr 2020 17:56:01 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200326101529.xh763j5frq2r7mqv@e107158-lin>
+In-Reply-To: <20200403144505.GZ162390@mtj.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-CA
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 26, 2020 at 10:15:32AM +0000, Qais Yousef wrote:
-> On 03/25/20 15:19, Tejun Heo wrote:
-> > On Wed, Mar 25, 2020 at 03:16:56PM -0400, Qian Cai wrote:
-> > > The linux-next commit a49e4629b5ed (“cpuset: Make cpuset hotplug synchronous”)
-> > > introduced real deadlocks with CPU hotplug as showed in the lockdep splat, since it is
-> > > now making a relation from cpu_hotplug_lock —> cgroup_mutex.
-> > 
-> > Prateek, can you please take a look? Given that the merge window is just around
-> > the corner, we might have to revert and retry later if it can't be resolved
-> > quickly.
+On 03/04/2020 17.45, Tejun Heo wrote:
+> On Fri, Apr 03, 2020 at 05:37:17PM +0300, Konstantin Khlebnikov wrote:
+>>> How would this work with things like inetd? Would it make sense to associate the
+>>> socket on the first actual send/recv?
+>>
+>> First send/recv seems too intrusive.
 > 
-> I've ran cpuset_hotplug and cpuhotplug LTP tests using next-20200325 but
-> couldn't reproduce it.
+> Intrusive in terms of?
+
+In term of adding more code to networking fast paths.
+
 > 
-> Hopefully that can be fixed, but if you had to revert it, do you mind picking
-> this instead to fix the LTP issue I encountered before?
+>> Setsockopt to change association to current cgroup (or by id) seems more reasonable.
 > 
-> 	https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+> I'm not sure about exposing it as an explicit interface.
 
-So, I'd rather not, for now anyway. It isn't a real problem and I don't wanna
-add a wait vector there.
+Yep, it's better to create thing in right place from the beginning.
+Current behaviour isn't bad, just not obvious (and barely documented).
+That's why I've asked Dmitry to add these notes.
 
-Thanks.
-
--- 
-tejun
+> 
+> Thanks.
+> 
