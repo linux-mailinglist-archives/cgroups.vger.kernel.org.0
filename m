@@ -2,73 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CC5701A05C7
-	for <lists+cgroups@lfdr.de>; Tue,  7 Apr 2020 06:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C5A1A0E23
+	for <lists+cgroups@lfdr.de>; Tue,  7 Apr 2020 15:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725874AbgDGEcw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 7 Apr 2020 00:32:52 -0400
-Received: from mail-io1-f67.google.com ([209.85.166.67]:34782 "EHLO
-        mail-io1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725802AbgDGEcw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Apr 2020 00:32:52 -0400
-Received: by mail-io1-f67.google.com with SMTP id f3so2047114ioj.1
-        for <cgroups@vger.kernel.org>; Mon, 06 Apr 2020 21:32:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=3FY4OmQ0sAvp4tmfMOhNoSngMXWtxjDvosdmcAR+VDU=;
-        b=jOmjF7UT1LK5J9kyTSKiUSaJ4KfVQYalVJvOo+rSudOYN4T6J97EKqoDFZSmxLhElr
-         o0D3AgkhRWY1M88MkqUklw9RUUybgoQFHMiMB0UNPz9wpUeO4cXD7vhKhPd/JSn9Bo2R
-         j4L6+8ATlY3+AzncOdaUaMGWMH3Uh+LGk69p66jWY2L6HTV1ZWCzEGMLjbQ2Km0EDJkW
-         M6SErSwgCg3/YclU5JV9MVubHEThjDME6aHhTVUEAti/O+8VhMgfcbPQQOMPKdBgOIUN
-         yHWv1CGeaYS7gOY+a//gsifu04vlNLwBnPpR7nsnUAhCfQOc3fr5KMGr9mZffJDevuqf
-         NQ3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=3FY4OmQ0sAvp4tmfMOhNoSngMXWtxjDvosdmcAR+VDU=;
-        b=DpQ4xGntouRMWxzBlF3AmmN7+ebJhZTcBozlR3e+KdmNIKbxj2FSwLmdlIuaW9BiYX
-         vGuyF9ZkOwYKskGfILOpDf3XVGueTNOVyrzpoVEzA5Uspr7l4JH5oAFUqEb+XOPZnkm0
-         P2YjJzWT99HRSqV3N2isFbAN9aa/Vl5RLapZuGiM3jd9fowkJCJXT1DRBuMyVFnWbOnf
-         p5pHgQm9dBZBFXlETNX2KT0545Wmelz+tU24OnqUCj4sAHNdUHLdxhepPvrm1NEtV6W/
-         J4k4S83i0PcxqHsaCERY3I9lj0FymP6yj01LXpPvktJ9MUzlsSHmLngsG3YuQGAl0k0C
-         MZlw==
-X-Gm-Message-State: AGi0PuZOXmO4dj+d3werGXsD1mvBdqGEc/9TmsgeBs9/EJ4O42yrZ4bv
-        Jkqmp99jzCCrn7iygYSMKbZ9YzzgindlAzaISFQ=
-X-Google-Smtp-Source: APiQypI86rnS7W+urkzC+eFAU0zg6iok6ty8pIN1xA2AShQmoXlA0Xtqz6AEJFfx4zN6DrWaPMVBCulACGslxB7Hl/s=
-X-Received: by 2002:a5d:8186:: with SMTP id u6mr405957ion.126.1586233971601;
- Mon, 06 Apr 2020 21:32:51 -0700 (PDT)
+        id S1728825AbgDGNHa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Apr 2020 09:07:30 -0400
+Received: from foss.arm.com ([217.140.110.172]:56134 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726562AbgDGNHa (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 7 Apr 2020 09:07:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BF0F031B;
+        Tue,  7 Apr 2020 06:07:29 -0700 (PDT)
+Received: from e107158-lin.cambridge.arm.com (e107158-lin.cambridge.arm.com [10.1.195.21])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDF043F68F;
+        Tue,  7 Apr 2020 06:07:28 -0700 (PDT)
+Date:   Tue, 7 Apr 2020 14:07:26 +0100
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Qian Cai <cai@lca.pw>, Prateek Sood <prsood@codeaurora.org>,
+        Li Zefan <lizefan@huawei.com>, cgroups@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: Re: Deadlock due to "cpuset: Make cpuset hotplug synchronous"
+Message-ID: <20200407130725.jhtth3bneo33zex6@e107158-lin.cambridge.arm.com>
+References: <F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw>
+ <20200325191922.GM162390@mtj.duckdns.org>
+ <20200326101529.xh763j5frq2r7mqv@e107158-lin>
+ <20200403145523.GC162390@mtj.duckdns.org>
+ <20200406105522.c66p4vzzzylety5d@e107158-lin.cambridge.arm.com>
+ <20200406143405.GH162390@mtj.duckdns.org>
 MIME-Version: 1.0
-Received: by 2002:a05:6638:c9:0:0:0:0 with HTTP; Mon, 6 Apr 2020 21:32:51
- -0700 (PDT)
-From:   minstry finance <minstyfinance10@gmail.com>
-Date:   Tue, 7 Apr 2020 04:32:51 +0000
-Message-ID: <CAGhLdxSWRJR9GdSSqCRQ6fGMjTJbf8fTkd061ydPh+VshTKkcg@mail.gmail.com>
-Subject: whether this is your correct email address or not
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200406143405.GH162390@mtj.duckdns.org>
+User-Agent: NeoMutt/20171215
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 04/06/20 10:34, Tejun Heo wrote:
+> On Mon, Apr 06, 2020 at 11:55:23AM +0100, Qais Yousef wrote:
+> > What would be the right approach to get a fix in then? We have been skipping
+> > this test for a while and we'd like to enable it but this failure is a
+> > blocking issue.
+> 
+> Update the test so that it accounts for the async nature of the operation?
 
+With a sleep() between the hp ops and the read? Isn't this a nasty hack?
 
-Certain amount of money has been here ( Global Security services
-Company ) a trunk box addressed to a client for some years now and I
-have made my findings, only to discover that the real owner is late.
+I was just trying to find out what can be done for 5.7. But based on your
+response this is sadly a dead end. For no reason I can comprehend.
 
-Can you help us {me and my colleagues} here to receive it as we are
-ready to change everything on it in your name as the original owner
-
-and we share it in the ratio of 50/50. Meaning 50% to you and the
-balance of 50% to me here.
-
-Waiting desperately for your reply.
-
-Yours Faithfully,
-
-Mrs. Sandra Dewi
-
-Email  mrsdewi@gmx.com
+--
+Qais Yousef
