@@ -2,72 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DC041A1F9A
-	for <lists+cgroups@lfdr.de>; Wed,  8 Apr 2020 13:12:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D8A41A2A20
+	for <lists+cgroups@lfdr.de>; Wed,  8 Apr 2020 22:15:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728129AbgDHLMQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 8 Apr 2020 07:12:16 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:44834 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728100AbgDHLMQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Apr 2020 07:12:16 -0400
-Received: by mail-ed1-f67.google.com with SMTP id i16so8046953edy.11;
-        Wed, 08 Apr 2020 04:12:13 -0700 (PDT)
+        id S1730243AbgDHUO5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 8 Apr 2020 16:14:57 -0400
+Received: from mail-qk1-f193.google.com ([209.85.222.193]:44280 "EHLO
+        mail-qk1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728853AbgDHUO5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 8 Apr 2020 16:14:57 -0400
+Received: by mail-qk1-f193.google.com with SMTP id j4so1632243qkc.11;
+        Wed, 08 Apr 2020 13:14:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to:cc;
-        bh=y6GvbrxPWO38NZY2qniHG/bjP2NH5oiIBjc+DHthlNY=;
-        b=VC5psAUsa1U2CjvoshCFasg2IK8FzsljYRvZ/5QS60xwoyvFBFXQqmt8BkfUpV3HhM
-         wkeRFEaLVqKQIOoZDyHNzLICNc4pgkurJGaKqWSZfacFmPdK86yd+dxBZVQCpzJjJOcA
-         nPceEZnTYX6NJHBHq5pJAT/x9+LSQWopr7Q1En9TwCbD3g2D35OpQY+2TajCjUF+FN1e
-         1nx+MN0TVjZJqCRqNbYlmm5rP8MdMkc4y6G74Frt5V7HwMBNMWLyd3BYzC8p66tFBOa3
-         x+m/N/xyM5Zel3thnTh3qMXI0vUG6+MDW4TbGn4BkVcNFBi01WQ7mnKcOKPmwSSniwZC
-         8YFw==
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sbOTLSdpKRSWoJg86rhLkNXWwpT6Ra+lmlyLxQcG74M=;
+        b=EAQj6ooRELE1aSGdzl7xJCc1N1bQ2cVXEuUaSuPh+B65JXFnbaMPbHPnsYsojbTQTv
+         J82pjh9KiPam7s6QYx7bnkyDaxRbQFxhX1VnRY/G1HkxOfJrvF2n+2L85QAxDdSaSoUr
+         n6H9+zQQamAM0P5VBdHIMJ8vxacPTyhuUmZHyRXrm6NSAw00nu1Qn57W0euRSLugCmZi
+         pWBk/lQmL0FXqZVjLH5BO+6+dLC5aQfBwRNkC0WBOV5HvTIF6/E50Hz2YII0b89d978J
+         zf8uziZ991jIjlqmJERnMicGbdRW1Y1ZI6n2EK3YeC+aUPZAZ0O3HrbJm9/W+oR7Kr1N
+         /l0A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=y6GvbrxPWO38NZY2qniHG/bjP2NH5oiIBjc+DHthlNY=;
-        b=KATwr8QcNWNVC17uOY0M097ufa1HW4BjNA/CHKemVGQ+B+B+QlCxpnEuI8oTsvM1sI
-         akkq+HccgM/gIK+0ceqsMikHRXbZsSBfEu6zhJED1nVa8BZ5cmkOqQlFsLFgC6p3VL1t
-         EN9t87EpXPYq1VLJkrcNMWLgSENaszTCZkODgDgP8pNvL0AeHrIGrIgeQJC97JB7wxx7
-         2yJV/b8pLVmIZxokEXdlRcEt0KJwOVssNbI6rUjfph8GBI2WtFgurP0+Iqygzc6cFVcr
-         1yP5CCHZ4FKYJlKDBEMs6IzJZW+BfAyzX9oRC5fTYWs2lz+jJaqbrn28igtS1A+EKvft
-         eAdA==
-X-Gm-Message-State: AGi0PuatYKpvWs2X0cbR1FJHA2ZSwgn35gQ0EbGMuFaCCYjJr2I33nzm
-        hCtTECG8UwX8vtJ/UnUzso9vRZEpwgHDERFmT90=
-X-Google-Smtp-Source: APiQypLakffEooTTK/wIZhPA1UXmX6ePrOgYPFpT6bdDI4nYEdoKNBKYdrg7FinZZVq0sJNuwRcasB3azLK159CjdFg=
-X-Received: by 2002:a05:6402:504:: with SMTP id m4mr6031207edv.367.1586344332475;
- Wed, 08 Apr 2020 04:12:12 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=sbOTLSdpKRSWoJg86rhLkNXWwpT6Ra+lmlyLxQcG74M=;
+        b=Getm7iOBLiCrbZm0jNW/ZIV0Q0MGbb2sgJqSEMb5O42vcmIMFoUq6lFvHJq6RHJ9m6
+         EmaluLxNwrCKp12u1B4uhYg4u5E2uXI2ZTsV2GXXce/NYJoFyN4z3UyDFQY1VHbA+y4I
+         lKgLFvcL4fpstgxmpQKEJ96ZPXatLB0W7H7OMbwl9qJxYYV3CTC9nW8PwmMlQwNp1Ca+
+         Y1RtWCyFkpXGxXg0aA7esj3bAVwAYQEAm2yGOS7IhewNjN/NHtoOK8AECd/qfWcNedxi
+         5fPn5jpZJIZFh0PH0jTCdmnz2v9ABF3t+vwCMyzVBCYTPfgSgSJN876Ll9MMpA4rjiXa
+         v3cA==
+X-Gm-Message-State: AGi0PuZvKqXYmtfhxekBKhnKst4L3Ae1ur7YBz9ts/iaW3dIw5peQ0sk
+        XRofoFawFi8uWWhlcEYpAT+PDg40KXM=
+X-Google-Smtp-Source: APiQypIqYaz+eZ0Lnqw/OZK4i8K0k+TZAR8pMonm/QC8s87JkRsvyM0ekWeZTspZPo0IdhZPmV6zAQ==
+X-Received: by 2002:a37:74d:: with SMTP id 74mr9442111qkh.376.1586376895466;
+        Wed, 08 Apr 2020 13:14:55 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::36b2])
+        by smtp.gmail.com with ESMTPSA id r128sm2506570qke.95.2020.04.08.13.14.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 08 Apr 2020 13:14:54 -0700 (PDT)
+From:   Tejun Heo <tj@kernel.org>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@vger.kernel.org, cgroups@vger.kernel.org,
+        newella@fb.com, josef@toxicpanda.com
+Subject: [PATCHSET block/for-5.8] iocost: improve use_delay and latency target handling
+Date:   Wed,  8 Apr 2020 16:14:45 -0400
+Message-Id: <20200408201450.3959560-1-tj@kernel.org>
+X-Mailer: git-send-email 2.25.2
 MIME-Version: 1.0
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Wed, 8 Apr 2020 13:12:01 +0200
-Message-ID: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
-Subject: CLONE_INTO_CGROUP documentation?
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Oleg Nesterov <oleg@redhat.com>,
-        Linux API <linux-api@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, Tejun Heo <tj@kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Christian,
+Hello, Jens.
 
-I see that CLONE_INTO_CGROUP has been merged? WOuld you be able to
-send a man-pages patch documenting this please?
+This patchset improves the following two iocost control behaviors.
 
-Thanks,
+* iocost was failing to punish heavy shared IO generators (file metadata, memory
+  reclaim) through use_delay mechanism - use_delay automatically decays which
+  works well for iolatency but doesn't match how iocost behaves. This led to
+  e.g. memory bombs which generate a lot of swap IOs to use over their allotted
+  amount. This is fixed by adding non-decaying use_delay mechanism.
 
-Michael
+* The same latency targets were being applied regardless of the IO sizes. While
+  this works fine for loose targets, it gets in the way when trying to tigthen
+  them - a latency target adequate for a 4k IO is too short for a 1 meg IO.
+  iocost now discounts the size portion of cost when testing whether a given IO
+  met or missed its latency target.
 
+While at it, it also makes minor changse to iocost_monitor.py.
+
+This patchset contains the following five patches.
+
+ 0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
+ 0002-block-add-request-io_data_len.patch
+ 0003-blk-iocost-account-for-IO-size-when-testing-latencie.patch
+ 0004-iocost_monitor-exit-successfully-if-interval-is-zero.patch
+ 0005-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
+
+and is also available in the following git branch.
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-delay-latency
+
+diffstat follows. Thanks.
+
+ block/Kconfig                  |    4 +++
+ block/blk-cgroup.c             |    6 ++++
+ block/blk-iocost.c             |   54 ++++++++++++++++++++++++++++-------------
+ block/blk-mq.c                 |    6 ++++
+ include/linux/blk-cgroup.h     |   43 +++++++++++++++++++++++++-------
+ include/linux/blkdev.h         |    8 ++++++
+ tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++-----------------
+ 7 files changed, 121 insertions(+), 48 deletions(-)
 
 --
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+tejun
+
