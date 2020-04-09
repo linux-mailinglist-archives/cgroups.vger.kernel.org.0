@@ -2,172 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id CD03F1A369D
-	for <lists+cgroups@lfdr.de>; Thu,  9 Apr 2020 17:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 701661A36F9
+	for <lists+cgroups@lfdr.de>; Thu,  9 Apr 2020 17:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727968AbgDIPJc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Thu, 9 Apr 2020 11:09:32 -0400
-Received: from smtprelay.restena.lu ([158.64.1.62]:44530 "EHLO
-        smtprelay.restena.lu" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727771AbgDIPJc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Apr 2020 11:09:32 -0400
-Received: from hemera.lan.sysophe.eu (unknown [IPv6:2001:a18:1:12::4])
-        by smtprelay.restena.lu (Postfix) with ESMTPS id 6A52340CD5;
-        Thu,  9 Apr 2020 17:09:27 +0200 (CEST)
-Date:   Thu, 9 Apr 2020 17:09:26 +0200
-From:   Bruno =?UTF-8?B?UHLDqW1vbnQ=?= <bonbons@linux-vserver.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Chris Down <chris@chrisdown.name>
+        id S1728137AbgDIPYU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 9 Apr 2020 11:24:20 -0400
+Received: from mail-wm1-f48.google.com ([209.85.128.48]:37267 "EHLO
+        mail-wm1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728090AbgDIPYU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 9 Apr 2020 11:24:20 -0400
+Received: by mail-wm1-f48.google.com with SMTP id z6so155801wml.2
+        for <cgroups@vger.kernel.org>; Thu, 09 Apr 2020 08:24:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=y6Uasohp5UNg9y1/Yu3p5ekTJRoqFqD2BtsV4x2pR0I=;
+        b=tJwqs1khMdMVGEMNLiUcBFTGDIqguzpIzMsPiVfg5EgAVW+WBMfkKjP9HYUIcxsifN
+         nsXbYQC6zM5zGRKyPS3TB+E17ssyTm5obRD54tsO2bPMp28xtlfhLAghjMBTOJqJgEcf
+         piGAgYTIBDk1+nNYj+lZh0bX/P4UwSupgOjn4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=y6Uasohp5UNg9y1/Yu3p5ekTJRoqFqD2BtsV4x2pR0I=;
+        b=ldOPkCTRvkF/y4NWpff8MOpYuHcKSrm8VwsGZPlwqYJCXnsbTqXRHF/ZyG1TlQOId+
+         2i/bXXa/TCXN/ItSDGxh/JIZvInZZsAI8+u/JPoEquO14sCSLCcj3kDsn4R4Ez4Dinyx
+         kuxhnbHM1OWj/h8n/nRIPdbMwi/cAjkFhHs8YPxwCHEXvlLXmcGLCb49r8xSoeTglePH
+         1LlEXh37y6YbGA7zwUseB/KHawltWQU2fPxiyxyTbzULo7owEe7IlB857YijbPGtZgbw
+         4g9PN4zif/TeMDYHvzG6tu8jnTpuePCh3ib9LrpOI+VV76eGcGb1yP5HuGzKg8oib0Qy
+         0wVA==
+X-Gm-Message-State: AGi0PuZID/+ZDQyckoK1+fLelo9/mrx1+GAOhHGzlXIdwYOIZvga/6EQ
+        mRfo8ex1kjQ5sariH2VjrDSQlw==
+X-Google-Smtp-Source: APiQypICmPk2Caj99JJJTjUv1vpKU4FXLVP3n8KXyG84Gx3X0Lgu9U6NVHypIsDGjQe34+jbxd0lTg==
+X-Received: by 2002:a1c:7308:: with SMTP id d8mr424161wmb.31.1586445859242;
+        Thu, 09 Apr 2020 08:24:19 -0700 (PDT)
+Received: from localhost ([2620:10d:c092:180::1:9ebe])
+        by smtp.gmail.com with ESMTPSA id b85sm4281421wmb.21.2020.04.09.08.24.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 09 Apr 2020 08:24:17 -0700 (PDT)
+Date:   Thu, 9 Apr 2020 16:24:17 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Bruno =?iso-8859-1?Q?Pr=E9mont?= <bonbons@linux-vserver.org>
+Cc:     Michal Hocko <mhocko@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
 Subject: Re: Memory CG and 5.1 to 5.6 uprade slows backup
-Message-ID: <20200409170926.182354c3@hemera.lan.sysophe.eu>
-In-Reply-To: <20200409103400.GF18386@dhcp22.suse.cz>
+Message-ID: <20200409152417.GB1040020@chrisdown.name>
 References: <20200409112505.2e1fc150@hemera.lan.sysophe.eu>
-        <20200409094615.GE18386@dhcp22.suse.cz>
-        <20200409121733.1a5ba17c@hemera.lan.sysophe.eu>
-        <20200409103400.GF18386@dhcp22.suse.cz>
+ <20200409094615.GE18386@dhcp22.suse.cz>
+ <20200409121733.1a5ba17c@hemera.lan.sysophe.eu>
+ <20200409103400.GF18386@dhcp22.suse.cz>
+ <20200409170926.182354c3@hemera.lan.sysophe.eu>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200409170926.182354c3@hemera.lan.sysophe.eu>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 9 Apr 2020 12:34:00 +0200Michal Hocko wrote:
+Bruno Pr�mont writes:
+>Could it be that cache is being prevented from being reclaimed by a task
+>in another cgroup?
+>
+>e.g.
+>  cgroup/system/backup
+>    first reads $files (reads each once)
+>  cgroup/workload/bla
+>    second&more reads $files
+>
+>Would $files remain associated to cgroup/system/backup and not
+>reclaimed there instead of being reassigned to cgroup/workload/bla?
 
-> On Thu 09-04-20 12:17:33, Bruno Prémont wrote:
-> > On Thu, 9 Apr 2020 11:46:15 Michal Hocko wrote:  
-> > > [Cc Chris]
-> > > 
-> > > On Thu 09-04-20 11:25:05, Bruno Prémont wrote:  
-> > > > Hi,
-> > > > 
-> > > > Upgrading from 5.1 kernel to 5.6 kernel on a production system using
-> > > > cgroups (v2) and having backup process in a memory.high=2G cgroup
-> > > > sees backup being highly throttled (there are about 1.5T to be
-> > > > backuped).    
-> > > 
-> > > What does /proc/sys/vm/dirty_* say?  
-> > 
-> > /proc/sys/vm/dirty_background_bytes:0
-> > /proc/sys/vm/dirty_background_ratio:10
-> > /proc/sys/vm/dirty_bytes:0
-> > /proc/sys/vm/dirty_expire_centisecs:3000
-> > /proc/sys/vm/dirty_ratio:20
-> > /proc/sys/vm/dirty_writeback_centisecs:500  
-> 
-> Sorry, but I forgot ask for the total amount of memory. But it seems
-> this is 64GB and 10% dirty ration might mean a lot of dirty memory.
-> Does the same happen if you reduce those knobs to something smaller than
-> 2G? _bytes alternatives should be useful for that purpose.
-
-Well, tuning it to /proc/sys/vm/dirty_background_bytes:268435456
-/proc/sys/vm/dirty_background_ratio:0
-/proc/sys/vm/dirty_bytes:536870912
-/proc/sys/vm/dirty_expire_centisecs:3000
-/proc/sys/vm/dirty_ratio:0
-/proc/sys/vm/dirty_writeback_centisecs:500
-does not make any difference.
-
-
-From /proc/meminfo there is no indication on high amounts of dirty
-memory either:
-MemTotal:       65930032 kB
-MemFree:        21237240 kB
-MemAvailable:   51646528 kB
-Buffers:          202692 kB
-Cached:         21493120 kB
-SwapCached:            0 kB
-Active:         12875888 kB
-Inactive:       11361852 kB
-Active(anon):    2879072 kB
-Inactive(anon):    20600 kB
-Active(file):    9996816 kB
-Inactive(file): 11341252 kB
-Unevictable:        9396 kB
-Mlocked:            9396 kB
-SwapTotal:             0 kB
-SwapFree:              0 kB
-Dirty:              3880 kB
-Writeback:             0 kB
-AnonPages:       2551776 kB
-Mapped:           461816 kB
-Shmem:            351144 kB
-KReclaimable:   10012140 kB
-Slab:           15673816 kB
-SReclaimable:   10012140 kB
-SUnreclaim:      5661676 kB
-KernelStack:        7888 kB
-PageTables:        24192 kB
-NFS_Unstable:          0 kB
-Bounce:                0 kB
-WritebackTmp:          0 kB
-CommitLimit:    32965016 kB
-Committed_AS:    4792440 kB
-VmallocTotal:   34359738367 kB
-VmallocUsed:      126408 kB
-VmallocChunk:          0 kB
-Percpu:           136448 kB
-HardwareCorrupted:     0 kB
-AnonHugePages:    825344 kB
-ShmemHugePages:        0 kB
-ShmemPmdMapped:        0 kB
-FileHugePages:         0 kB
-FilePmdMapped:         0 kB
-CmaTotal:              0 kB
-CmaFree:               0 kB
-DirectMap4k:       27240 kB
-DirectMap2M:     4132864 kB
-DirectMap1G:    65011712 kB
-
-
-> [...]
-> 
-> > > Is it possible that the reclaim is not making progress on too many
-> > > dirty pages and that triggers the back off mechanism that has been
-> > > implemented recently in  5.4 (have a look at 0e4b01df8659 ("mm,
-> > > memcg: throttle allocators when failing reclaim over memory.high")
-> > > and e26733e0d0ec ("mm, memcg: throttle allocators based on
-> > > ancestral memory.high").  
-> > 
-> > Could be though in that case it's throttling the wrong task/cgroup
-> > as far as I can see (at least from cgroup's memory stats) or being
-> > blocked by state external to the cgroup.
-> > Will have a look at those patches so get a better idea at what they
-> > change.  
-> 
-> Could you check where is the task of your interest throttled?
-> /proc/<pid>/stack should give you a clue.
-
-As guessed by Chris, it's
-[<0>] mem_cgroup_handle_over_high+0x121/0x170
-[<0>] exit_to_usermode_loop+0x67/0xa0
-[<0>] do_syscall_64+0x149/0x170
-[<0>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-And I know no way to tell kernel "drop all caches" for a specific cgroup
-nor how to list the inactive files assigned to a given cgroup (knowing
-which ones they are and their idle state could help understanding why
-they aren't being reclaimed).
-
-
-
-Could it be that cache is being prevented from being reclaimed by a task
-in another cgroup?
-
-e.g.
-  cgroup/system/backup
-    first reads $files (reads each once)
-  cgroup/workload/bla
-    second&more reads $files
-
-Would $files remain associated to cgroup/system/backup and not
-reclaimed there instead of being reassigned to cgroup/workload/bla?
-
-
-
-Bruno
+Yes, that's entirely possible. The first cgroup to fault in the pages is 
+charged for the memory. Other cgroups may use them, but they are not accounted 
+for as part of that other cgroup. They may also still be "active" as a result 
+of use by another cgroup.
