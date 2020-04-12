@@ -1,147 +1,89 @@
 Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from vger.kernel.org (vger.kernel.org [209.132.180.67])
-	by mail.lfdr.de (Postfix) with ESMTP id B399E1A4AF9
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2020 22:18:14 +0200 (CEST)
+Received: from vger.kernel.org (unknown [209.132.180.67])
+	by mail.lfdr.de (Postfix) with ESMTP id A124B1A6079
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2020 22:25:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726203AbgDJUSM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Apr 2020 16:18:12 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38003 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726177AbgDJUSM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Apr 2020 16:18:12 -0400
-Received: by mail-wr1-f67.google.com with SMTP id k11so2921573wrp.5;
-        Fri, 10 Apr 2020 13:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=cc:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=LirB/PVqDgbE/D2KaEucIjmXEfNOl2FdUxp75VSmgWE=;
-        b=S053X/y+NH90mhlB5TvqX63DVsl/Lc1yRGm0DWqWlZImLn+KezB6cOWo6TWueeZ8IG
-         4SIf90nikPeanX9PTUHmFwwDP8X9SqfBKH/o/lycd7pixNk/nQPr//+IFLLbynFNlbm9
-         M39etzBJ9gWDsxJ3qNI8p+i3QNY6C0gZfEsJrgvM4ofhOZt+fvAAu0P/Nq6V7zOv05kz
-         An5152US6IlZbufK6mSq9CyVe/iRwJvNVTUX0KRENF1D+Xj4YHq9G8lm5CpjLzGaJjmj
-         PJX3VbPrP4P87dDLht6loOfdfEgjL4y1AjNK4gi6eZDbYWB5wtIGr6nzu/hYqYRMC66t
-         XKrA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:cc:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=LirB/PVqDgbE/D2KaEucIjmXEfNOl2FdUxp75VSmgWE=;
-        b=D+Dkhv4jqY0mGuWy7i97oq2pX8KAXk5W6z0PmgOkHIBG72PgLq5tB1+M4fbXfD9FEk
-         lC4fkkySG7Cj+QtYv0iDNB7AJNYwXhawiYWQnDGQjF/gVm/rBcVwhvSq2yGoUDnqBtMU
-         c0AWWJ9bkTP1evsyD65QVso4tNsPWBKLV+7eHklPB3YTi+OWdtVdSGqfF8JMTXrseNxo
-         XVNWbbPTNwTTkMliyvtf5fnXCIIeg+QCY6ZRthMCVyOJpXJOrX1ALmES7XCSmXSUpcnV
-         lSkf0NPjwMPYzHsbDw04AmWkb+JimHN6bb9htPPX94rpNZGY45DpCoeMpg0J8kK6CzS3
-         +NHA==
-X-Gm-Message-State: AGi0PuZJrBLyPoXHo/S9E853ifkXNOFP+1vZfyEYnENx4Ba88jewVPZR
-        rwP8ed8WvC7ivfGcInHfURt8VwHP
-X-Google-Smtp-Source: APiQypJJZOIPvHdzHvYIayF6B94aL6PrGar63+56dmk6qwKH1KDDM4ArCh3MtMFvbv9cYkRH/qqWZw==
-X-Received: by 2002:adf:e744:: with SMTP id c4mr5867370wrn.133.1586549889297;
-        Fri, 10 Apr 2020 13:18:09 -0700 (PDT)
-Received: from ?IPv6:2001:a61:2482:101:3351:6160:8173:cc31? ([2001:a61:2482:101:3351:6160:8173:cc31])
-        by smtp.gmail.com with ESMTPSA id a7sm4085832wmj.12.2020.04.10.13.18.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 10 Apr 2020 13:18:08 -0700 (PDT)
-Cc:     mtk.manpages@gmail.com, cgroups@vger.kernel.org,
-        christian.brauner@ubuntu.com, linux-api@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-man@vger.kernel.org,
-        oleg@redhat.com, tj@kernel.org
-Subject: Re: [PATCH] clone.2: Document CLONE_INTO_CGROUP
-To:     Christian Brauner <christian@brauner.io>
-References: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
- <20200410104132.294639-1-christian@brauner.io>
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Message-ID: <b7550fcd-ba12-e64a-3228-e6668b31a8a7@gmail.com>
-Date:   Fri, 10 Apr 2020 22:18:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S1728045AbgDLUZq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 12 Apr 2020 16:25:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.18]:34870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727315AbgDLUZp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 12 Apr 2020 16:25:45 -0400
+Received: from us-smtp-delivery-1.mimecast.com (us-smtp-1.mimecast.com [205.139.110.61])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F41C9C0A3BF0
+        for <cgroups@vger.kernel.org>; Sun, 12 Apr 2020 13:25:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1586723144;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=7C3D22+bfcyONw5l0dvYrkLR9HBNKhS92euE1BouTaU=;
+        b=hFzSbQYZ9xcu/+suXp8oXlH9uQ5qnYI6BNpuJdeiYVg1EAvXJ2876us3aKw9s+JjAVd3UW
+        Tdy3FkW7edV/A+3iPe8s4/nNp6K6yFJhZboFdfTFDkrwXaZgm7ET9bOXXFgdA9n/ljl7ek
+        v7AKqcjCAHQ4l9x3OLyFTrVtCQvWlnE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-238-U4fa6Hs1NyOaO2w4RMeAcQ-1; Sun, 12 Apr 2020 16:25:42 -0400
+X-MC-Unique: U4fa6Hs1NyOaO2w4RMeAcQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9D7D01005509;
+        Sun, 12 Apr 2020 20:25:40 +0000 (UTC)
+Received: from asgard.redhat.com (unknown [10.36.110.6])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id C1FC75D9C9;
+        Sun, 12 Apr 2020 20:25:34 +0000 (UTC)
+Date:   Sun, 12 Apr 2020 22:25:33 +0200
+From:   Eugene Syromiatnikov <esyr@redhat.com>
+To:     linux-kernel@vger.kernel.org,
+        Christian Brauner <christian@brauner.io>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Peter Zijlstra <peterz@infradead.org>, cgroups@vger.kernel.org,
+        "Dmitry V. Levin" <ldv@altlinux.org>
+Subject: [PATCH] clone3: fix cgroup argument sanity check
+Message-ID: <20200412202533.GA29554@asgard.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200410104132.294639-1-christian@brauner.io>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.5.23 (2014-03-12)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Christian,
+Checking that cgroup field value of struct clone_args is less than 0
+is useless, as it is defined as unsigned 64-bit integer.  Moreover,
+it doesn't catch the situations where its higher bits are lost during
+the assignment to the cgroup field of the cgroup field of the internal
+struct kernel_clone_args (where it is declared as signed 32-bit
+integer), so it is still possible to pass garbage there.  A check
+against INT_MAX solves both these issues.
 
-Thank you for writing this!
+Fixes: ef2c41cf38a7559b ("clone3: allow spawning processes into cgroups")
+Signed-off-by: Eugene Syromiatnikov <esyr@redhat.com>
+---
+ kernel/fork.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-On 4/10/20 12:41 PM, Christian Brauner wrote:
-> From: Christian Brauner <christian.brauner@ubuntu.com>
-> 
-> Signed-off-by: Christian Brauner <christian.brauner@ubuntu.com>
-> ---
->  man2/clone.2 | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
-> 
-> diff --git a/man2/clone.2 b/man2/clone.2
-> index 39cec4c86..8d9aa9f99 100644
-> --- a/man2/clone.2
-> +++ b/man2/clone.2
-> @@ -197,6 +197,7 @@ struct clone_args {
->      u64 tls;          /* Location of new TLS */
->      u64 set_tid;      /* Pointer to a \fIpid_t\fP array */
->      u64 set_tid_size; /* Number of elements in \fIset_tid\fP */
-> +    u64 cgroup;       /* Target cgroup file descriptor for the child process */
->  };
->  .EE
->  .in
-> @@ -448,6 +449,25 @@ Specifying this flag together with
->  .B CLONE_SIGHAND
->  is nonsensical and disallowed.
->  .TP
-> +.BR CLONE_INTO_CGROUP " (since Linux 5.7)"
-> +.\" commit ef2c41cf38a7559bbf91af42d5b6a4429db8fc68
-> +By default, the child process will belong to the same cgroup as its parent.
-
-s/belong to/be placed in/
-
-s/cgroup/version 2 cgroup/
-
-> +If this flag is specified the child process will be created in a
-> +different cgroup than its parent.
-> +
-> +When using
-> +.RB clone3 ()
-> +the target cgroup can be specified by setting the
-> +.I cl_args.cgroup
-> +member to the file descriptor of the target cgroup. The cgroup file
-
-We need to say something about how this file descriptor is
-obtained. Is it by opening a directory in the v2 cgroup hierarchy?
-With what flags? O_RDONLY? or is O_PATH also possible? Yes, these
-are some rhetorical questions (I read your nice commit message);
-these things need to be explicit in the manual page though.
-
-Also, your commit message mentions a nice list of use cases.
-I think it would be well worth capturing those in a paragraph
-in the manual page text.
-
-> +descriptor must refer to a cgroup in a cgroup v2 hierarchy
-> +(see
-> +.BR cgroup (2)).
-
-s/cgroup/cgroups/
-s/2/7/
-
-> +
-> +Note that all usual cgroup v2 process migration restrictions apply. See
-> +.BR cgroup (2)
-
-s/cgroup/cgroups/
-s/2/7/
-
-Thanks,
-
-Michael
-
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 4385f3d..b4f7775 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -2631,7 +2631,7 @@ noinline static int copy_clone_args_from_user(struct kernel_clone_args *kargs,
+ 		     !valid_signal(args.exit_signal)))
+ 		return -EINVAL;
+ 
+-	if ((args.flags & CLONE_INTO_CGROUP) && args.cgroup < 0)
++	if ((args.flags & CLONE_INTO_CGROUP) && args.cgroup > INT_MAX)
+ 		return -EINVAL;
+ 
+ 	*kargs = (struct kernel_clone_args){
 -- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+2.1.4
+
