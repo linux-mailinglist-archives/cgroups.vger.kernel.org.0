@@ -2,97 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4091E1A6C5D
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 21:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEE4B1A6D1A
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 22:17:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387843AbgDMTLk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 15:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54950 "EHLO
+        id S2388266AbgDMUR1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 16:17:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2387811AbgDMTLk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 15:11:40 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62DA9C0A3BDC
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 12:11:39 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id l25so10664075qkk.3
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 12:11:39 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2388265AbgDMUR1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 16:17:27 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A087EC0A3BDC
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 13:17:26 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id a81so11337367wmf.5
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 13:17:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+lbubkUGFiM6VzQ+ueHXGQsXYs3AnJsTHepD8DGOyaE=;
-        b=eaYLPoyRllFIIJ1rsXYKhFdiz0QqsdX7PAjZtRacsfQZqFUOOFeyjQ7vNX5brDMf82
-         Uue5XZO8jlEiz9SQba87q5dC3SUCiD7k3LRm/w/0yX/UkQ2PzmEiC16wNMwL3/s5Fwyw
-         HtsKhQjpjwegOtBIZ9HSjQH1YdNlbxSiPuzcLphimp2WqXJpyyvPRUNMWOUk7iixdixj
-         Z/pbwzYJv+KRMY04nvZDKbtpp4CoiJ60W/HRsp/sdywWVD2JB6nKyxfHGPu8xDc5+MHT
-         vVHbrbYqM5DBhz2tVz/4/rEmbjeV3PWxyENQFvkI4YdOpFxfCbmRFX2dFi+3WAbjEy6x
-         19pA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dD5YUEDwlW8icDI+F/y9bZzsHxv/M2KUcD6dDQ+9NEo=;
+        b=aNP6WsOcy9oz2oIOPIazkJvo8godHmXtmr1TwE8JPmYx+cwAVWXPfV6tSX5Lgfey/B
+         3dXc7YsM8r6adTCmRF/bA55Ip/VGpC/QouxCgsQDUpe81/U9Fg7B4wijrK6SEei3kqkC
+         ckFdpb5ffuQhmtYRxoPwQSvKez4TVEY/lFeJKCGRQKZmdMr2cji+OnaFGXEd0FDSvNJn
+         ah9styOQohwsf/lT2taKcFugIxEvavHdQFOqN5eEXFGvhCRerpBZtJMXtQ8WAqk+o+8W
+         kfwKC0+fOvq4LnzI7HYDNDHI9Ae9Lj/D123X3Ussr43iDtHsF6WcqZhku2VK0AvP2KfL
+         8raQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=+lbubkUGFiM6VzQ+ueHXGQsXYs3AnJsTHepD8DGOyaE=;
-        b=QAUEXP5eNU2vd2nifjjzylojMBspckC4fVtHtKw3lXpb6+Yyyig8mLOJq4fxQovmGu
-         XcCUvCGCr8xGMH6NYR0tdhiK2Gx5ziYUKnu1u7rlrJd7pcEiM0dEUkq8Eeee0PlPejZf
-         OvhwotasYujjSP0yir/YGLMr8fOtKCPJ2FEwiAjN0bArIhSuUHoISEKdm4erIhdHHqBH
-         DHLmAb0EG1p+vADGd4CXmcTDNIwh9qC0gRJNdKPRHmw26NVvrHpheYJW3QrGUqnX32sj
-         2NZRDetHXaCehuN8CIfXxFKYnTpN7Cedkdr1BxRbHH1vYLVJlI5FvDKLwfgobvceVY5C
-         YpMA==
-X-Gm-Message-State: AGi0PubE7gClon9PyiuX3oaAE232RyuCVaRKtkA6hfZ/zNnTVZ+GDdo6
-        dNIv3685HEmnXQ/di2jatb1WG+3YKiQ=
-X-Google-Smtp-Source: APiQypLnNJ8smZT+QChmfC/ZWvRkkCA+pg4ypBQGWrb47G+Spc86/Me8goNHAQjSvAJtsmuKIFHLmg==
-X-Received: by 2002:a37:71c4:: with SMTP id m187mr6447160qkc.4.1586805098466;
-        Mon, 13 Apr 2020 12:11:38 -0700 (PDT)
-Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id d17sm9709606qtb.74.2020.04.13.12.11.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 12:11:37 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 15:11:36 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Kenny Ho <y2kenny@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dD5YUEDwlW8icDI+F/y9bZzsHxv/M2KUcD6dDQ+9NEo=;
+        b=hjExfEiJGMks5ODvVektgVzo5Cg89sXk0VxLLjM0yrPYZg68PamuCgVZoaOiQYPpj+
+         y8w6f9xgf+GKokpqcktWp1dh7QwIsUi4y4Vj6olGMBftkrzJbxNK8dKlTOlffjy8Tzs/
+         B/t6Qt9yfJampPw41KZ0fHBDWdG4syHlxEsJYI/X5TUfF/o+giOH8VW9SfRPKeHG7TZY
+         trVaPehXh61wziG51fvGmXio9eFXdthS0dJKK95KHhalxzxAjagu9qfBlbiQ+J3IUs//
+         a8kx/JE6EeEKSg55hWE0YSmUyxjHUOv174BcGsZGHTFkeoTx8+has6dj1PGEjAbsdUWj
+         viXw==
+X-Gm-Message-State: AGi0PuZ34fvsStixfd1XDAG9fpQ7Txh5lZtbEJ5hRwcrmCaAB1uEAIZe
+        v6Uduaos5qv8h3u6++qrfW/rpmzGFZFabZl1t2I=
+X-Google-Smtp-Source: APiQypKh7TZRCn8Mhrn8z14C0rhM0q0qetKx76lJiDA3Dok2HjocICF1CUGJ/iiEyAWJJZ3sG3pmNUO8e2TieXeSgbU=
+X-Received: by 2002:a1c:a4c2:: with SMTP id n185mr21099181wme.104.1586809045201;
+ Mon, 13 Apr 2020 13:17:25 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200226190152.16131-1-Kenny.Ho@amd.com> <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
+ <20200324184633.GH162390@mtj.duckdns.org> <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
+ <20200413191136.GI60335@mtj.duckdns.org>
+In-Reply-To: <20200413191136.GI60335@mtj.duckdns.org>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Mon, 13 Apr 2020 16:17:14 -0400
+Message-ID: <CAOWid-dM=38faGOF9=-Pq=sxssaL+gm2umctyGVQWVx2etShyQ@mail.gmail.com>
+Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
+To:     Tejun Heo <tj@kernel.org>
 Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
+        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
         "Kuehling, Felix" <felix.kuehling@amd.com>,
-        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com
-Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
-Message-ID: <20200413191136.GI60335@mtj.duckdns.org>
-References: <20200226190152.16131-1-Kenny.Ho@amd.com>
- <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
- <20200324184633.GH162390@mtj.duckdns.org>
- <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
+        "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
+        lkaplan@cray.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Kenny.
+(replying again in plain-text)
 
-On Tue, Mar 24, 2020 at 02:49:27PM -0400, Kenny Ho wrote:
-> Can you elaborate more on what are the missing pieces?
+Hi Tejun,
 
-Sorry about the long delay, but I think we've been going in circles for quite
-a while now. Let's try to make it really simple as the first step. How about
-something like the following?
+Thanks for taking the time to reply.
 
-* gpu.weight (should it be gpu.compute.weight? idk) - A single number
-  per-device weight similar to io.weight, which distributes computation
-  resources in work-conserving way.
+Perhaps we can even narrow things down to just
+gpu.weight/gpu.compute.weight as a start?  In this aspect, is the key
+objection to the current implementation of gpu.compute.weight the
+work-conserving bit?  This work-conserving requirement is probably
+what I have missed for the last two years (and hence going in circle.)
 
-* gpu.memory.high - A single number per-device on-device memory limit.
+If this is the case, can you clarify/confirm the followings?
 
-The above two, if works well, should already be plenty useful. And my guess is
-that getting the above working well will be plenty challenging already even
-though it's already excluding work-conserving memory distribution. So, let's
-please do that as the first step and see what more would be needed from there.
+1) Is resource scheduling goal of cgroup purely for the purpose of
+throughput?  (at the expense of other scheduling goals such as
+latency.)
+2) If 1) is true, under what circumstances will the "Allocations"
+resource distribution model (as defined in the cgroup-v2) be
+acceptable?
+3) If 1) is true, are things like cpuset from cgroup v1 no longer
+acceptable going forward?
 
-Thanks.
+To be clear, while some have framed this (time sharing vs spatial
+sharing) as a partisan issue, it is in fact a technical one.  I have
+implemented the gpu cgroup support this way because we have a class of
+users that value low latency/low jitter/predictability/synchronicity.
+For example, they would like 4 tasks to share a GPU and they would
+like the tasks to start and finish at the same time.
 
--- 
-tejun
+What is the rationale behind picking the Weight model over Allocations
+as the first acceptable implementation?  Can't we have both
+work-conserving and non-work-conserving ways of distributing GPU
+resources?  If we can, why not allow non-work-conserving
+implementation first, especially when we have users asking for such
+functionality?
+
+Regards,
+Kenny
+
+On Mon, Apr 13, 2020 at 3:11 PM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello, Kenny.
+>
+> On Tue, Mar 24, 2020 at 02:49:27PM -0400, Kenny Ho wrote:
+> > Can you elaborate more on what are the missing pieces?
+>
+> Sorry about the long delay, but I think we've been going in circles for quite
+> a while now. Let's try to make it really simple as the first step. How about
+> something like the following?
+>
+> * gpu.weight (should it be gpu.compute.weight? idk) - A single number
+>   per-device weight similar to io.weight, which distributes computation
+>   resources in work-conserving way.
+>
+> * gpu.memory.high - A single number per-device on-device memory limit.
+>
+> The above two, if works well, should already be plenty useful. And my guess is
+> that getting the above working well will be plenty challenging already even
+> though it's already excluding work-conserving memory distribution. So, let's
+> please do that as the first step and see what more would be needed from there.
+>
+> Thanks.
+>
+> --
+> tejun
