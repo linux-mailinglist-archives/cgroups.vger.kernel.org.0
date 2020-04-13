@@ -2,206 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EABF1A655A
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 12:48:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8530C1A6750
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 15:52:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728610AbgDMKsp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 06:48:45 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:50122 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728011AbgDMKso (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 06:48:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=38;SR=0;TI=SMTPD_---0TvP6RXn_1586774914;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvP6RXn_1586774914)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 13 Apr 2020 18:48:35 +0800
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
-Date:   Mon, 13 Apr 2020 18:48:22 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
+        id S1730148AbgDMNwQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 09:52:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730000AbgDMNwQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 09:52:16 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CAEC0A3BDC;
+        Mon, 13 Apr 2020 06:52:15 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id c63so9449298qke.2;
+        Mon, 13 Apr 2020 06:52:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=pEQ2ZN/sQMUNp0cAGyj+0Oo/y3A6wiKh+7dkMJzMwVI=;
+        b=MRSZ1qTh0me/yxxie/3CYFIGX8lrDC3ISjXJe6J7lVXk3NNURSYMsAEkOVRdvkUZVL
+         K97VBE5C8GBEcLI1j6snQqwxNHlR4+HRv+4c/KG8wrRFOyycSy4N/YUZrTbaWF/itcdj
+         cB85PL1NzoFmMsWzbeHhQx6dVVQzIf3ZmbjjAeD+6Zxf9S4eQh8M7DkjB6DbllIxcu9+
+         EKj5ePFmNh8aNV2InN7y+YDDIRVaayW85AjvKvBf+4LPxQciv2SkXZe9Pwsh7Sb+gzyp
+         dfQBXRF70YH8Zx2h75h9z8upaN74WXugMBbMvCCiTmq4wrRoQAEL6eB/jTiTQivTf8P6
+         cxJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=pEQ2ZN/sQMUNp0cAGyj+0Oo/y3A6wiKh+7dkMJzMwVI=;
+        b=NnlNV5l2gecQ4fPeqiap813QxvpTfOFGEidjKBRM0IHYzu0JiRis6pOBX7YniBMrLS
+         PWdiu2ZG42FT5ILkPSWOwnQE4uXE9VumJ7sMVxBZB3t3sedwkiZ7wDATyqY6v/duduSn
+         ImERfNeWW0awC29tRVt6FsMZAUibiWWj4empa+oJSwEFjPZOMDO3IqnnHVbBBB4fCcFb
+         PTyfy+yvdJR7DE6l7T906u/gVUsUAPh4zynFR9E17idUP9lj53ZHHKCo5fSinYCvc4eo
+         eaNr+fcvwPs8R1GgE99/otzAtG2MAjAKxb1Nis8ZLtANn5VbCMrscRdypaMZfBqMxg9e
+         I1pQ==
+X-Gm-Message-State: AGi0PuZRS/nHVjVz3z4hrINI0U2WsotxHOO1RX/yaLkL7m7O3/OVIhat
+        NGTZDokwL8EP79fnLBFCHeM=
+X-Google-Smtp-Source: APiQypLe7MO13U/Rf9ZmvyBPQqLT6zGJOfgTyGiBiUG0HsVQKvD4PRhBAITPJDiJayaHpv91ab4IvA==
+X-Received: by 2002:a37:418d:: with SMTP id o135mr16605498qka.349.1586785934916;
+        Mon, 13 Apr 2020 06:52:14 -0700 (PDT)
+Received: from localhost ([199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id c8sm8541264qke.90.2020.04.13.06.52.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 06:52:14 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 09:52:12 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Bart Van Assche <bvanassche@acm.org>
+Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@vger.kernel.org,
+        cgroups@vger.kernel.org, newella@fb.com, josef@toxicpanda.com
+Subject: Re: [PATCH 2/5] block: add request->io_data_len
+Message-ID: <20200413135212.GA60335@mtj.duckdns.org>
+References: <20200408201450.3959560-1-tj@kernel.org>
+ <20200408201450.3959560-3-tj@kernel.org>
+ <b027a718-1c76-6e34-1edb-5435a5605d35@acm.org>
 MIME-Version: 1.0
-In-Reply-To: <20200116215222.GA64230@cmpxchg.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b027a718-1c76-6e34-1edb-5435a5605d35@acm.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> In a previous review, I pointed out the following race condition
-> between page charging and compaction:
-> 
-> compaction:				generic_file_buffered_read:
-> 
-> 					page_cache_alloc()
-> 
-> !PageBuddy()
-> 
-> lock_page_lruvec(page)
->   lruvec = mem_cgroup_page_lruvec()
->   spin_lock(&lruvec->lru_lock)
->   if lruvec != mem_cgroup_page_lruvec()
->     goto again
-> 
-> 					add_to_page_cache_lru()
-> 					  mem_cgroup_commit_charge()
-> 					    page->mem_cgroup = foo
-> 					  lru_cache_add()
-> 					    __pagevec_lru_add()
-> 					      SetPageLRU()
-> 
-> if PageLRU(page):
->   __isolate_lru_page()
-> 
-> As far as I can see, you have not addressed this. You have added
-> lock_page_memcg(), but that prevents charged pages from moving between
-> cgroups, it does not prevent newly allocated pages from being charged.
-> 
-> It doesn't matter how many times you check the lruvec before and after
-> locking - if you're looking at a free page, it might get allocated,
-> charged and put on a new lruvec after you're done checking, and then
-> you isolate a page from an unlocked lruvec.
-> 
-> You simply cannot serialize on page->mem_cgroup->lruvec when
-> page->mem_cgroup isn't stable. You need to serialize on the page
-> itself, one way or another, to make this work.
-> 
-> 
-> So here is a crazy idea that may be worth exploring:
-> 
-> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
-> linked list.
-> 
-> Can we make PageLRU atomic and use it to stabilize the lru_lock
-> instead, and then use the lru_lock only serialize list operations?
-> 
-> I.e. in compaction, you'd do
-> 
-> 	if (!TestClearPageLRU(page))
-> 		goto isolate_fail;
-> 	/*
-> 	 * We isolated the page's LRU state and thereby locked out all
-> 	 * other isolators, including cgroup page moving, page reclaim,
-> 	 * page freeing etc. That means page->mem_cgroup is now stable
-> 	 * and we can safely look up the correct lruvec and take the
-> 	 * page off its physical LRU list.
-> 	 */
-> 	lruvec = mem_cgroup_page_lruvec(page);
-> 	spin_lock_irq(&lruvec->lru_lock);
-> 	del_page_from_lru_list(page, lruvec, page_lru(page));
-> 
-> Putback would mostly remain the same (although you could take the
-> PageLRU setting out of the list update locked section, as long as it's
-> set after the page is physically linked):
-> 
-> 	/* LRU isolation pins page->mem_cgroup */
-> 	lruvec = mem_cgroup_page_lruvec(page)
-> 	spin_lock_irq(&lruvec->lru_lock);
-> 	add_page_to_lru_list(...);
-> 	spin_unlock_irq(&lruvec->lru_lock);
-> 
-> 	SetPageLRU(page);
-> 
-> And you'd have to carefully review and rework other sites that rely on
-> PageLRU: reclaim, __page_cache_release(), __activate_page() etc.
-> 
-> Especially things like activate_page(), which used to only check
-> PageLRU to shuffle the page on the LRU list would now have to briefly
-> clear PageLRU and then set it again afterwards.
-> 
-> However, aside from a bit more churn in those cases, and the
-> unfortunate additional atomic operations, I currently can't think of a
-> fundamental reason why this wouldn't work.
-> 
-> Hugh, what do you think?
-> 
+Hello,
 
-Hi Johannes
-
-As to the idea of TestClearPageLRU, we except the following scenario
-    compaction                       commit_charge
-                                     if (TestClearPageLRU)
-        !TestClearPageLRU                 lock_page_lruvec
-            goto isolate_fail;            del_from_lru_list
-                                          unlock_page_lruvec
-
-But there is a difficult situation to handle:
-
-   compaction                        commit_charge
-        TestClearPageLRU
-                                    !TestClearPageLRU
-
-                                    page possible state:
-                                    a, reclaiming, b, moving between lru list, c, migrating, like in compaction
-                                    d, mlocking,   e, split_huge_page,
-
-If the page lru bit was cleared in commit_charge with lrucare,
-we still have no idea if the page was isolated by the reason from a~e
-or the page is never on LRU, to deal with different reasons is high cost.
-
-So as to the above issue you mentioned, Maybe the better idea is to
-set lrucare when do mem_cgroup_commit_charge(), since the charge action
-is not often. What's your idea of this solution?
-
-Thanks
-Alex
-
-> compaction:				generic_file_buffered_read:
+On Wed, Apr 08, 2020 at 08:44:17PM -0700, Bart Van Assche wrote:
+> On 2020-04-08 13:14, Tejun Heo wrote:
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index 32868fbedc9e..bfd34c6a27ef 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -142,6 +142,14 @@ struct request {
+> >  
+> >  	/* the following two fields are internal, NEVER access directly */
+> >  	unsigned int __data_len;	/* total data len */
+> > +#ifdef CONFIG_BLK_RQ_IO_DATA_LEN
+> > +	/*
+> > +	 * Total data len at the time of issue. This doesn't get deducted by
+> > +	 * blk_update_request() and can be used by completion path to determine
+> > +	 * the request size.
+> > +	 */
+> > +	unsigned int io_data_len;
+> > +#endif
+> >  	sector_t __sector;		/* sector cursor */
+> >  
+> >  	struct bio *bio;
 > 
-> 					page_cache_alloc()
-> 
-> !PageBuddy()
-> 
-> lock_page_lruvec(page)
->   lruvec = mem_cgroup_page_lruvec()
->   spin_lock(&lruvec->lru_lock)
->   if lruvec != mem_cgroup_page_lruvec()
->     goto again
-> 
-> 					add_to_page_cache_lru()
-> 					  mem_cgroup_commit_charge()
+> So we have one struct member with the description "total data len" and
+> another struct member with the description "total data len at the time
+> of issue"? How could one not get confused by these descriptions?
 
-					 //do charge with lrucare
-					 spin_lock(&lruvec->lru_lock)
-> 					    page->mem_cgroup = foo
-> 					  lru_cache_add()
-> 					    __pagevec_lru_add()
-> 					      SetPageLRU()
-> 
-> if PageLRU(page):
->   __isolate_lru_page()
+The new one explicitly says it doesn't get deducted by update_request.
+
+> This change makes the comment above __data_len incorrect. Please update
+> that comment or move io_data_len in front of that comment.
+
+Sure.
+
+> How does this change interact with the code in drivers/scsi/sd.c that
+> manipulates __data_len directly?
+
+It doesn't.
+
+Thanks.
+
+-- 
+tejun
