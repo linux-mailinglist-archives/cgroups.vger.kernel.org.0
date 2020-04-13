@@ -2,66 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8530C1A6750
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 15:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FC9B1A675F
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 15:56:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730148AbgDMNwQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 09:52:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52432 "EHLO
+        id S1730173AbgDMN4Z (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 09:56:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53062 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730000AbgDMNwQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 09:52:16 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9CAEC0A3BDC;
-        Mon, 13 Apr 2020 06:52:15 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id c63so9449298qke.2;
-        Mon, 13 Apr 2020 06:52:15 -0700 (PDT)
+        with ESMTP id S1729430AbgDMN4Y (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 09:56:24 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E903C0A3BDC;
+        Mon, 13 Apr 2020 06:56:24 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id l13so4374500qtr.7;
+        Mon, 13 Apr 2020 06:56:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=pEQ2ZN/sQMUNp0cAGyj+0Oo/y3A6wiKh+7dkMJzMwVI=;
-        b=MRSZ1qTh0me/yxxie/3CYFIGX8lrDC3ISjXJe6J7lVXk3NNURSYMsAEkOVRdvkUZVL
-         K97VBE5C8GBEcLI1j6snQqwxNHlR4+HRv+4c/KG8wrRFOyycSy4N/YUZrTbaWF/itcdj
-         cB85PL1NzoFmMsWzbeHhQx6dVVQzIf3ZmbjjAeD+6Zxf9S4eQh8M7DkjB6DbllIxcu9+
-         EKj5ePFmNh8aNV2InN7y+YDDIRVaayW85AjvKvBf+4LPxQciv2SkXZe9Pwsh7Sb+gzyp
-         dfQBXRF70YH8Zx2h75h9z8upaN74WXugMBbMvCCiTmq4wrRoQAEL6eB/jTiTQivTf8P6
-         cxJQ==
+        bh=MEV4w5u8wTFD0TinBcOlOPPgb+JBc/8ZPXNjItBqEvc=;
+        b=nhu8f+65G6mbDWJj8y7QJL/7UlzoaljLRQvRspKyQ1CA/3V1M0C4N1KGLFfrTbL8Tt
+         tocYT+riHzS6jXIOooqsI+Q70TgCylKcvjHW4rv4Wqzfs18PJ5vAmK+8EyMAiPZdCYAY
+         rue0xXczbx7/bbAKqpvIw/a5qCiA7yFQ/RyUo3AdGMjI2ziPFbOK2CCnThdfiJ9VjpxC
+         IBmL2aH+zNXCSWto2s+rkQfVgZ7Y37rnId0ypzJV1nlC70CMyYGi84ECkUDEjHNpu5oS
+         6uM0V++40A/0m0a86BcwN22LCZ6RBqGoi0NZjG//9GlQ8hYOpARHuViznwHNdU1zRaTU
+         PNjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=pEQ2ZN/sQMUNp0cAGyj+0Oo/y3A6wiKh+7dkMJzMwVI=;
-        b=NnlNV5l2gecQ4fPeqiap813QxvpTfOFGEidjKBRM0IHYzu0JiRis6pOBX7YniBMrLS
-         PWdiu2ZG42FT5ILkPSWOwnQE4uXE9VumJ7sMVxBZB3t3sedwkiZ7wDATyqY6v/duduSn
-         ImERfNeWW0awC29tRVt6FsMZAUibiWWj4empa+oJSwEFjPZOMDO3IqnnHVbBBB4fCcFb
-         PTyfy+yvdJR7DE6l7T906u/gVUsUAPh4zynFR9E17idUP9lj53ZHHKCo5fSinYCvc4eo
-         eaNr+fcvwPs8R1GgE99/otzAtG2MAjAKxb1Nis8ZLtANn5VbCMrscRdypaMZfBqMxg9e
-         I1pQ==
-X-Gm-Message-State: AGi0PuZRS/nHVjVz3z4hrINI0U2WsotxHOO1RX/yaLkL7m7O3/OVIhat
-        NGTZDokwL8EP79fnLBFCHeM=
-X-Google-Smtp-Source: APiQypLe7MO13U/Rf9ZmvyBPQqLT6zGJOfgTyGiBiUG0HsVQKvD4PRhBAITPJDiJayaHpv91ab4IvA==
-X-Received: by 2002:a37:418d:: with SMTP id o135mr16605498qka.349.1586785934916;
-        Mon, 13 Apr 2020 06:52:14 -0700 (PDT)
+        bh=MEV4w5u8wTFD0TinBcOlOPPgb+JBc/8ZPXNjItBqEvc=;
+        b=F4dUtmMgWIokbD2bim1bk0P738olAihiOd2jkRO/F7ctIph8v+AWxJCAozJq9a/xrc
+         D4XveNiRepUKHLzVs9lk/skzpgDp4SK3QKg9WXYkOO9WfssrbNWTvh3aaPo0/97SeJTC
+         Towb/QuuFj5lmU4nzOPQbUCF5PuaOCHbKUmi4dAYyyPn2jh0MuSKPJwDS5txEmxRICo3
+         QsFLtLhjGTy7oXuPKmuQWOJQdOOleEZUtJ0Hu0i71s/zZ61FRskp5xiPcNHFAhkMB6gU
+         JszDdY5YHMJDIbOGRhKCrqY4wJqzYmmb9fxqvLU63vBPhEPuJ4XlFycswEvoyuObaiUI
+         r1xA==
+X-Gm-Message-State: AGi0PuZRDXI52zDT6afS7gjmb+y+EdsVpt7Abg/C9xBmVvCfe6tWGwSL
+        mFQE3K7T//WsT3w5oxlDhY4=
+X-Google-Smtp-Source: APiQypKh5p1mK8Fu6o5MmCy3e0faMipQp8cuUVieWNXjoUNZwo+HvPrYywA6UjjylArxPOfmYc3gvg==
+X-Received: by 2002:ac8:193d:: with SMTP id t58mr10665708qtj.93.1586786183152;
+        Mon, 13 Apr 2020 06:56:23 -0700 (PDT)
 Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id c8sm8541264qke.90.2020.04.13.06.52.13
+        by smtp.gmail.com with ESMTPSA id p10sm8655544qtu.14.2020.04.13.06.56.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 06:52:14 -0700 (PDT)
-Date:   Mon, 13 Apr 2020 09:52:12 -0400
+        Mon, 13 Apr 2020 06:56:22 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 09:56:21 -0400
 From:   Tejun Heo <tj@kernel.org>
-To:     Bart Van Assche <bvanassche@acm.org>
+To:     Ming Lei <ming.lei@redhat.com>
 Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@vger.kernel.org,
         cgroups@vger.kernel.org, newella@fb.com, josef@toxicpanda.com
 Subject: Re: [PATCH 2/5] block: add request->io_data_len
-Message-ID: <20200413135212.GA60335@mtj.duckdns.org>
+Message-ID: <20200413135621.GB60335@mtj.duckdns.org>
 References: <20200408201450.3959560-1-tj@kernel.org>
  <20200408201450.3959560-3-tj@kernel.org>
- <b027a718-1c76-6e34-1edb-5435a5605d35@acm.org>
+ <20200409014406.GA370295@localhost.localdomain>
+ <20200409021119.GJ162390@mtj.duckdns.org>
+ <20200409023857.GB370295@localhost.localdomain>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b027a718-1c76-6e34-1edb-5435a5605d35@acm.org>
+In-Reply-To: <20200409023857.GB370295@localhost.localdomain>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -69,43 +71,38 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On Wed, Apr 08, 2020 at 08:44:17PM -0700, Bart Van Assche wrote:
-> On 2020-04-08 13:14, Tejun Heo wrote:
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index 32868fbedc9e..bfd34c6a27ef 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -142,6 +142,14 @@ struct request {
-> >  
-> >  	/* the following two fields are internal, NEVER access directly */
-> >  	unsigned int __data_len;	/* total data len */
-> > +#ifdef CONFIG_BLK_RQ_IO_DATA_LEN
-> > +	/*
-> > +	 * Total data len at the time of issue. This doesn't get deducted by
-> > +	 * blk_update_request() and can be used by completion path to determine
-> > +	 * the request size.
-> > +	 */
-> > +	unsigned int io_data_len;
-> > +#endif
-> >  	sector_t __sector;		/* sector cursor */
-> >  
-> >  	struct bio *bio;
+On Thu, Apr 09, 2020 at 10:38:57AM +0800, Ming Lei wrote:
+> On Wed, Apr 08, 2020 at 10:11:19PM -0400, Tejun Heo wrote:
+> > On Thu, Apr 09, 2020 at 09:44:06AM +0800, Ming Lei wrote:
+> > > Almost all __blk_mq_end_request() follow blk_update_request(), so the
+> > > completed bytes can be passed to __blk_mq_end_request(), then we can
+> > > avoid to introduce this field.
+> > 
+> > But on some drivers blk_update_request() may be called multiple times before
+> > __blk_mq_end_request() is called and what's needed here is the total number of
+> > bytes in the whole request, not just in the final completion.
 > 
-> So we have one struct member with the description "total data len" and
-> another struct member with the description "total data len at the time
-> of issue"? How could one not get confused by these descriptions?
+> OK.
+> 
+> Another choice might be to record request bytes in rq's payload
+> when calling .queue_rq() only for these drivers.
 
-The new one explicitly says it doesn't get deducted by update_request.
+There sure are multiple ways to skin a cat.
 
-> This change makes the comment above __data_len incorrect. Please update
-> that comment or move io_data_len in front of that comment.
+> > > Also there is just 20 callers of __blk_mq_end_request(), looks this kind
+> > > of change shouldn't be too big.
+> > 
+> > This would work iff we get rid of partial completions and if we get rid of
+> > partial completions, we might as well stop exposing blk_update_request() and
+> > __blk_mq_end_request().
+> 
+> Indeed, we can store the completed bytes in request payload, so looks killing
+> partial completion shouldn't be too hard.
 
-Sure.
-
-> How does this change interact with the code in drivers/scsi/sd.c that
-> manipulates __data_len directly?
-
-It doesn't.
+There's a reason why we've had partial completions. On slower IO devices, like
+floppy, partial completions actually are advantageous. I'm not arguing this
+still holds up as a valid justification but getting rid of partial completions
+isn't just a decision about plumbing details either.
 
 Thanks.
 
