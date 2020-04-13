@@ -2,59 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 637A91A6AAD
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 18:57:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 936CF1A6ACC
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 19:01:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732228AbgDMQ5g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 12:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48032 "EHLO
+        id S1732308AbgDMRBe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 13:01:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50526 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1732216AbgDMQ5e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 12:57:34 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4075EC0A3BDC;
-        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id s8so10842068wrt.7;
-        Mon, 13 Apr 2020 09:57:34 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1732295AbgDMRBd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 13:01:33 -0400
+Received: from mail-wr1-x434.google.com (mail-wr1-x434.google.com [IPv6:2a00:1450:4864:20::434])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A74ABC0A3BDC;
+        Mon, 13 Apr 2020 10:01:32 -0700 (PDT)
+Received: by mail-wr1-x434.google.com with SMTP id i10so10844446wrv.10;
+        Mon, 13 Apr 2020 10:01:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+        h=subject:from:to:cc:references:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to;
-        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
-        b=Ek6w3+2LwAgiEFDyJrzJ5+hBEeixOiDyTWppwlRHynKI7HKyY00VBh54AtmkM/tBT/
-         HXgnDqaRJLaacub59m4ZAc8rIviUGL+EQAXy92qTwWo5CZ1vfpUeNZZX3/7Ide5puFIT
-         Kg+AeTnkWlOwIFcQUYsUNJBC97RbveeDwLjyX18UgS+LAxOdjASYYAPjizDBWTIH22xy
-         7a07z57tP6vAEbV8ngk8wuWHoAk6boUQQljYzOlGG/nbehfLgm0l0MTftg2tp45F1ECa
-         vZCOtBbB/JbCFOrVcerRRIvoWd1SwAPF3IXGFk4hWVoh/d8+wEravjuDH/1xGD9lOvU7
-         Z80g==
+        bh=Y+OjZtirFhjkKohAUaG6BdVWbAOuDBo2mD5OAId8HZs=;
+        b=bhljM/45ZDJuZwpwJOb8QMjCZbnOZWPwXXJxlZtz0k8J78lyk63TMhqsI2IwWSibjY
+         RID2Cm5+ZEN13Xg4k+c30cv4cJAtDvJacnIbjdsjzoNB0ZZ2O9lrbtipsk2xP7mNwmdr
+         CMPnkCStQX4m84ySBmtfT9w2f9sA6d8L8pQFdfZ4CoihS06PKjWsQ4NO30P/boCyZa6T
+         jrcw3BJ6mIc9KSEjPrtgpzdk91dpL/AWRXRegYPqD3i7TmEX+W6u8bAHhCRcQ3zgfEwF
+         ClsJ9kncLd3QpUgx6qTFNScUmHL4unzU8Q1i/+BMwG1CWVhYoqL0T9Ls7vs1DJnYbJt5
+         xqLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+        h=x-gm-message-state:subject:from:to:cc:references:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to;
-        bh=Xk2BsSDKDhxiXf1W9gwjsfp/DxSiKFq+bcaV0hQZsPk=;
-        b=iAiGzkdhmhhel9FmT4nLQxL+oTsWZfpcICNezJkwc0EpiQS7KRjrwhsMOWeu7dkMmu
-         wnDO6BBeD2dtqCuaSDlfgx16cd2A1/UCYQvRVG/whYw6XwZWurEeKXN1J7wQoImDe9KA
-         mN72Wk6DFvuKDb/SFmE2CR9RjXkwd5dLidKmuT7zZLrcYpHW7Ch2z0gDUdlCVESLpS7H
-         Yvv/kVEX805MtcD6i9Kt6TEJlkQ2J3ULwTXnJwSYpbvRTwACZRuYh8qyhsB4qRuS0IZj
-         5xb18Y8t6qyibdnjVxB+uMh009WDjkFkug7ydPMRgF3CQHRGlHP7rEl0pN6/fWivW8Ao
-         WqtA==
-X-Gm-Message-State: AGi0PuaZZeVvDnAuC/Fxy9kPQxkyRIh2XmS9KoChRy5mVHExhWAnvP1O
-        pCwbc9Q9dAnRJ0l+DcShYr2cC7eNwXU=
-X-Google-Smtp-Source: APiQypISXbG9dV2fcRgzor6zakpBuK4UFfevcf7Gl4GEg01N/eKgMDCWdKixZp165gs6Dd+lmJyz5g==
-X-Received: by 2002:adf:f750:: with SMTP id z16mr18108334wrp.115.1586797052925;
-        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
+        bh=Y+OjZtirFhjkKohAUaG6BdVWbAOuDBo2mD5OAId8HZs=;
+        b=r47w7rR5h+H12sL16oLcZDA/Du3DrtvcnyBeVAjWFDQX+74PLtgqRN0SU7R8iWe2+A
+         1dvwoonW26RcQADuQieKJg5Q8M8q1WD89iI1/3EBYm899Tg40KDSjEvSw9a4aoHpvrng
+         /1tgTRXaobHCDkcMuie/EU1gLXgEZG5mtQU5DO8l2ByVaJO+deXiZOxjPXICXFGFTUSE
+         fJ6CXvnhxxuTXJ76GsVurN1o3JmgBjuBWwo0N1i5tp3cCbD89BbRj2ubHuo8z2Wvks9r
+         dZgp7DVCasKGNfkJna8tgoY3w3Kmh3nlEsjsTLReS7u8axeON+yvz2DcKBLbVZqfuiR8
+         EWaw==
+X-Gm-Message-State: AGi0PuaUUN44Q4H+HucioJyGJUhp4WfRLCe+uvvbcvLYE1b1NSKXSwIw
+        dW46mIq1eIw5sLG0QN+Eojw=
+X-Google-Smtp-Source: APiQypI9T8YXRsMySBlE238yvwAkH42wDN8DfS1TphylQPTaiG+dN9P9IJvuuprZXh4MbcrBMzk9Yw==
+X-Received: by 2002:a5d:4dcb:: with SMTP id f11mr8423368wru.174.1586797291380;
+        Mon, 13 Apr 2020 10:01:31 -0700 (PDT)
 Received: from [192.168.43.75] ([109.126.129.227])
-        by smtp.gmail.com with ESMTPSA id d7sm15565513wrr.77.2020.04.13.09.57.30
+        by smtp.gmail.com with ESMTPSA id t2sm8633601wmt.15.2020.04.13.10.01.28
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 13 Apr 2020 09:57:32 -0700 (PDT)
+        Mon, 13 Apr 2020 10:01:30 -0700 (PDT)
 Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
  target handling
+From:   Pavel Begunkov <asml.silence@gmail.com>
 To:     Tejun Heo <tj@kernel.org>, axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
         josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
 References: <20200413162758.97252-1-tj@kernel.org>
-From:   Pavel Begunkov <asml.silence@gmail.com>
+ <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
 Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
  mQINBFmKBOQBEAC76ZFxLAKpDw0bKQ8CEiYJRGn8MHTUhURL02/7n1t0HkKQx2K1fCXClbps
  bdwSHrhOWdW61pmfMbDYbTj6ZvGRvhoLWfGkzujB2wjNcbNTXIoOzJEGISHaPf6E2IQx1ik9
@@ -98,130 +99,80 @@ Autocrypt: addr=asml.silence@gmail.com; prefer-encrypt=mutual; keydata=
  UVMKkOCdFhutRmYp0mbv2e87IK4erwNHQRkHUkzbsuym8RVpAZbLzLPIYK/J3RTErL6Z99N2
  m3J6pjwSJY/zNwuFPs9zGEnRO4g0BUbwGdbuvDzaq6/3OJLKohr5eLXNU3JkT+3HezydWm3W
  OPhauth7W0db74Qd49HXK0xe/aPrK+Cp+kU1HRactyNtF8jZQbhMCC8vMGukZtWaAwpjWiiH bA==
-Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
-Date:   Mon, 13 Apr 2020 19:56:26 +0300
+Message-ID: <6f69d35c-c593-f140-c351-c7fd2c13069e@gmail.com>
+Date:   Mon, 13 Apr 2020 20:00:29 +0300
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.3.0
 MIME-Version: 1.0
-In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+In-Reply-To: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q"
+ boundary="ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
-Content-Type: multipart/mixed; boundary="naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO";
+--ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf
+Content-Type: multipart/mixed; boundary="YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d";
  protected-headers="v1"
 From: Pavel Begunkov <asml.silence@gmail.com>
 To: Tejun Heo <tj@kernel.org>, axboe@kernel.dk
 Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
  kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
  josef@toxicpanda.com, ming.lei@redhat.com, bvanassche@acm.org
-Message-ID: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
+Message-ID: <6f69d35c-c593-f140-c351-c7fd2c13069e@gmail.com>
 Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
  target handling
 References: <20200413162758.97252-1-tj@kernel.org>
-In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+ <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
+In-Reply-To: <dd55f890-740c-16b5-77bd-4c6fdb710b3d@gmail.com>
 
---naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO
+--YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: quoted-printable
 
-On 13/04/2020 19:27, Tejun Heo wrote:
-> Changes from v1[1]
+On 13/04/2020 19:56, Pavel Begunkov wrote:
+> On 13/04/2020 19:27, Tejun Heo wrote:
+>> Changes from v1[1]
+>>
+>> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
+>>   rq->stats_sectors instead as suggested by Pavel Begunkov.
 >=20
-> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
->   rq->stats_sectors instead as suggested by Pavel Begunkov.
+> rq->stats_sectors is set only when there is QUEUE_FLAG_STATS, see
+> blk_mq_start_request(). I don't see blk-iocost requiring it. Did I miss=
+ something?
 
-rq->stats_sectors is set only when there is QUEUE_FLAG_STATS, see
-blk_mq_start_request(). I don't see blk-iocost requiring it. Did I miss s=
-omething?
-
->=20
-> This patchset improves the following two iocost control behaviors.
->=20
-> * iocost was failing to punish heavy shared IO generators (file metadat=
-a, memory
->   reclaim) through use_delay mechanism - use_delay automatically decays=
- which
->   works well for iolatency but doesn't match how iocost behaves. This l=
-ed to
->   e.g. memory bombs which generate a lot of swap IOs to use over their =
-allotted
->   amount. This is fixed by adding non-decaying use_delay mechanism.
->=20
-> * The same latency targets were being applied regardless of the IO size=
-s. While
->   this works fine for loose targets, it gets in the way when trying to =
-tigthen
->   them - a latency target adequate for a 4k IO is too short for a 1 meg=
- IO.
->   iocost now discounts the size portion of cost when testing whether a =
-given IO
->   met or missed its latency target.
->=20
-> While at it, it also makes minor changse to iocost_monitor.py.
->=20
-> This patchset contains the following five patches.
->=20
->  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
->  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
->  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
->  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
->=20
-> and is also available in the following git branch.
->=20
->  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-del=
-ay-latency-v2
->=20
-> diffstat follows. Thanks.
->=20
->  block/Kconfig                  |    1=20
->  block/blk-cgroup.c             |    6 ++++
->  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++---=
----------
->  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
->  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++-------------=
----
->  5 files changed, 106 insertions(+), 48 deletions(-)
->=20
-> --
-> tejun
->=20
-> [1] http://lkml.kernel.org/r/20200408201450.3959560-1-tj@kernel.org
->=20
+And there is no reason to not initialise it unconditionally.
 
 --=20
 Pavel Begunkov
 
 
---naT5wF3ZYUQA1LjeTnwfcxF3ZNXqJImDO--
+--YJcycZrC01yeR1rFUGN2cbIOj36u3pt4d--
 
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q
+--ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl6Umb8ACgkQWt5b1Glr
-+6UL3Q//cYxPSPCP602xbhfwteRZw+0SsyigabnibOPeoindiN7zG1pRZqRqVdBA
-s0H7GfBW8f+DhVSPlgKYSYu4XQMwLRo1/adRJMeLtRvNh8b0CCdENXafKcMty5hK
-y0r9/PeMV/xlYb+aRUYFVwwMfX/B35nPnJ0NydCZz6ZYRFgkFz/27YppfsZY1tyk
-SBj+jWmBZgGmQoqoPwoCF8HN0KVb/8UIfx3be5b3KGAaB+pcYz26MJjKFufwap6r
-31oNhC3GcXSR5GrlsJauwYB5641H3IdP+1a4jg6cvrGN0+h/THVB98JwgImmz6WJ
-tWe6uiYXvDCrSdC9QNIJqIv3FiXaF/8pJMv4utJICPcB5xkq0cvz1yx+Zdca6o0b
-ybD/7AAcXMOaWbKYxffji/jpChJM0kPdUhDNr79MLoNr7fUusoocxRmPwkWG+jBe
-by8O/pGMsKOz3JXELwtWysQy0y/HqQSVYW8x58tdKXj0ACxSKwJqAgDzS5xdOJ1Y
-qgauGp4Kx3SwvE0oqV0bC5TKXVxS0q1PCg1XTKicnT7QjQqXYYJdZLf2PkDlqmEE
-Ug0P0dfH/ucNAXtv6lz/xfIgvfJnOtg+AHTBE1ol3gSRRbGccCVmrAxwYVcO+wFQ
-fVayxegf7IY55PMAPMuNMVCovTih6+DgOgOnc3czO3Y0mi3MYzI=
-=D3I7
+iQIzBAEBCAAdFiEE+6JuPTjTbx479o3OWt5b1Glr+6UFAl6Umq0ACgkQWt5b1Glr
++6U03A/+I2I+IhvRJKZaVJ/TYjRLBm1UKE5ljXXgHE/tb96RkjvEh1NlKCGhNKn1
+Sd/8fIT0QJW23aZVFUYPwVAYUKkzbmyhUX9bE2nYjq2A7OckDshVBvrKpjzVAH1w
+8SBzWFKysTSAPdyGLN2V3/cRn8ioBAGTpZd57WQJs8668WYGKWgxovbrc/s/mkWx
+jF9e8PN5ZYg24clRLMK+5T0Z3w5K2VwNitmCiGXzj8K8sxPNz/v6a6p/cpSNKfZ4
+6eo+oOhg8o9wGRMiZtA2H9fE2wrY7xcg2sF8vLkvKq6pVz6yI29wk+FbLvQuYJYc
+Uhjy0USJV2Mp4ErgLzGD2iZIicPgCQUZoTm5Jgqyp4NWJUoOAquULy1pSm8hYdiX
+JOuDcKuo+7S/PMSDUwZiwUYAJfPScy/OxOrYiCiE5letmpty5JV1J79bZ32XGVyA
+/dVFVHrTPz1sCAS1F/RMAsERwsa7uXg1DUPelQifAr1wGJ81bQMfrtGbCR4/QU2P
+VsyuhDadwS22FmMX4eJKdsCLkAUOX8hhPj2TpDVgYrpB2O4i+hnruPp8oGcHeGsG
+2zeMHq5Ld9Ma5rTXlXhUNANsHGRONkg0lWUEF5CJ5/ViwEbfCZ9Tqu3fKBv6sJ7t
+NjrTqzZp5B4AdBb0AejSDIkmq4c9Y7tj102TsDs2vVFehf4p99w=
+=39Mc
 -----END PGP SIGNATURE-----
 
---hFjuupwkWmuwpO9jhiJUUOPGSlwvofv9Q--
+--ZESNvDEwJ4gUs6e0UsPpowCHJz6ut96Qf--
