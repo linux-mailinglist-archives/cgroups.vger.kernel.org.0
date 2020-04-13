@@ -2,63 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72E91A6F01
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2020 00:20:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB8A1A6F03
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2020 00:21:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389510AbgDMWUp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 18:20:45 -0400
-Received: from mx0a-001e9b01.pphosted.com ([148.163.157.123]:52294 "EHLO
-        mx0a-001e9b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389509AbgDMWUo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 18:20:44 -0400
-X-Greylist: delayed 1346 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 18:20:44 EDT
-Received: from pps.filterd (m0176108.ppops.net [127.0.0.1])
-        by mx0a-001e9b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03DLtIt9017401
+        id S2389519AbgDMWVX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 18:21:23 -0400
+Received: from mx0b-001e9b01.pphosted.com ([148.163.159.123]:47994 "EHLO
+        mx0a-001e9b01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2389509AbgDMWVW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 18:21:22 -0400
+X-Greylist: delayed 1380 seconds by postgrey-1.27 at vger.kernel.org; Mon, 13 Apr 2020 18:21:19 EDT
+Received: from pps.filterd (m0088348.ppops.net [127.0.0.1])
+        by mx0b-001e9b01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03DLwFVE016040
         for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 17:58:18 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=magicleap.com; h=from : to : cc :
  subject : date : message-id : in-reply-to : references; s=pp09042018;
- bh=2LYr+6fk9jc+ruNP83QWvUWdwCvITiOBEiV9JY3ziDQ=;
- b=HdyBBN0yThk4EXVbQ8mZ9GFO+jNAmUXwLvFiakVexr/O7ktaI5W/3W8oV6oCYWkSX2Jz
- 96RkDeO7DbtQ/DxE7fhfEAJiXvsnQEhiPukuUeODRtWThXaYpZmmr/isIoHJewfndGxd
- hjDXz2x7rVL1ohNrr4HENi2S9jRdeGZl6ILgh6HYaFlgCuC2OvudLWjs54qxaQDCDEXE
- gASj4OpRcnP1jygBJEqGCBMI8QMRhoC+CyULhcXufOl3F9EWtDtjITz1WejIqCcXdOvA
- oYDb35/KSmirbEyIR8R0Syket7hK8/RpfWEj6dlN0Bx/kAu2bQrZ6Hw/BRmqhb+k60ov 3Q== 
-Received: from mail-ua1-f72.google.com (mail-ua1-f72.google.com [209.85.222.72])
-        by mx0a-001e9b01.pphosted.com with ESMTP id 30b7xqhuhc-1
+ bh=q9xbrEtUFvdD+yjJZ2AFSDagxPmBYQWtTPe7OPBiRKE=;
+ b=IHltbH3zB2ocnvsP4UJNirThHBgrhGPue/h6WDGLnNjv1W+HcTFhT16vvgCIvmeC3ibg
+ ZzZwXXzDLIpUYpvoiGHDOQIVX/i69nxgMs2//adl/ThzgXaD2kulyypywAO53sEkQeEl
+ 6Nf4eZgGPWd6TL1RKL6yh0OZduSjtJOGZjoZmRak3aDTSZUC2ZZR0rXOHcmWQAmvXiZX
+ OKDYK5/sfy43ognA+zz1BoG3sksx1kjGmsUtmzR6PQk1FsozE1wZxbPD4dJfGMapv5lP
+ MKTxLPqbksmujrJjIuXL0rbN9MvIUvPOFQZrQ9ixQrwrImmvE/a7bbExf+bYQ2Z30K2e CA== 
+Received: from mail-ua1-f71.google.com (mail-ua1-f71.google.com [209.85.222.71])
+        by mx0b-001e9b01.pphosted.com with ESMTP id 30b8rghu4t-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK)
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 17:58:17 -0400
-Received: by mail-ua1-f72.google.com with SMTP id y23so4732272uar.2
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:58:17 -0700 (PDT)
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 17:58:18 -0400
+Received: by mail-ua1-f71.google.com with SMTP id 8so4717883uak.19
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:58:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=magicleap.com; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=2LYr+6fk9jc+ruNP83QWvUWdwCvITiOBEiV9JY3ziDQ=;
-        b=GvwpjXIJdz7nDkgPYrZZvtBfCeiGi2XORRj68alYd6piMcXloFazhQkh9L9tVlDzeA
-         Wi2ToTlPJey7l6S8spMVnQDfD/JfFdR+6Ab+l1Gw1tFoZa6P3I4v6zD5e5GRp2kbGRG0
-         DwLJn7veoKFZI7kitdXi1SnmJRWB2keFHejko=
+        bh=q9xbrEtUFvdD+yjJZ2AFSDagxPmBYQWtTPe7OPBiRKE=;
+        b=KVR+sANu5hQxc4ZhyNpskoe4UhhF9xUoJ8NNACnnzE3ocoqzZjKju2MRdK2HRtZvL+
+         N/8thcktbt4udU/0V6iU8gpT/xyDsheWebPSS8FNZYY412N0ulciGc6Hq2Qca7kGEJBj
+         LyvmSWquIj6aaqtO+PdHJE5AWmMtVvU27GKas=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=2LYr+6fk9jc+ruNP83QWvUWdwCvITiOBEiV9JY3ziDQ=;
-        b=Xz7O/GkSC3CmGhOPnBfga8Na4mTr3MfBlJWEuPgoIl91kDUwtrf62XxLvhn9Ipaz47
-         bWzhkzUeqeuGyiCS+WFFChpbhu/gVE8KsuJnjsyJBnGSnybigMRctUPpmv7G5uwb0NQW
-         6JJi07D7/6Hj9c7z6NBwbJ3vs8ufGbAH0t0cVbQQeNyobwXYpk7UqHvqqPfL8dP9rfI1
-         PqbJX1578X9MpDxetpXo2o15N7hgTJ6j1+BjHheXMAwqQvpV9vKi0w0JN8L5ZXVlNgIh
-         4G1Wbm0tvfcyXEh4y7Twz+MhOP87dL0huELunxge+nSMxjtHxr8UO36qD89pA4MZkG5x
-         7nSg==
-X-Gm-Message-State: AGi0PubUhxOJSjRdPAOJ3hDLObqev2Z8EWYdgBOqxSCT+v4+vQQdprcw
-        e1wz/L/w4XngzjMw+2NDMn97fQdwXHtArqW07AB72/eiAGtnMrHVsvnz0JmhFHL7PfLYC7TMmqZ
-        1AnnCwqN/aSb+T0W6NA==
-X-Received: by 2002:a67:edd9:: with SMTP id e25mr13851040vsp.216.1586815096594;
-        Mon, 13 Apr 2020 14:58:16 -0700 (PDT)
-X-Google-Smtp-Source: APiQypIMGPLZnRtmTVpXfPqtZWc18Gf0bs/HZgZPXoFUY/YUf9rKLxCXLVFVeGuWQy7Zgvj40mZklA==
-X-Received: by 2002:a67:edd9:: with SMTP id e25mr13851022vsp.216.1586815096308;
-        Mon, 13 Apr 2020 14:58:16 -0700 (PDT)
+        bh=q9xbrEtUFvdD+yjJZ2AFSDagxPmBYQWtTPe7OPBiRKE=;
+        b=UAQ9OjqhpN2pDSlqXb93EvuIEQrzAefv5g9w73zf6r4hpQV0JY5zgmOTihKCJWmuAG
+         TMDZ8v6aFwKlcxDeCYbOtC0v5aFNEcaIodvzy9bkVp/Mt1sTK7XBNKF421Y1asSgoFjI
+         n5LfSgH4NZnUurXpon0KJ7AHtFX8wqml7ZS7YTwXAdpWYuM0hpalP5joopz+AhCdZqB1
+         ZN1BRtGhrA9DlVffAdWDK2GJFlgB8sPTGA17Mej1K6hqcy+TgedS9qa9JNKD7VGVJivT
+         4Vobyx4QvDE4pGNIr7Za8HevLHnFw0iXjEEReTxjWaDXfiPkB2likZSYQZjL1QT2kCus
+         a51A==
+X-Gm-Message-State: AGi0PuYbGoCjVaOT3NoQNHeh2Q1cpH8NAmgLTZDycSxBPjIccy/3SdsK
+        gaxq3Ku5nXHaSE1JHrDgc4LbjbVKaKlFJjt859Sbssh66+0gkP2zu3XPyg4U4PI0nnTYk4uCsen
+        rx/B1gT8yutH7XStRhA==
+X-Received: by 2002:a67:fad8:: with SMTP id g24mr14100498vsq.162.1586815097486;
+        Mon, 13 Apr 2020 14:58:17 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLSllP7rTpkID/s9wUgG/RyXGSFr2nLzVypoD5HoINgx0EhexeQbxFV6Z0LY7Chg6NphJMVQw==
+X-Received: by 2002:a67:fad8:: with SMTP id g24mr14100466vsq.162.1586815097140;
+        Mon, 13 Apr 2020 14:58:17 -0700 (PDT)
 Received: from mldl2169.magicleap.ds ([162.246.139.210])
-        by smtp.gmail.com with ESMTPSA id 20sm2988529uaj.13.2020.04.13.14.58.15
+        by smtp.gmail.com with ESMTPSA id 20sm2988529uaj.13.2020.04.13.14.58.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2020 14:58:15 -0700 (PDT)
+        Mon, 13 Apr 2020 14:58:16 -0700 (PDT)
 From:   svc_lmoiseichuk@magicleap.com
 X-Google-Original-From: lmoiseichuk@magicleap.com
 To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
@@ -67,19 +67,19 @@ Cc:     akpm@linux-foundation.org, rientjes@google.com, minchan@kernel.org,
         vinmenon@codeaurora.org, andriy.shevchenko@linux.intel.com,
         anton.vorontsov@linaro.org, penberg@kernel.org, linux-mm@kvack.org,
         Leonid Moiseichuk <lmoiseichuk@magicleap.com>
-Subject: [PATCH 1/2] memcg: expose vmpressure knobs
-Date:   Mon, 13 Apr 2020 17:57:49 -0400
-Message-Id: <20200413215750.7239-2-lmoiseichuk@magicleap.com>
+Subject: [PATCH 2/2] memcg, vmpressure: expose vmpressure controls
+Date:   Mon, 13 Apr 2020 17:57:50 -0400
+Message-Id: <20200413215750.7239-3-lmoiseichuk@magicleap.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20200413215750.7239-1-lmoiseichuk@magicleap.com>
 References: <20200413215750.7239-1-lmoiseichuk@magicleap.com>
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
  definitions=2020-04-13_11:2020-04-13,2020-04-13 signatures=0
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 mlxlogscore=999
- malwarescore=0 spamscore=0 adultscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 suspectscore=2 clxscore=1015
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004130160
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 suspectscore=0
+ phishscore=0 adultscore=0 clxscore=1015 malwarescore=0 mlxlogscore=999
+ priorityscore=1501 spamscore=0 bulkscore=0 impostorscore=0 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2003020000
+ definitions=main-2004130160
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -87,7 +87,11 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Leonid Moiseichuk <lmoiseichuk@magicleap.com>
 
-Populating memcg vmpressure controls with legacy defaults:
+vmpressure code used hardcoded empirically selected values
+to control levels and parameters for reclaiming pages which
+might be not acceptable for all memory profiles.
+
+The controls exposed vmpressure controls with legacy defaults:
 - memory.pressure_window (512 or SWAP_CLUSTER_MAX * 16)
 - memory.pressure_level_critical_prio (3)
 - memory.pressure_level_medium (60)
@@ -95,44 +99,379 @@ Populating memcg vmpressure controls with legacy defaults:
 
 Signed-off-by: Leonid Moiseichuk <lmoiseichuk@magicleap.com>
 ---
- Documentation/admin-guide/cgroup-v1/memory.rst | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ include/linux/vmpressure.h |  35 ++++++++++++
+ mm/memcontrol.c            | 113 +++++++++++++++++++++++++++++++++++++
+ mm/vmpressure.c            | 101 ++++++++++++++-------------------
+ 3 files changed, 189 insertions(+), 60 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
-index 0ae4f564c2d6..42508123a8e1 100644
---- a/Documentation/admin-guide/cgroup-v1/memory.rst
-+++ b/Documentation/admin-guide/cgroup-v1/memory.rst
-@@ -79,6 +79,12 @@ Brief summary of control files.
-  memory.use_hierarchy		     set/show hierarchical account enabled
-  memory.force_empty		     trigger forced page reclaim
-  memory.pressure_level		     set memory pressure notifications
-+ memory.pressure_window 	     set window size for scanned pages, better
-+				     to perform it as vmscan reclaimer logic
-+				     in chunks in multiple SWAP_CLUSTER_MAX
-+ memory.pressure_level_critical_prio vmscan priority for critical level
-+ memory.pressure_level_medium	     medium level pressure percents
-+ memory.pressure_level_critical      critical level pressure percents
-  memory.swappiness		     set/show swappiness parameter of vmscan
- 				     (See sysctl's vm.swappiness)
-  memory.move_charge_at_immigrate     set/show controls of moving charges
-@@ -893,12 +899,16 @@ pressure, the system might be making swap, paging out active file caches,
- etc. Upon this event applications may decide to further analyze
- vmstat/zoneinfo/memcg or internal memory usage statistics and free any
- resources that can be easily reconstructed or re-read from a disk.
-+The level threshold could be tuned using memory.pressure_level_medium.
+diff --git a/include/linux/vmpressure.h b/include/linux/vmpressure.h
+index 6d28bc433c1c..9ad0282f9ad9 100644
+--- a/include/linux/vmpressure.h
++++ b/include/linux/vmpressure.h
+@@ -25,6 +25,41 @@ struct vmpressure {
+ 	struct mutex events_lock;
  
- The "critical" level means that the system is actively thrashing, it is
- about to out of memory (OOM) or even the in-kernel OOM killer is on its
- way to trigger. Applications should do whatever they can to help the
- system. It might be too late to consult with vmstat or any other
--statistics, so it's advisable to take an immediate action.
-+statistics, so it's advisable to take an immediate action. The level
-+threshold could be tuned using memory.pressure_level_critical. Number
-+of pages and vmscan priority handled as memory.pressure_window and
-+memory.pressure_level_critical_prio.
+ 	struct work_struct work;
++
++	/*
++	 * The window size is the number of scanned pages before
++	 * we try to analyze scanned/reclaimed ratio. So the window is used as a
++	 * rate-limit tunable for the "low" level notification, and also for
++	 * averaging the ratio for medium/critical levels. Using small window
++	 * sizes can cause lot of false positives, but too big window size will
++	 * delay the notifications.
++	 */
++	unsigned long window;
++
++	/*
++	 * When there are too little pages left to scan, vmpressure() may miss
++	 * the critical pressure as number of pages will be less than
++	 * "window size".
++	 * However, in that case the vmscan priority will raise fast as the
++	 * reclaimer will try to scan LRUs more deeply.
++	 *
++	 * The vmscan logic considers these special priorities:
++	 *
++	 * prio == DEF_PRIORITY (12): reclaimer starts with that value
++	 * prio <= DEF_PRIORITY - 2 : kswapd becomes somewhat overwhelmed
++	 * prio == 0                : close to OOM, kernel scans every page in
++	 *                          : an lru
++	 */
++	unsigned long level_critical_prio;
++
++	/*
++	 * These thresholds are used when we account memory pressure through
++	 * scanned/reclaimed ratio. The current values were chosen empirically.
++	 * In essence, they are percents: the higher the value, the more number
++	 * unsuccessful reclaims there were.
++	 */
++	unsigned long level_medium;
++	unsigned long level_critical;
+ };
  
- By default, events are propagated upward until the event is handled, i.e. the
- events are not pass-through. For example, you have three cgroups: A->B->C. Now
+ struct mem_cgroup;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5beea03dd58a..f8a956bf6e81 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -251,6 +251,13 @@ struct vmpressure *memcg_to_vmpressure(struct mem_cgroup *memcg)
+ 	return &memcg->vmpressure;
+ }
+ 
++struct vmpressure *vmpressure_from_css(struct cgroup_subsys_state *css)
++{
++	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
++
++	return memcg_to_vmpressure(memcg);
++}
++
+ struct cgroup_subsys_state *vmpressure_to_css(struct vmpressure *vmpr)
+ {
+ 	return &container_of(vmpr, struct mem_cgroup, vmpressure)->css;
+@@ -3905,6 +3912,92 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
+ 	return 0;
+ }
+ 
++
++static u64 mem_cgroup_pressure_window_read(struct cgroup_subsys_state *css,
++					struct cftype *cft)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	return vmpr->window;
++}
++
++static int mem_cgroup_pressure_window_write(struct cgroup_subsys_state *css,
++					struct cftype *cft, u64 val)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	if (val < SWAP_CLUSTER_MAX)
++		return -EINVAL;
++
++	vmpr->window = val;
++
++	return 0;
++}
++
++static u64 mem_cgroup_pressure_level_critical_prio_read(
++			struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	return vmpr->level_critical_prio;
++}
++
++static int mem_cgroup_pressure_level_critical_prio_write(
++		struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	if (val > DEF_PRIORITY)
++		return -EINVAL;
++
++	vmpr->level_critical_prio = val;
++
++	return 0;
++}
++
++
++static u64 mem_cgroup_pressure_level_medium_read(
++		struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	return vmpr->level_medium;
++}
++
++static int mem_cgroup_pressure_level_medium_write(
++		struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	if (val > 100)
++		return -EINVAL;
++
++	vmpr->level_medium = val;
++
++	return 0;
++}
++
++static u64 mem_cgroup_pressure_level_critical_read(
++			struct cgroup_subsys_state *css, struct cftype *cft)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	return vmpr->level_critical;
++}
++
++static int mem_cgroup_pressure_level_critical_write(
++		struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
++{
++	struct vmpressure *vmpr = vmpressure_from_css(css);
++
++	if (val > 100)
++		return -EINVAL;
++
++	vmpr->level_critical = val;
++
++	return 0;
++}
++
+ static void __mem_cgroup_threshold(struct mem_cgroup *memcg, bool swap)
+ {
+ 	struct mem_cgroup_threshold_ary *t;
+@@ -4777,6 +4870,26 @@ static struct cftype mem_cgroup_legacy_files[] = {
+ 	{
+ 		.name = "pressure_level",
+ 	},
++	{
++		.name = "pressure_window",
++		.read_u64 = mem_cgroup_pressure_window_read,
++		.write_u64 = mem_cgroup_pressure_window_write,
++	},
++	{
++		.name = "pressure_level_critical_prio",
++		.read_u64 = mem_cgroup_pressure_level_critical_prio_read,
++		.write_u64 = mem_cgroup_pressure_level_critical_prio_write,
++	},
++	{
++		.name = "pressure_level_medium",
++		.read_u64 = mem_cgroup_pressure_level_medium_read,
++		.write_u64 = mem_cgroup_pressure_level_medium_write,
++	},
++	{
++		.name = "pressure_level_critical",
++		.read_u64 = mem_cgroup_pressure_level_critical_read,
++		.write_u64 = mem_cgroup_pressure_level_critical_write,
++	},
+ #ifdef CONFIG_NUMA
+ 	{
+ 		.name = "numa_stat",
+diff --git a/mm/vmpressure.c b/mm/vmpressure.c
+index d69019fc3789..6fc680dec971 100644
+--- a/mm/vmpressure.c
++++ b/mm/vmpressure.c
+@@ -21,52 +21,6 @@
+ #include <linux/printk.h>
+ #include <linux/vmpressure.h>
+ 
+-/*
+- * The window size (vmpressure_win) is the number of scanned pages before
+- * we try to analyze scanned/reclaimed ratio. So the window is used as a
+- * rate-limit tunable for the "low" level notification, and also for
+- * averaging the ratio for medium/critical levels. Using small window
+- * sizes can cause lot of false positives, but too big window size will
+- * delay the notifications.
+- *
+- * As the vmscan reclaimer logic works with chunks which are multiple of
+- * SWAP_CLUSTER_MAX, it makes sense to use it for the window size as well.
+- *
+- * TODO: Make the window size depend on machine size, as we do for vmstat
+- * thresholds. Currently we set it to 512 pages (2MB for 4KB pages).
+- */
+-static const unsigned long vmpressure_win = SWAP_CLUSTER_MAX * 16;
+-
+-/*
+- * These thresholds are used when we account memory pressure through
+- * scanned/reclaimed ratio. The current values were chosen empirically. In
+- * essence, they are percents: the higher the value, the more number
+- * unsuccessful reclaims there were.
+- */
+-static const unsigned int vmpressure_level_med = 60;
+-static const unsigned int vmpressure_level_critical = 95;
+-
+-/*
+- * When there are too little pages left to scan, vmpressure() may miss the
+- * critical pressure as number of pages will be less than "window size".
+- * However, in that case the vmscan priority will raise fast as the
+- * reclaimer will try to scan LRUs more deeply.
+- *
+- * The vmscan logic considers these special priorities:
+- *
+- * prio == DEF_PRIORITY (12): reclaimer starts with that value
+- * prio <= DEF_PRIORITY - 2 : kswapd becomes somewhat overwhelmed
+- * prio == 0                : close to OOM, kernel scans every page in an lru
+- *
+- * Any value in this range is acceptable for this tunable (i.e. from 12 to
+- * 0). Current value for the vmpressure_level_critical_prio is chosen
+- * empirically, but the number, in essence, means that we consider
+- * critical level when scanning depth is ~10% of the lru size (vmscan
+- * scans 'lru_size >> prio' pages, so it is actually 12.5%, or one
+- * eights).
+- */
+-static const unsigned int vmpressure_level_critical_prio = ilog2(100 / 10);
+-
+ static struct vmpressure *work_to_vmpressure(struct work_struct *work)
+ {
+ 	return container_of(work, struct vmpressure, work);
+@@ -109,17 +63,18 @@ static const char * const vmpressure_str_modes[] = {
+ 	[VMPRESSURE_LOCAL] = "local",
+ };
+ 
+-static enum vmpressure_levels vmpressure_level(unsigned long pressure)
++static enum vmpressure_levels vmpressure_level(struct vmpressure *vmpr,
++						unsigned long pressure)
+ {
+-	if (pressure >= vmpressure_level_critical)
++	if (pressure >= vmpr->level_critical)
+ 		return VMPRESSURE_CRITICAL;
+-	else if (pressure >= vmpressure_level_med)
++	else if (pressure >= vmpr->level_medium)
+ 		return VMPRESSURE_MEDIUM;
+ 	return VMPRESSURE_LOW;
+ }
+ 
+-static enum vmpressure_levels vmpressure_calc_level(unsigned long scanned,
+-						    unsigned long reclaimed)
++static enum vmpressure_levels vmpressure_calc_level(struct vmpressure *vmpr,
++			unsigned long scanned, unsigned long reclaimed)
+ {
+ 	unsigned long scale = scanned + reclaimed;
+ 	unsigned long pressure = 0;
+@@ -145,7 +100,7 @@ static enum vmpressure_levels vmpressure_calc_level(unsigned long scanned,
+ 	pr_debug("%s: %3lu  (s: %lu  r: %lu)\n", __func__, pressure,
+ 		 scanned, reclaimed);
+ 
+-	return vmpressure_level(pressure);
++	return vmpressure_level(vmpr, pressure);
+ }
+ 
+ struct vmpressure_event {
+@@ -207,7 +162,7 @@ static void vmpressure_work_fn(struct work_struct *work)
+ 	vmpr->tree_reclaimed = 0;
+ 	spin_unlock(&vmpr->sr_lock);
+ 
+-	level = vmpressure_calc_level(scanned, reclaimed);
++	level = vmpressure_calc_level(vmpr, scanned, reclaimed);
+ 
+ 	do {
+ 		if (vmpressure_event(vmpr, level, ancestor, signalled))
+@@ -273,7 +228,7 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 		vmpr->tree_reclaimed += reclaimed;
+ 		spin_unlock(&vmpr->sr_lock);
+ 
+-		if (scanned < vmpressure_win)
++		if (scanned < vmpr->window)
+ 			return;
+ 		schedule_work(&vmpr->work);
+ 	} else {
+@@ -286,14 +241,14 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+ 		spin_lock(&vmpr->sr_lock);
+ 		scanned = vmpr->scanned += scanned;
+ 		reclaimed = vmpr->reclaimed += reclaimed;
+-		if (scanned < vmpressure_win) {
++		if (scanned < vmpr->window) {
+ 			spin_unlock(&vmpr->sr_lock);
+ 			return;
+ 		}
+ 		vmpr->scanned = vmpr->reclaimed = 0;
+ 		spin_unlock(&vmpr->sr_lock);
+ 
+-		level = vmpressure_calc_level(scanned, reclaimed);
++		level = vmpressure_calc_level(vmpr, scanned, reclaimed);
+ 
+ 		if (level > VMPRESSURE_LOW) {
+ 			/*
+@@ -322,21 +277,23 @@ void vmpressure(gfp_t gfp, struct mem_cgroup *memcg, bool tree,
+  */
+ void vmpressure_prio(gfp_t gfp, struct mem_cgroup *memcg, int prio)
+ {
++	struct vmpressure *vmpr = memcg_to_vmpressure(memcg);
++
+ 	/*
+ 	 * We only use prio for accounting critical level. For more info
+-	 * see comment for vmpressure_level_critical_prio variable above.
++	 * see comment for vmpressure level_critical_prio variable above.
+ 	 */
+-	if (prio > vmpressure_level_critical_prio)
++	if (prio > vmpr->level_critical_prio)
+ 		return;
+ 
+ 	/*
+ 	 * OK, the prio is below the threshold, updating vmpressure
+ 	 * information before shrinker dives into long shrinking of long
+-	 * range vmscan. Passing scanned = vmpressure_win, reclaimed = 0
++	 * range vmscan. Passing scanned = vmpr->window, reclaimed = 0
+ 	 * to the vmpressure() basically means that we signal 'critical'
+ 	 * level.
+ 	 */
+-	vmpressure(gfp, memcg, true, vmpressure_win, 0);
++	vmpressure(gfp, memcg, true, vmpr->window, 0);
+ }
+ 
+ #define MAX_VMPRESSURE_ARGS_LEN	(strlen("critical") + strlen("hierarchy") + 2)
+@@ -450,6 +407,30 @@ void vmpressure_init(struct vmpressure *vmpr)
+ 	mutex_init(&vmpr->events_lock);
+ 	INIT_LIST_HEAD(&vmpr->events);
+ 	INIT_WORK(&vmpr->work, vmpressure_work_fn);
++
++	/*
++	 * As the vmscan reclaimer logic works with chunks which are multiple
++	 * of SWAP_CLUSTER_MAX, it makes sense to use it for the window size
++	 * as well.
++	 *
++	 * TODO: Make the window size depend on machine size, as we do for
++	 * vmstat thresholds. Now we set it to 512 pages (2MB for 4KB pages).
++	 */
++	vmpr->window = SWAP_CLUSTER_MAX * 16;
++
++	/*
++	 * Any value in this range is acceptable for this tunable (i.e. from
++	 * 12 to 0). Current value for the vmpressure level_critical_prio is
++	 * chosen empirically, but the number, in essence, means that we
++	 * consider critical level when scanning depth is ~10% of the lru size
++	 * (vmscan scans 'lru_size >> prio' pages, so it is actually 12.5%,
++	 * or one eights).
++	 */
++	vmpr->level_critical_prio = ilog2(100 / 10);
++
++	/* The current values were legacy and chosen empirically. */
++	vmpr->level_medium = 60;
++	vmpr->level_critical = 95;
+ }
+ 
+ /**
 -- 
 2.17.1
 
