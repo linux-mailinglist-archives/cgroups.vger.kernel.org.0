@@ -2,105 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 859BA1A6E82
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 23:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FD6D1A6EBA
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2020 23:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388861AbgDMVkq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 13 Apr 2020 17:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        id S2389330AbgDMVxh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 13 Apr 2020 17:53:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51892 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388138AbgDMVkq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 17:40:46 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF501C0A3BDC
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:40:45 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id d77so10777046wmd.3
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:40:45 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S2389316AbgDMVxd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 13 Apr 2020 17:53:33 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46959C0A3BDC
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:53:33 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id y3so11187740qky.8
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2020 14:53:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O3TzEoMtIfUdNB8j5+48orQwp7L+4a4BtPUMG6Pa9Qs=;
-        b=JJPXaMUMVrsrFSqVXlhblXhpVdyvyU1hImwu8WoU8B2TfGosdDZS3BTkSPdwtBM3aW
-         YKmrxwFbUw9GDetYjYLgNvG3ssHyU7RxH9cLyKRMfyXowPCRYtusXu/fS3S6XhCizpF2
-         Uojh6woCNv7Q/tz6Z0gTY+LbuIAN45HA8KGXBCpJBhAUTr9JdEtY5V0yoO9DpWXkuVt0
-         r+E/qJVorbUAwxCz3D9gYe4ZrXP2G72jPanfh6r7R1UsmxWDRL5b065ilJyDREYQj2aG
-         u3t+f91ZDlqBbA1t1sd7y5uaOpjCSurFyTCr0NhvXqLd+BFTjyN5fdA/Hza/FDYtnxqB
-         rpVQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kr/9d9Xct1hX07rDbEYx8wUsf1dJ+pFlOXTM040jufY=;
+        b=gt6u/J4rlzknBml16vacwiBKZilSvdoYDgWZrDknJ+/046sco+2EB80oMUdV/xHBPs
+         JXsoYf9KaaFkZbzeDRtByuMlHipVMlzej9/sgWSKPxw3Y2bbq19joPpCqEeVpFGZN/kW
+         LGzexbW2TXKA87eDlyeQPbwbYK//L1/PGzT+32hn9sEykCWesA9Z4Z+XJ6qgnQblAwke
+         zxLDzq78qEG9KKKCo/BbyLfOgUYD3uVPXzDtQOaEHP2kvWOMG1rr9rTw2Hse/IGwcYsD
+         8Xg55dDgYHJ90FzihCUobI7Sv7LeHFHd7CqDtHUuB7DdwAEPvH+OY+6IqE3xGXs/m7+0
+         7kxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O3TzEoMtIfUdNB8j5+48orQwp7L+4a4BtPUMG6Pa9Qs=;
-        b=gOPKbGmtciG9IAnIyK6odNelpzJvyUxaOXWCr6iRZV6qmR+N9m40XQiNn2OOYpYaap
-         teHCDsiz4PVgHko4zOq/7v3+Z+0Op6DCMOYRwzhGNpMwuuxI0u9vc65UvfhaIlufrLCL
-         e1cAm6s/AodqwTSMFQIWsHrjFEsBSdxZ4mi0TzZbQmk0z9qTHiuXzBp77/PrxDY4a9RR
-         Iol0oC3dJ9TVrYSFh/1AJJfmLiSrWzPD7eMeiaaaCGmDqEvJd10x+Q+Pl7RRuH3WyOIp
-         eXCA3YcOC/j4Mw8h/98PJdkUpB8/w7kHzgHb06L5F1dgE0FpJs9KefcZVwPj0Xbp5L+A
-         rrdg==
-X-Gm-Message-State: AGi0PuZXr0ehzoyOIHJWVzAv9WwNYJb/2Gw1ct4oE5q2ntEIcpgDyrmZ
-        ivuWIkJ/yQLbsKbFN5/Dbtuk03V0XrnAInIpHxI=
-X-Google-Smtp-Source: APiQypJmnmVsSa7P0w3YlJaIQlNVKj0BXQzYdCbxJ0pspOdO6devQKrfwNYWhioym4arvY5qHfuSaRUNuaj1xhhrKS4=
-X-Received: by 2002:a1c:bd08:: with SMTP id n8mr20023708wmf.23.1586814044460;
- Mon, 13 Apr 2020 14:40:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200226190152.16131-1-Kenny.Ho@amd.com> <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
- <20200324184633.GH162390@mtj.duckdns.org> <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
- <20200413191136.GI60335@mtj.duckdns.org> <CAOWid-dM=38faGOF9=-Pq=sxssaL+gm2umctyGVQWVx2etShyQ@mail.gmail.com>
- <20200413205436.GM60335@mtj.duckdns.org>
-In-Reply-To: <20200413205436.GM60335@mtj.duckdns.org>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Mon, 13 Apr 2020 17:40:32 -0400
-Message-ID: <CAOWid-fvmxSXtGUtQSZ4Ow1fK+wR8hbnUe5PcsM56EZMOMwb6g@mail.gmail.com>
-Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
-To:     Tejun Heo <tj@kernel.org>
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kr/9d9Xct1hX07rDbEYx8wUsf1dJ+pFlOXTM040jufY=;
+        b=LgAJNtB2DBOoSUgJBAanJGQbFs5UVkt9speDOdkDPL3wxteW9YCCWF7i63SyMEkoIg
+         R1SwFB2ObFEXdtLaYqJWNL8oY+JBw+CoNBQJnDQEmEXVB4SKGkiN6zQo4AHWsttDg+d1
+         SL6L+c69jg8LVIUNVHTzzjOBNMrKbu7561yqLIxkGhgXKNAg+nmyRX7WacRWBZ1OroUL
+         ppi3rGDxiQte6qwiQN234tasctLXJTmuuWFaPK5jQWj+EXEAW2pAyeL4qkcpxPakkHos
+         qEc1isZlbYYplbUqJlhTZDTMn19m0FuINB5VOvGMuFJ2j5ORzU1EyohJ2Idt5LXyH2CK
+         pGUg==
+X-Gm-Message-State: AGi0PubSEBkglCVsfHv/ocJxtZusyGDTWf5VJqy2tYmA1+84CfvppIwL
+        AAiqc6nlRXhuQyTq9dq5qGw=
+X-Google-Smtp-Source: APiQypKYvGVAUQdJvUhUcfpVugeCgnmzh+M4+j8oxN9vOsaUt+g4IHvXRJi0IouPshrZh4OlXSZCIA==
+X-Received: by 2002:a37:a0c7:: with SMTP id j190mr9233931qke.461.1586814812277;
+        Mon, 13 Apr 2020 14:53:32 -0700 (PDT)
+Received: from localhost ([199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id y127sm9339458qkb.76.2020.04.13.14.53.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2020 14:53:31 -0700 (PDT)
+Date:   Mon, 13 Apr 2020 17:53:30 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Kenny Ho <y2kenny@gmail.com>
 Cc:     Kenny Ho <Kenny.Ho@amd.com>, cgroups@vger.kernel.org,
         dri-devel <dri-devel@lists.freedesktop.org>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
         "Kuehling, Felix" <felix.kuehling@amd.com>,
         "Greathouse, Joseph" <joseph.greathouse@amd.com>, jsparks@cray.com,
         lkaplan@cray.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH v2 00/11] new cgroup controller for gpu/drm subsystem
+Message-ID: <20200413215330.GN60335@mtj.duckdns.org>
+References: <20200226190152.16131-1-Kenny.Ho@amd.com>
+ <CAOWid-eyMGZfOyfEQikwCmPnKxx6MnTm17pBvPeNpgKWi0xN-w@mail.gmail.com>
+ <20200324184633.GH162390@mtj.duckdns.org>
+ <CAOWid-cS-5YkFBLACotkZZCH0RSjHH94_r3VFH8vEPOubzSpPA@mail.gmail.com>
+ <20200413191136.GI60335@mtj.duckdns.org>
+ <CAOWid-dM=38faGOF9=-Pq=sxssaL+gm2umctyGVQWVx2etShyQ@mail.gmail.com>
+ <20200413205436.GM60335@mtj.duckdns.org>
+ <CAOWid-fvmxSXtGUtQSZ4Ow1fK+wR8hbnUe5PcsM56EZMOMwb6g@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWid-fvmxSXtGUtQSZ4Ow1fK+wR8hbnUe5PcsM56EZMOMwb6g@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Hello,
 
-On Mon, Apr 13, 2020 at 4:54 PM Tejun Heo <tj@kernel.org> wrote:
->
-> Allocations definitely are acceptable and it's not a pre-requisite to have
-> work-conserving control first either. Here, given the lack of consensus in
-> terms of what even constitute resource units, I don't think it'd be a good
-> idea to commit to the proposed interface and believe it'd be beneficial to
-> work on interface-wise simpler work conserving controls.
->
-...
-> I hope the rationales are clear now. What I'm objecting is inclusion of
-> premature interface, which is a lot easier and more tempting to do for
-> hardware-specific limits and the proposals up until now have been showing
-> ample signs of that. I don't think my position has changed much since the
-> beginning - do the difficult-to-implement but easy-to-use weights first and
-> then you and everyone would have a better idea of what hard-limit or
-> allocation interfaces and mechanisms should look like, or even whether they're
-> needed.
+On Mon, Apr 13, 2020 at 05:40:32PM -0400, Kenny Ho wrote:
+> By lack of consense, do you mean Intel's assertion that a standard is
+> not a standard until Intel implements it? (That was in the context of
+> OpenCL language standard with the concept of SubDevice.)  I thought
+> the discussion so far has established that the concept of a compute
+> unit, while named differently (AMD's CUs, ARM's SCs, Intel's EUs,
+> Nvidia's SMs, Qualcomm's SPs), is cross vendor.  While an AMD CU is
+> not the same as an Intel EU or Nvidia SM, the same can be said for CPU
+> cores.  If cpuset is acceptable for a diversity of CPU core designs
+> and arrangements, I don't understand why an interface derived from GPU
+> SubDevice is considered premature.
 
-By lack of consense, do you mean Intel's assertion that a standard is
-not a standard until Intel implements it? (That was in the context of
-OpenCL language standard with the concept of SubDevice.)  I thought
-the discussion so far has established that the concept of a compute
-unit, while named differently (AMD's CUs, ARM's SCs, Intel's EUs,
-Nvidia's SMs, Qualcomm's SPs), is cross vendor.  While an AMD CU is
-not the same as an Intel EU or Nvidia SM, the same can be said for CPU
-cores.  If cpuset is acceptable for a diversity of CPU core designs
-and arrangements, I don't understand why an interface derived from GPU
-SubDevice is considered premature.
+CPUs are a lot more uniform across vendors than GPUs and have way higher user
+observability and awareness. And, even then, it's something which has limited
+usefulness because the configuration is inherently more complex involving
+topology details and the end result is not work-conserving.
 
-If a decade-old language standard is not considered a consenses, can
-you elaborate on what might consitute a consenses?
+cpuset is there partly due to historical reasons and its features can often be
+trivially replicated with some scripting around taskset. If that's all you're
+trying to add, I don't see why it needs to be in cgroup at all. Just implement
+a tool similar to taskset and build sufficient tooling around it. Given how
+hardware specific it can become, that is likely the better direction anyway.
 
-Regards,
-Kenny
+Thanks.
+
+-- 
+tejun
