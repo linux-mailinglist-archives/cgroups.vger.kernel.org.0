@@ -2,86 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 433F81A8A51
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2020 20:56:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8FE91A8ACA
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2020 21:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732445AbgDNS4a (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Apr 2020 14:56:30 -0400
-Received: from mout.gmx.net ([212.227.15.15]:52369 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504506AbgDNS4Z (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 14 Apr 2020 14:56:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1586890578;
-        bh=+Tdr2K02RJI+GpvSdoZWt162/aAc9VhDfCwMAjh/zRQ=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=To6+SlucjMC+NnMnolrmspIqPDfcmfdtkJM0Od0mT1wnzsV70RQI4qgrnC5rkCZa0
-         P1XDBbxOg4KLmKxxhhrO9Y2G5Jou6NG0l5nGkTLO9XFcx8is0qCBzBt/6+MiCeUmoF
-         WwaDO0DTnczL3MEP38bv/mkPH4IEb+u1hat9egfk=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from [10.0.23.198] ([46.81.210.70]) by mail.gmx.com (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N9dwd-1jAeuK3jHx-015WjF for
- <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 20:56:17 +0200
-To:     cgroups@vger.kernel.org
-From:   Timo Haas <haastimo@gmx.de>
-Subject: Documentation cgroups v1
-Message-ID: <b8577be4-18d5-4e81-8f59-6b4ad68e9f10@gmx.de>
-Date:   Tue, 14 Apr 2020 20:56:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S2504807AbgDNTar (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Apr 2020 15:30:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57538 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2504775AbgDNT3q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Apr 2020 15:29:46 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9063FC025480
+        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 12:23:31 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id l13so8472463qtr.7
+        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 12:23:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IiZNJMCD1kbGltSbdSP42lcTPVfZZdCFmf+wp01qYTo=;
+        b=RwwCmIB7ctPm2eZIIKDEiOKmos3jQdBxTVEG5RvZSbkV6qx3mS8owINSN9Q4vZ7OIS
+         RV2m8pThdMF5zEvqM8E1gyAWGDKpUUtKRbX2qGs7db5dBKU+S9aWrAM7z6XMQCvIbpSV
+         RHT+8Xv7lNrxl4dZwvcKb9a30lxz9ZqbNxtyS6EtjXe2NOPVf0EkQm45oLKdDhlO0rkz
+         v/6G1qSst8Q0DW/UeN6I0cwt0GE7xhFcDsDyAUiLCDVa9nrQjXrKPI8lk1vvJwlt2RM5
+         ynB6xM183bbjPmwSl74sG2i8nCWCJ6aKUCDDLZc4WfCYXrewgkvLvBlv8vntw/Acb09x
+         3g9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IiZNJMCD1kbGltSbdSP42lcTPVfZZdCFmf+wp01qYTo=;
+        b=NPZwxZuFdou2Wdnsf7CufVHZkmc3hASAtSqmbDDt6Qg8k4PXvgWS5vgnDtQYT2xRbi
+         Etlim2qL7gzk5PWsyTZFAivT7Sz6n/JeUr6lcADQRXC5s8xzteGDF3tLbSk3s6g/NAKX
+         Mb8eYpEP9SFyz/B4UavfV/Hn1blR7qiPD6JVDB1rmewf9C3JId4H1aJ5iFbYLcGQbdGb
+         33njTpT50eHEMt/DqkIBCRZneXq9cOL85NW5PyJKO7k6ZiS124tJCDPmeLMaIrQJJdid
+         WY4AOaVui4HdIGyX9LQlh+0fKywTJpQUKthlvFXDsBbqTAio6R3GxNai4t8SsmxjYu8u
+         0EyQ==
+X-Gm-Message-State: AGi0PuZVn+Jl/P3ouHiN05fQ5FIqxF3UMBGNotD0c+bqqm6jAePLVhU1
+        xbiN4WrIk1uQcmYQIVg9FHHCTg==
+X-Google-Smtp-Source: APiQypIsWwXZj6Vc0/5Ixmn0EpnCIL+tbz10939EFT76GeeCqkj6YupU4aY+atQ9Pws1uWy8K2uJBQ==
+X-Received: by 2002:ac8:1ad1:: with SMTP id h17mr18050991qtk.9.1586892210731;
+        Tue, 14 Apr 2020 12:23:30 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::e623])
+        by smtp.gmail.com with ESMTPSA id m26sm11794637qta.53.2020.04.14.12.23.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 14 Apr 2020 12:23:30 -0700 (PDT)
+Date:   Tue, 14 Apr 2020 15:23:29 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Leonid Moiseichuk <lmoiseichuk@magicleap.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, svc_lmoiseichuk@magicleap.com,
+        vdavydov.dev@gmail.com, tj@kernel.org, lizefan@huawei.com,
+        cgroups@vger.kernel.org, akpm@linux-foundation.org,
+        rientjes@google.com, minchan@kernel.org, vinmenon@codeaurora.org,
+        andriy.shevchenko@linux.intel.com, anton.vorontsov@linaro.org,
+        penberg@kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] memcg, vmpressure: expose vmpressure controls
+Message-ID: <20200414192329.GC136578@cmpxchg.org>
+References: <20200413215750.7239-1-lmoiseichuk@magicleap.com>
+ <20200414113730.GH4629@dhcp22.suse.cz>
+ <CAELvCDTGnpA4WBAMZjGSLTrg2-Dbb3kTmLjMTw_JLYXBdvpcxw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:tczht2gLEQR2OEj4CJY2QpIVSrFmGDh5BJLtxAlHpMtItY7lSd5
- 1l/ovhryEvEvHrVAs6cz+y4Kx9GRnSPXCfKqJ98MqV2tETn5x3mVfWErFBB4QkM9Ex66kLl
- o3jbiwBb7jyx5fkzagtYfn4emBdf4b3PsIWTLlwsN2PAjXvXwmM07418g8kwHyjcrJ+9VwF
- R1jIa1WA2m9JcUKQWiZ1w==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:1/fomsaq2rY=:xB+2bQtMUnDRsRHsNgph4v
- k3qPwNJfbt1stXMeIEqjUILpkSxFQDdnwlvtBEZjuYBksMm1cxgV4LsJlQgBfJI5AdBbUGllG
- A8T829uu1wN5UjmAp1XKqD0saSfRB2zizt3rNFcBmDT6qrZV8bYyQ6PFTXRFgkImfYJfZv/Uv
- Tw8i835vSOdf4S0lZCU6SnfFFBFdjXcMDLTq9qCUL4MHqta7KrMWPN6VGDhb5KsH/3PWolENs
- 60lH96fgsS/up/lELgFF7zuMsmTX2YL1HgMjNRkOe7Ob7ZS0YU+SeF3sWiz57rau7+ElpWKLo
- J9MTQAAsAxNuDYLD2fBRhW794gP4Illbun1tMIa1QKwG2kRWXFCCVQHUWfgi7GTxhqbjEqGUO
- M8vJfxnwK1pzeurOT4S0yrSLBF9mV5rVNGrdJ5gvFcsIJVaQo6idJDohHu2CIKxJaos31KnWf
- 7KMFtOcU61iKyG6oZURsxJcII6I6v2IMBf2ojI44RetVZyVrQ7ZVSeLOe6SYKKkyS0WxlqSfW
- nYcKr1aHxRZQPArD1WAyjyovaxB+XpcVjM1b2CiobXGZeoVdxzVurYHVxzFKyXbGhlaXgvIjr
- gk+kRYtOdQXbFUE0M+3mCBqee/cgpQaVbAYN34KbQiFw6k6VQkMciQja68xyG33hEk12yJHGC
- wRdv4jJh4jp5DEFT+fRfKDWttq4Bdn8NTcTadRSH15rlaO1uRlUOUklrM1yOFeQhUd3gExLpK
- f+E/eK4WNYTtx1yro5KCG3UFSKmgrASNOXuMTV5VCcoVFykBkFLhsLgQ7ENUkmGkEqS6/q29n
- nyIrZXteuP4n2QIRrxV2iC9KmFtEScI4IGbCF8TeYD62Rh1Uw2mDqq2xwizDrTiRYPwXTrWpr
- MBIUs8nZkVrU6MwWuDhM1eoKbrpoBfRScUxSvTgxJglsHBcxSgwAuu3744S5d5FwzB3BqCqvg
- ZW62MH4SbESSf0AevdnTvTCldIFEZUTZ+cQo8RJkkljEg7RjP+H4Zf7O+GGBRtMvQC6h3bNqm
- qVT85VfYddc+EajXKVaesoB6gsr2Gzxh6BHCYy3S7Sp+v36Njzk3tdOb92jzlEjzQ/4fOsnVb
- 7iSANzsxzOekzQHRDpOVVEaG0WR0ehHI3Q3cRkcJX9m30I3ycXnFS4wYT00rS0zkfF8yyYjcR
- njSqNCHBED/QwE1qSitbSS38SyFA/XIhiap8MlwbotVE9NT7vg+qL5ebyo2SPk0+DPZ3loQE/
- NHB05TfUtsDN3QOj7
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAELvCDTGnpA4WBAMZjGSLTrg2-Dbb3kTmLjMTw_JLYXBdvpcxw@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi
+On Tue, Apr 14, 2020 at 12:42:44PM -0400, Leonid Moiseichuk wrote:
+> On Tue, Apr 14, 2020 at 7:37 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > On Mon 13-04-20 17:57:48, svc_lmoiseichuk@magicleap.com wrote:
+> > Anyway, I have to confess I am not a big fan of this. vmpressure turned
+> > out to be a very weak interface to measure the memory pressure. Not only
+> > it is not numa aware which makes it unusable on many systems it also
+> > gives data way too late from the practice.
 
-I've got a question: The cgroups-v1 documentation doesn't mention
-anymore the status of recording blkio.io_serviced and
-blkio.io_service_bytes stats when files are written without the O_DIRECT
-flag within a subgroup. With cgroups v2 it can be accurately recorded if
-the filesystem supports it. What is the status in cgroups v1?
+Yes, it's late in the game for vmpressure, and also a bit too late for
+extensive changes in cgroup1.
 
-I assume it has not changed and it can't keep the stats because there is
-no communication with the memory controller. Or have the improvements
-made in cgroups v2 ported to cgroups v1?
+> > Btw. why don't you use /proc/pressure/memory resp. its memcg counterpart
+> > to measure the memory pressure in the first place?
+> >
+> 
+> According to our checks PSI produced numbers only when swap enabled e.g.
+> swapless device 75% RAM utilization:
+> ==> /proc/pressure/io <==
+> some avg10=0.00 avg60=1.18 avg300=1.51 total=9642648
+> full avg10=0.00 avg60=1.11 avg300=1.47 total=9271174
+> 
+> ==> /proc/pressure/memory <==
+> some avg10=0.00 avg60=0.00 avg300=0.00 total=0
+> full avg10=0.00 avg60=0.00 avg300=0.00 total=0
 
-Background: [1] added documentation on limitations of blkio stats
-collection in cgroups v1.
-[2] refactored the documentation and I think mistakenly deleted too much.
+That doesn't look right. With total=0, there couldn't have been any
+reclaim activity, which means that vmpressure couldn't have reported
+anything either.
 
-Thanks
-	Timo Haas
+By the time vmpressure reports a drop in reclaim efficiency, psi
+should have already been reporting time spent doing reclaim. It
+reports a superset of the information conveyed by vmpressure.
 
-[1]
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/Documentation/cgroups/blkio-controller.txt?h=v4.14-rc4&id=3e1534cf4a2a8278e811e7c84a79da1a02347b8b
-[2]
-https://git.kernel.org/pub//scm/linux/kernel/git/torvalds/linux.git/commit/?id=6c2920926b10e8303378408e3c2b8952071d4344
+> Probably it is possible to activate PSI by introducing high IO and swap
+> enabled but that is not a typical case for mobile devices.
+> 
+> With swap-enabled case memory pressure follows IO pressure with some
+> fraction i.e. memory is io/2 ... io/10 depending on pattern.
+> Light sysbench case with swap enabled
+> ==> /proc/pressure/io <==
+> some avg10=0.00 avg60=0.00 avg300=0.11 total=155383820
+> full avg10=0.00 avg60=0.00 avg300=0.05 total=100516966
+> ==> /proc/pressure/memory <==
+> some avg10=0.00 avg60=0.00 avg300=0.06 total=465916397
+> full avg10=0.00 avg60=0.00 avg300=0.00 total=368664282
+> 
+> Since not all devices have zram or swap enabled it makes sense to have
+> vmpressure tuning option possible since
+> it is well used in Android and related issues are understandable.
+
+Android (since 10 afaik) uses psi to make low memory / OOM
+decisions. See the introduction of the psi poll() support:
+https://lwn.net/Articles/782662/
+
+It's true that with swap you may see a more gradual increase in
+pressure, whereas without swap you may go from idle to OOM much
+faster, depending on what type of memory is being allocated. But psi
+will still report it. You may just have to use poll() to get in-time
+notification like you do with vmpressure.
