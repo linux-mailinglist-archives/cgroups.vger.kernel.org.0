@@ -2,84 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 289DA1A9CDA
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2020 13:41:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92FB81AA097
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2020 14:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408914AbgDOLht convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 15 Apr 2020 07:37:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408903AbgDOLha (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Apr 2020 07:37:30 -0400
-X-Greylist: delayed 4773 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 15 Apr 2020 04:37:30 PDT
-Received: from smtprelay.restena.lu (smtprelay.restena.lu [IPv6:2001:a18:1::62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66EF3C061A0C
-        for <cgroups@vger.kernel.org>; Wed, 15 Apr 2020 04:37:30 -0700 (PDT)
-Received: from hemera.lan.sysophe.eu (unknown [IPv6:2001:a18:1:12::4])
-        by smtprelay.restena.lu (Postfix) with ESMTPS id 2577340FCB;
-        Wed, 15 Apr 2020 13:37:29 +0200 (CEST)
-Date:   Wed, 15 Apr 2020 13:37:28 +0200
-From:   Bruno =?UTF-8?B?UHLDqW1vbnQ=?= <bonbons@linux-vserver.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: Memory CG and 5.1 to 5.6 uprade slows backup
-Message-ID: <20200415133728.3f58d46e@hemera.lan.sysophe.eu>
-In-Reply-To: <20200415102442.GE4629@dhcp22.suse.cz>
-References: <20200409094615.GE18386@dhcp22.suse.cz>
-        <20200409121733.1a5ba17c@hemera.lan.sysophe.eu>
-        <20200409103400.GF18386@dhcp22.suse.cz>
-        <20200409170926.182354c3@hemera.lan.sysophe.eu>
-        <20200409152540.GP18386@dhcp22.suse.cz>
-        <20200410091525.287062fa@hemera.lan.sysophe.eu>
-        <20200410104343.5bcde519@hemera.lan.sysophe.eu>
-        <20200410115010.1d9f6a3f@hemera.lan.sysophe.eu>
-        <20200414163134.GQ4629@dhcp22.suse.cz>
-        <20200415121753.3c8d700b@hemera.lan.sysophe.eu>
-        <20200415102442.GE4629@dhcp22.suse.cz>
+        id S369385AbgDOM3N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Apr 2020 08:29:13 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52923 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409125AbgDOM3C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Apr 2020 08:29:02 -0400
+Received: by mail-wm1-f67.google.com with SMTP id o81so11600870wmo.2
+        for <cgroups@vger.kernel.org>; Wed, 15 Apr 2020 05:29:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ftXKO5Uq1KJxEgTgHTyrErxInw3k9nxtVAFqlw5s4i4=;
+        b=ubEzcmB4Ef4tWyYgdQOYdnyOMD3qdMmlfgo2lyD7/S0XQI8dB68eqYdoBuWwXTdaiy
+         Rkoqpq9DWI1TH5er0Bixpm+MZrh0mg4NuY1vudrOLM7pkHyo5MKgPlxgELSqvXf94q3b
+         3QKeBF7UQdAMIwK41k3hiFxSyGEdIQvw4kFofB78cyzrBRuSaxHr8bYI8mRTegk/eWWC
+         UHwQZ8KXks4NkXBQ6IEVCa8gAn4xzpusWlUvIa1vtuFnX3vtbKeBFJA1L8LF/6dcdkTs
+         7QRz7lqSMQbuFZuQt0mMuumPP5pkmtoDekPKrPxHkq/AV+xmrQwTbKrPzHxAhIXIlmCm
+         MWgg==
+X-Gm-Message-State: AGi0PubtYQ73AYx2B4gYvjpsrdRZZrRo32gL7n0uExU6DXL9gVzsAPOs
+        s/Ye5LfH1kdp6JexVtpKpeE=
+X-Google-Smtp-Source: APiQypJZ8bSrRr2PVsjo3hNejerskpCnIaGTRW7Ou6W3HYDnqkfXcuDyayllBwhBvq4MyLdIHHffaA==
+X-Received: by 2002:a7b:c0d5:: with SMTP id s21mr4965829wmh.107.1586953739505;
+        Wed, 15 Apr 2020 05:28:59 -0700 (PDT)
+Received: from localhost (ip-37-188-180-223.eurotel.cz. [37.188.180.223])
+        by smtp.gmail.com with ESMTPSA id n6sm23860479wrs.81.2020.04.15.05.28.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Apr 2020 05:28:58 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 14:28:57 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Leonid Moiseichuk <lmoiseichuk@magicleap.com>
+Cc:     svc lmoiseichuk <svc_lmoiseichuk@magicleap.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, vdavydov.dev@gmail.com,
+        tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, rientjes@google.com, minchan@kernel.org,
+        vinmenon@codeaurora.org, andriy.shevchenko@linux.intel.com,
+        anton.vorontsov@linaro.org, penberg@kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH 0/2] memcg, vmpressure: expose vmpressure controls
+Message-ID: <20200415122857.GL4629@dhcp22.suse.cz>
+References: <20200413215750.7239-1-lmoiseichuk@magicleap.com>
+ <20200414113730.GH4629@dhcp22.suse.cz>
+ <CAELvCDTGnpA4WBAMZjGSLTrg2-Dbb3kTmLjMTw_JLYXBdvpcxw@mail.gmail.com>
+ <20200414184917.GT4629@dhcp22.suse.cz>
+ <CAELvCDQRYmTZrGSwBUjnRJB3kfB_5JOJ5ELdGv+tkCyhvM=x9A@mail.gmail.com>
+ <20200415075136.GY4629@dhcp22.suse.cz>
+ <CAELvCDRpVi4zjpHCw1oeY=GXf8XO2TXGUFAwztvydS27Q8L9Sw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAELvCDRpVi4zjpHCw1oeY=GXf8XO2TXGUFAwztvydS27Q8L9Sw@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 15 Apr 2020 12:24:42 Michal Hocko <mhocko@kernel.org> wrote:
-> On Wed 15-04-20 12:17:53, Bruno Prémont wrote:
-> [...]
-> > > Anyway the following simply tracing patch should give a better clue.
-> > > The output will appear in the trace buffer (mount tracefs and read
-> > > trace_pipe file).  
-> > 
-> > This is the output I get on 5.6.4 with simple tar -zc call (max=high+4096):
-> >   tar-16943 [000] ....  1098.796955: mem_cgroup_handle_over_high: memcg_nr_pages_over_high:1 penalty_jiffies:200 current:262122 high:262144
-> >   tar-16943 [000] ....  1100.876794: mem_cgroup_handle_over_high: memcg_nr_pages_over_high:1 penalty_jiffies:200 current:262122 high:262144
-> >   tar-16943 [000] ....  1102.956636: mem_cgroup_handle_over_high: memcg_nr_pages_over_high:1 penalty_jiffies:200 current:262120 high:262144
-> >   tar-16943 [000] ....  1105.037388: mem_cgroup_handle_over_high: memcg_nr_pages_over_high:1 penalty_jiffies:200 current:262121 high:262144
-> >   tar-16943 [000] ....  1107.117246: mem_cgroup_handle_over_high: memcg_nr_pages_over_high:1 penalty_jiffies:200 current:262122 high:262144  
+On Wed 15-04-20 08:17:42, Leonid Moiseichuk wrote:
+> As Chris Down stated cgroups v1 frozen, so no API changes in the mainline
+> kernel.
+
+Yes, this is true, _but_ if there are clear shortcomings in the existing
+vmpressure implementation which could be addressed reasonably then there
+is no reason to ignore them.
+
+[...]
+
+> > I still find this very confusing because the amount of used memory is
+> > not really important. It really only depends on the reclaim activity and
+> > that is either the memcg or the global reclaim. And you are getting
+> > critical levels only if the reclaim is failing to reclaim way too many
+> > pages.
+> >
 > 
-> OK, that points to the underflow fix.
-> 
-> > 
-> > With 5.7-rc1 it runs just fine, pressure remains zero and no output in trace_pipe or throttling.
-> > 
-> > So the fixes that went in there do fix it.
-> > Now matter of cherry-picking the right ones... e26733e0d0ec and its fixe's fix,
-> > maybe some others (will start with those tagged for stable).  
-> 
-> I have seen Greg picking up this for stable trees so it should show up
-> there soon.
+> OK, agree from that point of view.
+> But for larger systems reclaiming happens not so often and we can
+> use larger window sizes to have better memory utilization approximation.
 
-Applying just 9b8b17541f13809d06f6f873325305ddbb760e3e which went to
-stable-rc for 5.6.5 gets things running fine where.
-(e26733e0d0ec seems to have gone in shortly prior to 5.6 release, need
-to improve my git-foo to locate commits between tags!)
+Nobody is saying the the window size has to be fixed. This all can be
+auto tuned in the kernel.  It would, however, require to define what
+"better utilization approximation" means much more specifically.
 
-So yes it's the fix.
+[...]
+> > This looks more like a problem of vmpressure implementation than
+> > something you want to workaround by tuning to me.
+> >
+> Basically it is how it works - collect the scanned page and activate worker
+> activity to update the current level.
 
-Thanks,
-Bruno
-
-> Thanks!
+That is the case only for some vmpressure invocations. And your data
+suggest that those might lead to misleading results. So this is likely
+good to focus on and find out whether this can be addressed.
+-- 
+Michal Hocko
+SUSE Labs
