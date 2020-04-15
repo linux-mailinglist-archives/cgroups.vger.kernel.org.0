@@ -2,85 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9087C1A8EC9
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2020 00:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 261071A91FA
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2020 06:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634298AbgDNWza (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Apr 2020 18:55:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1730783AbgDNWz2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Apr 2020 18:55:28 -0400
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA141C061A0C
-        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 15:55:27 -0700 (PDT)
-Received: by mail-wr1-x442.google.com with SMTP id x18so12259914wrq.2
-        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 15:55:27 -0700 (PDT)
+        id S2393068AbgDOEjP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Apr 2020 00:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60042 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388490AbgDOEjO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Apr 2020 00:39:14 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 525AFC061A0C
+        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 21:39:14 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id w24so12212311qts.11
+        for <cgroups@vger.kernel.org>; Tue, 14 Apr 2020 21:39:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=c8qoDjMoKh8m7k69YSal4t9Yzh8UqpaGOqxo2kh4+H4=;
-        b=qUOTrLKP5lkD+hzSEZLpsh2KQaBFsVU/EEodUWabGWRaIAOxSAA6Fky7NKOSZ1UPR3
-         KWeEOVeGQt5g+r3W8cYBFDYtCbD3yqd4wkOln8yW3EbPswE3I0zAIvmvIAuKKrHLRf8j
-         YNCY0b2m8MjDExYGkz21fWnOsPZs4GHRqaZdg=
+        bh=T0ov2Qm19NGfhDx7kb+Qpp+SBwZz53FIlhxAVVfKxI4=;
+        b=ohUd4ClmbLBtja20CTalUO+WoLl1ve/CYr2CKbobL6GFJjNAc/LB440d9rYAIaczm+
+         Kh1RiX35n8e3voiqIitcaGFBnH91SfJlcl57iEyZB4hlEhvesoMX2eOXRdntSRzr+hkH
+         dOgBVJDAi3bFtryful1Kxe6qHJjkhz8LI+/jrG88Tceh+0BEVEYbpFpYF0ghcHG85Bds
+         xGbea9oZ/UqbxOf2r/VOb2z4UXNriOnt8vLpgXJTQ3e/vG7ky2SV4TLQSwKYnh7deLwR
+         oAwhiU7x7YTEH6UiJ6nFbWPhGeJ7/i28lQNYphRYEI0IgJ7Lpo8+wtqijJbG7rp5t8sG
+         Io+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=c8qoDjMoKh8m7k69YSal4t9Yzh8UqpaGOqxo2kh4+H4=;
-        b=AZp2Z51Xn57Jx4AX0DY3P1sGskOJIWtYj07YHfy2Z/gOJUtQZZPZXSm1jNDWOSeNik
-         jgGBmuCE/DZojG2wJgLc0VMKt9692DzLM+fdSZqHmnY0NqXV/wXm9m+c84+YlN9nsZIi
-         IJCv+qaVaqlIM51bC09U1QSwUZ9i3h8vIU30bUNnHe0nM723LZHlIFnOTcgOUHN/2CzE
-         TP7h0qERAgiPGJ3+I2u3YdhSk8Hqw/Z4Yp/DSiN61FSDfSLcP5LkFhCzCF22gQ0WaUGN
-         hfdZ8tT8DYU0D27gi5bOx9D4m/UuaLXtkhIpc/G2teLHC+NXM9Ta0fNr7yBImhVZrqCa
-         gWZg==
-X-Gm-Message-State: AGi0PuYYP8OBmTcf3QcAFCDv2sqHvgycl0Pzpbo9+dgmWhwZOVyan++t
-        bNngBJ9adZf6fpUIXlc45JRyGw==
-X-Google-Smtp-Source: APiQypJ6O4aookb/rRY4LDzvhk4cVYhjiK8tQJBOUQvu8zJJrPOFWvoVk8qrVg2FQLDrNSc+7Hmokg==
-X-Received: by 2002:adf:ef01:: with SMTP id e1mr966160wro.182.1586904926418;
-        Tue, 14 Apr 2020 15:55:26 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:fa59:71ff:fe7e:8d21])
-        by smtp.gmail.com with ESMTPSA id w83sm21173847wmb.37.2020.04.14.15.55.25
+        bh=T0ov2Qm19NGfhDx7kb+Qpp+SBwZz53FIlhxAVVfKxI4=;
+        b=tM+HVgLNmPqDwvq2L0FEwm6pzMhdmjRaoxALz+Mj1GmKgzxKW3TS6tWJElwttcDs7P
+         ag/TYTsHgRFBJWDxbsOpMYskPcrGrpZaPoPnv92/DsMDO7lnfaiL0uWqFfW8X0parY8e
+         6tschh2vWlrc0nwAhkQiV0LXuk/oH3yDrzXE5B0S0NaYKQ/kBhlUncYlilGAH6fUEA1K
+         nqWidovexY1u4wLh71dGxBitQ1AU1v+yxASqWViLWQ6tGDBX0QXqmarbNnYQpdrElHSO
+         eRkTRcHCSvs8QS/kSh46adigw4d9Q5p1U+wqVHe5r2ie4+Is8Pncl4ZIOIn2LZIxTVaH
+         eueA==
+X-Gm-Message-State: AGi0PubOmgPUB/kz5rbQEP1Kh5aTFtK+lenybOmTknlPJjFj4ryBfFyo
+        70z7xqvmSkOBbgzITk0LjVd4/ZfV5FU=
+X-Google-Smtp-Source: APiQypIM5GoBSgbWbxjSMNs5ZNvz31Ab4J1vE8UwPpZfVZ7JsFAzFEaxoKJVsfy/rFJmxjNa4l9+dw==
+X-Received: by 2002:ac8:543:: with SMTP id c3mr18876077qth.8.1586925553554;
+        Tue, 14 Apr 2020 21:39:13 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::e623])
+        by smtp.gmail.com with ESMTPSA id i56sm5581998qte.6.2020.04.14.21.39.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Apr 2020 15:55:25 -0700 (PDT)
-Date:   Tue, 14 Apr 2020 23:55:25 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     svc_lmoiseichuk@magicleap.com
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        tj@kernel.org, lizefan@huawei.com, cgroups@vger.kernel.org,
-        akpm@linux-foundation.org, rientjes@google.com, minchan@kernel.org,
-        vinmenon@codeaurora.org, andriy.shevchenko@linux.intel.com,
-        anton.vorontsov@linaro.org, penberg@kernel.org, linux-mm@kvack.org,
-        Leonid Moiseichuk <lmoiseichuk@magicleap.com>
-Subject: Re: [PATCH 1/2] memcg: expose vmpressure knobs
-Message-ID: <20200414225525.GA1892067@chrisdown.name>
-References: <20200413215750.7239-1-lmoiseichuk@magicleap.com>
- <20200413215750.7239-2-lmoiseichuk@magicleap.com>
+        Tue, 14 Apr 2020 21:39:12 -0700 (PDT)
+Date:   Wed, 15 Apr 2020 00:39:11 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Jakub Kicinski <kuba@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: Do not high throttle allocators based on
+ wraparound
+Message-ID: <20200415043911.GA147015@cmpxchg.org>
+References: <20200331152424.GA1019937@chrisdown.name>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200413215750.7239-2-lmoiseichuk@magicleap.com>
+In-Reply-To: <20200331152424.GA1019937@chrisdown.name>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-svc_lmoiseichuk@magicleap.com writes:
->From: Leonid Moiseichuk <lmoiseichuk@magicleap.com>
->
->Populating memcg vmpressure controls with legacy defaults:
->- memory.pressure_window (512 or SWAP_CLUSTER_MAX * 16)
->- memory.pressure_level_critical_prio (3)
->- memory.pressure_level_medium (60)
->- memory.pressure_level_critical (95)
->
->Signed-off-by: Leonid Moiseichuk <lmoiseichuk@magicleap.com>
+On Tue, Mar 31, 2020 at 04:24:24PM +0100, Chris Down wrote:
+> From: Jakub Kicinski <kuba@kernel.org>
+> 
+> If a cgroup violates its memory.high constraints, we may end
+> up unduly penalising it. For example, for the following hierarchy:
+> 
+> A:   max high, 20 usage
+> A/B: 9 high, 10 usage
+> A/C: max high, 10 usage
+> 
+> We would end up doing the following calculation below when calculating
+> high delay for A/B:
+> 
+> A/B: 10 - 9 = 1...
+> A:   20 - PAGE_COUNTER_MAX = 21, so set max_overage to 21.
+> 
+> This gets worse with higher disparities in usage in the parent.
+> 
+> I have no idea how this disappeared from the final version of the patch,
+> but it is certainly Not Good(tm). This wasn't obvious in testing
+> because, for a simple cgroup hierarchy with only one child, the result
+> is usually roughly the same. It's only in more complex hierarchies that
+> things go really awry (although still, the effects are limited to a
+> maximum of 2 seconds in schedule_timeout_killable at a maximum).
+> 
+> [chris@chrisdown.name: changelog]
+> 
+> Fixes: e26733e0d0ec ("mm, memcg: throttle allocators based on ancestral memory.high")
+> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: Chris Down <chris@chrisdown.name>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: stable@vger.kernel.org # 5.4.x
 
-I'm against this even in the abstract, cgroup v1 is deprecated and its 
-interface frozen, and vmpressure is pretty much already supplanted by PSI, 
-which actually works (whereas vmpressure often doesn't since it mostly ends up 
-just measuring reclaim efficiency, rather than actual memory pressure).
+Oops.
 
-Without an extremely compelling reason to expose these, this just muddles the 
-situation.
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
