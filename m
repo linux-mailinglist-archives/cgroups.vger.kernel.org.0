@@ -2,63 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2C6C1AE3A3
-	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2020 19:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F1251AE3DF
+	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2020 19:36:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728916AbgDQRSj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Apr 2020 13:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33406 "EHLO
+        id S1728602AbgDQRgH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Apr 2020 13:36:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36132 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728687AbgDQRS3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Apr 2020 13:18:29 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44FBAC061A10
-        for <cgroups@vger.kernel.org>; Fri, 17 Apr 2020 10:18:29 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id r17so2429413lff.2
-        for <cgroups@vger.kernel.org>; Fri, 17 Apr 2020 10:18:29 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1728458AbgDQRgH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Apr 2020 13:36:07 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EAD4C061A0C
+        for <cgroups@vger.kernel.org>; Fri, 17 Apr 2020 10:36:06 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id k21so2901582ljh.2
+        for <cgroups@vger.kernel.org>; Fri, 17 Apr 2020 10:36:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=o4AxRTlVcgkXgmi2LH7FRSyDbtdJOdGOVjbxoP8py4E=;
-        b=KN9L8a7H5um8chRLVRTdUiq5rDqyihp3g4hBvjZNc0rLhfvTvEUIR3bpd7TMO9YPh2
-         DYhybPls3AOAIJuz2jJD64RiTxjWqpFqMpjJsf/IRALVWQmI/V51Xjv/LBHYwMADNnDD
-         XGoYsVgvmvbxEQd94R6RjNSmKNtoj/BHwVCe5OE2kwdMzXWbkSJYVSmzwzZHr1If24JZ
-         2CyUinq6W/uFHqjvQ756hZpIY6QMOqNIw3KRxW+AOe+SmoUc58AIPolI35skXhsCpazf
-         Gwfc8LqFDsWpjZ7e5JpD1ZrLCRi2AwsyyUXqm8iTmYGXk5GdKBflHIfz7U0dB17m40AO
-         SbzA==
+        bh=Hg6IIRdiW7K53TeUTBkQvnSYbhXlq293hVwvftTtBpY=;
+        b=Vwy15InWoEv70r74M82Y4LbZS+npes2VXDKaQjvNzJCyqXXde6NHxQmepyDO1vO1Ed
+         QDNopRM8cYIGGVlIEjKd+dGyO5LuF1d+Q2N/vxATnmmxvpcx+M0krPVJ1FqlJ7cqNwKo
+         abPmzqwu2buigwodzTtOZwOtMqDaU+rl6ytqqrGgQCavM2QpTg5jlHsA4MT8wIDgkznQ
+         JW2QXCTMfMZAsl8/CeoVzsVwyLAzmmoN1DUqVnO9Xr2rEQjGt+dDHagHVSfVGsFNJCTC
+         n2/DA4IBZ9iunwXNNtnrGUlBMZeYdzqgKOc97c2kAxzVrGkAkc9ui2UYAmYpuHqRWJpF
+         UdGw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=o4AxRTlVcgkXgmi2LH7FRSyDbtdJOdGOVjbxoP8py4E=;
-        b=UFukXLgTTYMmLZd342usPIKit6WOp7Y+3FTxWBJcKu24Iiv1BuuXDj+uda+T9D7iYg
-         ZE3djKY/WB+okxvfc+TlFJoWXi21K9q0jWasYDadgBfradzH02t1uPmHk+3skKOP1BSk
-         PpiRHKOari/kAaFIuMSqbw8vAQ0pNgjOnOfYILtn15gNX4JLUAAjiFsI7XIrX9fvJkkN
-         vaUowpZ5N5Pw+JhP4q9xR/ea7GnKhkFlARfZI9j8Q66Jntux9gt1Sujc7VFT+6Ma7CVW
-         C4p7WNl5A92t9EnmXx1BILrAlG3ZVDz76+leu0Trs0njbpti4ce01Mg+CmEM8UZfdz8w
-         SM9w==
-X-Gm-Message-State: AGi0PubqOitbu21jvXPwqIMm/58u+j0YBJQQHS1RYkKf4Zb0SovFsHuF
-        IoQX0GWxJ/iVNS2X111yuaeFhpSOXjR2RxsfCon8rQ==
-X-Google-Smtp-Source: APiQypLkRQHbdzhph7XVHw5ZeyHzUgxbYSRMTPvK6KeMnOLzAWUSiu4oqQ+yZMWVnEjMWtTb9H/RSvGHXBRgELHhtn4=
-X-Received: by 2002:a19:5206:: with SMTP id m6mr2714469lfb.33.1587143907411;
- Fri, 17 Apr 2020 10:18:27 -0700 (PDT)
+        bh=Hg6IIRdiW7K53TeUTBkQvnSYbhXlq293hVwvftTtBpY=;
+        b=jZcR8V7zWgbl7+T+QTkoFAR4hbhBfd0E614+hFElJVAyR3zn49tEM9/26Gxp9yzdbC
+         8581gOttjGUx/K1RMpoyb9+EmRtRk+iuzO3NT6G4NP5v4K5/EUjOeINlea80vKAlDbmg
+         c/s1IzZ9ZebusdcWuszgqPdqlSZ+6cKInOumYQty6vnCRi+RJYi73m5xMe0usayD80qt
+         lQgCLBsp2oaWBJBDc8YQfmc+Cpoa+imKB9vRdrOYtkpRP1E3nyUtU17bl09FYbnv3Nn7
+         edmFasWVqlNgo5qqsRjFlZSFTmuNse7lQFIB134ocNxyNjD99uXxbDFSGEcb3fR43Xjx
+         GpBg==
+X-Gm-Message-State: AGi0Pua1uj0Y8Aceip22hplrwfLZ5O2/t8IIhywum/dcatZX9fS+9Ci7
+        3oQ9B25uMmgLzQOOSqVIJTxUATa1elBled+NeK6GUabyA8s1MQ==
+X-Google-Smtp-Source: APiQypIr3P5caRZIgT/06laKGzVvRHT8utRwdQ/qnb1JlACKzpb0/PCRDtuT64YI3+taEpCR28vdyYl1i7/WEFf3KvE=
+X-Received: by 2002:a05:651c:1209:: with SMTP id i9mr2596479lja.250.1587144964706;
+ Fri, 17 Apr 2020 10:36:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200417010617.927266-1-kuba@kernel.org> <CALvZod78ZUhU+yr2x1h_gv+VgVGTPnSSGKh_+fd+MeiAKreJvg@mail.gmail.com>
- <20200417162355.GA43469@mtj.thefacebook.com>
-In-Reply-To: <20200417162355.GA43469@mtj.thefacebook.com>
+References: <1587134624-184860-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200417155317.GS26707@dhcp22.suse.cz> <CALvZod7Xa4Xs=7zC8OZ7GOfvfDBv+yNbGCzBxeoMgAeRGRtw0A@mail.gmail.com>
+ <20200417165442.GT26707@dhcp22.suse.cz>
+In-Reply-To: <20200417165442.GT26707@dhcp22.suse.cz>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 17 Apr 2020 10:18:15 -0700
-Message-ID: <CALvZod4ftvXCu8SbQUXwTGVvx5K2+at9h30r28chZLXEB1JdfQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] memcg: Slow down swap allocation as the available
- space gets depleted
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
+Date:   Fri, 17 Apr 2020 10:35:53 -0700
+Message-ID: <CALvZod5DT-2TB-6KFZshmSt=wq+jg5+b5aAsWequP8zxs+tMpQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] memcg: folding CONFIG_MEMCG_SWAP as default
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kernel Team <kernel-team@fb.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>,
+        Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
@@ -66,71 +64,51 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
-
-On Fri, Apr 17, 2020 at 9:23 AM Tejun Heo <tj@kernel.org> wrote:
+On Fri, Apr 17, 2020 at 9:54 AM Michal Hocko <mhocko@kernel.org> wrote:
 >
-> Hello,
->
-> On Fri, Apr 17, 2020 at 09:11:33AM -0700, Shakeel Butt wrote:
-> > On Thu, Apr 16, 2020 at 6:06 PM Jakub Kicinski <kuba@kernel.org> wrote:
+> On Fri 17-04-20 09:41:04, Shakeel Butt wrote:
+> > On Fri, Apr 17, 2020 at 9:03 AM Michal Hocko <mhocko@kernel.org> wrote:
 > > >
-> > > Tejun describes the problem as follows:
+> > > On Fri 17-04-20 22:43:43, Alex Shi wrote:
+> > > > This patch fold MEMCG_SWAP feature into kernel as default function. That
+> > > > required a short size memcg id for each of page. As Johannes mentioned
+> > > >
+> > > > "the overhead of tracking is tiny - 512k per G of swap (0.04%).'
+> > > >
+> > > > So all swapout page could be tracked for its memcg id.
 > > >
-> > > When swap runs out, there's an abrupt change in system behavior -
-> > > the anonymous memory suddenly becomes unmanageable which readily
-> > > breaks any sort of memory isolation and can bring down the whole
-> > > system.
+> > > I am perfectly OK with dropping the CONFIG_MEMCG_SWAP. The code that is
+> > > guarded by it is negligible and the resulting code is much easier to
+> > > read so no objection on that front. I just do not really see any real
+> > > reason to flip the default for cgroup v1. Why do we want/need that?
+> > >
 > >
-> > Can you please add more info on this abrupt change in system behavior
-> > and what do you mean by anon memory becoming unmanageable?
+> > Yes, the changelog is lacking the motivation of this change. This is
+> > proposed by Johannes and I was actually expecting the patch from him.
+> > The motivation is to make the things simpler for per-memcg LRU locking
+> > and workingset for anon memory (Johannes has described these really
+> > well, lemme find the email). If we keep the differentiation between
+> > cgroup v1 and v2, then there is actually no point of this cleanup as
+> > per-memcg LRU locking and anon workingset still has to handle the
+> > !do_swap_account case.
 >
-> In the sense that anonymous memory becomes essentially memlocked.
+> All those details really have to go into the changelog. I have to say
+> that I still do not understand why the actual accounting swap or not
+> makes any difference for per per-memcg LRU.
+
+Here is Johannes explanation:
+https://lore.kernel.org/linux-mm/20200413180725.GA99267@cmpxchg.org/
+
+> Especially when your patch
+
+You mean Alex's patch.
+
+> keeps the kernel command line parameter still in place.
 >
-> > Once the system is in global reclaim and doing swapping the memory
-> > isolation is already broken. Here I am assuming you are talking about
->
-> There currently are issues with anonymous memory management which makes them
-> different / worse than page cache but I don't follow why swapping
-> necessarily means that isolation is broken. Page refaults don't indicate
-> that memory isolation is broken after all.
->
-
-Sorry, I meant the performance isolation. Direct reclaim does not
-really differentiate who to stall and whose CPU to use.
-
-> > memcg limit reclaim and memcg limits are overcommitted. Shouldn't
-> > running out of swap will trigger the OOM earlier which should be
-> > better than impacting the whole system.
->
-> The primary scenario which was being considered was undercommitted
-> protections but I don't think that makes any relevant differences.
->
-
-What is undercommitted protections? Does it mean there is still swap
-available on the system but the memcg is hitting its swap limit?
-
-> This is exactly similar to delay injection for memory.high. What's desired
-> is slowing down the workload as the available resource is depleted so that
-> the resource shortage presents as gradual degradation of performance and
-> matching increase in resource PSI. This allows the situation to be detected
-> and handled from userland while avoiding sudden and unpredictable behavior
-> changes.
->
-
-Let me try to understand this with an example. Memcg 'A' has
-memory.high = 100 MiB, memory.max = 150 MiB and memory.swap.max = 50
-MiB. When A's usage goes over 100 MiB, it will reclaim the anon, file
-and kmem. The anon will go to swap and increase its swap usage until
-it hits the limit. Now the 'A' reclaim_high has fewer things (file &
-kmem) to reclaim but the mem_cgroup_handle_over_high() will keep A's
-increase in usage in check.
-
-So, my question is: should the slowdown by memory.high depends on the
-reclaimable memory? If there is no reclaimable memory and the job hits
-memory.high, should the kernel slow it down to crawl until the PSI
-monitor comes and decides what to do. If I understand correctly, the
-problem is the kernel slow down is not successful when reclaimable
-memory is very low. Please correct me if I am wrong.
-
-Shakeel
+> Anyway, it would be much more simpler to have a patch that drops the
+> CONFIG_MEMCG_SWAP and a separate one which switches the default
+> beahvior. I am not saying I am ok with the later but if the
+> justification is convincing then I might change my mind.
+> --
+> Michal Hocko
+> SUSE Labs
