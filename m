@@ -2,131 +2,430 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332051AE012
-	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2020 16:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E70371AE01B
+	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2020 16:44:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727817AbgDQOlA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Apr 2020 10:41:00 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:44814 "EHLO
+        id S1727957AbgDQOoM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Apr 2020 10:44:12 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:53436 "EHLO
         out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726707AbgDQOlA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Apr 2020 10:41:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R871e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=39;SR=0;TI=SMTPD_---0TvqIRjz_1587134450;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvqIRjz_1587134450)
+        by vger.kernel.org with ESMTP id S1726707AbgDQOoL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Apr 2020 10:44:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R601e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0TvqRnjL_1587134644;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvqRnjL_1587134644)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Apr 2020 22:40:52 +0800
-Subject: Re: [PATCH v8 03/10] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        shakeelb@google.com, Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vlastimil Babka <vbabka@suse.cz>, Qian Cai <cai@lca.pw>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        swkhack <swkhack@gmail.com>,
-        "Potyra, Stefan" <Stefan.Potyra@elektrobit.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Colin Ian King <colin.king@canonical.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Mauro Carvalho Chehab <mchehab+samsung@kernel.org>,
-        Peng Fan <peng.fan@nxp.com>,
-        Nikolay Borisov <nborisov@suse.com>,
-        Ira Weiny <ira.weiny@intel.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Wei Yang <richard.weiyang@gmail.com>
-References: <1579143909-156105-1-git-send-email-alex.shi@linux.alibaba.com>
- <1579143909-156105-4-git-send-email-alex.shi@linux.alibaba.com>
- <20200116215222.GA64230@cmpxchg.org>
- <cdcdb710-1d78-6fac-48d7-35519ddcdc6a@linux.alibaba.com>
- <20200413180725.GA99267@cmpxchg.org>
- <8e7bf170-2bb5-f862-c12b-809f7f7d96cb@linux.alibaba.com>
- <20200414163114.GA136578@cmpxchg.org>
- <54af0662-cbb4-88c7-7eae-f969684025dd@linux.alibaba.com>
- <0bed9f1a-400d-d9a9-aeb4-de1dd9ccbb45@linux.alibaba.com>
- <20200416152830.GA195132@cmpxchg.org>
+          Fri, 17 Apr 2020 22:44:05 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <2403add7-d468-7615-22c5-3fafb1264d54@linux.alibaba.com>
-Date:   Fri, 17 Apr 2020 22:39:59 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <20200416152830.GA195132@cmpxchg.org>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: [PATCH 1/2] memcg: folding CONFIG_MEMCG_SWAP as default
+Date:   Fri, 17 Apr 2020 22:43:43 +0800
+Message-Id: <1587134624-184860-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+This patch fold MEMCG_SWAP feature into kernel as default function. That
+required a short size memcg id for each of page. As Johannes mentioned
 
+"the overhead of tracking is tiny - 512k per G of swap (0.04%).'
 
-在 2020/4/16 下午11:28, Johannes Weiner 写道:
-> Hi Alex,
-> 
-> On Thu, Apr 16, 2020 at 04:01:20PM +0800, Alex Shi wrote:
->>
->>
->> 在 2020/4/15 下午9:42, Alex Shi 写道:
->>> Hi Johannes,
->>>
->>> Thanks a lot for point out!
->>>
->>> Charging in __read_swap_cache_async would ask for 3 layers function arguments
->>> pass, that would be a bit ugly. Compare to this, could we move out the
->>> lru_cache add after commit_charge, like ksm copied pages?
->>>
->>> That give a bit extra non lru list time, but the page just only be used only
->>> after add_anon_rmap setting. Could it cause troubles?
->>
->> Hi Johannes & Andrew,
->>
->> Doing lru_cache_add_anon during swapin_readahead can give a very short timing 
->> for possible page reclaiming for these few pages.
->>
->> If we delay these few pages lru adding till after the vm_fault target page 
->> get memcg charging(mem_cgroup_commit_charge) and activate, we could skip the 
->> mem_cgroup_try_charge/commit_charge/cancel_charge process in __read_swap_cache_async().
->> But the cost is maximum SWAP_RA_ORDER_CEILING number pages on each cpu miss
->> page reclaiming in a short time. On the other hand, save the target vm_fault
->> page from reclaiming before activate it during that time.
-> 
-> The readahead pages surrounding the faulting page might never get
-> accessed and pile up to large amounts. Users can also trigger
-> non-faulting readahead with MADV_WILLNEED.
-> 
-> So unfortunately, I don't see a way to keep these pages off the
-> LRU. They do need to be reclaimable, or they become a DoS vector.
-> 
-> I'm currently preparing a small patch series to make swap ownership
-> tracking an integral part of memcg and change the swapin charging
-> sequence, then you don't have to worry about it. This will also
-> unblock Joonsoo's "workingset protection/detection on the anonymous
-> LRU list" patch series, since he is blocked on the same problem - he
-> needs the correct LRU available at swapin time to process refaults
-> correctly. Both of your patch series are already pretty large, they
-> shouldn't need to also deal with that.
-> 
+So all swapout page could be tracked for its memcg id.
 
-That sounds great!
-BTW, the swapin target page will add into inactive_anon list and then activate
-after chaged. that left a minum time slot for this page to be reclaimed.
-May better activate it early?
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Andrew Morton <akpm@linux-foundation.org> 
+Cc: Johannes Weiner <hannes@cmpxchg.org> 
+Cc: linux-mm@kvack.org 
+Cc: cgroups@vger.kernel.org 
+---
+ arch/arm/configs/omap2plus_defconfig        |  1 -
+ arch/arm64/configs/defconfig                |  1 -
+ arch/mips/configs/db1xxx_defconfig          |  1 -
+ arch/mips/configs/generic_defconfig         |  1 -
+ arch/mips/configs/loongson3_defconfig       |  1 -
+ arch/parisc/configs/generic-64bit_defconfig |  1 -
+ arch/powerpc/configs/powernv_defconfig      |  1 -
+ arch/powerpc/configs/pseries_defconfig      |  1 -
+ arch/s390/configs/debug_defconfig           |  1 -
+ arch/s390/configs/defconfig                 |  1 -
+ arch/sh/configs/sdk7786_defconfig           |  1 -
+ arch/sh/configs/urquell_defconfig           |  1 -
+ include/linux/memcontrol.h                  |  2 --
+ include/linux/swap.h                        | 27 --------------------------
+ include/linux/swap_cgroup.h                 | 30 -----------------------------
+ init/Kconfig                                | 20 -------------------
+ mm/Makefile                                 |  4 ++--
+ mm/memcontrol.c                             | 18 -----------------
+ 18 files changed, 2 insertions(+), 111 deletions(-)
 
-Also I have 2 clean up patches, which may or may not useful for you. will send
-it to you. :)
+diff --git a/arch/arm/configs/omap2plus_defconfig b/arch/arm/configs/omap2plus_defconfig
+index 3cc3ca5fa027..929cfc4c062a 100644
+--- a/arch/arm/configs/omap2plus_defconfig
++++ b/arch/arm/configs/omap2plus_defconfig
+@@ -10,7 +10,6 @@ CONFIG_IKCONFIG_PROC=y
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_CGROUPS=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_CFS_BANDWIDTH=y
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 24e534d85045..3854c6140a04 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -13,7 +13,6 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CGROUP_PIDS=y
+ CONFIG_CGROUP_HUGETLB=y
+diff --git a/arch/mips/configs/db1xxx_defconfig b/arch/mips/configs/db1xxx_defconfig
+index e6f3e8e3da39..4604e826d03f 100644
+--- a/arch/mips/configs/db1xxx_defconfig
++++ b/arch/mips/configs/db1xxx_defconfig
+@@ -9,7 +9,6 @@ CONFIG_HIGH_RES_TIMERS=y
+ CONFIG_LOG_BUF_SHIFT=16
+ CONFIG_CGROUPS=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_CFS_BANDWIDTH=y
+diff --git a/arch/mips/configs/generic_defconfig b/arch/mips/configs/generic_defconfig
+index 714169e411cf..48e4e251779b 100644
+--- a/arch/mips/configs/generic_defconfig
++++ b/arch/mips/configs/generic_defconfig
+@@ -3,7 +3,6 @@ CONFIG_NO_HZ_IDLE=y
+ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CFS_BANDWIDTH=y
+ CONFIG_RT_GROUP_SCHED=y
+diff --git a/arch/mips/configs/loongson3_defconfig b/arch/mips/configs/loongson3_defconfig
+index 51675f5000d6..f91f49595100 100644
+--- a/arch/mips/configs/loongson3_defconfig
++++ b/arch/mips/configs/loongson3_defconfig
+@@ -13,7 +13,6 @@ CONFIG_TASK_DELAY_ACCT=y
+ CONFIG_TASK_XACCT=y
+ CONFIG_TASK_IO_ACCOUNTING=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CPUSETS=y
+ CONFIG_SCHED_AUTOGROUP=y
+diff --git a/arch/parisc/configs/generic-64bit_defconfig b/arch/parisc/configs/generic-64bit_defconfig
+index 59561e04e659..fab4401dd9f6 100644
+--- a/arch/parisc/configs/generic-64bit_defconfig
++++ b/arch/parisc/configs/generic-64bit_defconfig
+@@ -10,7 +10,6 @@ CONFIG_TASK_XACCT=y
+ CONFIG_TASK_IO_ACCOUNTING=y
+ CONFIG_CGROUPS=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_CGROUP_PIDS=y
+ CONFIG_CPUSETS=y
+ CONFIG_RELAY=y
+diff --git a/arch/powerpc/configs/powernv_defconfig b/arch/powerpc/configs/powernv_defconfig
+index df8bdbaa5d8f..c60c3a4125f7 100644
+--- a/arch/powerpc/configs/powernv_defconfig
++++ b/arch/powerpc/configs/powernv_defconfig
+@@ -17,7 +17,6 @@ CONFIG_LOG_CPU_MAX_BUF_SHIFT=13
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_CGROUPS=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_CGROUP_FREEZER=y
+ CONFIG_CPUSETS=y
+diff --git a/arch/powerpc/configs/pseries_defconfig b/arch/powerpc/configs/pseries_defconfig
+index 0bea4d3ffb85..426244f491ec 100644
+--- a/arch/powerpc/configs/pseries_defconfig
++++ b/arch/powerpc/configs/pseries_defconfig
+@@ -16,7 +16,6 @@ CONFIG_LOG_CPU_MAX_BUF_SHIFT=13
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_CGROUPS=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_CGROUP_FREEZER=y
+ CONFIG_CPUSETS=y
+diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
+index 46038bc58c9e..864b32403673 100644
+--- a/arch/s390/configs/debug_defconfig
++++ b/arch/s390/configs/debug_defconfig
+@@ -14,7 +14,6 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CFS_BANDWIDTH=y
+ CONFIG_RT_GROUP_SCHED=y
+diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
+index 7cd0648c1f4e..991e60d7c307 100644
+--- a/arch/s390/configs/defconfig
++++ b/arch/s390/configs/defconfig
+@@ -13,7 +13,6 @@ CONFIG_IKCONFIG=y
+ CONFIG_IKCONFIG_PROC=y
+ CONFIG_NUMA_BALANCING=y
+ CONFIG_MEMCG=y
+-CONFIG_MEMCG_SWAP=y
+ CONFIG_BLK_CGROUP=y
+ CONFIG_CFS_BANDWIDTH=y
+ CONFIG_RT_GROUP_SCHED=y
+diff --git a/arch/sh/configs/sdk7786_defconfig b/arch/sh/configs/sdk7786_defconfig
+index 7fa116b436c3..4a1d19068a8d 100644
+--- a/arch/sh/configs/sdk7786_defconfig
++++ b/arch/sh/configs/sdk7786_defconfig
+@@ -17,7 +17,6 @@ CONFIG_CPUSETS=y
+ # CONFIG_PROC_PID_CPUSET is not set
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_CGROUP_MEMCG=y
+-CONFIG_CGROUP_MEMCG_SWAP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_RT_GROUP_SCHED=y
+ CONFIG_BLK_CGROUP=y
+diff --git a/arch/sh/configs/urquell_defconfig b/arch/sh/configs/urquell_defconfig
+index cb2f56468fe0..be478f3148f2 100644
+--- a/arch/sh/configs/urquell_defconfig
++++ b/arch/sh/configs/urquell_defconfig
+@@ -14,7 +14,6 @@ CONFIG_CPUSETS=y
+ # CONFIG_PROC_PID_CPUSET is not set
+ CONFIG_CGROUP_CPUACCT=y
+ CONFIG_CGROUP_MEMCG=y
+-CONFIG_CGROUP_MEMCG_SWAP=y
+ CONFIG_CGROUP_SCHED=y
+ CONFIG_RT_GROUP_SCHED=y
+ CONFIG_BLK_DEV_INITRD=y
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 1b4150ff64be..45842ed8ba53 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -569,9 +569,7 @@ struct mem_cgroup *mem_cgroup_get_oom_group(struct task_struct *victim,
+ 					    struct mem_cgroup *oom_domain);
+ void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+ extern int do_swap_account;
+-#endif
+ 
+ struct mem_cgroup *lock_page_memcg(struct page *page);
+ void __unlock_page_memcg(struct mem_cgroup *memcg);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index b835d8dbea0e..7e44e1e6ef27 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -654,38 +654,11 @@ static inline void mem_cgroup_throttle_swaprate(struct mem_cgroup *memcg,
+ }
+ #endif
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+ extern void mem_cgroup_swapout(struct page *page, swp_entry_t entry);
+ extern int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry);
+ extern void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
+ extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+ extern bool mem_cgroup_swap_full(struct page *page);
+-#else
+-static inline void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+-{
+-}
+-
+-static inline int mem_cgroup_try_charge_swap(struct page *page,
+-					     swp_entry_t entry)
+-{
+-	return 0;
+-}
+-
+-static inline void mem_cgroup_uncharge_swap(swp_entry_t entry,
+-					    unsigned int nr_pages)
+-{
+-}
+-
+-static inline long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
+-{
+-	return get_nr_swap_pages();
+-}
+-
+-static inline bool mem_cgroup_swap_full(struct page *page)
+-{
+-	return vm_swap_full();
+-}
+-#endif
+ 
+ #endif /* __KERNEL__*/
+ #endif /* _LINUX_SWAP_H */
+diff --git a/include/linux/swap_cgroup.h b/include/linux/swap_cgroup.h
+index a12dd1c3966c..5ac87b3b0e08 100644
+--- a/include/linux/swap_cgroup.h
++++ b/include/linux/swap_cgroup.h
+@@ -4,8 +4,6 @@
+ 
+ #include <linux/swap.h>
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+-
+ extern unsigned short swap_cgroup_cmpxchg(swp_entry_t ent,
+ 					unsigned short old, unsigned short new);
+ extern unsigned short swap_cgroup_record(swp_entry_t ent, unsigned short id,
+@@ -14,32 +12,4 @@ extern unsigned short swap_cgroup_record(swp_entry_t ent, unsigned short id,
+ extern int swap_cgroup_swapon(int type, unsigned long max_pages);
+ extern void swap_cgroup_swapoff(int type);
+ 
+-#else
+-
+-static inline
+-unsigned short swap_cgroup_record(swp_entry_t ent, unsigned short id,
+-				  unsigned int nr_ents)
+-{
+-	return 0;
+-}
+-
+-static inline
+-unsigned short lookup_swap_cgroup_id(swp_entry_t ent)
+-{
+-	return 0;
+-}
+-
+-static inline int
+-swap_cgroup_swapon(int type, unsigned long max_pages)
+-{
+-	return 0;
+-}
+-
+-static inline void swap_cgroup_swapoff(int type)
+-{
+-	return;
+-}
+-
+-#endif /* CONFIG_MEMCG_SWAP */
+-
+ #endif /* __LINUX_SWAP_CGROUP_H */
+diff --git a/init/Kconfig b/init/Kconfig
+index 9e22ee8fbd75..3b09c71e9b57 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -834,26 +834,6 @@ config MEMCG
+ 	help
+ 	  Provides control over the memory footprint of tasks in a cgroup.
+ 
+-config MEMCG_SWAP
+-	bool "Swap controller"
+-	depends on MEMCG && SWAP
+-	help
+-	  Provides control over the swap space consumed by tasks in a cgroup.
+-
+-config MEMCG_SWAP_ENABLED
+-	bool "Swap controller enabled by default"
+-	depends on MEMCG_SWAP
+-	default y
+-	help
+-	  Memory Resource Controller Swap Extension comes with its price in
+-	  a bigger memory consumption. General purpose distribution kernels
+-	  which want to enable the feature but keep it disabled by default
+-	  and let the user enable it by swapaccount=1 boot command line
+-	  parameter should have this option unselected.
+-	  For those who want to have the feature enabled by default should
+-	  select this option (if, for some reason, they need to disable it
+-	  then swapaccount=0 does the trick).
+-
+ config MEMCG_KMEM
+ 	bool
+ 	depends on MEMCG && !SLOB
+diff --git a/mm/Makefile b/mm/Makefile
+index fccd3756b25f..812c08323355 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -58,7 +58,8 @@ ifdef CONFIG_MMU
+ 	obj-$(CONFIG_ADVISE_SYSCALLS)	+= madvise.o
+ endif
+ 
+-obj-$(CONFIG_SWAP)	+= page_io.o swap_state.o swapfile.o swap_slots.o
++obj-$(CONFIG_SWAP)	+= page_io.o swap_state.o swapfile.o swap_slots.o \
++			   swap_cgroup.o
+ obj-$(CONFIG_FRONTSWAP)	+= frontswap.o
+ obj-$(CONFIG_ZSWAP)	+= zswap.o
+ obj-$(CONFIG_HAS_DMA)	+= dmapool.o
+@@ -80,7 +81,6 @@ obj-$(CONFIG_MIGRATION) += migrate.o
+ obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+ obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
+ obj-$(CONFIG_MEMCG) += memcontrol.o vmpressure.o
+-obj-$(CONFIG_MEMCG_SWAP) += swap_cgroup.o
+ obj-$(CONFIG_CGROUP_HUGETLB) += hugetlb_cgroup.o
+ obj-$(CONFIG_GUP_BENCHMARK) += gup_benchmark.o
+ obj-$(CONFIG_MEMORY_FAILURE) += memory-failure.o
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 5beea03dd58a..446141b6597a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -82,11 +82,7 @@
+ static bool cgroup_memory_nokmem;
+ 
+ /* Whether the swap controller is active */
+-#ifdef CONFIG_MEMCG_SWAP
+ int do_swap_account __read_mostly;
+-#else
+-#define do_swap_account		0
+-#endif
+ 
+ #ifdef CONFIG_CGROUP_WRITEBACK
+ static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
+@@ -3020,7 +3016,6 @@ void mem_cgroup_split_huge_fixup(struct page *head)
+ }
+ #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+ /**
+  * mem_cgroup_move_swap_account - move swap charge and swap_cgroup's record.
+  * @entry: swap entry to be moved
+@@ -3050,13 +3045,6 @@ static int mem_cgroup_move_swap_account(swp_entry_t entry,
+ 	}
+ 	return -EINVAL;
+ }
+-#else
+-static inline int mem_cgroup_move_swap_account(swp_entry_t entry,
+-				struct mem_cgroup *from, struct mem_cgroup *to)
+-{
+-	return -EINVAL;
+-}
+-#endif
+ 
+ static DEFINE_MUTEX(memcg_max_mutex);
+ 
+@@ -6936,7 +6924,6 @@ static int __init mem_cgroup_init(void)
+ }
+ subsys_initcall(mem_cgroup_init);
+ 
+-#ifdef CONFIG_MEMCG_SWAP
+ static struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg)
+ {
+ 	while (!refcount_inc_not_zero(&memcg->id.ref)) {
+@@ -7137,11 +7124,7 @@ bool mem_cgroup_swap_full(struct page *page)
+ }
+ 
+ /* for remember boot option*/
+-#ifdef CONFIG_MEMCG_SWAP_ENABLED
+ static int really_do_swap_account __initdata = 1;
+-#else
+-static int really_do_swap_account __initdata;
+-#endif
+ 
+ static int __init enable_swap_account(char *s)
+ {
+@@ -7257,4 +7240,3 @@ static int __init mem_cgroup_swap_init(void)
+ }
+ subsys_initcall(mem_cgroup_swap_init);
+ 
+-#endif /* CONFIG_MEMCG_SWAP */
+-- 
+1.8.3.1
 
-Thanks
-Alex
