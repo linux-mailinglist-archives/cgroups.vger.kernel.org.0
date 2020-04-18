@@ -2,248 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2CE41AECCA
-	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2020 15:45:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C749F1AECC2
+	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2020 15:45:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725887AbgDRNpz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 18 Apr 2020 09:45:55 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:51532 "EHLO
+        id S1725873AbgDRNpb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 18 Apr 2020 09:45:31 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:47766 "EHLO
         out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726025AbgDRNpz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Apr 2020 09:45:55 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0TvvMGTV_1587217545;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvvMGTV_1587217545)
+        by vger.kernel.org with ESMTP id S1725879AbgDRNpb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 18 Apr 2020 09:45:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0TvvSI1O_1587217526;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TvvSI1O_1587217526)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 18 Apr 2020 21:45:46 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Jonathan Corbet <corbet@lwn.net>,
+          Sat, 18 Apr 2020 21:45:26 +0800
+Subject: Re: [PATCH 1/2] memcg: folding CONFIG_MEMCG_SWAP as default
+To:     Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH v2 2/2] mm/memcg: remove swapaccount kernel parameter
-Date:   Sat, 18 Apr 2020 21:33:09 +0800
-Message-Id: <1587216789-42342-3-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1587216789-42342-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1587216789-42342-1-git-send-email-alex.shi@linux.alibaba.com>
-To:     unlisted-recipients:; (no To-header on input)
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+References: <1587134624-184860-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200417155317.GS26707@dhcp22.suse.cz>
+ <CALvZod7Xa4Xs=7zC8OZ7GOfvfDBv+yNbGCzBxeoMgAeRGRtw0A@mail.gmail.com>
+ <20200417165442.GT26707@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <caa13db1-3094-0aae-bfb9-c3534949fa21@linux.alibaba.com>
+Date:   Sat, 18 Apr 2020 21:44:32 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.6.0
+MIME-Version: 1.0
+In-Reply-To: <20200417165442.GT26707@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-After merge the CONFIG_MEMCG_SWAP into kernel as default feature. This
-patch removes the kernel parameter interface swapaccount= to keep this
-feature from user disable in boot.
 
-Now, all swapped memcg page record it's id permanently.
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Jonathan Corbet <corbet@lwn.net>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-doc@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
----
- Documentation/admin-guide/kernel-parameters.txt |  5 ---
- include/linux/memcontrol.h                      |  2 -
- mm/memcontrol.c                                 | 50 ++++++++-----------------
- mm/swap_cgroup.c                                |  7 ----
- 4 files changed, 15 insertions(+), 49 deletions(-)
+ÔÚ 2020/4/18 ÉÏÎç12:54, Michal Hocko Ð´µÀ:
+> On Fri 17-04-20 09:41:04, Shakeel Butt wrote:
+>> On Fri, Apr 17, 2020 at 9:03 AM Michal Hocko <mhocko@kernel.org> wrote:
+>>>
+>>> On Fri 17-04-20 22:43:43, Alex Shi wrote:
+>>>> This patch fold MEMCG_SWAP feature into kernel as default function. That
+>>>> required a short size memcg id for each of page. As Johannes mentioned
+>>>>
+>>>> "the overhead of tracking is tiny - 512k per G of swap (0.04%).'
+>>>>
+>>>> So all swapout page could be tracked for its memcg id.
+>>>
+>>> I am perfectly OK with dropping the CONFIG_MEMCG_SWAP. The code that is
+>>> guarded by it is negligible and the resulting code is much easier to
+>>> read so no objection on that front. I just do not really see any real
+>>> reason to flip the default for cgroup v1. Why do we want/need that?
+>>>
+>>
+>> Yes, the changelog is lacking the motivation of this change. This is
+>> proposed by Johannes and I was actually expecting the patch from him.
+>> The motivation is to make the things simpler for per-memcg LRU locking
+>> and workingset for anon memory (Johannes has described these really
+>> well, lemme find the email). If we keep the differentiation between
+>> cgroup v1 and v2, then there is actually no point of this cleanup as
+>> per-memcg LRU locking and anon workingset still has to handle the
+>> !do_swap_account case.
+> 
+> All those details really have to go into the changelog. I have to say
+> that I still do not understand why the actual accounting swap or not
+> makes any difference for per per-memcg LRU. Especially when your patch
+> keeps the kernel command line parameter still in place.
+> 
+> Anyway, it would be much more simpler to have a patch that drops the
+> CONFIG_MEMCG_SWAP and a separate one which switches the default
+> beahvior. I am not saying I am ok with the later but if the
+> justification is convincing then I might change my mind.
+> 
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index f2a93c8679e8..f8532dfc4f17 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -4877,11 +4877,6 @@
- 			This parameter controls use of the Protected
- 			Execution Facility on pSeries.
- 
--	swapaccount=[0|1]
--			[KNL] Enable accounting of swap in memory resource
--			controller if no parameter or 1 is given or disable
--			it if 0 is given (See Documentation/admin-guide/cgroup-v1/memory.rst)
--
- 	swiotlb=	[ARM,IA-64,PPC,MIPS,X86]
- 			Format: { <int> | force | noforce }
- 			<int> -- Number of I/O TLB slabs
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 45842ed8ba53..9d6330ef5a13 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -569,8 +569,6 @@ struct mem_cgroup *mem_cgroup_get_oom_group(struct task_struct *victim,
- 					    struct mem_cgroup *oom_domain);
- void mem_cgroup_print_oom_group(struct mem_cgroup *memcg);
- 
--extern int do_swap_account;
--
- struct mem_cgroup *lock_page_memcg(struct page *page);
- void __unlock_page_memcg(struct mem_cgroup *memcg);
- void unlock_page_memcg(struct page *page);
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 446141b6597a..ba3ac7c7644b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -81,9 +81,6 @@
- /* Kernel memory accounting disabled? */
- static bool cgroup_memory_nokmem;
- 
--/* Whether the swap controller is active */
--int do_swap_account __read_mostly;
--
- #ifdef CONFIG_CGROUP_WRITEBACK
- static DECLARE_WAIT_QUEUE_HEAD(memcg_cgwb_frn_waitq);
- #endif
-@@ -91,7 +88,7 @@
- /* Whether legacy memory+swap accounting is active */
- static bool do_memsw_account(void)
- {
--	return !cgroup_subsys_on_dfl(memory_cgrp_subsys) && do_swap_account;
-+	return !cgroup_subsys_on_dfl(memory_cgrp_subsys);
- }
- 
- #define THRESHOLDS_EVENTS_TARGET 128
-@@ -6444,6 +6441,9 @@ int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
- 		goto out;
- 
- 	if (PageSwapCache(page)) {
-+		swp_entry_t ent;
-+		unsigned short id;
-+
- 		/*
- 		 * Every swap fault against a single page tries to charge the
- 		 * page, bail as early as possible.  shmem_unuse() encounters
-@@ -6455,16 +6455,13 @@ int mem_cgroup_try_charge(struct page *page, struct mm_struct *mm,
- 		if (compound_head(page)->mem_cgroup)
- 			goto out;
- 
--		if (do_swap_account) {
--			swp_entry_t ent = { .val = page_private(page), };
--			unsigned short id = lookup_swap_cgroup_id(ent);
--
--			rcu_read_lock();
--			memcg = mem_cgroup_from_id(id);
--			if (memcg && !css_tryget_online(&memcg->css))
--				memcg = NULL;
--			rcu_read_unlock();
--		}
-+		ent.val = page_private(page);
-+		id = lookup_swap_cgroup_id(ent);
-+		rcu_read_lock();
-+		memcg = mem_cgroup_from_id(id);
-+		if (memcg && !css_tryget_online(&memcg->css))
-+			memcg = NULL;
-+		rcu_read_unlock();
- 	}
- 
- 	if (!memcg)
-@@ -7024,7 +7021,7 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 	struct mem_cgroup *memcg;
- 	unsigned short oldid;
- 
--	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) || !do_swap_account)
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return 0;
- 
- 	memcg = page->mem_cgroup;
-@@ -7068,9 +7065,6 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
- 	struct mem_cgroup *memcg;
- 	unsigned short id;
- 
--	if (!do_swap_account)
--		return;
--
- 	id = swap_cgroup_record(entry, 0, nr_pages);
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_id(id);
-@@ -7091,7 +7085,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- {
- 	long nr_swap_pages = get_nr_swap_pages();
- 
--	if (!do_swap_account || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return nr_swap_pages;
- 	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg))
- 		nr_swap_pages = min_t(long, nr_swap_pages,
-@@ -7108,7 +7102,7 @@ bool mem_cgroup_swap_full(struct page *page)
- 
- 	if (vm_swap_full())
- 		return true;
--	if (!do_swap_account || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return false;
- 
- 	memcg = page->mem_cgroup;
-@@ -7123,19 +7117,6 @@ bool mem_cgroup_swap_full(struct page *page)
- 	return false;
- }
- 
--/* for remember boot option*/
--static int really_do_swap_account __initdata = 1;
--
--static int __init enable_swap_account(char *s)
--{
--	if (!strcmp(s, "1"))
--		really_do_swap_account = 1;
--	else if (!strcmp(s, "0"))
--		really_do_swap_account = 0;
--	return 1;
--}
--__setup("swapaccount=", enable_swap_account);
--
- static u64 swap_current_read(struct cgroup_subsys_state *css,
- 			     struct cftype *cft)
- {
-@@ -7229,8 +7210,7 @@ static int swap_events_show(struct seq_file *m, void *v)
- 
- static int __init mem_cgroup_swap_init(void)
- {
--	if (!mem_cgroup_disabled() && really_do_swap_account) {
--		do_swap_account = 1;
-+	if (!mem_cgroup_disabled()) {
- 		WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys,
- 					       swap_files));
- 		WARN_ON(cgroup_add_legacy_cftypes(&memory_cgrp_subsys,
-diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
-index 45affaef3bc6..3cb015179d29 100644
---- a/mm/swap_cgroup.c
-+++ b/mm/swap_cgroup.c
-@@ -171,9 +171,6 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
- 	unsigned long length;
- 	struct swap_cgroup_ctrl *ctrl;
- 
--	if (!do_swap_account)
--		return 0;
--
- 	length = DIV_ROUND_UP(max_pages, SC_PER_PAGE);
- 	array_size = length * sizeof(void *);
- 
-@@ -199,7 +196,6 @@ int swap_cgroup_swapon(int type, unsigned long max_pages)
- 	return 0;
- nomem:
- 	pr_info("couldn't allocate enough memory for swap_cgroup\n");
--	pr_info("swap_cgroup can be disabled by swapaccount=0 boot option\n");
- 	return -ENOMEM;
- }
- 
-@@ -209,9 +205,6 @@ void swap_cgroup_swapoff(int type)
- 	unsigned long i, length;
- 	struct swap_cgroup_ctrl *ctrl;
- 
--	if (!do_swap_account)
--		return;
--
- 	mutex_lock(&swap_cgroup_mutex);
- 	ctrl = &swap_cgroup_ctrl[type];
- 	map = ctrl->map;
--- 
-1.8.3.1
+Hi Shakeel & Michal,
 
+Thanks for all comments!
+
+Yes, we still need to remove swapaccount from cmdline and keep swap_cgroup.id
+permanently. Just I don't know if this patch could fit into the details of 
+Johannes new solution.
+
+Anyway, I will send out v2 for complete memcg id record patch, just in case
+if they are useful.
+
+Thanks
+Alex
