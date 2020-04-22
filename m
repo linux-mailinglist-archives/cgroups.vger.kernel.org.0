@@ -2,176 +2,190 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 971E01B4631
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 15:26:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CD851B463E
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 15:30:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726046AbgDVN0i (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Apr 2020 09:26:38 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:44069 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726041AbgDVN0h (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 09:26:37 -0400
-Received: by mail-wr1-f67.google.com with SMTP id d17so2360818wrg.11
-        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 06:26:35 -0700 (PDT)
+        id S1726604AbgDVNaG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Apr 2020 09:30:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36440 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726442AbgDVNaF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 09:30:05 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95C28C03C1AA
+        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 06:30:04 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id c63so2335234qke.2
+        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 06:30:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=chsAA4zyl1YPFqGtfiwU7PFfqVuSOELGokqTvQTOwpY=;
+        b=ryTWe4zYa0wqpywa20hGmZ5UhE9d4qB5vX4YCnD9vlJUAHekQcP/Xs5IuyWY64vmU3
+         06wbWvSe7zfL8eU/19YZb/9DoD4Ndak8N3S8q7hkMLbR7LjpsSb78dlwwwGIocC5+WXx
+         lalqwQ/GXib655ulKpereqvWthxeYlSjFV7icp27njo9mdQQE7IVz3FHVjFy65MkeeMW
+         z9XwtQA2u9/g/te+NNkiFqdJx1oqOrIo1xstSpKZNFj319mN2AEGDyzeSBqSb6TltMrb
+         C6ZZov9OETmmP7E83EE/KvMRWox8jtvqAx5kczuJgJ3mB4Fg/3mObRbzQZ8jl0r7OjmK
+         16gw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Jh325LoBmIF149N3Foq+6kQhHP9kkXwLpqad79//H2s=;
-        b=uCFYckcXZqqU09dcVOuH50bgr7zP8Duyz+NQPlNE20Lx6Eeu0LKXO+/Jzr34SgleBx
-         +l1b7ha9H9ZSUTu256jrXeOA7g4Fufrhklu4RNnco6Qt7QqZKotMMAU73fyiNC4BQDUk
-         zEfhBbBhfgYdNufe2wbq0GNkYnxUet6uYKwTGUnbjud3pJG4B3a2nhzf5xEETiOxlqAa
-         ziZTnyNqWuKFU0ymjYasX1J1BlzF69AcK3rgNJ3hulkxMJJwLCmSwbwU/au18gNCyCqk
-         CsiKY1FkUC7yjlv1/jtqJr+VYCKyXtOOvLpSrzR8vEzsSi3JYZ9siF2pLWtmzN6bHpPB
-         qTlw==
-X-Gm-Message-State: AGi0PuZeUcuji8AAxdEGKRa/f10U4trwpEebuVQagK6s0w9N+T7xD0/O
-        M38JFSRMNbcst99V1xnc56E=
-X-Google-Smtp-Source: APiQypL/NqajWDrv/c1LKUPHk6S9Q2h+Jqb8HJgb94TMSkEFfcX7fvQ7QFlajiVV6YXtytJ6MYyC6Q==
-X-Received: by 2002:adf:cd0a:: with SMTP id w10mr29149296wrm.404.1587561994936;
-        Wed, 22 Apr 2020 06:26:34 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id 1sm7926019wmz.13.2020.04.22.06.26.33
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=chsAA4zyl1YPFqGtfiwU7PFfqVuSOELGokqTvQTOwpY=;
+        b=eRIkDGdfCUUYMbDzCB0WVPI2ykZEEHwK5cNbF8OytFdVZkL+SB50UwH5SKIEqJDphC
+         /354V5T7suejNeVtedpURXQxUDpA24c6twnN/tmDLKvJlkkg8zj6RbTP7dVY/LVlLsmx
+         gW2vDzhpOCxxIrMOkKieXDmyWhmLWGHvwCRfe4e8IeUHokozs0in+Ya10emALYaVssN3
+         m17UOUPz5gVwDfnS1z5HV9MaKTEhMud040a8cfixnGvtZsBOYqNn6gniGt2mwRAg8ORI
+         ZqH+EFUHDDWN1yXUsXBFqFfuMsiYkoPI1xUNq3Xnyr3mo1ChwsnCZE27VAS5wxFNMHQ6
+         PklQ==
+X-Gm-Message-State: AGi0PuYVLTHvypFWfn7zyfjVHU9F3UkwrABSe7XNWlrbOEraFaByBfOQ
+        Y2g4jGzdiBIVHKAOO7gZaC31IQ==
+X-Google-Smtp-Source: APiQypI4kp0L3z8pDWk+9x1LtnDU2mTdSq+yx2OdUQxc128HJ1nrp+9d2uMLw60RNbH06M/X/I78zQ==
+X-Received: by 2002:a37:b445:: with SMTP id d66mr1768848qkf.474.1587562203624;
+        Wed, 22 Apr 2020 06:30:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::921])
+        by smtp.gmail.com with ESMTPSA id g63sm3818215qkb.89.2020.04.22.06.30.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 22 Apr 2020 06:26:33 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:26:32 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Shakeel Butt <shakeelb@google.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Chris Down <chris@chrisdown.name>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 0/3] memcg: Slow down swap allocation as the available
- space gets depleted
-Message-ID: <20200422132632.GG30312@dhcp22.suse.cz>
-References: <CALvZod6LT25t9aAA1KHmf1U4-L8zSjUXQ4VQvX4cMT1A+R_g+w@mail.gmail.com>
- <20200417225941.GE43469@mtj.thefacebook.com>
- <CALvZod6M4OsM-t8m_KX9wCkEutdwUMgbP9682eHGQor9JvO_BQ@mail.gmail.com>
- <20200420164740.GF43469@mtj.thefacebook.com>
- <20200420170318.GV27314@dhcp22.suse.cz>
- <20200420170650.GA169746@mtj.thefacebook.com>
- <20200421110612.GD27314@dhcp22.suse.cz>
- <20200421142746.GA341682@cmpxchg.org>
- <20200421161138.GL27314@dhcp22.suse.cz>
- <20200421165601.GA345998@cmpxchg.org>
+        Wed, 22 Apr 2020 06:30:02 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 09:30:01 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Joonsoo Kim <js1304@gmail.com>, Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 15/18] mm: memcontrol: make swap tracking an integral
+ part of memory control
+Message-ID: <20200422133001.GE358439@cmpxchg.org>
+References: <20200420221126.341272-1-hannes@cmpxchg.org>
+ <20200420221126.341272-16-hannes@cmpxchg.org>
+ <e9d58c82-d746-dcd0-d9e3-6322014a3b03@linux.alibaba.com>
+ <20200421143923.GC341682@cmpxchg.org>
+ <2721c508-9b32-d0e7-454d-386129bfda1b@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200421165601.GA345998@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <2721c508-9b32-d0e7-454d-386129bfda1b@linux.alibaba.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 21-04-20 12:56:01, Johannes Weiner wrote:
-> On Tue, Apr 21, 2020 at 06:11:38PM +0200, Michal Hocko wrote:
-> > On Tue 21-04-20 10:27:46, Johannes Weiner wrote:
-> > > On Tue, Apr 21, 2020 at 01:06:12PM +0200, Michal Hocko wrote:
-> > [...]
-> > > > I am also not sure about the isolation aspect. Because an external
-> > > > memory pressure might have pushed out memory to the swap and then the
-> > > > workload is throttled based on an external event. Compare that to the
-> > > > memory.high throttling which is not directly affected by the external
-> > > > pressure.
-> > > 
-> > > Neither memory.high nor swap.high isolate from external pressure.
+On Wed, Apr 22, 2020 at 11:14:40AM +0800, Alex Shi wrote:
+> 
+> 
+> 在 2020/4/21 下午10:39, Johannes Weiner 写道:
+> > Hi Alex,
 > > 
-> > I didn't say they do. What I am saying is that an external pressure
-> > might punish swap.high memcg because the external memory pressure would
-> > eat up the quota and trigger the throttling.
-> 
-> External pressure could also push a cgroup into a swap device that
-> happens to be very slow and cause the cgroup to be throttled that way.
-
-Yes but it would get throttled at the fault time when the swapped out
-memory is needed. Unless the anon workload actively doesn't fit into
-memory then refaults are not that common. Compare that to a continuous
-throttling because your memory has been pushed out to swap and you
-cannot do much about that without being slowed down to crawling.
-
-> But that effect is actually not undesirable. External pressure means
-> that something more important runs and needs the memory of something
-> less important (otherwise, memory.low would deflect this intrusion).
-> 
-> So we're punishing/deprioritizing the right cgroup here. The one that
-> isn't protected from memory pressure.
-> 
-> > It is fair to say that this externally triggered interference is already
-> > possible with swap.max as well though. It would likely be just more
-> > verbose because of the oom killer intervention rather than a slowdown.
-> 
-> Right.
-> 
-> > > They
-> > > are put on cgroups so they don't cause pressure on other cgroups. Swap
-> > > is required when either your footprint grows or your available space
-> > > shrinks. That's why it behaves like that.
-> > > 
-> > > That being said, I think we're getting lost in the implementation
-> > > details before we have established what the purpose of this all
-> > > is. Let's talk about this first.
+> > thanks for your quick review so far, I'll add the tags to the patches.
 > > 
-> > Thanks for describing it in the length. I have a better picture of the
-> > intention (this should have been in the changelog ideally). I can see
-> > how the swap consumption throttling might be useful but I still dislike the
-> > proposed implementation. Mostly because of throttling of all allocations
-> > regardless whether they can contribute to the swap consumption or not.
-> 
-> I mean, even if they're not swappable, they can still contribute to
-> swap consumption that wouldn't otherwise have been there. Each new
-> page that comes in displaces another page at the end of the big LRU
-> pipeline and pushes it into the mouth of reclaim - which may swap. So
-> *every* allocation has a certain probability of increasing swap usage.
+> > On Tue, Apr 21, 2020 at 05:27:30PM +0800, Alex Shi wrote:
+> >>
+> >>
+> >> 在 2020/4/21 上午6:11, Johannes Weiner 写道:
+> >>> The swapaccount=0 boot option will continue to exist, and it will
+> >>> eliminate the page_counter overhead and hide the swap control files,
+> >>> but it won't disable swap slot ownership tracking.
+> >>
+> >> May we add extra explanation for this change to user? and the default
+> >> memsw limitations?
+> > 
+> > Can you elaborate what you think is missing and where you would like
+> > to see it documented?
+> > 
+> Maybe the following doc change is better after whole patchset? 
+> Guess users would would happy to know details of this change.
 
-You are right of course and this makes an reasonable implementation of
-swap.high far from trivial. I would even dare to say that an optimal
-implementation is impossible because the throttling cannot be done in
-the reclaim context (at least not in your case where you rely on the
-global reclaim).
+Thanks, I stole your patch and extended/tweaked it a little. Would you
+mind providing your Signed-off-by:?
 
-> The fact that we have reached swap.high is a good hint that reclaim
-> has indeed been swapping quite aggressively to accomodate incoming
-> allocations, and probably will continue to do so.
+From 589d3c1b505e6671b4a9b424436c9eda88a0b08c Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 22 Apr 2020 11:14:40 +0800
+Subject: [PATCH] mm: memcontrol: document the new swap control behavior
 
-You can fill up a swap space even without an aggressive reclaim so I
-wouldn't make any assumptions just based on the amount of swapped out
-memory.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ .../admin-guide/cgroup-v1/memory.rst          | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+index 0ae4f564c2d6..12757e63b26c 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -199,11 +199,11 @@ An RSS page is unaccounted when it's fully unmapped. A PageCache page is
+ unaccounted when it's removed from radix-tree. Even if RSS pages are fully
+ unmapped (by kswapd), they may exist as SwapCache in the system until they
+ are really freed. Such SwapCaches are also accounted.
+-A swapped-in page is not accounted until it's mapped.
++A swapped-in page is accounted after adding into swapcache.
  
-> We could check whether there are NO anon pages left in a workload, but
-> that's such an extreme and short-lived case that it probably wouldn't
-> make a difference in practice.
->
-> We could try to come up with a model that calculates a probabilty of
-> each new allocation to cause swap. Whether that new allocation itself
-> is swapbacked would of course be a factor, but there are other factors
-> as well: the millions of existing LRU pages, the reclaim decisions we
-> will make, swappiness and so forth.
-
-Yeah, an optimal solution likely doesn't exist. Some portion of
-get_scan_count could be used to have at least some clue on whether
-swap out is likely.
+ Note: The kernel does swapin-readahead and reads multiple swaps at once.
+-This means swapped-in pages may contain pages for other tasks than a task
+-causing page fault. So, we avoid accounting at swap-in I/O.
++Since page's memcg recorded into swap whatever memsw enabled, the page will
++be accounted after swapin.
  
-> Of course, I agree with you, if all you have coming in is cache
-> allocations, you'd *eventually* run out of pages to swap.
->
-> However, 10G of new active cache allocations can still cause 10G of
-> already allocated anon pages to get swapped out. For example if a
-> malloc() leak happened *before* the regular cache workingset is
-> established. We cannot retro-actively throttle those anon pages, we
-> can only keep new allocations from pushing old ones into swap.
-
-Yes and this is the fundamental problem we have here as I have mentioned
-above as well. Throttling and swapout are simply not bound together. So
-we can only guess. And that guessing is a concern because opinions on
-that might differ. For example I really dislike the huge hammer to
-throttle for all charges but I do see how reasonable people might
-disagree on this matter.
-
-That being said I believe our discussion is missing an important part.
-There is no description of the swap.high semantic. What can user expect
-when using it?
+ At page migration, accounting information is kept.
+ 
+@@ -222,18 +222,13 @@ the cgroup that brought it in -- this will happen on memory pressure).
+ But see section 8.2: when moving a task to another cgroup, its pages may
+ be recharged to the new cgroup, if move_charge_at_immigrate has been chosen.
+ 
+-Exception: If CONFIG_MEMCG_SWAP is not used.
+-When you do swapoff and make swapped-out pages of shmem(tmpfs) to
+-be backed into memory in force, charges for pages are accounted against the
+-caller of swapoff rather than the users of shmem.
+-
+-2.4 Swap Extension (CONFIG_MEMCG_SWAP)
++2.4 Swap Extension
+ --------------------------------------
+ 
+-Swap Extension allows you to record charge for swap. A swapped-in page is
+-charged back to original page allocator if possible.
++Swap usage is always recorded for each of cgroup. Swap Extension allows you to
++read and limit it.
+ 
+-When swap is accounted, following files are added.
++When CONFIG_SWAP is enabled, following files are added.
+ 
+  - memory.memsw.usage_in_bytes.
+  - memory.memsw.limit_in_bytes.
 -- 
-Michal Hocko
-SUSE Labs
+
+
+
+> Also as to the RSS account name change, I don't know if it's good to polish
+> them in docs.
+
+I didn't actually change anything user-visible, just the internal name
+of the counters:
+
+static const unsigned int memcg1_stats[] = {
+	NR_FILE_PAGES,		/* was MEMCG_CACHE */
+	NR_ANON_MAPPED,		/* was MEMCG_RSS */
+	NR_ANON_THPS,		/* was MEMCG_RSS_HUGE */
+	NR_SHMEM,
+	NR_FILE_MAPPED,
+	NR_FILE_DIRTY,
+	NR_WRITEBACK,
+	MEMCG_SWAP,
+};
+
+static const char *const memcg1_stat_names[] = {
+	"cache",
+	"rss",
+	"rss_huge",
+	"shmem",
+	"mapped_file",
+	"dirty",
+	"writeback",
+	"swap",
+};
+
+Or did you refer to something else?
