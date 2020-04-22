@@ -2,54 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EB871B4C63
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 20:02:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 148881B4C6E
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 20:02:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgDVSB5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Apr 2020 14:01:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50586 "EHLO
+        id S1726963AbgDVSCi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Apr 2020 14:02:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50692 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726154AbgDVSB5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 14:01:57 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC7A9C03C1A9
-        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 11:01:56 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id a21so3297257ljb.9
-        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 11:01:56 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726924AbgDVSCh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 14:02:37 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF305C03C1AA
+        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 11:02:35 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id y4so3322920ljn.7
+        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2020 11:02:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=VeICkZcacX5o5DfIzM6geA/GUL/N+krHSEmjMqZ24Ck=;
-        b=cL4XfOMRgrSEemK6NhlwLMnQug9WZa18bhIbX62Kuv//MMo/AbdFk7SezdnPca2O6j
-         7Z98w0ubkPO7fv98GDmkR/MoSl9cfL0Tcvs92lqyqx8RfgALPRIw7IssCtZZ3wFe9zJJ
-         bfi4qrCpsmOag4OR1QHluehtfQE/oHErG8BFd1HmHFdhj+yVtenXBTciJQ864x6wipD6
-         cTzANHcDT4OXVOurM+RCx3wWYGawzR0anSa2YE4c6puLTIA9aIF8yMjgB7tmMkT+vw2J
-         KnyQeGNi4hAiYt2r0u5LrazJnVwzSDjFXg95O4uEtTU5RRVPffX+jKrcmLxg0Y9alJJ+
-         WLGA==
+        bh=OxPQfRGdb/9tZKOeYvx9nsO533AAnUsM72YkEAHTBCI=;
+        b=MtBnqEYdd89iXzsWZUzdrGnwyjo111BKIiu7L3ZHWXsQEJMUCoEyKDRbJIyIbEZ0UL
+         DV3+yaBUmM6gMxXui+ZOIe6OyD7VtRJ23975UXk+/Wj0COST+PbV9MJTROveWW0bw2T7
+         GtXFKn4EezlfKVlwrZaFUmoy/J+Vyg0tVlz69s+eov79IvvYBC6QTV2+OAVc8P/TxcAB
+         A8+D4KWyIqFJwYB36BbmoTeDFQv2oa4PzTVNJUV6suxSZPhHbZMiB3N4XCK8SMiAZedT
+         H6oGGCppXSeyYI9Pa+3Rc/6Drhivl0uuWfd0hsHATauPrPn70QbuvXx3LUDAOw5klFM8
+         xeuw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=VeICkZcacX5o5DfIzM6geA/GUL/N+krHSEmjMqZ24Ck=;
-        b=nFwzFE8JNK1ZN8izr7Jctdss+BorpyzEgA1jPQ6hpJqmwJFBeTKHDn5pMycW6u13Gj
-         yUrYP1TjNoXZYaO7icY6s3lBW785AII5D4bu6UiVn8WM11izRBvrz+gP97J0QuN5D+5O
-         dxCGBzao9+FyJbRgDRAZfEVgpWCI7ERNKAAgzCNOFPzyfn6XCr2AUO7XQJ6mBNak2Hst
-         pX7ples3rRHX34saCblPKUDA1gwNsdzGgtn6f3X/j/TET8j8qGGHJafcK5ZgeNjulZwN
-         UumSFaS5YVygq55A6ZzsVrkvZxTnvKWeKLpFrTQ+5ad80L2ZJaH5u7uYB+Tpi7bAcNqL
-         L/Pw==
-X-Gm-Message-State: AGi0PuYJlXuXTRawAc5zshr9FfJM2dddLxxfrm3m8PF27q9uskcuVfQx
-        TjpjoVOPvOEhbGZ1bQC5imkEQAr3JuB/KGwCzl/Lkw==
-X-Google-Smtp-Source: APiQypKl3UYhU9fAxPl/IQhzSvDx7R/nce6w2dJxZfvNJTkneHQkG2mQu+SCu00s+rs+TxVR605HW1Re6IhK2rEh0+4=
-X-Received: by 2002:a2e:b6cf:: with SMTP id m15mr28214ljo.168.1587578514909;
- Wed, 22 Apr 2020 11:01:54 -0700 (PDT)
+        bh=OxPQfRGdb/9tZKOeYvx9nsO533AAnUsM72YkEAHTBCI=;
+        b=K/c24gQxEXMjkS7ZWrwsRvRj8K4SRW/oJcNojLGmWmoH016Jg0/oW5I/znDIQvuMy7
+         ZdwW+/3rfQTkVuoMB7dU4p1EYuPsStDf9gNhb7qsGV+YWq5fAlE6D2t3ppNwAejse6Sx
+         haB4wuQvr1xQ7T/3qbBXL7ba546vl1ADnuJIE5DMP5oBApkGoWPRG6V0tgcyZ41QCq+/
+         43L5q8amUhbV7+tB0TCXyaYw/QyXYnQoL8y39jH9DBjDzHcq4yN21TsEJ5TJl+67leYU
+         q6u3wsTIXf8KOaeOPMGQz9VF/BUtij5mLrWQeKLhiopo31AawF13Ryl40D6csdex68rc
+         EBYw==
+X-Gm-Message-State: AGi0PuZYK0Koj3gR36Iwoeg5Ox+n/8q2K8QMRMf2zyP6vtso1IQqGo/H
+        aU/9qpAaDbekJmCy0iP7ari7vDZlXHAvMXyfjl9ZIQ==
+X-Google-Smtp-Source: APiQypKntPoBdVTS/8WRMaXpnY/jdYe0MPd3EYScD5Cm/9aT/zP0pcWdgKz8DqlIB8lwr7cYH+N/ASnro4D3GssV3l8=
+X-Received: by 2002:a05:651c:1209:: with SMTP id i9mr21615lja.250.1587578553958;
+ Wed, 22 Apr 2020 11:02:33 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200420221126.341272-1-hannes@cmpxchg.org> <20200420221126.341272-3-hannes@cmpxchg.org>
- <CALvZod4gFC1TDo8dtdaeQKj_ZEoOnQvRnw_dZANH7qQYCmnnGA@mail.gmail.com> <20200422174229.GD362484@cmpxchg.org>
-In-Reply-To: <20200422174229.GD362484@cmpxchg.org>
+In-Reply-To: <20200420221126.341272-3-hannes@cmpxchg.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 22 Apr 2020 11:01:42 -0700
-Message-ID: <CALvZod63SORMunUa5nqNqLoKuz--tvcURs-sqHD0ds0uaM7cDg@mail.gmail.com>
+Date:   Wed, 22 Apr 2020 11:02:22 -0700
+Message-ID: <CALvZod5XC+v_ThY=QyiXu9uWgkuc6x63jwUjW9mdWueoPh3LBw@mail.gmail.com>
 Subject: Re: [PATCH 02/18] mm: memcontrol: fix theoretical race in charge moving
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Joonsoo Kim <js1304@gmail.com>,
@@ -67,42 +66,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 10:42 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Mon, Apr 20, 2020 at 3:11 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> On Wed, Apr 22, 2020 at 09:51:20AM -0700, Shakeel Butt wrote:
-> > On Mon, Apr 20, 2020 at 3:11 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > > @@ -5426,15 +5420,23 @@ static int mem_cgroup_move_account(struct page *page,
-> > >         }
-> > >
-> > >         /*
-> > > +        * All state has been migrated, let's switch to the new memcg.
-> > > +        *
-> > >          * It is safe to change page->mem_cgroup here because the page
-> > > -        * is referenced, charged, and isolated - we can't race with
-> > > -        * uncharging, charging, migration, or LRU putback.
-> > > +        * is referenced, charged, isolated, and locked: we can't race
-> > > +        * with (un)charging, migration, LRU putback, or anything else
-> > > +        * that would rely on a stable page->mem_cgroup.
-> > > +        *
-> > > +        * Note that lock_page_memcg is a memcg lock, not a page lock,
-> > > +        * to save space. As soon as we switch page->mem_cgroup to a
-> > > +        * new memcg that isn't locked, the above state can change
-> > > +        * concurrently again. Make sure we're truly done with it.
-> > >          */
-> > > +       smp_mb();
-> >
-> > You said theoretical race in the subject but the above comment
-> > convinced me that smp_mb() is required. So, why is the race still
-> > theoretical?
+> The move_lock is a per-memcg lock, but the VM accounting code that
+> needs to acquire it comes from the page and follows page->mem_cgroup
+> under RCU protection. That means that the page becomes unlocked not
+> when we drop the move_lock, but when we update page->mem_cgroup. And
+> that assignment doesn't imply any memory ordering. If that pointer
+> write gets reordered against the reads of the page state -
+> page_mapped, PageDirty etc. the state may change while we rely on it
+> being stable and we can end up corrupting the counters.
 >
-> Sorry about the confusion.
+> Place an SMP memory barrier to make sure we're done with all page
+> state by the time the new page->mem_cgroup becomes visible.
 >
-> I said theoretical because I spotted it while thinking about the
-> code. I'm not aware of any real users that suffered the consequences
-> of this race condition. But they could exist in theory :-)
+> Also replace the open-coded move_lock with a lock_page_memcg() to make
+> it more obvious what we're serializing against.
 >
-> I think it's a real bug that needs fixing.
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Thanks for the clarification. I would suggest removing "theoretical"
-from the subject as it undermines that a real bug is fixed by the
-patch.
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
