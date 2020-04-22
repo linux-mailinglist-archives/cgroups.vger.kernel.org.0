@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 657051B37AC
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 08:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 998831B37B0
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2020 08:42:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726454AbgDVGmQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Apr 2020 02:42:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57720 "EHLO
+        id S1726577AbgDVGmk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Apr 2020 02:42:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57782 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726110AbgDVGmP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 02:42:15 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9140FC03C1A6;
-        Tue, 21 Apr 2020 23:42:15 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id d184so594001pfd.4;
-        Tue, 21 Apr 2020 23:42:15 -0700 (PDT)
+        with ESMTP id S1726077AbgDVGmk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Apr 2020 02:42:40 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2075BC03C1A6;
+        Tue, 21 Apr 2020 23:42:40 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w20so557984pll.4;
+        Tue, 21 Apr 2020 23:42:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=Drc+56Q36eDpJcbMrcUJkfyYMbc4NMUbpx2Oj4m1kIA=;
-        b=CUOUDClkinZimUWFeCOxuqvCFZL8oJ4l7+brBtc7xtSfkuDi8UsLA+VHKR4YMwKO8p
-         nTywzbCpVQ7TjgRm20khS6C+SNQCruZOWGnqOuj/a8tv10tKQj7t1VUxfkSnU22gi/zI
-         fR64Hpy+yb2ajCoVr8dBtKM84OyeQfsSxka9Uq8WLNa5NNMxZxDZ0n9bqHMHodAr6U5L
-         95QzwG7l8owtJHvhyDE7oZTAgtceuXBsps0jjvvRYx1zKLY4P7ExdGyVtdz3CplwRa8z
-         L5J0PLgzizfm6wou7IZP9dqjV8T114XHK+SjsE4lXC35XKT+LMJ4J8u035kjiJ69yIEJ
-         l6dg==
+        bh=S4cmeJAIuJsYF1bOsD5QwAHBqMKC5f7P2yKTwX1eing=;
+        b=GR52RWOyldaSx357kZpZdrxC4uXtpKfxWUcbhWtyoaAp4JIHvfVF5VJQGQwTjuY4GJ
+         u+8Qyb9dA5RWz+ubh4UOpwTgoATfhFJmsw5LqmO+ImgXEYmEHFrJMQyuVC9iJ0/ubdq2
+         fO0XZ6N/s1AnByjQyF33SGwwJPI7z96k4FpKJAHW9ZVME99CzXeXftQkDnzmzmmAHbbY
+         iPVZrYtO1srOpH4Xn/Kqn4S1TfKxuCQIT/dKY0BDFM9jy4aAW8C2y0/Eqo5uhVVQ9VPE
+         9cPEQKyDpRNvgzu3oGG5oJ7l0/KXEOdFpyoTC+hvoKVdiLiZxAcZVA2T0DLEeRljdTHk
+         okPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Drc+56Q36eDpJcbMrcUJkfyYMbc4NMUbpx2Oj4m1kIA=;
-        b=jJfotcH2zD9of6+u5AYdfWC/ZnuHqRoPhxkJNM7/1RJdMVpMv9fBYkFQH6wlTmKu09
-         dJOFG7bYdyjZjnGAy5LHZoVh1q8JGMDbAoE78RFvNKo08c5IkTM40OB4fAEUdelzDMkf
-         7wslSyiMNLZGLtANfrdDxI/p26FLb298K/2Jgv4c11c77RYyfX/a5v3xCL2pqrPC/fn2
-         mcd0TrypUJKyKB/M2r2RzVKl277hfXrdqYty9lZ4NvXYtvXUh93IDUv2muUt6Cy9oGIE
-         f5dvVC4Wg18CAwmDa9vxPcMv0G26zo+z8SltoksNB7yV9f4FV1Pl66XBZoKEoMUHoDmj
-         1mxw==
-X-Gm-Message-State: AGi0PuYDucSREtbuu//eXpuBsuGCrkbsi13lnQGL6PWpboeJ8STG5EaN
-        OGW3eDZtpS9NyY6rDfEf6KI=
-X-Google-Smtp-Source: APiQypLtEtPtZdsmpKWeCmbaul3a9tV3vD6iMVWju5gPx0XndvMSFMVnpRQXvLt195I+J2jI7ab8tg==
-X-Received: by 2002:a65:4908:: with SMTP id p8mr24814442pgs.413.1587537735137;
-        Tue, 21 Apr 2020 23:42:15 -0700 (PDT)
+        bh=S4cmeJAIuJsYF1bOsD5QwAHBqMKC5f7P2yKTwX1eing=;
+        b=VKTwkAAAg2/Bze/lpkcI34IssBgimLzVTinRNzdBD637XGDIq3YyO4Y+5ftdNp2rt5
+         lP0gSzZK/XWvky/5odjEhNfqou/fczBNYXo89nXEcXrQtsib/TPEBiyUIkWPrTO5jZgL
+         uGUVuI/mraztKGp3zOSPMyX0LF6qo2RKidQlYJvnbVJWS1If5uSBNjWI5xDr+vl9INJg
+         FZ+vmuPP1sUHaXM7cUUK6Uf11Xt/km8wjOGj1ltq6n3qam1IPljboB+46Rf+GXFAdO5A
+         fWMYQ7YJSeZAtiMXBKfmVSLHfPHV+5Fam0AZm/g0iv5Gvovjw62fuyliQsbjhCyFHPTZ
+         kvig==
+X-Gm-Message-State: AGi0PubUsb1h2pdwZcJV+fzzkadAOR/HFtpWsipQRCDuW5XJXpvJvFTP
+        n6obXfvMxkP5vFYNZrh3Dmc=
+X-Google-Smtp-Source: APiQypJv/sDcb8i798JjJTM4g48OpHyrU1KCVVws9P1AhaEYCMG4dLSkTwe4v887cgshTzrpTowVcQ==
+X-Received: by 2002:a17:90a:a78f:: with SMTP id f15mr10323985pjq.120.1587537759679;
+        Tue, 21 Apr 2020 23:42:39 -0700 (PDT)
 Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id k10sm4467360pfa.163.2020.04.21.23.42.12
+        by smtp.gmail.com with ESMTPSA id j13sm4378632pje.1.2020.04.21.23.42.36
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 21 Apr 2020 23:42:14 -0700 (PDT)
-Date:   Wed, 22 Apr 2020 15:42:09 +0900
+        Tue, 21 Apr 2020 23:42:39 -0700 (PDT)
+Date:   Wed, 22 Apr 2020 15:42:34 +0900
 From:   Joonsoo Kim <js1304@gmail.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -58,29 +58,35 @@ Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: Re: [PATCH 08/18] mm: memcontrol: prepare cgroup vmstat
- infrastructure for native anon counters
-Message-ID: <20200422064208.GH6780@js1304-desktop>
+Subject: Re: [PATCH 09/18] mm: memcontrol: switch to native NR_FILE_PAGES and
+ NR_SHMEM counters
+Message-ID: <20200422064233.GI6780@js1304-desktop>
 References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-9-hannes@cmpxchg.org>
+ <20200420221126.341272-10-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200420221126.341272-9-hannes@cmpxchg.org>
+In-Reply-To: <20200420221126.341272-10-hannes@cmpxchg.org>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 06:11:16PM -0400, Johannes Weiner wrote:
-> Anonymous compound pages can be mapped by ptes, which means that if we
-> want to track NR_MAPPED_ANON, NR_ANON_THPS on a per-cgroup basis, we
-> have to be prepared to see tail pages in our accounting functions.
+On Mon, Apr 20, 2020 at 06:11:17PM -0400, Johannes Weiner wrote:
+> Memcg maintains private MEMCG_CACHE and NR_SHMEM counters. This
+> divergence from the generic VM accounting means unnecessary code
+> overhead, and creates a dependency for memcg that page->mapping is set
+> up at the time of charging, so that page types can be told apart.
 > 
-> Make mod_lruvec_page_state() and lock_page_memcg() deal with tail
-> pages correctly, namely by redirecting to the head page which has the
-> page->mem_cgroup set up.
+> Convert the generic accounting sites to mod_lruvec_page_state and
+> friends to maintain the per-cgroup vmstat counters of NR_FILE_PAGES
+> and NR_SHMEM. The page is already locked in these places, so
+> page->mem_cgroup is stable; we only need minimal tweaks of two
+> mem_cgroup_migrate() calls to ensure it's set up in time.
+> 
+> Then replace MEMCG_CACHE with NR_FILE_PAGES and delete the private
+> NR_SHMEM accounting sites.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
