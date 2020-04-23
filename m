@@ -2,138 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DEEC1B5432
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2020 07:27:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B8D01B58DE
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2020 12:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726742AbgDWF1J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Apr 2020 01:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43974 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726122AbgDWF1I (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Apr 2020 01:27:08 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8E24AC03C1AB;
-        Wed, 22 Apr 2020 22:27:07 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id f8so1910672plt.2;
-        Wed, 22 Apr 2020 22:27:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5dRfGuiAmG9ezbEhwEm/4CtR44lsDucqUbK7PXbEl8Y=;
-        b=F5M1LLmsBpNN0fDAzQu31LTtIIQODx3f7aCxVlXmDLvGsnGmub9LLb8Jh86o59C0II
-         1P/8Jeuqhoov7oo0U654aVLXuP28nJ6gPHuf3fMG6chzvgRs5/yMdLNEs3Q1nRU0vhEt
-         1XPDILZXi9XIBnRazyV+VsjItkUFsIMht/cfD+/SDZV/g6ZfmHj5tYmtPtcwLVu/IQqU
-         2l6NZRxutaxvloiKPPxGTgOCPUnuioixocy10pqC4bZJxSPswExXdrlibTXIPM/ugqPq
-         i7OoSRwdf9eeBkXujPpqR4Qz9HIOcFTM94ncbDh3tDNUFSTVs6ytMzZ3M36vVdOXndv9
-         ww+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5dRfGuiAmG9ezbEhwEm/4CtR44lsDucqUbK7PXbEl8Y=;
-        b=AmFdId67i8VZ3bZRXDeDvz96da8qFnzJAC0iLo97Iw6ONXtfyq4a/H0GlleJlLOQBt
-         TN5uMmywMtf/Iqkif/SdWaybkQOyEZpi0UaulxDoMy0yBMuwXa2IC/tBkwHlousglDQn
-         vBWp/EGDzgS9UBFua54kO/m/8KfwYPgXDpOxC42WR+p81f4jYJQxVPghq8utg3IfG4Ym
-         jJKLrZ71mHzyhKIquxf+YBKaFjcUnBG8rBk213a5Ot4holHscQEjfmtGmLSd1O0udZuP
-         CgBet/lcD0pNCg73KpmH4J/3GHDdtulyQChC1gG0Dj2lytHkoC+SCuzkP6WTSAWdbdUt
-         5nXw==
-X-Gm-Message-State: AGi0PuZgHE8plJSxag6xb101g91xCHUCqEPloWPJ9cnaGm2Xt4Le9C6N
-        lQbusrunbKVuuOIk96fj204=
-X-Google-Smtp-Source: APiQypKZ1vg3B7CBVKCjT6RRrpVuaJ6pmpVjHiUxcDrwGFDDC+LfEX+3iekDoy33KuMefBsyLY965Q==
-X-Received: by 2002:a17:90a:9a89:: with SMTP id e9mr2548628pjp.108.1587619627027;
-        Wed, 22 Apr 2020 22:27:07 -0700 (PDT)
-Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id r4sm953199pgi.6.2020.04.22.22.27.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 22 Apr 2020 22:27:06 -0700 (PDT)
-Date:   Thu, 23 Apr 2020 14:27:01 +0900
-From:   Joonsoo Kim <js1304@gmail.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 10/18] mm: memcontrol: switch to native NR_ANON_MAPPED
- counter
-Message-ID: <20200423052700.GB12538@js1304-desktop>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-11-hannes@cmpxchg.org>
- <20200422065151.GJ6780@js1304-desktop>
- <20200422122818.GB358439@cmpxchg.org>
+        id S1726951AbgDWKOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Apr 2020 06:14:23 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33089 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726470AbgDWKOX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Apr 2020 06:14:23 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jRYs8-00021O-Rb; Thu, 23 Apr 2020 10:14:20 +0000
+Date:   Thu, 23 Apr 2020 12:14:20 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
+Cc:     Christian Brauner <christian@brauner.io>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        linux-man <linux-man@vger.kernel.org>,
+        Oleg Nesterov <oleg@redhat.com>, Tejun Heo <tj@kernel.org>
+Subject: Re: [PATCH] clone.2: Document CLONE_INTO_CGROUP
+Message-ID: <20200423101420.udkmlhnfg57lsshi@wittgenstein>
+References: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
+ <20200410104132.294639-1-christian@brauner.io>
+ <b7550fcd-ba12-e64a-3228-e6668b31a8a7@gmail.com>
+ <CAKgNAkhQr+sKGAu+KcxPEsuwG3kjQOyzVW7E1yM9cMtSZrhW9A@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200422122818.GB358439@cmpxchg.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAKgNAkhQr+sKGAu+KcxPEsuwG3kjQOyzVW7E1yM9cMtSZrhW9A@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 08:28:18AM -0400, Johannes Weiner wrote:
-> Hello Joonsoo,
+On Tue, Apr 21, 2020 at 04:30:46PM +0200, Michael Kerrisk (man-pages) wrote:
+> Hi Christian,
 > 
-> On Wed, Apr 22, 2020 at 03:51:52PM +0900, Joonsoo Kim wrote:
-> > On Mon, Apr 20, 2020 at 06:11:18PM -0400, Johannes Weiner wrote:
-> > > @@ -3768,7 +3761,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
-> > >  
-> > >  static const unsigned int memcg1_stats[] = {
-> > >  	NR_FILE_PAGES,
-> > > -	MEMCG_RSS,
-> > > +	NR_ANON_MAPPED,
-> > >  	MEMCG_RSS_HUGE,
-> > >  	NR_SHMEM,
-> > >  	NR_FILE_MAPPED,
-> > > @@ -5395,7 +5388,12 @@ static int mem_cgroup_move_account(struct page *page,
-> > >  
-> > >  	lock_page_memcg(page);
-> > >  
-> > > -	if (!PageAnon(page)) {
-> > > +	if (PageAnon(page)) {
-> > > +		if (page_mapped(page)) {
-> > 
-> > This page_mapped() check is newly inserted. Could you elaborate more
-> > on why mem_cgroup_charge_statistics() doesn't need this check?
-> 
-> MEMCG_RSS extended from when the page was charged until it was
-> uncharged, but NR_ANON_MAPPED is only counted while the page is really
-> mapped into page tables. That starts shortly after we charge and ends
-> shortly before we uncharge, so pages could move between cgroups before
-> or after they are mapped, while they aren't counted in NR_ANON_MAPPED.
-> 
-> So to know that the page is counted, charge_statistics() only needed
-> to know that the page is charged and Anon; move_account() also needs
-> to know that the page is mapped.
+> Ping!
 
-Got it!
+Will likely take a few days until I can get around to prepare a second
+version. Sorry for the delay!
 
-> 
-> > > @@ -1181,7 +1187,7 @@ void page_add_new_anon_rmap(struct page *page,
-> > >  		/* increment count (starts at -1) */
-> > >  		atomic_set(&page->_mapcount, 0);
-> > >  	}
-> > > -	__mod_node_page_state(page_pgdat(page), NR_ANON_MAPPED, nr);
-> > > +	__mod_lruvec_page_state(page, NR_ANON_MAPPED, nr);
-> > >  	__page_set_anon_rmap(page, vma, address, 1);
-> > >  }
-> > 
-> > memcg isn't setup yet and accounting isn't applied to proper memcg.
-> > Maybe, it would be applied to root memcg. With this change, we don't
-> > need the mapping to commit the charge so switching the order of
-> > page_add_new_anon_rmap() and mem_cgroup_commit_charge() will solve the
-> > issue.
-> 
-> Good catch, it's that dreaded circular dependency. It's fixed two
-> patches down when I charge anon pages earlier as well. But I'll change
-> the rmap<->commit order in this patch to avoid the temporary bug.
-
-Okay.
-
-> Thanks for your thorough review!
-
-Thanks.
+Christian
