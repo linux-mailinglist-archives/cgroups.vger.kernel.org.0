@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46A161B6A52
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2020 02:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4E61B6A54
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2020 02:31:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728342AbgDXAaj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 23 Apr 2020 20:30:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
+        id S1728240AbgDXAa7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 23 Apr 2020 20:30:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728244AbgDXAai (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Apr 2020 20:30:38 -0400
+        with ESMTP id S1728151AbgDXAa6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 23 Apr 2020 20:30:58 -0400
 Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA1F3C09B042;
-        Thu, 23 Apr 2020 17:30:38 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id hi11so3241098pjb.3;
-        Thu, 23 Apr 2020 17:30:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E406C09B042;
+        Thu, 23 Apr 2020 17:30:58 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id y6so3242112pjc.4;
+        Thu, 23 Apr 2020 17:30:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to:user-agent;
-        bh=CI/1B5Cidn96PsLF1+MV6uHHJxnOtG8IuRZiucSwLqg=;
-        b=u0+t3gSFNWhK/2bnK/QRc6HtUv83cARoTNpUd4TiJNOcMJz4I9cfqiF0ls+ngsJQFc
-         k0oU8JEm6gqxKnX66U5j3OzqbI9sPdzd1V4yDvG3PsPwCzgJcB4FRDncbQJWVPbbvmVu
-         /mhMZlY9Vt5ukryupUkZ32AsEqym9dDnewKDOf69r/BHg/V5wmMQrcntbqa4JbfvMEPl
-         qVfNo2lKVdjaQU2ihOQ+DC2MYz/U/dhqorIAZSE3n0IqKLAHqPLT86RoUOixMdq2UleY
-         +fAFeLfN7qDUWZqIaVIjBMPrOjRYx0ySqgmCxLkApI7G+ttGIXtuo3aiJmwAoE/wfX1Q
-         X1Gw==
+        bh=L5XArOSUZwIEnxR3eCf7lGVK2eb+Bi3jkepM1WeX9QE=;
+        b=YFPVrqX/oo9QxWP7xGzlaGJ9raYM+zVB0puskfyk362PScv39Lh67FW0q+PCC8NpeG
+         pbW8NfRzGNkrdsK4jdMh/G1k2wT9sziF6YTxoVNJ/wmwmKVvOXPga05yfPr+cbBNtnDI
+         QNRMbCkJyu5bU0tF+Gz2dR6hbULu4Z4ktTjvQUesjqAcBKSiBdYQGFv7OX83/2QS2vP6
+         70MjjYA9OMDctxic2eG+QCQV3QVT8WcivhAvczc5+vH6amZtwibpZCabA//sCP+ITktv
+         UJ6LOoeKeYB83s85iZxIxbmwLrOySFnUeMghkxwak+uK1NHrs8JDMAl9sHfTNN/+x9cj
+         HC4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=CI/1B5Cidn96PsLF1+MV6uHHJxnOtG8IuRZiucSwLqg=;
-        b=qCwQOx0HG++vZtrrAwGqo1o+eyz+hBFqwYS6DxPlmrzNZ/K1DE01a4EIWlDvfrvCya
-         qKpCNT7Kr1UqAJ5i4FFgvBuSuUAzhKQfCUhsv6jblRmoasLau6GbAk74NK5UhwLPuwJk
-         Wgh3KA5WF2cX/g+vyP9RLhsUuk7JshpK1gqnvsMGo8O9UZV4Oepv1dMR8EZjKsKVArAO
-         nYHow35MTUuKjrIW9n5z+gsKW6KCaHZ0uU7QR2FLu1c+Owp2N+N6sWB5pgakhhmrwJcV
-         XHwm8VVTCGHLzvjl+wbHeZa8ojFGMtJu46pWFUOkCZGTi1injpLws9KIrPqBpuosgkYN
-         56yA==
-X-Gm-Message-State: AGi0PuZnqhBZvp24BYJc7AQU3BfdBKZcfOqHBUD13yBRGTfQCDmasz37
-        c8Xp0gG/9Edt2Hf3v4ghQtA=
-X-Google-Smtp-Source: APiQypI4kk9tAuj7+CPHMQWiRpXqr0HI1QTu0E3mURZ4g1nVG23sqAnrDVS3MlRsbHSWjli8QhETTw==
-X-Received: by 2002:a17:90a:cc9:: with SMTP id 9mr3613012pjt.16.1587688238401;
-        Thu, 23 Apr 2020 17:30:38 -0700 (PDT)
+        bh=L5XArOSUZwIEnxR3eCf7lGVK2eb+Bi3jkepM1WeX9QE=;
+        b=ePZfndb0nhlhYgBGhnrSlhzmDxKcM18W1gR6YHCoG7vVNta0UBbXnpsDiV4qLB0NlK
+         KFsi/o2/6PNty1Ou99T+sojlWZPe5+pc4YVxy2asABDhPnYKbMX6M+qBqgjSxXGftW9g
+         AIrGwajTGDScj2mpOSff2Z36Nza4di8spiTaEyqEJxZAiVFttG5DKOzTWyLXRgFW1ukj
+         +gVgBQuU5IhnzXbJb7hwBPHT9EhRRhozD+jZNmXW1IZwIY+4Q21jEEiV5fADOeQTP7jD
+         EiwIjtJd1MFv8xgvEFovwIQH6H4JZF5awOhWXBzt8ir51/GQRUkgDSZ9+hU5UusOCC7/
+         QTQQ==
+X-Gm-Message-State: AGi0PubGhy6THhF7kQI5AROrG2I0W5CzHhhcM+WeK96rKDj1QKNSxlMS
+        2D8/fgNOIJbh2A0J4LBryQI=
+X-Google-Smtp-Source: APiQypI3JWqoZTZWFf/ZQssaQxK4U5EkPUiDF5YTIb5ST9FWlo/Kw86wh7/VtzgytUMI/y6cnR53Eg==
+X-Received: by 2002:a17:902:768b:: with SMTP id m11mr2702867pll.82.1587688258138;
+        Thu, 23 Apr 2020 17:30:58 -0700 (PDT)
 Received: from js1304-desktop ([114.206.198.176])
-        by smtp.gmail.com with ESMTPSA id x18sm3880817pfi.22.2020.04.23.17.30.35
+        by smtp.gmail.com with ESMTPSA id j26sm3816474pfr.215.2020.04.23.17.30.55
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 23 Apr 2020 17:30:37 -0700 (PDT)
-Date:   Fri, 24 Apr 2020 09:30:32 +0900
+        Thu, 23 Apr 2020 17:30:57 -0700 (PDT)
+Date:   Fri, 24 Apr 2020 09:30:52 +0900
 From:   Joonsoo Kim <js1304@gmail.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -58,33 +58,45 @@ Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: Re: [PATCH 14/18] mm: memcontrol: prepare swap controller setup for
- integration
-Message-ID: <20200424003031.GD13929@js1304-desktop>
+Subject: Re: [PATCH 15/18] mm: memcontrol: make swap tracking an integral
+ part of memory control
+Message-ID: <20200424003051.GE13929@js1304-desktop>
 References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-15-hannes@cmpxchg.org>
+ <20200420221126.341272-16-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200420221126.341272-15-hannes@cmpxchg.org>
+In-Reply-To: <20200420221126.341272-16-hannes@cmpxchg.org>
 User-Agent: Mutt/1.5.24 (2015-08-30)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 20, 2020 at 06:11:22PM -0400, Johannes Weiner wrote:
-> A few cleanups to streamline the swap controller setup:
+On Mon, Apr 20, 2020 at 06:11:23PM -0400, Johannes Weiner wrote:
+> Without swap page tracking, users that are otherwise memory controlled
+> can easily escape their containment and allocate significant amounts
+> of memory that they're not being charged for. That's because swap does
+> readahead, but without the cgroup records of who owned the page at
+> swapout, readahead pages don't get charged until somebody actually
+> faults them into their page table and we can identify an owner task.
+> This can be maliciously exploited with MADV_WILLNEED, which triggers
+> arbitrary readahead allocations without charging the pages.
 > 
-> - Replace the do_swap_account flag with cgroup_memory_noswap. This
->   brings it in line with other functionality that is usually available
->   unless explicitly opted out of - nosocket, nokmem.
+> Make swap swap page tracking an integral part of memcg and remove the
+> Kconfig options. In the first place, it was only made configurable to
+> allow users to save some memory. But the overhead of tracking cgroup
+> ownership per swap page is minimal - 2 byte per page, or 512k per 1G
+> of swap, or 0.04%. Saving that at the expense of broken containment
+> semantics is not something we should present as a coequal option.
 > 
-> - Remove the really_do_swap_account flag that stores the boot option
->   and is later used to switch the do_swap_account. It's not clear why
->   this indirection is/was necessary. Use do_swap_account directly.
+> The swapaccount=0 boot option will continue to exist, and it will
+> eliminate the page_counter overhead and hide the swap control files,
+> but it won't disable swap slot ownership tracking.
 > 
-> - Minor coding style polishing
+> This patch makes sure we always have the cgroup records at swapin
+> time; the next patch will fix the actual bug by charging readahead
+> swap pages at swapin time rather than at fault time.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
