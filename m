@@ -2,156 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD28A1BAB20
-	for <lists+cgroups@lfdr.de>; Mon, 27 Apr 2020 19:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97A41BAF28
+	for <lists+cgroups@lfdr.de>; Mon, 27 Apr 2020 22:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726473AbgD0RYo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Apr 2020 13:24:44 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27810 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726315AbgD0RYm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 13:24:42 -0400
-Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03RHOL0Z008492;
-        Mon, 27 Apr 2020 10:24:29 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type :
- content-transfer-encoding : in-reply-to : mime-version; s=facebook;
- bh=GZ9GjamGT+A0A+SJhZXVkvpA+FGAIwEm1X+n/+7paQ0=;
- b=TCciwyKFyZMzT4+Eq4sazZg8gyQ+9vwxHjYTKSzWp4AmQUy7E9/nm/GALnbEUk10MmKZ
- GvDywdOra8XVimWVNdNc4arPAi9CgN3BX79umvH7/5hSOGWTR4PJGIkeXMdgPKyc6Avo
- 61gQBm4NnfZ4gWMKhI+vERI8WGP7doc12xw= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 30mjqn55mm-9
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 27 Apr 2020 10:24:29 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Mon, 27 Apr 2020 10:24:27 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=TfTYXm2w4Qa5l/RRJVHaqy4uldRyJ44VYsZUwoj0s6OMn1H4V5oC0PTzJ79L07byBeSoRAW6sNx+KwEg3ZynqUm7+pte4VcETm7th9Wn92Qqb4zqWZpN7CPOLYDA5XYGZYH1jnvlYAtZRx3AjR72kdZcEs1f8P5/zZeKIlrwYMJfp4AxyP7gvrO9SRyykOrcCrs7ZV3eWugVJ9ajXqXhX6y8OprDEigjEJwQL9XoSf/IuVNevkPlp7JjIrz8BQtI+TC74fe8I/SKujV1qMKYeeqRQKMRNJ19Za3Mag66vZ44eVWYLjeaiqXvNXNscrY9hexdkN5yNiKYtjNF+oZONg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2gIlpWB4No8dxSMwkkUhV0bsKH8iSUF+NgmE3bfR/uY=;
- b=NoHXRxm0Gn4sZBSEXoH4pQJLoKO4P014utNMRQb14SpwHPWPRhCDWwwCAaK432xOAzeYhoudgBu1SK7UPi0kbAKAxgu8LqB9XaNpLL8ew1j79ruT4igji6OgDKjo6LIVe1mz9YKqwiw1agSJIqYm5CpP1tqQXXRwoCyqDzsFi9mlkjZbNl2lDn+I21bNfckUQiWDF6J2nRqRkroMapPDrVCNYs+HFF3WXpiRGHVNfIBhbFRs6JOYeyEs0iVmrNjuoNuvPCaRu/ufqYvZLS2N6mV/6bOTia1esbyKPmHBe7ARGjQM3ZNnly/QZEFbudh4O2XlAedYTHDOJnCF+oEiWQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2gIlpWB4No8dxSMwkkUhV0bsKH8iSUF+NgmE3bfR/uY=;
- b=TemQQlP10HZATr6CSH/csr4rxTb9xPx80gTHSM6FWB1Grtk7FFhUa1mmp8+ECPjT79FBgzwjxL1AVpQWnTZ3875QKF0z/wCAFyDLo8aO1yMaNqX63ZcGHlj4s2FqYD1OIzIhLjwMnkZrEVEnuo5V93enMWp4ThxfPl8JiyB5ij8=
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2872.namprd15.prod.outlook.com (2603:10b6:a03:b5::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13; Mon, 27 Apr
- 2020 17:24:26 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.023; Mon, 27 Apr 2020
- 17:24:26 +0000
-Date:   Mon, 27 Apr 2020 10:24:21 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Yang Yingliang <yangyingliang@huawei.com>, <tj@kernel.org>,
-        <lizefan@huawei.com>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <wangkefeng.wang@huawei.com>,
-        <linux-mm@kvack.org>, <guro@cmpxchg.org>
-Subject: Re: memleak in cgroup
-Message-ID: <20200427172421.GA122591@carbon.DHCP.thefacebook.com>
-References: <6e4d5208-ba26-93ed-c600-4776fc620456@huawei.com>
- <34dfdb52-6efd-7b11-07c8-9461a13b3aa4@huawei.com>
- <20200427171304.GC29022@cmpxchg.org>
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200427171304.GC29022@cmpxchg.org>
-X-ClientProxiedBy: MWHPR19CA0075.namprd19.prod.outlook.com
- (2603:10b6:320:1f::13) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1726409AbgD0URq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Apr 2020 16:17:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726285AbgD0URq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 16:17:46 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9F8FC0A3BF5
+        for <cgroups@vger.kernel.org>; Mon, 27 Apr 2020 13:17:45 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id j1so22099096wrt.1
+        for <cgroups@vger.kernel.org>; Mon, 27 Apr 2020 13:17:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=M33engiEAp9GtymvpxKX5lndqUY+8YDcH7kgkTq+ouw=;
+        b=rBr9YJyOPs1+63XL3xVSuiHlBrVJPB1FBu/je7eASoyAaJePJ1ea2vNzQTMyfnc4wD
+         1lYWHXEfXKpgGavrIODRBp/ZGR0nzbvOQef20TBeZ9jFAnbNj1riUm4K79NCAaoWG14e
+         Xp3KW2d8OmrY9C/9YW5FX/UcBiIWTjQRX6pehw4ojBBJ4whUvpnTxwqpOpQDOpnggtPC
+         UilMurnjDq7AFTyfJ+Mdn3SYmsMOiZQj2QjHolaT7UKUL6n/iFCF+Sk+bkrf/Lj1ivXM
+         kOLga8zcKqhzDc8r+fpcZ9AU4YL1GF7p6e5WLd1AaPnesNiq4pM9/Dgco+xY/WBIHTDb
+         53Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=M33engiEAp9GtymvpxKX5lndqUY+8YDcH7kgkTq+ouw=;
+        b=HShRNuL73Nh3QgPuY4rSBZ7Wbd13ryWNSSEA4U6iIHCgqoF+Z0bPjDOKuGI5wEJB6v
+         KzdzaYjzW2pUaOtUArb2sHgTYEAqM8lOKDJL+Wv0+fFLR6tpcsyr4OyQnPOoiMLH5o3g
+         ZA02DdvIsEcK2GmwxvL/gVL/YSdDUSlhfmYiw9oY8kWrMHKy69xb6xIGiZXrcBlalDGh
+         Te+ksRx0eIoTEck7NXdQrnwiMstpTyYEZ7glgtAexBosv3g6QGa+Z0LJEMWNvWVH5tF8
+         3jxzecCCKdu6HoeXjTOiq6PlHJMcUmlbm8Ch5/2mdYmUACSifgrnUDVBh/K7D54Cne2D
+         Tf2w==
+X-Gm-Message-State: AGi0PubLfzoU4+SwN+2sBIbe6iy7D4/Y69vWcPf7O45wc3RaM25bFN2E
+        sydneXtPUqEAYo9WuADYl9DZE59GUezwQv7OS5E=
+X-Google-Smtp-Source: APiQypITyGjfIxbcIZnfb+1cGWTMKYf4riBGKCyJQTsdg6ehdV71hHNIrlX+XWTAeYIYfcdTpD0hqNaEYP/Aa8tgdLc=
+X-Received: by 2002:a5d:65cb:: with SMTP id e11mr28532942wrw.402.1588018664457;
+ Mon, 27 Apr 2020 13:17:44 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:90e0) by MWHPR19CA0075.namprd19.prod.outlook.com (2603:10b6:320:1f::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2937.13 via Frontend Transport; Mon, 27 Apr 2020 17:24:25 +0000
-X-Originating-IP: [2620:10d:c090:400::5:90e0]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 688fbeef-d988-48fe-52cc-08d7eacfd5a1
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2872:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB28725F0FD9CE501B024C1129BEAF0@BYAPR15MB2872.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-Forefront-PRVS: 0386B406AA
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(346002)(39860400002)(366004)(396003)(376002)(136003)(66946007)(478600001)(86362001)(66556008)(6916009)(186003)(16526019)(5660300002)(6506007)(316002)(53546011)(66476007)(6666004)(3480700007)(8676002)(52116002)(7696005)(55016002)(2906002)(7116003)(33656002)(1076003)(4326008)(8936002)(9686003)(81156014);DIR:OUT;SFP:1102;
-Received-SPF: None (protection.outlook.com: fb.com does not designate
- permitted sender hosts)
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: H9ZKxph5U/2XcW7OtxoPshwE3wHm6bBBxdk1xA205rtcT+HKkjIpFjbkhR2DgDF7Oe4YqBI7SOgAR1atXo1htEkGzf6e1bhjanYnH5kMiIh5I+wAq4bGOIjVho+W24VdjYMDnb8+vTBT5jnKtNc7OGt7AX5Ni8QXVhc5n/CZq01s9KYvRT/M3lFMbJbjaZUgDS0kdmzRmtar+A4JK0TZSBmIAOG358iOOMHJ+lchWWlqSzcURlWOJfcSxKpQ1QTaMvtiPgQkX8MWAjpodRa1EE+SmpUCpuJ2WDh/vLZKuEf+xnvG4HSm6bbEZXhF1mlqHLkMi3Gv1MDYxkOV2c25uI8dhADBHLO0tXq/fo3Wld/hfw9DnhJaE3SHsD4tiYeq8MypyGrMVOAL/IBdIUI+fybWkuM7XW34/1DG0U3op4I8BiV2loRd86qjtQ5PQBly
-X-MS-Exchange-AntiSpam-MessageData: 3Q9ZDGx1sf78FyeYrbTgz1unG1Xf8ZGp4dndCTVsb83SXbKuDhDno6uFW0fIeWwBGL5hW8r1RHC6LXyYhaqm1VTzQG1kdHj2Wlfi++ja8aQ7vTyhA4YhF36kMpETHwfC8u7nj7e5MNHfRd6Gi2AfBCvfPfaqtDsh9sIBh2Jyuv6hhTVSK3hyoypPCvrq+R/6Jg85jysu5W0Sec6BMXgk/29Q4dVqvnoPXt3QzXmWa6IZrpvxOef2hFCLVW1D3zb6uCBCe+E860KezGK536NQqbqSazQzyhqPMKwAw4pFIN8T32sjabJlfh93M8AWDQ0CxNdfCX4VhKavlenkPQ71ZTzrysOvULQ4v0IrSbWKPXgIBkIw6Bx19HLyEo2nduRwjKGffqHIhoreCsyMavvnPAYhBGvOpUFev5oADn9nJtbT/GeAK2tW1k2Sm8SIU79Qb4kNKhGynRkCwDV9+IeiQYUFI7VIczv33BpFxKh7Cp7wGdEV6Sl0uEnnSh0I7848upc5rgiB1zQh6aTUTM/9/ioR87xnkCnJXJkAO7biFz0tmqf34TgQ12d4QVqvIeKUNzMoZ7F9Ji2jcUc2UpFpgl9hhPTTzZLCzgtga+D4QjZWhulmmf/FsU92WaIR40oOBOpTe9i59b0uJpr7foWTrbQQYJ3eeKwZVQmUi+plJqEnGFq644zK/xFo0VOTc3ytedSpJqqqsJSamTCnlqKiwjtVqIzMWpQXs1bbVPzDTQiLA9/E6g9zicim8esZobELPis5XqHKjCzlg6F0r7XkMNKgnmw5TqfUu4eZ7DWx/hab5HdC/Flfv5oxgbCYu9TRHPRX/ShTgAAvM98FVDojwQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 688fbeef-d988-48fe-52cc-08d7eacfd5a1
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Apr 2020 17:24:26.0623
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: EVV3d9UgIVhTo4B14aZZiGdA1IDfsb47JFZfLeyHzHVeg4D/RVIvdjxU3e+jpDSN
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2872
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-27_12:2020-04-27,2020-04-27 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 priorityscore=1501
- mlxscore=0 malwarescore=0 bulkscore=0 phishscore=0 clxscore=1011
- mlxlogscore=923 spamscore=0 lowpriorityscore=0 impostorscore=0
- suspectscore=5 adultscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004270143
-X-FB-Internal: deliver
+References: <CAOWid-dSF0X3pa6ud2-ndYzJdohuOBewfcEZcG7pQ8q=fZh14g@mail.gmail.com>
+ <20200424162557.GB99424@carbon.lan> <CAOWid-f0dKfZ=bAzLzdt-wCx2C2orYs3RrKi1MrfjO2=jJVyyw@mail.gmail.com>
+ <20200424170754.GC99424@carbon.lan> <CAOWid-fw=jaxWTVLTESrPf9XPE3PMnrQkk7GZnaPSkqFN_3e_g@mail.gmail.com>
+ <CAOWid-f6Kjds2sQ-auOPzixWaCa4twD6BQ+NbCipfU6remn1Hw@mail.gmail.com> <20200427152520.GB114719@carbon.DHCP.thefacebook.com>
+In-Reply-To: <20200427152520.GB114719@carbon.DHCP.thefacebook.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Mon, 27 Apr 2020 16:17:33 -0400
+Message-ID: <CAOWid-dhbe=PkV_B9CoWO1exB5nGZjGWQgfC0PNapTgHPUdinw@mail.gmail.com>
+Subject: Re: Question about BPF_MAP_TYPE_CGROUP_STORAGE
+To:     Roman Gushchin <guro@fb.com>
+Cc:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Apr 27, 2020 at 01:13:04PM -0400, Johannes Weiner wrote:
-> +cc Roman who has been looking the most at this area
-> 
-> On Mon, Apr 27, 2020 at 03:48:13PM +0800, Yang Yingliang wrote:
-> > +cc linux-mm@kvack.org <mailto:linux-mm@kvack.org>
-> > 
-> > On 2020/4/26 19:21, Yang Yingliang wrote:
-> > > Hi,
-> > > 
-> > > When I doing the follow test in kernel-5.7-rc2, I found mem-free is
-> > > decreased
-> > > 
-> > > #!/bin/sh
-> > > cd /sys/fs/cgroup/memory/
-> > > 
-> > > for((i=0;i<45;i++))
-> > > do
-> > >         for((j=0;j<60000;j++))
-> > >         do
-> > >                 mkdir /sys/fs/cgroup/memory/yyl-cg$j
-> > >         done
-> > >         sleep 1
-> > >         ls /sys/fs/cgroup/memory/ | grep yyl | xargs rmdir
-> > > done
-> 
-> Should be easy enough to reproduce, thanks for the report. I'll try to
-> take a look later this week, unless Roman beats me to it.
-> 
-> Is this a new observation in 5.7-rc2?
-> 
-> Can you provide /sys/fs/cgroup/unified/cgroup.stat after the test?
+I see.  Thanks for the pointers.  I will look into it.
 
-I'm actually trying to reproduce it now, but so far haven't found any issues.
+Regards,
+Kenny
 
-Yang, can you, please, attach the config you're using?
-
-And also confirm that you're giving the system some time before looking
-at the memory statistics? Reclaim of internal cgroup structure is a complex
-process which might take some time to finish.
-
-Is dmesg also clean?
-
-Thanks!
+On Mon, Apr 27, 2020 at 11:25 AM Roman Gushchin <guro@fb.com> wrote:
+>
+> On Fri, Apr 24, 2020 at 05:33:11PM -0400, Kenny Ho wrote:
+> > Hi Roman,
+> >
+> > To be more specific, I have been looking at the bpf-cgroup
+> > implementation of device cgroup and I cannot wrap my head around how
+> > the bpf-cgroup implementation would be able to enforce "[a] child
+> > cgroup can never receive a device access which is denied by its
+> > parent."  I am either missing some understanding around device cgroup
+> > or bpf cgroup or both.  Any pointer you can give me would be much
+> > appreciated.
+>
+> So as I wrote in the previous e-mail, if a program is attached
+> to a parent cgroup, it's effectively attached to all children cgroups.
+> So if something is prohibited on the parent level, it's also
+> prohibited on the child level.
+>
+> If there is an additional program attached to the child cgroup, both
+> programs will be executed one by one, and only if both will grant the access,
+> it will be allowed.
+>
+> The only exception is if the override mode is used and the program
+> on the child level is executed instead of the parent's program.
+>
+> Overall, I'd suggest you to look at kselftests and examples provided
+> with the kernel: you can find examples of how different attach flags
+> are used and how it works all together.
+>
+> Thanks!
+>
+>
+> >
+> > Regards,
+> > Kenny
+> >
+> > On Fri, Apr 24, 2020 at 1:28 PM Kenny Ho <y2kenny@gmail.com> wrote:
+> > >
+> > > Hi Roman,
+> > >
+> > > Um... I am not sure yet because I don't think I understand how
+> > > bpf-cgroup actually works.  May be you can help?  For example, how
+> > > does delegation work with bpf-cgroup?  What is the relationship
+> > > between program(s) attachted to the parent cgroup and the children
+> > > cgroups?  From what I understand, the attached eBPF prog will simply
+> > > replace what was attached by the parent (so there is no relationship?)
+> > >  Sequentially running attached program either from leaf to root or
+> > > root to leaf is not a thing right?
+> > >
+> > > Regards,
+> > > Kenny
+> > >
+> > > On Fri, Apr 24, 2020 at 1:08 PM Roman Gushchin <guro@fb.com> wrote:
+> > > >
+> > > > On Fri, Apr 24, 2020 at 12:43:38PM -0400, Kenny Ho wrote:
+> > > > > Hi Roman,
+> > > > >
+> > > > > I am thinking of using the cgroup local storage as a way to implement
+> > > > > per cgroup configurations that other kernel subsystem (gpu driver, for
+> > > > > example) can have access to.  Is that ok or is that crazy?
+> > > >
+> > > > If BPF is not involved at all, I'd say don't use it. Because beside providing
+> > > > a generic BPF map interface (accessible from userspace and BPF), it's
+> > > > just a page of memory "connected" to a cgroup.
+> > > >
+> > > > If BPF is involved, let's discuss it in more details.
+> > > >
+> > > > Thanks!
+> > > >
+> > > > >
+> > > > > Regards,
+> > > > > Kenny
+> > > > >
+> > > > > On Fri, Apr 24, 2020 at 12:26 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > > >
+> > > > > > On Fri, Apr 24, 2020 at 12:17:55PM -0400, Kenny Ho wrote:
+> > > > > > > Hi,
+> > > > > > >
+> > > > > > > From the documentation, eBPF maps allow sharing of data between eBPF
+> > > > > > > kernel programs, kernel and user space applications.  Does that
+> > > > > > > applies to BPF_MAP_TYPE_CGROUP_STORAGE?  If so, what is the correct
+> > > > > > > way to access the cgroup storage from the linux kernel? I have been
+> > > > > > > reading the __cgroup_bpf_attach function and how the storage are
+> > > > > > > allocated and linked but I am not sure if I am on the right path.
+> > > > > >
+> > > > > > Hello, Kenny!
+> > > > > >
+> > > > > > Can you, please, elaborate a bit more on the problem, you're trying to solve?
+> > > > > > What's the goal of accessing the cgroup storage from the kernel?
+> > > > > >
+> > > > > > Certainly you can get a pointer to an attached buffer if you have
+> > > > > > a cgroup pointer. But what's next?
+> > > > > >
+> > > > > > Thanks!
