@@ -2,19 +2,19 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D811B9817
-	for <lists+cgroups@lfdr.de>; Mon, 27 Apr 2020 09:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78B521B980E
+	for <lists+cgroups@lfdr.de>; Mon, 27 Apr 2020 09:04:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726711AbgD0HE2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Apr 2020 03:04:28 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:53021 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726589AbgD0HDm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 03:03:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R771e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0TwkfYPX_1587971017;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwkfYPX_1587971017)
+        id S1726816AbgD0HEO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Apr 2020 03:04:14 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:35110 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726760AbgD0HEN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 03:04:13 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0TwkfAkd_1587971017;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TwkfAkd_1587971017)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 27 Apr 2020 15:03:37 +0800
+          Mon, 27 Apr 2020 15:03:38 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
@@ -25,9 +25,9 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: [PATCH v10 10/15] mm/mlock: ClearPageLRU before get lru lock in munlock page isolation
-Date:   Mon, 27 Apr 2020 15:02:59 +0800
-Message-Id: <1587970985-21629-11-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v10 10/15] mm/mlock: isolation page before get lru lock in munlock
+Date:   Mon, 27 Apr 2020 15:03:00 +0800
+Message-Id: <1587970985-21629-12-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1587970985-21629-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1587970985-21629-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -36,13 +36,13 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch move the lru_lock after TestClearPageLRU, then prevent other
+This patch moves the lru_lock after TestClearPageLRU, then prevent other
 isolation elsewhere.
 
 __split_huge_page_refcount doesn't exist, but we still have to guard
 PageMlocked in __split_huge_page_tail.
 
-Also clean up __munlock_isolate_lru_page func, which isn't needed now.
+Also remove __munlock_isolate_lru_page func, which isn't needed now.
 
 [lkp@intel.com: found a sleeping function bug ... at mm/rmap.c:1861]
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
