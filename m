@@ -2,162 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EEFE1BB23C
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2020 01:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 063D61BB296
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2020 02:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgD0X4x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 27 Apr 2020 19:56:53 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:34905 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726398AbgD0X4w (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 19:56:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1588031811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=qCIbPd4z+LsfKk+IqgZJljs6Wparbj+tB3otWihkQ10=;
-        b=Bx3jM5Mcv+ejkUcUJsMHp79kfoeQ1CXgBM2qcLexgKkcbfv0crGVy2cIzoYIv9XjS7PV7X
-        11Bq/FxJpXNOhv6UsiY53pOrChnuycYdYdaXvxluVITKJ5nSNJaHpPkZu8/f+uh9XfaITA
-        HPhXhABHKa0paY6B7YFgFVsdq9FelbM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-116-t_m2IxUVOyyRbN5EYA7WrQ-1; Mon, 27 Apr 2020 19:56:49 -0400
-X-MC-Unique: t_m2IxUVOyyRbN5EYA7WrQ-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E899C180F12C;
-        Mon, 27 Apr 2020 23:56:47 +0000 (UTC)
-Received: from llong.com (ovpn-112-176.rdu2.redhat.com [10.10.112.176])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 9A89D60C81;
-        Mon, 27 Apr 2020 23:56:46 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1726405AbgD1ANi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 27 Apr 2020 20:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726335AbgD1ANi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 27 Apr 2020 20:13:38 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0EF45C03C1A8
+        for <cgroups@vger.kernel.org>; Mon, 27 Apr 2020 17:13:38 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id ep1so9571518qvb.0
+        for <cgroups@vger.kernel.org>; Mon, 27 Apr 2020 17:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=T8w1cAu62fq3Z/o1KAR+sWAmzB/rXmhhrpuLQFBAE2o=;
+        b=F6JtusMLTinzcqcUGMiUbaV2UdtlgxhuL6LAGXkeTZHk+Pr449mf/NN+OXQurRixTB
+         q4taVk1n0AyKdsw8fkHxyPWrHStJ44B9LkpKzmEXsYSFT5xBk4bxXdYS/tmiiaAN077Y
+         3sGnQt+B20IiZIqcvCmYTOWkrh/zocQxGAH3tQeeyd86oBSPbGIAYupBvOX1dsqmYWt1
+         v8dSIy15SqYvOQ9owwKsiH3P2mH/omX7QeNRAfTuf2LVpiVaGHGw6acfvDTAWsxnOLuD
+         La9kc2JCwHNei5DoPqEuqHjYb/VS7FQUmOlfJ7GOS3tUAUQy946ci3hYJLFuFB+Rlb4B
+         rntQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=T8w1cAu62fq3Z/o1KAR+sWAmzB/rXmhhrpuLQFBAE2o=;
+        b=IPB6V/KkuBsvWcGgASJeDwu1/AfU8BIDMgc918C0FfiwNctnq3IxIScqQ0aCuAD/JZ
+         op1T99nxJLLXDHq1BMNEU4ADTrkVDJ1NEsfCYdaXdsdRnuUfguSxdFTEBEWdC2eFwdW2
+         FXKai4fYYTJ2cmLvgB7dC9Uogu7ETu4EHzTgAQU9/x/JfTG7qShawUyHxpBMTgNLY1Vi
+         yh8qj8LAhhk/byoY/9wzz7u8/sPsD5kREPfEt42K0AuJwlhdUeAXUbv+lSWR3gq3PaZp
+         IiWSbKO+IdXzn3He63zMWJ75EO1BaDNvYdOM7uubObkZknAl29UInOWb1XMHuKYJPVyF
+         4A2w==
+X-Gm-Message-State: AGi0PuYAAVNdfLadcsGTvuWqtvO5gez9NpKYT5T8gGZtfzC/OiAwU9DF
+        VJ3JmCCEj12EOUyyGB8iZdV8Jg==
+X-Google-Smtp-Source: APiQypJn4FTOv85rWPD4nI1annl59MfgciOnHBOrcqSfE4D8IYqFhQj45SpSMByd3gG2ZRM+XnUxCg==
+X-Received: by 2002:a0c:f70c:: with SMTP id w12mr25454231qvn.28.1588032817220;
+        Mon, 27 Apr 2020 17:13:37 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id 11sm2439712qkv.92.2020.04.27.17.13.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 27 Apr 2020 17:13:36 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
+Date:   Mon, 27 Apr 2020 20:13:35 -0400
+Message-Id: <55509F31-A503-4148-B209-B4D062AD0ED7@lca.pw>
+References: <20200427235621.7823-5-longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
         David Rientjes <rientjes@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Juri Lelli <juri.lelli@redhat.com>,
-        Qian Cai <cai@lca.pw>, Waiman Long <longman@redhat.com>
-Subject: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
-Date:   Mon, 27 Apr 2020 19:56:21 -0400
-Message-Id: <20200427235621.7823-5-longman@redhat.com>
-In-Reply-To: <20200427235621.7823-1-longman@redhat.com>
-References: <20200427235621.7823-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+In-Reply-To: <20200427235621.7823-5-longman@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: iPhone Mail (17D50)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-A lockdep splat is observed by echoing "1" to the shrink sysfs file
-and then shutting down the system:
 
-[  167.473392] Chain exists of:
-[  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mutex
-[  167.473392]
-[  167.484323]  Possible unsafe locking scenario:
-[  167.484323]
-[  167.490273]        CPU0                    CPU1
-[  167.494825]        ----                    ----
-[  167.499376]   lock(slab_mutex);
-[  167.502530]                                lock(mem_hotplug_lock.rw_sem);
-[  167.509356]                                lock(slab_mutex);
-[  167.515044]   lock(kn->count#279);
-[  167.518462]
-[  167.518462]  *** DEADLOCK ***
 
-It is because of the get_online_cpus() and get_online_mems() calls in
-kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
-have to use trylock to get the memory and cpu hotplug read locks. Since
-hotplug events are rare, it should be fine to refuse a kmem caches
-shrink operation when some hotplug events are in progress.
+> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> A lockdep splat is observed by echoing "1" to the shrink sysfs file
+> and then shutting down the system:
+>=20
+> [  167.473392] Chain exists of:
+> [  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mutex
+> [  167.473392]
+> [  167.484323]  Possible unsafe locking scenario:
+> [  167.484323]
+> [  167.490273]        CPU0                    CPU1
+> [  167.494825]        ----                    ----
+> [  167.499376]   lock(slab_mutex);
+> [  167.502530]                                lock(mem_hotplug_lock.rw_sem=
+);
+> [  167.509356]                                lock(slab_mutex);
+> [  167.515044]   lock(kn->count#279);
+> [  167.518462]
+> [  167.518462]  *** DEADLOCK ***
+>=20
+> It is because of the get_online_cpus() and get_online_mems() calls in
+> kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
+> have to use trylock to get the memory and cpu hotplug read locks. Since
+> hotplug events are rare, it should be fine to refuse a kmem caches
+> shrink operation when some hotplug events are in progress.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/memory_hotplug.h |  2 ++
- mm/memory_hotplug.c            |  5 +++++
- mm/slub.c                      | 19 +++++++++++++++----
- 3 files changed, 22 insertions(+), 4 deletions(-)
+I don=E2=80=99t understand how trylock could prevent a splat. The fundamenta=
+l issue is that in sysfs slab store case, the locking order (once trylock su=
+cceed) is,
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 93d9ada74ddd..4ec4b0a2f0fa 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -231,6 +231,7 @@ extern void get_page_bootmem(unsigned long ingo, struct page *page,
- 
- void get_online_mems(void);
- void put_online_mems(void);
-+int  tryget_online_mems(void);
- 
- void mem_hotplug_begin(void);
- void mem_hotplug_done(void);
-@@ -274,6 +275,7 @@ static inline int try_online_node(int nid)
- 
- static inline void get_online_mems(void) {}
- static inline void put_online_mems(void) {}
-+static inline int  tryget_online_mems(void) { return 1; }
- 
- static inline void mem_hotplug_begin(void) {}
- static inline void mem_hotplug_done(void) {}
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index fc0aad0bc1f5..38f9ccec9259 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -59,6 +59,11 @@ void get_online_mems(void)
- 	percpu_down_read(&mem_hotplug_lock);
- }
- 
-+int tryget_online_mems(void)
-+{
-+	return percpu_down_read_trylock(&mem_hotplug_lock);
-+}
-+
- void put_online_mems(void)
- {
- 	percpu_up_read(&mem_hotplug_lock);
-diff --git a/mm/slub.c b/mm/slub.c
-index cf2114ca27f7..c4977ac3271b 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -5343,10 +5343,20 @@ static ssize_t shrink_show(struct kmem_cache *s, char *buf)
- static ssize_t shrink_store(struct kmem_cache *s,
- 			const char *buf, size_t length)
- {
--	if (buf[0] == '1')
--		kmem_cache_shrink(s);
--	else
-+	if (buf[0] != '1')
- 		return -EINVAL;
-+
-+	if (!cpus_read_trylock())
-+		return -EBUSY;
-+	if (!tryget_online_mems()) {
-+		length = -EBUSY;
-+		goto cpus_unlock_out;
-+	}
-+	kasan_cache_shrink(s);
-+	__kmem_cache_shrink(s);
-+	put_online_mems();
-+cpus_unlock_out:
-+	cpus_read_unlock();
- 	return length;
- }
- SLAB_ATTR(shrink);
-@@ -5654,7 +5664,8 @@ static ssize_t slab_attr_store(struct kobject *kobj,
- 
- 		for (idx = 0; idx < cnt; idx++) {
- 			c = pcaches[idx];
--			attribute->store(c, buf, len);
-+			if (attribute->store(c, buf, len) == -EBUSY)
-+				err = -EBUSY;
- 			percpu_ref_put(&c->memcg_params.refcnt);
- 		}
- 		kfree(pcaches);
--- 
-2.18.1
+kn->count =E2=80=94> cpu/memory_hotplug
+
+But we have the existing reverse chain everywhere.
+
+cpu/memory_hotplug =E2=80=94> slab_mutex =E2=80=94> kn->count
+
 
