@@ -2,29 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 652A81BCF90
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 00:14:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC371BD23E
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 04:27:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726451AbgD1WOY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Apr 2020 18:14:24 -0400
-Received: from mail105.syd.optusnet.com.au ([211.29.132.249]:60412 "EHLO
-        mail105.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726571AbgD1WOY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Apr 2020 18:14:24 -0400
-Received: from dread.disaster.area (pa49-195-157-175.pa.nsw.optusnet.com.au [49.195.157.175])
-        by mail105.syd.optusnet.com.au (Postfix) with ESMTPS id 543753A44C1;
-        Wed, 29 Apr 2020 07:47:35 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jTY4k-0008LL-IM; Wed, 29 Apr 2020 07:47:34 +1000
-Date:   Wed, 29 Apr 2020 07:47:34 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
+        id S1726522AbgD2C1p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Apr 2020 22:27:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33494 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726399AbgD2C1o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Apr 2020 22:27:44 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3359EC03C1AC
+        for <cgroups@vger.kernel.org>; Tue, 28 Apr 2020 19:27:44 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id w29so696489qtv.3
+        for <cgroups@vger.kernel.org>; Tue, 28 Apr 2020 19:27:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=j2BqRPlqFlKV+qbCocfSi2x/JssbK9MFgCKLqYpp14M=;
+        b=yIS7iHAsJKIugA/8A/w12xYgJlTB3URYy1+zVBuG/07z9SfuYhVCBj5PiJkT0Sl+ji
+         cXf8c1c1kahDA3yAOtTmKXArjKHd14VfmKaMdkMTPmYUTGT9rsh59FKalKFxHpPk83j/
+         6h5k65Ipm/JdoKcB0TayOyf566CF1TYMAnhztvxsSe+BwiBqA3qd2wd4dPDUqUbXZhpF
+         uHbegIniPpIGde6atAbSiqkWT/YfgXbyfmFXEoZf/A4Dbl49g/JVdbycBygXIQdXrWsS
+         7yHAyDqE2Kg2ihWZShc7QF2VtZtp/xOzHOrit4A75A9vYuKtIEkgUrnHDttEgHdPRgAE
+         B1jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=j2BqRPlqFlKV+qbCocfSi2x/JssbK9MFgCKLqYpp14M=;
+        b=bd6Tbrb4L0n6RlAp4IWrbX5PMF3BKRb0DnhrNnaZTtal9rXnx6DoRP42lDNdqvzt12
+         YcXzrCc1SLIVVoZSMVjB6nJM9RowHm2miDJXrcr5HhFI7qlRoIx+qLn6vB5JNaOEVqDh
+         E6yoBj21lTMKmx4f0DLYiK+5na/eK20B/ITyvH269gwrtFnk4ajd10oTR6BiF+7lySuu
+         eVQHmtrcwPDm9otvGolfc2lq0fQPD/LpOQKGK1Ehg2R/SH7Bie56wj4dxF/Jqm0JqlTR
+         iyl8/j+lqyUqq8eVl2slzTb+oyEFJeHzZYiyMWGatNDvxnsV80HBiRbo66TrIIQZIDF3
+         tnGA==
+X-Gm-Message-State: AGi0PuYX/Ce83fq57dgVw2A3q3nPWa3d+dBDQkptgu3O/V1YtLa5bkb1
+        HV3hjc8QmMQ0JMoOe0pGyM6G+Q==
+X-Google-Smtp-Source: APiQypLsEKenWN4WzB6ddMhGOd0xHUK1mWQIdZD+RG622mVERdaN6cZAXO8dAWWRsrXwQyIKvlFoGA==
+X-Received: by 2002:ac8:4ccc:: with SMTP id l12mr31941572qtv.129.1588127263372;
+        Tue, 28 Apr 2020 19:27:43 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id s190sm5345219qkh.23.2020.04.28.19.27.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 28 Apr 2020 19:27:42 -0700 (PDT)
+Date:   Tue, 28 Apr 2020 22:27:32 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
         Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -46,68 +76,40 @@ Cc:     Jens Axboe <axboe@kernel.dk>,
         "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
         <linux-mm@kvack.org>
 Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
-Message-ID: <20200428214653.GD2005@dread.disaster.area>
+Message-ID: <20200429022732.GA401038@cmpxchg.org>
 References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
+ <20200428214653.GD2005@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200428161355.6377-1-schatzberg.dan@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=X6os11be c=1 sm=1 tr=0
-        a=ONQRW0k9raierNYdzxQi9Q==:117 a=ONQRW0k9raierNYdzxQi9Q==:17
-        a=kj9zAlcOel0A:10 a=cl8xLZFz6L8A:10 a=7-415B0cAAAA:8
-        a=1gqJplI6GZ5HzG39sUQA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <20200428214653.GD2005@dread.disaster.area>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
-> The loop device runs all i/o to the backing file on a separate kworker
-> thread which results in all i/o being charged to the root cgroup. This
-> allows a loop device to be used to trivially bypass resource limits
-> and other policy. This patch series fixes this gap in accounting.
-
-How is this specific to the loop device? Isn't every block device
-that offloads work to a kthread or single worker thread susceptible
-to the same "exploit"?
-
-Or is the problem simply that the loop worker thread is simply not
-taking the IO's associated cgroup and submitting the IO with that
-cgroup associated with it? That seems kinda simple to fix....
-
-> Naively charging cgroups could result in priority inversions through
-> the single kworker thread in the case where multiple cgroups are
-> reading/writing to the same loop device.
-
-And that's where all the complexity and serialisation comes from,
-right?
-
-So, again: how is this unique to the loop device? Other block
-devices also offload IO to kthreads to do blocking work and IO
-submission to lower layers. Hence this seems to me like a generic
-"block device does IO submission from different task" issue that
-should be handled by generic infrastructure and not need to be
-reimplemented multiple times in every block device driver that
-offloads work to other threads...
-
-> This patch series does some
-> minor modification to the loop driver so that each cgroup can make
-> forward progress independently to avoid this inversion.
+On Wed, Apr 29, 2020 at 07:47:34AM +1000, Dave Chinner wrote:
+> On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
+> > This patch series does some
+> > minor modification to the loop driver so that each cgroup can make
+> > forward progress independently to avoid this inversion.
+> > 
+> > With this patch series applied, the above script triggers OOM kills
+> > when writing through the loop device as expected.
 > 
-> With this patch series applied, the above script triggers OOM kills
-> when writing through the loop device as expected.
+> NACK!
+> 
+> The IO that is disallowed should fail with ENOMEM or some similar
+> error, not trigger an OOM kill that shoots some innocent bystander
+> in the head. That's worse than using BUG() to report errors...
 
-NACK!
+Did you actually read the script?
 
-The IO that is disallowed should fail with ENOMEM or some similar
-error, not trigger an OOM kill that shoots some innocent bystander
-in the head. That's worse than using BUG() to report errors...
+It's OOMing because it's creating 256M worth of tmpfs pages inside a
+64M cgroup. It's not killing an innocent bystander, it's killing in
+the cgroup that is allocating all that memory - after Dan makes sure
+that memory is accounted to its rightful owner.
 
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+As opposed to before this series, where all this memory isn't
+accounted properly and goes to the root cgroup - where, ironically, it
+could cause OOM and kill an actually innocent bystander.
