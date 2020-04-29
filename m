@@ -2,140 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E66BF1BE0A5
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 16:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7519E1BE0BC
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 16:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727890AbgD2OTs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Apr 2020 10:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
+        id S1726973AbgD2OWf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Apr 2020 10:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60214 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727888AbgD2OTs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 10:19:48 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE2CC03C1AE
-        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 07:19:48 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id m67so2053268qke.12
-        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 07:19:48 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726815AbgD2OWe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 10:22:34 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5722CC03C1AD;
+        Wed, 29 Apr 2020 07:22:34 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id 71so1903053qtc.12;
+        Wed, 29 Apr 2020 07:22:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=WY+s1xElLyYapOX+xyVfCwGq2ouDJfw9qAn8e1SedMM=;
-        b=sM10OsRR0LNY4pcjhbdJnhoISXS/L4LnoeViGpuwZ2v+5WA8cDi0zGpia6vF/Lnywe
-         9yDC5Ysp9d3GxBOYO/Jy5r525crsR9ZR6Pel0O38S0Xl0kMiRfmh7zpL/aA3BBu81rMm
-         tmR84XZpKOhWYZyP9PUd9L+TFewI/8EMjEjYSUpVDVJ6+3CAapKUaVFTXct61QYcva81
-         gvSR+ox35ebLokYCKn2R0DeTO0+BRyx56hxhXWqLfCHar8ss9urE1ne3VXSINkkEOwdA
-         5+q38c+uJC7z15wq2a3UQbl+6dVrM4vvJ4ZWX9Y2UXi2JxONkL/tF3icTij/9A/Vqv9y
-         GtaQ==
+        bh=U7CYd6LIahwn6A9pI4DbAiS85+k2nqU8qqxir3NJPME=;
+        b=PeLTcvnmSUGReSfTmkROy81aqLORMcNPoEzmktkHawEeaPG9HbIpOgkxRx5xsqTpQN
+         9WOnAOZe+xH0FileYYcNrelmGXfu6azM0W+0j00Gqz4DY4IH06QvwINlT5pc+HSxL/pK
+         tL9rAA6decLe+wa6vxDWO8g3zqtmubZwuiwPEoUptoWJA3+7KoA+MkgAtnVVhQJUM9DY
+         wpTIQHbFB4U9kPA+rHftrWb7uGODB+OAnl59MfqEMDVGQdAPHEeoDvi1SxtdIuuy/avM
+         iKMnjfgO8zhSUvKYO2UoRaNkEWLAgHOzWvKrcLOGJ2S3I72q5M8zGXeI3EwZ/vf7SFyv
+         ke6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WY+s1xElLyYapOX+xyVfCwGq2ouDJfw9qAn8e1SedMM=;
-        b=tOUmT5wgPqYdZqWrcrEqLKQ7UyRdnO/IAv8yQR83TkIjNqV2+B/VoMNRYlSSABvy8C
-         NN5DJW6+XP0PXe7tq3db1af81tIGCOhGq8DaM0lITNwM7S8pXh7nmERTIvwW5EDkuZGS
-         c6EZjMh4Id8u8bu1js2rRr8Wr4sYcNk7QZIqsnasyx0PBoeX9EIslkcRlDoNzv2nksmO
-         OBsWHvI8xlSOgYMNGOPLxcExTr6+l0QYimDvR7KWU4fn7nQdHlAMSaHYcU4Z3YPKFdHZ
-         DsbBoWbdr17lvY22ppWUu3y2N75MyHHlW3H7AUHsBvWVx4DyYsz9+eDJbnVgfYaZuadV
-         9Ehg==
-X-Gm-Message-State: AGi0PuYy7ogT6vkb4a7j1PKUvnCAl1FXNjIXAwhGS8TGJRJHlxC6q42r
-        sU4rXAgOsDUCpNGOEeVLTTSAbuz5Y0A=
-X-Google-Smtp-Source: APiQypKY1jxWzFUg/BqBWREV5gw+gcRj3d3DZwN6IsgBLMzwfxKXzASR4TlcBVu5Uaa4l1Z070vJPQ==
-X-Received: by 2002:a37:5102:: with SMTP id f2mr16575684qkb.18.1588169986863;
-        Wed, 29 Apr 2020 07:19:46 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id k33sm15552796qtd.22.2020.04.29.07.19.45
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=U7CYd6LIahwn6A9pI4DbAiS85+k2nqU8qqxir3NJPME=;
+        b=pz8c+ueXzkm0kVVWlQ3FrKOwLpdjn9fUlqCCCr0Gkwcp+KlUDrvW4RmmIGe6P/M8UQ
+         tuyP2gLeomVovOhMhPnCm/cYUavKUyqV4cWrsWJomlOQWF6qvtLeSdAW6USv0olxjYHY
+         g1HUHBclr4Ki2n3KjarTD68JQ/+2hIL8ipbyXy0sWwE92FUaH3p2m99ReVI08CHWPPxW
+         m0g8WhEhNPrt65Rf1MMCZHhBQBigmiFhj3D8J+Ig+TkgnxzxZEppfOvB/ZbHBRiwHCVl
+         TzXUHUzXrQLFVmayR10jrAcCq6URFkr9Oif0YNHsnqBPQSVwlRW9lAKHUYpPw3oNZvpX
+         Ft6g==
+X-Gm-Message-State: AGi0PuYUNd8l2xqutaCGfe/jkQfSEsMPrRtMoGdEoIPAg3+vXamDlemB
+        leoMgliPe7OsEWqXUk5ngVA=
+X-Google-Smtp-Source: APiQypJMW/FRQ0KNbQV06MDhEGIzJ6AnlD4J81Wkyk6TKWOsnJQLVg0yLyYny/w1ZGbIKtk1MV4xIA==
+X-Received: by 2002:aed:3ac8:: with SMTP id o66mr34282726qte.110.1588170153191;
+        Wed, 29 Apr 2020 07:22:33 -0700 (PDT)
+Received: from localhost ([199.96.181.106])
+        by smtp.gmail.com with ESMTPSA id n13sm16521816qtf.15.2020.04.29.07.22.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 07:19:46 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 10:19:45 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
+        Wed, 29 Apr 2020 07:22:32 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 10:22:30 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Dave Chinner <david@fromorbit.com>,
+        Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-Message-ID: <20200429141945.GB5054@cmpxchg.org>
-References: <cover.1588092152.git.chris@chrisdown.name>
- <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
- <20200429101510.GA28637@dhcp22.suse.cz>
- <CALOAHbAosoU=+iPgD+TeU_iDXTV7W_WcFdKCi2fdwwyvutG2zQ@mail.gmail.com>
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
+Message-ID: <20200429142230.GE5462@mtj.thefacebook.com>
+References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
+ <20200428214653.GD2005@dread.disaster.area>
+ <20200429102540.GA12716@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALOAHbAosoU=+iPgD+TeU_iDXTV7W_WcFdKCi2fdwwyvutG2zQ@mail.gmail.com>
+In-Reply-To: <20200429102540.GA12716@quack2.suse.cz>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 06:53:03PM +0800, Yafang Shao wrote:
-> On Wed, Apr 29, 2020 at 6:15 PM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Tue 28-04-20 19:26:47, Chris Down wrote:
-> > > From: Yafang Shao <laoar.shao@gmail.com>
-> > >
-> > > A cgroup can have both memory protection and a memory limit to isolate
-> > > it from its siblings in both directions - for example, to prevent it
-> > > from being shrunk below 2G under high pressure from outside, but also
-> > > from growing beyond 4G under low pressure.
-> > >
-> > > Commit 9783aa9917f8 ("mm, memcg: proportional memory.{low,min} reclaim")
-> > > implemented proportional scan pressure so that multiple siblings in
-> > > excess of their protection settings don't get reclaimed equally but
-> > > instead in accordance to their unprotected portion.
-> > >
-> > > During limit reclaim, this proportionality shouldn't apply of course:
-> > > there is no competition, all pressure is from within the cgroup and
-> > > should be applied as such. Reclaim should operate at full efficiency.
-> > >
-> > > However, mem_cgroup_protected() never expected anybody to look at the
-> > > effective protection values when it indicated that the cgroup is above
-> > > its protection. As a result, a query during limit reclaim may return
-> > > stale protection values that were calculated by a previous reclaim cycle
-> > > in which the cgroup did have siblings.
-> > >
-> > > When this happens, reclaim is unnecessarily hesitant and potentially
-> > > slow to meet the desired limit. In theory this could lead to premature
-> > > OOM kills, although it's not obvious this has occurred in practice.
-> >
-> > Thanks this describes the underlying problem. I would be also explicit
-> > that the issue should be visible only on tail memcgs which have both
-> > max/high and protection configured and the effect depends on the
-> > difference between the two (the smaller it is the largrger the effect).
-> >
-> > There is no mention about the fix. The patch resets effective values for
-> > the reclaim root and I've had some concerns about that
-> > http://lkml.kernel.org/r/20200424162103.GK11591@dhcp22.suse.cz.
-> > Johannes has argued that other races are possible and I didn't get to
-> > think about it thoroughly. But this patch is introducing a new
-> > possibility of breaking protection.
+Hello,
+
+On Wed, Apr 29, 2020 at 12:25:40PM +0200, Jan Kara wrote:
+> Yeah, I was thinking about the same when reading the patch series
+> description. We already have some cgroup workarounds for btrfs kthreads if
+> I remember correctly, we have cgroup handling for flush workers, now we are
+> adding cgroup handling for loopback device workers, and soon I'd expect
+> someone comes with a need for DM/MD worker processes and IMHO it's getting
+> out of hands because the complexity spreads through the kernel with every
+> subsystem comming with slightly different solution to the problem and also
+> the number of kthreads gets multiplied by the number of cgroups. So I
+> agree some generic solution how to approach IO throttling of kthreads /
+> workers would be desirable.
 > 
-> Agreed with Michal that more writes will cause more bugs.
-> We should operate the volatile emin and elow as less as possible.
+> OTOH I don't have a great idea how the generic infrastructure should look
+> like...
 
-That's not a technical argument.
+I don't really see a way around that. The only generic solution would be
+letting all IOs through as root and handle everything through backcharging,
+which we already can do as backcharging is already in use to handle metadata
+updates which can't be controlled directly. However, doing that for all IOs
+would make the control quality a lot worse as all control would be based on
+first incurring deficit and then try to punish the issuer after the fact.
 
-If races are a problem, it doesn't matter that they're rare. If
-they're not a problem, it doesn't matter that they're frequent.
+The infrastructure work done to make IO control work for btrfs is generic
+and the changes needed on btrfs side was pretty small. Most of the work was
+identifying non-regular IO pathways (bouncing through different kthreads and
+whatnot) and making sure they're annotating IO ownership and the needed
+mechanism correctly. The biggest challenge probably is ensuring that the
+filesystem doesn't add ordering dependency between separate data IOs, which
+is a nice property to have with or without cgroup support.
 
-> >  If we want to have a quick and
-> > simple fix that would be easier to backport to older kernels then I
-> > would feel much better if we simply workedaround the problem as
-> > suggested earlier http://lkml.kernel.org/r/20200423061629.24185-1-laoar.shao@gmail.com
-> 
-> +1
-> 
-> This should be the right workaround to fix the current issue and it is
-> worth to be backported to the stable kernel.
+That leaves the nesting drivers, loop and md/dm. Given that they sit in the
+middle of IO stack and proxy a lot of its roles, they'll have to be updated
+to be transparent in terms of cgroup ownership if IO control is gonna work
+through them. Maybe we can have a common infra shared between loop, dm and
+md but they aren't many and may also be sufficiently different. idk
 
-From Documentation/process/stable-kernel-rules.rst:
+Thanks.
 
- - It must fix a real bug that bothers people (not a, "This could be a
-   problem..." type thing).
-
-There hasn't been a mention of this affecting real workloads in the
-submission history of this patch, so it doesn't qualify for -stable.
+-- 
+tejun
