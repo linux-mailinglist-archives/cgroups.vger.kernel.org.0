@@ -2,72 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07F111BE091
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 16:18:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E66BF1BE0A5
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 16:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727802AbgD2OSB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Apr 2020 10:18:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59502 "EHLO
+        id S1727890AbgD2OTs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Apr 2020 10:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59786 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726836AbgD2OSA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 10:18:00 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BFE7C03C1AD;
-        Wed, 29 Apr 2020 07:18:00 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id z2so2324766iol.11;
-        Wed, 29 Apr 2020 07:18:00 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1727888AbgD2OTs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 10:19:48 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0AE2CC03C1AE
+        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 07:19:48 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id m67so2053268qke.12
+        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 07:19:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cpXUf/vkO/R5yvacaxjyLtNiC2qft6yapuPXFNqdrtk=;
-        b=l8kNMZolNNRTje0ib1VyxH/4hTylfD414hWySHi/Pk5fJDdLTzmXJ+tL4bwZfbBrwe
-         x5aQaQIkJtYncgehYFquzLcHki7V2njzUJqCVP9iQ4Zunpp44t4JYWi3j/io5iVnRoMW
-         1xmQhmWhiq1P4108Evf5bFjMHPtdpV9v9Eo8PShJ2xq8IAGkmu6K6Y0S8RD5YrFN9b2p
-         hK94zWWO+FvBM3q9jwp82O5zwEgl4eGa3nIGqGMoH0cdScve/oMIdgpnQ/+y0515LRFF
-         o/6JUz4+Ndj+GUQiqd43ji0ijprsKeJTzaOCV8jQTMhGPObZdjzrM2buPfhN4z6lbB/+
-         gOBQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WY+s1xElLyYapOX+xyVfCwGq2ouDJfw9qAn8e1SedMM=;
+        b=sM10OsRR0LNY4pcjhbdJnhoISXS/L4LnoeViGpuwZ2v+5WA8cDi0zGpia6vF/Lnywe
+         9yDC5Ysp9d3GxBOYO/Jy5r525crsR9ZR6Pel0O38S0Xl0kMiRfmh7zpL/aA3BBu81rMm
+         tmR84XZpKOhWYZyP9PUd9L+TFewI/8EMjEjYSUpVDVJ6+3CAapKUaVFTXct61QYcva81
+         gvSR+ox35ebLokYCKn2R0DeTO0+BRyx56hxhXWqLfCHar8ss9urE1ne3VXSINkkEOwdA
+         5+q38c+uJC7z15wq2a3UQbl+6dVrM4vvJ4ZWX9Y2UXi2JxONkL/tF3icTij/9A/Vqv9y
+         GtaQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cpXUf/vkO/R5yvacaxjyLtNiC2qft6yapuPXFNqdrtk=;
-        b=Fa1m7vJLYT0L+WBssuQjiOOhDgzApzxvYCAZgnWTsTqKETJ9LDgC1QNBPm0pe1TmZg
-         +uNUJj65BdGwsG2saL+Sbn+lKHy+S0ANrimPy6oZsIZE+kvOhHJ3imlO7bNuV7SozfRF
-         kw2YlqOmhWUC60Ce9LLML2fMjceQsfjYemyIm7LHCRNkL+fhlAi7lFsn/3jX56OqT/S5
-         wDzH9+wRh+Vb2xyRUi3a1b7hNReikXKRCmQSQRLBltGkZI8Ibk+gVJZmCnP0C0p7SEI2
-         PqN69x1+OL4u1WfqXovB0GhOQMCmp5HhoPEK+jN7+euuetP5dZEnOgb0W+0XBNbjwgKb
-         JJzw==
-X-Gm-Message-State: AGi0PuZ4hVqZdtoMTU2/TtRaTFQen8wtGIHnhMd4aM9sFy/rGPLqOHGB
-        yUXE6DIZxTi0TT1XQz9f/rsQUkwEhFAfOnh5tCY=
-X-Google-Smtp-Source: APiQypK82VvXMlKNIqQa1QabCy02RcVqT8OoQ2IeGadn05A3gUPuRWf7A0wd9yYXJiPYRbjYNrz1I2L+gZGWkydziIc=
-X-Received: by 2002:a05:6638:31b:: with SMTP id w27mr29082935jap.94.1588169878532;
- Wed, 29 Apr 2020 07:17:58 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1588092152.git.chris@chrisdown.name> <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
- <20200429101510.GA28637@dhcp22.suse.cz> <20200429140330.GA5054@cmpxchg.org>
-In-Reply-To: <20200429140330.GA5054@cmpxchg.org>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Wed, 29 Apr 2020 22:17:21 +0800
-Message-ID: <CALOAHbCC-oT+CwzyokNfomEMf0GdzpipBeZJjnnE8RrPPZ_Maw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-To:     Johannes Weiner <hannes@cmpxchg.org>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WY+s1xElLyYapOX+xyVfCwGq2ouDJfw9qAn8e1SedMM=;
+        b=tOUmT5wgPqYdZqWrcrEqLKQ7UyRdnO/IAv8yQR83TkIjNqV2+B/VoMNRYlSSABvy8C
+         NN5DJW6+XP0PXe7tq3db1af81tIGCOhGq8DaM0lITNwM7S8pXh7nmERTIvwW5EDkuZGS
+         c6EZjMh4Id8u8bu1js2rRr8Wr4sYcNk7QZIqsnasyx0PBoeX9EIslkcRlDoNzv2nksmO
+         OBsWHvI8xlSOgYMNGOPLxcExTr6+l0QYimDvR7KWU4fn7nQdHlAMSaHYcU4Z3YPKFdHZ
+         DsbBoWbdr17lvY22ppWUu3y2N75MyHHlW3H7AUHsBvWVx4DyYsz9+eDJbnVgfYaZuadV
+         9Ehg==
+X-Gm-Message-State: AGi0PuYy7ogT6vkb4a7j1PKUvnCAl1FXNjIXAwhGS8TGJRJHlxC6q42r
+        sU4rXAgOsDUCpNGOEeVLTTSAbuz5Y0A=
+X-Google-Smtp-Source: APiQypKY1jxWzFUg/BqBWREV5gw+gcRj3d3DZwN6IsgBLMzwfxKXzASR4TlcBVu5Uaa4l1Z070vJPQ==
+X-Received: by 2002:a37:5102:: with SMTP id f2mr16575684qkb.18.1588169986863;
+        Wed, 29 Apr 2020 07:19:46 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id k33sm15552796qtd.22.2020.04.29.07.19.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 29 Apr 2020 07:19:46 -0700 (PDT)
+Date:   Wed, 29 Apr 2020 10:19:45 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     Michal Hocko <mhocko@kernel.org>,
         Chris Down <chris@chrisdown.name>,
         Andrew Morton <akpm@linux-foundation.org>,
         Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
+ is above protection
+Message-ID: <20200429141945.GB5054@cmpxchg.org>
+References: <cover.1588092152.git.chris@chrisdown.name>
+ <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+ <20200429101510.GA28637@dhcp22.suse.cz>
+ <CALOAHbAosoU=+iPgD+TeU_iDXTV7W_WcFdKCi2fdwwyvutG2zQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALOAHbAosoU=+iPgD+TeU_iDXTV7W_WcFdKCi2fdwwyvutG2zQ@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 10:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Apr 29, 2020 at 12:15:10PM +0200, Michal Hocko wrote:
+On Wed, Apr 29, 2020 at 06:53:03PM +0800, Yafang Shao wrote:
+> On Wed, Apr 29, 2020 at 6:15 PM Michal Hocko <mhocko@kernel.org> wrote:
+> >
 > > On Tue 28-04-20 19:26:47, Chris Down wrote:
 > > > From: Yafang Shao <laoar.shao@gmail.com>
 > > >
@@ -105,75 +112,30 @@ On Wed, Apr 29, 2020 at 10:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > > http://lkml.kernel.org/r/20200424162103.GK11591@dhcp22.suse.cz.
 > > Johannes has argued that other races are possible and I didn't get to
 > > think about it thoroughly. But this patch is introducing a new
-> > possibility of breaking protection. If we want to have a quick and
+> > possibility of breaking protection.
+> 
+> Agreed with Michal that more writes will cause more bugs.
+> We should operate the volatile emin and elow as less as possible.
+
+That's not a technical argument.
+
+If races are a problem, it doesn't matter that they're rare. If
+they're not a problem, it doesn't matter that they're frequent.
+
+> >  If we want to have a quick and
 > > simple fix that would be easier to backport to older kernels then I
 > > would feel much better if we simply workedaround the problem as
 > > suggested earlier http://lkml.kernel.org/r/20200423061629.24185-1-laoar.shao@gmail.com
-> > We can rework the effective values calculation to be more robust against
-> > races on top of that because this is likely a more tricky thing to do.
->
-> Well, can you please *do* think more thoroughly about what I wrote,
-> instead of pushing for an alternative patch on gut feeling alone?
->
-> Especially when you imply that this should be a stable patch.
->
-> Not only does your alternative patch not protect against the race you
-> are worried about, the race itself doesn't matter. Racing reclaimers
-> will write their competing views of the world into the shared state on
-> all other levels anyway.
->
-> And that's okay. If the configuration and memory usage is such that
-> there is at least one reclaimer that scans without any protection
-> (like a limit reclaimer), it's not a problem when a second reclaimer
-> that meant to do protected global reclaim will also do one iteration
-> without protection. It's no different than if a second thread had
-> entered limit reclaim through another internal allocation.
->
-> There is no semantical violation with the race in your patch or the
-> race in this patch. Any effective protection that becomes visible is
-> 1) permitted by the configuration, but 2) also triggered *right now*
-> by an acute need to reclaim memory with these parameters.
->
-> The *right now* part is important. That's what's broken before either
-> patch, and that's what we're fixing: to see really, really *old* stale
-> that might not be representative of the config semantics anymore.
->
-> Since you haven't linked to my email, here is my counter argument to
-> the alternative patch "fixing" this race somehow.
->
-> A reclaim:
->
->   root
->      `- A (low=2G, max=3G -> elow=0)
->         `- A1 (low=0G -> elow=0)
->
-> Global reclaim:
->
->   root
->      `- A (low=2G, max=3G -> elow=2G)
->         `- A1 (low=0G -> elow=2G)
->
-> During global reclaim, A1 is supposed to have 2G effective low
-> protection. If A limit reclaim races, it can set A1's elow to
-> 0.
+> 
+> +1
+> 
+> This should be the right workaround to fix the current issue and it is
+> worth to be backported to the stable kernel.
 
-Before the commit  8a931f801340c2be ("mm: memcontrol: recursive
-memory.low protection"), the A1's elow should be 0, while after this
-commit A1's elow is 2G.
-That is a behavior change.
+From Documentation/process/stable-kernel-rules.rst:
 
-Then this case gives us another example why accessing emin and elow in
-the very deap reclaiming code (get_scan_count) is the root of ALL
-EVIL.
+ - It must fix a real bug that bothers people (not a, "This could be a
+   problem..." type thing).
 
->  Global reclaim will now query mem_cgroup_protection(root, A1), the
-> root == memcg check you insist we add will fail and it'll reclaim A1
-> without protection.
->
-> The alternative patch is nothing except slightly worse code.
-
-
-
--- 
-Thanks
-Yafang
+There hasn't been a mention of this affecting real workloads in the
+submission history of this patch, so it doesn't qualify for -stable.
