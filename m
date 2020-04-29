@@ -2,146 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 00A7C1BD941
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 12:15:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D39C11BD981
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2020 12:25:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726501AbgD2KPO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Apr 2020 06:15:14 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:35004 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726484AbgD2KPO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 06:15:14 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x18so1824187wrq.2;
-        Wed, 29 Apr 2020 03:15:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Njrl+LtsYOcLWuGaTy+eEj39sQfLR9JQYx3iweX+KpU=;
-        b=IFf/tsOR3P29D3EvmDuNC8LdwdKyF5bVNOpYZXdS2rrE7DVB5shqIQr0lC/NpcnkNQ
-         6OKJmatoK3M6ztkrsZppiyV8kYCMWhD1IhlkKPf+YJ7igTnD2uAfUSFSDBgmKKt7i4jm
-         XoDzsZD9SRaMsKyiMNdxleMEctQNpYIYw0v0rWWXFZ5CezyXsKR1gvpi4LFHVKIbHtLa
-         Kt4Zbri1oL6QR43+G30/18HeK+g7OUTcvr213Vd9rZ8ogFSIcY7c6+cqDZ9mLQoi4Aew
-         7SOyCeD21Xi0R6/Ha/ShSXhnp9RcS6xOQXkm9/t7kOb1B5B1smtloENaLYK1jOQAZQCM
-         rFZg==
-X-Gm-Message-State: AGi0PuaHXXH2U0MARtc4pUQ6t/I3i/yILe+hTbrAWqXV/AopAn12/9Dc
-        fgAPGB9SY+rwHCqrrOHF9oI=
-X-Google-Smtp-Source: APiQypJGgFvLLqTU1s5YisUTtz/tbz+dtqB8uoU/wVmtyeOtMDieqK+p6vICrzf6demSsbqO+3KtGw==
-X-Received: by 2002:a5d:428a:: with SMTP id k10mr38619699wrq.59.1588155312300;
-        Wed, 29 Apr 2020 03:15:12 -0700 (PDT)
-Received: from localhost (ip-37-188-130-62.eurotel.cz. [37.188.130.62])
-        by smtp.gmail.com with ESMTPSA id n6sm6870097wmc.28.2020.04.29.03.15.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 03:15:11 -0700 (PDT)
-Date:   Wed, 29 Apr 2020 12:15:10 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1726554AbgD2KZp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Apr 2020 06:25:45 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41060 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726355AbgD2KZp (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 29 Apr 2020 06:25:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 3F218AC44;
+        Wed, 29 Apr 2020 10:25:42 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id DD8A91E1298; Wed, 29 Apr 2020 12:25:40 +0200 (CEST)
+Date:   Wed, 29 Apr 2020 12:25:40 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-Message-ID: <20200429101510.GA28637@dhcp22.suse.cz>
-References: <cover.1588092152.git.chris@chrisdown.name>
- <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
+Message-ID: <20200429102540.GA12716@quack2.suse.cz>
+References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
+ <20200428214653.GD2005@dread.disaster.area>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+In-Reply-To: <20200428214653.GD2005@dread.disaster.area>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 28-04-20 19:26:47, Chris Down wrote:
-> From: Yafang Shao <laoar.shao@gmail.com>
+On Wed 29-04-20 07:47:34, Dave Chinner wrote:
+> On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
+> > The loop device runs all i/o to the backing file on a separate kworker
+> > thread which results in all i/o being charged to the root cgroup. This
+> > allows a loop device to be used to trivially bypass resource limits
+> > and other policy. This patch series fixes this gap in accounting.
 > 
-> A cgroup can have both memory protection and a memory limit to isolate
-> it from its siblings in both directions - for example, to prevent it
-> from being shrunk below 2G under high pressure from outside, but also
-> from growing beyond 4G under low pressure.
+> How is this specific to the loop device? Isn't every block device
+> that offloads work to a kthread or single worker thread susceptible
+> to the same "exploit"?
 > 
-> Commit 9783aa9917f8 ("mm, memcg: proportional memory.{low,min} reclaim")
-> implemented proportional scan pressure so that multiple siblings in
-> excess of their protection settings don't get reclaimed equally but
-> instead in accordance to their unprotected portion.
+> Or is the problem simply that the loop worker thread is simply not
+> taking the IO's associated cgroup and submitting the IO with that
+> cgroup associated with it? That seems kinda simple to fix....
 > 
-> During limit reclaim, this proportionality shouldn't apply of course:
-> there is no competition, all pressure is from within the cgroup and
-> should be applied as such. Reclaim should operate at full efficiency.
+> > Naively charging cgroups could result in priority inversions through
+> > the single kworker thread in the case where multiple cgroups are
+> > reading/writing to the same loop device.
 > 
-> However, mem_cgroup_protected() never expected anybody to look at the
-> effective protection values when it indicated that the cgroup is above
-> its protection. As a result, a query during limit reclaim may return
-> stale protection values that were calculated by a previous reclaim cycle
-> in which the cgroup did have siblings.
+> And that's where all the complexity and serialisation comes from,
+> right?
 > 
-> When this happens, reclaim is unnecessarily hesitant and potentially
-> slow to meet the desired limit. In theory this could lead to premature
-> OOM kills, although it's not obvious this has occurred in practice.
+> So, again: how is this unique to the loop device? Other block
+> devices also offload IO to kthreads to do blocking work and IO
+> submission to lower layers. Hence this seems to me like a generic
+> "block device does IO submission from different task" issue that
+> should be handled by generic infrastructure and not need to be
+> reimplemented multiple times in every block device driver that
+> offloads work to other threads...
 
-Thanks this describes the underlying problem. I would be also explicit
-that the issue should be visible only on tail memcgs which have both
-max/high and protection configured and the effect depends on the
-difference between the two (the smaller it is the largrger the effect).
+Yeah, I was thinking about the same when reading the patch series
+description. We already have some cgroup workarounds for btrfs kthreads if
+I remember correctly, we have cgroup handling for flush workers, now we are
+adding cgroup handling for loopback device workers, and soon I'd expect
+someone comes with a need for DM/MD worker processes and IMHO it's getting
+out of hands because the complexity spreads through the kernel with every
+subsystem comming with slightly different solution to the problem and also
+the number of kthreads gets multiplied by the number of cgroups. So I
+agree some generic solution how to approach IO throttling of kthreads /
+workers would be desirable.
 
-There is no mention about the fix. The patch resets effective values for
-the reclaim root and I've had some concerns about that
-http://lkml.kernel.org/r/20200424162103.GK11591@dhcp22.suse.cz.
-Johannes has argued that other races are possible and I didn't get to
-think about it thoroughly. But this patch is introducing a new
-possibility of breaking protection. If we want to have a quick and
-simple fix that would be easier to backport to older kernels then I
-would feel much better if we simply workedaround the problem as
-suggested earlier http://lkml.kernel.org/r/20200423061629.24185-1-laoar.shao@gmail.com
-We can rework the effective values calculation to be more robust against
-races on top of that because this is likely a more tricky thing to do.
+OTOH I don't have a great idea how the generic infrastructure should look
+like...
 
-> Fixes: 9783aa9917f8 ("mm, memcg: proportional memory.{low,min} reclaim")
-> Signed-off-by: Yafang Shao <laoar.shao@gmail.com>
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Roman Gushchin <guro@fb.com>
-> 
-> [hannes@cmpxchg.org: rework code comment]
-> [hannes@cmpxchg.org: changelog]
-> [chris@chrisdown.name: fix store tear]
-> [chris@chrisdown.name: retitle]
-> ---
->  mm/memcontrol.c | 13 ++++++++++++-
->  1 file changed, 12 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 0be00826b832..b0374be44e9e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6392,8 +6392,19 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
->  
->  	if (!root)
->  		root = root_mem_cgroup;
-> -	if (memcg == root)
-> +	if (memcg == root) {
-> +		/*
-> +		 * The cgroup is the reclaim root in this reclaim
-> +		 * cycle, and therefore not protected. But it may have
-> +		 * stale effective protection values from previous
-> +		 * cycles in which it was not the reclaim root - for
-> +		 * example, global reclaim followed by limit reclaim.
-> +		 * Reset these values for mem_cgroup_protection().
-> +		 */
-> +		WRITE_ONCE(memcg->memory.emin, 0);
-> +		WRITE_ONCE(memcg->memory.elow, 0);
->  		return MEMCG_PROT_NONE;
-> +	}
->  
->  	usage = page_counter_read(&memcg->memory);
->  	if (!usage)
-> -- 
-> 2.26.2
-
+								Honza
 -- 
-Michal Hocko
-SUSE Labs
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
