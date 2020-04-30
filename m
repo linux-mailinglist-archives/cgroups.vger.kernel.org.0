@@ -2,90 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23D801BEDCF
-	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 03:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 780271BEDDA
+	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 03:50:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgD3BqJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 29 Apr 2020 21:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54572 "EHLO
+        id S1726291AbgD3BuX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 29 Apr 2020 21:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55226 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726329AbgD3BqI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 21:46:08 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7355C035495
-        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 18:46:06 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id h4so85050wmb.4
-        for <cgroups@vger.kernel.org>; Wed, 29 Apr 2020 18:46:06 -0700 (PDT)
+        with ESMTP id S1726282AbgD3BuX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 29 Apr 2020 21:50:23 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23D30C035494;
+        Wed, 29 Apr 2020 18:50:23 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id i16so4412739ils.12;
+        Wed, 29 Apr 2020 18:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kVsytFlvwmRlPq2e2ylTjFJxkqfOFOkO0kcwGuxLXfk=;
-        b=sf3CTAKS22+/2W8CwVyZC4W5QTvjxrSQYXYwimx3E04EnhPb09pbOUhgikHbXuQcH8
-         4+kqjU+Fm6hsIahZ+JkODsSb30DePYkcdcqXccwLuKGWPQYKN3XiBFqR9XU6ww7e4oJS
-         9Sr9WGpbT8cDQDnyDiRS7W5/TjJvUOnc3fL/c=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=y8ASo8zpK+8qPNof8u/cHdMqtlz7+kslUfS8Oj2LKzo=;
+        b=YsKFQT3reOM6k0etzlNKatoAoB8eS3oSXg4aogSsGj+BS7hEjdMtOWVXaO77T/HQKw
+         hEHrq0ofC8VjwZ/x3c3taB/oV7KRQUk+1oNGjllLZimTrlsev1U6dhu0zYATgrIupuLp
+         q0+Pb1D18JWDP/JQ8CNbqKpSNyCWfzylUEcabcyuin1SoTDUBQOEuLVXEL1nTk/jZFS9
+         hECoJovbAA/7cRjo02LMY0G2azloJS4+2tS526YUo20DtmTdxQEvDDrFzhMO3rPMVxH4
+         xgBf93K/xt09nGnW7hloNRwre4qBtdkX5aRu425sPKLvu0HFOheQBbJp6rxIBG/dv1li
+         Tfrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kVsytFlvwmRlPq2e2ylTjFJxkqfOFOkO0kcwGuxLXfk=;
-        b=U53JG6cbLZDSCQdvJ8QDBMwnFoM0aLY5XajtFBlnO4rYKkXEObSB6BZOiAXX8pQe2x
-         KLqKZE8pdiYEpCwjwjY0Oh+FaECEl5kyzESG2Aw9+GWUbyIq6UEOqcY1E4JjVwg46RW+
-         tKVAyvbpNIoj5arSfrc0282t4xmy/yczQs31VTW+x1LCJRTWCZvFwadJwX54Kj0iOpFK
-         JWbG98ANfeb0zScjzB5w2QMKzylrcHWa/lHUhyavdPj3ofhjyDuino8k5ZsVk9RZJxv7
-         OOu2GlP2+2WduVVNwEyEu+dW5PZ1jpk0gNbR8Ecgn7cplbKgdOUufZ7Y0OWHeMz8ihmB
-         w0LQ==
-X-Gm-Message-State: AGi0PuZEMjUquEFHBPQnC8Hlir1HvXwBH7uz5dNIcp3vFP5gBrZ5WtHT
-        pb5c8xi3OldYsY+h2g0/Eb+vsg==
-X-Google-Smtp-Source: APiQypL/aU3Pwq63058Nq5MGjoH0yWWJ2d7gZXE32aHzAXjf5qhNdcbhBoNgFELiTQFwET2TOZwLhA==
-X-Received: by 2002:a7b:c0cb:: with SMTP id s11mr208786wmh.180.1588211165307;
-        Wed, 29 Apr 2020 18:46:05 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
-        by smtp.gmail.com with ESMTPSA id a187sm10437581wmh.40.2020.04.29.18.46.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 29 Apr 2020 18:46:04 -0700 (PDT)
-Date:   Thu, 30 Apr 2020 02:46:03 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Yafang Shao <laoar.shao@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=y8ASo8zpK+8qPNof8u/cHdMqtlz7+kslUfS8Oj2LKzo=;
+        b=TaB1/EEomAj4KFhqMtx732zsA2V49a+RO7BtRgDVhdC0Tqgy9wYmzOCb75nnX8ZbBG
+         SZ6BNjBDaeivZ7QIFeQumPGarlw6RVKoAcj/xTjgbzKcIlRsSErMBwZt0LKuiNV5BNLe
+         HaB/qAIV9Mf24nmQXENEiuxYV6JNkzHSiBQG6M6eQoELavkXcP3wcqQhgoeIwJQVLXor
+         ooso4pmvS2xN6nj2uFJRSIWQHPpWQ/m6qPUDmTpbYXcY0lCYgxboMff304KgxA5mILlZ
+         o/kWRmi4HjXa2L8jhL0Xyv3NthfQCDPn+GIo1ninDqqG558fHIMRw+2feoObEMK7cE2/
+         zOUQ==
+X-Gm-Message-State: AGi0PuZUJ81XxwNcoypICF5MWkRarSRD6rXf3oG0cIZsVwI6stBwWDc/
+        0gTSHXwywmBP4qlbJIErHaEXcs3jj72UAv5pAqs=
+X-Google-Smtp-Source: APiQypKaO9W65Xbq6DTbEi00VBnOqfpMGUq/H4qUQG6zRhnIEl6P9hJ6oEhz+iXGRx5G3BxLEZMkw1nz0eiSb08RjA8=
+X-Received: by 2002:a92:8d9d:: with SMTP id w29mr1330029ill.168.1588211422430;
+ Wed, 29 Apr 2020 18:50:22 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1588092152.git.chris@chrisdown.name> <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+ <CALOAHbCotD1-+o_XZPU_4_i8Nn98r5F_5NpGVd=z6UG=rUcCmA@mail.gmail.com>
+ <20200430011626.GA2754277@chrisdown.name> <CALOAHbCL_JJgcy9r99Kn81-o_t-fs_nQ+n7aKMHO-02QMCufEw@mail.gmail.com>
+ <20200430014603.GB2754277@chrisdown.name>
+In-Reply-To: <20200430014603.GB2754277@chrisdown.name>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Thu, 30 Apr 2020 09:49:46 +0800
+Message-ID: <CALOAHbAzZUwGq3mnEtOcSetvAAm+m=X_KnQ2eS9U0QQVHggWYg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
+ is above protection
+To:     Chris Down <chris@chrisdown.name>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
         Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-Message-ID: <20200430014603.GB2754277@chrisdown.name>
-References: <cover.1588092152.git.chris@chrisdown.name>
- <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
- <CALOAHbCotD1-+o_XZPU_4_i8Nn98r5F_5NpGVd=z6UG=rUcCmA@mail.gmail.com>
- <20200430011626.GA2754277@chrisdown.name>
- <CALOAHbCL_JJgcy9r99Kn81-o_t-fs_nQ+n7aKMHO-02QMCufEw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CALOAHbCL_JJgcy9r99Kn81-o_t-fs_nQ+n7aKMHO-02QMCufEw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Yafang Shao writes:
->My concern is why we add these barriers to memcg protection
->specifically but don't add these barriers to the other memebers like
->memcg->oom_group which has the same issue ?
->What is the difference between these members and that members ?
+On Thu, Apr 30, 2020 at 9:46 AM Chris Down <chris@chrisdown.name> wrote:
+>
+> Yafang Shao writes:
+> >My concern is why we add these barriers to memcg protection
+> >specifically but don't add these barriers to the other memebers like
+> >memcg->oom_group which has the same issue ?
+> >What is the difference between these members and that members ?
+>
+> There are certainly more missing cases -- I didn't look at oom_group
+> specifically, but it sounds likely if there's not other mitigating factors.
+> Most of us have just been busy and haven't had time to comprehensively fix all
+> the potential store and load tears.
+>
+> Tearing is another case of something that would be nice to fix once and for all
+> in the memcg code, but isn't causing any significant issues for the timebeing.
+> We should certainly aim to avoid introducing any new tearing opportunities,
+> though :-)
+>
+> So the answer is just that improvement is incremental and we've not had the
+> time to track down and fix them all. If you find more cases, feel free to send
+> out the patches and I'll be happy to take a look.
 
-There are certainly more missing cases -- I didn't look at oom_group 
-specifically, but it sounds likely if there's not other mitigating factors.  
-Most of us have just been busy and haven't had time to comprehensively fix all 
-the potential store and load tears.
+Thanks for your suggestion.
+I'm planning to add these barriers all over the memory cgroup code.
 
-Tearing is another case of something that would be nice to fix once and for all 
-in the memcg code, but isn't causing any significant issues for the timebeing.  
-We should certainly aim to avoid introducing any new tearing opportunities, 
-though :-)
-
-So the answer is just that improvement is incremental and we've not had the 
-time to track down and fix them all. If you find more cases, feel free to send 
-out the patches and I'll be happy to take a look.
+-- 
+Thanks
+Yafang
