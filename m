@@ -2,203 +2,156 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22D751C03B2
-	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 19:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 915BD1C04B1
+	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 20:27:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726517AbgD3RRo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Apr 2020 13:17:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53688 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726440AbgD3RRn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 13:17:43 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UHBAOb012372;
-        Thu, 30 Apr 2020 10:17:36 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
- b=UwYx/u+0fh241hUNcZgGKqHL5V4ELty2RWpCdqgMT0ZBbPxqdU0Fhqfi75w7nViPe61G
- /nslJTapzyDzqKfO/nu764IjVrHPiMp/1mdYpj8Q9fEtvtKTcah9+yEP1LcTi4GYvg/d
- A6pRWbpmk0PJe6L3ND12b3RmWUold9m26TU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30pq0dqpwj-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Apr 2020 10:17:36 -0700
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 30 Apr 2020 10:17:35 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PMJJQmzBOBq4gF8UBT4wLBmavJbI4FbOmKUl1gWjVXpNPC1HO6y7mlUP0lcOXFKG2DSKV7Iv7XdWjU2b8ACaJlQz4z6skil76gXf7wEZS6CF8kVmz+Lr2kniFqUYLhAwvQfACObE0DOX95I9nFguJnHz82p+Ey0SF94aa6+/kdDOyBn2XV1phPYMVJOCpVdD1346FUpPY2j3elA/q+r7vvZQXbFYdbNmbK5rIgW1sBJk9JvLMS8RGcMFG5SEJoVUea92Wov1mLuh/6A2t3vPzwPB4Pb4Ufr1P9NFlva914SmT+v6o0NhmeTTro2HzHAL4LcnSN3YQmGwOAjrk5amkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
- b=PWC9qXK0EXI8Fak4JC3kKMtc9NiW0G9dyaBVxxntUd9GauyBpF1HVUfo4z/3FCgWMXLzreV3W1LEvAPhQaHED9HdoAyL3x3rQEVH9W0WBu7cIBJj/V7mbH6m8Z5QPx42D+yaSdoGItl7DI7FuQMIGWbDRCmjxF5+MqvvYKNXsMoUr7wWVuOEQpN07v+I3QyWikmKo999Ad0EfuaixwHwYGcVu85JqZdwAJVjsXjOxV8euJ8oVWB2ZpNxFFivhyUFOgJjj7EzWJuyQi4X7pK3dio9Y+Fj2pBzYrNz6aFIOj3e6c/nzL1TUUAAon5rc9vxGdoIQGgno11oP5Vy5gnU5g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
- b=IiYRJSAG8ViIvXxNl8nEmF22Bx8P+m9axmITxNB/qM9OFs7hvByoOT9FvSDdCWa/m7mU2YiC7sGwOFAXwneX1d+M2K+Z1vVdL+p+HEjTvuA6qLq4WzWaVuQW9TlG3Lx61ZcuaZBuDUwENC2n9j9aQWaM3wVVMa1zVd3uyJ/26m8=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2837.namprd15.prod.outlook.com (2603:10b6:a03:f9::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
- 2020 17:17:20 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
- 17:17:20 +0000
-Date:   Thu, 30 Apr 2020 10:17:16 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Michal Hocko <mhocko@kernel.org>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
- is above protection
-Message-ID: <20200430171716.GB339283@carbon.dhcp.thefacebook.com>
-References: <cover.1588092152.git.chris@chrisdown.name>
- <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
- <20200429101510.GA28637@dhcp22.suse.cz>
- <20200429140330.GA5054@cmpxchg.org>
- <20200429150414.GI28637@dhcp22.suse.cz>
- <20200429165627.GA24768@cmpxchg.org>
- <20200430145721.GF12655@dhcp22.suse.cz>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430145721.GF12655@dhcp22.suse.cz>
-X-ClientProxiedBy: CO2PR04CA0115.namprd04.prod.outlook.com
- (2603:10b6:104:7::17) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:cc83) by CO2PR04CA0115.namprd04.prod.outlook.com (2603:10b6:104:7::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 17:17:19 +0000
-X-Originating-IP: [2620:10d:c090:400::5:cc83]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1325a6e2-998c-41a6-850c-08d7ed2a5704
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2837:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2837AF00BDC7A405A7C4678FBEAA0@BYAPR15MB2837.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-Forefront-PRVS: 0389EDA07F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: easJJzHz8As8dVFzKMW6GeQL2GQ6vU6RQK6uZL4jDrJuc1yyrfIEfZ7jsGN30BQXsnvjmNTHTll8Fj3udUcDpCzfc7ueP2U+tURze/geFheWAneLrouNVZcLiI79pc9sW9yVdjK41hncG9xWBq660r+6DJpqop5K5U88fpY/JsH7rfc+lBdBoqr2JoLmNctgWgEJHLvSUg8I9txls2nO3UFhTFoejlGPJrM9mbut1b1R2LJ8Q5Jj2jfMItmQiGtc9E/Zy2RyX7NbjvVHX/c/erWTjun8V9Te9t4W4QnyWjyvfWtQaA4SisGzA8sgjrlUKxwwYJMWgWzDQ0mDfisIgXDz+BPtw6IjGo14J+TNaJUdPkwtM0X35B64s3FbQ0lOeZsguMizuL/zFZvTzKpHQDWucPUvu3yLf0Xh9NQWJVgoe3m9cedhyoWHWa8JvhDpVWfK+dUBIPhMlxAvdSny1FP5WkjqsZOIhOHNekABYJ0qWQr9BsW3OFuCgme+Gctm
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(346002)(366004)(136003)(39860400002)(8936002)(8676002)(6506007)(55016002)(2906002)(16526019)(186003)(9686003)(52116002)(316002)(54906003)(33656002)(7696005)(86362001)(4326008)(478600001)(5660300002)(1076003)(66556008)(66476007)(66946007)(6666004)(6916009)(21314003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: tBQG51XtAKwy9D/TGpnLEujVwyabrd2Zs9+U0oQL4pCRw4RAFnIZc4FhzPFmSIleynE2vihUPuFV6QfKpwDupmZQ4qyg8Jk+pWwLeMypbLrRR4tIMgj5hH0y9sLkuWs7j+0fqNtFHJQb0DkoikdvtfgebgTAhIiiERn91ppAU3J1bunKz9wubLOdHyoarOw9YAcMGDMb6hhKXAHNWEHktoPBdyQ8IZ3t736E/46SNIVNHDw82eq4LkPzV355/b9bzaxXR5SybZmcI4rylyqVyiNwz/zvo8V7yoMsI/Cg+oLTr7hcv/gZahyj0rerbhjqB1McjHqXJ4R4gOrQpGail+PAvgLJYX1eFTIQwpsGsELTswbfKVZefPLacFZcNgrTExyhX4gTgCwY+Vw3FUR9pJjzMVZHfVmxGYkby3pT/aV6AkdJtNksPUVm5Ltm7DayOAQ2EMrnaXlTdthfMPWfkIkHjQI2F29odIEwX7mSpduI/k4uOINbrTK+gjUtSPFiIWa9cHHV15KP9XW+fm+kW8sZHDqNH/jOohCYKV+udVQOnmGpgaNoBMJ12u/xwx0vNsd8EATjDnNq4qwH8lWPRMIY1bB9AHHGsJgS5VAXDfYtvG5ptf0M+Eozp13t/QSth7P+HwXeWQS3jasimz3gL35GQjOYgkjl9LFuUg46vO8DXk7+Dyz6vOm6bSvi7w7BlKtTbyHivNnQrmRhOBE4t12ydRegThoebPh/wfTy4xdzryeex5LlIH19rsTS1oVg6FY7XZoBlU9oQcURHr1XXyKKwmU8lZBe/q44IdUNHFiV/gJR40TAgA0ib7rWKCsIHwmVXXu8a/pAlC+2Ls1PgQ==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1325a6e2-998c-41a6-850c-08d7ed2a5704
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 17:17:20.3236
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: +oTmHraNNsociSBsOeyxzbOXgQ2s4p1gQFN2q21FGyCPT2zyCc0q3+34+8bphoF8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2837
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_11:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- priorityscore=1501 clxscore=1015 adultscore=0 lowpriorityscore=0
- impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0
- mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2003020000 definitions=main-2004300136
-X-FB-Internal: deliver
+        id S1726420AbgD3S1u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Apr 2020 14:27:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42044 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725844AbgD3S1u (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 14:27:50 -0400
+Received: from mail-ua1-x94a.google.com (mail-ua1-x94a.google.com [IPv6:2607:f8b0:4864:20::94a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21719C035494
+        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 11:27:50 -0700 (PDT)
+Received: by mail-ua1-x94a.google.com with SMTP id v27so3021350uaa.22
+        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 11:27:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=Jd1/haHiGLsB9DtO70aA7TDJJ8F7SbAfwTGIrfE2+1I=;
+        b=iErXb3iypgOLBQLKzSmwYHMdYYIq4FQ/Fs5O99JN5OVPg/URrWQYpUpa4kY7FYf/BC
+         XiR39ubKq+M9XC9dm4+/NQtJp45w0zaUOcxMguhS1TnX7J/535wLELSBBjUKWJ1dWqE6
+         iO6IpODegKvCUHTwKkjF0rYnv7hlPTcyspEUr8iVEgu2zy0g1ZGqrG9JyyK0cqlnx0xy
+         hfdzksqUkq3dN7eAwinITbGyet9pI6lrH090wPE8vGhavh9k/dzJUFPKlX79cfP3D+ls
+         gIS1rabZP18mssvRf0qDpla0A4w7qoWT35CVtPk8OJxUx9mN9fMmyxMODtpX9appu2eY
+         Js8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=Jd1/haHiGLsB9DtO70aA7TDJJ8F7SbAfwTGIrfE2+1I=;
+        b=GOvtLDNSjZv/CdVrcpPpugWEmJqpah35Hdz6xTXBP6eg0D7JvmKVPkiFb893B3a1PG
+         WyXY+FcEhzjnbMOP/D53j4D9k7K3GG/0Ig3rfQSZakZAkaYcwWD9hlMJe+8SEYvEnv0u
+         Opq8AqBklCE9cEYgszDSNDfahb2XOLZzySSezj/OGEbNvN+798QHywCWMm5JLzRDiKGR
+         zEkID0c9LfqQWZYyxw9GQblDcpqiQENDhUK+7DphV0u+p0+UaHY2FMbj59SlhFDfrxdB
+         GGqjShxjZk+rks0GzNZB2vL9tijfEdhRzCqjyxeI77iPl1TbZYGBcyEvSjc+whpegPnX
+         03Sw==
+X-Gm-Message-State: AGi0PuYMJnvWzMVVhiRhuSr6VPnVjkzgIRsCpS/+ex5IeA6UDJscxGOv
+        KpQt7FGBdSMXKPf/1rf+NK/eaT7YJxiWqQ==
+X-Google-Smtp-Source: APiQypIJnnUciZumXRHEJORNQcdjcnFEMXOXdpW+p2iyl9bRjHAlZXre3Ldi7KIlBZPqLSNMvedoctuZFZ1Xag==
+X-Received: by 2002:a9f:2188:: with SMTP id 8mr8788uac.46.1588271269078; Thu,
+ 30 Apr 2020 11:27:49 -0700 (PDT)
+Date:   Thu, 30 Apr 2020 11:27:12 -0700
+Message-Id: <20200430182712.237526-1-shakeelb@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.26.2.526.g744177e7f7-goog
+Subject: [PATCH] memcg: oom: ignore oom warnings from memory.max
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 04:57:21PM +0200, Michal Hocko wrote:
-> On Wed 29-04-20 12:56:27, Johannes Weiner wrote:
-> [...]
-> > I think to address this, we need a more comprehensive solution and
-> > introduce some form of serialization. I'm not sure yet how that would
-> > look like yet.
-> 
-> Yeah, that is what I've tried to express earlier and that is why I would
-> rather go with an uglier workaround for now and think about a more
-> robust effective values calculation on top.
->  
-> > I'm still not sure it's worth having a somewhat ugly workaround in
-> > mem_cgroup_protection() to protect against half of the bug. If you
-> > think so, the full problem should at least be documented and marked
-> > XXX or something.
-> 
-> Yes, this makes sense to me. What about the following?
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 1b4150ff64be..50ffbc17cdd8 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -350,6 +350,42 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
->  	if (mem_cgroup_disabled())
->  		return 0;
->  
-> +	/*
-> +	 * There is no reclaim protection applied to a targeted reclaim.
-> +	 * We are special casing this specific case here because
-> +	 * mem_cgroup_protected calculation is not robust enough to keep
-> +	 * the protection invariant for calculated effective values for
-> +	 * parallel reclaimers with different reclaim target. This is
-> +	 * especially a problem for tail memcgs (as they have pages on LRU)
-> +	 * which would want to have effective values 0 for targeted reclaim
-> +	 * but a different value for external reclaim.
-> +	 *
-> +	 * Example
-> +	 * Let's have global and A's reclaim in parallel:
-> +	 *  |
-> +	 *  A (low=2G, usage = 3G, max = 3G, children_low_usage = 1.5G)
-> +	 *  |\
-> +	 *  | C (low = 1G, usage = 2.5G)
-> +	 *  B (low = 1G, usage = 0.5G)
-> +	 *
-> +	 * For the global reclaim
-> +	 * A.elow = A.low
-> +	 * B.elow = min(B.usage, B.low) because children_low_usage <= A.elow
-> +	 * C.elow = min(C.usage, C.low)
-> +	 *
-> +	 * With the effective values resetting we have A reclaim
-> +	 * A.elow = 0
-> +	 * B.elow = B.low
-> +	 * C.elow = C.low
-> +	 *
-> +	 * If the global reclaim races with A's reclaim then
-> +	 * B.elow = C.elow = 0 because children_low_usage > A.elow)
-> +	 * is possible and reclaiming B would be violating the protection.
-> +	 *
-> +	 */
-> +	if (memcg == root)
-> +		return 0;
-> +
->  	if (in_low_reclaim)
->  		return READ_ONCE(memcg->memory.emin);
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 05b4ec2c6499..df88a22f09bc 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6385,6 +6385,14 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
->  
->  	if (!root)
->  		root = root_mem_cgroup;
-> +
-> +	/*
-> +	 * Effective values of the reclaim targets are ignored so they
-> +	 * can be stale. Have a look at mem_cgroup_protection for more
-> +	 * details.
-> +	 * TODO: calculation should be more robust so that we do not need
-> +	 * that special casing.
-> +	 */
->  	if (memcg == root)
->  		return MEMCG_PROT_NONE;
+Lowering memory.max can trigger an oom-kill if the reclaim does not
+succeed. However if oom-killer does not find a process for killing, it
+dumps a lot of warnings.
 
-Acked-by: Roman Gushchin <guro@fb.com>
+Deleting a memcg does not reclaim memory from it and the memory can
+linger till there is a memory pressure. One normal way to proactively
+reclaim such memory is to set memory.max to 0 just before deleting the
+memcg. However if some of the memcg's memory is pinned by others, this
+operation can trigger an oom-kill without any process and thus can log a
+lot un-needed warnings. So, ignore all such warnings from memory.max.
 
-Thanks!
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ include/linux/oom.h | 3 +++
+ mm/memcontrol.c     | 9 +++++----
+ mm/oom_kill.c       | 2 +-
+ 3 files changed, 9 insertions(+), 5 deletions(-)
+
+diff --git a/include/linux/oom.h b/include/linux/oom.h
+index c696c265f019..6345dc55df64 100644
+--- a/include/linux/oom.h
++++ b/include/linux/oom.h
+@@ -52,6 +52,9 @@ struct oom_control {
+ 
+ 	/* Used to print the constraint info. */
+ 	enum oom_constraint constraint;
++
++	/* Do not warn even if there is no process to be killed. */
++	bool no_warn;
+ };
+ 
+ extern struct mutex oom_lock;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 317dbbaac603..a1f00d9b9bb0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1571,7 +1571,7 @@ unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
+ }
+ 
+ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+-				     int order)
++				     int order, bool no_warn)
+ {
+ 	struct oom_control oc = {
+ 		.zonelist = NULL,
+@@ -1579,6 +1579,7 @@ static bool mem_cgroup_out_of_memory(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 		.memcg = memcg,
+ 		.gfp_mask = gfp_mask,
+ 		.order = order,
++		.no_warn = no_warn,
+ 	};
+ 	bool ret;
+ 
+@@ -1821,7 +1822,7 @@ static enum oom_status mem_cgroup_oom(struct mem_cgroup *memcg, gfp_t mask, int
+ 		mem_cgroup_oom_notify(memcg);
+ 
+ 	mem_cgroup_unmark_under_oom(memcg);
+-	if (mem_cgroup_out_of_memory(memcg, mask, order))
++	if (mem_cgroup_out_of_memory(memcg, mask, order, false))
+ 		ret = OOM_SUCCESS;
+ 	else
+ 		ret = OOM_FAILED;
+@@ -1880,7 +1881,7 @@ bool mem_cgroup_oom_synchronize(bool handle)
+ 		mem_cgroup_unmark_under_oom(memcg);
+ 		finish_wait(&memcg_oom_waitq, &owait.wait);
+ 		mem_cgroup_out_of_memory(memcg, current->memcg_oom_gfp_mask,
+-					 current->memcg_oom_order);
++					 current->memcg_oom_order, false);
+ 	} else {
+ 		schedule();
+ 		mem_cgroup_unmark_under_oom(memcg);
+@@ -6106,7 +6107,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
+ 		}
+ 
+ 		memcg_memory_event(memcg, MEMCG_OOM);
+-		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
++		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0, true))
+ 			break;
+ 	}
+ 
+diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+index 463b3d74a64a..5ace39f6fe1e 100644
+--- a/mm/oom_kill.c
++++ b/mm/oom_kill.c
+@@ -1098,7 +1098,7 @@ bool out_of_memory(struct oom_control *oc)
+ 
+ 	select_bad_process(oc);
+ 	/* Found nothing?!?! */
+-	if (!oc->chosen) {
++	if (!oc->chosen && !oc->no_warn) {
+ 		dump_header(oc, NULL);
+ 		pr_warn("Out of memory and no killable processes...\n");
+ 		/*
+-- 
+2.26.2.526.g744177e7f7-goog
+
