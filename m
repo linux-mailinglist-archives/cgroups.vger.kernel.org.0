@@ -2,135 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E09F1C07CD
-	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 22:23:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EF691C09CC
+	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 23:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726673AbgD3UXo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Apr 2020 16:23:44 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:40450 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726488AbgD3UXn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 16:23:43 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UKILa9024351;
-        Thu, 30 Apr 2020 13:23:34 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=DRHrq5ZeTcX9SCKsKRJolng7HMcc8vMJqdritvpAE4Iyvz36N8e2C6vBX+SixpmGqp/T
- 0N3h1E+H6RkdJDhIYEka6xP9tWeeMK9/ri1lkv1bRuxGqPw68D5elzVf5rlx5sLE+1Li
- XBoJFG8uUTvTo16YKWayP8uFfL5e8ZADTdE= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 30q6y12c0q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 30 Apr 2020 13:23:34 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Thu, 30 Apr 2020 13:23:33 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HZKoI9RO4x3HaAg/NjVucBcwv4rIztWJunKbDaqeGOUocl9EKRImIyHHpBqHrlUSw7mOxzlhW6vkCOv8Y6297DV8iNYI8X1uXzoxBh+jpQ8L7aQKeMHVxYWabwEqb3ymFgpEmzbiC1Zlcx8wWauEVnyQLBnjMO44c+6sTnh1HMyMfiuGzZqbnQLKIv2gyEXF+Igb+GrB28cbXfCYr/qDVdvtlGnn046WK0X7M3QjM3/MrXei+2dBrJJ1GodlnqUXM19OVMiWKSH9J66xFX89iuh3jsd4FyU26/A7KG38C1GIn/z/LnS4NVTsfADT9E7PdZULZvjCuruCVhCIwD3uzQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=PUmqHPpynU5iK7OmiY+5GFMYqUS/QtWvlkbwmGyMcyRileP8Ssnk77FcDdxR658xzCAtgi4zLUWFIIOqiIQPydbdU8W8azAvFcBlToCiavnYa/hk0pZBTXU76nT95Nk+93k3BPhGmtURiUIaASoUilK64Nrqo+e4oS7gxZ2PB5v43nCDjzNFGHr36MzhaSfF6Omm53FLjlWhUrVjcye8zziI1ZiYrU+1N1B/HMon6U5hRUxeNc7qI48rs3IIFiZFo+LpTJKPzjMECBn2BYLNkybYJouU0eJJV3+PGrcb6DKeKoMNcYigI+POUguP1tbpFhDRnXswFpWwvWyv50oXNA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RCCXWDjVRlwpddUB4DfuXqXk65Tcvr+BQrgC6dU4n3Y=;
- b=el021WNRoYt4oU9x6jdtZmIKUSwZCUJRGK5G8Af46n9hsXTc8NmVj4bkx1KWtdFY/KUzx3afaR+pffbFNbrwFt+gjtdHQGfejdKVx57GIZA08hKLlx/EqxucCbTWPC8AqT8N4vNvyhwQTOnMGJS4etKzIdgQ3C3WOiXRT22cKIU=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3461.namprd15.prod.outlook.com (2603:10b6:a03:109::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
- 2020 20:23:24 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
- 20:23:23 +0000
-Date:   Thu, 30 Apr 2020 13:23:19 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-Message-ID: <20200430202319.GF339283@carbon.dhcp.thefacebook.com>
-References: <20200430182712.237526-1-shakeelb@google.com>
- <20200430190610.GD339283@carbon.dhcp.thefacebook.com>
- <20200430193049.GB2436@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200430193049.GB2436@cmpxchg.org>
-X-ClientProxiedBy: MWHPR14CA0008.namprd14.prod.outlook.com
- (2603:10b6:300:ae::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S1727879AbgD3Vzd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Apr 2020 17:55:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727070AbgD3Vzd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 17:55:33 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D253C08E859
+        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id a32so1460790pje.5
+        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
+        b=0YJweBxdqRGXk8CKADPYZT2TDMDjlejyhecZFIP6Pdqu2Rol0vua+RkjawOc6lW+4C
+         uye8FqmbkqGQFahJuYyZ/sVkYDn8YKcognO7HZN5LGsmML6yIXlmeCxIkANnyZNQ1gTG
+         /9xSR/dOm1broZSmXWyPapxeqpe3M9DwJQedEjQkHUFGZC4OxPB9a94qfaCo8FkfLTG2
+         z4UdgSMg6xqZqbdaMkkKFbSj8MCsvkht1TJbHhLVLcwEjDr92euBMUJXifl8yCQybF3i
+         0VWB+PK6QrXPrkeZTzbIW4Ds0P1gdgZDHzx3P27ENgTnRXQIqNtK/jjJtTG7opYmGATG
+         kgeg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
+        b=oa+7+Nd9k/31L/IM8oBjWeU6P5NdVUzIVEb6Q37e9c9D5Ays9ZxkBYZLRXiW2sT+He
+         yziymMNuv96Xj+CkpRw/Wc/zqE8yj8qpCJntOFAc+sXobtHhZ7FN2ylrTR3SZab2fLvZ
+         Neibtzsz4IR37RoCVwHixtiGsOWItVc9kJlnO9BfuWuiWoo3gK9w6J0Gt8uBdgYEYkZF
+         Z/vwfQkaiR10YN2t8sCrIfupv7OLp7wOaTL8MTJiZPqZOcG8AyhkCZ68pY+p0+rJhyYk
+         F8azSfPm3KEQMrK7QDw/S8hHvoKOWBz/2EunOJaEKjGuTpHgr/Xp1dM5WnGgIs7fu8YR
+         vMfw==
+X-Gm-Message-State: AGi0PuZDG9IEl5TPyD02PI7UTm9wi9gJXfz/ZcvYUVviRVmb/ugmTB/j
+        LUYPgR5N2k2KkvUFOTSECWX4zQ==
+X-Google-Smtp-Source: APiQypKZKsYx7E2CGdgFsbEsXPiGTeppVxcKMSgLFPw/aX5eOiEu/pEAX05ugbUD8BcvAoby192kSA==
+X-Received: by 2002:a17:902:7b94:: with SMTP id w20mr1140125pll.8.1588283732465;
+        Thu, 30 Apr 2020 14:55:32 -0700 (PDT)
+Received: from [192.168.1.188] ([66.219.217.145])
+        by smtp.gmail.com with ESMTPSA id i25sm601473pfo.196.2020.04.30.14.55.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 30 Apr 2020 14:55:31 -0700 (PDT)
+Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
+ target handling
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
+        josef@toxicpanda.com, asml.silence@gmail.com, ming.lei@redhat.com,
+        bvanassche@acm.org
+References: <20200413162758.97252-1-tj@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <6ee6360e-1a35-874c-2263-6fb21da66591@kernel.dk>
+Date:   Thu, 30 Apr 2020 15:55:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:f631) by MWHPR14CA0008.namprd14.prod.outlook.com (2603:10b6:300:ae::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 20:23:22 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f631]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ac81bdc7-6756-458d-1aa7-08d7ed4454f8
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3461:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3461E7DB05EA67D8DEEF2479BEAA0@BYAPR15MB3461.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-Forefront-PRVS: 0389EDA07F
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4J9UBUm7edt6Fbh9lykJ6258YEnEB0o6e1HqsPj6I4CEiqT17AVipQOYMciHMwzzxUl4Wk+psglXD3y7JLyuo/RgVFzpkVNO4lzMiG8q/2c5kE3eoHnwsVRjiXYWQ55OXUUpgtOEngS7aUgNe2mLFufoKVfn5pw5zMpnhbGuaGAXXAex8HeTJBXEmNapg3373XYYreuaS8dsUEVBs7jlFEXUcF3inmIL1UwvX660kWWdOO0SIQz87PfmdDO6gY/1VHRR6km+pIzNfbTauoc+vyE5POixv2I0jiHkjCiWv9hfSvBGjhctzfePA0FD9U2122pbjKo2wJZTAOPuncnbEAj/aUJpTQwfv+6DInmEfykFCHMhapZNGoLKgEkClReg97iemhkFz/zrGnEqA+9tFVEm2nTKV4D9O2r4oKW8lwQT4OfPh/mp8DoR0xlwA9Cg
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(376002)(39860400002)(346002)(396003)(136003)(366004)(33656002)(186003)(66556008)(66476007)(16526019)(66946007)(86362001)(2906002)(6506007)(6916009)(7696005)(52116002)(4326008)(1076003)(54906003)(478600001)(8936002)(6666004)(316002)(8676002)(55016002)(5660300002)(9686003)(4744005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: CAsk9/6Bqi+OXEEOmyZkkLINa7YEKwZ6hlhBMW9TEBoOqxaT+YZ1i86LNYikZ80TN1/xUOV4QwaMRiSLo+9fYZDp/FUkCwsMQXz9fHcOEhPkqI6rx840Tq7oSL2CRL7X1BCACs0gKuXWm7qjyMh3u36aL+j49Wb7B68EApx+eFhapcBHGAOubtIkd/WERzUTfFvQ+sQRK57NZ6S+0Jk0LvYbCtNoTddUj/ji5bIVh+DlBuHwJKffu74BC/o2eVj41CRndl7A4GfgzJrLnfLNkSRRkNFVV6bIrkvsCz/mqPAAeP54jLmSGkj7MhoqaxKR+MeT43VO97q7DhnyM2nZd8Xxhxeyye0+On959LQ8zyTGOB4GvBBrXkNciwzYqyBNJHpG+un0wXHfChghgoNb2lQYvVGsIvp3W1WjHM0e/4bRXDCKhtIfGI6csaRowK/7Qfv3UIQhncJ5VrKSd9+GEI+j5XhesxVHDSldfStE6TL+rh0/UWwtq4PbBWcljqjP3gHMoEIib/aSkWwurfbr3NRO6Hi9icW/0UHsNuPAfhKMan535Hj2EoZf1qpJlfZLo5l0th5p5LympuQr7nmt2g3oYZHFpEjf4Fkmtt8D6repe0NNQOgOH3G2GsUczj0F3z0WyVJjeAA9G4QQOG47dHZWc18nzKBELKh13jQMSDySI+q1pCPmw4SZSm7GFmEcQ53sPPEfnpJw5qAFH0nCarKEdYTyg52kn3kt831N39+6ZbHn7VFvQAx1FZvpx+apw3AKgRylA8q/+K517wgv77kjQOSuWTwq+NjLxQ8Tq0/MBOG2OzQtNOEZ2yMmRm0xBrYQiz9/i0HISmn4idaj0Q==
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac81bdc7-6756-458d-1aa7-08d7ed4454f8
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 20:23:23.7158
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: PUPIB6mUrNwZHAnsSVjy7PyI4JuADWmuw+XbguQip8pAEPTdbHOKtqpFnRYdNjV/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3461
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
- definitions=2020-04-30_12:2020-04-30,2020-04-30 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0 phishscore=0
- malwarescore=0 impostorscore=0 mlxlogscore=999 suspectscore=1
- lowpriorityscore=0 bulkscore=0 mlxscore=0 clxscore=1015 priorityscore=1501
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2003020000 definitions=main-2004300152
-X-FB-Internal: deliver
+In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Apr 30, 2020 at 03:30:49PM -0400, Johannes Weiner wrote:
-> On Thu, Apr 30, 2020 at 12:06:10PM -0700, Roman Gushchin wrote:
-> > On Thu, Apr 30, 2020 at 11:27:12AM -0700, Shakeel Butt wrote:
-> > > @@ -6106,7 +6107,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
-> > >  		}
-> > >  
-> > >  		memcg_memory_event(memcg, MEMCG_OOM);
-> > > -		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0))
-> > > +		if (!mem_cgroup_out_of_memory(memcg, GFP_KERNEL, 0, true))
-> > 
-> > I wonder if we can handle it automatically from the oom_killer side?
-> > We can suppress warnings if oc->memcg is set and the cgroup scanning
-> > showed that there are no belonging processes?
+On 4/13/20 10:27 AM, Tejun Heo wrote:
+> Changes from v1[1]
 > 
-> Note that we do remote charging for certain consumers, where memory
-> gets charged from the outside of the cgroup.
+> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
+>   rq->stats_sectors instead as suggested by Pavel Begunkov.
 > 
-> We would want to know if these cause OOMs on an empty cgroup, rather
-> than force-charge the allocations quietly.
+> This patchset improves the following two iocost control behaviors.
 > 
+> * iocost was failing to punish heavy shared IO generators (file metadata, memory
+>   reclaim) through use_delay mechanism - use_delay automatically decays which
+>   works well for iolatency but doesn't match how iocost behaves. This led to
+>   e.g. memory bombs which generate a lot of swap IOs to use over their allotted
+>   amount. This is fixed by adding non-decaying use_delay mechanism.
+> 
+> * The same latency targets were being applied regardless of the IO sizes. While
+>   this works fine for loose targets, it gets in the way when trying to tigthen
+>   them - a latency target adequate for a 4k IO is too short for a 1 meg IO.
+>   iocost now discounts the size portion of cost when testing whether a given IO
+>   met or missed its latency target.
+> 
+> While at it, it also makes minor changse to iocost_monitor.py.
+> 
+> This patchset contains the following five patches.
+> 
+>  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
+>  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
+>  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
+>  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
+> 
+> and is also available in the following git branch.
+> 
+>  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-delay-latency-v2
+> 
+> diffstat follows. Thanks.
+> 
+>  block/Kconfig                  |    1 
+>  block/blk-cgroup.c             |    6 ++++
+>  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++------------
+>  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
+>  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++----------------
+>  5 files changed, 106 insertions(+), 48 deletions(-)
 
-Yeah, good point.
+Applied, thanks Tejun.
+
+-- 
+Jens Axboe
+
