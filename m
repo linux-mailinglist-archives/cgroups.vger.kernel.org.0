@@ -2,119 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EF691C09CC
-	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 23:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C01F61C0B26
+	for <lists+cgroups@lfdr.de>; Fri,  1 May 2020 02:00:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727879AbgD3Vzd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Apr 2020 17:55:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727070AbgD3Vzd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 17:55:33 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D253C08E859
-        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id a32so1460790pje.5
-        for <cgroups@vger.kernel.org>; Thu, 30 Apr 2020 14:55:33 -0700 (PDT)
+        id S1727808AbgEAAAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Apr 2020 20:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37674 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726384AbgEAAAf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 20:00:35 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89721C035494;
+        Thu, 30 Apr 2020 17:00:35 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id 19so3417733ioz.10;
+        Thu, 30 Apr 2020 17:00:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
-        b=0YJweBxdqRGXk8CKADPYZT2TDMDjlejyhecZFIP6Pdqu2Rol0vua+RkjawOc6lW+4C
-         uye8FqmbkqGQFahJuYyZ/sVkYDn8YKcognO7HZN5LGsmML6yIXlmeCxIkANnyZNQ1gTG
-         /9xSR/dOm1broZSmXWyPapxeqpe3M9DwJQedEjQkHUFGZC4OxPB9a94qfaCo8FkfLTG2
-         z4UdgSMg6xqZqbdaMkkKFbSj8MCsvkht1TJbHhLVLcwEjDr92euBMUJXifl8yCQybF3i
-         0VWB+PK6QrXPrkeZTzbIW4Ds0P1gdgZDHzx3P27ENgTnRXQIqNtK/jjJtTG7opYmGATG
-         kgeg==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mOWNIHM3btZ9j8NGTIPkfbXQJm50r4PKpoMQv4LKbCU=;
+        b=TOA/ANfb70xaeNIZuwPe7XM6HwdhADVz6L1VFwi33HMb/y5M5WgGTtZpDZ8WlZjY+s
+         xFY3SD+a5uwlNQCX0ZZ30liXUSeyUwQ4/PePP7Ta2QfGSPDRtU8sygsaBZbpQ/XD4US4
+         gj99XYNqk93FaBc/yFpxyenl4NfN4hIhvPjMIgNN2tLL7WhxcWoYaOG6iC1w+kVfJ4Sh
+         TWt9bMNxfD7/wzCIh5RzTmAHqnQua/zu9GmPI66+VnLZ56vD6wgxB92fHKLOlw3zA6NB
+         XxrU2jcjVQS2AVlubjNuSb0wg9qgF/ANq+MixLoLAbQaEvrX0pCBj0f8Dvyi4Y4GWoEh
+         S0xA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rYEprxh5hRkyIRk0SZJ1yYwJF2zaPFW1K1pdxuC7Zuc=;
-        b=oa+7+Nd9k/31L/IM8oBjWeU6P5NdVUzIVEb6Q37e9c9D5Ays9ZxkBYZLRXiW2sT+He
-         yziymMNuv96Xj+CkpRw/Wc/zqE8yj8qpCJntOFAc+sXobtHhZ7FN2ylrTR3SZab2fLvZ
-         Neibtzsz4IR37RoCVwHixtiGsOWItVc9kJlnO9BfuWuiWoo3gK9w6J0Gt8uBdgYEYkZF
-         Z/vwfQkaiR10YN2t8sCrIfupv7OLp7wOaTL8MTJiZPqZOcG8AyhkCZ68pY+p0+rJhyYk
-         F8azSfPm3KEQMrK7QDw/S8hHvoKOWBz/2EunOJaEKjGuTpHgr/Xp1dM5WnGgIs7fu8YR
-         vMfw==
-X-Gm-Message-State: AGi0PuZDG9IEl5TPyD02PI7UTm9wi9gJXfz/ZcvYUVviRVmb/ugmTB/j
-        LUYPgR5N2k2KkvUFOTSECWX4zQ==
-X-Google-Smtp-Source: APiQypKZKsYx7E2CGdgFsbEsXPiGTeppVxcKMSgLFPw/aX5eOiEu/pEAX05ugbUD8BcvAoby192kSA==
-X-Received: by 2002:a17:902:7b94:: with SMTP id w20mr1140125pll.8.1588283732465;
-        Thu, 30 Apr 2020 14:55:32 -0700 (PDT)
-Received: from [192.168.1.188] ([66.219.217.145])
-        by smtp.gmail.com with ESMTPSA id i25sm601473pfo.196.2020.04.30.14.55.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 30 Apr 2020 14:55:31 -0700 (PDT)
-Subject: Re: [PATCHSET v2 block/for-5.8] iocost: improve use_delay and latency
- target handling
-To:     Tejun Heo <tj@kernel.org>
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, cgroups@vger.kernel.org, newella@fb.com,
-        josef@toxicpanda.com, asml.silence@gmail.com, ming.lei@redhat.com,
-        bvanassche@acm.org
-References: <20200413162758.97252-1-tj@kernel.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <6ee6360e-1a35-874c-2263-6fb21da66591@kernel.dk>
-Date:   Thu, 30 Apr 2020 15:55:30 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mOWNIHM3btZ9j8NGTIPkfbXQJm50r4PKpoMQv4LKbCU=;
+        b=LwN5+gy6VXZKS6S98rgz8tPf/MsKaQn7mxrcczH2kqkTNVdBH2Cynq0EMCi+Abc/Nn
+         sPCz9YvADOXKZWgC/m6M6ue2SxPr7aYViSF7z5OwJIAsrfU+AcyRQnxaHHj90r/xaDaI
+         VvxHQ5e6trW/KL9tWuv+REmwVMaW74g9+KZD4UJfWEHh6DLG7MNcT9fcMvql08ZDrIS7
+         uQLl33mni1B2Y6r9dWnXxUxU5i/feuEeMoNKH3R+NUQs4I5gJLeoAQz2+9YB14twCZCZ
+         WNLTNWHFZ2Us+GzgnJ4QMrUhPunkTAd8hoGbILX65jymCZOgx7233EYPFyr9y/n2Yr5q
+         qMfw==
+X-Gm-Message-State: AGi0PuZm1Lc1ddHjDaeRtSJScHAMWWwgdR1hfkqIagwALxkHvYdDM1z7
+        wUvFXS1p3kkgmKwU2Z0mJ2j4XukgyYQmgPbETTs=
+X-Google-Smtp-Source: APiQypI0Rcquo6Afuwt/R1LcEJK7cymRT8m2/uzj444J31+eCm4fl/hATjqRADUVj9umz79W6KdO/dbd40bqCdfKrYA=
+X-Received: by 2002:a6b:7903:: with SMTP id i3mr1497420iop.66.1588291234028;
+ Thu, 30 Apr 2020 17:00:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200413162758.97252-1-tj@kernel.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1588092152.git.chris@chrisdown.name> <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+ <20200429101510.GA28637@dhcp22.suse.cz> <20200429140330.GA5054@cmpxchg.org>
+ <20200429150414.GI28637@dhcp22.suse.cz> <20200429165627.GA24768@cmpxchg.org> <20200430145721.GF12655@dhcp22.suse.cz>
+In-Reply-To: <20200430145721.GF12655@dhcp22.suse.cz>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Fri, 1 May 2020 07:59:57 +0800
+Message-ID: <CALOAHbBub_oojkb5DpXUoHV=-e9PDAeVzJvKvDtyk-9Jg6_Pkw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
+ is above protection
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/13/20 10:27 AM, Tejun Heo wrote:
-> Changes from v1[1]
-> 
-> * Dropped 0002-block-add-request-io_data_len.patch and updated to use
->   rq->stats_sectors instead as suggested by Pavel Begunkov.
-> 
-> This patchset improves the following two iocost control behaviors.
-> 
-> * iocost was failing to punish heavy shared IO generators (file metadata, memory
->   reclaim) through use_delay mechanism - use_delay automatically decays which
->   works well for iolatency but doesn't match how iocost behaves. This led to
->   e.g. memory bombs which generate a lot of swap IOs to use over their allotted
->   amount. This is fixed by adding non-decaying use_delay mechanism.
-> 
-> * The same latency targets were being applied regardless of the IO sizes. While
->   this works fine for loose targets, it gets in the way when trying to tigthen
->   them - a latency target adequate for a 4k IO is too short for a 1 meg IO.
->   iocost now discounts the size portion of cost when testing whether a given IO
->   met or missed its latency target.
-> 
-> While at it, it also makes minor changse to iocost_monitor.py.
-> 
-> This patchset contains the following five patches.
-> 
->  0001-blk-iocost-switch-to-fixed-non-auto-decaying-use_del.patch
->  0002-blk-iocost-account-for-IO-size-when-testing-latencie.patch
->  0003-iocost_monitor-exit-successfully-if-interval-is-zero.patch
->  0004-iocost_monitor-drop-string-wrap-around-numbers-when-.patch
-> 
-> and is also available in the following git branch.
-> 
->  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-delay-latency-v2
-> 
-> diffstat follows. Thanks.
-> 
->  block/Kconfig                  |    1 
->  block/blk-cgroup.c             |    6 ++++
->  block/blk-iocost.c             |   56 +++++++++++++++++++++++++++++------------
->  include/linux/blk-cgroup.h     |   43 ++++++++++++++++++++++++-------
->  tools/cgroup/iocost_monitor.py |   48 +++++++++++++++++++----------------
->  5 files changed, 106 insertions(+), 48 deletions(-)
+On Thu, Apr 30, 2020 at 10:57 PM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Wed 29-04-20 12:56:27, Johannes Weiner wrote:
+> [...]
+> > I think to address this, we need a more comprehensive solution and
+> > introduce some form of serialization. I'm not sure yet how that would
+> > look like yet.
+>
+> Yeah, that is what I've tried to express earlier and that is why I would
+> rather go with an uglier workaround for now and think about a more
+> robust effective values calculation on top.
+>
 
-Applied, thanks Tejun.
+Agreed.
+If there's a more robust effective values calculation on top, then we
+don't need to hack it here and there.
+
+> > I'm still not sure it's worth having a somewhat ugly workaround in
+> > mem_cgroup_protection() to protect against half of the bug. If you
+> > think so, the full problem should at least be documented and marked
+> > XXX or something.
+>
+> Yes, this makes sense to me. What about the following?
+
+Many thanks for the explaination on this workaround.
+With this explanation, I think the others will have a clear idea why
+we must add this ugly workaround here.
+
+
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 1b4150ff64be..50ffbc17cdd8 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -350,6 +350,42 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
+>         if (mem_cgroup_disabled())
+>                 return 0;
+>
+> +       /*
+> +        * There is no reclaim protection applied to a targeted reclaim.
+> +        * We are special casing this specific case here because
+> +        * mem_cgroup_protected calculation is not robust enough to keep
+> +        * the protection invariant for calculated effective values for
+> +        * parallel reclaimers with different reclaim target. This is
+> +        * especially a problem for tail memcgs (as they have pages on LRU)
+> +        * which would want to have effective values 0 for targeted reclaim
+> +        * but a different value for external reclaim.
+> +        *
+> +        * Example
+> +        * Let's have global and A's reclaim in parallel:
+> +        *  |
+> +        *  A (low=2G, usage = 3G, max = 3G, children_low_usage = 1.5G)
+> +        *  |\
+> +        *  | C (low = 1G, usage = 2.5G)
+> +        *  B (low = 1G, usage = 0.5G)
+> +        *
+> +        * For the global reclaim
+> +        * A.elow = A.low
+> +        * B.elow = min(B.usage, B.low) because children_low_usage <= A.elow
+> +        * C.elow = min(C.usage, C.low)
+> +        *
+> +        * With the effective values resetting we have A reclaim
+> +        * A.elow = 0
+> +        * B.elow = B.low
+> +        * C.elow = C.low
+> +        *
+> +        * If the global reclaim races with A's reclaim then
+> +        * B.elow = C.elow = 0 because children_low_usage > A.elow)
+> +        * is possible and reclaiming B would be violating the protection.
+> +        *
+> +        */
+> +       if (memcg == root)
+> +               return 0;
+> +
+>         if (in_low_reclaim)
+>                 return READ_ONCE(memcg->memory.emin);
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 05b4ec2c6499..df88a22f09bc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6385,6 +6385,14 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+>
+>         if (!root)
+>                 root = root_mem_cgroup;
+> +
+> +       /*
+> +        * Effective values of the reclaim targets are ignored so they
+> +        * can be stale. Have a look at mem_cgroup_protection for more
+> +        * details.
+> +        * TODO: calculation should be more robust so that we do not need
+> +        * that special casing.
+> +        */
+>         if (memcg == root)
+>                 return MEMCG_PROT_NONE;
+>
+>
+> > In practice, I doubt this matters all that much because limit reclaim
+> > and global reclaim tend to occur in complementary
+> > containerization/isolation strategies, not heavily simultaneously.
+>
+> I would expect that as well but this is always hard to tell.
+>
+> --
+> Michal Hocko
+> SUSE Labs
+
+
 
 -- 
-Jens Axboe
-
+Thanks
+Yafang
