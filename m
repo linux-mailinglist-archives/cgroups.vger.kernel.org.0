@@ -2,349 +2,203 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D467C1C00E9
-	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 17:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22D751C03B2
+	for <lists+cgroups@lfdr.de>; Thu, 30 Apr 2020 19:17:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727112AbgD3PxO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 30 Apr 2020 11:53:14 -0400
-Received: from forwardcorp1o.mail.yandex.net ([95.108.205.193]:60056 "EHLO
-        forwardcorp1o.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbgD3PxN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 11:53:13 -0400
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1o.mail.yandex.net (Yandex) with ESMTP id BC2F52E15AB;
-        Thu, 30 Apr 2020 18:53:04 +0300 (MSK)
-Received: from iva8-88b7aa9dc799.qloud-c.yandex.net (iva8-88b7aa9dc799.qloud-c.yandex.net [2a02:6b8:c0c:77a0:0:640:88b7:aa9d])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id YIZSWfcKVt-r3AKo8I7;
-        Thu, 30 Apr 2020 18:53:04 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588261984; bh=gdzeTGVZ6a92XTHXTR/IU8ctQrdTLBYx/L72zKJnp20=;
-        h=In-Reply-To:Message-Id:References:Date:Subject:To:From:Cc;
-        b=QJdX/rliUG2R5fAshlAedZorZ1Y2BtBRShAOZhP/6f3PzFhPIuZcYHmB8mvhckODc
-         dcFnWbfUv3FOJ3ykmg50d8fbhyqhys3TuHTJa6UWN7Y3jm7YdyfwO3c1pTexaUe0i4
-         c1BUTJXBODXvvTZImr4I2WEXIxEeAnvXpNYkz9f0=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from unknown (unknown [178.154.215.84])
-        by iva8-88b7aa9dc799.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id ItUiLwion6-r2WGTIAJ;
-        Thu, 30 Apr 2020 18:53:03 +0300
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client certificate not present)
-From:   Dmitry Yakunin <zeil@yandex-team.ru>
-To:     netdev@vger.kernel.org
-Cc:     khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-Subject: [PATCH iproute2-next 2/2] ss: add support for cgroup v2 information and filtering
-Date:   Thu, 30 Apr 2020 18:52:45 +0300
-Message-Id: <20200430155245.83364-3-zeil@yandex-team.ru>
-In-Reply-To: <20200430155245.83364-1-zeil@yandex-team.ru>
-References: <20200430155245.83364-1-zeil@yandex-team.ru>
+        id S1726517AbgD3RRo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 30 Apr 2020 13:17:44 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:53688 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726440AbgD3RRn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 30 Apr 2020 13:17:43 -0400
+Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 03UHBAOb012372;
+        Thu, 30 Apr 2020 10:17:36 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
+ b=UwYx/u+0fh241hUNcZgGKqHL5V4ELty2RWpCdqgMT0ZBbPxqdU0Fhqfi75w7nViPe61G
+ /nslJTapzyDzqKfO/nu764IjVrHPiMp/1mdYpj8Q9fEtvtKTcah9+yEP1LcTi4GYvg/d
+ A6pRWbpmk0PJe6L3ND12b3RmWUold9m26TU= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 30pq0dqpwj-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 30 Apr 2020 10:17:36 -0700
+Received: from NAM02-SN1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1847.3; Thu, 30 Apr 2020 10:17:35 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=PMJJQmzBOBq4gF8UBT4wLBmavJbI4FbOmKUl1gWjVXpNPC1HO6y7mlUP0lcOXFKG2DSKV7Iv7XdWjU2b8ACaJlQz4z6skil76gXf7wEZS6CF8kVmz+Lr2kniFqUYLhAwvQfACObE0DOX95I9nFguJnHz82p+Ey0SF94aa6+/kdDOyBn2XV1phPYMVJOCpVdD1346FUpPY2j3elA/q+r7vvZQXbFYdbNmbK5rIgW1sBJk9JvLMS8RGcMFG5SEJoVUea92Wov1mLuh/6A2t3vPzwPB4Pb4Ufr1P9NFlva914SmT+v6o0NhmeTTro2HzHAL4LcnSN3YQmGwOAjrk5amkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
+ b=PWC9qXK0EXI8Fak4JC3kKMtc9NiW0G9dyaBVxxntUd9GauyBpF1HVUfo4z/3FCgWMXLzreV3W1LEvAPhQaHED9HdoAyL3x3rQEVH9W0WBu7cIBJj/V7mbH6m8Z5QPx42D+yaSdoGItl7DI7FuQMIGWbDRCmjxF5+MqvvYKNXsMoUr7wWVuOEQpN07v+I3QyWikmKo999Ad0EfuaixwHwYGcVu85JqZdwAJVjsXjOxV8euJ8oVWB2ZpNxFFivhyUFOgJjj7EzWJuyQi4X7pK3dio9Y+Fj2pBzYrNz6aFIOj3e6c/nzL1TUUAAon5rc9vxGdoIQGgno11oP5Vy5gnU5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a7sxeF2d5y5y2WLPeH6+YxlwtfDmnaRPsZHXN9Zo3ns=;
+ b=IiYRJSAG8ViIvXxNl8nEmF22Bx8P+m9axmITxNB/qM9OFs7hvByoOT9FvSDdCWa/m7mU2YiC7sGwOFAXwneX1d+M2K+Z1vVdL+p+HEjTvuA6qLq4WzWaVuQW9TlG3Lx61ZcuaZBuDUwENC2n9j9aQWaM3wVVMa1zVd3uyJ/26m8=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2837.namprd15.prod.outlook.com (2603:10b6:a03:f9::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20; Thu, 30 Apr
+ 2020 17:17:20 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2937.028; Thu, 30 Apr 2020
+ 17:17:20 +0000
+Date:   Thu, 30 Apr 2020 10:17:16 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Michal Hocko <mhocko@kernel.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/2] mm, memcg: Avoid stale protection values when cgroup
+ is above protection
+Message-ID: <20200430171716.GB339283@carbon.dhcp.thefacebook.com>
+References: <cover.1588092152.git.chris@chrisdown.name>
+ <d454fca5d6b38b74d8dc35141e8519b02089a698.1588092152.git.chris@chrisdown.name>
+ <20200429101510.GA28637@dhcp22.suse.cz>
+ <20200429140330.GA5054@cmpxchg.org>
+ <20200429150414.GI28637@dhcp22.suse.cz>
+ <20200429165627.GA24768@cmpxchg.org>
+ <20200430145721.GF12655@dhcp22.suse.cz>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200430145721.GF12655@dhcp22.suse.cz>
+X-ClientProxiedBy: CO2PR04CA0115.namprd04.prod.outlook.com
+ (2603:10b6:104:7::17) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:cc83) by CO2PR04CA0115.namprd04.prod.outlook.com (2603:10b6:104:7::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2958.20 via Frontend Transport; Thu, 30 Apr 2020 17:17:19 +0000
+X-Originating-IP: [2620:10d:c090:400::5:cc83]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1325a6e2-998c-41a6-850c-08d7ed2a5704
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2837:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2837AF00BDC7A405A7C4678FBEAA0@BYAPR15MB2837.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
+X-Forefront-PRVS: 0389EDA07F
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: easJJzHz8As8dVFzKMW6GeQL2GQ6vU6RQK6uZL4jDrJuc1yyrfIEfZ7jsGN30BQXsnvjmNTHTll8Fj3udUcDpCzfc7ueP2U+tURze/geFheWAneLrouNVZcLiI79pc9sW9yVdjK41hncG9xWBq660r+6DJpqop5K5U88fpY/JsH7rfc+lBdBoqr2JoLmNctgWgEJHLvSUg8I9txls2nO3UFhTFoejlGPJrM9mbut1b1R2LJ8Q5Jj2jfMItmQiGtc9E/Zy2RyX7NbjvVHX/c/erWTjun8V9Te9t4W4QnyWjyvfWtQaA4SisGzA8sgjrlUKxwwYJMWgWzDQ0mDfisIgXDz+BPtw6IjGo14J+TNaJUdPkwtM0X35B64s3FbQ0lOeZsguMizuL/zFZvTzKpHQDWucPUvu3yLf0Xh9NQWJVgoe3m9cedhyoWHWa8JvhDpVWfK+dUBIPhMlxAvdSny1FP5WkjqsZOIhOHNekABYJ0qWQr9BsW3OFuCgme+Gctm
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(346002)(366004)(136003)(39860400002)(8936002)(8676002)(6506007)(55016002)(2906002)(16526019)(186003)(9686003)(52116002)(316002)(54906003)(33656002)(7696005)(86362001)(4326008)(478600001)(5660300002)(1076003)(66556008)(66476007)(66946007)(6666004)(6916009)(21314003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: tBQG51XtAKwy9D/TGpnLEujVwyabrd2Zs9+U0oQL4pCRw4RAFnIZc4FhzPFmSIleynE2vihUPuFV6QfKpwDupmZQ4qyg8Jk+pWwLeMypbLrRR4tIMgj5hH0y9sLkuWs7j+0fqNtFHJQb0DkoikdvtfgebgTAhIiiERn91ppAU3J1bunKz9wubLOdHyoarOw9YAcMGDMb6hhKXAHNWEHktoPBdyQ8IZ3t736E/46SNIVNHDw82eq4LkPzV355/b9bzaxXR5SybZmcI4rylyqVyiNwz/zvo8V7yoMsI/Cg+oLTr7hcv/gZahyj0rerbhjqB1McjHqXJ4R4gOrQpGail+PAvgLJYX1eFTIQwpsGsELTswbfKVZefPLacFZcNgrTExyhX4gTgCwY+Vw3FUR9pJjzMVZHfVmxGYkby3pT/aV6AkdJtNksPUVm5Ltm7DayOAQ2EMrnaXlTdthfMPWfkIkHjQI2F29odIEwX7mSpduI/k4uOINbrTK+gjUtSPFiIWa9cHHV15KP9XW+fm+kW8sZHDqNH/jOohCYKV+udVQOnmGpgaNoBMJ12u/xwx0vNsd8EATjDnNq4qwH8lWPRMIY1bB9AHHGsJgS5VAXDfYtvG5ptf0M+Eozp13t/QSth7P+HwXeWQS3jasimz3gL35GQjOYgkjl9LFuUg46vO8DXk7+Dyz6vOm6bSvi7w7BlKtTbyHivNnQrmRhOBE4t12ydRegThoebPh/wfTy4xdzryeex5LlIH19rsTS1oVg6FY7XZoBlU9oQcURHr1XXyKKwmU8lZBe/q44IdUNHFiV/gJR40TAgA0ib7rWKCsIHwmVXXu8a/pAlC+2Ls1PgQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1325a6e2-998c-41a6-850c-08d7ed2a5704
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Apr 2020 17:17:20.3236
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +oTmHraNNsociSBsOeyxzbOXgQ2s4p1gQFN2q21FGyCPT2zyCc0q3+34+8bphoF8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2837
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_11:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
+ priorityscore=1501 clxscore=1015 adultscore=0 lowpriorityscore=0
+ impostorscore=0 malwarescore=0 bulkscore=0 spamscore=0 mlxscore=0
+ mlxlogscore=999 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2003020000 definitions=main-2004300136
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch introduces two new features: obtaining cgroup information and
-filtering sockets by cgroups. These features work based on cgroup v2 ID
-field in the socket (kernel should be compiled with CONFIG_SOCK_CGROUP_DATA).
+On Thu, Apr 30, 2020 at 04:57:21PM +0200, Michal Hocko wrote:
+> On Wed 29-04-20 12:56:27, Johannes Weiner wrote:
+> [...]
+> > I think to address this, we need a more comprehensive solution and
+> > introduce some form of serialization. I'm not sure yet how that would
+> > look like yet.
+> 
+> Yeah, that is what I've tried to express earlier and that is why I would
+> rather go with an uglier workaround for now and think about a more
+> robust effective values calculation on top.
+>  
+> > I'm still not sure it's worth having a somewhat ugly workaround in
+> > mem_cgroup_protection() to protect against half of the bug. If you
+> > think so, the full problem should at least be documented and marked
+> > XXX or something.
+> 
+> Yes, this makes sense to me. What about the following?
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 1b4150ff64be..50ffbc17cdd8 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -350,6 +350,42 @@ static inline unsigned long mem_cgroup_protection(struct mem_cgroup *memcg,
+>  	if (mem_cgroup_disabled())
+>  		return 0;
+>  
+> +	/*
+> +	 * There is no reclaim protection applied to a targeted reclaim.
+> +	 * We are special casing this specific case here because
+> +	 * mem_cgroup_protected calculation is not robust enough to keep
+> +	 * the protection invariant for calculated effective values for
+> +	 * parallel reclaimers with different reclaim target. This is
+> +	 * especially a problem for tail memcgs (as they have pages on LRU)
+> +	 * which would want to have effective values 0 for targeted reclaim
+> +	 * but a different value for external reclaim.
+> +	 *
+> +	 * Example
+> +	 * Let's have global and A's reclaim in parallel:
+> +	 *  |
+> +	 *  A (low=2G, usage = 3G, max = 3G, children_low_usage = 1.5G)
+> +	 *  |\
+> +	 *  | C (low = 1G, usage = 2.5G)
+> +	 *  B (low = 1G, usage = 0.5G)
+> +	 *
+> +	 * For the global reclaim
+> +	 * A.elow = A.low
+> +	 * B.elow = min(B.usage, B.low) because children_low_usage <= A.elow
+> +	 * C.elow = min(C.usage, C.low)
+> +	 *
+> +	 * With the effective values resetting we have A reclaim
+> +	 * A.elow = 0
+> +	 * B.elow = B.low
+> +	 * C.elow = C.low
+> +	 *
+> +	 * If the global reclaim races with A's reclaim then
+> +	 * B.elow = C.elow = 0 because children_low_usage > A.elow)
+> +	 * is possible and reclaiming B would be violating the protection.
+> +	 *
+> +	 */
+> +	if (memcg == root)
+> +		return 0;
+> +
+>  	if (in_low_reclaim)
+>  		return READ_ONCE(memcg->memory.emin);
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 05b4ec2c6499..df88a22f09bc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6385,6 +6385,14 @@ enum mem_cgroup_protection mem_cgroup_protected(struct mem_cgroup *root,
+>  
+>  	if (!root)
+>  		root = root_mem_cgroup;
+> +
+> +	/*
+> +	 * Effective values of the reclaim targets are ignored so they
+> +	 * can be stale. Have a look at mem_cgroup_protection for more
+> +	 * details.
+> +	 * TODO: calculation should be more robust so that we do not need
+> +	 * that special casing.
+> +	 */
+>  	if (memcg == root)
+>  		return MEMCG_PROT_NONE;
 
-Cgroup information can be obtained by specifying --cgroup flag and now contains
-only pathname. For faster pathname lookups cgroup cache is implemented. This
-cache is filled on ss startup and missed entries are resolved and saved
-on the fly.
+Acked-by: Roman Gushchin <guro@fb.com>
 
-Cgroup filter extends EXPRESSION and allows to specify cgroup pathname
-(relative or absolute) to obtain sockets attached only to this cgroup.
-Filter syntax: ss [ cgroup PATHNAME ]
-Examples:
-    ss -a cgroup /sys/fs/cgroup/unified (or ss -a cgroup .)
-    ss -a cgroup /sys/fs/cgroup/unified/cgroup1 (or ss -a cgroup cgroup1)
-
-Signed-off-by: Dmitry Yakunin <zeil@yandex-team.ru>
-Reviewed-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
----
- include/uapi/linux/inet_diag.h |  2 ++
- man/man8/ss.8                  |  9 +++++++
- misc/ss.c                      | 61 ++++++++++++++++++++++++++++++++++++++++++
- misc/ssfilter.h                |  2 ++
- misc/ssfilter.y                | 22 ++++++++++++++-
- 5 files changed, 95 insertions(+), 1 deletion(-)
-
-diff --git a/include/uapi/linux/inet_diag.h b/include/uapi/linux/inet_diag.h
-index 0c1c781..f009abf 100644
---- a/include/uapi/linux/inet_diag.h
-+++ b/include/uapi/linux/inet_diag.h
-@@ -96,6 +96,7 @@ enum {
- 	INET_DIAG_BC_MARK_COND,
- 	INET_DIAG_BC_S_EQ,
- 	INET_DIAG_BC_D_EQ,
-+	INET_DIAG_BC_CGROUP_COND,   /* u64 cgroup v2 ID */
- };
- 
- struct inet_diag_hostcond {
-@@ -157,6 +158,7 @@ enum {
- 	INET_DIAG_MD5SIG,
- 	INET_DIAG_ULP_INFO,
- 	INET_DIAG_SK_BPF_STORAGES,
-+	INET_DIAG_CGROUP_ID,
- 	__INET_DIAG_MAX,
- };
- 
-diff --git a/man/man8/ss.8 b/man/man8/ss.8
-index 023d771..894cb20 100644
---- a/man/man8/ss.8
-+++ b/man/man8/ss.8
-@@ -281,6 +281,15 @@ Class id set by net_cls cgroup. If class is zero this shows priority
- set by SO_PRIORITY.
- .RE
- .TP
-+.B \-\-cgroup
-+Show cgroup information. Below fields may appear:
-+.RS
-+.P
-+.TP
-+.B cgroup
-+Cgroup v2 pathname. This pathname is relative to the mount point of the hierarchy.
-+.RE
-+.TP
- .B \-K, \-\-kill
- Attempts to forcibly close sockets. This option displays sockets that are
- successfully closed and silently skips sockets that the kernel does not support
-diff --git a/misc/ss.c b/misc/ss.c
-index 3ef151f..7b1c94b 100644
---- a/misc/ss.c
-+++ b/misc/ss.c
-@@ -36,6 +36,7 @@
- #include "namespace.h"
- #include "SNAPSHOT.h"
- #include "rt_names.h"
-+#include "cg_map.h"
- 
- #include <linux/tcp.h>
- #include <linux/sock_diag.h>
-@@ -122,6 +123,7 @@ static int follow_events;
- static int sctp_ino;
- static int show_tipcinfo;
- static int show_tos;
-+static int show_cgroup;
- int oneline;
- 
- enum col_id {
-@@ -797,6 +799,7 @@ struct sockstat {
- 	char *name;
- 	char *peer_name;
- 	__u32		    mark;
-+	__u64		    cgroup_id;
- };
- 
- struct dctcpstat {
-@@ -1417,6 +1420,9 @@ static void sock_details_print(struct sockstat *s)
- 
- 	if (s->mark)
- 		out(" fwmark:0x%x", s->mark);
-+
-+	if (s->cgroup_id)
-+		out(" cgroup:%s", cg_id_to_path(s->cgroup_id));
- }
- 
- static void sock_addr_print(const char *addr, char *delim, const char *port,
-@@ -1643,6 +1649,7 @@ struct aafilter {
- 	unsigned int	iface;
- 	__u32		mark;
- 	__u32		mask;
-+	__u64		cgroup_id;
- 	struct aafilter *next;
- };
- 
-@@ -1771,6 +1778,12 @@ static int run_ssfilter(struct ssfilter *f, struct sockstat *s)
- 
- 		return (s->mark & a->mask) == a->mark;
- 	}
-+		case SSF_CGROUPCOND:
-+	{
-+		struct aafilter *a = (void *)f->pred;
-+
-+		return s->cgroup_id == a->cgroup_id;
-+	}
- 		/* Yup. It is recursion. Sorry. */
- 		case SSF_AND:
- 		return run_ssfilter(f->pred, s) && run_ssfilter(f->post, s);
-@@ -1963,6 +1976,23 @@ static int ssfilter_bytecompile(struct ssfilter *f, char **bytecode)
- 
- 		return inslen;
- 	}
-+		case SSF_CGROUPCOND:
-+	{
-+		struct aafilter *a = (void *)f->pred;
-+		struct instr {
-+			struct inet_diag_bc_op op;
-+			__u64 cgroup_id;
-+		} __attribute__((packed));
-+		int inslen = sizeof(struct instr);
-+
-+		if (!(*bytecode = malloc(inslen))) abort();
-+		((struct instr *)*bytecode)[0] = (struct instr) {
-+			{ INET_DIAG_BC_CGROUP_COND, inslen, inslen + 4 },
-+			a->cgroup_id,
-+		};
-+
-+		return inslen;
-+	}
- 		default:
- 		abort();
- 	}
-@@ -2300,6 +2330,22 @@ void *parse_markmask(const char *markmask)
- 	return res;
- }
- 
-+void *parse_cgroupcond(const char *path)
-+{
-+	struct aafilter *res;
-+	__u64 id;
-+
-+	id = get_cgroup2_id(path);
-+	if (!id)
-+		return NULL;
-+
-+	res = malloc(sizeof(*res));
-+	if (res)
-+		res->cgroup_id = id;
-+
-+	return res;
-+}
-+
- static void proc_ctx_print(struct sockstat *s)
- {
- 	char *buf;
-@@ -3095,6 +3141,9 @@ static void parse_diag_msg(struct nlmsghdr *nlh, struct sockstat *s)
- 	s->mark = 0;
- 	if (tb[INET_DIAG_MARK])
- 		s->mark = rta_getattr_u32(tb[INET_DIAG_MARK]);
-+	s->cgroup_id = 0;
-+	if (tb[INET_DIAG_CGROUP_ID])
-+		s->cgroup_id = rta_getattr_u64(tb[INET_DIAG_CGROUP_ID]);
- 	if (tb[INET_DIAG_PROTOCOL])
- 		s->raw_prot = rta_getattr_u8(tb[INET_DIAG_PROTOCOL]);
- 	else
-@@ -3162,6 +3211,11 @@ static int inet_show_sock(struct nlmsghdr *nlh,
- 			out(" class_id:%#x", rta_getattr_u32(tb[INET_DIAG_CLASS_ID]));
- 	}
- 
-+	if (show_cgroup) {
-+		if (tb[INET_DIAG_CGROUP_ID])
-+			out(" cgroup:%s", cg_id_to_path(rta_getattr_u64(tb[INET_DIAG_CGROUP_ID])));
-+	}
-+
- 	if (show_mem || (show_tcpinfo && s->type != IPPROTO_UDP)) {
- 		if (!oneline)
- 			out("\n\t");
-@@ -4987,6 +5041,7 @@ static void _usage(FILE *dest)
- "       --tipcinfo      show internal tipc socket information\n"
- "   -s, --summary       show socket usage summary\n"
- "       --tos           show tos and priority information\n"
-+"       --cgroup        show cgroup information\n"
- "   -b, --bpf           show bpf filter socket information\n"
- "   -E, --events        continually display sockets as they are destroyed\n"
- "   -Z, --context       display process SELinux security contexts\n"
-@@ -5097,6 +5152,8 @@ static int scan_state(const char *state)
- /* Values of 'x' are already used so a non-character is used */
- #define OPT_XDPSOCK 260
- 
-+#define OPT_CGROUP 261
-+
- static const struct option long_opts[] = {
- 	{ "numeric", 0, 0, 'n' },
- 	{ "resolve", 0, 0, 'r' },
-@@ -5133,6 +5190,7 @@ static const struct option long_opts[] = {
- 	{ "net", 1, 0, 'N' },
- 	{ "tipcinfo", 0, 0, OPT_TIPCINFO},
- 	{ "tos", 0, 0, OPT_TOS },
-+	{ "cgroup", 0, 0, OPT_CGROUP },
- 	{ "kill", 0, 0, 'K' },
- 	{ "no-header", 0, 0, 'H' },
- 	{ "xdp", 0, 0, OPT_XDPSOCK},
-@@ -5320,6 +5378,9 @@ int main(int argc, char *argv[])
- 		case OPT_TOS:
- 			show_tos = 1;
- 			break;
-+		case OPT_CGROUP:
-+			show_cgroup = 1;
-+			break;
- 		case 'K':
- 			current_filter.kill = 1;
- 			break;
-diff --git a/misc/ssfilter.h b/misc/ssfilter.h
-index f5b0bc8..d85c084 100644
---- a/misc/ssfilter.h
-+++ b/misc/ssfilter.h
-@@ -11,6 +11,7 @@
- #define SSF_S_AUTO  9
- #define SSF_DEVCOND 10
- #define SSF_MARKMASK 11
-+#define SSF_CGROUPCOND 12
- 
- #include <stdbool.h>
- 
-@@ -25,3 +26,4 @@ int ssfilter_parse(struct ssfilter **f, int argc, char **argv, FILE *fp);
- void *parse_hostcond(char *addr, bool is_port);
- void *parse_devcond(char *name);
- void *parse_markmask(const char *markmask);
-+void *parse_cgroupcond(const char *path);
-diff --git a/misc/ssfilter.y b/misc/ssfilter.y
-index a901ae7..b417579 100644
---- a/misc/ssfilter.y
-+++ b/misc/ssfilter.y
-@@ -36,7 +36,7 @@ static void yyerror(char *s)
- 
- %}
- 
--%token HOSTCOND DCOND SCOND DPORT SPORT LEQ GEQ NEQ AUTOBOUND DEVCOND DEVNAME MARKMASK FWMARK
-+%token HOSTCOND DCOND SCOND DPORT SPORT LEQ GEQ NEQ AUTOBOUND DEVCOND DEVNAME MARKMASK FWMARK CGROUPCOND CGROUPPATH
- %left '|'
- %left '&'
- %nonassoc '!'
-@@ -156,6 +156,14 @@ expr:	'(' exprlist ')'
-         {
-                 $$ = alloc_node(SSF_NOT, alloc_node(SSF_MARKMASK, $3));
-         }
-+        | CGROUPPATH eq CGROUPCOND
-+        {
-+                $$ = alloc_node(SSF_CGROUPCOND, $3);
-+        }
-+        | CGROUPPATH NEQ CGROUPCOND
-+        {
-+                $$ = alloc_node(SSF_NOT, alloc_node(SSF_CGROUPCOND, $3));
-+        }
-         | AUTOBOUND
-         {
-                 $$ = alloc_node(SSF_S_AUTO, NULL);
-@@ -276,6 +284,10 @@ int yylex(void)
- 		tok_type = FWMARK;
- 		return FWMARK;
- 	}
-+	if (strcmp(curtok, "cgroup") == 0) {
-+		tok_type = CGROUPPATH;
-+		return CGROUPPATH;
-+	}
- 	if (strcmp(curtok, ">=") == 0 ||
- 	    strcmp(curtok, "ge") == 0 ||
- 	    strcmp(curtok, "geq") == 0)
-@@ -318,6 +330,14 @@ int yylex(void)
- 		}
- 		return MARKMASK;
- 	}
-+	if (tok_type == CGROUPPATH) {
-+		yylval = (void*)parse_cgroupcond(curtok);
-+		if (yylval == NULL) {
-+			fprintf(stderr, "Cannot parse cgroup %s.\n", curtok);
-+			exit(1);
-+		}
-+		return CGROUPCOND;
-+	}
- 	yylval = (void*)parse_hostcond(curtok, tok_type == SPORT || tok_type == DPORT);
- 	if (yylval == NULL) {
- 		fprintf(stderr, "Cannot parse dst/src address.\n");
--- 
-2.7.4
-
+Thanks!
