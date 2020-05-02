@@ -2,76 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C982C1C0DE9
-	for <lists+cgroups@lfdr.de>; Fri,  1 May 2020 07:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2679A1C247F
+	for <lists+cgroups@lfdr.de>; Sat,  2 May 2020 12:27:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728193AbgEAFyS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 1 May 2020 01:54:18 -0400
-Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:46660 "EHLO
-        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726452AbgEAFyS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 1 May 2020 01:54:18 -0400
-Received: from mxbackcorp1g.mail.yandex.net (mxbackcorp1g.mail.yandex.net [IPv6:2a02:6b8:0:1402::301])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 06D422E0997;
-        Fri,  1 May 2020 08:54:11 +0300 (MSK)
-Received: from sas2-32987e004045.qloud-c.yandex.net (sas2-32987e004045.qloud-c.yandex.net [2a02:6b8:c08:b889:0:640:3298:7e00])
-        by mxbackcorp1g.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id sQZ2gNUITo-s9A8R1rw;
-        Fri, 01 May 2020 08:54:10 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1588312450; bh=XMwVjRdapCx1ZzgjFo7tQjSSW8ZXx9fgUKdnncFJSfs=;
-        h=In-Reply-To:Message-ID:From:Date:References:To:Subject:Cc;
-        b=Vi83saj26yYQO+yf6DyXfGp7sI/ffpMvCROf3BSrOUrxbVNQ1Q1ENJaXbNZ1gMwPL
-         c5elxGEp+fN8M4A8xyZowUlD83s1Rg1e4ZebJ2O8tKW92ZoUlxJMeb8zpo9lJNTBd6
-         u2eFuoChOoDXZdcUKnxJ5njGWVqbONHMtz2ru5q0=
-Authentication-Results: mxbackcorp1g.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b081:1422::1:2])
-        by sas2-32987e004045.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id tn6P5JhdNK-s9WudR5I;
-        Fri, 01 May 2020 08:54:09 +0300
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (Client certificate not present)
-Subject: Re: [PATCH net-next 0/2] inet_diag: add cgroup attribute and filter
-To:     David Miller <davem@davemloft.net>, zeil@yandex-team.ru
-Cc:     netdev@vger.kernel.org, tj@kernel.org, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200430155115.83306-1-zeil@yandex-team.ru>
- <20200430.125506.1341002176317746009.davem@davemloft.net>
-From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-Message-ID: <7fb067b2-6c35-6573-82fe-edce194a7e46@yandex-team.ru>
-Date:   Fri, 1 May 2020 08:54:08 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+        id S1726654AbgEBK1g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 2 May 2020 06:27:36 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41548 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726574AbgEBK1f (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 2 May 2020 06:27:35 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 26E951F4C475056ECB60;
+        Sat,  2 May 2020 18:27:30 +0800 (CST)
+Received: from [127.0.0.1] (10.166.215.99) by DGGEMS402-HUB.china.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server id 14.3.487.0; Sat, 2 May 2020
+ 18:27:22 +0800
+To:     <tj@kernel.org>
+CC:     <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <netdev@vger.kernel.org>,
+        "Libin (Huawei)" <huawei.libin@huawei.com>,
+        <yangyingliang@huawei.com>, <guofan5@huawei.com>,
+        <wangkefeng.wang@huawei.com>
+From:   Yang Yingliang <yangyingliang@huawei.com>
+Subject: cgroup pointed by sock is leaked on mode switch
+Message-ID: <03dab6ab-0ffe-3cae-193f-a7f84e9b14c5@huawei.com>
+Date:   Sat, 2 May 2020 18:27:21 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
  Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200430.125506.1341002176317746009.davem@davemloft.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.166.215.99]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 30/04/2020 22.55, David Miller wrote:
-> From: Dmitry Yakunin <zeil@yandex-team.ru>
-> Date: Thu, 30 Apr 2020 18:51:13 +0300
-> 
->> This patch series extends inet diag with cgroup v2 ID attribute and
->> filter. Which allows investigate sockets on per cgroup basis. Patch for
->> ss is already sent to iproute2-next mailing list.
-> 
-> Ok, this looks fine, series applied.
-> 
-> Although I wish you could have done something like only emit the cgroup
-> attribute if it is a non-default value (zero, or whatever it is).
-> 
-> Every time a new socket attribute is added, it makes long dumps more
-> and more expensive.
-> 
+Hi,
 
-Maybe then put it under condition
+I got an oom panic because cgroup is leaked.
 
-	if (ext & (1 << (INET_DIAG_CLASS_ID - 1)) ||
-	    ext & (1 << (INET_DIAG_TCLASS - 1))) {
+Here is the steps :
+   - run a docker with --cap-add sys_admin parameter and the systemd 
+process in the docker uses both cgroupv1 and cgroupv2
+   - ssh/exit from host to docker repeately
 
-like legacy cgroup id INET_DIAG_CLASS_ID above.
+I find the number nr_dying_descendants is increasing:
+linux-dVpNUK:~ # find /sys/fs/cgroup/ -name cgroup.stat -exec grep 
+'^nr_dying_descendants [^0]'  {} +
+/sys/fs/cgroup/unified/cgroup.stat:nr_dying_descendants 80
+/sys/fs/cgroup/unified/system.slice/cgroup.stat:nr_dying_descendants 1
+/sys/fs/cgroup/unified/system.slice/system-hostos.slice/cgroup.stat:nr_dying_descendants 
+1
+/sys/fs/cgroup/unified/lxc/cgroup.stat:nr_dying_descendants 79
+/sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/cgroup.stat:nr_dying_descendants 
+78
+/sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/system.slice/cgroup.stat:nr_dying_descendants 
+78
 
-(userspace requests it by INET_DIAG_TCLASS because INET_DIAG_CLASS_ID does not fit into field)
+
+The situation is as same as the commit bd1060a1d671 ("sock, cgroup: add 
+sock->sk_cgroup") describes.
+"On mode switch, cgroup references which are already being pointed to by 
+socks may be leaked."
+
+Do we have a fix for this leak now ?
+
+Or how  about fix this by record the cgrp2 pointer, then put it when sk 
+is freeing like this:
+
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index d9bd671105e2..cbb1e76ea305 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -770,6 +770,7 @@ struct sock_cgroup_data {
+  #endif
+          u64        val;
+      };
++    struct cgroup *cgrpv2;
+  };
+
+  /*
+@@ -802,6 +803,7 @@ static inline void sock_cgroup_set_prioidx(struct 
+sock_cgroup_data *skcd,
+          return;
+
+      if (!(skcd_buf.is_data & 1)) {
++        WRITE_ONCE(skcd->cgrpv2, skcd_buf.val);
+          skcd_buf.val = 0;
+          skcd_buf.is_data = 1;
+      }
+@@ -819,6 +821,7 @@ static inline void sock_cgroup_set_classid(struct 
+sock_cgroup_data *skcd,
+          return;
+
+      if (!(skcd_buf.is_data & 1)) {
++        WRITE_ONCE(skcd->cgrpv2, skcd_buf.val);
+          skcd_buf.val = 0;
+          skcd_buf.is_data = 1;
+      }
+diff --git a/net/core/sock.c b/net/core/sock.c
+index a0dda2bf9d7c..7c761ef2d32e 100644
+--- a/net/core/sock.c
++++ b/net/core/sock.c
+@@ -1520,6 +1520,10 @@ static void sk_prot_free(struct proto *prot, 
+struct sock *sk)
+      slab = prot->slab;
+
+      cgroup_sk_free(&sk->sk_cgrp_data);
++    if (sk->sk_cgrp_data.cgrpv2) {
++        cgroup_put(sk->sk_cgrp_data.cgrpv2);
++        sk->sk_cgrp_data.cgrpv2 = NULL;
++    }
+      mem_cgroup_sk_free(sk);
+      security_sk_free(sk);
+      if (slab != NULL)
+
+
+Thanks,
+Yang
+
