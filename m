@@ -2,137 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555AF1C5A6D
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:03:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 791891C5AF7
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:23:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729868AbgEEPDb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 11:03:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
+        id S1729814AbgEEPXm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 11:23:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729470AbgEEPDb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:03:31 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B826FC061A0F
-        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 08:03:30 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id x73so1636315lfa.2
-        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 08:03:30 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729365AbgEEPXm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:23:42 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ED96C061A0F
+        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 08:23:40 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z2so2318133iol.11
+        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 08:23:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G5HI11tS+yKnZwbaq8TtL0vEO4XhsA9qTOxtb1zDBVc=;
-        b=NedESV1mf2KEGbnGwBXjkNGi7R9SVO/NUVnBR/MIIA4ksHkYG9Y0BOJUSO7cPfF101
-         DhqLvXmcnRAqIon/UhQwhmdhaRJTFMRbqv7rnUrFiiLplm7OYMLhdbiEBbtARuNhVV8D
-         LTzgdGvjzWUJX1UQL/oIjMDuzzQetiMjcVkKOHZidnk7VXhouvnvChgf89k1EWSMWRjT
-         FhIwRnMbbr/4G57qwJzkX9wXI0g0aGrRDYcsPodwxKY6npl93JABKfVo0PFuu+LIkLAx
-         gWRTkTusvXUAXg8/Xmo6bq3CqbG9PEAZT5/liY82/n294mGhWG9jm1kwV8U5Yd9K6Gur
-         9WEg==
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TPwxKE0klTjrvpCqkN/+GZfurYoGuk/drCYIDVYxA1Q=;
+        b=W1y7ye3xLvDWbdVRSKUUL0S+8HrvaPz16PwNA1IjuoxOj8GVxyKW6B6/eMTtHRlIiw
+         ocp5PbDJkd5E3DLCWaXeitPpzuGHudOfwlWg5LSj3q6nff83JSBz6DvAeONP/hmEapQN
+         2PMBRjrlNEg2eUMQbLK8DAdexla7k7MjnyfemM6nfThLo7eD7rFlFkWVMDUygtBKHDAT
+         EPuG8ZLDOPKyb2jXLzt4Midt4KUy4VERIq5gbofnW+NSfKhJpCNaV2ggpvueRJd3SYgV
+         vJ5Ed3Tpb+IfkIPJNBfbUrpSCFTJ1tXMu2dTSd1JsQcgNW0A9aaSgJdy9OWOhe932euT
+         CXdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G5HI11tS+yKnZwbaq8TtL0vEO4XhsA9qTOxtb1zDBVc=;
-        b=OYw0Uq2vVMEBRAXuRmbJS+2PfD5uRz6Qf8nkse9QqxZ55Tdr+WerP840dXDIasA7LU
-         9oSyMpxY14whiw61SHNMYrMzV9mL34oWgYliiN+srkvlWWEt5hDfH42Mk1/wzigmOYKI
-         bq+mibOfnUhu2kq7x6zXz1br04uCIHrWWSVJAHZP0dUBT2BTzKA+imIgel8ron6XshwK
-         sjhjTu+nCo+3K6YS18ES6tNyZwngnyJktlx4k3aprzEPmFJTHtT+NZ+0h8aiHEKnTu0v
-         YCpy2UYJygH2mAuj5DNJig16qpfPeMXaqr3p/1tgvtgPZXDq8xomPwtfLE7bxLr+Ti9Y
-         4bEw==
-X-Gm-Message-State: AGi0PuYYwXhLe4Al1V6bo8YCFx8zhW2lS/3Kr25QK4TP5tNoSa38qFoU
-        NeJUtvuVzMAwjDyMHFIZKpdiWmEGSIK1eoQLT83ENw==
-X-Google-Smtp-Source: APiQypIYjYUvEtVGNd27c1+JwM3UC4JdspvxdSp2uB6/Zn/IP6HBQYr4Yxw+YKakR94PGo55lnU3ndTA9L+bkjrGVfM=
-X-Received: by 2002:a19:c85:: with SMTP id 127mr1421149lfm.189.1588691008811;
- Tue, 05 May 2020 08:03:28 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TPwxKE0klTjrvpCqkN/+GZfurYoGuk/drCYIDVYxA1Q=;
+        b=g0OiAtMDZX4fIqQ+rEGtgqz8aItZnc3BJlzwQMxkPtz2/cgsBuYTjmmBY/h8Jn9/hD
+         wAfK7bzgQLHR/hnX96WG9lmuxcAIvkL9MBFKMfjKLqHqQFrhQeRexv6XNUfCOK06pdW1
+         3QICdT/IeqOREJcCYpYQdmmYEgJq0v8V+hrO3EUC7ktGn1mrjsTN7tjUDH9M6xnQlYCZ
+         YBDGOkvbAp/4rrzkyJZbbfazeetdbQ3A0dZB2tBs5+PV8TPK5Rp7+1bntnTUteUcDrQS
+         9APXL6I4j20QbwnqGqsFP/parBGx2gxBquHq3Hm2er9UIgqb9qz02MpqAM4mr8nqWBiy
+         TvUg==
+X-Gm-Message-State: AGi0PuZ3whyd9P64A0HpHvIXFs8gMPfZqMGbRynA1gUvS8ccKFCY0+Nm
+        mbQMstLb2agcMJ0YSjxw6PlgUg==
+X-Google-Smtp-Source: APiQypJAq2tEbNFshdQhYM92AuCn6z2zFmJm/tKNnvOKeooJrHtg/Dbe1zAetTS+9IMeiH2nlyuzxg==
+X-Received: by 2002:a5e:a607:: with SMTP id q7mr3877260ioi.109.1588692218512;
+        Tue, 05 May 2020 08:23:38 -0700 (PDT)
+Received: from [192.168.1.159] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id y70sm1893526ilk.47.2020.05.05.08.23.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 05 May 2020 08:23:37 -0700 (PDT)
+Subject: Re: [block/for-5.7] iocost: protect iocg->abs_vdebt with
+ iocg->waitq.lock
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com, cgroups@vger.kernel.org,
+        Vlad Dmitriev <vvd@fb.com>
+References: <20200504232754.GB3209250@mtj.thefacebook.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <e4377265-1605-077b-9415-183c8efe3da5@kernel.dk>
+Date:   Tue, 5 May 2020 09:23:35 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz> <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
- <20200504150052.GT22838@dhcp22.suse.cz> <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
- <20200504160613.GU22838@dhcp22.suse.cz> <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
- <20200505071324.GB16322@dhcp22.suse.cz>
-In-Reply-To: <20200505071324.GB16322@dhcp22.suse.cz>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 5 May 2020 08:03:17 -0700
-Message-ID: <CALvZod5H-fDbvu73=hkzN0Man_+03ZW0d5zc1N0YObVHSiy0Tw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200504232754.GB3209250@mtj.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 5, 2020 at 12:13 AM Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Mon 04-05-20 12:23:51, Shakeel Butt wrote:
-> [...]
-> > *Potentially* useful for debugging versus actually beneficial for
-> > "sweep before tear down" use-case.
->
-> I definitely do not want to prevent you from achieving what you
-> want/need. Let's get back to your argument on why you cannot use
-> memory.high for this purpose and what is the actual difference from
-> memory.max on the "sweep before removal". You've said
->
-> : Yes that would work but remote charging concerns me. Remote charging
-> : can still happen after the memcg is offlined and at the moment, high
-> : reclaim does not work for remote memcg and the usage can go till max
-> : or global pressure. This is most probably a misconfiguration and we
-> : might not receive the warnings in the log ever. Setting memory.max to
-> : 0 will definitely give such warnings.
->
-> So essentially the only reason you are not using memory.high which would
-> effectively achieve the same level of reclaim for your usecase is that
-> potential future remote charges could get unnoticed.
+On 5/4/20 5:27 PM, Tejun Heo wrote:
+> Subject: iocost: protect iocg->abs_vdebt with iocg->waitq.lock
+> 
+> abs_vdebt is an atomic_64 which tracks how much over budget a given cgroup
+> is and controls the activation of use_delay mechanism. Once a cgroup goes
+> over budget from forced IOs, it has to pay it back with its future budget.
+> The progress guarantee on debt paying comes from the iocg being active -
+> active iocgs are processed by the periodic timer, which ensures that as time
+> passes the debts dissipate and the iocg returns to normal operation.
+> 
+> However, both iocg activation and vdebt handling are asynchronous and a
+> sequence like the following may happen.
+> 
+> 1. The iocg is in the process of being deactivated by the periodic timer.
+> 
+> 2. A bio enters ioc_rqos_throttle(), calls iocg_activate() which returns
+>    without anything because it still sees that the iocg is already active.
+> 
+> 3. The iocg is deactivated.
+> 
+> 4. The bio from #2 is over budget but needs to be forced. It increases
+>    abs_vdebt and goes over the threshold and enables use_delay.
+> 
+> 5. IO control is enabled for the iocg's subtree and now IOs are attributed
+>    to the descendant cgroups and the iocg itself no longer issues IOs.
+> 
+> This leaves the iocg with stuck abs_vdebt - it has debt but inactive and no
+> further IOs which can activate it. This can end up unduly punishing all the
+> descendants cgroups.
+> 
+> The usual throttling path has the same issue - the iocg must be active while
+> throttled to ensure that future event will wake it up - and solves the
+> problem by synchronizing the throttling path with a spinlock. abs_vdebt
+> handling is another form of overage handling and shares a lot of
+> characteristics including the fact that it isn't in the hottest path.
+> 
+> This patch fixes the above and other possible races by strictly
+> synchronizing abs_vdebt and use_delay handling with iocg->waitq.lock.
 
-Yes.
+Applied, thanks.
 
-> I have proposed to
-> warn when charging to an offline memcg because that looks like a sign of
-> bug to me.
+-- 
+Jens Axboe
 
-Instead of a bug, I would say misconfiguration but there is at least a
-genuine user i.e. buffer_head. It can be allocated in reclaim and
-trigger remote charging but it should be fine as the page it is
-attached to will possibly get freed soon. So, I don't think we want to
-warn for all remote charges to an offlined memcg.
-
-> Having the hard limit clamped to 0 (or some other small
-> value) would complain loud by the oom report and no eligible tasks
-> message but it will unlikely help to stop such a usage because, well,
-> there is nothing reclaimable and we force the charge in that case. So
-> you are effectively in the memory.high like situation.
-
-Yes, effectively it will be similar to memory.high but at least we
-will get early warnings.
-
-Now rethinking about the remote charging of buffer_head to an offlined
-memcg with memory.max=0. It seems like it is special in the sense that
-it is using __GFP_NOFAIL and will skip the oom-killer and thus
-warnings. Maybe the right approach is, as you suggested, always warn
-for charging an offline memcg unless
-(__GFP_NOFAIL|__GFP_RETRY_MAYFAIL). Though I am not sure if this is
-doable without code duplication.
-
->
-> So instead of potentially removing a useful information can we focus on
-> the remote charging side of the problem and deal with it in a sensible
-> way? That would make memory.high usable for your usecase and I still
-> believe that this is what you should be using in the first place.
-
-We talked about this at LSFMM'19 and I think the decision was to not
-fix high reclaim for remote memcg until it will be an actual issue. I
-suppose now we can treat it as an actual issue.
-
-There are a couple of open questions:
-1) Should the remote chargers be throttled and do the high reclaim?
-2) There can be multiple remote charges to multiple memcgs in a single
-kernel entry. Should we handle such scenarios?
-
-Shakeel
