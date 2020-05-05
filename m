@@ -2,133 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A9271C4E6B
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 08:41:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AAD291C4ED2
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 09:13:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728143AbgEEGl0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 02:41:26 -0400
-Received: from mail104.syd.optusnet.com.au ([211.29.132.246]:60640 "EHLO
-        mail104.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725766AbgEEGl0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 02:41:26 -0400
-Received: from dread.disaster.area (pa49-195-157-175.pa.nsw.optusnet.com.au [49.195.157.175])
-        by mail104.syd.optusnet.com.au (Postfix) with ESMTPS id AEABB58BF91;
-        Tue,  5 May 2020 16:41:14 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1jVrGU-000355-3x; Tue, 05 May 2020 16:41:14 +1000
-Date:   Tue, 5 May 2020 16:41:14 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Jan Kara <jack@suse.cz>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>,
-        Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S1725766AbgEEHNa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 03:13:30 -0400
+Received: from mail-wr1-f67.google.com ([209.85.221.67]:41288 "EHLO
+        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725320AbgEEHNa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 03:13:30 -0400
+Received: by mail-wr1-f67.google.com with SMTP id g13so1345504wrb.8;
+        Tue, 05 May 2020 00:13:28 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=D35mOJV49bWuGzt/JCgfa9WldwyA3q6GVvLou0MYSnM=;
+        b=suYr2xGLoNNCGKNWfVZi/A9ZOmb+lvrS/qq+YXW3FJYtjj4/R7LNDg7gi6ptsVhIK6
+         corfc2WjHdxOi0w27cACHwi0e2szdQa32jN+EXwH5va5Z/7uI+p7c9UhrSRZPdgXeoUq
+         ugcWzU4sAlWGxIM8iDLIzJhG962d77CjXYheBS3LiTP456eYuSz+WX2tYZ/wc+87J/p1
+         p87Cm3i+fpZ5U7I4KfIIRLGT+DPYdBhRMYPNe2nXUs9Spa66z2dVVjS4ipos62jUO7mg
+         qbVo6HF/T/5HcdETMXQmFQ2/ExDLYRw/HDguWuPizoIOlDmaSyj2JZ0I2LF3/b+g68K+
+         TCsA==
+X-Gm-Message-State: AGi0PuYqxLq2jAYGcOjQhQ/aehJ2AdspaVwGIMqeMDKobpjioN3iWzSC
+        61TRxo5wAVVFewbcSqnwhHM=
+X-Google-Smtp-Source: APiQypKsJpn506doavmId1p49nfYK71RX13vklhQ6rOpXsgAEIhvXhgtE2o2L9CsVn2B81dhZFvhfw==
+X-Received: by 2002:adf:f648:: with SMTP id x8mr1941180wrp.257.1588662807808;
+        Tue, 05 May 2020 00:13:27 -0700 (PDT)
+Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
+        by smtp.gmail.com with ESMTPSA id u127sm2351710wme.8.2020.05.05.00.13.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 00:13:26 -0700 (PDT)
+Date:   Tue, 5 May 2020 09:13:24 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
-Message-ID: <20200505064114.GI2005@dread.disaster.area>
-References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
- <20200428214653.GD2005@dread.disaster.area>
- <20200429102540.GA12716@quack2.suse.cz>
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
+Message-ID: <20200505071324.GB16322@dhcp22.suse.cz>
+References: <20200430182712.237526-1-shakeelb@google.com>
+ <20200504065600.GA22838@dhcp22.suse.cz>
+ <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
+ <20200504141136.GR22838@dhcp22.suse.cz>
+ <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
+ <20200504150052.GT22838@dhcp22.suse.cz>
+ <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
+ <20200504160613.GU22838@dhcp22.suse.cz>
+ <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200429102540.GA12716@quack2.suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=QIgWuTDL c=1 sm=1 tr=0
-        a=ONQRW0k9raierNYdzxQi9Q==:117 a=ONQRW0k9raierNYdzxQi9Q==:17
-        a=kj9zAlcOel0A:10 a=sTwFKg_x9MkA:10 a=7-415B0cAAAA:8
-        a=rN2gyzmqWffP1ZJC7qsA:9 a=cE_fTOozNYi_-d1b:21 a=OBp7IKyJAvioFFSQ:21
-        a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+In-Reply-To: <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Apr 29, 2020 at 12:25:40PM +0200, Jan Kara wrote:
-> On Wed 29-04-20 07:47:34, Dave Chinner wrote:
-> > On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
-> > > The loop device runs all i/o to the backing file on a separate kworker
-> > > thread which results in all i/o being charged to the root cgroup. This
-> > > allows a loop device to be used to trivially bypass resource limits
-> > > and other policy. This patch series fixes this gap in accounting.
-> > 
-> > How is this specific to the loop device? Isn't every block device
-> > that offloads work to a kthread or single worker thread susceptible
-> > to the same "exploit"?
-> > 
-> > Or is the problem simply that the loop worker thread is simply not
-> > taking the IO's associated cgroup and submitting the IO with that
-> > cgroup associated with it? That seems kinda simple to fix....
-> > 
-> > > Naively charging cgroups could result in priority inversions through
-> > > the single kworker thread in the case where multiple cgroups are
-> > > reading/writing to the same loop device.
-> > 
-> > And that's where all the complexity and serialisation comes from,
-> > right?
-> > 
-> > So, again: how is this unique to the loop device? Other block
-> > devices also offload IO to kthreads to do blocking work and IO
-> > submission to lower layers. Hence this seems to me like a generic
-> > "block device does IO submission from different task" issue that
-> > should be handled by generic infrastructure and not need to be
-> > reimplemented multiple times in every block device driver that
-> > offloads work to other threads...
-> 
-> Yeah, I was thinking about the same when reading the patch series
-> description. We already have some cgroup workarounds for btrfs kthreads if
-> I remember correctly, we have cgroup handling for flush workers, now we are
-> adding cgroup handling for loopback device workers, and soon I'd expect
-> someone comes with a need for DM/MD worker processes and IMHO it's getting
-> out of hands because the complexity spreads through the kernel with every
-> subsystem comming with slightly different solution to the problem and also
-> the number of kthreads gets multiplied by the number of cgroups. So I
-> agree some generic solution how to approach IO throttling of kthreads /
-> workers would be desirable.
+On Mon 04-05-20 12:23:51, Shakeel Butt wrote:
+[...]
+> *Potentially* useful for debugging versus actually beneficial for
+> "sweep before tear down" use-case.
 
-Yup, that's pretty much what I was thinking: it's yet another
-special snowflake for cgroup-aware IO....
+I definitely do not want to prevent you from achieving what you
+want/need. Let's get back to your argument on why you cannot use
+memory.high for this purpose and what is the actual difference from
+memory.max on the "sweep before removal". You've said
 
-> OTOH I don't have a great idea how the generic infrastructure should look
-> like...
+: Yes that would work but remote charging concerns me. Remote charging
+: can still happen after the memcg is offlined and at the moment, high
+: reclaim does not work for remote memcg and the usage can go till max
+: or global pressure. This is most probably a misconfiguration and we
+: might not receive the warnings in the log ever. Setting memory.max to
+: 0 will definitely give such warnings.
 
-I haven't given it any thought - it's not something I have any
-bandwidth to spend time on.  I'll happily review a unified
-generic cgroup-aware kthread-based IO dispatch mechanism, but I
-don't have the time to design and implement that myself....
+So essentially the only reason you are not using memory.high which would
+effectively achieve the same level of reclaim for your usecase is that
+potential future remote charges could get unnoticed. I have proposed to
+warn when charging to an offline memcg because that looks like a sign of
+bug to me. Having the hard limit clamped to 0 (or some other small
+value) would complain loud by the oom report and no eligible tasks
+message but it will unlikely help to stop such a usage because, well,
+there is nothing reclaimable and we force the charge in that case. So
+you are effectively in the memory.high like situation.
 
-OTOH, I will make time to stop people screwing up filesystems and
-block devices with questionable complexity and unique, storage
-device dependent userspace visible error behaviour. This sort of
-change is objectively worse for users than not supporting the
-functionality in the first place.
-
-Cheers,
-
-Dave.
+So instead of potentially removing a useful information can we focus on
+the remote charging side of the problem and deal with it in a sensible
+way? That would make memory.high usable for your usecase and I still
+believe that this is what you should be using in the first place.
 -- 
-Dave Chinner
-david@fromorbit.com
+Michal Hocko
+SUSE Labs
