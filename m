@@ -2,248 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA6011C5A60
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555AF1C5A6D
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:03:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729396AbgEEPC7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 11:02:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56528 "EHLO
+        id S1729868AbgEEPDb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 11:03:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729320AbgEEPC6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:02:58 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 196ADC061A41
-        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 08:02:58 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id t3so2596596qkg.1
-        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 08:02:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729470AbgEEPDb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:03:31 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B826FC061A0F
+        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 08:03:30 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id x73so1636315lfa.2
+        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 08:03:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7FjP91SkgrTdYmk4uoRk09PuVQ/Ji8rbi00yg++Yf4U=;
-        b=RKuEVxru2LByEM9bQeia+4mJabGJDno/R9rUAInjwZGfh9YKnSSuCDxLcYxGy9TOzw
-         0rcQwQcW3xR7BIpr/DREFpixUUJmiEVNXQLle85uNTXW3ddIWv9KeChX3FapZ7aPuGGU
-         ponHAXH9g24XomYlw/zn6jraGPFAHTw6bRgXaHdAkI94j7YaiB1i1fGhEFbbA159Jkiw
-         fnUiHCHbCr8wPbqC5x/S8p51yP5oZoKLWwcgMhSBqIaKoGHyzbQOTlWJfENuYm6rKmOA
-         7q6tit7c1RASFtWztKETHyySqzMrYfJNFchoylbqZ0/hktjMn5vUy+Y6pYG2KBkOPe0B
-         Av7w==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G5HI11tS+yKnZwbaq8TtL0vEO4XhsA9qTOxtb1zDBVc=;
+        b=NedESV1mf2KEGbnGwBXjkNGi7R9SVO/NUVnBR/MIIA4ksHkYG9Y0BOJUSO7cPfF101
+         DhqLvXmcnRAqIon/UhQwhmdhaRJTFMRbqv7rnUrFiiLplm7OYMLhdbiEBbtARuNhVV8D
+         LTzgdGvjzWUJX1UQL/oIjMDuzzQetiMjcVkKOHZidnk7VXhouvnvChgf89k1EWSMWRjT
+         FhIwRnMbbr/4G57qwJzkX9wXI0g0aGrRDYcsPodwxKY6npl93JABKfVo0PFuu+LIkLAx
+         gWRTkTusvXUAXg8/Xmo6bq3CqbG9PEAZT5/liY82/n294mGhWG9jm1kwV8U5Yd9K6Gur
+         9WEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7FjP91SkgrTdYmk4uoRk09PuVQ/Ji8rbi00yg++Yf4U=;
-        b=ikIm94D4Cgv6vmWoEuVf01r+MpGpim+BLnRhct2ivAVmHpIpYRIxxT48iQFVOzxku5
-         Nfw5vmxTAdzuQF7DJSmqtDFv2gAfZJ3XAqw0zZdJ8/H1Jpq6gV89h2ytSU0UcsqP8rsy
-         OtddHNfu++XR9wxd3eOVQfFrMYtOXlk4udurWefP4MunrZKdr2SgUoiCUZfzoQ5mEwhr
-         JaKNqxbewDx5Sm4af+GBHYIc163iSPV+7Pjz3XuZ3MNpNpQWyiSQcmv6wv6e/9jWzBwu
-         jQ5Gwl35VBQw6P7BOf9EqvIgmll9fhZsAF7VH56PIL1wS4Rueu03BP78BbjU6Ap8OGcu
-         3efw==
-X-Gm-Message-State: AGi0PuYUKE8KRFWTdVK81uLmiu1SRummuhaNoRzonSadJ3rL66DoMDca
-        rj23/vRffDMNgCCrswXZr5rcYQ==
-X-Google-Smtp-Source: APiQypKgpRBdJBUH5vYr9buD5cxFxsKftYnVKJs9ZxvIG0y9aRPVDNXcpfa4cGPTvEHifDzJpopDDA==
-X-Received: by 2002:a05:620a:943:: with SMTP id w3mr3796419qkw.71.1588690976818;
-        Tue, 05 May 2020 08:02:56 -0700 (PDT)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id e3sm661471qkd.113.2020.05.05.08.02.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 08:02:56 -0700 (PDT)
-Date:   Tue, 5 May 2020 11:02:41 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Dave Chinner <david@fromorbit.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
-Message-ID: <20200505150241.GA58018@cmpxchg.org>
-References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
- <20200428214653.GD2005@dread.disaster.area>
- <20200429022732.GA401038@cmpxchg.org>
- <20200505062946.GH2005@dread.disaster.area>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G5HI11tS+yKnZwbaq8TtL0vEO4XhsA9qTOxtb1zDBVc=;
+        b=OYw0Uq2vVMEBRAXuRmbJS+2PfD5uRz6Qf8nkse9QqxZ55Tdr+WerP840dXDIasA7LU
+         9oSyMpxY14whiw61SHNMYrMzV9mL34oWgYliiN+srkvlWWEt5hDfH42Mk1/wzigmOYKI
+         bq+mibOfnUhu2kq7x6zXz1br04uCIHrWWSVJAHZP0dUBT2BTzKA+imIgel8ron6XshwK
+         sjhjTu+nCo+3K6YS18ES6tNyZwngnyJktlx4k3aprzEPmFJTHtT+NZ+0h8aiHEKnTu0v
+         YCpy2UYJygH2mAuj5DNJig16qpfPeMXaqr3p/1tgvtgPZXDq8xomPwtfLE7bxLr+Ti9Y
+         4bEw==
+X-Gm-Message-State: AGi0PuYYwXhLe4Al1V6bo8YCFx8zhW2lS/3Kr25QK4TP5tNoSa38qFoU
+        NeJUtvuVzMAwjDyMHFIZKpdiWmEGSIK1eoQLT83ENw==
+X-Google-Smtp-Source: APiQypIYjYUvEtVGNd27c1+JwM3UC4JdspvxdSp2uB6/Zn/IP6HBQYr4Yxw+YKakR94PGo55lnU3ndTA9L+bkjrGVfM=
+X-Received: by 2002:a19:c85:: with SMTP id 127mr1421149lfm.189.1588691008811;
+ Tue, 05 May 2020 08:03:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200505062946.GH2005@dread.disaster.area>
+References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
+ <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
+ <20200504141136.GR22838@dhcp22.suse.cz> <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
+ <20200504150052.GT22838@dhcp22.suse.cz> <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
+ <20200504160613.GU22838@dhcp22.suse.cz> <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
+ <20200505071324.GB16322@dhcp22.suse.cz>
+In-Reply-To: <20200505071324.GB16322@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 5 May 2020 08:03:17 -0700
+Message-ID: <CALvZod5H-fDbvu73=hkzN0Man_+03ZW0d5zc1N0YObVHSiy0Tw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 05, 2020 at 04:29:46PM +1000, Dave Chinner wrote:
-> On Tue, Apr 28, 2020 at 10:27:32PM -0400, Johannes Weiner wrote:
-> > On Wed, Apr 29, 2020 at 07:47:34AM +1000, Dave Chinner wrote:
-> > > On Tue, Apr 28, 2020 at 12:13:46PM -0400, Dan Schatzberg wrote:
-> > > > This patch series does some
-> > > > minor modification to the loop driver so that each cgroup can make
-> > > > forward progress independently to avoid this inversion.
-> > > > 
-> > > > With this patch series applied, the above script triggers OOM kills
-> > > > when writing through the loop device as expected.
-> > > 
-> > > NACK!
-> > > 
-> > > The IO that is disallowed should fail with ENOMEM or some similar
-> > > error, not trigger an OOM kill that shoots some innocent bystander
-> > > in the head. That's worse than using BUG() to report errors...
-> > 
-> > Did you actually read the script?
-> 
-> Of course I did. You specifically mean this bit:
-> 
-> echo 64M > $CGROUP/memory.max;
-> mount -t tmpfs -o size=512m tmpfs /tmp;
-> truncate -s 512m /tmp/backing_file
-> losetup $LOOP_DEV /tmp/backing_file
-> dd if=/dev/zero of=$LOOP_DEV bs=1M count=256;
-> 
-> And with this patch set the dd gets OOM killed because the
-> /tmp/backing_file usage accounted to the cgroup goes over 64MB and
-> so tmpfs OOM kills the IO...
-> 
-> As I said: that's very broken behaviour from a storage stack
-> perspective.
-> 
-> > It's OOMing because it's creating 256M worth of tmpfs pages inside a
-> > 64M cgroup. It's not killing an innocent bystander, it's killing in
-> > the cgroup that is allocating all that memory - after Dan makes sure
-> > that memory is accounted to its rightful owner.
-> 
-> What this example does is turn /tmp into thinly provisioned storage
-> for $CGROUP via a restricted quota. It has a device size of 512MB,
-> but only has physical storage capacity of 64MB, as constrained by
-> the cgroup memory limit.  You're dealing with management of -storage
-> devices- and -IO error reporting- here, not memory management.
-> 
-> When thin provisioned storage runs out of space - for whatever
-> reason - and it cannot resolve the issue by blocking, then it *must*
-> return ENOSPC to the IO submitter to tell it the IO has failed. This
-> is no different to if we set a quota on /tmp/backing_file and it is
-> exhausted at 64MB of data written - we fail the IO with ENOSPC or
-> EDQUOT, depending on which quota we used.
-> 
-> IOWs, we have solid expectations on how block devices report
-> unsolvable resource shortages during IO because those errors have to
-> be handled correctly by whatever is submitting the IO. We do not use
-> the OOM-killer to report or resolve ENOSPC errors.
+On Tue, May 5, 2020 at 12:13 AM Michal Hocko <mhocko@kernel.org> wrote:
 >
-> Indeed, once you've killed the dd, that CGROUP still consumes 64MB
-> of tmpfs space in /tmp/backing_file, in which case any further IO to
-> $LOOP_DEV is also going to OOM kill. These are horrible semantics
-> for reporting errors to userspace.
+> On Mon 04-05-20 12:23:51, Shakeel Butt wrote:
+> [...]
+> > *Potentially* useful for debugging versus actually beneficial for
+> > "sweep before tear down" use-case.
 >
-> And if the OOM-killer actually frees the 64MB of data written to
-> /tmp/backing_file through the $LOOP_DEV, then you're actually
-> corrupting the storage and ensuring that nobody can read the data
-> that was written to $LOOP_DEV.
-
-Right, but that's just tmpfs. It doesn't have much to do with the loop
-device or its semantics as a block device. (Although I don't think
-most users really see loop as a true block device, but rather as a
-namespacing tool that for better or worse happens to be implemented at
-the block layer). But remove the loop device indirection and the tmpfs
-semantics would be exactly the same.
-
-tmpfs returns -ENOSPC when you run out of filesystem quota, but when
-it tries to allocate memory and can't, it'll invoke the OOM killer as
-a means to reclaim memory. And when that fails, it'll return -ENOMEM.
-
-Dan's patches don't change the block device semantics of loop. They
-just ensure that the chain of causality between writer and memory
-allocation isn't broken.
-
-In fact, it barely has anything to do with loop itself. If loop were
-to do its redirections synchronously and in the context of the process
-that is making requests, we wouldn't have this problem.
-
-The generic problem is that of one process performing work on behalf
-of another process with side-effects relevant to the originator. The
-generic solution is to have the worker impersonate the process that
-created the work in all the various aspects that matter.
-
-Like io_uring and various other kthreads and workers doing use_mm()
-when the address space of the process creating the work matters.
-
-> So now lets put a filesystem on $LOOP_DEV in the above example, and
-> write out data to the filesystem which does IO to $LOOP_DEV. Just by
-> chance, the filesystem does some metadata writes iin the context of
-> the user process doing the writes (because journalling, etc) and
-> that metadata IO is what pushes the loop device over the cgroup's
-> memory limit.
-> 
-> You kill the user application even though it wasn't directly
-> responsible for going over the 64MB limit of space in $LOOP_DEV.
-> What happens now to the filesystem's metadata IO?  Did $LOOP_DEV
-> return an error, or after the OOM kill did the IO succeed?  What
-> happens if all the IO being generated from the user application is
-> metadata and that starts failing - killing the user application
-> doesn't help anything - the filesystem IO is failing and that's
-> where the errors need to be reported.
-> 
-> And if the answer is "metadata IO isn't accounted to the $CGROUP"
-> then what happens when the tmpfs actually runs out of it's 512MB of
-> space because of all the metadata the filesystem wrote (e.g. create
-> lots of zero length files)? That's an ENOSPC error, and we'll get
-> that from $LOOP_DEV just fine.
-
-Well, what happens today if you write to a loop mount backed by tmpfs,
-but the machine is *physically* out of memory?
-
-None of these questions are new in the context of this patch set. The
-cgroup annotations don't inject anything that isn't already happening.
-
-When you use the loop device on a tmpfs backing today, logically
-speaking you're charging the root cgroup. That may not have a user-set
-limit, but it's limited by physical RAM.
-
-With or without cgroup annotation, tmpfs needs to allocate memory, and
-that can fail. The function that charges to a specific cgroup is just
-a few lines below the function that physically allocates the
-page. Both can invoke the OOM killer for slightly different reasons
-that aren't really relevant to the loop device on top of it.
-
-> So why should the same error - running out of tmpfs space vs running
-> out of CGROUP quota space on tmpfs be handled differently? Either
-> they are both ENOSPC IO errors, or they are both OOM kill vectors
-> because tmpfs space has run out...
-
-Because charging memory has allocation semantics, and tmpfs already
-defines what those are.
-
-> > As opposed to before this series, where all this memory isn't
-> > accounted properly and goes to the root cgroup - where, ironically, it
-> > could cause OOM and kill an actually innocent bystander.
-> 
-> Johannes, I didn't question the need for the functionality. I
-> questioned the implementation and pointed out fundamental problems
-> it has as well as the architectural questions raised by needing
-> special kthread-based handling for correct accounting of
-> cgroup-aware IO.
+> I definitely do not want to prevent you from achieving what you
+> want/need. Let's get back to your argument on why you cannot use
+> memory.high for this purpose and what is the actual difference from
+> memory.max on the "sweep before removal". You've said
 >
-> It's a really bad look to go shoot the messenger when it's clear you
-> haven't understood the message that was delivered.
+> : Yes that would work but remote charging concerns me. Remote charging
+> : can still happen after the memcg is offlined and at the moment, high
+> : reclaim does not work for remote memcg and the usage can go till max
+> : or global pressure. This is most probably a misconfiguration and we
+> : might not receive the warnings in the log ever. Setting memory.max to
+> : 0 will definitely give such warnings.
+>
+> So essentially the only reason you are not using memory.high which would
+> effectively achieve the same level of reclaim for your usecase is that
+> potential future remote charges could get unnoticed.
 
-Do I need to point out the irony here? ;)
+Yes.
 
-Maybe let's focus on the technical questions and misunderstandings
-first before throwing NAKs around.
+> I have proposed to
+> warn when charging to an offline memcg because that looks like a sign of
+> bug to me.
+
+Instead of a bug, I would say misconfiguration but there is at least a
+genuine user i.e. buffer_head. It can be allocated in reclaim and
+trigger remote charging but it should be fine as the page it is
+attached to will possibly get freed soon. So, I don't think we want to
+warn for all remote charges to an offlined memcg.
+
+> Having the hard limit clamped to 0 (or some other small
+> value) would complain loud by the oom report and no eligible tasks
+> message but it will unlikely help to stop such a usage because, well,
+> there is nothing reclaimable and we force the charge in that case. So
+> you are effectively in the memory.high like situation.
+
+Yes, effectively it will be similar to memory.high but at least we
+will get early warnings.
+
+Now rethinking about the remote charging of buffer_head to an offlined
+memcg with memory.max=0. It seems like it is special in the sense that
+it is using __GFP_NOFAIL and will skip the oom-killer and thus
+warnings. Maybe the right approach is, as you suggested, always warn
+for charging an offline memcg unless
+(__GFP_NOFAIL|__GFP_RETRY_MAYFAIL). Though I am not sure if this is
+doable without code duplication.
+
+>
+> So instead of potentially removing a useful information can we focus on
+> the remote charging side of the problem and deal with it in a sensible
+> way? That would make memory.high usable for your usecase and I still
+> believe that this is what you should be using in the first place.
+
+We talked about this at LSFMM'19 and I think the decision was to not
+fix high reclaim for remote memcg until it will be an actual issue. I
+suppose now we can treat it as an actual issue.
+
+There are a couple of open questions:
+1) Should the remote chargers be throttled and do the high reclaim?
+2) There can be multiple remote charges to multiple memcgs in a single
+kernel entry. Should we handle such scenarios?
+
+Shakeel
