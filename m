@@ -2,106 +2,107 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C1711C5C82
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3884D1C5CF7
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 18:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730128AbgEEPuJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 11:50:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35804 "EHLO
+        id S1729561AbgEEQGn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 12:06:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729150AbgEEPuH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:50:07 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 917D9C061A0F;
-        Tue,  5 May 2020 08:50:07 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id k81so2772876qke.5;
-        Tue, 05 May 2020 08:50:07 -0700 (PDT)
+        with ESMTP id S1729171AbgEEQGn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 12:06:43 -0400
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDFDC061A0F;
+        Tue,  5 May 2020 09:06:43 -0700 (PDT)
+Received: by mail-qk1-x729.google.com with SMTP id c10so2843267qka.4;
+        Tue, 05 May 2020 09:06:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=yJr8RqITkDOSGCYSWIKgpqgvoSgqR2F95IvJn3b0ji4=;
-        b=jc0CkDP2R64dQQyGSslB9qk/kYm/zxhSNRdlUNAK+ACzkAtWZbgvmHATjia5aFel8o
-         ElMXA5x7gAZLp3+uLkYOhyRcrFWJzBB/UbPMP13/+JUlYldi3ceOhNrLPAIajFuWghfe
-         4abpBFl5979n9mX1uHFxWoL3nV6mUZe8yOGN+Bl8VdaKGIiqUGLfZujSE7nvS5iT3xK+
-         V0jzCJNs2wlkSo9P7QPvg/3iAR3omJKATAltVkVslcBb+lVAdSBiXwGwpJFPfRMQb+c8
-         alpJv9gVvRJeXd7dOw9ON+bWn+LD7wulFhfsvjoZHRydZtGMgT+f6giTXOtbUq8aipyo
-         EjYg==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=bv8d5auwv8WPKBW85dEhvwg9llp+d9U+MUHdBWxQ/AA=;
+        b=YXZUrR/FBzuSZDfpKyddp1h4Q3IEai/+synGatezI1urLNAo/GqDaNbGAM9LoDkeJA
+         gzaObuXQxJdC3rrvG/FR/5EeiUTZlK6odsPf1p2j4udJUVYqoD/ixxWPQ3wlnh6Ugoj0
+         vYy2wGt9ujB5Jsvwcbjm+GoiqKD2A2/exauGq8LvJ2S4UBZhS+fXlOwif5kPyc9klZmB
+         9pp6rHNVpVcYYqLKhsd8OLFqIo0pi5jKkzudk8kKoFvPirFDS9eZPbtzFjaqUlvibmD1
+         zA1nh/SEvZlB/pAWTKki+2g6j2zyhskCgHDaHXMFDI2s+KdFCtrcgdJ2wtHFQf42tAqX
+         W3kQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=yJr8RqITkDOSGCYSWIKgpqgvoSgqR2F95IvJn3b0ji4=;
-        b=FKE5K/jP9Os0M2xLZoHVTcicVYTS2f7r4kNV/mIL8eTiJwOGdOAtaVrLt4/JJauTr0
-         uW2iBeaQ5IO0kUpPuYSXsSgmL332TZPTe/rGJEhkMcDgvN60c9EeykTr0sAR0ScwNC0f
-         Kz9bZbUXrhGf2t3OH7cF1o/EKz5e1rFgTzKQMru0T6SAaDUr2kZjcXuzCTn8I8HrlPUa
-         rAEdILAV6u+G8Q4itEJ78rJU5Z/XupPQ0mXdwn4uPX7lprdSeGsB+bb81uWkaeBuphsH
-         Xxyu5nFXkhXjYTtUo8SJhvlD+0YKpDA6UhFoh7jh3H15UgezSO+knOLjQ3lmDmz+fbb/
-         Eyrw==
-X-Gm-Message-State: AGi0PuZZBYftyGxdrda3YkMIrRIn+TXPMI34HQSK62uRrt32M0rid9Zw
-        7JOQDkifAER6vJVTcnabb4w4aYbK
-X-Google-Smtp-Source: APiQypLCqoomdHCwWQgejNHDdpI6LwLVKABF7LU6TEhgRnJJpXSiw5kVu5AcqucNL0BygHBTCKCInA==
-X-Received: by 2002:a37:5846:: with SMTP id m67mr3829421qkb.78.1588693806656;
-        Tue, 05 May 2020 08:50:06 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:c19:a884:3b89:d8b6? ([2601:282:803:7700:c19:a884:3b89:d8b6])
-        by smtp.googlemail.com with ESMTPSA id f68sm2192226qke.74.2020.05.05.08.50.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 05 May 2020 08:50:06 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next 2/2] ss: add support for cgroup v2
- information and filtering
-To:     Dmitry Yakunin <zeil@yandex-team.ru>, netdev@vger.kernel.org
-Cc:     khlebnikov@yandex-team.ru, cgroups@vger.kernel.org,
-        bpf@vger.kernel.org
-References: <20200430155245.83364-1-zeil@yandex-team.ru>
- <20200430155245.83364-3-zeil@yandex-team.ru>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <72f12b35-0dd2-81b2-aeb1-52822c7fe03a@gmail.com>
-Date:   Tue, 5 May 2020 09:50:04 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to;
+        bh=bv8d5auwv8WPKBW85dEhvwg9llp+d9U+MUHdBWxQ/AA=;
+        b=EA0Fb44EaAqRz1NnMYOLAHJzhMFSRw2FtCfgtH7FH70IkeW7Yc2yqNvlUZewtvLefb
+         2AR2dGMVVgJoevVzidxd8oB5/VA6q50/xEXiZKZzidt8gFK5gG5gx4P3dLnf3iDQ4hqC
+         7ZXTiZWiBWF57xlF5xpVlAF/Uo1kdnbBousP6fwhH9jUMNA02uvdfBT09SweWWLsPrLf
+         6FMWwsAT5k9Esstmj4riG5RhZeluWqZzH5fBJj47mJxpjLWigU60Z/44INWjiwFus4WL
+         TyqxlgzBnEGNad576yFBc9Z9/+DXZUrWXVQDXI67jhVd1nHmetnlbjuoGoDDLs4mFnQl
+         uyGQ==
+X-Gm-Message-State: AGi0PuafDBCMejXuKKZEXwypOHQyoUzE4omgAAu1b/diCvHAoki7lDHc
+        m2Cjht7ViVO2cQz1au7gQBsRVxNvdzU=
+X-Google-Smtp-Source: APiQypL5/C35QYYNodlbdp+B4QZRwv17VqFw+9s44HXXYSewnnFddcstPi/LKf8jnUN7YSzyi3YHSA==
+X-Received: by 2002:a05:620a:16aa:: with SMTP id s10mr4277450qkj.216.1588694802205;
+        Tue, 05 May 2020 09:06:42 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:5ece])
+        by smtp.gmail.com with ESMTPSA id w69sm2087380qka.75.2020.05.05.09.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 09:06:41 -0700 (PDT)
+Date:   Tue, 5 May 2020 12:06:39 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Yang Yingliang <yangyingliang@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        netdev@vger.kernel.org, "Libin (Huawei)" <huawei.libin@huawei.com>,
+        guofan5@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: cgroup pointed by sock is leaked on mode switch
+Message-ID: <20200505160639.GG12217@mtj.thefacebook.com>
+References: <03dab6ab-0ffe-3cae-193f-a7f84e9b14c5@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <20200430155245.83364-3-zeil@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <03dab6ab-0ffe-3cae-193f-a7f84e9b14c5@huawei.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 4/30/20 9:52 AM, Dmitry Yakunin wrote:
-> This patch introduces two new features: obtaining cgroup information and
-> filtering sockets by cgroups. These features work based on cgroup v2 ID
-> field in the socket (kernel should be compiled with CONFIG_SOCK_CGROUP_DATA).
-> 
-> Cgroup information can be obtained by specifying --cgroup flag and now contains
-> only pathname. For faster pathname lookups cgroup cache is implemented. This
-> cache is filled on ss startup and missed entries are resolved and saved
-> on the fly.
-> 
-> Cgroup filter extends EXPRESSION and allows to specify cgroup pathname
-> (relative or absolute) to obtain sockets attached only to this cgroup.
-> Filter syntax: ss [ cgroup PATHNAME ]
-> Examples:
->     ss -a cgroup /sys/fs/cgroup/unified (or ss -a cgroup .)
->     ss -a cgroup /sys/fs/cgroup/unified/cgroup1 (or ss -a cgroup cgroup1)
-> 
+Hello, Yang.
 
-on a kernel without support for this feature:
+On Sat, May 02, 2020 at 06:27:21PM +0800, Yang Yingliang wrote:
+> I find the number nr_dying_descendants is increasing:
+> linux-dVpNUK:~ # find /sys/fs/cgroup/ -name cgroup.stat -exec grep
+> '^nr_dying_descendants [^0]'  {} +
+> /sys/fs/cgroup/unified/cgroup.stat:nr_dying_descendants 80
+> /sys/fs/cgroup/unified/system.slice/cgroup.stat:nr_dying_descendants 1
+> /sys/fs/cgroup/unified/system.slice/system-hostos.slice/cgroup.stat:nr_dying_descendants
+> 1
+> /sys/fs/cgroup/unified/lxc/cgroup.stat:nr_dying_descendants 79
+> /sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/cgroup.stat:nr_dying_descendants
+> 78
+> /sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/system.slice/cgroup.stat:nr_dying_descendants
+> 78
 
-$ misc/ss -a cgroup /sys/fs/cgroup/unified
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-Netid    State    Recv-Q    Send-Q       Local Address:Port         Peer
-Address:Port    Process
+Those numbers are nowhere close to causing oom issues. There are some
+aspects of page and other cache draining which is being improved but unless
+you're seeing numbers multiple orders of magnitude higher, this isn't the
+source of your problem.
 
-New iproute2 can be run on older kernels, so errors should be cleanly
-handled.
+> The situation is as same as the commit bd1060a1d671 ("sock, cgroup: add
+> sock->sk_cgroup") describes.
+> "On mode switch, cgroup references which are already being pointed to by
+> socks may be leaked."
+
+I'm doubtful that you're hitting that issue. Mode switching means memcg
+being switched between cgroup1 and cgroup2 hierarchies, which is unlikely to
+be what's happening when you're launching docker containers.
+
+The first step would be identifying where memory is going and finding out
+whether memcg is actually being switched between cgroup1 and 2 - look at the
+hierarchy number in /proc/cgroups, if that's switching between 0 and
+someting not zero, it is switching.
+
+Thanks.
+
+-- 
+tejun
