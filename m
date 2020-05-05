@@ -2,107 +2,143 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3884D1C5CF7
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 18:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 877DC1C5DBF
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 18:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729561AbgEEQGn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 12:06:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38416 "EHLO
+        id S1730014AbgEEQks (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 12:40:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43834 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729171AbgEEQGn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 12:06:43 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FDFDC061A0F;
-        Tue,  5 May 2020 09:06:43 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id c10so2843267qka.4;
-        Tue, 05 May 2020 09:06:43 -0700 (PDT)
+        with ESMTP id S1729998AbgEEQks (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 12:40:48 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8D8DC061A10
+        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 09:40:47 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id z7so1335774qvl.1
+        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 09:40:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=bv8d5auwv8WPKBW85dEhvwg9llp+d9U+MUHdBWxQ/AA=;
-        b=YXZUrR/FBzuSZDfpKyddp1h4Q3IEai/+synGatezI1urLNAo/GqDaNbGAM9LoDkeJA
-         gzaObuXQxJdC3rrvG/FR/5EeiUTZlK6odsPf1p2j4udJUVYqoD/ixxWPQ3wlnh6Ugoj0
-         vYy2wGt9ujB5Jsvwcbjm+GoiqKD2A2/exauGq8LvJ2S4UBZhS+fXlOwif5kPyc9klZmB
-         9pp6rHNVpVcYYqLKhsd8OLFqIo0pi5jKkzudk8kKoFvPirFDS9eZPbtzFjaqUlvibmD1
-         zA1nh/SEvZlB/pAWTKki+2g6j2zyhskCgHDaHXMFDI2s+KdFCtrcgdJ2wtHFQf42tAqX
-         W3kQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=l2bZJQmx2yOdyRWXMcVA9Hr5m54Y4Z+/y8vz43EAX8c=;
+        b=HGTZoh4KeqX6Uji51n5Dqfk0eq1uWiMkwpLlCbtNM2ptuSoknJ3SJokShT9RddkiiA
+         dyCYk+AJUScVGogd3LbtB5qGZ7TArY1dddPKiSFnpH2cT1Er1UBaOgmvSOKhQwwtxgU7
+         An/Xfou2A/jLmU+WaypU/qBQLQ9I0Lwq3cDA60/Pk0qRhkEN6COva+m26DdvjqiwoqG8
+         omVIPq8k/FOSepfH7rvaBuy3OYeTlxnsee55DCHQ2VjVtOHDuqUv+Vdtppv0fnaFmxUE
+         rjObgvGNPkng+b4UO4ikBvcvtv6Y+HXUE9neG4LXYuvRdX1LjY30KRhklHfrHkFnsIwa
+         vqTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=bv8d5auwv8WPKBW85dEhvwg9llp+d9U+MUHdBWxQ/AA=;
-        b=EA0Fb44EaAqRz1NnMYOLAHJzhMFSRw2FtCfgtH7FH70IkeW7Yc2yqNvlUZewtvLefb
-         2AR2dGMVVgJoevVzidxd8oB5/VA6q50/xEXiZKZzidt8gFK5gG5gx4P3dLnf3iDQ4hqC
-         7ZXTiZWiBWF57xlF5xpVlAF/Uo1kdnbBousP6fwhH9jUMNA02uvdfBT09SweWWLsPrLf
-         6FMWwsAT5k9Esstmj4riG5RhZeluWqZzH5fBJj47mJxpjLWigU60Z/44INWjiwFus4WL
-         TyqxlgzBnEGNad576yFBc9Z9/+DXZUrWXVQDXI67jhVd1nHmetnlbjuoGoDDLs4mFnQl
-         uyGQ==
-X-Gm-Message-State: AGi0PuafDBCMejXuKKZEXwypOHQyoUzE4omgAAu1b/diCvHAoki7lDHc
-        m2Cjht7ViVO2cQz1au7gQBsRVxNvdzU=
-X-Google-Smtp-Source: APiQypL5/C35QYYNodlbdp+B4QZRwv17VqFw+9s44HXXYSewnnFddcstPi/LKf8jnUN7YSzyi3YHSA==
-X-Received: by 2002:a05:620a:16aa:: with SMTP id s10mr4277450qkj.216.1588694802205;
-        Tue, 05 May 2020 09:06:42 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:5ece])
-        by smtp.gmail.com with ESMTPSA id w69sm2087380qka.75.2020.05.05.09.06.40
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=l2bZJQmx2yOdyRWXMcVA9Hr5m54Y4Z+/y8vz43EAX8c=;
+        b=BC+CEqlGful7rTxIm+NXlYtuNmaIuyfodSeC+dfwA3LEZCciAkRM2tlf8ZpiP81iZF
+         um/nP+/v7/S53A3m01M/IzfhKyfArE61S14YQXqjZIuaimFVFx9/6PT2sRQD5Fz7VGPS
+         wjsKjvOyMewkrSdXpndbDgmCN509cvRlupC5p3tlJLFCE4rYA3t5+/biRyTEckQKy6q7
+         6ncCapT2LHsncPp4S+L0oEBJUHI5teHilw/eXQ06BfDF63rzk90rA9iBmD2M4s1BF11n
+         Jy1x5tBymCpquPCsAk1aGwVl8AgjBjKrZx5kp9ygodpoIboPMiZwRApa286FtEgKUHiL
+         scMg==
+X-Gm-Message-State: AGi0PubZiqeKGZunUVm/F4h8i5lql1hw6sh3f3fFnfQJOaCOd0SOwRPU
+        spL+S73nBrq5imULXywmu/APlQuUPng=
+X-Google-Smtp-Source: APiQypJBI1Iddc2SwERK37fLTH83IVhbEuz4QyGiAEOV6UK9VOcqk/apxzVDX7wNDl531Nz60OWwpw==
+X-Received: by 2002:a05:6214:54d:: with SMTP id ci13mr3591929qvb.131.1588696846971;
+        Tue, 05 May 2020 09:40:46 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id s4sm789531qth.61.2020.05.05.09.40.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 05 May 2020 09:06:41 -0700 (PDT)
-Date:   Tue, 5 May 2020 12:06:39 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Yang Yingliang <yangyingliang@huawei.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        netdev@vger.kernel.org, "Libin (Huawei)" <huawei.libin@huawei.com>,
-        guofan5@huawei.com, wangkefeng.wang@huawei.com
-Subject: Re: cgroup pointed by sock is leaked on mode switch
-Message-ID: <20200505160639.GG12217@mtj.thefacebook.com>
-References: <03dab6ab-0ffe-3cae-193f-a7f84e9b14c5@huawei.com>
+        Tue, 05 May 2020 09:40:46 -0700 (PDT)
+Date:   Tue, 5 May 2020 12:40:31 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
+Message-ID: <20200505164031.GC58018@cmpxchg.org>
+References: <20200504065600.GA22838@dhcp22.suse.cz>
+ <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
+ <20200504141136.GR22838@dhcp22.suse.cz>
+ <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
+ <20200504150052.GT22838@dhcp22.suse.cz>
+ <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
+ <20200504160613.GU22838@dhcp22.suse.cz>
+ <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
+ <20200505152712.GB58018@cmpxchg.org>
+ <CALvZod48mu1w=fjpD=GXqCMdNq_8rExQ177_EP+Lx+TvR6fw+w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <03dab6ab-0ffe-3cae-193f-a7f84e9b14c5@huawei.com>
+In-Reply-To: <CALvZod48mu1w=fjpD=GXqCMdNq_8rExQ177_EP+Lx+TvR6fw+w@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Yang.
+On Tue, May 05, 2020 at 08:35:45AM -0700, Shakeel Butt wrote:
+> On Tue, May 5, 2020 at 8:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> > On Mon, May 04, 2020 at 12:23:51PM -0700, Shakeel Butt wrote:
+> > > On Mon, May 4, 2020 at 9:06 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > > > I really hate to repeat myself but this is no different from a regular
+> > > > oom situation.
+> > >
+> > > Conceptually yes there is no difference but there is no *divine
+> > > restriction* to not make a difference if there is a real world
+> > > use-case which would benefit from it.
+> >
+> > I would wholeheartedly agree with this in general.
+> >
+> > However, we're talking about the very semantics that set memory.max
+> > apart from memory.high: triggering OOM kills to enforce the limit.
+> >
+> > > > when the kernel cannot act and mentions that along with the
+> > > > oom report so that whoever consumes that information can debug or act on
+> > > > that fact.
+> > > >
+> > > > Silencing the oom report is simply removing a potentially useful
+> > > > aid to debug further a potential problem.
+> > >
+> > > *Potentially* useful for debugging versus actually beneficial for
+> > > "sweep before tear down" use-case. Also I am not saying to make "no
+> > > dumps for memory.max when no eligible tasks" a set in stone rule. We
+> > > can always reevaluate when such information will actually be useful.
+> > >
+> > > Johannes/Andrew, what's your opinion?
+> >
+> > I still think that if you want to sweep without triggering OOMs,
+> > memory.high has the matching semantics.
+> >
+> > As you pointed out, it doesn't work well for foreign charges, but that
+> > is more of a limitation in the implementation than in the semantics:
+> >
+> >         /*
+> >          * If the hierarchy is above the normal consumption range, schedule
+> >          * reclaim on returning to userland.  We can perform reclaim here
+> >          * if __GFP_RECLAIM but let's always punt for simplicity and so that
+> >          * GFP_KERNEL can consistently be used during reclaim.  @memcg is
+> >          * not recorded as it most likely matches current's and won't
+> >          * change in the meantime.  As high limit is checked again before
+> >          * reclaim, the cost of mismatch is negligible.
+> >          */
+> >
+> > Wouldn't it be more useful to fix that instead? It shouldn't be much
+> > of a code change to do sync reclaim in try_charge().
+> 
+> Sync reclaim would really simplify the remote charging case. Though
+> should sync reclaim only be done for remote charging or for all?
 
-On Sat, May 02, 2020 at 06:27:21PM +0800, Yang Yingliang wrote:
-> I find the number nr_dying_descendants is increasing:
-> linux-dVpNUK:~ # find /sys/fs/cgroup/ -name cgroup.stat -exec grep
-> '^nr_dying_descendants [^0]'  {} +
-> /sys/fs/cgroup/unified/cgroup.stat:nr_dying_descendants 80
-> /sys/fs/cgroup/unified/system.slice/cgroup.stat:nr_dying_descendants 1
-> /sys/fs/cgroup/unified/system.slice/system-hostos.slice/cgroup.stat:nr_dying_descendants
-> 1
-> /sys/fs/cgroup/unified/lxc/cgroup.stat:nr_dying_descendants 79
-> /sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/cgroup.stat:nr_dying_descendants
-> 78
-> /sys/fs/cgroup/unified/lxc/5f1fdb8c54fa40c3e599613dab6e4815058b76ebada8a27bc1fe80c0d4801764/system.slice/cgroup.stat:nr_dying_descendants
-> 78
+I would do it for all __GFP_RECLAIM callers, no need to special case
+remote charging unnecessarily IMO.
 
-Those numbers are nowhere close to causing oom issues. There are some
-aspects of page and other cache draining which is being improved but unless
-you're seeing numbers multiple orders of magnitude higher, this isn't the
-source of your problem.
+We can do both the reclaim as well as the penalty throttling
+synchronously, i.e. all of mem_cgroup_handle_over_high(). And then
+punt to the userspace resume when we either didn't reclaim or are
+still over the threshold after reclaim.
 
-> The situation is as same as the commit bd1060a1d671 ("sock, cgroup: add
-> sock->sk_cgroup") describes.
-> "On mode switch, cgroup references which are already being pointed to by
-> socks may be leaked."
-
-I'm doubtful that you're hitting that issue. Mode switching means memcg
-being switched between cgroup1 and cgroup2 hierarchies, which is unlikely to
-be what's happening when you're launching docker containers.
-
-The first step would be identifying where memory is going and finding out
-whether memcg is actually being switched between cgroup1 and 2 - look at the
-hierarchy number in /proc/cgroups, if that's switching between 0 and
-someting not zero, it is switching.
-
-Thanks.
-
--- 
-tejun
+Btw we should probably kick off high_work rather than set userspace
+resume on foreign charges, right? Otherwise we may not reclaim at all
+when we push a group over its limit from outside (and in a
+!__GFP_RECLAIM context).
