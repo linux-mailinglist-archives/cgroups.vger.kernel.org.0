@@ -2,134 +2,151 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 716311C5B82
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89B5F1C5B97
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2020 17:38:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729447AbgEEPf7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 May 2020 11:35:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33476 "EHLO
+        id S1729366AbgEEPik (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 May 2020 11:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729276AbgEEPf6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:35:58 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8480AC061A10
-        for <cgroups@vger.kernel.org>; Tue,  5 May 2020 08:35:58 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id a9so1719897lfb.8
-        for <cgroups@vger.kernel.org>; Tue, 05 May 2020 08:35:58 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1729276AbgEEPij (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 May 2020 11:38:39 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36230C061A0F;
+        Tue,  5 May 2020 08:38:39 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id fb4so1198841qvb.7;
+        Tue, 05 May 2020 08:38:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=huzUgNgktrhOCuskegeISs0vb5n+2XRI/TAh0nK4ACg=;
-        b=o/lrwQCJd50bIYfIsq0VJczMjBR58BsANK+atKw0wvz6n+yx9YZx/Nc940iF+0GKBy
-         hLX1vW57uKXqlQoqbEXWwWB2OPzsPSs/1Xv/IRnVkZZWUic1oqJOZTjNYVBgM85e4p9T
-         q8V0YzTKSnkWNS653jK6QCarT5rXXuYcYhLL6Xto3yX0F2uUtYNLwFfjKikUad8LtsLY
-         ciEJ2WNrIfEJBpPgnOwymUO911icskpbfrUvh1BEasE+MWoaV1+0SJoxVx7syjB0Tn6T
-         ClJ0LaUAT1XBPSTG5mhidZZSbLV0oOhaHpAYDKo6GLj1Yk57GrgqZdRwIiAP3TPvUzfi
-         scRw==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BXdArichtJxJSpMdJATI60C/n/3lvsy1fL/KOG1aR0o=;
+        b=Qgxse7dVakSkufrx/Jt+udb+ymexH65VUMnEUWLtLKEfqRpwkmZlz5vI4O25vYATuy
+         VVaC5aOnEDpNMe0z4vb1MBK8RuTdKfE1z+9MXMsUa8Z7ppPI9jeLSH+Y8Hs6hSeLIt7Z
+         XdQeFLLxaDYlVJjnLRQT2fRAPqAx2+GxrlAFS5lYDNwWv5TZOo8aje30hyhqww7q5VgE
+         hFxkjqHOBiRON9nOAlxbQxTz+54tsN16QGn69GNDWSv9wEK3DmoNTZSaJqVrx9A7Mk8y
+         00VmVkyFxFDtx76koAUjHf4CeJ1KqeHm5lGGRIjrmR90TSFZ8z6JZKNkLs+fowxAlB76
+         0AAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=huzUgNgktrhOCuskegeISs0vb5n+2XRI/TAh0nK4ACg=;
-        b=ehfqTyAFa5rFMeFdlC6ODeQwdoMKk9RO2NNC+3l0MdrH2YvAoLBvTjnFFv2r/R0Ar4
-         0jEQqBRzQgjcHtlTwBAZerNpx8au09e03vnVGah7t+Vl8BIp8xu6ZxJmTVy51W0eJvCf
-         /Oz3EpOhmGaq4HBsopbP1+VCvm+D97D9PBcshMyJijsl5fUrS3A3o/RkbjFp8piyW6Sc
-         jcbSQ83znX4MpTxnDrE5nsUZovENcto9S42IIRs4SAQqaxKhx2qISHcPZYxqJ3zkTv/N
-         mmyXYTH6U8ILNBQufvkqDkYYazy+FbQV+ZKbZB7fvXOTnrWTZK7LA5y9CYA6bFS/CpZp
-         0jDQ==
-X-Gm-Message-State: AGi0PuZQl9HVnoSG2yWtMHmI9O0ey8M4mE0N4zQPdd3BXQMUayc8Nfz1
-        oJHjtrzmcMgk/VYA5Hd+VvQBydWQUsoKeoVEKstaZg==
-X-Google-Smtp-Source: APiQypLnRYOoUJwZCqblQY9KaIwvVTlVdl1d9jFGkPlVkiHRoPkT9L7oyjRWTeGVG6V/2ICMPJ5TIkqiS2OgBQIs4Jg=
-X-Received: by 2002:ac2:4466:: with SMTP id y6mr2067094lfl.125.1588692956784;
- Tue, 05 May 2020 08:35:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200430182712.237526-1-shakeelb@google.com> <20200504065600.GA22838@dhcp22.suse.cz>
- <CALvZod5Ao2PEFPEOckW6URBfxisp9nNpNeon1GuctuHehqk_6Q@mail.gmail.com>
- <20200504141136.GR22838@dhcp22.suse.cz> <CALvZod7Ls7rTDOr5vXwEiPneLqbq3JoxfFBxZZ71YWgvLkNr5A@mail.gmail.com>
- <20200504150052.GT22838@dhcp22.suse.cz> <CALvZod7EeQm-T4dsBddfMY_szYw3m8gRh5R5GfjQiuQAtCocug@mail.gmail.com>
- <20200504160613.GU22838@dhcp22.suse.cz> <CALvZod79hWns9366B+8ZK2Roz8c+vkdA80HqFNMep56_pumdRQ@mail.gmail.com>
- <20200505152712.GB58018@cmpxchg.org>
-In-Reply-To: <20200505152712.GB58018@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 5 May 2020 08:35:45 -0700
-Message-ID: <CALvZod48mu1w=fjpD=GXqCMdNq_8rExQ177_EP+Lx+TvR6fw+w@mail.gmail.com>
-Subject: Re: [PATCH] memcg: oom: ignore oom warnings from memory.max
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=BXdArichtJxJSpMdJATI60C/n/3lvsy1fL/KOG1aR0o=;
+        b=uB/V30Cj7YoQf1AEnOguVgXUGjpsszGm5LVJ3F7+IN8zbdibi2WVeP9e9444Rd2pH0
+         ro8VB/suqlKhXvsR1ykUuDSWDP0HjJFLStniprmmBcsyY0IYtOA2ehnq5/snr775W7bY
+         J6nvr2WhH42k/3ka3LwPlYm4a1q52M7oycaRAcU+mSYghClHun5d8KVDwmMOkDraWdlB
+         ka/PwO6y9bAFJhMFC5PcFfIWvN6F74Z5DrevXJcu0MrR+lrFJMAZ2X5WY1n15kcVaz5x
+         8qXGAr4gqIf1xlv0UqeJQxdDtd+NwL5picZPxzNp8WV8MVBDK96APRkVX6gO+aNcyoYx
+         n74g==
+X-Gm-Message-State: AGi0PuayvpkTS0FEa5hpe3eIl1x6rKOnVnDNZkejbr9lvYYSBOf9tu7Y
+        BkpN1Zf5Yu5bXPiFPiApBDs=
+X-Google-Smtp-Source: APiQypIPmFzcysooPjiBb3SJnZHAzyV6pGruCekUBQbAVqyGjNBnCjfYXl4LmSQBc0QeZ7N4HNPQQA==
+X-Received: by 2002:ad4:434a:: with SMTP id q10mr3378243qvs.81.1588693118118;
+        Tue, 05 May 2020 08:38:38 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:5ece])
+        by smtp.gmail.com with ESMTPSA id q62sm2071319qke.22.2020.05.05.08.38.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 May 2020 08:38:37 -0700 (PDT)
+Date:   Tue, 5 May 2020 11:38:34 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Jan Kara <jack@suse.cz>, Dan Schatzberg <schatzberg.dan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
+Message-ID: <20200505153834.GA12217@mtj.thefacebook.com>
+References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
+ <20200428214653.GD2005@dread.disaster.area>
+ <20200429102540.GA12716@quack2.suse.cz>
+ <20200505064114.GI2005@dread.disaster.area>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200505064114.GI2005@dread.disaster.area>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 5, 2020 at 8:27 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Mon, May 04, 2020 at 12:23:51PM -0700, Shakeel Butt wrote:
-> > On Mon, May 4, 2020 at 9:06 AM Michal Hocko <mhocko@kernel.org> wrote:
-> > > I really hate to repeat myself but this is no different from a regular
-> > > oom situation.
-> >
-> > Conceptually yes there is no difference but there is no *divine
-> > restriction* to not make a difference if there is a real world
-> > use-case which would benefit from it.
->
-> I would wholeheartedly agree with this in general.
->
-> However, we're talking about the very semantics that set memory.max
-> apart from memory.high: triggering OOM kills to enforce the limit.
->
-> > > when the kernel cannot act and mentions that along with the
-> > > oom report so that whoever consumes that information can debug or act on
-> > > that fact.
-> > >
-> > > Silencing the oom report is simply removing a potentially useful
-> > > aid to debug further a potential problem.
-> >
-> > *Potentially* useful for debugging versus actually beneficial for
-> > "sweep before tear down" use-case. Also I am not saying to make "no
-> > dumps for memory.max when no eligible tasks" a set in stone rule. We
-> > can always reevaluate when such information will actually be useful.
-> >
-> > Johannes/Andrew, what's your opinion?
->
-> I still think that if you want to sweep without triggering OOMs,
-> memory.high has the matching semantics.
->
-> As you pointed out, it doesn't work well for foreign charges, but that
-> is more of a limitation in the implementation than in the semantics:
->
->         /*
->          * If the hierarchy is above the normal consumption range, schedule
->          * reclaim on returning to userland.  We can perform reclaim here
->          * if __GFP_RECLAIM but let's always punt for simplicity and so that
->          * GFP_KERNEL can consistently be used during reclaim.  @memcg is
->          * not recorded as it most likely matches current's and won't
->          * change in the meantime.  As high limit is checked again before
->          * reclaim, the cost of mismatch is negligible.
->          */
->
-> Wouldn't it be more useful to fix that instead? It shouldn't be much
-> of a code change to do sync reclaim in try_charge().
+Hello, Dave.
 
-Sync reclaim would really simplify the remote charging case. Though
-should sync reclaim only be done for remote charging or for all?
+On Tue, May 05, 2020 at 04:41:14PM +1000, Dave Chinner wrote:
+> > OTOH I don't have a great idea how the generic infrastructure should look
+> > like...
+> 
+> I haven't given it any thought - it's not something I have any
+> bandwidth to spend time on.  I'll happily review a unified
+> generic cgroup-aware kthread-based IO dispatch mechanism, but I
+> don't have the time to design and implement that myself....
+> 
+> OTOH, I will make time to stop people screwing up filesystems and
+> block devices with questionable complexity and unique, storage
+> device dependent userspace visible error behaviour. This sort of
+> change is objectively worse for users than not supporting the
+> functionality in the first place.
 
->
-> Then you could express all things that you asked for without changing
-> any user-visible semantics: sweep an empty cgroup as well as possible,
-> do not oom on remaining charges that continue to be used by processes
-> outside the cgroup, do trigger oom on new foreign charges appearing
-> due to a misconfiguration.
->
->         echo 0 > memory.high
->         cat memory.current > memory.max
->
-> Would this work for you?
+That probably is too strong a position to hold without spending at least
+some thoughts on a subject, whatever the subject may be, and it doesn't seem
+like your understanding of userspace implications is accurate.
 
-Yes that would work. I will work on a patch.
+I don't necessarily disagree that it'd be nice to have a common
+infrastructure and there may be some part which can actually be factored
+out. However, there isn't gonna be a magic bullet which magically makes
+every IO thing in the kernel cgroup aware automatically. Please consider the
+followings.
+
+* Avoding IO priority inversions requires splitting IO channels according to
+  cgroups and working around (e.g. with backcharging) when they can't be.
+  It's a substantial feature which may require substantial changes. Each IO
+  subsystem has different constraints and existing structures and many of
+  them would require their own solutions. It's not different from different
+  filesystems needing their own solutions for similar problems.
+
+* Because different filesystems and IO stacking layers already have their
+  own internal infrastructure, the right way to add cgroup support is
+  adapting to and modifying the existing infrastructure rather than trying
+  to restructure them to use the same cgroup mechanism, which I don't think
+  would be possible in many cases.
+
+* Among the three IO stacking / redirecting mechanisms - md/dm, loop and
+  fuse - the requirements and what's possible vary quite a bit. md/dm
+  definitely need to support full-on IO channel splitting cgroup support.
+  loop can go either way, but given existing uses, full splitting makes a
+  sense. fuse, as it currently stands, can't support that because the
+  priority inversions extend all the way to userspace and the kernel API
+  isn't built for that. If it wants to support cgroup containment, each
+  instance would have to be assigned to a cgroup.
+
+Between dm/md and loop, it's maybe possible that some of the sub-threading
+code can be reused, but I don't see a point in blocking loop updates given
+that it clearly fixes userspace visible malfunctions, is not that much code
+and how the shared code should look is unclear yet. We'll be able to answer
+the sharing question when we actually get to dm/md conversion.
+
+Thanks.
+
+-- 
+tejun
