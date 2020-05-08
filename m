@@ -2,91 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAA4F1C984C
-	for <lists+cgroups@lfdr.de>; Thu,  7 May 2020 19:49:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10C4A1CB186
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 16:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726470AbgEGRtz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 May 2020 13:49:55 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:37628 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726367AbgEGRtz (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 May 2020 13:49:55 -0400
-Received: by mail-wm1-f65.google.com with SMTP id z6so7834916wml.2;
-        Thu, 07 May 2020 10:49:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uzx7yPipGDJlLzd9pOfuRh3M2JP+Q1gSc82f3ElJ8zY=;
-        b=SjSHKjg5wPelS7nsNbolhH2TI4JkNmfUEucLnOJLJf9QiVPOv+0J+0kz490Frs4sLN
-         L4C4uz6hdW4H4iOXTQruVf0a9f+Wz/Vn7+HPsLSQMxEvW6JFY2FaCUFswU6ktMkycw7c
-         wIP0CTLq6TVyOPtC8T1TPcYqQssWpIxTIynuuwVQT/XvdJhv+fMeSg5pTVj8XMxL2DTz
-         lKSqbeuADNCTDzCm+Pr4U04ZvzyL4s2GJ1Ty0OQzk+2F+OHGgXvzQ5iqn7Mxr1YFau1s
-         K/zv+p267aAB/vR0iyVoE7xTV+zbNIIGpfvP35F8MAhBKN62AEmtbd2EAvIVfii/qRXp
-         gixw==
-X-Gm-Message-State: AGi0PuaJsDBQWRjK+DjXDwGhvF4g2jpATOzvk7mMbmc3heFbra7D00Oo
-        yC0ra2weRcj53WT1ttdt0z4=
-X-Google-Smtp-Source: APiQypIzr87jhEXZelDUSzpK7Ud4dOVfvMCNVoLIJsfeJx8v5mGHEwPPoIyxRblXb/5q9zF8hQSNcQ==
-X-Received: by 2002:a1c:1fc9:: with SMTP id f192mr12578342wmf.129.1588873792788;
-        Thu, 07 May 2020 10:49:52 -0700 (PDT)
-Received: from localhost (ip-37-188-183-9.eurotel.cz. [37.188.183.9])
-        by smtp.gmail.com with ESMTPSA id k133sm9875442wma.0.2020.05.07.10.49.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 07 May 2020 10:49:51 -0700 (PDT)
-Date:   Thu, 7 May 2020 19:49:49 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: effective memory.high reclaim for remote charging
-Message-ID: <20200507174949.GN6345@dhcp22.suse.cz>
-References: <20200507163301.229070-1-shakeelb@google.com>
- <20200507164653.GM6345@dhcp22.suse.cz>
- <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com>
+        id S1726770AbgEHOQe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 May 2020 10:16:34 -0400
+Received: from forwardcorp1p.mail.yandex.net ([77.88.29.217]:56418 "EHLO
+        forwardcorp1p.mail.yandex.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726636AbgEHOQe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 10:16:34 -0400
+Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
+        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id 9C6732E0997;
+        Fri,  8 May 2020 17:16:31 +0300 (MSK)
+Received: from myt5-70c90f7d6d7d.qloud-c.yandex.net (myt5-70c90f7d6d7d.qloud-c.yandex.net [2a02:6b8:c12:3e2c:0:640:70c9:f7d])
+        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id DzB0dpFFbi-GTXSjfvG;
+        Fri, 08 May 2020 17:16:31 +0300
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
+        t=1588947391; bh=Kz8084Qd+ukMFtBduY70Wrn/hOXrye0GrRmcB96gXCQ=;
+        h=Message-ID:Date:To:From:Subject:Cc;
+        b=Dj8/u6gZYmMA/f3gA/Gqiy6C2yfCTKO//L+zyCsxYhibDXK2RnLGgmSAlaRXqqzlw
+         Tq4x4ndeaEZyJGVAZxWLr/JJnElxICKB49ARgoON0n79PGht6cp9Htyk3J3iszXQle
+         cbNDkAqPk/3XuNtXYZDXX5+C1gTBipR7wPmNTtdg=
+Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
+Received: from dynamic-vpn.dhcp.yndx.net (dynamic-vpn.dhcp.yndx.net [2a02:6b8:b080:7008::1:4])
+        by myt5-70c90f7d6d7d.qloud-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id tvHw4hmnaj-GTWWnWM4;
+        Fri, 08 May 2020 17:16:29 +0300
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (Client certificate not present)
+Subject: [PATCH] doc: cgroup: update note about conditions when oom killer is
+ invoked
+From:   Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+To:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     cgroups@vger.kernel.org, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@suse.com>
+Date:   Fri, 08 May 2020 17:16:29 +0300
+Message-ID: <158894738928.208854.5244393925922074518.stgit@buzz>
+User-Agent: StGit/0.22-32-g6a05
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 07-05-20 10:00:07, Shakeel Butt wrote:
-> On Thu, May 7, 2020 at 9:47 AM Michal Hocko <mhocko@kernel.org> wrote:
-> >
-> > On Thu 07-05-20 09:33:01, Shakeel Butt wrote:
-> > [...]
-> > > @@ -2600,8 +2596,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
-> > >                               schedule_work(&memcg->high_work);
-> > >                               break;
-> > >                       }
-> > > -                     current->memcg_nr_pages_over_high += batch;
-> > > -                     set_notify_resume(current);
-> > > +
-> > > +                     if (gfpflags_allow_blocking(gfp_mask))
-> > > +                             reclaim_over_high(memcg, gfp_mask, batch);
-> > > +
-> > > +                     if (page_counter_read(&memcg->memory) <=
-> > > +                         READ_ONCE(memcg->high))
-> > > +                             break;
-> >
-> > I am half way to a long weekend so bear with me. Shouldn't this be continue? The
-> > parent memcg might be still in excess even the child got reclaimed,
-> > right?
-> >
-> 
-> The reclaim_high() actually already does this walk up to the root and
-> reclaim from ones who are still over their high limit. Though having
-> 'continue' here is correct too.
+Starting from v4.19 commit 29ef680ae7c2 ("memcg, oom: move out_of_memory
+back to the charge path") cgroup oom killer is no longer invoked only from
+page faults. Now it implements the same semantics as global OOM killer:
+allocation context invokes OOM killer and keeps retrying until success.
 
-Ohh, right. As I've said weekend brain. I will have a proper look next
-week. This just hit my eyes.
+Signed-off-by: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
+---
+ Documentation/admin-guide/cgroup-v2.rst |   17 ++++++++---------
+ 1 file changed, 8 insertions(+), 9 deletions(-)
 
--- 
-Michal Hocko
-SUSE Labs
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index bcc80269bb6a..1bb9a8f6ebe1 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1172,6 +1172,13 @@ PAGE_SIZE multiple when read back.
+ 	Under certain circumstances, the usage may go over the limit
+ 	temporarily.
+ 
++	In default configuration regular 0-order allocation always
++	succeed unless OOM killer choose current task as a victim.
++
++	Some kinds of allocations don't invoke the OOM killer.
++	Caller could retry them differently, return into userspace
++	as -ENOMEM or silently ignore in cases like disk readahead.
++
+ 	This is the ultimate protection mechanism.  As long as the
+ 	high limit is used and monitored properly, this limit's
+ 	utility is limited to providing the final safety net.
+@@ -1228,17 +1235,9 @@ PAGE_SIZE multiple when read back.
+ 		The number of time the cgroup's memory usage was
+ 		reached the limit and allocation was about to fail.
+ 
+-		Depending on context result could be invocation of OOM
+-		killer and retrying allocation or failing allocation.
+-
+-		Failed allocation in its turn could be returned into
+-		userspace as -ENOMEM or silently ignored in cases like
+-		disk readahead.  For now OOM in memory cgroup kills
+-		tasks iff shortage has happened inside page fault.
+-
+ 		This event is not raised if the OOM killer is not
+ 		considered as an option, e.g. for failed high-order
+-		allocations.
++		allocations or if caller asked to not retry attempts.
+ 
+ 	  oom_kill
+ 		The number of processes belonging to this cgroup
+
