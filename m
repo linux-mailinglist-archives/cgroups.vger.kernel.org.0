@@ -2,84 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B12E1CB909
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 22:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66CFC1CB9B1
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 23:22:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726843AbgEHUfH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 May 2020 16:35:07 -0400
-Received: from freas.net ([62.173.152.33]:33700 "EHLO host.securessvsmail.xyz"
-        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726811AbgEHUfH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 8 May 2020 16:35:07 -0400
-X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 16:35:06 EDT
-Received: from securessvsmail.xyz (2rt7.w.time4vps.cloud [89.40.10.200])
-        by host.securessvsmail.xyz (Postfix) with ESMTPA id 5CA8B300F9B3D
-        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 23:26:16 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 5CA8B300F9B3D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
-        s=default; t=1588969576;
-        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=GjUKQt4iDAaBhkg46Y0BkJ34BO6iyFNRELZZiNhwsKFAtQazN5XQA5feSj9rjC4Yj
-         UYnjViAKVbmj38lQ0YQYLDsgMkfqLgjYVkaAAQTv7nwbciTjCMIFD8Sbv3ilWjPyJ9
-         e/rrfObJLuYlfh+sT964bz4Eo5x31hbzuY6mlOIs=
-DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 5CA8B300F9B3D
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
-        s=default; t=1588969576;
-        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
-        h=Reply-To:From:To:Subject:Date:From;
-        b=GjUKQt4iDAaBhkg46Y0BkJ34BO6iyFNRELZZiNhwsKFAtQazN5XQA5feSj9rjC4Yj
-         UYnjViAKVbmj38lQ0YQYLDsgMkfqLgjYVkaAAQTv7nwbciTjCMIFD8Sbv3ilWjPyJ9
-         e/rrfObJLuYlfh+sT964bz4Eo5x31hbzuY6mlOIs=
-Reply-To: labdellatif@securesvsmail.com
-From:   Laghouili <labdellatif@securessvsmail.xyz>
-To:     cgroups@vger.kernel.org
-Subject: Collaboration
-Date:   08 May 2020 21:26:16 +0100
-Message-ID: <20200508212616.39D88BB62AB6A99D@securessvsmail.xyz>
+        id S1727778AbgEHVW1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 May 2020 17:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56122 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726950AbgEHVW0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 17:22:26 -0400
+Received: from mail-pf1-x44a.google.com (mail-pf1-x44a.google.com [IPv6:2607:f8b0:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0C6CC061A0C
+        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 14:22:26 -0700 (PDT)
+Received: by mail-pf1-x44a.google.com with SMTP id x197so3045094pfd.5
+        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 14:22:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=H7ED1E6iU6GJrL2T+LX5Bj/uEQY3JnE8s7k3T/+egkg=;
+        b=XY5On+GozPMjP6G7zkPxPhW0eE2rp4+jjdvdyV+TE6avG+bX2A6pptdCo2RW+Rn3no
+         KQU1jyKtWYfy9dkYUy4EImZ9+uEOAdDNPH0YwlyphH5/olIWRcFiT8PHrG0uYO6VgAgO
+         E/dVasAEh4SuLPL7R9m2RQCh6iAMAIo8SZvlMpxpYiJTLphr4eSjp2MuwGrDq5yyaNzx
+         4N+w8pQqM2elRyzuI36Dqha8UAGJbBpiCNZBetFNyysG+bhxK79vAv6P6/dmFhDWQ0cZ
+         53BuMgiu5tPKdTehsHF+yErNAw9OFP+cGYZN4uCLlChZJodaZgBljzVYxcpHxpU3zoun
+         Gm9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=H7ED1E6iU6GJrL2T+LX5Bj/uEQY3JnE8s7k3T/+egkg=;
+        b=qmyFMCMlmRoOsJUa0KiQ7/U9S84Vcnf9JnFkMavSBUH79Xh2QBhB4C3JKq0k/KKJNv
+         3w8+hdWe1HUPw477HVndps88mAsm5y2rr92stHZOO5VlqFlAEpbX3jFISmDWDkWP9yfv
+         vAXsh4g6LLlVt3h8PPKlLQ0953lpraZ/8/64qxxLX0qAb5kFbi9nUWDNxCdCl4L7DKg+
+         3Rb8xrnSMnRUBDn9G+BJ/DsLwLgPlvExHXJSH84/0VYQ6uDEofAh1CV1JYyHs531kPSU
+         76pnGvjdsEkAeTZrZ4scHtxQ2C8Zkvzo1eH9IE+jPgqWnTDZlIRPQ5uyC27vot2SofDP
+         AuSA==
+X-Gm-Message-State: AGi0PubIeS7bAjNFAuOrRDUs0KwdcygGWQ4TkBlhKj0uq29WDuBiTatq
+        ZQR52oDrSsXxu03P5bX+Az8uLCAtDt8xZg==
+X-Google-Smtp-Source: APiQypLfungZ5Nzv+f2ielEC+coRuoHMgMXQgXBUaRp75fbEnt3diNF+/f9OMq68YEUmbJsRsjKINr5ubL8GLQ==
+X-Received: by 2002:a17:90a:cb0b:: with SMTP id z11mr7520557pjt.62.1588972946092;
+ Fri, 08 May 2020 14:22:26 -0700 (PDT)
+Date:   Fri,  8 May 2020 14:22:13 -0700
+Message-Id: <20200508212215.181307-1-shakeelb@google.com>
 Mime-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+X-Mailer: git-send-email 2.26.2.645.ge9eca65c58-goog
+Subject: [PATCH 1/3] mm: swap: fix vmstats for huge pages
+From:   Shakeel Butt <shakeelb@google.com>
+To:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello there,
+Many of the callbacks called by pagevec_lru_move_fn() do not correctly
+update the vmstats for huge pages. Fix that. Also __pagevec_lru_add_fn()
+use the irq-unsafe alternative to update the stat as the irqs are
+already disabled.
 
-I am Laghouili Abdellatif. I am contacting you because I have a=20
-proposal that I think may be interested in. I represent the=20
-interest of my brother in-law who was a minister in the Syrian=20
-Government. As you probably know, there is a lot of crisis going=20
-on currently in Syria and my brother in-law has fallen out with=20
-the ruling Junta and the president because of his foreign=20
-policies and the senseless war and killings that has been going=20
-on for a while. Everybody in Syria is fed up and want a change=20
-but the president is too powerfull and he simply kills anyone=20
-that tries to oppose him. My brother in-law belives that he is at=20
-risk and he is now very scared for the safety of his family=20
-especially his kids. In order to ensure that his family is taken=20
-care of and protected incase anything happens to him, he has=20
-asked me to help him find a foreign investor who can help him=20
-accommodate and invest 100 MUSD privately that he has secured in=20
-Europe. He wants these funds safely invested so that the future=20
-and safety of his family can be secured.
+Signed-off-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/swap.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-I am contacting you with the hope that you will be interested in=20
-helping us. We need your help to accommodate the funds in the=20
-banking system in your country and also invest it in a lucrative=20
-projects that will yeild good profits. We will handle all the=20
-logistics involved in the movement of the funds to you. The funds=20
-is already in Europe so you have nothing to worry about because=20
-this transaction will be executed in a legal way. My brother in-
-law has also promised to compensate you for your help. He wants=20
-this to be done discretely so I will be acting as his eyes and=20
-ears during the course of this transaction.
+diff --git a/mm/swap.c b/mm/swap.c
+index a37bd7b202ac..3dbef6517cac 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -225,7 +225,7 @@ static void pagevec_move_tail_fn(struct page *page, struct lruvec *lruvec,
+ 		del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		ClearPageActive(page);
+ 		add_page_to_lru_list_tail(page, lruvec, page_lru(page));
+-		(*pgmoved)++;
++		(*pgmoved) += hpage_nr_pages(page);
+ 	}
+ }
+ 
+@@ -285,7 +285,7 @@ static void __activate_page(struct page *page, struct lruvec *lruvec,
+ 		add_page_to_lru_list(page, lruvec, lru);
+ 		trace_mm_lru_activate(page);
+ 
+-		__count_vm_event(PGACTIVATE);
++		__count_vm_events(PGACTIVATE, hpage_nr_pages(page));
+ 		update_page_reclaim_stat(lruvec, file, 1);
+ 	}
+ }
+@@ -503,6 +503,7 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	int lru, file;
+ 	bool active;
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	if (!PageLRU(page))
+ 		return;
+@@ -536,11 +537,11 @@ static void lru_deactivate_file_fn(struct page *page, struct lruvec *lruvec,
+ 		 * We moves tha page into tail of inactive.
+ 		 */
+ 		add_page_to_lru_list_tail(page, lruvec, lru);
+-		__count_vm_event(PGROTATED);
++		__count_vm_events(PGROTATED, nr_pages);
+ 	}
+ 
+ 	if (active)
+-		__count_vm_event(PGDEACTIVATE);
++		__count_vm_events(PGDEACTIVATE, nr_pages);
+ 	update_page_reclaim_stat(lruvec, file, 0);
+ }
+ 
+@@ -929,6 +930,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ {
+ 	enum lru_list lru;
+ 	int was_unevictable = TestClearPageUnevictable(page);
++	int nr_pages = hpage_nr_pages(page);
+ 
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 
+@@ -966,13 +968,13 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ 		update_page_reclaim_stat(lruvec, page_is_file_lru(page),
+ 					 PageActive(page));
+ 		if (was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGRESCUED);
++			__count_vm_events(UNEVICTABLE_PGRESCUED, nr_pages);
+ 	} else {
+ 		lru = LRU_UNEVICTABLE;
+ 		ClearPageActive(page);
+ 		SetPageUnevictable(page);
+ 		if (!was_unevictable)
+-			count_vm_event(UNEVICTABLE_PGCULLED);
++			__count_vm_events(UNEVICTABLE_PGCULLED, nr_pages);
+ 	}
+ 
+ 	add_page_to_lru_list(page, lruvec, lru);
+-- 
+2.26.2.645.ge9eca65c58-goog
 
-If this proposal interests you, please kindly respond so that I=20
-can give you more details.
-
-Regards,
-
-Laghouili.
