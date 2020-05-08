@@ -2,80 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5CA1CBA43
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 23:56:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFC411CBA4B
+	for <lists+cgroups@lfdr.de>; Sat,  9 May 2020 00:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728055AbgEHV4e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 May 2020 17:56:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727945AbgEHV4e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 17:56:34 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BE2CC05BD43
-        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 14:56:34 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id g185so3387947qke.7
-        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 14:56:34 -0700 (PDT)
+        id S1727778AbgEHWAX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 May 2020 18:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726811AbgEHWAW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 18:00:22 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9FC061A0C
+        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 15:00:21 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id m24so2129102wml.2
+        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 15:00:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=8zne5kD9U815Qp7lQoOfSkfWPnKdq4UH7l4ACZ1laQI=;
-        b=rVWxHIzDFvif9rrgKfKEzuzUqpug84jgH+pn6g2K+if7ys4WCpoBTPfsO3vQPvKAhN
-         yVfFa2Lp+fBa+5PTkzDejJhE9e4mKzNB4oFie8Fb4O99NmTGN8QvA+xTxmSSZnk3ibBc
-         HY2i6VFZUdjANcY0MDN1d4b9v0m8v8op+VhiOv7vwRUaW0FVadyL0QI7pMaOVKtzkkDK
-         eICt41IJctDdTY3MUPL17fid7XHKjjKefy0raEReMlnpRuJoXM9b+XyKVFxobwnSPF9F
-         Mh/uSrnjUReBhhaHgRTzE7vs/YNfmZ2ip7aKqPqWJrOr4nWGMCvhk2K4BK7cIVcztiM7
-         Ocsw==
+        d=cloud.ionos.com; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=HJaSGZ1p1+2gTGleg/polxs+Iy4GGrNGzSb8aVDGzrQ=;
+        b=IaPO7e8heLcfhT9bkoaHzPo555GzJw1+LYpUUo0zXxp4egYkIo8uKH2hJ12Gf60np7
+         6ThjNHhMdYtWeGtQ+yVnic8OSNXCdGjK1zQbTpFLQTCWUwFjUVW+F9PW+u3ohqNYIVDv
+         4ryJk5yYm5OV9PVscfngBf44Qc+EJWGxjQI4lgGJ5f0Tf+UlZs3H+iK1ZX4x0ZO0ghfE
+         dcmCNmAKY5bQs3/rA/aOm8iIOQ67grMUEvIYLLFIO2VnxdUs2VL7ERL+yM6M7YZo8KwA
+         AuByX002gvPWVYrIud5jWNMQbrHgHcvgTMKrg0tvYmEfqaMjftdBCj11iZVHhw+zemO4
+         +GIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8zne5kD9U815Qp7lQoOfSkfWPnKdq4UH7l4ACZ1laQI=;
-        b=TS46cA3McqqUgkgOQrL4PAlhU/qFZecCwHeokMA+Y+im5f9MjsqyXDXQSsqoU8vBjN
-         VcUQdDj6pJ0tIsQkhFisWReyNPHMqzB6iIOciE3Z0xFZYIzAAYZMc5sYAv28uqgV9WkS
-         ojyZNOcaStJ5MdcViMPi7i0QKX41vDSmSv768cQXKxgAgnaYw0DOLaBq3QQ27JELgLJu
-         WIZjQSfW+RwT+mzTIl9lNmZ4zt3vJJq/pVmaMr5ykUAw5hOGEX1JOL4i2bTKRWMiGb1Y
-         Ehc9ilqQ5LhOgmlLD52QKt2L4bbBhguZfG6OYxyyLuEInbwm7eU8dHnMN/ogzg1psqaU
-         2PiQ==
-X-Gm-Message-State: AGi0PubF+N4Ao8GbtWIzytaCGcXKfx5C10KLUfwb+WMHJ6kPoh2Fqja5
-        42Ks5TzNnJvVjNQtgA3uZ6iZijbRZyA=
-X-Google-Smtp-Source: APiQypLlrrLFKBShNnNVF90buqGFklh0fnoXQOu7te0s+VgmO3xy05UxmrY5DdaE5ky534ULac25jA==
-X-Received: by 2002:a37:ac08:: with SMTP id e8mr4618592qkm.439.1588974993311;
-        Fri, 08 May 2020 14:56:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2627])
-        by smtp.gmail.com with ESMTPSA id x8sm2438260qti.51.2020.05.08.14.56.32
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=HJaSGZ1p1+2gTGleg/polxs+Iy4GGrNGzSb8aVDGzrQ=;
+        b=dPEuO76roELvLbKYkSVzIQGAT6k/GLNKCtTBLZC3SJsp9Qb9iNoyHmbk2ipYfDkO3W
+         N+4axI8RkBx17R2C4HyIrTPnGDLzMCe/N1sxeD9+gYcu5CwqULtSRw3bUuMkEZtEqfdk
+         lpxkturcUH/YD76n9JqotGCln5WQ2a52yzGtXdBrDHfFQi5XY3MQkm1TvfsWXz0NN3uT
+         2wg9J1jtFJhfV/oj3jt3vIafR6m4aI7KAOnyYnqZGY2L6r0F4rJ1rE5QaPCPoI9yLCX5
+         VwNbaTJGaZk4vUqf1FsdOzilmgYY3+X765xobL7Z0a8kW0EkZ8/lZrTChxOonf/fIGZS
+         851Q==
+X-Gm-Message-State: AGi0PuYjEGWS62YWWjFTxAB8p0KF2P2QeAG5zLCKNpwGZafqQkOYmPnE
+        9X//Nw5md5OOkTQXLsLv1JMKiw==
+X-Google-Smtp-Source: APiQypJLnh6LtTckOQfEbPKkVnV4ntXLy1KkxIyL4FBqg3edpvuCqixk6f15YHj2QiF0QmhrVzmjuA==
+X-Received: by 2002:a7b:cf25:: with SMTP id m5mr19492194wmg.65.1588975219937;
+        Fri, 08 May 2020 15:00:19 -0700 (PDT)
+Received: from ls00508.pb.local ([2001:1438:4010:2540:7d6e:af57:ffe:3087])
+        by smtp.gmail.com with ESMTPSA id h6sm14646878wmf.31.2020.05.08.15.00.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 14:56:32 -0700 (PDT)
-Date:   Fri, 8 May 2020 17:56:16 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] mm: swap: memcg: fix memcg stats for huge pages
-Message-ID: <20200508215616.GD226164@cmpxchg.org>
-References: <20200508212215.181307-1-shakeelb@google.com>
- <20200508212215.181307-2-shakeelb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200508212215.181307-2-shakeelb@google.com>
+        Fri, 08 May 2020 15:00:19 -0700 (PDT)
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Subject: [PATCH 0/4] cleanup for blk-wbt and blk-throttle
+Date:   Sat,  9 May 2020 00:00:11 +0200
+Message-Id: <20200508220015.11528-1-guoqing.jiang@cloud.ionos.com>
+X-Mailer: git-send-email 2.17.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 08, 2020 at 02:22:14PM -0700, Shakeel Butt wrote:
-> The commit 2262185c5b28 ("mm: per-cgroup memory reclaim stats") added
-> PGLAZYFREE, PGACTIVATE & PGDEACTIVATE stats for cgroups but missed
-> couple of places and PGLAZYFREE missed huge page handling. Fix that.
-> Also for PGLAZYFREE use the irq-unsafe function to update as the irq is
-> already disabled.
-> 
-> Fixes: 2262185c5b28 ("mm: per-cgroup memory reclaim stats")
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+Hi,
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Find some functions can be removed since there is no caller of them when
+read the code.
+
+Thanks,
+Guoqing   
+
+Guoqing Jiang (4):
+  blk-throttle: remove blk_throtl_drain
+  blk-throttle: remove tg_drain_bios
+  blk-wbt: remove wbt_update_limits
+  blk-wbt: rename __wbt_update_limits to wbt_update_limits
+
+ block/blk-throttle.c | 63 --------------------------------------------
+ block/blk-wbt.c      | 16 +++--------
+ block/blk-wbt.h      |  4 ---
+ block/blk.h          |  2 --
+ 4 files changed, 4 insertions(+), 81 deletions(-)
+
+-- 
+2.17.1
+
