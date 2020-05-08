@@ -2,142 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8130C1CB74F
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 20:33:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B12E1CB909
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 22:35:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728028AbgEHScx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 May 2020 14:32:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728066AbgEHScr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 14:32:47 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5FEB8C05BD0B
-        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 11:32:47 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id z90so2121510qtd.10
-        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 11:32:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Eum9bjhCQUemh9iSZtdHJuvrUPzxWGTkZ4CcEro9n7E=;
-        b=jiNhQR7oDFgCIaeq8w1kb7yBCUxXWI4PGAu8hvAJp/EDuZPdtqs0Kv0eQRCIbghrLr
-         plx1VKm4Sw92oc+8T9hBnws9X3YpMutk37X+Z4vvHpsPuGw4ZF1Y2rPRjkD1agBRSLF1
-         kS797R/esbPerCLSlEDiYcRzyVwhJ24kA8ALmaEzLu9cjjv83Lmxp6XMkh3hMvNIqVEU
-         XEuKmtJ486aKM1U5k7/+R0un2thzz8+m1v19Z7FPHL+BnJkUfBDg73JlyXZZ7nG9aKiE
-         94bS/k6zSEgO9ITOLKwSURZnE+flX89sr9YP4oD6ByysAzQdkJOyP+fRM8bipeTGLD/0
-         yqfw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Eum9bjhCQUemh9iSZtdHJuvrUPzxWGTkZ4CcEro9n7E=;
-        b=HgeWwG4lVntqw/7SHZVaXUyzkN3ZNDPGK9CT44op5kC8euSt67HO4Xc1UNZWis8tDb
-         71S5ppslnCzQGj/9MLrkT6gxJpcBioDrgUe2uN79rc4xoLErSMSTcvNvauh4tUMiBC7A
-         8vqOGPtVM1UlG6EmcEEARakFPmSt6KsmoWap62sFo+3GQJ9BKoeTusnaIHuh5C1cvwhQ
-         YcXXe4e+v9d80e7JrYe9WSlXCgKegQMa84ukAgXhq3nYIeRKwPSWZD+UJKptadvA2jtq
-         JOuwSUI6/GWP+2tYco+o4B5dpBaNsaRt7kQ7+08IYeWOk3EBiZd9D9jccaoF7iDFl3NJ
-         wR6w==
-X-Gm-Message-State: AGi0PuaJe/IvkLx0vIqnM+bbhElo0fPAwi+O8auSYaXwviEE6vh3yYf6
-        n7b4gR0vO5foEN3yg9eezuFqZw==
-X-Google-Smtp-Source: APiQypJ0pdn3xZQfxhpj1b1EoTjr0iocaEQ2GoCK8oxJJWIkU3kVnVnuPWxhjkluRfHHIg6t3mG3Kw==
-X-Received: by 2002:aed:2442:: with SMTP id s2mr4367165qtc.153.1588962766615;
-        Fri, 08 May 2020 11:32:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:2627])
-        by smtp.gmail.com with ESMTPSA id 10sm2348766qtp.4.2020.05.08.11.32.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 11:32:45 -0700 (PDT)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Joonsoo Kim <js1304@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH 19/19] mm: memcontrol: update page->mem_cgroup stability rules
-Date:   Fri,  8 May 2020 14:31:06 -0400
-Message-Id: <20200508183105.225460-20-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200508183105.225460-1-hannes@cmpxchg.org>
-References: <20200508183105.225460-1-hannes@cmpxchg.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S1726843AbgEHUfH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 May 2020 16:35:07 -0400
+Received: from freas.net ([62.173.152.33]:33700 "EHLO host.securessvsmail.xyz"
+        rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726811AbgEHUfH (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 8 May 2020 16:35:07 -0400
+X-Greylist: delayed 514 seconds by postgrey-1.27 at vger.kernel.org; Fri, 08 May 2020 16:35:06 EDT
+Received: from securessvsmail.xyz (2rt7.w.time4vps.cloud [89.40.10.200])
+        by host.securessvsmail.xyz (Postfix) with ESMTPA id 5CA8B300F9B3D
+        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 23:26:16 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 5CA8B300F9B3D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
+        s=default; t=1588969576;
+        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=GjUKQt4iDAaBhkg46Y0BkJ34BO6iyFNRELZZiNhwsKFAtQazN5XQA5feSj9rjC4Yj
+         UYnjViAKVbmj38lQ0YQYLDsgMkfqLgjYVkaAAQTv7nwbciTjCMIFD8Sbv3ilWjPyJ9
+         e/rrfObJLuYlfh+sT964bz4Eo5x31hbzuY6mlOIs=
+DKIM-Filter: OpenDKIM Filter v2.11.0 host.securessvsmail.xyz 5CA8B300F9B3D
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=securessvsmail.xyz;
+        s=default; t=1588969576;
+        bh=TOUrQtNA/9Lcm9zkDMeg72zVB746Q4FAPUpPflwTIWQ=;
+        h=Reply-To:From:To:Subject:Date:From;
+        b=GjUKQt4iDAaBhkg46Y0BkJ34BO6iyFNRELZZiNhwsKFAtQazN5XQA5feSj9rjC4Yj
+         UYnjViAKVbmj38lQ0YQYLDsgMkfqLgjYVkaAAQTv7nwbciTjCMIFD8Sbv3ilWjPyJ9
+         e/rrfObJLuYlfh+sT964bz4Eo5x31hbzuY6mlOIs=
+Reply-To: labdellatif@securesvsmail.com
+From:   Laghouili <labdellatif@securessvsmail.xyz>
+To:     cgroups@vger.kernel.org
+Subject: Collaboration
+Date:   08 May 2020 21:26:16 +0100
+Message-ID: <20200508212616.39D88BB62AB6A99D@securessvsmail.xyz>
+Mime-Version: 1.0
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The previous patches have simplified the access rules around
-page->mem_cgroup somewhat:
+Hello there,
 
-1. We never change page->mem_cgroup while the page is isolated by
-   somebody else. This was by far the biggest exception to our rules
-   and it didn't stop at lock_page() or lock_page_memcg().
+I am Laghouili Abdellatif. I am contacting you because I have a=20
+proposal that I think may be interested in. I represent the=20
+interest of my brother in-law who was a minister in the Syrian=20
+Government. As you probably know, there is a lot of crisis going=20
+on currently in Syria and my brother in-law has fallen out with=20
+the ruling Junta and the president because of his foreign=20
+policies and the senseless war and killings that has been going=20
+on for a while. Everybody in Syria is fed up and want a change=20
+but the president is too powerfull and he simply kills anyone=20
+that tries to oppose him. My brother in-law belives that he is at=20
+risk and he is now very scared for the safety of his family=20
+especially his kids. In order to ensure that his family is taken=20
+care of and protected incase anything happens to him, he has=20
+asked me to help him find a foreign investor who can help him=20
+accommodate and invest 100 MUSD privately that he has secured in=20
+Europe. He wants these funds safely invested so that the future=20
+and safety of his family can be secured.
 
-2. We charge pages before they get put into page tables now, so the
-   somewhat fishy rule about "can be in page table as long as it's
-   still locked" is now gone and boiled down to having an exclusive
-   reference to the page.
+I am contacting you with the hope that you will be interested in=20
+helping us. We need your help to accommodate the funds in the=20
+banking system in your country and also invest it in a lucrative=20
+projects that will yeild good profits. We will handle all the=20
+logistics involved in the movement of the funds to you. The funds=20
+is already in Europe so you have nothing to worry about because=20
+this transaction will be executed in a legal way. My brother in-
+law has also promised to compensate you for your help. He wants=20
+this to be done discretely so I will be acting as his eyes and=20
+ears during the course of this transaction.
 
-Document the new rules. Any of the following will stabilize the
-page->mem_cgroup association:
+If this proposal interests you, please kindly respond so that I=20
+can give you more details.
 
-- the page lock
-- LRU isolation
-- lock_page_memcg()
-- exclusive access to the page
+Regards,
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
----
- mm/memcontrol.c | 21 +++++++--------------
- 1 file changed, 7 insertions(+), 14 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 491fdeec0ce4..865440e8438e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1201,9 +1201,8 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
-  * @page: the page
-  * @pgdat: pgdat of the page
-  *
-- * This function is only safe when following the LRU page isolation
-- * and putback protocol: the LRU lock must be held, and the page must
-- * either be PageLRU() or the caller must have isolated/allocated it.
-+ * This function relies on page->mem_cgroup being stable - see the
-+ * access rules in commit_charge().
-  */
- struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
- {
-@@ -2605,18 +2604,12 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- {
- 	VM_BUG_ON_PAGE(page->mem_cgroup, page);
- 	/*
--	 * Nobody should be changing or seriously looking at
--	 * page->mem_cgroup at this point:
--	 *
--	 * - the page is uncharged
--	 *
--	 * - the page is off-LRU
--	 *
--	 * - an anonymous fault has exclusive page access, except for
--	 *   a locked page table
-+	 * Any of the following ensures page->mem_cgroup stability:
- 	 *
--	 * - a page cache insertion, a swapin fault, or a migration
--	 *   have the page locked
-+	 * - the page lock
-+	 * - LRU isolation
-+	 * - lock_page_memcg()
-+	 * - exclusive reference
- 	 */
- 	page->mem_cgroup = memcg;
- }
--- 
-2.26.2
-
+Laghouili.
