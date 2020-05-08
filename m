@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9E11CB74B
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 20:33:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1291CB74D
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2020 20:33:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728045AbgEHScn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 8 May 2020 14:32:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57880 "EHLO
+        id S1728063AbgEHScq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 8 May 2020 14:32:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57888 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728033AbgEHScm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 14:32:42 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CD0AC05BD43
-        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 11:32:42 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id f83so2613499qke.13
-        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 11:32:42 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1727984AbgEHScp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 8 May 2020 14:32:45 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37D1DC061A0C
+        for <cgroups@vger.kernel.org>; Fri,  8 May 2020 11:32:44 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id q13so2134969qtp.7
+        for <cgroups@vger.kernel.org>; Fri, 08 May 2020 11:32:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=gEsuCl/jh1GeHgdn0FOVKPNUgKGHCcGpgaHvUQUBVHw=;
-        b=jwIJEbNfT/2CL0tzS3TiYOLlNBsdiZqhcBkAT2z2pYTVuCdkSo46gg7XewMb8yiQuP
-         ftQK5gtM/sZXuE/XcL94iRwGO6nHM7F6M9Oqj/Qu+IlSEdC1Wgr+lamK77D9m9bHorqy
-         ilsPqXGtEuyPwsR/OOW6etaQb2mig9DfovoTHQ0sQS5pAmCmSavQGPgD2n+EFpuUQIWX
-         n6YOeAdC41DRw4RXJxu/IXoSdZxob4X+9yMGTh0wXK3Op0zFcsqequmYpSN85dur9nVf
-         Z9KATcJmLKDj1ShIVtLXDNVNpSB2gsC6HDM+xGwTomo6F8J2rwI2H57oFUKlt/j8xqZE
-         lUfw==
+        bh=WjwifLkaxtnwjsDLki9oTn/ODVTE0c1W9xwEMFneqd4=;
+        b=q2dyjdEbv83IUE3u02r2JwYp7811qVwPgshXKCrQ9XsOoThuy+yCgx3eE+3O06I4nk
+         sA2UB6pDLm7Cl3ukEoSeqZ4absWqRl+rAuxVm35o9C8uulHk6tDaLg2OW64hPvYjMfPq
+         h1nO3+CuPO7MSvFT8px0tCOrBddzqfjGfIsySPjI7CJLvGVVKfGcW9YX0CHvGlWCu3eI
+         ZSOGDPjXfO7ba7ayjNCh1zngQEJvJ0Q7F/lJ9RAxmpg0eca0qEWUl/Zhn6BNtOlpc3JP
+         KMXOdTZnVyl63bvpRi5/fbOGw/EtLtsnjpmczC5i18yY0lhPEZL3g44yjE/BuRqyt+9f
+         tzQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=gEsuCl/jh1GeHgdn0FOVKPNUgKGHCcGpgaHvUQUBVHw=;
-        b=HyY7Htid+C5uPfgCYpbaZpaE8zfROuVUXZ4GufoYKWmYHmc3IM5BZJL3Uot9fi8ldj
-         7+2Jui+6c9so6DOumKEjm80nrn/8LtKLXYM/UDMKDwQ/isDF0guFH8gHLxbyVHe+6DaC
-         nymfu5s/TJXbTP9Zi7ha7U9m54/xM6SwZFWmVsHsW+alQ+85nt+TXQ4Ra5UauINYVxy9
-         Km4VOa734ghEJ/5EBwI4Fub90f5FC+qU7jdXu29fwFI2xoVPv5Flmi6wtfUNio8GKRNM
-         BQThrQFqo9sM13fmNsiNFdRZHbm9MFXyFa9/E0foK/k144EHrnDO6KME/JHrL4migQ6E
-         NpaQ==
-X-Gm-Message-State: AGi0Pub+1NKsv+2MFQdbAN7aTpovdpau5QcKPlf5oDIw4PFaQGv1ImXO
-        c0vQRl6hXTntljSIPaWAwmYoFbpFU18=
-X-Google-Smtp-Source: APiQypJMpRJ88KOHhg4rWkabtFU2Ek09QL0qeneqJOMfFjmiP/CPoKYsAH0QT5oCdxQUffgHmUPiiw==
-X-Received: by 2002:a37:a412:: with SMTP id n18mr4077666qke.134.1588962761498;
-        Fri, 08 May 2020 11:32:41 -0700 (PDT)
+        bh=WjwifLkaxtnwjsDLki9oTn/ODVTE0c1W9xwEMFneqd4=;
+        b=rDw3CSNUufF5oIjw1RZAkc3tscHwLF8Ns0jPsBd28WI0BrSNGoM0c7lm05C2PiuKxN
+         aYEMGDVHfMorMaNNmllPIwkJ/1ed73AV/2gRN6kg6pei+ehvFQVZLez/zLcGZhuZkHJP
+         IXv4AhOyPUV5Xw3JT+JL4x5rEBbq0VH6TJxCmCLBO3GBOI2MkLDYkfGvs+r1oy7D2RE8
+         M2JiveRP+5u3jJJgq3mhR4DNOe9I/m8eRb/kS3HaIiQnNW7VkZPf8mxjrVouCTdTbJVg
+         4E1rnPzfQnZ2Hr+qQqfDOwMwmK89D9/VO9hot9kclgjfv+IjrDHUblGPzoiW1/nQNfou
+         MPVg==
+X-Gm-Message-State: AGi0PuZQmrJKXNR+yR7H6BMV146gfXoygy+OAZcA6tDY2MM1ahSXSzxF
+        AD5v3a7pkEh6aSxyU6XnI0WbXdTNLkc=
+X-Google-Smtp-Source: APiQypKVCx22J2K5w35bf60sV1gZioeQd40D9P2B8Ud1CnlBKzSyhGcvkchitCvEL8araIDX3HOMIw==
+X-Received: by 2002:ac8:2c4f:: with SMTP id e15mr396815qta.27.1588962763459;
+        Fri, 08 May 2020 11:32:43 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:2627])
-        by smtp.gmail.com with ESMTPSA id 33sm2022173qtc.82.2020.05.08.11.32.39
+        by smtp.gmail.com with ESMTPSA id u11sm2090127qtj.10.2020.05.08.11.32.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 May 2020 11:32:39 -0700 (PDT)
+        Fri, 08 May 2020 11:32:42 -0700 (PDT)
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Andrew Morton <akpm@linux-foundation.org>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
@@ -58,9 +58,9 @@ Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Subject: [PATCH 16/19] mm: memcontrol: charge swapin pages on instantiation
-Date:   Fri,  8 May 2020 14:31:03 -0400
-Message-Id: <20200508183105.225460-17-hannes@cmpxchg.org>
+Subject: [PATCH 17/19] mm: memcontrol: document the new swap control behavior
+Date:   Fri,  8 May 2020 14:31:04 -0400
+Message-Id: <20200508183105.225460-18-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200508183105.225460-1-hannes@cmpxchg.org>
 References: <20200508183105.225460-1-hannes@cmpxchg.org>
@@ -71,258 +71,56 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Right now, users that are otherwise memory controlled can easily
-escape their containment and allocate significant amounts of memory
-that they're not being charged for. That's because swap readahead
-pages are not being charged until somebody actually faults them into
-their page table. This can be exploited with MADV_WILLNEED, which
-triggers arbitrary readahead allocations without charging the pages.
+From: Alex Shi <alex.shi@linux.alibaba.com>
 
-There are additional problems with the delayed charging of swap pages:
-
-1. To implement refault/workingset detection for anonymous pages, we
-   need to have a target LRU available at swapin time, but the LRU is
-   not determinable until the page has been charged.
-
-2. To implement per-cgroup LRU locking, we need page->mem_cgroup to be
-   stable when the page is isolated from the LRU; otherwise, the locks
-   change under us. But swapcache gets charged after it's already on
-   the LRU, and even if we cannot isolate it ourselves (since charging
-   is not exactly optional).
-
-The previous patch ensured we always maintain cgroup ownership records
-for swap pages. This patch moves the swapcache charging point from the
-fault handler to swapin time to fix all of the above problems.
-
-v2: simplify swapin error checking (Joonsoo)
-
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
 ---
- mm/memory.c     | 15 ++++++---
- mm/shmem.c      | 14 ++++----
- mm/swap_state.c | 89 ++++++++++++++++++++++++++-----------------------
- mm/swapfile.c   |  6 ----
- 4 files changed, 67 insertions(+), 57 deletions(-)
+ .../admin-guide/cgroup-v1/memory.rst          | 19 +++++++------------
+ 1 file changed, 7 insertions(+), 12 deletions(-)
 
-diff --git a/mm/memory.c b/mm/memory.c
-index 832ee914cbcf..93900b121b6e 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -3125,9 +3125,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 			page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma,
- 							vmf->address);
- 			if (page) {
-+				int err;
-+
- 				__SetPageLocked(page);
- 				__SetPageSwapBacked(page);
- 				set_page_private(page, entry.val);
-+
-+				/* Tell memcg to use swap ownership records */
-+				SetPageSwapCache(page);
-+				err = mem_cgroup_charge(page, vma->vm_mm,
-+							GFP_KERNEL, false);
-+				ClearPageSwapCache(page);
-+				if (err)
-+					goto out_page;
-+
- 				lru_cache_add_anon(page);
- 				swap_readpage(page, true);
- 			}
-@@ -3189,10 +3200,6 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
- 		goto out_page;
- 	}
+diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+index 0ae4f564c2d6..12757e63b26c 100644
+--- a/Documentation/admin-guide/cgroup-v1/memory.rst
++++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+@@ -199,11 +199,11 @@ An RSS page is unaccounted when it's fully unmapped. A PageCache page is
+ unaccounted when it's removed from radix-tree. Even if RSS pages are fully
+ unmapped (by kswapd), they may exist as SwapCache in the system until they
+ are really freed. Such SwapCaches are also accounted.
+-A swapped-in page is not accounted until it's mapped.
++A swapped-in page is accounted after adding into swapcache.
  
--	if (mem_cgroup_charge(page, vma->vm_mm, GFP_KERNEL, true)) {
--		ret = VM_FAULT_OOM;
--		goto out_page;
--	}
- 	cgroup_throttle_swaprate(page, GFP_KERNEL);
+ Note: The kernel does swapin-readahead and reads multiple swaps at once.
+-This means swapped-in pages may contain pages for other tasks than a task
+-causing page fault. So, we avoid accounting at swap-in I/O.
++Since page's memcg recorded into swap whatever memsw enabled, the page will
++be accounted after swapin.
  
- 	/*
-diff --git a/mm/shmem.c b/mm/shmem.c
-index d0306a36f42c..98547dc4642d 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -623,13 +623,15 @@ static int shmem_add_to_page_cache(struct page *page,
- 	page->mapping = mapping;
- 	page->index = index;
+ At page migration, accounting information is kept.
  
--	error = mem_cgroup_charge(page, charge_mm, gfp, PageSwapCache(page));
--	if (error) {
--		if (!PageSwapCache(page) && PageTransHuge(page)) {
--			count_vm_event(THP_FILE_FALLBACK);
--			count_vm_event(THP_FILE_FALLBACK_CHARGE);
-+	if (!PageSwapCache(page)) {
-+		error = mem_cgroup_charge(page, charge_mm, gfp, false);
-+		if (error) {
-+			if (PageTransHuge(page)) {
-+				count_vm_event(THP_FILE_FALLBACK);
-+				count_vm_event(THP_FILE_FALLBACK_CHARGE);
-+			}
-+			goto error;
- 		}
--		goto error;
- 	}
- 	cgroup_throttle_swaprate(page, gfp);
+@@ -222,18 +222,13 @@ the cgroup that brought it in -- this will happen on memory pressure).
+ But see section 8.2: when moving a task to another cgroup, its pages may
+ be recharged to the new cgroup, if move_charge_at_immigrate has been chosen.
  
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 558e224138d1..4052c011391d 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -360,12 +360,13 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 			struct vm_area_struct *vma, unsigned long addr,
- 			bool *new_page_allocated)
- {
--	struct page *found_page = NULL, *new_page = NULL;
- 	struct swap_info_struct *si;
--	int err;
-+	struct page *page;
-+
- 	*new_page_allocated = false;
- 
--	do {
-+	for (;;) {
-+		int err;
- 		/*
- 		 * First check the swap cache.  Since this is normally
- 		 * called after lookup_swap_cache() failed, re-calling
-@@ -373,12 +374,12 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 		 */
- 		si = get_swap_device(entry);
- 		if (!si)
--			break;
--		found_page = find_get_page(swap_address_space(entry),
--					   swp_offset(entry));
-+			return NULL;
-+		page = find_get_page(swap_address_space(entry),
-+				     swp_offset(entry));
- 		put_swap_device(si);
--		if (found_page)
--			break;
-+		if (page)
-+			return page;
- 
- 		/*
- 		 * Just skip read ahead for unused swap slot.
-@@ -389,21 +390,15 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 		 * else swap_off will be aborted if we return NULL.
- 		 */
- 		if (!__swp_swapcount(entry) && swap_slot_cache_enabled)
--			break;
+-Exception: If CONFIG_MEMCG_SWAP is not used.
+-When you do swapoff and make swapped-out pages of shmem(tmpfs) to
+-be backed into memory in force, charges for pages are accounted against the
+-caller of swapoff rather than the users of shmem.
 -
--		/*
--		 * Get a new page to read into from swap.
--		 */
--		if (!new_page) {
--			new_page = alloc_page_vma(gfp_mask, vma, addr);
--			if (!new_page)
--				break;		/* Out of memory */
--		}
-+			return NULL;
+-2.4 Swap Extension (CONFIG_MEMCG_SWAP)
++2.4 Swap Extension
+ --------------------------------------
  
- 		/*
- 		 * Swap entry may have been freed since our caller observed it.
- 		 */
- 		err = swapcache_prepare(entry);
-+		if (!err)
-+			break;
-+
- 		if (err == -EEXIST) {
- 			/*
- 			 * We might race against get_swap_page() and stumble
-@@ -412,31 +407,43 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
- 			 */
- 			cond_resched();
- 			continue;
--		} else if (err)		/* swp entry is obsolete ? */
--			break;
--
--		/* May fail (-ENOMEM) if XArray node allocation failed. */
--		__SetPageLocked(new_page);
--		__SetPageSwapBacked(new_page);
--		err = add_to_swap_cache(new_page, entry, gfp_mask & GFP_KERNEL);
--		if (likely(!err)) {
--			/* Initiate read into locked page */
--			SetPageWorkingset(new_page);
--			lru_cache_add_anon(new_page);
--			*new_page_allocated = true;
--			return new_page;
- 		}
--		__ClearPageLocked(new_page);
--		/*
--		 * add_to_swap_cache() doesn't return -EEXIST, so we can safely
--		 * clear SWAP_HAS_CACHE flag.
--		 */
--		put_swap_page(new_page, entry);
--	} while (err != -ENOMEM);
+-Swap Extension allows you to record charge for swap. A swapped-in page is
+-charged back to original page allocator if possible.
++Swap usage is always recorded for each of cgroup. Swap Extension allows you to
++read and limit it.
  
--	if (new_page)
--		put_page(new_page);
--	return found_page;
-+		return NULL;
-+	}
-+
-+	/*
-+	 * The swap entry is ours to swap in. Prepare a new page.
-+	 */
-+
-+	page = alloc_page_vma(gfp_mask, vma, addr);
-+	if (!page)
-+		goto fail_free;
-+
-+	__SetPageLocked(page);
-+	__SetPageSwapBacked(page);
-+
-+	/* May fail (-ENOMEM) if XArray node allocation failed. */
-+	if (add_to_swap_cache(page, entry, gfp_mask & GFP_KERNEL))
-+		goto fail_unlock;
-+
-+	if (mem_cgroup_charge(page, NULL, gfp_mask & GFP_KERNEL, false))
-+		goto fail_delete;
-+
-+	/* Initiate read into locked page */
-+	SetPageWorkingset(page);
-+	lru_cache_add_anon(page);
-+	*new_page_allocated = true;
-+	return page;
-+
-+fail_delete:
-+	delete_from_swap_cache(page);
-+fail_unlock:
-+	unlock_page(page);
-+	put_page(page);
-+fail_free:
-+	swap_free(entry);
-+	return NULL;
- }
+-When swap is accounted, following files are added.
++When CONFIG_SWAP is enabled, following files are added.
  
- /*
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 8c9b6767013b..3bc7acc68ba8 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1867,11 +1867,6 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
- 	if (unlikely(!page))
- 		return -ENOMEM;
- 
--	if (mem_cgroup_charge(page, vma->vm_mm, GFP_KERNEL, true)) {
--		ret = -ENOMEM;
--		goto out_nolock;
--	}
--
- 	pte = pte_offset_map_lock(vma->vm_mm, pmd, addr, &ptl);
- 	if (unlikely(!pte_same_as_swp(*pte, swp_entry_to_pte(entry)))) {
- 		ret = 0;
-@@ -1897,7 +1892,6 @@ static int unuse_pte(struct vm_area_struct *vma, pmd_t *pmd,
- 	activate_page(page);
- out:
- 	pte_unmap_unlock(pte, ptl);
--out_nolock:
- 	if (page != swapcache) {
- 		unlock_page(page);
- 		put_page(page);
+  - memory.memsw.usage_in_bytes.
+  - memory.memsw.limit_in_bytes.
 -- 
 2.26.2
 
