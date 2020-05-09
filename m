@@ -2,60 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393041CC203
-	for <lists+cgroups@lfdr.de>; Sat,  9 May 2020 16:07:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 119EC1CC238
+	for <lists+cgroups@lfdr.de>; Sat,  9 May 2020 16:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727882AbgEIOHF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 9 May 2020 10:07:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42424 "EHLO
+        id S1727840AbgEIOob (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 9 May 2020 10:44:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48232 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1727986AbgEIOHD (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 9 May 2020 10:07:03 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE240C05BD09
-        for <cgroups@vger.kernel.org>; Sat,  9 May 2020 07:07:01 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id b26so3697094lfa.5
-        for <cgroups@vger.kernel.org>; Sat, 09 May 2020 07:07:01 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1726782AbgEIOob (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 9 May 2020 10:44:31 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3489C061A0C;
+        Sat,  9 May 2020 07:44:29 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id c18so4203470ile.5;
+        Sat, 09 May 2020 07:44:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Jc93T48//PCz7sdPyS0gIAsQLpsU+tV5Kt0CzqYwNik=;
-        b=uF4uQoe+Y/Rjx41fEplRhUf+B9x5B5F/LKDeKQu+D8rktHPDMcvcrKJ2M9QRQslZfS
-         pxpEfjWspPHF07KZa4jVhaeDrW9r2+L6O38kBjVzIONl+siiFRvZHre6UUqVfO5njY4B
-         dclVPiAKKVgD9sk/qgxT+kxi1bWfRfD1eDSbafMPpBgtnE3jIzAu//+1lQ4e92NmJfmj
-         LCTOgnamNTrgmOw5HmZ+CAhGi7SIJy6XSOZNlSbK8eezV94DWGSsmsC1Idq4uY50QrbP
-         w0b4AnWsem9n7jdd6EvNgGuGM5FgnEYGAQe4NPYrBycRSJed3lj+S+y6HdS2UnvQtkqG
-         9oyQ==
+        bh=1hI9ycgQ4zeirYCayZqlQtbGCMAV/8BVRrWbFIPSt1Y=;
+        b=hQVS4ZPoIo4VxX/5nd1aSmJN4WU/ZZmJHcLAK0FoUrWJBAcRAM/ZH0kP2mDH9c2Mcb
+         SWM22Nu6jFYtWbCx6oRXIx6unbYZBjWZofzLjkBui4reST6xR05xkE87GIrR5C1m3dzn
+         /92kWXQcQ9kk25WbZeFThY2H4xFK1gR/Z3VpDt8RMZSIKOLT9SWOYaFBQ2j34qWqxxIC
+         pzM5kaLcIFLGXym3nG8SWO6bc5ZFMNw7EKTB96AW9LEYwK740cX1fJUNN7qoMIvsgLY4
+         5QMAeF0dqAoP2FmIxH0TTchL4SnXXtgR5qK5+41JQbkbw6btTdrYU7O4T8pNf1QtWZRR
+         xqhA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jc93T48//PCz7sdPyS0gIAsQLpsU+tV5Kt0CzqYwNik=;
-        b=Co5lH7nVw1xvpQF+ChsY5kIRXlFAGab733fd0mY72tPHZcwtMXKGInifQWwIL5XdFX
-         CQph2u8sZ9Lp1ZVb86YLOEiwEe0SevFI3KBRLcKg3ciPqf5yVO268HYhtg0ASLw1BiWE
-         eO6mQ0/aQ1uWsXZi6JZNcWsLPNr6PgxAuoeV3Mp2Lg9GmBItZixp7AcMtrQB2gumyCOj
-         1t4agjO9Qo5AVOW6OxotdRZHxG8VE2nDXinp+UH3bU7prq/75+uSOELKwthDGGSS418U
-         zipwR8g3EUyLwlmKp3UZjGYlR13qEYdxjsR7uR7Kc4sgJVIzxDdWNHDsZQspqljIxZhq
-         eqXw==
-X-Gm-Message-State: AOAM5324UwJjQI0sSvJEd/kz0lRElwXO3cEzC+fRGVqcm+vKrBmhu60O
-        aOl1APmLvBtpbHSZ+ofPgUs4AAaiuD/vVIixHvLoNw==
-X-Google-Smtp-Source: ABdhPJwjPYzDPcoNKv0FtPPZDg27RvRDPPE/INXsZ6+T0TDBOd40qBSDRRPucaEnBz644KrZdQwsAsrxFNOD5b1wI6g=
-X-Received: by 2002:a19:f512:: with SMTP id j18mr5027730lfb.33.1589033220016;
- Sat, 09 May 2020 07:07:00 -0700 (PDT)
+        bh=1hI9ycgQ4zeirYCayZqlQtbGCMAV/8BVRrWbFIPSt1Y=;
+        b=l3WqGezqsxNBlaOipwBMrRoEui4e+kSJ+AcruQyIeFhLbc/2Wxe2v1FrY/i10gsZyI
+         nPEr79sb8zUnSf6nuKvYXRB2B0XiB+spyuhnJfIh7BO1k7/oWgjo60KbJBt2e3xgN6ii
+         eSi55rmOz4qJ0q1/IOTEqPI9tHOrdgdZHHpSbolUtMCvtSVa0DciZ0tSAykQRqbXFu+P
+         w3mbVHA+xmqXUzRvFpj9hd+WSrjUfve0KBRCPcusgeF6uaDRYieJ6ICiPvZx1DgM/QJy
+         46ICpQftHcRYOYpJSWfMC0Zogq4FsvDGerfzVcB6PhoyGoHPNoyzmzs7crXQlb1V7HO/
+         l21g==
+X-Gm-Message-State: AGi0Pub/Z7Blr/skS4ZFWw6V5RDWKuttBTpj44FU2FNyKGb9Iakn8JRr
+        QVvDKydimHH1pLKh1qzjl/Wt7t9Hfo6XPl02dU/UWUpx
+X-Google-Smtp-Source: APiQypJeZbqR8cOxrIaCuTPsIeig2FGnuaB6IFS+w/IMBZaiGq2pK3JXRXRsR8/B4ve1cSseku7gziAyJDlCxouLxY4=
+X-Received: by 2002:a92:5c57:: with SMTP id q84mr8328572ilb.203.1589035469351;
+ Sat, 09 May 2020 07:44:29 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200508212215.181307-1-shakeelb@google.com> <20200508212215.181307-3-shakeelb@google.com>
- <20200508215122.GB226164@cmpxchg.org>
-In-Reply-To: <20200508215122.GB226164@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Sat, 9 May 2020 07:06:48 -0700
-Message-ID: <CALvZod5DyMK0uGhPD5oYjds0Q8ew=1LTqjbHK4YLdsqrfYQqWg@mail.gmail.com>
-Subject: Re: [PATCH 3/3] mm: swap: fix update_page_reclaim_stat for huge pages
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Mel Gorman <mgorman@suse.de>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
+References: <20200508170630.94406-1-shakeelb@google.com> <20200508214405.GA226164@cmpxchg.org>
+ <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
+In-Reply-To: <CALvZod5VHHUV+_AXs4+5sLOPGyxm709kQ1q=uHMPVxW8pwXZ=g@mail.gmail.com>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Sat, 9 May 2020 22:43:53 +0800
+Message-ID: <CALOAHbBK9XasDO9Wd1Jw9QzjSN--aEd2zuVkQSyVyitVmU8DAg@mail.gmail.com>
+Subject: Re: [PATCH] memcg: expose root cgroup's memory.stat
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Mel Gorman <mgorman@suse.de>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>,
         Linux MM <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
@@ -65,45 +64,62 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 8, 2020 at 2:51 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+On Sat, May 9, 2020 at 10:06 PM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> On Fri, May 08, 2020 at 02:22:15PM -0700, Shakeel Butt wrote:
-> > Currently update_page_reclaim_stat() updates the lruvec.reclaim_stats
-> > just once for a page irrespective if a page is huge or not. Fix that by
-> > passing the hpage_nr_pages(page) to it.
+> On Fri, May 8, 2020 at 2:44 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
 > >
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
->
-> https://lore.kernel.org/patchwork/patch/685703/
->
-> Laughs, then cries.
->
-
-What happened to that patch? Fell through the cracks?
-
-> > @@ -928,7 +928,7 @@ void lru_add_page_tail(struct page *page, struct page *page_tail,
-> >       }
+> > On Fri, May 08, 2020 at 10:06:30AM -0700, Shakeel Butt wrote:
+> > > One way to measure the efficiency of memory reclaim is to look at the
+> > > ratio (pgscan+pfrefill)/pgsteal. However at the moment these stats are
+> > > not updated consistently at the system level and the ratio of these are
+> > > not very meaningful. The pgsteal and pgscan are updated for only global
+> > > reclaim while pgrefill gets updated for global as well as cgroup
+> > > reclaim.
+> > >
+> > > Please note that this difference is only for system level vmstats. The
+> > > cgroup stats returned by memory.stat are actually consistent. The
+> > > cgroup's pgsteal contains number of reclaimed pages for global as well
+> > > as cgroup reclaim. So, one way to get the system level stats is to get
+> > > these stats from root's memory.stat, so, expose memory.stat for the root
+> > > cgroup.
+> > >
+> > >       from Johannes Weiner:
+> > >       There are subtle differences between /proc/vmstat and
+> > >       memory.stat, and cgroup-aware code that wants to watch the full
+> > >       hierarchy currently has to know about these intricacies and
+> > >       translate semantics back and forth.
+> > >
+> > >       Generally having the fully recursive memory.stat at the root
+> > >       level could help a broader range of usecases.
 > >
-> >       if (!PageUnevictable(page))
-> > -             update_page_reclaim_stat(lruvec, file, PageActive(page_tail));
-> > +             update_page_reclaim_stat(lruvec, file, PageActive(page_tail), 1);
->
-> The change to __pagevec_lru_add_fn() below makes sure the tail pages
-> are already accounted. This would make them count twice.
->
-
-Yes, you are right. I will just re-send your patch after rebase.
-
-
-
-> >  #endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+> > The changelog begs the question why we don't just "fix" the
+> > system-level stats. It may be useful to include the conclusions from
+> > that discussion, and why there is value in keeping the stats this way.
 > >
-> > @@ -973,7 +973,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
-> >       if (page_evictable(page)) {
-> >               lru = page_lru(page);
-> >               update_page_reclaim_stat(lruvec, page_is_file_lru(page),
-> > -                                      PageActive(page));
-> > +                                      PageActive(page), nr_pages);
-> >               if (was_unevictable)
-> >                       __count_vm_events(UNEVICTABLE_PGRESCUED, nr_pages);
-> >       } else {
+>
+> Right. Andrew, can you please add the following para to the changelog?
+>
+> Why not fix the stats by including both the global and cgroup reclaim
+> activity instead of exposing root cgroup's memory.stat? The reason is
+> the benefit of having metrics exposing the activity that happens
+> purely due to machine capacity rather than localized activity that
+> happens due to the limits throughout the cgroup tree. Additionally
+> there are userspace tools like sysstat(sar) which reads these stats to
+> inform about the system level reclaim activity. So, we should not
+> break such use-cases.
+>
+
+Acked-by: Yafang Shao <laoar.shao@gmail.com>
+
+> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> >
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Thanks a lot.
+
+
+
+-- 
+Thanks
+Yafang
