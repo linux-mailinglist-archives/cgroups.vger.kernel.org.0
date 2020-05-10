@@ -2,101 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E95481CC517
-	for <lists+cgroups@lfdr.de>; Sun, 10 May 2020 01:06:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA9D1CC658
+	for <lists+cgroups@lfdr.de>; Sun, 10 May 2020 06:02:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725938AbgEIXGa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 9 May 2020 19:06:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41256 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725927AbgEIXGa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 9 May 2020 19:06:30 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C75AC061A0C;
-        Sat,  9 May 2020 15:57:39 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id c64so5875461qkf.12;
-        Sat, 09 May 2020 15:57:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=rNy4JOtG+nCRfsj1WL1vWdLxzYPRX62nRZqLhv1rCGQ=;
-        b=ZBrXz5ssxM8itMJvIuhpryRMrVoN3j3run4YUAz9kEkOoLcLITpSlYjkDQ7w9RSvP1
-         HojOEGvaQDlHZxwbT5lZPfEogQgu8nZ9xiQG2LBJjr6pQw6jEdLZYdyThxAK7iKXAKQd
-         h/ZPs7oYkGx6MLK5yVck7arft1mrtTZBmumNr8P/oEV1EECn43KBNnYn9M0Js1dGFp4/
-         XCMz5qTkq1i2i4WFKcSfdsO9C55aV/5BpbJMQyj6IU0Bc0RLAujCsLkqDy6X9S3W2oQb
-         AQ2oKK+CDVfbfZdfdssvS6OZ+Pbo0E5iwtFQcPKP978sryTITGs/XquTmjhclfNGtfNe
-         WE+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=rNy4JOtG+nCRfsj1WL1vWdLxzYPRX62nRZqLhv1rCGQ=;
-        b=Yy9wwTkrsCkCCdK/SEGFZ/9XCdJsUvNThzOpqsIJ6ynIrpGarSL3vIQgtrSUMb+Zp5
-         keJBoj5cFqtncidKtiadBb26qhSZsJb6RVs1QH8Mf8ijaKeHaoq50uwIJ/oROmIdiCM2
-         0RYDQ66udbpGIfO0vLsnFr0v7sPZ6BumbhXOdusm9Sbat2iLdpSZUK0XE1sSkgUgbE/F
-         YDgCgSF+tz2+2RVAk7RMSFHLDaEsryrQQkNLLuMpmDPZ+rdBWpXCrV1U1WhAfJQH0iwH
-         NgtQyqn5iteYJEdPktWBGvbAnf9xI45+zC4Hh5Hh1RgbqFwniCQUMrfE/mcPsy2eoIHh
-         BsEw==
-X-Gm-Message-State: AGi0PuZqBRYOtfM8JQaQbXDB6pXI2kF5mE0dAkLeFJ1dsS4jo+DVHaud
-        9cwnaA02eZ596WiRCPE4k5s=
-X-Google-Smtp-Source: APiQypK96R6cZFzspYhYnzWz/BZGD+Zb9bSRGqNWyFkoxqBq1jqbx9pi9qU+L0H/Z1HgKrBNlxxxRA==
-X-Received: by 2002:a05:620a:1495:: with SMTP id w21mr9365964qkj.81.1589065058181;
-        Sat, 09 May 2020 15:57:38 -0700 (PDT)
-Received: from localhost ([199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id e26sm4537648qka.85.2020.05.09.15.57.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 May 2020 15:57:37 -0700 (PDT)
-Date:   Sat, 9 May 2020 18:57:36 -0400
-From:   Tejun Heo <tj@kernel.org>
+        id S1725355AbgEJECR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 10 May 2020 00:02:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36848 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725308AbgEJECR (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 10 May 2020 00:02:17 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 70FA020801;
+        Sun, 10 May 2020 04:02:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589083336;
+        bh=iIlip5Pvd+/nd22NeY8yhi15wbomwAP7PKDtjMfhDj4=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jt/Lu4MpG2XiLOF+j8YPcqZ4sHVm+vw975QlQVLhxR2U4bY7oXARENrwmZCyuzPr6
+         zFdhJhlfElJeK4kEP4G3Teypdvui3NPeLMLlqE26xrQjZ5nexhMPbWUN0Tiu7bxTvM
+         xGyXC1XUZ7RA2Bc3pdE+POWvblB2W29X4MnUmmXc=
+Date:   Sat, 9 May 2020 21:02:14 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
 To:     Zefan Li <lizefan@huawei.com>
-Cc:     David Miller <davem@davemloft.net>,
+Cc:     Tejun Heo <tj@kernel.org>, David Miller <davem@davemloft.net>,
         yangyingliang <yangyingliang@huawei.com>,
         Kefeng Wang <wangkefeng.wang@huawei.com>,
-        huawei.libin@huawei.com, guofan5@huawei.com,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        <huawei.libin@huawei.com>, <guofan5@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
         Linux Kernel Network Developers <netdev@vger.kernel.org>
 Subject: Re: [PATCH v2] netprio_cgroup: Fix unlimited memory leak of v2
  cgroups
-Message-ID: <20200509225736.GA16815@mtj.duckdns.org>
+Message-ID: <20200509210214.408e847a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200508225829.0880cf8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 References: <939566f5-abe3-3526-d4ff-ec6bf8e8c138@huawei.com>
- <2fcd921d-8f42-9d33-951c-899d0bbdd92d@huawei.com>
+        <2fcd921d-8f42-9d33-951c-899d0bbdd92d@huawei.com>
+        <20200508225829.0880cf8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2fcd921d-8f42-9d33-951c-899d0bbdd92d@huawei.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 09, 2020 at 11:32:10AM +0800, Zefan Li wrote:
-> If systemd is configured to use hybrid mode which enables the use of
-> both cgroup v1 and v2, systemd will create new cgroup on both the default
-> root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
-> task to the two cgroups. If the task does some network thing then the v2
-> cgroup can never be freed after the session exited.
+On Fri, 8 May 2020 22:58:29 -0700 Jakub Kicinski wrote:
+> On Sat, 9 May 2020 11:32:10 +0800 Zefan Li wrote:
+> > If systemd is configured to use hybrid mode which enables the use of
+> > both cgroup v1 and v2, systemd will create new cgroup on both the default
+> > root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
+> > task to the two cgroups. If the task does some network thing then the v2
+> > cgroup can never be freed after the session exited.
+> > 
+> > One of our machines ran into OOM due to this memory leak.
+> > 
+> > In the scenario described above when sk_alloc() is called cgroup_sk_alloc()
+> > thought it's in v2 mode, so it stores the cgroup pointer in sk->sk_cgrp_data
+> > and increments the cgroup refcnt, but then sock_update_netprioidx() thought
+> > it's in v1 mode, so it stores netprioidx value in sk->sk_cgrp_data, so the
+> > cgroup refcnt will never be freed.
+> > 
+> > Currently we do the mode switch when someone writes to the ifpriomap cgroup
+> > control file. The easiest fix is to also do the switch when a task is attached
+> > to a new cgroup.
+> > 
+> > Fixes: bd1060a1d671("sock, cgroup: add sock->sk_cgroup")  
 > 
-> One of our machines ran into OOM due to this memory leak.
+>                      ^ space missing here
 > 
-> In the scenario described above when sk_alloc() is called cgroup_sk_alloc()
-> thought it's in v2 mode, so it stores the cgroup pointer in sk->sk_cgrp_data
-> and increments the cgroup refcnt, but then sock_update_netprioidx() thought
-> it's in v1 mode, so it stores netprioidx value in sk->sk_cgrp_data, so the
-> cgroup refcnt will never be freed.
-> 
-> Currently we do the mode switch when someone writes to the ifpriomap cgroup
-> control file. The easiest fix is to also do the switch when a task is attached
-> to a new cgroup.
-> 
-> Fixes: bd1060a1d671("sock, cgroup: add sock->sk_cgroup")
-> Reported-by: Yang Yingliang <yangyingliang@huawei.com>
-> Tested-by: Yang Yingliang <yangyingliang@huawei.com>
-> Signed-off-by: Zefan Li <lizefan@huawei.com>
+> > Reported-by: Yang Yingliang <yangyingliang@huawei.com>
+> > Tested-by: Yang Yingliang <yangyingliang@huawei.com>
+> > Signed-off-by: Zefan Li <lizefan@huawei.com>
 
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+Fixed up the commit message and applied, thank you.
