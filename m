@@ -2,246 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D801CE07E
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 18:32:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A0671CE184
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 19:21:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730036AbgEKQcg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 May 2020 12:32:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58718 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729550AbgEKQcf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 May 2020 12:32:35 -0400
-Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51693C061A0E
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 09:32:35 -0700 (PDT)
-Received: by mail-oo1-xc44.google.com with SMTP id x16so2065048oop.13
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 09:32:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=rN6jrdtkqkuGCg/Q7Taboz2Lln3BwXo5xB8TuXyO+KY=;
-        b=OpawAOpO9nm4JEPmdukVT494hmLa6UutUAlyeiEZzga6yDqsAWdv/KR7/PKRbnVE8H
-         99R3tjCChbnsGcJfwwkAr9s1/Zw/H0x7wfs9HU9815u0SRg5GVp3kieHYd6ha2af+FGb
-         WhCLY6ORMVJbPnjhoQIaL7OaqlaOIu28eRPDZrj3Ff0Qn9k0+XHB4PBIllMbbZMu3yk0
-         QECaYZuIeEJZs/ZtNFeCku1eZjdI+dlyP+Rff+nXiKh/2WJh2HrXz/EJtOjiJi8/R/Ox
-         +hUk0KSPf7pKrhHu4suoZ3LNMAt4Ws25p66SSsjsmebWebTOaF6f2pq39RwUUUcDYgGR
-         edzw==
+        id S1730376AbgEKRVP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 May 2020 13:21:15 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:48219 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730215AbgEKRVO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 May 2020 13:21:14 -0400
+Received: by mail-il1-f197.google.com with SMTP id i2so9975826ile.15
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 10:21:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=rN6jrdtkqkuGCg/Q7Taboz2Lln3BwXo5xB8TuXyO+KY=;
-        b=cPQ6CiuvnSzjg8sXtO7u2VNrHqyvCwnuaNaPvXHiJWM+0BWcpjCMdCNRXVjUhzo9uO
-         YD5LhS2BqIAR7Dv+J6NS9XQT6bm3BnxORqrqJItNB7wAWnoS5UeZlwQMt6qFyZ0a77KA
-         2L1eDzxOMBaxUuiZpxYAW0hbK8iT/oy7y9/gWsAzrYKgAybseSBMn8a5YXPjjY4p24Zy
-         BgEvo2BDW8mv7cCIgF8NeQBfKFV8Cjn9Dii+aXtXkGZpNcGapHwq7fsEyDXnqSWFy07G
-         oUYXXpydcCG2N3HZqzy+ev5pFJGIgFjToG5F+3KZ/7BS0HM3CPnZmou6dEABdBUugYxd
-         X8bA==
-X-Gm-Message-State: AGi0PuaZwEwJusXiu+MCVmXtcw4EugOKkMNvwljf72/TOnt2kd+wkPZ+
-        UT0K+uqS9eEeAIMcZwuXw/JIeA==
-X-Google-Smtp-Source: APiQypLFH8LB9/mzdkQezPfhqKqOF8gm86/abafai8h/7Y5fVn96TpY2Jop/erQMAKojjWcL9ldIBQ==
-X-Received: by 2002:a4a:be13:: with SMTP id l19mr14433407oop.78.1589214754154;
-        Mon, 11 May 2020 09:32:34 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id f8sm564287oto.47.2020.05.11.09.32.32
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 11 May 2020 09:32:33 -0700 (PDT)
-Date:   Mon, 11 May 2020 09:32:16 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Hugh Dickins <hughd@google.com>, Joonsoo Kim <js1304@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 05/18] mm: memcontrol: convert page cache to a new
- mem_cgroup_charge() API
-In-Reply-To: <20200511150648.GA306292@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2005110912180.3431@eggly.anvils>
-References: <20200420221126.341272-1-hannes@cmpxchg.org> <20200420221126.341272-6-hannes@cmpxchg.org> <20200422064041.GE6780@js1304-desktop> <20200422120946.GA358439@cmpxchg.org> <20200423052450.GA12538@js1304-desktop> <20200508160122.GB181181@cmpxchg.org>
- <alpine.LSU.2.11.2005102350360.2769@eggly.anvils> <20200511150648.GA306292@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=n/Jv74xGVecUMFGbk0cscRosnzR2e3OxqcMoNdQON/Y=;
+        b=WuNjcV9AzXsnXjssSIO6kRr3PEoWdbmeIpdhGnIrFPhBBIBxYfecG+ieQuvJW2K/rR
+         uP0gfpmCiSePmrFk1z7qJYYESOT3WEbtYv5I5gZFOqbjLzFiyoSdwBjH5/Q4cDJccoJy
+         lAzU8BjkEnYzO8mc5U8DrT/rzPa4iRpTm6pHVyF/X0qsKTPWQ74ZiR5pVucIyeT6KHKy
+         rqiw7Ch/PvIbi6mWJBteh7o7Ciwc509+YoKoHzQIDGlCVaa+apa2RWX7cH0+r21V+Esj
+         hFb+sTD0lnDyh4Xp7u2Bmy6xnte0oKfQRIPefLMYKFitHdZLpKk4ybygm6dboH3i8GtF
+         w4WA==
+X-Gm-Message-State: AGi0PuYbXYUZqj2bfMWeZDj32jVjH/7OerDMlDYnoUS6txRSTJZ01D/W
+        4HfLjKGD5VcHtjrRx1r3hMn1OhXFtFM6C48/iX/DpKDhDP/I
+X-Google-Smtp-Source: APiQypL7z32WqVtJf+HU76MSmqdvhpd5b/+cWTCe8doO6sm7iJCSjXzZWEJ2xO7z9PbqCNV4hMLSwQdu3OIPRYsm0YiBnlo2Q/Bm
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+X-Received: by 2002:a02:3b4b:: with SMTP id i11mr16625500jaf.16.1589217673581;
+ Mon, 11 May 2020 10:21:13 -0700 (PDT)
+Date:   Mon, 11 May 2020 10:21:13 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e79ab005a56292f5@google.com>
+Subject: WARNING in cgroup_finalize_control
+From:   syzbot <syzbot+9c08aaa363ca5784c9e9@syzkaller.appspotmail.com>
+To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
+        cgroups@vger.kernel.org, christian@brauner.io,
+        coreteam@netfilter.org, daniel@iogearbox.net, davem@davemloft.net,
+        hannes@cmpxchg.org, john.fastabend@gmail.com, kaber@trash.net,
+        kadlec@blackhole.kfki.hu, kafai@fb.com, kpsingh@chromium.org,
+        linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org,
+        lizefan@huawei.com, marcelo.leitner@gmail.com,
+        netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+        nhorman@tuxdriver.com, pablo@netfilter.org, songliubraving@fb.com,
+        syzkaller-bugs@googlegroups.com, tj@kernel.org,
+        vyasevich@gmail.com, yhs@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 11 May 2020, Johannes Weiner wrote:
-> On Mon, May 11, 2020 at 12:38:04AM -0700, Hugh Dickins wrote:
-> > On Fri, 8 May 2020, Johannes Weiner wrote:
-> > > 
-> > > I looked at this some more, as well as compared it to non-shmem
-> > > swapping. My conclusion is - and Hugh may correct me on this - that
-> > > the deletion looks mandatory but is actually an optimization. Page
-> > > reclaim will ultimately pick these pages up.
-> > > 
-> > > When non-shmem pages are swapped in by readahead (locked until IO
-> > > completes) and their page tables are simultaneously unmapped, the
-> > > zap_pte_range() code calls free_swap_and_cache() and the locked pages
-> > > are stranded in the swap cache with no page table references. We rely
-> > > on page reclaim to pick them up later on.
-> > > 
-> > > The same appears to be true for shmem. If the references to the swap
-> > > page are zapped while we're trying to swap in, we can strand the page
-> > > in the swap cache. But it's not up to swapin to detect this reliably,
-> > > it just frees the page more quickly than having to wait for reclaim.
-> > 
-> > I think you've got all that exactly right, thanks for working it out.
-> > It originates from v3.7's 215c02bc33bb ("tmpfs: fix shmem_getpage_gfp()
-> > VM_BUG_ON") - in which I also had to thank you.
-> 
-> I should have looked where it actually came from - I had forgotten
-> about that patch!
-> 
-> > I think I chose to do the delete_from_swap_cache() right there, partly
-> > because of following shmem_unuse_inode() code which already did that,
-> > partly on the basis that while we have to observe the case then it's
-> > better to clean it up, and partly out of guilt that our page lock here
-> > is what had prevented shmem_undo_range() from completing its job; but
-> > I believe you're right that unused swapcache reclaim would sort it out
-> > eventually.
-> 
-> That makes sense to me.
-> 
-> > > diff --git a/mm/shmem.c b/mm/shmem.c
-> > > index e80167927dce..236642775f89 100644
-> > > --- a/mm/shmem.c
-> > > +++ b/mm/shmem.c
-> > > @@ -640,7 +640,7 @@ static int shmem_add_to_page_cache(struct page *page,
-> > >  		xas_lock_irq(&xas);
-> > >  		entry = xas_find_conflict(&xas);
-> > >  		if (entry != expected)
-> > > -			xas_set_err(&xas, -EEXIST);
-> > > +			xas_set_err(&xas, expected ? -ENOENT : -EEXIST);
-> > 
-> > Two things on this.
-> > 
-> > Minor matter of taste, I'd prefer that as
-> > 			xas_set_err(&xas, entry ? -EEXIST : -ENOENT);
-> > which would be more general and more understandable -
-> > but what you have written should be fine for the actual callers.
-> 
-> Yes, checking `expected' was to differentiate the behavior depending
-> on the callsite. But testing `entry' is more obvious in that location.
-> 
-> > Except... I think returning -ENOENT there will not work correctly,
-> > in the case of a punched hole.  Because (unless you've reworked it
-> > and I just haven't looked) shmem_getpage_gfp() knows to retry in
-> > the case of -EEXIST, but -ENOENT will percolate up to shmem_fault()
-> > and result in a SIGBUS, or a read/write error, when the hole should
-> > just get refilled instead.
-> 
-> Good catch, I had indeed missed that. I'm going to make it retry on
-> -ENOENT as well.
-> 
-> We could have it go directly to allocating a new page, but it seems
-> unnecessarily complicated: we've already been retrying in this
-> situation until now, so I would stick to "there was a race, retry."
-> 
-> > Not something that needs fixing in a hurry (it took trinity to
-> > generate this racy case in the first place), I'll take another look
-> > once I've pulled it into a tree (or collected next mmotm) - unless
-> > you've already have changed it around by then.
-> 
-> Attaching a delta fix based on your observations.
-> 
-> Andrew, barring any objections to this, could you please fold it into
-> the version you have in your tree already?
+Hello,
 
-Not so strong as an objection, and I won't get to see whether your
-retry on -ENOENT is good (can -ENOENT arrive at that point from any
-other case, that might endlessly retry?) until I've got the full
-context; but I had arrived at the opposite conclusion overnight.
+syzbot found the following crash on:
 
-Given that this case only appeared with a fuzzer, and stale swapcache
-reclaim is anyway relied upon to clean up after plenty of other such
-races, I think we should agree that I over-complicated the VM_BUG_ON
-removal originally, and it's best to kill that delete_from_swap_cache(),
-and the comment having to explain it, and your EEXIST/ENOENT distinction.
+HEAD commit:    a811c1fa Merge git://git.kernel.org/pub/scm/linux/kernel/g..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ad1d70100000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=43badbd0e7e1137e
+dashboard link: https://syzkaller.appspot.com/bug?extid=9c08aaa363ca5784c9e9
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d3c588100000
 
-(I haven't checked, but I suspect that the shmem_unuse_inode() case
-that I copied from, actually really needed to delete_from_swap_cache(),
-in order to swapoff the page without full retry of the big swapoff loop.)
+The bug was bisected to:
 
-Hugh
+commit eab59075d3cd7f3535aa2dbbc19a198dfee58892
+Author: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Date:   Wed Dec 28 11:26:31 2016 +0000
 
-> 
-> ---
-> 
-> From 33d03ceebce0a6261d472ddc9c5a07940f44714c Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Mon, 11 May 2020 10:45:14 -0400
-> Subject: [PATCH] mm: memcontrol: convert page cache to a new
->  mem_cgroup_charge() API fix
-> 
-> Incorporate Hugh's feedback:
-> 
-> - shmem_getpage_gfp() needs to handle the new -ENOENT that was
->   previously implied in the -EEXIST when a swap entry changed under us
->   in any way. Otherwise hole punching could cause a racing fault to
->   SIGBUS instead of allocating a new page.
-> 
-> - It is indeed page reclaim that picks up any swapcache we leave
->   stranded when free_swap_and_cache() runs on a page locked by
->   somebody else. Document that our delete_from_swap_cache() is an
->   optimization, not something we rely on for correctness.
-> 
-> - Style cleanup: testing `expected' to decide on -EEXIST vs -ENOENT
->   differentiates the callsites, but is a bit awkward to read. Test
->   `entry' instead.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/shmem.c | 15 +++++++++------
->  1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index afd5a057ebb7..00fb001e8f3e 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -638,7 +638,7 @@ static int shmem_add_to_page_cache(struct page *page,
->  		xas_lock_irq(&xas);
->  		entry = xas_find_conflict(&xas);
->  		if (entry != expected)
-> -			xas_set_err(&xas, expected ? -ENOENT : -EEXIST);
-> +			xas_set_err(&xas, entry ? -EEXIST : -ENOENT);
->  		xas_create_range(&xas);
->  		if (xas_error(&xas))
->  			goto unlock;
-> @@ -1686,10 +1686,13 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  		 * We already confirmed swap under page lock, but
->  		 * free_swap_and_cache() only trylocks a page, so it
->  		 * is just possible that the entry has been truncated
-> -		 * or holepunched since swap was confirmed.
-> -		 * shmem_undo_range() will have done some of the
-> -		 * unaccounting, now delete_from_swap_cache() will do
-> -		 * the rest.
-> +		 * or holepunched since swap was confirmed. This could
-> +		 * occur at any time while the page is locked, and
-> +		 * usually page reclaim will take care of the stranded
-> +		 * swapcache page. But when we catch it, we may as
-> +		 * well clean up after ourselves: shmem_undo_range()
-> +		 * will have done some of the unaccounting, now
-> +		 * delete_from_swap_cache() will do the rest.
->  		 */
->  		if (error == -ENOENT)
->  			delete_from_swap_cache(page);
-> @@ -1765,7 +1768,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  	if (xa_is_value(page)) {
->  		error = shmem_swapin_page(inode, index, &page,
->  					  sgp, gfp, vma, fault_type);
-> -		if (error == -EEXIST)
-> +		if (error == -EEXIST || error == -ENOENT)
->  			goto repeat;
->  
->  		*pagep = page;
-> -- 
-> 2.26.2
-> 
+    sctp: reduce indent level at sctp_sf_tabort_8_4_8
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=151b6c7c100000
+final crash:    https://syzkaller.appspot.com/x/report.txt?x=171b6c7c100000
+console output: https://syzkaller.appspot.com/x/log.txt?x=131b6c7c100000
+
+IMPORTANT: if you fix the bug, please add the following tag to the commit:
+Reported-by: syzbot+9c08aaa363ca5784c9e9@syzkaller.appspotmail.com
+Fixes: eab59075d3cd ("sctp: reduce indent level at sctp_sf_tabort_8_4_8")
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7373 at kernel/cgroup/cgroup.c:3111 cgroup_apply_control_disable kernel/cgroup/cgroup.c:3111 [inline]
+WARNING: CPU: 0 PID: 7373 at kernel/cgroup/cgroup.c:3111 cgroup_finalize_control+0xb6c/0xd60 kernel/cgroup/cgroup.c:3178
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 7373 Comm: syz-executor.0 Not tainted 5.7.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x1e9/0x30e lib/dump_stack.c:118
+ panic+0x264/0x7a0 kernel/panic.c:221
+ __warn+0x209/0x210 kernel/panic.c:582
+ report_bug+0x1ac/0x2d0 lib/bug.c:195
+ fixup_bug arch/x86/kernel/traps.c:175 [inline]
+ do_error_trap+0xca/0x1c0 arch/x86/kernel/traps.c:267
+ do_invalid_op+0x32/0x40 arch/x86/kernel/traps.c:286
+ invalid_op+0x23/0x30 arch/x86/entry/entry_64.S:1027
+RIP: 0010:cgroup_apply_control_disable kernel/cgroup/cgroup.c:3111 [inline]
+RIP: 0010:cgroup_finalize_control+0xb6c/0xd60 kernel/cgroup/cgroup.c:3178
+Code: 89 f7 ff d3 eb 08 e8 53 fe 07 00 0f 1f 00 49 ff c4 49 83 fc 0d 0f 84 63 01 00 00 e8 3e fe 07 00 e9 a9 f8 ff ff e8 34 fe 07 00 <0f> 0b e9 88 f9 ff ff 89 d9 80 e1 07 80 c1 03 38 c1 0f 8c cd f8 ff
+RSP: 0018:ffffc900035a7ba8 EFLAGS: 00010293
+RAX: ffffffff816b637c RBX: 0000000000000002 RCX: ffff88809e876100
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000000
+RBP: ffffffff89307148 R08: ffffffff816b5cfc R09: ffffed1015d07074
+R10: ffffed1015d07074 R11: 0000000000000000 R12: 0000000000000008
+R13: ffff88809251c000 R14: ffff88808eef2400 R15: dffffc0000000000
+ rebind_subsystems+0x737/0xe60 kernel/cgroup/cgroup.c:1750
+ cgroup_setup_root+0x679/0xd50 kernel/cgroup/cgroup.c:1984
+ cgroup1_root_to_use kernel/cgroup/cgroup-v1.c:1190 [inline]
+ cgroup1_get_tree+0x7a2/0xae0 kernel/cgroup/cgroup-v1.c:1207
+ vfs_get_tree+0x88/0x270 fs/super.c:1547
+ do_new_mount fs/namespace.c:2816 [inline]
+ do_mount+0x17ec/0x2900 fs/namespace.c:3141
+ __do_sys_mount fs/namespace.c:3350 [inline]
+ __se_sys_mount+0xd3/0x100 fs/namespace.c:3327
+ do_syscall_64+0xf3/0x1b0 arch/x86/entry/common.c:295
+ entry_SYSCALL_64_after_hwframe+0x49/0xb3
+RIP: 0033:0x45f27a
+Code: b8 a6 00 00 00 0f 05 48 3d 01 f0 ff ff 0f 83 ad 8c fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 8a 8c fb ff c3 66 0f 1f 84 00 00 00 00 00
+RSP: 002b:00007fff4f78e3a8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fff4f78e400 RCX: 000000000045f27a
+RDX: 00000000004cad91 RSI: 00000000004c1465 RDI: 00000000004c1428
+RBP: 0000000000000000 R08: 00000000004cf7b8 R09: 000000000000001c
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000418390
+R13: 00007fff4f78e628 R14: 0000000000000000 R15: 0000000000000000
+Kernel Offset: disabled
+Rebooting in 86400 seconds..
+
+
+---
+This bug is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this bug report. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+syzbot can test patches for this bug, for details see:
+https://goo.gl/tpsmEJ#testing-patches
