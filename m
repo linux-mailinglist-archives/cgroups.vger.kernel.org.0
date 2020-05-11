@@ -2,176 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21CCE1CE2F7
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 20:44:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51DAB1CE7A2
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 23:44:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729962AbgEKSoi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 11 May 2020 14:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51080 "EHLO
+        id S1726077AbgEKVok (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 May 2020 17:44:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51130 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1729727AbgEKSoi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 11 May 2020 14:44:38 -0400
-Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5194C061A0C
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 11:44:37 -0700 (PDT)
-Received: by mail-oi1-x241.google.com with SMTP id c124so15789264oib.13
-        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 11:44:37 -0700 (PDT)
+        by vger.kernel.org with ESMTP id S1725860AbgEKVoj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 May 2020 17:44:39 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78E19C061A0C
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 14:44:39 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id e25so11271009ljg.5
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 14:44:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=fUrEOO+y3D6qyRoObBtBb6IstX2hI5RkiWjny9eyf2g=;
-        b=ewA66SNz/mrr0YGX9ELb06rzKDiBYl/PL2esub6hnYZ+6TALexrmZPMIB8qJFeEFQd
-         IF0LVoeS9dsVfQZcUMGsaoh15m09m9CjX4NdAExvYiE0/lfPlterADU+Q/Hnf8H2j6c5
-         YKeM8EpuneuojhKYM0ZC9hT2FBdlQ0DPTdwuXwbmSzlYmwFGpW99Hw0ERgZfBzHvgWvh
-         emK8fLJefimnuGZ8BKEF6tl1HinCTmvsETP8ybYotG3S58k+VHH1hK7AmoIPB3ysRIyz
-         OYi/+MGYuIcNxIdA/1tjfRm8BlMts+W7Bxv3mcHAWEwsHl934fFKXGUdEH3AwIy91tW2
-         szyw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qi8QFxJcn8ospcUaTTL/msn/H2PnYlfa7gEDxoqIEDk=;
+        b=Xde/V+AmEr9RhRI0OF3eoEMOlc1isYqe7VOjexZ9+yvqXUITqDMjYykWWvmO4V34Mf
+         JOKkt+8ipvHoG6K6EnRJr+X4BE5BAeOIwVncM8mZiP+p8lL6D28UrUf9zrcUO4HYJ7Li
+         /D0qRklBhVjc7H/pRd3r6sLDxIMmGPBdiSdMvnDuECFum3YPjKLEReOjRUX1lEMISjPa
+         UxRo1lcjtjDBeAqBK9a6l4tU/5RJrH/CC/Tv8dqgB7LOsv/2hUPnh1rhH6QKtsylPMHk
+         BdDMHIPOaPWBeuE+Acy+5O+YHoJMjaQHW8cBtfuVR6w/jN0CQ0EMrdo5tDVPzgaOXoPu
+         HV7A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=fUrEOO+y3D6qyRoObBtBb6IstX2hI5RkiWjny9eyf2g=;
-        b=GDO3vnHizEegs87LLoUH6cqz9l0UqDdVLd5JlF2eG526p73Prsap+JaIcnP9yQUGs0
-         Q28XI4QmRylb6uilMSNEWc0Pm+BgdqfVMROuc4ho+Mjurp53fvsJyVnMuL/tG78ogIh7
-         1CyjXFhPTxV60hyM9NUEfOHgPBSiut8qmaDGYsfRzYgLr5d1d7mAtUQ+zliU1rk5Kx+k
-         s8NkXGAVyJmuxvn6xw5Ds8QKZ4nsiKAodyI5kWY3NyVptkXHWYgocMzM9x6yalBMRl41
-         tU6LTrupfNU5Sz/z8qim3cdRw9F6aqezcPTr8/jI7kwlTasF5J9nIH6N7h8NTS19wyI6
-         pHzg==
-X-Gm-Message-State: AGi0PuY5DPoHZy41dNSiXk3SYK1lmV4g1J2JVn5MAh5SJieitk0Wr0EE
-        HAKYdGqZKhMPKLjK7tu0y4VUWQ==
-X-Google-Smtp-Source: APiQypJPKtawHfjFwCRo/VUEXiQqWma/qUvHGiSpLqc2MhbZsPz2K4KVszWv+9LIbRIbt2YcLxL8/A==
-X-Received: by 2002:aca:478e:: with SMTP id u136mr20830110oia.34.1589222676847;
-        Mon, 11 May 2020 11:44:36 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id k26sm2869896ots.3.2020.05.11.11.44.35
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 11 May 2020 11:44:36 -0700 (PDT)
-Date:   Mon, 11 May 2020 11:44:21 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Hugh Dickins <hughd@google.com>, Joonsoo Kim <js1304@gmail.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Michal Hocko <mhocko@suse.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH 05/18] mm: memcontrol: convert page cache to a new
- mem_cgroup_charge() API
-In-Reply-To: <20200511181056.GA339505@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2005111132450.4088@eggly.anvils>
-References: <20200420221126.341272-1-hannes@cmpxchg.org> <20200420221126.341272-6-hannes@cmpxchg.org> <20200422064041.GE6780@js1304-desktop> <20200422120946.GA358439@cmpxchg.org> <20200423052450.GA12538@js1304-desktop> <20200508160122.GB181181@cmpxchg.org>
- <alpine.LSU.2.11.2005102350360.2769@eggly.anvils> <20200511150648.GA306292@cmpxchg.org> <alpine.LSU.2.11.2005110912180.3431@eggly.anvils> <20200511181056.GA339505@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qi8QFxJcn8ospcUaTTL/msn/H2PnYlfa7gEDxoqIEDk=;
+        b=WUO6fqGNqmaU6Ef6acCNENWABLyzkMoIZwnXbOFCOv5xR5Tq78/LrC85NVCmVx2OS3
+         noa8U0l7G9ICqRcXh8SYrCNrk6AZXDn6ds6i8+HWETs/ksOswhk0SjTHS0fcCW3Z0rVp
+         jQNkyrz/Ylxz6z6hASGrIEMAdR9rEI1Ya04PtOcXmh/fRh175fKvBxLwV7dgZBchq+6d
+         ZkoXujAbYxzQID1m18qt93KI0axmKBuNQ9EC8WleDBpsEBj2mu0lxyb/Z7BJzRF3g35/
+         l8ZJOkdVNsq7kZWSYJrBZ5qJafeuD/0YvxrnDh8BMF/BBjNYz+Iw+yYu6+XHFEWiH1pZ
+         SV/Q==
+X-Gm-Message-State: AOAM5321cEJvb6X/fY26kpjQfO3oMthkWY7KIiR0XeYuSL+NcZultgat
+        imNqpSefvk5Zr0jT6yONIh6YKJjEmKirqxb3ouwA1Q==
+X-Google-Smtp-Source: ABdhPJyDBiceL/nRp52X70KoPTj1Z2mRtQJpKkdBDk00bdjCphFTyVenSJCXU23TcFAtFOAlthEP8MRn7HZ4gVuWRHg=
+X-Received: by 2002:a2e:9a54:: with SMTP id k20mr12277759ljj.265.1589233477493;
+ Mon, 11 May 2020 14:44:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+References: <20200507163301.229070-1-shakeelb@google.com> <20200507164653.GM6345@dhcp22.suse.cz>
+ <CALvZod5TmAnDoueej1nu5_VV9rQa6VYVRXqCYuh63P5HN-o9Sw@mail.gmail.com> <20200511155646.GB306292@cmpxchg.org>
+In-Reply-To: <20200511155646.GB306292@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 11 May 2020 14:44:26 -0700
+Message-ID: <CALvZod7Js-3uF2QkxtizVNRB24QvoG_jobpsgkwScR3VkCHw9g@mail.gmail.com>
+Subject: Re: [PATCH] memcg: effective memory.high reclaim for remote charging
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 11 May 2020, Johannes Weiner wrote:
-> 
-> Since commit b56a2d8af914 ("mm: rid swapoff of quadratic complexity"),
-> shmem_unuse_inode() doesn't have its own copy anymore - it uses
-> shmem_swapin_page().
-> 
-> However, that commit appears to have made shmem's private call to
-> delete_from_swap_cache() obsolete as well. Whereas before this change
-> we fully relied on shmem_unuse() to find and clear a shmem swap entry
-> and its swapcache page, we now only need it to clean out shmem's
-> private state in the inode, as it's followed by a loop over all
-> remaining swap slots, calling try_to_free_swap() on stragglers.
+On Mon, May 11, 2020 at 8:57 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> On Thu, May 07, 2020 at 10:00:07AM -0700, Shakeel Butt wrote:
+> > On Thu, May 7, 2020 at 9:47 AM Michal Hocko <mhocko@kernel.org> wrote:
+> > >
+> > > On Thu 07-05-20 09:33:01, Shakeel Butt wrote:
+> > > [...]
+> > > > @@ -2600,8 +2596,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> > > >                               schedule_work(&memcg->high_work);
+> > > >                               break;
+> > > >                       }
+> > > > -                     current->memcg_nr_pages_over_high += batch;
+> > > > -                     set_notify_resume(current);
+> > > > +
+> > > > +                     if (gfpflags_allow_blocking(gfp_mask))
+> > > > +                             reclaim_over_high(memcg, gfp_mask, batch);
+> > > > +
+> > > > +                     if (page_counter_read(&memcg->memory) <=
+> > > > +                         READ_ONCE(memcg->high))
+> > > > +                             break;
+> > >
+> > > I am half way to a long weekend so bear with me. Shouldn't this be continue? The
+> > > parent memcg might be still in excess even the child got reclaimed,
+> > > right?
+> > >
+> >
+> > The reclaim_high() actually already does this walk up to the root and
+> > reclaim from ones who are still over their high limit. Though having
+> > 'continue' here is correct too.
+>
+> If reclaim was weak and failed to bring the child back in line, we
+> still do set_notify_resume(). We should do that for ancestors too.
+>
+> But it seems we keep adding hierarchy walks and it's getting somewhat
+> convoluted: page_counter does it, then we check high overage
+> recursively, and now we add the call to reclaim which itself is a walk
+> up the ancestor line.
+>
+> Can we hitchhike on the page_counter_try_charge() walk, which already
+> has the concept of identifying counters with overage? Rename the @fail
+> to @limited and return the first counter that is in excess of its high
+> as well, even when the function succeeds?
+>
+> Then we could ditch the entire high checking loop here and simply
+> replace it with
+>
+> done_restock:
+>         ...
+>
+>         if (*limited) {
+>                 if (gfpflags_allow_blocking())
+>                         reclaim_over_high(memcg_from_counter(limited));
+>                 /* Reclaim may not be able to do much, ... */
+>                 set_notify_resume(); // or schedule_work()
+>         };
+>
 
-Great, you've looked deeper into the current situation than I had.
+I will try to code the above and will give a shot to the following
+long-term suggestion as well.
 
-> 
-> Unless I missed something, it's still merely an optimization, and we
-> can delete it for simplicity:
+> In the long-term, the best thing might be to integrate memory.high
+> reclaim with the regular reclaim that try_charge() is already
+> doing. Especially the part where it retries several times - we
+> currently give up on memory.high unnecessarily early. Make
+> page_counter_try_charge() fail on high and max equally, and after
+> several reclaim cycles, instead of invoking the OOM killer, inject the
+> penalty sleep and force the charges. OOM killing and throttling is
+> supposed to be the only difference between the two, anyway, and yet
+> the code diverges far more than that for no apparent reason.
+>
+> But I also appreciate that this is a cleanup beyond the scope of this
+> patch here, so it's up to you how far you want to take it.
 
-Yes, nice ---s, simpler code, and a good idea to separate it out
-as a precursor: thanks, Hannes.
-
-> 
-> ---
-> 
-> From fc9dcaf68c8b54baf365cd670fb5780c7f0d243f Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Mon, 11 May 2020 12:59:08 -0400
-> Subject: [PATCH] mm: shmem: remove rare optimization when swapin races with
->  hole punching
-> 
-> Commit 215c02bc33bb ("tmpfs: fix shmem_getpage_gfp() VM_BUG_ON")
-> recognized that hole punching can race with swapin and removed the
-> BUG_ON() for a truncated entry from the swapin path.
-> 
-> The patch also added a swapcache deletion to optimize this rare case:
-> Since swapin has the page locked, and free_swap_and_cache() merely
-> trylocks, this situation can leave the page stranded in
-> swapcache. Usually, page reclaim picks up stale swapcache pages, and
-> the race can happen at any other time when the page is locked. (The
-> same happens for non-shmem swapin racing with page table zapping.) The
-> thinking here was: we already observed the race and we have the page
-> locked, we may as well do the cleanup instead of waiting for reclaim.
-> 
-> However, this optimization complicates the next patch which moves the
-> cgroup charging code around. As this is just a minor speedup for a
-> race condition that is so rare that it required a fuzzer to trigger
-> the original BUG_ON(), it's no longer worth the complications.
-> 
-> Suggested-by: Hugh Dickins <hughd@google.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Acked-by: Hugh Dickins <hughd@google.com>
-(if one is allowed to suggest and to ack)
-
-> ---
->  mm/shmem.c | 25 +++++++------------------
->  1 file changed, 7 insertions(+), 18 deletions(-)
-> 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index d505b6cce4ab..729bbb3513cd 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1665,27 +1665,16 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
->  	}
->  
->  	error = mem_cgroup_try_charge_delay(page, charge_mm, gfp, &memcg);
-> -	if (!error) {
-> -		error = shmem_add_to_page_cache(page, mapping, index,
-> -						swp_to_radix_entry(swap), gfp);
-> -		/*
-> -		 * We already confirmed swap under page lock, and make
-> -		 * no memory allocation here, so usually no possibility
-> -		 * of error; but free_swap_and_cache() only trylocks a
-> -		 * page, so it is just possible that the entry has been
-> -		 * truncated or holepunched since swap was confirmed.
-> -		 * shmem_undo_range() will have done some of the
-> -		 * unaccounting, now delete_from_swap_cache() will do
-> -		 * the rest.
-> -		 */
-> -		if (error) {
-> -			mem_cgroup_cancel_charge(page, memcg);
-> -			delete_from_swap_cache(page);
-> -		}
-> -	}
->  	if (error)
->  		goto failed;
->  
-> +	error = shmem_add_to_page_cache(page, mapping, index,
-> +					swp_to_radix_entry(swap), gfp);
-> +	if (error) {
-> +		mem_cgroup_cancel_charge(page, memcg);
-> +		goto failed;
-> +	}
-> +
->  	mem_cgroup_commit_charge(page, memcg, true);
->  
->  	spin_lock_irq(&info->lock);
-> -- 
-> 2.26.2
-> 
-> 
+Thanks,
+Shakeel
