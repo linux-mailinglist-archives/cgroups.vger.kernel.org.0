@@ -2,28 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF0D51CCFB9
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 04:27:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A57F1CD2BA
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2020 09:38:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729195AbgEKC1l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 10 May 2020 22:27:41 -0400
-Received: from lgeamrelo11.lge.com ([156.147.23.51]:50830 "EHLO
-        lgeamrelo11.lge.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729102AbgEKC1l (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 10 May 2020 22:27:41 -0400
-X-Greylist: delayed 1800 seconds by postgrey-1.27 at vger.kernel.org; Sun, 10 May 2020 22:27:40 EDT
-Received: from unknown (HELO lgeamrelo01.lge.com) (156.147.1.125)
-        by 156.147.23.51 with ESMTP; 11 May 2020 10:57:38 +0900
-X-Original-SENDERIP: 156.147.1.125
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Received: from unknown (HELO localhost) (10.177.220.187)
-        by 156.147.1.125 with ESMTP; 11 May 2020 10:57:38 +0900
-X-Original-SENDERIP: 10.177.220.187
-X-Original-MAILFROM: iamjoonsoo.kim@lge.com
-Date:   Mon, 11 May 2020 10:57:32 +0900
-From:   Joonsoo Kim <iamjoonsoo.kim@lge.com>
+        id S1728017AbgEKHiZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 11 May 2020 03:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60126 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725916AbgEKHiY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 11 May 2020 03:38:24 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 775C6C061A0E
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 00:38:24 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id k110so6791577otc.2
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2020 00:38:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=VP11kHxLwXDXaTzKOz+HMa/draWDszvpLP/hhYf3Fi4=;
+        b=ZYITXXk0Sv8/5ieeoX241h0bIN3/+/flJRugchMMNKwGQJF62m7yiaYuZVI0Z2a/Ev
+         5jZTGQCU1hQuEquqBEqyiPENflPKm8A85MS4g6fDaKW/l90DVcVfJBVTzPsouTpG3lmj
+         lMe15tgjv6BBowKWTrC+EpVWx46wLf1GQtjVgarN9qkIXaHNh4QkeXwgUekIi+xkfIRc
+         eT5CVGfVYVNZCpwhTj9das9U5at2ho6q70YrjMSzr+uV3cPM57V5BF6x86vXrNELetjN
+         fjLh0Yiub4SlJwlqEienK33bJ5iGStJmdf7jmuufStHuHi9hYYVXfVrWo/QHaGI1kUAY
+         B9cA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=VP11kHxLwXDXaTzKOz+HMa/draWDszvpLP/hhYf3Fi4=;
+        b=aNpdD8QC+XAEghYoJs3bBbTWD+9Myn7Fb5NK4gY2SGeqNE1v7E3y47MdLeOOROQFwN
+         joxfZTZzaHB31FknR21dO7BjAP7XS6uAVl5LtNg8jw0mHpEU5p5TP3hryIj8m8/q684f
+         na1KHSFmstSb2EQX/XNVe6Aovl3Po4/rNYiE7zMDKyN8hm4XVXm53piocHL/EFIrBzW0
+         /WTLXsue4J3VapAaKv9xTaVeSStt050/IDTxQ4mfnSLcakXySa/XD+4ceIrX+gy8OTYE
+         vi88cbvWgysZdb1UdDy38wWXAotApB5ooXpM/2lWk68LSv2fna6ewH0MSdlQiOv6yju7
+         RCbw==
+X-Gm-Message-State: AGi0Pubq+hlw5e1nr3bKUqWgUIeOv+4koKl83f61DUnrPgdTqBwcFfDx
+        +IiMcr7WR71Am1Tnp1iUfFkA5w==
+X-Google-Smtp-Source: APiQypISrLk02tj60/eS4sArwh2wB0XcKehRZlfYJebU0VMeRFve1zu672J8EbwdJy+PndQMB8GoXQ==
+X-Received: by 2002:a05:6830:19f8:: with SMTP id t24mr10838744ott.326.1589182703345;
+        Mon, 11 May 2020 00:38:23 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id q3sm2671555oom.12.2020.05.11.00.38.21
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 11 May 2020 00:38:22 -0700 (PDT)
+Date:   Mon, 11 May 2020 00:38:04 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+cc:     Joonsoo Kim <js1304@gmail.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
         Shakeel Butt <shakeelb@google.com>,
         Hugh Dickins <hughd@google.com>,
         Michal Hocko <mhocko@suse.com>,
@@ -33,104 +62,18 @@ Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         kernel-team@fb.com
 Subject: Re: [PATCH 05/18] mm: memcontrol: convert page cache to a new
  mem_cgroup_charge() API
-Message-ID: <20200511015732.GA7749@js1304-desktop>
-References: <20200420221126.341272-1-hannes@cmpxchg.org>
- <20200420221126.341272-6-hannes@cmpxchg.org>
- <20200422064041.GE6780@js1304-desktop>
- <20200422120946.GA358439@cmpxchg.org>
- <20200423052450.GA12538@js1304-desktop>
- <20200508160122.GB181181@cmpxchg.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <20200508160122.GB181181@cmpxchg.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Message-ID: <alpine.LSU.2.11.2005102350360.2769@eggly.anvils>
+References: <20200420221126.341272-1-hannes@cmpxchg.org> <20200420221126.341272-6-hannes@cmpxchg.org> <20200422064041.GE6780@js1304-desktop> <20200422120946.GA358439@cmpxchg.org> <20200423052450.GA12538@js1304-desktop> <20200508160122.GB181181@cmpxchg.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 08, 2020 at 12:01:22PM -0400, Johannes Weiner wrote:
-> On Thu, Apr 23, 2020 at 02:25:06PM +0900, Joonsoo Kim wrote:
-> > On Wed, Apr 22, 2020 at 08:09:46AM -0400, Johannes Weiner wrote:
-> > > On Wed, Apr 22, 2020 at 03:40:41PM +0900, Joonsoo Kim wrote:
-> > > > On Mon, Apr 20, 2020 at 06:11:13PM -0400, Johannes Weiner wrote:
-> > > > > @@ -1664,29 +1678,22 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
-> > > > >  			goto failed;
-> > > > >  	}
-> > > > >  
-> > > > > -	error = mem_cgroup_try_charge_delay(page, charge_mm, gfp, &memcg);
-> > > > > -	if (!error) {
-> > > > > -		error = shmem_add_to_page_cache(page, mapping, index,
-> > > > > -						swp_to_radix_entry(swap), gfp);
-> > > > > -		/*
-> > > > > -		 * We already confirmed swap under page lock, and make
-> > > > > -		 * no memory allocation here, so usually no possibility
-> > > > > -		 * of error; but free_swap_and_cache() only trylocks a
-> > > > > -		 * page, so it is just possible that the entry has been
-> > > > > -		 * truncated or holepunched since swap was confirmed.
-> > > > > -		 * shmem_undo_range() will have done some of the
-> > > > > -		 * unaccounting, now delete_from_swap_cache() will do
-> > > > > -		 * the rest.
-> > > > > -		 */
-> > > > > -		if (error) {
-> > > > > -			mem_cgroup_cancel_charge(page, memcg);
-> > > > > -			delete_from_swap_cache(page);
-> > > > > -		}
-> > > > > -	}
-> > > > > -	if (error)
-> > > > > +	error = shmem_add_to_page_cache(page, mapping, index,
-> > > > > +					swp_to_radix_entry(swap), gfp,
-> > > > > +					charge_mm);
-> > > > > +	/*
-> > > > > +	 * We already confirmed swap under page lock, and make no
-> > > > > +	 * memory allocation here, so usually no possibility of error;
-> > > > > +	 * but free_swap_and_cache() only trylocks a page, so it is
-> > > > > +	 * just possible that the entry has been truncated or
-> > > > > +	 * holepunched since swap was confirmed.  shmem_undo_range()
-> > > > > +	 * will have done some of the unaccounting, now
-> > > > > +	 * delete_from_swap_cache() will do the rest.
-> > > > > +	 */
-> > > > > +	if (error) {
-> > > > > +		delete_from_swap_cache(page);
-> > > > >  		goto failed;
-> > > > 
-> > > > -EEXIST (from swap cache) and -ENOMEM (from memcg) should be handled
-> > > > differently. delete_from_swap_cache() is for -EEXIST case.
-> > > 
-> > > Good catch, I accidentally changed things here.
-> > > 
-> > > I was just going to change it back, but now I'm trying to understand
-> > > how it actually works.
-> > > 
-> > > Who is removing the page from swap cache if shmem_undo_range() races
-> > > but we fail to charge the page?
-> > > 
-> > > Here is how this race is supposed to be handled: The page is in the
-> > > swapcache, we have it locked and confirmed that the entry in i_pages
-> > > is indeed a swap entry. We charge the page, then we try to replace the
-> > > swap entry in i_pages with the actual page. If we determine, under
-> > > tree lock now, that shmem_undo_range has raced with us, unaccounted
-> > > the swap space, but must have failed to get the page lock, we remove
-> > > the page from swap cache on our side, to free up swap slot and page.
-> > > 
-> > > But what if shmem_undo_range() raced with us, deleted the swap entry
-> > > from i_pages while we had the page locked, but then we simply failed
-> > > to charge? We unlock the page and return -EEXIST (shmem_confirm_swap
-> > > at the exit). The page with its userdata is now in swapcache, but no
-> > > corresponding swap entry in i_pages. shmem_getpage_gfp() sees the
-> > > -EEXIST, retries, finds nothing in i_pages and allocates a new, empty
-> > > page.
-> > > 
-> > > Aren't we leaking the swap slot and the page?
-> > 
-> > Yes, you're right! It seems that it's possible to leak the swap slot
-> > and the page. Race could happen for all the places after lock_page()
-> > and shmem_confirm_swap() are done. And, I think that it's not possible
-> > to fix the problem in shmem_swapin_page() side since we can't know the
-> > timing that trylock_page() is called. Maybe, solution would be,
-> > instead of using free_swap_and_cache() in shmem_undo_range() that
-> > calls trylock_page(), to use another function that calls lock_page().
+On Fri, 8 May 2020, Johannes Weiner wrote:
 > 
 > I looked at this some more, as well as compared it to non-shmem
 > swapping. My conclusion is - and Hugh may correct me on this - that
@@ -147,6 +90,19 @@ On Fri, May 08, 2020 at 12:01:22PM -0400, Johannes Weiner wrote:
 > page are zapped while we're trying to swap in, we can strand the page
 > in the swap cache. But it's not up to swapin to detect this reliably,
 > it just frees the page more quickly than having to wait for reclaim.
+
+I think you've got all that exactly right, thanks for working it out.
+It originates from v3.7's 215c02bc33bb ("tmpfs: fix shmem_getpage_gfp()
+VM_BUG_ON") - in which I also had to thank you.
+
+I think I chose to do the delete_from_swap_cache() right there, partly
+because of following shmem_unuse_inode() code which already did that,
+partly on the basis that while we have to observe the case then it's
+better to clean it up, and partly out of guilt that our page lock here
+is what had prevented shmem_undo_range() from completing its job; but
+I believe you're right that unused swapcache reclaim would sort it out
+eventually.
+
 > 
 > That being said, my patch introduces potentially undesirable behavior
 > (although AFAICS no correctness problem): We should only delete the
@@ -156,7 +112,78 @@ On Fri, May 08, 2020 at 12:01:22PM -0400, Johannes Weiner wrote:
 > charge it, the next fault has to read the still-valid page again from
 > the swap device.
 
-I got it! Thanks for explanation.
+Yes.
 
-Thanks.
+> 
+> I'm going to include this:
 
+I haven't pulled down your V2 series into a tree yet (expecting perhaps
+a respin from Alex on top, when I hope to switch over to trying them
+both), so haven't looked into the context and may be wrong...
+
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index e80167927dce..236642775f89 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -640,7 +640,7 @@ static int shmem_add_to_page_cache(struct page *page,
+>  		xas_lock_irq(&xas);
+>  		entry = xas_find_conflict(&xas);
+>  		if (entry != expected)
+> -			xas_set_err(&xas, -EEXIST);
+> +			xas_set_err(&xas, expected ? -ENOENT : -EEXIST);
+
+Two things on this.
+
+Minor matter of taste, I'd prefer that as
+			xas_set_err(&xas, entry ? -EEXIST : -ENOENT);
+which would be more general and more understandable -
+but what you have written should be fine for the actual callers.
+
+Except... I think returning -ENOENT there will not work correctly,
+in the case of a punched hole.  Because (unless you've reworked it
+and I just haven't looked) shmem_getpage_gfp() knows to retry in
+the case of -EEXIST, but -ENOENT will percolate up to shmem_fault()
+and result in a SIGBUS, or a read/write error, when the hole should
+just get refilled instead.
+
+Not something that needs fixing in a hurry (it took trinity to
+generate this racy case in the first place), I'll take another look
+once I've pulled it into a tree (or collected next mmotm) - unless
+you've already have changed it around by then.
+
+Hugh
+
+>  		xas_create_range(&xas);
+>  		if (xas_error(&xas))
+>  			goto unlock;
+> @@ -1683,17 +1683,18 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
+>  	error = shmem_add_to_page_cache(page, mapping, index,
+>  					swp_to_radix_entry(swap), gfp,
+>  					charge_mm);
+> -	/*
+> -	 * We already confirmed swap under page lock, and make no
+> -	 * memory allocation here, so usually no possibility of error;
+> -	 * but free_swap_and_cache() only trylocks a page, so it is
+> -	 * just possible that the entry has been truncated or
+> -	 * holepunched since swap was confirmed.  shmem_undo_range()
+> -	 * will have done some of the unaccounting, now
+> -	 * delete_from_swap_cache() will do the rest.
+> -	 */
+>  	if (error) {
+> -		delete_from_swap_cache(page);
+> +		/*
+> +		 * We already confirmed swap under page lock, but
+> +		 * free_swap_and_cache() only trylocks a page, so it
+> +		 * is just possible that the entry has been truncated
+> +		 * or holepunched since swap was confirmed.
+> +		 * shmem_undo_range() will have done some of the
+> +		 * unaccounting, now delete_from_swap_cache() will do
+> +		 * the rest.
+> +		 */
+> +		if (error == -ENOENT)
+> +			delete_from_swap_cache(page);
+>  		goto failed;
+>  	}
+>  
+> 
