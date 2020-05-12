@@ -2,91 +2,160 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 058091CFCAD
-	for <lists+cgroups@lfdr.de>; Tue, 12 May 2020 19:55:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E64B11D0161
+	for <lists+cgroups@lfdr.de>; Tue, 12 May 2020 23:58:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726055AbgELRzj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 May 2020 13:55:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48804 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbgELRzj (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 12 May 2020 13:55:39 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 33762206B9;
-        Tue, 12 May 2020 17:55:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1589306138;
-        bh=xdOV4sVw/QH3W5l5kTFnjtP5Xn7D0F1rZuTijRqPjeA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=whE0WE770+VHaMbfnYuPaiR3YTLVRI2bm6dCBiAjZO8iCWSULQm9XueRSDg27tl/e
-         xqTLM3PvalH3TpK8APtJHmd69y0BT7kubpKq9WhkBe8iFqy9B20swAuxAdcwEnf6Rz
-         lFtQWXAqkZCrbJ7H4+d3wLM5A+dn32IvGgCQWhOw=
-Date:   Tue, 12 May 2020 10:55:36 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Michal Hocko <mhocko@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, kernel-team@fb.com,
-        tj@kernel.org, hannes@cmpxchg.org, chris@chrisdown.name,
-        cgroups@vger.kernel.org, shakeelb@google.com
-Subject: Re: [PATCH mm v2 3/3] mm: automatically penalize tasks with high
- swap use
-Message-ID: <20200512105536.748da94e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <20200512072634.GP29153@dhcp22.suse.cz>
-References: <20200511225516.2431921-1-kuba@kernel.org>
-        <20200511225516.2431921-4-kuba@kernel.org>
-        <20200512072634.GP29153@dhcp22.suse.cz>
+        id S1731285AbgELV6e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 May 2020 17:58:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51648 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1728362AbgELV6e (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 May 2020 17:58:34 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C76F5C061A0E
+        for <cgroups@vger.kernel.org>; Tue, 12 May 2020 14:58:33 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id j2so12242819qtr.12
+        for <cgroups@vger.kernel.org>; Tue, 12 May 2020 14:58:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BUXw4M2hrKKLto70sS86x2vpRsYSrXGGkvx6yBoOXGU=;
+        b=J7i0tWVrKdNsAqbFJgrcX4F2LRmnhOb5p8uZbJCl613epPJb948twCNi5eKTP7s33F
+         o+ykWiTZ6bi0oA2jOKopphddfzhgvVTq6r+AmJQsHgKOxqkyo9BTD1/7K5TiLSrMvKx3
+         ks+yOuI09tX3K6d7xao/Wp6lhGaQOWKNb9W4Szmqn5UszApw18rY+G/q9yH/9rWoR7CW
+         T1BUYX12TPAODZ61FqPb14HTaO5TGHRU1aTEHLy57UFWKSIL30FYwQNvyBUMh80oKs0q
+         nsK6OMzbEcVf0RP+E0grzKwaTMUdz9YCrOvKmQ65HRXV0v7pVvObcHn3HluUVebhwQFf
+         79Dg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BUXw4M2hrKKLto70sS86x2vpRsYSrXGGkvx6yBoOXGU=;
+        b=BQ3sL94kRQUPcFlVxrdSNrgG24OhWOuBRB5hXSY4UIBkaNdqHCSNtHqxY2uyY4bNSs
+         HVjH8hfmhoIA3r3gaza04NbEmfJrIyh4MBgpTEp+6KDXEo09BFZHA0ciqq6aje2EtVTs
+         zpEAy0G8XoaNXkV5VSyLZJsXf7Lont6Ks+5bH1bVC2uZyzneR/9Vy8vLllK9+TWIQCUj
+         /6lsc6bXRGSEhUXPYTkS52WF0UiJmAZiz3VpaYQ6u92vlVQ+lhcismusxpvplVDUdPn5
+         I/JpuKRlzS0pp2ZazZ8O2ZAcsUi6GsznNxSJqhiuyI6ChzP/iWRDRzQDhSjUPrTGr7Pt
+         bqoA==
+X-Gm-Message-State: AGi0PuaGXvkxLyQg/XE85YB8xWluv5ZC6EdTfKsBYhzrHHccQS11EKKv
+        WIgyULS9+URcJ5N6AliZzw96UA==
+X-Google-Smtp-Source: APiQypJZIQGRoahrJO1OYKdMjJZJmITijIFVTA02HWCUKw8r3wra+jbdycYr2pGDA3Ctsgw1p0GtaQ==
+X-Received: by 2002:ac8:73c1:: with SMTP id v1mr10049652qtp.320.1589320713006;
+        Tue, 12 May 2020 14:58:33 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:2627])
+        by smtp.gmail.com with ESMTPSA id v44sm10409623qtk.79.2020.05.12.14.58.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 May 2020 14:58:32 -0700 (PDT)
+Date:   Tue, 12 May 2020 17:58:13 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Qian Cai <cai@lca.pw>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Joonsoo Kim <js1304@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, Linux-MM <linux-mm@kvack.org>,
+        cgroups@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        kernel-team@fb.com
+Subject: Re: [PATCH 12/19] mm: memcontrol: convert anon and file-thp to new
+ mem_cgroup_charge() API
+Message-ID: <20200512215813.GA487759@cmpxchg.org>
+References: <20200508183105.225460-1-hannes@cmpxchg.org>
+ <20200508183105.225460-13-hannes@cmpxchg.org>
+ <45AA36A9-0C4D-49C2-BA3C-08753BBC30FB@lca.pw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <45AA36A9-0C4D-49C2-BA3C-08753BBC30FB@lca.pw>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 12 May 2020 09:26:34 +0200 Michal Hocko wrote:
-> On Mon 11-05-20 15:55:16, Jakub Kicinski wrote:
-> > Use swap.high when deciding if swap is full.  
+On Tue, May 12, 2020 at 10:38:54AM -0400, Qian Cai wrote:
+> > On May 8, 2020, at 2:30 PM, Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > 
+> > With the page->mapping requirement gone from memcg, we can charge anon
+> > and file-thp pages in one single step, right after they're allocated.
+> > 
+> > This removes two out of three API calls - especially the tricky commit
+> > step that needed to happen at just the right time between when the
+> > page is "set up" and when it's "published" - somewhat vague and fluid
+> > concepts that varied by page type. All we need is a freshly allocated
+> > page and a memcg context to charge.
+> > 
+> > v2: prevent double charges on pre-allocated hugepages in khugepaged
+> > 
+> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> > ---
+> > include/linux/mm.h      |  4 +---
+> > kernel/events/uprobes.c | 11 +++--------
+> > mm/filemap.c            |  2 +-
+> > mm/huge_memory.c        |  9 +++------
+> > mm/khugepaged.c         | 35 ++++++++++-------------------------
+> > mm/memory.c             | 36 ++++++++++--------------------------
+> > mm/migrate.c            |  5 +----
+> > mm/swapfile.c           |  6 +-----
+> > mm/userfaultfd.c        |  5 +----
+> > 9 files changed, 31 insertions(+), 82 deletions(-)
+> []
+> > diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> > 
+> > @@ -1198,10 +1193,11 @@ static void collapse_huge_page(struct mm_struct *mm,
+> > out_up_write:
+> > 	up_write(&mm->mmap_sem);
+> > out_nolock:
+> > +	if (*hpage)
+> > +		mem_cgroup_uncharge(*hpage);
+> > 	trace_mm_collapse_huge_page(mm, isolated, result);
+> > 	return;
+> > out:
+> > -	mem_cgroup_cancel_charge(new_page, memcg);
+> > 	goto out_up_write;
+> > }
+> []
 > 
-> Please be more specific why.
-
-How about:
-
-    Use swap.high when deciding if swap is full to influence ongoing
-    swap reclaim in a best effort manner.
-
-> > Perform reclaim and count memory over high events.  
+> Some memory pressure will crash this new code. It looks like somewhat racy.
 > 
-> Please expand on this and explain how this is working and why the
-> semantic is subtly different from MEMCG_HIGH. I suspect the reason
-> is that there is no reclaim for the swap so you are only emitting an
-> event on the memcg which is actually throttled. This is in line with
-> memory.high but the difference is that we do reclaim each memcg subtree
-> in the high limit excess. That means that the counter tells us how many
-> times the specific memcg was in excess which would be impossible with
-> your implementation.
+> if (!page->mem_cgroup)
+> 
+> where page == NULL in mem_cgroup_uncharge().
 
-Right, with memory all cgroups over high get penalized with the extra
-reclaim work. For swap we just have the delay, so the event is
-associated with the worst offender, anything lower didn't really matter.
+Thanks for the report, sorry about the inconvenience.
 
-But it's easy enough to change if you prefer. Otherwise I'll just add
-this to the commit message:
+Hm, the page is exclusive at this point, nobody else should be
+touching it. After all, khugepaged might reuse the preallocated page
+for another pmd if this one fails to collapse.
 
-  Count swap over high events. Note that unlike memory over high events
-  we only count them for the worst offender. This is because the
-  delay penalties for both swap and memory over high are not cumulative,
-  i.e. we use the max delay.
+Looking at the code, I think it's page itself that's garbage, not
+page->mem_cgroup changing. If you have CONFIG_NUMA and the allocation
+fails, *hpage could contain an ERR_PTR instead of being NULL.
 
-> I would also suggest to explain or ideally even separate the swap
-> penalty scaling logic to a seprate patch. What kind of data it is based
-> on?
+I think we need the following fixlet:
 
-It's a hard thing to get production data for since, as we mentioned we
-don't expect the limit to be hit. It was more of a process of
-experimentation and finding a gradual slope that "felt right"...
-
-Is there a more scientific process we can follow here? We want the
-delay to be small at first for a first few pages and then grow to make
-sure we stop the task from going too much over high. The square
-function works pretty well IMHO.
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index f2e0a5e5cfbb..f6161e17da26 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1193,7 +1193,7 @@ static void collapse_huge_page(struct mm_struct *mm,
+ out_up_write:
+ 	up_write(&mm->mmap_sem);
+ out_nolock:
+-	if (*hpage)
++	if (!IS_ERR_OR_NULL(*hpage))
+ 		mem_cgroup_uncharge(*hpage);
+ 	trace_mm_collapse_huge_page(mm, isolated, result);
+ 	return;
+@@ -1928,7 +1928,7 @@ static void collapse_file(struct mm_struct *mm,
+ 	unlock_page(new_page);
+ out:
+ 	VM_BUG_ON(!list_empty(&pagelist));
+-	if (*hpage)
++	if (!IS_ERR_OR_NULL(*hpage))
+ 		mem_cgroup_uncharge(*hpage);
+ 	/* TODO: tracepoints */
+ }
