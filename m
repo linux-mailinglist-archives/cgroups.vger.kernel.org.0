@@ -2,96 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40D91D0496
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 04:03:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C94D41D04AC
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 04:13:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728228AbgEMCD3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 May 2020 22:03:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727902AbgEMCD2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 May 2020 22:03:28 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7E743C061A0C;
-        Tue, 12 May 2020 19:03:28 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id t8so7032600qvw.5;
-        Tue, 12 May 2020 19:03:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=mnascyUsz5V0FDEjsIfa2buK7teLIaGjv2zdFsy2N+M=;
-        b=jbH6+xgjghxL7+AaDRjacF4fwhwmz4I9AocgvDMBNPLb/k6T2p2LIk7q6EA1a29kOX
-         DF5zI/zYa1GaOeIzUa1Ppxb+RjMle8BzJYls5Bh+w4xvPs2ZrA2vT8f6pvbaHICCg8VH
-         p5bHmD7MvdnljHAtr0eVuMGG9JvvAcs4yHQwI5kKzczxqLB20qtZQ6ldHfUJiLghTFma
-         NXWF6JBgo/u90RdjqNDMurp3f6uKPcWNKs5WYivrPDuNYpaSJ8w+ltktyc2M+KMymxaQ
-         nXxmU9ufx/31W6/oNtLOAADl2+GmsiuNEfIsB1SEBEAUI0TqDrgxU3ep92OVUwc/c2AR
-         SRIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=mnascyUsz5V0FDEjsIfa2buK7teLIaGjv2zdFsy2N+M=;
-        b=YWPeqcYyL07tIwg+2s1V9vF5j6gnbbTLpwCnjQKWvY3kYbP9bEqvIcriAVNxOO5mcu
-         +S5wFSHDBH9MjzukOPxgkCpYmiFDSCez8b//PDN3mQytlCPdVFKF30mDBjNEgHWT54H7
-         Kp/YV8Pkvfb9cQ0c0Hi+lkoAflM3IWGeWIJmdL5acjmZqsUPuBpQ2lt9oKChEbWU66KJ
-         g5yBlpzzlYWcGm6uAULdPvNybf3eBVSaN/1T3veFHsRIb+mLc6KQjZfyErAgPKV3SlwG
-         DZJ8KEj2j86tiH976LTSd66yFAXnch1pH34MuvsUeVPrgawnGCVIj3qjySucGvsIuceC
-         mVSg==
-X-Gm-Message-State: AOAM531hZm2c8ET1MnakMGOX3UyR//ldcN0ZK2UWcJ+M1wnzWXFoYdNy
-        DG716UfyLFSFdXVX0hcq4DV5UoYo
-X-Google-Smtp-Source: ABdhPJyPfuG8JfeY7HsCjQWPG400npgxLXBlTmPVrWjc5W/+vJOoI3FBBSrKmTAxkNugakBCURQdXg==
-X-Received: by 2002:a05:6214:42a:: with SMTP id a10mr4071727qvy.78.1589335407492;
-        Tue, 12 May 2020 19:03:27 -0700 (PDT)
-Received: from ?IPv6:2601:282:803:7700:4082:2138:4ed8:3e6? ([2601:282:803:7700:4082:2138:4ed8:3e6])
-        by smtp.googlemail.com with ESMTPSA id p125sm11300584qkf.130.2020.05.12.19.03.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 May 2020 19:03:26 -0700 (PDT)
-Subject: Re: [PATCH iproute2-next v2 1/3] ss: introduce cgroup2 cache and
- helper functions
-To:     Dmitry Yakunin <zeil@yandex-team.ru>, netdev@vger.kernel.org
-Cc:     cgroups@vger.kernel.org
-References: <20200509165202.17959-1-zeil@yandex-team.ru>
-From:   David Ahern <dsahern@gmail.com>
-Message-ID: <42814b4f-dc95-d246-47a4-2b8c46dd607e@gmail.com>
-Date:   Tue, 12 May 2020 20:03:25 -0600
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.8.0
+        id S1728131AbgEMCNQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 May 2020 22:13:16 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:55562 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727792AbgEMCNQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 12 May 2020 22:13:16 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 9D0CB1D573112B1D5684;
+        Wed, 13 May 2020 10:13:14 +0800 (CST)
+Received: from [10.133.206.78] (10.133.206.78) by smtp.huawei.com
+ (10.3.19.213) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 13 May
+ 2020 10:13:12 +0800
+To:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
+CC:     Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+From:   Zefan Li <lizefan@huawei.com>
+Subject: [PATCH] cgroup: Remove stale comments
+Message-ID: <0ce73f20-6b19-38c7-81c5-b0b71013fcb7@huawei.com>
+Date:   Wed, 13 May 2020 10:13:11 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-In-Reply-To: <20200509165202.17959-1-zeil@yandex-team.ru>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="gbk"
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.206.78]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/9/20 10:52 AM, Dmitry Yakunin wrote:
-> This patch prepares infrastructure for matching sockets by cgroups.
-> Two helper functions are added for transformation between cgroup v2 ID
-> and pathname. Cgroup v2 cache is implemented as hash table indexed by ID.
-> This cache is needed for faster lookups of socket cgroup.
-> 
-> v2:
->   - style fixes (David Ahern)
-> 
+- The default root is where we can create v2 cgroups.
+- The __DEVEL__sane_behavior mount option has been removed long long ago.
 
-you missed my other comment about this set. Running this new command on
-a kernel without support should give the user a better error message
-than a string of Invalid arguments:
+Signed-off-by: Li Zefan <lizefan@huawei.com>
+---
 
-$ uname -r
-5.3.0-51-generic
+found these when fixing the netprio cgroup bug.
 
-$ ss -a cgroup /sys/fs/cgroup/unified
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
-RTNETLINK answers: Invalid argument
+---
+ kernel/cgroup/cgroup.c | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 06b5ea9..7a01674 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -153,11 +153,7 @@ static struct static_key_true *cgroup_subsys_on_dfl_key[] = {
+ 
+ static DEFINE_PER_CPU(struct cgroup_rstat_cpu, cgrp_dfl_root_rstat_cpu);
+ 
+-/*
+- * The default hierarchy, reserved for the subsystems that are otherwise
+- * unattached - it never has more than a single cgroup, and all tasks are
+- * part of that cgroup.
+- */
++/* the default hierarchy */
+ struct cgroup_root cgrp_dfl_root = { .cgrp.rstat_cpu = &cgrp_dfl_root_rstat_cpu };
+ EXPORT_SYMBOL_GPL(cgrp_dfl_root);
+ 
+@@ -251,9 +247,6 @@ bool cgroup_ssid_enabled(int ssid)
+  * cases where a subsystem should behave differnetly depending on the
+  * interface version.
+  *
+- * The set of behaviors which change on the default hierarchy are still
+- * being determined and the mount option is prefixed with __DEVEL__.
+- *
+  * List of changed behaviors:
+  *
+  * - Mount options "noprefix", "xattr", "clone_children", "release_agent"
+-- 
+2.7.4
