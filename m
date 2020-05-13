@@ -2,85 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3BD1D0AEF
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 10:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6D2C1D0B72
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 11:05:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732239AbgEMIiU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 May 2020 04:38:20 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:33820 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726092AbgEMIiS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 04:38:18 -0400
-Received: by mail-wm1-f67.google.com with SMTP id g14so11263102wme.1
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2020 01:38:17 -0700 (PDT)
+        id S1732416AbgEMJFH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 May 2020 05:05:07 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:34937 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730617AbgEMJFG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 05:05:06 -0400
+Received: by mail-wr1-f65.google.com with SMTP id j5so19908555wrq.2
+        for <cgroups@vger.kernel.org>; Wed, 13 May 2020 02:05:05 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=oFsa0LErIymXz9nEeCHbYZeDaAUm0vYvIFciXQM1UZ0=;
-        b=pJzmvjNR2WTIBASTLt/LK59fcUGNcyS3tDpAfJevcfmoP9sADDLK4EmzHYUQYGxQBI
-         jTXNxVBQYFftfT3HfwU2RbfUsfDcptJNjf1O3yfyNk6atgNWht6smiSqCIKhTAwQ0Pke
-         YIZ0ZD/JFOTilEdn5qq6sfxVKKfe/CM7GcAKJknyHqcdPSXaSUmCBt5Sdkzvl8BCbYas
-         vD3QXrNQFM+eijDzAQWTJxFKK1JgElzO57hpBDW0rjiDyJVtUvsGPIAaGlKWMfgpMibn
-         ovSlMnlQpPVN05gNWdwIit8nIDLIyYEMJmRle47FrsutufxkBE4dgNPKKbo/ksXp73i9
-         LsWw==
-X-Gm-Message-State: AGi0PubYJANzfffdY2vQvHVLZZzljZL4mmpmlunJdR1eytOZdrGnQHDy
-        jLmEHaUjwVB63rYo1Key+4w=
-X-Google-Smtp-Source: APiQypLN3NH5oB3pG5WZOnYlbIG9ZnAPA9fHndBOkVLpR2E+bgJBOtS0RvbIZ9Ok5yWxJrSqLWPaAw==
-X-Received: by 2002:a7b:cd04:: with SMTP id f4mr40091267wmj.3.1589359096391;
-        Wed, 13 May 2020 01:38:16 -0700 (PDT)
+        bh=25RxHAwMSBIhetL8+/dr6OgZkr6zowEfU1+0SqNEFMo=;
+        b=K/gzyDIDC5+9XghFqPJ4xLmSESFmBorOWA4711k94igjz6i4Y23+haUmwR6EYLPjkZ
+         HNd7v7+nlNKq6zenz63fd29MyR5iPFwc6jm1Pm1dcJVjS+3nCk+8QyNVxakC0SjpnNyZ
+         BelOtT7/9vkU9sEfXRnLfI2NWRWtxzFDID/5D+2Nvsinmzbobx/r7ruUdAFUVMNLlJ98
+         QvaWFRbfi9mTWiEQ4ZqT7Nf8I+AdOzXbubZOy+zDFidbMvMyS9Z8NdPHK2FoUv0fPKSU
+         NchTQ1wtQMLiyr9LKeMu3EAOlf0balHskc8z7z1dZkylSjK+M/e1N/Z1NlnyNLei1TRr
+         QlJg==
+X-Gm-Message-State: AGi0PuZMM1xCJooPxhJa/AqpdnsdXh1rvewPVJifR1tOhtepmuUli+8y
+        3piuMpWxstKL5NxlPb4lQnKv5gJR
+X-Google-Smtp-Source: APiQypJWdE8DjrCrM/t86K82ap6eXFwHYOthGCW0D9foSRXTjZWil1VrsD6Grw0l79eYIaZbRgqC8Q==
+X-Received: by 2002:adf:e905:: with SMTP id f5mr30391896wrm.409.1589360704960;
+        Wed, 13 May 2020 02:05:04 -0700 (PDT)
 Received: from localhost (ip-37-188-249-36.eurotel.cz. [37.188.249.36])
-        by smtp.gmail.com with ESMTPSA id j2sm26800817wrp.47.2020.05.13.01.38.15
+        by smtp.gmail.com with ESMTPSA id 128sm29510735wme.39.2020.05.13.02.05.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 01:38:15 -0700 (PDT)
-Date:   Wed, 13 May 2020 10:38:14 +0200
+        Wed, 13 May 2020 02:05:03 -0700 (PDT)
+Date:   Wed, 13 May 2020 11:05:02 +0200
 From:   Michal Hocko <mhocko@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, kernel-team@fb.com,
-        tj@kernel.org, hannes@cmpxchg.org, chris@chrisdown.name,
-        cgroups@vger.kernel.org, shakeelb@google.com
-Subject: Re: [PATCH mm v2 3/3] mm: automatically penalize tasks with high
- swap use
-Message-ID: <20200513083814.GT29153@dhcp22.suse.cz>
-References: <20200511225516.2431921-1-kuba@kernel.org>
- <20200511225516.2431921-4-kuba@kernel.org>
+To:     Zefan Li <lizefan@huawei.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>, linux-mm@kvack.org,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] memcg: Fix memcg_kmem_bypass() for remote memcg charging
+Message-ID: <20200513090502.GV29153@dhcp22.suse.cz>
+References: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200511225516.2431921-4-kuba@kernel.org>
+In-Reply-To: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 11-05-20 15:55:16, Jakub Kicinski wrote:
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 5f12f203822e..c60226daa193 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1374,6 +1374,22 @@ PAGE_SIZE multiple when read back.
->  	The total amount of swap currently being used by the cgroup
->  	and its descendants.
+On Wed 13-05-20 15:28:28, Li Zefan wrote:
+> While trying to use remote memcg charging in an out-of-tree kernel module
+> I found it's not working, because the current thread is a workqueue thread.
+> 
+> Signed-off-by: Zefan Li <lizefan@huawei.com>
+> ---
+> 
+> No need to queue this for v5.7 as currently no upstream users of this memcg
+> feature suffer from this bug.
+> 
+> ---
+>  mm/memcontrol.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index a3b97f1..db836fc 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2802,6 +2802,8 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
 >  
-> +  memory.swap.high
-> +	A read-write single value file which exists on non-root
-> +	cgroups.  The default is "max".
-> +
-> +	Swap usage throttle limit.  If a cgroup's swap usage exceeds
-> +	this limit, all its further allocations will be throttled to
-> +	allow userspace to implement custom out-of-memory procedures.
-> +
-> +	This limit marks a point of no return for the cgroup. It is NOT
-> +	designed to manage the amount of swapping a workload does
-> +	during regular operation. Compare to memory.swap.max, which
-> +	prohibits swapping past a set amount, but lets the cgroup
-> +	continue unimpeded as long as other memory can be reclaimed.
-> +
-> +	Healthy workloads are not expected to reach this limit.
-> +
+>  static inline bool memcg_kmem_bypass(void)
+>  {
+> +	if (unlikely(current->active_memcg))
+> +		return false;
 
-Btw. I forgot to mention that before but you should also add a
-documentation for the swap high event to this file.
+I am confused. Why the check below is insufficient? It checks for both mm
+and PF_KTHREAD?
+
+>  	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+>  		return true;
+>  	return false;
+> -- 
+> 2.7.4
+
 -- 
 Michal Hocko
 SUSE Labs
