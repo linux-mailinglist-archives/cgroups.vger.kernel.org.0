@@ -2,85 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2973E1D09E6
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 09:27:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7A5E1D09EA
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 09:28:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729728AbgEMH1t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 May 2020 03:27:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55370 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728490AbgEMH1t (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 03:27:49 -0400
-Received: from forwardcorp1p.mail.yandex.net (forwardcorp1p.mail.yandex.net [IPv6:2a02:6b8:0:1472:2741:0:8b6:217])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3B01C061A0C;
-        Wed, 13 May 2020 00:27:48 -0700 (PDT)
-Received: from mxbackcorp2j.mail.yandex.net (mxbackcorp2j.mail.yandex.net [IPv6:2a02:6b8:0:1619::119])
-        by forwardcorp1p.mail.yandex.net (Yandex) with ESMTP id E3AF62E1454;
-        Wed, 13 May 2020 10:27:43 +0300 (MSK)
-Received: from localhost (localhost [::1])
-        by mxbackcorp2j.mail.yandex.net (mxbackcorp/Yandex) with ESMTP id KFpMUGJ3fY-RhXSFNkK;
-        Wed, 13 May 2020 10:27:43 +0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru; s=default;
-        t=1589354863; bh=fqTiNo7qgWHswfMQuWMsYkNbunOtZFsc+gVHEJqehuM=;
-        h=Subject:In-Reply-To:Cc:Date:References:To:From:Message-Id;
-        b=JWdpHWOZZIaiOXsS0PqNcPWXouB+6R7VLJw+CpzqnlvlBpv1KCr0rctlRYuF4Gur9
-         0J5KL+MM0M5lDsGGVlQvj7ve3qxTh+bvHOrwiukVzOi+3uhOnbkIlQnNVpl3gjP2fV
-         o6JLQjeikub1PL99IcjMO4mpe/rkBLlvdv5gyCQM=
-Authentication-Results: mxbackcorp2j.mail.yandex.net; dkim=pass header.i=@yandex-team.ru
-X-Yandex-Sender-Uid: 1120000000093952
-X-Yandex-Avir: 1
-Received: from mxbackcorp1g.mail.yandex.net (localhost [::1])
-        by mxbackcorp1g.mail.yandex.net with LMTP id SxxvUWXl5z-KQyWRy6P
-        for <zeil@yandex-team.ru>; Wed, 13 May 2020 10:27:33 +0300
-Received: by iva4-6d0ca09d92db.qloud-c.yandex.net with HTTP;
-        Wed, 13 May 2020 10:27:32 +0300
-From:   =?utf-8?B?0JTQvNC40YLRgNC40Lkg0K/QutGD0L3QuNC9?= 
-        <zeil@yandex-team.ru>
-To:     David Ahern <dsahern@gmail.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc:     "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-In-Reply-To: <42814b4f-dc95-d246-47a4-2b8c46dd607e@gmail.com>
-References: <20200509165202.17959-1-zeil@yandex-team.ru> <42814b4f-dc95-d246-47a4-2b8c46dd607e@gmail.com>
-Subject: Re: [PATCH iproute2-next v2 1/3] ss: introduce cgroup2 cache and helper functions
+        id S1730502AbgEMH2c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 May 2020 03:28:32 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:41696 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1729298AbgEMH2c (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 13 May 2020 03:28:32 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id DE6FF1B5FA18F9AA71A3;
+        Wed, 13 May 2020 15:28:29 +0800 (CST)
+Received: from [10.133.206.78] (10.133.206.78) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Wed, 13 May
+ 2020 15:28:29 +0800
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+CC:     Cgroups <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+From:   Zefan Li <lizefan@huawei.com>
+Subject: [PATCH] memcg: Fix memcg_kmem_bypass() for remote memcg charging
+Message-ID: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
+Date:   Wed, 13 May 2020 15:28:28 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.1
 MIME-Version: 1.0
-X-Mailer: Yamail [ http://yandex.ru ] 5.0
-Date:   Wed, 13 May 2020 10:27:42 +0300
-Message-Id: <25511589354341@mail.yandex-team.ru>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.133.206.78]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+While trying to use remote memcg charging in an out-of-tree kernel module
+I found it's not working, because the current thread is a workqueue thread.
 
+Signed-off-by: Zefan Li <lizefan@huawei.com>
+---
 
-13.05.2020, 05:03, "David Ahern" <dsahern@gmail.com>:
-> On 5/9/20 10:52 AM, Dmitry Yakunin wrote:
->>  This patch prepares infrastructure for matching sockets by cgroups.
->>  Two helper functions are added for transformation between cgroup v2 ID
->>  and pathname. Cgroup v2 cache is implemented as hash table indexed by ID.
->>  This cache is needed for faster lookups of socket cgroup.
->>
->>  v2:
->>    - style fixes (David Ahern)
->
-> you missed my other comment about this set. Running this new command on
-> a kernel without support should give the user a better error message
-> than a string of Invalid arguments:
->
-> $ uname -r
-> 5.3.0-51-generic
->
-> $ ss -a cgroup /sys/fs/cgroup/unified
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
-> RTNETLINK answers: Invalid argument
+No need to queue this for v5.7 as currently no upstream users of this memcg
+feature suffer from this bug.
 
-No, i didn't miss your comment. This patchset was extended with the third patch which includes bytecode filter checking.
+---
+ mm/memcontrol.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a3b97f1..db836fc 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2802,6 +2802,8 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
+ 
+ static inline bool memcg_kmem_bypass(void)
+ {
++	if (unlikely(current->active_memcg))
++		return false;
+ 	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+ 		return true;
+ 	return false;
+-- 
+2.7.4
+
