@@ -2,111 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A7981D1150
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 13:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F60B1D1157
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 13:30:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727944AbgEML3J (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 May 2020 07:29:09 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:38187 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726081AbgEML3J (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 07:29:09 -0400
-Received: by mail-wr1-f67.google.com with SMTP id e1so6501743wrt.5
-        for <cgroups@vger.kernel.org>; Wed, 13 May 2020 04:29:07 -0700 (PDT)
+        id S1730149AbgEMLaj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 May 2020 07:30:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36744 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730064AbgEMLaj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 07:30:39 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45019C061A0C;
+        Wed, 13 May 2020 04:30:38 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b8so6698784plm.11;
+        Wed, 13 May 2020 04:30:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2Ktd5bounBb85k+GhDJYQBKwGNjtE8xOQJSWOO0qVps=;
+        b=hfgNGCstCMJHb8IVTFUEeL+3JGilD81+7rwOcqzOpwjQoMrYv2Z5LeMUCzJ8pzCf9p
+         8oqSZVzVevLUBq3aqDYXpA5ZPorxTlk4GyVcCXcXtDCgg7rf32OqplGewGX/Tq71KaH0
+         6x4rjEaB8R/x8vYndWFQEzIeiZi6qCG+t/GUzp8QQzYxcta8Da+BQ1XqadEpTVA62rkk
+         zElKLJwK03h9CYhA0lS21Apb7+3W2n0SDgmVpoyRqDKhiNiSbPAdNABETh7/377aNjfT
+         BOlkWnf4jhBvUOSUv52te1U6tfHKfFNhSm+45+yDmrE3aEbTj6mQI4lzTBQIqGH/hj/R
+         mnSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=3llE+hJQ+seqQFgq9zbLo0/0zK+SZ7WYVbm/5bG7H5M=;
-        b=uXlXhF9ym+yZE2DUzQ7OdxF5ITSccryfN+EKYYouP3RxwlIRHkG/gA9aQnkW1wmqLc
-         +kP87br/Xy8kqB5Q9B5aqSm8eHEx7Ly7uR+ta70nGCe+iKAMNvWGiaqQdxutxm95otYW
-         pVPwf0tq3Y7mOOwLCyrS739Knj5YfUe539HF2FrartnoV7QkB/jES5iTpv7oV77OnD3b
-         7k+0Fk9RvQrSOL6ejvBofuqHkVY7+8mV9At9gRRf+/Glnul8FWEhHn3SLnDRwJmFckIM
-         QI+c+UTvw6Wr0sGWIUnwRLCN4jg6/mv8h07yYUSBlZg+0LUGF9kPhsMKeK6EapgpyExW
-         CjgQ==
-X-Gm-Message-State: AGi0Puawke3tzrrLoitFcIP3h7u+vgAKeta17yOrEIrSkHCH2brrPjVT
-        kwpyiGdPBVq2XnTWb/uZAZxdH6oI
-X-Google-Smtp-Source: APiQypIiTrg/yulPCYukZyBiZi2cwVpwClkPUU7J/CdQK1ygG8GD0tqOE20B9KXNTAgAcRSED3sVgA==
-X-Received: by 2002:adf:a704:: with SMTP id c4mr29943798wrd.303.1589369347321;
-        Wed, 13 May 2020 04:29:07 -0700 (PDT)
-Received: from localhost (ip-37-188-249-36.eurotel.cz. [37.188.249.36])
-        by smtp.gmail.com with ESMTPSA id s15sm1341951wro.80.2020.05.13.04.29.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 13 May 2020 04:29:06 -0700 (PDT)
-Date:   Wed, 13 May 2020 13:29:05 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Zefan Li <lizefan@huawei.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] memcg: Fix memcg_kmem_bypass() for remote memcg charging
-Message-ID: <20200513112905.GX29153@dhcp22.suse.cz>
-References: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
- <20200513090502.GV29153@dhcp22.suse.cz>
- <76f71776-d049-7407-8574-86b6e9d80704@huawei.com>
+        bh=2Ktd5bounBb85k+GhDJYQBKwGNjtE8xOQJSWOO0qVps=;
+        b=I1+vCEVO5Pg5hAEqN8bnRYeCRrROiGneYFgDRP54vRPD4uVRFepSZGlJPh3sYBqCYW
+         cU39QdvFoTnVVW1q1585a4Em9s1Yt0a+LDvVvpdenFj0DAb+1CaXF6qWyKhtGPMbYips
+         3vdNl9hcNyP8udR99qswGf60SPllojWtJkysvD9zRJrZrJYH6ayzSjnA9NYambXina7B
+         NkvQ8j0f9Zy+t9xOYmsaianZVrvNS5eXmU71FSeshG7zziYPNkzhTIQV0TiFZRzJGnBU
+         4id4KtBp551TPEC1kUeVo7CZh48Vc8eEMVNhUcIUkgy1brarLNu9Xvmhofh97tR2wXnO
+         xbQQ==
+X-Gm-Message-State: AOAM533pPboNTe/oDuyY30IXOo2h06GKe53AKXaI2Sra31KZIUaoxkfE
+        pTpSKTTo2FaAQRm7w68c8jo=
+X-Google-Smtp-Source: ABdhPJwyEeANLs5At6bpev/PUGNX/0KyW6asJ6F8bCCh8n5pcpj+q8jCPczezPPMJcLx7U8T8U5KPA==
+X-Received: by 2002:a17:90b:608:: with SMTP id gb8mr11211316pjb.178.1589369437653;
+        Wed, 13 May 2020 04:30:37 -0700 (PDT)
+Received: from dev-dsk-sblbir-1c-a524888b.ap-northeast-1.amazon.com ([27.0.3.145])
+        by smtp.gmail.com with ESMTPSA id h14sm14406751pfq.46.2020.05.13.04.30.34
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 13 May 2020 04:30:36 -0700 (PDT)
+From:   Balbir Singh <bsingharora@gmail.com>
+X-Google-Original-From: Balbir Singh <sblbir@dev-dsk-sblbir-1c-a524888b.ap-northeast-1.amazon.com>
+Date:   Wed, 13 May 2020 11:30:32 +0000
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Joonsoo Kim <js1304@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 00/19 V2] mm: memcontrol: charge swapin pages on
+ instantiation
+Message-ID: <20200513113032.GA93568@dev-dsk-sblbir-1c-a524888b.ap-northeast-1.amazon.com>
+References: <20200508183105.225460-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <76f71776-d049-7407-8574-86b6e9d80704@huawei.com>
+In-Reply-To: <20200508183105.225460-1-hannes@cmpxchg.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[Cc Roman - initial email is http://lkml.kernel.org/r/e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com]
-
-On Wed 13-05-20 19:19:56, Li Zefan wrote:
-> On 2020/5/13 17:05, Michal Hocko wrote:
-> > On Wed 13-05-20 15:28:28, Li Zefan wrote:
-> >> While trying to use remote memcg charging in an out-of-tree kernel module
-> >> I found it's not working, because the current thread is a workqueue thread.
-> >>
-> >> Signed-off-by: Zefan Li <lizefan@huawei.com>
-> >> ---
-> >>
-> >> No need to queue this for v5.7 as currently no upstream users of this memcg
-> >> feature suffer from this bug.
-> >>
-> >> ---
-> >>  mm/memcontrol.c | 2 ++
-> >>  1 file changed, 2 insertions(+)
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index a3b97f1..db836fc 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -2802,6 +2802,8 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
-> >>  
-> >>  static inline bool memcg_kmem_bypass(void)
-> >>  {
-> >> +	if (unlikely(current->active_memcg))
-> >> +		return false;
-> > 
-> > I am confused. Why the check below is insufficient? It checks for both mm
-> > and PF_KTHREAD?
-> > 
+On Fri, May 08, 2020 at 02:30:47PM -0400, Johannes Weiner wrote:
+> This patch series reworks memcg to charge swapin pages directly at
+> swapin time, rather than at fault time, which may be much later, or
+> not happen at all.
 > 
-> memalloc_use_memcg(memcg);
-> alloc_page(GFP_KERNEL_ACCOUNT);
-> memalloc_unuse_memcg();
+> Changes in version 2:
+> - prevent double charges on pre-allocated hugepages in khugepaged
+> - leave shmem swapcache when charging fails to avoid double IO (Joonsoo)
+> - fix temporary accounting bug by switching rmap<->commit (Joonsoo)
+> - fix double swap charge bug in cgroup1/cgroup2 code gating
+> - simplify swapin error checking (Joonsoo)
+> - mm: memcontrol: document the new swap control behavior (Alex)
+> - review tags
 > 
-> If we run above code in a workqueue thread the memory won't be charged to the specific
-> memcg, because memcg_kmem_bypass() returns true in this case.
+> The delayed swapin charging scheme we have right now causes problems:
+> 
+> - Alex's per-cgroup lru_lock patches rely on pages that have been
+>   isolated from the LRU to have a stable page->mem_cgroup; otherwise
+>   the lock may change underneath him. Swapcache pages are charged only
+>   after they are added to the LRU, and charging doesn't follow the LRU
+>   isolation protocol.
+> 
+> - Joonsoo's anon workingset patches need a suitable LRU at the time
+>   the page enters the swap cache and displaces the non-resident
+>   info. But the correct LRU is only available after charging.
+> 
+> - It's a containment hole / DoS vector. Users can trigger arbitrarily
+>   large swap readahead using MADV_WILLNEED. The memory is never
+>   charged unless somebody actually touches it.
+> 
+> - It complicates the page->mem_cgroup stabilization rules
+> 
+> In order to charge pages directly at swapin time, the memcg code base
+> needs to be prepared, and several overdue cleanups become a necessity:
+> 
+> To charge pages at swapin time, we need to always have cgroup
+> ownership tracking of swap records. We also cannot rely on
+> page->mapping to tell apart page types at charge time, because that's
+> only set up during a page fault.
+> 
+> To eliminate the page->mapping dependency, memcg needs to ditch its
+> private page type counters (MEMCG_CACHE, MEMCG_RSS, NR_SHMEM) in favor
+> of the generic vmstat counters and accounting sites, such as
+> NR_FILE_PAGES, NR_ANON_MAPPED etc.
 
-Ohh, right I have misread your patch. Sorry about that. A comment for
-the above branch would make it more clear. Something like
-	/* Allow memalloc_use_memcg usage from kthread contexts */
+Could you elaborate on what this means and the implications of this on
+user space programs?
 
-On the other hand adding a code for an out of tree code is usually not
-welcome. But in this particular case the branch is correct for the
-existing code already so I am OK with it. Roman is de-facto kmem
-implementation maintainer so I will defer to him.
+> 
+> To switch to generic vmstat counters, the charge sequence must be
+> adjusted such that page->mem_cgroup is set up by the time these
+> counters are modified.
+> 
+> The series is structured as follows:
+> 
+> 1. Bug fixes
+> 2. Decoupling charging from rmap
+> 3. Swap controller integration into memcg
+> 4. Direct swapin charging
+>
 
-> >>  	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
-> >>  		return true;
-> >>  	return false;
-
--- 
-Michal Hocko
-SUSE Labs
+Thanks,
+Balbir Singh. 
