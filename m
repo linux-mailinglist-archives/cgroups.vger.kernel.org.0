@@ -2,163 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059721D1ABD
-	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 18:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21F2E1D1D97
+	for <lists+cgroups@lfdr.de>; Wed, 13 May 2020 20:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732120AbgEMQMw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 May 2020 12:12:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18250 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730831AbgEMQMw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 May 2020 12:12:52 -0400
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 04DGBUiB002049;
-        Wed, 13 May 2020 09:11:30 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=igsYSo8Rnj6AmhEEXQNL3hz7d88Zd8kYSLUh0Cs0nos=;
- b=MXedZEZyw5bxnxbfGeyniV729AsiWCIr0AWvMRoaQlNsZgqidsm5cDO4xBi1dX61FP3k
- IXylAtDI0wxu6hpx9mISYBvsm8sJ4ir1KQyo5FiY5+Ot8DSBpSa/DqTBqhnlWvtZFrGE
- cuNNBjLP1514vRzJrVy4Rkly8ptPEENb7z0= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3100xb5qg7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 May 2020 09:11:30 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.231) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1847.3; Wed, 13 May 2020 09:11:14 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=iR0H+Iz7MZWrNIL+7u9wzuZPDtTvHAaA+SCdiiQv6+jPyMleHpepWqP5LXeEyd+6R0sv4f9qdnzRdWP2bYT/2qShDFzvS1ufHJtnioELicWvv0BvGa0f2+ZL0Yb6jzKkqqaKSl+r3ObvZdZ/6NJSHXxKqLHPSEJPvBi0zWBxFjG5Tk+su8DK+WkzMw9NX5Dno2FnzziRtuUqMy/F13U/KmhSA9L2IPbtSKyZTeuUfBcX6cxHUSa2xmtDiUP/ZxPOW7adUqq/kpAKvmLfnz2hvjvEQP/B4hiKUBALorsnwNnoGA4AiLP/rmZzUl0ABD0UYuAVOqYmmo4jF7aJF9dguQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=igsYSo8Rnj6AmhEEXQNL3hz7d88Zd8kYSLUh0Cs0nos=;
- b=cStSckZrfC3WwYXtMTQppsH2SqWdlxRzFtNmWk7IPZEss5jDFPjZ9mD27g/80jQDP0A2ycuXocTeN9O4LRCnrsFiq1qhZDbNA14fMMR+3/EtKvwGTTd3mhXTA8KtD5sa0m48LoZe08zY0Tm62t1cIQrLCd9MwEJ+47rW3uz6CEQAaq6Io3GUrnnMpz6eEy7SBaxCkf88kIK5NfW+HDXNa6gvpr36dkQm+H02yFna2R/+jM8P6dfKcQZihu83aP2CPxs2Cu0T0Jg246nzCrnibfiVbALQcEzlVg5uJy/tvRgYFdC6Wf1uVjS9doePi/CwlZS8vj4xN60vB9tmPCxcUw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=igsYSo8Rnj6AmhEEXQNL3hz7d88Zd8kYSLUh0Cs0nos=;
- b=MJZvbtQGba6MreT5VR30DnXgtFKRGpjEiagFzp6TTr2Q9+MiynUxof2a5t+wc8GI6Eln+rcObrXkW8fvNdtDgns0GYzadcHEVRCQlbdXR4Cx86CMrTWXgUTX8Hz1ojygmHY2YBmKU17f6jDaXdAg+DrRXuLYmWJEzdvJ7/eznFs=
-Authentication-Results: huawei.com; dkim=none (message not signed)
- header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3429.namprd15.prod.outlook.com (2603:10b6:a03:10c::27) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.35; Wed, 13 May
- 2020 16:11:13 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::bdf9:6577:1d2a:a275%7]) with mapi id 15.20.2979.033; Wed, 13 May 2020
- 16:11:13 +0000
-Date:   Wed, 13 May 2020 09:11:10 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Zefan Li <lizefan@huawei.com>
-CC:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>
-Subject: Re: [PATCH v2] memcg: Fix memcg_kmem_bypass() for remote memcg
- charging
-Message-ID: <20200513161110.GA70427@carbon.DHCP.thefacebook.com>
-References: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
- <20200513090502.GV29153@dhcp22.suse.cz>
- <76f71776-d049-7407-8574-86b6e9d80704@huawei.com>
- <20200513112905.GX29153@dhcp22.suse.cz>
- <3a721f62-5a66-8bc5-247b-5c8b7c51c555@huawei.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3a721f62-5a66-8bc5-247b-5c8b7c51c555@huawei.com>
-X-ClientProxiedBy: BY3PR05CA0015.namprd05.prod.outlook.com
- (2603:10b6:a03:254::20) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S2389702AbgEMSg0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 May 2020 14:36:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51866 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1732218AbgEMSg0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 13 May 2020 14:36:26 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.1])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 228C3205CB;
+        Wed, 13 May 2020 18:36:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589394986;
+        bh=7xeHDUO2UcI3LIaK5NObk1DiE5/xCvLjBsBS1p7mx9o=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Bm7hCZnq6MvMYDE2z1ZIbxpKad33tP5vKMdjHPw4SfAY2IZdwQO2ZiFsRksvOUcra
+         FdzsQnPJQ/LUNaBDuNiu2g6Duk/sO0OPJb7jbbCPPq0Kz+UgL0FWbnJaLBonzDNHtt
+         xfKwHJmrVYuDHKh1bPlikZPPBNxURp2izCkGKy1g=
+Date:   Wed, 13 May 2020 11:36:23 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, kernel-team@fb.com,
+        tj@kernel.org, hannes@cmpxchg.org, chris@chrisdown.name,
+        cgroups@vger.kernel.org, shakeelb@google.com
+Subject: Re: [PATCH mm v2 3/3] mm: automatically penalize tasks with high
+ swap use
+Message-ID: <20200513113623.0659e4c4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20200513083249.GS29153@dhcp22.suse.cz>
+References: <20200511225516.2431921-1-kuba@kernel.org>
+        <20200511225516.2431921-4-kuba@kernel.org>
+        <20200512072634.GP29153@dhcp22.suse.cz>
+        <20200512105536.748da94e@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20200513083249.GS29153@dhcp22.suse.cz>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:6c9e) by BY3PR05CA0015.namprd05.prod.outlook.com (2603:10b6:a03:254::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3000.12 via Frontend Transport; Wed, 13 May 2020 16:11:12 +0000
-X-Originating-IP: [2620:10d:c090:400::5:6c9e]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 905db2fb-b8ee-4ed4-ce66-08d7f75841d1
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3429:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB342987CDF155CB9FD1AC0619BEBF0@BYAPR15MB3429.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-Forefront-PRVS: 0402872DA1
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CkHE76BueKd70voW4UKblcz5Oy47a0yLBzZFC+awpJhtMf08AAuzOAb4u6junyBw6q2rR352XahrRzuPEy2zBtROfAizj0CZLH2S/YPQM89hMYOHoKVhUNN2a+BFbN0JIRCxxcXNysiImexvBGDN7OQriSftryo5H9MKnLDguz0CuGp8vVTQgzhh3cbX6jtfhHOm2pLn3J2bzRnXxYuTzNXenOR6aWY819fWqTtd7vMCDb0HVlQTY4S12MFA1BwUmuslZebjNP2s8hytW43Yl4uveBhUZCJ6U9HF8NnmsGdFv/wEKdedLyjk2sSd36/XnQlZecVW8GH67v0QRWE7ECt+BlixPPmVmlKnMc/RwZU0ubT7sfBSxpJvc+i9bKGhika5zxxXa2AnjYR+B0oukOHC0ir20LEr2hBZg0HIdNvj6BdxJJ8Uz18xTge2cCR3XnqTQY4kSKNP4GdsothU+wba+wpCaIC1tvvDZYC0HAM1M6qnFNy7GDwZwg2wa95hDrwHqljOdB8/eE8g5PWExg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(376002)(136003)(39860400002)(366004)(346002)(33430700001)(16526019)(316002)(54906003)(4326008)(33440700001)(66946007)(5660300002)(55016002)(66556008)(86362001)(1076003)(66476007)(8936002)(6916009)(33656002)(6506007)(478600001)(9686003)(52116002)(7696005)(2906002)(8676002)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: mNUYSSF8FbIaOzTReXX1sMSp9ytrj6/Rq4ODmx+5+yDvme9MM0JMgK+FeK7t9SSMCspN6jIeTuwJ2RJMCyFHlasscaQ8MRk1TuqqosXf1aEsdv/P3YqegAW+OZZIsIZ+E1qEKj8gzHBaNErWdLEI+Z0lfuwMmMo0zxLQRR4Y5hbmm4KfgKxVOk5erE2bmY9g9VZ/cRkrHc9sHQEhiFlNTusL8gCiNfOSedUNKd0en0c1MmUko0SMLpgjK9rw2bTb5Z/VWRlzSx5jX0aTl/3x2/4VaJvguKA4oYSJHgoLSfQ8XIA8RDp6Hp2yPcO31SFog9YeiYWC9JJMF0lKBXX7V0QWEBpfMh5ZZsC1lX9d1vKvvI/Y6mVHMTjMovxk4hwjpHfDi/LNhxjAZdYRCSxtysmoyQXP+j5IjTvTmIHnBKNFsEp+51SmgNdXZtSQ8F8c9HwuGAzFSMb3ntAJpibfjMbaITug/TyB7o0P/bKrAm1yQbp7dPxb6W8itiHvT0Hw0Rw7pJIQ4GIbiIj6VILeKg==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 905db2fb-b8ee-4ed4-ce66-08d7f75841d1
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 May 2020 16:11:13.1375
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: k35ZsA6RhK7r1cTGIL2llwM2g2XwFhZwiqSYs8XTHx8iOQfWMGQDkMn63v0+8WmQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3429
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.676
- definitions=2020-05-13_07:2020-05-13,2020-05-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
- cotscore=-2147483648 mlxscore=0 suspectscore=1 lowpriorityscore=0
- impostorscore=0 bulkscore=0 spamscore=0 priorityscore=1501 clxscore=1015
- malwarescore=0 adultscore=0 mlxlogscore=999 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2005130141
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, May 13, 2020 at 07:47:49PM +0800, Zefan Li wrote:
-> While trying to use remote memcg charging in an out-of-tree kernel module
-> I found it's not working, because the current thread is a workqueue thread.
+On Wed, 13 May 2020 10:32:49 +0200 Michal Hocko wrote:
+> On Tue 12-05-20 10:55:36, Jakub Kicinski wrote:
+> > On Tue, 12 May 2020 09:26:34 +0200 Michal Hocko wrote:  
+> > > On Mon 11-05-20 15:55:16, Jakub Kicinski wrote:  
+> > > > Use swap.high when deciding if swap is full.    
+> > > 
+> > > Please be more specific why.  
+> > 
+> > How about:
+> > 
+> >     Use swap.high when deciding if swap is full to influence ongoing
+> >     swap reclaim in a best effort manner.  
 > 
-> As we will probably encounter this issue in the future as the users of
-> memalloc_use_memcg() grow, it's better we fix it now.
-> 
-> Signed-off-by: Zefan Li <lizefan@huawei.com>
-> ---
-> 
-> v2: add a comment as sugguested by Michal. and add changelog to explain why
-> upstream kernel needs this fix.
-> 
-> ---
-> 
->  mm/memcontrol.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index a3b97f1..43a12ed 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2802,6 +2802,9 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
->  
->  static inline bool memcg_kmem_bypass(void)
->  {
-> +	/* Allow remote memcg charging in kthread contexts. */
-> +	if (unlikely(current->active_memcg))
-> +		return false;
->  	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
->  		return true;
+> This is still way too vague. The crux is why should we treat hard and
+> high swap limit the same for mem_cgroup_swap_full purpose. Please
+> note that I am not saying this is wrong. I am asking for a more
+> detailed explanation mostly because I would bet that somebody
+> stumbles over this sooner or later.
 
-Shakeel is right about interrupts. How about something like this?
+Stumbles in what way? Isn't it expected for the kernel to take
+reasonable precautions to avoid hitting limits?  We expect the
+application which breaches swap.high to get terminated by user 
+space OOM, kernel best be careful about approaching that limit, 
+no?
 
-static inline bool memcg_kmem_bypass(void)
-{
-	if (in_interrupt())
-		return true;
+> mem_cgroup_swap_full is an odd predicate. It doesn't really want to
+> tell that the swap is really full. I haven't studied the original
+> intention but it is more in line of mem_cgroup_swap_under_pressure
+> based on the current usage to (attempt) scale swap cache size.
 
-	if ((!current->mm || current->flags & PF_KTHREAD) && !current->active_memcg)
-		return true;
+Perhaps Johannes has some experience here?  The 50% means full 
+heuristic predates git :(
 
-	return false;
-}
+> > > > Perform reclaim and count memory over high events.    
+> > > 
+> > > Please expand on this and explain how this is working and why the
+> > > semantic is subtly different from MEMCG_HIGH. I suspect the reason
+> > > is that there is no reclaim for the swap so you are only emitting
+> > > an event on the memcg which is actually throttled. This is in
+> > > line with memory.high but the difference is that we do reclaim
+> > > each memcg subtree in the high limit excess. That means that the
+> > > counter tells us how many times the specific memcg was in excess
+> > > which would be impossible with your implementation.  
+> > 
+> > Right, with memory all cgroups over high get penalized with the
+> > extra reclaim work. For swap we just have the delay, so the event is
+> > associated with the worst offender, anything lower didn't really
+> > matter.
+> > 
+> > But it's easy enough to change if you prefer. Otherwise I'll just
+> > add this to the commit message:
+> > 
+> >   Count swap over high events. Note that unlike memory over high
+> > events we only count them for the worst offender. This is because
+> > the delay penalties for both swap and memory over high are not
+> > cumulative, i.e. we use the max delay.  
+> 
+> Well, memory high penalty is in fact cumulative, because the reclaim
+> would happen for each memcg subtree up the hierarchy. Sure the
+> additional throttling is not cumulative but that is not really that
+> important because the exact amount of throttling is an implementation
+> detail. The swap high is an odd one here because we do not reclaim
+> swap so the cumulative effect of that is 0 and there is only the
+> additional throttling happening. I suspect that your current
+> implementation is exposing an internal implementation to the
+> userspace but considering how the current memory high event is
+> documented high
+>                 The number of times processes of the cgroup are
+>                 throttled and routed to perform direct memory reclaim
+>                 because the high memory boundary was exceeded.  For a
+>                 cgroup whose memory usage is capped by the high limit
+>                 rather than global memory pressure, this event's
+>                 occurrences are expected.
+> 
+> it talks about throttling rather than excess (like max) so I am not
+> really sure. I believe that it would be much better if both events
+> were more explicit about counting an excess and a throttling is just
+> a side effect of that situation.
+> 
+> I do not expect that we will have any form of the swap reclaim anytime
+> soon (if ever) but I fail to see why to creat a small little trap like
+> this now.
 
-Thanks!
+Right, let me adjust then.
+
+> > > I would also suggest to explain or ideally even separate the swap
+> > > penalty scaling logic to a seprate patch. What kind of data it is
+> > > based on?  
+> > 
+> > It's a hard thing to get production data for since, as we mentioned
+> > we don't expect the limit to be hit. It was more of a process of
+> > experimentation and finding a gradual slope that "felt right"...
+> > 
+> > Is there a more scientific process we can follow here? We want the
+> > delay to be small at first for a first few pages and then grow to
+> > make sure we stop the task from going too much over high. The square
+> > function works pretty well IMHO.  
+> 
+> If there is no data to showing this to be an improvement then I would
+> just not add an additional scaling factor. Why? Mostly because once we
+> have it there it would be extremely hard to change. MM is full of
+> these little heuristics that are copied over because nobody dares to
+> touch them. If a different scaling is really needed it can always be
+> added later with some data to back that.
+
+Oh, I misunderstood the question, you were asking about the scaling
+factor.. The allocation of swap is in larger batches, according to 
+my tests, example below (AR - after reclaim, swap overage changes 
+after memory reclaim). 
+                                    mem overage AR
+     swap pages over_high AR        |    swap overage AR
+ swap pages over at call.   \       |    |      . mem sleep
+   mem pages over_high.  \   \      |    |     /  . swap sleep
+                       v  v   v     v    v    v  v
+ [   73.360533] sleep (32/10->67) [-35|13379] 0+253
+ [   73.631291] sleep (32/ 3->54) [-18|13430] 0+205
+ [   73.851629] sleep (32/22->35) [-20|13443] 0+133
+ [   74.021396] sleep (32/ 3->60) [-29|13500] 0+230
+ [   74.263355] sleep (32/28->79) [-44|13551] 0+306
+ [   74.585689] sleep (32/29->91) [-17|13627] 0+355
+ [   74.958675] sleep (32/27->79) [-31|13679] 0+311
+ [   75.293021] sleep (32/29->86) [ -9|13750] 0+344
+ [   75.654218] sleep (32/22->72) [-24|13800] 0+290
+ [   75.962467] sleep (32/22->73) [-39|13865] 0+296
+
+That's for a process slowly leaking memory. Swap gets over the high by
+about 2.5x MEMCG_CHARGE_BATCH on average. Hence to keep the same slope
+I was trying to scale it back.
+
+But you make a fair point, someone more knowledgeable can add the
+heuristic later if it's really needed.
