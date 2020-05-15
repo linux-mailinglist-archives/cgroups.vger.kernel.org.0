@@ -2,50 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C68431D4D33
-	for <lists+cgroups@lfdr.de>; Fri, 15 May 2020 13:59:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1EBE1D4D73
+	for <lists+cgroups@lfdr.de>; Fri, 15 May 2020 14:10:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726096AbgEOL7q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 May 2020 07:59:46 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52939 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726087AbgEOL7q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 May 2020 07:59:46 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jZZ0B-0000Kb-MV; Fri, 15 May 2020 11:59:43 +0000
-Date:   Fri, 15 May 2020 13:59:42 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Christian Brauner <christian@brauner.io>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>, Tejun Heo <tj@kernel.org>
-Subject: Re: [PATCH] clone.2: Document CLONE_INTO_CGROUP
-Message-ID: <20200515115942.n2teqwvo3day6cvz@wittgenstein>
-References: <CAKgNAkhL0zCj11LS9vfae872YVeRsxdz20sZWuXdi+UjH21=0g@mail.gmail.com>
- <20200410104132.294639-1-christian@brauner.io>
- <b7550fcd-ba12-e64a-3228-e6668b31a8a7@gmail.com>
- <CAKgNAkhQr+sKGAu+KcxPEsuwG3kjQOyzVW7E1yM9cMtSZrhW9A@mail.gmail.com>
- <20200423101420.udkmlhnfg57lsshi@wittgenstein>
- <CAKgNAkhXxWFE8msNkJ3117ChacWsfiMsBptZsVJOnxGtuDTX0Q@mail.gmail.com>
+        id S1726163AbgEOMKh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 May 2020 08:10:37 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:4789 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726062AbgEOMKh (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 15 May 2020 08:10:37 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E8474193311A1C622AEB;
+        Fri, 15 May 2020 20:10:32 +0800 (CST)
+Received: from huawei.com (10.175.124.27) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 15 May 2020
+ 20:10:25 +0800
+From:   Wu Bo <wubo40@huawei.com>
+To:     <tj@kernel.org>, <axboe@kernel.dk>
+CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <liuzhiqiang26@huawei.com>,
+        <linfeilong@huawei.com>, <wubo40@huawei.com>
+Subject: [PATCH] blkcg:fixes memory leaks in blkg_conf_prep()
+Date:   Fri, 15 May 2020 20:24:03 +0800
+Message-ID: <1589545443-151387-1-git-send-email-wubo40@huawei.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKgNAkhXxWFE8msNkJ3117ChacWsfiMsBptZsVJOnxGtuDTX0Q@mail.gmail.com>
+Content-Type: text/plain
+X-Originating-IP: [10.175.124.27]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, May 15, 2020 at 01:41:46PM +0200, Michael Kerrisk (man-pages) wrote:
-> Hello Christian,
-> 
-> Ping!
+blkg_conf_prep():
+ 
+new_blkg = blkg_alloc(pos, q, GFP_KERNEL);
+...
+blkg = blkg_lookup_check(pos, pol, q);
+if (IS_ERR(blkg)) {
+	ret = PTR_ERR(blkg);
+	goto fail_unlock;
+}
+...
 
-Yes, I just thought of this when I saw your mail to Aleksa fly by. ;)
-Christian
+
+if calling blkg_lookup_check() failed, at the IS_ERR block, 
+the new_blkg should be free before goto lable fail_unlock
+in blkg_conf_prep() function.
+
+Signed-off-by: Wu Bo <wubo40@huawei.com>
+---
+ block/blk-cgroup.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 930212c..afeb769 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -682,6 +682,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
+ 		blkg = blkg_lookup_check(pos, pol, q);
+ 		if (IS_ERR(blkg)) {
+ 			ret = PTR_ERR(blkg);
++			blkg_free(new_blkg);
+ 			goto fail_unlock;
+ 		}
+ 
+-- 
+1.8.3.1
+
