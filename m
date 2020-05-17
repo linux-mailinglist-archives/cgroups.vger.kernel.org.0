@@ -2,110 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E3721D5DB8
-	for <lists+cgroups@lfdr.de>; Sat, 16 May 2020 03:42:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 553E01D6514
+	for <lists+cgroups@lfdr.de>; Sun, 17 May 2020 03:46:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726553AbgEPBmv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 May 2020 21:42:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55354 "EHLO
+        id S1726919AbgEQBqJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 16 May 2020 21:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726290AbgEPBmv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 May 2020 21:42:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8A27C061A0C
-        for <cgroups@vger.kernel.org>; Fri, 15 May 2020 18:42:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id 50so5450321wrc.11
-        for <cgroups@vger.kernel.org>; Fri, 15 May 2020 18:42:49 -0700 (PDT)
+        with ESMTP id S1726797AbgEQBqJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 16 May 2020 21:46:09 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15346C061A0C
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id 190so6794004qki.1
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kS8OYMG072jDcI6wkY/z+PD46Du/tMZhKnhnXKRsoeo=;
-        b=AH0puOca79INHP4Gyjk8o8AyxnmdUlm/s7CIZkXpa4xvSasJLmdH8L2vWT0y+OPoA2
-         I0dBbUpqu90pgUFRkEbf4DKo2KVJwQ7QIFWnpt9s6w4TNSbgkI5skacNqeGVjFYdGK2v
-         XfuM/QsPsOjBfWclFvjZVsVcN2YdvdcuqqfPA=
+        d=lca.pw; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
+        b=mTuyBRurXQZEK9utptTiC11aN2pRP5dmNcE3mS9JBiWGvq+XHi1IprBG0ma5RZ8d1B
+         mq/y+wqaSGx+FRZ55wJjSWJknBkFCrIAqsYJSJG+IJNbVLUiZY0PjS65iNMYjH5poapJ
+         ano66ITpWYc7rAQifzLH5VBHZaDrUFXLp87bcqJILV29+PDGdX7D8K7W9M26JKqOX6FC
+         aQiPnMJf1SdeDID06QRXlqxWkRGX8BJvxwE8AUiQJvRghyyLv3dtN/xklxayHY2TAiOW
+         QudmNWPFzxw7MllH6ftOp0wvqb3tMAV8Mda48M/0Wy7idJzc4TBrjXekP9QxEtS5uGvd
+         wtyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kS8OYMG072jDcI6wkY/z+PD46Du/tMZhKnhnXKRsoeo=;
-        b=boLXHq7ju+18CYKb7MLhdzIUQ/uyd0AYqZeH0c18lC+gRad7n0FdiiEs3ZxpuviA4D
-         O0fD1fPdXfjR9pifNT2KZoItxfTAXE5anBBYrSa0FUoEOgZkao+uMvruccjdtGfpSYkj
-         d/VCJ+yfmhURNUjh1oUClgXSnJMyy1Q3ptsfQH+zS6na2D3ZgQZCgOrKKLKsyyzXeA2u
-         P920HhSB093DLKceqNSDiIPo1SdVHQE1qeQ8KfT526VEdsCs+dKSa25aSxRpkdqK+PtM
-         oudba48zdPAO7fbGqNPfTpA1Xa3JRENZFA82Aqoikx0cQs+ViW/YZamaEbpfGnTfEh64
-         u79A==
-X-Gm-Message-State: AOAM533tISkL+yLywf2JSEdlft6LEJc1AxLuFf4XMqGsmZ6WMwoxu9BK
-        abJxORUr0B/NG/3WOYiQw6elBA==
-X-Google-Smtp-Source: ABdhPJygr4YRwvdn5bQj/+FRk7Jk9MpKoXCmkZ5L4Hgg+hvUMxR3NbMw1h1nDwgPO85GahUNXx18VA==
-X-Received: by 2002:adf:9b91:: with SMTP id d17mr6892266wrc.183.1589593368152;
-        Fri, 15 May 2020 18:42:48 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
-        by smtp.gmail.com with ESMTPSA id x5sm6315441wro.12.2020.05.15.18.42.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 May 2020 18:42:47 -0700 (PDT)
-Date:   Sat, 16 May 2020 02:42:47 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Mel Gorman <mgorman@suse.de>, Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yafang Shao <laoar.shao@gmail.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: expose root cgroup's memory.stat
-Message-ID: <20200516014247.GA8578@chrisdown.name>
-References: <20200508170630.94406-1-shakeelb@google.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20200508170630.94406-1-shakeelb@google.com>
+        h=x-gm-message-state:content-transfer-encoding:from:mime-version
+         :subject:date:message-id:references:cc:in-reply-to:to;
+        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
+        b=ZOvKGJWoemWBjx1sQqrz4utWb0kmsSEt6m/HgDOAVTUIwYvtE+l8yy7hfm34h/aA+W
+         Y2yuSMaTMy9KMc/PsNA11AoaSRp0wdUjqCSJjK6zvVmBzhPxS+blvbw5EVkZ9uxULa5d
+         9NqKH5EeFL+oj8lXsBPdcqEV5jhnZzqacqPuZNRI1vRws5l3r0A6dC7iramHJ6vdrpKl
+         /FuTMvNxLvPoRyX2IQf4kCAo0Tf4cl9vEwrUiNXx+mtwvxkFbsws4ij6Thz5GkSopqRh
+         Dd/3U0lzQcdiuEnWifJKHgf8j+rDbXBD4AFALyl6Bolk47DjaNTbnsK2KAJqNzM6Q0A0
+         /TPA==
+X-Gm-Message-State: AOAM531DTz4T7w3aNPaGJvPmIEeyBmb9NcviqktpQ+2s13ZLbnEDu+kG
+        PSjYSaXH7fFB/rvJtbbS1Qr6lA==
+X-Google-Smtp-Source: ABdhPJzStOu9xj05KLKxunZry1UUBpBOKseoEyDnnEQBwPMBKvyZuLowmwoxKqJL+Hq9l1aoJW48+Q==
+X-Received: by 2002:ae9:e858:: with SMTP id a85mr10042251qkg.478.1589679967192;
+        Sat, 16 May 2020 18:46:07 -0700 (PDT)
+Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
+        by smtp.gmail.com with ESMTPSA id g66sm5186785qkb.122.2020.05.16.18.46.06
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 May 2020 18:46:06 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From:   Qian Cai <cai@lca.pw>
+Mime-Version: 1.0 (1.0)
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
+Date:   Sat, 16 May 2020 21:46:05 -0400
+Message-Id: <62C1A69E-A14F-42EE-970F-ABAEA2782256@lca.pw>
+References: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>
+In-Reply-To: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+To:     Waiman Long <longman@redhat.com>
+X-Mailer: iPhone Mail (17E262)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hey Shakeel,
 
-Shakeel Butt writes:
->One way to measure the efficiency of memory reclaim is to look at the
->ratio (pgscan+pfrefill)/pgsteal. However at the moment these stats are
->not updated consistently at the system level and the ratio of these are
->not very meaningful. The pgsteal and pgscan are updated for only global
->reclaim while pgrefill gets updated for global as well as cgroup
->reclaim.
->
->Please note that this difference is only for system level vmstats. The
->cgroup stats returned by memory.stat are actually consistent. The
->cgroup's pgsteal contains number of reclaimed pages for global as well
->as cgroup reclaim. So, one way to get the system level stats is to get
->these stats from root's memory.stat, so, expose memory.stat for the root
->cgroup.
->
->	from Johannes Weiner:
->	There are subtle differences between /proc/vmstat and
->	memory.stat, and cgroup-aware code that wants to watch the full
->	hierarchy currently has to know about these intricacies and
->	translate semantics back and forth.
->
->	Generally having the fully recursive memory.stat at the root
->	level could help a broader range of usecases.
->
->Signed-off-by: Shakeel Butt <shakeelb@google.com>
->Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 
-The patch looks great, thanks. To that extent you can add my ack:
+> On Apr 28, 2020, at 10:07 AM, Waiman Long <longman@redhat.com> wrote:
+>=20
+> Trylock is handled differently from lockdep's perspective as trylock can f=
+ailed. When trylock succeeds, the critical section is executed. As long as i=
+t doesn't try to acquire another lock in the circular chain, the execution w=
+ill finish at some point and release the lock. On the other hand, if another=
+ task has already held all those locks, the trylock will fail and held locks=
+ should be released. Again, no deadlock will happen.
 
-Acked-by: Chris Down <chris@chrisdown.name>
+Ok, I can see that in validate_chain() especially mentioned,
 
-One concern about the API now exposed, though: to a new cgroup v2 user this 
-looks fairly dodgy as a sole stat file (except for cgroup.stat) at the root. If 
-I used cgroup v2 for the first time and only saw memory.stat and cgroup.stat 
-there, but for some reason io.stat and cpu.stat are not available at the root 
-but are available everywhere else, I think my first thought would be that the 
-cgroup v2 developers must have been on some strong stuff when they came up with 
-this ;-)
+=E2=80=9CTrylock needs to maintain the stack of held locks, but it does not a=
+dd new dependencies, because trylock can be done in any order.=E2=80=9D
 
-Even if they're only really duplicating information available elsewhere right 
-now, have you considered exposing the rest of the stat files as well so that 
-the API maintains a bit more consistency? As a bonus, that also means userspace 
-applications can parse in the same way from the root down.
+So, I agree this trylock trick could really work. Especially, I don=E2=80=99=
+t know any other better way to fix this.=
