@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEA501D6519
-	for <lists+cgroups@lfdr.de>; Sun, 17 May 2020 03:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4E121D651B
+	for <lists+cgroups@lfdr.de>; Sun, 17 May 2020 03:58:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726977AbgEQBy2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 May 2020 21:54:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
+        id S1726895AbgEQB6B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 16 May 2020 21:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56702 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726855AbgEQBy1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 16 May 2020 21:54:27 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C60C061A0C
-        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:54:27 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id fb16so3044306qvb.5
-        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:54:27 -0700 (PDT)
+        with ESMTP id S1726888AbgEQB6B (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 16 May 2020 21:58:01 -0400
+Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4429DC05BD09
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:58:01 -0700 (PDT)
+Received: by mail-qv1-xf44.google.com with SMTP id fb16so3045976qvb.5
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=lca.pw; s=google;
         h=content-transfer-encoding:from:mime-version:subject:date:message-id
          :references:cc:in-reply-to:to;
-        bh=QqBtGMwRf4iMThT/E7Zzgq854jp3AIpzA1Y8zlAhggY=;
-        b=kWafknG1HhI2nq0LzV1WNZsMtIbtpGsnnUjIJW35CsFYFMlqLGy5HA66FACPokMXhc
-         /8td4xNLaqhlfun7I+onfk0qbHyvwgkIKM8bOj4UMsnD0rRDMxMFSALK5mG4ULqZwOj6
-         WmoXzu7R1hOLYUxM2mStHwrkm9PL4c1U1akmER10YBtOmhSV/QJGIj1QxTJ8sHWdoxzm
-         dbKcw0on4aWVPAChVGm9vwFsCT8sIV3v9jp7cvdbpBJyWqOLiLrk+mVcF4sn8GKQ2wvn
-         RuI8czmKO7TExBBB9x2BribWkKTRmRWIkWPT23qn8tkEWth3IcWCMu+8xOn6mQAGy9ww
-         kcLQ==
+        bh=s3yeuZAhDmFpBOUorb/iouNYdnDc9CDj+UxZLN9lvxg=;
+        b=nkDo28rEL9kgR2hMhdY3aEgW0FJDqa7d8Al3/yHezV2tdkx30CmhQBcLfiTqOPrgjm
+         ARxWaM3min6L9oyJv9TR/E2FlcMiEFBvPZi+GOOGp8QQxTSAD1A/0d1nDMyJMiJEBFlt
+         cTisUARGGxzRNNipr3nyN4uDk6/wf1RqeFdZGbWd3rIOcAkAuj4SjJMXo2XR6Rte5iG/
+         T5gYipkgIEKTuHxcguMJWsNTk8+IgoOTRYVBFAdEG+tn2bDC8wbgLiiB+J0M8Uwnqbdm
+         YuOZdqBrSRWUWn8mWck7nvrVHNn4YJ2VCn1Vwg1F8PbZqe145Ns41oZ15DEX/nBqYWRI
+         W7YQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:content-transfer-encoding:from:mime-version
          :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=QqBtGMwRf4iMThT/E7Zzgq854jp3AIpzA1Y8zlAhggY=;
-        b=USf3E1y1ytnDF2CEpc+fl3Uub6cxCqgoxODP714VoyUwTjE6T1Tdh/I/cDpctMJOxc
-         BAVDwhgv4IRai+ofVQUlMx66K14eJZDwCNfs1xCzf56jnnUseHLVwaIZu/h35+jTIiDg
-         9mxuKaaXsDMJqFQ8WshxeleBE3RbWaiZY6u85icJlKz5ygo6s4FSYB0stXbk2PSvkuL3
-         CQKX9NKNRE82SYzj+fAE0Fhj/2wCi1uyvZf0otseJuj+sCsIFkjS1yup1t4M3U99tasZ
-         8dHPf6LPi0nEw6nHpfCIfkTGKzMnKZSrlzlRdIj8Rm3dl+RzXtNQG/TQrioUf9gkMzG0
-         45tw==
-X-Gm-Message-State: AOAM532nETsBi2+sfhC31TMQ5PJKilf68gybw9D5BDXHJ8WZFa06Xc/b
-        W+Ze4ixK7OCO+O451HfCRce7Dg==
-X-Google-Smtp-Source: ABdhPJwXFqCGZrPtK8SOtTnNQZnWefQKpRMKA6723XCzFN2bp70KEacdXczdHr/cz1QgFNHfQMMwXg==
-X-Received: by 2002:a0c:eb8b:: with SMTP id x11mr10102936qvo.33.1589680466545;
-        Sat, 16 May 2020 18:54:26 -0700 (PDT)
+        bh=s3yeuZAhDmFpBOUorb/iouNYdnDc9CDj+UxZLN9lvxg=;
+        b=mIwWHr07O/BDO4rSqYVIfjXwxv1X1B7jZPOOR+mLbf0R0+5QKsZRuuQPUAPR+KsNig
+         SHGBOKu7QNsET1eBlgT6OO6uYZm9/dQoP1BEdVjF9XUUFQWor6OX+9PulqnH1jOQNgGS
+         SW0qAua3rc283gDhjqoBrbq5bLhSMe5QvAAbqPOLFUe2g5MWv0kkrpYxJUtExLxDRd+t
+         nZQR2XwvV/1P1Q1FidfUmdJxEj0sRMpsHJsOckGoSE54IC+Lmnlp+hs9O6uKaifidyZu
+         rHZBvvcoLkxNvHJGjcoETVGWNrDvdUJnyKu+ZOz8ZOHHMswqlaeQmfLR80YY5xFXFnRv
+         6GXg==
+X-Gm-Message-State: AOAM533gYc8hJ9/BHFjzuw5n7XoItRwmKmkmretJWnnftpm3ivZ1yEIK
+        N57XEQZA3cAakw3qwwLDy9ofvw==
+X-Google-Smtp-Source: ABdhPJyNxW8iFR2eteeZ+lqQ9hA289cfRSQ9jxFJxVPy9mAJlEuKi+nIP5JCkbJ2hYF5z2utUz5qoA==
+X-Received: by 2002:a0c:c603:: with SMTP id v3mr10304208qvi.82.1589680680311;
+        Sat, 16 May 2020 18:58:00 -0700 (PDT)
 Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id m33sm5978445qtb.88.2020.05.16.18.54.25
+        by smtp.gmail.com with ESMTPSA id l184sm5080303qke.115.2020.05.16.18.57.59
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 May 2020 18:54:25 -0700 (PDT)
+        Sat, 16 May 2020 18:57:59 -0700 (PDT)
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 From:   Qian Cai <cai@lca.pw>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 0/4] mm/slub: Fix sysfs circular locking dependency
-Date:   Sat, 16 May 2020 21:54:25 -0400
-Message-Id: <2BD2A76D-CB50-4BA8-A867-DF71B1DA5F28@lca.pw>
-References: <20200427235621.7823-1-longman@redhat.com>
+Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
+Date:   Sat, 16 May 2020 21:57:58 -0400
+Message-Id: <3D1CF487-DD7E-4C5F-B977-D161CCED5234@lca.pw>
+References: <20200427235621.7823-5-longman@redhat.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
@@ -65,7 +65,7 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>
-In-Reply-To: <20200427235621.7823-1-longman@redhat.com>
+In-Reply-To: <20200427235621.7823-5-longman@redhat.com>
 To:     Waiman Long <longman@redhat.com>
 X-Mailer: iPhone Mail (17E262)
 Sender: cgroups-owner@vger.kernel.org
@@ -76,23 +76,33 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 > On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
-> 
-> v2:
-> - Use regular cmpxchg() instead of x86-only try_cmpxchg() in patch 2.
-> - Add patches 3 and 4 to fix circular locking dependency showing up
->   at shutdown time.
-> 
-> With lockdep enabled, issuing the following command to the slub sysfs
-> files will cause splat about circular locking dependency to show up
-> either immediately afterwards or at shutdown time.
-> 
-> # echo 1 > validate
-> # echo 1 > shrink
-> 
-> This patchset fixes these lockdep splats by replacing slab_mutex with
-> memcg_cache_ids_sem as well as changing some of the lock operations
-> with trylock.
+>=20
+> A lockdep splat is observed by echoing "1" to the shrink sysfs file
+> and then shutting down the system:
+>=20
+> [  167.473392] Chain exists of:
+> [  167.473392]   kn->count#279 --> mem_hotplug_lock.rw_sem --> slab_mutex
+> [  167.473392]
+> [  167.484323]  Possible unsafe locking scenario:
+> [  167.484323]
+> [  167.490273]        CPU0                    CPU1
+> [  167.494825]        ----                    ----
+> [  167.499376]   lock(slab_mutex);
+> [  167.502530]                                lock(mem_hotplug_lock.rw_sem=
+);
+> [  167.509356]                                lock(slab_mutex);
+> [  167.515044]   lock(kn->count#279);
+> [  167.518462]
+> [  167.518462]  *** DEADLOCK ***
+>=20
+> It is because of the get_online_cpus() and get_online_mems() calls in
+> kmem_cache_shrink() invoked via the shrink sysfs file. To fix that, we
+> have to use trylock to get the memory and cpu hotplug read locks. Since
+> hotplug events are rare, it should be fine to refuse a kmem caches
+> shrink operation when some hotplug events are in progress.
+>=20
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-For the whole series, feel free to use,
+Feel free to use,
 
-Tested-by: Qian Cai <cai@lca.pw>
+Reviewed-by: Qian Cai <cai@lca.pw>=
