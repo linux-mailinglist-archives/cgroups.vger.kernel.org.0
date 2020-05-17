@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 553E01D6514
-	for <lists+cgroups@lfdr.de>; Sun, 17 May 2020 03:46:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DEA501D6519
+	for <lists+cgroups@lfdr.de>; Sun, 17 May 2020 03:54:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726919AbgEQBqJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 May 2020 21:46:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54878 "EHLO
+        id S1726977AbgEQBy2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 16 May 2020 21:54:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726797AbgEQBqJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 16 May 2020 21:46:09 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15346C061A0C
-        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 190so6794004qki.1
-        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:46:09 -0700 (PDT)
+        with ESMTP id S1726855AbgEQBy1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 16 May 2020 21:54:27 -0400
+Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59C60C061A0C
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:54:27 -0700 (PDT)
+Received: by mail-qv1-xf41.google.com with SMTP id fb16so3044306qvb.5
+        for <cgroups@vger.kernel.org>; Sat, 16 May 2020 18:54:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=lca.pw; s=google;
         h=content-transfer-encoding:from:mime-version:subject:date:message-id
          :references:cc:in-reply-to:to;
-        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
-        b=mTuyBRurXQZEK9utptTiC11aN2pRP5dmNcE3mS9JBiWGvq+XHi1IprBG0ma5RZ8d1B
-         mq/y+wqaSGx+FRZ55wJjSWJknBkFCrIAqsYJSJG+IJNbVLUiZY0PjS65iNMYjH5poapJ
-         ano66ITpWYc7rAQifzLH5VBHZaDrUFXLp87bcqJILV29+PDGdX7D8K7W9M26JKqOX6FC
-         aQiPnMJf1SdeDID06QRXlqxWkRGX8BJvxwE8AUiQJvRghyyLv3dtN/xklxayHY2TAiOW
-         QudmNWPFzxw7MllH6ftOp0wvqb3tMAV8Mda48M/0Wy7idJzc4TBrjXekP9QxEtS5uGvd
-         wtyw==
+        bh=QqBtGMwRf4iMThT/E7Zzgq854jp3AIpzA1Y8zlAhggY=;
+        b=kWafknG1HhI2nq0LzV1WNZsMtIbtpGsnnUjIJW35CsFYFMlqLGy5HA66FACPokMXhc
+         /8td4xNLaqhlfun7I+onfk0qbHyvwgkIKM8bOj4UMsnD0rRDMxMFSALK5mG4ULqZwOj6
+         WmoXzu7R1hOLYUxM2mStHwrkm9PL4c1U1akmER10YBtOmhSV/QJGIj1QxTJ8sHWdoxzm
+         dbKcw0on4aWVPAChVGm9vwFsCT8sIV3v9jp7cvdbpBJyWqOLiLrk+mVcF4sn8GKQ2wvn
+         RuI8czmKO7TExBBB9x2BribWkKTRmRWIkWPT23qn8tkEWth3IcWCMu+8xOn6mQAGy9ww
+         kcLQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:content-transfer-encoding:from:mime-version
          :subject:date:message-id:references:cc:in-reply-to:to;
-        bh=v8/1I95wcTj1mWlxsoep0Hvc73TKsH79uHMoZbzZUWA=;
-        b=ZOvKGJWoemWBjx1sQqrz4utWb0kmsSEt6m/HgDOAVTUIwYvtE+l8yy7hfm34h/aA+W
-         Y2yuSMaTMy9KMc/PsNA11AoaSRp0wdUjqCSJjK6zvVmBzhPxS+blvbw5EVkZ9uxULa5d
-         9NqKH5EeFL+oj8lXsBPdcqEV5jhnZzqacqPuZNRI1vRws5l3r0A6dC7iramHJ6vdrpKl
-         /FuTMvNxLvPoRyX2IQf4kCAo0Tf4cl9vEwrUiNXx+mtwvxkFbsws4ij6Thz5GkSopqRh
-         Dd/3U0lzQcdiuEnWifJKHgf8j+rDbXBD4AFALyl6Bolk47DjaNTbnsK2KAJqNzM6Q0A0
-         /TPA==
-X-Gm-Message-State: AOAM531DTz4T7w3aNPaGJvPmIEeyBmb9NcviqktpQ+2s13ZLbnEDu+kG
-        PSjYSaXH7fFB/rvJtbbS1Qr6lA==
-X-Google-Smtp-Source: ABdhPJzStOu9xj05KLKxunZry1UUBpBOKseoEyDnnEQBwPMBKvyZuLowmwoxKqJL+Hq9l1aoJW48+Q==
-X-Received: by 2002:ae9:e858:: with SMTP id a85mr10042251qkg.478.1589679967192;
-        Sat, 16 May 2020 18:46:07 -0700 (PDT)
+        bh=QqBtGMwRf4iMThT/E7Zzgq854jp3AIpzA1Y8zlAhggY=;
+        b=USf3E1y1ytnDF2CEpc+fl3Uub6cxCqgoxODP714VoyUwTjE6T1Tdh/I/cDpctMJOxc
+         BAVDwhgv4IRai+ofVQUlMx66K14eJZDwCNfs1xCzf56jnnUseHLVwaIZu/h35+jTIiDg
+         9mxuKaaXsDMJqFQ8WshxeleBE3RbWaiZY6u85icJlKz5ygo6s4FSYB0stXbk2PSvkuL3
+         CQKX9NKNRE82SYzj+fAE0Fhj/2wCi1uyvZf0otseJuj+sCsIFkjS1yup1t4M3U99tasZ
+         8dHPf6LPi0nEw6nHpfCIfkTGKzMnKZSrlzlRdIj8Rm3dl+RzXtNQG/TQrioUf9gkMzG0
+         45tw==
+X-Gm-Message-State: AOAM532nETsBi2+sfhC31TMQ5PJKilf68gybw9D5BDXHJ8WZFa06Xc/b
+        W+Ze4ixK7OCO+O451HfCRce7Dg==
+X-Google-Smtp-Source: ABdhPJwXFqCGZrPtK8SOtTnNQZnWefQKpRMKA6723XCzFN2bp70KEacdXczdHr/cz1QgFNHfQMMwXg==
+X-Received: by 2002:a0c:eb8b:: with SMTP id x11mr10102936qvo.33.1589680466545;
+        Sat, 16 May 2020 18:54:26 -0700 (PDT)
 Received: from [192.168.1.183] (pool-71-184-117-43.bstnma.fios.verizon.net. [71.184.117.43])
-        by smtp.gmail.com with ESMTPSA id g66sm5186785qkb.122.2020.05.16.18.46.06
+        by smtp.gmail.com with ESMTPSA id m33sm5978445qtb.88.2020.05.16.18.54.25
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 May 2020 18:46:06 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+        Sat, 16 May 2020 18:54:25 -0700 (PDT)
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 From:   Qian Cai <cai@lca.pw>
 Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 4/4] mm/slub: Fix sysfs shrink circular locking dependency
-Date:   Sat, 16 May 2020 21:46:05 -0400
-Message-Id: <62C1A69E-A14F-42EE-970F-ABAEA2782256@lca.pw>
-References: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+Subject: Re: [PATCH v2 0/4] mm/slub: Fix sysfs circular locking dependency
+Date:   Sat, 16 May 2020 21:54:25 -0400
+Message-Id: <2BD2A76D-CB50-4BA8-A867-DF71B1DA5F28@lca.pw>
+References: <20200427235621.7823-1-longman@redhat.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Christoph Lameter <cl@linux.com>,
         Pekka Enberg <penberg@kernel.org>,
@@ -65,7 +65,7 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Juri Lelli <juri.lelli@redhat.com>
-In-Reply-To: <56327de0-fa44-d5f3-2409-69cf2b97a209@redhat.com>
+In-Reply-To: <20200427235621.7823-1-longman@redhat.com>
 To:     Waiman Long <longman@redhat.com>
 X-Mailer: iPhone Mail (17E262)
 Sender: cgroups-owner@vger.kernel.org
@@ -75,19 +75,24 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-> On Apr 28, 2020, at 10:07 AM, Waiman Long <longman@redhat.com> wrote:
->=20
-> Trylock is handled differently from lockdep's perspective as trylock can f=
-ailed. When trylock succeeds, the critical section is executed. As long as i=
-t doesn't try to acquire another lock in the circular chain, the execution w=
-ill finish at some point and release the lock. On the other hand, if another=
- task has already held all those locks, the trylock will fail and held locks=
- should be released. Again, no deadlock will happen.
+> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
+> 
+> v2:
+> - Use regular cmpxchg() instead of x86-only try_cmpxchg() in patch 2.
+> - Add patches 3 and 4 to fix circular locking dependency showing up
+>   at shutdown time.
+> 
+> With lockdep enabled, issuing the following command to the slub sysfs
+> files will cause splat about circular locking dependency to show up
+> either immediately afterwards or at shutdown time.
+> 
+> # echo 1 > validate
+> # echo 1 > shrink
+> 
+> This patchset fixes these lockdep splats by replacing slab_mutex with
+> memcg_cache_ids_sem as well as changing some of the lock operations
+> with trylock.
 
-Ok, I can see that in validate_chain() especially mentioned,
+For the whole series, feel free to use,
 
-=E2=80=9CTrylock needs to maintain the stack of held locks, but it does not a=
-dd new dependencies, because trylock can be done in any order.=E2=80=9D
-
-So, I agree this trylock trick could really work. Especially, I don=E2=80=99=
-t know any other better way to fix this.=
+Tested-by: Qian Cai <cai@lca.pw>
