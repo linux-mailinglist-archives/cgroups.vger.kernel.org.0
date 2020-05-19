@@ -2,107 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B1B1D8A66
-	for <lists+cgroups@lfdr.de>; Tue, 19 May 2020 00:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC7C41D8C7D
+	for <lists+cgroups@lfdr.de>; Tue, 19 May 2020 02:44:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728223AbgERWFP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 18 May 2020 18:05:15 -0400
-Received: from us-smtp-1.mimecast.com ([205.139.110.61]:40621 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1728129AbgERWFN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 18 May 2020 18:05:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1589839511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=iZK8o0/YgEUO016TV6TQ7POrns9r3ptB7P38AZfbfLY=;
-        b=NZSy1xktGmA8/pvmLb1i6powT+xv0TGvezpc0H74gC44w6M8NODwNdePpXz2dkxQ3CaMZf
-        Gq21MUedJoQ+8jF2gGhCn43bTYX8V7g4FHvtaG7alTkY/GiIW9RosDXlRrR+D3/yAR7sbc
-        ZsbodOYiyP+FVm24gXngS/PGuNYKML0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-366-jiqD3ErjMku290OgbMSPcA-1; Mon, 18 May 2020 18:05:09 -0400
-X-MC-Unique: jiqD3ErjMku290OgbMSPcA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S1726720AbgESAmw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 18 May 2020 20:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51892 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726494AbgESAmw (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 18 May 2020 20:42:52 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BCE021800704;
-        Mon, 18 May 2020 22:05:06 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-114-131.rdu2.redhat.com [10.10.114.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2EB1C5C1B2;
-        Mon, 18 May 2020 22:05:00 +0000 (UTC)
-Subject: Re: [PATCH v2 3/4] mm/slub: Fix another circular locking dependency
- in slab_attr_store()
-To:     Qian Cai <cai@lca.pw>
+        by mail.kernel.org (Postfix) with ESMTPSA id 597772072C;
+        Tue, 19 May 2020 00:42:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1589848971;
+        bh=qxboCEg4hi3CXOBVgmrK9TNH02/9r/BNCIXuD89A5Sw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=zZ1dJXEoHkeudQYpl+ZCYadBNd3ECVvJt9fa5tm7bHJKpYFJ0cEHRzCZ6ZTWW4R82
+         IpjwI5a97klaxsC+8kgRLXKVuyQtAlQxOwqWoSXAXdio7I7RWBOh+JLEycI1cJDC6i
+         FZWr8BmJDeTO3aSzoAedmHKYKgllbObVJYvUxMt0=
+Date:   Mon, 18 May 2020 17:42:49 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Shakeel Butt <shakeelb@google.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Kernel Team <kernel-team@fb.com>, Tejun Heo <tj@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>
-References: <20200427235621.7823-4-longman@redhat.com>
- <F1FA6654-C07C-42FD-B497-61EB635B264C@lca.pw>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <638f59c0-60f1-2279-fea6-28b2980720f4@redhat.com>
-Date:   Mon, 18 May 2020 18:05:00 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        Chris Down <chris@chrisdown.name>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH mm v3 3/3] mm: automatically penalize tasks with high
+ swap use
+Message-ID: <20200518174249.745e66d1@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <CALvZod5Dcee8CaNfkhQQbvC1OuOTO7qE9bJw9NAa8nd2Cru6hA@mail.gmail.com>
+References: <20200515202027.3217470-1-kuba@kernel.org>
+        <20200515202027.3217470-4-kuba@kernel.org>
+        <CALvZod5Dcee8CaNfkhQQbvC1OuOTO7qE9bJw9NAa8nd2Cru6hA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <F1FA6654-C07C-42FD-B497-61EB635B264C@lca.pw>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 5/16/20 10:19 PM, Qian Cai wrote:
->
->> On Apr 27, 2020, at 7:56 PM, Waiman Long <longman@redhat.com> wrote:
->>
->> It turns out that switching from slab_mutex to memcg_cache_ids_sem in
->> slab_attr_store() does not completely eliminate circular locking dependency
->> as shown by the following lockdep splat when the system is shut down:
->>
->> [ 2095.079697] Chain exists of:
->> [ 2095.079697]   kn->count#278 --> memcg_cache_ids_sem --> slab_mutex
->> [ 2095.079697]
->> [ 2095.090278]  Possible unsafe locking scenario:
->> [ 2095.090278]
->> [ 2095.096227]        CPU0                    CPU1
->> [ 2095.100779]        ----                    ----
->> [ 2095.105331]   lock(slab_mutex);
->> [ 2095.108486]                                lock(memcg_cache_ids_sem);
->> [ 2095.114961]                                lock(slab_mutex);
->> [ 2095.120649]   lock(kn->count#278);
->> [ 2095.124068]
->> [ 2095.124068]  *** DEADLOCK ***
-> Can you show the full splat?
->
->> To eliminate this possibility, we have to use trylock to acquire
->> memcg_cache_ids_sem. Unlikely slab_mutex which can be acquired in
->> many places, the memcg_cache_ids_sem write lock is only acquired
->> in memcg_alloc_cache_id() to double the size of memcg_nr_cache_ids.
->> So the chance of successive calls to memcg_alloc_cache_id() within
->> a short time is pretty low. As a result, we can retry the read lock
->> acquisition a few times if the first attempt fails.
->>
->> Signed-off-by: Waiman Long <longman@redhat.com>
-> The code looks a bit hacky and probably not that robust. Since it is the shutdown path which is not all that important without lockdep, maybe you could drop this single patch for now until there is a better solution?
+On Sun, 17 May 2020 06:44:52 -0700 Shakeel Butt wrote:
+> > @@ -2583,12 +2606,23 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+> >          * reclaim, the cost of mismatch is negligible.
+> >          */
+> >         do {
+> > -               if (page_counter_read(&memcg->memory) > READ_ONCE(memcg->high)) {
+> > -                       /* Don't bother a random interrupted task */
+> > -                       if (in_interrupt()) {
+> > +               bool mem_high, swap_high;
+> > +
+> > +               mem_high = page_counter_read(&memcg->memory) >
+> > +                       READ_ONCE(memcg->high);
+> > +               swap_high = page_counter_read(&memcg->swap) >
+> > +                       READ_ONCE(memcg->swap_high);
+> > +
+> > +               /* Don't bother a random interrupted task */
+> > +               if (in_interrupt()) {
+> > +                       if (mem_high) {
+> >                                 schedule_work(&memcg->high_work);
+> >                                 break;
+> >                         }
+> > +                       continue;  
+> 
+> break?
 
-That is true. Unlike using the slab_mutex, the chance of failing to 
-acquire a read lock on memcg_cache_ids_sem is pretty low. Maybe just 
-print_once a warning if that happen.
+On a closer look I think continue is correct. In irq we only care 
+about mem_high, because there's nothing we can do in a work context 
+to penalize swap. So the loop is shortened.
 
-Thanks,
-Longman
+> > +               }
+> > +
+> > +               if (mem_high || swap_high) {
+> >                         current->memcg_nr_pages_over_high += batch;
+> >                         set_notify_resume(current);
+> >                         break;
 
