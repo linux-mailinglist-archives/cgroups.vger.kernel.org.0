@@ -2,174 +2,220 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 669DB1DC7B8
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 09:32:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6120D1DC91B
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 10:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728272AbgEUHcw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 May 2020 03:32:52 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:39711 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728245AbgEUHcw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 03:32:52 -0400
-Received: by mail-ed1-f67.google.com with SMTP id bs4so5954682edb.6;
-        Thu, 21 May 2020 00:32:48 -0700 (PDT)
+        id S1728588AbgEUI7N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 May 2020 04:59:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728560AbgEUI7N (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 04:59:13 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 344F4C05BD43
+        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 01:59:13 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id 82so4047150lfh.2
+        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 01:59:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Ebjb/EkTXvuLGqJe8ycqzM228+EB5pV3TJ94q2+hFBE=;
+        b=uIDE4B/jSErBGZ7dOnzEgDAhyBWnmBaQsrZKtTpAwa6Z91lQRziNBWcH3VmFbPbprV
+         N6eQawm+AiXWqGuqukU2cinrgbpkwYYYszcRIIAVxAh3+Ke9laz31qkoKL3DVZtzrxhb
+         UKGZb4UBaKcYmskNL/BVgb1R547rsgu6RJV3DBNyPIA/WMXkG73zz5UtqtOsotMRzOcX
+         PlsvuWvdZmqjEKtVG5XKpkLUFz65+Vhy8omCaVd6UPjKm7tSWi16AGZSh2Jbp3aFNCtw
+         B3g6TdZWAJlzVPG/6thsom+ogYAp2Rz3RKbAETWxeZGZtjyErE7tlk5T3Me08V54J3GS
+         e/og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=CIs2f+9mvt6X0epmC+MlJo55capX2w3vIg9emhYp22E=;
-        b=LX0XVzjwWtVWl46mtpJoXQvCvOaYooz7plewctsHXM2UZ5hyzOQNzvTs5ZkfxevqyH
-         DMFXAelXPerbXYwzn2VUCQ7V6p6CCS+4MKSKb106mh5u8AJTA8+3GU0d7JJ01WkbIQ7u
-         0lAWxiJ/QezHhaUA5DtIH6cepSeG/Lvc6pEyBBYg0PNPkNKTlXm0TSSWEJY96sSy9xH8
-         zTGriW9zvW2gOBlmLmvRYvUc0h3QgaWFKlzuJV25sLUvYSr6nr51k+rrhNzWV2aQxOD6
-         oxhk4P2r9+8M24b1Ve2BK529tPAD0g790t7YNcx7IkBzIfbW1R2EbKQ3Mn6lqxZK9Ri6
-         I5iQ==
-X-Gm-Message-State: AOAM531Rw4b749MM3v18eKkSq7i/3jtQbxxm8CL+z3TzgPQWdzziurlV
-        otcBAn46Xu1xFw3hhjmfh78=
-X-Google-Smtp-Source: ABdhPJxCKk/t2VY13WddHe4RLLp/gX40dcFgqguBcisAcJV20a5GHx4V0pn7ipz9AjzCL9dfxSK6iw==
-X-Received: by 2002:a05:6402:8c1:: with SMTP id d1mr6811027edz.265.1590046368007;
-        Thu, 21 May 2020 00:32:48 -0700 (PDT)
-Received: from localhost (ip-37-188-180-112.eurotel.cz. [37.188.180.112])
-        by smtp.gmail.com with ESMTPSA id kq5sm4085647ejb.20.2020.05.21.00.32.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 21 May 2020 00:32:46 -0700 (PDT)
-Date:   Thu, 21 May 2020 09:32:45 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Chris Down <chris@chrisdown.name>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200521073245.GI6462@dhcp22.suse.cz>
-References: <20200520143712.GA749486@chrisdown.name>
- <20200520160756.GE6462@dhcp22.suse.cz>
- <20200520165131.GB630613@cmpxchg.org>
- <20200520170430.GG6462@dhcp22.suse.cz>
- <20200520175135.GA793901@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Ebjb/EkTXvuLGqJe8ycqzM228+EB5pV3TJ94q2+hFBE=;
+        b=bCaTekIbS+bVnjzkICNLNJApR/jjySTnkKLSsIEsS2m52D9GnlbtkiGfyouver15IV
+         XyL5h7Cf2050oLjK6kZEJsrqX2XJ5ovs8T8yrcFWJJy6puXFDuuUqjbl6Bel4LHwMb99
+         m60nHDlEl0phlTqsS0F/5YUQF61HtqaeyDDurEyAdm7BCRiPVVvmV8a0zU6HoIuM1eu0
+         ycGuR74WxaRe4n0D2A7gEZCaU/OoPBTuYdv2mn8PBxU9HFi3U6fMVQG7rLBnjbGRFrS3
+         mWqHKltLOe6JhUfjBFZqGD0IYz8UNYfv8dEuSZtbvS0FMM7KetpMy2g+oUwIOf4eOwPo
+         I4uw==
+X-Gm-Message-State: AOAM532/5/buht8+ZY6wPS9sF0PtpeunDxla2KkBmwl2GnHruHgvVdYk
+        UDqPURUOsIA61MBTzbBQPEYQ/6LIoaZVwg0bc+Ucbw==
+X-Google-Smtp-Source: ABdhPJxDvtYrdgUKcpg1JdYdNpiDjJpM5V4Ly/IUHcYljcMDsZbQaVXuEqvryChtft1CSL9MYVF8w+pIeakbceUncq8=
+X-Received: by 2002:a19:8453:: with SMTP id g80mr4635448lfd.167.1590051551242;
+ Thu, 21 May 2020 01:59:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200520175135.GA793901@cmpxchg.org>
+References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
+ <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
+ <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com> <CALOAHbDMrHkNHTxeBWP22iTjJd+HfqfFhAfmC_m0jsVkhu5vEA@mail.gmail.com>
+In-Reply-To: <CALOAHbDMrHkNHTxeBWP22iTjJd+HfqfFhAfmC_m0jsVkhu5vEA@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 21 May 2020 14:28:59 +0530
+Message-ID: <CA+G9fYsCaxJ5WyN8y=gCMvrZHCCYYkbzyCpHKspkqrEVwpgNoQ@mail.gmail.com>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+To:     Yafang Shao <laoar.shao@gmail.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 20-05-20 13:51:35, Johannes Weiner wrote:
-> On Wed, May 20, 2020 at 07:04:30PM +0200, Michal Hocko wrote:
-> > On Wed 20-05-20 12:51:31, Johannes Weiner wrote:
-> > > On Wed, May 20, 2020 at 06:07:56PM +0200, Michal Hocko wrote:
-> > > > On Wed 20-05-20 15:37:12, Chris Down wrote:
-> > > > > In Facebook production, we've seen cases where cgroups have been put
-> > > > > into allocator throttling even when they appear to have a lot of slack
-> > > > > file caches which should be trivially reclaimable.
-> > > > > 
-> > > > > Looking more closely, the problem is that we only try a single cgroup
-> > > > > reclaim walk for each return to usermode before calculating whether or
-> > > > > not we should throttle. This single attempt doesn't produce enough
-> > > > > pressure to shrink for cgroups with a rapidly growing amount of file
-> > > > > caches prior to entering allocator throttling.
-> > > > > 
-> > > > > As an example, we see that threads in an affected cgroup are stuck in
-> > > > > allocator throttling:
-> > > > > 
-> > > > >     # for i in $(cat cgroup.threads); do
-> > > > >     >     grep over_high "/proc/$i/stack"
-> > > > >     > done
-> > > > >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
-> > > > >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
-> > > > >     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
-> > > > > 
-> > > > > ...however, there is no I/O pressure reported by PSI, despite a lot of
-> > > > > slack file pages:
-> > > > > 
-> > > > >     # cat memory.pressure
-> > > > >     some avg10=78.50 avg60=84.99 avg300=84.53 total=5702440903
-> > > > >     full avg10=78.50 avg60=84.99 avg300=84.53 total=5702116959
-> > > > >     # cat io.pressure
-> > > > >     some avg10=0.00 avg60=0.00 avg300=0.00 total=78051391
-> > > > >     full avg10=0.00 avg60=0.00 avg300=0.00 total=78049640
-> > > > >     # grep _file memory.stat
-> > > > >     inactive_file 1370939392
-> > > > >     active_file 661635072
-> > > > > 
-> > > > > This patch changes the behaviour to retry reclaim either until the
-> > > > > current task goes below the 10ms grace period, or we are making no
-> > > > > reclaim progress at all. In the latter case, we enter reclaim throttling
-> > > > > as before.
-> > > > 
-> > > > Let me try to understand the actual problem. The high memory reclaim has
-> > > > a target which is proportional to the amount of charged memory. For most
-> > > > requests that would be SWAP_CLUSTER_MAX though (resp. N times that where
-> > > > N is the number of memcgs in excess up the hierarchy). I can see to be
-> > > > insufficient if the memcg is already in a large excess but if the
-> > > > reclaim can make a forward progress this should just work fine because
-> > > > each charging context should reclaim at least the contributed amount.
-> > > > 
-> > > > Do you have any insight on why this doesn't work in your situation?
-> > > > Especially with such a large inactive file list I would be really
-> > > > surprised if the reclaim was not able to make a forward progress.
-> > > 
-> > > The workload we observed this in was downloading a large file and
-> > > writing it to disk, which means that a good chunk of that memory was
-> > > dirty. The first reclaim pass appears to make little progress because
-> > > it runs into dirty pages.
-> > 
-> > OK, I see but why does the subsequent reclaim attempt makes a forward
-> > progress? Is this just because dirty pages are flushed in the mean time?
-> > Because if this is the case then the underlying problem seems to be that
-> > the reclaim should be throttled on dirty data.
-> 
-> That's what I assume. Chris wanted to do more reclaim tracing. But is
-> this actually important beyond maybe curiosity?
+On Thu, 21 May 2020 at 08:10, Yafang Shao <laoar.shao@gmail.com> wrote:
+>
+> On Thu, May 21, 2020 at 2:00 AM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > On Wed, 20 May 2020 at 17:26, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> > >
+> > >
+> > > This issue is specific on 32-bit architectures i386 and arm on linux-next tree.
+> > > As per the test results history this problem started happening from
+> > > mkfs -t ext4 /dev/disk/by-id/ata-SanDisk_SSD_PLUS_120GB_190804A00BE5
+> > >
+> > >
+> > > Problem:
+> > > [   38.802375] dd invoked oom-killer: gfp_mask=0x100cc0(GFP_USER),
+> > > order=0, oom_score_adj=0
+> >
+> My guess is that we made the same mistake in commit "mm, memcg:
+> decouple e{low,min} state mutations from protection
+> checks" that it read a stale memcg protection in
+> mem_cgroup_below_low() and mem_cgroup_below_min().
+>
+> Bellow is a possble fix,
 
-Yes, because it might show that there is a deeper problem. Having an
-extremely large file list full of dirty data and pre-mature failure for
-the reclaim sounds like a problem that is worth looking into closely.
+Sorry. The proposed fix did not work.
+I have took your patch and applied on top of linux-next master branch and
+tested and mkfs -t ext4 invoked oom-killer.
 
-> We retry every other reclaim invocation on forward progress. There is
-> not a single naked call to try_to_free_pages(), and this here is the
-> only exception where we don't loop on try_to_free_mem_cgroup_pages().
+After patch applied test log link,
+https://lkft.validation.linaro.org/scheduler/job/1443936#L1168
 
-I am not saying the looping over try_to_free_pages is wrong. I do care
-about the final reclaim target. That shouldn't be arbitrary. We have
-established a target which is proportional to the requested amount of
-memory. And there is a good reason for that. If any task tries to
-reclaim down to the high limit then this might lead to a large
-unfairness when heavy producers piggy back on the active reclaimer(s).
 
-I wouldn't mind to loop over try_to_free_pages to meet the requested
-memcg_nr_pages_over_high target.
+test  log,
++ mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8NRK0BPF6XF
+mke2fs 1.43.8 (1-Jan-2018)
+Creating filesystem with 244190646 4k blocks and 61054976 inodes
+Filesystem UUID: ab107250-bf18-4357-a06a-67f2bfcc1048
+Superblock backups stored on blocks:
+32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+102400000, 214990848
+Allocating group tables:    0/7453                           done
+Writing inode tables:    0/7453                           done
+Creating journal (262144 blocks): [   34.423940] mkfs.ext4 invoked
+oom-killer: gfp_mask=0x101cc0(GFP_USER|__GFP_WRITE), order=0,
+oom_score_adj=0
+[   34.433694] CPU: 0 PID: 402 Comm: mkfs.ext4 Not tainted
+5.7.0-rc6-next-20200519+ #1
+[   34.441342] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.2 05/23/2018
+[   34.448734] Call Trace:
+[   34.451196]  dump_stack+0x54/0x76
+[   34.454517]  dump_header+0x40/0x1f0
+[   34.458008]  ? oom_badness+0x1f/0x120
+[   34.461673]  ? ___ratelimit+0x6c/0xe0
+[   34.465332]  oom_kill_process+0xc9/0x110
+[   34.469255]  out_of_memory+0xd7/0x2f0
+[   34.472916]  __alloc_pages_nodemask+0xdd1/0xe90
+[   34.477446]  ? set_bh_page+0x33/0x50
+[   34.481016]  ? __xa_set_mark+0x4d/0x70
+[   34.484762]  pagecache_get_page+0xbe/0x250
+[   34.488859]  grab_cache_page_write_begin+0x1a/0x30
+[   34.493645]  block_write_begin+0x25/0x90
+[   34.497569]  blkdev_write_begin+0x1e/0x20
+[   34.501574]  ? bdev_evict_inode+0xc0/0xc0
+[   34.505578]  generic_perform_write+0x95/0x190
+[   34.509927]  __generic_file_write_iter+0xe0/0x1a0
+[   34.514626]  blkdev_write_iter+0xbf/0x1c0
+[   34.518630]  __vfs_write+0x122/0x1e0
+[   34.522200]  vfs_write+0x8f/0x1b0
+[   34.525510]  ksys_pwrite64+0x60/0x80
+[   34.529081]  __ia32_sys_ia32_pwrite64+0x16/0x20
+[   34.533604]  do_fast_syscall_32+0x66/0x240
+[   34.537697]  entry_SYSENTER_32+0xa5/0xf8
+[   34.541613] EIP: 0xb7f3c549
+[   34.544403] Code: 03 74 c0 01 10 05 03 74 b8 01 10 06 03 74 b4 01
+10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 51 52 55 89 e5 0f
+34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d 76 00 58 b8 77 00 00 00 cd 80 90
+8d 76
+[   34.563140] EAX: ffffffda EBX: 00000003 ECX: b7830010 EDX: 00400000
+[   34.569397] ESI: 38400000 EDI: 00000074 EBP: 07438400 ESP: bff1e650
+[   34.575654] DS: 007b ES: 007b FS: 0000 GS: 0033 SS: 007b EFLAGS: 00000246
+[   34.582453] Mem-Info:
+[   34.584732] active_anon:5713 inactive_anon:2169 isolated_anon:0
+[   34.584732]  active_file:4040 inactive_file:211204 isolated_file:0
+[   34.584732]  unevictable:0 dirty:17270 writeback:6240 unstable:0
+[   34.584732]  slab_reclaimable:5856 slab_unreclaimable:3439
+[   34.584732]  mapped:6192 shmem:2258 pagetables:178 bounce:0
+[   34.584732]  free:265105 free_pcp:1330 free_cma:0
+[   34.618483] Node 0 active_anon:22852kB inactive_anon:8676kB
+active_file:16160kB inactive_file:844816kB unevictable:0kB
+isolated(anon):0kB isolated(file):0kB mapped:24768kB dirty:69080kB
+writeback:19628kB shmem:9032kB writeback_tmp:0kB unstable:0kB
+all_unreclaimable? yes
+[   34.642354] DMA free:3588kB min:68kB low:84kB high:100kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:0kB inactive_file:11848kB unevictable:0kB
+writepending:11856kB present:15964kB managed:15876kB mlocked:0kB
+kernel_stack:0kB pagetables:0kB bounce:0kB free_pcp:0kB local_pcp:0kB
+free_cma:0kB
+[   34.670194] lowmem_reserve[]: 0 824 1947 824
+[   34.674483] Normal free:4228kB min:3636kB low:4544kB high:5452kB
+reserved_highatomic:0KB active_anon:0kB inactive_anon:0kB
+active_file:1136kB inactive_file:786456kB unevictable:0kB
+writepending:68084kB present:884728kB managed:845324kB mlocked:0kB
+kernel_stack:1104kB pagetables:0kB bounce:0kB free_pcp:3056kB
+local_pcp:388kB free_cma:0kB
+[   34.704243] lowmem_reserve[]: 0 0 8980 0
+[   34.708189] HighMem free:1053028kB min:512kB low:1748kB high:2984kB
+reserved_highatomic:0KB active_anon:22852kB inactive_anon:8676kB
+active_file:15024kB inactive_file:46596kB unevictable:0kB
+writepending:0kB present:1149544kB managed:1149544kB mlocked:0kB
+kernel_stack:0kB pagetables:712kB bounce:0kB free_pcp:2160kB
+local_pcp:736kB free_cma:0kB
+[   34.738563] lowmem_reserve[]: 0 0 0 0
+[   34.742245] DMA: 23*4kB (U) 2*8kB (U) 3*16kB (U) 2*32kB (UE) 2*64kB
+(U) 1*128kB (U) 1*256kB (E) 0*512kB 1*1024kB (E) 1*2048kB (E) 0*4096kB
+= 3804kB
+[   34.755479] Normal: 25*4kB (UM) 27*8kB (UME) 16*16kB (UME) 14*32kB
+(UME) 7*64kB (UME) 2*128kB (UM) 1*256kB (E) 1*512kB (E) 0*1024kB
+1*2048kB (M) 0*4096kB = 4540kB
+[   34.770004] HighMem: 1*4kB (U) 0*8kB 0*16kB 1*32kB (U) 1*64kB (M)
+2*128kB (UM) 2*256kB (UM) 1*512kB (U) 1*1024kB (U) 1*2048kB (U)
+256*4096kB (M) = 1053028kB
+[   34.784010] Node 0 hugepages_total=0 hugepages_free=0
+hugepages_surp=0 hugepages_size=4096kB
+[   34.792466] 217507 total pagecache pages
+[   34.796387] 0 pages in swap cache
+[   34.799704] Swap cache stats: add 0, delete 0, find 0/0
+[   34.804923] Free swap  = 0kB
+[   34.807834] Total swap = 0kB
+[   34.810738] 512559 pages RAM
+[   34.813640] 287386 pages HighMem/MovableOnly
+[   34.817931] 9873 pages reserved
 
-[...]
 
-> > > > Also if the current high reclaim scaling is insufficient then we should
-> > > > be handling that via memcg_nr_pages_over_high rather than effectivelly
-> > > > unbound number of reclaim retries.
-> > > 
-> > > ???
-> > 
-> > I am not sure what you are asking here.
-> 
-> You expressed that some alternate solution B would be preferable,
-> without any detail on why you think that is the case.
-> 
-> And it's certainly not obvious or self-explanatory - in particular
-> because Chris's proposal *is* obvious and self-explanatory, given how
-> everybody else is already doing loops around page reclaim.
-
-Sorry, I could have been less cryptic. I hope the above and my response
-to Chris goes into more details why I do not like this proposal and what
-is the alternative. But let me summarize. I propose to use memcg_nr_pages_over_high
-target. If the current calculation of the target is unsufficient - e.g.
-in situations where the high limit excess is very large then this should
-be reflected in memcg_nr_pages_over_high.
-
-Is it more clear?
-
--- 
-Michal Hocko
-SUSE Labs
+- Naresh
