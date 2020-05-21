@@ -2,61 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 833941DC9E6
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 11:22:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C7BB1DCA2F
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 11:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728835AbgEUJWY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 May 2020 05:22:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35272 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728729AbgEUJWY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 05:22:24 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1524AC061A0F
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 02:22:24 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id 82so4083015lfh.2
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 02:22:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=FIbEyFSF9lKlh/sPieDWc1oRqrvi4vGBjOrvNTlDQgI=;
-        b=Cr+vYd5dIpgIP1m+dtPF8wLQuyM7qoaALMgtSirDDMRRIgqxpytD0hrSF2zko/x5mk
-         l/G2FXraKn8PMsmRDq4Un6jQXt2HJ4hL78VRPU+qdLES1+ToQVDFdGiGtpaOGLK7F2zM
-         6MKEL1a7yiV4ickufkf1ggX7LbmfPLokTuBN2TG1x20EISryRLnvWvNBgcl/y8m7/sVI
-         MO9cnUWS6iHrtzbq50+WiROYQCTdiEG/ExnjIv1i160UasocMEWgmgikQ3pbvdWCeIhi
-         xdBAwAYfUkhH3wWYCwg1eVm4WzkttSXEgcgDwM0Fh/LeRJSCjz+QgsRbYOOK7ojMzFLX
-         xICg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=FIbEyFSF9lKlh/sPieDWc1oRqrvi4vGBjOrvNTlDQgI=;
-        b=lqB+wWzTAr6vm/ltZtiU1tFuMCig3k4mvE3LDuM6GSgke0ifRMW1FREx9oSYdH82LF
-         MM8GHVEQV0K8rsfC9Rw2jQSfSGyag4bTKflOzTmI9m8lfhr8pBC0DXPhvDwkqBqsVNJQ
-         s3KTY1wsaefuTO6BvyofrgJLhZ8RQZQm7J0ms+9JVVkxTUz+QL+YipjUe/cNeO+XMhzb
-         lM7jOmXiPyar1cK++8OChznmxABRg4xzbsDLWEGP1eSTxmQ9meuYzNZUL+M1j4aBCRTA
-         GxBRxiIG94KiQn2V5Ta4nQ9Eg/Ke78qu1cbJH/rN7PpduULjCUv6U85PW389sY8w63c1
-         Hfvg==
-X-Gm-Message-State: AOAM530tOxKuGs5dKaqBgtPN3mL1a4bLHEM/N6CMAzrcd6AEWcEg1N49
-        Mf/vZ7TEYmc6E995mvjdj/qsyNrZgnpWLYAX2KvN3A==
-X-Google-Smtp-Source: ABdhPJxo0iMvxRymbhbSSmZbSlzo/jmqeHEAf6W0prqay+f+/zEUegDczxDDUgR2FE8lvoDDugzyWov/NH6f84fYzgY=
-X-Received: by 2002:a19:641b:: with SMTP id y27mr372964lfb.74.1590052942272;
- Thu, 21 May 2020 02:22:22 -0700 (PDT)
+        id S1728990AbgEUJgJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 May 2020 05:36:09 -0400
+Received: from mout.kundenserver.de ([212.227.126.134]:47701 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728720AbgEUJgJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 05:36:09 -0400
+Received: from mail-qk1-f173.google.com ([209.85.222.173]) by
+ mrelayeu.kundenserver.de (mreue009 [212.227.15.129]) with ESMTPSA (Nemesis)
+ id 1MV6G6-1jRDmr065O-00S4aI; Thu, 21 May 2020 11:36:07 +0200
+Received: by mail-qk1-f173.google.com with SMTP id i5so6503277qkl.12;
+        Thu, 21 May 2020 02:36:06 -0700 (PDT)
+X-Gm-Message-State: AOAM532tdMBB+TVbWUDVaovW3ZoNwPPp2cTaOQb2mN7sPzfXEmx4BiXR
+        GgjYShL6CoZQ5QinJKjs1vpCXMpI5JDoMeLVM2g=
+X-Google-Smtp-Source: ABdhPJws3KKBV0w5Mhpfv6LZKBqE10KcRtqFB/QC1e+qfkRLL99VkSqd9yoBmueLGwUSMY9q0aWGCr2HfWe2EBzpd8M=
+X-Received: by 2002:a37:4c48:: with SMTP id z69mr8052116qka.138.1590053765528;
+ Thu, 21 May 2020 02:36:05 -0700 (PDT)
 MIME-Version: 1.0
 References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
  <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
  <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
  <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
  <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com> <20200520190906.GA558281@chrisdown.name>
-In-Reply-To: <20200520190906.GA558281@chrisdown.name>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 21 May 2020 14:52:08 +0530
-Message-ID: <CA+G9fYt1qvGQTAdUZ4WgitY18cydgnNzqu_fyoTtSm3W8JhF3w@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name> <CA+G9fYt1qvGQTAdUZ4WgitY18cydgnNzqu_fyoTtSm3W8JhF3w@mail.gmail.com>
+In-Reply-To: <CA+G9fYt1qvGQTAdUZ4WgitY18cydgnNzqu_fyoTtSm3W8JhF3w@mail.gmail.com>
+From:   Arnd Bergmann <arnd@arndb.de>
+Date:   Thu, 21 May 2020 11:35:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a2Yna-BD+M6-+Y2Go_Y0ZXx8_7KMud7JxSfPbG8+-Q7Wg@mail.gmail.com>
+Message-ID: <CAK8P3a2Yna-BD+M6-+Y2Go_Y0ZXx8_7KMud7JxSfPbG8+-Q7Wg@mail.gmail.com>
 Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
         Michal Hocko <mhocko@kernel.org>,
         Anders Roxell <anders.roxell@linaro.org>,
         "Linux F2FS DEV, Mailing List" 
@@ -66,7 +47,7 @@ Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         open list <linux-kernel@vger.kernel.org>,
         Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        linux-mm <linux-mm@kvack.org>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
@@ -77,55 +58,50 @@ Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+X-Provags-ID: V03:K1:tE3t4TPrND4BHXRl6VrQxpilryG1scFRiFa8boVDA7y+3W+2ulA
+ m2PT/hqzBoz12kmiz7J4oY82+0aCSbQNFLtsRcYQZB+iqmF6pSeD8QWhVY+RBR16+NPuPFf
+ ZRRyL1B8qNZPMS305xGjd83w6fkA1IE3/u5IkvUuBOFpfmor7KQd2JnqxSSd5JjnyoIBk9U
+ zMLRHViqkSxwTi7mJGC+w==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:8dbZaZ6lhT0=:b/ekQTZHioS9KkLCYnPh5N
+ uvR3WiOuz3VGP99yC0Nf+Vk3FYp9XjDuwgshHynI+bM1U52lhJOfUi1EY0AwQSZFSZCe/P/Vw
+ 3syZlZY6O5XFZtaOId7tPJvDeJYZQ6EHN/1nMuCiqPbh5smnbEIua9Wfo6xT2FlJkn7FiQNIl
+ 5dr8yKWy0FvagBahaGvPmKpB6vgWq0jGru2pnjXlnRz0ShozTmFE592aHfUjqDbqcfTdOwRGL
+ 5i6uYo4pQRdZNV/E7gjv1y1Rqo86XS71NncoYSBP2AzkqgIoCzEYGnNBS6kkgc79QwfPvmscv
+ pfR7KPTay4Asb7A6lyrvugMb8BC1B6EsSal+lCN//cA0tfJG4KoJL0esSEobTji0BzI44XNhm
+ 3fcUrSfGI5tE/reO9Pb5dSEkAmxykMv1iAlcuu0qNvWjPG7lRpWvlyzq2pt0zs5RYggG2Wax/
+ QSoSc0UZxC6bBC2GPl2W8rbqaoQBcuxD6tzZMVvXcNYBSybvu32id6xKegatZr05f+u9doJY0
+ pUgJobQc5Kd6cZQT4bde5HIJOxBQ7zWH3AxTiLlop8MA0io31hYqMLZuTx1w5AA32qtnBl+0C
+ Kd8drNOv+NP8vio1rz8hUt3uJU/TOMSrPvm2ON3X7rnmlNh3KavnimntNPFuazcTbcgfltREQ
+ BypiaNyCEz6GY7PY/zdx4wfAorTrFmB8ShtpdX37hW0KK2hkZzhNVt3B5FUVCqDOrKradH8mq
+ atkX9MDemwiNjDUeGvxESYEoSV3e3v8rmM8DP1wHcRHApcaSdFgeOQAZQPjesbTKQa7cMd684
+ os953vEyKqhkGO9869LJzt/v427XuK0Q7w6Wh0cWxB1hgQdjoo=
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 21 May 2020 at 00:39, Chris Down <chris@chrisdown.name> wrote:
->
-> Hi Naresh,
->
-> Naresh Kamboju writes:
-> >As a part of investigation on this issue LKFT teammate Anders Roxell
-> >git bisected the problem and found bad commit(s) which caused this problem.
-> >
-> >The following two patches have been reverted on next-20200519 and retested the
-> >reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
-> >( invoked oom-killer is gone now)
-> >
-> >Revert "mm, memcg: avoid stale protection values when cgroup is above
-> >protection"
-> >    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
-> >
-> >Revert "mm, memcg: decouple e{low,min} state mutations from protection
-> >checks"
-> >    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
->
-> Thanks Anders and Naresh for tracking this down and reverting.
->
-> I'll take a look tomorrow. I don't see anything immediately obviously wrong in
-> either of those commits from a (very) cursory glance, but they should only be
-> taking effect if protections are set.
->
-> Since you have i386 hardware available, and I don't, could you please apply
-> only "avoid stale protection" again and check if it only happens with that
-> commit, or requires both? That would help narrow down the suspects.
+On Thu, May 21, 2020 at 11:22 AM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
+> On Thu, 21 May 2020 at 00:39, Chris Down <chris@chrisdown.name> wrote:
+> > Since you have i386 hardware available, and I don't, could you please apply
+> > only "avoid stale protection" again and check if it only happens with that
+> > commit, or requires both? That would help narrow down the suspects.
 
-Not both.
-The bad commit is
-"mm, memcg: decouple e{low,min} state mutations from protection checks"
+Note that Naresh is running an i386 kernel on regular 64-bit hardware that
+most people have access to.
 
->
-> Do you use any memcg protections in these tests?
-I see three MEMCG configs and please find the kernel config link
-for more details.
+> kernel config link,
+> https://builds.tuxbuild.com/8lg6WQibcwtQRRtIa0bcFA/kernel.config
 
-CONFIG_MEMCG=y
-CONFIG_MEMCG_SWAP=y
-CONFIG_MEMCG_KMEM=y
+Do you know if the same bug shows up running a kernel with that
+configuration in qemu? I would expect it to, and that would make
+it much easier to reproduce.
 
-kernel config link,
-https://builds.tuxbuild.com/8lg6WQibcwtQRRtIa0bcFA/kernel.config
+I would also not be surprised if it happens on all architectures but only
+shows up on the 32-bit arm and x86 machines first because they have
+a rather limited amount of lowmem. Maybe booting a 64-bit kernel
+with "mem=512M" and then running "dd if=/dev/sda of=/dev/null bs=1M"
+will also trigger it. I did not attempt to run this myself.
 
-- Naresh
+       Arnd
