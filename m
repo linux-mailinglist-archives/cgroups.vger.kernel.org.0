@@ -2,108 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4CF1DD8E6
-	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 22:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD2251DD938
+	for <lists+cgroups@lfdr.de>; Thu, 21 May 2020 23:15:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729844AbgEUUxY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 May 2020 16:53:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58848 "EHLO
+        id S1730621AbgEUVOx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 May 2020 17:14:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730325AbgEUUxX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 16:53:23 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 481DFC08C5C1
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 13:53:23 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id z6so9964739ljm.13
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 13:53:23 -0700 (PDT)
+        with ESMTP id S1726814AbgEUVOw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 17:14:52 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8745CC061A0E;
+        Thu, 21 May 2020 14:14:52 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id t7so3471556plr.0;
+        Thu, 21 May 2020 14:14:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+fLCJ2GM93cwoKTZdZ4WFD0IYvwQ9ZS8NpXP6kyN8Oc=;
-        b=TBv65LdWvJKhGaaNuo9NEb78jnL9BrQAOtPhzoDfCosM1uH7i74IqGHCHmYGaJPdHz
-         CWCviqP1kSYaAcJp76r0NmD2UjTYe3MeXRUjZ7Gfj0csgNWpJcH5xbzTOLaFtf8uT5+3
-         /uM6hI+J/Gq/ki4ylpSu3zLN9n1wTEPzv14fLIVPyhMmtfoFCL62Kx4yZeWDBbv/l5w1
-         K39JR/uyz8X+Y20+CXNOcXbl3HbDDa7fsDpPrOTRV9Q5SbBB3Jb/BXIJzdJ9gGDiZkj+
-         XTUH4ek9bRuZIljRPeGI/rG4e1ojQtcnYVTE/xIktlVknSWMIJfaLJsufV1okj576bpp
-         EBuQ==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:message-id:in-reply-to:references:subject
+         :mime-version:content-transfer-encoding;
+        bh=ojdRX3qZp+MZy5LmVQafkaesJV8j+MVGJ1zs3/CG9ps=;
+        b=RqIEZpIWW6wQMMsJlLMYX/UrPUwSfvJa/1f1lD74bLLdNgCbW6p9OnBzJiMCVLh66N
+         rGfmWNArObZ/CpcS2ZTnlFyH6POr51/Zt4N/bzP0itDHDhPnDZde+K0W/dYelgoiN0/t
+         q+28oaP/iE1eidBoli9M/UivgR1JnWdKX05tQjQ36BPaLAr1R+ULHll03othOUkkgszt
+         rKHAJd2Z3b2H4Bv+Vv0L/Wn8r/XajOWa8NS8lyv70AaYKG2GGYj/tu33LtK0QGOHO8/H
+         hv9rzjdun/ce16/1XOctscWWpDTUVE60NzyebF09gwcFWYCIvs3Tb4rBNEzni3cc1CMe
+         PdqQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+fLCJ2GM93cwoKTZdZ4WFD0IYvwQ9ZS8NpXP6kyN8Oc=;
-        b=jk0YvqLEzpXk1nVWLpOKKBA9camxHf+Ioo1UAheN1RCNKgVb9u2O1YwX4/0FRk1Piz
-         2Lo2gR+RAtG4qBphOsXxhHSgzPz4qZNLrMyyk5RWstriJ56Qpf3BK9lcm4gaJkQqOIfz
-         LsCO8MsNgV9UTlKxFap1L3z2LRh/k1gVjl2htAl/3OXRBZZLd6wERj2G1YsNfcR2jMZw
-         JBUP6Cm+q6tdtO8bnQrzjKxIklUEYzv7wzyA7z97EjJeUrUqauyBNkpGFqLaTmzZZdkJ
-         NZNDa3T5EsHcCMBJH6oID2PDxgxDNH+X49/QxhSBPZObLXhMNWxLIvgxBoJFkA0ZWknE
-         3mJw==
-X-Gm-Message-State: AOAM532mj/As0JHkN9D2kK/OSqPUtEz6voTM7DkUnM6RArsrjFSbwcXx
-        RgxJENbuOwdpedmvS2C7hwGI9B9fiWrjPN4gFLu/3g==
-X-Google-Smtp-Source: ABdhPJyTC3xGMKlc4QlHWxkqxT2nu3F9ZLF51sSqylyADWoJHXSTsMzu0bqdTCQsW0drulE/TbXWWznw77y8lomSnQ4=
-X-Received: by 2002:a2e:9684:: with SMTP id q4mr3903462lji.431.1590094401526;
- Thu, 21 May 2020 13:53:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz> <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
-In-Reply-To: <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 22 May 2020 02:23:09 +0530
-Message-ID: <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Yafang Shao <laoar.shao@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:message-id:in-reply-to
+         :references:subject:mime-version:content-transfer-encoding;
+        bh=ojdRX3qZp+MZy5LmVQafkaesJV8j+MVGJ1zs3/CG9ps=;
+        b=NuP5o7ue7iLGTRlTmaKAZ8/SFcJEt5BaSw1FlAJhTLCQGPLsRlsWOot4aXZJC9QdAd
+         PSfJf0vr8OKlGC31ok5VkTpav0a0Ff4onlvMwoGskzM3QlUgN3IaqorTva1f17O1iMjX
+         pYkW6pz8CXu9CNFzextpBMTDpIHX8ZdTzvhahbAe+w1efWP4WN8zJLa/Ev8A24CaQp3a
+         43B3m7Qj76ipshwjPOKP2x4whaSoXxlXfsKExQtNq9I+k+Dncki/IGjSi2vXIKvR/07s
+         dxImvJIcDr92+Wsj0xy9lz8GDvF+H4zgOQa5xdQ83NdjFKhF07DTweXHL4toU6gL4jJx
+         lz0A==
+X-Gm-Message-State: AOAM530QIb1KFjk24hlm7WMt3H6Vqe54Px64LPjJ8W1vJRbL5CNnoQXi
+        /Gcg6Mqtf0pCH13GCFo2v6A=
+X-Google-Smtp-Source: ABdhPJwqvTC+zhXH2hem8mbMqcAo9Mx67T9nysflxxQZxlZcUo4QgeuA/gJxd7R0YO4SLKJZ9+jjMg==
+X-Received: by 2002:a17:90a:3228:: with SMTP id k37mr549777pjb.118.1590095691621;
+        Thu, 21 May 2020 14:14:51 -0700 (PDT)
+Received: from localhost ([184.63.162.180])
+        by smtp.gmail.com with ESMTPSA id l4sm4538214pgo.92.2020.05.21.14.14.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 May 2020 14:14:50 -0700 (PDT)
+Date:   Thu, 21 May 2020 14:14:43 -0700
+From:   John Fastabend <john.fastabend@gmail.com>
+To:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
+        ast@kernel.org
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        yangyingliang <yangyingliang@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        huawei.libin@huawei.com, guofan5@huawei.com,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+Message-ID: <5ec6ef43d98e7_3bbf2ab912c625b4eb@john-XPS-13-9370.notmuch>
+In-Reply-To: <20200509210214.408e847a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+References: <939566f5-abe3-3526-d4ff-ec6bf8e8c138@huawei.com>
+ <2fcd921d-8f42-9d33-951c-899d0bbdd92d@huawei.com>
+ <20200508225829.0880cf8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200509210214.408e847a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+Subject: Re: [PATCH v2] netprio_cgroup: Fix unlimited memory leak of v2
+ cgroups
+Mime-Version: 1.0
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-My apology !
-As per the test results history this problem started happening from
-Bad : next-20200430 (still reproducible on next-20200519)
-Good : next-20200429
+Jakub Kicinski wrote:
+> On Fri, 8 May 2020 22:58:29 -0700 Jakub Kicinski wrote:
+> > On Sat, 9 May 2020 11:32:10 +0800 Zefan Li wrote:
+> > > If systemd is configured to use hybrid mode which enables the use of
+> > > both cgroup v1 and v2, systemd will create new cgroup on both the default
+> > > root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
+> > > task to the two cgroups. If the task does some network thing then the v2
+> > > cgroup can never be freed after the session exited.
+> > > 
+> > > One of our machines ran into OOM due to this memory leak.
+> > > 
+> > > In the scenario described above when sk_alloc() is called cgroup_sk_alloc()
+> > > thought it's in v2 mode, so it stores the cgroup pointer in sk->sk_cgrp_data
+> > > and increments the cgroup refcnt, but then sock_update_netprioidx() thought
+> > > it's in v1 mode, so it stores netprioidx value in sk->sk_cgrp_data, so the
+> > > cgroup refcnt will never be freed.
+> > > 
+> > > Currently we do the mode switch when someone writes to the ifpriomap cgroup
+> > > control file. The easiest fix is to also do the switch when a task is attached
+> > > to a new cgroup.
+> > > 
+> > > Fixes: bd1060a1d671("sock, cgroup: add sock->sk_cgroup")  
+> > 
+> >                      ^ space missing here
+> > 
+> > > Reported-by: Yang Yingliang <yangyingliang@huawei.com>
+> > > Tested-by: Yang Yingliang <yangyingliang@huawei.com>
+> > > Signed-off-by: Zefan Li <lizefan@huawei.com>
+> 
+> Fixed up the commit message and applied, thank you.
 
-The git tree / tag used for testing is from linux next-20200430 tag and reverted
-following three patches and oom-killer problem fixed.
+Hi Zefan, Tejun,
 
-Revert "mm, memcg: avoid stale protection values when cgroup is above
-protection"
-Revert "mm, memcg: decouple e{low,min} state mutations from protectinn checks"
-Revert "mm-memcg-decouple-elowmin-state-mutations-from-protection-checks-fix"
+This is causing a regression where previously cgroupv2 bpf sockops programs
+could be attached and would run even if netprio_cgroup was enabled as long
+as  the netprio cgroup had not been configured. After this the bpf sockops
+programs can still be attached but only programs attached to the root cgroup
+will be run. For example I hit this when I ran bpf selftests on a box that
+also happened to have netprio cgroup enabled, tests started failing after
+bumping kernel to rc5.
 
-Ref tree:
-https://github.com/roxell/linux/commits/my-next-20200430
+I'm a bit on the fence here if it needs to be reverted. For my case its just
+a test box and easy enough to work around. Also all the production cases I
+have already have to be aware of this to avoid the configured error. So it
+may be fine but worth noting at least. Added Alexei to see if he has any
+opinion and/or uses net_prio+cgroubv2. I only looked it over briefly but
+didn't see any simple rc6 worthy fixes that would fix the issue above and
+also keep the original behavior.
 
-Build images:
-https://builds.tuxbuild.com/whyTLI1O8s5HiILwpLTLtg/
+And then while reviewing I also wonder do we have the same issue described
+here in netclasid_cgroup.c with the cgrp_attach()? It would be best to keep
+netcls and netprio in sync in this regard imo. At least netcls calls
+cgroup_sk_alloc_disable in the write_classid() hook so I suspect it makes
+sense to also add that to the attach hook?
 
-Test log:
-https://lkft.validation.linaro.org/scheduler/job/1444321#L1164
-
-- Naresh
+Thanks,
+John
