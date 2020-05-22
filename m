@@ -2,221 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C319C1DDB16
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2020 01:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5256D1DDDD7
+	for <lists+cgroups@lfdr.de>; Fri, 22 May 2020 05:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728537AbgEUXgB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 May 2020 19:36:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56034 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728926AbgEUXgA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 May 2020 19:36:00 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D88C08C5C1
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 16:36:00 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id c3so6887348otr.12
-        for <cgroups@vger.kernel.org>; Thu, 21 May 2020 16:36:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=kuLdeOsDjtq4btndvocDjcU9xa/QKpm/ZAFygkLZQD0=;
-        b=rUoh0EqLHveWp3JmAv8austkXIK10h/ZbmP/iO2jGai2j9kfjNn19FlOu1A+s7cUi9
-         WKX4MQfU1iBAXfYYg33aC5VonsRXKpCAEqIynepaFwo9iSQjpBKZMlz4YDXmr801D3Cw
-         vyKrq7OhTWEPJUUu0gHafme14RPu6t2Cg7dhm2fldoChmvPt2iqzahr+o2f2vIsCYXWU
-         7D16d20kDrhdyMA/altx7HLHOJ5YBOa6oOvNBQ6C4DMYVNuW3+WsAnBqnvLeXajBggif
-         +vBJKox3zID8l9wuDMyr6f/2s3P38a+CAl6iZNwFPER1EaXyOjOWR0caKiFzOSEBoLpX
-         xJsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=kuLdeOsDjtq4btndvocDjcU9xa/QKpm/ZAFygkLZQD0=;
-        b=U1jFQ4Kcnx2y0iEUMXLwDBeCnDzLHZZpKQ62yDkwMhkQLz1ihMUj6X+fYeHIbvttbZ
-         CsH6ebM6S7MWCUnQ1PEe8woKoE9KSaJ2QKUvaLyHzOPGTADbQrhSEaBd6xyXTJPQc3Jb
-         D4NG34jCpT2oLCRejbQl0yfxAVRh7eHxC7lOKoU26XxKJKnu0lS7hI562WTPZ5g8NoJz
-         LKO07kUTnqir6owzfcq9nXF+ucX7EZDKg2CpFavh/MnffiWNvy8aP5RvJ0ftBtsFymX1
-         k5xgpzAc9S2U5RPASFAi4zo48lwxaezDFC9a8cJkhz0nY/wxRz16jKYVyXqjyIyuNrlj
-         dzJw==
-X-Gm-Message-State: AOAM530pJL3DCITXAzE/CdcmsMsdk/mfCIItzHDZxrkF7J+HcJ6YHPZL
-        sWWA1xLiOKBF/Jg1rkUhTe0Pgw==
-X-Google-Smtp-Source: ABdhPJxq9NYSUNqGk3KZgFuE6+bBS3i85hFHEJHqR05vwv+zm2qIzHoixf/P7AvUsZ/S1HLdwY2rYA==
-X-Received: by 2002:a9d:4902:: with SMTP id e2mr8835571otf.86.1590104159617;
-        Thu, 21 May 2020 16:35:59 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id l26sm2077279oos.43.2020.05.21.16.35.56
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 21 May 2020 16:35:58 -0700 (PDT)
-Date:   Thu, 21 May 2020 16:35:42 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@kernel.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-In-Reply-To: <20200521215855.GB815153@cmpxchg.org>
-Message-ID: <alpine.LSU.2.11.2005211614320.1102@eggly.anvils>
-References: <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com> <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com> <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <CA+G9fYvAB9F+Xo0vUsSveKnExkv3cV9-oOG9gBqGEcXsO95m0w@mail.gmail.com> <20200521105801.GL6462@dhcp22.suse.cz> <alpine.LSU.2.11.2005210504110.1185@eggly.anvils> <20200521124444.GP6462@dhcp22.suse.cz> <20200521191746.GB815980@cmpxchg.org>
- <alpine.LSU.2.11.2005211250130.1158@eggly.anvils> <20200521215855.GB815153@cmpxchg.org>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1727080AbgEVD0t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 May 2020 23:26:49 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:5273 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727024AbgEVD0s (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 21 May 2020 23:26:48 -0400
+Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 5264D3B8B9B8A21A4CC9;
+        Fri, 22 May 2020 11:26:47 +0800 (CST)
+Received: from [10.166.213.22] (10.166.213.22) by smtp.huawei.com
+ (10.3.19.202) with Microsoft SMTP Server (TLS) id 14.3.487.0; Fri, 22 May
+ 2020 11:26:41 +0800
+Subject: Re: [PATCH v2] netprio_cgroup: Fix unlimited memory leak of v2
+ cgroups
+To:     John Fastabend <john.fastabend@gmail.com>,
+        Tejun Heo <tj@kernel.org>, <ast@kernel.org>
+CC:     Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>,
+        yangyingliang <yangyingliang@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        <huawei.libin@huawei.com>, <guofan5@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>
+References: <939566f5-abe3-3526-d4ff-ec6bf8e8c138@huawei.com>
+ <2fcd921d-8f42-9d33-951c-899d0bbdd92d@huawei.com>
+ <20200508225829.0880cf8b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <20200509210214.408e847a@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <5ec6ef43d98e7_3bbf2ab912c625b4eb@john-XPS-13-9370.notmuch>
+From:   Zefan Li <lizefan@huawei.com>
+Message-ID: <37ad9c6e-b8e9-d23a-f168-fca2292ef5c5@huawei.com>
+Date:   Fri, 22 May 2020 11:26:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <5ec6ef43d98e7_3bbf2ab912c625b4eb@john-XPS-13-9370.notmuch>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.213.22]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 21 May 2020, Johannes Weiner wrote:
-> On Thu, May 21, 2020 at 01:06:28PM -0700, Hugh Dickins wrote:
-> > On Thu, 21 May 2020, Johannes Weiner wrote:
-> > > do_memsw_account() used to be automatically false when the cgroup
-> > > controller was disabled. Now that it's replaced by
-> > > cgroup_memory_noswap, for which this isn't true, make the
-> > > mem_cgroup_disabled() checks explicit in the swap control API.
-> > > 
-> > > [hannes@cmpxchg.org: use mem_cgroup_disabled() in all API functions]
-> > > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> > > Debugged-by: Hugh Dickins <hughd@google.com>
-> > > Debugged-by: Michal Hocko <mhocko@kernel.org>
-> > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > ---
-> > >  mm/memcontrol.c | 47 +++++++++++++++++++++++++++++++++++++++++------
-> > >  1 file changed, 41 insertions(+), 6 deletions(-)
-> > 
-> > I'm certainly not against a mem_cgroup_disabled() check in the only
-> > place that's been observed to need it, as a fixup to merge into your
-> > original patch; but this seems rather an over-reaction - and I'm a
-> > little surprised that setting mem_cgroup_disabled() doesn't just
-> > force cgroup_memory_noswap, saving repetitious checks elsewhere
-> > (perhaps there's a difficulty in that, I haven't looked).
+On 2020/5/22 5:14, John Fastabend wrote:
+> Jakub Kicinski wrote:
+>> On Fri, 8 May 2020 22:58:29 -0700 Jakub Kicinski wrote:
+>>> On Sat, 9 May 2020 11:32:10 +0800 Zefan Li wrote:
+>>>> If systemd is configured to use hybrid mode which enables the use of
+>>>> both cgroup v1 and v2, systemd will create new cgroup on both the default
+>>>> root (v2) and netprio_cgroup hierarchy (v1) for a new session and attach
+>>>> task to the two cgroups. If the task does some network thing then the v2
+>>>> cgroup can never be freed after the session exited.
+>>>>
+>>>> One of our machines ran into OOM due to this memory leak.
+>>>>
+>>>> In the scenario described above when sk_alloc() is called cgroup_sk_alloc()
+>>>> thought it's in v2 mode, so it stores the cgroup pointer in sk->sk_cgrp_data
+>>>> and increments the cgroup refcnt, but then sock_update_netprioidx() thought
+>>>> it's in v1 mode, so it stores netprioidx value in sk->sk_cgrp_data, so the
+>>>> cgroup refcnt will never be freed.
+>>>>
+>>>> Currently we do the mode switch when someone writes to the ifpriomap cgroup
+>>>> control file. The easiest fix is to also do the switch when a task is attached
+>>>> to a new cgroup.
+>>>>
+>>>> Fixes: bd1060a1d671("sock, cgroup: add sock->sk_cgroup")  
+>>>
+>>>                      ^ space missing here
+>>>
+>>>> Reported-by: Yang Yingliang <yangyingliang@huawei.com>
+>>>> Tested-by: Yang Yingliang <yangyingliang@huawei.com>
+>>>> Signed-off-by: Zefan Li <lizefan@huawei.com>
+>>
+>> Fixed up the commit message and applied, thank you.
 > 
-> Fair enough, I changed it to set the flag at initialization time if
-> mem_cgroup_disabled(). I was never a fan of the old flags, where it
-> was never clear what was commandline, and what was internal runtime
-> state - do_swap_account? really_do_swap_account? But I think it's
-> straight-forward in this case now.
+> Hi Zefan, Tejun,
 > 
-> > Historically, I think we've added mem_cgroup_disabled() checks
-> > (accessing a cacheline we'd rather avoid) where they're necessary,
-> > rather than at every "interface".
+> This is causing a regression where previously cgroupv2 bpf sockops programs
+> could be attached and would run even if netprio_cgroup was enabled as long
+> as  the netprio cgroup had not been configured. After this the bpf sockops
+> programs can still be attached but only programs attached to the root cgroup
+> will be run. For example I hit this when I ran bpf selftests on a box that
+> also happened to have netprio cgroup enabled, tests started failing after
+> bumping kernel to rc5.
 > 
-> To me that always seemed like bugs waiting to happen. Like this one!
+> I'm a bit on the fence here if it needs to be reverted. For my case its just
+> a test box and easy enough to work around. Also all the production cases I
+> have already have to be aware of this to avoid the configured error. So it
+> may be fine but worth noting at least. Added Alexei to see if he has any
+> opinion and/or uses net_prio+cgroubv2. I only looked it over briefly but
+> didn't see any simple rc6 worthy fixes that would fix the issue above and
+> also keep the original behavior.
 > 
-> It's a jump label nowadays, so I've been liberal with these to avoid
-> subtle bugs.
-> 
-> > And you seem to be in a very "goto out" mood today - we all have
-> > our "goto out" days, alternating with our "return 0" days :)
-> 
-> :-)
-> 
-> But I agree, best to keep this fixup self-contained and defer anything
-> else to separate cleanup patches.
-> 
-> How about the below? It survives a swaptest with cgroup_disable=memory
-> for me.
 
-I like this version *a lot*, thank you. I got worried for a bit by
-the "#define cgroup_memory_noswap 1" when #ifndef CONFIG_MEMCG_SWAP,
-but now realize that fits perfectly.
+Me neither. If we really want to keep the original behavior we probably need
+to do something similar to what netclassid cgroup does, which is to iterate
+all the tasks in the cgroup to update netprioidx when netprio cgroup is
+configured, and we also need to not update netprioidx when a task is attached
+to a new cgroup.
 
+> And then while reviewing I also wonder do we have the same issue described
+> here in netclasid_cgroup.c with the cgrp_attach()? It would be best to keep
+> netcls and netprio in sync in this regard imo. At least netcls calls
+> cgroup_sk_alloc_disable in the write_classid() hook so I suspect it makes
+> sense to also add that to the attach hook?
 > 
-> Hugh, I started with your patch, which is why I kept you as the
-> author, but as the patch now (and arguably the previous one) is
-> sufficiently different, I dropped that now. I hope that's okay.
 
-Absolutely okay, these are yours: I was a little uncomfortable to
-see me on the From line before, but it also seemed just too petty
-to insist that my name be removed.
+Fortunately we don't have this issue in netclassid cgroup. :)
 
-(By the way, off-topic for this particular issue, but advance warning
-that I hope to post a couple of patches to __read_swap_cache_async()
-before the end of the day, first being fixup to some of your mods -
-I suspect you got it working well enough, and intended to come back
-to check a few details later, but never quite got around to that.)
-
-> 
-> ---
-> From d9e7ed15d1c9248a3fd99e35e82437549154dac7 Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Thu, 21 May 2020 17:44:25 -0400
-> Subject: [PATCH] mm: memcontrol: prepare swap controller setup for integration
->  fix
-> 
-> Fix crash with cgroup_disable=memory:
-> 
-> > > > > + mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8NRK0BPF6XF
-> > > > > mke2fs 1.43.8 (1-Jan-2018)
-> > > > > Creating filesystem with 244190646 4k blocks and 61054976 inodes
-> > > > > Filesystem UUID: 3bb1a285-2cb4-44b4-b6e8-62548f3ac620
-> > > > > Superblock backups stored on blocks:
-> > > > > 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-> > > > > 4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
-> > > > > 102400000, 214990848
-> > > > > Allocating group tables:    0/7453                           done
-> > > > > Writing inode tables:    0/7453                           done
-> > > > > Creating journal (262144 blocks): [   35.502102] BUG: kernel NULL
-> > > > > pointer dereference, address: 000000c8
-> > > > > [   35.508372] #PF: supervisor read access in kernel mode
-> > > > > [   35.513506] #PF: error_code(0x0000) - not-present page
-> > > > > [   35.518638] *pde = 00000000
-> > > > > [   35.521514] Oops: 0000 [#1] SMP
-> > > > > [   35.524652] CPU: 0 PID: 145 Comm: kswapd0 Not tainted
-> > > > > 5.7.0-rc6-next-20200519+ #1
-> > > > > [   35.532121] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > > > 2.2 05/23/2018
-> > > > > [   35.539507] EIP: mem_cgroup_get_nr_swap_pages+0x28/0x60
-> 
-> Swap accounting used to be implied-disabled when the cgroup controller
-> was disabled. Restore that for the new cgroup_memory_noswap, so that
-> we bail out of this function instead of dereferencing a NULL memcg.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Debugged-by: Hugh Dickins <hughd@google.com>
-> Debugged-by: Michal Hocko <mhocko@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Acked-by: Hugh Dickins <hughd@google.com>
-
-> ---
->  mm/memcontrol.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 3e000a316b59..e3b785d6e771 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7075,7 +7075,11 @@ static struct cftype memsw_files[] = {
->  
->  static int __init mem_cgroup_swap_init(void)
->  {
-> -	if (mem_cgroup_disabled() || cgroup_memory_noswap)
-> +	/* No memory control -> no swap control */
-> +	if (mem_cgroup_disabled())
-> +		cgroup_memory_noswap = true;
-> +
-> +	if (cgroup_memory_noswap)
->  		return 0;
->  
->  	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
-> -- 
-> 2.26.2
+Because task_cls_classid() remains 0 as long as netclassid cgroup is not
+configured.
