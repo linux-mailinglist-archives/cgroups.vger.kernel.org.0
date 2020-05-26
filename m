@@ -2,94 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B0221DED3C
-	for <lists+cgroups@lfdr.de>; Fri, 22 May 2020 18:28:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80EF31E190E
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2020 03:25:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730058AbgEVQ2C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 22 May 2020 12:28:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730031AbgEVQ2B (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 22 May 2020 12:28:01 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AE15C061A0E;
-        Fri, 22 May 2020 09:28:01 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id j2so11258681ilr.5;
-        Fri, 22 May 2020 09:28:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TysnkmOIkLeX9KxlHLPL4xK1JYCC9XQVpNTteD8sJWI=;
-        b=lfm2XyuLMBYBEMicKkNUBvKtTqemJXPbmFBeN/eDLNIxq1Id68/49Ne+gIoDwSCuxt
-         PeZotFigJ3ZPSD9p6jTGhATFunfQ9qsPYh76th8MHBQeNDElh3K4ig7cWIiYTF1beD9I
-         ZhK/eAXZzgrN6Zfj6BDIp8VMQbVyI5viIJjrVpBW/BnSbFVqqUN0n3+xKKdukU2d4JTt
-         ocbVEWftg/opspRtHbRTG3DtRVxzVSXWHlF/bgAKDT0g/A+frfgtgjGZZy2+xfX+Hu+f
-         3xn7ErM5jt3GoVN0OtIsP+1x1V9o3ktTP2HTuxHEsbtjlbdMByZrDzBW/vFnZKr6Qwz8
-         CEfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TysnkmOIkLeX9KxlHLPL4xK1JYCC9XQVpNTteD8sJWI=;
-        b=RNcWtUyzQu0dAIV3mrUoCPA0+jEL+CzEvqkXcEgaQdgvzFMnXy38/hYPyn6SL1ugT4
-         8lmPf/bNpchpCJ3E4F0pdhIpylR6iifBWmXCBDf0KMr/jNerjIM29IbzN3w3tMb5SV0b
-         1S6CuevfmpPwmA1ITWXFSYR4TiQKwIBy4Zk9kmP7UbiKdoERUfpqePY16q+x02rKHGOD
-         K+rc/cum0CCTL+CfPtgax255iydtZTZZTwiPhy8H2bedaPWAWIqwjn4j8W1gSb78pA/0
-         tA/OB0xQ7KSH5/KpIj01fgIgdLxXx3jqHdSsA3xSHzrRZlOEmQoCUVEaZ5AHHzIWttPT
-         basw==
-X-Gm-Message-State: AOAM530fGigfXKBXFpasQBoZwda9SC3gGpItA7CvVm3EYAix3Io+4qHi
-        VvQ3DcLa7ZqRHFVL73P9BOPdDFR1cqYEf13cLX8=
-X-Google-Smtp-Source: ABdhPJygTKEZ0/3slz2Qencuk56A3Fa5sc0tQiWlaV/GUulZeY6LWuJ4x6zRNvb/rdBY6V2nkBUTiyiv1Exd1hFGk1E=
-X-Received: by 2002:a92:10a:: with SMTP id 10mr14145774ilb.203.1590164880781;
- Fri, 22 May 2020 09:28:00 -0700 (PDT)
+        id S2388169AbgEZBZa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 25 May 2020 21:25:30 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:55234 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2387888AbgEZBZa (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 25 May 2020 21:25:30 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id D5C4EA0762D88C679684;
+        Tue, 26 May 2020 09:25:27 +0800 (CST)
+Received: from [10.166.213.22] (10.166.213.22) by smtp.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server (TLS) id 14.3.487.0; Tue, 26 May
+ 2020 09:25:25 +0800
+From:   Zefan Li <lizefan@huawei.com>
+Subject: [PATCH v3] memcg: Fix memcg_kmem_bypass() for remote memcg charging
+To:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+References: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
+ <20200513090502.GV29153@dhcp22.suse.cz>
+ <76f71776-d049-7407-8574-86b6e9d80704@huawei.com>
+ <20200513112905.GX29153@dhcp22.suse.cz>
+Message-ID: <1d202a12-26fe-0012-ea14-f025ddcd044a@huawei.com>
+Date:   Tue, 26 May 2020 09:25:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-References: <20200505084127.12923-1-laoar.shao@gmail.com> <20200505084127.12923-3-laoar.shao@gmail.com>
- <CA+G9fYseWc_7yq0M5Onju_HxbFid6DbuuaEFf-KUpqfxdF-QTg@mail.gmail.com>
- <CALOAHbBTt1pMo0kwheWqPfU7RTXcDHWJ-x8=5mpw327uiy2qzA@mail.gmail.com>
- <CA+G9fYtmpjunUetTmf2yquB1rwZA+nnWOiueWbAMx483c0wUvQ@mail.gmail.com>
- <CALOAHbCdXrU1AeLd4pWubutuG6HP4xKvxRkXeOv=sd_MMW58rg@mail.gmail.com>
- <20200522160626.GB1112005@chrisdown.name> <20200522160709.GC1112005@chrisdown.name>
-In-Reply-To: <20200522160709.GC1112005@chrisdown.name>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Sat, 23 May 2020 00:27:24 +0800
-Message-ID: <CALOAHbArZ3NsuR3mCnx_kbSF8ktpjhUF2kaaTa7Mb7ocJajsQg@mail.gmail.com>
-Subject: Re: [PATCH v3 2/2] mm, memcg: Decouple e{low,min} state mutations
- from protection checks
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, linux-mm <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200513112905.GX29153@dhcp22.suse.cz>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.166.213.22]
+X-CFilter-Loop: Reflected
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, May 23, 2020 at 12:07 AM Chris Down <chris@chrisdown.name> wrote:
->
-> Chris Down writes:
-> >Yafang Shao writes:
-> >>I will do it.
-> >>If no one has objection to my proposal, I will send it tomorrow.
-> >
-> >If the fixup patch works, just send that. Otherwise, sure.
->
-> Oh, I see the other reply from Naresh now saying it didn't help.
->
-> Sure, feel free to do that for now then while we work out what the real problem
-> is.
+While trying to use remote memcg charging in an out-of-tree kernel module
+I found it's not working, because the current thread is a workqueue thread.
 
-Regarding the root cause, my guess is it makes a similar mistake that
-I tried to fix in the previous patch that the direct reclaimer read a
-stale protection value.  But I don't think it is worth to add another
-fix. The best way is to revert this commit.
+As we will probably encounter this issue in the future as the users of
+memalloc_use_memcg() grow, and it's nothing wrong for this usage, it's
+better we fix it now.
 
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Zefan Li <lizefan@huawei.com>
+---
+
+v3: bypass __GFP_ACCOUNT allocations in interrupt contexts.
+
+---
+ mm/memcontrol.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a3b97f1..3c7717a 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2802,7 +2802,12 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
+ 
+ static inline bool memcg_kmem_bypass(void)
+ {
+-	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
++	if (in_interrupt())
++		return true;
++
++	/* Allow remote memcg charging in kthread contexts. */
++	if ((!current->mm || (current->flags & PF_KTHREAD)) &&
++	     !current->active_memcg)
+ 		return true;
+ 	return false;
+ }
 -- 
-Thanks
-Yafang
+2.7.4
+
