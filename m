@@ -2,274 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80F5C1E2585
-	for <lists+cgroups@lfdr.de>; Tue, 26 May 2020 17:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A16B1E2617
+	for <lists+cgroups@lfdr.de>; Tue, 26 May 2020 17:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729385AbgEZPdg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 May 2020 11:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727898AbgEZPdg (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 May 2020 11:33:36 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAC5EC03E96D
-        for <cgroups@vger.kernel.org>; Tue, 26 May 2020 08:33:34 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id p12so16400273qtn.13
-        for <cgroups@vger.kernel.org>; Tue, 26 May 2020 08:33:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KVe4F8UgxCDjeBkRy/htdbjafevBT7vloPhWAUIoZSQ=;
-        b=wYcdu/SC1qTHS6RI1MxhlU/qTMWLEdH3Qeo6CTfkpmbrKNV4VYpO2vqtFCSR0e/hbW
-         4fAd2qNJmJ8z9BELunQZ/u+nlpHbzm1ScmtxhZGYcKZOYqedbagfjlK982OyBsWibKkk
-         00DhRgWVbJr9zNelJyVBM6xFIshMDCzeGF7zFzabevHf22FZ9gQte/yk7xkd0l2nHw08
-         tLY3iSjfuKJJEsC6ZW8YzsnySD5Id6eXHiPT0NBJZMLpoUzo1n4bOuU/mvYFzWurSmi8
-         lZM2hYgISl+B5JSEQr5KDYrBxRJb8LTiW6YCcFuOJ+pJIzmiMXKkwETIhV+pL2659O+v
-         gXlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=KVe4F8UgxCDjeBkRy/htdbjafevBT7vloPhWAUIoZSQ=;
-        b=Hlra6PRu9uLUIT+CklEkEo95MoeFUQE0fJP1oILtVbaEiJadM4LTS2E/TyZ0q24987
-         ZZMzryfGPdZCjBgkiWYDT0kvm5VtO0tP+WXCGIBW0wYFrEJFe7wHmQoPpB1wMIXnL0+M
-         Qg8CErEi8Xf3bDSzeWFaULYSsnV4mZjU6ahqsQ6QzJs3pb4bmcQHwYG6bYzOOx1J6lqf
-         BZOYFT4le+jX/X77tssVRw9HYC5O+u2EyLaCEj3kdhPKH/kFnhbWbDha3TgmR/BbEcb9
-         cNMtMbeRBLML9qZ67Majebn0HOl9+n71J3eTjuhmTxRfue+mvZ/EO7PHu68YkHb+zs9Q
-         Z/Tg==
-X-Gm-Message-State: AOAM5338TdmyroED60RpXBrZiw2du1/O8CpvetAn7DzXJkqyLmTA0ep8
-        Ws1uVjDls/gqNgVf9KJ65F++6g==
-X-Google-Smtp-Source: ABdhPJzx2k45/IZwPVkUr4JFul95oufLHUkWJLIlUuKb+J0EncNyxBvyIJfXU5ds+yd4hHUcA/sWog==
-X-Received: by 2002:ac8:3529:: with SMTP id y38mr1806481qtb.315.1590507213882;
-        Tue, 26 May 2020 08:33:33 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8152])
-        by smtp.gmail.com with ESMTPSA id l2sm19878qth.47.2020.05.26.08.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2020 08:33:33 -0700 (PDT)
-Date:   Tue, 26 May 2020 11:33:09 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, kernel-team@fb.com,
-        tj@kernel.org, chris@chrisdown.name, cgroups@vger.kernel.org,
-        shakeelb@google.com, mhocko@kernel.org
-Subject: Re: [PATCH mm v5 RESEND 4/4] mm: automatically penalize tasks with
- high swap use
-Message-ID: <20200526153309.GD848026@cmpxchg.org>
-References: <20200521002411.3963032-1-kuba@kernel.org>
- <20200521002411.3963032-5-kuba@kernel.org>
-MIME-Version: 1.0
+        id S1729666AbgEZPyj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 May 2020 11:54:39 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:52856 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727862AbgEZPyi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 May 2020 11:54:38 -0400
+Received: from pps.filterd (m0089730.ppops.net [127.0.0.1])
+        by m0089730.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 04QFhw7W002830;
+        Tue, 26 May 2020 08:53:35 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=1fdj+iq3jP1MBWtdJyigG3N2HI1VPzgBImfCNqGNDFA=;
+ b=LEQGdAShHkvE4a0qJd45NOUc0imlSZy1rrq9fAJxadbQ0smpTboDuT6/ZRioeZSSkYta
+ OZFv3jqaQu14rL/wDOHK6PDwiY3Bno3S0d4A4TImfOHerSyieeDbLaKVrLkw21497Fpk
+ GgsgE3tY9acZKLloBh8DQUz7I10mx1G/Kg0= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by m0089730.ppops.net with ESMTP id 316yb11xw3-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 26 May 2020 08:53:35 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 26 May 2020 08:53:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Aq1ALz2QJc9SAsY/QRXKliy95XRbVKVpTgUQQpgGixQ6hoh3t3EBrIaBpwUVO5A1S+5e1AlCMTUlDGb7To5DdPgYNqBVqDP1C0Fwm12TZRxL2oKHTNAsSgmHqdmhgLrCefrnt/jxLgGpabYZpgN8MmRovYaF6cH8DggzQMfDW66ub8uWTeo/7Kd8UQZBO6fe/v0/VpPURKJcP8oFz278VJkZS9Cz7pzEfUDzISM8DR874lSvfGRA/fu9WGWJmCRoNj8wYtVYltuR1ZthcsDcJyMpEsBvoWxJpvEHNJhOWxKThs2vsV4AdS70H9ehoF+xOqj4XjOGvPZGdjbwq0CDfQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1fdj+iq3jP1MBWtdJyigG3N2HI1VPzgBImfCNqGNDFA=;
+ b=XLwM+2TDXVJUVwRuymJO9MGOLC5kvfjcKr22EFPSRvikeUJoZU2MG1UA/IXVqBlchFI1cxyBX+4bh7YB21r2DsEF63VzPcN8aTt7MZz6ML43Tod1t83j42IQ/9P9Nh0BtboNl1nMcJL8KBISHSijFvtPBeZvBwBwzwdl7/ZJBtqFRxkeKauWowzDHFMkGbZdruzVYi8nriEQCqZwg4cFy/9OfeLiTsx9DioFnWD8V62AIeAgludJNGn2Je79W6oICRUVioIpM65QYhWRPsDIPoLjkaMwGrf6dSkzJ/r42RHuBUKIaFgA9/2kl2fhrNkPD/M/5h+NWjy9EkKTGLxpOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1fdj+iq3jP1MBWtdJyigG3N2HI1VPzgBImfCNqGNDFA=;
+ b=b6yzFseVvDRRrbO49Ox8iQkxDiDdk6w0D9Q7qEYtNnTaj+qjco+MrpDTFiyAtZDQzva5CW4kVCQYDMIY4HV+PCrgZtyg9Nvoz5OiyJTfailqcwqWhyIBRm/yrpUUURVuOQvVTby5hHfEB4SJhpWpLeUYb3NqL0hMwLB187H+w0M=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=fb.com;
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14) by SN6PR1501MB2061.namprd15.prod.outlook.com
+ (2603:10b6:805:e::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.27; Tue, 26 May
+ 2020 15:53:32 +0000
+Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::3046:2fa:5da3:73be]) by SN6PR1501MB4141.namprd15.prod.outlook.com
+ ([fe80::3046:2fa:5da3:73be%7]) with mapi id 15.20.3021.029; Tue, 26 May 2020
+ 15:53:32 +0000
+Date:   Tue, 26 May 2020 08:53:23 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Zefan Li <lizefan@huawei.com>
+CC:     Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Cgroups <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>
+Subject: Re: [PATCH v3] memcg: Fix memcg_kmem_bypass() for remote memcg
+ charging
+Message-ID: <20200526155323.GB364753@carbon.DHCP.thefacebook.com>
+References: <e6927a82-949c-bdfd-d717-0a14743c6759@huawei.com>
+ <20200513090502.GV29153@dhcp22.suse.cz>
+ <76f71776-d049-7407-8574-86b6e9d80704@huawei.com>
+ <20200513112905.GX29153@dhcp22.suse.cz>
+ <1d202a12-26fe-0012-ea14-f025ddcd044a@huawei.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200521002411.3963032-5-kuba@kernel.org>
+In-Reply-To: <1d202a12-26fe-0012-ea14-f025ddcd044a@huawei.com>
+X-ClientProxiedBy: BYAPR02CA0035.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::48) To SN6PR1501MB4141.namprd15.prod.outlook.com
+ (2603:10b6:805:e3::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:c3d5) by BYAPR02CA0035.namprd02.prod.outlook.com (2603:10b6:a02:ee::48) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3021.23 via Frontend Transport; Tue, 26 May 2020 15:53:31 +0000
+X-Originating-IP: [2620:10d:c090:400::5:c3d5]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ecf5cec8-a9f5-41ca-62bb-08d8018cf10f
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2061:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB2061B3FE87DE4055E7A347ECBEB00@SN6PR1501MB2061.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Forefront-PRVS: 041517DFAB
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: VJrjSqZxDFPKXeTpDAysa95Qr3Kgr8ptlzL5FyRKwO94mCdJROixT7Y6mymebUACCIjBgU5H2RfjUzliv2BA5/Zpfg8ToxAIN9awPPp1umcoGZ8ANog/nTHjsyuHIARh1PO/AlyGYvuaQ9xMz6UahnhX6LsPYgPLs9Jjt/WkzKy656AjnTOsJWjDNILqeNGUCb6lwJ3772jX5KdhdmO84UsB1o/8RY/ve8gd3q8OM0n6ChMwIPbiunnDyvQMUtGv67n8XBGAD/B2vSrX5HKIPkB4jwNKnmzQuKdfyTaEgIJjG5wUbCSENrzZ3IYG1sKVs+KohfZu+jYtdL+xKZSkVg==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(136003)(366004)(39860400002)(376002)(396003)(346002)(86362001)(16526019)(6506007)(186003)(8936002)(66946007)(66476007)(8676002)(66556008)(2906002)(5660300002)(4326008)(33656002)(52116002)(1076003)(316002)(54906003)(6666004)(478600001)(6916009)(9686003)(55016002)(7696005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: qxEl84UIH0zTOiZ0xgauns0/20LHTx/XZjLKAG+AL0fcGOXGL6eeFAWrLNhb1xQgHa7lbzD5vhIjqhy4iKqsYn0g0LLpl3DvspJBcfqACtWFpx7U6IGnmS1zrBCMQtqGWE3hMtR/4iGMvfg9YrwLFn8iXWqOQyc26Nri8upqQH2f19sviBSO3ogXeNvSwL2g0TUYKdbIf+isaPptH4d36ETewdtsKOuHgpePpNB7Sk2sUq2N7ollkpOjPbr1O6Y2tMV+M7cpheZxZnTi7Jqc99tVYu4FuR7qPZTt/tIn/rwdyX7WSOpRjTxvM3uCKoyF8g+Z7nF6cdazR/hULypQy1E0C3X4k9dQz0koPKScAHlFX4KIuFNUkGwQhOpgtuSgYi5loF8jqvDxx9jWIgpXq2j9LiURwgwM3Ww0na9p+9TpJfI7kXAwK8JqZyUIbL9GFDCpeHT914vXrQuXu9xWv8aP7WGIEiwqYzMJzRN2MZH50HrBlzqpcX3T7YHDEEGloG/VctwQCRh+QztPmLIJ0w==
+X-MS-Exchange-CrossTenant-Network-Message-Id: ecf5cec8-a9f5-41ca-62bb-08d8018cf10f
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 May 2020 15:53:32.6210
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wOLhXIMJzbDkaDME8F/yiV5oc0rbEs8cokBzsLIeR9+Y1BmgZHhs87WgthPKpXdf
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2061
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.216,18.0.687
+ definitions=2020-05-26_02:2020-05-26,2020-05-26 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0
+ clxscore=1015 adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999
+ cotscore=-2147483648 spamscore=0 priorityscore=1501 suspectscore=1
+ bulkscore=0 malwarescore=0 lowpriorityscore=0 classifier=spam adjust=0
+ reason=mlx scancount=1 engine=8.12.0-2004280000
+ definitions=main-2005260122
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jakub,
-
-the patch looks mostly good to me, but there are a couple of things
-that should be cleaned up before merging:
-
-On Wed, May 20, 2020 at 05:24:11PM -0700, Jakub Kicinski wrote:
-> Add a memory.swap.high knob, which can be used to protect the system
-> from SWAP exhaustion. The mechanism used for penalizing is similar
-> to memory.high penalty (sleep on return to user space), but with
-> a less steep slope.
-
-The last part is no longer true after incorporating Michal's feedback.
-
-> That is not to say that the knob itself is equivalent to memory.high.
-> The objective is more to protect the system from potentially buggy
-> tasks consuming a lot of swap and impacting other tasks, or even
-> bringing the whole system to stand still with complete SWAP
-> exhaustion. Hopefully without the need to find per-task hard
-> limits.
+On Tue, May 26, 2020 at 09:25:25AM +0800, Zefan Li wrote:
+> While trying to use remote memcg charging in an out-of-tree kernel module
+> I found it's not working, because the current thread is a workqueue thread.
 > 
-> Slowing misbehaving tasks down gradually allows user space oom
-> killers or other protection mechanisms to react. oomd and earlyoom
-> already do killing based on swap exhaustion, and memory.swap.high
-> protection will help implement such userspace oom policies more
-> reliably.
+> As we will probably encounter this issue in the future as the users of
+> memalloc_use_memcg() grow, and it's nothing wrong for this usage, it's
+> better we fix it now.
 > 
-> We can use one counter for number of pages allocated under
-> pressure to save struct task space and avoid two separate
-> hierarchy walks on the hot path. The exact overage is
-> calculated on return to user space, anyway.
-> 
-> Take the new high limit into account when determining if swap
-> is "full". Borrowing the explanation from Johannes:
-> 
->   The idea behind "swap full" is that as long as the workload has plenty
->   of swap space available and it's not changing its memory contents, it
->   makes sense to generously hold on to copies of data in the swap
->   device, even after the swapin. A later reclaim cycle can drop the page
->   without any IO. Trading disk space for IO.
-> 
->   But the only two ways to reclaim a swap slot is when they're faulted
->   in and the references go away, or by scanning the virtual address space
->   like swapoff does - which is very expensive (one could argue it's too
->   expensive even for swapoff, it's often more practical to just reboot).
-> 
->   So at some point in the fill level, we have to start freeing up swap
->   slots on fault/swapin. Otherwise we could eventually run out of swap
->   slots while they're filled with copies of data that is also in RAM.
-> 
->   We don't want to OOM a workload because its available swap space is
->   filled with redundant cache.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
-> --
-> v4:
->  - add a comment on using a single counter for both mem and swap pages
-> v3:
->  - count events for all groups over limit
->  - add doc for high events
->  - remove the magic scaling factor
->  - improve commit message
-> v2:
->  - add docs
->  - improve commit message
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Signed-off-by: Zefan Li <lizefan@huawei.com>
 > ---
->  Documentation/admin-guide/cgroup-v2.rst | 20 ++++++
->  include/linux/memcontrol.h              |  1 +
->  mm/memcontrol.c                         | 84 +++++++++++++++++++++++--
->  3 files changed, 99 insertions(+), 6 deletions(-)
+
+Reviewed-by: Roman Gushchin <guro@fb.com>
+
+Thanks!
+
 > 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index fed4e1d2a343..1536deb2f28e 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -1373,6 +1373,22 @@ PAGE_SIZE multiple when read back.
->  	The total amount of swap currently being used by the cgroup
->  	and its descendants.
->  
-> +  memory.swap.high
-> +	A read-write single value file which exists on non-root
-> +	cgroups.  The default is "max".
-> +
-> +	Swap usage throttle limit.  If a cgroup's swap usage exceeds
-> +	this limit, all its further allocations will be throttled to
-> +	allow userspace to implement custom out-of-memory procedures.
-> +
-> +	This limit marks a point of no return for the cgroup. It is NOT
-> +	designed to manage the amount of swapping a workload does
-> +	during regular operation. Compare to memory.swap.max, which
-> +	prohibits swapping past a set amount, but lets the cgroup
-> +	continue unimpeded as long as other memory can be reclaimed.
-> +
-> +	Healthy workloads are not expected to reach this limit.
-> +
->    memory.swap.max
->  	A read-write single value file which exists on non-root
->  	cgroups.  The default is "max".
-> @@ -1386,6 +1402,10 @@ PAGE_SIZE multiple when read back.
->  	otherwise, a value change in this file generates a file
->  	modified event.
->  
-> +	  high
-> +		The number of times the cgroup's swap usage was over
-> +		the high threshold.
-> +
->  	  max
->  		The number of times the cgroup's swap usage was about
->  		to go over the max boundary and swap allocation
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index d726867d8af9..865afda5b6f0 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -42,6 +42,7 @@ enum memcg_memory_event {
->  	MEMCG_MAX,
->  	MEMCG_OOM,
->  	MEMCG_OOM_KILL,
-> +	MEMCG_SWAP_HIGH,
->  	MEMCG_SWAP_MAX,
->  	MEMCG_SWAP_FAIL,
->  	MEMCG_NR_MEMORY_EVENTS,
+> v3: bypass __GFP_ACCOUNT allocations in interrupt contexts.
+> 
+> ---
+>  mm/memcontrol.c | 7 ++++++-
+>  1 file changed, 6 insertions(+), 1 deletion(-)
+> 
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d4b7bc80aa38..a92ddaecd28e 100644
+> index a3b97f1..3c7717a 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -2334,6 +2334,22 @@ static u64 mem_find_max_overage(struct mem_cgroup *memcg)
->  	return max_overage;
+> @@ -2802,7 +2802,12 @@ static void memcg_schedule_kmem_cache_create(struct mem_cgroup *memcg,
+>  
+>  static inline bool memcg_kmem_bypass(void)
+>  {
+> -	if (in_interrupt() || !current->mm || (current->flags & PF_KTHREAD))
+> +	if (in_interrupt())
+> +		return true;
+> +
+> +	/* Allow remote memcg charging in kthread contexts. */
+> +	if ((!current->mm || (current->flags & PF_KTHREAD)) &&
+> +	     !current->active_memcg)
+>  		return true;
+>  	return false;
 >  }
->  
-> +static u64 swap_find_max_overage(struct mem_cgroup *memcg)
-> +{
-> +	u64 overage, max_overage = 0;
-> +
-> +	do {
-> +		overage = calculate_overage(page_counter_read(&memcg->swap),
-> +					    READ_ONCE(memcg->swap.high));
-> +		if (overage)
-> +			memcg_memory_event(memcg, MEMCG_SWAP_HIGH);
-> +		max_overage = max(overage, max_overage);
-> +	} while ((memcg = parent_mem_cgroup(memcg)) &&
-> +		 !mem_cgroup_is_root(memcg));
-> +
-> +	return max_overage;
-> +}
-> +
->  /*
->   * Get the number of jiffies that we should penalise a mischievous cgroup which
->   * is exceeding its memory.high by checking both it and its ancestors.
-> @@ -2395,6 +2411,13 @@ void mem_cgroup_handle_over_high(void)
->  	penalty_jiffies = calculate_high_delay(memcg, nr_pages,
->  					       mem_find_max_overage(memcg));
->  
-> +	/*
-> +	 * Make the swap curve more gradual, swap can be considered "cheaper",
-> +	 * and is allocated in larger chunks. We want the delays to be gradual.
-> +	 */
-
-This comment is also out-of-date, as the same curve is being applied.
-
-> +	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
-> +						swap_find_max_overage(memcg));
-> +
->  	/*
->  	 * Clamp the max delay per usermode return so as to still keep the
->  	 * application moving forwards and also permit diagnostics, albeit
-> @@ -2585,12 +2608,25 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
->  	 * reclaim, the cost of mismatch is negligible.
->  	 */
->  	do {
-> -		if (page_counter_is_above_high(&memcg->memory)) {
-> -			/* Don't bother a random interrupted task */
-> -			if (in_interrupt()) {
-> +		bool mem_high, swap_high;
-> +
-> +		mem_high = page_counter_is_above_high(&memcg->memory);
-> +		swap_high = page_counter_is_above_high(&memcg->swap);
-
-Please open-code these checks instead - we don't really do getters and
-predicates for these, and only have the setters because they are more
-complicated operations.
-
-> +		if (mem_high || swap_high) {
-> +			/* Use one counter for number of pages allocated
-> +			 * under pressure to save struct task space and
-> +			 * avoid two separate hierarchy walks.
-> +			 /*
->  			current->memcg_nr_pages_over_high += batch;
-
-That comment style is leaking out of the networking code ;-) Please
-use the customary style in this code base, /*\n *...
-
-As for one counter instead of two: I'm not sure that question arises
-in the reader. There have also been some questions recently what the
-counter actually means. How about the following:
-
-			/*
-			 * The allocating tasks in this cgroup will need to do
-			 * reclaim or be throttled to prevent further growth
-			 * of the memory or swap footprints.
-			 *
-			 * Target some best-effort fairness between the tasks,
-			 * and distribute reclaim work and delay penalties
-			 * based on how much each task is actually allocating.
-			 */
-
-Otherwise, the patch looks good to me.
-
+> -- 
+> 2.7.4
+> 
