@@ -2,36 +2,36 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95F4B1E4EB4
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2020 21:58:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A56AF1E4EB5
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2020 21:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726839AbgE0T6u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 May 2020 15:58:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38520 "EHLO mail.kernel.org"
+        id S1727787AbgE0T6w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 May 2020 15:58:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38532 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726946AbgE0T6u (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 27 May 2020 15:58:50 -0400
+        id S1726946AbgE0T6v (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 27 May 2020 15:58:51 -0400
 Received: from kicinski-fedora-PC1C0HJN.thefacebook.com (unknown [163.114.132.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA1D12100A;
-        Wed, 27 May 2020 19:58:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 743A920FC3;
+        Wed, 27 May 2020 19:58:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1590609530;
-        bh=j9Z01ym8A482OzEXrkei7XMFsMhiBRz05m+BDsqzMdo=;
+        s=default; t=1590609531;
+        bh=PaTZJCrNc64FntwKudDXnQWYv1Hp7AiLvyNyWNhRgyI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OQCR2Mo9NIBT6oXmeAvtSnzNMDXtZYqKEPCqDxC8IJy0nHK6OZeA5InMESztTBoFg
-         bOSy98Rv7ep7gRDQGm/rUs+XNkwcfpv7bbcn5/LT9/iWfslXHFJdhkyT5NJ27w8Z+z
-         Vdp+9uOsyuW5UG3UYdYmxMr9itIh6k62YV1QWYl0=
+        b=GHNe8Bkm1Lm/pq4i2IvVRQAjJfL9ERD2IztCcO7SKJJcmIA2OLpbzCmdyI+1Z4fPI
+         Zen2p3PfOuU43KW4H8HJyNMMZMJepoETzSIl9DouRteL6dg9sQ/GJdyb9gRcPmo2fe
+         oRpxR+PyZQ1Dzvf/wPXCNPdrbwJtY/0gXuzKfMAE=
 From:   Jakub Kicinski <kuba@kernel.org>
 To:     akpm@linux-foundation.org
 Cc:     linux-mm@kvack.org, kernel-team@fb.com, tj@kernel.org,
         hannes@cmpxchg.org, chris@chrisdown.name, cgroups@vger.kernel.org,
         shakeelb@google.com, mhocko@kernel.org,
         Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH mm v6 2/4] mm: move penalty delay clamping out of calculate_high_delay()
-Date:   Wed, 27 May 2020 12:58:44 -0700
-Message-Id: <20200527195846.102707-3-kuba@kernel.org>
+Subject: [PATCH mm v6 3/4] mm: move cgroup high memory limit setting into struct page_counter
+Date:   Wed, 27 May 2020 12:58:45 -0700
+Message-Id: <20200527195846.102707-4-kuba@kernel.org>
 X-Mailer: git-send-email 2.25.4
 In-Reply-To: <20200527195846.102707-1-kuba@kernel.org>
 References: <20200527195846.102707-1-kuba@kernel.org>
@@ -42,52 +42,143 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We will want to call calculate_high_delay() twice - once for
-memory and once for swap, and we should apply the clamp value
-to sum of the penalties. Clamping has to be applied outside
-of calculate_high_delay().
+High memory limit is currently recorded directly in
+struct mem_cgroup. We are about to add a high limit
+for swap, move the field to struct page_counter and
+add some helpers.
 
 Signed-off-by: Jakub Kicinski <kuba@kernel.org>
 Reviewed-by: Shakeel Butt <shakeelb@google.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+--
+v6: remove page_counter_is_above_high()
+v5: make page_counter_set_high() a static inline in the header
+v4: new patch
 ---
- mm/memcontrol.c | 16 ++++++++--------
- 1 file changed, 8 insertions(+), 8 deletions(-)
+ include/linux/memcontrol.h   |  3 ---
+ include/linux/page_counter.h |  8 ++++++++
+ mm/memcontrol.c              | 19 +++++++++++--------
+ 3 files changed, 19 insertions(+), 11 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 3632d062dc11..4c6da7eadaa7 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -212,9 +212,6 @@ struct mem_cgroup {
+ 	struct page_counter kmem;
+ 	struct page_counter tcpmem;
+ 
+-	/* Upper bound of normal memory consumption range */
+-	unsigned long high;
+-
+ 	/* Range enforcement for interrupt charges */
+ 	struct work_struct high_work;
+ 
+diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+index bab7e57f659b..85bd413e784e 100644
+--- a/include/linux/page_counter.h
++++ b/include/linux/page_counter.h
+@@ -10,6 +10,7 @@ struct page_counter {
+ 	atomic_long_t usage;
+ 	unsigned long min;
+ 	unsigned long low;
++	unsigned long high;
+ 	unsigned long max;
+ 	struct page_counter *parent;
+ 
+@@ -55,6 +56,13 @@ bool page_counter_try_charge(struct page_counter *counter,
+ void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages);
+ void page_counter_set_min(struct page_counter *counter, unsigned long nr_pages);
+ void page_counter_set_low(struct page_counter *counter, unsigned long nr_pages);
++
++static inline void page_counter_set_high(struct page_counter *counter,
++					 unsigned long nr_pages)
++{
++	WRITE_ONCE(counter->high, nr_pages);
++}
++
+ int page_counter_set_max(struct page_counter *counter, unsigned long nr_pages);
+ int page_counter_memparse(const char *buf, const char *max,
+ 			  unsigned long *nr_pages);
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 20ea7aea2292..3751e849f443 100644
+index 3751e849f443..db5dc875addf 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -2367,14 +2367,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
- 	 * MEMCG_CHARGE_BATCH pages is nominal, so work out how much smaller or
- 	 * larger the current charge patch is than that.
+@@ -2233,7 +2233,8 @@ static void reclaim_high(struct mem_cgroup *memcg,
+ 			 gfp_t gfp_mask)
+ {
+ 	do {
+-		if (page_counter_read(&memcg->memory) <= READ_ONCE(memcg->high))
++		if (page_counter_read(&memcg->memory) <=
++		    READ_ONCE(memcg->memory.high))
+ 			continue;
+ 		memcg_memory_event(memcg, MEMCG_HIGH);
+ 		try_to_free_mem_cgroup_pages(memcg, nr_pages, gfp_mask, true);
+@@ -2326,7 +2327,7 @@ static u64 mem_find_max_overage(struct mem_cgroup *memcg)
+ 
+ 	do {
+ 		overage = calculate_overage(page_counter_read(&memcg->memory),
+-					    READ_ONCE(memcg->high));
++					    READ_ONCE(memcg->memory.high));
+ 		max_overage = max(overage, max_overage);
+ 	} while ((memcg = parent_mem_cgroup(memcg)) &&
+ 		 !mem_cgroup_is_root(memcg));
+@@ -2585,7 +2586,8 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 * reclaim, the cost of mismatch is negligible.
  	 */
--	penalty_jiffies = penalty_jiffies * nr_pages / MEMCG_CHARGE_BATCH;
--
--	/*
--	 * Clamp the max delay per usermode return so as to still keep the
--	 * application moving forwards and also permit diagnostics, albeit
--	 * extremely slowly.
--	 */
--	return min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
-+	return penalty_jiffies * nr_pages / MEMCG_CHARGE_BATCH;
+ 	do {
+-		if (page_counter_read(&memcg->memory) > READ_ONCE(memcg->high)) {
++		if (page_counter_read(&memcg->memory) >
++		    READ_ONCE(memcg->memory.high)) {
+ 			/* Don't bother a random interrupted task */
+ 			if (in_interrupt()) {
+ 				schedule_work(&memcg->high_work);
+@@ -4280,7 +4282,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+ 
+ 	while ((parent = parent_mem_cgroup(memcg))) {
+ 		unsigned long ceiling = min(READ_ONCE(memcg->memory.max),
+-					    READ_ONCE(memcg->high));
++					    READ_ONCE(memcg->memory.high));
+ 		unsigned long used = page_counter_read(&memcg->memory);
+ 
+ 		*pheadroom = min(*pheadroom, ceiling - min(ceiling, used));
+@@ -5005,7 +5007,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
+ 	if (IS_ERR(memcg))
+ 		return ERR_CAST(memcg);
+ 
+-	WRITE_ONCE(memcg->high, PAGE_COUNTER_MAX);
++	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
+ 	memcg->soft_limit = PAGE_COUNTER_MAX;
+ 	if (parent) {
+ 		memcg->swappiness = mem_cgroup_swappiness(parent);
+@@ -5158,7 +5160,7 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
+ 	page_counter_set_max(&memcg->tcpmem, PAGE_COUNTER_MAX);
+ 	page_counter_set_min(&memcg->memory, 0);
+ 	page_counter_set_low(&memcg->memory, 0);
+-	WRITE_ONCE(memcg->high, PAGE_COUNTER_MAX);
++	page_counter_set_high(&memcg->memory, PAGE_COUNTER_MAX);
+ 	memcg->soft_limit = PAGE_COUNTER_MAX;
+ 	memcg_wb_domain_size_changed(memcg);
+ }
+@@ -5978,7 +5980,8 @@ static ssize_t memory_low_write(struct kernfs_open_file *of,
+ 
+ static int memory_high_show(struct seq_file *m, void *v)
+ {
+-	return seq_puts_memcg_tunable(m, READ_ONCE(mem_cgroup_from_seq(m)->high));
++	return seq_puts_memcg_tunable(m,
++		READ_ONCE(mem_cgroup_from_seq(m)->memory.high));
  }
  
- /*
-@@ -2402,6 +2395,13 @@ void mem_cgroup_handle_over_high(void)
- 	penalty_jiffies = calculate_high_delay(memcg, nr_pages,
- 					       mem_find_max_overage(memcg));
+ static ssize_t memory_high_write(struct kernfs_open_file *of,
+@@ -5995,7 +5998,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 	if (err)
+ 		return err;
  
-+	/*
-+	 * Clamp the max delay per usermode return so as to still keep the
-+	 * application moving forwards and also permit diagnostics, albeit
-+	 * extremely slowly.
-+	 */
-+	penalty_jiffies = min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
-+
- 	/*
- 	 * Don't sleep if the amount of jiffies this memcg owes us is so low
- 	 * that it's not even worth doing, in an attempt to be nice to those who
+-	WRITE_ONCE(memcg->high, high);
++	page_counter_set_high(&memcg->memory, high);
+ 
+ 	for (;;) {
+ 		unsigned long nr_pages = page_counter_read(&memcg->memory);
 -- 
 2.25.4
 
