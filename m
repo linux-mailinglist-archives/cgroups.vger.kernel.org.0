@@ -2,82 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BACEC1E37B5
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2020 07:10:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EE131E4336
+	for <lists+cgroups@lfdr.de>; Wed, 27 May 2020 15:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726860AbgE0FJt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 May 2020 01:09:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725379AbgE0FJt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 May 2020 01:09:49 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 772FCC061A0F;
-        Tue, 26 May 2020 22:09:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20170209; h=In-Reply-To:Content-Type:MIME-Version
-        :References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gHdtexCQGQRaatxx6IEb1gGC16jgjrLxhKEQOJ39uAQ=; b=kvM2IesnbKbAxu4uRnJqOjHn1U
-        OkIhbK/PCHpdiGv/c7IzpFly3ueziTlwNiOXh/Y+3tpsSWg3LMrjVQ+LMnF+zEUZNmqNw6Kl5OnQC
-        AFM8ATOv9heC9Nl0TZzyzRn1Cnh4gYHIngAMbimQN3Y4I0cpXIb2U3+NLOERIWMSbne/KPx/P0eB1
-        uR6Bp59hrw2Fe+P1qymKKKRIW6o6dnreDzWkemnh2tSCnLr4wc7/wD9Y8oXYIwiecGkPqEyWeNGTw
-        3dV84ae9v7pa1kHq0cQMpqc716FshZpviUGRx8aObBmHV3UBnQO0sia9QJcT5SegOXvISsfpGPctQ
-        ZVrM3Gvg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jdoJe-0000Ci-Ev; Wed, 27 May 2020 05:09:22 +0000
-Date:   Tue, 26 May 2020 22:09:22 -0700
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v5 0/4] Charge loop device i/o to issuing cgroup
-Message-ID: <20200527050922.GB31860@infradead.org>
-References: <20200428161355.6377-1-schatzberg.dan@gmail.com>
- <20200512132521.GA28700@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
- <20200512133545.GA26535@infradead.org>
- <20200526142803.GA1061@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
+        id S1730212AbgE0NQO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 May 2020 09:16:14 -0400
+Received: from msa14.plala.or.jp ([60.36.166.14]:37750 "EHLO msa14.plala.or.jp"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725267AbgE0NQO (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 27 May 2020 09:16:14 -0400
+X-Greylist: delayed 415 seconds by postgrey-1.27 at vger.kernel.org; Wed, 27 May 2020 09:16:13 EDT
+Received: from mwebp13 ([172.23.13.133]) by msa14.plala.or.jp with ESMTP
+          id <20200527130918.VRFA3566.msa14.plala.or.jp@mwebp13>;
+          Wed, 27 May 2020 22:09:18 +0900
+Date:   Wed, 27 May 2020 22:09:17 +0900
+From:   "Mrs.Judith Rice" <hamurafujimi@tmail.plala.or.jp>
+Reply-To: jonesevansje@gmail.com
+Message-ID: <20200527220918.W9Z21.802.root@mwebp13>
+Subject: Spende
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200526142803.GA1061@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=iso-2022-jp
+Content-Transfer-Encoding: 7bit
+X-Priority: 3 (Normal)
+Sensitivity: Normal
+X-VirusScan: Outbound; mvir-ac14; Wed, 27 May 2020 22:09:18 +0900
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, May 26, 2020 at 10:28:03AM -0400, Dan Schatzberg wrote:
-> Will do - I'll split out the lock-use refactor into a separate
-> patch. Do you have particular concerns about re-using the existing
-> spinlock? Its existing use is not contended so I didn't see any harm
-> in extending its use. I'll add this justification to the commit
-> message as well, but I'm tempted to leave the re-use as is instead of
-> creating a new lock.
+Attn:
 
-Please don't share a lock for entirely separate critical sections that
-are used from different contexts.
+Es tut uns leid, dass wir Sie aufgrund eines Mismanagent of Beneficaries-Fonds von unseren ernannten Zonal Managern versp&#228;tet kontaktiert haben. Bitte beachten Sie, dass Sie qualifiziert sind, die Zahlung von 900.000,00 USD an der ATM-Karte mit neunhunderttausend Dollar zu erhalten.
+
+Als Entsch&#228;digung von WORLD BANK / IWF (Internationaler W&#228;hrungsfonds) f&#252;r die automatisch &#252;ber einen E-Mail-Wahlautomaten gezogenen, die in der Vergangenheit noch nicht abgeschlossene Transaktionen hatten.
+
+F&#252;r weitere Informationen kontaktieren Sie bitte Rev.EVANS JONES ( jonesevansje@gmail.com )
+
+Bitte senden Sie ihm Ihre pers&#246;nlichen Daten wie:
+
+Vollst&#228;ndiger Name:
+Wohnanschrift:
+Telefonnummer:
+Herkunftsland:
+
+Gr&#252;&#223;e,
+Mrs. Judith Rice
+
