@@ -2,211 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 666E51E50AB
-	for <lists+cgroups@lfdr.de>; Wed, 27 May 2020 23:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB9E21E5C78
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 11:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726923AbgE0Vqr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 27 May 2020 17:46:47 -0400
-Received: from wnew2-smtp.messagingengine.com ([64.147.123.27]:48525 "EHLO
-        wnew2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726787AbgE0Vqr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 27 May 2020 17:46:47 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.west.internal (Postfix) with ESMTP id E0700AAA;
-        Wed, 27 May 2020 17:46:45 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Wed, 27 May 2020 17:46:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
-        :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=1uMfllCwGVRSV
-        eD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=n5jA1URN2O3JQQOPok0OlsSawfeLb
-        qbcVZyXyIOqc6v3EddUBeX2546X93UB6qLgI/tUrxtS7V7joMKVJch25KM6pi07J
-        2G4QRoB5Z5Gp6iLFfjIzZQgmBePIV+CiRnSljB8JMlMF8VryCaYpgdqvHH18HC2p
-        N9SfcT/g5sMGoAoJTlompcbWSatAW3SmDwAlwEqGhrZ2rb4h+ucztpJ7m+R/Y217
-        vD2l6OBFvxs3ylviaMh9x339IDg5qNBMRvKL0vW0qy8Kq/u6+YpzRcysjUnb6c23
-        oLZK0HZ1VskQV+FoPvUuwi6qoH4eYr22Dmn8DKgrQtCqsGkbBit2Y0Cdw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=1uMfllCwGVRSVeD897uL9SAlLt6bpaVgLEM5vf/6PXU=; b=vhoXYIJy
-        /3lxQnWiTue+356RJ4otCRAQYzaNChiU+HSGfGb3JVGdhIs6J6jBuZ3DPWPe444H
-        OpqQccWga+AETOEIZwyUEWEiH6sJrqkOsSvpY2DlSnbsm+RFqzvTjBgVfKKewHwV
-        1XMl++ndMIQr5BGrEeBBG8qZ2zPnhgH1MbJBQ3kqtQBUpVn4cVfvahqL0wBR2zcV
-        PwLWrqQ5tCe1cA5UHpI/EIfMfgxeKKg2k7P4wauR3jXRa2qdDApY0sjFusDBgn+7
-        Zzk0eMXCjxFgWcVTecs325j0DHqERu/P8Qzc5J3B/igvzH9jRXjt3dIi8pmioNyu
-        ZTa2649CKs8xlA==
-X-ME-Sender: <xms:w9_OXihbCd_T2cI525J_EuxTj3CfThoBndGDvD07xykf1PKJ31HMCA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedruddvhedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhs
-    uceuuhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepie
-    euffeuvdeiueejhfehiefgkeevudejjeejffevvdehtddufeeihfekgeeuheelnecukfhp
-    peduieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
-    hmpehmrghilhhfrhhomhepsghorhhishessghurhdrihho
-X-ME-Proxy: <xmx:w9_OXjDct1_DPzWmPDM8nOmLIsZk_q8ZQDxHzUBoVlvzM8ZmPvw7WQ>
-    <xmx:w9_OXqE4vIQU7lIpdphkuEZiXCEwRsUp-ya6HK3lEyxII_lhXUc7CQ>
-    <xmx:w9_OXrQuVLYJb0xRS0DX18E9ve8yUVTS-Fvixgrs81FBU0Z6Q5G3Mw>
-    <xmx:xd_OXmzSkHVYyo8lVCKGqV_RQ9cG495BkLBY6v8z7cupzCq6mlTciwx-djiOrpZYFkibbQ>
-Received: from localhost (unknown [163.114.132.3])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 111E23280060;
-        Wed, 27 May 2020 17:46:43 -0400 (EDT)
-From:   Boris Burkov <boris@bur.io>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com, Boris Burkov <boris@bur.io>
-Subject: [PATCH v2 cgroup/for-5.8] cgroup: add cpu.stat file to root cgroup
-Date:   Wed, 27 May 2020 14:43:19 -0700
-Message-Id: <20200527214316.524124-1-boris@bur.io>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20200527160821.GC42293@cmpxchg.org>
-References: <20200527160821.GC42293@cmpxchg.org>
+        id S2387493AbgE1J5L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 May 2020 05:57:11 -0400
+Received: from mout.kundenserver.de ([212.227.126.133]:47511 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387432AbgE1J5L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 05:57:11 -0400
+Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
+ (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
+ 1MPGJh-1jNYOn19Pp-00Pco1; Thu, 28 May 2020 11:56:44 +0200
+From:   Arnd Bergmann <arnd@arndb.de>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: memcontrol: fix an unused-function warning
+Date:   Thu, 28 May 2020 11:56:26 +0200
+Message-Id: <20200528095640.151454-1-arnd@arndb.de>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:MmnweMcrIlQS31C4Eojn+fisoHH6xccQrSm5HEQ7Cg4yek9PYGC
+ +ghSiDQyJqsxnlMJfWbmBK2Qu6dq6unBLwpvZ0yHILOPW/ria1qeOlXncbIGyYc5lvWAzZ1
+ 7GmpBcr+r0Cnb3BVV8dej8SDqtMZZYqtv6KdgWZ0SpUaVNyg1GdFQXpiM62/hST9SV3t5jh
+ PRjOjacy/S1rObEnr+NBA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Tt63NLnuUFg=:a9faJh4it/EFiD6fj/M/gH
+ t2D0WyESVdFmjjor8z9UwmI7Q+RS2KcFEZzAL6ThJP0jbq1dtr08eDCfcLfoZewsKiENs5HGs
+ f904rkJoqqc9tDLq2ebhaa2vyAdXxJXL7AwR7Yn7niUqSGwg+BGvh41903eG5wyEPK1QjfjEl
+ t7SnlC3ZXpH6Ce/fcLrYSgu5JNSt3BBttO6XHI7hluh6+4gKyezMJ1F7TtALflb7k+6bCGqah
+ hyy/XZSz50UeCny1mM63SE/grrMlyggkSWzQGqRQQQ5C/noZKGnZTojlSKKDMe1Kx46OlLxgf
+ aR1QJvSnQG9yM2zdoYpb0qGCZXHzz6k9rwD7FNu0Ydnd5eLbCXuD3H/T6zn5/zYtpsYRq7osQ
+ IRvYYuSrabVOdOSk7VyKYn4B7+Jyktf0mWo3AwmByDaUiLDM23iUWYD06tk1d25TbsEuYG0G4
+ daI/VBZTJLAEHYMR5JDkVI20cq5LX26WTN8RWnq3eFcobjBn7+wUhO88U0bkc5vQGvgf+tcNV
+ TcZQoQ50WncZArEdeBiE7+Ukn1NgRl/Z5WRuHphG9OZtAbHl9YNOyGxWauVlq+MtUASFw4fvC
+ go/YA8vF2ZSp1pj9J+jsumw5JcuUeGSsxnM1LKxOHn8qcnoA6cGg29cbXnOxvu470Lu+Je9eg
+ UKEJPfAFwqtM6OVmaBo0t/2uSmHGMOmZaXukJvKJh39tp4UD9m3+msIM4PAmMWLoa0MqHCR/7
+ GivQCT+5COGnL9/9d4eCoo+xGlF+TXYfJiFmie0eElWHsdzkKqP4GVBCb5k3uPvs2M/pvYNEc
+ xJbZdSxQZf/3Zot/JszCFO0aN3yBf9Fw3pb91iw7CtSpsMjlkw=
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Currently, the root cgroup does not have a cpu.stat file. Add one which
-is consistent with /proc/stat to capture global cpu statistics that
-might not fall under cgroup accounting.
+On NOMMU kernels without CONFIG_MEMCG_KMEM, we now get a harmless
+warning about an unused function:
 
-We haven't done this in the past because the data are already presented
-in /proc/stat and we didn't want to add overhead from collecting root
-cgroup stats when cgroups are configured, but no cgroups have been
-created.
+mm/memcontrol.c:2595:13: error: unused function 'cancel_charge' [-Werror,-Wunused-function]
 
-By keeping the data consistent with /proc/stat, I think we avoid the
-first problem, while improving the usability of cgroups stats.
-We avoid the second problem by computing the contents of cpu.stat from
-existing data collected for /proc/stat anyway.
+Hide this function in a matching #ifdef.
 
-Signed-off-by: Boris Burkov <boris@bur.io>
-Suggested-by: Tejun Heo <tj@kernel.org>
+Fixes: 5bd144bf764c ("mm: memcontrol: drop unused try/commit/cancel charge API")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- Documentation/admin-guide/cgroup-v2.rst |  6 +--
- kernel/cgroup/cgroup.c                  |  1 -
- kernel/cgroup/rstat.c                   | 60 +++++++++++++++++++++----
- 3 files changed, 54 insertions(+), 13 deletions(-)
+ mm/memcontrol.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index fed4e1d2a343..fec2f13fe065 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -714,9 +714,7 @@ Conventions
- - Settings for a single feature should be contained in a single file.
- 
- - The root cgroup should be exempt from resource control and thus
--  shouldn't have resource control interface files.  Also,
--  informational files on the root cgroup which end up showing global
--  information available elsewhere shouldn't exist.
-+  shouldn't have resource control interface files.
- 
- - The default time unit is microseconds.  If a different unit is ever
-   used, an explicit unit suffix must be present.
-@@ -985,7 +983,7 @@ CPU Interface Files
- All time durations are in microseconds.
- 
-   cpu.stat
--	A read-only flat-keyed file which exists on non-root cgroups.
-+	A read-only flat-keyed file.
- 	This file exists whether the controller is enabled or not.
- 
- 	It always reports the following three stats:
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 557a9b9d2244..b8a75169c3e4 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4881,7 +4881,6 @@ static struct cftype cgroup_base_files[] = {
- 	},
- 	{
- 		.name = "cpu.stat",
--		.flags = CFTYPE_NOT_ON_ROOT,
- 		.seq_show = cpu_stat_show,
- 	},
- #ifdef CONFIG_PSI
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 41ca996568df..b6397a186ce9 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -389,18 +389,62 @@ void __cgroup_account_cputime_field(struct cgroup *cgrp,
- 	cgroup_base_stat_cputime_account_end(cgrp, rstatc);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f14da7a7348b..7bfca0abb8e1 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2592,6 +2592,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	return 0;
  }
  
-+/*
-+ * compute the cputime for the root cgroup by getting the per cpu data
-+ * at a global level, then categorizing the fields in a manner consistent
-+ * with how it is done by __cgroup_account_cputime_field for each bit of
-+ * cpu time attributed to a cgroup.
-+ */
-+static void root_cgroup_cputime(struct task_cputime *cputime)
-+{
-+	int i;
-+
-+	cputime->stime = 0;
-+	cputime->utime = 0;
-+	cputime->sum_exec_runtime = 0;
-+	for_each_possible_cpu(i) {
-+		struct kernel_cpustat kcpustat;
-+		u64 *cpustat = kcpustat.cpustat;
-+		u64 user = 0;
-+		u64 sys = 0;
-+
-+		kcpustat_cpu_fetch(&kcpustat, i);
-+
-+		user += cpustat[CPUTIME_USER];
-+		user += cpustat[CPUTIME_NICE];
-+		cputime->utime += user;
-+
-+		sys += cpustat[CPUTIME_SYSTEM];
-+		sys += cpustat[CPUTIME_IRQ];
-+		sys += cpustat[CPUTIME_SOFTIRQ];
-+		cputime->stime += sys;
-+
-+		cputime->sum_exec_runtime += user;
-+		cputime->sum_exec_runtime += sys;
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_STEAL];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST];
-+		cputime->sum_exec_runtime += cpustat[CPUTIME_GUEST_NICE];
-+	}
-+}
-+
- void cgroup_base_stat_cputime_show(struct seq_file *seq)
++#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
+ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
  {
- 	struct cgroup *cgrp = seq_css(seq)->cgroup;
- 	u64 usage, utime, stime;
--
--	if (!cgroup_parent(cgrp))
--		return;
--
--	cgroup_rstat_flush_hold(cgrp);
--	usage = cgrp->bstat.cputime.sum_exec_runtime;
--	cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime, &utime, &stime);
--	cgroup_rstat_flush_release();
-+	struct task_cputime cputime;
-+
-+	if (cgroup_parent(cgrp)) {
-+		cgroup_rstat_flush_hold(cgrp);
-+		usage = cgrp->bstat.cputime.sum_exec_runtime;
-+		cputime_adjust(&cgrp->bstat.cputime, &cgrp->prev_cputime,
-+			       &utime, &stime);
-+		cgroup_rstat_flush_release();
-+	} else {
-+		root_cgroup_cputime(&cputime);
-+		usage = cputime.sum_exec_runtime;
-+		utime = cputime.utime;
-+		stime = cputime.stime;
-+	}
+ 	if (mem_cgroup_is_root(memcg))
+@@ -2603,6 +2604,7 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
  
- 	do_div(usage, NSEC_PER_USEC);
- 	do_div(utime, NSEC_PER_USEC);
+ 	css_put_many(&memcg->css, nr_pages);
+ }
++#endif
+ 
+ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+ {
 -- 
-2.24.1
+2.26.2
 
