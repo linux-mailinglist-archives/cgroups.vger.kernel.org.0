@@ -2,98 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9E21E5C78
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 11:57:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDB91E5D9D
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 13:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387493AbgE1J5L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 May 2020 05:57:11 -0400
-Received: from mout.kundenserver.de ([212.227.126.133]:47511 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2387432AbgE1J5L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 05:57:11 -0400
-Received: from threadripper.lan ([149.172.98.151]) by mrelayeu.kundenserver.de
- (mreue009 [212.227.15.129]) with ESMTPA (Nemesis) id
- 1MPGJh-1jNYOn19Pp-00Pco1; Thu, 28 May 2020 11:56:44 +0200
-From:   Arnd Bergmann <arnd@arndb.de>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] mm: memcontrol: fix an unused-function warning
-Date:   Thu, 28 May 2020 11:56:26 +0200
-Message-Id: <20200528095640.151454-1-arnd@arndb.de>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:MmnweMcrIlQS31C4Eojn+fisoHH6xccQrSm5HEQ7Cg4yek9PYGC
- +ghSiDQyJqsxnlMJfWbmBK2Qu6dq6unBLwpvZ0yHILOPW/ria1qeOlXncbIGyYc5lvWAzZ1
- 7GmpBcr+r0Cnb3BVV8dej8SDqtMZZYqtv6KdgWZ0SpUaVNyg1GdFQXpiM62/hST9SV3t5jh
- PRjOjacy/S1rObEnr+NBA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Tt63NLnuUFg=:a9faJh4it/EFiD6fj/M/gH
- t2D0WyESVdFmjjor8z9UwmI7Q+RS2KcFEZzAL6ThJP0jbq1dtr08eDCfcLfoZewsKiENs5HGs
- f904rkJoqqc9tDLq2ebhaa2vyAdXxJXL7AwR7Yn7niUqSGwg+BGvh41903eG5wyEPK1QjfjEl
- t7SnlC3ZXpH6Ce/fcLrYSgu5JNSt3BBttO6XHI7hluh6+4gKyezMJ1F7TtALflb7k+6bCGqah
- hyy/XZSz50UeCny1mM63SE/grrMlyggkSWzQGqRQQQ5C/noZKGnZTojlSKKDMe1Kx46OlLxgf
- aR1QJvSnQG9yM2zdoYpb0qGCZXHzz6k9rwD7FNu0Ydnd5eLbCXuD3H/T6zn5/zYtpsYRq7osQ
- IRvYYuSrabVOdOSk7VyKYn4B7+Jyktf0mWo3AwmByDaUiLDM23iUWYD06tk1d25TbsEuYG0G4
- daI/VBZTJLAEHYMR5JDkVI20cq5LX26WTN8RWnq3eFcobjBn7+wUhO88U0bkc5vQGvgf+tcNV
- TcZQoQ50WncZArEdeBiE7+Ukn1NgRl/Z5WRuHphG9OZtAbHl9YNOyGxWauVlq+MtUASFw4fvC
- go/YA8vF2ZSp1pj9J+jsumw5JcuUeGSsxnM1LKxOHn8qcnoA6cGg29cbXnOxvu470Lu+Je9eg
- UKEJPfAFwqtM6OVmaBo0t/2uSmHGMOmZaXukJvKJh39tp4UD9m3+msIM4PAmMWLoa0MqHCR/7
- GivQCT+5COGnL9/9d4eCoo+xGlF+TXYfJiFmie0eElWHsdzkKqP4GVBCb5k3uPvs2M/pvYNEc
- xJbZdSxQZf/3Zot/JszCFO0aN3yBf9Fw3pb91iw7CtSpsMjlkw=
+        id S2388107AbgE1LBi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 May 2020 07:01:38 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:52084 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388073AbgE1LBf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 07:01:35 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0TztM4bJ_1590663683;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TztM4bJ_1590663683)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 28 May 2020 19:01:24 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>
+Subject: [PATCH v11 00/16] per memcg lru lock
+Date:   Thu, 28 May 2020 19:00:42 +0800
+Message-Id: <1590663658-184131-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On NOMMU kernels without CONFIG_MEMCG_KMEM, we now get a harmless
-warning about an unused function:
+This is a new version which bases on linux-next 
 
-mm/memcontrol.c:2595:13: error: unused function 'cancel_charge' [-Werror,-Wunused-function]
+Johannes Weiner has suggested:
+"So here is a crazy idea that may be worth exploring:
 
-Hide this function in a matching #ifdef.
+Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
+linked list.
 
-Fixes: 5bd144bf764c ("mm: memcontrol: drop unused try/commit/cancel charge API")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- mm/memcontrol.c | 2 ++
- 1 file changed, 2 insertions(+)
+Can we make PageLRU atomic and use it to stabilize the lru_lock
+instead, and then use the lru_lock only serialize list operations?
+..."
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index f14da7a7348b..7bfca0abb8e1 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2592,6 +2592,7 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	return 0;
- }
- 
-+#if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
- static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
- 	if (mem_cgroup_is_root(memcg))
-@@ -2603,6 +2604,7 @@ static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- 
- 	css_put_many(&memcg->css, nr_pages);
- }
-+#endif
- 
- static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- {
+With new memcg charge path and this solution, we could isolate
+LRU pages to exclusive visit them in compaction, page migration, reclaim,
+memcg move_accunt, huge page split etc scenarios while keeping pages' 
+memcg stable. Then possible to change per node lru locking to per memcg
+lru locking. As to pagevec_lru_move_fn funcs, it would be safe to let
+pages remain on lru list, lru lock could guard them for list integrity.
+
+The patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
+
+The 3rd part moves per node lru_lock into lruvec, thus bring a lru_lock for
+each of memcg per node. So on a large machine, each of memcg don't
+have to suffer from per node pgdat->lru_lock competition. They could go
+fast with their self lru_lock
+
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+
+Alex Shi (14):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/compaction: correct the comments of compact_defer_shift
+  mm/compaction: rename compact_deferred as compact_should_defer
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: narrow lru locking
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/mlock: reorder isolation sequence during munlock
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/pgdat: remove pgdat lru_lock
+
+Hugh Dickins (2):
+  mm/vmscan: use relock for move_pages_to_lru
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |   8 +-
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/compaction.h                         |   4 +-
+ include/linux/memcontrol.h                         |  92 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ include/trace/events/compaction.h                  |   2 +-
+ mm/compaction.c                                    | 104 ++++++++-----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  51 +++++--
+ mm/memcontrol.c                                    |  87 ++++++++++-
+ mm/mlock.c                                         |  93 ++++++------
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   2 +-
+ mm/swap.c                                          | 112 ++++----------
+ mm/swap_state.c                                    |   6 +-
+ mm/vmscan.c                                        | 168 +++++++++++----------
+ mm/workingset.c                                    |   4 +-
+ 24 files changed, 487 insertions(+), 312 deletions(-)
+
 -- 
-2.26.2
+1.8.3.1
 
