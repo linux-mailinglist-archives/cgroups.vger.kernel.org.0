@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E785E1E5D96
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 13:01:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D5A01E5DB2
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 13:03:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388112AbgE1LBj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 May 2020 07:01:39 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:55280 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2388095AbgE1LBh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 07:01:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R681e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0TztNDDl_1590663690;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TztNDDl_1590663690)
+        id S2388239AbgE1LCj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 May 2020 07:02:39 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:46285 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2388207AbgE1LCe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 07:02:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R821e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0TztNb5w_1590663691;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0TztNb5w_1590663691)
           by smtp.aliyun-inc.com(127.0.0.1);
           Thu, 28 May 2020 19:01:31 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
@@ -23,12 +23,10 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Jann Horn <jannh@google.com>
-Subject: [PATCH v11 14/16] mm/vmscan: use relock for move_pages_to_lru
-Date:   Thu, 28 May 2020 19:00:56 +0800
-Message-Id: <1590663658-184131-15-git-send-email-alex.shi@linux.alibaba.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>
+Subject: [PATCH v11 15/16] mm/pgdat: remove pgdat lru_lock
+Date:   Thu, 28 May 2020 19:00:57 +0800
+Message-Id: <1590663658-184131-16-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1590663658-184131-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1590663658-184131-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -37,76 +35,45 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Hugh Dickins <hughd@google.com>
+Now pgdat.lru_lock was replaced by lruvec lock. It's not used anymore.
 
-Use the relock function to replace relocking action. And try to save few
-lock times.
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
-Cc: Jann Horn <jannh@google.com>
-Cc: Mel Gorman <mgorman@techsingularity.net>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
 Cc: Hugh Dickins <hughd@google.com>
-Cc: cgroups@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
+Cc: Johannes Weiner <hannes@cmpxchg.org>
 Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+Cc: cgroups@vger.kernel.org
 ---
- mm/vmscan.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+ include/linux/mmzone.h | 1 -
+ mm/page_alloc.c        | 1 -
+ 2 files changed, 2 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7a0d4ac71558..672e7304f211 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1854,15 +1854,15 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 	enum lru_list lru;
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index d70a12214936..42e646f7f30d 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -733,7 +733,6 @@ struct deferred_split {
  
- 	while (!list_empty(list)) {
--		struct lruvec *new_lruvec = NULL;
--
- 		page = lru_to_page(list);
- 		VM_BUG_ON_PAGE(PageLRU(page), page);
- 		list_del(&page->lru);
- 		if (unlikely(!page_evictable(page))) {
--			spin_unlock_irq(&lruvec->lru_lock);
-+			if (lruvec) {
-+				spin_unlock_irq(&lruvec->lru_lock);
-+				lruvec = NULL;
-+			}
- 			putback_lru_page(page);
--			spin_lock_irq(&lruvec->lru_lock);
- 			continue;
- 		}
+ 	/* Write-intensive fields used by page reclaim */
+ 	ZONE_PADDING(_pad1_)
+-	spinlock_t		lru_lock;
  
-@@ -1876,12 +1876,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		 *                                        list_add(&page->lru,)
- 		 *     list_add(&page->lru,) //corrupt
- 		 */
--		new_lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
--		if (new_lruvec != lruvec) {
--			if (lruvec)
--				spin_unlock_irq(&lruvec->lru_lock);
--			lruvec = lock_page_lruvec_irq(page);
--		}
-+		lruvec = relock_page_lruvec_irq(page, lruvec);
- 		SetPageLRU(page);
+ #ifdef CONFIG_DEFERRED_STRUCT_PAGE_INIT
+ 	/*
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index 79a3a6d62532..30081dc0cc15 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -6765,7 +6765,6 @@ static void __meminit pgdat_init_internals(struct pglist_data *pgdat)
+ 	init_waitqueue_head(&pgdat->pfmemalloc_wait);
  
- 		if (unlikely(put_page_testzero(page))) {
-@@ -1890,8 +1885,8 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
+ 	pgdat_page_ext_init(pgdat);
+-	spin_lock_init(&pgdat->lru_lock);
+ 	lruvec_init(&pgdat->__lruvec);
+ }
  
- 			if (unlikely(PageCompound(page))) {
- 				spin_unlock_irq(&lruvec->lru_lock);
-+				lruvec = NULL;
- 				destroy_compound_page(page);
--				spin_lock_irq(&lruvec->lru_lock);
- 			} else
- 				list_add(&page->lru, &pages_to_free);
- 			continue;
 -- 
 1.8.3.1
 
