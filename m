@@ -2,44 +2,42 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CA8E1E6521
-	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 17:01:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2953E1E655B
+	for <lists+cgroups@lfdr.de>; Thu, 28 May 2020 17:03:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403995AbgE1O7y (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 28 May 2020 10:59:54 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:54785 "EHLO
+        id S2404155AbgE1PDS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 28 May 2020 11:03:18 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:35115 "EHLO
         mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2403956AbgE1O7r (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 10:59:47 -0400
-Received: by mail-wm1-f66.google.com with SMTP id h4so3474221wmb.4;
-        Thu, 28 May 2020 07:59:45 -0700 (PDT)
+        with ESMTP id S2403912AbgE1PDQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 28 May 2020 11:03:16 -0400
+Received: by mail-wm1-f66.google.com with SMTP id n5so3561883wmd.0;
+        Thu, 28 May 2020 08:03:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=HvdKpHF042iTNApEGGudMnbcuPPZ+JOhqsO7H3d0iMc=;
-        b=sBhEmuSUd/GFOy3np6mV8rstzGSKw+c/3N7A5idKPh6bSBRzSjT8zi2hGTXx0IQ058
-         3vgOx1IIU/u5a1ArZyovHhM/CuTwqOBUcZURZfyXkNl4unIuv3y65nUSuXutlRnQHKhy
-         hQXzBCA9ZY0vsz9gnD2qPuPnFcnIZKILRhMntigT8Wr+Rp6oytstrmuYreQsBqdfthN7
-         uy0pTvGAt+a61/QhVOjGQUG9KwdaVD6/6aZ0frMa0VjBvrskGW6Z04tq12L5JUIWUeYw
-         tZTuwIwJu5uUcK3n0uw+DyJPgjqa2scQxwXvmGabrp8CHjr6+mPQsCCyZSWEzbD7DPcb
-         QkwA==
-X-Gm-Message-State: AOAM5312Xv+4y5d8EKInL1tAq3ohf4MDrhdGv0td1MspagaaNnXDPlD1
-        JIVE+9LSrJlwkWcdjCpmmks=
-X-Google-Smtp-Source: ABdhPJwLdJXj9IDbExOvEPWylXBWigVlYHMkRhO6O5dzYmOl704Ju6Ewl0cUi5F1r49EwVynvlA5Tw==
-X-Received: by 2002:a1c:230a:: with SMTP id j10mr3748329wmj.124.1590677985101;
-        Thu, 28 May 2020 07:59:45 -0700 (PDT)
+        bh=evz1lutsdd2Eqt9o4+KgC57g/gR26qB8cQ2KV6NODWs=;
+        b=VJx/HwbXl5o/d18rL9jXFWIru48CRcbu6zMa/nbL8uHL5RkpLFzluxqMPSHkiUACnq
+         8fpdo/KWej952ZGVeM52GUKte5NExvG3LpYfxGglSAuy0TBPmQxlIIK82X7RgOLgJmXB
+         +pjpUIOL/bVQorU96JoWT/ysuQZBRxRchyXcPh4B01yzJEnbYuNZSzg4Di2PgdvnQw22
+         ksF9CdT4clBfpm1g7Phqf34d9bI09L/NOjel519iuryPdW9UVpqHeITg1pNWQgwAcNU0
+         V4UJuQwu9Zb4g6+2NLS3L5y+wF758rtkI/+FjSh/df4TUBaKBHx9YBdCX2ufGjpBOo78
+         eMbg==
+X-Gm-Message-State: AOAM5335KeIBGypNdrt0JATwyrPXP/uVxG66RygJwBLuKrIswRUKlp8s
+        U+85bywfUrHGjRi+1zXV9K4=
+X-Google-Smtp-Source: ABdhPJzniI6Aw1b/FqGaEPNB/a6M/vRt8hKQ5Zx5UYlLdgljMoGjhh+KSxCloB6yCJzH8NHlfHrceg==
+X-Received: by 2002:a1c:b0c8:: with SMTP id z191mr3947280wme.165.1590678193035;
+        Thu, 28 May 2020 08:03:13 -0700 (PDT)
 Received: from localhost (ip-37-188-185-40.eurotel.cz. [37.188.185.40])
-        by smtp.gmail.com with ESMTPSA id t129sm2060873wmf.41.2020.05.28.07.59.43
+        by smtp.gmail.com with ESMTPSA id k14sm6163539wrq.97.2020.05.28.08.03.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 May 2020 07:59:44 -0700 (PDT)
-Date:   Thu, 28 May 2020 16:59:42 +0200
+        Thu, 28 May 2020 08:03:11 -0700 (PDT)
+Date:   Thu, 28 May 2020 17:03:10 +0200
 From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
         Anders Roxell <anders.roxell@linaro.org>,
         "Linux F2FS DEV, Mailing List" 
         <linux-f2fs-devel@lists.sourceforge.net>,
@@ -52,102 +50,52 @@ Cc:     Hugh Dickins <hughd@google.com>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
         Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
         Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
 Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-Message-ID: <20200528145942.GF27484@dhcp22.suse.cz>
-References: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+Message-ID: <20200528150310.GG27484@dhcp22.suse.cz>
+References: <20200519075213.GF32497@dhcp22.suse.cz>
+ <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+ <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
  <20200520190906.GA558281@chrisdown.name>
  <20200521095515.GK6462@dhcp22.suse.cz>
- <CA+G9fYvAB9F+Xo0vUsSveKnExkv3cV9-oOG9gBqGEcXsO95m0w@mail.gmail.com>
- <20200521105801.GL6462@dhcp22.suse.cz>
- <alpine.LSU.2.11.2005210504110.1185@eggly.anvils>
- <20200521124444.GP6462@dhcp22.suse.cz>
- <20200521191746.GB815980@cmpxchg.org>
- <alpine.LSU.2.11.2005211250130.1158@eggly.anvils>
- <20200521215855.GB815153@cmpxchg.org>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
+ <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200521215855.GB815153@cmpxchg.org>
+In-Reply-To: <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[Sorry for a late reply - was offline for few days]
+On Fri 22-05-20 02:23:09, Naresh Kamboju wrote:
+> My apology !
+> As per the test results history this problem started happening from
+> Bad : next-20200430 (still reproducible on next-20200519)
+> Good : next-20200429
+> 
+> The git tree / tag used for testing is from linux next-20200430 tag and reverted
+> following three patches and oom-killer problem fixed.
+> 
+> Revert "mm, memcg: avoid stale protection values when cgroup is above
+> protection"
+> Revert "mm, memcg: decouple e{low,min} state mutations from protectinn checks"
+> Revert "mm-memcg-decouple-elowmin-state-mutations-from-protection-checks-fix"
 
-On Thu 21-05-20 17:58:55, Johannes Weiner wrote:
-> On Thu, May 21, 2020 at 01:06:28PM -0700, Hugh Dickins wrote:
-[...]
-> >From d9e7ed15d1c9248a3fd99e35e82437549154dac7 Mon Sep 17 00:00:00 2001
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> Date: Thu, 21 May 2020 17:44:25 -0400
-> Subject: [PATCH] mm: memcontrol: prepare swap controller setup for integration
->  fix
-> 
-> Fix crash with cgroup_disable=memory:
-> 
-> > > > > + mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8NRK0BPF6XF
-> > > > > mke2fs 1.43.8 (1-Jan-2018)
-> > > > > Creating filesystem with 244190646 4k blocks and 61054976 inodes
-> > > > > Filesystem UUID: 3bb1a285-2cb4-44b4-b6e8-62548f3ac620
-> > > > > Superblock backups stored on blocks:
-> > > > > 32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-> > > > > 4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
-> > > > > 102400000, 214990848
-> > > > > Allocating group tables:    0/7453                           done
-> > > > > Writing inode tables:    0/7453                           done
-> > > > > Creating journal (262144 blocks): [   35.502102] BUG: kernel NULL
-> > > > > pointer dereference, address: 000000c8
-> > > > > [   35.508372] #PF: supervisor read access in kernel mode
-> > > > > [   35.513506] #PF: error_code(0x0000) - not-present page
-> > > > > [   35.518638] *pde = 00000000
-> > > > > [   35.521514] Oops: 0000 [#1] SMP
-> > > > > [   35.524652] CPU: 0 PID: 145 Comm: kswapd0 Not tainted
-> > > > > 5.7.0-rc6-next-20200519+ #1
-> > > > > [   35.532121] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
-> > > > > 2.2 05/23/2018
-> > > > > [   35.539507] EIP: mem_cgroup_get_nr_swap_pages+0x28/0x60
-> 
-> Swap accounting used to be implied-disabled when the cgroup controller
-> was disabled. Restore that for the new cgroup_memory_noswap, so that
-> we bail out of this function instead of dereferencing a NULL memcg.
-> 
-> Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
-> Debugged-by: Hugh Dickins <hughd@google.com>
-> Debugged-by: Michal Hocko <mhocko@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-
-Yes this looks better. I hope to get to your series soon to have the
-full picture finally.
-
-> ---
->  mm/memcontrol.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 3e000a316b59..e3b785d6e771 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7075,7 +7075,11 @@ static struct cftype memsw_files[] = {
->  
->  static int __init mem_cgroup_swap_init(void)
->  {
-> -	if (mem_cgroup_disabled() || cgroup_memory_noswap)
-> +	/* No memory control -> no swap control */
-> +	if (mem_cgroup_disabled())
-> +		cgroup_memory_noswap = true;
-> +
-> +	if (cgroup_memory_noswap)
->  		return 0;
->  
->  	WARN_ON(cgroup_add_dfl_cftypes(&memory_cgrp_subsys, swap_files));
-> -- 
-> 2.26.2
-
+The discussion has fragmented and I got lost TBH.
+In http://lkml.kernel.org/r/CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com
+you have said that none of the added tracing output has triggered. Does
+this still hold? Because I still have a hard time to understand how
+those three patches could have the observed effects.
 -- 
 Michal Hocko
 SUSE Labs
