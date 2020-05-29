@@ -2,107 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CC51E79C3
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2020 11:49:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E8BF1E7A13
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2020 12:09:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725795AbgE2JtX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 May 2020 05:49:23 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38563 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725681AbgE2JtW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 May 2020 05:49:22 -0400
-Received: by mail-wr1-f65.google.com with SMTP id e1so2804030wrt.5;
-        Fri, 29 May 2020 02:49:20 -0700 (PDT)
+        id S1726394AbgE2KJC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 May 2020 06:09:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725681AbgE2KJB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 May 2020 06:09:01 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CDD5C08C5C6
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2020 03:09:00 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id j16so2851195wrb.7
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2020 03:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=EGCTr//CJ/0Q2eA0EeEmXyU8B15617Zs/uV0IexoscQ=;
+        b=Y11uIhOmRXyo7ieDj5COXVZGcR2zPt8sa+tZoxdWPwOhh82K5aMgVHdKX8MwCKQog6
+         R5xkeI26afEweBp7Mx7N7MkVhsgf+2kKhl8P2I8yKYZyAHWvoHSt/vK1imWNu4m3iKGH
+         pOwGMBJuSK1v0vztOth0Idw9xsAZeoIm1s9KQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4SLMrx0MWc8j4vJRn7Kgzb3DUyQWlx2ZLRbxHmKbcbE=;
-        b=Ffo8IQE++6k+frzciH7ED5GMNv607o7tgzOMgs1l+TpeHRJXG3eXOUNr7/LwzY4RkD
-         PgADuitQPfprFo2OdNyXJKZpRT0a+5rWOowb5oFllzkM757hs7ia+jBnhaOgxMG/KBic
-         3IjxMv+NTvlerppX3wn2Tb8gHduqqxxgkxGmneN97HRbv36JwL4iHDni6NgAfMcM3E+0
-         dgEeUqtNbuEvWOyuPIZijNvyIAfUnbeGUXBDdq9ayEpy9QgTzb543MXJe27gGYAbb73B
-         3ULgH6nrR4qTuM56Sa4MCsBHMetJ5uGsloJgkk42ZrJhoWvL/mapbyzSOdJ/evRKTne2
-         WAWQ==
-X-Gm-Message-State: AOAM532Olg01nDQb4vFu/oik4+0BT/DJXCM6MLCo6rsp16qubFQ0VlAh
-        OX3qc5dyHJtdbLvO8dUDZ68=
-X-Google-Smtp-Source: ABdhPJynJWn/appsj5zHjc6kja0kVDlwDRUmuKllOuUorUMxNbkdmaKubkMD/idzdl3klO6z62m4Rg==
-X-Received: by 2002:adf:f58b:: with SMTP id f11mr7947420wro.155.1590745760055;
-        Fri, 29 May 2020 02:49:20 -0700 (PDT)
-Received: from localhost (ip-37-188-150-59.eurotel.cz. [37.188.150.59])
-        by smtp.gmail.com with ESMTPSA id 5sm9907553wmd.19.2020.05.29.02.49.18
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=EGCTr//CJ/0Q2eA0EeEmXyU8B15617Zs/uV0IexoscQ=;
+        b=N9fPFTTs+gX5iKv9ixzXSbQCV30p1QaUvLpINbCInkMNcMNGi+0S656mrsz1rcuv/Q
+         dzHIa5wNYuROxfiMnYsp1HaVhCMojujVF1Nd3lL4xOvqnmPzwaRwaLgWNdnnfCTcQ85h
+         zPUzIYbQdFkjq3tJguPLoi+qRbAnd2ZjSvUIlORX7RAaZ7dRnqU/DEFTTpO2S+Dijdyb
+         0ZliJYpgP5K+u1muQk64svLtRXAc+jZq+6qcmcK09nE50kmBpXQ1S5fukJ9TcUe1EFh+
+         v8ONRYnACtGZtDot8dm/HqoeVyUVOskXOh55Wt9agRoGt+3WgSrisrcdcYAYkNo4FOwS
+         AAUg==
+X-Gm-Message-State: AOAM531B0SVW0T2GvXyGX7oGmXNzUocgLJ+LMKA49ekCxGK7gJoQ9Y5f
+        tr2vlLkfrKl0sSUowm/buO3oVw==
+X-Google-Smtp-Source: ABdhPJz4oOMKF3Tw/lvTsl28+bPqerfZ7GakdrKgkU82JOD5fD05mK5sPA441ncYZFjSEnddQ8N/rQ==
+X-Received: by 2002:a5d:498b:: with SMTP id r11mr5190933wrq.328.1590746938609;
+        Fri, 29 May 2020 03:08:58 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:56e1:adff:fe3f:49ed])
+        by smtp.gmail.com with ESMTPSA id z12sm10088964wrg.9.2020.05.29.03.08.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 02:49:18 -0700 (PDT)
-Date:   Fri, 29 May 2020 11:49:10 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
+        Fri, 29 May 2020 03:08:58 -0700 (PDT)
+Date:   Fri, 29 May 2020 11:08:58 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-Message-ID: <20200529094910.GH4406@dhcp22.suse.cz>
-References: <20200520190906.GA558281@chrisdown.name>
- <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz>
- <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
- <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
- <20200528150310.GG27484@dhcp22.suse.cz>
- <CA+G9fYvDXiZ9E9EfU6h0gsJ+xaXY77mRu9Jg+J7C=X4gJ3qvLg@mail.gmail.com>
- <20200528164121.GA839178@chrisdown.name>
- <CALOAHbAHGOsAUUM7qn=9L1u8kAf6Gztqt=SyHSmZ9XuYZWcKmg@mail.gmail.com>
- <20200529015644.GA84588@chrisdown.name>
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
+ allocator throttling
+Message-ID: <20200529100858.GA98458@chrisdown.name>
+References: <20200520175135.GA793901@cmpxchg.org>
+ <20200521073245.GI6462@dhcp22.suse.cz>
+ <20200521135152.GA810429@cmpxchg.org>
+ <20200521143515.GU6462@dhcp22.suse.cz>
+ <20200521163833.GA813446@cmpxchg.org>
+ <20200521173701.GX6462@dhcp22.suse.cz>
+ <20200521184505.GA815980@cmpxchg.org>
+ <20200528163101.GJ27484@dhcp22.suse.cz>
+ <20200528164848.GB839178@chrisdown.name>
+ <20200529073118.GE4406@dhcp22.suse.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <20200529015644.GA84588@chrisdown.name>
+In-Reply-To: <20200529073118.GE4406@dhcp22.suse.cz>
+User-Agent: Mutt/1.14.2 (2020-05-25)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 29-05-20 02:56:44, Chris Down wrote:
-> Yafang Shao writes:
-> > Look at this patch[1] carefully you will find that it introduces the
-> > same issue that I tried to fix in another patch [2]. Even more sad is
-> > these two patches are in the same patchset. Although this issue isn't
-> > related with the issue found by Naresh, we have to ask ourselves why
-> > we always make the same mistake ?
-> > One possible answer is that we always forget the lifecyle of
-> > memory.emin before we read it. memory.emin doesn't have the same
-> > lifecycle with the memcg, while it really has the same lifecyle with
-> > the reclaimer. IOW, once a reclaimer begins the protetion value should
-> > be set to 0, and after we traversal the memcg tree we calculate a
-> > protection value for this reclaimer, finnaly it disapears after the
-> > reclaimer stops. That is why I highly suggest to add an new protection
-> > member in scan_control before.
-> 
-> I agree with you that the e{min,low} lifecycle is confusing for everyone --
-> the only thing I've not seen confirmation of is any confirmed correlation
-> with the i386 oom killer issue. If you've validated that, I'd like to see
-> the data :-)
+Michal Hocko writes:
+>> > > task->memcg_nr_pages_over_high is not vague, it's a best-effort
+>> > > mechanism to distribute fairness. It's the current task's share of the
+>> > > cgroup's overage, and it allows us in the majority of situations to
+>> > > distribute reclaim work and sleeps in proportion to how much the task
+>> > > is actually at fault.
+>> >
+>> > Agreed. But this stops being the case as soon as the reclaim target has
+>> > been reached and new reclaim attempts are enforced because the memcg is
+>> > still above the high limit. Because then you have a completely different
+>> > reclaim target - get down to the limit. This would be especially visible
+>> > with a large memcg_nr_pages_over_high which could even lead to an over
+>> > reclaim.
+>>
+>> We actually over reclaim even before this patch -- this patch doesn't bring
+>> much new in that regard.
+>>
+>> Tracing try_to_free_pages for a cgroup at the memory.high threshold shows
+>> that before this change, we sometimes even reclaim on the order of twice the
+>> number of pages requested. For example, I see cases where we requested 1000
+>> pages to be reclaimed, but end up reclaiming 2000 in a single reclaim
+>> attempt.
+>
+>This is interesting and worth looking into. I am aware that we can
+>reclaim potentially much more pages during the icache reclaim and that
+>there was a heated discussion without any fix merged in the end IIRC.
+>Do you have any details?
 
-Agreed. Even if e{low,min} might still have some rough edges I am
-completely puzzled how we could end up oom if none of the protection
-path triggers which the additional debugging should confirm. Maybe my
-debugging patch is incomplete or used incorrectly (maybe it would be
-esier to use printk rather than trace_printk?).
--- 
-Michal Hocko
-SUSE Labs
+Sure, we can look into this more, but let's do it separately from this patch -- 
+I don't see that its merging should be contingent on that discussion :-)
