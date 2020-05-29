@@ -2,100 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCD9D1E7A3A
-	for <lists+cgroups@lfdr.de>; Fri, 29 May 2020 12:14:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7EC11E8A7F
+	for <lists+cgroups@lfdr.de>; Fri, 29 May 2020 23:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725790AbgE2KOQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 29 May 2020 06:14:16 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:47039 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725601AbgE2KOQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 29 May 2020 06:14:16 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x6so2804037wrm.13;
-        Fri, 29 May 2020 03:14:14 -0700 (PDT)
+        id S1728071AbgE2Vzi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 29 May 2020 17:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53754 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726975AbgE2Vzi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 29 May 2020 17:55:38 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC25C03E969
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2020 14:55:37 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id k26so5617622wmi.4
+        for <cgroups@vger.kernel.org>; Fri, 29 May 2020 14:55:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloud.ionos.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=y+7fPyOVJN5kEZ9dPieR6MlsnghgeDslNqLeQyzk6T0=;
+        b=WZeC7eO7/F1ZaHD2HPukUdjFIz2gU316B+8AUCkZ3RKsm7iLEROxDs+nbuAmSb/M1D
+         oto7q3ImBObrsf7Z8ZjIa2xJvNFfpmhYKUXEMNdbGPul2Odv8xHsR0jxFRbs75pFsx8s
+         tEBmiGdLzbVZNYQ5xTX0vEWNkGPpXNroUaoy77ja1l5tGYab04onKEOIRN3Mi46GrMtQ
+         SetD/TtpId/Ilf7VGL1u8VPwxrB29EEl3tywWnAl0i+PVtPjDP3lxNZ07IpbuOUE4a55
+         fiblyxy3HtslcCuCq66nOo+R7FDVhxyx46HZvQ+KZjC/3rkGtvP+LfVqOmpJFfg5Znu7
+         Qzgg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=fjFkfyPnmnUfjK5e2Sor0/7zNo8bV0z4i3upTl22etI=;
-        b=SCKcij5o2xoAksurGFnAQCjmwbAATxb99+6DRffbNwxZ0wHQdPIB5gfZif40rqUvYj
-         dily348aNOOiEsvxh5zPqyM3bVvL6XwsnKpJcUlOf6xnApip3J3S009VTOggnEYNUHU4
-         J0iky8L7NEuIpFHHqneP8xUzC55xM5VC1PlP2a3yYqlVdEdZz2vRO9agqxLEXCI2kNLD
-         u8GX1o1UcDzQRwitBn/GfsPnbOl2BPDMe5XI1P7+U4scCY9LPrRFvjzOTIIDn9X33Dq+
-         1uSO6tK0NpbAGtA6rBeI3F/+AM4t8Y9kvIVlDo3we3kg7IMK/4nygpAYP75wdxZihk0b
-         jubQ==
-X-Gm-Message-State: AOAM531vBN/eo44+u4WjSJRhEKVjR7QJzdxfjmUHKRRfsTyaXOJB7VPA
-        6i5S5gtN2OYA0TkV1ZheHH8=
-X-Google-Smtp-Source: ABdhPJzn6aLmwokj6tmIfnCNGo7vbtKiJNtoOPTx7wRTRPgg9TfVmfq8xS6pGLVOfpzsROcTGZanFw==
-X-Received: by 2002:a5d:5492:: with SMTP id h18mr7777167wrv.330.1590747254204;
-        Fri, 29 May 2020 03:14:14 -0700 (PDT)
-Received: from localhost (ip-37-188-178-109.eurotel.cz. [37.188.178.109])
-        by smtp.gmail.com with ESMTPSA id y17sm5355217wrn.12.2020.05.29.03.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 29 May 2020 03:14:13 -0700 (PDT)
-Date:   Fri, 29 May 2020 12:14:12 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200529101412.GJ4406@dhcp22.suse.cz>
-References: <20200521073245.GI6462@dhcp22.suse.cz>
- <20200521135152.GA810429@cmpxchg.org>
- <20200521143515.GU6462@dhcp22.suse.cz>
- <20200521163833.GA813446@cmpxchg.org>
- <20200521173701.GX6462@dhcp22.suse.cz>
- <20200521184505.GA815980@cmpxchg.org>
- <20200528163101.GJ27484@dhcp22.suse.cz>
- <20200528164848.GB839178@chrisdown.name>
- <20200529073118.GE4406@dhcp22.suse.cz>
- <20200529100858.GA98458@chrisdown.name>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=y+7fPyOVJN5kEZ9dPieR6MlsnghgeDslNqLeQyzk6T0=;
+        b=pitakoWAkPkQOK7SkJEO5Tqf9JEZn0rDF3Ms0GuXyxM2M+AdIbLtLcOCJIQq8mzKYY
+         woIHcgn53xoahLukIK9ONEBXho3q+HVBa8vFSzE64d+mH2J/vEqNe2Kb5LPZl8kV8ZUE
+         7vFIvowGOlCcKiicECY7P4qbmY+fssCWAIwEiTK693rXGg5WiyouCkce3hNxlZN8z9nd
+         iu7QcjvHkz0gPZyrT8kgccU4IDuWxjVoXUHFEEbgvzvzSFt57tZjikMb7SPqvFjFUiXU
+         ZWvRgMVLpdtBTQQpWQlxKztdsk/HvF88giug542sX5uvFTa8BayW9/4DDMcqYFWk74XB
+         Y4kg==
+X-Gm-Message-State: AOAM532q6mzscV/G8iKTO25GkTHmuDRNTUOnCwbu+SDwHwy0hbHgTSaY
+        ZDIJm7PGFDrck+LWsK+nYmMKrw==
+X-Google-Smtp-Source: ABdhPJwebDU0toeDqVExcoUsOjyNPjev/ummN9l/P8IRsg1/RBgPJu0TE/gEy3JksZSZdsnGz7qe6A==
+X-Received: by 2002:a05:600c:3cf:: with SMTP id z15mr10058213wmd.24.1590789335789;
+        Fri, 29 May 2020 14:55:35 -0700 (PDT)
+Received: from ?IPv6:2001:16b8:4826:7300:a436:5e5d:3e25:d8b3? ([2001:16b8:4826:7300:a436:5e5d:3e25:d8b3])
+        by smtp.gmail.com with ESMTPSA id t14sm5080616wri.7.2020.05.29.14.55.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 29 May 2020 14:55:35 -0700 (PDT)
+Subject: Re: [PATCH 0/4] cleanup for blk-wbt and blk-throttle
+To:     tj@kernel.org, axboe@kernel.dk
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org
+References: <20200508220015.11528-1-guoqing.jiang@cloud.ionos.com>
+From:   Guoqing Jiang <guoqing.jiang@cloud.ionos.com>
+Message-ID: <f308bc7f-083a-d0f3-aad2-b353c241dbde@cloud.ionos.com>
+Date:   Fri, 29 May 2020 23:55:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.8.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200529100858.GA98458@chrisdown.name>
+In-Reply-To: <20200508220015.11528-1-guoqing.jiang@cloud.ionos.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 29-05-20 11:08:58, Chris Down wrote:
-> Michal Hocko writes:
-> > > > > task->memcg_nr_pages_over_high is not vague, it's a best-effort
-> > > > > mechanism to distribute fairness. It's the current task's share of the
-> > > > > cgroup's overage, and it allows us in the majority of situations to
-> > > > > distribute reclaim work and sleeps in proportion to how much the task
-> > > > > is actually at fault.
-> > > >
-> > > > Agreed. But this stops being the case as soon as the reclaim target has
-> > > > been reached and new reclaim attempts are enforced because the memcg is
-> > > > still above the high limit. Because then you have a completely different
-> > > > reclaim target - get down to the limit. This would be especially visible
-> > > > with a large memcg_nr_pages_over_high which could even lead to an over
-> > > > reclaim.
-> > > 
-> > > We actually over reclaim even before this patch -- this patch doesn't bring
-> > > much new in that regard.
-> > > 
-> > > Tracing try_to_free_pages for a cgroup at the memory.high threshold shows
-> > > that before this change, we sometimes even reclaim on the order of twice the
-> > > number of pages requested. For example, I see cases where we requested 1000
-> > > pages to be reclaimed, but end up reclaiming 2000 in a single reclaim
-> > > attempt.
-> > 
-> > This is interesting and worth looking into. I am aware that we can
-> > reclaim potentially much more pages during the icache reclaim and that
-> > there was a heated discussion without any fix merged in the end IIRC.
-> > Do you have any details?
-> 
-> Sure, we can look into this more, but let's do it separately from this patch
-> -- I don't see that its merging should be contingent on that discussion :-)
+Gently ping.
 
-Yes that is a separate issue.
--- 
-Michal Hocko
-SUSE Labs
+On 5/9/20 12:00 AM, Guoqing Jiang wrote:
+> Hi,
+>
+> Find some functions can be removed since there is no caller of them when
+> read the code.
+>
+> Thanks,
+> Guoqing
+>
+> Guoqing Jiang (4):
+>    blk-throttle: remove blk_throtl_drain
+>    blk-throttle: remove tg_drain_bios
+>    blk-wbt: remove wbt_update_limits
+>    blk-wbt: rename __wbt_update_limits to wbt_update_limits
+>
+>   block/blk-throttle.c | 63 --------------------------------------------
+>   block/blk-wbt.c      | 16 +++--------
+>   block/blk-wbt.h      |  4 ---
+>   block/blk.h          |  2 --
+>   4 files changed, 4 insertions(+), 81 deletions(-)
+>
+
