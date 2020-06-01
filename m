@@ -2,188 +2,182 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107CC1E9D88
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2020 07:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D98D31EA73A
+	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2020 17:44:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725847AbgFAFv0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Jun 2020 01:51:26 -0400
-Received: from mga03.intel.com ([134.134.136.65]:9250 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725818AbgFAFv0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 1 Jun 2020 01:51:26 -0400
-IronPort-SDR: jtt4eSK+7JbMCPKKMSlKq3lcB538ITr/uW2U8OMdPqCETz2ElmwYHtoC6B1J++CetTVPL5SGh/
- 3l18uZOHh1pw==
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 31 May 2020 22:51:25 -0700
-IronPort-SDR: j4yKbv39wd2hlakYpRQKNL+6rC9CBwvvAKLM+27Gga63JWdtN+kNy2nA26i87ECqdLBc3z/xvE
- EQx9NLltEbnw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.73,459,1583222400"; 
-   d="scan'208";a="256679935"
-Received: from lkp-server01.sh.intel.com (HELO 49d03d9b0ee7) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 31 May 2020 22:51:24 -0700
-Received: from kbuild by 49d03d9b0ee7 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1jfdM3-0000Us-SO; Mon, 01 Jun 2020 05:51:23 +0000
-Date:   Mon, 01 Jun 2020 13:50:52 +0800
-From:   kbuild test robot <lkp@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     cgroups@vger.kernel.org
-Subject: [cgroup:for-5.8] BUILD SUCCESS
- 936f2a70f2077f64fab1dcb3eca71879e82ecd3f
-Message-ID: <5ed4973c.MVZ8aTwMco1mDJDJ%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S1726110AbgFAPn5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Jun 2020 11:43:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726075AbgFAPn4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Jun 2020 11:43:56 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56459C05BD43;
+        Mon,  1 Jun 2020 08:43:55 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id k22so8010413qtm.6;
+        Mon, 01 Jun 2020 08:43:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=G2ppN+SO01U35andcJx4wK7uE7Y/yhFiQ+1V3mTLz5k=;
+        b=g9LHrVyOk4LXkO1djAdvgd7CoGtQeMTrsqvothE6BTPFJHbZe1UYxFWaj2XyM5+u2v
+         mIzUJNAuuxFS1k6lMjA0i5s4/9jM45hbiIf8z0Dygga25k5k+7D6d43ZbgDv61GZdkPh
+         vtRTrhph/+vvVXh6nvvH+GMtH5KdVjeQ4IMvg4ZWEu6I8tvl7HMF0VBK9vUfvMOEtC1T
+         ePkoMQeqZDC5D6jatZ0EUQgWuhwlYGRn+qhPlayT98/jFKvUdkeIJQQSSs5ZuvYtZDk3
+         ZGD5JVvRxwXieZvNhlpPZ9Dq0UEmyVz4cRGWwiGy4h/S27RV5TUM1ECVgCN1RejuUZcC
+         S2Pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=G2ppN+SO01U35andcJx4wK7uE7Y/yhFiQ+1V3mTLz5k=;
+        b=MObsS8hEysDZU4yvVP1/Xn1fUJier66htWgTaqi1EgPc5owkgEAvMg+ZeOVM6Bhvdx
+         Z5mzcvONSJWPH7WtNer6S2IF8qTcQj0PoXgY51ASwrZU/2kdAyBkxem9Ft/mDpidjNT1
+         Bcen3dnMyrKy42uQQPory8Wzrg8nRgCUqi2TuVZ7njlrtjmK/ZCajXdy+9a6r2dO25jQ
+         x+V6B9s+zEIhv+nfHwoRlar0MoF0okpmeCTK2i/8zVrU654XGGCywT32qEYAiVqPBT0L
+         xEWtuasXMaxWlIdYSEsVGsih9ojO/iUBJxcQUSwqIouAc6wqAlOu5D9KpPeax3rOq+9a
+         jR5w==
+X-Gm-Message-State: AOAM530P/hGqzsqtmBiemIXPfVrcJqliyRhtKNeLtc2R9ZzFWxo9ke2s
+        hCR9CblDgn8hc/6rtbWIYvjtlBJQ
+X-Google-Smtp-Source: ABdhPJydDc8pxC/hzfQQ5LLSzEsme2ZF1n790P7xvYsqHZEpPm8tvZgc/1nkS1CWxoo8SriQV8AQ0g==
+X-Received: by 2002:ac8:221a:: with SMTP id o26mr9593551qto.88.1591026234387;
+        Mon, 01 Jun 2020 08:43:54 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:eb8b])
+        by smtp.gmail.com with ESMTPSA id k43sm18081584qtk.67.2020.06.01.08.43.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Jun 2020 08:43:53 -0700 (PDT)
+Date:   Mon, 1 Jun 2020 11:43:51 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Boris Burkov <boris@bur.io>
+Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH blk-cgroup/for-5.8] blk-cgroup: show global disk stats in
+ root cgroup io.stat
+Message-ID: <20200601154351.GD31548@mtj.thefacebook.com>
+References: <20200529232017.1795920-1-boris@bur.io>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20200529232017.1795920-1-boris@bur.io>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git  for-5.8
-branch HEAD: 936f2a70f2077f64fab1dcb3eca71879e82ecd3f  cgroup: add cpu.stat file to root cgroup
+Hello, Boris.
 
-elapsed time: 5164m
+On Fri, May 29, 2020 at 04:20:17PM -0700, Boris Burkov wrote:
+> In order to improve consistency and usability in cgroup stat accounting,
+> we would like to support the root cgroup's io.stat.
+> 
+> Since the root cgroup has processes doing io even if the system has no
+> explicitly created cgroups, we need to be careful to avoid overhead in
+> that case.  For that reason, the rstat algorithms don't handle the root
+> cgroup, so just turning the file on wouldn't give correct statistics.
+> 
+> To get around this, we simulate flushing the iostat struct by filling it
+> out directly from global disk stats. The result is a root cgroup io.stat
+> file consistent with both /proc/diskstats and io.stat.
+> 
+> Signed-off-by: Boris Burkov <boris@bur.io>
+> Suggested-by: Tejun Heo <tj@kernel.org>
+...
+> +static void blkg_iostat_set(struct blkg_iostat *dst, struct blkg_iostat *src)
+> +{
 
-configs tested: 129
-configs skipped: 4
+Can you please separate out code reorganization to a separate patch so that
+the actual change can be reviewed clearly?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+> +/*
+> + * The rstat algorithms intentionally don't handle the root cgroup to avoid
+> + * incurring overhead when no cgroups are defined. For that reason,
+> + * cgroup_rstat_flush in blkcg_print_stat does not actually fill out the
+> + * iostat in the root cgroup's blkcg_gq.
+> + *
+> + * However, we would like to re-use the printing code between the root and
+> + * non-root cgroups to the extent possible. For that reason, we simulate
+> + * flushing the root cgroup's stats by explicitly filling in the iostat
+> + * with disk level statistics.
+> + */
 
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm64                            allmodconfig
-arm64                             allnoconfig
-arm                              allyesconfig
-arm                              allmodconfig
-arm                               allnoconfig
-sparc                       sparc64_defconfig
-mips                  decstation_64_defconfig
-mips                          ath79_defconfig
-powerpc                      pasemi_defconfig
-m68k                            q40_defconfig
-sh                           se7724_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                            e55_defconfig
-mips                       lemote2f_defconfig
-arm                            pleb_defconfig
-sh                             espt_defconfig
-arm                           omap1_defconfig
-arm                       spear13xx_defconfig
-sparc64                          allyesconfig
-microblaze                    nommu_defconfig
-i386                              allnoconfig
-i386                             allyesconfig
-i386                                defconfig
-i386                              debian-10.3
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                              allnoconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                              allnoconfig
-m68k                           sun3_defconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-nios2                            allyesconfig
-openrisc                            defconfig
-c6x                              allyesconfig
-c6x                               allnoconfig
-openrisc                         allyesconfig
-nds32                               defconfig
-nds32                             allnoconfig
-csky                             allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-h8300                            allmodconfig
-xtensa                              defconfig
-arc                                 defconfig
-arc                              allyesconfig
-sh                               allmodconfig
-sh                                allnoconfig
-microblaze                        allnoconfig
-mips                             allyesconfig
-mips                              allnoconfig
-mips                             allmodconfig
-parisc                            allnoconfig
-parisc                              defconfig
-parisc                           allyesconfig
-parisc                           allmodconfig
-powerpc                             defconfig
-powerpc                          allyesconfig
-powerpc                          rhel-kconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-x86_64               randconfig-a002-20200529
-x86_64               randconfig-a006-20200529
-x86_64               randconfig-a005-20200529
-x86_64               randconfig-a001-20200529
-x86_64               randconfig-a004-20200529
-x86_64               randconfig-a003-20200529
-i386                 randconfig-a004-20200531
-i386                 randconfig-a003-20200531
-i386                 randconfig-a006-20200531
-i386                 randconfig-a002-20200531
-i386                 randconfig-a005-20200531
-i386                 randconfig-a001-20200531
-i386                 randconfig-a004-20200529
-i386                 randconfig-a001-20200529
-i386                 randconfig-a002-20200529
-i386                 randconfig-a006-20200529
-i386                 randconfig-a003-20200529
-i386                 randconfig-a005-20200529
-x86_64               randconfig-a011-20200531
-x86_64               randconfig-a016-20200531
-x86_64               randconfig-a012-20200531
-x86_64               randconfig-a014-20200531
-x86_64               randconfig-a013-20200531
-x86_64               randconfig-a015-20200531
-i386                 randconfig-a013-20200529
-i386                 randconfig-a011-20200529
-i386                 randconfig-a012-20200529
-i386                 randconfig-a015-20200529
-i386                 randconfig-a016-20200529
-i386                 randconfig-a014-20200529
-i386                 randconfig-a013-20200531
-i386                 randconfig-a012-20200531
-i386                 randconfig-a015-20200531
-i386                 randconfig-a011-20200531
-i386                 randconfig-a016-20200531
-i386                 randconfig-a014-20200531
-riscv                            allyesconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                            allmodconfig
-s390                             allyesconfig
-s390                              allnoconfig
-s390                             allmodconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-sparc64                             defconfig
-sparc64                           allnoconfig
-sparc64                          allmodconfig
-um                                allnoconfig
-um                                  defconfig
-um                               allmodconfig
-um                               allyesconfig
-x86_64                                   rhel
-x86_64                               rhel-7.6
-x86_64                    rhel-7.6-kselftests
-x86_64                         rhel-7.2-clear
-x86_64                                    lkp
-x86_64                              fedora-25
-x86_64                                  kexec
+This is clever and neat.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+> +static void blkcg_fill_root_iostats(void)
+> +{
+> +	struct class_dev_iter iter;
+> +	struct device *dev;
+> +
+> +	class_dev_iter_init(&iter, &block_class, NULL, &disk_type);
+> +	while ((dev = class_dev_iter_next(&iter))) {
+> +		struct gendisk *disk = dev_to_disk(dev);
+> +		struct hd_struct *part = disk_get_part(disk, 0);
+> +		struct blkcg_gq *blkg = blk_queue_root_blkg(disk->queue);
+> +		struct blkg_iostat tmp;
+> +		int cpu;
+> +
+> +		memset(&tmp, 0, sizeof(tmp));
+> +		for_each_possible_cpu(cpu) {
+> +			struct disk_stats *cpu_dkstats;
+> +
+> +			cpu_dkstats = per_cpu_ptr(part->dkstats, cpu);
+> +			tmp.ios[BLKG_IOSTAT_READ] +=
+> +				cpu_dkstats->ios[STAT_READ];
+> +			tmp.ios[BLKG_IOSTAT_WRITE] +=
+> +				cpu_dkstats->ios[STAT_WRITE];
+> +			tmp.ios[BLKG_IOSTAT_DISCARD] +=
+> +				cpu_dkstats->ios[STAT_DISCARD];
+> +			// convert sectors to bytes
+> +			tmp.bytes[BLKG_IOSTAT_READ] +=
+> +				cpu_dkstats->sectors[STAT_READ] << 9;
+> +			tmp.bytes[BLKG_IOSTAT_WRITE] +=
+> +				cpu_dkstats->sectors[STAT_WRITE] << 9;
+> +			tmp.bytes[BLKG_IOSTAT_DISCARD] +=
+> +				cpu_dkstats->sectors[STAT_DISCARD] << 9;
+> +
+> +			u64_stats_update_begin(&blkg->iostat.sync);
+> +			blkg_iostat_set(&blkg->iostat.cur, &tmp);
+> +			u64_stats_update_end(&blkg->iostat.sync);
+> +		}
+> +	}
+> +}
+...
+> diff --git a/block/genhd.c b/block/genhd.c
+> index afdb2c3e5b22..4f5f4590517c 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -38,8 +38,6 @@ static struct kobject *block_depr;
+>  static DEFINE_SPINLOCK(ext_devt_lock);
+>  static DEFINE_IDR(ext_devt_idr);
+>  
+> -static const struct device_type disk_type;
+> -
+>  static void disk_check_events(struct disk_events *ev,
+>  			      unsigned int *clearing_ptr);
+>  static void disk_alloc_events(struct gendisk *disk);
+> @@ -1566,7 +1564,7 @@ static char *block_devnode(struct device *dev, umode_t *mode,
+>  	return NULL;
+>  }
+>  
+> -static const struct device_type disk_type = {
+> +const struct device_type disk_type = {
+>  	.name		= "disk",
+>  	.groups		= disk_attr_groups,
+>  	.release	= disk_release,
+> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
+> index a9384449465a..ea38bc36bc6d 100644
+> --- a/include/linux/genhd.h
+> +++ b/include/linux/genhd.h
+> @@ -26,6 +26,7 @@
+>  #define disk_to_dev(disk)	(&(disk)->part0.__dev)
+>  #define part_to_dev(part)	(&((part)->__dev))
+>  
+> +extern const struct device_type disk_type;
+
+So, this is fine but I'd explicitly mention it in the patch description.
+
+Thanks.
+
+-- 
+tejun
