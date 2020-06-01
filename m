@@ -2,95 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 112531EB05D
-	for <lists+cgroups@lfdr.de>; Mon,  1 Jun 2020 22:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E535F1EB203
+	for <lists+cgroups@lfdr.de>; Tue,  2 Jun 2020 01:11:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728394AbgFAUmS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Jun 2020 16:42:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726124AbgFAUmS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Jun 2020 16:42:18 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCA9CC061A0E;
-        Mon,  1 Jun 2020 13:42:17 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id z1so8906297qtn.2;
-        Mon, 01 Jun 2020 13:42:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=nNZfm4KTFqe5hnlvYWDeBhcm8Ap+9mpyPFYJmsznAkM=;
-        b=t8euN+bSgRmxO9c8Y/F883WBGe4+MHcPeJWqbsm/Ga9gEIjuGubgttCJNl+uoAu4f2
-         WA3zDSPL6rLppywjj2lYh+yOrJLiGEntBUcihOjGwVwoOB+VIdBpDFHsUZKyLfQ2mqYV
-         RDtckfLXaIynwN3PFlN6VbNxg0/5w0I5jj3n0pEQotS8YPJ9NtJpK3PpqYr1y6OmuR72
-         DP+i/gUVvc8ImBV86uzJB2jknfWCq8ei32IFzdQbXhYFDor1nFtNyNC6g3NI2o2ixNLx
-         YX5Ej8xkJ/zLmgnXpj7IkDsfKCsuw621xmaC5Ff+cxGIH9ky6fFxr9V1lwO1sDKFQMHm
-         flMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nNZfm4KTFqe5hnlvYWDeBhcm8Ap+9mpyPFYJmsznAkM=;
-        b=JE6l962Prn65mv1+H2SADpseIXTG0FNZ0wG+UXE5UxXlN7TRWAm9vGI8eeOjdbua9p
-         uabuyBABIM8rQWlcLn0x+OLccrp4QNHTfOdaUS/LQPSsxgZX7AY1ks1S/bFLO2odNMWl
-         1/fciK+qPIEtvYHh5dI52vd60QAsbzVJMIEw0LZtiunfkuWj6/2OF69fEmGHgNRIpNyZ
-         eAxnEq+VBaCHXPyQGJ/Hc3/vI0h2WeGyyWXvKwGHoCR1cUXhAqYY172ABQn14vFMLXc8
-         fbvRBfy3iJeckrSCT0yJE8a44nD+KpbUAmKWSI8JuG8fKRUyhf/XfjHeVUZNjzorD3Rq
-         TA7A==
-X-Gm-Message-State: AOAM532ntUELCTL72A5oMA2mgWFBb59c3yUfX/xywJOPXmOz02DWHVw5
-        HsXXs0glLGrhBvhPSQ6SfLWQlFAY
-X-Google-Smtp-Source: ABdhPJycDkD6/AfqKFyakBBoPe7y+t2QIAOFQeVj3fFguo76Qe7tXaBmURSRECa9qRKObF/ju+mqBA==
-X-Received: by 2002:ac8:f79:: with SMTP id l54mr24298287qtk.79.1591044136879;
-        Mon, 01 Jun 2020 13:42:16 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:eb8b])
-        by smtp.gmail.com with ESMTPSA id d23sm434611qtn.38.2020.06.01.13.42.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Jun 2020 13:42:16 -0700 (PDT)
-Date:   Mon, 1 Jun 2020 16:42:14 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Boris Burkov <boris@bur.io>
-Cc:     Jens Axboe <axboe@kernel.dk>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 2/2 blk-cgroup/for-5.8] blk-cgroup: show global disk
- stats in root cgroup io.stat
-Message-ID: <20200601204214.GF31548@mtj.thefacebook.com>
-References: <20200601154351.GD31548@mtj.thefacebook.com>
- <20200601201205.1658417-1-boris@bur.io>
+        id S1727828AbgFAXLr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Jun 2020 19:11:47 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:53589 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727113AbgFAXLr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Jun 2020 19:11:47 -0400
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id BF2AB5800DD;
+        Mon,  1 Jun 2020 19:11:45 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Mon, 01 Jun 2020 19:11:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bur.io; h=from
+        :to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm1; bh=EJxQtXEmzgFV7qYlHbiD6rvXvA
+        D6+GpjivfAKXYShn8=; b=pp/8RPm1nMDp8zDWGn+jMh9zTt5XUJaZJT5CvG0dcX
+        JRhtGOWyadjxXEh4fVuAcsq7QZZ+zbesJ2IUYWrXUcVzXmFHd1i3e+L2DhzM/yx5
+        IQ2i1htYsKcVQtZi6UFEJqUmkGpN21btMEvllx5NFZaCwLJVDDvSZoX5shfxHGzy
+        q9ZSZ6izbtxumf20J6CWzmEWtB/tk53hIAI+g91CvsyVaasvZ7hqTnMr//FEUT1c
+        LrpDWDXjwIwtI/FfH9dtaqpXvLvGGZwkoDzJM5y4fq9KGJK6I4BUrr/hQmYTq9FN
+        6V9Tya8NxGIILvr9/dwWfuDtlrEQTQtAHfWXb6VmZOmg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=EJxQtXEmzgFV7qYlH
+        biD6rvXvAD6+GpjivfAKXYShn8=; b=A+2N0452c36DE0qjKhBkM9RicotCU+OXG
+        ZRRHrE+KyZdHSShWo/lWsb0ey7SWaUKHObn2xZiTSll0E38D+FBamXZ+hV6MLXFn
+        1qSTbnPBQJabyiC4iqyPb2BlwizRAIorwWZRQx8oLPD+5IhsVuugofC2/Vw3mhpv
+        /7zfOGE2VnvdDAg1QV5TQZv2q4tDFmhkHcrHtrmvZ5v/ZqV/8HEUmOGt+KLL0+KX
+        gp0WA+ZRhGh0m4opyE5Cc0lmBJNpwKBHCQrC6wIAXyzgSjN6Esp+CH53yWrtxn9U
+        dDSOtDwnI56QVbuUYiSGPP+Yom5QkttwYg08dBWl5odn/JpcWwOGw==
+X-ME-Sender: <xms:MIvVXkONr8XwPkgygnAIFRmnxuCcLIEGYTO0MNyCOoJFyBpfbIdNng>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduhedrudefiedgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffoggfgsedtkeertdertddtnecuhfhrohhmpeeuohhrihhsuceu
+    uhhrkhhovhcuoegsohhrihhssegsuhhrrdhioheqnecuggftrfgrthhtvghrnhepudeitd
+    elueeijeefleffveelieefgfejjeeigeekudduteefkefffeethfdvjeevnecukfhppedu
+    ieefrdduudegrddufedvrdefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepsghorhhishessghurhdrihho
+X-ME-Proxy: <xmx:MIvVXq9zY4BRoFGj3bm2LWIGoPL3_wwYPJmbiCXCTons26eZoFl0YQ>
+    <xmx:MIvVXrTT-2KPnBB0IXj5dVx3rZSOaukhzkJIznA2kfMRoFvs__5NcA>
+    <xmx:MIvVXstHQOxT9yyQjJKxK9dmJqTMSADbP6YATk8D-dzxP3Lt92saBg>
+    <xmx:MYvVXk7gs-3IrbDI23hi0p6OsIDuE_K4pqbNR6lhpFZP-6ACCFHRklCdi80>
+Received: from localhost (unknown [163.114.132.3])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 216D63061CCB;
+        Mon,  1 Jun 2020 19:11:44 -0400 (EDT)
+From:   Boris Burkov <boris@bur.io>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Boris Burkov <boris@bur.io>
+Subject: [PATCH] blk-cgroup: don't account iostat for root cgroup
+Date:   Mon,  1 Jun 2020 16:11:41 -0700
+Message-Id: <20200601231141.2218370-1-boris@bur.io>
+X-Mailer: git-send-email 2.24.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200601201205.1658417-1-boris@bur.io>
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 01, 2020 at 01:12:05PM -0700, Boris Burkov wrote:
-> In order to improve consistency and usability in cgroup stat accounting,
-> we would like to support the root cgroup's io.stat.
-> 
-> Since the root cgroup has processes doing io even if the system has no
-> explicitly created cgroups, we need to be careful to avoid overhead in
-> that case.  For that reason, the rstat algorithms don't handle the root
-> cgroup, so just turning the file on wouldn't give correct statistics.
-> 
-> To get around this, we simulate flushing the iostat struct by filling it
-> out directly from global disk stats. The result is a root cgroup io.stat
-> file consistent with both /proc/diskstats and io.stat.
-> 
-> Note that in order to collect the disk stats, we needed to iterate over
-> devices. To facilitate that, we had to change the linkage of a disk_type
-> to external so that it can be used from blk-cgroup.c to iterate over
-> disks.
-> 
-> Signed-off-by: Boris Burkov <boris@bur.io>
-> Suggested-by: Tejun Heo <tj@kernel.org>
+This data is never flushed by rstat, so it is never used. We shouldn't
+bother collecting it. We can access global disk stats to compute io
+statistics for the root cgroup.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Boris Burkov <boris@bur.io>
+---
+ include/linux/blk-cgroup.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks.
-
+diff --git a/include/linux/blk-cgroup.h b/include/linux/blk-cgroup.h
+index a57ebe2f00ab..e9de4ec07182 100644
+--- a/include/linux/blk-cgroup.h
++++ b/include/linux/blk-cgroup.h
+@@ -591,7 +591,7 @@ static inline bool blkcg_bio_issue_check(struct request_queue *q,
+ 
+ 	throtl = blk_throtl_bio(q, blkg, bio);
+ 
+-	if (!throtl) {
++	if (blkg->parent && !throtl) {
+ 		struct blkg_iostat_set *bis;
+ 		int rwd, cpu;
+ 
 -- 
-tejun
+2.24.1
+
