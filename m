@@ -2,151 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE2EE1EC67C
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2020 03:13:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D9A01ED0DA
+	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2020 15:32:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728403AbgFCBNq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Jun 2020 21:13:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46054 "EHLO
+        id S1725881AbgFCNcu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Jun 2020 09:32:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728344AbgFCBNm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Jun 2020 21:13:42 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0A7DC08C5C3
-        for <cgroups@vger.kernel.org>; Tue,  2 Jun 2020 18:13:40 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t7so572232pgt.3
-        for <cgroups@vger.kernel.org>; Tue, 02 Jun 2020 18:13:40 -0700 (PDT)
+        with ESMTP id S1725797AbgFCNct (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Jun 2020 09:32:49 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE22C08C5C0
+        for <cgroups@vger.kernel.org>; Wed,  3 Jun 2020 06:32:49 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id p5so2364645wrw.9
+        for <cgroups@vger.kernel.org>; Wed, 03 Jun 2020 06:32:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=nhWgywlp7hGFzT3uDr0Y1hpZYhM+popoEVRUKB4VQWc=;
-        b=KcuhYU82+vDQQx/DeVCMpJeN14+0ym8WxhWxeXEkaQ+3yezTYF4Ee5fw/subrNMumN
-         KyeAfCGCmRn0kJMIhZMcogDXCSfT+sBBqmi7wdOtjgBK8yInPiCqMLFgrVCWXL2KYFXQ
-         wAigHdmOLJYq7IXym1xyUJRMKY8oH/Rez9kpo=
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=q+nnIMOV8QPLuimjJR+FSv9a9Hdhy9ho4/8fHMAopTvh1Ny0KFTWdnudIzTDklc5PB
+         9SshMMU6nDgahhiEW1cK4xUhUemT7lhXlQguy59r7khMA6uG7c7YyMapoERtJ1zXpxVC
+         Bc9YU/P5cf+tQXq29HrvH25QDkx1vX2Np2avosp3kcIjf5dUVXCHXRU/DvpRfGFgiWiE
+         rAOAEiX3EVAkk2Iv8vJKAgXQRhCzyOykN7XV8CsQGJHf0+QmkSlTWCi7FdYiGAtitmZf
+         k8thGP39CyHFAm2q5IdfPkd3lZVigLFdcMdRpz+DIJr1r6uufmQMngKijtQo2ZYphOP9
+         qPlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=nhWgywlp7hGFzT3uDr0Y1hpZYhM+popoEVRUKB4VQWc=;
-        b=GphVEUMsq/bUDlI/YHJmUyiYJXRzbyL3dIcQVC3iVvOOjKezJZGVWENrS/ms/NflaH
-         o7jxXXTYKhKmAKdK74L7VhNXeqgRbbWcbxTM2ZYbc+6WBcD+LrlEA/VyHjYCuK1pWYtH
-         oV7BIEcUC/LpDmI+y0sb5yb+NYnZnFkAL6ebZ6en0bSPRjwRCNlPLI3mLVoeWHLVlrFy
-         0Gyw8en8ROoKOpJ1HQCAmyOzpJrTqYBvFEmPHV/D3WlaPn3KcUw2hP72zQPp+8tSAN7T
-         19Db0rpwjG+Xcihki8DVLmPfC2yB52R5tPCNWNWnxKRIV3D5sMGWkpJbKjbWa7xj118f
-         XWKQ==
-X-Gm-Message-State: AOAM530aHPJqnCbCRPTSUDbVJI0Jfdlh+jdmGZyCAQ7oNVxX4j7k8Jc2
-        i3uohgLxEK6f8ALr8mwJ2GMSug==
-X-Google-Smtp-Source: ABdhPJziu0Ir+oIrvYqeFGcbFb1EEVntTRUVR8VaEiMPDVEUmaVr/EmBGAHwManIvwfanKgve0+dwg==
-X-Received: by 2002:a17:90a:7bcb:: with SMTP id d11mr2287916pjl.209.1591146820050;
-        Tue, 02 Jun 2020 18:13:40 -0700 (PDT)
-Received: from ubuntu.netflix.com (203.20.25.136.in-addr.arpa. [136.25.20.203])
-        by smtp.gmail.com with ESMTPSA id a12sm263222pjw.35.2020.06.02.18.13.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Jun 2020 18:13:39 -0700 (PDT)
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org
-Cc:     Sargun Dhillon <sargun@sargun.me>, Tycho Andersen <tycho@tycho.ws>,
-        Matt Denton <mpdenton@google.com>,
-        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Robert Sesek <rsesek@google.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        containers@lists.linux-foundation.org,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        "David S . Miller" <davem@davemloft.net>,
-        John Fastabend <john.r.fastabend@intel.com>,
-        Tejun Heo <tj@kernel.org>, stable@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH v3 2/4] pid: Use file_receive helper to copy FDs
-Date:   Tue,  2 Jun 2020 18:10:42 -0700
-Message-Id: <20200603011044.7972-3-sargun@sargun.me>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200603011044.7972-1-sargun@sargun.me>
-References: <20200603011044.7972-1-sargun@sargun.me>
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
+        b=pjqzGQDIw8zq0J6w2WZoblgrluiY26I3rXgw7H79exL1cmvYN/Ai+J7wHt8NqvRW67
+         3B55gX4fgKxBtrq9QpTy93Gn3ECdlE2YqKHfRpBFf0p9COtI/wNS75qevVDQFndoOPE9
+         e3RqsrhqBLgqqXsiSaXgKogNORWXfddAPGZ+cbZAzw3HBMR3cSujrImlVM8eLrKoZV+d
+         I4hABFJWh0RMld+0iPGQtuxJGmYyOOeU/XoxqI7juI1wyilnWjzLlRAmeb6B8gFiLx2J
+         IJYMJNKTS+UZKyjGJDdAmq/nwKUZYiDVVyTbLO3x2uW9Y5dlo5OtaWvMKoddDSvvuM95
+         gpCg==
+X-Gm-Message-State: AOAM531Er2h6U2+XE52Ao3LoBNCV2j5Q/vYLdDeC57pZobaNtx/SBvGa
+        iSoGbbxKWnkk4DJ8mnGZyNyIK3t+bAkqlxGxG64=
+X-Google-Smtp-Source: ABdhPJynP2KZI5XhkFA9zkLHQZ1uEj62UDn8MKK1YNSuTLKQDNuzmex0HWzLnmDStXCXRG5PK0eTuAPEiWypx2HAteY=
+X-Received: by 2002:adf:a396:: with SMTP id l22mr20537577wrb.24.1591191168018;
+ Wed, 03 Jun 2020 06:32:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Reply-To: susanjones.wife@gmail.com
+Received: by 2002:adf:f112:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:32:47 -0700 (PDT)
+From:   "Mrs.Susan Jones" <sus.wifejones@gmail.com>
+Date:   Wed, 3 Jun 2020 14:32:47 +0100
+X-Google-Sender-Auth: ugQNlP48brp64rhp8zmuJMZC8R8
+Message-ID: <CAAxb+3w=_+QhwD_MCfN4MxEagbuwe7urLu439Cx0FguZOqR8aQ@mail.gmail.com>
+Subject: HELLO: I AM MRS SUSAN JONES
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The code to copy file descriptors was duplicated in pidfd_getfd.
-Rather than continue to duplicate it, this hoists the code out of
-kernel/pid.c and uses the newly added file_receive helper.
-
-Earlier, when this was implemented there was some back-and-forth
-about how the semantics should work around copying around file
-descriptors [1], and it was decided that the default behaviour
-should be to not modify cgroup data. As a matter of least surprise,
-this approach follows the default semantics as presented by SCM_RIGHTS.
-
-In the future, a flag can be added to avoid manipulating the cgroup
-data on copy.
-
-[1]: https://lore.kernel.org/lkml/20200107175927.4558-1-sargun@sargun.me/
-
-Signed-off-by: Sargun Dhillon <sargun@sargun.me>
-Suggested-by: Kees Cook <keescook@chromium.org>
-Cc: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Daniel Wagner <daniel.wagner@bmw-carit.de>
-Cc: David S. Miller <davem@davemloft.net>
-Cc: Jann Horn <jannh@google.com>
-Cc: John Fastabend <john.r.fastabend@intel.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Tycho Andersen <tycho@tycho.ws>
-Cc: stable@vger.kernel.org
-Cc: cgroups@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org
----
- kernel/pid.c | 20 +++++++++-----------
- 1 file changed, 9 insertions(+), 11 deletions(-)
-
-diff --git a/kernel/pid.c b/kernel/pid.c
-index c835b844aca7..1642cf940aa1 100644
---- a/kernel/pid.c
-+++ b/kernel/pid.c
-@@ -606,7 +606,7 @@ static int pidfd_getfd(struct pid *pid, int fd)
- {
- 	struct task_struct *task;
- 	struct file *file;
--	int ret;
-+	int ret, err;
- 
- 	task = get_pid_task(pid, PIDTYPE_PID);
- 	if (!task)
-@@ -617,18 +617,16 @@ static int pidfd_getfd(struct pid *pid, int fd)
- 	if (IS_ERR(file))
- 		return PTR_ERR(file);
- 
--	ret = security_file_receive(file);
--	if (ret) {
--		fput(file);
--		return ret;
--	}
--
- 	ret = get_unused_fd_flags(O_CLOEXEC);
--	if (ret < 0)
--		fput(file);
--	else
--		fd_install(ret, file);
-+	if (ret >= 0) {
-+		err = file_receive(ret, file);
-+		if (err) {
-+			put_unused_fd(ret);
-+			ret = err;
-+		}
-+	}
- 
-+	fput(file);
- 	return ret;
- }
- 
 -- 
-2.25.1
+OUR GOLDEN OPPORTUNITY
 
+Hello Dear Friend,
+
+Complement of the day, i hope you are doing great today. However, I am
+Mrs.Susan Jones, an auditor with one of the new generation banks here
+in Burkina Faso.
+
+I am writing you this letter based on the latest development at my
+Department. i discovered some abandoned huge amount of money, Ten
+Million, Five hundred thousand  United States Dollars.($10.500.000).
+Now I am only contacting you as a foreigner because this money cannot
+be approved to a local bank account here, but can only be approved to
+any foreign account and foreign beneficiary because the money is in US
+dollars
+
+This will be  a legitimate transaction once you accept to build trust
+with me and follow simple instruction doing the transfer process,
+until the total sum transfer out of the bank here to your own bank
+account any where in the world, and I agreed to share the total money
+50/50 with you once you successful confirmed it in your bank account.
+But any expenses doing the transfer process will be deduct from the
+amount before sharing, If you are interested to work with me and
+provide a good receiving bank account, get back to me as soon as
+possible with the following details below.
+
+Your full name
+Your Profession
+Your direct mobile phone number
+Your Scanned International passport or any of your identity
+
+NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
+AVOID TIME WASTED.
+
+As soon as I receive these data's, I will forward to you the
+application form which you will send to the bank for the claim and
+transfer of the fund into your bank account as the  new beneficial.
+
+I am waiting to hear from you soon
+
+Yours
+Mrs.Susan Jones
