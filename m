@@ -2,53 +2,25 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DF541EDCB0
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2020 07:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0394B1EE4CD
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2020 14:52:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725959AbgFDFUs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Jun 2020 01:20:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726670AbgFDFUq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jun 2020 01:20:46 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D899C05BD43
-        for <cgroups@vger.kernel.org>; Wed,  3 Jun 2020 22:20:44 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id s18so4969599ioe.2
-        for <cgroups@vger.kernel.org>; Wed, 03 Jun 2020 22:20:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=oKNXmPZh2jB30BHUyHRPpl5a8wx5yENQJM5HVKTmIUg=;
-        b=054UqkhvVty3ow+lMQbK9j4Udt3zohY4MtWydjS8v+qaL1KEzL/lBvin5kq+w6wouX
-         hZI4wLQja9EIX1nva9plQnfwHl8FzoXwywvdWospv8P8d7E04VgKiRV9X8gRx2J9T1CC
-         JEXiaCtFU/kNPlAOilsNcnuQhrVealltviXyQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=oKNXmPZh2jB30BHUyHRPpl5a8wx5yENQJM5HVKTmIUg=;
-        b=qeHUNnW8BrQKV8HgZtu+pQqLZgLexyD+G0mlUd8v79DbnbgiV47AdNfPAtSnzTbvhK
-         rl9/D24cTVXk8+CYM8mEvL1ZSAtE8ItOOwUel3WD6xWQ/IZ8Sc2ySjSdMeUJL6lS/r5T
-         Klid3VYAdENnVu+mg+hc0uUk6s3U1hlDwbePx3CiAap/t++/Q627P5i2a5MRwq529//E
-         rwpmx7NBVlzUS/xWCakXk3MAhPLm+hl0lZ+6T2XzDPS7h3jyflKNFqBXgig5pFrTlOUM
-         Qq9VutZkseMIUjcps2pbl1uAiBpmdGN8iyo33bCfjJugitRKWnKdh1vS4ML4EBKtpOdp
-         siow==
-X-Gm-Message-State: AOAM530I88u4XJDrlwpktik2vT6GrTByyimUPkPLrlxnR3ODRhNATOkD
-        Q6e5w0vrY2U6DlECwRiTOE+m7CYKlk02aw==
-X-Google-Smtp-Source: ABdhPJz1JJFpDvHfIzAqgbnGUeuraT6RkK3cM76pgob/tqzC+lFOJzt//SUhOOU6QHvDtvw+nG2caw==
-X-Received: by 2002:a5d:9e51:: with SMTP id i17mr2607501ioi.8.1591248043464;
-        Wed, 03 Jun 2020 22:20:43 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id r17sm900698ilc.33.2020.06.03.22.20.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 03 Jun 2020 22:20:42 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 05:20:41 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
+        id S1726221AbgFDMwg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Jun 2020 08:52:36 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35727 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725926AbgFDMwg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jun 2020 08:52:36 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jgpMC-0007l3-4H; Thu, 04 Jun 2020 12:52:28 +0000
+Date:   Thu, 4 Jun 2020 14:52:26 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
 To:     Kees Cook <keescook@chromium.org>
-Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
-        linux-kernel@vger.kernel.org, Tycho Andersen <tycho@tycho.ws>,
+Cc:     Sargun Dhillon <sargun@sargun.me>, linux-kernel@vger.kernel.org,
+        Tycho Andersen <tycho@tycho.ws>,
         Matt Denton <mpdenton@google.com>,
         Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
         Aleksa Sarai <cyphar@cyphar.com>,
@@ -57,21 +29,22 @@ Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
         Giuseppe Scrivano <gscrivan@redhat.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Al Viro <viro@zeniv.linux.org.uk>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
         "David S . Miller" <davem@davemloft.net>,
+        John Fastabend <john.r.fastabend@intel.com>,
         Tejun Heo <tj@kernel.org>, stable@vger.kernel.org,
         cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
  move fds across processes
-Message-ID: <20200604052040.GA16501@ircssh-2.c.rugged-nimbus-611.internal>
+Message-ID: <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
 References: <20200603011044.7972-1-sargun@sargun.me>
  <20200603011044.7972-2-sargun@sargun.me>
  <20200604012452.vh33nufblowuxfed@wittgenstein>
  <202006031845.F587F85A@keescook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 In-Reply-To: <202006031845.F587F85A@keescook>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -172,6 +145,48 @@ On Wed, Jun 03, 2020 at 07:22:57PM -0700, Kees Cook wrote:
 > 
 > int file_receive(int fd, unsigned long flags, struct file *file,
 > 		 int __user *fdptr)
+
+I still fail to see what this whole put_user() handling buys us at all
+and why this function needs to be anymore complicated then simply:
+
+fd_install_received(int fd, struct file *file)
+{
+	security_file_receive(file);
+ 
+ 	sock = sock_from_file(fd, &err);
+ 	if (sock) {
+ 		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
+ 		sock_update_classid(&sock->sk->sk_cgrp_data);
+ 	}
+
+	fd_install();
+	return;
+}
+
+exactly like fd_install() but for received files.
+
+For scm you can fail somewhere in the middle of putting any number of
+file descriptors so you're left in a state with only a subset of
+requested file descriptors installed so it's not really useful there.
+And if you manage to install an fd but then fail to put_user() it
+userspace can simply check it's fds via proc and has to anyway on any
+scm message error. If you fail an scm message userspace better check
+their fds.
+For seccomp maybe but even there I doubt it and I still maintain that
+userspace screwing this up is on them which is how we do this most of
+the time. And for pidfd_getfd() this whole put_user() thing doesn't
+matter at all.
+
+It's much easier and clearer if we simply have a fd_install() -
+fd_install_received() parallelism where we follow an established
+convention. _But_ if that blocks you from making this generic enough
+then at least the replace_fd() vs fd_install() logic seems it shouldn't
+be in there. 
+
+And the function name really needs to drive home the point that it
+installs an fd into the tasks fdtable no matter what version you go
+with. file_receive() is really not accurate enough for this at all.
+
 > {
 > 	struct socket *sock;
 > 	int err;
@@ -223,51 +238,3 @@ On Wed, Jun 03, 2020 at 07:22:57PM -0700, Kees Cook wrote:
 > 
 > -- 
 > Kees Cook
-This seems weird that the function has two different return mechanisms
-depending on the value of fdptr, especially given that behaviour is
-only invoked by SCM, whereas the other callers (addfd, and pidfd_getfd)
-just want the FD value returned.
-
-Won't this produce a "bad" result, if the user does:
-
-struct msghdr msg = {};
-struct cmsghdr *cmsg;
-struct iovec io = {
-	.iov_base = &c,
-	.iov_len = 1,
-};
-
-msg.msg_iov = &io;
-msg.msg_iovlen = 1;
-msg.msg_control = NULL;
-msg.msg_controllen = sizeof(buf);
-
-recvmsg(sock, &msg, 0);
-----
-
-This will end up installing the FD, but it will efault, when
-scm_detach_fds tries to fill out the rest of the info. 
-
-I mean, we can easily solve this with a null pointer check
-in scm_detach_fds, but my fear is that user n will forget
-to do this, and make a mistake.
-
-Maybe it would be nice to have:
-
-/* Receives file descriptor and installs it in userspace at uptr. */
-static inline intfile_receive_user(struct file *file, unsigned long flags,
-				   int __user *fdptr)
-{
-	if (fdptr == NULL)
-		return -EFAULT;
-
-	return __file_receive(-1, flags, file, uptr);
-}
-
-And then just let pidfd_getfd, and seccomp_addfd call __file_receive
-directly, or offer a different helper like:
-
-static inline file_receive(long fd, struct *file, unsigned long flags)
-{
-	return __file_receive(fd, flags, file, NULL);
-}
