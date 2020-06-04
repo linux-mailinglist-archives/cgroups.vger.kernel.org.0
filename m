@@ -2,111 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8D811EE816
-	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2020 17:57:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54F1F1EEDA1
+	for <lists+cgroups@lfdr.de>; Fri,  5 Jun 2020 00:06:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729619AbgFDP5I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Jun 2020 11:57:08 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:42864 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729216AbgFDP5I (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jun 2020 11:57:08 -0400
-Received: by mail-ej1-f66.google.com with SMTP id k11so6658705ejr.9
-        for <cgroups@vger.kernel.org>; Thu, 04 Jun 2020 08:57:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Icf5qOuQ0PqhfFGqACEYzjrp6a9b4hmTL4gSujxhojA=;
-        b=L9Dy4FeF0FsnZXBCPMytTOwIkCbMyC/ZYXA+dFhQFwsXjErvuByk5D6x/IkcMWlSW8
-         ooyfYiJgN3WmM0yuB2pqzngU5v4H+/H8OZzW+uK3/WBU1mTqTnsZIEZ6m7PHhbcPzpY7
-         eDUN66xRszZPUuno7Vcl1VFO2nfldFmhq/684PC1HBSUn3kTUYkGzSIg+UljvJvWqiqQ
-         4oTWcpQ0VwWWE7mCkJtBnzQISdPZ+z/j29/ZKWjR3evswekM89sY2A2l3NzYlqXMXubC
-         LJqqQ4Dnwji/f/oWuTtKfhdKplTP2LJXj9FMCxTfXrK2WxDwhE3Q7QFQ7cL3S2sDlaf+
-         sGOg==
-X-Gm-Message-State: AOAM531ov6A4ZJzOdgumrwQ1Fvmt1AYJYu2KM+vtqNsH7TWymKTyuJxo
-        W5BcNPGTvXr7NtIxxn7f9YA=
-X-Google-Smtp-Source: ABdhPJz0IXqhK/g0xGjZ0NqbNofp5gGXOAMGVRTQ4INUODYUzpJ42S9KNHPAn4Ts5G6tNTwjSc1EFg==
-X-Received: by 2002:a17:907:b15:: with SMTP id h21mr4573394ejl.450.1591286226320;
-        Thu, 04 Jun 2020 08:57:06 -0700 (PDT)
-Received: from localhost (ip-37-188-245-182.eurotel.cz. [37.188.245.182])
-        by smtp.gmail.com with ESMTPSA id l8sm2533564ejz.52.2020.06.04.08.57.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Jun 2020 08:57:04 -0700 (PDT)
-Date:   Thu, 4 Jun 2020 17:57:00 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org, kernel-team@fb.com,
-        tj@kernel.org, hannes@cmpxchg.org, chris@chrisdown.name,
-        cgroups@vger.kernel.org, shakeelb@google.com
-Subject: Re: [PATCH mm v6 4/4] mm: automatically penalize tasks with high
- swap use
-Message-ID: <20200604155700.GD4362@dhcp22.suse.cz>
-References: <20200527195846.102707-1-kuba@kernel.org>
- <20200527195846.102707-5-kuba@kernel.org>
+        id S1726268AbgFDWGn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Thu, 4 Jun 2020 18:06:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:52495 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726146AbgFDWGn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Jun 2020 18:06:43 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jgy0U-0001Oq-MK; Thu, 04 Jun 2020 22:06:38 +0000
+Date:   Fri, 5 Jun 2020 00:06:37 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        criu@openvz.org, lxc-devel@lists.linuxcontainers.org,
+        cgroups@vger.kernel.org
+Cc:     =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Virtual Linux Plumbers 2020: Containers and Checkpoint/Restore
+ microconference CFP Open until 20 July
+Message-ID: <20200604220637.d4ccmcsswi2ppniw@wittgenstein>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200527195846.102707-5-kuba@kernel.org>
+Content-Transfer-Encoding: 8BIT
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 27-05-20 12:58:46, Jakub Kicinski wrote:
-> Add a memory.swap.high knob, which can be used to protect the system
-> from SWAP exhaustion. The mechanism used for penalizing is similar
-> to memory.high penalty (sleep on return to user space).
-> 
-> That is not to say that the knob itself is equivalent to memory.high.
-> The objective is more to protect the system from potentially buggy
-> tasks consuming a lot of swap and impacting other tasks, or even
-> bringing the whole system to stand still with complete SWAP
-> exhaustion. Hopefully without the need to find per-task hard
-> limits.
-> 
-> Slowing misbehaving tasks down gradually allows user space oom
-> killers or other protection mechanisms to react. oomd and earlyoom
-> already do killing based on swap exhaustion, and memory.swap.high
-> protection will help implement such userspace oom policies more
-> reliably.
-> 
-> We can use one counter for number of pages allocated under
-> pressure to save struct task space and avoid two separate
-> hierarchy walks on the hot path. The exact overage is
-> calculated on return to user space, anyway.
-> 
-> Take the new high limit into account when determining if swap
-> is "full". Borrowing the explanation from Johannes:
-> 
->   The idea behind "swap full" is that as long as the workload has plenty
->   of swap space available and it's not changing its memory contents, it
->   makes sense to generously hold on to copies of data in the swap
->   device, even after the swapin. A later reclaim cycle can drop the page
->   without any IO. Trading disk space for IO.
-> 
->   But the only two ways to reclaim a swap slot is when they're faulted
->   in and the references go away, or by scanning the virtual address space
->   like swapoff does - which is very expensive (one could argue it's too
->   expensive even for swapoff, it's often more practical to just reboot).
-> 
->   So at some point in the fill level, we have to start freeing up swap
->   slots on fault/swapin. Otherwise we could eventually run out of swap
->   slots while they're filled with copies of data that is also in RAM.
-> 
->   We don't want to OOM a workload because its available swap space is
->   filled with redundant cache.
-> 
-> Signed-off-by: Jakub Kicinski <kuba@kernel.org>
+Hey everyone,
 
-I am sorry for being late here but thanks for adding clarifications
-which make the semantic much more clear now! Also thanks for simplifying 
-the throttling implementation. If a different scaling is needed then
-this can be added later on.
+We're happy to announce that the Container and Checkpoint/Restore
+microconference (MC) has been accepted as part of Linux Plumber's again!
+The Containers and Checkpoint/Restore MC at Linux Plumbers is the opportunity
+for kernel developers, runtime maintainers, and generally everyone working on
+containers and related technologies to talk about what they are up to and agree
+on the next major changes to kernel and userspace.
 
-I do not see any other problems with the patch.
+As we have already done the last years, the micro-conference also covers topic
+of the Checkpoint-Restore micro-conference.
 
-Thanks!
--- 
-Michal Hocko
-SUSE Labs
+Please note that LPC 2020 was originally set to be held in Halifax, Nova
+Scotia, Canada but has been moved to a virtual event in light of recent events.
+Please see our organizing comittee's blog on the Plumber's website [1]
+for more information.
+
+We expect to time limit presentations/demos to 15 minutes including questions.
+More open ended discussion topics will get up to 30 minutes allocated.
+
+In the spirit of a Plumber's microconference we especially appreciate topics
+pitching new ideas and features people have been thinking about. This is also
+the time to talk about your favorite kernel- or userspace problems. If you have
+a proposal how to solve them or if you just want to gather input and ideas from
+other developers this is the right place.
+
+Here are some ideas for topics:
+
+System call filtering and interception
+Hardware enforced container isolation
+New seccomp features
+New cgroup features
+Handling cgroup v1 on cgroup v2 only hosts and vica versa
+Performance improvement for containers (following Spectre/Meltdown mitigation)
+Time namespacing
+CGroupV2 developments
+LSM, IMA, EVM, keyrings inside containers
+UID shifting filesystem (shiftfs)
+New mount API
+New pidfd API
+New clone3 syscall
+CRIU integration with container engines and orchestration frameworks
+(In)stability of less commonly used kernel ABIs
+Checkpoint/Restore performance improvements
+Improving the state of userfaultfd and its adoption in container runtimes
+Speeding up container live migration
+Extending and virtualizing procfs
+Restricting path resolution
+Android containers and containers on Android
+Container Auditing and Monitoring
+Cgroups and Containers with Real-Time Scheduling
+
+Some of those are ideas in search of an acceptable solution, some are problems
+likely to affect all container runtimes some are coverage of very recent
+kernel work and how that can be used by userspace, and some are proposed kernel
+patches that need in-person discussion. This list is not meant to be
+exhaustive. If you have other ideas or work to discuss, please apply! Keep in
+mind both kernel- and userspace topics are acceptable!
+
+Please make your proposals on the Linux Plumber's website selecting the
+Containers and Checkpoint/Restore MC as the Track you're submitting at:
+
+https://linuxplumbersconf.org/event/7/abstracts/
+
+We’ll accept proposals for this micro-conference until the 20 of July 2020.
+
+This year’s edition of the micro-conference is organized and run by:
+
+Christian Brauner (Canonical Ltd.)
+Stéphane Graber (Canonical Ltd.)
+Mike Rapoport (IBM)
+
+[1]: https://www.linuxplumbersconf.org/blog/2020/linux-plumbers-conference-2020-goes-virtual/
+
