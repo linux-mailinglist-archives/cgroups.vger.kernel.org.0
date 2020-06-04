@@ -2,101 +2,232 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9A01ED0DA
-	for <lists+cgroups@lfdr.de>; Wed,  3 Jun 2020 15:32:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87A5B1EDA64
+	for <lists+cgroups@lfdr.de>; Thu,  4 Jun 2020 03:25:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725881AbgFCNcu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Jun 2020 09:32:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47540 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725797AbgFCNct (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Jun 2020 09:32:49 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BE22C08C5C0
-        for <cgroups@vger.kernel.org>; Wed,  3 Jun 2020 06:32:49 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id p5so2364645wrw.9
-        for <cgroups@vger.kernel.org>; Wed, 03 Jun 2020 06:32:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
-        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
-        b=q+nnIMOV8QPLuimjJR+FSv9a9Hdhy9ho4/8fHMAopTvh1Ny0KFTWdnudIzTDklc5PB
-         9SshMMU6nDgahhiEW1cK4xUhUemT7lhXlQguy59r7khMA6uG7c7YyMapoERtJ1zXpxVC
-         Bc9YU/P5cf+tQXq29HrvH25QDkx1vX2Np2avosp3kcIjf5dUVXCHXRU/DvpRfGFgiWiE
-         rAOAEiX3EVAkk2Iv8vJKAgXQRhCzyOykN7XV8CsQGJHf0+QmkSlTWCi7FdYiGAtitmZf
-         k8thGP39CyHFAm2q5IdfPkd3lZVigLFdcMdRpz+DIJr1r6uufmQMngKijtQo2ZYphOP9
-         qPlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:sender:from:date
-         :message-id:subject:to;
-        bh=H8rDQEJouwBJIElP/Vpqq+PrvTZxQQy2H7A/MvyMMB0=;
-        b=pjqzGQDIw8zq0J6w2WZoblgrluiY26I3rXgw7H79exL1cmvYN/Ai+J7wHt8NqvRW67
-         3B55gX4fgKxBtrq9QpTy93Gn3ECdlE2YqKHfRpBFf0p9COtI/wNS75qevVDQFndoOPE9
-         e3RqsrhqBLgqqXsiSaXgKogNORWXfddAPGZ+cbZAzw3HBMR3cSujrImlVM8eLrKoZV+d
-         I4hABFJWh0RMld+0iPGQtuxJGmYyOOeU/XoxqI7juI1wyilnWjzLlRAmeb6B8gFiLx2J
-         IJYMJNKTS+UZKyjGJDdAmq/nwKUZYiDVVyTbLO3x2uW9Y5dlo5OtaWvMKoddDSvvuM95
-         gpCg==
-X-Gm-Message-State: AOAM531Er2h6U2+XE52Ao3LoBNCV2j5Q/vYLdDeC57pZobaNtx/SBvGa
-        iSoGbbxKWnkk4DJ8mnGZyNyIK3t+bAkqlxGxG64=
-X-Google-Smtp-Source: ABdhPJynP2KZI5XhkFA9zkLHQZ1uEj62UDn8MKK1YNSuTLKQDNuzmex0HWzLnmDStXCXRG5PK0eTuAPEiWypx2HAteY=
-X-Received: by 2002:adf:a396:: with SMTP id l22mr20537577wrb.24.1591191168018;
- Wed, 03 Jun 2020 06:32:48 -0700 (PDT)
+        id S1726480AbgFDBY7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Jun 2020 21:24:59 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:42656 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725946AbgFDBY7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Jun 2020 21:24:59 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jgecn-0006qD-L0; Thu, 04 Jun 2020 01:24:53 +0000
+Date:   Thu, 4 Jun 2020 03:24:52 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Kees Cook <keescook@chromium.org>, linux-kernel@vger.kernel.org,
+        Tycho Andersen <tycho@tycho.ws>,
+        Matt Denton <mpdenton@google.com>,
+        Jann Horn <jannh@google.com>, Chris Palmer <palmer@google.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Robert Sesek <rsesek@google.com>,
+        containers@lists.linux-foundation.org,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
+        "David S . Miller" <davem@davemloft.net>,
+        John Fastabend <john.r.fastabend@intel.com>,
+        Tejun Heo <tj@kernel.org>, stable@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Message-ID: <20200604012452.vh33nufblowuxfed@wittgenstein>
+References: <20200603011044.7972-1-sargun@sargun.me>
+ <20200603011044.7972-2-sargun@sargun.me>
 MIME-Version: 1.0
-Reply-To: susanjones.wife@gmail.com
-Received: by 2002:adf:f112:0:0:0:0:0 with HTTP; Wed, 3 Jun 2020 06:32:47 -0700 (PDT)
-From:   "Mrs.Susan Jones" <sus.wifejones@gmail.com>
-Date:   Wed, 3 Jun 2020 14:32:47 +0100
-X-Google-Sender-Auth: ugQNlP48brp64rhp8zmuJMZC8R8
-Message-ID: <CAAxb+3w=_+QhwD_MCfN4MxEagbuwe7urLu439Cx0FguZOqR8aQ@mail.gmail.com>
-Subject: HELLO: I AM MRS SUSAN JONES
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20200603011044.7972-2-sargun@sargun.me>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
--- 
-OUR GOLDEN OPPORTUNITY
+On Tue, Jun 02, 2020 at 06:10:41PM -0700, Sargun Dhillon wrote:
+> Previously there were two chunks of code where the logic to receive file
+> descriptors was duplicated in net. The compat version of copying
+> file descriptors via SCM_RIGHTS did not have logic to update cgroups.
+> Logic to change the cgroup data was added in:
+> commit 48a87cc26c13 ("net: netprio: fd passed in SCM_RIGHTS datagram not set correctly")
+> commit d84295067fc7 ("net: net_cls: fd passed in SCM_RIGHTS datagram not set correctly")
+> 
+> This was not copied to the compat path. This commit fixes that, and thus
+> should be cherry-picked into stable.
+> 
+> This introduces a helper (file_receive) which encapsulates the logic for
+> handling calling security hooks as well as manipulating cgroup information.
+> This helper can then be used other places in the kernel where file
+> descriptors are copied between processes
+> 
+> I tested cgroup classid setting on both the compat (x32) path, and the
+> native path to ensure that when moving the file descriptor the classid
+> is set.
+> 
+> Signed-off-by: Sargun Dhillon <sargun@sargun.me>
+> Suggested-by: Kees Cook <keescook@chromium.org>
+> Cc: Al Viro <viro@zeniv.linux.org.uk>
+> Cc: Christian Brauner <christian.brauner@ubuntu.com>
+> Cc: Daniel Wagner <daniel.wagner@bmw-carit.de>
+> Cc: David S. Miller <davem@davemloft.net>
+> Cc: Jann Horn <jannh@google.com>,
+> Cc: John Fastabend <john.r.fastabend@intel.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Tycho Andersen <tycho@tycho.ws>
+> Cc: stable@vger.kernel.org
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-fsdevel@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  fs/file.c            | 35 +++++++++++++++++++++++++++++++++++
+>  include/linux/file.h |  1 +
+>  net/compat.c         | 10 +++++-----
+>  net/core/scm.c       | 14 ++++----------
+>  4 files changed, 45 insertions(+), 15 deletions(-)
+> 
+> diff --git a/fs/file.c b/fs/file.c
+> index abb8b7081d7a..5afd76fca8c2 100644
+> --- a/fs/file.c
+> +++ b/fs/file.c
+> @@ -18,6 +18,9 @@
+>  #include <linux/bitops.h>
+>  #include <linux/spinlock.h>
+>  #include <linux/rcupdate.h>
+> +#include <net/sock.h>
+> +#include <net/netprio_cgroup.h>
+> +#include <net/cls_cgroup.h>
+>  
+>  unsigned int sysctl_nr_open __read_mostly = 1024*1024;
+>  unsigned int sysctl_nr_open_min = BITS_PER_LONG;
+> @@ -931,6 +934,38 @@ int replace_fd(unsigned fd, struct file *file, unsigned flags)
+>  	return err;
+>  }
+>  
+> +/*
+> + * File Receive - Receive a file from another process
+> + *
+> + * This function is designed to receive files from other tasks. It encapsulates
+> + * logic around security and cgroups. The file descriptor provided must be a
+> + * freshly allocated (unused) file descriptor.
+> + *
+> + * This helper does not consume a reference to the file, so the caller must put
+> + * their reference.
+> + *
+> + * Returns 0 upon success.
+> + */
+> +int file_receive(int fd, struct file *file)
 
-Hello Dear Friend,
+This is all just a remote version of fd_install(), yet it deviates from
+fd_install()'s semantics and naming. That's not great imho. What about
+naming this something like:
 
-Complement of the day, i hope you are doing great today. However, I am
-Mrs.Susan Jones, an auditor with one of the new generation banks here
-in Burkina Faso.
+fd_install_received()
 
-I am writing you this letter based on the latest development at my
-Department. i discovered some abandoned huge amount of money, Ten
-Million, Five hundred thousand  United States Dollars.($10.500.000).
-Now I am only contacting you as a foreigner because this money cannot
-be approved to a local bank account here, but can only be approved to
-any foreign account and foreign beneficiary because the money is in US
-dollars
+and move the get_file() out of there so it has the same semantics as
+fd_install(). It seems rather dangerous to have a function like
+fd_install() that consumes a reference once it returned and another
+version of this that is basically the same thing but doesn't consume a
+reference because it takes its own. Seems an invitation for confusion.
+Does that make sense?
 
-This will be  a legitimate transaction once you accept to build trust
-with me and follow simple instruction doing the transfer process,
-until the total sum transfer out of the bank here to your own bank
-account any where in the world, and I agreed to share the total money
-50/50 with you once you successful confirmed it in your bank account.
-But any expenses doing the transfer process will be deduct from the
-amount before sharing, If you are interested to work with me and
-provide a good receiving bank account, get back to me as soon as
-possible with the following details below.
-
-Your full name
-Your Profession
-Your direct mobile phone number
-Your Scanned International passport or any of your identity
-
-NOTE: PLEASE IT YOU ARE NOT INTERESTED DON'T BORDER TO RESPOND BACK TO
-AVOID TIME WASTED.
-
-As soon as I receive these data's, I will forward to you the
-application form which you will send to the bank for the claim and
-transfer of the fund into your bank account as the  new beneficial.
-
-I am waiting to hear from you soon
-
-Yours
-Mrs.Susan Jones
+> +{
+> +	struct socket *sock;
+> +	int err;
+> +
+> +	err = security_file_receive(file);
+> +	if (err)
+> +		return err;
+> +
+> +	fd_install(fd, get_file(file));
+> +
+> +	sock = sock_from_file(file, &err);
+> +	if (sock) {
+> +		sock_update_netprioidx(&sock->sk->sk_cgrp_data);
+> +		sock_update_classid(&sock->sk->sk_cgrp_data);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>  static int ksys_dup3(unsigned int oldfd, unsigned int newfd, int flags)
+>  {
+>  	int err = -EBADF;
+> diff --git a/include/linux/file.h b/include/linux/file.h
+> index 142d102f285e..7b56dc23e560 100644
+> --- a/include/linux/file.h
+> +++ b/include/linux/file.h
+> @@ -94,4 +94,5 @@ extern void fd_install(unsigned int fd, struct file *file);
+>  extern void flush_delayed_fput(void);
+>  extern void __fput_sync(struct file *);
+>  
+> +extern int file_receive(int fd, struct file *file);
+>  #endif /* __LINUX_FILE_H */
+> diff --git a/net/compat.c b/net/compat.c
+> index 4bed96e84d9a..8ac0e7e09208 100644
+> --- a/net/compat.c
+> +++ b/net/compat.c
+> @@ -293,9 +293,6 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
+>  
+>  	for (i = 0, cmfptr = (int __user *) CMSG_COMPAT_DATA(cm); i < fdmax; i++, cmfptr++) {
+>  		int new_fd;
+> -		err = security_file_receive(fp[i]);
+> -		if (err)
+> -			break;
+>  		err = get_unused_fd_flags(MSG_CMSG_CLOEXEC & kmsg->msg_flags
+>  					  ? O_CLOEXEC : 0);
+>  		if (err < 0)
+> @@ -306,8 +303,11 @@ void scm_detach_fds_compat(struct msghdr *kmsg, struct scm_cookie *scm)
+>  			put_unused_fd(new_fd);
+>  			break;
+>  		}
+> -		/* Bump the usage count and install the file. */
+> -		fd_install(new_fd, get_file(fp[i]));
+> +		err = file_receive(new_fd, fp[i]);
+> +		if (err) {
+> +			put_unused_fd(new_fd);
+> +			break;
+> +		}
+>  	}
+>  
+>  	if (i > 0) {
+> diff --git a/net/core/scm.c b/net/core/scm.c
+> index dc6fed1f221c..ba93abf2881b 100644
+> --- a/net/core/scm.c
+> +++ b/net/core/scm.c
+> @@ -303,11 +303,7 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
+>  	for (i=0, cmfptr=(__force int __user *)CMSG_DATA(cm); i<fdmax;
+>  	     i++, cmfptr++)
+>  	{
+> -		struct socket *sock;
+>  		int new_fd;
+> -		err = security_file_receive(fp[i]);
+> -		if (err)
+> -			break;
+>  		err = get_unused_fd_flags(MSG_CMSG_CLOEXEC & msg->msg_flags
+>  					  ? O_CLOEXEC : 0);
+>  		if (err < 0)
+> @@ -318,13 +314,11 @@ void scm_detach_fds(struct msghdr *msg, struct scm_cookie *scm)
+>  			put_unused_fd(new_fd);
+>  			break;
+>  		}
+> -		/* Bump the usage count and install the file. */
+> -		sock = sock_from_file(fp[i], &err);
+> -		if (sock) {
+> -			sock_update_netprioidx(&sock->sk->sk_cgrp_data);
+> -			sock_update_classid(&sock->sk->sk_cgrp_data);
+> +		err = file_receive(new_fd, fp[i]);
+> +		if (err) {
+> +			put_unused_fd(new_fd);
+> +			break;
+>  		}
+> -		fd_install(new_fd, get_file(fp[i]));
+>  	}
+>  
+>  	if (i > 0)
+> -- 
+> 2.25.1
+> 
