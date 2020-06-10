@@ -2,85 +2,177 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D471F594A
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2020 18:42:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEA41F59B9
+	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2020 19:10:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726449AbgFJQm1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Jun 2020 12:42:27 -0400
-Received: from mail-wm1-f66.google.com ([209.85.128.66]:32939 "EHLO
-        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726095AbgFJQm1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jun 2020 12:42:27 -0400
-Received: by mail-wm1-f66.google.com with SMTP id j198so5069105wmj.0;
-        Wed, 10 Jun 2020 09:42:26 -0700 (PDT)
+        id S1729359AbgFJRKh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Jun 2020 13:10:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728530AbgFJRKh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jun 2020 13:10:37 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC33CC03E96B
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id h95so1143231pje.4
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Wu1KxK3oWDaDyFouCR1IJCWRCCZuOnfSKhmf+rK5Zxw=;
+        b=oMmr18e2vlsUwaIbxh6CowxNZ5fXzjfgmkFL2R2jM2RUlcV/0jnVTduaVrPaFnDGs9
+         QDuR/bYJP+8NCw01k5v6u7s7UrHLS9i8UYMPU93hCzQfrKP3xRzfjAw0OBDtnOAgcdtQ
+         7KVFiv3APJf/AYGrTCrcwRMVTg4Dwe/DNZI54=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Ook+0bD6nDY7guFSHqX6ZWDJpxvAcnd7uAbxr86fzgA=;
-        b=CKacqhAyf0TxQgaQC+am7iJo4KA+4beZCpQATGsUODSKFG1n6+gbMS+xITeM8efrf2
-         RwNU2pKIuPTC7C9WesoJ95uX/dB4Y70hWeGDMWx1sviPw8BQ95HMEAhbzsJL0GD1hpN5
-         fGUcX4Ru7nPsnzVlzBgp+odeGjcLgptUe1XN/mEshiCbyek/0bdIvsMq8SPGr3ORvM1B
-         Iy9vuTSFRzXZJqloF8g9Q/w8XzaL5bYi0ZyzPQqOo8PMfFG+zafgX3fPEBid5DVP1wdp
-         +DRAtXAbGizIqZHxwWeZYhDmCknpotKAom6da3nkkhU3Tnf+IZtx/CfFaIq7GBUyu+cW
-         /pXQ==
-X-Gm-Message-State: AOAM532Wdytrk+cKDPNS34GHiUTNpWKGBuW1zFNr4gZ5Lo4Nb57YbuQg
-        HO15SBZpsvki7TfDKEpONt0iqnQT
-X-Google-Smtp-Source: ABdhPJxmYRD6cZbJSPnxkRZsit0PruzpSfdFiZDIgh6S35E8QE1VmM5NhYom44xkETDEF/JI5xHTjQ==
-X-Received: by 2002:a7b:c18a:: with SMTP id y10mr4245243wmi.73.1591807345411;
-        Wed, 10 Jun 2020 09:42:25 -0700 (PDT)
-Received: from localhost (ip-37-188-155-130.eurotel.cz. [37.188.155.130])
-        by smtp.gmail.com with ESMTPSA id s7sm471331wrr.60.2020.06.10.09.42.23
+        bh=Wu1KxK3oWDaDyFouCR1IJCWRCCZuOnfSKhmf+rK5Zxw=;
+        b=avvMGgXGhRp65rUevJH3W2trdk6GU7EcrTszip8jZjN7Wnr74DGsDeepF5Vat36kps
+         qdRFTjZISh1lePVSNlZd3mXT2ax8ErDipzLq+s9z41Ws6KLQyro6cfsvhyNZyP3K9sX1
+         ej1dycK2ofAotIPxbn8lSFvUJVndqyd98wClxWh/upoYG59TqT7E4rAWlFjbBmFW1vhE
+         0jtzz9MhWsCqZGThnfEEY85+K3neWtfscg4gEPHjgEX3Rhvi/Xh/8+Eo2bhr6Oy8bAZv
+         x2EDXFxiU9Rx6vhKMskaX7v3zBSxHcJV12cDhf28l8kIElLR+98lGJ8AIaGDQrjiv68E
+         hhxg==
+X-Gm-Message-State: AOAM530mawXnFX5ZIuq+DSknJAfvoxkBsRYVcTtO0JrCMRGQT2qvLj9O
+        Y/VcZOZBFq8qS4N+yLjk/+LK0NlaQVf4bQ==
+X-Google-Smtp-Source: ABdhPJxayOX7rVXqbhvcTIWz5BPNBU4r5agrcCKjs9HEcbi4xBHT9zFhKhsPc7rddjV41A6Y2XRKoQ==
+X-Received: by 2002:a17:902:7487:: with SMTP id h7mr3828645pll.155.1591809036089;
+        Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id h3sm484466pfr.2.2020.06.10.10.10.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 09:42:24 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 18:42:22 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Joonsoo Kim <js1304@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH 09/19] mm: memcontrol: switch to native NR_FILE_PAGES and
- NR_SHMEM counters
-Message-ID: <20200610164222.GE20204@dhcp22.suse.cz>
-References: <20200508183105.225460-1-hannes@cmpxchg.org>
- <20200508183105.225460-10-hannes@cmpxchg.org>
+        Wed, 10 Jun 2020 10:10:34 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 10:10:33 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        containers@lists.linux-foundation.org,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
+        linux-kernel@vger.kernel.org, Matt Denton <mpdenton@google.com>,
+        John Fastabend <john.r.fastabend@intel.com>,
+        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, cgroups@vger.kernel.org,
+        stable@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Message-ID: <202006101005.D1D19EE@keescook>
+References: <20200604012452.vh33nufblowuxfed@wittgenstein>
+ <202006031845.F587F85A@keescook>
+ <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
+ <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006091235.930519F5B@keescook>
+ <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
+ <202006091346.66B79E07@keescook>
+ <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
+ <202006092227.D2D0E1F8F@keescook>
+ <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200508183105.225460-10-hannes@cmpxchg.org>
+In-Reply-To: <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 08-05-20 14:30:56, Johannes Weiner wrote:
-> Memcg maintains private MEMCG_CACHE and NR_SHMEM counters. This
-> divergence from the generic VM accounting means unnecessary code
-> overhead, and creates a dependency for memcg that page->mapping is set
-> up at the time of charging, so that page types can be told apart.
+On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
+> On Tue, Jun 09, 2020 at 10:27:54PM -0700, Kees Cook wrote:
+> > On Tue, Jun 09, 2020 at 11:27:30PM +0200, Christian Brauner wrote:
+> > > On June 9, 2020 10:55:42 PM GMT+02:00, Kees Cook <keescook@chromium.org> wrote:
+> > > >LOL. And while we were debating this, hch just went and cleaned stuff up:
+> > > >
+> > > >2618d530dd8b ("net/scm: cleanup scm_detach_fds")
+> > > >
+> > > >So, um, yeah, now my proposal is actually even closer to what we already
+> > > >have there. We just add the replace_fd() logic to __scm_install_fd() and
+> > > >we're done with it.
+> > > 
+> > > Cool, you have a link? :)
+> > 
+> > How about this:
+> > 
+> Thank you.
+> > https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/seccomp/addfd/v3.1&id=bb94586b9e7cc88e915536c2e9fb991a97b62416
+> > 
+> > -- 
+> > Kees Cook
 > 
-> Convert the generic accounting sites to mod_lruvec_page_state and
-> friends to maintain the per-cgroup vmstat counters of NR_FILE_PAGES
-> and NR_SHMEM. The page is already locked in these places, so
-> page->mem_cgroup is stable; we only need minimal tweaks of two
-> mem_cgroup_migrate() calls to ensure it's set up in time.
-> 
-> Then replace MEMCG_CACHE with NR_FILE_PAGES and delete the private
-> NR_SHMEM accounting sites.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+> +		if (ufd) {
+> +			error = put_user(new_fd, ufd);
+> +			if (error) {
+> +				put_unused_fd(new_fd);
+> +				return error;
+> +			}
+> + 		}
+> I'm fairly sure this introduces a bug[1] if the user does:
 
-While looking at the code I've noticed that add_to_swap_cache resp.
-__delete_from_swap_cache are accounting only to global counters.
-Is there any reason for that? Not something that this patch is
-responsible for of course but I am just wondering.
+Ah, sorry, I missed this before I posted my "v3.2" tree link.
+
+> 
+> struct msghdr msg = {};
+> struct cmsghdr *cmsg;
+> struct iovec io = {
+> 	.iov_base = &c,
+> 	.iov_len = 1,
+> };
+> 
+> msg.msg_iov = &io;
+> msg.msg_iovlen = 1;
+> msg.msg_control = NULL;
+> msg.msg_controllen = sizeof(buf);
+> 
+> recvmsg(sock, &msg, 0);
+> 
+> They will have the FD installed, no error message, but FD number wont be written 
+> to memory AFAICT. If two FDs are passed, you will get an efault. They will both
+> be installed, but memory wont be written to. Maybe instead of 0, make it a
+> poison pointer, or -1 instead?
+
+Hmmm. I see what you mean -- SCM_RIGHTS effectively _requires_ a valid
+__user pointer, so we can't use NULL to indicate "we don't want this".
+I'm not sure I can pass this through directly at all, though.
+
+> -----
+> As an aside, all of this junk should be dropped:
+> +	ret = get_user(size, &uaddfd->size);
+> +	if (ret)
+> +		return ret;
+> +
+> +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> +	if (ret)
+> +		return ret;
+> 
+> and the size member of the seccomp_notif_addfd struct. I brought this up 
+> off-list with Tycho that ioctls have the size of the struct embedded in them. We 
+> should just use that. The ioctl definition is based on this[2]:
+> #define _IOC(dir,type,nr,size) \
+> 	(((dir)  << _IOC_DIRSHIFT) | \
+> 	 ((type) << _IOC_TYPESHIFT) | \
+> 	 ((nr)   << _IOC_NRSHIFT) | \
+> 	 ((size) << _IOC_SIZESHIFT))
+> 
+> 
+> We should just use copy_from_user for now. In the future, we can either 
+> introduce new ioctl names for new structs, or extract the size dynamically from 
+> the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
+
+Okay, sounds good.
+
+> ----
+> +#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOR(3,	\
+> +						struct seccomp_notif_addfd)
+> 
+> Lastly, what I believe to be a small mistake, it should be SECCOMP_IOW, based on 
+> the documentation in ioctl.h -- "_IOW means userland is writing and kernel is 
+> reading."
+
+Okay, let me tweak things and get a "v3.3". ;)
+
 -- 
-Michal Hocko
-SUSE Labs
+Kees Cook
