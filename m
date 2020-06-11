@@ -2,68 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 363521F663F
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 13:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 443A61F6A36
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 16:43:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727979AbgFKLGi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jun 2020 07:06:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727045AbgFKLGf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 07:06:35 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19584C08C5C1
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 04:06:35 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u13so5788101iol.10
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 04:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=2R+wiFfzvQNb0IhDifqVeL6cc3fjUJMhYBce6rC6DCk=;
-        b=Z+sW2TmSn6OM09sIzUe+GQMvwrm3rd/qAFbZjYr2L+algtLl9Jmw9KCJ03Kqh3WBmH
-         TUdyrRddl5XGBkntRXl1Rqrp3Xl8aYytjB4MgxAI8tcXsASWj5iaReXFPsMcxI6pG+l3
-         Q+69LhfrlGgdVOJf0uh2V+rCbQOn19wm6MmiI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=2R+wiFfzvQNb0IhDifqVeL6cc3fjUJMhYBce6rC6DCk=;
-        b=psoL6CQ4d1aBwTK+AUFesclR4CnVa/e/KPnBooalrJ4Um8XcK+swCKVTOr2A4nQ8VE
-         G7FxBddZUc4opvZdz7f4SKahvnPotK6q0o+k4f7gCR3xq5Zs7zJCTYTZUuBhPUU41L31
-         my1Gn4zmi6aDZG4ranEgI0GBBvGRB2FM2IHdnyEJLxY7bb3Ev9tz6Y6F+MUGNgfeWmn+
-         1xjfNCLPPQyekoj/hdeb+p9tICKI3V2zvtqwbOcYmfoZdMF1oCaMFJZWyFHT9fYe/G2s
-         E9FCIx24fI9AEooznKVxOTbrO4XTv6kFE8K0BwI/1zjUHEE7AhwcjTg9qvXr87NARapH
-         +EQA==
-X-Gm-Message-State: AOAM533NH5AcJReZVKmcuQhFhTo2aUJbFXF5xSi2l9POekRiRPQt67nu
-        PkzmYYyipzh1FrzX52egz56CMA==
-X-Google-Smtp-Source: ABdhPJxAe2FFIVPIGtUH7XUlqRwmMIqQvWfQmGlMX7FGj+oJX7+J03taHo0cG57juW6PAL7xtwxx0g==
-X-Received: by 2002:a6b:1487:: with SMTP id 129mr7966323iou.197.1591873594035;
-        Thu, 11 Jun 2020 04:06:34 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id p10sm1369817ilm.32.2020.06.11.04.06.33
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 11 Jun 2020 04:06:33 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 11:06:31 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        containers@lists.linux-foundation.org,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
+        id S1728196AbgFKOnF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jun 2020 10:43:05 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:53357 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728059AbgFKOnE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 10:43:04 -0400
+Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jjOPw-0001ni-3R; Thu, 11 Jun 2020 14:42:56 +0000
+Date:   Thu, 11 Jun 2020 16:42:54 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Giuseppe Scrivano <gscrivan@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
         Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Robert Sesek <rsesek@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        containers@lists.linux-foundation.org,
         Daniel Wagner <daniel.wagner@bmw-carit.de>,
         linux-kernel@vger.kernel.org, Matt Denton <mpdenton@google.com>,
         John Fastabend <john.r.fastabend@intel.com>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
         stable@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
 Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
  move fds across processes
-Message-ID: <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
-References: <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
- <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
+Message-ID: <20200611144254.4ixxx66qabqlvxe4@wittgenstein>
+References: <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
  <202006091235.930519F5B@keescook>
  <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
  <202006091346.66B79E07@keescook>
@@ -72,194 +43,228 @@ References: <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
  <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
  <202006101953.899EFB53@keescook>
  <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
+ <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 12:01:14PM +0200, Christian Brauner wrote:
-> On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
-> > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
-> > > As an aside, all of this junk should be dropped:
-> > > +	ret = get_user(size, &uaddfd->size);
-> > > +	if (ret)
-> > > +		return ret;
-> > > +
-> > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-> > > +	if (ret)
-> > > +		return ret;
+On Thu, Jun 11, 2020 at 11:06:31AM +0000, Sargun Dhillon wrote:
+> On Thu, Jun 11, 2020 at 12:01:14PM +0200, Christian Brauner wrote:
+> > On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
+> > > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
+> > > > As an aside, all of this junk should be dropped:
+> > > > +	ret = get_user(size, &uaddfd->size);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > 
+> > > > and the size member of the seccomp_notif_addfd struct. I brought this up 
+> > > > off-list with Tycho that ioctls have the size of the struct embedded in them. We 
+> > > > should just use that. The ioctl definition is based on this[2]:
+> > > > #define _IOC(dir,type,nr,size) \
+> > > > 	(((dir)  << _IOC_DIRSHIFT) | \
+> > > > 	 ((type) << _IOC_TYPESHIFT) | \
+> > > > 	 ((nr)   << _IOC_NRSHIFT) | \
+> > > > 	 ((size) << _IOC_SIZESHIFT))
+> > > > 
+> > > > 
+> > > > We should just use copy_from_user for now. In the future, we can either 
+> > > > introduce new ioctl names for new structs, or extract the size dynamically from 
+> > > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
 > > > 
-> > > and the size member of the seccomp_notif_addfd struct. I brought this up 
-> > > off-list with Tycho that ioctls have the size of the struct embedded in them. We 
-> > > should just use that. The ioctl definition is based on this[2]:
-> > > #define _IOC(dir,type,nr,size) \
-> > > 	(((dir)  << _IOC_DIRSHIFT) | \
-> > > 	 ((type) << _IOC_TYPESHIFT) | \
-> > > 	 ((nr)   << _IOC_NRSHIFT) | \
-> > > 	 ((size) << _IOC_SIZESHIFT))
-> > > 
-> > > 
-> > > We should just use copy_from_user for now. In the future, we can either 
-> > > introduce new ioctl names for new structs, or extract the size dynamically from 
-> > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
+> > > Yeah, that seems reasonable. Here's the diff for that part:
 > > 
-> > Yeah, that seems reasonable. Here's the diff for that part:
+> > Why does it matter that the ioctl() has the size of the struct embedded
+> > within? Afaik, the kernel itself doesn't do anything with that size. It
+> > merely checks that the size is not pathological and it does so at
+> > compile time.
+> > 
+> > #ifdef __CHECKER__
+> > #define _IOC_TYPECHECK(t) (sizeof(t))
+> > #else
+> > /* provoke compile error for invalid uses of size argument */
+> > extern unsigned int __invalid_size_argument_for_IOC;
+> > #define _IOC_TYPECHECK(t) \
+> > 	((sizeof(t) == sizeof(t[1]) && \
+> > 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
+> > 	  sizeof(t) : __invalid_size_argument_for_IOC)
+> > #endif
+> > 
+> > The size itself is not verified at runtime. copy_struct_from_user()
+> > still makes sense at least if we're going to allow expanding the struct
+> > in the future.
+> Right, but if we simply change our headers and extend the struct, it will break 
+> all existing programs compiled against those headers. In order to avoid that, if 
+> we intend on extending this struct by appending to it, we need to have a 
+> backwards compatibility mechanism. Just having copy_struct_from_user isn't 
+> enough. The data structure either must be fixed size, or we need a way to handle 
+> multiple ioctl numbers derived from headers with different sized struct arguments
 > 
-> Why does it matter that the ioctl() has the size of the struct embedded
-> within? Afaik, the kernel itself doesn't do anything with that size. It
-> merely checks that the size is not pathological and it does so at
-> compile time.
+> The two approaches I see are:
+> 1. use more indirection. This has previous art in drm[1]. That's look
+> something like this:
 > 
-> #ifdef __CHECKER__
-> #define _IOC_TYPECHECK(t) (sizeof(t))
-> #else
-> /* provoke compile error for invalid uses of size argument */
-> extern unsigned int __invalid_size_argument_for_IOC;
-> #define _IOC_TYPECHECK(t) \
-> 	((sizeof(t) == sizeof(t[1]) && \
-> 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
-> 	  sizeof(t) : __invalid_size_argument_for_IOC)
-> #endif
+> struct seccomp_notif_addfd_ptr {
+> 	__u64 size;
+> 	__u64 addr;
+> }
 > 
-> The size itself is not verified at runtime. copy_struct_from_user()
-> still makes sense at least if we're going to allow expanding the struct
-> in the future.
-Right, but if we simply change our headers and extend the struct, it will break 
-all existing programs compiled against those headers. In order to avoid that, if 
-we intend on extending this struct by appending to it, we need to have a 
-backwards compatibility mechanism. Just having copy_struct_from_user isn't 
-enough. The data structure either must be fixed size, or we need a way to handle 
-multiple ioctl numbers derived from headers with different sized struct arguments
+> ... And then it'd be up to us to dereference the addr and copy struct from user.
 
-The two approaches I see are:
-1. use more indirection. This has previous art in drm[1]. That's look
-something like this:
-
-struct seccomp_notif_addfd_ptr {
-	__u64 size;
-	__u64 addr;
-}
-
-... And then it'd be up to us to dereference the addr and copy struct from user.
-
-2. Expose one ioctl to the user, many internally
-
-e.g., public api:
-
-struct seccomp_notif {
-	__u64 id;
-	__u64 pid;
-	struct seccomp_data;
-	__u64 fancy_new_field;
-}
-
-#define SECCOMP_IOCTL_NOTIF_RECV	SECCOMP_IOWR(0, struct seccomp_notif)
-
-internally:
-struct seccomp_notif_v1 {
-	__u64 id;
-	__u64 pid;
-	struct seccomp_data;
-}
-
-struct seccomp_notif_v2 {
-	__u64 id;
-	__u64 pid;
-	struct seccomp_data;
-	__u64 fancy_new_field;
-}
-
-and we can switch like this:
-	switch (cmd) {
-	/* for example. We actually have to do this for any struct we intend to 
-	 * extend to get proper backwards compatibility
-	 */
-	case SECCOMP_IOWR(0, struct seccomp_notif_v1)
-		return seccomp_notify_recv(filter, buf, sizeof(struct seccomp_notif_v1));
-	case SECCOMP_IOWR(0, struct seccomp_notif_v2)
-		return seccomp_notify_recv(filter, buf, sizeof(struct seccomp_notif_v3));
-...
-	case SECCOMP_IOCTL_NOTIF_SEND:
-		return seccomp_notify_send(filter, buf);
-	case SECCOMP_IOCTL_NOTIF_ID_VALID:
-		return seccomp_notify_id_valid(filter, buf);
-	default:
-		return -EINVAL;
-	}
-
-This has the downside that programs compiled against more modern kernel headers 
-will break on older kernels.
-
-3. We can take the approach you suggested.
-
-#define UNSIZED(cmd)	(cmd & ~(_IOC_SIZEMASK << _IOC_SIZESHIFT)
-static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
-				 unsigned long arg)
-{
-	struct seccomp_filter *filter = file->private_data;
-	void __user *buf = (void __user *)arg;
-	int size = _IOC_SIZE(cmd);
-	cmd = UNSIZED(cmd);
-
-	switch (cmd) {
-	/* for example. We actually have to do this for any struct we intend to 
-	 * extend to get proper backwards compatibility
-	 */
-	case UNSIZED(SECCOMP_IOCTL_NOTIF_RECV):
-		return seccomp_notify_recv(filter, buf, size);
-...
-	case SECCOMP_IOCTL_NOTIF_SEND:
-		return seccomp_notify_send(filter, buf);
-	case SECCOMP_IOCTL_NOTIF_ID_VALID:
-		return seccomp_notify_id_valid(filter, buf);
-	default:
-		return -EINVAL;
-	}
-}
+Which isn't great but could do.
 
 > 
-> Leaving that aside, the proposed direction here seems to mean that any
-> change to the struct itself will immediately mean a new ioctl() but
-> afaict, that also means a new struct. Since when you simply extend the
-> struct for the sake of the new ioctl you also change the size for the
-> ioctl.
+> 2. Expose one ioctl to the user, many internally
 > 
-> Sure, you can simply treat the struct coming through the old ioctl as
-> being "capped" by e.g. hiding the size as suggested but then the gain
-> by having two separate ioctls is 0 compared to simply versioning the
-> struct with an explicit size member since the size encoded in the ioctl
-> and the actual size of the struct don't line up anymore which is the
-> only plus I can see for relying on _IOC_SIZE(). All this manages to do
-> then is to make it more annoying for userspace since they now need to
-> maintain multiple ioctls(). And if you have - however unlikely - say
-> three different ioctls all to be used with a different struct size of
-> the same struct I now need to know which ioctl() goes with which size of
-> the struct (I guess you could append the size to the ioctl name?
-> *shudder*). If you have the size in the struct itself you don't need to
-> care about any of that.
-> Maybe I'm not making sense or I misunderstand what's going on though.
+> e.g., public api:
 > 
-> Christian
+> struct seccomp_notif {
+> 	__u64 id;
+> 	__u64 pid;
+> 	struct seccomp_data;
+> 	__u64 fancy_new_field;
+> }
 > 
-I don't understand why userspace has to have any knowledge of this. As soon as 
-we add the code above, and we use copy_struct_from_user based on _that_ size,
-userspace will get free upgrades. If they are compiling against an older header
-than the kernel, size will return a smaller number, and thus we will zero
-out our trailing bits, and if their number is bigger, we just check their
-bits are appropriately zeroed.
+> #define SECCOMP_IOCTL_NOTIF_RECV	SECCOMP_IOWR(0, struct seccomp_notif)
+> 
+> internally:
+> struct seccomp_notif_v1 {
+> 	__u64 id;
+> 	__u64 pid;
+> 	struct seccomp_data;
+> }
+> 
+> struct seccomp_notif_v2 {
+> 	__u64 id;
+> 	__u64 pid;
+> 	struct seccomp_data;
+> 	__u64 fancy_new_field;
+> }
+> 
+> and we can switch like this:
+> 	switch (cmd) {
+> 	/* for example. We actually have to do this for any struct we intend to 
+> 	 * extend to get proper backwards compatibility
+> 	 */
+> 	case SECCOMP_IOWR(0, struct seccomp_notif_v1)
+> 		return seccomp_notify_recv(filter, buf, sizeof(struct seccomp_notif_v1));
+> 	case SECCOMP_IOWR(0, struct seccomp_notif_v2)
+> 		return seccomp_notify_recv(filter, buf, sizeof(struct seccomp_notif_v3));
+> ...
+> 	case SECCOMP_IOCTL_NOTIF_SEND:
+> 		return seccomp_notify_send(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
+> 		return seccomp_notify_id_valid(filter, buf);
+> 	default:
+> 		return -EINVAL;
+> 	}
+> 
+> This has the downside that programs compiled against more modern kernel headers 
+> will break on older kernels.
+> 
+> 3. We can take the approach you suggested.
+> 
+> #define UNSIZED(cmd)	(cmd & ~(_IOC_SIZEMASK << _IOC_SIZESHIFT)
+> static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
+> 				 unsigned long arg)
+> {
+> 	struct seccomp_filter *filter = file->private_data;
+> 	void __user *buf = (void __user *)arg;
+> 	int size = _IOC_SIZE(cmd);
+> 	cmd = UNSIZED(cmd);
+> 
+> 	switch (cmd) {
+> 	/* for example. We actually have to do this for any struct we intend to 
+> 	 * extend to get proper backwards compatibility
+> 	 */
+> 	case UNSIZED(SECCOMP_IOCTL_NOTIF_RECV):
+> 		return seccomp_notify_recv(filter, buf, size);
+> ...
+> 	case SECCOMP_IOCTL_NOTIF_SEND:
+> 		return seccomp_notify_send(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
+> 		return seccomp_notify_id_valid(filter, buf);
+> 	default:
+> 		return -EINVAL;
+> 	}
+> }
+> 
+> > 
+> > Leaving that aside, the proposed direction here seems to mean that any
+> > change to the struct itself will immediately mean a new ioctl() but
+> > afaict, that also means a new struct. Since when you simply extend the
+> > struct for the sake of the new ioctl you also change the size for the
+> > ioctl.
+> > 
+> > Sure, you can simply treat the struct coming through the old ioctl as
+> > being "capped" by e.g. hiding the size as suggested but then the gain
+> > by having two separate ioctls is 0 compared to simply versioning the
+> > struct with an explicit size member since the size encoded in the ioctl
+> > and the actual size of the struct don't line up anymore which is the
+> > only plus I can see for relying on _IOC_SIZE(). All this manages to do
+> > then is to make it more annoying for userspace since they now need to
+> > maintain multiple ioctls(). And if you have - however unlikely - say
+> > three different ioctls all to be used with a different struct size of
+> > the same struct I now need to know which ioctl() goes with which size of
+> > the struct (I guess you could append the size to the ioctl name?
+> > *shudder*). If you have the size in the struct itself you don't need to
+> > care about any of that.
+> > Maybe I'm not making sense or I misunderstand what's going on though.
+> > 
+> > Christian
+> > 
+> I don't understand why userspace has to have any knowledge of this. As soon as 
+> we add the code above, and we use copy_struct_from_user based on _that_ size,
 
-This approach would be forwards-and-backwards compatible.
+Hm, which code exactly?
 
-There's a little bit of prior art here as well [2]. The approach is that
-we effectively do the thing we had earlier with passing a size with
-copy_struct_from_user, but instead of the size being embedded in the struct,
-it's embedded in the ioctl command itself.
+In the previous mail the only thing proposed was to switch to a simple
+copy_from_user() which effectively bars us from extending the
+seccomp_addfd struct which this is about, right? At that point, the only
+option then becomes to either introduce a new ioctl() and a new struct
+or to go for the hack in e.g. 3. (Afaiu, 2. is not working anymore
+because we break userspace as soon as we append "fancy_new_field" to the
+struct because it changes the ioctl() unless I'm missing something.)
 
+Let me maybe rephrase: I'd prefer we merge something for addfd that is
+extensible with minimal burden on userspace. 
+But if we are fine with saying "we don't care, let's just use
+copy_from_user() for addfd and if we extend we add a new struct + ioctl"
+then ok, sure. But I would prefer to keep dealing with new structs +
+ioctls (Look at the end of btrfs.h [1] unlikely to be a problem for us,
+but still.) as little as possible because that will be more churn in
+userspace code than I'd prefer.
 
-[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/drm/radeon_drm.h?h=v5.7#n831
-[2]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/firewire/core-cdev.c?id=v5.7#n1621
+So either [1] or - since none of the generic extensibility seems to be
+particularly nice - we bite the bullet and just add a:
+
+__u64 reserved[4]
+
+field and hope that this will carry us for a long time (probably will
+for quite a long time) and defer the new ioctl() problem.
+
+[1]: https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/uapi/linux/btrfs.h
+
+> userspace will get free upgrades. If they are compiling against an older header
+> than the kernel, size will return a smaller number, and thus we will zero
+> out our trailing bits, and if their number is bigger, we just check their
+> bits are appropriately zeroed.
+> 
+> This approach would be forwards-and-backwards compatible.
+> 
+> There's a little bit of prior art here as well [2]. The approach is that
+> we effectively do the thing we had earlier with passing a size with
+> copy_struct_from_user, but instead of the size being embedded in the struct,
+> it's embedded in the ioctl command itself.
+
+That looks super sketchy. :D
+
+Christian
