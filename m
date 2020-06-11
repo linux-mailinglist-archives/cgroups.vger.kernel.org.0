@@ -2,143 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BBE1F6493
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 11:21:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4D161F64CF
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 11:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727114AbgFKJTx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jun 2020 05:19:53 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:43309 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727039AbgFKJTw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 05:19:52 -0400
-Received: from ip5f5af183.dynamic.kabel-deutschland.de ([95.90.241.131] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jjJN9-0007JQ-NC; Thu, 11 Jun 2020 09:19:43 +0000
-Date:   Thu, 11 Jun 2020 11:19:42 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        containers@lists.linux-foundation.org,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        linux-kernel@vger.kernel.org, Matt Denton <mpdenton@google.com>,
-        John Fastabend <john.r.fastabend@intel.com>,
-        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, cgroups@vger.kernel.org,
-        stable@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Message-ID: <20200611091942.jni2glnpmxisnant@wittgenstein>
-References: <202006031845.F587F85A@keescook>
- <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
- <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
- <202006091235.930519F5B@keescook>
- <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
- <202006091346.66B79E07@keescook>
- <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
- <202006092227.D2D0E1F8F@keescook>
- <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
- <202006101953.899EFB53@keescook>
+        id S1726790AbgFKJf3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jun 2020 05:35:29 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41199 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726560AbgFKJf2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 05:35:28 -0400
+Received: by mail-wr1-f66.google.com with SMTP id j10so5401760wrw.8;
+        Thu, 11 Jun 2020 02:35:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fCziW7D9RQqCEqfz7/IGRWHPMeEiWE2daJvcDBf0ZPA=;
+        b=sd4niBTvsJr+OjxfwYzZy/zmX5UHFSvgUubOcCTS9TucQ/Gl569kvXpMmLFDdjXkZm
+         ub/McMAoMmNiFgY/8WtTY4l6GyPeBY5RenXfQThl5pH2cmEk4F5oiNK+jMEeL/RLEwwT
+         0r6TXOTuij1gWvAKu2MUnUi/hu05bJemhjh2k2mjqkeLMyIsQI8lTh4YHAp2jvzCJt69
+         1v1fv7mzoDJTylwvc8FJRPfv5D1wz6mluXTlKglTzCzssFn6Rw/kmYwa2HmK+Z0AySM9
+         MH/sZ/7Vgb+cMOaorTtKPJDjfYnPDg4jdinRvItoFrl7t9N1RGOj6R0VmTEAo/UgYMY2
+         riLg==
+X-Gm-Message-State: AOAM531em3EIDz6qvd4lL7aThNi++5PafH3yP0a3G3bkbpTbY1kkL1k7
+        eTDpDfnfGVcVJM7RPLLCj9M=
+X-Google-Smtp-Source: ABdhPJwH0mDt5sHqy/XukKQyC767OzXT3IpOZMbx+o8zAQCUAY/T6Fsnyv8bfwIUq0D76RR8+m6TOg==
+X-Received: by 2002:a5d:484b:: with SMTP id n11mr8689943wrs.356.1591868126445;
+        Thu, 11 Jun 2020 02:35:26 -0700 (PDT)
+Received: from localhost (ip-37-188-174-201.eurotel.cz. [37.188.174.201])
+        by smtp.gmail.com with ESMTPSA id y19sm3165036wmi.6.2020.06.11.02.35.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 02:35:25 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 11:35:23 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Joonsoo Kim <js1304@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH 16/19] mm: memcontrol: charge swapin pages on
+ instantiation
+Message-ID: <20200611093523.GB20450@dhcp22.suse.cz>
+References: <20200508183105.225460-1-hannes@cmpxchg.org>
+ <20200508183105.225460-17-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202006101953.899EFB53@keescook>
+In-Reply-To: <20200508183105.225460-17-hannes@cmpxchg.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
-> On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
-> > As an aside, all of this junk should be dropped:
-> > +	ret = get_user(size, &uaddfd->size);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-> > +	if (ret)
-> > +		return ret;
-> > 
-> > and the size member of the seccomp_notif_addfd struct. I brought this up 
-> > off-list with Tycho that ioctls have the size of the struct embedded in them. We 
-> > should just use that. The ioctl definition is based on this[2]:
-> > #define _IOC(dir,type,nr,size) \
-> > 	(((dir)  << _IOC_DIRSHIFT) | \
-> > 	 ((type) << _IOC_TYPESHIFT) | \
-> > 	 ((nr)   << _IOC_NRSHIFT) | \
-> > 	 ((size) << _IOC_SIZESHIFT))
-> > 
-> > 
-> > We should just use copy_from_user for now. In the future, we can either 
-> > introduce new ioctl names for new structs, or extract the size dynamically from 
-> > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
-> 
-> Yeah, that seems reasonable. Here's the diff for that part:
-> 
-> diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
-> index 7b6028b399d8..98bf19b4e086 100644
-> --- a/include/uapi/linux/seccomp.h
-> +++ b/include/uapi/linux/seccomp.h
-> @@ -118,7 +118,6 @@ struct seccomp_notif_resp {
->  
->  /**
->   * struct seccomp_notif_addfd
-> - * @size: The size of the seccomp_notif_addfd datastructure
->   * @id: The ID of the seccomp notification
->   * @flags: SECCOMP_ADDFD_FLAG_*
->   * @srcfd: The local fd number
-> @@ -126,7 +125,6 @@ struct seccomp_notif_resp {
->   * @newfd_flags: The O_* flags the remote FD should have applied
->   */
->  struct seccomp_notif_addfd {
-> -	__u64 size;
->  	__u64 id;
->  	__u32 flags;
->  	__u32 srcfd;
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 3c913f3b8451..00cbdad6c480 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -1297,14 +1297,9 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
->  	struct seccomp_notif_addfd addfd;
->  	struct seccomp_knotif *knotif;
->  	struct seccomp_kaddfd kaddfd;
-> -	u64 size;
->  	int ret;
->  
-> -	ret = get_user(size, &uaddfd->size);
-> -	if (ret)
-> -		return ret;
-> -
-> -	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-> +	ret = copy_from_user(&addfd, uaddfd, sizeof(addfd));
->  	if (ret)
->  		return ret;
->  
-> 
-> > 
-> > ----
-> > +#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOR(3,	\
-> > +						struct seccomp_notif_addfd)
-> > 
-> > Lastly, what I believe to be a small mistake, it should be SECCOMP_IOW, based on 
-> > the documentation in ioctl.h -- "_IOW means userland is writing and kernel is 
-> > reading."
-> 
-> Oooooh. Yeah; good catch. Uhm, that means SECCOMP_IOCTL_NOTIF_ID_VALID
-> is wrong too, yes? Tycho, Christian, how disruptive would this be to
-> fix? (Perhaps support both and deprecate the IOR version at some point
-> in the future?)
+On Fri 08-05-20 14:31:03, Johannes Weiner wrote:
+[...]
+> diff --git a/mm/memory.c b/mm/memory.c
+> index 832ee914cbcf..93900b121b6e 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -3125,9 +3125,20 @@ vm_fault_t do_swap_page(struct vm_fault *vmf)
+>  			page = alloc_page_vma(GFP_HIGHUSER_MOVABLE, vma,
+>  							vmf->address);
+>  			if (page) {
+> +				int err;
+> +
+>  				__SetPageLocked(page);
+>  				__SetPageSwapBacked(page);
+>  				set_page_private(page, entry.val);
+> +
+> +				/* Tell memcg to use swap ownership records */
+> +				SetPageSwapCache(page);
+> +				err = mem_cgroup_charge(page, vma->vm_mm,
+> +							GFP_KERNEL, false);
+> +				ClearPageSwapCache(page);
+> +				if (err)
+> +					goto out_page;
 
-We have custom defines in our source code, i.e.
-#define SECCOMP_IOCTL_NOTIF_ID_VALID  SECCOMP_IOR(2, __u64)
-so ideally we'd have a SECCOMP_IOCTL_NOTIF_ID_VALID_V2
+err would be a return value from try_charge and that can be -ENOMEM. Now
+we almost never return ENOMEM for GFP_KERNEL single page charge. Except
+for async OOM handling (oom_disabled v1). So this needs translation to
+VM_FAULT_OOM.
 
-Does that sound ok?
-
-Christian
+I am not an expert on the swap code so I might have missed some subtle
+issues but the rest of the patch seems reasonable to me.
+-- 
+Michal Hocko
+SUSE Labs
