@@ -2,49 +2,49 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEA41F59B9
-	for <lists+cgroups@lfdr.de>; Wed, 10 Jun 2020 19:10:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0025A1F6038
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 05:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729359AbgFJRKh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Jun 2020 13:10:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60402 "EHLO
+        id S1726416AbgFKDAA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Jun 2020 23:00:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38318 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728530AbgFJRKh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jun 2020 13:10:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC33CC03E96B
-        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id h95so1143231pje.4
-        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
+        with ESMTP id S1726396AbgFKDAA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Jun 2020 23:00:00 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E3F76C08C5C4
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 19:59:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id s23so2022910pfh.7
+        for <cgroups@vger.kernel.org>; Wed, 10 Jun 2020 19:59:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=Wu1KxK3oWDaDyFouCR1IJCWRCCZuOnfSKhmf+rK5Zxw=;
-        b=oMmr18e2vlsUwaIbxh6CowxNZ5fXzjfgmkFL2R2jM2RUlcV/0jnVTduaVrPaFnDGs9
-         QDuR/bYJP+8NCw01k5v6u7s7UrHLS9i8UYMPU93hCzQfrKP3xRzfjAw0OBDtnOAgcdtQ
-         7KVFiv3APJf/AYGrTCrcwRMVTg4Dwe/DNZI54=
+        bh=lP4DTVpqVtxlC9MaFsoDN9/npQaHlEe1E0smsNRDWZY=;
+        b=ewreE9bF2kyTwnZRJ5UVCC2ltyCjUSmztW1aNJ6VlB/VObo3KwT+InjCahCm8eQgLV
+         uizAtftEHbnJZxdwxttgyeTlWySA8txlDR1rN9TjDc7oZrThm+OGpQjI+V2eFhNnaJEg
+         MdkJOgqIhqsMjDg3CaemZwzwEIfrizUaDagP4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=Wu1KxK3oWDaDyFouCR1IJCWRCCZuOnfSKhmf+rK5Zxw=;
-        b=avvMGgXGhRp65rUevJH3W2trdk6GU7EcrTszip8jZjN7Wnr74DGsDeepF5Vat36kps
-         qdRFTjZISh1lePVSNlZd3mXT2ax8ErDipzLq+s9z41Ws6KLQyro6cfsvhyNZyP3K9sX1
-         ej1dycK2ofAotIPxbn8lSFvUJVndqyd98wClxWh/upoYG59TqT7E4rAWlFjbBmFW1vhE
-         0jtzz9MhWsCqZGThnfEEY85+K3neWtfscg4gEPHjgEX3Rhvi/Xh/8+Eo2bhr6Oy8bAZv
-         x2EDXFxiU9Rx6vhKMskaX7v3zBSxHcJV12cDhf28l8kIElLR+98lGJ8AIaGDQrjiv68E
-         hhxg==
-X-Gm-Message-State: AOAM530mawXnFX5ZIuq+DSknJAfvoxkBsRYVcTtO0JrCMRGQT2qvLj9O
-        Y/VcZOZBFq8qS4N+yLjk/+LK0NlaQVf4bQ==
-X-Google-Smtp-Source: ABdhPJxayOX7rVXqbhvcTIWz5BPNBU4r5agrcCKjs9HEcbi4xBHT9zFhKhsPc7rddjV41A6Y2XRKoQ==
-X-Received: by 2002:a17:902:7487:: with SMTP id h7mr3828645pll.155.1591809036089;
-        Wed, 10 Jun 2020 10:10:36 -0700 (PDT)
+        bh=lP4DTVpqVtxlC9MaFsoDN9/npQaHlEe1E0smsNRDWZY=;
+        b=eHe0AGyl2wH2ZHARBSOUHX3BZIThhjT0FsWhi1IBWBLzOf1eU3ZKaHxLuPXnQu8njR
+         wIxzITaBHxyrjy9VnBUEEfAfnafxfmBq6EJuDGeW1PJnUQvQSym5kRp8k2KbLHcZLLdE
+         XqOFlusoCfDXOphUoA5FsW41xP9qfdzKANi/9O4iRn6EVLRDXbkLNySyXcjqvf+Yzlh8
+         5YB9q1qgnGRGEu4xZp6DpEAgmonFjMBaL53gVJGTyjG7ifb4h96m/gJnOVION8KSt/2z
+         3aLhHHIUJXQZ+DCAmjMiryqVB68dc6Ebw5uZbQIc91oSb8B3yoM7hHXlo+zDIyLhDME/
+         S1xw==
+X-Gm-Message-State: AOAM533eOJydEMXLgSmYSW57hggphVCeGV+r1yeZnyqDtB4g7YDF25jS
+        5f/K6Ru1MqQCdWo/ri6guBgcXA==
+X-Google-Smtp-Source: ABdhPJxRQ3wfBebdsxh56BY1Z64vWDb6HxWrd6T2L4+yh/OHQXKSrQd+GdnwY1k6ib8nqwMT1Bt+uA==
+X-Received: by 2002:a62:6804:: with SMTP id d4mr5595936pfc.100.1591844397704;
+        Wed, 10 Jun 2020 19:59:57 -0700 (PDT)
 Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id h3sm484466pfr.2.2020.06.10.10.10.34
+        by smtp.gmail.com with ESMTPSA id q193sm1295053pfq.158.2020.06.10.19.59.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Jun 2020 10:10:34 -0700 (PDT)
-Date:   Wed, 10 Jun 2020 10:10:33 -0700
+        Wed, 10 Jun 2020 19:59:56 -0700 (PDT)
+Date:   Wed, 10 Jun 2020 19:59:55 -0700
 From:   Kees Cook <keescook@chromium.org>
 To:     Sargun Dhillon <sargun@sargun.me>
 Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
@@ -61,7 +61,7 @@ Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
         stable@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
 Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
  move fds across processes
-Message-ID: <202006101005.D1D19EE@keescook>
+Message-ID: <202006101953.899EFB53@keescook>
 References: <20200604012452.vh33nufblowuxfed@wittgenstein>
  <202006031845.F587F85A@keescook>
  <20200604125226.eztfrpvvuji7cbb2@wittgenstein>
@@ -82,63 +82,6 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
-> On Tue, Jun 09, 2020 at 10:27:54PM -0700, Kees Cook wrote:
-> > On Tue, Jun 09, 2020 at 11:27:30PM +0200, Christian Brauner wrote:
-> > > On June 9, 2020 10:55:42 PM GMT+02:00, Kees Cook <keescook@chromium.org> wrote:
-> > > >LOL. And while we were debating this, hch just went and cleaned stuff up:
-> > > >
-> > > >2618d530dd8b ("net/scm: cleanup scm_detach_fds")
-> > > >
-> > > >So, um, yeah, now my proposal is actually even closer to what we already
-> > > >have there. We just add the replace_fd() logic to __scm_install_fd() and
-> > > >we're done with it.
-> > > 
-> > > Cool, you have a link? :)
-> > 
-> > How about this:
-> > 
-> Thank you.
-> > https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/commit/?h=devel/seccomp/addfd/v3.1&id=bb94586b9e7cc88e915536c2e9fb991a97b62416
-> > 
-> > -- 
-> > Kees Cook
-> 
-> +		if (ufd) {
-> +			error = put_user(new_fd, ufd);
-> +			if (error) {
-> +				put_unused_fd(new_fd);
-> +				return error;
-> +			}
-> + 		}
-> I'm fairly sure this introduces a bug[1] if the user does:
-
-Ah, sorry, I missed this before I posted my "v3.2" tree link.
-
-> 
-> struct msghdr msg = {};
-> struct cmsghdr *cmsg;
-> struct iovec io = {
-> 	.iov_base = &c,
-> 	.iov_len = 1,
-> };
-> 
-> msg.msg_iov = &io;
-> msg.msg_iovlen = 1;
-> msg.msg_control = NULL;
-> msg.msg_controllen = sizeof(buf);
-> 
-> recvmsg(sock, &msg, 0);
-> 
-> They will have the FD installed, no error message, but FD number wont be written 
-> to memory AFAICT. If two FDs are passed, you will get an efault. They will both
-> be installed, but memory wont be written to. Maybe instead of 0, make it a
-> poison pointer, or -1 instead?
-
-Hmmm. I see what you mean -- SCM_RIGHTS effectively _requires_ a valid
-__user pointer, so we can't use NULL to indicate "we don't want this".
-I'm not sure I can pass this through directly at all, though.
-
-> -----
 > As an aside, all of this junk should be dropped:
 > +	ret = get_user(size, &uaddfd->size);
 > +	if (ret)
@@ -162,8 +105,50 @@ I'm not sure I can pass this through directly at all, though.
 > introduce new ioctl names for new structs, or extract the size dynamically from 
 > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
 
-Okay, sounds good.
+Yeah, that seems reasonable. Here's the diff for that part:
 
+diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+index 7b6028b399d8..98bf19b4e086 100644
+--- a/include/uapi/linux/seccomp.h
++++ b/include/uapi/linux/seccomp.h
+@@ -118,7 +118,6 @@ struct seccomp_notif_resp {
+ 
+ /**
+  * struct seccomp_notif_addfd
+- * @size: The size of the seccomp_notif_addfd datastructure
+  * @id: The ID of the seccomp notification
+  * @flags: SECCOMP_ADDFD_FLAG_*
+  * @srcfd: The local fd number
+@@ -126,7 +125,6 @@ struct seccomp_notif_resp {
+  * @newfd_flags: The O_* flags the remote FD should have applied
+  */
+ struct seccomp_notif_addfd {
+-	__u64 size;
+ 	__u64 id;
+ 	__u32 flags;
+ 	__u32 srcfd;
+diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+index 3c913f3b8451..00cbdad6c480 100644
+--- a/kernel/seccomp.c
++++ b/kernel/seccomp.c
+@@ -1297,14 +1297,9 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
+ 	struct seccomp_notif_addfd addfd;
+ 	struct seccomp_knotif *knotif;
+ 	struct seccomp_kaddfd kaddfd;
+-	u64 size;
+ 	int ret;
+ 
+-	ret = get_user(size, &uaddfd->size);
+-	if (ret)
+-		return ret;
+-
+-	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
++	ret = copy_from_user(&addfd, uaddfd, sizeof(addfd));
+ 	if (ret)
+ 		return ret;
+ 
+
+> 
 > ----
 > +#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOR(3,	\
 > +						struct seccomp_notif_addfd)
@@ -172,7 +157,26 @@ Okay, sounds good.
 > the documentation in ioctl.h -- "_IOW means userland is writing and kernel is 
 > reading."
 
-Okay, let me tweak things and get a "v3.3". ;)
+Oooooh. Yeah; good catch. Uhm, that means SECCOMP_IOCTL_NOTIF_ID_VALID
+is wrong too, yes? Tycho, Christian, how disruptive would this be to
+fix? (Perhaps support both and deprecate the IOR version at some point
+in the future?)
+
+Diff for just addfd's change:
+
+diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+index 7b6028b399d8..98bf19b4e086 100644
+--- a/include/uapi/linux/seccomp.h
++++ b/include/uapi/linux/seccomp.h
+@@ -146,7 +144,7 @@ struct seccomp_notif_addfd {
+ 						struct seccomp_notif_resp)
+ #define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOR(2, __u64)
+ /* On success, the return value is the remote process's added fd number */
+-#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOR(3,	\
++#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOW(3,	\
+ 						struct seccomp_notif_addfd)
+ 
+ #endif /* _UAPI_LINUX_SECCOMP_H */
 
 -- 
 Kees Cook
