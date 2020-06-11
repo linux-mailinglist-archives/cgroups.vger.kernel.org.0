@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E7F1F6193
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 08:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 374A61F6196
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 08:19:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726583AbgFKGRL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jun 2020 02:17:11 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:32795 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726462AbgFKGRK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 02:17:10 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R851e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U.EnD9o_1591856225;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U.EnD9o_1591856225)
+        id S1726675AbgFKGRQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jun 2020 02:17:16 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51499 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726653AbgFKGRP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 02:17:15 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=20;SR=0;TI=SMTPD_---0U.EnD9y_1591856226;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U.EnD9y_1591856226)
           by smtp.aliyun-inc.com(127.0.0.1);
           Thu, 11 Jun 2020 14:17:06 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
@@ -23,9 +23,13 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: [PATCH v12 03/16] mm/compaction: correct the comments of compact_defer_shift
-Date:   Thu, 11 Jun 2020 14:16:36 +0800
-Message-Id: <1591856209-166869-4-git-send-email-alex.shi@linux.alibaba.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Subject: [PATCH v12 04/16] mm/compaction: rename compact_deferred as compact_should_defer
+Date:   Thu, 11 Jun 2020 14:16:37 +0800
+Message-Id: <1591856209-166869-5-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1591856209-166869-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1591856209-166869-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,43 +38,98 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-There is no compact_defer_limit. It should be compact_defer_shift in
-use. and add compact_order_failed explanation.
+The compact_deferred is a defer suggestion check, deferring action does in
+defer_compaction not here. so, better rename it to avoid confusing.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>
+Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
+Cc: Vlastimil Babka <vbabka@suse.cz>
+Cc: Mike Kravetz <mike.kravetz@oracle.com>
 Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
 ---
- include/linux/mmzone.h | 1 +
- mm/compaction.c        | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
+ include/linux/compaction.h        | 4 ++--
+ include/trace/events/compaction.h | 2 +-
+ mm/compaction.c                   | 8 ++++----
+ 3 files changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index df1f08486d81..7ae464188588 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -512,6 +512,7 @@ struct zone {
- 	 * On compaction failure, 1<<compact_defer_shift compactions
- 	 * are skipped before trying again. The number attempted since
- 	 * last failure is tracked with compact_considered.
-+	 * compact_order_failed is the minimum compaction failed order.
- 	 */
- 	unsigned int		compact_considered;
- 	unsigned int		compact_defer_shift;
+diff --git a/include/linux/compaction.h b/include/linux/compaction.h
+index 6fa0eea3f530..be9ed7437a38 100644
+--- a/include/linux/compaction.h
++++ b/include/linux/compaction.h
+@@ -100,7 +100,7 @@ extern enum compact_result compaction_suitable(struct zone *zone, int order,
+ 		unsigned int alloc_flags, int highest_zoneidx);
+ 
+ extern void defer_compaction(struct zone *zone, int order);
+-extern bool compaction_deferred(struct zone *zone, int order);
++extern bool compaction_should_defer(struct zone *zone, int order);
+ extern void compaction_defer_reset(struct zone *zone, int order,
+ 				bool alloc_success);
+ extern bool compaction_restarting(struct zone *zone, int order);
+@@ -199,7 +199,7 @@ static inline void defer_compaction(struct zone *zone, int order)
+ {
+ }
+ 
+-static inline bool compaction_deferred(struct zone *zone, int order)
++static inline bool compaction_should_defer(struct zone *zone, int order)
+ {
+ 	return true;
+ }
+diff --git a/include/trace/events/compaction.h b/include/trace/events/compaction.h
+index 54e5bf081171..33633c71df04 100644
+--- a/include/trace/events/compaction.h
++++ b/include/trace/events/compaction.h
+@@ -274,7 +274,7 @@
+ 		1UL << __entry->defer_shift)
+ );
+ 
+-DEFINE_EVENT(mm_compaction_defer_template, mm_compaction_deferred,
++DEFINE_EVENT(mm_compaction_defer_template, mm_compaction_should_defer,
+ 
+ 	TP_PROTO(struct zone *zone, int order),
+ 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index fd988b7e5f2b..48114f98e362 100644
+index 48114f98e362..5d59e77cd424 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -136,7 +136,7 @@ void __ClearPageMovable(struct page *page)
+@@ -154,7 +154,7 @@ void defer_compaction(struct zone *zone, int order)
+ }
  
- /*
-  * Compaction is deferred when compaction fails to result in a page
-- * allocation success. 1 << compact_defer_limit compactions are skipped up
-+ * allocation success. compact_defer_shift++, compactions are skipped up
-  * to a limit of 1 << COMPACT_MAX_DEFER_SHIFT
-  */
- void defer_compaction(struct zone *zone, int order)
+ /* Returns true if compaction should be skipped this time */
+-bool compaction_deferred(struct zone *zone, int order)
++bool compaction_should_defer(struct zone *zone, int order)
+ {
+ 	unsigned long defer_limit = 1UL << zone->compact_defer_shift;
+ 
+@@ -168,7 +168,7 @@ bool compaction_deferred(struct zone *zone, int order)
+ 	if (zone->compact_considered >= defer_limit)
+ 		return false;
+ 
+-	trace_mm_compaction_deferred(zone, order);
++	trace_mm_compaction_should_defer(zone, order);
+ 
+ 	return true;
+ }
+@@ -2366,7 +2366,7 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
+ 		enum compact_result status;
+ 
+ 		if (prio > MIN_COMPACT_PRIORITY
+-					&& compaction_deferred(zone, order)) {
++				&& compaction_should_defer(zone, order)) {
+ 			rc = max_t(enum compact_result, COMPACT_DEFERRED, rc);
+ 			continue;
+ 		}
+@@ -2550,7 +2550,7 @@ static void kcompactd_do_work(pg_data_t *pgdat)
+ 		if (!populated_zone(zone))
+ 			continue;
+ 
+-		if (compaction_deferred(zone, cc.order))
++		if (compaction_should_defer(zone, cc.order))
+ 			continue;
+ 
+ 		if (compaction_suitable(zone, cc.order, 0, zoneid) !=
 -- 
 1.8.3.1
 
