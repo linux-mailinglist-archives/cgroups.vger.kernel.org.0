@@ -2,127 +2,207 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 482D21F7038
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 00:30:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 096971F70D6
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 01:23:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726159AbgFKWau (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jun 2020 18:30:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49544 "EHLO
+        id S1726380AbgFKXXO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jun 2020 19:23:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726471AbgFKWat (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 18:30:49 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4E7C03E96F
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 15:30:49 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id s13so5849130otd.7
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 15:30:49 -0700 (PDT)
+        with ESMTP id S1726468AbgFKXXO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 19:23:14 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1BBBC08C5C4
+        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 16:23:12 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id g12so2929571pll.10
+        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 16:23:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
-        bh=+EahI0YlQUT1/wBvgRJFQZcHP3obsCOagtKe7ySyhrM=;
-        b=W26cncJyLH/i2zSIOMrO837pRs3uf2BxQU7IzrLdCgttozbazIeNDlQgCyQFiYpUyY
-         Ms4olROFTxfvmQAdemlh52vDy0Ftr89GQMQrDXOir38oNwY8+8gPiDMnQChh/qPvfhj1
-         iUsIdILczYmCpO1xqBDBaFflxA4qJYGotgpCt1+gBdruUxe14ckzTnM3+9z+NR3Qkckp
-         8bXFzj6IhT3p8E6ZtAmnlH8HwiB/X34paleeTrwi7sO8xUPY1QHO1EqXGNShfQxJUmTK
-         oNomeUpR4hUAyI5seihocIFNBhP5T0Ojn22FOBFdo6AgdYqo+CShth6zOvtf4oEc8vZn
-         S8fw==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dF5S2dn2pVgES3YrOEuT/txRTXS0NkdBy5TQaEH6DIU=;
+        b=Im7VtVIhpDqHDj91TB7IHzCdVnA7cfAKvscZOGBTPVCyTJytRbl+ab1O58LQFqAHOi
+         U4CzwwHUZnlrb8MvXGRZ430PTCx5cAFj98PV4U2LQtuIFjbr8XzRxz5SIGSuj3FBGQDo
+         ASsFRokK8d6OyeBDvWzybCftl71yZ/TTfnUO0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
-         :mime-version;
-        bh=+EahI0YlQUT1/wBvgRJFQZcHP3obsCOagtKe7ySyhrM=;
-        b=R27ZKvsmZjw5TnE45FuGZmnjVfeAAWgiGyN9Q3QHzrKmKlPC2cCZHxLFnRIDrUpnvb
-         tcTCoNYeT1GB79RQy3Lq0LS2QJBP5Ea4BnHHegIjbdQIdy/15HZ2WAnArkduvnpXx1Bj
-         jYriyIRc1soz+ncEpZGBH8PQx62K2DEWdYjXF+fIccDL3actB8o61H4PM8MxZ0uUaqnW
-         65ptlabohprm6wI9HuUGNIyfmUNy8oGU5TkjXe0KtiK15DoyejQCgbLB/3vr9LeVkeDd
-         U2+thtX8Lgup9kOLzCOlqLsSqWm6fXA5hKA4wcLpnxvO8LVfw9EAet6KqtfYr2tNx1xV
-         GSSA==
-X-Gm-Message-State: AOAM530TgJ2fbiVU39JP8NEWUJgvI28kfQVaA44lSLDuELBzhiXEV9WN
-        ugdKHIOs8/nIJoim6Burh9+Urg==
-X-Google-Smtp-Source: ABdhPJzEon9DZKGa7Vpn9RDUNP7chh++P+QM4RhU5y/VWUIMVZUMKcU4pCYumWLy9ZXhRooe4mHeuA==
-X-Received: by 2002:a05:6830:1dba:: with SMTP id z26mr8682022oti.180.1591914648150;
-        Thu, 11 Jun 2020 15:30:48 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id r15sm978948oot.5.2020.06.11.15.30.45
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 11 Jun 2020 15:30:47 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 15:30:45 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: [PATCH alexv12 2/2] mm/compaction: fix call to
- __isolate_lru_page_prepare()
-Message-ID: <alpine.LSU.2.11.2006111529010.10801@eggly.anvils>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dF5S2dn2pVgES3YrOEuT/txRTXS0NkdBy5TQaEH6DIU=;
+        b=rl8+Ok4eDE7OpbRANfHUdklqX+rSG6LA10eoUfUdJbtLnSzVgr79/Eb4ToiEcAHcKw
+         ibitvsMj++izph1SHvVIplqYhXwgVenDWDhEaw2Kj4nM+klMynuxfFuPXrfK4A7vZ8Aw
+         FZfSrbP/C/mCYGcQ5FSlwUqY5ni8cofR4MRphlTBEt+gNl76vc1SFsn/cuJHLx+2tb6b
+         XsgxxJ1D7JkdDzmHhRkBuYS9mxS1sk6i4a7JKil6bIn9LkFKSYnfnVArSavU2NVkvSJU
+         atemwvVyDfPx3Aspi0aMe0zDbTCKPm2RExf5ojjYhwlbxH3jN+sbC8VCG01TqAoX44cA
+         uKcA==
+X-Gm-Message-State: AOAM530ZXeRIZYKqfjI2tr5UNY/mfd9DmyUEplDLA6reZwtFTAfMT+72
+        WMAvcreZNg7BtpiQKClsds45iQ==
+X-Google-Smtp-Source: ABdhPJwTmpa2kzC8wDU5aCXCVkPVDsBffhaUPbr0t/XzzYQF4UVcbOpP5W8PS0r8XWx0KOQrRuCd8A==
+X-Received: by 2002:a17:902:c214:: with SMTP id 20mr9177825pll.193.1591917792301;
+        Thu, 11 Jun 2020 16:23:12 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id d189sm4120162pfc.51.2020.06.11.16.23.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jun 2020 16:23:11 -0700 (PDT)
+Date:   Thu, 11 Jun 2020 16:23:10 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Sargun Dhillon <sargun@sargun.me>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        containers@lists.linux-foundation.org,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>,
+        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
+        linux-kernel@vger.kernel.org, Matt Denton <mpdenton@google.com>,
+        John Fastabend <john.r.fastabend@intel.com>,
+        linux-fsdevel@vger.kernel.org, Tejun Heo <tj@kernel.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, cgroups@vger.kernel.org,
+        stable@vger.kernel.org, "David S . Miller" <davem@davemloft.net>
+Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Message-ID: <202006111622.01F596D@keescook>
+References: <20200605075435.GA3345@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006091235.930519F5B@keescook>
+ <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
+ <202006091346.66B79E07@keescook>
+ <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
+ <202006092227.D2D0E1F8F@keescook>
+ <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
+ <202006101953.899EFB53@keescook>
+ <20200611091942.jni2glnpmxisnant@wittgenstein>
+ <20200611103922.GA30103@ircssh-2.c.rugged-nimbus-611.internal>
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200611103922.GA30103@ircssh-2.c.rugged-nimbus-611.internal>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-isolate_migratepages_block() is calling __isolate_lru_page_prepare()
-at a point when it has not yet acquired a reference to the page, and
-may not yet hold the right lruvec lock: it has no hold on the page.
+On Thu, Jun 11, 2020 at 10:39:23AM +0000, Sargun Dhillon wrote:
+> On Thu, Jun 11, 2020 at 11:19:42AM +0200, Christian Brauner wrote:
+> > On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
+> > > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
+> > > > As an aside, all of this junk should be dropped:
+> > > > +	ret = get_user(size, &uaddfd->size);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > 
+> > > > and the size member of the seccomp_notif_addfd struct. I brought this up 
+> > > > off-list with Tycho that ioctls have the size of the struct embedded in them. We 
+> > > > should just use that. The ioctl definition is based on this[2]:
+> > > > #define _IOC(dir,type,nr,size) \
+> > > > 	(((dir)  << _IOC_DIRSHIFT) | \
+> > > > 	 ((type) << _IOC_TYPESHIFT) | \
+> > > > 	 ((nr)   << _IOC_NRSHIFT) | \
+> > > > 	 ((size) << _IOC_SIZESHIFT))
+> > > > 
+> > > > 
+> > > > We should just use copy_from_user for now. In the future, we can either 
+> > > > introduce new ioctl names for new structs, or extract the size dynamically from 
+> > > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
+> > > 
+> > > Yeah, that seems reasonable. Here's the diff for that part:
+> > > 
+> > > diff --git a/include/uapi/linux/seccomp.h b/include/uapi/linux/seccomp.h
+> > > index 7b6028b399d8..98bf19b4e086 100644
+> > > --- a/include/uapi/linux/seccomp.h
+> > > +++ b/include/uapi/linux/seccomp.h
+> > > @@ -118,7 +118,6 @@ struct seccomp_notif_resp {
+> > >  
+> > >  /**
+> > >   * struct seccomp_notif_addfd
+> > > - * @size: The size of the seccomp_notif_addfd datastructure
+> > >   * @id: The ID of the seccomp notification
+> > >   * @flags: SECCOMP_ADDFD_FLAG_*
+> > >   * @srcfd: The local fd number
+> > > @@ -126,7 +125,6 @@ struct seccomp_notif_resp {
+> > >   * @newfd_flags: The O_* flags the remote FD should have applied
+> > >   */
+> > >  struct seccomp_notif_addfd {
+> > > -	__u64 size;
+> > >  	__u64 id;
+> > >  	__u32 flags;
+> > >  	__u32 srcfd;
+> > > diff --git a/kernel/seccomp.c b/kernel/seccomp.c
+> > > index 3c913f3b8451..00cbdad6c480 100644
+> > > --- a/kernel/seccomp.c
+> > > +++ b/kernel/seccomp.c
+> > > @@ -1297,14 +1297,9 @@ static long seccomp_notify_addfd(struct seccomp_filter *filter,
+> > >  	struct seccomp_notif_addfd addfd;
+> > >  	struct seccomp_knotif *knotif;
+> > >  	struct seccomp_kaddfd kaddfd;
+> > > -	u64 size;
+> > >  	int ret;
+> > >  
+> > > -	ret = get_user(size, &uaddfd->size);
+> > > -	if (ret)
+> > > -		return ret;
+> > > -
+> > > -	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> > > +	ret = copy_from_user(&addfd, uaddfd, sizeof(addfd));
+> > >  	if (ret)
+> > >  		return ret;
+> > >  
+> > > 
+> > > > 
+> > > > ----
+> > > > +#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOR(3,	\
+> > > > +						struct seccomp_notif_addfd)
+> > > > 
+> > > > Lastly, what I believe to be a small mistake, it should be SECCOMP_IOW, based on 
+> > > > the documentation in ioctl.h -- "_IOW means userland is writing and kernel is 
+> > > > reading."
+> > > 
+> > > Oooooh. Yeah; good catch. Uhm, that means SECCOMP_IOCTL_NOTIF_ID_VALID
+> > > is wrong too, yes? Tycho, Christian, how disruptive would this be to
+> > > fix? (Perhaps support both and deprecate the IOR version at some point
+> > > in the future?)
+> > 
+> > We have custom defines in our source code, i.e.
+> > #define SECCOMP_IOCTL_NOTIF_ID_VALID  SECCOMP_IOR(2, __u64)
+> > so ideally we'd have a SECCOMP_IOCTL_NOTIF_ID_VALID_V2
+> > 
+> > Does that sound ok?
+> > 
+> > Christian
+> Why not change the public API in seccomp.h to:
+> #define SECCOMP_IOCTL_NOTIF_ID_VALID	SECCOMP_IOW(2, __u64)
+> 
+> And then in seccomp.c:
+> #define SECCOMP_IOCTL_NOTIF_ID_VALID_OLD	SECCOMP_IOR(2, __u64)
+> static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
+> 				 unsigned long arg)
+> {
+> 	struct seccomp_filter *filter = file->private_data;
+> 	void __user *buf = (void __user *)arg;
+> 
+> 	switch (cmd) {
+> 	case SECCOMP_IOCTL_NOTIF_RECV:
+> 		return seccomp_notify_recv(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_SEND:
+> 		return seccomp_notify_send(filter, buf);
+> 	case SECCOMP_IOCTL_NOTIF_ID_VALID_OLD:
+> 		pr_warn_once("Detected usage of legacy (incorrect) version of seccomp notifier notif_id_valid ioctl\n");
+> 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
+> 		return seccomp_notify_id_valid(filter, buf);
+> 	default:
+> 		return -EINVAL;
+> 	}
+> }
+> ---- 
+> 
+> So, both will work fine, and whenevery anyone recompiles, or picks up new 
+> headers, they will start calling the "right" one without a code change, and
+> we wont break any userspace.
 
-trylock_page() is not safe to use at this time: its setting PG_locked
-can race with the page being freed or allocated ("Bad page"), and can
-also erase flags being set by one of those "sole owners" of a freshly
-allocated page who use non-atomic __SetPageFlag().
+Yeah, that's what I'd prefer here.
 
-Though I have tried rcu_read_lock() instead of trylock_page() there
-(like in page_evictable()), 054f1d1faaed ("mm/swap_state.c: simplify
-total_swapcache_pages() with get_swap_device()") stopped the freeing of
-swapper_spaces by RCU; and races against setting PageSwapCache, and the
-dereference of mapping->a_ops, and the lack of any page reference: all
-make that a more dubious approach.
-
-Just move the call to __isolate_lru_page_prepare() after the call to
-get_page_unless_zero(), when using trylock_page() has become safe
-(safe given __isolate's  check for PageLRU - unsafe without that).
-
-Signed-off-by: Hugh Dickins <hughd@google.com>
----
-I had envisaged this as a separate patch; but once it came down
-to just moving the call inside isolate_migratepages_block(), it's
-probably best folded into 10/16 or 12/16 (needs isolate_fail_put).
-
-I shall probably want to come along later, to clean up or eliminate
-__isolate_lru_page_prepare(): which I found before to have almost
-nothing in common between its use by isolate_migratepages_block()
-and its use by isolate_lru_pages(). We can then do its safer checks
-before the get_page_unless_zero(). But trying that cleanup right
-now would just get in the way of this series.
-
- mm/compaction.c |    6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
-
---- alexv12/mm/compaction.c	2020-06-11 13:48:10.437046025 -0700
-+++ hughd/mm/compaction.c	2020-06-11 13:49:05.570579095 -0700
-@@ -960,9 +960,6 @@ isolate_migratepages_block(struct compac
- 		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
- 			goto isolate_fail;
- 
--		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
--			goto isolate_fail;
--
- 		/*
- 		 * Be careful not to clear PageLRU until after we're
- 		 * sure the page is not being freed elsewhere -- the
-@@ -971,6 +968,9 @@ isolate_migratepages_block(struct compac
- 		if (unlikely(!get_page_unless_zero(page)))
- 			goto isolate_fail;
- 
-+		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
-+			goto isolate_fail_put;
-+
- 		/* Try isolate the page */
- 		if (!TestClearPageLRU(page))
- 			goto isolate_fail_put;
+-- 
+Kees Cook
