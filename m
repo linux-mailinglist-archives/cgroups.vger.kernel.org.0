@@ -2,19 +2,19 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5818D1F6192
-	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 08:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C8B81F61AE
+	for <lists+cgroups@lfdr.de>; Thu, 11 Jun 2020 08:19:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726570AbgFKGRK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Jun 2020 02:17:10 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:39554 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726379AbgFKGRJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 02:17:09 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U.EtHon_1591856223;
-Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U.EtHon_1591856223)
+        id S1726890AbgFKGSL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Jun 2020 02:18:11 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:48176 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726563AbgFKGRL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Jun 2020 02:17:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U.FIUkw_1591856225;
+Received: from localhost(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U.FIUkw_1591856225)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 11 Jun 2020 14:17:03 +0800
+          Thu, 11 Jun 2020 14:17:05 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
@@ -23,9 +23,9 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: [PATCH v12 01/16] mm/vmscan: remove unnecessary lruvec adding
-Date:   Thu, 11 Jun 2020 14:16:34 +0800
-Message-Id: <1591856209-166869-2-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v12 02/16] mm/page_idle: no unlikely double check for idle page counting
+Date:   Thu, 11 Jun 2020 14:16:35 +0800
+Message-Id: <1591856209-166869-3-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1591856209-166869-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1591856209-166869-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,93 +34,47 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We don't have to add a freeable page into lru and then remove from it.
-This change saves a couple of actions and makes the moving more clear.
+As func comments mentioned, few isolated page missing be tolerated.
+So why not do further to drop the unlikely double check. That won't
+cause more idle pages, but reduce a lock contention.
 
-The SetPageLRU needs to be kept here for list intergrity.
-Otherwise:
- #0 mave_pages_to_lru              #1 release_pages
-                                   if (put_page_testzero())
- if !put_page_testzero
-                                     !PageLRU //skip lru_lock
-                                       list_add(&page->lru,)
-   list_add(&page->lru,) //corrupt
+This is also a preparation for later new page isolation feature.
 
-[akpm@linux-foundation.org: coding style fixes]
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Tejun Heo <tj@kernel.org>
 Cc: Matthew Wilcox <willy@infradead.org>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/vmscan.c | 32 +++++++++++++++++++++-----------
- 1 file changed, 21 insertions(+), 11 deletions(-)
+ mm/page_idle.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b6d84326bdf2..81228334f7d6 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1855,26 +1855,29 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 	while (!list_empty(list)) {
- 		page = lru_to_page(list);
- 		VM_BUG_ON_PAGE(PageLRU(page), page);
-+		list_del(&page->lru);
- 		if (unlikely(!page_evictable(page))) {
--			list_del(&page->lru);
- 			spin_unlock_irq(&pgdat->lru_lock);
- 			putback_lru_page(page);
- 			spin_lock_irq(&pgdat->lru_lock);
- 			continue;
- 		}
--		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+diff --git a/mm/page_idle.c b/mm/page_idle.c
+index 057c61df12db..5fdd753e151a 100644
+--- a/mm/page_idle.c
++++ b/mm/page_idle.c
+@@ -32,19 +32,11 @@
+ static struct page *page_idle_get_page(unsigned long pfn)
+ {
+ 	struct page *page = pfn_to_online_page(pfn);
+-	pg_data_t *pgdat;
  
-+		/*
-+		 * The SetPageLRU needs to be kept here for list intergrity.
-+		 * Otherwise:
-+		 *   #0 mave_pages_to_lru             #1 release_pages
-+		 *				      if (put_page_testzero())
-+		 *   if !put_page_testzero
-+		 *				        !PageLRU //skip lru_lock
-+		 *                                        list_add(&page->lru,)
-+		 *     list_add(&page->lru,) //corrupt
-+		 */
- 		SetPageLRU(page);
--		lru = page_lru(page);
--
--		nr_pages = hpage_nr_pages(page);
--		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
--		list_move(&page->lru, &lruvec->lists[lru]);
+ 	if (!page || !PageLRU(page) ||
+ 	    !get_page_unless_zero(page))
+ 		return NULL;
  
--		if (put_page_testzero(page)) {
-+		if (unlikely(put_page_testzero(page))) {
- 			__ClearPageLRU(page);
- 			__ClearPageActive(page);
--			del_page_from_lru_list(page, lruvec, lru);
+-	pgdat = page_pgdat(page);
+-	spin_lock_irq(&pgdat->lru_lock);
+-	if (unlikely(!PageLRU(page))) {
+-		put_page(page);
+-		page = NULL;
+-	}
+-	spin_unlock_irq(&pgdat->lru_lock);
+ 	return page;
+ }
  
- 			if (unlikely(PageCompound(page))) {
- 				spin_unlock_irq(&pgdat->lru_lock);
-@@ -1882,9 +1885,16 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 				spin_lock_irq(&pgdat->lru_lock);
- 			} else
- 				list_add(&page->lru, &pages_to_free);
--		} else {
--			nr_moved += nr_pages;
-+			continue;
- 		}
-+
-+		lruvec = mem_cgroup_page_lruvec(page, pgdat);
-+		lru = page_lru(page);
-+		nr_pages = hpage_nr_pages(page);
-+
-+		update_lru_size(lruvec, lru, page_zonenum(page), nr_pages);
-+		list_add(&page->lru, &lruvec->lists[lru]);
-+		nr_moved += nr_pages;
- 	}
- 
- 	/*
 -- 
 1.8.3.1
 
