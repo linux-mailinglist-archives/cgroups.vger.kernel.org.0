@@ -2,119 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FF671F7B28
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 17:55:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F551F7C06
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 19:04:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726272AbgFLPzU convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Fri, 12 Jun 2020 11:55:20 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35332 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726112AbgFLPzT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 11:55:19 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-256-WF26PnyoMeW0bYbJgCCLOA-1; Fri, 12 Jun 2020 16:55:15 +0100
-X-MC-Unique: WF26PnyoMeW0bYbJgCCLOA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 12 Jun 2020 16:55:15 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 12 Jun 2020 16:55:15 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Kees Cook' <keescook@chromium.org>,
-        Sargun Dhillon <sargun@sargun.me>
-CC:     Christian Brauner <christian.brauner@ubuntu.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: RE: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Topic: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Thread-Index: AQHWP+BcCi14oegu0U6J73sUpcDiU6jTfHDAgACI+YCAAKH2YIAAcPLvgAAKH6A=
-Date:   Fri, 12 Jun 2020 15:55:14 +0000
-Message-ID: <b598484958d140fc9f523e200490b942@AcuMS.aculab.com>
-References: <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
- <202006092227.D2D0E1F8F@keescook>
- <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
- <202006101953.899EFB53@keescook>
- <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
- <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
- <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
- <202006111634.8237E6A5C6@keescook>
- <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
- <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
- <202006120806.E770867EF@keescook>
-In-Reply-To: <202006120806.E770867EF@keescook>
-Accept-Language: en-GB, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S1726258AbgFLREA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jun 2020 13:04:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41048 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726521AbgFLREA (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 12 Jun 2020 13:04:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.220.254])
+        by mx2.suse.de (Postfix) with ESMTP id 7629CAECE;
+        Fri, 12 Jun 2020 17:04:01 +0000 (UTC)
+Date:   Fri, 12 Jun 2020 19:03:52 +0200
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 3/6] mm, memcg: Prevent memory.low load/store tearing
+Message-ID: <20200612170352.GA40768@blackbook>
+References: <cover.1584034301.git.chris@chrisdown.name>
+ <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
 MIME-Version: 1.0
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
+Content-Disposition: inline
+In-Reply-To: <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Kees Cook
-> Sent: 12 June 2020 16:13
-...
-> > 	/* Fixed size ioctls. Can be converted later on? */
-> > 	switch (cmd) {
-> > 	case SECCOMP_IOCTL_NOTIF_RECV:
-> > 		return seccomp_notify_recv(filter, buf);
-> > 	case SECCOMP_IOCTL_NOTIF_SEND:
-> > 		return seccomp_notify_send(filter, buf);
-> > 	case SECCOMP_IOCTL_NOTIF_ID_VALID:
-> > 		return seccomp_notify_id_valid(filter, buf);
-> > 	}
-> >
-> > 	/* Probably should make some nicer macros here */
-> > 	switch (SIZE_MASK(DIR_MASK(cmd))) {
-> > 	case SIZE_MASK(DIR_MASK(SECCOMP_IOCTL_NOTIF_ADDFD)):
-> 
-> Ah yeah, I like this because of what you mention below: it's forward
-> compat too. (I'd just use the ioctl masks directly...)
-> 
-> 	switch (cmd & ~(_IOC_SIZEMASK | _IOC_DIRMASK))
 
-Since you need the same mask on the case labels I think
-I'd define a helper just across the switch statement:
+--6TrnltStXW4iwmi0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-#define M(cmd) ((cmd & ~(_IOC_SIZEMASK | _IOC_DIRMASK))
-	switch (M(cmd)) {
-	case M(SECCOMP_IOCTL_NOTIF_RECV):
-	...
-	}
-#undef M
+Hello.
 
-It is probably wrong to mask off DIRMASK.
-But you might need to add extra case labels for
-the broken one(s).
+I see suspicious asymmetry, in the current mainline:
+>	WRITE_ONCE(memcg->memory.emin, effective_protection(usage, parent_usage,
+>			READ_ONCE(memcg->memory.min),
+>			READ_ONCE(parent->memory.emin),
+>			atomic_long_read(&parent->memory.children_min_usage)));
+>
+>	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
+>			memcg->memory.low, READ_ONCE(parent->memory.elow),
+>			atomic_long_read(&parent->memory.children_low_usage)));
 
-Prior to worries about indirect jumps you could
-get a dense set of case label and faster code.
+On Thu, Mar 12, 2020 at 05:33:01PM +0000, Chris Down <chris@chrisdown.name>=
+ wrote:
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index aca2964ea494..c85a304fa4a1 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6262,7 +6262,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
+uct mem_cgroup *root,
+>  		return MEMCG_PROT_NONE;
+> =20
+>  	emin =3D memcg->memory.min;
+> -	elow =3D memcg->memory.low;
+> +	elow =3D READ_ONCE(memcg->memory.low);
+> =20
+>  	parent =3D parent_mem_cgroup(memcg);
+>  	/* No parent means a non-hierarchical mode on v1 memcg */
+> @@ -6291,7 +6291,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
+uct mem_cgroup *root,
+>  	if (elow && parent_elow) {
+>  		unsigned long low_usage, siblings_low_usage;
+> =20
+> -		low_usage =3D min(usage, memcg->memory.low);
+> +		low_usage =3D min(usage, READ_ONCE(memcg->memory.low));
+>  		siblings_low_usage =3D atomic_long_read(
+>  			&parent->memory.children_low_usage);
+Is it possible that these hunks were lost during rebase/merge?
 
-	David
+IMHO it should apply as:
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+-- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6428,7 +6428,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struc=
+t mem_cgroup *root,
+                        atomic_long_read(&parent->memory.children_min_usage=
+)));
 
+        WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_u=
+sage,
+-                       memcg->memory.low, READ_ONCE(parent->memory.elow),
++                       READ_ONCE(memcg->memory.low),
++                       READ_ONCE(parent->memory.elow),
+                        atomic_long_read(&parent->memory.children_low_usage=
+)));
+
+ out:
+
+
+Michal
+
+--6TrnltStXW4iwmi0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl7jtXIACgkQia1+riC5
+qSjUig//d3bjL+7mCpm6speHzN1vPZbVuEsBjl+P4DhMwGSl1iiwWP8chYdm30Xg
+5l8eACsZox2Zta2TvNkqUKaYSanJ3+cY4j6vFecnJ2ADRwTG5OgKJHz4pPpTSDox
+9YVzYsOzLVF/cfoOiD2GPer+YBaEMyppaqWwfzAb2XoKUmdHsY1A/nBllvbTSm6c
+zbGdMqb3kt/ixm8cljE/0Wyk26QeyydHBQuU9XW1VQZniQhDWwi4tR7lfFCxMYtQ
+9/PUKtgmZ+ku8YOEoc9twXbOxR8C3MZo7zZslrcVvqrF1bVOkpYAZMIMGnSLFf9Q
+Mdcmbf81yPWEd/7hRO8vC8ICfBnU1nN14f1+MuXt56VWtmLnn/UqJ5sS3vqF5tgV
+iBlucq9xjxMKsvoT15tNq3DX+CKL5bdqAOglSmT/XwUW1hsVycQ0spCWQ5J4K/bQ
+ljahv3T9G4UgGouUwrVTZxU2+JC7YQg5BqJoC4sf0hLdFcVjdcq/aQis4b8TZLVs
+36wBd/QpHGVEh1bZ5LN2AcFY+WhahNswJjM2rx2WB1S9IMhukeIe2C/PjpKnc2Zw
+ff7+GBkyif/+0Xwj7N+aXSsLQ/0Xjv3kgcbOXGU0jjdoEpQxyOVtb8mAKGDRHt1D
+hIr7XNHBIOUgzGC+YBl0fGDVYCWXEg45umFPdf6OTx8MCONUjQI=
+=Uooi
+-----END PGP SIGNATURE-----
+
+--6TrnltStXW4iwmi0--
