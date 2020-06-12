@@ -2,297 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 543461F76E1
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 12:46:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A560E1F77B1
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 14:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726100AbgFLKqg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jun 2020 06:46:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49724 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726219AbgFLKqe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 06:46:34 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 360E6C08C5C2
-        for <cgroups@vger.kernel.org>; Fri, 12 Jun 2020 03:46:33 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id i25so9762877iog.0
-        for <cgroups@vger.kernel.org>; Fri, 12 Jun 2020 03:46:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sargun.me; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=UhVaLcte/bQZseZm2UZAFNzVmahOYzGWl5NVHlmJpxM=;
-        b=g3fc+WbvrUuf7fzhuoSM0Bqtwx6DTuuljS5pqb5+sbhRyn7AozlgkV+xVvsrlIJm70
-         y8tnoO/CsR6mb0Qa+dTCCs+7QzzoMp5qBXlQzRnYVyzHvf4CXEh1ywyUXJYbFmR55tcp
-         +VWYtTQvNY9NU7lIhBRJqHs/gV43ZZhe2W8vI=
+        id S1725886AbgFLMJM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jun 2020 08:09:12 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36922 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725791AbgFLMJM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 08:09:12 -0400
+Received: by mail-wr1-f65.google.com with SMTP id x13so9494574wrv.4;
+        Fri, 12 Jun 2020 05:09:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=UhVaLcte/bQZseZm2UZAFNzVmahOYzGWl5NVHlmJpxM=;
-        b=MH+pafeQyUEQ+WBBFlrYwtXOTyzy5li2tCUBMvaVilby4wupzpqCANNcEhPpe1XpNr
-         eemciJPid0gjfm97JKqa41Wlqa4e5+eQ6rlS7iTpMMQBAILDC/o63kfu+OTsFjECxldF
-         z5FXq8WaBPGQgyVzV8+y7IpQxw5BD+fsYj0WevFKshY7e+bNHsvNSUAFfaTi9BN/DOsk
-         SLYTDPfXOxBKdgD3nk6c75jozFjFxP9C6kwcVvP6fDw8FhwZDCoW8zKpDEmBbg59rRru
-         mT6njOCfikEuIHeDyTJWmqeG99TLPbq8bpmcbmyGIq13GiMmTmllbHOvPtQdT8uoZRj5
-         p4dg==
-X-Gm-Message-State: AOAM533Y9QFmX9nVGocKoXrQdYKk3njRi1HS3wQ9k0z9/AJ7ZVKz0Tx3
-        l176i+crWMLXGLQ9pTiJ92SBZQ==
-X-Google-Smtp-Source: ABdhPJwDceQMPwhQ9vSubJSTgFKXwO8RIBuV4ZgX7eSDJLKP7PusyHeuFmqsaFLk5Uw9SZlsvaWDuA==
-X-Received: by 2002:a6b:6709:: with SMTP id b9mr13217066ioc.108.1591958792714;
-        Fri, 12 Jun 2020 03:46:32 -0700 (PDT)
-Received: from ircssh-2.c.rugged-nimbus-611.internal (80.60.198.104.bc.googleusercontent.com. [104.198.60.80])
-        by smtp.gmail.com with ESMTPSA id l12sm2930795ilj.8.2020.06.12.03.46.31
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Fri, 12 Jun 2020 03:46:31 -0700 (PDT)
-Date:   Fri, 12 Jun 2020 10:46:30 +0000
-From:   Sargun Dhillon <sargun@sargun.me>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Kees Cook' <keescook@chromium.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "containers@lists.linux-foundation.org" 
-        <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>,
-        Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Daniel Wagner <daniel.wagner@bmw-carit.de>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Matt Denton <mpdenton@google.com>,
-        John Fastabend <john.r.fastabend@intel.com>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
- move fds across processes
-Message-ID: <20200612104629.GA15814@ircssh-2.c.rugged-nimbus-611.internal>
-References: <202006091346.66B79E07@keescook>
- <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
- <202006092227.D2D0E1F8F@keescook>
- <20200610081237.GA23425@ircssh-2.c.rugged-nimbus-611.internal>
- <202006101953.899EFB53@keescook>
- <20200611100114.awdjswsd7fdm2uzr@wittgenstein>
- <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
- <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
- <202006111634.8237E6A5C6@keescook>
- <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
+         :mime-version:content-disposition:in-reply-to;
+        bh=0z8NpPBTC8fx2bnuG8Z/NmM1px6+WjPFa2BhCesn7bM=;
+        b=dwnmoXthax/50cYKAd2YDKOcoUZGZ40vfZxg8MCacIHv1HWxewXKYMVXB6iepuaAD1
+         DUoRH8fH6vP6uZePzk2ZbBA35FsWL9StD0xCH3yuU5Kfylnp1F2OQY/YOxznxRN0ta53
+         5NNXNtWr3a9ZFnER1wWXh12ZTJx2mKUa/ax28gJnxUDfTaDY0VVsBS9U6vkkVJOkfYy3
+         WrLnQLQx3PinJv9PsOWt5O6SvJGoQGRmbV8KYKKCMqtTu+FrLMzn2MV3JdA1rYv6imWK
+         P5OnZpf0A/Tq/XDBVA2LF3wKX3f5ZNqPlRplNEhPpkmDEQ+yyQYC5rQkFjj+gNCHEF5w
+         rhuA==
+X-Gm-Message-State: AOAM531xfznxpy8lXvdt7BeWSnJgiUnkLe5E3nbDJryK8/aP8D/Ze7lg
+        gCAVB9vF2Fkict2wXAM65rM=
+X-Google-Smtp-Source: ABdhPJz1sL62XzpDAGQuQcumUUzvpkSfg7su7rAnvTQ7e/vCPEMTYoz1QoY8w+Uh8QVrBnRvZKmM4A==
+X-Received: by 2002:a05:6000:1104:: with SMTP id z4mr14545075wrw.272.1591963748046;
+        Fri, 12 Jun 2020 05:09:08 -0700 (PDT)
+Received: from localhost (ip-37-188-174-201.eurotel.cz. [37.188.174.201])
+        by smtp.gmail.com with ESMTPSA id a3sm9652169wrp.91.2020.06.12.05.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 05:09:06 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 14:09:04 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        "Linux F2FS DEV, Mailing List" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        linux-ext4 <linux-ext4@vger.kernel.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200612120904.GA8641@dhcp22.suse.cz>
+References: <CA+G9fYuDWGZx50UpD+WcsDeHX9vi3hpksvBAWbMgRZadb0Pkww@mail.gmail.com>
+ <CA+G9fYs2jg-j_5fdb0OW0G-JzDjN7b8d9qnX7uuk9p4c7mVSig@mail.gmail.com>
+ <20200528150310.GG27484@dhcp22.suse.cz>
+ <CA+G9fYvDXiZ9E9EfU6h0gsJ+xaXY77mRu9Jg+J7C=X4gJ3qvLg@mail.gmail.com>
+ <20200528164121.GA839178@chrisdown.name>
+ <CALOAHbAHGOsAUUM7qn=9L1u8kAf6Gztqt=SyHSmZ9XuYZWcKmg@mail.gmail.com>
+ <20200529015644.GA84588@chrisdown.name>
+ <20200529094910.GH4406@dhcp22.suse.cz>
+ <20200611095514.GD20450@dhcp22.suse.cz>
+ <CA+G9fYsjH8vOTkSKGa5vgC=0fEXuC5UnGsZOirHxH9nOJSHPdA@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CA+G9fYsjH8vOTkSKGa5vgC=0fEXuC5UnGsZOirHxH9nOJSHPdA@mail.gmail.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jun 12, 2020 at 08:36:03AM +0000, David Laight wrote:
-> From: Kees Cook
-> > Sent: 12 June 2020 00:50
-> > > From: Sargun Dhillon
-> > > > Sent: 11 June 2020 12:07
-> > > > Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to move fds across
-> > processes
-> > > >
-> > > > On Thu, Jun 11, 2020 at 12:01:14PM +0200, Christian Brauner wrote:
-> > > > > On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
-> > > > > > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
-> > > > > > > As an aside, all of this junk should be dropped:
-> > > > > > > +	ret = get_user(size, &uaddfd->size);
-> > > > > > > +	if (ret)
-> > > > > > > +		return ret;
-> > > > > > > +
-> > > > > > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-> > > > > > > +	if (ret)
-> > > > > > > +		return ret;
-> > > > > > >
-> > > > > > > and the size member of the seccomp_notif_addfd struct. I brought this up
-> > > > > > > off-list with Tycho that ioctls have the size of the struct embedded in them. We
-> > > > > > > should just use that. The ioctl definition is based on this[2]:
-> > > > > > > #define _IOC(dir,type,nr,size) \
-> > > > > > > 	(((dir)  << _IOC_DIRSHIFT) | \
-> > > > > > > 	 ((type) << _IOC_TYPESHIFT) | \
-> > > > > > > 	 ((nr)   << _IOC_NRSHIFT) | \
-> > > > > > > 	 ((size) << _IOC_SIZESHIFT))
-> > > > > > >
-> > > > > > >
-> > > > > > > We should just use copy_from_user for now. In the future, we can either
-> > > > > > > introduce new ioctl names for new structs, or extract the size dynamically from
-> > > > > > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
-> > > > > >
-> > > > > > Yeah, that seems reasonable. Here's the diff for that part:
-> > > > >
-> > > > > Why does it matter that the ioctl() has the size of the struct embedded
-> > > > > within? Afaik, the kernel itself doesn't do anything with that size. It
-> > > > > merely checks that the size is not pathological and it does so at
-> > > > > compile time.
-> > > > >
-> > > > > #ifdef __CHECKER__
-> > > > > #define _IOC_TYPECHECK(t) (sizeof(t))
-> > > > > #else
-> > > > > /* provoke compile error for invalid uses of size argument */
-> > > > > extern unsigned int __invalid_size_argument_for_IOC;
-> > > > > #define _IOC_TYPECHECK(t) \
-> > > > > 	((sizeof(t) == sizeof(t[1]) && \
-> > > > > 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
-> > > > > 	  sizeof(t) : __invalid_size_argument_for_IOC)
-> > > > > #endif
-> > > > >
-> > > > > The size itself is not verified at runtime. copy_struct_from_user()
-> > > > > still makes sense at least if we're going to allow expanding the struct
-> > > > > in the future.
-> > > > Right, but if we simply change our headers and extend the struct, it will break
-> > > > all existing programs compiled against those headers. In order to avoid that, if
-> > > > we intend on extending this struct by appending to it, we need to have a
-> > > > backwards compatibility mechanism. Just having copy_struct_from_user isn't
-> > > > enough. The data structure either must be fixed size, or we need a way to handle
-> > > > multiple ioctl numbers derived from headers with different sized struct arguments
-> > > >
-> > > > The two approaches I see are:
-> > > > 1. use more indirection. This has previous art in drm[1]. That's look
-> > > > something like this:
-> > > >
-> > > > struct seccomp_notif_addfd_ptr {
-> > > > 	__u64 size;
-> > > > 	__u64 addr;
-> > > > }
-> > > >
-> > > > ... And then it'd be up to us to dereference the addr and copy struct from user.
-> > >
-> > > Do not go down that route. It isn't worth the pain.
-> > >
-> > > You should also assume that userspace might have a compile-time check
-> > > on the buffer length (I've written one - not hard) and that the kernel
-> > > might (in the future - or on a BSD kernel) be doing the user copies
-> > > for you.
-> > >
-> > > Also, if you change the structure you almost certainly need to
-> > > change the name of the ioctl cmd as well as its value.
-> > > Otherwise a recompiled program will pass the new cmd value (and
-> > > hopefully the right sized buffer) but it won't have initialised
-> > > the buffer properly.
-> > > This is likely to lead to unexpected behaviour.
-Why do you say this? Assuming people are just pulling in <linux/seccomp.h>
-they will get both the ioctl number, and the struct. The one case where
-I can see things going wrong is languages which implement their own struct
-packing / ioctls and wouldn't get the updated # because it's hard coded.
-
-
-> > 
-> > Hmmm.
-> > 
-> > So, while initially I thought Sargun's observation about ioctl's fixed
-> > struct size was right, I think I've been swayed to Christian's view
-> > (which is supported by the long tail of struct size pain we've seen in
-> > other APIs).
-> > 
-> > Doing a separate ioctl for each structure version seems like the "old
-> > solution" now that we've got EA syscalls. So, I'd like to keep the size
-> > and copy_struct_from_user().
+On Fri 12-06-20 15:13:22, Naresh Kamboju wrote:
+> On Thu, 11 Jun 2020 at 15:25, Michal Hocko <mhocko@kernel.org> wrote:
+> >
+> > On Fri 29-05-20 11:49:20, Michal Hocko wrote:
+> > > On Fri 29-05-20 02:56:44, Chris Down wrote:
+> > > > Yafang Shao writes:
+> > > Agreed. Even if e{low,min} might still have some rough edges I am
+> > > completely puzzled how we could end up oom if none of the protection
+> > > path triggers which the additional debugging should confirm. Maybe my
+> > > debugging patch is incomplete or used incorrectly (maybe it would be
+> > > esier to use printk rather than trace_printk?).
+> >
+> > It would be really great if we could move forward. While the fix (which
+> > has been dropped from mmotm) is not super urgent I would really like to
+> > understand how it could hit the observed behavior. Can we double check
+> > that the debugging patch really doesn't trigger (e.g.
+> > s@trace_printk@printk in the first step)?
 > 
-> If the size is variable then why not get the application to fill
-> in the size of the structure it is sending at the time of the ioctl.
+> Please suggest to me the way to get more debug information
+> by providing kernel debug patches and extra kernel configs.
 > 
-> So you'd have:
-> #define xxx_IOCTL_17(param) _IOCW('X', 17, sizeof *(param))
-> 
-> The application code would then do:
-> 	ioctl(fd, xxx_IOCTL_17(arg), arg);
-> 
-> The kernel code can either choose to have specific 'case'
-> for each size, or mask off the length bits and do the
-> length check later.
-> 
-> 	David
-> 
-> 
-My suggest, written out (no idea if this code actually works), is as follows:
+> I have applied your debug patch and tested on top on linux next 20200612
+> but did not find any printk output while running mkfs -t ext4 /drive test case.
 
-ioctl.h:
-/* This needs to be added */
-#define IOCDIR_MASK	(_IOC_DIRMASK << _IOC_DIRSHIFT)
-
-
-seccomp.h:
-
-struct struct seccomp_notif_addfd {
-	__u64 fd;
-	...
-}
-
-/* or IOW? */
-#define SECCOMP_IOCTL_NOTIF_ADDFD	SECCOMP_IOWR(3, struct seccomp_notif_addfd)
-
-seccomp.c:
-static long seccomp_notify_addfd(struct seccomp_filter *filter,
-				 struct seccomp_notif_addfd __user *uaddfd int size)
-{
-	struct seccomp_notif_addfd addfd;
-	int ret;
-
-	if (size < 32)
-		return -EINVAL;
-	if (size > PAGE_SIZE)
-		return -E2BIG;
-
-	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
-	if (ret)
-		return ret;
-
-	...
-}
-
-/* Mask out size */
-#define SIZE_MASK(cmd)	(~IOCSIZE_MASK & cmd)
-
-/* Mask out direction */
-#define DIR_MASK(cmd)	(~IOCDIR_MASK & cmd)
-
-static long seccomp_notify_ioctl(struct file *file, unsigned int cmd,
-				 unsigned long arg)
-{
-	struct seccomp_filter *filter = file->private_data;
-	void __user *buf = (void __user *)arg;
-
-	/* Fixed size ioctls. Can be converted later on? */
-	switch (cmd) {
-	case SECCOMP_IOCTL_NOTIF_RECV:
-		return seccomp_notify_recv(filter, buf);
-	case SECCOMP_IOCTL_NOTIF_SEND:
-		return seccomp_notify_send(filter, buf);
-	case SECCOMP_IOCTL_NOTIF_ID_VALID:
-		return seccomp_notify_id_valid(filter, buf);
-	}
-
-	/* Probably should make some nicer macros here */
-	switch (SIZE_MASK(DIR_MASK(cmd))) {
-	case SIZE_MASK(DIR_MASK(SECCOMP_IOCTL_NOTIF_ADDFD)):
-		return seccomp_notify_addfd(filter, buf, _IOC_SIZE(cmd));
-	default:
-		return -EINVAL;
-	}
-}
-
---------
-
-What boxes does this tick?
-* Forwards (and backwards) compatibility
-* Applies to existing commands
-* Command can be extended without requiring new ioctl to be defined
-* It well accomodates the future where we want to have a kernel
-  helper copy the structures from userspace
-
-The fact that the size of the argument struct, and the ioctl are defined in the 
-same header gives us the ability to "cheat", and for the argument size to be 
-included / embedded for free in the command passed to ioctl. In turn, this
-gives us two benefits. First, it means we don't have to copy from user twice,
-and can just do it all in one shot since the size is passed with the syscall
-arguments. Second, it means that the user does not have to do the following:
-
-seccomp_notif_addfd addfd = {};
-addfd.size = sizeof(struct seccomp_notif_addfd)
-
-Because sizeof(struct seccomp_notif_addfd) is embedded in 
-SECCOMP_IOCTL_NOTIF_ADDFD based on the same headers they plucked the struct out of.
-
+Have you tried s@trace_printk@printk@ in the patch? AFAIK trace_printk
+doesn't dump anything into the printk ring buffer. You would have to
+look into trace ring buffer.
+-- 
+Michal Hocko
+SUSE Labs
