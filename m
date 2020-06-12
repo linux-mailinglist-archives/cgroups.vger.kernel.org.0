@@ -2,127 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F551F7C06
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 19:04:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC9201F7C20
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 19:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726258AbgFLREA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jun 2020 13:04:00 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41048 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726521AbgFLREA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 12 Jun 2020 13:04:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.220.254])
-        by mx2.suse.de (Postfix) with ESMTP id 7629CAECE;
-        Fri, 12 Jun 2020 17:04:01 +0000 (UTC)
-Date:   Fri, 12 Jun 2020 19:03:52 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Chris Down <chris@chrisdown.name>,
+        id S1726258AbgFLRNi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Jun 2020 13:13:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53022 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726089AbgFLRNi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 13:13:38 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E19F4C03E96F
+        for <cgroups@vger.kernel.org>; Fri, 12 Jun 2020 10:13:37 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id e1so10498038wrt.5
+        for <cgroups@vger.kernel.org>; Fri, 12 Jun 2020 10:13:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=6/WKj2RP2D9n4+fw5DYObbawXZCZEXk2atts5/6vXZA=;
+        b=TI6S+MwlPkt8KC/tPABYYKsT1TobgOSEYvn7gfp61hj7IWbDiaISOUSExWX249s6fi
+         EIYHO6hkn1K1f6HNJlpcgTM7TC6HcJ9Bz/i/U+52KQ4SDr9GmgcRXdjV7av4HWETWXxM
+         fxu5PbxWzUePUak1TSIszwbrfNsSF2Mef0XA8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=6/WKj2RP2D9n4+fw5DYObbawXZCZEXk2atts5/6vXZA=;
+        b=Sgl3Ona+lqANpRv0pL1O5EvHvWR5As+LY9KjxLEG4H9TIpCUo+BPi9QusSs0S5C0BV
+         jTf4/B2pFLzPgaLJr85kSSesnfuDx6M14/doLNaQ9vONCeFLG6OJN5SblyfPsujIk2ZQ
+         nlopC3ndjxCgQiYBGMQTcKxzs0FCjlAdfnrmwZNkoN/q+40D2yT0GOsLRAe6YuFnkzR5
+         JLC6J328BP4xMaGjxIbQAwRWaP+PIszCCEU/nogY56Q4Hhr/gT9lw27WtODgOsnLPnOU
+         0eUzsBMfawi9YJAyMUrqlF5sF3Z+fOcDWwIFLruNL9Zz4/kGLHxBqM80N3IdBOxo2AYR
+         +p7Q==
+X-Gm-Message-State: AOAM533gnIbMjx+DkcjJlS0DGcgGIN4q6Y320zy6Wrr6ljPunNc4gdAa
+        K1BqeDDjVjpZyjyoFLCuZSRN9Q==
+X-Google-Smtp-Source: ABdhPJzlc5PIQbzc9wrrQMNksbeyPR5ziC+iT8uaWIdBJcsqaBBESl71xk5jFNvubBzbMwIi3XoqOw==
+X-Received: by 2002:a5d:4404:: with SMTP id z4mr16439075wrq.189.1591982016383;
+        Fri, 12 Jun 2020 10:13:36 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id b185sm16603283wmd.3.2020.06.12.10.13.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Jun 2020 10:13:35 -0700 (PDT)
+Date:   Fri, 12 Jun 2020 18:13:35 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
 Subject: Re: [PATCH 3/6] mm, memcg: Prevent memory.low load/store tearing
-Message-ID: <20200612170352.GA40768@blackbook>
+Message-ID: <20200612171335.GA341094@chrisdown.name>
 References: <cover.1584034301.git.chris@chrisdown.name>
  <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
+ <20200612170352.GA40768@blackbook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="6TrnltStXW4iwmi0"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="r5Pyd7+fXNt84Ff3"
 Content-Disposition: inline
-In-Reply-To: <448206f44b0fa7be9dad2ca2601d2bcb2c0b7844.1584034301.git.chris@chrisdown.name>
+In-Reply-To: <20200612170352.GA40768@blackbook>
+User-Agent: Mutt/1.14.2 (2020-05-25)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---6TrnltStXW4iwmi0
-Content-Type: text/plain; charset=us-ascii
+--r5Pyd7+fXNt84Ff3
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hello.
+Hi Michal,
 
-I see suspicious asymmetry, in the current mainline:
->	WRITE_ONCE(memcg->memory.emin, effective_protection(usage, parent_usage,
->			READ_ONCE(memcg->memory.min),
->			READ_ONCE(parent->memory.emin),
->			atomic_long_read(&parent->memory.children_min_usage)));
->
->	WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_usage,
->			memcg->memory.low, READ_ONCE(parent->memory.elow),
->			atomic_long_read(&parent->memory.children_low_usage)));
+Good catch! Andrew and I must have missed these when massaging the commits =
+with=20
+other stuff in -mm, which is totally understandable considering the amount =
+of=20
+places being touched by this and other patch series at the same time. Just =
+goes=20
+to show how complex it can be sometimes, since I even double checked these =
+and=20
+didn't see that missed hunk :-)
 
-On Thu, Mar 12, 2020 at 05:33:01PM +0000, Chris Down <chris@chrisdown.name>=
- wrote:
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index aca2964ea494..c85a304fa4a1 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6262,7 +6262,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
-uct mem_cgroup *root,
->  		return MEMCG_PROT_NONE;
-> =20
->  	emin =3D memcg->memory.min;
-> -	elow =3D memcg->memory.low;
-> +	elow =3D READ_ONCE(memcg->memory.low);
-> =20
->  	parent =3D parent_mem_cgroup(memcg);
->  	/* No parent means a non-hierarchical mode on v1 memcg */
-> @@ -6291,7 +6291,7 @@ enum mem_cgroup_protection mem_cgroup_protected(str=
-uct mem_cgroup *root,
->  	if (elow && parent_elow) {
->  		unsigned long low_usage, siblings_low_usage;
-> =20
-> -		low_usage =3D min(usage, memcg->memory.low);
-> +		low_usage =3D min(usage, READ_ONCE(memcg->memory.low));
->  		siblings_low_usage =3D atomic_long_read(
->  			&parent->memory.children_low_usage);
-Is it possible that these hunks were lost during rebase/merge?
+The good news is that these are belt-and-suspenders: this avoids a rare=20
+theoretical case, not something likely to be practically dangerous. But yes=
+, we=20
+should fix it up. Since the commit is already out, I'll just submit a new o=
+ne.
 
-IMHO it should apply as:
+Thanks for the report!
 
--- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6428,7 +6428,8 @@ enum mem_cgroup_protection mem_cgroup_protected(struc=
-t mem_cgroup *root,
-                        atomic_long_read(&parent->memory.children_min_usage=
-)));
+Chris
 
-        WRITE_ONCE(memcg->memory.elow, effective_protection(usage, parent_u=
-sage,
--                       memcg->memory.low, READ_ONCE(parent->memory.elow),
-+                       READ_ONCE(memcg->memory.low),
-+                       READ_ONCE(parent->memory.elow),
-                        atomic_long_read(&parent->memory.children_low_usage=
-)));
-
- out:
-
-
-Michal
-
---6TrnltStXW4iwmi0
+--r5Pyd7+fXNt84Ff3
 Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl7jtXIACgkQia1+riC5
-qSjUig//d3bjL+7mCpm6speHzN1vPZbVuEsBjl+P4DhMwGSl1iiwWP8chYdm30Xg
-5l8eACsZox2Zta2TvNkqUKaYSanJ3+cY4j6vFecnJ2ADRwTG5OgKJHz4pPpTSDox
-9YVzYsOzLVF/cfoOiD2GPer+YBaEMyppaqWwfzAb2XoKUmdHsY1A/nBllvbTSm6c
-zbGdMqb3kt/ixm8cljE/0Wyk26QeyydHBQuU9XW1VQZniQhDWwi4tR7lfFCxMYtQ
-9/PUKtgmZ+ku8YOEoc9twXbOxR8C3MZo7zZslrcVvqrF1bVOkpYAZMIMGnSLFf9Q
-Mdcmbf81yPWEd/7hRO8vC8ICfBnU1nN14f1+MuXt56VWtmLnn/UqJ5sS3vqF5tgV
-iBlucq9xjxMKsvoT15tNq3DX+CKL5bdqAOglSmT/XwUW1hsVycQ0spCWQ5J4K/bQ
-ljahv3T9G4UgGouUwrVTZxU2+JC7YQg5BqJoC4sf0hLdFcVjdcq/aQis4b8TZLVs
-36wBd/QpHGVEh1bZ5LN2AcFY+WhahNswJjM2rx2WB1S9IMhukeIe2C/PjpKnc2Zw
-ff7+GBkyif/+0Xwj7N+aXSsLQ/0Xjv3kgcbOXGU0jjdoEpQxyOVtb8mAKGDRHt1D
-hIr7XNHBIOUgzGC+YBl0fGDVYCWXEg45umFPdf6OTx8MCONUjQI=
-=Uooi
+iQKTBAEBCgB9FiEECEkprPvCOwsaJqhB340hthYRgHAFAl7jt79fFIAAAAAALgAo
+aXNzdWVyLWZwckBub3RhdGlvbnMub3BlbnBncC5maWZ0aGhvcnNlbWFuLm5ldDA4
+NDkyOUFDRkJDMjNCMEIxQTI2QTg0MURGOEQyMUI2MTYxMTgwNzAACgkQ340hthYR
+gHAerQ//Zf+6DzdEaZvfnvPNq5+6NbmAAs+Pw1AZn2s81dipkRY38MGPNTqY8oBL
+qd46ZDJ24zSUPAcHvu6E3UGwpjO8VSynvP+CfEoFlS+R5k15oEqTe36C7l9eA+IY
+zTDyLj9LrFhy5qD2V2GKH9Dp9ZQC9BrIls1Gc0J+XaB7h9umEc2g1Ybadj1d3ouk
+xAX/6iV19fAW4uFgXVOq70BhYGXGXvWCX0NYQ3Yz18Kkr5bSnjzTz2irIxCbaWZ+
+q2Gj+Q1JFN/yhkRUt+m+8qtJZAb/i4cXqDJp9kqJ6t9cLjIhybFNRnXMueGr1Puc
+byWoWK7i9+vEjnY6VbjToicAWQPeId063wxJzzhp/uqQ+zoCMDX+P7Iz4s1u+6l6
+R3nXQSRcrw9VNc3ZOfJjXy1R/hIwGBbeGt/ndPnyNrznWu8yYJJr7qZirk8Uy4lp
+wTmv/5QTkal+TiVXOMW6VwXMLLvu50Q+E3/7dIz4waKt98kfM8hd8zjB676rwcGD
+olHRJHD956i7HOAU3uzFrijiMOgOnXAiJIDj1+MxLXdTL0ZidJizBh6eeSbxUrcg
+egr+KPJSKcxuZ+K8c+yZD8MoCLJX84xTU1LdtTwQC9x10M1HnT1OMFLrfso4yWTK
+SYtQxYe6sGiKMLvN3tYD5Ql63m8D2CIK5NDiK/hxG9hZtiYOH9k=
+=2HeI
 -----END PGP SIGNATURE-----
 
---6TrnltStXW4iwmi0--
+--r5Pyd7+fXNt84Ff3--
