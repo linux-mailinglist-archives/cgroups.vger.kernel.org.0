@@ -2,52 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E28E91F7435
-	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 08:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8773A1F755D
+	for <lists+cgroups@lfdr.de>; Fri, 12 Jun 2020 10:36:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726396AbgFLG6O (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Jun 2020 02:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726287AbgFLG6O (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 02:58:14 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B1E5C08C5C3
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 23:58:14 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id n9so3387048plk.1
-        for <cgroups@vger.kernel.org>; Thu, 11 Jun 2020 23:58:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hbBTPedvojIPOHUOPrzkvqJhdMTFZotSf6yPfyzcSVc=;
-        b=VEv60SuR1xOiTK9xkgyJTKlyILo0gJSwdIeMlGuiTetR5wFnYj6YsL3yI5plGAsZg/
-         OMWGwHmJ43PaYQmc4gd+GLuzIVpWUsVLdppG1kCQK4jIBzjwWXGw0RM5BZd3bMh5g6Op
-         5zaycbbMBN8Yc9oPnkdOTIpZ4v5cFWgsPof1Q=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hbBTPedvojIPOHUOPrzkvqJhdMTFZotSf6yPfyzcSVc=;
-        b=V4f0VYLrOJ/upnBwweRfu/PVLG6bYrH1Zdt3O7n4QFY4VlsJanJ1sdiQgTjI/RVgPM
-         cM7QGkmpRJovD7k6y5zfO4AoMr3lTl9bdIQkdhuDB4zPTT5fDmBp7wANn8BU9Mina4Os
-         d0IOlc3ZQdgCi9WFvcitt/iLyTC8M4rVIsiPNxK7H1XrZ/SRAmFLHjwMRjqAB61yGCoo
-         ZklXTNAzDu2duMatpfqsDBvjXJKd8JCPpIsSnaMS+Gs80a+FLh3mBUh/VFfUWe4Tnold
-         sh85MAmJCMbU+SwlHDEtK2rgETjrGmwVNR7Y4IJXpqwZgbXUa4DhKHO9vXd0+ZfbfmLz
-         dtsQ==
-X-Gm-Message-State: AOAM530U9KvOwL8PS9krWOWY//KzDmAVd7yAoz+1E79YzYPcgMBRALes
-        iCNoC2ED71BX6ymqnzEXBLDAaQ==
-X-Google-Smtp-Source: ABdhPJzFarvRyhjwA03KJI+npCqldj7tRexddeTWqnuMNZdeX8tlh9W+3uGOuYbwK6XOUnTfUmmkPQ==
-X-Received: by 2002:a17:902:23:: with SMTP id 32mr10294486pla.40.1591945093613;
-        Thu, 11 Jun 2020 23:58:13 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id t201sm5206590pfc.104.2020.06.11.23.58.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 11 Jun 2020 23:58:12 -0700 (PDT)
-Date:   Thu, 11 Jun 2020 23:58:11 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Sargun Dhillon' <sargun@sargun.me>,
+        id S1726372AbgFLIgI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 12 Jun 2020 04:36:08 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:34182 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726357AbgFLIgI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Jun 2020 04:36:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-254-37IQVLyONZaErv1-cO8eWQ-1; Fri, 12 Jun 2020 09:36:04 +0100
+X-MC-Unique: 37IQVLyONZaErv1-cO8eWQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 12 Jun 2020 09:36:03 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 12 Jun 2020 09:36:03 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Kees Cook' <keescook@chromium.org>
+CC:     'Sargun Dhillon' <sargun@sargun.me>,
         Christian Brauner <christian.brauner@ubuntu.com>,
         "containers@lists.linux-foundation.org" 
         <containers@lists.linux-foundation.org>,
@@ -55,17 +31,24 @@ Cc:     'Sargun Dhillon' <sargun@sargun.me>,
         Robert Sesek <rsesek@google.com>,
         Chris Palmer <palmer@google.com>, Jann Horn <jannh@google.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Daniel Wagner <daniel.wagner@bmw-carit.de>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Matt Denton <mpdenton@google.com>,
+        John Fastabend <john.r.fastabend@intel.com>,
         "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
         Tejun Heo <tj@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>,
         "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
         "stable@vger.kernel.org" <stable@vger.kernel.org>,
         "David S . Miller" <davem@davemloft.net>
-Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+Subject: RE: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
  move fds across processes
-Message-ID: <202006112355.932D0AD@keescook>
-References: <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
+Thread-Topic: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to
+ move fds across processes
+Thread-Index: AQHWP+BcCi14oegu0U6J73sUpcDiU6jTfHDAgACI+YCAAKH2YA==
+Date:   Fri, 12 Jun 2020 08:36:03 +0000
+Message-ID: <94407449bedd4ba58d85446401ff0a42@AcuMS.aculab.com>
+References: <202006091235.930519F5B@keescook>
+ <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
  <202006091346.66B79E07@keescook>
  <037A305F-B3F8-4CFA-B9F8-CD4C9EF9090B@ubuntu.com>
  <202006092227.D2D0E1F8F@keescook>
@@ -75,24 +58,136 @@ References: <20200609200346.3fthqgfyw3bxat6l@wittgenstein>
  <20200611110630.GB30103@ircssh-2.c.rugged-nimbus-611.internal>
  <067f494d55c14753a31657f958cb0a6e@AcuMS.aculab.com>
  <202006111634.8237E6A5C6@keescook>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <202006111634.8237E6A5C6@keescook>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 11, 2020 at 04:49:37PM -0700, Kees Cook wrote:
-> I think I prefer the last one.
+From: Kees Cook
+> Sent: 12 June 2020 00:50
+> > From: Sargun Dhillon
+> > > Sent: 11 June 2020 12:07
+> > > Subject: Re: [PATCH v3 1/4] fs, net: Standardize on file_receive helper to move fds across
+> processes
+> > >
+> > > On Thu, Jun 11, 2020 at 12:01:14PM +0200, Christian Brauner wrote:
+> > > > On Wed, Jun 10, 2020 at 07:59:55PM -0700, Kees Cook wrote:
+> > > > > On Wed, Jun 10, 2020 at 08:12:38AM +0000, Sargun Dhillon wrote:
+> > > > > > As an aside, all of this junk should be dropped:
+> > > > > > +	ret = get_user(size, &uaddfd->size);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > > +
+> > > > > > +	ret = copy_struct_from_user(&addfd, sizeof(addfd), uaddfd, size);
+> > > > > > +	if (ret)
+> > > > > > +		return ret;
+> > > > > >
+> > > > > > and the size member of the seccomp_notif_addfd struct. I brought this up
+> > > > > > off-list with Tycho that ioctls have the size of the struct embedded in them. We
+> > > > > > should just use that. The ioctl definition is based on this[2]:
+> > > > > > #define _IOC(dir,type,nr,size) \
+> > > > > > 	(((dir)  << _IOC_DIRSHIFT) | \
+> > > > > > 	 ((type) << _IOC_TYPESHIFT) | \
+> > > > > > 	 ((nr)   << _IOC_NRSHIFT) | \
+> > > > > > 	 ((size) << _IOC_SIZESHIFT))
+> > > > > >
+> > > > > >
+> > > > > > We should just use copy_from_user for now. In the future, we can either
+> > > > > > introduce new ioctl names for new structs, or extract the size dynamically from
+> > > > > > the ioctl (and mask it out on the switch statement in seccomp_notify_ioctl.
+> > > > >
+> > > > > Yeah, that seems reasonable. Here's the diff for that part:
+> > > >
+> > > > Why does it matter that the ioctl() has the size of the struct embedded
+> > > > within? Afaik, the kernel itself doesn't do anything with that size. It
+> > > > merely checks that the size is not pathological and it does so at
+> > > > compile time.
+> > > >
+> > > > #ifdef __CHECKER__
+> > > > #define _IOC_TYPECHECK(t) (sizeof(t))
+> > > > #else
+> > > > /* provoke compile error for invalid uses of size argument */
+> > > > extern unsigned int __invalid_size_argument_for_IOC;
+> > > > #define _IOC_TYPECHECK(t) \
+> > > > 	((sizeof(t) == sizeof(t[1]) && \
+> > > > 	  sizeof(t) < (1 << _IOC_SIZEBITS)) ? \
+> > > > 	  sizeof(t) : __invalid_size_argument_for_IOC)
+> > > > #endif
+> > > >
+> > > > The size itself is not verified at runtime. copy_struct_from_user()
+> > > > still makes sense at least if we're going to allow expanding the struct
+> > > > in the future.
+> > > Right, but if we simply change our headers and extend the struct, it will break
+> > > all existing programs compiled against those headers. In order to avoid that, if
+> > > we intend on extending this struct by appending to it, we need to have a
+> > > backwards compatibility mechanism. Just having copy_struct_from_user isn't
+> > > enough. The data structure either must be fixed size, or we need a way to handle
+> > > multiple ioctl numbers derived from headers with different sized struct arguments
+> > >
+> > > The two approaches I see are:
+> > > 1. use more indirection. This has previous art in drm[1]. That's look
+> > > something like this:
+> > >
+> > > struct seccomp_notif_addfd_ptr {
+> > > 	__u64 size;
+> > > 	__u64 addr;
+> > > }
+> > >
+> > > ... And then it'd be up to us to dereference the addr and copy struct from user.
+> >
+> > Do not go down that route. It isn't worth the pain.
+> >
+> > You should also assume that userspace might have a compile-time check
+> > on the buffer length (I've written one - not hard) and that the kernel
+> > might (in the future - or on a BSD kernel) be doing the user copies
+> > for you.
+> >
+> > Also, if you change the structure you almost certainly need to
+> > change the name of the ioctl cmd as well as its value.
+> > Otherwise a recompiled program will pass the new cmd value (and
+> > hopefully the right sized buffer) but it won't have initialised
+> > the buffer properly.
+> > This is likely to lead to unexpected behaviour.
+> 
+> Hmmm.
+> 
+> So, while initially I thought Sargun's observation about ioctl's fixed
+> struct size was right, I think I've been swayed to Christian's view
+> (which is supported by the long tail of struct size pain we've seen in
+> other APIs).
+> 
+> Doing a separate ioctl for each structure version seems like the "old
+> solution" now that we've got EA syscalls. So, I'd like to keep the size
+> and copy_struct_from_user().
 
-Here's where I am with things:
+If the size is variable then why not get the application to fill
+in the size of the structure it is sending at the time of the ioctl.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/kees/linux.git/log/?h=devel/seccomp/addfd/v3.3
+So you'd have:
+#define xxx_IOCTL_17(param) _IOCW('X', 17, sizeof *(param))
 
-If we can agree on the ioctl numbering solution, I can actually send the
-series for email review...
+The application code would then do:
+	ioctl(fd, xxx_IOCTL_17(arg), arg);
 
--- 
-Kees Cook
+The kernel code can either choose to have specific 'case'
+for each size, or mask off the length bits and do the
+length check later.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
