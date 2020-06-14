@@ -2,74 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D16A1F89FD
-	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2020 20:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE9FC1F8A89
+	for <lists+cgroups@lfdr.de>; Sun, 14 Jun 2020 22:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726686AbgFNSKO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 14 Jun 2020 14:10:14 -0400
-Received: from bedivere.hansenpartnership.com ([66.63.167.143]:46078 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726513AbgFNSKO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 14 Jun 2020 14:10:14 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id DAD1E8EE2F6;
-        Sun, 14 Jun 2020 11:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1592158213;
-        bh=PGzUuMvpO+6kzpKxkF4YyCGT8UrnacuIwBFLYULnNxY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=ZTx/WKouqrcKstUIGTYH++lQrh1C0vddT233DaDgJcSkoBGuRxjHWqDIv/DCV2FcW
-         nmxZCgZRR6oEeitdr/0aMl7UpW1j49vR0+Zg3meoln+8dhpfq3A4cLsfk/NygzMn7C
-         HnGpeeSnaN0s4TMWZG+0+02/5SCLxtWvJtDl7X9w=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id vUWU89wdzV0W; Sun, 14 Jun 2020 11:10:12 -0700 (PDT)
-Received: from [153.66.254.194] (unknown [50.35.76.230])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id A61E48EE1C8;
-        Sun, 14 Jun 2020 11:10:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1592158210;
-        bh=PGzUuMvpO+6kzpKxkF4YyCGT8UrnacuIwBFLYULnNxY=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=xYL4fKyr/4K6QtdNcTPoG3uoMbGabnRFHbzYyzXFHR3wXMTTfmYRD96xDZcfODMiZ
-         hfE+1jK+tXc3acqPmpkdiIkzYtKkU1746J7RAkLAe3WgsBeWJGBxlnDmFoJpxh0QeN
-         LSEibjppD4CsuWup94IIZeRZtJpUGySbDGgoFpf4=
-Message-ID: <1592158208.5303.27.camel@HansenPartnership.com>
-Subject: Re: [PATCH] cgroup: Refactor two assignments in
- css_task_iter_next_css_set()
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     zzuedu2000@163.com, tj@kernel.org, lizefan@huawei.com,
-        hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Markus.Elfring@web.de, songmuchun@bytedance.com,
-        buddy.zhang@aliyun.com
-Date:   Sun, 14 Jun 2020 11:10:08 -0700
-In-Reply-To: <20200614022833.2641-1-zzuedu2000@163.com>
-References: <20200614022833.2641-1-zzuedu2000@163.com>
+        id S1726905AbgFNUG5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 14 Jun 2020 16:06:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38260 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726844AbgFNUG5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 14 Jun 2020 16:06:57 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D7D7AC08C5C2
+        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2020 13:06:55 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id j13so8204531vsn.3
+        for <cgroups@vger.kernel.org>; Sun, 14 Jun 2020 13:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=MRJYdBEWDkphEZG/UEdwwg3luf4wsGYhc8hRIEMMM04=;
+        b=QOmwYp9RYJxDQ/IGgn3/TpLLMfLKeWskDjGcWBx4tuprIRR9q/r7XLmugTGpgkOF69
+         6Q+j0Demrsw8NR/T0NRGjnbLS+t3RqLOxDV85Hnw1QZAeFhFK211gJLm3qZk3i36jF/1
+         EpiHz+dXNlncXQ4vaJHU0ubhN2UjLVKqalbsjDnfdRj+CX+YGoQnwws+UmmkrkXoS54V
+         JDX1EPcsYoOc7xQMKC628FtamySzc9ReowvEuztk2fq2q6qBTjY6Aiol93fPD+hrrPPW
+         OQCUuuDAQyxi3JULt+Ed4Tet55t8qR+XgEbmW6375CP5ESQXOKra0Ddlar8zqaTzw1MW
+         egXw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=MRJYdBEWDkphEZG/UEdwwg3luf4wsGYhc8hRIEMMM04=;
+        b=S/BDMiWY4AYMiTO5Es0YN0iV+wZ9272PhvT8/wP1/WoHcIyoLmPZOQmGicv6Zx3axN
+         qWH2wSklRjMc5XhWIRZb1uFFjS8Rbheaipjc9j0uluI8uWLasL6r7PAIV/vEwm4bWBko
+         UErXruzlj1Ihziwu7xKDdE4cSPyDzATOlAGU0UWNnNlbGe+z8Sr6vvkYzU3QAQYNG/YI
+         mFL17mEKOSWlLS6K7ZnVhJ+Hf7V4Re1Goporxu2rKtTWi6c0Uuj1vpR3pKcMb9W3EVpZ
+         Py7wWyof4Y8miJyWdYdOtYWJ9S0MSzinF+yk0wS5DsKbslE/u9ky+iE3nELn1CGnEQ0W
+         XRJA==
+X-Gm-Message-State: AOAM531VNL3QsEqgOJePiMRx/GN0aoHaeKDgGpUNJ2J911DR5dEX5pr5
+        sORPfneDYqfGUYhrgYM5Ql8QRwIO1C+QWu+wX+E=
+X-Google-Smtp-Source: ABdhPJw729xn3GUMEiFC/ZNEGBmcHNMdmQ+ylJYsYmFs2hg0GWb7bRGM0yDtCxDUDAidKhFWuKJQfJx9gd1mJh93CyM=
+X-Received: by 2002:a05:6102:1265:: with SMTP id q5mr15495114vsg.93.1592165214501;
+ Sun, 14 Jun 2020 13:06:54 -0700 (PDT)
+MIME-Version: 1.0
+Received: by 2002:a67:fa42:0:0:0:0:0 with HTTP; Sun, 14 Jun 2020 13:06:54
+ -0700 (PDT)
+Reply-To: jinghualiuyang@gmail.com
+From:   Frau JINGHUA Liu Yang <deleonalbertr@gmail.com>
+Date:   Sun, 14 Jun 2020 22:06:54 +0200
+Message-ID: <CAN6-f8ughW4=J3mjXNWE-GVk672UM6EqDpK-fby=xEwco21qOw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.26.6 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, 2020-06-14 at 10:28 +0800, zzuedu2000@163.com wrote:
-> From: Wei Fenghai <zzuedu2000@163.com>
-> 
-> Combine two assignments for the variable ‘l’ into one statement.
+--=20
+Sch=C3=B6nen Tag,
 
-The problem with this commit message isn't the description, we can all
-see what the change does, it's the justification.  Why is there any
-reason to do this?  My version of gcc does this as an optimization
-anyway, so the patch doesn't change to the binary output and it's
-arguable that having two statements instead of one makes the code
-marginally more readable.
+       Ich bin Frau JINGHUA Liu Yang f=C3=BCr die CITIBANK OF KOREA hier in
+der Republik KOREA. Ich habe einen Gesch=C3=A4ftsvorgang. Kann ich Ihnen
+vertrauen, dass Sie diesen Betrag von $9.356.669 USD =C3=BCberweisen? Wenn
+Sie bereit sind, mir zu helfen, melden Sie sich bei mir, damit ich Sie
+dar=C3=BCber informieren kann, wie wir diese Transaktion am besten
+perfektionieren k=C3=B6nnen, damit das Geld an Sie in Ihrem Land =C3=BCberw=
+iesen
+wird.
 
-Regards,
-
-James
-
+Sch=C3=B6ne Gr=C3=BC=C3=9Fe..
+Frau JINGHUA Liu Yang
