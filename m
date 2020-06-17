@@ -2,65 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D4841FCEAB
-	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2020 15:38:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F236C1FCEE9
+	for <lists+cgroups@lfdr.de>; Wed, 17 Jun 2020 15:58:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727807AbgFQNhg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Jun 2020 09:37:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51016 "EHLO
+        id S1726480AbgFQN6D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 17 Jun 2020 09:58:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727805AbgFQNhf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Jun 2020 09:37:35 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C9FEC0613EF
-        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2020 06:37:35 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a9so2891871ljn.6
-        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2020 06:37:34 -0700 (PDT)
+        with ESMTP id S1726341AbgFQN6C (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Jun 2020 09:58:02 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EDEEC06174E
+        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2020 06:58:01 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id r7so2477550wro.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Jun 2020 06:58:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
-        b=AQDHF9j1wumEdOF8jW/1ZD+wMd/8SpKXUSrLOHAhi0A44X1JaVVNvxPIvK23AWFQl1
-         lcfd2qLeHyI1mOR56hQwvpPqFkxdvrqlLEDd85my4N1iUDfAlgcF8AzsgKWBK3zrgNCe
-         FfcZd/NGkaf2Mw5/0Wi7/NN8GlYj/dE1H3Y2K/UdByyIhfAVRQSJIdp1UXJN3EirQcCx
-         gGhwwgc+eOdRDRZohnKU4obNcVnQwSt7TB0Y31V6blCHXIgexA++Mbo6gO8D5gHDGqpn
-         e08UA7hYCS3YGjFr+hICEEExE+bXh2EV+2ZuVFnYmW334FTROJKMWUws6mNfrG1VlVfC
-         NXPg==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=czz/LMTUSEyCUOCBc2bpVTh7IggBB8ARvYVKv0fzm0w=;
+        b=oHJZsmwDgazVpFYFy9f1b0DXnvsC0m5vxNXELt2qWUG2KfVfS0Fn9Az8Mm4tsT5Yun
+         T0BN8K2g46PCiRW5Vtd3CYq9U6e5qZuldGsqUGrQVKibeXmeDBk6U6AB2EVkl4AOMQoQ
+         bb1tNkHgfcvlaxd0Rj1tDcDG32lDe0/EQGnL4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fqR44w8izx/KE5EkQ1Ws5ETNchnRTHELluIzCKgLjZQ=;
-        b=Dh/zaM1rS7BRPHFtCePLr6KIEYVu5P/R4dZVD8KAiYdOL/uT3Okg1rXWCYsILKlmLC
-         Riknz/HVxGz4GetRqJ6niNl6q7OUu0g13fm2TbLvovlolPQthhNLiuX1NhfP6+jqU3WZ
-         qdOuss7Yc2qabcrYgvF7tMVz2Jp1NetcqgtpAp5saXvvMvW3IZ6NuuxD1WjwwQPMGDuL
-         1XtVmn3MGp4MhbDACiHvNkFgxrcJChyskHejtOzb273YLyjx4zpiXVPpNA5JScDwt3Yi
-         rXY0WXq65mO0CjluEZnCkQZNDIuDBWrIw3v3hg+tJQNhxEyNck1BR90Io5/nAFPC902W
-         0V2Q==
-X-Gm-Message-State: AOAM5321LyVdQm8gHuDdjXtkPZjLqFy5UFLKOl7yuA4CErLJCsEO7il2
-        tWH4eHY6qU3vul6oV5BSxQ9IhWXBNYL4ZRLW7t8giA==
-X-Google-Smtp-Source: ABdhPJwA6fF2gcH8wQw09CP/KfWtNPcawF+FUlNNP2wgH6FMgwt35Wa0rYTio1e8v/dCRtNDcHsmii7KXDmm4uILcaA=
-X-Received: by 2002:a2e:911:: with SMTP id 17mr4347007ljj.411.1592401052747;
- Wed, 17 Jun 2020 06:37:32 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYu2ruH-8uxBHE0pdE6RgRTSx4QuQPAN=Nv3BCdRd2ouYA@mail.gmail.com>
- <20200501135806.4eebf0b92f84ab60bba3e1e7@linux-foundation.org>
- <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
- <20200519075213.GF32497@dhcp22.suse.cz> <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
- <20200519084535.GG32497@dhcp22.suse.cz> <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
- <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz>
-In-Reply-To: <20200521163450.GV6462@dhcp22.suse.cz>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 17 Jun 2020 19:07:20 +0530
-Message-ID: <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Michal Hocko <mhocko@kernel.org>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>
-Cc:     Anders Roxell <anders.roxell@linaro.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=czz/LMTUSEyCUOCBc2bpVTh7IggBB8ARvYVKv0fzm0w=;
+        b=gVffU8ikINK87yC/X6EtNVeRxNAgDFMHfYfsFWK2yO3v78fLAFeCe9gVImsDtZQMla
+         nFKYkixUZHyeEV73+pQff9SR/qFr4tgIF1FbqzH6Byg0+EkQaSgXvIjQ/Vcqy0d4UF3E
+         KvI2BEOABXdXmoI8MihvWZuWy+qcppO/Y33MOT0VaBExMSbEj4/VX+GPCaK/c5H3SSts
+         to5XybbdYsoCw8R19lPAJeX6/lAJd57UvBEXOWNSSsY5YPja99kSyBx9lLvJi4do6m3B
+         Vaz/40nu37dQMcNGMj3hQ/6KHAiWsHgXFuigtlZA+NnfINZx42B2DyCGyJdfAtGyUF87
+         nQaA==
+X-Gm-Message-State: AOAM532/RPwku6k+ozieg2EECCzZYl9uQDY31XISlVyAXCoS2tO0kEas
+        v/J91KWjp1HltYalp3NzbQXCrQ==
+X-Google-Smtp-Source: ABdhPJxEWNxFxNxnJ3uLML+OdoNnGyXOqpBVbo7UMqTkjK8aBRi7UkKmaFuOunrzbNW+H9nqkV6M+Q==
+X-Received: by 2002:a5d:4286:: with SMTP id k6mr8336535wrq.140.1592402279710;
+        Wed, 17 Jun 2020 06:57:59 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id 67sm35206526wrk.49.2020.06.17.06.57.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Jun 2020 06:57:58 -0700 (PDT)
+Date:   Wed, 17 Jun 2020 14:57:58 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
         "Linux F2FS DEV, Mailing List" 
         <linux-f2fs-devel@lists.sourceforge.net>,
         linux-ext4 <linux-ext4@vger.kernel.org>,
@@ -71,107 +60,70 @@ Cc:     Anders Roxell <anders.roxell@linaro.org>,
         linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
         Hugh Dickins <hughd@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
         Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200617135758.GA548179@chrisdown.name>
+References: <CA+G9fYsiZ81pmawUY62K30B6ue+RXYod854RS91R2+F8ZO7Xvw@mail.gmail.com>
+ <20200519075213.GF32497@dhcp22.suse.cz>
+ <CAK8P3a2T_j-Ynvhsqe_FCqS2-ZdLbo0oMbHhHChzMbryE0izAQ@mail.gmail.com>
+ <20200519084535.GG32497@dhcp22.suse.cz>
+ <CA+G9fYvzLm7n1BE7AJXd8_49fOgPgWWTiQ7sXkVre_zoERjQKg@mail.gmail.com>
+ <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
+ <20200520190906.GA558281@chrisdown.name>
+ <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+User-Agent: Mutt/1.14.3 (2020-06-14)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 21 May 2020 at 22:04, Michal Hocko <mhocko@kernel.org> wrote:
->
-> On Thu 21-05-20 11:55:16, Michal Hocko wrote:
-> > On Wed 20-05-20 20:09:06, Chris Down wrote:
-> > > Hi Naresh,
-> > >
-> > > Naresh Kamboju writes:
-> > > > As a part of investigation on this issue LKFT teammate Anders Roxell
-> > > > git bisected the problem and found bad commit(s) which caused this problem.
-> > > >
-> > > > The following two patches have been reverted on next-20200519 and retested the
-> > > > reproducible steps and confirmed the test case mkfs -t ext4 got PASS.
-> > > > ( invoked oom-killer is gone now)
-> > > >
-> > > > Revert "mm, memcg: avoid stale protection values when cgroup is above
-> > > > protection"
-> > > >    This reverts commit 23a53e1c02006120f89383270d46cbd040a70bc6.
-> > > >
-> > > > Revert "mm, memcg: decouple e{low,min} state mutations from protection
-> > > > checks"
-> > > >    This reverts commit 7b88906ab7399b58bb088c28befe50bcce076d82.
-> > >
-> > > Thanks Anders and Naresh for tracking this down and reverting.
-> > >
-> > > I'll take a look tomorrow. I don't see anything immediately obviously wrong
-> > > in either of those commits from a (very) cursory glance, but they should
-> > > only be taking effect if protections are set.
-> >
-> > Agreed. If memory.{low,min} is not used then the patch should be
-> > effectively a nop.
->
-> I was staring into the code and do not see anything.  Could you give the
-> following debugging patch a try and see whether it triggers?
->
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index cc555903a332..df2e8df0eb71 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -2404,6 +2404,8 @@ static void get_scan_count(struct lruvec *lruvec, struct scan_control *sc,
->                          * sc->priority further than desirable.
->                          */
->                         scan = max(scan, SWAP_CLUSTER_MAX);
-> +
-> +                       trace_printk("scan:%lu protection:%lu\n", scan, protection);
->                 } else {
->                         scan = lruvec_size;
->                 }
-> @@ -2648,6 +2650,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->                 mem_cgroup_calculate_protection(target_memcg, memcg);
->
->                 if (mem_cgroup_below_min(memcg)) {
-> +                       trace_printk("under min:%lu emin:%lu\n", memcg->memory.min, memcg->memory.emin);
->                         /*
->                          * Hard protection.
->                          * If there is no reclaimable memory, OOM.
-> @@ -2660,6 +2663,7 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->                          * there is an unprotected supply
->                          * of reclaimable memory from other cgroups.
->                          */
-> +                       trace_printk("under low:%lu elow:%lu\n", memcg->memory.low, memcg->memory.elow);
->                         if (!sc->memcg_low_reclaim) {
->                                 sc->memcg_low_skipped = 1;
->                                 continue;
+Naresh Kamboju writes:
+>mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
+>mke2fs 1.43.8 (1-Jan-2018)
+>Creating filesystem with 244190646 4k blocks and 61054976 inodes
+>Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
+>Superblock backups stored on blocks:
+>32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
+>4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
+>102400000, 214990848
+>Allocating group tables:    0/7453 done
+>Writing inode tables:    0/7453 done
+>Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
+>[   51.845304] under min:0 emin:0
+>[   51.848738] under min:0 emin:0
+>[   51.858147] under min:0 emin:0
+>[   51.861333] under min:0 emin:0
+>[   51.862034] under min:0 emin:0
+>[   51.862442] under min:0 emin:0
+>[   51.862763] under min:0 emin:0
 
-As per your suggestions on debugging this problem,
-trace_printk is replaced with printk and applied to your patch on top of the
-problematic kernel and here is the test output and link.
+Thanks, this helps a lot. Somehow we're entering mem_cgroup_below_min even when 
+min/emin is 0 (which should indeed be the case if you haven't set them in the 
+hierarchy).
 
-mkfs -t ext4 /dev/disk/by-id/ata-TOSHIBA_MG04ACA100N_Y8RQK14KF6XF
-mke2fs 1.43.8 (1-Jan-2018)
-Creating filesystem with 244190646 4k blocks and 61054976 inodes
-Filesystem UUID: 7c380766-0ed8-41ba-a0de-3c08e78f1891
-Superblock backups stored on blocks:
-32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208,
-4096000, 7962624, 11239424, 20480000, 23887872, 71663616, 78675968,
-102400000, 214990848
-Allocating group tables:    0/7453 done
-Writing inode tables:    0/7453 done
-Creating journal (262144 blocks): [   51.544525] under min:0 emin:0
-[   51.845304] under min:0 emin:0
-[   51.848738] under min:0 emin:0
-[   51.858147] under min:0 emin:0
-[   51.861333] under min:0 emin:0
-[   51.862034] under min:0 emin:0
-[   51.862442] under min:0 emin:0
-[   51.862763] under min:0 emin:0
+My guess is that page_counter_read(&memcg->memory) is 0, which means 
+mem_cgroup_below_min will return 1.
 
-Full test log link,
-https://lkft.validation.linaro.org/scheduler/job/1497412#L1451
+However, I don't know for sure why that should then result in the OOM killer 
+coming along. My guess is that since this memcg has 0 pages to scan anyway, we 
+enter premature OOM under some conditions. I don't know why we wouldn't have 
+hit that with the old version of mem_cgroup_protected that returned 
+MEMCG_PROT_* members, though.
 
-- Naresh
+Can you please try the patch with the `>=` checks in mem_cgroup_below_min and 
+mem_cgroup_below_low changed to `>`? If that fixes it, then that gives a strong 
+hint about what's going on here.
+
+Thanks for your help!
