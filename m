@@ -2,61 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C3E91FDFD1
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2020 03:44:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4961FF203
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2020 14:37:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732209AbgFRBno (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 17 Jun 2020 21:43:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50440 "EHLO
+        id S1727022AbgFRMhr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Jun 2020 08:37:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37868 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729997AbgFRBnm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 17 Jun 2020 21:43:42 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E92D2C06174E;
-        Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id j19so4243037ilk.9;
-        Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
+        with ESMTP id S1727793AbgFRMhq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Jun 2020 08:37:46 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA43C0613EF
+        for <cgroups@vger.kernel.org>; Thu, 18 Jun 2020 05:37:46 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id y20so5485428wmi.2
+        for <cgroups@vger.kernel.org>; Thu, 18 Jun 2020 05:37:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/NV0zNhM4fAGBEvR6pS4jubz62WIXqxLs8Qbcn4M8G8=;
-        b=dDcozoF3gjERlnIYD/aopfiDz8+Xk7wB85tQ+JG+fS/wcxWZRWOO9ndR3j6DlLjase
-         pakWhsVPQ1s1RE4tdxVgckkmbgQQmy7KzyUVIgo8XiewLQf5iDAQQHzmV55SqyA3ni0l
-         UhO1lJ4tnxN9yr+l1R5SlEBFs6N7bGO1IezGVFxCOKnzKhYGlAd0C60gF1lzq5zPgtZ5
-         9JgAPTH5CwMDcYYdYBRFRY59OOo2Ufb2xXI6CZ33SNJk34h80UPpZg/jdNoIWaOmSADF
-         HprtPmsk/lgc7E5A+WM5WfU02YavO+ic/3qkx+0n65e7+GL5yWyxbhFZWUcj97Z490uK
-         AJxw==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=OgZomFoj/7toYCBCKWRo7nq/kYdKAWeXt05LtEajY3k=;
+        b=Vba3/YBp135F4zjZnb2RedWXF2lwu1lFFL34CLaNpxPjPTPlt0UR472eYi5S4YZ1Wx
+         Z0rDK+6Hs9d3o0cUOdxwi2SS36Jq5bWlnav7DNmZNgJpcMQ+D8caGFIGg/ORh0SmmPxl
+         k69/g/gWD8TgMCYkGiY2Wz/GRty0LMQ/SrbXk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/NV0zNhM4fAGBEvR6pS4jubz62WIXqxLs8Qbcn4M8G8=;
-        b=rIZaeZTMyB+E9IELLbPTjBPoCCaBgD3xQt1ws8BU4h9XstxN3oZN8RRILpTQ4uXQmv
-         cXVnyuNmNjOsK9YJzEz/33jmCbeqZXOHypH4Zqr6izzZXuj0AtnuKmdNXfuxHbYRF2H6
-         j3eoZTp+6Rsa/iTM6VuJPmhM7cbez1oFBZ4FsG0xI2WpGUSKFKpMt26GsmJ8YRhiRgd1
-         JF7A9z+tUxOQaJ3YJusjuZmowsqkbr8kNn6dsC8UdxUiCTTeFRnXDw3bL3VRTJNzZAJz
-         Qd2ngfmMwYX6ZcerUAuNG5bGYZn83XSt4PEPFvemdEu48FNflsj37H2WGLfe+nnZT5Mk
-         QtOg==
-X-Gm-Message-State: AOAM532Bac1QzSwCth3YFWtbUrdp2SmwUmrp6GQ3dBHgcArhsOSGaf50
-        lIOM/P6Ix+OA6HFX3w6m06pzkFXlG1Jfpy7sikM=
-X-Google-Smtp-Source: ABdhPJy/FeQxzQszfiH33uOWaccj4JEo3pvq0ekiMOC1+TiGVdTADnFmscwMk0igU9qcjJHn9X3GpIIhMlgC28sEOaI=
-X-Received: by 2002:a05:6e02:542:: with SMTP id i2mr1867971ils.203.1592444621188;
- Wed, 17 Jun 2020 18:43:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CA+G9fYsXnwyGetj-vztAKPt8=jXrkY8QWe74u5EEA3XPW7aikQ@mail.gmail.com>
- <20200520190906.GA558281@chrisdown.name> <20200521095515.GK6462@dhcp22.suse.cz>
- <20200521163450.GV6462@dhcp22.suse.cz> <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
- <20200617135758.GA548179@chrisdown.name> <20200617141155.GQ9499@dhcp22.suse.cz>
- <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
- <20200617160624.GS9499@dhcp22.suse.cz> <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
- <20200617210935.GA578452@chrisdown.name>
-In-Reply-To: <20200617210935.GA578452@chrisdown.name>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 18 Jun 2020 09:43:05 +0800
-Message-ID: <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Chris Down <chris@chrisdown.name>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=OgZomFoj/7toYCBCKWRo7nq/kYdKAWeXt05LtEajY3k=;
+        b=BdC8DdQI+/RqlEpdehxMo9OmuVJyD3qJ2/1VaA/Gar07S+/Koz3PfAJFu+byZs7Ryn
+         nEKQ47OkphV2jOoRkhbGSCmbfILNpxjeD355DA67ZtzQoVKK64pbAVVGTtWYuIPnqfzX
+         o2DKWqZ6e/QgVwJ81Fp0uLzeF3h2DY4sZOOChMdvoeP831hI2w4+Aa8IAjkOFKieL/xV
+         NEFFoTYjukRhFKy62NOZB6ZYe8j4MR1wRqZ7/uHLovGAPHD88MoWrxoqpgxqDOmvzQJs
+         LPXlQex/cXyQnWm6xExtqIIVwt4u43s2+KoNsaucsMW5LF4ulrar4Yc8+TroMvx8UBN2
+         L3qg==
+X-Gm-Message-State: AOAM530VxZyB2aWDe7vwd48FHV1vedKRHWRGoXIjd1DDI7LKtBIFb8yb
+        dVxZJUDlRofS8DEPGgQnWelv6w==
+X-Google-Smtp-Source: ABdhPJzFoWSkp2MqAS0xx92RSUWbWQ0U7Z92SQ/MTtOdoN5z3gnxoKRC/r81z8qHIYMjhulYtZARyw==
+X-Received: by 2002:a1c:4143:: with SMTP id o64mr3734793wma.157.1592483864725;
+        Thu, 18 Jun 2020 05:37:44 -0700 (PDT)
+Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
+        by smtp.gmail.com with ESMTPSA id t82sm2586962wmg.10.2020.06.18.05.37.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 18 Jun 2020 05:37:43 -0700 (PDT)
+Date:   Thu, 18 Jun 2020 13:37:43 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Yafang Shao <laoar.shao@gmail.com>
 Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
         Michal Hocko <mhocko@kernel.org>,
         Anders Roxell <anders.roxell@linaro.org>,
@@ -70,35 +60,52 @@ Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
         linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
         Andreas Dilger <adilger.kernel@dilger.ca>,
         Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
+        Theodore Ts'o <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
         Hugh Dickins <hughd@google.com>,
         Andrea Arcangeli <aarcange@redhat.com>,
         Matthew Wilcox <willy@infradead.org>,
         Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
         Johannes Weiner <hannes@cmpxchg.org>,
         Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
+Message-ID: <20200618123743.GA694719@chrisdown.name>
+References: <20200521095515.GK6462@dhcp22.suse.cz>
+ <20200521163450.GV6462@dhcp22.suse.cz>
+ <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
+ <20200617135758.GA548179@chrisdown.name>
+ <20200617141155.GQ9499@dhcp22.suse.cz>
+ <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
+ <20200617160624.GS9499@dhcp22.suse.cz>
+ <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
+ <20200617210935.GA578452@chrisdown.name>
+ <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
+User-Agent: Mutt/1.14.3 (2020-06-14)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
+Yafang Shao writes:
+>On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
+>>
+>> Naresh Kamboju writes:
+>> >After this patch applied the reported issue got fixed.
+>>
+>> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
+>>
+>> I'll send out a new version tomorrow with the fixes applied and both of you
+>> credited in the changelog for the detection and fix.
 >
-> Naresh Kamboju writes:
-> >After this patch applied the reported issue got fixed.
->
-> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
->
-> I'll send out a new version tomorrow with the fixes applied and both of you
-> credited in the changelog for the detection and fix.
+>As we have already found that the usage around memory.{emin, elow} has
+>many limitations, I think memory.{emin, elow} should be used for
+>memcg-tree internally only, that means they can only be used to
+>calculate the protection of a memcg in a specified memcg-tree but
+>should not be exposed to other MM parts.
 
-As we have already found that the usage around memory.{emin, elow} has
-many limitations, I think memory.{emin, elow} should be used for
-memcg-tree internally only, that means they can only be used to
-calculate the protection of a memcg in a specified memcg-tree but
-should not be exposed to other MM parts.
-
--- 
-Thanks
-Yafang
+I agree that the current semantics are mentally taxing and we should generally 
+avoid exposing the implementation details outside of memcg where possible. Do 
+you have a suggested rework? :-)
