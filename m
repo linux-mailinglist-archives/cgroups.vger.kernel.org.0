@@ -2,116 +2,116 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C871FF5F9
-	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2020 17:00:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D33451FFB88
+	for <lists+cgroups@lfdr.de>; Thu, 18 Jun 2020 21:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726382AbgFRPAJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Jun 2020 11:00:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59912 "EHLO
+        id S1728531AbgFRTJY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Jun 2020 15:09:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41982 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726193AbgFRPAI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Jun 2020 11:00:08 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC3CFC06174E;
-        Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id m81so7406487ioa.1;
-        Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
+        with ESMTP id S1728283AbgFRTJX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Jun 2020 15:09:23 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A435AC06174E
+        for <cgroups@vger.kernel.org>; Thu, 18 Jun 2020 12:09:22 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id g5so5422272otg.6
+        for <cgroups@vger.kernel.org>; Thu, 18 Jun 2020 12:09:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NtwtfirPIaj3hQKqt5NnTqLzfoXadlYH6xaXhH3mB+s=;
-        b=kYwPKZdp0pHLg9nzSkXLUjXIWhhGSDK+lUsX3kvZKhpx/abFTtNYjkojW4sVVt7bHm
-         qZGTxARuFd3WI6EfU1eBN6+4gj/yCc7G3VU2n21gea6aS3fkUz/uMmbZ6zjhs6dF/ctG
-         mtQLDzrh6EKtHb9OSOEmMjo3N7fWi8hwmYyXXXcwlEWheXzJEY46FsRDyYJ/YXapbZEL
-         GAjWeoKd6sh4vm2KkDp99cfVll6l6Xz1jcMVSif5RsT91SxuUdRKKCZShkXiMxJfDPO2
-         mEQ03gbiIGbBmN1vxaEfCsHPJle351uahP3BtuY+Amj/uplhgSOrlPpU1WHGNLMkS4iC
-         lVIw==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=pn5FW8J3MCqMPMMMbu9aaNnladSi2Z5PrgpKV0ydSM4=;
+        b=upio3K1VskLqCdzpg0Pd0JRsyyF0u1pF0RitpcNn0w/vGFG3EVqh5q/8Ky/LdUF4w8
+         8tdtb/51XFBVI3ihKAPTVHzsOjoyBGnfrFIBVUSihIl7Fjq6X3pwY/QyKlLIEWe/7aBH
+         4+18SAdKSoHC5iFfqkqxOXr0vG6pi9q1lSdJ5y4sEOAIItyogg03nzaHRWG8ivTdkOTj
+         r3lb2NRU9ugvnlc6CAc6mSSyBE+tJ72gJ7rCxH0V9SloVmtcezmtUpwbXLoEjSlr+QOP
+         h2sc3lcCPqjvBtYmACcbC1LyQTtYy2tZCRHX5seE16j7YNxME51zoTLjRG8Dt1GLgks4
+         Z1Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NtwtfirPIaj3hQKqt5NnTqLzfoXadlYH6xaXhH3mB+s=;
-        b=E9oYBpHSZYmC7FLuwZtM18HBTCZPtsRMxCzP0mIHBegoGebObr7eH9A7y4vuzcy66h
-         Kd3F62IdMGfD/Q8vLsxuqYRk5AhEPIBg55HPyVBb0PGzoXl0igvA0SIPhQLYundiIMx+
-         tcgJqFJOaqh9yEL5uSqY55GT+USlIRYZVF/VfS9kNr13eJ53fAIBYIBO47RDw9NCtDJx
-         yhJfYZTsJH7BAFHsYN1ySSDYNAWrsh5qRnguXjI7Nx5PypdyoEyfXovnVqwprgoFdeZx
-         0vHgfWRD82wxHZsrQ8boAvZ7JBHCLsK2Y/qXb1qZH4ZkXPcZs3sXiK4s9cDt8Jl3NJdC
-         Apdw==
-X-Gm-Message-State: AOAM531PZUpGh13VrmFL1AJBCGva+2B1zX1VYE6NkKS9TH70KddBrTFW
-        sDtIVOtYHe2ZjdVKqjAWQ1PnUYsWmMEG/bDDECQ=
-X-Google-Smtp-Source: ABdhPJyxduBF4FPnbsePTb+IJMrnaO574t87lgH7MXGDrxKnm7Fm0uPL20a9JpNnhO5AEW9mefqTwucGCC8avIECgKo=
-X-Received: by 2002:a05:6602:2dd4:: with SMTP id l20mr5412675iow.13.1592492407237;
- Thu, 18 Jun 2020 08:00:07 -0700 (PDT)
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=pn5FW8J3MCqMPMMMbu9aaNnladSi2Z5PrgpKV0ydSM4=;
+        b=KAAqVqeYVN++THu/2CEKSwTE9d1jbe4pW1FgQ+ZsOfh8BTgye7F1+K3GYCO2RT7e8v
+         85jwcFjaPmGH7bTrp6Y4RCBxE7B3H9dCuqdCLE2BaPy2vfUg2y+Yx8+cRQsUDKw+/A8Y
+         ds26/ZadhGlbYOOCHTXpOGY27qH2hflK0eYKVQDccUQhga90MXcbl4y1GZlpsqZBNGVr
+         oQGn/A7Au9PqTedTPyyolVeBKCrUQcVH7aQn/oldEVvti7vC2IF/06fVPKudanoy/Wnu
+         UayHLVm9wDAi0jdVqnnx5Icc25kXdYoKl3UYHxWiWLK6Gmgv6WBTQdYgt6DsqVI+n7Mb
+         2vMA==
+X-Gm-Message-State: AOAM532kth2MMD35LeILrTxonTTP7IigBR2DqzxtvTXaUgDsazMz9npy
+        3yqg3gx84PLGNAa4L3MEni+X6G1MfIZE0CjNjeo=
+X-Google-Smtp-Source: ABdhPJwt3Mz5RB270qwplS02Dj8dXej8e1V1z44vkt62M45pwzEhOG3p8kMAkxnly3qwk92k5F/gqA++bHVWhHctXpY=
+X-Received: by 2002:a05:6830:1f1b:: with SMTP id u27mr143830otg.327.1592507361931;
+ Thu, 18 Jun 2020 12:09:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200521095515.GK6462@dhcp22.suse.cz> <20200521163450.GV6462@dhcp22.suse.cz>
- <CA+G9fYsdsgRmwLtSKJSzB1eWcUQ1z-_aaU+BNcQpker34XT6_w@mail.gmail.com>
- <20200617135758.GA548179@chrisdown.name> <20200617141155.GQ9499@dhcp22.suse.cz>
- <CA+G9fYu+FB1PE0AMmE-9MrHpayE9kChwTyc3zfM6V83uQ0zcQA@mail.gmail.com>
- <20200617160624.GS9499@dhcp22.suse.cz> <CA+G9fYtCXrVGVtRTwxiqgfFNDDf_H4aNH=VpWLhsV4n_mCTLGg@mail.gmail.com>
- <20200617210935.GA578452@chrisdown.name> <CALOAHbBp7Ytd-Hta9NH-_HJtVTAsR5Pw2RYrVScp7PPezCEv2w@mail.gmail.com>
- <20200618123743.GA694719@chrisdown.name>
-In-Reply-To: <20200618123743.GA694719@chrisdown.name>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Thu, 18 Jun 2020 22:59:28 +0800
-Message-ID: <CALOAHbCPd407z45e809VE5c8vP6ewqwkDkY9nrMP5TyP5cjG+A@mail.gmail.com>
-Subject: Re: mm: mkfs.ext4 invoked oom-killer on i386 - pagecache_get_page
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Anders Roxell <anders.roxell@linaro.org>,
-        "Linux F2FS DEV, Mailing List" 
-        <linux-f2fs-devel@lists.sourceforge.net>,
-        linux-ext4 <linux-ext4@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Arnd Bergmann <arnd@arndb.de>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        "Theodore Ts'o" <tytso@mit.edu>, Chao Yu <chao@kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Chao Yu <yuchao0@huawei.com>, lkft-triage@lists.linaro.org,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Cgroups <cgroups@vger.kernel.org>
+Received: by 2002:ac9:780b:0:0:0:0:0 with HTTP; Thu, 18 Jun 2020 12:09:21
+ -0700 (PDT)
+From:   Mrs Kim Hong Yeoh <mrs.kimhongyeoh55@gmail.com>
+Date:   Thu, 18 Jun 2020 19:09:21 +0000
+X-Google-Sender-Auth: iEDYkGUnthklWdBdqRxvnib4ovY
+Message-ID: <CANe==rySdPET9DoqW1n4N0Q+KJ7=_z0MdtCGSs-xftBnxtrB+w@mail.gmail.com>
+Subject: Greetings Beloved in Christ,
+To:     undisclosed-recipients:;
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jun 18, 2020 at 8:37 PM Chris Down <chris@chrisdown.name> wrote:
->
-> Yafang Shao writes:
-> >On Thu, Jun 18, 2020 at 5:09 AM Chris Down <chris@chrisdown.name> wrote:
-> >>
-> >> Naresh Kamboju writes:
-> >> >After this patch applied the reported issue got fixed.
-> >>
-> >> Great! Thank you Naresh and Michal for helping to get to the bottom of this :-)
-> >>
-> >> I'll send out a new version tomorrow with the fixes applied and both of you
-> >> credited in the changelog for the detection and fix.
-> >
-> >As we have already found that the usage around memory.{emin, elow} has
-> >many limitations, I think memory.{emin, elow} should be used for
-> >memcg-tree internally only, that means they can only be used to
-> >calculate the protection of a memcg in a specified memcg-tree but
-> >should not be exposed to other MM parts.
->
-> I agree that the current semantics are mentally taxing and we should generally
-> avoid exposing the implementation details outside of memcg where possible. Do
-> you have a suggested rework? :-)
+Greetings Beloved in Christ,
 
-Keeping the mem_cgroup_protected() as-is is my suggestion. Anyway I
-think it is bad to put memory.{emin, elow} here and there.
-If we don't have any better idea by now, just putting all the
-references of memory.{emin, elow}  into one
-wrapper(mem_cgroup_protected()) is the reasonable solution.
+I had previously sent you an email with no feedback from you.I suppose
+it went to your junk folder.I anticipate that you read this mail
+quickly and let me know your opinion or willingness on this classified
+information that I will release to you.  therefore I would not want to
+jeopardize this opportunity to Save lives of Less Privileged ones and
+also change our financial status and give Less Privileged a secured
+future.
 
--- 
-Thanks
-Yafang
+I am Ms.  Hong Yeoh Kim, Working at MAYBANK (Malaysia) as the
+Non-Independent Non-Executive Director and Chairman of Maybank. During
+our last banking Audits we discovered an abandoned account belongs to
+one of our Foreign Deceased Customer, Late Mr. Wang Jian, The
+Co-founder and Co-chairman of HNA Group, a Chinese conglomerate with
+significant real estate ownerships across the U.S., died in an
+accident while on a business trip in France on Tuesday.
+
+Please go through this link:
+https://observer.com/2018/07/wang-jian-hna-founder-dies-tragic-fall/
+
+I am writing to request your assistance in transferring the sum of
+$17.000.000.00 (Seventeen Million United States Dollars) into your
+account as the Late Mr. Wang Jian Foreign Business Partner, which I am
+planning to use the fund to invest for public benefit as follows;
+
+1. Establish An Orphanage Home To Help The Orphanages Children.
+2. Build A Hospital To Help The Poor.
+3. Build A Nursing Home For Elderly People Need Care & Meal.
+
+Meanwhile, before I contacted you I have done personal investigation
+in locating any of Late Mr. Wang Jian relatives who knows about the
+account, but I came out unsuccessful. However, I took this decision to
+use this fund in supporting the Orphanages Children, Less Privileged
+and Elderly People Need Care & Meal Support, because i don't want this
+fund to be transfer into our Government Treasury Account as unclaimed
+fund as the law of my country abiding.
+
+As an officer of the Bank I cannot be directly connected to this
+money, so this is why I have to contact you for us to work so that you
+can assist to claim/receive this money into your bank account for us
+start a charity project, Meanwhile you will have 40% of the total fund
+and 60% for charity project, Note there are practically no risk
+involved, it will be bank to bank transfer, all I need from you is to
+stand and claim $17. Million without any problem with the information
+am going to provide to you.
+
+
+Please for the sake of god accept this offer to work with me and let
+us save lives of those Orphanages Children, Less Privileged and
+Elderly People Need Care, I will appreciate it very much. As soon as I
+receive your kind response, I will give you details on how we can
+achieve it successfully i will explain more on how the fund will be
+transfer to you.
+
+Waiting for your urgent response now.
+best regards
+Ms.  Hong Yeoh Kim.
