@@ -2,39 +2,47 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0A8202B75
-	for <lists+cgroups@lfdr.de>; Sun, 21 Jun 2020 17:45:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F8B203B5A
+	for <lists+cgroups@lfdr.de>; Mon, 22 Jun 2020 17:46:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730371AbgFUPpt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 21 Jun 2020 11:45:49 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:54361 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1730359AbgFUPpt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 21 Jun 2020 11:45:49 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01419;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U0FRv8j_1592754341;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U0FRv8j_1592754341)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sun, 21 Jun 2020 23:45:42 +0800
-Subject: Re: [PATCH v13 00/18] per memcg lru lock
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        yang.shi@linux.alibaba.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com
-References: <1592555636-115095-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200620160807.0e0997c3e0e3ca1b18e68a53@linux-foundation.org>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <5561f72b-8f9a-f84e-94a4-600c66084f29@linux.alibaba.com>
-Date:   Sun, 21 Jun 2020 23:44:47 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1729260AbgFVPqi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Jun 2020 11:46:38 -0400
+Received: from sonic316-20.consmr.mail.ne1.yahoo.com ([66.163.187.146]:37385
+        "EHLO sonic316-20.consmr.mail.ne1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729247AbgFVPqi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Jun 2020 11:46:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1592840797; bh=ac0sCjJUI93cXt8Ne4UV+BUmdTO8c8UeaDLEdPti3zY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=trNIpPZZjnb9Pldg6H3GJc36pWlIwhI/kFDsT301YkO6vknY6qoWD5dkEBo2oR8lblmVumpWXyHzmCSrtveGwPTbnJ8IYgfkBEndOnb0/k62hYf0RHVc57ozUepCcOAZQUr0T0TRp8PhN7nnUEQAO86wPocCFjZyMx34LFRx73xJbVG0ovy6DUq6RB4+U3hS3fgLsvzOhenEHV6KBdaTVmUDMKf4S5nM6IZzfE+bVHR1inH9v1074l4o06vnBBtFtoxpXpzRTOjX59WwKmeNo5d66llgNk2aErMyjBbiAEL6eIn5xBLYSFrd1C9417dIpVkbhDnQwatxfomI1RwwEQ==
+X-YMail-OSG: k4hy6bgVM1lU.cgX36qUEK57IfKWSuwO6GpFAyrvgM1gjsORWOs4en6kfkerMau
+ ZcOxL3gSZm4F2JDNgMACC1qtTb7wm7UBpGYLq2HeWlQKbPGlkhYd3UrqAhS6X666sAx_72aDNgGM
+ K.Lh6AdFoLAsbfQp6rerbe265p_qhn8F14PZrl_ruQ3xxOiRQImNXPtLDrv.scVtdg0Q.Z9UvVNd
+ aAsRo4.mPSi49JAY_uF8zuishjbeB74.037sOxx8IaMmh6X104sMtTEdoPJ5oRbjSSfRI5drTa.I
+ SH3OOpp7ra9x6coMA8oVzzyii0dYiIID1T8m3MrEsZv0hvKZXPSF8XO2tazlMWoTddwx4CPViy1y
+ u3oFjwU8gWTbh9t0foyIWSZjTdJVdIK.4lly9t22vFQbqZ2g4N4zpQhnfRLAhPf0fE5OfKGo9_Sg
+ ypUam.pnaiF1TNC7tUW60eBzFPlhc9I_2HgX6y5nGeqG4G8Xsow3wur9xH.18zTgU_ruHVU3nhzM
+ tGXLBT1uPhzrEjesomejMXUJKgGOSJRMaPon5ZQbxwaOhExqm9ardNkdCqJ5SgrcEECux1JNTREw
+ xFK0IyneE4nMDRiDz_Y5vaAIfgPC8q7emBJwAkttGrUXulrB_qhTezbt0A8EOgZ4n2NduLG7KIhf
+ J_rcn7eZjhcBb9UhSgNJWqpD5omVHgZOvTGReMfTP_zSMrueQcvNlk3GpZ7fqrdyFHR9XunlqL25
+ 9.WMuIrLbWjQvugxqyU9DF4b9k3itppvruEYl3SnHRCIMnlWifN9imE3k5muE2.mzLZXSaiLsAf7
+ AVsAneI5fRGaZmzl8UwwVhbpJlcPLw9d3n0BQHaC66Itu2ZfCbHfT5QnF1V7ij5jAVtxkF7VtE6v
+ PN1MI5AGx4xIjZRHB2o6E9EtF5irMogLWdGggNa8bsSl4VVGHlgO_i1fYpJ.3MOUqwYZ2RRO4_Vx
+ MXhfFt5LuhTYEVrnajeVRhSzaCApr1.bJSDzcXeHcmzFLPuU46zNUrA7zTejk17n9P01bYlbSztn
+ OuOmyhl8vi33ndYn4RQZR4_4q3iKRXzcZPwwFT8kkMyKb5IiRjoJgwdn7lurPYDoBC4DLXRINJ6Y
+ KODUNGJvdNr8I0hD.KzqxxwBGQw.bdmtpKwFG0ZTPxsi6o5Ipga0MAje0vBUF2pAiAjGr.qMiLVx
+ ylS9cFmyBXptoPRD.0qb9ucwcQizmYNhDHvL0F9Vn2.VTr1XnudeyNH5omqZumV48MLteYMO5gnq
+ d0_J9guqnNPRA.mlGCAKRh5OxFlS9o2zX_PESv51g18bNN.Vrb63DCFU1wBRuMmOjMv6m57d6RzL
+ VlPDs4k8-
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic316.consmr.mail.ne1.yahoo.com with HTTP; Mon, 22 Jun 2020 15:46:37 +0000
+Date:   Mon, 22 Jun 2020 15:46:33 +0000 (UTC)
+From:   Karim Zakari <kariim1960z@gmail.com>
+Reply-To: kzakari04@gmail.com
+Message-ID: <333757312.1852569.1592840793061@mail.yahoo.com>
+Subject: URGENT REPLY.
 MIME-Version: 1.0
-In-Reply-To: <20200620160807.0e0997c3e0e3ca1b18e68a53@linux-foundation.org>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+References: <333757312.1852569.1592840793061.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16138 YMailNodin Mozilla/5.0 (Windows NT 6.1; ) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.106 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -42,101 +50,17 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-ÔÚ 2020/6/21 ÉÏÎç7:08, Andrew Morton Ð´µÀ:
-> On Fri, 19 Jun 2020 16:33:38 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> 
->> This is a new version which bases on linux-next, merged much suggestion
->> from Hugh Dickins, from compaction fix to less TestClearPageLRU and
->> comments reverse etc. Thank a lot, Hugh!
->>
->> Johannes Weiner has suggested:
->> "So here is a crazy idea that may be worth exploring:
->>
->> Right now, pgdat->lru_lock protects both PageLRU *and* the lruvec's
->> linked list.
->>
->> Can we make PageLRU atomic and use it to stabilize the lru_lock
->> instead, and then use the lru_lock only serialize list operations?
-> 
-> I don't understand this sentence.  How can a per-page flag stabilize a
-> per-pgdat spinlock?  Perhaps some additional description will help.
+Good-Day=C2=A0Friend,
 
-Hi Andrew,
+=C2=A0Hope=C2=A0you=C2=A0are=C2=A0doing=C2=A0great=C2=A0Today.=C2=A0I=C2=A0=
+have=C2=A0a=C2=A0proposed=C2=A0business=C2=A0deal=C2=A0worthy=C2=A0(US$16.5=
+=C2=A0Million=C2=A0Dollars)=C2=A0that=C2=A0will=C2=A0benefit=C2=A0both=C2=
+=A0parties.=C2=A0This=C2=A0is=C2=A0legitimate'=C2=A0legal=C2=A0and=C2=A0you=
+r=C2=A0personality=C2=A0will=C2=A0not=C2=A0be=C2=A0compromised.
 
-Well, above comments miss a context, which lru_lock means new lru_lock on each
-of memcg not the current per node lru_lock. Sorry!
+Waiting=C2=A0for=C2=A0your=C2=A0response=C2=A0for=C2=A0more=C2=A0details,=
+=C2=A0As=C2=A0you=C2=A0are=C2=A0willing=C2=A0to=C2=A0execute=C2=A0this=C2=
+=A0business=C2=A0opportunity=C2=A0with=C2=A0me.
 
-Currently the lru bit changed under lru_lock, so isolate a page from lru just
-need take lru_lock. New patch will change it with a atomic action alone from 
-lru_lock, so isolate a page need both actions: TestClearPageLRU and take the
-lru_lock. like followings in isolate_lru_page():
-
-The main reason for this comes from isolate_migratepages_block() in compaction.c
-we have to take lru bit before lru lock, that serialized the page isolation in 
-memcg page charge/migration which will change page's lruvec and new lru_lock
-in it. The current isolation just take lru lock directly which fails on guard 
-page's lruvec change(memcg change).
-
-changes in isolate_lru_page():-	if (PageLRU(page)) {
-+	if (TestClearPageLRU(page)) {
- 		pg_data_t *pgdat = page_pgdat(page);
- 		struct lruvec *lruvec;
-+		int lru = page_lru(page);
- 
--		spin_lock_irq(&pgdat->lru_lock);
-+		get_page(page);
- 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
--		if (PageLRU(page)) {
--			int lru = page_lru(page);
--			get_page(page);
--			ClearPageLRU(page);
--			del_page_from_lru_list(page, lruvec, lru);
--			ret = 0;
--		}
-+		spin_lock_irq(&pgdat->lru_lock);
-+		del_page_from_lru_list(page, lruvec, lru);
- 		spin_unlock_irq(&pgdat->lru_lock);
-+		ret = 0;
- 	}
-
-> 
-
->>
->> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
->> containers on a 2s * 26cores * HT box with a modefied case:
->> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
->>
->> With this patchset, the readtwice performance increased about 80%
->> in concurrent containers.
->>
->> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
->> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
->> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
->>
->> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
->> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
->>
->> ...
->>
->>  24 files changed, 500 insertions(+), 357 deletions(-)
-> 
-> It's a large patchset and afaict the whole point is performance gain. 
-> 80% in one specialized test sounds nice, but is there a plan for more
-> extensive quantification?
-
-Once I got 5% aim7 performance gain on 16 cores machine, and about 20+%
-readtwice performance gain. the performance gain is increased a lot following
-larger cores.
-
-Is there some suggestion for this?
-
-> 
-> There isn't much sign of completed review activity here, so I'll go
-> into hiding for a while.
-> 
-
-Yes, it's relatively big. also much of change from comments part. :)
-Anyway, thanks for look into!
-
-Thanks
-Alex
+Sincerely=C2=A0Yours,
+Mr.=C2=A0Karim=C2=A0Zakari.
