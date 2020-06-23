@@ -2,65 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A48120513A
-	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2020 13:49:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7353A205648
+	for <lists+cgroups@lfdr.de>; Tue, 23 Jun 2020 17:49:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732505AbgFWLtt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Jun 2020 07:49:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732449AbgFWLts (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jun 2020 07:49:48 -0400
-Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94835C061573
-        for <cgroups@vger.kernel.org>; Tue, 23 Jun 2020 04:49:48 -0700 (PDT)
-Received: by mail-io1-xd44.google.com with SMTP id h4so15547501ior.5
-        for <cgroups@vger.kernel.org>; Tue, 23 Jun 2020 04:49:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to;
-        bh=7fNnQnFssZCc2Jtw2cUlJB4v7zrpRiQS682aXMZO9+Q=;
-        b=gwwPY0nPqh3sTCCuNPbHXXocQKWqt0Idmkn1WHH4zXuFD8PGipZ4VU7cNu5LRUwj7E
-         5rbsN6Q+khacLWwpvh5NZtn0uWYIjPHLwazS9JNi5cjDVDMb9cgb47U9CIRSOsaNqNsq
-         8MdsyBewhx1F4noYNVbq7IA/ljIEjpqj2tOe77wE0R9IbKq117mi4seKAgOPhBeSEeyg
-         hOI6YdiZWBHXKz228mDvVT839Z7/hbTFgvkSYP4sSLmAVjS5/AVmc0fvuCLw1pBS4q5L
-         AQiCqLYLsoB/SxOYHb3kwLQtBzfWYQDxO/XtG3WSvS0O7DpYYZZtUS+eQh+DPKoUqCUj
-         Jxaw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to;
-        bh=7fNnQnFssZCc2Jtw2cUlJB4v7zrpRiQS682aXMZO9+Q=;
-        b=DMV9oLp5qEWZg+F7qkkGWsW3gH+WN4qu8EgT+dHSOBUxJEnsRofJh1VgnaoLWtOjbL
-         UA4PEG8w/xWaUXd6yBtuWJbpYSRuE5Mh1sLfHvwHMxaz2HJzRr3mkO46GukVvZe8Fn5a
-         0nNeZHqpz8/LAG447C3E0nxotAH39a785211/mlC47BL1/dJdnegTD05Ks6w7n9c3+YP
-         irdSXsmQzTZSf8GLNkGaTRV9T1iCM6j0WqurO5YyGilgUjrTbTwlt9OHOyLjF1vC2JpQ
-         eaTtAWYG07WwgOWAcocRQNziF5anERNx6wCO5g1iyT5069rg3wF8sk7CgnIYoSYilM2w
-         FQjA==
-X-Gm-Message-State: AOAM533KIhhHYWpnyFqRnC8h8n48KaopoYIr87f7uyaLk3Kf2U1e8O3u
-        OcVJX7GTpPMMQozlNZChCQf/lx06pmQas7eUzOU=
-X-Google-Smtp-Source: ABdhPJxEMeSFyi19Hhu9V65BWYE+vRgjnE55JZ9zaeyeenN/1FDppA9XifIOpQ40njCfaja0IKnbgFwqALVAKqTSEl4=
-X-Received: by 2002:a6b:f919:: with SMTP id j25mr24156939iog.185.1592912988086;
- Tue, 23 Jun 2020 04:49:48 -0700 (PDT)
+        id S1732943AbgFWPtA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Jun 2020 11:49:00 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55208 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1732942AbgFWPtA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Jun 2020 11:49:00 -0400
+Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <christian.brauner@ubuntu.com>)
+        id 1jnlAP-0004f7-D1; Tue, 23 Jun 2020 15:48:57 +0000
+Date:   Tue, 23 Jun 2020 17:48:56 +0200
+From:   Christian Brauner <christian.brauner@ubuntu.com>
+To:     Linux Containers <containers@lists.linux-foundation.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        criu@openvz.org, lxc-devel@lists.linuxcontainers.org,
+        cgroups@vger.kernel.org
+Cc:     =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>,
+        Mike Rapoport <rppt@linux.ibm.com>
+Subject: Virtual Linux Plumbers 2020 (24-28 August): Containers and
+ Checkpoint/Restore microconference CFP Open until 20 July
+Message-ID: <20200623154856.cjuhrh3f4uel7ek2@wittgenstein>
+References: <20200604220637.d4ccmcsswi2ppniw@wittgenstein>
 MIME-Version: 1.0
-Received: by 2002:a92:290e:0:0:0:0:0 with HTTP; Tue, 23 Jun 2020 04:49:47
- -0700 (PDT)
-Reply-To: bektery@outlook.com
-From:   YAVUZ BEKTER <bariskims@gmail.com>
-Date:   Tue, 23 Jun 2020 04:49:47 -0700
-Message-ID: <CAC21a+qyAUaUZ2_tgjPwEs2_gbkaT2mOJBYpA6Xwsb-QJVLXLw@mail.gmail.com>
-Subject: Hello.
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200604220637.d4ccmcsswi2ppniw@wittgenstein>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I am the foreign operations director of Bank of Turkey.
-My name is Mr, Yavuz. I have a sensitive investment project to discuss
-with you, please reply now.
-________________________
-Ik ben de directeur buitenlandse activiteiten van de Bank of Turkey.
-Mijn naam is meneer Yavuz. Ik moet een gevoelig investeringsproject bespreken
-met u, antwoord dan nu.
+On Fri, Jun 05, 2020 at 12:06:39AM +0200, Christian Brauner wrote:
+> Hey everyone,
+> 
+> We're happy to announce that the Container and Checkpoint/Restore
+> microconference (MC) has been accepted as part of Linux Plumber's again!
+> The Containers and Checkpoint/Restore MC at Linux Plumbers is the opportunity
+> for kernel developers, runtime maintainers, and generally everyone working on
+> containers and related technologies to talk about what they are up to and agree
+> on the next major changes to kernel and userspace.
+
+I'm happy to announce that the dates for virtual LPC will be Monday, 24
+August to Friday, 28 August! Once I have the final registration details
+I will resend this mail with all info included.
+
+Don't forget to hand in your proposals!
+
+Thanks!
+Christian
+
+> 
+> As we have already done the last years, the micro-conference also covers topic
+> of the Checkpoint-Restore micro-conference.
+> 
+> Please note that LPC 2020 was originally set to be held in Halifax, Nova
+> Scotia, Canada but has been moved to a virtual event in light of recent events.
+> Please see our organizing comittee's blog on the Plumber's website [1]
+> for more information.
+> 
+> We expect to time limit presentations/demos to 15 minutes including questions.
+> More open ended discussion topics will get up to 30 minutes allocated.
+> 
+> In the spirit of a Plumber's microconference we especially appreciate topics
+> pitching new ideas and features people have been thinking about. This is also
+> the time to talk about your favorite kernel- or userspace problems. If you have
+> a proposal how to solve them or if you just want to gather input and ideas from
+> other developers this is the right place.
+> 
+> Here are some ideas for topics:
+> 
+> System call filtering and interception
+> Hardware enforced container isolation
+> New seccomp features
+> New cgroup features
+> Handling cgroup v1 on cgroup v2 only hosts and vica versa
+> Performance improvement for containers (following Spectre/Meltdown mitigation)
+> Time namespacing
+> CGroupV2 developments
+> LSM, IMA, EVM, keyrings inside containers
+> UID shifting filesystem (shiftfs)
+> New mount API
+> New pidfd API
+> New clone3 syscall
+> CRIU integration with container engines and orchestration frameworks
+> (In)stability of less commonly used kernel ABIs
+> Checkpoint/Restore performance improvements
+> Improving the state of userfaultfd and its adoption in container runtimes
+> Speeding up container live migration
+> Extending and virtualizing procfs
+> Restricting path resolution
+> Android containers and containers on Android
+> Container Auditing and Monitoring
+> Cgroups and Containers with Real-Time Scheduling
+> 
+> Some of those are ideas in search of an acceptable solution, some are problems
+> likely to affect all container runtimes some are coverage of very recent
+> kernel work and how that can be used by userspace, and some are proposed kernel
+> patches that need in-person discussion. This list is not meant to be
+> exhaustive. If you have other ideas or work to discuss, please apply! Keep in
+> mind both kernel- and userspace topics are acceptable!
+> 
+> Please make your proposals on the Linux Plumber's website selecting the
+> Containers and Checkpoint/Restore MC as the Track you're submitting at:
+> 
+> https://linuxplumbersconf.org/event/7/abstracts/
+> 
+> We’ll accept proposals for this micro-conference until the 20 of July 2020.
+> 
+> This year’s edition of the micro-conference is organized and run by:
+> 
+> Christian Brauner (Canonical Ltd.)
+> Stéphane Graber (Canonical Ltd.)
+> Mike Rapoport (IBM)
+> 
+> [1]: https://www.linuxplumbersconf.org/blog/2020/linux-plumbers-conference-2020-goes-virtual/
+> 
