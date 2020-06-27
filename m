@@ -2,40 +2,40 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2F620BFAE
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2020 09:33:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F34F20BF98
+	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2020 09:33:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726448AbgF0Hct (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 27 Jun 2020 03:32:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59344 "EHLO
+        id S1726499AbgF0Hc4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 27 Jun 2020 03:32:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59362 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgF0Hcs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Jun 2020 03:32:48 -0400
+        with ESMTP id S1726481AbgF0Hcx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Jun 2020 03:32:53 -0400
 Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3156FC03E979;
-        Sat, 27 Jun 2020 00:32:48 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6AAAC03E979;
+        Sat, 27 Jun 2020 00:32:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=S7ew7tFSTCy/AgXfhknQUe2b8dthYpBxIvPKvi74jmI=; b=YdxLWQTAi5Ieyyatgq0h9uJfn1
-        BGXkahQmOZuu9szIz6bz4ij6CxtHBH4Ab+5mc0WAE/Lz8VHb2l3vz9Nv11Uau3jfnvvMhlNtPph2W
-        476eG96my0sNe0X6xcuGOWkoLNTLAI+BVMhRNE0mZwr/vfKAhSeeNtn3WYUlfeHKbQ9zEBNfM1+jG
-        v8F/RPXkYoIfuas7wxO0yuB2C3eigotYi1AfVik7M7Aq4YZM4wdxg5AJyNa4tU1cYZ+Q1Y+i+4Y16
-        g6mVz15f41EyQ+5CSe/9nlppdQ+Cj70QyR+cStzXHF091tiiVKIUcfiuT+A4vIT+UoaeT0mQtmyXX
-        0VA1lnlw==;
+        bh=GGiSOAs9cZu8YPYPdf6bT1AGgpeRSLCWtTfRUcMw8po=; b=DUd0a08wTpSbY0adkAupOokAWp
+        +Ij/hgTuW5RW75ccKxqhkrzy9fhx8QsEhlJKu3R416Iffa4LObjU5Dt9pIPT/J6Dt9Re9JjgdyQ5c
+        LPBjuoM0NSylWVyDxwhs9szHi+BMAKgqpVlGWUY3IES6andSNvUGwycll6w2IEIuBKXqlCiFjjicR
+        YpbE2VIphHNWEyGkkQnFmwGIheMgfuzckSiee4Nb5Y5RgYozISDJWrYobSvebkTt7YNEmmqTA2lqy
+        QH9+idB2SLdYLMAEi4Rfo7HZjjf4bHV5w8hynB0ab7WZ7U/rr5ZkDf1cWePpT/dHugveyfSyOJXqA
+        1YK96cEw==;
 Received: from [2001:4bb8:184:76e3:595:ba65:ae56:65a6] (helo=localhost)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jp5K3-0006nC-48; Sat, 27 Jun 2020 07:32:24 +0000
+        id 1jp5K8-0006nQ-7F; Sat, 27 Jun 2020 07:32:29 +0000
 From:   Christoph Hellwig <hch@lst.de>
 To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
 Cc:     Dennis Zhou <dennis@kernel.org>, Li Zefan <lizefan@huawei.com>,
         Johannes Weiner <hannes@cmpxchg.org>, dm-devel@redhat.com,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 07/14] block: merge blkg_lookup_create and __blkg_lookup_create
-Date:   Sat, 27 Jun 2020 09:31:52 +0200
-Message-Id: <20200627073159.2447325-8-hch@lst.de>
+Subject: [PATCH 08/14] block: bypass blkg_tryget_closest for the root_blkg
+Date:   Sat, 27 Jun 2020 09:31:53 +0200
+Message-Id: <20200627073159.2447325-9-hch@lst.de>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200627073159.2447325-1-hch@lst.de>
 References: <20200627073159.2447325-1-hch@lst.de>
@@ -47,100 +47,46 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-No good reason to keep these two functions split.
+The root_blkg is only torn down at the very end of removing a queue.
+So in the I/O submission path is always has a life reference and we
+can just grab another one using blkg_get instead of doing a tryget
+and parent walk that won't lead anywhere.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 ---
- block/blk-cgroup.c | 49 +++++++++++++++++-----------------------------
- 1 file changed, 18 insertions(+), 31 deletions(-)
+ block/blk-cgroup.c | 15 ++++++++++-----
+ 1 file changed, 10 insertions(+), 5 deletions(-)
 
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index bb0607bfd771cd..6aedb73ffbf473 100644
+index 6aedb73ffbf473..0912820d4f8194 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -316,30 +316,35 @@ static struct blkcg_gq *blkg_create(struct blkcg *blkcg,
- }
- 
- /**
-- * __blkg_lookup_create - lookup blkg, try to create one if not there
-+ * blkg_lookup_create - lookup blkg, try to create one if not there
-  * @blkcg: blkcg of interest
-  * @q: request_queue of interest
-  *
-  * Lookup blkg for the @blkcg - @q pair.  If it doesn't exist, try to
-  * create one.  blkg creation is performed recursively from blkcg_root such
-  * that all non-root blkg's have access to the parent blkg.  This function
-- * should be called under RCU read lock and @q->queue_lock.
-+ * should be called under RCU read lock and takes @q->queue_lock.
-  *
-  * Returns the blkg or the closest blkg if blkg_create() fails as it walks
-  * down from root.
-  */
--static struct blkcg_gq *__blkg_lookup_create(struct blkcg *blkcg,
--				      struct request_queue *q)
-+static struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
-+		struct request_queue *q)
+@@ -1758,16 +1758,21 @@ void bio_associate_blkg_from_css(struct bio *bio,
+ 				 struct cgroup_subsys_state *css)
  {
- 	struct blkcg_gq *blkg;
-+	unsigned long flags;
+ 	struct request_queue *q = bio->bi_disk->queue;
+-	struct blkcg_gq *blkg = q->root_blkg;
  
- 	WARN_ON_ONCE(!rcu_read_lock_held());
--	lockdep_assert_held(&q->queue_lock);
+ 	if (bio->bi_blkg)
+ 		blkg_put(bio->bi_blkg);
  
--	blkg = __blkg_lookup(blkcg, q, true);
-+	blkg = blkg_lookup(blkcg, q);
- 	if (blkg)
- 		return blkg;
- 
-+	spin_lock_irqsave(&q->queue_lock, flags);
-+	blkg = __blkg_lookup(blkcg, q, true);
-+	if (blkg)
-+		goto found;
+-	rcu_read_lock();
+-	if (css && css->parent)
++	if (css && css->parent) {
++		struct blkcg_gq *blkg;
 +
- 	/*
- 	 * Create blkgs walking down from blkcg_root to @blkcg, so that all
- 	 * non-root blkgs have access to their parents.  Returns the closest
-@@ -362,34 +367,16 @@ static struct blkcg_gq *__blkg_lookup_create(struct blkcg *blkcg,
- 		}
- 
- 		blkg = blkg_create(pos, q, NULL);
--		if (IS_ERR(blkg))
--			return ret_blkg;
-+		if (IS_ERR(blkg)) {
-+			blkg = ret_blkg;
-+			break;
-+		}
- 		if (pos == blkcg)
--			return blkg;
--	}
--}
--
--/**
-- * blkg_lookup_create - find or create a blkg
-- * @blkcg: target block cgroup
-- * @q: target request_queue
-- *
-- * This looks up or creates the blkg representing the unique pair
-- * of the blkcg and the request_queue.
-- */
--static struct blkcg_gq *blkg_lookup_create(struct blkcg *blkcg,
--				    struct request_queue *q)
--{
--	struct blkcg_gq *blkg = blkg_lookup(blkcg, q);
--
--	if (unlikely(!blkg)) {
--		unsigned long flags;
--
--		spin_lock_irqsave(&q->queue_lock, flags);
--		blkg = __blkg_lookup_create(blkcg, q);
--		spin_unlock_irqrestore(&q->queue_lock, flags);
-+			break;
- 	}
- 
-+found:
-+	spin_unlock_irqrestore(&q->queue_lock, flags);
- 	return blkg;
++		rcu_read_lock();
+ 		blkg = blkg_lookup_create(css_to_blkcg(css), q);
+-	bio->bi_blkg = blkg_tryget_closest(blkg);
+-	rcu_read_unlock();
++		bio->bi_blkg = blkg_tryget_closest(blkg);
++		rcu_read_unlock();
++	} else {
++		blkg_get(q->root_blkg);
++		bio->bi_blkg = q->root_blkg;
++	}
  }
+ EXPORT_SYMBOL_GPL(bio_associate_blkg_from_css);
  
 -- 
 2.26.2
