@@ -2,71 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D28120BFA9
-	for <lists+cgroups@lfdr.de>; Sat, 27 Jun 2020 09:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FDC320C47E
+	for <lists+cgroups@lfdr.de>; Sun, 28 Jun 2020 00:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726593AbgF0HdS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 27 Jun 2020 03:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59434 "EHLO
+        id S1726316AbgF0WCB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 27 Jun 2020 18:02:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726547AbgF0HdR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Jun 2020 03:33:17 -0400
-Received: from casper.infradead.org (unknown [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C94F2C03E979;
-        Sat, 27 Jun 2020 00:33:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=vmpoA1D7dyjV06bzwDyN/+k+GU++bNP7VnywwlpIVGc=; b=cbYqXmVeSoBvWX/9hZmJT+Lpgl
-        l5Y6Vcm2ctIJzcPBTMX3VolpG677Sf4JJWJZfg14gMcYc1m3NFSPX26I/Vdufl8Wj4OJD/jl2Umzw
-        27pEigOY5nvjxvYMvM49rAPEbxY55yRTlPi3Lbfj1+TngLfjOcWXmlbk3hcRzSGoz6hhvGr0okR7W
-        GCJr60AtGTdEOj8PSSltng1UW/O17eCtnu6LH/wkHVpdPf76uXKO6uYRjV3pBB02z8yKJ9PAQx81q
-        mu+xZlNzRT5mjjmmiZE8tNwZpxaMdqqkKx8I//a0cFfvkQn/kdUEIwH5bGq7AXsO0yq6LLvd29UPA
-        2/yaXMOg==;
-Received: from [2001:4bb8:184:76e3:595:ba65:ae56:65a6] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jp5KY-0006qv-AN; Sat, 27 Jun 2020 07:32:56 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>
-Cc:     Dennis Zhou <dennis@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH 14/14] blk-cgroup: remove a dead check in blk_throtl_bio
-Date:   Sat, 27 Jun 2020 09:31:59 +0200
-Message-Id: <20200627073159.2447325-15-hch@lst.de>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200627073159.2447325-1-hch@lst.de>
-References: <20200627073159.2447325-1-hch@lst.de>
+        with ESMTP id S1725912AbgF0WCB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Jun 2020 18:02:01 -0400
+Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C07C061794
+        for <cgroups@vger.kernel.org>; Sat, 27 Jun 2020 15:02:01 -0700 (PDT)
+Received: by mail-ua1-x941.google.com with SMTP id c7so2691330uap.0
+        for <cgroups@vger.kernel.org>; Sat, 27 Jun 2020 15:02:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
+        b=uvaWEz0dd8Ac3CT35qBSqfznpY4sgxsz7Od3pFBzZIuQcY/8TViLhlHXQU9leeTEpY
+         AGovLfmyzd6U3Cq2lgZLwHP1J5YFMSD+Pyz17XxyLzQnjVOPPz8Ik+J+fYFM18bC4Fqc
+         JhO+jF294xtXRRnL3TKWvGE6eKydOzo9lI+qnLW3YVbUSLfu7Gq0pi7M8z5WpDddMN8M
+         WWaoRGs8g5M97omhRASDLgcJhl5wyTXcCK3cENHMncLoSakV7dWBQ+2v4jCXqV+88itT
+         y9KXfYDXgC/gw5+BqchOAKmUvgcqp5Y71+LwruoBL/ShzO8C2ON+xs5RLFzJg/awZL11
+         9lUw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
+        b=g/vyPf7T9v1AT1NVgOI1qb1SqkpdS0su/Afbo6SzGlXjWSpGy0WPPlE3ooNtl0Weg4
+         Ngzbl4K3U39tn2PO+f8xl7Fk/B8Vq6bc7BuckcN6OIwouLoJEAoWVvqlLzu3ckruVe8V
+         KYf18OxZN8OUhoZjvibFxAkHxDIxvAnk/fxL4dRJavTkRXhQuayouHBQmrIONPIm3oSm
+         fN1NLzLta2aebLOVJYp9P5YFlzJ/UaAWvdiact2d1VVjbl0+JHvg7Ay0w8EyPES4FMnu
+         mmM3c9FGO26uPrQXJZL/v2wGJavRPKL+5op1IWHR0/xZYGIc0+Rg8H6SuuV6uZQ/k3I6
+         rxRw==
+X-Gm-Message-State: AOAM531tzdxZIPx3hpRFOE4pWs5Txv11vmzTwvGHW68mkW/cBQq2H8t6
+        97F00t6vdUjG3Tx3eqcn7HFGiMzWYouZkpEvJnzqXUUrUMw=
+X-Google-Smtp-Source: ABdhPJynf4CV3u/z+wvqAxCFESu7ee7lLWI0u2+Rd2bRIf462RpI7Q5/OgPmYRkZuywkeS9iG1gTukKnSolbNLelkro=
+X-Received: by 2002:a05:6830:1dba:: with SMTP id z26mr8074641oti.180.1593294943879;
+ Sat, 27 Jun 2020 14:55:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Received: by 2002:a9d:12d3:0:0:0:0:0 with HTTP; Sat, 27 Jun 2020 14:55:43
+ -0700 (PDT)
+Reply-To: un.org@i.ua
+From:   helen <taxofficebenin@gmail.com>
+Date:   Sat, 27 Jun 2020 22:55:43 +0100
+Message-ID: <CAK9MGy3D5UBf06OY16UW=c+Cybm67x+0kH_OWJkX7ywdQD9CNA@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-bios must have a valid block group by the time they are submitted.
+MONEY-GRAM TRANSFERRED PAYMENT INFO:
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- block/blk-throttle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Below is the sender=E2=80=99s information
 
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 9d00f62c05ecdf..ad37043297ed58 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2163,7 +2163,7 @@ bool blk_throtl_bio(struct bio *bio)
- 	struct request_queue *q = bio->bi_disk->queue;
- 	struct blkcg_gq *blkg = bio->bi_blkg;
- 	struct throtl_qnode *qn = NULL;
--	struct throtl_grp *tg = blkg_to_tg(blkg ?: q->root_blkg);
-+	struct throtl_grp *tg = blkg_to_tg(blkg);
- 	struct throtl_service_queue *sq;
- 	bool rw = bio_data_dir(bio);
- 	bool throttled = false;
--- 
-2.26.2
 
+
+1. MG. REFERENCE NO#: 36360857
+
+2. SENDER'S NAME: Johnson Williams
+
+3. AMOUNT TO PICKUP: US$10,000
+
+
+
+Go to any Money Gram office near you and pick up the payment Track the
+
+Reference Number by visiting and click the link below
+
+(https://secure.moneygram.com/embed/track) and enter the Reference
+
+Number: 36360857 and the Last Name: Williams, you will find the payment
+
+available for pickup instantly.
+
+Yours Sincerely,
+
+Mrs. Helen Marvis
+United Nations Liaison Office
+Directorate for International Payments
