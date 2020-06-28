@@ -2,89 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FDC320C47E
-	for <lists+cgroups@lfdr.de>; Sun, 28 Jun 2020 00:02:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1394720CAE9
+	for <lists+cgroups@lfdr.de>; Mon, 29 Jun 2020 00:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726316AbgF0WCB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 27 Jun 2020 18:02:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50542 "EHLO
+        id S1726104AbgF1WP2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 28 Jun 2020 18:15:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46254 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725912AbgF0WCB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 27 Jun 2020 18:02:01 -0400
-Received: from mail-ua1-x941.google.com (mail-ua1-x941.google.com [IPv6:2607:f8b0:4864:20::941])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47C07C061794
-        for <cgroups@vger.kernel.org>; Sat, 27 Jun 2020 15:02:01 -0700 (PDT)
-Received: by mail-ua1-x941.google.com with SMTP id c7so2691330uap.0
-        for <cgroups@vger.kernel.org>; Sat, 27 Jun 2020 15:02:01 -0700 (PDT)
+        with ESMTP id S1726080AbgF1WP2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 28 Jun 2020 18:15:28 -0400
+Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA790C03E979
+        for <cgroups@vger.kernel.org>; Sun, 28 Jun 2020 15:15:27 -0700 (PDT)
+Received: by mail-pf1-x436.google.com with SMTP id j12so7047540pfn.10
+        for <cgroups@vger.kernel.org>; Sun, 28 Jun 2020 15:15:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
-        b=uvaWEz0dd8Ac3CT35qBSqfznpY4sgxsz7Od3pFBzZIuQcY/8TViLhlHXQU9leeTEpY
-         AGovLfmyzd6U3Cq2lgZLwHP1J5YFMSD+Pyz17XxyLzQnjVOPPz8Ik+J+fYFM18bC4Fqc
-         JhO+jF294xtXRRnL3TKWvGE6eKydOzo9lI+qnLW3YVbUSLfu7Gq0pi7M8z5WpDddMN8M
-         WWaoRGs8g5M97omhRASDLgcJhl5wyTXcCK3cENHMncLoSakV7dWBQ+2v4jCXqV+88itT
-         y9KXfYDXgC/gw5+BqchOAKmUvgcqp5Y71+LwruoBL/ShzO8C2ON+xs5RLFzJg/awZL11
-         9lUw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=bXlGWq9uTXnkYLRzPxcb6hpxU9VpPN38TAS14IL4DXU=;
+        b=CPgaqyT1Jx9UOYLiIqMfnX7Tf8eNkL68Qr1/ndCHQChQEw0gyxZi+wZUzq6eBBEYRP
+         pc+/CPbBhO3TLXbzOpeL6KkxlJO3CVKJeraSBqfF3sF+qpffnEgV02KXVmzBtv0OmsTp
+         tycxMlzZy0EYrAHx7xZ6f6yuD9xnqYzgXjiAto3WSR/jC/tWPL6YMP+AkFYNzaBaUe2h
+         iiaGn/d/zTOQrsHPipdPoico8WwIC7LCRefUt6cRYW2jYFVcUa/MCvQc7g+uFidtHVsz
+         gRz566TTpsUYf7tNIoceau+1/KmB0K+YMCwhdT3EdozGhMZmhEgzCrwl1FuvPMJqmUpp
+         m35w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
-         :subject:to:content-transfer-encoding;
-        bh=hDm0J70xfMLbVvceQHwxPddZCp69UMTk2d0jtKg2a8s=;
-        b=g/vyPf7T9v1AT1NVgOI1qb1SqkpdS0su/Afbo6SzGlXjWSpGy0WPPlE3ooNtl0Weg4
-         Ngzbl4K3U39tn2PO+f8xl7Fk/B8Vq6bc7BuckcN6OIwouLoJEAoWVvqlLzu3ckruVe8V
-         KYf18OxZN8OUhoZjvibFxAkHxDIxvAnk/fxL4dRJavTkRXhQuayouHBQmrIONPIm3oSm
-         fN1NLzLta2aebLOVJYp9P5YFlzJ/UaAWvdiact2d1VVjbl0+JHvg7Ay0w8EyPES4FMnu
-         mmM3c9FGO26uPrQXJZL/v2wGJavRPKL+5op1IWHR0/xZYGIc0+Rg8H6SuuV6uZQ/k3I6
-         rxRw==
-X-Gm-Message-State: AOAM531tzdxZIPx3hpRFOE4pWs5Txv11vmzTwvGHW68mkW/cBQq2H8t6
-        97F00t6vdUjG3Tx3eqcn7HFGiMzWYouZkpEvJnzqXUUrUMw=
-X-Google-Smtp-Source: ABdhPJynf4CV3u/z+wvqAxCFESu7ee7lLWI0u2+Rd2bRIf462RpI7Q5/OgPmYRkZuywkeS9iG1gTukKnSolbNLelkro=
-X-Received: by 2002:a05:6830:1dba:: with SMTP id z26mr8074641oti.180.1593294943879;
- Sat, 27 Jun 2020 14:55:43 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=bXlGWq9uTXnkYLRzPxcb6hpxU9VpPN38TAS14IL4DXU=;
+        b=n7797xF/tWvwOBgV7uwZGvzcQ/pzvgKFlbdV9eO05IHlTkacsPlZrIEmPOuc4tHjF6
+         pw18W27gNGK7wXlzYgmquw9dMU/cjxBu8abOYD4qJVlJpoHIQPentIm5JGt0yb3aCak7
+         CGao1IRvG9cpsEfp8DRqblCJRHsLInsNBKH3MS2M74pTUbRkfi67yaR64YxJ3dH7LBSE
+         sVXeSpaDe2FbWbBeOkLaf1WJowyCrnkW3z80wR6XI1SkYv0+BLLoKkaOvIzHk/iJ5/N1
+         K0gAdhSYr5QJgNhhGbbc9YiOXdpYM2nC0ikEzBhb/e+XRaUPqo61QFbGKFmG1xlHyUP4
+         cEsA==
+X-Gm-Message-State: AOAM531vLioCpS9TKmHR+3ljYsrnEQ+5Jsqs7EcB1VUwxDcbDF0DmIs6
+        4acBS4U2SsWJPz903OV2QT51AQ==
+X-Google-Smtp-Source: ABdhPJw3SWyyPGWA4SeTounVeFBQUs7hNtLlrfRHk9vJ15BE96RxB65x681BZVgnTswZzLCDt28uuA==
+X-Received: by 2002:a62:5c02:: with SMTP id q2mr12255403pfb.232.1593382527157;
+        Sun, 28 Jun 2020 15:15:27 -0700 (PDT)
+Received: from [2620:15c:17:3:3a5:23a7:5e32:4598] ([2620:15c:17:3:3a5:23a7:5e32:4598])
+        by smtp.gmail.com with ESMTPSA id t19sm8464123pgg.19.2020.06.28.15.15.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 28 Jun 2020 15:15:26 -0700 (PDT)
+Date:   Sun, 28 Jun 2020 15:15:25 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Memcg stat for available memory
+Message-ID: <alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Received: by 2002:a9d:12d3:0:0:0:0:0 with HTTP; Sat, 27 Jun 2020 14:55:43
- -0700 (PDT)
-Reply-To: un.org@i.ua
-From:   helen <taxofficebenin@gmail.com>
-Date:   Sat, 27 Jun 2020 22:55:43 +0100
-Message-ID: <CAK9MGy3D5UBf06OY16UW=c+Cybm67x+0kH_OWJkX7ywdQD9CNA@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-MONEY-GRAM TRANSFERRED PAYMENT INFO:
+Hi everybody,
 
-Below is the sender=E2=80=99s information
+I'd like to discuss the feasibility of a stat similar to 
+si_mem_available() but at memcg scope which would specify how much memory 
+can be charged without I/O.
 
+The si_mem_available() stat is based on heuristics so this does not 
+provide an exact quantity that is actually available at any given time, 
+but can otherwise provide userspace with some guidance on the amount of 
+reclaimable memory.  See the description in 
+Documentation/filesystems/proc.rst and its implementation.
 
+ [ Naturally, userspace would need to understand both the amount of memory 
+   that is available for allocation and for charging, separately, on an 
+   overcommitted system.  I assume this is trivial.  (Why don't we provide 
+   MemAvailable in per-node meminfo?) ]
 
-1. MG. REFERENCE NO#: 36360857
+For such a stat at memcg scope, we can ignore totalreserves and 
+watermarks.  We already have ~precise (modulo MEMCG_CHARGE_BATCH) data for 
+both file pages and slab_reclaimable.
 
-2. SENDER'S NAME: Johnson Williams
+We can infer lazily free memory by doing
 
-3. AMOUNT TO PICKUP: US$10,000
+	file - (active_file + inactive_file)
 
+(This is necessary because lazy free memory is anon but on the inactive 
+ file lru and we can't infer lazy freeable memory through pglazyfree -
+ pglazyfreed, they are event counters.)
 
+We can also infer the number of underlying compound pages that are on 
+deferred split queues but have yet to be split with active_anon - anon (or
+is this a bug? :)
 
-Go to any Money Gram office near you and pick up the payment Track the
+So it *seems* like userspace can make a si_mem_available()-like 
+calculation ("avail") by doing
 
-Reference Number by visiting and click the link below
+	free = memory.high - memory.current
+	lazyfree = file - (active_file + inactive_file)
+	deferred = active_anon - anon
 
-(https://secure.moneygram.com/embed/track) and enter the Reference
+	avail = free + lazyfree + deferred +
+		(active_file + inactive_file + slab_reclaimable) / 2
 
-Number: 36360857 and the Last Name: Williams, you will find the payment
+For userspace interested in knowing how much memory it can charge without 
+incurring I/O (and assuming it has knowledge of available memory on an 
+overcommitted system), it seems like:
 
-available for pickup instantly.
+ (a) it can derive the above avail amount that is at least similar to
+     MemAvailable,
 
-Yours Sincerely,
+ (b) it can assume that all reclaim is considered equal so anything more
+     than memory.high - memory.current is disruptive enough that it's a
+     better heuristic than the above, or
 
-Mrs. Helen Marvis
-United Nations Liaison Office
-Directorate for International Payments
+ (c) the kernel provide an "avail" stat in memory.stat based on the above 
+     and can evolve as the kernel implementation changes (how lazy free 
+     memory impacts anon vs file lru stats, how deferred split memory is 
+     handled, any future extensions for "easily reclaimable memory") that 
+     userspace can count on to the same degree it can count on 
+     MemAvailable.
+
+Any thoughts?
