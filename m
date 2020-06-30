@@ -2,64 +2,72 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F4A820EDA4
-	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2020 07:42:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7580120F2DB
+	for <lists+cgroups@lfdr.de>; Tue, 30 Jun 2020 12:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726364AbgF3FmU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 30 Jun 2020 01:42:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56962 "EHLO
+        id S1732557AbgF3Kky (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 30 Jun 2020 06:40:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46586 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725994AbgF3FmU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Jun 2020 01:42:20 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4B19C061755;
-        Mon, 29 Jun 2020 22:42:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=10n6fkJT5YFknRXlHwj9gjNGg/R91/iiEmizqFo2Wwo=; b=KS/1RcoO2tBOxUo26C2OeBpqjl
-        OB2sVaGqmZWJ+kuE7+75OHOwksmtSEVZNf0KN2lNbbk0YFvsUp8g7rb33mF9Rygtv5wn3lgzZTqcQ
-        khfetKq77lCf6uZ5aoegLeRgrbxkfD9th0T/zwET+2XNS6OaFaYwljTfGureLmMCEM6xUmlALsOn6
-        64lRKuziJU6P4RoeTfLQ1YJWx3PW+uzU5MLFefV1CBVi5nANFuxRSC3wsLmhnzFHvJOpDKlVhyZlz
-        HPSfid7WCsQEdj3nRsPpNptdaSIlJen04FrqdMpG9XIJEksoqGon0zcHUxo8koUf5NuQ15sP9H+H+
-        76vP82GA==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jq929-0007BL-K3; Tue, 30 Jun 2020 05:42:17 +0000
-Date:   Tue, 30 Jun 2020 06:42:17 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Eric Sandeen <sandeen@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net,
-        linux-xfs <linux-xfs@vger.kernel.org>
-Subject: Re: [PATCH] doc: cgroup: add f2fs and xfs to supported list for
- writeback
-Message-ID: <20200630054217.GA27221@infradead.org>
-References: <c8271324-9132-388c-5242-d7699f011892@redhat.com>
+        with ESMTP id S1732417AbgF3Kky (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 30 Jun 2020 06:40:54 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1485EC061755
+        for <cgroups@vger.kernel.org>; Tue, 30 Jun 2020 03:40:54 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id a11so8986253ilk.0
+        for <cgroups@vger.kernel.org>; Tue, 30 Jun 2020 03:40:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=fsCe4U/7wjRdb2DTtn1aQc5ygylfzKBl8XbVVMuY+kg=;
+        b=L2sTa2xZ1vP5dqseTvDaJtJBQsagdYoKluHKQeubsQMg9SjY2r77Lq0i78t02hRE6e
+         KDytRitxEepAB5cd/ks1PXRTuP5/j7lqSSu7Bo46K3ZKb6zol8bPEDaG/OXrq3j1pC87
+         YvGRpzdevg5I+KTdUcBnHHFvo9rC+v4nj8lFPCScb2niI2+YCD+w9JFV41KyxPO5htCQ
+         C0RgtoyWJggsKf6Oyp0jM51iVBQBSagAlVHRP35NRGSXk6EFbxQWoh0LFhVVb97KvEXy
+         aoTwomRFK1Ikmu0mwy+9C7oMYEP1vbzF5wS+JTpkYQOuyHGFpGdIw+SvS/WUvrFspxLb
+         +Ulw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=fsCe4U/7wjRdb2DTtn1aQc5ygylfzKBl8XbVVMuY+kg=;
+        b=iwE3eLTN4J/tCZt7UEGhgwws1ATqargTlVCb8Y9+/gKBcR4NGeCtVmnoKf73z+TtbB
+         kKLqrGihSLK3Sz2e1N27uxI3ZcaXB02/63uSKN5djmmE3MjM81Hvq9Q48ubm+lzRYwx4
+         nIiGXb2bwXmIjgA5xEiPkGaL+h4tCpTWbg64OTfGyyubJUdxC6fjAxaG8FCF4zBjcMHt
+         NGW4MlIXZNfAZQO8Z8FNO7FtTX0kMHDCaDzwFM/zqf6kBU5g/x/pN4/bwobMJEMiUHeT
+         Z6RsP/oa/Ni4YKerzWpaDz+8A+YYoxMhtAKjvxirMDfICcUQFTGuqIq+O3cupEv9vxIg
+         h6Sg==
+X-Gm-Message-State: AOAM533jgLWeYw/qT/S1dT0NRjmM20VNGWrqSrgFLq0TFDDX+ozIz3M/
+        m+ZZAnufCy0VcdJfSSdODdMtoN91geeHW0S1XUg=
+X-Google-Smtp-Source: ABdhPJzP9dsxO51J1KOzZ+7qjBX60v2B701YGGqGzp70eiCvz8U2z/ROqeimzYJ7RB1WaJY3FxPkMH+7qfJuI5uMuyQ=
+X-Received: by 2002:a92:8b0e:: with SMTP id i14mr1845094ild.307.1593513653396;
+ Tue, 30 Jun 2020 03:40:53 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c8271324-9132-388c-5242-d7699f011892@redhat.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Received: by 2002:a5d:8b02:0:0:0:0:0 with HTTP; Tue, 30 Jun 2020 03:40:52
+ -0700 (PDT)
+Reply-To: mrs.victoria.alexander2@gmail.com
+From:   " Mrs. Victoria Alexander  " <mrssamiraali20@gmail.com>
+Date:   Tue, 30 Jun 2020 03:40:52 -0700
+Message-ID: <CAOch3DjT4wGkP1Hg3w5RpmLShvDSoq-kRiPOomVOx=Y+vZSfUg@mail.gmail.com>
+Subject: Hello,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jun 29, 2020 at 02:08:09PM -0500, Eric Sandeen wrote:
-> f2fs and xfs have both added support for cgroup writeback:
-> 
-> 578c647 f2fs: implement cgroup writeback support
-> adfb5fb xfs: implement cgroup aware writeback
-> 
-> so add them to the supported list in the docs.
-> 
-> Signed-off-by: Eric Sandeen <sandeen@redhat.com>
-> ---
-> 
-> TBH I wonder about the wisdom of having this detail in
-> the doc, as it apparently gets missed quite often ...
+Dear friend,
 
-I'd rather remove the list of file systems.  It has no chance of
-staying uptodate.
+
+I have a business container transaction what that some of( $13million dollars)
+
+ I would like to discuss with you. If you are interested, please
+contact my email
+
+address (mrs.victoria.alexander2@gmail.com)
+
+My WhatsApp number but only message +19293737780
+
+Please do not reply if you are not ready
+Thanks
