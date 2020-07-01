@@ -2,76 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D46B211295
-	for <lists+cgroups@lfdr.de>; Wed,  1 Jul 2020 20:25:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 471292115B3
+	for <lists+cgroups@lfdr.de>; Thu,  2 Jul 2020 00:15:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732987AbgGASZm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Jul 2020 14:25:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732835AbgGASZm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Jul 2020 14:25:42 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29356C08C5C1;
-        Wed,  1 Jul 2020 11:25:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=79iDJfFRYlYHrisn3ouDHG53Aq0lK8z2VddrdPxeVyA=; b=o7SDqMAwBo7t+TzTt83Wnbb4Mf
-        /u3FPb35bitwFjn51sx/gj3Y9SatyNLQ4rgWXHyeRpDSuy2msqXigA7OPbbMBLBZH4hqJdMl6nn4j
-        o+oNlcrRUlnxx6s1auiuL4a9abVDq46ghr0Ywah7Ao7UudMSVkL0IvmrZuixAAq9t7XLxby/vTDpD
-        66p1DhcwBNMn2HW7Kd0s1SbNOfzFt7MnNzqs6ZeP2YjAYbVADLriPSyKR43Cxp2dGBQbRz1ID7kyG
-        wnhB7OkOwvB4o3qDO8VvcqOP5sGj6DpgyZfHicwM2Rmsyv+O6qL0Q2QA193Apy1eQwBhl+yj/wnuE
-        eK83FPaA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jqhQQ-0004j0-GK; Wed, 01 Jul 2020 18:25:38 +0000
-Date:   Wed, 1 Jul 2020 19:25:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Snitzer <snitzer@redhat.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-raid@vger.kernel.org, linux-mm@kvack.org,
-        linux-bcache@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@tron.linbit.com,
-        dm-devel@redhat.com, Tejun Heo <tj@kernel.org>,
-        cgroups@vger.kernel.org, linux-btrfs@vger.kernel.org
-Subject: Re: remove dead bdi congestion leftovers
-Message-ID: <20200701182538.GU25523@casper.infradead.org>
-References: <20200701090622.3354860-1-hch@lst.de>
- <20200701164103.GC27063@redhat.com>
- <20200701175747.GT25523@casper.infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200701175747.GT25523@casper.infradead.org>
+        id S1727072AbgGAWOu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Jul 2020 18:14:50 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:36375 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1727004AbgGAWOu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Jul 2020 18:14:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1593641688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=glPotn+K1T613CjdKByq3iS5Ne25OlUyrCXDnz2IEJI=;
+        b=h2UsJ/kzl2hlMn5H6dFCUGinFSCDzKMSDiN3kR8R0HGprdrE0tSmDVscrXvNbG6iSVFi2w
+        pPImqykhqyeSoJxpdEoj2G80DRKvDcX2RPZBbLmpf3KbHosGeFPdOFwxvMafiPgJ9xyaeX
+        onwS1+z1h3ie3rEkrUO48PCI/FSa4pA=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-242-0m-QKwMiNDyzONAFtUE_eQ-1; Wed, 01 Jul 2020 18:14:43 -0400
+X-MC-Unique: 0m-QKwMiNDyzONAFtUE_eQ-1
+Received: by mail-pg1-f197.google.com with SMTP id o15so19015765pgn.15
+        for <cgroups@vger.kernel.org>; Wed, 01 Jul 2020 15:14:43 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=glPotn+K1T613CjdKByq3iS5Ne25OlUyrCXDnz2IEJI=;
+        b=FqdD7FtreRVNe5tTDgCsRqRpwSBBwr/Pr6jYi0pZVCVFNrvuDzitymfLs0SGcMNvcw
+         gE0gwxJRoO8ztipQjmWbmuVEKHeQ6BSl4b9hzK1Hx3Rl/UDnmoc9m5JAZ7udmdZcAvuZ
+         LmClCHfAi1mJ4RT/Smq84PbO2VitPf+7yWkW0kvxU8J2/562ZXhr8pSCUA4Dla1KUJT/
+         XeX3K5A6OOMhApLCynKSYF6RRnA+bgU9z2HNzuX5XmgClyZqDpbzAvuAqSGViCZStxTh
+         IceN3QTHkztCCbYtIgXFT+EUbg6Fi3WMW6Rx9HyHJIDdSRk1qgsIR7QHQD5SxI5BT1ZP
+         4ZTw==
+X-Gm-Message-State: AOAM533i/PQ6DFl96LqyuZKk+2H1ijO6S7eXfxYxarVK1wC5yl7VDiYw
+        AhPgYJp49x2uHzkaf6+oepTh2cS8BWv31sFQBTw87PVL7Y7NSPTGdbf0YuaNXpLg7AG+yXyR2Bx
+        z1+CGJKP/A8A8gOAqwA==
+X-Received: by 2002:a17:90a:c295:: with SMTP id f21mr17700633pjt.208.1593641681959;
+        Wed, 01 Jul 2020 15:14:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPvPqACXXwd/bD0e/FXP/qE7VfvMYJ9AYKG238E3SOIkFKDcqV3tvp0NbqgZNbAots/y7ygA==
+X-Received: by 2002:a17:90a:c295:: with SMTP id f21mr17700609pjt.208.1593641681705;
+        Wed, 01 Jul 2020 15:14:41 -0700 (PDT)
+Received: from localhost ([110.227.183.4])
+        by smtp.gmail.com with ESMTPSA id i196sm6902130pgc.55.2020.07.01.15.14.40
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 01 Jul 2020 15:14:41 -0700 (PDT)
+From:   Bhupesh Sharma <bhsharma@redhat.com>
+To:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-arm-kernel@lists.infradead.org
+Cc:     bhsharma@redhat.com, bhupesh.linux@gmail.com,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        James Morse <james.morse@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, kexec@lists.infradead.org
+Subject: [PATCH 0/2] arm64/kdump: Fix OOPS and OOM issues in kdump kernel
+Date:   Thu,  2 Jul 2020 03:44:18 +0530
+Message-Id: <1593641660-13254-1-git-send-email-bhsharma@redhat.com>
+X-Mailer: git-send-email 2.7.4
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 06:57:47PM +0100, Matthew Wilcox wrote:
-> On Wed, Jul 01, 2020 at 12:41:03PM -0400, Mike Snitzer wrote:
-> > On Wed, Jul 01 2020 at  5:06am -0400,
-> > Christoph Hellwig <hch@lst.de> wrote:
-> > 
-> > > Hi Jens,
-> > > 
-> > > we have a lot of bdi congestion related code that is left around without
-> > > any use.  This series removes it in preparation of sorting out the bdi
-> > > lifetime rules properly.
-> > 
-> > I could do some git archeology to see what the fs, mm and block core
-> > changes were to stop using bdi congested but a pointer to associated
-> > changes (or quick recap) would save me some time.
-> > 
-> > Also, curious to know how back-pressure should be felt back up the IO
-> > stack now? (apologies if these are well worn topics, I haven't been
-> > tracking this area of development).
-> 
-> It isn't.  Jens declared the implementation was broken, and broke it
-> more.  So we're just living with stupid broken timeouts.
+Prabhakar recently reported a kdump kernel boot failure on ThunderX2
+arm64 plaforms (which I was able to reproduce on ampere arm64 machines
+as well), (see [1]), which is seen when a corner case is hit on some
+arm64 boards when kdump kernel runs with "cgroup_disable=memory" passed
+to the kdump kernel (via bootargs) and the crashkernel was originally
+allocated from either a ZONE_DMA32 memory or mixture of memory chunks
+belonging to both ZONE_DMA and ZONE_DMA32 regions.
 
-Here's a thread about it.  This would have been a discussion topic at
-LSFMM2020, but COVID.
+While [PATCH 1/2] fixes the OOPS inside mem_cgroup_get_nr_swap_pages()
+function, [PATCH 2/2] fixes the OOM seen inside the kdump kernel by
+allocating the crashkernel inside ZONE_DMA region only.
 
-https://lore.kernel.org/linux-mm/20190917115824.16990-1-linf@wangsu.com/T/#u
+[1]. https://marc.info/?l=kexec&m=158954035710703&w=4
+
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: James Morse <james.morse@arm.com>
+Cc: Mark Rutland <mark.rutland@arm.com>
+Cc: Will Deacon <will@kernel.org>
+Cc: Catalin Marinas <catalin.marinas@arm.com>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: kexec@lists.infradead.org
+Reported-by: Prabhakar Kushwaha <pkushwaha@marvell.com>
+Signed-off-by: Bhupesh Sharma <bhsharma@redhat.com>
+
+Bhupesh Sharma (2):
+  mm/memcontrol: Fix OOPS inside mem_cgroup_get_nr_swap_pages()
+  arm64: Allocate crashkernel always in ZONE_DMA
+
+ arch/arm64/mm/init.c | 16 ++++++++++++++--
+ mm/memcontrol.c      |  9 ++++++++-
+ 2 files changed, 22 insertions(+), 3 deletions(-)
+
+-- 
+2.7.4
+
