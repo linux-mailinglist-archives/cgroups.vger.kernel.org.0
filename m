@@ -2,82 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D306210DFB
-	for <lists+cgroups@lfdr.de>; Wed,  1 Jul 2020 16:48:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E91092110D0
+	for <lists+cgroups@lfdr.de>; Wed,  1 Jul 2020 18:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731253AbgGAOsZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 1 Jul 2020 10:48:25 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33414 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726251AbgGAOsZ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 1 Jul 2020 10:48:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 9FCFBAEC2;
-        Wed,  1 Jul 2020 14:48:22 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 88D47DA781; Wed,  1 Jul 2020 16:48:06 +0200 (CEST)
-Date:   Wed, 1 Jul 2020 16:48:06 +0200
-From:   David Sterba <dsterba@suse.cz>
+        id S1732445AbgGAQiR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 1 Jul 2020 12:38:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726621AbgGAQiQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 1 Jul 2020 12:38:16 -0400
+Received: from mail-qv1-xf35.google.com (mail-qv1-xf35.google.com [IPv6:2607:f8b0:4864:20::f35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76CA3C08C5C1;
+        Wed,  1 Jul 2020 09:38:16 -0700 (PDT)
+Received: by mail-qv1-xf35.google.com with SMTP id t11so9223826qvk.1;
+        Wed, 01 Jul 2020 09:38:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=tnWfjqu9qwTdD4KnQK/3+SjWTBx9SJibvmRRCZ2MKpw=;
+        b=U026WByv7++7/w1+Nu+RBzmT42CWmL089oP2jZPE4GfX8trhuMpatdvHRasGwxl1tp
+         esIRMJhHnW5uCzGbrrP5CE9k4nW7c65rE4KRI9NkWii4E6mEPbKGBXdTFeEP0b5/X8j1
+         RKDZhhs7eEWkZ9yrTYjSzyRQuzgfxSGkKewuCj72VWynBsVS+2Ska24TaCYNSUtYNx0h
+         tkr380dMygtpbEq4afb+a4dCf6bAwClROx8TUXDVt1XYAVILF8ZQdXine5RK1wrhdCLx
+         lurHJt08cKi6hQMnrm0IC1VIZZ5Da6Y0NgMH3p1I2KbSxRTE3WPzEilFi6RtD7avMeW2
+         +K0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=tnWfjqu9qwTdD4KnQK/3+SjWTBx9SJibvmRRCZ2MKpw=;
+        b=K3fSWa0Ce8fQw1eYj9WLiAfw3wULKCQ2gMPbsZhEHwtd29+I/qJTqjBqbIW1nIaepe
+         cSubrkYY+bDbXMdxQxYD4dh09KJLuE8LVz4hr9ZxzwC9M2vc3Qr8IQommNO5bzMIXUMm
+         qXbZOc3toByQalPEs8XRBITHtctNJYWfH1bC4uSZGztnCrW5jiS3p5JNOl1JL/MmhC90
+         t8qtBiPPjzpq4XtopI0dmgnaX0vTOrNVjWnLCU0jTbevetynrbtjP84di2y6RgU4krBg
+         Us0ZgXH+XkPbEOUC14aAzA+/mwb6zNSdB97HjI8qLPVIA+yTxVvJ0JkNHFqBUgYsd9Vp
+         aiwA==
+X-Gm-Message-State: AOAM532fmwerP9g6efsS8ZAopd3HdJExAtAkFi0cztnEAekytZe1/CZl
+        oLfxqX+30B1m9mVKCwpdig3k+GzgEh4=
+X-Google-Smtp-Source: ABdhPJzfqJE8PIES5DnR2PTCVTamwJmruYSeMWZpKr4HJeNZUuy5RzchyjxSpfzGXXbaj1X8ONNd6g==
+X-Received: by 2002:a05:6214:10e1:: with SMTP id q1mr24708355qvt.78.1593621495518;
+        Wed, 01 Jul 2020 09:38:15 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:f839])
+        by smtp.gmail.com with ESMTPSA id u1sm5792798qkf.49.2020.07.01.09.38.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 01 Jul 2020 09:38:14 -0700 (PDT)
+Date:   Wed, 1 Jul 2020 12:38:13 -0400
+From:   Tejun Heo <tj@kernel.org>
 To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@tron.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] writeback: remove bdi->congested_fn
-Message-ID: <20200701144805.GC27795@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Christoph Hellwig <hch@lst.de>,
-        Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>,
-        dm-devel@redhat.com, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org, drbd-dev@tron.linbit.com,
-        linux-bcache@vger.kernel.org, linux-raid@vger.kernel.org,
-        linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
+Cc:     Jens Axboe <axboe@kernel.dk>, dm-devel@redhat.com,
+        cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-bcache@vger.kernel.org,
+        linux-raid@vger.kernel.org, linux-btrfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: remove dead bdi congestion leftovers
+Message-ID: <20200701163813.GA5046@mtj.thefacebook.com>
 References: <20200701090622.3354860-1-hch@lst.de>
- <20200701090622.3354860-5-hch@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200701090622.3354860-5-hch@lst.de>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+In-Reply-To: <20200701090622.3354860-1-hch@lst.de>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jul 01, 2020 at 11:06:22AM +0200, Christoph Hellwig wrote:
-> Except for pktdvd, the only places setting congested bits are file
-> systems that allocate their own backing_dev_info structures.  And
-> pktdvd is a deprecated driver that isn't useful in stack setup
-> either.  So remove the dead congested_fn stacking infrastructure.
+On Wed, Jul 01, 2020 at 11:06:18AM +0200, Christoph Hellwig wrote:
+> Hi Jens,
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> ---
->  drivers/block/drbd/drbd_main.c   | 59 --------------------------------
->  drivers/md/bcache/request.c      | 43 -----------------------
->  drivers/md/bcache/super.c        |  1 -
->  drivers/md/dm-cache-target.c     | 19 ----------
->  drivers/md/dm-clone-target.c     | 15 --------
->  drivers/md/dm-era-target.c       | 15 --------
->  drivers/md/dm-raid.c             | 12 -------
->  drivers/md/dm-table.c            | 37 +-------------------
->  drivers/md/dm-thin.c             | 16 ---------
->  drivers/md/dm.c                  | 33 ------------------
->  drivers/md/dm.h                  |  1 -
->  drivers/md/md-linear.c           | 24 -------------
->  drivers/md/md-multipath.c        | 23 -------------
->  drivers/md/md.c                  | 23 -------------
->  drivers/md/md.h                  |  4 ---
->  drivers/md/raid0.c               | 16 ---------
->  drivers/md/raid1.c               | 31 -----------------
->  drivers/md/raid10.c              | 26 --------------
->  drivers/md/raid5.c               | 25 --------------
+> we have a lot of bdi congestion related code that is left around without
+> any use.  This series removes it in preparation of sorting out the bdi
+> lifetime rules properly.
 
-For the btrfs bits
+Acked-by: Tejun Heo <tj@kernel.org>
 
->  fs/btrfs/disk-io.c               | 23 -------------
+Thanks a lot for killing the dead code.
 
-Acked-by: David Sterba <dsterba@suse.com>
+-- 
+tejun
