@@ -2,16 +2,16 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57E29213369
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 07:10:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B88F421335D
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 07:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726371AbgGCFJx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jul 2020 01:09:53 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52234 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725915AbgGCFIl (ORCPT
+        id S1726365AbgGCFIl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jul 2020 01:08:41 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:55000 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725972AbgGCFIl (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 01:08:41 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U1Y4LGX_1593752912;
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U1Y4LGX_1593752912;
 Received: from alexshi-test.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U1Y4LGX_1593752912)
           by smtp.aliyun-inc.com(127.0.0.1);
           Fri, 03 Jul 2020 13:08:35 +0800
@@ -23,9 +23,9 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: [PATCH v14 04/20] mm/compaction: rename compact_deferred as compact_should_defer
-Date:   Fri,  3 Jul 2020 13:07:37 +0800
-Message-Id: <1593752873-4493-5-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v14 05/20] mm/thp: move lru_add_page_tail func to huge_memory.c
+Date:   Fri,  3 Jul 2020 13:07:38 +0800
+Message-Id: <1593752873-4493-6-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,98 +34,122 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The compact_deferred is a defer suggestion check, deferring action does in
-defer_compaction not here. so, better rename it to avoid confusing.
+The func is only used in huge_memory.c, defining it in other file with a
+CONFIG_TRANSPARENT_HUGEPAGE macro restrict just looks weird.
+
+Let's move it THP. And make it static as Hugh Dickin suggested.
 
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Mike Kravetz <mike.kravetz@oracle.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: Hugh Dickins <hughd@google.com>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org
 ---
- include/linux/compaction.h        | 4 ++--
- include/trace/events/compaction.h | 2 +-
- mm/compaction.c                   | 8 ++++----
- 3 files changed, 7 insertions(+), 7 deletions(-)
+ include/linux/swap.h |  2 --
+ mm/huge_memory.c     | 30 ++++++++++++++++++++++++++++++
+ mm/swap.c            | 33 ---------------------------------
+ 3 files changed, 30 insertions(+), 35 deletions(-)
 
-diff --git a/include/linux/compaction.h b/include/linux/compaction.h
-index 6fa0eea3f530..be9ed7437a38 100644
---- a/include/linux/compaction.h
-+++ b/include/linux/compaction.h
-@@ -100,7 +100,7 @@ extern enum compact_result compaction_suitable(struct zone *zone, int order,
- 		unsigned int alloc_flags, int highest_zoneidx);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 5b3216ba39a9..2c29399b29a0 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -339,8 +339,6 @@ extern void lru_note_cost(struct lruvec *lruvec, bool file,
+ 			  unsigned int nr_pages);
+ extern void lru_note_cost_page(struct page *);
+ extern void lru_cache_add(struct page *);
+-extern void lru_add_page_tail(struct page *page, struct page *page_tail,
+-			 struct lruvec *lruvec, struct list_head *head);
+ extern void activate_page(struct page *);
+ extern void mark_page_accessed(struct page *);
+ extern void lru_add_drain(void);
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 78c84bee7e29..9e050b13f597 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2340,6 +2340,36 @@ static void remap_page(struct page *page)
+ 	}
+ }
  
- extern void defer_compaction(struct zone *zone, int order);
--extern bool compaction_deferred(struct zone *zone, int order);
-+extern bool compaction_should_defer(struct zone *zone, int order);
- extern void compaction_defer_reset(struct zone *zone, int order,
- 				bool alloc_success);
- extern bool compaction_restarting(struct zone *zone, int order);
-@@ -199,7 +199,7 @@ static inline void defer_compaction(struct zone *zone, int order)
++static void lru_add_page_tail(struct page *page, struct page *page_tail,
++				struct lruvec *lruvec, struct list_head *list)
++{
++	VM_BUG_ON_PAGE(!PageHead(page), page);
++	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
++	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
++	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
++
++	if (!list)
++		SetPageLRU(page_tail);
++
++	if (likely(PageLRU(page)))
++		list_add_tail(&page_tail->lru, &page->lru);
++	else if (list) {
++		/* page reclaim is reclaiming a huge page */
++		get_page(page_tail);
++		list_add_tail(&page_tail->lru, list);
++	} else {
++		/*
++		 * Head page has not yet been counted, as an hpage,
++		 * so we must account for each subpage individually.
++		 *
++		 * Put page_tail on the list at the correct position
++		 * so they all end up in order.
++		 */
++		add_page_to_lru_list_tail(page_tail, lruvec,
++					  page_lru(page_tail));
++	}
++}
++
+ static void __split_huge_page_tail(struct page *head, int tail,
+ 		struct lruvec *lruvec, struct list_head *list)
  {
+diff --git a/mm/swap.c b/mm/swap.c
+index a82efc33411f..7701d855873d 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -933,39 +933,6 @@ void __pagevec_release(struct pagevec *pvec)
  }
+ EXPORT_SYMBOL(__pagevec_release);
  
--static inline bool compaction_deferred(struct zone *zone, int order)
-+static inline bool compaction_should_defer(struct zone *zone, int order)
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-/* used by __split_huge_page_refcount() */
+-void lru_add_page_tail(struct page *page, struct page *page_tail,
+-		       struct lruvec *lruvec, struct list_head *list)
+-{
+-	VM_BUG_ON_PAGE(!PageHead(page), page);
+-	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
+-	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
+-	lockdep_assert_held(&lruvec_pgdat(lruvec)->lru_lock);
+-
+-	if (!list)
+-		SetPageLRU(page_tail);
+-
+-	if (likely(PageLRU(page)))
+-		list_add_tail(&page_tail->lru, &page->lru);
+-	else if (list) {
+-		/* page reclaim is reclaiming a huge page */
+-		get_page(page_tail);
+-		list_add_tail(&page_tail->lru, list);
+-	} else {
+-		/*
+-		 * Head page has not yet been counted, as an hpage,
+-		 * so we must account for each subpage individually.
+-		 *
+-		 * Put page_tail on the list at the correct position
+-		 * so they all end up in order.
+-		 */
+-		add_page_to_lru_list_tail(page_tail, lruvec,
+-					  page_lru(page_tail));
+-	}
+-}
+-#endif /* CONFIG_TRANSPARENT_HUGEPAGE */
+-
+ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec,
+ 				 void *arg)
  {
- 	return true;
- }
-diff --git a/include/trace/events/compaction.h b/include/trace/events/compaction.h
-index 54e5bf081171..33633c71df04 100644
---- a/include/trace/events/compaction.h
-+++ b/include/trace/events/compaction.h
-@@ -274,7 +274,7 @@
- 		1UL << __entry->defer_shift)
- );
- 
--DEFINE_EVENT(mm_compaction_defer_template, mm_compaction_deferred,
-+DEFINE_EVENT(mm_compaction_defer_template, mm_compaction_should_defer,
- 
- 	TP_PROTO(struct zone *zone, int order),
- 
-diff --git a/mm/compaction.c b/mm/compaction.c
-index cd1ef9e5e638..f14780fc296a 100644
---- a/mm/compaction.c
-+++ b/mm/compaction.c
-@@ -154,7 +154,7 @@ void defer_compaction(struct zone *zone, int order)
- }
- 
- /* Returns true if compaction should be skipped this time */
--bool compaction_deferred(struct zone *zone, int order)
-+bool compaction_should_defer(struct zone *zone, int order)
- {
- 	unsigned long defer_limit = 1UL << zone->compact_defer_shift;
- 
-@@ -168,7 +168,7 @@ bool compaction_deferred(struct zone *zone, int order)
- 	if (zone->compact_considered >= defer_limit)
- 		return false;
- 
--	trace_mm_compaction_deferred(zone, order);
-+	trace_mm_compaction_should_defer(zone, order);
- 
- 	return true;
- }
-@@ -2377,7 +2377,7 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
- 		enum compact_result status;
- 
- 		if (prio > MIN_COMPACT_PRIORITY
--					&& compaction_deferred(zone, order)) {
-+				&& compaction_should_defer(zone, order)) {
- 			rc = max_t(enum compact_result, COMPACT_DEFERRED, rc);
- 			continue;
- 		}
-@@ -2561,7 +2561,7 @@ static void kcompactd_do_work(pg_data_t *pgdat)
- 		if (!populated_zone(zone))
- 			continue;
- 
--		if (compaction_deferred(zone, cc.order))
-+		if (compaction_should_defer(zone, cc.order))
- 			continue;
- 
- 		if (compaction_suitable(zone, cc.order, 0, zoneid) !=
 -- 
 1.8.3.1
 
