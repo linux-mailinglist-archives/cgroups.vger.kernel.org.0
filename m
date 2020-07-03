@@ -2,209 +2,237 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05D5F213606
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 10:15:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AEEC213760
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 11:13:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726039AbgGCIPo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jul 2020 04:15:44 -0400
-Received: from mail-ej1-f68.google.com ([209.85.218.68]:35872 "EHLO
-        mail-ej1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725648AbgGCIPn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 04:15:43 -0400
-Received: by mail-ej1-f68.google.com with SMTP id dr13so33302008ejc.3
-        for <cgroups@vger.kernel.org>; Fri, 03 Jul 2020 01:15:41 -0700 (PDT)
+        id S1726410AbgGCJN0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jul 2020 05:13:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51060 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725648AbgGCJNZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 05:13:25 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 869EFC08C5C1;
+        Fri,  3 Jul 2020 02:13:25 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id s21so11572641ilk.5;
+        Fri, 03 Jul 2020 02:13:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Iaw9LIET2b5Zr3PfzFEZD0ZO7MflodPo5riog/VYOpY=;
+        b=YpIy1IBvV/vLDmas280jG6wn7S0jnFsNNvzfC29z8poUfzNVniy27kGXdSPXMeuxQo
+         9JSXKH42L1HWQIH+kXrA0YiI/7Zy401o50eq+uimBMyWhCYYRt+uQa9lR/eGlV42uabK
+         mpvPUqYHyqrHmk7zLwDAln4Pr0T49Uc/f6p4N5Q+iN6sJwX1P4kCRJfrNMG2nUhf/nHL
+         l+FEcYMwI/gtkC5uhtXAgzG4qm6YpjwREqczaUT2sqkIBVhrKlVRVqnIsFEpspNOeCLI
+         ueS1v9GV7K3eTKXn1row8vxgATK6cOERngz1i7o3+hf+X25EKaGK0p1cFb/UagT0Ra2p
+         jVUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=nJKToe/ngyXNxbfxc+EUofabc8Tm8QUW9Rjz76FVoBQ=;
-        b=Lk02q0CJHunvlRuRELsPO+3Yra8jqGMsw5++aFqvOoCSRdX3gYR/K0YOKUrM2PDZCy
-         vzgX4z27wo5llH71eWJ9R2GJINvj6mJ662QDv3oBmyLlZUxCE0p6s9Zybk9sr3lRx3WM
-         2Cd4F/vdafFUWpV3HJogDd0Cvbx/7S+Dw2DBRRzccJ4rgHGzTpTr38CZAUcBWaY7yhOb
-         tsxWGyi7n0q90Mk1mJVYnHeqAvPGwkJ/x/IvI/udTR/2xWDq/JmXa+6j37iI9LpaStUe
-         qSSZQCgvk+OGENzmOY6q7MoQTxg2UCfue+9ztYcY5v2HHT0yZ33WjP3D314nfL2SAdtl
-         tYZw==
-X-Gm-Message-State: AOAM530oZo/yPqan8iE87FuMRFKw1QQb8lwn2elArKLGA/vIg8MMCnPl
-        RHQZiwsobB+J8Hom8fgL82M=
-X-Google-Smtp-Source: ABdhPJw7umdLfXv/DAVDElsgL92ZxR/T+DiTHuV1Ye+AgX4t7u6e9QCSqWIx7ntqyEP81raGWd2+sQ==
-X-Received: by 2002:a17:906:abca:: with SMTP id kq10mr16367768ejb.515.1593764140807;
-        Fri, 03 Jul 2020 01:15:40 -0700 (PDT)
-Received: from localhost (ip-37-188-168-3.eurotel.cz. [37.188.168.3])
-        by smtp.gmail.com with ESMTPSA id x4sm8707419eju.2.2020.07.03.01.15.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Jul 2020 01:15:40 -0700 (PDT)
-Date:   Fri, 3 Jul 2020 10:15:38 +0200
-From:   Michal Hocko <mhocko@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     David Rientjes <rientjes@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Subject: Re: Memcg stat for available memory
-Message-ID: <20200703081538.GO18446@dhcp22.suse.cz>
-References: <alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com>
- <CALvZod5Zv33oNLxS_8TyGV_QT4CsBjiEuocxpt2+U-XDMaFDPw@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Iaw9LIET2b5Zr3PfzFEZD0ZO7MflodPo5riog/VYOpY=;
+        b=pFcLMS2tpOPN3Cd4qVHwLxkmxOziTz0YTlWtBzE+73EHGr+F12DSoIROGk8CaNeQ+z
+         UOFsJlFEyYOOV62ZuK3ahFpAmE0mxN+qfl02gAk9UaD3G2WqQxrBXUzard1ET+/Sw8ta
+         LcHfYPgiDG/LoDkYE++suYJFbWVa+Qd2Y1ryRh9pz+OKDfdtNabE8cY+yUeuE7upFyoZ
+         QAbnAYAge4AvCQxqKTYxmODM73PN5vQV9ILHqjTESwv5j9/UNSUrBCuULJWpFzbXkZ0Z
+         PjC7FRE84nu4T9g5znX4jxtp0wag6HYjIBpwj6+4yF91ieo7ChVRZYtsqzZ8lDqZQ2io
+         9h5A==
+X-Gm-Message-State: AOAM533VRcrJzXqzHnDxaaW02CHVDftSPFjvDDJMYro1aoHJaB0V/Rjh
+        gXPrQI09XHbEqRPoe1hf4P1ioec53EyxbSMhcLY=
+X-Google-Smtp-Source: ABdhPJwXEBMUa2aMAP8q7reOsOn7JWMVBv9lH9Wka6vYuFUYz3A/Uc1V9oTxMQbgJosNCGX2ixDSbcUhc2wyDTuJKVs=
+X-Received: by 2002:a92:a148:: with SMTP id v69mr16694332ili.7.1593767604804;
+ Fri, 03 Jul 2020 02:13:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5Zv33oNLxS_8TyGV_QT4CsBjiEuocxpt2+U-XDMaFDPw@mail.gmail.com>
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com> <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
+From:   Konstantin Khlebnikov <koct9i@gmail.com>
+Date:   Fri, 3 Jul 2020 12:13:14 +0300
+Message-ID: <CALYGNiOkA_ZsycF_hqm3XLk55Ek1Mo9w1gO=6EeE35fUtA0i_w@mail.gmail.com>
+Subject: Re: [PATCH v14 15/20] mm/swap: serialize memcg changes during pagevec_lru_move_fn
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        =?UTF-8?B?0JrQvtC90YHRgtCw0L3RgtC40L0g0KXQu9C10LHQvdC40LrQvtCy?= 
+        <khlebnikov@yandex-team.ru>, daniel.m.jordan@oracle.com,
+        yang.shi@linux.alibaba.com, Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, lkp@intel.com,
+        linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, shakeelb@google.com,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>, richard.weiyang@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I am sorry I was bussy and didn't get to it sooner]
+On Fri, Jul 3, 2020 at 8:09 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+> Hugh Dickins' found a memcg change bug on original version:
+> If we want to change the pgdat->lru_lock to memcg's lruvec lock, we have
+> to serialize mem_cgroup_move_account during pagevec_lru_move_fn. The
+> possible bad scenario would like:
+>
+>         cpu 0                                   cpu 1
+> lruvec = mem_cgroup_page_lruvec()
+>                                         if (!isolate_lru_page())
+>                                                 mem_cgroup_move_account
+>
+> spin_lock_irqsave(&lruvec->lru_lock <== wrong lock.
+>
+> So we need the ClearPageLRU to block isolate_lru_page(), then serialize
+> the memcg change here.
+>
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> ---
+>  mm/swap.c | 31 +++++++++++++++++++------------
+>  1 file changed, 19 insertions(+), 12 deletions(-)
+>
+> diff --git a/mm/swap.c b/mm/swap.c
+> index b24d5f69b93a..55eb2c2eed03 100644
+> --- a/mm/swap.c
+> +++ b/mm/swap.c
+> @@ -203,7 +203,7 @@ int get_kernel_page(unsigned long start, int write, struct page **pages)
+>  EXPORT_SYMBOL_GPL(get_kernel_page);
+>
+>  static void pagevec_lru_move_fn(struct pagevec *pvec,
+> -       void (*move_fn)(struct page *page, struct lruvec *lruvec))
+> +       void (*move_fn)(struct page *page, struct lruvec *lruvec), bool add)
+>  {
+>         int i;
+>         struct pglist_data *pgdat = NULL;
+> @@ -221,8 +221,15 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+>                         spin_lock_irqsave(&pgdat->lru_lock, flags);
+>                 }
+>
+> +               /* new page add to lru or page moving between lru */
+> +               if (!add && !TestClearPageLRU(page))
+> +                       continue;
+> +
+>                 lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>                 (*move_fn)(page, lruvec);
+> +
+> +               if (!add)
+> +                       SetPageLRU(page);
+>         }
+>         if (pgdat)
+>                 spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> @@ -259,7 +266,7 @@ void rotate_reclaimable_page(struct page *page)
+>                 local_lock_irqsave(&lru_rotate.lock, flags);
+>                 pvec = this_cpu_ptr(&lru_rotate.pvec);
+>                 if (!pagevec_add(pvec, page) || PageCompound(page))
+> -                       pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
+> +                       pagevec_lru_move_fn(pvec, pagevec_move_tail_fn, false);
+>                 local_unlock_irqrestore(&lru_rotate.lock, flags);
+>         }
+>  }
+> @@ -328,7 +335,7 @@ static void activate_page_drain(int cpu)
+>         struct pagevec *pvec = &per_cpu(lru_pvecs.activate_page, cpu);
+>
+>         if (pagevec_count(pvec))
+> -               pagevec_lru_move_fn(pvec, __activate_page);
+> +               pagevec_lru_move_fn(pvec, __activate_page, false);
+>  }
+>
+>  static bool need_activate_page_drain(int cpu)
+> @@ -346,7 +353,7 @@ void activate_page(struct page *page)
+>                 pvec = this_cpu_ptr(&lru_pvecs.activate_page);
+>                 get_page(page);
+>                 if (!pagevec_add(pvec, page) || PageCompound(page))
+> -                       pagevec_lru_move_fn(pvec, __activate_page);
+> +                       pagevec_lru_move_fn(pvec, __activate_page, false);
+>                 local_unlock(&lru_pvecs.lock);
+>         }
+>  }
+> @@ -621,21 +628,21 @@ void lru_add_drain_cpu(int cpu)
+>
+>                 /* No harm done if a racing interrupt already did this */
+>                 local_lock_irqsave(&lru_rotate.lock, flags);
+> -               pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
+> +               pagevec_lru_move_fn(pvec, pagevec_move_tail_fn, false);
+>                 local_unlock_irqrestore(&lru_rotate.lock, flags);
+>         }
+>
+>         pvec = &per_cpu(lru_pvecs.lru_deactivate_file, cpu);
+>         if (pagevec_count(pvec))
+> -               pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
+> +               pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, false);
+>
+>         pvec = &per_cpu(lru_pvecs.lru_deactivate, cpu);
+>         if (pagevec_count(pvec))
+> -               pagevec_lru_move_fn(pvec, lru_deactivate_fn);
+> +               pagevec_lru_move_fn(pvec, lru_deactivate_fn, false);
+>
+>         pvec = &per_cpu(lru_pvecs.lru_lazyfree, cpu);
+>         if (pagevec_count(pvec))
+> -               pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
+> +               pagevec_lru_move_fn(pvec, lru_lazyfree_fn, false);
+>
+>         activate_page_drain(cpu);
+>  }
+> @@ -664,7 +671,7 @@ void deactivate_file_page(struct page *page)
+>                 pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate_file);
+>
+>                 if (!pagevec_add(pvec, page) || PageCompound(page))
+> -                       pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
+> +                       pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, false);
+>                 local_unlock(&lru_pvecs.lock);
+>         }
+>  }
+> @@ -686,7 +693,7 @@ void deactivate_page(struct page *page)
+>                 pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate);
+>                 get_page(page);
+>                 if (!pagevec_add(pvec, page) || PageCompound(page))
+> -                       pagevec_lru_move_fn(pvec, lru_deactivate_fn);
+> +                       pagevec_lru_move_fn(pvec, lru_deactivate_fn, false);
+>                 local_unlock(&lru_pvecs.lock);
+>         }
+>  }
+> @@ -708,7 +715,7 @@ void mark_page_lazyfree(struct page *page)
+>                 pvec = this_cpu_ptr(&lru_pvecs.lru_lazyfree);
+>                 get_page(page);
+>                 if (!pagevec_add(pvec, page) || PageCompound(page))
+> -                       pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
+> +                       pagevec_lru_move_fn(pvec, lru_lazyfree_fn, false);
+>                 local_unlock(&lru_pvecs.lock);
+>         }
+>  }
+> @@ -976,7 +983,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+>   */
+>  void __pagevec_lru_add(struct pagevec *pvec)
+>  {
+> -       pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
+> +       pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn, true);
+>  }
 
-On Thu 02-07-20 08:22:10, Shakeel Butt wrote:
-> (Adding more people who might be interested in this)
-> 
-> 
-> On Sun, Jun 28, 2020 at 3:15 PM David Rientjes <rientjes@google.com> wrote:
-> >
-> > Hi everybody,
-> >
-> > I'd like to discuss the feasibility of a stat similar to
-> > si_mem_available() but at memcg scope which would specify how much memory
-> > can be charged without I/O.
-> >
-> > The si_mem_available() stat is based on heuristics so this does not
-> > provide an exact quantity that is actually available at any given time,
-> > but can otherwise provide userspace with some guidance on the amount of
-> > reclaimable memory.  See the description in
-> > Documentation/filesystems/proc.rst and its implementation.
+It seems better to open code version in lru_add than adding a bool
+argument which is true just for one user.
 
-I have to say I was a fan of this metric when it was introduced mostly
-because it has removed that nasty subtle detail that Cached value
-includes the swap backed memory (e.g. shmem) and that has caused a lot
-of confusion. But I became very skeptical over time because it is really
-hard to set expectations right when relying on the value for two main
-reasons
-	- it is a global snapshot value and as such it becomes largely
-	  unusable for any decisions which are not implemented right
-	  away or if there are multiple uncoordinated consumers.
-	- it is not really hard to trigger "corner" cases where a careful
-	  use of MemAvailable still leads to a lot of memory reclaim
-	  even for single large consumer. What we consider reclaimable
-	  might be pinned for different reasons or situation simply
-	  changes. Our documentation claims that following this guidance
-	  will help prevent from swapping/reclaim yet this is not true
-	  and I have seen bug reports in the past.
+Also with this new lru protection logic lru_add could be optimized:
+It could prepare a list of pages and under lru_lock do only list
+splice and bumping counter.
+Since PageLRU isn't set yet nobody could touch these pages in lru.
+After that lru_add could iterate pages from first to last without
+lru_lock to set PageLRU and drop reference.
 
-> >  [ Naturally, userspace would need to understand both the amount of memory
-> >    that is available for allocation and for charging, separately, on an
-> >    overcommitted system.  I assume this is trivial.  (Why don't we provide
-> >    MemAvailable in per-node meminfo?) ]
+So, lru_add will do O(1) operations under lru_lock regardless of the
+count of pages it added.
 
-I presume you min the consumer would simply do min(global, memcg) right?
-Well a proper implementation of the value would have to be hierarchical
-so it would be minimum over the whole memcg tree up to the root. We
-cannot expect userspace do do that.
+Actually per-cpu vector for adding could be replaced with per-cpu
+lists and\or per-lruvec atomic slist.
+Thus incommig pages will be already in list structure rather than page vector.
+This allows to accumulate more pages and offload adding to kswapd or
+direct reclaim.
 
-While technically possible and not that hard to express I am worried
-existing problems with the value would be just amplified because there
-is even more volatility here. Global value mostly depends on consumers,
-now you have a second source of volatility and that is the memcg limit
-(hard or high) that can be changed quite dynamically. Sure the global
-case can have a similar with memory hotplug but realistically this is
-not by far common. Another complication is that the amount of reclaim
-for each memcg depends on reclaimability of other reclaim under the
-global memory pressure (just consider low/min protection as the simplest
-example). So I expect imprecision will be even harder to predict for
-per-memcg value.
-
-> > For such a stat at memcg scope, we can ignore totalreserves and
-> > watermarks.  We already have ~precise (modulo MEMCG_CHARGE_BATCH) data for
-> > both file pages and slab_reclaimable.
-> >
-> > We can infer lazily free memory by doing
-> >
-> >         file - (active_file + inactive_file)
-> >
-> > (This is necessary because lazy free memory is anon but on the inactive
-> >  file lru and we can't infer lazy freeable memory through pglazyfree -
-> >  pglazyfreed, they are event counters.)
-> > We can also infer the number of underlying compound pages that are on
-> >
-> > deferred split queues but have yet to be split with active_anon - anon (or
-> > is this a bug? :)
-> >
-> > So it *seems* like userspace can make a si_mem_available()-like
-> > calculation ("avail") by doing
-> >
-> >         free = memory.high - memory.current
-
-min(memory.high, memory.max)
-
-> >         lazyfree = file - (active_file + inactive_file)
-> >         deferred = active_anon - anon
-> >
-> >         avail = free + lazyfree + deferred +
-> >                 (active_file + inactive_file + slab_reclaimable) / 2
-
-I am not sure why you want to trigger lazy free differently from the
-global value. But this is really a minor technical thing which is not
-really all that interesting until we actually can define what would be
-the real usecase.
-
-> > For userspace interested in knowing how much memory it can charge without
-> > incurring I/O (and assuming it has knowledge of available memory on an
-> > overcommitted system), it seems like:
-> >
-> >  (a) it can derive the above avail amount that is at least similar to
-> >      MemAvailable,
-> >
-> >  (b) it can assume that all reclaim is considered equal so anything more
-> >      than memory.high - memory.current is disruptive enough that it's a
-> >      better heuristic than the above, or
-> >
-> >  (c) the kernel provide an "avail" stat in memory.stat based on the above
-> >      and can evolve as the kernel implementation changes (how lazy free
-> >      memory impacts anon vs file lru stats, how deferred split memory is
-> >      handled, any future extensions for "easily reclaimable memory") that
-> >      userspace can count on to the same degree it can count on
-> >      MemAvailable.
-> >
-> > Any thoughts?
-> 
-> 
-> I think we need to answer two questions:
-> 
-> 1) What's the use-case?
-> 2) Why is user space calculating their MemAvailable themselves not good?
-
-These are questions the discussion should have started with. Thanks!
-
-> The use case I have in mind is the latency sensitive distributed
-> caching service which would prefer to reduce the amount of its caching
-> over the stalls incurred by hitting the limit. Such applications can
-> monitor their MemAvailable and adjust their caching footprint.
-
-Is the value really reliable enough to implement such a logic though? I
-have mentioned some problems above. The situation might change at any
-time and the source of that change might be external to the memcg so the
-value would have to be pro-actively polled all the time. This doesn't
-sound very viable to me, especially for latency sensitive service.
-Wouldn't it make more sense to protect the service and dynamically
-change the low memory protection based on the external memory pressure.
-There are different ways to achieve that. E.g. watch for LOW event
-notifications and/or PSI metrics. I believe FB is relying on such a
-dynamic scaling a lot.
- 
-> For the second, I think it is to hide the internal implementation
-> details of the kernel from the user space. The deferred split queues
-> is an internal detail and we don't want that exposed to the user.
-> Similarly how lazyfree is implemented (i.e. anon pages on file LRU)
-> should not be exposed to the users.
-
-I would tend to agree that there is a lot of internal logic that can
-skew existing statistics and that might be confusing. But I am not sure
-that providing something that aims to hide them yet is hard to use is a
-proper way forward. But maybe I am just too pessimistic. I would be
-happy to be convinced otherwise.
-
--- 
-Michal Hocko
-SUSE Labs
+>
+>  /**
+> --
+> 1.8.3.1
+>
+>
