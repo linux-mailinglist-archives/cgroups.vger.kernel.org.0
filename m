@@ -2,115 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E9CE213B7B
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 16:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CBB0213BBE
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 16:23:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726048AbgGCOGH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jul 2020 10:06:07 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:56724 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726035AbgGCOGG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 10:06:06 -0400
-Received: from ip5f5af08c.dynamic.kabel-deutschland.de ([95.90.240.140] helo=wittgenstein)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <christian.brauner@ubuntu.com>)
-        id 1jrMKK-0003fk-Df; Fri, 03 Jul 2020 14:06:04 +0000
-Date:   Fri, 3 Jul 2020 16:06:03 +0200
-From:   Christian Brauner <christian.brauner@ubuntu.com>
-To:     Linux Containers <containers@lists.linux-foundation.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        criu@openvz.org, lxc-devel@lists.linuxcontainers.org,
-        cgroups@vger.kernel.org
-Cc:     =?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>,
-        Mike Rapoport <rppt@linux.ibm.com>
-Subject: Virtual Linux Plumbers 2020, 24-28 August: Containers and
- Checkpoint/Restore microconference CFP Open until 20 July
-Message-ID: <20200703140603.ch73e342wxhll5on@wittgenstein>
+        id S1726035AbgGCOXb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jul 2020 10:23:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42140 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726039AbgGCOX2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 10:23:28 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5D8FC08C5DD
+        for <cgroups@vger.kernel.org>; Fri,  3 Jul 2020 07:23:27 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s9so37142751ljm.11
+        for <cgroups@vger.kernel.org>; Fri, 03 Jul 2020 07:23:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xAsbhYpysmstHPq0Op9MjqJaZ7YDRLDrp7Rg8i0eT+Q=;
+        b=KacU4DChX8owr3WxGngcQJG0ITHWxa2x5YJZMRcO1Oq8g8suqMxqCIKz2KIVn+GX0G
+         NlL4sAx7SWLe7wOoKqalqC8WPtCsOVDiIJl2ugaBNTqIy8m+xXXNOoboIPQNY0hU4eh5
+         Cv+CRClsFvZBzHLaY4R8w4zl6/ZmyudVjt3Ym/CNTRtKSCKgM5mCowbGng/unHeM1X6G
+         rX9V5/vB5ZifMJFjN2LTDNr4RYI0VvFlBsKbHhDWHWGHEv13TdNi3C8BfxPrrTetX9vs
+         vMD4jQOdARdwlqk8ECDSA4gMLt9sQnF8RfswofOxXeklF/ny6lafGO5LMCzz1KNSzmw1
+         ZJUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xAsbhYpysmstHPq0Op9MjqJaZ7YDRLDrp7Rg8i0eT+Q=;
+        b=HtWovDFBl47GxMKfSdlZwrPd6Ze3B708YF+GUvB4kp67cfKkSMq8Sz1jJMnK2l6Gpk
+         QxWMQo4NBxoPafO9MZ2bJNo9l92jDpw4s06sMj/AfLU5YWehLi3MQIi4EBRSwYkH1c1O
+         +3MKWwuEgZpxXfsLEGGizRu8mw2wi/r3IW5VPsiFPiTFYhPrn5E66AZQkOw60sRZDz0y
+         fLw5U4ycXf1RI2nMRAE/MPKlMkS6sbSop1lyLi9wGrXxZT4hIUc/BRmfseramnJSnGQy
+         GfZ26JOdJCz3mW3UkNb58bilJWYUBOg/u+SxZurC/rT9bz80mOiK/Ad17CM2FttgSjuw
+         yjkw==
+X-Gm-Message-State: AOAM531VEzky4PMlmKkud4tGXW5Su493SfgcMBt46ZdbMQGkigeJ9fH5
+        XtNBxTKSXI659pa24d+oxHwqe46+7hkhrItp2EFmtw==
+X-Google-Smtp-Source: ABdhPJypEhgBGtdvE+CIOFMTHTIs6098Z3PwdIVQlW6tkGvx5BOconTGtFOIQ4CnrlAXgXA8D+jLajNgHO9BeuTBN1U=
+X-Received: by 2002:a2e:910c:: with SMTP id m12mr20890425ljg.332.1593786205575;
+ Fri, 03 Jul 2020 07:23:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+References: <20200702152222.2630760-1-shakeelb@google.com> <20200703063548.GM18446@dhcp22.suse.cz>
+In-Reply-To: <20200703063548.GM18446@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Fri, 3 Jul 2020 07:23:14 -0700
+Message-ID: <CALvZod5gthVX5m6o50OiYsXa=0_NpXK-tVvjTF42Oj4udr4Nuw@mail.gmail.com>
+Subject: Re: [RFC PROPOSAL] memcg: per-memcg user space reclaim interface
+To:     Michal Hocko <mhocko@kernel.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        David Rientjes <rientjes@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hey everyone,
+On Thu, Jul 2, 2020 at 11:35 PM Michal Hocko <mhocko@kernel.org> wrote:
+>
+> On Thu 02-07-20 08:22:22, Shakeel Butt wrote:
+> [...]
+> > Interface options:
+> > ------------------
+> >
+> > 1) memcg interface e.g. 'echo 10M > memory.reclaim'
+> >
+> > + simple
+> > + can be extended to target specific type of memory (anon, file, kmem).
+> > - most probably restricted to cgroup v2.
+> >
+> > 2) fadvise(PAGEOUT) on cgroup_dir_fd
+> >
+> > + more general and applicable to other FSes (actually we are using
+> > something similar for tmpfs).
+> > + can be extended in future to just age the LRUs instead of reclaim or
+> > some new use cases.
+>
+> Could you explain why memory.high as an interface to trigger pro-active
+> memory reclaim is not sufficient. Also memory.low limit to protect
+> latency sensitve workloads?
 
-I promised to resend this one more time once we have confirmed the dates
-for Virtual Linux Plumbers 2020: Linux Plumbers 2020 will take place
-from Monday, 24 August to Friday, 28 August. As usual it also
-encompasses Kernel Summit.
+Yes, we can use memory.high to trigger [proactive] reclaim in a memcg
+but note that it can also introduce stalls in the application running
+in that memcg. Let's suppose the memory.current of a memcg is 100MiB
+and we want to reclaim 20MiB from it, we can set the memory.high to
+80MiB but any allocation attempt from the application running in that
+memcg can get stalled/throttled. I want the functionality of the
+reclaim without potential stalls.
 
-We're happy to announce that the Container and Checkpoint/Restore
-microconference (MC) has been accepted as part of Linux Plumber's again!
-The Containers and Checkpoint/Restore MC at Linux Plumbers is the opportunity
-for kernel developers, runtime maintainers, and generally everyone working on
-containers and related technologies to talk about what they are up to and agree
-on the next major changes to kernel and userspace.
-
-As we have already done the last years, the micro-conference also covers topic
-of the Checkpoint-Restore micro-conference.
-
-Please note that LPC 2020 was originally set to be held in Halifax, Nova
-Scotia, Canada but has been moved to a virtual event in light of recent events.
-Please see our organizing comittee's blog on the Plumber's website [1]
-for more information.
-
-We expect to time limit presentations/demos to 15 minutes including questions.
-More open ended discussion topics will get up to 30 minutes allocated.
-
-In the spirit of a Plumber's microconference we especially appreciate topics
-pitching new ideas and features people have been thinking about. This is also
-the time to talk about your favorite kernel- or userspace problems. If you have
-a proposal how to solve them or if you just want to gather input and ideas from
-other developers this is the right place.
-
-Here are some ideas for topics:
-
-System call filtering and interception
-Hardware enforced container isolation
-New seccomp features
-New cgroup features
-Handling cgroup v1 on cgroup v2 only hosts and vica versa
-Performance improvement for containers (following Spectre/Meltdown mitigation)
-Time namespacing
-CGroupV2 developments
-LSM, IMA, EVM, keyrings inside containers
-UID shifting filesystem (shiftfs)
-New mount API
-New pidfd API
-New clone3 syscall
-CRIU integration with container engines and orchestration frameworks
-(In)stability of less commonly used kernel ABIs
-Checkpoint/Restore performance improvements
-Improving the state of userfaultfd and its adoption in container runtimes
-Speeding up container live migration
-Extending and virtualizing procfs
-Restricting path resolution
-Android containers and containers on Android
-Container Auditing and Monitoring
-Cgroups and Containers with Real-Time Scheduling
-
-Some of those are ideas in search of an acceptable solution, some are problems
-likely to affect all container runtimes some are coverage of very recent
-kernel work and how that can be used by userspace, and some are proposed kernel
-patches that need in-person discussion. This list is not meant to be
-exhaustive. If you have other ideas or work to discuss, please apply! Keep in
-mind both kernel- and userspace topics are acceptable!
-
-Please make your proposals on the Linux Plumber's website selecting the
-Containers and Checkpoint/Restore MC as the Track you're submitting at:
-
-https://linuxplumbersconf.org/event/7/abstracts/
-
-We’ll accept proposals for this micro-conference until the 20 of July 2020.
-
-This year’s edition of the micro-conference is organized and run by:
-
-Christian Brauner (Canonical Ltd.)
-Stéphane Graber (Canonical Ltd.)
-Mike Rapoport (IBM)
-
-[1]: https://www.linuxplumbersconf.org/blog/2020/linux-plumbers-conference-2020-goes-virtual/
+The memory.min is for protection against the global reclaim and is
+unrelated to this discussion.
