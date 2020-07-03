@@ -2,16 +2,16 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79F89213365
-	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 07:10:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DA5B213356
+	for <lists+cgroups@lfdr.de>; Fri,  3 Jul 2020 07:09:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726406AbgGCFJm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jul 2020 01:09:42 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:35230 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726371AbgGCFIq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 01:08:46 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R271e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U1Y4LGX_1593752912;
+        id S1726766AbgGCFJ0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jul 2020 01:09:26 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51160 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726445AbgGCFIt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 01:08:49 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0U1Y4LGX_1593752912;
 Received: from alexshi-test.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U1Y4LGX_1593752912)
           by smtp.aliyun-inc.com(127.0.0.1);
           Fri, 03 Jul 2020 13:08:39 +0800
@@ -23,9 +23,9 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: [PATCH v14 14/20] mm/mlock: reorder isolation sequence during munlock
-Date:   Fri,  3 Jul 2020 13:07:47 +0800
-Message-Id: <1593752873-4493-15-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v14 15/20] mm/swap: serialize memcg changes during pagevec_lru_move_fn
+Date:   Fri,  3 Jul 2020 13:07:48 +0800
+Message-Id: <1593752873-4493-16-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -34,183 +34,148 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch reorder the isolation steps during munlock, move the lru lock
-to guard each pages, unfold __munlock_isolate_lru_page func, to do the
-preparation for lru lock change.
+Hugh Dickins' found a memcg change bug on original version:
+If we want to change the pgdat->lru_lock to memcg's lruvec lock, we have
+to serialize mem_cgroup_move_account during pagevec_lru_move_fn. The
+possible bad scenario would like:
 
-__split_huge_page_refcount doesn't exist, but we still have to guard
-PageMlocked and PageLRU in __split_huge_page_tail, that is the reason
-ClearPageLRU action is moved after lru locking.
+	cpu 0					cpu 1
+lruvec = mem_cgroup_page_lruvec()
+					if (!isolate_lru_page())
+						mem_cgroup_move_account
 
-[lkp@intel.com: found a sleeping function bug ... at mm/rmap.c]
+spin_lock_irqsave(&lruvec->lru_lock <== wrong lock.
+
+So we need the ClearPageLRU to block isolate_lru_page(), then serialize
+the memcg change here.
+
+Reported-by: Hugh Dickins <hughd@google.com>
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Kirill A. Shutemov <kirill@shutemov.name>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Matthew Wilcox <willy@infradead.org>
-Cc: Hugh Dickins <hughd@google.com>
 Cc: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org
 ---
- mm/mlock.c | 93 ++++++++++++++++++++++++++++++++++----------------------------
- 1 file changed, 51 insertions(+), 42 deletions(-)
+ mm/swap.c | 31 +++++++++++++++++++------------
+ 1 file changed, 19 insertions(+), 12 deletions(-)
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 228ba5a8e0a5..7098be122966 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -103,25 +103,6 @@ void mlock_vma_page(struct page *page)
- }
+diff --git a/mm/swap.c b/mm/swap.c
+index b24d5f69b93a..55eb2c2eed03 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -203,7 +203,7 @@ int get_kernel_page(unsigned long start, int write, struct page **pages)
+ EXPORT_SYMBOL_GPL(get_kernel_page);
  
- /*
-- * Isolate a page from LRU with optional get_page() pin.
-- * Assumes lru_lock already held and page already pinned.
-- */
--static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
--{
--	if (TestClearPageLRU(page)) {
--		struct lruvec *lruvec;
--
--		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
--		if (getpage)
--			get_page(page);
--		del_page_from_lru_list(page, lruvec, page_lru(page));
--		return true;
--	}
--
--	return false;
--}
--
--/*
-  * Finish munlock after successful page isolation
-  *
-  * Page must be locked. This is a wrapper for try_to_munlock()
-@@ -181,6 +162,7 @@ static void __munlock_isolation_failed(struct page *page)
- unsigned int munlock_vma_page(struct page *page)
+ static void pagevec_lru_move_fn(struct pagevec *pvec,
+-	void (*move_fn)(struct page *page, struct lruvec *lruvec))
++	void (*move_fn)(struct page *page, struct lruvec *lruvec), bool add)
  {
- 	int nr_pages;
-+	bool clearlru = false;
- 	pg_data_t *pgdat = page_pgdat(page);
- 
- 	/* For try_to_munlock() and to serialize with page migration */
-@@ -189,32 +171,42 @@ unsigned int munlock_vma_page(struct page *page)
- 	VM_BUG_ON_PAGE(PageTail(page), page);
- 
- 	/*
--	 * Serialize with any parallel __split_huge_page_refcount() which
-+	 * Serialize with any parallel __split_huge_page_tail() which
- 	 * might otherwise copy PageMlocked to part of the tail pages before
- 	 * we clear it in the head page. It also stabilizes hpage_nr_pages().
- 	 */
-+	get_page(page);
- 	spin_lock_irq(&pgdat->lru_lock);
-+	clearlru = TestClearPageLRU(page);
- 
- 	if (!TestClearPageMlocked(page)) {
--		/* Potentially, PTE-mapped THP: do not skip the rest PTEs */
--		nr_pages = 1;
--		goto unlock_out;
-+		if (clearlru)
-+			SetPageLRU(page);
-+		/*
-+		 * Potentially, PTE-mapped THP: do not skip the rest PTEs
-+		 * Reuse lock as memory barrier for release_pages racing.
-+		 */
-+		spin_unlock_irq(&pgdat->lru_lock);
-+		put_page(page);
-+		return 0;
- 	}
- 
- 	nr_pages = hpage_nr_pages(page);
- 	__mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
- 
--	if (__munlock_isolate_lru_page(page, true)) {
-+	if (clearlru) {
-+		struct lruvec *lruvec;
-+
-+		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+		del_page_from_lru_list(page, lruvec, page_lru(page));
- 		spin_unlock_irq(&pgdat->lru_lock);
- 		__munlock_isolated_page(page);
--		goto out;
-+	} else {
-+		spin_unlock_irq(&pgdat->lru_lock);
-+		put_page(page);
-+		__munlock_isolation_failed(page);
- 	}
--	__munlock_isolation_failed(page);
--
--unlock_out:
--	spin_unlock_irq(&pgdat->lru_lock);
- 
--out:
- 	return nr_pages - 1;
- }
- 
-@@ -297,34 +289,51 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
- 	pagevec_init(&pvec_putback);
- 
- 	/* Phase 1: page isolation */
--	spin_lock_irq(&zone->zone_pgdat->lru_lock);
- 	for (i = 0; i < nr; i++) {
- 		struct page *page = pvec->pages[i];
-+		struct lruvec *lruvec;
-+		bool clearlru;
- 
--		if (TestClearPageMlocked(page)) {
--			/*
--			 * We already have pin from follow_page_mask()
--			 * so we can spare the get_page() here.
--			 */
--			if (__munlock_isolate_lru_page(page, false))
--				continue;
--			else
--				__munlock_isolation_failed(page);
--		} else {
-+		clearlru = TestClearPageLRU(page);
-+		spin_lock_irq(&zone->zone_pgdat->lru_lock);
-+
-+		if (!TestClearPageMlocked(page)) {
- 			delta_munlocked++;
-+			if (clearlru)
-+				SetPageLRU(page);
-+			goto putback;
-+		}
-+
-+		if (!clearlru) {
-+			__munlock_isolation_failed(page);
-+			goto putback;
+ 	int i;
+ 	struct pglist_data *pgdat = NULL;
+@@ -221,8 +221,15 @@ static void pagevec_lru_move_fn(struct pagevec *pvec,
+ 			spin_lock_irqsave(&pgdat->lru_lock, flags);
  		}
  
- 		/*
-+		 * Isolate this page.
-+		 * We already have pin from follow_page_mask()
-+		 * so we can spare the get_page() here.
-+		 */
-+		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+		del_page_from_lru_list(page, lruvec, page_lru(page));
-+		spin_unlock_irq(&zone->zone_pgdat->lru_lock);
-+		continue;
++		/* new page add to lru or page moving between lru */
++		if (!add && !TestClearPageLRU(page))
++			continue;
 +
-+		/*
- 		 * We won't be munlocking this page in the next phase
- 		 * but we still need to release the follow_page_mask()
- 		 * pin. We cannot do it under lru_lock however. If it's
- 		 * the last pin, __page_cache_release() would deadlock.
- 		 */
-+putback:
-+		spin_unlock_irq(&zone->zone_pgdat->lru_lock);
- 		pagevec_add(&pvec_putback, pvec->pages[i]);
- 		pvec->pages[i] = NULL;
+ 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 		(*move_fn)(page, lruvec);
++
++		if (!add)
++			SetPageLRU(page);
  	}
-+	/* tempary disable irq, will remove later */
-+	local_irq_disable();
- 	__mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
--	spin_unlock_irq(&zone->zone_pgdat->lru_lock);
-+	local_irq_enable();
+ 	if (pgdat)
+ 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+@@ -259,7 +266,7 @@ void rotate_reclaimable_page(struct page *page)
+ 		local_lock_irqsave(&lru_rotate.lock, flags);
+ 		pvec = this_cpu_ptr(&lru_rotate.pvec);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+-			pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
++			pagevec_lru_move_fn(pvec, pagevec_move_tail_fn, false);
+ 		local_unlock_irqrestore(&lru_rotate.lock, flags);
+ 	}
+ }
+@@ -328,7 +335,7 @@ static void activate_page_drain(int cpu)
+ 	struct pagevec *pvec = &per_cpu(lru_pvecs.activate_page, cpu);
  
- 	/* Now we can release pins of pages that we are not munlocking */
- 	pagevec_release(&pvec_putback);
+ 	if (pagevec_count(pvec))
+-		pagevec_lru_move_fn(pvec, __activate_page);
++		pagevec_lru_move_fn(pvec, __activate_page, false);
+ }
+ 
+ static bool need_activate_page_drain(int cpu)
+@@ -346,7 +353,7 @@ void activate_page(struct page *page)
+ 		pvec = this_cpu_ptr(&lru_pvecs.activate_page);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+-			pagevec_lru_move_fn(pvec, __activate_page);
++			pagevec_lru_move_fn(pvec, __activate_page, false);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+@@ -621,21 +628,21 @@ void lru_add_drain_cpu(int cpu)
+ 
+ 		/* No harm done if a racing interrupt already did this */
+ 		local_lock_irqsave(&lru_rotate.lock, flags);
+-		pagevec_lru_move_fn(pvec, pagevec_move_tail_fn);
++		pagevec_lru_move_fn(pvec, pagevec_move_tail_fn, false);
+ 		local_unlock_irqrestore(&lru_rotate.lock, flags);
+ 	}
+ 
+ 	pvec = &per_cpu(lru_pvecs.lru_deactivate_file, cpu);
+ 	if (pagevec_count(pvec))
+-		pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
++		pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, false);
+ 
+ 	pvec = &per_cpu(lru_pvecs.lru_deactivate, cpu);
+ 	if (pagevec_count(pvec))
+-		pagevec_lru_move_fn(pvec, lru_deactivate_fn);
++		pagevec_lru_move_fn(pvec, lru_deactivate_fn, false);
+ 
+ 	pvec = &per_cpu(lru_pvecs.lru_lazyfree, cpu);
+ 	if (pagevec_count(pvec))
+-		pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
++		pagevec_lru_move_fn(pvec, lru_lazyfree_fn, false);
+ 
+ 	activate_page_drain(cpu);
+ }
+@@ -664,7 +671,7 @@ void deactivate_file_page(struct page *page)
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate_file);
+ 
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+-			pagevec_lru_move_fn(pvec, lru_deactivate_file_fn);
++			pagevec_lru_move_fn(pvec, lru_deactivate_file_fn, false);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+@@ -686,7 +693,7 @@ void deactivate_page(struct page *page)
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_deactivate);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+-			pagevec_lru_move_fn(pvec, lru_deactivate_fn);
++			pagevec_lru_move_fn(pvec, lru_deactivate_fn, false);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+@@ -708,7 +715,7 @@ void mark_page_lazyfree(struct page *page)
+ 		pvec = this_cpu_ptr(&lru_pvecs.lru_lazyfree);
+ 		get_page(page);
+ 		if (!pagevec_add(pvec, page) || PageCompound(page))
+-			pagevec_lru_move_fn(pvec, lru_lazyfree_fn);
++			pagevec_lru_move_fn(pvec, lru_lazyfree_fn, false);
+ 		local_unlock(&lru_pvecs.lock);
+ 	}
+ }
+@@ -976,7 +983,7 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
+  */
+ void __pagevec_lru_add(struct pagevec *pvec)
+ {
+-	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn);
++	pagevec_lru_move_fn(pvec, __pagevec_lru_add_fn, true);
+ }
+ 
+ /**
 -- 
 1.8.3.1
 
