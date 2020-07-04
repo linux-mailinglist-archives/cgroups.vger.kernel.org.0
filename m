@@ -2,31 +2,31 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A652142F0
-	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2020 05:21:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8CF6214306
+	for <lists+cgroups@lfdr.de>; Sat,  4 Jul 2020 05:21:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727789AbgGDDVT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 3 Jul 2020 23:21:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48782 "EHLO
+        id S1727929AbgGDDVZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 3 Jul 2020 23:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727067AbgGDDVR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 23:21:17 -0400
+        with ESMTP id S1727067AbgGDDVW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 3 Jul 2020 23:21:22 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92AB8C061794;
-        Fri,  3 Jul 2020 20:21:17 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78F73C061794;
+        Fri,  3 Jul 2020 20:21:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=IYOmOJoYZTBzZj9tcefKQPSQ7bdbtk5gsplfzDl4zv8=; b=RDI/Bdk8o1Faay9KdZmlzUO+AA
-        m9o/n0YxzrBme19YPdPlCs6aSDNnHgXacy3SY0Tdmr/4smmEjBkkP5fSiwBPjm6W0rmT9dI6DUqB+
-        WPHy1NRhErLBOSZm3A3Bf+bwJ9OBXlfP3tT2RRuxrlR99dEPK7dPaWT9lxLrl3ZwSnGGAYcw2jHgB
-        W/3HGLyYFeyYxOR1/ANiuRukON94z6AHvMn1jLVlTIl8DaCF/sPqUhvS3zbj5LrIh8RFBBpgRJ1Z3
-        d7bJ4CWw+xjil4LqVozb2pkxgw+V7EI4L00GtUN7dBTuSRaE0MQRcpfhjuK0LA6Q1dhrNNiAsIssx
-        Y0YtEhcw==;
+        bh=8pKvrcNaFuZeOjcq9eNrFm90IIli99w7VYLzSvP2y/o=; b=Vr5yaAj1Ow2hOWq/9C2zxsJ/Ih
+        O0OJdZk0igUSwbBN6Coig/XIlsc6duH3uegpjCHLNSAew5qXmj8JWos7K97HeWesePg2chNgXnnmX
+        Fm0rn3ALzxs6znAgYSoRLrp2oaO5NKphqg+xKe0qr8V2ZHhJt1ekEjax+61rghNovm7npGJNuAIBv
+        5TQa/YURh8seaHlSM2wgsBGNGWSnMiM0p48qQPEITU0X59w8FryqV1X9ohHmEmeEjIbgsb/mZwRk3
+        SJNzh68EBoS/b4DUnSJ9cazhy1UXJE5lbmBzU0jAOOW3astTOcTCgr6SMZd1wDPvAa5iP/Sc/o/YG
+        7lyRnaew==;
 Received: from [2601:1c0:6280:3f0::19c2] (helo=smtpauth.infradead.org)
         by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1jrYjq-0000Ri-9h; Sat, 04 Jul 2020 03:21:15 +0000
+        id 1jrYjv-0000Ri-Jh; Sat, 04 Jul 2020 03:21:20 +0000
 From:   Randy Dunlap <rdunlap@infradead.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Randy Dunlap <rdunlap@infradead.org>,
@@ -43,9 +43,9 @@ Cc:     Randy Dunlap <rdunlap@infradead.org>,
         platform-driver-x86@vger.kernel.org,
         "Darrick J . Wong" <darrick.wong@oracle.com>,
         linux-xfs@vger.kernel.org
-Subject: [PATCH 10/13] Documentation/admin-guide: intel-speed-select: drop doubled words
-Date:   Fri,  3 Jul 2020 20:20:17 -0700
-Message-Id: <20200704032020.21923-11-rdunlap@infradead.org>
+Subject: [PATCH 11/13] Documentation/admin-guide: sysctl/kernel: drop doubled word
+Date:   Fri,  3 Jul 2020 20:20:18 -0700
+Message-Id: <20200704032020.21923-12-rdunlap@infradead.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200704032020.21923-1-rdunlap@infradead.org>
 References: <20200704032020.21923-1-rdunlap@infradead.org>
@@ -56,34 +56,23 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Drop the doubled words "that" and "and".
+Drop the doubled word "set".
 
 Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
 Cc: Jonathan Corbet <corbet@lwn.net>
 Cc: linux-doc@vger.kernel.org
-Cc: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org
 ---
- Documentation/admin-guide/pm/intel-speed-select.rst |    4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/sysctl/kernel.rst |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
---- linux-next-20200701.orig/Documentation/admin-guide/pm/intel-speed-select.rst
-+++ linux-next-20200701/Documentation/admin-guide/pm/intel-speed-select.rst
-@@ -114,7 +114,7 @@ base performance profile (which is perfo
- Lock/Unlock status
- ~~~~~~~~~~~~~~~~~~
+--- linux-next-20200701.orig/Documentation/admin-guide/sysctl/kernel.rst
++++ linux-next-20200701/Documentation/admin-guide/sysctl/kernel.rst
+@@ -235,7 +235,7 @@ This toggle indicates whether unprivileg
+ from using ``dmesg(8)`` to view messages from the kernel's log
+ buffer.
+ When ``dmesg_restrict`` is set to 0 there are no restrictions.
+-When ``dmesg_restrict`` is set set to 1, users must have
++When ``dmesg_restrict`` is set to 1, users must have
+ ``CAP_SYSLOG`` to use ``dmesg(8)``.
  
--Even if there are multiple performance profiles, it is possible that that they
-+Even if there are multiple performance profiles, it is possible that they
- are locked. If they are locked, users cannot issue a command to change the
- performance state. It is possible that there is a BIOS setup to unlock or check
- with your system vendor.
-@@ -883,7 +883,7 @@ To enable Intel(R) SST-TF, execute::
-         enable:success
- 
- In this case, the option "-a" is optional. If set, it enables Intel(R) SST-TF
--feature and also sets the CPUs to high and and low priority using Intel Speed
-+feature and also sets the CPUs to high and low priority using Intel Speed
- Select Technology Core Power (Intel(R) SST-CP) features. The CPU numbers passed
- with "-c" arguments are marked as high priority, including its siblings.
- 
+ The kernel config option ``CONFIG_SECURITY_DMESG_RESTRICT`` sets the
