@@ -2,202 +2,272 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9FD4D216102
-	for <lists+cgroups@lfdr.de>; Mon,  6 Jul 2020 23:38:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38971216591
+	for <lists+cgroups@lfdr.de>; Tue,  7 Jul 2020 06:53:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726802AbgGFViu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 6 Jul 2020 17:38:50 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:43850 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726810AbgGFViu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 6 Jul 2020 17:38:50 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 066LapdW017402;
-        Mon, 6 Jul 2020 14:38:38 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=lwkY6r4OZaHJitgZp0xrDtujuSGt0l8XV3LwLLwc4HM=;
- b=mhpD1Dbj3kno709ho6TEPhCGrkAw+cWjIjUwPLCeeg3KQ2KMlrh6YrzAvBPXQVmX8I5J
- //dM++JrUH15mZnFrPP6lCqx7xUG5B1zS37xcLtHWQykuy4rakUy825sLXeGu4FzUVQf
- m2qn/0wXU3AyH0g216yOPaokaXXTMV8btVk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 3239fnpj6s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Mon, 06 Jul 2020 14:38:38 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 6 Jul 2020 14:38:37 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PFJCRXKmAof1tksSepXGR/u9YPDFfEv68SRsc5NLS1DphWrpMf7RCd5x2fSOnc33hxHlmf+W9PIaCcI5cKZx8MYrqaSwubiNo5/GSUHZwSzbLWk5jTg0znG8cB7wivgO283rT5A+/mY70tDvQDRfTR/Tg4u80mZzNMZsQRWcMl2zNKEoLYGiMlQXgkgnXZ1JpPMkmLl2P8FoREiQODA2exeu/SiHp7cHzrb8gfwD9Ns7GHUgbfQhCgvKFjgN+vn4pvpTItqcMjzAV+zbHnkjFGm2aDF/18p3PkXDkDL+j8kZU6h6zywu7ootIWdxyrB51ppBXIfVvpWCtLaS+75EFA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lwkY6r4OZaHJitgZp0xrDtujuSGt0l8XV3LwLLwc4HM=;
- b=Zl9RcM437okC9SsSPfTe1q2lX8Im0V95AGcb8enfzAmaXjcHOpaWmwta+Anf2iOqlfSvxCdlTYyNUmiie7VlgcvV76eGd5bN/f8aCmVDH2m9F/zxax4WoCrpS9qNOmM9dsxMyq1KpRx85Xuq8P1yz2ke0Fdmajfq/Vx0uz8LPzDKlFOhDyJszSHJp12ET2aiz/b46/ZNsHtQl2drzCbksBiGp3FOrCjCwBLSNILQDIArBCbZbVypyCckp8QoDYMmG1j/wsf2WyjwjhB36n4NDUHzB8Nrl/pdxMZn+udgU47MfbYOypjWNPIjni57BQ6rzPcahYaaDPqYj0Qa2Yu5JA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lwkY6r4OZaHJitgZp0xrDtujuSGt0l8XV3LwLLwc4HM=;
- b=NljN1bmL/MqBvRrNQ9bUoHCu59KXqdO84jje1Ds6YsANgPHMffB7EglrQz1jTopxnRIO+uqCWvLf9rHkBH9jZQbikWcUyj2hi3PP6WcYjSGnMjr4rhXHKmajC0IqybzNOtJrLxMHYmXRIO7SluL7s8/eK9WuMx40pWE3ITtl/xQ=
-Authentication-Results: google.com; dkim=none (message not signed)
- header.d=none;google.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.29; Mon, 6 Jul
- 2020 21:38:36 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
- 21:38:36 +0000
-Date:   Mon, 6 Jul 2020 14:38:33 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Michal Hocko <mhocko@kernel.org>,
+        id S1727876AbgGGEwu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 7 Jul 2020 00:52:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727871AbgGGEwu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 7 Jul 2020 00:52:50 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30BC9C061794
+        for <cgroups@vger.kernel.org>; Mon,  6 Jul 2020 21:52:50 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id g37so9660386otb.9
+        for <cgroups@vger.kernel.org>; Mon, 06 Jul 2020 21:52:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=KHZlRSI+5CNL5CqTzNRG6K++ofxZi2qsI5xp62BEST4=;
+        b=Ie5U4BIeZl2VIBxCKeRtfjbvltwphRbfChayVeJPr3EEMrR+huqI3OlNmuWY+NDB5J
+         72jlIaEuPw+J7noorqfokzCp+Bs/fPOJEDm3+WsIsr9YiB+k4CrA3jlSDI7zGh4QPo/p
+         vRieHzUvlDC26r1ZJRyMD6jjg0tL82hVVcl6KOPPskYkdGqtZI4yXvWDUA3DjSy+nav3
+         mkJ34Ae23N2q8AJ3xV9pRF1+x5mJTRlWGZviPsi6N4uc1xfaFLBz/svKMA00sGsDzb1g
+         /BXGOe0xflGBDFmi65AnB+cLQ5Xd/ORU3XlacIR9Tt0Jz+R7qXP8gtQBBQ4ZBd76iNpG
+         BXPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=KHZlRSI+5CNL5CqTzNRG6K++ofxZi2qsI5xp62BEST4=;
+        b=P3sEoD4Cb0ZoNOHsip3vOcvCAX4F7q9vFcOleGHkxbid9dN5H0v3Hx8J3vQrk9Cpm7
+         UtBZ1oklSTWypPENt68nyjubs6BDokAxUV+P1VzbNI0j6cuVnIvN3m7pkG9/0IfTkD7q
+         VpTPhHYS6fcVto7dabBbQB8AyXjMvs1QlV1w/iQFCCmR29JGw7m85GC0FcxDQOUI36k1
+         ew4ynIEc7hKkThSxRfIpd1Haf1hU4D7ylB2hDZM511LzN2i/N0P9kHzQhDL15mSMRKOy
+         AsJJTobBS9umXVdpgIyztZ4CC2A53XfJ2qZ7yJS5d5Ob8A6wPtcnolTVm8lOUdAS9XtB
+         bFxA==
+X-Gm-Message-State: AOAM532EvUs6qbVL7L0YjFB8UgMWC9zP4Cz2uTElTk4k8m7CrPeiwOCK
+        IHfMF/poWBtA9UNY7MoGHhMNZA==
+X-Google-Smtp-Source: ABdhPJzk2+Ii217M/o/8WQf9gyL4sN7inGPmtwbEjOry4qwY8kr+eF1ThkMK23ovKt+YOB5PN7R0cA==
+X-Received: by 2002:a9d:2c62:: with SMTP id f89mr21357843otb.148.1594097569050;
+        Mon, 06 Jul 2020 21:52:49 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id l18sm5763137ooe.32.2020.07.06.21.52.46
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 06 Jul 2020 21:52:47 -0700 (PDT)
+Date:   Mon, 6 Jul 2020 21:52:34 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Matthew Wilcox <willy@infradead.org>
+cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [RFC PROPOSAL] memcg: per-memcg user space reclaim interface
-Message-ID: <20200706213404.GA152560@carbon.lan>
-References: <20200702152222.2630760-1-shakeelb@google.com>
- <20200703063548.GM18446@dhcp22.suse.cz>
- <CALvZod5gthVX5m6o50OiYsXa=0_NpXK-tVvjTF42Oj4udr4Nuw@mail.gmail.com>
- <20200703155021.GB114903@carbon.dhcp.thefacebook.com>
- <CALvZod5Z4=1CijJp0QRnx+pdH=Me6sYPXASCxVATnshU0RW-Qw@mail.gmail.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod5Z4=1CijJp0QRnx+pdH=Me6sYPXASCxVATnshU0RW-Qw@mail.gmail.com>
-X-ClientProxiedBy: BY5PR20CA0005.namprd20.prod.outlook.com
- (2603:10b6:a03:1f4::18) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+Subject: Re: [PATCH v14 07/20] mm/thp: narrow lru locking
+In-Reply-To: <20200706113513.GY25523@casper.infradead.org>
+Message-ID: <alpine.LSU.2.11.2007062059420.2793@eggly.anvils>
+References: <1593752873-4493-1-git-send-email-alex.shi@linux.alibaba.com> <1593752873-4493-8-git-send-email-alex.shi@linux.alibaba.com> <124eeef1-ff2b-609e-3bf6-a118100c3f2a@linux.alibaba.com> <20200706113513.GY25523@casper.infradead.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:f033) by BY5PR20CA0005.namprd20.prod.outlook.com (2603:10b6:a03:1f4::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.21 via Frontend Transport; Mon, 6 Jul 2020 21:38:35 +0000
-X-Originating-IP: [2620:10d:c090:400::5:f033]
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 369de30e-9f98-4c31-ef9b-08d821f4f039
-X-MS-TrafficTypeDiagnostic: BYAPR15MB4136:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB4136AA82D396A1BA8C08FAD3BE690@BYAPR15MB4136.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-Forefront-PRVS: 04569283F9
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 5ESyWGh4Wol/vg2Yf178zbrkzCxnOFPNIgl94Z7mWRXeudRqYJxtLA4kjCIF+ZwX8zX8qx+SOOMR+LpoSwNGKLQe12OByOX//3qAVnko278IQtKUIOdgvGfQSft/JoP+z9nH54idVh4YRMp0jZChnWMdLI/Nq2/jc/OA8PUA4DffsjHp0zrCy5ZZHrdLL5A6Am+qXcdGTcgqlkVucdJSmCgtAoUmPpRAGjn5S5dFXvbLUZ2rzaaa9iElG4JqlH/zCQ+4Ig6HV6d/d9gkJlI+kjYWS3F8Ol5B2mDW4++eC5YXLIqeH82SIdprvjqYOBq6GhzB0mocDX3nudAWciLDnu1c7sz5SM0mSl71rfvhTe7Anp2nhul0uXzGIuQQ6A/ScHh+WsY0SEdpk9PC0IcOC9PO8xVOvIgY2ICtGaULOjy31t0CAs3M3WxBaWJE3dhmxOMcuhKwu8eSvLsGQXdV8UeQNkV2J6I68/OetT+mE/3TpjUOVdlqe6jKnWk3zmsj/59a1exXEigJsDTQ98bz8Ddm6aWL8xejPCJvb2FP1tW8tLEfxDMGwk6JlYD4RDqE/Mth4qlrWnCe7SSo34ue693eDwV31YQAuJabgnCDcJbPAKg/1bNjaFuZnglvTud3aTbm1TALplcMyiAX1zGo1FB2n72d+ivfHoedlrXZV6jUNYVOk0oOP0ebLJF7U7rKfQvqHhrnc7xq7Gge669CmQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:5;SRV:;IPV:NLI;SFV:SPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:OSPM;SFTY:;SFS:(39860400002)(396003)(136003)(346002)(366004)(376002)(186003)(5660300002)(8886007)(33656002)(36756003)(1076003)(316002)(83380400001)(478600001)(4326008)(16526019)(7416002)(8936002)(66476007)(66556008)(66946007)(86362001)(54906003)(8676002)(55016002)(7696005)(6916009)(9686003)(6506007)(53546011)(52116002)(2906002)(27376004)(200143005);DIR:OUT;SFP:1501;
-X-MS-Exchange-AntiSpam-MessageData: wbCyazRi1Ge958U5+BnprjG44a8+2OfMZoMyi/TxvcqStQ/hAVjAkQLK8n7AQRiCTc7B/hw/XNlkUt2dAJHmPHvkWHpmzY4rypWy7nVO5wNA2hQhYQz75GOwSDIz8M5QL3VdSvTmvnKofykKjq+VOIiGY95Ng76oXPEuvi4CFu60NSRQt18PSSYybj5F18sihBU1WYOx+AZxkfjzOKPCuxJ6ZBJhQXnRQJOSjffrG5LWjiIV7ko+8JamYZUUOePwfT7nYRNRquscsP86olLwBs5AmV+DyCut6gagoyidqDCmi/ETFgM6xNTNqMOPn0Rt/lKcUIpqUTQTBidLzcwl5eiysB+/ti1EtaMrsT+ikTp+5xtlHdPi6hJIZgsW4evMsuRHnI28XO0g0BqnGlqQuRvQjOKK4VM9A4BSccsAyUAd7zBpr28pyJet9jAEOn9/g8+AYcsZJ8rxtzFdNewx6l38Dcog+HRlsjK0gh7Q4YAdNgZMImVQanvVs3c9rMDW3L80I4BXWG/5kl1dimOlmw==
-X-MS-Exchange-CrossTenant-Network-Message-Id: 369de30e-9f98-4c31-ef9b-08d821f4f039
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 Jul 2020 21:38:36.2438
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K5CVvcBJbIbxDzPzuZlf8x3iYTPTUzrNAYktkNDE9BzK613Wef2l40ZmCdlQCpfX
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB4136
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
- definitions=2020-07-06_20:2020-07-06,2020-07-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
- cotscore=-2147483648 priorityscore=1501 suspectscore=1 bulkscore=0
- phishscore=0 adultscore=0 impostorscore=0 spamscore=0 clxscore=1015
- mlxlogscore=999 mlxscore=0 malwarescore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.12.0-2004280000
- definitions=main-2007060147
-X-FB-Internal: deliver
+Content-Type: MULTIPART/MIXED; BOUNDARY="0-1390346354-1594097567=:2793"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 03, 2020 at 09:27:19AM -0700, Shakeel Butt wrote:
-> On Fri, Jul 3, 2020 at 8:50 AM Roman Gushchin <guro@fb.com> wrote:
-> >
-> > On Fri, Jul 03, 2020 at 07:23:14AM -0700, Shakeel Butt wrote:
-> > > On Thu, Jul 2, 2020 at 11:35 PM Michal Hocko <mhocko@kernel.org> wrote:
-> > > >
-> > > > On Thu 02-07-20 08:22:22, Shakeel Butt wrote:
-> > > > [...]
-> > > > > Interface options:
-> > > > > ------------------
-> > > > >
-> > > > > 1) memcg interface e.g. 'echo 10M > memory.reclaim'
-> > > > >
-> > > > > + simple
-> > > > > + can be extended to target specific type of memory (anon, file, kmem).
-> > > > > - most probably restricted to cgroup v2.
-> > > > >
-> > > > > 2) fadvise(PAGEOUT) on cgroup_dir_fd
-> > > > >
-> > > > > + more general and applicable to other FSes (actually we are using
-> > > > > something similar for tmpfs).
-> > > > > + can be extended in future to just age the LRUs instead of reclaim or
-> > > > > some new use cases.
-> > > >
-> > > > Could you explain why memory.high as an interface to trigger pro-active
-> > > > memory reclaim is not sufficient. Also memory.low limit to protect
-> > > > latency sensitve workloads?
-> >
-> > I initially liked the proposal, but after some thoughts I've realized
-> > that I don't know a good use case where memory.high is less useful.
-> > Shakeel, what's the typical use case you thinking of?
-> > Who and how will use the new interface?
-> >
-> > >
-> > > Yes, we can use memory.high to trigger [proactive] reclaim in a memcg
-> > > but note that it can also introduce stalls in the application running
-> > > in that memcg. Let's suppose the memory.current of a memcg is 100MiB
-> > > and we want to reclaim 20MiB from it, we can set the memory.high to
-> > > 80MiB but any allocation attempt from the application running in that
-> > > memcg can get stalled/throttled. I want the functionality of the
-> > > reclaim without potential stalls.
-> >
-> > But reclaiming some pagecache/swapping out anon pages can always
-> > generate some stalls caused by pagefaults, no?
-> >
-> 
-> Thanks for looking into the proposal. Let me answer both of your
-> questions together. I have added the two use-cases but let me explain
-> the proactive reclaim a bit more as we actually use that in our
-> production.
-> 
-> We have defined tolerable refault rates for the applications based on
-> their type (latency sensitive or not). Proactive reclaim is triggered
-> in the application based on their current refault rates and usage. If
-> the current refault rate exceeds the tolerable refault rate then
-> stop/slowdown the proactive reclaim.
-> 
-> For the second question, yes, each individual refault can induce the
-> stall as well but we have more control on that stall as compared to
-> stalls due to reclaim. For us almost all the reclaimable memory is
-> anon and we use compression based swap, so, the cost of each refault
-> is fixed and a couple of microseconds.
-> 
-> I think the next question is what about the refaults from disk or
-> source with highly variable cost. Usually the latency sensitive
-> applications remove such uncertainty by mlocking the pages backed by
-> such backends (e.g. mlocking the executable) or at least that is the
-> case for us.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Got it.
+--0-1390346354-1594097567=:2793
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-It feels like you're suggesting something similar to memory.high with
-something similar to a different gfp flags. In other words, the
-difference is only which pages can be reclaimed and which not. I don't
-have a definitive answer here, but I wonder if we can somehow
-generalize the existing interface? E.g. if the problem is with artificially
-induced delays, we can have a config option/sysctl/sysfs knob/something else
-which would disable it. Otherwise we risk ending up with many different kinds
-of soft memory limits.
+On Mon, 6 Jul 2020, Matthew Wilcox wrote:
+> On Mon, Jul 06, 2020 at 05:15:09PM +0800, Alex Shi wrote:
+> > Hi Kirill & Johannes & Matthew,
 
-Thanks!
+Adding Kirill, who was in patch's Cc list but not mail's Cc list.
+
+I asked Alex to direct this one particularly to Kirill and Johannes
+and Matthew because (and I regret that the commit message still does
+not make this at all clear) this patch changes the lock ordering:
+which for years has been lru_lock outside memcg move_lock outside
+i_pages lock, but here inverted to lru_lock inside i_pages lock.
+
+I don't see a strong reason to have them one way round or the other,
+and think Alex is right that they can safely be reversed here: but
+he doesn't actually give any reason for doing so (if cleanup, then
+I think the cleanup should have been taken further), and no reason
+for doing so as part of this series.
+
+I had more need to know which way round they should go, when adding
+lru_lock into mem_cgroup_move_account (inside or outside move_lock?):
+but Alex's use of TestClearPageLRU appears to have successfully
+eliminated the need for that; so I only need to know for the final
+Doc patch in the series (credited to my name), where mm/rmap.c
+documents the lock ordering.
+
+I'm okay with leaving this patch in the series (and the final patch
+currently documents this new order); but wondered if someone else
+(especially Kirill or Johannes or Matthew) sees a reason against it?
+
+And I have to admit that, in researching this, I discovered that
+actually we unconsciously departed from the supposed lock ordering
+years ago: back in 3.18's 8186eb6a799e, Johannes did a cleanup which
+moved a clear_page_mlock() call to inside memcg move_lock, and in
+principle clear_page_mlock() can take lru_lock. But we have never
+seen a lockdep complaint about this, so I suspect that the page is
+(almost?) always already isolated from lru when that is called,
+and the issue therefore hypothetical.
+
+My vote, for dispatch of the series, is to leave this patch in;
+but cannot object if consensus were that it should be taken out.
+
+Hugh
+
+> >=20
+> > Would you like to give some comments or share your concern of this patc=
+hset,
+> > specialy for THP part?=20
+>=20
+> I don't have the brain space to understand this patch set fully at
+> the moment.  I'll note that the realtime folks are doing their best to
+> stamp out users of local_irq_disable(), so they won't be pleased to see
+> you adding a new one.  Also, you removed the comment explaining why the
+> lock needed to be taken.
+>=20
+> > Many Thanks
+> > Alex
+> >=20
+> > =E5=9C=A8 2020/7/3 =E4=B8=8B=E5=8D=881:07, Alex Shi =E5=86=99=E9=81=93:
+> > > lru_lock and page cache xa_lock have no reason with current sequence,
+> > > put them together isn't necessary. let's narrow the lru locking, but
+> > > left the local_irq_disable to block interrupt re-entry and statistic =
+update.
+> > >=20
+> > > Hugh Dickins point: split_huge_page_to_list() was already silly,to be
+> > > using the _irqsave variant: it's just been taking sleeping locks, so
+> > > would already be broken if entered with interrupts enabled.
+> > > so we can save passing flags argument down to __split_huge_page().
+> > >=20
+> > > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> > > Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
+> > > Cc: Hugh Dickins <hughd@google.com>
+> > > Cc: Kirill A. Shutemov <kirill@shutemov.name>
+> > > Cc: Andrea Arcangeli <aarcange@redhat.com>
+> > > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > > Cc: Matthew Wilcox <willy@infradead.org>
+> > > Cc: Andrew Morton <akpm@linux-foundation.org>
+> > > Cc: linux-mm@kvack.org
+> > > Cc: linux-kernel@vger.kernel.org
+> > > ---
+> > >  mm/huge_memory.c | 24 ++++++++++++------------
+> > >  1 file changed, 12 insertions(+), 12 deletions(-)
+> > >=20
+> > > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > > index b18f21da4dac..607869330329 100644
+> > > --- a/mm/huge_memory.c
+> > > +++ b/mm/huge_memory.c
+> > > @@ -2433,7 +2433,7 @@ static void __split_huge_page_tail(struct page =
+*head, int tail,
+> > >  }
+> > > =20
+> > >  static void __split_huge_page(struct page *page, struct list_head *l=
+ist,
+> > > -=09=09pgoff_t end, unsigned long flags)
+> > > +=09=09=09      pgoff_t end)
+> > >  {
+> > >  =09struct page *head =3D compound_head(page);
+> > >  =09pg_data_t *pgdat =3D page_pgdat(head);
+> > > @@ -2442,8 +2442,6 @@ static void __split_huge_page(struct page *page=
+, struct list_head *list,
+> > >  =09unsigned long offset =3D 0;
+> > >  =09int i;
+> > > =20
+> > > -=09lruvec =3D mem_cgroup_page_lruvec(head, pgdat);
+> > > -
+> > >  =09/* complete memcg works before add pages to LRU */
+> > >  =09mem_cgroup_split_huge_fixup(head);
+> > > =20
+> > > @@ -2455,6 +2453,11 @@ static void __split_huge_page(struct page *pag=
+e, struct list_head *list,
+> > >  =09=09xa_lock(&swap_cache->i_pages);
+> > >  =09}
+> > > =20
+> > > +=09/* lock lru list/PageCompound, ref freezed by page_ref_freeze */
+> > > +=09spin_lock(&pgdat->lru_lock);
+> > > +
+> > > +=09lruvec =3D mem_cgroup_page_lruvec(head, pgdat);
+> > > +
+> > >  =09for (i =3D HPAGE_PMD_NR - 1; i >=3D 1; i--) {
+> > >  =09=09__split_huge_page_tail(head, i, lruvec, list);
+> > >  =09=09/* Some pages can be beyond i_size: drop them from page cache =
+*/
+> > > @@ -2474,6 +2477,8 @@ static void __split_huge_page(struct page *page=
+, struct list_head *list,
+> > >  =09}
+> > > =20
+> > >  =09ClearPageCompound(head);
+> > > +=09spin_unlock(&pgdat->lru_lock);
+> > > +=09/* Caller disabled irqs, so they are still disabled here */
+> > > =20
+> > >  =09split_page_owner(head, HPAGE_PMD_ORDER);
+> > > =20
+> > > @@ -2491,8 +2496,7 @@ static void __split_huge_page(struct page *page=
+, struct list_head *list,
+> > >  =09=09page_ref_add(head, 2);
+> > >  =09=09xa_unlock(&head->mapping->i_pages);
+> > >  =09}
+> > > -
+> > > -=09spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> > > +=09local_irq_enable();
+> > > =20
+> > >  =09remap_page(head);
+> > > =20
+> > > @@ -2631,12 +2635,10 @@ bool can_split_huge_page(struct page *page, i=
+nt *pextra_pins)
+> > >  int split_huge_page_to_list(struct page *page, struct list_head *lis=
+t)
+> > >  {
+> > >  =09struct page *head =3D compound_head(page);
+> > > -=09struct pglist_data *pgdata =3D NODE_DATA(page_to_nid(head));
+> > >  =09struct deferred_split *ds_queue =3D get_deferred_split_queue(head=
+);
+> > >  =09struct anon_vma *anon_vma =3D NULL;
+> > >  =09struct address_space *mapping =3D NULL;
+> > >  =09int count, mapcount, extra_pins, ret;
+> > > -=09unsigned long flags;
+> > >  =09pgoff_t end;
+> > > =20
+> > >  =09VM_BUG_ON_PAGE(is_huge_zero_page(head), head);
+> > > @@ -2697,9 +2699,7 @@ int split_huge_page_to_list(struct page *page, =
+struct list_head *list)
+> > >  =09unmap_page(head);
+> > >  =09VM_BUG_ON_PAGE(compound_mapcount(head), head);
+> > > =20
+> > > -=09/* prevent PageLRU to go away from under us, and freeze lru stats=
+ */
+> > > -=09spin_lock_irqsave(&pgdata->lru_lock, flags);
+> > > -
+> > > +=09local_irq_disable();
+> > >  =09if (mapping) {
+> > >  =09=09XA_STATE(xas, &mapping->i_pages, page_index(head));
+> > > =20
+> > > @@ -2729,7 +2729,7 @@ int split_huge_page_to_list(struct page *page, =
+struct list_head *list)
+> > >  =09=09=09=09__dec_node_page_state(head, NR_FILE_THPS);
+> > >  =09=09}
+> > > =20
+> > > -=09=09__split_huge_page(page, list, end, flags);
+> > > +=09=09__split_huge_page(page, list, end);
+> > >  =09=09if (PageSwapCache(head)) {
+> > >  =09=09=09swp_entry_t entry =3D { .val =3D page_private(head) };
+> > > =20
+> > > @@ -2748,7 +2748,7 @@ int split_huge_page_to_list(struct page *page, =
+struct list_head *list)
+> > >  =09=09spin_unlock(&ds_queue->split_queue_lock);
+> > >  fail:=09=09if (mapping)
+> > >  =09=09=09xa_unlock(&mapping->i_pages);
+> > > -=09=09spin_unlock_irqrestore(&pgdata->lru_lock, flags);
+> > > +=09=09local_irq_enable();
+> > >  =09=09remap_page(head);
+> > >  =09=09ret =3D -EBUSY;
+> > >  =09}
+--0-1390346354-1594097567=:2793--
