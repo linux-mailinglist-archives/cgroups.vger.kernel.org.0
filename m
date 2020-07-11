@@ -2,167 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D638821BEF9
-	for <lists+cgroups@lfdr.de>; Fri, 10 Jul 2020 23:05:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3246D21C17F
+	for <lists+cgroups@lfdr.de>; Sat, 11 Jul 2020 03:00:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgGJVFT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 10 Jul 2020 17:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48616 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726325AbgGJVFS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Jul 2020 17:05:18 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C69B1C08C5DC
-        for <cgroups@vger.kernel.org>; Fri, 10 Jul 2020 14:05:17 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id y10so7521630eje.1
-        for <cgroups@vger.kernel.org>; Fri, 10 Jul 2020 14:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=knKCGO/TFZKmvezoCtPFxOWQQYS0S9SrfSJaD988IlQ=;
-        b=ZwAlQGHv/53vyRlAA/pgP4ejQrYZEO9WBuZ97orWg9JVqECbBB1qAb9fzz1MXWBJLq
-         xiYBseSkAnoLcPgAekoTjxZ+YTpFLZZqIgwAXEylYIDb+8OZRR/EKzVtx8oRlFH1aLiW
-         6mr119vYLxGfTQVhJuQb7L6H9QyC9kaeTBf+DByR6WV7dCexpTqdjTDQkjJlPQwpTry+
-         g28Ey5ba98fxDvcHP11mUbk2NCs4buS6+rP6MMV0EfczuazJATO04b0EHE3SmUcindIR
-         nW3eUGt5re+JD3ug4x4fEKJsWZuZdhQo3fZAwK2h9TMg6pBJV3ZXKk4CTeh51GhKRPG4
-         GxyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=knKCGO/TFZKmvezoCtPFxOWQQYS0S9SrfSJaD988IlQ=;
-        b=aVbxcLZoLvMRUDPUE1qCj5p7RvvmWGb56zOILp2UVCv42bRpqmMXGSf7mVk2WYGfbD
-         cHEZXEgUP/5gDc/Tm8ZcM8unmUPjxHIvc0/Au05UmReD9b0QAIarLNvUkVwLZMBSUKgf
-         ld4k1E7Af5LouW2oQzIIEDP2k0PqXXXKnixOiODoMQn2pdu5sMZTivpuWtD70RTZw0ky
-         MFbU1MV1IFeiGIQZwUTWUViIo+We34QXSXeMw+wLmCf7hVWhQgCWKMyWG3Hzzz6bhQt3
-         u1/aNhPVC73f7IoNKtLxK6r9lVnBVxDfbB6gNgxgpQnLEVQeEy/vz1L6tOXylRW9kglK
-         6Rhw==
-X-Gm-Message-State: AOAM53074Mu85WxSQGg7Kehclur7G0OFBJljuljCA85OfDhWfw5T+m82
-        BEFLUaYCo8tqcAGpE6pDO8CTssE8NHPD5ALCxaw=
-X-Google-Smtp-Source: ABdhPJx2IUiJD1OxCtVUpCL5i2Fhcm7yWlqe4EFHqwKCrIDxNyKrGjlOCqwlULecplvCwT5kbqw2huLNx/tP9gMVO9I=
-X-Received: by 2002:a17:906:aac9:: with SMTP id kt9mr58596966ejb.488.1594415116480;
- Fri, 10 Jul 2020 14:05:16 -0700 (PDT)
+        id S1728117AbgGKBAV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 10 Jul 2020 21:00:21 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48885 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726606AbgGKA7F (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 10 Jul 2020 20:59:05 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2KGAZr_1594429139;
+Received: from alexshi-test.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2KGAZr_1594429139)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 11 Jul 2020 08:58:59 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name
+Subject: [PATCH v16 00/22] per memcg lru_lock 
+Date:   Sat, 11 Jul 2020 08:58:34 +0800
+Message-Id: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-References: <alpine.DEB.2.22.394.2006281445210.855265@chino.kir.corp.google.com>
- <CALvZod5Zv33oNLxS_8TyGV_QT4CsBjiEuocxpt2+U-XDMaFDPw@mail.gmail.com>
- <20200703081538.GO18446@dhcp22.suse.cz> <alpine.DEB.2.23.453.2007071210410.396729@chino.kir.corp.google.com>
- <alpine.DEB.2.23.453.2007101223470.1178541@chino.kir.corp.google.com>
-In-Reply-To: <alpine.DEB.2.23.453.2007101223470.1178541@chino.kir.corp.google.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Fri, 10 Jul 2020 14:04:57 -0700
-Message-ID: <CAHbLzkoCNt7GPrwN1uPEvd==-Lz9-j6-2RS0CCL0s2e-M_omiw@mail.gmail.com>
-Subject: Re: Memcg stat for available memory
-To:     David Rientjes <rientjes@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 12:49 PM David Rientjes <rientjes@google.com> wrote:
->
-> On Tue, 7 Jul 2020, David Rientjes wrote:
->
-> > Another use case would be motivated by exactly the MemAvailable use case:
-> > when bound to a memcg hierarchy, how much memory is available without
-> > substantial swap or risk of oom for starting a new process or service?
-> > This would not trigger any memory.low or PSI notification but is a
-> > heuristic that can be used to determine what can and cannot be started
-> > without incurring substantial memory reclaim.
-> >
-> > I'm indifferent to whether this would be a "reclaimable" or "available"
-> > metric, with a slight preference toward making it as similar in
-> > calculation to MemAvailable as possible, so I think the question is
-> > whether this is something the user should be deriving themselves based on
-> > memcg stats that are exported or whether we should solidify this based on
-> > how the kernel handles reclaim as a metric that will carry over across
-> > kernel vesions?
-> >
->
-> To try to get more discussion on the subject, consider a malloc
-> implementation, like tcmalloc, that does MADV_DONTNEED to free memory back
-> to the system and how this freed memory is then described to userspace
-> depending on the kernel implementation.
->
->  [ For the sake of this discussion, consider we have precise memcg stats
->    available to us although the actual implementation allows for some
->    variance (MEMCG_CHARGE_BATCH). ]
->
-> With a 64MB heap backed by thp on x86, for example, the vma starts with an
-> rss of 64MB, all of which is anon and backed by hugepages.  Imagine some
-> aggressive MADV_DONTNEED freeing that ends up with only a single 4KB page
-> mapped in each 2MB aligned range.  The rss is now 32 * 4KB = 128KB.
->
-> Before freeing, anon, anon_thp, and active_anon in memory.stat would all
-> be the same for this vma (64MB).  64MB would also be charged to
-> memory.current.  That's all working as intended and to the expectation of
-> userspace.
->
-> After freeing, however, we have the kernel implementation specific detail
-> of how huge pmd splitting is handled (rss) in comparison to the underlying
-> split of the compound page (deferred split queue).  The huge pmd is always
-> split synchronously after MADV_DONTNEED so, as mentioned, the rss is 128KB
-> for this vma and none of it is backed by thp.
->
-> What is charged to the memcg (memory.current) and what is on active_anon
-> is unchanged, however, because the underlying compound pages are still
-> charged to the memcg.  The amount of anon and anon_thp are decreased
-> in compliance with the splitting of the page tables, however.
->
-> So after freeing, for this vma: anon = 128KB, anon_thp = 0,
-> active_anon = 64MB, memory.current = 64MB.
->
-> In this case, because of the deferred split queue, which is a kernel
-> implementation detail, userspace may be unclear on what is actually
-> reclaimable -- and this memory is reclaimable under memory pressure.  For
-> the motivation of MemAvailable (what amount of memory is available for
-> starting new work), userspace *could* determine this through the
-> aforementioned active_anon - anon (or some combination of
-> memory.current - anon - file - slab), but I think it's a fair point that
-> userspace's view of reclaimable memory as the kernel implementation
-> changes is something that can and should remain consistent between
-> versions.
->
-> Otherwise, an earlier implementation before deferred split queues could
-> have safely assumed that active_anon was unreclaimable unless swap were
-> enabled.  It doesn't have the foresight based on future kernel
-> implementation detail to reconcile what the amount of reclaimable memory
-> actually is.
->
-> Same discussion could happen for lazy free memory which is anon but now
-> appears on the file lru stats and not the anon lru stats: it's easily
-> reclaimable under memory pressure but you need to reconcile the difference
-> between the anon metric and what is revealed in the anon lru stats.
->
-> That gave way to my original thought of a si_mem_available()-like
-> calculation ("avail") by doing
->
->         free = memory.high - memory.current
+The new version which bases on v5.8-rc4. Add 2 more patchs:
+'mm/thp: remove code path which never got into'
+'mm/thp: add tail pages into lru anyway in split_huge_page()'
+and modified 'mm/mlock: reorder isolation sequence during munlock'
 
-I'm wondering what if high or max is set to max limit. Don't you end
-up seeing a super large memavail?
+Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+lru lists, but now we had moved the lru lists into memcg for long time. Still
+using per node lru_lock is clearly unscalable, pages on each of memcgs have
+to compete each others for a whole lru_lock. This patchset try to use per
+lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+it scalable for memcgs and get performance gain.
 
->         lazyfree = file - (active_file + inactive_file)
+Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+but if we want to use specific lruvec lock on the page, we need to pin down
+the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+undermined by the page's memcg charge/migration. To fix this problem, we could
+take out the page's lru bit clear and use it as pin down action to block the
+memcg changes. That's the reason for new atomic func TestClearPageLRU.
+So now isolating a page need both actions: TestClearPageLRU and hold the
+lru_lock.
 
-Isn't it (active_file + inactive_file) - file ? It looks MADV_FREE
-just updates inactive lru size.
+The typical usage of this is isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation
+in memcg page charge/migration which will change page's lruvec and new 
+lru_lock in it.
 
->         deferred = active_anon - anon
->
->         avail = free + lazyfree + deferred +
->                 (active_file + inactive_file + slab_reclaimable) / 2
->
-> And we have the ability to change this formula based on kernel
-> implementation details as they evolve.  Idea is to provide a consistent
-> field that userspace can use to determine the rough amount of reclaimable
-> memory in a MemAvailable-like way.
->
+The above solution suggested by Johannes Weiner, and based on his new memcg 
+charge path, then have this patchset. (Hugh Dickins tested and contributed much
+code from compaction fix to general code polish, thanks a lot!).
+
+The patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation.
+2, use TestCleanPageLRU as page isolation's precondition
+3, replace per node lru_lock with per memcg per node lru_lock
+
+Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+containers on a 2s * 26cores * HT box with a modefied case:
+https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+With this patchset, the readtwice performance increased about 80%
+in concurrent containers.
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+Alex Shi (20):
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/page_idle: no unlikely double check for idle page counting
+  mm/compaction: correct the comments of compact_defer_shift
+  mm/compaction: rename compact_deferred as compact_should_defer
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: clean up lru_add_page_tail
+  mm/thp: remove code path which never got into
+  mm/thp: narrow lru locking
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: move lru_lock holding in func lru_note_cost_page
+  mm/lru: move lock into lru_note_cost
+  mm/lru: introduce TestClearPageLRU
+  mm/thp: add tail pages into lru anyway in split_huge_page()
+  mm/compaction: do page isolation first in compaction
+  mm/mlock: reorder isolation sequence during munlock
+  mm/swap: serialize memcg changes during pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
+  mm/lru: introduce the relock_page_lruvec function
+  mm/pgdat: remove pgdat lru_lock
+
+Hugh Dickins (2):
+  mm/vmscan: use relock for move_pages_to_lru
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/compaction.h                         |   4 +-
+ include/linux/memcontrol.h                         |  98 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ include/trace/events/compaction.h                  |   2 +-
+ mm/compaction.c                                    | 113 ++++++++----
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  47 +++--
+ mm/memcontrol.c                                    |  71 +++++++-
+ mm/memory.c                                        |   3 -
+ mm/mlock.c                                         |  93 +++++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   8 -
+ mm/rmap.c                                          |   4 +-
+ mm/swap.c                                          | 189 ++++++++-------------
+ mm/swap_state.c                                    |   2 -
+ mm/vmscan.c                                        | 174 ++++++++++---------
+ mm/workingset.c                                    |   2 -
+ 25 files changed, 524 insertions(+), 365 deletions(-)
+
+-- 
+1.8.3.1
+
