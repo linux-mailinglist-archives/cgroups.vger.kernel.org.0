@@ -2,92 +2,87 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231EC2205FE
-	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2020 09:16:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97361220DC1
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2020 15:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729199AbgGOHQJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 15 Jul 2020 03:16:09 -0400
-Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:17836 "EHLO
-        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728905AbgGOHQJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jul 2020 03:16:09 -0400
+        id S1731447AbgGONKv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 15 Jul 2020 09:10:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730868AbgGONKv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 15 Jul 2020 09:10:51 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF31C061755
+        for <cgroups@vger.kernel.org>; Wed, 15 Jul 2020 06:10:50 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id n2so1570950edr.5
+        for <cgroups@vger.kernel.org>; Wed, 15 Jul 2020 06:10:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1594797369; x=1626333369;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=HEw3+Ao/fqO9FvXA+Yo3+7G67lorJbwZfAa4e34wU6o=;
-  b=FKkUZ+ixFASeTPY+2m6wAwM0YA2HW9sExpozMrc4IS3oO+zIytEYTxVC
-   wpU5FRBncGRBUhiAI8GKnAVA4ZKnPyXxxBHbNKEho5pnIqDtedmHq559B
-   E5uLm6OHdFZAla1czKEyzvjejFsE8NLosdLwzbR4QM3VcYxD3XKGgoGwR
-   M=;
-IronPort-SDR: bESFgyDUpLZQJ2zcI5QT+WenhUMp3wdsKik+XScOdDK1qGtavlf4orhYokhiCxRzO+tLf+5GlT
- 5UWCX7q/0f8g==
-X-IronPort-AV: E=Sophos;i="5.75,354,1589241600"; 
-   d="scan'208";a="43418616"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com) ([10.43.8.6])
-  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 15 Jul 2020 07:15:52 +0000
-Received: from EX13MTAUEA002.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-c7131dcf.us-west-2.amazon.com (Postfix) with ESMTPS id 8C5C6A17C9;
-        Wed, 15 Jul 2020 07:15:50 +0000 (UTC)
-Received: from EX13D31EUA004.ant.amazon.com (10.43.165.161) by
- EX13MTAUEA002.ant.amazon.com (10.43.61.77) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 15 Jul 2020 07:15:50 +0000
-Received: from u886c93fd17d25d.ant.amazon.com (10.43.161.146) by
- EX13D31EUA004.ant.amazon.com (10.43.165.161) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 15 Jul 2020 07:15:44 +0000
-From:   SeongJae Park <sjpark@amazon.com>
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=vkCY6kDWjByVF/jAwqrMxG8bXNVZTl6QD0EIHDVYVvg=;
+        b=T5LhLO42jFeK8otjiZMlFd/9dTVrSG8T1SXlUDpXXePwRFiDaTChrtR6/5AL6KIw+w
+         ALeafWne74XeJ2cUm9BH8jJSRMagzJn/pbb+aT1MdoID6XNOyc+4V0p63UKIS2c9IKC5
+         cVuDvv+F2sZfzwkL5EzZEvsqqahRgwwtZYias=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=vkCY6kDWjByVF/jAwqrMxG8bXNVZTl6QD0EIHDVYVvg=;
+        b=OwQxVxvxy6dj8zZXkHDubr9N0cMzsgL2iGOKyiBCAFpbSsqy417k9LzpjUVy2pi82B
+         4id9khg8NjTd71y3q9j8WrfhhcbJwU7a6XEjbD+0/BU9psWY4qSouFBc1J98ImGhp18i
+         zNI0Wj8BmHbZY2eKaczFk9zJH+fruE/CtB2tJYDq2EKu3pstW8+SZ/zqkjlSHXEBffJl
+         F6aRDyj8f7Q2It5QunM4qWHFRlvCKWEcWv7GlSM5LJfYniYYWD2VZ9tQgAOR9o4pTeCr
+         nogmaZMmpuOiLZx7sT6cKY5O5MCl610aGFdkwutrGpbVbcpRvsw3ei4CXhKLm+75sNHj
+         WZpw==
+X-Gm-Message-State: AOAM5316ZxyShFCVocnjFoyzl1naprxLkvyQeigHr0WhA4+ktP2+szQX
+        vtkZrkHmy41hSK6Y1507Aq9Qlw==
+X-Google-Smtp-Source: ABdhPJyhY5cN0L+v+z/JsqezWVFNriRXkI06IQ9mceLAEKRfn47qTlJO8K5juPaf2zCWOu3J9DonpQ==
+X-Received: by 2002:a05:6402:354:: with SMTP id r20mr10036250edw.32.1594818649439;
+        Wed, 15 Jul 2020 06:10:49 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:3d8a])
+        by smtp.gmail.com with ESMTPSA id u19sm2209262edd.62.2020.07.15.06.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 15 Jul 2020 06:10:48 -0700 (PDT)
+Date:   Wed, 15 Jul 2020 14:10:48 +0100
+From:   Chris Down <chris@chrisdown.name>
 To:     David Rientjes <rientjes@google.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Yang Shi <shy828301@gmail.com>,
         Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
-        "Yang Shi" <yang.shi@linux.alibaba.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
         Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
-Subject: Re: Re: [patch] mm, memcg: provide a stat to describe reclaimable memory
-Date:   Wed, 15 Jul 2020 09:15:22 +0200
-Message-ID: <20200715071522.19663-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <alpine.DEB.2.23.453.2007142353350.2694999@chino.kir.corp.google.com> (raw)
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [patch] mm, memcg: provide a stat to describe reclaimable memory
+Message-ID: <20200715131048.GA176092@chrisdown.name>
+References: <alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.146]
-X-ClientProxiedBy: EX13D14UWB003.ant.amazon.com (10.43.161.162) To
- EX13D31EUA004.ant.amazon.com (10.43.165.161)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello David,
+Hi David,
 
-On Wed, 15 Jul 2020 00:00:03 -0700 (PDT) David Rientjes <rientjes@google.com> wrote:
+I'm somewhat against adding more metrics which try to approximate availability 
+of memory when we already know it not to generally manifest very well in 
+practice, especially since this *is* calculable by userspace (albeit with some 
+knowledge of mm internals). Users and applications often vastly overestimate 
+the reliability of these metrics, especially since they heavily depend on 
+transient page states and whatever reclaim efficacy happens to be achieved at 
+the time there is demand.
 
-> On Tue, 14 Jul 2020, David Rientjes wrote:
-> 
-[...]
-> 
-> An alternative to this would also be to change from an "available" metric 
-> to an "anon_reclaimable" metric since both the deferred split queues and 
-> lazy freeable memory would pertain to anon.  This would no longer attempt 
-> to mimic MemAvailable and leave any such calculation to userspace
-> (anon_reclaimable + (file + slab_reclaimable) / 2).
-> 
-> With this route, care would need to be taken to clearly indicate that 
-> anon_reclaimable is not necessarily a subset of the "anon" metric since 
-> reclaimable memory from compound pages on deferred split queues is not 
-> mapped, so it doesn't show up in NR_ANON_MAPPED.
-> 
-> I'm indifferent to either approach and would be happy to switch to 
-> anon_reclaimable if others agree and doesn't foresee any extensibility 
-> issues.
-
-Agreed, I was also once confused about the 'MemAvailable'.  The 'reclaimable'
-might be better to understand.
-
+What do you intend to do with these metrics and how do you envisage other users 
+should use them? Is it not possible to rework the strategy to use pressure 
+information and/or workingset pressurisation instead?
 
 Thanks,
-SeongJae Park
+
+Chris
