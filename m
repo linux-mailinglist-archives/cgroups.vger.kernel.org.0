@@ -2,125 +2,185 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5994621F655
-	for <lists+cgroups@lfdr.de>; Tue, 14 Jul 2020 17:45:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A5452202DD
+	for <lists+cgroups@lfdr.de>; Wed, 15 Jul 2020 05:18:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726851AbgGNPp5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 14 Jul 2020 11:45:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37644 "EHLO
+        id S1727930AbgGODSy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 14 Jul 2020 23:18:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60886 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725962AbgGNPp4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jul 2020 11:45:56 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C037C061755
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2020 08:45:56 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id z63so15949955qkb.8
-        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2020 08:45:56 -0700 (PDT)
+        with ESMTP id S1726479AbgGODSy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 14 Jul 2020 23:18:54 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B56CC061755
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2020 20:18:54 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id q17so1197333pfu.8
+        for <cgroups@vger.kernel.org>; Tue, 14 Jul 2020 20:18:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7U8JsZvgXHH3n8xgxoCLEbRbt6AY8Z+mxAelisJgRw8=;
-        b=TeT4WtuDoSJlYSAQH2bV1YMeSx1E6X2BFU8rj0/8YyGh0bErT86/GtYKHAowuaOF6E
-         i5sZLU99YAKqeQ4qr4Qp40qynq4yNSyzg1yH0BPltc5IY1ZLrkVQwxI8UTVm3ozseEdy
-         5ZkeWdsxPMWs2cvuTkyXFRGoW6rRjLvtArEwKHjtaJEZrrRGsCnu7J5y946a97v7K8xc
-         O8xhwzvcMs0lb/N+ymrisTzO4wstCoEc86JTj/YVRRwGUOkVXxACR80FW58sUvUxstgn
-         J4rgoTKUsqwoXilNN1i9HA6gtgwsAfe+lhDNrffl8KLuAP0+jQXa9OkWVGhEGjbFqp8/
-         6C6g==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:user-agent:mime-version;
+        bh=msyTwNMWxPuFJXiWs5O0lYGKZpuyME2C9XStVaZzeTU=;
+        b=KJdT54GXo7EEU/QR4u7uq62UiYdr9gxzmi0ZURm9A0MTeNUw3zq+2pui1mR3K0t1M/
+         WUKYhb7JWjwhW+5QC6pwKbqRh96pnLKJWcl+Fe4Hiwjo+ldU+/Eo6O4RcZgZ6ESKJwXt
+         Twjcj5jJy+7hqpX2ysrYTUPuRP8AAj59Ru24wZCOIauOq1NiCfosqhvt4/ahwDTEz5C+
+         oJsMN8EKywZZ56O6YYRQHRXkRutlGELSEcHXrmSc86ShTCKX1MXwc4prD99KiZWm5edE
+         CLplwcmpvwvsF4yyq3o2L6vA+QIYQXRqh7hRD3zHaRrvmIPw5hD9aJy2F6bRrpXzz30G
+         KKcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7U8JsZvgXHH3n8xgxoCLEbRbt6AY8Z+mxAelisJgRw8=;
-        b=ulbIZD33T43Jw5Wyekzg2V7Nw+dOWhvaSXzw7bNXz/ai41omfFzUM7wR6EYQzjdb7o
-         4DrXj2SUAHn87nt0/FVW8oC+gvpVwiv8ruudSFAFwLWkcBpf6/fpQE+mDhlDBLep5EBL
-         LjrCnH0VebV7FJu8wz1uMdb7/53HdcFwhVTKS+L1nQ/JCVHqJdnWAaDVDd4uGQWHx7Wy
-         K6KV1w6MM2OnIu9DqY24Rr0hna763coaALq6WlPWdHDBvCi/4i7tbT/vGRGWM9LPG9J5
-         dA7EFWP5vLtbeiwWEq/+CKb2YIUIpFk+NUye+4VQuTX/69tOPzEL+9QLnwVKvQJoYRbR
-         VJGg==
-X-Gm-Message-State: AOAM531jH18e/ZYlIF8D82PowMLwTwBP0TwYC2LnErw+f1pLFgi/NCei
-        8eXOpWQesKH4kNhNwDFqlD1DLQ==
-X-Google-Smtp-Source: ABdhPJwDgYPEzL6yjkDXQkBKQCvfcAKX1idi2WJWmoKy4Y+Sz7jQrn0lIt5Ndq1K+62+h1vAQ0vstA==
-X-Received: by 2002:a37:689:: with SMTP id 131mr4805114qkg.468.1594741554235;
-        Tue, 14 Jul 2020 08:45:54 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:81a8])
-        by smtp.gmail.com with ESMTPSA id r6sm23081172qtt.81.2020.07.14.08.45.53
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:user-agent
+         :mime-version;
+        bh=msyTwNMWxPuFJXiWs5O0lYGKZpuyME2C9XStVaZzeTU=;
+        b=O+MwZX2KlGSZVlUBpvqhZC033W7MPBpENc74b/WY9oO+CNUCwAqcXVI1tI0n4GHWMS
+         4gY4P+4Z3JTdSAA5g3V4/htB4Pj83LBh53kYxoW/CkeHmL6TylWLSArhZRda+R6zc6Ur
+         LKHP8gp5d7jQiaYVzbpZiv0AQ+tJlWiYj1711SYNOqu5ghuTj+LfEITEWlAGkLJAOCWJ
+         pG6dPuZFiMmdFK6N5zOJ/hPjcGJJyWGH7+dRGgfA3hMfFifccFAmuNdicibwfuCl5ipJ
+         HrGBq+fNyvwDMZG8HM8dRO4JiRgEWgzVIhOR27EbIyPdj7P2xgPdUNsSkKKwISoFaapn
+         FUBQ==
+X-Gm-Message-State: AOAM532owcvFcgM5hg0o4YsyMP4sQ5yN19GSHmrRSF4zYD8Qwg8eLaql
+        OuQftPUMlWSbut01Y3H1+c2LhA==
+X-Google-Smtp-Source: ABdhPJyAFSnY6Qwoj4MZMBXn0tY/G4599d1iXI0mjFbFopN+SimNGdzFv8thYnjm0fe7E1mI28LiMQ==
+X-Received: by 2002:a62:3741:: with SMTP id e62mr6746699pfa.127.1594783133481;
+        Tue, 14 Jul 2020 20:18:53 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 4sm447683pgk.68.2020.07.14.20.18.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 14 Jul 2020 08:45:53 -0700 (PDT)
-Date:   Tue, 14 Jul 2020 11:45:04 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v2 1/2] mm, memcg: reclaim more aggressively before high
- allocator throttling
-Message-ID: <20200714154504.GB215857@cmpxchg.org>
-References: <cover.1594640214.git.chris@chrisdown.name>
- <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
+        Tue, 14 Jul 2020 20:18:53 -0700 (PDT)
+Date:   Tue, 14 Jul 2020 20:18:52 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>
+cc:     Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: [patch] mm, memcg: provide a stat to describe reclaimable memory
+Message-ID: <alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a4e23b59e9ef499b575ae73a8120ee089b7d3373.1594640214.git.chris@chrisdown.name>
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 13, 2020 at 12:42:35PM +0100, Chris Down wrote:
-> In Facebook production, we've seen cases where cgroups have been put
-> into allocator throttling even when they appear to have a lot of slack
-> file caches which should be trivially reclaimable.
-> 
-> Looking more closely, the problem is that we only try a single cgroup
-> reclaim walk for each return to usermode before calculating whether or
-> not we should throttle. This single attempt doesn't produce enough
-> pressure to shrink for cgroups with a rapidly growing amount of file
-> caches prior to entering allocator throttling.
-> 
-> As an example, we see that threads in an affected cgroup are stuck in
-> allocator throttling:
-> 
->     # for i in $(cat cgroup.threads); do
->     >     grep over_high "/proc/$i/stack"
->     > done
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
->     [<0>] mem_cgroup_handle_over_high+0x10b/0x150
-> 
-> ...however, there is no I/O pressure reported by PSI, despite a lot of
-> slack file pages:
-> 
->     # cat memory.pressure
->     some avg10=78.50 avg60=84.99 avg300=84.53 total=5702440903
->     full avg10=78.50 avg60=84.99 avg300=84.53 total=5702116959
->     # cat io.pressure
->     some avg10=0.00 avg60=0.00 avg300=0.00 total=78051391
->     full avg10=0.00 avg60=0.00 avg300=0.00 total=78049640
->     # grep _file memory.stat
->     inactive_file 1370939392
->     active_file 661635072
-> 
-> This patch changes the behaviour to retry reclaim either until the
-> current task goes below the 10ms grace period, or we are making no
-> reclaim progress at all. In the latter case, we enter reclaim throttling
-> as before.
-> 
-> To a user, there's no intuitive reason for the reclaim behaviour to
-> differ from hitting memory.high as part of a new allocation, as opposed
-> to hitting memory.high because someone lowered its value. As such this
-> also brings an added benefit: it unifies the reclaim behaviour between
-> the two.
-> 
-> There's precedent for this behaviour: we already do reclaim retries when
-> writing to memory.{high,max}, in max reclaim, and in the page allocator
-> itself.
-> 
-> Signed-off-by: Chris Down <chris@chrisdown.name>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
+MemAvailable in /proc/meminfo provides some guidance on the amount of
+memory that can be made available for starting new applications (see
+Documentation/filesystems/proc.rst).
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Userspace can lack insight into the amount of memory that can be reclaimed
+from a memcg based on values from memory.stat, however.  Two specific
+examples:
+
+ - Lazy freeable memory (MADV_FREE) that are clean anonymous pages on the
+   inactive file LRU that can be quickly reclaimed under memory pressure
+   but otherwise shows up as mapped anon in memory.stat, and
+
+ - Memory on deferred split queues (thp) that are compound pages that can
+   be split and uncharged from the memcg under memory pressure, but
+   otherwise shows up as charged anon LRU memory in memory.stat.
+
+Userspace can currently derive this information and use the same heuristic
+as MemAvailable by doing this:
+
+	deferred = (active_anon + inactive_anon) - anon
+	lazyfree = (active_file + inactive_file) - file
+
+	avail = deferred + lazyfree + (file + slab_reclaimable) / 2
+
+But this depends on implementation details for how this memory is handled
+in the kernel for the purposes of reclaim (anon on inactive file LRU or
+unmapped anon on the LRU).
+
+For the purposes of writing portable userspace code that does not need to
+have insight into the kernel implementation for reclaimable memory, this
+exports a metric that can provide an estimate of the amount of memory that
+can be reclaimed and uncharged from the memcg to start new applications.
+
+As the kernel implementation evolves for memory that can be reclaimed
+under memory pressure, this metric can be kept consistent.
+
+Signed-off-by: David Rientjes <rientjes@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 12 +++++++++
+ mm/memcontrol.c                         | 35 +++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1314,6 +1314,18 @@ PAGE_SIZE multiple when read back.
+ 		Part of "slab" that cannot be reclaimed on memory
+ 		pressure.
+ 
++	  avail
++		An estimate of how much memory can be made available for
++		starting new applications, similar to MemAvailable from
++		/proc/meminfo (Documentation/filesystems/proc.rst).
++
++		This is derived by assuming that half of page cahce and
++		reclaimable slab can be uncharged without significantly
++		impacting the workload, similar to MemAvailable.  It also
++		factors in the amount of lazy freeable memory (MADV_FREE) and
++		compound pages that can be split and uncharged under memory
++		pressure.
++
+ 	  pgfault
+ 		Total number of page faults incurred
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1350,6 +1350,35 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+ 	return false;
+ }
+ 
++/*
++ * Returns an estimate of the amount of available memory that can be reclaimed
++ * for a memcg, in pages.
++ */
++static unsigned long mem_cgroup_avail(struct mem_cgroup *memcg)
++{
++	long deferred, lazyfree;
++
++	/*
++	 * Deferred pages are charged anonymous pages that are on the LRU but
++	 * are unmapped.  These compound pages are split under memory pressure.
++	 */
++	deferred = max_t(long, memcg_page_state(memcg, NR_ACTIVE_ANON) +
++			       memcg_page_state(memcg, NR_INACTIVE_ANON) -
++			       memcg_page_state(memcg, NR_ANON_MAPPED), 0);
++	/*
++	 * Lazyfree pages are charged clean anonymous pages that are on the file
++	 * LRU and can be reclaimed under memory pressure.
++	 */
++	lazyfree = max_t(long, memcg_page_state(memcg, NR_ACTIVE_FILE) +
++			       memcg_page_state(memcg, NR_INACTIVE_FILE) -
++			       memcg_page_state(memcg, NR_FILE_PAGES), 0);
++
++	/* Using same heuristic as si_mem_available() */
++	return (unsigned long)deferred + (unsigned long)lazyfree +
++	       (memcg_page_state(memcg, NR_FILE_PAGES) +
++		memcg_page_state(memcg, NR_SLAB_RECLAIMABLE)) / 2;
++}
++
+ static char *memory_stat_format(struct mem_cgroup *memcg)
+ {
+ 	struct seq_buf s;
+@@ -1417,6 +1446,12 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 	seq_buf_printf(&s, "slab_unreclaimable %llu\n",
+ 		       (u64)memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE) *
+ 		       PAGE_SIZE);
++	/*
++	 * All values in this buffer are read individually, no implied
++	 * consistency amongst them.
++	 */
++	seq_buf_printf(&s, "avail %llu\n",
++		       (u64)mem_cgroup_avail(memcg) * PAGE_SIZE);
+ 
+ 	/* Accumulated memory events */
+ 
