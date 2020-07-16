@@ -2,136 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D34572224EF
-	for <lists+cgroups@lfdr.de>; Thu, 16 Jul 2020 16:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1607D222D53
+	for <lists+cgroups@lfdr.de>; Thu, 16 Jul 2020 22:58:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728579AbgGPOLZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jul 2020 10:11:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44914 "EHLO
+        id S1725980AbgGPU6W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 16 Jul 2020 16:58:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51412 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727044AbgGPOLY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jul 2020 10:11:24 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B64BC061755;
-        Thu, 16 Jul 2020 07:11:24 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id l1so6133419ioh.5;
-        Thu, 16 Jul 2020 07:11:24 -0700 (PDT)
+        with ESMTP id S1725959AbgGPU6V (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jul 2020 16:58:21 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942BDC061755
+        for <cgroups@vger.kernel.org>; Thu, 16 Jul 2020 13:58:21 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id 72so4405293ple.0
+        for <cgroups@vger.kernel.org>; Thu, 16 Jul 2020 13:58:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZwX/mhlAD3zr833qIWvUPD76zWFR7r5RHDAo4CaqDJs=;
-        b=mSUV7Ne41+i4WmO2Vm8ptf3P9RJODM2Y9Mg+O0LU/7IyBGkaVo1SQrKWvgj1Aqnoy8
-         g08NJT8igdEaGYT6EwoRxBGeK4NsqhiRzrMZ+xgito13FEBBjxlN5v15bCpgv6DKnkkG
-         I10aEZB/G9JJ5HXxoPIO1KVUCT5+ZC5u7WRj6wXuOBwVXYuO3XCXM0XI3GnwJ6bhUPqc
-         TvUNrXNCEPqbBByGmnniW7ylJGm2aUQEArKr9pbDkCj/RCbqTXdx5deU0iC+/OFcvqIx
-         MD+8n1h3b7ddIhzb3mMpul58aqCsG4fODqusChCjuq8/vBxZnkDCtxt4sbpsciw72B66
-         EH+w==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=kxhHxWSY/EeOqL085lgvyjHtFXlx52qCOAF6Jf9tnk4=;
+        b=oxEJuMEpdGw4BUMJcxYEgG52h/uvb7q2mmajsxp33ECVDv3GOgvi1AVFXEpAj//Fpq
+         mxgK5gWcuNSMrrqkY/4H1htStrel93Se8s+vHvOoLlIE0H6Ucwg4BTirbn/T4O5STI2s
+         ksi8EDO3LCOpksdq8VmSI5mVG+c/1LUnz+ugQ9TdaVIyOm0meIlIE0gUQr0r3Phdq9b6
+         aFRT+JongrkxKz591trMPY4tWkF/gA+xYJES3hjV4kjKzO26BY3QMeBzYCCj1grcmjt7
+         ByObvgdoTAFoYdA6ySKBMFjGatz2BfUaHv126vgfldA6X8t1xtvKAJudJG/CwtoPxXv/
+         RcWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZwX/mhlAD3zr833qIWvUPD76zWFR7r5RHDAo4CaqDJs=;
-        b=e7teLsu68qnjXcXz3KiA25apIvAlgyX+qXE9lCsmsrW3mToBvA3VXegXM2jJUGXncD
-         O6JTtDpvHt1lrIxvOG0XUBGPdx38K43Tkt+UWH3UHypc8dVcw4uPgmIKwQRnjmllDETR
-         +SI+adpJ8srsyn/6fDjfCALc32Kp0aBiD+tZ7SNY3jK6LCKc2J2VZqHcUGLT3Cql5xl4
-         iN8L25MhaZ60XHcBYB9LJQO8svLzEyxzsvdIlVoZ1tLOTcpfmireCz9uEtf5oFwEHk6J
-         YQy4jrURWQ7GAit3hQ//zPNPEqtPz6aE330vjwXn1VlAamX44NdGste8Sk1xwr/wccd/
-         e14g==
-X-Gm-Message-State: AOAM5319DAVmgq9uTfSEPb86fWCK+rwAJCiI0ordTSe3ML50HWQGXDZm
-        Z54MIISuKpH3SFJSeoihlWS8fTF4VcP9v+9rcdA=
-X-Google-Smtp-Source: ABdhPJy91dfh0GT+dqKF3C2rWnAEox2zlavfLO3RPZaRa7Nk/LRvW3ITiol1O0WjbC5f8lyH21Ai23FETBwlxZ8cts0=
-X-Received: by 2002:a02:c888:: with SMTP id m8mr5117977jao.114.1594908683752;
- Thu, 16 Jul 2020 07:11:23 -0700 (PDT)
-MIME-Version: 1.0
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 16 Jul 2020 07:11:12 -0700
-Message-ID: <CAKgT0UcKVyTXQ=tGv_uMV+fSvoH_-cuG9zA_zhE+S8Ou11gt=w@mail.gmail.com>
-Subject: Re: [PATCH v16 00/22] per memcg lru_lock
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=kxhHxWSY/EeOqL085lgvyjHtFXlx52qCOAF6Jf9tnk4=;
+        b=hxtatGOvpGuLamIdk/o/JakqOl6Td4512um3oQxKnM/mjTNjNqjEEKIgCLSN6GRw/i
+         y5HoeJ1aTA8c3OjKvf2G5S3EtrtzQDkAWit2Uk/46tp86+aO8gcVRnQvxgeOk8VAbUDJ
+         W/N8eAeaYEzfTxzorqcxEP6bpDRNmsVOzvynx3Ur0U4zNzx883gSsBLEjyrfqX6NV1IU
+         6vPK7ajkV+SCEDzsdaNe9DCB7bUrM1f48JkmsfiYXMimr+ZRyFp2lEZ+q3MbutAtjpiM
+         /60UYadCbNzUeWmHrpdYDOkIgMpBPI3ArflNJOsAEW+g0ksRQU+J6Nzh8C5WYpV6r+vu
+         7TXQ==
+X-Gm-Message-State: AOAM532NKOqEsxIZUrE5mykXW5a2PEaGDq21JTl8jRg1rAjlx3Jqy6gg
+        erj3u0nr/YwJWlTMeGFVnhSmKA==
+X-Google-Smtp-Source: ABdhPJxpHKcKS3ne/oV23aUkXMDVK9WF6TJ5tR53ZnGc0j269hYsvMNOi4CwmA6CaKQI46d3PPIB1Q==
+X-Received: by 2002:a17:902:c211:: with SMTP id 17mr4937449pll.302.1594933100849;
+        Thu, 16 Jul 2020 13:58:20 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id 19sm5584565pfy.193.2020.07.16.13.58.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 16 Jul 2020 13:58:20 -0700 (PDT)
+Date:   Thu, 16 Jul 2020 13:58:19 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     SeongJae Park <sjpark@amazon.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+cc:     Yang Shi <shy828301@gmail.com>, Michal Hocko <mhocko@kernel.org>,
         Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>
-Content-Type: text/plain; charset="UTF-8"
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: [patch] mm, memcg: provide an anon_reclaimable stat
+In-Reply-To: <alpine.DEB.2.23.453.2007151031020.2788464@chino.kir.corp.google.com>
+Message-ID: <alpine.DEB.2.23.453.2007161357490.3209847@chino.kir.corp.google.com>
+References: <20200715071522.19663-1-sjpark@amazon.com> <alpine.DEB.2.23.453.2007151031020.2788464@chino.kir.corp.google.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 10, 2020 at 5:59 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
->
-> The new version which bases on v5.8-rc4. Add 2 more patchs:
-> 'mm/thp: remove code path which never got into'
-> 'mm/thp: add tail pages into lru anyway in split_huge_page()'
-> and modified 'mm/mlock: reorder isolation sequence during munlock'
->
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
->
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
->
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new
-> lru_lock in it.
->
-> The above solution suggested by Johannes Weiner, and based on his new memcg
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
->
-> The patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation.
-> 2, use TestCleanPageLRU as page isolation's precondition
-> 3, replace per node lru_lock with per memcg per node lru_lock
->
-> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> containers on a 2s * 26cores * HT box with a modefied case:
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> With this patchset, the readtwice performance increased about 80%
-> in concurrent containers.
->
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan,
-> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
->
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+Userspace can lack insight into the amount of memory that can be reclaimed
+from a memcg based on values from memory.stat.  Two specific examples:
 
-Hi Alex,
+ - Lazy freeable memory (MADV_FREE) that are clean anonymous pages on the
+   inactive file LRU that can be quickly reclaimed under memory pressure
+   but otherwise shows up as mapped anon in memory.stat, and
 
-I think I am seeing a regression with this patch set when I run the
-will-it-scale/page_fault3 test. Specifically the processes result is
-dropping from 56371083 to 43127382 when I apply these patches.
+ - Memory on deferred split queues (thp) that are compound pages that can
+   be split and uncharged from the memcg under memory pressure, but
+   otherwise shows up as charged anon LRU memory in memory.stat.
 
-I haven't had a chance to bisect and figure out what is causing it,
-and wanted to let you know in case you are aware of anything specific
-that may be causing this.
+Both of this anonymous usage is also charged to memory.current.
 
-Thanks.
+Userspace can currently derive this information but it depends on kernel
+implementation details for how this memory is handled for the purposes of
+reclaim (anon on inactive file LRU or unmapped anon on the LRU).
 
-- Alex
+For the purposes of writing portable userspace code that does not need to
+have insight into the kernel implementation for reclaimable memory, this
+exports a stat that reveals the amount of anonymous memory that can be
+reclaimed and uncharged from the memcg to start new applications.
+
+As the kernel implementation evolves for memory that can be reclaimed
+under memory pressure, this stat can be kept consistent.
+
+Signed-off-by: David Rientjes <rientjes@google.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  6 +++++
+ mm/memcontrol.c                         | 31 +++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1296,6 +1296,12 @@ PAGE_SIZE multiple when read back.
+ 		Amount of memory used in anonymous mappings backed by
+ 		transparent hugepages
+ 
++	  anon_reclaimable
++		The amount of charged anonymous memory that can be reclaimed
++		under memory pressure without swap.  This currently includes
++		lazy freeable memory (MADV_FREE) and compound pages that can be
++		split and uncharged.
++
+ 	  inactive_anon, active_anon, inactive_file, active_file, unevictable
+ 		Amount of memory, swap-backed and filesystem-backed,
+ 		on the internal memory management lists used by the
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1350,6 +1350,32 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+ 	return false;
+ }
+ 
++/*
++ * Returns the amount of anon memory that is charged to the memcg that is
++ * reclaimable under memory pressure without swap, in pages.
++ */
++static unsigned long memcg_anon_reclaimable(struct mem_cgroup *memcg)
++{
++	long deferred, lazyfree;
++
++	/*
++	 * Deferred pages are charged anonymous pages that are on the LRU but
++	 * are unmapped.  These compound pages are split under memory pressure.
++	 */
++	deferred = max_t(long, memcg_page_state(memcg, NR_ACTIVE_ANON) +
++			       memcg_page_state(memcg, NR_INACTIVE_ANON) -
++			       memcg_page_state(memcg, NR_ANON_MAPPED), 0);
++	/*
++	 * Lazyfree pages are charged clean anonymous pages that are on the file
++	 * LRU and can be reclaimed under memory pressure.
++	 */
++	lazyfree = max_t(long, memcg_page_state(memcg, NR_ACTIVE_FILE) +
++			       memcg_page_state(memcg, NR_INACTIVE_FILE) -
++			       memcg_page_state(memcg, NR_FILE_PAGES), 0);
++
++	return deferred + lazyfree;
++}
++
+ static char *memory_stat_format(struct mem_cgroup *memcg)
+ {
+ 	struct seq_buf s;
+@@ -1363,6 +1389,9 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 	 * Provide statistics on the state of the memory subsystem as
+ 	 * well as cumulative event counters that show past behavior.
+ 	 *
++	 * All values in this buffer are read individually, so no implied
++	 * consistency amongst them.
++	 *
+ 	 * This list is ordered following a combination of these gradients:
+ 	 * 1) generic big picture -> specifics and details
+ 	 * 2) reflecting userspace activity -> reflecting kernel heuristics
+@@ -1405,6 +1434,8 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 		       (u64)memcg_page_state(memcg, NR_ANON_THPS) *
+ 		       HPAGE_PMD_SIZE);
+ #endif
++	seq_buf_printf(&s, "anon_reclaimable %llu\n",
++		       (u64)memcg_anon_reclaimable(memcg) * PAGE_SIZE);
+ 
+ 	for (i = 0; i < NR_LRU_LISTS; i++)
+ 		seq_buf_printf(&s, "%s %llu\n", lru_list_name(i),
