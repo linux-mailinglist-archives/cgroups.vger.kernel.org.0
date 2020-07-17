@@ -2,120 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63B22232C6
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 07:11:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CE642232D0
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 07:15:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725811AbgGQFLC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jul 2020 01:11:02 -0400
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:46617 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgGQFLC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 01:11:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U2ytDbF_1594962637;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ytDbF_1594962637)
+        id S1726040AbgGQFOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jul 2020 01:14:23 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52776 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgGQFOX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 01:14:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2ysU8P_1594962854;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ysU8P_1594962854)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Jul 2020 13:10:38 +0800
-Subject: Re: [PATCH v16 15/22] mm/compaction: do page isolation first in
- compaction
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>
+          Fri, 17 Jul 2020 13:14:16 +0800
+Subject: Re: [PATCH v16 05/22] mm/thp: move lru_add_page_tail func to
+ huge_memory.c
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
 References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-16-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0Ue72SfAmxCS+tay1NjioW9WBOvVgrhwUtVPz2aDCrcHPQ@mail.gmail.com>
+ <1594429136-20002-6-git-send-email-alex.shi@linux.alibaba.com>
+ <924c187c-d4cb-4458-9a71-63f79e0a66c8@linux.alibaba.com>
+ <20200716131706.h6c5nob4somfmegp@box>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <e724c44b-4135-3302-16fa-1df624fa81fa@linux.alibaba.com>
-Date:   Fri, 17 Jul 2020 13:09:43 +0800
+Message-ID: <045c70c7-e4e4-c1d1-b066-c359ef9f15a5@linux.alibaba.com>
+Date:   Fri, 17 Jul 2020 13:13:21 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <CAKgT0Ue72SfAmxCS+tay1NjioW9WBOvVgrhwUtVPz2aDCrcHPQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20200716131706.h6c5nob4somfmegp@box>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
->> @@ -950,6 +951,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
->>                 if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
->>                         goto isolate_fail;
+
+ÔÚ 2020/7/16 ÏÂÎç9:17, Kirill A. Shutemov Ð´µÀ:
+> On Thu, Jul 16, 2020 at 04:59:48PM +0800, Alex Shi wrote:
+>> Hi Kirill & Matthew,
 >>
->> +               /*
->> +                * Be careful not to clear PageLRU until after we're
->> +                * sure the page is not being freed elsewhere -- the
->> +                * page release code relies on it.
->> +                */
->> +               if (unlikely(!get_page_unless_zero(page)))
->> +                       goto isolate_fail;
->> +
->> +               if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
->> +                       goto isolate_fail_put;
->> +
->> +               /* Try isolate the page */
->> +               if (!TestClearPageLRU(page))
->> +                       goto isolate_fail_put;
->> +
->>                 /* If we already hold the lock, we can skip some rechecking */
->>                 if (!locked) {
->>                         locked = compact_lock_irqsave(&pgdat->lru_lock,
+>> Is there any concern from for the THP involved patches?
 > 
-> Why not do the __isolate_lru_page_prepare before getting the page?
-> That way you can avoid performing an extra atomic operation on non-LRU
-> pages.
->
-
-This change come from Hugh Dickins as mentioned from commit log:
->> trylock_page() is not safe to use at this time: its setting PG_locked
->> can race with the page being freed or allocated ("Bad page"), and can
->> also erase flags being set by one of those "sole owners" of a freshly
->> allocated page who use non-atomic __SetPageFlag().
-
-Hi Hugh,
-
-would you like to show more details of the bug?
-
-...
-
->> +                        * sure the page is not being freed elsewhere -- the
->> +                        * page release code relies on it.
->> +                        */
->> +                       if (unlikely(!get_page_unless_zero(page)))
->> +                               goto busy;
->> +
->> +                       if (!TestClearPageLRU(page)) {
->> +                               /*
->> +                                * This page may in other isolation path,
->> +                                * but we still hold lru_lock.
->> +                                */
->> +                               put_page(page);
->> +                               goto busy;
->> +                       }
->> +
-> 
-> I wonder if it wouldn't make sense to combine these two atomic ops
-> with tests and the put_page into a single inline function? Then it
-> could be possible to just do one check and if succeeds you do the
-> block of code below, otherwise you just fall-through into the -EBUSY
-> case.
+> It is mechanical move. I don't see a problem.
 > 
 
-Uh, since get_page changes page->_refcount, TestClearPageLRU changes page->flags,
-So I don't know how to combine them, could you make it more clear with code?
+Many thanks! Kirill,
 
-Thanks
+Do you mind to give a reviewed-by?
+
+And rre they ok for patch 6th,7th and 14th?
+
+Thanks a lot!
 Alex
