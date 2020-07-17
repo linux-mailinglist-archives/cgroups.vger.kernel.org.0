@@ -2,41 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CE642232D0
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 07:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4915C2232E3
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 07:25:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgGQFOX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jul 2020 01:14:23 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:52776 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725300AbgGQFOX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 01:14:23 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R591e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U2ysU8P_1594962854;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ysU8P_1594962854)
+        id S1725970AbgGQFZ2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jul 2020 01:25:28 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:52663 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725811AbgGQFZ1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 01:25:27 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U2ysVL5_1594963521;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ysVL5_1594963521)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 17 Jul 2020 13:14:16 +0800
-Subject: Re: [PATCH v16 05/22] mm/thp: move lru_add_page_tail func to
- huge_memory.c
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
+          Fri, 17 Jul 2020 13:25:23 +0800
+Subject: Re: [PATCH v16 00/22] per memcg lru_lock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
 References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-6-git-send-email-alex.shi@linux.alibaba.com>
- <924c187c-d4cb-4458-9a71-63f79e0a66c8@linux.alibaba.com>
- <20200716131706.h6c5nob4somfmegp@box>
+ <CAKgT0UcKVyTXQ=tGv_uMV+fSvoH_-cuG9zA_zhE+S8Ou11gt=w@mail.gmail.com>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <045c70c7-e4e4-c1d1-b066-c359ef9f15a5@linux.alibaba.com>
-Date:   Fri, 17 Jul 2020 13:13:21 +0800
+Message-ID: <57c619e7-da7e-198e-3de8-530bf19b9450@linux.alibaba.com>
+Date:   Fri, 17 Jul 2020 13:24:28 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <20200716131706.h6c5nob4somfmegp@box>
-Content-Type: text/plain; charset=gbk
+In-Reply-To: <CAKgT0UcKVyTXQ=tGv_uMV+fSvoH_-cuG9zA_zhE+S8Ou11gt=w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -45,20 +50,28 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-ÔÚ 2020/7/16 ÏÂÎç9:17, Kirill A. Shutemov Ð´µÀ:
-> On Thu, Jul 16, 2020 at 04:59:48PM +0800, Alex Shi wrote:
->> Hi Kirill & Matthew,
->>
->> Is there any concern from for the THP involved patches?
+åœ¨ 2020/7/16 ä¸‹åˆ10:11, Alexander Duyck å†™é“:
+>> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+>> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+> Hi Alex,
 > 
-> It is mechanical move. I don't see a problem.
+> I think I am seeing a regression with this patch set when I run the
+> will-it-scale/page_fault3 test. Specifically the processes result is
+> dropping from 56371083 to 43127382 when I apply these patches.
 > 
+> I haven't had a chance to bisect and figure out what is causing it,
+> and wanted to let you know in case you are aware of anything specific
+> that may be causing this.
 
-Many thanks! Kirill,
 
-Do you mind to give a reviewed-by?
+Thanks a lot for the info!
 
-And rre they ok for patch 6th,7th and 14th?
+Actually, the patch 17th, and patch 13th may changed performance a little,
+like the 17th, intel LKP found vm-scalability.throughput 68.0% improvement,
+and stress-ng.remap.ops_per_sec -76.3% regression, or stress-ng.memfd.ops_per_sec
+ +23.2%. etc.
 
-Thanks a lot!
+This kind performance interference is known and acceptable.
+Thanks
 Alex
+ 
