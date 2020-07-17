@@ -2,111 +2,159 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC04223E5C
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 16:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1334022402F
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 18:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726932AbgGQOj6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 17 Jul 2020 10:39:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45748 "EHLO
+        id S1726633AbgGQQJ7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jul 2020 12:09:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726736AbgGQOj5 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 10:39:57 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6EDAC0619D2
-        for <cgroups@vger.kernel.org>; Fri, 17 Jul 2020 07:39:56 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id b185so8946603qkg.1
-        for <cgroups@vger.kernel.org>; Fri, 17 Jul 2020 07:39:56 -0700 (PDT)
+        with ESMTP id S1726256AbgGQQJ6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 12:09:58 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FA9DC0619D2;
+        Fri, 17 Jul 2020 09:09:58 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id l1so10962841ioh.5;
+        Fri, 17 Jul 2020 09:09:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=STv7WsxvA8+TLcU34mj2MS3Xd7Gr7Bu4P1KzwtIAOuE=;
-        b=nxkPNAOOmMGSq8vdVAA45szRlpUlEv1fwfOC/OOzpgnTUQHlx85q/CguxHfQAzzEJD
-         8klFI7rewse8RvzYNgGppXlmSetz04nEL8MZ6IQdzlPEERJj5iHptUllNKRePqwhTg+4
-         RaDMHisQI+f8ikCcgQGwdRk9s5MoR6ZMQ1TA/1sx5NletxVp3ubJ7LNHbYThF00qLfcI
-         KisWyutsRTi24ry8UsqpxYbxaKW01FZkYeASduAh6oXvL/5EdEMRU//NZjMDQmnnWfAC
-         xK8+loM+0EYxajNdy33qCNAqyc85ZB8hBeynDAUnBAFw0/M8ZcBXlJ3IQqVbIsUOvvTF
-         Jo2A==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=80duo2UCKGgh3D4vpF1VXWLmX4mSAl0+jky26IF2Kfc=;
+        b=rz3oI1vxyD4wEFspA2IXpcN6RZgCG8ugcDQv4pjD++gEX0xWJzrl7/IvE0B5L4OiMN
+         n3lSLCuMdLZg9h1a9XUA8isyooRlZIp0Oe7D9CgRkEQ0pNf8NqPD1dhRLxBVIonbLTuH
+         rJLeVM/JLCYk8BU7XiOVFLi2U+GNwhp8V6yNnhOXc3KRHH8RRVm7Km3qi4oWqaNlreFc
+         Nf4q/lt8EZ1JBoxQcRv4D75VlGItFhNde8Wi0JR7SvZ8DetJSH5t09MP7u3EKVvDFuVD
+         6jcccRbVO1SvOYnx0WLDxbbiA2hiNAhErX2ZWtnmy4PR+B/1O3fLfgwwJ/2Fk88FyQJ8
+         +Zrw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=STv7WsxvA8+TLcU34mj2MS3Xd7Gr7Bu4P1KzwtIAOuE=;
-        b=gcri6lhuDlf1RO81ZzFDaUU2Ed2pVhd56R42Q8OulVhu0etmHMb/NgAIfRxrPQf01/
-         iM4QmSU7oaCWAVL7sLPk16rLh9DjetnFZ98OdEhP71R2u+M14/JBLILoRWsywNuOWQA8
-         EKDM7EBWeRdqn9med7trEJnxDScrd89wY4UhZ7uyHmToaDws5fT0kdzV30Ld353F+WYH
-         vb7olkne47UT5RQdRqVBmiHkyXb/GNFW3i1+jF+byWOvJiMpJ1EEzNImETVqaZuXxEuU
-         f+oSG8ev0yZLE0R66+TJqWcD0wPHOc7snNfSj6li5q4NiDj4YEdXB+pLGadfGGBxAOa9
-         oa+A==
-X-Gm-Message-State: AOAM530r8aRzDJw9jof6qsVmfnF0aCvXZ8bWwxYE5DcZZZOE+zw5Adf4
-        gf72Ki62IzZuAIpOLyaJgltUTQ==
-X-Google-Smtp-Source: ABdhPJxMXKxdEQiTF9nJ+aEIegm5INEc54s4Mkb5WF+o979C6xr7dEsy9yXIaT0Csd9/0rMmTfTfag==
-X-Received: by 2002:ae9:e8c5:: with SMTP id a188mr9435703qkg.222.1594996796013;
-        Fri, 17 Jul 2020 07:39:56 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:be7d])
-        by smtp.gmail.com with ESMTPSA id e129sm10150402qkf.132.2020.07.17.07.39.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 17 Jul 2020 07:39:55 -0700 (PDT)
-Date:   Fri, 17 Jul 2020 10:39:02 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     David Rientjes <rientjes@google.com>
-Cc:     SeongJae Park <sjpark@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [patch] mm, memcg: provide an anon_reclaimable stat
-Message-ID: <20200717143902.GA266388@cmpxchg.org>
-References: <20200715071522.19663-1-sjpark@amazon.com>
- <alpine.DEB.2.23.453.2007151031020.2788464@chino.kir.corp.google.com>
- <alpine.DEB.2.23.453.2007161357490.3209847@chino.kir.corp.google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=80duo2UCKGgh3D4vpF1VXWLmX4mSAl0+jky26IF2Kfc=;
+        b=iCvbYfnlqB3EmS6i6jUibmQuf0U/FkCOzi7rVLGik9BcIwWfOpq7D8oKftt1QZ9Coj
+         bdsx9jd62rIK1tTngQDxo6foDJ464bZY9hMoRDr9M2TZBVg48v8K5pr1jh9LYdgpkMxS
+         9Y9eXwoqZSTKehBIkBgMsZJqh1oqckh18om4FbyjiV0C+chGKtFT5yZJwQkh5MMpwbGF
+         TUaS3q/clhRSQRofJ5rHYkRVz/PidpFPW4J/QPlQqiXAV5f8pn4GlgqFVrBL7SbCcDMx
+         t7UkYaI+GbhL+OW+BqcguyikWO4r2/VW+1z45t80Akaxe5zxPaHgEzajWylibvHyLPgr
+         idMA==
+X-Gm-Message-State: AOAM533xWUFBbTxaCaARvtBd9xCnPQPRbJMZVD54pBoHTAOiCvPggToS
+        UbsSh7g9Hd2XGkizO5FIdxxHtUNP+pyd4oK9g/s=
+X-Google-Smtp-Source: ABdhPJxAS5zKXGaRqMgoDBx8B5vS6pgJi7+88Y8nU6nWwsBaz2StwBp/+VMGafhOk/5PifpRQsVX2g3wWOuV+jYMgq8=
+X-Received: by 2002:a02:ce9a:: with SMTP id y26mr11930673jaq.121.1595002197726;
+ Fri, 17 Jul 2020 09:09:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2007161357490.3209847@chino.kir.corp.google.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-16-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Ue72SfAmxCS+tay1NjioW9WBOvVgrhwUtVPz2aDCrcHPQ@mail.gmail.com> <e724c44b-4135-3302-16fa-1df624fa81fa@linux.alibaba.com>
+In-Reply-To: <e724c44b-4135-3302-16fa-1df624fa81fa@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Fri, 17 Jul 2020 09:09:46 -0700
+Message-ID: <CAKgT0UcbvTid8RqDgsZjewdEo1wTD8BDjPHo59UX9gKQEkZUtA@mail.gmail.com>
+Subject: Re: [PATCH v16 15/22] mm/compaction: do page isolation first in compaction
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 01:58:19PM -0700, David Rientjes wrote:
-> @@ -1350,6 +1350,32 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
->  	return false;
->  }
->  
-> +/*
-> + * Returns the amount of anon memory that is charged to the memcg that is
-> + * reclaimable under memory pressure without swap, in pages.
-> + */
-> +static unsigned long memcg_anon_reclaimable(struct mem_cgroup *memcg)
-> +{
-> +	long deferred, lazyfree;
-> +
-> +	/*
-> +	 * Deferred pages are charged anonymous pages that are on the LRU but
-> +	 * are unmapped.  These compound pages are split under memory pressure.
-> +	 */
-> +	deferred = max_t(long, memcg_page_state(memcg, NR_ACTIVE_ANON) +
-> +			       memcg_page_state(memcg, NR_INACTIVE_ANON) -
-> +			       memcg_page_state(memcg, NR_ANON_MAPPED), 0);
-> +	/*
-> +	 * Lazyfree pages are charged clean anonymous pages that are on the file
-> +	 * LRU and can be reclaimed under memory pressure.
-> +	 */
-> +	lazyfree = max_t(long, memcg_page_state(memcg, NR_ACTIVE_FILE) +
-> +			       memcg_page_state(memcg, NR_INACTIVE_FILE) -
-> +			       memcg_page_state(memcg, NR_FILE_PAGES), 0);
+On Thu, Jul 16, 2020 at 10:10 PM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+>
+> >> @@ -950,6 +951,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
+> >>                 if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+> >>                         goto isolate_fail;
+> >>
+> >> +               /*
+> >> +                * Be careful not to clear PageLRU until after we're
+> >> +                * sure the page is not being freed elsewhere -- the
+> >> +                * page release code relies on it.
+> >> +                */
+> >> +               if (unlikely(!get_page_unless_zero(page)))
+> >> +                       goto isolate_fail;
+> >> +
+> >> +               if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
+> >> +                       goto isolate_fail_put;
+> >> +
+> >> +               /* Try isolate the page */
+> >> +               if (!TestClearPageLRU(page))
+> >> +                       goto isolate_fail_put;
+> >> +
+> >>                 /* If we already hold the lock, we can skip some rechecking */
+> >>                 if (!locked) {
+> >>                         locked = compact_lock_irqsave(&pgdat->lru_lock,
+> >
+> > Why not do the __isolate_lru_page_prepare before getting the page?
+> > That way you can avoid performing an extra atomic operation on non-LRU
+> > pages.
+> >
+>
+> This change come from Hugh Dickins as mentioned from commit log:
+> >> trylock_page() is not safe to use at this time: its setting PG_locked
+> >> can race with the page being freed or allocated ("Bad page"), and can
+> >> also erase flags being set by one of those "sole owners" of a freshly
+> >> allocated page who use non-atomic __SetPageFlag().
+>
+> Hi Hugh,
+>
+> would you like to show more details of the bug?
+>
+> ...
+>
+> >> +                        * sure the page is not being freed elsewhere -- the
+> >> +                        * page release code relies on it.
+> >> +                        */
+> >> +                       if (unlikely(!get_page_unless_zero(page)))
+> >> +                               goto busy;
+> >> +
+> >> +                       if (!TestClearPageLRU(page)) {
+> >> +                               /*
+> >> +                                * This page may in other isolation path,
+> >> +                                * but we still hold lru_lock.
+> >> +                                */
+> >> +                               put_page(page);
+> >> +                               goto busy;
+> >> +                       }
+> >> +
+> >
+> > I wonder if it wouldn't make sense to combine these two atomic ops
+> > with tests and the put_page into a single inline function? Then it
+> > could be possible to just do one check and if succeeds you do the
+> > block of code below, otherwise you just fall-through into the -EBUSY
+> > case.
+> >
+>
+> Uh, since get_page changes page->_refcount, TestClearPageLRU changes page->flags,
+> So I don't know how to combine them, could you make it more clear with code?
 
-Unfortunately, we don't know if these have been reused after the
-madvise until we actually do the rmap walk in page reclaim. All of
-these could have dirty ptes and require swapout after all.
+Actually it is pretty straight forward. Something like this:
+static inline bool get_page_unless_zero_or_nonlru(struct page *page)
+{
+    if (get_page_unless_zero(page)) {
+        if (TestClearPageLRU(page))
+            return true;
+        put_page(page);
+    }
+    return false;
+}
 
-The MADV_FREE tradeoff was that the freed pages can get reused by
-userspace without another context switch and tlb flush in the common
-case, by exploiting the fact that the MMU sets the dirty bit for
-us. The downside is that the kernel doesn't know what state these
-pages are in until it takes a close-up look at them one by one.
+You can then add comments as necessary. The general idea is you are
+having to do this in two different spots anyway so why not combine the
+logic? Although it does assume you can change the ordering of the
+other test above.
