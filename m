@@ -2,171 +2,120 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D296223087
-	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 03:37:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E63B22232C6
+	for <lists+cgroups@lfdr.de>; Fri, 17 Jul 2020 07:11:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgGQBh0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 16 Jul 2020 21:37:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38100 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726130AbgGQBh0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 16 Jul 2020 21:37:26 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB952C061755
-        for <cgroups@vger.kernel.org>; Thu, 16 Jul 2020 18:37:25 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id e4so10729295ljn.4
-        for <cgroups@vger.kernel.org>; Thu, 16 Jul 2020 18:37:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=4fwyecrqDo3xAzbltI8V1YX+FnW4zOMOFhcPK3N30M4=;
-        b=PqXDgyEfEfNOXnWkDOIuH1UvNlOdmlNHdOcwFeIs0TRFLODS2F4x31VrzG+XnVzJa2
-         0gcmglp41ZGXXORmw9HPVM8Inf3MWsJb1zyrilKA7A6984hcjxm9VoDbsn7uF5UuAnf6
-         g6Tz7lI6M6DhWhNiOz0MaBdM32nQiFUzNtmXmXIKHZWgJt8OZNG6CTlGLwdeg+2CCHkG
-         DLyUZeml9wlTTx7pSCfWrc9Kv/vfUlB13w1bwnzVDxJpBfLKdl27pwUOJaLpCHkwPFFq
-         V8M17JsKOKGeRitE0UGsQRhMSoP5uVk752fbTY4a/4hHVCDP48BOUUywFB6fUgzl5inl
-         lDwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=4fwyecrqDo3xAzbltI8V1YX+FnW4zOMOFhcPK3N30M4=;
-        b=As65Bnqjg95/4d+A9yDse/icR3PVQHsPZ/muua05tANFjrfNybLKtzshOyPeX0QBqc
-         POo3+Sxif1hQBRYu9zCycL931qpTy3XiwYlOO8kxkFHLIFXJidfS2HZk8G/R8lHtwQyx
-         uakF1cRj/mmxjEGiExCMU8pM4hqgmnGo4yrTR1cEazF4jdOtqYoqkcWzJ81WEggiZKQo
-         AuE1oaxmz8kCVorwaYXt/qqBSrSqAiS2TDu1iZrWYJgZLJRs8L8+RoOLKEt2tL2AO4Zo
-         HismLio8aqLaFaV84Xjej9WlN0xYiTYVKFpBFWmY8/LIshgJFmOSYkG/GaNLfhE8C4S2
-         qIaw==
-X-Gm-Message-State: AOAM5309rlM69THbFDxxwRNWG81xtivbXvOos9j+E5y5DMVbda3WwXjP
-        h6FnjXRBCIU3cW701sLTc8gz5T8S8qKJHIZWchUNkA==
-X-Google-Smtp-Source: ABdhPJywPNKwcReDncD+Y3Bra8NgMUVwK6PVaktNdLTZgvPMo2hBPWGXBz1DQAnnQ/OryTfZgHjpNLXLY4w6sZ5zxsw=
-X-Received: by 2002:a2e:9585:: with SMTP id w5mr2972062ljh.58.1594949844035;
- Thu, 16 Jul 2020 18:37:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200715071522.19663-1-sjpark@amazon.com> <alpine.DEB.2.23.453.2007151031020.2788464@chino.kir.corp.google.com>
- <alpine.DEB.2.23.453.2007161357490.3209847@chino.kir.corp.google.com>
- <CALvZod6DbAUA-M9VXJW4RumeUD8qGf+BHM+9TUNeAr92JVkxsA@mail.gmail.com> <alpine.DEB.2.23.453.2007161427360.3213701@chino.kir.corp.google.com>
-In-Reply-To: <alpine.DEB.2.23.453.2007161427360.3213701@chino.kir.corp.google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 16 Jul 2020 18:37:12 -0700
-Message-ID: <CALvZod65Ja8xc2QBPSOZpwzqL_JudO9e4A1qvXCMCxRoD1_52A@mail.gmail.com>
-Subject: Re: [patch] mm, memcg: provide an anon_reclaimable stat
-To:     David Rientjes <rientjes@google.com>
-Cc:     SeongJae Park <sjpark@amazon.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Yang Shi <shy828301@gmail.com>,
-        Michal Hocko <mhocko@kernel.org>,
+        id S1725811AbgGQFLC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 17 Jul 2020 01:11:02 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:46617 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725300AbgGQFLC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 17 Jul 2020 01:11:02 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U2ytDbF_1594962637;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U2ytDbF_1594962637)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 17 Jul 2020 13:10:38 +0800
+Subject: Re: [PATCH v16 15/22] mm/compaction: do page isolation first in
+ compaction
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
         Yang Shi <yang.shi@linux.alibaba.com>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-16-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Ue72SfAmxCS+tay1NjioW9WBOvVgrhwUtVPz2aDCrcHPQ@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <e724c44b-4135-3302-16fa-1df624fa81fa@linux.alibaba.com>
+Date:   Fri, 17 Jul 2020 13:09:43 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
+MIME-Version: 1.0
+In-Reply-To: <CAKgT0Ue72SfAmxCS+tay1NjioW9WBOvVgrhwUtVPz2aDCrcHPQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Jul 16, 2020 at 2:28 PM David Rientjes <rientjes@google.com> wrote:
+
+>> @@ -950,6 +951,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>                 if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+>>                         goto isolate_fail;
+>>
+>> +               /*
+>> +                * Be careful not to clear PageLRU until after we're
+>> +                * sure the page is not being freed elsewhere -- the
+>> +                * page release code relies on it.
+>> +                */
+>> +               if (unlikely(!get_page_unless_zero(page)))
+>> +                       goto isolate_fail;
+>> +
+>> +               if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
+>> +                       goto isolate_fail_put;
+>> +
+>> +               /* Try isolate the page */
+>> +               if (!TestClearPageLRU(page))
+>> +                       goto isolate_fail_put;
+>> +
+>>                 /* If we already hold the lock, we can skip some rechecking */
+>>                 if (!locked) {
+>>                         locked = compact_lock_irqsave(&pgdat->lru_lock,
+> 
+> Why not do the __isolate_lru_page_prepare before getting the page?
+> That way you can avoid performing an extra atomic operation on non-LRU
+> pages.
 >
-> On Thu, 16 Jul 2020, Shakeel Butt wrote:
->
-> > > Userspace can lack insight into the amount of memory that can be reclaimed
-> > > from a memcg based on values from memory.stat.  Two specific examples:
-> > >
-> > >  - Lazy freeable memory (MADV_FREE) that are clean anonymous pages on the
-> > >    inactive file LRU that can be quickly reclaimed under memory pressure
-> > >    but otherwise shows up as mapped anon in memory.stat, and
-> > >
-> > >  - Memory on deferred split queues (thp) that are compound pages that can
-> > >    be split and uncharged from the memcg under memory pressure, but
-> > >    otherwise shows up as charged anon LRU memory in memory.stat.
-> > >
-> > > Both of this anonymous usage is also charged to memory.current.
-> > >
-> > > Userspace can currently derive this information but it depends on kernel
-> > > implementation details for how this memory is handled for the purposes of
-> > > reclaim (anon on inactive file LRU or unmapped anon on the LRU).
-> > >
-> > > For the purposes of writing portable userspace code that does not need to
-> > > have insight into the kernel implementation for reclaimable memory, this
-> > > exports a stat that reveals the amount of anonymous memory that can be
-> > > reclaimed and uncharged from the memcg to start new applications.
-> > >
-> > > As the kernel implementation evolves for memory that can be reclaimed
-> > > under memory pressure, this stat can be kept consistent.
-> > >
-> > > Signed-off-by: David Rientjes <rientjes@google.com>
-> > > ---
-> > >  Documentation/admin-guide/cgroup-v2.rst |  6 +++++
-> > >  mm/memcontrol.c                         | 31 +++++++++++++++++++++++++
-> > >  2 files changed, 37 insertions(+)
-> > >
-> > > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > > @@ -1296,6 +1296,12 @@ PAGE_SIZE multiple when read back.
-> > >                 Amount of memory used in anonymous mappings backed by
-> > >                 transparent hugepages
-> > >
-> > > +         anon_reclaimable
-> > > +               The amount of charged anonymous memory that can be reclaimed
-> > > +               under memory pressure without swap.  This currently includes
-> > > +               lazy freeable memory (MADV_FREE) and compound pages that can be
-> > > +               split and uncharged.
-> > > +
-> > >           inactive_anon, active_anon, inactive_file, active_file, unevictable
-> > >                 Amount of memory, swap-backed and filesystem-backed,
-> > >                 on the internal memory management lists used by the
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -1350,6 +1350,32 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
-> > >         return false;
-> > >  }
-> > >
-> > > +/*
-> > > + * Returns the amount of anon memory that is charged to the memcg that is
-> > > + * reclaimable under memory pressure without swap, in pages.
-> > > + */
-> > > +static unsigned long memcg_anon_reclaimable(struct mem_cgroup *memcg)
-> > > +{
-> > > +       long deferred, lazyfree;
-> > > +
-> > > +       /*
-> > > +        * Deferred pages are charged anonymous pages that are on the LRU but
-> > > +        * are unmapped.  These compound pages are split under memory pressure.
-> > > +        */
-> > > +       deferred = max_t(long, memcg_page_state(memcg, NR_ACTIVE_ANON) +
-> > > +                              memcg_page_state(memcg, NR_INACTIVE_ANON) -
-> > > +                              memcg_page_state(memcg, NR_ANON_MAPPED), 0);
-> >
-> > Please note that the NR_ANON_MAPPED does not include tmpfs memory but
-> > NR_[IN]ACTIVE_ANON does include the tmpfs.
-> >
-> > > +       /*
-> > > +        * Lazyfree pages are charged clean anonymous pages that are on the file
-> > > +        * LRU and can be reclaimed under memory pressure.
-> > > +        */
-> > > +       lazyfree = max_t(long, memcg_page_state(memcg, NR_ACTIVE_FILE) +
-> > > +                              memcg_page_state(memcg, NR_INACTIVE_FILE) -
-> > > +                              memcg_page_state(memcg, NR_FILE_PAGES), 0);
-> >
-> > Similarly NR_FILE_PAGES includes tmpfs memory but NR_[IN]ACTIVE_FILE does not.
-> >
->
-> Ah, so this adds to the motivation of providing the anon_reclaimable stat
-> because the calculation becomes even more convoluted and completely based
-> on the kernel implementation details for both lazyfree memory and deferred
-> split queues.
 
-Yes, I agree.
+This change come from Hugh Dickins as mentioned from commit log:
+>> trylock_page() is not safe to use at this time: its setting PG_locked
+>> can race with the page being freed or allocated ("Bad page"), and can
+>> also erase flags being set by one of those "sole owners" of a freshly
+>> allocated page who use non-atomic __SetPageFlag().
 
-> Did you have a calculation in mind for
-> memcg_anon_reclaimable()?
+Hi Hugh,
 
- For deferred, "memcg->deferred_split_queue.split_queue_len" should be usable.
+would you like to show more details of the bug?
 
-For lazyfree, NR_ACTIVE_FILE + NR_INACTIVE_FILE + NR_SHMEM -
-NR_FILE_PAGES seems like the right formula.
+...
+
+>> +                        * sure the page is not being freed elsewhere -- the
+>> +                        * page release code relies on it.
+>> +                        */
+>> +                       if (unlikely(!get_page_unless_zero(page)))
+>> +                               goto busy;
+>> +
+>> +                       if (!TestClearPageLRU(page)) {
+>> +                               /*
+>> +                                * This page may in other isolation path,
+>> +                                * but we still hold lru_lock.
+>> +                                */
+>> +                               put_page(page);
+>> +                               goto busy;
+>> +                       }
+>> +
+> 
+> I wonder if it wouldn't make sense to combine these two atomic ops
+> with tests and the put_page into a single inline function? Then it
+> could be possible to just do one check and if succeeds you do the
+> block of code below, otherwise you just fall-through into the -EBUSY
+> case.
+> 
+
+Uh, since get_page changes page->_refcount, TestClearPageLRU changes page->flags,
+So I don't know how to combine them, could you make it more clear with code?
+
+Thanks
+Alex
