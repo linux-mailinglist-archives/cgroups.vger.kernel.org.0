@@ -2,87 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5881A227056
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 23:28:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4D322755D
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jul 2020 04:07:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726535AbgGTV2K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 17:28:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726428AbgGTV2J (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 17:28:09 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9917AC061794;
-        Mon, 20 Jul 2020 14:28:09 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id b79so3438304qkg.9;
-        Mon, 20 Jul 2020 14:28:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Sh/KLSzQqnJr0/PMf2DmO5rUtVYfFwMH4ti+obo2a7s=;
-        b=EulKUbZ0padoY58Gz7BUn19Q8Hk6KEJaTssCqM4lILM7IAI6zewfZh8oqNUoUyQoQB
-         7NTznTeKJycRqCHBebiJHdUDc3dJuXT4oWkSqv7Nd8vAXT58D5mHAgRZrE/rlefmctXk
-         iF0R314VBwwyPtZ5vQ9GjPl1jHRYIZxMQkWwbkCU5KpbxSiLWlT5Nqva2QiK7czML7c5
-         URTZec+Vmlsd24zt83lXA6dlTzT6u6pS8nCtPCyLiAvWG+LFRFdZ5hizdC/H3ow8Mkn8
-         0jt58w1ztanJnkcf9f7qnHKksF3N35HduNlT0BJ1Z5fBq2yUpp1KgYjnlkc1j3tOh7m6
-         BfSQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sh/KLSzQqnJr0/PMf2DmO5rUtVYfFwMH4ti+obo2a7s=;
-        b=gudpn3MvtSCEHHB0yIwr2tNZ7iTRR6paf8TE9QGtm8N21TzL8EAOmTXkXVeeY1XHWv
-         cjbIIWrttcbKsaAt/2KDbtk09ZAEbD8wP0e26XPVrFCS2KLu5n8OeCJqYyRzZKWKuMUD
-         NGOx7UKpcYTNxM+CHuQHUWS2nHmWiZ5nXAj8uEec5XnPo07UVlJDguRECN/8O3jZFv2x
-         6/VJawQshzzMvW1vRKwW2Ta2HJxdtkalfzx0Ip5eikVW2CMU2rJrDRJrQndGShI6Lw1z
-         LS9Wn2Sn52WL+f3fSgUN1qiCG2GizDjzhv40MVCOVmfIeRnpFb87joet8qsq3/wiY1UB
-         7T/A==
-X-Gm-Message-State: AOAM532TvstF8Ibwg0zJQyXGeHwLuThUHDBwJsu5BZ3nyWwxs4nj1T3y
-        qK2RnpOSFAyqvGT6920E676dFD/gpJBFwtUgGF0=
-X-Google-Smtp-Source: ABdhPJzsaontx5ozyXPRUXIspav4OYKL8Yae9yGB7WLujLekyBKPAJ+mXHiIErPXcPeOXd4tel2AAhIoC764A4fM5+Q=
-X-Received: by 2002:a37:9147:: with SMTP id t68mr23191512qkd.34.1595280488864;
- Mon, 20 Jul 2020 14:28:08 -0700 (PDT)
+        id S1725862AbgGUCHG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 22:07:06 -0400
+Received: from [211.196.21.11] ([211.196.21.11]:37118 "EHLO
+        iscure03.localdomain" rhost-flags-FAIL-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725857AbgGUCHG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 22:07:06 -0400
+Received: from Shop01 (unknown [127.0.0.1])
+        by iscure03.localdomain (Postfix) with SMTP id 0B3242ADEAF;
+        Mon, 20 Jul 2020 12:08:17 +0900 (KST)
+Received: from [223.164.92.222]
+        by Shop01 id 9a9494v3uzPN;
+        Sun, 19 Jul 2020 19:59:55 +0400
+Message-ID: <v951fb25ci3f-72z$3yhr@wrv.6i4.6o2>
+From:   "MOORE GATES LTD" <TEXT@TEXT.COM>
+Reply-To: "MOORE GATES LTD" <TEXT@TEXT.COM>
+To:     cedrichobson@yahoo.com
+Subject: FROM MR. MOORE
+Date:   Sun, 19 Jul 20 19:59:55 GMT
+X-Mailer: Microsoft Outlook Express 5.50.4133.2400
 MIME-Version: 1.0
-References: <20200720075148.172156-1-hch@lst.de> <20200720075148.172156-5-hch@lst.de>
- <CAFLxGvxNHGEOrj6nKTtDeiU+Rx4xv_6asjSQYcFWXhk5m=1cBA@mail.gmail.com>
- <20200720120734.GA29061@lst.de> <2827a5dbd94bc5c2c1706a6074d9a9a32a590feb.camel@gmail.com>
-In-Reply-To: <2827a5dbd94bc5c2c1706a6074d9a9a32a590feb.camel@gmail.com>
-From:   Richard Weinberger <richard.weinberger@gmail.com>
-Date:   Mon, 20 Jul 2020 23:27:57 +0200
-Message-ID: <CAFLxGvyxtYnJ5UdD18uNA97zQaDB8-Wv8MHQn2g9GYD74v7cTg@mail.gmail.com>
-Subject: Re: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
-To:     Artem Bityutskiy <dedekind1@gmail.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        linux-raid@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        LKML <linux-kernel@vger.kernel.org>, linux-block@vger.kernel.org,
-        Song Liu <song@kernel.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        linux-mtd@lists.infradead.org, linux-mm@kvack.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        cgroups mailinglist <cgroups@vger.kernel.org>,
-        drbd-dev@lists.linbit.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/alternative;
+        boundary="CFA3__C0.46A.8EAB"
+X-Priority: 1
+X-MSMail-Priority: High
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jul 20, 2020 at 2:37 PM Artem Bityutskiy <dedekind1@gmail.com> wrote:
->
-> On Mon, 2020-07-20 at 14:07 +0200, Christoph Hellwig wrote:
-> > What about jffs2 and blk2mtd raw block devices?
 
-I don't worry much about blk2mtd.
+--CFA3__C0.46A.8EAB
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
-> If my memory serves me correctly JFFS2 did not mind readahead.
+Dear Beloved,
+Peace of the Lord be with you and family, I am Fitzpatrick Moore a
+United Kingdom Citizen, I have ($ 25M) Twenty five Million united
+states dollars with a finance House in United State. I will want you
+to help me collect this deposit and dispatch it to charity
+organizations. You will take out 30% of these funds for your
+assistance to help ME disburse this fund to charities. I will like you
+to acknowledge the receipt of this e-mail as soon as possible and
+treats with absolute confidentiality and sincerity. Please reply to my
+Email: (moorefitzpatrick@gmail.com)
+Yours Sincerely,
+Fitzpatrick Moore
 
-This covers my knowledge too.
-I fear enabling readahead on JFFS2 will cause performance issues, this
-filesystem
-is mostly used on small and slow NOR devices.
+--CFA3__C0.46A.8EAB--
 
--- 
-Thanks,
-//richard
