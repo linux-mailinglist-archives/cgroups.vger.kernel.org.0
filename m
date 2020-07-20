@@ -2,98 +2,88 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFE20225877
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 09:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A7F32258B6
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 09:37:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725845AbgGTHaV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 03:30:21 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:60734 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725815AbgGTHaV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 03:30:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R221e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0U3DnCGw_1595230215;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3DnCGw_1595230215)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 20 Jul 2020 15:30:16 +0800
-Subject: Re: [PATCH v16 00/22] per memcg lru_lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <04a2ad99-5d88-a300-6430-7a8da0946f04@linux.alibaba.com>
-Date:   Mon, 20 Jul 2020 15:30:14 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726736AbgGTHhT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 03:37:19 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:52210 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725845AbgGTHhT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 03:37:19 -0400
+Received: by mail-wm1-f67.google.com with SMTP id 22so21234922wmg.1
+        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 00:37:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3+cG4dlbvOXxi0Np/998Id6Ue/YJ51oIXoz1t5uzjEE=;
+        b=nKhrhWZbc2gwr8hPWnW6pIenpfhSRq2TE1UW2bOGCN36cixc3ERW9Jygz2f8/qlTbt
+         VMeHXyj7muBiNLd9Cq/lvkgOp5p+PiMCmp0wN/hXZJym6MtggwIKpAxfRLcqCSrMN1u5
+         itYXZ4s8JnZApzfgrZ8LUXcq0BYT45AK/2rBtBx8FJGej7ZAJPtna9ADoXp7aYPozGBC
+         AE6USA/XVppBih0bRTVQoZI9NoA9jnRqHHbiwDgyxUsSl9UF7cfPqQR8Buq5OQriFoB6
+         JbrlFrbXvaLkj+AHEB1kYFFf1Qtqh/5jYMytpa1g3x8wFLTAZa6pSgGh1oBR9Pi4WuEh
+         3EVg==
+X-Gm-Message-State: AOAM532UFMZlvNEJjsRMqsWCfYpXYLiMGUPGioG1iTtpvBXCX99VsoGC
+        ohkCU/PQpHmwwoSFE0xiyZI=
+X-Google-Smtp-Source: ABdhPJw0egh+vZOpf+3Q1sE4MGaAhEuhbo9dtC8o+ihIP20N5BB4q51xtPRvHWzAipyqdcTdnmOtOw==
+X-Received: by 2002:a05:600c:2949:: with SMTP id n9mr19440283wmd.69.1595230637370;
+        Mon, 20 Jul 2020 00:37:17 -0700 (PDT)
+Received: from localhost (ip-37-188-169-187.eurotel.cz. [37.188.169.187])
+        by smtp.gmail.com with ESMTPSA id p29sm32231242wmi.43.2020.07.20.00.37.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 20 Jul 2020 00:37:16 -0700 (PDT)
+Date:   Mon, 20 Jul 2020 09:37:15 +0200
+From:   Michal Hocko <mhocko@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Chris Down <chris@chrisdown.name>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Yang Shi <shy828301@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [patch] mm, memcg: provide a stat to describe reclaimable memory
+Message-ID: <20200720073715.GB18535@dhcp22.suse.cz>
+References: <alpine.DEB.2.23.453.2007142018150.2667860@chino.kir.corp.google.com>
+ <20200715131048.GA176092@chrisdown.name>
+ <alpine.DEB.2.23.453.2007151046320.2788464@chino.kir.corp.google.com>
+ <20200717121750.GA367633@chrisdown.name>
+ <alpine.DEB.2.23.453.2007171226310.3398972@chino.kir.corp.google.com>
 MIME-Version: 1.0
-In-Reply-To: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.23.453.2007171226310.3398972@chino.kir.corp.google.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Fri 17-07-20 12:37:57, David Rientjes wrote:
+[...]
+> On a 4.3 kernel, for example, memory.current for the heap segment is now 
+> (64MB / 2MB) * 4KB = 128KB because we have synchronous splitting and 
+> uncharging of the underlying hugepage.  On a 4.15 kernel, for example, 
+> memory.current is still 64MB because the underlying hugepages are still 
+> charged to the memcg due to deferred split queues.
 
-I am preparing/testing the patch v17 according comments from Hugh Dickins
-and Alexander Duyck. 
-Many thanks for line by line review and patient suggestion!
+Deferred THP split should be a kernel internal implementation
+optimization and a detail that userspace shouldn't really be worrying
+about. If there are user visible effects that are standing in the way
+then we should reconsider how much is the optimization worth. I do not
+really remember any actual numbers that would strongly justify its
+existence while I do remember several problems that this has introduced.
 
-Please drop me any more comments or concern of any patches!
+So I am really wondering whether exporting subtle metrics to the
+userspace which can lead to confusion is the right approach to the
+problem you have at hands.
 
-Thanks a lot!
-Alex
-
-在 2020/7/11 上午8:58, Alex Shi 写道:
-> The new version which bases on v5.8-rc4. Add 2 more patchs:
-> 'mm/thp: remove code path which never got into'
-> 'mm/thp: add tail pages into lru anyway in split_huge_page()'
-> and modified 'mm/mlock: reorder isolation sequence during munlock'
-> 
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
-> 
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
-> 
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new 
-> lru_lock in it.
-> 
-> The above solution suggested by Johannes Weiner, and based on his new memcg 
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
-> 
-> The patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation.
-> 2, use TestCleanPageLRU as page isolation's precondition
-> 3, replace per node lru_lock with per memcg per node lru_lock
-> 
-> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
-> containers on a 2s * 26cores * HT box with a modefied case:
-> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
-> With this patchset, the readtwice performance increased about 80%
-> in concurrent containers.
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+Also could you be more specific about the numbers we are talking here?
+E.g. what is the overal percentage of the "mis-accounted" split THPs
+wrt. to the high/max limit? Is the userspace relying on very precise
+numbers?
+-- 
+Michal Hocko
+SUSE Labs
