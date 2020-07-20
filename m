@@ -2,60 +2,24 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FEA2256CB
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 06:48:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4EB322572D
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 07:47:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726084AbgGTEsI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 00:48:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgGTEsI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 00:48:08 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1551DC0619D2
-        for <cgroups@vger.kernel.org>; Sun, 19 Jul 2020 21:48:08 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id e90so11205993ote.1
-        for <cgroups@vger.kernel.org>; Sun, 19 Jul 2020 21:48:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=6Nps254wO3Vku/AMs/COcTPJnAHzxFnu9/tet83Jczo=;
-        b=Orx+a9RBBcSgVIEOHFVB374CoAHh0H+dcciHwze7bjd/evrRLoNHoEeHX6AUUXAWPE
-         rlEZJuyYrLtfrbxBEr1f6tOk1hUCeuxitWVtbHQSm1gD5eBMeQnnQmiecOui/n+Wy+CH
-         lVR+yKJxXOVRAwcOkkKdPQDX9l0WSRYT55r6M1O9qVGNeakNm5eWCBq/poyfEr+Mh+xO
-         fvXDBer896r9lWpDPRKLzlOfw7HMuYx8YhXqqDQ9X/jiqcowwnnertv+u6tOMyTf4L6x
-         VhxLTL6Tuzj5Wcb/bIoRfQ7SJeG3OQOLcWf9uL2ccqf9yxAULz7Zp0JITwEJl9p0MruI
-         UiVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=6Nps254wO3Vku/AMs/COcTPJnAHzxFnu9/tet83Jczo=;
-        b=a6IzdAJEEMd2qFHZco7zxiPeO90wE5yL8YfTvUlNDouFyJ6b2qEdCnBeVHnbG9vRvc
-         zdLhRcL3edWWo/vcnJwRr6sZ1+3O3XZWajCjEXVWHu7rsGNCQmQOm7G6Cjol3gFer5/h
-         47eCR9v+KtcMMUIJfgS6ukk9+hNixC45/XQ6HthnmZw21Lo+0C62whbWZ/KxNebND3Ih
-         2fUdxyAn/iuxRNrZIZl3ttp34AWI78LbCPlC09LyoiSjusvK+7yMYpvxXIPUWj27dFO3
-         y9eVK059DLjmt3DxoPBl9acyrc/BiAVOEUa9haCsVwtoYAo3RUOw5U8a+zUm/wZ8E+Qf
-         I/WQ==
-X-Gm-Message-State: AOAM531cMmLSGNvrC6ynMI7BjkCKdXlzv6DKl19WBiKYJ3+cRT1Neksf
-        bo3nbT0x8CMDxzp+k88P38nVCQ==
-X-Google-Smtp-Source: ABdhPJyxUSbYws6hgiXi/FXNrgA6DQiqHyVhJ/vCcW5ZcJVVBJfAngGkSI4Kx13zzYcqaz/Mipp0kQ==
-X-Received: by 2002:a9d:480d:: with SMTP id c13mr18932515otf.224.1595220487215;
-        Sun, 19 Jul 2020 21:48:07 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w17sm3914020oia.16.2020.07.19.21.48.04
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Sun, 19 Jul 2020 21:48:06 -0700 (PDT)
-Date:   Sun, 19 Jul 2020 21:47:49 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Hugh Dickins <hughd@google.com>,
-        Alexander Duyck <alexander.duyck@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        id S1725805AbgGTFrS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 01:47:18 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:44673 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725872AbgGTFrS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 01:47:18 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U3BbMp-_1595224030;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3BbMp-_1595224030)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Jul 2020 13:47:10 +0800
+Subject: Re: [PATCH v16 18/22] mm/lru: replace pgdat lru_lock with lruvec lock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
         Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
         Daniel Jordan <daniel.m.jordan@oracle.com>,
         Yang Shi <yang.shi@linux.alibaba.com>,
@@ -67,66 +31,57 @@ cc:     Hugh Dickins <hughd@google.com>,
         Shakeel Butt <shakeelb@google.com>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>
-Subject: Re: [PATCH v16 00/22] per memcg lru_lock
-In-Reply-To: <5f2401d3-dd4f-cbc6-8cb4-4e92fc64998c@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2007192144150.1478@eggly.anvils>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com> <CAKgT0UcKVyTXQ=tGv_uMV+fSvoH_-cuG9zA_zhE+S8Ou11gt=w@mail.gmail.com> <57c619e7-da7e-198e-3de8-530bf19b9450@linux.alibaba.com> <alpine.LSU.2.11.2007190801490.3521@eggly.anvils>
- <5f2401d3-dd4f-cbc6-8cb4-4e92fc64998c@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Rong Chen <rong.a.chen@intel.com>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-19-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Ud+Dj-Q8Sxv8eDQhjM3fFHwnU_ZFEVG54debBennUmxAg@mail.gmail.com>
+ <62dfd262-a7ac-d18e-216a-2988c690b256@linux.alibaba.com>
+ <c339f46e-ae04-4e65-2713-a5c8be56051a@linux.alibaba.com>
+ <CAKgT0UestD7cU+3aqg3a9JT4bTXVYQpjGbwoC2-bOBHPY5xn6A@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <27eb389d-b5f9-fe03-2e57-15c351629efc@linux.alibaba.com>
+Date:   Mon, 20 Jul 2020 13:47:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="0-1916823428-1595220486=:1478"
+In-Reply-To: <CAKgT0UestD7cU+3aqg3a9JT4bTXVYQpjGbwoC2-bOBHPY5xn6A@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---0-1916823428-1595220486=:1478
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-On Mon, 20 Jul 2020, Alex Shi wrote:
-> =E5=9C=A8 2020/7/19 =E4=B8=8B=E5=8D=8811:23, Hugh Dickins =E5=86=99=E9=81=
-=93:
-> > I noticed that 5.8-rc5, with lrulock v16 applied, took significantly
-> > longer to run loads than without it applied, when there should have bee=
-n
-> > only slight differences in system time. Comparing /proc/vmstat, somethi=
-ng
-> > that stood out was "pgrotated 0" for the patched kernels, which led her=
-e:
-> >=20
-> > If pagevec_lru_move_fn() is now to TestClearPageLRU (I have still not
-> > decided whether that's good or not, but assume here that it is good),
-> > then functions called though it must be changed not to expect PageLRU!
-> >=20
-> > Signed-off-by: Hugh Dickins <hughd@google.com>
->=20
-> Good catch!
->=20
-> Thanks a lot, Hugh!=20
-> except 6 changes should apply, looks we add one more in swap.c file to st=
-op
-> !PageRLU further actions!
+在 2020/7/19 下午11:14, Alexander Duyck 写道:
+>> Compare to move to tail, how about to move it to head of struct, which is
+>> close to lru list? Did you have some data of the place change?
+> I don't have specific data, just anecdotal evidence from the past that
+> usually you want to keep locks away from read-mostly items since they
+> cause obvious cache thrash. My concern was more with the other fields
+> in the structure such as pgdat since it should be a static value and
+> having it evicted would likely be more expensive than just leaving the
+> cacheline as it is.
+> 
 
-Agreed, that's a minor optimization that wasn't done before,
-that can be added (but it's not a fix like the rest of them).
+Thanks for comments, Alex.
 
->=20
-> Many Thanks!
-> Alex
->=20
-> @@ -649,7 +647,7 @@ void deactivate_file_page(struct page *page)
->          * In a workload with many unevictable page such as mprotect,
->          * unevictable page deactivation for accelerating reclaim is poin=
-tless.
->          */
-> -       if (PageUnevictable(page))
-> +       if (PageUnevictable(page) || !PageLRU(page))
->                 return;
->=20
->         if (likely(get_page_unless_zero(page))) {
---0-1916823428-1595220486=:1478--
+So, sounds like moving the lru_lock to head of struct lruvec could be better.
+
+>> -       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+>> +       if (delta_munlocked)
+>> +               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+>>         if (lruvec)
+>>                 unlock_page_lruvec_irq(lruvec);
+> Why not just wrap the entire thing in a check for "lruvec"? Yes you
+> could theoretically be modding with a value of 0, but it avoids a
+> secondary unnecessary check and branching.
+
+Right, and the delta_munlocked value could be checked inside the accounting
+func
+
+Thanks!
