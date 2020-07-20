@@ -2,56 +2,22 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD2DC225A56
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 10:49:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2181225AC6
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 11:05:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727849AbgGTIte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 04:49:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgGTItd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 04:49:33 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016DDC061794
-        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:49:33 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id h19so19303420ljg.13
-        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:49:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tfIjuOSIlbet9/U1v7RlPXF9pVVwSHoUTTJkP/5CtL4=;
-        b=1ditQAJ73I/pNYNr9SBkH/lg3J1Qh+5+0QLU2qG5EjXLx93eAZkNyUewnNXYvpWeTV
-         YV/xN3j/4ZwEboXLMLnGfbfO4xeci2toTl8pyFqkRsxWyA9EvXVVSOr1g0MsPJskesbE
-         k4PBkR2Ki4cPOgwtJbVTdk3Ytptep/N0TD+xqYef5fQ4TpfvGgac3p5P8weAUTMEGp4U
-         Y3OoaUMDereGfXzrjFTsTAx/m6IYXSgwqVXhD8+qXC4el25pG3pP/FyI1ijaLYrVvkJ4
-         Q6ZW4g2LmiRgteBMQu1yFt2zGwm4Px1npRWIIiydszKOm8aq45M/KXVDvuC+19ah2t5P
-         6kSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tfIjuOSIlbet9/U1v7RlPXF9pVVwSHoUTTJkP/5CtL4=;
-        b=D0fVCYCrngCKeld0yQZzwBCUPmv1Q/DpCCytvkd6S5+iBRAa7+5lTXLJaY5nsOmcy2
-         5Rb+sAi7+QbZC9EwwskScNpQBF9aJa/lur3jSUmZGwnbL83ZtNO0qtkFpUpO5vUu1pl2
-         zXxQjPPH6+G9870I7VF4SKsPmp4c8T33jDB4Y8eKZIpL5NnAsbzGCxG/vMRlfh9cVsG6
-         y+uy85xft3KO14NZKxMvediclkY/0MnIW5kD6AyB1LisZ0bTirP59K1JIR2Y/Q0gr20e
-         uBR/yKZ6iSkCjkloNG3N0CeQxeo9twOwZMoQY8/GHFtLnAErT3B2h56+W0cdahS0EzUt
-         9+kg==
-X-Gm-Message-State: AOAM533ncwSooWpRfZqyHj+kIY7XnBBl0OpXtU9LILb7pV+3gT709kjt
-        eoxxlcGkQJYL4qDGpUm65JjC4A==
-X-Google-Smtp-Source: ABdhPJwVNfyMQI2peB7wCDKanVUNIZeNAO0x0vZkGy2DHvW0CnQn7oDgafHuXBtvoqj/4i8RJE1VgQ==
-X-Received: by 2002:a2e:8043:: with SMTP id p3mr10427887ljg.469.1595234971531;
-        Mon, 20 Jul 2020 01:49:31 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id y2sm3653160lfh.1.2020.07.20.01.49.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 01:49:30 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 2ED97102393; Mon, 20 Jul 2020 11:49:31 +0300 (+03)
-Date:   Mon, 20 Jul 2020 11:49:31 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
+        id S1726736AbgGTJFB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 05:05:01 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45371 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726030AbgGTJFB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 05:05:01 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U3FgSDJ_1595235887;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3FgSDJ_1595235887)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 20 Jul 2020 17:04:48 +0800
+Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
+ split_huge_page()
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
 Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
         daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
@@ -59,44 +25,37 @@ Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        Mika =?utf-8?B?UGVudHRpbMOk?= <mika.penttila@nextfour.com>
-Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
- split_huge_page()
-Message-ID: <20200720084931.jusstogio6j74uhs@box>
+        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
 References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
  <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
  <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
+ <20200720084931.jusstogio6j74uhs@box>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <dd33c5ae-7924-393d-ecd2-3c7fc1bfd1cc@linux.alibaba.com>
+Date:   Mon, 20 Jul 2020 17:04:46 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
+In-Reply-To: <20200720084931.jusstogio6j74uhs@box>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jul 17, 2020 at 05:30:27PM +0800, Alex Shi wrote:
-> 
-> Add a VM_WARN_ON for tracking. and updated comments for the code.
-> 
-> Thanks
-> 
-> ---
-> From f1381a1547625a6521777bf9235823d8fbd00dac Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Fri, 10 Jul 2020 16:54:37 +0800
-> Subject: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
->  split_huge_page()
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
-> 
-> Split_huge_page() must start with PageLRU(head), and we are holding the
-> lru_lock here. If the head was cleared lru bit unexpected, tracking it.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 
-Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
--- 
- Kirill A. Shutemov
+ÔÚ 2020/7/20 ÏÂÎç4:49, Kirill A. Shutemov Ð´µÀ:
+>>
+>> Split_huge_page() must start with PageLRU(head), and we are holding the
+>> lru_lock here. If the head was cleared lru bit unexpected, tracking it.
+>>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+
+Hi Kirill,
+
+Millions thanks for review!
+
+Alex
