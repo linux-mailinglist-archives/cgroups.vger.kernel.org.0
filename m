@@ -2,60 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2181225AC6
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 11:05:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F504225DFD
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 13:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726736AbgGTJFB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 05:05:01 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:45371 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726030AbgGTJFB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 05:05:01 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U3FgSDJ_1595235887;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3FgSDJ_1595235887)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 20 Jul 2020 17:04:48 +0800
-Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
- split_huge_page()
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, yang.shi@linux.alibaba.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        =?UTF-8?Q?Mika_Penttil=c3=a4?= <mika.penttila@nextfour.com>
-References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
- <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
- <20200720084931.jusstogio6j74uhs@box>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <dd33c5ae-7924-393d-ecd2-3c7fc1bfd1cc@linux.alibaba.com>
-Date:   Mon, 20 Jul 2020 17:04:46 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1728572AbgGTL6f (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 07:58:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32932 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728058AbgGTL6e (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 07:58:34 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 993AEC061794;
+        Mon, 20 Jul 2020 04:58:34 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id u64so1671314qka.12;
+        Mon, 20 Jul 2020 04:58:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oyadEz0eZwOz4veMiu/99Xwk84Lj2bAOI1P6STGAbTM=;
+        b=pzO5UY59E2I78nkbHVVchIb8xSq5dpsUcOpNS7Gkxof5sNSjCEODEhGzsvVVjAfJyl
+         VSwzSp6U1Zs9krrRKUF/u2Bk2AkyMb7A4vyZNN5lBySozBpWv75kuuSymSQ75I0lOQIq
+         /aNfumnu9UNKeQqzNIgsFnNCRnWlLEXCl5HKsdcBqoLY2AX4WupdTDUkutMtkReFDd/p
+         7rLcMb8CsQvVO2aMkGCvC0cISIr9opF8PILSUSavYLWpTTSmyGJ8atrT4DsGICF1czPS
+         GjukeM8re+7Is53uuqLc1gz9fVVpsyasqxmhyXdVNJb4jwNSaNcNEMbvPaz5r/mI8alC
+         KLmw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oyadEz0eZwOz4veMiu/99Xwk84Lj2bAOI1P6STGAbTM=;
+        b=Y4CledokJc6GI0n6XJUpXO1Iy42iDV40Vm+i5Wi3eBacq6KYNoq2KmB/n0j0qQjhPG
+         WdxK8emySDybueGcv3LByUrKFevz9aAbJ/3IxzNipfzWfhxsTq/T+SksofUineYlu54L
+         Pslw2GWv1VqlEgN8FK37XazhuIGKVOy3u8npCkdODWcOyRdUKdXTnbwOYSUi/XirioQc
+         CzZe6vlB7aGJ4VWVbqEx9odqL4KpN3xZuv/zoqIftUimPxwH5jVOE+UwVbL1WH5Ww6ls
+         zQ9ZAj3mgWe6KuuupeV7V71IxbsiZCbsC/+GL4NsejI1C0mo7PbieQGG3ElJeq22e8h1
+         Psgw==
+X-Gm-Message-State: AOAM532q4BcFDn1SQcD5gmDldO30sN4yaHsco2aHqOARwywJsH+20skt
+        49xWIm1A2aRCQiYZixu2lANPEEGq6GbwUMqIGsw=
+X-Google-Smtp-Source: ABdhPJxZvpi5p/rGIGspu/X0VuST2fAly2yyAucRwLGlbJciYxHfYOGN4y9O3LRxtfeMHSSpDlexGGV5rTPgQNTp1kc=
+X-Received: by 2002:a37:9147:: with SMTP id t68mr20753351qkd.34.1595246313907;
+ Mon, 20 Jul 2020 04:58:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200720084931.jusstogio6j74uhs@box>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+References: <20200720075148.172156-1-hch@lst.de> <20200720075148.172156-5-hch@lst.de>
+In-Reply-To: <20200720075148.172156-5-hch@lst.de>
+From:   Richard Weinberger <richard.weinberger@gmail.com>
+Date:   Mon, 20 Jul 2020 13:58:22 +0200
+Message-ID: <CAFLxGvxNHGEOrj6nKTtDeiU+Rx4xv_6asjSQYcFWXhk5m=1cBA@mail.gmail.com>
+Subject: Re: [PATCH 04/14] bdi: initialize ->ra_pages in bdi_init
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org,
+        device-mapper development <dm-devel@redhat.com>,
+        linux-block@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        linux-mm@kvack.org, cgroups mailinglist <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello Chrstoph,
 
+On Mon, Jul 20, 2020 at 9:53 AM Christoph Hellwig <hch@lst.de> wrote:
+>
+> Set up a readahead size by default.  This changes behavior for mtd,
+> ubifs, and vboxsf to actually enabled readahead, the lack of which
+> very much looks like an oversight.
 
-ÔÚ 2020/7/20 ÏÂÎç4:49, Kirill A. Shutemov Ð´µÀ:
->>
->> Split_huge_page() must start with PageLRU(head), and we are holding the
->> lru_lock here. If the head was cleared lru bit unexpected, tracking it.
->>
->> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+UBIFS doesn't enable readahead on purpose, please see:
+http://www.linux-mtd.infradead.org/doc/ubifs.html#L_readahead
 
-Hi Kirill,
-
-Millions thanks for review!
-
-Alex
+-- 
+Thanks,
+//richard
