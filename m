@@ -2,54 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76898225A47
-	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 10:43:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2DC225A56
+	for <lists+cgroups@lfdr.de>; Mon, 20 Jul 2020 10:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727058AbgGTIny (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 20 Jul 2020 04:43:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58628 "EHLO
+        id S1727849AbgGTIte (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 20 Jul 2020 04:49:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59498 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726389AbgGTIny (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 04:43:54 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D23B2C0619D2
-        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:43:53 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id z24so19308811ljn.8
-        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:43:53 -0700 (PDT)
+        with ESMTP id S1726389AbgGTItd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 20 Jul 2020 04:49:33 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 016DDC061794
+        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:49:33 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id h19so19303420ljg.13
+        for <cgroups@vger.kernel.org>; Mon, 20 Jul 2020 01:49:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=shutemov-name.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=ktede3490cF8xrICApRVvg9tnZvpytnPociFCS3lvDc=;
-        b=e6djTCYWEj2Fmi95lUFWKgkZcJHCyeTSf7Syl643UoYLetz7sglV0iZEAzz9bdhAWy
-         AV2kduveWFWI+JWAlK2oNtidKKo/CEuAaKD0MJ5Pp2tRK5UEZOnqUQB+URJ8qpBiS3E0
-         7BLXT/fa/imiZu0Qgtj10PZL/JBmO+Pz1dtSqFtftbPH5ryJlZX1B4ohWJEXiBEEvDCm
-         QXR5JmQwVkqYm8SkgaPhzlXf0D9fpQhWmfdlnKXyWsNJSVXFpVk2mp2087rkuizdb6pR
-         gp9yJayr7YSyuNloyVlOeoyOmDejlgs1239X59/cPzNKO7ss8eXDNgChuv/x7qWhxATI
-         9lQA==
+        bh=tfIjuOSIlbet9/U1v7RlPXF9pVVwSHoUTTJkP/5CtL4=;
+        b=1ditQAJ73I/pNYNr9SBkH/lg3J1Qh+5+0QLU2qG5EjXLx93eAZkNyUewnNXYvpWeTV
+         YV/xN3j/4ZwEboXLMLnGfbfO4xeci2toTl8pyFqkRsxWyA9EvXVVSOr1g0MsPJskesbE
+         k4PBkR2Ki4cPOgwtJbVTdk3Ytptep/N0TD+xqYef5fQ4TpfvGgac3p5P8weAUTMEGp4U
+         Y3OoaUMDereGfXzrjFTsTAx/m6IYXSgwqVXhD8+qXC4el25pG3pP/FyI1ijaLYrVvkJ4
+         Q6ZW4g2LmiRgteBMQu1yFt2zGwm4Px1npRWIIiydszKOm8aq45M/KXVDvuC+19ah2t5P
+         6kSg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ktede3490cF8xrICApRVvg9tnZvpytnPociFCS3lvDc=;
-        b=PWOZkIRNCnTlAbJeH8c7bYSnQu+MCRA8+5hBtSnojskqiwPpNNEf3XPl5I6XyR1A20
-         cct6XS2gZ+/PE/KalmNloxkVCPauw5eTnQ9Lo/nU5sZqHDXfrrhtfqpHlaMBeRf5TKFj
-         yfbswZUO3oJKIZeblJJsIeb4OSiEOHNFs8VOMnNUWD5nIsN/JUhTIWrRutddp4JgcUq7
-         Jo7dYMU1lkj2r8tL940xrRsybKbCNF9hg6SlUC9EIul8cysMY4lxzFRsNC6TBMwW/Syd
-         tq8U+e88LUTX3rH9HrA8P0H+uGiMnmSQl8aCQ9Lgg+CfXhUxjdpibp++fgcsynvtYSC6
-         brvA==
-X-Gm-Message-State: AOAM530Gj5qu+5jCO6TYJ8377A/p4nPFnOej1h974FO2fun7CpJimVEw
-        xw39bHML8FBRAQOS2WYYYsD4uA==
-X-Google-Smtp-Source: ABdhPJxDpc+xGL9gCU4hB6aJTaR2Pfe9WrNdwYB5SAzencPCUUdqx2ZecSSoIxaZ/WyEMlHA9/Z3Zg==
-X-Received: by 2002:a05:651c:1057:: with SMTP id x23mr9133434ljm.116.1595234632369;
-        Mon, 20 Jul 2020 01:43:52 -0700 (PDT)
+        bh=tfIjuOSIlbet9/U1v7RlPXF9pVVwSHoUTTJkP/5CtL4=;
+        b=D0fVCYCrngCKeld0yQZzwBCUPmv1Q/DpCCytvkd6S5+iBRAa7+5lTXLJaY5nsOmcy2
+         5Rb+sAi7+QbZC9EwwskScNpQBF9aJa/lur3jSUmZGwnbL83ZtNO0qtkFpUpO5vUu1pl2
+         zXxQjPPH6+G9870I7VF4SKsPmp4c8T33jDB4Y8eKZIpL5NnAsbzGCxG/vMRlfh9cVsG6
+         y+uy85xft3KO14NZKxMvediclkY/0MnIW5kD6AyB1LisZ0bTirP59K1JIR2Y/Q0gr20e
+         uBR/yKZ6iSkCjkloNG3N0CeQxeo9twOwZMoQY8/GHFtLnAErT3B2h56+W0cdahS0EzUt
+         9+kg==
+X-Gm-Message-State: AOAM533ncwSooWpRfZqyHj+kIY7XnBBl0OpXtU9LILb7pV+3gT709kjt
+        eoxxlcGkQJYL4qDGpUm65JjC4A==
+X-Google-Smtp-Source: ABdhPJwVNfyMQI2peB7wCDKanVUNIZeNAO0x0vZkGy2DHvW0CnQn7oDgafHuXBtvoqj/4i8RJE1VgQ==
+X-Received: by 2002:a2e:8043:: with SMTP id p3mr10427887ljg.469.1595234971531;
+        Mon, 20 Jul 2020 01:49:31 -0700 (PDT)
 Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s62sm3101085lja.100.2020.07.20.01.43.51
+        by smtp.gmail.com with ESMTPSA id y2sm3653160lfh.1.2020.07.20.01.49.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 01:43:51 -0700 (PDT)
+        Mon, 20 Jul 2020 01:49:30 -0700 (PDT)
 Received: by box.localdomain (Postfix, from userid 1000)
-        id E7866102393; Mon, 20 Jul 2020 11:43:51 +0300 (+03)
-Date:   Mon, 20 Jul 2020 11:43:51 +0300
+        id 2ED97102393; Mon, 20 Jul 2020 11:49:31 +0300 (+03)
+Date:   Mon, 20 Jul 2020 11:49:31 +0300
 From:   "Kirill A. Shutemov" <kirill@shutemov.name>
 To:     Alex Shi <alex.shi@linux.alibaba.com>
 Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
@@ -58,31 +58,43 @@ Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com
-Subject: Re: [PATCH v16 06/22] mm/thp: clean up lru_add_page_tail
-Message-ID: <20200720084351.v3skr3pluudy6fer@box>
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        Mika =?utf-8?B?UGVudHRpbMOk?= <mika.penttila@nextfour.com>
+Subject: Re: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
+ split_huge_page()
+Message-ID: <20200720084931.jusstogio6j74uhs@box>
 References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
- <1594429136-20002-7-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-15-git-send-email-alex.shi@linux.alibaba.com>
+ <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1594429136-20002-7-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <d478a44b-c598-e99b-d438-9387f208ad37@linux.alibaba.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Jul 11, 2020 at 08:58:40AM +0800, Alex Shi wrote:
-> Since the first parameter is only used by head page, it's better to make
-> it explicit.
+On Fri, Jul 17, 2020 at 05:30:27PM +0800, Alex Shi wrote:
+> 
+> Add a VM_WARN_ON for tracking. and updated comments for the code.
+> 
+> Thanks
+> 
+> ---
+> From f1381a1547625a6521777bf9235823d8fbd00dac Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Fri, 10 Jul 2020 16:54:37 +0800
+> Subject: [PATCH v16 14/22] mm/thp: add tail pages into lru anyway in
+>  split_huge_page()
+> MIME-Version: 1.0
+> Content-Type: text/plain; charset=UTF-8
+> Content-Transfer-Encoding: 8bit
+> 
+> Split_huge_page() must start with PageLRU(head), and we are holding the
+> lru_lock here. If the head was cleared lru bit unexpected, tracking it.
 > 
 > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
 
 Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
 
