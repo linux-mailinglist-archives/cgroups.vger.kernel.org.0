@@ -2,143 +2,180 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 186E422784D
-	for <lists+cgroups@lfdr.de>; Tue, 21 Jul 2020 07:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16FEC227BAE
+	for <lists+cgroups@lfdr.de>; Tue, 21 Jul 2020 11:26:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727027AbgGUFqW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 21 Jul 2020 01:46:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58162 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725774AbgGUFqV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jul 2020 01:46:21 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EE6DC061794;
-        Mon, 20 Jul 2020 22:46:21 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id b92so1094980pjc.4;
-        Mon, 20 Jul 2020 22:46:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3veC3pi53wl7dFDGpjkOo+uS1itnPbzCOm4x4ko6JVY=;
-        b=D/IxIwyEq3hF3iTuaIk+KFCFZyGC8VqcCGJnFT12TDv/8eGagJrHkXCGkF3Muc266t
-         OGT7OoG2HtHbaXMhlknQISHa5De5A/xFpxWKJLCbc/SAIqTngBdVmIG3+rFG2+Y1Wb46
-         YATZPWszcpNmKSDpEHErZUkhido9bvZlai2206IHzthib3Y0UiQ6fX8Re2N3orWnF12s
-         XZ6RPqQNT9T2QKcABfS3hJr1GCzgJFm/rDpCofJQA16hsZZMLUHK0fkaVJHJKDnTcvEP
-         YayBMF/DStbLmLjOPFjbig16IweaRvLj4UCWCSitHEj/N0DuM+39Lm+dho9165oRwpKe
-         XDKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=3veC3pi53wl7dFDGpjkOo+uS1itnPbzCOm4x4ko6JVY=;
-        b=kKDf9hYPNfFx+vlamvo53EVnijLvDnh2gDSOEgTN7NK8ieDWPEkAvH09bq9L8KZT8A
-         NqhxhuAxU5Eoo1HglQpQCoUzAwwRsNPbN3Cqc8dogQzsQmPHywFP0N8CyKGvQP4E8jUD
-         HtDs2nnIVl4vn98n9Q+nNfsx0VS5u52SXHhf1X1tVz8+c8nwscKuYShEIKvp4oSGgk8B
-         jb0alZHqijPGTuO5lWGKDeoL9Er0qxLP05vJOq0/34lQdXnxY8mevxGj/ZLJHhKRd+zP
-         7CyzC6V0wYZ/jw19o0Jm9E+Omx6Jr6IHKngv6bRBE8VSXJDewgpPEVf3Czz743yCr9/t
-         mS1w==
-X-Gm-Message-State: AOAM532LNpJqlyiIILMOP8g32Cr4HkRAeFZ/WApONLKFeA79jZOkw/o5
-        8imwm3wvnM6fjJ2Lf/1IGM4=
-X-Google-Smtp-Source: ABdhPJylrFyWY9zOcJ3tuosterYe/etVkRG4BboKrT7kWFS6Sy9YPaV4NbuHkPEn95UZ4BSYHonUbw==
-X-Received: by 2002:a17:90a:dd44:: with SMTP id u4mr2794038pjv.203.1595310380927;
-        Mon, 20 Jul 2020 22:46:20 -0700 (PDT)
-Received: from google.com ([2620:15c:211:1:7220:84ff:fe09:5e58])
-        by smtp.gmail.com with ESMTPSA id nh14sm1541134pjb.4.2020.07.20.22.46.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 Jul 2020 22:46:19 -0700 (PDT)
-Date:   Mon, 20 Jul 2020 22:46:17 -0700
-From:   Minchan Kim <minchan@kernel.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>,
-        Song Liu <song@kernel.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 11/14] mm: use SWP_SYNCHRONOUS_IO more intelligently
-Message-ID: <20200721054617.GA1879427@google.com>
-References: <20200720075148.172156-1-hch@lst.de>
- <20200720075148.172156-12-hch@lst.de>
- <CALvZod7ACBnNX5W-gtTzheh8R-rxv1nB-5q7UcDUZ7BvtpakpA@mail.gmail.com>
+        id S1725984AbgGUJ0m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 21 Jul 2020 05:26:42 -0400
+Received: from out30-45.freemail.mail.aliyun.com ([115.124.30.45]:48716 "EHLO
+        out30-45.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726892AbgGUJ0l (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 21 Jul 2020 05:26:41 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R481e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=18;SR=0;TI=SMTPD_---0U3Oezh-_1595323596;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U3Oezh-_1595323596)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 21 Jul 2020 17:26:36 +0800
+Subject: Re: [PATCH v16 16/22] mm/mlock: reorder isolation sequence during
+ munlock
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>
+References: <1594429136-20002-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1594429136-20002-17-git-send-email-alex.shi@linux.alibaba.com>
+ <CAKgT0Udcry01samXT54RkurNqFKnVmv-686ZFHF+iw4b+12T_A@mail.gmail.com>
+ <6e37ee32-c6c5-fcc5-3cad-74f7ae41fb67@linux.alibaba.com>
+ <CAKgT0Ue2i96gL=Tqx_wFmsBj_b1cnM1KQHh8b+oYr5iRg0Tcpw@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <7a931661-e096-29ee-d97d-8bf96ba6c972@linux.alibaba.com>
+Date:   Tue, 21 Jul 2020 17:26:34 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod7ACBnNX5W-gtTzheh8R-rxv1nB-5q7UcDUZ7BvtpakpA@mail.gmail.com>
+In-Reply-To: <CAKgT0Ue2i96gL=Tqx_wFmsBj_b1cnM1KQHh8b+oYr5iRg0Tcpw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Thanks for Ccing me, Shakeel.
 
-On Mon, Jul 20, 2020 at 10:52:55AM -0700, Shakeel Butt wrote:
-> +Minchan Kim
-> 
-> On Mon, Jul 20, 2020 at 12:52 AM Christoph Hellwig <hch@lst.de> wrote:
-> >
-> > There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
-> > is not set, as the device won't support it.  Also there is no point in
-> > trying a bio submission if bdev_read_page failed.
-> 
-> This will at least break the failure path of zram_rw_page().
 
-Yes, it needs post processing for error propagaion like *page* handling
-part in end_swap_bio_read(mostly, PG_error and PG_uptodate with pr_alert).
-bdev_read_page's sematic doesn't need to be synchronous so it could just
-submit the IO request and complete the IO afterward. In that case, we
-need right error handling, too if the IO encoutered error. BIO fallback
-makes it simple.
+在 2020/7/21 上午2:51, Alexander Duyck 写道:
+>> Look into the __split_huge_page_tail, there is a tiny gap between tail page
+>> get PG_mlocked, and it is added into lru list.
+>> The TestClearPageLRU could blocked memcg changes of the page from stopping
+>> isolate_lru_page.
+> I get that there is a gap between the two in __split_huge_page_tail.
+> My concern is more the fact that you are pulling the bit testing
+> outside of the locked region when I don't think it needs to be. The
+> lock is being taken unconditionally, so why pull the testing out when
+> you could just do it inside the lock anyway? My worry is that you
+> might be addressing __split_huge_page_tail but in the process you
+> might be introducing a new race with something like
+> __pagevec_lru_add_fn.
 
- * bdev_read_page() - Start reading a page from a block device
- * @bdev: The device to read the page from
- * @sector: The offset on the device to read the page to (need not be aligned)
- * @page: The page to read
- *
- * On entry, the page should be locked.  It will be unlocked when the page
- * has been read.  If the block driver implements rw_page synchronously,
- * that will be true on exit from this function, but it need not be.
- *
- * Errors returned by this function are usually "soft", eg out of memory, or
- * queue full; callers should try a different route to read this page rather
- * than propagate an error back up the stack.
-
-The other concern about this patch is zram have used rw_page for a long
-time even though sometime it doesn't declare BDI_CAP_SYNCHRONOUS_IO by itself
-because rw_page shows 4~5% bandwidth improvement compared to bio-based.
-The performance gain becomes more important these day because compressor
-becomes more fast day by day.
+Yes, the page maybe interfered by clear_page_mlock and add pages to wrong lru
+list.
 
 > 
-> >
-> > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > ---
-> >  mm/page_io.c | 7 +++++--
-> >  1 file changed, 5 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/page_io.c b/mm/page_io.c
-> > index ccda7679008851..63b44b8221af0f 100644
-> > --- a/mm/page_io.c
-> > +++ b/mm/page_io.c
-> > @@ -403,8 +403,11 @@ int swap_readpage(struct page *page, bool synchronous)
-> >                 goto out;
-> >         }
-> >
-> > -       ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
-> > -       if (!ret) {
-> > +       if (sis->flags & SWP_SYNCHRONOUS_IO) {
-> > +               ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
-> > +               if (ret)
-> > +                       goto out;
-> > +
-> >                 if (trylock_page(page)) {
-> >                         swap_slot_free_notify(page);
-> >                         unlock_page(page);
-> > --
-> > 2.27.0
-> >
+> If I am not mistaken the Mlocked flag can still be cleared regardless
+> of if the LRU bit is set or not. So you can still clear the LRU bit
+> before you pull the page out of the list, but it can be done after
+> clearing the Mlocked flag instead of before you have even taken the
+> LRU lock. In that way it would function more similar to how you
+> handled pagevec_lru_move_fn() as all this function is really doing is
+> moving the pages out of the unevictable list into one of the other LRU
+> lists anyway since the Mlocked flag was cleared.
+> 
+
+Without the lru bit guard, the page may be moved between memcgs, luckly,
+lock_page would stop the mem_cgroup_move_account with BUSY state cost.
+whole new change would like the following, I will testing/resend again.
+
+Thanks!
+Alex
+
+@@ -182,7 +179,7 @@ static void __munlock_isolation_failed(struct page *page)
+ unsigned int munlock_vma_page(struct page *page)
+ {
+        int nr_pages;
+-       pg_data_t *pgdat = page_pgdat(page);
++       struct lruvec *lruvec;
+
+        /* For try_to_munlock() and to serialize with page migration */
+        BUG_ON(!PageLocked(page));
+@@ -190,11 +187,11 @@ unsigned int munlock_vma_page(struct page *page)
+        VM_BUG_ON_PAGE(PageTail(page), page);
+
+        /*
+-        * Serialize with any parallel __split_huge_page_refcount() which
++        * Serialize split tail pages in __split_huge_page_tail() which
+         * might otherwise copy PageMlocked to part of the tail pages before
+         * we clear it in the head page. It also stabilizes hpage_nr_pages().
+         */
+-       spin_lock_irq(&pgdat->lru_lock);
++       lruvec = lock_page_lruvec_irq(page);
+
+        if (!TestClearPageMlocked(page)) {
+                /* Potentially, PTE-mapped THP: do not skip the rest PTEs */
+@@ -205,15 +202,15 @@ unsigned int munlock_vma_page(struct page *page)
+        nr_pages = hpage_nr_pages(page);
+        __mod_zone_page_state(page_zone(page), NR_MLOCK, -nr_pages);
+
+-       if (__munlock_isolate_lru_page(page, true)) {
+-               spin_unlock_irq(&pgdat->lru_lock);
++       if (__munlock_isolate_lru_page(page, lruvec, true)) {
++               unlock_page_lruvec_irq(lruvec);
+                __munlock_isolated_page(page);
+                goto out;
+        }
+        __munlock_isolation_failed(page);
+
+ unlock_out:
+-       spin_unlock_irq(&pgdat->lru_lock);
++       unlock_page_lruvec_irq(lruvec);
+
+ out:
+        return nr_pages - 1;
+@@ -293,23 +290,27 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+        int nr = pagevec_count(pvec);
+        int delta_munlocked = -nr;
+        struct pagevec pvec_putback;
++       struct lruvec *lruvec = NULL;
+        int pgrescued = 0;
+
+        pagevec_init(&pvec_putback);
+
+        /* Phase 1: page isolation */
+-       spin_lock_irq(&zone->zone_pgdat->lru_lock);
+        for (i = 0; i < nr; i++) {
+                struct page *page = pvec->pages[i];
+
++               /* block memcg change in mem_cgroup_move_account */
++               lock_page(page);
++               lruvec = relock_page_lruvec_irq(page, lruvec);
+                if (TestClearPageMlocked(page)) {
+                        /*
+                         * We already have pin from follow_page_mask()
+                         * so we can spare the get_page() here.
+                         */
+-                       if (__munlock_isolate_lru_page(page, false))
++                       if (__munlock_isolate_lru_page(page, lruvec, false)) {
++                               unlock_page(page);
+                                continue;
+-                       else
++                       } else
+                                __munlock_isolation_failed(page);
+                } else {
+                        delta_munlocked++;
+@@ -321,11 +322,14 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
+                 * pin. We cannot do it under lru_lock however. If it's
+                 * the last pin, __page_cache_release() would deadlock.
+                 */
++               unlock_page(page);
+                pagevec_add(&pvec_putback, pvec->pages[i]);
+                pvec->pages[i] = NULL;
+        }
+-       __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
+-       spin_unlock_irq(&zone->zone_pgdat->lru_lock);
++       if (lruvec) {
++               __mod_zone_page_state(zone, NR_MLOCK, delta_munlocked);
++               unlock_page_lruvec_irq(lruvec);
++       }
+
+        /* Now we can release pins of pages that we are not munlocking */
+        pagevec_release(&pvec_putback);
