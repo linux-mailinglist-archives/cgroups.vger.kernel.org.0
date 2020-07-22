@@ -2,125 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7653522927D
-	for <lists+cgroups@lfdr.de>; Wed, 22 Jul 2020 09:45:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 75579229332
+	for <lists+cgroups@lfdr.de>; Wed, 22 Jul 2020 10:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726870AbgGVHpa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 22 Jul 2020 03:45:30 -0400
-Received: from esa6.hgst.iphmx.com ([216.71.154.45]:60082 "EHLO
-        esa6.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726253AbgGVHp3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jul 2020 03:45:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1595403929; x=1626939929;
-  h=from:to:cc:subject:date:message-id:references:
-   content-transfer-encoding:mime-version;
-  bh=2dYsmetetAQjGFOstq75gNTdBHAVPGPd6z19LIgcbAs=;
-  b=AX+FqyFP42cvLdAwluqAh6NJ4NC9KumH6E5bwT2Do6gs35PIRX44z/fp
-   rHFo2N6mcQ1c9TpzbPJnMdS+/vIJPdezH9ELCuoQbWM294ewrU8AOjrP8
-   srit02Vsv9yJozycvqVfww6wx3N7vg96O8YIpaZFpmwUhas0cCikpzLPl
-   vnWUkEHDsIkE2QkALziB/UmqluvTEmFinO0589aqYSgjB3I8CtrBASTJd
-   NvmFfHrauXPZYvKdzj46zQj1yhGETqXX/v1O6JtW3FAqPnoHkRTA3DD+j
-   M6Jjx36GZHmQq2ICEBhny7PJiCjdazGU/sefV3bD6u/70D8ASJ3W4dsBc
-   Q==;
-IronPort-SDR: SDjlXVEhUp0fAxb7HA0iZl2lppjVGzgppUkGG+WGLW49GubZShj2qUNUK5fNy4VXMQ7uM5NF6g
- MarhJ3NvqMvRPN/606pU/xuhmhczi+lE91rLKYEKA+oV6uoB5H0IdBUqdnKqU36BIXI5+/DVgT
- wgx9aceZ/vD9Eop0RBjUf+MudWDzMAGwbQcjD0PFQ5hzZ1q/QUjE19+Vql9NhvSaR8W98oqvMz
- qjibeh+XqSl2YoU50c12tPKRtuhHIbtFEukHVOoXJJV86GB5DD7DPM0Lpj5gzLvU6/YwO3x6Y6
- Q4U=
-X-IronPort-AV: E=Sophos;i="5.75,381,1589212800"; 
-   d="scan'208";a="144357296"
-Received: from mail-bn8nam12lp2172.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) ([104.47.55.172])
-  by ob1.hgst.iphmx.com with ESMTP; 22 Jul 2020 15:45:27 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=drU+PObeyP3UdTqV790WO7C7ywL2JUxTmqUeMUz5Stk/lb7uW1UesRnhM8Bghke9cpVbX1l+A0ghUYsD6uONEDPIfm/z73C0GptuwOLdoSOStVdRiK4ErYwGSMmTB8GIKxQcRNNzTxjcOPVWnXyT5Vx5KQURD3ibXiCeDKmWVmck++vNxZvfTwuK2LakYaiYqUVJY/uwDcNQEi0NOKYQyB9Ko0LK6xTwgHSA3zUUtmswN1NC7eaVqD/KQYJqitLhRooZBMUUzLJ2Q3ofLymn/bHO4FNyx94dLVizecb6ggSo72Ipoxfsan24IL40+mn2OdzVTf88LZL4EvK9AbABeQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I0K5mJznmfxjwY39VW0JeYpFKeILGV3n8VhABZp5fF0=;
- b=QHi8m12gXJAZFvDfFS+/9Ds0HLkoapN9cfjcRy0VvFYZTBR6NyuCx+otChUHAnb3qlIROeJaR8ji5RPiKRDI0L4/ARXAgOPzY/GfSRmtn4NuPG+79LUDpHZg53LN3S93p7x+FMV2P1bymnvylbv3SQvnD83FciBm2Bq6pct4/uFcyQ5NDK4VeqvN/5Vfoxsieogb7of8PRjCCfyHpS+mzpNFkWxHZ1PjyLYPjaNKJ4REhYDQb5bH3YH0rSJ+bLlCZlMxy+T95pW4MnG2MSILwebfSbMXDaYktgpq+5z9aDJ5CSNKM7zDdl29OErlCFRXEoLdsAgKHMXV4eNdyRh2LA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
+        id S1727819AbgGVIM4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 22 Jul 2020 04:12:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49758 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726141AbgGVIMz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 22 Jul 2020 04:12:55 -0400
+Received: from mail-vs1-xe44.google.com (mail-vs1-xe44.google.com [IPv6:2607:f8b0:4864:20::e44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB227C0619DC
+        for <cgroups@vger.kernel.org>; Wed, 22 Jul 2020 01:12:55 -0700 (PDT)
+Received: by mail-vs1-xe44.google.com with SMTP id j186so666928vsd.10
+        for <cgroups@vger.kernel.org>; Wed, 22 Jul 2020 01:12:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=I0K5mJznmfxjwY39VW0JeYpFKeILGV3n8VhABZp5fF0=;
- b=a/9R+n5BrdGnFvHmK72vVSTNqZyTcUh2/W/H5HRXaBYZJJFj6fag2W8sUdt+D1wg8YbLPwkfmtSwkPd6qAfXsxozzx/9GJcww1xDIA9SHpfliZe3w2opM2huZfYgSW77aFyzYlj43Q6qS1FVjdu8ZM81iim5HkVQKJqFQRyTIDc=
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- (2603:10b6:803:47::21) by SN6PR04MB5166.namprd04.prod.outlook.com
- (2603:10b6:805:94::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3195.17; Wed, 22 Jul
- 2020 07:45:25 +0000
-Received: from SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2]) by SN4PR0401MB3598.namprd04.prod.outlook.com
- ([fe80::1447:186c:326e:30b2%7]) with mapi id 15.20.3195.026; Wed, 22 Jul 2020
- 07:45:25 +0000
-From:   Johannes Thumshirn <Johannes.Thumshirn@wdc.com>
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-CC:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        "linux-mtd@lists.infradead.org" <linux-mtd@lists.infradead.org>,
-        "dm-devel@redhat.com" <dm-devel@redhat.com>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "drbd-dev@lists.linbit.com" <drbd-dev@lists.linbit.com>,
-        "linux-raid@vger.kernel.org" <linux-raid@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>
-Subject: Re: [PATCH 09/14] bdi: remove BDI_CAP_CGROUP_WRITEBACK
-Thread-Topic: [PATCH 09/14] bdi: remove BDI_CAP_CGROUP_WRITEBACK
-Thread-Index: AQHWX/E7tn9lZZ9OhUyy9G9ALxYa2w==
-Date:   Wed, 22 Jul 2020 07:45:24 +0000
-Message-ID: <SN4PR0401MB35988BC2003CCDFC7CE8258F9B790@SN4PR0401MB3598.namprd04.prod.outlook.com>
-References: <20200722062552.212200-1-hch@lst.de>
- <20200722062552.212200-10-hch@lst.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lst.de; dkim=none (message not signed)
- header.d=none;lst.de; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [129.253.240.72]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: c408b401-570b-44b8-cdf6-08d82e133232
-x-ms-traffictypediagnostic: SN6PR04MB5166:
-x-microsoft-antispam-prvs: <SN6PR04MB51661888992ABF6700F326FB9B790@SN6PR04MB5166.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: EfDnxd+GPm0gZxTebfIFv6FzPlTSO1L25VMdJjFqeTLDSm95+2EeoCncor1Ikx12NOs4A+eQLtb91OotgtTkwkMqjEjcLDYer1UXXwFK88XlDNn1VcC789J1XI+YCfboC4NQONkv1aqjH2CGDULcJvndJokgksu+OyxWeUJ7sui9iztfLHfi4h58+IcNHU9petmCnmts7XzJ8feEu8J7MzCOPz/+O66g51FfXLHwDFfuo/FKIH9r0/+Cg4GR4g+BJTTeRFfkvlUyiQGc9z/ZjV+LrFhQKJD7JCd+oqdQXKCqCMn/aQUmhjRqjxZN7XcLPYMVWY6tgZGNDWXbz1Uqpw==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN4PR0401MB3598.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(366004)(376002)(39860400002)(136003)(346002)(9686003)(55016002)(86362001)(26005)(558084003)(7416002)(52536014)(5660300002)(83380400001)(186003)(76116006)(66946007)(66446008)(64756008)(66476007)(66556008)(8936002)(478600001)(54906003)(8676002)(7696005)(110136005)(316002)(2906002)(91956017)(4326008)(53546011)(6506007)(71200400001)(33656002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: 4Vf7Bw2L2SMhl3Jt3ilKs7ZxghqXd79kKvSP0ct+ChAlqLmLNj25NXPhAalKXCu+YIG48i068OUEUN4KbDcYD0Hs/4j3WJUCFvzLlt53HJvY/ue9U+1J4qJGyiIFHnJbqZkwfh5gcTysF4pp0RekCJ9GpLa/gL7pxT5vh35fxY/ONSjnEm1YFiihH0NflWOi62TZ4iUOtvcqy8kPeRgvhsMxNHAD+c3NVTilVhm32WxzcUWmG8IEJS+97EFA3iCNiQr3EbnB8sozmmMHjVZH0QG7Vp1YT2z2PL0ZR9pM5MyFMTN/unviq9YFquqWSSmDfyEu+VQ8XJYnvqHzkqTkEZ1ZiQ0x9U2ydIA5/YGw/KT8m+pA2hWsxgBhkidG5ZrFUqkSkUSwJ5jhWEusaX4QaW+vL6YHK4QyZrHGmLc9W5hvA0iDXzx+//rVN6Q5xL0DCjkkAO59PGD5+es9JShbbi+JPLfiXOeIrnzflaWg4qgWIqs51Z6d8CAdXS8f0wwv
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=W076aF0pkVnevDwhzxCKbE8g4hkBp73FmZlkbs1P7qI=;
+        b=EJvmytfSokKO7JKn01fpIGNNcDIwYqddu5VHauVWUGc3goiTFLOMh/jS6GOMU5u8fV
+         afUX5FEujNCgFhe9IgKVk11AmYBxs8SDVZ/33xRJ6fclZI3iEbvd+I8JWZ20P0Ogp99k
+         05OkW1+TJbQB4wziG5tBJqCUqnu5Fum6fhYrItkEX/Ql7rPQB4gvVgUNgCGTAMu+a46G
+         Cr8+kEDVxXB23qpVtdjFhmN6gyaVIdYUQ+p2S9hJ9W1JAllvSfFHvBr3FN7arjqVvM27
+         38sPnVTONLxWzS/9Og5FqICPliuMHrY9n5ft9bEcJaBY87UGztv5oI/Nj+JfPpUqQNZA
+         eovA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=W076aF0pkVnevDwhzxCKbE8g4hkBp73FmZlkbs1P7qI=;
+        b=ulpSBGEyFrRCXrQGtQ2ACAhyzXzRdrJ3ikg5E3w8Kt1UGMV1l+QXtdLBb3Kqq/8nOg
+         PONrswKC7pj6yqR4kYPCUJ+JrDe6r0ZBC5gUUzcvsNhlRV92tVBBovTncuvUagb2W7Gh
+         RzhITj+h7xLc+faZL0TJ3FtRwLmPA771IiZnUw24iAO70sQw3sbeHOwyshnFDLCy3PL0
+         ybKjib3GXXyKz5Owh2VyIF+VgiP1jCJzCd94zGI7Coj4e2tBLM6y1yAwRunjHbtRw0/T
+         bUNLOo9Vcd2asBAESpUbVExaXu27pdWMnb/vWy5oEys+wDeagaEFBhoQad+6AqDGZjZ1
+         qZ0Q==
+X-Gm-Message-State: AOAM532snYKC0/2Hkda5AuNUkkeOtJURMQrHHhniAh89pOrlZhTV/KXL
+        VCFkW4+5Wv4EJGgZwjjcMcvbuWJb81EBuLIf3C9/Vg==
+X-Google-Smtp-Source: ABdhPJzouE3ayXob168ZiUBCBR5VEnzkMxo5l6S3qNRk39xqgecbpgIN4va5/wubbhAfJjSUa2F7SfeShPjXI+/Oo+8=
+X-Received: by 2002:a67:2d0e:: with SMTP id t14mr21191740vst.22.1595405574822;
+ Wed, 22 Jul 2020 01:12:54 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SN4PR0401MB3598.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c408b401-570b-44b8-cdf6-08d82e133232
-X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Jul 2020 07:45:24.9244
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: SirNX0bUajLMGXRH0iKCjWPNXUs9Ukmcwo5ehc24DNrjMj6KWKusnbx4pI2xSrXuVT41q2axOQJFRyDnqTFudULMSRzXqqnqTrUhVIuh+2Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR04MB5166
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 22 Jul 2020 13:42:42 +0530
+Message-ID: <CA+G9fYuj3bHUMz8XQztbmTgF0c5+rZ5-FkUjFyvEftej2jLT+Q@mail.gmail.com>
+Subject: BUG at mm/vmalloc.c:3089! - invalid opcode: 0000 [#1] SMP KASAN PTI
+To:     open list <linux-kernel@vger.kernel.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, lkft-triage@lists.linaro.org,
+        LTP List <ltp@lists.linux.it>,
+        Cgroups <cgroups@vger.kernel.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>, urezki@gmail.com,
+        Matthew Wilcox <willy@infradead.org>,
+        oleksiy.avramchenko@sonymobile.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>, rppt@linux.ibm.com,
+        david@redhat.com, Joerg Roedel <jroedel@suse.de>,
+        Arnd Bergmann <arnd@arndb.de>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 22/07/2020 08:27, Christoph Hellwig wrote:=0A=
-> it is know to support cgroup writeback, or the bdi comes from the block=
-=0A=
-knwon  ~^=0A=
-=0A=
-Apart from that,=0A=
-Reviewed-by: Johannes Thumshirn <johannes.thumshirn@wdc.com>=0A=
+Kernel BUG at mm/vmalloc.c:3089! on x86_64 Kasan configured kernel reported
+this while testing LTP cgroup_fj_stress_memory_4_4_none test cases.
+
+Also found on arm64 and i386 devices and qemu.
+
+metadata:
+  git branch: master
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
+  git commit: de2e69cfe54a8f2ed4b75f09d3110c514f45d38e
+  git describe: next-20200721
+  make_kernelversion: 5.8.0-rc6
+  kernel-config:
+https://builds.tuxbuild.com/zU-I3LEfC1AaKQ59Er60ZQ/kernel.config
+
+crash log,
+[ 1421.080221] ------------[ cut here ]------------
+[ 1421.084874] kernel BUG at mm/vmalloc.c:3089!
+[ 1421.090356] invalid opcode: 0000 [#1] SMP KASAN PTI
+[ 1421.096009] CPU: 1 PID: 19100 Comm: kworker/1:1 Not tainted
+5.8.0-rc6-next-20200721 #1
+[ 1421.103933] Hardware name: Supermicro SYS-5019S-ML/X11SSH-F, BIOS
+2.0b 07/27/2017
+[ 1421.111418] Workqueue: events pcpu_balance_workfn
+[ 1421.116138] RIP: 0010:free_vm_area+0x2d/0x30
+[ 1421.120413] Code: e5 41 54 49 89 fc 48 83 c7 08 e8 9e 5e 04 00 49
+8b 7c 24 08 e8 74 f8 ff ff 49 39 c4 75 0c 4c 89 e7 e8 97 d2 03 00 41
+5c 5d c3 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 56 49
+89 fe
+[ 1421.139154] RSP: 0018:ffff88840142fc80 EFLAGS: 00010282
+[ 1421.144381] RAX: 0000000000000000 RBX: ffff88841b843738 RCX: ffffffff86ca1d78
+[ 1421.151515] RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffff8883bfacd630
+[ 1421.158647] RBP: ffff88840142fc88 R08: 0000000000000001 R09: ffffed1080285f7e
+[ 1421.165780] R10: 0000000000000003 R11: ffffed1080285f7d R12: ffff888409e89880
+[ 1421.172913] R13: ffff88841b843730 R14: 0000000000000080 R15: 0000000000000080
+[ 1421.180045] FS:  0000000000000000(0000) GS:ffff88841fa80000(0000)
+knlGS:0000000000000000
+[ 1421.188132] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1421.193876] CR2: 00007f1230b41080 CR3: 000000025d40e002 CR4: 00000000003706e0
+[ 1421.201008] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1421.208132] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+[ 1421.215255] Call Trace:
+[ 1421.217703]  pcpu_free_vm_areas+0x30/0x44
+[ 1421.221714]  pcpu_balance_workfn+0x7bd/0x8f0
+[ 1421.225987]  ? pcpu_create_chunk+0x2f0/0x2f0
+[ 1421.230261]  ? read_word_at_a_time+0x12/0x20
+[ 1421.234531]  ? strscpy+0xc1/0x190
+[ 1421.237842]  process_one_work+0x474/0x7b0
+[ 1421.241856]  worker_thread+0x7b/0x6a0
+[ 1421.245521]  ? wake_up_process+0x10/0x20
+[ 1421.249448]  ? process_one_work+0x7b0/0x7b0
+[ 1421.253635]  kthread+0x1aa/0x200
+[ 1421.256867]  ? kthread_create_on_node+0xd0/0xd0
+[ 1421.261400]  ret_from_fork+0x22/0x30
+[ 1421.264978] Modules linked in: x86_pkg_temp_thermal
+[ 1421.269869] ---[ end trace 6352cf97284f07da ]---
+[ 1421.274955] RIP: 0010:free_vm_area+0x2d/0x30
+[ 1421.281026] Code: e5 41 54 49 89 fc 48 83 c7 08 e8 9e 5e 04 00 49
+8b 7c 24 08 e8 74 f8 ff ff 49 39 c4 75 0c 4c 89 e7 e8 97 d2 03 00 41
+5c 5d c3 <0f> 0b 90 48 b8 00 00 00 00 00 fc ff df 55 48 89 e5 41 56 49
+89 fe
+[ 1421.300553] RSP: 0018:ffff88840142fc80 EFLAGS: 00010282
+[ 1421.307051] RAX: 0000000000000000 RBX: ffff88841b843738 RCX: ffffffff86ca1d78
+[ 1421.314184] RDX: dffffc0000000000 RSI: 0000000000000004 RDI: ffff8883bfacd630
+[ 1421.321317] RBP: ffff88840142fc88 R08: 0000000000000001 R09: ffffed1080285f7e
+[ 1421.328477] R10: 0000000000000003 R11: ffffed1080285f7d R12: ffff888409e89880
+[ 1421.335639] R13: ffff88841b843730 R14: 0000000000000080 R15: 0000000000000080
+[ 1421.342777] FS:  0000000000000000(0000) GS:ffff88841fa80000(0000)
+knlGS:0000000000000000
+[ 1421.350870] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[ 1421.356643] CR2: 00007f1230b41080 CR3: 000000025d40e002 CR4: 00000000003706e0
+[ 1421.363811] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+[ 1421.370951] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+
+Full test log,
+https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200721/testrun/2972982/suite/linux-log-parser/test/check-kernel-bug-1594684/log
+
+--
+Linaro LKFT
+https://lkft.linaro.org
