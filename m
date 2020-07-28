@@ -2,339 +2,225 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20F26230E8D
-	for <lists+cgroups@lfdr.de>; Tue, 28 Jul 2020 17:56:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA1A4231208
+	for <lists+cgroups@lfdr.de>; Tue, 28 Jul 2020 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731039AbgG1P4H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 28 Jul 2020 11:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730963AbgG1P4H (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jul 2020 11:56:07 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 150DBC061794;
-        Tue, 28 Jul 2020 08:56:07 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id t15so12336571iob.3;
-        Tue, 28 Jul 2020 08:56:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=OTfwjc1FRQLZQNZD1/9bduGC1jve2EFF+bZqMItMbMI=;
-        b=bZo5BpOKVA3FUbeHqes88E2XiqI+1pUiJvaI8Vg2qsZrJ8/WVytv13JK85YM7vRiW7
-         7SBoL0m2NQdE0iD7/0In30u7Kh9hnvXHifRNYJq8UfCDDi3139iNiU07/3wrfcA3mtBp
-         LrqHVWdXB+qrAzaOUxZgpmJ+rKwBKZOpWvoVw8u/OvICCYBTr2x85Bf0m2v7BAHTwnNx
-         vZAnymn3iMjjrDEt58wRcAuKEXhred52FDKC0JS/J/j8lN0FUHVJUAPZzJ/F1kAQVGQ1
-         WGlXXVxcOuVZXfPJjRLD6NcKUA0RzFELEfhnHwDlD5lO30mf8DtYbjTzcxfMliqaqxSx
-         TuTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=OTfwjc1FRQLZQNZD1/9bduGC1jve2EFF+bZqMItMbMI=;
-        b=U65EY5uuEHtQ8eiMBBEQPe1OdwNKGCj/fSVk2FbOQV+xohJAuEe6ztd5b5l/yl7++R
-         OP8LOxprUV1RrU3MpHlyuHDeX3/BrVe83D+p3/aBOsSdO+WUm5FeOajt/N0jDRUd6fkJ
-         g0sT5omEWJ/jAiQbp0oGHqD0/393G9AQP4dkRsM9NQat9jeBGtp606B1refy0IJUw2jG
-         CSXzJWkjaGDSFA8xrF1yrgFfw1tdk1xWxvu6NRE9ttePbDMxQJmXLmncKkzXx5sNpHUS
-         9v6bkkUuufaaxVvwaUKaam5i1Af7iUDChHA1IqCGe8OPbVmeIJsyuZrXnktz7oT4gxhL
-         Z3cw==
-X-Gm-Message-State: AOAM532l3wZvDzLOasZQsr/7LgD3iLL5s296C/RL7f8Y9rG6q2EdiIDJ
-        mvcmSndAmIA7/dKS0eu7btWAPyG4KHT0pG78Sz0=
-X-Google-Smtp-Source: ABdhPJwCqe5IctwsE4VLRsK8Zi2PsslTmgFY725Rn4+dwHYPCAonPWWUshwTmD9995054HtivWtW4maSQJv8hdfw2iw=
-X-Received: by 2002:a6b:92d5:: with SMTP id u204mr17206025iod.38.1595951766280;
- Tue, 28 Jul 2020 08:56:06 -0700 (PDT)
+        id S1732532AbgG1Sxz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 28 Jul 2020 14:53:55 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:45890 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728782AbgG1Sxz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 28 Jul 2020 14:53:55 -0400
+Received: from pps.filterd (m0148460.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 06SIoWCT004054;
+        Tue, 28 Jul 2020 11:53:48 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=FVNIR2xjk/9l9AEZJ00iTvtiTR8dEBO3vE9XfzlitWc=;
+ b=gP9o441jVCsBKj6ajeSRfOwOOWmH82HF1aaFcpXtSMIDimrC66Zd2rksWc/ciyNEc+jL
+ A/WZDNi3vcFAwErOMqBeucLkSFF79CumYbXVVmLFYX92GKoq0WN/KMN8PBj9+aHJhAIp
+ B3A0z9XlZbRPQxs0IomC41Izior5Mi/n/Lo= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 32jp0uh790-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 28 Jul 2020 11:53:48 -0700
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 28 Jul 2020 11:53:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iOsszuzYNlmu5j8sLaBgIa1xfzLt5Oe673+V3TUSfW1s69nJvNOU+l6WTygrqFfJ6tSrkcg9NATCLfIoRK+2negNGBAyIqptqGhcnKaKHNtlOWwGEdoCY0ZBJ6buZn1LbFBgm8uBNvDlmvuMf6Ycf91MP19gH6k7udZ2FQuH9S8IAXxwntEXz/m0c+s+YlHkseBP+EHO7qgTuHy3MkWnidyN/rtUHpuQsyc5MXTf+wC3p1Ede3rg4oTsiOiFD39OjzL4jN3ARcLtYww7VWgRqVOKNqOc2JKfEqmk8YrFdT9IlJUv3ud3d9Hu4rrbJK9dRLSCUyiuo17QEs72RBR0dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FVNIR2xjk/9l9AEZJ00iTvtiTR8dEBO3vE9XfzlitWc=;
+ b=hW+aFhpWSDK4p/bsCrrRQW/TO46u0zVaD5sFP9mlAAgAaRfcMetW3QiNhQdzczKhnObiKAol+BORysIo/S4nO6VrRjTPjzEb9wDwM9XYGOy4wJ2Jicm3d/WzRGH0kQB7O+YtOQbbu2rebFWJzUdFrgLTewAyJ+pyjcljyiLG7oxgtgsGR4CKUZXN/p1TNSNu4wbvv83Xtkxp7G8x6YmCHTvouG6kB+iLlSPo4F6dkYbVJLbNFsQjQSuW/0OHBRVYv32jWXp1AO5h73w+YkhvKWzFizT10GSDNuK6sQ9FOrjjWJNzcgycEDWXekWiK8e+e3yEbpEX//AYLdkY6lgiiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FVNIR2xjk/9l9AEZJ00iTvtiTR8dEBO3vE9XfzlitWc=;
+ b=Z7ZiC9i2fll3ivLLcSLh6WTjpARzYpgi3evXwxLTELo25+zUwYoJFbIwr0EcTG8NL/3BA+qBO2Jo0K2WNTHQcg6OuM9TcFq9KXWYJUXi02lbGqE6RJMa9iAVny03r7+fLnT7eJmIF05y0bL9nK5HrGr/drU43MG2fVwBCke46vM=
+Authentication-Results: cmpxchg.org; dkim=none (message not signed)
+ header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3480.namprd15.prod.outlook.com (2603:10b6:a03:112::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3216.23; Tue, 28 Jul
+ 2020 18:53:44 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::48e3:c159:703d:a2f1%5]) with mapi id 15.20.3216.033; Tue, 28 Jul 2020
+ 18:53:44 +0000
+Date:   Tue, 28 Jul 2020 11:53:41 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kernel-team@fb.com>
+Subject: Re: [PATCH] mm: memcontrol: don't count limit-setting reclaim as
+ memory pressure
+Message-ID: <20200728185341.GA410810@carbon.DHCP.thefacebook.com>
+References: <20200728135210.379885-2-hannes@cmpxchg.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200728135210.379885-2-hannes@cmpxchg.org>
+X-ClientProxiedBy: BYAPR11CA0047.namprd11.prod.outlook.com
+ (2603:10b6:a03:80::24) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-18-git-send-email-alex.shi@linux.alibaba.com>
- <CAKgT0UdaW4Rf43yULhQBuP07vQgmoPbaWHGKv1Z7fEPP6jH83w@mail.gmail.com> <1fd45e69-3a50-aae8-bcc4-47d891a5e263@linux.alibaba.com>
-In-Reply-To: <1fd45e69-3a50-aae8-bcc4-47d891a5e263@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Tue, 28 Jul 2020 08:55:55 -0700
-Message-ID: <CAKgT0UfWckn0npij5UhEEmMKuG0bRytN3kPDtvvE3AdJuEZjJg@mail.gmail.com>
-Subject: Re: [PATCH v17 17/21] mm/lru: replace pgdat lru_lock with lruvec lock
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:19ed) by BYAPR11CA0047.namprd11.prod.outlook.com (2603:10b6:a03:80::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3239.16 via Frontend Transport; Tue, 28 Jul 2020 18:53:44 +0000
+X-Originating-IP: [2620:10d:c090:400::5:19ed]
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 74470a21-29cc-432b-d248-08d833278d80
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3480:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BYAPR15MB3480B9BA85BBAF3C7D80E5D4BE730@BYAPR15MB3480.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: v4+idC3rz6jzkc1I9W9G+TANYWmIaITJWYJs+SdTqYzY05SA8BiRL8psSe5z4BgVEJwOtuZ6iFP/0snYI/JH//AB0uW9HLT4mw+SqMlSnbM+YtN6Uh9b96ItHF7i+fBt0UVXa/an8vMuzTNS60pFJD64n3rriZvbjk1CG+AYeSkKI5j8zJZKxnzXjuIZI3oYPxs85YjEk22ZWOedXcp7y/MsvWOvQdAa2ebiVln3CwiYOJ8WDLZtvWuHxUZfTdRVXaFgnJ50qhId1GIuxnvJTRz3KBkI/q6Fde6ktQmJWh8mM2/00ZUwlnqVYSv1gV7CaWZNhfoF7GiF+QQyxbRDbw53CmtHx50WwJJe5P298J5WaYlWuijy4suIo3CcEfBM3FVSfADSNHPoCyE288eoHw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(396003)(39860400002)(136003)(346002)(376002)(366004)(83380400001)(1076003)(52116002)(6506007)(186003)(16526019)(7696005)(8676002)(8936002)(33656002)(86362001)(5660300002)(316002)(4326008)(55016002)(66946007)(9686003)(66476007)(6916009)(478600001)(66556008)(54906003)(2906002)(6666004);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: cCNNx8UhM3WCI4k0o5j0euqW570IH9vYQML49tXArQmWrpYlt7BcfI2Vo4GT+bz5BXGIBzeZ91eZb7OFm3ondmmmSEeKqF5N91No9a97V0oiyQn3Y/NkuLElH0Vg+uxPf8A974D8nVHRs56wTORZLRqZqFgZb4P2UCBiHZp4xOiWKMJSgo56/f5oXFLonrVHFK6sPkuyC5IPPxA1kHdmDiHa+f4C5eFH/x5r62x1gVHCOFfV+gj1eDK+J1n1zxzak+gY1cA+NxzhEW7BNa6yIvpdnicpTFhKIbHprtT0aKYBzv5zff4OP1GuctdvLYrU5aw1UNZdNNWM4+s/I1FzNuUEEOkpIn0QTb5D+zLslp6ds2dAlH4O00hS7QTQrf7WTibngtTSiIv3vgf2QxY9cqz568U1/MOQLh29vRgZAcWu619WwLcfxt3160u82j4qTRY42pHOrbcQMzg6ycV4qxC9xlg4g4vuBToGJ+AL8LKavJ++Ie4eznq+PS4EckvFX5F5jN9m31+uBm8fCRRlsQ==
+X-MS-Exchange-CrossTenant-Network-Message-Id: 74470a21-29cc-432b-d248-08d833278d80
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 28 Jul 2020 18:53:44.5055
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Dk7qRxiYsS1qoFvGbvA+GeGZl8DqNVQfS8yRgpCmdhzMwQDLytwddHs94UnWfBFd
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3480
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-07-28_15:2020-07-28,2020-07-28 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 lowpriorityscore=0
+ mlxscore=0 phishscore=0 priorityscore=1501 suspectscore=0 malwarescore=0
+ mlxlogscore=999 bulkscore=0 adultscore=0 impostorscore=0 spamscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2007280133
+X-FB-Internal: deliver
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jul 28, 2020 at 8:40 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
-:
->
->
->
-> =E5=9C=A8 2020/7/28 =E4=B8=8A=E5=8D=887:34, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> > It might make more sense to look at modifying
-> > compact_unlock_should_abort and compact_lock_irqsave (which always
-> > returns true so should probably be a void) to address the deficiencies
-> > they have that make them unusable for you.
->
-> One of possible reuse for the func compact_unlock_should_abort, could be
-> like the following, the locked parameter reused different in 2 places.
-> but, it's seems no this style usage in kernel, isn't it?
->
-> Thanks
-> Alex
->
-> From 41d5ce6562f20f74bc6ac2db83e226ac28d56e90 Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Tue, 28 Jul 2020 21:19:32 +0800
-> Subject: [PATCH] compaction polishing
->
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+On Tue, Jul 28, 2020 at 09:52:10AM -0400, Johannes Weiner wrote:
+> When an outside process lowers one of the memory limits of a cgroup
+> (or uses the force_empty knob in cgroup1), direct reclaim is performed
+> in the context of the write(), in order to directly enforce the new
+> limit and have it being met by the time the write() returns.
+> 
+> Currently, this reclaim activity is accounted as memory pressure in
+> the cgroup that the writer(!) belongs to. This is unexpected. It
+> specifically causes problems for senpai
+> (https://github.com/facebookincubator/senpai), which is an agent that
+> routinely adjusts the memory limits and performs associated reclaim
+> work in tens or even hundreds of cgroups running on the host. The
+> cgroup that senpai is running in itself will report elevated levels of
+> memory pressure, even though it itself is under no memory shortage or
+> any sort of distress.
+> 
+> Move the psi annotation from the central cgroup reclaim function to
+> callsites in the allocation context, and thereby no longer count any
+> limit-setting reclaim as memory pressure. If the newly set limit
+> causes the workload inside the cgroup into direct reclaim, that of
+> course will continue to count as memory pressure.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+Reviewed-by: Roman Gushchin <guro@fb.com>
+
+Thanks!
+
 > ---
->  mm/compaction.c | 71 ++++++++++++++++++++++++---------------------------=
-------
->  1 file changed, 30 insertions(+), 41 deletions(-)
->
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index c28a43481f01..36fce988de3e 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -479,20 +479,20 @@ static bool test_and_set_skip(struct compact_contro=
-l *cc, struct page *page,
->   *
->   * Always returns true which makes it easier to track lock state in call=
-ers.
->   */
-> -static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
-> +static void compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
->                                                 struct compact_control *c=
-c)
->         __acquires(lock)
+>  mm/memcontrol.c | 12 +++++++++++-
+>  mm/vmscan.c     |  6 ------
+>  2 files changed, 11 insertions(+), 7 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 805a44bf948c..8377640ad494 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2233,11 +2233,18 @@ static void reclaim_high(struct mem_cgroup *memcg,
+>  			 gfp_t gfp_mask)
 >  {
->         /* Track if the lock is contended in async mode */
->         if (cc->mode =3D=3D MIGRATE_ASYNC && !cc->contended) {
->                 if (spin_trylock_irqsave(lock, *flags))
-> -                       return true;
-> +                       return;
->
->                 cc->contended =3D true;
->         }
->
->         spin_lock_irqsave(lock, *flags);
-> -       return true;
-> +       return;
+>  	do {
+> +		unsigned long pflags;
+> +
+>  		if (page_counter_read(&memcg->memory) <=
+>  		    READ_ONCE(memcg->memory.high))
+>  			continue;
+> +
+>  		memcg_memory_event(memcg, MEMCG_HIGH);
+> +
+> +		psi_memstall_enter(&pflags);
+>  		try_to_free_mem_cgroup_pages(memcg, nr_pages, gfp_mask, true);
+> +		psi_memstall_leave(&pflags);
+> +
+>  	} while ((memcg = parent_mem_cgroup(memcg)) &&
+>  		 !mem_cgroup_is_root(memcg));
 >  }
->
->  /*
-> @@ -511,11 +511,11 @@ static bool compact_lock_irqsave(spinlock_t *lock, =
-unsigned long *flags,
->   *             scheduled)
->   */
->  static bool compact_unlock_should_abort(spinlock_t *lock,
-> -               unsigned long flags, bool *locked, struct compact_control=
- *cc)
-> +               unsigned long flags, void **locked, struct compact_contro=
-l *cc)
-
-Instead of passing both a void pointer and the lock why not just pass
-the pointer to the lock pointer? You could combine lock and locked
-into a single argument and save yourself some extra effort.
-
+> @@ -2451,10 +2458,11 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	int nr_retries = MEM_CGROUP_RECLAIM_RETRIES;
+>  	struct mem_cgroup *mem_over_limit;
+>  	struct page_counter *counter;
+> +	enum oom_status oom_status;
+>  	unsigned long nr_reclaimed;
+>  	bool may_swap = true;
+>  	bool drained = false;
+> -	enum oom_status oom_status;
+> +	unsigned long pflags;
+>  
+>  	if (mem_cgroup_is_root(memcg))
+>  		return 0;
+> @@ -2514,8 +2522,10 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  
+>  	memcg_memory_event(mem_over_limit, MEMCG_MAX);
+>  
+> +	psi_memstall_enter(&pflags);
+>  	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
+>  						    gfp_mask, may_swap);
+> +	psi_memstall_leave(&pflags);
+>  
+>  	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
+>  		goto retry;
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 749d239c62b2..742538543c79 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -3318,7 +3318,6 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  					   bool may_swap)
 >  {
->         if (*locked) {
->                 spin_unlock_irqrestore(lock, flags);
-> -               *locked =3D false;
-> +               *locked =3D NULL;
->         }
->
->         if (fatal_signal_pending(current)) {
-> @@ -543,7 +543,7 @@ static unsigned long isolate_freepages_block(struct c=
-ompact_control *cc,
->         int nr_scanned =3D 0, total_isolated =3D 0;
->         struct page *cursor;
->         unsigned long flags =3D 0;
-> -       bool locked =3D false;
-> +       struct compact_control *locked =3D NULL;
->         unsigned long blockpfn =3D *start_pfn;
->         unsigned int order;
->
-> @@ -565,7 +565,7 @@ static unsigned long isolate_freepages_block(struct c=
-ompact_control *cc,
->                  */
->                 if (!(blockpfn % SWAP_CLUSTER_MAX)
->                     && compact_unlock_should_abort(&cc->zone->lock, flags=
-,
-> -                                                               &locked, =
-cc))
-> +                                                       (void**)&locked, =
-cc))
->                         break;
->
->                 nr_scanned++;
-> @@ -599,8 +599,8 @@ static unsigned long isolate_freepages_block(struct c=
-ompact_control *cc,
->                  * recheck as well.
->                  */
->                 if (!locked) {
-> -                       locked =3D compact_lock_irqsave(&cc->zone->lock,
-> -                                                               &flags, c=
-c);
-> +                       compact_lock_irqsave(&cc->zone->lock, &flags, cc)=
-;
-> +                       locked =3D cc;
->
->                         /* Recheck this is a buddy page under lock */
->                         if (!PageBuddy(page))
-
-If you have to provide a pointer you might as well just provide a
-pointer to the zone lock since that is the thing that is actually
-holding the lock at this point and would be consistent with your other
-uses of the locked value. One possibility would be to change the
-return type so that you return a pointer to the lock you are using.
-Then the code would look closer to the lruvec code you are already
-using.
-
-> @@ -787,7 +787,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
->         unsigned long nr_scanned =3D 0, nr_isolated =3D 0;
->         struct lruvec *lruvec;
->         unsigned long flags =3D 0;
-> -       struct lruvec *locked_lruvec =3D NULL;
-> +       struct lruvec *locked =3D NULL;
->         struct page *page =3D NULL, *valid_page =3D NULL;
->         unsigned long start_pfn =3D low_pfn;
->         bool skip_on_failure =3D false;
-> @@ -847,21 +847,11 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                  * contention, to give chance to IRQs. Abort completely i=
-f
->                  * a fatal signal is pending.
->                  */
-> -               if (!(low_pfn % SWAP_CLUSTER_MAX)) {
-> -                       if (locked_lruvec) {
-> -                               unlock_page_lruvec_irqrestore(locked_lruv=
-ec,
-> -                                                                       f=
-lags);
-> -                               locked_lruvec =3D NULL;
-> -                       }
+>  	unsigned long nr_reclaimed;
+> -	unsigned long pflags;
+>  	unsigned int noreclaim_flag;
+>  	struct scan_control sc = {
+>  		.nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX),
+> @@ -3339,17 +3338,12 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>  	struct zonelist *zonelist = node_zonelist(numa_node_id(), sc.gfp_mask);
+>  
+>  	set_task_reclaim_state(current, &sc.reclaim_state);
 > -
-> -                       if (fatal_signal_pending(current)) {
-> -                               cc->contended =3D true;
+>  	trace_mm_vmscan_memcg_reclaim_begin(0, sc.gfp_mask);
 > -
-> -                               low_pfn =3D 0;
-> -                               goto fatal_pending;
-> -                       }
+> -	psi_memstall_enter(&pflags);
+>  	noreclaim_flag = memalloc_noreclaim_save();
+>  
+>  	nr_reclaimed = do_try_to_free_pages(zonelist, &sc);
+>  
+>  	memalloc_noreclaim_restore(noreclaim_flag);
+> -	psi_memstall_leave(&pflags);
 > -
-> -                       cond_resched();
-> +               if (!(low_pfn % SWAP_CLUSTER_MAX)
-> +                   && compact_unlock_should_abort(&locked->lru_lock, fla=
-gs,
-> +                                               (void**)&locked, cc)) {
-
-An added advantage to making locked a pointer to a spinlock is that
-you could reduce the number of pointers you have to pass. Instead of
-messing with &locked->lru_lock you would just pass the pointer to
-locked resulting in fewer arguments being passed and if it is NULL you
-skip the whole unlock pass.
-
-> +                       low_pfn =3D 0;
-> +                       goto fatal_pending;
->                 }
->
->                 if (!pfn_valid_within(low_pfn))
-> @@ -932,9 +922,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                          */
->                         if (unlikely(__PageMovable(page)) &&
->                                         !PageIsolated(page)) {
-> -                               if (locked_lruvec) {
-> -                                       unlock_page_lruvec_irqrestore(loc=
-ked_lruvec, flags);
-> -                                       locked_lruvec =3D NULL;
-> +                               if (locked) {
-> +                                       unlock_page_lruvec_irqrestore(loc=
-ked, flags);
-> +                                       locked =3D NULL;
->                                 }
->
->                                 if (!isolate_movable_page(page, isolate_m=
-ode))
-> @@ -979,13 +969,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                 lruvec =3D mem_cgroup_page_lruvec(page, pgdat);
->
->                 /* If we already hold the lock, we can skip some rechecki=
-ng */
-> -               if (lruvec !=3D locked_lruvec) {
-> -                       if (locked_lruvec)
-> -                               unlock_page_lruvec_irqrestore(locked_lruv=
-ec,
-> +               if (lruvec !=3D locked) {
-> +                       if (locked)
-> +                               unlock_page_lruvec_irqrestore(locked,
->                                                                         f=
-lags);
->
->                         compact_lock_irqsave(&lruvec->lru_lock, &flags, c=
-c);
-> -                       locked_lruvec =3D lruvec;
-> +                       locked =3D lruvec;
->                         rcu_read_unlock();
->
->                         lruvec_memcg_debug(lruvec, page);
-> @@ -1041,9 +1031,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
->
->  isolate_fail_put:
->                 /* Avoid potential deadlock in freeing page under lru_loc=
-k */
-> -               if (locked_lruvec) {
-> -                       unlock_page_lruvec_irqrestore(locked_lruvec, flag=
-s);
-> -                       locked_lruvec =3D NULL;
-> +               if (locked) {
-> +                       unlock_page_lruvec_irqrestore(locked, flags);
-> +                       locked =3D NULL;
->                 }
->                 put_page(page);
->
-> @@ -1057,10 +1047,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
->                  * page anyway.
->                  */
->                 if (nr_isolated) {
-> -                       if (locked_lruvec) {
-> -                               unlock_page_lruvec_irqrestore(locked_lruv=
-ec,
-> -                                                                       f=
-lags);
-> -                               locked_lruvec =3D NULL;
-> +                       if (locked) {
-> +                               unlock_page_lruvec_irqrestore(locked, fla=
-gs);
-> +                               locked =3D NULL;
->                         }
->                         putback_movable_pages(&cc->migratepages);
->                         cc->nr_migratepages =3D 0;
-> @@ -1087,8 +1076,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
->         page =3D NULL;
->
->  isolate_abort:
-> -       if (locked_lruvec)
-> -               unlock_page_lruvec_irqrestore(locked_lruvec, flags);
-> +       if (locked)
-> +               unlock_page_lruvec_irqrestore(locked, flags);
->         if (page) {
->                 SetPageLRU(page);
->                 put_page(page);
-> --
-> 1.8.3.1
->
+>  	trace_mm_vmscan_memcg_reclaim_end(nr_reclaimed);
+>  	set_task_reclaim_state(current, NULL);
+>  
+> -- 
+> 2.27.0
+> 
