@@ -2,55 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C2423B069
-	for <lists+cgroups@lfdr.de>; Tue,  4 Aug 2020 00:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C3DF23B078
+	for <lists+cgroups@lfdr.de>; Tue,  4 Aug 2020 00:50:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727885AbgHCWqC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 3 Aug 2020 18:46:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53218 "EHLO
+        id S1728911AbgHCWuL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 3 Aug 2020 18:50:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53852 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726548AbgHCWqB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Aug 2020 18:46:01 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6343C06174A;
-        Mon,  3 Aug 2020 15:46:01 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id z6so40303449iow.6;
-        Mon, 03 Aug 2020 15:46:01 -0700 (PDT)
+        with ESMTP id S1726770AbgHCWuK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 3 Aug 2020 18:50:10 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96D1FC06174A;
+        Mon,  3 Aug 2020 15:50:10 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id t18so32588511ilh.2;
+        Mon, 03 Aug 2020 15:50:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=gbJLXIAhRA3ILjxJ/kOnaqM4fWJ/LpEX+iUTeUndPqc=;
-        b=iXpmTJ6iTNHX5/0yQVDFwLIAFlMfeqBTpmWkw/+gdIlRTM53IBjEPiTdOr2WqHCjf1
-         /ngIOpPdDMnmF2xOP6HHwk+9yO6JRwHBhmEVmtCeryvi401SbANXAXdxqxr/kDqXwT7a
-         aVsVubcmq1syeWSWgj5QeG6iBGgl3zE15WTocvZ9qmYIvLIJDw/kaAeSJRCaFFSLh3s6
-         +tfjoW3jE7RnVGlBtZ1M1r5sGFLFxuDy4hEJq3VAfoN9EqPy+dV135AaJDrqRsY6Vtes
-         OFWRY8PISjNVEERbRNnZQpHElFL71u2bADXCdsR1RpkNR/8z/Lta+ZJiVHfTGqxE0qeE
-         /eRw==
+        bh=MAO+PpuYLBX0uefa2B1NpsdRhW1fJ0Gox2/GooMZOIM=;
+        b=KoPTr2noAD6XVqblQ0ZDm8p+m1GxTbJgLxmKlP6peN1JC+e0602LcrNh6gu9ebaXQ2
+         JeatTeBzUATzp79AE5HlxpKkODqdTWABRJnBgKaTw1JEK6M35cNoSvDmynZZU17JNPCd
+         qDj173WmJzHySDfVECR+KGtPR7MNNMY4YEGUCLvWzdtUO4Di7z/F4K+gMHaacHSdb/7i
+         6fRIEyaptXGL9Dai6I1u/EbsyMk/NV+sQpP6f8ifB7QfaCeZDWs8z9Ki0VaWK9WOv0l9
+         Y7hn756uAd0RcZkpy+MFgf71qbBeZGVeI33T25YFXcnpiZe9iwydIXXFJ/R7aDm0wOdh
+         XohA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=gbJLXIAhRA3ILjxJ/kOnaqM4fWJ/LpEX+iUTeUndPqc=;
-        b=URbVtEy7udVdl6DxbcoW21kUjtdTBPITo9P6XpNfXIPTj1pdLE5LwVjqezn8RXlDuD
-         tt4lrxmSoUSeqh7GTANOlEI27hWpK/skiW2RgwGOlHszppiFT2uXf9LIGVKpo+bPTHhI
-         X6SwUc22neL0MuVeQMzGnDeHsJ4EJxMvhHXWUoQazWe+yjUAUxWWef1J9yj0AwoD2U73
-         5W/PZvJBgLRA5KFeZxyCwX5r2k22qhRx+nOy19wyP0Ij+ed2QRmuwxKW55Oxf4M5gFBB
-         qYy/mSIipl3udTzs34ZXXbdOLDKgJJoNJyG5PaBoZjzCC4YLLcexbrP37K8momOpqFkm
-         N/IQ==
-X-Gm-Message-State: AOAM531L9ti2+hA6AiIBTJ/uU5a4xl/V4HO3YCM0NdSz2Pt9SVNrTD3e
-        dM5N+dQv60xOkm5dfKK6BjPA4me7/O4+hsZa2lg=
-X-Google-Smtp-Source: ABdhPJwIYpCvFGkCiGSEc1aDXcpoKK7cGb6N+8I2MMc5J1M4owpv0ARR2wasZVYDndA4tWugeNL7PFHnSM1tY1vY8CQ=
-X-Received: by 2002:a5d:8d04:: with SMTP id p4mr2150494ioj.187.1596494761071;
- Mon, 03 Aug 2020 15:46:01 -0700 (PDT)
+        bh=MAO+PpuYLBX0uefa2B1NpsdRhW1fJ0Gox2/GooMZOIM=;
+        b=SILPbqstLXR8k1UwIRlGEwJk5p8JGMr08EFVcwo/87tl8PtokQZKXxYyFWx6UTsGOx
+         lvvqM0t4UOu4DlWkduQW2FeMnQNvXh8zJrngriVjUlVDGN8TdWVmD30tD3or0q+ZLnWn
+         axRY7OwFMsdk88eb1Vm8bwm5O+Vs6eON7S4AbyUOIW+sdBXjWbtD6dd0KOJZmKt5w1IJ
+         95p2t8nVN0a98cwTq8ysIojYzeUZAJsBoQ0wgiafUAKIZjl8wjYhH+NsmHVyZcEy7XO/
+         mqiIdVIS356g2GwWdZYAVOcYVSBY8kKX4syDweXtc+BBCMAphh17om7i5N54zfsd7LrL
+         Psig==
+X-Gm-Message-State: AOAM531xfgaKlxxjdIgAevoc1tp9P8NkDslj7c4zr1ohTxJ3+m9EXHdf
+        B59tM6xqe8gpKO0mxxuSFoHG8VkOPkBC2LiCTSA=
+X-Google-Smtp-Source: ABdhPJyzIp0mBLgEAMF9KBUD33iW7ci/UwoWCClOTift/uX4YrgooLg8UXJJ4J7qT3jcBwOKYf8c3cDy6dv0B9fT68M=
+X-Received: by 2002:a92:bd0f:: with SMTP id c15mr1705273ile.95.1596495009904;
+ Mon, 03 Aug 2020 15:50:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com>
- <1595681998-19193-21-git-send-email-alex.shi@linux.alibaba.com> <CAKgT0UfZg5Wf2qNJ_=VPO1Cj8YuifZN8rG_X4Btq86ADmsVZFw@mail.gmail.com>
-In-Reply-To: <CAKgT0UfZg5Wf2qNJ_=VPO1Cj8YuifZN8rG_X4Btq86ADmsVZFw@mail.gmail.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com> <1595681998-19193-20-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1595681998-19193-20-git-send-email-alex.shi@linux.alibaba.com>
 From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 3 Aug 2020 15:45:50 -0700
-Message-ID: <CAKgT0UciRJCPs_zrxri1pEJmJVKkHpEq=AFiVpJE99JJQe=Xrg@mail.gmail.com>
-Subject: Re: [PATCH v17 20/21] mm/pgdat: remove pgdat lru_lock
+Date:   Mon, 3 Aug 2020 15:49:59 -0700
+Message-ID: <CAKgT0UebLfdju0Ny9ad5bigzAazqpzfwk2_JNQQ9yEHYyVm5-Q@mail.gmail.com>
+Subject: Re: [PATCH v17 19/21] mm/vmscan: use relock for move_pages_to_lru
 To:     Alex Shi <alex.shi@linux.alibaba.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Mel Gorman <mgorman@techsingularity.net>,
@@ -67,37 +66,38 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>,
         Wei Yang <richard.weiyang@gmail.com>,
         "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
+        Rong Chen <rong.a.chen@intel.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Jann Horn <jannh@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Just to correct a typo, I meant patch 17, not 18. in the comment below.
+On Sat, Jul 25, 2020 at 6:00 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>
+> From: Hugh Dickins <hughd@google.com>
+>
+> Use the relock function to replace relocking action. And try to save few
+> lock times.
+>
+> Signed-off-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Andrey Ryabinin <aryabinin@virtuozzo.com>
+> Cc: Jann Horn <jannh@google.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: cgroups@vger.kernel.org
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-mm@kvack.org
 
+I am assuming this is only separate from patch 18 because of the fact
+that it is from Hugh and not yourself. Otherwise I would recommend
+folding this into patch 18.
 
-On Mon, Aug 3, 2020 at 3:42 PM Alexander Duyck
-<alexander.duyck@gmail.com> wrote:
->
-> On Sat, Jul 25, 2020 at 6:00 AM Alex Shi <alex.shi@linux.alibaba.com> wrote:
-> >
-> > Now pgdat.lru_lock was replaced by lruvec lock. It's not used anymore.
-> >
-> > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> > Cc: Andrew Morton <akpm@linux-foundation.org>
-> > Cc: Konstantin Khlebnikov <khlebnikov@yandex-team.ru>
-> > Cc: Hugh Dickins <hughd@google.com>
-> > Cc: Johannes Weiner <hannes@cmpxchg.org>
-> > Cc: linux-mm@kvack.org
-> > Cc: linux-kernel@vger.kernel.org
-> > Cc: cgroups@vger.kernel.org
->
-> I really think this would be better just squashed into patch 18
-> instead of as a standalone patch since you were moving all of the
-> locking anyway so it would be more likely to trigger build errors if
-> somebody didn't move a lock somewhere that was referencing this.
->
-> That said this change is harmless at this point.
->
-> Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+Reviewed-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
