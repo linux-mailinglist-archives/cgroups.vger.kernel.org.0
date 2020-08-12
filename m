@@ -2,98 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD95E241F53
-	for <lists+cgroups@lfdr.de>; Tue, 11 Aug 2020 19:36:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3B17242442
+	for <lists+cgroups@lfdr.de>; Wed, 12 Aug 2020 05:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729227AbgHKRgm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 11 Aug 2020 13:36:42 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41558 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729046AbgHKRgl (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 11 Aug 2020 13:36:41 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8D6E5B69F;
-        Tue, 11 Aug 2020 17:37:00 +0000 (UTC)
-Date:   Tue, 11 Aug 2020 19:36:26 +0200
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Subject: Re: [RFC PROPOSAL] memcg: per-memcg user space reclaim interface
-Message-ID: <20200811173626.GA58879@blackbook>
-References: <20200702152222.2630760-1-shakeelb@google.com>
- <20200703063548.GM18446@dhcp22.suse.cz>
- <CALvZod5gthVX5m6o50OiYsXa=0_NpXK-tVvjTF42Oj4udr4Nuw@mail.gmail.com>
- <20200707121422.GP5913@dhcp22.suse.cz>
- <CALvZod5ty=piw6czyVyMhxQMBWGghC3ujxbrkVPr0fzwqogwrw@mail.gmail.com>
+        id S1726469AbgHLD0n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 11 Aug 2020 23:26:43 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:56186 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726457AbgHLD0m (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 11 Aug 2020 23:26:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R381e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01422;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5Wk7Ug_1597202786;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5Wk7Ug_1597202786)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 12 Aug 2020 11:26:27 +0800
+Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
+ page->mem_cgroup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
+ <20200811113008.GK4793@dhcp22.suse.cz>
+ <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
+ <20200811135626.GL4793@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
+Date:   Wed, 12 Aug 2020 11:25:53 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="RnlQjJ0d97Da+TV1"
-Content-Disposition: inline
-In-Reply-To: <CALvZod5ty=piw6czyVyMhxQMBWGghC3ujxbrkVPr0fzwqogwrw@mail.gmail.com>
+In-Reply-To: <20200811135626.GL4793@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
---RnlQjJ0d97Da+TV1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Shakeel.
+ÔÚ 2020/8/11 ÏÂÎç9:56, Michal Hocko Ð´µÀ:
+> On Tue 11-08-20 20:54:18, Alex Shi wrote:
+>> >From beeac61119ab39b1869c520c0f272fb8bab93765 Mon Sep 17 00:00:00 2001
+>> From: Alex Shi <alex.shi@linux.alibaba.com>
+>> Date: Wed, 5 Aug 2020 21:02:30 +0800
+>> Subject: [PATCH 2/6] memcg: bail out early from swap accounting when memcg is
+>>  disabled>>
+>> If we disabled memcg by cgroup_disable=memory, the swap charges are
+>> still called. Let's return from the funcs earlier.
+> They are not, are they? page->memcg will be NULL and so the charge is
+> skipped and that will trigger a warning with your current ordering.
 
-On Tue, Jul 07, 2020 at 10:02:50AM -0700, Shakeel Butt <shakeelb@google.com=
-> wrote:
-> > Well, I was talkingg about memory.low. It is not meant only to protect
-> > from the global reclaim. It can be used for balancing memory reclaim
-> > from _any_ external memory pressure source. So it is somehow related to
-> > the usecase you have mentioned.
-> >
->=20
-> For the uswapd use-case, I am not concerned about the external memory
-> pressure source but the application hitting its own memory.high limit
-> and getting throttled.
-FTR, you can transform own memory.high into "external" pressure with a
-hierarchy such as
+Hi Michal,
 
-  limit-group			memory.high=3DN+margin memory.low=3D0
-  `- latency-sensitive-group	memory.low=3DN
-  `- regular-group		memory.low=3D0
+Thanks for comment! Looks like we both agree the memcg wasn't charged, but funcs
+just are called. :)
+  
+> 
+> Let me repeat again. Either you put it first in the series and argue
+> that we can bail out early or keep the ordering then this makes sure the
+> warning doesn't trigger.
+> 
 
-Would that ensure the latency targets?
+Is the following commit log fine?
 
-Michal
+Thanks!
+Alex
 
---RnlQjJ0d97Da+TV1
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 5 Aug 2020 21:02:30 +0800
+Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
+ is disabled
 
------BEGIN PGP SIGNATURE-----
+If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+and so the charge is skipped and that will trigger a warning like below.
+Let's return from the funcs earlier.
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl8y1xcACgkQia1+riC5
-qShqhw//YT26h60lQF35uV5/xyJu8L4l+X7FL+ZZjsTqvY/lPSVgvrRzv3zb2h4B
-ocoUY0cjJ4JatVY9uurZJAMEbGd9Iww8UmPaZAvCb8VPssWTHFgSbD1Eb+RAi4py
-zEBPLd1JMZ4IeI7FmjGfZHk1/2Qr7nle3KPhHSZKrc83t0tDF6DTTYLOkWBTm+bS
-JL56nLcXOb8Gm3kOkhLhseffcaWhBKYBzn3GzBXHYfbwX0Ba1I/OX6YrJD649vvc
-xsmlJc9YfMVixDEatA4Vzt3Pi9ZhpsdfbqMrgHeVA1p81MoA3q8Sk7q9Oz1mze7p
-aZbmCnl7t04NW7quKmqqqeMG91u+76KpmdGP/T+xpgXu2F8yLDGxzlfgbftb6wVr
-LhcqYd9SXnX5fy/A0rV4tKAOXTqEpSY9/gEhnBwptwI2KO8VIiFo4a0dKKZ/9K9F
-yREd3aoKMyad5E99i0N8ZJloo0X42sRdnVoc5SGV0Lj30Wp660IMEO/atRP0Z2+1
-SgQmD9VTbsU4wBb2LcaCEz4P83keWm1oMfqdZ7EuGXzvmRT0FOMWvXAQ17RxYBtG
-DjA+HOCeP9EuHXyefUA2DxsVRbK7Yn0Zb79nOkitb0oXrJuKTFlIW0qQ8oYmmrY8
-gsOblNPf1DI2gLr+Wqh58u8/vER3NRgGv77xs/R39KeDh9DMz6Q=
-=ODBM
------END PGP SIGNATURE-----
+ ---[ end trace f1f34bfc3b32ed2f ]---
+ anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+ raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+ raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+ page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
 
---RnlQjJ0d97Da+TV1--
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 299382fc55a9..419cf565f40b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return;
+ 
+@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short oldid;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
+ 
+-- 
+1.8.3.1
+
