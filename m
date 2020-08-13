@@ -2,105 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C63FA2433DD
-	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 08:20:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29A51243443
+	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 08:57:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725960AbgHMGUw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Aug 2020 02:20:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48952 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725954AbgHMGUv (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 13 Aug 2020 02:20:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 32076ACA3;
-        Thu, 13 Aug 2020 06:21:12 +0000 (UTC)
-Date:   Thu, 13 Aug 2020 08:20:49 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
- page->mem_cgroup
-Message-ID: <20200813062049.GA9477@dhcp22.suse.cz>
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
- <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
- <20200811113008.GK4793@dhcp22.suse.cz>
- <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
- <20200811135626.GL4793@dhcp22.suse.cz>
- <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
+        id S1726292AbgHMG5L (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Aug 2020 02:57:11 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:41935 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725982AbgHMG5L (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 02:57:11 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U5dLrE0_1597301826;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5dLrE0_1597301826)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 Aug 2020 14:57:08 +0800
+Subject: Re: [RFC PATCH 1/3] mm: Drop locked from isolate_migratepages_block
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
+        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
+        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, richard.weiyang@gmail.com,
+        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040224.13054.96724.stgit@localhost.localdomain>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <8ea9e186-b223-fb1b-5c82-2aa43c5e9f10@linux.alibaba.com>
+Date:   Thu, 13 Aug 2020 14:56:30 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
+In-Reply-To: <20200813040224.13054.96724.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 12-08-20 11:25:53, Alex Shi wrote:
-> >From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Wed, 5 Aug 2020 21:02:30 +0800
-> Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
->  is disabled
-> 
-> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
-> and so the charge is skipped and that will trigger a warning like below.
-> Let's return from the funcs earlier.
-> 
->  ---[ end trace f1f34bfc3b32ed2f ]---
->  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
->  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
->  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
->  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
 
-Yes this is better. It would be even more informative if you added the
-backtrace.
- 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Reviewed-by: Roman Gushchin <guro@fb.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: cgroups@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
+
+在 2020/8/13 下午12:02, Alexander Duyck 写道:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> We can drop the need for the locked variable by making use of the
+> lruvec_holds_page_lru_lock function. By doing this we can avoid some rcu
+> locking ugliness for the case where the lruvec is still holding the LRU
+> lock associated with the page. Instead we can just use the lruvec and if it
+> is NULL we assume the lock was released.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 > ---
->  mm/memcontrol.c | 6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 299382fc55a9..419cf565f40b 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
->  	VM_BUG_ON_PAGE(PageLRU(page), page);
->  	VM_BUG_ON_PAGE(page_count(page), page);
->  
-> +	if (mem_cgroup_disabled())
-> +		return;
-> +
->  	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->  		return;
->  
-> @@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
->  	struct mem_cgroup *memcg;
->  	unsigned short oldid;
->  
-> +	if (mem_cgroup_disabled())
-> +		return 0;
-> +
->  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
->  		return 0;
->  
-> -- 
-> 1.8.3.1
+>  mm/compaction.c |   45 ++++++++++++++++++++-------------------------
+>  1 file changed, 20 insertions(+), 25 deletions(-)
 
--- 
-Michal Hocko
-SUSE Labs
+Thanks a lot!
+Don't know if community is ok if we keep the patch following whole patchset alone?
+
