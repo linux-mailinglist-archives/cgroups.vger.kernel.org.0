@@ -2,175 +2,148 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45F2B2437D8
-	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 11:46:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6AF2437EB
+	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 11:47:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726144AbgHMJqB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Aug 2020 05:46:01 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55693 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726053AbgHMJqA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 05:46:00 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5eFTQs_1597311955;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5eFTQs_1597311955)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 13 Aug 2020 17:45:55 +0800
-Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
- page->mem_cgroup
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
- <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
- <20200811113008.GK4793@dhcp22.suse.cz>
- <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
- <20200811135626.GL4793@dhcp22.suse.cz>
- <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
- <20200813062049.GA9477@dhcp22.suse.cz>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <abd9276b-31f8-a51d-43d6-6c8ae93237dc@linux.alibaba.com>
-Date:   Thu, 13 Aug 2020 17:45:19 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726587AbgHMJrc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Aug 2020 05:47:32 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:32969 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726144AbgHMJr1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 05:47:27 -0400
+Received: by mail-il1-f200.google.com with SMTP id h5so1104537ilq.0
+        for <cgroups@vger.kernel.org>; Thu, 13 Aug 2020 02:47:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gFVHgzil7w64tQYvr3B4qI+8MO/FB2UDkU12jeaufKs=;
+        b=NEbQqo/IeRtVrZQ/REr/gRA81OyoaP+uwN0WBpwbnJqTsI0JklYWPDZaE7FHOfHGpW
+         36ii1H+xMAhdZa1KuCGEo3bjryW/OtjWqcgk3hN1Ot+gzILWDbXxIJsFsDGogS6rr8XA
+         a3IuEkNXeDJqb+trNzQhg3aWb4Udz7vvEjf0fRzs3DFEoL+i41KjWIevEmJIMTQhh349
+         xMjIMDhK+nP3UcyIzV2Uave6s4IQ7w1XOnoS5Nud81kocmZFscuqNrkUcWPNjivkMIQc
+         yThRx6KqwH4M5AcM4K/QpsA6eqCtMZEM6jvRdFec1EV3Mxbosr7LZPLeUTipNElu9Oig
+         XhgA==
+X-Gm-Message-State: AOAM530reMVxUCE5fjeJZDpIb4lcmMBdGWTxhIjpIrAalLSjjarFCi5Y
+        q/qej0EgAHYQsQ56jW+rujjHjSNatPelKC/bPO0ZT5AccEps
+X-Google-Smtp-Source: ABdhPJyDPoDHfmgFx8qDc8OwEDNO1gGdgfLeSY09YArIT7vY7qn1d2KoFbZ+2A/346TnoSNMeN4MRvH9pbunS8D5pgFQnnroI2Qy
 MIME-Version: 1.0
-In-Reply-To: <20200813062049.GA9477@dhcp22.suse.cz>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a92:c848:: with SMTP id b8mr3991461ilq.79.1597312046017;
+ Thu, 13 Aug 2020 02:47:26 -0700 (PDT)
+Date:   Thu, 13 Aug 2020 02:47:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000019317f05acbf31bd@google.com>
+Subject: upstream boot error: WARNING in mem_cgroup_css_alloc
+From:   syzbot <syzbot+35d35ef677516d65bdda@syzkaller.appspotmail.com>
+To:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, mhocko@kernel.org,
+        syzkaller-bugs@googlegroups.com, vdavydov.dev@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    dc06fe51 Merge tag 'rtc-5.9' of git://git.kernel.org/pub/s..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d34bd6900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c89856ae5fc8b6
+dashboard link: https://syzkaller.appspot.com/bug?extid=35d35ef677516d65bdda
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+35d35ef677516d65bdda@syzkaller.appspotmail.com
+
+mem auto-init: stack:off, heap alloc:on, heap free:off
+Memory: 6461180K/7863916K available (116743K kernel code, 17665K rwdata, 21624K rodata, 2792K init, 23940K bss, 1402480K reserved, 0K cma-reserved)
+Running RCU self tests
+rcu: Preemptible hierarchical RCU implementation.
+rcu: 	RCU lockdep checking is enabled.
+rcu: 	RCU restricting CPUs from NR_CPUS=64 to nr_cpu_ids=2.
+rcu: 	RCU callback double-/use-after-free debug enabled.
+rcu: 	RCU debug extended QS entry/exit.
+	All grace periods are expedited (rcu_expedited).
+	Trampoline variant of Tasks RCU enabled.
+rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
+rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=2
+NR_IRQS: 4352, nr_irqs: 440, preallocated irqs: 16
+random: get_random_bytes called from boot_init_stack_canary arch/x86/include/asm/stackprotector.h:80 [inline] with crng_init=0
+random: get_random_bytes called from start_kernel+0x23b/0x46a init/main.c:957 with crng_init=0
+Console: colour VGA+ 80x25
+printk: console [ttyS0] enabled
+printk: console [ttyS0] enabled
+printk: bootconsole [earlyser0] disabled
+printk: bootconsole [earlyser0] disabled
+Lock dependency validator: Copyright (c) 2006 Red Hat, Inc., Ingo Molnar
+... MAX_LOCKDEP_SUBCLASSES:  8
+... MAX_LOCK_DEPTH:          48
+... MAX_LOCKDEP_KEYS:        8192
+... CLASSHASH_SIZE:          4096
+... MAX_LOCKDEP_ENTRIES:     32768
+... MAX_LOCKDEP_CHAINS:      65536
+... CHAINHASH_SIZE:          32768
+ memory used by lock dependency info: 6301 kB
+ memory used for stack traces: 4224 kB
+ per task-struct memory footprint: 1920 bytes
+mempolicy: Enabling automatic NUMA balancing. Configure with numa_balancing= or the kernel.numa_balancing sysctl
+ACPI: Core revision 20200717
+APIC: Switch to symmetric I/O mode setup
+x2apic enabled
+Switched APIC routing to physical x2apic.
+..TIMER: vector=0x30 apic1=0 pin1=0 apic2=-1 pin2=-1
+clocksource: tsc-early: mask: 0xffffffffffffffff max_cycles: 0x212735223b2, max_idle_ns: 440795277976 ns
+Calibrating delay loop (skipped) preset value.. 4600.00 BogoMIPS (lpj=23000000)
+pid_max: default: 32768 minimum: 301
+LSM: Security Framework initializing
+LSM: security= is ignored because it is superseded by lsm=
+Yama: becoming mindful.
+TOMOYO Linux initialized
+AppArmor: AppArmor initialized
+LSM support for eBPF active
+Dentry cache hash table entries: 1048576 (order: 11, 8388608 bytes, vmalloc)
+Inode-cache hash table entries: 524288 (order: 10, 4194304 bytes, vmalloc)
+Mount-cache hash table entries: 16384 (order: 5, 131072 bytes, vmalloc)
+Mountpoint-cache hash table entries: 16384 (order: 5, 131072 bytes, vmalloc)
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 0 at mm/memcontrol.c:5226 memalloc_unuse_memcg include/linux/sched/mm.h:331 [inline]
+WARNING: CPU: 0 PID: 0 at mm/memcontrol.c:5226 mem_cgroup_css_alloc+0x535/0x1c30 mm/memcontrol.c:5285
+Kernel panic - not syncing: panic_on_warn set ...
+CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x18f/0x20d lib/dump_stack.c:118
+ panic+0x2e3/0x75c kernel/panic.c:231
+ __warn.cold+0x20/0x4a kernel/panic.c:600
+ report_bug+0x1bd/0x210 lib/bug.c:198
+ handle_bug+0x38/0x90 arch/x86/kernel/traps.c:234
+ exc_invalid_op+0x14/0x40 arch/x86/kernel/traps.c:254
+ asm_exc_invalid_op+0x12/0x20 arch/x86/include/asm/idtentry.h:536
+RIP: 0010:mem_cgroup_alloc mm/memcontrol.c:5226 [inline]
+RIP: 0010:mem_cgroup_css_alloc+0x535/0x1c30 mm/memcontrol.c:5284
+Code: 01 00 48 8d bb 28 14 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 74 81 e8 e0 00 c2 f9 e9 77 ff ff ff <0f> 0b e9 21 fc ff ff 48 89 ef e8 bc 28 c7 f9 48 b8 00 00 00 00 00
+RSP: 0000:ffffffff89a07e20 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: ffffffff89a99dc0 RCX: 1ffff110152b2028
+RDX: 1ffffffff135363d RSI: ffffffff83b0f2c2 RDI: ffffffff89a9b1e8
+RBP: ffff8880a9590000 R08: 0000000000000001 R09: ffff88821b801aef
+R10: 0000000000000000 R11: ffffffff810000d4 R12: ffffffff8ab224b4
+R13: 0000000000000000 R14: 0000000000000000 R15: ffffffff8ab224d0
+ cgroup_init_subsys+0x215/0x4d7 kernel/cgroup/cgroup.c:5587
+ cgroup_init+0x359/0xa63 kernel/cgroup/cgroup.c:5713
+ start_kernel+0x426/0x46a init/main.c:1035
+ secondary_startup_64+0xa4/0xb0 arch/x86/kernel/head_64.S:243
+Rebooting in 86400 seconds..
 
 
-ÔÚ 2020/8/13 ÏÂÎç2:20, Michal Hocko Ð´µÀ:
-> On Wed 12-08-20 11:25:53, Alex Shi wrote:
->> >From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
->> From: Alex Shi <alex.shi@linux.alibaba.com>
->> Date: Wed, 5 Aug 2020 21:02:30 +0800
->> Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
->>  is disabled
->>
->> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
->> and so the charge is skipped and that will trigger a warning like below.
->> Let's return from the funcs earlier.
->>
->>  ---[ end trace f1f34bfc3b32ed2f ]---
->>  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
->>  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
->>  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
->>  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
-> 
-> Yes this is better. It would be even more informative if you added the
-> backtrace.
-
-The stack is a bit long.
-I still don't know where cause the asm_exc_page_fault? And seems the vma is from
-kernel not user.
-
-From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Wed, 5 Aug 2020 21:02:30 +0800
-Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
- is disabled
-
-If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
-and so the charge is skipped and that will trigger a warning like below.
-Let's return from the funcs earlier.
-
- anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
- raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
- raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
- page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
-...
- RIP: 0010:vprintk_emit+0x1f7/0x260
- Code: 00 84 d2 74 72 0f b6 15 27 58 64 01 48 c7 c0 00 d4 72 82 84 d2 74 09 f3 90 0f b6 10 84 d2 75 f7 e8 de 0d 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 e9 62 ff ff ff 80 3d 88 c9 3a 01 00 0f 85 54 fe ff
- RSP: 0018:ffffc9000faab358 EFLAGS: 00000202
- RAX: ffffffff8272d400 RBX: 000000000000005e RCX: ffff88afd80d0040
- RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000202
- RBP: ffffc9000faab3a8 R08: ffffffff8272d440 R09: 0000000000022480
- R10: 00120c77be68bfac R11: 0000000000cd7568 R12: 0000000000000202
- R13: 0057ffffc0080005 R14: ffffffff820a0130 R15: ffffc9000faab3e8
- ? vprintk_emit+0x140/0x260
- vprintk_default+0x1a/0x20
- vprintk_func+0x4f/0xc4
- ? vprintk_func+0x4f/0xc4
- printk+0x53/0x6a
- ? xas_load+0xc/0x80
- __dump_page.cold.6+0xff/0x4ee
- ? xas_init_marks+0x23/0x50
- ? xas_store+0x30/0x40
- ? free_swap_slot+0x43/0xd0
- ? put_swap_page+0x119/0x320
- ? update_load_avg+0x82/0x580
- dump_page+0x9/0xb
- mem_cgroup_try_charge_swap+0x16e/0x1d0
- get_swap_page+0x130/0x210
- add_to_swap+0x41/0xc0
- shrink_page_list+0x99e/0xdf0
- shrink_inactive_list+0x199/0x360
- shrink_lruvec+0x40d/0x650
- ? _cond_resched+0x14/0x30
- ? _cond_resched+0x14/0x30
- shrink_node+0x226/0x6e0
- do_try_to_free_pages+0xd0/0x400
- try_to_free_pages+0xef/0x130
- __alloc_pages_slowpath.constprop.127+0x38d/0xbd0
- ? ___slab_alloc+0x31d/0x6f0
- __alloc_pages_nodemask+0x27f/0x2c0
- alloc_pages_vma+0x75/0x220
- shmem_alloc_page+0x46/0x90
- ? release_pages+0x1ae/0x410
- shmem_alloc_and_acct_page+0x77/0x1c0
- shmem_getpage_gfp+0x162/0x910
- shmem_fault+0x74/0x210
- ? filemap_map_pages+0x29c/0x410
- __do_fault+0x37/0x190
- handle_mm_fault+0x120a/0x1770
- exc_page_fault+0x251/0x450
- ? asm_exc_page_fault+0x8/0x30
- asm_exc_page_fault+0x1e/0x30
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Reviewed-by: Roman Gushchin <guro@fb.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
 ---
- mm/memcontrol.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 299382fc55a9..419cf565f40b 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
- 	VM_BUG_ON_PAGE(PageLRU(page), page);
- 	VM_BUG_ON_PAGE(page_count(page), page);
- 
-+	if (mem_cgroup_disabled())
-+		return;
-+
- 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return;
- 
-@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 	struct mem_cgroup *memcg;
- 	unsigned short oldid;
- 
-+	if (mem_cgroup_disabled())
-+		return 0;
-+
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return 0;
- 
--- 
-1.8.3.1
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
