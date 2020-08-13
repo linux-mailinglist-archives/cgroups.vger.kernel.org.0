@@ -2,97 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 874B92441B5
-	for <lists+cgroups@lfdr.de>; Fri, 14 Aug 2020 01:25:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 393D22441BA
+	for <lists+cgroups@lfdr.de>; Fri, 14 Aug 2020 01:27:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726526AbgHMXZL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Aug 2020 19:25:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40196 "EHLO
+        id S1726564AbgHMX1G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Aug 2020 19:27:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgHMXZK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 19:25:10 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 735DBC061757;
-        Thu, 13 Aug 2020 16:25:09 -0700 (PDT)
+        with ESMTP id S1726205AbgHMX1G (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 19:27:06 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE02C061757;
+        Thu, 13 Aug 2020 16:27:05 -0700 (PDT)
 Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BSN2m19kFz9sTN;
-        Fri, 14 Aug 2020 09:25:03 +1000 (AEST)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BSN532LP4z9sTQ;
+        Fri, 14 Aug 2020 09:27:03 +1000 (AEST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597361105;
-        bh=aXgzpd9CFe3IkARlfe+AQV0Aqs2X036V+1GWrROBFIw=;
+        s=201702; t=1597361224;
+        bh=b0sp0GqxeJRJwCzNQOrqlW7VXOG8F0YZwALL4eEoD5M=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=eWcVOK9z+WZHI2OSKf4O5f3bZCO0P9ZWucX8p2GDqQ2Vac9SxRm9Dz80wNoFDpW4W
-         FvaExKdF+vWiy+dZQg24ztR/kYUmE1/QNvApo5z/2DYSLO7MQ8qVAaMZfFxV8QdBhW
-         g+hZ2cAIY465Ab2gFdJDbWWwHTxDBK1XZTlvGiptdMOP9QQXauk+wLB/ADwPEFkbV2
-         d6290J0NUD7bDtta9hK2/A0E8MZa9yZA8/Yh03fgfQ42Co/zWRU4FEEF6DUq29UUn7
-         Etx8KfnLycpcsUULQiVzhwEJ9dpUBMz+MgpjZaONzc0h3xqX9MVSbzi30cnIUd0CTO
-         6+Jg0zNuuPZkg==
-Date:   Fri, 14 Aug 2020 09:25:02 +1000
+        b=UnU1wME2TLmgYlebvh6Kha7r7BnHE0z+WwPnEBZM+GehgUImQrlr+goSrJVOrqH+w
+         59MZzU1BVgn87fdCzbPZnnukEOad5yyX7sF5PCB+E4dZbetS76Z6JnizvqjYLvrUUS
+         5FdWQnO4wFF4XlSscVKa+uv8WWfwc8JC2vk4AUD8TJjTPXmy5Kx6WUjl77cNsZfO62
+         zVL+qWdKCAkYuQCLrzgu7D80cSr6Q5TElNNXEioruHtMSCU38ulmsKmRY7AUnyPs9r
+         X2/uxCeuPia/YdUbRxOtptGi4/GYSYzW0QQSX/yXnDTAXwHnvheHY9iEYJadirtsLo
+         ocQZ/5dJ2LKZQ==
+Date:   Fri, 14 Aug 2020 09:27:02 +1000
 From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     syzbot <syzbot+f96cbc69d9803e663664@syzkaller.appspotmail.com>
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org, linux-next@vger.kernel.org, mhocko@kernel.org,
-        syzkaller-bugs@googlegroups.com, vdavydov.dev@gmail.com
-Subject: Re: linux-next boot error: WARNING in mem_cgroup_css_alloc
-Message-ID: <20200814092502.34c48995@canb.auug.org.au>
-In-Reply-To: <0000000000001c467c05acbf3196@google.com>
-References: <0000000000001c467c05acbf3196@google.com>
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     Roman Gushchin <guro@fb.com>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Kernel Team <kernel-team@fb.com>, lkft-triage@lists.linaro.org
+Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
+ parent cgroup
+Message-ID: <20200814092702.137f588e@canb.auug.org.au>
+In-Reply-To: <CA+G9fYuTsjEpDpODGcYf5hnGwzxj__tVdCMpWeC+ojg5pkYCzw@mail.gmail.com>
+References: <20200623184515.4132564-1-guro@fb.com>
+        <20200623184515.4132564-5-guro@fb.com>
+        <20200811152737.GB650506@cmpxchg.org>
+        <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
+        <CA+G9fYuTsjEpDpODGcYf5hnGwzxj__tVdCMpWeC+ojg5pkYCzw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/krubGEnJdNa0L.7SdKkKDu_";
+Content-Type: multipart/signed; boundary="Sig_/DSdzwDUNizsWTg7P5FTg3NX";
  protocol="application/pgp-signature"; micalg=pgp-sha256
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---Sig_/krubGEnJdNa0L.7SdKkKDu_
+--Sig_/DSdzwDUNizsWTg7P5FTg3NX
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Hi Naresh,
 
-On Thu, 13 Aug 2020 02:47:26 -0700 syzbot <syzbot+f96cbc69d9803e663664@syzk=
-aller.appspotmail.com> wrote:
+On Thu, 13 Aug 2020 14:46:51 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
+g> wrote:
 >
-> syzbot found the following issue on:
+> The kernel warnings  were noticed on linux next 20200813 while booting
+> on arm64, arm, x86_64 and i386.
 >=20
-> HEAD commit:    e6d113ac Add linux-next specific files for 20200813
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=3D11db9fd6900000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D2055bd0d83d5e=
-e16
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Df96cbc69d9803e6=
-63664
-> compiler:       gcc (GCC) 10.1.0-syz 20200507
->=20
-> IMPORTANT: if you fix the issue, please add the following tag to the comm=
-it:
-> Reported-by: syzbot+f96cbc69d9803e663664@syzkaller.appspotmail.com
+> metadata:
+>   git branch: master
+>   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
+xt.git
+>   git commit: e6d113aca646fb6a92b237340109237fd7a9c770
+>   git describe: next-20200813
+>   make_kernelversion: 5.8.0
+>   kernel-config:
+> https://builds.tuxbuild.com/YQHc_PpEV-DF8rU7N9tlIQ/kernel.config
 
-#syz fix: mm: memcontrol: fix warning when allocating the root cgroup
+Actually in Linus' tree.
+
+It has been fixed today.  Thanks for reporting.
 
 --=20
 Cheers,
 Stephen Rothwell
 
---Sig_/krubGEnJdNa0L.7SdKkKDu_
+--Sig_/DSdzwDUNizsWTg7P5FTg3NX
 Content-Type: application/pgp-signature
 Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl81y84ACgkQAVBC80lX
-0Gx3uQf/cE5sU5zeLP79spf/R6yO7PvwNO1YLwQmnE4CA4b4g0MysfpTq8s1a0A1
-o21sS9jpRfKECBmfzY6C15EubWYulmjB8IUpBUXIKT1Gy71gucsA9VlNQyeVQ/Wf
-DWIQTx5BrVOH1pzTz1BH/cIpg/XHJ2FV9+uKeICmMEAJE/ZbKgH1jF5d8dkKgKjD
-e1hZW+PQ9zxqReE5KVYZezq7WDCfz5jtis8mQQg5U2km4T31asNzA1KhV2abTluL
-lKinlQ2TiPpsaBJu0DRoiqqO/h/gItgXe9Y5LrzX7JW52AN7SeNo6SeHXyK7UwdB
-wAhg3+q30hcai1t3HnYdxru+9aLIcA==
-=uE3e
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl81zEYACgkQAVBC80lX
+0Gw2LggAoyJQ8D8AoMUEbVoc+URfocM9YXpIdJ3mVvqsndDMp87mLPzO5YrOO+X8
+ZTgKq1ws0W0X7eRoCL/GOFSiF890ifP4kxrz2bmT2/azN44dUUtDmon6jfiu907u
+nGpoMMBgKnubh2e+xQ7LUJKsVrHKvHm/fWAfhEFw7LyGEhbdlbOaTPxWg34j6qdY
+ROzwCtJ52x9m/jkHYqcqJophYIB41HDXmxHGW2UrITHCl6dQBJ29xrQsLAfNDmZA
+oGVIiM453gmdPekBMkJTMM8FMT01uLwfM4WWZ+y0/1aoq/4J31LqNX6iFVxzVpub
+OXIOLoyxuhFJJW4yuDPJ53tKVqonpQ==
+=Bk2z
 -----END PGP SIGNATURE-----
 
---Sig_/krubGEnJdNa0L.7SdKkKDu_--
+--Sig_/DSdzwDUNizsWTg7P5FTg3NX--
