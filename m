@@ -2,163 +2,175 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 037E4243774
-	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 11:17:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45F2B2437D8
+	for <lists+cgroups@lfdr.de>; Thu, 13 Aug 2020 11:46:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726244AbgHMJRE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Aug 2020 05:17:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726144AbgHMJRE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 05:17:04 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E14C061384
-        for <cgroups@vger.kernel.org>; Thu, 13 Aug 2020 02:17:03 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id p13so4970631ilh.4
-        for <cgroups@vger.kernel.org>; Thu, 13 Aug 2020 02:17:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AVVK701BmMx0nOUeszXW5DOWYJuKUEBlmJUyUmBXonw=;
-        b=KBgg1LChIJzojq8wCoeBtwucYMjlQp1QRp2wmwPAM1zKPNUxxR3/5bSVizhTzk6G44
-         npUXrcnyRvP3lRa9ULHZykC+QGgP49O13LGemQfktRZo0AwGCTZxu1Ja45c7yx18xNv1
-         muca13rZx62UlS4IYGcPmIkoylmr5XPcDhItlD5VtS/lOEzd/55M7WX/jCSGZlcxiQI+
-         xvnTzujx3DLUkky5EGUiKdsM2s3jPLVW09TCdy6GQnvkfys69duwnup2xrOpSZ4dzgrb
-         MtdejXgoIja4ZEo0YCTAljx1ZieNdcHRbla7np/JOHNAUDYiXq7g/vRLdZ5Giy7MIEkC
-         pJKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AVVK701BmMx0nOUeszXW5DOWYJuKUEBlmJUyUmBXonw=;
-        b=EGWWve7KaIzdJ/qaF3Clnw3ssxsPQMB+03g1JiogoXGmKyld1lKdqlXmVWK1nY9dI3
-         ybS3sk7WIerkUlx3tiRyVeMRgT6p683p4EdhV8HhKYr4rRzYNR9IXhjvEa5QbYKsMO/F
-         iqw2xU+LDPbfWMWV2ETDYRkqgyw6bbSP/SzoPsdBtSYeO1dyA4ERg7a5rduXEoxxlv2D
-         8YbBT2ZULn5IxvGY26jXof3Z+jPvWi17z269mLDR2YGfr7MvO6OsHa/MkdIIGG6TeEFp
-         zAfIkaqUQu+8Nic49URhb45FI/02Qng1ph99UlSG1LepoI9hvcgDrIoZBrPKn4eFfhoR
-         0iRQ==
-X-Gm-Message-State: AOAM533DSAgrom8J05bnwUznYr8qZDdcH7bYWpQEu//MriNARxorDqit
-        rBRW2vcV0eKyJGhtqKyVyGrAy82ZqNeAREeL7latoQ==
-X-Google-Smtp-Source: ABdhPJxRPXxN0U59d/h40YvTBY16ELyNZJXxcUBHQUGymL9OOd1KXfE1MSjnoyNb6ubpiCdMHTv5+ANAII49M9IQehI=
-X-Received: by 2002:a92:d5ca:: with SMTP id d10mr3686682ilq.216.1597310222851;
- Thu, 13 Aug 2020 02:17:02 -0700 (PDT)
+        id S1726144AbgHMJqB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 13 Aug 2020 05:46:01 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:55693 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726053AbgHMJqA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 05:46:00 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07425;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U5eFTQs_1597311955;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5eFTQs_1597311955)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 13 Aug 2020 17:45:55 +0800
+Subject: Re: [Resend PATCH 2/6] mm/memcg: remove useless check on
+ page->mem_cgroup
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1597144232-11370-2-git-send-email-alex.shi@linux.alibaba.com>
+ <20200811113008.GK4793@dhcp22.suse.cz>
+ <776b0e6f-4129-9fb9-0f66-47757cf320d5@linux.alibaba.com>
+ <20200811135626.GL4793@dhcp22.suse.cz>
+ <0b5e1ac3-c9c7-35e9-2661-b58430314d0a@linux.alibaba.com>
+ <20200813062049.GA9477@dhcp22.suse.cz>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <abd9276b-31f8-a51d-43d6-6c8ae93237dc@linux.alibaba.com>
+Date:   Thu, 13 Aug 2020 17:45:19 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200623184515.4132564-1-guro@fb.com> <20200623184515.4132564-5-guro@fb.com>
- <20200811152737.GB650506@cmpxchg.org> <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
-In-Reply-To: <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 13 Aug 2020 14:46:51 +0530
-Message-ID: <CA+G9fYuTsjEpDpODGcYf5hnGwzxj__tVdCMpWeC+ojg5pkYCzw@mail.gmail.com>
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-To:     Roman Gushchin <guro@fb.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Kernel Team <kernel-team@fb.com>, lkft-triage@lists.linaro.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200813062049.GA9477@dhcp22.suse.cz>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The kernel warnings  were noticed on linux next 20200813 while booting
-on arm64, arm, x86_64 and i386.
-
-metadata:
-  git branch: master
-  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
-  git commit: e6d113aca646fb6a92b237340109237fd7a9c770
-  git describe: next-20200813
-  make_kernelversion: 5.8.0
-  kernel-config:
-https://builds.tuxbuild.com/YQHc_PpEV-DF8rU7N9tlIQ/kernel.config
-
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 130093bdf74b..e25f2db7e61c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5137,6 +5137,9 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
->         if (!pn)
->                 return 1;
->
-> +       /* We charge the parent cgroup, never the current task */
-> +       WARN_ON_ONCE(!current->active_memcg);
-> +
->         pn->lruvec_stat_local = alloc_percpu_gfp(struct lruvec_stat,
->                                                  GFP_KERNEL_ACCOUNT);
->         if (!pn->lruvec_stat_local) {
-> @@ -5219,6 +5222,9 @@ static struct mem_cgroup *mem_cgroup_alloc(void)
->                 goto fail;
->         }
->
-> +       /* We charge the parent cgroup, never the current task */
-> +       WARN_ON_ONCE(!current->active_memcg);
-
-[    0.217404] ------------[ cut here ]------------
-[    0.218038] WARNING: CPU: 0 PID: 0 at mm/memcontrol.c:5226
-mem_cgroup_css_alloc+0x680/0x740
-[    0.219188] Modules linked in:
-[    0.219597] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 5.8.0-next-20200813 #1
-[    0.220187] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.12.0-1 04/01/2014
-[    0.221190] EIP: mem_cgroup_css_alloc+0x680/0x740
-[    0.222190] Code: d6 17 5d ff 8d 65 f4 89 d8 5b 5e 5f 5d c3 8d 74
-26 00 b8 58 39 6a d1 e8 fe 94 55 ff 8d 65 f4 89 d8 5b 5e 5f 5d c3 8d
-74 26 00 <0f> 0b e9 01 fa ff ff 8d b4 26 00 00 00 00 66 90 bb f4 ff ff
-ff ba
-[    0.223188] EAX: 00000000 EBX: d13666c0 ECX: 00000cc0 EDX: 0000ffff
-[    0.224187] ESI: 00000000 EDI: f4c11000 EBP: d1361f50 ESP: d1361f40
-[    0.225188] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210246
-[    0.226190] CR0: 80050033 CR2: ffd19000 CR3: 115f8000 CR4: 00040690
-[    0.227195] Call Trace:
-[    0.227882]  ? _cond_resched+0x17/0x30
-[    0.228195]  cgroup_init_subsys+0x66/0x12a
-[    0.229193]  cgroup_init+0x118/0x323
-[    0.230194]  start_kernel+0x43c/0x47d
-[    0.231193]  i386_start_kernel+0x48/0x4a
-[    0.232194]  startup_32_smp+0x164/0x168
-[    0.233195] ---[ end trace dfcf9be7b40caf05 ]---
-[    0.2342#
-08] ------------[ cut here ]------------
-[    0.235192] WARNING: CPU: 0 PID: 0 at mm/memcontrol.c:5141
-mem_cgroup_css_alloc+0x718/0x740
-[    0.236187] Modules linked in:
-[    0.236590] CPU: 0 PID: 0 Comm: swapper/0 Tainted: G        W
-  5.8.0-next-20200813 #1
-[    0.237190] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
-BIOS 1.12.0-1 04/01/2014
-[    0.238194] EIP: mem_cgroup_css_alloc+0x718/0x740
-[    0.239191] Code: 48 ff e9 7c fd ff ff 8d 76 00 a1 b0 14 40 d1 e9
-53 fc ff ff 8d b6 00 00 00 00 0f 0b 8d b6 00 00 00 00 0f 0b 8d b6 00
-00 00 00 <0f> 0b e9 df f9 ff ff 90 89 f8 e8 29 0c 5c ff 89 f2 b8 10 f4
-40 d1
-[    0.240190] EAX: 00000000 EBX: f4c0c800 ECX: 00000000 EDX: d0eab660
-[    0.241189] ESI: 00000000 EDI: f4c11000 EBP: d1361f50 ESP: d1361f40
-[    0.242189] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00210246
-[    0.243190] CR0: 80050033 CR2: ffd19000 CR3: 115f8000 CR4: 00040690
-[    0.244188] Call Trace:
-[    0.245191]  ? _cond_resched+0x17/0x30
-[    0.245686]  cgroup_init_subsys+0x66/0x12a
-[    0.246189]  cgroup_init+0x118/0x323
-[    0.246654]  start_kernel+0x43c/0x47d
-[    0.247189]  i386_start_kernel+0x48/0x4a
-[    0.247697]  startup_32_smp+0x164/0x168
-[    0.248188] ---[ end trace dfcf9be7b40caf06 ]---
-[    0.248990] Last level iTLB entries: 4KB 512, 2MB 255, 4MB 127
-[    0.249187] Last level dTLB entries: 4KB 512, 2MB 255, 4MB 127, 1GB 0
 
 
-Full test log,
-https://qa-reports.linaro.org/lkft/linux-next-oe/build/next-20200813/testrun/3061112/suite/linux-log-parser/test/check-kernel-warning-1665815/log
+ÔÚ 2020/8/13 ÏÂÎç2:20, Michal Hocko Ð´µÀ:
+> On Wed 12-08-20 11:25:53, Alex Shi wrote:
+>> >From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
+>> From: Alex Shi <alex.shi@linux.alibaba.com>
+>> Date: Wed, 5 Aug 2020 21:02:30 +0800
+>> Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
+>>  is disabled
+>>
+>> If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+>> and so the charge is skipped and that will trigger a warning like below.
+>> Let's return from the funcs earlier.
+>>
+>>  ---[ end trace f1f34bfc3b32ed2f ]---
+>>  anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+>>  raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+>>  raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+>>  page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+> 
+> Yes this is better. It would be even more informative if you added the
+> backtrace.
 
+The stack is a bit long.
+I still don't know where cause the asm_exc_page_fault? And seems the vma is from
+kernel not user.
+
+From 999b0fe5fc65865c3b59ff28500d45572a4a9570 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Wed, 5 Aug 2020 21:02:30 +0800
+Subject: [PATCH 2/6] mm/memcg: bail out early from swap accounting when memcg
+ is disabled
+
+If we disabled memcg by cgroup_disable=memory, page->memcg will be NULL
+and so the charge is skipped and that will trigger a warning like below.
+Let's return from the funcs earlier.
+
+ anon flags:0x5005b48008000d(locked|uptodate|dirty|swapbacked)
+ raw: 005005b48008000d dead000000000100 dead000000000122 ffff8897c7c76ad1
+ raw: 0000000000000022 0000000000000000 0000000200000000 0000000000000000
+ page dumped because: VM_WARN_ON_ONCE_PAGE(!memcg)
+...
+ RIP: 0010:vprintk_emit+0x1f7/0x260
+ Code: 00 84 d2 74 72 0f b6 15 27 58 64 01 48 c7 c0 00 d4 72 82 84 d2 74 09 f3 90 0f b6 10 84 d2 75 f7 e8 de 0d 00 00 4c 89 e7 57 9d <0f> 1f 44 00 00 e9 62 ff ff ff 80 3d 88 c9 3a 01 00 0f 85 54 fe ff
+ RSP: 0018:ffffc9000faab358 EFLAGS: 00000202
+ RAX: ffffffff8272d400 RBX: 000000000000005e RCX: ffff88afd80d0040
+ RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000202
+ RBP: ffffc9000faab3a8 R08: ffffffff8272d440 R09: 0000000000022480
+ R10: 00120c77be68bfac R11: 0000000000cd7568 R12: 0000000000000202
+ R13: 0057ffffc0080005 R14: ffffffff820a0130 R15: ffffc9000faab3e8
+ ? vprintk_emit+0x140/0x260
+ vprintk_default+0x1a/0x20
+ vprintk_func+0x4f/0xc4
+ ? vprintk_func+0x4f/0xc4
+ printk+0x53/0x6a
+ ? xas_load+0xc/0x80
+ __dump_page.cold.6+0xff/0x4ee
+ ? xas_init_marks+0x23/0x50
+ ? xas_store+0x30/0x40
+ ? free_swap_slot+0x43/0xd0
+ ? put_swap_page+0x119/0x320
+ ? update_load_avg+0x82/0x580
+ dump_page+0x9/0xb
+ mem_cgroup_try_charge_swap+0x16e/0x1d0
+ get_swap_page+0x130/0x210
+ add_to_swap+0x41/0xc0
+ shrink_page_list+0x99e/0xdf0
+ shrink_inactive_list+0x199/0x360
+ shrink_lruvec+0x40d/0x650
+ ? _cond_resched+0x14/0x30
+ ? _cond_resched+0x14/0x30
+ shrink_node+0x226/0x6e0
+ do_try_to_free_pages+0xd0/0x400
+ try_to_free_pages+0xef/0x130
+ __alloc_pages_slowpath.constprop.127+0x38d/0xbd0
+ ? ___slab_alloc+0x31d/0x6f0
+ __alloc_pages_nodemask+0x27f/0x2c0
+ alloc_pages_vma+0x75/0x220
+ shmem_alloc_page+0x46/0x90
+ ? release_pages+0x1ae/0x410
+ shmem_alloc_and_acct_page+0x77/0x1c0
+ shmem_getpage_gfp+0x162/0x910
+ shmem_fault+0x74/0x210
+ ? filemap_map_pages+0x29c/0x410
+ __do_fault+0x37/0x190
+ handle_mm_fault+0x120a/0x1770
+ exc_page_fault+0x251/0x450
+ ? asm_exc_page_fault+0x8/0x30
+ asm_exc_page_fault+0x1e/0x30
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 299382fc55a9..419cf565f40b 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7098,6 +7098,9 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 	VM_BUG_ON_PAGE(PageLRU(page), page);
+ 	VM_BUG_ON_PAGE(page_count(page), page);
+ 
++	if (mem_cgroup_disabled())
++		return;
++
+ 	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return;
+ 
+@@ -7163,6 +7166,9 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 	struct mem_cgroup *memcg;
+ 	unsigned short oldid;
+ 
++	if (mem_cgroup_disabled())
++		return 0;
++
+ 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+ 		return 0;
+ 
 -- 
-Linaro LKFT
-https://lkft.linaro.org
+1.8.3.1
+
