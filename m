@@ -2,109 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393D22441BA
-	for <lists+cgroups@lfdr.de>; Fri, 14 Aug 2020 01:27:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09F882445C4
+	for <lists+cgroups@lfdr.de>; Fri, 14 Aug 2020 09:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726564AbgHMX1G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 13 Aug 2020 19:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726205AbgHMX1G (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 13 Aug 2020 19:27:06 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAE02C061757;
-        Thu, 13 Aug 2020 16:27:05 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4BSN532LP4z9sTQ;
-        Fri, 14 Aug 2020 09:27:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1597361224;
-        bh=b0sp0GqxeJRJwCzNQOrqlW7VXOG8F0YZwALL4eEoD5M=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UnU1wME2TLmgYlebvh6Kha7r7BnHE0z+WwPnEBZM+GehgUImQrlr+goSrJVOrqH+w
-         59MZzU1BVgn87fdCzbPZnnukEOad5yyX7sF5PCB+E4dZbetS76Z6JnizvqjYLvrUUS
-         5FdWQnO4wFF4XlSscVKa+uv8WWfwc8JC2vk4AUD8TJjTPXmy5Kx6WUjl77cNsZfO62
-         zVL+qWdKCAkYuQCLrzgu7D80cSr6Q5TElNNXEioruHtMSCU38ulmsKmRY7AUnyPs9r
-         X2/uxCeuPia/YdUbRxOtptGi4/GYSYzW0QQSX/yXnDTAXwHnvheHY9iEYJadirtsLo
-         ocQZ/5dJ2LKZQ==
-Date:   Fri, 14 Aug 2020 09:27:02 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     Roman Gushchin <guro@fb.com>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>, Cgroups <cgroups@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Kernel Team <kernel-team@fb.com>, lkft-triage@lists.linaro.org
-Subject: Re: [PATCH v3 4/5] mm: memcg: charge memcg percpu memory to the
- parent cgroup
-Message-ID: <20200814092702.137f588e@canb.auug.org.au>
-In-Reply-To: <CA+G9fYuTsjEpDpODGcYf5hnGwzxj__tVdCMpWeC+ojg5pkYCzw@mail.gmail.com>
-References: <20200623184515.4132564-1-guro@fb.com>
-        <20200623184515.4132564-5-guro@fb.com>
-        <20200811152737.GB650506@cmpxchg.org>
-        <20200811170611.GB1507044@carbon.DHCP.thefacebook.com>
-        <CA+G9fYuTsjEpDpODGcYf5hnGwzxj__tVdCMpWeC+ojg5pkYCzw@mail.gmail.com>
+        id S1726272AbgHNHT4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 14 Aug 2020 03:19:56 -0400
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:51904 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726213AbgHNHT4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 14 Aug 2020 03:19:56 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U5iicOY_1597389589;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U5iicOY_1597389589)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 14 Aug 2020 15:19:51 +0800
+Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
+ just setting skip
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
+        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
+        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, richard.weiyang@gmail.com,
+        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040232.13054.82417.stgit@localhost.localdomain>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <6c072332-ff16-757d-99dd-b8fbae131a0c@linux.alibaba.com>
+Date:   Fri, 14 Aug 2020 15:19:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/DSdzwDUNizsWTg7P5FTg3NX";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+In-Reply-To: <20200813040232.13054.82417.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
---Sig_/DSdzwDUNizsWTg7P5FTg3NX
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
 
-Hi Naresh,
 
-On Thu, 13 Aug 2020 14:46:51 +0530 Naresh Kamboju <naresh.kamboju@linaro.or=
-g> wrote:
->
-> The kernel warnings  were noticed on linux next 20200813 while booting
-> on arm64, arm, x86_64 and i386.
->=20
-> metadata:
->   git branch: master
->   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-ne=
-xt.git
->   git commit: e6d113aca646fb6a92b237340109237fd7a9c770
->   git describe: next-20200813
->   make_kernelversion: 5.8.0
->   kernel-config:
-> https://builds.tuxbuild.com/YQHc_PpEV-DF8rU7N9tlIQ/kernel.config
+在 2020/8/13 下午12:02, Alexander Duyck 写道:
+> 
+> Since we have dropped the late abort case we can drop the code that was
+> clearing the LRU flag and calling page_put since the abort case will now
+> not be holding a reference to a page.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-Actually in Linus' tree.
+seems the case-lru-file-mmap-read case drop about 3% on this patch in a rough testing.
+on my 80 core machine.
 
-It has been fixed today.  Thanks for reporting.
+Thanks
+Alex
 
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/DSdzwDUNizsWTg7P5FTg3NX
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl81zEYACgkQAVBC80lX
-0Gw2LggAoyJQ8D8AoMUEbVoc+URfocM9YXpIdJ3mVvqsndDMp87mLPzO5YrOO+X8
-ZTgKq1ws0W0X7eRoCL/GOFSiF890ifP4kxrz2bmT2/azN44dUUtDmon6jfiu907u
-nGpoMMBgKnubh2e+xQ7LUJKsVrHKvHm/fWAfhEFw7LyGEhbdlbOaTPxWg34j6qdY
-ROzwCtJ52x9m/jkHYqcqJophYIB41HDXmxHGW2UrITHCl6dQBJ29xrQsLAfNDmZA
-oGVIiM453gmdPekBMkJTMM8FMT01uLwfM4WWZ+y0/1aoq/4J31LqNX6iFVxzVpub
-OXIOLoyxuhFJJW4yuDPJ53tKVqonpQ==
-=Bk2z
------END PGP SIGNATURE-----
-
---Sig_/DSdzwDUNizsWTg7P5FTg3NX--
