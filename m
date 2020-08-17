@@ -2,55 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28963246D1C
-	for <lists+cgroups@lfdr.de>; Mon, 17 Aug 2020 18:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0F1246FC7
+	for <lists+cgroups@lfdr.de>; Mon, 17 Aug 2020 19:53:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731348AbgHQQpo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Aug 2020 12:45:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45406 "EHLO
+        id S1731619AbgHQRxp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Aug 2020 13:53:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40300 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731338AbgHQQpQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 12:45:16 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 487D8C061343
-        for <cgroups@vger.kernel.org>; Mon, 17 Aug 2020 09:44:55 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id h19so18208333ljg.13
-        for <cgroups@vger.kernel.org>; Mon, 17 Aug 2020 09:44:55 -0700 (PDT)
+        with ESMTP id S2388631AbgHQQLh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 12:11:37 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7555C061389
+        for <cgroups@vger.kernel.org>; Mon, 17 Aug 2020 09:11:35 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id m7so15410265qki.12
+        for <cgroups@vger.kernel.org>; Mon, 17 Aug 2020 09:11:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ustc/Co8E0AQhbcerO/qjyS5RAvKGH1AciZ7eOvqsmA=;
-        b=c+qkjdRRVAF0xvWA9+DkkVLwK7sGF1z8hQM3CtGa1YD+bJI6w1nj5+9S70Q8FvCQqi
-         2Ei0s13pec+cTVm+0OSOFIdw7vP7XLcSIvUcZ6EGrALSHKiZ7PPGzM4XEb029aajiYyC
-         aEhBUOpbzPBTQSG4Cdn7X1BjMfLQqn745I4HqH3Abk31kJgYxjgeUpKk7qwB2tzxmqpe
-         AtkUyANm5zAbjaLbrp8RlEB5I2UccCxi0HQae47ThK7uHUPNGSHd8fX+Y3ltxcsiL9Kl
-         3ENiFhFOnYGf8LXV3bRXJi1SUgcycpC5v7MIYDrXtB34VmBj+Nk2YpIHRR25BtbB6i8Q
-         lRBw==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=EPZNWjTuoNbn3/0iITSmRZt5ivNwv7BWW6z1AtL/Hmc=;
+        b=Z23cJzvoZmVLpOK2aT+f4XT4iV2NnQq1w6sWZWEGLYa39+S+I66Qx1sJuEz0lgvGq1
+         9MafbfOp+fkSCLAdwkxY3sqWfa/7Ya+r03VJzdWTWGLlMGY81AwTZ2a03DaIZWFHcudU
+         YK2AWWX4x4DALRmK9f7+jCQ+8hCmXiM0ppCuA=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ustc/Co8E0AQhbcerO/qjyS5RAvKGH1AciZ7eOvqsmA=;
-        b=X6OsHCHMvqXFTb3d5E4sq8Wibd7CGu4smeiUu6E8A4MsuiT89vNRT7HhrPqoWYWX91
-         SxWcsmIaE6F57xDdPnMM0BYx+MZOQpcRU1wcRxX1o04Ws3kqDlxTToozCar2/fUaTZPI
-         hzuqW2ifNzxpDisFaSuWJvPXfP8vCC9eog4pERY0oqE5t7lCwPT7iGHhRt6xWWhypezT
-         CADCfLKP9u7BBlopfDtc2m40kIpHjoKp1cmzLm7+cShQv/oGzHClyJZSwCDWzpO4mf/b
-         6O7RbTX1RB1PFHneS3AWDd3BT+KOX4i06RoD843LGAeelvXshUWf45vkmrZdg0RhabX8
-         aUgg==
-X-Gm-Message-State: AOAM531aX7/ru1FogHOwnR5ju/A4RFmtERx6W8bbBlKApA8+Mh5SLSYd
-        AjvHVFcoUuToP90vXaQwqG5R/P0bG4KQMKe1mhhShw==
-X-Google-Smtp-Source: ABdhPJxOE/KUm/g/wNOBiL7kHkyu0ap1d61VlZFxn7CVZ1FQIRsBFPdNAO+qmD/8YZJURfdVWZ4NywWAdRo3uSnMkE4=
-X-Received: by 2002:a2e:96c3:: with SMTP id d3mr7974441ljj.270.1597682693369;
- Mon, 17 Aug 2020 09:44:53 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200817140831.30260-1-longman@redhat.com> <20200817140831.30260-2-longman@redhat.com>
-In-Reply-To: <20200817140831.30260-2-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 17 Aug 2020 09:44:42 -0700
-Message-ID: <CALvZod5V3N3K9-tDoaq=JgkeuAK=0TkRf97Vua0khXL+Lxw+Pg@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/8] memcg: Enable fine-grained control of over
- memory.high action
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=EPZNWjTuoNbn3/0iITSmRZt5ivNwv7BWW6z1AtL/Hmc=;
+        b=XUeLtEqpxATcU2xCVD3rtAALfrw2C/erbHUF3AVOju42OgkFIEyl6aUjpA1DIqUB+u
+         83d43Z90qplAYO6MFUK/sUnUY6++RASUdlJlcOHM9kYAO1T5c5SyzGDSa4CFurIxzs2J
+         1ojUoBjgCQSVm/GfSORKAneNMr+UqQnOTVGjLUqg73mcn+/hHyUNKUdNg4MDIx57BjCH
+         tHEqZediTZm72EcfFNtMZY+X5SxOp5NAIFhBxTKbvqv2gdB0PPMo+daR3qf6YhwSjsz8
+         s15fRStoUY3pLz4lSIs11TNka/TF02NGI11Qls+CbvjTbbwW47fulrpGimkhN3yOh3MA
+         cb3w==
+X-Gm-Message-State: AOAM530rIsxUpXyAIpQk7gjp4jIiwVc0fIZByCOQsBis7NdKfpUCiayn
+        l91vHbhdwgHS/yxNh5deUu6drwU64OF2mAIafxU=
+X-Google-Smtp-Source: ABdhPJxCfcujs7UvLmGxbMeQ2XhvVrOMYp62V16ipQ+dV/Tk0r1zxthxYII+3rcf8N5c4NDp4jS9dg==
+X-Received: by 2002:a37:9a46:: with SMTP id c67mr13909866qke.85.1597680694869;
+        Mon, 17 Aug 2020 09:11:34 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:47cc])
+        by smtp.gmail.com with ESMTPSA id z14sm19093304qtn.92.2020.08.17.09.11.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Aug 2020 09:11:34 -0700 (PDT)
+Date:   Mon, 17 Aug 2020 17:11:32 +0100
+From:   Chris Down <chris@chrisdown.name>
 To:     Waiman Long <longman@redhat.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -62,32 +59,69 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>, linux-doc@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 1/8] memcg: Enable fine-grained control of over
+ memory.high action
+Message-ID: <20200817161132.GA5171@chrisdown.name>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200817140831.30260-2-longman@redhat.com>
+ <20200817143044.GA1987@chrisdown.name>
+ <934e4bc3-bab6-b19a-49f9-6a6ae8638570@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <934e4bc3-bab6-b19a-49f9-6a6ae8638570@redhat.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 7:11 AM Waiman Long <longman@redhat.com> wrote:
->
-> Memory controller can be used to control and limit the amount of
-> physical memory used by a task. When a limit is set in "memory.high"
-> in a non-root memory cgroup, the memory controller will try to reclaim
-> memory if the limit has been exceeded. Normally, that will be enough
-> to keep the physical memory consumption of tasks in the memory cgroup
-> to be around or below the "memory.high" limit.
->
-> Sometimes, memory reclaim may not be able to recover memory in a rate
-> that can catch up to the physical memory allocation rate especially
-> when rotating disks are used for swapping or writing dirty pages. In
-> this case, the physical memory consumption will keep on increasing.
+Waiman Long writes:
+>On 8/17/20 10:30 AM, Chris Down wrote:
+>>Astractly, I think this really overcomplicates the API a lot. If 
+>>these are truly generally useful (and I think that remains to be 
+>>demonstrated), they should be additions to the existing API, rather 
+>>than a sidestep with prctl.
+>This patchset is derived from customer requests. With existing API, I 
+>suppose you mean the memory cgroup API. Right? The reason to use 
+>prctl() is that there are users out there who want some kind of 
+>per-process control instead of for a whole group of processes unless 
+>the users try to create one cgroup per process which is not very 
+>efficient.
 
-Isn't this the real underlying issue? Why not make the guarantees of
-memory.high more strict instead of adding more interfaces and
-complexity?
+If using one cgroup per process is inefficient, then that's what needs to be 
+fixed. Making the API extremely complex to reason about for every user isn't a 
+good compromise when we're talking about an already niche use case.
 
-By the way, have you observed this issue on real workloads or some
-test cases? It would be good to get a repro with simple test cases.
+>>I also worry about some other more concrete things:
+>>
+>>1. Doesn't this allow unprivileged applications to potentially 
+>>bypass    memory.high constraints set by a system administrator?
+>The memory.high constraint is for triggering memory reclaim. The new 
+>mitigation actions introduced by this patchset will only be applied if 
+>memory reclaim alone fails to limit the physical memory consumption. 
+>The current memory cgroup memory reclaim code will not be affected by 
+>this patchset.
+
+memory.high isn't only for triggering memory reclaim, it's also about active 
+throttling when the application fails to come under. Fundamentally it's 
+supposed to indicate the point at which we expect the application to either 
+cooperate or get forcibly descheduled -- take a look at where we call 
+schedule_timeout_killable.
+
+I really struggle to think about how all of those things should interact in 
+this patchset.
+
+>>2. What's the purpose of PR_MEMACT_KILL, compared to memory.max?
+>A user can use this to specify which processes are less important and 
+>can be sacrificed first instead of the other more important ones in 
+>case they are really in a OOM situation. IOW, users can specify the 
+>order where OOM kills can happen.
+
+You can already do that with something like oomd, which has way more 
+flexibility than this. Why codify this in the kernel instead of in a userspace 
+agent?
