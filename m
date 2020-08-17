@@ -2,94 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937D9247690
-	for <lists+cgroups@lfdr.de>; Mon, 17 Aug 2020 21:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B52247AD3
+	for <lists+cgroups@lfdr.de>; Tue, 18 Aug 2020 00:58:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732468AbgHQTit (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Aug 2020 15:38:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39618 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729238AbgHQP06 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 17 Aug 2020 11:26:58 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AE32BAC24;
-        Mon, 17 Aug 2020 15:27:21 +0000 (UTC)
-Date:   Mon, 17 Aug 2020 17:26:55 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Waiman Long <longman@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200817152655.GE28270@dhcp22.suse.cz>
-References: <20200817140831.30260-1-longman@redhat.com>
+        id S1728004AbgHQW6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Aug 2020 18:58:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727966AbgHQW62 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 18:58:28 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C41AC061389;
+        Mon, 17 Aug 2020 15:58:27 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id u126so19218794iod.12;
+        Mon, 17 Aug 2020 15:58:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=CUinOKHyVodz4jvTS1Tm95hUcIyZXDORsxNhMipeHNI=;
+        b=byIpvA6PXapCvY4kbX9hsHPmMFKCY69IW6PMIvbws4/x8AN3hC6qzvqvx9OoH0NDvs
+         K0+ur+V+gik/czeG85229oQgaJMslt/bpivK5ELrz0IRun/ymrxVU3pKlTz/rce9mJT5
+         oQ+qmEmqZJ48NuA2NMUtEhzYNqRqAcKYfhLcV6LSxNzWtoCVDiosbiVVcrX7w+BkVx1w
+         884NUizKW61AP8E0defZhjbkHF3jdtVA3osKGJbKcWwqHVB4nLH36OeiyJh5y2sxkp1Z
+         XPcZiDkxup87SeHU138rtD0cipsLApPga25ffrPjsj7opfL3vKkN2yGeFCUprlbS0XDQ
+         pbpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=CUinOKHyVodz4jvTS1Tm95hUcIyZXDORsxNhMipeHNI=;
+        b=dNn8LM8+aKlIFOy4t5rlHqvyo1OLYMO/f+Yjsz1lrIS7j6teRdwPAHBET08B6Jkq/k
+         wf5SwB/DwfW0UnWdSWZ+Sy8VQY2ruA060k5fnTfgDnELiMuwbtPQo5+0pnelgeVajJF0
+         4pk6PRyTXmaDxHv9OS48TFdVdhfL3muaIVdAUuz3Z8nMWXY1AWVxdh5RxAXBYDph6bnQ
+         8iawP5DDbpOF40LpYpfQSKO+GC/Qivb6xIyFpJCIyO05X/mmO+ww+DVsQAzueTUeNSdo
+         MxsBENKJsJUs2IWLQKKKyk4VLKNwLIklcF5Plfmp6+/TGA+iBk1HOq3PASoCIVqHJt3R
+         Wo9g==
+X-Gm-Message-State: AOAM532XLtrIqUEdX7/eSoa/8OWzhus9t2XRKiBQ3rqmIixmIXTK6Cxn
+        FjTZ8/Ty8G2OMO1hgayCW1X94hAMn8CLdWDRBSA=
+X-Google-Smtp-Source: ABdhPJy34kcBAP3BK2E4PxuPNKUrvks5mcEY80IvzNnvrGyoBR82Uo/yk/nsMsmVM+1ZuY5AwRRcBR5TOKdk/ZHJfNI=
+X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr16744973jat.96.1597705106519;
+ Mon, 17 Aug 2020 15:58:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200817140831.30260-1-longman@redhat.com>
+References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com> <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 17 Aug 2020 15:58:15 -0700
+Message-ID: <CAKgT0Uf-38mNQMN4PptyvL=Jzyooz-K-FsosaVv+P0ok-7R4Sw@mail.gmail.com>
+Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in compaction
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 17-08-20 10:08:23, Waiman Long wrote:
-> Memory controller can be used to control and limit the amount of
-> physical memory used by a task. When a limit is set in "memory.high" in
-> a v2 non-root memory cgroup, the memory controller will try to reclaim
-> memory if the limit has been exceeded. Normally, that will be enough
-> to keep the physical memory consumption of tasks in the memory cgroup
-> to be around or below the "memory.high" limit.
-> 
-> Sometimes, memory reclaim may not be able to recover memory in a rate
-> that can catch up to the physical memory allocation rate. In this case,
-> the physical memory consumption will keep on increasing.  When it reaches
-> "memory.max" for memory cgroup v2 or when the system is running out of
-> free memory, the OOM killer will be invoked to kill some tasks to free
-> up additional memory. However, one has little control of which tasks
-> are going to be killed by an OOM killer. Killing tasks that hold some
-> important resources without freeing them first can create other system
-> problems down the road.
-> 
-> Users who do not want the OOM killer to be invoked to kill random
-> tasks in an out-of-memory situation can use the memory control
-> facility provided by this new patchset via prctl(2) to better manage
-> the mitigation action that needs to be performed to various tasks when
-> the specified memory limit is exceeded with memory cgroup v2 being used.
-> 
-> The currently supported mitigation actions include the followings:
-> 
->  1) Return ENOMEM for some syscalls that allocate or handle memory
->  2) Slow down the process for memory reclaim to catch up
->  3) Send a specific signal to the task
->  4) Kill the task
-> 
-> The users that want better memory control for their applicatons can
-> either modify their applications to call the prctl(2) syscall directly
-> with the new memory control command code or write the desired action to
-> the newly provided memctl procfs files of their applications provided
-> that those applications run in a non-root v2 memory cgroup.
+> @@ -1691,17 +1680,34 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>                  * only when the page is being freed somewhere else.
+>                  */
+>                 scan += nr_pages;
+> -               switch (__isolate_lru_page(page, mode)) {
+> +               switch (__isolate_lru_page_prepare(page, mode)) {
+>                 case 0:
+> +                       /*
+> +                        * Be careful not to clear PageLRU until after we're
+> +                        * sure the page is not being freed elsewhere -- the
+> +                        * page release code relies on it.
+> +                        */
+> +                       if (unlikely(!get_page_unless_zero(page)))
+> +                               goto busy;
+> +
+> +                       if (!TestClearPageLRU(page)) {
+> +                               /*
+> +                                * This page may in other isolation path,
+> +                                * but we still hold lru_lock.
+> +                                */
+> +                               put_page(page);
+> +                               goto busy;
+> +                       }
+> +
 
-prctl is fundamentally about per-process control while cgroup (not only
-memcg) is about group of processes interface. How do those two interact
-together? In other words what is the semantic when different processes
-have a different views on the same underlying memcg event?
+So I was reviewing the code and came across this piece. It has me a
+bit concerned since we are calling put_page while holding the LRU lock
+which was taken before calling the function. We should be fine in
+terms of not encountering a deadlock since the LRU bit is cleared the
+page shouldn't grab the LRU lock again, however we could end up
+grabbing the zone lock while holding the LRU lock which would be an
+issue.
 
-Also the above description doesn't really describe any usecase which
-struggles with the existing interface. We already do allow slow down and
-along with PSI also provide user space control over close to OOM
-situation.
+One other thought I had is that this might be safe because the
+assumption would be that another thread is holding a reference on the
+page, has already called TestClearPageLRU on the page and retrieved
+the LRU bit, and is waiting on us to release the LRU lock before it
+can pull the page off of the list. In that case put_page will never
+decrement the reference count to 0. I believe that is the current case
+but I cannot be certain.
 
--- 
-Michal Hocko
-SUSE Labs
+I'm just wondering if we should just replace the put_page(page) with a
+WARN_ON(put_page_testzero(page)) and a bit more documentation. If I am
+not mistaken it should never be possible for the reference count to
+actually hit zero here.
+
+Thanks.
+
+- Alex
