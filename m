@@ -2,130 +2,186 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 185C62472A2
-	for <lists+cgroups@lfdr.de>; Mon, 17 Aug 2020 20:45:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F95F2474FD
+	for <lists+cgroups@lfdr.de>; Mon, 17 Aug 2020 21:18:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730392AbgHQSpj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Aug 2020 14:45:39 -0400
-Received: from us-smtp-2.mimecast.com ([207.211.31.81]:55521 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2388045AbgHQPzy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 11:55:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597679748;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=k6oJC/PPG0hRAekHdOQPH1JgLE6OMEX6unSGcCgCQZY=;
-        b=cP3fbn8UKrSZ/UniHonrBJXwjPSE+gMD7YHG8rH3gFV6/F8GVHlYW2wVXRLp5+zIWYFyo/
-        TyxgQzRRV9XMZj47lechGqMB4zLHPoXD6G3SrylRceu0oOAss9TUtAwvYz+Pqsf1aoa6mz
-        nP8oiS+kjQNQSCEp0bKqh81omuckE08=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-223-Rbny8aeWOpiIteDTxPfBTQ-1; Mon, 17 Aug 2020 11:55:44 -0400
-X-MC-Unique: Rbny8aeWOpiIteDTxPfBTQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 81E101DDEB;
-        Mon, 17 Aug 2020 15:55:42 +0000 (UTC)
-Received: from llong.remote.csb (ovpn-118-35.rdu2.redhat.com [10.10.118.35])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 950E37D901;
-        Mon, 17 Aug 2020 15:55:37 +0000 (UTC)
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200817152655.GE28270@dhcp22.suse.cz>
-From:   Waiman Long <longman@redhat.com>
-Organization: Red Hat
-Message-ID: <e66d6b5f-6f02-8c8f-681e-1d6da7a72224@redhat.com>
-Date:   Mon, 17 Aug 2020 11:55:37 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.4.1
+        id S2389912AbgHQTRx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 17 Aug 2020 15:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35146 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730582AbgHQPiO (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 11:38:14 -0400
+Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E301C061389;
+        Mon, 17 Aug 2020 08:38:14 -0700 (PDT)
+Received: by mail-io1-xd43.google.com with SMTP id v6so17948263iow.11;
+        Mon, 17 Aug 2020 08:38:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4Bkdz+k72rLGRx5zfmph4t7mOQMS3PzCCK/DsnCmnNk=;
+        b=IUxAnms4s7sSclWkvmw5QiiHjkg484hwDAcSl/TapXh0pQyfDNpoGhtsiLGdSP8sI/
+         rJ3nFoUmNjxtIlAuvyzlLaT+dNCimN4koRcvtUfx34lpUMOAitgRZOoSGPR/faSU36+h
+         W5P3Fnp/zOYblyl4nLFp35Nn3FWPjieLKlt0s279lug2G5pIov2EQZ456vEhAt+0gU2P
+         UUNVf7+sJ7+D3VGcI1+FDJ0mRse6hzZ2N4+R64jBzVA5DRfFjeGhMTN8BHPrUAEyGdWU
+         WAP7k37sKE7kIjzWuy+Wk4na9F1Am+y7QYk/VIDlyxwUKIKPvwVKQYDv+2+YYuiR+89Y
+         rVTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=4Bkdz+k72rLGRx5zfmph4t7mOQMS3PzCCK/DsnCmnNk=;
+        b=js90b07Gq0i+sHjsd8SIDwEsiqeV+IubNf9QCIJH78S7McP25hP4vdWhyDQlUeLvCM
+         xSNmcdAFXjx3mgXlgtu1bInk/GsqBGdL87JmW4LC9Sh+E2/MCxpvsID675c40KX4AQl/
+         Ac0z8RzGhV/Jx7z98dUordJ5osuazCfJRIzHm82hxMXdXl2Uvn1h1K0SlOTK1ep2f2NN
+         oRfmIywaYtcYjpIMBn58SvHkkVlt82IlKU2XCbrYVr3eQd+43J6+NyJNUwdCD64V0Skk
+         5cNxT34743VnAPZqh5Ewy1RO1D+eDFy0m0tR/DKHd/Qpm/6tEuAgjn3s7A/yYzKpGzkN
+         +f4g==
+X-Gm-Message-State: AOAM530K7vtnkP05ne87QQp8JIQecwu+NrINBNAEoDxdIbMQj3CwJWok
+        b1cnpSdEMvCf0+ks1XgNP4M7f7po6Slkdi7LesM=
+X-Google-Smtp-Source: ABdhPJyOwbaMmiZwnk764Naqoxki1LO6gp/dMIbwdpnsdnjdWOCh0o6U7UJnMVNK2M9r7HHawNWHPgFvpAzlUFE4fFA=
+X-Received: by 2002:a5d:9051:: with SMTP id v17mr12402353ioq.88.1597678693579;
+ Mon, 17 Aug 2020 08:38:13 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200817152655.GE28270@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040232.13054.82417.stgit@localhost.localdomain> <6c072332-ff16-757d-99dd-b8fbae131a0c@linux.alibaba.com>
+ <CAKgT0Uf0TbRBVsuGZ1bgh5rdFp+vARkP=+GgD4-DP3Gy6cj+pA@mail.gmail.com>
+ <CAKgT0Ue=DwVAr+dG8Ff04mUY5ZCG6cpvHCG=bP1w=HujiCp0BQ@mail.gmail.com> <650ab639-e66f-5ca6-a9a5-31e61c134ae7@linux.alibaba.com>
+In-Reply-To: <650ab639-e66f-5ca6-a9a5-31e61c134ae7@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Mon, 17 Aug 2020 08:38:02 -0700
+Message-ID: <CAKgT0Ud5D3vAtC0_+3otdqzm+hfqR9xGBacjpuh5Qze5=J1=Vw@mail.gmail.com>
+Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
+ just setting skip
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        kbuild test robot <lkp@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 8/17/20 11:26 AM, Michal Hocko wrote:
-> On Mon 17-08-20 10:08:23, Waiman Long wrote:
->> Memory controller can be used to control and limit the amount of
->> physical memory used by a task. When a limit is set in "memory.high" in
->> a v2 non-root memory cgroup, the memory controller will try to reclaim
->> memory if the limit has been exceeded. Normally, that will be enough
->> to keep the physical memory consumption of tasks in the memory cgroup
->> to be around or below the "memory.high" limit.
->>
->> Sometimes, memory reclaim may not be able to recover memory in a rate
->> that can catch up to the physical memory allocation rate. In this case,
->> the physical memory consumption will keep on increasing.  When it reaches
->> "memory.max" for memory cgroup v2 or when the system is running out of
->> free memory, the OOM killer will be invoked to kill some tasks to free
->> up additional memory. However, one has little control of which tasks
->> are going to be killed by an OOM killer. Killing tasks that hold some
->> important resources without freeing them first can create other system
->> problems down the road.
->>
->> Users who do not want the OOM killer to be invoked to kill random
->> tasks in an out-of-memory situation can use the memory control
->> facility provided by this new patchset via prctl(2) to better manage
->> the mitigation action that needs to be performed to various tasks when
->> the specified memory limit is exceeded with memory cgroup v2 being used.
->>
->> The currently supported mitigation actions include the followings:
->>
->>   1) Return ENOMEM for some syscalls that allocate or handle memory
->>   2) Slow down the process for memory reclaim to catch up
->>   3) Send a specific signal to the task
->>   4) Kill the task
->>
->> The users that want better memory control for their applicatons can
->> either modify their applications to call the prctl(2) syscall directly
->> with the new memory control command code or write the desired action to
->> the newly provided memctl procfs files of their applications provided
->> that those applications run in a non-root v2 memory cgroup.
-> prctl is fundamentally about per-process control while cgroup (not only
-> memcg) is about group of processes interface. How do those two interact
-> together? In other words what is the semantic when different processes
-> have a different views on the same underlying memcg event?
-As said in a previous mail, this patchset is derived from a customer 
-request and per-process control is exactly what the customer wants. That 
-is why prctl() is used. This patchset is intended to supplement the 
-existing memory cgroup features. Processes in a memory cgroup that don't 
-use this new API will behave exactly like before. Only processes that 
-opt to use this new API will have additional mitigation actions applied 
-on them in case the additional limits are reached.
+On Sat, Aug 15, 2020 at 2:51 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
+:
 >
-> Also the above description doesn't really describe any usecase which
-> struggles with the existing interface. We already do allow slow down and
-> along with PSI also provide user space control over close to OOM
-> situation.
 >
-The customer that request it was using Solaris. Solaris does allow 
-per-process memory control and they have tools that rely on this 
-capability. This patchset will help them migrate off Solaris easier. I 
-will look closer into how PSI can help here.
+>
+> =E5=9C=A8 2020/8/15 =E4=B8=8A=E5=8D=885:15, Alexander Duyck =E5=86=99=E9=
+=81=93:
+> > On Fri, Aug 14, 2020 at 7:24 AM Alexander Duyck
+> > <alexander.duyck@gmail.com> wrote:
+> >>
+> >> On Fri, Aug 14, 2020 at 12:19 AM Alex Shi <alex.shi@linux.alibaba.com>=
+ wrote:
+> >>>
+> >>>
+> >>>
+> >>> =E5=9C=A8 2020/8/13 =E4=B8=8B=E5=8D=8812:02, Alexander Duyck =E5=86=
+=99=E9=81=93:
+> >>>>
+> >>>> Since we have dropped the late abort case we can drop the code that =
+was
+> >>>> clearing the LRU flag and calling page_put since the abort case will=
+ now
+> >>>> not be holding a reference to a page.
+> >>>>
+> >>>> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> >>>
+> >>> seems the case-lru-file-mmap-read case drop about 3% on this patch in=
+ a rough testing.
+> >>> on my 80 core machine.
+> >>
+> >> I'm not sure how it could have that much impact on the performance
+> >> since the total effect would just be dropping what should be a
+> >> redundant test since we tested the skip bit before we took the LRU
+> >> bit, so we shouldn't need to test it again after.
+> >>
+> >> I finally got my test setup working last night. I'll have to do some
+> >> testing in my environment and I can start trying to see what is going
+> >> on.
+> >
+> > So I ran the case-lru-file-mmap-read a few times and I don't see how
+> > it is supposed to be testing the compaction code. It doesn't seem like
+> > compaction is running at least on my system as a result of the test
+> > script.
+>
+> atteched my kernel config, it is used on mine machine,
 
-Thanks,
-Longman
+I'm just wondering what the margin of error is on the tests you are
+running. What is the variance between runs? I'm just wondering if 3%
+falls into the range of noise or possible changes due to just code
+shifting around?
 
+In order for the code to have shown any change it needs to be run and
+I didn't see the tests triggering compaction on my test system. I'm
+wondering how much memory you have available in the system you were
+testing on that the test was enough to trigger compaction?
+
+> > I wonder if testing this code wouldn't be better done using
+> > something like thpscale from the
+> > mmtests(https://github.com/gormanm/mmtests)? It seems past changes to
+> > the compaction code were tested using that, and the config script for
+> > the test explains that it is designed specifically to stress the
+> > compaction code. I have the test up and running now and hope to
+> > collect results over the weekend.
+>
+> I did the testing, but a awkward is that I failed to get result,
+> maybe leak some packages.
+
+So one thing I noticed is that if you have over 128GB of memory in the
+system it will fail unless you update the sysctl value
+vm.max_map_count. It defaulted to somewhere close to 64K, and I
+increased it 20X to 1280K in order for the test to run without failing
+on the mmap calls. The other edit I had to make was the config file as
+the test system I was on had about 1TB of RAM, and my home partition
+only had about 800GB to spare so I had to reduce the map size from
+8/10 to 5/8.
+
+> # ../../compare-kernels.sh
+>
+> thpscale Fault Latencies
+> Can't locate List/BinarySearch.pm in @INC (@INC contains: /root/mmtests/b=
+in/lib /usr/local/lib64/perl5 /usr/local/share/perl5 /usr/lib64/perl5/vendo=
+r_perl /usr/share/perl5/vend.
+> BEGIN failed--compilation aborted at /root/mmtests/bin/lib/MMTests/Stat.p=
+m line 13.
+> Compilation failed in require at /root/mmtests/work/log/../../bin/compare=
+-mmtests.pl line 13.
+> BEGIN failed--compilation aborted at /root/mmtests/work/log/../../bin/com=
+pare-mmtests.pl line 13.
+
+I had to install List::BinarySearch.pm. It required installing the
+cpan perl libraries.
+
+> >
+> > There is one change I will probably make to this patch and that is to
+> > place the new code that is setting skip_updated where the old code was
+> > calling test_and_set_skip_bit. By doing that we can avoid extra checks
+> > and it should help to reduce possible collisions when setting the skip
+> > bit in the pageblock flags.
+>
+> the problem maybe on cmpchxg pb flags, that may involved other blocks cha=
+nges.
+
+That is the only thing I can think of just based on code review.
+Although that would imply multiple compact threads are running, and as
+I said in my tests I never saw kcompactd wakeup so I don't think the
+tests you were mentioning were enough to stress compaction.
