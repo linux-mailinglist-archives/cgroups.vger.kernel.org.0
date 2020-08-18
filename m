@@ -2,181 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64AC6247EB4
-	for <lists+cgroups@lfdr.de>; Tue, 18 Aug 2020 08:51:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC53C2481A2
+	for <lists+cgroups@lfdr.de>; Tue, 18 Aug 2020 11:15:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726435AbgHRGvc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 18 Aug 2020 02:51:32 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59555 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726228AbgHRGvb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Aug 2020 02:51:31 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U67H.h6_1597733485;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U67H.h6_1597733485)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 18 Aug 2020 14:51:26 +0800
-Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
- just setting skip
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
-        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
-        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
-        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
-        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
-        akpm@linux-foundation.org, richard.weiyang@gmail.com,
-        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
-References: <20200813035100.13054.25671.stgit@localhost.localdomain>
- <20200813040232.13054.82417.stgit@localhost.localdomain>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <176fae1b-b95b-51c3-d8cc-4380f0972666@linux.alibaba.com>
-Date:   Tue, 18 Aug 2020 14:50:25 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726699AbgHRJPR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Aug 2020 05:15:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726165AbgHRJPQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Aug 2020 05:15:16 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD81BC061389;
+        Tue, 18 Aug 2020 02:15:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=UBwdQabxborBnUE/RMGD20d7Ru/Oheb0wmXWjUiC0/E=; b=YbqYH54dJpbZukfJbcHBX5gIe6
+        4fGR1JnoO2J5ou9rqay98pZf09b2sJvtXYzco+ShIGTbQCUJanYELbMUIKzdUJp8m6gqGDh2Vy5dz
+        Z85kRmbOcs2R9yO6b+qiXnRvxaiEOIVu1SfG+AZ1aEeGjWd8zXPOHQnLG0G/xaBKWZcnjPHK5THwY
+        NUFDfGvip/hUyZNwCTe8rH2KlZoyzIbkjSr4WisborRSryZSeC0mSG/mHjMtr6YgsnrQ7qlP834T9
+        2AXdgEs4etYbr2acZv2wBRyLfyez9vj90z97qq/VvNlLitUCukARb3errqkqzDH0jEAYtn4LMlLjg
+        uY4c2NiA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k7xhs-000568-8H; Tue, 18 Aug 2020 09:15:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7C4093060F2;
+        Tue, 18 Aug 2020 11:14:53 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 293DB2BDBFE38; Tue, 18 Aug 2020 11:14:53 +0200 (CEST)
+Date:   Tue, 18 Aug 2020 11:14:53 +0200
+From:   peterz@infradead.org
+To:     Waiman Long <longman@redhat.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
+ control
+Message-ID: <20200818091453.GL2674@hirez.programming.kicks-ass.net>
+References: <20200817140831.30260-1-longman@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20200813040232.13054.82417.stgit@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200817140831.30260-1-longman@redhat.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-在 2020/8/13 下午12:02, Alexander Duyck 写道:
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+On Mon, Aug 17, 2020 at 10:08:23AM -0400, Waiman Long wrote:
+> Memory controller can be used to control and limit the amount of
+> physical memory used by a task. When a limit is set in "memory.high" in
+> a v2 non-root memory cgroup, the memory controller will try to reclaim
+> memory if the limit has been exceeded. Normally, that will be enough
+> to keep the physical memory consumption of tasks in the memory cgroup
+> to be around or below the "memory.high" limit.
 > 
-> The only user of test_and_set_skip was isolate_migratepages_block and it
-> was using it after a call that was testing and clearing the LRU flag. As
-> such it really didn't need to be behind the LRU lock anymore as it wasn't
-> really fulfilling its purpose.
-> 
-> With that being the case we can simply drop the bit and instead directly
-> just call the set_pageblock_skip function if the page we are working on is
-> the valid_page at the start of the pageblock. It shouldn't be possible for
-> us to encounter the bit being set since we obtained the LRU flag for the
-> first page in the pageblock which means we would have exclusive access to
-> setting the skip bit. As such we don't need to worry about the abort case
-> since no other thread will be able to call what used to be
-> test_and_set_skip.
-> 
-> Since we have dropped the late abort case we can drop the code that was
-> clearing the LRU flag and calling page_put since the abort case will now
-> not be holding a reference to a page.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Sometimes, memory reclaim may not be able to recover memory in a rate
+> that can catch up to the physical memory allocation rate. In this case,
+> the physical memory consumption will keep on increasing. 
 
-After my false sharing remove on pageblock_flags, this patch looks fine with
-a minor change
+Then slow down the allocator? That's what we do for dirty pages too, we
+slow down the dirtier when we run against the limits.
 
-> ---
->  mm/compaction.c |   50 +++++++-------------------------------------------
->  1 file changed, 7 insertions(+), 43 deletions(-)
-> 
-> diff --git a/mm/compaction.c b/mm/compaction.c
-> index 5021a18ef722..c1e9918f9dd4 100644
-> --- a/mm/compaction.c
-> +++ b/mm/compaction.c
-> @@ -399,29 +399,6 @@ void reset_isolation_suitable(pg_data_t *pgdat)
->  	}
->  }
->  
-> -/*
-> - * Sets the pageblock skip bit if it was clear. Note that this is a hint as
-> - * locks are not required for read/writers. Returns true if it was already set.
-> - */
-> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
-> -							unsigned long pfn)
-> -{
-> -	bool skip;
-> -
-> -	/* Do no update if skip hint is being ignored */
-> -	if (cc->ignore_skip_hint)
-> -		return false;
-> -
-> -	if (!IS_ALIGNED(pfn, pageblock_nr_pages))
-> -		return false;
-> -
-> -	skip = get_pageblock_skip(page);
-> -	if (!skip && !cc->no_set_skip_hint)
-> -		skip = !set_pageblock_skip(page);
-> -
-> -	return skip;
-> -}
-> -
->  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->  {
->  	struct zone *zone = cc->zone;
-> @@ -480,12 +457,6 @@ static inline void update_pageblock_skip(struct compact_control *cc,
->  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
->  {
->  }
-> -
-> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
-> -							unsigned long pfn)
-> -{
-> -	return false;
-> -}
->  #endif /* CONFIG_COMPACTION */
->  
->  /*
-> @@ -895,7 +866,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
->  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
->  				low_pfn = end_pfn;
-> -				page = NULL;
->  				goto isolate_abort;
->  			}
->  			valid_page = page;
-> @@ -991,6 +961,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  		if (!TestClearPageLRU(page))
->  			goto isolate_fail_put;
->  
-> +		/* Indicate that we want exclusive access to this pageblock */
-> +		if (page == valid_page) {
-> +			skip_updated = true;
-> +			if (!cc->ignore_skip_hint)
-
-                        if (!cc->ignore_skip_hint && !cc->no_set_skip_hint)
-no_set_skip_hint needs to add here.
-
-Thanks
-Alex
-
-> +				set_pageblock_skip(page);
-> +		}
-> +
->  		/* If we already hold the lock, we can skip some rechecking */
->  		if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec)) {
->  			if (lruvec)
-> @@ -1002,13 +979,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  
->  			lruvec_memcg_debug(lruvec, page);
->  
-> -			/* Try get exclusive access under lock */
-> -			if (!skip_updated) {
-> -				skip_updated = true;
-> -				if (test_and_set_skip(cc, page, low_pfn))
-> -					goto isolate_abort;
-> -			}
-> -
->  			/*
->  			 * Page become compound since the non-locked check,
->  			 * and it's on LRU. It can only be a THP so the order
-> @@ -1094,15 +1064,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
->  	if (unlikely(low_pfn > end_pfn))
->  		low_pfn = end_pfn;
->  
-> -	page = NULL;
-> -
->  isolate_abort:
->  	if (lruvec)
->  		unlock_page_lruvec_irqrestore(lruvec, flags);
-> -	if (page) {
-> -		SetPageLRU(page);
-> -		put_page(page);
-> -	}
->  
->  	/*
->  	 * Updated the cached scanner pfn once the pageblock has been scanned
-> 
