@@ -2,123 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B52247AD3
-	for <lists+cgroups@lfdr.de>; Tue, 18 Aug 2020 00:58:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64AC6247EB4
+	for <lists+cgroups@lfdr.de>; Tue, 18 Aug 2020 08:51:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728004AbgHQW6b (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 17 Aug 2020 18:58:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47504 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727966AbgHQW62 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 17 Aug 2020 18:58:28 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C41AC061389;
-        Mon, 17 Aug 2020 15:58:27 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id u126so19218794iod.12;
-        Mon, 17 Aug 2020 15:58:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CUinOKHyVodz4jvTS1Tm95hUcIyZXDORsxNhMipeHNI=;
-        b=byIpvA6PXapCvY4kbX9hsHPmMFKCY69IW6PMIvbws4/x8AN3hC6qzvqvx9OoH0NDvs
-         K0+ur+V+gik/czeG85229oQgaJMslt/bpivK5ELrz0IRun/ymrxVU3pKlTz/rce9mJT5
-         oQ+qmEmqZJ48NuA2NMUtEhzYNqRqAcKYfhLcV6LSxNzWtoCVDiosbiVVcrX7w+BkVx1w
-         884NUizKW61AP8E0defZhjbkHF3jdtVA3osKGJbKcWwqHVB4nLH36OeiyJh5y2sxkp1Z
-         XPcZiDkxup87SeHU138rtD0cipsLApPga25ffrPjsj7opfL3vKkN2yGeFCUprlbS0XDQ
-         pbpA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CUinOKHyVodz4jvTS1Tm95hUcIyZXDORsxNhMipeHNI=;
-        b=dNn8LM8+aKlIFOy4t5rlHqvyo1OLYMO/f+Yjsz1lrIS7j6teRdwPAHBET08B6Jkq/k
-         wf5SwB/DwfW0UnWdSWZ+Sy8VQY2ruA060k5fnTfgDnELiMuwbtPQo5+0pnelgeVajJF0
-         4pk6PRyTXmaDxHv9OS48TFdVdhfL3muaIVdAUuz3Z8nMWXY1AWVxdh5RxAXBYDph6bnQ
-         8iawP5DDbpOF40LpYpfQSKO+GC/Qivb6xIyFpJCIyO05X/mmO+ww+DVsQAzueTUeNSdo
-         MxsBENKJsJUs2IWLQKKKyk4VLKNwLIklcF5Plfmp6+/TGA+iBk1HOq3PASoCIVqHJt3R
-         Wo9g==
-X-Gm-Message-State: AOAM532XLtrIqUEdX7/eSoa/8OWzhus9t2XRKiBQ3rqmIixmIXTK6Cxn
-        FjTZ8/Ty8G2OMO1hgayCW1X94hAMn8CLdWDRBSA=
-X-Google-Smtp-Source: ABdhPJy34kcBAP3BK2E4PxuPNKUrvks5mcEY80IvzNnvrGyoBR82Uo/yk/nsMsmVM+1ZuY5AwRRcBR5TOKdk/ZHJfNI=
-X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr16744973jat.96.1597705106519;
- Mon, 17 Aug 2020 15:58:26 -0700 (PDT)
+        id S1726435AbgHRGvc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 18 Aug 2020 02:51:32 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:59555 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726228AbgHRGvb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 18 Aug 2020 02:51:31 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R651e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04427;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U67H.h6_1597733485;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U67H.h6_1597733485)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 18 Aug 2020 14:51:26 +0800
+Subject: Re: [RFC PATCH 2/3] mm: Drop use of test_and_set_skip in favor of
+ just setting skip
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
+        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
+        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
+        akpm@linux-foundation.org, richard.weiyang@gmail.com,
+        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
+References: <20200813035100.13054.25671.stgit@localhost.localdomain>
+ <20200813040232.13054.82417.stgit@localhost.localdomain>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <176fae1b-b95b-51c3-d8cc-4380f0972666@linux.alibaba.com>
+Date:   Tue, 18 Aug 2020 14:50:25 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <1595681998-19193-1-git-send-email-alex.shi@linux.alibaba.com> <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
-In-Reply-To: <1595681998-19193-15-git-send-email-alex.shi@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Mon, 17 Aug 2020 15:58:15 -0700
-Message-ID: <CAKgT0Uf-38mNQMN4PptyvL=Jzyooz-K-FsosaVv+P0ok-7R4Sw@mail.gmail.com>
-Subject: Re: [PATCH v17 14/21] mm/compaction: do page isolation first in compaction
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200813040232.13054.82417.stgit@localhost.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> @@ -1691,17 +1680,34 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
->                  * only when the page is being freed somewhere else.
->                  */
->                 scan += nr_pages;
-> -               switch (__isolate_lru_page(page, mode)) {
-> +               switch (__isolate_lru_page_prepare(page, mode)) {
->                 case 0:
-> +                       /*
-> +                        * Be careful not to clear PageLRU until after we're
-> +                        * sure the page is not being freed elsewhere -- the
-> +                        * page release code relies on it.
-> +                        */
-> +                       if (unlikely(!get_page_unless_zero(page)))
-> +                               goto busy;
+
+
+在 2020/8/13 下午12:02, Alexander Duyck 写道:
+> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> 
+> The only user of test_and_set_skip was isolate_migratepages_block and it
+> was using it after a call that was testing and clearing the LRU flag. As
+> such it really didn't need to be behind the LRU lock anymore as it wasn't
+> really fulfilling its purpose.
+> 
+> With that being the case we can simply drop the bit and instead directly
+> just call the set_pageblock_skip function if the page we are working on is
+> the valid_page at the start of the pageblock. It shouldn't be possible for
+> us to encounter the bit being set since we obtained the LRU flag for the
+> first page in the pageblock which means we would have exclusive access to
+> setting the skip bit. As such we don't need to worry about the abort case
+> since no other thread will be able to call what used to be
+> test_and_set_skip.
+> 
+> Since we have dropped the late abort case we can drop the code that was
+> clearing the LRU flag and calling page_put since the abort case will now
+> not be holding a reference to a page.
+> 
+> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+
+After my false sharing remove on pageblock_flags, this patch looks fine with
+a minor change
+
+> ---
+>  mm/compaction.c |   50 +++++++-------------------------------------------
+>  1 file changed, 7 insertions(+), 43 deletions(-)
+> 
+> diff --git a/mm/compaction.c b/mm/compaction.c
+> index 5021a18ef722..c1e9918f9dd4 100644
+> --- a/mm/compaction.c
+> +++ b/mm/compaction.c
+> @@ -399,29 +399,6 @@ void reset_isolation_suitable(pg_data_t *pgdat)
+>  	}
+>  }
+>  
+> -/*
+> - * Sets the pageblock skip bit if it was clear. Note that this is a hint as
+> - * locks are not required for read/writers. Returns true if it was already set.
+> - */
+> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
+> -							unsigned long pfn)
+> -{
+> -	bool skip;
+> -
+> -	/* Do no update if skip hint is being ignored */
+> -	if (cc->ignore_skip_hint)
+> -		return false;
+> -
+> -	if (!IS_ALIGNED(pfn, pageblock_nr_pages))
+> -		return false;
+> -
+> -	skip = get_pageblock_skip(page);
+> -	if (!skip && !cc->no_set_skip_hint)
+> -		skip = !set_pageblock_skip(page);
+> -
+> -	return skip;
+> -}
+> -
+>  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
+>  {
+>  	struct zone *zone = cc->zone;
+> @@ -480,12 +457,6 @@ static inline void update_pageblock_skip(struct compact_control *cc,
+>  static void update_cached_migrate(struct compact_control *cc, unsigned long pfn)
+>  {
+>  }
+> -
+> -static bool test_and_set_skip(struct compact_control *cc, struct page *page,
+> -							unsigned long pfn)
+> -{
+> -	return false;
+> -}
+>  #endif /* CONFIG_COMPACTION */
+>  
+>  /*
+> @@ -895,7 +866,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
+>  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
+>  				low_pfn = end_pfn;
+> -				page = NULL;
+>  				goto isolate_abort;
+>  			}
+>  			valid_page = page;
+> @@ -991,6 +961,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  		if (!TestClearPageLRU(page))
+>  			goto isolate_fail_put;
+>  
+> +		/* Indicate that we want exclusive access to this pageblock */
+> +		if (page == valid_page) {
+> +			skip_updated = true;
+> +			if (!cc->ignore_skip_hint)
+
+                        if (!cc->ignore_skip_hint && !cc->no_set_skip_hint)
+no_set_skip_hint needs to add here.
+
+Thanks
+Alex
+
+> +				set_pageblock_skip(page);
+> +		}
 > +
-> +                       if (!TestClearPageLRU(page)) {
-> +                               /*
-> +                                * This page may in other isolation path,
-> +                                * but we still hold lru_lock.
-> +                                */
-> +                               put_page(page);
-> +                               goto busy;
-> +                       }
-> +
-
-So I was reviewing the code and came across this piece. It has me a
-bit concerned since we are calling put_page while holding the LRU lock
-which was taken before calling the function. We should be fine in
-terms of not encountering a deadlock since the LRU bit is cleared the
-page shouldn't grab the LRU lock again, however we could end up
-grabbing the zone lock while holding the LRU lock which would be an
-issue.
-
-One other thought I had is that this might be safe because the
-assumption would be that another thread is holding a reference on the
-page, has already called TestClearPageLRU on the page and retrieved
-the LRU bit, and is waiting on us to release the LRU lock before it
-can pull the page off of the list. In that case put_page will never
-decrement the reference count to 0. I believe that is the current case
-but I cannot be certain.
-
-I'm just wondering if we should just replace the put_page(page) with a
-WARN_ON(put_page_testzero(page)) and a bit more documentation. If I am
-not mistaken it should never be possible for the reference count to
-actually hit zero here.
-
-Thanks.
-
-- Alex
+>  		/* If we already hold the lock, we can skip some rechecking */
+>  		if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec)) {
+>  			if (lruvec)
+> @@ -1002,13 +979,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  
+>  			lruvec_memcg_debug(lruvec, page);
+>  
+> -			/* Try get exclusive access under lock */
+> -			if (!skip_updated) {
+> -				skip_updated = true;
+> -				if (test_and_set_skip(cc, page, low_pfn))
+> -					goto isolate_abort;
+> -			}
+> -
+>  			/*
+>  			 * Page become compound since the non-locked check,
+>  			 * and it's on LRU. It can only be a THP so the order
+> @@ -1094,15 +1064,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>  	if (unlikely(low_pfn > end_pfn))
+>  		low_pfn = end_pfn;
+>  
+> -	page = NULL;
+> -
+>  isolate_abort:
+>  	if (lruvec)
+>  		unlock_page_lruvec_irqrestore(lruvec, flags);
+> -	if (page) {
+> -		SetPageLRU(page);
+> -		put_page(page);
+> -	}
+>  
+>  	/*
+>  	 * Updated the cached scanner pfn once the pageblock has been scanned
+> 
