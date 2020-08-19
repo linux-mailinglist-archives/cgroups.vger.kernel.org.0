@@ -2,57 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4F6624A1F0
-	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 16:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D824024A1FB
+	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 16:48:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgHSOmz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Aug 2020 10:42:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52388 "EHLO
+        id S1726792AbgHSOsa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Aug 2020 10:48:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53378 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726578AbgHSOmx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 10:42:53 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A5FC061757;
-        Wed, 19 Aug 2020 07:42:53 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u126so24841884iod.12;
-        Wed, 19 Aug 2020 07:42:53 -0700 (PDT)
+        with ESMTP id S1726578AbgHSOs0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 10:48:26 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5330C061757;
+        Wed, 19 Aug 2020 07:48:22 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id t4so20870525iln.1;
+        Wed, 19 Aug 2020 07:48:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=mcVXNr/miBqBqBzPd9zMl9/P3yj0Py/DDVO/2K9/W8w=;
-        b=We78s8aeZBHNS8HsXJOECFtjGX0yBLXCmD9JNUeoRZJB6mQznUcKYUARlp2d8bBHSj
-         3MYtOox2aoiTCMZJHQ0aLbKAufrXDvLthlw1SYtqfpmsKIMKJ2AKJcyGEV9+c8l1w3Z1
-         gCVfjavBkDJIkR3fUr3gg57fqGnCjcqa0v128cNDQur3H2RzKvtWNedO3MfQvg9dIMe3
-         FJzHgpcTQvnbz5Ng96Mgg/91NthBPq/wlMFrT2EQKdfpKbLD5aEGeARJ24zu4Vn9Jf2V
-         ilqu/6IJiEUpeCdUs/PwxW30G3jBBEkpPghitItA81NmeiUXeGHVXCopiMY4J/OlNh08
-         ToMQ==
+         :cc;
+        bh=0ApYOFSEYaJPt7kKwt38Kbe/M+l0V8+5a0AJxr5VRnc=;
+        b=YYBHKawxqJQGH1DRcGNuNEl8HkABjzipt0mrQB7bCYB3X3HNFEjzrPeNzEydAioj/M
+         DwVxkFmLmp6FYn7jLmVK819EibJcsnNXjaOcxdInSWq5tAKv62k7M0o5y4ysoqaF9BbV
+         qphZCSByCz4tOwQ4m2IseIey1XrnftJYJn2p69QJBLHQc90jrKFj64a/XXMvuhpfRyGN
+         XnKEk/0OPRCvmjVHuYH4zNer7uEKRmiXBGN9njK4kUWx3qyz6boBD4UioL22mwzjEwjt
+         Oc5zDVyYkwMsJcnXux9zkSu9cM4OZg8KGChwRNkRqzHHlIxPITRBvJwd6qI/aGIExjjG
+         jqSA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=mcVXNr/miBqBqBzPd9zMl9/P3yj0Py/DDVO/2K9/W8w=;
-        b=Z4VwzbNc2ltbym/9G81bgWJET4hcOZm1w9Zxouqzq+sApPF6dIXvAwaAJpH9tolhvM
-         Z4O5e/uRTd3dw978vDeXB8P+1Tj1EoF3G828V57s8k2iRWCVzvphwB7oxlWnIolzQE1o
-         egu8fh26khdR1ipHCq9eUR8/z1++1jKxKU5Ztgplq+d5VffCN/Ip3aCxANvt2xXiUD5n
-         AoqUfEI5jwcaimvf00BQeyEdkR8Vb3bSqFL09y2oNqeyk6IlOD8FqxRpVU55JZxT4KR7
-         9fsrRGFxuqxzr7tputz1G17Um9l2CKEl4wKyVm5i1wl9s7AYtA0nLNwfVwphB668uzwe
-         wR0g==
-X-Gm-Message-State: AOAM530ZMvnlyMSTDkdJr2o9uQWJJ5fI6xKCDu3hj7MyqwYOmSKE4i2j
-        p4JajsKNUZ/Fj4/ayRA1oWY5H6M4QCYd/Ggq1xBcKqfHDN4=
-X-Google-Smtp-Source: ABdhPJy0G9erP9ijJ2vX8Ai98AthvnT14z2zO5yP9aZ0guBPsZfdROzXXArHkB7NYbBxnMOHqKwUMXP/pKWqLBtWNUU=
-X-Received: by 2002:a6b:da0d:: with SMTP id x13mr20832998iob.138.1597848172300;
- Wed, 19 Aug 2020 07:42:52 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=0ApYOFSEYaJPt7kKwt38Kbe/M+l0V8+5a0AJxr5VRnc=;
+        b=bFyWn4V9J9q6ymkUsc5rdSN3qZO3xWAEWKScp1/3NQ8lxMyD56G86p9bgkY//jBLpa
+         5Km+NIZgSEti0BnTHKtvMW2h+OLzDIWVxzVl6Fi/uKf/7dNX+aHSch7++TCgB0mWsEx1
+         pIBLIBDstOD0llXsXuIfkVFx982t1mQxOlfE+vHK8LX37/aNou/dpz1qwb4PaaCnDquS
+         mSpLAnqbPgcPKWfW3dcWHOqoREjkCVv2/C0KlyjYki9Qfu96UGg85KsVBzV2oMovmjeV
+         6kkbKBvgcGxeLOq4/asybxLQx9kArgrxU1pLTJBMbvvgQBpAuMnj3VYNec/s3+pyHNtz
+         ikTw==
+X-Gm-Message-State: AOAM530/3zxrku/Z+j+ITjsAR55KirUruJHlEXzNXPoNjXNFr2m+K3+j
+        wNr++OH/kcm098lCQcQP6c97BHTdgaq8JgVxpJf0q+uArbI=
+X-Google-Smtp-Source: ABdhPJzmEU0mpAvFX3yBtvh1+ob71cBaFPK3Zp+QxW5r94JaD4ZkLNuqIBncSh6+TTlYFpt1mGrwR4sv+irPX8Uoajs=
+X-Received: by 2002:a92:ae06:: with SMTP id s6mr21501169ilh.64.1597848501986;
+ Wed, 19 Aug 2020 07:48:21 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200819041852.23414.95939.stgit@localhost.localdomain>
- <20200819042738.23414.60815.stgit@localhost.localdomain> <084c58a7-7aac-820c-9606-19391c35b9b5@linux.alibaba.com>
-In-Reply-To: <084c58a7-7aac-820c-9606-19391c35b9b5@linux.alibaba.com>
+ <20200819042705.23414.84098.stgit@localhost.localdomain> <20200819114309.GB17456@casper.infradead.org>
+In-Reply-To: <20200819114309.GB17456@casper.infradead.org>
 From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 19 Aug 2020 07:42:41 -0700
-Message-ID: <CAKgT0Ud3CZ8KHLXCrWNGJAX85x23-EWLnAV63-NMmJ+5vD1JAA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 5/5] mm: Split move_pages_to_lru into 3 separate passes
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+Date:   Wed, 19 Aug 2020 07:48:11 -0700
+Message-ID: <CAKgT0UfVdaMfg=TiiqOK1axUdmViEeaU+R8sisf5WpOKqa-65w@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 1/5] mm: Identify compound pages sooner in isolate_migratepages_block
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
         kbuild test robot <lkp@intel.com>,
         Rong Chen <rong.a.chen@intel.com>,
         Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
@@ -62,7 +63,6 @@ Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
         Daniel Jordan <daniel.m.jordan@oracle.com>,
         linux-mm <linux-mm@kvack.org>,
         Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -70,125 +70,51 @@ Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
         Mel Gorman <mgorman@techsingularity.net>,
         Joonsoo Kim <iamjoonsoo.kim@lge.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:58 AM Alex Shi <alex.shi@linux.alibaba.com> wrot=
-e:
+On Wed, Aug 19, 2020 at 4:43 AM Matthew Wilcox <willy@infradead.org> wrote:
 >
->
->
-> =E5=9C=A8 2020/8/19 =E4=B8=8B=E5=8D=8812:27, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> > From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> >
-> > The current code for move_pages_to_lru is meant to release the LRU lock
-> > every time it encounters an unevictable page or a compound page that mu=
-st
-> > be freed. This results in a fair amount of code bulk because the lruvec=
- has
-> > to be reacquired every time the lock is released and reacquired.
-> >
-> > Instead of doing this I believe we can break the code up into 3 passes.=
- The
-> > first pass will identify the pages we can move to LRU and move those. I=
-n
-> > addition it will sort the list out leaving the unevictable pages in the
-> > list and moving those pages that have dropped to a reference count of 0=
- to
-> > pages_to_free. The second pass will return the unevictable pages to the
-> > LRU. The final pass will free any compound pages we have in the
-> > pages_to_free list before we merge it back with the original list and
-> > return from the function.
-> >
-> > The advantage of doing it this way is that we only have to release the =
-lock
-> > between pass 1 and 2, and then we reacquire the lock after pass 3 after=
- we
-> > merge the pages_to_free back into the original list. As such we only ha=
-ve
-> > to release the lock at most once in an entire call instead of having to
-> > test to see if we need to relock with each page.
-> >
-> > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> > ---
-> >  mm/vmscan.c |   68 ++++++++++++++++++++++++++++++++++-----------------=
---------
-> >  1 file changed, 39 insertions(+), 29 deletions(-)
-> >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 3ebe3f9b653b..6a2bdbc1a9eb 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1850,22 +1850,21 @@ static unsigned noinline_for_stack move_pages_t=
-o_lru(struct lruvec *lruvec,
-> >  {
-> >       int nr_pages, nr_moved =3D 0;
-> >       LIST_HEAD(pages_to_free);
-> > -     struct page *page;
-> > -     struct lruvec *orig_lruvec =3D lruvec;
-> > +     struct page *page, *next;
-> >       enum lru_list lru;
-> >
-> > -     while (!list_empty(list)) {
-> > -             page =3D lru_to_page(list);
-> > +     list_for_each_entry_safe(page, next, list, lru) {
-> >               VM_BUG_ON_PAGE(PageLRU(page), page);
-> > -             list_del(&page->lru);
-> > -             if (unlikely(!page_evictable(page))) {
-> > -                     if (lruvec) {
-> > -                             spin_unlock_irq(&lruvec->lru_lock);
-> > -                             lruvec =3D NULL;
-> > -                     }
-> > -                     putback_lru_page(page);
-> > +
+> On Tue, Aug 18, 2020 at 09:27:05PM -0700, Alexander Duyck wrote:
 > > +             /*
-> > +              * if page is unevictable leave it on the list to be retu=
-rned
-> > +              * to the LRU after we have finished processing the other
-> > +              * entries in the list.
+> > +              * Page is compound. We know the order before we know if it is
+> > +              * on the LRU so we cannot assume it is THP. However since the
+> > +              * page will have the LRU validated shortly we can use the value
+> > +              * to skip over this page for now or validate the LRU is set and
+> > +              * then isolate the entire compound page if we are isolating to
+> > +              * generate a CMA page.
 > > +              */
-> > +             if (unlikely(!page_evictable(page)))
-> >                       continue;
-> > -             }
+> > +             if (PageCompound(page)) {
+> > +                     const unsigned int order = compound_order(page);
 > > +
-> > +             list_del(&page->lru);
-> >
-> >               /*
-> >                * The SetPageLRU needs to be kept here for list intergri=
-ty.
-> > @@ -1878,20 +1877,14 @@ static unsigned noinline_for_stack move_pages_t=
-o_lru(struct lruvec *lruvec,
-> >                *     list_add(&page->lru,)
-> >                *                                        list_add(&page-=
->lru,)
-> >                */
-> > -             lruvec =3D relock_page_lruvec_irq(page, lruvec);
+> > +                     if (likely(order < MAX_ORDER))
+> > +                             low_pfn += (1UL << order) - 1;
 >
-> It's actually changed the meaning from current func. which I had seen a b=
-ug if no relock.
-> but after move to 5.9 kernel, I can not reprodce the bug any more. I am n=
-ot sure if 5.9 fixed
-> the problem, and we don't need relock here.
+> Hmm.  You're checking for PageCompound but then skipping 1UL << order.
+> That only works if PageHead.  If instead this is PageCompound because
+> it's PageTail, you need to do something like:
+>
+>                                 low_pfn |= (1UL << order) - 1;
+>
+> which will move you to the end of the page you're in the middle of.
 
-So I am not sure what you mean here about "changed the meaning from
-the current func". Which function are you referring to and what
-changed?
+Can you successfully call get_page_unless_zero in a tail page? I
+thought their reference count was 0? There is a get_page_unless_zero
+call before the PageCompound check, so I don't think we can get a tail
+page.
 
-From what I can tell the pages cannot change memcg because they were
-isolated and had the LRU flag stripped. They shouldn't be able to
-change destination LRU vector as a result. Assuming that, then they
-can all be processed under same LRU lock and we can avoid having to
-release it until we are forced to do so to call putback_lru_page or
-destroy the compound pages that were freed while we were shrinking the
-LRU lists.
+> If PageTail can't actually happen here, then it's better to check for
+> PageHead explicitly and WARN_ON if you get a PageTail (eg a page was
+> combined into a compound page after you processed the earlier head page).
+>
+> Is it possible the page you've found is hugetlbfs?  Those can have orders
+> larger than MAX_ORDER.
 
-> For the rest of this patch.
-> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-Thanks for the review.
-
-- Alex
+So in theory we only need to jump pageblock_order. However there are
+some architectures where that is not a fixed constant and so it would
+have some additional overhead if I am not mistaken. In addition we
+should have been only provided a pageblock if i am not mistaken so the
+check further down that prevents low_pfn from passing end_pfn should
+reset to the correct value.
