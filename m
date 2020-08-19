@@ -2,186 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACF6E2497D8
-	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 09:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F37B0249B17
+	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 12:50:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726837AbgHSH6Q (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Aug 2020 03:58:16 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:53076 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726570AbgHSH6L (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 03:58:11 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R881e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=19;SR=0;TI=SMTPD_---0U6D5.Xk_1597823875;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6D5.Xk_1597823875)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 19 Aug 2020 15:57:57 +0800
-Subject: Re: [RFC PATCH v2 5/5] mm: Split move_pages_to_lru into 3 separate
- passes
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     yang.shi@linux.alibaba.com, lkp@intel.com, rong.a.chen@intel.com,
-        khlebnikov@yandex-team.ru, kirill@shutemov.name, hughd@google.com,
-        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
-        linux-mm@kvack.org, shakeelb@google.com, willy@infradead.org,
-        hannes@cmpxchg.org, tj@kernel.org, cgroups@vger.kernel.org,
-        akpm@linux-foundation.org, richard.weiyang@gmail.com,
-        mgorman@techsingularity.net, iamjoonsoo.kim@lge.com
-References: <20200819041852.23414.95939.stgit@localhost.localdomain>
- <20200819042738.23414.60815.stgit@localhost.localdomain>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <084c58a7-7aac-820c-9606-19391c35b9b5@linux.alibaba.com>
-Date:   Wed, 19 Aug 2020 15:56:43 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726642AbgHSKuf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Aug 2020 06:50:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728211AbgHSKuY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 06:50:24 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9EC061757
+        for <cgroups@vger.kernel.org>; Wed, 19 Aug 2020 03:50:24 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id n25so11692290vsq.6
+        for <cgroups@vger.kernel.org>; Wed, 19 Aug 2020 03:50:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7JqLKSUFdGdLy72GqIL1pnksOMo8WeFdq7kCu4Cdvdc=;
+        b=R1yt/KtnUZxDh7puLqxjlE1kR3/nMFP6JC3fBdGSl5URQDjv0HhyMfHpXtC25zd8tO
+         ngvGuKDnufw97OLTaHeYwhu/miJwBHOSYHCMovRVdSc7jMoWuLPUAndl21QnGR564PLT
+         IlKXPVuKCLVwrNyndm7qFN5gQEY9ezi03Q87IBHa0I8BnFnIVN1WW/PQwu4mJsTgE7CX
+         0c5bIDa2hqM9eM25ATW2VlJ0BEdMDdY5BzmTZ0BEyDnpwXgV7YBcZYgmLut2Q4pWA866
+         3VCSIVta13bBniltOZBOIpu6h7kAfiPzVFjNsz7vB7H65E2BNPBOh/47sSPsI1HFykGd
+         Cibg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=7JqLKSUFdGdLy72GqIL1pnksOMo8WeFdq7kCu4Cdvdc=;
+        b=rzGENvgEcalZoX4sWGWSOPxAxycbUBR3rzdzk5SWZUmzUyBGMBMmMYvTsJimali/h5
+         1kbGpzl0v9wp1BErShLJmuSlHTZNo3WtHomVlg7KKa4iCe6rhrN9FGak9Jh5v2P6Sv+e
+         4fccpBSrkNzoKAyXnR1HmTx0YBbFK9a1rFdMMIN+un7Xirs/MfvYwnT1LU1B/gjC8e/s
+         59X00rU1MdVHYGxyJYTIJuhChQRfpLgJ9W4GXXUYOci435UngIxh1h576LHi5GampUwq
+         n0bwzkXEG8fqUfm3TXbUzFxszzABHSONHEtYL8XUStqHoq++4u08CcBV6TrS398cD25C
+         jXPA==
+X-Gm-Message-State: AOAM532vp505btzgSeKbAxcDRJe9Mi3EpiLIx8CRRub2HxejDE390V8s
+        RkzMyJbn2GSpiwHQObld2lQlVtZy8sQlnFbD46g=
+X-Google-Smtp-Source: ABdhPJyZ2orM3uIY6d5e8QfvB7VoYEeV2JdIqsS+C3cn8y9jx1zEH679fDJz2AkXQI3PV58SVcbDXOevn8akzZv2gHY=
+X-Received: by 2002:a67:683:: with SMTP id 125mr13264088vsg.168.1597834223154;
+ Wed, 19 Aug 2020 03:50:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200819042738.23414.60815.stgit@localhost.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6102:205b:0:0:0:0 with HTTP; Wed, 19 Aug 2020 03:50:22
+ -0700 (PDT)
+From:   robert anderson <robertandersonhappy2@gmail.com>
+Date:   Wed, 19 Aug 2020 03:50:22 -0700
+Message-ID: <CABzJeR-MBhdWbXd5LavHJBT=n379ACzHF9FpSM6gRvBeUkhMFQ@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-在 2020/8/19 下午12:27, Alexander Duyck 写道:
-> From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> 
-> The current code for move_pages_to_lru is meant to release the LRU lock
-> every time it encounters an unevictable page or a compound page that must
-> be freed. This results in a fair amount of code bulk because the lruvec has
-> to be reacquired every time the lock is released and reacquired.
-> 
-> Instead of doing this I believe we can break the code up into 3 passes. The
-> first pass will identify the pages we can move to LRU and move those. In
-> addition it will sort the list out leaving the unevictable pages in the
-> list and moving those pages that have dropped to a reference count of 0 to
-> pages_to_free. The second pass will return the unevictable pages to the
-> LRU. The final pass will free any compound pages we have in the
-> pages_to_free list before we merge it back with the original list and
-> return from the function.
-> 
-> The advantage of doing it this way is that we only have to release the lock
-> between pass 1 and 2, and then we reacquire the lock after pass 3 after we
-> merge the pages_to_free back into the original list. As such we only have
-> to release the lock at most once in an entire call instead of having to
-> test to see if we need to relock with each page.
-> 
-> Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
-> ---
->  mm/vmscan.c |   68 ++++++++++++++++++++++++++++++++++-------------------------
->  1 file changed, 39 insertions(+), 29 deletions(-)
-> 
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 3ebe3f9b653b..6a2bdbc1a9eb 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1850,22 +1850,21 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  {
->  	int nr_pages, nr_moved = 0;
->  	LIST_HEAD(pages_to_free);
-> -	struct page *page;
-> -	struct lruvec *orig_lruvec = lruvec;
-> +	struct page *page, *next;
->  	enum lru_list lru;
->  
-> -	while (!list_empty(list)) {
-> -		page = lru_to_page(list);
-> +	list_for_each_entry_safe(page, next, list, lru) {
->  		VM_BUG_ON_PAGE(PageLRU(page), page);
-> -		list_del(&page->lru);
-> -		if (unlikely(!page_evictable(page))) {
-> -			if (lruvec) {
-> -				spin_unlock_irq(&lruvec->lru_lock);
-> -				lruvec = NULL;
-> -			}
-> -			putback_lru_page(page);
-> +
-> +		/*
-> +		 * if page is unevictable leave it on the list to be returned
-> +		 * to the LRU after we have finished processing the other
-> +		 * entries in the list.
-> +		 */
-> +		if (unlikely(!page_evictable(page)))
->  			continue;
-> -		}
-> +
-> +		list_del(&page->lru);
->  
->  		/*
->  		 * The SetPageLRU needs to be kept here for list intergrity.
-> @@ -1878,20 +1877,14 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		 *     list_add(&page->lru,)
->  		 *                                        list_add(&page->lru,)
->  		 */
-> -		lruvec = relock_page_lruvec_irq(page, lruvec);
-
-It's actually changed the meaning from current func. which I had seen a bug if no relock.
-but after move to 5.9 kernel, I can not reprodce the bug any more. I am not sure if 5.9 fixed 
-the problem, and we don't need relock here. 
-
-For the rest of this patch. 
-Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
-
-
->  		SetPageLRU(page);
->  
->  		if (unlikely(put_page_testzero(page))) {
->  			__ClearPageLRU(page);
->  			__ClearPageActive(page);
->  
-> -			if (unlikely(PageCompound(page))) {
-> -				spin_unlock_irq(&lruvec->lru_lock);
-> -				lruvec = NULL;
-> -				destroy_compound_page(page);
-> -			} else
-> -				list_add(&page->lru, &pages_to_free);
-> -
-> +			/* defer freeing until we can release lru_lock */
-> +			list_add(&page->lru, &pages_to_free);
->  			continue;
->  		}
->  
-> @@ -1904,16 +1897,33 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
->  		if (PageActive(page))
->  			workingset_age_nonresident(lruvec, nr_pages);
->  	}
-> -	if (orig_lruvec != lruvec) {
-> -		if (lruvec)
-> -			spin_unlock_irq(&lruvec->lru_lock);
-> -		spin_lock_irq(&orig_lruvec->lru_lock);
-> -	}
->  
-> -	/*
-> -	 * To save our caller's stack, now use input list for pages to free.
-> -	 */
-> -	list_splice(&pages_to_free, list);
-> +	if (unlikely(!list_empty(list) || !list_empty(&pages_to_free))) {
-> +		spin_unlock_irq(&lruvec->lru_lock);
-> +
-> +		/* return any unevictable pages to the LRU list */
-> +		while (!list_empty(list)) {
-> +			page = lru_to_page(list);
-> +			list_del(&page->lru);
-> +			putback_lru_page(page);
-> +		}
-> +
-> +		/*
-> +		 * To save our caller's stack use input
-> +		 * list for pages to free.
-> +		 */
-> +		list_splice(&pages_to_free, list);
-> +
-> +		/* free any compound pages we have in the list */
-> +		list_for_each_entry_safe(page, next, list, lru) {
-> +			if (likely(!PageCompound(page)))
-> +				continue;
-> +			list_del(&page->lru);
-> +			destroy_compound_page(page);
-> +		}
-> +
-> +		spin_lock_irq(&lruvec->lru_lock);
-> +	}
->  
->  	return nr_moved;
->  }
-> 
+KiDQktC90LjQvNCw0L3QuNC1OiDQsdC10L3QtdGE0LjRhtC40LDRgCAqDQoNCiog0KHQvtC+0LHR
+idC40YLQtSwg0YfRgtC+INC80Ysg0L/QvtC70YPRh9C40LvQuCDRg9GC0LLQtdGA0LbQtNC10L3Q
+vdGL0Lkg0YTQsNC50Lsg0L7Qv9C70LDRgtGLINC+0YIgRkVERVJBTA0K0JzQmNCd0JjQodCi0JXQ
+oNCh0KLQktCeINCk0JjQndCQ0J3QodCe0JIg0YHQvtCy0LzQtdGB0YLQvdC+INGBINCc0LXQttC0
+0YPQvdCw0YDQvtC00L3Ri9C8INCy0LDQu9GO0YLQvdGL0Lwg0YTQvtC90LTQvtC8ICjQnNCS0KQp
+DQrQutC+0LzQv9C10L3RgdCw0YbQuNGPINC20LXRgNGC0LLQsNC8INC80L7RiNC10L3QvdC40YfQ
+tdGB0YLQstCwINC4INCy0LDRiCDQsNC00YDQtdGBINGN0LvQtdC60YLRgNC+0L3QvdC+0Lkg0L/Q
+vtGH0YLRiyDQstGF0L7QtNC40YIg0LIg0YHQv9C40YHQvtC6DQrQttC10YDRgtCy0YsuICoNCg0K
+KiDQryDQv9C40YjRgywg0YfRgtC+0LHRiyDRgdC+0L7QsdGJ0LjRgtGMINCy0LDQvCwg0YfRgtC+
+INC80Ysg0LHRg9C00LXQvCDQvtGC0L/RgNCw0LLQu9GP0YLRjCDQstCw0LwgJCA1MDAwLjAwVVNE
+DQrQtdC20LXQtNC90LXQstC90L4g0YENCtC90LDRiCDQvtGE0LjRgSDQt9C00LXRgdGMLCDRgtCw
+0Log0LrQsNC6INC80Ysg0L/QvtC70YPRh9C40LvQuCDQvNCw0L3QtNCw0YIg0L3QsCDQv9C10YDQ
+tdC00LDRh9GDINCy0LDRiNC10LPQviDQv9C+0LvQvdC+0LPQvg0K0LrQvtC80L/QtdC90YHQsNGG
+0LjQvtC90L3Ri9C5INC/0LvQsNGC0LXQtiDQsiDRgNCw0LfQvNC10YDQtSA4MDAgMDAwINC00L7Q
+u9C70LDRgNC+0LIg0KHQqNCQINCc0LXQttC00YPQvdCw0YDQvtC00L3Ri9C8DQrQstCw0LvRjtGC
+0L3Ri9C8INGE0L7QvdC00L7QvA0KKNCc0JLQpCkg0Lgg0KTQtdC00LXRgNCw0LvRjNC90L7QtSDQ
+vNC40L3QuNGB0YLQtdGA0YHRgtCy0L4g0YTQuNC90LDQvdGB0L7Qsi4g0JLQsNGIINC70LjRh9C9
+0YvQuSDQuNC00LXQvdGC0LjRhNC40LrQsNGG0LjQvtC90L3Ri9C5INC90L7QvNC10YANCtC/0YDQ
+tdC00L7RgdGC0LDQstC70LXQvdC+INC60L7QvNCw0L3QtNC+0LkgSS5NLkYgQ1BQMDkyMFRHLiAq
+DQoNCiog0JLQvtGCINC40L3RhNC+0YDQvNCw0YbQuNGPINC+0LEg0L7Qv9C70LDRgtC1LCDQutC+
+0YLQvtGA0YPRjiDQvNGLINCx0YPQtNC10Lwg0LjRgdC/0L7Qu9GM0LfQvtCy0LDRgtGMINC00LvR
+jyDQv9C10YDQtdGB0YvQu9C60Lgg0LLQsNGI0LXQs9C+DQrQtdC20LXQtNC90LXQstC90YvQuSDQ
+v9C10YDQtdCy0L7QtC4gKg0KDQoqINCY0LzRjyDQvtGC0L/RgNCw0LLQuNGC0LXQu9GPOiDQodC4
+0L3RgtC40Y8g0JjQtNC10L0gKg0KKiDQktC+0L/RgNC+0YE6INCe0L/Qu9Cw0YLQsCAqDQoqINCe
+0YLQstC10YI6INCU0LAgKg0KKiDQodGD0LzQvNCwOiA1IDAwMCwwMCDQtNC+0LvQu9Cw0YDQvtCy
+INCh0KjQkCAqDQoqINCT0L7RgNC+0LQ6INCb0L7QvNC1ICoNCiog0KHRgtGA0LDQvdCwOiDQotC+
+0LPQviAqDQoNCiog0J/QoNCY0JzQldCn0JDQndCY0JU6IE1UQ04g0LHRg9C00LXRgiDQvtGC0L/R
+gNCw0LLQu9C10L0g0LLQsNC8INC/0L7RgdC70LUg0LLQsNGI0LXQs9C+INC+0YLQstC10YLQsCDQ
+uCDQv9C+0LTRgtCy0LXRgNC20LTQtdC90LjRjw0K0JjQvdGE0L7RgNC80LDRhtC40Y8g0L4g0LLQ
+sNGI0LXQvCDQv9C+0LvRg9GH0LDRgtC10LvQtSwg0YfRgtC+0LHRiyDQuNC30LHQtdC20LDRgtGM
+INC90LXQv9GA0LDQstC40LvRjNC90L7QuSDQv9C10YDQtdC00LDRh9C4LiAqDQoNCiog0JzRiyDQ
+ttC00LXQvCDQstCw0YjQtdCz0L4g0YHRgNC+0YfQvdC+0LPQviDQvtGC0LLQtdGC0LAg0L/QviDR
+jdGC0L7QvNGDINCw0LTRgNC10YHRgw0KKG1pc3NjeW50aGlhZWRlbjU2QGdtYWlsLmNvbSA8bWlz
+c2N5bnRoaWFlZGVuNTZAZ21haWwuY29tPiksINGH0YLQvtCx0Ysg0L/QvtC30LLQvtC70LjRgtGM
+INC90LDQvA0K0L/RgNC+0LTQvtC70LbQuNGC0Ywg0L7Qv9C70LDRgtGDLiAqDQoNCirQmNGB0LrR
+gNC10L3QvdC1INCy0LDRiCwqDQoNCirQoNGD0LrQvtCy0L7QtNC40YLQtdC70Ywg0YTQuNC70LjQ
+sNC70LA6Kg0KKiDQnNC40YHRgSDQodC40L3RgtC40Y8g0JjQtNC10L0gKg0K
