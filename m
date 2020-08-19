@@ -2,96 +2,81 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F37B0249B17
-	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 12:50:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D20249C06
+	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 13:43:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726642AbgHSKuf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Aug 2020 06:50:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44518 "EHLO
+        id S1727120AbgHSLnj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Aug 2020 07:43:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52708 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728211AbgHSKuY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 06:50:24 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44B9EC061757
-        for <cgroups@vger.kernel.org>; Wed, 19 Aug 2020 03:50:24 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id n25so11692290vsq.6
-        for <cgroups@vger.kernel.org>; Wed, 19 Aug 2020 03:50:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7JqLKSUFdGdLy72GqIL1pnksOMo8WeFdq7kCu4Cdvdc=;
-        b=R1yt/KtnUZxDh7puLqxjlE1kR3/nMFP6JC3fBdGSl5URQDjv0HhyMfHpXtC25zd8tO
-         ngvGuKDnufw97OLTaHeYwhu/miJwBHOSYHCMovRVdSc7jMoWuLPUAndl21QnGR564PLT
-         IlKXPVuKCLVwrNyndm7qFN5gQEY9ezi03Q87IBHa0I8BnFnIVN1WW/PQwu4mJsTgE7CX
-         0c5bIDa2hqM9eM25ATW2VlJ0BEdMDdY5BzmTZ0BEyDnpwXgV7YBcZYgmLut2Q4pWA866
-         3VCSIVta13bBniltOZBOIpu6h7kAfiPzVFjNsz7vB7H65E2BNPBOh/47sSPsI1HFykGd
-         Cibg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=7JqLKSUFdGdLy72GqIL1pnksOMo8WeFdq7kCu4Cdvdc=;
-        b=rzGENvgEcalZoX4sWGWSOPxAxycbUBR3rzdzk5SWZUmzUyBGMBMmMYvTsJimali/h5
-         1kbGpzl0v9wp1BErShLJmuSlHTZNo3WtHomVlg7KKa4iCe6rhrN9FGak9Jh5v2P6Sv+e
-         4fccpBSrkNzoKAyXnR1HmTx0YBbFK9a1rFdMMIN+un7Xirs/MfvYwnT1LU1B/gjC8e/s
-         59X00rU1MdVHYGxyJYTIJuhChQRfpLgJ9W4GXXUYOci435UngIxh1h576LHi5GampUwq
-         n0bwzkXEG8fqUfm3TXbUzFxszzABHSONHEtYL8XUStqHoq++4u08CcBV6TrS398cD25C
-         jXPA==
-X-Gm-Message-State: AOAM532vp505btzgSeKbAxcDRJe9Mi3EpiLIx8CRRub2HxejDE390V8s
-        RkzMyJbn2GSpiwHQObld2lQlVtZy8sQlnFbD46g=
-X-Google-Smtp-Source: ABdhPJyZ2orM3uIY6d5e8QfvB7VoYEeV2JdIqsS+C3cn8y9jx1zEH679fDJz2AkXQI3PV58SVcbDXOevn8akzZv2gHY=
-X-Received: by 2002:a67:683:: with SMTP id 125mr13264088vsg.168.1597834223154;
- Wed, 19 Aug 2020 03:50:23 -0700 (PDT)
+        with ESMTP id S1726820AbgHSLnd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 07:43:33 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FF20C061757;
+        Wed, 19 Aug 2020 04:43:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Ak4zJfL3jaSZH9A144fE0Ks6867bEAtu2NTkcDH4RvU=; b=RXOzKbrxZsfW3t1Wc6xtkyc7lT
+        I+02t0IG7W47hbjx6qsg4QiL6EcBfdWn2aBpC7gmY52ux5erb1OYdpDwQu58mJ9ZG4hmTgVFgDIMb
+        CKVgKq/EMapYfJeCEq7+sPv9fSjNFOr1z7bYFj6ovfyc3jt7+Gpy0dV/1c6OSRwXnmYUu9ayo7G9H
+        acNNDxZjmcEBy/nqgab4XdpN5SnxJPNEca2H4ALpDZ/QhF6XGF/hKvoViSs2EYF4g1sUHQMErIgKf
+        EqDgis9otkTiDaVkk0eQYqWc/Bxf9X8D3dXkNa/TV+XSz6A0hxRiY7AUM3ESI0ctl2xdYmsUfjk+Y
+        R2hAdK3Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k8MUn-0002W6-IT; Wed, 19 Aug 2020 11:43:09 +0000
+Date:   Wed, 19 Aug 2020 12:43:09 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     alex.shi@linux.alibaba.com, yang.shi@linux.alibaba.com,
+        lkp@intel.com, rong.a.chen@intel.com, khlebnikov@yandex-team.ru,
+        kirill@shutemov.name, hughd@google.com,
+        linux-kernel@vger.kernel.org, daniel.m.jordan@oracle.com,
+        linux-mm@kvack.org, shakeelb@google.com, hannes@cmpxchg.org,
+        tj@kernel.org, cgroups@vger.kernel.org, akpm@linux-foundation.org,
+        richard.weiyang@gmail.com, mgorman@techsingularity.net,
+        iamjoonsoo.kim@lge.com
+Subject: Re: [RFC PATCH v2 1/5] mm: Identify compound pages sooner in
+ isolate_migratepages_block
+Message-ID: <20200819114309.GB17456@casper.infradead.org>
+References: <20200819041852.23414.95939.stgit@localhost.localdomain>
+ <20200819042705.23414.84098.stgit@localhost.localdomain>
 MIME-Version: 1.0
-Received: by 2002:a05:6102:205b:0:0:0:0 with HTTP; Wed, 19 Aug 2020 03:50:22
- -0700 (PDT)
-From:   robert anderson <robertandersonhappy2@gmail.com>
-Date:   Wed, 19 Aug 2020 03:50:22 -0700
-Message-ID: <CABzJeR-MBhdWbXd5LavHJBT=n379ACzHF9FpSM6gRvBeUkhMFQ@mail.gmail.com>
-Subject: 
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819042705.23414.84098.stgit@localhost.localdomain>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-KiDQktC90LjQvNCw0L3QuNC1OiDQsdC10L3QtdGE0LjRhtC40LDRgCAqDQoNCiog0KHQvtC+0LHR
-idC40YLQtSwg0YfRgtC+INC80Ysg0L/QvtC70YPRh9C40LvQuCDRg9GC0LLQtdGA0LbQtNC10L3Q
-vdGL0Lkg0YTQsNC50Lsg0L7Qv9C70LDRgtGLINC+0YIgRkVERVJBTA0K0JzQmNCd0JjQodCi0JXQ
-oNCh0KLQktCeINCk0JjQndCQ0J3QodCe0JIg0YHQvtCy0LzQtdGB0YLQvdC+INGBINCc0LXQttC0
-0YPQvdCw0YDQvtC00L3Ri9C8INCy0LDQu9GO0YLQvdGL0Lwg0YTQvtC90LTQvtC8ICjQnNCS0KQp
-DQrQutC+0LzQv9C10L3RgdCw0YbQuNGPINC20LXRgNGC0LLQsNC8INC80L7RiNC10L3QvdC40YfQ
-tdGB0YLQstCwINC4INCy0LDRiCDQsNC00YDQtdGBINGN0LvQtdC60YLRgNC+0L3QvdC+0Lkg0L/Q
-vtGH0YLRiyDQstGF0L7QtNC40YIg0LIg0YHQv9C40YHQvtC6DQrQttC10YDRgtCy0YsuICoNCg0K
-KiDQryDQv9C40YjRgywg0YfRgtC+0LHRiyDRgdC+0L7QsdGJ0LjRgtGMINCy0LDQvCwg0YfRgtC+
-INC80Ysg0LHRg9C00LXQvCDQvtGC0L/RgNCw0LLQu9GP0YLRjCDQstCw0LwgJCA1MDAwLjAwVVNE
-DQrQtdC20LXQtNC90LXQstC90L4g0YENCtC90LDRiCDQvtGE0LjRgSDQt9C00LXRgdGMLCDRgtCw
-0Log0LrQsNC6INC80Ysg0L/QvtC70YPRh9C40LvQuCDQvNCw0L3QtNCw0YIg0L3QsCDQv9C10YDQ
-tdC00LDRh9GDINCy0LDRiNC10LPQviDQv9C+0LvQvdC+0LPQvg0K0LrQvtC80L/QtdC90YHQsNGG
-0LjQvtC90L3Ri9C5INC/0LvQsNGC0LXQtiDQsiDRgNCw0LfQvNC10YDQtSA4MDAgMDAwINC00L7Q
-u9C70LDRgNC+0LIg0KHQqNCQINCc0LXQttC00YPQvdCw0YDQvtC00L3Ri9C8DQrQstCw0LvRjtGC
-0L3Ri9C8INGE0L7QvdC00L7QvA0KKNCc0JLQpCkg0Lgg0KTQtdC00LXRgNCw0LvRjNC90L7QtSDQ
-vNC40L3QuNGB0YLQtdGA0YHRgtCy0L4g0YTQuNC90LDQvdGB0L7Qsi4g0JLQsNGIINC70LjRh9C9
-0YvQuSDQuNC00LXQvdGC0LjRhNC40LrQsNGG0LjQvtC90L3Ri9C5INC90L7QvNC10YANCtC/0YDQ
-tdC00L7RgdGC0LDQstC70LXQvdC+INC60L7QvNCw0L3QtNC+0LkgSS5NLkYgQ1BQMDkyMFRHLiAq
-DQoNCiog0JLQvtGCINC40L3RhNC+0YDQvNCw0YbQuNGPINC+0LEg0L7Qv9C70LDRgtC1LCDQutC+
-0YLQvtGA0YPRjiDQvNGLINCx0YPQtNC10Lwg0LjRgdC/0L7Qu9GM0LfQvtCy0LDRgtGMINC00LvR
-jyDQv9C10YDQtdGB0YvQu9C60Lgg0LLQsNGI0LXQs9C+DQrQtdC20LXQtNC90LXQstC90YvQuSDQ
-v9C10YDQtdCy0L7QtC4gKg0KDQoqINCY0LzRjyDQvtGC0L/RgNCw0LLQuNGC0LXQu9GPOiDQodC4
-0L3RgtC40Y8g0JjQtNC10L0gKg0KKiDQktC+0L/RgNC+0YE6INCe0L/Qu9Cw0YLQsCAqDQoqINCe
-0YLQstC10YI6INCU0LAgKg0KKiDQodGD0LzQvNCwOiA1IDAwMCwwMCDQtNC+0LvQu9Cw0YDQvtCy
-INCh0KjQkCAqDQoqINCT0L7RgNC+0LQ6INCb0L7QvNC1ICoNCiog0KHRgtGA0LDQvdCwOiDQotC+
-0LPQviAqDQoNCiog0J/QoNCY0JzQldCn0JDQndCY0JU6IE1UQ04g0LHRg9C00LXRgiDQvtGC0L/R
-gNCw0LLQu9C10L0g0LLQsNC8INC/0L7RgdC70LUg0LLQsNGI0LXQs9C+INC+0YLQstC10YLQsCDQ
-uCDQv9C+0LTRgtCy0LXRgNC20LTQtdC90LjRjw0K0JjQvdGE0L7RgNC80LDRhtC40Y8g0L4g0LLQ
-sNGI0LXQvCDQv9C+0LvRg9GH0LDRgtC10LvQtSwg0YfRgtC+0LHRiyDQuNC30LHQtdC20LDRgtGM
-INC90LXQv9GA0LDQstC40LvRjNC90L7QuSDQv9C10YDQtdC00LDRh9C4LiAqDQoNCiog0JzRiyDQ
-ttC00LXQvCDQstCw0YjQtdCz0L4g0YHRgNC+0YfQvdC+0LPQviDQvtGC0LLQtdGC0LAg0L/QviDR
-jdGC0L7QvNGDINCw0LTRgNC10YHRgw0KKG1pc3NjeW50aGlhZWRlbjU2QGdtYWlsLmNvbSA8bWlz
-c2N5bnRoaWFlZGVuNTZAZ21haWwuY29tPiksINGH0YLQvtCx0Ysg0L/QvtC30LLQvtC70LjRgtGM
-INC90LDQvA0K0L/RgNC+0LTQvtC70LbQuNGC0Ywg0L7Qv9C70LDRgtGDLiAqDQoNCirQmNGB0LrR
-gNC10L3QvdC1INCy0LDRiCwqDQoNCirQoNGD0LrQvtCy0L7QtNC40YLQtdC70Ywg0YTQuNC70LjQ
-sNC70LA6Kg0KKiDQnNC40YHRgSDQodC40L3RgtC40Y8g0JjQtNC10L0gKg0K
+On Tue, Aug 18, 2020 at 09:27:05PM -0700, Alexander Duyck wrote:
+> +		/*
+> +		 * Page is compound. We know the order before we know if it is
+> +		 * on the LRU so we cannot assume it is THP. However since the
+> +		 * page will have the LRU validated shortly we can use the value
+> +		 * to skip over this page for now or validate the LRU is set and
+> +		 * then isolate the entire compound page if we are isolating to
+> +		 * generate a CMA page.
+> +		 */
+> +		if (PageCompound(page)) {
+> +			const unsigned int order = compound_order(page);
+> +
+> +			if (likely(order < MAX_ORDER))
+> +				low_pfn += (1UL << order) - 1;
+
+Hmm.  You're checking for PageCompound but then skipping 1UL << order.
+That only works if PageHead.  If instead this is PageCompound because
+it's PageTail, you need to do something like:
+
+				low_pfn |= (1UL << order) - 1;
+
+which will move you to the end of the page you're in the middle of.
+
+If PageTail can't actually happen here, then it's better to check for
+PageHead explicitly and WARN_ON if you get a PageTail (eg a page was
+combined into a compound page after you processed the earlier head page).
+
+Is it possible the page you've found is hugetlbfs?  Those can have orders
+larger than MAX_ORDER.
