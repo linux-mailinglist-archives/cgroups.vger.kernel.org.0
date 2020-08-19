@@ -2,30 +2,30 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E948C24A644
-	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 20:49:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6C3C24A646
+	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 20:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726925AbgHSStZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Aug 2020 14:49:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34088 "EHLO
+        id S1726749AbgHSStn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Aug 2020 14:49:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726846AbgHSStH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 14:49:07 -0400
+        with ESMTP id S1726820AbgHSStG (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 14:49:06 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C90EEC061344;
-        Wed, 19 Aug 2020 11:49:06 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09EADC061342;
+        Wed, 19 Aug 2020 11:49:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
         References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
         Content-Type:Content-ID:Content-Description;
-        bh=p9w3DQmYzQVsLNeG7R7MdPybBJO6jXoNftILGTf+IE0=; b=s/Fj5e9N4i8MPBUyLdHzmYltJH
-        W95qh4IqdO+bgeV/dKBXO34yVAYFsjEf92o4CweV2SCp098vES4xu2VCaPtffdljiQgVFusO0lPtR
-        mVxJiPVCa8G/0SULJ8xl53dhiTptsPOCo1sLkBvQH4SedICuiVc6SD74X35sX59AOfjyMClCYGUzr
-        978Ku/CwTM5ej8GuG7J5Hwsz0uakDJFFzqaSPsaVyedNaFZ8G9IsmSt4Xk4MOwfTnNBgqvB1gV7u9
-        lDbXNqBWefAsnr4EO2lUpq8B6IotkPmE/O6f+kHf5745L3YB4RJNSt3UO0+ggGjOLpewsg3FA6VVz
-        e6DXDilg==;
+        bh=7+YSI5YaFA7nV1yaE7i/RW3xZbJtF/8x3LDr4io57Q8=; b=QBZEY6GNdSOmnF4ujehB7tIL/+
+        8WlFkWpSxuLPFzkGOnnhlBlJavyO4Z+T0yXOfXgJgAGvoDk+Cf1m8ak9wPM8AkhSIMWn8nFA51xkD
+        WHXh1JSEJrwxa10n1dsaReCF4jaEG4ACDpvQROgOqopHoed3BHKh9cV153/2lHtDBdHzNGvzALDwt
+        xhCJjd4YgCOtHb28bEt8UYDUq80/QJIuQXJRj9csQ+VHnOkdnIJ+SSvdZLDIr692dGd7QtGw5TKT0
+        kT9IZJattIKOxBcoS1wr/w22x9PoXKBXAMBPZyBB/EKkYK4S922ZQv2l+P8miuoSBxQIRrrF5OJXs
+        10W3+YmQ==;
 Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1k8T8p-0006UC-TJ; Wed, 19 Aug 2020 18:48:56 +0000
+        id 1k8T8q-0006UR-DL; Wed, 19 Aug 2020 18:48:56 +0000
 From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
 To:     linux-mm@kvack.org
 Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
@@ -40,9 +40,9 @@ Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
         Huang Ying <ying.huang@intel.com>,
         intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH 7/8] mm: Return head page from find_lock_entry
-Date:   Wed, 19 Aug 2020 19:48:49 +0100
-Message-Id: <20200819184850.24779-8-willy@infradead.org>
+Subject: [PATCH 8/8] mm: Hoist find_subpage call further up in pagecache_get_page
+Date:   Wed, 19 Aug 2020 19:48:50 +0100
+Message-Id: <20200819184850.24779-9-willy@infradead.org>
 X-Mailer: git-send-email 2.21.3
 In-Reply-To: <20200819184850.24779-1-willy@infradead.org>
 References: <20200819184850.24779-1-willy@infradead.org>
@@ -53,135 +53,48 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Convert the one caller of find_lock_entry() to cope with a head page
-being returned instead of the subpage for the index.
+This avoids a call to compound_head().
 
 Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- include/linux/pagemap.h | 12 ++++++++++++
- mm/filemap.c            | 25 +++++++++++--------------
- mm/shmem.c              | 15 ++++++++-------
- 3 files changed, 31 insertions(+), 21 deletions(-)
+ mm/filemap.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 8261c64f592d..de8f3758ceaa 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -371,6 +371,18 @@ static inline struct page *grab_cache_page_nowait(struct address_space *mapping,
- 			mapping_gfp_mask(mapping));
- }
- 
-+/*
-+ * Is this index for one of the subpages of this page?
-+ * This should always be called for a locked, non-hugetlbfs page.
-+ */
-+static inline bool thp_valid_index(struct page *head, pgoff_t index)
-+{
-+	VM_BUG_ON_PAGE(PageHuge(head), head);
-+	VM_BUG_ON_PAGE(!PageLocked(head), head);
-+
-+	return head->index == (index & ~(thp_nr_pages(head) - 1));
-+}
-+
- /*
-  * Given the page we found in the page cache, return the page corresponding
-  * to this index in the file
 diff --git a/mm/filemap.c b/mm/filemap.c
-index 5a87e1bdddd6..6594baae7cd2 100644
+index 6594baae7cd2..8c354277108d 100644
 --- a/mm/filemap.c
 +++ b/mm/filemap.c
-@@ -1594,37 +1594,34 @@ struct page *find_get_entry(struct address_space *mapping, pgoff_t index)
- }
+@@ -1667,7 +1667,6 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+ 		page = NULL;
+ 	if (!page)
+ 		goto no_page;
+-	page = find_subpage(page, index);
  
- /**
-- * find_lock_entry - locate, pin and lock a page cache entry
-- * @mapping: the address_space to search
-- * @offset: the page cache index
-+ * find_lock_entry - Locate and lock a page cache entry.
-+ * @mapping: The address_space to search.
-+ * @index: The page cache index.
-  *
-- * Looks up the page cache slot at @mapping & @offset.  If there is a
-- * page cache page, it is returned locked and with an increased
-- * refcount.
-+ * Looks up the page at @mapping & @index.  If there is a page in the
-+ * cache, the head page is returned locked and with an increased refcount.
-  *
-  * If the slot holds a shadow entry of a previously evicted page, or a
-  * swap entry from shmem/tmpfs, it is returned.
-  *
-- * find_lock_entry() may sleep.
-- *
-- * Return: the found page or shadow entry, %NULL if nothing is found.
-+ * Context: May sleep.
-+ * Return: The head page or shadow entry, %NULL if nothing is found.
-  */
--struct page *find_lock_entry(struct address_space *mapping, pgoff_t offset)
-+struct page *find_lock_entry(struct address_space *mapping, pgoff_t index)
- {
- 	struct page *page;
+ 	if (fgp_flags & FGP_LOCK) {
+ 		if (fgp_flags & FGP_NOWAIT) {
+@@ -1680,12 +1679,12 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+ 		}
  
- repeat:
--	page = find_get_entry(mapping, offset);
-+	page = find_get_entry(mapping, index);
- 	if (page && !xa_is_value(page)) {
- 		lock_page(page);
  		/* Has the page been truncated? */
--		if (unlikely(page_mapping(page) != mapping)) {
+-		if (unlikely(compound_head(page)->mapping != mapping)) {
 +		if (unlikely(page->mapping != mapping)) {
  			unlock_page(page);
  			put_page(page);
  			goto repeat;
  		}
--		page = find_subpage(page, offset);
--		VM_BUG_ON_PAGE(page_to_pgoff(page) != offset, page);
+-		VM_BUG_ON_PAGE(page->index != index, page);
 +		VM_BUG_ON_PAGE(!thp_valid_index(page, index), page);
  	}
- 	return page;
- }
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 271548ca20f3..bbb43e9d35df 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1834,8 +1834,9 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 		page = NULL;
- 	}
- 	if (page || sgp == SGP_READ) {
--		*pagep = page;
--		return 0;
-+		if (page && PageTransHuge(page))
-+			hindex = round_down(index, HPAGE_PMD_NR);
-+		goto out;
- 	}
  
- 	/*
-@@ -1961,14 +1962,13 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	 * it now, lest undo on failure cancel our earlier guarantee.
- 	 */
- 	if (sgp != SGP_WRITE && !PageUptodate(page)) {
--		struct page *head = compound_head(page);
- 		int i;
- 
--		for (i = 0; i < compound_nr(head); i++) {
--			clear_highpage(head + i);
--			flush_dcache_page(head + i);
-+		for (i = 0; i < compound_nr(page); i++) {
-+			clear_highpage(page + i);
-+			flush_dcache_page(page + i);
- 		}
--		SetPageUptodate(head);
-+		SetPageUptodate(page);
+ 	if (fgp_flags & FGP_ACCESSED)
+@@ -1695,6 +1694,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
+ 		if (page_is_idle(page))
+ 			clear_page_idle(page);
  	}
++	page = find_subpage(page, index);
  
- 	/* Perhaps the file has been truncated since we checked */
-@@ -1984,6 +1984,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 		error = -EINVAL;
- 		goto unlock;
- 	}
-+out:
- 	*pagep = page + index - hindex;
- 	return 0;
- 
+ no_page:
+ 	if (!page && (fgp_flags & FGP_CREAT)) {
 -- 
 2.28.0
 
