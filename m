@@ -2,56 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BC1624A209
-	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 16:52:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9FDF24A231
+	for <lists+cgroups@lfdr.de>; Wed, 19 Aug 2020 16:57:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728571AbgHSOwY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 19 Aug 2020 10:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53992 "EHLO
+        id S1728445AbgHSO5h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 19 Aug 2020 10:57:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728415AbgHSOwV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 10:52:21 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F36AC061757;
-        Wed, 19 Aug 2020 07:52:21 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id c6so20837595ilo.13;
-        Wed, 19 Aug 2020 07:52:21 -0700 (PDT)
+        with ESMTP id S1727018AbgHSO53 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 19 Aug 2020 10:57:29 -0400
+Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BD58C061757;
+        Wed, 19 Aug 2020 07:57:28 -0700 (PDT)
+Received: by mail-io1-xd42.google.com with SMTP id u126so24896361iod.12;
+        Wed, 19 Aug 2020 07:57:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=tScvbNwkYnRqhhATPJ7UjpnLY9tTLi+iAPlBc9rB3iY=;
-        b=VNV2FDB4prOhD7krvEKqNRccc1tIE3ic5uWeIuDwt90ZWFOeL9havI3q4VWlHeDNlD
-         uX4QctT6sFkcZWlNwOUZBAhC/iupzupsuaErPhzT+hlDNLUmnr4kgfjEGWXt8gMext8c
-         cwcsyhcty5Qifn13F1KfJQf+979yllT0BJpyWnMYHpQWw+goI30FSA2OJ9jnDoHnwrvx
-         idKl3jZ7EBFt5GgiHIEFz8JalGse5Hvwjr4tsZsSU9/99CqD/yc0FyUux/NERNg/tT9L
-         /GQFmg6aYSFpKCG/utfJlBNzWbz8PKJEZx5Th8eOvf+1KdoanUNVoXNh55++qa10pIl2
-         gQIA==
+        bh=VDgt+NfpwH6U6r2hvHr0dBMMv6qNBbALooemz8NFh5U=;
+        b=f+ZY76s5TRKLUXDOUW1UKWMOshJmecMeQftVcBsCsWkWr4125JZu9WJtY2mpOhQoPG
+         qsJ/dGsIR4iuWMWEBeaCXI22z2X+muEGh5TnoFmIDerzN/VXAPAsbPN/7xR8Dk2eGWx4
+         w4VaCqCZAoGVIR1bl2Smo3+3TxHihbXBwp9Ciz1699llS6GM6yAvU/XbPjS9Q72K3Pge
+         qtxmOF26p1U8NUaDlBngBuqZz1LHwJQqQGV9gjb/PYz4tx7Z16p/BVOLCP4Bur07EFLS
+         R2gYxBW87NUAFuNuUQubaJdFH84qd2+y7N8LItneA+hKUh1pddYAeHTHUiPrPqKxB4ke
+         G4dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=tScvbNwkYnRqhhATPJ7UjpnLY9tTLi+iAPlBc9rB3iY=;
-        b=du2HVlkan4dCRHjafxmN7BOGR3/rnqPfFbCr/hHZZ+deGBusVaxsxe+BD3vtpbNkv4
-         s8uUqWuQmgvj1k3rB4OUCHdLEOqhOopGp2e2ziflDxDtCCj/hZNJ4Bekhy6ZNj81sQ0B
-         i3iH6vHVbgVASJDaCX1BEJz57JIcSKiqYWYOu1O9VfLlFcAqH0eF7KftXfhA3JNndyIw
-         OHTSivjT2b111aE8ENxQ5zFQu5C9+ws6wAyIz6ny1txNy8qhwMpirxk5zT5YmR1to5K2
-         f6LyKTcPUN674xPNse+z/UykM6GXmf2csBJJnZ3ZBqZB3ENMEGzbrF8x50Ynqj755u74
-         128g==
-X-Gm-Message-State: AOAM53328STxgxRxBpWL2LCgaJ/lTNkViPgaEtFja4CNZ4vuSVZeIKWt
-        TQTdx65hom+uQo9n6tbciEbHwQrU/I20X49AUJQ=
-X-Google-Smtp-Source: ABdhPJwvaKUYj/VF7zowJ3yR+UvMpeYHKVrq9VBPQWNGDV7+EQoQY7JPDmxtWwhYzHg4fV4XNvZfKGYiYzHpxjt6gnM=
-X-Received: by 2002:a92:99d4:: with SMTP id t81mr10297363ilk.95.1597848740262;
- Wed, 19 Aug 2020 07:52:20 -0700 (PDT)
+        bh=VDgt+NfpwH6U6r2hvHr0dBMMv6qNBbALooemz8NFh5U=;
+        b=s1HM1JTef5VBiZZw5DRtF5oI42gJnYDzy4p5bBrOo8gZnbGRJAd+ddEnuVqqUynxgq
+         9/7CyLrzjyONjYER+3aqDoiiyoLJVzDtNj3ruSF7/cVUA9xHvZHwN/HIGqQe4rOuAd5g
+         4MAjB9If+wizhRavZsb/Ga6HCMejevtATotLEERLsaboJRimQGsvrWc/D1uVm02Lo991
+         Rwrgrrw9UBrrfkwhtP+pA3/idpi+ErLOrdh0SAlBPZ0iBKSGqFRQXnXUqhocxXPgFvQN
+         Q0vNLtnVcM4t/5ULnhK/YtCOgqmtjPbI2kJaJFuEJB81SGteTk6WyZn4NrAVI+KyTeX4
+         4gWA==
+X-Gm-Message-State: AOAM5333xd6kOtPVhiPA3gJ7v415LXpyBfaRN3Xo/VSRIHGMitQX//z1
+        nemz9XHqISz/bk4a8jLptV4GDXmmdjnBJbRkDQs=
+X-Google-Smtp-Source: ABdhPJw82IIwMfZIA4+g7ITehMEWVBDEC30ayD+Zb/ABgCE0UZQZtipSr3pQzvMOJHMijecJLpYfli+FMxDUybauTq8=
+X-Received: by 2002:a05:6602:2e83:: with SMTP id m3mr21190548iow.38.1597849047807;
+ Wed, 19 Aug 2020 07:57:27 -0700 (PDT)
 MIME-Version: 1.0
 References: <20200819041852.23414.95939.stgit@localhost.localdomain>
- <20200819042722.23414.2654.stgit@localhost.localdomain> <cc993d93-a5af-dd29-19f4-176ba86000e1@linux.alibaba.com>
-In-Reply-To: <cc993d93-a5af-dd29-19f4-176ba86000e1@linux.alibaba.com>
+ <20200819042730.23414.41309.stgit@localhost.localdomain> <15edf807-ce03-83f7-407d-5929341b2b4e@linux.alibaba.com>
+In-Reply-To: <15edf807-ce03-83f7-407d-5929341b2b4e@linux.alibaba.com>
 From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Wed, 19 Aug 2020 07:52:09 -0700
-Message-ID: <CAKgT0UeZa_-hpeV5X_PEf3sz9HSRsnLMgPSu6Zqb5wZ-H0jEhw@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 3/5] mm: Add explicit page decrement in exception
- path for isolate_lru_pages
+Date:   Wed, 19 Aug 2020 07:57:16 -0700
+Message-ID: <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 4/5] mm: Split release_pages work into 3 passes
 To:     Alex Shi <alex.shi@linux.alibaba.com>
 Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
         kbuild test robot <lkp@intel.com>,
@@ -77,7 +76,7 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Aug 19, 2020 at 12:52 AM Alex Shi <alex.shi@linux.alibaba.com> wrot=
+On Wed, Aug 19, 2020 at 12:54 AM Alex Shi <alex.shi@linux.alibaba.com> wrot=
 e:
 >
 >
@@ -86,57 +85,98 @@ e:
 =81=93:
 > > From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 > >
-> > In isolate_lru_pages we have an exception path where if we call
-> > get_page_unless_zero and that succeeds, but TestClearPageLRU fails we c=
-all
-> > put_page. Normally this would be problematic but due to the way that th=
-e
-> > calls are ordered and the fact that we are holding the LRU lock we know
-> > that the caller must be holding another reference for the page. Since w=
-e
-> > can assume that we can replace the put_page with a call to
-> > put_page_testzero contained within a WARN_ON. By doing this we should s=
-ee
-> > if we ever leak a page as a result of the reference count somehow hitti=
-ng
-> > zero when it shouldn't, and can avoid the overhead and confusion of usi=
-ng
-> > the full put_page call.
+> > The release_pages function has a number of paths that end up with the
+> > LRU lock having to be released and reacquired. Such an example would be=
+ the
+> > freeing of THP pages as it requires releasing the LRU lock so that it c=
+an
+> > be potentially reacquired by __put_compound_page.
+> >
+> > In order to avoid that we can split the work into 3 passes, the first
+> > without the LRU lock to go through and sort out those pages that are no=
+t in
+> > the LRU so they can be freed immediately from those that can't. The sec=
+ond
+> > pass will then go through removing those pages from the LRU in batches =
+as
+> > large as a pagevec can hold before freeing the LRU lock. Once the pages=
+ have
+> > been removed from the LRU we can then proceed to free the remaining pag=
+es
+> > without needing to worry about if they are in the LRU any further.
+> >
+> > The general idea is to avoid bouncing the LRU lock between pages and to
+> > hopefully aggregate the lock for up to the full page vector worth of pa=
+ges.
 > >
 > > Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 > > ---
-> >  mm/vmscan.c |    9 ++++++---
-> >  1 file changed, 6 insertions(+), 3 deletions(-)
+> >  mm/swap.c |  109 +++++++++++++++++++++++++++++++++++++----------------=
+--------
+> >  1 file changed, 67 insertions(+), 42 deletions(-)
 > >
-> > diff --git a/mm/vmscan.c b/mm/vmscan.c
-> > index 5bc0c2322043..3ebe3f9b653b 100644
-> > --- a/mm/vmscan.c
-> > +++ b/mm/vmscan.c
-> > @@ -1688,10 +1688,13 @@ static unsigned long isolate_lru_pages(unsigned=
- long nr_to_scan,
+> > diff --git a/mm/swap.c b/mm/swap.c
+> > index fe53449fa1b8..b405f81b2c60 100644
+> > --- a/mm/swap.c
+> > +++ b/mm/swap.c
+> > @@ -795,6 +795,54 @@ void lru_add_drain_all(void)
+> >  }
+> >  #endif
 > >
-> >                       if (!TestClearPageLRU(page)) {
-> >                               /*
-> > -                              * This page may in other isolation path,
-> > -                              * but we still hold lru_lock.
-> > +                              * This page is being isolated in another
-> > +                              * thread, but we still hold lru_lock. Th=
-e
-> > +                              * other thread must be holding a referen=
-ce
-> > +                              * to the page so this should never hit a
-> > +                              * reference count of 0.
-> >                                */
-> > -                             put_page(page);
-> > +                             WARN_ON(put_page_testzero(page));
+> > +static void __release_page(struct page *page, struct list_head *pages_=
+to_free)
+> > +{
+> > +     if (PageCompound(page)) {
+> > +             __put_compound_page(page);
+> > +     } else {
+> > +             /* Clear Active bit in case of parallel mark_page_accesse=
+d */
+> > +             __ClearPageActive(page);
+> > +             __ClearPageWaiters(page);
+> > +
+> > +             list_add(&page->lru, pages_to_free);
+> > +     }
+> > +}
+> > +
+> > +static void __release_lru_pages(struct pagevec *pvec,
+> > +                             struct list_head *pages_to_free)
+> > +{
+> > +     struct lruvec *lruvec =3D NULL;
+> > +     unsigned long flags =3D 0;
+> > +     int i;
+> > +
+> > +     /*
+> > +      * The pagevec at this point should contain a set of pages with
+> > +      * their reference count at 0 and the LRU flag set. We will now
+> > +      * need to pull the pages from their LRU lists.
+> > +      *
+> > +      * We walk the list backwards here since that way we are starting=
+ at
+> > +      * the pages that should be warmest in the cache.
+> > +      */
+> > +     for (i =3D pagevec_count(pvec); i--;) {
+> > +             struct page *page =3D pvec->pages[i];
+> > +
+> > +             lruvec =3D relock_page_lruvec_irqsave(page, lruvec, &flag=
+s);
 >
-> seems WARN_ON is always enabled.
+> the lock bounce is better with the patch, would you like to do further
+> like using add_lruvecs to reduce bounce more?
 >
-> Reviewed-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Thanks
+> Alex
 
-Yeah, it is always enabled however it should never be triggered. I had
-considered just putting a page_ref_dec here since in theory this path
-should never be triggered but I thought as a debug catch I add the
-WARN_ON and put_page_testzero. If we ever do encounter this being
-triggered then it will leak a page of memory which isn't the end of
-the world but I thought would warrant a WARN_ON.
+I'm not sure how much doing something like that would add. In my case
+I had a very specific issue that this is addressing which is the fact
+that every compound page was taking the LRU lock and zone lock
+separately. With this patch that is reduced to one LRU lock per 15
+pages and then the zone lock per page. By adding or sorting pages by
+lruvec I am not sure there will be much benefit as I am not certain
+how often we will end up with pages being interleaved between multiple
+lruvecs. In addition as I am limiting the quantity to a pagevec which
+limits the pages to 15 I am not sure there will be much benefit to be
+seen for sorting the pages beforehand.
+
+Thanks.
+
+- Alex
