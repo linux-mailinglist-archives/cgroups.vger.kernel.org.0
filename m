@@ -2,126 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D761F24BD64
-	for <lists+cgroups@lfdr.de>; Thu, 20 Aug 2020 15:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B5F8624C057
+	for <lists+cgroups@lfdr.de>; Thu, 20 Aug 2020 16:13:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728877AbgHTNEn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Aug 2020 09:04:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:51039 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729885AbgHTNET (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Aug 2020 09:04:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1597928658;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=CJnfEEPsHTayufcqPRv869AJ8y4aZylFQ/z6R8psu84=;
-        b=UPxACiMBxNxZKKUPQFu+PLJNdf7byO6EDqF1XmvvgISBNLd4RcyIIY3j1O05xec/rlwGOg
-        Lo5AscxcF7r31vtNX+sv3ib4NmEcgDCHJ/daVBpFbn2Jfuf3+/11mVQMu6FbJfJ9EsuTyF
-        gqIjrQX6qCANDD9GEET7IWzHHgzU2Lg=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-457-VVfH2K2cNdKSB7y61NNuZA-1; Thu, 20 Aug 2020 09:04:16 -0400
-X-MC-Unique: VVfH2K2cNdKSB7y61NNuZA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4B42A81F02B;
-        Thu, 20 Aug 2020 13:04:14 +0000 (UTC)
-Received: from llong.com (unknown [10.10.115.249])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id CAC0A600DD;
-        Thu, 20 Aug 2020 13:04:12 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S1726754AbgHTONn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Aug 2020 10:13:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44466 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725823AbgHTONm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Aug 2020 10:13:42 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B829C061385;
+        Thu, 20 Aug 2020 07:13:42 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id q75so2344610iod.1;
+        Thu, 20 Aug 2020 07:13:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=7KUqD0NVyRg3Zo03GZrFVQegwrcexF2aJREuag4UjIs=;
+        b=TCJZNgYlFkolAtKYDIaSQN1FZqYOp0XkIPkHM5WH42LWR6/yUHnPUjst8eHDeJmbVI
+         j5LsQXv6294iLVbd3J87FiCydVMOuBJ0fa9oex0OUM92w/tFyJmNbRU8b1a1MM1c5uyN
+         785YJ3lAM9LVM2OjK3bnrI51rakDkVrQRnhg68McF4HsFIfOb7naUtnS8WgGlVCen2uL
+         DQ6HuaO1AY/+oE+9Y09w9SJnDdZjAfNT0twocg+yXtnzrQxMVmNyS9CdKBKqTpezXNHM
+         gAvy5RnVll4PadjCJ/Vi3pdvgimSd0fUCj+odJhmONiUJCgifJsi+1UkihKXhBJ/4T/1
+         IKaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=7KUqD0NVyRg3Zo03GZrFVQegwrcexF2aJREuag4UjIs=;
+        b=tju0bxxQIFZ2qSGJsi9HTczWEyn7DuGoOig/LOyA3L11AkCBijYdNWjmXGx4jTbIhf
+         8YlFwYomKWRRb8qKXQ2HXzBNJYmGuPJqARFDlKxMXKUY7ba3DohrqCmfd3bHDq2mfQH8
+         VVOVrbAxvErADNQm3Uze4kE4Hk+tlNo+uVIV1hRMOfpsjpEwMJNxr1GwnD2EHfztcSe6
+         x6QbR+JfRUxKEEaEtkrqFplt/6Rxqa3MB+C5FWf8ox5kmJR0uWajvUFXLVAajhK/am1X
+         xShvbUMECwI/tcrFzkXyIoSUdrwPhQliyZ+TY7TKJ9+Qz+rotcHRXE4Lz2cMUc0UA16S
+         /r9w==
+X-Gm-Message-State: AOAM532mqBSZSak9mHdIwSUZejoZui2DtZnqQ6ADPABZQcfFMx3ag/yI
+        fIe1iAfM5nRcLGPs9BB8E6xcbVYCNQ8TTWUeuLY=
+X-Google-Smtp-Source: ABdhPJwbWC38Bz5MDaAGOI9NDW7tN+sr5sluyUNIxyH9tFJgxZZ0l6sSTtfBdLeGoYx1fATjeKxgHnjjjN1eF7MNVBw=
+X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr3408874jat.96.1597932821221;
+ Thu, 20 Aug 2020 07:13:41 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200819041852.23414.95939.stgit@localhost.localdomain>
+ <20200819042730.23414.41309.stgit@localhost.localdomain> <15edf807-ce03-83f7-407d-5929341b2b4e@linux.alibaba.com>
+ <CAKgT0UepdfjXn=j8e4xEBFmsNJdzJyN57em8dscr-Er4OBZCOg@mail.gmail.com> <a88eef1b-242d-78c6-fecb-35ea00cd739b@linux.alibaba.com>
+In-Reply-To: <a88eef1b-242d-78c6-fecb-35ea00cd739b@linux.alibaba.com>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Thu, 20 Aug 2020 07:13:30 -0700
+Message-ID: <CAKgT0UdmKpn3x_=F4E-u+mCf75hu4Bu0O0dyds4mHq93G6wJVA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 4/5] mm: Split release_pages work into 3 passes
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
+        kbuild test robot <lkp@intel.com>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Hugh Dickins <hughd@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        linux-mm <linux-mm@kvack.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Roman Gushchin <guro@fb.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Waiman Long <longman@redhat.com>
-Subject: [PATCH 3/3] mm/memcg: Unify swap and memsw page counters
-Date:   Thu, 20 Aug 2020 09:03:50 -0400
-Message-Id: <20200820130350.3211-4-longman@redhat.com>
-In-Reply-To: <20200820130350.3211-1-longman@redhat.com>
-References: <20200820130350.3211-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+        Wei Yang <richard.weiyang@gmail.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The swap page counter is v2 only while memsw is v1 only. As v1 and v2
-controllers cannot be active at the same time, there is no point to keep
-both swap and memsw page counters in mem_cgroup. The previous patch has
-made sure that memsw page counter is updated and accessed only when in
-v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
-swap page counter. This saves 14 long's in the size of mem_cgroup. This
-is a saving of 112 bytes for 64-bit archs.
+On Thu, Aug 20, 2020 at 2:51 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
+:
+>
+>
+>
+> =E5=9C=A8 2020/8/19 =E4=B8=8B=E5=8D=8810:57, Alexander Duyck =E5=86=99=E9=
+=81=93:
+> >>>       lruvec =3D relock_page_lruvec_irqsave(page, lruvec, &flags);
+> >> the lock bounce is better with the patch, would you like to do further
+> >> like using add_lruvecs to reduce bounce more?
+> >>
+> >> Thanks
+> >> Alex
+> > I'm not sure how much doing something like that would add. In my case
+> > I had a very specific issue that this is addressing which is the fact
+> > that every compound page was taking the LRU lock and zone lock
+> > separately. With this patch that is reduced to one LRU lock per 15
+> > pages and then the zone lock per page. By adding or sorting pages by
+> > lruvec I am not sure there will be much benefit as I am not certain
+> > how often we will end up with pages being interleaved between multiple
+> > lruvecs. In addition as I am limiting the quantity to a pagevec which
+> > limits the pages to 15 I am not sure there will be much benefit to be
+> > seen for sorting the pages beforehand.
+> >
+>
+> the relock will unlock and get another lock again, the cost in that, the =
+2nd
+> lock need to wait for fairness for concurrency lruvec locking.
+> If we can do sort before, we should remove the fairness waiting here. Of =
+course,
+> perf result depends on scenarios.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- include/linux/memcontrol.h | 3 +--
- mm/memcontrol.c            | 8 +++++---
- 2 files changed, 6 insertions(+), 5 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d0b036123c6a..d2a819d7db70 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -216,10 +216,9 @@ struct mem_cgroup {
- 
- 	/* Accounted resources */
- 	struct page_counter memory;
--	struct page_counter swap;
-+	struct page_counter swap;	/* memsw (memory+swap) for v1 */
- 
- 	/* Legacy consumer-oriented counters */
--	struct page_counter memsw;
- 	struct page_counter kmem;
- 	struct page_counter tcpmem;
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d219dca5239f..04c3794cdc98 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -68,6 +68,11 @@
- 
- #include <trace/events/vmscan.h>
- 
-+/*
-+ * The v1 memsw page counter is aliased to the v2 swap page counter.
-+ */
-+#define memsw	swap
-+
- struct cgroup_subsys memory_cgrp_subsys __read_mostly;
- EXPORT_SYMBOL(memory_cgrp_subsys);
- 
-@@ -5279,13 +5284,11 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 		memcg->use_hierarchy = true;
- 		page_counter_init(&memcg->memory, &parent->memory);
- 		page_counter_init(&memcg->swap, &parent->swap);
--		page_counter_init(&memcg->memsw, &parent->memsw);
- 		page_counter_init(&memcg->kmem, &parent->kmem);
- 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
- 	} else {
- 		page_counter_init(&memcg->memory, NULL);
- 		page_counter_init(&memcg->swap, NULL);
--		page_counter_init(&memcg->memsw, NULL);
- 		page_counter_init(&memcg->kmem, NULL);
- 		page_counter_init(&memcg->tcpmem, NULL);
- 		/*
-@@ -5414,7 +5417,6 @@ static void mem_cgroup_css_reset(struct cgroup_subsys_state *css)
- 
- 	page_counter_set_max(&memcg->memory, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->swap, PAGE_COUNTER_MAX);
--	page_counter_set_max(&memcg->memsw, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->kmem, PAGE_COUNTER_MAX);
- 	page_counter_set_max(&memcg->tcpmem, PAGE_COUNTER_MAX);
- 	page_counter_set_min(&memcg->memory, 0);
--- 
-2.18.1
-
+Agreed. The question is in how many scenarios are you going to have
+pages interleaved between more than one lruvec? I suspect in most
+cases you should only have one lruvec for all the pages being
+processed in a single pagevec.
