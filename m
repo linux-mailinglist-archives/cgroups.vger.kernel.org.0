@@ -2,117 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021AE24C458
-	for <lists+cgroups@lfdr.de>; Thu, 20 Aug 2020 19:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0485124C482
+	for <lists+cgroups@lfdr.de>; Thu, 20 Aug 2020 19:28:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730494AbgHTRQR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 20 Aug 2020 13:16:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44376 "EHLO
+        id S1729448AbgHTR2w (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 20 Aug 2020 13:28:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46396 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730489AbgHTRPh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Aug 2020 13:15:37 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0020C061387;
-        Thu, 20 Aug 2020 10:15:29 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id z3so2297990ilh.3;
-        Thu, 20 Aug 2020 10:15:29 -0700 (PDT)
+        with ESMTP id S1730559AbgHTR2o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 20 Aug 2020 13:28:44 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E564C061385
+        for <cgroups@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id s16so1749224qtn.7
+        for <cgroups@vger.kernel.org>; Thu, 20 Aug 2020 10:28:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=MOQmfZn9DA4QXnKxyQeBWYBG/mA3vxQqGH4PKhYLc5o=;
-        b=OfBzuLHZ2eSHGCtzyhVtTLqGYyG1Up4rJEWA0nr8ye40oTw8lvfrlQJXFRysqMYoDt
-         eOGvCWmxBFoWGMLHQXoBHqnzSy4h2NC9VOv3VeXXQu1kI/PhBB+F+2MKDFp1BIXr78HS
-         Vk33HZ2ECIEDzTQu95hzffvCTm5bzMONFui3vlVPtr7YAlnSkn55SMJ1RCht2TTIMMOh
-         zEeiOHkWMWGWHZdpzhItd55aQryuPukj72Ij6RXsM2UGmfaFWCtz7UAePAj3B/nHqWRt
-         7Dat4Z8Yb74jW1xR4XiSMT9Ho29VZs0MO7r5ePNd999lahMd89om26IvTh5fLLk0Dctf
-         AWvQ==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
+        b=B0zXn8r/1mchT7VpWpZ+mN4JB+LQTOAcThKwvNYAguEIUDOZHwwTrdR6gzmQZ5tubZ
+         nadwJJP0FhhTUc6qtozlaIcQuD/FFdRoOqCSSFPC20808u50MokVC+zzcj74bSNK3564
+         K2rPaPV6/LqFSt2EYvyidWPeBNnkH5k+UUHnDDp7LsHM+QUZl4RIfl0sMDasq2fgoDTh
+         aEiFbkQ9IhmoLjkYAaQc2VPQYaxtLY7ONExn+cDWgW0LH7qwa/cgM2WtSkYRhS29jGEn
+         +HZQ+jI+GqR+PBIfIjicJ0wnOj2ML6oSYHPVNMYabbRVYTlqLboSPlY8YiNQkmtdg/2E
+         7wZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=MOQmfZn9DA4QXnKxyQeBWYBG/mA3vxQqGH4PKhYLc5o=;
-        b=fWFOSedBaHUyYLUvaYMV4ITGy3Mx7oz+oPsrHo8QXkNEANOh/XujZfKMxI40Tu0fzb
-         VCnrKL8ZzUcfg6rDLnNhpyadMwIBe4lrfeDrRwa6fgX1krQRFqRWwJGdpz6yfmLRV2aM
-         CiSw4xEaQYlBrRhIAJeGVdzKlFoILjcGvSiNXC0cZVdDxNHs2MN0I6i8r8dM2VwH6Zij
-         l+SHhVRDEj4me772D/9eec831+AIdE2ifUXlhbWhIDUdBiT2ejU+4nPtJHSIY2jeuE8d
-         EsyRtO2trpBk242DWuBcJXntXflSTzJFMyNSyC9Q9hVpQJsgIciE9IcSEJ8HHNQp2Kqi
-         CSGQ==
-X-Gm-Message-State: AOAM530jhAz6tn/xFjf9lRUrVDOrOLLDzFI4dber0LElMnKdEV849dfw
-        ptBOhcqgoVRO9JSbS8+tvVgjPko9/vtQTdQznY4=
-X-Google-Smtp-Source: ABdhPJzhT90NxQEDROP7MsMMwa4plorb/IpX1WdMHQHJMHCNn3LrLx1qXWTMcLhjtdyEkwkUV8Fqvrkh7A6b529fmDI=
-X-Received: by 2002:a92:ae06:: with SMTP id s6mr3311682ilh.64.1597943728468;
- Thu, 20 Aug 2020 10:15:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200819041852.23414.95939.stgit@localhost.localdomain>
- <20200819042738.23414.60815.stgit@localhost.localdomain> <084c58a7-7aac-820c-9606-19391c35b9b5@linux.alibaba.com>
- <CAKgT0Ud3CZ8KHLXCrWNGJAX85x23-EWLnAV63-NMmJ+5vD1JAA@mail.gmail.com> <87ded438-e908-117d-ecfb-1af7224d46da@linux.alibaba.com>
-In-Reply-To: <87ded438-e908-117d-ecfb-1af7224d46da@linux.alibaba.com>
-From:   Alexander Duyck <alexander.duyck@gmail.com>
-Date:   Thu, 20 Aug 2020 10:15:17 -0700
-Message-ID: <CAKgT0Ueibb_MBvq4CeOO2ZkQfigv5SOC4=13Bfdzdj_9zt4O7Q@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 5/5] mm: Split move_pages_to_lru into 3 separate passes
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Yang Shi <yang.shi@linux.alibaba.com>,
-        kbuild test robot <lkp@intel.com>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Hugh Dickins <hughd@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        linux-mm <linux-mm@kvack.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Tejun Heo <tj@kernel.org>, cgroups@vger.kernel.org,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BGSTy2S11pQaFof1yGnLyVAv1YOvYkkwg2xvJjtqeUQ=;
+        b=TyTAAtkEDEleANbXuxhj1fm/KQIvjAgcGDSwPOek2vviQKpX4Hf0K2OY21GtNgQyn5
+         PH877+/Xw1KRJ0ziFSYqFbvaBl7tu1dOnsBLD/FN5DMYUZlH/WUYYKCIUtHJpIptX1Gr
+         wuWx66F8sxY12VRIvqee7TReRAbvVl1ztqAkQ3Lu58DLyAaLvOEp/W6hfEfRTbVHIU+j
+         KvzMQ0La8VWl2eu/dG8mzaI9W6XfFyOW5dxzAhBmDj6oEJUUMGXX8NKGAczAUg3jNY6j
+         hI5LkWfzeiCTt08G5twOb7nXdm9NZUlxzSgl45qDfsvmHASpaPPbOr4DaDLkeNY9PmNc
+         Vebg==
+X-Gm-Message-State: AOAM532RqRuPWnhA4Uy51nqCThkd9l7agODCD9MIN6vCb0TCWqJSwve3
+        oBrm6uFzxNcW0qnsqD0XE+nGPw==
+X-Google-Smtp-Source: ABdhPJzxECzP6spyILQOPgtHzJiSltg/hxxoXq1qcxUwEjRfqOCr081RyncGF5PD5joh3rhL7RCH+w==
+X-Received: by 2002:ac8:7c87:: with SMTP id y7mr3692080qtv.375.1597944521618;
+        Thu, 20 Aug 2020 10:28:41 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:3cdd])
+        by smtp.gmail.com with ESMTPSA id r188sm2708541qkb.122.2020.08.20.10.28.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 20 Aug 2020 10:28:40 -0700 (PDT)
+Date:   Thu, 20 Aug 2020 13:27:26 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH 1/3] mm/memcg: Clean up obsolete enum charge_type
+Message-ID: <20200820172726.GA912520@cmpxchg.org>
+References: <20200820130350.3211-1-longman@redhat.com>
+ <20200820130350.3211-2-longman@redhat.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200820130350.3211-2-longman@redhat.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 20, 2020 at 2:58 AM Alex Shi <alex.shi@linux.alibaba.com> wrote=
-:
->
->
->
-> =E5=9C=A8 2020/8/19 =E4=B8=8B=E5=8D=8810:42, Alexander Duyck =E5=86=99=E9=
-=81=93:
-> >> It's actually changed the meaning from current func. which I had seen =
-a bug if no relock.
-> >> but after move to 5.9 kernel, I can not reprodce the bug any more. I a=
-m not sure if 5.9 fixed
-> >> the problem, and we don't need relock here.
-> > So I am not sure what you mean here about "changed the meaning from
-> > the current func". Which function are you referring to and what
-> > changed?
-> >
-> > From what I can tell the pages cannot change memcg because they were
-> > isolated and had the LRU flag stripped. They shouldn't be able to
-> > change destination LRU vector as a result. Assuming that, then they
-> > can all be processed under same LRU lock and we can avoid having to
-> > release it until we are forced to do so to call putback_lru_page or
-> > destroy the compound pages that were freed while we were shrinking the
-> > LRU lists.
-> >
->
-> I had sent a bug which base on 5.8 kernel.
-> https://lkml.org/lkml/2020/7/28/465
->
-> I am not sure it was fixed in new kernel. The original line was introduce=
-d by Hugh Dickins
-> I believe it would be great if you can get comments from him.
+On Thu, Aug 20, 2020 at 09:03:48AM -0400, Waiman Long wrote:
+> Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
+> commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
+> enum charge_type was no longer used anywhere. However, the enum itself
+> was not removed at that time. Remove the obsolete enum charge_type now.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-When I brought this up before you had pointed to the relocking being
-due to the fact that the function was reacquiring the lruvec for some
-reason. I wonder if the fact that the LRU bit stripping serializing
-things made it so that the check for the lruvec after releasing the
-lock became redundant.
-
-- Alex
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
