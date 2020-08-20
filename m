@@ -2,131 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC4F724E215
-	for <lists+cgroups@lfdr.de>; Fri, 21 Aug 2020 22:23:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B41FB24E6DF
+	for <lists+cgroups@lfdr.de>; Sat, 22 Aug 2020 12:31:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726337AbgHUUXg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Aug 2020 16:23:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42934 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725948AbgHUUXe (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Aug 2020 16:23:34 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71811C061574
-        for <cgroups@vger.kernel.org>; Fri, 21 Aug 2020 13:23:33 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id w25so3187649ljo.12
-        for <cgroups@vger.kernel.org>; Fri, 21 Aug 2020 13:23:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3D+TqH2GckoXVS0G3AVPPpXHl/Ts1q0PzrQAkDG5DxU=;
-        b=Iaf2NJFcLLPjJhCFY4NPJilmEIWG1EFZPPdHf4a8cj0cg5EIjHpega0AiSsQdtW2bk
-         gfJ+fc6kt7IQS7SnbVWnC7nVl1NCVvIvAYMA+W7ZX4lygUpP1+w1ZAYWXppaTBAf8FnJ
-         HLiubgJccGNPYTJixoFrXXnbWGuO3t08zDeHSeMZCXjnotaLbkFq91VPkpSg8AOzFma2
-         6iZ7V4Oefj3vBgGenVmlNikMMYEnqUWK1a+A4pNOYTR11AA0IqAS6HeY4XIaHwSMRWmH
-         w3QNtXRLNxeUZuRdcDTgKqZ6ih6/11rJX2eAqK4u7o5a+KWL4L4g4AZjl5yls4ZEKP7/
-         G2Ow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3D+TqH2GckoXVS0G3AVPPpXHl/Ts1q0PzrQAkDG5DxU=;
-        b=BIoxjvEcDmBNWuMR+DstMxePo70zHmOZ165gG1puAp5jSZaxLc5QH2VjK3QFGMRKqZ
-         s/CWZn2k/07QxKa2cnjcN2QDceXjAUDMnGybOcsCVc7kMbjDdqW/B+WzEIpj10xhJMXc
-         qowCLguoelkwk5si4alCXymwnOHdwcv3JXXH3RXeaUwElh0NjsVJmPpTNYQ+WxQv5F1W
-         ayYngnhxuey2sB/Av+qPc1lY1A3toyRwxp+uxN5Hfo0Dr6C5C0tEG2RfX3+TWpsCbO7f
-         f9g7nPQG/nuNgHZ2QdSY/9gdYCHCdC5FCKokcc0MD6SIb7S8OL3rSU21BPUdb9SA5s77
-         A8oQ==
-X-Gm-Message-State: AOAM531ESElR6Te413bGa9rQo+W6mDbI3jW8y1TtGycE2YFNzpYwfWph
-        4YzaxybYzICeDmG9oIfPAiyEICmVnPwFDoY6/goAnw==
-X-Google-Smtp-Source: ABdhPJxtB3gytKgy43PrfoEOXffDzmegXgekhXTFkNzcg9j+nkrkWcOxp0q7UZtL0bR4N1sDGWoc4+ZBzIS8qEtpwWY=
-X-Received: by 2002:a05:651c:330:: with SMTP id b16mr2290021ljp.77.1598041411383;
- Fri, 21 Aug 2020 13:23:31 -0700 (PDT)
+        id S1727845AbgHVKbI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 22 Aug 2020 06:31:08 -0400
+Received: from [103.145.96.106] ([103.145.96.106]:49040 "EHLO
+        mail.peraturan.go.id" rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org
+        with ESMTP id S1726728AbgHVKbH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 22 Aug 2020 06:31:07 -0400
+X-Greylist: delayed 153932 seconds by postgrey-1.27 at vger.kernel.org; Sat, 22 Aug 2020 06:31:06 EDT
+Received: from localhost (localhost [127.0.0.1])
+        by mail.peraturan.go.id (Postfix) with ESMTP id 5A80060399CC6;
+        Fri, 24 Jul 2020 20:57:01 +0700 (+07)
+Received: from mail.peraturan.go.id ([127.0.0.1])
+        by localhost (mail.peraturan.go.id [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id p5lU_ebXBtWy; Fri, 24 Jul 2020 20:57:01 +0700 (+07)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.peraturan.go.id (Postfix) with ESMTP id E3696603D837B;
+        Fri, 24 Jul 2020 20:57:00 +0700 (+07)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.peraturan.go.id E3696603D837B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=peraturan.go.id;
+        s=5786568A-740E-11EA-92BD-675CCBC2581F; t=1595599021;
+        bh=dvMwzoc68s5ASGnCkjuvOmnHmNufUtfGARP54Ss1/bc=;
+        h=MIME-Version:To:From:Date:Message-Id;
+        b=n1S3CLeMwOAwaU0uT9P1IWU3VHs21BC8ENKZMGFxSKMuE77hiYFieP9LjzA9X38BJ
+         sHB/3XeFgKULtgwSnrUZysNr3JlcBxN/scj4PO6t/KufT5pcwtchfvyMUqYw/DKGOv
+         qYrFpgKnoLqX6CfvqjoOrJk5pR47iMJ8IJutE93kgj42/lacz9atxKl+ekyNtPAbjt
+         MR4V2c+6cI2T4PdhasTtCJsfeHwsGbzYnBDFq0SoxnvzVLTqNDSX6UOS+EibsldRZE
+         TAubF7Kwpoh9hSf4t2B4VEbB1PJma/IB5rxFCxm9mdkrxWUHqzwR+wE2NCaMk7h8fr
+         8B21zSBLyFu7A==
+X-Virus-Scanned: amavisd-new at mail.peraturan.go.id
+Received: from mail.peraturan.go.id ([127.0.0.1])
+        by localhost (mail.peraturan.go.id [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Js4H0BrKFvmZ; Fri, 24 Jul 2020 20:57:00 +0700 (+07)
+Received: from [216.198.95.216] (unknown [216.198.95.216])
+        by mail.peraturan.go.id (Postfix) with ESMTPSA id CBC40603D8363;
+        Fri, 24 Jul 2020 20:56:54 +0700 (+07)
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-References: <20200528135444.11508-1-schatzberg.dan@gmail.com>
- <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
- <20200821150405.GA4137@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com>
- <20200821160128.GA2233370@carbon.dhcp.thefacebook.com> <CALvZod69w5UoCjfWcqVAejpKWzRAUxX7dEPzqDUknHhUFV_XEA@mail.gmail.com>
- <20200821200530.GA2250889@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200821200530.GA2250889@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 21 Aug 2020 13:23:20 -0700
-Message-ID: <CALvZod7mfgOab_NSBegCcJ4jL6pb98CfckUhk7QgNCLsmiB4aQ@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] Charge loop device i/o to issuing cgroup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Content-Description: Mail message body
+Subject: Low rate Loan offer  at 1.95%
+To:     Recipients <andre@peraturan.go.id>
+From:   "Mr. Ronan" <andre@peraturan.go.id>
+Date:   Thu, 20 Aug 2020 07:29:26 -0700
+Reply-To: ronan.owen.agent@bk.ru
+Message-Id: <20200724135654.CBC40603D8363@mail.peraturan.go.id>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 1:05 PM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Aug 21, 2020 at 09:27:56AM -0700, Shakeel Butt wrote:
-> > On Fri, Aug 21, 2020 at 9:02 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Fri, Aug 21, 2020 at 11:04:05AM -0400, Dan Schatzberg wrote:
-> > > > On Thu, Aug 20, 2020 at 10:06:44AM -0700, Shakeel Butt wrote:
-> > > > > On Thu, May 28, 2020 at 6:55 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> > > > > >
-> > > > > > Much of the discussion about this has died down. There's been a
-> > > > > > concern raised that we could generalize infrastructure across loop,
-> > > > > > md, etc. This may be possible, in the future, but it isn't clear to me
-> > > > > > how this would look like. I'm inclined to fix the existing issue with
-> > > > > > loop devices now (this is a problem we hit at FB) and address
-> > > > > > consolidation with other cases if and when those need to be addressed.
-> > > > > >
-> > > > >
-> > > > > What's the status of this series?
-> > > >
-> > > > Thanks for reminding me about this. I haven't got any further
-> > > > feedback. I'll bug Jens to take a look and see if he has any concerns
-> > > > and if not send a rebased version.
-> > >
-> > > Just as a note, I stole a patch from this series called
-> > > "mm: support nesting memalloc_use_memcg()" to use for the bpf memory accounting.
-> > > I rewrote the commit log and rebased to the tot with some trivial changes.
-> > >
-> > > I just sent it upstream:
-> > > https://lore.kernel.org/bpf/20200821150134.2581465-1-guro@fb.com/T/#md7edb6b5b940cee1c4d15e3cef17aa8b07328c2e
-> > >
-> > > It looks like we need it for two independent sub-systems, so I wonder
-> > > if we want to route it first through the mm tree as a standalone patch?
-> > >
-> >
-> > Another way is to push that patch to 5.9-rc2 linus tree, so both block
-> > and mm branches for 5.10 will have it. (Not sure if that's ok.)
->
-> Ok, it looks like the patch provides a generally useful API enhancement.
-> And we do have at least two potential use cases for it.
-> Let me send it as a standalone patch to linux-mm@.
->
-> Btw, Shakeel, what do you think of s/memalloc_use_memcg()/set_active_memcg() ?
->
+Charity Loans is offering 51% off Prime Lending Rate at 1.95% Collateral an=
+d Non-Collateral Loans (traditional installment loans from $5000 to $1,000,=
+000) for your business start-up. If you are interested, please revert back =
+for the application. Thanks as we wait to wipe your debts.
 
-I am fine with it.
+Marketing Team
+
+Charity Loans
+
+Mr. Ronan Owen(Agent)
+
+Email: ronan.owen.agent@bk.ru
