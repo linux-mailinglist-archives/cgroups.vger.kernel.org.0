@@ -2,117 +2,125 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B98124DADA
-	for <lists+cgroups@lfdr.de>; Fri, 21 Aug 2020 18:29:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE42424DEB0
+	for <lists+cgroups@lfdr.de>; Fri, 21 Aug 2020 19:40:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728130AbgHUQ3H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Aug 2020 12:29:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728482AbgHUQ2Q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Aug 2020 12:28:16 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CB64C061755
-        for <cgroups@vger.kernel.org>; Fri, 21 Aug 2020 09:28:11 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id g6so2482165ljn.11
-        for <cgroups@vger.kernel.org>; Fri, 21 Aug 2020 09:28:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ASBotJZ8EZpsI/eCx5HlBKysI3NgkGBSfRhPo944ZDA=;
-        b=mvQsNqxvDRfKY9x4pIZgEPhlpB930QAuNErYXzNPLu7IhTBgokTUR97DSKDApKmNfS
-         cibjePU5QCWO42UFsCRWQwMu/X9Q9pISUETSOyLv8GDQ7qwMEl4Ib/H3WWqJjSRry3xl
-         9TU6msunmhJlIGiYjWcVH7a2M3X4BhkWw0G2xvXyrrXNTBchQ9LtnRpmS8/pffU/upUX
-         /kFJp8461OeN+P7fP/3Y2HmjrCgDZQYrsQfpcRdb/+ho08gxWAK1CegzesM559po/s7S
-         QS3/ic98qpHNV6+NY5HcH0fd2uQX7y1u6cKBRJq2fY9JRNDQP1Z7JMuCbauUj7xPMwgM
-         dTgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ASBotJZ8EZpsI/eCx5HlBKysI3NgkGBSfRhPo944ZDA=;
-        b=tNP6+/DzvgswsEt+K7SfbTnSR6cbWdh/Pw/LRQ+rw9L+1eGzaW40/szsT4p8qJasmQ
-         zp+dhQjGhLghNVk8wydqzYc3e219sWmg2IbhZQIzAsDQaqzKtu5aTsWTmWKfewAanbAa
-         sjeoruHXQATYQQA5tBw8q+B3Yc5cBY/K0dPvdndWWGxUO1dry202bKBAOoDNJTK+Zard
-         ysVxW8UehYNc7PGcYt2GNpbo5IJ3cJfCONS6V+z40IVjw7HpoJMA7zs2DubmZw5Sqg7B
-         fJFzQxSVqNmeS8pURO0SffQZChQTRiuur3SgPnJLygGXuz/TUDgaJF+/YCmwOrQYdcq7
-         7bZQ==
-X-Gm-Message-State: AOAM531oax61tLyOSvMIpCJPaYUFYYO3EBnp7Pkjc49LurbiMsmApt9+
-        svnT0hvTUOL+Mw0XxdpGguuE2DTLMmqRIGtq4JoCuA==
-X-Google-Smtp-Source: ABdhPJxBJx48eP7IauIXH6HjOknwmi0SBAJ//UG77vmKK+pXc4hy+ku162ReCSBX43dsu2Kih9HINa4PcVbhBog5/lU=
-X-Received: by 2002:a2e:96c3:: with SMTP id d3mr1932135ljj.270.1598027287929;
- Fri, 21 Aug 2020 09:28:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200528135444.11508-1-schatzberg.dan@gmail.com>
- <CALvZod655MqFxmzwCf4ZLSh9QU+oLb0HL-Q_yKomh3fb-_W0Vg@mail.gmail.com>
- <20200821150405.GA4137@dschatzberg-fedora-PC0Y6AEN.dhcp.thefacebook.com> <20200821160128.GA2233370@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20200821160128.GA2233370@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Fri, 21 Aug 2020 09:27:56 -0700
-Message-ID: <CALvZod69w5UoCjfWcqVAejpKWzRAUxX7dEPzqDUknHhUFV_XEA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/4] Charge loop device i/o to issuing cgroup
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        id S1727856AbgHURk3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Aug 2020 13:40:29 -0400
+Received: from userp2130.oracle.com ([156.151.31.86]:57002 "EHLO
+        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726864AbgHURk1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Aug 2020 13:40:27 -0400
+Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
+        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LHaowd144287;
+        Fri, 21 Aug 2020 17:39:58 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=JUslshiDaN2dhP+XGrtZjY0EQXD83w9PlaWLQ1ae6vI=;
+ b=v1eeqSoFZHVgpxgBCn7rPBUUsxTUxa4ls50fuAPwe9ZXg1ke5BYPwqZntCNgqvG3F55k
+ OCUTr+/mXf3F6gdjCbHtO05iTUAAHid/DTL4UdDcVZcHw87g3AM0X/yrhKr2zSQnlGBL
+ YpCwFOMY23P9LcP84/hCOoSqG1Xcy0j5d7NoppYcsVerTPajz2PR1V0FedP8sT03ZOdG
+ oJYqKuRpeTP3TX/vRHcypi9Bo1ISI5tAbKK1hyBN7DgPjq9Pa15PrwJ1n/G1YMSz1Srx
+ oB91CuqryjpyaITXDlUnTEZlsFeI66zSGMi0UWa9SerzCdbwrMgnuppWdeTBTlPArg0f aw== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2130.oracle.com with ESMTP id 32x74rq8rp-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 21 Aug 2020 17:39:58 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LHbtpn178487;
+        Fri, 21 Aug 2020 17:37:57 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 330pvs96qh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 21 Aug 2020 17:37:57 +0000
+Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07LHbpkQ015754;
+        Fri, 21 Aug 2020 17:37:51 GMT
+Received: from localhost.localdomain (/73.243.10.6)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 21 Aug 2020 17:37:50 +0000
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.0.3\))
+Subject: Re: [PATCH 0/8] Return head pages from find_get_entry and
+ find_lock_entry
+From:   William Kucharski <william.kucharski@oracle.com>
+In-Reply-To: <20200819184850.24779-1-willy@infradead.org>
+Date:   Fri, 21 Aug 2020 11:37:49 -0600
+Cc:     linux-mm <linux-mm@kvack.org>,
         Andrew Morton <akpm@linux-foundation.org>,
         Hugh Dickins <hughd@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "open list:BLOCK LAYER" <linux-block@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "open list:FILESYSTEMS (VFS and infrastructure)" 
-        <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <4AEE52BC-76F0-4DB4-BBB1-7E367C12338B@oracle.com>
+References: <20200819184850.24779-1-willy@infradead.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+X-Mailer: Apple Mail (2.3654.0.3)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210166
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
+ suspectscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008210166
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Aug 21, 2020 at 9:02 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Fri, Aug 21, 2020 at 11:04:05AM -0400, Dan Schatzberg wrote:
-> > On Thu, Aug 20, 2020 at 10:06:44AM -0700, Shakeel Butt wrote:
-> > > On Thu, May 28, 2020 at 6:55 AM Dan Schatzberg <schatzberg.dan@gmail.com> wrote:
-> > > >
-> > > > Much of the discussion about this has died down. There's been a
-> > > > concern raised that we could generalize infrastructure across loop,
-> > > > md, etc. This may be possible, in the future, but it isn't clear to me
-> > > > how this would look like. I'm inclined to fix the existing issue with
-> > > > loop devices now (this is a problem we hit at FB) and address
-> > > > consolidation with other cases if and when those need to be addressed.
-> > > >
-> > >
-> > > What's the status of this series?
-> >
-> > Thanks for reminding me about this. I haven't got any further
-> > feedback. I'll bug Jens to take a look and see if he has any concerns
-> > and if not send a rebased version.
->
-> Just as a note, I stole a patch from this series called
-> "mm: support nesting memalloc_use_memcg()" to use for the bpf memory accounting.
-> I rewrote the commit log and rebased to the tot with some trivial changes.
->
-> I just sent it upstream:
-> https://lore.kernel.org/bpf/20200821150134.2581465-1-guro@fb.com/T/#md7edb6b5b940cee1c4d15e3cef17aa8b07328c2e
->
-> It looks like we need it for two independent sub-systems, so I wonder
-> if we want to route it first through the mm tree as a standalone patch?
->
 
-Another way is to push that patch to 5.9-rc2 linus tree, so both block
-and mm branches for 5.10 will have it. (Not sure if that's ok.)
+
+> On Aug 19, 2020, at 12:48 PM, Matthew Wilcox (Oracle) =
+<willy@infradead.org> wrote:
+>=20
+> This patch seris started out as part of the THP patch set, but it has
+> some nice effects along the way and it seems worth splitting it out =
+and
+> submitting separately.
+>=20
+> Currently find_get_entry() and find_lock_entry() return the page
+> corresponding to the requested index, but the first thing most callers =
+do
+> is find the head page, which we just threw away.  As part of auditing
+> all the callers, I found some misuses of the APIs and some plain
+> inefficiencies that I've fixed.
+>=20
+> The diffstat is unflattering, but I added more kernel-doc.
+>=20
+> Matthew Wilcox (Oracle) (8):
+>  mm: Factor find_get_swap_page out of mincore_page
+>  mm: Use find_get_swap_page in memcontrol
+>  mm: Optimise madvise WILLNEED
+>  proc: Optimise smaps for shmem entries
+>  i915: Use find_lock_page instead of find_lock_entry
+>  mm: Convert find_get_entry to return the head page
+>  mm: Return head page from find_lock_entry
+>  mm: Hoist find_subpage call further up in pagecache_get_page
+>=20
+> drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  4 +--
+> fs/proc/task_mmu.c                        |  8 +----
+> include/linux/pagemap.h                   | 16 +++++++--
+> include/linux/swap.h                      |  7 ++++
+> mm/filemap.c                              | 41 +++++++++++------------
+> mm/madvise.c                              | 21 +++++++-----
+> mm/memcontrol.c                           | 25 ++------------
+> mm/mincore.c                              | 28 ++--------------
+> mm/shmem.c                                | 15 +++++----
+> mm/swap_state.c                           | 31 +++++++++++++++++
+> 10 files changed, 98 insertions(+), 98 deletions(-)
+
+For the series:
+
+Reviewed-by: William Kucharski <william.kucharski@oracle.com>=
