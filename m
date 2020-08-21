@@ -2,125 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE42424DEB0
-	for <lists+cgroups@lfdr.de>; Fri, 21 Aug 2020 19:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A982F24E0BD
+	for <lists+cgroups@lfdr.de>; Fri, 21 Aug 2020 21:37:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727856AbgHURk3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 21 Aug 2020 13:40:29 -0400
-Received: from userp2130.oracle.com ([156.151.31.86]:57002 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726864AbgHURk1 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Aug 2020 13:40:27 -0400
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LHaowd144287;
-        Fri, 21 Aug 2020 17:39:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=JUslshiDaN2dhP+XGrtZjY0EQXD83w9PlaWLQ1ae6vI=;
- b=v1eeqSoFZHVgpxgBCn7rPBUUsxTUxa4ls50fuAPwe9ZXg1ke5BYPwqZntCNgqvG3F55k
- OCUTr+/mXf3F6gdjCbHtO05iTUAAHid/DTL4UdDcVZcHw87g3AM0X/yrhKr2zSQnlGBL
- YpCwFOMY23P9LcP84/hCOoSqG1Xcy0j5d7NoppYcsVerTPajz2PR1V0FedP8sT03ZOdG
- oJYqKuRpeTP3TX/vRHcypi9Bo1ISI5tAbKK1hyBN7DgPjq9Pa15PrwJ1n/G1YMSz1Srx
- oB91CuqryjpyaITXDlUnTEZlsFeI66zSGMi0UWa9SerzCdbwrMgnuppWdeTBTlPArg0f aw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 32x74rq8rp-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 21 Aug 2020 17:39:58 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07LHbtpn178487;
-        Fri, 21 Aug 2020 17:37:57 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 330pvs96qh-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 21 Aug 2020 17:37:57 +0000
-Received: from abhmp0008.oracle.com (abhmp0008.oracle.com [141.146.116.14])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 07LHbpkQ015754;
-        Fri, 21 Aug 2020 17:37:51 GMT
-Received: from localhost.localdomain (/73.243.10.6)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 21 Aug 2020 17:37:50 +0000
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.0.3\))
-Subject: Re: [PATCH 0/8] Return head pages from find_get_entry and
- find_lock_entry
-From:   William Kucharski <william.kucharski@oracle.com>
-In-Reply-To: <20200819184850.24779-1-willy@infradead.org>
-Date:   Fri, 21 Aug 2020 11:37:49 -0600
-Cc:     linux-mm <linux-mm@kvack.org>,
+        id S1726433AbgHUThc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 21 Aug 2020 15:37:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725801AbgHUThb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 21 Aug 2020 15:37:31 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31BDEC061573;
+        Fri, 21 Aug 2020 12:37:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=N3ZGTcGJdfl/OTaIgJwrIkHSk+AkqKBFZGMv7k7JAjc=; b=ggzc/B/8OBjbLuwpgTkXf/pU42
+        +EOW+Btl5c58I6tA9Tz1DotvxKyQlEce8eaHFx5uPaj+FAJO5eNeSstr8eK32iVfkZX9BRWclAhwZ
+        OToYv7Axe6/UemxFJFZtndQZLIFCKFhxZ+MicIpQ8D2ApWwHovB9Qo8srTIBnFpw3chOTGT/K2CGp
+        QDl7EaMCU/DeA8Ba3GZGENthYYt7qc6MSlkzrz8gl43DMD/4tUAsV3LVKmPDXUozBTfBOHQo3pvCS
+        Lx7OuGNZE83kZvcZUsnl0RTEslw9K9K9Qom8MsixP0YIQpoLJF5WMetdTe20APCXCS1WvfV1v90Sq
+        /JStoxmg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=worktop.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1k9Cqj-0005Lt-JW; Fri, 21 Aug 2020 19:37:17 +0000
+Received: by worktop.programming.kicks-ass.net (Postfix, from userid 1000)
+        id DCBA8980DF7; Fri, 21 Aug 2020 21:37:16 +0200 (CEST)
+Date:   Fri, 21 Aug 2020 21:37:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Waiman Long <longman@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
         Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <4AEE52BC-76F0-4DB4-BBB1-7E367C12338B@oracle.com>
-References: <20200819184850.24779-1-willy@infradead.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-X-Mailer: Apple Mail (2.3654.0.3)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 phishscore=0
- malwarescore=0 adultscore=0 bulkscore=0 suspectscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008210166
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9720 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 spamscore=0 mlxscore=0 adultscore=0
- suspectscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0 clxscore=1011
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2008210166
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
+ control
+Message-ID: <20200821193716.GU3982@worktop.programming.kicks-ass.net>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200818091453.GL2674@hirez.programming.kicks-ass.net>
+ <20200818092617.GN28270@dhcp22.suse.cz>
+ <20200818095910.GM2674@hirez.programming.kicks-ass.net>
+ <20200818100516.GO28270@dhcp22.suse.cz>
+ <20200818101844.GO2674@hirez.programming.kicks-ass.net>
+ <20200818134900.GA829964@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200818134900.GA829964@cmpxchg.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Tue, Aug 18, 2020 at 09:49:00AM -0400, Johannes Weiner wrote:
+> On Tue, Aug 18, 2020 at 12:18:44PM +0200, peterz@infradead.org wrote:
+> > What you need is a feeback loop against the rate of freeing pages, and
+> > when you near the saturation point, the allocation rate should exactly
+> > match the freeing rate.
+> 
+> IO throttling solves a slightly different problem.
+> 
+> IO occurs in parallel to the workload's execution stream, and you're
+> trying to take the workload from dirtying at CPU speed to rate match
+> to the independent IO stream.
+> 
+> With memory allocations, though, freeing happens from inside the
+> execution stream of the workload. If you throttle allocations, you're
 
+For a single task, but even then you're making the argument that we need
+to allocate memory to free memory, and we all know where that gets us.
 
-> On Aug 19, 2020, at 12:48 PM, Matthew Wilcox (Oracle) =
-<willy@infradead.org> wrote:
->=20
-> This patch seris started out as part of the THP patch set, but it has
-> some nice effects along the way and it seems worth splitting it out =
-and
-> submitting separately.
->=20
-> Currently find_get_entry() and find_lock_entry() return the page
-> corresponding to the requested index, but the first thing most callers =
-do
-> is find the head page, which we just threw away.  As part of auditing
-> all the callers, I found some misuses of the APIs and some plain
-> inefficiencies that I've fixed.
->=20
-> The diffstat is unflattering, but I added more kernel-doc.
->=20
-> Matthew Wilcox (Oracle) (8):
->  mm: Factor find_get_swap_page out of mincore_page
->  mm: Use find_get_swap_page in memcontrol
->  mm: Optimise madvise WILLNEED
->  proc: Optimise smaps for shmem entries
->  i915: Use find_lock_page instead of find_lock_entry
->  mm: Convert find_get_entry to return the head page
->  mm: Return head page from find_lock_entry
->  mm: Hoist find_subpage call further up in pagecache_get_page
->=20
-> drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  4 +--
-> fs/proc/task_mmu.c                        |  8 +----
-> include/linux/pagemap.h                   | 16 +++++++--
-> include/linux/swap.h                      |  7 ++++
-> mm/filemap.c                              | 41 +++++++++++------------
-> mm/madvise.c                              | 21 +++++++-----
-> mm/memcontrol.c                           | 25 ++------------
-> mm/mincore.c                              | 28 ++--------------
-> mm/shmem.c                                | 15 +++++----
-> mm/swap_state.c                           | 31 +++++++++++++++++
-> 10 files changed, 98 insertions(+), 98 deletions(-)
+But we're actually talking about a cgroup here, which is a collection of
+tasks all doing things in parallel.
 
-For the series:
+> most likely throttling the freeing rate as well. And you'll slow down
+> reclaim scanning by the same amount as the page references, so it's
+> not making reclaim more successful either. The alloc/use/free
+> (im)balance is an inherent property of the workload, regardless of the
+> speed you're executing it at.
 
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>=
+Arguably seeing the rate drop to near 0 is a very good point to consider
+running cgroup-OOM.
