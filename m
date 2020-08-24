@@ -2,332 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62B4425014B
-	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 17:41:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609202501A5
+	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 18:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727930AbgHXPjz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Aug 2020 11:39:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44678 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725921AbgHXPik (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 11:38:40 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AB2AC061797;
-        Mon, 24 Aug 2020 08:38:05 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id k18so6434062qtm.10;
-        Mon, 24 Aug 2020 08:38:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/ckAtjHcJOwaVSUeYgTAhDX9DuJ7NFFHp2LflIRMsvo=;
-        b=nnLzC/Tbu8EG4EQLUh1rQ1oWrrSDBUwLwvqXQZkdi3E75Vr9vGDLW8E3ki69yT2+Hr
-         IB/B2nKt/JANUz1txl8ltQ1BkIn7BCW1uV/c5jsaz2yh6gQj6ZSJO4ypr0T10vHhEDle
-         s5P53ZlmeWinIAcJ0Izp3UgG3C7XMkm1Wl9OzT05ADa7VM1sAbJiBS45gdkgovrth1TR
-         hDfS6OzS7OyNhkVEtQW/5oorykjMRWzFz8gQBesKSb2VmJiLh0Z9c1RnyltHXwJCjAsF
-         i/qJJKHIFfsXoEt34WyaptEakC1unEVUyAU+9dB7OmUBPziBzMpDpg5T5Vsi37IaVUHW
-         5cMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/ckAtjHcJOwaVSUeYgTAhDX9DuJ7NFFHp2LflIRMsvo=;
-        b=LTWlWF2RowMe0sHgpqlDrHKzDoJs/57z7As5LqEPNFd/insiTfXIRymANrxwFuAodo
-         0t25Dy53BH6UeGZdtVQv6CrHwN3LegzJA5IK1ROTLGydB/ibIIetCCLdij2oeVkoNDJ2
-         V1daF25fpVZbXYx2uzsUV6/NPd7YUK4gC6PkQiXZ7OmwqF/yqYry2AhAndgRHa3hAiZ/
-         clDTMEHs7wyPACuft9u1Gk8KUjuvE/uOmKM795jZhnAWssXQSdYGEXeA8y7OKWY9SHrT
-         2rICdKMXzl8kv7MinPAczDGoinvci43yucSGqQzfenba/daPJUpViK0WA6mCbq/wl81b
-         BHYA==
-X-Gm-Message-State: AOAM531s+B2X6TZcSVCYjnc+XmY7TsFOLHV0BQAZ24nUdgRR9bt4PI/d
-        xgSb7F8d1pepfe6KqZHOVR4=
-X-Google-Smtp-Source: ABdhPJz1Hwbu5Otr/qHLJUXZggCdoNRReRZhCYBmY+Cl8rQhpiWRbW8QX6AqXd8ZPiUxQrknN2wkxg==
-X-Received: by 2002:ac8:4514:: with SMTP id q20mr5393116qtn.122.1598283484416;
-        Mon, 24 Aug 2020 08:38:04 -0700 (PDT)
-Received: from dschatzberg-fedora-PC0Y6AEN.thefacebook.com ([2620:10d:c091:480::1:dd21])
-        by smtp.gmail.com with ESMTPSA id m17sm10942758qkn.45.2020.08.24.08.38.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 24 Aug 2020 08:38:03 -0700 (PDT)
-From:   Dan Schatzberg <schatzberg.dan@gmail.com>
-Cc:     Dan Schatzberg <schatzberg.dan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        id S1726830AbgHXQDF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Aug 2020 12:03:05 -0400
+Received: from us-smtp-2.mimecast.com ([207.211.31.81]:24385 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726666AbgHXQC6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 12:02:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1598284975;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GOOvGMjNbf5XtLNCKd9ysNRuyAgV0fQgbTvlhMQq8xI=;
+        b=DhR4iTc47y+ZBv2Yb0yNRGx26eVpZAbahIMo1FqqP+1ecPzgzFs/MSxB5P+m+doz4kk75H
+        jbrK++sBKQtgLrlvTXKrkvmm7yOLfcEmAxOtRGyetmzgCjhPWDgBAaoDTCCN+b4WDC6dqL
+        Za5fT+WODCbKQumsb6sY4ZjqcfyQdrk=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-465-FWvG5sP1NauODAXLjclCsQ-1; Mon, 24 Aug 2020 12:02:52 -0400
+X-MC-Unique: FWvG5sP1NauODAXLjclCsQ-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E2DC710ABDA5;
+        Mon, 24 Aug 2020 16:02:49 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-112-212.rdu2.redhat.com [10.10.112.212])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 94F411002382;
+        Mon, 24 Aug 2020 16:02:48 +0000 (UTC)
+Subject: Re: [PATCH 3/3] mm/memcg: Unify swap and memsw page counters
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Michel Lespinasse <walken@google.com>,
-        linux-block@vger.kernel.org (open list:BLOCK LAYER),
-        linux-kernel@vger.kernel.org (open list),
-        linux-fsdevel@vger.kernel.org (open list:FILESYSTEMS (VFS and
-        infrastructure)),
-        cgroups@vger.kernel.org (open list:CONTROL GROUP (CGROUP)),
-        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
-        CONTROLLER (MEMCG))
-Subject: [PATCH 4/4] loop: Charge i/o to mem and blk cg
-Date:   Mon, 24 Aug 2020 11:36:02 -0400
-Message-Id: <20200824153607.6595-5-schatzberg.dan@gmail.com>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200824153607.6595-1-schatzberg.dan@gmail.com>
-References: <20200824153607.6595-1-schatzberg.dan@gmail.com>
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200820130350.3211-1-longman@redhat.com>
+ <20200820130350.3211-4-longman@redhat.com>
+ <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <18d02675-0c2a-bfc3-6953-42dcd10396b1@redhat.com>
+Date:   Mon, 24 Aug 2020 12:02:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CALvZod7cNkjgd_YWzPSFm=AeC8sy5kWspX3J_Q7237Q9+N5Pxw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The current code only associates with the existing blkcg when aio is
-used to access the backing file. This patch covers all types of i/o to
-the backing file and also associates the memcg so if the backing file is
-on tmpfs, memory is charged appropriately.
+On 8/20/20 11:46 AM, Shakeel Butt wrote:
+> On Thu, Aug 20, 2020 at 6:04 AM Waiman Long <longman@redhat.com> wrote:
+>> The swap page counter is v2 only while memsw is v1 only. As v1 and v2
+>> controllers cannot be active at the same time, there is no point to keep
+>> both swap and memsw page counters in mem_cgroup. The previous patch has
+>> made sure that memsw page counter is updated and accessed only when in
+>> v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
+>> swap page counter. This saves 14 long's in the size of mem_cgroup. This
+>> is a saving of 112 bytes for 64-bit archs.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/memcontrol.h | 3 +--
+>>   mm/memcontrol.c            | 8 +++++---
+>>   2 files changed, 6 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index d0b036123c6a..d2a819d7db70 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -216,10 +216,9 @@ struct mem_cgroup {
+>>
+>>          /* Accounted resources */
+>>          struct page_counter memory;
+>> -       struct page_counter swap;
+>> +       struct page_counter swap;       /* memsw (memory+swap) for v1 */
+>>
+>>          /* Legacy consumer-oriented counters */
+>> -       struct page_counter memsw;
+>>          struct page_counter kmem;
+>>          struct page_counter tcpmem;
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index d219dca5239f..04c3794cdc98 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -68,6 +68,11 @@
+>>
+>>   #include <trace/events/vmscan.h>
+>>
+>> +/*
+>> + * The v1 memsw page counter is aliased to the v2 swap page counter.
+>> + */
+>> +#define memsw  swap
+>> +
+> Personally I would prefer a union instead of #define.
 
-This patch also exports cgroup_get_e_css so it can be used by the loop
-module.
+Yes, that is also what I am thinking about in the v2.
 
-Signed-off-by: Dan Schatzberg <schatzberg.dan@gmail.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
- drivers/block/loop.c       | 61 +++++++++++++++++++++++++-------------
- drivers/block/loop.h       |  3 +-
- include/linux/memcontrol.h |  6 ++++
- kernel/cgroup/cgroup.c     |  1 +
- mm/shmem.c                 |  1 -
- 5 files changed, 50 insertions(+), 22 deletions(-)
+Cheers,
+Longman
 
-diff --git a/drivers/block/loop.c b/drivers/block/loop.c
-index c8dae53f3914..102d236d1540 100644
---- a/drivers/block/loop.c
-+++ b/drivers/block/loop.c
-@@ -77,6 +77,7 @@
- #include <linux/uio.h>
- #include <linux/ioprio.h>
- #include <linux/blk-cgroup.h>
-+#include <linux/sched/mm.h>
- 
- #include "loop.h"
- 
-@@ -518,8 +519,6 @@ static void lo_rw_aio_complete(struct kiocb *iocb, long ret, long ret2)
- {
- 	struct loop_cmd *cmd = container_of(iocb, struct loop_cmd, iocb);
- 
--	if (cmd->css)
--		css_put(cmd->css);
- 	cmd->ret = ret;
- 	lo_rw_aio_do_completion(cmd);
- }
-@@ -580,8 +579,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 	cmd->iocb.ki_complete = lo_rw_aio_complete;
- 	cmd->iocb.ki_flags = IOCB_DIRECT;
- 	cmd->iocb.ki_ioprio = IOPRIO_PRIO_VALUE(IOPRIO_CLASS_NONE, 0);
--	if (cmd->css)
--		kthread_associate_blkcg(cmd->css);
- 
- 	if (rw == WRITE)
- 		ret = call_write_iter(file, &cmd->iocb, &iter);
-@@ -589,7 +586,6 @@ static int lo_rw_aio(struct loop_device *lo, struct loop_cmd *cmd,
- 		ret = call_read_iter(file, &cmd->iocb, &iter);
- 
- 	lo_rw_aio_do_completion(cmd);
--	kthread_associate_blkcg(NULL);
- 
- 	if (ret != -EIOCBQUEUED)
- 		cmd->iocb.ki_complete(&cmd->iocb, ret, 0);
-@@ -929,7 +925,7 @@ struct loop_worker {
- 	struct list_head cmd_list;
- 	struct list_head idle_list;
- 	struct loop_device *lo;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
- 	unsigned long last_ran_at;
- };
- 
-@@ -946,7 +942,7 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 
- 	spin_lock_irq(&lo->lo_work_lock);
- 
--	if (!cmd->css)
-+	if (!cmd->blkcg_css)
- 		goto queue_work;
- 
- 	node = &lo->worker_tree.rb_node;
-@@ -954,10 +950,10 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	while (*node) {
- 		parent = *node;
- 		cur_worker = container_of(*node, struct loop_worker, rb_node);
--		if (cur_worker->css == cmd->css) {
-+		if (cur_worker->blkcg_css == cmd->blkcg_css) {
- 			worker = cur_worker;
- 			break;
--		} else if ((long)cur_worker->css < (long)cmd->css) {
-+		} else if ((long)cur_worker->blkcg_css < (long)cmd->blkcg_css) {
- 			node = &(*node)->rb_left;
- 		} else {
- 			node = &(*node)->rb_right;
-@@ -969,13 +965,18 @@ static void loop_queue_work(struct loop_device *lo, struct loop_cmd *cmd)
- 	worker = kzalloc(sizeof(struct loop_worker), GFP_NOWAIT | __GFP_NOWARN);
- 	/*
- 	 * In the event we cannot allocate a worker, just queue on the
--	 * rootcg worker
-+	 * rootcg worker and issue the I/O as the rootcg
- 	 */
--	if (!worker)
-+	if (!worker) {
-+		cmd->blkcg_css = NULL;
-+		if (cmd->memcg_css)
-+			css_put(cmd->memcg_css);
-+		cmd->memcg_css = NULL;
- 		goto queue_work;
-+	}
- 
--	worker->css = cmd->css;
--	css_get(worker->css);
-+	worker->blkcg_css = cmd->blkcg_css;
-+	css_get(worker->blkcg_css);
- 	INIT_WORK(&worker->work, loop_workfn);
- 	INIT_LIST_HEAD(&worker->cmd_list);
- 	INIT_LIST_HEAD(&worker->idle_list);
-@@ -1301,7 +1302,7 @@ static int __loop_clr_fd(struct loop_device *lo, bool release)
- 				idle_list) {
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	spin_unlock_irq(&lo->lo_work_lock);
-@@ -2102,13 +2103,18 @@ static blk_status_t loop_queue_rq(struct blk_mq_hw_ctx *hctx,
- 	}
- 
- 	/* always use the first bio's css */
-+	cmd->blkcg_css = NULL;
-+	cmd->memcg_css = NULL;
- #ifdef CONFIG_BLK_CGROUP
--	if (cmd->use_aio && rq->bio && rq->bio->bi_blkg) {
--		cmd->css = &bio_blkcg(rq->bio)->css;
--		css_get(cmd->css);
--	} else
-+	if (rq->bio && rq->bio->bi_blkg) {
-+		cmd->blkcg_css = &bio_blkcg(rq->bio)->css;
-+#ifdef CONFIG_MEMCG
-+		cmd->memcg_css =
-+			cgroup_get_e_css(cmd->blkcg_css->cgroup,
-+					&memory_cgrp_subsys);
-+#endif
-+	}
- #endif
--		cmd->css = NULL;
- 	loop_queue_work(lo, cmd);
- 
- 	return BLK_STS_OK;
-@@ -2120,13 +2126,28 @@ static void loop_handle_cmd(struct loop_cmd *cmd)
- 	const bool write = op_is_write(req_op(rq));
- 	struct loop_device *lo = rq->q->queuedata;
- 	int ret = 0;
-+	struct mem_cgroup *old_memcg = NULL;
- 
- 	if (write && (lo->lo_flags & LO_FLAGS_READ_ONLY)) {
- 		ret = -EIO;
- 		goto failed;
- 	}
- 
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(cmd->blkcg_css);
-+	if (cmd->memcg_css)
-+		old_memcg = memalloc_use_memcg(
-+			mem_cgroup_from_css(cmd->memcg_css));
-+
- 	ret = do_req_filebacked(lo, rq);
-+
-+	if (cmd->blkcg_css)
-+		kthread_associate_blkcg(NULL);
-+
-+	if (cmd->memcg_css) {
-+		memalloc_use_memcg(old_memcg);
-+		css_put(cmd->memcg_css);
-+	}
-  failed:
- 	/* complete non-aio request */
- 	if (!cmd->use_aio || ret) {
-@@ -2205,7 +2226,7 @@ static void loop_free_idle_workers(struct timer_list *timer)
- 			break;
- 		list_del(&worker->idle_list);
- 		rb_erase(&worker->rb_node, &lo->worker_tree);
--		css_put(worker->css);
-+		css_put(worker->blkcg_css);
- 		kfree(worker);
- 	}
- 	if (!list_empty(&lo->idle_worker_list))
-diff --git a/drivers/block/loop.h b/drivers/block/loop.h
-index 0162b55a68e1..4d6886d9855a 100644
---- a/drivers/block/loop.h
-+++ b/drivers/block/loop.h
-@@ -75,7 +75,8 @@ struct loop_cmd {
- 	long ret;
- 	struct kiocb iocb;
- 	struct bio_vec *bvec;
--	struct cgroup_subsys_state *css;
-+	struct cgroup_subsys_state *blkcg_css;
-+	struct cgroup_subsys_state *memcg_css;
- };
- 
- /* Support for loadable transfer modules */
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d0b036123c6a..fceac9f66d96 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1031,6 +1031,12 @@ static inline struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
- 	return NULL;
- }
- 
-+static inline
-+struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css)
-+{
-+	return NULL;
-+}
-+
- static inline void mem_cgroup_put(struct mem_cgroup *memcg)
- {
- }
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index dd247747ec14..16d059a89a68 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -580,6 +580,7 @@ struct cgroup_subsys_state *cgroup_get_e_css(struct cgroup *cgrp,
- 	rcu_read_unlock();
- 	return css;
- }
-+EXPORT_SYMBOL_GPL(cgroup_get_e_css);
- 
- static void cgroup_get_live(struct cgroup *cgrp)
- {
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 77c908730be4..1139f52ac4ee 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1696,7 +1696,6 @@ static int shmem_swapin_page(struct inode *inode, pgoff_t index,
- 	struct address_space *mapping = inode->i_mapping;
- 	struct shmem_inode_info *info = SHMEM_I(inode);
- 	struct mm_struct *charge_mm = vma ? vma->vm_mm : NULL;
--	struct mem_cgroup *memcg;
- 	struct page *page;
- 	swp_entry_t swap;
- 	int error;
--- 
-2.24.1
 
