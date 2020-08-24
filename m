@@ -2,19 +2,19 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A476824FE1D
-	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 14:55:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09AAA24FE43
+	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 14:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727862AbgHXMzd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Aug 2020 08:55:33 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53750 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727839AbgHXMza (ORCPT
+        id S1728001AbgHXM5E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Aug 2020 08:57:04 -0400
+Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:32871 "EHLO
+        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727081AbgHXMza (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 08:55:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6k9-bl_1598273712;
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0U6k9-bl_1598273712;
 Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6k9-bl_1598273712)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 24 Aug 2020 20:55:22 +0800
+          Mon, 24 Aug 2020 20:55:23 +0800
 From:   Alex Shi <alex.shi@linux.alibaba.com>
 To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
@@ -25,9 +25,11 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         richard.weiyang@gmail.com, kirill@shutemov.name,
         alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
         vdavydov.dev@gmail.com, shy828301@gmail.com
-Subject: [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add lru_lock
-Date:   Mon, 24 Aug 2020 20:55:00 +0800
-Message-Id: <1598273705-69124-28-git-send-email-alex.shi@linux.alibaba.com>
+Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
+Date:   Mon, 24 Aug 2020 20:55:01 +0800
+Message-Id: <1598273705-69124-29-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -36,87 +38,134 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The current relock logical will change lru_lock when if found a new
-lruvec, so if 2 memcgs are reading file or alloc page equally, they
-could hold the lru_lock alternately.
+From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-This patch will record the needed lru_lock and only hold them once in
-above scenario. That could reduce the lock contention.
+We can drop the need for the locked variable by making use of the
+lruvec_holds_page_lru_lock function. By doing this we can avoid some rcu
+locking ugliness for the case where the lruvec is still holding the LRU
+lock associated with the page. Instead we can just use the lruvec and if it
+is NULL we assume the lock was released.
 
-Suggested-by: Konstantin Khlebnikov <koct9i@gmail.com>
+Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
+Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: linux-kernel@vger.kernel.org
+Cc: linux-mm@kvack.org
 ---
- mm/swap.c | 43 ++++++++++++++++++++++++++++++++++++-------
- 1 file changed, 36 insertions(+), 7 deletions(-)
+ mm/compaction.c | 46 +++++++++++++++++++++-------------------------
+ 1 file changed, 21 insertions(+), 25 deletions(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 2ac78e8fab71..fe53449fa1b8 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -958,24 +958,53 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
- 	trace_mm_lru_insertion(page, lru);
- }
- 
-+struct add_lruvecs {
-+	struct list_head lists[PAGEVEC_SIZE];
-+	struct lruvec *vecs[PAGEVEC_SIZE];
-+};
-+
- /*
-  * Add the passed pages to the LRU, then drop the caller's refcount
-  * on them.  Reinitialises the caller's pagevec.
-  */
- void __pagevec_lru_add(struct pagevec *pvec)
+diff --git a/mm/compaction.c b/mm/compaction.c
+index b724eacf6421..6bf5ccd8fcf6 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -803,9 +803,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
  {
--	int i;
-+	int i, j, total;
- 	struct lruvec *lruvec = NULL;
+ 	pg_data_t *pgdat = cc->zone->zone_pgdat;
+ 	unsigned long nr_scanned = 0, nr_isolated = 0;
+-	struct lruvec *lruvec;
++	struct lruvec *lruvec = NULL;
  	unsigned long flags = 0;
-+	struct page *page;
-+	struct add_lruvecs lruvecs;
-+
-+	lruvecs.vecs[0] = NULL;
-+	for (i = total = 0; i < pagevec_count(pvec); i++) {
-+		page = pvec->pages[i];
-+		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+
-+		/* Try to find a same lruvec */
-+		for (j = 0; j <= total; j++)
-+			if (lruvec == lruvecs.vecs[j])
-+				break;
-+		/* A new lruvec */
-+		if (j > total) {
-+			INIT_LIST_HEAD(&lruvecs.lists[total]);
-+			lruvecs.vecs[total] = lruvec;
-+			j = total++;
-+			lruvecs.vecs[total] = 0;
+-	struct lruvec *locked = NULL;
+ 	struct page *page = NULL, *valid_page = NULL;
+ 	unsigned long start_pfn = low_pfn;
+ 	bool skip_on_failure = false;
+@@ -866,9 +865,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		 * a fatal signal is pending.
+ 		 */
+ 		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
+-			if (locked) {
+-				unlock_page_lruvec_irqrestore(locked, flags);
+-				locked = NULL;
++			if (lruvec) {
++				unlock_page_lruvec_irqrestore(lruvec, flags);
++				lruvec = NULL;
+ 			}
+ 
+ 			if (fatal_signal_pending(current)) {
+@@ -949,9 +948,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 			 */
+ 			if (unlikely(__PageMovable(page)) &&
+ 					!PageIsolated(page)) {
+-				if (locked) {
+-					unlock_page_lruvec_irqrestore(locked, flags);
+-					locked = NULL;
++				if (lruvec) {
++					unlock_page_lruvec_irqrestore(lruvec, flags);
++					lruvec = NULL;
+ 				}
+ 
+ 				if (!isolate_movable_page(page, isolate_mode))
+@@ -992,16 +991,14 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		if (!TestClearPageLRU(page))
+ 			goto isolate_fail_put;
+ 
+-		rcu_read_lock();
+-		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+-
+ 		/* If we already hold the lock, we can skip some rechecking */
+-		if (lruvec != locked) {
+-			if (locked)
+-				unlock_page_lruvec_irqrestore(locked, flags);
++		if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec)) {
++			if (lruvec)
++				unlock_page_lruvec_irqrestore(lruvec, flags);
+ 
++			rcu_read_lock();
++			lruvec = mem_cgroup_page_lruvec(page, pgdat);
+ 			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
+-			locked = lruvec;
+ 			rcu_read_unlock();
+ 
+ 			lruvec_memcg_debug(lruvec, page);
+@@ -1023,8 +1020,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 				SetPageLRU(page);
+ 				goto isolate_fail_put;
+ 			}
+-		} else
+-			rcu_read_unlock();
 +		}
  
--	for (i = 0; i < pagevec_count(pvec); i++) {
--		struct page *page = pvec->pages[i];
-+		list_add(&page->lru, &lruvecs.lists[j]);
-+	}
+ 		/* The whole page is taken off the LRU; skip the tail pages. */
+ 		if (PageCompound(page))
+@@ -1057,9 +1053,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
  
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
--		__pagevec_lru_add_fn(page, lruvec);
-+	for (i = 0; i < total; i++) {
-+		spin_lock_irqsave(&lruvecs.vecs[i]->lru_lock, flags);
-+		while (!list_empty(&lruvecs.lists[i])) {
-+			page = lru_to_page(&lruvecs.lists[i]);
-+			list_del(&page->lru);
-+			__pagevec_lru_add_fn(page, lruvecs.vecs[i]);
-+		}
-+		spin_unlock_irqrestore(&lruvecs.vecs[i]->lru_lock, flags);
- 	}
--	if (lruvec)
--		unlock_page_lruvec_irqrestore(lruvec, flags);
-+
- 	release_pages(pvec->pages, pvec->nr);
- 	pagevec_reinit(pvec);
- }
+ isolate_fail_put:
+ 		/* Avoid potential deadlock in freeing page under lru_lock */
+-		if (locked) {
+-			unlock_page_lruvec_irqrestore(locked, flags);
+-			locked = NULL;
++		if (lruvec) {
++			unlock_page_lruvec_irqrestore(lruvec, flags);
++			lruvec = NULL;
+ 		}
+ 		put_page(page);
+ 
+@@ -1073,9 +1069,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		 * page anyway.
+ 		 */
+ 		if (nr_isolated) {
+-			if (locked) {
+-				unlock_page_lruvec_irqrestore(locked, flags);
+-				locked = NULL;
++			if (lruvec) {
++				unlock_page_lruvec_irqrestore(lruvec, flags);
++				lruvec = NULL;
+ 			}
+ 			putback_movable_pages(&cc->migratepages);
+ 			cc->nr_migratepages = 0;
+@@ -1102,8 +1098,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 	page = NULL;
+ 
+ isolate_abort:
+-	if (locked)
+-		unlock_page_lruvec_irqrestore(locked, flags);
++	if (lruvec)
++		unlock_page_lruvec_irqrestore(lruvec, flags);
+ 	if (page) {
+ 		SetPageLRU(page);
+ 		put_page(page);
 -- 
 1.8.3.1
 
