@@ -2,16 +2,16 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09AAA24FE43
-	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 14:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C949124FE32
+	for <lists+cgroups@lfdr.de>; Mon, 24 Aug 2020 14:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728001AbgHXM5E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Aug 2020 08:57:04 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:32871 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727081AbgHXMza (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 08:55:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R411e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0U6k9-bl_1598273712;
+        id S1727994AbgHXM4j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Aug 2020 08:56:39 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:43108 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727851AbgHXMze (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 08:55:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R691e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04397;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0U6k9-bl_1598273712;
 Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6k9-bl_1598273712)
           by smtp.aliyun-inc.com(127.0.0.1);
           Mon, 24 Aug 2020 20:55:23 +0800
@@ -27,9 +27,9 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         vdavydov.dev@gmail.com, shy828301@gmail.com
 Cc:     Alexander Duyck <alexander.h.duyck@linux.intel.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
-Date:   Mon, 24 Aug 2020 20:55:01 +0800
-Message-Id: <1598273705-69124-29-git-send-email-alex.shi@linux.alibaba.com>
+Subject: [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
+Date:   Mon, 24 Aug 2020 20:55:02 +0800
+Message-Id: <1598273705-69124-30-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
 References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
@@ -40,11 +40,17 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 
-We can drop the need for the locked variable by making use of the
-lruvec_holds_page_lru_lock function. By doing this we can avoid some rcu
-locking ugliness for the case where the lruvec is still holding the LRU
-lock associated with the page. Instead we can just use the lruvec and if it
-is NULL we assume the lock was released.
+Since we are holding a reference to the page much sooner in
+isolate_migratepages_block we can move the PageCompound check out of the
+LRU locked section and instead just place it after get_page_unless_zero. By
+doing this we can allow any of the items that might trigger a failure to
+trigger a failure for the compound page rather than the order 0 page and as
+a result we should be able to process the pageblock faster.
+
+In addition by testing for PageCompound sooner we can avoid having the LRU
+flag cleared and then reset in the exception case. As a result this should
+prevent possible races where another thread might be attempting to pull the
+LRU pages from the list.
 
 Signed-off-by: Alexander Duyck <alexander.h.duyck@linux.intel.com>
 Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
@@ -53,119 +59,62 @@ Cc: Stephen Rothwell <sfr@canb.auug.org.au>
 Cc: linux-kernel@vger.kernel.org
 Cc: linux-mm@kvack.org
 ---
- mm/compaction.c | 46 +++++++++++++++++++++-------------------------
- 1 file changed, 21 insertions(+), 25 deletions(-)
+ mm/compaction.c | 33 ++++++++++++++++++---------------
+ 1 file changed, 18 insertions(+), 15 deletions(-)
 
 diff --git a/mm/compaction.c b/mm/compaction.c
-index b724eacf6421..6bf5ccd8fcf6 100644
+index 6bf5ccd8fcf6..a0e48d079124 100644
 --- a/mm/compaction.c
 +++ b/mm/compaction.c
-@@ -803,9 +803,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
- {
- 	pg_data_t *pgdat = cc->zone->zone_pgdat;
- 	unsigned long nr_scanned = 0, nr_isolated = 0;
--	struct lruvec *lruvec;
-+	struct lruvec *lruvec = NULL;
- 	unsigned long flags = 0;
--	struct lruvec *locked = NULL;
- 	struct page *page = NULL, *valid_page = NULL;
- 	unsigned long start_pfn = low_pfn;
- 	bool skip_on_failure = false;
-@@ -866,9 +865,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * a fatal signal is pending.
- 		 */
- 		if (!(low_pfn % SWAP_CLUSTER_MAX)) {
--			if (locked) {
--				unlock_page_lruvec_irqrestore(locked, flags);
--				locked = NULL;
-+			if (lruvec) {
-+				unlock_page_lruvec_irqrestore(lruvec, flags);
-+				lruvec = NULL;
- 			}
+@@ -984,6 +984,24 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 		if (unlikely(!get_page_unless_zero(page)))
+ 			goto isolate_fail;
  
- 			if (fatal_signal_pending(current)) {
-@@ -949,9 +948,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 			 */
- 			if (unlikely(__PageMovable(page)) &&
- 					!PageIsolated(page)) {
--				if (locked) {
--					unlock_page_lruvec_irqrestore(locked, flags);
--					locked = NULL;
-+				if (lruvec) {
-+					unlock_page_lruvec_irqrestore(lruvec, flags);
-+					lruvec = NULL;
- 				}
- 
- 				if (!isolate_movable_page(page, isolate_mode))
-@@ -992,16 +991,14 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		if (!TestClearPageLRU(page))
++		/*
++		 * Page is compound. We know the order before we know if it is
++		 * on the LRU so we cannot assume it is THP. However since the
++		 * page will have the LRU validated shortly we can use the value
++		 * to skip over this page for now or validate the LRU is set and
++		 * then isolate the entire compound page if we are isolating to
++		 * generate a CMA page.
++		 */
++		if (PageCompound(page)) {
++			const unsigned int order = compound_order(page);
++
++			if (likely(order < MAX_ORDER))
++				low_pfn += (1UL << order) - 1;
++
++			if (!cc->alloc_contig)
++				goto isolate_fail_put;
++		}
++
+ 		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
  			goto isolate_fail_put;
  
--		rcu_read_lock();
--		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+@@ -1009,23 +1027,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
+ 				if (test_and_set_skip(cc, page, low_pfn))
+ 					goto isolate_abort;
+ 			}
 -
- 		/* If we already hold the lock, we can skip some rechecking */
--		if (lruvec != locked) {
--			if (locked)
--				unlock_page_lruvec_irqrestore(locked, flags);
-+		if (!lruvec || !lruvec_holds_page_lru_lock(page, lruvec)) {
-+			if (lruvec)
-+				unlock_page_lruvec_irqrestore(lruvec, flags);
- 
-+			rcu_read_lock();
-+			lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
--			locked = lruvec;
- 			rcu_read_unlock();
- 
- 			lruvec_memcg_debug(lruvec, page);
-@@ -1023,8 +1020,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 				SetPageLRU(page);
- 				goto isolate_fail_put;
- 			}
--		} else
--			rcu_read_unlock();
-+		}
- 
- 		/* The whole page is taken off the LRU; skip the tail pages. */
- 		if (PageCompound(page))
-@@ -1057,9 +1053,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 
- isolate_fail_put:
- 		/* Avoid potential deadlock in freeing page under lru_lock */
--		if (locked) {
--			unlock_page_lruvec_irqrestore(locked, flags);
--			locked = NULL;
-+		if (lruvec) {
-+			unlock_page_lruvec_irqrestore(lruvec, flags);
-+			lruvec = NULL;
+-			/*
+-			 * Page become compound since the non-locked check,
+-			 * and it's on LRU. It can only be a THP so the order
+-			 * is safe to read and it's 0 for tail pages.
+-			 */
+-			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
+-				low_pfn += compound_nr(page) - 1;
+-				SetPageLRU(page);
+-				goto isolate_fail_put;
+-			}
  		}
- 		put_page(page);
  
-@@ -1073,9 +1069,9 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 		 * page anyway.
- 		 */
- 		if (nr_isolated) {
--			if (locked) {
--				unlock_page_lruvec_irqrestore(locked, flags);
--				locked = NULL;
-+			if (lruvec) {
-+				unlock_page_lruvec_irqrestore(lruvec, flags);
-+				lruvec = NULL;
- 			}
- 			putback_movable_pages(&cc->migratepages);
- 			cc->nr_migratepages = 0;
-@@ -1102,8 +1098,8 @@ static bool too_many_isolated(pg_data_t *pgdat)
- 	page = NULL;
- 
- isolate_abort:
--	if (locked)
--		unlock_page_lruvec_irqrestore(locked, flags);
-+	if (lruvec)
-+		unlock_page_lruvec_irqrestore(lruvec, flags);
- 	if (page) {
- 		SetPageLRU(page);
- 		put_page(page);
+-		/* The whole page is taken off the LRU; skip the tail pages. */
+-		if (PageCompound(page))
+-			low_pfn += compound_nr(page) - 1;
+-
+ 		/* Successfully isolated */
+ 		del_page_from_lru_list(page, lruvec, page_lru(page));
+ 		mod_node_page_state(page_pgdat(page),
 -- 
 1.8.3.1
 
