@@ -2,117 +2,178 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BD8D250E8F
-	for <lists+cgroups@lfdr.de>; Tue, 25 Aug 2020 04:05:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAA6E250FFC
+	for <lists+cgroups@lfdr.de>; Tue, 25 Aug 2020 05:28:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727846AbgHYCFK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 24 Aug 2020 22:05:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725781AbgHYCFJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 22:05:09 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96536C061574
-        for <cgroups@vger.kernel.org>; Mon, 24 Aug 2020 19:05:08 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id x24so9161568otp.3
-        for <cgroups@vger.kernel.org>; Mon, 24 Aug 2020 19:05:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=xCEzVSHJfiSnfhxabuVNC9t0rkX2zX2AVt5dsDA1M40=;
-        b=Qx7zECjPFmyvrTTs8F/ocW7tCcVkTwhnunAlXDXZ02SD4HEo5pHK0qvUZ8cmV197QW
-         23MJoL24elKzlrQkZr8Yc7T8ZQWrmKbeOUd4hY5pKufw1Z5VW9CMRTRZfbjXU1Za+2yc
-         qRLjAl0KCQd2veC9jbi1F0Watbt0V5rKLyNSxNLUGzhHJw2G/qIDuCpOTi/JiHnQg6Lr
-         gSCfATvLRBLoL6yZredvS7LzkNyRekKGV1W4rh92bKf6/LJkuKnmLxgLMp2gUOAexBpV
-         MmYNyURSACJ5Zg10joqtevQml+/+IDZ7wYzyaTgpNw8011WUWi4XwnMLAStJVcudiGaV
-         qJuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=xCEzVSHJfiSnfhxabuVNC9t0rkX2zX2AVt5dsDA1M40=;
-        b=KLs+ec4/5jUFp7fwex1xb6BwpQQGciYZc6ZOJ6Y5DeNoe1t12ssZpa7fAj2XvCJWoZ
-         en4VRebTIBEYDClF1AE+qscdS9aJlm/UQjb+keAXhcxEEDXS/hHhzfssAQ0iH2s/2K+3
-         fpwbypIrgwRNKJkYjAGByiS+RI9koQg+LRfF0gdcB2hRqriHSMVneIWBp4KqoybzWJcq
-         /7vh/B4xKNoPHcjiNRAXjOQHBV2gQ+ksbMU5koDTTCpwU5OXZ24QJ32nNPxdl7PZVS7+
-         Tpb7mnLtu+Xd1O+H6eIg+XU1SIhrGv8+GckOYiW85kMzLMKLR1r7Vg28szkYOdjJxVS4
-         HhBQ==
-X-Gm-Message-State: AOAM531zhlZ5ojRu/df+jA9n3206P3iStl58qlfL9+6vrdLbYv+4vDUD
-        Jg2LKEY5/O/I7Q3l3wEQXF3B5A==
-X-Google-Smtp-Source: ABdhPJxzM2WV+TVOMQL/4Ow6BMstFoj6g+xmPTXBpDKBq7id1uxSEggrr4ObCz8lU1snOf/c5wzcZg==
-X-Received: by 2002:a9d:12a9:: with SMTP id g38mr5224481otg.299.1598321107433;
-        Mon, 24 Aug 2020 19:05:07 -0700 (PDT)
-Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id w62sm2402101otb.52.2020.08.24.19.05.05
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 24 Aug 2020 19:05:06 -0700 (PDT)
-Date:   Mon, 24 Aug 2020 19:04:53 -0700 (PDT)
-From:   Hugh Dickins <hughd@google.com>
-X-X-Sender: hugh@eggly.anvils
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-cc:     Michal Hocko <mhocko@suse.com>, Qian Cai <cai@lca.pw>,
-        akpm@linux-foundation.org, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, nao.horiguchi@gmail.com,
-        osalvador@suse.de, mike.kravetz@oracle.com
-Subject: Re: [Resend PATCH 1/6] mm/memcg: warning on !memcg after readahead
- page charged
-In-Reply-To: <12425e06-38ce-7ff4-28ce-b0418353fc67@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2008241849020.1171@eggly.anvils>
-References: <1597144232-11370-1-git-send-email-alex.shi@linux.alibaba.com> <20200820145850.GA4622@lca.pw> <20200821080127.GD32537@dhcp22.suse.cz> <20200821123934.GA4314@lca.pw> <20200821134842.GF32537@dhcp22.suse.cz> <20200824151013.GB3415@dhcp22.suse.cz>
- <12425e06-38ce-7ff4-28ce-b0418353fc67@linux.alibaba.com>
-User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+        id S1728105AbgHYD2e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 24 Aug 2020 23:28:34 -0400
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:53142 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726532AbgHYD2d (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 24 Aug 2020 23:28:33 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R101e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01f04455;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6nFDwk_1598326106;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6nFDwk_1598326106)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 25 Aug 2020 11:28:27 +0800
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+Date:   Tue, 25 Aug 2020 11:26:58 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: TEXT/PLAIN; charset=US-ASCII
+In-Reply-To: <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, 25 Aug 2020, Alex Shi wrote:
-> reproduce using our linux-mm random bug collection on NUMA systems.
-> >>
-> >> OK, I must have missed that this was on ppc. The order makes more sense
-> >> now. I will have a look at this next week.
-> > 
-> > OK, so I've had a look and I know what's going on there. The
-> > move_pages12 is migrating hugetlb pages. Those are not charged to any
-> > memcg. We have completely missed this case. There are two ways going
-> > around that. Drop the warning and update the comment so that we do not
-> > forget about that or special case hugetlb pages.
-> > 
-> > I think the first option is better.
-> > 
+
+
+ÔÚ 2020/8/25 ÉÏÎç9:56, Daniel Jordan Ð´µÀ:
+> On Mon, Aug 24, 2020 at 01:24:20PM -0700, Hugh Dickins wrote:
+>> On Mon, 24 Aug 2020, Andrew Morton wrote:
+>>> On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
+>> Andrew demurred on version 17 for lack of review.  Alexander Duyck has
+>> been doing a lot on that front since then.  I have intended to do so,
+>> but it's a mirage that moves away from me as I move towards it: I have
 > 
+> Same, I haven't been able to keep up with the versions or the recent review
+> feedback.  I got through about half of v17 last week and hope to have more time
+> for the rest this week and beyond.
 > 
-> Hi Michal,
+>>>> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
+>>>> containers on a 2s * 26cores * HT box with a modefied case:
 > 
-> Compare to ignore the warning which is designed to give, seems addressing
-> the hugetlb out of charge issue is a better solution, otherwise the memcg
-> memory usage is out of control on hugetlb, is that right?
+> Alex, do you have a pointer to the modified readtwice case?
 
-Please don't suppose that this is peculiar to hugetlb: I'm not
-testing hugetlb at all (sorry), but I see the VM_WARN_ON_ONCE from
-mem_cgroup_page_lruvec(), and from mem_cgroup_migrate(), and from
-mem_cgroup_swapout().
+Sorry, no. my developer machine crashed, so I lost case my container and modified
+case. I am struggling to get my container back from a account problematic repository. 
 
-In all cases seen on a PageAnon page (well, in one case PageKsm).
-And not related to THP either: seen also on machine incapable of THP.
+But some testing scripts is here, generally, the original readtwice case will
+run each of threads on each of cpus. The new case will run one container on each cpus,
+and just run one readtwice thead in each of containers.
 
-Maybe there's an independent change in 5.9-rc that's defeating
-expectations here, or maybe they were never valid.  Worth
-investigating, even though the patch is currently removed,
-to find out why expectations were wrong.
+Here is readtwice case changes(Just a reference)
+diff --git a/case-lru-file-readtwice b/case-lru-file-readtwice
+index 85533b248634..48c6b5f44256 100755
+--- a/case-lru-file-readtwice
++++ b/case-lru-file-readtwice
+@@ -15,12 +15,9 @@
 
-You'll ask me for more info, stacktraces etc, and I'll say sorry,
-no time today.  Please try the swapping tests I sent before.
+ . ./hw_vars
 
-And may I say, the comment
-/* Readahead page is charged too, to see if other page uncharged */
-is nonsensical to me, and much better deleted: maybe it would make
-some sense if the reader could see the comment it replaces - as
-they can in the patch - but not in the resulting source file.
+-for i in `seq 1 $nr_task`
+-do
+        create_sparse_file $SPARSE_FILE-$i $((ROTATE_BYTES / nr_task))
+        timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-1-$i 2>&1 &
+        timeout --foreground -s INT ${runtime:-600} dd bs=4k if=$SPARSE_FILE-$i of=/dev/null > $TMPFS_MNT/dd-output-2-$i 2>&1 &
+-done
 
-Hugh
+ wait
+ sleep 1
+@@ -31,7 +28,7 @@ do
+                echo "dd output file empty: $file" >&2
+        }
+        cat $file
+-       rm  $file
++       #rm  $file
+ done
+
+ rm `seq -f $SPARSE_FILE-%g 1 $nr_task`
+
+And here is how to running the case: 
+--------
+#run all case on 24 cpu machine, lrulockv2 is the container with modified case.
+for ((i=0; i<24; i++))
+do
+        #btw, vm-scalability need create 23 loop devices
+        docker run --privileged=true --rm lrulockv2 bash -c " sleep 20000" &
+done
+sleep 15  #wait all container ready. 
+
+#kick testing
+for i in `docker ps | sed '1 d' | awk '{print $1 }'` ;do docker exec --privileged=true -it $i bash -c "cd vm-scalability/; bash -x ./run case-lru-file-readtwice "& done
+
+#show testing result for all
+for i in `docker ps | sed '1 d' | awk '{print $1 }'` ;do echo === $i ===; docker exec $i bash -c 'cat /tmp/vm-scalability-tmp/dd-output-* '  & done
+for i in `docker ps | sed '1 d' | awk '{print $1 }'` ;do echo === $i ===; docker exec $i bash -c 'cat /tmp/vm-scalability-tmp/dd-output-* '  & done | grep MB | awk 'BEGIN {a=0
+;} { a+=$8} END {print NR, a/(NR)}'
+
+
+> 
+> Even better would be a description of the problem you're having in production
+> with lru_lock.  We might be able to create at least a simulation of it to show
+> what the expected improvement of your real workload is.
+
+we are using thousands memcgs in a machine, but as a simulation, I guess above case
+could be helpful to show the problem.
+
+Thanks a lot!
+Alex
+
+> 
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/wfg/vm-scalability.git/tree/case-lru-file-readtwice
+>>>> With this patchset, the readtwice performance increased about 80%
+>>>> in concurrent containers.
+>>>
+>>> That's rather a slight amount of performance testing for a huge
+>>> performance patchset!
+>>
+>> Indeed.  And I see that clause about readtwice performance increased 80%
+>> going back eight months to v6: a lot of fundamental bugs have been fixed
+>> in it since then, so I do think it needs refreshing.  It could be faster
+>> now: v16 or v17 fixed the last bug I knew of, which had been slowing
+>> down reclaim considerably.
+>>
+>> When I last timed my repetitive swapping loads (not loads anyone sensible
+>> would be running with), across only two memcgs, Alex's patchset was
+>> slightly faster than without: it really did make a difference.  But
+>> I tend to think that for all patchsets, there exists at least one
+>> test that shows it faster, and another that shows it slower.
+
+In my testing, case-lru-file-mmap-read has a bit slower, 10+% on 96 thread machine,
+when memcg is enabled but unused, that may due to longer pointer jumpping on 
+lruvec than pgdat->lru_lock, since cgroup_disable=memory could fully remove the
+regression with the new lock path.
+
+I tried reusing page->prviate to store lruvec pointer, that could remove some 
+regression on this, since private is generally unused on a lru page. But the patch
+is too buggy now. 
+
+BTW, 
+Guess memcg would cause more memory disturb on a large machine, if it's enabled but
+unused, isn't it?
+
+
+>>
+>>> Is more detailed testing planned?
+>>
+>> Not by me, performance testing is not something I trust myself with,
+>> just get lost in the numbers: Alex, this is what we hoped for months
+>> ago, please make a more convincing case, I hope Daniel and others
+>> can make more suggestions.  But my own evidence suggests it's good.
+> 
+> I ran a few benchmarks on v17 last week (sysbench oltp readonly, kerndevel from
+> mmtests, a memcg-ized version of the readtwice case I cooked up) and then today
+> discovered there's a chance I wasn't running the right kernels, so I'm redoing
+> them on v18.  Plan to look into what other, more "macro" tests would be
+> sensitive to these changes.
+> 
