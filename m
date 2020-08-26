@@ -2,24 +2,50 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7E625191F
-	for <lists+cgroups@lfdr.de>; Tue, 25 Aug 2020 15:01:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADE512524F1
+	for <lists+cgroups@lfdr.de>; Wed, 26 Aug 2020 03:11:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726095AbgHYNBs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 25 Aug 2020 09:01:48 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:37244 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726024AbgHYNBs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 25 Aug 2020 09:01:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01355;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6qR9GC_1598360501;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6qR9GC_1598360501)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Tue, 25 Aug 2020 21:01:43 +0800
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S1726664AbgHZBLa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 25 Aug 2020 21:11:30 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:48068 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726610AbgHZBL2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 25 Aug 2020 21:11:28 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07Q1A691044031;
+        Wed, 26 Aug 2020 01:10:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
+ bh=VWKaRWmTmrlTrbnIky0PuQ3aZ0bL/HrXLsBsMQQqZo4=;
+ b=jQNvNVHYVl0Oq89XEgsmuaLNiJpGZJT9brk12EKPFxStCdsik5I4IBEl6Bg/H3NtYf2Z
+ cmzX1sVKVAwMR/9dtkl5+JbbWT934jfcpvNxDywlgqCg51YQs0e0n9qAHlHsLQ5ihWaP
+ jfDlzlh4U6ZT4v89eaYGfzPPP/w9t5HO2yAgiNyJ1PgteJXcHlLGZW6e7NrjGNIVpSeB
+ lU7mwgsqKocBkjf4K5fjzhl9uxqclIjlOPIoYhiqdyWwa04NYvZW7c+F0nPNNYYZ4/rV
+ FMmXYE4rJEyLxS6Vur9iT/YFuDO8s0NbT0Q+rWL/Ni1XlHheonNF35vprX/YllYb3zk6 rA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 333w6tv73f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 26 Aug 2020 01:10:55 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07Q1AC7X034251;
+        Wed, 26 Aug 2020 01:10:54 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3020.oracle.com with ESMTP id 333ru8x57n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 26 Aug 2020 01:10:54 +0000
+Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07Q1AnBB002426;
+        Wed, 26 Aug 2020 01:10:49 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 25 Aug 2020 18:10:48 -0700
+Date:   Tue, 25 Aug 2020 21:19:46 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
         mgorman@techsingularity.net, tj@kernel.org,
         khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
         lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
@@ -28,55 +54,68 @@ Cc:     Andrew Morton <akpm@linux-foundation.org>,
         kirill@shutemov.name, alexander.duyck@gmail.com,
         rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
         shy828301@gmail.com
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+Message-ID: <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
 References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
  <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
  <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
  <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
- <4cc9f54a-9eda-9966-df9a-a00bc9e88f4c@linux.alibaba.com>
-Message-ID: <d6127d13-0997-3f9d-3c35-1fe453fc6a12@linux.alibaba.com>
-Date:   Tue, 25 Aug 2020 21:00:13 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <4cc9f54a-9eda-9966-df9a-a00bc9e88f4c@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
+ bulkscore=0 suspectscore=0 spamscore=0 mlxscore=0 adultscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008260007
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9724 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008260006
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-ÔÚ 2020/8/25 ÏÂÎç4:52, Alex Shi Ð´µÀ:
+On Tue, Aug 25, 2020 at 11:26:58AM +0800, Alex Shi wrote:
+> åœ¨ 2020/8/25 ä¸Šåˆ9:56, Daniel Jordan å†™é“:
+> > Alex, do you have a pointer to the modified readtwice case?
 > 
-> ÔÚ 2020/8/25 ÉÏÎç9:56, Daniel Jordan Ð´µÀ:
->> On Mon, Aug 24, 2020 at 01:24:20PM -0700, Hugh Dickins wrote:
->>> On Mon, 24 Aug 2020, Andrew Morton wrote:
->>>> On Mon, 24 Aug 2020 20:54:33 +0800 Alex Shi <alex.shi@linux.alibaba.com> wrote:
->>> Andrew demurred on version 17 for lack of review.  Alexander Duyck has
->>> been doing a lot on that front since then.  I have intended to do so,
->>> but it's a mirage that moves away from me as I move towards it: I have
->> Same, I haven't been able to keep up with the versions or the recent review
->> feedback.  I got through about half of v17 last week and hope to have more time
->> for the rest this week and beyond.
->>
->>>>> Following Daniel Jordan's suggestion, I have run 208 'dd' with on 104
->>>>> containers on a 2s * 26cores * HT box with a modefied case:
->> Alex, do you have a pointer to the modified readtwice case?
->>
-> Hi Daniel,
+> Sorry, no. my developer machine crashed, so I lost case my container and modified
+> case. I am struggling to get my container back from a account problematic repository. 
 > 
-> my readtwice modification like below.
+> But some testing scripts is here, generally, the original readtwice case will
+> run each of threads on each of cpus. The new case will run one container on each cpus,
+> and just run one readtwice thead in each of containers.
+
+Ok, what you've sent so far gives me an idea of what you did.  My readtwice
+changes were similar, except I used the cgroup interface directly instead of
+docker and shared a filesystem between all the cgroups whereas it looks like
+you had one per memcg.  30 second runs on 5.9-rc2 and v18 gave 11% more data
+read with v18.  This was using 16 cgroups (32 dd tasks) on a 40 CPU, 2 socket
+machine.
+
+> > Even better would be a description of the problem you're having in production
+> > with lru_lock.  We might be able to create at least a simulation of it to show
+> > what the expected improvement of your real workload is.
 > 
-> diff --git a/case-lru-file-readtwice b/case-lru-file-readtwice
+> we are using thousands memcgs in a machine, but as a simulation, I guess above case
+> could be helpful to show the problem.
 
-Hi Diniel,
+Using thousands of memcgs to do what?  Any particulars about the type of
+workload?  Surely it's more complicated than page cache reads :)
 
-I finally settle down my container, and found I give a different version of my scripts
-which can't work out together. I am sorry!
+> > I ran a few benchmarks on v17 last week (sysbench oltp readonly, kerndevel from
+> > mmtests, a memcg-ized version of the readtwice case I cooked up) and then today
+> > discovered there's a chance I wasn't running the right kernels, so I'm redoing
+> > them on v18.
 
-I will try to bring them up together. and try to give a new version.
-
-Thanks a lot!
-Alex
+Neither kernel compile nor git checkout in the root cgroup changed much, just
+0.31% slower on elapsed time for the compile, so no significant regressions
+there.  Now for sysbench again.
