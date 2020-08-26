@@ -2,133 +2,133 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A76732529BD
-	for <lists+cgroups@lfdr.de>; Wed, 26 Aug 2020 11:09:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4AE0253124
+	for <lists+cgroups@lfdr.de>; Wed, 26 Aug 2020 16:21:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727798AbgHZJJa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 26 Aug 2020 05:09:30 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:38375 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727122AbgHZJJa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Aug 2020 05:09:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01358;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U6v-68g_1598432963;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U6v-68g_1598432963)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 26 Aug 2020 17:09:24 +0800
-Subject: Re: [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add
- lru_lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598273705-69124-28-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <57cea811-13bd-c026-01dc-69bd9eafa014@linux.alibaba.com>
-Date:   Wed, 26 Aug 2020 17:07:53 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1728113AbgHZOVk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 26 Aug 2020 10:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57230 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728041AbgHZOVU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 26 Aug 2020 10:21:20 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5AA4C061574
+        for <cgroups@vger.kernel.org>; Wed, 26 Aug 2020 07:21:19 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id t23so1482824qto.3
+        for <cgroups@vger.kernel.org>; Wed, 26 Aug 2020 07:21:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9cipQfYQtv7cAiG+G38dpVGRbXrdKVedcuYm2vqWBLE=;
+        b=r/aSAxJIwBhxZNYLfslR2WgJGk8qwXY7iEQclmhmk8/Z831e3QGoww9xiThSt0fEU1
+         3PCNg6JDfrF1/obSDOg5HsFvZFIVHfQRu1wEC8OOFd01VUmXaBhZfoP40svMW802E1Tf
+         3JM0RIrOw2BqmfIUSfn+mz+17yNzZAIeFBAzVEuU92gtGA0FhaBtdyMpFRnKxer1CMCB
+         uRQRHSXbROCHtEjVH2hlrpYARZm43Cce7Ri3XnIpVGznmEarT4V3wLqHduh1Bx6VHn2P
+         SpXJ+RpUhQnm0DVrncjQNiJ0vYYkEqEu1U1x+3Xu36kJKVEtOiBRhvf0vTaw+hdySoFf
+         ns/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9cipQfYQtv7cAiG+G38dpVGRbXrdKVedcuYm2vqWBLE=;
+        b=CUTdXZXuDutPaJOBGjBADHo8SvgQh1WmsFhD3/W82jEYaZ7hh7G7/XWF8Xfigs8f9i
+         LDgOU5Iu459h0nHbVhqvFkxEXRvozYPkmQ7QTgyGUAUe57EEQErVb8sUop2DefPaIqwa
+         3/7U7FVLQ0s5lOEJLCehRbf4cBP4meqUvh+7cn8W4TUxpaOpmpQrZkSvbxjXPKYFKyNM
+         0KOZBFUQj2I8MXIbtEhpfdm2NA+uGZDlDAn3IXLo2bXUsA0m5aA1nUCy/ofMW4XAv5gb
+         nnqhM2PZkai3y3KRC5pnv6ze2M56hLUE2QJXLdy+9BDJ0xlrhCa21uJdRiXKI6t45wwC
+         3Kuw==
+X-Gm-Message-State: AOAM533PJeWE0GlC3nPGpt5N4TF9mk3fa2abQtctWfhsWPYjdVxQxVAu
+        I9UflIV0Y+EWfk79YTEsnuAutg==
+X-Google-Smtp-Source: ABdhPJzkL+VbMNqXk0VI6usc3IzWafauyYNT0NkD01Zs9u4SVmyMN6cWX67eat1DeaEj/WIGp5aZEg==
+X-Received: by 2002:ac8:7156:: with SMTP id h22mr14460468qtp.36.1598451678946;
+        Wed, 26 Aug 2020 07:21:18 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:4a00])
+        by smtp.gmail.com with ESMTPSA id x29sm1976087qtv.80.2020.08.26.07.21.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 26 Aug 2020 07:21:17 -0700 (PDT)
+Date:   Wed, 26 Aug 2020 10:20:02 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
+Message-ID: <20200826142002.GA988805@cmpxchg.org>
+References: <20200819184850.24779-1-willy@infradead.org>
+ <20200819184850.24779-3-willy@infradead.org>
 MIME-Version: 1.0
-In-Reply-To: <1598273705-69124-28-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200819184850.24779-3-willy@infradead.org>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The patch need update since a bug found.
+On Wed, Aug 19, 2020 at 07:48:44PM +0100, Matthew Wilcox (Oracle) wrote:
+> The current code does not protect against swapoff of the underlying
+> swap device, so this is a bug fix as well as a worthwhile reduction in
+> code complexity.
+> 
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> ---
+>  mm/memcontrol.c | 25 ++-----------------------
+>  1 file changed, 2 insertions(+), 23 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b807952b4d43..4075f214a841 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5539,35 +5539,14 @@ static struct page *mc_handle_swap_pte(struct vm_area_struct *vma,
+>  static struct page *mc_handle_file_pte(struct vm_area_struct *vma,
+>  			unsigned long addr, pte_t ptent, swp_entry_t *entry)
+>  {
+> -	struct page *page = NULL;
+> -	struct address_space *mapping;
+> -	pgoff_t pgoff;
+> -
+>  	if (!vma->vm_file) /* anonymous vma */
+>  		return NULL;
+>  	if (!(mc.flags & MOVE_FILE))
+>  		return NULL;
+>  
+> -	mapping = vma->vm_file->f_mapping;
+> -	pgoff = linear_page_index(vma, addr);
+> -
+>  	/* page is moved even if it's not RSS of this task(page-faulted). */
+> -#ifdef CONFIG_SWAP
+> -	/* shmem/tmpfs may report page out on swap: account for that too. */
+> -	if (shmem_mapping(mapping)) {
+> -		page = find_get_entry(mapping, pgoff);
+> -		if (xa_is_value(page)) {
+> -			swp_entry_t swp = radix_to_swp_entry(page);
+> -			*entry = swp;
+> -			page = find_get_page(swap_address_space(swp),
+> -					     swp_offset(swp));
+> -		}
+> -	} else
+> -		page = find_get_page(mapping, pgoff);
+> -#else
+> -	page = find_get_page(mapping, pgoff);
+> -#endif
+> -	return page;
+> +	return find_get_swap_page(vma->vm_file->f_mapping,
+> +			linear_page_index(vma, addr));
 
-From 547d95205e666c7c5a81c44b7b1f8e1b6c7b1749 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Sat, 1 Aug 2020 22:49:31 +0800
-Subject: [PATCH] mm/swap.c: optimizing __pagevec_lru_add lru_lock
+The refactor makes sense to me, but the name is confusing. We're not
+looking for a swap page, we're primarily looking for a file page in
+the page cache mapping that's handed in. Only in the special case
+where it's a shmem mapping and there is a swap entry do we consult the
+auxiliary swap cache.
 
-The current relock logical will change lru_lock when if found a new
-lruvec, so if 2 memcgs are reading file or alloc page equally, they
-could hold the lru_lock alternately.
-
-This patch will record the needed lru_lock and only hold them once in
-above scenario. That could reduce the lock contention.
-
-Suggested-by: Konstantin Khlebnikov <koct9i@gmail.com>
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/swap.c | 42 +++++++++++++++++++++++++++++++++++-------
- 1 file changed, 35 insertions(+), 7 deletions(-)
-
-diff --git a/mm/swap.c b/mm/swap.c
-index 2ac78e8fab71..dba3f0aba2a0 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -958,24 +958,52 @@ static void __pagevec_lru_add_fn(struct page *page, struct lruvec *lruvec)
- 	trace_mm_lru_insertion(page, lru);
- }
- 
-+struct add_lruvecs {
-+	struct list_head lists[PAGEVEC_SIZE];
-+	struct lruvec *vecs[PAGEVEC_SIZE];
-+};
-+
- /*
-  * Add the passed pages to the LRU, then drop the caller's refcount
-  * on them.  Reinitialises the caller's pagevec.
-  */
- void __pagevec_lru_add(struct pagevec *pvec)
- {
--	int i;
-+	int i, j, total;
- 	struct lruvec *lruvec = NULL;
- 	unsigned long flags = 0;
-+	struct page *page;
-+	struct add_lruvecs lruvecs;
-+
-+	for (i = total = 0; i < pagevec_count(pvec); i++) {
-+		page = pvec->pages[i];
-+		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
-+		lruvecs.vecs[i] = NULL;
-+
-+		/* Try to find a same lruvec */
-+		for (j = 0; j < total; j++)
-+			if (lruvec == lruvecs.vecs[j])
-+				break;
-+		/* A new lruvec */
-+		if (j == total) {
-+			INIT_LIST_HEAD(&lruvecs.lists[total]);
-+			lruvecs.vecs[total] = lruvec;
-+			total++;
-+		}
- 
--	for (i = 0; i < pagevec_count(pvec); i++) {
--		struct page *page = pvec->pages[i];
-+		list_add(&page->lru, &lruvecs.lists[j]);
-+	}
- 
--		lruvec = relock_page_lruvec_irqsave(page, lruvec, &flags);
--		__pagevec_lru_add_fn(page, lruvec);
-+	for (i = 0; i < total; i++) {
-+		spin_lock_irqsave(&lruvecs.vecs[i]->lru_lock, flags);
-+		while (!list_empty(&lruvecs.lists[i])) {
-+			page = lru_to_page(&lruvecs.lists[i]);
-+			list_del(&page->lru);
-+			__pagevec_lru_add_fn(page, lruvecs.vecs[i]);
-+		}
-+		spin_unlock_irqrestore(&lruvecs.vecs[i]->lru_lock, flags);
- 	}
--	if (lruvec)
--		unlock_page_lruvec_irqrestore(lruvec, flags);
-+
- 	release_pages(pvec->pages, pvec->nr);
- 	pagevec_reinit(pvec);
- }
--- 
-1.8.3.1
-
+How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
+Maybe you have a better idea. It's a fairly specialized operation that
+isn't widely used, so a longer name isn't a bad thing IMO.
