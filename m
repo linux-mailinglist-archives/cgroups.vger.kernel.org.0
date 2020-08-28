@@ -2,107 +2,119 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 579252546BA
-	for <lists+cgroups@lfdr.de>; Thu, 27 Aug 2020 16:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA29A25528C
+	for <lists+cgroups@lfdr.de>; Fri, 28 Aug 2020 03:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727981AbgH0OYj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 27 Aug 2020 10:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57114 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727927AbgH0OX4 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Aug 2020 10:23:56 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D307FC061237
-        for <cgroups@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id t6so2675213qvw.1
-        for <cgroups@vger.kernel.org>; Thu, 27 Aug 2020 07:23:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
-        b=KPqGwrmsmOIuf+JiWEW/k7gGWQ1y3K+MpxQ+GlJBR4JHV9vGFTTbjyFMl+FZ4Y0eR1
-         K2BXbisksDsJdOWmVO1uqUYQ2h1rz6x4zhmDciS7F7QXhAv9oK2efTTjrKFY2lV0MX2h
-         m+NX4PEHBJLAtiNCQ+E62vD9YoMqRVe4nQ2rLdY2M6j+IN9GUIPk+F93i5PMufggiU+5
-         7qfQtxk5IGmbE2ZD7qvuDqJQO8zKxEiYo6gkbc90Yi69wGk+9eBBpz/JoSeL/G/aFyFt
-         vrKHByeeVrxLF5cwGuOVUkygA2VuBjAX42oiZQSqxkRduIvG36gg5Hfhjg+H7Ukg95zP
-         RpMg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BmSkU8kL1DJIMf//B6UvwY8ukjXeH0WHbYlFQli5/Kw=;
-        b=SSG5wwKXuDls9v4YEDtZxP6v1rG1bmR1IUJY2qpSVG88Z6iDykEby7yug1MRr+U1Fh
-         Hl+rGJqinN1bG9GD0JwcQ1HmU8/DK7ZPcBfxTD6F+ddFD2LOFqZqRpXP55tHsQw6HhGF
-         IF6EkUVmGsxbmW/MDbhDjoQgQChaJYY8opw7wBK7TOusRIS40SxW3+yTTmutHK9Sg1fx
-         DkBn4LcUC8bd87f+/LfyJm3qJSt8OZAbCK9IVoJkmuAlBT1jR5icnIJ3dJmQ0fd74jnm
-         rxP9ScXo1xxHpX3f9BQGnPzmM/7Ty2S+Ao6NAcdEWGBkk8ABLXMJoHNslyjttAU0D0EP
-         TrZA==
-X-Gm-Message-State: AOAM533Zw6ngOKCdPawCRAJWHG7X+UCNvO7oWQBi0V9HqZEM7WRYjseU
-        uyWr+qmxfmZ3YGOiXPcC0eD7Ew==
-X-Google-Smtp-Source: ABdhPJxeJ4y+twhjLH2tJgCPbWVuyl+hfRB8UMwjlhngOikJ6bWHbwUXxgZd/BLJ9LZT047bUSDjHg==
-X-Received: by 2002:a0c:ffa1:: with SMTP id d1mr19299175qvv.36.1598538226887;
-        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:412a])
-        by smtp.gmail.com with ESMTPSA id l64sm1953780qkc.21.2020.08.27.07.23.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Aug 2020 07:23:46 -0700 (PDT)
-Date:   Thu, 27 Aug 2020 10:22:29 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        id S1727843AbgH1BcC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 27 Aug 2020 21:32:02 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:38240 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727929AbgH1BcB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 27 Aug 2020 21:32:01 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07S1TNrG195014;
+        Fri, 28 Aug 2020 01:31:31 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=EE+MmSN3lbKnbvXBOhbYoQLeslJjSSgBP3XNEkQXgRQ=;
+ b=KaSLqjJzENC36uaJMTkyhzgDkJ2KfQYLgzCz13xV15ZAZNT3+Y0xu9qgW9r6Uaf/gAhP
+ p/lDkVi37vjz1X3j21WaOz3VEhVh+uLP7I5oV7vvRDXfw/0shmbpmn74a0y+4tP4xjqU
+ x3aRGOIZW84msVY3kmzWTdP6c+eog5WiX3mRnth7Bd2ounWU/NfOFYXYmevJ5GQm0nWt
+ ddMGf7ZSwZU52zu6MbpKxP5wvtfEqQl+OK/U3aaOvsGYwAPWZyczKh+77vwYt67QWAO1
+ TObjUYzMQoddfUC8VNxwIAWvWeZzTcpoza+wl4TrPOCUu9X/cC/mcl+RtAUKi2r372IV eA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by userp2120.oracle.com with ESMTP id 333w6u80tn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 28 Aug 2020 01:31:31 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 07S1OkL1149469;
+        Fri, 28 Aug 2020 01:31:31 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 333ru26er1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 28 Aug 2020 01:31:30 +0000
+Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 07S1VNnd020001;
+        Fri, 28 Aug 2020 01:31:25 GMT
+Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 27 Aug 2020 18:31:23 -0700
+Date:   Thu, 27 Aug 2020 21:40:22 -0400
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
         Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/8] mm: Use find_get_swap_page in memcontrol
-Message-ID: <20200827142229.GB1002856@cmpxchg.org>
-References: <20200819184850.24779-1-willy@infradead.org>
- <20200819184850.24779-3-willy@infradead.org>
- <20200826142002.GA988805@cmpxchg.org>
- <20200827125941.GG14765@casper.infradead.org>
+        Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+Message-ID: <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+ <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
+ <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200827125941.GG14765@casper.infradead.org>
+In-Reply-To: <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
+User-Agent: NeoMutt/20180716
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2008280011
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9726 signatures=668679
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 impostorscore=0
+ mlxlogscore=999 suspectscore=0 phishscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 clxscore=1015 mlxscore=0 lowpriorityscore=0 bulkscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
+ definitions=main-2008280011
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 01:59:41PM +0100, Matthew Wilcox wrote:
-> On Wed, Aug 26, 2020 at 10:20:02AM -0400, Johannes Weiner wrote:
-> > The refactor makes sense to me, but the name is confusing. We're not
-> > looking for a swap page, we're primarily looking for a file page in
-> > the page cache mapping that's handed in. Only in the special case
-> > where it's a shmem mapping and there is a swap entry do we consult the
-> > auxiliary swap cache.
+On Wed, Aug 26, 2020 at 04:59:28PM +0800, Alex Shi wrote:
+> I clean up my testing and make it reproducable by a Dockerfile and a case patch which
+> attached. 
+
+Ok, I'll give that a shot once I've taken care of sysbench.
+
+> >>> Even better would be a description of the problem you're having in production
+> >>> with lru_lock.  We might be able to create at least a simulation of it to show
+> >>> what the expected improvement of your real workload is.
+> >>
+> >> we are using thousands memcgs in a machine, but as a simulation, I guess above case
+> >> could be helpful to show the problem.
 > > 
-> > How about find_get_page_or_swapcache()? find_get_page_shmemswap()?
-> > Maybe you have a better idea. It's a fairly specialized operation that
-> > isn't widely used, so a longer name isn't a bad thing IMO.
+> > Using thousands of memcgs to do what?  Any particulars about the type of
+> > workload?  Surely it's more complicated than page cache reads :)
 > 
-> Got it.  find_get_incore_page().  I was going to go with inmem, but that
-> it matches mincore sold me on it.
->
-> /**
->  * find_get_incore_page - Find and get a page from the page or swap caches.
->  * @mapping: The address_space to search.
->  * @index: The page cache index.
->  *
->  * This differs from find_get_page() in that it will also look for the
->  * page in the swap cache.
->  *
->  * Return: The found page or %NULL.
->  */
+> Yes, the workload are quit different on different business, some use cpu a
+> lot, some use memory a lot, and some are may mixed.
 
-Nice work, that's perfect.
+That's pretty vague, but I don't suppose I could do much better describing what
+all runs on our systems  :-/
 
-> I was focusing too much on what the function did, not why it was doing it.
+I went back to your v1 post to see what motivated you originally, and you had
+some results from aim9 but nothing about where this reared its head in the
+first place.  How did you discover the bottleneck?  I'm just curious about how
+lru_lock hurts in practice.
 
-Me too.
+> > Neither kernel compile nor git checkout in the root cgroup changed much, just
+> > 0.31% slower on elapsed time for the compile, so no significant regressions
+> > there.  Now for sysbench again.
+
+Still working on getting repeatable sysbench runs, no luck so far.  The numbers
+have stayed fairly consistent with your series but vary a lot on the base
+kernel, not sure why yet.
