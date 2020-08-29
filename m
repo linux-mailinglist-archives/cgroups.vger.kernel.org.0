@@ -2,63 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89E7B255404
-	for <lists+cgroups@lfdr.de>; Fri, 28 Aug 2020 07:24:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03EBF2566C3
+	for <lists+cgroups@lfdr.de>; Sat, 29 Aug 2020 12:03:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725858AbgH1FYV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 28 Aug 2020 01:24:21 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:53915 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725849AbgH1FYV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 28 Aug 2020 01:24:21 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e07488;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U7448ER_1598592253;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U7448ER_1598592253)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 28 Aug 2020 13:24:14 +0800
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
- <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
- <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
- <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
- <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <327a1bb4-b64d-65b8-e18f-db33e03ca9ed@linux.alibaba.com>
-Date:   Fri, 28 Aug 2020 13:22:28 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726912AbgH2KDU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 29 Aug 2020 06:03:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726464AbgH2KDT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 29 Aug 2020 06:03:19 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD73C061236;
+        Sat, 29 Aug 2020 03:03:19 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id 67so1644013pgd.12;
+        Sat, 29 Aug 2020 03:03:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=ve5Y7UpqDFbuWlDWcOR+wgYs8OkOidRTnnjW9IZXZ6U=;
+        b=bs9p3/w0ksSNIWFN2OvCev28CeZY6aVLLibarFLpX9igmm3UCZ0WpSDC0RjHJVE75F
+         H6W7uKT9MCe1b8AIjN2AvBuJ6gh37kMBK2eVt+hisLVudA4m5Af39dZmwu3E09DGHCKV
+         cNpW5Cwsaa2UfbToWG2axFJcuWHifEaCZY3XWYMpCK7YRgK/u20e1drvosjW9UxV5DYU
+         7DOmTGZmqGPYe18nCsshEyruy4jEVu4ZWmQyViWOxpBNwccL1/UnxisZ01sjNv1bPZ7K
+         yrOuGOvYzmGSonLRH3hz0LQUVq28P3ZeYf8QIdh/tH5OkTIO2/6LXeg18S+ceeUI/u2T
+         XRoQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=ve5Y7UpqDFbuWlDWcOR+wgYs8OkOidRTnnjW9IZXZ6U=;
+        b=XbiMcepRa5Ub51Pm+3xSp+KByb9UZ0uGcv3I9NDv8pYYTqY0y/5XQbBcg2Ci9ygFb1
+         mTBSWLVd8tselE1V5VVpjWe5p8bB4vPFOsNO6Oqoa6Z3EAxIr1U6yXl6xu0BsebFD1j/
+         hUQR7E85KHwXOmQ6G2E30f39rROXNUWGJmV80ixLuUJ7szIKCu2p3mIU+bgN0aqp7tJ/
+         iizhlAM3LREk/sgQE3AfhiEMafsGgQyXhjF+mobo/OT0NY2KwxVXpRjmtcW8xgvd2mTG
+         q+BuQ62oMGgb+IK2+cyObWeGT1VmfEmJe96KJ+1wB6hqBD9K/LEhClvN2YxODfYhZn+d
+         65Uw==
+X-Gm-Message-State: AOAM532In9jZWwV1SYXapGxYL2Su6dUgotyPW7r7TJHRtDb2CTojlPsj
+        G7HZafBelSIzfzOm4AQTJik=
+X-Google-Smtp-Source: ABdhPJzoTwhsMjm/U955Ohjqv+ei2DZZG8H6U8UGf9Gye8cesUtHSfljq1YVtlpDFw91JYyt531fDg==
+X-Received: by 2002:a63:fe06:: with SMTP id p6mr2003724pgh.337.1598695398716;
+        Sat, 29 Aug 2020 03:03:18 -0700 (PDT)
+Received: from haolee.github.io ([2600:3c01::f03c:91ff:fe02:b162])
+        by smtp.gmail.com with ESMTPSA id v12sm2040355pgk.81.2020.08.29.03.03.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 29 Aug 2020 03:03:18 -0700 (PDT)
+Date:   Sat, 29 Aug 2020 10:03:16 +0000
+From:   Hao Lee <haolee.swjtu@gmail.com>
+To:     tj@kernel.org
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, haolee.swjtu@gmail.com
+Subject: [PATCH] cgroup: Delete unnecessary if statement in css_visible()
+Message-ID: <20200829100202.GA855@haolee.github.io>
 MIME-Version: 1.0
-In-Reply-To: <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.12.1 (2019-06-15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+css_visible() is called in either cgroup_apply_control_enable()
+or cgroup_apply_control_disable().
+In cgroup_apply_control_enable(), we have checked ss_mask before calling
+css_visible(), so there is no need to do the same thing again.
+In cgroup_apply_control_disable():
+ - If css->parent is not NULL, we have checked ss_mask in the
+   second condition, so there is no need to do the same thing again.
+ - If css->parent is NULL, dsct is root cgroup so the deleted if
+   statement is always false and there is no need to keep it.
 
-ÔÚ 2020/8/28 ÉÏÎç9:40, Daniel Jordan Ð´µÀ:
-> I went back to your v1 post to see what motivated you originally, and you had
-> some results from aim9 but nothing about where this reared its head in the
-> first place.  How did you discover the bottleneck?  I'm just curious about how
-> lru_lock hurts in practice.
+Signed-off-by: Hao Lee <haolee.swjtu@gmail.com>
+---
+ kernel/cgroup/cgroup.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-We have gotten very high 'sys' in some buiness/machines. And found much of time spent
-on the lru_lock and/or zone lock. Seems per memcg lru_lock could help this, but still
-no idea on zone lock.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index dd247747ec14..b6714166106d 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3023,8 +3023,6 @@ static bool css_visible(struct cgroup_subsys_state *css)
+ 
+ 	if (cgroup_control(cgrp) & (1 << ss->id))
+ 		return true;
+-	if (!(cgroup_ss_mask(cgrp) & (1 << ss->id)))
+-		return false;
+ 	return cgroup_on_dfl(cgrp) && ss->implicit_on_dfl;
+ }
+ 
+-- 
+2.24.1
 
-Thanks
-Alex
