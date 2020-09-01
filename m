@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E748E259EAB
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:55:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3110D259E7C
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731841AbgIASyB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:54:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57530 "EHLO
+        id S1731840AbgIASyA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57542 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730517AbgIASxv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:53:51 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9FC2C061246;
-        Tue,  1 Sep 2020 11:53:50 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id v69so1993265qkb.7;
-        Tue, 01 Sep 2020 11:53:50 -0700 (PDT)
+        with ESMTP id S1731761AbgIASxz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:53:55 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23BCDC061244;
+        Tue,  1 Sep 2020 11:53:54 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id d20so1999253qka.5;
+        Tue, 01 Sep 2020 11:53:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=0YDXgIA1K+ZfhGe/lwGuhu8ktkywG9yY1AryQl3mCGI=;
-        b=IJmpZv9OQ33NuZ5oIRloUIYTVC+/7+sFOK4ttwgkljaMn7IlEN3iV9lyqBOcQqR0uC
-         fwmhnl4FPImWoZiBbyHRJG7BhYHTcuwWeuA54PjTv94oC59xUbUSRaXZm0d1u0i0AgYu
-         VFG9TRDpU+0m6LQncYEC0A5mt8TlqhsdiugpoKm41gZCnPKxSRU3IDDOcBMB1NblhHPK
-         GVJnObVjUVwmT6IA68FmGkXSCc2OePwnWp3hj3w6ZBwRNA9cojz8L8AQrQabiMOi6+0q
-         RA6z5tL8/qJ+Ijd6WL/WCnnAezrfV1dSNNTMG500KIQ8kqcLYJREcXLI1md16F1TUv9i
-         gSxg==
+        bh=W9a83GnSUegRN3aq2WoXDxZCM3FbBGqeK5GH+ZHyQQM=;
+        b=Sn5CXW/oEMdzc5Gt1HU6u77M+wBIEpc5T8Nn2jWGaqsyzKTDbW9A0gR4v0fQ9A2SLF
+         SiKpYQI0fJ/3cFymDBLZZKY8wtkhlTzY5FC/tGXq+mMSO6sAvHHyUP2Cpe0WCRRh5S51
+         MYoKmye0Kq8w0tJCoUkaopTaNumWCduYyOeTAlBlbNFqyxUyi12A5lWAQr0LRuNJhYY/
+         MRuPn6o+8MDCUmNK2gWYQkIxH3ASgcbDK8bs1dWX9xIyy6xWgl0fIHtm+ntd762jE5HC
+         R4fSLhdyaH/5/YeKFXOcsc7uWdHy38d4f1QFu4lpjBQXLUJ0Vc99/k/bTCO4Zo+TvC7v
+         gKVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=0YDXgIA1K+ZfhGe/lwGuhu8ktkywG9yY1AryQl3mCGI=;
-        b=IOUBCSTvOoSM/RS9iXykNd6zhPqRjHF7ywUQayi882gw3RlM/uzHT9C1EGUoKLsWqd
-         amCwHrO32bmZx55d6Sqpoci46vvwRO6gGLp3Rl7cYVt5PJfPWVfJTiBhnX6yFYDhGLR2
-         9DUun0PurkJfQEm6Aivq0j4WOOYXjzaqGgQW6JwoB3DGp6ExV0o9BXBDHdYhR6i3TLAi
-         Fcs9XLhwnPvevTjqhNmIn09DHzVPR8WNkx3ufdzKmq9O9Azj9Hpbti692ERHcOtZtpCb
-         hmhteiTGC3c7rfvG6Gk9mmySn5+GaJe/pGdslMHtKanPQdNF5GJIWWiaR7mcubOmsPyE
-         mwLA==
-X-Gm-Message-State: AOAM533jNXohMaNCbrRFiEY6988j1bEaS6U+2axc9QfQjtqmKLYGrolx
-        F66c+DJhyYbenHTSDGLbrWI=
-X-Google-Smtp-Source: ABdhPJzIFXVWPu8lmo/nlLSwxDxGZUx+3Z4piSJAkukXlm2lwWiqEZmkUb/HShPISMCG8nUq8qb7kw==
-X-Received: by 2002:a37:5042:: with SMTP id e63mr3170231qkb.453.1598986429966;
-        Tue, 01 Sep 2020 11:53:49 -0700 (PDT)
+        bh=W9a83GnSUegRN3aq2WoXDxZCM3FbBGqeK5GH+ZHyQQM=;
+        b=YZNvoE6yXZT33ntRVuNJe6isMSbrYvAWuVCJkX6OVF+pq9ySG7pd15u9f0t2eAozQ8
+         RH6LeVHZvk0IKLb0JS1aGK2GQ0jNBu18YMHzgTB919YKPZ/KKTt8s4SYwrPbWNIop4L8
+         CPnMnxbWzqJcJObSaOhuW9yaYu2+hDnogmKxF5ee33meLS5lNBhFnwNmhk+luebN1msP
+         6JhSvc1hxb+enaU3kv904Rc+5eZJtXykkrl1WehI1gujLoMKkMvLJywtdKDEsvIoaGEO
+         aXnnbzakQiWzmeH3EVoJhbvN5PhKf52mEvbzHt5H8FiFid3xp8P+PCRicp+5MRG3ucQu
+         udow==
+X-Gm-Message-State: AOAM533or11nAuLKnn1zQp+OeP/kw76jt6rOgeIKuXJwip+gYW4X/W5K
+        vPyTQ8I7KoQNZZ+ZVNItB7o=
+X-Google-Smtp-Source: ABdhPJz2+2WxUDYy56VgqwLHTsVTQxppZsujilAbTKebn7Jwf2RduFUvodDK1dtgDwmEfpLn0usYeQ==
+X-Received: by 2002:a37:e509:: with SMTP id e9mr3124998qkg.469.1598986433172;
+        Tue, 01 Sep 2020 11:53:53 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id k6sm1865857qti.23.2020.09.01.11.53.48
+        by smtp.gmail.com with ESMTPSA id g4sm2339857qth.30.2020.09.01.11.53.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:53:49 -0700 (PDT)
+        Tue, 01 Sep 2020 11:53:52 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 15/27] blk-iocost: replace iocg->has_surplus with ->surplus_list
-Date:   Tue,  1 Sep 2020 14:52:45 -0400
-Message-Id: <20200901185257.645114-16-tj@kernel.org>
+Subject: [PATCH 16/27] blk-iocost: decouple vrate adjustment from surplus transfers
+Date:   Tue,  1 Sep 2020 14:52:46 -0400
+Message-Id: <20200901185257.645114-17-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,99 +65,130 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Instead of marking iocgs with surplus with a flag and filtering for them
-while walking all active iocgs, build a surpluses list. This doesn't make
-much difference now but will help implementing improved donation logic which
-will iterate iocgs with surplus multiple times.
+Budget donations are inaccurate and could take multiple periods to converge.
+To prevent triggering vrate adjustments while surplus transfers were
+catching up, vrate adjustment was suppressed if donations were increasing,
+which was indicated by non-zero nr_surpluses.
+
+This entangling won't be necessary with the scheduled rewrite of donation
+mechanism which will make it precise and immediate. Let's decouple the two
+in preparation.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- block/blk-iocost.c | 19 +++++++++++--------
- 1 file changed, 11 insertions(+), 8 deletions(-)
+ block/blk-iocost.c            | 19 +++++++------------
+ include/trace/events/iocost.h | 13 ++++---------
+ 2 files changed, 11 insertions(+), 21 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 2496674bbbf4..c1cd66cfa2a8 100644
+index c1cd66cfa2a8..a3889a8b0a33 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -494,9 +494,9 @@ struct ioc_gq {
- 	int				hweight_gen;
- 	u32				hweight_active;
- 	u32				hweight_inuse;
--	bool				has_surplus;
- 
- 	struct list_head		walk_list;
-+	struct list_head		surplus_list;
- 
- 	struct wait_queue_head		waitq;
- 	struct hrtimer			waitq_timer;
-@@ -1507,6 +1507,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	struct ioc *ioc = container_of(timer, struct ioc, timer);
+@@ -1508,7 +1508,7 @@ static void ioc_timer_fn(struct timer_list *timer)
  	struct ioc_gq *iocg, *tiocg;
  	struct ioc_now now;
-+	LIST_HEAD(surpluses);
- 	int nr_surpluses = 0, nr_shortages = 0, nr_lagging = 0;
+ 	LIST_HEAD(surpluses);
+-	int nr_surpluses = 0, nr_shortages = 0, nr_lagging = 0;
++	int nr_shortages = 0, nr_lagging = 0;
  	u32 ppm_rthr = MILLION - ioc->params.qos[QOS_RPPM];
  	u32 ppm_wthr = MILLION - ioc->params.qos[QOS_WPPM];
-@@ -1630,8 +1631,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 		/* see whether there's surplus vtime */
- 		vmin = now.vnow - ioc->margins.max;
- 
--		iocg->has_surplus = false;
--
-+		WARN_ON_ONCE(!list_empty(&iocg->surplus_list));
- 		if (!waitqueue_active(&iocg->waitq) &&
- 		    time_before64(vtime, vmin)) {
- 			u64 delta = vmin - vtime;
-@@ -1641,7 +1641,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 	u32 missed_ppm[2], rq_wait_pct;
+@@ -1640,10 +1640,8 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 			atomic64_add(delta, &iocg->vtime);
  			atomic64_add(delta, &iocg->done_vtime);
  			/* if usage is sufficiently low, maybe it can donate */
- 			if (surplus_adjusted_hweight_inuse(usage, hw_inuse)) {
--				iocg->has_surplus = true;
-+				list_add(&iocg->surplus_list, &surpluses);
- 				nr_surpluses++;
- 			}
+-			if (surplus_adjusted_hweight_inuse(usage, hw_inuse)) {
++			if (surplus_adjusted_hweight_inuse(usage, hw_inuse))
+ 				list_add(&iocg->surplus_list, &surpluses);
+-				nr_surpluses++;
+-			}
  		} else if (hw_inuse < hw_active) {
-@@ -1677,13 +1677,10 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 			u32 new_hwi, new_inuse;
+ 
+@@ -1673,7 +1671,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 		}
+ 	}
+ 
+-	if (!nr_shortages || !nr_surpluses)
++	if (!nr_shortages || list_empty(&surpluses))
  		goto skip_surplus_transfers;
  
  	/* there are both shortages and surpluses, transfer surpluses */
--	list_for_each_entry(iocg, &ioc->active_iocgs, active_list) {
-+	list_for_each_entry(iocg, &surpluses, surplus_list) {
- 		u32 usage, hw_active, hw_inuse, new_hwi, new_inuse;
- 		int nr_valid = 0;
+@@ -1738,11 +1736,9 @@ static void ioc_timer_fn(struct timer_list *timer)
  
--		if (!iocg->has_surplus)
--			continue;
--
- 		/* base the decision on max historical usage */
- 		for (i = 0, usage = 0; i < NR_USAGE_SLOTS; i++) {
- 			if (iocg->usages[i]) {
-@@ -1711,6 +1708,10 @@ static void ioc_timer_fn(struct timer_list *timer)
- skip_surplus_transfers:
- 	commit_weights(ioc);
- 
-+	/* surplus list should be dissolved after use */
-+	list_for_each_entry_safe(iocg, tiocg, &surpluses, surplus_list)
-+		list_del_init(&iocg->surplus_list);
-+
- 	/*
- 	 * If q is getting clogged or we're missing too much, we're issuing
- 	 * too much IO and should lower vtime rate.  If we're not missing
-@@ -2284,6 +2285,7 @@ static void ioc_pd_init(struct blkg_policy_data *pd)
- 	atomic64_set(&iocg->active_period, atomic64_read(&ioc->cur_period));
- 	INIT_LIST_HEAD(&iocg->active_list);
- 	INIT_LIST_HEAD(&iocg->walk_list);
-+	INIT_LIST_HEAD(&iocg->surplus_list);
- 	iocg->hweight_active = WEIGHT_ONE;
- 	iocg->hweight_inuse = WEIGHT_ONE;
- 
-@@ -2320,6 +2322,7 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
+ 			/*
+ 			 * If there are IOs spanning multiple periods, wait
+-			 * them out before pushing the device harder.  If
+-			 * there are surpluses, let redistribution work it
+-			 * out first.
++			 * them out before pushing the device harder.
+ 			 */
+-			if (!nr_lagging && !nr_surpluses)
++			if (!nr_lagging)
+ 				ioc->busy_level--;
+ 		} else {
+ 			/*
+@@ -1796,15 +1792,14 @@ static void ioc_timer_fn(struct timer_list *timer)
  		}
  
- 		WARN_ON_ONCE(!list_empty(&iocg->walk_list));
-+		WARN_ON_ONCE(!list_empty(&iocg->surplus_list));
+ 		trace_iocost_ioc_vrate_adj(ioc, vrate, missed_ppm, rq_wait_pct,
+-					   nr_lagging, nr_shortages,
+-					   nr_surpluses);
++					   nr_lagging, nr_shortages);
  
- 		spin_unlock_irqrestore(&ioc->lock, flags);
+ 		atomic64_set(&ioc->vtime_rate, vrate);
+ 		ioc_refresh_margins(ioc);
+ 	} else if (ioc->busy_level != prev_busy_level || nr_lagging) {
+ 		trace_iocost_ioc_vrate_adj(ioc, atomic64_read(&ioc->vtime_rate),
+ 					   missed_ppm, rq_wait_pct, nr_lagging,
+-					   nr_shortages, nr_surpluses);
++					   nr_shortages);
+ 	}
+ 
+ 	ioc_refresh_params(ioc, false);
+diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
+index a905ecc0342f..ee024fe8fef6 100644
+--- a/include/trace/events/iocost.h
++++ b/include/trace/events/iocost.h
+@@ -128,11 +128,9 @@ DEFINE_EVENT(iocg_inuse_update, iocost_inuse_reset,
+ TRACE_EVENT(iocost_ioc_vrate_adj,
+ 
+ 	TP_PROTO(struct ioc *ioc, u64 new_vrate, u32 *missed_ppm,
+-		u32 rq_wait_pct, int nr_lagging, int nr_shortages,
+-		int nr_surpluses),
++		u32 rq_wait_pct, int nr_lagging, int nr_shortages),
+ 
+-	TP_ARGS(ioc, new_vrate, missed_ppm, rq_wait_pct, nr_lagging, nr_shortages,
+-		nr_surpluses),
++	TP_ARGS(ioc, new_vrate, missed_ppm, rq_wait_pct, nr_lagging, nr_shortages),
+ 
+ 	TP_STRUCT__entry (
+ 		__string(devname, ioc_name(ioc))
+@@ -144,7 +142,6 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
+ 		__field(u32, rq_wait_pct)
+ 		__field(int, nr_lagging)
+ 		__field(int, nr_shortages)
+-		__field(int, nr_surpluses)
+ 	),
+ 
+ 	TP_fast_assign(
+@@ -157,15 +154,13 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
+ 		__entry->rq_wait_pct = rq_wait_pct;
+ 		__entry->nr_lagging = nr_lagging;
+ 		__entry->nr_shortages = nr_shortages;
+-		__entry->nr_surpluses = nr_surpluses;
+ 	),
+ 
+-	TP_printk("[%s] vrate=%llu->%llu busy=%d missed_ppm=%u:%u rq_wait_pct=%u lagging=%d shortages=%d surpluses=%d",
++	TP_printk("[%s] vrate=%llu->%llu busy=%d missed_ppm=%u:%u rq_wait_pct=%u lagging=%d shortages=%d",
+ 		__get_str(devname), __entry->old_vrate, __entry->new_vrate,
+ 		__entry->busy_level,
+ 		__entry->read_missed_ppm, __entry->write_missed_ppm,
+-		__entry->rq_wait_pct, __entry->nr_lagging, __entry->nr_shortages,
+-		__entry->nr_surpluses
++		__entry->rq_wait_pct, __entry->nr_lagging, __entry->nr_shortages
+ 	)
+ );
  
 -- 
 2.26.2
