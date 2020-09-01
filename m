@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9064A259E83
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8526F259EA3
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731879AbgIASyT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:54:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
+        id S1732177AbgIASzR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730658AbgIASyH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:07 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B00C061247;
-        Tue,  1 Sep 2020 11:54:07 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id w186so2017806qkd.1;
-        Tue, 01 Sep 2020 11:54:07 -0700 (PDT)
+        with ESMTP id S1731873AbgIASyJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:09 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A875C061244;
+        Tue,  1 Sep 2020 11:54:09 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id p65so1752064qtd.2;
+        Tue, 01 Sep 2020 11:54:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=+znxVIecrtKWYGkcHEVPQEzgR+d5RoCk5v84S1Jw+o4=;
-        b=u8k3gyyVQfI0XRNV9AWPq8hwbyDime6LlCDuZaJ01IWRgdaLnv7YDHECSM6iZomAIw
-         fjfjRTGpdj+3Tdhgj/hhECaf8496rA2fnMqUPDgtQZpVWQfJpcpyCMtOGjFZclO6Qk7s
-         AXZaEIFikWjrrrUQ+/BOER1BDdP3ObTKm0dQzeDKvNm0enFRLt/O2T4dHHFUviN+oCJ2
-         WAG9oF0MpzzWTH1tXrIB31bMeez4gWypFnVnOyh+YHsd2LdRscAcQgRLV6GPzF95lUE1
-         bKPpFsyE/oMdWk7sRWw7q6xjQ56pdAs8VjlsjzHz0KzpVhAowC3mIzJV08vt4RPFp+Ok
-         QS9A==
+        bh=/gDenaieQk48kIz1Dxz8dwvYLvZzUa/DeKiS9toAb8Q=;
+        b=I4fY2NLjgj8385ru65Sz82/4IM7JXkJS+IiDLhMZnRa1Tm8osQSWfk67eSJlTm0WCY
+         RsfNgkUCYEO9BIV5hOX7ClROxm8cXDqwo4JYghrGukEbGm5zv8EZYPJxaR5UtjOLjoJg
+         xqtq9gC8dlItEeFrQU1a2LRw96Nu5Uc56fCWikDtVpDQUeZZbo9dqnCNao0Eim+yNIcF
+         2/slpMVry900hho5fv/duDhqzbmF1mqk62JCtK2uFZc9Nl7iUmbU3ovM+aWZBSM9yL3W
+         MMJfzTCvrZDbnLQlc2axXonMngqhlvUpEy4UT+5pD3vP9xzfTSAKRt9ZEiyGnFEyEZOM
+         o7xw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=+znxVIecrtKWYGkcHEVPQEzgR+d5RoCk5v84S1Jw+o4=;
-        b=RFxQG94oPhM4Me6NXR1RzLCQXhiU6BMTliwE5EkVOALyKoqEc4WHGDzY/mWgIBCnT5
-         Dd3Emg5w1SWTGs6evfWNVvaPIvJFI8oOdWmgOPGvZx+RKor0FtAhE1uUvd7uhycqZjL6
-         7wmjGTGIcj9nPZFCKOO1/ZPAqPDRdYnfhNH/kpzA0wQsnFm+pscfHZd4258eH4ePJPSx
-         Lo8pHZwAw8Md0AQ/5OZRT9R4SIEtmsDJZ4nA4iu9JKUu7KI80vQikiKN9rMmxaqhKogH
-         igr/tjrI20+NsM6Cfehp4LRulV6PDZPIuyv8DnYr0dME0lGRukYT4ACaoHTzs4rML3WJ
-         K/9A==
-X-Gm-Message-State: AOAM532LrlzP2r7OMv6e1awNsrHfETYwjh/fHkIshKV9d8SCTGCpsOhN
-        +UgHI1r/2kF8CjRzVUBQpwU=
-X-Google-Smtp-Source: ABdhPJwxRJ6KXa/lhEd17sq4PINJmhS1dg/6HgW+DwKy+rk3PafNh0mIMLbYThae8p7DQ0MZAM55Vg==
-X-Received: by 2002:a37:454d:: with SMTP id s74mr3401793qka.373.1598986446198;
-        Tue, 01 Sep 2020 11:54:06 -0700 (PDT)
+        bh=/gDenaieQk48kIz1Dxz8dwvYLvZzUa/DeKiS9toAb8Q=;
+        b=I7V7CC+046XltnR1ogUsWN7gZO+UwLPurb0gQzy5tG5ke+7CRyay2gqjueC7U6jVuo
+         /tUsSgtqCuKH11Igyuc9aobHSJTJYf7UQRgTaCdp9BKxf/aZJIkzZ1mhYAqMWjoeRADy
+         9izZjw39wQSwEbf/Sae+hOGphGDdP1rEcNAgMjOdx5BwTB8+6TIwUElRy5in6UZs0msZ
+         l4Pb0sjbFkm9Bv5AmJ/atwwvJZ/lTHAog94kxXnxbowxHjoEuPYmelHfPR3EnhTZrruW
+         XxqsSTPLtxJypZCnhJbGwvEE3hjwKVOdWcGeZkOVEi7/BD9Uj3ZbHyXECaYkxWR1/not
+         +72Q==
+X-Gm-Message-State: AOAM532GUhCuhxNNQHlKgi16TpxoPWbluv7cmQl25d8+VtxL+oSlLXTy
+        4+aY8e97n9Bm3PIMalvO+HY=
+X-Google-Smtp-Source: ABdhPJy9ioj3LNs/HrM9mnBi6yF6W8z59cw20fGMRsDxSKvZBP4vdISCIzUgLsVvF+WfcFZzzEX0Ww==
+X-Received: by 2002:ac8:6d0e:: with SMTP id o14mr3197641qtt.31.1598986448233;
+        Tue, 01 Sep 2020 11:54:08 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id y20sm2468314qkj.70.2020.09.01.11.54.05
+        by smtp.gmail.com with ESMTPSA id i66sm2672276qkc.63.2020.09.01.11.54.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:54:05 -0700 (PDT)
+        Tue, 01 Sep 2020 11:54:07 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 21/27] blk-iocost: revamp debt handling
-Date:   Tue,  1 Sep 2020 14:52:51 -0400
-Message-Id: <20200901185257.645114-22-tj@kernel.org>
+        Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>
+Subject: [PATCH 22/27] blk-iocost: implement delay adjustment hysteresis
+Date:   Tue,  1 Sep 2020 14:52:52 -0400
+Message-Id: <20200901185257.645114-23-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,259 +65,278 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Debt handling had several issues.
+Curently, iocost syncs the delay duration to the outstanding debt amount,
+which seemed enough to protect the system from anon memory hogs. However,
+that was mostly because the delay calcuation was using hweight_inuse which
+quickly converges towards zero under debt for delay duration calculation,
+often pusnishing debtors overly harshly for longer than deserved.
 
-* How much inuse a debtor carries wasn't clearly defined. inuse would be
-  driven down over time from not issuing IOs but it'd be better to clamp it
-  to minimum immediately once in debt.
+The previous patch fixed the delay calcuation and now the protection against
+anonymous memory hogs isn't enough because the effect of delay is indirect
+and non-linear and a huge amount of future debt can accumulate abruptly
+while unthrottled.
 
-* How much can be paid off was determined by hweight_inuse. As inuse was
-  driven down, the payment amount would fall together regardless of the
-  debtor's active weight. This means that the debtors were punished harshly.
+This patch implements delay hysteresis so that delay is decayed
+exponentially over time instead of getting cleared immediately as debt is
+paid off. While the overall behavior is similar to the blk-cgroup
+implementation used by blk-iolatency, a lot of the details are different and
+due to the empirical nature of the mechanism, it's challenging to adapt the
+mechanism for one controller without negatively impacting the other.
 
-* ioc_rqos_merge() wasn't calling blkcg_schedule_throttle() after
-  iocg_kick_delay().
-
-This patch revamps debt handling so that
-
-* Debt handling owns inuse for iocgs in debt and keeps them at zero.
-
-* Payment amount is determined by hweight_active. This is more deterministic
-  and safer than hweight_inuse but still far from ideal in that it doesn't
-  factor in possible donations from other iocgs for debt payments. This
-  likely needs further improvements in the future.
-
-* iocg_rqos_merge() now calls blkcg_schedule_throttle() as necessary.
+As the delay is gradually decayed now, there's no point in running it from
+its own hrtimer. Periodic updates are now performed from ioc_timer_fn() and
+the dedicated hrtimer is removed.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
-Cc: Andy Newell <newella@fb.com>
+Cc: Josef Bacik <josef@toxicpanda.com>
 ---
- block/blk-iocost.c | 117 +++++++++++++++++++++++++++++++++++----------
- 1 file changed, 93 insertions(+), 24 deletions(-)
+ block/blk-cgroup.c |  23 ++++++---
+ block/blk-iocost.c | 119 ++++++++++++++++++++++++++-------------------
+ 2 files changed, 86 insertions(+), 56 deletions(-)
 
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index c195365c9817..d33dd6be1d9c 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -1613,16 +1613,24 @@ static void blkcg_scale_delay(struct blkcg_gq *blkg, u64 now)
+ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
+ {
+ 	unsigned long pflags;
++	bool clamp;
+ 	u64 now = ktime_to_ns(ktime_get());
+ 	u64 exp;
+ 	u64 delay_nsec = 0;
+ 	int tok;
+ 
+ 	while (blkg->parent) {
+-		if (atomic_read(&blkg->use_delay)) {
++		int use_delay = atomic_read(&blkg->use_delay);
++
++		if (use_delay) {
++			u64 this_delay;
++
+ 			blkcg_scale_delay(blkg, now);
+-			delay_nsec = max_t(u64, delay_nsec,
+-					   atomic64_read(&blkg->delay_nsec));
++			this_delay = atomic64_read(&blkg->delay_nsec);
++			if (this_delay > delay_nsec) {
++				delay_nsec = this_delay;
++				clamp = use_delay > 0;
++			}
+ 		}
+ 		blkg = blkg->parent;
+ 	}
+@@ -1634,10 +1642,13 @@ static void blkcg_maybe_throttle_blkg(struct blkcg_gq *blkg, bool use_memdelay)
+ 	 * Let's not sleep for all eternity if we've amassed a huge delay.
+ 	 * Swapping or metadata IO can accumulate 10's of seconds worth of
+ 	 * delay, and we want userspace to be able to do _something_ so cap the
+-	 * delays at 1 second.  If there's 10's of seconds worth of delay then
+-	 * the tasks will be delayed for 1 second for every syscall.
++	 * delays at 0.25s. If there's 10's of seconds worth of delay then the
++	 * tasks will be delayed for 0.25 second for every syscall. If
++	 * blkcg_set_delay() was used as indicated by negative use_delay, the
++	 * caller is responsible for regulating the range.
+ 	 */
+-	delay_nsec = min_t(u64, delay_nsec, 250 * NSEC_PER_MSEC);
++	if (clamp)
++		delay_nsec = min_t(u64, delay_nsec, 250 * NSEC_PER_MSEC);
+ 
+ 	if (use_memdelay)
+ 		psi_memstall_enter(&pflags);
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index d09b4011449c..d2b69d87f3e7 100644
+index d2b69d87f3e7..9cb8f29f01f5 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -1206,13 +1206,13 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
- 	u64 vtime = atomic64_read(&iocg->vtime);
- 	u64 delta_ns, expires, oexpires;
--	u32 hw_inuse;
-+	u32 hwa;
+@@ -270,6 +270,31 @@ enum {
+ 	/* unbusy hysterisis */
+ 	UNBUSY_THR_PCT		= 75,
  
- 	lockdep_assert_held(&iocg->waitq.lock);
- 
- 	/* debt-adjust vtime */
--	current_hweight(iocg, NULL, &hw_inuse);
--	vtime += abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
-+	current_hweight(iocg, &hwa, NULL);
-+	vtime += abs_cost_to_cost(iocg->abs_vdebt, hwa);
- 
- 	/*
- 	 * Clear or maintain depending on the overage. Non-zero vdebt is what
-@@ -1258,6 +1258,47 @@ static enum hrtimer_restart iocg_delay_timer_fn(struct hrtimer *timer)
- 	return HRTIMER_NORESTART;
- }
- 
-+static void iocg_incur_debt(struct ioc_gq *iocg, u64 abs_cost,
-+			    struct ioc_now *now)
-+{
-+	struct iocg_pcpu_stat *gcs;
-+
-+	lockdep_assert_held(&iocg->ioc->lock);
-+	lockdep_assert_held(&iocg->waitq.lock);
-+	WARN_ON_ONCE(list_empty(&iocg->active_list));
-+
 +	/*
-+	 * Once in debt, debt handling owns inuse. @iocg stays at the minimum
-+	 * inuse donating all of it share to others until its debt is paid off.
++	 * The effect of delay is indirect and non-linear and a huge amount of
++	 * future debt can accumulate abruptly while unthrottled. Linearly scale
++	 * up delay as debt is going up and then let it decay exponentially.
++	 * This gives us quick ramp ups while delay is accumulating and long
++	 * tails which can help reducing the frequency of debt explosions on
++	 * unthrottle. The parameters are experimentally determined.
++	 *
++	 * The delay mechanism provides adequate protection and behavior in many
++	 * cases. However, this is far from ideal and falls shorts on both
++	 * fronts. The debtors are often throttled too harshly costing a
++	 * significant level of fairness and possibly total work while the
++	 * protection against their impacts on the system can be choppy and
++	 * unreliable.
++	 *
++	 * The shortcoming primarily stems from the fact that, unlike for page
++	 * cache, the kernel doesn't have well-defined back-pressure propagation
++	 * mechanism and policies for anonymous memory. Fully addressing this
++	 * issue will likely require substantial improvements in the area.
 +	 */
-+	if (!iocg->abs_vdebt && abs_cost)
-+		propagate_weights(iocg, iocg->active, 0, false, now);
++	MIN_DELAY_THR_PCT	= 500,
++	MAX_DELAY_THR_PCT	= 25000,
++	MIN_DELAY		= 250,
++	MAX_DELAY		= 250 * USEC_PER_MSEC,
 +
-+	iocg->abs_vdebt += abs_cost;
+ 	/* don't let cmds which take a very long time pin lagging for too long */
+ 	MAX_LAGGING_PERIODS	= 10,
+ 
+@@ -473,6 +498,10 @@ struct ioc_gq {
+ 	atomic64_t			done_vtime;
+ 	u64				abs_vdebt;
+ 
++	/* current delay in effect and when it started */
++	u64				delay;
++	u64				delay_at;
 +
-+	gcs = get_cpu_ptr(iocg->pcpu_stat);
-+	local64_add(abs_cost, &gcs->abs_vusage);
-+	put_cpu_ptr(gcs);
-+}
-+
-+static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
-+			  struct ioc_now *now)
-+{
-+	lockdep_assert_held(&iocg->ioc->lock);
-+	lockdep_assert_held(&iocg->waitq.lock);
-+
-+	/* make sure that nobody messed with @iocg */
-+	WARN_ON_ONCE(list_empty(&iocg->active_list));
-+	WARN_ON_ONCE(iocg->inuse > 1);
-+
-+	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
-+
-+	/* if debt is paid in full, restore inuse */
-+	if (!iocg->abs_vdebt)
-+		propagate_weights(iocg, iocg->active, iocg->last_inuse,
-+				  false, now);
-+}
-+
- static int iocg_wake_fn(struct wait_queue_entry *wq_entry, unsigned mode,
- 			int flags, void *key)
+ 	/*
+ 	 * The period this iocg was last active in.  Used for deactivation
+ 	 * and invalidating `vtime`.
+@@ -495,7 +524,6 @@ struct ioc_gq {
+ 
+ 	struct wait_queue_head		waitq;
+ 	struct hrtimer			waitq_timer;
+-	struct hrtimer			delay_timer;
+ 
+ 	/* timestamp at the latest activation */
+ 	u64				activated_at;
+@@ -1204,58 +1232,50 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  {
-@@ -1296,26 +1337,25 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
- 	struct iocg_wake_ctx ctx = { .iocg = iocg };
- 	u64 vshortage, expires, oexpires;
- 	s64 vbudget;
--	u32 hw_inuse;
-+	u32 hwa;
+ 	struct ioc *ioc = iocg->ioc;
+ 	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
+-	u64 vtime = atomic64_read(&iocg->vtime);
+-	u64 delta_ns, expires, oexpires;
++	u64 tdelta, delay, new_delay;
++	s64 vover, vover_pct;
+ 	u32 hwa;
  
  	lockdep_assert_held(&iocg->waitq.lock);
  
--	current_hweight(iocg, NULL, &hw_inuse);
-+	current_hweight(iocg, &hwa, NULL);
- 	vbudget = now->vnow - atomic64_read(&iocg->vtime);
+-	/* debt-adjust vtime */
++	/* calculate the current delay in effect - 1/2 every second */
++	tdelta = now->now - iocg->delay_at;
++	if (iocg->delay)
++		delay = iocg->delay >> div64_u64(tdelta, USEC_PER_SEC);
++	else
++		delay = 0;
++
++	/* calculate the new delay from the debt amount */
+ 	current_hweight(iocg, &hwa, NULL);
+-	vtime += abs_cost_to_cost(iocg->abs_vdebt, hwa);
++	vover = atomic64_read(&iocg->vtime) +
++		abs_cost_to_cost(iocg->abs_vdebt, hwa) - now->vnow;
++	vover_pct = div64_s64(100 * vover, ioc->period_us * now->vrate);
++
++	if (vover_pct <= MIN_DELAY_THR_PCT)
++		new_delay = 0;
++	else if (vover_pct >= MAX_DELAY_THR_PCT)
++		new_delay = MAX_DELAY;
++	else
++		new_delay = MIN_DELAY +
++			div_u64((MAX_DELAY - MIN_DELAY) *
++				(vover_pct - MIN_DELAY_THR_PCT),
++				MAX_DELAY_THR_PCT - MIN_DELAY_THR_PCT);
  
- 	/* pay off debt */
- 	if (pay_debt && iocg->abs_vdebt && vbudget > 0) {
--		u64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
--		u64 delta = min_t(u64, vbudget, vdebt);
--		u64 abs_delta = min(cost_to_abs_cost(delta, hw_inuse),
--				    iocg->abs_vdebt);
-+		u64 abs_vbudget = cost_to_abs_cost(vbudget, hwa);
-+		u64 abs_vpay = min_t(u64, abs_vbudget, iocg->abs_vdebt);
-+		u64 vpay = abs_cost_to_cost(abs_vpay, hwa);
- 
- 		lockdep_assert_held(&ioc->lock);
- 
--		atomic64_add(delta, &iocg->vtime);
--		atomic64_add(delta, &iocg->done_vtime);
--		iocg->abs_vdebt -= abs_delta;
--		vbudget -= vdebt;
-+		atomic64_add(vpay, &iocg->vtime);
-+		atomic64_add(vpay, &iocg->done_vtime);
-+		iocg_pay_debt(iocg, abs_vpay, now);
-+		vbudget -= vpay;
- 
- 		iocg_kick_delay(iocg, now);
+-	/*
+-	 * Clear or maintain depending on the overage. Non-zero vdebt is what
+-	 * guarantees that @iocg is online and future iocg_kick_delay() will
+-	 * clear use_delay. Don't leave it on when there's no vdebt.
+-	 */
+-	if (!iocg->abs_vdebt || time_before_eq64(vtime, now->vnow)) {
+-		blkcg_clear_delay(blkg);
+-		return false;
++	/* pick the higher one and apply */
++	if (new_delay > delay) {
++		iocg->delay = new_delay;
++		iocg->delay_at = now->now;
++		delay = new_delay;
  	}
-@@ -1327,17 +1367,20 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
- 	 * not positive.
- 	 */
- 	if (iocg->abs_vdebt) {
--		s64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
-+		s64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hwa);
- 		vbudget = min_t(s64, 0, vbudget - vdebt);
- 	}
+-	if (!atomic_read(&blkg->use_delay) &&
+-	    time_before_eq64(vtime, now->vnow + ioc->margins.target))
+-		return false;
+-
+-	/* use delay */
+-	delta_ns = DIV64_U64_ROUND_UP(vtime - now->vnow,
+-				      now->vrate) * NSEC_PER_USEC;
+-	blkcg_set_delay(blkg, delta_ns);
+-	expires = now->now_ns + delta_ns;
  
- 	/*
--	 * Wake up the ones which are due and see how much vtime we'll need
--	 * for the next one.
-+	 * Wake up the ones which are due and see how much vtime we'll need for
-+	 * the next one. As paying off debt restores hw_inuse, it must be read
-+	 * after the above debt payment.
- 	 */
--	ctx.hw_inuse = hw_inuse;
- 	ctx.vbudget = vbudget;
-+	current_hweight(iocg, NULL, &ctx.hw_inuse);
-+
- 	__wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
-+
- 	if (!waitqueue_active(&iocg->waitq))
- 		return;
- 	if (WARN_ON_ONCE(ctx.vbudget >= 0))
-@@ -1525,6 +1568,10 @@ static u32 hweight_after_donation(struct ioc_gq *iocg, u32 hwm, u32 usage,
- 	u64 vtime = atomic64_read(&iocg->vtime);
- 	s64 excess, delta, target, new_hwi;
- 
-+	/* debt handling owns inuse for debtors */
-+	if (iocg->abs_vdebt)
-+		return 1;
-+
- 	/* see whether minimum margin requirement is met */
- 	if (waitqueue_active(&iocg->waitq) ||
- 	    time_after64(vtime, now->vnow - ioc->margins.min))
-@@ -1798,6 +1845,18 @@ static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
- 		struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
- 		u32 inuse;
- 
-+		/*
-+		 * In-debt iocgs participated in the donation calculation with
-+		 * the minimum target hweight_inuse. Configuring inuse
-+		 * accordingly would work fine but debt handling expects
-+		 * @iocg->inuse stay at the minimum and we don't wanna
-+		 * interfere.
-+		 */
-+		if (iocg->abs_vdebt) {
-+			WARN_ON_ONCE(iocg->inuse > 1);
-+			continue;
-+		}
-+
- 		/* w' = s' * b' / b'_p, note that b' == b'_t for donating leaves */
- 		inuse = DIV64_U64_ROUND_UP(
- 			parent->child_adjusted_sum * iocg->hweight_after_donation,
-@@ -2081,6 +2140,10 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
- 	cost = abs_cost_to_cost(abs_cost, hwi);
- 	margin = now->vnow - vtime - cost;
- 
-+	/* debt handling owns inuse for debtors */
-+	if (iocg->abs_vdebt)
-+		return cost;
-+
- 	/*
- 	 * We only increase inuse during period and do so iff the margin has
- 	 * deteriorated since the previous adjustment.
-@@ -2092,7 +2155,7 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
- 	spin_lock_irq(&ioc->lock);
- 
- 	/* we own inuse only when @iocg is in the normal active state */
--	if (list_empty(&iocg->active_list)) {
-+	if (iocg->abs_vdebt || list_empty(&iocg->active_list)) {
- 		spin_unlock_irq(&ioc->lock);
- 		return cost;
- 	}
-@@ -2266,7 +2329,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 	 * penalizing the cgroup and its descendants.
- 	 */
- 	if (use_debt) {
--		iocg->abs_vdebt += abs_cost;
-+		iocg_incur_debt(iocg, abs_cost, &now);
- 		if (iocg_kick_delay(iocg, &now))
- 			blkcg_schedule_throttle(rqos->q,
- 					(bio->bi_opf & REQ_SWAP) == REQ_SWAP);
-@@ -2275,7 +2338,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 	}
- 
- 	/* guarantee that iocgs w/ waiters have maximum inuse */
--	if (iocg->inuse != iocg->active) {
-+	if (!iocg->abs_vdebt && iocg->inuse != iocg->active) {
- 		if (!ioc_locked) {
- 			iocg_unlock(iocg, false, &flags);
- 			ioc_locked = true;
-@@ -2363,14 +2426,20 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
- 	 * be for the vast majority of cases. See debt handling in
- 	 * ioc_rqos_throttle() for details.
- 	 */
+-	/* if already active and close enough, don't bother */
+-	oexpires = ktime_to_ns(hrtimer_get_softexpires(&iocg->delay_timer));
+-	if (hrtimer_is_queued(&iocg->delay_timer) &&
+-	    abs(oexpires - expires) <= ioc->timer_slack_ns)
++	if (delay >= MIN_DELAY) {
++		blkcg_set_delay(blkg, delay * NSEC_PER_USEC);
+ 		return true;
+-
+-	hrtimer_start_range_ns(&iocg->delay_timer, ns_to_ktime(expires),
+-			       ioc->timer_slack_ns, HRTIMER_MODE_ABS);
+-	return true;
+-}
+-
+-static enum hrtimer_restart iocg_delay_timer_fn(struct hrtimer *timer)
+-{
+-	struct ioc_gq *iocg = container_of(timer, struct ioc_gq, delay_timer);
+-	struct ioc_now now;
+-	unsigned long flags;
+-
 -	spin_lock_irqsave(&iocg->waitq.lock, flags);
-+	spin_lock_irqsave(&ioc->lock, flags);
-+	spin_lock(&iocg->waitq.lock);
-+
- 	if (likely(!list_empty(&iocg->active_list))) {
--		iocg->abs_vdebt += abs_cost;
--		iocg_kick_delay(iocg, &now);
-+		iocg_incur_debt(iocg, abs_cost, &now);
-+		if (iocg_kick_delay(iocg, &now))
-+			blkcg_schedule_throttle(rqos->q,
-+					(bio->bi_opf & REQ_SWAP) == REQ_SWAP);
- 	} else {
- 		iocg_commit_bio(iocg, bio, abs_cost, cost);
- 	}
+-	ioc_now(iocg->ioc, &now);
+-	iocg_kick_delay(iocg, &now);
 -	spin_unlock_irqrestore(&iocg->waitq.lock, flags);
-+
-+	spin_unlock(&iocg->waitq.lock);
-+	spin_unlock_irqrestore(&ioc->lock, flags);
+-
+-	return HRTIMER_NORESTART;
++	} else {
++		iocg->delay = 0;
++		blkcg_clear_delay(blkg);
++		return false;
++	}
  }
  
- static void ioc_rqos_done_bio(struct rq_qos *rqos, struct bio *bio)
+ static void iocg_incur_debt(struct ioc_gq *iocg, u64 abs_cost,
+@@ -1356,9 +1376,10 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
+ 		atomic64_add(vpay, &iocg->done_vtime);
+ 		iocg_pay_debt(iocg, abs_vpay, now);
+ 		vbudget -= vpay;
++	}
+ 
++	if (iocg->abs_vdebt || iocg->delay)
+ 		iocg_kick_delay(iocg, now);
+-	}
+ 
+ 	/*
+ 	 * Debt can still be outstanding if we haven't paid all yet or the
+@@ -1906,12 +1927,13 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 	 */
+ 	list_for_each_entry_safe(iocg, tiocg, &ioc->active_iocgs, active_list) {
+ 		if (!waitqueue_active(&iocg->waitq) && !iocg->abs_vdebt &&
+-		    !iocg_is_idle(iocg))
++		    !iocg->delay && !iocg_is_idle(iocg))
+ 			continue;
+ 
+ 		spin_lock(&iocg->waitq.lock);
+ 
+-		if (waitqueue_active(&iocg->waitq) || iocg->abs_vdebt) {
++		if (waitqueue_active(&iocg->waitq) || iocg->abs_vdebt ||
++		    iocg->delay) {
+ 			/* might be oversleeping vtime / hweight changes, kick */
+ 			iocg_kick_waitq(iocg, true, &now);
+ 		} else if (iocg_is_idle(iocg)) {
+@@ -2641,8 +2663,6 @@ static void ioc_pd_init(struct blkg_policy_data *pd)
+ 	init_waitqueue_head(&iocg->waitq);
+ 	hrtimer_init(&iocg->waitq_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
+ 	iocg->waitq_timer.function = iocg_waitq_timer_fn;
+-	hrtimer_init(&iocg->delay_timer, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
+-	iocg->delay_timer.function = iocg_delay_timer_fn;
+ 
+ 	iocg->level = blkg->blkcg->css.cgroup->level;
+ 
+@@ -2679,7 +2699,6 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
+ 		spin_unlock_irqrestore(&ioc->lock, flags);
+ 
+ 		hrtimer_cancel(&iocg->waitq_timer);
+-		hrtimer_cancel(&iocg->delay_timer);
+ 	}
+ 	free_percpu(iocg->pcpu_stat);
+ 	kfree(iocg);
 -- 
 2.26.2
 
