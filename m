@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E65A259EBB
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:56:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23BA3259EB4
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:56:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731532AbgIAS4I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:56:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57490 "EHLO
+        id S1730675AbgIASzw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:55:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57500 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729044AbgIASxj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:53:39 -0400
+        with ESMTP id S1731573AbgIASxl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:53:41 -0400
 Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1E20C061244;
-        Tue,  1 Sep 2020 11:53:38 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id g72so1994941qke.8;
-        Tue, 01 Sep 2020 11:53:38 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B91C061247;
+        Tue,  1 Sep 2020 11:53:41 -0700 (PDT)
+Received: by mail-qk1-x741.google.com with SMTP id f142so1984761qke.13;
+        Tue, 01 Sep 2020 11:53:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=xcYuTvF8Ohy5zqCuYMaFIj11Q2zNsOBhOJ0SKfeowWw=;
-        b=U472/xr30n+SbYC13Z1ABZBICXE1a3uAeOZy4m9jfXvJ0GEn/+mmArddjWTHxfpc+T
-         rPR8A7BR6WeTjug0pzT2S6Rgd7Tp5CS/eTH1SrSHqv6V/l1kZU2NtLemgBBOs2YtTPji
-         y7pEcOOB6Dj01Px9M7V1Mv6SzlcY9rDk/fL0oqjvmRoHA+lXcBd8Si6IAVviWA1J337Y
-         fPL3knFHOZao5V+4G5XWX65be0veARsi7FmjeRbtLhRjkbo0VRQA4Va0mFqnc7gT//oz
-         1sgbxCh6XENhPrFl9UIvHaUIzsUB/PFcM0HnTM1EPrkBtHlr4Tnr3U2sZaSk2nsdw1aH
-         rDeg==
+        bh=SS4MWJ4/XFRWZ111xGt7boFuHdhcJQ+ioHm3dskasW8=;
+        b=aLzLHjIw3l5Y/zlJrrHpxgwVyA9EN030ZQbfbIo3PBVwwTgPkmMOdf2lHRGRx/2Oi8
+         idOJ3H1mbEU1lLN6LBjA5Mt2jXrmoWPiqxTY4/xh2gpBLDetXWS3s8noEQ1FZqgOrqAB
+         fTNTZWN7xcg6f5w0l1hsm8kqAdUbkzvn9jYJXCiBRsyhPqePSFVTQgy3Rl/hnpzQepp3
+         yLedbrzxfCElwnwJFLppHckD4N0/gnFDQ5y5gwIcV2KKj2aToa89KQ+qtUAGoNI3RxAd
+         RQvW+HLM160JH1h2k9JglmwA5bDn7f0Zm2CT/fibZk3uavdltl7XPsFbK3zAdqYx+vXZ
+         zMlw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=xcYuTvF8Ohy5zqCuYMaFIj11Q2zNsOBhOJ0SKfeowWw=;
-        b=iMWRULyudiveuicZyHNbnNcJ1YfuDofBxgoAydh+tEysFwNXsDKjbu3+vrhJ+lY09+
-         X1484zTbL74dpFymsuLgF21pgLvZgW35+/uMMT08PWuryHBloT/vO9wxowObZc0EB2z9
-         KgKBINQYIzW16t5XNmZMDkVQNwcGY7lTbHCQe5nIlWqFa61vyvLDI4TdFCmp68Kzqwyr
-         B9fBRobB96z3wzHRXvdRtcj+PcEJVoQZH/AbVV78pEsephEzbYOQHx1tUMf9/ute0X91
-         kGROkjN7CMjXpr+oxB5eaBdt85QDDweqo8Og+aNizZrPgPEWPcH4iKGmlEafCKgIJ02x
-         EnjQ==
-X-Gm-Message-State: AOAM531/4qxKfablc1kqnnVojE4DIoMFaY1NPx9HCUPmRNhjf7qkQiPF
-        dP0SjTxE7vs3V6/oheFnhmQ=
-X-Google-Smtp-Source: ABdhPJyeg7Zc6ub4xIR78TrlT1VcwiTxulMa2rR/4B9uimCW1OKTIRkFRkroDOreZHD1NXp/Nwhh6A==
-X-Received: by 2002:a05:620a:211b:: with SMTP id l27mr41243qkl.56.1598986418000;
-        Tue, 01 Sep 2020 11:53:38 -0700 (PDT)
+        bh=SS4MWJ4/XFRWZ111xGt7boFuHdhcJQ+ioHm3dskasW8=;
+        b=badvJ9NOx+xtLBQWzobNHJchFcmy2FCL5FVIi6IgugxThLVCXHC+9+by6/SQGEZ8Q/
+         pW/SaNOXUL1dbOdBTYmXjTooJEEw9C9cUPgZ5bYKhcip6eqL2zgOo6aLOKGxSZKbRe6Q
+         XTA8NP8FwSePrEd/k5CvaHSEqaRNcw+BoM6d5mVn6XpDtyfba+zNLSu/6IDLwqIKOQ+7
+         TIUXqN7rXMJO3YVS4/kAqE6pyR4mSm1fWDmEba1XuWTXJr/J3MDPeVJTyG8S4YE+VV6n
+         w2VcQ5EmGHL0LIGM3DkeR6Gg0fj5DkRqaXPxsb1QHmB8OdD1Q6bs8I/jka5sj3nIVJ+j
+         n37Q==
+X-Gm-Message-State: AOAM532tNyrc0O8VrkTO/AP1tcO1vv7LR+dK1uBFj0FEt3ADKwyzrQYe
+        QeraaBSWbtfgEAAfnp9V0sw=
+X-Google-Smtp-Source: ABdhPJzjJyj4e+S5sxOQAJfqqzubtLaQlRtAZU6s2bMQz5FCq1i/3SI5W0JQrGSw9Ihvt8YxoEkOEA==
+X-Received: by 2002:a37:5d43:: with SMTP id r64mr3031347qkb.52.1598986420445;
+        Tue, 01 Sep 2020 11:53:40 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id a3sm2427898qtj.21.2020.09.01.11.53.37
+        by smtp.gmail.com with ESMTPSA id o16sm2577628qkk.114.2020.09.01.11.53.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:53:37 -0700 (PDT)
+        Tue, 01 Sep 2020 11:53:39 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 11/27] blk-iocost: streamline vtime margin and timer slack handling
-Date:   Tue,  1 Sep 2020 14:52:41 -0400
-Message-Id: <20200901185257.645114-12-tj@kernel.org>
+Subject: [PATCH 12/27] blk-iocost: grab ioc->lock for debt handling
+Date:   Tue,  1 Sep 2020 14:52:42 -0400
+Message-Id: <20200901185257.645114-13-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,238 +65,217 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The margin handling was pretty inconsistent.
+Currently, debt handling requires only iocg->waitq.lock. In the future, we
+want to adjust and propagate inuse changes depending on debt status. Let's
+grab ioc->lock in debt handling paths in preparation.
 
-* ioc->margin_us and ioc->inuse_margin_vtime were used as vtime margin
-  thresholds. However, the two are in different units with the former
-  requiring conversion to vtime on use.
+* Because ioc->lock nests outside iocg->waitq.lock, the decision to grab
+  ioc->lock needs to be made before entering the critical sections.
 
-* iocg_kick_waitq() was using a quarter of WAITQ_TIMER_MARGIN_PCT of
-  period_us as the timer slack - ~1.2%. While iocg_kick_delay() was using a
-  quarter of ioc->margin_us - ~12.5%. There aren't strong reasons to use
-  different values for the two.
+* Add and use iocg_[un]lock() which handles the conditional double locking.
 
-This patch cleans up margin and timer slack handling:
+* Add @pay_debt to iocg_kick_waitq() so that debt payment happens only when
+  the caller grabbed both locks.
 
-* vtime margins are now recorded in ioc->margins.{min, max} on period
-  duration changes and used consistently.
-
-* Timer slack is now 1% of period_us and recorded in ioc->timer_slack_ns and
-  used consistently for iocg_kick_waitq() and iocg_kick_delay().
-
-The only functional change is shortening of timer slack. No meaningful
-visible change is expected.
+This patch is prepatory and the comments contain references to future
+changes.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- block/blk-iocost.c | 67 ++++++++++++++++++++++++++--------------------
- 1 file changed, 38 insertions(+), 29 deletions(-)
+ block/blk-iocost.c | 92 ++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 73 insertions(+), 19 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index dc72cd965837..f36988657594 100644
+index f36988657594..23b173e34591 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -221,11 +221,11 @@ enum {
- 	 * serves as its IO credit buffer.  Surplus weight adjustment is
- 	 * immediately canceled if the vtime margin runs below 10%.
- 	 */
--	MARGIN_PCT		= 50,
--	INUSE_MARGIN_PCT	= 10,
-+	MARGIN_MIN_PCT		= 10,
-+	MARGIN_MAX_PCT		= 50,
+@@ -680,6 +680,26 @@ static void iocg_commit_bio(struct ioc_gq *iocg, struct bio *bio, u64 cost)
+ 	atomic64_add(cost, &iocg->vtime);
+ }
  
--	/* Have some play in waitq timer operations */
--	WAITQ_TIMER_MARGIN_PCT	= 5,
-+	/* Have some play in timer operations */
-+	TIMER_SLACK_PCT		= 1,
- 
- 	/*
- 	 * vtime can wrap well within a reasonable uptime when vrate is
-@@ -374,6 +374,11 @@ struct ioc_params {
- 	u32				too_slow_vrate_pct;
- };
- 
-+struct ioc_margins {
-+	s64				min;
-+	s64				max;
-+};
++static void iocg_lock(struct ioc_gq *iocg, bool lock_ioc, unsigned long *flags)
++{
++	if (lock_ioc) {
++		spin_lock_irqsave(&iocg->ioc->lock, *flags);
++		spin_lock(&iocg->waitq.lock);
++	} else {
++		spin_lock_irqsave(&iocg->waitq.lock, *flags);
++	}
++}
 +
- struct ioc_missed {
- 	local_t				nr_met;
- 	local_t				nr_missed;
-@@ -395,8 +400,9 @@ struct ioc {
- 	bool				enabled;
- 
- 	struct ioc_params		params;
-+	struct ioc_margins		margins;
- 	u32				period_us;
--	u32				margin_us;
-+	u32				timer_slack_ns;
- 	u64				vrate_min;
- 	u64				vrate_max;
- 
-@@ -415,7 +421,6 @@ struct ioc {
- 	atomic64_t			cur_period;	/* inc'd each period */
- 	int				busy_level;	/* saturation history */
- 
--	u64				inuse_margin_vtime;
- 	bool				weights_updated;
- 	atomic_t			hweight_gen;	/* for lazy hweights */
- 
-@@ -678,6 +683,16 @@ static void iocg_commit_bio(struct ioc_gq *iocg, struct bio *bio, u64 cost)
++static void iocg_unlock(struct ioc_gq *iocg, bool unlock_ioc, unsigned long *flags)
++{
++	if (unlock_ioc) {
++		spin_unlock(&iocg->waitq.lock);
++		spin_unlock_irqrestore(&iocg->ioc->lock, *flags);
++	} else {
++		spin_unlock_irqrestore(&iocg->waitq.lock, *flags);
++	}
++}
++
  #define CREATE_TRACE_POINTS
  #include <trace/events/iocost.h>
  
-+static void ioc_refresh_margins(struct ioc *ioc)
-+{
-+	struct ioc_margins *margins = &ioc->margins;
-+	u32 period_us = ioc->period_us;
-+	u64 vrate = atomic64_read(&ioc->vtime_rate);
-+
-+	margins->min = (period_us * MARGIN_MIN_PCT / 100) * vrate;
-+	margins->max = (period_us * MARGIN_MAX_PCT / 100) * vrate;
-+}
-+
- /* latency Qos params changed, update period_us and all the dependent params */
- static void ioc_refresh_period_us(struct ioc *ioc)
- {
-@@ -711,9 +726,10 @@ static void ioc_refresh_period_us(struct ioc *ioc)
- 
- 	/* calculate dependent params */
- 	ioc->period_us = period_us;
--	ioc->margin_us = period_us * MARGIN_PCT / 100;
--	ioc->inuse_margin_vtime = DIV64_U64_ROUND_UP(
--			period_us * VTIME_PER_USEC * INUSE_MARGIN_PCT, 100);
-+	ioc->timer_slack_ns = div64_u64(
-+		(u64)period_us * NSEC_PER_USEC * TIMER_SLACK_PCT,
-+		100);
-+	ioc_refresh_margins(ioc);
+@@ -1215,11 +1235,17 @@ static int iocg_wake_fn(struct wait_queue_entry *wq_entry, unsigned mode,
+ 	return 0;
  }
  
- static int ioc_autop_idx(struct ioc *ioc)
-@@ -1031,7 +1047,7 @@ static bool iocg_activate(struct ioc_gq *iocg, struct ioc_now *now)
- {
- 	struct ioc *ioc = iocg->ioc;
- 	u64 last_period, cur_period, max_period_delta;
--	u64 vtime, vmargin, vmin;
-+	u64 vtime, vmin;
- 	int i;
- 
- 	/*
-@@ -1077,8 +1093,7 @@ static bool iocg_activate(struct ioc_gq *iocg, struct ioc_now *now)
- 	 */
- 	max_period_delta = DIV64_U64_ROUND_UP(VTIME_VALID_DUR, ioc->period_us);
- 	vtime = atomic64_read(&iocg->vtime);
--	vmargin = ioc->margin_us * now->vrate;
--	vmin = now->vnow - vmargin;
-+	vmin = now->vnow - ioc->margins.max;
- 
- 	if (last_period + max_period_delta < cur_period ||
- 	    time_before64(vtime, vmin)) {
-@@ -1121,8 +1136,6 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 	struct ioc *ioc = iocg->ioc;
- 	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
- 	u64 vtime = atomic64_read(&iocg->vtime);
--	u64 vmargin = ioc->margin_us * now->vrate;
--	u64 margin_ns = ioc->margin_us * NSEC_PER_USEC;
- 	u64 delta_ns, expires, oexpires;
- 	u32 hw_inuse;
- 
-@@ -1142,7 +1155,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 		return false;
- 	}
- 	if (!atomic_read(&blkg->use_delay) &&
--	    time_before_eq64(vtime, now->vnow + vmargin))
-+	    time_before_eq64(vtime, now->vnow + ioc->margins.max))
- 		return false;
- 
- 	/* use delay */
-@@ -1154,11 +1167,11 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 	/* if already active and close enough, don't bother */
- 	oexpires = ktime_to_ns(hrtimer_get_softexpires(&iocg->delay_timer));
- 	if (hrtimer_is_queued(&iocg->delay_timer) &&
--	    abs(oexpires - expires) <= margin_ns / 4)
-+	    abs(oexpires - expires) <= ioc->timer_slack_ns)
- 		return true;
- 
- 	hrtimer_start_range_ns(&iocg->delay_timer, ns_to_ktime(expires),
--			       margin_ns / 4, HRTIMER_MODE_ABS);
-+			       ioc->timer_slack_ns, HRTIMER_MODE_ABS);
- 	return true;
- }
- 
-@@ -1206,8 +1219,6 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, struct ioc_now *now)
+-static void iocg_kick_waitq(struct ioc_gq *iocg, struct ioc_now *now)
++/*
++ * Calculate the accumulated budget, pay debt if @pay_debt and wake up waiters
++ * accordingly. When @pay_debt is %true, the caller must be holding ioc->lock in
++ * addition to iocg->waitq.lock.
++ */
++static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
++			    struct ioc_now *now)
  {
  	struct ioc *ioc = iocg->ioc;
  	struct iocg_wake_ctx ctx = { .iocg = iocg };
--	u64 margin_ns = (u64)(ioc->period_us *
--			      WAITQ_TIMER_MARGIN_PCT / 100) * NSEC_PER_USEC;
- 	u64 vdebt, vshortage, expires, oexpires;
+-	u64 vdebt, vshortage, expires, oexpires;
++	u64 vshortage, expires, oexpires;
  	s64 vbudget;
  	u32 hw_inuse;
-@@ -1243,20 +1254,20 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, struct ioc_now *now)
- 	if (WARN_ON_ONCE(ctx.vbudget >= 0))
+ 
+@@ -1229,25 +1255,39 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, struct ioc_now *now)
+ 	vbudget = now->vnow - atomic64_read(&iocg->vtime);
+ 
+ 	/* pay off debt */
+-	vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
+-	if (vdebt && vbudget > 0) {
++	if (pay_debt && iocg->abs_vdebt && vbudget > 0) {
++		u64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
+ 		u64 delta = min_t(u64, vbudget, vdebt);
+ 		u64 abs_delta = min(cost_to_abs_cost(delta, hw_inuse),
+ 				    iocg->abs_vdebt);
+ 
++		lockdep_assert_held(&ioc->lock);
++
+ 		atomic64_add(delta, &iocg->vtime);
+ 		atomic64_add(delta, &iocg->done_vtime);
+ 		iocg->abs_vdebt -= abs_delta;
++		vbudget -= vdebt;
+ 
+ 		iocg_kick_delay(iocg, now);
+ 	}
+ 
++	/*
++	 * Debt can still be outstanding if we haven't paid all yet or the
++	 * caller raced and called without @pay_debt. Shouldn't wake up waiters
++	 * under debt. Make sure @vbudget reflects the outstanding amount and is
++	 * not positive.
++	 */
++	if (iocg->abs_vdebt) {
++		s64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
++		vbudget = min_t(s64, 0, vbudget - vdebt);
++	}
++
+ 	/*
+ 	 * Wake up the ones which are due and see how much vtime we'll need
+ 	 * for the next one.
+ 	 */
+ 	ctx.hw_inuse = hw_inuse;
+-	ctx.vbudget = vbudget - vdebt;
++	ctx.vbudget = vbudget;
+ 	__wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
+ 	if (!waitqueue_active(&iocg->waitq))
  		return;
- 
--	/* determine next wakeup, add a quarter margin to guarantee chunking */
-+	/* determine next wakeup, add a timer margin to guarantee chunking */
- 	vshortage = -ctx.vbudget;
- 	expires = now->now_ns +
- 		DIV64_U64_ROUND_UP(vshortage, now->vrate) * NSEC_PER_USEC;
--	expires += margin_ns / 4;
-+	expires += ioc->timer_slack_ns;
- 
- 	/* if already active and close enough, don't bother */
- 	oexpires = ktime_to_ns(hrtimer_get_softexpires(&iocg->waitq_timer));
- 	if (hrtimer_is_queued(&iocg->waitq_timer) &&
--	    abs(oexpires - expires) <= margin_ns / 4)
-+	    abs(oexpires - expires) <= ioc->timer_slack_ns)
- 		return;
- 
- 	hrtimer_start_range_ns(&iocg->waitq_timer, ns_to_ktime(expires),
--			       margin_ns / 4, HRTIMER_MODE_ABS);
-+			       ioc->timer_slack_ns, HRTIMER_MODE_ABS);
- }
- 
+@@ -1273,14 +1313,15 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, struct ioc_now *now)
  static enum hrtimer_restart iocg_waitq_timer_fn(struct hrtimer *timer)
-@@ -1399,7 +1410,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ {
+ 	struct ioc_gq *iocg = container_of(timer, struct ioc_gq, waitq_timer);
++	bool pay_debt = READ_ONCE(iocg->abs_vdebt);
+ 	struct ioc_now now;
+ 	unsigned long flags;
  
- 	/* calc usages and see whether some weights need to be moved around */
- 	list_for_each_entry(iocg, &ioc->active_iocgs, active_list) {
--		u64 vdone, vtime, vusage, vmargin, vmin;
-+		u64 vdone, vtime, vusage, vmin;
- 		u32 hw_active, hw_inuse, usage;
+ 	ioc_now(iocg->ioc, &now);
  
- 		/*
-@@ -1450,8 +1461,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 		}
+-	spin_lock_irqsave(&iocg->waitq.lock, flags);
+-	iocg_kick_waitq(iocg, &now);
+-	spin_unlock_irqrestore(&iocg->waitq.lock, flags);
++	iocg_lock(iocg, pay_debt, &flags);
++	iocg_kick_waitq(iocg, pay_debt, &now);
++	iocg_unlock(iocg, pay_debt, &flags);
  
- 		/* see whether there's surplus vtime */
--		vmargin = ioc->margin_us * now.vrate;
--		vmin = now.vnow - vmargin;
-+		vmin = now.vnow - ioc->margins.max;
+ 	return HRTIMER_NORESTART;
+ }
+@@ -1396,7 +1437,7 @@ static void ioc_timer_fn(struct timer_list *timer)
  
- 		iocg->has_surplus = false;
+ 		if (waitqueue_active(&iocg->waitq) || iocg->abs_vdebt) {
+ 			/* might be oversleeping vtime / hweight changes, kick */
+-			iocg_kick_waitq(iocg, &now);
++			iocg_kick_waitq(iocg, true, &now);
+ 		} else if (iocg_is_idle(iocg)) {
+ 			/* no waiter and idle, deactivate */
+ 			iocg->last_inuse = iocg->inuse;
+@@ -1743,6 +1784,8 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	struct iocg_wait wait;
+ 	u32 hw_active, hw_inuse;
+ 	u64 abs_cost, cost, vtime;
++	bool use_debt, ioc_locked;
++	unsigned long flags;
  
-@@ -1623,8 +1633,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 					   nr_surpluses);
+ 	/* bypass IOs if disabled or for root cgroup */
+ 	if (!ioc->enabled || !iocg->level)
+@@ -1786,15 +1829,26 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	}
  
- 		atomic64_set(&ioc->vtime_rate, vrate);
--		ioc->inuse_margin_vtime = DIV64_U64_ROUND_UP(
--			ioc->period_us * vrate * INUSE_MARGIN_PCT, 100);
-+		ioc_refresh_margins(ioc);
- 	} else if (ioc->busy_level != prev_busy_level || nr_lagging) {
- 		trace_iocost_ioc_vrate_adj(ioc, atomic64_read(&ioc->vtime_rate),
- 					   missed_ppm, rq_wait_pct, nr_lagging,
-@@ -1754,7 +1763,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 	current_hweight(iocg, &hw_active, &hw_inuse);
+ 	/*
+-	 * We activated above but w/o any synchronization. Deactivation is
+-	 * synchronized with waitq.lock and we won't get deactivated as long
+-	 * as we're waiting or has debt, so we're good if we're activated
+-	 * here. In the unlikely case that we aren't, just issue the IO.
++	 * We're over budget. This can be handled in two ways. IOs which may
++	 * cause priority inversions are punted to @ioc->aux_iocg and charged as
++	 * debt. Otherwise, the issuer is blocked on @iocg->waitq. Debt handling
++	 * requires @ioc->lock, waitq handling @iocg->waitq.lock. Determine
++	 * whether debt handling is needed and acquire locks accordingly.
+ 	 */
+-	spin_lock_irq(&iocg->waitq.lock);
++	use_debt = bio_issue_as_root_blkg(bio) || fatal_signal_pending(current);
++	ioc_locked = use_debt || READ_ONCE(iocg->abs_vdebt);
  
- 	if (hw_inuse < hw_active &&
--	    time_after_eq64(vtime + ioc->inuse_margin_vtime, now.vnow)) {
-+	    time_after_eq64(vtime + ioc->margins.min, now.vnow)) {
- 		TRACE_IOCG_PATH(inuse_reset, iocg, &now,
- 				iocg->inuse, iocg->weight, hw_inuse, hw_active);
- 		spin_lock_irq(&ioc->lock);
++	iocg_lock(iocg, ioc_locked, &flags);
++
++	/*
++	 * @iocg must stay activated for debt and waitq handling. Deactivation
++	 * is synchronized against both ioc->lock and waitq.lock and we won't
++	 * get deactivated as long as we're waiting or has debt, so we're good
++	 * if we're activated here. In the unlikely cases that we aren't, just
++	 * issue the IO.
++	 */
+ 	if (unlikely(list_empty(&iocg->active_list))) {
+-		spin_unlock_irq(&iocg->waitq.lock);
++		iocg_unlock(iocg, ioc_locked, &flags);
+ 		iocg_commit_bio(iocg, bio, cost);
+ 		return;
+ 	}
+@@ -1816,12 +1870,12 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	 * clear them and leave @iocg inactive w/ dangling use_delay heavily
+ 	 * penalizing the cgroup and its descendants.
+ 	 */
+-	if (bio_issue_as_root_blkg(bio) || fatal_signal_pending(current)) {
++	if (use_debt) {
+ 		iocg->abs_vdebt += abs_cost;
+ 		if (iocg_kick_delay(iocg, &now))
+ 			blkcg_schedule_throttle(rqos->q,
+ 					(bio->bi_opf & REQ_SWAP) == REQ_SWAP);
+-		spin_unlock_irq(&iocg->waitq.lock);
++		iocg_unlock(iocg, ioc_locked, &flags);
+ 		return;
+ 	}
+ 
+@@ -1845,9 +1899,9 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	wait.committed = false;	/* will be set true by waker */
+ 
+ 	__add_wait_queue_entry_tail(&iocg->waitq, &wait.wait);
+-	iocg_kick_waitq(iocg, &now);
++	iocg_kick_waitq(iocg, ioc_locked, &now);
+ 
+-	spin_unlock_irq(&iocg->waitq.lock);
++	iocg_unlock(iocg, ioc_locked, &flags);
+ 
+ 	while (true) {
+ 		set_current_state(TASK_UNINTERRUPTIBLE);
 -- 
 2.26.2
 
