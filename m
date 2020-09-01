@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17C8B259E88
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E87259E90
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731960AbgIASyd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:54:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57628 "EHLO
+        id S1731912AbgIASyc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:54:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731917AbgIASyW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:22 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E312C061245;
-        Tue,  1 Sep 2020 11:54:21 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id 60so1735794qtc.9;
-        Tue, 01 Sep 2020 11:54:21 -0700 (PDT)
+        with ESMTP id S1731934AbgIASyZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:25 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 651CEC061244;
+        Tue,  1 Sep 2020 11:54:25 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id v69so1995109qkb.7;
+        Tue, 01 Sep 2020 11:54:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=m+qTmQYuX+yoSNUOz4jTM/Jvux+Eq7PX2lLyJ9lYHRM=;
-        b=XipZHXfU9XrCtlGklpOQGNXRadhcHdExtLsTEZL7t60433LLNu7tEHGjQqBqMC+iR7
-         dzOZrvVvPn13/zRt1PKU3F9yOKmtRpSRDlUXyHHWyzh8LKcLYdSQ4C5U9dSjstz6fM0M
-         j4gZRzS5tOd4+1i6w3lS3cx1sPdlhcRfer1SkYCs6qDq7Oi+WJoj+1xBKAZdM+qZd3XQ
-         JnpfCe0cEXjxqluYe3gDlwQCygUtDoiivx5w4r914bM2z2dyq0ESorJJuIySt6s90gmS
-         dVBA+q9jEx5wqCLzMbOcH/IX3zWUiR1PQnygRDH6WXwyH0wNqYOYCRbi0sFgurl8XLdC
-         i9Rw==
+        bh=cm+df0jFPyE1zTjCqgFLh2q6gImstDntHA7G0hKbn1c=;
+        b=XajDkh8P9KQTJXpi9a5vP6TJ7CkEhXM4INtbnSsTamKj77lttU5yXy9F/WfSWTKkxK
+         TH5ddWvVKmWD8wKvRAttyvS3Hgh7AoiRULzZSGWVQvleLF5fH4ms+fK/evyW3FMFqfl4
+         B4z5fZo3UOC08McpaqbKgKFmzLEPi7zu/4gvz4qaHXJQPqK/4QI++6MWT5BGL/paChPI
+         wY+8Puhdm0BglBfCawCT0Do8mk4x0L1pmSSWJcKpPNEBEOuofB3vh6hoyFBMc0Qe3B2c
+         Fm+FWJOo51I2OrqxBjvSla140/ntPH3CsqqFeutrsnj4zy+W5HEkgRYSlMFTxOeFMvqE
+         1A+A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=m+qTmQYuX+yoSNUOz4jTM/Jvux+Eq7PX2lLyJ9lYHRM=;
-        b=snSnaJkGV5z1+i3jtjIcUK5f2qsbX2MDEmhG2ZTAFWHCbXtF4LGse1SPfn10pAw/7u
-         NUIfYJmKAZ5vi89amZPe32U0v9vLq9vuTVnnSKBmCJ7CqPj34bs8q8wsF2kHAd8x/yg7
-         NpT5QzX7z8FeqiBI2F3s+cmfssNHmxGQfRV7CJdxDqVykI5kMmvDVQkoYmVd3M014fyO
-         kr6J5m8XXrTgqbJoz/wupnJnsC5UKKENi59Wk4e6jxpOgOT33lk0rArkHAYLWIHEDI/3
-         5pbONgDR2Vw07y5QpVwInbwQnwrml9QKspeaN9Z6Aq+h9fRw4gZW+6ypKudMH4YjNwo6
-         RNMg==
-X-Gm-Message-State: AOAM530We733ZwdkFYv/5m3KzdSj5qudSNgUyTOaq2/SYE9ts7U0LteP
-        5aDdrk3X8wjGNmkwg3/RQEs=
-X-Google-Smtp-Source: ABdhPJzUspyaN4Tu+/SqUVmwCZWio6vGZQ+22rInJpzfHUowHkMwaTKle0jWv9IsEhZA4s2chmePNw==
-X-Received: by 2002:ac8:6d32:: with SMTP id r18mr3346066qtu.246.1598986460695;
-        Tue, 01 Sep 2020 11:54:20 -0700 (PDT)
+        bh=cm+df0jFPyE1zTjCqgFLh2q6gImstDntHA7G0hKbn1c=;
+        b=tPdi3q/3Vg/+xxW+CEJ/4qotvu+adlPZaPr2IA1olq86BIWDiJxEjp4ER4zcXXs8En
+         hREwp6VIEpKnOanVDPmG09PufQD0DN1YXKKW8GON6PFpnaajPm+brDcUY2roqlkuhBc7
+         7549HzUPsfElUNheIEuWPCL0LqEuYzcqgE1/DHhkNImipe/esxczHVak7XsUeLTBsX0h
+         XPrnav+b7jzVql1xJXH9PE4nfCaTagY3bT2KAdafYdmJyMdnmZHfneWwmcK7xO6zyZrk
+         i3lPHnda9RfNh9CdIPflDksCNqEgKvJCX/GgPGHwiAVLMnfuHz0fgIQYlG4hfvoY2j4l
+         G5kQ==
+X-Gm-Message-State: AOAM530gtNKi0VtUDaFekRpwhf139BGAdDpVi11bCcjPFCa1IVZVVbZB
+        CBnoWbPaTtX4QCfeeMu05twagEXtXD2LAg==
+X-Google-Smtp-Source: ABdhPJyC1zrmWahk0Un9SvEpY6Bbw4MwTkW6QE19cV+1OyUU/CrIaLlLAJ85naK2tPp7q0zf9GIF9g==
+X-Received: by 2002:a37:4c15:: with SMTP id z21mr3170782qka.334.1598986464504;
+        Tue, 01 Sep 2020 11:54:24 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id i65sm2409921qkf.126.2020.09.01.11.54.19
+        by smtp.gmail.com with ESMTPSA id p68sm2697824qka.78.2020.09.01.11.54.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:54:20 -0700 (PDT)
+        Tue, 01 Sep 2020 11:54:24 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 26/27] blk-iocost: add three debug stat - cost.wait, indebt and indelay
-Date:   Tue,  1 Sep 2020 14:52:56 -0400
-Message-Id: <20200901185257.645114-27-tj@kernel.org>
+Subject: [PATCH 27/27] blk-iocost: update iocost_monitor.py
+Date:   Tue,  1 Sep 2020 14:52:57 -0400
+Message-Id: <20200901185257.645114-28-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,187 +65,123 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-These are really cheap to collect and can be useful in debugging iocost
-behavior. Add them as debug stats for now.
+iocost went through significant internal changes. Update iocost_monitor.py
+accordingly.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- block/blk-iocost.c | 77 +++++++++++++++++++++++++++++++++++++++++++---
- 1 file changed, 72 insertions(+), 5 deletions(-)
+ tools/cgroup/iocost_monitor.py | 54 ++++++++++++----------------------
+ 1 file changed, 19 insertions(+), 35 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 9366527d8c12..fc897bb142bc 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -452,6 +452,9 @@ struct iocg_pcpu_stat {
+diff --git a/tools/cgroup/iocost_monitor.py b/tools/cgroup/iocost_monitor.py
+index f4699f9b46ba..c4ff907c078b 100644
+--- a/tools/cgroup/iocost_monitor.py
++++ b/tools/cgroup/iocost_monitor.py
+@@ -45,8 +45,7 @@ args = parser.parse_args()
+     err('The kernel does not have iocost enabled')
  
- struct iocg_stat {
- 	u64				usage_us;
-+	u64				wait_us;
-+	u64				indebt_us;
-+	u64				indelay_us;
- };
+ IOC_RUNNING     = prog['IOC_RUNNING'].value_()
+-NR_USAGE_SLOTS  = prog['NR_USAGE_SLOTS'].value_()
+-HWEIGHT_WHOLE   = prog['HWEIGHT_WHOLE'].value_()
++WEIGHT_ONE      = prog['WEIGHT_ONE'].value_()
+ VTIME_PER_SEC   = prog['VTIME_PER_SEC'].value_()
+ VTIME_PER_USEC  = prog['VTIME_PER_USEC'].value_()
+ AUTOP_SSD_FAST  = prog['AUTOP_SSD_FAST'].value_()
+@@ -100,7 +99,7 @@ autop_names = {
+         self.period_ms = ioc.period_us.value_() / 1_000
+         self.period_at = ioc.period_at.value_() / 1_000_000
+         self.vperiod_at = ioc.period_at_vtime.value_() / VTIME_PER_SEC
+-        self.vrate_pct = ioc.vtime_rate.counter.value_() * 100 / VTIME_PER_USEC
++        self.vrate_pct = ioc.vtime_base_rate.value_() * 100 / VTIME_PER_USEC
+         self.busy_level = ioc.busy_level.value_()
+         self.autop_idx = ioc.autop_idx.value_()
+         self.user_cost_model = ioc.user_cost_model.value_()
+@@ -136,7 +135,7 @@ autop_names = {
  
- /* per device-cgroup pair */
-@@ -538,6 +541,9 @@ struct ioc_gq {
- 	struct iocg_stat		last_stat;
- 	u64				last_stat_abs_vusage;
- 	u64				usage_delta_us;
-+	u64				wait_since;
-+	u64				indebt_since;
-+	u64				indelay_since;
+     def table_header_str(self):
+         return f'{"":25} active {"weight":>9} {"hweight%":>13} {"inflt%":>6} ' \
+-               f'{"dbt":>3} {"delay":>6} {"usages%"}'
++               f'{"debt":>7} {"delay":>7} {"usage%"}'
  
- 	/* this iocg's depth in the hierarchy and ancestors including self */
- 	int				level;
-@@ -1303,9 +1309,15 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
- 	}
+ class IocgStat:
+     def __init__(self, iocg):
+@@ -144,11 +143,11 @@ autop_names = {
+         blkg = iocg.pd.blkg
  
- 	if (delay >= MIN_DELAY) {
-+		if (!iocg->indelay_since)
-+			iocg->indelay_since = now->now;
- 		blkcg_set_delay(blkg, delay * NSEC_PER_USEC);
- 		return true;
- 	} else {
-+		if (iocg->indelay_since) {
-+			iocg->local_stat.indelay_us += now->now - iocg->indelay_since;
-+			iocg->indelay_since = 0;
-+		}
- 		iocg->delay = 0;
- 		blkcg_clear_delay(blkg);
- 		return false;
-@@ -1325,8 +1337,10 @@ static void iocg_incur_debt(struct ioc_gq *iocg, u64 abs_cost,
- 	 * Once in debt, debt handling owns inuse. @iocg stays at the minimum
- 	 * inuse donating all of it share to others until its debt is paid off.
- 	 */
--	if (!iocg->abs_vdebt && abs_cost)
-+	if (!iocg->abs_vdebt && abs_cost) {
-+		iocg->indebt_since = now->now;
- 		propagate_weights(iocg, iocg->active, 0, false, now);
-+	}
+         self.is_active = not list_empty(iocg.active_list.address_of_())
+-        self.weight = iocg.weight.value_()
+-        self.active = iocg.active.value_()
+-        self.inuse = iocg.inuse.value_()
+-        self.hwa_pct = iocg.hweight_active.value_() * 100 / HWEIGHT_WHOLE
+-        self.hwi_pct = iocg.hweight_inuse.value_() * 100 / HWEIGHT_WHOLE
++        self.weight = iocg.weight.value_() / WEIGHT_ONE
++        self.active = iocg.active.value_() / WEIGHT_ONE
++        self.inuse = iocg.inuse.value_() / WEIGHT_ONE
++        self.hwa_pct = iocg.hweight_active.value_() * 100 / WEIGHT_ONE
++        self.hwi_pct = iocg.hweight_inuse.value_() * 100 / WEIGHT_ONE
+         self.address = iocg.value_()
  
- 	iocg->abs_vdebt += abs_cost;
+         vdone = iocg.done_vtime.counter.value_()
+@@ -160,23 +159,13 @@ autop_names = {
+         else:
+             self.inflight_pct = 0
  
-@@ -1348,9 +1362,13 @@ static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
- 	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
- 
- 	/* if debt is paid in full, restore inuse */
--	if (!iocg->abs_vdebt)
-+	if (!iocg->abs_vdebt) {
-+		iocg->local_stat.indebt_us += now->now - iocg->indebt_since;
-+		iocg->indebt_since = 0;
-+
- 		propagate_weights(iocg, iocg->active, iocg->last_inuse,
- 				  false, now);
-+	}
- }
- 
- static int iocg_wake_fn(struct wait_queue_entry *wq_entry, unsigned mode,
-@@ -1436,8 +1454,17 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
- 
- 	__wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
- 
--	if (!waitqueue_active(&iocg->waitq))
-+	if (!waitqueue_active(&iocg->waitq)) {
-+		if (iocg->wait_since) {
-+			iocg->local_stat.wait_us += now->now - iocg->wait_since;
-+			iocg->wait_since = 0;
-+		}
- 		return;
-+	}
-+
-+	if (!iocg->wait_since)
-+		iocg->wait_since = now->now;
-+
- 	if (WARN_ON_ONCE(ctx.vbudget >= 0))
- 		return;
- 
-@@ -1579,8 +1606,15 @@ static void iocg_flush_stat_one(struct ioc_gq *iocg, struct ioc_now *now)
- 	iocg->usage_delta_us = div64_u64(vusage_delta, ioc->vtime_base_rate);
- 	iocg->local_stat.usage_us += iocg->usage_delta_us;
- 
-+	/* propagate upwards */
- 	new_stat.usage_us =
- 		iocg->local_stat.usage_us + iocg->desc_stat.usage_us;
-+	new_stat.wait_us =
-+		iocg->local_stat.wait_us + iocg->desc_stat.wait_us;
-+	new_stat.indebt_us =
-+		iocg->local_stat.indebt_us + iocg->desc_stat.indebt_us;
-+	new_stat.indelay_us =
-+		iocg->local_stat.indelay_us + iocg->desc_stat.indelay_us;
- 
- 	/* propagate the deltas to the parent */
- 	if (iocg->level > 0) {
-@@ -1589,6 +1623,12 @@ static void iocg_flush_stat_one(struct ioc_gq *iocg, struct ioc_now *now)
- 
- 		parent_stat->usage_us +=
- 			new_stat.usage_us - iocg->last_stat.usage_us;
-+		parent_stat->wait_us +=
-+			new_stat.wait_us - iocg->last_stat.wait_us;
-+		parent_stat->indebt_us +=
-+			new_stat.indebt_us - iocg->last_stat.indebt_us;
-+		parent_stat->indelay_us +=
-+			new_stat.indelay_us - iocg->last_stat.indelay_us;
- 	}
- 
- 	iocg->last_stat = new_stat;
-@@ -1961,8 +2001,6 @@ static void ioc_timer_fn(struct timer_list *timer)
- 		return;
- 	}
- 
--	iocg_flush_stat(&ioc->active_iocgs, &now);
+-        # vdebt used to be an atomic64_t and is now u64, support both
+-        try:
+-            self.debt_ms = iocg.abs_vdebt.counter.value_() / VTIME_PER_USEC / 1000
+-        except:
+-            self.debt_ms = iocg.abs_vdebt.value_() / VTIME_PER_USEC / 1000
 -
- 	/*
- 	 * Waiters determine the sleep durations based on the vrate they
- 	 * saw at the time of sleep.  If vrate has increased, some waiters
-@@ -1976,6 +2014,22 @@ static void ioc_timer_fn(struct timer_list *timer)
+-        self.use_delay = blkg.use_delay.counter.value_()
+-        self.delay_ms = blkg.delay_nsec.counter.value_() / 1_000_000
+-
+-        usage_idx = iocg.usage_idx.value_()
+-        self.usages = []
+-        self.usage = 0
+-        for i in range(NR_USAGE_SLOTS):
+-            usage = iocg.usages[(usage_idx + 1 + i) % NR_USAGE_SLOTS].value_()
+-            upct = usage * 100 / HWEIGHT_WHOLE
+-            self.usages.append(upct)
+-            self.usage = max(self.usage, upct)
++        self.usage = (100 * iocg.usage_delta_us.value_() /
++                      ioc.period_us.value_()) if self.active else 0
++        self.debt_ms = iocg.abs_vdebt.value_() / VTIME_PER_USEC / 1000
++        if blkg.use_delay.counter.value_() != 0:
++            self.delay_ms = blkg.delay_nsec.counter.value_() / 1_000_000
++        else:
++            self.delay_ms = 0
  
- 		spin_lock(&iocg->waitq.lock);
+     def dict(self, now, path):
+         out = { 'cgroup'                : path,
+@@ -189,25 +178,20 @@ autop_names = {
+                 'hweight_inuse_pct'     : self.hwi_pct,
+                 'inflight_pct'          : self.inflight_pct,
+                 'debt_ms'               : self.debt_ms,
+-                'use_delay'             : self.use_delay,
+                 'delay_ms'              : self.delay_ms,
+                 'usage_pct'             : self.usage,
+                 'address'               : self.address }
+-        for i in range(len(self.usages)):
+-            out[f'usage_pct_{i}'] = str(self.usages[i])
+         return out
  
-+		/* flush wait and indebt stat deltas */
-+		if (iocg->wait_since) {
-+			iocg->local_stat.wait_us += now.now - iocg->wait_since;
-+			iocg->wait_since = now.now;
-+		}
-+		if (iocg->indebt_since) {
-+			iocg->local_stat.indebt_us +=
-+				now.now - iocg->indebt_since;
-+			iocg->indebt_since = now.now;
-+		}
-+		if (iocg->indelay_since) {
-+			iocg->local_stat.indelay_us +=
-+				now.now - iocg->indelay_since;
-+			iocg->indelay_since = now.now;
-+		}
-+
- 		if (waitqueue_active(&iocg->waitq) || iocg->abs_vdebt ||
- 		    iocg->delay) {
- 			/* might be oversleeping vtime / hweight changes, kick */
-@@ -2010,6 +2064,12 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	}
- 	commit_weights(ioc);
- 
-+	/*
-+	 * Wait and indebt stat are flushed above and the donation calculation
-+	 * below needs updated usage stat. Let's bring stat up-to-date.
-+	 */
-+	iocg_flush_stat(&ioc->active_iocgs, &now);
-+
- 	/* calc usage and see whether some weights need to be moved around */
- 	list_for_each_entry(iocg, &ioc->active_iocgs, active_list) {
- 		u64 vdone, vtime, usage_us, usage_dur;
-@@ -2835,6 +2895,13 @@ static size_t ioc_pd_stat(struct blkg_policy_data *pd, char *buf, size_t size)
- 	pos += scnprintf(buf + pos, size - pos, " cost.usage=%llu",
- 			 iocg->last_stat.usage_us);
- 
-+	if (blkcg_debug_stats)
-+		pos += scnprintf(buf + pos, size - pos,
-+				 " cost.wait=%llu cost.indebt=%llu cost.indelay=%llu",
-+				 iocg->last_stat.wait_us,
-+				 iocg->last_stat.indebt_us,
-+				 iocg->last_stat.indelay_us);
-+
- 	return pos;
- }
+     def table_row_str(self, path):
+         out = f'{path[-28:]:28} ' \
+               f'{"*" if self.is_active else " "} ' \
+-              f'{self.inuse:5}/{self.active:5} ' \
++              f'{round(self.inuse):5}/{round(self.active):5} ' \
+               f'{self.hwi_pct:6.2f}/{self.hwa_pct:6.2f} ' \
+               f'{self.inflight_pct:6.2f} ' \
+-              f'{min(math.ceil(self.debt_ms), 999):3} ' \
+-              f'{min(self.use_delay, 99):2}*'\
+-              f'{min(math.ceil(self.delay_ms), 999):03} '
+-        for u in self.usages:
+-            out += f'{min(round(u), 999):03d}:'
++              f'{self.debt_ms:7.2f} ' \
++              f'{self.delay_ms:7.2f} '\
++              f'{min(self.usage, 999):6.2f}'
+         out = out.rstrip(':')
+         return out
  
 -- 
 2.26.2
