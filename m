@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C1AB259E9B
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9064A259E83
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732190AbgIASzR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:55:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57576 "EHLO
+        id S1731879AbgIASyT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:54:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726997AbgIASyF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:05 -0400
+        with ESMTP id S1730658AbgIASyH (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:07 -0400
 Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46900C061246;
-        Tue,  1 Sep 2020 11:54:05 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id u3so1993442qkd.9;
-        Tue, 01 Sep 2020 11:54:05 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35B00C061247;
+        Tue,  1 Sep 2020 11:54:07 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id w186so2017806qkd.1;
+        Tue, 01 Sep 2020 11:54:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=WI61poO+tzD6ywi3PUQTgApvGbiRc/GiQJ11KYgRf2E=;
-        b=D4EA6c7IU9mdyulG2hG/aegFWrCtcIT7s/jikZcEyHYrWBIGjPk3dTa9i3gmPjT9ph
-         1d6ecywOxoXmDAeCHr9mr0+Ef9L47eEdHn/gWU/iJUn49RTICL1Zj97zofr7CJUYD+cu
-         J6XfqLAMSwnvJMy8lTkhVDnKrkmgYkfpNpkwUP9YxJmPHCs/rJQ9iXynJ30qTElmYrP6
-         EZ/fJPEhjua7GSUKY3EbOXro8VkKSmt8arm2tde8NG1nHi3X0UnD+EaZMYq5UEjo90pm
-         EkD5LXoDFIxyje5BBidcubv51ZFExuBbxEYRPdnuqVNcX+sTH7w1KhftrCW4I/6KQDku
-         1tFg==
+        bh=+znxVIecrtKWYGkcHEVPQEzgR+d5RoCk5v84S1Jw+o4=;
+        b=u8k3gyyVQfI0XRNV9AWPq8hwbyDime6LlCDuZaJ01IWRgdaLnv7YDHECSM6iZomAIw
+         fjfjRTGpdj+3Tdhgj/hhECaf8496rA2fnMqUPDgtQZpVWQfJpcpyCMtOGjFZclO6Qk7s
+         AXZaEIFikWjrrrUQ+/BOER1BDdP3ObTKm0dQzeDKvNm0enFRLt/O2T4dHHFUviN+oCJ2
+         WAG9oF0MpzzWTH1tXrIB31bMeez4gWypFnVnOyh+YHsd2LdRscAcQgRLV6GPzF95lUE1
+         bKPpFsyE/oMdWk7sRWw7q6xjQ56pdAs8VjlsjzHz0KzpVhAowC3mIzJV08vt4RPFp+Ok
+         QS9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=WI61poO+tzD6ywi3PUQTgApvGbiRc/GiQJ11KYgRf2E=;
-        b=LMBoD89Dk0frOBlLB2G1kVyJn7o91d+ZoX+qKMBTIs8hjbFUH6IMq+8S2ORUCFnnoP
-         Yxc14MwBlLxPmURDc9xUoq/9WRDKA40L16cFx6QZvwZwJIybk/DoLaRPWQe8bc+HSDbM
-         a3Pw1I1obMFU/cx2+KPxJF9DWUQx38jyjHDv3NcN1EykT6FUuOp9h4blJc/Kzy/UmrB6
-         ceaxACgFF3+nB1mGhjB5Va9koj996IBOXuWfGueHTSoVFh9ApblDQiQ1IpRQve9Vvdg+
-         U36qdCgR2+6hjs0zi1bP6mKFTNRa8UrUfd404k0AwDFcLOHC0XXrD1QD35NTFHUkLDms
-         8uLw==
-X-Gm-Message-State: AOAM53289r0G2oby0kKYqCpURneHeLoMcW21QIqL7kqBOI5AmbDepIMz
-        TcLAgEPNl/aqETTLu33YSi8=
-X-Google-Smtp-Source: ABdhPJysAO7acug8W6zpx4fqHqJAI5U9kXbT2/PMK313OsvrdYv1kqkvvEirm6512eTQQsRmIwjEBA==
-X-Received: by 2002:a37:414f:: with SMTP id o76mr3237770qka.162.1598986444289;
-        Tue, 01 Sep 2020 11:54:04 -0700 (PDT)
+        bh=+znxVIecrtKWYGkcHEVPQEzgR+d5RoCk5v84S1Jw+o4=;
+        b=RFxQG94oPhM4Me6NXR1RzLCQXhiU6BMTliwE5EkVOALyKoqEc4WHGDzY/mWgIBCnT5
+         Dd3Emg5w1SWTGs6evfWNVvaPIvJFI8oOdWmgOPGvZx+RKor0FtAhE1uUvd7uhycqZjL6
+         7wmjGTGIcj9nPZFCKOO1/ZPAqPDRdYnfhNH/kpzA0wQsnFm+pscfHZd4258eH4ePJPSx
+         Lo8pHZwAw8Md0AQ/5OZRT9R4SIEtmsDJZ4nA4iu9JKUu7KI80vQikiKN9rMmxaqhKogH
+         igr/tjrI20+NsM6Cfehp4LRulV6PDZPIuyv8DnYr0dME0lGRukYT4ACaoHTzs4rML3WJ
+         K/9A==
+X-Gm-Message-State: AOAM532LrlzP2r7OMv6e1awNsrHfETYwjh/fHkIshKV9d8SCTGCpsOhN
+        +UgHI1r/2kF8CjRzVUBQpwU=
+X-Google-Smtp-Source: ABdhPJwxRJ6KXa/lhEd17sq4PINJmhS1dg/6HgW+DwKy+rk3PafNh0mIMLbYThae8p7DQ0MZAM55Vg==
+X-Received: by 2002:a37:454d:: with SMTP id s74mr3401793qka.373.1598986446198;
+        Tue, 01 Sep 2020 11:54:06 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id j8sm2415814qth.90.2020.09.01.11.54.03
+        by smtp.gmail.com with ESMTPSA id y20sm2468314qkj.70.2020.09.01.11.54.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:54:03 -0700 (PDT)
+        Tue, 01 Sep 2020 11:54:05 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 20/27] blk-iocost: revamp in-period donation snapbacks
-Date:   Tue,  1 Sep 2020 14:52:50 -0400
-Message-Id: <20200901185257.645114-21-tj@kernel.org>
+Subject: [PATCH 21/27] blk-iocost: revamp debt handling
+Date:   Tue,  1 Sep 2020 14:52:51 -0400
+Message-Id: <20200901185257.645114-22-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,351 +65,259 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-When the margin drops below the minimum on a donating iocg, donation is
-immediately canceled in full. There are a couple shortcomings with the
-current behavior.
+Debt handling had several issues.
 
-* It's abrupt. A small temporary budget deficit can lead to a wide swing in
-  weight allocation and a large surplus.
+* How much inuse a debtor carries wasn't clearly defined. inuse would be
+  driven down over time from not issuing IOs but it'd be better to clamp it
+  to minimum immediately once in debt.
 
-* It's open coded in the issue path but not implemented for the merge path.
-  A series of merges at a low inuse can make the iocg incur debts and stall
-  incorrectly.
+* How much can be paid off was determined by hweight_inuse. As inuse was
+  driven down, the payment amount would fall together regardless of the
+  debtor's active weight. This means that the debtors were punished harshly.
 
-This patch reimplements in-period donation snapbacks so that
+* ioc_rqos_merge() wasn't calling blkcg_schedule_throttle() after
+  iocg_kick_delay().
 
-* inuse adjustment and cost calculations are factored into
-  adjust_inuse_and_calc_cost() which is called from both the issue and merge
-  paths.
+This patch revamps debt handling so that
 
-* Snapbacks are more gradual. It occurs in quarter steps.
+* Debt handling owns inuse for iocgs in debt and keeps them at zero.
 
-* A snapback triggers if the margin goes below the low threshold and is
-  lower than the budget at the time of the last adjustment.
+* Payment amount is determined by hweight_active. This is more deterministic
+  and safer than hweight_inuse but still far from ideal in that it doesn't
+  factor in possible donations from other iocgs for debt payments. This
+  likely needs further improvements in the future.
 
-* For the above, __propagate_weights() stores the margin in
-  iocg->saved_margin. Move iocg->last_inuse storing together into
-  __propagate_weights() for consistency.
-
-* Full snapback is guaranteed when there are waiters.
-
-* With precise donation and gradual snapbacks, inuse adjustments are now a
-  lot more effective and the value of scaling inuse on weight changes isn't
-  clear. Removed inuse scaling from weight_update().
+* iocg_rqos_merge() now calls blkcg_schedule_throttle() as necessary.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Andy Newell <newella@fb.com>
 ---
- block/blk-iocost.c | 133 ++++++++++++++++++++++++++++++++-------------
- 1 file changed, 96 insertions(+), 37 deletions(-)
+ block/blk-iocost.c | 117 +++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 93 insertions(+), 24 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 694f1487208a..d09b4011449c 100644
+index d09b4011449c..d2b69d87f3e7 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -226,6 +226,8 @@ enum {
- 	MARGIN_TARGET_PCT	= 50,
- 	MARGIN_MAX_PCT		= 100,
- 
-+	INUSE_ADJ_STEP_PCT	= 25,
-+
- 	/* Have some play in timer operations */
- 	TIMER_SLACK_PCT		= 1,
- 
-@@ -443,12 +445,17 @@ struct ioc_gq {
- 	 *
- 	 * `last_inuse` remembers `inuse` while an iocg is idle to persist
- 	 * surplus adjustments.
-+	 *
-+	 * `inuse` may be adjusted dynamically during period. `saved_*` are used
-+	 * to determine and track adjustments.
- 	 */
- 	u32				cfg_weight;
- 	u32				weight;
- 	u32				active;
- 	u32				inuse;
-+
- 	u32				last_inuse;
-+	s64				saved_margin;
- 
- 	sector_t			cursor;		/* to detect randio */
- 
-@@ -934,9 +941,11 @@ static void ioc_start_period(struct ioc *ioc, struct ioc_now *now)
- 
- /*
-  * Update @iocg's `active` and `inuse` to @active and @inuse, update level
-- * weight sums and propagate upwards accordingly.
-+ * weight sums and propagate upwards accordingly. If @save, the current margin
-+ * is saved to be used as reference for later inuse in-period adjustments.
-  */
--static void __propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse)
-+static void __propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse,
-+				bool save, struct ioc_now *now)
- {
- 	struct ioc *ioc = iocg->ioc;
- 	int lvl;
-@@ -945,6 +954,10 @@ static void __propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse)
- 
- 	inuse = clamp_t(u32, inuse, 1, active);
- 
-+	iocg->last_inuse = iocg->inuse;
-+	if (save)
-+		iocg->saved_margin = now->vnow - atomic64_read(&iocg->vtime);
-+
- 	if (active == iocg->active && inuse == iocg->inuse)
- 		return;
- 
-@@ -996,9 +1009,10 @@ static void commit_weights(struct ioc *ioc)
- 	}
- }
- 
--static void propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse)
-+static void propagate_weights(struct ioc_gq *iocg, u32 active, u32 inuse,
-+			      bool save, struct ioc_now *now)
- {
--	__propagate_weights(iocg, active, inuse);
-+	__propagate_weights(iocg, active, inuse, save, now);
- 	commit_weights(iocg->ioc);
- }
- 
-@@ -1082,7 +1096,7 @@ static u32 current_hweight_max(struct ioc_gq *iocg)
- 	return max_t(u32, hwm, 1);
- }
- 
--static void weight_updated(struct ioc_gq *iocg)
-+static void weight_updated(struct ioc_gq *iocg, struct ioc_now *now)
- {
- 	struct ioc *ioc = iocg->ioc;
+@@ -1206,13 +1206,13 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
  	struct blkcg_gq *blkg = iocg_to_blkg(iocg);
-@@ -1093,9 +1107,7 @@ static void weight_updated(struct ioc_gq *iocg)
+ 	u64 vtime = atomic64_read(&iocg->vtime);
+ 	u64 delta_ns, expires, oexpires;
+-	u32 hw_inuse;
++	u32 hwa;
  
- 	weight = iocg->cfg_weight ?: iocc->dfl_weight;
- 	if (weight != iocg->weight && iocg->active)
--		propagate_weights(iocg, weight,
--				  DIV64_U64_ROUND_UP((u64)iocg->inuse * weight,
--						     iocg->weight));
-+		propagate_weights(iocg, weight, iocg->inuse, true, now);
- 	iocg->weight = weight;
+ 	lockdep_assert_held(&iocg->waitq.lock);
+ 
+ 	/* debt-adjust vtime */
+-	current_hweight(iocg, NULL, &hw_inuse);
+-	vtime += abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
++	current_hweight(iocg, &hwa, NULL);
++	vtime += abs_cost_to_cost(iocg->abs_vdebt, hwa);
+ 
+ 	/*
+ 	 * Clear or maintain depending on the overage. Non-zero vdebt is what
+@@ -1258,6 +1258,47 @@ static enum hrtimer_restart iocg_delay_timer_fn(struct hrtimer *timer)
+ 	return HRTIMER_NORESTART;
  }
  
-@@ -1165,8 +1177,9 @@ static bool iocg_activate(struct ioc_gq *iocg, struct ioc_now *now)
- 	 */
- 	iocg->hweight_gen = atomic_read(&ioc->hweight_gen) - 1;
- 	list_add(&iocg->active_list, &ioc->active_iocgs);
-+
- 	propagate_weights(iocg, iocg->weight,
--			  iocg->last_inuse ?: iocg->weight);
-+			  iocg->last_inuse ?: iocg->weight, true, now);
- 
- 	TRACE_IOCG_PATH(iocg_activate, iocg, now,
- 			last_period, cur_period, vtime);
-@@ -1789,7 +1802,7 @@ static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
- 		inuse = DIV64_U64_ROUND_UP(
- 			parent->child_adjusted_sum * iocg->hweight_after_donation,
- 			parent->hweight_inuse);
--		__propagate_weights(iocg, iocg->active, inuse);
-+		__propagate_weights(iocg, iocg->active, inuse, true, now);
- 	}
- 
- 	/* walk list should be dissolved after use */
-@@ -1844,8 +1857,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 			iocg_kick_waitq(iocg, true, &now);
- 		} else if (iocg_is_idle(iocg)) {
- 			/* no waiter and idle, deactivate */
--			iocg->last_inuse = iocg->inuse;
--			__propagate_weights(iocg, 0, 0);
-+			__propagate_weights(iocg, 0, 0, false, &now);
- 			list_del_init(&iocg->active_list);
- 		}
- 
-@@ -1925,7 +1937,7 @@ static void ioc_timer_fn(struct timer_list *timer)
- 				list_add(&iocg->surplus_list, &surpluses);
- 			} else {
- 				__propagate_weights(iocg, iocg->active,
--						    iocg->active);
-+						    iocg->active, true, &now);
- 				nr_shortages++;
- 			}
- 		} else {
-@@ -2055,6 +2067,50 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	spin_unlock_irq(&ioc->lock);
- }
- 
-+static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
-+				      u64 abs_cost, struct ioc_now *now)
++static void iocg_incur_debt(struct ioc_gq *iocg, u64 abs_cost,
++			    struct ioc_now *now)
 +{
-+	struct ioc *ioc = iocg->ioc;
-+	struct ioc_margins *margins = &ioc->margins;
-+	u32 adj_step = DIV_ROUND_UP(iocg->active * INUSE_ADJ_STEP_PCT, 100);
-+	u32 hwi;
-+	s64 margin;
-+	u64 cost, new_inuse;
++	struct iocg_pcpu_stat *gcs;
 +
-+	current_hweight(iocg, NULL, &hwi);
-+	cost = abs_cost_to_cost(abs_cost, hwi);
-+	margin = now->vnow - vtime - cost;
++	lockdep_assert_held(&iocg->ioc->lock);
++	lockdep_assert_held(&iocg->waitq.lock);
++	WARN_ON_ONCE(list_empty(&iocg->active_list));
 +
 +	/*
-+	 * We only increase inuse during period and do so iff the margin has
-+	 * deteriorated since the previous adjustment.
++	 * Once in debt, debt handling owns inuse. @iocg stays at the minimum
++	 * inuse donating all of it share to others until its debt is paid off.
 +	 */
-+	if (margin >= iocg->saved_margin || margin >= margins->low ||
-+	    iocg->inuse == iocg->active)
-+		return cost;
++	if (!iocg->abs_vdebt && abs_cost)
++		propagate_weights(iocg, iocg->active, 0, false, now);
 +
-+	spin_lock_irq(&ioc->lock);
++	iocg->abs_vdebt += abs_cost;
 +
-+	/* we own inuse only when @iocg is in the normal active state */
-+	if (list_empty(&iocg->active_list)) {
-+		spin_unlock_irq(&ioc->lock);
-+		return cost;
-+	}
-+
-+	/* bump up inuse till @abs_cost fits in the existing budget */
-+	new_inuse = iocg->inuse;
-+	do {
-+		new_inuse = new_inuse + adj_step;
-+		propagate_weights(iocg, iocg->active, new_inuse, true, now);
-+		current_hweight(iocg, NULL, &hwi);
-+		cost = abs_cost_to_cost(abs_cost, hwi);
-+	} while (time_after64(vtime + cost, now->vnow) &&
-+		 iocg->inuse != iocg->active);
-+
-+	spin_unlock_irq(&ioc->lock);
-+	return cost;
++	gcs = get_cpu_ptr(iocg->pcpu_stat);
++	local64_add(abs_cost, &gcs->abs_vusage);
++	put_cpu_ptr(gcs);
 +}
 +
- static void calc_vtime_cost_builtin(struct bio *bio, struct ioc_gq *iocg,
- 				    bool is_merge, u64 *costp)
++static void iocg_pay_debt(struct ioc_gq *iocg, u64 abs_vpay,
++			  struct ioc_now *now)
++{
++	lockdep_assert_held(&iocg->ioc->lock);
++	lockdep_assert_held(&iocg->waitq.lock);
++
++	/* make sure that nobody messed with @iocg */
++	WARN_ON_ONCE(list_empty(&iocg->active_list));
++	WARN_ON_ONCE(iocg->inuse > 1);
++
++	iocg->abs_vdebt -= min(abs_vpay, iocg->abs_vdebt);
++
++	/* if debt is paid in full, restore inuse */
++	if (!iocg->abs_vdebt)
++		propagate_weights(iocg, iocg->active, iocg->last_inuse,
++				  false, now);
++}
++
+ static int iocg_wake_fn(struct wait_queue_entry *wq_entry, unsigned mode,
+ 			int flags, void *key)
  {
-@@ -2136,7 +2192,6 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 	struct ioc_gq *iocg = blkg_to_iocg(blkg);
- 	struct ioc_now now;
- 	struct iocg_wait wait;
--	u32 hw_active, hw_inuse;
- 	u64 abs_cost, cost, vtime;
- 	bool use_debt, ioc_locked;
- 	unsigned long flags;
-@@ -2154,21 +2209,8 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 		return;
- 
- 	iocg->cursor = bio_end_sector(bio);
--
- 	vtime = atomic64_read(&iocg->vtime);
--	current_hweight(iocg, &hw_active, &hw_inuse);
--
--	if (hw_inuse < hw_active &&
--	    time_after_eq64(vtime + ioc->margins.min, now.vnow)) {
--		TRACE_IOCG_PATH(inuse_reset, iocg, &now,
--				iocg->inuse, iocg->weight, hw_inuse, hw_active);
--		spin_lock_irq(&ioc->lock);
--		propagate_weights(iocg, iocg->weight, iocg->weight);
--		spin_unlock_irq(&ioc->lock);
--		current_hweight(iocg, &hw_active, &hw_inuse);
--	}
--
--	cost = abs_cost_to_cost(abs_cost, hw_inuse);
-+	cost = adjust_inuse_and_calc_cost(iocg, vtime, abs_cost, &now);
- 
- 	/*
- 	 * If no one's waiting and within budget, issue right away.  The
-@@ -2190,7 +2232,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 	 */
- 	use_debt = bio_issue_as_root_blkg(bio) || fatal_signal_pending(current);
- 	ioc_locked = use_debt || READ_ONCE(iocg->abs_vdebt);
--
-+retry_lock:
- 	iocg_lock(iocg, ioc_locked, &flags);
- 
- 	/*
-@@ -2232,6 +2274,17 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
- 		return;
- 	}
- 
-+	/* guarantee that iocgs w/ waiters have maximum inuse */
-+	if (iocg->inuse != iocg->active) {
-+		if (!ioc_locked) {
-+			iocg_unlock(iocg, false, &flags);
-+			ioc_locked = true;
-+			goto retry_lock;
-+		}
-+		propagate_weights(iocg, iocg->active, iocg->active, true,
-+				  &now);
-+	}
-+
- 	/*
- 	 * Append self to the waitq and schedule the wakeup timer if we're
- 	 * the first waiter.  The timer duration is calculated based on the
-@@ -2274,8 +2327,7 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
- 	struct ioc *ioc = iocg->ioc;
- 	sector_t bio_end = bio_end_sector(bio);
- 	struct ioc_now now;
+@@ -1296,26 +1337,25 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
+ 	struct iocg_wake_ctx ctx = { .iocg = iocg };
+ 	u64 vshortage, expires, oexpires;
+ 	s64 vbudget;
 -	u32 hw_inuse;
--	u64 abs_cost, cost;
-+	u64 vtime, abs_cost, cost;
- 	unsigned long flags;
++	u32 hwa;
  
- 	/* bypass if disabled or for root cgroup */
-@@ -2287,8 +2339,9 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
- 		return;
+ 	lockdep_assert_held(&iocg->waitq.lock);
  
- 	ioc_now(ioc, &now);
 -	current_hweight(iocg, NULL, &hw_inuse);
--	cost = abs_cost_to_cost(abs_cost, hw_inuse);
-+
-+	vtime = atomic64_read(&iocg->vtime);
-+	cost = adjust_inuse_and_calc_cost(iocg, vtime, abs_cost, &now);
++	current_hweight(iocg, &hwa, NULL);
+ 	vbudget = now->vnow - atomic64_read(&iocg->vtime);
  
- 	/* update cursor if backmerging into the request at the cursor */
- 	if (blk_rq_pos(rq) < bio_end &&
-@@ -2530,7 +2583,7 @@ static void ioc_pd_init(struct blkg_policy_data *pd)
+ 	/* pay off debt */
+ 	if (pay_debt && iocg->abs_vdebt && vbudget > 0) {
+-		u64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
+-		u64 delta = min_t(u64, vbudget, vdebt);
+-		u64 abs_delta = min(cost_to_abs_cost(delta, hw_inuse),
+-				    iocg->abs_vdebt);
++		u64 abs_vbudget = cost_to_abs_cost(vbudget, hwa);
++		u64 abs_vpay = min_t(u64, abs_vbudget, iocg->abs_vdebt);
++		u64 vpay = abs_cost_to_cost(abs_vpay, hwa);
+ 
+ 		lockdep_assert_held(&ioc->lock);
+ 
+-		atomic64_add(delta, &iocg->vtime);
+-		atomic64_add(delta, &iocg->done_vtime);
+-		iocg->abs_vdebt -= abs_delta;
+-		vbudget -= vdebt;
++		atomic64_add(vpay, &iocg->vtime);
++		atomic64_add(vpay, &iocg->done_vtime);
++		iocg_pay_debt(iocg, abs_vpay, now);
++		vbudget -= vpay;
+ 
+ 		iocg_kick_delay(iocg, now);
+ 	}
+@@ -1327,17 +1367,20 @@ static void iocg_kick_waitq(struct ioc_gq *iocg, bool pay_debt,
+ 	 * not positive.
+ 	 */
+ 	if (iocg->abs_vdebt) {
+-		s64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hw_inuse);
++		s64 vdebt = abs_cost_to_cost(iocg->abs_vdebt, hwa);
+ 		vbudget = min_t(s64, 0, vbudget - vdebt);
  	}
  
- 	spin_lock_irqsave(&ioc->lock, flags);
--	weight_updated(iocg);
-+	weight_updated(iocg, &now);
- 	spin_unlock_irqrestore(&ioc->lock, flags);
+ 	/*
+-	 * Wake up the ones which are due and see how much vtime we'll need
+-	 * for the next one.
++	 * Wake up the ones which are due and see how much vtime we'll need for
++	 * the next one. As paying off debt restores hw_inuse, it must be read
++	 * after the above debt payment.
+ 	 */
+-	ctx.hw_inuse = hw_inuse;
+ 	ctx.vbudget = vbudget;
++	current_hweight(iocg, NULL, &ctx.hw_inuse);
++
+ 	__wake_up_locked_key(&iocg->waitq, TASK_NORMAL, &ctx);
++
+ 	if (!waitqueue_active(&iocg->waitq))
+ 		return;
+ 	if (WARN_ON_ONCE(ctx.vbudget >= 0))
+@@ -1525,6 +1568,10 @@ static u32 hweight_after_donation(struct ioc_gq *iocg, u32 hwm, u32 usage,
+ 	u64 vtime = atomic64_read(&iocg->vtime);
+ 	s64 excess, delta, target, new_hwi;
+ 
++	/* debt handling owns inuse for debtors */
++	if (iocg->abs_vdebt)
++		return 1;
++
+ 	/* see whether minimum margin requirement is met */
+ 	if (waitqueue_active(&iocg->waitq) ||
+ 	    time_after64(vtime, now->vnow - ioc->margins.min))
+@@ -1798,6 +1845,18 @@ static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
+ 		struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
+ 		u32 inuse;
+ 
++		/*
++		 * In-debt iocgs participated in the donation calculation with
++		 * the minimum target hweight_inuse. Configuring inuse
++		 * accordingly would work fine but debt handling expects
++		 * @iocg->inuse stay at the minimum and we don't wanna
++		 * interfere.
++		 */
++		if (iocg->abs_vdebt) {
++			WARN_ON_ONCE(iocg->inuse > 1);
++			continue;
++		}
++
+ 		/* w' = s' * b' / b'_p, note that b' == b'_t for donating leaves */
+ 		inuse = DIV64_U64_ROUND_UP(
+ 			parent->child_adjusted_sum * iocg->hweight_after_donation,
+@@ -2081,6 +2140,10 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+ 	cost = abs_cost_to_cost(abs_cost, hwi);
+ 	margin = now->vnow - vtime - cost;
+ 
++	/* debt handling owns inuse for debtors */
++	if (iocg->abs_vdebt)
++		return cost;
++
+ 	/*
+ 	 * We only increase inuse during period and do so iff the margin has
+ 	 * deteriorated since the previous adjustment.
+@@ -2092,7 +2155,7 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+ 	spin_lock_irq(&ioc->lock);
+ 
+ 	/* we own inuse only when @iocg is in the normal active state */
+-	if (list_empty(&iocg->active_list)) {
++	if (iocg->abs_vdebt || list_empty(&iocg->active_list)) {
+ 		spin_unlock_irq(&ioc->lock);
+ 		return cost;
+ 	}
+@@ -2266,7 +2329,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	 * penalizing the cgroup and its descendants.
+ 	 */
+ 	if (use_debt) {
+-		iocg->abs_vdebt += abs_cost;
++		iocg_incur_debt(iocg, abs_cost, &now);
+ 		if (iocg_kick_delay(iocg, &now))
+ 			blkcg_schedule_throttle(rqos->q,
+ 					(bio->bi_opf & REQ_SWAP) == REQ_SWAP);
+@@ -2275,7 +2338,7 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	}
+ 
+ 	/* guarantee that iocgs w/ waiters have maximum inuse */
+-	if (iocg->inuse != iocg->active) {
++	if (!iocg->abs_vdebt && iocg->inuse != iocg->active) {
+ 		if (!ioc_locked) {
+ 			iocg_unlock(iocg, false, &flags);
+ 			ioc_locked = true;
+@@ -2363,14 +2426,20 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
+ 	 * be for the vast majority of cases. See debt handling in
+ 	 * ioc_rqos_throttle() for details.
+ 	 */
+-	spin_lock_irqsave(&iocg->waitq.lock, flags);
++	spin_lock_irqsave(&ioc->lock, flags);
++	spin_lock(&iocg->waitq.lock);
++
+ 	if (likely(!list_empty(&iocg->active_list))) {
+-		iocg->abs_vdebt += abs_cost;
+-		iocg_kick_delay(iocg, &now);
++		iocg_incur_debt(iocg, abs_cost, &now);
++		if (iocg_kick_delay(iocg, &now))
++			blkcg_schedule_throttle(rqos->q,
++					(bio->bi_opf & REQ_SWAP) == REQ_SWAP);
+ 	} else {
+ 		iocg_commit_bio(iocg, bio, abs_cost, cost);
+ 	}
+-	spin_unlock_irqrestore(&iocg->waitq.lock, flags);
++
++	spin_unlock(&iocg->waitq.lock);
++	spin_unlock_irqrestore(&ioc->lock, flags);
  }
  
-@@ -2544,7 +2597,10 @@ static void ioc_pd_free(struct blkg_policy_data *pd)
- 		spin_lock_irqsave(&ioc->lock, flags);
- 
- 		if (!list_empty(&iocg->active_list)) {
--			propagate_weights(iocg, 0, 0);
-+			struct ioc_now now;
-+
-+			ioc_now(ioc, &now);
-+			propagate_weights(iocg, 0, 0, false, &now);
- 			list_del_init(&iocg->active_list);
- 		}
- 
-@@ -2612,6 +2668,7 @@ static ssize_t ioc_weight_write(struct kernfs_open_file *of, char *buf,
- 	struct blkcg *blkcg = css_to_blkcg(of_css(of));
- 	struct ioc_cgrp *iocc = blkcg_to_iocc(blkcg);
- 	struct blkg_conf_ctx ctx;
-+	struct ioc_now now;
- 	struct ioc_gq *iocg;
- 	u32 v;
- 	int ret;
-@@ -2632,7 +2689,8 @@ static ssize_t ioc_weight_write(struct kernfs_open_file *of, char *buf,
- 
- 			if (iocg) {
- 				spin_lock_irq(&iocg->ioc->lock);
--				weight_updated(iocg);
-+				ioc_now(iocg->ioc, &now);
-+				weight_updated(iocg, &now);
- 				spin_unlock_irq(&iocg->ioc->lock);
- 			}
- 		}
-@@ -2658,7 +2716,8 @@ static ssize_t ioc_weight_write(struct kernfs_open_file *of, char *buf,
- 
- 	spin_lock(&iocg->ioc->lock);
- 	iocg->cfg_weight = v * WEIGHT_ONE;
--	weight_updated(iocg);
-+	ioc_now(iocg->ioc, &now);
-+	weight_updated(iocg, &now);
- 	spin_unlock(&iocg->ioc->lock);
- 
- 	blkg_conf_finish(&ctx);
+ static void ioc_rqos_done_bio(struct rq_qos *rqos, struct bio *bio)
 -- 
 2.26.2
 
