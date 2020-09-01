@@ -2,59 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A761F259E81
-	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22389259EA4
+	for <lists+cgroups@lfdr.de>; Tue,  1 Sep 2020 20:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731875AbgIASyS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Sep 2020 14:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57562 "EHLO
+        id S1732162AbgIASzR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Sep 2020 14:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731867AbgIASyC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:02 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7F30C061244;
-        Tue,  1 Sep 2020 11:54:00 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id f2so2008970qkh.3;
-        Tue, 01 Sep 2020 11:54:00 -0700 (PDT)
+        with ESMTP id S1731819AbgIASyF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Sep 2020 14:54:05 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 648F4C061245;
+        Tue,  1 Sep 2020 11:54:03 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id n10so1749693qtv.3;
+        Tue, 01 Sep 2020 11:54:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=jGd+L4+CkY8CX0oqEN26vP4g80+Fyvx1ej68utXe9eU=;
-        b=ev7eg3EzJbXpbqkUt0lt7tPqxrWvM49cng+IcVXF/RxITjxvPt9frEoVle9Dm8HVvR
-         WJ6m+rPTklgKM6eUGAYXkR+kU0RSykq/51LEy/BipmfpyUbB00Q/EEhDity8wyseFhN+
-         VkH5Svpq1Gu0Tio1IZpfn7yPc5fB1JVtzOxaw7VMg7Y4iibIwXrx4RfS3hKF7rOI7pFI
-         D3v2+5d1IuYuXuO1wujQtLYnJxbngTbMwmu0xPOD466mOP0eu1cdeKD93J2vVKD3oNHT
-         OfyQQDl3EMiUHF1YaJjfH76tCV9QPGZYJ4b0Tl47VkjJBq2qizVhnRP67q8NqHNP0Brd
-         g6Qw==
+        bh=j8/MHtQnIWUZGz4ny60HkFTlkU4fit1K0ZbZqOii9ss=;
+        b=i79+RILXC83YIcNxFkRKDBXVMxYXYhWO3kwo/JYJSe6wJY/kXeb/hvcaszKCRwozRc
+         V/WOpFOZ25hnm6tx5GkOi7Q7r6F4e+CWuo8VV+pk7wF44mwqiXl3x7Pw/xs/BVZb83c1
+         f67j13nEkyz064HpuEyqDhCg7Qj/4VZlFA9v5aCn9A5F8ziCmh336Dq5M5Br1bYAfuhj
+         IisMtpx3WCJrnP0LQKH8X7Mw/b+dWa3E2lri3h5Yk62+AGPTFIKPVZFIR5ZKmORPuGRq
+         xMETKtBfvbhX3CZBV7wzfSN4YkrAHQ78GORtw74nH+kSc9wJ5o6oPiQgrO3JyH9gSloU
+         QFng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=jGd+L4+CkY8CX0oqEN26vP4g80+Fyvx1ej68utXe9eU=;
-        b=lmOFXBw+C7irWfE7T/e+fYOogxc483Xs4C28UYEm1DXuPqQRk+SDbQNt+a9UATDm4u
-         y6cG/1aVwDkknnnYpa84A55PwVPSwaEubTIveghlb0PueilvOisOmFJORIztYYE60uAT
-         6AxGESRtxYmNNlaVZlLso4ifPEM1YSLWbgReP2UUzhoTC1nUTWtFWfHEDj15dW23s6MH
-         p7MpiYPIB51wKMDXJvmff5hejzI2CAfLvE0Sd/F7yaq8aG92zDSol731RlgU+ydzcSfw
-         nivvQZmOsikAYVGw9kIQpTnNjxL0fY2qp04F0Jl8yNiBkKOtOgHwg6qEItYOWBSzVQe1
-         nWMQ==
-X-Gm-Message-State: AOAM531hHWVK42gF7amabERfLcYft5pyeCEdl+TLDb+uAOBjCpY3+Ttl
-        mNQeSWZUyQwbu0pwXxFIDKg=
-X-Google-Smtp-Source: ABdhPJz0FYHxtYz1RIlzqJCDxI7tk17SYzcBe+F3uolKbJ7xCAv8goMCyA6Gg//S8Tw+iH/N3/WwIw==
-X-Received: by 2002:a37:5fc6:: with SMTP id t189mr3003354qkb.78.1598986439743;
-        Tue, 01 Sep 2020 11:53:59 -0700 (PDT)
+        bh=j8/MHtQnIWUZGz4ny60HkFTlkU4fit1K0ZbZqOii9ss=;
+        b=iH+9xXmatwrHIrZyJk5UflAbCgcJKlW0l/WpH4Dias4AQjK4u0qndNC8g8Ge5/F+zp
+         GZ8+SEi7ytmpFizOLL+xL4xjGQ+rRHlHk/KN2cBUMZgdQxsXQZAyeCjplDCfarEUoQCG
+         ROUL19fpkRV1DOsKvHgF1JjhcC/OE40dvJ2q8Q0WbHutvp2AoTp8PdpAg2jmLO92m/SZ
+         rNPuNTp6kUKH22jabkqAFgCHfyE102jYZtVG0zgm3MY2/oLQVkOpBV2uK8lUg7cR8LtT
+         sdT8syTk4OyRQwy7zIB1iYin3oNSoRb9w4Qd/JSdFDWHrPWvRS31sZn7hvrEpnzt9StZ
+         F6LQ==
+X-Gm-Message-State: AOAM531dPU+yr83rm7+6U58PrJoxahOzsLeVe/zwMcqEBUPp/MRFbu2F
+        0S8W9F8OfNIhBEpQQYoxpz7f3Mp3pVRojA==
+X-Google-Smtp-Source: ABdhPJwpGcVGJyG0/nm08NjREu2jHRdZ7SqujXGhl0D0dGNMtZ5u7dc9T9dbT18vuo0/eUHCIAtAuA==
+X-Received: by 2002:ac8:4d84:: with SMTP id a4mr3269979qtw.365.1598986442381;
+        Tue, 01 Sep 2020 11:54:02 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:a198])
-        by smtp.gmail.com with ESMTPSA id d9sm2585814qtg.51.2020.09.01.11.53.58
+        by smtp.gmail.com with ESMTPSA id 194sm2405798qke.36.2020.09.01.11.54.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 01 Sep 2020 11:53:59 -0700 (PDT)
+        Tue, 01 Sep 2020 11:54:01 -0700 (PDT)
 From:   Tejun Heo <tj@kernel.org>
 To:     axboe@kernel.dk
 Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com, newella@fb.com,
         Tejun Heo <tj@kernel.org>
-Subject: [PATCH 18/27] blk-iocost: implement Andy's method for donation weight updates
-Date:   Tue,  1 Sep 2020 14:52:48 -0400
-Message-Id: <20200901185257.645114-19-tj@kernel.org>
+Subject: [PATCH 19/27] blk-iocost: revamp donation amount determination
+Date:   Tue,  1 Sep 2020 14:52:49 -0400
+Message-Id: <20200901185257.645114-20-tj@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20200901185257.645114-1-tj@kernel.org>
 References: <20200901185257.645114-1-tj@kernel.org>
@@ -65,347 +65,296 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-iocost implements work conservation by reducing iocg->inuse and propagating
-the adjustment upwards proportionally. However, while I knew the target
-absolute hierarchical proportion - adjusted hweight_inuse, I couldn't figure
-out how to determine the iocg->inuse adjustment to achieve that and
-approximated the adjustment by scaling iocg->inuse using the proportion of
-the needed hweight_inuse changes.
+iocost has various safety nets to combat inuse adjustment calculation
+inaccuracies. With Andy's method implemented in transfer_surpluses(), inuse
+adjustment calculations are now accurate and we can make donation amount
+determinations accurate too.
 
-When nested, these scalings aren't accurate even when adjusting a single
-node as the donating node also receives the benefit of the donated portion.
-When multiple nodes are donating as they often do, they can be wildly wrong.
+* Stop keeping track of past usage history and using the maximum. Act on the
+  immediate usage information.
 
-iocost employed various safety nets to combat the inaccuracies. There are
-ample buffers in determining how much to donate, the adjustments are
-conservative and gradual. While it can achieve a reasonable level of work
-conservation in simple scenarios, the inaccuracies can easily add up leading
-to significant loss of total work. This in turn makes it difficult to
-closely cap vrate as vrate adjustment is needed to compensate for the loss
-of work. The combination of inaccurate donation calculations and vrate
-adjustments can lead to wide fluctuations and clunky overall behaviors.
+* Remove donation constraints defined by SURPLUS_* constants. Donate
+  whatever isn't used.
 
-Andy Newell devised a method to calculate the needed ->inuse updates to
-achieve the target hweight_inuse's. The method is compatible with the
-proportional inuse adjustment propagation which allows all hot path
-operations to be local to each iocg.
+* Determine the donation amount so that the iocg will end up with
+  MARGIN_TARGET_PCT budget at the end of the coming period assuming the same
+  usage as the previous period. TARGET is set at 50% of period, which is the
+  previous maximum. This provides smooth convergence for most repetitive IO
+  patterns.
 
-To roughly summarize, Andy's method divides the tree into donating and
-non-donating parts, calculates global donation rate which is used to
-determine the target hweight_inuse for each node, and then derives per-level
-proportions. There's non-trivial amount of math involved. Please refer to
-the following pdfs for detailed descriptions.
+* Apply donation logic early at 20% budget. There's no risk in doing so as
+  the calculation is based on the delta between the current budget and the
+  target budget at the end of the coming period.
 
-  https://drive.google.com/file/d/1PsJwxPFtjUnwOY1QJ5AeICCcsL7BM3bo
-  https://drive.google.com/file/d/1vONz1-fzVO7oY5DXXsLjSxEtYYQbOvsE
-  https://drive.google.com/file/d/1WcrltBOSPN0qXVdBgnKm4mdp9FhuEFQN
+* Remove preemptive iocg activation for zero cost IOs. As donation can reach
+  near zero now, the mere activation doesn't provide any protection anymore.
+  In the unlikely case that this becomes a problem, the right solution is
+  assigning appropriate costs for such IOs.
 
-This patch implements Andy's method in transfer_surpluses(). This makes the
-donation calculations accurate per cycle and enables further improvements in
-other parts of the donation logic.
+This significantly improves the donation determination logic while also
+simplifying it. Now all donations are immediate, exact and smooth.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 Cc: Andy Newell <newella@fb.com>
 ---
- block/blk-iocost.c | 252 +++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 244 insertions(+), 8 deletions(-)
+ block/blk-iocost.c | 133 +++++++++++++++++----------------------------
+ 1 file changed, 51 insertions(+), 82 deletions(-)
 
 diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 61b008d0801f..ecc23b827e5d 100644
+index ecc23b827e5d..694f1487208a 100644
 --- a/block/blk-iocost.c
 +++ b/block/blk-iocost.c
-@@ -491,9 +491,11 @@ struct ioc_gq {
- 	/* see __propagate_weights() and current_hweight() for details */
- 	u64				child_active_sum;
- 	u64				child_inuse_sum;
-+	u64				child_adjusted_sum;
- 	int				hweight_gen;
- 	u32				hweight_active;
- 	u32				hweight_inuse;
-+	u32				hweight_donating;
- 	u32				hweight_after_donation;
+@@ -217,12 +217,14 @@ enum {
+ 	MAX_PERIOD		= USEC_PER_SEC,
  
- 	struct list_head		walk_list;
-@@ -1551,20 +1553,252 @@ static u32 hweight_after_donation(struct ioc_gq *iocg, u32 hwm, u32 usage,
- 	return usage;
+ 	/*
+-	 * A cgroup's vtime can run 50% behind the device vtime, which
++	 * iocg->vtime is targeted at 50% behind the device vtime, which
+ 	 * serves as its IO credit buffer.  Surplus weight adjustment is
+ 	 * immediately canceled if the vtime margin runs below 10%.
+ 	 */
+ 	MARGIN_MIN_PCT		= 10,
+-	MARGIN_MAX_PCT		= 50,
++	MARGIN_LOW_PCT		= 20,
++	MARGIN_TARGET_PCT	= 50,
++	MARGIN_MAX_PCT		= 100,
+ 
+ 	/* Have some play in timer operations */
+ 	TIMER_SLACK_PCT		= 1,
+@@ -234,17 +236,6 @@ enum {
+ 	 */
+ 	VTIME_VALID_DUR		= 300 * USEC_PER_SEC,
+ 
+-	/*
+-	 * Remember the past three non-zero usages and use the max for
+-	 * surplus calculation.  Three slots guarantee that we remember one
+-	 * full period usage from the last active stretch even after
+-	 * partial deactivation and re-activation periods.  Don't start
+-	 * giving away weight before collecting two data points to prevent
+-	 * hweight adjustments based on one partial activation period.
+-	 */
+-	NR_USAGE_SLOTS		= 3,
+-	MIN_VALID_USAGES	= 2,
+-
+ 	/* 1/64k is granular enough and can easily be handled w/ u32 */
+ 	WEIGHT_ONE		= 1 << 16,
+ 
+@@ -280,14 +271,6 @@ enum {
+ 	/* don't let cmds which take a very long time pin lagging for too long */
+ 	MAX_LAGGING_PERIODS	= 10,
+ 
+-	/*
+-	 * If usage% * 1.25 + 2% is lower than hweight% by more than 3%,
+-	 * donate the surplus.
+-	 */
+-	SURPLUS_SCALE_PCT	= 125,			/* * 125% */
+-	SURPLUS_SCALE_ABS	= WEIGHT_ONE / 50,	/* + 2% */
+-	SURPLUS_MIN_ADJ_DELTA	= WEIGHT_ONE / 33,	/* 3% */
+-
+ 	/* switch iff the conditions are met for longer than this */
+ 	AUTOP_CYCLE_NSEC	= 10LLU * NSEC_PER_SEC,
+ 
+@@ -376,6 +359,8 @@ struct ioc_params {
+ 
+ struct ioc_margins {
+ 	s64				min;
++	s64				low;
++	s64				target;
+ 	s64				max;
+ };
+ 
+@@ -514,11 +499,7 @@ struct ioc_gq {
+ 	struct iocg_stat		desc_stat;
+ 	struct iocg_stat		last_stat;
+ 	u64				last_stat_abs_vusage;
+-
+-	/* usage is recorded as fractions of WEIGHT_ONE */
+-	u32				usage_delta_us;
+-	int				usage_idx;
+-	u32				usages[NR_USAGE_SLOTS];
++	u64				usage_delta_us;
+ 
+ 	/* this iocg's depth in the hierarchy and ancestors including self */
+ 	int				level;
+@@ -737,6 +718,8 @@ static void ioc_refresh_margins(struct ioc *ioc)
+ 	u64 vrate = atomic64_read(&ioc->vtime_rate);
+ 
+ 	margins->min = (period_us * MARGIN_MIN_PCT / 100) * vrate;
++	margins->low = (period_us * MARGIN_LOW_PCT / 100) * vrate;
++	margins->target = (period_us * MARGIN_TARGET_PCT / 100) * vrate;
+ 	margins->max = (period_us * MARGIN_MAX_PCT / 100) * vrate;
  }
  
-+/*
-+ * For work-conservation, an iocg which isn't using all of its share should
-+ * donate the leftover to other iocgs. There are two ways to achieve this - 1.
-+ * bumping up vrate accordingly 2. lowering the donating iocg's inuse weight.
-+ *
-+ * #1 is mathematically simpler but has the drawback of requiring synchronous
-+ * global hweight_inuse updates when idle iocg's get activated or inuse weights
-+ * change due to donation snapbacks as it has the possibility of grossly
-+ * overshooting what's allowed by the model and vrate.
-+ *
-+ * #2 is inherently safe with local operations. The donating iocg can easily
-+ * snap back to higher weights when needed without worrying about impacts on
-+ * other nodes as the impacts will be inherently correct. This also makes idle
-+ * iocg activations safe. The only effect activations have is decreasing
-+ * hweight_inuse of others, the right solution to which is for those iocgs to
-+ * snap back to higher weights.
-+ *
-+ * So, we go with #2. The challenge is calculating how each donating iocg's
-+ * inuse should be adjusted to achieve the target donation amounts. This is done
-+ * using Andy's method described in the following pdf.
-+ *
-+ *   https://drive.google.com/file/d/1PsJwxPFtjUnwOY1QJ5AeICCcsL7BM3bo
-+ *
-+ * Given the weights and target after-donation hweight_inuse values, Andy's
-+ * method determines how the proportional distribution should look like at each
-+ * sibling level to maintain the relative relationship between all non-donating
-+ * pairs. To roughly summarize, it divides the tree into donating and
-+ * non-donating parts, calculates global donation rate which is used to
-+ * determine the target hweight_inuse for each node, and then derives per-level
-+ * proportions.
-+ *
-+ * The following pdf shows that global distribution calculated this way can be
-+ * achieved by scaling inuse weights of donating leaves and propagating the
-+ * adjustments upwards proportionally.
-+ *
-+ *   https://drive.google.com/file/d/1vONz1-fzVO7oY5DXXsLjSxEtYYQbOvsE
-+ *
-+ * Combining the above two, we can determine how each leaf iocg's inuse should
-+ * be adjusted to achieve the target donation.
-+ *
-+ *   https://drive.google.com/file/d/1WcrltBOSPN0qXVdBgnKm4mdp9FhuEFQN
-+ *
-+ * The inline comments use symbols from the last pdf.
-+ *
-+ *   b is the sum of the absolute budgets in the subtree. 1 for the root node.
-+ *   f is the sum of the absolute budgets of non-donating nodes in the subtree.
-+ *   t is the sum of the absolute budgets of donating nodes in the subtree.
-+ *   w is the weight of the node. w = w_f + w_t
-+ *   w_f is the non-donating portion of w. w_f = w * f / b
-+ *   w_b is the donating portion of w. w_t = w * t / b
-+ *   s is the sum of all sibling weights. s = Sum(w) for siblings
-+ *   s_f and s_t are the non-donating and donating portions of s.
-+ *
-+ * Subscript p denotes the parent's counterpart and ' the adjusted value - e.g.
-+ * w_pt is the donating portion of the parent's weight and w'_pt the same value
-+ * after adjustments. Subscript r denotes the root node's values.
-+ */
- static void transfer_surpluses(struct list_head *surpluses, struct ioc_now *now)
- {
--	struct ioc_gq *iocg;
-+	LIST_HEAD(over_hwa);
-+	LIST_HEAD(inner_walk);
-+	struct ioc_gq *iocg, *tiocg, *root_iocg;
-+	u32 after_sum, over_sum, over_target, gamma;
-+
-+	/*
-+	 * It's pretty unlikely but possible for the total sum of
-+	 * hweight_after_donation's to be higher than WEIGHT_ONE, which will
-+	 * confuse the following calculations. If such condition is detected,
-+	 * scale down everyone over its full share equally to keep the sum below
-+	 * WEIGHT_ONE.
-+	 */
-+	after_sum = 0;
-+	over_sum = 0;
-+	list_for_each_entry(iocg, surpluses, surplus_list) {
-+		u32 hwa;
-+
-+		current_hweight(iocg, &hwa, NULL);
-+		after_sum += iocg->hweight_after_donation;
-+
-+		if (iocg->hweight_after_donation > hwa) {
-+			over_sum += iocg->hweight_after_donation;
-+			list_add(&iocg->walk_list, &over_hwa);
-+		}
-+	}
-+
-+	if (after_sum >= WEIGHT_ONE) {
-+		/*
-+		 * The delta should be deducted from the over_sum, calculate
-+		 * target over_sum value.
-+		 */
-+		u32 over_delta = after_sum - (WEIGHT_ONE - 1);
-+		WARN_ON_ONCE(over_sum <= over_delta);
-+		over_target = over_sum - over_delta;
-+	} else {
-+		over_target = 0;
-+	}
-+
-+	list_for_each_entry_safe(iocg, tiocg, &over_hwa, walk_list) {
-+		if (over_target)
-+			iocg->hweight_after_donation =
-+				div_u64((u64)iocg->hweight_after_donation *
-+					over_target, over_sum);
-+		list_del_init(&iocg->walk_list);
-+	}
-+
-+	/*
-+	 * Build pre-order inner node walk list and prepare for donation
-+	 * adjustment calculations.
-+	 */
-+	list_for_each_entry(iocg, surpluses, surplus_list) {
-+		iocg_build_inner_walk(iocg, &inner_walk);
-+	}
-+
-+	root_iocg = list_first_entry(&inner_walk, struct ioc_gq, walk_list);
-+	WARN_ON_ONCE(root_iocg->level > 0);
- 
-+	list_for_each_entry(iocg, &inner_walk, walk_list) {
-+		iocg->child_adjusted_sum = 0;
-+		iocg->hweight_donating = 0;
-+		iocg->hweight_after_donation = 0;
-+	}
-+
-+	/*
-+	 * Propagate the donating budget (b_t) and after donation budget (b'_t)
-+	 * up the hierarchy.
-+	 */
- 	list_for_each_entry(iocg, surpluses, surplus_list) {
--		u32 old_hwi, new_hwi, new_inuse;
-+		struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
-+
-+		parent->hweight_donating += iocg->hweight_donating;
-+		parent->hweight_after_donation += iocg->hweight_after_donation;
-+	}
- 
--		current_hweight(iocg, NULL, &old_hwi);
--		new_hwi = iocg->hweight_after_donation;
-+	list_for_each_entry_reverse(iocg, &inner_walk, walk_list) {
-+		if (iocg->level > 0) {
-+			struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
- 
--		new_inuse = DIV64_U64_ROUND_UP((u64)iocg->inuse * new_hwi,
--					       old_hwi);
--		__propagate_weights(iocg, iocg->weight, new_inuse);
-+			parent->hweight_donating += iocg->hweight_donating;
-+			parent->hweight_after_donation += iocg->hweight_after_donation;
-+		}
-+	}
-+
-+	/*
-+	 * Calculate inner hwa's (b) and make sure the donation values are
-+	 * within the accepted ranges as we're doing low res calculations with
-+	 * roundups.
-+	 */
-+	list_for_each_entry(iocg, &inner_walk, walk_list) {
-+		if (iocg->level) {
-+			struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
-+
-+			iocg->hweight_active = DIV64_U64_ROUND_UP(
-+				(u64)parent->hweight_active * iocg->active,
-+				parent->child_active_sum);
-+
-+		}
-+
-+		iocg->hweight_donating = min(iocg->hweight_donating,
-+					     iocg->hweight_active);
-+		iocg->hweight_after_donation = min(iocg->hweight_after_donation,
-+						   iocg->hweight_donating - 1);
-+		if (WARN_ON_ONCE(iocg->hweight_active <= 1 ||
-+				 iocg->hweight_donating <= 1 ||
-+				 iocg->hweight_after_donation == 0)) {
-+			pr_warn("iocg: invalid donation weights in ");
-+			pr_cont_cgroup_path(iocg_to_blkg(iocg)->blkcg->css.cgroup);
-+			pr_cont(": active=%u donating=%u after=%u\n",
-+				iocg->hweight_active, iocg->hweight_donating,
-+				iocg->hweight_after_donation);
-+		}
+@@ -1228,7 +1211,7 @@ static bool iocg_kick_delay(struct ioc_gq *iocg, struct ioc_now *now)
+ 		return false;
  	}
-+
+ 	if (!atomic_read(&blkg->use_delay) &&
+-	    time_before_eq64(vtime, now->vnow + ioc->margins.max))
++	    time_before_eq64(vtime, now->vnow + ioc->margins.target))
+ 		return false;
+ 
+ 	/* use delay */
+@@ -1527,7 +1510,7 @@ static u32 hweight_after_donation(struct ioc_gq *iocg, u32 hwm, u32 usage,
+ {
+ 	struct ioc *ioc = iocg->ioc;
+ 	u64 vtime = atomic64_read(&iocg->vtime);
+-	s64 excess;
++	s64 excess, delta, target, new_hwi;
+ 
+ 	/* see whether minimum margin requirement is met */
+ 	if (waitqueue_active(&iocg->waitq) ||
+@@ -1542,15 +1525,28 @@ static u32 hweight_after_donation(struct ioc_gq *iocg, u32 hwm, u32 usage,
+ 		vtime += excess;
+ 	}
+ 
+-	/* add margin */
+-	usage = DIV_ROUND_UP(usage * SURPLUS_SCALE_PCT, 100);
+-	usage += SURPLUS_SCALE_ABS;
+-
+-	/* don't bother if the surplus is too small */
+-	if (usage + SURPLUS_MIN_ADJ_DELTA > hwm)
+-		return hwm;
 +	/*
-+	 * Calculate the global donation rate (gamma) - the rate to adjust
-+	 * non-donating budgets by. No need to use 64bit multiplication here as
-+	 * the first operand is guaranteed to be smaller than WEIGHT_ONE
-+	 * (1<<16).
++	 * Let's say the distance between iocg's and device's vtimes as a
++	 * fraction of period duration is delta. Assuming that the iocg will
++	 * consume the usage determined above, we want to determine new_hwi so
++	 * that delta equals MARGIN_TARGET at the end of the next period.
 +	 *
-+	 * gamma = (1 - t_r') / (1 - t_r)
++	 * We need to execute usage worth of IOs while spending the sum of the
++	 * new budget (1 - MARGIN_TARGET) and the leftover from the last period
++	 * (delta):
++	 *
++	 *   usage = (1 - MARGIN_TARGET + delta) * new_hwi
++	 *
++	 * Therefore, the new_hwi is:
++	 *
++	 *   new_hwi = usage / (1 - MARGIN_TARGET + delta)
 +	 */
-+	gamma = DIV_ROUND_UP(
-+		(WEIGHT_ONE - root_iocg->hweight_after_donation) * WEIGHT_ONE,
-+		WEIGHT_ONE - root_iocg->hweight_donating);
-+
-+	/*
-+	 * Calculate adjusted hwi, child_adjusted_sum and inuse for the inner
-+	 * nodes.
-+	 */
-+	list_for_each_entry(iocg, &inner_walk, walk_list) {
-+		struct ioc_gq *parent;
-+		u32 inuse, wpt, wptp;
-+		u64 st, sf;
-+
-+		if (iocg->level == 0) {
-+			/* adjusted weight sum for 1st level: s' = s * b_pf / b'_pf */
-+			iocg->child_adjusted_sum = DIV64_U64_ROUND_UP(
-+				iocg->child_active_sum * (WEIGHT_ONE - iocg->hweight_donating),
-+				WEIGHT_ONE - iocg->hweight_after_donation);
-+			continue;
-+		}
-+
-+		parent = iocg->ancestors[iocg->level - 1];
-+
-+		/* b' = gamma * b_f + b_t' */
-+		iocg->hweight_inuse = DIV64_U64_ROUND_UP(
-+			(u64)gamma * (iocg->hweight_active - iocg->hweight_donating),
-+			WEIGHT_ONE) + iocg->hweight_after_donation;
-+
-+		/* w' = s' * b' / b'_p */
-+		inuse = DIV64_U64_ROUND_UP(
-+			(u64)parent->child_adjusted_sum * iocg->hweight_inuse,
-+			parent->hweight_inuse);
-+
-+		/* adjusted weight sum for children: s' = s_f + s_t * w'_pt / w_pt */
-+		st = DIV64_U64_ROUND_UP(
-+			iocg->child_active_sum * iocg->hweight_donating,
-+			iocg->hweight_active);
-+		sf = iocg->child_active_sum - st;
-+		wpt = DIV64_U64_ROUND_UP(
-+			(u64)iocg->active * iocg->hweight_donating,
-+			iocg->hweight_active);
-+		wptp = DIV64_U64_ROUND_UP(
-+			(u64)inuse * iocg->hweight_after_donation,
-+			iocg->hweight_inuse);
-+
-+		iocg->child_adjusted_sum = sf + DIV64_U64_ROUND_UP(st * wptp, wpt);
-+	}
-+
-+	/*
-+	 * All inner nodes now have ->hweight_inuse and ->child_adjusted_sum and
-+	 * we can finally determine leaf adjustments.
-+	 */
-+	list_for_each_entry(iocg, surpluses, surplus_list) {
-+		struct ioc_gq *parent = iocg->ancestors[iocg->level - 1];
-+		u32 inuse;
-+
-+		/* w' = s' * b' / b'_p, note that b' == b'_t for donating leaves */
-+		inuse = DIV64_U64_ROUND_UP(
-+			parent->child_adjusted_sum * iocg->hweight_after_donation,
-+			parent->hweight_inuse);
-+		__propagate_weights(iocg, iocg->active, inuse);
-+	}
-+
-+	/* walk list should be dissolved after use */
-+	list_for_each_entry_safe(iocg, tiocg, &inner_walk, walk_list)
-+		list_del_init(&iocg->walk_list);
++	delta = div64_s64(WEIGHT_ONE * (now->vnow - vtime),
++			  now->vnow - ioc->period_at_vtime);
++	target = WEIGHT_ONE * MARGIN_TARGET_PCT / 100;
++	new_hwi = div64_s64(WEIGHT_ONE * usage, WEIGHT_ONE - target + delta);
+ 
+-	return usage;
++	return clamp_t(s64, new_hwi, 1, hwm);
  }
  
- static void ioc_timer_fn(struct timer_list *timer)
-@@ -1705,16 +1939,18 @@ static void ioc_timer_fn(struct timer_list *timer)
+ /*
+@@ -1812,7 +1808,7 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 	u32 ppm_wthr = MILLION - ioc->params.qos[QOS_WPPM];
+ 	u32 missed_ppm[2], rq_wait_pct;
+ 	u64 period_vtime;
+-	int prev_busy_level, i;
++	int prev_busy_level;
+ 
+ 	/* how were the latencies during the period? */
+ 	ioc_lat_stat(ioc, missed_ppm, &rq_wait_pct);
+@@ -1857,11 +1853,10 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 	}
+ 	commit_weights(ioc);
+ 
+-	/* calc usages and see whether some weights need to be moved around */
++	/* calc usage and see whether some weights need to be moved around */
+ 	list_for_each_entry(iocg, &ioc->active_iocgs, active_list) {
+-		u64 vdone, vtime, usage_us;
+-		u32 hw_active, hw_inuse, usage;
+-		int uidx, nr_valid;
++		u64 vdone, vtime, usage_us, usage_dur;
++		u32 usage, hw_active, hw_inuse;
+ 
+ 		/*
+ 		 * Collect unused and wind vtime closer to vnow to prevent
+@@ -1886,15 +1881,11 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 			nr_lagging++;
+ 
+ 		/*
+-		 * Determine absolute usage factoring in pending and in-flight
+-		 * IOs to avoid stalls and high-latency completions appearing as
+-		 * idle.
++		 * Determine absolute usage factoring in in-flight IOs to avoid
++		 * high-latency completions appearing as idle.
+ 		 */
+ 		usage_us = iocg->usage_delta_us;
+-		if (waitqueue_active(&iocg->waitq) && time_before64(vtime, now.vnow))
+-			usage_us += DIV64_U64_ROUND_UP(
+-				cost_to_abs_cost(now.vnow - vtime, hw_inuse),
+-				now.vrate);
++
+ 		if (vdone != vtime) {
+ 			u64 inflight_us = DIV64_U64_ROUND_UP(
+ 				cost_to_abs_cost(vtime - vdone, hw_inuse),
+@@ -1902,43 +1893,22 @@ static void ioc_timer_fn(struct timer_list *timer)
+ 			usage_us = max(usage_us, inflight_us);
+ 		}
+ 
+-		/* convert to hweight based usage ratio and record */
+-		uidx = (iocg->usage_idx + 1) % NR_USAGE_SLOTS;
+-
+-		if (time_after64(vtime, now.vnow - ioc->margins.min)) {
+-			iocg->usage_idx = uidx;
+-			iocg->usages[uidx] = WEIGHT_ONE;
+-		} else if (usage_us) {
+-			u64 started_at, dur;
+-
+-			if (time_after64(iocg->activated_at, ioc->period_at))
+-				started_at = iocg->activated_at;
+-			else
+-				started_at = ioc->period_at;
+-
+-			dur = max_t(u64, now.now - started_at, 1);
++		/* convert to hweight based usage ratio */
++		if (time_after64(iocg->activated_at, ioc->period_at))
++			usage_dur = max_t(u64, now.now - iocg->activated_at, 1);
++		else
++			usage_dur = max_t(u64, now.now - ioc->period_at, 1);
+ 
+-			iocg->usage_idx = uidx;
+-			iocg->usages[uidx] = clamp_t(u32,
+-				DIV64_U64_ROUND_UP(usage_us * WEIGHT_ONE, dur),
++		usage = clamp_t(u32,
++				DIV64_U64_ROUND_UP(usage_us * WEIGHT_ONE,
++						   usage_dur),
+ 				1, WEIGHT_ONE);
+-		}
+-
+-		/* base the decision on max historical usage */
+-		for (i = 0, usage = 0, nr_valid = 0; i < NR_USAGE_SLOTS; i++) {
+-			if (iocg->usages[i]) {
+-				usage = max(usage, iocg->usages[i]);
+-				nr_valid++;
+-			}
+-		}
+-		if (nr_valid < MIN_VALID_USAGES)
+-			usage = WEIGHT_ONE;
+ 
+ 		/* see whether there's surplus vtime */
+ 		WARN_ON_ONCE(!list_empty(&iocg->surplus_list));
  		if (hw_inuse < hw_active ||
  		    (!waitqueue_active(&iocg->waitq) &&
- 		     time_before64(vtime, now.vnow - ioc->margins.max))) {
--			u32 hwm, new_hwi;
-+			u32 hwa, hwm, new_hwi;
+-		     time_before64(vtime, now.vnow - ioc->margins.max))) {
++		     time_before64(vtime, now.vnow - ioc->margins.low))) {
+ 			u32 hwa, hwm, new_hwi;
  
  			/*
- 			 * Already donating or accumulated enough to start.
- 			 * Determine the donation amount.
- 			 */
-+			current_hweight(iocg, &hwa, NULL);
- 			hwm = current_hweight_max(iocg);
- 			new_hwi = hweight_after_donation(iocg, hwm, usage,
- 							 &now);
- 			if (new_hwi < hwm) {
-+				iocg->hweight_donating = hwa;
- 				iocg->hweight_after_donation = new_hwi;
- 				list_add(&iocg->surplus_list, &surpluses);
- 			} else {
+@@ -2175,15 +2145,14 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	if (!ioc->enabled || !iocg->level)
+ 		return;
+ 
+-	/* always activate so that even 0 cost IOs get protected to some level */
+-	if (!iocg_activate(iocg, &now))
+-		return;
+-
+ 	/* calculate the absolute vtime cost */
+ 	abs_cost = calc_vtime_cost(bio, iocg, false);
+ 	if (!abs_cost)
+ 		return;
+ 
++	if (!iocg_activate(iocg, &now))
++		return;
++
+ 	iocg->cursor = bio_end_sector(bio);
+ 
+ 	vtime = atomic64_read(&iocg->vtime);
 -- 
 2.26.2
 
