@@ -2,74 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CCD25F4B0
-	for <lists+cgroups@lfdr.de>; Mon,  7 Sep 2020 10:12:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FE8225F9DE
+	for <lists+cgroups@lfdr.de>; Mon,  7 Sep 2020 13:50:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727978AbgIGIKo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Sep 2020 04:10:44 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:41210 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727969AbgIGIKh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Sep 2020 04:10:37 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R761e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0U87zzD4_1599466231;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0U87zzD4_1599466231)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 07 Sep 2020 16:10:31 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 5/5] blk-throttle: Avoid checking bps/iops limitation if bps or iops is unlimited
-Date:   Mon,  7 Sep 2020 16:10:17 +0800
-Message-Id: <a4fab3f329b3334850c508e824e137dfc9b29025.1599458244.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
-References: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
-References: <cover.1599458244.git.baolin.wang@linux.alibaba.com>
+        id S1729109AbgIGLty (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Sep 2020 07:49:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729135AbgIGLrs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Sep 2020 07:47:48 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F488C061574
+        for <cgroups@vger.kernel.org>; Mon,  7 Sep 2020 04:47:48 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id l63so12473035edl.9
+        for <cgroups@vger.kernel.org>; Mon, 07 Sep 2020 04:47:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=395Y0lUxtoxk+N6Xwo36+dBOIhVjSE/2+oZvPClU7KM=;
+        b=cuAJnS9cKwag10JrR5XWKLTSDpsVij2RIxygdpxgcJAAdzqC0pGMP0broEdFrjuV2u
+         YK1YpzjfS7JWBVBZPRmTUcfnAukLTXmsLJ2XSzMOmdbEBvGaIW/6SMoesJ2yxCpA/WG2
+         m8QnLvvHNNu3zgtJUbsMfzQakaNE4sxXw5yG0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=395Y0lUxtoxk+N6Xwo36+dBOIhVjSE/2+oZvPClU7KM=;
+        b=CcPDm4ZYwD9l2OkqVn6IoRW/o/JjlyZpaq408/qobCtMhqRLg9HxpUiki4Ojht4zSl
+         bZZju7SYcc5s/eN5QdExE2OHbCtufA9vAwi5DMyTkWzhz05vVGpkBh72cup+WAfjP7Qf
+         deUoczC9mAFC/msrt7JgUK27n73VI9iMnCAqvmylFaW90JrTAJtfwzV7MYFK0cxdq0WE
+         eT9FMMCBmLm93LgsTt0hOece3NA9jthXbQagth2DksAH2fpLbAVR4XA4pwKojr8Z//sO
+         b+LK0jqlL/WRpO/8EDZ7Hqom+DgYbGgb9E/hXA8nUZJG4GjhNqD+Dof5qKOm+X2btHYv
+         2dig==
+X-Gm-Message-State: AOAM532OUu+cdax90s+q1TxepcUFFaNRCOVTsc7Toex+i5ljoXUKbxDu
+        z+gt06Tm4D59vtsLu1KKe54e0g==
+X-Google-Smtp-Source: ABdhPJyILtFsw8r3H1RpyzxLgjhS4fpPrmJqOehWQUoj7NYN8ViFHh3BGjy7PTSONASUxNPG0HBqNg==
+X-Received: by 2002:a05:6402:1151:: with SMTP id g17mr21705446edw.227.1599479266759;
+        Mon, 07 Sep 2020 04:47:46 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:80b])
+        by smtp.gmail.com with ESMTPSA id q14sm14733379edv.54.2020.09.07.04.47.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 07 Sep 2020 04:47:45 -0700 (PDT)
+Date:   Mon, 7 Sep 2020 12:47:45 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Waiman Long <longman@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
+ control
+Message-ID: <20200907114745.GA1076657@chrisdown.name>
+References: <20200817140831.30260-1-longman@redhat.com>
+ <20200818091453.GL2674@hirez.programming.kicks-ass.net>
+ <20200818092617.GN28270@dhcp22.suse.cz>
+ <20200818095910.GM2674@hirez.programming.kicks-ass.net>
+ <20200818100516.GO28270@dhcp22.suse.cz>
+ <20200818101844.GO2674@hirez.programming.kicks-ass.net>
+ <20200818134900.GA829964@cmpxchg.org>
+ <20200821193716.GU3982@worktop.programming.kicks-ass.net>
+ <20200824165850.GA932571@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20200824165850.GA932571@cmpxchg.org>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Do not need check the bps or iops limitation if bps or iops is unlimited.
+Johannes Weiner writes:
+>That all being said, the semantics of the new 'high' limit in cgroup2
+>have allowed us to move reclaim/limit enforcement out of the
+>allocation context and into the userspace return path.
+>
+>See the call to mem_cgroup_handle_over_high() from
+>tracehook_notify_resume(), and the comments in try_charge() around
+>set_notify_resume().
+>
+>This already solves the free->alloc ordering problem by allowing the
+>allocation to exceed the limit temporarily until at least all locks
+>are dropped, we know we can sleep etc., before performing enforcement.
+>
+>That means we may not need the timed sleeps anymore for that purpose,
+>and could bring back directed waits for freeing-events again.
+>
+>What do you think? Any hazards around indefinite sleeps in that resume
+>path? It's called before __rseq_handle_notify_resume and the
+>arch-specific resume callback (which appears to be a no-op currently).
+>
+>Chris, Michal, what are your thoughts? It would certainly be simpler
+>conceptually on the memcg side.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-throttle.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 8719e37..36ba61c 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -901,6 +901,12 @@ static bool tg_with_in_iops_limit(struct throtl_grp *tg, struct bio *bio,
- 	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
- 	u64 tmp;
- 
-+	if (iops_limit == UINT_MAX) {
-+		if (wait)
-+			*wait = 0;
-+		return true;
-+	}
-+
- 	jiffy_elapsed = jiffies - tg->slice_start[rw];
- 
- 	/* Round up to the next throttle slice, wait time must be nonzero */
-@@ -943,6 +949,12 @@ static bool tg_with_in_bps_limit(struct throtl_grp *tg, struct bio *bio,
- 	unsigned long jiffy_elapsed, jiffy_wait, jiffy_elapsed_rnd;
- 	unsigned int bio_size = throtl_bio_data_size(bio);
- 
-+	if (bps_limit == U64_MAX) {
-+		if (wait)
-+			*wait = 0;
-+		return true;
-+	}
-+
- 	jiffy_elapsed = jiffy_elapsed_rnd = jiffies - tg->slice_start[rw];
- 
- 	/* Slice has just started. Consider one slice interval */
--- 
-1.8.3.1
-
+I'm not against that, although I personally don't feel very strongly about it 
+either way, since the current behaviour clearly works in practice.
