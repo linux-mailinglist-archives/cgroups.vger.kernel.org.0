@@ -2,83 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A02AC2618CA
-	for <lists+cgroups@lfdr.de>; Tue,  8 Sep 2020 20:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D32CF261B34
+	for <lists+cgroups@lfdr.de>; Tue,  8 Sep 2020 20:59:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731436AbgIHSDJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Sep 2020 14:03:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45720 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731548AbgIHSDH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Sep 2020 14:03:07 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5AA05C061573;
-        Tue,  8 Sep 2020 11:03:06 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id r8so3388485qtp.13;
-        Tue, 08 Sep 2020 11:03:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9mmDYx8WrU8rvHetKafuDvQNZNEWur0WVQdCgfEZspw=;
-        b=SPoVuP8Q6WzCw4D9NfkuXnNEptqRql+J4fajBqQc2kYsIhfgOYk0tEnacAbvowX1iH
-         2HgdyOoKtpvck6By0pNhFJcCOunkqWjl1JRzB0GS2+WGlkYvhTBUzobypXqZwLPOYibT
-         xt8Zl3up/YriK4ErSIiCCMeyzZTRfS3d4j3xIaFGJZbVBrYfKR4wOZkZXYMQ1AYpuiU7
-         8b6dAZPZMG5ggCV7UZI9MBPStx8lOwxR0DxqFyfvocgsBQy18+BFgkiSxtRpL4KUFzOM
-         UnZoy5BRkMnhnH5ejxOYYoUIK1COU05dLo0PqODWfSyByRIY7crPD5mm0SSR7OTFb536
-         Vzjw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9mmDYx8WrU8rvHetKafuDvQNZNEWur0WVQdCgfEZspw=;
-        b=YAwCdU41qNSS14LxDKYhMp9OHdRjbLjz+iEOmuQYWmyNkgI0c0BqVLxslf0CLhluTM
-         FuVHV0LOpGgRUmnGMa+5xPRiSAtdepkIHfngGM8R0hKvskjb9TEhtkcVPy7JmRIySx5r
-         Fqz1Wq/BuRtrjeBesIQHBMoaS6XrRKni829dhGlBOwZxi4I6nlaMy2He3+ljHnEWdnAr
-         9FOirRGl2ZsfVOOx5fIy9XfNs4mm/03GQA60fgwvldFMclNBsxARTmpqCBJF/Sz8T5gM
-         tDq8j3ps9la1LX6amJSBn1x9fLQm6keuNZkXuk3anqa1Oaq55Cy0Si3jYl5hjd2D4hwo
-         1WVA==
-X-Gm-Message-State: AOAM532bHMib3VUDjpadu/QHG/oUrqLtOTQlla77LOXzi4nsHxQa5Qmx
-        78az5ZQ//Qv0DmLk8FbSrZY=
-X-Google-Smtp-Source: ABdhPJxZp/BKi4pCSubL4sPpiZCHt5AmUer/L4tlgYku0XHZVMEBaXZZz/rd/r7R8Ru4Z+PNDK1nug==
-X-Received: by 2002:ac8:7388:: with SMTP id t8mr1294476qtp.187.1599588185280;
-        Tue, 08 Sep 2020 11:03:05 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:87d8])
-        by smtp.gmail.com with ESMTPSA id v16sm7627009qkg.37.2020.09.08.11.03.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Sep 2020 11:03:04 -0700 (PDT)
-Date:   Tue, 8 Sep 2020 14:03:02 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Tianxianting <tian.xianting@h3c.com>
-Cc:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] blkcg: add plugging support for punt bio
-Message-ID: <20200908180302.GE4295@mtj.thefacebook.com>
-References: <1596722082-31817-1-git-send-email-xianting_tian@126.com>
- <8f84e1fe-9fa5-b7e7-1f2f-b0c4a40614e2@kernel.dk>
- <42b939c2.e08.173c6f79af9.Coremail.xianting_tian@126.com>
- <1ded6246.2c67.17458ce4300.Coremail.xianting_tian@126.com>
- <65e1e040da644ed9a05edd166d06b5e3@h3c.com>
+        id S1731340AbgIHS6x (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Sep 2020 14:58:53 -0400
+Received: from rcdn-iport-9.cisco.com ([173.37.86.80]:22168 "EHLO
+        rcdn-iport-9.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730572AbgIHS6w (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Sep 2020 14:58:52 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Tue, 08 Sep 2020 14:58:51 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1391; q=dns/txt; s=iport;
+  t=1599591531; x=1600801131;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=m2WVpZpXrtQFXh3Ql4JrliPwX+fM66/2SHqLhNxgwkY=;
+  b=KnYh3lHP4/Pu4OSlhFDHLVbfoxOVsRcMaYRNRv459un7R/dOKJu/TVfZ
+   knVJe3j1CGYS+0nTi6yI2AAbBjKCaDRKp537mXeHkDVYbh9mHX4Esi4E0
+   spzQSsk0yz4pU8CBK7o05+KtEyqKAqKdiHtDVeOhk+uBaODMXfKpMSj26
+   Y=;
+X-IronPort-AV: E=Sophos;i="5.76,406,1592870400"; 
+   d="scan'208";a="732158731"
+Received: from rcdn-core-1.cisco.com ([173.37.93.152])
+  by rcdn-iport-9.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 08 Sep 2020 18:51:43 +0000
+Received: from sjc-ads-9087.cisco.com (sjc-ads-9087.cisco.com [10.30.208.97])
+        by rcdn-core-1.cisco.com (8.15.2/8.15.2) with ESMTP id 088IphYE005304;
+        Tue, 8 Sep 2020 18:51:43 GMT
+Received: by sjc-ads-9087.cisco.com (Postfix, from userid 396877)
+        id D89BFBFD; Tue,  8 Sep 2020 11:51:42 -0700 (PDT)
+From:   Julius Hemanth Pitti <jpitti@cisco.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com,
+        Julius Hemanth Pitti <jpitti@cisco.com>
+Subject: [PATCH] mm: memcg: yield cpu when we fail to charge pages
+Date:   Tue,  8 Sep 2020 11:50:51 -0700
+Message-Id: <20200908185051.62420-1-jpitti@cisco.com>
+X-Mailer: git-send-email 2.19.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <65e1e040da644ed9a05edd166d06b5e3@h3c.com>
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.30.208.97, sjc-ads-9087.cisco.com
+X-Outbound-Node: rcdn-core-1.cisco.com
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Sep 05, 2020 at 11:25:03AM +0000, Tianxianting wrote:
-> Hi jens,tj
-> Could you share a couple of  minutes to comment it?
-> I really appreciate it
+For non root CG, in try_charge(), we keep trying
+to charge until we succeed. On non-preemptive
+kernel, when we are OOM, this results in holding
+CPU forever.
 
-The result looks fine to me but can you please summarize that in the commit
-message of the patch?
+On SMP systems, this doesn't create a big problem
+because oom_reaper get a change to kill victim
+and make some free pages. However on a single-core
+CPU (or cases where oom_reaper pinned to same CPU
+where try_charge is executing), oom_reaper shall
+never get scheduled and we stay in try_charge forever.
 
-Thanks.
+Steps to repo this on non-smp:
+1. mount -t tmpfs none /sys/fs/cgroup
+2. mkdir /sys/fs/cgroup/memory
+3. mount -t cgroup none /sys/fs/cgroup/memory -o memory
+4. mkdir /sys/fs/cgroup/memory/0
+5. echo 40M > /sys/fs/cgroup/memory/0/memory.limit_in_bytes
+6. echo $$ > /sys/fs/cgroup/memory/0/tasks
+7. stress -m 5 --vm-bytes 10M --vm-hang 0
 
+Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+---
+ mm/memcontrol.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 0d6f3ea86738..4620d70267cb 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2652,6 +2652,8 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (fatal_signal_pending(current))
+ 		goto force;
+ 
++	cond_resched();
++
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+ 	 * a forward progress or bypass the charge if the oom killer
 -- 
-tejun
+2.17.1
+
