@@ -2,84 +2,98 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E18E262527
-	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 04:24:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30EE1262555
+	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 04:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726489AbgIICYY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Sep 2020 22:24:24 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:42086 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726369AbgIICYY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Sep 2020 22:24:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R731e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0U8MLMVV_1599618258;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0U8MLMVV_1599618258)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 09 Sep 2020 10:24:19 +0800
-Date:   Wed, 9 Sep 2020 10:24:18 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     Hugh Dickins <hughd@google.com>
+        id S1726605AbgIICoo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Sep 2020 22:44:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726002AbgIICon (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Sep 2020 22:44:43 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC6D9C061573;
+        Tue,  8 Sep 2020 19:44:42 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id m8so976523pgi.3;
+        Tue, 08 Sep 2020 19:44:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=0ZdmUVaaik0Cd28h3Zbe2m43Ssgf1GR/sAhP0i4ZEkE=;
+        b=AnELXMNtpHPPvFIglx8F3SVHWevil/Qj/z/vpbBRAvIn5Z+8QZvRRdtDrnet3+bsLM
+         5mCLGxCFpyFhqz95Hx4U4HTvz5lQjzyhOuSdSEsfTMrNQimYLdlqYew1C5g66rd5/su2
+         CNH0k30TqQpa5zqkDQirUnbrGnTL0LJeLOdkLsfi2Z7BI4YZu/TDAbvV38KLLXcrhNH6
+         zfotW278dwua1xutDu6WQ4z4I55XsYNz9vIlb2ToKsKtYIXaTYjXBj6Dr7qzfXmWutZN
+         ZY89N3EA5hpaqooLt1MKRRrIEkQhWYLwuREAdK6vuhA2hQvMXg+kaJBSOiAgPVm5ebo/
+         hrTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=0ZdmUVaaik0Cd28h3Zbe2m43Ssgf1GR/sAhP0i4ZEkE=;
+        b=lgUfN4KK0n3awGsKwwYCRGSK7EgB2/HCL5KDe0Y/VbGLHdSuNn4kwULEnHrRC05B6K
+         wK4B1vU7sDFXfKHa+yFBIbvU/qaRh7wjsUY7oQN8fB+bydxGWQcke4fBsr4YdCq4Gxgr
+         RBJr4B141tzsqzjuidOy6mw+IhJsQLzRnQs4uOEaVHfZJ1PMq/gh0xFTgLObasKBCHoA
+         sOSKsWaHwHFFo5z8CbBwqSyJe3MJOZHYKnuL5cRh8PGKl1Ql3VsaZUIrdqtjlaoyf0bR
+         QCZC3IaM6c9+EOJOkpsQwc61fP8jIREfuB7+8ZUkilE43mHQrAdc/JBsdrn9qq85DWNm
+         S1dQ==
+X-Gm-Message-State: AOAM531aZVaRWKbnCyeUXsA+neHxGluxzFHIHEguM+XNygZ0lQhXjPTu
+        Xo5Rjbv1qfQAYvm1TfujVdk=
+X-Google-Smtp-Source: ABdhPJy4R6mz9uYwCQ+w3R9a2nnsXjsgw2amLudcvUNkXcUDKVv/IUKrWuLgI1C9iMeS6XgZAub9AQ==
+X-Received: by 2002:a63:110c:: with SMTP id g12mr1261586pgl.91.1599619482359;
+        Tue, 08 Sep 2020 19:44:42 -0700 (PDT)
+Received: from desktop-ziqianlu ([47.89.83.67])
+        by smtp.gmail.com with ESMTPSA id m190sm684741pfm.184.2020.09.08.19.44.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 08 Sep 2020 19:44:41 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 10:44:32 +0800
+From:   Aaron Lu <aaron.lwe@gmail.com>
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>
 Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Hugh Dickins <hughd@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
         kirill@shutemov.name, alexander.duyck@gmail.com,
         rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-Message-ID: <20200909022418.GA14584@L-31X9LVDL-1304.local>
-Reply-To: Wei Yang <richard.weiyang@linux.alibaba.com>
+        shy828301@gmail.com
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock
+Message-ID: <20200909024432.GA9736@desktop-ziqianlu>
 References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
  <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
  <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+ <20200825015627.3c3pnwauqznnp3gc@ca-dmjordan1.us.oracle.com>
+ <ec62a835-f79d-2b8c-99c7-120834703b42@linux.alibaba.com>
+ <20200826011946.spknwjt44d2szrdo@ca-dmjordan1.us.oracle.com>
+ <01ed6e45-3853-dcba-61cb-b429a49a7572@linux.alibaba.com>
+ <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+In-Reply-To: <20200828014022.y5xju6weysqpzxd2@ca-dmjordan1.us.oracle.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 08, 2020 at 04:41:00PM -0700, Hugh Dickins wrote:
-[...]
->[PATCH v18 06/32] mm/thp: narrow lru locking
->Why? What part does this play in the series? "narrow lru locking" can
->also be described as "widen page cache locking": you are changing the
->lock ordering, and not giving any reason to do so. This may be an
->excellent change, or it may be a terrible change: I find that usually
->lock ordering is forced upon us, and it's rare to meet an instance like
->this that could go either way, and I don't know myself how to judge it.
->
->I do want this commit to go in, partly because it has been present in
->all the testing we have done, and partly because I *can at last* see a
->logical advantage to it - it also nests lru_lock inside memcg->move_lock,
->allowing lock_page_memcg() to be used to stabilize page->mem_cgroup when
->getting per-memcg lru_lock - though only in one place, starting in v17,
->do you actually use that (and, warning: it's not used correctly there).
->
->I'm not very bothered by how the local_irq_disable() looks to RT: THP
->seems a very bad idea in an RT kernel.  Earlier I asked you to run this
->past Kirill and Matthew and Johannes: you did so, thank you, and Kirill
->has blessed it, and no one has nacked it, and I have not noticed any
->disadvantage from this change in lock ordering (documented in 23/32),
->so I'm now going to say
->
->Acked-by: Hugh Dickins <hughd@google.com>
->
->But I wish you could give some reason for it in the commit message!
->
->Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->Is that correct? Or Wei Yang suggested some part of it perhaps?
->
+On Thu, Aug 27, 2020 at 09:40:22PM -0400, Daniel Jordan wrote:
+> I went back to your v1 post to see what motivated you originally, and you had
+> some results from aim9 but nothing about where this reared its head in the
+> first place.  How did you discover the bottleneck?  I'm just curious about how
+> lru_lock hurts in practice.
 
-If my memory is correct, we had some offline discussion about this change.
+I think making lru_lock per-memcg helps in colocated environment: some
+workloads are of high priority while some workloads are of low priority.
 
--- 
-Wei Yang
-Help you, Help me
+For these low priority workloads, we may even want to use some swap for
+it to save memory and this can cause frequent alloc/reclaim, depending
+on its workingset etc. and these alloc/reclaim need to hold the global
+lru lock and zone lock. And then when the high priority workloads do
+page fault, their performance can be adversely affected and that is not
+acceptible since these high priority workloads normally have strict SLA
+requirement.
