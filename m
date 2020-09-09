@@ -2,148 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C19E263140
-	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 18:04:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4D2263167
+	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 18:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730853AbgIIQD6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Sep 2020 12:03:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37996 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730874AbgIIQDp (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 9 Sep 2020 12:03:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7A5B9AD1E;
-        Wed,  9 Sep 2020 11:53:59 +0000 (UTC)
-Date:   Wed, 9 Sep 2020 13:53:57 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Waiman Long <longman@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/8] memcg: Enable fine-grained per process memory
- control
-Message-ID: <20200909115357.GI7348@dhcp22.suse.cz>
-References: <20200817140831.30260-1-longman@redhat.com>
- <20200818091453.GL2674@hirez.programming.kicks-ass.net>
- <20200818092617.GN28270@dhcp22.suse.cz>
- <20200818095910.GM2674@hirez.programming.kicks-ass.net>
- <20200818100516.GO28270@dhcp22.suse.cz>
- <20200818101844.GO2674@hirez.programming.kicks-ass.net>
- <20200818134900.GA829964@cmpxchg.org>
- <20200821193716.GU3982@worktop.programming.kicks-ass.net>
- <20200824165850.GA932571@cmpxchg.org>
+        id S1730456AbgIIQMO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Sep 2020 12:12:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53820 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730576AbgIIQLl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Sep 2020 12:11:41 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56ED3C061756;
+        Wed,  9 Sep 2020 09:11:40 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t16so2820126ilf.13;
+        Wed, 09 Sep 2020 09:11:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fi6EPOk4V99JFbqYmEhNPN5TNg8BdROS9o2xQ3RBg5E=;
+        b=rlfBLzoK50AdGuXYFUe5sFCgGZuO8AeB+DJLXTpOd98w2tONPNvWw7PRN8UwfX1kcB
+         qpaUWzVXxXFCR4QS6X1eKPXKlVCOw84PnHMfRJcwucgm7MCtrONclkv3c2KGz6NKRWF6
+         bIpuGEl92zf3lDES3mrCY0o9yN5bbmlesde/nSjHgaz11aqQZJE94l16lobir7khJp1G
+         cAcR6z9rG4oAj+dPwZ9HPfHvbwf3BM1FGFuYK/NIxWfxS1rSM4FBiuz2BiSu5KXeaOPw
+         QTce2zDZfvrieGVGSjHvcdTXGqtBQ81gE7ZOjeMSmma7RQZoOn1sEkpUSmqsZ5lAvgfp
+         /a4A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fi6EPOk4V99JFbqYmEhNPN5TNg8BdROS9o2xQ3RBg5E=;
+        b=qJha6f4gmbSWYnm3pGMA6D5vLY6ARzjyxho3VTsLMjBB/cTxAtHxTt94z8Aoa+r5xE
+         EWpB1yVgcPRfJoAy9OD8AfSKjtSZVpG4/+TEplEuCjhedRNFCRDWSymyo8b8qvKZCZTL
+         jrw3/FM1+i9EGAcnFdXFtRyir26nDvRCPWImbaGfJN/vcyM9QQm6INroR9lLzetFSvSK
+         u4XhOKZEwVJp3VAnEkn2CIVldc2MXdTk0oCCSjSHLLgojnkQsmWSq2WBlAxQJ+pdOjgB
+         fzVKx3+seybPo0VHEOcW01GkOfJmc/G1C754Qb9KKbvNskgtlfQcYyQsRgRkE89rR+Q0
+         GbUQ==
+X-Gm-Message-State: AOAM5321nXgtgmyU/XSM+cjnc5QIBRQkFic+sZNGwaw4A+QIhdbi+DdM
+        Di3dKc9UoZfhuVY0iZciEBhYXP4U67TKgyaDnY0=
+X-Google-Smtp-Source: ABdhPJx7KEby+OfH82kXGH3NIHe6v3PfIbd7mVCLU00Uzi2e/UVTJzdsgLsJe7WH+xQ5FqL4JHH6CPwAlr9OBlnQ7WQ=
+X-Received: by 2002:a92:ae06:: with SMTP id s6mr4063803ilh.64.1599667899575;
+ Wed, 09 Sep 2020 09:11:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200824165850.GA932571@cmpxchg.org>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils> <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+From:   Alexander Duyck <alexander.duyck@gmail.com>
+Date:   Wed, 9 Sep 2020 09:11:28 -0700
+Message-ID: <CAKgT0Uc_L-Tz_rVJiHc5GUK_ZWOs2wRvez4QGf2wwEjx38qnbg@mail.gmail.com>
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Tejun Heo <tj@kernel.org>,
+        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        kbuild test robot <lkp@intel.com>,
+        linux-mm <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Wei Yang <richard.weiyang@gmail.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Rong Chen <rong.a.chen@intel.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[Sorry, this slipped through cracks]
+On Tue, Sep 8, 2020 at 4:41 PM Hugh Dickins <hughd@google.com> wrote:
+>
 
-On Mon 24-08-20 12:58:50, Johannes Weiner wrote:
-> On Fri, Aug 21, 2020 at 09:37:16PM +0200, Peter Zijlstra wrote:
-[...]
-> > Arguably seeing the rate drop to near 0 is a very good point to consider
-> > running cgroup-OOM.
-> 
-> Agreed. In the past, that's actually what we did: In cgroup1, you
-> could disable the kernel OOM killer, and when reclaim failed at the
-> limit, the allocating task would be put on a waitqueue until woken up
-> by a freeing event. Conceptually this is clean & straight-forward.
-> 
-> However,
-> 
-> 1. Putting allocation contexts with unknown locks to indefinite sleep
->    caused deadlocks, for obvious reasons. Userspace OOM killing tends
->    to take a lot of task-specific locks when scanning through /proc
->    files for kill candidates, and can easily get stuck.
-> 
->    Using bounded over indefinite waits is simply acknowledging that
->    the deadlock potential when connecting arbitrary task stacks in the
->    system through free->alloc ordering is equally difficult to plan
->    out as alloc->free ordering.
-> 
->    The non-cgroup OOM killer actually has the same deadlock potential,
->    where the allocating/killing task can hold resources that the OOM
->    victim requires to exit. The OOM reaper hides it, the static
->    emergency reserves hide it - but to truly solve this problem, you
->    would have to have full knowledge of memory & lock ordering
->    dependencies of those tasks. And then can still end up with
->    scenarios where the only answer is panic().
+<snip>
 
-Yes. Even killing all eligible tasks is not guaranteed to help the
-situation because a) resources might be not bound to a process life time
-(e.g. tmpfs) or ineligible task might be holding resources that block
-others to do the proper cleanup. OOM reaper is here to make sure we
-reclaim some of the address space of the victim and we go over all
-eligible tasks rather than getting stuck at the first victim for ever.
- 
-> 2. I don't recall ever seeing situations in cgroup1 where the precise
->    matching of allocation rate to freeing rate has allowed cgroups to
->    run sustainably after reclaim has failed. The practical benefit of
->    a complicated feedback loop over something crude & robust once
->    we're in an OOM situation is not apparent to me.
+> [PATCH v18 28/32] mm/compaction: Drop locked from isolate_migratepages_block
+> Most of this consists of replacing "locked" by "lruvec", which is good:
+> but please fold those changes back into 20/32 (or would it be 17/32?
+> I've not yet looked into the relationship between those two), so we
+> can then see more clearly what change this 28/32 (will need renaming!)
+> actually makes, to use lruvec_holds_page_lru_lock(). That may be a
+> good change, but it's mixed up with the "locked"->"lruvec" at present,
+> and I think you could have just used lruvec for locked all along
+> (but of course there's a place where you'll need new_lruvec too).
 
-Yes, this is usually go OOM and kill something. Running on a very edge
-of the (memcg) oom doesn't tend to be sustainable and I am not sure it
-makes sense to optimize for.
+I am good with my patch being folded in. No need to keep it separate.
 
->    [ That's different from the IO-throttling *while still doing
->      reclaim* that Dave brought up. *That* justifies the same effort
->      we put into dirty throttling. I'm only talking about the
->      situation where reclaim has already failed and we need to
->      facilitate userspace OOM handling. ]
-> 
-> So that was the motivation for the bounded sleeps. They do not
-> guarantee containment, but they provide a reasonable amount of time
-> for the userspace OOM handler to intervene, without deadlocking.
+> [PATCH v18 29/32] mm: Identify compound pages sooner in isolate_migratepages_block
+> NAK. I agree that isolate_migratepages_block() looks nicer this way, but
+> take a look at prep_new_page() in mm/page_alloc.c: post_alloc_hook() is
+> where set_page_refcounted() changes page->_refcount from 0 to 1, allowing
+> a racing get_page_unless_zero() to succeed; then later prep_compound_page()
+> is where PageHead and PageTails get set. So there's a small race window in
+> which this patch could deliver a compound page when it should not.
 
-Yes, memory.high is mostly a best effort containment. We do have the
-hard limit to put a stop on runaways or if you are watching for PSI then
-the high limit throttling would give you enough idea to take an action
-from the userspace.
+So the main motivation for the patch was to avoid the case where we
+are having to reset the LRU flag. One question I would have is what if
+we swapped the code block with the __isolate_lru_page_prepare section?
+WIth that we would be taking a reference on the page, then verifying
+the LRU flag is set, and then testing for compound page flag bit.
+Would doing that close the race window since the LRU flag being set
+should indicate that the allocation has already been completed has it
+not?
 
-> That all being said, the semantics of the new 'high' limit in cgroup2
-> have allowed us to move reclaim/limit enforcement out of the
-> allocation context and into the userspace return path.
-> 
-> See the call to mem_cgroup_handle_over_high() from
-> tracehook_notify_resume(), and the comments in try_charge() around
-> set_notify_resume().
-> 
-> This already solves the free->alloc ordering problem by allowing the
-> allocation to exceed the limit temporarily until at least all locks
-> are dropped, we know we can sleep etc., before performing enforcement.
-> 
-> That means we may not need the timed sleeps anymore for that purpose,
-> and could bring back directed waits for freeing-events again.
-> 
-> What do you think? Any hazards around indefinite sleeps in that resume
-> path? It's called before __rseq_handle_notify_resume and the
-> arch-specific resume callback (which appears to be a no-op currently).
-> 
-> Chris, Michal, what are your thoughts? It would certainly be simpler
-> conceptually on the memcg side.
+> [PATCH v18 30/32] mm: Drop use of test_and_set_skip in favor of just setting skip
+> I haven't looked at this yet (but recall that per-memcg lru_lock can
+> change the point at which compaction should skip a contended lock: IIRC
+> the current kernel needs nothing extra, whereas some earlier kernels did
+> need extra; but when I look at 30/32, may find these remarks irrelevant).
+>
+> [PATCH v18 31/32] mm: Add explicit page decrement in exception path for isolate_lru_pages
+> The title of this patch is definitely wrong: there was an explicit page
+> decrement there before (put_page), now it's wrapping it up inside a
+> WARN_ON().  We usually prefer to avoid doing functional operations
+> inside WARN/BUGs, but I think I'll overlook that - anyone else worried?
+> The comment is certainly better than what was there before: yes, this
+> warning reflects the difficulty we have in thinking about the
+> TestClearPageLRU protocol: which I'm still not sold on, but
+> agree we should proceed with.  With a change in title, perhaps
+> "mm: add warning where TestClearPageLRU failed on freeable page"?
+> Acked-by: Hugh Dickins <hughd@google.com>
 
-I would need a more specific description. But as I've already said. It
-doesn't seem that we are in a need to fix any practical problem here.
-High limit implementation has changed quite a lot recently. I would
-rather see it settled for a while and see how it behaves in wider
-variety of workloads before changing the implementation again.
-
--- 
-Michal Hocko
-SUSE Labs
+I can update that and resubmit it if needed. I know there were also
+some suggestions from Matthew.
