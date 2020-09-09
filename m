@@ -2,34 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E3C62633A1
-	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 19:08:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 111EF2635E1
+	for <lists+cgroups@lfdr.de>; Wed,  9 Sep 2020 20:24:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730257AbgIIRIE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Sep 2020 13:08:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34540 "EHLO
+        id S1729479AbgIISYd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Sep 2020 14:24:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46456 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729479AbgIIRHv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Sep 2020 13:07:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D00DC061573;
-        Wed,  9 Sep 2020 10:07:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=6BdBPXJ8XQ6dfeqF8dncKUjTFopmPuRS/B/dl8JZcac=; b=hfgEADwyatdZgRCv4HedPewUgr
-        Z5yHyqRWXGgLxnBngNkckmik9vLonqHLyt6/X2g0X64afWCiiVrXixO7LMWLj5L65iwEQ04DOAIqW
-        W0pR5PZbCGyIMkEO713IdjH8mBkU/FmFPGEWPXSQ4hC6jURyfYG6idODxcWpMgdxyrIgUHxZBlLv9
-        +8rLnXwL1R7IW/voe+UYGk6bwztj7l+VQpqkLfxrHU10aEcahIA7WaxW486c2weui77TBhr9DECJ7
-        R9nMf6JsMmQTjIHXKEcHK0QPRg1x8DKJJ+iB4U2GbKJNdRsI07LfPl3hXVGRn45fFkhqn6+2MIZzs
-        Xi+cpe4A==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kG3Yz-0008CM-44; Wed, 09 Sep 2020 17:07:17 +0000
-Date:   Wed, 9 Sep 2020 18:07:17 +0100
-From:   Matthew Wilcox <willy@infradead.org>
+        with ESMTP id S1726642AbgIISYa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Sep 2020 14:24:30 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A36D1C061755
+        for <cgroups@vger.kernel.org>; Wed,  9 Sep 2020 11:24:30 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id z18so2033248qvp.6
+        for <cgroups@vger.kernel.org>; Wed, 09 Sep 2020 11:24:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Ruhhup1GiVMzdtnhUGJBHZmdP0+i41QleFToFouJcG0=;
+        b=XDE4XX5WI/xPzfW/NMmUCQ3gVCnjbXrHt8OZ8zTa8NBevb7IHbrl/CNJzNEBbJAWSt
+         mb2pkZ6iQFCSt/q5DVeqGb+Nus0hYvK68luUixqriqlyeKJdl+oqygph3LDTrnWc6T9h
+         fWv/uvdnEzXrsILGx8SzqA65K21CKUQDVaAl0JFq2hcncH1UebzvxYpWJbFh7zVFBpBu
+         gingaYs6WXb1VQj6dXz40KyyJXkaaFLrzQ4rRC1CX61vyJvkxHuszDndK7jT5Lrbkojv
+         DJeqyHfkPPnmTJGrQIIwUhTtQ+MRbeYsaCG00Wkar1qmHCnOEQgsdMgsei9v2ccL99kT
+         XkOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Ruhhup1GiVMzdtnhUGJBHZmdP0+i41QleFToFouJcG0=;
+        b=D5lNGwTA8JDbVnrpgoBiNcStqK/MielZ5Gdhwm7zsrzAmLCBbqqK1PrXXdZXw6DZCY
+         yiBAkzX99VqaEnPrIfswmJ0Rm/1TZNrRBiXv/dwjC0A6IGb8eG6h7V+Dy+5URsrlTZYN
+         KprGfe7MPRyGREFdMGM4wPWzYrtFJ+miid7K1ssotVG9t4mV6wv+jWq7gL1wKg8NTcWj
+         BKohfbpapG9X6k/fEgimYgtyNC8wSiaHl+Q9JfCmANczQOLcr8M9UII52DNOOgR0Hv+o
+         JtiGvLbYIqMSKunxqxvPUYJ/64697+2bT1lZ/Gpy2tTlrNhXRbLEp3xtnrFLvrgc/UHB
+         tY9Q==
+X-Gm-Message-State: AOAM533sMZqVgKkYrrkKy3WaljNKIDXrC6k/kquI+r4pNcf5RpLU5LXL
+        VhwiDEkN69GY4DK14pMofeRB5w==
+X-Google-Smtp-Source: ABdhPJwLHtK06MB86ozbrs1dqxtlh9p5l/69lx5+FCQ89PVrR+dpBTlHWMb5oT5whELFYBtY0OnqTQ==
+X-Received: by 2002:a0c:ff4b:: with SMTP id y11mr5502578qvt.3.1599675869492;
+        Wed, 09 Sep 2020 11:24:29 -0700 (PDT)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id c13sm3841553qtq.5.2020.09.09.11.24.26
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 09 Sep 2020 11:24:28 -0700 (PDT)
+Date:   Wed, 9 Sep 2020 11:24:14 -0700 (PDT)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
 To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+cc:     Matthew Wilcox <willy@infradead.org>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Mel Gorman <mgorman@techsingularity.net>,
         Tejun Heo <tj@kernel.org>, Hugh Dickins <hughd@google.com>,
@@ -49,23 +72,19 @@ Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
         Alexander Duyck <alexander.h.duyck@linux.intel.com>
 Subject: Re: [PATCH v18 31/32] mm: Add explicit page decrement in exception
  path for isolate_lru_pages
-Message-ID: <20200909170717.GK6583@casper.infradead.org>
-References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <1598273705-69124-32-git-send-email-alex.shi@linux.alibaba.com>
- <20200909010118.GB6583@casper.infradead.org>
- <CAKgT0UcjNx=00OgAQNWezc7UjLmF2NcDH0p7kzZ5D23PaFrFXA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 In-Reply-To: <CAKgT0UcjNx=00OgAQNWezc7UjLmF2NcDH0p7kzZ5D23PaFrFXA@mail.gmail.com>
+Message-ID: <alpine.LSU.2.11.2009091100280.9020@eggly.anvils>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com> <1598273705-69124-32-git-send-email-alex.shi@linux.alibaba.com> <20200909010118.GB6583@casper.infradead.org> <CAKgT0UcjNx=00OgAQNWezc7UjLmF2NcDH0p7kzZ5D23PaFrFXA@mail.gmail.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 09, 2020 at 08:43:38AM -0700, Alexander Duyck wrote:
+On Wed, 9 Sep 2020, Alexander Duyck wrote:
 > On Tue, Sep 8, 2020 at 6:01 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
 > > On Mon, Aug 24, 2020 at 08:55:04PM +0800, Alex Shi wrote:
 > > > +++ b/mm/vmscan.c
 > > > @@ -1688,10 +1688,13 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
@@ -89,13 +108,28 @@ On Wed, Sep 09, 2020 at 08:43:38AM -0700, Alexander Duyck wrote:
 > >
 > >         page_ref_sub(page, nr);
 > >         VM_BUG_ON_PAGE(page_count(page) <= 0, page);
+> >
+> >
 > 
 > Actually for this case page_ref_dec(page) would make more sense
 > wouldn't it? Otherwise I agree that would be a better change if that
 > is the way it has been handled before. I just wasn't familiar with
 > those other spots.
 
-Yes, page_ref_dec() should be fine.  It's hard to remember which of
-VM_BUG_ON, WARN_ON, etc, compile down to nothing with various CONFIG
-options, and which ones actually evalauate their arguments.  Safer not
-to put things with side-effects inside macros.
+After overnight reflection, my own preference would be simply to
+drop this patch.  I think we are making altogether too much of a
+fuss here over what was simply correct as plain put_page()
+(and further from correct if we change it to leak the page in an
+unforeseen circumstance).
+
+And if Alex's comment was not quite grammatically correct, never mind,
+it said as much as was worth saying.  I got more worried by his
+placement of the "busy:" label, but that does appear to work correctly.
+
+There's probably a thousand places where put_page() is used, where
+it would be troublesome if it were the final put_page(): this one
+bothered you because you'd been looking at isolate_migratepages_block(),
+and its necessary avoidance of lru_lock recursion on put_page();
+but let's just just leave this put_page() as is.
+
+Hugh
