@@ -2,167 +2,166 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB618264D41
-	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 20:38:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63B4F264E43
+	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 21:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726901AbgIJSim (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 14:38:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37958 "EHLO
+        id S1727095AbgIJTHr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 15:07:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42244 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725804AbgIJSdr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 14:33:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26F61C061573;
-        Thu, 10 Sep 2020 11:33:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=iUQLI4IkKhxmuIt5IQ92wfzZNFFmlqJHR5Mjgm7VnoA=; b=BA9fXgzR2ABZNFehO2jFdouN4b
-        iatHnAm3X02YEDHBkg5V7kpzguGHl7vVWOOyszawHEkfApPAg1CVxxTQddRDUlB2DXtjsIPebRC0H
-        +RSun9FiyBLil2BxMQTak8vbiwPaq02YTFwtoCHfj3fHL9EVOeHaJFkRRGNvBNMkGf76k2ekSGR8w
-        q+6P8md5vudIkfhhBaRydUlngTJBq7gdHAIuO2S8Wb8c5A7bhSSLnSPs5HtyvAHjness9QKziYg+o
-        4Su2kksd56Fv0Rz0NaXC5CIngX3owPQbylFWO6K+Gq+ygUkjYDxRzGzapwO8XsA13+zclT89KPb0o
-        e7QRA3hQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGRNq-0005Ge-AD; Thu, 10 Sep 2020 18:33:22 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] mm: Add find_lock_head
-Date:   Thu, 10 Sep 2020 19:33:18 +0100
-Message-Id: <20200910183318.20139-9-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20200910183318.20139-1-willy@infradead.org>
-References: <20200910183318.20139-1-willy@infradead.org>
+        with ESMTP id S1731346AbgIJQC0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 12:02:26 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8DE0C061795
+        for <cgroups@vger.kernel.org>; Thu, 10 Sep 2020 09:02:07 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n25so8887617ljj.4
+        for <cgroups@vger.kernel.org>; Thu, 10 Sep 2020 09:02:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gXFL8zxGAkEAFklyf5PNn/rioB+MLXLEPv+A6IYV3Is=;
+        b=i6hq+vV98YA8q8Wcq6doLG+y5wjiyjWWL96kdQw0H+jDMxeA9Mj+NVqTkSuQ8Cvuzi
+         66mGBRjmRbCe9uCMwVNKAt1PgIRZYmt68YEjOSvJPvvH8zdiyELwSOGs7GgYgWzw54ws
+         MC8K5MYJ8ipMU0WZOqCAicBPqNbNhDMXRBDNFnCsWb6RoO0DyJQhfzijsLqCQrq9YBtU
+         TATSHj1U8l9J2pHnmzcIKjevg8aAQtqDezGDeSRun2tajWl072+qD4mHPnB/Uk28jBej
+         gD8NcxlU7ER8jI+FCE4AYxqnIymDHUbxmHzJfKUTcK43WNeC0qU86q+M9AU+YtZ2sYec
+         4pBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gXFL8zxGAkEAFklyf5PNn/rioB+MLXLEPv+A6IYV3Is=;
+        b=aiJlc8tMYVm0pHm1AGruySP/DOPhX+tyto8G9iZxC4iCx+jEAcAmjwgMaIvDPoguib
+         rQZqdkZ4KTu9pGEOaCt1HqG+mDRsop5U0wCr9EAXrz4jXuiKCsKe83NCcmkXdbCy5DQn
+         BxDjB//OqT4JX8QXpfAM9mVSKg7lfP++z/lorFJbznyC2b6CGEwP9B/fnOQ5R0qrlSzh
+         8FfeBtLQEhyDsr4GgzFDqLxvGsSnRqNe6Gafve8HIwivSCOBx6QvnJc3OFTEwnkjjjAm
+         GDb5h0V4QBiB8qg4ID8rMjonM155xRs0NAOCvf0fBGACMtnKd8//s+EI3svJ72uePV8M
+         mZ1g==
+X-Gm-Message-State: AOAM532gsNGMXGMrAhs3NWDEUwDsZ1ix7EjuxuKubirA46vXz2OD/M0i
+        DXLdOag3YqgPvjHLi/72oxfsA9stczyUXJdpQG/uRg==
+X-Google-Smtp-Source: ABdhPJz54WOPqVjLoiOAMEPFyivI7Bk2NO3KuFh9RoqJBEjdb4PNOM4gxm78bc2Klo+DIfoL656LWL7Khq/ccs7aPG0=
+X-Received: by 2002:a2e:92d6:: with SMTP id k22mr5137971ljh.332.1599753725639;
+ Thu, 10 Sep 2020 09:02:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20200910084258.22293-1-songmuchun@bytedance.com>
+In-Reply-To: <20200910084258.22293-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 10 Sep 2020 09:01:54 -0700
+Message-ID: <CALvZod5JQWGHUAPnj9S0pKFQreLPST441mZnp+h=fue_nnh1yQ@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: Add the missing numa stat of anon and
+ file for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add a new FGP_HEAD flag which avoids calling find_subpage() and add a
-convenience wrapper for it.
+On Thu, Sep 10, 2020 at 1:46 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/pagemap.h | 32 ++++++++++++++++++++++++++------
- mm/filemap.c            |  9 ++++++---
- 2 files changed, 32 insertions(+), 9 deletions(-)
+I am actually working on exposing this info on v2 as well.
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index f374618b2c93..4e52a3ff92fb 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -278,6 +278,7 @@ pgoff_t page_cache_prev_miss(struct address_space *mapping,
- #define FGP_NOFS		0x00000010
- #define FGP_NOWAIT		0x00000020
- #define FGP_FOR_MMAP		0x00000040
-+#define FGP_HEAD		0x00000080
- 
- struct page *pagecache_get_page(struct address_space *mapping, pgoff_t offset,
- 		int fgp_flags, gfp_t cache_gfp_mask);
-@@ -309,18 +310,37 @@ static inline struct page *find_get_page_flags(struct address_space *mapping,
-  * @mapping: the address_space to search
-  * @offset: the page index
-  *
-- * Looks up the page cache slot at @mapping & @offset.  If there is a
-+ * Looks up the page cache entry at @mapping & @offset.  If there is a
-  * page cache page, it is returned locked and with an increased
-  * refcount.
-  *
-- * Otherwise, %NULL is returned.
-- *
-- * find_lock_page() may sleep.
-+ * Context: May sleep.
-+ * Return: A struct page or %NULL if there is no page in the cache for this
-+ * index.
-  */
- static inline struct page *find_lock_page(struct address_space *mapping,
--					pgoff_t offset)
-+					pgoff_t index)
-+{
-+	return pagecache_get_page(mapping, index, FGP_LOCK, 0);
-+}
-+
-+/**
-+ * find_lock_head - Locate, pin and lock a pagecache page.
-+ * @mapping: The address_space to search.
-+ * @offset: The page index.
-+ *
-+ * Looks up the page cache entry at @mapping & @offset.  If there is a
-+ * page cache page, its head page is returned locked and with an increased
-+ * refcount.
-+ *
-+ * Context: May sleep.
-+ * Return: A struct page which is !PageTail, or %NULL if there is no page
-+ * in the cache for this index.
-+ */
-+static inline struct page *find_lock_head(struct address_space *mapping,
-+					pgoff_t index)
- {
--	return pagecache_get_page(mapping, offset, FGP_LOCK, 0);
-+	return pagecache_get_page(mapping, index, FGP_LOCK | FGP_HEAD, 0);
- }
- 
- /**
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 453535170b8d..e429e02317ef 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1659,6 +1659,8 @@ struct page *find_lock_entry(struct address_space *mapping, pgoff_t index)
-  *
-  * * %FGP_ACCESSED - The page will be marked accessed.
-  * * %FGP_LOCK - The page is returned locked.
-+ * * %FGP_HEAD - If the page is present and a THP, return the head page
-+ *   rather than the exact page specified by the index.
-  * * %FGP_CREAT - If no page is present then a new page is allocated using
-  *   @gfp_mask and added to the page cache and the VM's LRU list.
-  *   The page is returned locked and with an increased refcount.
-@@ -1687,7 +1689,6 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		page = NULL;
- 	if (!page)
- 		goto no_page;
--	page = find_subpage(page, index);
- 
- 	if (fgp_flags & FGP_LOCK) {
- 		if (fgp_flags & FGP_NOWAIT) {
-@@ -1700,12 +1701,12 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		}
- 
- 		/* Has the page been truncated? */
--		if (unlikely(compound_head(page)->mapping != mapping)) {
-+		if (unlikely(page->mapping != mapping)) {
- 			unlock_page(page);
- 			put_page(page);
- 			goto repeat;
- 		}
--		VM_BUG_ON_PAGE(page->index != index, page);
-+		VM_BUG_ON_PAGE(!thp_contains(page, index), page);
- 	}
- 
- 	if (fgp_flags & FGP_ACCESSED)
-@@ -1715,6 +1716,8 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- 		if (page_is_idle(page))
- 			clear_page_idle(page);
- 	}
-+	if (!(fgp_flags & FGP_HEAD))
-+		page = find_subpage(page, index);
- 
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
--- 
-2.28.0
+>  mm/memcontrol.c | 46 ++++++++++++++++++++++++++++++++++++++++++++--
+>  1 file changed, 44 insertions(+), 2 deletions(-)
+>
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..c779673f29b2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1492,10 +1492,34 @@ static bool mem_cgroup_wait_acct_move(struct mem_cgroup *memcg)
+>         return false;
+>  }
+>
+> +#ifdef CONFIG_NUMA
+> +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
+> +                                          unsigned int nid,
+> +                                          enum node_stat_item idx)
+> +{
+> +       long x;
+> +       struct mem_cgroup_per_node *pn;
+> +       struct lruvec *lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> +
+> +       VM_BUG_ON(nid >= nr_node_ids);
+> +
+> +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> +       x = atomic_long_read(&pn->lruvec_stat[idx]);
+> +#ifdef CONFIG_SMP
+> +       if (x < 0)
+> +               x = 0;
+> +#endif
+> +       return x;
+> +}
+> +#endif
+> +
+>  static char *memory_stat_format(struct mem_cgroup *memcg)
+>  {
+>         struct seq_buf s;
+>         int i;
+> +#ifdef CONFIG_NUMA
+> +       int nid;
+> +#endif
+>
+>         seq_buf_init(&s, kmalloc(PAGE_SIZE, GFP_KERNEL), PAGE_SIZE);
+>         if (!s.buffer)
+> @@ -1512,12 +1536,30 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+>          * Current memory state:
+>          */
+>
 
+Let's not break the parsers of memory.stat. I would prefer a separate
+interface like v1 i.e. memory.numa_stat.
+
+> -       seq_buf_printf(&s, "anon %llu\n",
+> +       seq_buf_printf(&s, "anon %llu",
+>                        (u64)memcg_page_state(memcg, NR_ANON_MAPPED) *
+>                        PAGE_SIZE);
+> -       seq_buf_printf(&s, "file %llu\n",
+> +#ifdef CONFIG_NUMA
+> +       for_each_node_state(nid, N_MEMORY)
+> +               seq_buf_printf(&s, " N%d=%llu", nid,
+> +                              (u64)memcg_node_page_state(memcg, nid,
+> +                                                         NR_ANON_MAPPED) *
+> +                              PAGE_SIZE);
+> +#endif
+> +       seq_buf_putc(&s, '\n');
+> +
+> +       seq_buf_printf(&s, "file %llu",
+>                        (u64)memcg_page_state(memcg, NR_FILE_PAGES) *
+>                        PAGE_SIZE);
+> +#ifdef CONFIG_NUMA
+> +       for_each_node_state(nid, N_MEMORY)
+> +               seq_buf_printf(&s, " N%d=%llu", nid,
+> +                              (u64)memcg_node_page_state(memcg, nid,
+> +                                                         NR_FILE_PAGES) *
+> +                              PAGE_SIZE);
+> +#endif
+> +       seq_buf_putc(&s, '\n');
+> +
+
+The v1's numa_stat exposes the LRUs, why NR_ANON_MAPPED and NR_FILE_PAGES?
+
+Also I think exposing slab_[un]reclaimable per node would be beneficial as well.
+
+>         seq_buf_printf(&s, "kernel_stack %llu\n",
+>                        (u64)memcg_page_state(memcg, NR_KERNEL_STACK_KB) *
+>                        1024);
+> --
+> 2.20.1
+>
