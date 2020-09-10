@@ -2,144 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35EF0264AEF
-	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 19:18:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF3D0264D19
+	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 20:34:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726657AbgIJRSt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 13:18:49 -0400
-Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30565 "EHLO
-        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726911AbgIJRP7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 13:15:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1599758150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=V5RVkZoHNNgO8iRkts2uQucFzF0PqLciDsVyoi9bgfc=;
-        b=gH5ANVlh9jHChevAgLxQU6nEieXdAB93TigKP1WvfIKmZ6pVADdvi7rZTEsLqOpZnj2sDu
-        OhPCxAZQ9sgZBkTyw4ty6ImPZKHwi5E0d1bhyiuwaNgfiGjgh3P2QAv9N0VS4tX/gl3XVb
-        3zIVLYKa8LDenzQjpCd10+ZcVWFekqA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-250-HnAUMfNAM0OMvyN4RsRhjA-1; Thu, 10 Sep 2020 13:15:48 -0400
-X-MC-Unique: HnAUMfNAM0OMvyN4RsRhjA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7CFB802B72;
-        Thu, 10 Sep 2020 17:15:45 +0000 (UTC)
-Received: from localhost (unknown [10.18.25.174])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 061BB60BFA;
-        Thu, 10 Sep 2020 17:15:42 +0000 (UTC)
-Date:   Thu, 10 Sep 2020 13:15:41 -0400
-From:   Mike Snitzer <snitzer@redhat.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
-        martin.petersen@oracle.com, Hans de Goede <hdegoede@redhat.com>,
-        Song Liu <song@kernel.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
-        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
-        linux-mm@kvack.org, drbd-dev@tron.linbit.com,
-        cgroups@vger.kernel.org
-Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
- block layer
-Message-ID: <20200910171541.GB21919@redhat.com>
-References: <20200726150333.305527-1-hch@lst.de>
- <20200726150333.305527-7-hch@lst.de>
- <20200826220737.GA25613@redhat.com>
- <20200902151144.GA1738@lst.de>
- <20200902162007.GB5513@redhat.com>
- <20200910092813.GA27229@lst.de>
+        id S1726980AbgIJSeR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 14:34:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38002 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726896AbgIJSeC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 14:34:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7394C061798;
+        Thu, 10 Sep 2020 11:33:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=O3f4pJZULtJ0Hg2fNHWuRs5XcF+sc7d6/Hzv1fj3FPw=; b=K31IH21Tut9dcJNTkS09h6hBMc
+        zzqUmjTdSEGz7kbkojcnDkmNauqqxB7FbXhHGDpsxcJhPWRcqSYX0le9QfA9DkUTleaOsDu76FXdT
+        3AdUKzs5yHbqQq3g1sP4PZsgZQkYfiNcQgmItXFGklo37jxy/0YO6B1YYw9zFBHlrFKptdYs3itjz
+        LbBbGz1kjShY7XpdkW2tr/ARbYgUzKLJbGFBcZRovkONmt0heqXfLfc1Q/7MqGrFAeh1pfKxrHrJv
+        VNm5Xs5VZPTA+FKeangibdYPtMCLGkGhe1oY8JSdJ8LyauGiq0l3DmjoxI8ToSbCB1zDsYU632iZa
+        dvs7zhXw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGRNn-0005FX-SV; Thu, 10 Sep 2020 18:33:19 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2 0/8] Return head pages from find_*_entry
+Date:   Thu, 10 Sep 2020 19:33:10 +0100
+Message-Id: <20200910183318.20139-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200910092813.GA27229@lst.de>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 10 2020 at  5:28am -0400,
-Christoph Hellwig <hch@lst.de> wrote:
+This patch series started out as part of the THP patch set, but it has
+some nice effects along the way and it seems worth splitting it out and
+submitting separately.
 
-> On Wed, Sep 02, 2020 at 12:20:07PM -0400, Mike Snitzer wrote:
-> > On Wed, Sep 02 2020 at 11:11am -0400,
-> > Christoph Hellwig <hch@lst.de> wrote:
-> > 
-> > > On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
-> > > > On Sun, Jul 26 2020 at 11:03am -0400,
-> > > > Christoph Hellwig <hch@lst.de> wrote:
-> > > > 
-> > > > > Drivers shouldn't really mess with the readahead size, as that is a VM
-> > > > > concept.  Instead set it based on the optimal I/O size by lifting the
-> > > > > algorithm from the md driver when registering the disk.  Also set
-> > > > > bdi->io_pages there as well by applying the same scheme based on
-> > > > > max_sectors.
-> > > > > 
-> > > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> > > > > ---
-> > > > >  block/blk-settings.c         |  5 ++---
-> > > > >  block/blk-sysfs.c            |  1 -
-> > > > >  block/genhd.c                | 13 +++++++++++--
-> > > > >  drivers/block/aoe/aoeblk.c   |  2 --
-> > > > >  drivers/block/drbd/drbd_nl.c | 12 +-----------
-> > > > >  drivers/md/bcache/super.c    |  4 ----
-> > > > >  drivers/md/dm-table.c        |  3 ---
-> > > > >  drivers/md/raid0.c           | 16 ----------------
-> > > > >  drivers/md/raid10.c          | 24 +-----------------------
-> > > > >  drivers/md/raid5.c           | 13 +------------
-> > > > >  10 files changed, 16 insertions(+), 77 deletions(-)
-> > > > 
-> > > > 
-> > > > In general these changes need a solid audit relative to stacking
-> > > > drivers.  That is, the limits stacking methods (blk_stack_limits)
-> > > > vs lower level allocation methods (__device_add_disk).
-> > > > 
-> > > > You optimized for lowlevel __device_add_disk establishing the bdi's
-> > > > ra_pages and io_pages.  That is at the beginning of disk allocation,
-> > > > well before any build up of stacking driver's queue_io_opt() -- which
-> > > > was previously done in disk_stack_limits or driver specific methods
-> > > > (e.g. dm_table_set_restrictions) that are called _after_ all the limits
-> > > > stacking occurs.
-> > > > 
-> > > > By inverting the setting of the bdi's ra_pages and io_pages to be done
-> > > > so early in __device_add_disk it'll break properly setting these values
-> > > > for at least DM afaict.
-> > > 
-> > > ra_pages never got inherited by stacking drivers, check it by modifying
-> > > it on an underlying device and then creating a trivial dm or md one.
-> > 
-> > Sure, not saying that it did.  But if the goal is to set ra_pages based
-> > on io_opt then to do that correctly on stacking drivers it must be done
-> > in terms of limits stacking right?  Or at least done at a location that
-> > is after the limits stacking has occurred?  So should DM just open-code
-> > setting ra_pages like it did for io_pages?
-> > 
-> > Because setting ra_pages in __device_add_disk() is way too early for DM
-> > -- given it uses device_add_disk_no_queue_reg via add_disk_no_queue_reg
-> > at DM device creation (before stacking all underlying devices' limits).
-> 
-> I'll move it to blk_register_queue, which should work just fine.
+Currently find_get_entry() and find_lock_entry() return the page
+corresponding to the requested index, but the first thing most callers do
+is find the head page, which we just threw away.  As part of auditing
+all the callers, I found some misuses of the APIs and some plain
+inefficiencies that I've fixed.
 
-That'll work for initial DM table load as part of DM device creation
-(dm_setup_md_queue).  But it won't account for DM table reloads that
-might change underlying devices on a live DM device (done using
-__bind).
+The diffstat is unflattering, but I added more kernel-doc and a new wrapper.
 
-Both dm_setup_md_queue() and __bind() call dm_table_set_restrictions()
-to set/update queue_limits.  It feels like __bind() will need to call a
-new block helper to set/update parts of queue_limits (e.g. ra_pages and
-io_pages).
+v2:
+ - Rework how shmem_getpage_gfp() handles getting a head page back from
+   find_lock_entry()
+ - Renamed find_get_swap_page() to find_get_incore_page()
+ - Make sure find_get_incore_page() doesn't return a head page
+ - Fix the missing include of linux/shmem_fs.h
+ - Move find_get_entry and find_lock_entry prototypes to mm/internal.h
+ - Rename thp_valid_index() to thp_contains()
+ - Fix thp_contains() for hugetlbfs and swapcache
+ - Add find_lock_head() wrapper around pagecache_get_page()
 
-Any chance you're open to factoring out that block function as an
-exported symbol for use by blk_register_queue() and code like DM's
-__bind()?
+Matthew Wilcox (Oracle) (8):
+  mm: Factor find_get_incore_page out of mincore_page
+  mm: Use find_get_incore_page in memcontrol
+  mm: Optimise madvise WILLNEED
+  proc: Optimise smaps for shmem entries
+  i915: Use find_lock_page instead of find_lock_entry
+  mm: Convert find_get_entry to return the head page
+  mm/shmem: Return head page from find_lock_entry
+  mm: Add find_lock_head
 
-Thanks,
-Mike
+ drivers/gpu/drm/i915/gem/i915_gem_shmem.c |  4 +--
+ fs/proc/task_mmu.c                        |  8 +----
+ include/linux/pagemap.h                   | 43 +++++++++++++++++-----
+ include/linux/swap.h                      |  7 ++++
+ mm/filemap.c                              | 44 +++++++++++------------
+ mm/internal.h                             |  3 ++
+ mm/madvise.c                              | 21 ++++++-----
+ mm/memcontrol.c                           | 24 ++-----------
+ mm/mincore.c                              | 28 ++-------------
+ mm/shmem.c                                | 20 +++++------
+ mm/swap_state.c                           | 32 +++++++++++++++++
+ 11 files changed, 127 insertions(+), 107 deletions(-)
+
+-- 
+2.28.0
 
