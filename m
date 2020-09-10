@@ -2,208 +2,222 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB23E263D2E
-	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 08:22:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC35263D7D
+	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 08:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726963AbgIJGWm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 02:22:42 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:42091 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725971AbgIJGWh (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 10 Sep 2020 02:22:37 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam01-ex.h3c.com with ESMTPS id 08A6Lve4044174
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 10 Sep 2020 14:21:57 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Thu, 10 Sep 2020 14:21:59 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] [v2] blkcg: add plugging support for punt bio
-Date:   Thu, 10 Sep 2020 14:15:06 +0800
-Message-ID: <20200910061506.45704-1-tian.xianting@h3c.com>
+        id S1727791AbgIJGia (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 02:38:30 -0400
+Received: from smtp-fw-6002.amazon.com ([52.95.49.90]:44938 "EHLO
+        smtp-fw-6002.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727770AbgIJGhW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 02:37:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1599719842; x=1631255842;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=GzpkhECVivbbxVgp+QkERBRuQKYx97kDrCEsWiAnM9s=;
+  b=eqrGHGTWOcYQDTFvK4V7hC4d347sRYuVslGSprlpm+0ajmKKcWKycfcu
+   XuHg8w78O7p4ICDgRsG1520AnQPnLMtgdVxPeqOqf229yQNk3xdjHNxpJ
+   B+SwIYjOjA90p9FogFYZLu5PfsTDp2qUmNqaMwlX+DHuySwo0NcYR7yIa
+   o=;
+X-IronPort-AV: E=Sophos;i="5.76,412,1592870400"; 
+   d="scan'208";a="53096358"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6002.iad6.amazon.com with ESMTP; 10 Sep 2020 06:37:19 +0000
+Received: from EX13D31EUA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan3.pdx.amazon.com [10.170.41.166])
+        by email-inbound-relay-2c-1968f9fa.us-west-2.amazon.com (Postfix) with ESMTPS id 9C012A06BF;
+        Thu, 10 Sep 2020 06:37:17 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.160.100) by
+ EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 10 Sep 2020 06:37:10 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Date:   Thu, 10 Sep 2020 08:36:56 +0200
+Message-ID: <20200910063656.25038-1-sjpark@amazon.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20200909215752.1725525-1-shakeelb@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 08A6Lve4044174
+X-Originating-IP: [10.43.160.100]
+X-ClientProxiedBy: EX13D05UWB004.ant.amazon.com (10.43.161.208) To
+ EX13D31EUA001.ant.amazon.com (10.43.165.15)
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The test and the explaination of the patch as bellow.
+On 2020-09-09T14:57:52-07:00 Shakeel Butt <shakeelb@google.com> wrote:
 
-Before test we added more debug code in blkg_async_bio_workfn():
-	int count = 0
-	if (bios.head && bios.head->bi_next) {
-		need_plug = true;
-		blk_start_plug(&plug);
-	}
-	while ((bio = bio_list_pop(&bios))) {
-		/*io_punt is a sysctl user interface to control the print*/
-		if(io_punt) {
-			printk("[%s:%d] bio start,size:%llu,%d count=%d plug?%d\n",
-				current->comm, current->pid, bio->bi_iter.bi_sector,
-				(bio->bi_iter.bi_size)>>9, count++, need_plug);
-		}
-		submit_bio(bio);
-	}
-	if (need_plug)
-		blk_finish_plug(&plug);
+> Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
+> 
+> Use cases:
+> ----------
+> 
+> 1) Per-memcg uswapd:
+> 
+> Usually applications consists of combination of latency sensitive and
+> latency tolerant tasks. For example, tasks serving user requests vs
+> tasks doing data backup for a database application. At the moment the
+> kernel does not differentiate between such tasks when the application
+> hits the memcg limits. So, potentially a latency sensitive user facing
+> task can get stuck in high reclaim and be throttled by the kernel.
+> 
+> Similarly there are cases of single process applications having two set
+> of thread pools where threads from one pool have high scheduling
+> priority and low latency requirement. One concrete example from our
+> production is the VMM which have high priority low latency thread pool
+> for the VCPUs while separate thread pool for stats reporting, I/O
+> emulation, health checks and other managerial operations. The kernel
+> memory reclaim does not differentiate between VCPU thread or a
+> non-latency sensitive thread and a VCPU thread can get stuck in high
+> reclaim.
+> 
+> One way to resolve this issue is to preemptively trigger the memory
+> reclaim from a latency tolerant task (uswapd) when the application is
+> near the limits. Finding 'near the limits' situation is an orthogonal
+> problem.
+> 
+> 2) Proactive reclaim:
+> 
+> This is a similar to the previous use-case, the difference is instead of
+> waiting for the application to be near its limit to trigger memory
+> reclaim, continuously pressuring the memcg to reclaim a small amount of
+> memory. This gives more accurate and uptodate workingset estimation as
+> the LRUs are continuously sorted and can potentially provide more
+> deterministic memory overcommit behavior. The memory overcommit
+> controller can provide more proactive response to the changing behavior
+> of the running applications instead of being reactive.
+> 
+> Benefit of user space solution:
+> -------------------------------
+> 
+> 1) More flexible on who should be charged for the cpu of the memory
+> reclaim. For proactive reclaim, it makes more sense to centralized the
+> overhead while for uswapd, it makes more sense for the application to
+> pay for the cpu of the memory reclaim.
+> 
+> 2) More flexible on dedicating the resources (like cpu). The memory
+> overcommit controller can balance the cost between the cpu usage and
+> the memory reclaimed.
+> 
+> 3) Provides a way to the applications to keep their LRUs sorted, so,
+> under memory pressure better reclaim candidates are selected. This also
+> gives more accurate and uptodate notion of working set for an
+> application.
+> 
+> Questions:
+> ----------
+> 
+> 1) Why memory.high is not enough?
+> 
+> memory.high can be used to trigger reclaim in a memcg and can
+> potentially be used for proactive reclaim as well as uswapd use cases.
+> However there is a big negative in using memory.high. It can potentially
+> introduce high reclaim stalls in the target application as the
+> allocations from the processes or the threads of the application can hit
+> the temporary memory.high limit.
+> 
+> Another issue with memory.high is that it is not delegatable. To
+> actually use this interface for uswapd, the application has to introduce
+> another layer of cgroup on whose memory.high it has write access.
+> 
+> 2) Why uswapd safe from self induced reclaim?
+> 
+> This is very similar to the scenario of oomd under global memory
+> pressure. We can use the similar mechanisms to protect uswapd from self
+> induced reclaim i.e. memory.min and mlock.
+> 
+> Interface options:
+> ------------------
+> 
+> Introducing a very simple memcg interface 'echo 10M > memory.reclaim' to
+> trigger reclaim in the target memory cgroup.
+> 
+> In future we might want to reclaim specific type of memory from a memcg,
+> so, this interface can be extended to allow that. e.g.
+> 
+> $ echo 10M [all|anon|file|kmem] > memory.reclaim
+> 
+> However that should be when we have concrete use-cases for such
+> functionality. Keep things simple for now.
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst |  9 ++++++
+>  mm/memcontrol.c                         | 37 +++++++++++++++++++++++++
+>  2 files changed, 46 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 6be43781ec7f..58d70b5989d7 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1181,6 +1181,15 @@ PAGE_SIZE multiple when read back.
+>  	high limit is used and monitored properly, this limit's
+>  	utility is limited to providing the final safety net.
+>  
+> +  memory.reclaim
+> +	A write-only file which exists on non-root cgroups.
+> +
+> +	This is a simple interface to trigger memory reclaim in the
+> +	target cgroup. Write the number of bytes to reclaim to this
+> +	file and the kernel will try to reclaim that much memory.
+> +	Please note that the kernel can over or under reclaim from
+> +	the target cgroup.
+> +
+>    memory.oom.group
+>  	A read-write single value file which exists on non-root
+>  	cgroups.  The default value is "0".
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 75cd1a1e66c8..2d006c36d7f3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6456,6 +6456,38 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
+>  	return nbytes;
+>  }
+>  
+> +static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
+> +			      size_t nbytes, loff_t off)
+> +{
+> +	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
+> +	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
+> +	unsigned long nr_to_reclaim, nr_reclaimed = 0;
+> +	int err;
+> +
+> +	buf = strstrip(buf);
+> +	err = page_counter_memparse(buf, "", &nr_to_reclaim);
+> +	if (err)
+> +		return err;
+> +
+> +	while (nr_reclaimed < nr_to_reclaim) {
+> +		unsigned long reclaimed;
+> +
+> +		if (signal_pending(current))
+> +			break;
+> +
+> +		reclaimed = try_to_free_mem_cgroup_pages(memcg,
+> +						nr_to_reclaim - nr_reclaimed,
+> +						GFP_KERNEL, true);
+> +
+> +		if (!reclaimed && !nr_retries--)
+> +			break;
 
-Steps that need to be set to trigger *PUNT* io before testing:
-	mount -t btrfs -o compress=lzo /dev/sda6 /btrfs
-	mount -t cgroup2 nodev /cgroup2
-	mkdir /cgroup2/cg3
-	echo "+io" > /cgroup2/cgroup.subtree_control
-	echo "8:0 wbps=1048576000" > /cgroup2/cg3/io.max #1000M/s
-	echo $$ > /cgroup2/cg3/cgroup.procs
+Shouldn't the if condition use '||' instead of '&&'?  I think it could be
+easier to read if we put the 'nr_retires' condition in the while condition as
+below (just my personal preference, though).
 
-Then use dd command to test btrfs PUNT io in current shell:
-	dd if=/dev/zero of=/btrfs/file bs=64K count=100000
+    while (nr_reclaimed < nr_to_reclaim && nr_retires--)
 
-Test hardware environment as below:
-	[root@localhost btrfs]# lscpu
-	Architecture:          x86_64
-	CPU op-mode(s):        32-bit, 64-bit
-	Byte Order:            Little Endian
-	CPU(s):                32
-	On-line CPU(s) list:   0-31
-	Thread(s) per core:    2
-	Core(s) per socket:    8
-	Socket(s):             2
-	NUMA node(s):          2
-	Vendor ID:             GenuineIntel
 
-With above debug code, test command and test environment, I did the
-tests under 3 different system loads, which are triggered by stress:
-1, Run 64 threads by command "stress -c 64 &"
-	[53615.975974] [kworker/u66:18:1490] bio start,size:45583056,8 count=0 plug?1
-	[53615.975980] [kworker/u66:18:1490] bio start,size:45583064,8 count=1 plug?1
-	[53615.975984] [kworker/u66:18:1490] bio start,size:45583072,8 count=2 plug?1
-	[53615.975987] [kworker/u66:18:1490] bio start,size:45583080,8 count=3 plug?1
-	[53615.975990] [kworker/u66:18:1490] bio start,size:45583088,8 count=4 plug?1
-	[53615.975993] [kworker/u66:18:1490] bio start,size:45583096,8 count=5 plug?1
-	... ...
-	[53615.977041] [kworker/u66:18:1490] bio start,size:45585480,8 count=303 plug?1
-	[53615.977044] [kworker/u66:18:1490] bio start,size:45585488,8 count=304 plug?1
-	[53615.977047] [kworker/u66:18:1490] bio start,size:45585496,8 count=305 plug?1
-	[53615.977050] [kworker/u66:18:1490] bio start,size:45585504,8 count=306 plug?1
-	[53615.977053] [kworker/u66:18:1490] bio start,size:45585512,8 count=307 plug?1
-	[53615.977056] [kworker/u66:18:1490] bio start,size:45585520,8 count=308 plug?1
-	[53615.977058] [kworker/u66:18:1490] bio start,size:45585528,8 count=309 plug?1
-
-2, Run 32 threads by command "stress -c 32 &"
-	[50586.290521] [kworker/u66:6:32351] bio start,size:45806496,8 count=0 plug?1
-	[50586.290526] [kworker/u66:6:32351] bio start,size:45806504,8 count=1 plug?1
-	[50586.290529] [kworker/u66:6:32351] bio start,size:45806512,8 count=2 plug?1
-	[50586.290531] [kworker/u66:6:32351] bio start,size:45806520,8 count=3 plug?1
-	[50586.290533] [kworker/u66:6:32351] bio start,size:45806528,8 count=4 plug?1
-	[50586.290535] [kworker/u66:6:32351] bio start,size:45806536,8 count=5 plug?1
-	... ...
-	[50586.299640] [kworker/u66:5:32350] bio start,size:45808576,8 count=252 plug?1
-	[50586.299643] [kworker/u66:5:32350] bio start,size:45808584,8 count=253 plug?1
-	[50586.299646] [kworker/u66:5:32350] bio start,size:45808592,8 count=254 plug?1
-	[50586.299649] [kworker/u66:5:32350] bio start,size:45808600,8 count=255 plug?1
-	[50586.299652] [kworker/u66:5:32350] bio start,size:45808608,8 count=256 plug?1
-	[50586.299663] [kworker/u66:5:32350] bio start,size:45808616,8 count=257 plug?1
-	[50586.299665] [kworker/u66:5:32350] bio start,size:45808624,8 count=258 plug?1
-	[50586.299668] [kworker/u66:5:32350] bio start,size:45808632,8 count=259 plug?1
-
-3, Don't run thread by stress
-	[50861.355246] [kworker/u66:19:32376] bio start,size:13544504,8 count=0 plug?0
-	[50861.355288] [kworker/u66:19:32376] bio start,size:13544512,8 count=0 plug?0
-	[50861.355322] [kworker/u66:19:32376] bio start,size:13544520,8 count=0 plug?0
-	[50861.355353] [kworker/u66:19:32376] bio start,size:13544528,8 count=0 plug?0
-	[50861.355392] [kworker/u66:19:32376] bio start,size:13544536,8 count=0 plug?0
-	[50861.355431] [kworker/u66:19:32376] bio start,size:13544544,8 count=0 plug?0
-	[50861.355468] [kworker/u66:19:32376] bio start,size:13544552,8 count=0 plug?0
-	[50861.355499] [kworker/u66:19:32376] bio start,size:13544560,8 count=0 plug?0
-	[50861.355532] [kworker/u66:19:32376] bio start,size:13544568,8 count=0 plug?0
-	[50861.355575] [kworker/u66:19:32376] bio start,size:13544576,8 count=0 plug?0
-	[50861.355618] [kworker/u66:19:32376] bio start,size:13544584,8 count=0 plug?0
-	[50861.355659] [kworker/u66:19:32376] bio start,size:13544592,8 count=0 plug?0
-	[50861.355740] [kworker/u66:0:32346] bio start,size:13544600,8 count=0 plug?1
-	[50861.355748] [kworker/u66:0:32346] bio start,size:13544608,8 count=1 plug?1
-	[50861.355962] [kworker/u66:2:32347] bio start,size:13544616,8 count=0 plug?0
-	[50861.356272] [kworker/u66:7:31962] bio start,size:13544624,8 count=0 plug?0
-	[50861.356446] [kworker/u66:7:31962] bio start,size:13544632,8 count=0 plug?0
-	[50861.356567] [kworker/u66:7:31962] bio start,size:13544640,8 count=0 plug?0
-	[50861.356707] [kworker/u66:19:32376] bio start,size:13544648,8 count=0 plug?0
-	[50861.356748] [kworker/u66:15:32355] bio start,size:13544656,8 count=0 plug?0
-	[50861.356825] [kworker/u66:17:31970] bio start,size:13544664,8 count=0 plug?0
-
-Analysis of above 3 test results with different system load:
-From above test, we can see more and more continuous bios can be plugged
-with system load increasing. When run "stress -c 64 &", 310 continuous
-bios are plugged; When run "stress -c 32 &", 260 continuous bios are
-plugged; When don't run stress, at most only 2 continuous bios are
-plugged, in most cases, bio_list only contains one single bio.
-
-How to explain above phenomenon:
-We know, in submit_bio(), if the bio is a REQ_CGROUP_PUNT io, it will
-queue a work to workqueue blkcg_punt_bio_wq. But when the workqueue is
-scheduled, it depends on the system load.  When system load is low, the
-workqueue will be quickly scheduled, and the bio in bio_list will be
-quickly processed in blkg_async_bio_workfn(), so there is less chance
-that the same io submit thread can add multiple continuous bios to
-bio_list before workqueue is scheduled to run. The analysis aligned with
-above test "3".
-When system load is high, there is some delay before the workqueue can
-be scheduled to run, the higher the system load the greater the delay.
-So there is more chance that the same io submit thread can add multiple
-continuous bios to bio_list. Then when the workqueue is scheduled to run,
-there are more continuous bios in bio_list, which will be processed in
-blkg_async_bio_workfn(). The analysis aligned with above test "1" and "2".
-
-According to test, we can get io performance improved with the patch,
-especially when system load is higher. Another optimazition is to use
-the plug only when bio_list contains at least 2 bios.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- block/blk-cgroup.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index c195365c9..f35a205d5 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -119,6 +119,8 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 					     async_bio_work);
- 	struct bio_list bios = BIO_EMPTY_LIST;
- 	struct bio *bio;
-+	struct blk_plug plug;
-+	bool need_plug = false;
- 
- 	/* as long as there are pending bios, @blkg can't go away */
- 	spin_lock_bh(&blkg->async_bio_lock);
-@@ -126,8 +128,15 @@ static void blkg_async_bio_workfn(struct work_struct *work)
- 	bio_list_init(&blkg->async_bios);
- 	spin_unlock_bh(&blkg->async_bio_lock);
- 
-+	/* start plug only when bio_list contains at least 2 bios */
-+	if (bios.head && bios.head->bi_next) {
-+		need_plug = true;
-+		blk_start_plug(&plug);
-+	}
- 	while ((bio = bio_list_pop(&bios)))
- 		submit_bio(bio);
-+	if (need_plug)
-+		blk_finish_plug(&plug);
- }
- 
- /**
--- 
-2.17.1
-
+Thanks,
+SeongJae Park
