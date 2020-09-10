@@ -2,350 +2,213 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C077265168
-	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 22:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C33426536A
+	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 23:34:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725992AbgIJUxb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 16:53:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58932 "EHLO
+        id S1726755AbgIJVel (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 17:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730729AbgIJOus (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 10:50:48 -0400
+        with ESMTP id S1730889AbgIJNt4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 09:49:56 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1D0BC0617B1;
-        Thu, 10 Sep 2020 07:48:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 962A0C061796;
+        Thu, 10 Sep 2020 06:49:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=9i1Gg1JSur2QWtYFlaW97koMyRif1OvYLqO9+VB32Xs=; b=og9r483utVHQsXs2xoHw95AUzs
-        hk1vewmZf6aVti8vyAYWeRxdzYDUYYZR4MECcX+Lq8/CK/k2OR30h0GpopgcsOAjoAlXVsO93Rw7A
-        2KpQtgzekUafkA1Xm+hK9NyAVClHHEGI9CXycDPIS+aPcHQASIUV6ooSdlY2GFJQ1BetRCVMPs5K7
-        vXEb62/3Sz7D/6uR/v3k1kIcRop/Y04JaHXuidND3xs3IHNTV5OFJMkWWlrUPccKu2ngOogAG/7Ow
-        M+Gq3LXAH+Hgthe77cJD3oSa2Rp1pQ8j/KCwb8aWNShL2jPk8tn+7HCpdqKiIbRf89O0o/Kd9b0vB
-        TKvvaaig==;
-Received: from [2001:4bb8:184:af1:3ecc:ac5b:136f:434a] (helo=localhost)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kGNsb-0006yv-Pv; Thu, 10 Sep 2020 14:48:54 +0000
-From:   Christoph Hellwig <hch@lst.de>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: [PATCH 12/12] bdi: replace BDI_CAP_NO_{WRITEBACK,ACCT_DIRTY} with a single flag
-Date:   Thu, 10 Sep 2020 16:48:32 +0200
-Message-Id: <20200910144833.742260-13-hch@lst.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20200910144833.742260-1-hch@lst.de>
-References: <20200910144833.742260-1-hch@lst.de>
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8HnaJsrywNAsTbyAgR0uDLUkI/076f0nl1xcx0f5Xko=; b=AVDgGo0/6/PB8I5DLtMJL2binO
+        pmOQFwK5wVGNZiNAEaWwYcL8vS/eMnTaPIZAY7mbv6nStP3R2yb3GXKw3Qof4jcmSlWeoHU+/82Bd
+        0TBjzvJIvJc9SWg49AWb+7o7JjGt5K7abOf0Il9pg05LbGq1YrgXcbg2ZOL7iK1OafUcqQA5Oej0N
+        Rzb00lRrkyeX+N9QqRfbzHBkWInN0t2a18twu+JQOaR6naObkQH/wPwnpfeKDHczznhDDNSnbqA1I
+        Hp3PxF293vyIQQgKuyBlP0/cCZMpvlMZkU473U0yNovX0yMS07kGlvLPybyBzlNDYEBoRKOPENnzX
+        TSCNEaRg==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kGMx1-0003DF-8H; Thu, 10 Sep 2020 13:49:23 +0000
+Date:   Thu, 10 Sep 2020 14:49:23 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH v18 06/32] mm/thp: narrow lru locking
+Message-ID: <20200910134923.GR6583@casper.infradead.org>
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Replace the two negative flags that are always used together with a
-single positive flag that indicates the writeback capability instead
-of two related non-capabilities.  Also remove the pointless wrappers
-to just check the flag.
+On Mon, Aug 24, 2020 at 08:54:39PM +0800, Alex Shi wrote:
+> lru_lock and page cache xa_lock have no reason with current sequence,
+> put them together isn't necessary. let's narrow the lru locking, but
+> left the local_irq_disable to block interrupt re-entry and statistic update.
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/9p/vfs_file.c            |  2 +-
- fs/fs-writeback.c           |  7 +++---
- include/linux/backing-dev.h | 48 ++++++++-----------------------------
- mm/backing-dev.c            |  6 ++---
- mm/filemap.c                |  4 ++--
- mm/memcontrol.c             |  2 +-
- mm/memory-failure.c         |  2 +-
- mm/migrate.c                |  2 +-
- mm/mmap.c                   |  2 +-
- mm/page-writeback.c         | 12 +++++-----
- 10 files changed, 29 insertions(+), 58 deletions(-)
+What stats are you talking about here?
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index 3576123d82990e..6ecf863bfa2f4b 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -625,7 +625,7 @@ static void v9fs_mmap_vm_close(struct vm_area_struct *vma)
+> +++ b/mm/huge_memory.c
+> @@ -2397,7 +2397,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  }
+>  
+>  static void __split_huge_page(struct page *page, struct list_head *list,
+> -		pgoff_t end, unsigned long flags)
+> +			      pgoff_t end)
+
+Please don't change this whitespace.  It's really annoying having to
+adjust the whitespace when renaming a function.  Just two tabs indentation
+to give a clear separation of arguments from code is fine.
+
+
+How about this patch instead?  It occurred to me we already have
+perfectly good infrastructure to track whether or not interrupts are
+already disabled, and so we should use that instead of ensuring that
+interrupts are disabled, or tracking that ourselves.
+
+But I may have missed something else that's relying on having
+interrupts disabled.  Please check carefully.
+
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 2ccff8472cd4..74cae6c032f9 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2376,17 +2376,16 @@ static void __split_huge_page_tail(struct page *head, int tail,
+ }
  
- 	inode = file_inode(vma->vm_file);
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-index 149227160ff0b0..d4f84a2fe0878e 100644
---- a/fs/fs-writeback.c
-+++ b/fs/fs-writeback.c
-@@ -2321,7 +2321,7 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 
- 			wb = locked_inode_to_wb_and_lock_list(inode);
- 
--			WARN(bdi_cap_writeback_dirty(wb->bdi) &&
-+			WARN((wb->bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 			     !test_bit(WB_registered, &wb->state),
- 			     "bdi-%s not registered\n", bdi_dev_name(wb->bdi));
- 
-@@ -2346,7 +2346,8 @@ void __mark_inode_dirty(struct inode *inode, int flags)
- 			 * to make sure background write-back happens
- 			 * later.
- 			 */
--			if (bdi_cap_writeback_dirty(wb->bdi) && wakeup_bdi)
-+			if (wakeup_bdi &&
-+			    (wb->bdi->capabilities & BDI_CAP_WRITEBACK))
- 				wb_wakeup_delayed(wb);
- 			return;
- 		}
-@@ -2581,7 +2582,7 @@ int write_inode_now(struct inode *inode, int sync)
- 		.range_end = LLONG_MAX,
- 	};
- 
--	if (!mapping_cap_writeback_dirty(inode->i_mapping))
-+	if (!mapping_can_writeback(inode->i_mapping))
- 		wbc.nr_to_write = 0;
- 
- 	might_sleep();
-diff --git a/include/linux/backing-dev.h b/include/linux/backing-dev.h
-index b217344a2c63be..44df4fcef65c1e 100644
---- a/include/linux/backing-dev.h
-+++ b/include/linux/backing-dev.h
-@@ -110,27 +110,14 @@ int bdi_set_max_ratio(struct backing_dev_info *bdi, unsigned int max_ratio);
- /*
-  * Flags in backing_dev_info::capability
-  *
-- * The first three flags control whether dirty pages will contribute to the
-- * VM's accounting and whether writepages() should be called for dirty pages
-- * (something that would not, for example, be appropriate for ramfs)
-- *
-- * WARNING: these flags are closely related and should not normally be
-- * used separately.  The BDI_CAP_NO_ACCT_AND_WRITEBACK combines these
-- * three flags into a single convenience macro.
-- *
-- * BDI_CAP_NO_ACCT_DIRTY:  Dirty pages shouldn't contribute to accounting
-- * BDI_CAP_NO_WRITEBACK:   Don't write pages back
-- * BDI_CAP_WRITEBACK_ACCT: Automatically account writeback pages
-- * BDI_CAP_STRICTLIMIT:    Keep number of dirty pages below bdi threshold.
-+ * BDI_CAP_WRITEBACK:		Supports dirty page writeback, and dirty pages
-+ *				should contribute to accounting
-+ * BDI_CAP_WRITEBACK_ACCT:	Automatically account writeback pages
-+ * BDI_CAP_STRICTLIMIT:		Keep number of dirty pages below bdi threshold
-  */
--#define BDI_CAP_NO_ACCT_DIRTY	0x00000001
--#define BDI_CAP_NO_WRITEBACK	0x00000002
--#define BDI_CAP_WRITEBACK_ACCT	0x00000004
--#define BDI_CAP_STRICTLIMIT	0x00000010
--#define BDI_CAP_CGROUP_WRITEBACK 0x00000020
--
--#define BDI_CAP_NO_ACCT_AND_WRITEBACK \
--	(BDI_CAP_NO_WRITEBACK | BDI_CAP_NO_ACCT_DIRTY)
-+#define BDI_CAP_WRITEBACK		(1 << 0)
-+#define BDI_CAP_WRITEBACK_ACCT		(1 << 1)
-+#define BDI_CAP_STRICTLIMIT		(1 << 2)
- 
- extern struct backing_dev_info noop_backing_dev_info;
- 
-@@ -169,24 +156,9 @@ static inline int wb_congested(struct bdi_writeback *wb, int cong_bits)
- long congestion_wait(int sync, long timeout);
- long wait_iff_congested(int sync, long timeout);
- 
--static inline bool bdi_cap_writeback_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_WRITEBACK);
--}
--
--static inline bool bdi_cap_account_dirty(struct backing_dev_info *bdi)
--{
--	return !(bdi->capabilities & BDI_CAP_NO_ACCT_DIRTY);
--}
--
--static inline bool mapping_cap_writeback_dirty(struct address_space *mapping)
--{
--	return bdi_cap_writeback_dirty(inode_to_bdi(mapping->host));
--}
--
--static inline bool mapping_cap_account_dirty(struct address_space *mapping)
-+static inline bool mapping_can_writeback(struct address_space *mapping)
+ static void __split_huge_page(struct page *page, struct list_head *list,
+-		pgoff_t end, unsigned long flags)
++		pgoff_t end)
  {
--	return bdi_cap_account_dirty(inode_to_bdi(mapping->host));
-+	return inode_to_bdi(mapping->host)->capabilities & BDI_CAP_WRITEBACK;
- }
+ 	struct page *head = compound_head(page);
+ 	pg_data_t *pgdat = page_pgdat(head);
+ 	struct lruvec *lruvec;
+ 	struct address_space *swap_cache = NULL;
+ 	unsigned long offset = 0;
++	unsigned long flags;
+ 	int i;
  
- static inline int bdi_sched_wait(void *word)
-@@ -223,7 +195,7 @@ static inline bool inode_cgwb_enabled(struct inode *inode)
+-	lruvec = mem_cgroup_page_lruvec(head, pgdat);
+-
+ 	/* complete memcg works before add pages to LRU */
+ 	mem_cgroup_split_huge_fixup(head);
  
- 	return cgroup_subsys_on_dfl(memory_cgrp_subsys) &&
- 		cgroup_subsys_on_dfl(io_cgrp_subsys) &&
--		bdi_cap_account_dirty(bdi) &&
-+		(bdi->capabilities & BDI_CAP_WRITEBACK) &&
- 		(inode->i_sb->s_iflags & SB_I_CGROUPWB);
- }
+@@ -2395,9 +2394,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
  
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index ab0415dde5c66c..5d0991e75ca337 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -14,9 +14,7 @@
- #include <linux/device.h>
- #include <trace/events/writeback.h>
- 
--struct backing_dev_info noop_backing_dev_info = {
--	.capabilities	= BDI_CAP_NO_ACCT_AND_WRITEBACK,
--};
-+struct backing_dev_info noop_backing_dev_info;
- EXPORT_SYMBOL_GPL(noop_backing_dev_info);
- 
- static struct class *bdi_class;
-@@ -744,7 +742,7 @@ struct backing_dev_info *bdi_alloc(int node_id)
- 		kfree(bdi);
- 		return NULL;
+ 		offset = swp_offset(entry);
+ 		swap_cache = swap_address_space(entry);
+-		xa_lock(&swap_cache->i_pages);
++		xa_lock_irq(&swap_cache->i_pages);
  	}
--	bdi->capabilities = BDI_CAP_WRITEBACK_ACCT;
-+	bdi->capabilities = BDI_CAP_WRITEBACK | BDI_CAP_WRITEBACK_ACCT;
- 	bdi->ra_pages = VM_READAHEAD_PAGES;
- 	bdi->io_pages = VM_READAHEAD_PAGES;
- 	return bdi;
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 1aaea26556cc7e..6c2a0139e22fa3 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -414,7 +414,7 @@ int __filemap_fdatawrite_range(struct address_space *mapping, loff_t start,
- 		.range_end = end,
- 	};
  
--	if (!mapping_cap_writeback_dirty(mapping) ||
-+	if (!mapping_can_writeback(mapping) ||
- 	    !mapping_tagged(mapping, PAGECACHE_TAG_DIRTY))
- 		return 0;
++	/* prevent PageLRU to go away from under us, and freeze lru stats */
++	spin_lock_irqsave(&pgdat->lru_lock, flags);
++	lruvec = mem_cgroup_page_lruvec(head, pgdat);
++
+ 	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
+ 		__split_huge_page_tail(head, i, lruvec, list);
+ 		/* Some pages can be beyond i_size: drop them from page cache */
+@@ -2417,6 +2420,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 	}
  
-@@ -1702,7 +1702,7 @@ struct page *pagecache_get_page(struct address_space *mapping, pgoff_t index,
- no_page:
- 	if (!page && (fgp_flags & FGP_CREAT)) {
- 		int err;
--		if ((fgp_flags & FGP_WRITE) && mapping_cap_account_dirty(mapping))
-+		if ((fgp_flags & FGP_WRITE) && mapping_can_writeback(mapping))
- 			gfp_mask |= __GFP_WRITE;
- 		if (fgp_flags & FGP_NOFS)
- 			gfp_mask &= ~__GFP_FS;
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b807952b4d431b..d2352f76d6519f 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5643,7 +5643,7 @@ static int mem_cgroup_move_account(struct page *page,
- 		if (PageDirty(page)) {
- 			struct address_space *mapping = page_mapping(page);
+ 	ClearPageCompound(head);
++	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
  
--			if (mapping_cap_account_dirty(mapping)) {
-+			if (mapping_can_writeback(mapping)) {
- 				__mod_lruvec_state(from_vec, NR_FILE_DIRTY,
- 						   -nr_pages);
- 				__mod_lruvec_state(to_vec, NR_FILE_DIRTY,
-diff --git a/mm/memory-failure.c b/mm/memory-failure.c
-index f1aa6433f40416..a1e73943445e77 100644
---- a/mm/memory-failure.c
-+++ b/mm/memory-failure.c
-@@ -1006,7 +1006,7 @@ static bool hwpoison_user_mappings(struct page *p, unsigned long pfn,
- 	 */
- 	mapping = page_mapping(hpage);
- 	if (!(flags & MF_MUST_KILL) && !PageDirty(hpage) && mapping &&
--	    mapping_cap_writeback_dirty(mapping)) {
-+	    mapping_can_writeback(mapping)) {
- 		if (page_mkclean(hpage)) {
- 			SetPageDirty(hpage);
+ 	split_page_owner(head, HPAGE_PMD_ORDER);
+ 
+@@ -2425,18 +2429,16 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+ 		/* Additional pin to swap cache */
+ 		if (PageSwapCache(head)) {
+ 			page_ref_add(head, 2);
+-			xa_unlock(&swap_cache->i_pages);
++			xa_unlock_irq(&swap_cache->i_pages);
  		} else {
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 34a842a8eb6a7b..9d2f42a3a16294 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -503,7 +503,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
- 			__dec_lruvec_state(old_lruvec, NR_SHMEM);
- 			__inc_lruvec_state(new_lruvec, NR_SHMEM);
+ 			page_ref_inc(head);
  		}
--		if (dirty && mapping_cap_account_dirty(mapping)) {
-+		if (dirty && mapping_can_writeback(mapping)) {
- 			__dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
- 			__dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
- 			__inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
-diff --git a/mm/mmap.c b/mm/mmap.c
-index 40248d84ad5fbd..1fc0e92be4ba9b 100644
---- a/mm/mmap.c
-+++ b/mm/mmap.c
-@@ -1666,7 +1666,7 @@ int vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
+ 	} else {
+ 		/* Additional pin to page cache */
+ 		page_ref_add(head, 2);
+-		xa_unlock(&head->mapping->i_pages);
++		xa_unlock_irq(&head->mapping->i_pages);
+ 	}
  
- 	/* Can the mapping track the dirty pages? */
- 	return vma->vm_file && vma->vm_file->f_mapping &&
--		mapping_cap_account_dirty(vma->vm_file->f_mapping);
-+		mapping_can_writeback(vma->vm_file->f_mapping);
- }
+-	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+-
+ 	remap_page(head);
  
- /*
-diff --git a/mm/page-writeback.c b/mm/page-writeback.c
-index 0139f9622a92da..358d6f28c627b7 100644
---- a/mm/page-writeback.c
-+++ b/mm/page-writeback.c
-@@ -1882,7 +1882,7 @@ void balance_dirty_pages_ratelimited(struct address_space *mapping)
- 	int ratelimit;
- 	int *p;
- 
--	if (!bdi_cap_account_dirty(bdi))
-+	if (!(bdi->capabilities & BDI_CAP_WRITEBACK))
- 		return;
- 
- 	if (inode_cgwb_enabled(inode))
-@@ -2423,7 +2423,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- 
- 	trace_writeback_dirty_page(page, mapping);
- 
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct bdi_writeback *wb;
- 
- 		inode_attach_wb(inode, page);
-@@ -2450,7 +2450,7 @@ void account_page_dirtied(struct page *page, struct address_space *mapping)
- void account_page_cleaned(struct page *page, struct address_space *mapping,
- 			  struct bdi_writeback *wb)
+ 	for (i = 0; i < HPAGE_PMD_NR; i++) {
+@@ -2574,7 +2576,6 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
+ int split_huge_page_to_list(struct page *page, struct list_head *list)
  {
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		dec_lruvec_page_state(page, NR_FILE_DIRTY);
- 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
- 		dec_wb_stat(wb, WB_RECLAIMABLE);
-@@ -2513,7 +2513,7 @@ void account_page_redirty(struct page *page)
- {
- 	struct address_space *mapping = page->mapping;
+ 	struct page *head = compound_head(page);
+-	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
+ 	struct deferred_split *ds_queue = get_deferred_split_queue(head);
+ 	struct anon_vma *anon_vma = NULL;
+ 	struct address_space *mapping = NULL;
+@@ -2640,9 +2641,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 	unmap_page(head);
+ 	VM_BUG_ON_PAGE(compound_mapcount(head), head);
  
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2625,7 +2625,7 @@ void __cancel_dirty_page(struct page *page)
- {
- 	struct address_space *mapping = page_mapping(page);
+-	/* prevent PageLRU to go away from under us, and freeze lru stats */
+-	spin_lock_irqsave(&pgdata->lru_lock, flags);
+-
+ 	if (mapping) {
+ 		XA_STATE(xas, &mapping->i_pages, page_index(head));
  
--	if (mapping_cap_account_dirty(mapping)) {
-+	if (mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
-@@ -2665,7 +2665,7 @@ int clear_page_dirty_for_io(struct page *page)
+@@ -2650,13 +2648,13 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		 * Check if the head page is present in page cache.
+ 		 * We assume all tail are present too, if head is there.
+ 		 */
+-		xa_lock(&mapping->i_pages);
++		xa_lock_irq(&mapping->i_pages);
+ 		if (xas_load(&xas) != head)
+ 			goto fail;
+ 	}
  
- 	VM_BUG_ON_PAGE(!PageLocked(page), page);
+ 	/* Prevent deferred_split_scan() touching ->_refcount */
+-	spin_lock(&ds_queue->split_queue_lock);
++	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+ 	count = page_count(head);
+ 	mapcount = total_mapcount(head);
+ 	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
+@@ -2664,7 +2662,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 			ds_queue->split_queue_len--;
+ 			list_del(page_deferred_list(head));
+ 		}
+-		spin_unlock(&ds_queue->split_queue_lock);
++		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+ 		if (mapping) {
+ 			if (PageSwapBacked(head))
+ 				__dec_node_page_state(head, NR_SHMEM_THPS);
+@@ -2672,7 +2670,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 				__dec_node_page_state(head, NR_FILE_THPS);
+ 		}
  
--	if (mapping && mapping_cap_account_dirty(mapping)) {
-+	if (mapping && mapping_can_writeback(mapping)) {
- 		struct inode *inode = mapping->host;
- 		struct bdi_writeback *wb;
- 		struct wb_lock_cookie cookie = {};
--- 
-2.28.0
-
+-		__split_huge_page(page, list, end, flags);
++		__split_huge_page(page, list, end);
+ 		if (PageSwapCache(head)) {
+ 			swp_entry_t entry = { .val = page_private(head) };
+ 
+@@ -2688,10 +2686,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 			dump_page(page, "total_mapcount(head) > 0");
+ 			BUG();
+ 		}
+-		spin_unlock(&ds_queue->split_queue_lock);
++		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+ fail:		if (mapping)
+-			xa_unlock(&mapping->i_pages);
+-		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
++			xa_unlock_irq(&mapping->i_pages);
+ 		remap_page(head);
+ 		ret = -EBUSY;
+ 	}
