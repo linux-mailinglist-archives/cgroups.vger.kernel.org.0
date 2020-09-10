@@ -2,244 +2,144 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D74D264AE3
-	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 19:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35EF0264AEF
+	for <lists+cgroups@lfdr.de>; Thu, 10 Sep 2020 19:18:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726810AbgIJROx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 13:14:53 -0400
-Received: from smtp-fw-9101.amazon.com ([207.171.184.25]:2620 "EHLO
-        smtp-fw-9101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727004AbgIJQfa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 12:35:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1599755729; x=1631291729;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   mime-version;
-  bh=sMYF1yObi7M5yLm8bSdKKWnVop6J5D4MwnjeLCnWRnU=;
-  b=ffTsIwi42LWAMokF2ZdV46qZ4TzTAnWMsbjotPkqjoi8jozcfBinQ1AL
-   yrFn3TBe2joGVSuoIROsr/N5sG5AU3YVaC7SSBRmM2kcersKcDarKtEa5
-   bqZ+LjH9alQvWqpIilfwZEwHC08JQdY7Hwd/1WfMcD9yHiULgOTRILof9
-   U=;
-X-IronPort-AV: E=Sophos;i="5.76,413,1592870400"; 
-   d="scan'208";a="66995981"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-2b-859fe132.us-west-2.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9101.sea19.amazon.com with ESMTP; 10 Sep 2020 16:34:58 +0000
-Received: from EX13D31EUA001.ant.amazon.com (pdx4-ws-svc-p6-lb7-vlan2.pdx.amazon.com [10.170.41.162])
-        by email-inbound-relay-2b-859fe132.us-west-2.amazon.com (Postfix) with ESMTPS id 10C7D2249C5;
-        Thu, 10 Sep 2020 16:34:57 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.34) by
- EX13D31EUA001.ant.amazon.com (10.43.165.15) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 10 Sep 2020 16:34:50 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-CC:     SeongJae Park <sjpark@amazon.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-Date:   Thu, 10 Sep 2020 18:34:33 +0200
-Message-ID: <20200910163433.29792-1-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <CALvZod7y0kTVU5Y6-678OW8pLF8P4n3rNoWg8CXrem-diSMXXQ@mail.gmail.com>
+        id S1726657AbgIJRSt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 13:18:49 -0400
+Received: from us-smtp-2.mimecast.com ([205.139.110.61]:30565 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726911AbgIJRP7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 13:15:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1599758150;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=V5RVkZoHNNgO8iRkts2uQucFzF0PqLciDsVyoi9bgfc=;
+        b=gH5ANVlh9jHChevAgLxQU6nEieXdAB93TigKP1WvfIKmZ6pVADdvi7rZTEsLqOpZnj2sDu
+        OhPCxAZQ9sgZBkTyw4ty6ImPZKHwi5E0d1bhyiuwaNgfiGjgh3P2QAv9N0VS4tX/gl3XVb
+        3zIVLYKa8LDenzQjpCd10+ZcVWFekqA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-250-HnAUMfNAM0OMvyN4RsRhjA-1; Thu, 10 Sep 2020 13:15:48 -0400
+X-MC-Unique: HnAUMfNAM0OMvyN4RsRhjA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D7CFB802B72;
+        Thu, 10 Sep 2020 17:15:45 +0000 (UTC)
+Received: from localhost (unknown [10.18.25.174])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 061BB60BFA;
+        Thu, 10 Sep 2020 17:15:42 +0000 (UTC)
+Date:   Thu, 10 Sep 2020 13:15:41 -0400
+From:   Mike Snitzer <snitzer@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, linux-block@vger.kernel.org,
+        martin.petersen@oracle.com, Hans de Goede <hdegoede@redhat.com>,
+        Song Liu <song@kernel.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org, Minchan Kim <minchan@kernel.org>,
+        dm-devel@redhat.com, linux-mtd@lists.infradead.org,
+        linux-mm@kvack.org, drbd-dev@tron.linbit.com,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 06/14] block: lift setting the readahead size into the
+ block layer
+Message-ID: <20200910171541.GB21919@redhat.com>
+References: <20200726150333.305527-1-hch@lst.de>
+ <20200726150333.305527-7-hch@lst.de>
+ <20200826220737.GA25613@redhat.com>
+ <20200902151144.GA1738@lst.de>
+ <20200902162007.GB5513@redhat.com>
+ <20200910092813.GA27229@lst.de>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.34]
-X-ClientProxiedBy: EX13P01UWA002.ant.amazon.com (10.43.160.46) To
- EX13D31EUA001.ant.amazon.com (10.43.165.15)
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910092813.GA27229@lst.de>
+User-Agent: Mutt/1.5.21 (2010-09-15)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> On Wed, Sep 9, 2020 at 11:37 PM SeongJae Park <sjpark@amazon.com> wrote:
-> >
-> > On 2020-09-09T14:57:52-07:00 Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > > Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
-> > >
-> > > Use cases:
-> > > ----------
-> > >
-> > > 1) Per-memcg uswapd:
-> > >
-> > > Usually applications consists of combination of latency sensitive and
-> > > latency tolerant tasks. For example, tasks serving user requests vs
-> > > tasks doing data backup for a database application. At the moment the
-> > > kernel does not differentiate between such tasks when the application
-> > > hits the memcg limits. So, potentially a latency sensitive user facing
-> > > task can get stuck in high reclaim and be throttled by the kernel.
-> > >
-> > > Similarly there are cases of single process applications having two set
-> > > of thread pools where threads from one pool have high scheduling
-> > > priority and low latency requirement. One concrete example from our
-> > > production is the VMM which have high priority low latency thread pool
-> > > for the VCPUs while separate thread pool for stats reporting, I/O
-> > > emulation, health checks and other managerial operations. The kernel
-> > > memory reclaim does not differentiate between VCPU thread or a
-> > > non-latency sensitive thread and a VCPU thread can get stuck in high
-> > > reclaim.
-> > >
-> > > One way to resolve this issue is to preemptively trigger the memory
-> > > reclaim from a latency tolerant task (uswapd) when the application is
-> > > near the limits. Finding 'near the limits' situation is an orthogonal
-> > > problem.
-> > >
-> > > 2) Proactive reclaim:
-> > >
-> > > This is a similar to the previous use-case, the difference is instead of
-> > > waiting for the application to be near its limit to trigger memory
-> > > reclaim, continuously pressuring the memcg to reclaim a small amount of
-> > > memory. This gives more accurate and uptodate workingset estimation as
-> > > the LRUs are continuously sorted and can potentially provide more
-> > > deterministic memory overcommit behavior. The memory overcommit
-> > > controller can provide more proactive response to the changing behavior
-> > > of the running applications instead of being reactive.
-> > >
-> > > Benefit of user space solution:
-> > > -------------------------------
-> > >
-> > > 1) More flexible on who should be charged for the cpu of the memory
-> > > reclaim. For proactive reclaim, it makes more sense to centralized the
-> > > overhead while for uswapd, it makes more sense for the application to
-> > > pay for the cpu of the memory reclaim.
-> > >
-> > > 2) More flexible on dedicating the resources (like cpu). The memory
-> > > overcommit controller can balance the cost between the cpu usage and
-> > > the memory reclaimed.
-> > >
-> > > 3) Provides a way to the applications to keep their LRUs sorted, so,
-> > > under memory pressure better reclaim candidates are selected. This also
-> > > gives more accurate and uptodate notion of working set for an
-> > > application.
-> > >
-> > > Questions:
-> > > ----------
-> > >
-> > > 1) Why memory.high is not enough?
-> > >
-> > > memory.high can be used to trigger reclaim in a memcg and can
-> > > potentially be used for proactive reclaim as well as uswapd use cases.
-> > > However there is a big negative in using memory.high. It can potentially
-> > > introduce high reclaim stalls in the target application as the
-> > > allocations from the processes or the threads of the application can hit
-> > > the temporary memory.high limit.
-> > >
-> > > Another issue with memory.high is that it is not delegatable. To
-> > > actually use this interface for uswapd, the application has to introduce
-> > > another layer of cgroup on whose memory.high it has write access.
-> > >
-> > > 2) Why uswapd safe from self induced reclaim?
-> > >
-> > > This is very similar to the scenario of oomd under global memory
-> > > pressure. We can use the similar mechanisms to protect uswapd from self
-> > > induced reclaim i.e. memory.min and mlock.
-> > >
-> > > Interface options:
-> > > ------------------
-> > >
-> > > Introducing a very simple memcg interface 'echo 10M > memory.reclaim' to
-> > > trigger reclaim in the target memory cgroup.
-> > >
-> > > In future we might want to reclaim specific type of memory from a memcg,
-> > > so, this interface can be extended to allow that. e.g.
-> > >
-> > > $ echo 10M [all|anon|file|kmem] > memory.reclaim
-> > >
-> > > However that should be when we have concrete use-cases for such
-> > > functionality. Keep things simple for now.
-> > >
-> > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > > ---
-> > >  Documentation/admin-guide/cgroup-v2.rst |  9 ++++++
-> > >  mm/memcontrol.c                         | 37 +++++++++++++++++++++++++
-> > >  2 files changed, 46 insertions(+)
-> > >
-> > > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > > index 6be43781ec7f..58d70b5989d7 100644
-> > > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > > @@ -1181,6 +1181,15 @@ PAGE_SIZE multiple when read back.
-> > >       high limit is used and monitored properly, this limit's
-> > >       utility is limited to providing the final safety net.
-> > >
-> > > +  memory.reclaim
-> > > +     A write-only file which exists on non-root cgroups.
-> > > +
-> > > +     This is a simple interface to trigger memory reclaim in the
-> > > +     target cgroup. Write the number of bytes to reclaim to this
-> > > +     file and the kernel will try to reclaim that much memory.
-> > > +     Please note that the kernel can over or under reclaim from
-> > > +     the target cgroup.
-> > > +
-> > >    memory.oom.group
-> > >       A read-write single value file which exists on non-root
-> > >       cgroups.  The default value is "0".
-> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > index 75cd1a1e66c8..2d006c36d7f3 100644
-> > > --- a/mm/memcontrol.c
-> > > +++ b/mm/memcontrol.c
-> > > @@ -6456,6 +6456,38 @@ static ssize_t memory_oom_group_write(struct kernfs_open_file *of,
-> > >       return nbytes;
-> > >  }
-> > >
-> > > +static ssize_t memory_reclaim(struct kernfs_open_file *of, char *buf,
-> > > +                           size_t nbytes, loff_t off)
-> > > +{
-> > > +     struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-> > > +     unsigned int nr_retries = MAX_RECLAIM_RETRIES;
-> > > +     unsigned long nr_to_reclaim, nr_reclaimed = 0;
-> > > +     int err;
-> > > +
-> > > +     buf = strstrip(buf);
-> > > +     err = page_counter_memparse(buf, "", &nr_to_reclaim);
-> > > +     if (err)
-> > > +             return err;
-> > > +
-> > > +     while (nr_reclaimed < nr_to_reclaim) {
-> > > +             unsigned long reclaimed;
-> > > +
-> > > +             if (signal_pending(current))
-> > > +                     break;
-> > > +
-> > > +             reclaimed = try_to_free_mem_cgroup_pages(memcg,
-> > > +                                             nr_to_reclaim - nr_reclaimed,
-> > > +                                             GFP_KERNEL, true);
-> > > +
-> > > +             if (!reclaimed && !nr_retries--)
-> > > +                     break;
-> >
-> > Shouldn't the if condition use '||' instead of '&&'?
-> 
-> I copied the pattern from memory_high_write().
-> 
-> > I think it could be
-> > easier to read if we put the 'nr_retires' condition in the while condition as
-> > below (just my personal preference, though).
-> >
-> >     while (nr_reclaimed < nr_to_reclaim && nr_retires--)
-> >
-> 
-> The semantics will be different. In my version, it means tolerate
-> MAX_RECLAIM_RETRIES reclaim failures and your suggestion means total
-> MAX_RECLAIM_RETRIES tries.
-> 
-> Please note that try_to_free_mem_cgroup_pages() internally does
-> 'nr_to_reclaim = max(nr_pages, SWAP_CLUSTER_MAX)', so, we might need
-> more than MAX_RECLAIM_RETRIES successful tries to actually reclaim the
-> amount of memory the user has requested.
+On Thu, Sep 10 2020 at  5:28am -0400,
+Christoph Hellwig <hch@lst.de> wrote:
 
-Thanks, understood your intention and agreed on the point.
+> On Wed, Sep 02, 2020 at 12:20:07PM -0400, Mike Snitzer wrote:
+> > On Wed, Sep 02 2020 at 11:11am -0400,
+> > Christoph Hellwig <hch@lst.de> wrote:
+> > 
+> > > On Wed, Aug 26, 2020 at 06:07:38PM -0400, Mike Snitzer wrote:
+> > > > On Sun, Jul 26 2020 at 11:03am -0400,
+> > > > Christoph Hellwig <hch@lst.de> wrote:
+> > > > 
+> > > > > Drivers shouldn't really mess with the readahead size, as that is a VM
+> > > > > concept.  Instead set it based on the optimal I/O size by lifting the
+> > > > > algorithm from the md driver when registering the disk.  Also set
+> > > > > bdi->io_pages there as well by applying the same scheme based on
+> > > > > max_sectors.
+> > > > > 
+> > > > > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > > > > ---
+> > > > >  block/blk-settings.c         |  5 ++---
+> > > > >  block/blk-sysfs.c            |  1 -
+> > > > >  block/genhd.c                | 13 +++++++++++--
+> > > > >  drivers/block/aoe/aoeblk.c   |  2 --
+> > > > >  drivers/block/drbd/drbd_nl.c | 12 +-----------
+> > > > >  drivers/md/bcache/super.c    |  4 ----
+> > > > >  drivers/md/dm-table.c        |  3 ---
+> > > > >  drivers/md/raid0.c           | 16 ----------------
+> > > > >  drivers/md/raid10.c          | 24 +-----------------------
+> > > > >  drivers/md/raid5.c           | 13 +------------
+> > > > >  10 files changed, 16 insertions(+), 77 deletions(-)
+> > > > 
+> > > > 
+> > > > In general these changes need a solid audit relative to stacking
+> > > > drivers.  That is, the limits stacking methods (blk_stack_limits)
+> > > > vs lower level allocation methods (__device_add_disk).
+> > > > 
+> > > > You optimized for lowlevel __device_add_disk establishing the bdi's
+> > > > ra_pages and io_pages.  That is at the beginning of disk allocation,
+> > > > well before any build up of stacking driver's queue_io_opt() -- which
+> > > > was previously done in disk_stack_limits or driver specific methods
+> > > > (e.g. dm_table_set_restrictions) that are called _after_ all the limits
+> > > > stacking occurs.
+> > > > 
+> > > > By inverting the setting of the bdi's ra_pages and io_pages to be done
+> > > > so early in __device_add_disk it'll break properly setting these values
+> > > > for at least DM afaict.
+> > > 
+> > > ra_pages never got inherited by stacking drivers, check it by modifying
+> > > it on an underlying device and then creating a trivial dm or md one.
+> > 
+> > Sure, not saying that it did.  But if the goal is to set ra_pages based
+> > on io_opt then to do that correctly on stacking drivers it must be done
+> > in terms of limits stacking right?  Or at least done at a location that
+> > is after the limits stacking has occurred?  So should DM just open-code
+> > setting ra_pages like it did for io_pages?
+> > 
+> > Because setting ra_pages in __device_add_disk() is way too early for DM
+> > -- given it uses device_add_disk_no_queue_reg via add_disk_no_queue_reg
+> > at DM device creation (before stacking all underlying devices' limits).
+> 
+> I'll move it to blk_register_queue, which should work just fine.
 
-Reviewed-by: SeongJae Park <sjpark@amazon.de>
+That'll work for initial DM table load as part of DM device creation
+(dm_setup_md_queue).  But it won't account for DM table reloads that
+might change underlying devices on a live DM device (done using
+__bind).
 
+Both dm_setup_md_queue() and __bind() call dm_table_set_restrictions()
+to set/update queue_limits.  It feels like __bind() will need to call a
+new block helper to set/update parts of queue_limits (e.g. ra_pages and
+io_pages).
+
+Any chance you're open to factoring out that block function as an
+exported symbol for use by blk_register_queue() and code like DM's
+__bind()?
 
 Thanks,
-SeongJae Park
+Mike
+
