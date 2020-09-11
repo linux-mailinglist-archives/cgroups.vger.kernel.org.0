@@ -2,46 +2,41 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1801A265723
-	for <lists+cgroups@lfdr.de>; Fri, 11 Sep 2020 04:52:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C99826579C
+	for <lists+cgroups@lfdr.de>; Fri, 11 Sep 2020 05:38:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725300AbgIKCwD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Sep 2020 22:52:03 -0400
-Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:51311 "EHLO
-        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725613AbgIKCwC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 22:52:02 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0U8YF63K_1599792714;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U8YF63K_1599792714)
+        id S1725778AbgIKDi5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Sep 2020 23:38:57 -0400
+Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:49712 "EHLO
+        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725648AbgIKDiz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Sep 2020 23:38:55 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U8YuYvo_1599795527;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U8YuYvo_1599795527)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 11 Sep 2020 10:51:55 +0800
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+          Fri, 11 Sep 2020 11:38:49 +0800
+Subject: Re: [PATCH v18 06/32] mm/thp: narrow lru locking
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, hannes@cmpxchg.org, lkp@intel.com,
         linux-mm@kvack.org, linux-kernel@vger.kernel.org,
         cgroups@vger.kernel.org, shakeelb@google.com,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
         kirill@shutemov.name, alexander.duyck@gmail.com,
         rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
+        shy828301@gmail.com, Andrea Arcangeli <aarcange@redhat.com>
 References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
- <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
- <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
- <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
+ <1598273705-69124-7-git-send-email-alex.shi@linux.alibaba.com>
+ <20200910134923.GR6583@casper.infradead.org>
 From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
-Date:   Fri, 11 Sep 2020 10:50:56 +0800
+Message-ID: <514f6afa-dbf7-11c5-5431-1d558d2c20c9@linux.alibaba.com>
+Date:   Fri, 11 Sep 2020 11:37:50 +0800
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
  Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200910134923.GR6583@casper.infradead.org>
+Content-Type: text/plain; charset=gbk
 Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
@@ -50,171 +45,187 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-åœ¨ 2020/9/10 ä¸Šåˆ7:16, Hugh Dickins å†™é“:
-> On Wed, 9 Sep 2020, Alex Shi wrote:
->> åœ¨ 2020/9/9 ä¸Šåˆ7:41, Hugh Dickins å†™é“:
->>>
->>> [PATCH v18 05/32] mm/thp: remove code path which never got into
->>> This is a good simplification, but I see no sign that you understand
->>> why it's valid: it relies on lru_add_page_tail() being called while
->>> head refcount is frozen to 0: we would not get this far if someone
->>> else holds a reference to the THP - which they must hold if they have
->>> isolated the page from its lru (and that's true before or after your
->>> per-memcg changes - but even truer after those changes, since PageLRU
->>> can then be flipped without lru_lock at any instant): please explain
->>> something of this in the commit message.
->>
->> Is the following commit log better?
->>
->>     split_huge_page() will never call on a page which isn't on lru list, so
->>     this code never got a chance to run, and should not be run, to add tail
->>     pages on a lru list which head page isn't there.
->>
->>     Hugh Dickins' mentioned:
->>     The path should never be called since lru_add_page_tail() being called
->>     while head refcount is frozen to 0: we would not get this far if someone
->>     else holds a reference to the THP - which they must hold if they have
->>     isolated the page from its lru.
->>
->>     Although the bug was never triggered, it'better be removed for code
->>     correctness, and add a warn for unexpected calling.
+ÔÚ 2020/9/10 ÏÂÎç9:49, Matthew Wilcox Ð´µÀ:
+> On Mon, Aug 24, 2020 at 08:54:39PM +0800, Alex Shi wrote:
+>> lru_lock and page cache xa_lock have no reason with current sequence,
+>> put them together isn't necessary. let's narrow the lru locking, but
+>> left the local_irq_disable to block interrupt re-entry and statistic update.
 > 
-> Not much better, no.  split_huge_page() can easily be called for a page
-> which is not on the lru list at the time, 
+> What stats are you talking about here?
 
-Hi Hugh,
+Hi Matthew,
 
 Thanks for comments!
 
-There are some discussion on this point a couple of weeks ago,
-https://lkml.org/lkml/2020/7/9/760
+like __dec_node_page_state(head, NR_SHMEM_THPS); will have preemptive warning...
 
-Matthew Wilcox and Kirill have the following comments,
-> I don't understand how we get to split_huge_page() with a page that's
-> not on an LRU list.  Both anonymous and page cache pages should be on
-> an LRU list.  What am I missing?
+> 
+>> +++ b/mm/huge_memory.c
+>> @@ -2397,7 +2397,7 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>>  }
+>>  
+>>  static void __split_huge_page(struct page *page, struct list_head *list,
+>> -		pgoff_t end, unsigned long flags)
+>> +			      pgoff_t end)
+> 
+> Please don't change this whitespace.  It's really annoying having to
+> adjust the whitespace when renaming a function.  Just two tabs indentation
+> to give a clear separation of arguments from code is fine.
+> 
+> 
+> How about this patch instead?  It occurred to me we already have
+> perfectly good infrastructure to track whether or not interrupts are
+> already disabled, and so we should use that instead of ensuring that
+> interrupts are disabled, or tracking that ourselves.
 
-Right, and it's never got removed from LRU during the split. The tail
-pages have to be added to LRU because they now separate from the tail
-page.
+So your proposal looks like;
+1, xa_lock_irq(&mapping->i_pages); (optional)
+2, spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+3, spin_lock_irqsave(&pgdat->lru_lock, flags);
 
--- 
- Kirill A. Shutemov
+Is there meaningful for the 2nd and 3rd flags?
 
-> and I don't know what was the
-> bug which was never triggered.  
-
-So the only path to the removed part should be a bug, like  sth here,
-https://lkml.org/lkml/2020/7/10/118
-or
-https://lkml.org/lkml/2020/7/10/972
-
-> Stick with whatever text you end up with
-> for the combination of 05/32 and 18/32, and I'll rewrite it after.
-
-I am not object to merge them into one, I just don't know how to say
-clear about 2 patches in commit log. As patch 18, TestClearPageLRU
-add the incorrect posibility of remove lru bit during split, that's
-the reason of code path rewrite and a WARN there.
+IIRC, I had a similar proposal as your, the flags used in xa_lock_irqsave(),
+but objected by Hugh.
 
 Thanks
 Alex
-> 
->>> [PATCH v18 06/32] mm/thp: narrow lru locking
->>> Why? What part does this play in the series? "narrow lru locking" can
->>> also be described as "widen page cache locking": 
->>
->> Uh, the page cache locking isn't widen, it's still on the old place.
-> 
-> I'm not sure if you're joking there. Perhaps just a misunderstanding.
-> 
-> Yes, patch 06/32 does not touch the xa_lock(&mapping->i_pages) and
-> xa_lock(&swap_cache->i_pages) lines (odd how we've arrived at two of
-> those, but please do not get into cleaning it up now); but it removes
-> the spin_lock_irqsave(&pgdata->lru_lock, flags) which used to come
-> before them, and inserts a spin_lock(&pgdat->lru_lock) after them.
-> 
-> You call that narrowing the lru locking, okay, but I see it as also
-> pushing the page cache locking outwards: before this patch, page cache
-> lock was taken inside lru_lock; after this patch, page cache lock is
-> taken outside lru_lock.  If you cannot see that, then I think you
-> should not have touched this code at all; but it's what we have
-> been testing, and I think we should go forward with it.
-> 
->>> But I wish you could give some reason for it in the commit message!
->>
->> It's a head scratch task. Would you like to tell me what's detailed info 
->> should be there? Thanks!
-> 
-> So, you don't know why you did it either: then it will be hard to
-> justify.  I guess I'll have to write something for it later.  I'm
-> strongly tempted just to drop the patch, but expect it will become
-> useful later, for using lock_page_memcg() before getting lru_lock.
-> 
-
-I thought the xa_lock and lru_lock relationship was described clear
-in the commit log, and still no idea of the move_lock in the chain.
-Please refill them for what I overlooked.
-Thanks!
-
->>> Signed-off-by: Wei Yang <richard.weiyang@gmail.com>
->>> Is that correct? Or Wei Yang suggested some part of it perhaps?
->>
->> Yes, we talked a lot to confirm the locking change is safe.
-> 
-> Okay, but the patch was written by you, and sent by you to Andrew:
-> that is not a case for "Signed-off-by: Someone Else".
-> 
-
-Ok. let's remove his signed-off.
-
->>> [PATCH v18 27/32] mm/swap.c: optimizing __pagevec_lru_add lru_lock
->>> Could we please drop this one for the moment? And come back to it later
->>> when the basic series is safely in.  It's a good idea to try sorting
->>> together those pages which come under the same lock (though my guess is
->>> that they naturally gather themselves together quite well already); but
->>> I'm not happy adding 360 bytes to the kernel stack here (and that in
->>> addition to 192 bytes of horrid pseudo-vma in the shmem swapin case),
->>> though that could be avoided by making it per-cpu. But I hope there's
->>> a simpler way of doing it, as efficient, but also useful for the other
->>> pagevec operations here: perhaps scanning the pagevec for same page->
->>> mem_cgroup (and flags node bits), NULLing entries as they are done.
->>> Another, easily fixed, minor defect in this patch: if I'm reading it
->>> right, it reverses the order in which the pages are put on the lru?
->>
->> this patch could give about 10+% performance gain on my multiple memcg
->> readtwice testing. fairness locking cost the performance much.
-> 
-> Good to know, should have been mentioned.  s/fairness/Repeated/
-> 
-> But what was the gain or loss on your multiple memcg readtwice
-> testing without this patch, compared against node-only lru_lock?
-> The 80% gain mentioned before, I presume.  So this further
-> optimization can wait until the rest is solid.
-
-the gain based on the patch 26.
 
 > 
->>
->> I also tried per cpu solution but that cause much trouble of per cpu func
->> things, and looks no benefit except a bit struct size of stack, so if 
->> stack size still fine. May we could use the solution and improve it better.
->> like, functionlize, fix the reverse issue etc.
+> But I may have missed something else that's relying on having
+> interrupts disabled.  Please check carefully.
 > 
-> I don't know how important the stack depth consideration is nowadays:
-> I still care, maybe others don't, since VMAP_STACK became an option.
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 2ccff8472cd4..74cae6c032f9 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2376,17 +2376,16 @@ static void __split_huge_page_tail(struct page *head, int tail,
+>  }
+>  
+>  static void __split_huge_page(struct page *page, struct list_head *list,
+> -		pgoff_t end, unsigned long flags)
+> +		pgoff_t end)
+>  {
+>  	struct page *head = compound_head(page);
+>  	pg_data_t *pgdat = page_pgdat(head);
+>  	struct lruvec *lruvec;
+>  	struct address_space *swap_cache = NULL;
+>  	unsigned long offset = 0;
+> +	unsigned long flags;
+>  	int i;
+>  
+> -	lruvec = mem_cgroup_page_lruvec(head, pgdat);
+> -
+>  	/* complete memcg works before add pages to LRU */
+>  	mem_cgroup_split_huge_fixup(head);
+>  
+> @@ -2395,9 +2394,13 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  
+>  		offset = swp_offset(entry);
+>  		swap_cache = swap_address_space(entry);
+> -		xa_lock(&swap_cache->i_pages);
+> +		xa_lock_irq(&swap_cache->i_pages);
+>  	}
+>  
+> +	/* prevent PageLRU to go away from under us, and freeze lru stats */
+> +	spin_lock_irqsave(&pgdat->lru_lock, flags);
+> +	lruvec = mem_cgroup_page_lruvec(head, pgdat);
+> +
+>  	for (i = HPAGE_PMD_NR - 1; i >= 1; i--) {
+>  		__split_huge_page_tail(head, i, lruvec, list);
+>  		/* Some pages can be beyond i_size: drop them from page cache */
+> @@ -2417,6 +2420,7 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  	}
+>  
+>  	ClearPageCompound(head);
+> +	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>  
+>  	split_page_owner(head, HPAGE_PMD_ORDER);
+>  
+> @@ -2425,18 +2429,16 @@ static void __split_huge_page(struct page *page, struct list_head *list,
+>  		/* Additional pin to swap cache */
+>  		if (PageSwapCache(head)) {
+>  			page_ref_add(head, 2);
+> -			xa_unlock(&swap_cache->i_pages);
+> +			xa_unlock_irq(&swap_cache->i_pages);
+>  		} else {
+>  			page_ref_inc(head);
+>  		}
+>  	} else {
+>  		/* Additional pin to page cache */
+>  		page_ref_add(head, 2);
+> -		xa_unlock(&head->mapping->i_pages);
+> +		xa_unlock_irq(&head->mapping->i_pages);
+>  	}
+>  
+> -	spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+> -
+>  	remap_page(head);
+>  
+>  	for (i = 0; i < HPAGE_PMD_NR; i++) {
+> @@ -2574,7 +2576,6 @@ bool can_split_huge_page(struct page *page, int *pextra_pins)
+>  int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  {
+>  	struct page *head = compound_head(page);
+> -	struct pglist_data *pgdata = NODE_DATA(page_to_nid(head));
+>  	struct deferred_split *ds_queue = get_deferred_split_queue(head);
+>  	struct anon_vma *anon_vma = NULL;
+>  	struct address_space *mapping = NULL;
+> @@ -2640,9 +2641,6 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  	unmap_page(head);
+>  	VM_BUG_ON_PAGE(compound_mapcount(head), head);
+>  
+> -	/* prevent PageLRU to go away from under us, and freeze lru stats */
+> -	spin_lock_irqsave(&pgdata->lru_lock, flags);
+> -
+>  	if (mapping) {
+>  		XA_STATE(xas, &mapping->i_pages, page_index(head));
+>  
+> @@ -2650,13 +2648,13 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  		 * Check if the head page is present in page cache.
+>  		 * We assume all tail are present too, if head is there.
+>  		 */
+> -		xa_lock(&mapping->i_pages);
+> +		xa_lock_irq(&mapping->i_pages);
+>  		if (xas_load(&xas) != head)
+>  			goto fail;
+>  	}
+>  
+>  	/* Prevent deferred_split_scan() touching ->_refcount */
+> -	spin_lock(&ds_queue->split_queue_lock);
+> +	spin_lock_irqsave(&ds_queue->split_queue_lock, flags);
+>  	count = page_count(head);
+>  	mapcount = total_mapcount(head);
+>  	if (!mapcount && page_ref_freeze(head, 1 + extra_pins)) {
+> @@ -2664,7 +2662,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  			ds_queue->split_queue_len--;
+>  			list_del(page_deferred_list(head));
+>  		}
+> -		spin_unlock(&ds_queue->split_queue_lock);
+> +		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>  		if (mapping) {
+>  			if (PageSwapBacked(head))
+>  				__dec_node_page_state(head, NR_SHMEM_THPS);
+> @@ -2672,7 +2670,7 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  				__dec_node_page_state(head, NR_FILE_THPS);
+>  		}
+>  
+> -		__split_huge_page(page, list, end, flags);
+> +		__split_huge_page(page, list, end);
+>  		if (PageSwapCache(head)) {
+>  			swp_entry_t entry = { .val = page_private(head) };
+>  
+> @@ -2688,10 +2686,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  			dump_page(page, "total_mapcount(head) > 0");
+>  			BUG();
+>  		}
+> -		spin_unlock(&ds_queue->split_queue_lock);
+> +		spin_unlock_irqrestore(&ds_queue->split_queue_lock, flags);
+>  fail:		if (mapping)
+> -			xa_unlock(&mapping->i_pages);
+> -		spin_unlock_irqrestore(&pgdata->lru_lock, flags);
+> +			xa_unlock_irq(&mapping->i_pages);
+>  		remap_page(head);
+>  		ret = -EBUSY;
+>  	}
 > 
-> Yes, please fix the reversal (if I was right on that); and I expect
-> you could use a singly linked list instead of the double.
-
-single linked list is more saving, but do we have to reverse walking to seek
-the head or tail for correct sequence?
-
-> 
-> But I'll look for an alternative - later, once the urgent stuff
-> is completed - and leave the acks on this patch to others.
-
-Ok, looking forward for your new solution!
-
-Thanks
-Alex
