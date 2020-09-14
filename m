@@ -2,134 +2,183 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 284E42693DF
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 19:44:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41583269541
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 21:07:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726043AbgINRoR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 13:44:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43622 "EHLO
+        id S1725979AbgINTHK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 15:07:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726138AbgINMFl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 08:05:41 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA66BC061788
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:05:40 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id w7so12461116pfi.4
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GsOIVPKx7/GKwttOx4gkrBI8E8JMmQp3RWxUAc5wfcY=;
-        b=G1oJRVfApka43Z3M51QifLTqy6wQ/iKgboQET0cTsUGhqa2VvUp8zDM8KlmGoMSTn2
-         4Nrv8KQBR0s4z0UdeuHvXlON0PxsuBLT2bR5RsbPH5Ds+0mk4ZSITL47v4bUSSrYxRf+
-         3JbtyFmqXOdHv5OcDFVVpHHmldqYsBpLMfDiqL+XHgcz8n+Rw6WA48PDWy7xI28TERZO
-         OX3Ivrdkp571bX+Qwd4tBKr+MUvOr2dhIor2S9JPGrGrcy3jqr9YXy3I4nvalNuVLHrq
-         pXLybs29hC36HQhOnDUctrx6f05OvpzbtddhDB62gOnd0DXz75rX20WGUGWvRC2TiNCL
-         7h3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GsOIVPKx7/GKwttOx4gkrBI8E8JMmQp3RWxUAc5wfcY=;
-        b=ffTq/3iMf6mqp4EIBAM8oKC2ZQ9KWXGK/TzJfNFs/TnyEjBHLEYEjIgYMcFlDbkmZi
-         70a6FAWDfZcsvNJG/JK7JXbCYbLcTUPm6hGjNR/92aWpHs3T/ZCg2FHO8asB9JD0cE8+
-         jf3mxO/FrbvgDEc+LkvSsCHpQyjM6UDJDSaIX+YpL1MideW16tuGHfH+XYqZOkygbkl5
-         /OTvHlyXgGP992YzsbNMWUkz4mPaUgGFP3xl+diUX5OYwwx2GHe7Afh1Vawl4Nv2haPF
-         9rVIuNazuegoNHAiQblKUPHSrvCzgJG46bQsCpOhWym1bKaL4eUqUmYcJwFGABWDAI54
-         JHfw==
-X-Gm-Message-State: AOAM531rMIitSM1w4FRlRtB8s2Jdwlb12zts55dIjcnUqbITaNbFK8Tj
-        vasDWl/J0Bpr82HFUjY7DWBqbcW7dxViXRn3XxA0mw==
-X-Google-Smtp-Source: ABdhPJy0PPAh9+CRT36/WnNcBPpBRgPC600c1hQtAsuYJZS5GFpKJtb5l5v2LAjd1XIksmtFfFkruvL0x/daNTrYq1o=
-X-Received: by 2002:a17:902:a605:b029:d0:cbe1:e714 with SMTP id
- u5-20020a170902a605b02900d0cbe1e714mr14271096plq.34.1600085139550; Mon, 14
- Sep 2020 05:05:39 -0700 (PDT)
+        with ESMTP id S1725953AbgINTHJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 15:07:09 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 369FBC06174A;
+        Mon, 14 Sep 2020 12:07:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=N8T1tOQR2qSaR9SyfG7NteG59Ly5LuoTRUVFcE43ejU=; b=Ecx5Y31AlKnUhF8sXiscXGFIIB
+        JTAlDxNPr/zeVUsrVCiFy7EckaHazxjuuNYGH70OaQjzQgJmn6TWMmuMTO2kOmylfn25jg1MYb5GE
+        m9Fmx2lLCfgFlxSnjmCTQ0g5FtuJ7JC2vqGjBfkpA7dIoF6dvhCKWBrELvUJon4TAJ2+6gtzavTZs
+        J433nKXEHXHypR8mAtl0NACx3CQUsIsdBpm4yCBl0wBZAdHCSllkRYxOrONb1Lgkq4vAZYVtTtQUG
+        HFeEFVSahZQBHnZef0RHKlBKY71FHxMqq524y4b1L0/C+Q8Dt5V7F+eu9g+DMKkgis6HD4fCC8XmM
+        owHU1kEw==;
+Received: from [2601:1c0:6280:3f0::19c2]
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHtoW-0002rB-SZ; Mon, 14 Sep 2020 19:06:57 +0000
+Subject: Re: [PATCH v3] mm: memcontrol: Add the missing numa_stat interface
+ for cgroup v2
+To:     Muchun Song <songmuchun@bytedance.com>, tj@kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com
+Cc:     cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel test robot <lkp@intel.com>
+References: <20200913070010.44053-1-songmuchun@bytedance.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <8387344f-0e43-9b6e-068d-b2c45bbda1de@infradead.org>
+Date:   Mon, 14 Sep 2020 12:06:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz> <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
- <20200914103205.GI16999@dhcp22.suse.cz> <CAMZfGtWBSCFWw7QN66-ZLTb8oT7UALkyaGONjcjB93DyeeXXTA@mail.gmail.com>
- <20200914115724.GO16999@dhcp22.suse.cz>
-In-Reply-To: <20200914115724.GO16999@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 20:05:03 +0800
-Message-ID: <CAMZfGtUBAO8AApzuDZZviCUpPyy4-JTCpXTRSzimq=K9aG467g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200913070010.44053-1-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 7:57 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 14-09-20 19:46:36, Muchun Song wrote:
-> > On Mon, Sep 14, 2020 at 6:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 14-09-20 17:43:42, Muchun Song wrote:
-> > > > On Mon, Sep 14, 2020 at 5:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 14-09-20 12:02:33, Muchun Song wrote:
-> > > > > > On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > > > >
-> > > > > > > On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > > > >
-> > > > > > > > The memory_stat_format() returns a format string, but the return buf
-> > > > > > > > may not including the trailing '\0'. So the users may read the buf
-> > > > > > > > out of bounds.
-> > > > > > >
-> > > > > > > That sounds serious.  Is a cc:stable appropriate?
-> > > > > > >
-> > > > > >
-> > > > > > Yeah, I think we should cc:stable.
-> > > > >
-> > > > > Is this a real problem? The buffer should contain 36 lines which makes
-> > > > > it more than 100B per line. I strongly suspect we are not able to use
-> > > > > that storage up.
-> > > >
-> > > > Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
-> > > > Otherwise, the return buf string has no trailing null('\0'). But users treat buf
-> > > > as a string(and read the string oob). It is wrong. Thanks.
-> > >
-> > > I am not sure I follow you. vsnprintf which is used by seq_printf will
-> > > add \0 if there is a room for that. And I argue there is a lot of room
-> > > in the buffer so a corner case where the buffer gets full doesn't happen
-> > > with the current code.
-> >
-> > Thanks for your explanation. Yeah, seq_printf will add \0 if there is a
-> > room for that. So I agree with you that the "Fixes" tag is wrong. There
-> > is nothing to fix. Sorry for the noise.
-> >
-> > I think that if someone uses seq_buf_putc(maybe in the feature) at the
-> > end of memory_stat_format(). It will break the rule and there is no \0.
-> > So this patch can just make the code robust but need to change the
-> > commit log and remove the Fixes tag.
->
-> Please see my other reply. Adding \0 is not really sufficient. If we
-> want to have a robust code to handle the small buffer then we need to
-> make sure that all counters will make it to the userspace. Short output
-> is simply a broken result. Implementing this properly is certainly
-> possible, the question is whether this is worth addressing. It is not
-> like we are adding a lot of output into this file and it is quite likely
-> that the code is good as it is.
+On 9/13/20 12:00 AM, Muchun Song wrote:
+> In the cgroup v1, we have a numa_stat interface. This is useful for
+> providing visibility into the numa locality information within an
+> memcg since the pages are allowed to be allocated from any physical
+> node. One of the use cases is evaluating application performance by
+> combining this information with the application's CPU allocation.
+> But the cgroup v2 does not. So this patch adds the missing information.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Suggested-by: Shakeel Butt <shakeelb@google.com>
+> Reported-by: kernel test robot <lkp@intel.com>
+> ---
+>  changelog in v3:
+>  1. Fix compiler error on powerpc architecture reported by kernel test robot.
+>  2. Fix a typo from "anno" to "anon".
+> 
+>  changelog in v2:
+>  1. Add memory.numa_stat interface in cgroup v2.
+> 
+>  Documentation/admin-guide/cgroup-v2.rst |  72 ++++++++++++++++
+>  mm/memcontrol.c                         | 107 ++++++++++++++++++++++++
+>  2 files changed, 179 insertions(+)
+> 
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 6be43781ec7f..92207f0012e4 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
+>  		collapsing an existing range of pages. This counter is not
+>  		present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
+>  
+> +  memory.numa_stat
+> +	A read-only flat-keyed file which exists on non-root cgroups.
+> +
+> +	This breaks down the cgroup's memory footprint into different
+> +	types of memory, type-specific details, and other information
+> +	per node on the state of the memory management system.
+> +
+> +	This is useful for providing visibility into the numa locality
 
-Got it. Thanks.
-
-> --
-> Michal Hocko
-> SUSE Labs
+capitalize acronyms, please:                             NUMA
 
 
+> +	information within an memcg since the pages are allowed to be
+> +	allocated from any physical node. One of the use cases is evaluating
+> +	application performance by combining this information with the
+> +	application's CPU allocation.
+> +
+> +	All memory amounts are in bytes.
+> +
+> +	The output format of memory.numa_stat is::
+> +
+> +	  type N0=<node 0 pages> N1=<node 1 pages> ...
 
+Now I'm confused.  5 lines above here it says "All memory amounts are in bytes"
+but these appear to be in pages. Which is it?  and what size pages if that matters?
+
+Is it like this?
+	  type N0=<bytes in node 0 pages> N1=<bytes in node 1 pages> ...
+
+
+
+> +	The entries are ordered to be human readable, and new entries
+> +	can show up in the middle. Don't rely on items remaining in a
+> +	fixed position; use the keys to look up specific values!
+> +
+> +	  anon
+> +		Amount of memory per node used in anonymous mappings such
+> +		as brk(), sbrk(), and mmap(MAP_ANONYMOUS)
+> +
+> +	  file
+> +		Amount of memory per node used to cache filesystem data,
+> +		including tmpfs and shared memory.
+> +
+> +	  kernel_stack
+> +		Amount of memory per node allocated to kernel stacks.
+> +
+> +	  shmem
+> +		Amount of cached filesystem data per node that is swap-backed,
+> +		such as tmpfs, shm segments, shared anonymous mmap()s
+> +
+> +	  file_mapped
+> +		Amount of cached filesystem data per node mapped with mmap()
+> +
+> +	  file_dirty
+> +		Amount of cached filesystem data per node that was modified but
+> +		not yet written back to disk
+> +
+> +	  file_writeback
+> +		Amount of cached filesystem data per node that was modified and
+> +		is currently being written back to disk
+> +
+> +	  anon_thp
+> +		Amount of memory per node used in anonymous mappings backed by
+> +		transparent hugepages
+> +
+> +	  inactive_anon, active_anon, inactive_file, active_file, unevictable
+> +		Amount of memory, swap-backed and filesystem-backed,
+> +		per node on the internal memory management lists used
+> +		by the page reclaim algorithm.
+> +
+> +		As these represent internal list state (eg. shmem pages are on anon
+
+		                                         e.g.
+
+> +		memory management lists), inactive_foo + active_foo may not be equal to
+> +		the value for the foo counter, since the foo counter is type-based, not
+> +		list-based.
+> +
+> +	  slab_reclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which might be reclaimed, such as dentries and
+> +		inodes.
+> +
+> +	  slab_unreclaimable
+> +		Amount of memory per node used for storing in-kernel data
+> +		structures which cannot be reclaimed on memory pressure.
+
+Some of the descriptions above end with a '.' and some do not. Please be consistent.
+
+> +
+>    memory.swap.current
+>  	A read-only single value file which exists on non-root
+>  	cgroups.
+
+
+thanks.
 -- 
-Yours,
-Muchun
+~Randy
+
