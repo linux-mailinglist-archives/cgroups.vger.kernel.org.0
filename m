@@ -2,117 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF706268F07
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 17:06:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA682268F32
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 17:10:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726038AbgINPG3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 11:06:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43444 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726121AbgINPFR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 11:05:17 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51127C06174A;
-        Mon, 14 Sep 2020 08:05:17 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id f142so333021qke.13;
-        Mon, 14 Sep 2020 08:05:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=MwhoD2IsxPuM7wLbM0i6FSRjhQSYCwaNO02+PwwZFwI=;
-        b=hj2b9XRbREKQ+sQk3KdHJ9qKJ/wirPnzOxDkqIAkGjUGWYNewcfCK/Z7n78c1zp8np
-         xtjqO9I4lyHECVNCQi1LMx1mAeUDX84kSpB/SM3ReBDs4J6RgH29faPh/v3Rsm7StlAK
-         xOrl5xFFo0tb3gX4J8z5hmS9pVBMkMdT2iMV+D7pJAv+UfXc0x24dq6sVeouNDnz0Yn/
-         J26hK5gKW1e6k0ng4Gh62M5KQXjWM7IUC3ec0FE6jB3N9CRxVsrXO2p5G3TADdo6gIC6
-         eTwZar7N5P2rGY67eotzjFM3OpJeplY2AXypg/5jDqiUBilJ2ERSBOAjO6/IIdeg9CUv
-         wdMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=MwhoD2IsxPuM7wLbM0i6FSRjhQSYCwaNO02+PwwZFwI=;
-        b=OZtTWF5v1Qfj++CFgwIINSZ0S6RmV5vMmIEVx1ssIleEq5BIZG3/WgSh+S0GPEevYT
-         MjYp5rsPi64F9sETe5iYYm3govEWPGTnf6RwL0vRHiXAYOwXsHk8GCbBUKTrWlTmEwae
-         BfKh/l5y1BliYKXKJ134CvyD6teBlWKrthJd2aZ1ytMsmzfdthHsUIoKxl6lLclGZ+ak
-         w7lfEzazf2nghYvNauX3WgWEs44jS/WEyyxD8lmZ625qBhrpN23W7KSROVxW+x6LaUpa
-         GyToTSdx/hocno2kGGB1RpFVGy0gNUAOISJv8vRJW8e9i+T8BPFgMgC2qoAcLMvpmRjl
-         Uf1g==
-X-Gm-Message-State: AOAM531qIvlXqqrWHg7RsyNTLvRJwR5atAmIEY4+f1LQIDAimnx6p+gp
-        gY96+A4Z22N/mQBVQFv1LdA=
-X-Google-Smtp-Source: ABdhPJyB9YS6tyxfzJLHs3GtWMtDdBshxzWHI7GwmBNZV5EVnTVp8lRSOAHTZQIAAI+lGG+RGbAa1Q==
-X-Received: by 2002:ae9:de85:: with SMTP id s127mr12471825qkf.59.1600095915610;
-        Mon, 14 Sep 2020 08:05:15 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:c1e3])
-        by smtp.gmail.com with ESMTPSA id y20sm14321815qkj.70.2020.09.14.08.05.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 08:05:14 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 11:05:13 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Jens Axboe <axboe@kernel.dk>
+        id S1726215AbgINPJ6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 11:09:58 -0400
+Received: from us-smtp-1.mimecast.com ([205.139.110.61]:56097 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725970AbgINPJv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 11:09:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600096188;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
+        bh=6+JqwjvDWrEa3i/FAJIeAH613qFKBYUmXeFNszVZCpA=;
+        b=Ouj/omuOl1248vhafLIetAEkfQJW40Lae1+3OF9wjKo1HH7XitdvoKV9fuBaQ/Xm5a11rY
+        BzYvVLz8ls5OLWRqz7ojdgvIch1tKEs7gBeFbrm3BEbSgTqt96NimE13C7V482wGre1pHX
+        f8jjNme/ECnr9COmKUDcCumVTGigUgw=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-522-ld3toLdkPHSfv9Ugq9g3GQ-1; Mon, 14 Sep 2020 11:09:46 -0400
+X-MC-Unique: ld3toLdkPHSfv9Ugq9g3GQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 61ABD91313E;
+        Mon, 14 Sep 2020 15:09:44 +0000 (UTC)
+Received: from llong.com (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id D111260DA0;
+        Mon, 14 Sep 2020 15:09:37 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel-team@fb.com
-Subject: [PATCH block/for-next] iocost: fix infinite loop bug in
- adjust_inuse_and_calc_cost()
-Message-ID: <20200914150513.GC865564@mtj.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+        linux-mm@kvack.org, Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Waiman Long <longman@redhat.com>
+Subject: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+Date:   Mon, 14 Sep 2020 11:09:28 -0400
+Message-Id: <20200914150928.7841-1-longman@redhat.com>
+In-Reply-To: <20200914024452.19167-1-longman@redhat.com>
+References: <20200914024452.19167-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-adjust_inuse_and_calc_cost() is responsible for reducing the amount of
-donated weights dynamically in period as the budget runs low. Because we
-don't want to do full donation calculation in period, we keep latching up
-inuse by INUSE_ADJ_STEP_PCT of the active weight of the cgroup until the
-resulting hweight_inuse is satisfactory.
+The mem_cgroup_get_max() function used to get memory+swap max from
+both the v1 memsw and v2 memory+swap page counters & return the maximum
+of these 2 values. This is redundant and it is more efficient to just
+get either the v1 or the v2 values depending on which one is currently
+in use.
 
-Unfortunately, the adj_step calculation was reading the active weight before
-acquiring ioc->lock. Because the current thread could have lost race to
-activate the iocg to another thread before entering this function, it may
-read the active weight as zero before acquiring ioc->lock. When this
-happens, the adj_step is calculated as zero and the incremental adjustment
-loop becomes an infinite one.
-
-Fix it by fetching the active weight after acquiring ioc->lock.
-
-Signed-off-by: Tejun Heo <tj@kernel.org>
-Fixes: b0853ab4a238 ("blk-iocost: revamp in-period donation snapbacks")
+Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- block/blk-iocost.c |   12 +++++++++---
- 1 file changed, 9 insertions(+), 3 deletions(-)
+ mm/memcontrol.c | 24 +++++++++++++-----------
+ 1 file changed, 13 insertions(+), 11 deletions(-)
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 6e29b4dcf3566..ef9476fca1d8a 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2323,9 +2323,8 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 8c74f1200261..cad1ac4551ad 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+  */
+ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
  {
- 	struct ioc *ioc = iocg->ioc;
- 	struct ioc_margins *margins = &ioc->margins;
--	u32 adj_step = DIV_ROUND_UP(iocg->active * INUSE_ADJ_STEP_PCT, 100);
- 	u32 __maybe_unused old_inuse = iocg->inuse, __maybe_unused old_hwi;
--	u32 hwi;
-+	u32 hwi, adj_step;
- 	s64 margin;
- 	u64 cost, new_inuse;
- 
-@@ -2354,8 +2353,15 @@ static u64 adjust_inuse_and_calc_cost(struct ioc_gq *iocg, u64 vtime,
- 		return cost;
+-	unsigned long max;
+-
+-	max = READ_ONCE(memcg->memory.max);
+-	if (mem_cgroup_swappiness(memcg)) {
+-		unsigned long memsw_max;
+-		unsigned long swap_max;
+-
+-		memsw_max = memcg->memsw.max;
+-		swap_max = READ_ONCE(memcg->swap.max);
+-		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+-		max = min(max + swap_max, memsw_max);
++	unsigned long max = READ_ONCE(memcg->memory.max);
++
++	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
++		if (mem_cgroup_swappiness(memcg))
++			max += min(READ_ONCE(memcg->swap.max),
++				   (unsigned long)total_swap_pages);
++	} else { /* v1 */
++		if (mem_cgroup_swappiness(memcg)) {
++			/* Calculate swap excess capacity from memsw limit */
++			unsigned long swap = READ_ONCE(memcg->memsw.max) - max;
++
++			max += min(swap, (unsigned long)total_swap_pages);
++		}
  	}
- 
--	/* bump up inuse till @abs_cost fits in the existing budget */
-+	/*
-+	 * Bump up inuse till @abs_cost fits in the existing budget.
-+	 * adj_step must be determined after acquiring ioc->lock - we might
-+	 * have raced and lost to another thread for activation and could
-+	 * be reading 0 iocg->active before ioc->lock which will lead to
-+	 * infinite loop.
-+	 */
- 	new_inuse = iocg->inuse;
-+	adj_step = DIV_ROUND_UP(iocg->active * INUSE_ADJ_STEP_PCT, 100);
- 	do {
- 		new_inuse = new_inuse + adj_step;
- 		propagate_weights(iocg, iocg->active, new_inuse, true, now);
+ 	return max;
+ }
+-- 
+2.18.1
+
