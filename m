@@ -2,77 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9BE268A0E
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 13:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 23FF9268A30
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 13:38:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726053AbgINL2g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 07:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726052AbgINL2D (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 07:28:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A57C06174A;
-        Mon, 14 Sep 2020 04:28:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=3a9YiCRLSdfxT+zjyDP/va2bUubeehwvzanOvcg0GxQ=; b=ZnFpgSWDEryPzF8z+fHhQ7Shl2
-        hBFm8DenBw+/t889jQOCGrpQ0rDHOLM5QHUJqsC7TICkw+13dTLpYnqWx0CdPTLoOyu8laVcTlmOI
-        yxVmM2AFdyZUGoWpMbvqHA5MZw4ppabm02Qyz8GBvL0/8wsASVW0xm3Y+5PhYEfz90lpQXdG97AoZ
-        /tzQ02AOeLp7eJnKP/zIe+sMez7ySzubAluHZ3CsL8xYtrxf6O0oJArjOA4k1S28+zlTh5aIiJELq
-        b2uZ3guQq9luXS2rnz4d3U2dyMC2M1lebD8l63wWox7AXf2XZ0FgL6q14dyqyK+5EkK3hNS7GkwPW
-        wkHTxNDA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kHme2-0005if-Uf; Mon, 14 Sep 2020 11:27:39 +0000
-Date:   Mon, 14 Sep 2020 12:27:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     kernel test robot <lkp@intel.com>
-Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Huang Ying <ying.huang@intel.com>,
-        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lkp@lists.01.org
-Subject: Re: [mm] 2037ab69a5: BUG:KASAN:null-ptr-deref_in_t
-Message-ID: <20200914112738.GM6583@casper.infradead.org>
-References: <20200910183318.20139-7-willy@infradead.org>
- <20200914085545.GB28738@shao2-debian>
+        id S1726119AbgINLhj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 07:37:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:50982 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726124AbgINLhY (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 14 Sep 2020 07:37:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A9154AD0F;
+        Mon, 14 Sep 2020 11:37:38 +0000 (UTC)
+Date:   Mon, 14 Sep 2020 13:37:22 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Waiman Long <longman@redhat.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+Subject: Re: [PATCH v2 1/3] mm/memcg: Clean up obsolete enum charge_type
+Message-ID: <20200914113722.GL16999@dhcp22.suse.cz>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-2-longman@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914085545.GB28738@shao2-debian>
+In-Reply-To: <20200914024452.19167-2-longman@redhat.com>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 04:55:45PM +0800, kernel test robot wrote:
-> Greeting,
+On Sun 13-09-20 22:44:50, Waiman Long wrote:
+> Since commit 0a31bc97c80c ("mm: memcontrol: rewrite uncharge API") and
+> commit 00501b531c47 ("mm: memcontrol: rewrite charge API") in v3.17, the
+> enum charge_type was no longer used anywhere. However, the enum itself
+> was not removed at that time. Remove the obsolete enum charge_type now.
 > 
-> FYI, we noticed the following commit (built with gcc-9):
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+
+Acked-by: Michal Hocko <mhocko@suse.com>
+
+> ---
+>  mm/memcontrol.c | 8 --------
+>  1 file changed, 8 deletions(-)
 > 
-> commit: 2037ab69a5cd8afe58347135010f6160ea368dd0 ("mm: Convert find_get_entry to return the head page")
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index cfa6cbad21d5..8c74f1200261 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -197,14 +197,6 @@ static struct move_charge_struct {
+>  #define	MEM_CGROUP_MAX_RECLAIM_LOOPS		100
+>  #define	MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS	2
+>  
+> -enum charge_type {
+> -	MEM_CGROUP_CHARGE_TYPE_CACHE = 0,
+> -	MEM_CGROUP_CHARGE_TYPE_ANON,
+> -	MEM_CGROUP_CHARGE_TYPE_SWAPOUT,	/* for accounting swapcache */
+> -	MEM_CGROUP_CHARGE_TYPE_DROP,	/* a page was unused swap cache */
+> -	NR_CHARGE_TYPE,
+> -};
+> -
+>  /* for encoding cft->private value on file */
+>  enum res_type {
+>  	_MEM,
+> -- 
+> 2.18.1
+> 
 
-Thank you!
-
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index c2fb62f660a5..a22c2430e80c 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -427,6 +427,8 @@ struct page *find_get_incore_page(struct address_space *mapping, pgoff_t index)
- 	struct swap_info_struct *si;
- 	struct page *page = find_get_entry(mapping, index);
- 
-+	if (!page)
-+		return page;
- 	if (!xa_is_value(page))
- 		return find_subpage(page, index);
- 	if (!shmem_mapping(mapping))
-
+-- 
+Michal Hocko
+SUSE Labs
