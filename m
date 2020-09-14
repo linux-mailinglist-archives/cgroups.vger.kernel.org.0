@@ -2,98 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 786FC268FE1
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 17:28:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B40269026
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 17:38:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726174AbgINP2k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 11:28:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58868 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726033AbgINPSi (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 14 Sep 2020 11:18:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2882EB52E;
-        Mon, 14 Sep 2020 15:18:52 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 17:18:36 +0200
-From:   Michal Hocko <mhocko@suse.com>
+        id S1726189AbgINPiU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 11:38:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48524 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726294AbgINPhf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 11:37:35 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD6AFC06178A
+        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 08:37:33 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id n25so73899ljj.4
+        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 08:37:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K4ao+npZ6MxTlYLJj73SuM3MYmDgRwOTBj2VBQ+8aQw=;
+        b=QqiQ6xW7AdhcYi1OC2qsAevLzikaA4B2B2HmiF8E4JiJ3lndiY2zyjlmfQdljBEpsu
+         wnzt39W7OkhG6hVVv0LU6qArb8GcclfoatunyFpVXrFjrN8WwKHyFrturfPeDR1N4uIg
+         O7WvUBHhSaBagCz8j4SJtlrL++cp0DKMDP76VZxD69TxZFiq7XP246R/5nGrcvgM9z+M
+         sr+Gh5le/CKY1RrlTeDP9/dVwTXsyll0buo08vjzthzY6ziEoCxtDPi6G88Ipvigmuu/
+         ViTE32WfPr4r5OnN1bimsysiOcMNByATfPHjxJ+eTRjx5Si0EMvHdcuOTIFexSCUI8gv
+         47hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K4ao+npZ6MxTlYLJj73SuM3MYmDgRwOTBj2VBQ+8aQw=;
+        b=WsnZjyzdkQ3J5R+851aiZyZaBWHbtzd7HDStBZPHMG9F9UiJ0q12pGsmNtR4ZWmRfg
+         Py05Uu+3APoF1XAB/IspnyS1Jp3raW1B6MhJm7Xl1To29z37uDbLeucNMKwhoKTAwHqs
+         QG8YbMhMDEHodmECNblGSpMy2scAH0MQ8IkoTKl6Cw9lMBJJx1HLTCoI1Pcl3s/yMKVb
+         4BN6J0tTQH1sBPP2BKkSnyYR6T6xOYzuIbNWnghkhPPaAg8iRDpQ8Ql4gkm8+52Df15+
+         wHb3jnO8hwK489ZgaNm4hlJOwQBiBFXvOesnsAg+fiUNV8iihmoogPqtYsnD+PWsGET0
+         v6tg==
+X-Gm-Message-State: AOAM533Oa3fdJtBTzSJM6xL/TBtbXGfXuue9M3o7bHfwag5immD+NtfT
+        NzgFm3xy3zndJ/ubBLZS5/NMh9rz1a0cu0E1z7yeGQ==
+X-Google-Smtp-Source: ABdhPJwS8YHP1iUcafEkzqm6r7X9c+DloJI9X6GeP5Nto1Ho7LBEnwm4bfjuMB3M1DwukxWL2rUryFlBIf8BFedMO3E=
+X-Received: by 2002:a2e:b4f5:: with SMTP id s21mr5532851ljm.270.1600097852018;
+ Mon, 14 Sep 2020 08:37:32 -0700 (PDT)
+MIME-Version: 1.0
+References: <20200914024452.19167-1-longman@redhat.com> <20200914024452.19167-4-longman@redhat.com>
+In-Reply-To: <20200914024452.19167-4-longman@redhat.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 14 Sep 2020 08:37:21 -0700
+Message-ID: <CALvZod6e3+F_YfEvTSJv015Z=BgHOMQPiYs0Kg9SMRPMHjJsFw@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] mm/memcg: Unify swap and memsw page counters
 To:     Waiman Long <longman@redhat.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        Shakeel Butt <shakeelb@google.com>,
+        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         Chris Down <chris@chrisdown.name>,
         Roman Gushchin <guro@fb.com>,
         Yafang Shao <laoar.shao@gmail.com>
-Subject: Re: [PATCH v4 2/3] mm/memcg: Simplify mem_cgroup_get_max()
-Message-ID: <20200914151836.GB16999@dhcp22.suse.cz>
-References: <20200914024452.19167-1-longman@redhat.com>
- <20200914150928.7841-1-longman@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200914150928.7841-1-longman@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 14-09-20 11:09:28, Waiman Long wrote:
-> The mem_cgroup_get_max() function used to get memory+swap max from
-> both the v1 memsw and v2 memory+swap page counters & return the maximum
-> of these 2 values. This is redundant and it is more efficient to just
-> get either the v1 or the v2 values depending on which one is currently
-> in use.
-> 
+On Sun, Sep 13, 2020 at 7:45 PM Waiman Long <longman@redhat.com> wrote:
+>
+> The swap page counter is v2 only while memsw is v1 only. As v1 and v2
+> controllers cannot be active at the same time, there is no point to keep
+> both swap and memsw page counters in mem_cgroup. The previous patch has
+> made sure that memsw page counter is updated and accessed only when in
+> v1 code paths. So it is now safe to alias the v1 memsw page counter to v2
+> swap page counter. This saves 14 long's in the size of mem_cgroup. This
+> is a saving of 112 bytes for 64-bit archs.
+>
+> While at it, also document which page counters are used in v1 and/or v2.
+>
 > Signed-off-by: Waiman Long <longman@redhat.com>
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-
-Thanks!
-> ---
->  mm/memcontrol.c | 24 +++++++++++++-----------
->  1 file changed, 13 insertions(+), 11 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8c74f1200261..cad1ac4551ad 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1633,17 +1633,19 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
->   */
->  unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
->  {
-> -	unsigned long max;
-> -
-> -	max = READ_ONCE(memcg->memory.max);
-> -	if (mem_cgroup_swappiness(memcg)) {
-> -		unsigned long memsw_max;
-> -		unsigned long swap_max;
-> -
-> -		memsw_max = memcg->memsw.max;
-> -		swap_max = READ_ONCE(memcg->swap.max);
-> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
-> -		max = min(max + swap_max, memsw_max);
-> +	unsigned long max = READ_ONCE(memcg->memory.max);
-> +
-> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-> +		if (mem_cgroup_swappiness(memcg))
-> +			max += min(READ_ONCE(memcg->swap.max),
-> +				   (unsigned long)total_swap_pages);
-> +	} else { /* v1 */
-> +		if (mem_cgroup_swappiness(memcg)) {
-> +			/* Calculate swap excess capacity from memsw limit */
-> +			unsigned long swap = READ_ONCE(memcg->memsw.max) - max;
-> +
-> +			max += min(swap, (unsigned long)total_swap_pages);
-> +		}
->  	}
->  	return max;
->  }
-> -- 
-> 2.18.1
-
--- 
-Michal Hocko
-SUSE Labs
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
