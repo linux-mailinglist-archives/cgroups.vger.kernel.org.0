@@ -2,93 +2,123 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA8C268B6A
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 14:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4242F268C94
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 15:53:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726376AbgINMsu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 08:48:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726568AbgINMsd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 08:48:33 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CBEC06178A
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:48:06 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id v196so12672978pfc.1
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:48:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=Uz3YE9w1fx32lra6fotfj3/BpiuxJjONItcmFYjk970=;
-        b=ta92UEnM0Ua9PKVZdAdjsi6Jcm76RRN61MVtg6ALDRhldMa+ZsFdlqJ3vjV7W78eQU
-         L+mNnZT19WOv1iAntELNGU/RnT55IXLY4V1fZJk31ruqe/QWsLhn7vTI3wshmsuuW9WE
-         xcXv3AmVxLJH5ZH0CPAmEgfxJNjgsRm+aVqtR9u4fHcL5QsDo2ycGJ23JvH5MVGCdwaG
-         2gFRVq5A98aqjW2AC4oG5eiDcJm+cDjNRZA2i0KhknZ4KFMoPfj+Rs8soQCCFsQI90dG
-         gliLXbww33mVTnbTrDO6SJ3QRT7apUD5L7qeW15VijIPPsRbh5YkpIddinm0fzkgBTwJ
-         noNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=Uz3YE9w1fx32lra6fotfj3/BpiuxJjONItcmFYjk970=;
-        b=JvFqIOE8mkotb2cuWjGPEDk8DuX+2XxUp8SEYnnVw5i0nXWjlMJYccdfp+uOy/xIyz
-         Ous0df2isTpvv1Kxg2yqr4v9Q+YqbY8nf0vEIqp8h/Sb9y41Jbly+YXD3o8KH9pAl/Ui
-         MwTeUmE4UNIWiD/WB0nxCUw2em/bv9UW7Jn57GfxBOmIdi4VtHMJEPs7ZML6E9lp7MjC
-         NDLwgTrleZRRh81N2z8T8pfAVlLW8eSKqE2hYlHUDnTPUdgrg5doLxQRBa8gyW/k6ys6
-         MCLEbUZuFb9HYmbFd90z0ak4vt6QnzwgI+BzkchHoL4nivO+nNCaNoIiKB5EvM2KfHbV
-         3row==
-X-Gm-Message-State: AOAM532lvKwhTpSoQkcSWJXzpe+vEyOC4PZlRh3iZp1b0Two0cRkLufD
-        YDfU13tXsr072UEL7hwNzRuYQQ==
-X-Google-Smtp-Source: ABdhPJwGlhXZUcP7IyQxtyR5M0DoHv+Edk8HQH37UA9N/AavLopTAC+f2LB/uWPLZCvLUE2zhkf3Sw==
-X-Received: by 2002:a17:902:d711:b029:d1:c6b5:ae5f with SMTP id w17-20020a170902d711b02900d1c6b5ae5fmr5413664ply.38.1600087685077;
-        Mon, 14 Sep 2020 05:48:05 -0700 (PDT)
-Received: from [10.86.118.224] ([103.136.221.66])
-        by smtp.gmail.com with ESMTPSA id ie13sm9660102pjb.5.2020.09.14.05.48.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 14 Sep 2020 05:48:04 -0700 (PDT)
-Subject: Re: [Phishing Risk] [External] Re: [PATCH] taskstats: fix
- CGROUPSTATS_CMD_GET for cgroup v2
-To:     Tejun Heo <tj@kernel.org>
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luodaowen.backend@bytedance.com
-References: <20200910055207.87702-1-zhouchengming@bytedance.com>
- <20200910143244.GF4295@mtj.thefacebook.com>
-From:   Chengming Zhou <zhouchengming@bytedance.com>
-Message-ID: <32fa7ae0-761f-9f2b-088b-4a3a0b5448cd@bytedance.com>
-Date:   Mon, 14 Sep 2020 20:48:00 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726799AbgINNwn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 09:52:43 -0400
+Received: from us-smtp-1.mimecast.com ([207.211.31.81]:51723 "EHLO
+        us-smtp-delivery-1.mimecast.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726708AbgINNwW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 09:52:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1600091494;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Fu/1GHUDf4AcKJWnq4PI0AJl4nVdBvz984mVLLa8XWI=;
+        b=FXur+oHttylqzUUIdyCox9+t9no2W5Hg02/O1KZXBXsILmO/f8dvL+me4gbOKYXRLPA6S0
+        FNC7RyrknDa9olelUdO6SZObUVpBpT1Wp9XKxhKTYssqyHzU+b62i9HrETu+pM1fux/Xzk
+        qzc4SLOTz7r/GR3xXBRWzEJyrmlNE00=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-FShcX2-SMQ2YvK_dh2FRxA-1; Mon, 14 Sep 2020 09:51:30 -0400
+X-MC-Unique: FShcX2-SMQ2YvK_dh2FRxA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 479C884F227;
+        Mon, 14 Sep 2020 13:51:28 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-85.rdu2.redhat.com [10.10.118.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A85011002D60;
+        Mon, 14 Sep 2020 13:51:26 +0000 (UTC)
+Subject: Re: [PATCH v2 2/3] mm/memcg: Simplify mem_cgroup_get_max()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        Shakeel Butt <shakeelb@google.com>,
+        Chris Down <chris@chrisdown.name>,
+        Roman Gushchin <guro@fb.com>,
+        Yafang Shao <laoar.shao@gmail.com>
+References: <20200914024452.19167-1-longman@redhat.com>
+ <20200914024452.19167-3-longman@redhat.com>
+ <20200914114825.GM16999@dhcp22.suse.cz>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <e8ddc443-b56a-1dd6-6d41-ad217e9aea80@redhat.com>
+Date:   Mon, 14 Sep 2020 09:51:26 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-In-Reply-To: <20200910143244.GF4295@mtj.thefacebook.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20200914114825.GM16999@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-在 2020/9/10 下午10:32, Tejun Heo 写道:
-> On Thu, Sep 10, 2020 at 01:52:07PM +0800, Chengming Zhou wrote:
->> We found cgroupstats_build would return -EINVAL when using netlink
->> CGROUPSTATS_CMD_GET interface to get stats on cgroup v2. Fix it by
->> supporting cgroup v2 kernfs directory in cgroupstats_build, and export
->> cgroup2_fs_type like we did for cgroup_fs_type.
+On 9/14/20 7:48 AM, Michal Hocko wrote:
+> On Sun 13-09-20 22:44:51, Waiman Long wrote:
+>> The mem_cgroup_get_max() function used to get memory+swap max from
+>> both the v1 memsw and v2 memory+swap page counters & return the maximum
+>> of these 2 values. This is redundant and it is more efficient to just
+>> get either the v1 or the v2 values depending on which one is currently
+>> in use.
 >>
->> Reported-by: Daowen Luo <luodaowen.backend@bytedance.com>
->> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
->> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
-> The exclusion of cgroupstats from v2 interface was intentional due to the
-> duplication and inconsistencies with other statistics. If you need these
-> numbers, please justify and add them to the appropriate cgroupfs stat file.
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   mm/memcontrol.c | 20 +++++++++-----------
+>>   1 file changed, 9 insertions(+), 11 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 8c74f1200261..ca36bed588d1 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -1633,17 +1633,15 @@ void mem_cgroup_print_oom_meminfo(struct mem_cgroup *memcg)
+>>    */
+>>   unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
+>>   {
+>> -	unsigned long max;
+>> -
+>> -	max = READ_ONCE(memcg->memory.max);
+>> -	if (mem_cgroup_swappiness(memcg)) {
+>> -		unsigned long memsw_max;
+>> -		unsigned long swap_max;
+>> -
+>> -		memsw_max = memcg->memsw.max;
+>> -		swap_max = READ_ONCE(memcg->swap.max);
+>> -		swap_max = min(swap_max, (unsigned long)total_swap_pages);
+>> -		max = min(max + swap_max, memsw_max);
+>> +	unsigned long max = READ_ONCE(memcg->memory.max);
+>> +
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
+>> +		if (mem_cgroup_swappiness(memcg))
+>> +			max += min(READ_ONCE(memcg->swap.max),
+>> +				   (unsigned long)total_swap_pages);
+>> +	} else { /* v1 */
+>> +		if (mem_cgroup_swappiness(memcg))
+>> +			max = memcg->memsw.max;
+> I agree that making v1 vs. v2 distinction here makes the code more
+> obvious. But I do not think your code is correct for v1. In a default
+> state it would lead to max = PAGE_COUNTER_MAX which is not something
+> we want, right?
 >
-> Thanks.
+> instead you want
+> 		max += min(READ_ONCE(memcg->memsw.max), total_swap_pages);
 >
-Thanks for your advice. The container monitor tool "cadvisor" needs
-these numbers to work,
+You are right, it is a bit tricky for v1.
 
-I will put them in the existing cpu.stat interface.
+I will change it to
 
-Thanks.
+     max += min(READ_ONCE(memcg->memsw.max) - max, total_swap_pages):
+
+Thanks,
+Longman
 
