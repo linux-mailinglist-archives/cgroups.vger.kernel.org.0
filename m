@@ -2,104 +2,77 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE7C2689DC
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 13:21:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9BE268A0E
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 13:29:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725964AbgINLV0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 07:21:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36658 "EHLO
+        id S1726053AbgINL2g (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 07:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725968AbgINLUl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 07:20:41 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6B21C06174A
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 04:20:39 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e16so18301601wrm.2
-        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 04:20:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chrisdown.name; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
-        b=NrVooSirCkC89uwDGsSlSp0zG/q+C1jxdMRgf5vGubOWhuYbiNfYYdydkZ3JndP3vc
-         6j1Zt4R+v3/omPJt4fTsTB0b5IQG7u4qoZ9UkGKoveS0XQF9k1VBJIsF5vwqHnYw5nbh
-         MlxJi+tdMfm8TSZbWKWyyv0HVCHtRKJeEg0u8=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=kLfSmpZKw0IcWAbxwnk8PLqM8595LR3Odif7KTgUXZk=;
-        b=njLz3GZiMd0E1nlgu4IfAriLhg28k4YRMmsP+1M6x1qSjbVl6m5Oq6ZomINIOtKEOf
-         x1MRiYSUFwwfdCZGr+q+38l5oDHwBVWhas5L2wkGiW0nZ5ulImNmFb5pzAZBc74a0sRu
-         IlChgAfgOpHNF6crDUI8GPCQaO8IIx2IKzbeV7mP9XqfjZEr+G4wiy47PG2nrPw7b8xf
-         gIS3Od2I12nXZWvcKk/yj0kIkC5m+sgcq98XdJwZzEul46ZCv8FoHHp1AgH43MMRA8HJ
-         yBtuLZWEUaS5WWso3btW8wzLhysdj+51QcOWNAcxfSH01jdFg5BWOdg8ECCnOD4vgJfF
-         +gBA==
-X-Gm-Message-State: AOAM530kkVL0jCpIT4ihyvt56pOMt8nodK3lgFNhz29s+xm/wp1c8JtN
-        8GxMw1qPrAQr2VaKay3QCKTeGLgSe5FeGQ==
-X-Google-Smtp-Source: ABdhPJwBJtsZXWlo/8DZ9/96K7Ym7PgHSobyj/KV5SR5J+lZjhcTVzvshIGxo/oQce5aFlYqWEXtuA==
-X-Received: by 2002:a5d:674c:: with SMTP id l12mr15342266wrw.325.1600082438340;
-        Mon, 14 Sep 2020 04:20:38 -0700 (PDT)
-Received: from localhost ([2a01:4b00:8432:8a00:63de:dd93:20be:f460])
-        by smtp.gmail.com with ESMTPSA id m185sm19699575wmf.5.2020.09.14.04.20.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 14 Sep 2020 04:20:37 -0700 (PDT)
-Date:   Mon, 14 Sep 2020 12:20:37 +0100
-From:   Chris Down <chris@chrisdown.name>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+        with ESMTP id S1726052AbgINL2D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 07:28:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92A57C06174A;
+        Mon, 14 Sep 2020 04:28:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=3a9YiCRLSdfxT+zjyDP/va2bUubeehwvzanOvcg0GxQ=; b=ZnFpgSWDEryPzF8z+fHhQ7Shl2
+        hBFm8DenBw+/t889jQOCGrpQ0rDHOLM5QHUJqsC7TICkw+13dTLpYnqWx0CdPTLoOyu8laVcTlmOI
+        yxVmM2AFdyZUGoWpMbvqHA5MZw4ppabm02Qyz8GBvL0/8wsASVW0xm3Y+5PhYEfz90lpQXdG97AoZ
+        /tzQ02AOeLp7eJnKP/zIe+sMez7ySzubAluHZ3CsL8xYtrxf6O0oJArjOA4k1S28+zlTh5aIiJELq
+        b2uZ3guQq9luXS2rnz4d3U2dyMC2M1lebD8l63wWox7AXf2XZ0FgL6q14dyqyK+5EkK3hNS7GkwPW
+        wkHTxNDA==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kHme2-0005if-Uf; Mon, 14 Sep 2020 11:27:39 +0000
+Date:   Mon, 14 Sep 2020 12:27:38 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-Message-ID: <20200914112037.GA2417148@chrisdown.name>
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz>
- <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
- <20200914103205.GI16999@dhcp22.suse.cz>
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Huang Ying <ying.huang@intel.com>,
+        intel-gfx@lists.freedesktop.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lkp@lists.01.org
+Subject: Re: [mm] 2037ab69a5: BUG:KASAN:null-ptr-deref_in_t
+Message-ID: <20200914112738.GM6583@casper.infradead.org>
+References: <20200910183318.20139-7-willy@infradead.org>
+ <20200914085545.GB28738@shao2-debian>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200914103205.GI16999@dhcp22.suse.cz>
-User-Agent: Mutt/1.14.6 (2020-07-11)
+In-Reply-To: <20200914085545.GB28738@shao2-debian>
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Hocko writes:
->> > > Yeah, I think we should cc:stable.
->> >
->> > Is this a real problem? The buffer should contain 36 lines which makes
->> > it more than 100B per line. I strongly suspect we are not able to use
->> > that storage up.
->>
->> Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
->> Otherwise, the return buf string has no trailing null('\0'). But users treat buf
->> as a string(and read the string oob). It is wrong. Thanks.
->
->I am not sure I follow you. vsnprintf which is used by seq_printf will
->add \0 if there is a room for that. And I argue there is a lot of room
->in the buffer so a corner case where the buffer gets full doesn't happen
->with the current code.
+On Mon, Sep 14, 2020 at 04:55:45PM +0800, kernel test robot wrote:
+> Greeting,
+> 
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 2037ab69a5cd8afe58347135010f6160ea368dd0 ("mm: Convert find_get_entry to return the head page")
 
-I don't feel very strongly either way, but in general I agree with Michal. As 
-it is this feels quite perfunctory.
+Thank you!
 
-If you can demonstrate reading the string out of bounds in a 
-userspace-exploitable way -- that is, you can demonstrate one can coerce 
-memory.stat to a format where you would read out of bounds -- then we should 
-obviously cc stable and keep the Fixes tag, but you have not come close to 
-demonstrating this yet.
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index c2fb62f660a5..a22c2430e80c 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -427,6 +427,8 @@ struct page *find_get_incore_page(struct address_space *mapping, pgoff_t index)
+ 	struct swap_info_struct *si;
+ 	struct page *page = find_get_entry(mapping, index);
+ 
++	if (!page)
++		return page;
+ 	if (!xa_is_value(page))
+ 		return find_subpage(page, index);
+ 	if (!shmem_mapping(mapping))
 
-Otherwise, if you cannot provide any way to read the string out of bounds, 
-because the buffer is simply way too big for this to ever happen, this is just 
-a code cleanup, and neither Fixes nor stable are appropriate.
-
-So, the question is, which is it? :-)
