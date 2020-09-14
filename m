@@ -2,82 +2,85 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2F4E268359
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 06:03:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 258B4268365
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 06:15:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbgINEDL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 00:03:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725972AbgINEDJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 00:03:09 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4628C06174A
-        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id b124so11424950pfg.13
-        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
-        b=CqIfTLtozQ3xvA/KXFvjkKb1zYdS2iyiXoVFEvA0vmD2FVJ2slyMgvSYQ00c8x7ytj
-         mx61VL523WNZigppR8w4h/OfvHx0V+eROTHrLyDK0xMG3Q16At3IMZVLEVrm6smf4LQj
-         Hm2mKdquGXG4js/HGAiwxp+2xYuFK3YPdudZHFzhQszumUV3IJSRZXKjZiuVessize+V
-         ceqaoE/OpxcPAb+ASWwOkBOjlZ2MFCpWp48AaphS6mTD39B20SZQ+OCgYZ6qytmaRPnu
-         A2P4M7baDBpOgQzsToSWLad01UMxaRUgCxc8NUQeTxn+66zGl7EL2Ao3fNh+GKSwaLUX
-         c4zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
-        b=EzxmpKB5FYxXKmQgx4rM00Trs21RVFRa1r86yVn3DD18otHMpip69q7pIIINkuuBw1
-         W4fZDZvSV7NFpjUcmrqCAqbyXKZAnxD0xcx3dZVue6VDwXEKCzbRUIH6GffQHLrjXFOk
-         76DlGFO/Xl2XHb6Zf/NdLp2Om5uN0v65VJ7VAI6jQF35oGgIbTdSEuGpSEayDd9Lio2r
-         PDN2rzsdgd72h96ZFtkZ3Np/otZACI+Rr2qJrtXkdGC+L8IKajc6v2RrZYMRDhcQC2zg
-         FrddSqzsoTtuoTCT3jlA7+QkNQ/NasLAzgbaFqM/yB1hhQ4qWqZ9a1VJpThxS3ntyqQK
-         hx4w==
-X-Gm-Message-State: AOAM533a5YbZUqpC1eujIehfV7xBTTC8Pv+VpbSIOlsba73sTHXC32v8
-        LOTIPzi6hhZrZnz44G/Q7y/cmn4DbpSuxfdJ8oBH3Q==
-X-Google-Smtp-Source: ABdhPJwJ5ImAc3zR+/ovbzQJqIFTBNyvaOQXjxE6WDS4XTm9eE+0WpjDQqQFxAhAREZOjstjQnmqTWIg/GfIct7L4vs=
-X-Received: by 2002:a17:902:a70e:b029:d1:9be4:b49c with SMTP id
- w14-20020a170902a70eb02900d19be4b49cmr13241634plq.20.1600056189287; Sun, 13
- Sep 2020 21:03:09 -0700 (PDT)
+        id S1725976AbgINEPd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 00:15:33 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:50838 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725974AbgINEPc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 00:15:32 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=xlpang@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0U8ps8Kn_1600056928;
+Received: from xunleideMacBook-Pro.local(mailfrom:xlpang@linux.alibaba.com fp:SMTPD_---0U8ps8Kn_1600056928)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Mon, 14 Sep 2020 12:15:28 +0800
+Reply-To: xlpang@linux.alibaba.com
+Subject: Re: [PATCH] mm: memcg: yield cpu when we fail to charge pages
+To:     Julius Hemanth Pitti <jpitti@cisco.com>, hannes@cmpxchg.org,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, xe-linux-external@cisco.com
+References: <20200908185051.62420-1-jpitti@cisco.com>
+From:   Xunlei Pang <xlpang@linux.alibaba.com>
+Message-ID: <c21b1788-6bf0-b675-7066-396f21da2c76@linux.alibaba.com>
+Date:   Mon, 14 Sep 2020 12:15:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20200912155100.25578-1-songmuchun@bytedance.com> <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
-In-Reply-To: <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 12:02:33 +0800
-Message-ID: <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20200908185051.62420-1-jpitti@cisco.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
->
-> On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
->
-> > The memory_stat_format() returns a format string, but the return buf
-> > may not including the trailing '\0'. So the users may read the buf
-> > out of bounds.
->
-> That sounds serious.  Is a cc:stable appropriate?
->
+On 2020/9/9 AM2:50, Julius Hemanth Pitti wrote:
+> For non root CG, in try_charge(), we keep trying
+> to charge until we succeed. On non-preemptive
+> kernel, when we are OOM, this results in holding
+> CPU forever.
+> 
+> On SMP systems, this doesn't create a big problem
+> because oom_reaper get a change to kill victim
+> and make some free pages. However on a single-core
+> CPU (or cases where oom_reaper pinned to same CPU
+> where try_charge is executing), oom_reaper shall
+> never get scheduled and we stay in try_charge forever.
+> 
+> Steps to repo this on non-smp:
+> 1. mount -t tmpfs none /sys/fs/cgroup
+> 2. mkdir /sys/fs/cgroup/memory
+> 3. mount -t cgroup none /sys/fs/cgroup/memory -o memory
+> 4. mkdir /sys/fs/cgroup/memory/0
+> 5. echo 40M > /sys/fs/cgroup/memory/0/memory.limit_in_bytes
+> 6. echo $$ > /sys/fs/cgroup/memory/0/tasks
+> 7. stress -m 5 --vm-bytes 10M --vm-hang 0
+> 
+> Signed-off-by: Julius Hemanth Pitti <jpitti@cisco.com>
+> ---
+>  mm/memcontrol.c | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 0d6f3ea86738..4620d70267cb 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2652,6 +2652,8 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
+>  	if (fatal_signal_pending(current))
+>  		goto force;
+>  
+> +	cond_resched();
+> +
+>  	/*
+>  	 * keep retrying as long as the memcg oom killer is able to make
+>  	 * a forward progress or bypass the charge if the oom killer
+> 
 
-Yeah, I think we should cc:stable.
+This should be fixed by:
+https://lkml.org/lkml/2020/8/26/1440
 
--- 
-Yours,
-Muchun
+Thanks,
+Xunlei
