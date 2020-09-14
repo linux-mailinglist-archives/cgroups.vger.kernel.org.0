@@ -2,112 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1D6F26831B
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 05:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F4E268359
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 06:03:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726003AbgIND2u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 13 Sep 2020 23:28:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48896 "EHLO
+        id S1725986AbgINEDL (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 00:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54150 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725995AbgIND2q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 13 Sep 2020 23:28:46 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D41E8C061787
-        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id d13so2171976pgl.6
-        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
+        with ESMTP id S1725972AbgINEDJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 00:03:09 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4628C06174A
+        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b124so11424950pfg.13
+        for <cgroups@vger.kernel.org>; Sun, 13 Sep 2020 21:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
-        b=qSowdt5PMPNIuUtYyjjVxXOB007fAprML0D9RLG01hggiBoUvwOyNQT+CB+AUUb69C
-         Pc6o7Mnk2vhKMTjLgNpanvxjhxy12n3MbsrZ/gqVlxBp2pO+LF73GR00DawWKvKDEQsv
-         INJmnpgtznXFsTnRJ8tPl4m3KAttaAVb/5EBaSasg3mXATRb/qHyV5IFUeU2QrDAOVbu
-         QZNs8r67pQqpSQsotruFc6agNZUIRsmSIkmzxe1hrZWD8YD0gAfCg7B+Hp3gnZqSNQg8
-         1wR3DvI5i/2fNqtA75uiMcFkcXEoRE0qzVYmtLhPvo7zAXgkliZi0O7BUNBe2LhOOGEn
-         U0lQ==
+        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
+        b=CqIfTLtozQ3xvA/KXFvjkKb1zYdS2iyiXoVFEvA0vmD2FVJ2slyMgvSYQ00c8x7ytj
+         mx61VL523WNZigppR8w4h/OfvHx0V+eROTHrLyDK0xMG3Q16At3IMZVLEVrm6smf4LQj
+         Hm2mKdquGXG4js/HGAiwxp+2xYuFK3YPdudZHFzhQszumUV3IJSRZXKjZiuVessize+V
+         ceqaoE/OpxcPAb+ASWwOkBOjlZ2MFCpWp48AaphS6mTD39B20SZQ+OCgYZ6qytmaRPnu
+         A2P4M7baDBpOgQzsToSWLad01UMxaRUgCxc8NUQeTxn+66zGl7EL2Ao3fNh+GKSwaLUX
+         c4zw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=4kHmejXTIo1BBSLRENZgyqFfGzb/ylHsGPtQU3ORsGY=;
-        b=r3uvmKv0czwM7L461jkOqP/CTFlKdMgR4v8fF8nj5bBbGCgjTlGgFNRuKOhYE+SyDy
-         htRX2nudVuWBxtGSz864+tyrl4oYB07zoZNOJRHgX3ugXepj0Jo5aTwLlqZHMUJFuF43
-         gQjNo7Az+k2pi6kwE2mwiYOdG7IRV2nOxBC6xJs7ClJHeczTgUlpDajWDQp8MCsHlu8M
-         Wq/Fycx9Svo1uoxt0WEHtng1TAWiHqZ5xXLk5tcztoy6PXKqtDGqdxWMRodEPDIskh2o
-         RFpadzCxCR4N8ySIZaJKWCDmh3qG7LmmTlPlNP8onFYRy/zv23ksXCNfomZumZ/+965m
-         aMtg==
-X-Gm-Message-State: AOAM533bAHnobu+L0gPF6J2zwQAz59RsOhGzF5l+qV1/22VewbDxvONX
-        D0FKwNZjHhbMNPxODmnm865EmV2LJE5W9ZC+yH/a6A==
-X-Google-Smtp-Source: ABdhPJyYRwniJbcpH5xKTfN/gYBasufM4x3VEAlZv0zuWL45LjZLH0gCwfNtbKPcwb9oAoUfGRtNjqlf+aJkB1XhvT8=
-X-Received: by 2002:a63:5515:: with SMTP id j21mr9223604pgb.31.1600054125347;
- Sun, 13 Sep 2020 20:28:45 -0700 (PDT)
+        bh=dWdl+yaQbYEtdR4On3P7CGGpC+OD3QLDLkmMq6+C9k0=;
+        b=EzxmpKB5FYxXKmQgx4rM00Trs21RVFRa1r86yVn3DD18otHMpip69q7pIIINkuuBw1
+         W4fZDZvSV7NFpjUcmrqCAqbyXKZAnxD0xcx3dZVue6VDwXEKCzbRUIH6GffQHLrjXFOk
+         76DlGFO/Xl2XHb6Zf/NdLp2Om5uN0v65VJ7VAI6jQF35oGgIbTdSEuGpSEayDd9Lio2r
+         PDN2rzsdgd72h96ZFtkZ3Np/otZACI+Rr2qJrtXkdGC+L8IKajc6v2RrZYMRDhcQC2zg
+         FrddSqzsoTtuoTCT3jlA7+QkNQ/NasLAzgbaFqM/yB1hhQ4qWqZ9a1VJpThxS3ntyqQK
+         hx4w==
+X-Gm-Message-State: AOAM533a5YbZUqpC1eujIehfV7xBTTC8Pv+VpbSIOlsba73sTHXC32v8
+        LOTIPzi6hhZrZnz44G/Q7y/cmn4DbpSuxfdJ8oBH3Q==
+X-Google-Smtp-Source: ABdhPJwJ5ImAc3zR+/ovbzQJqIFTBNyvaOQXjxE6WDS4XTm9eE+0WpjDQqQFxAhAREZOjstjQnmqTWIg/GfIct7L4vs=
+X-Received: by 2002:a17:902:a70e:b029:d1:9be4:b49c with SMTP id
+ w14-20020a170902a70eb02900d19be4b49cmr13241634plq.20.1600056189287; Sun, 13
+ Sep 2020 21:03:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200913070010.44053-1-songmuchun@bytedance.com>
- <20200913170913.GB2239582@chrisdown.name> <CAMZfGtVBFCodKuNKzG8TxKjeuC1_hF_YKdqMTmX5ENE_FfDmzw@mail.gmail.com>
- <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
-In-Reply-To: <91184891-6a12-87a2-5a82-099a637b072f@huawei.com>
+References: <20200912155100.25578-1-songmuchun@bytedance.com> <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
+In-Reply-To: <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 14 Sep 2020 11:28:09 +0800
-Message-ID: <CAMZfGtVGRDCNm0oOpco+-uPjsx6+VyVrCwVRS4dKV2ZTbY-e+w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v3] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Zefan Li <lizefan@huawei.com>
-Cc:     Chris Down <chris@chrisdown.name>, tj@kernel.org,
-        Johannes Weiner <hannes@cmpxchg.org>, corbet@lwn.net,
+Date:   Mon, 14 Sep 2020 12:02:33 +0800
+Message-ID: <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
+ buf returned by memory_stat_format
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
-        kernel test robot <lkp@intel.com>
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 14, 2020 at 11:19 AM Zefan Li <lizefan@huawei.com> wrote:
+On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
 >
-> On 2020/9/14 11:10, Muchun Song wrote:
-> > On Mon, Sep 14, 2020 at 1:09 AM Chris Down <chris@chrisdown.name> wrote:
-> >>
-> >> Muchun Song writes:
-> >>> In the cgroup v1, we have a numa_stat interface. This is useful for
-> >>> providing visibility into the numa locality information within an
-> >>> memcg since the pages are allowed to be allocated from any physical
-> >>> node. One of the use cases is evaluating application performance by
-> >>> combining this information with the application's CPU allocation.
-> >>> But the cgroup v2 does not. So this patch adds the missing information.
-> >>>
-> >>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >>> Suggested-by: Shakeel Butt <shakeelb@google.com>
-> >>> Reported-by: kernel test robot <lkp@intel.com>
-> >>
-> >> This is a feature patch, why does this have LKP's Reported-by?
-> >
-> > In the v2 version, the kernel test robot reported a compiler error
-> > on the powerpc architecture. So I added that. Thanks.
-> >
+> On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
 >
-> You should remove this reported-by, and then add v2->v3 changelog:
-
-Got it. I see Andrew has done it for me, thank him very much for
-his work. He also added this patch to the -mm tree.
-
+> > The memory_stat_format() returns a format string, but the return buf
+> > may not including the trailing '\0'. So the users may read the buf
+> > out of bounds.
 >
-> ...original changelog...
+> That sounds serious.  Is a cc:stable appropriate?
 >
-> v3:
-> - fixed something reported by test rebot
 
-I already added that in the changelog. Thanks.
+Yeah, I think we should cc:stable.
 
-
---
+-- 
 Yours,
 Muchun
