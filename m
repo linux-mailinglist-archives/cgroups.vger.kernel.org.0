@@ -2,96 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48FFA268B8E
-	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 14:57:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DA8C268B6A
+	for <lists+cgroups@lfdr.de>; Mon, 14 Sep 2020 14:49:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726480AbgINMnu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 14 Sep 2020 08:43:50 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55446 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726585AbgINMns (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 14 Sep 2020 08:43:48 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 97D09B13F;
-        Mon, 14 Sep 2020 11:57:40 +0000 (UTC)
-Date:   Mon, 14 Sep 2020 13:57:24 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: Fix out-of-bounds on the
- buf returned by memory_stat_format
-Message-ID: <20200914115724.GO16999@dhcp22.suse.cz>
-References: <20200912155100.25578-1-songmuchun@bytedance.com>
- <20200912174241.eeaa771755915f27babf9322@linux-foundation.org>
- <CAMZfGtXNg31+8QLbUMj7f61Yg1Jgt0rPB7VTDE7qoopGCANGjA@mail.gmail.com>
- <20200914091844.GE16999@dhcp22.suse.cz>
- <CAMZfGtXd3DNrW5BPjDosHsz-FUYACGZEOAfAYLwyHdRSpOsqhQ@mail.gmail.com>
- <20200914103205.GI16999@dhcp22.suse.cz>
- <CAMZfGtWBSCFWw7QN66-ZLTb8oT7UALkyaGONjcjB93DyeeXXTA@mail.gmail.com>
+        id S1726376AbgINMsu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 14 Sep 2020 08:48:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50408 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726568AbgINMsd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 14 Sep 2020 08:48:33 -0400
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72CBEC06178A
+        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:48:06 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id v196so12672978pfc.1
+        for <cgroups@vger.kernel.org>; Mon, 14 Sep 2020 05:48:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=Uz3YE9w1fx32lra6fotfj3/BpiuxJjONItcmFYjk970=;
+        b=ta92UEnM0Ua9PKVZdAdjsi6Jcm76RRN61MVtg6ALDRhldMa+ZsFdlqJ3vjV7W78eQU
+         L+mNnZT19WOv1iAntELNGU/RnT55IXLY4V1fZJk31ruqe/QWsLhn7vTI3wshmsuuW9WE
+         xcXv3AmVxLJH5ZH0CPAmEgfxJNjgsRm+aVqtR9u4fHcL5QsDo2ycGJ23JvH5MVGCdwaG
+         2gFRVq5A98aqjW2AC4oG5eiDcJm+cDjNRZA2i0KhknZ4KFMoPfj+Rs8soQCCFsQI90dG
+         gliLXbww33mVTnbTrDO6SJ3QRT7apUD5L7qeW15VijIPPsRbh5YkpIddinm0fzkgBTwJ
+         noNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
+        bh=Uz3YE9w1fx32lra6fotfj3/BpiuxJjONItcmFYjk970=;
+        b=JvFqIOE8mkotb2cuWjGPEDk8DuX+2XxUp8SEYnnVw5i0nXWjlMJYccdfp+uOy/xIyz
+         Ous0df2isTpvv1Kxg2yqr4v9Q+YqbY8nf0vEIqp8h/Sb9y41Jbly+YXD3o8KH9pAl/Ui
+         MwTeUmE4UNIWiD/WB0nxCUw2em/bv9UW7Jn57GfxBOmIdi4VtHMJEPs7ZML6E9lp7MjC
+         NDLwgTrleZRRh81N2z8T8pfAVlLW8eSKqE2hYlHUDnTPUdgrg5doLxQRBa8gyW/k6ys6
+         MCLEbUZuFb9HYmbFd90z0ak4vt6QnzwgI+BzkchHoL4nivO+nNCaNoIiKB5EvM2KfHbV
+         3row==
+X-Gm-Message-State: AOAM532lvKwhTpSoQkcSWJXzpe+vEyOC4PZlRh3iZp1b0Two0cRkLufD
+        YDfU13tXsr072UEL7hwNzRuYQQ==
+X-Google-Smtp-Source: ABdhPJwGlhXZUcP7IyQxtyR5M0DoHv+Edk8HQH37UA9N/AavLopTAC+f2LB/uWPLZCvLUE2zhkf3Sw==
+X-Received: by 2002:a17:902:d711:b029:d1:c6b5:ae5f with SMTP id w17-20020a170902d711b02900d1c6b5ae5fmr5413664ply.38.1600087685077;
+        Mon, 14 Sep 2020 05:48:05 -0700 (PDT)
+Received: from [10.86.118.224] ([103.136.221.66])
+        by smtp.gmail.com with ESMTPSA id ie13sm9660102pjb.5.2020.09.14.05.48.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 14 Sep 2020 05:48:04 -0700 (PDT)
+Subject: Re: [Phishing Risk] [External] Re: [PATCH] taskstats: fix
+ CGROUPSTATS_CMD_GET for cgroup v2
+To:     Tejun Heo <tj@kernel.org>
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, luodaowen.backend@bytedance.com
+References: <20200910055207.87702-1-zhouchengming@bytedance.com>
+ <20200910143244.GF4295@mtj.thefacebook.com>
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+Message-ID: <32fa7ae0-761f-9f2b-088b-4a3a0b5448cd@bytedance.com>
+Date:   Mon, 14 Sep 2020 20:48:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtWBSCFWw7QN66-ZLTb8oT7UALkyaGONjcjB93DyeeXXTA@mail.gmail.com>
+In-Reply-To: <20200910143244.GF4295@mtj.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 14-09-20 19:46:36, Muchun Song wrote:
-> On Mon, Sep 14, 2020 at 6:32 PM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Mon 14-09-20 17:43:42, Muchun Song wrote:
-> > > On Mon, Sep 14, 2020 at 5:18 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > >
-> > > > On Mon 14-09-20 12:02:33, Muchun Song wrote:
-> > > > > On Sun, Sep 13, 2020 at 8:42 AM Andrew Morton <akpm@linux-foundation.org> wrote:
-> > > > > >
-> > > > > > On Sat, 12 Sep 2020 23:51:00 +0800 Muchun Song <songmuchun@bytedance.com> wrote:
-> > > > > >
-> > > > > > > The memory_stat_format() returns a format string, but the return buf
-> > > > > > > may not including the trailing '\0'. So the users may read the buf
-> > > > > > > out of bounds.
-> > > > > >
-> > > > > > That sounds serious.  Is a cc:stable appropriate?
-> > > > > >
-> > > > >
-> > > > > Yeah, I think we should cc:stable.
-> > > >
-> > > > Is this a real problem? The buffer should contain 36 lines which makes
-> > > > it more than 100B per line. I strongly suspect we are not able to use
-> > > > that storage up.
-> > >
-> > > Before memory_stat_format() return, we should call seq_buf_putc(&s, '\0').
-> > > Otherwise, the return buf string has no trailing null('\0'). But users treat buf
-> > > as a string(and read the string oob). It is wrong. Thanks.
-> >
-> > I am not sure I follow you. vsnprintf which is used by seq_printf will
-> > add \0 if there is a room for that. And I argue there is a lot of room
-> > in the buffer so a corner case where the buffer gets full doesn't happen
-> > with the current code.
-> 
-> Thanks for your explanation. Yeah, seq_printf will add \0 if there is a
-> room for that. So I agree with you that the "Fixes" tag is wrong. There
-> is nothing to fix. Sorry for the noise.
-> 
-> I think that if someone uses seq_buf_putc(maybe in the feature) at the
-> end of memory_stat_format(). It will break the rule and there is no \0.
-> So this patch can just make the code robust but need to change the
-> commit log and remove the Fixes tag.
 
-Please see my other reply. Adding \0 is not really sufficient. If we
-want to have a robust code to handle the small buffer then we need to
-make sure that all counters will make it to the userspace. Short output
-is simply a broken result. Implementing this properly is certainly
-possible, the question is whether this is worth addressing. It is not
-like we are adding a lot of output into this file and it is quite likely
-that the code is good as it is.
--- 
-Michal Hocko
-SUSE Labs
+在 2020/9/10 下午10:32, Tejun Heo 写道:
+> On Thu, Sep 10, 2020 at 01:52:07PM +0800, Chengming Zhou wrote:
+>> We found cgroupstats_build would return -EINVAL when using netlink
+>> CGROUPSTATS_CMD_GET interface to get stats on cgroup v2. Fix it by
+>> supporting cgroup v2 kernfs directory in cgroupstats_build, and export
+>> cgroup2_fs_type like we did for cgroup_fs_type.
+>>
+>> Reported-by: Daowen Luo <luodaowen.backend@bytedance.com>
+>> Tested-by: Chengming Zhou <zhouchengming@bytedance.com>
+>> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+> The exclusion of cgroupstats from v2 interface was intentional due to the
+> duplication and inconsistencies with other statistics. If you need these
+> numbers, please justify and add them to the appropriate cgroupfs stat file.
+>
+> Thanks.
+>
+Thanks for your advice. The container monitor tool "cadvisor" needs
+these numbers to work,
+
+I will put them in the existing cpu.stat interface.
+
+Thanks.
+
