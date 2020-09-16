@@ -2,246 +2,256 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E0B626BB48
-	for <lists+cgroups@lfdr.de>; Wed, 16 Sep 2020 06:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CC6626BD90
+	for <lists+cgroups@lfdr.de>; Wed, 16 Sep 2020 08:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726140AbgIPEP1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Sep 2020 00:15:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726069AbgIPEP0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Sep 2020 00:15:26 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40787C06174A
-        for <cgroups@vger.kernel.org>; Tue, 15 Sep 2020 21:15:26 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y6so2479302plt.9
-        for <cgroups@vger.kernel.org>; Tue, 15 Sep 2020 21:15:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LCRAOABNyfnd7lzn4QMxDV96zQMAtn58NYDWlvquY3g=;
-        b=2G6cIT8yZsbFxrYcihmm01Gj0GSrMKff8Czby6u+EPsC5Y13yzYr4IjiO33Hbh6W/S
-         3XcK0ykjiUDsKYjgLk5yq6aEZlY8UOw/EMR+GXEHF5B4qga8TW5wh71rA8wRUI+O1GpF
-         JRF8qYyUOP2vwBL0t5/skhaS8XNKzuppA5BzeZPbp+3zARCR1zbOWN7Jt4HgGiOYEoBS
-         qyqW/6uNQxmXZke8BhbUXEvptwlrBP5RMTLKs2xagCaon+uPVYO0G1YiJ2lliVZpRdQt
-         EoLdWPztPztdRe7hxe6Qy/FfIlXNwnh1ij5YFpXRg9gnDnrr+tYWs2UU4DIu88wynRFK
-         qWFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LCRAOABNyfnd7lzn4QMxDV96zQMAtn58NYDWlvquY3g=;
-        b=BGsaXH7RZJPK1p29dpABMwQGBkHuYp/0JTO+SVrDX6Yi4ijSHhf/kbs/u7obQGVWgc
-         DTui1Fyjvxi6I3r1P/2T7xtAWUtM0DN6qxH/i32ja4gKOI3xY6X6XstgpQEi6cqKTbNj
-         g/ZazPDqBd/gzmHVDDoBDQwRM796XfyEvjOy2cli3PHW78G1gQShN3Pf1wdV9lRUf/YW
-         DpFeKcphAuCc6IOUh5G3A32YN5cW52xet0aBnsxEUI7vZI+PuJTMM4tFdmYUF7b3NKuO
-         SMS+1vjEKEaCGyt+kC44UrGgNs5ZYAdyTnL5t7QqRPJZgwMOLDwRJ1NDjP5djEcU2Zte
-         a1Cw==
-X-Gm-Message-State: AOAM533mZj24VJ+XCTnUdtn0IeBTloe8wefhmuTx7kcOdkFph0ydgaYx
-        nQtRESaWqVnqb7Cxfvz1RfTyFQxwIkQ+oRncrr52uQ==
-X-Google-Smtp-Source: ABdhPJy2sy8PVXcyCJOvShHPTPgr0MnoBvJ8hNXFb+iNCh2bapM/ywuberhz6eOfN37SIu/IZPymzXp6hkAMbtGvh/Q=
-X-Received: by 2002:a17:90a:b78b:: with SMTP id m11mr2289570pjr.13.1600229725682;
- Tue, 15 Sep 2020 21:15:25 -0700 (PDT)
+        id S1726145AbgIPG7I convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Wed, 16 Sep 2020 02:59:08 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:54711 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726133AbgIPG7E (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Sep 2020 02:59:04 -0400
+Received: from [192.168.1.173] ([37.4.249.194]) by mrelayeu.kundenserver.de
+ (mreue109 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MORMu-1k995Y31d0-00Prkk; Wed, 16 Sep 2020 08:58:50 +0200
+From:   Stefan Wahren <stefan.wahren@i2se.com>
+Subject: [BUG] NULL ptr deref in css_free_rwork_fn
+Autocrypt: addr=stefan.wahren@i2se.com; keydata=
+ LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tClZlcnNpb246IEdudVBHIHYy
+ CgptUUlOQkZ0NmdCTUJFQUN1Yi9wQmV2SHhidkplZnlaRzMySklObW4yYnNFUFgyNVY2ZmVq
+ bXlZd21DR0tqRnRMCi9Eb1VNRVZIRHhDSjQ3Qk1YbzM0NGZIVjFDM0FudWRnTjFCZWhMb0J0
+ TEh4bW5lQ3pnSDNLY1B0V1c3cHRqNEcKdEp2OUNRRFp5MjdTS29FUHh5YUk4Q0YweWdSeEpj
+ NzJNOUk5d21zUFo1YlVIc0x1WVdNcVE3SmNSbVBzNkQ4ZwpCa2srOC95bmdFeU5FeHd4SnBS
+ MXlsajVianhXREh5WVF2dUo1THpaS3VPOUxCM2xYVnNjNGJxWEVqYzZWRnVaCkZDQ2svc3lp
+ by9ZaHNlOE4rUXN4N01RYWd6NHdLVWtRUWJmWGcxVnFrVG5BaXZYczQyVm5Ja211NWd6SXcv
+ MHQKUkp2NTBGUmhIaHhweUtBSThCOG5oTjhRdng3TVZrUGM1dkRmZDN1R1lXNDdKUGhWUUJj
+ VXdKd05rLzQ5RjllQQp2ZzJtdE1QRm5GT1JrV1VSdlArRzZGSmZtNitDdk92N1lmUDF1ZXdB
+ aTRsbitKTzFnK2dqVklXbC9XSnB5MG5UCmlwZGZlSDlkSGtnU2lmUXVuWWN1Y2lzTXlvUmJG
+ OTU1dENna0VZOUVNRWRZMXQ4aUdEaUNnWDZzNTBMSGJpM2sKNDUzdWFjcHhmUVhTYUF3UGtz
+ bDhNa0NPc3YyZUVyNElOQ0hZUUR5WmljbEJ1dUNnOEVOYlI2QUdWdFpTUGNRYgplbnpTektS
+ Wm9POUNhcUlEK2ZhdkxpQi9kaHptSEErOWJnSWhtWGZ2WFJMRFp6ZThwbzFkeXQzRTFzaFhp
+ ZGRaClBBOE51SlZ6RUl0MmxtSTZWOHBaRHBuMjIxcmZLaml2UlFpYW9zNTRUZ1pqak1ZSTdu
+ bko3ZTZ4endBUkFRQUIKdENCVGRHVm1ZVzRnVjJGb2NtVnVJRHgzWVdoeVpXNXpkRUJuYlhn
+ dWJtVjBQb2tDTndRVEFRZ0FJUVVDWElkYwo0Z0liQXdVTENRZ0hBZ1lWQ0FrS0N3SUVGZ0lE
+ QVFJZUFRSVhnQUFLQ1JDVWdld1BFWkR5MjFPVEQvOUdpWkxkCnRSWWNteVJKZ2x0aVFRekFp
+ UWRjSUQ3OGxHb1dwL3grci92Y1U2YjZqdVl1ZVR3Z1Iwclc3djdsMklSQnlEN24KSEp4YSt0
+ SVNvUVpCZ2hvbE1JZmI5TXRoR09KTENZNzdrL1FoQWhuMzJOR1prZWp3OXR6a3MvNDBtclpT
+ VVQ4NApaeWJzUVhyTE0vSFI2VElJL0RlUEIwbktEM0ppcHBzMlVIUUQ5cUQySWpFd1NRUGxI
+ akNPckVaaDQ1UFo3bTkrClo5M0x6aVRlc1dabFlRdUxpSndzNHJLcHRIVzFkL3dSZWxzaG1t
+ NlFxY0wybDRDL2U0MGVEQjlncTRkU1poOVgKUEVZbGxpeU5RaDdhMkxTZHVtRTFyK2NTd0lq
+ RS91ZHRSdmRPOWFLb0psT2JVSzVkTmpTUEg3d0tUYndkWGRZRApHUHdEaFhkNThOQXdyK1BY
+ QmxQajB0STFMQ3ErTEJ4ZUt6aFdYK0dWcTlEb2pWanlVREV4Rk5Ga1h1b0M3ZzhtClY5VDB0
+ ZUJpdVpSbm91WEt3VjJGcHRaT0hIN0JVRVd0a0t0aGgxZXRmT1dwaWdCemtVN2JQc2ZJWVQr
+ cnk5dGIKMW9KK3Y0MVBOYXFaRW1QVXBKeHZmek5UN3Ayd01lRDdaajlmMHJ1YlJQdExBSjJR
+ R2pyRkhzdVh3QU9xcHl6ZQoxOEVidHNZazBOMHp1SEVoY2orUEJJQmZoMFlJWWQ1MW9mNkdJ
+ aU95UjlxMFhYdHBsVUo3VDIvSDF1UXFrWGxwCitnVzRWa2lmc2NJckl1eWZueFpXMTJlSXZq
+ NnlicVdMN2FZS0dZbVQ2aUxDUGJIWXlZY2F5bDRFa0ZjckNGN0UKZTBXVC9zY1ZNaE8vNVgv
+ SGFOQTVIQngvcjUycGdMY3Y0aTlNeExRbVUzUmxabUZ1SUZkaGFISmxiaUE4YzNSbApabUZ1
+ TG5kaGFISmxia0JwTW5ObExtTnZiVDZKQWpnRUV3RUNBQ0lGQWx0NmdCTUNHd01HQ3drSUJ3
+ TUNCaFVJCkFna0tDd1FXQWdNQkFoNEJBaGVBQUFvSkVKU0I3QThSa1BMYmpic1AvamdqYVNz
+ NUh0bGtBSXZXUytGcm15N2MKaG5jT0F4TFRWL0Q2UkV3SU95R0poRkt3d29pck55UTJnOXZV
+ YTNZQ1lDZjFmSjh3RWhhS09COWQwTHBNUm5MNApkRVQ4ZDgyMzhFL3BLK0hxTktpSXNKaHM2
+ SnNLOFpnalZRR3JtbWZua0dyWisxdjBIQnV4ZGljZ0duUC9XdHVBClVsOGw2Mi9BTGJheXlq
+ KzYxQ2xyc0V0UklhcU82N0xJWXdQaVBEUkkrWGlNek5pR3pIRi8xUTZHUjAyUkg2YTMKRjg5
+ ejhhUHhjSGkxWnZDdDJ5a3o2VUVjaHpQMHI1Z3FGSisvTC9VcHU4ME1YaVk0djVlSWFCNTJn
+ VlBnaXlNQQpsTDJkRHMxbUladm5yUkxSWTJ0YjNtQVlOa1Y1QjVJRFQzcGtXeTZrS281T0Nn
+ SytZZFlPUjhGTloyb04ydDhPCnJLK1ZudGFLN01NU0tIbG1ZL3NPd3RSbEVoMU9CbXJjQ3dH
+ d21wLzA1R2tSNDZmL0lzaFJWZUZPUmF3K0dBcXQKUDIrQ0ZhMkNOQS9JSG5aTm95aWtsRHpQ
+ UUhVVUdzck5wcERyaFg5Sm1oQm1nMXYyeXdIMU5YdTFpRGZQMUJBdwpLZ29rdDVmNVVhUkY5
+ c0FBNTN2V0V2YlVVTjllZXNGR0x6UFdkSkdRNWhwZC9WSDVJUXk5U0JyaC93SWNla3E1Cm4w
+ a042cGJUSHhHRTUyU2kvTVZJa05UdURaM2FwbjJqbERaNHBPdHBCWEkydlAzYlBPK05pcUJa
+ anNVM3R4TGkKV2R2MkZqeXp6NlhMUndlV1JZVkw1SGE2TER0eG9yMnZ1NlVQMDdwOXh6MXhS
+ WmFPRFczb1lsSEZ6WXBhNFc1ZwpMSGIybEVrSXVVZlNjaWNHYmpqQXRDbFRkR1ZtWVc0Z1Yy
+ Rm9jbVZ1SUR4emRHVm1ZVzR1ZDJGb2NtVnVRR2x1CkxYUmxZMmd1WTI5dFBva0NOd1FUQVFn
+ QUlRVUNYSWRlaHdJYkF3VUxDUWdIQWdZVkNBa0tDd0lFRmdJREFRSWUKQVFJWGdBQUtDUkNV
+ Z2V3UEVaRHkyeUhURC85VUY3UWxEa0d4elE3QWFDSTZOOTVpUWY4LzFvU1VhRE51Mlk2SQpL
+ K0R6UXBiMVRiVE9yM1ZKd3dZOGEzT1d6NU5MU09MTVdlVnh0K29zTW1sUUlHdWJEM09EWko4
+ aXpQbEcvSnJOCnQ1elNkbU41SUE1ZjNlc1dXUVZLdmdoWkFnVERxZHB2K1pIVzJFbXhuQUox
+ dUxGWFhlUWQzVVpjQzVyMy9nL3YKU2FNbzl4ZWszSjVtTnVEbTcxbEVXc0FzL0JBY0ZjK3lu
+ TGh4d0JXQld3c3Z3UjhiSHRKNURPTVd2YUt1RHNrcApJR0ZVZS9LYjJCK2pyYXZRM1RuNnMv
+ SHFKTTBjZXhTSHo1cGUrMHNHdlArdDlKNzIzNEJGUXdlRkV4cmlleThVCkl4T3I0WEFiYWFi
+ U3J5WW5VL3pWSDlVMWkyQUlRWk1XSkFldkN2VmdRL1UrTmVSaFh1ZGU5WVVtRE1EbzJzQjIK
+ VkFGRUFxaUYyUVVIUEEybThhN0VPM3lmTDRyTWswaUh6TElLdmg2L3JIOFFDWThpM1h4VE5M
+ OWlDTHpCV3UvTgpPbkNBYlMremx2TFphaVNNaDVFZnV4VHR2NFBsVmRFamY2MlArWkhJRDE2
+ Z1VEd0VtYXpMQU1yeDY2NmpINWt1ClVDVFZ5bWJMMFR2Qis2TDZBUmw4QU55TTRBRG1rV2tw
+ eU0yMmtDdUlTWUFFZlFSM3VXWFo5WWd4YVBNcWJWK3cKQnJoSmc0SGFONkM2eFRxR3YzcjRC
+ MmFxYjc3L0NWb1JKMVo5Y3BIQ3dpT3pJYUFtdnl6UFU2TXhDRFhaOEZnWQpsVDR2MjNHNWlt
+ SlAyemdYNXMrRjZBQ1VKOVVRUEQwdVRmK0o5RGEycitza2gvc1dPbloreWNvSE5CUXZvY1pF
+ Ck5BSFFmN2tDRFFSYmVvQVRBUkFBMkhkMGZzRFZLNzJSTFNESGJ5ME9oZ0RjRGxWQk0yTSto
+ WVlwTzNmWDFyKysKc2hpcVBLQ0hWQXNRNWJ4ZTdIbUppbUhhNEtLWXMya3YvbWx0L0NhdUNK
+ Ly9wbWN5Y0JNN0d2d25Lem11WHp1QQpHbVZUWkM2V1I1TGtha0ZydEhPelZtc0VHcE52NVJj
+ OWw2SFlGcExrYlNrVmk1U1BRWkp5K0VNZ01DRmdqclpmClZGNnlvdHdFMWFmN0hOdE1oTlBh
+ TEROMW9VS0Y1aitSeVJnNWl3SnVDRGtuSGp3QlFWNHBndzIvNXZTOEE3WlEKdjJNYlcvVExF
+ eXBLWGlmNzhJaGdBelh0RTJYck0xbi9vNlpINzFvUkZGS096NDJsRmR6ZHJTWDBZc3FYZ0hD
+ WAo1Z0l0TGZxemoxcHNNYTlvMWVpTlRFbTFkVlFyVHFueXMwbDE4b2FsUk5zd1lsUW1uWUJ3
+ cHdDa2FUSExNSHdLCmZHQmJvNWRMUEVzaHRWb3dJNm5zZ3FMVHlRSG1xSFlxVVpZSXBpZ21t
+ QzNTd0JXWTFWNmZmVUVta3FwQUFDRW4KTDQvZ1Vnbjd5US81ZDBzZXFuQXEycFNCSE1VVW9D
+ Y1R6RVFVV1ZraUR2M1JrN2hURm1oVHNNcTc4eHYyWFJzWApNUjZ5UWhTVFBGWkNZRFVFeEVs
+ RXNTbzlGV0hXcjZ6SHlZY2M4cURMRnZHOUZQaG1RdVQyczlCbHg2Z0kzMjNHCm5FcTFsd1dQ
+ SlZ6UDRqUWtKS0lBWHdGcHYrVzhDV0xxekRXT3ZkbHJEYVRhVk1zY0ZUZUg1VzZVcHJsNjVq
+ cUYKUUdNcGNSR0NzOEdDVVcxM0gwSXlPdFF0d1dYQTRueStTTDgxcHZpQW1hU1hVOGxhS2FS
+ dTkxVk9WYUY5ZjRzQQpFUUVBQVlrQ0h3UVlBUUlBQ1FVQ1czcUFFd0liREFBS0NSQ1VnZXdQ
+ RVpEeTIrb1hELzljSEhSa0JaT2ZrbVNxCjE0U3Z4MDYyUHRVMEtWNDcwVFNucC9qV29ZSm5L
+ SXczRzBtWElSZ3J0SDJkUHdwSWdWanNZeVJTVk1LbVNwdDUKWnJEZjlOdFRiTldnazhWb0xl
+ WnpZRW8rSjNvUHFGclRNczNhWVl2N2U0K0pLNjk1WW5tUSttT0Q5bmlhOTE1dApyNUFaajk1
+ VWZTVGx5VW15aWMxZDhvdnNmMWZQN1hDVVZSRmNSamZOZkRGMW9ML3BEZ01QNUdaMk93YVRl
+ am15CkN1SGpNOElSMUNpYXZCcFlEbUJuVFlrN1B0aHk2YXRXdllsMGZ5L0NxYWpUS3N4Nytw
+ OXh6aXU4WmZWWCtpS0IKQ2MrSGUrRURFZEdJRGh2TlovSVFIZk9CMlBVWFdHUytzOUZOVHhy
+ L0E2bkxHWG5BOVk2dzkzaVBkWUl3eFM3SwpYTG9LSmVlMTBEamx6c1lzUmZsRk9XMFpPaVNp
+ aElDWGlRVjF1cU02dHpGRzlndFJjaXVzNVVBdGhXYU8xT3dVClNDUW1mQ09tNGZ2TUlKSUE5
+ cnh0b1M2T3FSUWNpRjNjcm1vMHJKQ3ROMmF3WmZnaThYRWlmN2Q2aGp2MEVLTTkKWFpvaUFa
+ WVpEKy9pTG01VGFLV042b0dJdGkwVmpKdjhaWk9aT2ZDYjZ2cUZJa0pXK2FPdTRvclRMRk16
+ MjhhbwpVM1F5V3BOQzhGRm1kWXNWdWE4czZnTjFOSWE2eTNxYS9aQjhiQS9pa3k1OUFFejRp
+ RElScmdVek1FZzhBazdUCmZtMUtpWWVpVHRCRENvMjVCdlhqYnFzeXhrUUQxbmtSbTZGQVZ6
+ RXVPUEllOEp1cVcyeEQ5aXhHWXZqVTVoa1IKZ0pwM2dQNWIrY25HM0xQcXF1UTJFNmdvS1VN
+ TEFia0NEUVJiZmw5REFSQUFzRExjYStMbFAydm5mdEVHaHBjQQpCR1ZOUUVGbkdQckNhdVU2
+ SGhOODA1V3RQVHRtc1JPdUp6cWdVVDBtcHFXSWZacTZzTXd5dkhLOVRzL0tIM0paClVWYlJD
+ M3oyaDNLZmhIL0RhZjk1cGQ2bVBjL2g5dkYvT3kzK2VUV2hnR25QNmNBNWtsUitmTzFXaEc4
+ VnJpWHYKck5lUkcyMHN6emplSG9jblNJY1Q1WHVaUjB1REhPaUd4T2l6MXNNUkZUR3h6R095
+ MTlSOXJ2dTYzdGlJM2Q3dgpnYzc1T0NBZGtlQi9TZUNFbGFSdzBUZjdMWmJQampzRjI2M0JZ
+ bk1mNGtrTkVLdnFXY1UyaWNNcCtxZXpqeW5CCnB2ZXVlMHJDVFFCWUFRbG9GQ1ZUR0hyV1dB
+ NkQ0VzVPMkFmSWRJYzF1MUpDWnAyZjVMV1ZvVUZUVklyUW5RUVUKU0hDaWZyOU1aeExUdFBK
+ ZFU1Mm9TUHczZGs0aExQOGlKSUx1dnYvYXZhakNzUVlIRXR3WXNiZUZaeGl1TGdscApBN1lj
+ Sk5ObXBnQ3BNRDR3VWh2bEN0QUtOQlFXeXIyOTc2OThFUVRuNDZlQmVVNkttMkNpaFhrZ3dD
+ eWY4ZXlLCkxFM3NYZXdhcTVrZ1pXdk5xNml1NXFZSVJCOXl3K2NYYzYwZE9aRE9scTkzWDVT
+ QVJZemFvZXBrSHo0cmtMa1AKUG8rdENIeUhRUHNHblBYYzlXVDgwREM5Tm5KR2R2VWx5NXJk
+ TUk0eHBaeWdlb2tqd293VlFsUFV1Y1M2TXluNwpmOHc4Y2dmQjdDMklBSWNEeDJwUC9IendY
+ dmtDT1FOQTdtVjFsTTA4bitnVmtUcnpweGlwNURicTRDSW9ZeDJNCkpaVDhiR1JINlhqY1VE
+ S2EwOVFoeVpzQUVRRUFBWWtFUkFRWUFRZ0FEd1VDVzM1ZlF3SWJBZ1VKQThKbkFBSXAKQ1JD
+ VWdld1BFWkR5MjhGZElBUVpBUWdBQmdVQ1czNWZRd0FLQ1JCVnhETFBjVk1NamNkc0QvMFJo
+ QXN1UVlPeQpyMTNCbDNOaFhrWUFaR3AyWkZER3VrZTdPU2tWOG9qT09UZFR5ei9jT1JHQ2J5
+ ZEQrRGd2cUZ5VmRuT1hLZ08wCmxKbUd3ckdlTGRnZ0F2aDBpaHJwNU8wWVVKOWJCU1htR01t
+ UVRZSC9BbUxUR2FkYnVqQ1dqNWZGVWtDeXd4aW0KSHV5MFBiMjRwelR2UzUwR1k1WStxSDBG
+ SE5haWdka2tpV04zcnVnN0haRXUvQ3lsUFpqT1h6K0QxUVBNckV4dwo3ZC9NS2FiVis5YU5i
+ UVlabGRJajk4UXd2VUYxS1N6YThqbFVJdnBoUnEyN0FUOGZER1lHUGZERU1nMmNCT2FlCkty
+ N29uUXM0YjdhV082aWZEbHhRVHB6c3pvK0FuODA3Tk1TdFZFRmYrczNBaFZEM2U3bmY4SkJh
+ dmJWckFlMGsKb20yNm96elBubnh6K2xxVlZ0dzZVazRYTUl6dGl4L0h3SFl3dUNuY1VYWndL
+ MEkzeUFKd2pZd29vck9DaEozUwpFVWJKUVB0R3NneFJERXhWQkZlNk5MUC82MnhQOU82dGFj
+ d09kYjBNbVAxYjM5cFJBVEM3YmdkMWxkVUxpNzVaCmxKckowL1NpVkVyb3FOWXk3OXRmbWdB
+ WjJVeFptczlTckV5Nm85UVNmc24xYVh2K01QTDlKYUNHbWtQNnpiTFEKTm5kajBKY2FRbmtD
+ MHZneWRPMUJtNk11OTZQOXVmbEtaY0FTNndtTE01SWRIT3lqTDg4d0h3anVjakFPQnRjdwpw
+ MG9HVG5WT25Sc05ZU084VzhZWi9LZGJ1Nzg1ZGF6TXFKMmlOakFEdUJiZG02TjRqNUVkTW5r
+ TG4wQklmUEpwCmRnbTR2bDJVcExqd1JHci9NM3dtbTVwdnMrNnVCN2hrL0ZKaUQvNGxsRU5Q
+ NGVNMWg3U200aitWcTZOMSt6VEIKSVhKQWViSXFhc0RwNXlaUzdYcnk0STM2bjg1WEVZZkcw
+ MWx0QXlob05WMkRPOFNJUlFwdWkydHErOVJQM1JLMQpKREJ4eEVKWTJFTzVKWjhNeGFQSFEw
+ RFQwNWxSRmpLMkFsaGRFSXRqTGpwSjNmVW05c3FMeE1XeHpQNlV6M2lpCjJ1YTR1bnJ0Nk9D
+ VHFRd2lqRi8zYlRXaXd2VkFBSG5NRlVpb1hzaEhhb2hWRGNWZm5lSU1mVjBiUUNYWWkzTnAK
+ WTB2MFp3Y2lGSCtnU0M3cUQ2WE51aHBWR1NMNElpbGlGeS9TemNhSkV6QUhlTERTaFpQMkNX
+ ZG5DNHZnbDM3dApocHg4aDU1WWhKbjZIU3VVelBnaGFLdFZCMmsrajdaZXlaK1NGeHA3SXVi
+ SEN3TEhsUWhUNzVSd1EzaUF4S242CjBxajUxY1lUbnF4ZFpYVzZmSDNQa3VNellVNUdwcVIv
+ MU9sNWMvd2ZJNmc2QW04eUtXLzBFVUx0K0tuNExGc1MKbTdZM201SDV2MTJVNkpCWXZWK3Ix
+ M2paaW9zNEVFREU5M0Q1c05IMk1JeVJ6Q0RxMXpkZHQ0WHV5S0ZqUEtXMQo5aWJaRGZGVjdL
+ dUNzdnVMMjNzQmMxc0NNb3ArRTFtVC9ReE9JQTZvRFQxTVFzdHdPVnVReURDdi9PdktTZ2Z6
+ CjhGWEdMNkFQY2xqQ3FqOEFKaHhReXN4ZG9pUVA4bS92dStialdHR3Z4dzVzMWxncGlSRFRS
+ VVBnY0pKTmFHWTIKVklEclpRaTROU2lOUTBOSWkrZGp1NGZOTW1DcFFxZzh0YkMzY0FhNnl3
+ bTZvUUIxU0JobURYMmUxMWdSbGx1SQpPblRHUEUwSFRvM2w3MmxoYmc9PQo9cVpNVgotLS0t
+ LUVORCBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCg==
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+Cc:     cgroups@vger.kernel.org, open list <linux-kernel@vger.kernel.org>
+Message-ID: <dd06bf27-b0d0-d956-abfc-d2a209f0a225@i2se.com>
+Date:   Wed, 16 Sep 2020 08:58:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200915171801.39761-1-songmuchun@bytedance.com> <20200915214845.GB189808@cmpxchg.org>
-In-Reply-To: <20200915214845.GB189808@cmpxchg.org>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 16 Sep 2020 12:14:49 +0800
-Message-ID: <CAMZfGtXOR1Ed2PyB4TB5mq=1mh7p7La-4BsoZ8oYhtgc8ZcqLQ@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v5] mm: memcontrol: Add the missing
- numa_stat interface for cgroup v2
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Roman Gushchin <guro@fb.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
+X-Provags-ID: V03:K1:McBaR6h475f+03AsHcDzrOtYImqqW512bfeOU5VDEZyQ/04/BWo
+ n/mG2/TQWziVupQNfSNhRnaSv3Ki16v4xvh9NIw4/78v0jwRq952tWNWDHNSUKNbaeYpDLJ
+ CAbakkD0tQYBQT39jQN7BOqGWLK15GGfsZ6tUgtP4dgKWd+3dYFv2DfwLwmuBA+7ONZUYbB
+ C8y8F+bCTTRKqAlOrN1Ww==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:MR/8TKoEpSo=:4hW2YDfBOIEk/YTsJyx3Ad
+ ah6s+1VCY5+Yt78QOMshlNuCLNr/zVaDmVUFv5qRVDmTZpBBWo2colAi2TbEc17lvVrLPRRpi
+ iXGdQESRREOHXDb5zBeQG9O3Ao2DzSTkcc8S4Y3SSQv2XyUjABxHtf9lzWYBt+hyYyb7JsvAu
+ AJUqE5QMv2uevCww94wZcBkw4cB107GMhV+Ky0vV1CeAAtxl5s+pjy1d+hkBrTy85I9dVxCk6
+ S6T53qvCyRoSivcFznzqUtKF692jxOX3V3fNu21+UlsVO2bpQyqCVqa5gk6eUH6GIA3v+knJK
+ vOlmxozWarhkSh4yVNrCG6uud6x6jHMv/vQg3ga97uxHKp/Z8JTz2dsPfqgttPsG1SSSGsqdg
+ KS3plcr1tCqgPWpTnnATJVO4L2c24eZbSfUHaML8BsR6YO9clEHXcKQeXXu4f+RVkVJoh/F1x
+ 65fUgM0EXJ6x0xnl9lrfZ4DXg1wFlso4cBYArDLYGangS4ZKbJI45aE/HNJeamx+xpgRxmxgB
+ KMfwI6v84YHSdcFAbMRG/eICeFMclx+yOg0cucmA3wQSRXqdqxaOTMP3FZC+8qA/XQuUEwVnC
+ /nvQmx38DujFSvms1isi+1+b2uC5syP/t3N4yd2jNYfd8aJF0pmGtM3QZNzrLdwaQeaoGz/71
+ D4jAMkxqgm4eS20M9QnnDYsaLN2eoDntIXG+4h2fEBobAsImcc873KK7J3lt4NHSY/i6kXraA
+ /bsYLcR59HMl2TSowmhMHzk1EGHbwm2L/EzWpa/CWKgGcfcPS5Jqom0xIwmiC5I8KNoxFT0e1
+ mGHP4+HjFdSjdDHR5on4tPjL30f7rLDm0dCBn+UvN1dxMfcbkysQSini4wEFFSm48zcZYTX
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Sep 16, 2020 at 5:50 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> On Wed, Sep 16, 2020 at 01:18:01AM +0800, Muchun Song wrote:
-> > In the cgroup v1, we have a numa_stat interface. This is useful for
-> > providing visibility into the numa locality information within an
-> > memcg since the pages are allowed to be allocated from any physical
-> > node. One of the use cases is evaluating application performance by
-> > combining this information with the application's CPU allocation.
-> > But the cgroup v2 does not. So this patch adds the missing information.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > Suggested-by: Shakeel Butt <shakeelb@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
->
-> Yup, that would be useful information to have. Just a few comments on
-> the patch below:
->
-> > @@ -1368,6 +1368,78 @@ PAGE_SIZE multiple when read back.
-> >               collapsing an existing range of pages. This counter is not
-> >               present when CONFIG_TRANSPARENT_HUGEPAGE is not set.
-> >
-> > +  memory.numa_stat
-> > +     A read-only flat-keyed file which exists on non-root cgroups.
->
-> It's a nested key file, not flat.
+Hi,
 
-This is just copied from memory.stat documentation.Is the memory.stat
-also a nested key file?
+i noticed a regular crash (NULL pointer dereference) on my ARM i.MX28
+board using the current mainline kernel (last tested version Linux
+5.9-rc5). I also tested Linux 5.8, but i wasn't able to reproduce with
+this version, so i assume this is a regression. The crash happens mostly
+short after boot or during shutdown. Unfortunately i don't have a
+specific scenario to trigger this issue. The issue was reproducable with
+arm/mxs_defconfig.
 
->
-> > +     This breaks down the cgroup's memory footprint into different
-> > +     types of memory, type-specific details, and other information
-> > +     per node on the state of the memory management system.
-> > +
-> > +     This is useful for providing visibility into the NUMA locality
-> > +     information within an memcg since the pages are allowed to be
-> > +     allocated from any physical node. One of the use case is evaluating
-> > +     application performance by combining this information with the
-> > +     application's CPU allocation.
-> > +
-> > +     All memory amounts are in bytes.
-> > +
-> > +     The output format of memory.numa_stat is::
-> > +
-> > +       type N0=<bytes in node 0> N1=<bytes in node 1> ...
-> > +
-> > +     The entries are ordered to be human readable, and new entries
-> > +     can show up in the middle. Don't rely on items remaining in a
-> > +     fixed position; use the keys to look up specific values!
-> > +
-> > +       anon
-> > +             Amount of memory per node used in anonymous mappings such
-> > +             as brk(), sbrk(), and mmap(MAP_ANONYMOUS).
-> > +
-> > +       file
-> > +             Amount of memory per node used to cache filesystem data,
-> > +             including tmpfs and shared memory.
-> > +
-> > +       kernel_stack
-> > +             Amount of memory per node allocated to kernel stacks.
-> > +
-> > +       shmem
-> > +             Amount of cached filesystem data per node that is swap-backed,
-> > +             such as tmpfs, shm segments, shared anonymous mmap()s.
-> > +
-> > +       file_mapped
-> > +             Amount of cached filesystem data per node mapped with mmap().
-> > +
-> > +       file_dirty
-> > +             Amount of cached filesystem data per node that was modified but
-> > +             not yet written back to disk.
-> > +
-> > +       file_writeback
-> > +             Amount of cached filesystem data per node that was modified and
-> > +             is currently being written back to disk.
-> > +
-> > +       anon_thp
-> > +             Amount of memory per node used in anonymous mappings backed by
-> > +             transparent hugepages.
-> > +
-> > +       inactive_anon, active_anon, inactive_file, active_file, unevictable
-> > +             Amount of memory, swap-backed and filesystem-backed,
-> > +             per node on the internal memory management lists used
-> > +             by the page reclaim algorithm.
-> > +
-> > +             As these represent internal list state (e.g. shmem pages are on
-> > +             anon memory management lists), inactive_foo + active_foo may not
-> > +             be equal to the value for the foo counter, since the foo counter
-> > +             is type-based, not list-based.
-> > +
-> > +       slab_reclaimable
-> > +             Amount of memory per node used for storing in-kernel data
-> > +             structures which might be reclaimed, such as dentries and
-> > +             inodes.
-> > +
-> > +       slab_unreclaimable
-> > +             Amount of memory per node used for storing in-kernel data
-> > +             structures which cannot be reclaimed on memory pressure.
-> > +
-> >    memory.swap.current
-> >       A read-only single value file which exists on non-root
-> >       cgroups.
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 75cd1a1e66c8..ff919ef3b57b 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -6425,6 +6425,86 @@ static int memory_stat_show(struct seq_file *m, void *v)
-> >       return 0;
-> >  }
-> >
-> > +#ifdef CONFIG_NUMA
-> > +struct numa_stat {
-> > +     const char *name;
-> > +     unsigned int ratio;
-> > +     enum node_stat_item idx;
-> > +};
-> > +
-> > +static struct numa_stat numa_stats[] = {
-> > +     { "anon", PAGE_SIZE, NR_ANON_MAPPED },
-> > +     { "file", PAGE_SIZE, NR_FILE_PAGES },
-> > +     { "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-> > +     { "shmem", PAGE_SIZE, NR_SHMEM },
-> > +     { "file_mapped", PAGE_SIZE, NR_FILE_MAPPED },
-> > +     { "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
-> > +     { "file_writeback", PAGE_SIZE, NR_WRITEBACK },
-> > +#ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > +     /*
-> > +      * The ratio will be initialized in numa_stats_init(). Because
-> > +      * on some architectures, the macro of HPAGE_PMD_SIZE is not
-> > +      * constant(e.g. powerpc).
-> > +      */
-> > +     { "anon_thp", 0, NR_ANON_THPS },
-> > +#endif
-> > +     { "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-> > +     { "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> > +     { "inactive_file", PAGE_SIZE, NR_INACTIVE_FILE },
-> > +     { "active_file", PAGE_SIZE, NR_ACTIVE_FILE },
-> > +     { "unevictable", PAGE_SIZE, NR_UNEVICTABLE },
-> > +     { "slab_reclaimable", 1, NR_SLAB_RECLAIMABLE_B },
-> > +     { "slab_unreclaimable", 1, NR_SLAB_UNRECLAIMABLE_B },
-> > +};
->
-> This is a bit duplicative with memory_stat_format(), and the
-> collections will easily go out of sync as we add/change stat items.
->
-> Can you please convert memory_stat_format() to use the same shared table?
->
-> You may have to add another flag for the MEMCG_* items for which we
-> don't have per-node counters.
->
-> The same applies to the documentation. Please don't duplicate the list
-> of items, but have memory.numa_stat refer to the list for memory.stat.
-> You can add (not in memory.numa_stat) or something to percpu and sock.
+Here is the crash output:
 
-Thanks for your suggestions.
-
->
-> > +static unsigned long memcg_node_page_state(struct mem_cgroup *memcg,
-> > +                                        unsigned int nid,
-> > +                                        enum node_stat_item idx)
-> > +{
-> > +     VM_BUG_ON(nid >= nr_node_ids);
-> > +     return lruvec_page_state(mem_cgroup_lruvec(memcg, NODE_DATA(nid)), idx);
-> > +}
->
-> Please drop this wrapper and use lruvec_page_state directly below.
->
-> Otherwise, this looks reasonable to me.
-
-OK. Will do that.
+[   58.670665] 8<--- cut here ---
+[   58.673844] Unable to handle kernel NULL pointer dereference at
+virtual address 000002c0
+[   58.682130] pgd = aa9080fa
+[   58.684863] [000002c0] *pgd=00000000
+[   58.688467] Internal error: Oops: 5 [#1] ARM
+[   58.692743] Modules linked in:
+[   58.695826] CPU: 0 PID: 41 Comm: kworker/0:2 Not tainted
+5.9.0-rc5-00009-g9d3c35e #15
+[   58.703660] Hardware name: Freescale MXS (Device Tree)
+[   58.708830] Workqueue: cgroup_destroy css_free_rwork_fn
+[   58.714089] PC is at kernfs_put+0xb8/0x1c4
+[   58.718195] LR is at 0xc6f4c7c0
+[   58.721342] pc : [<c01b3cb4>]    lr : [<c6f4c7c0>]    psr: 00000013
+[   58.727614] sp : c7787ed0  ip : 60000013  fp : c6f47a10
+[   58.732843] r10: c6f4c9c0  r9 : c0ae95fc  r8 : c0ae95f8
+[   58.738072] r7 : c74249c8  r6 : c6f486e0  r5 : c670b898  r4 : 000002c0
+[   58.744603] r3 : 00000000  r2 : 00000001  r1 : 00000001  r0 : c7ee4030
+[   58.751138] Flags: nzcv  IRQs on  FIQs on  Mode SVC_32  ISA ARM 
+Segment none
+[   58.758280] Control: 0005317f  Table: 44d18000  DAC: 00000053
+[   58.764043] Process kworker/0:2 (pid: 41, stack limit = 0x6fb11f96)
+[   58.770322] Stack: (0xc7787ed0 to 0xc7788000)
+[   58.774697] 7ec0:                                     60000013
+c0ae2664 c7ee4d00 00000000
+[   58.782896] 7ee0: c653b800 c74249c0 c0ab2df4 c653b864 00000000
+c653b800 c7ee4d00 00000000
+[   58.791096] 7f00: 00000000 c653b868 c0ab2df4 c0083574 c653b864
+c773d720 00000000 c7ee4d00
+[   58.799295] 7f20: 00000000 c00309e8 c0a21370 c7786000 c0a28fa0
+c773d720 c0a2135c c773d734
+[   58.807493] 7f40: c0a21370 c7786000 c0a28fa0 00000008 c0a2135c
+c0031158 c773d720 c7497eb8
+[   58.815693] 7f60: c7787f7c c778c100 c7781200 00000000 c7786000
+c0031108 c773d720 c7497eb8
+[   58.823890] 7f80: c778c120 c00371d4 60000013 c7781200 c00370dc
+00000000 00000000 00000000
+[   58.832087] 7fa0: 00000000 00000000 00000000 c0008540 00000000
+00000000 00000000 00000000
+[   58.840282] 7fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[   58.848478] 7fe0: 00000000 00000000 00000000 00000000 00000013
+00000000 00000000 00000000
+[   58.856698] [<c01b3cb4>] (kernfs_put) from [<c0083574>]
+(css_free_rwork_fn+0x19c/0x3ac)
+[   58.864739] [<c0083574>] (css_free_rwork_fn) from [<c00309e8>]
+(process_one_work+0x14c/0x4d4)
+[   58.873293] [<c00309e8>] (process_one_work) from [<c0031158>]
+(worker_thread+0x50/0x590)
+[   58.881421] [<c0031158>] (worker_thread) from [<c00371d4>]
+(kthread+0xf8/0x134)
+[   58.888764] [<c00371d4>] (kthread) from [<c0008540>]
+(ret_from_fork+0x14/0x34)
+[   58.895996] Exception stack(0xc7787fb0 to 0xc7787ff8)
+[   58.901062] 7fa0:                                     00000000
+00000000 00000000 00000000
+[   58.909259] 7fc0: 00000000 00000000 00000000 00000000 00000000
+00000000 00000000 00000000
+[   58.917452] 7fe0: 00000000 00000000 00000000 00000000 00000013 00000000
+[   58.924088] Code: ebfdce1f e1a0000a ebfce9aa e154000b (e5943000)
+[   58.930410] ---[ end trace 73455566ad3e0105 ]---
 
 
-
--- 
-Yours,
-Muchun
