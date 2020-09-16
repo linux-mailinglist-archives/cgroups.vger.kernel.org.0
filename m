@@ -2,62 +2,61 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AD2126C37F
-	for <lists+cgroups@lfdr.de>; Wed, 16 Sep 2020 16:03:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A00626C8EE
+	for <lists+cgroups@lfdr.de>; Wed, 16 Sep 2020 21:00:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726767AbgIPOCv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Sep 2020 10:02:51 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:39904 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1726426AbgIPNlI (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 16 Sep 2020 09:41:08 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id 1F550FB1E2A1D7A9514B;
-        Wed, 16 Sep 2020 21:20:54 +0800 (CST)
-Received: from huawei.com (10.175.104.175) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
- 21:20:43 +0800
-From:   Miaohe Lin <linmiaohe@huawei.com>
-To:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>
-CC:     <cgroups@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, <linmiaohe@huawei.com>
-Subject: [PATCH] mm: memcontrol: correct the comment of mem_cgroup_unmark_under_oom()
-Date:   Wed, 16 Sep 2020 09:19:27 -0400
-Message-ID: <20200916131927.11340-1-linmiaohe@huawei.com>
-X-Mailer: git-send-email 2.19.1
+        id S1727222AbgIPTAP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Sep 2020 15:00:15 -0400
+Received: from mail1.windriver.com ([147.11.146.13]:49178 "EHLO
+        mail1.windriver.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727666AbgIPTAL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Sep 2020 15:00:11 -0400
+Received: from ALA-HCA.corp.ad.wrs.com (ala-hca.corp.ad.wrs.com [147.11.189.40])
+        by mail1.windriver.com (8.15.2/8.15.2) with ESMTPS id 08GBNieV017215
+        (version=TLSv1 cipher=DHE-RSA-AES256-SHA bits=256 verify=FAIL);
+        Wed, 16 Sep 2020 04:23:45 -0700 (PDT)
+Received: from pek-lpggp1.wrs.com (128.224.153.74) by ALA-HCA.corp.ad.wrs.com
+ (147.11.189.40) with Microsoft SMTP Server id 14.3.487.0; Wed, 16 Sep 2020
+ 04:23:44 -0700
+From:   <yanfei.xu@windriver.com>
+To:     <lizefan@huawei.com>, <tj@kernel.org>, <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] cpuset: Move node_isset() outside of the rcu_read region
+Date:   Wed, 16 Sep 2020 19:23:42 +0800
+Message-ID: <20200916112342.25790-1-yanfei.xu@windriver.com>
+X-Mailer: git-send-email 2.18.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.175]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Sender: cgroups-owner@vger.kernel.org
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since commit fb2a6fc56be6 ("mm: memcg: rework and document OOM waiting and
-wakeup"), we have renamed mem_cgroup_oom_lock to mem_cgroup_oom_trylock. So
-replace mem_cgroup_oom_lock with mem_cgroup_oom_trylock in comment.
+From: Yanfei Xu <yanfei.xu@windriver.com>
 
-Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+It's no need to keep node_isset still in rcu_read region, just move
+it outside of the rcu_read region.
+
+Signed-off-by: Yanfei Xu <yanfei.xu@windriver.com>
 ---
- mm/memcontrol.c | 2 +-
+ kernel/cgroup/cpuset.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3d26b4b954e2..702aa4d7ebbc 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1846,7 +1846,7 @@ static void mem_cgroup_unmark_under_oom(struct mem_cgroup *memcg)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 642415b8c3c9..51d51ed97deb 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3443,9 +3443,9 @@ bool __cpuset_node_allowed(int node, gfp_t gfp_mask)
  
- 	/*
- 	 * When a new child is created while the hierarchy is under oom,
--	 * mem_cgroup_oom_lock() may not be called. Watch for underflow.
-+	 * mem_cgroup_oom_trylock() may not be called. Watch for underflow.
- 	 */
- 	spin_lock(&memcg_oom_lock);
- 	for_each_mem_cgroup_tree(iter, memcg)
+ 	rcu_read_lock();
+ 	cs = nearest_hardwall_ancestor(task_cs(current));
+-	allowed = node_isset(node, cs->mems_allowed);
+ 	rcu_read_unlock();
+ 
++	allowed = node_isset(node, cs->mems_allowed);
+ 	spin_unlock_irqrestore(&callback_lock, flags);
+ 	return allowed;
+ }
 -- 
-2.19.1
+2.18.2
 
