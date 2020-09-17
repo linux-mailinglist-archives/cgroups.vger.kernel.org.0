@@ -2,69 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A427626D14C
-	for <lists+cgroups@lfdr.de>; Thu, 17 Sep 2020 04:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 781E826D789
+	for <lists+cgroups@lfdr.de>; Thu, 17 Sep 2020 11:23:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726044AbgIQCjn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Sep 2020 22:39:43 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:35878 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726040AbgIQCjm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Sep 2020 22:39:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0U9ANYuN_1600310363;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9ANYuN_1600310363)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 17 Sep 2020 10:39:27 +0800
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        mgorman@techsingularity.net, tj@kernel.org,
-        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
-References: <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
- <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
- <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
- <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
- <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
- <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
- <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
- <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
- <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
- <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
- <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
-Date:   Thu, 17 Sep 2020 10:37:45 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.7.0
+        id S1726241AbgIQJXs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 05:23:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:40154 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726185AbgIQJXs (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 17 Sep 2020 05:23:48 -0400
+X-Greylist: delayed 1013 seconds by postgrey-1.27 at vger.kernel.org; Thu, 17 Sep 2020 05:23:46 EDT
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EC534AE08;
+        Thu, 17 Sep 2020 09:07:26 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id D5C071E12E1; Thu, 17 Sep 2020 11:06:52 +0200 (CEST)
+Date:   Thu, 17 Sep 2020 11:06:52 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        drbd-dev@lists.linbit.com, linux-raid@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [PATCH 09/12] mm: use SWP_SYNCHRONOUS_IO more intelligently
+Message-ID: <20200917090652.GB7347@quack2.suse.cz>
+References: <20200910144833.742260-1-hch@lst.de>
+ <20200910144833.742260-10-hch@lst.de>
 MIME-Version: 1.0
-In-Reply-To: <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200910144833.742260-10-hch@lst.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu 10-09-20 16:48:29, Christoph Hellwig wrote:
+> There is no point in trying to call bdev_read_page if SWP_SYNCHRONOUS_IO
+> is not set, as the device won't support it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
+Looks good to me. You can add:
 
-在 2020/9/16 上午12:58, Daniel Jordan 写道:
-> On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
->> On Sun, 13 Sep 2020, Alex Shi wrote:
->>> Uh, I updated the testing with some new results here:
->>> https://lkml.org/lkml/2020/8/26/212
->> Right, I missed that, that's better, thanks.  Any other test results?
-> Alex, you were doing some will-it-scale runs earlier.  Are you planning to do
-> more of those?  Otherwise I can add them in.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Hi Daniel,
+								Honza
 
-Does compaction perf scalable, like thpscale, I except they could get some benefit.
-
-Thanks
-Alex
+> ---
+>  mm/page_io.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/page_io.c b/mm/page_io.c
+> index e485a6e8a6cddb..b199b87e0aa92b 100644
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -403,15 +403,17 @@ int swap_readpage(struct page *page, bool synchronous)
+>  		goto out;
+>  	}
+>  
+> -	ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> -	if (!ret) {
+> -		if (trylock_page(page)) {
+> -			swap_slot_free_notify(page);
+> -			unlock_page(page);
+> -		}
+> +	if (sis->flags & SWP_SYNCHRONOUS_IO) {
+> +		ret = bdev_read_page(sis->bdev, swap_page_sector(page), page);
+> +		if (!ret) {
+> +			if (trylock_page(page)) {
+> +				swap_slot_free_notify(page);
+> +				unlock_page(page);
+> +			}
+>  
+> -		count_vm_event(PSWPIN);
+> -		goto out;
+> +			count_vm_event(PSWPIN);
+> +			goto out;
+> +		}
+>  	}
+>  
+>  	ret = 0;
+> -- 
+> 2.28.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
