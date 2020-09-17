@@ -2,63 +2,69 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B16CD26D0EA
-	for <lists+cgroups@lfdr.de>; Thu, 17 Sep 2020 03:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A427626D14C
+	for <lists+cgroups@lfdr.de>; Thu, 17 Sep 2020 04:39:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725987AbgIQB5U convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 16 Sep 2020 21:57:20 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3518 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1725886AbgIQB5T (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 16 Sep 2020 21:57:19 -0400
-X-Greylist: delayed 937 seconds by postgrey-1.27 at vger.kernel.org; Wed, 16 Sep 2020 21:57:18 EDT
-Received: from dggeme751-chm.china.huawei.com (unknown [172.30.72.57])
-        by Forcepoint Email with ESMTP id 685C42EE129367064534;
-        Thu, 17 Sep 2020 09:41:38 +0800 (CST)
-Received: from dggeme753-chm.china.huawei.com (10.3.19.99) by
- dggeme751-chm.china.huawei.com (10.3.19.97) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.1913.5; Thu, 17 Sep 2020 09:41:38 +0800
-Received: from dggeme753-chm.china.huawei.com ([10.7.64.70]) by
- dggeme753-chm.china.huawei.com ([10.7.64.70]) with mapi id 15.01.1913.007;
- Thu, 17 Sep 2020 09:41:37 +0800
-From:   linmiaohe <linmiaohe@huawei.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "vdavydov.dev@gmail.com" <vdavydov.dev@gmail.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcontrol: correct the comment of
- mem_cgroup_unmark_under_oom()
-Thread-Topic: [PATCH] mm: memcontrol: correct the comment of
- mem_cgroup_unmark_under_oom()
-Thread-Index: AdaMk2onBuSUvuaupEiH3Zos6miJVQ==
-Date:   Thu, 17 Sep 2020 01:41:37 +0000
-Message-ID: <e192943774324dc6af20095c0e274dbf@huawei.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.174.176.109]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1726044AbgIQCjn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Sep 2020 22:39:43 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:35878 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726040AbgIQCjm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Sep 2020 22:39:42 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R201e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0U9ANYuN_1600310363;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9ANYuN_1600310363)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 17 Sep 2020 10:39:27 +0800
+Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
+To:     Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        mgorman@techsingularity.net, tj@kernel.org,
+        khlebnikov@yandex-team.ru, willy@infradead.org, hannes@cmpxchg.org,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, vbabka@suse.cz, minchan@kernel.org, cai@lca.pw
+References: <20200824114204.cc796ca182db95809dd70a47@linux-foundation.org>
+ <alpine.LSU.2.11.2008241231460.1065@eggly.anvils>
+ <alpine.LSU.2.11.2008262301240.4405@eggly.anvils>
+ <alpine.LSU.2.11.2009081640070.7256@eggly.anvils>
+ <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
+ <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
+ <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
+ <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
+ <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
+ <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
+ <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
+Date:   Thu, 17 Sep 2020 10:37:45 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Michal Hocko <mhocko@suse.com> wrote:
-> On Wed 16-09-20 09:19:27, Miaohe Lin wrote:
->> Since commit fb2a6fc56be6 ("mm: memcg: rework and document OOM waiting 
->> and wakeup"), we have renamed mem_cgroup_oom_lock to 
->> mem_cgroup_oom_trylock. So replace mem_cgroup_oom_lock with mem_cgroup_oom_trylock in comment.
->
->While you are right I find the comment more confusing then helpful.
->What does it try to tell us actually? Is it still valid? Shouldn't we rather remove it or make it more clear?
->> 
 
-It seems this comment no long make sense. Many thanks for your nice advise.
 
+在 2020/9/16 上午12:58, Daniel Jordan 写道:
+> On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
+>> On Sun, 13 Sep 2020, Alex Shi wrote:
+>>> Uh, I updated the testing with some new results here:
+>>> https://lkml.org/lkml/2020/8/26/212
+>> Right, I missed that, that's better, thanks.  Any other test results?
+> Alex, you were doing some will-it-scale runs earlier.  Are you planning to do
+> more of those?  Otherwise I can add them in.
+
+Hi Daniel,
+
+Does compaction perf scalable, like thpscale, I except they could get some benefit.
+
+Thanks
+Alex
