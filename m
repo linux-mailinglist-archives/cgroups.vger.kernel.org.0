@@ -2,152 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BA026F1D5
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 04:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E263A26F2D1
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727164AbgIRCyU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 22:54:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57884 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726435AbgIRCHc (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 17 Sep 2020 22:07:32 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 48F762389E;
-        Fri, 18 Sep 2020 02:07:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1600394851;
-        bh=fR/UbDId/TZwo11/kGB43MSUf1Nix4TokHJyS1Bx8Rs=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qnjEOA0ewTwgH0jpeoKeykIQcyHCRtLwQih1PvTXg2rCDqVwTyUn4J1zSNPptg8Kw
-         nLshbpbZ+eMBeSJjc+4sZ2xWo10ZdDV1dQMyJgkOgJ8ZF6QX1nBvWZP71y4XGxq4B8
-         E6SrEyWRCepAiGsCHtk4WarmDYqf0xGN1h5kn2nM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        id S1727978AbgIRDCP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 23:02:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34234 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729968AbgIRDBA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 23:01:00 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9772EC06174A
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:00:59 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id t56so3784725qtt.19
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:00:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=MShH3I1oLcjvEJbj3NYW9C342mvg+PbbBJCOoSH1HSQ=;
+        b=CDRIysijqlvkYU+kfz4ExesE+3SJEmw3l9qWCAyu0Yl6J6QfFZHDzRMn2cts4G/GOz
+         due2AZm8uZnE02XEz5UeXJrQLnFVWnnCS9C/pPkMQNrCt04NXlx25xEYkfo0PmopvTxC
+         6Mc1ISZvlBE8hm/TYls84q50iEmrO8OTSwUfAOYHWxvmq5G4q3tHrvddW6BfGlAJaXXa
+         7jtZbfY4KCbYKA922DT7v4HaAYQlRavyHrrpgTJ650wUBUgxocGjlFGX5ZdwB2iFOxvt
+         Sb0vnDNEX8KpkSdUPfi9dXotay6ssMYaQk9GrMx5bqH0g6TjEErAVqtu1pf7rtwPgd1d
+         LRRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=MShH3I1oLcjvEJbj3NYW9C342mvg+PbbBJCOoSH1HSQ=;
+        b=kCJoZOPTNpD1ebtpkWfVafmRULzhTBSm77bUJmHGn/lVW59dOTgds1DuKUPZvbWPjf
+         ElsHOUOTCLTA0pmL/aAVdnp4nln03TGKBjdC5neROzl5XlqE44NseQj0pL1AwgMS8VCA
+         RY3HHbGbp9x6+Wjawa+smMtcr/7LEdQLqdmbCiSfuVUkrJMUFPubVWca/m6g9Od+IAy1
+         iaQ06lDbVezKwSGofwEYYzWrKYRzxG3USfxizeiyoEtOAX5AG4cpsEoARt1PudwehieF
+         QUSyG8qJAQSoFlGrM9Gj0IZ0MzNQllPdtAUuStnYcJ7k2WULhzCn/TciZYPnhO8HGI/o
+         VOCg==
+X-Gm-Message-State: AOAM530Dq0OaA3be1mVD/q8hgV4O11WED7M15AeVc+kPSesgSs4mUrHD
+        DoTgsfdzfIMRkYdBTY3Lq+PF0xYWJNk=
+X-Google-Smtp-Source: ABdhPJx5px4YCOzuxVaL63VwwQLE+zcsL6qsTZcmWHgsANcGMolFMRqq/fwgx6MIzZ049mi7yH0PVbKuSkw=
+X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
+ (user=yuzhao job=sendgmr) by 2002:a0c:b21b:: with SMTP id x27mr31580996qvd.12.1600398058666;
+ Thu, 17 Sep 2020 20:00:58 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:38 -0600
+Message-Id: <20200918030051.650890-1-yuzhao@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
+Subject: [PATCH 00/13] mm: clean up some lru related pieces
+From:   Yu Zhao <yuzhao@google.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>,
         Shakeel Butt <shakeelb@google.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Hugh Dickins <hughd@google.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH AUTOSEL 5.4 307/330] mm: memcontrol: fix stat-corrupting race in charge moving
-Date:   Thu, 17 Sep 2020 22:00:47 -0400
-Message-Id: <20200918020110.2063155-307-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
-References: <20200918020110.2063155-1-sashal@kernel.org>
-MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+        Chris Down <chris@chrisdown.name>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Huang Ying <ying.huang@intel.com>,
+        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Konstantin Khlebnikov <koct9i@gmail.com>,
+        Minchan Kim <minchan@kernel.org>,
+        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Yu Zhao <yuzhao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Johannes Weiner <hannes@cmpxchg.org>
+Hi Andrew,
 
-[ Upstream commit abb242f57196dbaa108271575353a0453f6834ef ]
+I see you have taken this:
+  mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
+Do you mind dropping it?
 
-The move_lock is a per-memcg lock, but the VM accounting code that needs
-to acquire it comes from the page and follows page->mem_cgroup under RCU
-protection.  That means that the page becomes unlocked not when we drop
-the move_lock, but when we update page->mem_cgroup.  And that assignment
-doesn't imply any memory ordering.  If that pointer write gets reordered
-against the reads of the page state - page_mapped, PageDirty etc.  the
-state may change while we rely on it being stable and we can end up
-corrupting the counters.
+Michal asked to do a bit of additional work. So I thought I probably
+should create a series to do more cleanups I've been meaning to.
 
-Place an SMP memory barrier to make sure we're done with all page state by
-the time the new page->mem_cgroup becomes visible.
+This series contains the change in the patch above and goes a few
+more steps farther. It's intended to improve readability and should
+not have any performance impacts. There are minor behavior changes in
+terms of debugging and error reporting, which I have all highlighted
+in the individual patches. All patches were properly tested on 5.8
+running Chrome OS, with various debug options turned on.
 
-Also replace the open-coded move_lock with a lock_page_memcg() to make it
-more obvious what we're serializing against.
+Michal,
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Cc: Alex Shi <alex.shi@linux.alibaba.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Roman Gushchin <guro@fb.com>
-Cc: Balbir Singh <bsingharora@gmail.com>
-Link: http://lkml.kernel.org/r/20200508183105.225460-3-hannes@cmpxchg.org
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- mm/memcontrol.c | 26 ++++++++++++++------------
- 1 file changed, 14 insertions(+), 12 deletions(-)
+Do you mind taking a looking at the entire series?
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 402c8bc65e08d..ca1632850fb76 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5489,7 +5489,6 @@ static int mem_cgroup_move_account(struct page *page,
- {
- 	struct lruvec *from_vec, *to_vec;
- 	struct pglist_data *pgdat;
--	unsigned long flags;
- 	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
- 	int ret;
- 	bool anon;
-@@ -5516,18 +5515,13 @@ static int mem_cgroup_move_account(struct page *page,
- 	from_vec = mem_cgroup_lruvec(pgdat, from);
- 	to_vec = mem_cgroup_lruvec(pgdat, to);
- 
--	spin_lock_irqsave(&from->move_lock, flags);
-+	lock_page_memcg(page);
- 
- 	if (!anon && page_mapped(page)) {
- 		__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
- 		__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
- 	}
- 
--	/*
--	 * move_lock grabbed above and caller set from->moving_account, so
--	 * mod_memcg_page_state will serialize updates to PageDirty.
--	 * So mapping should be stable for dirty pages.
--	 */
- 	if (!anon && PageDirty(page)) {
- 		struct address_space *mapping = page_mapping(page);
- 
-@@ -5543,15 +5537,23 @@ static int mem_cgroup_move_account(struct page *page,
- 	}
- 
- 	/*
-+	 * All state has been migrated, let's switch to the new memcg.
-+	 *
- 	 * It is safe to change page->mem_cgroup here because the page
--	 * is referenced, charged, and isolated - we can't race with
--	 * uncharging, charging, migration, or LRU putback.
-+	 * is referenced, charged, isolated, and locked: we can't race
-+	 * with (un)charging, migration, LRU putback, or anything else
-+	 * that would rely on a stable page->mem_cgroup.
-+	 *
-+	 * Note that lock_page_memcg is a memcg lock, not a page lock,
-+	 * to save space. As soon as we switch page->mem_cgroup to a
-+	 * new memcg that isn't locked, the above state can change
-+	 * concurrently again. Make sure we're truly done with it.
- 	 */
-+	smp_mb();
- 
--	/* caller should have done css_get */
--	page->mem_cgroup = to;
-+	page->mem_cgroup = to; 	/* caller should have done css_get */
- 
--	spin_unlock_irqrestore(&from->move_lock, flags);
-+	__unlock_page_memcg(from);
- 
- 	ret = 0;
- 
+Thank you.
+
+Yu Zhao (13):
+  mm: use add_page_to_lru_list()
+  mm: use page_off_lru()
+  mm: move __ClearPageLRU() into page_off_lru()
+  mm: shuffle lru list addition and deletion functions
+  mm: don't pass enum lru_list to lru list addition functions
+  mm: don't pass enum lru_list to trace_mm_lru_insertion()
+  mm: don't pass enum lru_list to del_page_from_lru_list()
+  mm: rename page_off_lru() to __clear_page_lru_flags()
+  mm: inline page_lru_base_type()
+  mm: VM_BUG_ON lru page flags
+  mm: inline __update_lru_size()
+  mm: make lruvec_lru_size() static
+  mm: enlarge the int parameter of update_lru_size()
+
+ include/linux/memcontrol.h     |  14 ++--
+ include/linux/mm_inline.h      | 115 ++++++++++++++-------------------
+ include/linux/mmzone.h         |   2 -
+ include/linux/vmstat.h         |   2 +-
+ include/trace/events/pagemap.h |  11 ++--
+ mm/compaction.c                |   2 +-
+ mm/memcontrol.c                |  10 +--
+ mm/mlock.c                     |   2 +-
+ mm/swap.c                      |  53 ++++++---------
+ mm/vmscan.c                    |  28 +++-----
+ 10 files changed, 95 insertions(+), 144 deletions(-)
+
 -- 
-2.25.1
+2.28.0.681.g6f77f65b4e-goog
 
