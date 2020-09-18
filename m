@@ -2,129 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0D8026E107
-	for <lists+cgroups@lfdr.de>; Thu, 17 Sep 2020 18:45:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96F5C26EA0E
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 02:45:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728563AbgIQQpJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 12:45:09 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:56160 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728630AbgIQQoq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 12:44:46 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HGZ1pH019065;
-        Thu, 17 Sep 2020 16:39:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- content-transfer-encoding : in-reply-to; s=corp-2020-01-29;
- bh=IbwTUuS7WDD96m5NCI9svM+4U/lOcHyrB4uP9uxzxr8=;
- b=GGE9vmsGoRqBb0l8dT/2oKizlmK1s/LXNokj3OyhnXeKCCgUxCSt/DKaTmIL+b60WOHJ
- TFl6JP4IqBWWyHkHzkNk33pJkoBO8o/lWuYxk8Vk7sV2iGmCj+0dKqKfthcLGLzSgv/C
- CDLU4rXyDplrzeoZwGkLtV6crE5BpX55fepx6NDcq/SBc/UKxYlu6SoTrI02I2HvOsCG
- UwQucFJ4w/7hO4NUg7bWKj2pcoUE+7RHwKetgC2NV4U9YqFx7HlQwg5SGIz7+NYi9S1Z
- wvPLxyBZ6gr/Vqa0nn921uvtENU8uZZ8vxtLxh4sa/n7XKir6DIoDN4YPqx7nVeN9cuf mQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 33gp9mje1b-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 17 Sep 2020 16:39:16 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 08HGZvNl067229;
-        Thu, 17 Sep 2020 16:39:15 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 33hm355hng-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 17 Sep 2020 16:39:15 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 08HGd9K6008649;
-        Thu, 17 Sep 2020 16:39:10 GMT
-Received: from ca-dmjordan1.us.oracle.com (/10.211.9.48)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 17 Sep 2020 16:39:09 +0000
-Date:   Thu, 17 Sep 2020 12:48:12 -0400
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Alexander Duyck <alexander.duyck@gmail.com>
-Cc:     Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Tejun Heo <tj@kernel.org>,
-        Konstantin Khlebnikov <khlebnikov@yandex-team.ru>,
-        Matthew Wilcox <willy@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        kbuild test robot <lkp@intel.com>,
-        linux-mm <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>, cgroups@vger.kernel.org,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Rong Chen <rong.a.chen@intel.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>, shy828301@gmail.com,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>, Qian Cai <cai@lca.pw>
-Subject: Re: [PATCH v18 00/32] per memcg lru_lock: reviews
-Message-ID: <20200917164812.y6bstuo6zvxklcjc@ca-dmjordan1.us.oracle.com>
-References: <61a42a87-eec9-e300-f710-992756f70de6@linux.alibaba.com>
- <alpine.LSU.2.11.2009091524260.10087@eggly.anvils>
- <855ad6ee-dba4-9729-78bd-23e392905cf6@linux.alibaba.com>
- <alpine.LSU.2.11.2009111634020.22739@eggly.anvils>
- <5cfc6142-752d-26e6-0108-38d13009268b@linux.alibaba.com>
- <alpine.LSU.2.11.2009150112130.1550@eggly.anvils>
- <20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com>
- <c3362c0a-3707-3a3d-9955-960d95f3ad8c@linux.alibaba.com>
- <20200917143519.lhdfnoc47qrmbhaz@ca-dmjordan1.us.oracle.com>
- <CAKgT0Ud8sYidvxtyrN3AFLs+-DiW7cuPGrKknaRicQsC8PLRtg@mail.gmail.com>
+        id S1726009AbgIRApB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 20:45:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726007AbgIRApA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 20:45:00 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1B3FC06174A;
+        Thu, 17 Sep 2020 17:45:00 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id cv8so1999846qvb.12;
+        Thu, 17 Sep 2020 17:45:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=I4g8oZaM4I1PTgkVQKRiJNIBO3rGE09QsJ8U+iD020Q=;
+        b=oqR+7x5dJyQcBEwZDtu1PVnUg0zlf4DCuy1Zp8tZ2FigjcnKMuj2pg78JL2AbnBQLM
+         lpNqq/FRqu/ytyo8P0ug/B0NXdeHsnftsBfGkIM6w01ef/dTfOFlrd8uvz0wYDofxW2j
+         XG2W1jvJ1QCpUQjZYlT3L7Y/KLFvXTba2Foj+z6KNYngQWofDOXSMuS9OfxiwO+OkcXo
+         ngQeOqW5OMDzeAazkPzJ+x3uqMA5U3+dI26Nu8OaD8VY+C0DSbIWFjjQuaQDxENVb17v
+         W8e68mbdDldx+0xBYRKbuIFe5WVgXpXmEniOLKGUU2XkHCRJE3SDflzZRT653J+gyPdT
+         yMGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=I4g8oZaM4I1PTgkVQKRiJNIBO3rGE09QsJ8U+iD020Q=;
+        b=fij2JfqxIU0h0hqxh6f/kLhTL6TkLLCjJ6pOdO4ucbSi4EEOJVdFep57EYqYDpwp+q
+         ApvMaY536ZVJYnzJIooW8ucKQNm+VAtm86WEUGoz+W5+uPyAdGyp6AbPMdJ3pyDk1sqe
+         gL7ddc08sPloEkNYfKjI2UJoR/rw4OqkfPF5KYx+g2rMidN/E739a2KOEN/e/orWDCGy
+         QpD2YkuEPlwydHc198Py5lhgSbynDL42UYDYUPEBFDg5cB98b/9IBtLlA8EOegVm3cH8
+         /jiwncANM8VYcbAXtZxqdOWYJmkeDtq9QKgPGPuyTSIzduIFeM3DR35njjKBdB06GPkx
+         D/Fw==
+X-Gm-Message-State: AOAM531FvIYP3qK4FJ6SXQKZFMSt4/oPl/nuD7c4q1slT4zf4MOHkPAR
+        ca0CA1SBz2OqHq63TC2OZnBHtQNtLCeJiQ==
+X-Google-Smtp-Source: ABdhPJyn2pmKBLJDKQFFGWpimDyrVIFq6Efh5yAXczEBVLkltpvJg6VKFJcu0xaZIpkehLhIddMH3Q==
+X-Received: by 2002:ad4:4594:: with SMTP id x20mr31706024qvu.4.1600389899750;
+        Thu, 17 Sep 2020 17:44:59 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:6893])
+        by smtp.gmail.com with ESMTPSA id v131sm1064791qkb.15.2020.09.17.17.44.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 17 Sep 2020 17:44:59 -0700 (PDT)
+From:   Tejun Heo <tj@kernel.org>
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: [PATCHSET for-5.10/block] iocost: improve debt forgiveness logic
+Date:   Thu, 17 Sep 2020 20:44:51 -0400
+Message-Id: <20200918004456.593983-1-tj@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKgT0Ud8sYidvxtyrN3AFLs+-DiW7cuPGrKknaRicQsC8PLRtg@mail.gmail.com>
-User-Agent: NeoMutt/20180716
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 mlxlogscore=999
- malwarescore=0 mlxscore=0 phishscore=0 adultscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170126
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9747 signatures=668679
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
- adultscore=0 malwarescore=0 clxscore=1015 lowpriorityscore=0 phishscore=0
- spamscore=0 priorityscore=1501 suspectscore=0 impostorscore=0 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009170126
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Sep 17, 2020 at 08:39:34AM -0700, Alexander Duyck wrote:
-> On Thu, Sep 17, 2020 at 7:26 AM Daniel Jordan
-> <daniel.m.jordan@oracle.com> wrote:
-> >
-> > On Thu, Sep 17, 2020 at 10:37:45AM +0800, Alex Shi wrote:
-> > > 在 2020/9/16 上午12:58, Daniel Jordan 写道:
-> > > > On Tue, Sep 15, 2020 at 01:21:56AM -0700, Hugh Dickins wrote:
-> > > >> On Sun, 13 Sep 2020, Alex Shi wrote:
-> > > >>> Uh, I updated the testing with some new results here:
-> > > >>> https://lkml.org/lkml/2020/8/26/212
-> > > >> Right, I missed that, that's better, thanks.  Any other test results?
-> > > > Alex, you were doing some will-it-scale runs earlier.  Are you planning to do
-> > > > more of those?  Otherwise I can add them in.
-> > >
-> > > Hi Daniel,
-> > >
-> > > Does compaction perf scalable, like thpscale, I except they could get some benefit.
-> >
-> > Yep, I plan to stress compaction.  Reclaim as well.
-> >
-> > I should have said which Alex I meant.  I was asking Alex Duyck since he'd done
-> > some will-it-scale runs.
-> 
-> I probably won't be able to do any will-it-scale runs any time soon.
-> If I recall I ran them for this latest v18 patch set and didn't see
-> any regressions like I did with the previous set. However the system I
-> was using is tied up for other purposes and it may be awhile before I
-> can free it up to look into this again.
+Hello,
 
-Ok, sure.  I hadn't seen the regressions were taken case of, that's good to
-hear.  Might still add them to my testing for v19 and beyond, we'll see.
+Debt reduction logic was recently added by dda1315f1853 ("blk-iocost: halve
+debts if device stays idle"). While it was effective at avoiding
+pathological cases where some iocgs were kept delayed while the device was
+most idle, it wasn't very effective at addressing more complex conditions
+and could leave low priority cgroups unnecessarily harshly throttled under
+moderate load.
+
+This patchset improves the debt forgiveness logic so that it's more
+effective at reducing such unnecessary throttling. This patchset contains
+the following five patches:
+
+ 0001-iocost-factor-out-ioc_forgive_debts.patch
+ 0002-iocost-replace-nr_shortages-cond-in-ioc_forgive_debt.patch
+ 0003-iocost-recalculate-delay-after-debt-reduction.patch
+ 0004-iocost-reimplement-debt-forgiveness-using-average-us.patch
+ 0005-iocost-add-iocg_forgive_debt-tracepoint.patch
+
+and is also available in the following git tree:
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git iocost-debt-forgiveness
+
+diffstat follows. Thanks.
+
+ block/blk-iocost.c            |  141 +++++++++++++++++++++++++++++-------------
+ include/trace/events/iocost.h |   41 ++++++++++++
+ 2 files changed, 141 insertions(+), 41 deletions(-)
+
+--
+tejun
+
