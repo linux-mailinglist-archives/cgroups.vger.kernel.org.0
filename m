@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F36726F2BC
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AC7926F2BE
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726170AbgIRDBb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 23:01:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
+        id S1730506AbgIRDBd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 23:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730506AbgIRDBR (ORCPT
+        with ESMTP id S1730511AbgIRDBR (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 23:01:17 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7CD26C061223
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:13 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id g1so3758315qtc.22
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:13 -0700 (PDT)
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3DFC061225
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id a2so3402841qkg.19
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=JWU8yC6IA7OOmAjcclmLYHeJJ6Drguj19pPsyjDCDs0=;
-        b=qy3asCDaCFhH2UckwoVpj1hLkwKFWdJ8Q5ketDmhYI3hL6mTuFwQvIqRDiOthDLcop
-         PaTh5jl3tn3RExOoer2eQ1sA4CtBHf8RusyChtv3D0k48TiFbyxIhJyEXtCqHq/0n1xE
-         3Yn8oq0MtIy5PWoW+p1Bq2LKE228TMBHdm2Q2e3ocu7wJuESMOzDPfmS1X2MYwdMtH0N
-         /lhTVZtJPDrrqCIwW+Ymnxtxhor8zWXlnCdwoOxR8+e1hPcZXo/+sihZSJUl+SblRMo0
-         nvdn+vCO4zY56L7FbvQlWb3v1qy4rUB83yS9VcoBBSfFkDeCenHZoAYK3FFf8xrMjl6h
-         SWWw==
+        bh=wq04R7kZnQOtaC6LIn5FEyAUuNq1+kFsvgljt2u93LM=;
+        b=gMRyeCTkVNljPnLMYO/c5iwSUJPLZYnD8yVlrpNnYNQl+BUx4Gp6/CVq2UXghQXGL0
+         DsDMaadax8KWE8X5qaIMvpG6T690scGvd3Umzz2c8LXQDxhE5P42VbtJwYEG5wO+jFGZ
+         L1gYoNlhdLpsUUd9kzHg0DoMrL069TOq4UpyUgaStksAyD4JM0446iezsZlMDIKjXeVJ
+         K+15ABfhWQghGRPSS5tivLNMvFtAiisjVBtwvc/dxiDYVE6hCRMbnimrwIAZSPG1X0g0
+         7Db4ovJPLWWGZgL8IdeKqCGHLlA8tr+98Io6ncueImMNiVlVOpsrvmFQY4NauP0wGXb6
+         Swbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=JWU8yC6IA7OOmAjcclmLYHeJJ6Drguj19pPsyjDCDs0=;
-        b=eEs2MsuIt/WycUH6o5x0zL+iQDRZi1kBK9121ZjfwBWYum6ZKYJPmQDqKTqXm7jaN4
-         WgiUQRF+pS7Tw1otAEKZqMkyLVx8NAvWmOrz2w98YzWunP49IdP9B97yHkAsgo0sZ2sB
-         nKrA+/YBIVyFYoDKgUkR+qF/lo2as48CVGWZUbH7X+LZZTT4PNNUr5aWbWQvwL5Fe7Oq
-         Zcg30dr+tVdAFf+uTRl+NAlmL9baJ32YAxkW0EWKl0Qrk1ZRYQLPTLz3tTaKppyBf0lg
-         DzOSEGKol0lijFwBp1J4GB9IfxULPDX9gbMAkdnypXvriPUm7X3+H2XbQsPX5MC9kbEE
-         VWYA==
-X-Gm-Message-State: AOAM530eZVfdySc2Ct95iG3xXMVchZLj/RUOjc2/jxjfVRVGJXIEuA2P
-        Q263SXLv8sA69TW4mcmlvbuKk3ZKE1Y=
-X-Google-Smtp-Source: ABdhPJxIHy/OXzjFuCpoj0u7VNt7iPcltg3BNZV0oXGBDUKbZUUYLhQqY4UiUR7CtG/Lm+IdXuWI6R/A+ec=
+        bh=wq04R7kZnQOtaC6LIn5FEyAUuNq1+kFsvgljt2u93LM=;
+        b=lJXHBzw0iGRTTUfhFb05rWWTeDvbs0FSo2lMmjyT3q5tVoPOJKhywWOOaE4kVjWd/B
+         fKyhh7Z/A6ZkZXCQp0JA+2qRBtGa9JEJ25rJmevd9wPjGCta6aqHWr3YE9gWIo9xTx8f
+         P2RiM1vJsnfuyUxOX6rVfG67xloqfsLQUd4Nad6K49KyEFWQFAMBofWcugJtuLwFB1ja
+         XGZcE61Ht9mTRZXiZD0JHZDAW9UTPstgPeIfY6h2ZAJB9Q70z2YPCMJVBY+cTlSO8Ds8
+         6mr4pSvUYSKAlrsAjwa08GYGDIco0XowdpoGG/8w2/OHL1dyoxEYdWu5KTY+nQIgpqiK
+         +fvg==
+X-Gm-Message-State: AOAM5324z5RAzsty6apcCt3ArIzzfH2IQ+zivlM7oYu31Zt6jOLmi7va
+        OWv0ALWR11UhwHz4FTTQNJUalfS48YM=
+X-Google-Smtp-Source: ABdhPJxaysxGdARme+9yjmforBPIN7Zkq7S72PiA++g2NnAT+54HUXkrR7L5CWXZOP3wm2phDI5l8TxTG5E=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:ad4:5745:: with SMTP id q5mr31480391qvx.29.1600398072647;
- Thu, 17 Sep 2020 20:01:12 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 21:00:48 -0600
+ (user=yuzhao job=sendgmr) by 2002:a0c:aed5:: with SMTP id n21mr32541779qvd.20.1600398074007;
+ Thu, 17 Sep 2020 20:01:14 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:49 -0600
 In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
-Message-Id: <20200918030051.650890-11-yuzhao@google.com>
+Message-Id: <20200918030051.650890-12-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20200918030051.650890-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 10/13] mm: VM_BUG_ON lru page flags
+Subject: [PATCH 11/13] mm: inline __update_lru_size()
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -77,70 +77,43 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Move scattered VM_BUG_ONs to two essential places that cover all
-lru list additions and deletions.
+All other references to the function were removed after
+commit a892cb6b977f ("mm/vmscan.c: use update_lru_size() in update_lru_sizes()")
+
+This change should have no side effects.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/mm_inline.h | 4 ++++
- mm/swap.c                 | 2 --
- mm/vmscan.c               | 1 -
- 3 files changed, 4 insertions(+), 3 deletions(-)
+ include/linux/mm_inline.h | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
 
 diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 07d9a0286635..7183c7a03f09 100644
+index 7183c7a03f09..355ea1ee32bd 100644
 --- a/include/linux/mm_inline.h
 +++ b/include/linux/mm_inline.h
-@@ -51,6 +51,8 @@ static __always_inline void update_lru_size(struct lruvec *lruvec,
-  */
- static __always_inline void __clear_page_lru_flags(struct page *page)
+@@ -24,7 +24,7 @@ static inline int page_is_file_lru(struct page *page)
+ 	return !PageSwapBacked(page);
+ }
+ 
+-static __always_inline void __update_lru_size(struct lruvec *lruvec,
++static __always_inline void update_lru_size(struct lruvec *lruvec,
+ 				enum lru_list lru, enum zone_type zid,
+ 				int nr_pages)
  {
-+	VM_BUG_ON_PAGE(!PageLRU(page), page);
-+
- 	__ClearPageLRU(page);
- 
- 	/* this shouldn't happen, so leave the flags to bad_page() */
-@@ -72,6 +74,8 @@ static __always_inline enum lru_list page_lru(struct page *page)
- {
- 	enum lru_list lru;
- 
-+	VM_BUG_ON_PAGE(PageActive(page) && PageUnevictable(page), page);
-+
- 	if (PageUnevictable(page))
- 		return LRU_UNEVICTABLE;
- 
-diff --git a/mm/swap.c b/mm/swap.c
-index b252f3593c57..4daa46907dd5 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -85,7 +85,6 @@ static void __page_cache_release(struct page *page)
- 
- 		spin_lock_irqsave(&pgdat->lru_lock, flags);
- 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
--		VM_BUG_ON_PAGE(!PageLRU(page), page);
- 		del_page_from_lru_list(page, lruvec);
- 		__clear_page_lru_flags(page);
- 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
-@@ -885,7 +884,6 @@ void release_pages(struct page **pages, int nr)
- 			}
- 
- 			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
--			VM_BUG_ON_PAGE(!PageLRU(page), page);
- 			del_page_from_lru_list(page, lruvec);
- 			__clear_page_lru_flags(page);
- 		}
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index d93033407200..4688e495c242 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -4276,7 +4276,6 @@ void check_move_unevictable_pages(struct pagevec *pvec)
- 			continue;
- 
- 		if (page_evictable(page)) {
--			VM_BUG_ON_PAGE(PageActive(page), page);
- 			del_page_from_lru_list(page, lruvec);
- 			ClearPageUnevictable(page);
- 			add_page_to_lru_list(page, lruvec);
+@@ -33,13 +33,6 @@ static __always_inline void __update_lru_size(struct lruvec *lruvec,
+ 	__mod_lruvec_state(lruvec, NR_LRU_BASE + lru, nr_pages);
+ 	__mod_zone_page_state(&pgdat->node_zones[zid],
+ 				NR_ZONE_LRU_BASE + lru, nr_pages);
+-}
+-
+-static __always_inline void update_lru_size(struct lruvec *lruvec,
+-				enum lru_list lru, enum zone_type zid,
+-				int nr_pages)
+-{
+-	__update_lru_size(lruvec, lru, zid, nr_pages);
+ #ifdef CONFIG_MEMCG
+ 	mem_cgroup_update_lru_size(lruvec, lru, zid, nr_pages);
+ #endif
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
