@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A71D326F2BD
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65ABC26F2C3
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728625AbgIRDBc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 23:01:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        id S1727143AbgIRDBo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 23:01:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730504AbgIRDBR (ORCPT
+        with ESMTP id S1730507AbgIRDBR (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 23:01:17 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BADBEC06121F
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:10 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id p187so4065844ybg.14
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:10 -0700 (PDT)
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1544AC061220
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:12 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id g1so3758249qtc.22
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=mgUvRZoNyo/y0AQ5WR2jz5tZr6t85cJbSfg1V582xDg=;
-        b=WbBF/biWXWgsyfQrPFvQ3vxOo+han7gBPOKVDaDU4vJiFk4GkLPWtgi2/g3SIc6Sm4
-         t3Uu+l1/J0OCujYFgUdgOOdQnLSuYKqjCbiVFAVL62xtqsR8AWYvU9xxCQbe5SNYfR7P
-         6qKIYnW/Nq+bYrVKiO/ZRYqZ9sujtxhKeqHLelTrl4oSZWzPFumT+IwW1EXoRdnknys4
-         9tdE11jEHtr50ERnioBOHFSTj/eepTvgUi5+qbGrY2XaOveyiAXErPRrap0CkToH0ECx
-         xdvml7aQA0VQtDWIbFHHojN2KjO7YQ6KHO6zMR5goFxSrxt+PJ5zaHkJ1IMNTqEdb9d2
-         DZ6A==
+        bh=b85d06LSJeBa6rsJlkkKw7JSUKETD4Y77r+y+YRUjRk=;
+        b=cWN5izs+aaUKIykYldczEGDmX7RVsvXEViMXNM8ddq7IeJUErvEZ7YdO38E4AFWwxP
+         YEGT0mKVWONgbxqp+r4pTV4D1WwdDlqTrABmb6KVFHS5OFMTLKY2UEzRGM+vL7hhdhKx
+         IaQIzDSeHjmyce1otEEqrqDyv6uST3U5GfHz2sDAE1s8kXR5cjQj4EETNK69mu8yGn9j
+         GvzZfTkNo0CzoDjDLYHYJ8I5KsS2eGdRS+qV0OiiRKfOB1pppqA28sk9tyOGnxQxSwcr
+         G+u1NzRVk46Muag854KLQHKD6YgqmcxLbkzWgPIt4r7DV7v+ZaC3USwXXEuUreUOuKSI
+         IIcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=mgUvRZoNyo/y0AQ5WR2jz5tZr6t85cJbSfg1V582xDg=;
-        b=jZgoyOQFW1pqYa/H0J8bDW8eMBAvagLyFIRh8d+oO5PGaG1c53XyZ2APf/cRe3a5Wb
-         SPTlGMQjZErwBdbDwjEIP6dnm0IEmkHRk3xSkD5cKWf495oVOFrelSdmfZSuX6N+AkZf
-         Ng/n+k7BAXe55JdlslUF2dOEapoAVrCf7iW1P7++P0PqwQeAHphdeau4Gk3t03qjRn0+
-         n0zEowaywPBID8x5rmuHzDTK38wP/jtlYY8Cpjx5JSe9MABzOLa3AU0LLC4VgRbfYNCP
-         +ZDl/ij/5l9ZuYERfwAZtBmtIHjyFkQNVoabATZ2ZHXod4gG/XNFNVdUclwj8yZsGYMA
-         KytA==
-X-Gm-Message-State: AOAM532BPfy5sP6+wyTd/F1+BBZKhIg3BU+ds5rXMHKeNHVBu3EYg/gK
-        KXxAbNGIZ0F474xmpqPpzi8ppvslJcY=
-X-Google-Smtp-Source: ABdhPJw/NMQTsr5clEF7UbuRxrpPr6jti09YZRwK5a69aAftHh4i/FzywDR2H/UoJQ1/f0Yitz79mnIXNPs=
+        bh=b85d06LSJeBa6rsJlkkKw7JSUKETD4Y77r+y+YRUjRk=;
+        b=GPh5LnRUttC5vfqNfBYwfFD2U/MEf4Zv7EYTCWwXfiFlwNTZwzqsJ2nYcSui/N6MMA
+         fVgFvcPy3PjRL9MehWIoZY825BwCmiR+t2018ACbnkb8h/VJY5PRcwzxPpn+X2G0O3YK
+         hPhbLEnfeu1rSmxSUsnuJ4l25kYzKZviWk5xz8bmLkO1v0LU4euSgsAxRtg4wjFFSfOY
+         9PljCpTTXFC1/0HBitaS4i0msX+l4bJ4suO0ZiaS0l5kBqJEeqBAXQnYRi5gbgP2yvYe
+         dKCA876+cy8FNyd5sYz7nGBGKE/jd+UqwM12J2CvvcnRCTx5QPYJFvWgicL5/OaHvIJX
+         XpLg==
+X-Gm-Message-State: AOAM532yDLRz6zQ4T82GFqQdqKGz6u3vBOa1t92h4lQ0AvKPGXGJy5Tn
+        DQOzrB4IrFdFZv0Te/5aYdkZm31eGFY=
+X-Google-Smtp-Source: ABdhPJx+hjixMwDHpA9umqu4pgWDN6Xi+UKbNRpq8JuDRKAm+QSAwliVY3yAQF3K3VTtyDo+SOcVYv9cqh0=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a25:ad43:: with SMTP id l3mr28473720ybe.157.1600398069895;
- Thu, 17 Sep 2020 20:01:09 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 21:00:46 -0600
+ (user=yuzhao job=sendgmr) by 2002:a0c:e6ea:: with SMTP id m10mr15321673qvn.53.1600398071234;
+ Thu, 17 Sep 2020 20:01:11 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:47 -0600
 In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
-Message-Id: <20200918030051.650890-9-yuzhao@google.com>
+Message-Id: <20200918030051.650890-10-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20200918030051.650890-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 08/13] mm: rename page_off_lru() to __clear_page_lru_flags()
+Subject: [PATCH 09/13] mm: inline page_lru_base_type()
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -77,97 +77,60 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Rename the function according to what it really does. And make it
-return void since the return value is not needed anymore.
+We've removed all other references to this function.
 
-If PageActive() and PageUnevictable() are both true, refuse to clear
-either and leave them to bad_page().
+This change should have no side effects.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/mm_inline.h | 29 ++++++++++-------------------
- mm/swap.c                 |  4 ++--
- mm/vmscan.c               |  2 +-
- 3 files changed, 13 insertions(+), 22 deletions(-)
+ include/linux/mm_inline.h | 27 ++++++---------------------
+ 1 file changed, 6 insertions(+), 21 deletions(-)
 
 diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 03796021f0fe..ef3fd79222e5 100644
+index ef3fd79222e5..07d9a0286635 100644
 --- a/include/linux/mm_inline.h
 +++ b/include/linux/mm_inline.h
-@@ -61,28 +61,19 @@ static inline enum lru_list page_lru_base_type(struct page *page)
+@@ -45,21 +45,6 @@ static __always_inline void update_lru_size(struct lruvec *lruvec,
+ #endif
  }
  
- /**
-- * page_off_lru - which LRU list was page on? clearing its lru flags.
+-/**
+- * page_lru_base_type - which LRU list type should a page be on?
 - * @page: the page to test
 - *
-- * Returns the LRU list a page was on, as an index into the array of LRU
-- * lists; and clears its Unevictable or Active flags, ready for freeing.
-+ * __clear_page_lru_flags - clear page lru flags before releasing a page
-+ * @page: the page that was on lru and now has a zero reference
-  */
--static __always_inline enum lru_list page_off_lru(struct page *page)
-+static __always_inline void __clear_page_lru_flags(struct page *page)
- {
--	enum lru_list lru;
+- * Used for LRU list index arithmetic.
+- *
+- * Returns the base LRU type - file or anon - @page should be on.
+- */
+-static inline enum lru_list page_lru_base_type(struct page *page)
+-{
+-	if (page_is_file_lru(page))
+-		return LRU_INACTIVE_FILE;
+-	return LRU_INACTIVE_ANON;
+-}
 -
- 	__ClearPageLRU(page);
--	if (PageUnevictable(page)) {
--		__ClearPageUnevictable(page);
--		lru = LRU_UNEVICTABLE;
--	} else {
--		lru = page_lru_base_type(page);
--		if (PageActive(page)) {
--			__ClearPageActive(page);
--			lru += LRU_ACTIVE;
--		}
--	}
--	return lru;
-+
-+	/* this shouldn't happen, so leave the flags to bad_page() */
-+	if (PageActive(page) && PageUnevictable(page))
-+		return;
-+
-+	__ClearPageActive(page);
-+	__ClearPageUnevictable(page);
- }
- 
  /**
-diff --git a/mm/swap.c b/mm/swap.c
-index 8bbeabc582c1..b252f3593c57 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -87,7 +87,7 @@ static void __page_cache_release(struct page *page)
- 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 		VM_BUG_ON_PAGE(!PageLRU(page), page);
- 		del_page_from_lru_list(page, lruvec);
--		page_off_lru(page);
-+		__clear_page_lru_flags(page);
- 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
- 	}
+  * __clear_page_lru_flags - clear page lru flags before releasing a page
+  * @page: the page that was on lru and now has a zero reference
+@@ -88,12 +73,12 @@ static __always_inline enum lru_list page_lru(struct page *page)
+ 	enum lru_list lru;
+ 
+ 	if (PageUnevictable(page))
+-		lru = LRU_UNEVICTABLE;
+-	else {
+-		lru = page_lru_base_type(page);
+-		if (PageActive(page))
+-			lru += LRU_ACTIVE;
+-	}
++		return LRU_UNEVICTABLE;
++
++	lru = page_is_file_lru(page) ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON;
++	if (PageActive(page))
++		lru += LRU_ACTIVE;
++
+ 	return lru;
  }
-@@ -887,7 +887,7 @@ void release_pages(struct page **pages, int nr)
- 			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
- 			VM_BUG_ON_PAGE(!PageLRU(page), page);
- 			del_page_from_lru_list(page, lruvec);
--			page_off_lru(page);
-+			__clear_page_lru_flags(page);
- 		}
  
- 		list_add(&page->lru, &pages_to_free);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 47a4e8ba150f..d93033407200 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1862,7 +1862,7 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 
- 		if (put_page_testzero(page)) {
- 			del_page_from_lru_list(page, lruvec);
--			page_off_lru(page);
-+			__clear_page_lru_flags(page);
- 
- 			if (unlikely(PageCompound(page))) {
- 				spin_unlock_irq(&pgdat->lru_lock);
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
