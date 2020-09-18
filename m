@@ -2,95 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D7326F745
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 09:45:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5993626F8C7
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 10:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726040AbgIRHpw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 18 Sep 2020 03:45:52 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45642 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726185AbgIRHpw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 18 Sep 2020 03:45:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=cantorsusede;
-        t=1600415150;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=fw/5e3KjQ1JIQKMCyH0O6Rh1ECmtPNhDeEZeres5Xb4=;
-        b=sfui7gRkKIyRKYHVuphifZvgiC4A7ar5kIcwddsQBim9lQg9xNqF5k7WwgFsRi2FhO9QXR
-        /LzANXQtSVL28jbiDz87FhuxgDpu/eDrqeAwZsMH6jwiVWML9yHdxu/sMYLPWSzqRywZj1
-        xGhIXwj7aVfXu4Dj0sQBJEn7g4fMgaA7PZ4zZ2+VW4RWpSVK4X0NkxviUEgBBYZnguFeYQ
-        flfCpBTMvAKzndECK3yIGFCDtuvM32LW7uTC7LpuFkCfmK9NtIGPNXu9SnssvbgK/DcfvD
-        itNo+D1sk7aM9rM2I42D66UQcLnKnz0Tr+JyM2PiHigRccWlc0X0s0iQu2JJCw==
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C865BAC4D;
-        Fri, 18 Sep 2020 07:46:24 +0000 (UTC)
-Date:   Fri, 18 Sep 2020 09:45:49 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 00/13] mm: clean up some lru related pieces
-Message-ID: <20200918074549.GG28827@dhcp22.suse.cz>
-References: <20200918030051.650890-1-yuzhao@google.com>
+        id S1726119AbgIRI6o (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 18 Sep 2020 04:58:44 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:13254 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1726118AbgIRI6o (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 18 Sep 2020 04:58:44 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id 42DAB29796FAA4D95A1E;
+        Fri, 18 Sep 2020 16:58:41 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 18 Sep 2020 16:58:32 +0800
+From:   chenxiang <chenxiang66@hisilicon.com>
+To:     <tj@kernel.org>, <lizefan@huawei.com>, <hannes@cmpxchg.org>
+CC:     <linuxarm@huawei.com>, <cgroups@vger.kernel.org>,
+        Xiang Chen <chenxiang66@hisilicon.com>
+Subject: [PATCH] cgroup: Fix a comment in function cgroup_wq_init()
+Date:   Fri, 18 Sep 2020 16:54:52 +0800
+Message-ID: <1600419292-191248-1-git-send-email-chenxiang66@hisilicon.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 17-09-20 21:00:38, Yu Zhao wrote:
-> Hi Andrew,
-> 
-> I see you have taken this:
->   mm: use add_page_to_lru_list()/page_lru()/page_off_lru()
-> Do you mind dropping it?
-> 
-> Michal asked to do a bit of additional work. So I thought I probably
-> should create a series to do more cleanups I've been meaning to.
-> 
-> This series contains the change in the patch above and goes a few
-> more steps farther. It's intended to improve readability and should
-> not have any performance impacts. There are minor behavior changes in
-> terms of debugging and error reporting, which I have all highlighted
-> in the individual patches. All patches were properly tested on 5.8
-> running Chrome OS, with various debug options turned on.
-> 
-> Michal,
-> 
-> Do you mind taking a looking at the entire series?
+From: Xiang Chen <chenxiang66@hisilicon.com>
 
-I have stopped at patch 3 as all patches until then are really missing
-any justification. What is the point for all this to be done? The code
-is far from trivial and just shifting around sounds like a risk. You are
-removing ~50 LOC which is always nice but I am not sure the resulting
-code is better maintainble or easier to read and understand. Just
-consider __ClearPageLRU moving to page_off_lru patch. What is the
-additional value of having the flag moved and burry it into a function
-to have even more side effects? I found the way how __ClearPageLRU is
-nicely close to removing it from LRU easier to follow. This is likely
-subjective and other might think differently but as it is not clear what
-is your actual goal here it is hard to judge pros and cons.
+Use function workqueue_init() instead of init_workqueues() which
+is not used in kernel.
 
+Signed-off-by: Xiang Chen <chenxiang66@hisilicon.com>
+---
+ kernel/cgroup/cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index dd24774..c34b03d 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5784,7 +5784,7 @@ static int __init cgroup_wq_init(void)
+ 	 * Use 1 for @max_active.
+ 	 *
+ 	 * We would prefer to do this in cgroup_init() above, but that
+-	 * is called before init_workqueues(): so leave this until after.
++	 * is called before workqueue_init(): so leave this until after.
+ 	 */
+ 	cgroup_destroy_wq = alloc_workqueue("cgroup_destroy", 0, 1);
+ 	BUG_ON(!cgroup_destroy_wq);
 -- 
-Michal Hocko
-SUSE Labs
+2.8.1
+
