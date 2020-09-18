@@ -2,155 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B5926EA17
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 02:45:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52BA026F1D5
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 04:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726291AbgIRApM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 20:45:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726279AbgIRApL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 20:45:11 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1460C06178A;
-        Thu, 17 Sep 2020 17:45:10 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id g72so4354107qke.8;
-        Thu, 17 Sep 2020 17:45:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=mKtA7cFsHNh8hYHY7vxbi2vKeig9nNldo1RjIq6TDkU=;
-        b=qEUz8l3TjyhsGosmXReNkCXnNOUMnbuhorgcWpRVoMfslfF8hO0Z5BXLsGJ1eOA/YQ
-         B/FJJyDVE+YoC/n5s19IhlY5KOzaDWsulPXgRRPl7m/2HV8UYEPh+Y7deLQjqLMoogD5
-         q/I2xRsP1X1d9aMY0QgP2C+Eohq109DY5E4dtT6MZWUc5vLE8gF0gOB8xokWY68MiENL
-         OOTeZVRCNo4yFZ9ZZ6jSDJGKf73eKQpEV8U+D6gLO532hS38I1AwwrnGxI6LK75Lei+F
-         SFYqsZ1NDgmJtBFZbeMnCGOKsef3Pc4dcwqjay5YgwrIERh9W80ioJxhA7i4yoyUAClm
-         WeTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=mKtA7cFsHNh8hYHY7vxbi2vKeig9nNldo1RjIq6TDkU=;
-        b=GLaeVKx7ux0eM8L7Fsy1LGwcSdi/gYa7awloTdfZQ2+XUVrXkfbwI13yLbPk4J7Jns
-         m1jqtcdZrbhueHKro/rGM3MxH/X29k9U3pihOMCbS3jLFj6ZIvcX2A475E4ggkmSB5JI
-         6rt4/3Jfs0+fQmhQZpQxHEouVz7+B38hGsMwAPmb39RpILjLMzriPIVAHTvy2WCsxiCw
-         8g9skdptRAIZw8LnMGASc3aC/MuqVFJJiQA0Lr3pPY3lHn1ExYuCDXIqtgOymIrvRN9c
-         KWM+qJHyAeqve3i09WM3Zsc2t55RbL7tB64PeGRDyOsFd9lxGzt3IVo6g+Zr7WLsGM1o
-         kWOg==
-X-Gm-Message-State: AOAM533gqtViGjUhMgTbdKdVPO9j5tDSxsqMf1xM6zOn9f5gzOVhci3O
-        UZ9dW5k68jZSU6rOtzihycU=
-X-Google-Smtp-Source: ABdhPJyz9fH33yXfplmTghMymIBJ67u130kv7OxYBvln1bqjnQ2+xHKNecNuQseRlxGekhe8CIveVA==
-X-Received: by 2002:a37:2715:: with SMTP id n21mr31314550qkn.401.1600389910170;
-        Thu, 17 Sep 2020 17:45:10 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:6893])
-        by smtp.gmail.com with ESMTPSA id a24sm1024239qko.82.2020.09.17.17.45.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 17 Sep 2020 17:45:09 -0700 (PDT)
-From:   Tejun Heo <tj@kernel.org>
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>
-Subject: [PATCH 5/5] iocost: add iocg_forgive_debt tracepoint
-Date:   Thu, 17 Sep 2020 20:44:56 -0400
-Message-Id: <20200918004456.593983-6-tj@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20200918004456.593983-1-tj@kernel.org>
-References: <20200918004456.593983-1-tj@kernel.org>
+        id S1727164AbgIRCyU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 22:54:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57884 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726435AbgIRCHc (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 17 Sep 2020 22:07:32 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 48F762389E;
+        Fri, 18 Sep 2020 02:07:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1600394851;
+        bh=fR/UbDId/TZwo11/kGB43MSUf1Nix4TokHJyS1Bx8Rs=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=qnjEOA0ewTwgH0jpeoKeykIQcyHCRtLwQih1PvTXg2rCDqVwTyUn4J1zSNPptg8Kw
+         nLshbpbZ+eMBeSJjc+4sZ2xWo10ZdDV1dQMyJgkOgJ8ZF6QX1nBvWZP71y4XGxq4B8
+         E6SrEyWRCepAiGsCHtk4WarmDYqf0xGN1h5kn2nM=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Hugh Dickins <hughd@google.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH AUTOSEL 5.4 307/330] mm: memcontrol: fix stat-corrupting race in charge moving
+Date:   Thu, 17 Sep 2020 22:00:47 -0400
+Message-Id: <20200918020110.2063155-307-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200918020110.2063155-1-sashal@kernel.org>
+References: <20200918020110.2063155-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Signed-off-by: Tejun Heo <tj@kernel.org>
----
- block/blk-iocost.c            | 12 ++++++++++
- include/trace/events/iocost.h | 41 +++++++++++++++++++++++++++++++++++
- 2 files changed, 53 insertions(+)
+From: Johannes Weiner <hannes@cmpxchg.org>
 
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 9b1f94499432..328ae805e85f 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2046,12 +2046,24 @@ static void ioc_forgive_debts(struct ioc *ioc, u64 usage_us_sum, int nr_debtors,
- 	ioc->dfgv_period_rem = do_div(nr_cycles, DFGV_PERIOD);
+[ Upstream commit abb242f57196dbaa108271575353a0453f6834ef ]
+
+The move_lock is a per-memcg lock, but the VM accounting code that needs
+to acquire it comes from the page and follows page->mem_cgroup under RCU
+protection.  That means that the page becomes unlocked not when we drop
+the move_lock, but when we update page->mem_cgroup.  And that assignment
+doesn't imply any memory ordering.  If that pointer write gets reordered
+against the reads of the page state - page_mapped, PageDirty etc.  the
+state may change while we rely on it being stable and we can end up
+corrupting the counters.
+
+Place an SMP memory barrier to make sure we're done with all page state by
+the time the new page->mem_cgroup becomes visible.
+
+Also replace the open-coded move_lock with a lock_page_memcg() to make it
+more obvious what we're serializing against.
+
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Reviewed-by: Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Cc: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Hugh Dickins <hughd@google.com>
+Cc: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: Michal Hocko <mhocko@suse.com>
+Cc: Roman Gushchin <guro@fb.com>
+Cc: Balbir Singh <bsingharora@gmail.com>
+Link: http://lkml.kernel.org/r/20200508183105.225460-3-hannes@cmpxchg.org
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ mm/memcontrol.c | 26 ++++++++++++++------------
+ 1 file changed, 14 insertions(+), 12 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 402c8bc65e08d..ca1632850fb76 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5489,7 +5489,6 @@ static int mem_cgroup_move_account(struct page *page,
+ {
+ 	struct lruvec *from_vec, *to_vec;
+ 	struct pglist_data *pgdat;
+-	unsigned long flags;
+ 	unsigned int nr_pages = compound ? hpage_nr_pages(page) : 1;
+ 	int ret;
+ 	bool anon;
+@@ -5516,18 +5515,13 @@ static int mem_cgroup_move_account(struct page *page,
+ 	from_vec = mem_cgroup_lruvec(pgdat, from);
+ 	to_vec = mem_cgroup_lruvec(pgdat, to);
  
- 	list_for_each_entry(iocg, &ioc->active_iocgs, active_list) {
-+		u64 __maybe_unused old_debt, __maybe_unused old_delay;
-+
- 		if (!iocg->abs_vdebt)
- 			continue;
-+
- 		spin_lock(&iocg->waitq.lock);
-+
-+		old_debt = iocg->abs_vdebt;
-+		old_delay = iocg->delay;
-+
- 		iocg->abs_vdebt >>= nr_cycles;
- 		iocg->delay = 0; /* kick_waitq will recalc */
- 		iocg_kick_waitq(iocg, true, now);
-+
-+		TRACE_IOCG_PATH(iocg_forgive_debt, iocg, now, usage_pct,
-+				old_debt, iocg->abs_vdebt,
-+				old_delay, iocg->delay);
-+
- 		spin_unlock(&iocg->waitq.lock);
+-	spin_lock_irqsave(&from->move_lock, flags);
++	lock_page_memcg(page);
+ 
+ 	if (!anon && page_mapped(page)) {
+ 		__mod_lruvec_state(from_vec, NR_FILE_MAPPED, -nr_pages);
+ 		__mod_lruvec_state(to_vec, NR_FILE_MAPPED, nr_pages);
  	}
- }
-diff --git a/include/trace/events/iocost.h b/include/trace/events/iocost.h
-index b350860d2e71..0b6869980ba2 100644
---- a/include/trace/events/iocost.h
-+++ b/include/trace/events/iocost.h
-@@ -164,6 +164,47 @@ TRACE_EVENT(iocost_ioc_vrate_adj,
- 	)
- );
  
-+TRACE_EVENT(iocost_iocg_forgive_debt,
-+
-+	TP_PROTO(struct ioc_gq *iocg, const char *path, struct ioc_now *now,
-+		u32 usage_pct, u64 old_debt, u64 new_debt,
-+		u64 old_delay, u64 new_delay),
-+
-+	TP_ARGS(iocg, path, now, usage_pct,
-+		old_debt, new_debt, old_delay, new_delay),
-+
-+	TP_STRUCT__entry (
-+		__string(devname, ioc_name(iocg->ioc))
-+		__string(cgroup, path)
-+		__field(u64, now)
-+		__field(u64, vnow)
-+		__field(u32, usage_pct)
-+		__field(u64, old_debt)
-+		__field(u64, new_debt)
-+		__field(u64, old_delay)
-+		__field(u64, new_delay)
-+	),
-+
-+	TP_fast_assign(
-+		__assign_str(devname, ioc_name(iocg->ioc));
-+		__assign_str(cgroup, path);
-+		__entry->now = now->now;
-+		__entry->vnow = now->vnow;
-+		__entry->usage_pct = usage_pct;
-+		__entry->old_debt = old_debt;
-+		__entry->new_debt = new_debt;
-+		__entry->old_delay = old_delay;
-+		__entry->new_delay = new_delay;
-+	),
-+
-+	TP_printk("[%s:%s] now=%llu:%llu usage=%u debt=%llu->%llu delay=%llu->%llu",
-+		__get_str(devname), __get_str(cgroup),
-+		__entry->now, __entry->vnow, __entry->usage_pct,
-+		__entry->old_debt, __entry->new_debt,
-+		__entry->old_delay, __entry->new_delay
-+	)
-+);
-+
- #endif /* _TRACE_BLK_IOCOST_H */
+-	/*
+-	 * move_lock grabbed above and caller set from->moving_account, so
+-	 * mod_memcg_page_state will serialize updates to PageDirty.
+-	 * So mapping should be stable for dirty pages.
+-	 */
+ 	if (!anon && PageDirty(page)) {
+ 		struct address_space *mapping = page_mapping(page);
  
- /* This part must be outside protection */
+@@ -5543,15 +5537,23 @@ static int mem_cgroup_move_account(struct page *page,
+ 	}
+ 
+ 	/*
++	 * All state has been migrated, let's switch to the new memcg.
++	 *
+ 	 * It is safe to change page->mem_cgroup here because the page
+-	 * is referenced, charged, and isolated - we can't race with
+-	 * uncharging, charging, migration, or LRU putback.
++	 * is referenced, charged, isolated, and locked: we can't race
++	 * with (un)charging, migration, LRU putback, or anything else
++	 * that would rely on a stable page->mem_cgroup.
++	 *
++	 * Note that lock_page_memcg is a memcg lock, not a page lock,
++	 * to save space. As soon as we switch page->mem_cgroup to a
++	 * new memcg that isn't locked, the above state can change
++	 * concurrently again. Make sure we're truly done with it.
+ 	 */
++	smp_mb();
+ 
+-	/* caller should have done css_get */
+-	page->mem_cgroup = to;
++	page->mem_cgroup = to; 	/* caller should have done css_get */
+ 
+-	spin_unlock_irqrestore(&from->move_lock, flags);
++	__unlock_page_memcg(from);
+ 
+ 	ret = 0;
+ 
 -- 
-2.26.2
+2.25.1
 
