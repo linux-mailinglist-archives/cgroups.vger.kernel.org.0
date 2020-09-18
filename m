@@ -2,55 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 699EF26F2CE
-	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27C0926F2C9
+	for <lists+cgroups@lfdr.de>; Fri, 18 Sep 2020 05:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727725AbgIRDCK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 17 Sep 2020 23:02:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34288 "EHLO
+        id S1726154AbgIRDCA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 17 Sep 2020 23:02:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34294 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727988AbgIRDBQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 23:01:16 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2062C061797
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:03 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id j35so3796872qtk.14
-        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:03 -0700 (PDT)
+        with ESMTP id S1730392AbgIRDBR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 17 Sep 2020 23:01:17 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32FA1C061352
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:05 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id q2so4067896ybo.5
+        for <cgroups@vger.kernel.org>; Thu, 17 Sep 2020 20:01:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=xgnYESlnPAgRXuNmUoKIpEseoXbDWRNbcLBaliwt4oc=;
-        b=JUmupfA4wraNNkt/3nQDRoRaUfUY18y3RzYhZnq0DDiJXlYJesex9t/1/0moJHN7v0
-         50pxg0398VUNoS2zmL94S71EK7TP61x8/Q7FBsofCF2wC7NulxTKKH3hMdhR7nFOJ/PC
-         uki9yZgG4KT9CzoqHNwgC7l7OkUR4FkQCLaBZwHr0QORR/rpMHGg/TdJWwEZCAtCS+8e
-         4b1oC3cA+Trzzm0/dv8Wx+97jp+3a3DAAkgXb8OwFXgLmTQBqSbxgIv/X9QFjfhX+pRs
-         K0DivOWlJ0PQTVXSvOGXUPE5sMtcoED2ZmrCJl1b9tqjC20mjmwqKnURY63+3efkm+wG
-         BY+A==
+        bh=w7mV5u1sVuL/HO4R09xmKV4wSajKsT9IQhDHQgEJXm8=;
+        b=jDtcgyrhMdZDz3izu8b4buHaQnBHiMajkKbH5BTR5O+yM3vyEJzubaWXG3osf+PdiA
+         WDIFMK6json2onX6FGRWm1wJFG4aJtqbEZCBQVMdTSxbX52x/ZxeUD6wCdCyTDvGF/W9
+         fHAhr4VdkC62NlHfxA9LHTUU9ojRZZRXc5CuhbqCHj+hov8eLDeFR9CaHt3hVHuvQ3EI
+         nHk9bPEOYH99f4NTwoV1jvoEj/cFFsoLfAAVtVtU6GcMuabk7KtE4Dcj35ROnppJCQWE
+         SnaNaAP0OJYZNobndXx0RCrPNI28FP1PtuIeYR2ro2oXPWKjVJ4E9T8Pam52iDeW313A
+         7nVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=xgnYESlnPAgRXuNmUoKIpEseoXbDWRNbcLBaliwt4oc=;
-        b=BNcXX6WGDaAzec/hzj5ygHLWxTBaCNYV4ayQQjBvKJ8APewT7Qv/qcjwkK9ubA0VNx
-         eg8s9N2JKM/xb7PLscyZD9sAK8enT3KH4TmbYkYNIICzdXVIUwxO/n8PV8I/2qTSrKwn
-         btcVyqKlu7NqMGHXU3FNrUfAKjHt+PCMDdeQ3arBzmmzhSojK29eXFJvGlGklMiKA9ca
-         BDyfSKkURdWmJBoxQRQWXsZDPE1Wtglim/n8tdv+opdodjXD7uOaVIt1SS0fjhzEIEph
-         dSFxWFMZJ14x1EFez8EL9bu0A+fwGkA4vzlnV+FdiLbRtXDMs0Iicen3DJ7ldj3f9/q5
-         y9pw==
-X-Gm-Message-State: AOAM533cv4HNkOkhwtFoyMOQAXVBhaRBLQWwGs/TwNd9v6cHKedK4SZR
-        05vdTKOAqbnfwWCtLmlDHpzIm7DNNfw=
-X-Google-Smtp-Source: ABdhPJxi2d5rBcjBpXGVEN33YSeJpIGsvVd5FHEOFm+6Zvu+65+brOoWC+mQWMQVotpkrxRGOx14mPFQ4PA=
+        bh=w7mV5u1sVuL/HO4R09xmKV4wSajKsT9IQhDHQgEJXm8=;
+        b=OhOZKfIFp3S3Kd/fzqC6wPZmBVQwR2s3DrOrVPqWzPYxrB9F/wG2G38fQ+kWeaPyuL
+         TFZuwJEesHUMKMyQ4iFUOgrMnbxtBNC5lePxh24bZQdd2H06LiLslOI+AOnBKeSlW6dH
+         yiDhq4yzUYcL0R/LUnqQs9nlBWyA9u+9pe1OdZTWqXGVAXzHY+qII51e5MoJmz6cHMA/
+         BFXK2kE7HFsQB/OI/LoNVrbrwixjkKoVmKa7eSc2iDOYoS8PaEUTpC6TeoRsyryuG8W3
+         ApL+hhflAnhoK3TomOcbGnPIMWuTqESq+/68kQ4JlYVwlEmNiqRcANskOVY8QSc/U2G8
+         bnxA==
+X-Gm-Message-State: AOAM531Cj7ADfdw/nqUvyPu/uayQdrCYTJDMwbwF8xojdvLVWh5c39mK
+        Cj4k2wq/hFBLe9btS87g9UKM51l81gI=
+X-Google-Smtp-Source: ABdhPJxtkD2+YD/H021PF6gHpoN5EAhvy1+iGadjOw2IU9M8snsBGioGmQ4RZZk0fpZsAbdO7JC3AOTK8pI=
 X-Received: from yuzhao.bld.corp.google.com ([2620:15c:183:200:7220:84ff:fe09:2d90])
- (user=yuzhao job=sendgmr) by 2002:a05:6214:a6c:: with SMTP id
- ef12mr32117792qvb.14.1600398062849; Thu, 17 Sep 2020 20:01:02 -0700 (PDT)
-Date:   Thu, 17 Sep 2020 21:00:41 -0600
+ (user=yuzhao job=sendgmr) by 2002:a25:d848:: with SMTP id p69mr421664ybg.414.1600398064327;
+ Thu, 17 Sep 2020 20:01:04 -0700 (PDT)
+Date:   Thu, 17 Sep 2020 21:00:42 -0600
 In-Reply-To: <20200918030051.650890-1-yuzhao@google.com>
-Message-Id: <20200918030051.650890-4-yuzhao@google.com>
+Message-Id: <20200918030051.650890-5-yuzhao@google.com>
 Mime-Version: 1.0
 References: <20200918030051.650890-1-yuzhao@google.com>
 X-Mailer: git-send-email 2.28.0.681.g6f77f65b4e-goog
-Subject: [PATCH 03/13] mm: move __ClearPageLRU() into page_off_lru()
+Subject: [PATCH 04/13] mm: shuffle lru list addition and deletion functions
 From:   Yu Zhao <yuzhao@google.com>
 To:     Andrew Morton <akpm@linux-foundation.org>,
         Michal Hocko <mhocko@kernel.org>
@@ -77,72 +77,74 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now we have a total of three places that free lru pages when their
-references become zero (after we drop the reference from isolation).
-
-Before this patch, they all do:
-	__ClearPageLRU()
-	page_off_lru()
-	del_page_from_lru_list()
-
-After this patch, they become:
-	page_off_lru()
-		__ClearPageLRU()
-	del_page_from_lru_list()
-
 This change should have no side effects.
+
+We want it only because we prefer to avoid forward declarations in
+the following patches.
 
 Signed-off-by: Yu Zhao <yuzhao@google.com>
 ---
- include/linux/mm_inline.h | 1 +
- mm/swap.c                 | 2 --
- mm/vmscan.c               | 1 -
- 3 files changed, 1 insertion(+), 3 deletions(-)
+ include/linux/mm_inline.h | 42 +++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 21 deletions(-)
 
 diff --git a/include/linux/mm_inline.h b/include/linux/mm_inline.h
-index 8fc71e9d7bb0..be9418425e41 100644
+index be9418425e41..bfa30c752804 100644
 --- a/include/linux/mm_inline.h
 +++ b/include/linux/mm_inline.h
-@@ -92,6 +92,7 @@ static __always_inline enum lru_list page_off_lru(struct page *page)
- {
- 	enum lru_list lru;
+@@ -45,27 +45,6 @@ static __always_inline void update_lru_size(struct lruvec *lruvec,
+ #endif
+ }
  
-+	__ClearPageLRU(page);
- 	if (PageUnevictable(page)) {
- 		__ClearPageUnevictable(page);
- 		lru = LRU_UNEVICTABLE;
-diff --git a/mm/swap.c b/mm/swap.c
-index 40bf20a75278..8362083f00c9 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -86,7 +86,6 @@ static void __page_cache_release(struct page *page)
- 		spin_lock_irqsave(&pgdat->lru_lock, flags);
- 		lruvec = mem_cgroup_page_lruvec(page, pgdat);
- 		VM_BUG_ON_PAGE(!PageLRU(page), page);
--		__ClearPageLRU(page);
- 		del_page_from_lru_list(page, lruvec, page_off_lru(page));
- 		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+-static __always_inline void add_page_to_lru_list(struct page *page,
+-				struct lruvec *lruvec, enum lru_list lru)
+-{
+-	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
+-	list_add(&page->lru, &lruvec->lists[lru]);
+-}
+-
+-static __always_inline void add_page_to_lru_list_tail(struct page *page,
+-				struct lruvec *lruvec, enum lru_list lru)
+-{
+-	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
+-	list_add_tail(&page->lru, &lruvec->lists[lru]);
+-}
+-
+-static __always_inline void del_page_from_lru_list(struct page *page,
+-				struct lruvec *lruvec, enum lru_list lru)
+-{
+-	list_del(&page->lru);
+-	update_lru_size(lruvec, lru, page_zonenum(page), -thp_nr_pages(page));
+-}
+-
+ /**
+  * page_lru_base_type - which LRU list type should a page be on?
+  * @page: the page to test
+@@ -126,4 +105,25 @@ static __always_inline enum lru_list page_lru(struct page *page)
  	}
-@@ -895,7 +894,6 @@ void release_pages(struct page **pages, int nr)
- 
- 			lruvec = mem_cgroup_page_lruvec(page, locked_pgdat);
- 			VM_BUG_ON_PAGE(!PageLRU(page), page);
--			__ClearPageLRU(page);
- 			del_page_from_lru_list(page, lruvec, page_off_lru(page));
- 		}
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index f257d2f61574..f9a186a96410 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1862,7 +1862,6 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
- 		add_page_to_lru_list(page, lruvec, lru);
- 
- 		if (put_page_testzero(page)) {
--			__ClearPageLRU(page);
- 			del_page_from_lru_list(page, lruvec, page_off_lru(page));
- 
- 			if (unlikely(PageCompound(page))) {
+ 	return lru;
+ }
++
++static __always_inline void add_page_to_lru_list(struct page *page,
++				struct lruvec *lruvec, enum lru_list lru)
++{
++	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
++	list_add(&page->lru, &lruvec->lists[lru]);
++}
++
++static __always_inline void add_page_to_lru_list_tail(struct page *page,
++				struct lruvec *lruvec, enum lru_list lru)
++{
++	update_lru_size(lruvec, lru, page_zonenum(page), thp_nr_pages(page));
++	list_add_tail(&page->lru, &lruvec->lists[lru]);
++}
++
++static __always_inline void del_page_from_lru_list(struct page *page,
++				struct lruvec *lruvec, enum lru_list lru)
++{
++	list_del(&page->lru);
++	update_lru_size(lruvec, lru, page_zonenum(page), -thp_nr_pages(page));
++}
+ #endif
 -- 
 2.28.0.681.g6f77f65b4e-goog
 
