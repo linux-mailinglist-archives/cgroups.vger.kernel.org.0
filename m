@@ -2,93 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D415E272915
-	for <lists+cgroups@lfdr.de>; Mon, 21 Sep 2020 16:50:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D97E2272991
+	for <lists+cgroups@lfdr.de>; Mon, 21 Sep 2020 17:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727931AbgIUOuR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Sep 2020 10:50:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727770AbgIUOuM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Sep 2020 10:50:12 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89C96C061755;
-        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id n10so12537170qtv.3;
-        Mon, 21 Sep 2020 07:50:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
-        b=H4Yxk2SPjvLf2Brrla/hrvyq/OarS424J9FV8e1g25bELnn/LLXo44r2kzde5q0I7J
-         mjKpYsrkCTWeDdh8qDWSf00x4bh8CXq+JPKScEkemo4j8xD+q4qfALCjyeqei3pKuLcm
-         Bdr14uL8sNnC7bpzsT03ZCqVKKHeEsK0nTOUBKOKX+Xg+VQanXssvIv1+z4S+PxsIu8i
-         mBxqLYlWeveKSKy74N3HJm/uDVIk+VyzU1dNJ0wKA1Kvz25vFyh8iu/SfcMVxF+GxRyn
-         +0e8YMKCH/andqHfGTX8pEbimG8cSXJhvLiPuWljEK+LItU0WODLZNcFyUswDl+W+6XG
-         i8fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=I0TzWXUmgi2lOEHpdl5qmQ0obP+a5wT/52mUzrc/Cfw=;
-        b=N9XDpQkw4VdJTEWb12dGJKv23ybRbpY1XRUOQ4xwtkJwARF6E0MgXcTgII0t9MpZM+
-         G+xSRnEev5fO/E6Ym4R+hnvARPIUl6BwB1E1z5gPUO9ZOfJd+1Us38BSfPk7zaZ1gGEV
-         IuAQcVbHYwkw5Dt8Cyfii5p6/96M473cHIVDlQgSTMe+1x/qnfJU96OMlhMHym/LIriu
-         KDZ5lUs4T6sT9+aShNln9aImNFd1YA888776fC810v1fXK/4yPa5qX5Qioo/CggznhSG
-         AXmFVZ4XDe3gVYxiH7JJvWd501790NDYUZDlLi+DJXSML1CLGvey4l7oM24Di2chSw7k
-         XRVQ==
-X-Gm-Message-State: AOAM531uzy28pnT/ZTtvivThq0hF/W1Cx27vT86jVH9hq24y8S7uPRH8
-        aZOBErZ7bg6dC2capoWKTOM=
-X-Google-Smtp-Source: ABdhPJzNNwPI/wJ/7TcWjcBWmRzVQTi9xiWSzOdY27OrIajjhpASkSL5yIN4toFKxhCtgEo3lO+psw==
-X-Received: by 2002:ac8:71c6:: with SMTP id i6mr32876446qtp.318.1600699811627;
-        Mon, 21 Sep 2020 07:50:11 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:54a6])
-        by smtp.gmail.com with ESMTPSA id w36sm10370728qtc.48.2020.09.21.07.50.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 21 Sep 2020 07:50:10 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 21 Sep 2020 10:50:09 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     Chengming Zhou <zhouchengming@bytedance.com>
-Cc:     lizefan@huawei.com, hannes@cmpxchg.org, corbet@lwn.net,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, luodaowen.backend@bytedance.com,
-        songmuchun@bytedance.com
-Subject: Re: [PATCH] cgroup: Add cgroupstats numbers to cgroup.stat file
-Message-ID: <20200921145009.GD4268@mtj.duckdns.org>
-References: <20200915155349.15181-1-zhouchengming@bytedance.com>
+        id S1727349AbgIUPKA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Sep 2020 11:10:00 -0400
+Received: from mx2.suse.de ([195.135.220.15]:46852 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726688AbgIUPKA (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 21 Sep 2020 11:10:00 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 427FAB31C;
+        Mon, 21 Sep 2020 15:10:34 +0000 (UTC)
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jens Axboe <axboe@kernel.dk>, Song Liu <song@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+References: <20200921080734.452759-1-hch@lst.de>
+ <20200921080734.452759-4-hch@lst.de>
+ <b547a1b6-ab03-0520-012d-86d112c83d92@suse.de>
+ <20200921140010.GA14672@lst.de>
+From:   Coly Li <colyli@suse.de>
+Autocrypt: addr=colyli@suse.de; keydata=
+ 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
+Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
+Message-ID: <5bcc52dc-ca8f-bbdd-69ef-4b6312e7994a@suse.de>
+Date:   Mon, 21 Sep 2020 23:09:48 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200915155349.15181-1-zhouchengming@bytedance.com>
+In-Reply-To: <20200921140010.GA14672@lst.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On 2020/9/21 22:00, Christoph Hellwig wrote:
+> On Mon, Sep 21, 2020 at 05:54:59PM +0800, Coly Li wrote:
+>> I am not sure whether virtual bcache device's optimal request size can
+>> be simply set like this.
+>>
+>> Most of time inherit backing device's optimal request size is fine, but
+>> there are two exceptions,
+>> - Read request hits on cache device
+>> - User sets sequential_cuttoff as 0, all writing may go into cache
+>> device firstly.
+>> For the above two conditions, all I/Os goes into cache device, using
+>> optimal request size of backing device might be improper.
+>>
+>> Just a guess, is it OK to set the optimal request size of the virtual
+>> bcache device as the least common multiple of cache device's and backing
+>> device's optimal request sizes ?
+> 
+> Well, if the optimal I/O size is wrong, the read ahead size also is
+> wrong.  Can we just drop the setting?
+> 
 
-On Tue, Sep 15, 2020 at 11:53:49PM +0800, Chengming Zhou wrote:
-> In the cgroup v1, we can use netlink interface to get cgroupstats for
-> a cgroup. But it has been excluded from cgroup v2 interface intentionally
-> due to the duplication and inconsistencies with other statistics.
-> To make container monitor tool like "cadvisor" continue to work, we add
-> these cgroupstats numbers to the cgroup.stat file, and change the
-> admin-guide doc accordingly.
+I feel this is something should be fixed. Indeed I overlooked it until
+you point out the issue now.
 
-So, we can't add O(nr_threads) operations to cgroup.stat reads. There are
-two ways forward that I can see.
+The optimal request size and read ahead pages hint are necessary, but
+current initialization is simple. A better way might be dynamically
+setting them depends on the cache mode and some special configuration.
 
-* Investigate how these counters are being used. If it's used for congestion
-  detection, pressure metrics are likely better indicators to use anyway. If
-  the usage frequency is low enough, maybe querying from userspace should
-  work?
+By your inspiration, I want to ACK your original patch although it
+doesn't work fine for all condition. Then we may know these two settings
+(ra_pages and queue_io_opt) should be improved for more situations. At
+lease for most part of the situations they provide proper hints.
 
-* If the need for these per-cgroup task state counters is really
-  justifiable, the counters should be maintained from scheduling event
-  directly and summed up using rstat like other statistics.
+How do you think of the above idea ?
 
-Thanks.
-
--- 
-tejun
+Coly Li
