@@ -2,122 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461D3272217
-	for <lists+cgroups@lfdr.de>; Mon, 21 Sep 2020 13:16:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77826272240
+	for <lists+cgroups@lfdr.de>; Mon, 21 Sep 2020 13:23:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726367AbgIULQy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Sep 2020 07:16:54 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55866 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIULQw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 21 Sep 2020 07:16:52 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600687010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=XTczP/zLHBRx8LMrv/lg4UZ5y7Ccak5p+2XPXjz+ei4=;
-        b=FRXjcj2dlbs+GhpPvSSoGBVWXvzIC1b9rlv+jCncvGTtBLvTv3T5jSHPx2q5Os1BhdzptT
-        5eLVfdY5B+2480xmbVUvYe/zoz6qSJR+pUU/wk4ZG0u1yY1V2yVANeBb0oSVKxhTo9zlli
-        D1mju4Ky9UwEuAJUveyXXxGqRqpNr8o=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3EE87B182;
-        Mon, 21 Sep 2020 11:17:26 +0000 (UTC)
-Date:   Mon, 21 Sep 2020 13:16:48 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Yu Zhao <yuzhao@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Huang Ying <ying.huang@intel.com>,
-        Pankaj Gupta <pankaj.gupta.linux@gmail.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Konstantin Khlebnikov <koct9i@gmail.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Jaewon Kim <jaewon31.kim@samsung.com>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 02/13] mm: use page_off_lru()
-Message-ID: <20200921111648.GI12990@dhcp22.suse.cz>
-References: <20200918030051.650890-1-yuzhao@google.com>
- <20200918030051.650890-3-yuzhao@google.com>
- <20200918073700.GE28827@dhcp22.suse.cz>
- <20200918102713.GB1004594@google.com>
- <20200918110914.GK28827@dhcp22.suse.cz>
- <20200918185358.GA1095986@google.com>
+        id S1726770AbgIULXi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Sep 2020 07:23:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726367AbgIULXi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Sep 2020 07:23:38 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38E28C061755;
+        Mon, 21 Sep 2020 04:23:38 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id t13so13272038ile.9;
+        Mon, 21 Sep 2020 04:23:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Jylsjxure8iloHgTv6dK8e3IpVuFYGMIH7w1sVGlBAw=;
+        b=nqLrdxvYUsrTTUgEz8hFcvRTwfimgRk7PIAWUsvqWfJXTlPGfflwm8mzXT8aa2KY2P
+         68uE0ItUG43PEBQHvQz0n5LfzcY5Vinp3+0+N/mi9FzOG6wN7RalWfeVlXnWsudjvjLp
+         azA/VpQMdPVNfv0XmXevqqOz8FpUze8tuIoBUenMuu9HhVDRlzMDoeTwUTGMvMguTp/z
+         8XEmLlOEvu1vFSu26V/SA8TWV2zWBUcmtuQOOj/8mT/j0oWnquMpxzpvNWBy+D2FVLw5
+         URhzLqfaOkxtFGFL0xgduy16DEHqIIA4K/3Dp3aKV72mKsmud58QrDiQCeOAcPvNt6ik
+         /HCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Jylsjxure8iloHgTv6dK8e3IpVuFYGMIH7w1sVGlBAw=;
+        b=VpBFsAQt8SRUilAk7vzUPbEgMSDpvmAAYjlihtZNw3WYWjq1U9OY/6KRzCP1LjCqJe
+         3pvGDgYAYWaTbUaKyuIBXbV6S0UwnnDACG++eFfr5wYz/Eg2FCXTyR7yBng6Hsc7sVro
+         Wx0VXfdbmqier6CWhKXwyp74jeax/HcBa6ZihGwfVZlBHYZFFQgwiCtFmO4R3f2iqiTw
+         /CJUvRU8scN87ryc36Y8dENoVK+1aX8Z4LUUNhHfW+kqMtJj4NuCAVJ4zoLz4Q9HKPVO
+         nVZNSV7wxDbhJ6JPrcsgQkNNIaPpdTNNbXb55BX5QxeZhGhvX9C1KjCHADYNJsU8PYDX
+         xi5g==
+X-Gm-Message-State: AOAM5313eYskzQVmnjwiSnoo+cK7xo3esclVwUqxi9B1y4xzHj6qhzoS
+        O2So56RpNI8Fp7lTo5XiR3soty32W3vjkAxs6iE=
+X-Google-Smtp-Source: ABdhPJxKB3sTltABNKXrNPF1O/jcVNZisQ+S96LJnMDeQtk1GgN0zbXDBpIBy0vCshMqNA00/xnM1su+7h8kUnV4ny0=
+X-Received: by 2002:a92:c7b0:: with SMTP id f16mr41703231ilk.137.1600687417526;
+ Mon, 21 Sep 2020 04:23:37 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200918185358.GA1095986@google.com>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz>
+In-Reply-To: <20200921110505.GH12990@dhcp22.suse.cz>
+From:   Yafang Shao <laoar.shao@gmail.com>
+Date:   Mon, 21 Sep 2020 19:23:01 +0800
+Message-ID: <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
+Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 18-09-20 12:53:58, Yu Zhao wrote:
-> On Fri, Sep 18, 2020 at 01:09:14PM +0200, Michal Hocko wrote:
-> > On Fri 18-09-20 04:27:13, Yu Zhao wrote:
-> > > On Fri, Sep 18, 2020 at 09:37:00AM +0200, Michal Hocko wrote:
-> > > > On Thu 17-09-20 21:00:40, Yu Zhao wrote:
-> > > > > This patch replaces the only open-coded __ClearPageActive() with
-> > > > > page_off_lru(). There is no open-coded __ClearPageUnevictable()s.
-> > > > > 
-> > > > > Before this patch, we have:
-> > > > > 	__ClearPageActive()
-> > > > > 	add_page_to_lru_list()
-> > > > > 
-> > > > > After this patch, we have:
-> > > > > 	page_off_lru()
-> > > > > 		if PageUnevictable()
-> > > > > 			__ClearPageUnevictable()
-> > > > > 		else if PageActive()
-> > > > > 			__ClearPageActive()
-> > > > > 	add_page_to_lru_list()
-> > > > > 
-> > > > > Checking PageUnevictable() shouldn't be a problem because these two
-> > > > > flags are mutually exclusive. Leaking either will trigger bad_page().
-> > > > 
-> > > > I am sorry but the changelog is really hard to grasp. What are you
-> > > > trying to achieve, why and why it is safe. This should be a general
-> > > > outline for any patch. I have already commented on the previous patch
-> > > > and asked you for the explanation why removing __ClearPageActive from
-> > > > this path is desirable and safe. I have specifically asked to clarify
-> > > > the compound page situation as that is using its oen destructor in the
-> > > > freeing path and that might result in page_off_lru to be not called.
-> > > 
-> > > Haven't I explained we are NOT removing __ClearPageActive()? Is my
-> > > notion of the code structure above confusing you? Or 'open-coded'
-> > > could mean different things?
-> > 
-> > Please read through my reply carefuly. I am not saying what you are
-> > doing is wrong. I am expressing a lack of justification which is the
-> > case throughout this patch series. You do not explain why we need it and
-> > why reviewers should spend time on this. Because the review is not as
-> > trivial as looking at the diff.
-> 
-> I appreciate your time. But if you are looking for some grand
-> justification, I'm afraid I won't be able to give one, because, as it's
-> titled, this is just a series of cleanup patches.
+On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 21-09-20 18:55:40, Yafang Shao wrote:
+> > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
+> > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > >
+> > > > In the cgroup v1, we have 'force_mepty' interface. This is very
+> > > > useful for userspace to actively release memory. But the cgroup
+> > > > v2 does not.
+> > > >
+> > > > This patch reuse cgroup v1's function, but have a new name for
+> > > > the interface. Because I think 'drop_cache' may be is easier to
+> > > > understand :)
+> > >
+> > > This should really explain a usecase. Global drop_caches is a terrible
+> > > interface and it has caused many problems in the past. People have
+> > > learned to use it as a remedy to any problem they might see and cause
+> > > other problems without realizing that. This is the reason why we even
+> > > log each attempt to drop caches.
+> > >
+> > > I would rather not repeat the same mistake on the memcg level unless
+> > > there is a very strong reason for it.
+> > >
+> >
+> > I think we'd better add these comments above the function
+> > mem_cgroup_force_empty() to explain why we don't want to expose this
+> > interface in cgroup2, otherwise people will continue to send this
+> > proposal without any strong reason.
+>
+> I do not mind people sending this proposal.  "V1 used to have an
+> interface, we need it in v2 as well" is not really viable without
+> providing more reasoning on the specific usecase.
+>
+> _Any_ patch should have a proper justification. This is nothing really
+> new to the process and I am wondering why this is coming as a surprise.
+>
 
-You likely had some reason to do that clean up, right? What was that? An
-inconcistency in handling some of the page flags when it is moved around
-LRU lists? Was the code too hard to reason about? Was it error prone?
+Container users always want to drop cache in a specific container,
+because they used to use drop_caches to fix memory pressure issues.
+Although drop_caches can cause some unexpected issues, it could also
+fix some issues. So container users want to use it in containers as
+well.
+If this feature is not implemented in cgroup, they will ask you why
+but there is no explanation in the kernel.
 
-Please do not take me wrong, I am not trying to discourage you from
-clean up work. There is a lot of code that would benefit from clean ups.
-But it certainly helps to outline your motivation and the goal you would
-like to achieve. Without that it would boil down to guessing what you
-might have thought or simly moving things around without a very good
-long term reason.
+Regarding the memory.high, it is not perfect as well, because you have
+to set it to 0 to drop_caches, and the processes in the containers
+have to reclaim pages as well because they reach the memory.high, but
+memory.force_empty won't make other processes to reclaim.
 
-Thanks!
+That doesn't mean I agree to add this interface, while I really mean
+that if we discard one feature we'd better explain why.
+
 -- 
-Michal Hocko
-SUSE Labs
+Thanks
+Yafang
