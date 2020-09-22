@@ -2,59 +2,54 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38C5E273EBD
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 11:44:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9419273EE5
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 11:51:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726498AbgIVJoG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 05:44:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        id S1726648AbgIVJvj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 05:51:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51390 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726454AbgIVJoF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 05:44:05 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA55C061755
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id a15so13585175ljk.2
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
+        with ESMTP id S1726558AbgIVJvj (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 05:51:39 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD65C0613D2
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:51:38 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id u21so21983412eja.2
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:51:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
-        b=HrhPC/cSVDNvm9kRZbwXzKjP6DTk7b2Nny0qurmlykw8pbZ55EM/YwnTphGw0Phb0i
-         zLX5bT+td8tZrb0mEVN/5fL82j/z07O92s3jT9d8a3W4dm57qRVrcwJUKb/E954BVUFV
-         TFAFWTS9f1YWrkJmJXHSfoOpeRSQND+w5H5Fjv8qHCsv7cOPHBTyoHb2k7c4eymMDFdn
-         36bHMIDD9tsCIpE+KTz3b5R3eCf65PHRjGW/uP65gLuixUJGJ3T+62IcXjI47ThEu5eZ
-         VV1igHblTySvW9p8oAXIc5QU5B9pDzu/21y96VHJGLYi8awC0gVsJZPlzCzJkQh6mF7V
-         96iw==
+        d=chrisdown.name; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=vLhN/ucVLfE69Dl/WKI0HEpcS5fMQFDATogS8fruK+Y=;
+        b=kWC+smJjtT0c9St6jcuRKFe+iC/3MNGMO2hzLmI4h3ukWa//TYGeZk5SPv1bkUzYpe
+         Piq5Gfchg23WCZ9wQAwQMGNwS3SbNdcaDAC2Az/+yjW8h+MjYeKt2dW1g/mome8M5EMI
+         iHbdhnfc6dBx+c0BNKdqAlSk0ap/1jplkFecY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
-        b=oDFnDf4h3uKDXEN3AL1PDODBdYTYXCUf1McpHe3XqC+bcdfzOifx+OOL5VV1rNKRGU
-         NP1031/X8TBPL49W22PXYhsIZgcD2dALfYEcoqS6jf3BxsbVo84xUMgZzApIW3VRm00S
-         3B7bQuCJUTxDIA6qaL8hrdkHwCZ9rHdu2KXH9dSVjBO9PpRnF/Jp3ntCMal17/7+/NUi
-         nZ2Dk3oiik0AOxZN5juN2UJa0sxIlQ4QGHr3Eg/pKjoaZ7zZbpSK/F8fGDqzb5Po/63v
-         jNWaX1xkrMhVwn4FYA9Ly7BG4NIG3a4paKsux7OEwOumx5lT6qc8+jA1A5JLYSsObsFV
-         sKyg==
-X-Gm-Message-State: AOAM532gMjRckIoPDXO3Af70daaa49ozbgs8WR83ZVf82VaWPpzJbG9B
-        HQ34RcxR5t5tOXbolpUuyDCSRAX4LOihdXSbsFjeCg==
-X-Google-Smtp-Source: ABdhPJxXVnl7GUvUOwrcD+5qdd9k2lu/yskeXQOKLRd98NXH9jTfBpsWC5OGIMBrUFqa0KDjRh3xVSSaQ18LIv9nGbI=
-X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr1198265ljp.222.1600767843752;
- Tue, 22 Sep 2020 02:44:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz>
-In-Reply-To: <20200921110505.GH12990@dhcp22.suse.cz>
-From:   Chunxin Zang <zangchunxin@bytedance.com>
-Date:   Tue, 22 Sep 2020 17:43:52 +0800
-Message-ID: <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
- interface for cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=vLhN/ucVLfE69Dl/WKI0HEpcS5fMQFDATogS8fruK+Y=;
+        b=b77uR6O3e8nVZXwwuN06pymIAEdxHSR6ZlUCG45zh80N6RL7Fm4WR+32b+OoVyiBTP
+         QKWGPBk3Uei+cYS5B3S2GSjvqyG2LDzBrpHrP4u3FRqR9x67YbHD+KWIQSYYn8yuV0C1
+         Fkkqhyj0z/HXHSdd/Pp7XGuEbrlPKdup/4Xr63dLvVW3aUeM6AU5xbGDTsi+Q0s/2oSK
+         AQLbZXqk0mCJA1aOKjCwYv08joKKJt1D6oCcFKmZRdjxDhHJK3PCgVj6sV/nrVdCl9SR
+         nKQ2HOUOQJzTSdw11si7UcCY4fmc1Tc0hfZruL8XAuR4dgz9bm3VMNdQh+i1sevJpfkf
+         4N5w==
+X-Gm-Message-State: AOAM531Jg7KqdU+n2xY5SHPmBWvD6E48sajR19pkqyUW3drtX/8a3Osw
+        PDcYY0MVpbpgaxAQbHbswzUZzg==
+X-Google-Smtp-Source: ABdhPJz0OsMdgyayNctU/Uicxzh0FHbqFj8fYde2wyp0iYG7bitVMgqzdrly9+4XgRu7N/ARK6LFpw==
+X-Received: by 2002:a17:906:af53:: with SMTP id ly19mr3778973ejb.503.1600768297333;
+        Tue, 22 Sep 2020 02:51:37 -0700 (PDT)
+Received: from localhost ([2620:10d:c093:400::5:7783])
+        by smtp.gmail.com with ESMTPSA id y14sm10723374eje.10.2020.09.22.02.51.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 02:51:36 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 10:51:36 +0100
+From:   Chris Down <chris@chrisdown.name>
+To:     Chunxin Zang <zangchunxin@bytedance.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -68,75 +63,43 @@ Cc:     Yafang Shao <laoar.shao@gmail.com>,
         Linux MM <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>,
         netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+Message-ID: <20200922095136.GA9682@chrisdown.name>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz>
+ <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz>
+ <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+Chunxin Zang writes:
+>My usecase is that there are two types of services in one server. They
+>have difference
+>priorities. Type_A has the highest priority, we need to ensure it's
+>schedule latency、I/O
+>latency、memory enough. Type_B has the lowest priority, we expect it
+>will not affect
+>Type_A when executed.
+>So Type_A could use memory without any limit. Type_B could use memory
+>only when the
+>memory is absolutely sufficient. But we cannot estimate how much
+>memory Type_B should
+>use. Because everything is dynamic. So we can't set Type_B's memory.high.
 >
-> On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > >
-> > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > useful for userspace to actively release memory. But the cgroup
-> > > > v2 does not.
-> > > >
-> > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > understand :)
-> > >
-> > > This should really explain a usecase. Global drop_caches is a terribl=
-e
-> > > interface and it has caused many problems in the past. People have
-> > > learned to use it as a remedy to any problem they might see and cause
-> > > other problems without realizing that. This is the reason why we even
-> > > log each attempt to drop caches.
-> > >
-> > > I would rather not repeat the same mistake on the memcg level unless
-> > > there is a very strong reason for it.
-> > >
-> >
-> > I think we'd better add these comments above the function
-> > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > interface in cgroup2, otherwise people will continue to send this
-> > proposal without any strong reason.
->
-> I do not mind people sending this proposal.  "V1 used to have an
-> interface, we need it in v2 as well" is not really viable without
-> providing more reasoning on the specific usecase.
->
-> _Any_ patch should have a proper justification. This is nothing really
-> new to the process and I am wondering why this is coming as a surprise.
->
+>So we want to release the memory of Type_B when global memory is
+>insufficient in order
+>to ensure the quality of service of Type_A . In the past, we used the
+>'force_empty' interface
+>of cgroup v1.
 
-I'm so sorry for that.
-My usecase is that there are two types of services in one server. They
-have difference
-priorities. Type_A has the highest priority, we need to ensure it's
-schedule latency=E3=80=81I/O
-latency=E3=80=81memory enough. Type_B has the lowest priority, we expect it
-will not affect
-Type_A when executed.
-So Type_A could use memory without any limit. Type_B could use memory
-only when the
-memory is absolutely sufficient. But we cannot estimate how much
-memory Type_B should
-use. Because everything is dynamic. So we can't set Type_B's memory.high.
-
-So we want to release the memory of Type_B when global memory is
-insufficient in order
-to ensure the quality of service of Type_A . In the past, we used the
-'force_empty' interface
-of cgroup v1.
-
-> --
-> Michal Hocko
-> SUSE Labs
-
-Best wishes
-Chunxin
+This sounds like a perfect use case for memory.low on Type_A, and it's pretty 
+much exactly what we invented it for. What's the problem with that?
