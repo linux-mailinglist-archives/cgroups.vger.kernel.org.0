@@ -2,121 +2,135 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBCDC2749BA
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 22:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F29D274AED
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 23:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726563AbgIVUDC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 16:03:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
+        id S1726617AbgIVVOK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 17:14:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43556 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726550AbgIVUDC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 16:03:02 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D004C061755;
-        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id o8so24607139ejb.10;
-        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
+        with ESMTP id S1726576AbgIVVOK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 17:14:10 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82575C061755
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 14:14:10 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id o20so13615876pfp.11
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 14:14:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
-        b=gQf7T+W348/cUa7xWPDW9mvfpBriiULeP1ZiFwI/jDSAJXi3GsqBEJgVzaZkuZ3KCN
-         DAYlg61fYR1XNjaNGtmQGHh+hKXwEWxOJ2n9Ghee/kUzRlnQLH4Zeu/fTNenx15m6XXp
-         FX71AJvEK80xn0Xkbrrlt/6VoGll00mpOfki/B1Ag5oQTK/iMuyJLByVfKQai4xyvfj0
-         6cq+Fp5kLtWHQ1iy4C4sDrTPsNplpHsgHhuCGhzzQTpVKI0kxMIqTs4NYwGmwWMehVua
-         LE3pRNdZ19xyq6AwCiTwJBamQsck+Xhems9XXbzyJSxo7b4G4hWnCHQ+KzCpyQTnyven
-         0LKw==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jX0oqiM8ZRWUr1y81TApDh2RLCO5qMFygk0a8MYzzVI=;
+        b=B1hYCzRIzXGxf476oO1RyhjC26uBYCDdckWaQTm5Z1XUjvlWEEJN1luX8NvRRESzqy
+         uI37IR6+6MX61y1oGcN8An610Ee2QYGs6VGNllKq9m+zlneUHDzy3UsAGGBHv9DE1E1D
+         qT8GQM4UVAesCA8kLMpRrA9ZeI4cfw8eGjxYKtyE0yjY59irZXh2Dfmz9OjumiYUu/qm
+         yHTO7ctPRUbZ9EigdnrWAIXnwvosn5CW58fpf0+coea0060UfoW1dsYi0nQkVmy0O4VO
+         g81iae2/630fno3kknm7E/zhJn0XhCUt3WhKQcA0ckIX/ElhyihqNT81SRkD23FlxBLs
+         OQcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
-        b=N+2KpZLN+5mB2r2CVLvgX29NKSq4cFmCKw3En9MlLy2gVt79c5YBCRXfmeFnCwMTQz
-         SK/I3EK3fhChS2ounQCBU0V8PqwtV0I5qJc7MF9luUwIvuAsTAoknDMQdVDUAMK9Arym
-         mBvicK9DTvGjxykBddhOAecy+lethJrVZzFIs6hp0bJSOcXd2O5OBON20+iIFnUVU8tG
-         PUxkSLJAQLE3DtyVgtyXd5iAX7nxt3hfRdH+pza9uiRcqgUSkSVebGH6IrLJty7X5uEU
-         QdF85RqYnFS/eWA+axAL+Gv68QgX1cCJ4kAEkXOLIYIbRv4ANJzzE+FW/tNvxYnvyItp
-         XAVQ==
-X-Gm-Message-State: AOAM530eYeqcujeIgTuo38XUxtdDlZlcf4qf1sG/h0fUv5hkQJgHE1mM
-        xW/p+dbpI9RULXPr+3JD0wc9Yw+DHh9HKudM1xo=
-X-Google-Smtp-Source: ABdhPJzrukxcqBwmPMNwZEfjF9bZU4xr+6NJgA7Fjwt063EvqbKJpTcRE4M8HENKWwjen25q8n7in1Ofle1X8HiQuYQ=
-X-Received: by 2002:a17:906:fb8f:: with SMTP id lr15mr6669776ejb.25.1600804980354;
- Tue, 22 Sep 2020 13:03:00 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jX0oqiM8ZRWUr1y81TApDh2RLCO5qMFygk0a8MYzzVI=;
+        b=Xggnq9A574gK86GJwTmoZGG1beb9PBfSQouQd78CfhW3ScAEtkFAb9bHjL0zrrjgtI
+         j3bu6elnXcRt7ZX5m2zCVVE+1gj0agaDXpEUaW5txo3QHXpeUnaYDAjT0cd+V3ETeF9M
+         qj/aD4tW4lunOoUe3JVN0n5BU+RsGog8xN8ZeBznRl8Jg32Mv8r1pNkSZJ/y2mm/hind
+         vI927GNFk1rj2NZvKamSkC+qt4DFaY8PSJEvsqt7+I5FcXS6ZlYWoaZCrAgfRR+dajJV
+         VE1J8AHNIwDVWxnyYkvhXRB41OdfkrsmjwRKaSIXI5HokbSRj0gyCobLTu3DHTjD+9J8
+         noCQ==
+X-Gm-Message-State: AOAM5317JwdSt6aX4TS7+GjixdYtSmjPl66ozyVfGGjwVNKvnUhigL1R
+        WytcIgwPSKNGHs2qV9/LjF96TA==
+X-Google-Smtp-Source: ABdhPJzzrNDDUM06Vr4/E2y5sYnq1wUrhSBwgHDHzOZNGlz/fG05U62zoyb1FdFl0XlVuaTCkIKrPg==
+X-Received: by 2002:a63:516:: with SMTP id 22mr5143414pgf.316.1600809249779;
+        Tue, 22 Sep 2020 14:14:09 -0700 (PDT)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id r15sm15218636pgg.17.2020.09.22.14.14.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 22 Sep 2020 14:14:09 -0700 (PDT)
+Date:   Tue, 22 Sep 2020 14:14:04 -0700
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>
+Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
+        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20200922211404.GA4141897@google.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922014836.GA26507@linux.intel.com>
 MIME-Version: 1.0
-References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
- <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
- <20200922114908.GZ12990@dhcp22.suse.cz> <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
- <20200922165527.GD12990@dhcp22.suse.cz> <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
- <20200922190859.GH12990@dhcp22.suse.cz>
-In-Reply-To: <20200922190859.GH12990@dhcp22.suse.cz>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Tue, 22 Sep 2020 13:02:47 -0700
-Message-ID: <CAHbLzkoBRAEWeDAh8Hd+3kNUMVUr-L79m4fpXoeez0wkBqUYxw@mail.gmail.com>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200922014836.GA26507@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 12:09 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
-> > On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
-> [...]
-> > > Last but not least the memcg
-> > > background reclaim is something that should be possible without a new
-> > > interface.
-> >
-> > So, it comes down to adding more functionality/semantics to
-> > memory.high or introducing a new simple interface. I am fine with
-> > either of one but IMO convoluted memory.high might have a higher
-> > maintenance cost.
->
-> One idea would be to schedule a background worker (which work on behalf
-> on the memcg) to do the high limit reclaim with high limit target as
-> soon as the high limit is reached. There would be one work item for each
-> memcg. Userspace would recheck the high limit on return to the userspace
-> and do the reclaim if the excess is larger than a threshold, and sleep
-> as the fallback.
->
-> Excessive consumers would get throttled if the background work cannot
-> keep up with the charge pace and most of them would return without doing
-> any reclaim because there is somebody working on their behalf - and is
-> accounted for that.
->
-> The semantic of high limit would be preserved IMHO because high limit is
-> actively throttled. Where that work is done shouldn't matter as long as
-> it is accounted properly and memcg cannot outsource all the work to the
-> rest of the system.
->
-> Would something like that (with many details to be sorted out of course)
-> be feasible?
+On Mon, Sep 21, 2020 at 06:48:38PM -0700, Sean Christopherson wrote:
+> On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
+> > Hello,
+> > 
+> > This patch series adds a new SEV controller for tracking and limiting
+> > the usage of SEV ASIDs on the AMD SVM platform.
+> > 
+> > SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
+> > but this resource is in very limited quantity on a host.
+> > 
+> > This limited quantity creates issues like SEV ASID starvation and
+> > unoptimized scheduling in the cloud infrastructure.
+> > 
+> > SEV controller provides SEV ASID tracking and resource control
+> > mechanisms.
+> 
+> This should be genericized to not be SEV specific.  TDX has a similar
+> scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
+> (gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
+> would change anything, I think it'd just be a bunch of renaming.  The hardest
+> part would probably be figuring out a name :-).
+> 
+> Another idea would be to go even more generic and implement a KVM cgroup
+> that accounts the number of VMs of a particular type, e.g. legacy, SEV,
+> SEV-ES?, and TDX.  That has potential future problems though as it falls
+> apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
+> account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
+> light of day.
 
-This is exactly how our "per-memcg kswapd" works. The missing piece is
-how to account the background worker (it is a kernel work thread)
-properly as what we discussed before. You mentioned such work is WIP
-in earlier email of this thread, I think once this is done the
-per-memcg background worker could be supported easily.
+I read about the TDX and its use of the KeyID for encrypting VMs. TDX
+has two kinds of KeyIDs private and shared.
 
->
-> If we do not want to change the existing semantic of high and want a new
-> api then I think having another limit for the background reclaim then
-> that would make more sense to me. It would resemble the global reclaim
-> and kswapd model and something that would be easier to reason about.
-> Comparing to echo $N > reclaim which might mean to reclaim any number
-> pages around N.
-> --
-> Michal Hocko
-> SUSE Labs
+On AMD platform there are two types of ASIDs for encryption.
+1. SEV ASID - Normal runtime guest memory encryption.
+2. SEV-ES ASID - Extends SEV ASID by adding register state encryption with
+		 integrity.
+
+Both types of ASIDs have their own maximum value which is provisioned in
+the firmware
+
+So, we are talking about 4 different types of resources:
+1. AMD SEV ASID (implemented in this patch as sev.* files in SEV cgroup)
+2. AMD SEV-ES ASID (in future, adding files like sev_es.*)
+3. Intel TDX private KeyID
+4. Intel TDX shared KeyID
+
+TDX private KeyID is similar to SEV and SEV-ES ASID. I think coming up
+with the same name which can be used by both platforms will not be easy,
+and extensible with the future enhancements. This will get even more
+difficult if Arm also comes up with something similar but with different
+nuances.
+
+I like the idea of the KVM cgroup and when it is mounted it will have
+different files based on the hardware platform.
+
+1. KVM cgroup on AMD will have:
+sev.max & sev.current.
+sev_es.max & sev_es.current.
+
+2. KVM cgroup mounted on Intel:
+tdx_private_keys.max
+tdx_shared_keys.max
+
+The KVM cgroup can be used to have control files which are generic (no
+use case in my mind right now) and hardware platform specific files
+also.
