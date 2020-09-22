@@ -2,190 +2,139 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80362274174
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 13:49:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0DFE274225
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 14:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726648AbgIVLta (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 07:49:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57096 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726559AbgIVLtM (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 22 Sep 2020 07:49:12 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1600775349;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8iCO/PMQ+aqpQdU9hV48d1gqGMqCBV8A5LG2dYfT6fo=;
-        b=M5sgCg2s8osPJ3ZVuc42+zVIj2rTfhWYsHKcOEZf462rAvgH+jYJokdHkCOSHGqVZOQk02
-        +j+lFGNj81JgHda+nGNY0F4arMJed2grCy8lUhG+4eRTz9krPSCwXF21bu7eMA6FBxpa4F
-        EoWnqZfcRw20HrBxp76lrsc483J6gRY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5D22FAEAC;
-        Tue, 22 Sep 2020 11:49:46 +0000 (UTC)
-Date:   Tue, 22 Sep 2020 13:49:08 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Yang Shi <shy828301@gmail.com>
-Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
-Message-ID: <20200922114908.GZ12990@dhcp22.suse.cz>
-References: <20200909215752.1725525-1-shakeelb@google.com>
- <20200921163055.GQ12990@dhcp22.suse.cz>
- <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+        id S1726635AbgIVMhp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 08:37:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726631AbgIVMhp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 08:37:45 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC682C0613D1
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 05:37:44 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id n25so14009543ljj.4
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 05:37:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gA220xpuIaxUuyuMwr6nlukSuBX7MpFrxgJa3f1luDw=;
+        b=GReCqit5HTO/ziRjftty0K8XZi2ySCuJzKJveaG0MdXTTpgULihVLwMvfADeawU2QZ
+         IbAydMl3Tn/9XZF79/7c4WOv1D9hB06rNVFZ/DiHhbarrKyedLyRCcCrKNAAgAgynsvl
+         PuiO+M0DWum3yqYFnTFuppHoZ6RUqQ5x1aZtz6a6hAJDQtyZm8Nk5IuIu/m6lV5zU0Qa
+         YPhNCDslcn72ErQ130linofe9GJPNOAEaCIrlopykwgfmAJg0zLWoF20Oug79KD1o/ie
+         h0iyMZUYd3e33ZiaWMrDN63XT+TuA6+CR0zCHGKr/FQJkVpg0EeSRf5Qih1CxKrTnkq8
+         Ut5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gA220xpuIaxUuyuMwr6nlukSuBX7MpFrxgJa3f1luDw=;
+        b=Tnaa+zzJUJDCCipBraMiVCRgYrWqazeY7a1gJPbV0BTt7R/93wYltaKWRdzDZihwka
+         ckl4WmqJVb9YlpsriRwnSXmeaoHHUM875IipM/xOXrV3eLTycLCqs6tHNkY5bo6gElb7
+         /ZniWZcHyIRZTh9P7WHEbRKQLrgr7iyWHljB7V4Tc3YEfVkDTiACyFEMGqPqbOAL/NYN
+         egFVr4ML1Fjxi26Z8EwGlNpdvksCv1yEcowxtIirtTpi3vsd+jKvOg6HHiSPcuS7h3+l
+         BxgByIjTA8ooC8qiRDzC6WkC0YMKR7Dott5WTuw4P+9F0jSyKQZVWU7dalzg9C1zcPn0
+         l6fg==
+X-Gm-Message-State: AOAM533oFREBMnb1r2dr4/gLaZI4PJESZHasQTPrBn65Bd2tzojI07jc
+        s2YQXV56raEjp5J0mISkMhybi8a6q5Pk0iQBhrTdZg==
+X-Google-Smtp-Source: ABdhPJy2uCCGncfmVCuod/IiCiTTfxrKsDOlJTrFdVxVRrWlq7JKLI4j/OgY4j/S5nJzpdTEsCyW0xWnIGQadAicUpY=
+X-Received: by 2002:a2e:9089:: with SMTP id l9mr1605962ljg.408.1600778262989;
+ Tue, 22 Sep 2020 05:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+ <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
+ <20200922104252.GB9682@chrisdown.name>
+In-Reply-To: <20200922104252.GB9682@chrisdown.name>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Tue, 22 Sep 2020 20:37:32 +0800
+Message-ID: <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Chris Down <chris@chrisdown.name>
+Cc:     Michal Hocko <mhocko@suse.com>, Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon 21-09-20 10:50:14, Shakeel Butt wrote:
-> On Mon, Sep 21, 2020 at 9:30 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> > On Wed 09-09-20 14:57:52, Shakeel Butt wrote:
-> > > Introduce an memcg interface to trigger memory reclaim on a memory cgroup.
-> > >
-> > > Use cases:
-> > > ----------
-> > >
-> > > 1) Per-memcg uswapd:
-> > >
-> > > Usually applications consists of combination of latency sensitive and
-> > > latency tolerant tasks. For example, tasks serving user requests vs
-> > > tasks doing data backup for a database application. At the moment the
-> > > kernel does not differentiate between such tasks when the application
-> > > hits the memcg limits. So, potentially a latency sensitive user facing
-> > > task can get stuck in high reclaim and be throttled by the kernel.
-> > >
-> > > Similarly there are cases of single process applications having two set
-> > > of thread pools where threads from one pool have high scheduling
-> > > priority and low latency requirement. One concrete example from our
-> > > production is the VMM which have high priority low latency thread pool
-> > > for the VCPUs while separate thread pool for stats reporting, I/O
-> > > emulation, health checks and other managerial operations. The kernel
-> > > memory reclaim does not differentiate between VCPU thread or a
-> > > non-latency sensitive thread and a VCPU thread can get stuck in high
-> > > reclaim.
-> >
-> > As those are presumably in the same cgroup what does prevent them to get
-> > stuck behind shared resources with taken during the reclaim performed by
-> > somebody else? I mean, memory reclaim might drop memory used by the high
-> > priority task. Or they might simply stumble over same locks.
-> >
-> 
-> Yes there are a lot of challenges in providing isolation between
-> latency sensitive and latency tolerant jobs/threads. This proposal
-> aims to solve one specific challenge memcg limit reclaim.
-
-I am fully aware that a complete isolation is hard to achieve. I am just
-trying evaluate how is this specific usecase worth a new interface that
-we will have to maintain for ever. Especially when I suspect that the
-interface will likely only paper over immediate problems rather than
-offer a long term maintainable solution for it.
-
-> > I am also more interested in actual numbers here. The high limit reclaim
-> > is normally swift and should be mostly unnoticeable. If the reclaim gets
-> > more expensive then it can get really noticeable for sure. But for the
-> > later the same can happen with the external pro-activee reclaimer as
-> 
-> I think you meant 'uswapd' here instead of pro-active reclaimer.
+On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote:
 >
-> > well, right? So there is no real "guarantee". Do you have any numbers
-> > from your workloads where you can demonstrate that the external reclaim
-> > has saved you this amount of effective cpu time of the sensitive
-> > workload? (Essentially measure how much time it has to consume in the
-> > high limit reclaim)
+> Chunxin Zang writes:
+> >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrote:
+> >>
+> >> Chunxin Zang writes:
+> >> >My usecase is that there are two types of services in one server. The=
+y
+> >> >have difference
+> >> >priorities. Type_A has the highest priority, we need to ensure it's
+> >> >schedule latency=E3=80=81I/O
+> >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we exp=
+ect it
+> >> >will not affect
+> >> >Type_A when executed.
+> >> >So Type_A could use memory without any limit. Type_B could use memory
+> >> >only when the
+> >> >memory is absolutely sufficient. But we cannot estimate how much
+> >> >memory Type_B should
+> >> >use. Because everything is dynamic. So we can't set Type_B's memory.h=
+igh.
+> >> >
+> >> >So we want to release the memory of Type_B when global memory is
+> >> >insufficient in order
+> >> >to ensure the quality of service of Type_A . In the past, we used the
+> >> >'force_empty' interface
+> >> >of cgroup v1.
+> >>
+> >> This sounds like a perfect use case for memory.low on Type_A, and it's=
+ pretty
+> >> much exactly what we invented it for. What's the problem with that?
 > >
-> 
-> What we actually use in our production is the 'proactive reclaim'
-> which I have explained in the original message but I will add a couple
-> more sentences below.
-> 
-> For the uswapd use-case, let me point to the previous discussions and
-> feature requests by others [1, 2]. One of the limiting factors of
-> these previous proposals was the lack of CPU accounting of the
-> background reclaimer which the current proposal solves by enabling the
-> user space solution.
-> 
-> [1] https://lwn.net/Articles/753162/
-> [2] http://lkml.kernel.org/r/20200219181219.54356-1-hannes@cmpxchg.org
+> >But we cannot estimate how much memory Type_A uses at least.
+>
+> memory.low allows ballparking, you don't have to know exactly how much it=
+ uses.
+> Any amount of protection biases reclaim away from that cgroup.
+>
+> >For example:
+> >total memory: 100G
+> >At the beginning, Type_A was in an idle state, and it only used 10G of m=
+emory.
+> >The load is very low. We want to run Type_B to avoid wasting machine res=
+ources.
+> >When Type_B runs for a while, it used 80G of memory.
+> >At this time Type_A is busy, it needs more memory.
+>
+> Ok, so set memory.low for Type_A close to your maximum expected value.
 
-I remember those. My understanding was that the only problem is to
-properly account for CPU on behalf of the reclaimed cgroup and that has
-been work in progress for that.
+Please forgive me for not being able to understand why setting
+memory.low for Type_A can solve the problem.
+In my scene, Type_A is the most important, so I will set 100G to memory.low=
+.
+But 'memory.low' only takes effect passively when the kernel is
+reclaiming memory. It means that reclaim Type_B's memory only when
+Type_A  in alloc memory slow path. This will affect Type_A's
+performance.
+We want to reclaim Type_B's memory in advance when A is expected to be busy=
+.
 
-Outsourcing all that to userspace surely sounds like an attractive
-option but it comes with usual user API price. More on that later.
-
-> Let me add one more point. Even if the high limit reclaim is swift, it
-> can still take 100s of usecs. Most of our jobs are anon-only and we
-> use zswap. Compressing a page can take a couple usec, so 100s of usecs
-> in limit reclaim is normal. For latency sensitive jobs, this amount of
-> hiccups do matters.
-
-Understood. But isn't this an implementation detail of zswap? Can it
-offload some of the heavy lifting to a different context and reduce the
-general overhead?
-
-> For the proactive reclaim, based on the refault medium, we define
-> tolerable refault rate of the applications. Then we proactively
-> reclaim memory from the applications and monitor the refault rates.
-> Based on the refault rates, the memory overcommit manager controls the
-> aggressiveness of the proactive reclaim.
-> 
-> This is exactly what we do in the production. Please let me know if
-> you want to know why we do proactive reclaim in the first place.
-
-This information is definitely useful and having it in the changelog
-would be useful. IIUC the only reason why you cannot use high limit
-to control this pro-active reclaim is the potential throttling due to
-expensive reclaim, correct?
-
-> > To the feature itself, I am not yet convinced we want to have a feature
-> > like that. It surely sounds easy to use and attractive for a better user
-> > space control. It is also much well defined than drop_caches/force_empty
-> > because it is not all or nothing. But it also sounds like something too
-> > easy to use incorrectly (remember drop_caches). I am also a bit worried
-> > about corner cases wich would be easier to hit - e.g. fill up the swap
-> > limit and turn anonymous memory into unreclaimable and who knows what
-> > else.
-> 
-> The corner cases you are worried about are already possible with the
-> existing interfaces. We can already do all such things with
-> memory.high interface but with some limitations. This new interface
-> resolves that limitation as explained in the original email.
-
-You are right that misconfigured limits can result in problems. But such
-a configuration should be quite easy to spot which is not the case for
-targetted reclaim calls which do not leave any footprints behind.
-Existing interfaces are trying to not expose internal implementation
-details as much as well. You are proposing a very targeted interface to
-fine control the memory reclaim. There is a risk that userspace will
-start depending on a specific reclaim implementation/behavior and future
-changes would be prone to regressions in workloads relying on that. So
-effectively, any user space memory reclaimer would need to be tuned to a
-specific implementation of the memory reclaim. My past experience tells
-me that this is not a great thing for maintainability of neither kernel
-nor the userspace part.
-
-All that being said, we really should consider whether the proposed
-interface is trying to work around existing limitations in the reclaim
-or the interface. If this is the former then I do not think we should be
-adding it. If the later then we should discuss on how to improve our
-existing interfaces (or their implementations) to be better usable and
-allow your usecase to work better.
-
-What is your take on that Johannes?
--- 
-Michal Hocko
-SUSE Labs
+Best wishes
+Chunxin
