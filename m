@@ -2,118 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92623273EAD
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 11:39:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 38C5E273EBD
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 11:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726558AbgIVJjf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 05:39:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49520 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726353AbgIVJje (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 22 Sep 2020 05:39:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CCD2CAC6E;
-        Tue, 22 Sep 2020 09:40:08 +0000 (UTC)
-Subject: Re: [PATCH 03/13] bcache: inherit the optimal I/O size
-To:     Christoph Hellwig <hch@lst.de>, Jens Axboe <axboe@kernel.dk>
-Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
-        Richard Weinberger <richard@nod.at>,
-        Minchan Kim <minchan@kernel.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        Justin Sanders <justin@coraid.com>,
-        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
-        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
-        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
-        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-mm@kvack.org, cgroups@vger.kernel.org
-References: <20200921080734.452759-1-hch@lst.de>
- <20200921080734.452759-4-hch@lst.de>
-From:   Coly Li <colyli@suse.de>
-Autocrypt: addr=colyli@suse.de; keydata=
- mQINBFYX6S8BEAC9VSamb2aiMTQREFXK4K/W7nGnAinca7MRuFUD4JqWMJ9FakNRd/E0v30F
- qvZ2YWpidPjaIxHwu3u9tmLKqS+2vnP0k7PRHXBYbtZEMpy3kCzseNfdrNqwJ54A430BHf2S
- GMVRVENiScsnh4SnaYjFVvB8SrlhTsgVEXEBBma5Ktgq9YSoy5miatWmZvHLFTQgFMabCz/P
- j5/xzykrF6yHo0rHZtwzQzF8rriOplAFCECp/t05+OeHHxjSqSI0P/G79Ll+AJYLRRm9til/
- K6yz/1hX5xMToIkYrshDJDrUc8DjEpISQQPhG19PzaUf3vFpmnSVYprcWfJWsa2wZyyjRFkf
- J51S82WfclafNC6N7eRXedpRpG6udUAYOA1YdtlyQRZa84EJvMzW96iSL1Gf+ZGtRuM3k49H
- 1wiWOjlANiJYSIWyzJjxAd/7Xtiy/s3PRKL9u9y25ftMLFa1IljiDG+mdY7LyAGfvdtIkanr
- iBpX4gWXd7lNQFLDJMfShfu+CTMCdRzCAQ9hIHPmBeZDJxKq721CyBiGAhRxDN+TYiaG/UWT
- 7IB7LL4zJrIe/xQ8HhRO+2NvT89o0LxEFKBGg39yjTMIrjbl2ZxY488+56UV4FclubrG+t16
- r2KrandM7P5RjR+cuHhkKseim50Qsw0B+Eu33Hjry7YCihmGswARAQABtBhDb2x5IExpIDxj
- b2x5bGlAc3VzZS5kZT6JAlYEEwEIAEACGyMHCwkIBwMCAQYVCAIJCgsEFgIDAQIeAQIXgBYh
- BOo+RS/0+Uhgjej60Mc5B5Nrffj8BQJcR84dBQkY++fuAAoJEMc5B5Nrffj8ixcP/3KAKg1X
- EcoW4u/0z+Ton5rCyb/NpAww8MuRjNW82UBUac7yCi1y3OW7NtLjuBLw5SaVG5AArb7IF3U0
- qTOobqfl5XHsT0o5wFHZaKUrnHb6y7V3SplsJWfkP3JmOooJsQB3z3K96ZTkFelsNb0ZaBRu
- gV+LA4MomhQ+D3BCDR1it1OX/tpvm2uaDF6s/8uFtcDEM9eQeqATN/QAJ49nvU/I8zDSY9rc
- 0x9mP0x+gH4RccbnoPu/rUG6Fm1ZpLrbb6NpaYBBJ/V1BC4lIOjnd24bsoQrQmnJn9dSr60X
- 1MY60XDszIyzRw7vbJcUn6ZzPNFDxFFT9diIb+wBp+DD8ZlD/hnVpl4f921ZbvfOSsXAJrKB
- 1hGY17FPwelp1sPcK2mDT+pfHEMV+OQdZzD2OCKtza/5IYismJJm3oVUYMogb5vDNAw9X2aP
- XgwUuG+FDEFPamFMUwIfzYHcePfqf0mMsaeSgtA/xTxzx/0MLjUJHl46Bc0uKDhv7QUyGz0j
- Ywgr2mHTvG+NWQ/mDeHNGkcnsnp3IY7koDHnN2xMFXzY4bn9m8ctqKo2roqjCzoxD/njoAhf
- KBzdybLHATqJG/yiZSbCxDA1n/J4FzPyZ0rNHUAJ/QndmmVspE9syFpFCKigvvyrzm016+k+
- FJ59Q6RG4MSy/+J565Xj+DNY3/dCuQINBFYX6S8BEADZP+2cl4DRFaSaBms08W8/smc5T2CO
- YhAoygZn71rB7Djml2ZdvrLRjR8Qbn0Q/2L2gGUVc63pJnbrjlXSx2LfAFE0SlfYIJ11aFdF
- 9w7RvqWByQjDJor3Z0fWvPExplNgMvxpD0U0QrVT5dIGTx9hadejCl/ug09Lr6MPQn+a4+qs
- aRWwgCSHaIuDkH3zI1MJXiqXXFKUzJ/Fyx6R72rqiMPHH2nfwmMu6wOXAXb7+sXjZz5Po9GJ
- g2OcEc+rpUtKUJGyeQsnCDxUcqJXZDBi/GnhPCcraQuqiQ7EGWuJfjk51vaI/rW4bZkA9yEP
- B9rBYngbz7cQymUsfxuTT8OSlhxjP3l4ZIZFKIhDaQeZMj8pumBfEVUyiF6KVSfgfNQ/5PpM
- R4/pmGbRqrAAElhrRPbKQnCkGWDr8zG+AjN1KF6rHaFgAIO7TtZ+F28jq4reLkur0N5tQFww
- wFwxzROdeLHuZjL7eEtcnNnzSkXHczLkV4kQ3+vr/7Gm65mQfnVpg6JpwpVrbDYQeOFlxZ8+
- GERY5Dag4KgKa/4cSZX2x/5+KkQx9wHwackw5gDCvAdZ+Q81nm6tRxEYBBiVDQZYqO73stgT
- ZyrkxykUbQIy8PI+g7XMDCMnPiDncQqgf96KR3cvw4wN8QrgA6xRo8xOc2C3X7jTMQUytCz9
- 0MyV1QARAQABiQI8BBgBCAAmAhsMFiEE6j5FL/T5SGCN6PrQxzkHk2t9+PwFAlxHziAFCRj7
- 5/EACgkQxzkHk2t9+PxgfA//cH5R1DvpJPwraTAl24SUcG9EWe+NXyqveApe05nk15zEuxxd
- e4zFEjo+xYZilSveLqYHrm/amvQhsQ6JLU+8N60DZHVcXbw1Eb8CEjM5oXdbcJpXh1/1BEwl
- 4phsQMkxOTns51bGDhTQkv4lsZKvNByB9NiiMkT43EOx14rjkhHw3rnqoI7ogu8OO7XWfKcL
- CbchjJ8t3c2XK1MUe056yPpNAT2XPNF2EEBPG2Y2F4vLgEbPv1EtpGUS1+JvmK3APxjXUl5z
- 6xrxCQDWM5AAtGfM/IswVjbZYSJYyH4BQKrShzMb0rWUjkpXvvjsjt8rEXpZEYJgX9jvCoxt
- oqjCKiVLpwje9WkEe9O9VxljmPvxAhVqJjX62S+TGp93iD+mvpCoHo3+CcvyRcilz+Ko8lfO
- hS9tYT0HDUiDLvpUyH1AR2xW9RGDevGfwGTpF0K6cLouqyZNdhlmNciX48tFUGjakRFsxRmX
- K0Jx4CEZubakJe+894sX6pvNFiI7qUUdB882i5GR3v9ijVPhaMr8oGuJ3kvwBIA8lvRBGVGn
- 9xvzkQ8Prpbqh30I4NMp8MjFdkwCN6znBKPHdjNTwE5PRZH0S9J0o67IEIvHfH0eAWAsgpTz
- +jwc7VKH7vkvgscUhq/v1/PEWCAqh9UHy7R/jiUxwzw/288OpgO+i+2l11Y=
-Message-ID: <5ce140e1-a6c1-42d7-7d10-c3eb9b2785df@suse.de>
-Date:   Tue, 22 Sep 2020 17:39:24 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1726498AbgIVJoG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 05:44:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726454AbgIVJoF (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 05:44:05 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DA55C061755
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id a15so13585175ljk.2
+        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 02:44:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
+        b=HrhPC/cSVDNvm9kRZbwXzKjP6DTk7b2Nny0qurmlykw8pbZ55EM/YwnTphGw0Phb0i
+         zLX5bT+td8tZrb0mEVN/5fL82j/z07O92s3jT9d8a3W4dm57qRVrcwJUKb/E954BVUFV
+         TFAFWTS9f1YWrkJmJXHSfoOpeRSQND+w5H5Fjv8qHCsv7cOPHBTyoHb2k7c4eymMDFdn
+         36bHMIDD9tsCIpE+KTz3b5R3eCf65PHRjGW/uP65gLuixUJGJ3T+62IcXjI47ThEu5eZ
+         VV1igHblTySvW9p8oAXIc5QU5B9pDzu/21y96VHJGLYi8awC0gVsJZPlzCzJkQh6mF7V
+         96iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=guVVaBxnWrQ86fDPccANXl4ruP0cfa0fdBrEFJjzk2w=;
+        b=oDFnDf4h3uKDXEN3AL1PDODBdYTYXCUf1McpHe3XqC+bcdfzOifx+OOL5VV1rNKRGU
+         NP1031/X8TBPL49W22PXYhsIZgcD2dALfYEcoqS6jf3BxsbVo84xUMgZzApIW3VRm00S
+         3B7bQuCJUTxDIA6qaL8hrdkHwCZ9rHdu2KXH9dSVjBO9PpRnF/Jp3ntCMal17/7+/NUi
+         nZ2Dk3oiik0AOxZN5juN2UJa0sxIlQ4QGHr3Eg/pKjoaZ7zZbpSK/F8fGDqzb5Po/63v
+         jNWaX1xkrMhVwn4FYA9Ly7BG4NIG3a4paKsux7OEwOumx5lT6qc8+jA1A5JLYSsObsFV
+         sKyg==
+X-Gm-Message-State: AOAM532gMjRckIoPDXO3Af70daaa49ozbgs8WR83ZVf82VaWPpzJbG9B
+        HQ34RcxR5t5tOXbolpUuyDCSRAX4LOihdXSbsFjeCg==
+X-Google-Smtp-Source: ABdhPJxXVnl7GUvUOwrcD+5qdd9k2lu/yskeXQOKLRd98NXH9jTfBpsWC5OGIMBrUFqa0KDjRh3xVSSaQ18LIv9nGbI=
+X-Received: by 2002:a2e:b8d1:: with SMTP id s17mr1198265ljp.222.1600767843752;
+ Tue, 22 Sep 2020 02:44:03 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200921080734.452759-4-hch@lst.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20200921080255.15505-1-zangchunxin@bytedance.com>
+ <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
+ <20200921110505.GH12990@dhcp22.suse.cz>
+In-Reply-To: <20200921110505.GH12990@dhcp22.suse.cz>
+From:   Chunxin Zang <zangchunxin@bytedance.com>
+Date:   Tue, 22 Sep 2020 17:43:52 +0800
+Message-ID: <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
+ interface for cgroup v2
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
+        Jonathan Corbet <corbet@lwn.net>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
+        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 2020/9/21 16:07, Christoph Hellwig wrote:
-> Inherit the optimal I/O size setting just like the readahead window,
-> as any reason to do larger I/O does not apply to just readahead.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Mon 21-09-20 18:55:40, Yafang Shao wrote:
+> > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
+> > > > From: Chunxin Zang <zangchunxin@bytedance.com>
+> > > >
+> > > > In the cgroup v1, we have 'force_mepty' interface. This is very
+> > > > useful for userspace to actively release memory. But the cgroup
+> > > > v2 does not.
+> > > >
+> > > > This patch reuse cgroup v1's function, but have a new name for
+> > > > the interface. Because I think 'drop_cache' may be is easier to
+> > > > understand :)
+> > >
+> > > This should really explain a usecase. Global drop_caches is a terribl=
+e
+> > > interface and it has caused many problems in the past. People have
+> > > learned to use it as a remedy to any problem they might see and cause
+> > > other problems without realizing that. This is the reason why we even
+> > > log each attempt to drop caches.
+> > >
+> > > I would rather not repeat the same mistake on the memcg level unless
+> > > there is a very strong reason for it.
+> > >
+> >
+> > I think we'd better add these comments above the function
+> > mem_cgroup_force_empty() to explain why we don't want to expose this
+> > interface in cgroup2, otherwise people will continue to send this
+> > proposal without any strong reason.
+>
+> I do not mind people sending this proposal.  "V1 used to have an
+> interface, we need it in v2 as well" is not really viable without
+> providing more reasoning on the specific usecase.
+>
+> _Any_ patch should have a proper justification. This is nothing really
+> new to the process and I am wondering why this is coming as a surprise.
+>
 
-Acked-by: Coly Li <colyli@suse.de>
+I'm so sorry for that.
+My usecase is that there are two types of services in one server. They
+have difference
+priorities. Type_A has the highest priority, we need to ensure it's
+schedule latency=E3=80=81I/O
+latency=E3=80=81memory enough. Type_B has the lowest priority, we expect it
+will not affect
+Type_A when executed.
+So Type_A could use memory without any limit. Type_B could use memory
+only when the
+memory is absolutely sufficient. But we cannot estimate how much
+memory Type_B should
+use. Because everything is dynamic. So we can't set Type_B's memory.high.
 
-Thanks.
+So we want to release the memory of Type_B when global memory is
+insufficient in order
+to ensure the quality of service of Type_A . In the past, we used the
+'force_empty' interface
+of cgroup v1.
 
-Coly Li
+> --
+> Michal Hocko
+> SUSE Labs
 
-> ---
->  drivers/md/bcache/super.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-> index 1bbdc410ee3c51..48113005ed86ad 100644
-> --- a/drivers/md/bcache/super.c
-> +++ b/drivers/md/bcache/super.c
-> @@ -1430,6 +1430,8 @@ static int cached_dev_init(struct cached_dev *dc, unsigned int block_size)
->  	dc->disk.disk->queue->backing_dev_info->ra_pages =
->  		max(dc->disk.disk->queue->backing_dev_info->ra_pages,
->  		    q->backing_dev_info->ra_pages);
-> +	blk_queue_io_opt(dc->disk.disk->queue,
-> +		max(queue_io_opt(dc->disk.disk->queue), queue_io_opt(q)));
->  
->  	atomic_set(&dc->io_errors, 0);
->  	dc->io_disable = false;
-> 
-
+Best wishes
+Chunxin
