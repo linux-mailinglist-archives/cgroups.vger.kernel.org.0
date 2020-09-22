@@ -2,113 +2,127 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815DE27461C
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 18:05:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9042A274707
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 18:55:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726728AbgIVQFQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 12:05:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726680AbgIVQFQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 12:05:16 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBC42C0613CF
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 09:05:14 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id k14so12316988pgi.9
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 09:05:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=3cb2ln5okcTwbkZwIHw36/uS8TyOTC34MG+GPkwSrZc=;
-        b=ket6MFsKGgeTKg06rAwU3VDAPgvifvWos8wL/PnPWPRsfN8itIg22pijPAXgFiUxD8
-         Fd7QHl+cLoi+AojYI/uzZLiSnkiKfZrV0aT1MEDwgG5wUcL5BAy0o6ZN9q6zf5x5EzEe
-         +vgACDfDyXI94Lso05jFSaPdPdjsYsl78/DZsmWSL+HdbBnaqlPM35rtfcVt5gLOelRw
-         Yo9TEUDsIhXgyB14PuoaFO8HxUGK2iYlLlmUDF49sNxPlVfj/fCxmT+ONyEa9FVYQg8v
-         qBO57Zf8p6I4kE7DkzGlQqZdpm45ZncnEFrK0CQkrt73NeKcuVR1Km00Fjp55T7bNcux
-         ++6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=3cb2ln5okcTwbkZwIHw36/uS8TyOTC34MG+GPkwSrZc=;
-        b=LxYxsf/IDOcMSmtj0LRFMsDyT/WqSLHF6HJLmN8+BcXALtNO9+z0iHfWBvb0pk6K60
-         2dyvJrenxBR0agOqI+0UdZuDAfLwbkniRLTWyWZKbAkasvYEMeAu6pnqNOeTXDbPo10r
-         FjJNc5f2iVrIiNJzUWgfB4bU90bw/F8f36I6l5Z2V7tVHyxYVOu+ZY6XeUvNp7WFZCQv
-         axfPTGA9mO/H0SQBU18MXjifgpJgva40suEPipJ3mEbj8YffzsaRDbT21Pyvj9LRxNZY
-         BRjqStr9y4ZWJCOl6oS6rMyVJ1jZh+4A6P6aOD4xwy98XuHcsnx+Hg+JQISLK+a0CHRB
-         hvmw==
-X-Gm-Message-State: AOAM533ISqIB0ij1f/26f4UYlShrqdgxsfbVbscerlnlOovH/yv1Fi74
-        Fxsc13we5OaDcnEhiBJA+u+MiQ==
-X-Google-Smtp-Source: ABdhPJwDhQVCK5kMBC//E0Erf3yB57sWYMqIm4wY94GLY8PY9N2Jd3FgOvpyMgKERXA4LDx3m9cFUg==
-X-Received: by 2002:a17:902:bb85:b029:d2:21cf:dc77 with SMTP id m5-20020a170902bb85b02900d221cfdc77mr5483863pls.66.1600790714148;
-        Tue, 22 Sep 2020 09:05:14 -0700 (PDT)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id i1sm15473209pfk.21.2020.09.22.09.05.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 22 Sep 2020 09:05:13 -0700 (PDT)
-Date:   Tue, 22 Sep 2020 09:05:08 -0700
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
-        joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
-        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Erdem Aktas <erdemaktas@google.com>
-Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
-Message-ID: <20200922160508.GA4017872@google.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
- <20200922004024.3699923-2-vipinsh@google.com>
- <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
- <20200922012227.GA26483@linux.intel.com>
+        id S1726614AbgIVQzf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 12:55:35 -0400
+Received: from mx2.suse.de ([195.135.220.15]:42354 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726558AbgIVQzf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 22 Sep 2020 12:55:35 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1600793733;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5jCObW2aZuYsbwA3+WNFccCphyTXD8hTQNq4fK3Vcz4=;
+        b=hzHNG52oRkd8BTbo/rvSiMraoa3PW+GRD3nIN/EKcbZ1CcZkYHkNfV7IqIX12/325qcZP5
+        rIk2+5rEZzHWH5/tM/25LnBmaoGyWt0r8F2V2paOE5XNRFwpqnGImXV+mDk7khw/js3/3h
+        YaNIIXAhRI97QIaQHHtm1a+yn8pPrTY=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 64A23AD32;
+        Tue, 22 Sep 2020 16:56:10 +0000 (UTC)
+Date:   Tue, 22 Sep 2020 18:55:27 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Yang Shi <shy828301@gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20200922165527.GD12990@dhcp22.suse.cz>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+ <20200922114908.GZ12990@dhcp22.suse.cz>
+ <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20200922012227.GA26483@linux.intel.com>
+In-Reply-To: <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 06:22:28PM -0700, Sean Christopherson wrote:
-> On Mon, Sep 21, 2020 at 06:04:04PM -0700, Randy Dunlap wrote:
-> > Hi,
-> > 
-> > On 9/21/20 5:40 PM, Vipin Sharma wrote:
-> > > diff --git a/init/Kconfig b/init/Kconfig
-> > > index d6a0b31b13dc..1a57c362b803 100644
-> > > --- a/init/Kconfig
-> > > +++ b/init/Kconfig
-> > > @@ -1101,6 +1101,20 @@ config CGROUP_BPF
-> > >  	  BPF_CGROUP_INET_INGRESS will be executed on the ingress path of
-> > >  	  inet sockets.
-> > >  
-> > > +config CGROUP_SEV
-> > > +	bool "SEV ASID controller"
-> > > +	depends on KVM_AMD_SEV
-> > > +	default n
-> > > +	help
-> > > +	  Provides a controller for AMD SEV ASIDs. This controller limits and
-> > > +	  shows the total usage of SEV ASIDs used in encrypted VMs on AMD
-> > > +	  processors. Whenever a new encrypted VM is created using SEV on an
-> > > +	  AMD processor, this controller will check the current limit in the
-> > > +	  cgroup to which the task belongs and will deny the SEV ASID if the
-> > > +	  cgroup has already reached its limit.
-> > > +
-> > > +	  Say N if unsure.
-> > 
-> > Something here (either in the bool prompt string or the help text) should
-> > let a reader know w.t.h. SEV means.
-> > 
-> > Without having to look in other places...
+On Tue 22-09-20 08:54:25, Shakeel Butt wrote:
+> On Tue, Sep 22, 2020 at 4:49 AM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Mon 21-09-20 10:50:14, Shakeel Butt wrote:
+[...]
+> > > Let me add one more point. Even if the high limit reclaim is swift, it
+> > > can still take 100s of usecs. Most of our jobs are anon-only and we
+> > > use zswap. Compressing a page can take a couple usec, so 100s of usecs
+> > > in limit reclaim is normal. For latency sensitive jobs, this amount of
+> > > hiccups do matters.
+> >
+> > Understood. But isn't this an implementation detail of zswap? Can it
+> > offload some of the heavy lifting to a different context and reduce the
+> > general overhead?
+> >
 > 
-> ASIDs too.  I'd also love to see more info in the docs and/or cover letter
-> to explain why ASID management on SEV requires a cgroup.  I know what an
-> ASID is, and have a decent idea of how KVM manages ASIDs for legacy VMs, but
-> I know nothing about why ASIDs are limited for SEV and not legacy VMs.
+> Are you saying doing the compression asynchronously? Similar to how
+> the disk-based swap triggers the writeback and puts the page back to
+> LRU, so the next time reclaim sees it, it will be instantly reclaimed?
+> Or send the batch of pages to be compressed to a different CPU and
+> wait for the completion?
 
-Thanks for the feedback, I will add more details in the Kconfig and the
-documentation about SEV and ASID.
+Yes.
+
+[...]
+
+> > You are right that misconfigured limits can result in problems. But such
+> > a configuration should be quite easy to spot which is not the case for
+> > targetted reclaim calls which do not leave any footprints behind.
+> > Existing interfaces are trying to not expose internal implementation
+> > details as much as well. You are proposing a very targeted interface to
+> > fine control the memory reclaim. There is a risk that userspace will
+> > start depending on a specific reclaim implementation/behavior and future
+> > changes would be prone to regressions in workloads relying on that. So
+> > effectively, any user space memory reclaimer would need to be tuned to a
+> > specific implementation of the memory reclaim.
+> 
+> I don't see the exposure of internal memory reclaim implementation.
+> The interface is very simple. Reclaim a given amount of memory. Either
+> the kernel will reclaim less memory or it will over reclaim. In case
+> of reclaiming less memory, the user space can retry given there is
+> enough reclaimable memory. For the over reclaim case, the user space
+> will backoff for a longer time. How are the internal reclaim
+> implementation details exposed?
+
+In an ideal world yes. A feedback mechanism will be independent on the
+particular implementation. But the reality tends to disagree quite
+often. Once we provide a tool there will be users using it to the best
+of their knowlege. Very often as a hammer. This is what the history of
+kernel regressions and "we have to revert an obvious fix because
+userspace depends on an undocumented behavior which happened to work for
+some time" has thought us in a hard way.
+
+I really do not want to deal with reports where a new heuristic in the
+memory reclaim will break something just because the reclaim takes
+slightly longer or over/under reclaims differently so the existing
+assumptions break and the overall balancing from userspace breaks.
+
+This might be a shiny exception of course. And please note that I am not
+saying that the interface is completely wrong or unacceptable. I just
+want to be absolutely sure we cannot move forward with the existing API
+space that we have.
+
+So far I have learned that you are primarily working around an
+implementation detail in the zswap which is doing the swapout path
+directly in the pageout path. That sounds like a very bad reason to add
+a new interface. You are right that there are likely other usecases to
+like this new interface - mostly to emulate drop_caches - but I believe
+those are quite misguided as well and we should work harder to help
+them out to use the existing APIs. Last but not least the memcg
+background reclaim is something that should be possible without a new
+interface.
+-- 
+Michal Hocko
+SUSE Labs
