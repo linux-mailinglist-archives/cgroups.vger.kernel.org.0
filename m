@@ -2,173 +2,343 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2A422739A7
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 06:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20BA52739F8
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 06:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728300AbgIVEV3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 00:21:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726790AbgIVEV2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 00:21:28 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFD2DC061755;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id y2so5319600ila.0;
-        Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=eF/EbBSe9yFBqTjdwzbFsunrkCPqbYXgfxHDSEkrckP5A1JHkh3XKpgKh1/IGo/vpm
-         PxlwoZMqDyyio84Vt96+iIDsRTiLJBgiQsTvGsDCpKt/pgm36IvvjTbwaqIKrGYde6Hi
-         0BHrqmtRg+GVQzDb9NRZEk/zfFZn8kaIVBnLwClJLRYsQc+uNdTo9V0vEmmil93p8bpC
-         gB9+qh4AB+tp0jmSgoo6Fcn9UmBpXDRPaykudNaQMqKbTqnFcAEL0jv3aGMx7vnanVue
-         GIlYCRrZPBKR9PHUH6u1kyqfeUZu/yQM1gKgTq9owy3HhmFOH2sUvEg8zRosVx5M7MpM
-         vbyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZNNbuALh04//uifYVPdDjh++fb2lT/Xqcs4an3gHVio=;
-        b=ELqTN1ptjUZ0xy1YDpLE9z7r94uOTlGql3AEKLgPWcJXgJxfN5qBJI5wwUnzNN5+CK
-         F6F8WcjvtJ6qqGaxdqwMvfQIal0zB5TqIoeFxdP03h1px1mgZtrFM9DST+aHm2ggBqRf
-         IOGR9K1f/anaiHIZ+IMzg+DpSb5LpJ9o0sEZNvW+Fb+Ezv6dbZkmiV2vPBiKpJp14yNE
-         1VhxKOtYIG0ZQUGkHnTUlo30LabxAB2vKp0ISXefpHWkuhTF7kvDp3GqCXWqa7tjNP7Q
-         waA1ZvlQCjDtbUmX2HMx/dvOUiFkJIYshrms/VzlxyKF+AcmkNzQ1EWTCwWch4nMQHdj
-         NYXw==
-X-Gm-Message-State: AOAM532YZq5wlZa8xJvtykpux3TuSunX5IuatjMb46MZB0W4/dgqYZHe
-        peysrAANkkMyU6wUEk5fRXpopzv6nvwEgV1qlzc=
-X-Google-Smtp-Source: ABdhPJzDl8MdjPVNRJmS4FRLkv0hUY6IYs3el3g0ioVtIQKA0mfz3YZi4KUDwxEL6Q++VW2yZEYb9pNfWRlG4ObXVfo=
-X-Received: by 2002:a92:c7b0:: with SMTP id f16mr2847131ilk.137.1600748488148;
- Mon, 21 Sep 2020 21:21:28 -0700 (PDT)
+        id S1728641AbgIVE7X (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 00:59:23 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:32320 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726533AbgIVE7X (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 00:59:23 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U9k1AHg_1600750746;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9k1AHg_1600750746)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 22 Sep 2020 12:59:08 +0800
+Subject: Re: [PATCH v18 17/32] mm/compaction: do page isolation first in
+ compaction
+To:     Hugh Dickins <hughd@google.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598273705-69124-18-git-send-email-alex.shi@linux.alibaba.com>
+ <alpine.LSU.2.11.2009211617080.5214@eggly.anvils>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <a9024c46-c344-0f6f-7e1b-a96e3c803201@linux.alibaba.com>
+Date:   Tue, 22 Sep 2020 12:57:00 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CALOAHbCDXwjN+WDSGVv+G3ho-YRRPjAAqMJBtyxeGHH6utb5ew@mail.gmail.com>
- <20200921113646.GJ12990@dhcp22.suse.cz>
-In-Reply-To: <20200921113646.GJ12990@dhcp22.suse.cz>
-From:   Yafang Shao <laoar.shao@gmail.com>
-Date:   Tue, 22 Sep 2020 12:20:52 +0800
-Message-ID: <CALOAHbCker64WEW9w4oq8=avA6oKf3-Jrn-vOOgkpqkV3g+CYA@mail.gmail.com>
-Subject: Re: [PATCH] mm/memcontrol: Add the drop_cache interface for cgroup v2
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     zangchunxin@bytedance.com, Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, lizefan@huawei.com,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
-        Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <alpine.LSU.2.11.2009211617080.5214@eggly.anvils>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 7:36 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 21-09-20 19:23:01, Yafang Shao wrote:
-> > On Mon, Sep 21, 2020 at 7:05 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Mon 21-09-20 18:55:40, Yafang Shao wrote:
-> > > > On Mon, Sep 21, 2020 at 4:12 PM Michal Hocko <mhocko@suse.com> wrote:
-> > > > >
-> > > > > On Mon 21-09-20 16:02:55, zangchunxin@bytedance.com wrote:
-> > > > > > From: Chunxin Zang <zangchunxin@bytedance.com>
-> > > > > >
-> > > > > > In the cgroup v1, we have 'force_mepty' interface. This is very
-> > > > > > useful for userspace to actively release memory. But the cgroup
-> > > > > > v2 does not.
-> > > > > >
-> > > > > > This patch reuse cgroup v1's function, but have a new name for
-> > > > > > the interface. Because I think 'drop_cache' may be is easier to
-> > > > > > understand :)
-> > > > >
-> > > > > This should really explain a usecase. Global drop_caches is a terrible
-> > > > > interface and it has caused many problems in the past. People have
-> > > > > learned to use it as a remedy to any problem they might see and cause
-> > > > > other problems without realizing that. This is the reason why we even
-> > > > > log each attempt to drop caches.
-> > > > >
-> > > > > I would rather not repeat the same mistake on the memcg level unless
-> > > > > there is a very strong reason for it.
-> > > > >
-> > > >
-> > > > I think we'd better add these comments above the function
-> > > > mem_cgroup_force_empty() to explain why we don't want to expose this
-> > > > interface in cgroup2, otherwise people will continue to send this
-> > > > proposal without any strong reason.
-> > >
-> > > I do not mind people sending this proposal.  "V1 used to have an
-> > > interface, we need it in v2 as well" is not really viable without
-> > > providing more reasoning on the specific usecase.
-> > >
-> > > _Any_ patch should have a proper justification. This is nothing really
-> > > new to the process and I am wondering why this is coming as a surprise.
-> > >
-> >
-> > Container users always want to drop cache in a specific container,
-> > because they used to use drop_caches to fix memory pressure issues.
->
-> This is exactly the kind of problems we have seen in the past. There
-> should be zero reason to addre potential reclaim problems by dropping
-> page cache on the floor. There is a huge cargo cult about this
-> procedure and I have seen numerous reports when people complained about
-> performance afterwards just to learn that the dropped page cache was one
-> of the resons for that.
->
-> > Although drop_caches can cause some unexpected issues, it could also
-> > fix some issues.
->
-> "Some issues" is way too general. We really want to learn about those
-> issues and address them properly.
->
-
-One use case in our production environment is that some of our tasks
-become very latency sensitive from 7am to 10am, so before these tasks
-become active we will use drop_caches to drop page caches generated by
-other tasks at night to avoid these tasks triggering direct reclaim.
-The best way to do it is to fix the latency in direct reclaim, but it
-will take great effort. while drop_caches give us an easier way to
-achieve the same goal.
-IOW, drop_caches give the users an option to achieve their goal before
-they find a better solution.
-
-> > So container users want to use it in containers as
-> > well.
-> > If this feature is not implemented in cgroup, they will ask you why
-> > but there is no explanation in the kernel.
->
-> There is no usecase that would really require it so far.
->
-> > Regarding the memory.high, it is not perfect as well, because you have
-> > to set it to 0 to drop_caches, and the processes in the containers
-> > have to reclaim pages as well because they reach the memory.high, but
-> > memory.force_empty won't make other processes to reclaim.
->
-> Since 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering
-> memory.high") the limit is set after the reclaim so the race window when
-> somebody would be pushed to high limit reclaim is reduced. But I do
-> agree this is just a workaround.
->
-> > That doesn't mean I agree to add this interface, while I really mean
-> > that if we discard one feature we'd better explain why.
->
-> We need to understand why somebody wants an interface because once it is
-> added it will have to be maintained for ever.
-> --
-> Michal Hocko
-> SUSE Labs
 
 
+ÔÚ 2020/9/22 ÉÏÎç7:49, Hugh Dickins Ð´µÀ:
+> On Mon, 24 Aug 2020, Alex Shi wrote:
+> 
+>> Currently, compaction would get the lru_lock and then do page isolation
+>> which works fine with pgdat->lru_lock, since any page isoltion would
+>> compete for the lru_lock. If we want to change to memcg lru_lock, we
+>> have to isolate the page before getting lru_lock, thus isoltion would
+>> block page's memcg change which relay on page isoltion too. Then we
+>> could safely use per memcg lru_lock later.
+>>
+>> The new page isolation use previous introduced TestClearPageLRU() +
+>> pgdat lru locking which will be changed to memcg lru lock later.
+>>
+>> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
+>> early version:
+>>
+>> Fix lots of crashes under compaction load: isolate_migratepages_block()
+>> must clean up appropriately when rejecting a page, setting PageLRU again
+>> if it had been cleared; and a put_page() after get_page_unless_zero()
+>> cannot safely be done while holding locked_lruvec - it may turn out to
+>> be the final put_page(), which will take an lruvec lock when PageLRU.
+>> And move __isolate_lru_page_prepare back after get_page_unless_zero to
+>> make trylock_page() safe:
+>> trylock_page() is not safe to use at this time: its setting PG_locked
+>> can race with the page being freed or allocated ("Bad page"), and can
+>> also erase flags being set by one of those "sole owners" of a freshly
+>> allocated page who use non-atomic __SetPageFlag().
+>>
+>> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+>> Signed-off-by: Hugh Dickins <hughd@google.com>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> 
+> Okay, whatever. I was about to say
+> Acked-by: Hugh Dickins <hughd@google.com>
 
--- 
-Thanks
-Yafang
+Thanks!
+
+> With my signed-off-by there, someone will ask if it should say
+> "From: Hugh ..." at the top: no, it should not, this is Alex's patch,
+> but I proposed some fixes to it, as you already acknowledged.
+
+I guess you prefer to remove your signed off here, don't you?
+
+> 
+> A couple of comments below on the mm/vmscan.c part of it.
+> 
+>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>> Cc: Matthew Wilcox <willy@infradead.org>
+>> Cc: linux-kernel@vger.kernel.org
+>> Cc: linux-mm@kvack.org
+>> ---
+>>  include/linux/swap.h |  2 +-
+>>  mm/compaction.c      | 42 +++++++++++++++++++++++++++++++++---------
+>>  mm/vmscan.c          | 46 ++++++++++++++++++++++++++--------------------
+>>  3 files changed, 60 insertions(+), 30 deletions(-)
+>>
+>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>> index 43e6b3458f58..550fdfdc3506 100644
+>> --- a/include/linux/swap.h
+>> +++ b/include/linux/swap.h
+>> @@ -357,7 +357,7 @@ extern void lru_cache_add_inactive_or_unevictable(struct page *page,
+>>  extern unsigned long zone_reclaimable_pages(struct zone *zone);
+>>  extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
+>>  					gfp_t gfp_mask, nodemask_t *mask);
+>> -extern int __isolate_lru_page(struct page *page, isolate_mode_t mode);
+>> +extern int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode);
+>>  extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>>  						  unsigned long nr_pages,
+>>  						  gfp_t gfp_mask,
+>> diff --git a/mm/compaction.c b/mm/compaction.c
+>> index 4e2c66869041..253382d99969 100644
+>> --- a/mm/compaction.c
+>> +++ b/mm/compaction.c
+>> @@ -887,6 +887,7 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  		if (!valid_page && IS_ALIGNED(low_pfn, pageblock_nr_pages)) {
+>>  			if (!cc->ignore_skip_hint && get_pageblock_skip(page)) {
+>>  				low_pfn = end_pfn;
+>> +				page = NULL;
+>>  				goto isolate_abort;
+>>  			}
+>>  			valid_page = page;
+>> @@ -968,6 +969,21 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  		if (!(cc->gfp_mask & __GFP_FS) && page_mapping(page))
+>>  			goto isolate_fail;
+>>  
+>> +		/*
+>> +		 * Be careful not to clear PageLRU until after we're
+>> +		 * sure the page is not being freed elsewhere -- the
+>> +		 * page release code relies on it.
+>> +		 */
+>> +		if (unlikely(!get_page_unless_zero(page)))
+>> +			goto isolate_fail;
+>> +
+>> +		if (__isolate_lru_page_prepare(page, isolate_mode) != 0)
+>> +			goto isolate_fail_put;
+>> +
+>> +		/* Try isolate the page */
+>> +		if (!TestClearPageLRU(page))
+>> +			goto isolate_fail_put;
+>> +
+>>  		/* If we already hold the lock, we can skip some rechecking */
+>>  		if (!locked) {
+>>  			locked = compact_lock_irqsave(&pgdat->lru_lock,
+>> @@ -980,10 +996,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  					goto isolate_abort;
+>>  			}
+>>  
+>> -			/* Recheck PageLRU and PageCompound under lock */
+>> -			if (!PageLRU(page))
+>> -				goto isolate_fail;
+>> -
+>>  			/*
+>>  			 * Page become compound since the non-locked check,
+>>  			 * and it's on LRU. It can only be a THP so the order
+>> @@ -991,16 +1003,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  			 */
+>>  			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
+>>  				low_pfn += compound_nr(page) - 1;
+>> -				goto isolate_fail;
+>> +				SetPageLRU(page);
+>> +				goto isolate_fail_put;
+>>  			}
+>>  		}
+>>  
+>>  		lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>>  
+>> -		/* Try isolate the page */
+>> -		if (__isolate_lru_page(page, isolate_mode) != 0)
+>> -			goto isolate_fail;
+>> -
+>>  		/* The whole page is taken off the LRU; skip the tail pages. */
+>>  		if (PageCompound(page))
+>>  			low_pfn += compound_nr(page) - 1;
+>> @@ -1029,6 +1038,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  		}
+>>  
+>>  		continue;
+>> +
+>> +isolate_fail_put:
+>> +		/* Avoid potential deadlock in freeing page under lru_lock */
+>> +		if (locked) {
+>> +			spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>> +			locked = false;
+>> +		}
+>> +		put_page(page);
+>> +
+>>  isolate_fail:
+>>  		if (!skip_on_failure)
+>>  			continue;
+>> @@ -1065,9 +1083,15 @@ static bool too_many_isolated(pg_data_t *pgdat)
+>>  	if (unlikely(low_pfn > end_pfn))
+>>  		low_pfn = end_pfn;
+>>  
+>> +	page = NULL;
+>> +
+>>  isolate_abort:
+>>  	if (locked)
+>>  		spin_unlock_irqrestore(&pgdat->lru_lock, flags);
+>> +	if (page) {
+>> +		SetPageLRU(page);
+>> +		put_page(page);
+>> +	}
+>>  
+>>  	/*
+>>  	 * Updated the cached scanner pfn once the pageblock has been scanned
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 1b3e0eeaad64..48b50695f883 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -1538,20 +1538,20 @@ unsigned int reclaim_clean_pages_from_list(struct zone *zone,
+>>   *
+>>   * returns 0 on success, -ve errno on failure.
+>>   */
+>> -int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+>> +int __isolate_lru_page_prepare(struct page *page, isolate_mode_t mode)
+>>  {
+>>  	int ret = -EINVAL;
+>>  
+>> -	/* Only take pages on the LRU. */
+>> -	if (!PageLRU(page))
+>> -		return ret;
+>> -
+>>  	/* Compaction should not handle unevictable pages but CMA can do so */
+>>  	if (PageUnevictable(page) && !(mode & ISOLATE_UNEVICTABLE))
+>>  		return ret;
+>>  
+>>  	ret = -EBUSY;
+>>  
+>> +	/* Only take pages on the LRU. */
+>> +	if (!PageLRU(page))
+>> +		return ret;
+>> +
+> 
+> So here you do deal with that BUG() issue.  But I'd prefer you to leave
+> it as I suggested in 16/32, just start with "int ret = -EBUSY;" and
+> don't rearrange the checks here at all.  I say that partly because
+> the !PageLRU check is very important (when called for compaction), and
+> the easier it is to find (at the very start), the less anxious I get!
+
+yes, have done as your suggestion.
+
+> 
+>>  	/*
+>>  	 * To minimise LRU disruption, the caller can indicate that it only
+>>  	 * wants to isolate pages it will be able to operate on without
+>> @@ -1592,20 +1592,9 @@ int __isolate_lru_page(struct page *page, isolate_mode_t mode)
+>>  	if ((mode & ISOLATE_UNMAPPED) && page_mapped(page))
+>>  		return ret;
+>>  
+>> -	if (likely(get_page_unless_zero(page))) {
+>> -		/*
+>> -		 * Be careful not to clear PageLRU until after we're
+>> -		 * sure the page is not being freed elsewhere -- the
+>> -		 * page release code relies on it.
+>> -		 */
+>> -		ClearPageLRU(page);
+>> -		ret = 0;
+>> -	}
+>> -
+>> -	return ret;
+>> +	return 0;
+>>  }
+>>  
+>> -
+>>  /*
+>>   * Update LRU sizes after isolating pages. The LRU size updates must
+>>   * be complete before mem_cgroup_update_lru_size due to a sanity check.
+>> @@ -1685,17 +1674,34 @@ static unsigned long isolate_lru_pages(unsigned long nr_to_scan,
+>>  		 * only when the page is being freed somewhere else.
+>>  		 */
+>>  		scan += nr_pages;
+>> -		switch (__isolate_lru_page(page, mode)) {
+>> +		switch (__isolate_lru_page_prepare(page, mode)) {
+>>  		case 0:
+>> +			/*
+>> +			 * Be careful not to clear PageLRU until after we're
+>> +			 * sure the page is not being freed elsewhere -- the
+>> +			 * page release code relies on it.
+>> +			 */
+>> +			if (unlikely(!get_page_unless_zero(page)))
+>> +				goto busy;
+>> +
+>> +			if (!TestClearPageLRU(page)) {
+>> +				/*
+>> +				 * This page may in other isolation path,
+>> +				 * but we still hold lru_lock.
+>> +				 */
+>> +				put_page(page);
+>> +				goto busy;
+>> +			}
+>> +
+>>  			nr_taken += nr_pages;
+>>  			nr_zone_taken[page_zonenum(page)] += nr_pages;
+>>  			list_move(&page->lru, dst);
+>>  			break;
+>> -
+>> +busy:
+>>  		case -EBUSY:
+> 
+> It's a long time since I read a C manual. I had to try that out in a
+> little test program: and it does seem to do the right thing.  Maybe
+> I'm just very ignorant, and everybody else finds that natural: but I'd
+> feel more comfortable with the busy label on the line after the
+> "case -EBUSY:" - wouldn't you?
+
+will move down. Thanks!
+
+> 
+> You could, of course, change that "case -EBUSY" to "default",
+> and delete the "default: BUG();" that follows: whatever you prefer.
+> 
+
+yes, the default is enough after last patch's change.
+
+>>  			/* else it is being freed elsewhere */
+>>  			list_move(&page->lru, src);
+>> -			continue;
+>> +			break;
+> 
+> Aha. Yes, I like that change, I'm not going to throw a tantrum,
+> accusing you of sneaking in unrelated changes etc. You made me look
+> back at the history: it was "continue" from back in the days of
+> lumpy reclaim, when there was stuff after the switch statement
+> which needed to be skipped in the -EBUSY case.  "break" looks
+> more natural to me now.
+
+Thanks!
+with above 'default' change, the break could be saved finally. :)
+
+Thanks!
+
+> 
+>>  
+>>  		default:
+>>  			BUG();
+>> -- 
+>> 1.8.3.1
