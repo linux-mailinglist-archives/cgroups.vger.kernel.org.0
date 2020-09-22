@@ -2,162 +2,121 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D84927499E
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 21:57:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCDC2749BA
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 22:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726703AbgIVT5e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 22 Sep 2020 15:57:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59974 "EHLO
+        id S1726563AbgIVUDC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 22 Sep 2020 16:03:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60816 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726577AbgIVT5d (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 15:57:33 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DC0AC061755
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id k25so15222458ljk.0
-        for <cgroups@vger.kernel.org>; Tue, 22 Sep 2020 12:57:33 -0700 (PDT)
+        with ESMTP id S1726550AbgIVUDC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 22 Sep 2020 16:03:02 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D004C061755;
+        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id o8so24607139ejb.10;
+        Tue, 22 Sep 2020 13:03:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
-        b=c9Y5X31ITFROkCz58BWDmVOTUSXQxwKVO0+YO5gM7Dueho0fqdMOddqGunqR3K1DSz
-         koftFlaQy5AWDynEFTUKrj/IhzVPvGkhTp5Nxa+Zlib8R9NmI9XnuBG9iHCHh7KcMQ/B
-         R2VvMWJxVq3CuEFElE+lE4DkpmSBO4nOKPEAgpV6PF+cdQ0sJlc2ScNbTbgx8wIlp+Dj
-         kZAs1jbuzLo5f/4MpCexanAo64EI9+2+h41TrGEHG8twyTTttEPJrctB/YnAZ2+HkB5k
-         uWovA5v2eCiXYkMwI/ZVzbxoqj8LOi8G4gzoBn6tiRDAJ7YqjH0xAUIYJg7tM5JKyukd
-         +iUg==
+         :cc;
+        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
+        b=gQf7T+W348/cUa7xWPDW9mvfpBriiULeP1ZiFwI/jDSAJXi3GsqBEJgVzaZkuZ3KCN
+         DAYlg61fYR1XNjaNGtmQGHh+hKXwEWxOJ2n9Ghee/kUzRlnQLH4Zeu/fTNenx15m6XXp
+         FX71AJvEK80xn0Xkbrrlt/6VoGll00mpOfki/B1Ag5oQTK/iMuyJLByVfKQai4xyvfj0
+         6cq+Fp5kLtWHQ1iy4C4sDrTPsNplpHsgHhuCGhzzQTpVKI0kxMIqTs4NYwGmwWMehVua
+         LE3pRNdZ19xyq6AwCiTwJBamQsck+Xhems9XXbzyJSxo7b4G4hWnCHQ+KzCpyQTnyven
+         0LKw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Z6CQ4PR7LXXUvvSI+PnJV2oiFyZAUecU41+cGfwOujU=;
-        b=nVpSqx1elHraBJylJfPJhY7191j1TrCB2PTtZeHnCmBfsJDK3U3fivEK+qO42WxFd1
-         bsdiIcjdIp/ef5SifZmfC5XwhW+uaOtZjKAI7engMzdcT/eR1bcTrdKLd+LQcuWDc+xP
-         AEVHoES/R4gQRcVAfMSULk8BpjpF0hXW5oMYNVqI1iTfhisv3G3CCAoTU4KJThAWv1dK
-         J/PaDc4WbUmX/awOfWDdittc6mOVJMeR6TpSXXLrK2UEqhPvPx4MxNjXnRFt6WuBfbgd
-         WO+1hyCXpG4gOKuftCq3aqNcHQIXQiOI4MD8+PJW2AP0JRhYrmdzyr+69QJbCH0UOYRm
-         qJFg==
-X-Gm-Message-State: AOAM533MhCvsZbwZdNKpcQHnzUKlJi524kCLJWcd883r8drOeQWXscUU
-        7N/gco/qp0C9nPArywBp1NfiY8qx180lbWBLkAwZ6Q==
-X-Google-Smtp-Source: ABdhPJzYews2Ih4OsV/9BJPJX66ITSb1cl147pd8KN4Cqs6H0ueYwNCOPq7ksxkbE9zvtTGB9qj/7KwbIsYjwO4rXFQ=
-X-Received: by 2002:a2e:7c09:: with SMTP id x9mr1916202ljc.192.1600804651550;
- Tue, 22 Sep 2020 12:57:31 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=Ux/FWhUKlfKba4R9gSVXh2d9U57fEhQO969QMh4dk+k=;
+        b=N+2KpZLN+5mB2r2CVLvgX29NKSq4cFmCKw3En9MlLy2gVt79c5YBCRXfmeFnCwMTQz
+         SK/I3EK3fhChS2ounQCBU0V8PqwtV0I5qJc7MF9luUwIvuAsTAoknDMQdVDUAMK9Arym
+         mBvicK9DTvGjxykBddhOAecy+lethJrVZzFIs6hp0bJSOcXd2O5OBON20+iIFnUVU8tG
+         PUxkSLJAQLE3DtyVgtyXd5iAX7nxt3hfRdH+pza9uiRcqgUSkSVebGH6IrLJty7X5uEU
+         QdF85RqYnFS/eWA+axAL+Gv68QgX1cCJ4kAEkXOLIYIbRv4ANJzzE+FW/tNvxYnvyItp
+         XAVQ==
+X-Gm-Message-State: AOAM530eYeqcujeIgTuo38XUxtdDlZlcf4qf1sG/h0fUv5hkQJgHE1mM
+        xW/p+dbpI9RULXPr+3JD0wc9Yw+DHh9HKudM1xo=
+X-Google-Smtp-Source: ABdhPJzrukxcqBwmPMNwZEfjF9bZU4xr+6NJgA7Fjwt063EvqbKJpTcRE4M8HENKWwjen25q8n7in1Ofle1X8HiQuYQ=
+X-Received: by 2002:a17:906:fb8f:: with SMTP id lr15mr6669776ejb.25.1600804980354;
+ Tue, 22 Sep 2020 13:03:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200921080255.15505-1-zangchunxin@bytedance.com>
- <20200921081200.GE12990@dhcp22.suse.cz> <CALOAHbDKvT58UFjxy770VDxO0VWABRYb7GVwgw+NiJp62mB06w@mail.gmail.com>
- <20200921110505.GH12990@dhcp22.suse.cz> <CAKRVAeN5U6S78jF1n8nCs5ioAdqvVn5f6GGTAnA93g_J0daOLw@mail.gmail.com>
- <20200922095136.GA9682@chrisdown.name> <CAKRVAePisoOg8QBz11gPqzEoUdwPiJ-9Z9MyFE2LHzR-r+PseQ@mail.gmail.com>
- <20200922104252.GB9682@chrisdown.name> <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
-In-Reply-To: <CAKRVAeOjST1vJsSXMgj91=tMf1MQTeNp_dz34z=DwL7Weh0bmg@mail.gmail.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 22 Sep 2020 12:57:19 -0700
-Message-ID: <CALvZod64Qwzjv3N2PO-EUtMkA4bs_PM=Tq4=cmuM0VO9P3BAjw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: Add the drop_cache
- interface for cgroup v2
-To:     Chunxin Zang <zangchunxin@bytedance.com>
-Cc:     Chris Down <chris@chrisdown.name>, Michal Hocko <mhocko@suse.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200921163055.GQ12990@dhcp22.suse.cz>
+ <CALvZod43VXKZ3StaGXK_EZG_fKcW3v3=cEYOWFwp4HNJpOOf8g@mail.gmail.com>
+ <20200922114908.GZ12990@dhcp22.suse.cz> <CALvZod4FvE12o53BpeH5WB_McTdCkFTFXgc9gcT1CEHXzQLy_A@mail.gmail.com>
+ <20200922165527.GD12990@dhcp22.suse.cz> <CALvZod7K9g9mi599c5+ayLeC4__kckv155QQGVMVy2rXXOY1Rw@mail.gmail.com>
+ <20200922190859.GH12990@dhcp22.suse.cz>
+In-Reply-To: <20200922190859.GH12990@dhcp22.suse.cz>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Tue, 22 Sep 2020 13:02:47 -0700
+Message-ID: <CAHbLzkoBRAEWeDAh8Hd+3kNUMVUr-L79m4fpXoeez0wkBqUYxw@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Shakeel Butt <shakeelb@google.com>,
+        Minchan Kim <minchan@kernel.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Roman Gushchin <guro@fb.com>, Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>, kafai@fb.com,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        andriin@fb.com, john.fastabend@gmail.com, kpsingh@chromium.org,
-        Cgroups <cgroups@vger.kernel.org>, linux-doc@vger.kernel.org,
         Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>, bpf@vger.kernel.org
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Sep 22, 2020 at 5:37 AM Chunxin Zang <zangchunxin@bytedance.com> wr=
-ote:
+On Tue, Sep 22, 2020 at 12:09 PM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Tue, Sep 22, 2020 at 6:42 PM Chris Down <chris@chrisdown.name> wrote:
+> On Tue 22-09-20 11:10:17, Shakeel Butt wrote:
+> > On Tue, Sep 22, 2020 at 9:55 AM Michal Hocko <mhocko@suse.com> wrote:
+> [...]
+> > > Last but not least the memcg
+> > > background reclaim is something that should be possible without a new
+> > > interface.
 > >
-> > Chunxin Zang writes:
-> > >On Tue, Sep 22, 2020 at 5:51 PM Chris Down <chris@chrisdown.name> wrot=
-e:
-> > >>
-> > >> Chunxin Zang writes:
-> > >> >My usecase is that there are two types of services in one server. T=
-hey
-> > >> >have difference
-> > >> >priorities. Type_A has the highest priority, we need to ensure it's
-> > >> >schedule latency=E3=80=81I/O
-> > >> >latency=E3=80=81memory enough. Type_B has the lowest priority, we e=
-xpect it
-> > >> >will not affect
-> > >> >Type_A when executed.
-> > >> >So Type_A could use memory without any limit. Type_B could use memo=
-ry
-> > >> >only when the
-> > >> >memory is absolutely sufficient. But we cannot estimate how much
-> > >> >memory Type_B should
-> > >> >use. Because everything is dynamic. So we can't set Type_B's memory=
-.high.
-> > >> >
-> > >> >So we want to release the memory of Type_B when global memory is
-> > >> >insufficient in order
-> > >> >to ensure the quality of service of Type_A . In the past, we used t=
-he
-> > >> >'force_empty' interface
-> > >> >of cgroup v1.
-> > >>
-> > >> This sounds like a perfect use case for memory.low on Type_A, and it=
-'s pretty
-> > >> much exactly what we invented it for. What's the problem with that?
-> > >
-> > >But we cannot estimate how much memory Type_A uses at least.
-> >
-> > memory.low allows ballparking, you don't have to know exactly how much =
-it uses.
-> > Any amount of protection biases reclaim away from that cgroup.
-> >
-> > >For example:
-> > >total memory: 100G
-> > >At the beginning, Type_A was in an idle state, and it only used 10G of=
- memory.
-> > >The load is very low. We want to run Type_B to avoid wasting machine r=
-esources.
-> > >When Type_B runs for a while, it used 80G of memory.
-> > >At this time Type_A is busy, it needs more memory.
-> >
-> > Ok, so set memory.low for Type_A close to your maximum expected value.
+> > So, it comes down to adding more functionality/semantics to
+> > memory.high or introducing a new simple interface. I am fine with
+> > either of one but IMO convoluted memory.high might have a higher
+> > maintenance cost.
 >
-> Please forgive me for not being able to understand why setting
-> memory.low for Type_A can solve the problem.
-> In my scene, Type_A is the most important, so I will set 100G to memory.l=
-ow.
-> But 'memory.low' only takes effect passively when the kernel is
-> reclaiming memory. It means that reclaim Type_B's memory only when
-> Type_A  in alloc memory slow path. This will affect Type_A's
-> performance.
-> We want to reclaim Type_B's memory in advance when A is expected to be bu=
-sy.
+> One idea would be to schedule a background worker (which work on behalf
+> on the memcg) to do the high limit reclaim with high limit target as
+> soon as the high limit is reached. There would be one work item for each
+> memcg. Userspace would recheck the high limit on return to the userspace
+> and do the reclaim if the excess is larger than a threshold, and sleep
+> as the fallback.
 >
+> Excessive consumers would get throttled if the background work cannot
+> keep up with the charge pace and most of them would return without doing
+> any reclaim because there is somebody working on their behalf - and is
+> accounted for that.
+>
+> The semantic of high limit would be preserved IMHO because high limit is
+> actively throttled. Where that work is done shouldn't matter as long as
+> it is accounted properly and memcg cannot outsource all the work to the
+> rest of the system.
+>
+> Would something like that (with many details to be sorted out of course)
+> be feasible?
 
-How will you know when to reclaim from B? Are you polling /proc/meminfo?
+This is exactly how our "per-memcg kswapd" works. The missing piece is
+how to account the background worker (it is a kernel work thread)
+properly as what we discussed before. You mentioned such work is WIP
+in earlier email of this thread, I think once this is done the
+per-memcg background worker could be supported easily.
 
-From what I understand, you want to proactively reclaim from B, so
-that A does not go into global reclaim and in the worst case kill B,
-right?
-
-BTW you can use memory.high to reclaim from B by setting it lower than
-memory.current of B and reset it to 'max' once the reclaim is done.
-Since 'B' is not high priority (I am assuming not a latency sensitive
-workload), B hitting temporary memory.high should not be an issue.
-Also I am assuming you don't much care about the amount of memory to
-be reclaimed from B, so I think memory.high can fulfil your use-case.
-However if in future you decide to proactively reclaim from all the
-jobs based on their priority i.e. more aggressive reclaim from B and a
-little bit reclaim from A then memory.high is not a good interface.
-
-Shakeel
+>
+> If we do not want to change the existing semantic of high and want a new
+> api then I think having another limit for the background reclaim then
+> that would make more sense to me. It would resemble the global reclaim
+> and kswapd model and something that would be easier to reason about.
+> Comparing to echo $N > reclaim which might mean to reclaim any number
+> pages around N.
+> --
+> Michal Hocko
+> SUSE Labs
