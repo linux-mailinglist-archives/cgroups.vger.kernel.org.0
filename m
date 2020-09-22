@@ -2,75 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BB0927382C
-	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 03:48:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A62EC273958
+	for <lists+cgroups@lfdr.de>; Tue, 22 Sep 2020 05:40:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729076AbgIVBsk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Sep 2020 21:48:40 -0400
-Received: from mga11.intel.com ([192.55.52.93]:23180 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728726AbgIVBsk (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 21 Sep 2020 21:48:40 -0400
-IronPort-SDR: w0VtyY6O5VdxRNet/a3IMR7hOm+Vkw5IyHXYU/NCOSyE8EAK0zuJ1StJvx5Ce2KUbVpikVpiFo
- MjMQRkPmv8lA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9751"; a="157889550"
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="157889550"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 18:48:40 -0700
-IronPort-SDR: EKmRzOaBuIIW9inV+MyT74mc9qgnnr0UMVwHIISz1HktLahGd3wNsAXDVEIGZvfEifGjgr4AFM
- SqGdYcQR+2JQ==
-X-IronPort-AV: E=Sophos;i="5.77,288,1596524400"; 
-   d="scan'208";a="510967132"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Sep 2020 18:48:39 -0700
-Date:   Mon, 21 Sep 2020 18:48:38 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
-        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20200922014836.GA26507@linux.intel.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
+        id S1727011AbgIVDke (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Sep 2020 23:40:34 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:60877 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726467AbgIVDke (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Sep 2020 23:40:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04357;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0U9jwaHs_1600746028;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9jwaHs_1600746028)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 22 Sep 2020 11:40:31 +0800
+Subject: Re: [PATCH v18 15/32] mm/lru: move lock into lru_note_cost
+To:     Hugh Dickins <hughd@google.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+References: <1598273705-69124-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1598273705-69124-16-git-send-email-alex.shi@linux.alibaba.com>
+ <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <dfc21f50-998f-a9b7-4ab9-3598c32d7e49@linux.alibaba.com>
+Date:   Tue, 22 Sep 2020 11:38:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200922004024.3699923-1-vipinsh@google.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <alpine.LSU.2.11.2009211434490.5214@eggly.anvils>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Sep 21, 2020 at 05:40:22PM -0700, Vipin Sharma wrote:
-> Hello,
-> 
-> This patch series adds a new SEV controller for tracking and limiting
-> the usage of SEV ASIDs on the AMD SVM platform.
-> 
-> SEV ASIDs are used in creating encrypted VM and lightweight sandboxes
-> but this resource is in very limited quantity on a host.
-> 
-> This limited quantity creates issues like SEV ASID starvation and
-> unoptimized scheduling in the cloud infrastructure.
-> 
-> SEV controller provides SEV ASID tracking and resource control
-> mechanisms.
 
-This should be genericized to not be SEV specific.  TDX has a similar
-scarcity issue in the form of key IDs, which IIUC are analogous to SEV ASIDs
-(gave myself a quick crash course on SEV ASIDs).  Functionally, I doubt it
-would change anything, I think it'd just be a bunch of renaming.  The hardest
-part would probably be figuring out a name :-).
 
-Another idea would be to go even more generic and implement a KVM cgroup
-that accounts the number of VMs of a particular type, e.g. legacy, SEV,
-SEV-ES?, and TDX.  That has potential future problems though as it falls
-apart if hardware every supports 1:MANY VMs:KEYS, or if there is a need to
-account keys outside of KVM, e.g. if MKTME for non-KVM cases ever sees the
-light of day.
+ÔÚ 2020/9/22 ÉÏÎç5:36, Hugh Dickins Ð´µÀ:
+> 
+>> We have to move lru_lock into lru_note_cost, since it cycle up on memcg
+>> tree, for future per lruvec lru_lock replace. It's a bit ugly and may
+>> cost a bit more locking, but benefit from multiple memcg locking could
+>> cover the lost.
+>>
+>> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+
+Thanks!
+
