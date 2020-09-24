@@ -2,16 +2,16 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9956D276744
-	for <lists+cgroups@lfdr.de>; Thu, 24 Sep 2020 05:29:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3DA2276742
+	for <lists+cgroups@lfdr.de>; Thu, 24 Sep 2020 05:29:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726729AbgIXD2n (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Sep 2020 23:28:43 -0400
-Received: from out30-131.freemail.mail.aliyun.com ([115.124.30.131]:37825 "EHLO
-        out30-131.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726702AbgIXD2m (ORCPT
+        id S1726746AbgIXD2m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 23 Sep 2020 23:28:42 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:33557 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726667AbgIXD2m (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Wed, 23 Sep 2020 23:28:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R721e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=22;SR=0;TI=SMTPD_---0U9w0Ss1_1600918116;
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R311e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0U9w0Ss1_1600918116;
 Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9w0Ss1_1600918116)
           by smtp.aliyun-inc.com(127.0.0.1);
           Thu, 24 Sep 2020 11:28:37 +0800
@@ -25,114 +25,113 @@ To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         richard.weiyang@gmail.com, kirill@shutemov.name,
         alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
         vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
-Subject: [PATCH v19 00/20] per memcg lru_lock 
-Date:   Thu, 24 Sep 2020 11:28:15 +0800
-Message-Id: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+Cc:     Michal Hocko <mhocko@kernel.org>
+Subject: [PATCH v19 01/20] mm/memcg: warning on !memcg after readahead page charged
+Date:   Thu, 24 Sep 2020 11:28:16 +0800
+Message-Id: <1600918115-22007-2-git-send-email-alex.shi@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The new version rebased on v5.9-rc6 with line by line review by Hugh Dickins.
-Millions thanks! And removed the 4th part from last version which do post
-optimization, that we can repost after the main part get merged. About one
-year coding and review, now I believe it's ready.
+Add VM_WARN_ON_ONCE_PAGE() macro.
 
-So now this patchset includes 3 parts:
-1, some code cleanup and minimum optimization as a preparation. 
-2, use TestCleanPageLRU as page isolation's precondition.
-3, replace per node lru_lock with per memcg per node lru_lock.
+Since readahead page is charged on memcg too, in theory we don't have to
+check this exception now. Before safely remove them all, add a warning
+for the unexpected !memcg.
 
-Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-lru lists, but now we had moved the lru lists into memcg for long time. Still
-using per node lru_lock is clearly unscalable, pages on each of memcgs have
-to compete each others for a whole lru_lock. This patchset try to use per
-lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-it scalable for memcgs and get performance gain.
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Hugh Dickins <hughd@google.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ include/linux/mmdebug.h | 13 +++++++++++++
+ mm/memcontrol.c         | 11 ++++-------
+ 2 files changed, 17 insertions(+), 7 deletions(-)
 
-Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-but if we want to use specific lruvec lock on the page, we need to pin down
-the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-undermined by the page's memcg charge/migration. To fix this problem, we could
-take out the page's lru bit clear and use it as pin down action to block the
-memcg changes. That's the reason for new atomic func TestClearPageLRU.
-So now isolating a page need both actions: TestClearPageLRU and hold the
-lru_lock.
-
-The typical usage of this is isolate_migratepages_block() in compaction.c
-we have to take lru bit before lru lock, that serialized the page isolation
-in memcg page charge/migration which will change page's lruvec and new 
-lru_lock in it.
-
-The above solution suggested by Johannes Weiner, and based on his new memcg 
-charge path, then have this patchset. (Hugh Dickins tested and contributed much
-code from compaction fix to general code polish, thanks a lot!).
-
-Daniel Jordan's testing show 62% improvement on modified readtwice case
-on his 2P * 10 core * 2 HT broadwell box.
-https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
-
-Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
-
-Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
-
-
-Alex Shi (17):
-  mm/memcg: warning on !memcg after readahead page charged
-  mm/memcg: bail early from swap accounting if memcg disabled
-  mm/thp: move lru_add_page_tail func to huge_memory.c
-  mm/thp: use head for head page in lru_add_page_tail
-  mm/thp: Simplify lru_add_page_tail()
-  mm/thp: narrow lru locking
-  mm/vmscan: remove unnecessary lruvec adding
-  mm/memcg: add debug checking in lock_page_memcg
-  mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
-  mm/lru: move lock into lru_note_cost
-  mm/vmscan: remove lruvec reget in move_pages_to_lru
-  mm/mlock: remove lru_lock on TestClearPageMlocked
-  mm/mlock: remove __munlock_isolate_lru_page
-  mm/lru: introduce TestClearPageLRU
-  mm/compaction: do page isolation first in compaction
-  mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
-  mm/lru: replace pgdat lru_lock with lruvec lock
-
-Alexander Duyck (1):
-  mm/lru: introduce the relock_page_lruvec function
-
-Hugh Dickins (2):
-  mm: page_idle_get_page() does not need lru_lock
-  mm/lru: revise the comments of lru_lock
-
- Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
- Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
- Documentation/trace/events-kmem.rst                |   2 +-
- Documentation/vm/unevictable-lru.rst               |  22 +--
- include/linux/memcontrol.h                         | 110 +++++++++++
- include/linux/mm_types.h                           |   2 +-
- include/linux/mmdebug.h                            |  13 ++
- include/linux/mmzone.h                             |   6 +-
- include/linux/page-flags.h                         |   1 +
- include/linux/swap.h                               |   4 +-
- mm/compaction.c                                    |  94 +++++++---
- mm/filemap.c                                       |   4 +-
- mm/huge_memory.c                                   |  45 +++--
- mm/memcontrol.c                                    |  85 ++++++++-
- mm/mlock.c                                         |  63 ++-----
- mm/mmzone.c                                        |   1 +
- mm/page_alloc.c                                    |   1 -
- mm/page_idle.c                                     |   4 -
- mm/rmap.c                                          |   4 +-
- mm/swap.c                                          | 199 ++++++++------------
- mm/vmscan.c                                        | 203 +++++++++++----------
- mm/workingset.c                                    |   2 -
- 22 files changed, 523 insertions(+), 378 deletions(-)
-
+diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
+index 2ad72d2c8cc5..4ed52879ce55 100644
+--- a/include/linux/mmdebug.h
++++ b/include/linux/mmdebug.h
+@@ -37,6 +37,18 @@
+ 			BUG();						\
+ 		}							\
+ 	} while (0)
++#define VM_WARN_ON_ONCE_PAGE(cond, page)	({			\
++	static bool __section(.data.once) __warned;			\
++	int __ret_warn_once = !!(cond);					\
++									\
++	if (unlikely(__ret_warn_once && !__warned)) {			\
++		dump_page(page, "VM_WARN_ON_ONCE_PAGE(" __stringify(cond)")");\
++		__warned = true;					\
++		WARN_ON(1);						\
++	}								\
++	unlikely(__ret_warn_once);					\
++})
++
+ #define VM_WARN_ON(cond) (void)WARN_ON(cond)
+ #define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
+ #define VM_WARN_ONCE(cond, format...) (void)WARN_ONCE(cond, format)
+@@ -48,6 +60,7 @@
+ #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
+ #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
++#define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
+ #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
+ #endif
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index cfa6cbad21d5..f7094a04be07 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1322,10 +1322,7 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
+ 	}
+ 
+ 	memcg = page->mem_cgroup;
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
++	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+ 	if (!memcg)
+ 		memcg = root_mem_cgroup;
+ 
+@@ -6912,8 +6909,8 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+ 	if (newpage->mem_cgroup)
+ 		return;
+ 
+-	/* Swapcache readahead pages can get replaced before being charged */
+ 	memcg = oldpage->mem_cgroup;
++	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
+ 	if (!memcg)
+ 		return;
+ 
+@@ -7110,7 +7107,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
+ 
+ 	memcg = page->mem_cgroup;
+ 
+-	/* Readahead page, never charged */
++	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+ 	if (!memcg)
+ 		return;
+ 
+@@ -7174,7 +7171,7 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
+ 
+ 	memcg = page->mem_cgroup;
+ 
+-	/* Readahead page, never charged */
++	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+ 	if (!memcg)
+ 		return 0;
+ 
 -- 
 1.8.3.1
 
