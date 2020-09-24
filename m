@@ -2,106 +2,95 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 069C0276769
-	for <lists+cgroups@lfdr.de>; Thu, 24 Sep 2020 05:32:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D58B52769B4
+	for <lists+cgroups@lfdr.de>; Thu, 24 Sep 2020 08:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727203AbgIXD3m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 23 Sep 2020 23:29:42 -0400
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:49672 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726702AbgIXD2s (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 23 Sep 2020 23:28:48 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R261e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=24;SR=0;TI=SMTPD_---0U9w0Ss1_1600918116;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0U9w0Ss1_1600918116)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 24 Sep 2020 11:28:43 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com, aaron.lwe@gmail.com
-Cc:     "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v19 14/20] mm/mlock: remove __munlock_isolate_lru_page
-Date:   Thu, 24 Sep 2020 11:28:29 +0800
-Message-Id: <1600918115-22007-15-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1600918115-22007-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1726950AbgIXGxV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 24 Sep 2020 02:53:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727014AbgIXGv7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 24 Sep 2020 02:51:59 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F282C0613D3;
+        Wed, 23 Sep 2020 23:51:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=5cv5XM1WbeIcMKM5m6HEEjDcYpaEJfjGWw9dDjM6nfI=; b=r2w8hhD+ZBoRdDKl0qZXo3vF81
+        hM/13MLXzpPkHMHSdkeatYWtW/3Rk3FztSV6U5y+CbAh6t7JHsfTFWVb3fcVheFT1g+IP1CUvdL/M
+        qf6RvhVVVcfKzIDmXfduJ5W90Ne2Xmv0UFnYt+mp024P858pnetDNMffHtNWZutPuWI481/Ixizft
+        VzlRi+PBja8K/ca/ZHfPdeq8UXLIZ3VY+HnhwsTOu5umASFwHza1/IftOvz3nrDcW8iJ2OvWsxcVr
+        FHnaTnZTbgNXfbL0liL+h4MJ2F/DEq8P/XjVxB+RLUSVk0zwY6gebGFkYLAM8tqFMr4ps3to5Wmm/
+        AERB55ug==;
+Received: from p4fdb0c34.dip0.t-ipconnect.de ([79.219.12.52] helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLL6T-00019A-6Y; Thu, 24 Sep 2020 06:51:41 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     Song Liu <song@kernel.org>, Hans de Goede <hdegoede@redhat.com>,
+        Coly Li <colyli@suse.de>, Richard Weinberger <richard@nod.at>,
+        Minchan Kim <minchan@kernel.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        Justin Sanders <justin@coraid.com>,
+        linux-mtd@lists.infradead.org, dm-devel@redhat.com,
+        linux-block@vger.kernel.org, linux-bcache@vger.kernel.org,
+        linux-kernel@vger.kernel.org, drbd-dev@lists.linbit.com,
+        linux-raid@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org
+Subject: bdi cleanups v7
+Date:   Thu, 24 Sep 2020 08:51:27 +0200
+Message-Id: <20200924065140.726436-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The func only has one caller, remove it to clean up code and simplify
-code.
+Hi Jens,
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Cc: Hugh Dickins <hughd@google.com>
-Cc: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- mm/mlock.c | 31 +++++++++----------------------
- 1 file changed, 9 insertions(+), 22 deletions(-)
+this series contains a bunch of different BDI cleanups.  The biggest item
+is to isolate block drivers from the BDI in preparation of changing the
+lifetime of the block device BDI in a follow up series.
 
-diff --git a/mm/mlock.c b/mm/mlock.c
-index 796c726a0407..d487aa864e86 100644
---- a/mm/mlock.c
-+++ b/mm/mlock.c
-@@ -106,26 +106,6 @@ void mlock_vma_page(struct page *page)
- }
- 
- /*
-- * Isolate a page from LRU with optional get_page() pin.
-- * Assumes lru_lock already held and page already pinned.
-- */
--static bool __munlock_isolate_lru_page(struct page *page, bool getpage)
--{
--	if (PageLRU(page)) {
--		struct lruvec *lruvec;
--
--		lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
--		if (getpage)
--			get_page(page);
--		ClearPageLRU(page);
--		del_page_from_lru_list(page, lruvec, page_lru(page));
--		return true;
--	}
--
--	return false;
--}
--
--/*
-  * Finish munlock after successful page isolation
-  *
-  * Page must be locked. This is a wrapper for try_to_munlock()
-@@ -296,9 +276,16 @@ static void __munlock_pagevec(struct pagevec *pvec, struct zone *zone)
- 			 * We already have pin from follow_page_mask()
- 			 * so we can spare the get_page() here.
- 			 */
--			if (__munlock_isolate_lru_page(page, false))
-+			if (PageLRU(page)) {
-+				struct lruvec *lruvec;
-+
-+				ClearPageLRU(page);
-+				lruvec = mem_cgroup_page_lruvec(page,
-+							page_pgdat(page));
-+				del_page_from_lru_list(page, lruvec,
-+							page_lru(page));
- 				continue;
--			else
-+			} else
- 				__munlock_isolation_failed(page);
- 		} else {
- 			delta_munlocked++;
--- 
-1.8.3.1
+Changes since v6:
+ - add a new blk_queue_update_readahead helper and use it in stacking
+   drivers
+ - improve another commit log
 
+Changes since v5:
+ - improve a commit message
+ - improve the stable_writes deprecation printk
+ - drop "drbd: remove RB_CONGESTED_REMOTE"
+ - drop a few hunks that add a local variable in a otherwise unchanged
+   file due to changes in the previous revisions
+ - keep updating ->io_pages in queue_max_sectors_store
+ - set an optimal I/O size in aoe
+ - inherit the optimal I/O size in bcache
+
+Changes since v4:
+ - add a back a prematurely removed assignment in dm-table.c
+ - pick up a few reviews from Johannes that got lost
+
+Changes since v3:
+ - rebased on the lasted block tree, which has some of the prep
+   changes merged
+ - extend the ->ra_pages changes to ->io_pages
+ - move initializing ->ra_pages and ->io_pages for block devices to
+   blk_register_queue
+
+Changes since v2:
+ - fix a rw_page return value check
+ - fix up various changelogs
+
+Changes since v1:
+ - rebased to the for-5.9/block-merge branch
+ - explicitly set the readahead to 0 for ubifs, vboxsf and mtd
+ - split the zram block_device operations
+ - let rw_page users fall back to bios in swap_readpage
+
+
+Diffstat:
