@@ -2,54 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D1462783A5
-	for <lists+cgroups@lfdr.de>; Fri, 25 Sep 2020 11:11:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D41B5278AF2
+	for <lists+cgroups@lfdr.de>; Fri, 25 Sep 2020 16:35:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727751AbgIYJL0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Sep 2020 05:11:26 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:34967 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727044AbgIYJL0 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Sep 2020 05:11:26 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=richard.weiyang@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UA1.jhS_1601025084;
-Received: from localhost(mailfrom:richard.weiyang@linux.alibaba.com fp:SMTPD_---0UA1.jhS_1601025084)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 25 Sep 2020 17:11:24 +0800
-From:   Wei Yang <richard.weiyang@linux.alibaba.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Wei Yang <richard.weiyang@linux.alibaba.com>
-Subject: [PATCH] cgroup: remove redundant kernfs_activate in cgroup_setup_root()
-Date:   Fri, 25 Sep 2020 17:11:10 +0800
-Message-Id: <20200925091110.17189-1-richard.weiyang@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1 (Apple Git-117)
+        id S1729070AbgIYOfc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Sep 2020 10:35:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729067AbgIYOfc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Sep 2020 10:35:32 -0400
+Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40EF5C0613CE
+        for <cgroups@vger.kernel.org>; Fri, 25 Sep 2020 07:35:32 -0700 (PDT)
+Received: by mail-pj1-x1036.google.com with SMTP id s14so1428183pju.1
+        for <cgroups@vger.kernel.org>; Fri, 25 Sep 2020 07:35:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=3sVDrl7nq71b7+Tl95Id30AEaStu5JjNu+SbInS86S8=;
+        b=E55wmYy6/zrsq1xauJ75mYZUcCl/7T8kL0VfI5mCOUuYURZxcMOOCuqthu+IF2L+NV
+         eVlWeUXhu5vEq18VjsiZrD8N8Pk0YBn3UJ20S0yUhwxU/3UiyJ/bTPgCZCRlHIKCtqf+
+         4t22c3hKJyeQK7cv5zEt6qCepixo/cNSB3/qhci7vp34g73P5vhesH4X/NDeo6RfV2ub
+         BIV8GJZkeuY5TiDZ/1rLHDCSOwqaT7mQ6eKLpRjVzo0yU2z/zidZBszbbUK642laboim
+         qTAd7a0vjHf0JpTsjxT/CmJDVk2TnsS+rzCwxP9U/4bTuRRs+8MwUdkc8Raqtx1O3cZ2
+         h+fQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=3sVDrl7nq71b7+Tl95Id30AEaStu5JjNu+SbInS86S8=;
+        b=kgEup5UTU7AkYYUJxz7WJOeFbycWDt1bGHmLm+SNtGqQvL1BgTU2T4bjP48okfDuYC
+         3cpYqMocJ9PoQDWLSPf+X97rbdZJAg7FPMmarAnwc7juIZFXba3mw49IY8iS2nRl3S/J
+         q8E8d7p45SGKgcmnS770tBZ/ujxxNwOudGDXQlpP5VPLBNG6NHW7iBKMM5qRpDbwghq8
+         K+/k8EWBnA/vJhhDfIGRheZU2FY8zdrY7/ChLG21P+EKQMPyKogL1ld09tndYwRv0IKJ
+         uVCi2WStKj3kXdgxYNjmu/ZePFHepTa4IuymKbd4bFF4WCUNjEJe4gzaNzKwAlcf26A0
+         GTgw==
+X-Gm-Message-State: AOAM531kHJUvMjH1HfkZkrhtfRMxSwFcfp+1TCOOSXwUjKgJlmUJZ2s9
+        2R5Q3/NuIxR4DARMD7VHU98e1g==
+X-Google-Smtp-Source: ABdhPJxxZ/jipQ6UmFyIc2cAtDZeTloKi918d+xUfqX+TxGNVI9NqJKGAzht2a4+S8FbMh21YYiD/w==
+X-Received: by 2002:a17:90a:e984:: with SMTP id v4mr599004pjy.202.1601044531755;
+        Fri, 25 Sep 2020 07:35:31 -0700 (PDT)
+Received: from [192.168.1.30] ([65.144.74.34])
+        by smtp.gmail.com with ESMTPSA id r16sm2257501pjo.19.2020.09.25.07.35.30
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 25 Sep 2020 07:35:31 -0700 (PDT)
+Subject: Re: [PATCHSET for-5.10/block] iocost: improve debt forgiveness logic
+To:     Tejun Heo <tj@kernel.org>
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20200918004456.593983-1-tj@kernel.org>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <a4baed8e-d3a5-3801-7f26-5c32f2931177@kernel.dk>
+Date:   Fri, 25 Sep 2020 08:35:30 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20200918004456.593983-1-tj@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This step is already done in rebind_subsystems().
+On 9/17/20 6:44 PM, Tejun Heo wrote:
+> Hello,
+> 
+> Debt reduction logic was recently added by dda1315f1853 ("blk-iocost: halve
+> debts if device stays idle"). While it was effective at avoiding
+> pathological cases where some iocgs were kept delayed while the device was
+> most idle, it wasn't very effective at addressing more complex conditions
+> and could leave low priority cgroups unnecessarily harshly throttled under
+> moderate load.
 
-Not necessary to do it again.
+Applied, thanks.
 
-Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
----
- kernel/cgroup/cgroup.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index dd247747ec14..809b13588124 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2006,7 +2006,6 @@ int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
- 	BUG_ON(!list_empty(&root_cgrp->self.children));
- 	BUG_ON(atomic_read(&root->nr_cgrps) != 1);
- 
--	kernfs_activate(root_cgrp->kn);
- 	ret = 0;
- 	goto out;
- 
 -- 
-2.20.1 (Apple Git-117)
+Jens Axboe
 
