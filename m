@@ -2,106 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C71A4278E4F
-	for <lists+cgroups@lfdr.de>; Fri, 25 Sep 2020 18:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55E33278DCE
+	for <lists+cgroups@lfdr.de>; Fri, 25 Sep 2020 18:15:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728858AbgIYQWs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 25 Sep 2020 12:22:48 -0400
-Received: from m12-15.163.com ([220.181.12.15]:49220 "EHLO m12-15.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727751AbgIYQWs (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 25 Sep 2020 12:22:48 -0400
-X-Greylist: delayed 917 seconds by postgrey-1.27 at vger.kernel.org; Fri, 25 Sep 2020 12:22:47 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=TPYFb
-        PSp4V8vYQ4z0mS+XWUEYAjUGpB+g/xY+pc+6GE=; b=PVQYhqPDCUwiAEdCTv3nZ
-        UM+WBwcstQfT/KMzCBTVXr5/Obw6/vTsN3e/TxWPG8kZ6Rs2ZRplwls5wzjfy5Lw
-        +668EgpaU6EqLwJvcPjwdcOjjC5Cy1YB7H7L4iPdmgcPN7OO3OLqteOKxjsZ9xbN
-        6FwYolGypdX4NBacz+rx58=
-Received: from localhost (unknown [101.86.214.224])
-        by smtp11 (Coremail) with SMTP id D8CowAAH3peaFW5fMOwfDw--.9007S2;
-        Sat, 26 Sep 2020 00:06:51 +0800 (CST)
-Date:   Sat, 26 Sep 2020 00:06:50 +0800
-From:   Hui Su <sh_def@163.com>
-To:     lizefan@huawei.com, tj@kernel.org, hannes@cmpxchg.org,
-        akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Subject: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
-Message-ID: <20200925160650.GA42847@rlk>
+        id S1728733AbgIYQPK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 25 Sep 2020 12:15:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727812AbgIYQPK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 25 Sep 2020 12:15:10 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A9FEC0613CE;
+        Fri, 25 Sep 2020 09:15:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=Y2wH4RuuuVJ7MQ/4jAkTQlQ8pcaD870YXfRn/rEdzlM=; b=SLodffWn1lQtoi5MM/yWwKew1R
+        MTEG36QLz4sz4acbWW05Ij1EEUpGF15Wk6lyQ984odhtMINUxwiu5MwQKHpqtKXpu98MPoha8Sd2/
+        xhw2YUWpTnZFrPBQ9+bwSA/sMjCTVoIa06CD92ZuRVsEcnz9OUNdaOL/eF8HAIQFkxf1WNvuZPszV
+        7oXxZzM6RX2u67NWZSfg1pgjzPVy4D91QKIawJAP3v/lO7jYfTF8mnjN+o4BrhKgI32qxLmYjh2bH
+        n3k9L0rQ0w6r7nN652Ste7tORJKiS5TgOgxma13HGDwPxmwtkL0YJHMjVWocYuU9WGqz1Tvo5o9vh
+        dczfcGJA==;
+Received: from [213.208.157.35] (helo=localhost)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kLqN5-0003ve-U6; Fri, 25 Sep 2020 16:14:56 +0000
+From:   Christoph Hellwig <hch@lst.de>
+To:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
+        Minho Ban <mhban@samsung.com>
+Cc:     cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
+Subject: RFC: sort out get_gendisk abuses
+Date:   Fri, 25 Sep 2020 18:14:45 +0200
+Message-Id: <20200925161447.1486883-1-hch@lst.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: D8CowAAH3peaFW5fMOwfDw--.9007S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7ZFWUurWrtF4fCw1rAF45GFg_yoW8tFWkpF
-        WkGa45A3WFvF1jk392ka1Dury0gw48Ja17KFn5Gwn5Z3W3tF4qkF9rWwnxZryYyF1Y9a4U
-        trZIvr4Yg3WDJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jSnmiUUUUU=
-X-Originating-IP: [101.86.214.224]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitwSqX1aEFvbE+wABsK
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-1. the cpuset.c has been moved from kernel/cpuset.c to
-kernel/cgroup/cpuset.c long time ago, but the comment is stale,
-so we update it.
-2. get_page_from_freelist() may alloc many pages according to
-order, we may use pages for better.
+Hi all,
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- kernel/cgroup/cpuset.c | 2 +-
- mm/mempolicy.c         | 2 +-
- mm/page_alloc.c        | 4 ++--
- 3 files changed, 4 insertions(+), 4 deletions(-)
+this series tries to remove two abuses of the get_gendisk API.
+The first one is fairly straigt forward and switched the blk-cgroup
+configuration API to properly open the block device, but I'd love to see
+it reviewed and tested by the cgroup maintainers, as I don't really know
+how this code is actually used.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 642415b8c3c9..1d3011c1aab6 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1,5 +1,5 @@
- /*
-- *  kernel/cpuset.c
-+ *  kernel/cgroup/cpuset.c
-  *
-  *  Processor and Memory placement constraints for sets of tasks.
-  *
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index eddbe4e56c73..ac59b049b16c 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -2295,7 +2295,7 @@ int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
-  * rebinds the mempolicy its copying by calling mpol_rebind_policy()
-  * with the mems_allowed returned by cpuset_mems_allowed().  This
-  * keeps mempolicies cpuset relative after its cpuset moves.  See
-- * further kernel/cpuset.c update_nodemask().
-+ * further kernel/cgroup/cpuset.c update_nodemask().
-  *
-  * current's mempolicy may be rebinded by the other task(the task that changes
-  * cpuset's mems), so we needn't do rebind work for current task.
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index fab5e97dc9ca..1e3c7493e1cb 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -3709,7 +3709,7 @@ static inline unsigned int current_alloc_flags(gfp_t gfp_mask,
- 
- /*
-  * get_page_from_freelist goes through the zonelist trying to allocate
-- * a page.
-+ * pages.
-  */
- static struct page *
- get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
-@@ -3723,7 +3723,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- retry:
- 	/*
- 	 * Scan zonelist, looking for a zone with enough free.
--	 * See also __cpuset_node_allowed() comment in kernel/cpuset.c.
-+	 * See also __cpuset_node_allowed() comment in kernel/cgroup/cpuset.c.
- 	 */
- 	no_fallback = alloc_flags & ALLOC_NOFRAGMENT;
- 	z = ac->preferred_zoneref;
--- 
-2.25.1
-
-
+The other one in the hibernation code really puzzles me - it busy loops
+on the gendisk lookup, just to leak a reference when it finally succeeds
+and then doesn't actually do anything with the result.  My proposal for
+now is to simply revert the offending change, but better proposals are
+welcome.
