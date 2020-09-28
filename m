@@ -2,16 +2,16 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B31AA27B125
-	for <lists+cgroups@lfdr.de>; Mon, 28 Sep 2020 17:47:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3261727B126
+	for <lists+cgroups@lfdr.de>; Mon, 28 Sep 2020 17:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726420AbgI1PrF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Sep 2020 11:47:05 -0400
-Received: from sonic302-20.consmr.mail.sg3.yahoo.com ([106.10.242.140]:33914
-        "EHLO sonic302-20.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726344AbgI1PrF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Sep 2020 11:47:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1601308022; bh=k6qD474V9VtXKDobcCBmjOJywgarZvgPlTt0r+34qBY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=pA8YLd7ixNmECln/2GVoTFQxGcyNInc81UsHnAhvlRvZ2O0JSJDMwd6aTrwsUsFXdOx/2ndgx0mOLZ6WuZTWGOHW5wvKCMVK1zUU+G5C4EzFPr4+Xyqfo0NB8pzdJU0kjH7gZApEDeI7tPsPqoQd9xwxbvF5+4MDf9XpxYxZdVckAj9GOiPiWPj18I1hfjQidZm+dAkVnw6KxsrkJTLHd5la/YqY4ulpMaREs0K5gQ7j0V3P+FOLFApz/7V6FM3rxbDP8Es0xyJbWJlWZigIiM+mwYNLhWqU7bUeITT+6fAszGed8t8NW6MPEotOaV8BMKy+ISE/g00QX9XPa88qZw==
+        id S1726534AbgI1Prn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Sep 2020 11:47:43 -0400
+Received: from sonic304-20.consmr.mail.sg3.yahoo.com ([106.10.242.210]:45948
+        "EHLO sonic304-20.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726325AbgI1Prn (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Sep 2020 11:47:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1601308061; bh=k6qD474V9VtXKDobcCBmjOJywgarZvgPlTt0r+34qBY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=W0PhrjGYOJCjjHK+tTFAxG5x4yj3pHoZbkOaf7zPitcaaXVYAcq8JLXDvqwzOHdTAPMFW2kJdgjK7XZlsx2fKXgdahsJ4zBffdnOilobA54UT+QiccKRf2pUK6h7mYEoDA5pC6NvTG7PkY1wKNfO5yIfsWd/O2BOw5KGZMSQZ6i3QhAm2s/cumccKIWdlfCL1OEVORlUFU3gyZfCoGyJ0nlT4FP3mbyuvE0m1aYjz+rVQL3dRP7WOGtDlRAMK6FsbKoiA2r5yOlO3dzkxfkOvnOotJXVt2zXynPirm06gdUDj0+BZkGzoDF+w5wNdN/NEhuHXR7zMxGGy3tkzRQ4Ig==
 X-YMail-OSG: dRKJmAcVM1mUHfP7WGirXZQbrNl.S2NHrEkflsMCO.8jyRSu3eA9OYCNg2ZgwE.
  jAj3WvhOUszmjGrKf.q.LVGHDt5rnbIS94DD5avSTG.55y5n3CdhEebZE7V_1bBfy5rQvBP062Nj
  K3v9VPcucR_MSiJo_SVJjDoRC2bODgRhQamRNSNtrfzrEJ0grb1kQCnnfkgy4N8CiI4VEKySqjdz
@@ -33,7 +33,7 @@ X-YMail-OSG: dRKJmAcVM1mUHfP7WGirXZQbrNl.S2NHrEkflsMCO.8jyRSu3eA9OYCNg2ZgwE.
  ySCjPkL3QlgC1x_y_NB_jQQa9yqPf3KGkGhv_bdmOfUQfuHZT4CSWTUsNLnUk1aWuQlGk.spg6ri
  FH37qJ14qE6u34F2s4AOCVN.qZT5KZZr50PIecuyOdChG3WsLj4XuLNq.Lh3_wi2II2dLdQ_S5Ks
  h6A--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic302.consmr.mail.sg3.yahoo.com with HTTP; Mon, 28 Sep 2020 15:47:02 +0000
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic304.consmr.mail.sg3.yahoo.com with HTTP; Mon, 28 Sep 2020 15:47:41 +0000
 Date:   Mon, 28 Sep 2020 15:45:33 +0000 (UTC)
 From:   MONICA BROWN <jjjjjjj.kkkkkkkk@aol.com>
 Reply-To: jjjjjjj.kkkkkkkk@aol.com
