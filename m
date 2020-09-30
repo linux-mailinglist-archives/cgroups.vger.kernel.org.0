@@ -2,92 +2,79 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 323AF27EDB6
-	for <lists+cgroups@lfdr.de>; Wed, 30 Sep 2020 17:45:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D289C27EE2E
+	for <lists+cgroups@lfdr.de>; Wed, 30 Sep 2020 18:03:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725837AbgI3Ppk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Sep 2020 11:45:40 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:39923 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725372AbgI3Ppj (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Sep 2020 11:45:39 -0400
-Received: by mail-ot1-f66.google.com with SMTP id u25so2265450otq.6;
-        Wed, 30 Sep 2020 08:45:39 -0700 (PDT)
+        id S1730335AbgI3QD2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Sep 2020 12:03:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728076AbgI3QD2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Sep 2020 12:03:28 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91477C061755;
+        Wed, 30 Sep 2020 09:03:27 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id n10so1612055qtv.3;
+        Wed, 30 Sep 2020 09:03:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qq54/nTErxi0RFH786s9sI+Dgv5bltXrwyKiIEnYNfw=;
+        b=arKX5oW7pd33EJ5Cl2u/Ne1vMb9nMCv5Ys1X66cp96FJiTOEdRzKGfWfUm2SZd9FKf
+         jkGdGXaSX4KL7lVTu71skCNWvTsgeE0zxCj3DUeJW5DYYHtqyMoMDjg0wBth0CEYpQTq
+         JUNMjupuAzHYSyImMMMtX87Id4XFz+qQbLBmNUD8izu+6iTQa41ZFUQtT2aTq7BFn7+w
+         i24gfA3zfz8boF/AlUL8cSc+szkaciIS63foOp+RqmJ0lNHrswpxhi1tQKNH/Cr9PApR
+         4VI36IjJxLT/WMSBZQnXKiYMzULHayFZBz1sM0qc6lKsr8Feo2Y98B2+QuZezXIPqAEu
+         fCIQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CLYN4DZDwH7R2NlapAAUY3QJYvuRZTJWMNdqx5ssFgc=;
-        b=pHRC04ZPwF+ycqsziBDV4z0AHCzDgwlRrVl9XwchuKO6Vol7KxmsXYiejfFqvk+hxp
-         US1O+ajUpmqhW239Nf3CZ/1qoZqSpXkuHWecN3LKf9EdjM2JHEREJI9HnphxUTp/PRsW
-         m0wCs2Nwj1H6A2Ko4N7LUabf7PAoPS4/d9mDrfq1bzV0YXMINd+x0xNGtU3XPGmn0Ktw
-         9Qn2NKXr1xjuuwpzNFs4H2OjsqorAZvfs93GV7yqMEqJcYbh/zrszLFtPAg/lP4zm3JI
-         NnkM3Dob/4SToCVrDduCj+MUnvmyhyYTbPdROebZ3MUSpvudplKrqFZ0Dj/sJbOTbdGn
-         GRgw==
-X-Gm-Message-State: AOAM5327ncUIFYaIjjZAwszeMNwHqTTjNqdcGCRC606CNj38HpPTNvVN
-        Jd/MAnGpIcOYR0WCKnmUGANOXjppbCTaEdPaUcQ=
-X-Google-Smtp-Source: ABdhPJzqXlb0zHSZaZNzwr5/qsG+1b1UNIBdXnbuu2s+WcgP8W4OEH88f8YoSjZZt44LtFCSSamxbIEldAz4zPwkqlw=
-X-Received: by 2002:a05:6830:150a:: with SMTP id k10mr1830532otp.167.1601480739002;
- Wed, 30 Sep 2020 08:45:39 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=qq54/nTErxi0RFH786s9sI+Dgv5bltXrwyKiIEnYNfw=;
+        b=Ox5grk1eUWyg6utd0LArRCtorNfI0Tpt6HbLp0dV17fh9HxtEPsQe8OM/goPWRHzGb
+         oirRRmcrAi1SkcRN6rmwd6LGdXxUDpY/eEdo64n/cDg+soltRw3hkkTONPijLjKQ3+25
+         iEq1rlmtdfY5wL0pNr0SZbU4GikvI324mlOExTB41jTJh29wn/dAR1Hh+yF6IPd2PRIv
+         UwhKLeP3l2LKcvt0EC9wCNMo5lDDaA/G+uQbn5KQD3gzpiYu7UjCXsDrVrdO0IJDTLJs
+         PKy5eOOsP1uqiHyhYY9cpqMFGmBzrte+2CV0J2fR/2DqGapPFajVJlF5mZyT6/+E9xcy
+         8pFw==
+X-Gm-Message-State: AOAM5316yM/85lP2ftjMyGC54tSAa+DRK/5KCQx5eVv0X6VGR4jEthNz
+        vDOL7udu7afZOPqU9YZp9KU=
+X-Google-Smtp-Source: ABdhPJxhRM2+EtxeMMNNbVCJmTYJGjAiuc2DGTi39XGVYmi2tSe4h/KwXyCFk8nZyZ7DabpQ9pOfGw==
+X-Received: by 2002:ac8:44c2:: with SMTP id b2mr2930428qto.277.1601481806766;
+        Wed, 30 Sep 2020 09:03:26 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:e9fa])
+        by smtp.gmail.com with ESMTPSA id g19sm2465750qka.84.2020.09.30.09.03.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 30 Sep 2020 09:03:26 -0700 (PDT)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 30 Sep 2020 12:03:24 -0400
+From:   Tejun Heo <tj@kernel.org>
+To:     Wei Yang <richard.weiyang@linux.alibaba.com>
+Cc:     lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: remove redundant kernfs_activate in
+ cgroup_setup_root()
+Message-ID: <20200930160324.GD4441@mtj.duckdns.org>
+References: <20200925091110.17189-1-richard.weiyang@linux.alibaba.com>
 MIME-Version: 1.0
-References: <20200925161447.1486883-1-hch@lst.de> <20200925161447.1486883-3-hch@lst.de>
-In-Reply-To: <20200925161447.1486883-3-hch@lst.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Wed, 30 Sep 2020 17:45:27 +0200
-Message-ID: <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM/hibernate: remove the bogus call to get_gendisk in software_resume
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200925091110.17189-1-richard.weiyang@linux.alibaba.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Sep 25, 2020 at 6:15 PM Christoph Hellwig <hch@lst.de> wrote:
->
-> get_gendisk grabs a reference on the disk and file operation, so this
-> code will leak both of them while having absolutely no use for the
-> gendisk itself.
->
-> This effectively reverts commit 2df83fa4bce421f
-> ("PM / Hibernate: Use get_gendisk to verify partition if resume_file is integer format")
->
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+On Fri, Sep 25, 2020 at 05:11:10PM +0800, Wei Yang wrote:
+> This step is already done in rebind_subsystems().
+> 
+> Not necessary to do it again.
+> 
+> Signed-off-by: Wei Yang <richard.weiyang@linux.alibaba.com>
 
-Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+Applied to cgroup/for-5.10.
 
-> ---
->  kernel/power/hibernate.c | 11 -----------
->  1 file changed, 11 deletions(-)
->
-> diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-> index e7aa57fb2fdc33..7d0b99d2e69631 100644
-> --- a/kernel/power/hibernate.c
-> +++ b/kernel/power/hibernate.c
-> @@ -948,17 +948,6 @@ static int software_resume(void)
->
->         /* Check if the device is there */
->         swsusp_resume_device = name_to_dev_t(resume_file);
-> -
-> -       /*
-> -        * name_to_dev_t is ineffective to verify parition if resume_file is in
-> -        * integer format. (e.g. major:minor)
-> -        */
-> -       if (isdigit(resume_file[0]) && resume_wait) {
-> -               int partno;
-> -               while (!get_gendisk(swsusp_resume_device, &partno))
-> -                       msleep(10);
-> -       }
-> -
->         if (!swsusp_resume_device) {
->                 /*
->                  * Some device discovery might still be in progress; we need
-> --
-> 2.28.0
->
+Thanks.
+
+-- 
+tejun
