@@ -2,87 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F8C27EF4F
-	for <lists+cgroups@lfdr.de>; Wed, 30 Sep 2020 18:35:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F77127EF82
+	for <lists+cgroups@lfdr.de>; Wed, 30 Sep 2020 18:44:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725815AbgI3QfA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 30 Sep 2020 12:35:00 -0400
-Received: from mgw-01.mpynet.fi ([82.197.21.90]:35802 "EHLO mgw-01.mpynet.fi"
+        id S1730196AbgI3QoU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Sep 2020 12:44:20 -0400
+Received: from mgw-01.mpynet.fi ([82.197.21.90]:37138 "EHLO mgw-01.mpynet.fi"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725355AbgI3Qe7 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 30 Sep 2020 12:34:59 -0400
+        id S1725355AbgI3QoU (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 30 Sep 2020 12:44:20 -0400
 Received: from pps.filterd (mgw-01.mpynet.fi [127.0.0.1])
-        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 08UGRCfc129285;
-        Wed, 30 Sep 2020 19:34:37 +0300
+        by mgw-01.mpynet.fi (8.16.0.42/8.16.0.42) with SMTP id 08UGddCo016869;
+        Wed, 30 Sep 2020 19:43:51 +0300
 Received: from ex13.tuxera.com (ex13.tuxera.com [178.16.184.72])
-        by mgw-01.mpynet.fi with ESMTP id 33vwb280x6-1
+        by mgw-01.mpynet.fi with ESMTP id 33vwb2815s-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Wed, 30 Sep 2020 19:34:37 +0300
-Received: from tuxera.com (87.92.44.32) by tuxera-exch.ad.tuxera.com
+        Wed, 30 Sep 2020 19:43:51 +0300
+Received: from localhost (87.92.44.32) by tuxera-exch.ad.tuxera.com
  (10.20.48.11) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 30 Sep
- 2020 19:34:36 +0300
-Date:   Wed, 30 Sep 2020 19:34:35 +0300
+ 2020 19:43:50 +0300
 From:   Jouni Roivas <jouni.roivas@tuxera.com>
-To:     Tejun Heo <tj@kernel.org>
-CC:     Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-        <lizefan@huawei.com>, <hannes@cmpxchg.org>,
-        <cgroups@vger.kernel.org>
-Subject: Re: [PATCH] cgroup: Zero sized write should be no-op
-Message-ID: <20200930163435.GB304403@tuxera.com>
-References: <20200928131013.3816044-1-jouni.roivas@tuxera.com>
- <20200930160357.GA25838@blackbody.suse.cz>
- <20200930160619.GE4441@mtj.duckdns.org>
+To:     <tj@kernel.org>, <lizefan@huawei.com>, <hannes@cmpxchg.org>,
+        <mkoutny@suse.com>, <cgroups@vger.kernel.org>
+Subject: [PATCH v2] cgroup: Zero sized write should be no-op
+Date:   Wed, 30 Sep 2020 19:42:42 +0300
+Message-ID: <20200930164242.332249-1-jouni.roivas@tuxera.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20200930163435.GB304403@tuxera.com>
+References: <20200930163435.GB304403@tuxera.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20200930160619.GE4441@mtj.duckdns.org>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
 X-Originating-IP: [87.92.44.32]
 X-ClientProxiedBy: tuxera-exch.ad.tuxera.com (10.20.48.11) To
  tuxera-exch.ad.tuxera.com (10.20.48.11)
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
  definitions=2020-09-30_09:2020-09-30,2020-09-30 signatures=0
 X-Proofpoint-Spam-Details: rule=mpy_notspam policy=mpy score=0 phishscore=0 bulkscore=0 mlxscore=0
- spamscore=0 suspectscore=1 malwarescore=0 adultscore=0 mlxlogscore=939
+ spamscore=0 suspectscore=0 malwarescore=0 adultscore=4 mlxlogscore=999
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2006250000
- definitions=main-2009300129
+ definitions=main-2009300130
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi,
+Do not report failure on zero sized writes, and handle them as no-op.
 
-thanks for the feedback.
+There's issues for example in case of writev() when there's iovec
+containing zero buffer as a first one. It's expected writev() on below
+example to successfully perform the write to specified writable cgroup
+file expecting integer value, and to return 2. For now it's returning
+value -1, and skipping the write:
 
-The 09/30/2020 12:06, Tejun Heo wrote:
-> On Wed, Sep 30, 2020 at 06:03:57PM +0200, Michal Koutný wrote:
-> > On Mon, Sep 28, 2020 at 04:10:13PM +0300, Jouni Roivas <jouni.roivas@tuxera.com> wrote:
-> > > Do not report failure on zero sized writes, and handle them as no-op.
-> > This is a user visible change (in the case of a single write(2)), OTOH,
-> > `man write` says:
-> > > If count is zero and fd refers to a file other than a regular file,
-> > > the results are not specified.
-> 
-> So, I'm not necessarily against the change, mostly in the spirit of "why
-> not?".
+	int writetest(int fd) {
+	  const char *buf1 = "";
+	  const char *buf2 = "1\n";
+          struct iovec iov[2] = {
+                { .iov_base = (void*)buf1, .iov_len = 0 },
+                { .iov_base = (void*)buf2, .iov_len = 2 }
+          };
+	  return writev(fd, iov, 2);
+	}
 
-There's actual user space application failing because of this. Of course
-can to fix the app, but think it's better to fix kernel as well. At
-least prevents possible similar failures in future.
+This patch fixes the issue by checking if there's nothing to write,
+and handling the write as no-op by just returning 0.
 
-> > > @@ -3682,6 +3700,9 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
-> > >  	struct cgroup_subsys_state *css;
-> > >  	int ret;
-> > >  
-> > > +	if (!nbytes)
-> > > +		return 0;
-> > > +
-> > >  	/*
-> > >  	 * If namespaces are delegation boundaries, disallow writes to
-> > >  	 * files in an non-init namespace root from inside the namespace
-> > Shouldn't just this guard be sufficient? 
-> 
-> But yeah, please do it in one spot.
+Signed-off-by: Jouni Roivas <jouni.roivas@tuxera.com>
+---
+ kernel/cgroup/cgroup.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thought it would be good to add everywhere, but will clean up the patch
-and resubmit.
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index dd247747ec14..c26ba71c3d93 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3682,6 +3682,9 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
+ 	struct cgroup_subsys_state *css;
+ 	int ret;
+ 
++	if (!nbytes)
++		return 0;
++
+ 	/*
+ 	 * If namespaces are delegation boundaries, disallow writes to
+ 	 * files in an non-init namespace root from inside the namespace
+-- 
+2.25.1
+
