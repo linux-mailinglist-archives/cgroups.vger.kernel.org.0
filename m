@@ -2,72 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A10F2814B7
-	for <lists+cgroups@lfdr.de>; Fri,  2 Oct 2020 16:11:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D810281B8E
+	for <lists+cgroups@lfdr.de>; Fri,  2 Oct 2020 21:22:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388009AbgJBOLo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 2 Oct 2020 10:11:44 -0400
-Received: from mail-oo1-f66.google.com ([209.85.161.66]:44754 "EHLO
-        mail-oo1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgJBOLo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 2 Oct 2020 10:11:44 -0400
-Received: by mail-oo1-f66.google.com with SMTP id 4so360331ooh.11;
-        Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gesR1T7BjDx7faU3zrJze9mnQNTvk17XfofPixkh6R8=;
-        b=QW8OOsrdMU3X1mmWnuPD1RPNM1RSkCRFqhJD//qTq0SyAXJ8Hhumtw9ErobE+i4eWC
-         LLflRUs+NkycEgZ/Y3iKa0ck8w4Rb6lJdE02LhBgnsT4QSNvoZKXP/QZ1gcwAsR/TlEG
-         tOxO6YhLUzMfORdHGvhk1wh0E/zvj/7TslSF4XqgArrcH3xA+t4gGPuxUCoH4Wa/bkYL
-         kqMHSCYtmuH9Ez/5S9GwIa9zetXLPUH2HDk01ycfQmP5flKFrAIfvd/Mi416jAvzANFk
-         cdlLSq7v+JDhxEcjyvJbNsz7lcXxUcE4kgKJnAgRHkxhCTmJA6CaNNK2X5+wJU7zwLL/
-         lQUA==
-X-Gm-Message-State: AOAM530vxyF1ujhCm9/hqMFKRGSLG1OakTCfiOxPvKJIv5ck1wLU8S5N
-        eMb+5baVWyUhZTLcI2N/vGWd7hZraP4qxSeqtxdD2B2M
-X-Google-Smtp-Source: ABdhPJyOChhrOxMlaFI5j/v7n2WWIa9JJ6DsWupxqoyuqq9cx0MDNFvfbr/1n5VWiIB1HK6C3AQJgvKcYqwj5k3CjaE=
-X-Received: by 2002:a4a:e946:: with SMTP id v6mr2068079ood.38.1601647903052;
- Fri, 02 Oct 2020 07:11:43 -0700 (PDT)
+        id S2388415AbgJBTWB convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 2 Oct 2020 15:22:01 -0400
+Received: from mx.metalurgs.lv ([81.198.125.103]:65054 "EHLO mx.metalurgs.lv"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388411AbgJBTWA (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 2 Oct 2020 15:22:00 -0400
+X-Greylist: delayed 401 seconds by postgrey-1.27 at vger.kernel.org; Fri, 02 Oct 2020 15:22:00 EDT
+Received: from mx.metalurgs.lv (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 76CDF62ACF
+        for <cgroups@vger.kernel.org>; Fri,  2 Oct 2020 22:15:17 +0300 (EEST)
+Received: from kas30pipe.localhost (localhost [127.0.0.1])
+        by mx.metalurgs.lv (Postfix) with ESMTP id 4CC2962ABF
+        for <cgroups@vger.kernel.org>; Fri,  2 Oct 2020 22:15:17 +0300 (EEST)
+Received: by mx.metalurgs.lv (Postfix, from userid 1005)
+        id 08C3662BAC; Fri,  2 Oct 2020 22:15:14 +0300 (EEST)
+Received: from [100.64.1.74] (unknown [190.15.125.50])
+        (Authenticated sender: admin)
+        by mx.metalurgs.lv (Postfix) with ESMTPA id E022F62B44;
+        Fri,  2 Oct 2020 22:15:08 +0300 (EEST)
 MIME-Version: 1.0
-References: <20200925161447.1486883-1-hch@lst.de> <20200925161447.1486883-3-hch@lst.de>
- <CAJZ5v0h8TbOZ=seE8+OqFKTRxOYK25aTXDam7Lez0VR5qnkM3Q@mail.gmail.com> <20201002065015.GA9691@lst.de>
-In-Reply-To: <20201002065015.GA9691@lst.de>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 2 Oct 2020 16:11:30 +0200
-Message-ID: <CAJZ5v0hN7S0Tg8UTQCTLSsZw-n+9pHQBjvscWcBC4gpA5jPCuQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] PM/hibernate: remove the bogus call to get_gendisk in software_resume
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Pavel Machek <pavel@ucw.cz>, Len Brown <len.brown@intel.com>,
-        Minho Ban <mhban@samsung.com>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Description: Mail message body
+To:     Recipients <financialcapability6@gmail.com>
+From:   "Mr. Hashim Bin" <financialcapability6@gmail.com>
+Date:   Fri, 02 Oct 2020 16:15:02 -0300
+Reply-To: binmurrah@gmail.com
+X-SpamTest-Envelope-From: financialcapability6@gmail.com
+X-SpamTest-Group-ID: 00000000
+X-SpamTest-Info: Profiles 71303 [Jan 01 2015]
+X-SpamTest-Info: {TO: forged address, i.e. recipient, investors, public, etc.}
+X-SpamTest-Info: {DATE: unreal year}
+X-SpamTest-Method: none
+X-SpamTest-Rate: 55
+X-SpamTest-Status: Not detected
+X-SpamTest-Status-Extended: not_detected
+X-SpamTest-Version: SMTP-Filter Version 3.0.0 [0284], KAS30/Release
+Message-ID: <20201002191515.08C3662BAC@mx.metalurgs.lv>
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: 8BIT
+Subject: Low Rate Loan.
+X-Anti-Virus: Kaspersky Anti-Virus for Linux Mail Server 5.6.39/RELEASE,
+         bases: 20140401 #7726142, check: 20201002 notchecked
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 2, 2020 at 8:50 AM Christoph Hellwig <hch@lst.de> wrote:
->
-> On Wed, Sep 30, 2020 at 05:45:27PM +0200, Rafael J. Wysocki wrote:
-> > On Fri, Sep 25, 2020 at 6:15 PM Christoph Hellwig <hch@lst.de> wrote:
-> > >
-> > > get_gendisk grabs a reference on the disk and file operation, so this
-> > > code will leak both of them while having absolutely no use for the
-> > > gendisk itself.
-> > >
-> > > This effectively reverts commit 2df83fa4bce421f
-> > > ("PM / Hibernate: Use get_gendisk to verify partition if resume_file is integer format")
-> > >
-> > > Signed-off-by: Christoph Hellwig <hch@lst.de>
-> >
-> > Acked-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Can you pick it up through the PM tree?  The big rework in this area
-> I have planned won't land before 5.11 anyway.
+Hello Dear,
 
-Will do, thanks!
+We are Investment Company offering Corporate and Personal
+Loan at 3% Interest Rate for a duration of 10Years.
+
+We also pay 1% commission to brokers, who introduce project
+owners for finance or other opportunities.
+
+Please get back to me if you are interested for more
+details.
+
+Yours faithfully,
+Hashim Bin 
