@@ -2,124 +2,166 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE89F283B28
-	for <lists+cgroups@lfdr.de>; Mon,  5 Oct 2020 17:40:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B402284252
+	for <lists+cgroups@lfdr.de>; Mon,  5 Oct 2020 23:59:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728463AbgJEPkB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 5 Oct 2020 11:40:01 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44514 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727950AbgJEPjx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Oct 2020 11:39:53 -0400
-Received: from mail-wr1-f72.google.com ([209.85.221.72])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kPSac-0001Rz-V7
-        for cgroups@vger.kernel.org; Mon, 05 Oct 2020 15:39:51 +0000
-Received: by mail-wr1-f72.google.com with SMTP id f11so1968646wro.15
-        for <cgroups@vger.kernel.org>; Mon, 05 Oct 2020 08:39:50 -0700 (PDT)
+        id S1726944AbgJEV7W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Oct 2020 17:59:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726714AbgJEV7W (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Oct 2020 17:59:22 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6279EC0613CE
+        for <cgroups@vger.kernel.org>; Mon,  5 Oct 2020 14:59:22 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id y20so10808510iod.5
+        for <cgroups@vger.kernel.org>; Mon, 05 Oct 2020 14:59:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=LsnSp/dKPJAZzQDStydfHkWvldA7av+IiYeRmlTt4/8=;
+        b=mz35yaD2r8hUgO+GSF0qAc5vVEH3SeonsFMI6KdZcoNNym7Pd6MsbUxcZddO1PUpwj
+         FuSvqYFGvVTvOxAIBDiGdxHbcGf5apD+7AUJNzeh/DAQUGFCAn95imvjTx/aoQkuzizu
+         GiHSQTfvzp1v+81QiEdV2g1IPvpclyBIRUaXJfuObYRAVWgnJcB1B+ho/ky6OW7bo+Xo
+         w221HwZ1DrqnO5qC3CP+PilfLZjpCP6LxySy25/cR2hp5r6Z8PbchAvmbKoqQ3QOWj14
+         Y2IumtFdbYlxhwdmxL1zwsdbsOz7RrFs3Y4GiADconT3Wz+PSWJPXkvcRv355nUo1QB+
+         WFMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mM+mXfJfYWo+rDTzms1HSoE47Buw2ePWt0ypNfOv5eA=;
-        b=b5qNDMdJXA+oKdiUGpwVlVWnMc6XH6cE0WUEyd82/lsvdpQcsc6O0JLFne6m8+dFWa
-         P5gV1Uk4c/UAlKlCFHbB6XIRuaucTJOhg0VyRxbQeFJb7jEQJTnUT7JywRmgLUaG1U68
-         FZtDW6Rc66lChly3DJpQxxiZvPFAbv8KbiwGg0qcE1+pWkEUs2ghF98+kPjP2B8DZipu
-         THhX6MVmf9CNG0A34JdxQWwABO4d1KSEpfCptAHne2OBc1fQtvOO3Ok7CRhapT12AgWR
-         qDlLE2JYslYIk/V8oy+xg5XJIPTCEDFMbj2hZWs/ejOOmNlxVg4fpfwHmlWV9u/ixRIP
-         igUg==
-X-Gm-Message-State: AOAM533bPrfHnl8Mdo6YqNMAP/HF5jVDtMhsgDtI6zBMgeyBGZQzEluR
-        h2UjQ43Ky7z+MGt8S8HhnndEJAfr9oQl9gsPVKg6wwVnX6sjJF9zQ85XGznaMAIa4rUpprtnT+v
-        v+ieDc9ZvioPjaur59jkjWyw9TWIcW+jTt5c=
-X-Received: by 2002:adf:f6cd:: with SMTP id y13mr18239093wrp.161.1601912390435;
-        Mon, 05 Oct 2020 08:39:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyyR5jOPYrgRLM5RUrs8DlVxB9ydRU8TU1jx6BFSljPHmzKZvGegdovcj80QusTJb5Aun56xw==
-X-Received: by 2002:adf:f6cd:: with SMTP id y13mr18239067wrp.161.1601912390139;
-        Mon, 05 Oct 2020 08:39:50 -0700 (PDT)
-Received: from localhost (host-79-36-133-218.retail.telecomitalia.it. [79.36.133.218])
-        by smtp.gmail.com with ESMTPSA id c1sm438226wru.49.2020.10.05.08.39.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Oct 2020 08:39:49 -0700 (PDT)
-Date:   Mon, 5 Oct 2020 17:39:48 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Chris Down <chris@chrisdown.name>
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Luigi Semenzato <semenzato@google.com>,
-        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org
-Subject: Re: [PATCH RFC v2] Opportunistic memory reclaim
-Message-ID: <20201005153948.GC783944@xps-13-7390>
-References: <20201005081313.732745-1-andrea.righi@canonical.com>
- <20201005112555.GA108347@chrisdown.name>
- <20201005135130.GA850459@xps-13-7390>
- <20201005144612.GB108347@chrisdown.name>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=LsnSp/dKPJAZzQDStydfHkWvldA7av+IiYeRmlTt4/8=;
+        b=IRoDYTj9TdboEdOLv9z4Z59SQY+qJ893d/mxQbcP/SkOtfSbSQoB4oem0JeLNesjw1
+         o/L06ryFs79MHZx9arIFoOyWskM7AF9u6BnSBGC9u+PfX1ElmZASQh+rn1lNym3/TgkU
+         hSNu3kXvijUgW9XgZD5vV5dD7tdcWhAgRLRJ3TyX9VB2JekqRXwI0fBeIMHx/Hi77aOD
+         q6hBokCs8J/RhBXL+23pjqED4LlSYOllweIyJdgPg06GYpNZ9ZotGcZLZzZ02nAaX61X
+         TlvxVrhpKaH+vCUomYKWZfj6QUeR0A+2HHcmmBeBSvMhoTCDIG/lzgrOygUmOY9kG8FH
+         1PLg==
+X-Gm-Message-State: AOAM5304OVqRyrmgC2UQ47yEdiz9QZoJ6Ud3Jb1cYoOgVaO4APU1IgrQ
+        CBFutIhcIakM2W4PYPhCeUdrISrFR/y0pzbI9hBs1A==
+X-Google-Smtp-Source: ABdhPJwjTBSl3nKHIt88uqzRTedY2UYNL8AQKBPtKmiB17i5PNDeTdDSbTwz6PXhv5HgYzm+iHS2EIQ7SlwYxMDwUcQ=
+X-Received: by 2002:a5d:9e0c:: with SMTP id h12mr1525893ioh.163.1601935161379;
+ Mon, 05 Oct 2020 14:59:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201005144612.GB108347@chrisdown.name>
+References: <20200909215752.1725525-1-shakeelb@google.com> <20200928210216.GA378894@cmpxchg.org>
+ <CALvZod7afgoAL7KyfjpP-LoSFGSHv7XtfbbnVhEEhsiZLqZu9A@mail.gmail.com> <20201001151058.GB493631@cmpxchg.org>
+In-Reply-To: <20201001151058.GB493631@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 5 Oct 2020 14:59:10 -0700
+Message-ID: <CALvZod66T4-y2JQnN+favf6tnKkkFQ17HZ8EAAX0GXAcbO4v+w@mail.gmail.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        SeongJae Park <sjpark@amazon.com>, andrea.righi@canonical.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Oct 05, 2020 at 03:46:12PM +0100, Chris Down wrote:
-> Andrea Righi writes:
-> > senpai is focused at estimating the ideal memory requirements without
-> > affecting performance. And this covers the use case about reducing
-> > memory footprint.
-> > 
-> > In my specific use-case (hibernation) I would let the system use as much
-> > memory as possible if it's doing any activity (reclaiming memory only
-> > when the kernel decides that it needs to reclaim memory) and apply a
-> > more aggressive memory reclaiming policy when the system is mostly idle.
-> 
-> From this description, I don't see any reason why it needs to be implemented
-> in kernel space. All of that information is available to userspace, and all
-> of the knobs are there.
-> 
-> As it is I'm afraid of the "only when the system is mostly idle" comment,
-> because it's usually after such periods that applications need to do large
-> retrievals, and now they're going to be in slowpath (eg. periodic jobs).
+Hi Johannes,
 
-True, but with memory.high there's the risk to trash some applications
-badly if I'm not reacting fast at increasing memory.high.
+On Thu, Oct 1, 2020 at 8:12 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> Hello Shakeel,
+>
+> On Wed, Sep 30, 2020 at 08:26:26AM -0700, Shakeel Butt wrote:
+> > On Mon, Sep 28, 2020 at 2:03 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> > > Workloads may not
+> > > allocate anything for hours, and then suddenly allocate gigabytes
+> > > within seconds. A sudden onset of streaming reads through the
+> > > filesystem could destroy the workingset measurements, whereas a limit
+> > > would catch it and do drop-behind (and thus workingset sampling) at
+> > > the exact rate of allocations.
+> > >
+> > > Again I believe something that may be doable as a hyperscale operator,
+> > > but likely too fragile to get wider applications beyond that.
+> > >
+> > > My take is that a proactive reclaim feature, whose goal is never to
+> > > thrash or punish but to keep the LRUs warm and the workingset trimmed,
+> > > would ideally have:
+> > >
+> > > - a pressure or size target specified by userspace but with
+> > >   enforcement driven inside the kernel from the allocation path
+> > >
+> > > - the enforcement work NOT be done synchronously by the workload
+> > >   (something I'd argue we want for *all* memory limits)
+> > >
+> > > - the enforcement work ACCOUNTED to the cgroup, though, since it's the
+> > >   cgroup's memory allocations causing the work (again something I'd
+> > >   argue we want in general)
+> >
+> > For this point I think we want more flexibility to control the
+> > resources we want to dedicate for proactive reclaim. One particular
+> > example from our production is the batch jobs with high memory
+> > footprint. These jobs don't have enough CPU quota but we do want to
+> > proactively reclaim from them. We would prefer to dedicate some amount
+> > of CPU to proactively reclaim from them independent of their own CPU
+> > quota.
+>
+> Would it not work to add headroom for this reclaim overhead to the CPU
+> quota of the job?
+>
+> The reason I'm asking is because reclaim is only one side of the
+> proactive reclaim medal. The other side is taking faults and having to
+> do IO and/or decompression (zswap, compressed btrfs) on the workload
+> side. And that part is unavoidably consuming CPU and IO quota of the
+> workload. So I wonder how much this can generally be separated out.
+>
+> It's certainly something we've been thinking about as well. Currently,
+> because we use memory.high, we have all the reclaim work being done by
+> a privileged daemon outside the cgroup, and the workload pressure only
+> stems from the refault side.
+>
+> But that means a workload is consuming privileged CPU cycles, and the
+> amount varies depending on the memory access patterns - how many
+> rotations the reclaim scanner is doing etc.
+>
+> So I do wonder whether this "cost of business" of running a workload
+> with a certain memory footprint should be accounted to the workload
+> itself. Because at the end of the day, the CPU you have available will
+> dictate how much memory you need, and both of these axes affect how
+> you can schedule this job in a shared compute pool. Do neighboring
+> jobs on the same host leave you either the memory for your colder
+> pages, or the CPU (and IO) to trim them off?
+>
+> For illustration, compare extreme examples of this.
+>
+>         A) A workload that has its executable/libraries and a fixed
+>            set of hot heap pages. Proactive reclaim will be relatively
+>            slow and cheap - a couple of deactivations/rotations.
+>
+>         B) A workload that does high-speed streaming IO and generates
+>            a lot of drop-behind cache; or a workload that has a huge
+>            virtual anon set with lots of allocations and MADV_FREEing
+>            going on. Proactive reclaim will be fast and expensive.
+>
+> Even at the same memory target size, these two types of jobs have very
+> different requirements toward the host environment they can run on.
+>
+> It seems to me that this is cost that should be captured in the job's
+> overall resource footprint.
 
-However, something that I could definitely want to try is to move all
-the memory hogs to a cgroup, set memory.high to a very small value and
-then immediately set it back to 'max'. The effect should be pretty much
-the same as calling shrink_all_memory(), that is what I'm doing with my
-memory.swap.reclaim.
+I understand your point but from the usability perspective, I am
+finding it hard to deploy/use.
 
-> 
-> Such tradeoffs for a specific situation might be fine in userspace as a
-> distribution maintainer, but codifying them in the kernel seems premature to
-> me, especially for a knob which we will have to maintain forever onwards.
-> 
-> > I could probably implement this behavior adjusting memory.high
-> > dynamically, like senpai, but I'm worried about potential sudden large
-> > allocations that may require to respond faster at increasing
-> > memory.high. I think the user-space triggered memory reclaim approach is
-> > a safer solution from this perspective.
-> 
-> Have you seen Shakeel's recent "per-memcg reclaim interface" patches? I
-> suspect they may help you there.
+As you said, the proactive reclaim cost will be different for
+different types of workload but I do not expect the job owners telling
+me how much headroom their jobs need.
 
-Yes, Michal pointed out to me his work, it's basically the same approach
-that I'm using.
+I would have to start with a fixed headroom for a job, have to monitor
+the resource usage of the proactive reclaim for it and dynamically
+adjust the headroom to not steal the CPU from the job (I am assuming
+there is no isolation between job and proactive reclaim).
 
-I started this work with a patch that was hibernation specific
-(https://lore.kernel.org/lkml/20200601160636.148346-1-andrea.righi@canonical.com/);
-this v2 was the natural evolution of my previous work and I didn't
-notice that something similar has been posted in the meantime.
-
-Anyway, I already contacted Shakeel, so we won't duplicate the efforts
-in the future. :)
-
-Thanks for your feedback!
--Andrea
+This seems very hard to use as compared to setting aside a fixed
+amount of CPU for proactive reclaim system wide. Please correct me if
+I am misunderstanding something.
