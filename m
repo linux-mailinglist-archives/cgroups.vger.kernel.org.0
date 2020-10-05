@@ -2,104 +2,212 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B68EE281FF0
-	for <lists+cgroups@lfdr.de>; Sat,  3 Oct 2020 03:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27B02831A5
+	for <lists+cgroups@lfdr.de>; Mon,  5 Oct 2020 10:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725536AbgJCBNM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 2 Oct 2020 21:13:12 -0400
-Received: from sonic305-21.consmr.mail.sg3.yahoo.com ([106.10.241.84]:45534
-        "EHLO sonic305-21.consmr.mail.sg3.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725379AbgJCBNM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 2 Oct 2020 21:13:12 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1601687589; bh=YiBnr4Uk8siI0dhikjlKOiXekrwpOWZKz+TPVjgu4sY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=KSLyODSv7EgP3/28ZOF1HTAc7CFIK956aKPdYyVdwYMcnwQN45bFfAFiTG891YDx5o0Rtkjeeqf7uxzPWKabuXiDBJBbCToGzrcwB9+jsSPHeqbsyxdm/s3jDxv5gybhPmstmfkjAfDxtWz2lGI2ll7JbLcFFXSM1YN/r3zPQ5bxsFaPkUD/6q92wGx9vfXnh22HasJwH26TamVw3LMD35NHMhOktxn7fLo+rWdpMXMlR9Qsyv9qfStVsCXc8UkEZ2LYQ3w4zEHxd1wi+bFW4EogBqIPhVrjZ0ogeW43pBFCTYLohsccwQPVDaMyTmqVrPlOM6omeHMt9FL6/CPG9A==
-X-YMail-OSG: 2uOYPjEVM1nCw5I9czfzOi4ogLNNQnrR2VtSx0HrZsoMlNt9Hu2GiI5HhgfxrFu
- L86iiCNarUg.vdsj8Q08qpTG7QBl6zQ2GCwI9isN88GBqehogxTVQv5YljXn.g94jDsZVP8Gsx62
- 1RTRix99ySt9vM4j7g1FVa4wf7.hEW1169Iq7N5yltw0ZJMELhSWgNrNq_jWjqRZIFOHDziFgcoL
- WNOcxTKWJZkR40qawd97VDR5E39HKXBlP7tISo_MCATcRLdOqAijp_3hOr_z91ZBpOCrPEn.YbdY
- DasBru..KmvigX7mkkoH0ZYTTQ7PqB62.WQQCzQ0QAYzOvkSlwHOAXr4DOv8UJnDnhj.B_xEKjTR
- 4Kz09dPY_WFeXt6BGkLQl6Zd0hVG15D1PHFcuNPob7.8IwCgAIFsX6dhHi4G.hllP4q4rxYbaSe8
- evV7DY1wvfm8P4r32EvsgeUb1A0UZ0V6mMAh4a3Fz9NQYdeAFmqGjP0WfLv9N5Gk8cePVq6wpGYk
- xus.wFeaaGLBg6yuu0jigT759YPKlZDpYrk_m1B7zLe0fQ.e6254UYR2tXzwsKfUJqxYJn5Lkuem
- N67EUkdlrWLe9._7BjdkW4p51PezP2tnariBPqGNUYVi2OiWXSSsuKMfAM4TAMMD0gyz5LwuNbeM
- TmOJRpxwbe3s2zJ0Gr76jA2XlE7x3DGiU0mITTr.LkdGg8LtaIrw5edrzjR7aO1eqVks2zdRULc9
- bwPDwJz5GnR01TC70g2SK7kNgWeU4.McAcfnZaf9cJgLjmApwUegYuqL3mJwfw_fUbyil7__Gh1T
- q8aCV8acMLMGvYN11y63AHj5a7guJCYRgXzuffPn97E_h5QbwDrcb.HuCrinqEQews6DhreRhnTj
- Iimm7mUGKSinPKUDSt.30Ek9J.dBr.tX5.Kh6zQYOCCMVGUEB3OIH03aMNlWfAhkw2AeV2yQIY2M
- 8gVMoOvB5dzWfAKUa9yzpzr2PUoR.HktKsrdj.GblSClC8k3vgknYU9tPMDBFVSi3kIy3EXI6Ju_
- nCqFJJ3AhaUJc7365QXNoiBTEnHr0zDhBpMAmfjAQZBjpXuL5YDlDeppK18uk1ohrtDqqlzpeLTg
- 1d01Qwys7CiP7NTuxH.Km0Z8yDvgCaVTbMZSpfzQPWlGvlDHUb.NvR0HytsUYmbdiUGA3Og3YJlZ
- teZ7uo42lO5fOsJd5XveOCuHZUCYuSs3DOyZMimmMp21x4tP1gOWzpoRhKcnD48yWsBytEwn18s.
- nmGIATILbz70jljZkeE9teWF9P_ML_WDQ2uKVTZEI_b5s4bIsQ8t33PLSWPO0BGl71rnTSxYRiZ8
- sg59CS_WKYhh066XZGnS0gmZXkUfHc0Ths2KORqCXUEFFTWeRAWez_WCQMAzWJBWJnoC0dHDyg16
- 3B1dRIj6aljsl82rkrkk3pOlUBVt21o.sYmsMly5T7L8RnD3GKRmz
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic305.consmr.mail.sg3.yahoo.com with HTTP; Sat, 3 Oct 2020 01:13:09 +0000
-Date:   Sat, 3 Oct 2020 01:13:05 +0000 (UTC)
-From:   " MRS. MARYAM COMPAORE" <mrscompaoremary2222@gmail.com>
-Reply-To: mrscompaoremary2222@gmail.com
-Message-ID: <490053646.971644.1601687585189@mail.yahoo.com>
-Subject: FORM.MRS.MARYAM C. RICHARD.
+        id S1725954AbgJEIOa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 5 Oct 2020 04:14:30 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:57846 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725898AbgJEIOa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 5 Oct 2020 04:14:30 -0400
+Received: from mail-wr1-f69.google.com ([209.85.221.69])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <andrea.righi@canonical.com>)
+        id 1kPLdb-0001H1-6T
+        for cgroups@vger.kernel.org; Mon, 05 Oct 2020 08:14:27 +0000
+Received: by mail-wr1-f69.google.com with SMTP id b2so3663294wrs.7
+        for <cgroups@vger.kernel.org>; Mon, 05 Oct 2020 01:14:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=04NfvqcE293cqSxzmzA7UDEenFQaTMOEO1JaCZLQgms=;
+        b=Ry7cGJEtDn4Jja7y2qreH7tqBZvWSlQNmETurP9Jn6AS/SR9ny84nd1ldoJK4gIPR8
+         Im0Bwjlb/2OGc7aP3/3cz60ZpBLe/Bbgg5+MKvzy23zx4EyGt0OwRU//MWCqrWypE6n3
+         WA0ePsjHWYfnc9M5YFOb8OOfTAih7wOxB+5OStARSQIo4/XJKEcrUuCIa9cpFLfZ448m
+         LJlUo0GllngWKEl2xql6KSgS0Yali36s9vrDqTTPgZGPwMB7HOvhVJfWJ9jJ28NfOx+d
+         8DDKJG37wI1p2nq+MFa6M3XYCAQu5qByj6hnuLQK6lCDFcuqOEm5v75c9ssz5e4YpHDj
+         5v3w==
+X-Gm-Message-State: AOAM530siVR1aua5GXifCqMrpmbNy1OG9RJ5mJ2doSv/lZLuYCFOThrS
+        wmvmb3iXA7YkKrQbF7Eu74kvTu1Rk59ru01s5qZ+6NMTReeJz42m+AB2s/re9hmbV/WRggshPAG
+        wDjC7zByv2+JefYldn1a9hKdGyFVcBvWYG0Q=
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr1763594wrg.191.1601885666768;
+        Mon, 05 Oct 2020 01:14:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy/vSx89vE5EQY/p7M5JNzqT6l1/+ZcZKgMzOZLy7zCPdPEe+yrwl2TQ5atBaon8TgjIaK/tQ==
+X-Received: by 2002:adf:c3c2:: with SMTP id d2mr1763556wrg.191.1601885666376;
+        Mon, 05 Oct 2020 01:14:26 -0700 (PDT)
+Received: from xps-13-7390.homenet.telecomitalia.it (host-79-36-133-218.retail.telecomitalia.it. [79.36.133.218])
+        by smtp.gmail.com with ESMTPSA id a15sm13168855wrn.3.2020.10.05.01.14.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 05 Oct 2020 01:14:25 -0700 (PDT)
+From:   Andrea Righi <andrea.righi@canonical.com>
+To:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Luigi Semenzato <semenzato@google.com>,
+        "Rafael J . Wysocki" <rafael@kernel.org>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH RFC v2] Opportunistic memory reclaim
+Date:   Mon,  5 Oct 2020 10:13:11 +0200
+Message-Id: <20201005081313.732745-1-andrea.righi@canonical.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-References: <490053646.971644.1601687585189.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16718 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/85.0.4183.121 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-My Beloved Friend In The Lord.
+## Overview
 
-Greetings in the name of our Lord Jesus  Christ. I am Mrs. Maryam C. Richar=
-d, From Poland, a widow to late (MR.RICHARD BURSON from Florida , U.S.A) l =
-am 51 years old and I am a converted born again Christian, suffering from l=
-ong term  Cancer of the KIDNEY, from all indication my condition is really =
-deteriorating and it is quite obvious that I might not live more than two (=
-2) months, according to my Doctor because the cancer has gotten to a very w=
-orst / dangerous stage.
+Opportunistic memory reclaim aims to introduce a new interface that
+allows user-space to trigger an artificial memory pressure condition and
+force the kernel to reclaim memory (dropping page cache pages, swapping
+out anonymous memory, etc.).
 
-My late husband and my only child died last five years ago, his death was p=
-olitically motivated. My late husband was a very rich and wealthy business =
-man who was running his Gold/Diamond Business here in Burkina Faso. After h=
-is death, I inherited all his business and wealth. My doctors have advised =
-me that I may not live for more than two (2) months, so I now decided to di=
-vide the part of this wealth, to contribute to the development of the churc=
-hes in Africa, America, Asia, and Europe. I got your email id from your cou=
-ntry guestbook, and I prayed over it and the spirit our Lord Jesus directed=
- me to you as an honest person who can assist me to fulfill my wish here on=
- earth before I give up in live.
+### Motivation
 
-My late husband, have an account deposited the sum of $5.3 Million Dollars =
-in BANK OF AFRICA Burkina Faso where he do his business projects before his=
- death, So I want the Sum $5.3 Million Dollars in BANK OF AFRICA Burkina Fa=
-so to be release/transfer to you as the less privileged because I cannot ta=
-ke this money to the grave. Please I want you to note that this fund is lod=
-ged in a Bank Of Africa in Burkina Faso.
+Reclaiming memory in advance to prepare the system to be more responsive
+when needed.
 
-Once I hear from you, I will forward to you all the information's you will =
-use to get this fund released from the bank of Africa and to be transferred=
- to your bank account. I honestly pray that this money when transferred to =
-you will be used for the said purpose on Churches and Orphanage because l h=
-ave come to find out that wealth acquisition without Christ is vanity. May =
-the grace of our lord Jesus the love of God and the fellowship of God be wi=
-th you and your family as you will use part of this sum for Churches and Or=
-phanage for my soul to rest in peace when I die.
+### Use cases
 
-Urgently Reply with the information=E2=80=99s bellow to this My Private E-m=
-ail bellow:=20
+ - Reduce system memory footprint
+ - Speed up hibernation time
+ - Speed up VM migration time
+ - Prioritize responsiveness of foreground applications vs background
+   applications
+ - Prepare the system to be more responsiveness during large allocation
+   bursts
 
-( mrscompaoremary392@gmail.com )
+## Interface
 
-1. YOUR FULL NAME..........
+This feature is provided by adding a new file to each memcg:
+memory.swap.reclaim.
 
-2. NATIONALITY.................
+Writing a number to this file forces a memcg to reclaim memory up to
+that number of bytes ("max" means as much memory as possible). Reading
+from the this file returns the amount of bytes reclaimed in the last
+opportunistic memory reclaim attempt.
 
-3. YOUR AGE......................
+Memory reclaim can be interrupted sending a signal to the process that
+is writing to memory.swap.reclaim (i.e., to set a timeout for the whole
+memory reclaim run).
 
-4. OCCUPATION.................
+## Example usage
 
-5. PHONE NUMBER.............
+This feature has been successfully used to improve hibernation time of
+cloud computing instances.
 
-BEST REGARD.
-MRS.MARYAM C. RICHARD.
+Certain cloud providers allow to run "spot instances": low-priority
+instances that run when there are spare resources available and can be
+stopped at any time to prioritize other more privileged instances [2].
+
+Hibernation can be used to stop these low-priority instances nicely,
+rather than losing state when the instance is shut down. Being able to
+quickly stop low-priority instances can be critical to provide a better
+quality of service in the overall cloud infrastructure [1].
+
+The main bottleneck of hibernation is represented by the I/O generated
+to write all the main memory (hibernation image) to a persistent
+storage.
+
+Opportunistic memory reclaimed can be used to reduce the size of the
+hibernation image in advance, for example if the system is idle for a
+certain amount of time, so if an hibernation request happens, the kernel
+has already saved most of the memory to the swap device (caches have
+been dropped, etc.) and hibernation can complete quickly.
+
+## Testing and results
+
+Here is a simple test case to show the effectiveness of this feature.
+
+Environment:
+```
+   - VM (kvm):
+     8GB of RAM
+     disk speed: 100 MB/s
+     8GB swap file on ext4 (/swapfile)
+```
+
+Test case:
+```
+  - allocate 85% of memory
+  - wait for 60s almost in idle
+  - hibernate and resume the system (measuring the time)
+```
+
+Result:
+  - average of 10 runs tested with `/sys/power/image_size=default` and
+    `/sys/power/image_size=0`:
+```
+                                 5.9-vanilla   5.9-mm_reclaim
+                                 -----------   --------------
+  [hibernate] image_size=default      49.07s            3.40s
+     [resume] image_size=default      18.35s            7.13s
+
+  [hibernate] image_size=0            71.55s            4.72s
+     [resume] image_size=0             7.49s            7.41s
+```
+
+NOTE #1: in the `5.9-mm_reclaim` case a simple user-space daemon detects
+when the system is idle for a certain amount of time and triggers the
+opportunistic memory reclaim.
+
+NOTE #2: `/sys/power/image_size=0` can be used with `5.9-vanilla` to
+speed up resume time (because it shrinks even more the hibernation
+image) at the cost of increasing hibernation time; with `5.9-mm_reclaim`
+performance are pretty much identical in both cases, because the
+hibernation image is already reduced to the minimum when the hibernation
+request happens.
+
+## Conclusion
+
+Being able to trigger memory reclaim from user-space allows to prepare
+the system in advance to be more responsive when needed.
+
+This feature has been used with positive test results to speed up
+hibernation time of cloud computing instances, but it can also provide
+benefits to other use cases, for example:
+
+ - prioritize responsiveness of foreground applications vs background
+   applications
+
+ - improve system responsiveness during large allocation bursts
+   (preparing system by reclaiming memory in advance, e.g. using some
+   idle cycles)
+
+ - reduce overall system memory footprint (especially in VM / cloud
+   computing environments)
+
+## See also
+
+ - [1] https://lwn.net/Articles/821158/
+ - [2] https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-interruptions.html
+ - [3] user-space tools/scripts: https://github.com/arighi/opportunistic-memory-reclaim
+ - [4] previous version: https://lore.kernel.org/lkml/20200601160636.148346-1-andrea.righi@canonical.com/
+
+## Changes in v2:
+ - move ABI from hibernation to memcg (since this feature can be used
+   also in other contexts and it's not hibernation-specific)
+ - drop memory release functionality (to re-load swapped out pages,
+   since it ended being not very useful)
+ - added the possibility to show the number of memory reclaimed in the
+   last attempt (per-memcg)
+
+----------------------------------------------------------------
+Andrea Righi (2):
+      mm: memcontrol: make shrink_all_memory() memcg aware
+      mm: memcontrol: introduce opportunistic memory reclaim
+
+ Documentation/admin-guide/cgroup-v2.rst | 18 ++++++++++
+ include/linux/memcontrol.h              |  4 +++
+ include/linux/swap.h                    |  9 ++++-
+ mm/memcontrol.c                         | 59 +++++++++++++++++++++++++++++++++
+ mm/vmscan.c                             |  6 ++--
+ 5 files changed, 92 insertions(+), 4 deletions(-)
 
