@@ -2,17 +2,17 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0CF6286D5C
-	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 05:53:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7784F286D61
+	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 05:53:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727742AbgJHDxC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Oct 2020 23:53:02 -0400
-Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:33738 "EHLO
-        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728313AbgJHDwo (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Oct 2020 23:52:44 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UBGF.4a_1602129161;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UBGF.4a_1602129161)
+        id S1728313AbgJHDxb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 7 Oct 2020 23:53:31 -0400
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:53763 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728082AbgJHDxa (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Oct 2020 23:53:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UBG9jZH_1602129161;
+Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UBG9jZH_1602129161)
           by smtp.aliyun-inc.com(127.0.0.1);
           Thu, 08 Oct 2020 11:52:41 +0800
 From:   Baolin Wang <baolin.wang@linux.alibaba.com>
@@ -20,9 +20,9 @@ To:     tj@kernel.org, axboe@kernel.dk
 Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
         linux-block@vger.kernel.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v2 7/8] blk-throttle: Open code __throtl_de/enqueue_tg()
-Date:   Thu,  8 Oct 2020 11:52:28 +0800
-Message-Id: <6a43ae990da3163204bae3ddedb6025d73b91545.1602128837.git.baolin.wang@linux.alibaba.com>
+Subject: [PATCH v2 8/8] blk-throttle: Re-use the throtl_set_slice_end()
+Date:   Thu,  8 Oct 2020 11:52:29 +0800
+Message-Id: <f46c1c65ccf30f755df6fbfd6f2eaae9b9e6dc4b.1602128837.git.baolin.wang@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
 References: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
@@ -32,58 +32,26 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The __throtl_de/enqueue_tg() functions are only be called by
-throtl_de/enqueue_tg(), thus we can just open code them to
-make code more readable.
+Re-use throtl_set_slice_end() to remove duplicate code.
 
 Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
 ---
- block/blk-throttle.c | 26 +++++++++-----------------
- 1 file changed, 9 insertions(+), 17 deletions(-)
+ block/blk-throttle.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 38aed8b..fc5c14f 100644
+index fc5c14f..b771c42 100644
 --- a/block/blk-throttle.c
 +++ b/block/blk-throttle.c
-@@ -691,29 +691,21 @@ static void tg_service_queue_add(struct throtl_grp *tg)
- 			       leftmost);
- }
- 
--static void __throtl_enqueue_tg(struct throtl_grp *tg)
--{
--	tg_service_queue_add(tg);
--	tg->flags |= THROTL_TG_PENDING;
--	tg->service_queue.parent_sq->nr_pending++;
--}
--
- static void throtl_enqueue_tg(struct throtl_grp *tg)
+@@ -808,7 +808,7 @@ static inline void throtl_set_slice_end(struct throtl_grp *tg, bool rw,
+ static inline void throtl_extend_slice(struct throtl_grp *tg, bool rw,
+ 				       unsigned long jiffy_end)
  {
--	if (!(tg->flags & THROTL_TG_PENDING))
--		__throtl_enqueue_tg(tg);
--}
--
--static void __throtl_dequeue_tg(struct throtl_grp *tg)
--{
--	throtl_rb_erase(&tg->rb_node, tg->service_queue.parent_sq);
--	tg->flags &= ~THROTL_TG_PENDING;
-+	if (!(tg->flags & THROTL_TG_PENDING)) {
-+		tg_service_queue_add(tg);
-+		tg->flags |= THROTL_TG_PENDING;
-+		tg->service_queue.parent_sq->nr_pending++;
-+	}
- }
- 
- static void throtl_dequeue_tg(struct throtl_grp *tg)
- {
--	if (tg->flags & THROTL_TG_PENDING)
--		__throtl_dequeue_tg(tg);
-+	if (tg->flags & THROTL_TG_PENDING) {
-+		throtl_rb_erase(&tg->rb_node, tg->service_queue.parent_sq);
-+		tg->flags &= ~THROTL_TG_PENDING;
-+	}
- }
- 
- /* Call with queue lock held */
+-	tg->slice_end[rw] = roundup(jiffy_end, tg->td->throtl_slice);
++	throtl_set_slice_end(tg, rw, jiffy_end);
+ 	throtl_log(&tg->service_queue,
+ 		   "[%c] extend slice start=%lu end=%lu jiffies=%lu",
+ 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
 -- 
 1.8.3.1
 
