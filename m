@@ -2,56 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7784F286D61
-	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 05:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80714287488
+	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 14:51:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728313AbgJHDxb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 7 Oct 2020 23:53:31 -0400
-Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:53763 "EHLO
-        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728082AbgJHDxa (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 7 Oct 2020 23:53:30 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UBG9jZH_1602129161;
-Received: from localhost(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0UBG9jZH_1602129161)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 08 Oct 2020 11:52:41 +0800
-From:   Baolin Wang <baolin.wang@linux.alibaba.com>
-To:     tj@kernel.org, axboe@kernel.dk
-Cc:     baolin.wang@linux.alibaba.com, baolin.wang7@gmail.com,
-        linux-block@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 8/8] blk-throttle: Re-use the throtl_set_slice_end()
-Date:   Thu,  8 Oct 2020 11:52:29 +0800
-Message-Id: <f46c1c65ccf30f755df6fbfd6f2eaae9b9e6dc4b.1602128837.git.baolin.wang@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
-References: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
-In-Reply-To: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
-References: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
+        id S1730083AbgJHMvs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Oct 2020 08:51:48 -0400
+Received: from m12-18.163.com ([220.181.12.18]:52546 "EHLO m12-18.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1729722AbgJHMvq (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 8 Oct 2020 08:51:46 -0400
+X-Greylist: delayed 978 seconds by postgrey-1.27 at vger.kernel.org; Thu, 08 Oct 2020 08:51:45 EDT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=7snQg
+        UUJSF5tKYLwhoTXmX+RnS13E0l5FHg91pRGEt8=; b=TBwxSNoIp21YXiaIJENv0
+        MP5W7XPDKS3g7j6aUCxBY1VvRFNFo2nLYIeyER1o0tOtZWOgC2MNeVYZjMdU2xy0
+        I6jCGPN9DpkmWlG0VmB9pBcz9nnbhMGZd1gYdCCqsJc/xWCClQxXr8XdmKluD5zr
+        JsAcTktXCGtnTkD2ZLomW0=
+Received: from localhost (unknown [101.228.30.83])
+        by smtp14 (Coremail) with SMTP id EsCowACnL6cdB39fzHnSSA--.1218S2;
+        Thu, 08 Oct 2020 20:33:34 +0800 (CST)
+Date:   Thu, 8 Oct 2020 20:33:33 +0800
+From:   Hui Su <sh_def@163.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: fix some comments in page_alloc.c and mempolicy.c
+Message-ID: <20201008123333.GA7424@rlk>
+References: <20200925160650.GA42847@rlk>
+ <10c1b339-b352-7643-7adf-d82c941c7d2c@redhat.com>
+ <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <11c9c699aaa873847b4d14dfa5e2435b94c08569.camel@perches.com>
+X-CM-TRANSID: EsCowACnL6cdB39fzHnSSA--.1218S2
+X-Coremail-Antispam: 1Uf129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UbIYCTnIWIevJa73UjIFyTuYvjxU2qg4UUUUU
+X-Originating-IP: [101.228.30.83]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/xtbBywq3X1PAPK5HEgAAs9
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Re-use throtl_set_slice_end() to remove duplicate code.
+On Thu, Oct 01, 2020 at 09:17:29AM -0700, Joe Perches wrote:
+> On Thu, 2020-10-01 at 14:27 +0200, David Hildenbrand wrote:
+> > On 25.09.20 18:06, Hui Su wrote:
+> > > 1. the cpuset.c has been moved from kernel/cpuset.c to
+> > > kernel/cgroup/cpuset.c long time ago, but the comment is stale,
+> > > so we update it.
+> []
+> > > diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> []
+> > > @@ -1,5 +1,5 @@
+> > >  /*
+> > > - *  kernel/cpuset.c
+> > > + *  kernel/cgroup/cpuset.c
+> 
+> It's probably better to remove this altogether instead.
 
-Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
----
- block/blk-throttle.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index fc5c14f..b771c42 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -808,7 +808,7 @@ static inline void throtl_set_slice_end(struct throtl_grp *tg, bool rw,
- static inline void throtl_extend_slice(struct throtl_grp *tg, bool rw,
- 				       unsigned long jiffy_end)
- {
--	tg->slice_end[rw] = roundup(jiffy_end, tg->td->throtl_slice);
-+	throtl_set_slice_end(tg, rw, jiffy_end);
- 	throtl_log(&tg->service_queue,
- 		   "[%c] extend slice start=%lu end=%lu jiffies=%lu",
- 		   rw == READ ? 'R' : 'W', tg->slice_start[rw],
--- 
-1.8.3.1
+Please ignore this change, thanks.
 
