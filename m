@@ -2,98 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6709D287593
-	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 16:02:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEE9287675
+	for <lists+cgroups@lfdr.de>; Thu,  8 Oct 2020 16:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730294AbgJHOCJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 8 Oct 2020 10:02:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52406 "EHLO
+        id S1730736AbgJHOzK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 8 Oct 2020 10:55:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60590 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730275AbgJHOCJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Oct 2020 10:02:09 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D780C0613D2
-        for <cgroups@vger.kernel.org>; Thu,  8 Oct 2020 07:02:08 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id 67so6249247iob.8
-        for <cgroups@vger.kernel.org>; Thu, 08 Oct 2020 07:02:08 -0700 (PDT)
+        with ESMTP id S1730735AbgJHOzK (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 8 Oct 2020 10:55:10 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53021C061755
+        for <cgroups@vger.kernel.org>; Thu,  8 Oct 2020 07:55:09 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id q63so7305759qkf.3
+        for <cgroups@vger.kernel.org>; Thu, 08 Oct 2020 07:55:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=+v0FBMBQHdikeISvOs9/H6RdJVjsvgJipGvlxdEATrw=;
-        b=OtjKLWoNFnJwBG+iIBsnfGAFJ4zdt7leYN6+IZMnSqbHnvoXh5fOLZV1t5S4zHKUK+
-         KlLNhwQDcsdOJ+V6LCgAsTRNBvCb+hz8mhghFlo0yiw4O2KRm4ZtDM9yfQnRV0uSBSer
-         C9/7OPQObbekrl9Gh4aVoZUyL5YHShCtmwpHSrZO3WnByHNC2KioGmRAmwwGQnvmB2VT
-         zZjChPKRCnH8sXBxdxwX+sVzpfg5961ZI6KZIqRSaKXhs2v0NxRWX9XSl4VdF3M1eOP6
-         09lAFvYNw26lHxgYb/xSqunH/NmCfM9e73cUCb7zv4dadb8bBohqNr3EeFusZoM46jjQ
-         DEPA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uyKHtfoarsj+UYs2PP4XCdlBcu5iL8M8TqmjexyJtjo=;
+        b=gSpOReNk6UlU6+gBPtDU3TmLons5StnRVP+CSGLouttWxPrXlWzOUzwAitmC+kccP2
+         0zmeEv8fvogdspFm1WObJnfz37SM5ZQXGJVkNbRt3U9rIh7Pyw4kD0vw0G9kikekdRdl
+         C2gz/68+9dh12edgZNkL+yu9ynPSKifE62fxva7Ow56HS1u8kUWSsGm2yoI9rtaJKJiN
+         nJA/QAp95vu+Fs1ILvQcjFYZDG+JxrV4BqbTRG3oG/QYOK4UZCI4Cc9geDfeNj3qsVsq
+         MFI8DWNCMjRkARF4wR2mrx1S+YWbkkW2KhHKaCXXeQQUOCxJQtRVVlpJiKio3PpqqbwF
+         TK5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=+v0FBMBQHdikeISvOs9/H6RdJVjsvgJipGvlxdEATrw=;
-        b=Y4PDgX/oVWxtFVVj51qv7GdcAdwIWo7l9hQsBvr13SURjhJ8ppK7K6gmX8/rp8Qhwy
-         Ja8/kaI8DmlZd5arSc9sED+usewANtwgK7xXtm/Xr1XJeZSbQmA9pTQKRgeLUHoAkdfc
-         9rqdBnrSiitZ6qMiuC8is58aFXQwg23Y+tUWVIzjmBpH56jwbkR80dMd9kaGUtaytd+p
-         nJrcFAs5Ety6cEgP8ITqHZ0i+BB/ZIz6EBteIA1f5ziMQJWTNPh8zjxrinnojriSGwsD
-         XSS67ftcawdpDHerm3GN1J5ZNHOe37/c6GJ7GiSnCXNuFlIfHXR0uQtfJaOpNA++8r+9
-         cmzQ==
-X-Gm-Message-State: AOAM532MJ006HdBk4VNSRMcOEKm1/EBZrRYrDa3CKL0lYVWUPBDw/C+o
-        Sk5gjxZLQtsxs5lh8b4BwVijBQ==
-X-Google-Smtp-Source: ABdhPJy/LL8lIwlhJyCrinad2Oa+KhO+WtX+sKYdSYwFbXtVAptuvPI1GFZpqt98YjTtzz2k0dg+Lg==
-X-Received: by 2002:a02:82c8:: with SMTP id u8mr6948237jag.61.1602165727444;
-        Thu, 08 Oct 2020 07:02:07 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id l4sm2695327ilk.14.2020.10.08.07.02.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 08 Oct 2020 07:02:06 -0700 (PDT)
-Subject: Re: [PATCH v2 0/8] Some improvements for blk throttle
-To:     Baolin Wang <baolin.wang@linux.alibaba.com>, tj@kernel.org
-Cc:     baolin.wang7@gmail.com, linux-block@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <b54c6741-10dc-2768-bc37-f1965672f039@kernel.dk>
-Date:   Thu, 8 Oct 2020 08:02:06 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=uyKHtfoarsj+UYs2PP4XCdlBcu5iL8M8TqmjexyJtjo=;
+        b=GEWy0xsgeCadU6lhQlnRRvBwM1QcqnP8VSExO1gvOLFGszFrI1O9E1QIzPB4YUPXRf
+         b18jajRzCAWuceA5hVOnPj/1c63NReHv65vwEMT7JomKAyRrEMg7ZveJWOMKd65LWHjo
+         +bwj6FZHMKnHNHs1U/N+Swk8oY7UbbzCh9h5O2vCixO33m4WBoehEM4BPGHUKnFAT/n+
+         O72n5wQOL5isChkECJOXyVLZKvV03jr77MLbVfyuffhSHBnrfyPd0TDzIHFxg6fBc0lP
+         eTmueMcIFSOx6G3Hn1mxMEJ7qo2a61qUkVY7YCGkPwY8jz41G+6ahe4I2y+SCJNxa6z2
+         cRog==
+X-Gm-Message-State: AOAM533i76LEAGjklp70NnBGSSxXAKFRjxbR/68/zC3UQpzQ8zRjBRTy
+        1UFcuDnQR8PKeXAyS54fmZUUDQ==
+X-Google-Smtp-Source: ABdhPJwCjDD186qpBAmnjaTWRt1sPwSBHJUbvD4s+XLrOlPjgXCU4uGDse/682h+yj3I+EQxRHgfig==
+X-Received: by 2002:ae9:e644:: with SMTP id x4mr8391439qkl.270.1602168908459;
+        Thu, 08 Oct 2020 07:55:08 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:9294])
+        by smtp.gmail.com with ESMTPSA id e23sm3955591qkl.67.2020.10.08.07.55.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 08 Oct 2020 07:55:07 -0700 (PDT)
+Date:   Thu, 8 Oct 2020 10:53:36 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Greg Thelen <gthelen@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Andrea Righi <andrea.righi@canonical.com>,
+        SeongJae Park <sjpark@amazon.com>
+Subject: Re: [PATCH] memcg: introduce per-memcg reclaim interface
+Message-ID: <20201008145336.GA163830@cmpxchg.org>
+References: <20200909215752.1725525-1-shakeelb@google.com>
+ <20200928210216.GA378894@cmpxchg.org>
+ <20200929150444.GG2277@dhcp22.suse.cz>
+ <20200929215341.GA408059@cmpxchg.org>
+ <CALvZod5eN0PDtKo8SEp1n-xGvgCX9k6-OBGYLT3RmzhA+Q-2hw@mail.gmail.com>
+ <20201001143149.GA493631@cmpxchg.org>
+ <CALvZod59cU40A3nbQtkP50Ae3g6T2MQSt+q1=O2=Gy9QUzNkbg@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <cover.1602128837.git.baolin.wang@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod59cU40A3nbQtkP50Ae3g6T2MQSt+q1=O2=Gy9QUzNkbg@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/7/20 9:52 PM, Baolin Wang wrote:
-> Hi,
+On Tue, Oct 06, 2020 at 09:55:43AM -0700, Shakeel Butt wrote:
+> On Thu, Oct 1, 2020 at 7:33 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> [snip]
+> > > >    So instead of asking users for a target size whose suitability
+> > > >    heavily depends on the kernel's LRU implementation, the readahead
+> > > >    code, the IO device's capability and general load, why not directly
+> > > >    ask the user for a pressure level that the workload is comfortable
+> > > >    with and which captures all of the above factors implicitly? Then
+> > > >    let the kernel do this feedback loop from a per-cgroup worker.
+> > >
+> > > I am assuming here by pressure level you are referring to the PSI like
+> > > interface e.g. allowing the users to tell about their jobs that X
+> > > amount of stalls in a fixed time window is tolerable.
+> >
+> > Right, essentially the same parameters that psi poll() would take.
 > 
-> This patch set did some improvements for blk throttle, please
-> help to review. Thanks.
+> I thought a bit more on the semantics of the psi usage for the
+> proactive reclaim.
 > 
-> Changes from v1:
->  - Add another 4 new patches in this patch set.
+> Suppose I have a top level cgroup A on which I want to enable
+> proactive reclaim. Which memory psi events should the proactive
+> reclaim should consider?
 > 
-> Baolin Wang (8):
->   blk-throttle: Remove a meaningless parameter for
->     throtl_downgrade_state()
->   blk-throttle: Avoid getting the current time if tg->last_finish_time
->     is 0
->   blk-throttle: Avoid tracking latency if low limit is invalid
->   blk-throttle: Fix IO hang for a corner case
->   blk-throttle: Move the list operation after list validation
->   blk-throttle: Move service tree validation out of the
->     throtl_rb_first()
->   blk-throttle: Open code __throtl_de/enqueue_tg()
->   blk-throttle: Re-use the throtl_set_slice_end()
-> 
->  block/blk-throttle.c | 69 ++++++++++++++++++++++++++--------------------------
->  1 file changed, 35 insertions(+), 34 deletions(-)
+> The simplest would be the memory.psi at 'A'. However memory.psi is
+> hierarchical and I would not really want the pressure due limits in
+> children of 'A' to impact the proactive reclaim.
 
-LGTM, applied, thanks.
+I don't think pressure from limits down the tree can be separated out,
+generally. All events are accounted recursively as well. Of course, we
+remember the reclaim level for evicted entries - but if there is
+reclaim triggered at A and A/B concurrently, the distribution of who
+ends up reclaiming the physical pages in A/B is pretty arbitrary/racy.
 
--- 
-Jens Axboe
+If A/B decides to do its own proactive reclaim with the sublimit, and
+ends up consuming the pressure budget assigned to proactive reclaim in
+A, there isn't much that can be done.
 
+It's also possible that proactive reclaim in A keeps A/B from hitting
+its limit in the first place.
+
+I have to say, the configuration doesn't really strike me as sensible,
+though. Limits make sense for doing fixed partitioning: A gets 4G, A/B
+gets 2G out of that. But if you do proactive reclaim on A you're
+essentially saying A as a whole is auto-sizing dynamically based on
+its memory access pattern. I'm not sure what it means to then start
+doing fixed partitions in the sublevel.
+
+> PSI due to refaults and slow IO should be included or maybe only
+> those which are caused by the proactive reclaim itself. I am
+> undecided on the PSI due to compaction. PSI due to global reclaim
+> for 'A' is even more complicated. This is a stall due to reclaiming
+> from the system including self. It might not really cause more
+> refaults and IOs for 'A'. Should proactive reclaim ignore the
+> pressure due to global pressure when tuning its aggressiveness.
+
+Yeah, I think they should all be included, because ultimately what
+matters is what the workload can tolerate without sacrificing
+performance.
+
+Proactive reclaim can destroy THPs, so the cost of recreating them
+should be reflected. Otherwise you can easily overpressurize.
+
+For global reclaim, if you say you want a workload pressurized to X
+percent in order to drive the LRUs and chop off all cold pages the
+workload can live without, it doesn't matter who does the work. If
+there is an abundance of physical memory, it's going to be proactive
+reclaim. If physical memory is already tight enough that global
+reclaim does it for you, there is nothing to be done in addition, and
+proactive reclaim should hang back. Otherwise you can again easily
+overpressurize the workload.
