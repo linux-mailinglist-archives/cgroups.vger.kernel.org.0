@@ -2,80 +2,104 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DB64288C4C
-	for <lists+cgroups@lfdr.de>; Fri,  9 Oct 2020 17:12:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A55A289B62
+	for <lists+cgroups@lfdr.de>; Sat, 10 Oct 2020 00:01:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388811AbgJIPMe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 9 Oct 2020 11:12:34 -0400
-Received: from mx2.suse.de ([195.135.220.15]:42306 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2388696AbgJIPMe (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 9 Oct 2020 11:12:34 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1602256352;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BSD1kYo1TCGseCG0CMo0C9XsPcUqaOsDq8A7C+bHfAc=;
-        b=H9vZZHdqeJILfnwmhQEIFVlV29sQ5i/dofyz5kArPDdfu1Dl+uoOE0Y+YJku6zahrYl3R8
-        R/CyAR+M+8h6Z/GdvxRvvFvdlvT3x/HxRWyaaesz1u2dqzvfRhAsNXJcGvmv0RJzWUK37C
-        N8LATr1C4lgtsO/P/i/6e2kwNWMVDNU=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 592C3B251;
-        Fri,  9 Oct 2020 15:12:32 +0000 (UTC)
-Date:   Fri, 9 Oct 2020 17:12:27 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Miaohe Lin <linmiaohe@huawei.com>
-Cc:     akpm@linux-foundation.org, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm: memcontrol: eliminate redundant check in
- __mem_cgroup_insert_exceeded()
-Message-ID: <20201009151227.GP4967@dhcp22.suse.cz>
-References: <20201009135104.39048-1-linmiaohe@huawei.com>
+        id S1731895AbgJIWAw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 9 Oct 2020 18:00:52 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:14417 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731030AbgJIWAv (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 9 Oct 2020 18:00:51 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f80dd590003>; Fri, 09 Oct 2020 14:59:53 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL111.nvidia.com
+ (172.20.187.18) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 9 Oct
+ 2020 22:00:46 +0000
+Received: from rcampbell-dev.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Fri, 9 Oct 2020 22:00:46 +0000
+From:   Ralph Campbell <rcampbell@nvidia.com>
+To:     <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Ralph Campbell <rcampbell@nvidia.com>, <stable@vger.kernel.org>
+Subject: [PATCH] mm/memcg: fix device private memcg accounting
+Date:   Fri, 9 Oct 2020 14:59:52 -0700
+Message-ID: <20201009215952.2726-1-rcampbell@nvidia.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009135104.39048-1-linmiaohe@huawei.com>
+X-NVConfidentiality: public
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1602280794; bh=7mbqnLRSmP8gyFcv2CaKHAGuiDlEp5BFChE0DK1AomM=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:MIME-Version:
+         X-NVConfidentiality:Content-Transfer-Encoding:Content-Type;
+        b=GeXxS06CgAM4OOs4VCnOprIky8XoMeqlb13IWp0IGbvVpb7B8gd+hqzTalJC/zNQy
+         wqBVq14+n5Sn4XP6sXOxEMREEzyaO7RQXpwh00B/1HXhMrUJXKm6747f8MNxqTAovl
+         RMHcyxNBZo/hWbb4hatQSFNc2MqflrLJCFYTod+GkNE6Rm4eIOjVfeVKsgWm5pa0ta
+         T0bUuVSRMbG740o3HCQ5e89pmK/+o+j31QFnM4S85NaLtML/52R0fzfQN3RHTsuJKT
+         Y0Xg08kvpmukYGORsuuNmYdLYb4jE1bR00IypKYRojk7PVJADHRkW0mGzF4VnQCS1y
+         +dRqbzURrmy8g==
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 09-10-20 09:51:04, Miaohe Lin wrote:
-> The mz->usage_in_excess >= mz_node->usage_in_excess check is exactly the
-> else case of mz->usage_in_excess < mz_node->usage_in_excess. So we could
-> replace else if (mz->usage_in_excess >= mz_node->usage_in_excess) with else
-> equally.
-> 
-> Signed-off-by: Miaohe Lin <linmiaohe@huawei.com>
+The code in mc_handle_swap_pte() checks for non_swap_entry() and returns
+NULL before checking is_device_private_entry() so device private pages
+are never handled.
+Fix this by checking for non_swap_entry() after handling device private
+swap PTEs.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+Cc: stable@vger.kernel.org
+Fixes: c733a82874a7 ("mm/memcontrol: support MEMORY_DEVICE_PRIVATE")
+Signed-off-by: Ralph Campbell <rcampbell@nvidia.com>
+---
 
-I believe this is a result of a very unreadable code. Resp. the comment
-makes it hard to follow. It would be slightly better to simply drop the
-comment which doesn't really explain much IMHO.
+I'm not sure exactly how to test this. I ran the HMM self tests but
+that is a minimal sanity check. I think moving the self test from one
+memory cgroup to another while it is running would exercise this patch.
+I'm looking at how the test could move itself to another group after
+migrating some anonymous memory to the test driver.
 
-> ---
->  mm/memcontrol.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 2636f8bad908..f607afd0fcbf 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -629,7 +629,7 @@ static void __mem_cgroup_insert_exceeded(struct mem_cgroup_per_node *mz,
->  		 * We can't avoid mem cgroups that are over their soft
->  		 * limit by the same amount
->  		 */
-> -		else if (mz->usage_in_excess >= mz_node->usage_in_excess)
-> +		else
->  			p = &(*p)->rb_right;
->  	}
->  
-> -- 
-> 2.19.1
+This applies cleanly to linux-5.9.0-rc8-mm1 and is for Andrew Morton's
+tree.
 
--- 
-Michal Hocko
-SUSE Labs
+ mm/memcontrol.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2636f8bad908..3a24e3b619f5 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5549,7 +5549,7 @@ static struct page *mc_handle_swap_pte(struct vm_area=
+_struct *vma,
+ 	struct page *page =3D NULL;
+ 	swp_entry_t ent =3D pte_to_swp_entry(ptent);
+=20
+-	if (!(mc.flags & MOVE_ANON) || non_swap_entry(ent))
++	if (!(mc.flags & MOVE_ANON))
+ 		return NULL;
+=20
+ 	/*
+@@ -5568,6 +5568,9 @@ static struct page *mc_handle_swap_pte(struct vm_area=
+_struct *vma,
+ 		return page;
+ 	}
+=20
++	if (non_swap_entry(ent))
++		return NULL;
++
+ 	/*
+ 	 * Because lookup_swap_cache() updates some statistics counter,
+ 	 * we call find_get_page() with swapper_space directly.
+--=20
+2.20.1
+
