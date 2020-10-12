@@ -2,111 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6364428B632
-	for <lists+cgroups@lfdr.de>; Mon, 12 Oct 2020 15:30:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F23F28B96C
+	for <lists+cgroups@lfdr.de>; Mon, 12 Oct 2020 16:01:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727633AbgJLNai (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 12 Oct 2020 09:30:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57746 "EHLO
+        id S2390725AbgJLOAX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 12 Oct 2020 10:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726742AbgJLNaf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Oct 2020 09:30:35 -0400
-Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFE19C0613D0
-        for <cgroups@vger.kernel.org>; Mon, 12 Oct 2020 06:30:35 -0700 (PDT)
-Received: by mail-qk1-x743.google.com with SMTP id k9so3438693qki.6
-        for <cgroups@vger.kernel.org>; Mon, 12 Oct 2020 06:30:35 -0700 (PDT)
+        with ESMTP id S2390248AbgJLN77 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 12 Oct 2020 09:59:59 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BB98C0613D2
+        for <cgroups@vger.kernel.org>; Mon, 12 Oct 2020 06:59:58 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id t9so12808559qtp.9
+        for <cgroups@vger.kernel.org>; Mon, 12 Oct 2020 06:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=pnPTIBXyXY3lw9klvumgMEMiErvTNBjNm3i9R50FiO8=;
-        b=vnTw9dJflaMIXNnNWw2vi/vOaGk2yCJ69WDQkdY4C16AMLkPTm9WzibqnJrH3CiqcT
-         mJCxscrz0aU5tFQt3oG+TShN2wD1khwShvSZmM7v3nm7O0dWqniUMmRiLZDDQYjBBccN
-         EQJUREQlsKPdgYnTyxfYxpHc0vHmAkbUNFICmbFU9qwruHcZYxq++kzYmfP+Jt3WKH/u
-         s9pLL3UOpMht2Ts8ZdKF5KM7CdNLZlGJtrvSuo0yDSxa4ZuiVm8uVJZWBNWu3bOhsbRd
-         aG5OPdQLY7OH+3bI0F0c0UQ5AwXOA6uNU9dy12iV8LG4GQPFUMJU45SjR9KBubkniWJy
-         zj0A==
+        bh=LiRTK1pn0r+YX72HhN94UTqVGuwvK727gErKq+9p5co=;
+        b=kdD+EQ/dal5vV717URB/8INdiZStUkziLF+UP1/oTSbkc1xgOTizbXO5c7UxoZEPEW
+         ciXRZScy5HT82Nv+OD2jUtLvQ9ZQUcBf5lQFSVG840aSBl/RscDr0IFlx4mq7nv7MQ35
+         qKKeS7bNKo7We6dmI+xlw49U9Yldi1thKV+okEC746kq4DMa7X461pF8ef+CffG9QZHZ
+         P4KVdg4bG0zObRLP2mgNLOg61igdJOJIBA0f9nLPUnjww4ZBDnQ2ZQq2sYhk6myWpyxs
+         kMjev9XtTo/GbPHtFljwhoUpLw1Rj5mPbkW6NIMYdXRlfoGwcEQJYFL0k3Ft/+QUy2a5
+         zMxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pnPTIBXyXY3lw9klvumgMEMiErvTNBjNm3i9R50FiO8=;
-        b=Zf9pkvX8B9yHVW9gCgydBCwLmhdAn45OTyC43cHRUmq1+Epl9OPfgbz/XVBwY/i237
-         LgxwvdoazodnsQgHrTtKjXZuqsKpopc6V7LpFeMpANZEKJxcLyRo1ydW7jdN2o+wbV/W
-         UeYV/7T0h7AbnbOH3j3yyaFzGe8t2Z2uKW7nMHXIUEZIMPDjDduVLP5+XblJw9ceg0ZF
-         Rl4ChRD0GsSPqyXqlHJ4+VjkHHKQIw+k123Krz9WqGbA06YEkn/mLzw4h3CBtAIc2cf2
-         WTFzYpWAPr7raKV7IcleCAc5kuItmvrww/uQFiFflSFfVDIrk2yJhQZFZAgaUL0mb8iD
-         2hVg==
-X-Gm-Message-State: AOAM533hodjPoyr+CjZ3P2lDtiOLurmzl6AOTMKAcUWpltRaL4pafg1H
-        iNKkBRWDdttLiD6gQvG84OEMrQ==
-X-Google-Smtp-Source: ABdhPJxcAtD+DVNW0Lo9o9FmYxCJnyvNR7wF/YxZxRmvawTGsigNtgwmZAfyvj+gqt87sq8Idn2hFA==
-X-Received: by 2002:a05:620a:16cb:: with SMTP id a11mr10048726qkn.474.1602509434380;
-        Mon, 12 Oct 2020 06:30:34 -0700 (PDT)
+        bh=LiRTK1pn0r+YX72HhN94UTqVGuwvK727gErKq+9p5co=;
+        b=cI0sKxPdKEtvTtmGZWov9XIoFGpl4W1tlpS1asICWy+y3s+r/caaemtTPWwa/Aoh5V
+         eIqnUzgrmUe+n4CgKa6NePzxK2GGV3b3bf+8+TsAZSp9RUfyj0EbuuZWWGzyVyRtNyMc
+         yx5XjZ+rEQUYFQiZq1quTztjysZvd5a6J9a7jWvczd6i/K/oIkEaCbmRm4JHn6W90Xxa
+         ZwL0XSBj/JTEqQ+2yRaz144F+Aj2msunVzzW8jABdxFksDUhkvIAngCwi5zeUjmXU+QR
+         ay4B/LSpl/8H7RmNN7jaHmSbKEqASaMX1NNDHvt2savz36Jug3soctsGrV4EH7lqui+S
+         Qjrg==
+X-Gm-Message-State: AOAM533vpX2FuOYxklETqdsnBj/TaPcIkFkyjFaMriIFAOQYNIzj18ic
+        sAuVwmrWtaRY0y/OpC+mpfxGfA==
+X-Google-Smtp-Source: ABdhPJxAX5eynIShuux1RfN6TNFMLHG9rFliYB7ohOz/eT70FOqxANA48CGA9a+dB8RWZqnIBpu8UQ==
+X-Received: by 2002:ac8:5b8d:: with SMTP id a13mr9846698qta.209.1602511197075;
+        Mon, 12 Oct 2020 06:59:57 -0700 (PDT)
 Received: from localhost (pool-96-232-200-60.nycmny.fios.verizon.net. [96.232.200.60])
-        by smtp.gmail.com with ESMTPSA id x91sm7657123qte.69.2020.10.12.06.30.32
+        by smtp.gmail.com with ESMTPSA id r16sm6844790qkm.1.2020.10.12.06.59.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Oct 2020 06:30:33 -0700 (PDT)
-Date:   Mon, 12 Oct 2020 09:28:59 -0400
+        Mon, 12 Oct 2020 06:59:56 -0700 (PDT)
+Date:   Mon, 12 Oct 2020 09:58:23 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Ralph Campbell <rcampbell@nvidia.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        =?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Ira Weiny <ira.weiny@intel.com>, stable@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: fix device private memcg accounting
-Message-ID: <20201012132859.GD163830@cmpxchg.org>
-References: <20201009215952.2726-1-rcampbell@nvidia.com>
- <20201009155055.f87de51ea04d4ea879e3981a@linux-foundation.org>
- <d1aab0b0-4327-38da-6587-98f1740228fd@nvidia.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     davem@davemloft.net, kuba@kernel.org, edumazet@google.com,
+        mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, kuznet@ms2.inr.ac.ru,
+        yoshfuji@linux-ipv6.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        daniel@iogearbox.net, kafai@fb.com, ast@kernel.org,
+        jakub@cloudflare.com, linmiaohe@huawei.com, keescook@chromium.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm: memcontrol: localize mem_cgroup_sockets_enabled()
+ check
+Message-ID: <20201012135823.GA188876@cmpxchg.org>
+References: <20201010104521.67262-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d1aab0b0-4327-38da-6587-98f1740228fd@nvidia.com>
+In-Reply-To: <20201010104521.67262-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 05:00:37PM -0700, Ralph Campbell wrote:
+On Sat, Oct 10, 2020 at 06:45:21PM +0800, Muchun Song wrote:
+> Move the mem_cgroup_sockets_enabled() checks into memcg socket charge
+> or uncharge functions, so the users don't have to explicitly check that
+> condition.
 > 
-> On 10/9/20 3:50 PM, Andrew Morton wrote:
-> > On Fri, 9 Oct 2020 14:59:52 -0700 Ralph Campbell <rcampbell@nvidia.com> wrote:
-> > 
-> > > The code in mc_handle_swap_pte() checks for non_swap_entry() and returns
-> > > NULL before checking is_device_private_entry() so device private pages
-> > > are never handled.
-> > > Fix this by checking for non_swap_entry() after handling device private
-> > > swap PTEs.
-
-The fix looks good to me.
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-
-> > But this makes me suspect the answer is "there aren't any that we know
-> > of".  Are you sure a cc:stable is warranted?
-> > 
+> This is purely code cleanup patch without any functional change. But
+> move the sk_memcg member of the sock structure to the CONFIG_MEMCG
+> scope.
 > 
-> I assume the memory cgroup accounting would be off somehow when moving
-> a process to another memory cgroup.
-> Currently, the device private page is charged like a normal anonymous page
-> when allocated and is uncharged when the page is freed so I think that path is OK.
-> Maybe someone who knows more about memory cgroup accounting can comment?
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> ---
+>  include/linux/memcontrol.h      | 78 ++++++++++++++++++++++++++-------
+>  include/net/sock.h              |  5 ++-
+>  include/net/tcp.h               |  3 +-
+>  mm/memcontrol.c                 | 43 +++++++++++++-----
+>  net/core/sock.c                 | 15 +++----
+>  net/ipv4/inet_connection_sock.c |  6 +--
+>  net/ipv4/tcp_output.c           |  3 +-
+>  7 files changed, 111 insertions(+), 42 deletions(-)
 
-As for whether to CC stable, I'm leaning toward no:
+Hm, this is almost 3 times as much code.
 
-- When moving tasks, we'd leave their device pages behind in the old
-  cgroup. This isn't great, but it doesn't cause counter imbalances or
-  corruption or anything - we also skip locked pages, we used to skip
-  pages mapped by more than one pte, the user can select whether to
-  move pages along tasks at all, and if so, whether only anon or file.
+The sk_memcg saving on !CONFIG_MEMCG is somewhat nice, but it's not
+clear how many users would benefit here. And it adds ifdefs in code.
 
-- Charge moving itself is a bit of a questionable feature, and users
-  have been moving away from it. Leaving tasks in a cgroup and
-  changing the configuration is a heck of a lot cheaper than moving
-  potentially gigabytes of pages to another configuration domain.
+Also memcg code now has to know about struct sock.
 
-- According to the Fixes tag, this isn't a regression, either. Since
-  their inception, we have never migrated device pages.
+I'm not quite sure that this is an overall improvement.
