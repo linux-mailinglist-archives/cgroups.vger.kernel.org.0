@@ -2,94 +2,152 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80DBF28CFD1
-	for <lists+cgroups@lfdr.de>; Tue, 13 Oct 2020 16:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E4B128D158
+	for <lists+cgroups@lfdr.de>; Tue, 13 Oct 2020 17:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388242AbgJMOHI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Oct 2020 10:07:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60802 "EHLO
+        id S1730567AbgJMPge (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Oct 2020 11:36:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2388196AbgJMOHI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Oct 2020 10:07:08 -0400
-Received: from mail-qv1-xf41.google.com (mail-qv1-xf41.google.com [IPv6:2607:f8b0:4864:20::f41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9D9BC0613D0;
-        Tue, 13 Oct 2020 07:07:07 -0700 (PDT)
-Received: by mail-qv1-xf41.google.com with SMTP id de3so43854qvb.5;
-        Tue, 13 Oct 2020 07:07:07 -0700 (PDT)
+        with ESMTP id S1726749AbgJMPgd (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Oct 2020 11:36:33 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF86C0613D2
+        for <cgroups@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id o9so2229plx.10
+        for <cgroups@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=zlJunIPW8Wajc0MiN91i37/1o2rvLQm/+3y/Aoom9SU=;
-        b=nsZug78+5p7pGKmm3DsDTOBfTQHjEv5AvUhIvb5ixEWe/iSqrf6Z/zZyayKI+2iRPK
-         MVbDBepFDBAfZ+kDIDXs6LK/CkLLlbfCZDSX6IM6CZFBfDhiodhl3Z4t4yxLo8A9Hph+
-         g+5rw80BsqfDOzW+U7wZmFf4Nmt2BWUktKEB3i1KpzXeLmuIQl/C5FKk0U8hMtwRqvIG
-         UuLcG4GpzbkDTL8oXHK7Rpv1nEj4RuAmOJ/m6iLK6zLGUb66NgsZeTi60cv6ZrRWSPiq
-         pY5j1LdT9TQhVMD8iOzG3VA+S3JpRe29B3PBLx+UR4TpFULac0bkFMMs6W3JvOkz7Uoh
-         LCQA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
+        b=VkeuT8BUzhjPjsJacswMkrJ0NijklYP+nB3jOT+GvqiI3jx9FYGbjzyvaOrykMOTF2
+         nSwhF1EkJx4O34zdFgah/jIOv21/bjPnc+z3Khu3mqLcLmHy7NPih0fmH00mB3syuP9D
+         Kt9lm9OYx6UjIAyofJRA/M9Shp6L24sqIM1P9YbzIEW3opjnQZ3aIxUCL0Z3dTuphIjz
+         OsS5rI3XCbb+Dwx4D5qkxAfyNEO/8ZN5z+1fmfy2vB8UYG8+zCOsN7u9N65nDZfk4JBQ
+         MupQAZg3r9b28VEDDcm7XOnGPmt9tz8zLckQGUGSUVNoWyMcs1BL+0x5u2YJTOG0zo60
+         OLXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=zlJunIPW8Wajc0MiN91i37/1o2rvLQm/+3y/Aoom9SU=;
-        b=lsFN5iPAIFChYEaJyHEMJXy/Bh7Xd71W2LFItXVvbT0F6sw9nufSBY6JGUISDmj+4N
-         5xEJVqe2xSpibygQcmuYyO7PCuGwVfHqOkcBxk+l4hA6CmJW/clbydSSaPE6nvQ1W/0+
-         bRE0wFioUj8FizEOU0WfmmKD15Dmtfp1FILlu3zMcdlA+eTYtSdy3Vwv3H/uFpPKLPEZ
-         A+eZtGzploH/6tVhYoQifX0aLSSTgKig/yvjQBrvMTqplc0bD69uTRe5KgU/qsxpIyud
-         PMEaIDNuj05o4eAz8/tO/L2iyQucu2mMwhWkK5VlZKQtGePIGKysB5OYHhR/HsnncGoD
-         lJBA==
-X-Gm-Message-State: AOAM530KRAu1B257HUe8S9OxRKgyU/DdZIHSU3D51JBlZK2XkvE7k0yJ
-        7RYdLDSW0MTyvpxoSdyWDzI=
-X-Google-Smtp-Source: ABdhPJzDNQiUNhFKePXipvWMwQCDi4CxW+qZGiarrZgLj8CrGxdwMuvHGb0Lvc6pUxy5898u1VzCzA==
-X-Received: by 2002:a05:6214:152:: with SMTP id x18mr74300qvs.41.1602598026311;
-        Tue, 13 Oct 2020 07:07:06 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:d88e])
-        by smtp.gmail.com with ESMTPSA id e4sm12149790qkb.4.2020.10.13.07.07.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Oct 2020 07:07:05 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 13 Oct 2020 10:07:03 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     torvalds@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v5.10-rc1
-Message-ID: <20201013140703.GA3845@mtj.thefacebook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
+        b=VUHyDJM8TZc/W8aXyISsGka6MGdYKQDPqR2h3ZtxUr15iqgEyJGnsx4yU4SX9+dnC1
+         opYHL2i18GHLEpLht0wyrUl0F7qUwbobNrTewOOltm7+NEgjuedE+FJgkZbThSl5MIRd
+         oxpIABJ03igXtKddbpNOIq61yBh/o8xGs71GLN1qWPxN5L3J7BHzI66fS8Rr3yIwBvXz
+         uHP556DJ0icvHHz2/rEe+PDIXL42q/v+FD3RXLDHvz7CPrYCLMn4e8DlWck/McDbfxQO
+         XRXBcuF1u79gvPAbMNxxFkuH47XwnhR0TLcYMQwI01f3y57o686nufvy5fXUDVRQvYvZ
+         T7tw==
+X-Gm-Message-State: AOAM5304TkbuOo2HgurVNDoAgNDpafBzLcymDImy7TTzqxVxZ1IXpMlF
+        31VGVtVzXl6IcHntz0GLWtEfV9Gd0r1wPCmGwgQ=
+X-Google-Smtp-Source: ABdhPJx8AJmn2NrpVgs33N+C6pPbGr20NVTb5i0f0/DACBLUktB2tjoItgXyeq3rsE7kjeb0EXkS2w==
+X-Received: by 2002:a17:90a:f617:: with SMTP id bw23mr278783pjb.95.1602603391282;
+        Tue, 13 Oct 2020 08:36:31 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.221.66])
+        by smtp.gmail.com with ESMTPSA id y124sm14083pfy.28.2020.10.13.08.36.25
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 13 Oct 2020 08:36:30 -0700 (PDT)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
+        rientjes@google.com, iamjoonsoo.kim@lge.com, shakeelb@google.com,
+        guro@fb.com, vbabka@suse.cz, laoar.shao@gmail.com,
+        songmuchun@bytedance.com, chris@chrisdown.name
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Subject: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
+Date:   Tue, 13 Oct 2020 23:35:04 +0800
+Message-Id: <20201013153504.92602-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Linus.
+Since commit:
 
-Two minor changes. One makes cgroup interface files ignore 0 sized writes
-rather than triggering -EINVAL on them. The other change is a cleanup which
-doesn't cause any behavior changes.
+  991e7673859e ("mm: memcontrol: account kernel stack per node")
 
-Thanks.
+There is no user of the mod_memcg_obj_state(). This patch just remove
+it. Also rework type of the idx parameter of the mod_objcg_state()
+from int to enum node_stat_item.
 
-The following changes since commit 02de58b24d2e1b2cf947d57205bd2221d897193c:
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ include/linux/memcontrol.h |  6 ------
+ mm/memcontrol.c            | 11 -----------
+ mm/slab.h                  |  4 ++--
+ 3 files changed, 2 insertions(+), 19 deletions(-)
 
-  Merge tag 'devicetree-fixes-for-5.9-3' of git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux (2020-09-29 17:56:30 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.10
-
-for you to fetch changes up to 65026da59cda16baf6c3e98b74ec439f366e468f:
-
-  cgroup: Zero sized write should be no-op (2020-09-30 13:52:06 -0400)
-
-----------------------------------------------------------------
-Jouni Roivas (1):
-      cgroup: Zero sized write should be no-op
-
-Wei Yang (1):
-      cgroup: remove redundant kernfs_activate in cgroup_setup_root()
-
- kernel/cgroup/cgroup.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index a1395b584947..d7e339bf72dc 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -795,8 +795,6 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			int val);
+ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
+ 
+-void mod_memcg_obj_state(void *p, int idx, int val);
+-
+ static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
+ 					 int val)
+ {
+@@ -1245,10 +1243,6 @@ static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
+ 	mod_node_page_state(page_pgdat(page), idx, val);
+ }
+ 
+-static inline void mod_memcg_obj_state(void *p, int idx, int val)
+-{
+-}
+-
+ static inline
+ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 					    gfp_t gfp_mask,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2124ded698b2..1337775b04f3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -885,17 +885,6 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
+ 	rcu_read_unlock();
+ }
+ 
+-void mod_memcg_obj_state(void *p, int idx, int val)
+-{
+-	struct mem_cgroup *memcg;
+-
+-	rcu_read_lock();
+-	memcg = mem_cgroup_from_obj(p);
+-	if (memcg)
+-		mod_memcg_state(memcg, idx, val);
+-	rcu_read_unlock();
+-}
+-
+ /**
+  * __count_memcg_events - account VM events in a cgroup
+  * @memcg: the memory cgroup
+diff --git a/mm/slab.h b/mm/slab.h
+index 4a24e1702923..725a0bb8b317 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -204,7 +204,7 @@ ssize_t slabinfo_write(struct file *file, const char __user *buffer,
+ void __kmem_cache_free_bulk(struct kmem_cache *, size_t, void **);
+ int __kmem_cache_alloc_bulk(struct kmem_cache *, gfp_t, size_t, void **);
+ 
+-static inline int cache_vmstat_idx(struct kmem_cache *s)
++static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
+ {
+ 	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
+ 		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
+@@ -294,7 +294,7 @@ static inline struct obj_cgroup *memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+ 
+ static inline void mod_objcg_state(struct obj_cgroup *objcg,
+ 				   struct pglist_data *pgdat,
+-				   int idx, int nr)
++				   enum node_stat_item idx, int nr)
+ {
+ 	struct mem_cgroup *memcg;
+ 	struct lruvec *lruvec;
 -- 
-tejun
+2.20.1
+
