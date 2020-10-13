@@ -2,152 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E4B128D158
-	for <lists+cgroups@lfdr.de>; Tue, 13 Oct 2020 17:36:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F62928D256
+	for <lists+cgroups@lfdr.de>; Tue, 13 Oct 2020 18:36:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730567AbgJMPge (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 13 Oct 2020 11:36:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726749AbgJMPgd (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Oct 2020 11:36:33 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BF86C0613D2
-        for <cgroups@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id o9so2229plx.10
-        for <cgroups@vger.kernel.org>; Tue, 13 Oct 2020 08:36:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
-        b=VkeuT8BUzhjPjsJacswMkrJ0NijklYP+nB3jOT+GvqiI3jx9FYGbjzyvaOrykMOTF2
-         nSwhF1EkJx4O34zdFgah/jIOv21/bjPnc+z3Khu3mqLcLmHy7NPih0fmH00mB3syuP9D
-         Kt9lm9OYx6UjIAyofJRA/M9Shp6L24sqIM1P9YbzIEW3opjnQZ3aIxUCL0Z3dTuphIjz
-         OsS5rI3XCbb+Dwx4D5qkxAfyNEO/8ZN5z+1fmfy2vB8UYG8+zCOsN7u9N65nDZfk4JBQ
-         MupQAZg3r9b28VEDDcm7XOnGPmt9tz8zLckQGUGSUVNoWyMcs1BL+0x5u2YJTOG0zo60
-         OLXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5Ox95qvJhDnil9bz6yooXTHbNTLkLwItEwWWK2Vi73M=;
-        b=VUHyDJM8TZc/W8aXyISsGka6MGdYKQDPqR2h3ZtxUr15iqgEyJGnsx4yU4SX9+dnC1
-         opYHL2i18GHLEpLht0wyrUl0F7qUwbobNrTewOOltm7+NEgjuedE+FJgkZbThSl5MIRd
-         oxpIABJ03igXtKddbpNOIq61yBh/o8xGs71GLN1qWPxN5L3J7BHzI66fS8Rr3yIwBvXz
-         uHP556DJ0icvHHz2/rEe+PDIXL42q/v+FD3RXLDHvz7CPrYCLMn4e8DlWck/McDbfxQO
-         XRXBcuF1u79gvPAbMNxxFkuH47XwnhR0TLcYMQwI01f3y57o686nufvy5fXUDVRQvYvZ
-         T7tw==
-X-Gm-Message-State: AOAM5304TkbuOo2HgurVNDoAgNDpafBzLcymDImy7TTzqxVxZ1IXpMlF
-        31VGVtVzXl6IcHntz0GLWtEfV9Gd0r1wPCmGwgQ=
-X-Google-Smtp-Source: ABdhPJx8AJmn2NrpVgs33N+C6pPbGr20NVTb5i0f0/DACBLUktB2tjoItgXyeq3rsE7kjeb0EXkS2w==
-X-Received: by 2002:a17:90a:f617:: with SMTP id bw23mr278783pjb.95.1602603391282;
-        Tue, 13 Oct 2020 08:36:31 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.221.66])
-        by smtp.gmail.com with ESMTPSA id y124sm14083pfy.28.2020.10.13.08.36.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 13 Oct 2020 08:36:30 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, cl@linux.com, penberg@kernel.org,
-        rientjes@google.com, iamjoonsoo.kim@lge.com, shakeelb@google.com,
-        guro@fb.com, vbabka@suse.cz, laoar.shao@gmail.com,
-        songmuchun@bytedance.com, chris@chrisdown.name
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
-Date:   Tue, 13 Oct 2020 23:35:04 +0800
-Message-Id: <20201013153504.92602-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S1727320AbgJMQgT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 13 Oct 2020 12:36:19 -0400
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:23792 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726942AbgJMQgS (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 13 Oct 2020 12:36:18 -0400
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09DGSoul004056;
+        Tue, 13 Oct 2020 09:36:02 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : in-reply-to : mime-version :
+ content-type : content-transfer-encoding; s=facebook;
+ bh=IxPOCF1993S3QaPPdLtUzkCPBFxHymBIwLPrdYNgUZw=;
+ b=ez3E8wTMo+8YusLEdFHMzSVj5HiKb17A+bdEYInP5J2LBW6HiJRoASajcHfLRIxEa9/9
+ Gegw6eIh850DfRJYf3skFQGEdfybl9zq2UvbcqvxBlb9jBgxhZSe/6mJ1cIpmBmJK4e4
+ BvVkVPXI2u49+H5gjqyv+wmsLjvuT5+HEB4= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 343w7nutmv-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 13 Oct 2020 09:36:02 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.36.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 13 Oct 2020 09:36:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N8oeEy1ZlkfI1g0lnN4ICI57XFqCijq3pS6zZ6lZvpzyHjyvZwP+fhjSRWX2/5SXjxbh8XfHMB9zKdHG17Yh2fvcT65JAkT4tN0LsJwvCt2tC33eUDvqmUr3+I5kzcM/WS03Lk2y33q5eMLnqwap9S2QHW4PR46LVKwEMYyIWqCslDhpPpy1QnpLYsxyUV2cPDkcRiRSodCRD2lU8Zk8l2koRSxoq+2ZJiQl+igBtsV4eneNXeMv5yNNLVGcaB3E/I0GkrjUhfqK+kiSaEscyvSLhsa0DnXg2rtYNW+HksC1UltmEVzjwdIyvgyYMii6PT8LYt+m9YGNz0qXJGdL8A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IxPOCF1993S3QaPPdLtUzkCPBFxHymBIwLPrdYNgUZw=;
+ b=Uu7ji/I3h0FkSEWfqEaousrHtCIHMdnCJDTzSrDfoLf2c2ub2d4UbebozqXhxdSGupDobK3UVllm4a0SUIhgx6vMVJB+EgDHETmG+8LTsdRZztFBtuaWAK9m8SYuqwgEULG9b6OVC8Tk/8x4vZQHDtyNtSoqAfgMGKagl114oHJ8x8Hx/7w6kMEc5RQYMeOU86iPh1h7MDyXyBDvwOqtJNaG1GNPy5w3C1hMgahkzbCN/vtXnuqyrVlxPLh4KJreUN+CMPa/ePfP7grak7j9In3oXFiOdeW7UG054NeODrhO5EnSuOLUsJIN8gUyKtyn3wvJ05Ar3oCSFGanmwwr7w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IxPOCF1993S3QaPPdLtUzkCPBFxHymBIwLPrdYNgUZw=;
+ b=TA5BHPbhHKDuivIXAhI0lykStClJyPHWeQ6Iip0U/pS0rC7tKevp8VTWipBCGRacqY3wQ2edC+T7Ny5KK+Hrhwrj6pdME/7Ig4zCGBJEn8by9d+FMAcYilgMXICpYcD2YBMyjSV0GEPoXHi8+xZnel1dNVy3PkHDSdHmkHHmHFQ=
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3078.namprd15.prod.outlook.com (2603:10b6:a03:fe::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.23; Tue, 13 Oct
+ 2020 16:35:59 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3455.030; Tue, 13 Oct 2020
+ 16:35:59 +0000
+Date:   Tue, 13 Oct 2020 09:35:53 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <cl@linux.com>, <penberg@kernel.org>, <rientjes@google.com>,
+        <iamjoonsoo.kim@lge.com>, <shakeelb@google.com>, <vbabka@suse.cz>,
+        <laoar.shao@gmail.com>, <chris@chrisdown.name>,
+        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
+Message-ID: <20201013163553.GA3754702@carbon.dhcp.thefacebook.com>
+References: <20201013153504.92602-1-songmuchun@bytedance.com>
+In-Reply-To: <20201013153504.92602-1-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:618f]
+X-ClientProxiedBy: MWHPR10CA0060.namprd10.prod.outlook.com
+ (2603:10b6:300:2c::22) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:618f) by MWHPR10CA0060.namprd10.prod.outlook.com (2603:10b6:300:2c::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20 via Frontend Transport; Tue, 13 Oct 2020 16:35:57 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: ed99a0fa-0ea1-4448-8f54-08d86f961106
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3078:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB30788030AC257FF5E25F73BFBE040@BYAPR15MB3078.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:324;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: AiK83zk7FzrreFQ3+Oy5WQ6YMEX561QnW588DUDnrZFiQssJvnwObh+Ud0SoPvdGZbwvAulKU34YJ4RRcrOQ3LblS95hg+eIRoUmYd/nXLiWCK6cip/ztLVuCyJNuOL56w5dMg/5TkAtGhucwgmGBH8j7Pbzyp03oSMERg5H0b/NFOAE5c2AO98lFCp51u1mPh88ZX0BuMYeSvrJNcy9mNFHW119mwkrlNHAy8PTlkFimuOvbzQrd6jndxeY4V8W3mxS0rOvbjqBL6DoMBACQ3Qxue7wUY3alTHKmOJgsi4wf5TO6tVF+XStv4Da/cVZHdCmmSuIi9RtwBVpAriNGQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(136003)(346002)(39860400002)(376002)(66556008)(66476007)(66946007)(9686003)(2906002)(4744005)(52116002)(83380400001)(7416002)(186003)(478600001)(5660300002)(7696005)(6916009)(33656002)(16526019)(86362001)(4326008)(1076003)(8936002)(55016002)(6666004)(8676002)(6506007)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 7cyF+oBU2mXY4gpzrsZ3KAqTaIHY1pP1LtMamhnEXEN8KDKse0VVAeG7PFaNaXuIbNV17x2OPer8i/c50iLS/e/wX/icnFmL8DfKmGyEy+XTe5uvR8RTVSQI7AHFpOn4VtPJ42Bjtj01JEiHi55mpunlj4wEmseBlEU/EQ1ea5+R6crA8F6lbrdpdpa7NwZDTA29TfnMI6dcEFa0o3CZYeMcWIrdsMdUZ77trTJpx699MDOoy4QclSIBnwAsUHYACZWw0S02TPaOpop9UGJB5eEc8PYXWlQObwFegXZd2myaICiuzOYAzdO7Hfj48XcpVIWV5GMqcvS5jCJx6H2M6CjeyS4DYk8fnsSXwxk0WYykrEFE/QbWGRoC5Jk0wDgVugZEpyoXxRh0u2DrcDsKJCTKAkBEFXx7Zmkc38icID9d1h/OZDj2Mje+BReRKdW+rm6gSm4TgKzHNH3J3zrwEAWiqdK8Hi/fLCgB7klFUZ410gPGDBXzXq2tZLW8txFyueIDBwXDytkYRVML938h9/xr5okm7mc51VCSsaR/ET22kzviaYcubOv+eMjbg6MLq4v4695N4VSe62vOK1Fq9/uF2LrVgBm6/gvNBGKyLWOgZ9V8rng7jiZNNtPQFlhD4LNuKleeZZeBQYpqiHWckAExt/vNIBhogQEOz0byXSU=
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed99a0fa-0ea1-4448-8f54-08d86f961106
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Oct 2020 16:35:59.6294
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Om8VpvsVOHRQFxEtO9vxifzYiZTba8lzlRq8kanZLu1ceFmSyAW0zs2DbEbYCAUC
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3078
+X-OriginatorOrg: fb.com
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 8bit
+Content-Disposition: inline
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-10-13_09:2020-10-13,2020-10-13 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
+ clxscore=1011 malwarescore=0 bulkscore=0 phishscore=0 mlxscore=0
+ suspectscore=1 lowpriorityscore=0 priorityscore=1501 adultscore=0
+ spamscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010130122
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since commit:
+On Tue, Oct 13, 2020 at 11:35:04PM +0800, Muchun Song wrote:
+> Since commit:
+> 
+>   991e7673859e ("mm: memcontrol: account kernel stack per node")
+> 
+> There is no user of the mod_memcg_obj_state(). This patch just remove
+> it. Also rework type of the idx parameter of the mod_objcg_state()
+> from int to enum node_stat_item.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-  991e7673859e ("mm: memcontrol: account kernel stack per node")
+Acked-by: Roman Gushchin <guro@fb.com>
 
-There is no user of the mod_memcg_obj_state(). This patch just remove
-it. Also rework type of the idx parameter of the mod_objcg_state()
-from int to enum node_stat_item.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h |  6 ------
- mm/memcontrol.c            | 11 -----------
- mm/slab.h                  |  4 ++--
- 3 files changed, 2 insertions(+), 19 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index a1395b584947..d7e339bf72dc 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -795,8 +795,6 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			int val);
- void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
- 
--void mod_memcg_obj_state(void *p, int idx, int val);
--
- static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
- 					 int val)
- {
-@@ -1245,10 +1243,6 @@ static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
- 	mod_node_page_state(page_pgdat(page), idx, val);
- }
- 
--static inline void mod_memcg_obj_state(void *p, int idx, int val)
--{
--}
--
- static inline
- unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
- 					    gfp_t gfp_mask,
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2124ded698b2..1337775b04f3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -885,17 +885,6 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
- 	rcu_read_unlock();
- }
- 
--void mod_memcg_obj_state(void *p, int idx, int val)
--{
--	struct mem_cgroup *memcg;
--
--	rcu_read_lock();
--	memcg = mem_cgroup_from_obj(p);
--	if (memcg)
--		mod_memcg_state(memcg, idx, val);
--	rcu_read_unlock();
--}
--
- /**
-  * __count_memcg_events - account VM events in a cgroup
-  * @memcg: the memory cgroup
-diff --git a/mm/slab.h b/mm/slab.h
-index 4a24e1702923..725a0bb8b317 100644
---- a/mm/slab.h
-+++ b/mm/slab.h
-@@ -204,7 +204,7 @@ ssize_t slabinfo_write(struct file *file, const char __user *buffer,
- void __kmem_cache_free_bulk(struct kmem_cache *, size_t, void **);
- int __kmem_cache_alloc_bulk(struct kmem_cache *, gfp_t, size_t, void **);
- 
--static inline int cache_vmstat_idx(struct kmem_cache *s)
-+static inline enum node_stat_item cache_vmstat_idx(struct kmem_cache *s)
- {
- 	return (s->flags & SLAB_RECLAIM_ACCOUNT) ?
- 		NR_SLAB_RECLAIMABLE_B : NR_SLAB_UNRECLAIMABLE_B;
-@@ -294,7 +294,7 @@ static inline struct obj_cgroup *memcg_slab_pre_alloc_hook(struct kmem_cache *s,
- 
- static inline void mod_objcg_state(struct obj_cgroup *objcg,
- 				   struct pglist_data *pgdat,
--				   int idx, int nr)
-+				   enum node_stat_item idx, int nr)
- {
- 	struct mem_cgroup *memcg;
- 	struct lruvec *lruvec;
--- 
-2.20.1
-
+Thanks!
