@@ -2,86 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CE4128F77C
-	for <lists+cgroups@lfdr.de>; Thu, 15 Oct 2020 19:12:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AE4F292A17
+	for <lists+cgroups@lfdr.de>; Mon, 19 Oct 2020 17:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390110AbgJORMY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 15 Oct 2020 13:12:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54296 "EHLO
+        id S1729849AbgJSPNC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 19 Oct 2020 11:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48196 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390105AbgJORMV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 15 Oct 2020 13:12:21 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1EED3C061755;
-        Thu, 15 Oct 2020 10:12:21 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id z2so3616432ilh.11;
-        Thu, 15 Oct 2020 10:12:21 -0700 (PDT)
+        with ESMTP id S1729630AbgJSPNC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 19 Oct 2020 11:13:02 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AD58C0613CE
+        for <cgroups@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 23so425361ljv.7
+        for <cgroups@vger.kernel.org>; Mon, 19 Oct 2020 08:13:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=cKc+bNP++EX8fyeI3aXeiHgsKpFOPQVrFxV0jhUJ6Fg=;
-        b=p0r50dhkcILtmkik8X5doT3aHa4RN3urlDvhCui/LT+YbnQ1OWZozAHZWskt8bEhIW
-         yb6JDEMgozrWHdCgXSyYnq8GD+EOW2TGevh3dhnysvwgt6xNa3Zr2iwgHOLfRKMa+/vU
-         5QYR9gwKkCKLuhze9yReIip3bePpABLN3vN9Q1eqosiyKI5XQlQlnfeGwW6N3eq6pBha
-         SHgCIvsMq4ZJ9XSz0d8BUSSxihLk9cu9V4hWvL2j5L4aL6HauyHuhU9XTGg8mFQmSise
-         AFmWX4NcezYAg/A89RzOfNljjxEqHkmFl/ZcYUDopFWTEekqM6RsyCpKnnTEaD1vQM2m
-         1GXw==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
+        b=QfCrOWagyVz1D/JQhVoyJQsbYNAjvQ/iL7mZq7ErUA3+oG3FeUeyngHtmr1rE78TW2
+         jEnzyi82NX2BxtlxZFHebEGmu38P5zJj9WCs6+iSqnxIoj5aGi0JeTWr3DPX+dP3+yKX
+         ROusE4YeJT4cVzU+K8MYz96BljmWIdtJ4HuB9/BgDhjxhYPDGT9OUp0VhAxFbSPCyCJz
+         DYeUCyUbDI2Esf8lS0dCx3esOjAXoE4j9oDYLRJMVAOtEtegY53K58fX77sPIETx8NZO
+         JuHNAesgnTu5m+RsUsU2DJ5hVSNRke6vMLvbfwGKTfX1Qwu/jUJ7of6sDfo5LButNPCA
+         FYZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition;
-        bh=cKc+bNP++EX8fyeI3aXeiHgsKpFOPQVrFxV0jhUJ6Fg=;
-        b=i/nBx/5d74zuzgHgM4pRscmeZV5+r9eqdgYQcW279pLmTFnkgf0r0Ju268IZ11/Vcd
-         Wf0kzoSpDygK8SA6sdiXOpZnoZKmWd5LjTxrEpGZL9u6gCx1mKm0OfDOk8YPFq6aUZI0
-         noDbGNDLKFYGfxkV36QvOvbcK5S/xXMrd0YgEjj2A5Bxs+t/LxE3efyp9i+PJ3Ak8A5w
-         gKPMfn9xhW70/l+1ca1pu84pr3kHaAA1KBKlUiwP/6b1PtzvTDKILdItytAQqcgnV1u8
-         vvmNudgoF9iHskE0HtwhOBwciAn1EXawrQcXUhDwWN6itZDgtX1pi8bAZyKV6ylz0jFR
-         KN9g==
-X-Gm-Message-State: AOAM531YhXIJxNVy83YPfMZO48+LhbI6mSzszRwK7UDdeVRdc8hpOEGi
-        yYbGrNTPchENrEmla3oxne51fCLQT3vwxw==
-X-Google-Smtp-Source: ABdhPJxVnZ1+jrwNEoIkYnMmUllM79lB1UD0hugdC+JJkbQF7qtSN/eSxQ302nVvejCeXS8NAHf8EQ==
-X-Received: by 2002:a92:b503:: with SMTP id f3mr3982048ile.23.1602781940097;
-        Thu, 15 Oct 2020 10:12:20 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:8126])
-        by smtp.gmail.com with ESMTPSA id p12sm3641460ili.14.2020.10.15.10.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 15 Oct 2020 10:12:19 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 15 Oct 2020 13:12:16 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     cgroups@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [ANNOUNCEMENT] resctl-demo (Resource Control Demo)
-Message-ID: <20201015171216.GG3845@mtj.thefacebook.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=zk46YEU8AFrJPMd2DZK0YXhrQs/eaI3r0nLePqJ0ljY=;
+        b=UwtvmU2kijeL3Al/oCWYtyRFMIZn+VLYu/LiyCJC4NgYE/Z0lS4Ud5LsmWZNJE3bPl
+         1wHdbS7uHG093wYlBfQ3COsBCxlr2ebaXldhXqvSL+k2fxOriZw16vuCTCZVOVsoaCKg
+         3+q084uyqUS2ShnbaBmapy+yEiThnzNvrUcwQM306l8wHETkUwFvaDRzvxj0VVOrCUZy
+         tCU3JKyGLcNIRba861anCPJNJIyOtNzLdXAfaMW5fxlxbsoGHKEIGrogXQLmTmmHlrUl
+         ZbnGAgH7pk8PdQTluCtPbN3wPbYnLIt2ue1zEtBU4RS6CH/KpDXRdg6ekpQsfJaWtNjJ
+         EsVQ==
+X-Gm-Message-State: AOAM531VG0pf+ARFmUMbBMuf7DaLW6dtDkfZPLSQA76Vq8Lto7jxnaZA
+        9rZMqwsfezld2L7KlSHRIwb0aIB4I3xvSl/RPLeNtw==
+X-Google-Smtp-Source: ABdhPJyy1bxdUdOPXMnQ5eKDGPZT8n6dCCKjJ9rZMIhGQSyK/ZSc4sXbGHMHJl0Se48FIReMKBaaBIn4QgIzJEXOaiw=
+X-Received: by 2002:a2e:b60e:: with SMTP id r14mr223627ljn.77.1603120379795;
+ Mon, 19 Oct 2020 08:12:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20201013153504.92602-1-songmuchun@bytedance.com>
+In-Reply-To: <20201013153504.92602-1-songmuchun@bytedance.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 19 Oct 2020 08:12:48 -0700
+Message-ID: <CALvZod49YJkG7z+Bnben2pUbw=TyXrHJE1wWt9HbY_85oNpXNA@mail.gmail.com>
+Subject: Re: [PATCH] mm: memcontrol: Remove unused mod_memcg_obj_state()
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>, Vlastimil Babka <vbabka@suse.cz>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        Chris Down <chris@chrisdown.name>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Tue, Oct 13, 2020 at 8:36 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Since commit:
+>
+>   991e7673859e ("mm: memcontrol: account kernel stack per node")
+>
+> There is no user of the mod_memcg_obj_state(). This patch just remove
+> it. Also rework type of the idx parameter of the mod_objcg_state()
+> from int to enum node_stat_item.
+>
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-resctl-demo which documents resource control features and strategies with
-live scenarios has just been released. This documents most stuff that we
-learned at FB working with and deploying cgroup2, PSI and oomd.
-
-Setting up the whole environment is still a bit difficult because it depends
-on pending kernel patches in devel branches and non-trivial system level
-configurations such as btrfs root filesystem, so we've built a system image
-which can either be launched in AWS or installed on local machine.
-Everything in the image is either already upstream or pending, it's just an
-easy way to set things up. Follow the link in the Getting Started section in
-README if you wanna check them out.
-
-  https://github.com/facebookexperimental/resctl-demo
-
-Longer term, I'm planning to build benchmark / autotest framework on top so
-that we can actually verify and score various aspects of resource control in
-terms of both isolation and work conservation.
-
-Thanks.
-
--- 
-tejun
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
