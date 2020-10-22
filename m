@@ -2,104 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1687294463
-	for <lists+cgroups@lfdr.de>; Tue, 20 Oct 2020 23:14:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF71C296192
+	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 17:20:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731414AbgJTVOc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 20 Oct 2020 17:14:32 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59758 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729542AbgJTVOc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 20 Oct 2020 17:14:32 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KLELjH154973
-        for <cgroups@vger.kernel.org>; Tue, 20 Oct 2020 21:14:31 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : subject : to :
- message-id : date : mime-version : content-type :
- content-transfer-encoding; s=corp-2020-01-29;
- bh=NVS75jl5f3ZgS5RJJBrIX/ZDaY9HPmTwQMgddPNnFP4=;
- b=ITEA31dhyG2ZaX0WelBf8u1mPcB1AUi+3fjjumdh1jFXOGy+NcjMnJ9fV7VbLo7SwqzX
- H0V2Hx28us78znyAM+p2CZtweBsZGimLEpmdsSbz3G1Hm3vKbbswaiGvFNDJhoEu12ok
- XmBQo++6Q5/BVRdMrQHHGNSQUdiD4ipULj4ZqWAXqZJW9SecP/KXUmtKm0c6mY+G5cpI
- g5lnXRTNs/bahjyixBQ0XTLGJ6pp9rYQPoDGgLGCUaQo6VSWQ0GuKOn4UhhpIk7BPWMm
- p2/+7b/aMrDl4dhnH5RhC8REXGbA77wxG5yvvEEJvXcNk2KtwNKfVSWCK+gCyuUj1DiY Pg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 347s8mwbxk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <cgroups@vger.kernel.org>; Tue, 20 Oct 2020 21:14:31 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09KL9ss5016073
-        for <cgroups@vger.kernel.org>; Tue, 20 Oct 2020 21:12:30 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 348acr9f94-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK)
-        for <cgroups@vger.kernel.org>; Tue, 20 Oct 2020 21:12:30 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09KLCTLZ008855
-        for <cgroups@vger.kernel.org>; Tue, 20 Oct 2020 21:12:30 GMT
-Received: from OracleT490.vogsphere (/73.203.30.179)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 20 Oct 2020 14:12:28 -0700
-From:   Tom Hromatka <tom.hromatka@oracle.com>
-Subject: [QUESTION] Cgroup namespace and cgroup v2
-To:     cgroups@vger.kernel.org
-Message-ID: <d223c6ba-9fcf-8728-214b-1bce30f26441@oracle.com>
-Date:   Tue, 20 Oct 2020 15:12:28 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        id S2901363AbgJVPU3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Oct 2020 11:20:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41272 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509976AbgJVPU0 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 11:20:26 -0400
+Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB71DC0613CE
+        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 08:20:24 -0700 (PDT)
+Received: by mail-qk1-x72e.google.com with SMTP id b69so1774308qkg.8
+        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 08:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBBH901rQGlVlFoCnkqyIlpkXIRSFljWv35x5+cQPf8=;
+        b=K/nRNa8p7sw9/iAQNZ79hyIJivwYVZRf9LPGMBQJkU3so+Aa7InLCzFOogauJpEnUP
+         THh4W4D8SUTdDnI5IyBtA0yfxnQ0kuRyqfRhiq2J97w7M2MWvUUioMHQwgfJX4QOgXQk
+         SfSOCGVauKWRDy5nuCZHUE4cCfiDJBcAHQC5pu7tKkWKoFq14twvjIZnpRK2qCSBxlfa
+         TwFORMEq4o4rW1W89fq/xydP/6xWg7usvTaAPeykPNGDW1gC5h0ryJ5ZmwEhKHIoXxNJ
+         SjW0v0m2NniwZpyuWU0FABhxibu13QkVx8a8rntRLjU1CbQZG5U5UMQF9lMvpsQ1vLmB
+         EExQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBBH901rQGlVlFoCnkqyIlpkXIRSFljWv35x5+cQPf8=;
+        b=pSk+IZO/PH7L1F3xY0IsEiRNRTEaW1z9waF+vym5ibsm7lulnOTsYNcH61Pqv2YfRz
+         rlQyYLtB18oHD3fpBtDP+lRUr570mU72d4wwPXTjP/B1kwGvrRlEDV9s7hRf2OOO3cZa
+         EbUgOfVYSTFdl30uFNEv2ATHFISqt7adN2AD3l5H2fP+dwx7O632Ptb2lKbc/uyxH741
+         w8lkRGwhlSlsL/3RP5c3P0rAG31CkjNfyw+XGXL1MKurTGyNq67bcUmaZfmBKNWmtFi1
+         IHiT2lnMDcAOmGY4Ndb2P/IM1N3Jh5Fc514JqVswIROrWnVPcyvjoMTS5lTAX4/QsW5O
+         SYWg==
+X-Gm-Message-State: AOAM531lFFAMxW3sy4Fv6mJn55HoETINHEzFB3WOBQ9FeLIQmYLXqBU2
+        nqdl3m7SpAYwtjfS4c23ncqgRA==
+X-Google-Smtp-Source: ABdhPJxlIHTHGOHGzLPZANXxHyN9jvKBN1ZfwQSQac4ihaDF7kJXLbxeD8vSdBsG3o5AQUe4eSgmOQ==
+X-Received: by 2002:a37:664f:: with SMTP id a76mr3041550qkc.370.1603380023909;
+        Thu, 22 Oct 2020 08:20:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:c400])
+        by smtp.gmail.com with ESMTPSA id 11sm1163614qkc.91.2020.10.22.08.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 08:20:22 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
+Date:   Thu, 22 Oct 2020 11:18:44 -0400
+Message-Id: <20201022151844.489337-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 bulkscore=0 adultscore=0
- mlxscore=0 malwarescore=0 suspectscore=1 spamscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010200144
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9780 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 suspectscore=1
- lowpriorityscore=0 mlxlogscore=999 priorityscore=1501 spamscore=0
- phishscore=0 clxscore=1011 bulkscore=0 impostorscore=0 adultscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010200145
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I am in the process of adding automated cgroup v2 testing to
-libcgroup and ran into an unsatisfactory user experience when
-using cgroup v2 and cgroup namespaces.
+As huge page usage in the page cache and for shmem files proliferates
+in our production environment, the performance monitoring team has
+asked for per-cgroup stats on those pages.
 
-I used lxc to create a container on a cgroup v2 system.  lxc
-uses cgroup namespaces to remap /sys/fs/cgroup/mycontainer/ on
-the host to /sys/fs/cgroup/ within the container.  Within the
-container, I then created a cgroup - /sys/fs/cgroup/MyCgroup/ and
-placed a long-running process in it.  (Note that as part of the
-container creation, there are other cgroups in /sys/fs/cgroup/.)
+We already track and export anon_thp per cgroup. We already track file
+THP and shmem THP per node, so making them per-cgroup is only a matter
+of switching from node to lruvec counters. All callsites are in places
+where the pages are charged and locked, so page->memcg is stable.
 
-I then used cgdelete to recursively delete the MyCgroup/ folder.
-In recursive mode, cgdelete will move processes from a child
-cgroup to its parent.  But this fails on a cgroup v2 system in a
-cgroup namespace because the root cgroup is a non-leaf cgroup.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/filemap.c     | 4 ++--
+ mm/huge_memory.c | 4 ++--
+ mm/khugepaged.c  | 4 ++--
+ mm/memcontrol.c  | 6 +++++-
+ mm/shmem.c       | 2 +-
+ 5 files changed, 12 insertions(+), 8 deletions(-)
 
-A couple questions/thoughts:
-
-* As outlined above, the behavior of the "root" cgroup in a cgroup
-   namespace on a v2 system differs from the behavior of the
-   unnamespaced root cgroup.  At best this is inconsistent; at worst,
-   this may leak information to an unethical program.  Any ideas how
-   we can make the behavior more consistent for the user and
-   libcgroup?
-
-* I will likely add a flag to cgdelete to simply kill processes in
-   a cgroup rather than try and move them to the parent cgroup.
-   Moving processes to the parent cgroup is somewhat challenging
-   even in a cgroup v1 system due to permissions, etc.
-
-tl;dr - I can't move a process to the root cgroup within a cgroup
-         v2 cgroup namespace because its "root" is a non-leaf cgroup
-
-Thanks.
-
-Tom
+diff --git a/mm/filemap.c b/mm/filemap.c
+index e80aa9d2db68..334ce608735c 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+ 	if (PageSwapBacked(page)) {
+ 		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
+ 		if (PageTransHuge(page))
+-			__dec_node_page_state(page, NR_SHMEM_THPS);
++			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
+ 	} else if (PageTransHuge(page)) {
+-		__dec_node_page_state(page, NR_FILE_THPS);
++		__dec_lruvec_page_state(page, NR_FILE_THPS);
+ 		filemap_nr_thps_dec(mapping);
+ 	}
+ 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index cba3812a5c3e..5fe044e5dad5 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2707,9 +2707,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		spin_unlock(&ds_queue->split_queue_lock);
+ 		if (mapping) {
+ 			if (PageSwapBacked(head))
+-				__dec_node_page_state(head, NR_SHMEM_THPS);
++				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
+ 			else
+-				__dec_node_page_state(head, NR_FILE_THPS);
++				__dec_lruvec_page_state(head, NR_FILE_THPS);
+ 		}
+ 
+ 		__split_huge_page(page, list, end, flags);
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index f1d5f6dde47c..04828e21f434 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1833,9 +1833,9 @@ static void collapse_file(struct mm_struct *mm,
+ 	}
+ 
+ 	if (is_shmem)
+-		__inc_node_page_state(new_page, NR_SHMEM_THPS);
++		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
+ 	else {
+-		__inc_node_page_state(new_page, NR_FILE_THPS);
++		__inc_lruvec_page_state(new_page, NR_FILE_THPS);
+ 		filemap_nr_thps_inc(mapping);
+ 	}
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2636f8bad908..98177d5e8e03 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1507,6 +1507,8 @@ static struct memory_stat memory_stats[] = {
+ 	 * constant(e.g. powerpc).
+ 	 */
+ 	{ "anon_thp", 0, NR_ANON_THPS },
++	{ "file_thp", 0, NR_FILE_THPS },
++	{ "shmem_thp", 0, NR_SHMEM_THPS },
+ #endif
+ 	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+ 	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+@@ -1537,7 +1539,9 @@ static int __init memory_stats_init(void)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_ANON_THPS)
++		if (memory_stats[i].idx == NR_ANON_THPS ||
++		    memory_stats[i].idx == NR_FILE_THPS ||
++		    memory_stats[i].idx == NR_SHMEM_THPS)
+ 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
+ #endif
+ 		VM_BUG_ON(!memory_stats[i].ratio);
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 537c137698f8..5009d783d954 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -713,7 +713,7 @@ static int shmem_add_to_page_cache(struct page *page,
+ 		}
+ 		if (PageTransHuge(page)) {
+ 			count_vm_event(THP_FILE_ALLOC);
+-			__inc_node_page_state(page, NR_SHMEM_THPS);
++			__inc_lruvec_page_state(page, NR_SHMEM_THPS);
+ 		}
+ 		mapping->nrpages += nr;
+ 		__mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
+-- 
+2.29.0
 
