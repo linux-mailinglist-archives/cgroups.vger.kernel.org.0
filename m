@@ -2,46 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F26A296654
-	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 22:59:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E82296657
+	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 23:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372124AbgJVU7r (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Oct 2020 16:59:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372101AbgJVU7o (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 16:59:44 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA0DC0613CE
-        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 13:59:44 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: krisman)
-        with ESMTPSA id D457D1F45E92
-From:   Gabriel Krisman Bertazi <krisman@collabora.com>
-To:     tj@kernel.org
-Cc:     axboe@kernel.dk, cgroups@vger.kernel.org, khazhy@google.com,
-        kernel@collabora.com
-Subject: Re: [PATCH v2 1/2] blk-cgroup: Fix memleak on error path
-Organization: Collabora
-References: <20201022205758.1739430-1-krisman@collabora.com>
-Date:   Thu, 22 Oct 2020 16:59:39 -0400
-In-Reply-To: <20201022205758.1739430-1-krisman@collabora.com> (Gabriel Krisman
-        Bertazi's message of "Thu, 22 Oct 2020 16:57:57 -0400")
-Message-ID: <87k0vi0yf8.fsf@collabora.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.3 (gnu/linux)
+        id S372128AbgJVVAw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Oct 2020 17:00:52 -0400
+Received: from sonic310-11.consmr.mail.ir2.yahoo.com ([77.238.177.32]:36405
+        "EHLO sonic310-11.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S372101AbgJVVAw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 17:00:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603400449; bh=k6qD474V9VtXKDobcCBmjOJywgarZvgPlTt0r+34qBY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=JLNKkFVZSVQ1sQyqqii32hNU+4zxQsAMiewFOfle5TaMnC2keUN5/umYu+uqmgJ0Th4zwCXyZOX+hZ+RfCZY5DtMkIP48Ts2oBEAEwAfiMC5RQVBMivAja9gTLIPZBcE3sy4rusRGlJWgdmM6hpP2fvuBjJ19lGjPzcIO182oSYzqU3ODaSCdF7h6c/Q0P8meAKRoUSvlVSmwmNTlbUGjysuvbKJ18eyW8OHycb0qNWXHwoNNrotCB0NAZRGX2TpzEj71/eyu6XPD5kg+STXLy9BdQaInT+VG84Yk9CNNAePAyfMhsj6KWEAXWmLrqIY1fztrzOwkwgVW4wyzw00Vw==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603400449; bh=78K4hH4aMJoKbuFJt3dQ9t6FNQ6axX+rUOsuxG+zY/K=; h=Date:From:Subject; b=XOdHZc+CGr5WF9vEWgb98uDqZOSh4g0T7XaJaIJtZW4y2tXRybJ97UvMnicFlPuj0Jvb5PJvQx8Rrc+0TIWkp+qCev/GHvU0ff7yFnkbQ1snKbYlOA+s7UNx2PTJVeFMV2xKnTtpvmXk+NAeUtdCtPgHF9Ib+S+w/lC2PHlLsh/64Ki9xEtHbS5/wEi9V9OMTiTDW4oFcH320dFniNj5thq/SVsfGA9yREfyJ51Gdet5XpdwjcmzSI0V1nIgHQonPXwCoI2s50jPxXVxNmHGVIYUR8QHkOLyWZJsDSXYoKzj8bMLU1JQNQG1B2CxhouiQcVKoMCRB8lY1Z6zc8SIxg==
+X-YMail-OSG: DTp1zH0VM1n4Cu2.4zAD2doF1yjrskWBcrgIvb7iwFUJiAwvqAExxAybBJX.NHq
+ BJ2syWimIaRnswfDt.oEfqYfulAUiAG4E3mahuqUOiMwo5Yp7HOb_CXOSKzhBSl2d6_VjOQvpPBu
+ 79AUrOiEj5e3og6bS8hcNwSmlHtadGhRdT9GyCZaFeBoXA.wXvOlJO6dbo3cUhtqTbQS.38hZaNo
+ nTmCnN9eO0mmEThqe2MMJc1RN0RGdLObeVWAi5JSffsc68S_6tWC9e507ywzyzXptGA_VD4UrvJI
+ Q0tFru6UNdsAek0KpKBdNx.BVlNB8qkIAbSxzQEW6i7gIDW5O7lG4fdFgQY4UrSIoQL3M3MHKF2K
+ .64YBu29EotJQTuAMQemArduzo5WELtASbXc48e4_xL1FTSe1bdEfptxaOuTYEV0DjqCGEeZZLKC
+ rnuIPWANIbxsNaVcw88pG4Zl9.iAUbQblzXXZIINpXXbqanu88UZw2DfszPudPdpjBMVU0ix1HlR
+ lTRY4MOorIyr1XkB4b0GSAOMnzLDGeARYkaPs_9Jk4dXDRUnI2dXhF8uJ4.HYoROnaT_8JhjiTMS
+ q6tvLJG73q2WlA058fmvnMigTjlq72BInZMba9kc_9VhzuMPXkqGlp9KXU09o40T_vi_jNzTgmH.
+ PHOsMdxFCluisjA4.L.YCJXSO4MIlShs.VYuh.Tp0kvhTG3FfaO8DfUqE1axWAWOmJVFDBE47oda
+ C8GDh30kXRybUmn6aOP7ulb.Gfk.P_UdSmMkcjMTxUtCZrPlyyD2u1ZiDuFDzZgdVnctw0Z_m6QZ
+ UbaMpA6M.M0o1key7LkcTa9FMhXrv0B8QXqf9i0gOT94lXOpyOhSY9Tp5C63JfnEQxOeBYBRPket
+ ajW74zvbAi9jvnkL68KssbgcpOS.dj0vU5QP685eJvZyhHSR3W6sBFvdNzUxXH.zTLmyOk2XiBRy
+ STngKXMntSO6OvyA9O8Y6SJ_MiDFDEZ2nmy.7rVOAtnWjwxHEvBd7fNwgj_qhClxMkEi2g_syfvX
+ youcwo3fiqY9irUZg2WyWf1nmRUzL2__c030WsdtIg5VATJmzrHPMY5MvGGMn4ya0aKurgl.oR51
+ b2vCOsBezRUzehJTk0l0WSXtOuvMUJ11KgNdegHik88JHYZf20e5tP4sLPds3jcSX2_ZpB6fDIWD
+ BnBTdJBvKODNX00Yow4q6ASWM.yd508bCvZp0pFSFu63KreFZkY22pXRmNTeDooQVEMeTzE5ExxL
+ ChCTxMgykxzhBi8tDCfx0GDzjwQBW68wZUIGXfx5MsVLDMTfKkNe46lSCPbF9S0AY9I4hZqYr8R7
+ YaGKNUQd9ZWViYUuQQYbMQfBD9FMqfMMYJlI9gIHRYjn2xzZLIKv_lVpcilyc0yrnkWQ4tI4Hoet
+ fI2YhdIgp7e_6Pwsjn1wuSkia_PSeVEj7zmtZ_IWStWX678okSL2_SW1wAu4EACPXWu0pCjlxDDF
+ CoCG5gkyvCBcvHS6IPIlXfxOEtkqG7rQ3VHs9RFF6xG2dNIVVf9mw9WUSUVQs4VPwnkwAstDF5Ev
+ hvp8Ux9FEH0skymC_AbX_P3ZI3AkSkYDfJEOY4fDDfbsHvxyXdaH7pXN6vrmL_ubdiTx1xWjdBn_
+ fQW9lQ9IV5Tc7BRrHIC6FPQpemVqeyXf9W6L9DYQZ6c0AOeweQ0dCnRGwo9ArnBKH0xpPr8BB2_d
+ .kI1.t3eUWVdzoj3qJlpkoAw6FDEYpmNv7hM..RGDp3cYreSRhuvV72WKDduVoaYVKYaNFZzXkpx
+ 1QEqwYs8Zv9gQqoPG1S._bwC8GMa6tjmXSoFn_l9ylLdDXYkbJ8AfxPdx_PLpYZPMbSvTbFVJSJX
+ W9aymGZcyYDXk3AzoD.KX8l.VJ3buks9Xn1o6olS2VzUbfYBdSMW1_THM3D.L6Lb_PpQICBuZeVO
+ qFtln81sdodvwayjgwnGLImBwyjquqRMk6ai5FgO.SaGtF1Tj9yuDReGNg.FnT2oCPBVlCnDTfYj
+ pjltRPtK8zQgoeYbnsYNRuBH0p3Pe7odXnGihk.pmJKdcF_hH_axmB5BGKA1hOWnHJNOVCMYkRK9
+ A1gVoWfj7B4zyScc2cj8e01JiEJb2rfylfTLZB_tnYK6OI6GcedAhqLjvimMBHDrc.m_cBW2txGc
+ aUD0X16vXAPjI.RGnwqll0umVjSBKcelzDh_GnuXOugIk7MbPG6H62zZSkrKDZ4IQszRoraFBOUr
+ fNCR.oVbDRnpfVgaXkFmoabUzxBoLAsBEwJlld1WW._eIxsGGOF3m5Ee4Ihut48ivc8w4H6O3u9L
+ rgDjDk_OCzfU5XDXKTuRTTd_mB_6fDovJb_UrIRGoCppnZkAlhdB17tjXuchgrV5N2Vc6Amtwr5j
+ yivQa46ZxN4Y2EjUkWME0bVraKgc4j78EDMcSdndafcB2lQ_Z3Mt_5AMWY_PfUb_o91N6mqZxpqR
+ Etp8no81QKS6cwvih2DB8QY6kq1vlgsNucOH6qZ6joygQJFgs3vxp7hQPtAFGJUgoVkeC3BLjhys
+ NP2QsrFUNcg.yVlUBgVEgRO_GCk_9_lI.yOzbiiv6qw75mLX5NGLYYqXqikcE.VqzJiySQj5Kwny
+ VVYYfkr7FpD9t20X33LFmq2CRiShA2jjitX2ozwJaujHaNex1YUw1DG5CEGfIUm0iHoabsWPnNlv
+ 8jsXqtgSKNeU0drbmi9bmujPJJrSjJkEElV9uH7H.D3FaTVF6z0RvRZV_cjEjI7GdKLtuRZR1J.Z
+ yu1VNma7nqwGCSKaGDGWQ0ckNcrCXetIZ9eW0IUGV_dG5K.goXC46JRLm2yi2JDdb9mqRc5Bp9.8
+ ANs77icmurv0c22upG.4KqyMn5YXsoKZZinDJzLJ0DoFYejOFwIcB6ktoRBkayY9UWUibURrB_9T
+ 9IG9yVxonco9SVOor_UhltlCb6DbvHTymHUBxhbKq0UmnDX.LPE_65pT.u0Mzu_kbsMp3jD07wh6
+ st7J56HgbQ3DYPb3n2djZyZK_MbPjIZr1l_4P9pNpIzVAwPACFowa3D64a4ZhMt1zoXX4UgBmrZS
+ s_Q2Vln3FEI7v2xSqHTeaEDxacbqI7CwZCcW4MDlfeBwKqlArG3YKTY995IxyI1DIAlh9.ptkeUF
+ DiaKHvtCQPX3OwiBQmQZe_jm9Zub4SLWDbh6StaWKAkp5feZEiAinL9hMZ8qUy47a_2hx71rd_bk
+ RlwDEEJuPVFERnmJdvHEMkotvo3OyVVYv7jb4fpo7cvV1z3JD9._FDnchkmytYFGZcCcwe0teLoX
+ hHFPnRsx34Z4LPVzYEKpoS7Ce3CbisvklODcgJwi9.4neyF8T1n973lqVxtUlWkAx6ziypHx5ItF
+ xre6t_VcW3EkYutO2VwYvnCFENwifbFQvuCsalUQGkvIPwSVQMpc2kB5AipWHqIa.4lbQGyY6pn1
+ yeneJ1DyEoi0dgWY.MRRktiw1TDbNTN49OrmuZjNdMJPW3RvJd282a64AkyBIe0TICERZLBlloY8
+ pnWOYTPuXtcRZXwlP3dCgaVN7tUgn28WIVv_c7K.ulJ1MxsoGnzobV3Xv8FvIQe3XaRm8B.qB58b
+ M_Y4tFnRhFkFBQT59LIuJbm1v0_LHIcyeOxgMjrLkUfJoWY79SraCWgHVVmX65WEd8PZ8BC7vp7p
+ GneoQyLvgYDcZGA4Cy2VwYnuZQj5z2vibR3I_049emWvpMYWz5.Yljy1wLCRt6_1p21dTnRaOJaH
+ D6B_lkCDWh7b_xBrj9hPpRObXS1icjIB6etYptFbpXRljaYBjiFyvut1stPoRjTgrsRCDR3PuXeO
+ GIzuU4PlxU_pFrJtHz7yHHIaCyc5SSPweFchvbc_iEyjWSdGs3ECjK2xp.gqHrPx3Z5ahtYFRFcC
+ qwFKDgJt.gPKz2eIfjPFcP7Ng53L.lLJQF9othA.6h4vs9JLchbmSW.Ir.QrRvYtkzxXvjRNvyrl
+ wJg_bug9U2EaaMxrbXCZ0R6cZ4Vc_xDl5Y9h_H83idD3i60C4vy4RGKqpZJBKTgInA3Lzu1cKTcf
+ 2MxAhwKwOFCPMSX2jYULxZjEdy8yje6cLTciWXTHpN_0zkABEElKfaw9sGc_UHk98P.CIgvpaxRt
+ I7v.8RnsM_fSQD5ONTG4UMlLYfeu6i2Bs7Yi_4.UuKoSyd2VPavkFR6Z.farjF8jT7SSCVTs2ZQk
+ JC0L4Oq99aQigjiKEJr7MScy3ofZ9vIRTDOt_kvyOqnzl2lrh.Y9Q4o._19OLE.keeppv0_I3SmM
+ Lnwosek.WmDsXODMRACJnzo9CX1jz1DICkCkHnixOc3X1.w3X1W7FfAFRQv2kspJNVYNQXfOxyXV
+ Y8J.W3kxhog42cQ_eRLZZ9jMdGazcz1xTwnJ8f_Bz8Sa4qbZyoqXnkLYxAmJTtKVne2fEUi5HWWu
+ JmmRyB44yRnou.LnO286PKcZq_mARy7wlEJ3eApz34gDmNXSn162GkaeYLL7CC9tS9EafJhpFMFv
+ opnusm6C1ydjnMCtNWeKrWAlD9P0F64Tm8w5lyNKaOXRwW0DqCCo_4tRLCpvdBrP.gddxIPrVmG0
+ E5KZusu_WCmqdnfZ5zmY2_Lh8XiPU7JlmvOFaWImFcg.eoSbvzYcD2WeIqdXLkct2guq7Po1kNDD
+ NsWTOTNHRqniywDl7x9c2Y0MWYMtgeYVC_22h1DaXrZLBhlGGcAheBCkP37gatFW5BFf5pbQztUB
+ C00No5nHsRCcrvrnGZTjh4aMZP0IgOTGaG4CChiTSBVc1sAJgW8kWpg2EEZqE1yVKyHLu26DbUhA
+ eV4YAIRGp39w9S9pUF2W_5Kplcy.1zqutBVyyjIY1jcYs2gcJs4KGrn1ggjqVav3Ncd6aHcGbVgx
+ QhU2OdGIbEfp5vB0R4hVCj3_o8QJmJA165Tt6QO8yZIAEDyLbKER3ZnlDH457UBXkDAeUeQHAJ6F
+ vQEwLld.Z_O5_NDHevX9qxN477IJUOBQ3Dndc.lGE100Y_V5ZNthvbVBsyuDORbTvU.YeJIig20c
+ 24dQn4WEXwH3ECSZBHcQVvks69Jb8bD.nApPABWmoBuF58G.qW1O_oxsfswM0IGq0upUlPGyhVka
+ 9jOKTk_s3ZSrhsA--
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ir2.yahoo.com with HTTP; Thu, 22 Oct 2020 21:00:49 +0000
+Date:   Thu, 22 Oct 2020 21:00:47 +0000 (UTC)
+From:   MONICA BROWN <monicabrown4098@gmail.com>
+Reply-To: monicabrown4098@gmail.com
+Message-ID: <1402045438.3894283.1603400447600@mail.yahoo.com>
+Subject: FROM SERGEANT MONICA BROWN
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+References: <1402045438.3894283.1603400447600.ref@mail.yahoo.com>
+X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Gabriel Krisman Bertazi <krisman@collabora.com> writes:
+I am Sergeant Monica Brown, originally from Lake Jackson Texas. I have 
+personally conducted a special research on the internet and came across 
+your information. I am writing you this mail from US Military Base Kabul 
+Afghanistan. I have a secured business proposal for you. If you are 
+interested in my private email (monicabrown4098@gmail.com), please contact me 
+immediately for more information.
+Thank you.
 
-> If new_blkg allocation raced with blk_policy change and
-> blkg_lookup_check fails, new_blkg is leaked.
 
-hm, sorry for the duplicate, the first attempt my script tripped on the
-cover letter for some reason. Please disregard this one.
 
--- 
-Gabriel Krisman Bertazi
+
+
+
+
