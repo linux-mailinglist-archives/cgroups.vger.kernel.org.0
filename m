@@ -2,95 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B438F296355
-	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 19:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56AF3296457
+	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 20:00:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898631AbgJVRGt (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Oct 2020 13:06:49 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34934 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898289AbgJVRGt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 13:06:49 -0400
-X-Greylist: delayed 529 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Oct 2020 13:06:48 EDT
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kVduW-0001tE-8q; Thu, 22 Oct 2020 12:57:56 -0400
-Message-ID: <004fe66ee1d111ec006dd065b9bed5fdcfdaad01.camel@surriel.com>
-Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
-From:   Rik van Riel <riel@surriel.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        id S368650AbgJVSAf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Oct 2020 14:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38024 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368643AbgJVSAe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 14:00:34 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4A59C0613CF
+        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 11:00:34 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id w21so1605272pfc.7
+        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 11:00:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=+Jm50fe41wfDpU30qvqkj0sqMT/OM8dCaofZzxuvBXc=;
+        b=Ked+h/0SpWqtiUKSQ+9P+ieLMEYOUTVO+Qm1xZegAoXCKTnpLFKnApIRgEQNuVl+xY
+         23Ki0jXwUy5jxqKjbS2p6j57kwY3nhDmCf37yAxUZIDdarrFWzYtYwszarW8AmN7W1tK
+         QaLA/Ut1Q91UzjmR8M+CJmabUDT+4GAGKWWZS3k2oqfzBELUTGLx66J0bAP5qIk5i6tN
+         Vs7wLG8jgWwCSeX8OCz+Zk0H6cEsdJR9buSyEVvsBbfH6HCvq04fuHMoF5qKL3KXNRtP
+         LOqXn+Ehbt1GJq1WgSjRK/9M7jcRx4qYct5wkhxVGQiCFzuQpUmPwAr76h/VN6Cd6ywY
+         QO2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=+Jm50fe41wfDpU30qvqkj0sqMT/OM8dCaofZzxuvBXc=;
+        b=RhuH7fDZC7DLBUoWdSjY/cd9nP2eFmRnMLFsfjvxpUldjBYh54wOD86qgSSx21qHe1
+         tDlbFn5r1sOuUoSM+jcs9OTZkRewuP/7JWQj9p6Rgn9O3PKltwjCM96HUig0lOO/FHQO
+         55cmXwIOMQQNmG+pY7QUoWy0wYU6uUasHrtMjy83dRLgXIhL46fBCmD6Punglg9kSaZm
+         O3HYWNBUJtoUvT4xiWtmVTA0sENw7n2aDJYlqIm007V8qyODNhfzYyWw7JBuMjWNR8dR
+         6ntB8eXXdilB9YVibUO+61t1rIP0ZXa/AaraDeveLHzradBnQnTtoP/AtcSJKy2qLsW4
+         GIfA==
+X-Gm-Message-State: AOAM530EZ5kyi5F80iQyGuJdtN7VUkPqFXZqn3YccBFTOxTl3rNdwWVq
+        QZvgjW331lwwHwtdoWm0o0alZA==
+X-Google-Smtp-Source: ABdhPJxn4taYlIWRahvkIvssJLMcCUQ84+ML8jbNY9JiGAhKblgzms/4vt1AYrhAFZgNDcVQ+MsviA==
+X-Received: by 2002:a65:5a0d:: with SMTP id y13mr3202032pgs.436.1603389633998;
+        Thu, 22 Oct 2020 11:00:33 -0700 (PDT)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id u12sm2512347pji.30.2020.10.22.11.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 11:00:32 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 11:00:32 -0700 (PDT)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
         kernel-team@fb.com
-Date:   Thu, 22 Oct 2020 12:57:55 -0400
-In-Reply-To: <db4f86f30726a1a33c868155b4c681ac25569179.camel@fb.com>
+Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
+In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
+Message-ID: <alpine.DEB.2.23.453.2010221100150.1331349@chino.kir.corp.google.com>
 References: <20201022151844.489337-1-hannes@cmpxchg.org>
-         <db4f86f30726a1a33c868155b4c681ac25569179.camel@fb.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-q/yjJ9zoR2cgocIosU9b"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, 22 Oct 2020, Johannes Weiner wrote:
 
---=-q/yjJ9zoR2cgocIosU9b
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> As huge page usage in the page cache and for shmem files proliferates
+> in our production environment, the performance monitoring team has
+> asked for per-cgroup stats on those pages.
+> 
+> We already track and export anon_thp per cgroup. We already track file
+> THP and shmem THP per node, so making them per-cgroup is only a matter
+> of switching from node to lruvec counters. All callsites are in places
+> where the pages are charged and locked, so page->memcg is stable.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On Thu, 2020-10-22 at 12:49 -0400, Rik van Riel wrote:
-> On Thu, 2020-10-22 at 11:18 -0400, Johannes Weiner wrote:
->=20
-> > index e80aa9d2db68..334ce608735c 100644
-> > --- a/mm/filemap.c
-> > +++ b/mm/filemap.c
-> > @@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct
-> > address_space *mapping,
-> >  	if (PageSwapBacked(page)) {
-> >  		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
-> >  		if (PageTransHuge(page))
-> > -			__dec_node_page_state(page, NR_SHMEM_THPS);
-> > +			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
-> >  	} else if (PageTransHuge(page)) {
-> > -		__dec_node_page_state(page, NR_FILE_THPS);
-> > +		__dec_lruvec_page_state(page, NR_FILE_THPS);
-> >  		filemap_nr_thps_dec(mapping);
-> >  	}
->=20
-> This may be a dumb question, but does that mean the
-> NR_FILE_THPS number will no longer be visible in
-> /proc/vmstat or is there some magic I overlooked in
-> a cursory look of the code?
+Acked-by: David Rientjes <rientjes@google.com>
 
-Never mind, I found it a few levels deep in
-__dec_lruvec_page_state.
-
-Reviewed-by: Rik van Riel <riel@surriel.com>
-
---=20
-All Rights Reversed.
-
---=-q/yjJ9zoR2cgocIosU9b
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RuhQACgkQznnekoTE
-3oNrzwf9GSWmH30yYW4VoJhqcAiuVzpHRu/K7HGUTezlWzZgMV+ef6NYaUk0NItK
-sIgNpwCkeBZXg99ZG6y7o/yBiMLB7LR9E5PdREv+7CQrgZ8dvTbu0OhsmhOvo8TL
-+ufRBaAt4aK1Melt27dbnooHH43PVqRODDI9nkp4NU/aSIGami/KCAIGf3JfMEyR
-mK7THczWyFCknk1LWfPIbhYb3cneiwM62w07Xn3Fs4ord5612IvbW3iULFEMQwAO
-FUQ8DZycLWEIJL9DDa/eYeNH9c0cq0tzdiRBsaESVnT4q/I0gapNN4eLora3VCzi
-xqEBWQ22PQDOuUdJ0Lc7fyrhnplMWA==
-=/3Jx
------END PGP SIGNATURE-----
-
---=-q/yjJ9zoR2cgocIosU9b--
-
+Nice!
