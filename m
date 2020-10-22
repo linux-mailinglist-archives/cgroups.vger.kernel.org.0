@@ -2,109 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC91D296643
-	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 22:58:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93DE7296644
+	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 22:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372068AbgJVU6S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Oct 2020 16:58:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37248 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897292AbgJVU6S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 16:58:18 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAB8EC0613CE
-        for <cgroups@vger.kernel.org>; Thu, 22 Oct 2020 13:58:17 -0700 (PDT)
+        id S2897301AbgJVU6u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 22 Oct 2020 16:58:50 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:48200 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897292AbgJVU6t (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 16:58:49 -0400
 Received: from [127.0.0.1] (localhost [127.0.0.1])
         (Authenticated sender: krisman)
-        with ESMTPSA id 702021F45E92
+        with ESMTPSA id C68D41F45E92
 From:   Gabriel Krisman Bertazi <krisman@collabora.com>
 To:     tj@kernel.org, axboe@kernel.dk
 Cc:     cgroups@vger.kernel.org, khazhy@google.com,
         Gabriel Krisman Bertazi <krisman@collabora.com>,
         kernel@collabora.com
-Subject: [PATCH v2 2/2] blk-cgroup: Pre-allocate tree node on blkg_conf_prep
-Date:   Thu, 22 Oct 2020 16:57:58 -0400
-Message-Id: <20201022205758.1739430-2-krisman@collabora.com>
+Subject: [PATCH v2 0/2] Fixes to blkg_conf_prep
+Date:   Thu, 22 Oct 2020 16:58:40 -0400
+Message-Id: <20201022205842.1739739-1-krisman@collabora.com>
 X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201022205758.1739430-1-krisman@collabora.com>
-References: <20201022205758.1739430-1-krisman@collabora.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Similarly to commit 457e490f2b741 ("blkcg: allocate struct blkcg_gq
-outside request queue spinlock"), blkg_create can also trigger
-occasional -ENOMEM failures at the radix insertion because any
-allocation inside blkg_create has to be non-blocking, making it more
-likely to fail.  This causes trouble for userspace tools trying to
-configure io weights who need to deal with this condition.
+Hi Tejun,
 
-This patch reduces the occurrence of -ENOMEMs on this path by preloading
-the radix tree element on a GFP_KERNEL context, such that we guarantee
-the later non-blocking insertion won't fail.
+In addition to addressing your comments the previously submitted fix to
+pre-allocate the radix node on blkg_conf_prep, this series fixes a small
+memleak on the same function.
 
-A similar solution exists in blkcg_init_queue for the same situation.
+Gabriel Krisman Bertazi (2):
+  blk-cgroup: Fix memleak on error path
+  blk-cgroup: Pre-allocate tree node on blkg_conf_prep
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+ block/blk-cgroup.c | 15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
 
----
-Changes since v1:
- - Fail function if preload failed. (Tejun Heo)
----
- block/blk-cgroup.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index f9389b7cf823..c68bdf58c9a6 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -657,6 +657,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			goto fail;
- 		}
- 
-+		if (radix_tree_preload(GFP_KERNEL)) {
-+			blkg_free(new_blkg);
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+
- 		rcu_read_lock();
- 		spin_lock_irq(&q->queue_lock);
- 
-@@ -664,7 +670,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 		if (IS_ERR(blkg)) {
- 			ret = PTR_ERR(blkg);
- 			blkg_free(new_blkg);
--			goto fail_unlock;
-+			goto fail_preloaded;
- 		}
- 
- 		if (blkg) {
-@@ -673,10 +679,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			blkg = blkg_create(pos, q, new_blkg);
- 			if (IS_ERR(blkg)) {
- 				ret = PTR_ERR(blkg);
--				goto fail_unlock;
-+				goto fail_preloaded;
- 			}
- 		}
- 
-+		radix_tree_preload_end();
-+
- 		if (pos == blkcg)
- 			goto success;
- 	}
-@@ -686,6 +694,8 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 	ctx->body = input;
- 	return 0;
- 
-+fail_preloaded:
-+	radix_tree_preload_end();
- fail_unlock:
- 	spin_unlock_irq(&q->queue_lock);
- 	rcu_read_unlock();
 -- 
 2.28.0
 
