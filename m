@@ -2,113 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50E82296657
-	for <lists+cgroups@lfdr.de>; Thu, 22 Oct 2020 23:00:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A08F5296A69
+	for <lists+cgroups@lfdr.de>; Fri, 23 Oct 2020 09:42:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372128AbgJVVAw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 22 Oct 2020 17:00:52 -0400
-Received: from sonic310-11.consmr.mail.ir2.yahoo.com ([77.238.177.32]:36405
-        "EHLO sonic310-11.consmr.mail.ir2.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S372101AbgJVVAw (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 22 Oct 2020 17:00:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603400449; bh=k6qD474V9VtXKDobcCBmjOJywgarZvgPlTt0r+34qBY=; h=Date:From:Reply-To:Subject:References:From:Subject; b=JLNKkFVZSVQ1sQyqqii32hNU+4zxQsAMiewFOfle5TaMnC2keUN5/umYu+uqmgJ0Th4zwCXyZOX+hZ+RfCZY5DtMkIP48Ts2oBEAEwAfiMC5RQVBMivAja9gTLIPZBcE3sy4rusRGlJWgdmM6hpP2fvuBjJ19lGjPzcIO182oSYzqU3ODaSCdF7h6c/Q0P8meAKRoUSvlVSmwmNTlbUGjysuvbKJ18eyW8OHycb0qNWXHwoNNrotCB0NAZRGX2TpzEj71/eyu6XPD5kg+STXLy9BdQaInT+VG84Yk9CNNAePAyfMhsj6KWEAXWmLrqIY1fztrzOwkwgVW4wyzw00Vw==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603400449; bh=78K4hH4aMJoKbuFJt3dQ9t6FNQ6axX+rUOsuxG+zY/K=; h=Date:From:Subject; b=XOdHZc+CGr5WF9vEWgb98uDqZOSh4g0T7XaJaIJtZW4y2tXRybJ97UvMnicFlPuj0Jvb5PJvQx8Rrc+0TIWkp+qCev/GHvU0ff7yFnkbQ1snKbYlOA+s7UNx2PTJVeFMV2xKnTtpvmXk+NAeUtdCtPgHF9Ib+S+w/lC2PHlLsh/64Ki9xEtHbS5/wEi9V9OMTiTDW4oFcH320dFniNj5thq/SVsfGA9yREfyJ51Gdet5XpdwjcmzSI0V1nIgHQonPXwCoI2s50jPxXVxNmHGVIYUR8QHkOLyWZJsDSXYoKzj8bMLU1JQNQG1B2CxhouiQcVKoMCRB8lY1Z6zc8SIxg==
-X-YMail-OSG: DTp1zH0VM1n4Cu2.4zAD2doF1yjrskWBcrgIvb7iwFUJiAwvqAExxAybBJX.NHq
- BJ2syWimIaRnswfDt.oEfqYfulAUiAG4E3mahuqUOiMwo5Yp7HOb_CXOSKzhBSl2d6_VjOQvpPBu
- 79AUrOiEj5e3og6bS8hcNwSmlHtadGhRdT9GyCZaFeBoXA.wXvOlJO6dbo3cUhtqTbQS.38hZaNo
- nTmCnN9eO0mmEThqe2MMJc1RN0RGdLObeVWAi5JSffsc68S_6tWC9e507ywzyzXptGA_VD4UrvJI
- Q0tFru6UNdsAek0KpKBdNx.BVlNB8qkIAbSxzQEW6i7gIDW5O7lG4fdFgQY4UrSIoQL3M3MHKF2K
- .64YBu29EotJQTuAMQemArduzo5WELtASbXc48e4_xL1FTSe1bdEfptxaOuTYEV0DjqCGEeZZLKC
- rnuIPWANIbxsNaVcw88pG4Zl9.iAUbQblzXXZIINpXXbqanu88UZw2DfszPudPdpjBMVU0ix1HlR
- lTRY4MOorIyr1XkB4b0GSAOMnzLDGeARYkaPs_9Jk4dXDRUnI2dXhF8uJ4.HYoROnaT_8JhjiTMS
- q6tvLJG73q2WlA058fmvnMigTjlq72BInZMba9kc_9VhzuMPXkqGlp9KXU09o40T_vi_jNzTgmH.
- PHOsMdxFCluisjA4.L.YCJXSO4MIlShs.VYuh.Tp0kvhTG3FfaO8DfUqE1axWAWOmJVFDBE47oda
- C8GDh30kXRybUmn6aOP7ulb.Gfk.P_UdSmMkcjMTxUtCZrPlyyD2u1ZiDuFDzZgdVnctw0Z_m6QZ
- UbaMpA6M.M0o1key7LkcTa9FMhXrv0B8QXqf9i0gOT94lXOpyOhSY9Tp5C63JfnEQxOeBYBRPket
- ajW74zvbAi9jvnkL68KssbgcpOS.dj0vU5QP685eJvZyhHSR3W6sBFvdNzUxXH.zTLmyOk2XiBRy
- STngKXMntSO6OvyA9O8Y6SJ_MiDFDEZ2nmy.7rVOAtnWjwxHEvBd7fNwgj_qhClxMkEi2g_syfvX
- youcwo3fiqY9irUZg2WyWf1nmRUzL2__c030WsdtIg5VATJmzrHPMY5MvGGMn4ya0aKurgl.oR51
- b2vCOsBezRUzehJTk0l0WSXtOuvMUJ11KgNdegHik88JHYZf20e5tP4sLPds3jcSX2_ZpB6fDIWD
- BnBTdJBvKODNX00Yow4q6ASWM.yd508bCvZp0pFSFu63KreFZkY22pXRmNTeDooQVEMeTzE5ExxL
- ChCTxMgykxzhBi8tDCfx0GDzjwQBW68wZUIGXfx5MsVLDMTfKkNe46lSCPbF9S0AY9I4hZqYr8R7
- YaGKNUQd9ZWViYUuQQYbMQfBD9FMqfMMYJlI9gIHRYjn2xzZLIKv_lVpcilyc0yrnkWQ4tI4Hoet
- fI2YhdIgp7e_6Pwsjn1wuSkia_PSeVEj7zmtZ_IWStWX678okSL2_SW1wAu4EACPXWu0pCjlxDDF
- CoCG5gkyvCBcvHS6IPIlXfxOEtkqG7rQ3VHs9RFF6xG2dNIVVf9mw9WUSUVQs4VPwnkwAstDF5Ev
- hvp8Ux9FEH0skymC_AbX_P3ZI3AkSkYDfJEOY4fDDfbsHvxyXdaH7pXN6vrmL_ubdiTx1xWjdBn_
- fQW9lQ9IV5Tc7BRrHIC6FPQpemVqeyXf9W6L9DYQZ6c0AOeweQ0dCnRGwo9ArnBKH0xpPr8BB2_d
- .kI1.t3eUWVdzoj3qJlpkoAw6FDEYpmNv7hM..RGDp3cYreSRhuvV72WKDduVoaYVKYaNFZzXkpx
- 1QEqwYs8Zv9gQqoPG1S._bwC8GMa6tjmXSoFn_l9ylLdDXYkbJ8AfxPdx_PLpYZPMbSvTbFVJSJX
- W9aymGZcyYDXk3AzoD.KX8l.VJ3buks9Xn1o6olS2VzUbfYBdSMW1_THM3D.L6Lb_PpQICBuZeVO
- qFtln81sdodvwayjgwnGLImBwyjquqRMk6ai5FgO.SaGtF1Tj9yuDReGNg.FnT2oCPBVlCnDTfYj
- pjltRPtK8zQgoeYbnsYNRuBH0p3Pe7odXnGihk.pmJKdcF_hH_axmB5BGKA1hOWnHJNOVCMYkRK9
- A1gVoWfj7B4zyScc2cj8e01JiEJb2rfylfTLZB_tnYK6OI6GcedAhqLjvimMBHDrc.m_cBW2txGc
- aUD0X16vXAPjI.RGnwqll0umVjSBKcelzDh_GnuXOugIk7MbPG6H62zZSkrKDZ4IQszRoraFBOUr
- fNCR.oVbDRnpfVgaXkFmoabUzxBoLAsBEwJlld1WW._eIxsGGOF3m5Ee4Ihut48ivc8w4H6O3u9L
- rgDjDk_OCzfU5XDXKTuRTTd_mB_6fDovJb_UrIRGoCppnZkAlhdB17tjXuchgrV5N2Vc6Amtwr5j
- yivQa46ZxN4Y2EjUkWME0bVraKgc4j78EDMcSdndafcB2lQ_Z3Mt_5AMWY_PfUb_o91N6mqZxpqR
- Etp8no81QKS6cwvih2DB8QY6kq1vlgsNucOH6qZ6joygQJFgs3vxp7hQPtAFGJUgoVkeC3BLjhys
- NP2QsrFUNcg.yVlUBgVEgRO_GCk_9_lI.yOzbiiv6qw75mLX5NGLYYqXqikcE.VqzJiySQj5Kwny
- VVYYfkr7FpD9t20X33LFmq2CRiShA2jjitX2ozwJaujHaNex1YUw1DG5CEGfIUm0iHoabsWPnNlv
- 8jsXqtgSKNeU0drbmi9bmujPJJrSjJkEElV9uH7H.D3FaTVF6z0RvRZV_cjEjI7GdKLtuRZR1J.Z
- yu1VNma7nqwGCSKaGDGWQ0ckNcrCXetIZ9eW0IUGV_dG5K.goXC46JRLm2yi2JDdb9mqRc5Bp9.8
- ANs77icmurv0c22upG.4KqyMn5YXsoKZZinDJzLJ0DoFYejOFwIcB6ktoRBkayY9UWUibURrB_9T
- 9IG9yVxonco9SVOor_UhltlCb6DbvHTymHUBxhbKq0UmnDX.LPE_65pT.u0Mzu_kbsMp3jD07wh6
- st7J56HgbQ3DYPb3n2djZyZK_MbPjIZr1l_4P9pNpIzVAwPACFowa3D64a4ZhMt1zoXX4UgBmrZS
- s_Q2Vln3FEI7v2xSqHTeaEDxacbqI7CwZCcW4MDlfeBwKqlArG3YKTY995IxyI1DIAlh9.ptkeUF
- DiaKHvtCQPX3OwiBQmQZe_jm9Zub4SLWDbh6StaWKAkp5feZEiAinL9hMZ8qUy47a_2hx71rd_bk
- RlwDEEJuPVFERnmJdvHEMkotvo3OyVVYv7jb4fpo7cvV1z3JD9._FDnchkmytYFGZcCcwe0teLoX
- hHFPnRsx34Z4LPVzYEKpoS7Ce3CbisvklODcgJwi9.4neyF8T1n973lqVxtUlWkAx6ziypHx5ItF
- xre6t_VcW3EkYutO2VwYvnCFENwifbFQvuCsalUQGkvIPwSVQMpc2kB5AipWHqIa.4lbQGyY6pn1
- yeneJ1DyEoi0dgWY.MRRktiw1TDbNTN49OrmuZjNdMJPW3RvJd282a64AkyBIe0TICERZLBlloY8
- pnWOYTPuXtcRZXwlP3dCgaVN7tUgn28WIVv_c7K.ulJ1MxsoGnzobV3Xv8FvIQe3XaRm8B.qB58b
- M_Y4tFnRhFkFBQT59LIuJbm1v0_LHIcyeOxgMjrLkUfJoWY79SraCWgHVVmX65WEd8PZ8BC7vp7p
- GneoQyLvgYDcZGA4Cy2VwYnuZQj5z2vibR3I_049emWvpMYWz5.Yljy1wLCRt6_1p21dTnRaOJaH
- D6B_lkCDWh7b_xBrj9hPpRObXS1icjIB6etYptFbpXRljaYBjiFyvut1stPoRjTgrsRCDR3PuXeO
- GIzuU4PlxU_pFrJtHz7yHHIaCyc5SSPweFchvbc_iEyjWSdGs3ECjK2xp.gqHrPx3Z5ahtYFRFcC
- qwFKDgJt.gPKz2eIfjPFcP7Ng53L.lLJQF9othA.6h4vs9JLchbmSW.Ir.QrRvYtkzxXvjRNvyrl
- wJg_bug9U2EaaMxrbXCZ0R6cZ4Vc_xDl5Y9h_H83idD3i60C4vy4RGKqpZJBKTgInA3Lzu1cKTcf
- 2MxAhwKwOFCPMSX2jYULxZjEdy8yje6cLTciWXTHpN_0zkABEElKfaw9sGc_UHk98P.CIgvpaxRt
- I7v.8RnsM_fSQD5ONTG4UMlLYfeu6i2Bs7Yi_4.UuKoSyd2VPavkFR6Z.farjF8jT7SSCVTs2ZQk
- JC0L4Oq99aQigjiKEJr7MScy3ofZ9vIRTDOt_kvyOqnzl2lrh.Y9Q4o._19OLE.keeppv0_I3SmM
- Lnwosek.WmDsXODMRACJnzo9CX1jz1DICkCkHnixOc3X1.w3X1W7FfAFRQv2kspJNVYNQXfOxyXV
- Y8J.W3kxhog42cQ_eRLZZ9jMdGazcz1xTwnJ8f_Bz8Sa4qbZyoqXnkLYxAmJTtKVne2fEUi5HWWu
- JmmRyB44yRnou.LnO286PKcZq_mARy7wlEJ3eApz34gDmNXSn162GkaeYLL7CC9tS9EafJhpFMFv
- opnusm6C1ydjnMCtNWeKrWAlD9P0F64Tm8w5lyNKaOXRwW0DqCCo_4tRLCpvdBrP.gddxIPrVmG0
- E5KZusu_WCmqdnfZ5zmY2_Lh8XiPU7JlmvOFaWImFcg.eoSbvzYcD2WeIqdXLkct2guq7Po1kNDD
- NsWTOTNHRqniywDl7x9c2Y0MWYMtgeYVC_22h1DaXrZLBhlGGcAheBCkP37gatFW5BFf5pbQztUB
- C00No5nHsRCcrvrnGZTjh4aMZP0IgOTGaG4CChiTSBVc1sAJgW8kWpg2EEZqE1yVKyHLu26DbUhA
- eV4YAIRGp39w9S9pUF2W_5Kplcy.1zqutBVyyjIY1jcYs2gcJs4KGrn1ggjqVav3Ncd6aHcGbVgx
- QhU2OdGIbEfp5vB0R4hVCj3_o8QJmJA165Tt6QO8yZIAEDyLbKER3ZnlDH457UBXkDAeUeQHAJ6F
- vQEwLld.Z_O5_NDHevX9qxN477IJUOBQ3Dndc.lGE100Y_V5ZNthvbVBsyuDORbTvU.YeJIig20c
- 24dQn4WEXwH3ECSZBHcQVvks69Jb8bD.nApPABWmoBuF58G.qW1O_oxsfswM0IGq0upUlPGyhVka
- 9jOKTk_s3ZSrhsA--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic310.consmr.mail.ir2.yahoo.com with HTTP; Thu, 22 Oct 2020 21:00:49 +0000
-Date:   Thu, 22 Oct 2020 21:00:47 +0000 (UTC)
-From:   MONICA BROWN <monicabrown4098@gmail.com>
-Reply-To: monicabrown4098@gmail.com
-Message-ID: <1402045438.3894283.1603400447600@mail.yahoo.com>
-Subject: FROM SERGEANT MONICA BROWN
+        id S374461AbgJWHmQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 23 Oct 2020 03:42:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:57648 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S374460AbgJWHmQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 23 Oct 2020 03:42:16 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603438934;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=NCVcXJgtnbl5xb/5N2lzG24wq0yxvkQDQbOQxlLLxpQ=;
+        b=rOH447hh4FY+XSJSdXj2KLMddyoXyyI0coBmjHTAKTAdQ0xgipqYuH0kTlgMSZhafzmOTF
+        xW/RK/WU3YlW2KOxjWVzvvy0tzi5R+C+4ZCo+g8dp5Ve/0NGWOAnC0sW1j2yEy4hOmJJIo
+        5fb6CvzXFagvuPXphyJ9u7dZQpO6Pg8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id CCE89AE7D;
+        Fri, 23 Oct 2020 07:42:14 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 09:42:13 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
+Message-ID: <20201023074213.GR23790@dhcp22.suse.cz>
+References: <20201022151844.489337-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-References: <1402045438.3894283.1603400447600.ref@mail.yahoo.com>
-X-Mailer: WebService/1.1.16868 YMailNodin Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/86.0.4240.75 Safari/537.36
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-I am Sergeant Monica Brown, originally from Lake Jackson Texas. I have 
-personally conducted a special research on the internet and came across 
-your information. I am writing you this mail from US Military Base Kabul 
-Afghanistan. I have a secured business proposal for you. If you are 
-interested in my private email (monicabrown4098@gmail.com), please contact me 
-immediately for more information.
-Thank you.
+On Thu 22-10-20 11:18:44, Johannes Weiner wrote:
+> As huge page usage in the page cache and for shmem files proliferates
+> in our production environment, the performance monitoring team has
+> asked for per-cgroup stats on those pages.
+> 
+> We already track and export anon_thp per cgroup. We already track file
+> THP and shmem THP per node, so making them per-cgroup is only a matter
+> of switching from node to lruvec counters. All callsites are in places
+> where the pages are charged and locked, so page->memcg is stable.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Acked-by: Michal Hocko <mhocko@suse.com>
 
+> ---
+>  mm/filemap.c     | 4 ++--
+>  mm/huge_memory.c | 4 ++--
+>  mm/khugepaged.c  | 4 ++--
+>  mm/memcontrol.c  | 6 +++++-
+>  mm/shmem.c       | 2 +-
+>  5 files changed, 12 insertions(+), 8 deletions(-)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index e80aa9d2db68..334ce608735c 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+>  	if (PageSwapBacked(page)) {
+>  		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
+>  		if (PageTransHuge(page))
+> -			__dec_node_page_state(page, NR_SHMEM_THPS);
+> +			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
+>  	} else if (PageTransHuge(page)) {
+> -		__dec_node_page_state(page, NR_FILE_THPS);
+> +		__dec_lruvec_page_state(page, NR_FILE_THPS);
+>  		filemap_nr_thps_dec(mapping);
+>  	}
+>  
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index cba3812a5c3e..5fe044e5dad5 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -2707,9 +2707,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+>  		spin_unlock(&ds_queue->split_queue_lock);
+>  		if (mapping) {
+>  			if (PageSwapBacked(head))
+> -				__dec_node_page_state(head, NR_SHMEM_THPS);
+> +				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
+>  			else
+> -				__dec_node_page_state(head, NR_FILE_THPS);
+> +				__dec_lruvec_page_state(head, NR_FILE_THPS);
+>  		}
+>  
+>  		__split_huge_page(page, list, end, flags);
+> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+> index f1d5f6dde47c..04828e21f434 100644
+> --- a/mm/khugepaged.c
+> +++ b/mm/khugepaged.c
+> @@ -1833,9 +1833,9 @@ static void collapse_file(struct mm_struct *mm,
+>  	}
+>  
+>  	if (is_shmem)
+> -		__inc_node_page_state(new_page, NR_SHMEM_THPS);
+> +		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
+>  	else {
+> -		__inc_node_page_state(new_page, NR_FILE_THPS);
+> +		__inc_lruvec_page_state(new_page, NR_FILE_THPS);
+>  		filemap_nr_thps_inc(mapping);
+>  	}
+>  
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 2636f8bad908..98177d5e8e03 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1507,6 +1507,8 @@ static struct memory_stat memory_stats[] = {
+>  	 * constant(e.g. powerpc).
+>  	 */
+>  	{ "anon_thp", 0, NR_ANON_THPS },
+> +	{ "file_thp", 0, NR_FILE_THPS },
+> +	{ "shmem_thp", 0, NR_SHMEM_THPS },
+>  #endif
+>  	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+>  	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+> @@ -1537,7 +1539,9 @@ static int __init memory_stats_init(void)
+>  
+>  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+>  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+> -		if (memory_stats[i].idx == NR_ANON_THPS)
+> +		if (memory_stats[i].idx == NR_ANON_THPS ||
+> +		    memory_stats[i].idx == NR_FILE_THPS ||
+> +		    memory_stats[i].idx == NR_SHMEM_THPS)
+>  			memory_stats[i].ratio = HPAGE_PMD_SIZE;
+>  #endif
+>  		VM_BUG_ON(!memory_stats[i].ratio);
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 537c137698f8..5009d783d954 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -713,7 +713,7 @@ static int shmem_add_to_page_cache(struct page *page,
+>  		}
+>  		if (PageTransHuge(page)) {
+>  			count_vm_event(THP_FILE_ALLOC);
+> -			__inc_node_page_state(page, NR_SHMEM_THPS);
+> +			__inc_lruvec_page_state(page, NR_SHMEM_THPS);
+>  		}
+>  		mapping->nrpages += nr;
+>  		__mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
+> -- 
+> 2.29.0
 
-
-
-
-
+-- 
+Michal Hocko
+SUSE Labs
