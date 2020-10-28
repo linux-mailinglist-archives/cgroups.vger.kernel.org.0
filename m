@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A401829D944
-	for <lists+cgroups@lfdr.de>; Wed, 28 Oct 2020 23:50:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B9CA29DA38
+	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 00:17:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1733102AbgJ1Wua (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Oct 2020 18:50:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
+        id S1730426AbgJ1XRS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Oct 2020 19:17:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35368 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389564AbgJ1WuN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Oct 2020 18:50:13 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D616CC0613D1
-        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:50:12 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b3so700820pfo.2
-        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:50:12 -0700 (PDT)
+        with ESMTP id S1730371AbgJ1XRN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Oct 2020 19:17:13 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C7B9C0613CF
+        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 16:17:13 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id i26so779278pgl.5
+        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 16:17:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=l11fDl4Fq8T2pP6ahb6hX5LVHhC/PeAhLkamA9ns5Ro=;
-        b=QqsjQXInft72OQYfP146sQ7qXQee2XfBGLyb+DEaD05o6VsMPBa58ZPQD8Q2dWXcfo
-         rKjTON9Q0FmZSazxEHhEgYu9omkImsZX6NFGJazpjDs/Jv6lpHThith2PtVqtBRGzJ0Q
-         xsPWq5tbDQGNg0rC9VwFjARLGirb6X4ZaT5IiaTnnNG5eUzhrj2yuAHMlRtEt72BciMB
-         uPD5KN3DC8PYpDNz7r6a5fFWpOPeFE13YBbt9aks/263bb5Fffl3tg7ZIuBrZyr4buNj
-         eIiwkAV9032BYShK3hc+ZSp7kUFFO0qES3VpGpF9tLReHGOoW8tUcXk5NHPF9IjXAKvV
-         +eDQ==
+        bh=rFOCR0z2k088YX66ZBfrxJZH18ogpQbHQLbfk8+8CYU=;
+        b=t0Q+e2FBNi/gftNkFBdCTLi3hN6RhvPuqrjrAeVOgKjK0yetO6ZVmJ9PoviQAZiAav
+         2uQ4+Vj+6OJ2rDvCyt2uyBu3twAoqDxpPQ6HKCdcNsfQt3fKQ2VVySd+/O7ZhT+omSvS
+         qZb5XlF2ct60QyTPLgt0a8Lieq3qhoMKPpQRDi4d7p/5pbyAiEwESnQWV9cwbVPkgwyk
+         BAyL5QTuIq0WENXagPIbA0m6crAXFshFYRKBVua2yDvn4vjkUGv3eanVsknBQaVhtaiA
+         ZmBGY8UiNIxoTPgMxz+0ofvcOYRNPR4a6i82osws4JKcgiLpHKTuugXL6LkqKE3r0k7B
+         z0aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=l11fDl4Fq8T2pP6ahb6hX5LVHhC/PeAhLkamA9ns5Ro=;
-        b=MDK5RiYBxRtFCnXckHKXIFGEuyo5qcptkhzvzy/BHbyougmfnz5IO1WQma8FMeJRzc
-         pfcKIoi9YEDNM8KatcZX0y7SoX+iWo0OeXP/qAW7rSkHdpOkX9xJUT+4Ntk5dcUzID3d
-         zuPkujoaWHiUabnPtC8Yx3vp2TJtPiA4XaTP4WkHMMsPjuO3ACphZK25gKMN3K+KorkG
-         mfXkftZCpQ3bRjeEFu4BaS/TCDCMj7h21/P+JR5VMj6FVR1KcbVrT4dCaa4bx3XQpUnZ
-         rl7IpmrdXckV3kDh1u8FQP7OqEGsQ+zSMlugrXfsfdIJqiaeH36eG32WlE+zwbjuRwHD
-         TWqw==
-X-Gm-Message-State: AOAM531B6rMbo2UyIJC7RTwFZzIsatsfGW6eFaObmWs+rl3rec9XIk7l
-        ZE02SW/1oiuEbvluK/18bulMx7F3wcA7u7zg
-X-Google-Smtp-Source: ABdhPJycyfczOyPNeFxM2C2gUkjDTpqdx5AYk95FzEjXctEmnDLNsmfKgddVG/v5Nu9GC47RlLjxzA==
-X-Received: by 2002:aa7:801a:0:b029:15d:55ba:d11e with SMTP id j26-20020aa7801a0000b029015d55bad11emr4661607pfi.10.1603857065090;
-        Tue, 27 Oct 2020 20:51:05 -0700 (PDT)
+        bh=rFOCR0z2k088YX66ZBfrxJZH18ogpQbHQLbfk8+8CYU=;
+        b=b8LPT0zWB5nm5dKGYCx7q+kDPV7PNoa2b9Fhirf2zzxeUykjDr0LXX8y95cyBoqj04
+         6pF2ne+6WWTHkhsLnK7vUCq7E7pgdz3QLZuYXlpJRrgL4COkqqdzb73g2OS++KKYa/lJ
+         POhG6ZXBps3Jk+IGHwnXZ1nidHovkqQCSfOTNdG8rZWWWlmtRZ8g+mfNbTKtBmnosz3g
+         /2go4tAgdPu3gKd/2lnRsPY/7khOn34leK+XkP9e8tSg0ibQWaVIxxtuP8fJuTonlA4a
+         rT5Vrke4Gue3sVA85/Ly7S+fj1gVowlDReqhHgPPKl3+wh0UTNFSyst2f2OmEbbQ/bQ2
+         w4GQ==
+X-Gm-Message-State: AOAM532bRbDTOpfye97yznDxDJgd1Jfj734hHcq+E4hfPkHJKhmqYGA9
+        l9KENSh2leEeOkWVX86jbVf5EzzLKPQpLBRb
+X-Google-Smtp-Source: ABdhPJw85ywrViQDutYz7H0AcVWUMgaMzewvZdsi2bR6wV3akldT5YSxgNVzdtytLLB0N19+6b94gg==
+X-Received: by 2002:a63:4d45:: with SMTP id n5mr4488139pgl.389.1603857072734;
+        Tue, 27 Oct 2020 20:51:12 -0700 (PDT)
 Received: from Smcdef-MBP.local.net ([103.136.220.89])
-        by smtp.gmail.com with ESMTPSA id s8sm3412273pjn.46.2020.10.27.20.50.57
+        by smtp.gmail.com with ESMTPSA id s8sm3412273pjn.46.2020.10.27.20.51.05
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 27 Oct 2020 20:51:04 -0700 (PDT)
+        Tue, 27 Oct 2020 20:51:12 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
@@ -57,9 +57,9 @@ To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
         elver@google.com
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: memcg/slab: Rename *_lruvec_slab_state to *_lruvec_kmem_state
-Date:   Wed, 28 Oct 2020 11:50:12 +0800
-Message-Id: <20201028035013.99711-3-songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
+Date:   Wed, 28 Oct 2020 11:50:13 +0800
+Message-Id: <20201028035013.99711-4-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20201028035013.99711-1-songmuchun@bytedance.com>
 References: <20201028035013.99711-1-songmuchun@bytedance.com>
@@ -69,146 +69,164 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The *_lruvec_slab_state is also suitable for pages allocated from buddy,
-not just for the slab objects. But the function name seems to tell us that
-only slab object is applicable. So we can rename the keyword of slab to
-kmem.
+We can reuse the code of mem_cgroup_lruvec() to simplify the code
+of the mem_cgroup_page_lruvec().
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Roman Gushchin <guro@fb.com>
 ---
  changelog in v2:
- 1. Remove VM_BUG_ON suggested by Roman.
+ 1. Move mem_cgroup_node_lruvec to memcontrol.c to avoid abuse.
 
- include/linux/memcontrol.h | 18 +++++++++---------
- kernel/fork.c              |  2 +-
- mm/memcontrol.c            |  2 +-
- mm/workingset.c            |  8 ++++----
- 4 files changed, 15 insertions(+), 15 deletions(-)
+ include/linux/memcontrol.h | 41 ++++-------------------------
+ mm/memcontrol.c            | 53 ++++++++++++++++++++++++++------------
+ 2 files changed, 42 insertions(+), 52 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index d7e339bf72dc..95807bf6be64 100644
+index 95807bf6be64..bbdc694d26b1 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -793,15 +793,15 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			      int val);
- void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			int val);
--void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
-+void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
+@@ -445,48 +445,17 @@ void mem_cgroup_uncharge_list(struct list_head *page_list);
  
--static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
-+static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
- 					 int val)
+ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
+ 
+-static struct mem_cgroup_per_node *
++static inline struct mem_cgroup_per_node *
+ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
  {
- 	unsigned long flags;
- 
- 	local_irq_save(flags);
--	__mod_lruvec_slab_state(p, idx, val);
-+	__mod_lruvec_kmem_state(p, idx, val);
- 	local_irq_restore(flags);
+ 	return memcg->nodeinfo[nid];
  }
  
-@@ -1227,7 +1227,7 @@ static inline void mod_lruvec_page_state(struct page *page,
- 	mod_node_page_state(page_pgdat(page), idx, val);
- }
+-/**
+- * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+- * @memcg: memcg of the wanted lruvec
+- *
+- * Returns the lru list vector holding pages for a given @memcg &
+- * @node combination. This can be the node lruvec, if the memory
+- * controller is disabled.
+- */
+-static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+-					       struct pglist_data *pgdat)
+-{
+-	struct mem_cgroup_per_node *mz;
+-	struct lruvec *lruvec;
+-
+-	if (mem_cgroup_disabled()) {
+-		lruvec = &pgdat->__lruvec;
+-		goto out;
+-	}
+-
+-	if (!memcg)
+-		memcg = root_mem_cgroup;
+-
+-	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
+-	lruvec = &mz->lruvec;
+-out:
+-	/*
+-	 * Since a node can be onlined after the mem_cgroup was created,
+-	 * we have to be prepared to initialize lruvec->pgdat here;
+-	 * and if offlined then reonlined, we need to reinitialize it.
+-	 */
+-	if (unlikely(lruvec->pgdat != pgdat))
+-		lruvec->pgdat = pgdat;
+-	return lruvec;
+-}
++struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
++				 struct pglist_data *pgdat);
  
--static inline void __mod_lruvec_slab_state(void *p, enum node_stat_item idx,
-+static inline void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
- 					   int val)
- {
- 	struct page *page = virt_to_head_page(p);
-@@ -1235,7 +1235,7 @@ static inline void __mod_lruvec_slab_state(void *p, enum node_stat_item idx,
- 	__mod_node_page_state(page_pgdat(page), idx, val);
- }
+-struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
++struct lruvec *mem_cgroup_page_lruvec(struct page *page,
++				      struct pglist_data *pgdat);
  
--static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
-+static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
- 					 int val)
- {
- 	struct page *page = virt_to_head_page(p);
-@@ -1330,14 +1330,14 @@ static inline void __dec_lruvec_page_state(struct page *page,
- 	__mod_lruvec_page_state(page, idx, -1);
- }
- 
--static inline void __inc_lruvec_slab_state(void *p, enum node_stat_item idx)
-+static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
- {
--	__mod_lruvec_slab_state(p, idx, 1);
-+	__mod_lruvec_kmem_state(p, idx, 1);
- }
- 
--static inline void __dec_lruvec_slab_state(void *p, enum node_stat_item idx)
-+static inline void __dec_lruvec_kmem_state(void *p, enum node_stat_item idx)
- {
--	__mod_lruvec_slab_state(p, idx, -1);
-+	__mod_lruvec_kmem_state(p, idx, -1);
- }
- 
- /* idx can be of type enum memcg_stat_item or node_stat_item */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 4b328aecabb2..4fb0bbc3b041 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -384,7 +384,7 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
- 		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
- 				      account * (THREAD_SIZE / 1024));
- 	else
--		mod_lruvec_slab_state(stack, NR_KERNEL_STACK_KB,
-+		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
- 				      account * (THREAD_SIZE / 1024));
- }
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
  
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d9cdf899c6fc..2dde734df7d1 100644
+index bbd40c5af61e..28095a1711aa 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -866,7 +866,7 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 		__mod_memcg_lruvec_state(lruvec, idx, val);
+@@ -1332,18 +1332,15 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	return ret;
  }
  
--void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
-+void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
+-/**
+- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+- * @page: the page
+- * @pgdat: pgdat of the page
+- *
+- * This function relies on page->mem_cgroup being stable - see the
+- * access rules in commit_charge().
++/*
++ * Note: Do not use this function directly. Please use mem_cgroup_lruvec()
++ * or mem_cgroup_page_lruvec() instead.
+  */
+-struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
++static struct lruvec *
++__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
++			 int nid)
  {
- 	pg_data_t *pgdat = page_pgdat(virt_to_page(p));
- 	struct mem_cgroup *memcg;
-diff --git a/mm/workingset.c b/mm/workingset.c
-index 50d53f3699e4..2c707c92dd89 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -445,12 +445,12 @@ void workingset_update_node(struct xa_node *node)
- 	if (node->count && node->count == node->nr_values) {
- 		if (list_empty(&node->private_list)) {
- 			list_lru_add(&shadow_nodes, &node->private_list);
--			__inc_lruvec_slab_state(node, WORKINGSET_NODES);
-+			__inc_lruvec_kmem_state(node, WORKINGSET_NODES);
- 		}
- 	} else {
- 		if (!list_empty(&node->private_list)) {
- 			list_lru_del(&shadow_nodes, &node->private_list);
--			__dec_lruvec_slab_state(node, WORKINGSET_NODES);
-+			__dec_lruvec_kmem_state(node, WORKINGSET_NODES);
- 		}
- 	}
- }
-@@ -541,7 +541,7 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
+ 	struct mem_cgroup_per_node *mz;
+-	struct mem_cgroup *memcg;
+ 	struct lruvec *lruvec;
+ 
+ 	if (mem_cgroup_disabled()) {
+@@ -1351,20 +1348,15 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
+ 		goto out;
  	}
  
- 	list_lru_isolate(lru, item);
--	__dec_lruvec_slab_state(node, WORKINGSET_NODES);
-+	__dec_lruvec_kmem_state(node, WORKINGSET_NODES);
+-	memcg = page->mem_cgroup;
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
+ 	if (!memcg)
+ 		memcg = root_mem_cgroup;
  
- 	spin_unlock(lru_lock);
- 
-@@ -564,7 +564,7 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
- 	 * shadow entries we were tracking ...
+-	mz = mem_cgroup_page_nodeinfo(memcg, page);
++	mz = mem_cgroup_nodeinfo(memcg, nid);
+ 	lruvec = &mz->lruvec;
+ out:
+ 	/*
+ 	 * Since a node can be onlined after the mem_cgroup was created,
+-	 * we have to be prepared to initialize lruvec->zone here;
++	 * we have to be prepared to initialize lruvec->pgdat here;
+ 	 * and if offlined then reonlined, we need to reinitialize it.
  	 */
- 	xas_store(&xas, NULL);
--	__inc_lruvec_slab_state(node, WORKINGSET_NODERECLAIM);
-+	__inc_lruvec_kmem_state(node, WORKINGSET_NODERECLAIM);
+ 	if (unlikely(lruvec->pgdat != pgdat))
+@@ -1372,6 +1364,35 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
+ 	return lruvec;
+ }
  
- out_invalid:
- 	xa_unlock_irq(&mapping->i_pages);
++/**
++ * mem_cgroup_lruvec - get the lru list vector for a memcg & node
++ * @memcg: memcg of the wanted lruvec
++ *
++ * Returns the lru list vector holding pages for a given @memcg &
++ * @node combination. This can be the node lruvec, if the memory
++ * controller is disabled.
++ */
++struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
++				 struct pglist_data *pgdat)
++{
++	return __mem_cgroup_node_lruvec(memcg, pgdat, pgdat->node_id);
++}
++
++/**
++ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
++ * @page: the page
++ * @pgdat: pgdat of the page
++ *
++ * This function relies on page->mem_cgroup being stable - see the
++ * access rules in commit_charge().
++ */
++struct lruvec *mem_cgroup_page_lruvec(struct page *page,
++				      struct pglist_data *pgdat)
++{
++	return __mem_cgroup_node_lruvec(page->mem_cgroup, pgdat,
++					page_to_nid(page));
++}
++
+ /**
+  * mem_cgroup_update_lru_size - account for adding or removing an lru page
+  * @lruvec: mem_cgroup per zone lru vector
 -- 
 2.20.1
 
