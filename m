@@ -2,138 +2,213 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58F5929D7CF
-	for <lists+cgroups@lfdr.de>; Wed, 28 Oct 2020 23:28:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A401829D944
+	for <lists+cgroups@lfdr.de>; Wed, 28 Oct 2020 23:50:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730815AbgJ1W1G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 28 Oct 2020 18:27:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55144 "EHLO
+        id S1733102AbgJ1Wua (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 28 Oct 2020 18:50:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733120AbgJ1W0v (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Oct 2020 18:26:51 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C312C0613CF
-        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:26:51 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id x203so1208434oia.10
-        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:26:51 -0700 (PDT)
+        with ESMTP id S2389564AbgJ1WuN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 28 Oct 2020 18:50:13 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D616CC0613D1
+        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:50:12 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b3so700820pfo.2
+        for <cgroups@vger.kernel.org>; Wed, 28 Oct 2020 15:50:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=haZrmfpmntdtUu2HCrdM+P5anuz4VVrL1riml318t4Y=;
-        b=Wzk2Avtec2wOG385ie+/41UyVjBLOdjL67AfpTMKR1mWo6L8Zr7gbQPfRXt0daWbLj
-         9eIB3qmpCLwzx260I5fxzOXhphezCgWwHOKXei6mqi7QJCLgPp1CjDceRVH/VQ+T04tP
-         Zp86Sl6fFQHrllc1YWvLf5gS7HNMYxqKEt2BklLyD5IESzi12hAxi4Mx5L6ZjoARRl5z
-         sPqXr9IRoISiz3eC5SCMsbpQn7okBqOVhaov6DVO+UGsl3Q+x8qCxRofoIlNWcwpekWD
-         /4ri1aA6jajwfQ1lbm6ANjSbkWqAQC6vPpi5cTlU0sW9mFfnbh9Fj6+s+Gm3xin24haD
-         uMYw==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=l11fDl4Fq8T2pP6ahb6hX5LVHhC/PeAhLkamA9ns5Ro=;
+        b=QqsjQXInft72OQYfP146sQ7qXQee2XfBGLyb+DEaD05o6VsMPBa58ZPQD8Q2dWXcfo
+         rKjTON9Q0FmZSazxEHhEgYu9omkImsZX6NFGJazpjDs/Jv6lpHThith2PtVqtBRGzJ0Q
+         xsPWq5tbDQGNg0rC9VwFjARLGirb6X4ZaT5IiaTnnNG5eUzhrj2yuAHMlRtEt72BciMB
+         uPD5KN3DC8PYpDNz7r6a5fFWpOPeFE13YBbt9aks/263bb5Fffl3tg7ZIuBrZyr4buNj
+         eIiwkAV9032BYShK3hc+ZSp7kUFFO0qES3VpGpF9tLReHGOoW8tUcXk5NHPF9IjXAKvV
+         +eDQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=haZrmfpmntdtUu2HCrdM+P5anuz4VVrL1riml318t4Y=;
-        b=QNplLGNJGDH/9+WdQQbrkk6PgLXfyWMizFhe/Q4Xr2eLrVcxfWF0v/XG25xV0frLfc
-         T5WIzGI9+5/Y5mreBc39ojgYxjpM3wreuwunNoSwTzkZ3bVM9T675BoUr0D+j1RkGnLt
-         HwaKDQ+5KJMo1Vrt9SOSwu3DyHeCRJMKxwFNiQGIvQnVYPRAfyRuPyhmj0ggl58L81Ia
-         GyPiWvlCZWVIdj6/K6/SsrALcZ9vOV5SQBVM1Rh3FwN2LtViKaFaK7L4ZCDV9LgrWkuc
-         IwWN/rPzRyhJlZxTXvm5+WqgIsHmI8G5u7ymvYMAUax4X0ZPsjWe7dw+IJIAUx2Ds1TT
-         ENZw==
-X-Gm-Message-State: AOAM530WpZkBdkHs1/NQ/29z2Bgx+GAVbDkG6IB/CAErkxKbuJWV/Ew5
-        jLqz+3b5SzDnm2EEPfC0U1EarAZm3mJ1Jv6RK7JxG9onuDNB2BSE
-X-Google-Smtp-Source: ABdhPJxJ9lMlqruIazh/zmZBtfs/xi9mwEd63/HHgyDcIyU0v+lL5EPTcLvnSae+vVd+E1dNAvJuDTLaKiW21MT/xdI=
-X-Received: by 2002:a17:90a:890f:: with SMTP id u15mr4764490pjn.147.1603853816824;
- Tue, 27 Oct 2020 19:56:56 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201027080256.76497-1-songmuchun@bytedance.com>
- <20201027080256.76497-5-songmuchun@bytedance.com> <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201027184835.GB827280@carbon.dhcp.thefacebook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=l11fDl4Fq8T2pP6ahb6hX5LVHhC/PeAhLkamA9ns5Ro=;
+        b=MDK5RiYBxRtFCnXckHKXIFGEuyo5qcptkhzvzy/BHbyougmfnz5IO1WQma8FMeJRzc
+         pfcKIoi9YEDNM8KatcZX0y7SoX+iWo0OeXP/qAW7rSkHdpOkX9xJUT+4Ntk5dcUzID3d
+         zuPkujoaWHiUabnPtC8Yx3vp2TJtPiA4XaTP4WkHMMsPjuO3ACphZK25gKMN3K+KorkG
+         mfXkftZCpQ3bRjeEFu4BaS/TCDCMj7h21/P+JR5VMj6FVR1KcbVrT4dCaa4bx3XQpUnZ
+         rl7IpmrdXckV3kDh1u8FQP7OqEGsQ+zSMlugrXfsfdIJqiaeH36eG32WlE+zwbjuRwHD
+         TWqw==
+X-Gm-Message-State: AOAM531B6rMbo2UyIJC7RTwFZzIsatsfGW6eFaObmWs+rl3rec9XIk7l
+        ZE02SW/1oiuEbvluK/18bulMx7F3wcA7u7zg
+X-Google-Smtp-Source: ABdhPJycyfczOyPNeFxM2C2gUkjDTpqdx5AYk95FzEjXctEmnDLNsmfKgddVG/v5Nu9GC47RlLjxzA==
+X-Received: by 2002:aa7:801a:0:b029:15d:55ba:d11e with SMTP id j26-20020aa7801a0000b029015d55bad11emr4661607pfi.10.1603857065090;
+        Tue, 27 Oct 2020 20:51:05 -0700 (PDT)
+Received: from Smcdef-MBP.local.net ([103.136.220.89])
+        by smtp.gmail.com with ESMTPSA id s8sm3412273pjn.46.2020.10.27.20.50.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Oct 2020 20:51:04 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 28 Oct 2020 10:56:20 +0800
-Message-ID: <CAMZfGtU1aViokYk1hkHbYEiqW5QNi49UTd-QTrkycLqj6Q+-8g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/5] mm: memcg/slab: Fix root memcg vmstats
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>, laoar.shao@gmail.com,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
+        esyr@redhat.com, surenb@google.com, areber@redhat.com,
+        elver@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcg/slab: Rename *_lruvec_slab_state to *_lruvec_kmem_state
+Date:   Wed, 28 Oct 2020 11:50:12 +0800
+Message-Id: <20201028035013.99711-3-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20201028035013.99711-1-songmuchun@bytedance.com>
+References: <20201028035013.99711-1-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Oct 28, 2020 at 2:48 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Tue, Oct 27, 2020 at 04:02:55PM +0800, Muchun Song wrote:
-> > If we reparent the slab objects to the root memcg, when we free
-> > the slab object, we need to update the per-memcg vmstats to keep
-> > it correct for the root memcg. Now this at least affects the vmstat
-> > of NR_KERNEL_STACK_KB for !CONFIG_VMAP_STACK when the thread stack
-> > size is smaller than the PAGE_SIZE.
-> >
-> > Fixes: ec9f02384f60 ("mm: workingset: fix vmstat counters for shadow nodes")
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->
-> Can you, please, drop this patch for now?
->
-> I'm working on a bigger cleanup related to the handling of the root memory
-> cgroup (I sent a link earlier in this thread), which already does a similar change.
-> There are several issues like this one, so it will be nice to fix them all at once.
+The *_lruvec_slab_state is also suitable for pages allocated from buddy,
+not just for the slab objects. But the function name seems to tell us that
+only slab object is applicable. So we can rename the keyword of slab to
+kmem.
 
-I have read the patch of https://lkml.org/lkml/2020/10/14/869. You
-mean this patch
-fixes this issue? It chooses to uncharge the root memcg. But here we may need to
-uncharge the root memcg to keep root vmstats correct. If we do not do
-this, we can
-see the wrong vmstats via root memory.stat(e.g. NR_KERNEL_STACK_KB).
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+---
+ changelog in v2:
+ 1. Remove VM_BUG_ON suggested by Roman.
 
-Thanks.
+ include/linux/memcontrol.h | 18 +++++++++---------
+ kernel/fork.c              |  2 +-
+ mm/memcontrol.c            |  2 +-
+ mm/workingset.c            |  8 ++++----
+ 4 files changed, 15 insertions(+), 15 deletions(-)
 
->
-> Thank you!
->
-> > ---
-> >  mm/memcontrol.c | 9 +++++++--
-> >  1 file changed, 7 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 22b4fb941b54..70345b15b150 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -875,8 +875,13 @@ void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
-> >       rcu_read_lock();
-> >       memcg = mem_cgroup_from_obj(p);
-> >
-> > -     /* Untracked pages have no memcg, no lruvec. Update only the node */
-> > -     if (!memcg || memcg == root_mem_cgroup) {
-> > +     /*
-> > +      * Untracked pages have no memcg, no lruvec. Update only the
-> > +      * node. If we reparent the slab objects to the root memcg,
-> > +      * when we free the slab object, we need to update the per-memcg
-> > +      * vmstats to keep it correct for the root memcg.
-> > +      */
-> > +     if (!memcg) {
-> >               __mod_node_page_state(pgdat, idx, val);
-> >       } else {
-> >               lruvec = mem_cgroup_lruvec(memcg, pgdat);
-> > --
-> > 2.20.1
-> >
-
-
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index d7e339bf72dc..95807bf6be64 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -793,15 +793,15 @@ void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			      int val);
+ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 			int val);
+-void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val);
++void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val);
+ 
+-static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
++static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 					 int val)
+ {
+ 	unsigned long flags;
+ 
+ 	local_irq_save(flags);
+-	__mod_lruvec_slab_state(p, idx, val);
++	__mod_lruvec_kmem_state(p, idx, val);
+ 	local_irq_restore(flags);
+ }
+ 
+@@ -1227,7 +1227,7 @@ static inline void mod_lruvec_page_state(struct page *page,
+ 	mod_node_page_state(page_pgdat(page), idx, val);
+ }
+ 
+-static inline void __mod_lruvec_slab_state(void *p, enum node_stat_item idx,
++static inline void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 					   int val)
+ {
+ 	struct page *page = virt_to_head_page(p);
+@@ -1235,7 +1235,7 @@ static inline void __mod_lruvec_slab_state(void *p, enum node_stat_item idx,
+ 	__mod_node_page_state(page_pgdat(page), idx, val);
+ }
+ 
+-static inline void mod_lruvec_slab_state(void *p, enum node_stat_item idx,
++static inline void mod_lruvec_kmem_state(void *p, enum node_stat_item idx,
+ 					 int val)
+ {
+ 	struct page *page = virt_to_head_page(p);
+@@ -1330,14 +1330,14 @@ static inline void __dec_lruvec_page_state(struct page *page,
+ 	__mod_lruvec_page_state(page, idx, -1);
+ }
+ 
+-static inline void __inc_lruvec_slab_state(void *p, enum node_stat_item idx)
++static inline void __inc_lruvec_kmem_state(void *p, enum node_stat_item idx)
+ {
+-	__mod_lruvec_slab_state(p, idx, 1);
++	__mod_lruvec_kmem_state(p, idx, 1);
+ }
+ 
+-static inline void __dec_lruvec_slab_state(void *p, enum node_stat_item idx)
++static inline void __dec_lruvec_kmem_state(void *p, enum node_stat_item idx)
+ {
+-	__mod_lruvec_slab_state(p, idx, -1);
++	__mod_lruvec_kmem_state(p, idx, -1);
+ }
+ 
+ /* idx can be of type enum memcg_stat_item or node_stat_item */
+diff --git a/kernel/fork.c b/kernel/fork.c
+index 4b328aecabb2..4fb0bbc3b041 100644
+--- a/kernel/fork.c
++++ b/kernel/fork.c
+@@ -384,7 +384,7 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+ 		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
+ 				      account * (THREAD_SIZE / 1024));
+ 	else
+-		mod_lruvec_slab_state(stack, NR_KERNEL_STACK_KB,
++		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
+ 				      account * (THREAD_SIZE / 1024));
+ }
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d9cdf899c6fc..2dde734df7d1 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -866,7 +866,7 @@ void __mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
+ 		__mod_memcg_lruvec_state(lruvec, idx, val);
+ }
+ 
+-void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
++void __mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
+ {
+ 	pg_data_t *pgdat = page_pgdat(virt_to_page(p));
+ 	struct mem_cgroup *memcg;
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 50d53f3699e4..2c707c92dd89 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -445,12 +445,12 @@ void workingset_update_node(struct xa_node *node)
+ 	if (node->count && node->count == node->nr_values) {
+ 		if (list_empty(&node->private_list)) {
+ 			list_lru_add(&shadow_nodes, &node->private_list);
+-			__inc_lruvec_slab_state(node, WORKINGSET_NODES);
++			__inc_lruvec_kmem_state(node, WORKINGSET_NODES);
+ 		}
+ 	} else {
+ 		if (!list_empty(&node->private_list)) {
+ 			list_lru_del(&shadow_nodes, &node->private_list);
+-			__dec_lruvec_slab_state(node, WORKINGSET_NODES);
++			__dec_lruvec_kmem_state(node, WORKINGSET_NODES);
+ 		}
+ 	}
+ }
+@@ -541,7 +541,7 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
+ 	}
+ 
+ 	list_lru_isolate(lru, item);
+-	__dec_lruvec_slab_state(node, WORKINGSET_NODES);
++	__dec_lruvec_kmem_state(node, WORKINGSET_NODES);
+ 
+ 	spin_unlock(lru_lock);
+ 
+@@ -564,7 +564,7 @@ static enum lru_status shadow_lru_isolate(struct list_head *item,
+ 	 * shadow entries we were tracking ...
+ 	 */
+ 	xas_store(&xas, NULL);
+-	__inc_lruvec_slab_state(node, WORKINGSET_NODERECLAIM);
++	__inc_lruvec_kmem_state(node, WORKINGSET_NODERECLAIM);
+ 
+ out_invalid:
+ 	xa_unlock_irq(&mapping->i_pages);
 -- 
-Yours,
-Muchun
+2.20.1
+
