@@ -2,61 +2,138 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88E6229E6F5
-	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 10:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8168529E942
+	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 11:45:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725613AbgJ2JI6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Oct 2020 05:08:58 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46456 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726776AbgJ2JIJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Oct 2020 05:08:09 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603962487;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pRfvIcEC60eWRFi87by9E7+LFhlD5mHOp4kKoOmBQUI=;
-        b=jhHChYEGIqkgyrVF2bZZDAP9fShBJKnw5Z76v7XG/lfKacRenW4EL4SRGC/eZd1qasjwS2
-        cXgAP3eIkMrcSCfouk1jFCJmAe+jJ4WKqCfQbzrt+J4qDoDjNaVak+cdilW0CbujdHb2DS
-        S50daeUjnIvhpfapMjy5qa/SKRtIe58=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0EDAB2CF;
-        Thu, 29 Oct 2020 09:08:07 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 10:08:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     hannes@cmpxchg.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
-        christian.brauner@ubuntu.com, peterz@infradead.org,
-        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
-        esyr@redhat.com, surenb@google.com, areber@redhat.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
-Message-ID: <20201029090806.GD17500@dhcp22.suse.cz>
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
- <20201028035013.99711-4-songmuchun@bytedance.com>
+        id S1726707AbgJ2Kpe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Oct 2020 06:45:34 -0400
+Received: from out30-54.freemail.mail.aliyun.com ([115.124.30.54]:38252 "EHLO
+        out30-54.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725867AbgJ2Kpe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 06:45:34 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R251e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UDXwDyN_1603968328;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UDXwDyN_1603968328)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Thu, 29 Oct 2020 18:45:28 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org,
+        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com
+Subject: [PATCH v20 00/20] per memcg lru lock
+Date:   Thu, 29 Oct 2020 18:44:45 +0800
+Message-Id: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201028035013.99711-4-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 28-10-20 11:50:13, Muchun Song wrote:
-[...]
-> -struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-> +static struct lruvec *
-> +__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
-> +			 int nid)
+This version just a rebase on v5.10-rc1. and moves the lru_lock position
+down after lists[] in lruvec, which resolves a fio.read regression that
+revealed by Rong Chen -- Intel LKP.
 
-I thought I have made it clear that this is not a good approach. Please
-do not repost new version without that being addressed. If there are any
-questions then feel free to ask for details.
+Many thanks for line by line review by Hugh Dickins and Alexander Duyck.
+
+So now this patchset includes 3 parts:
+1, some code cleanup and minimum optimization as a preparation. 
+2, use TestCleanPageLRU as page isolation's precondition.
+3, replace per node lru_lock with per memcg per node lru_lock.
+
+Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+lru lists, but now we had moved the lru lists into memcg for long time. Still
+using per node lru_lock is clearly unscalable, pages on each of memcgs have
+to compete each others for a whole lru_lock. This patchset try to use per
+lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+it scalable for memcgs and get performance gain.
+
+Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+but if we want to use specific lruvec lock on the page, we need to pin down
+the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+undermined by the page's memcg charge/migration. To fix this problem, we could
+take out the page's lru bit clear and use it as pin down action to block the
+memcg changes. That's the reason for new atomic func TestClearPageLRU.
+So now isolating a page need both actions: TestClearPageLRU and hold the
+lru_lock.
+
+The typical usage of this is isolate_migratepages_block() in compaction.c
+we have to take lru bit before lru lock, that serialized the page isolation
+in memcg page charge/migration which will change page's lruvec and new 
+lru_lock in it.
+
+The above solution suggested by Johannes Weiner, and based on his new memcg 
+charge path, then have this patchset. (Hugh Dickins tested and contributed much
+code from compaction fix to general code polish, thanks a lot!).
+
+Daniel Jordan's testing show 62% improvement on modified readtwice case
+on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
+with this v20.
+https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+
+Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
+
+Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+
+Alex Shi (17):
+  mm/memcg: warning on !memcg after readahead page charged
+  mm/memcg: bail early from swap accounting if memcg disabled
+  mm/thp: move lru_add_page_tail func to huge_memory.c
+  mm/thp: use head for head page in lru_add_page_tail
+  mm/thp: Simplify lru_add_page_tail()
+  mm/thp: narrow lru locking
+  mm/vmscan: remove unnecessary lruvec adding
+  mm/memcg: add debug checking in lock_page_memcg
+  mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
+  mm/lru: move lock into lru_note_cost
+  mm/vmscan: remove lruvec reget in move_pages_to_lru
+  mm/mlock: remove lru_lock on TestClearPageMlocked
+  mm/mlock: remove __munlock_isolate_lru_page
+  mm/lru: introduce TestClearPageLRU
+  mm/compaction: do page isolation first in compaction
+  mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
+  mm/lru: replace pgdat lru_lock with lruvec lock
+
+Alexander Duyck (1):
+  mm/lru: introduce the relock_page_lruvec function
+
+Hugh Dickins (2):
+  mm: page_idle_get_page() does not need lru_lock
+  mm/lru: revise the comments of lru_lock
+
+ Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+ Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+ Documentation/trace/events-kmem.rst                |   2 +-
+ Documentation/vm/unevictable-lru.rst               |  22 +--
+ include/linux/memcontrol.h                         | 110 +++++++++++
+ include/linux/mm_types.h                           |   2 +-
+ include/linux/mmdebug.h                            |  13 ++
+ include/linux/mmzone.h                             |   6 +-
+ include/linux/page-flags.h                         |   1 +
+ include/linux/swap.h                               |   4 +-
+ mm/compaction.c                                    |  94 +++++++---
+ mm/filemap.c                                       |   4 +-
+ mm/huge_memory.c                                   |  45 +++--
+ mm/memcontrol.c                                    |  85 ++++++++-
+ mm/mlock.c                                         |  63 ++-----
+ mm/mmzone.c                                        |   1 +
+ mm/page_alloc.c                                    |   1 -
+ mm/page_idle.c                                     |   4 -
+ mm/rmap.c                                          |   4 +-
+ mm/swap.c                                          | 199 ++++++++------------
+ mm/vmscan.c                                        | 203 +++++++++++----------
+ mm/workingset.c                                    |   2 -
+ 22 files changed, 523 insertions(+), 378 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+1.8.3.1
+
