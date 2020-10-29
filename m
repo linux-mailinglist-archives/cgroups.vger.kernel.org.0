@@ -2,33 +2,59 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1AE29F0E2
-	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 17:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A4629F11B
+	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 17:18:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725841AbgJ2QNk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Oct 2020 12:13:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34896 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725847AbgJ2QNk (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 29 Oct 2020 12:13:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603988018;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nxefRSiqTvIh1X46sbXjSTVE8f5f0KcaWYrFYUA7Jvk=;
-        b=meEFnLQtGDhNNwqDYFrHnB4+mqNmRj2I7FO4urV6zIV7LYoCbnCHFJ76yXFcBa9g2LWkNA
-        EflhUj/SfziFb7HAMiGgGDdPY0faX/PtGSXJgLDIM2HCXOQqHDqIXh0NMPDIqga+yNG8f6
-        znuNzjtPxaHM3+YbSVwN0rQLszgJtqs=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3EE88ACA0;
-        Thu, 29 Oct 2020 16:13:38 +0000 (UTC)
-Date:   Thu, 29 Oct 2020 17:13:36 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S1726364AbgJ2QS6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Oct 2020 12:18:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726105AbgJ2QS6 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 12:18:58 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D35EAC0613CF
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:18:57 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id l2so4097107lfk.0
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:18:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=G9EtR8ay+CFHP0VWhr60l9Agx6oBhnBUNvO58Pm5n2c=;
+        b=ZypFrwHFGFdiH3//0NKW6vQX1p5u1pLj9CchSpsY8VglCbaO2vGBx2uveHOn+HSxzq
+         O9Uwvtp1dzgD56WgMNXb2hhjjdjiSi/B1wQtiI6Ap/p4ZUtD3xctBS+5x3BZ2cOEhSSg
+         +nX9mb4w+MOOeGPQM6MbQXVpUd2uhKi+z1z7Xtf6A07T8HHVYZ8i3zH4begi4U/VBCuX
+         Yn2KWTFJa0FSTi3LiRcT1LGfcNUBE8/Mza2QMwPBACfFLoCzE6DaLbauBuPCkbTQgTWr
+         QDTXah3K6U8HNIb/ifAcYX6mB4g+Nsw837iHGB7rnB488OMnyCTszLAZZ84zKoyFiCZ6
+         VzDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G9EtR8ay+CFHP0VWhr60l9Agx6oBhnBUNvO58Pm5n2c=;
+        b=Nj2LlR4ZiZFXNn1Rpi6kwL18ZjI6m8jzOjplniYJUwZTWbm0i6zMSh3GBHdkuH8Dg3
+         cKFHINPuJMH+L5slBoVa0fdsPWa1xyxS+FfQcObLQ7l00mnoyltFTEuYVTMfwksaZvrE
+         0/XKVeYtIaCJ4Ma3XSwqkdTOh0YMWL5DjRIHbx3t4rB3wxycB/bVCNKBeyXcJVelgymD
+         rVkL4i+9zj3gY0GL1N9NSuHxarCXqD4T8SygJqj4izJAkgqtDLravMWn/BN/MyAHT6wy
+         zOLFuguZxS8Lo90pYTVSeBvydiF+mcAhCj/cJhJreLihO0+zn/M/1OLU36iXJ4mIX1cR
+         AzQA==
+X-Gm-Message-State: AOAM530Jheh9oj4mEEdIrakevVqW9XE+Nu5xIoFMZOVTiNey5Jy6Z52u
+        HdD3DG78l8fJwLE4UrAvxQAzUVReiMfXQKAR8XFoTA==
+X-Google-Smtp-Source: ABdhPJwDUMPMP12s120vl/5u2CihW7CO4f8+IgmIiwZd79+cJvWwOZSSCzYSedlU15A8/2stmps0+QqOjNwIgwF0euA=
+X-Received: by 2002:a19:7719:: with SMTP id s25mr1785670lfc.521.1603988336095;
+ Thu, 29 Oct 2020 09:18:56 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201028035013.99711-1-songmuchun@bytedance.com>
+ <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com> <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com>
+In-Reply-To: <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 29 Oct 2020 09:18:45 -0700
+Message-ID: <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v2] mm: memcg/slab: Fix return child memcg
+ objcg for root memcg
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Roman Gushchin <guro@fb.com>,
@@ -44,44 +70,28 @@ Cc:     Muchun Song <songmuchun@bytedance.com>,
         Marco Elver <elver@google.com>,
         LKML <linux-kernel@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Subject: Re: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
-Message-ID: <20201029161336.GH17500@dhcp22.suse.cz>
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
- <20201028035013.99711-4-songmuchun@bytedance.com>
- <20201029090806.GD17500@dhcp22.suse.cz>
- <CALvZod68-f-_1pevYbegzXk_b0L=XbCJkM5KqcRF9TuLiz3_ww@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod68-f-_1pevYbegzXk_b0L=XbCJkM5KqcRF9TuLiz3_ww@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 29-10-20 09:01:37, Shakeel Butt wrote:
-> On Thu, Oct 29, 2020 at 2:08 AM Michal Hocko <mhocko@suse.com> wrote:
+On Thu, Oct 29, 2020 at 9:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> On Thu, Oct 29, 2020 at 11:48 PM Shakeel Butt <shakeelb@google.com> wrote:
 > >
-> > On Wed 28-10-20 11:50:13, Muchun Song wrote:
-> > [...]
-> > > -struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-> > > +static struct lruvec *
-> > > +__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
-> > > +                      int nid)
+> > On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> > >
+> > > Consider the following memcg hierarchy.
+> > >
+> > >                     root
+> > >                    /    \
+> > >                   A      B
+> > >
+> > > If we get the objcg of memcg A failed,
 > >
-> > I thought I have made it clear that this is not a good approach. Please
-> > do not repost new version without that being addressed. If there are any
-> > questions then feel free to ask for details.
-> 
-> You can get nid from pgdat (pgdat->node_id) and also pgdat from nid
-> (NODE_DATA(nid)), so, __mem_cgroup_node_lruvec() only need one of them
-> as parameter.
+> > Please fix the above statement.
+>
+> Sorry, could you be more specific, I don't quite understand.
 
-Exactly what I've said in the previous version review. I suspect that
-the issue is that mem_cgroup_page_nodeinfo (based on page's node_id)
-and the given pgdat can mismatch in the existing code but that shouldn't
-be a real problem because the mismatch can only happen for lruvec->pgdat
-== NULL unless I am missing something.
-
--- 
-Michal Hocko
-SUSE Labs
+Fix the grammar. Something like "If we failed to get the reference on
+objcg of memcg A..."
