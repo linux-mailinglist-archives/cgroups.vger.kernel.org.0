@@ -2,105 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1ED4C29F194
-	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 17:34:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 74C5D29F1FF
+	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 17:44:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726794AbgJ2QeB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Oct 2020 12:34:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56166 "EHLO
+        id S1728029AbgJ2Qos (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Oct 2020 12:44:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57966 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727177AbgJ2QdG (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 12:33:06 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FAFC0613D2
-        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e15so2786423pfh.6
-        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:33:04 -0700 (PDT)
+        with ESMTP id S1727915AbgJ2Qos (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 12:44:48 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3D6FC0613D2
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id b12so1578339plr.4
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
-        b=f6D+/uNPO6HW47eS+XdsuzOWR1OMKIbf1tDWGNa/eHlbdNS1fFyq73++vFXANcz6x2
-         ytHLCE17oAxpQhTZeiOQrmqhH4JsQDnMKEzIq5jZmBroArNr7f6GsZp52FWH2KkhY3sM
-         H8KsLn2uIX0lXXKFtXSbrA4roiZkm9N/rx+aLZ7Z/aAg0vhgc/QNYZtvX+naxEa054tr
-         J0G6xItBIlWQ5zhq1bPzfF1wq31Xu/yYiQL3OtYyEzqwyevlKs28VqyQLH4Vw4YcJ7ti
-         8EQJyl5qnkFrglTZQ6jMXOEWKksSQAolyC8ztjX4eIQqPqjYVEB+NEeUU6DztL2Vnx9B
-         0Pjg==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMTjr2+W+gNVsgeHGd8A7YK4eqPL28HpThgEaSeH9eU=;
+        b=hfspaErkNEk3rAQDqD3A0QgoFYIiQkGUXf8U4LtwDIZRnTaq5uY+72sOy4F8Tecu7/
+         S10JQrb+7JGVOXgAIaOvAXO67dScyeX13atrBB4zM+n0Vnq+wRAjitHeNE4ZuCqVjq/T
+         y1K07iO66M5EAMlOc0n1HSwbJUn8tCD1O10RG0i3r2KoxYlwfxpn3eJjkJamTOQhXQdz
+         WRu4N0U20Nh5rSCsry63lSKA1ytldBRzUIhbDSqHt73GjcTEdUL5KABUa1mss8WbXjsR
+         IAJ/w6jdyyyMBerGnkWLXBgWJR/Zw+o2nEuA5MEUGTCnJccPYfUJRhZrugg2P3djBpW3
+         d5QQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CNp60uz7U6o1WyBX9AAMogQVRcPxcfAiqCLR+bSZ8wY=;
-        b=kufIY4glXT28PzqLqx4pzhajZ+wXgvc1NgDlfobvR7kjROlB6Cn5AH0v2O1YtYr3Yu
-         UXkNdYH556NuFSE3+gfzcYR3uSZbwj37YWjOCDSdxZwk1Hhb7wCZbKu3eAcVnIkSIGh3
-         hGV0Pyu0HbT0Z48QKmZ5GX4OvNx/INT9slb3PmMpYBnEC/kXB6d+QlT/EahP1zassK6T
-         UVqeOGYjd7yUqnkbtAUeZSyjNkKhyGTGGnOODJ3G87qNXHbAqPNJ2s5pSjmBFum9Ty/7
-         M0gVmj1wMmYGjGqSPPtYtMuNrtWVPLtYQxddBHfWACo2JWKFotbExcG3him8lPQwQRaw
-         sIPA==
-X-Gm-Message-State: AOAM530lR/tJeER7N/lRXl1sLYNTz1FpRsPYcxLpOYbhKtbHuMQapQ+I
-        pzY4BU4XVBuXyoMBLZBoqr9ZdCaFxD+vVGJTIcCa9g==
-X-Google-Smtp-Source: ABdhPJy1+WefzaCmcrBy2LFwrFD2Wq5MJeAwQJ74F2m6AHO5xCmR0PebTW6H1Op74Lq4+jARizRrOxwrObc2Oo0XhDY=
-X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr599421pjb.13.1603989183738;
- Thu, 29 Oct 2020 09:33:03 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com>
- <CALvZod6p_y2fTEK5fzAL=JfPsguqYbttgWC4_GPc=rF1PsN6TQ@mail.gmail.com>
- <CAMZfGtW38sFcdpnx3Xx+RgRL37WzpQsq8qvfdnmhbh4H9Ex0cg@mail.gmail.com> <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
-In-Reply-To: <CALvZod68HooK_bnaxFLEBL_neVybVRECkHJyb6r8LHWqwTOe5Q@mail.gmail.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WMTjr2+W+gNVsgeHGd8A7YK4eqPL28HpThgEaSeH9eU=;
+        b=ixnjTctzGUBT2ReYCGebzumcMJP9vxU9023rBOpVsNWe+ejCUX0QJl/PbUQWra6SM/
+         Z9VqoU72dXGjCZRZL0yImb747yZDaQbuwx41UbDnbU8AYRLw9HkXMw11QrkCJ5PPXvxG
+         YCGxvcTLgosnAaHYKuHiImF1B51mGlrdyPExWQ1GuzE7mcPz23wdbDp8vBbjDeG4SsFP
+         4qWcGiwwRLUrqGSym+i40dKdKunFwMxFrYgJ7VX4k3+VsbYGTnqE8ufG44eThbXQrJB1
+         QAQbcFQoeSZk4i0Re+SFgELi+EluhoH9zuW3Zyy4e9fCK9Xi4aBt7PMHk4XhZKQZk3Hs
+         JDUg==
+X-Gm-Message-State: AOAM530UY+953D5NDqaJvK73RNc0UDX3ZEfVrpEsZJSku4mHsRvw3PwU
+        3zpsmrySYulY0T/CGCFpHB6GoA==
+X-Google-Smtp-Source: ABdhPJwQrJmv/aoXAfRDFvHvxaf+pIXE+6B7vM/dhQRAubpFI5YbGj/chIP9FmZN25gkwUQQYOHgsQ==
+X-Received: by 2002:a17:902:b497:b029:d5:c01a:f06b with SMTP id y23-20020a170902b497b02900d5c01af06bmr5152085plr.13.1603989887265;
+        Thu, 29 Oct 2020 09:44:47 -0700 (PDT)
+Received: from localhost.localdomain ([103.136.220.95])
+        by smtp.gmail.com with ESMTPSA id 197sm3429491pfa.170.2020.10.29.09.44.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 29 Oct 2020 09:44:46 -0700 (PDT)
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 30 Oct 2020 00:32:26 +0800
-Message-ID: <CAMZfGtUCXAzvjQ60VUEdOj1OocqUxGNZkikr-Lch2w-dkmQTwg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm: memcg/slab: Fix return child memcg
- objcg for root memcg
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Roman Gushchin <guro@fb.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        Chris Down <chris@chrisdown.name>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        Suren Baghdasaryan <surenb@google.com>, areber@redhat.com,
-        Marco Elver <elver@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        iamjoonsoo.kim@lge.com, laoar.shao@gmail.com, chris@chrisdown.name,
+        christian.brauner@ubuntu.com, peterz@infradead.org,
+        mingo@kernel.org, keescook@chromium.org, tglx@linutronix.de,
+        esyr@redhat.com, surenb@google.com, areber@redhat.com,
+        elver@google.com
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3] mm: memcg/slab: Fix return child memcg objcg for root memcg
+Date:   Fri, 30 Oct 2020 00:44:29 +0800
+Message-Id: <20201029164429.58703-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 12:18 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Thu, Oct 29, 2020 at 9:09 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> >
-> > On Thu, Oct 29, 2020 at 11:48 PM Shakeel Butt <shakeelb@google.com> wrote:
-> > >
-> > > On Tue, Oct 27, 2020 at 8:50 PM Muchun Song <songmuchun@bytedance.com> wrote:
-> > > >
-> > > > Consider the following memcg hierarchy.
-> > > >
-> > > >                     root
-> > > >                    /    \
-> > > >                   A      B
-> > > >
-> > > > If we get the objcg of memcg A failed,
-> > >
-> > > Please fix the above statement.
-> >
-> > Sorry, could you be more specific, I don't quite understand.
->
-> Fix the grammar. Something like "If we failed to get the reference on
-> objcg of memcg A..."
+Consider the following memcg hierarchy.
 
-Got it. Sorry for my poor English, Thanks.
+                    root
+                   /    \
+                  A      B
 
+If we failed to get the reference on objcg of memcg A, the
+get_obj_cgroup_from_current can return the wrong objcg for
+the root memcg.
+
+Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+---
+ changelog in v3:
+ 1. Fix commit grammar, thanks to Shakeel.
+
+ changelog in v2:
+ 1. Do not use a comparison with the root_mem_cgroup
+
+ mm/memcontrol.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 1337775b04f3..8c8b4c3ed5a0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2961,6 +2961,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
+ 		objcg = rcu_dereference(memcg->objcg);
+ 		if (objcg && obj_cgroup_tryget(objcg))
+ 			break;
++		objcg = NULL;
+ 	}
+ 	rcu_read_unlock();
+ 
 -- 
-Yours,
-Muchun
+2.20.1
+
