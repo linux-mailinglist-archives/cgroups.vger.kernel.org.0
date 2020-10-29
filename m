@@ -2,57 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C19B829F094
-	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 16:53:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B79929F0B3
+	for <lists+cgroups@lfdr.de>; Thu, 29 Oct 2020 17:02:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728476AbgJ2PxH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 29 Oct 2020 11:53:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49968 "EHLO
+        id S1728373AbgJ2QCg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 29 Oct 2020 12:02:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728094AbgJ2PxH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 11:53:07 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33747C0613CF
-        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 08:53:07 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id m16so3629736ljo.6
-        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 08:53:07 -0700 (PDT)
+        with ESMTP id S1728225AbgJ2QCg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 29 Oct 2020 12:02:36 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5DF2C0613D2
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:01:50 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id a7so3951968lfk.9
+        for <cgroups@vger.kernel.org>; Thu, 29 Oct 2020 09:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=MUp5qMqJOVbZKYoMqJH3XNqp7xnfXB9wzQttcgJOSd8=;
-        b=cbK+yBgzyQXmtq+AD9wEnzaVNXe3mfmDrMTEqViTBtdbqHEURNS9luA0TyLL4nib30
-         3Boxh9kOZuUY6VQJFAygdY2G/XhItlHRWqpCzGXy0TGt+a6ZGpmx0H5vJyv1/oxNH5Lx
-         i/xJv2TVagtyrnp857y3WB+q1jPwQbfDjDVUHXiJlBCpCalLGRWzFFGhmXzUUxQ1HOz1
-         PT5Jy/Z6QCT1J2noMaD3WXT+b9QyC3cSxQCoFRfderFo1vjlHqQKFlQZkosRXhQiHzC2
-         qzuInwS3JX8FWL4UhHPNiE9oPFFNBjTTBGffzvpUFhyhtsXoDQ3oxDrAUgIf2njzqj5P
-         Gp8g==
+        bh=p81Xb4QB6WZnyTYb/aPQJGGs3MtSmkCjVSQFBTfTe00=;
+        b=eeVMWmyLkGAhC1rQFKkLvBOCkWQ6Smot20Si3H+Lg87YKkUxflwYxLcfGFqVLc5KLf
+         SwfZDbAGSj4utMXHZmxzJ7TGpzf/Jd7X5Inmxc4MCtwfLFLZytqccPGQm1mHvSm7j5Lp
+         dMfYdPJhpw9CWTTVqZsaV7ks5rzt5ea8aULFpgqf8ikV/61BMq3p8Szx3rYFDUXOUAnZ
+         mAnrQOY1y6sAb0KwsoD3XeL7AmBHXhk4w543PNyD0NFf6HqcD0asVoBZ1/Q11E6qJedJ
+         7abxq5IUrm3H3tQgcVV7hVxwNp+ND66/eKEZkhmXVM7KiHEur3c3SDi/bzfspTKvt+9q
+         iOGQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=MUp5qMqJOVbZKYoMqJH3XNqp7xnfXB9wzQttcgJOSd8=;
-        b=JyHg7mi3/oL2fSKpsDjwqhsrFbjgu8xfi6yqebSHvtW7GFkY7cYhMMhk+1DsZEjxFB
-         Od5uPkmzpwD7qNzcSS95G18oXzhLKIKyaNBz3HFvW6Gg9hYdkc1drfYnzr866Ca+Vzrn
-         K9W/6kkc3BMhhAJnDQR+EHYAShRsfE5/6YXeE4a+iaDz6d1fcwUy/znQP8khrvgdGLfQ
-         nm7aIjZfc5gWyNp1KrQcIIaIsqgssTiv9nfqpheAQxQKGFaGXtNzHPgxzGNT6gDCjb0z
-         Id/8fl3k66Z7nhYtZPrxPqujHeXhS7PoaPZIHrdWWQrsDVPR6CN+m+Q+5hAz5V46/4e/
-         A4gw==
-X-Gm-Message-State: AOAM530uNeWHyKu9pbdYw8tYdVvLuZ8xTbj9XNJ46nEiji+PCBM2nSot
-        +xd6QjTfdD1abP9OUxVHS2KaCJrSd2G24Nthl4nJWg==
-X-Google-Smtp-Source: ABdhPJye3zEoAgWwSugrZfe85uL6Pkay9ZQKPWHjAkEPbGsa7tncJVrylxDIVaK+KmISLE0L4reaqNhl84MD847oGco=
-X-Received: by 2002:a2e:9f05:: with SMTP id u5mr1988377ljk.192.1603986785403;
- Thu, 29 Oct 2020 08:53:05 -0700 (PDT)
+        bh=p81Xb4QB6WZnyTYb/aPQJGGs3MtSmkCjVSQFBTfTe00=;
+        b=A6+hTwr6XZxmQ8RV6PYUU25qDd6hkQXg1Nr4QbVHGujk6ifPi6hSCegXXDOYI0qO96
+         cVN1kTNYX+BYw5SM4zoua+IgEepbyprLQeVrh2+csGHtHf0aNkHXL13VQMWlrS34N8Cj
+         lCtzlyORWk1sLmipb3nTg5ZkdFBf9T+7oNkuaw+oSGc+jkcOJrDORUwiidwB0p3P4Suy
+         dvj8+Yf3viWqZxUKptDBY7S1SYmLdazTu5ebGMUzuRJUR0m2G58PKNjpkrxegqt5miM8
+         C0jTpiMK/b0FVFsCyPbch+S4Y+botZaeVrxLrtW2SwVfPhv788G4HHVmGc0KvF/tn3TZ
+         eVJw==
+X-Gm-Message-State: AOAM533KT/H7aLaijTijNpVDHfFImeyI/4kiQykpzRFEKBLXExhPXXZO
+        mqKTZ621cZLWvqLsvjckrMPAdonglcfDSY4r/Bfj/w==
+X-Google-Smtp-Source: ABdhPJx+zC1arRhZCm7aznCIifmlA/6cXtGd3vyaxduqhW4AIttT0kz+HB9ULUcSqFW5zic1sM3xgNSvr5x8UXg3rjA=
+X-Received: by 2002:a19:7ed8:: with SMTP id z207mr1786143lfc.54.1603987308798;
+ Thu, 29 Oct 2020 09:01:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201028035013.99711-1-songmuchun@bytedance.com> <20201028035013.99711-3-songmuchun@bytedance.com>
-In-Reply-To: <20201028035013.99711-3-songmuchun@bytedance.com>
+References: <20201028035013.99711-1-songmuchun@bytedance.com>
+ <20201028035013.99711-4-songmuchun@bytedance.com> <20201029090806.GD17500@dhcp22.suse.cz>
+In-Reply-To: <20201029090806.GD17500@dhcp22.suse.cz>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 29 Oct 2020 08:52:54 -0700
-Message-ID: <CALvZod5PcvSOszj7L-qbh_mOmKRwsrH+4Er_vQAiRqRf9GhcnA@mail.gmail.com>
-Subject: Re: [PATCH v2] mm: memcg/slab: Rename *_lruvec_slab_state to *_lruvec_kmem_state
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
+Date:   Thu, 29 Oct 2020 09:01:37 -0700
+Message-ID: <CALvZod68-f-_1pevYbegzXk_b0L=XbCJkM5KqcRF9TuLiz3_ww@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: memcontrol: Simplify the mem_cgroup_page_lruvec
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Roman Gushchin <guro@fb.com>,
@@ -73,14 +74,19 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 8:51 PM Muchun Song <songmuchun@bytedance.com> wrote:
+On Thu, Oct 29, 2020 at 2:08 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> The *_lruvec_slab_state is also suitable for pages allocated from buddy,
-> not just for the slab objects. But the function name seems to tell us that
-> only slab object is applicable. So we can rename the keyword of slab to
-> kmem.
+> On Wed 28-10-20 11:50:13, Muchun Song wrote:
+> [...]
+> > -struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+> > +static struct lruvec *
+> > +__mem_cgroup_node_lruvec(struct mem_cgroup *memcg, struct pglist_data *pgdat,
+> > +                      int nid)
 >
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <guro@fb.com>
+> I thought I have made it clear that this is not a good approach. Please
+> do not repost new version without that being addressed. If there are any
+> questions then feel free to ask for details.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+You can get nid from pgdat (pgdat->node_id) and also pgdat from nid
+(NODE_DATA(nid)), so, __mem_cgroup_node_lruvec() only need one of them
+as parameter.
