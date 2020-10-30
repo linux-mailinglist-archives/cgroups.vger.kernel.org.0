@@ -2,49 +2,32 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8389E2A0FF3
-	for <lists+cgroups@lfdr.de>; Fri, 30 Oct 2020 22:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 775092A11F0
+	for <lists+cgroups@lfdr.de>; Sat, 31 Oct 2020 01:29:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726917AbgJ3VFZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Oct 2020 17:05:25 -0400
-Received: from 93804.cloudwaysapps.com ([178.62.255.238]:39062 "EHLO
-        93804.cloudwaysapps.com" rhost-flags-OK-FAIL-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1726163AbgJ3VFZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 17:05:25 -0400
-X-Greylist: delayed 4894 seconds by postgrey-1.27 at vger.kernel.org; Fri, 30 Oct 2020 17:05:25 EDT
-Received: from 127.0.0.1 (93804.cloudwaysapps.com [127.0.0.1])
-        by 93804.cloudwaysapps.com (Postfix) with SMTP id 1A53221606;
-        Fri, 30 Oct 2020 19:07:01 +0000 (UTC)
-Received: from [107.147.131.188]
-        by 127.0.0.1 id 1Jnf1EGIiAwi
-        for <cgordon@BeeNews.com>; Fri, 30 Oct 2020 19:02:16 -0100
-Message-ID: <mh-d$1$0b1-5$-bb5b6tc@ofp2.7s.kt6o>
-From:   "JOHN PHIL" <gerradfinancialplanning@gmail.com>
-Reply-To: "JOHN PHIL" <gerradfinancialplanning@gmail.com>
-To:     cgordon@BeeNews.com
-Subject: November Equity Investment 20-20 
-Date:   Fri, 30 Oct 20 19:02:16 GMT
-X-Mailer: QUALCOMM Windows Eudora Version 5.1
+        id S1725536AbgJaA3q convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+cgroups@lfdr.de>); Fri, 30 Oct 2020 20:29:46 -0400
+Received: from 45.173.252.243.turbolinenet.com.br ([45.173.252.243]:57327 "EHLO
+        srv01.turbolinenet.com.br" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1725446AbgJaA3q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 20:29:46 -0400
+Received: from [23.106.215.139]
+        by srv01.turbolinenet.com.br with esmtpsa (TLSv1:DHE-RSA-AES256-SHA:256)
+        (Exim 4.92.2)
+        (envelope-from <info@details.com>)
+        id 1kYQYF-0007kE-Ck; Fri, 30 Oct 2020 07:18:27 -0200
+Content-Type: text/plain; charset="iso-8859-1"
 MIME-Version: 1.0
-Content-Type: multipart/alternative;
-        boundary="99440ED0_67E6BC026"
-X-Priority: 1
-X-MSMail-Priority: High
+Content-Transfer-Encoding: 8BIT
+Content-Description: Mail message body
+Subject: Final Notice 2
+To:     Recipients <info@details.com>
+From:   info@details.com
+Date:   Fri, 30 Oct 2020 02:18:17 -0700
+Reply-To: trust101101@consultant.com
+Message-Id: <E1kYQYF-0007kE-Ck@srv01.turbolinenet.com.br>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
---99440ED0_67E6BC026
-Content-Type: text/plain;
-Content-Transfer-Encoding: quoted-printable
-
-How are you doing today I have a proposal which i think may interest you a=
-nd benefit you.I will like to give you full details of this via email:  ge=
-rradfinancialplanning@gmail.com
-Thanks.
-
-John PHIL
-
---99440ED0_67E6BC026--
-
+We are trying to reach you as regards the estate of Late George Brumley, you were made one of the beneficiaries of his estate. Do get back to me at your earliest convenience. The Trustees
