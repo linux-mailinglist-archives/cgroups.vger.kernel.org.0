@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BD4F2A0729
-	for <lists+cgroups@lfdr.de>; Fri, 30 Oct 2020 14:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 37C192A0764
+	for <lists+cgroups@lfdr.de>; Fri, 30 Oct 2020 15:07:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726765AbgJ3NyO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Oct 2020 09:54:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        id S1726491AbgJ3OHB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Oct 2020 10:07:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59106 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727007AbgJ3NyE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 09:54:04 -0400
+        with ESMTP id S1726101AbgJ3OHA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 10:07:00 -0400
 Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18BBC0613CF
-        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id a64so1466068qkc.5
-        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BB40C0613CF
+        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 07:06:05 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id s14so4846759qkg.11
+        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 07:06:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=p1nkWHsTTJ1phk0MECInN7pnDwPUF1bojBnmQs9PZoM=;
-        b=JsNIng18yHH5/LXDpPA+BwLTBHcs1T13ZwrR46DvSQd2iyr/I2H49p0AaTvTYPWxtu
-         hRlzMwdMBF7gPpGJExMS3hcyvwcq2OLXMcHJRUYaIINATS2DLqUpB59uW/MCb8eG1cmy
-         KIX7EF8KQzWW81n5ccWUkUQOY5wf00O99LDkOtjXk3o27fEMFo/HJDlPg7FqiHLAHTPP
-         S8DBv/CExSuAh1XX/bl1C3LjbAgG1WJWjXBibLWMbrn+cWxhUD3vFLKq8SWWvl8XFGzZ
-         1q1WFkMcp6/IugaIHT2dqvt7HYV96HeBabnklmKeSNKFtYP/mXrizgDpZLO2t9x51Da1
-         lZsA==
+        bh=XFvLixYNsnzdj4toTcnFoItKGAiR6MimcB7uXhxEsAY=;
+        b=YdSmPnE65j6ZxU34kUIayYUWOJdr/r9gmpdMjuHb3lqo4k7Ldna9+SpQYp+Q/O0rpo
+         WDajdXIoc3E12pCo7NqjkA5VdTd3GcxyIs6fRkV9TDwZFbcvFqV+vpX1kEwgkglssWVp
+         hrXznUwOVgnLP4ssAB6TzjQZYCZCsYzKg3NFhoUAkFoL5+R2IA2zHpXGCyjZ/IF6/MMx
+         gqFNMF1zPrQ27+qJm3plMXyMAHfqxPv8dn/ClpIMvSHlmfhmD44gWnz56F6/+2+9h2y+
+         kYQTmd6XxzlYFlW17S94k8DW9B2C0Zx8DoGp66gvVqRDJ3ZbNZTsrXicfYnke5xW9AFr
+         1v2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=p1nkWHsTTJ1phk0MECInN7pnDwPUF1bojBnmQs9PZoM=;
-        b=LDdjixxPFXZ2TbOhtyyztROI8jIMJitzOKIAin+ota+5ii0QvrHEh2ovhyxonor8TL
-         nBUVtfvv3mX0GtlETGS+nhRzZCEtEU5rUyaVfR/4zF1JzukxG8p1JEZmJdqKm1Np9Nj3
-         CDzYWWwCrp4Tq41JoG0xNu4QUIr4vIrRhSqQ+WoEbQuXvg2QJ4LJnJhm0lomQae/uR4o
-         XLHxjKwC/6ZqY2OYr+qBrvlsotZdTywjGICNyLK+K4MPcA2SGFS52bSigmsNob9Fi081
-         RTwSY22aVyfZsP0M6V/L9RQBbLNZtJj6k0pXBqXfPsuQAepYgNuZvJPrt1Voigbuqe/X
-         k92Q==
-X-Gm-Message-State: AOAM5327ar/yTh1Vip5YgGsxjaHmCdonEbcGZRI7ZJqomJD41gxjX8Rj
-        uQy0MF/fjM0AIqYs6OmYhMewPQ==
-X-Google-Smtp-Source: ABdhPJyF+BFubaC/JGYM6eWjmxwnbrrCuZ0ryHOd/RS/yxhobmdvosNJSoJpp5+YvCHoPljCfCzHEA==
-X-Received: by 2002:a05:620a:16dc:: with SMTP id a28mr2289149qkn.372.1604066043143;
-        Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
+        bh=XFvLixYNsnzdj4toTcnFoItKGAiR6MimcB7uXhxEsAY=;
+        b=gabuUCScWk7QD4/jfFCNE4TscIRCGlT4acmxNeSC+PyUe8KYT0LNVkUIOv6BPKuqFp
+         SwtOjxCJdBzGnHo8lEfBwdNpHBfPiQK8XWNb09AQZBAyh0jq7eekNBgbYCSvLxjm0yt2
+         VyCakwzPMso1TSvOMVP5Z4MFK5ArMTf9g9cDmQB7Mx3CKVITmlPk+smh/liB2yRFtmh6
+         zeKQmvSy4vultCtJDI0eye46C+59Ido9X4vQ/2U2XK/G/UK9EvBetChX03JzWDcXQfWE
+         h97TkkM5yK3r+GdvuXXtv/XWjdpibce03K00ajODxLpE+wa8SIXqmVcfJh8zsnD72rNl
+         IOgw==
+X-Gm-Message-State: AOAM5321AQmgjJeE8r+TrPGhZ2WQw2owEPX82RoeQ8KOFhjbueJFbZxS
+        UfGZcZjPNhA+Wb7/6wP2ZaCK4Q==
+X-Google-Smtp-Source: ABdhPJy6GSdDtgopMaSrcuhTI50F6OgXI/etTV6OK///4TfnmY4zL1gXH/AwTDzNi59Yk5VOzZtUbA==
+X-Received: by 2002:ae9:e802:: with SMTP id a2mr2343108qkg.227.1604066764803;
+        Fri, 30 Oct 2020 07:06:04 -0700 (PDT)
 Received: from localhost ([2620:10d:c091:480::1:fb53])
-        by smtp.gmail.com with ESMTPSA id k4sm2577028qkj.46.2020.10.30.06.54.01
+        by smtp.gmail.com with ESMTPSA id 19sm2609429qki.33.2020.10.30.07.06.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 30 Oct 2020 06:54:02 -0700 (PDT)
-Date:   Fri, 30 Oct 2020 09:52:18 -0400
+        Fri, 30 Oct 2020 07:06:03 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 10:04:20 -0400
 From:   Johannes Weiner <hannes@cmpxchg.org>
 To:     Alex Shi <alex.shi@linux.alibaba.com>
 Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
@@ -59,54 +59,61 @@ Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
         iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
         kirill@shutemov.name, alexander.duyck@gmail.com,
         rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v20 04/20] mm/thp: use head for head page in
- lru_add_page_tail
-Message-ID: <20201030135218.GA666074@cmpxchg.org>
+        shy828301@gmail.com, Michal Hocko <mhocko@kernel.org>
+Subject: Re: [PATCH v20 02/20] mm/memcg: bail early from swap accounting if
+ memcg disabled
+Message-ID: <20201030140420.GB666074@cmpxchg.org>
 References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-5-git-send-email-alex.shi@linux.alibaba.com>
- <20201029135047.GE599825@cmpxchg.org>
- <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+ <1603968305-8026-3-git-send-email-alex.shi@linux.alibaba.com>
+ <20201029134648.GC599825@cmpxchg.org>
+ <96b6d122-df0e-dfb0-368c-6bd714fab116@linux.alibaba.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+In-Reply-To: <96b6d122-df0e-dfb0-368c-6bd714fab116@linux.alibaba.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:46:54AM +0800, Alex Shi wrote:
-> 在 2020/10/29 下午9:50, Johannes Weiner 写道:
-> > It may be better to pick either
-> > 	head and tail
+On Fri, Oct 30, 2020 at 10:27:51AM +0800, Alex Shi wrote:
 > 
-> Hi Johannes,
 > 
-> Thanks for comments!
+> 在 2020/10/29 下午9:46, Johannes Weiner 写道:
+> >>  ? release_pages+0x1ae/0x410
+> >>  shmem_alloc_and_acct_page+0x77/0x1c0
+> >>  shmem_getpage_gfp+0x162/0x910
+> >>  shmem_fault+0x74/0x210
+> >>  ? filemap_map_pages+0x29c/0x410
+> >>  __do_fault+0x37/0x190
+> >>  handle_mm_fault+0x120a/0x1770
+> >>  exc_page_fault+0x251/0x450
+> >>  ? asm_exc_page_fault+0x8/0x30
+> >>  asm_exc_page_fault+0x1e/0x30
+> >>
+> >> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> >> Reviewed-by: Roman Gushchin <guro@fb.com>
+> >> Acked-by: Michal Hocko <mhocko@suse.com>
+> >> Acked-by: Hugh Dickins <hughd@google.com>
+> >> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> >> Cc: Michal Hocko <mhocko@kernel.org>
+> >> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+> >> Cc: Andrew Morton <akpm@linux-foundation.org>
+> >> Cc: cgroups@vger.kernel.org
+> >> Cc: linux-mm@kvack.org
+> >> Cc: linux-kernel@vger.kernel.org
+> > Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > This should go in before the previous patch that adds the WARN for it.
 > 
-> Right, Consider functions in this file are using head/tail more as parameters
-> I will change to use head/tail too. And then, the 04th, 05th, and 18th patch 
-> will be changed accordingly.
+> Right, but than the long ops may not weird. Should I remove the ops and resend the whole patchset?
 
-That's great, thank you!
+You mean the warning in the changelog? I think that's alright. You can
+just say that you're about to remove the !page->memcg check in the
+next patch because the original reasons for having it are gone, and
+memcg being disabled is the only remaining exception, so this patch
+makes that check explicit in preparation for the next.
 
-> From a9ee63a213f40eb4d5a69b52fbb348ff9cd7cf6c Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Tue, 26 May 2020 16:49:22 +0800
-> Subject: [PATCH v21 04/20] mm/thp: use head for head page in lru_add_page_tail
-> 
-> Since the first parameter is only used by head page, it's better to make
-> it explicit.
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Sorry, it's all a bit of a hassle, I just wouldn't want to introduce a
+known warning into the kernel between those two patches (could confuse
+bisection runs, complicates partial reverts etc.)
