@@ -2,131 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE742A063F
-	for <lists+cgroups@lfdr.de>; Fri, 30 Oct 2020 14:11:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD4F2A0729
+	for <lists+cgroups@lfdr.de>; Fri, 30 Oct 2020 14:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725975AbgJ3NLf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 30 Oct 2020 09:11:35 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:50238 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJ3NLf (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 09:11:35 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UD5Cm1040754;
-        Fri, 30 Oct 2020 13:11:29 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=corp-2020-01-29;
- bh=P4mtStT2D2qnh4vVbPD791lmQ3o57FSAUHJXBvfRArk=;
- b=tdQ33e24t9bxSOVk27NNg8uJUHv0y2qs10GHQLEWt8+YFsE/EDrJ+GqzOcYh/SC7EA5p
- UldB+zXykFrU/rrTe7RkWO6UCqtmA1LbyyRAEOLG93RKlhrJfm4fHZ4YM4NYM0IKDLZZ
- pTH/tM4mpRtCtWsoy+wS9w0hhihOHacfQGQTSnTrzH7iMtiFXq4jnPT/2/7ovBGsJuTu
- W2n39wO1ecOOwq92pOqWqmPlTbAbK1DNxrL8UAIt0h+61UG1Y6GGJQ2K5/rf9MYF9tpR
- 4ASde0iGGosNaYdfJSDdSSiV6ybWybe4l9J3iabvlSLRjO5Bea07tAdAuCv+QjSIjumx +w== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34cc7m9m1s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 30 Oct 2020 13:11:29 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09UD6C1n129781;
-        Fri, 30 Oct 2020 13:11:29 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 34cx61pdx4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 30 Oct 2020 13:11:29 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09UDBRPP007339;
-        Fri, 30 Oct 2020 13:11:28 GMT
-Received: from OracleT490.vogsphere (/73.203.30.179)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 30 Oct 2020 06:11:27 -0700
-Subject: Re: [QUESTION] Cgroup namespace and cgroup v2
-To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
-Cc:     cgroups@vger.kernel.org
-References: <d223c6ba-9fcf-8728-214b-1bce30f26441@oracle.com>
- <20201027182659.GA62134@blackbook>
-From:   Tom Hromatka <tom.hromatka@oracle.com>
-Message-ID: <001e7b1d-1b7c-e3d8-493f-2b78b3b093b1@oracle.com>
-Date:   Fri, 30 Oct 2020 07:11:20 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1726765AbgJ3NyO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 30 Oct 2020 09:54:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727007AbgJ3NyE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 30 Oct 2020 09:54:04 -0400
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E18BBC0613CF
+        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
+Received: by mail-qk1-x744.google.com with SMTP id a64so1466068qkc.5
+        for <cgroups@vger.kernel.org>; Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=p1nkWHsTTJ1phk0MECInN7pnDwPUF1bojBnmQs9PZoM=;
+        b=JsNIng18yHH5/LXDpPA+BwLTBHcs1T13ZwrR46DvSQd2iyr/I2H49p0AaTvTYPWxtu
+         hRlzMwdMBF7gPpGJExMS3hcyvwcq2OLXMcHJRUYaIINATS2DLqUpB59uW/MCb8eG1cmy
+         KIX7EF8KQzWW81n5ccWUkUQOY5wf00O99LDkOtjXk3o27fEMFo/HJDlPg7FqiHLAHTPP
+         S8DBv/CExSuAh1XX/bl1C3LjbAgG1WJWjXBibLWMbrn+cWxhUD3vFLKq8SWWvl8XFGzZ
+         1q1WFkMcp6/IugaIHT2dqvt7HYV96HeBabnklmKeSNKFtYP/mXrizgDpZLO2t9x51Da1
+         lZsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=p1nkWHsTTJ1phk0MECInN7pnDwPUF1bojBnmQs9PZoM=;
+        b=LDdjixxPFXZ2TbOhtyyztROI8jIMJitzOKIAin+ota+5ii0QvrHEh2ovhyxonor8TL
+         nBUVtfvv3mX0GtlETGS+nhRzZCEtEU5rUyaVfR/4zF1JzukxG8p1JEZmJdqKm1Np9Nj3
+         CDzYWWwCrp4Tq41JoG0xNu4QUIr4vIrRhSqQ+WoEbQuXvg2QJ4LJnJhm0lomQae/uR4o
+         XLHxjKwC/6ZqY2OYr+qBrvlsotZdTywjGICNyLK+K4MPcA2SGFS52bSigmsNob9Fi081
+         RTwSY22aVyfZsP0M6V/L9RQBbLNZtJj6k0pXBqXfPsuQAepYgNuZvJPrt1Voigbuqe/X
+         k92Q==
+X-Gm-Message-State: AOAM5327ar/yTh1Vip5YgGsxjaHmCdonEbcGZRI7ZJqomJD41gxjX8Rj
+        uQy0MF/fjM0AIqYs6OmYhMewPQ==
+X-Google-Smtp-Source: ABdhPJyF+BFubaC/JGYM6eWjmxwnbrrCuZ0ryHOd/RS/yxhobmdvosNJSoJpp5+YvCHoPljCfCzHEA==
+X-Received: by 2002:a05:620a:16dc:: with SMTP id a28mr2289149qkn.372.1604066043143;
+        Fri, 30 Oct 2020 06:54:03 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:fb53])
+        by smtp.gmail.com with ESMTPSA id k4sm2577028qkj.46.2020.10.30.06.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Oct 2020 06:54:02 -0700 (PDT)
+Date:   Fri, 30 Oct 2020 09:52:18 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Subject: Re: [PATCH v20 04/20] mm/thp: use head for head page in
+ lru_add_page_tail
+Message-ID: <20201030135218.GA666074@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-5-git-send-email-alex.shi@linux.alibaba.com>
+ <20201029135047.GE599825@cmpxchg.org>
+ <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
 MIME-Version: 1.0
-In-Reply-To: <20201027182659.GA62134@blackbook>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010300098
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9789 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010300098
+In-Reply-To: <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 10/27/20 12:26 PM, Michal Koutný wrote:
-> Hi Tom.
->
-> On Tue, Oct 20, 2020 at 03:12:28PM -0600, Tom Hromatka <tom.hromatka@oracle.com> wrote:
->> But this fails on a cgroup v2 system in a
->> cgroup namespace because the root cgroup is a non-leaf cgroup.
-> Yes, the no internal process constraint simplifies and enables many
-> things for v2 controllers.
->
->> * As outlined above, the behavior of the "root" cgroup in a cgroup
->>    namespace on a v2 system differs from the behavior of the
->>    unnamespaced root cgroup.  At best this is inconsistent; at worst,
->>    this may leak information to an unethical program.
-> What information does this leak? (That it's running in a cgroup namespace?)
-> Note that this isn't the only discrepancy between host root cgroup and
-> namespaced root cgroup. The host group is simply special.
+On Fri, Oct 30, 2020 at 10:46:54AM +0800, Alex Shi wrote:
+> åœ¨ 2020/10/29 ä¸‹åˆ9:50, Johannes Weiner å†™é“:
+> > It may be better to pick either
+> > 	head and tail
+> 
+> Hi Johannes,
+> 
+> Thanks for comments!
+> 
+> Right, Consider functions in this file are using head/tail more as parameters
+> I will change to use head/tail too. And then, the 04th, 05th, and 18th patch 
+> will be changed accordingly.
 
-Oops.  My wording was overly dramatic.  My in-house customers
-get nervous when things differ within a container vs. on a host.
+That's great, thank you!
 
-You're right, it differs, but that's an acceptable side effect
-of the improved design of cgroup v2.
+> From a9ee63a213f40eb4d5a69b52fbb348ff9cd7cf6c Mon Sep 17 00:00:00 2001
+> From: Alex Shi <alex.shi@linux.alibaba.com>
+> Date: Tue, 26 May 2020 16:49:22 +0800
+> Subject: [PATCH v21 04/20] mm/thp: use head for head page in lru_add_page_tail
+> 
+> Since the first parameter is only used by head page, it's better to make
+> it explicit.
+> 
+> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> Acked-by: Hugh Dickins <hughd@google.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Matthew Wilcox <willy@infradead.org>
+> Cc: Hugh Dickins <hughd@google.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
 
-Would you mind sharing some of the other discrepancies?  I
-would like to be prepared when we run into them as well.
-
-Thanks!
-
->
->>    Any ideas how   we can make the behavior more consistent for the
->> user and   libcgroup?
-> You can disable the controllers (via parent's cgroup.subtree_control) to
-> allow migration into the parent. Of course that affects also siblings of
-> the removed cgroup.
-
-Good call.  I didn't think of that.
-
->
->> * I will likely add a flag to cgdelete to simply kill processes in
->>    a cgroup rather than try and move them to the parent cgroup.
->>    Moving processes to the parent cgroup is somewhat challenging
->>    even in a cgroup v1 system due to permissions, etc.
-> In general, migrations with controlled v2 cgroup are not supported, so
-> moving processes up and (especially) down has less sense than in v1.
-> Hence, refusing the delete operation on a populated cgroup (with
-> controllers) is IMO justified.
-
-That makes a lot of sense.  I think I will need to spend
-time with the database team and others.  Cgroup v2 is simply
-different enough that we'll need to rethink some of the
-decisions that were made for cgroup v1.
-
-Thanks so much for the help.
-
-Tom
-
->
->
-> Michal
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
