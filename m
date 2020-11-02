@@ -2,132 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 402532A22FB
-	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 03:18:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77E7F2A2C49
+	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 15:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727727AbgKBCRv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 1 Nov 2020 21:17:51 -0500
-Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:50292 "EHLO
-        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727517AbgKBCRr (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 1 Nov 2020 21:17:47 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R461e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UDrT9AM_1604283462;
-Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UDrT9AM_1604283462)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 02 Nov 2020 10:17:43 +0800
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org
-Cc:     Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: [PATCH 2/2] mm/memcg: warning on !memcg after readahead page charged
-Date:   Mon,  2 Nov 2020 10:17:16 +0800
-Message-Id: <1604283436-18880-3-git-send-email-alex.shi@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
-In-Reply-To: <1604283436-18880-1-git-send-email-alex.shi@linux.alibaba.com>
-References: <1604283436-18880-1-git-send-email-alex.shi@linux.alibaba.com>
+        id S1725836AbgKBOJ2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Nov 2020 09:09:28 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40070 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725616AbgKBOJ2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 2 Nov 2020 09:09:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1604326166;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=rzClJdernid9DZjs+LXc6mlLzbVlffJS5KXlyFdrG7k=;
+        b=tr4G+t5mSX8DExPZbrwb/Ed7X0gqPsFbeubq83nMeARlFpnqMZdUw4gIWg0Um2N+YHYB7D
+        yCf1YBjpV4s+aJddXnFy2FRXXzNZoZNnAejIJWU/pUA8LxrTcxC7aJs8LDEyJcmytW6VBV
+        d4zA+2Ezl6g3eH23z57HF/LJKBcDJUs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2BC9AAF49;
+        Mon,  2 Nov 2020 14:09:26 +0000 (UTC)
+Date:   Mon, 2 Nov 2020 15:09:21 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Tom Hromatka <tom.hromatka@oracle.com>
+Cc:     cgroups@vger.kernel.org
+Subject: Re: [QUESTION] Cgroup namespace and cgroup v2
+Message-ID: <20201102140921.GA4691@blackbook>
+References: <d223c6ba-9fcf-8728-214b-1bce30f26441@oracle.com>
+ <20201027182659.GA62134@blackbook>
+ <001e7b1d-1b7c-e3d8-493f-2b78b3b093b1@oracle.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="d6Gm4EdcadzBjdND"
+Content-Disposition: inline
+In-Reply-To: <001e7b1d-1b7c-e3d8-493f-2b78b3b093b1@oracle.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add VM_WARN_ON_ONCE_PAGE() macro.
 
-Since readahead page is charged on memcg too, in theory we don't have to
-check this exception now. Before safely remove them all, add a warning
-for the unexpected !memcg.
+--d6Gm4EdcadzBjdND
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Hugh Dickins <hughd@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
----
- include/linux/mmdebug.h | 13 +++++++++++++
- mm/memcontrol.c         | 11 ++++-------
- 2 files changed, 17 insertions(+), 7 deletions(-)
+On Fri, Oct 30, 2020 at 07:11:20AM -0600, Tom Hromatka <tom.hromatka@oracle=
+=2Ecom> wrote:
+> Would you mind sharing some of the other discrepancies?=A0 I
+> would like to be prepared when we run into them as well.
+Search for CFTYPE_NOT_ON_ROOT flag (that was on my mind above). It
+causes a visible difference between host and container (OTOH, you won't
+be able to write into such files typically, so that's effectively equal
+to the host).
 
-diff --git a/include/linux/mmdebug.h b/include/linux/mmdebug.h
-index 2ad72d2c8cc5..5d0767cb424a 100644
---- a/include/linux/mmdebug.h
-+++ b/include/linux/mmdebug.h
-@@ -37,6 +37,18 @@
- 			BUG();						\
- 		}							\
- 	} while (0)
-+#define VM_WARN_ON_ONCE_PAGE(cond, page)	({			\
-+	static bool __section(".data.once") __warned;			\
-+	int __ret_warn_once = !!(cond);					\
-+									\
-+	if (unlikely(__ret_warn_once && !__warned)) {			\
-+		dump_page(page, "VM_WARN_ON_ONCE_PAGE(" __stringify(cond)")");\
-+		__warned = true;					\
-+		WARN_ON(1);						\
-+	}								\
-+	unlikely(__ret_warn_once);					\
-+})
-+
- #define VM_WARN_ON(cond) (void)WARN_ON(cond)
- #define VM_WARN_ON_ONCE(cond) (void)WARN_ON_ONCE(cond)
- #define VM_WARN_ONCE(cond, format...) (void)WARN_ONCE(cond, format)
-@@ -48,6 +60,7 @@
- #define VM_BUG_ON_MM(cond, mm) VM_BUG_ON(cond)
- #define VM_WARN_ON(cond) BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN_ON_ONCE(cond) BUILD_BUG_ON_INVALID(cond)
-+#define VM_WARN_ON_ONCE_PAGE(cond, page)  BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN_ONCE(cond, format...) BUILD_BUG_ON_INVALID(cond)
- #define VM_WARN(cond, format...) BUILD_BUG_ON_INVALID(cond)
- #endif
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ec13fe4ed407..e46b9f9501c2 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1350,10 +1350,7 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
- 	}
- 
- 	memcg = page->mem_cgroup;
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
-@@ -6979,8 +6976,8 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
- 	if (newpage->mem_cgroup)
- 		return;
- 
--	/* Swapcache readahead pages can get replaced before being charged */
- 	memcg = oldpage->mem_cgroup;
-+	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
- 	if (!memcg)
- 		return;
- 
-@@ -7180,7 +7177,7 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
- 
- 	memcg = page->mem_cgroup;
- 
--	/* Readahead page, never charged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		return;
- 
-@@ -7247,7 +7244,7 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 
- 	memcg = page->mem_cgroup;
- 
--	/* Readahead page, never charged */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		return 0;
- 
--- 
-1.8.3.1
+Michal
 
+
+--d6Gm4EdcadzBjdND
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAl+gEwwACgkQia1+riC5
+qSifaA/+N7Jnx5DhGUIqKKYkuMebh/f49HQhMhigXv8N4qLNUGNwWqgP0wEP69Ex
+SzwHoiw5S/cuqziGASB4DKdzcmdfLKK2dER1NZccT6aDjPbjBveCHA4L8BEf1piX
+PwrEPoZBR6hBaHBSndn+S2fQecmB7WvZjfRxFol0VivCi+DWgNfNlRZyJHml17nA
+i7J/xc5mgxpceZP2xhyw8S5LSgtYXdWIQqEbYEotRg7r0dhvt3BMAszDtu8asmBB
+NKnkExNTi6f7Cw3P4EzI2/UUcYTUgD4NoDSAWIbx3NbmTWeYjAqhj0kpG4WJw87g
+5TA2kohDozxzX1A+BFjg5yX50CoVZvXEuufbgjCNuWXVcZL1ft+8YUfSiHL/TH0b
+9TMYUiFp7Yqv7Wyf5P5V+HSSPr1gtJrjkuzjGaTs1rCeFn2I2OcJvVBf4lV53FzS
+iCXQS90w58yUuABF9U0eObciB+nqsM1k8/FjSFz0eJvCRe7X38jrrEk1zsOUZoDR
+BiLDD0jhyQ8jZv6uozs5N8Z5pzCaF4XvZZRrekvfPUKVWFaND+AA+wiiFz5mQvMO
+ULfM+HKWDH4YOsmc5qQq20Zf+vKtVAVLoV0ibrorimgh8gqj1HMDStYm2JGKFx2B
+UJjVTHiBa+OmdtCZrnL/kmjwKbGnAd9etDSMCLwUY1faSkfv9zA=
+=QbyZ
+-----END PGP SIGNATURE-----
+
+--d6Gm4EdcadzBjdND--
