@@ -2,75 +2,90 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9542A2F53
-	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 17:08:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D3E32A2F62
+	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 17:11:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726740AbgKBQE3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Nov 2020 11:04:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725852AbgKBQE3 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Nov 2020 11:04:29 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9472C0617A6;
-        Mon,  2 Nov 2020 08:04:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ById62lxNkbzmGe1y6sEW9CH+Xn28r08JtKiwHI4ZFE=; b=eXXZJcEJI37a+/rq1NcdCftKu9
-        1w1qhi7JK4Le0V6NXiB4NVW+gvn9ySrTjTmOENM8vLHMoaZsenii71Nci4qAeWZ0mamhK8a35JlQK
-        J6cojCg0ge0utPapk8k+jZjA6fWe4Fy6jHXiyGPgdfX9BY6C+qR/NI+aInfubiQUD76BE/6AuMWf6
-        2rZwOBSfaFCGmbL4e9iS4ymkQ4uuSmJgbUmrZEe7AuPpgfqxeEoNWiItbK37ZJp7oIKQTDRWtkIfD
-        RaNYRb+6U8KoxF7lQmMkTuC3Lqs1i1WIXcnj20sKrUrkN/yGwYgCfwn+13jRLArwa8HrkX306cFP0
-        r5FYl46Q==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kZcJJ-0003kC-UX; Mon, 02 Nov 2020 16:03:58 +0000
-Date:   Mon, 2 Nov 2020 16:03:57 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-Subject: Re: [PATCH v20 04/20] mm/thp: use head for head page in
- lru_add_page_tail
-Message-ID: <20201102160357.GP27442@casper.infradead.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-5-git-send-email-alex.shi@linux.alibaba.com>
- <20201029135047.GE599825@cmpxchg.org>
- <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+        id S1726942AbgKBQJu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Nov 2020 11:09:50 -0500
+Received: from aserp2130.oracle.com ([141.146.126.79]:52234 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726920AbgKBQJu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Nov 2020 11:09:50 -0500
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A2G9fPP082406;
+        Mon, 2 Nov 2020 16:09:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=s5s8+s0XNuoA1n0Xmu2wW9hwDujD3Ki9LMC4+zTMlxw=;
+ b=vo45Yog4xFjVF97suIFIOjVQk5cZk0X8MaoKBEWEHzNfiMxnPXMQUJifG10U9l9zhzR6
+ LB25nqeRBJiRdKCfaok+WUauYGyyHBrqQqa6gL/xdGCirAobM3+lmoW0b2e/A3j5YRFl
+ xCzOWW3WKTqvUSflsW7FOxkAt/Vp8gSG4/7TVMnAUfWe3Zpl93gp5/S+jgai8XR9cLva
+ zDuJ01YX7Zi4aAUnPA6uwMuRMxKeB1LfMPrhsCNJE/HBDx+50OsSYChSvOjMOhnxctWZ
+ 2n9iwVU5p8lPIlEBt4bfc32jLJIs+jgReYHj3g7stsXOkNOMYwIz0Aqe1Yr7R+fpGy/N RA== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 34hhb1vs2d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 02 Nov 2020 16:09:45 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0A2FojQM166132;
+        Mon, 2 Nov 2020 16:09:44 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 34jf46qr9r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 02 Nov 2020 16:09:44 +0000
+Received: from abhmp0010.oracle.com (abhmp0010.oracle.com [141.146.116.16])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0A2G9iQI030839;
+        Mon, 2 Nov 2020 16:09:44 GMT
+Received: from OracleT490.vogsphere (/73.203.30.179)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 02 Nov 2020 08:09:43 -0800
+Subject: Re: [QUESTION] Cgroup namespace and cgroup v2
+To:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>
+Cc:     cgroups@vger.kernel.org
+References: <d223c6ba-9fcf-8728-214b-1bce30f26441@oracle.com>
+ <20201027182659.GA62134@blackbook>
+ <001e7b1d-1b7c-e3d8-493f-2b78b3b093b1@oracle.com>
+ <20201102140921.GA4691@blackbook>
+From:   Tom Hromatka <tom.hromatka@oracle.com>
+Message-ID: <5be94abd-1663-55e1-01a7-f36405fb0669@oracle.com>
+Date:   Mon, 2 Nov 2020 09:09:43 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <06a5b7d8-bbf2-51b7-1352-2b630186e15f@linux.alibaba.com>
+In-Reply-To: <20201102140921.GA4691@blackbook>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0 mlxscore=0
+ bulkscore=0 malwarescore=0 mlxlogscore=999 phishscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020124
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9793 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0 suspectscore=0
+ clxscore=1015 mlxlogscore=999 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 adultscore=0 spamscore=0 priorityscore=1501 mlxscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011020125
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Oct 30, 2020 at 10:46:54AM +0800, Alex Shi wrote:
-> -static void lru_add_page_tail(struct page *page, struct page *page_tail,
-> +static void lru_add_page_tail(struct page *head, struct page *tail,
->  		struct lruvec *lruvec, struct list_head *list)
->  {
-> -	VM_BUG_ON_PAGE(!PageHead(page), page);
-> -	VM_BUG_ON_PAGE(PageCompound(page_tail), page);
-> -	VM_BUG_ON_PAGE(PageLRU(page_tail), page);
-> +	VM_BUG_ON_PAGE(!PageHead(head), head);
-> +	VM_BUG_ON_PAGE(PageCompound(tail), head);
-> +	VM_BUG_ON_PAGE(PageLRU(tail), head);
+On 11/2/20 7:09 AM, Michal Koutný wrote:
+> On Fri, Oct 30, 2020 at 07:11:20AM -0600, Tom Hromatka <tom.hromatka@oracle.com> wrote:
+>> Would you mind sharing some of the other discrepancies?  I
+>> would like to be prepared when we run into them as well.
+> Search for CFTYPE_NOT_ON_ROOT flag (that was on my mind above). It
+> causes a visible difference between host and container (OTOH, you won't
+> be able to write into such files typically, so that's effectively equal
+> to the host).
 
-These last two should surely have been
-	VM_BUG_ON_PAGE(PageCompound(tail), tail);
-	VM_BUG_ON_PAGE(PageLRU(tail), tail);
+Awesome!  Thanks.
 
-Also, what do people think about converting these to VM_BUG_ON_PGFLAGS?
+Tom
 
-Either way:
+>
+> Michal
+>
 
-Reviewed-by: Matthew Wilcox (Oracle) <willy@infradead.org>
