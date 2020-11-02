@@ -2,371 +2,126 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 542B82A33EF
-	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 20:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5B872A3508
+	for <lists+cgroups@lfdr.de>; Mon,  2 Nov 2020 21:21:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725824AbgKBTXR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Nov 2020 14:23:17 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38742 "EHLO
+        id S1725809AbgKBUVu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Nov 2020 15:21:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47898 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725805AbgKBTXR (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Nov 2020 14:23:17 -0500
-Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4AA55C0617A6;
-        Mon,  2 Nov 2020 11:23:15 -0800 (PST)
-Received: by mail-wr1-x442.google.com with SMTP id a9so15894847wrg.12;
-        Mon, 02 Nov 2020 11:23:15 -0800 (PST)
+        with ESMTP id S1725805AbgKBUVu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 2 Nov 2020 15:21:50 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 323C6C0617A6
+        for <cgroups@vger.kernel.org>; Mon,  2 Nov 2020 12:21:50 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id m14so10091577qtc.12
+        for <cgroups@vger.kernel.org>; Mon, 02 Nov 2020 12:21:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=O2roJi9bc81755qLfSnTnaxoncu2lW7arGJfQBREeHQ=;
-        b=JkGQpaWd1s/vPA4IEkUtKBWlxS3b7yQ+yKb7GeJMlngkRkYiBFWwEZWbqSysn/ZaUR
-         B6/RA+g2sLJKTMLGzhBpeyRrBsKKfGRUucEzWiL3pZj2sgtlmJrPWDFq37QFVgZMsqoX
-         TVtqMSFkpb1g5+qIk3z6ICzJlIzA8/SlQRiBcDQNS7/43Q9uIH5Ufz3urzVBdxKhgIMd
-         jcZqf7rsQEnRTmCmZUaS855Zt67hBOj1U7ni7bZOAxGitjeIbLPWCZd1pFdVKBFtcWUr
-         kRlxvtdGaFpBp9yigbLofCcg6gdhbBZkwa2v7EFRLtBTO0ixyqcO4pXSuJpi8c0TcdJT
-         KA1g==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
+        b=bBEKVnMgjoWujuv68Y0rl6eDm5sl+RLsRxWldpJosx8V8ORC5f5WNURvzRPF1NBv6v
+         Hw8SkPEFiVazRpc8HtbAFv6rySvi+dOgYcijpf6DGivgxo6rHAxTkqYtg7KMW/nWj0FK
+         jNVL3+jbG7w71qugmLw3Xz4ncKPZ2iWxLBTPPCt8BD1uQREeERQz3EX3KuToBY6VIz+L
+         zWgI8CrMO0KLAeTkRYk8aUfxLK5LxOxKT8l/+pOHEe6cjDYpW8aCCLwlS41l8QROI6B/
+         mwQYZlJ8/jHFIKB9IuKFrZteCWMQ5raxOMQKUfKXvcqF/2zfCoNEJ2DCqrzBN7oVKQ3f
+         3fMQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=O2roJi9bc81755qLfSnTnaxoncu2lW7arGJfQBREeHQ=;
-        b=uc/KPO5yADXNWdxrQK3tdJhTiOxl8tvnhUbX6d02++DcEose95u78JdX52LmjFqAPy
-         rMIWFl3AzJ2tun1gOapgy2Nqmva6PeFzZZBOYlFByQxECjuuBhIxuYzMsUkHbseXiEP7
-         SSJ8jBjdTGmrJyR/MY2ujPkg6vKpPKQ3TyGUz8IkVP+Fk+mAT7oipBObuBR7PoWKMOjT
-         eoflmtNa5gfoIY4fi8oEG2fcPhcWYpEtVGfB7cNxtYZ41n8mVlqLAoJ+GBf5yfe5BQRx
-         SMX/TP9lrAF/fmXWaF5IK3BpdUaWUKDVW0iWF2SRqJDy+buNRJG2He/H4yaaa63Ha3WP
-         BCIA==
-X-Gm-Message-State: AOAM533N+fGZZwgCn47GoTUBoQRazyAyG5ElmrHRMiROMhFEA5y3Z8bd
-        wD54eEt3c15sUTem3xOAOb2ExEsLk+gf6/XtMWA=
-X-Google-Smtp-Source: ABdhPJz++IBTFslmEojVhqAWwJxffOgFKh73FhYI7QWLuUeYM1/b0ofRHUj7lH3vOr8s9/T/neantyex9MCaU+BnjcE=
-X-Received: by 2002:a5d:4010:: with SMTP id n16mr21074251wrp.97.1604344993900;
- Mon, 02 Nov 2020 11:23:13 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KGaTJmrQfb84Zu/sOJ7IzGE95V5QBTb6nK7txU9KSJQ=;
+        b=Ai+1Mtr50ud7wXrFFktX3+33VyuqCRdw5XuzQqdXsNTP9XA0evrfoER5X5kvsBUdIz
+         In/7fifR/2d//h1fEY9pTZrntCqR81RoV4CroZHrWhyE4UPGT/nX5mCxcrq8bd9y9Nsg
+         hOWvT4kaCaScxO8nmbIQDaZdtO3811amlUXq6uu2Ll4f/ex7pKn5tzhBHoxJUKJXljk2
+         tf6cEgGP/srdSYc1J5wkDzy/rdbWtaBNefWCpPUmj/qmXapTQVBQHCkd81w8Rxdn2B4f
+         Cjg/V1Wz7sAoSswOaM60d3Ad+88KZybcm2uU4Fd7BWdbgrxx/TukPFkTXF40uzgUwuw3
+         7upg==
+X-Gm-Message-State: AOAM530RQgZh7+6Xp0iQgIoGINmWk74ZpkawAEL4pH16vck+wJLVS63t
+        i37rkMp7IrRwFtUXUXYjmlA1XA==
+X-Google-Smtp-Source: ABdhPJwJQ2pszo1xApCrT+kXkRvTKT2LgFbWrFGxrHm118eNGOEBxjD4Dibd0ztWDPiArgTklCLYGg==
+X-Received: by 2002:ac8:76d9:: with SMTP id q25mr16151275qtr.125.1604348509453;
+        Mon, 02 Nov 2020 12:21:49 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:2f6e])
+        by smtp.gmail.com with ESMTPSA id 6sm8812740qks.51.2020.11.02.12.21.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 02 Nov 2020 12:21:48 -0800 (PST)
+Date:   Mon, 2 Nov 2020 15:20:03 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+Message-ID: <20201102202003.GA740958@cmpxchg.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
 MIME-Version: 1.0
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
-In-Reply-To: <20201007152355.2446741-1-Kenny.Ho@amd.com>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Mon, 2 Nov 2020 14:23:02 -0500
-Message-ID: <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-To:     Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf@vger.kernel.org,
-        netdev@vger.kernel.org
-Cc:     linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201102144927.GN27442@casper.infradead.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Adding a few more emails from get_maintainer.pl and bumping this
-thread since there hasn't been any comments so far.  Is this too
-crazy?  Am I missing something fundamental?
+On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
+> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
+> > On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
+> > > From: Hugh Dickins <hughd@google.com>
+> > > 
+> > > It is necessary for page_idle_get_page() to recheck PageLRU() after
+> > > get_page_unless_zero(), but holding lru_lock around that serves no
+> > > useful purpose, and adds to lru_lock contention: delete it.
+> > > 
+> > > See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+> > > discussion that led to lru_lock there; but __page_set_anon_rmap() now
+> > > uses WRITE_ONCE(),
+> > 
+> > That doesn't seem to be the case in Linus's or Andrew's tree. Am I
+> > missing a dependent patch series?
+> > 
+> > > and I see no other risk in page_idle_clear_pte_refs() using
+> > > rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
+> > > not entirely prevented by page_count() check in ksm.c's
+> > > write_protect_page(): that risk being shared with page_referenced()
+> > > and not helped by lru_lock).
+> > 
+> > Isn't it possible, as per Minchan's description, for page->mapping to
+> > point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
+> > thinking it's looking at a struct address_space?
+> 
+> I don't think it can point to an anon_vma without the ANON bit set.
+> Minchan's concern in that email was that it might still be NULL.
 
-Regards,
-Kenny
+Hm, no, the thread is a lengthy discussion about whether the store
+could be split such that page->mapping is actually pointing to
+something invalid (anon_vma without the PageAnon bit).
 
+From his email:
 
-On Wed, Oct 7, 2020 at 11:24 AM Kenny Ho <Kenny.Ho@amd.com> wrote:
->
-> This is a skeleton implementation to invite comments and generate
-> discussion around the idea of introducing a bpf-cgroup program type to
-> control ioctl access.  This is modelled after
-> BPF_PROG_TYPE_CGROUP_DEVICE.  The premise is to allow system admins to
-> write bpf programs to block some ioctl access, potentially in conjunction
-> with data collected by other bpf programs stored in some bpf maps and
-> with bpf_spin_lock.
->
-> For example, a bpf program has been accumulating resource usaging
-> statistic and a second bpf program of BPF_PROG_TYPE_CGROUP_IOCTL would
-> block access to previously mentioned resource via ioctl when the stats
-> stored in a bpf map reaches certain threshold.
->
-> Like BPF_PROG_TYPE_CGROUP_DEVICE, the default is permissive (i.e.,
-> ioctls are not blocked if no bpf program is present for the cgroup.) to
-> maintain current interface behaviour when this functionality is unused.
->
-> Performance impact to ioctl calls is minimal as bpf's in-kernel verifier
-> ensure attached bpf programs cannot crash and always terminate quickly.
->
-> TODOs:
-> - correct usage of the verifier
-> - toolings
-> - samples
-> - device driver may provide helper functions that take
-> bpf_cgroup_ioctl_ctx and return something more useful for specific
-> device
->
-> Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
-> ---
->  fs/ioctl.c                 |  5 +++
->  include/linux/bpf-cgroup.h | 14 ++++++++
->  include/linux/bpf_types.h  |  2 ++
->  include/uapi/linux/bpf.h   |  8 +++++
->  kernel/bpf/cgroup.c        | 66 ++++++++++++++++++++++++++++++++++++++
->  kernel/bpf/syscall.c       |  7 ++++
->  kernel/bpf/verifier.c      |  1 +
->  7 files changed, 103 insertions(+)
->
-> diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 4e6cc0a7d69c..a3925486d417 100644
-> --- a/fs/ioctl.c
-> +++ b/fs/ioctl.c
-> @@ -19,6 +19,7 @@
->  #include <linux/falloc.h>
->  #include <linux/sched/signal.h>
->  #include <linux/fiemap.h>
-> +#include <linux/cgroup.h>
->
->  #include "internal.h"
->
-> @@ -45,6 +46,10 @@ long vfs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
->         if (!filp->f_op->unlocked_ioctl)
->                 goto out;
->
-> +       error = BPF_CGROUP_RUN_PROG_IOCTL(filp, cmd, arg);
-> +       if (error)
-> +               goto out;
-> +
->         error = filp->f_op->unlocked_ioctl(filp, cmd, arg);
->         if (error == -ENOIOCTLCMD)
->                 error = -ENOTTY;
-> diff --git a/include/linux/bpf-cgroup.h b/include/linux/bpf-cgroup.h
-> index 64f367044e25..a5f0b0a8f82b 100644
-> --- a/include/linux/bpf-cgroup.h
-> +++ b/include/linux/bpf-cgroup.h
-> @@ -134,6 +134,9 @@ int __cgroup_bpf_run_filter_sock_ops(struct sock *sk,
->  int __cgroup_bpf_check_dev_permission(short dev_type, u32 major, u32 minor,
->                                       short access, enum bpf_attach_type type);
->
-> +int __cgroup_bpf_check_ioctl_permission(struct file *filp, unsigned int cmd, unsigned long arg,
-> +                                       enum bpf_attach_type type);
-> +
->  int __cgroup_bpf_run_filter_sysctl(struct ctl_table_header *head,
->                                    struct ctl_table *table, int write,
->                                    void **buf, size_t *pcount, loff_t *ppos,
-> @@ -346,6 +349,16 @@ int bpf_percpu_cgroup_storage_update(struct bpf_map *map, void *key,
->         __ret;                                                                 \
->  })
->
-> +#define BPF_CGROUP_RUN_PROG_IOCTL(filp, cmd, arg)                            \
-> +({                                                                           \
-> +       int __ret = 0;                                                        \
-> +       if (cgroup_bpf_enabled)                                               \
-> +               __ret = __cgroup_bpf_check_ioctl_permission(filp, cmd, arg,   \
-> +                                                           BPF_CGROUP_IOCTL);\
-> +                                                                             \
-> +       __ret;                                                                \
-> +})
-> +
->  int cgroup_bpf_prog_attach(const union bpf_attr *attr,
->                            enum bpf_prog_type ptype, struct bpf_prog *prog);
->  int cgroup_bpf_prog_detach(const union bpf_attr *attr,
-> @@ -429,6 +442,7 @@ static inline int bpf_percpu_cgroup_storage_update(struct bpf_map *map,
->                                        optlen, max_optlen, retval) ({ retval; })
->  #define BPF_CGROUP_RUN_PROG_SETSOCKOPT(sock, level, optname, optval, optlen, \
->                                        kernel_optval) ({ 0; })
-> +#define BPF_CGROUP_RUN_PROG_IOCTL(type,major,minor,access) ({ 0; })
->
->  #define for_each_cgroup_storage_type(stype) for (; false; )
->
-> diff --git a/include/linux/bpf_types.h b/include/linux/bpf_types.h
-> index a52a5688418e..3055e7e4918c 100644
-> --- a/include/linux/bpf_types.h
-> +++ b/include/linux/bpf_types.h
-> @@ -56,6 +56,8 @@ BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SYSCTL, cg_sysctl,
->               struct bpf_sysctl, struct bpf_sysctl_kern)
->  BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_SOCKOPT, cg_sockopt,
->               struct bpf_sockopt, struct bpf_sockopt_kern)
-> +BPF_PROG_TYPE(BPF_PROG_TYPE_CGROUP_IOCTL, cg_ioctl,
-> +             struct bpf_cgroup_ioctl_ctx, struct bpf_cgroup_ioctl_ctx)
->  #endif
->  #ifdef CONFIG_BPF_LIRC_MODE2
->  BPF_PROG_TYPE(BPF_PROG_TYPE_LIRC_MODE2, lirc_mode2,
-> diff --git a/include/uapi/linux/bpf.h b/include/uapi/linux/bpf.h
-> index b6238b2209b7..6a908e13d3a3 100644
-> --- a/include/uapi/linux/bpf.h
-> +++ b/include/uapi/linux/bpf.h
-> @@ -197,6 +197,7 @@ enum bpf_prog_type {
->         BPF_PROG_TYPE_EXT,
->         BPF_PROG_TYPE_LSM,
->         BPF_PROG_TYPE_SK_LOOKUP,
-> +       BPF_PROG_TYPE_CGROUP_IOCTL,
->  };
->
->  enum bpf_attach_type {
-> @@ -238,6 +239,7 @@ enum bpf_attach_type {
->         BPF_XDP_CPUMAP,
->         BPF_SK_LOOKUP,
->         BPF_XDP,
-> +       BPF_CGROUP_IOCTL,
->         __MAX_BPF_ATTACH_TYPE
->  };
->
-> @@ -4276,6 +4278,12 @@ struct bpf_cgroup_dev_ctx {
->         __u32 minor;
->  };
->
-> +struct bpf_cgroup_ioctl_ctx {
-> +       __u64 filp;
-> +       __u32 cmd;
-> +       __u32 arg;
-> +};
-> +
->  struct bpf_raw_tracepoint_args {
->         __u64 args[0];
->  };
-> diff --git a/kernel/bpf/cgroup.c b/kernel/bpf/cgroup.c
-> index 83ff127ef7ae..0958bae3b0b7 100644
-> --- a/kernel/bpf/cgroup.c
-> +++ b/kernel/bpf/cgroup.c
-> @@ -1203,6 +1203,72 @@ const struct bpf_verifier_ops cg_dev_verifier_ops = {
->         .is_valid_access        = cgroup_dev_is_valid_access,
->  };
->
-> +int __cgroup_bpf_check_ioctl_permission(struct file *filp, unsigned int cmd, unsigned long arg,
-> +                                     enum bpf_attach_type type)
-> +{
-> +       struct cgroup *cgrp;
-> +       struct bpf_cgroup_ioctl_ctx ctx = {
-> +               .filp = filp,
-> +               .cmd = cmd,
-> +               .arg = arg,
-> +       };
-> +       int allow = 1;
-> +
-> +       rcu_read_lock();
-> +       cgrp = task_dfl_cgroup(current);
-> +       allow = BPF_PROG_RUN_ARRAY(cgrp->bpf.effective[type], &ctx,
-> +                                  BPF_PROG_RUN);
-> +       rcu_read_unlock();
-> +
-> +       return !allow;
-> +}
-> +
-> +static const struct bpf_func_proto *
-> +cgroup_ioctl_func_proto(enum bpf_func_id func_id, const struct bpf_prog *prog)
-> +{
-> +       return cgroup_base_func_proto(func_id, prog);
-> +}
-> +
-> +static bool cgroup_ioctl_is_valid_access(int off, int size,
-> +                                      enum bpf_access_type type,
-> +                                      const struct bpf_prog *prog,
-> +                                      struct bpf_insn_access_aux *info)
-> +{
-> +       const int size_default = sizeof(__u32);
-> +
-> +       if (type == BPF_WRITE)
-> +               return false;
-> +
-> +       if (off < 0 || off + size > sizeof(struct bpf_cgroup_ioctl_ctx))
-> +               return false;
-> +       /* The verifier guarantees that size > 0. */
-> +       if (off % size != 0)
-> +               return false;
-> +
-> +       switch (off) {
-> +       case bpf_ctx_range(struct bpf_cgroup_ioctl_ctx, filp):
-> +               bpf_ctx_record_field_size(info, size_default);
-> +               if (!bpf_ctx_narrow_access_ok(off, size, size_default))
-> +                       return false;
-> +               break;
-> +       case bpf_ctx_range(struct bpf_cgroup_ioctl_ctx, cmd):
-> +       case bpf_ctx_range(struct bpf_cgroup_ioctl_ctx, arg):
-> +       default:
-> +               if (size != size_default)
-> +                       return false;
-> +       }
-> +
-> +       return true;
-> +}
-> +
-> +const struct bpf_prog_ops cg_ioctl_prog_ops = {
-> +};
-> +
-> +const struct bpf_verifier_ops cg_ioctl_verifier_ops = {
-> +       .get_func_proto         = cgroup_ioctl_func_proto,
-> +       .is_valid_access        = cgroup_ioctl_is_valid_access,
-> +};
-> +
->  /**
->   * __cgroup_bpf_run_filter_sysctl - Run a program on sysctl
->   *
-> diff --git a/kernel/bpf/syscall.c b/kernel/bpf/syscall.c
-> index 86299a292214..6984a62c96f4 100644
-> --- a/kernel/bpf/syscall.c
-> +++ b/kernel/bpf/syscall.c
-> @@ -2054,6 +2054,7 @@ static bool is_net_admin_prog_type(enum bpf_prog_type prog_type)
->         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> +       case BPF_PROG_TYPE_CGROUP_IOCTL:
->         case BPF_PROG_TYPE_SOCK_OPS:
->         case BPF_PROG_TYPE_EXT: /* extends any prog */
->                 return true;
-> @@ -2806,6 +2807,8 @@ attach_type_to_prog_type(enum bpf_attach_type attach_type)
->                 return BPF_PROG_TYPE_SOCK_OPS;
->         case BPF_CGROUP_DEVICE:
->                 return BPF_PROG_TYPE_CGROUP_DEVICE;
-> +       case BPF_CGROUP_IOCTL:
-> +               return BPF_PROG_TYPE_CGROUP_IOCTL;
->         case BPF_SK_MSG_VERDICT:
->                 return BPF_PROG_TYPE_SK_MSG;
->         case BPF_SK_SKB_STREAM_PARSER:
-> @@ -2878,6 +2881,7 @@ static int bpf_prog_attach(const union bpf_attr *attr)
->         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> +       case BPF_PROG_TYPE_CGROUP_IOCTL:
->         case BPF_PROG_TYPE_SOCK_OPS:
->                 ret = cgroup_bpf_prog_attach(attr, ptype, prog);
->                 break;
-> @@ -2915,6 +2919,7 @@ static int bpf_prog_detach(const union bpf_attr *attr)
->         case BPF_PROG_TYPE_CGROUP_SOCK_ADDR:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
-> +       case BPF_PROG_TYPE_CGROUP_IOCTL:
->         case BPF_PROG_TYPE_SOCK_OPS:
->                 return cgroup_bpf_prog_detach(attr, ptype);
->         default:
-> @@ -2958,6 +2963,7 @@ static int bpf_prog_query(const union bpf_attr *attr,
->         case BPF_CGROUP_SYSCTL:
->         case BPF_CGROUP_GETSOCKOPT:
->         case BPF_CGROUP_SETSOCKOPT:
-> +       case BPF_CGROUP_IOCTL:
->                 return cgroup_bpf_prog_query(attr, uattr);
->         case BPF_LIRC_MODE2:
->                 return lirc_prog_query(attr, uattr);
-> @@ -3914,6 +3920,7 @@ static int link_create(union bpf_attr *attr)
->         case BPF_PROG_TYPE_CGROUP_DEVICE:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> +       case BPF_PROG_TYPE_CGROUP_IOCTL:
->                 ret = cgroup_bpf_link_attach(attr, prog);
->                 break;
->         case BPF_PROG_TYPE_TRACING:
-> diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-> index ef938f17b944..af68f463e828 100644
-> --- a/kernel/bpf/verifier.c
-> +++ b/kernel/bpf/verifier.c
-> @@ -7419,6 +7419,7 @@ static int check_return_code(struct bpf_verifier_env *env)
->         case BPF_PROG_TYPE_CGROUP_DEVICE:
->         case BPF_PROG_TYPE_CGROUP_SYSCTL:
->         case BPF_PROG_TYPE_CGROUP_SOCKOPT:
-> +       case BPF_PROG_TYPE_CGROUP_IOCTL:
->                 break;
->         case BPF_PROG_TYPE_RAW_TRACEPOINT:
->                 if (!env->prog->aux->attach_btf_id)
-> --
-> 2.25.1
->
+        CPU 0                                                                           CPU 1
+
+do_anonymous_page
+  __page_set_anon_rmap
+  /* out of order happened so SetPageLRU is done ahead */
+  SetPageLRU(page)
+  /* Compilr changed store operation like below */
+  page->mapping = (struct address_space *) anon_vma;
+  /* Big stall happens */
+                                                                /* idletacking judged it as LRU page so pass the page
+                                                                   in page_reference */
+                                                                page_refernced
+                                                                        page_rmapping return true because
+                                                                        page->mapping has some vaule but not complete
+                                                                        so it calls rmap_walk_file.
+                                                                        it's okay to pass non-completed anon page in rmap_walk_file?
