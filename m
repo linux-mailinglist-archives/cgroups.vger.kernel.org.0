@@ -2,143 +2,143 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F8672A4DEA
-	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 19:10:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 50E802A4FF7
+	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 20:19:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729001AbgKCSKM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Nov 2020 13:10:12 -0500
-Received: from mga05.intel.com ([192.55.52.43]:49720 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727706AbgKCSKM (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 3 Nov 2020 13:10:12 -0500
-IronPort-SDR: xvMNNypQfzeMnCSKXXRKC/KZtU9I1TDUWhZ4i3gj3Ji2uKNQZJsuoXysYw68u/NloUNyxb4wx0
- oPVyBeUGUYxw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9794"; a="253813450"
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="253813450"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:10:11 -0800
-IronPort-SDR: EnuKWw9b8qb1LuDgOXw8oYS0Pp14A8Tpmqa/Wd4i9cXFcno0nH47ivzeVfNGqfG0OGkpp7gPtk
- 7M3VQfXzf8Bg==
-X-IronPort-AV: E=Sophos;i="5.77,448,1596524400"; 
-   d="scan'208";a="357763196"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Nov 2020 10:10:11 -0800
-Date:   Tue, 3 Nov 2020 10:10:09 -0800
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
-        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
-        joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
-        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
-        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Dionna Glaze <dionnaglaze@google.com>,
-        Erdem Aktas <erdemaktas@google.com>
-Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
-Message-ID: <20201103181007.GB28367@linux.intel.com>
-References: <20200922004024.3699923-1-vipinsh@google.com>
- <20200922004024.3699923-2-vipinsh@google.com>
- <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
- <20200922012227.GA26483@linux.intel.com>
- <c0ee04a93a8d679f5e9ee7eea6467b32bb7063d6.camel@HansenPartnership.com>
+        id S1729691AbgKCTTg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Nov 2020 14:19:36 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729578AbgKCTTe (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Nov 2020 14:19:34 -0500
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A29AC0613D1;
+        Tue,  3 Nov 2020 11:19:34 -0800 (PST)
+Received: by mail-pf1-x42f.google.com with SMTP id a200so15100257pfa.10;
+        Tue, 03 Nov 2020 11:19:34 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RyTUHv4YPLTNqL42MTqa/fFS08HR2dajcyLQhdo9vRs=;
+        b=LoYboUnHFQ3lxhuQT6RRR/I/kiFa6P1380rLhwUGdHscqd75CFuNDxUwo46/P1QYRO
+         kX2dtjRF/Lfs70NWS1UlHiyh/a4EgKZpJq8LBrJheRjh4dWbOmN9r7d6rdXK0kKygIFV
+         vG01bgpQGk2sGuu9rbEdeqPY8X/CZ4eVUHDREeOpE5+Vq4+f2i4hi/DrvyhjYBnneT+g
+         pwCyBxGvmYfSB6W+mXDw1n7r50Nou9jQS2LuO8qnuVoEgc8g0CKa2Ifz289fe9pRBu1v
+         9v/XfxkFbA+ETHQ83acEr23zBclzMESJgpUxVS4emEr6p0ZectaduvuAC5lQeU78DZFP
+         re6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RyTUHv4YPLTNqL42MTqa/fFS08HR2dajcyLQhdo9vRs=;
+        b=L05Yn/wUmSxHe+oOX7lfcRcLrQaVwhfs6PCFMvjfi+uhPsE009/0pOw3SiJwOXordB
+         1j6Cr0K7eU61VLn/aZGItRkb7NvfWr2EYzNN85KXlxSw+aSW139nxOKjrOgODvUwn0VI
+         6u+8Tn96Z1LUXqoRl2uu88GY+uZyAY4DHIx2BzddKcW8+TAfHv0TJDrgBSzUEAWWy9/5
+         oV5gcwUaECizXhu6T0egLwsBBRZQW4y9Zcn2p8E7sT36DbY63AMN22kdQLRLZ6QtZKKK
+         R9x3jXdHEYoKHBF44cTAwLpGnQw92G7/y1LCTShcfVtPguFbdcWdVSDgeH8XpHws91Cf
+         +HVQ==
+X-Gm-Message-State: AOAM53213X+muMe0x/iCb2Y7mi9dZLmaSL3IJz+15FuMukjq6hFm1TfV
+        lpbzynfeh4MQtv1AQ5JTg+DKD2aXvhSuoLiIbvU=
+X-Google-Smtp-Source: ABdhPJyS5KGX9mdkfbE1gtYPEJ7SMa69KuVYRRcH1stREUhbeiEnctTzXjnI+hsOhH4oDKqG2vLQpMQT7LtdOXPDG1M=
+X-Received: by 2002:a62:5f83:0:b029:18a:e039:4908 with SMTP id
+ t125-20020a625f830000b029018ae0394908mr11860139pfb.23.1604431173654; Tue, 03
+ Nov 2020 11:19:33 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0ee04a93a8d679f5e9ee7eea6467b32bb7063d6.camel@HansenPartnership.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+References: <20201007152355.2446741-1-Kenny.Ho@amd.com> <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
+ <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com> <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
+In-Reply-To: <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Tue, 3 Nov 2020 14:19:22 -0500
+Message-ID: <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
+Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Cc:     Kenny Ho <Kenny.Ho@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 08:39:12AM -0800, James Bottomley wrote:
-> On Mon, 2020-09-21 at 18:22 -0700, Sean Christopherson wrote:
-> > ASIDs too.  I'd also love to see more info in the docs and/or cover
-> > letter to explain why ASID management on SEV requires a cgroup.  I
-> > know what an ASID is, and have a decent idea of how KVM manages ASIDs
-> > for legacy VMs, but I know nothing about why ASIDs are limited for
-> > SEV and not legacy VMs.
-> 
-> Well, also, why would we only have a cgroup for ASIDs but not MSIDs?
+On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
+<alexei.starovoitov@gmail.com> wrote:
+> On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
+> pls don't top post.
+My apology.
 
-Assuming MSID==PCID in Intel terminology, which may be a bad assumption, the
-answer is that rationing PCIDs is a fools errand, at least on Intel CPUs.
+> > Cgroup awareness is desired because the intent
+> > is to use this for resource management as well (potentially along with
+> > other cgroup controlled resources.)  I will dig into bpf_lsm and learn
+> > more about it.
+>
+> Also consider that bpf_lsm hooks have a way to get cgroup-id without
+> being explicitly scoped. So the bpf program can be made cgroup aware.
+> It's just not as convenient as attaching a prog to cgroup+hook at once.
+> For prototyping the existing bpf_lsm facility should be enough.
+> So please try to follow this route and please share more details about
+> the use case.
 
-> For the reader at home a Space ID (SID) is simply a tag that can be
-> placed on a cache line to control things like flushing.  Intel and AMD
-> use MSIDs which are allocated per process to allow fast context
-> switching by flushing all the process pages using a flush by SID. 
-> ASIDs are also used by both Intel and AMD to control nested/extended
-> paging of virtual machines, so ASIDs are allocated per VM.  So far it's
-> universal.
+Ok.  I will take a look and see if that is sufficient.  My
+understanding of bpf-cgroup is that it not only makes attaching prog
+to cgroup easier but it also facilitates hierarchical calling of
+attached progs which might be useful if users wants to manage gpu
+resources with bpf cgroup along with other cgroup resources (like
+cpu/mem/io, etc.)
 
-On Intel CPUs, multiple things factor into the actual ASID that is used to tag
-TLB entries.  And underneath the hood, there are a _very_ limited number of
-ASIDs that are globally shared, i.e. a process in the host has an ASID, same
-as a process in the guest, and the CPU only supports tagging translations for
-N ASIDs at any given time.
+About the use case.  The high level motivation here is to provide the
+ability to subdivide/share a GPU via cgroups/containers in a way that
+is similar to other resources like CPU and memory.  Users have been
+requesting this type of functionality because GPU compute can get
+expensive and they want to maximize the utilization to get the most
+bang for their bucks.  A traditional way to do this is via
+SRIOV/virtualization but that often means time sharing the GPU as a
+whole unit.  That is useful for some applications but not others due
+to the flushing and added latency.  We also have a study that
+identified various GPU compute application types.  These types can
+benefit from more asymmetrical/granular sharing of the GPU (for
+example some applications are compute bound while others can be memory
+bound that can benefit from having more VRAM.)
 
-E.g. with TDX, the hardware/real ASID is derived from:
+I have been trying to add a cgroup subsystem for the drm subsystem for
+this purpose but I ran into two challenges.  First, the composition of
+a GPU and how some of the subcomponents (like VRAM or shader
+engines/compute units) can be shared are very much vendor specific so
+we are unable to arrive at a common interface across all vendors.
+Because of this and the variety of places a GPU can go into
+(smartphone, PC, server, HPC), there is also no agreement on how
+exactly a GPU should be shared.  The best way forward appears to
+simply provide hooks for users to define how and what they want to
+share via a bpf program.
 
-   VPID + PCID + SEAM + EPTP
+From what I can tell so far (I am still learning), there are multiple
+pieces that need to fall in place for bpf-cgroup to work for this use
+case.  First there is resource limit enforcement, which is the
+motivation for this RFC (I will look into bpf_lsm as the path
+forward.)  I have also been thinking about instrumenting the drm
+subsystem with a new BPF program type and have various attach types
+across the drm subsystem but I am not sure if this is allowed (this
+one is more for resource usage monitoring.)  Another thing I have been
+considering is to have the gpu driver provide bpf helper functions for
+bpf programs to modify drm driver internals.  That was the reason I
+asked about the potential of BTF support for kernel modules a couple
+of months ago (and Andrii Nakryiko mentioned that it is being worked
+on.)
 
-where VPID=0 for host, PCID=0 if PCID is disabled, SEAM=1 for the TDX-Module
-and TDX VMs, and obviously EPTP is invalid/ignored when EPT is disabled.
+Please feel free to ask more questions if any of the above is unclear.
+Feedbacks are always welcome.
 
-> AMD invented a mechanism for tying their memory encryption technology
-> to the ASID asserted on the memory bus, so now they can do encrypted
-> virtual machines since each VM is tagged by ASID which the memory
-> encryptor sees.  It is suspected that the forthcoming intel TDX
-> technology to encrypt VMs will operate in the same way as well.  This
-
-TDX uses MKTME keys, which are not tied to the ASID.  The KeyID is part of the
-physical address, at least in the initial hardware implementations, which means
-that from a memory perspective, each KeyID is a unique physical address.  This
-is completely orthogonal to ASIDs, e.g. a given KeyID+PA combo can have
-mutliple TLB entries if it's accessed by multiple ASIDs.
-
-> isn't everything you have to do to get an encrypted VM, but it's a core
-> part of it.
-> 
-> The problem with SIDs (both A and M) is that they get crammed into
-> spare bits in the CPU (like the upper bits of %CR3 for MSID) so we
-
-This CR3 reference is why I assume MSID==PCID, but the PCID is carved out of
-the lower bits (11:0) of CR3, which is why I'm unsure I interpreted this
-correctly.
-
-> don't have enough of them to do a 1:1 mapping of MSID to process or
-> ASID to VM.  Thus we have to ration them somewhat, which is what I
-> assume this patch is about?
-
-This cgroup is more about a hard limitation than about performance.
-
-With PCIDs, VPIDs, and AMD's ASIDs, there is always the option of recycling an
-existing ID (used for PCIDs and ASIDs), or simply disabling the feature (used
-for VPIDs).  In both cases, exhausting the resource affects performance due to
-incurring TLB flushes at transition points, but doesn't prevent creating new
-processes/VMs.
-
-And due to the way PCID=>ASID derivation works on Intel CPUs, the kernel
-doesn't even bother trying to use a large number of PCIDs.  IIRC, the current
-number of PCIDs used by the kernel is 5, i.e. the kernel intentionally
-recycles PCIDs long before it's forced to do so by the architectural
-limitation of 4k PCIDs, because using more than 5 PCIDs actually hurts
-performance (forced PCID recycling allows the kernel to keep *its* ASID live
-by flushing userspace PCIDs, whereas CPU recycling of ASIDs is indiscriminate).
-
-MKTME KeyIDs and SEV ASIDs are different.  There is a hard, relatively low
-limit on the number of IDs that are available, and exhausting that pool
-effectively prevents creating a new encrypted VM[*].  E.g. with TDX, on first
-gen hardware there is a hard limit of 127 KeyIDs that can be used to create
-TDX VMs.  IIRC, SEV-ES is capped 512 or so ASIDs.  Hitting that cap means no
-more protected VMs can be created.
-
-[*] KeyID exhaustion for TDX is a hard restriction, the old VM _must_ be torn
-    down to reuse the KeyID.  ASID exhaustion for SEV is not technically a
-    hard limit, e.g. KVM could theoretically park a VM to reuse its ASID, but
-    for all intents and purposes that VM is no longer live.
+Regards,
+Kenny
