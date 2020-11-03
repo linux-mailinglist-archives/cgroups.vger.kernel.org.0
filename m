@@ -2,89 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC0072A3C1D
-	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 06:43:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 457C82A4BE1
+	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 17:48:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727165AbgKCFnG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Nov 2020 00:43:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49860 "EHLO
+        id S1728302AbgKCQsT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 3 Nov 2020 11:48:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725953AbgKCFnF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Nov 2020 00:43:05 -0500
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22C65C0617A6;
-        Mon,  2 Nov 2020 21:43:05 -0800 (PST)
-Received: by mail-lf1-x12a.google.com with SMTP id k14so5385503lfg.7;
-        Mon, 02 Nov 2020 21:43:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MuNT1kBsmjFVlwCSohMVH0XAUpaiqhjCv+VgJCXYn0k=;
-        b=LQcQ8Age9Axwo8J/829d2HXmpiJvQwk7ycJxrWRlT8zpJ3qF9MuzhIpBhvAhiSR+hb
-         mG9XHWU7bdhknsPJxSxxMMLg2F/tuhgOGAcbS5bIbu7IeoTnEGsRaRlBTZHrssQgMhM5
-         dhL4qOSKVAlKR/eigT63eGr05e8xe7fyDgp9mgTKE/F5t0ckHbU2jHiXavzhSYScwq1z
-         xibrtSd4QPFO5DuMkxd0GEc55SHeO0TFYSscQuZyNrxlrlMlxMgYVMWyBguiQ7If+zgS
-         dERkjRfy/0TIDpDmOZVyuv2rIHF4fV2COuff1yXN3jCbSObv098KCXOJVKUbWHf6GhOE
-         7pFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=MuNT1kBsmjFVlwCSohMVH0XAUpaiqhjCv+VgJCXYn0k=;
-        b=t0Dmxj6VSIoKdX74cez0aQBqtBse5+MwmBuVpS9BZr6fzvkaFmAf8MmsqKP9vxnQ3e
-         Yez1r1tpK7bfz86omtqKUjlr5ncZ7Mr4LRhtdnM5gz0rznN7lo5RF6j3kG+kfLV2/4KK
-         /V39wgW/Re9PgyowolMcjzny7fog94lDGWv8VQMPn4bbohLJFGSyTb32LTBeQjVEA/i6
-         FuHmB/NkVRGEvU8IxwQd6AEStvzRLa2O9sKQPzngM4YdN2vbG6xyCKt/uZ8SFbS8mgMh
-         JnLRwlkJ9s0W2ruSqR0CFIpnaHfnGthADhelUlo3QKIzBG9NE8WZmOdU1sbF7k27H22O
-         qmrw==
-X-Gm-Message-State: AOAM531c3pGY3ZYh3NYc5YDaZkTwMV3fmjJuh2l8qd1ICozTafoD2EOf
-        bxsBL/f0nGMIaHJ823MgWMPge6tbT5DeqEkwGG8=
-X-Google-Smtp-Source: ABdhPJzqM9tOchv/OdQTFpb4w5KVIztjOUzx5R8fylmEUY5nbuLVIZ9e1iYxtp9SAi/9XGaS0db3wka/hT7ZlRkwOjU=
-X-Received: by 2002:a19:8317:: with SMTP id f23mr6590718lfd.554.1604382183579;
- Mon, 02 Nov 2020 21:43:03 -0800 (PST)
-MIME-Version: 1.0
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com> <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com> <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
-In-Reply-To: <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Date:   Mon, 2 Nov 2020 21:42:52 -0800
-Message-ID: <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
+        with ESMTP id S1725997AbgKCQsT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Nov 2020 11:48:19 -0500
+X-Greylist: delayed 543 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 03 Nov 2020 08:48:19 PST
+Received: from bedivere.hansenpartnership.com (bedivere.hansenpartnership.com [IPv6:2607:fcd0:100:8a00::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B18EC0613D1;
+        Tue,  3 Nov 2020 08:48:19 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id C69BA128003B;
+        Tue,  3 Nov 2020 08:39:14 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1604421554;
+        bh=HGUTyhqFV7T0x144FbiJ+dIW4PRgOPfbbL2emrIeZSI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=JV5wydhVcXN14b9so+1nEsuOqf/5654vfvCb3lKpcdvyNBGgNCjRZKR10SdqBr0zJ
+         ZWHyYISVZXNaOIX7U/vHlBX3vhZn1ppqUUUAemdXH7gs1LjXrGnB4mcr1mhjCIX2BQ
+         xIdn8A920w3BZhKsFhf9SsMnD1NHOkCYO8XZe3os=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id q32PP5ReTDhX; Tue,  3 Nov 2020 08:39:14 -0800 (PST)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::527])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 9FFF5128002F;
+        Tue,  3 Nov 2020 08:39:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1604421554;
+        bh=HGUTyhqFV7T0x144FbiJ+dIW4PRgOPfbbL2emrIeZSI=;
+        h=Message-ID:Subject:From:To:Date:In-Reply-To:References:From;
+        b=JV5wydhVcXN14b9so+1nEsuOqf/5654vfvCb3lKpcdvyNBGgNCjRZKR10SdqBr0zJ
+         ZWHyYISVZXNaOIX7U/vHlBX3vhZn1ppqUUUAemdXH7gs1LjXrGnB4mcr1mhjCIX2BQ
+         xIdn8A920w3BZhKsFhf9SsMnD1NHOkCYO8XZe3os=
+Message-ID: <c0ee04a93a8d679f5e9ee7eea6467b32bb7063d6.camel@HansenPartnership.com>
+Subject: Re: [RFC Patch 1/2] KVM: SVM: Create SEV cgroup controller.
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Cc:     Vipin Sharma <vipinsh@google.com>, thomas.lendacky@amd.com,
+        pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
+        joro@8bytes.org, corbet@lwn.net, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, gingell@google.com,
+        rientjes@google.com, kvm@vger.kernel.org, x86@kernel.org,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Dionna Glaze <dionnaglaze@google.com>,
+        Erdem Aktas <erdemaktas@google.com>
+Date:   Tue, 03 Nov 2020 08:39:12 -0800
+In-Reply-To: <20200922012227.GA26483@linux.intel.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+         <20200922004024.3699923-2-vipinsh@google.com>
+         <94c3407d-07ca-8eaf-4073-4a5e2a3fb7b8@infradead.org>
+         <20200922012227.GA26483@linux.intel.com>
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
->
-> Thanks for the reply.
+On Mon, 2020-09-21 at 18:22 -0700, Sean Christopherson wrote:
+> On Mon, Sep 21, 2020 at 06:04:04PM -0700, Randy Dunlap wrote:
+> > Hi,
+> > 
+> > On 9/21/20 5:40 PM, Vipin Sharma wrote:
+> > > diff --git a/init/Kconfig b/init/Kconfig
+> > > index d6a0b31b13dc..1a57c362b803 100644
+> > > --- a/init/Kconfig
+> > > +++ b/init/Kconfig
+> > > @@ -1101,6 +1101,20 @@ config CGROUP_BPF
+> > >  	  BPF_CGROUP_INET_INGRESS will be executed on the ingress path
+> > > of
+> > >  	  inet sockets.
+> > >  
+> > > +config CGROUP_SEV
+> > > +	bool "SEV ASID controller"
+> > > +	depends on KVM_AMD_SEV
+> > > +	default n
+> > > +	help
+> > > +	  Provides a controller for AMD SEV ASIDs. This controller
+> > > limits and
+> > > +	  shows the total usage of SEV ASIDs used in encrypted VMs on
+> > > AMD
+> > > +	  processors. Whenever a new encrypted VM is created using SEV
+> > > on an
+> > > +	  AMD processor, this controller will check the current limit
+> > > in the
+> > > +	  cgroup to which the task belongs and will deny the SEV ASID
+> > > if the
+> > > +	  cgroup has already reached its limit.
+> > > +
+> > > +	  Say N if unsure.
+> > 
+> > Something here (either in the bool prompt string or the help text)
+> > should let a reader know w.t.h. SEV means.
+> > 
+> > Without having to look in other places...
+> 
+> ASIDs too.  I'd also love to see more info in the docs and/or cover
+> letter to explain why ASID management on SEV requires a cgroup.  I
+> know what an ASID is, and have a decent idea of how KVM manages ASIDs
+> for legacy VMs, but I know nothing about why ASIDs are limited for
+> SEV and not legacy VMs.
 
-pls don't top post.
+Well, also, why would we only have a cgroup for ASIDs but not MSIDs?
 
-> Cgroup awareness is desired because the intent
-> is to use this for resource management as well (potentially along with
-> other cgroup controlled resources.)  I will dig into bpf_lsm and learn
-> more about it.
+For the reader at home a Space ID (SID) is simply a tag that can be
+placed on a cache line to control things like flushing.  Intel and AMD
+use MSIDs which are allocated per process to allow fast context
+switching by flushing all the process pages using a flush by SID. 
+ASIDs are also used by both Intel and AMD to control nested/extended
+paging of virtual machines, so ASIDs are allocated per VM.  So far it's
+universal.
 
-Also consider that bpf_lsm hooks have a way to get cgroup-id without
-being explicitly scoped. So the bpf program can be made cgroup aware.
-It's just not as convenient as attaching a prog to cgroup+hook at once.
-For prototyping the existing bpf_lsm facility should be enough.
-So please try to follow this route and please share more details about
-the use case.
+AMD invented a mechanism for tying their memory encryption technology
+to the ASID asserted on the memory bus, so now they can do encrypted
+virtual machines since each VM is tagged by ASID which the memory
+encryptor sees.  It is suspected that the forthcoming intel TDX
+technology to encrypt VMs will operate in the same way as well.  This
+isn't everything you have to do to get an encrypted VM, but it's a core
+part of it.
+
+The problem with SIDs (both A and M) is that they get crammed into
+spare bits in the CPU (like the upper bits of %CR3 for MSID) so we
+don't have enough of them to do a 1:1 mapping of MSID to process or
+ASID to VM.  Thus we have to ration them somewhat, which is what I
+assume this patch is about?
+
+James
+
+
