@@ -2,121 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E74E2A38E0
-	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 02:22:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A9362A3A38
+	for <lists+cgroups@lfdr.de>; Tue,  3 Nov 2020 03:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728320AbgKCBVF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 2 Nov 2020 20:21:05 -0500
-Received: from mail.kernel.org ([198.145.29.99]:36306 "EHLO mail.kernel.org"
+        id S1727307AbgKCCG3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 2 Nov 2020 21:06:29 -0500
+Received: from mga18.intel.com ([134.134.136.126]:25958 "EHLO mga18.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1728307AbgKCBVC (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 2 Nov 2020 20:21:02 -0500
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C4E742244C;
-        Tue,  3 Nov 2020 01:21:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604366461;
-        bh=pS/wfuvgECeMv7tP2JsM2x5VhNzsY45wQ2MPzjvmbb4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=HShtYipL15ECiKG3KGMjsXkwBHLQ/RMDmkhOGcz7LcZDbzIKCGdDvPTgOwjLR8lD5
-         u6JMMYHdE+fbJ1uRsgqKpNKh2kQSv3+GzoFYzsHqG64uq0joboeRV551vD8ODZdkho
-         jZowZaE3HakjWPT11DM58eQHj408jEFSs2Pqs7RE=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
-        Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
-        linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.14 05/10] blk-cgroup: Pre-allocate tree node on blkg_conf_prep
-Date:   Mon,  2 Nov 2020 20:20:49 -0500
-Message-Id: <20201103012054.183811-5-sashal@kernel.org>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20201103012054.183811-1-sashal@kernel.org>
-References: <20201103012054.183811-1-sashal@kernel.org>
+        id S1726143AbgKCCG3 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 2 Nov 2020 21:06:29 -0500
+IronPort-SDR: 02ZU4rN9rSdTTOih4AkVeqdTXNuto7lVtRiaYSMV8Mjr89Ngj90o53cKyI281plzRFbGBI3LTu
+ z1rcEQw8ZyZw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9793"; a="156763943"
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="156763943"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:28 -0800
+IronPort-SDR: Kq6lU2fZpcgBUsl0B+DBw7X9k9ezyBKi1z58dYSXci+awnhXrCJemdiKjNZSiihHrdJFghI1C0
+ eWMHQSf6vLBQ==
+X-IronPort-AV: E=Sophos;i="5.77,446,1596524400"; 
+   d="scan'208";a="353032672"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Nov 2020 18:06:26 -0800
+Date:   Mon, 2 Nov 2020 18:06:24 -0800
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, pbonzini@redhat.com, tj@kernel.org,
+        lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        gingell@google.com, rientjes@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+Message-ID: <20201103020623.GJ21563@linux.intel.com>
+References: <20200922004024.3699923-1-vipinsh@google.com>
+ <20200922014836.GA26507@linux.intel.com>
+ <20200922211404.GA4141897@google.com>
+ <20200924192116.GC9649@linux.intel.com>
+ <cb592c59-a50e-5901-71fe-19e43bc9e37e@amd.com>
+ <20200925222220.GA977797@google.com>
+ <20201002204810.GA3179405@google.com>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201002204810.GA3179405@google.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:
+> On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:
+> > I agree with you that the abstract name is better than the concrete
+> > name, I also feel that we must provide HW extensions. Here is one
+> > approach:
+> > 
+> > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to
+> > suggestions)
+> > 
+> > Control files: slots.{max, current, events}
 
-[ Upstream commit f255c19b3ab46d3cad3b1b2e1036f4c926cb1d0c ]
-
-Similarly to commit 457e490f2b741 ("blkcg: allocate struct blkcg_gq
-outside request queue spinlock"), blkg_create can also trigger
-occasional -ENOMEM failures at the radix insertion because any
-allocation inside blkg_create has to be non-blocking, making it more
-likely to fail.  This causes trouble for userspace tools trying to
-configure io weights who need to deal with this condition.
-
-This patch reduces the occurrence of -ENOMEMs on this path by preloading
-the radix tree element on a GFP_KERNEL context, such that we guarantee
-the later non-blocking insertion won't fail.
-
-A similar solution exists in blkcg_init_queue for the same situation.
-
-Acked-by: Tejun Heo <tj@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- block/blk-cgroup.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index a7217caea699d..34f8e69078cc1 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -872,6 +872,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			goto fail;
- 		}
- 
-+		if (radix_tree_preload(GFP_KERNEL)) {
-+			blkg_free(new_blkg);
-+			ret = -ENOMEM;
-+			goto fail;
-+		}
-+
- 		rcu_read_lock();
- 		spin_lock_irq(q->queue_lock);
- 
-@@ -879,7 +885,7 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 		if (IS_ERR(blkg)) {
- 			ret = PTR_ERR(blkg);
- 			blkg_free(new_blkg);
--			goto fail_unlock;
-+			goto fail_preloaded;
- 		}
- 
- 		if (blkg) {
-@@ -888,10 +894,12 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 			blkg = blkg_create(pos, q, new_blkg);
- 			if (unlikely(IS_ERR(blkg))) {
- 				ret = PTR_ERR(blkg);
--				goto fail_unlock;
-+				goto fail_preloaded;
- 			}
- 		}
- 
-+		radix_tree_preload_end();
-+
- 		if (pos == blkcg)
- 			goto success;
- 	}
-@@ -901,6 +909,8 @@ int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 	ctx->body = body;
- 	return 0;
- 
-+fail_preloaded:
-+	radix_tree_preload_end();
- fail_unlock:
- 	spin_unlock_irq(q->queue_lock);
- 	rcu_read_unlock();
--- 
-2.27.0
-
+I don't particularly like the "slots" name, mostly because it could be confused
+with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
+love those names either, but "encryption" and "IDs" are the two obvious
+commonalities betwee TDX's encryption key IDs and SEV's encryption address
+space IDs.
