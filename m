@@ -2,166 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3B552A6C24
-	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 18:49:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 797022A70A5
+	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 23:38:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730805AbgKDRru (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Nov 2020 12:47:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48860 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730797AbgKDRru (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Nov 2020 12:47:50 -0500
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6982C0613D3
-        for <cgroups@vger.kernel.org>; Wed,  4 Nov 2020 09:47:49 -0800 (PST)
-Received: by mail-qk1-x742.google.com with SMTP id 140so20094861qko.2
-        for <cgroups@vger.kernel.org>; Wed, 04 Nov 2020 09:47:49 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=7p9nMEZ9CzGNR2nnoc/NmQ6U82GjuP7yX7DwiANzfMc=;
-        b=rli6FwsWHB6cip/0jF9V7BsRWZHrrjIg7apvuKsE1Kge0E1dkDcIwIFohwKtLUNDAk
-         wz/XglDjWFEulLaAfpTOkI/0Uc4V5g+ashXdnCpUU5Y67NkbPnjYcHowLSGV3qpV1sm8
-         PXa4wmOaVMSbRNKZO03cdu+YlTVXPEjInI04LrO59b8qeBsErr+oo5tT/Kqu6AQo2ZRk
-         65sCqy2Xavh+oMTSK1yv/QuMP9HCT8mS1vrN5D4TUL9Ved1CVkPbN6xpb49UcVVNb2VC
-         YNORrzogpHxam/vez2HbOF4GRctTlLzbSWFf3SULmRcwcG/9bFvtEV/CyaxRuImJqqNG
-         bpXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=7p9nMEZ9CzGNR2nnoc/NmQ6U82GjuP7yX7DwiANzfMc=;
-        b=Y7R/x2pmlyOiZXYSMg0llsCrVhN7fuGjVBUvWelq8tre2lXX8v6jrBTJ2BwZMR253u
-         lC002cvaYVcbo6G0OLxm1WopxCKTDB9Vw987b/XKXij3GX3DrHQnV0u4z1z7XGTMgdX/
-         tkGoiLcZVWLw4CjT0a/7KoG9pTB1zPiquf81YBy9Hvor3tlRH6f6SUz1r0UrnexueZ7Y
-         pam50GTmEH7EvdXxtVoq1N+TGHoJntBo1PcRfxpP+XohzDLtOo2JikJO4OdO48dRO6KR
-         dPSvxIw61nMNEaVAkS3IxBWSTUP5JoxztHaPyKFKbuZVmmoOZQSXqT+R4BphArfeEALl
-         d+rw==
-X-Gm-Message-State: AOAM532FzMpoGkdjkkLwA9oCKEVnfGlPHYLX0g6VV0uEpwugqG72FW7Q
-        RIcjMFNrQhg5m6mb5dgQHVeqGA==
-X-Google-Smtp-Source: ABdhPJyMmSWtU9YdDH6PIQ8KMI59p6etR+e16HXhCBMFokoPryGCTptpZglCy4FPpuIv5MAhH7H3vA==
-X-Received: by 2002:a37:8542:: with SMTP id h63mr27249718qkd.102.1604512068975;
-        Wed, 04 Nov 2020 09:47:48 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:9e9e])
-        by smtp.gmail.com with ESMTPSA id d145sm2908052qke.83.2020.11.04.09.47.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 04 Nov 2020 09:47:48 -0800 (PST)
-Date:   Wed, 4 Nov 2020 12:46:03 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
-        Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
-Message-ID: <20201104174603.GB744831@cmpxchg.org>
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
- <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
- <20201102144110.GB724984@cmpxchg.org>
- <20201102144927.GN27442@casper.infradead.org>
- <20201102202003.GA740958@cmpxchg.org>
- <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S1729149AbgKDWiV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Nov 2020 17:38:21 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:31972 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728085AbgKDWiV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Nov 2020 17:38:21 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A4MTvXQ006018;
+        Wed, 4 Nov 2020 14:38:07 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
+ b=jJOWNDX3uFjBKHQP197Ajf+iOzNFtbD7H/mju691sv6If979RmQpjJ10ahihL9UOjPFC
+ E+AJtQQAAs0tPBH8EfhZJ2iNjYw1C8nrorQGy37aKa8bYeZ/QBaXrVpHaYd0fkE7s7dH
+ rqSMC+wCFnVFXGeUhgctA9co+cINrLiW/9g= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34ky5tt9uq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Wed, 04 Nov 2020 14:38:07 -0800
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Wed, 4 Nov 2020 14:38:06 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g1eVIKBmqZU8k7TTXxUNXFQtTFZZf0XvNFKq9fx1F2lVkx4qRpA1hQ0KXw83elLjkIrQHPCSoYEz/6MEL1uLUvDpmVmjzasq/g+cD0LO6zCEuS+/tjO1edQuQd6ySXgo1fz1mJupd4lGZ87DSJbOpyP9irTcqGVmI2XonDgGjuq6rkABXlAraOdirRXuuxI+uzVAoBrkEsmzb0cWqsSgWZNSy8JYSwbImT/JLjna04kNyKlrYzBzvz8rFqNiky5nf0+O/uRLQF9L8COgokOP7UP69HxlaQg3ih9Y8wJEnEyHvRrN0Hzu1NmGcGzuFBRXd/CHtLhTc2AVxlaA8A/HyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
+ b=SnM+laQNrX+FVBFXKeA+fgPWLe2SkTcgwCpk5zRC7cRKtYCAkMTDKevi6f0xG/pmRwxYDqjppP1IFKbMbsrqy30jScsVDTti7PwC5IIVPXDF9xvOnoL+RfBK5pr+0THvviv1fMsJw08UeMYniIs5F5oC8XsSi3bZkYCepOt+xFFam6m3ojHSvu5+o6GIVvYygjfs6IXSIOviQNs+3t03in4ZoS3MmF4qE6Fq29eBqj++oIpoLLgy6kKwcbwAZ2zIDt5K/4GsUOShFQ8b7if1Pcey/A8Q/FR1XfOp5R8/NKBNU0zBF05HbWXCs13M1M5cyROUFkiJjGfiWGDaPKwZjA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SaXYkKIlRUoE2k29DxM72HhU3WLstM7GE8lDlgF29S8=;
+ b=TDENzwI3mNN8drG9OZM+Lc3CC5ZefjbWaxNbV8DQ1leGm+t2RMiNLMqPBR5RpI14dR2X41ip54+nWHau1/92s5OH762Hi9WiADFRBI+8DX7QSehMgk8rp6d5xk6GuNi6NojCG32CVGwPuUwyS8X/tEsjOkHkQC2SFaLdMwztEIc=
+Authentication-Results: 163.com; dkim=none (message not signed)
+ header.d=none;163.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2391.namprd15.prod.outlook.com (2603:10b6:a02:8c::31) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19; Wed, 4 Nov
+ 2020 22:38:04 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3499.032; Wed, 4 Nov 2020
+ 22:38:04 +0000
+Date:   Wed, 4 Nov 2020 14:38:00 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Hui Su <sh_def@163.com>
+CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
+        <shakeelb@google.com>, <laoar.shao@gmail.com>,
+        <chris@chrisdown.name>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-ID: <20201104223800.GD1938922@carbon.dhcp.thefacebook.com>
+References: <20201104142516.GA106571@rlk>
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
+In-Reply-To: <20201104142516.GA106571@rlk>
+X-Originating-IP: [2620:10d:c090:400::5:ae3f]
+X-ClientProxiedBy: MWHPR14CA0061.namprd14.prod.outlook.com
+ (2603:10b6:300:81::23) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:ae3f) by MWHPR14CA0061.namprd14.prod.outlook.com (2603:10b6:300:81::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 4 Nov 2020 22:38:03 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 22cd2d9c-1a39-4beb-879a-08d881124b2e
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2391:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB2391706F8957759B683F67B8BEEF0@BYAPR15MB2391.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 3As0JoBdg9I0wFZshkl2qN6V7YMb4RRwqi9r6dQxmKYENvdERTJ6JkMQeXEjwBhTC7jgg8cu9RYlHr4SPwqE0W5RDG3wqyxbQv/h29jDV8RU2fiiABociWrvchzDtVRwLH+25X3alMa7L0DSgwq6u9qFw8RD+xLSg6IetNbFjJMA1NY1Hsve7hZvIJwBgkG3mOqRg0v9qUN/072zZvkpd8NsPaOShMMU9WMhMlM5cLU7MIEKTCUT8v31gfO/CgcXlQ4VEa40sDmPJ25o7PS4GTFeUWNS7u6K9Km9UVbJ1xQKX+oeoX5KEwTG6BsqpywVviHxwxS+lfAWl1RT+iKqyw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(396003)(366004)(9686003)(4326008)(86362001)(5660300002)(8676002)(83380400001)(1076003)(55016002)(2906002)(66556008)(66476007)(7696005)(66946007)(8936002)(16526019)(6506007)(33656002)(52116002)(186003)(478600001)(7416002)(6916009)(316002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: HPCsBN+bSVeyVmB/lV/vDkwc2mUuX5Y+C0Zr67w+6i8IchCQdetUXnOBmfl2VydmyAORC+e4ezhDyUbaGxchSZBNKPkRwd401v2qfFIlb57YsYj0VBGEhHGnBXiMQVoFsZUJ7SLBHhmkRIT3HZdVyCJkrvtPHa6amScJcZAAXJx4+vzzqxkx+d2qF7X97mj13Rp+RTuU4voYJb42rpY2EB/x1R3tKirP0/Zm9FvHVHLwwLm6DwyoujzrouX6kbeZe5coP5Q5TRyGoHMGnoPf1mtfJLa3pw7lCXP6bp3K4nHkeJRrZGnyzZGLFGKnDgBisjg4SIul2zWGpQ9NWC95UAR6LbiZ8vieFs7a4F789NlxYyzIegckEhxRKcEEfGjo3U/teyYMnPWgwoSqWvmC0JYUdVuGYy2asX+4g9fLxuqQMppS2eSm7ekBY9Mb/V+E2kbv/EQRvX/vpZN9P/2TYToosQuJorwkhkZyphfPdmOlbSvQeQ/3ZnceWeMbI+BxMKoXX8S2a3PdCNUOGQ/JHl5w/WRPBL1M8t1IdlTLU9a4U5rSKU++4ImqiEuDFMbLztI81KCXI9TlCt0x9oAu1ViI8oGySBY0Mb7XVQbykcRcC7ubAM5ilfXs3CRXLL/J8XnrUEx2AnfAwT4rRrcdSayA4HUqXXMoy0srfe+hc5c=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 22cd2d9c-1a39-4beb-879a-08d881124b2e
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Nov 2020 22:38:04.5329
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: xSy3X/01QdUTpQh+yDluV1tL5msVKCqfoc8FR9FZkp2colpjp20RebXNIL+wyEgG
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2391
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-04_15:2020-11-04,2020-11-04 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 impostorscore=0
+ clxscore=1011 malwarescore=0 priorityscore=1501 suspectscore=1 mlxscore=0
+ lowpriorityscore=0 mlxlogscore=999 spamscore=0 phishscore=0 bulkscore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011040161
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 07:27:21PM +0800, Alex Shi wrote:
-> 在 2020/11/3 上午4:20, Johannes Weiner 写道:
-> > On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
-> >> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
-> >>> On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
-> >>>> From: Hugh Dickins <hughd@google.com>
-> >>>>
-> >>>> It is necessary for page_idle_get_page() to recheck PageLRU() after
-> >>>> get_page_unless_zero(), but holding lru_lock around that serves no
-> >>>> useful purpose, and adds to lru_lock contention: delete it.
-> >>>>
-> >>>> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
-> >>>> discussion that led to lru_lock there; but __page_set_anon_rmap() now
-> >>>> uses WRITE_ONCE(),
-> >>>
-> >>> That doesn't seem to be the case in Linus's or Andrew's tree. Am I
-> >>> missing a dependent patch series?
-> >>>
-> >>>> and I see no other risk in page_idle_clear_pte_refs() using
-> >>>> rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
-> >>>> not entirely prevented by page_count() check in ksm.c's
-> >>>> write_protect_page(): that risk being shared with page_referenced()
-> >>>> and not helped by lru_lock).
-> >>>
-> >>> Isn't it possible, as per Minchan's description, for page->mapping to
-> >>> point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
-> >>> thinking it's looking at a struct address_space?
-> >>
-> >> I don't think it can point to an anon_vma without the ANON bit set.
-> >> Minchan's concern in that email was that it might still be NULL.
-> > 
-> > Hm, no, the thread is a lengthy discussion about whether the store
-> > could be split such that page->mapping is actually pointing to
-> > something invalid (anon_vma without the PageAnon bit).
-> > 
-> > From his email:
-> > 
-> >         CPU 0                                                                           CPU 1
-> > 
-> > do_anonymous_page
-> >   __page_set_anon_rmap
-> >   /* out of order happened so SetPageLRU is done ahead */
-> >   SetPageLRU(page)
+On Wed, Nov 04, 2020 at 10:25:16PM +0800, Hui Su wrote:
+> mem_cgroup_page_lruvec() in memcontrol.c and
+> mem_cgroup_lruvec() in memcontrol.h is very similar
+> except for the param(page and memcg) which also can be
+> convert to each other.
 > 
-> This SetPageLRU done in __pagevec_lru_add_fn() which under the lru_lock
-> protection, so the original memory barrier or lock concern isn't
-> correct. that means, the SetPageLRU isn't possible to be here.
-> And then no warry on right side 'CPU 1' problem.
+> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
+> 
+> Signed-off-by: Hui Su <sh_def@163.com>
+> ---
+>  include/linux/memcontrol.h | 18 +++++++++++++++--
+>  mm/memcontrol.c            | 40 --------------------------------------
+>  2 files changed, 16 insertions(+), 42 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index e391e3c56de5..a586363fb766 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+>  /**
+>   * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+>   * @memcg: memcg of the wanted lruvec
+> + * @pgdat: pglist_data
+>   *
+>   * Returns the lru list vector holding pages for a given @memcg &
+> - * @node combination. This can be the node lruvec, if the memory
+> + * @pgdat combination. This can be the node lruvec, if the memory
+>   * controller is disabled.
+>   */
+>  static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+> @@ -489,7 +490,20 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>  	return lruvec;
+>  }
 
-The SetPageLRU is done under lru_lock, but the store to page->mapping
-is not, so what ensures ordering between them? And what prevents the
-compiler from tearing the store to page->mapping?
+Hi Hui,
 
-The writer does this:
+>  
+> -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
+> +/**
+> + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+> + * @page: the page
+> + * @pgdat: pgdat of the page
+> + *
+> + * This function relies on page->mem_cgroup being stable.
+> + */
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> +						struct pglist_data *pgdat)
 
-	CPU 0
-	page_add_new_anon_rmap()
-	  page->mapping = anon_vma + PAGE_MAPPING_ANON
-	lru_cache_add_inactive_or_unevictable()
-	  spin_lock(lruvec->lock)
-	  SetPageLRU()
-	  spin_unlock(lruvec->lock)
+Hm, do we need to pass page and pgdat?
 
-The concern is what CPU 1 will observe at page->mapping after
-observing PageLRU set on the page.
+> +{
+> +	struct mem_cgroup *memcg = page->mem_cgroup;
 
-1. anon_vma + PAGE_MAPPING_ANON
+It seems like you need to rebase the patch against the latest mm snapshot.
 
-   That's the in-order scenario and is fine.
+> +
+> +	return mem_cgroup_lruvec(memcg, pgdat);
 
-2. NULL
-
-   That's possible if the page->mapping store gets reordered to occur
-   after SetPageLRU. That's fine too because we check for it.
-
-3. anon_vma without the PAGE_MAPPING_ANON bit
-
-   That would be a problem and could lead to all kinds of undesirable
-   behavior including crashes and data corruption.
-
-   Is it possible? AFAICT the compiler is allowed to tear the store to
-   page->mapping and I don't see anything that would prevent it.
-
-That said, I also don't see how the reader testing PageLRU under the
-lru_lock would prevent that in the first place. AFAICT we need that
-WRITE_ONCE() around the page->mapping assignment that's referenced in
-the changelog of this patch but I cannot find in any tree or patch.
+Thanks!
