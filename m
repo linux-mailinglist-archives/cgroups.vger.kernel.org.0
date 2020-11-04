@@ -2,127 +2,151 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D1032A63B9
-	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 12:57:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FD52A6657
+	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 15:27:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726344AbgKDL5d (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 4 Nov 2020 06:57:33 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:40491 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728841AbgKDLzq (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Nov 2020 06:55:46 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UED0xNV_1604490939;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UED0xNV_1604490939)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 04 Nov 2020 19:55:39 +0800
-Subject: Re: [PATCH v20 00/20] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
+        id S1726756AbgKDO12 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Nov 2020 09:27:28 -0500
+Received: from m12-16.163.com ([220.181.12.16]:41277 "EHLO m12-16.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726729AbgKDO12 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 4 Nov 2020 09:27:28 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=+7b6f
+        oOiP5Z9YBXE2KwaQcndnG3JikUcOzlmE2YTnls=; b=fS4axkMErEOzoG9saGOnX
+        bIQbf3lUfxOnbHkqEOBpybEr7XmzYxwHLvd1l0rxjIT3k9cLPGdX6ZXHoiI51PhV
+        Eri9QeKQopNabCeE6LuhYrJcwSSQcenN46qOnA0THPFKLNcAyMznz/ZTKGkby0m0
+        GN32nARCTwKsOs2D1oWVn8=
+Received: from localhost (unknown [101.86.211.214])
+        by smtp12 (Coremail) with SMTP id EMCowADnFGrMuaJffmFhJw--.17147S2;
+        Wed, 04 Nov 2020 22:25:17 +0800 (CST)
+Date:   Wed, 4 Nov 2020 22:25:16 +0800
+From:   Hui Su <sh_def@163.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
+        laoar.shao@gmail.com, chris@chrisdown.name,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <811216d4-4972-4721-d6b9-1028c02f4290@linux.alibaba.com>
-Date:   Wed, 4 Nov 2020 19:55:39 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        linux-mm@kvack.org
+Cc:     sh_def@163.com
+Subject: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-ID: <20201104142516.GA106571@rlk>
 MIME-Version: 1.0
-In-Reply-To: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: EMCowADnFGrMuaJffmFhJw--.17147S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4UAryrJFyrGry7Kr15Arb_yoW5ur4xpF
+        ZxJ3W3A398JrWYgr1xta1q9a4fZa1xJw43Jr17Jw1SyF13K34Fq3W2kr1rJFWUuF9ayrnr
+        trZ0kr18G3yqvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U0iiDUUUUU=
+X-Originating-IP: [101.86.211.214]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbitw3SX1aEGR9xmQAAsL
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Johannes & all,
+mem_cgroup_page_lruvec() in memcontrol.c and
+mem_cgroup_lruvec() in memcontrol.h is very similar
+except for the param(page and memcg) which also can be
+convert to each other.
 
-Thanks for all comments and suggestions, here is a patch base on v20, as a summary for all you suggested:
-Is this ok?
+So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
 
-Many thanks!
-Alex
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ include/linux/memcontrol.h | 18 +++++++++++++++--
+ mm/memcontrol.c            | 40 --------------------------------------
+ 2 files changed, 16 insertions(+), 42 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e391e3c56de5..a586363fb766 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+ /**
+  * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+  * @memcg: memcg of the wanted lruvec
++ * @pgdat: pglist_data
+  *
+  * Returns the lru list vector holding pages for a given @memcg &
+- * @node combination. This can be the node lruvec, if the memory
++ * @pgdat combination. This can be the node lruvec, if the memory
+  * controller is disabled.
+  */
+ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+@@ -489,7 +490,20 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+ 	return lruvec;
+ }
+ 
+-struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
++/**
++ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
++ * @page: the page
++ * @pgdat: pgdat of the page
++ *
++ * This function relies on page->mem_cgroup being stable.
++ */
++static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
++						struct pglist_data *pgdat)
++{
++	struct mem_cgroup *memcg = page->mem_cgroup;
++
++	return mem_cgroup_lruvec(memcg, pgdat);
++}
+ 
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0c97292834fa..0fe4172c8c14 100644
+index 3dcbf24d2227..9d4e1150b194 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -20,6 +20,9 @@
-  * Lockless page tracking & accounting
-  * Unified hierarchy configuration model
-  * Copyright (C) 2015 Red Hat, Inc., Johannes Weiner
-+ *
-+ * Per memcg lru locking
-+ * Copyright (C) 2020 Alibaba, Inc, Alex Shi
-  */
-
- #include <linux/page_counter.h>
-@@ -1380,6 +1383,14 @@ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgd
-        return lruvec;
+@@ -1330,46 +1330,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	return ret;
  }
+ 
+-/**
+- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+- * @page: the page
+- * @pgdat: pgdat of the page
+- *
+- * This function relies on page->mem_cgroup being stable - see the
+- * access rules in commit_charge().
+- */
+-struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+-{
+-	struct mem_cgroup_per_node *mz;
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-
+-	if (mem_cgroup_disabled()) {
+-		lruvec = &pgdat->__lruvec;
+-		goto out;
+-	}
+-
+-	memcg = page->mem_cgroup;
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
+-	if (!memcg)
+-		memcg = root_mem_cgroup;
+-
+-	mz = mem_cgroup_page_nodeinfo(memcg, page);
+-	lruvec = &mz->lruvec;
+-out:
+-	/*
+-	 * Since a node can be onlined after the mem_cgroup was created,
+-	 * we have to be prepared to initialize lruvec->zone here;
+-	 * and if offlined then reonlined, we need to reinitialize it.
+-	 */
+-	if (unlikely(lruvec->pgdat != pgdat))
+-		lruvec->pgdat = pgdat;
+-	return lruvec;
+-}
+-
+ /**
+  * mem_cgroup_update_lru_size - account for adding or removing an lru page
+  * @lruvec: mem_cgroup per zone lru vector
+-- 
+2.29.0
 
-+/**
-+ * lock_page_lruvec - return lruvec for the locked page.
-+ * @page: the page
-+ *
-+ * This series functions should be used in either conditions:
-+ * PageLRU is cleared or unset
-+ * or, page->_refcount is zero
-+ */
- struct lruvec *lock_page_lruvec(struct page *page)
- {
-        struct lruvec *lruvec;
-diff --git a/mm/swap.c b/mm/swap.c
-index 9fe5ff9a8111..bcc814de35c4 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -264,6 +264,13 @@ void lru_note_cost(struct lruvec *lruvec, bool file, unsigned int nr_pages)
-        do {
-                unsigned long lrusize;
-
-+               /*
-+                * Hold lruvec->lru_lock is safe here, since
-+                * 1) The pinned lruvec in reclaim, or
-+                * 2) From a pre-LRU page during refault (which also holds the
-+                *    rcu lock, so would be safe even if the page was on the LRU
-+                *    and could move simultaneously to a new lruvec).
-+                */
-                spin_lock_irq(&lruvec->lru_lock);
-                /* Record cost event */
-                if (file)
-@@ -355,10 +362,12 @@ static void activate_page(struct page *page)
-        struct lruvec *lruvec;
-
-        page = compound_head(page);
--       lruvec = lock_page_lruvec_irq(page);
--       if (PageLRU(page))
-+       if (TestClearPageLRU(page)) {
-+               lruvec = lock_page_lruvec_irq(page);
-                __activate_page(page, lruvec);
--       unlock_page_lruvec_irq(lruvec);
-+               unlock_page_lruvec_irq(lruvec);
-+               SetPageLRU(page);
-+       }
- }
- #endif
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 7ed10ade548d..af03a7f2e1b8 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1868,6 +1868,10 @@ static unsigned noinline_for_stack move_pages_to_lru(struct lruvec *lruvec,
-                        continue;
-                }
-
-+               /*
-+                * All pages were isolated from the same lruvec (and isolation
-+                * inhibits memcg migration).
-+                */
-                VM_BUG_ON_PAGE(!lruvec_holds_page_lru_lock(page, lruvec), page);
-                lru = page_lru(page);
-                nr_pages = thp_nr_pages(page);
 
