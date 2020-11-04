@@ -2,143 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F7F42A5A8D
-	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 00:28:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DDD522A6342
+	for <lists+cgroups@lfdr.de>; Wed,  4 Nov 2020 12:27:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725765AbgKCX2K (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 3 Nov 2020 18:28:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46862 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725763AbgKCX2J (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 3 Nov 2020 18:28:09 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B7C74C0613D1;
-        Tue,  3 Nov 2020 15:28:09 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id x13so14929503pgp.7;
-        Tue, 03 Nov 2020 15:28:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=eRl//7At+Wm2EvC4VlJ9A50IgrwQOr/jqI3Y/MXhPxg=;
-        b=kmZVUoU/Ml29s2vai8g/wNXjAaEbkI2ty7/6v1tIWH/TsVrRa4VJjMGFgMG6+GfqOd
-         9YUZ70jBPbJJsjQW/+jbVP+kYL/cKNZnzawk7FKkjXECBfHU0twg+Y03hcoyYt1HAV4r
-         dwuVHNxylpag7OCuMJnFlLe/C1x/Gtlnr/dRj2KKStNq7iQecKuIkiwlgblsw44EQOCi
-         +u/IO3JItZUNB9dcbEqwcJ6zSBEnqh3W7zEq03ns+7jyjKspZ61r4pdJQZGsqvvgg8Rt
-         oeJ/OCsatIzsx20LV3rXcQ4JRKe03TqSXJu1lX8dMm4zOhLKyK9wt7RGo0qAPkfiqv6S
-         cdoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=eRl//7At+Wm2EvC4VlJ9A50IgrwQOr/jqI3Y/MXhPxg=;
-        b=PpDYWBpft5QfqqDUOiW0aB0i+brG0Lt9ZC1YaiIPzwHmu2WrNNo/wZCUVMzJLMqhOJ
-         B3rt2xvc2uEe0OfHDyHx/J7A0YeC0JoSK6HYvsrOhT402fopcCEFd95MDar4OqSInD5V
-         2FDX6yCpElEw5vW3QrM7cPN0yeKrmvNNRFBru4QshYJBr+GFeM8qWAmijF8QcKj1vtsX
-         fSbmGz5R+m5MvWoJsv9VLPlOWoA0HXDx5b0kkuY6ClO7DamhE7FBeNbW3XRHtjgRdJNh
-         MQrtgJk3FH9SH0hPq2uNOnEXzLDaGqGP9var9GzLwqbZ3XGwiwF1LiMUqZdrNSax9zUM
-         EBCA==
-X-Gm-Message-State: AOAM531ILp624++hlI6MXOk72A0peev0YvUd8J1NT497jvDloDWQLLZG
-        q3D1bvq4ZW1qLGfE0GengZI=
-X-Google-Smtp-Source: ABdhPJwA1Y3V3bXAbq5RWgN0tRPA1Lm5ZwU9tdZvWFuGd5NX2rWIgARC5HkbuwN5Li8owzB81DvZcw==
-X-Received: by 2002:a63:5153:: with SMTP id r19mr18783989pgl.130.1604446089195;
-        Tue, 03 Nov 2020 15:28:09 -0800 (PST)
-Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::5:4055])
-        by smtp.gmail.com with ESMTPSA id w19sm209327pff.6.2020.11.03.15.28.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Nov 2020 15:28:08 -0800 (PST)
-Date:   Tue, 3 Nov 2020 15:28:05 -0800
-From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
-To:     Kenny Ho <y2kenny@gmail.com>
-Cc:     Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
- <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
- <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
- <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
- <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+        id S1728535AbgKDL1h (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 4 Nov 2020 06:27:37 -0500
+Received: from out4436.biz.mail.alibaba.com ([47.88.44.36]:34260 "EHLO
+        out4436.biz.mail.alibaba.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1728287AbgKDL1h (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 4 Nov 2020 06:27:37 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R131e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0UECBM9f_1604489241;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UECBM9f_1604489241)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 04 Nov 2020 19:27:22 +0800
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Matthew Wilcox <willy@infradead.org>
+Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
+        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
+        daniel.m.jordan@oracle.com, lkp@intel.com, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        shakeelb@google.com, iamjoonsoo.kim@lge.com,
+        richard.weiyang@gmail.com, kirill@shutemov.name,
+        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
+        vdavydov.dev@gmail.com, shy828301@gmail.com,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
+ <20201102202003.GA740958@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
+Date:   Wed, 4 Nov 2020 19:27:21 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+In-Reply-To: <20201102202003.GA740958@cmpxchg.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 03, 2020 at 05:57:47PM -0500, Kenny Ho wrote:
-> On Tue, Nov 3, 2020 at 4:04 PM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> >
-> > On Tue, Nov 03, 2020 at 02:19:22PM -0500, Kenny Ho wrote:
-> > > On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > > On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> >
-> > Sounds like either bpf_lsm needs to be made aware of cgv2 (which would
-> > be a great thing to have regardless) or cgroup-bpf needs a drm/gpu specific hook.
-> > I think generic ioctl hook is too broad for this use case.
-> > I suspect drm/gpu internal state would be easier to access inside
-> > bpf program if the hook is next to gpu/drm. At ioctl level there is 'file'.
-> > It's probably too abstract for the things you want to do.
-> > Like how VRAM/shader/etc can be accessed through file?
-> > Probably possible through a bunch of lookups and dereferences, but
-> > if the hook is custom to GPU that info is likely readily available.
-> > Then such cgroup-bpf check would be suitable in execution paths where
-> > ioctl-based hook would be too slow.
-> Just to clarify, when you say drm specific hook, did you mean just a
-> unique attach_type or a unique prog_type+attach_type combination?  (I
-> am still a bit fuzzy on when a new prog type is needed vs a new attach
-> type.  I think prog type is associated with a unique type of context
-> that the bpf prog will get but I could be missing some nuances.)
-> 
-> When I was thinking of doing an ioctl wide hook, the file would be the
-> device file and the thinking was to have a helper function provided by
-> device drivers to further disambiguate.  For our (AMD's) driver, we
-> have a bunch of ioctls for set/get/create/destroy
-> (https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c#L1763)
-> so the bpf prog can make the decision after the disambiguation.  For
-> example, we have an ioctl called "kfd_ioctl_set_cu_mask."  You can
 
-Thanks for the pointer.
-That's one monster ioctl. So much copy_from_user.
-BPF prog would need to be sleepable to able to examine the args in such depth.
-After quick glance at the code I would put a new hook into
-kfd_ioctl() right before
-retcode = func(filep, process, kdata);
-At this point kdata is already copied from user space 
-and usize, that is cmd specific, is known.
-So bpf prog wouldn't need to copy that data again.
-That will save one copy.
-To drill into details of kfd_ioctl_set_cu_mask() the prog would
-need to be sleepable to do second copy_from_user of cu_mask.
-At least it's not that big.
-Yes, the attachment point will be amd driver specific,
-but the program doesn't need to be.
-It can be generic tracing prog that is agumented to use BTF.
-Something like writeable tracepoint with BTF support would do.
-So on the bpf side there will be minimal amount of changes.
-And in the driver you'll add one or few writeable tracepoints
-and the result of the tracepoint will gate
-retcode = func(filep, process, kdata);
-call in kfd_ioctl().
-The writeable tracepoint would need to be cgroup-bpf based.
-So that's the only tricky part. BPF infra doesn't have
-cgroup+tracepoint scheme. It's probably going to be useful
-in other cases like this. See trace_nbd_send_request.
+
+ÔÚ 2020/11/3 ÉÏÎç4:20, Johannes Weiner Ð´µÀ:
+> On Mon, Nov 02, 2020 at 02:49:27PM +0000, Matthew Wilcox wrote:
+>> On Mon, Nov 02, 2020 at 09:41:10AM -0500, Johannes Weiner wrote:
+>>> On Thu, Oct 29, 2020 at 06:44:53PM +0800, Alex Shi wrote:
+>>>> From: Hugh Dickins <hughd@google.com>
+>>>>
+>>>> It is necessary for page_idle_get_page() to recheck PageLRU() after
+>>>> get_page_unless_zero(), but holding lru_lock around that serves no
+>>>> useful purpose, and adds to lru_lock contention: delete it.
+>>>>
+>>>> See https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop for the
+>>>> discussion that led to lru_lock there; but __page_set_anon_rmap() now
+>>>> uses WRITE_ONCE(),
+>>>
+>>> That doesn't seem to be the case in Linus's or Andrew's tree. Am I
+>>> missing a dependent patch series?
+>>>
+>>>> and I see no other risk in page_idle_clear_pte_refs() using
+>>>> rmap_walk() (beyond the risk of racing PageAnon->PageKsm, mostly but
+>>>> not entirely prevented by page_count() check in ksm.c's
+>>>> write_protect_page(): that risk being shared with page_referenced()
+>>>> and not helped by lru_lock).
+>>>
+>>> Isn't it possible, as per Minchan's description, for page->mapping to
+>>> point to a struct anon_vma without PAGE_MAPPING_ANON set, and rmap
+>>> thinking it's looking at a struct address_space?
+>>
+>> I don't think it can point to an anon_vma without the ANON bit set.
+>> Minchan's concern in that email was that it might still be NULL.
+> 
+> Hm, no, the thread is a lengthy discussion about whether the store
+> could be split such that page->mapping is actually pointing to
+> something invalid (anon_vma without the PageAnon bit).
+> 
+> From his email:
+> 
+>         CPU 0                                                                           CPU 1
+> 
+> do_anonymous_page
+>   __page_set_anon_rmap
+>   /* out of order happened so SetPageLRU is done ahead */
+>   SetPageLRU(page)
+
+This SetPageLRU done in __pagevec_lru_add_fn() which under the lru_lock
+protection, so the original memory barrier or lock concern isn't
+correct. that means, the SetPageLRU isn't possible to be here.
+And then no warry on right side 'CPU 1' problem.
+
+>   /* Compilr changed store operation like below */
+>   page->mapping = (struct address_space *) anon_vma;
+>   /* Big stall happens */
+>                                                                 /* idletacking judged it as LRU page so pass the page
+>                                                                    in page_reference */
+>                                                                 page_refernced
+								  page_referenced should be page_idle_clear_pte_refs_one here?	
+>                                                                         page_rmapping return true because
+>                                                                         page->mapping has some vaule but not complete
+>                                                                         so it calls rmap_walk_file.
+>                                                                         it's okay to pass non-completed anon page in rmap_walk_file?
+> 
+
+
+For this patch, According to comments of page_idle_get_page() 
+PageLRU just used to judge if the page is in user using. for this
+purpose, a unguard PageLRU check is good enough. So this patch
+should be fine.
+
+Thanks
+Alex
