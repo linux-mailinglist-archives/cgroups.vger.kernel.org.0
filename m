@@ -2,80 +2,75 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13F6D2A82BD
-	for <lists+cgroups@lfdr.de>; Thu,  5 Nov 2020 16:55:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E2E962A8BFC
+	for <lists+cgroups@lfdr.de>; Fri,  6 Nov 2020 02:11:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731586AbgKEPzS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 5 Nov 2020 10:55:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58000 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731560AbgKEPzS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Nov 2020 10:55:18 -0500
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5D192C0613CF
-        for <cgroups@vger.kernel.org>; Thu,  5 Nov 2020 07:55:18 -0800 (PST)
-Received: by mail-qk1-x741.google.com with SMTP id k9so1580018qki.6
-        for <cgroups@vger.kernel.org>; Thu, 05 Nov 2020 07:55:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=A3JA9WEFpRuCAbhY2DBNk/bNA/HrXMr9AT46oTgaBJc=;
-        b=iE2JW9bLmeyDb8+yOQGwPSMgBWXGejaZMqGA4cvyWkomZy8WrhWPWjVl/6AlmObyKl
-         iUvEVobpJggmpeNwPzM0+B4lsSQYI0RGUFGlU+GaKYmNYjeL7RlgXRaOU5vu7BpLmKLz
-         b6d5uerULC4QbQ4GTFrYFH9vVziu7NUf2IOv/Gqw+8Yi0bHtTQ2zd7xuJsn5ieVGqJ2/
-         8bSXkOZyKtBcrYstoI8nMWWG9zuCuNjvIPHMT/g+lWlruh+BRNpQUCAGXi18LnRPKpgz
-         W1KIdVcHHWs2RqTY3NHosrKq8wStbQjj0A16XDgRpYAQMnPZifnI/1QB6PdcMzllpXjs
-         ruhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=A3JA9WEFpRuCAbhY2DBNk/bNA/HrXMr9AT46oTgaBJc=;
-        b=kjSQvXtfa0tGWzQkVfYJ2v0i+PiGS17tN8wz54+Udel5mDssen2PjV90Kzly4AuTha
-         wjrNZ1NgCTvVVMrLDLNyb9MoPH3Q7kkGVrb7dtbjAhtEX1sA2IQgS2WI+H9fcsD6DgR3
-         SEu0fQMbs84MHuCQBJ8ILe5aYCvIlv7+uSlzmbutRuNT9mM/05PDOK7YuomjdchlaOoL
-         EpuX51Na24RsJfAWQ5bYrwRTK5FSa8jRqTP2ETf91msH/mJSXRh+vPKnBwo/ZzaQWuBX
-         5h6n5A4XuQ8FjbK4v5XJgAey7wV2cSb6FhDX6F0tYfniYLwGPwq6R4QUQepLQMj+p9Xo
-         DaXQ==
-X-Gm-Message-State: AOAM5308IDV3+ZJIw5uxde3c1pDvYTNu40zr4frVJ1obAI2Ac/19hbsL
-        FuNJ01cfvBgHEFXPnBS1H+KAGIckuRE7PA==
-X-Google-Smtp-Source: ABdhPJwcraIqbJ3b5alyPraU5Bj9UQ/pjTE9hZ55uU+SAxXYsxTVO0mKKnn9bGpqnpigK5ac/u/Spw==
-X-Received: by 2002:a37:4ca:: with SMTP id 193mr2715271qke.346.1604591717689;
-        Thu, 05 Nov 2020 07:55:17 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:fc05])
-        by smtp.gmail.com with ESMTPSA id k15sm1133883qtq.11.2020.11.05.07.55.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 05 Nov 2020 07:55:16 -0800 (PST)
-Date:   Thu, 5 Nov 2020 10:53:31 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Hui Su <sh_def@163.com>
-Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        laoar.shao@gmail.com, chris@chrisdown.name,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-ID: <20201105155331.GE744831@cmpxchg.org>
-References: <20201104142516.GA106571@rlk>
+        id S1732766AbgKFBL3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 5 Nov 2020 20:11:29 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:53250 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732396AbgKFBL2 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 5 Nov 2020 20:11:28 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R211e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=23;SR=0;TI=SMTPD_---0UEMg2FE_1604625083;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEMg2FE_1604625083)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 06 Nov 2020 09:11:24 +0800
+Subject: Re: [PATCH v20 08/20] mm: page_idle_get_page() does not need lru_lock
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        lkp@intel.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com, Vlastimil Babka <vbabka@suse.cz>,
+        Minchan Kim <minchan@kernel.org>
+References: <1603968305-8026-1-git-send-email-alex.shi@linux.alibaba.com>
+ <1603968305-8026-9-git-send-email-alex.shi@linux.alibaba.com>
+ <20201102144110.GB724984@cmpxchg.org>
+ <20201102144927.GN27442@casper.infradead.org>
+ <20201102202003.GA740958@cmpxchg.org>
+ <b4038b87-cf5a-fcb7-06f4-b98874029615@linux.alibaba.com>
+ <20201104174603.GB744831@cmpxchg.org>
+ <6eea82d8-e406-06ee-2333-eb6e2f1944e5@linux.alibaba.com>
+ <20201105045702.GI17076@casper.infradead.org>
+ <1e8f0162-cf2e-03eb-e7e0-ccc9f6a3eaf2@linux.alibaba.com>
+ <20201105153649.GC744831@cmpxchg.org>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <a7ed8ebf-0d7b-2f01-eaad-14a07e660f68@linux.alibaba.com>
+Date:   Fri, 6 Nov 2020 09:11:12 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201104142516.GA106571@rlk>
+In-Reply-To: <20201105153649.GC744831@cmpxchg.org>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Nov 04, 2020 at 10:25:16PM +0800, Hui Su wrote:
-> mem_cgroup_page_lruvec() in memcontrol.c and
-> mem_cgroup_lruvec() in memcontrol.h is very similar
-> except for the param(page and memcg) which also can be
-> convert to each other.
-> 
-> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
-> 
-> Signed-off-by: Hui Su <sh_def@163.com>
 
-Nice.
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+在 2020/11/5 下午11:36, Johannes Weiner 写道:
+>>> 	 */
+>>>
+> Yeah, I don't think this scenario warrants the full race diagram in
+> the code itself.
+> 
+> But the code is highly specific - synchronizing one struct page member
+> for one particular use case. Let's keep at least a reference to what
+> we are synchronizing against. There is a non-zero chance that if the
+> comment goes out of date, so does the code. How about this?
+> 
+> 	/*
+> 	 * page_idle does a lockless/optimistic rmap scan on page->mapping.
+> 	 * Make sure the compiler doesn't split the stores of anon_vma and
+> 	 * the PAGE_MAPPING_ANON type identifier, otherwise the rmap code
+> 	 * could mistake the mapping for a struct address_space and crash.
+> 	 */
+
+Thanks a lot to you all. I will update to v21 patch
+
+Alex
