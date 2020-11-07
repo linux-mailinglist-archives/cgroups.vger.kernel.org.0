@@ -2,96 +2,92 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B301B2A9EFD
-	for <lists+cgroups@lfdr.de>; Fri,  6 Nov 2020 22:22:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237532AA204
+	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 02:30:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727178AbgKFVWU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Nov 2020 16:22:20 -0500
-Received: from m12-13.163.com ([220.181.12.13]:47245 "EHLO m12-13.163.com"
+        id S1726447AbgKGBaQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 6 Nov 2020 20:30:16 -0500
+Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725868AbgKFVWU (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 6 Nov 2020 16:22:20 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=lcBJi
-        p8ZNNvvSPADxy2tq0eOE8BhPbgY2uyruI3Bgms=; b=JWk5wGPQXlpX8nNKA/ARa
-        vBuaMqLarm1G1WPJdbB9RJAgWydHW5CR3Tm/QZo3G/Tv67ogyLSyNpKckp8M10WG
-        TQAViSZDY9fW0Xm4j2LXN1Bn+i/OZuAqP3ISd9QJ+Nyz3ZaNNwTzzz4b2tlTXZiF
-        lQbu3sT5RkIOVx68MtMyKc=
-Received: from localhost (unknown [101.86.208.122])
-        by smtp9 (Coremail) with SMTP id DcCowAB3v2sMYqVf2GK5PA--.44977S2;
-        Fri, 06 Nov 2020 22:47:40 +0800 (CST)
-Date:   Fri, 6 Nov 2020 22:47:40 +0800
-From:   Hui Su <sh_def@163.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     sh_def@163.com
-Subject: [PATCH] cgroup/cgroup.c: replace 'of->kn->priv' with of_cft()
-Message-ID: <20201106144740.GA9692@rlk>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-CM-TRANSID: DcCowAB3v2sMYqVf2GK5PA--.44977S2
-X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw1rGrWfGFy8XFy3Jw13Arb_yoW8WFy3pF
-        Z8A3yYkw45KF1DCr1qyFWq93WfKw4ftry7JF9rA34rtr129r1qqF1UCryjv3WYyF93Kr4a
-        qrZ09ryUKw4rtFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UjiiDUUUUU=
-X-Originating-IP: [101.86.208.122]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbipAzUX1r7rQdvUAAAsX
+        id S1727129AbgKGBaQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 6 Nov 2020 20:30:16 -0500
+Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E9F320720;
+        Sat,  7 Nov 2020 01:30:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1604712615;
+        bh=5ja+hHDhLaw834klWxEIsEobJjKzEYlU1fK3r77mU5g=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=jZrN5F7/+Zu3GmPA5iLrAhldT/HnmmgsyZF2eKJZ9aZUKndfgBlXBzDVBKRlKB20J
+         gnoQgoeBoM9JlKv5BRD526px7a20WshtiPv/94Md18VkK2B5uF32W2PcQAXlnjhxJP
+         wyfF6u9yfTq52lPBu14DkQlLqPNi719Z1w4wjAJ4=
+Date:   Fri, 6 Nov 2020 17:30:14 -0800
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Hui Su <sh_def@163.com>
+Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        shakeelb@google.com, guro@fb.com, laoar.shao@gmail.com,
+        chris@chrisdown.name, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-Id: <20201106173014.e13b5fe5edec41d1f7fdf072@linux-foundation.org>
+In-Reply-To: <20201104142516.GA106571@rlk>
+References: <20201104142516.GA106571@rlk>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-we have supplied the inline function: of_cft() in cgroup.h.
+On Wed, 4 Nov 2020 22:25:16 +0800 Hui Su <sh_def@163.com> wrote:
 
-So replace the direct use 'of->kn->priv' with inline func
-of_cft(), which is more readable.
+> mem_cgroup_page_lruvec() in memcontrol.c and
+> mem_cgroup_lruvec() in memcontrol.h is very similar
+> except for the param(page and memcg) which also can be
+> convert to each other.
+> 
+> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- kernel/cgroup/cgroup.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Alex Shi's "mm/memcg: warning on !memcg after readahead page charged"
+(https://lkml.kernel.org/r/1604283436-18880-3-git-send-email-alex.shi@linux.alibaba.com)
+changes mem_cgroup_page_lruvec() thusly:
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e41c21819ba0..078d7f167890 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3657,7 +3657,7 @@ static ssize_t cgroup_freeze_write(struct kernfs_open_file *of,
+--- a/mm/memcontrol.c~mm-memcg-warning-on-memcg-after-readahead-page-charged
++++ a/mm/memcontrol.c
+@@ -1325,10 +1325,7 @@ struct lruvec *mem_cgroup_page_lruvec(st
+ 	}
  
- static int cgroup_file_open(struct kernfs_open_file *of)
- {
--	struct cftype *cft = of->kn->priv;
-+	struct cftype *cft = of_cft(of);
+ 	memcg = page_memcg(page);
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
++	VM_WARN_ON_ONCE_PAGE(!memcg, page);
+ 	if (!memcg)
+ 		memcg = root_mem_cgroup;
  
- 	if (cft->open)
- 		return cft->open(of);
-@@ -3666,7 +3666,7 @@ static int cgroup_file_open(struct kernfs_open_file *of)
- 
- static void cgroup_file_release(struct kernfs_open_file *of)
- {
--	struct cftype *cft = of->kn->priv;
-+	struct cftype *cft = of_cft(of);
- 
- 	if (cft->release)
- 		cft->release(of);
-@@ -3677,7 +3677,7 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
- {
- 	struct cgroup_namespace *ns = current->nsproxy->cgroup_ns;
- 	struct cgroup *cgrp = of->kn->parent->priv;
--	struct cftype *cft = of->kn->priv;
-+	struct cftype *cft = of_cft(of);
- 	struct cgroup_subsys_state *css;
- 	int ret;
- 
-@@ -3727,7 +3727,7 @@ static ssize_t cgroup_file_write(struct kernfs_open_file *of, char *buf,
- 
- static __poll_t cgroup_file_poll(struct kernfs_open_file *of, poll_table *pt)
- {
--	struct cftype *cft = of->kn->priv;
-+	struct cftype *cft = of_cft(of);
- 
- 	if (cft->poll)
- 		return cft->poll(of, pt);
--- 
-2.29.0
+So the patch didn't apply.
 
+That's easily fixed, but it does make one wonder whether this:
+
+> -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
+> +/**
+> + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+> + * @page: the page
+> + * @pgdat: pgdat of the page
+> + *
+> + * This function relies on page->mem_cgroup being stable.
+> + */
+> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
+> +						struct pglist_data *pgdat)
+> +{
+> +	struct mem_cgroup *memcg = page->mem_cgroup;
+> +
+> +	return mem_cgroup_lruvec(memcg, pgdat);
+> +}
+
+Should be using page_memcg()?
 
