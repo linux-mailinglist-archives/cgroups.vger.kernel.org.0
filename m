@@ -2,92 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 237532AA204
-	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 02:30:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C4B292AA3DA
+	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 09:25:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726447AbgKGBaQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 6 Nov 2020 20:30:16 -0500
-Received: from mail.kernel.org ([198.145.29.99]:47326 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727129AbgKGBaQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 6 Nov 2020 20:30:16 -0500
-Received: from localhost.localdomain (c-73-231-172-41.hsd1.ca.comcast.net [73.231.172.41])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1E9F320720;
-        Sat,  7 Nov 2020 01:30:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604712615;
-        bh=5ja+hHDhLaw834klWxEIsEobJjKzEYlU1fK3r77mU5g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=jZrN5F7/+Zu3GmPA5iLrAhldT/HnmmgsyZF2eKJZ9aZUKndfgBlXBzDVBKRlKB20J
-         gnoQgoeBoM9JlKv5BRD526px7a20WshtiPv/94Md18VkK2B5uF32W2PcQAXlnjhxJP
-         wyfF6u9yfTq52lPBu14DkQlLqPNi719Z1w4wjAJ4=
-Date:   Fri, 6 Nov 2020 17:30:14 -0800
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     Hui Su <sh_def@163.com>
-Cc:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        shakeelb@google.com, guro@fb.com, laoar.shao@gmail.com,
-        chris@chrisdown.name, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
-Message-Id: <20201106173014.e13b5fe5edec41d1f7fdf072@linux-foundation.org>
-In-Reply-To: <20201104142516.GA106571@rlk>
-References: <20201104142516.GA106571@rlk>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S1728285AbgKGIZB (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Nov 2020 03:25:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728264AbgKGIZB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Nov 2020 03:25:01 -0500
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B28EC0613CF
+        for <cgroups@vger.kernel.org>; Sat,  7 Nov 2020 00:25:01 -0800 (PST)
+Received: by mail-pf1-x444.google.com with SMTP id g7so3890385pfc.2
+        for <cgroups@vger.kernel.org>; Sat, 07 Nov 2020 00:25:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=JHHlZp1uRQshZtVOevTd8kVtiW2laSXxZhJcCQo5cWA=;
+        b=F6LWRqEvicBf2UN13VB/7aC+ImV1y7V/8eAIjVqjWAEwNwPrnYcDIfH2BaMMj9E2ip
+         IflIZc+QBAEB8h6loN1v83UhaNc84Af6eIT42giwMAUXHbeaUCGX3rvDIVgUelI71jU+
+         95Jh1Grak51pUzoFZ4LI4Vi2g93k8rgEUr6wh2iThMlZmZvmLUv0KCPtyI+4jtS+TTdp
+         m80cSSptzouL5UKP3d7FEzyvu7akyhNQ5VXuct/ShmWhKWc8X8jMpsMecOLELB9aK9Qh
+         bYlpdLiVGoJBXeZN1pEepSPZpxe39XZmEGZ5UqhbBadEAWx0ymNvUZc00wJs00Ln99R2
+         aYhA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=JHHlZp1uRQshZtVOevTd8kVtiW2laSXxZhJcCQo5cWA=;
+        b=L/8l9YT4DI5ZyUWTYmpQBorIqJIrAsCpRnSr8QBJJIDQaycQqDq+kGD4OAb+KZn41B
+         QGCkZmc1T6CWHNSt9T9s5DMrSdsUIU9LpU/m/ASrV7sKYtqeAJYP01U3EpPNrwGDahg6
+         lyR9vyQziLZ1KWFg2Y4jdTENtx4yCxveiBmAGMV3QDfliiaNZe/waFfBavhM1KEKYl4t
+         bINis8Z1+T5YT1zc7Egstbi//m8nvAK29tUiRBkg6si0xGmdiLhE1ITEF5Pj7hX8jY2/
+         wl2CcrReuBAVrCGiVyRrXYwhSnUgKJYTzGJt/s6cd5TTMp84+VRsgxihGfCGjJeAFMix
+         1m+A==
+X-Gm-Message-State: AOAM530tJABq2FlQAPM2FLzBcDWtou7fdVwWD3QVKWrxShjoeDjE07Py
+        3umRo+GgFROOBDf1bF+mlA==
+X-Google-Smtp-Source: ABdhPJwgcSJr0lc2iZQEQUsRw6j98V2iYoW2P9biBW6H0rb5fe0tan/UdtmeBx4VYA5GihB80p4Rrg==
+X-Received: by 2002:a63:205c:: with SMTP id r28mr4838182pgm.100.1604737501216;
+        Sat, 07 Nov 2020 00:25:01 -0800 (PST)
+Received: from he-cluster.localdomain (67.216.221.250.16clouds.com. [67.216.221.250])
+        by smtp.gmail.com with ESMTPSA id m9sm4800543pfh.94.2020.11.07.00.25.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sat, 07 Nov 2020 00:25:00 -0800 (PST)
+From:   xiakaixu1987@gmail.com
+X-Google-Original-From: kaixuxia@tencent.com
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com
+Cc:     linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Kaixu Xia <kaixuxia@tencent.com>
+Subject: [PATCH] mm: memcontrol: Assign boolean values to a bool variable
+Date:   Sat,  7 Nov 2020 16:24:55 +0800
+Message-Id: <1604737495-6418-1-git-send-email-kaixuxia@tencent.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, 4 Nov 2020 22:25:16 +0800 Hui Su <sh_def@163.com> wrote:
+From: Kaixu Xia <kaixuxia@tencent.com>
 
-> mem_cgroup_page_lruvec() in memcontrol.c and
-> mem_cgroup_lruvec() in memcontrol.h is very similar
-> except for the param(page and memcg) which also can be
-> convert to each other.
-> 
-> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
+Fix the following coccinelle warnings:
 
-Alex Shi's "mm/memcg: warning on !memcg after readahead page charged"
-(https://lkml.kernel.org/r/1604283436-18880-3-git-send-email-alex.shi@linux.alibaba.com)
-changes mem_cgroup_page_lruvec() thusly:
+./mm/memcontrol.c:7341:2-22: WARNING: Assignment of 0/1 to bool variable
+./mm/memcontrol.c:7343:2-22: WARNING: Assignment of 0/1 to bool variable
 
---- a/mm/memcontrol.c~mm-memcg-warning-on-memcg-after-readahead-page-charged
-+++ a/mm/memcontrol.c
-@@ -1325,10 +1325,7 @@ struct lruvec *mem_cgroup_page_lruvec(st
- 	}
- 
- 	memcg = page_memcg(page);
--	/*
--	 * Swapcache readahead pages are added to the LRU - and
--	 * possibly migrated - before they are charged.
--	 */
-+	VM_WARN_ON_ONCE_PAGE(!memcg, page);
- 	if (!memcg)
- 		memcg = root_mem_cgroup;
- 
-So the patch didn't apply.
+Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
+Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
+---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-That's easily fixed, but it does make one wonder whether this:
-
-> -struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
-> +/**
-> + * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
-> + * @page: the page
-> + * @pgdat: pgdat of the page
-> + *
-> + * This function relies on page->mem_cgroup being stable.
-> + */
-> +static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
-> +						struct pglist_data *pgdat)
-> +{
-> +	struct mem_cgroup *memcg = page->mem_cgroup;
-> +
-> +	return mem_cgroup_lruvec(memcg, pgdat);
-> +}
-
-Should be using page_memcg()?
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3dcbf24d2227..60147cf9f0c0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -7349,9 +7349,9 @@ bool mem_cgroup_swap_full(struct page *page)
+ static int __init setup_swap_account(char *s)
+ {
+ 	if (!strcmp(s, "1"))
+-		cgroup_memory_noswap = 0;
++		cgroup_memory_noswap = false;
+ 	else if (!strcmp(s, "0"))
+-		cgroup_memory_noswap = 1;
++		cgroup_memory_noswap = true;
+ 	return 1;
+ }
+ __setup("swapaccount=", setup_swap_account);
+-- 
+2.20.0
 
