@@ -2,100 +2,101 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E35EA2AA3DC
-	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 09:29:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF682AA56D
+	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 14:34:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728053AbgKGI3A (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Nov 2020 03:29:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727786AbgKGI27 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Nov 2020 03:28:59 -0500
-Received: from mail-ua1-x943.google.com (mail-ua1-x943.google.com [IPv6:2607:f8b0:4864:20::943])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A99EEC0613CF
-        for <cgroups@vger.kernel.org>; Sat,  7 Nov 2020 00:28:59 -0800 (PST)
-Received: by mail-ua1-x943.google.com with SMTP id v16so1172171uat.9
-        for <cgroups@vger.kernel.org>; Sat, 07 Nov 2020 00:28:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1Vd93WrgVvvPOFnm9XWhutuIS0jTqt2s/2KmuTAC+LQ=;
-        b=A+VYWsiKxRJhotjCN437Jq9UVFfSxHy1z8zL4GFSmFJkbyG4P9QCLVXLXa/q7YXPGg
-         pln9mI3nJ4oWPbMTR2Sd+hTcybayJu3ipyZ5hrtbjHfKzE8Ki3FqWnEmeFeV717fy4Ii
-         Nc5Gg9vY5gIWDQZtBjLr46tbdu+ssiG3+CWnZxZWLHJxyHpU6PwTnD2ELwjLNBBUyjHj
-         wlB16etOYEhoertjV9HJwhsIHLUeL8e1frqowc2JFdVlX39PvMLN7IYa+g3yhCGK9Ip6
-         7psSMg3QkyzsGk0Mtl9sfRt33+/zWUVMroh/K53lz+DTh/EYxXP4MrM/PKfzLvnAuz2v
-         Ic8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1Vd93WrgVvvPOFnm9XWhutuIS0jTqt2s/2KmuTAC+LQ=;
-        b=P7S1cw87xXCsQH7Rx9QPqzJNOrCWr+0imexfXPl0/nXWOb1KBUEEVXgf/ILa+wvJyw
-         JGXI6qRFfD1WndLKPoDQ6bT2UMF8mDz/41tzIVHde+3HYGF/dGzngdgIoMBI2+0sWS6O
-         Yidenw2kPjkKpzQhxcpoxrG4wbwWWEmoW3LVfop51sGqfJzFTWL40DDdUjIeTZn4TASk
-         S/ew4TylksHM95fmCGk0BqnrERSTUga8X1o39pFUNRKsYNH1gFP7BnuyzaOyov7Tj1pu
-         RU0FCQlyvBIwYnYgh3+EIex3DPCKUSHRwp7x2S+RQN8qk5FRVmifT2qGeNJEXgvFFykL
-         guwQ==
-X-Gm-Message-State: AOAM532Lh49uDnDgF+KMZn+l6QsI43j7YlwQaXFEKZp+Gng4j1c8TMuu
-        bdQELntkGh1QF7WGbv0iLY5s2cqP3YrYLk1U+CDUK1mt5BM=
-X-Google-Smtp-Source: ABdhPJzn8++rcz5VCx9VgSy+XShiJSgKKj9OSQlke9zVteeARYeo0EiCPVj3mpI6SQeOvVB/vF7U45tUU3KBAH6hf4Q=
-X-Received: by 2002:ab0:2986:: with SMTP id u6mr3077204uap.118.1604737738865;
- Sat, 07 Nov 2020 00:28:58 -0800 (PST)
-MIME-Version: 1.0
-References: <1604737495-6418-1-git-send-email-kaixuxia@tencent.com>
-In-Reply-To: <1604737495-6418-1-git-send-email-kaixuxia@tencent.com>
-From:   Souptick Joarder <jrdr.linux@gmail.com>
-Date:   Sat, 7 Nov 2020 13:58:47 +0530
-Message-ID: <CAFqt6zZXEiS7dY+Y2OPXQ=DX=9gXMGpXGrvKCMrSq5qRwpvu5g@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: Assign boolean values to a bool variable
-To:     xiakaixu1987@gmail.com
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        id S1728031AbgKGNej (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 7 Nov 2020 08:34:39 -0500
+Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56002 "EHLO
+        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727084AbgKGNei (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Nov 2020 08:34:38 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEWYIIT_1604756073;
+Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEWYIIT_1604756073)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Sat, 07 Nov 2020 21:34:33 +0800
+Subject: Re: [PATCH] mm/memcg: update page struct member in comments
+To:     Roman Gushchin <guro@fb.com>
+Cc:     hannes@cmpxchg.org, akpm@linux-foundation.org,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Linux-MM <linux-mm@kvack.org>, cgroups@vger.kernel.org,
-        Kaixu Xia <kaixuxia@tencent.com>
-Content-Type: text/plain; charset="UTF-8"
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+References: <1604662413-5734-1-git-send-email-alex.shi@linux.alibaba.com>
+ <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <1491c150-1cc0-6062-08ea-9c891548a3bc@linux.alibaba.com>
+Date:   Sat, 7 Nov 2020 21:34:15 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Nov 7, 2020 at 1:55 PM <xiakaixu1987@gmail.com> wrote:
->
-> From: Kaixu Xia <kaixuxia@tencent.com>
->
-> Fix the following coccinelle warnings:
->
-> ./mm/memcontrol.c:7341:2-22: WARNING: Assignment of 0/1 to bool variable
-> ./mm/memcontrol.c:7343:2-22: WARNING: Assignment of 0/1 to bool variable
->
-> Reported-by: Tosk Robot <tencent_os_robot@tencent.com>
-> Signed-off-by: Kaixu Xia <kaixuxia@tencent.com>
 
-Acked-by: Souptick Joarder <jrdr.linux@gmail.com>
 
-> ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 3dcbf24d2227..60147cf9f0c0 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -7349,9 +7349,9 @@ bool mem_cgroup_swap_full(struct page *page)
->  static int __init setup_swap_account(char *s)
->  {
->         if (!strcmp(s, "1"))
-> -               cgroup_memory_noswap = 0;
-> +               cgroup_memory_noswap = false;
->         else if (!strcmp(s, "0"))
-> -               cgroup_memory_noswap = 1;
-> +               cgroup_memory_noswap = true;
->         return 1;
->  }
->  __setup("swapaccount=", setup_swap_account);
-> --
-> 2.20.0
->
->
+ÔÚ 2020/11/7 ÉÏÎç4:51, Roman Gushchin Ð´µÀ:
+> There are "page and memcg binding" and "page's memcg" used in similar cases,
+> I think it's more obvious than "page_memcg(page) being stable".
+> 
+> Maybe it helps to address Ira's comment.
+> 
+> Anyway, please feel free to add:
+> Acked-by: Roman Gushchin <guro@fb.com>
+> 
+> Thanks!
+
+Thanks a lot! Roman.
+here is the updated patch with your suggestion and ack.
+
+
+From 0db2bd8f3833ec5e58c6978f771b05e4902e5156 Mon Sep 17 00:00:00 2001
+From: Alex Shi <alex.shi@linux.alibaba.com>
+Date: Fri, 6 Nov 2020 19:33:33 +0800
+Subject: [PATCH v2] mm/memcg: update page struct member in comments
+
+The page->mem_cgroup member is replaced by memcg_data, and add a helper
+page_memcg() for it. Need to update comments to avoid confusing.
+
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: cgroups@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org
+---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 7657f16cf992..b6560ab1adc4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1330,7 +1330,7 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
+  * @page: the page
+  * @pgdat: pgdat of the page
+  *
+- * This function relies on page->mem_cgroup being stable - see the
++ * This function relies on page's memcg being stable - see the
+  * access rules in commit_charge().
+  */
+ struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+@@ -2942,7 +2942,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
+ {
+ 	VM_BUG_ON_PAGE(page_memcg(page), page);
+ 	/*
+-	 * Any of the following ensures page->mem_cgroup stability:
++	 * Any of the following ensures page's memcg stability:
+ 	 *
+ 	 * - the page lock
+ 	 * - LRU isolation
+-- 
+1.8.3.1
+
