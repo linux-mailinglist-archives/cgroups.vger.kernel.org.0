@@ -2,101 +2,155 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF682AA56D
-	for <lists+cgroups@lfdr.de>; Sat,  7 Nov 2020 14:34:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 008992AABE4
+	for <lists+cgroups@lfdr.de>; Sun,  8 Nov 2020 16:26:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728031AbgKGNej (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 7 Nov 2020 08:34:39 -0500
-Received: from out30-44.freemail.mail.aliyun.com ([115.124.30.44]:56002 "EHLO
-        out30-44.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727084AbgKGNei (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 7 Nov 2020 08:34:38 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R521e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UEWYIIT_1604756073;
-Received: from IT-FVFX43SYHV2H.lan(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UEWYIIT_1604756073)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Sat, 07 Nov 2020 21:34:33 +0800
-Subject: Re: [PATCH] mm/memcg: update page struct member in comments
-To:     Roman Gushchin <guro@fb.com>
-Cc:     hannes@cmpxchg.org, akpm@linux-foundation.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-References: <1604662413-5734-1-git-send-email-alex.shi@linux.alibaba.com>
- <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-Message-ID: <1491c150-1cc0-6062-08ea-9c891548a3bc@linux.alibaba.com>
-Date:   Sat, 7 Nov 2020 21:34:15 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
+        id S1728191AbgKHP0k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 8 Nov 2020 10:26:40 -0500
+Received: from m12-13.163.com ([220.181.12.13]:34084 "EHLO m12-13.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726814AbgKHP0k (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 8 Nov 2020 10:26:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=vi3Bj
+        fzpqssVUtirGQmg9J3S/o92w2Pdis4J9PzyuEA=; b=LR99cRZns097oGxzgUbGR
+        7KE9mcPJVTRCuG6VwZtTjH/ZxYSu8Ep5ls1k8VD6cVygCRVrZ20KDGC0ieAQ40DC
+        SCrWZCc4DRWEpPzTLY4LMfkfXiWVtGYGDMcKfwFQp8C6VndvC0UDjtG4rCGEuJEe
+        hFo380z8ezfUdAFqcT8MTE=
+Received: from localhost (unknown [101.86.208.122])
+        by smtp9 (Coremail) with SMTP id DcCowAAHZwOrAqhfgSskPg--.40498S2;
+        Sun, 08 Nov 2020 22:37:31 +0800 (CST)
+Date:   Sun, 8 Nov 2020 22:37:31 +0800
+From:   Hui Su <sh_def@163.com>
+To:     akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, shakeelb@google.com, guro@fb.com,
+        laoar.shao@gmail.com, chris@chrisdown.name,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+Cc:     sh_def@163.com
+Subject: [PATCH v2] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-ID: <20201108143731.GA74138@rlk>
 MIME-Version: 1.0
-In-Reply-To: <20201106205140.GA2285866@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DcCowAAHZwOrAqhfgSskPg--.40498S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxWF4UJr4DZr1UKrW7tr1kZrb_yoW5tF43pF
+        ZxG3W3Z398JrWYqr4xta1q9a4fZa1xJw43Jr17Jw1IvF13K340q3W2kr1rXFWUuFySyrnr
+        trZ0kr18G3yqvFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRRT5JUUUUU=
+X-Originating-IP: [101.86.208.122]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbifwvWX1r6mir7KwAAs9
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+mem_cgroup_page_lruvec() in memcontrol.c and
+mem_cgroup_lruvec() in memcontrol.h is very similar
+except for the param(page and memcg) which also can be
+convert to each other.
 
+So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
 
-ÔÚ 2020/11/7 ÉÏÎç4:51, Roman Gushchin Ð´µÀ:
-> There are "page and memcg binding" and "page's memcg" used in similar cases,
-> I think it's more obvious than "page_memcg(page) being stable".
-> 
-> Maybe it helps to address Ira's comment.
-> 
-> Anyway, please feel free to add:
-> Acked-by: Roman Gushchin <guro@fb.com>
-> 
-> Thanks!
+v1->v2:
+use page_memcg() instead of 'page->mem_cgroup'.
 
-Thanks a lot! Roman.
-here is the updated patch with your suggestion and ack.
-
-
-From 0db2bd8f3833ec5e58c6978f771b05e4902e5156 Mon Sep 17 00:00:00 2001
-From: Alex Shi <alex.shi@linux.alibaba.com>
-Date: Fri, 6 Nov 2020 19:33:33 +0800
-Subject: [PATCH v2] mm/memcg: update page struct member in comments
-
-The page->mem_cgroup member is replaced by memcg_data, and add a helper
-page_memcg() for it. Need to update comments to avoid confusing.
-
-Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-Acked-by: Roman Gushchin <guro@fb.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: cgroups@vger.kernel.org
-Cc: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Signed-off-by: Hui Su <sh_def@163.com>
 ---
- mm/memcontrol.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ include/linux/memcontrol.h | 16 +++++++++++++--
+ mm/memcontrol.c            | 40 --------------------------------------
+ 2 files changed, 14 insertions(+), 42 deletions(-)
 
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index e391e3c56de5..727af7c74e91 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -457,9 +457,10 @@ mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+ /**
+  * mem_cgroup_lruvec - get the lru list vector for a memcg & node
+  * @memcg: memcg of the wanted lruvec
++ * @pgdat: pglist_data
+  *
+  * Returns the lru list vector holding pages for a given @memcg &
+- * @node combination. This can be the node lruvec, if the memory
++ * @pgdat combination. This can be the node lruvec, if the memory
+  * controller is disabled.
+  */
+ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+@@ -489,7 +490,18 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+ 	return lruvec;
+ }
+ 
+-struct lruvec *mem_cgroup_page_lruvec(struct page *, struct pglist_data *);
++/**
++ * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
++ * @page: the page
++ * @pgdat: pgdat of the page
++ *
++ * This function relies on page->mem_cgroup being stable.
++ */
++static inline struct lruvec *mem_cgroup_page_lruvec(struct page *page,
++						struct pglist_data *pgdat)
++{
++	return mem_cgroup_lruvec(page_memcg(page), pgdat);
++}
+ 
+ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
+ 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 7657f16cf992..b6560ab1adc4 100644
+index 3dcbf24d2227..9d4e1150b194 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1330,7 +1330,7 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
-  * @page: the page
-  * @pgdat: pgdat of the page
-  *
+@@ -1330,46 +1330,6 @@ int mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	return ret;
+ }
+ 
+-/**
+- * mem_cgroup_page_lruvec - return lruvec for isolating/putting an LRU page
+- * @page: the page
+- * @pgdat: pgdat of the page
+- *
 - * This function relies on page->mem_cgroup being stable - see the
-+ * This function relies on page's memcg being stable - see the
-  * access rules in commit_charge().
-  */
- struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
-@@ -2942,7 +2942,7 @@ static void commit_charge(struct page *page, struct mem_cgroup *memcg)
- {
- 	VM_BUG_ON_PAGE(page_memcg(page), page);
- 	/*
--	 * Any of the following ensures page->mem_cgroup stability:
-+	 * Any of the following ensures page's memcg stability:
- 	 *
- 	 * - the page lock
- 	 * - LRU isolation
+- * access rules in commit_charge().
+- */
+-struct lruvec *mem_cgroup_page_lruvec(struct page *page, struct pglist_data *pgdat)
+-{
+-	struct mem_cgroup_per_node *mz;
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+-
+-	if (mem_cgroup_disabled()) {
+-		lruvec = &pgdat->__lruvec;
+-		goto out;
+-	}
+-
+-	memcg = page->mem_cgroup;
+-	/*
+-	 * Swapcache readahead pages are added to the LRU - and
+-	 * possibly migrated - before they are charged.
+-	 */
+-	if (!memcg)
+-		memcg = root_mem_cgroup;
+-
+-	mz = mem_cgroup_page_nodeinfo(memcg, page);
+-	lruvec = &mz->lruvec;
+-out:
+-	/*
+-	 * Since a node can be onlined after the mem_cgroup was created,
+-	 * we have to be prepared to initialize lruvec->zone here;
+-	 * and if offlined then reonlined, we need to reinitialize it.
+-	 */
+-	if (unlikely(lruvec->pgdat != pgdat))
+-		lruvec->pgdat = pgdat;
+-	return lruvec;
+-}
+-
+ /**
+  * mem_cgroup_update_lru_size - account for adding or removing an lru page
+  * @lruvec: mem_cgroup per zone lru vector
 -- 
-1.8.3.1
+2.29.0
+
 
