@@ -2,149 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B3912AACB7
-	for <lists+cgroups@lfdr.de>; Sun,  8 Nov 2020 19:02:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 884FB2AAD5C
+	for <lists+cgroups@lfdr.de>; Sun,  8 Nov 2020 21:21:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727844AbgKHSCY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 8 Nov 2020 13:02:24 -0500
-Received: from mail.kernel.org ([198.145.29.99]:37494 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727570AbgKHSCX (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sun, 8 Nov 2020 13:02:23 -0500
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C88DC206ED;
-        Sun,  8 Nov 2020 18:02:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1604858542;
-        bh=GK/qj9bZGnpYJo6FWypLDOgY/DwucCX+/OFUjULSa/w=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=Y0ZvovWB6V4dh9i75Nk1BU9NUHPm4ZnQ6uQgofMyjUEqvKatwzzEvqDT/JSw8vtlA
-         CQiDUNP/tSDqwT8SRBOwD+Qq4b4bB6BqvlIyeSIW0PdB5PX4dC+d8qNCefvak5KSzI
-         5He+q8UK5hPUGi3ID1G3Mpq1QxnBfv6URjrOGxvw=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 8F77A352265A; Sun,  8 Nov 2020 10:02:22 -0800 (PST)
-Date:   Sun, 8 Nov 2020 10:02:22 -0800
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Paul Gortmaker <paul.gortmaker@windriver.com>
+        id S1728006AbgKHUVp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 8 Nov 2020 15:21:45 -0500
+Received: from mail-eopbgr760075.outbound.protection.outlook.com ([40.107.76.75]:63478
+        "EHLO NAM02-CY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1727570AbgKHUVp (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 8 Nov 2020 15:21:45 -0500
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M99dUAmJJqQNmkUZzqMlVZihsFWkY19YXDkriQovAERBD3X4P1kklIifNgy+YMcqdy+ypnm/7sVlraz3EWNL0A4eqrjn6f3K65b1oyWo0C975YnCeTG6KHA4um5NzXixWc1Gjj7IDw1kzT3WKl7+l8tyC/o51cWW+3M9JA0c2+s6233j+o2kuHtyRZEl4bg10pNqvvYdNXcf6IaWjhNDNv7xJ5o41GjcFgcw4xUHlfcT/rugBOESF5cdEslpaNm2/kRZUsgd1Cdu22r98QFSuRVwM/w5BaLPLZxMBOk40GXg8qnaw2xJdX4Zo6phRiihTAGS9cJsTaF1rNzagXG79A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iLAK9FzJCGbK3dUFfXIe7ExR8HpHqLU6wJAyh2n3a8E=;
+ b=Iqo0pD7gUs9EuyqjUopzXW0OGL2dHv/1pm9SB1plUJBkUi08Ee8XaGWDhbxeZL/joX4C0ogyc0Vc1w28V8bZ8whH7DHgOZ1K4RycLLalZ9r7L2bYLtrBQj1EP4bMspdPCem07Rm2BU/OLgdfQSOq3sgysVpA6SMVTLnRRhFS05loGquDiSaxJfZPr38lt4f57xekY1823Hj+j7GdOflIRPSwyMsWfafd2m+VGCow2aBaCET1GPqZ+vmFwMITCO1YiCBQJoSe/w63ILEWGOmLiozrDIa92+HPWoD6fxAlTGIJq8kaSNkoQgpXFLAIDxf/5330hULEi8dEjlxQ9MzZ9A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=iLAK9FzJCGbK3dUFfXIe7ExR8HpHqLU6wJAyh2n3a8E=;
+ b=Dx78A9ir6aY3bdQdLCnUrMBn6iCJGjt5fW7JuKAJqMkZWxnaD1Sayzc3TJRN6uwL5Jpy8sAQjINriHtWV//yYyUmmB8Tv3L8iBbx82mt5ZauBtKKaA62E+JiAB/S2ok4UF8kPn6S+oskB+9a51tuwYradc9qxBS+Wd/RlGGNM5k=
+Authentication-Results: huawei.com; dkim=none (message not signed)
+ header.d=none;huawei.com; dmarc=none action=none header.from=windriver.com;
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com (2603:10b6:5:2ae::14)
+ by DM5PR1101MB2091.namprd11.prod.outlook.com (2603:10b6:4:57::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21; Sun, 8 Nov
+ 2020 20:21:42 +0000
+Received: from DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::4985:c74a:ffcb:6f40]) by DM6PR11MB4545.namprd11.prod.outlook.com
+ ([fe80::4985:c74a:ffcb:6f40%4]) with mapi id 15.20.3541.024; Sun, 8 Nov 2020
+ 20:21:42 +0000
+Subject: Re: [PATCH 0/4] RFC: support for global CPU list abbreviations
+To:     paulmck@kernel.org
 Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         Frederic Weisbecker <fweisbec@gmail.com>,
         Josh Triplett <josh@joshtriplett.org>,
         Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, Li Zefan <lizefan@huawei.com>
-Subject: Re: [PATCH 0/4] RFC: support for global CPU list abbreviations
-Message-ID: <20201108180222.GA17637@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
 References: <20201108160816.896881-1-paul.gortmaker@windriver.com>
+ <20201108180222.GA17637@paulmck-ThinkPad-P72>
+From:   Paul Gortmaker <paul.gortmaker@windriver.com>
+Message-ID: <ca462940-c81d-d968-c870-e1a991331522@windriver.com>
+Date:   Sun, 8 Nov 2020 15:21:40 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+In-Reply-To: <20201108180222.GA17637@paulmck-ThinkPad-P72>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [24.212.229.210]
+X-ClientProxiedBy: YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2d::24) To DM6PR11MB4545.namprd11.prod.outlook.com
+ (2603:10b6:5:2ae::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201108160816.896881-1-paul.gortmaker@windriver.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [172.25.35.34] (24.212.229.210) by YT1PR01CA0085.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2d::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Sun, 8 Nov 2020 20:21:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: eca0c73a-3749-46c8-11d5-08d88423e828
+X-MS-TrafficTypeDiagnostic: DM5PR1101MB2091:
+X-Microsoft-Antispam-PRVS: <DM5PR1101MB2091FA83077347C4D536D23783EB0@DM5PR1101MB2091.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Qpp4EALCv43EKNhQ6Yidypc6kUf8lIipn6jY1CibsM6+5qfJ5moWC/kVYOZP5BLJ5yjlxpzBvzitFFPGJ5+KkjNmnMXXYOzPNq/YXysH6LNcTc/4t61nnFPYeYmwXLuDPBxd43vUilUgRuLULfUlWU5FThheedCUzRD59Pt+4ZYbu2zpSDTyzu6Z2WqkLMnNu+99FjAh9xtCnlUUjlHX/fdjo4syvd2/MU3KFgha/7Lx1MPStBoznX2+kxYV/bshkgKeC/ED1YOLPPmNBM8sQgxua1GnfudQHF8x3pCPZ4kYAduyvMdLQdDxVVFvfhAZ+41dG6DUOq11EuqfnmymA3Lp6Eb2oJh+9KZQOr+uQZThASWvRozIgpfijlRqs1xc
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR11MB4545.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39830400003)(396003)(346002)(2906002)(8936002)(478600001)(66946007)(4326008)(54906003)(956004)(36756003)(44832011)(52116002)(86362001)(53546011)(2616005)(66556008)(66476007)(31686004)(16526019)(4744005)(26005)(6486002)(6916009)(8676002)(316002)(31696002)(16576012)(186003)(5660300002)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: CsPQm/23+SOuVR79We/6KFU0amBE/oLVROZ0hzhn27/0bYi63PKLPfYGId7tpusvJQcvU6gPulGK2MIgJU5hWcKXx1hjLCEsFLq/BCf8wqTnQcDWpZVQ+EMFofQhIJnOUwiYm6Q4mT/yVw2/EtIHNFArRJftzFdchlVOSk3frQjm8r2hLPU0L0ZkDcC1APZguJ6XwuAirp2YxPa5dEZxR2r3hgZzXBKMJrTvGFMbQvsdh0LIw963dKKEr2R7QBJkfyuwLrvaXlCujiFcqvp3IVlhjCpinx9vYyuHjZ9v306oa7okqUUd9Z8otL1OWVKssYlvJXEATxzAJyz17HL/qbcUy6D6NK0QFWZw9r56KAy80wnff/lzAyujRKwJNAWL53k8co2b7JUsZ9esLyIl49gHXRhYBB+VgHh6j2mHDZVxCQf5NaRjwfgqQchUDDRCNGASnJI3DBBJDZ8Y9EaWh9XBtG7N4iuBW0H2dkpW3UI07smkkVdFVOZiCuEuR2215Vg49ylJufdmsPWMqdQtb84S1W+3xkxGGKU9O2FRA0uSdRxu3lsw6jFvKi9UcBvF1SFZVT++a7hJrE7y02EOyXY9Vmv6/XmUKgGcE1iPRTDhXvcM9Pc/uPNJk0o4I6a6X2l3B774i2yXyRePQjSP6w==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eca0c73a-3749-46c8-11d5-08d88423e828
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR11MB4545.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 08 Nov 2020 20:21:42.7692
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: sntfQfOJUdto3zevSCeJgyEFt5YMTliMuxXfDDELzOmGNpLTzzDKF1nyxeLxaXiunPvLLm9271tJR8quKXQYftHfx8vjtRWEWoEDVNVSoH8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1101MB2091
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Nov 08, 2020 at 11:08:12AM -0500, Paul Gortmaker wrote:
-> The basic objective here was to add support for "nohz_full=8-last" and/or
-> "rcu_nocbs="4-last" -- essentially introduce "last" as a portable
-> reference evaluated at boot/runtime for anything using a CPU list.
-> 
-> The thinking behind this, is that people carve off a few early CPUs to
-> support housekeeping tasks, and perhaps dedicate one to a busy I/O
-> peripheral, and then the remaining pool of CPUs out to the end are a
-> part of a commonly configured pool used for the real work the user
-> cares about.
-> 
-> Extend that logic out to a fleet of machines - some new, and some
-> nearing EOL, and you've probably got a wide range of core counts to
-> contend with - even though the early number of cores dedicated to the
-> system overhead probably doesn't vary.
-> 
-> This change would enable sysadmins to have a common bootarg across all
-> such systems, and would also avoid any off-by-one fencepost errors that
-> happen for users who might briefly forget that core counts start at
-> zero.
-> 
-> Looking around before starting, I noticed RCU already had a short-form
-> abbreviation "all" -- but if we want to treat CPU lists in a uniform
-> matter, then tokens shouldn't be implemented at a subsystem level and
-> hence be subsystem specific; each with their own variations.
-> 
-> So I moved "all" to global use - for boot args, and for cgroups.  Then
-> I added the inverse "none" and finally, the one I wanted -- "last".
-> 
-> The use of "last" isn't a standalone word like "all" or "none".  It will
-> be a part of a complete range specification, possibly with CSV separate
-> ranges, and possibly specified multiple times.  So I had to be a bit
-> more careful with string matching - and hence un-inlined the parse
-> function as commit #1 in this series.
-> 
-> But it really is a generic support for "replace token ABC with known at
-> boot value XYZ" - for example, it would be trivial to extend support to
-> add "half" as a dynamic token to be replaced with 1/2 the core count,
-> even though I wouldn't suggest that has a use case like "last" does.
-> 
-> I tested the string matching with a bunch of intentionally badly crafted
-> strings in a user-space harness, and tested bootarg use with nohz_full
-> and rcu_nocbs, and also the post-boot cgroup use case as per below:
-> 
->    root@hackbox:/sys/fs/cgroup/cpuset# mkdir foo
->    root@hackbox:/sys/fs/cgroup/cpuset# cd foo
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
->    
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo 10-last > cpuset.cpus
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
->    10-15
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo all > cpuset.cpus
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
->    0-15
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# /bin/echo none > cpuset.cpus
->    root@hackbox:/sys/fs/cgroup/cpuset/foo# cat cpuset.cpus
->    
->    root@hackbox:/sys/fs/cgroup/cpuset/foo#
-> 
-> This was on a 16 core machine with CONFIG_NR_CPUS=16 in .config file.
-> 
-> Note that the two use cases (boot and runtime) are why you see "early"
-> parameter in the code - I entertained just sticking the string copy on
-> the stack vs. the early alloc dance, but this felt more correct/robust.
-> The cgroup and modular code using cpulist_parse() are runtime cases.
+On 2020-11-08 1:02 p.m., Paul E. McKenney wrote:
 
-I considered doing this when adding "all" for RCU, but was just too
-lazy.  So you are a better man than I am!  ;-)
+ > Or I can carry them if you wish.  My expected changes in response to
+ > this series are shown below, and are also what I used to test it.
 
-I have queued these for testing, both "all" and "last" work just fine.
-Given that "all" works, I hereby declare "none" to be working by
-inspection.  Therefore, for 1, 2, and 4:
+Thanks Paul - that would get linux-next exposure w/o me pestering sfr.
+If nobody else has objections, having them in rcu-next would be great.
 
-Tested-by: Paul E. McKenney <paulmck@kernel.org>
-
-For 3:
-
-Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-
-Or I can carry them if you wish.  My expected changes in response to
-this series are shown below, and are also what I used to test it.
-
-							Thanx, Paul
-
-------------------------------------------------------------------------
-
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-index 5adc675..25a765d 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE04.boot
-@@ -1 +1 @@
--rcutree.rcu_fanout_leaf=4 nohz_full=1-7
-+rcutree.rcu_fanout_leaf=4 nohz_full=1-last
-diff --git a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-index 22478fd..94d3844 100644
---- a/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-+++ b/tools/testing/selftests/rcutorture/configs/rcu/TREE08.boot
-@@ -1,3 +1,3 @@
- rcupdate.rcu_self_test=1
- rcutree.rcu_fanout_exact=1
--rcu_nocbs=0-7
-+rcu_nocbs=all
+Paul.
+--
