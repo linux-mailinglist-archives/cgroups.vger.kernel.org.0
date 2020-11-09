@@ -2,179 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A69722AB507
-	for <lists+cgroups@lfdr.de>; Mon,  9 Nov 2020 11:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F39742AC313
+	for <lists+cgroups@lfdr.de>; Mon,  9 Nov 2020 19:00:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729100AbgKIKdl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 9 Nov 2020 05:33:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54202 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729050AbgKIKdl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Nov 2020 05:33:41 -0500
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60E61C0613CF;
-        Mon,  9 Nov 2020 02:33:41 -0800 (PST)
-Received: by mail-io1-xd43.google.com with SMTP id s24so9202746ioj.13;
-        Mon, 09 Nov 2020 02:33:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkye27w2nAyIcjrhd3hfBHl4YeysiD/X9LyxFDbBQas=;
-        b=OqRlee4MqSA7fZDWCF6CqdUSTCXoYD0diRAhsu5/Y7W/g2KuA+bJCPazJTzzu+ZzmV
-         mIovg/IuUJTtyhh+Uue6ho2Oj21wr80ltk8yGxzGlQL/NbCB+CKd7CCetJSPbVSjvAD4
-         8j+5N7HB1rpyffj20+nK7sxJE9Bqz9QhTgB9tpDlFvfUsAYlk4TgrcnW9BACfKgE3Xhi
-         2QS+Ki2TRw0wu04D3aZw2eJGaESFUNt16tiQeFXYR/Kr9EC0eQLWtGXg7rviA0XTeHdH
-         6tjed0PESdEiJTzDtD5P5Bi4mTY1QYeXlX4XTdaHJeDcr3yqwwuxQbDbBOfI5fOe4t+7
-         g5qA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=wkye27w2nAyIcjrhd3hfBHl4YeysiD/X9LyxFDbBQas=;
-        b=NX/hmMxC0yybAS3YMcZ0Kr7vJgGo44RCQEZfpvZoCxiBfrg9nGJKn0WCoOCi6FTHTi
-         31o3fzyXmP4LWFPb7kKNEE2I0VEquvcDK4HsAS9l2r+Vu7RaVbI5diKY8nCmeK2yXD7E
-         /32edaeJDXpsVs2UGLbVV9zZMU+rIzMZPNvHKjJXTxpKQKaFbF+v4kwtUo9RycCzgpgj
-         eLJ7OO1KPd5GoUcRpK7Mpfy11uiRss+DCQ+aBQH94S22nWe+fj2vb99xZy20W8XtTQ3E
-         SEI4svw0aWUEE2NTKBUJiXpuYxAfFjZG68MpYGR15NV6VLp8EmVyDQsY8JA5UlVHp8gF
-         qMnA==
-X-Gm-Message-State: AOAM5328h3ILpIEF/pXhuo52F8GKW9iwLzKHp/YkSu72IP9sg8eYYE3b
-        CaK2Wnr7peWJg/DomN53BFM=
-X-Google-Smtp-Source: ABdhPJx3u8n9iY0h3VNSOjcaxUcjatBsthD0e/jyc8IR2gl42ENShsI/H7RSJAqdzlqyjhoCkAFyAg==
-X-Received: by 2002:a6b:c047:: with SMTP id q68mr5323755iof.189.1604918020810;
-        Mon, 09 Nov 2020 02:33:40 -0800 (PST)
-Received: from localhost.localdomain ([156.146.54.75])
-        by smtp.gmail.com with ESMTPSA id l9sm6758483ilt.19.2020.11.09.02.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Nov 2020 02:33:40 -0800 (PST)
-From:   Bhaskar Chowdhury <unixbhaskar@gmail.com>
-To:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        christian@brauner.io, ast@kernel.org, daniel@iogearbox.net,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com, andrii@kernel.org,
-        john.fastabend@gmail.com, kpsingh@chromium.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Cc:     Bhaskar Chowdhury <unixbhaskar@gmail.com>
-Subject: [PATCH] kernel: cgroup: Mundane spelling fixes throughout the file
-Date:   Mon,  9 Nov 2020 16:01:11 +0530
-Message-Id: <20201109103111.10078-1-unixbhaskar@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        id S1730178AbgKISAr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 9 Nov 2020 13:00:47 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:54860 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1729987AbgKISAq (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 9 Nov 2020 13:00:46 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0A9HxONh027922;
+        Mon, 9 Nov 2020 10:00:33 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=X4D8oL7DS3umIxJWzscItQ/Iato6n+wr5sxRrOHo1to=;
+ b=ZxmuIdRG1zD4j1Sw0Doq7wtkaZGtlVLbjDOAtkKnYMPytUiODNhThzkNgAhJ+Hm0KvpQ
+ NXkTi2jgXQ5ZWCeLn9w7VNKSJ/6kNJdibNNDGQJot5Pf+dwE6LlPSRXoZ53UYcRosGdS
+ swTx/T1amuMHlc7qgnAjURAACapDM5NibUw= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 34pcqs5xtf-8
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Mon, 09 Nov 2020 10:00:33 -0800
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Mon, 9 Nov 2020 10:00:29 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GF9X6+ag/+GwC23wel2eWFVTRynRQjZYMGNFjenbyGIFAl4FjrbzOshkEq/x2ynaV01et0ykNUMpAEx/9A9yrpbrbT3sT9RKHvXdlzGLdnGfXf6zoAknetjNproZ/8a5UAqrL87QJTGr1n8en+AJMVl3TEqK26mUmM80z6KUM8XKb1hj2VAQwNtO2gE14dy3Lu4zuuhR2f37CA4sHEkvXqd3n/kIvOul2gUvosurgu4KPVPIkwcrm005D3nHnh/HS8UhEU4U/Q6/5nMYFXHGyn4TlDGrnnQqR8TK+aIU0b7TVHjZkB+RYZFPO32n0K2LctYDUIduhKMoiYNRybYENw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X4D8oL7DS3umIxJWzscItQ/Iato6n+wr5sxRrOHo1to=;
+ b=jBOToBuwxN6+1NIBll+z/8J3q9hIsCBCbI8RW+26kiirVM/BDI+qrzS5D7zel6zxmHHn+kt2XlgH73ugOVDd+87LhgaLxyMy9sqv54JK4PfywhMSA6MnYsX+4SkofryiSkwHtkZsTK3IdwfFPfYJmJANc68c7m+K0eaXvvm4VLZZf39Ux7opBNTQhlNCScjUijUhzyCQ/8qZi+RboB/aOBy6xbE4iTZ1SDpIvAF76OBdfR2KZ2ErtHG9LMinQ1I9bHQ3VVqR+yYiizaJbA++/Xcryy0VCrWWRVlh3ZsshD8+Cr/ExYvkj7qKJNDAv8mDmAvrxXwRcYNjaaxEAfXd2Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X4D8oL7DS3umIxJWzscItQ/Iato6n+wr5sxRrOHo1to=;
+ b=AVyvgduDKdLh6u5MJhXK3UAzO5zUsmC8Uk1TXY1rpHjZwxcq7UZR0Mi0maqxm4sKHoQPuRSxwTsmY8TxEnhjcyrk5BXM8lLxctNQz2WW4HHgpm0wHcq3c3sKGMu92+k/PFFFC27IivKDgK+rQSUBk5T0DNWZ7IXcUTtcHcMix18=
+Authentication-Results: 163.com; dkim=none (message not signed)
+ header.d=none;163.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB3141.namprd15.prod.outlook.com (2603:10b6:a03:f5::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.23; Mon, 9 Nov
+ 2020 18:00:27 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3541.025; Mon, 9 Nov 2020
+ 18:00:27 +0000
+Date:   Mon, 9 Nov 2020 10:00:21 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Hui Su <sh_def@163.com>
+CC:     <akpm@linux-foundation.org>, <hannes@cmpxchg.org>,
+        <mhocko@kernel.org>, <vdavydov.dev@gmail.com>,
+        <shakeelb@google.com>, <laoar.shao@gmail.com>,
+        <chris@chrisdown.name>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, <linux-mm@kvack.org>
+Subject: Re: [PATCH v2] mm/memcontrol:rewrite mem_cgroup_page_lruvec()
+Message-ID: <20201109180021.GC2285866@carbon.dhcp.thefacebook.com>
+References: <20201108143731.GA74138@rlk>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201108143731.GA74138@rlk>
+X-Originating-IP: [2620:10d:c090:400::5:b4d0]
+X-ClientProxiedBy: CO2PR04CA0094.namprd04.prod.outlook.com
+ (2603:10b6:104:6::20) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:b4d0) by CO2PR04CA0094.namprd04.prod.outlook.com (2603:10b6:104:6::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3541.21 via Frontend Transport; Mon, 9 Nov 2020 18:00:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4f66f729-dd98-4b3a-7736-08d884d956c7
+X-MS-TrafficTypeDiagnostic: BYAPR15MB3141:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB31414D6E4269978B98CF3C9EBEEA0@BYAPR15MB3141.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WE6/0Jx31C3zssjvvQsBkHgBMIIwpii1+mxWHJUvCf4hdQTipspwkOluo7uulrtvdot7Xz2fcncRcJkXzYVntPajToTsjiLhWLfy0qMY5meCnTAUHAei9sjraIoL/Hz62I9cHFWN0a9BuPNwbT86VyuHVehfeFoeWFwzKVl5ec+rta8o3espXaOc27Fv0YdteU1BsHIdV7S/fmxiOb3giVy9N39V84Bz6tCkhHUoWlrQM8EjKroFLpodjAJpZ48Bsl8ymyMEAzA6moNmPnKNrGDBsoVeHsdxtcDSupzC68i/T9IZmBvpZU718JWgUbis2etmTc0x1iVgr7zsX4MgXQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(136003)(346002)(376002)(396003)(366004)(1076003)(6666004)(4744005)(6506007)(52116002)(33656002)(55016002)(2906002)(16526019)(7696005)(478600001)(7416002)(186003)(9686003)(66476007)(66556008)(66946007)(316002)(4326008)(6916009)(5660300002)(8676002)(8936002)(86362001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: ssGh4Lbv0IHfRaLE+KDA0ztdtpPNAflzrS8mlGuezDRTnz44ph4UbvEKng09YknGPfinLUrdeCY2l+R/WqATvWbUe5AFbd2iayzKVcf//mH26ux5eyLJ1R00/EJpKhv63fkwgZD/aSsA49mr9ggccxFlXzCLPtlMDobtCjuCXOmOvfTQ/tZxaq4gTpklunJFn3UXAElUQYShXyLL0VTPfnUf80gbD28DmVgfKBr+FUWH4qAbalROPTj7Xd/diJGYp0Ow1WCQE07mlHTo5Ncye0dijXP3gJjsZqKdvG0GaQPfq53fatWCyjwMWN7dH9cSdflcKqQoHSffGvv1MQmn2k2XF4mKVq0xWzpzxB0bMqcC6ZlARbaOdJ+j0vag0Burwy7Rq5kRHuvlNsfnsL+yWxhmuPMpsyL2xTrIC8nsk7AogrSpotecADkVvR+s1pqhURxtNOkFWCzTwyaDgiEOmEf9sl6Jk5RLzDVKvaD8TpBSWocjQPTk8xCPhm1g/MsosrbHl67o4Jp3QvhI2SN85qvOG3hwV70YlXmgYHpWnqiUog3i1B69LsewL+bTdW3ebrrPd3a5a1DK7lYUaoN0+8fYc6FXD9+9WqDrSKFMWwbQQrkXabGTZrJurZHCWGYKYi2iCOUbV0uHnFXn/bJ6n/gd+/hlVhHS/8VGal0YtG0=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f66f729-dd98-4b3a-7736-08d884d956c7
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Nov 2020 18:00:27.5115
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: T1q6BkfStgC1tovGj6rcfsMZQoL1cEG6h4m8egd+hoR6V12WBbtdcK6k65IhlwQH
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3141
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-09_11:2020-11-05,2020-11-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 bulkscore=0 mlxscore=0
+ spamscore=0 lowpriorityscore=0 phishscore=0 clxscore=1015 impostorscore=0
+ priorityscore=1501 mlxlogscore=848 suspectscore=1 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011090125
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Few spelling fixes throughout the file.
+On Sun, Nov 08, 2020 at 10:37:31PM +0800, Hui Su wrote:
+> mem_cgroup_page_lruvec() in memcontrol.c and
+> mem_cgroup_lruvec() in memcontrol.h is very similar
+> except for the param(page and memcg) which also can be
+> convert to each other.
+> 
+> So rewrite mem_cgroup_page_lruvec() with mem_cgroup_lruvec().
+> 
+> v1->v2:
+> use page_memcg() instead of 'page->mem_cgroup'.
+> 
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Signed-off-by: Hui Su <sh_def@163.com>
 
-Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
----
- kernel/cgroup/cgroup.c | 22 +++++++++++-----------
- 1 file changed, 11 insertions(+), 11 deletions(-)
+Acked-by: Roman Gushchin <guro@fb.com>
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index f2eeff74d713..c4f1b7968981 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -244,7 +244,7 @@ bool cgroup_ssid_enabled(int ssid)
-  *
-  * The default hierarchy is the v2 interface of cgroup and this function
-  * can be used to test whether a cgroup is on the default hierarchy for
-- * cases where a subsystem should behave differnetly depending on the
-+ * cases where a subsystem should behave differently depending on the
-  * interface version.
-  *
-  * List of changed behaviors:
-@@ -262,7 +262,7 @@ bool cgroup_ssid_enabled(int ssid)
-  *   "cgroup.procs" instead.
-  *
-  * - "cgroup.procs" is not sorted.  pids will be unique unless they got
-- *   recycled inbetween reads.
-+ *   recycled in-between reads.
-  *
-  * - "release_agent" and "notify_on_release" are removed.  Replacement
-  *   notification mechanism will be implemented.
-@@ -345,7 +345,7 @@ static bool cgroup_is_mixable(struct cgroup *cgrp)
- 	return !cgroup_parent(cgrp);
- }
-
--/* can @cgrp become a thread root? should always be true for a thread root */
-+/* can @cgrp become a thread root? Should always be true for a thread root */
- static bool cgroup_can_be_thread_root(struct cgroup *cgrp)
- {
- 	/* mixables don't care */
-@@ -530,7 +530,7 @@ static struct cgroup_subsys_state *cgroup_e_css_by_mask(struct cgroup *cgrp,
-  * the root css is returned, so this function always returns a valid css.
-  *
-  * The returned css is not guaranteed to be online, and therefore it is the
-- * callers responsiblity to tryget a reference for it.
-+ * callers responsibility to try get a reference for it.
-  */
- struct cgroup_subsys_state *cgroup_e_css(struct cgroup *cgrp,
- 					 struct cgroup_subsys *ss)
-@@ -702,7 +702,7 @@ EXPORT_SYMBOL_GPL(of_css);
- 			;						\
- 		else
-
--/* walk live descendants in preorder */
-+/* walk live descendants in pre order */
- #define cgroup_for_each_live_descendant_pre(dsct, d_css, cgrp)		\
- 	css_for_each_descendant_pre((d_css), cgroup_css((cgrp), NULL))	\
- 		if (({ lockdep_assert_held(&cgroup_mutex);		\
-@@ -936,7 +936,7 @@ void put_css_set_locked(struct css_set *cset)
-
- 	WARN_ON_ONCE(!list_empty(&cset->threaded_csets));
-
--	/* This css_set is dead. unlink it and release cgroup and css refs */
-+	/* This css_set is dead. Unlink it and release cgroup and css refs */
- 	for_each_subsys(ss, ssid) {
- 		list_del(&cset->e_cset_node[ssid]);
- 		css_put(cset->subsys[ssid]);
-@@ -1061,7 +1061,7 @@ static struct css_set *find_existing_css_set(struct css_set *old_cset,
-
- 	/*
- 	 * Build the set of subsystem state objects that we want to see in the
--	 * new css_set. while subsystems can change globally, the entries here
-+	 * new css_set. While subsystems can change globally, the entries here
- 	 * won't change, so no need for locking.
- 	 */
- 	for_each_subsys(ss, i) {
-@@ -1151,7 +1151,7 @@ static void link_css_set(struct list_head *tmp_links, struct css_set *cset,
-
- 	/*
- 	 * Always add links to the tail of the lists so that the lists are
--	 * in choronological order.
-+	 * in chronological order.
- 	 */
- 	list_move_tail(&link->cset_link, &cgrp->cset_links);
- 	list_add_tail(&link->cgrp_link, &cset->cgrp_links);
-@@ -4137,7 +4137,7 @@ struct cgroup_subsys_state *css_next_child(struct cgroup_subsys_state *pos,
- 	 * implies that if we observe !CSS_RELEASED on @pos in this RCU
- 	 * critical section, the one pointed to by its next pointer is
- 	 * guaranteed to not have finished its RCU grace period even if we
--	 * have dropped rcu_read_lock() inbetween iterations.
-+	 * have dropped rcu_read_lock() in-between iterations.
- 	 *
- 	 * If @pos has CSS_RELEASED set, its next pointer can't be
- 	 * dereferenced; however, as each css is given a monotonically
-@@ -4385,7 +4385,7 @@ static struct css_set *css_task_iter_next_css_set(struct css_task_iter *it)
- }
-
- /**
-- * css_task_iter_advance_css_set - advance a task itererator to the next css_set
-+ * css_task_iter_advance_css_set - advance a task iterator to the next css_set
-  * @it: the iterator to advance
-  *
-  * Advance @it to the next css_set to walk.
-@@ -6320,7 +6320,7 @@ struct cgroup_subsys_state *css_from_id(int id, struct cgroup_subsys *ss)
-  *
-  * Find the cgroup at @path on the default hierarchy, increment its
-  * reference count and return it.  Returns pointer to the found cgroup on
-- * success, ERR_PTR(-ENOENT) if @path doens't exist and ERR_PTR(-ENOTDIR)
-+ * success, ERR_PTR(-ENOENT) if @path doesn't exist and ERR_PTR(-ENOTDIR)
-  * if @path points to a non-directory.
-  */
- struct cgroup *cgroup_get_from_path(const char *path)
---
-2.26.2
-
+Thanks!
