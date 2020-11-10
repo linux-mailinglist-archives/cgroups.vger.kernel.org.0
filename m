@@ -2,142 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A22F2ADF17
-	for <lists+cgroups@lfdr.de>; Tue, 10 Nov 2020 20:08:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D4B42AE0C2
+	for <lists+cgroups@lfdr.de>; Tue, 10 Nov 2020 21:35:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731407AbgKJTIZ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 10 Nov 2020 14:08:25 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731350AbgKJTIY (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Nov 2020 14:08:24 -0500
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CC56C0613D3
-        for <cgroups@vger.kernel.org>; Tue, 10 Nov 2020 11:08:24 -0800 (PST)
-Received: by mail-qt1-x843.google.com with SMTP id g15so5669113qtq.13
-        for <cgroups@vger.kernel.org>; Tue, 10 Nov 2020 11:08:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=o/P6FAAbZyAhrgG09vfP1BCKKHct1LeQm/LdrSl6xbo=;
-        b=SEkve2d6VJEm0fVm001sIsH50qhvSC+fkG3XYb4FWVK0N4jo3NezX45gV3V1c2JJxR
-         RlB9BUM6fCLmSo3s6Y+Ijb8MGuKJEYSBWECV+upj1zkIkqu9mmBWoc3OHP5rnb7Z8dMI
-         XqnnLdzqv17RKQKD79XOWA0pV6et/HWzqgsbx8EIrk+jEXGI7wXbGmDPKkz87HtaKW2k
-         ynWMuyHTCvF6/PVzX8n0E5VJp1o/mlS6Z9aZR3UXWdad07hThGZp/CFnMmCPtki3dz9U
-         Uhu2qAohDJR7toQ5Ir44j97UxPf8mIj/iyXfszUSca9FeYv2Wgvw3oDYY6qsSTqVH0lq
-         B18g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=o/P6FAAbZyAhrgG09vfP1BCKKHct1LeQm/LdrSl6xbo=;
-        b=GExcFF+aw0TE5UlobFYbniohdzgJFhIWKtz2oQ+ltS1nhmBXK7rzcHwLc9hW4uSBmc
-         TgpDvaqE/yETx01VBCwhK4DjMEm9/ahm9B0j4Ieb6fTj+tYNABhmdEVYqRBnf019oNPc
-         OwChXrtrLykg97ST89yGaIDBiQN8fubIR2nGP8Ozj2EJexq82MQP4xARCsfxCtxvVjEu
-         HgLqVzPPxdN0glv9TrGAO09O53jAZnhCqWu3R1ndIUBoHDrQK1sLi3jy1NW2/YsbU3u+
-         V5WibLxmAH+VQgcnjcnOpUlc/qTRcXQulhVJ4Otelh5HD22CjcdtK5Oqq85GKgwKUzQ5
-         tKIQ==
-X-Gm-Message-State: AOAM533mG/9qpcG2CsSbILOa+QBtJFufiQ5vQq4X+hvg7SumQ2DSz+5m
-        qIvSQMd1j5deVWsSUizSxVvBSg==
-X-Google-Smtp-Source: ABdhPJzfQAT2OcEe14YYdZG0nE07YVG6i4U3vEP7T4ecgGBzSVYiOwyA3Q/DQDNUkOxmRz3uaExLTg==
-X-Received: by 2002:ac8:d48:: with SMTP id r8mr19575791qti.69.1605035303894;
-        Tue, 10 Nov 2020 11:08:23 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:64f7])
-        by smtp.gmail.com with ESMTPSA id y17sm9007791qki.134.2020.11.10.11.08.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 10 Nov 2020 11:08:22 -0800 (PST)
-Date:   Tue, 10 Nov 2020 14:06:35 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Alex Shi <alex.shi@linux.alibaba.com>
-Cc:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com, Minchan Kim <minchan@kernel.org>
-Subject: Re: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
- page->mapping
-Message-ID: <20201110190635.GE850433@cmpxchg.org>
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-7-git-send-email-alex.shi@linux.alibaba.com>
- <e66ef2e5-c74c-6498-e8b3-56c37b9d2d15@linux.alibaba.com>
+        id S1726737AbgKJUfY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 10 Nov 2020 15:35:24 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:55044 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725862AbgKJUfX (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 10 Nov 2020 15:35:23 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKXlN0034528;
+        Tue, 10 Nov 2020 20:35:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=s4nyry0mSPgh1FrvXm8VEB2bCAXmh9/aI1iL5kwnE7o=;
+ b=MF+5WKq4vr3MUTA6g7wFb5dE9tfejt9KvBDxWLBe5SyR4tn+KB8wIBonc5JTNB7hJwB/
+ qrP6eeCzoy7nqQvQ2EcvbNw5p1jd2fBAY36U3SA9WjAPqqnjclHo+NnObpxPLwg9ZUcK
+ rBWZSV2ZoV3SRFk8V1O4V8nU6hYuEtDkz9qrBY6u0t/ojtHmhUfYlnojLtc+xUUV28Xc
+ feumLPaql28r4xrEnnokxLa5xfFznLWZ9aDVbTLXPL1fm2Kj1MQVPIE7ImtDabENM+ZO
+ 9FZZNYcRlJyzo2OYOpzyqCoH+NFiAzkORBr36nz6dXSXxL0H/lCxO8FXawwILEN6rq6n gw== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 34nkhkwqss-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Tue, 10 Nov 2020 20:35:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0AAKKBw6104737;
+        Tue, 10 Nov 2020 20:35:05 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3030.oracle.com with ESMTP id 34p5gxfwve-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 10 Nov 2020 20:35:04 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 0AAKZ1Zm022008;
+        Tue, 10 Nov 2020 20:35:01 GMT
+Received: from parnassus (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Tue, 10 Nov 2020 12:35:00 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+        Li Zefan <lizefan@huawei.com>,
+        Prateek Sood <prsood@codeaurora.org>,
+        Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cpuset: fix race between hotplug work and later CPU
+ offline
+In-Reply-To: <20201110164504.GL2594@hirez.programming.kicks-ass.net>
+References: <20201029181845.415517-1-daniel.m.jordan@oracle.com>
+ <20201110164504.GL2594@hirez.programming.kicks-ass.net>
+Date:   Tue, 10 Nov 2020 15:34:31 -0500
+Message-ID: <87zh3pt0h4.fsf@mr.pineapple.says.hi.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e66ef2e5-c74c-6498-e8b3-56c37b9d2d15@linux.alibaba.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999 mlxscore=0
+ spamscore=0 phishscore=0 adultscore=0 malwarescore=0 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100138
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9801 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 priorityscore=1501
+ mlxscore=0 suspectscore=1 mlxlogscore=999 lowpriorityscore=0 spamscore=0
+ malwarescore=0 adultscore=0 clxscore=1015 bulkscore=0 impostorscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2011100139
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 09:20:04AM +0800, Alex Shi wrote:
-> From 2fd278b1ca6c3e260ad249808b62f671d8db5a7b Mon Sep 17 00:00:00 2001
-> From: Alex Shi <alex.shi@linux.alibaba.com>
-> Date: Thu, 5 Nov 2020 11:38:24 +0800
-> Subject: [PATCH v21 06/19] mm/rmap: stop store reordering issue on
->  page->mapping
-> 
-> Hugh Dickins and Minchan Kim observed a long time issue which
-> discussed here, but actully the mentioned fix missed.
-> https://lore.kernel.org/lkml/20150504031722.GA2768@blaptop/
-> The store reordering may cause problem in the scenario:
-> 
-> 	CPU 0						CPU1
->    do_anonymous_page
-> 	page_add_new_anon_rmap()
-> 	  page->mapping = anon_vma + PAGE_MAPPING_ANON
-> 	lru_cache_add_inactive_or_unevictable()
-> 	  spin_lock(lruvec->lock)
-> 	  SetPageLRU()
-> 	  spin_unlock(lruvec->lock)
-> 						/* idletacking judged it as LRU
-> 						 * page so pass the page in
-> 						 * page_idle_clear_pte_refs
-> 						 */
-> 						page_idle_clear_pte_refs
-> 						  rmap_walk
-> 						    if PageAnon(page)
-> 
-> Johannes give detailed examples how the store reordering could cause
-> a trouble:
-> "The concern is the SetPageLRU may get reorder before 'page->mapping'
-> setting, That would make CPU 1 will observe at page->mapping after
-> observing PageLRU set on the page.
-> 
-> 1. anon_vma + PAGE_MAPPING_ANON
-> 
->    That's the in-order scenario and is fine.
-> 
-> 2. NULL
-> 
->    That's possible if the page->mapping store gets reordered to occur
->    after SetPageLRU. That's fine too because we check for it.
-> 
-> 3. anon_vma without the PAGE_MAPPING_ANON bit
-> 
->    That would be a problem and could lead to all kinds of undesirable
->    behavior including crashes and data corruption.
-> 
->    Is it possible? AFAICT the compiler is allowed to tear the store to
->    page->mapping and I don't see anything that would prevent it.
-> 
-> That said, I also don't see how the reader testing PageLRU under the
-> lru_lock would prevent that in the first place. AFAICT we need that
-> WRITE_ONCE() around the page->mapping assignment."
-> 
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Hugh Dickins <hughd@google.com>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: Minchan Kim <minchan@kernel.org>
-> Cc: Vladimir Davydov <vdavydov.dev@gmail.com>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
+Peter Zijlstra <peterz@infradead.org> writes:
+> On Thu, Oct 29, 2020 at 02:18:45PM -0400, Daniel Jordan wrote:
+>> rebuild_sched_domains_locked() prevented the race during the cgroup2
+>> cpuset series up until the Fixes commit changed its check.  Make the
+>> check more robust so that it can detect an offline CPU in any exclusive
+>> cpuset's effective mask, not just the top one.
+>
+> *groan*, what a mess...
 
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Ah, the joys of cpu hotplug!
 
-Thanks Alex!
+>> I think the right thing to do long-term is make the hotplug work
+>> synchronous, fixing the lockdep splats of past attempts, and then take
+>> these checks out of rebuild_sched_domains_locked, but this fixes the
+>> immediate issue and is small enough for stable.  Open to suggestions.
+>> 
+>> Prateek, are you planning on picking up your patches again?
+>
+> Yeah, that might help, but those deadlocks were nasty iirc :/
+
+It might end up being too invasive to be worth it, but I'm being
+optimistic for now.
+
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 57b5b5d0a5fd..ac3124010b2a 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -983,8 +983,10 @@ partition_and_rebuild_sched_domains(int ndoms_new, cpumask_var_t doms_new[],
+>>   */
+>>  static void rebuild_sched_domains_locked(void)
+>>  {
+>> +	struct cgroup_subsys_state *pos_css;
+>>  	struct sched_domain_attr *attr;
+>>  	cpumask_var_t *doms;
+>> +	struct cpuset *cs;
+>>  	int ndoms;
+>>  
+>>  	lockdep_assert_cpus_held();
+>> @@ -999,9 +1001,21 @@ static void rebuild_sched_domains_locked(void)
+>>  	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+>>  		return;
+>
+> So you argued above that effective_cpus was stale, I suppose the above
+> one works because its an equality test instead of a subset?
+
+Yep, fortunately enough.
+
+> Does that wants a comment?
+
+Ok, I'll change the comments to this absent other ideas.
+
+	/*
+	 * If we have raced with CPU hotplug, return early to avoid
+	 * passing doms with offlined cpu to partition_sched_domains().
+	 * Anyways, cpuset_hotplug_workfn() will rebuild sched domains.
+	 *
+	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
+	 * should be the same as the active CPUs, so checking only top_cpuset
+	 * is enough to detect racing CPU offlines.
+	 */
+	if (!top_cpuset.nr_subparts_cpus &&
+	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+		return;
+
+	/*
+	 * With subpartition CPUs, however, the effective CPUs of a partition
+	 * root should be only a subset of the active CPUs.  Since a CPU in any
+	 * partition root could be offlined, all must be checked.
+	 */
+	if (top_cpuset.nr_subparts_cpus) {
+		rcu_read_lock();
+        ...
+
+
+Thanks for looking.
