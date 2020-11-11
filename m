@@ -2,106 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0387F2AF738
-	for <lists+cgroups@lfdr.de>; Wed, 11 Nov 2020 18:12:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E4ABE2AF74A
+	for <lists+cgroups@lfdr.de>; Wed, 11 Nov 2020 18:19:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726011AbgKKRMe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 11 Nov 2020 12:12:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:35408 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725995AbgKKRMe (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 11 Nov 2020 12:12:34 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51074AC24;
-        Wed, 11 Nov 2020 17:12:32 +0000 (UTC)
-To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
-        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
-        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
-        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, shakeelb@google.com,
-        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
-        kirill@shutemov.name, alexander.duyck@gmail.com,
-        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
-        shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
- <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v21 15/19] mm/compaction: do page isolation first in
- compaction
-Message-ID: <a0b8c198-6bd0-2ccb-fe55-970895c26a0b@suse.cz>
-Date:   Wed, 11 Nov 2020 18:12:28 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1727279AbgKKRTw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 11 Nov 2020 12:19:52 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727248AbgKKRTw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 11 Nov 2020 12:19:52 -0500
+Received: from mail-vk1-xa31.google.com (mail-vk1-xa31.google.com [IPv6:2607:f8b0:4864:20::a31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79E7AC0613D1
+        for <cgroups@vger.kernel.org>; Wed, 11 Nov 2020 09:19:52 -0800 (PST)
+Received: by mail-vk1-xa31.google.com with SMTP id e8so647383vkk.8
+        for <cgroups@vger.kernel.org>; Wed, 11 Nov 2020 09:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=UL2wfa/4du6yc1p0RZb5RDC24E3Qw223Z/qO4WPONiM=;
+        b=WtHwlLNsnYMylNy+J2/4lWLpxV9knD5GTi6yJAyYRlveqgSJh//i/ZxxOH0ugttQiJ
+         EnVHSF7oOol28ppG9eBFVqcAc/cZ1xXzp0ySpleH+x7QQ7T8pis7dnHMJ29QH9lcLQub
+         l6iSN4KqjBZxx7H5dtMPxh8IdjpCj8TJ8lqUfsJ0gYAbQQcMoaR5/ork8jS2zHW6KSBV
+         9w2oWQ4SkSm+e/Zn5mhoNWPhSUyKifOk2UvHz952zmLLmfneo0aLNwGl5oriNI5Ubf0J
+         y41kQG6lD1LN/wBFgYnSj8d7aEsbvGlz0WVSOSpPs2ixmrCzyefDICFZzlsB3WH5kdj9
+         5/uA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=UL2wfa/4du6yc1p0RZb5RDC24E3Qw223Z/qO4WPONiM=;
+        b=ePRKdWhop+OI650qy3V1jo3flluu2RqAv3hMDmJfiyup16yPCANStataRoeMIcZeid
+         H27K8jZo+paLiTNJueDMiwphkwE80dtywOFJVpcTBvzHzumsfBH7BeN5kR+t/dorgJhQ
+         rBxO9LNbyH9s5aL+/0p/GWc377bwpUHP65OGXdZdvCpeMXPLkpyTC4GrYpHndkQoq4GZ
+         yO0g+s65q44an18Ql1pJ/vln68JI6EqU4PfkQCHLNKNxp+Ua6vUggQi/ScGXPEXsJ0NZ
+         xfwZ4MLnO0F9BUfAPMBd8D+z664duhZf0UB8P+v5yyQBM4d1V1EndUkfs+0pvorwFOtr
+         AKWA==
+X-Gm-Message-State: AOAM533n/1Fhk+4JrfjF8AOHM37+P0L2uPOchF0cvaC/p14kZSLhqmlI
+        E1P9FGMO6BTQJMVs+sexWxnMp3ev9zYqPec+axOXHnIMHVE=
+X-Google-Smtp-Source: ABdhPJwKxTRftmMIBrmV4Bvg6ZJgNlerWYOHGfSpGgVvTEfY3jUUzDEuvwnSlgyZwpqm/lVhtM+QPCb8DHDxGCoT/Jw=
+X-Received: by 2002:a1f:1289:: with SMTP id 131mr14868519vks.24.1605115191398;
+ Wed, 11 Nov 2020 09:19:51 -0800 (PST)
 MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-16-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+From:   =?UTF-8?B?0JXQvdGM0YjQuNC9INCQ0L3QtNGA0LXQuQ==?= 
+        <and.enshin@gmail.com>
+Date:   Thu, 12 Nov 2020 02:19:40 +0900
+Message-ID: <CAHoi7St=-G_0TYcXiMYjSF0OG1GFc=Bu165hGX4yNW+wDcO=QQ@mail.gmail.com>
+Subject: systemd subsystem: exists or not exists ?
+To:     cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 11/5/20 9:55 AM, Alex Shi wrote:
-> Currently, compaction would get the lru_lock and then do page isolation
-> which works fine with pgdat->lru_lock, since any page isoltion would
-> compete for the lru_lock. If we want to change to memcg lru_lock, we
-> have to isolate the page before getting lru_lock, thus isoltion would
-> block page's memcg change which relay on page isoltion too. Then we
-> could safely use per memcg lru_lock later.
-> 
-> The new page isolation use previous introduced TestClearPageLRU() +
-> pgdat lru locking which will be changed to memcg lru lock later.
-> 
-> Hugh Dickins <hughd@google.com> fixed following bugs in this patch's
-> early version:
-> 
-> Fix lots of crashes under compaction load: isolate_migratepages_block()
-> must clean up appropriately when rejecting a page, setting PageLRU again
-> if it had been cleared; and a put_page() after get_page_unless_zero()
-> cannot safely be done while holding locked_lruvec - it may turn out to
-> be the final put_page(), which will take an lruvec lock when PageLRU.
-> And move __isolate_lru_page_prepare back after get_page_unless_zero to
-> make trylock_page() safe:
-> trylock_page() is not safe to use at this time: its setting PG_locked
-> can race with the page being freed or allocated ("Bad page"), and can
-> also erase flags being set by one of those "sole owners" of a freshly
-> allocated page who use non-atomic __SetPageFlag().
-> 
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
-> Acked-by: Hugh Dickins <hughd@google.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Matthew Wilcox <willy@infradead.org>
-> Cc: linux-kernel@vger.kernel.org
-> Cc: linux-mm@kvack.org
+Hi cgroups folks,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+I have very simple question which I was not able to google: is there
+such subsystem as systemd?
 
-A question below:
+It is not shown in `lssubsys -am` and `cat /proc/cgroups` but shown in
+`cat /proc/self/mountinfo`.
 
-> @@ -979,10 +995,6 @@ static bool too_many_isolated(pg_data_t *pgdat)
->   					goto isolate_abort;
->   			}
->   
-> -			/* Recheck PageLRU and PageCompound under lock */
-> -			if (!PageLRU(page))
-> -				goto isolate_fail;
-> -
->   			/*
->   			 * Page become compound since the non-locked check,
->   			 * and it's on LRU. It can only be a THP so the order
-> @@ -990,16 +1002,13 @@ static bool too_many_isolated(pg_data_t *pgdat)
->   			 */
->   			if (unlikely(PageCompound(page) && !cc->alloc_contig)) {
->   				low_pfn += compound_nr(page) - 1;
-> -				goto isolate_fail;
-> +				SetPageLRU(page);
-> +				goto isolate_fail_put;
->   			}
 
-IIUC the danger here is khugepaged will collapse a THP. For that, 
-__collapse_huge_page_isolate() has to succeed isolate_lru_page(). Under the new 
-scheme, it shouldn't be possible, right? If that's correct, we can remove this part?
+Also in some cases I can see how =C2=ABsystemd=C2=BB subsystem, If we can c=
+all
+it so, breaks Rule 2 described in the Red Hat doc:
+=C2=ABAny single subsystem (such as cpu) cannot be attached to more than
+one hierarchy if one of those hierarchies has a different subsystem
+attached to it already.=C2=BB
+
+Attached two times, if I understand it correctly:
+# cat /proc/self/mountinfo | grep systemd | grep cgroup
+26 25 0:23 / /sys/fs/cgroup/systemd rw,nosuid,nodev,noexec,relatime
+shared:6 - cgroup cgroup
+rw,xattr,release_agent=3D/usr/lib/systemd/systemd-cgroups-agent,name=3Dsyst=
+emd
+2826 26 0:23 /kubepods/burstable/pod7ffde41a-fa85-4b01-8023-69a4e4b50c55/88=
+42def241fac72cb34fdce90297b632f098289270fa92ec04643837f5748c15
+/sys/fs/cgroup/systemd/kubepods/burstable/pod7ffde41a-fa85-4b01-8023-69a4e4=
+b50c55/8842def241fac72cb34fdce90297b632f098289270fa92ec04643837f5748c15
+rw,nosuid,nodev,noexec,relatime shared:6 - cgroup cgroup
+rw,xattr,release_agent=3D/usr/lib/systemd/systemd-cgroups-agent,name=3Dsyst=
+emd
+
+So, to cocnlude
+Q1. Is there such subsystem as systemd?
+Q2. Why it=E2=80=99s not shown in one way but shown in another?
+Q3. Why I can see it is mounted twice breaking Rule 2?
+
+--=20
+
+Best Regards,
+Andrei Enshin
