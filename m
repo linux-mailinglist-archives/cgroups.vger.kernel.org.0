@@ -2,103 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 872792B3BE9
-	for <lists+cgroups@lfdr.de>; Mon, 16 Nov 2020 04:47:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E93CC2B3CB1
+	for <lists+cgroups@lfdr.de>; Mon, 16 Nov 2020 06:51:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726734AbgKPDrE (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 15 Nov 2020 22:47:04 -0500
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:46418 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726732AbgKPDrE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 15 Nov 2020 22:47:04 -0500
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=21;SR=0;TI=SMTPD_---0UFSqqZF_1605498418;
-Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFSqqZF_1605498418)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Mon, 16 Nov 2020 11:46:59 +0800
-Subject: Re: [PATCH v21 00/19] per memcg lru lock
-From:   Alex Shi <alex.shi@linux.alibaba.com>
-To:     akpm@linux-foundation.org, mgorman@techsingularity.net,
-        tj@kernel.org, hughd@google.com, khlebnikov@yandex-team.ru,
-        daniel.m.jordan@oracle.com, willy@infradead.org,
-        hannes@cmpxchg.org, lkp@intel.com, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        shakeelb@google.com, iamjoonsoo.kim@lge.com,
-        richard.weiyang@gmail.com, kirill@shutemov.name,
-        alexander.duyck@gmail.com, rong.a.chen@intel.com, mhocko@suse.com,
-        vdavydov.dev@gmail.com, shy828301@gmail.com
-References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <c24610dd-a1f1-529d-5fdf-acdd1cc5060a@linux.alibaba.com>
-Date:   Mon, 16 Nov 2020 11:45:51 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
- Gecko/20100101 Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+        id S1725379AbgKPFu4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 16 Nov 2020 00:50:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49102 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725300AbgKPFuz (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 16 Nov 2020 00:50:55 -0500
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D888C0613CF;
+        Sun, 15 Nov 2020 21:50:55 -0800 (PST)
+Received: by mail-ej1-x644.google.com with SMTP id f23so22759889ejk.2;
+        Sun, 15 Nov 2020 21:50:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=bMCt60rqT+zbnmmu8mIiXqNzcowO0BqJlZFilJ3Doeo=;
+        b=l2N6UPXztssB0BIvdQTVtoH2uBhHn7UeL7GZOqiJHymxU/o40kBJboG/xwwJ0dZ+cw
+         n1KO2j8bOsgqGfSu/Gks3g2zXimC/L45Zq1Vtw6IBhErbes7kYBG5Z4+iwogQJxm56yX
+         8eJtxaKvCz6uHpp/6j8Ow/A7n9mAFktsHac1tWj8Ihzt3aglcMo9yjTlUknFm5aaH2nW
+         P3zfAIHUMuCP7T4vWeYCZL/dh4UbYvnzwzQrRAg97uqoMX4cfjg4Y+Rvz/Mx5rPpLvon
+         KKdJ0tN6fWaK8sA144XP8eVvWUUAA4FY8HKz+VyprSzyZ8VqEozquOocB26xYFvnFQj+
+         OvVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=bMCt60rqT+zbnmmu8mIiXqNzcowO0BqJlZFilJ3Doeo=;
+        b=rqG7jxH8bLfItl64K/bp49UdV9xrcswWePumTqdPM3kgOTZ5Owy4EMUFiXI0rp2AF1
+         D3rzzLD9aBlFC4e6CCv/iPWpozkpH94oXzQmrQOrQmB21TVO4C0OK5AcH13XoCGGDXnV
+         Bk3StGw08CMVRDrh9Y2jD7IYphpHIAtX+OZMXKi+G15hdbuQZoWjee0i5CreFVA9aKu8
+         RXcGYVyDCn3Q7ZEj4D8bT+utjYi9qzcD9jjnDIWroqSTi61rjzqBp7Ipy513oNjLGN1p
+         0mvo+DXZmPzbLQ5ZtNok0doKfIYWv9BL3CcRcb6atMUpW/ZsTwLOVPnmGLfwajN3Dlug
+         LWvQ==
+X-Gm-Message-State: AOAM532COiRhhp+K1DUK2H9yVLFF1laFz5KXMC/1V84lBXBl9/9GjPHJ
+        rl7EwKOUKHzPmIAZKHmfQb8=
+X-Google-Smtp-Source: ABdhPJxZbKUtzcgQIOuCyBy7CGfW5JkOEuHKZALohI5J1FH2WeJ62lL9BDzOSL78BB+LKiR25Ex7Hg==
+X-Received: by 2002:a17:906:3294:: with SMTP id 20mr13143545ejw.239.1605505853911;
+        Sun, 15 Nov 2020 21:50:53 -0800 (PST)
+Received: from felia.fritz.box ([2001:16b8:2de6:ad00:939:47a9:70b9:fe5b])
+        by smtp.gmail.com with ESMTPSA id h24sm9907059ejg.15.2020.11.15.21.50.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Nov 2020 21:50:53 -0800 (PST)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Roman Gushchin <guro@fb.com>, Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+Cc:     Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>, Tom Rix <trix@redhat.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux@googlegroups.com,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] mm: memcg: remove obsolete memcg_has_children()
+Date:   Mon, 16 Nov 2020 06:50:43 +0100
+Message-Id: <20201116055043.20886-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Andrew,
+Commit 2ef1bf118c40 ("mm: memcg: deprecate the non-hierarchical mode")
+removed the only use of memcg_has_children() in
+mem_cgroup_hierarchy_write() as part of the feature deprecation.
 
-With all patches are acked-by Hugh and Johannes, and full testing from LKP,
-is this patchset ready for more testing on linux-next? or anything still need
-be improved?
+Hence, since then, make CC=clang W=1 warns:
 
-Thanks
-Alex
+  mm/memcontrol.c:3421:20:
+    warning: unused function 'memcg_has_children' [-Wunused-function]
 
+Simply remove this obsolete unused function.
 
-在 2020/11/5 下午4:55, Alex Shi 写道:
-> This version rebase on next/master 20201104, with much of Johannes's
-> Acks and some changes according to Johannes comments. And add a new patch
-> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
-> v21-0007.
-> 
-> This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
-> added to -mm tree yesterday.
->  
-> Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
-> Johannes Weiner.
-> 
-> So now this patchset includes 3 parts:
-> 1, some code cleanup and minimum optimization as a preparation. 
-> 2, use TestCleanPageLRU as page isolation's precondition.
-> 3, replace per node lru_lock with per memcg per node lru_lock.
-> 
-> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
-> lru lists, but now we had moved the lru lists into memcg for long time. Still
-> using per node lru_lock is clearly unscalable, pages on each of memcgs have
-> to compete each others for a whole lru_lock. This patchset try to use per
-> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
-> it scalable for memcgs and get performance gain.
-> 
-> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
-> but if we want to use specific lruvec lock on the page, we need to pin down
-> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
-> undermined by the page's memcg charge/migration. To fix this problem, we could
-> take out the page's lru bit clear and use it as pin down action to block the
-> memcg changes. That's the reason for new atomic func TestClearPageLRU.
-> So now isolating a page need both actions: TestClearPageLRU and hold the
-> lru_lock.
-> 
-> The typical usage of this is isolate_migratepages_block() in compaction.c
-> we have to take lru bit before lru lock, that serialized the page isolation
-> in memcg page charge/migration which will change page's lruvec and new 
-> lru_lock in it.
-> 
-> The above solution suggested by Johannes Weiner, and based on his new memcg 
-> charge path, then have this patchset. (Hugh Dickins tested and contributed much
-> code from compaction fix to general code polish, thanks a lot!).
-> 
-> Daniel Jordan's testing show 62% improvement on modified readtwice case
-> on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
-> with this v20.
-> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
-> 
-> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
-> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
-> Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
-> 
-> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
-> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20201113, not on current master
+
+Roman, please ack.
+
+Andrew, please pick this minor non-urgent patch into your -next tree.
+
+ mm/memcontrol.c | 13 -------------
+ 1 file changed, 13 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f95ddb3e9898..d49d7c507284 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3415,19 +3415,6 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+ 	return nr_reclaimed;
+ }
+ 
+-/*
+- * Test whether @memcg has children, dead or alive.
+- */
+-static inline bool memcg_has_children(struct mem_cgroup *memcg)
+-{
+-	bool ret;
+-
+-	rcu_read_lock();
+-	ret = css_next_child(NULL, &memcg->css);
+-	rcu_read_unlock();
+-	return ret;
+-}
+-
+ /*
+  * Reclaims as many pages from the given memcg as possible.
+  *
+-- 
+2.17.1
+
