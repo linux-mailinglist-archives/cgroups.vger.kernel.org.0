@@ -2,56 +2,62 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 541472B7FCB
-	for <lists+cgroups@lfdr.de>; Wed, 18 Nov 2020 15:52:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B462BA64C
+	for <lists+cgroups@lfdr.de>; Fri, 20 Nov 2020 10:36:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727087AbgKROuL convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 18 Nov 2020 09:50:11 -0500
-Received: from tigeramira.ro ([88.158.78.30]:45634 "EHLO mail.tigeramira.ro"
-        rhost-flags-OK-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S1727085AbgKROuL (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 18 Nov 2020 09:50:11 -0500
-Received: from localhost (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id C83A1C007D3
-        for <cgroups@vger.kernel.org>; Wed, 18 Nov 2020 03:27:48 +0200 (EET)
-Received: from mail.tigeramira.ro ([127.0.0.1])
-        by localhost (mail.tigeramira.ro [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id odGkybFMcQQM for <cgroups@vger.kernel.org>;
-        Wed, 18 Nov 2020 03:27:33 +0200 (EET)
-Received: from mail.tigeramira.ro (localhost [127.0.0.1])
-        by mail.tigeramira.ro (Postfix) with ESMTP id BE1CCCAA940
-        for <cgroups@vger.kernel.org>; Mon, 16 Nov 2020 19:46:35 +0200 (EET)
-Received: from [156.96.44.214] (unknown [192.168.12.254])
-        by mail.tigeramira.ro (Postfix) with ESMTP id B680A998C6E
-        for <cgroups@vger.kernel.org>; Fri, 13 Nov 2020 19:07:55 +0200 (EET)
-Content-Type: text/plain; charset="iso-8859-1"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Corporate and Personal Loan::,
-To:     cgroups@vger.kernel.org
-From:   "Investment  Corporate" <financialcapability6@gmail.com>
-Date:   Fri, 13 Nov 2020 08:08:08 -0800
-Reply-To: hmurrah39@gmail.com
-Message-Id: <20201113170756.B680A998C6E@mail.tigeramira.ro>
+        id S1726426AbgKTJff (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 20 Nov 2020 04:35:35 -0500
+Received: from out30-132.freemail.mail.aliyun.com ([115.124.30.132]:34656 "EHLO
+        out30-132.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725942AbgKTJff (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 20 Nov 2020 04:35:35 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R551e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=7;SR=0;TI=SMTPD_---0UFykla5_1605864932;
+Received: from aliy80.localdomain(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UFykla5_1605864932)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 20 Nov 2020 17:35:32 +0800
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH next-akpm] mm/memcg: remove incorrect comments
+Date:   Fri, 20 Nov 2020 17:35:30 +0800
+Message-Id: <1605864930-49405-1-git-send-email-alex.shi@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello cgroups@vger.kernel.org
+Swapcache readahead pages are charged before get used, so it unlikely be
+migrated before charged. remove the incorrect comments.
 
+Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org> 
+Cc: Michal Hocko <mhocko@kernel.org> 
+Cc: Vladimir Davydov <vdavydov.dev@gmail.com> 
+Cc: Andrew Morton <akpm@linux-foundation.org> 
+Cc: cgroups@vger.kernel.org 
+Cc: linux-mm@kvack.org 
+Cc: linux-kernel@vger.kernel.org 
+---
+ mm/memcontrol.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-We are Base Investment Company offering Corporate and Personal Loan at 3% Interest Rate for a duration of 10Years.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 45465c03a8d7..08c267305725 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6941,7 +6941,6 @@ void mem_cgroup_migrate(struct page *oldpage, struct page *newpage)
+ 	if (page_memcg(newpage))
+ 		return;
+ 
+-	/* Swapcache readahead pages can get replaced before being charged */
+ 	memcg = page_memcg(oldpage);
+ 	VM_WARN_ON_ONCE_PAGE(!memcg, oldpage);
+ 	if (!memcg)
+-- 
+2.29.GIT
 
-
-We also pay 1% commission to brokers, who introduce project owners for finance or other opportunities.
-
-
-Please get back to me if you are interested for more
-
-details.
-
-
-Yours faithfully,
-
-Hashim Murrah
