@@ -2,55 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AFE2C315D
-	for <lists+cgroups@lfdr.de>; Tue, 24 Nov 2020 20:50:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79E942C31D4
+	for <lists+cgroups@lfdr.de>; Tue, 24 Nov 2020 21:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728019AbgKXTtM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 24 Nov 2020 14:49:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36442 "EHLO
+        id S1730728AbgKXUSu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 24 Nov 2020 15:18:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41058 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727440AbgKXTtK (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Nov 2020 14:49:10 -0500
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF8B6C0613D6
-        for <cgroups@vger.kernel.org>; Tue, 24 Nov 2020 11:49:09 -0800 (PST)
-Received: by mail-pg1-x543.google.com with SMTP id t21so134937pgl.3
-        for <cgroups@vger.kernel.org>; Tue, 24 Nov 2020 11:49:09 -0800 (PST)
+        with ESMTP id S1727131AbgKXUSt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 24 Nov 2020 15:18:49 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24CA1C061A4F
+        for <cgroups@vger.kernel.org>; Tue, 24 Nov 2020 12:18:48 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id f17so192653pge.6
+        for <cgroups@vger.kernel.org>; Tue, 24 Nov 2020 12:18:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=cBmKZMpajiKIWN5tBRCoLzJxvBW3rq8fOFgW5/znSig=;
-        b=abO5DZnLyapNPhgLSSf/lKJXmbODOZYvrcZGLbM/QTh9TsTAokw2MINS+GkfWsSWXb
-         4trka4tPQprDo6K6uK3MjtRpmS8B3Ffzymka/9lKhG2nimTqRjKpKd5ukYnPPla1moeh
-         oNur5MfnzwT/sxlfGsP4yTJsA70ZxoI3aPpP7sONi1c+im/N1AzHOJUl7zMwu1Vlev+4
-         pSKnZeyWy6Cx0WePVUrPmz0ta0CURZY4H6CrF2pJFjaeBtEnRbZj+0EAJnIbdmzIpv2m
-         zCwGFpTMQvkBHPo8q5oToerqIQKJYgOeQfGQco6oPJpm0G5SnPpEhSUsl0ZPmWUOfz6F
-         KT9Q==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=+d3Q+FJMp5wysv4Lgx699qsAFKb+B/URuOmqRGlIss4=;
+        b=TA5DY7nVqkkzYdJjhDZ7R6UmWPWd8fAOJab+j7WazNhY9amUjOXgvlKUExj5nM0/C1
+         tuvCwJ51PeL/Uh0G6D/cXPDxSLt8rfmR1a3ZaY4592VbSNFaD23grfs14In9FAyLsEgK
+         bozL0Uvjw8VXTlKfXj1fMjLYK538qEX5PDaYDIWRv/JRMFVDtisCW1k3pKdVPB2VBz7u
+         H58vHaVo6y+yHnDoul/bD568yBKNAdiz2YAZWxSqWb50sXX/ME509J8HKbv3UV/7fgKk
+         wcXgqmyLiFBeBDfKBkwDGLN4MqRGRVR663Kr1T1N6znwkZES50/JIREOyoBOICeJ6KGK
+         MHqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cBmKZMpajiKIWN5tBRCoLzJxvBW3rq8fOFgW5/znSig=;
-        b=O1WjW4xc1Uqyr7xzvfQ5hyNyuxzUTb3pD/ub0SWeLtfFTnWyeQBlJa+l8tec7Zax6M
-         YjIVpkpgJwmrMMnqy84kP/vtUKHUWrXUDLyyRhx20DST5ClqShmUjnXdnE/FRA3AeIp7
-         rWoe9pALxPqaVbNnSL8xx0Wq/ijeseRhkS8y2yXKJHvVusmvmOV6OJH06Ph15Y+J6qpp
-         mnAJz8yYBCrMBboW3y2iDnjTMEytFrzTBJOVfukxk/ZEY2PGpd/bgnsL+go+14x/5Drh
-         l1JNSsN/5tSv9syjOxOMaSE29orEBoTfiONgXUOdvqEseeoFFQn5I0ZYOPSP9lWD1Ea+
-         OT8A==
-X-Gm-Message-State: AOAM530D92nCXr27PwHxaXap5fgwagpsf86LMTsnujicimkBIvemQn4T
-        zoyONNi1JEYYKQrsc/Gi2//FSA==
-X-Google-Smtp-Source: ABdhPJyoz4AIhG2izPE8K3TTUxxow/cd9XwYYI/YdjXK5jCO3mP3Q3IK88SwTHvD3ZeDIG+nhcE8UQ==
-X-Received: by 2002:a17:90a:7c4a:: with SMTP id e10mr235473pjl.72.1606247349136;
-        Tue, 24 Nov 2020 11:49:09 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id g11sm40570pju.23.2020.11.24.11.49.08
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=+d3Q+FJMp5wysv4Lgx699qsAFKb+B/URuOmqRGlIss4=;
+        b=fmDsbLI0CzYl0pbLYFTB/qudJ/uWhsLbwE2qmsMd0jMhV0a1mahCLXNzY2+OsnZmEQ
+         6XrjtzebiYFnyrp2csRdx7bj+tmtvUquSBkvtYGlPmp39wZVpIWmy6bFxOwWe3WBDxJe
+         6lLSxVOJIr4lhYrKuxcYsu8+I2RMB3Fk8qynoytOcjdlq5Vn+WNLNBg87uSkV3oNF4QR
+         AmURbvBQjGv8Zk8Pp70l3bnf22qszJCdnSQlMD6K9eCR4uIM9kx66JApWq5yVhqJxdU4
+         V19KGoO4UYQ608dQ4PREgekXoAWQ8mdakAf9HvYILWDMWjKxrstKq0Dw0aEXNUa4HNKe
+         hOzA==
+X-Gm-Message-State: AOAM5334gY7VOe7J9Vcg5pPRPFtm5CBb2q1K23MlLm/BLyJL+ORZTI7L
+        jAIX4wpXY27UurRD9RGF/RlIEw==
+X-Google-Smtp-Source: ABdhPJy43I36Ch2HoOAJBNeRJ9IXB+JaaxA0NK+B43dRGgE//jaRqGi7ACQhDCbCOOv/Bl9EOkU5bw==
+X-Received: by 2002:a62:f20e:0:b029:197:f6d8:8d4d with SMTP id m14-20020a62f20e0000b0290197f6d88d4dmr457862pfh.58.1606249127350;
+        Tue, 24 Nov 2020 12:18:47 -0800 (PST)
+Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
+        by smtp.gmail.com with ESMTPSA id h16sm72362pgd.62.2020.11.24.12.18.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Nov 2020 11:49:08 -0800 (PST)
-Date:   Tue, 24 Nov 2020 11:49:04 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Sean Christopherson <seanjc@google.com>, rientjes@google.com
-Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Tue, 24 Nov 2020 12:18:46 -0800 (PST)
+Date:   Tue, 24 Nov 2020 12:18:45 -0800 (PST)
+From:   David Rientjes <rientjes@google.com>
+X-X-Sender: rientjes@chino.kir.corp.google.com
+To:     Vipin Sharma <vipinsh@google.com>
+cc:     Sean Christopherson <seanjc@google.com>,
+        Janosch Frank <frankja@linux.ibm.com>,
         Christian Borntraeger <borntraeger@de.ibm.com>,
         Lendacky@google.com, Thomas <thomas.lendacky@amd.com>,
         pbonzini@redhat.com, tj@kernel.org, lizefan@huawei.com,
@@ -61,112 +63,61 @@ Cc:     Janosch Frank <frankja@linux.ibm.com>,
         kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
-Message-ID: <20201124194904.GA45519@google.com>
-References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com>
- <20201124191629.GB235281@google.com>
+In-Reply-To: <20201124194904.GA45519@google.com>
+Message-ID: <alpine.DEB.2.23.453.2011241215400.3594395@chino.kir.corp.google.com>
+References: <alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com> <20201124191629.GB235281@google.com> <20201124194904.GA45519@google.com>
+User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201124191629.GB235281@google.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Nov 24, 2020 at 07:16:29PM +0000, Sean Christopherson wrote:
-> On Fri, Nov 13, 2020, David Rientjes wrote:                                     
-> >                                                                               
-> > On Mon, 2 Nov 2020, Sean Christopherson wrote:                                
-> >                                                                               
-> > > On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:               
-> > > > On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:             
-> > > > > I agree with you that the abstract name is better than the concrete     
-> > > > > name, I also feel that we must provide HW extensions. Here is one       
-> > > > > approach:                                                               
-> > > > >                                                                         
-> > > > > Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to     
-> > > > > suggestions)                                                            
-> > > > >                                                                         
-> > > > > Control files: slots.{max, current, events}                             
-> > >                                                                             
-> > > I don't particularly like the "slots" name, mostly because it could be confused
-> > > with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
-> > > love those names either, but "encryption" and "IDs" are the two obvious     
-> > > commonalities betwee TDX's encryption key IDs and SEV's encryption address  
-> > > space IDs.                                                                  
-> > >                                                                             
-> >                                                                               
-> > Looping Janosch and Christian back into the thread.                           
-> >                                                                               
-> > I interpret this suggestion as                                                
-> > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
+On Tue, 24 Nov 2020, Vipin Sharma wrote:
+
+> > > Looping Janosch and Christian back into the thread.                           
+> > >                                                                               
+> > > I interpret this suggestion as                                                
+> > > encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
+> > 
+> > I think it makes sense to use encryption_ids instead of simply encryption, that
+> > way it's clear the cgroup is accounting ids as opposed to restricting what
+> > techs can be used on yes/no basis.
+> > 
+
+Agreed.
+
+> > > offerings, which was my thought on this as well.                              
+> > >                                                                               
+> > > Certainly the kernel could provide a single interface for all of these and    
+> > > key value pairs depending on the underlying encryption technology but it      
+> > > seems to only introduce additional complexity in the kernel in string         
+> > > parsing that can otherwise be avoided.  I think we all agree that a single    
+> > > interface for all encryption keys or one-value-per-file could be done in      
+> > > the kernel and handled by any userspace agent that is configuring these       
+> > > values.                                                                       
+> > >                                                                               
+> > > I think Vipin is adding a root level file that describes how many keys we     
+> > > have available on the platform for each technology.  So I think this comes    
+> > > down to, for example, a single encryption.max file vs                         
+> > > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
+> > 
+> > Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
+> > no need to enumerate platform total, but not knowing how many of the allowed IDs
+> > have been allocated seems problematic.
+> > 
 > 
-> I think it makes sense to use encryption_ids instead of simply encryption, that
-> way it's clear the cgroup is accounting ids as opposed to restricting what
-> techs can be used on yes/no basis.
+> We will be showing encryption_ids.{sev,sev_es}.{max,current}
+> I am inclined to not provide "events" as I am not using it, let me know
+> if this file is required, I can provide it then.
 > 
-> > offerings, which was my thought on this as well.                              
-> >                                                                               
-> > Certainly the kernel could provide a single interface for all of these and    
-> > key value pairs depending on the underlying encryption technology but it      
-> > seems to only introduce additional complexity in the kernel in string         
-> > parsing that can otherwise be avoided.  I think we all agree that a single    
-> > interface for all encryption keys or one-value-per-file could be done in      
-> > the kernel and handled by any userspace agent that is configuring these       
-> > values.                                                                       
-> >                                                                               
-> > I think Vipin is adding a root level file that describes how many keys we     
-> > have available on the platform for each technology.  So I think this comes    
-> > down to, for example, a single encryption.max file vs                         
-> > encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
-> 
-> Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
-> no need to enumerate platform total, but not knowing how many of the allowed IDs
-> have been allocated seems problematic.
+> I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
+> total available ids on the platform. This one will be useful for
+> scheduling jobs in the cloud infrastructure based on total supported
+> capacity.
 > 
 
-We will be showing encryption_ids.{sev,sev_es}.{max,current}
-I am inclined to not provide "events" as I am not using it, let me know
-if this file is required, I can provide it then.
-
-I will provide an encryption_ids.{sev,sev_es}.stat file, which shows
-total available ids on the platform. This one will be useful for
-scheduling jobs in the cloud infrastructure based on total supported
-capacity.
-
-> > separately so we treat them as their own resource here.                       
-> >                                                                               
-> > So which is easier?                                                           
-> >                                                                               
-> > $ cat encryption.sev.max                                                      
-> > 10                                                                            
-> > $ echo -n 15 > encryption.sev.max                                             
-> >                                                                               
-> > or                                                                            
-> >                                                                               
-> > $ cat encryption.max                                                          
-> > sev 10                                                                        
-> > sev_es 10                                                                     
-> > keyid 0                                                                       
-> > $ echo -n "sev 10" > encryption.max                                           
-> >                                                                               
-> > I would argue the former is simplest (always preferring                       
-> > one-value-per-file) and avoids any string parsing or resource controller      
-> > lookups that need to match on that string in the kernel.                      
-> 
-> Ya, I prefer individual files as well.
-> 
-> I don't think "keyid" is the best name for TDX, it doesn't leave any wiggle room
-> if there are other flavors of key IDs on Intel platform, e.g. private vs. shared
-> in the future.  It's also inconsistent with the SEV names, e.g. "asid" isn't
-> mentioned anywhere.  And "keyid" sort of reads as "max key id", rather than "max
-> number of keyids".  Maybe "tdx_private", or simply "tdx"?  Doesn't have to be
-> solved now though, there's plenty of time before TDX will be upstream. :-)
-> 
-> > The set of encryption.{sev,sev_es,keyid} files that exist would depend on     
-> > CONFIG_CGROUP_ENCRYPTION and whether CONFIG_AMD_MEM_ENCRYPT or                
-> > CONFIG_INTEL_TDX is configured.  Both can be configured so we have all        
-> > three files, but the root file will obviously indicate 0 keys available       
-> > for one of them (can't run on AMD and Intel at the same time :).              
-> >                                                                               
-> > So I'm inclined to suggest that the one-value-per-file format is the ideal    
-> > way to go unless there are objections to it.
+Makes sense.  I assume the stat file is only at the cgroup root level 
+since it would otherwise be duplicating its contents in every cgroup under 
+it.  Probably not very helpful for child cgroup to see stat = 509 ASIDs 
+but max = 100 :)
