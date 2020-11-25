@@ -2,230 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9AEA2C3F4C
-	for <lists+cgroups@lfdr.de>; Wed, 25 Nov 2020 12:49:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF2C2C403F
+	for <lists+cgroups@lfdr.de>; Wed, 25 Nov 2020 13:34:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727661AbgKYLsi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 25 Nov 2020 06:48:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43092 "EHLO
+        id S1728220AbgKYMdU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 25 Nov 2020 07:33:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50036 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725838AbgKYLsi (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Nov 2020 06:48:38 -0500
-X-Greylist: delayed 512 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 25 Nov 2020 03:48:38 PST
-Received: from smtprelay.restena.lu (smtprelay.restena.lu [IPv6:2001:a18:1::62])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42E67C0613D4
-        for <cgroups@vger.kernel.org>; Wed, 25 Nov 2020 03:48:38 -0800 (PST)
-Received: from hemera (unknown [IPv6:2001:a18:1:10:fa75:a4ff:fe28:fe3a])
-        by smtprelay.restena.lu (Postfix) with ESMTPS id F32F640FFF;
-        Wed, 25 Nov 2020 12:39:56 +0100 (CET)
-Date:   Wed, 25 Nov 2020 12:39:56 +0100
-From:   Bruno =?UTF-8?B?UHLDqW1vbnQ=?= <bonbons@linux-vserver.org>
-To:     Yafang Shao <laoar.shao@gmail.com>
-Cc:     Chris Down <chris@chrisdown.name>, Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Chris Down <chris@chrisdown.name>, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Regression from 5.7.17 to 5.9.9 with memory.low cgroup constraints
-Message-ID: <20201125123956.61d9e16a@hemera>
+        with ESMTP id S1725616AbgKYMdT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 25 Nov 2020 07:33:19 -0500
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BD2AC0613D4;
+        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
+Received: by mail-qt1-x843.google.com with SMTP id f93so1404627qtb.10;
+        Wed, 25 Nov 2020 04:33:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
+        b=m8eiXGIffxTQcl9qWmpoUZgBsSzJBJL+g8a+25Jt5FKxrq5reTIQJIvOqHam06ytUT
+         +AVBi6gElJoegN0PJweNe4OCeUoDzFODyFHPyIln49wZ5mShP7YmWW3JcvzSHisvU3RY
+         HvY920z0TDVKvZHVGUl0hW04u6KPVUTYgkRsiSfEQ5wXOQlIapC1e1DPv6ahx8onYMVI
+         RK3uA/nnhPE9+aELC01Cnp4okGEgdmF1asc72P2GBtujVywjnmfE22z+BSjYMM6mL8Q6
+         c9LsElOYkPJODDqa7BlptGqmUGWMtnSAY3T7eNQCvLF8h3PLrE397W3APYrR+NuKSx2g
+         3d/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=H3aqrBY6oYhCd62SVodU601+HB4mzl3pG4lUcfT04Cg=;
+        b=BI6cbfed42i6bo1We2KRaaxHDJcLlfR+Kq+bl+Zi/Cv78i/NipGuewMcSUpFM/LQNL
+         VDd2JOybOQCYBCBmvBet2vzdL9GOpZZZyR10oTWfdBBi/7RH+74xqxg8MZnDncShXrlv
+         W2tDXjBYLey79nFLZFyVl+iX6Eb9pfkglT4AwDSi6hfUbyIKJ/lioK+p6fY1yEDKIMEf
+         xCFFfItOywsDbxaQ4mypXJtcaHvNX7D/tQlROXorXffDEo92P+cu/Cpj8Vax+YrwBKpq
+         tzpsG538/GEVcvwvi7eT74l/GInS/UITBVLJGievB+giAhSMHewABpRLNT7uoG/FO+nG
+         8I6w==
+X-Gm-Message-State: AOAM53125sVVZcShwwr2oMioNmWX8beh4eFXVaA763HLqqUZ2lkfmNEd
+        whV9Ko0GcDBZU9jedmW9A84=
+X-Google-Smtp-Source: ABdhPJzocuRXVD+bPmrqSjVXD61c/mr1QuassCJZAWcu3BRdBXPc1L3HjKV+b5/kdsWDa9hsVQr+qg==
+X-Received: by 2002:ac8:7a87:: with SMTP id x7mr2792856qtr.253.1606307591437;
+        Wed, 25 Nov 2020 04:33:11 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id a123sm2264134qkc.52.2020.11.25.04.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Nov 2020 04:33:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 25 Nov 2020 07:32:48 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com, houtao1@huawei.com
+Subject: Re: [RFC PATCH] blk-cgroup: prevent rcu_sched detected stalls
+ warnings in blkg_destroy_all()
+Message-ID: <X75O8BNVSX3ZE86w@mtj.duckdns.org>
+References: <20201121083420.3857433-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201121083420.3857433-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 Hello,
 
-On a production system I've encountered a rather harsh behavior from
-kernel in the context of memory cgroup (v2) after updating kernel from
-5.7 series to 5.9 series.
+Thanks for the fix. A couple comments below.
 
+On Sat, Nov 21, 2020 at 04:34:20PM +0800, Yu Kuai wrote:
+> +#define BLKG_DESTROY_BATH 4096
 
-It seems like kernel is reclaiming file cache but leaving inode cache
-(reclaimable slabs) alone in a way that the server ends up trashing and
-maxing out on IO to one of its disks instead of doing actual work.
+I think you meant BLKG_DESTROY_BATCH.
 
+>  static void blkg_destroy_all(struct request_queue *q)
+>  {
+>  	struct blkcg_gq *blkg, *n;
+> +	int count = BLKG_DESTROY_BATH;
 
-My setup, server has 64G of RAM:
-  root
-   + system        { min=0, low=128M, high=8G, max=8G }
-     + base        { no specific constraints }
-     + backup      { min=0, low=32M, high=2G, max=2G }
-     + shell       { no specific constraints }
-  + websrv         { min=0, low=4G, high=32G, max=32G }
-  + website        { min=0, low=16G, high=40T, max=40T }
-    + website1     { min=0, low=64M, high=2G, max=2G }
-    + website2     { min=0, low=64M, high=2G, max=2G }
-      ...
-  + remote         { min=0, low=1G, high=14G, max=14G }
-    + webuser1     { min=0, low=64M, high=2G, max=2G }
-    + webuser2     { min=0, low=64M, high=2G, max=2G }
-      ...
+But might as well just write 4096 here.
 
+>  	spin_lock_irq(&q->queue_lock);
+>  	list_for_each_entry_safe(blkg, n, &q->blkg_list, q_node) {
+>  		struct blkcg *blkcg = blkg->blkcg;
+>  
+> +		/*
+> +		 * If the list is too long, the loop can took a long time,
+> +		 * thus relese the lock for a while when a batch of blkcg
+> +		 * were destroyed.
+> +		 */
+> +		if (!(--count)) {
+> +			count = BLKG_DESTROY_BATH;
+> +			spin_unlock_irq(&q->queue_lock);
+> +			cond_resched();
+> +			spin_lock_irq(&q->queue_lock);
 
-When the server was struggling I've had mostly IO on disk hosting
-system processes and some cache files of websrv processes.
-It seems that running backup does make the issue much more probable.
+You can't continue iteration after dropping both locks. You'd have to jump
+out of loop and start list_for_each_entry_safe() again.
 
-The processes in websrv are the most impacted by the trashing and this
-is the one with lots of disk cache and inode cache assigned to it.
-(note a helper running in websrv cgroup scan whole file system
-hierarchy once per hour and this keeps inode cache pretty filled.
-Dropping just file cache (about 10G) did not unlock situation but
-dropping reclaimable slabs (inode cache, about 30G) got the system back
-running.
+> +		}
+>  		spin_lock(&blkcg->lock);
+>  		blkg_destroy(blkg);
+>  		spin_unlock(&blkcg->lock);
 
+Thanks.
 
-
-Some metrics I have collected during a trashing period (metrics
-collected at about 5min interval) - I don't have ful memory.stat
-unfortunately:
-
-system/memory.min              0              = 0
-system/memory.low              134217728      = 134217728
-system/memory.high             8589934592     = 8589934592
-system/memory.max              8589934592     = 8589934592
-system/memory.pressure
-    some avg10=54.41 avg60=59.28 avg300=69.46 total=7347640237
-    full avg10=27.45 avg60=22.19 avg300=29.28 total=3287847481
-  ->
-    some avg10=77.25 avg60=73.24 avg300=69.63 total=7619662740
-    full avg10=23.04 avg60=25.26 avg300=27.97 total=3401421903
-system/memory.current          262533120      < 263929856
-system/memory.events.local
-    low                        5399469        = 5399469
-    high                       0              = 0
-    max                        112303         = 112303
-    oom                        0              = 0
-    oom_kill                   0              = 0
-
-system/base/memory.min         0              = 0
-system/base/memory.low         0              = 0
-system/base/memory.high        max            = max
-system/base/memory.max         max            = max
-system/base/memory.pressure
-    some avg10=18.89 avg60=20.34 avg300=24.95 total=5156816349
-    full avg10=10.90 avg60=8.50 avg300=11.68 total=2253916169
-  ->
-    some avg10=33.82 avg60=32.26 avg300=26.95 total=5258381824
-    full avg10=12.51 avg60=13.01 avg300=12.05 total=2301375471
-system/base/memory.current     31363072       < 32243712
-system/base/memory.events.local
-    low                        0              = 0
-    high                       0              = 0
-    max                        0              = 0
-    oom                        0              = 0
-    oom_kill                   0              = 0
-
-system/backup/memory.min       0              = 0
-system/backup/memory.low       33554432       = 33554432
-system/backup/memory.high      2147483648     = 2147483648
-system/backup/memory.max       2147483648     = 2147483648
-system/backup/memory.pressure
-    some avg10=41.73 avg60=45.97 avg300=56.27 total=3385780085
-    full avg10=21.78 avg60=18.15 avg300=25.35 total=1571263731
-  ->
-    some avg10=60.27 avg60=55.44 avg300=54.37 total=3599850643
-    full avg10=19.52 avg60=20.91 avg300=23.58 total=1667430954
-system/backup/memory.current  222130176       < 222543872
-system/backup/memory.events.local
-    low                       5446            = 5446
-    high                      0               = 0
-    max                       0               = 0
-    oom                       0               = 0
-    oom_kill                  0               = 0
-
-system/shell/memory.min       0               = 0
-system/shell/memory.low       0               = 0
-system/shell/memory.high      max             = max
-system/shell/memory.max       max             = max
-system/shell/memory.pressure
-    some avg10=0.00 avg60=0.12 avg300=0.25 total=1348427661
-    full avg10=0.00 avg60=0.04 avg300=0.06 total=493582108
-  ->
-    some avg10=0.00 avg60=0.00 avg300=0.06 total=1348516773
-    full avg10=0.00 avg60=0.00 avg300=0.00 total=493591500
-system/shell/memory.current  8814592          < 8888320
-system/shell/memory.events.local
-    low                      0                = 0
-    high                     0                = 0
-    max                      0                = 0
-    oom                      0                = 0
-    oom_kill                 0                = 0
-
-website/memory.min           0                = 0
-website/memory.low           17179869184      = 17179869184
-website/memory.high          45131717672960   = 45131717672960
-website/memory.max           45131717672960   = 45131717672960
-website/memory.pressure
-    some avg10=0.00 avg60=0.00 avg300=0.00 total=415009408
-    full avg10=0.00 avg60=0.00 avg300=0.00 total=201868483
-  ->
-    some avg10=0.00 avg60=0.00 avg300=0.00 total=415009408
-    full avg10=0.00 avg60=0.00 avg300=0.00 total=201868483
-website/memory.current       11811520512      > 11456942080
-website/memory.events.local
-    low                      11372142         < 11377350
-    high                     0                = 0
-    max                      0                = 0
-    oom                      0                = 0
-    oom_kill                 0                = 0
-
-remote/memory.min            0
-remote/memory.low            1073741824
-remote/memory.high           15032385536
-remote/memory.max            15032385536
-remote/memory.pressure
-    some avg10=0.00 avg60=0.25 avg300=0.50 total=2017364408
-    full avg10=0.00 avg60=0.00 avg300=0.01 total=738071296
-  ->
-remote/memory.current        84439040         > 81797120
-remote/memory.events.local
-    low                      11372142         < 11377350
-    high                     0                = 0
-    max                      0                = 0
-    oom                      0                = 0
-    oom_kill                 0                = 0
-
-websrv/memory.min            0                = 0
-websrv/memory.low            4294967296       = 4294967296
-websrv/memory.high           34359738368      = 34359738368
-websrv/memory.max            34426847232      = 34426847232
-websrv/memory.pressure
-    some avg10=40.38 avg60=62.58 avg300=68.83 total=7760096704
-    full avg10=7.80 avg60=10.78 avg300=12.64 total=2254679370
-  ->
-    some avg10=89.97 avg60=83.78 avg300=72.99 total=8040513640
-    full avg10=11.46 avg60=11.49 avg300=11.47 total=2300116237
-websrv/memory.current        18421673984      < 18421936128
-websrv/memory.events.local
-    low                      0                = 0
-    high                     0                = 0
-    max                      0                = 0
-    oom                      0                = 0
-    oom_kill                 0                = 0
-
-
-
-Is there something important I'm missing in my setup that could prevent
-things from starving?
-
-Did memory.low meaning change between 5.7 and 5.9? From behavior it
-feels as if inodes are not accounted to cgroup at all and kernel pushes
-cgroups down to their memory.low by killing file cache if there is not
-enough free memory to hold all promises (and not only when a cgroup
-tries to use up to its promised amount of memory).
-As system was trashing as much with 10G of file cache dropped
-(completely unused memory) as with it in use.
-
-
-I will try to create a test-case for it to reproduce it on a test
-machine an be able to verify a fix or eventually bisect to triggering
-patch though it this all rings a bell, please tell!
-
-Note until I have a test-case I'm reluctant to just wait [on
-production system] for next occurrence (usually at unpractical times) to
-gather some more metrics.
-
-Regards,
-Bruno
+-- 
+tejun
