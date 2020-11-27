@@ -2,106 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986742C5290
-	for <lists+cgroups@lfdr.de>; Thu, 26 Nov 2020 12:03:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 740F62C6B36
+	for <lists+cgroups@lfdr.de>; Fri, 27 Nov 2020 19:02:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726479AbgKZLCa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 26 Nov 2020 06:02:30 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27728 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729663AbgKZLC2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 26 Nov 2020 06:02:28 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1606388547;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=8cvGV8OUthTmjmbY5oJ7mRxJLMMwznOKcyuaPUff3ek=;
-        b=VezbIcJalAdt/otNdxYgQil5QVSdbXlehicqEyhGBWBCVCiJzLL0t8enPJIlyr35Cchr2a
-        nzZXjjyxclHMD639PRhxITSS3o/dSbOwkfB/MxNBsYLGLTjXuL4bYQXKHKR39jIc08qYEZ
-        mrHxatGwzRXg07yudk4mrJJSGfZXrgI=
-Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
- [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-357-pPN2YdfAOaCV6_SzTSznIg-1; Thu, 26 Nov 2020 06:02:24 -0500
-X-MC-Unique: pPN2YdfAOaCV6_SzTSznIg-1
-Received: by mail-wr1-f69.google.com with SMTP id b12so1093768wru.15
-        for <cgroups@vger.kernel.org>; Thu, 26 Nov 2020 03:02:24 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=8cvGV8OUthTmjmbY5oJ7mRxJLMMwznOKcyuaPUff3ek=;
-        b=iIf72OlMlptB/GH71P7wGkaH3+vcb5ZKLw3MxD/T2INE8Jc3NGDKIow7fySBSpUDgN
-         ooUw2j2+kpGLOZKK08R4cj1w3DjhzQI/U7A7Hi/auaDqhR5/j+RW10AG92Rj/O87q6J8
-         qwspf7O+cPiKH4NxkqPkNPbGecwghss7g8752wCxWUsWCzwBIhu/FBOyz18VlV75fVqT
-         gTThjuy+pqKRlVnJvG1F1DC3ujLRHFzs0pcHc7n4ipskIcDL8MO/TC5CvP8eAttOV+jD
-         idqBv4+4L8pG7nbHOEPpJhAxh5x80YnIYtNcY9498OwF7FwJTUk+JXWYZvp6QfJGU96g
-         usdQ==
-X-Gm-Message-State: AOAM533R9ZGtm+7gZKt4vDGYxtjGPxNziiCFVy8F5ARX/wPqCUMWNkBx
-        xuzqf47qzzEIyrmGEBDZQBgDXJQULEHt3T/zzDmHyzUxgvusm5dCzCT+wutxpZr6MVhn32DJEB3
-        g+V5DM6Lb8SyF5ub7
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr3210906wrb.132.1606388543423;
-        Thu, 26 Nov 2020 03:02:23 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJzNurD+B9K0wyu+wLx1//nc60gT6N9gDdwcKceycA0Aw8hI/yIujAcODjNgQftSCd3n2mbAxg==
-X-Received: by 2002:adf:a54d:: with SMTP id j13mr3210886wrb.132.1606388543257;
-        Thu, 26 Nov 2020 03:02:23 -0800 (PST)
-Received: from localhost (cpc111767-lutn13-2-0-cust344.9-3.cable.virginm.net. [86.5.41.89])
-        by smtp.gmail.com with ESMTPSA id y2sm8806139wrn.31.2020.11.26.03.02.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 26 Nov 2020 03:02:21 -0800 (PST)
-Date:   Thu, 26 Nov 2020 11:02:20 +0000
-From:   Aaron Tomlin <atomlin@redhat.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>, hannes@cmpxchg.org,
-        vdavydov.dev@gmail.com, Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH] memcg: add support to generate the total count of
- children from root
-Message-ID: <20201126110220.k4o6s32er5jy2mdk@ava.usersys.com>
-X-PGP-Key: http://pgp.mit.edu/pks/lookup?search=atomlin%40redhat.com
-X-PGP-Fingerprint: 7906 84EB FA8A 9638 8D1E  6E9B E2DE 9658 19CC 77D6
-References: <20201124105836.713371-1-atomlin@redhat.com>
- <20201124112612.GV27488@dhcp22.suse.cz>
- <CANfR36hyrqXjk2tL03GzCk6rn6sCD7Sd811soBsZC3dHY0h9fQ@mail.gmail.com>
- <20201124133644.GA31550@dhcp22.suse.cz>
- <CANfR36hw8iSSszSt4sNh+ika3vTdXQnXHPLj5t2iLL=5-nzZZw@mail.gmail.com>
+        id S1731755AbgK0SBg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 27 Nov 2020 13:01:36 -0500
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14070 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732303AbgK0SBg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 27 Nov 2020 13:01:36 -0500
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0ARHVmiN162416;
+        Fri, 27 Nov 2020 13:01:22 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=+EzQmBcpDdFMQ0B4y+2SmyFO/YnTKNjLD5kNjjGWmbs=;
+ b=Q72yuXrJALzbwKkcWDd+gjyS2Kj9jhnSnh2CyKGHXd7ez9VzdQUBO7zj7nufTrF+kJ76
+ bQTU+bRrxgIX+FJS7wz90Ciqf3StPFX0/CNKdOSQdoc4GqGGv0hby+2zL5wdZ0kNB0zb
+ xllt9OkXCdJKcJcgJKgnveVMp4H1fteGryF8AX3gdU7aQVJv5U/sRcl55j0vA3eB+WL+
+ nA15n7Fg9qdjWMkNFtLSIFgTl0zO3S1vwnaduEqLijG3hhoqlNj4/zox6Hi1JjZwRx8Z
+ kGcuqjCEdG0EVlWH0Oj+OqszCHm9hfAXGB2ziX4AUfREnEiEoE0VOoBSNmi8nHm+p4MC BQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3531crfnsx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 13:01:20 -0500
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0ARHWmXl164545;
+        Fri, 27 Nov 2020 13:01:19 -0500
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 3531crfnq4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 13:01:19 -0500
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0ARHwnCK020456;
+        Fri, 27 Nov 2020 18:01:13 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma03ams.nl.ibm.com with ESMTP id 34xth8eu38-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 27 Nov 2020 18:01:12 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0ARI1AkG49742318
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 27 Nov 2020 18:01:10 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9E4EFA4054;
+        Fri, 27 Nov 2020 18:01:09 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9ECEBA4064;
+        Fri, 27 Nov 2020 18:01:08 +0000 (GMT)
+Received: from oc7455500831.ibm.com (unknown [9.171.78.207])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Fri, 27 Nov 2020 18:01:08 +0000 (GMT)
+Subject: Re: [RFC Patch 0/2] KVM: SVM: Cgroup support for SVM SEV ASIDs
+To:     Sean Christopherson <seanjc@google.com>,
+        David Rientjes <rientjes@google.com>
+Cc:     Janosch Frank <frankja@linux.ibm.com>,
+        Vipin Sharma <vipinsh@google.com>, Lendacky@google.com,
+        Thomas <thomas.lendacky@amd.com>, pbonzini@redhat.com,
+        tj@kernel.org, lizefan@huawei.com, joro@8bytes.org, corbet@lwn.net,
+        Singh@google.com, Brijesh <brijesh.singh@amd.com>,
+        Grimm@google.com, Jon <jon.grimm@amd.com>, VanTassell@google.com,
+        Eric <eric.vantassell@amd.com>, gingell@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201124191629.GB235281@google.com>
+From:   Christian Borntraeger <borntraeger@de.ibm.com>
+Message-ID: <d738731e-bda2-031c-c301-94e3cf6b5e44@de.ibm.com>
+Date:   Fri, 27 Nov 2020 19:01:08 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
+In-Reply-To: <20201124191629.GB235281@google.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANfR36hw8iSSszSt4sNh+ika3vTdXQnXHPLj5t2iLL=5-nzZZw@mail.gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.312,18.0.737
+ definitions=2020-11-27_10:2020-11-26,2020-11-27 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 bulkscore=0 mlxscore=0 phishscore=0 priorityscore=1501
+ impostorscore=0 mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2011270099
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 2020-11-24 13:47 +0000, Aaron Tomlin wrote:
-> On Tue, 24 Nov 2020 at 13:36, Michal Hocko <mhocko@suse.com> wrote:
-> > This like any other user visible interface would be a much easier sell
-> > if there was a clear usecase to justify it. I do not see anything
-> > controversial about exporting such a value but my general take is that
-> > we are only adding new interface when existing ones are insufficient. A
-> > performance might be a very good reason but that would really require to
-> > come with some real life numbers.
 
-Michal,
 
-> Fair enough and understood.
+On 24.11.20 20:16, Sean Christopherson wrote:
+> On Fri, Nov 13, 2020, David Rientjes wrote:                                     
+>>                                                                               
+>> On Mon, 2 Nov 2020, Sean Christopherson wrote:                                
+>>                                                                               
+>>> On Fri, Oct 02, 2020 at 01:48:10PM -0700, Vipin Sharma wrote:               
+>>>> On Fri, Sep 25, 2020 at 03:22:20PM -0700, Vipin Sharma wrote:             
+>>>>> I agree with you that the abstract name is better than the concrete     
+>>>>> name, I also feel that we must provide HW extensions. Here is one       
+>>>>> approach:                                                               
+>>>>>                                                                         
+>>>>> Cgroup name: cpu_encryption, encryption_slots, or memcrypt (open to     
+>>>>> suggestions)                                                            
+>>>>>                                                                         
+>>>>> Control files: slots.{max, current, events}                             
+>>>                                                                             
+>>> I don't particularly like the "slots" name, mostly because it could be confused
+>>> with KVM's memslots.  Maybe encryption_ids.ids.{max, current, events}?  I don't
+>>> love those names either, but "encryption" and "IDs" are the two obvious     
+>>> commonalities betwee TDX's encryption key IDs and SEV's encryption address  
+>>> space IDs.                                                                  
+>>>                                                                             
+>>                                                                               
+>> Looping Janosch and Christian back into the thread.                           
+>>                                                                               
+>> I interpret this suggestion as                                                
+>> encryption.{sev,sev_es,keyids}.{max,current,events} for AMD and Intel         
 > 
-> At this stage, I unfortunately do not have such supporting data. This was only
-> useful in an isolated situation. Having said this, I thought that the
-> aforementioned interface would be helpful to others, in particular, given the
-> known limitation.
+> I think it makes sense to use encryption_ids instead of simply encryption, that
+> way it's clear the cgroup is accounting ids as opposed to restricting what
+> techs can be used on yes/no basis.
 
-Furthermore, I can see that this is already provided via /proc/cgroups
-(see proc_cgroupstats_show()). As such, another possibility:
-the proposed interface could reliably produce the difference between the
-maximum permitted memory-controlled cgroup count and the used count
-(i.e. the remaining memory cgroup count, from root); albeit, I doubt that
-this would be particularly useful to others i.e., the use-case would be
-rather limited.
+For what its worth the IDs for s390x are called SEIDs (secure execution IDs)
 
+> 
+>> offerings, which was my thought on this as well.                              
+>>                                                                               
+>> Certainly the kernel could provide a single interface for all of these and    
+>> key value pairs depending on the underlying encryption technology but it      
+>> seems to only introduce additional complexity in the kernel in string         
+>> parsing that can otherwise be avoided.  I think we all agree that a single    
+>> interface for all encryption keys or one-value-per-file could be done in      
+>> the kernel and handled by any userspace agent that is configuring these       
+>> values.                                                                       
+>>                                                                               
+>> I think Vipin is adding a root level file that describes how many keys we     
+>> have available on the platform for each technology.  So I think this comes    
+>> down to, for example, a single encryption.max file vs                         
+>> encryption.{sev,sev_es,keyid}.max.  SEV and SEV-ES ASIDs are provisioned      
+> 
+> Are you suggesting that the cgroup omit "current" and "events"?  I agree there's
+> no need to enumerate platform total, but not knowing how many of the allowed IDs
+> have been allocated seems problematic.
+> 
+>> separately so we treat them as their own resource here.                       
+>>                                                                               
+>> So which is easier?                                                           
+>>                                                                               
+>> $ cat encryption.sev.max                                                      
+>> 10                                                                            
+>> $ echo -n 15 > encryption.sev.max                                             
+>>                                                                               
+>> or                                                                            
+>>                                                                               
+>> $ cat encryption.max                                                          
+>> sev 10                                                                        
+>> sev_es 10                                                                     
+>> keyid 0                                                                       
+>> $ echo -n "sev 10" > encryption.max                                           
+>>                                                                               
+>> I would argue the former is simplest (always preferring                       
+>> one-value-per-file) and avoids any string parsing or resource controller      
+>> lookups that need to match on that string in the kernel.                      
 
-Kind regards,
+I like the idea of having encryption_ids.max for all platforms. 
+If we go for individual files using "seid" for s390 seems the best name.
 
--- 
-Aaron Tomlin
-
+> 
+> Ya, I prefer individual files as well.
+> 
+> I don't think "keyid" is the best name for TDX, it doesn't leave any wiggle room
+> if there are other flavors of key IDs on Intel platform, e.g. private vs. shared
+> in the future.  It's also inconsistent with the SEV names, e.g. "asid" isn't
+> mentioned anywhere.  And "keyid" sort of reads as "max key id", rather than "max
+> number of keyids".  Maybe "tdx_private", or simply "tdx"?  Doesn't have to be
+> solved now though, there's plenty of time before TDX will be upstream. :-)
+> 
+>> The set of encryption.{sev,sev_es,keyid} files that exist would depend on     
+>> CONFIG_CGROUP_ENCRYPTION and whether CONFIG_AMD_MEM_ENCRYPT or                
+>> CONFIG_INTEL_TDX is configured.  Both can be configured so we have all        
+>> three files, but the root file will obviously indicate 0 keys available       
+>> for one of them (can't run on AMD and Intel at the same time :).              
+>>                                                                               
+>> So I'm inclined to suggest that the one-value-per-file format is the ideal    
+>> way to go unless there are objections to it.
