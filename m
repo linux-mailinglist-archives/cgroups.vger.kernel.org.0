@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 382842C9E10
-	for <lists+cgroups@lfdr.de>; Tue,  1 Dec 2020 10:41:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A1DD2C9D23
+	for <lists+cgroups@lfdr.de>; Tue,  1 Dec 2020 10:39:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728913AbgLAJbG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 1 Dec 2020 04:31:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49880 "EHLO
+        id S2389583AbgLAJTe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Dec 2020 04:19:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729031AbgLAIzH (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Dec 2020 03:55:07 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9B42C0613CF
-        for <cgroups@vger.kernel.org>; Tue,  1 Dec 2020 00:54:21 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id e5so826974pjt.0
-        for <cgroups@vger.kernel.org>; Tue, 01 Dec 2020 00:54:21 -0800 (PST)
+        with ESMTP id S2388729AbgLAJJo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Dec 2020 04:09:44 -0500
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8376C0613D4
+        for <cgroups@vger.kernel.org>; Tue,  1 Dec 2020 01:09:03 -0800 (PST)
+Received: by mail-ej1-x641.google.com with SMTP id f23so2578810ejt.8
+        for <cgroups@vger.kernel.org>; Tue, 01 Dec 2020 01:09:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=niYaq/JRpKzB99MWM85q+70GJ2PSdrtB0S69IuuZNQw=;
-        b=l0RgZkr/ooILtuQNf9RcVw8IoO2KP6POtGiNC/rcv5cNIRvSz9UPSEkkRN0q+ZduaQ
-         pssQKPNZ79aC1+B83P54e2Du+lK6TMRWg2ZzIffub/R03C3mnsN5LA6VxjJi/J+PwSy8
-         WwZ9X65aTRsj2ulLLDCFKXrkRHOMW/0yeb73X6TKbhFdHdcGOrnGcRQlnGlbAbbFViS7
-         xEVIDudge5yRqV3e07lfxvmIVeoLZz9srEH1gVzQZV5yEiAweAq51wOv6eWi5nrDrs8h
-         w8syYqUaaQ7WUfaRxU23EvFdAb4k0gTz0F8YDslH7Qwv4VHnGzCL+z0jvKcZyjCOtUmh
-         4bjA==
+         :cc:content-transfer-encoding;
+        bh=S+Ngn4W/oQtuMxlBFu4kHeU3p7nhm6p8xjw9712a+hg=;
+        b=a1xDBC0NB1WegU5JwLnZPeJz2v97WB28CL0vAfurTSZNAoShRCXmC95d3JszRXT8V2
+         t47DSCSTXBLukV4RQqIXsQnrhr/HM/xRMmAlJs5xV8uW8100Cy9Z++tUUSqc9mt/66r+
+         C7zlSHICvqkcIRc7XolTcgpJitMlO1FBjS1utDfmAwsQkNaZVOZEyw2JFuyf0w+WfxLT
+         e2I8DpbCs7yCV7cmmNDt4SphJREPbyXf81PsCX3pEukIGegJ1hbWRaWt89vhrqdqhFyK
+         oAjflrkxgLhtnaAtj0D13J65wTDkcPV++R8Dc3ox0c3PdP1EchtZPQlqRlCsdZXqesef
+         TA0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=niYaq/JRpKzB99MWM85q+70GJ2PSdrtB0S69IuuZNQw=;
-        b=Hbcyt/R9/Xcn6dfG96vjEXik9To3DPzo8pletNu7I5R5WcF5J8cuz+ORwIAi7ntWJv
-         vGmdIHDicasVhagrhoNqFavMvowltvzKqCfUk4QZbbynp9n2aDVfS4a5cLbWgRBfErvk
-         2n2xMwYtlgKppCapvulN/uDma+YVfvSnkr6Q4HTgxxe53BuPiJ7n4bKNcqRcwCR1Lnfo
-         iobDE2utkXCsg+us3RaUdxRiyUy8a+2Jxxs6gVKC0TJiy46cYXguyeEoxx47DTZpcO70
-         pwxYlToncKNhbjV1PnHuKC27fc6HfW/4177T73FjeV9ZrFKuTac/wT/mnlDxEDFEOV5E
-         0ObA==
-X-Gm-Message-State: AOAM533uHWKgbP+YSKDhcPvxT35B9YFU7ZwjTyjymRzE/hTsRKHp8cf1
-        CF1LPjSXY27fQkw+3AWAk8QOKAnMFg6Hj8O319AiWw==
-X-Google-Smtp-Source: ABdhPJwo8+fWwdRXF65E5blWn6IRolCg3aG0zKG6QXDMLIDW3SB6+ovX2dcMxBJQjXU7RrgwmROOOyCmkMiy0xq4xeo=
-X-Received: by 2002:a17:90a:ae14:: with SMTP id t20mr1771540pjq.13.1606812861293;
- Tue, 01 Dec 2020 00:54:21 -0800 (PST)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=S+Ngn4W/oQtuMxlBFu4kHeU3p7nhm6p8xjw9712a+hg=;
+        b=ozDwJF1a/ranyskpXXD1lUCItAlCqkp9Omk5S1jO8vK8pM/3Qg27+xT4IxkrwVPKDj
+         LgamHJn8MJko9uc20eDQzR8F3C3pIBDtetsSfjBAmp+BrpQcHhmSTM/Ar/ongNtJRHov
+         2/oBDqGoJAb48SigJL3LqJ3c7sOfNlCNhT1wrlmhN5R86BRt3sdV/AZR7sufHP2bAB6L
+         SDB+a/0vLivUPiZK8uhWIToU7I+J2doG0aGO9rdeACcFIEs9WmhtguuZunQ1j0oMUoyi
+         OORlU81lSo5DtY2ZRO9JQvelr3uXaf3hPXdXBnyfJ9obhVz2/2XObkLvPLYFQ6o89xNp
+         DlxA==
+X-Gm-Message-State: AOAM530sG85yotnaHc8DbB8yg2+U7TPdqwppEKxUYOiMeYh7qvkzdRDV
+        axQDyHiPdY10fhdUfiQCcJ3GMqbbTZXOC5ylLCQLWg==
+X-Google-Smtp-Source: ABdhPJz9Uhhox7ZTrrku2Jm0H/oZM/zXk9l4/6aLl25sq93H6GDa8EkVqs78ul1nVveVbLKnNiLpc/83txz7DeAOR9c=
+X-Received: by 2002:a17:906:1498:: with SMTP id x24mr2014665ejc.170.1606813742234;
+ Tue, 01 Dec 2020 01:09:02 -0800 (PST)
 MIME-Version: 1.0
 References: <CA+G9fYtk3fKy7ct-rT=T8iFDhE4CbjGgdfxsOBrKT9y8ntwXyg@mail.gmail.com>
- <CAA5enKbujU+PRwA3qeYqx-Ydcj7owJnYkeTYJFdBweQJjWU78w@mail.gmail.com>
-In-Reply-To: <CAA5enKbujU+PRwA3qeYqx-Ydcj7owJnYkeTYJFdBweQJjWU78w@mail.gmail.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 1 Dec 2020 16:53:45 +0800
-Message-ID: <CAMZfGtUQMmH566CTT2G0KugLsX_3ouOM_80Kqk1R6b1N_NGB-Q@mail.gmail.com>
-Subject: Re: [External] Re: BUG: KASAN: null-ptr-deref in workingset_eviction+0xf2/0x1e0
-To:     Lorenzo Stoakes <lstoakes@gmail.com>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        inux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+ <58f66f22-fd5f-685d-e608-99c35d89c1a3@linux.alibaba.com>
+In-Reply-To: <58f66f22-fd5f-685d-e608-99c35d89c1a3@linux.alibaba.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Tue, 1 Dec 2020 14:38:50 +0530
+Message-ID: <CA+G9fYs8jzvh6c3sfaMoCetQydtSrzsmcUvG4DpPW33bad7Q0A@mail.gmail.com>
+Subject: Re: BUG: KASAN: null-ptr-deref in workingset_eviction+0xf2/0x1e0
+To:     Alex Shi <alex.shi@linux.alibaba.com>
+Cc:     inux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         Linux-Next Mailing List <linux-next@vger.kernel.org>,
         lkft-triage@lists.linaro.org,
@@ -62,28 +61,87 @@ Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
         Shakeel Butt <shakeelb@google.com>,
         Roman Gushchin <guro@fb.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
+        Muchun Song <songmuchun@bytedance.com>,
         alexander.h.duyck@linux.intel.com,
         Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.co,
         Michal Hocko <mhocko@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Dec 1, 2020 at 4:02 AM Lorenzo Stoakes <lstoakes@gmail.com> wrote:
+Hi Alex,
+
+On Tue, 1 Dec 2020 at 13:14, Alex Shi <alex.shi@linux.alibaba.com> wrote:
 >
-> On Mon, 30 Nov 2020 at 19:52, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> > [  285.863025] BUG: kernel NULL pointer dereference, address: 00000000000000c8
 >
-> This looks to be the same as
-> https://lore.kernel.org/linux-mm/20201130132345.GJ17338@dhcp22.suse.cz/T/#t
+>
+> =E5=9C=A8 2020/12/1 =E4=B8=8A=E5=8D=883:52, Naresh Kamboju =E5=86=99=E9=
+=81=93:
+> > Crash log:
+> > -----------
+> > ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg1
+> > [  285.862123] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > [  285.863025] BUG: KASAN: null-ptr-deref in workingset_eviction+0xf2/0=
+x1e0
+> > [  285.863025] Read of size 4 at addr 00000000000000c8 by task kswapd0/=
+245
+>
+> Hi Naresh,
+>
+> Good to know you again. :)
 
-I am sure it is the same issue.
+Same here :)
+
+>
+> Would you like to use command to check whichh line cause the panic:
+>
+> scripts/faddr2line vmlinux workingset_eviction+0xf2/0x1e0
+
+scripts/faddr2line vmlinux workingset_eviction+0xf2/0x1e0
+workingset_eviction+0xf2/0x1e0:
+workingset_eviction at ??:?
 
 
+vmlinux and system.map files available in this location,
+https://builds.tuxbuild.com/1l0FDtgxYSNunuG5ERIXtvPjZ7R/
 
--- 
-Yours,
-Muchun
+>
+> I can't reproduce it. and my gcc version mismatch with yours.
+
+Please run below easy steps to reproduce.
+you may install docker and tuxmake.
+
+Please share if you have any debug patch or proposed fix patch,
+I would be happy to test.
+
+Steps to reproduce:
+--------------------
+# TuxMake is a command line tool and Python library that provides
+# portable and repeatable Linux kernel builds across a variety of
+# architectures, toolchains, kernel configurations, and make targets.
+#
+# TuxMake supports the concept of runtimes.
+# See https://docs.tuxmake.org/runtimes/, for that to work it requires
+# that you install podman or docker on your system.
+#
+# To install tuxmake on your system globally:
+# sudo pip3 install -U tuxmake
+#
+# See https://docs.tuxmake.org/ for complete documentation.
+
+# tuxmake --runtime docker --target-arch x86_64 --toolchain gcc-9 \
+--kconfig defconfig \
+--kconfig-add https://builds.tuxbuild.com/1l0FDtgxYSNunuG5ERIXtvPjZ7R/confi=
+g
+
+# run LTP
+# cd /opt/ltp
+# ./runltp -s ioctl_sg01
+# you see below crash
+
+- Naresh
