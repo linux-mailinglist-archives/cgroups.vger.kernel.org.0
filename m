@@ -2,77 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E9EB2C8E9A
-	for <lists+cgroups@lfdr.de>; Mon, 30 Nov 2020 21:03:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CEBC2C9861
+	for <lists+cgroups@lfdr.de>; Tue,  1 Dec 2020 08:46:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729141AbgK3UDN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 30 Nov 2020 15:03:13 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729127AbgK3UDM (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 30 Nov 2020 15:03:12 -0500
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41334C0613CF;
-        Mon, 30 Nov 2020 12:02:32 -0800 (PST)
-Received: by mail-ed1-x52c.google.com with SMTP id m16so17980635edr.3;
-        Mon, 30 Nov 2020 12:02:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wkgGZlXFTsc7rTynWbLSdwUFsTUmKl5GnDvKV+LtZYY=;
-        b=PJ3KLIGamaGWru818Udw4jyMnVi7uD8Q1uTb8kV+YBiT8qN7akbLHVgO0WLRSFdVi6
-         UAodIxUJbgfUcH2vqemO+bsC75Qjcdfx/N2ACm805ScjGXWrtLDfoze8RcOF0QepVLR2
-         sqb/KPY2atxNIKr+MgTkoIDK3x4gM17F1F0lVClMCY+WKrrvpuQxJ0p51DsHF4/kcPeD
-         Q8VnB221mfw4f3xKn6W1W7YwsanYztAiIlCAh4c/4PS6iaHNBuB8d7XReDv6V7MqHI05
-         dyAcUVNB+U52efW/K8hRDKbuKmvoy643zzMZ/6P+SMLmC78+V3A2qbDqGhKH5ZBBVRvF
-         Ctlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wkgGZlXFTsc7rTynWbLSdwUFsTUmKl5GnDvKV+LtZYY=;
-        b=fWCrh2VGL3RKhgpPSQRA5H5D0yMFiSoyeJg/Wbo8ZgePlxKEFPwdOUTUUMRzL+HJnL
-         mh+YAoWBUrPOkN6wqf/9nF4fsKxOC/C1gUdaB4DcALPrm2HKsT5aUFeGe8dWoLCYvuIE
-         7DKaoFdYoxyD1wlm6iSXHMKyGxp2nKmoPGigsnEAso3F8v8fxkFLoCpvTy7O9R8KpFMi
-         oakA7Ie50cInJzsGOIQNQcIQbp1b98qHvI/EPcU0XstJfsGSAElsi0Snr4cELh+P6atZ
-         XSPnZwuOegPxjzetO9jnsJ8ZKeYM9TwJkWcpZhgYitIg3arb9epaqwLUaNrm2vJWk0ww
-         KARQ==
-X-Gm-Message-State: AOAM5309hK4q0TYKhfFKnb3TPsFL1ImXyQrrjRaMRLk4DUB25WF6HT1W
-        x2esslowWfML5nJjCrqskFVQFYRsNgBzMlMEchU=
-X-Google-Smtp-Source: ABdhPJwHIuqK4ERjf3h8hnoUvfTUBi4YeRiMoPaRdAwh8zM/moiXdvG8RmXSVTdsXLTvqMNgpojjbcBCCuYeAGpP21w=
-X-Received: by 2002:a50:d490:: with SMTP id s16mr23385494edi.187.1606766550997;
- Mon, 30 Nov 2020 12:02:30 -0800 (PST)
-MIME-Version: 1.0
-References: <CA+G9fYtk3fKy7ct-rT=T8iFDhE4CbjGgdfxsOBrKT9y8ntwXyg@mail.gmail.com>
-In-Reply-To: <CA+G9fYtk3fKy7ct-rT=T8iFDhE4CbjGgdfxsOBrKT9y8ntwXyg@mail.gmail.com>
-From:   Lorenzo Stoakes <lstoakes@gmail.com>
-Date:   Mon, 30 Nov 2020 20:02:20 +0000
-Message-ID: <CAA5enKbujU+PRwA3qeYqx-Ydcj7owJnYkeTYJFdBweQJjWU78w@mail.gmail.com>
+        id S1725987AbgLAHqJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 1 Dec 2020 02:46:09 -0500
+Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:55076 "EHLO
+        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1727727AbgLAHqI (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 1 Dec 2020 02:46:08 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04420;MF=alex.shi@linux.alibaba.com;NM=1;PH=DS;RN=17;SR=0;TI=SMTPD_---0UH7dQ8L_1606808694;
+Received: from IT-FVFX43SYHV2H.local(mailfrom:alex.shi@linux.alibaba.com fp:SMTPD_---0UH7dQ8L_1606808694)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Tue, 01 Dec 2020 15:44:55 +0800
 Subject: Re: BUG: KASAN: null-ptr-deref in workingset_eviction+0xf2/0x1e0
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     inux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        inux-kernel@vger.kernel.org, linux-mm <linux-mm@kvack.org>,
         Cgroups <cgroups@vger.kernel.org>,
         Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        Andrew Morton <akpm@linux-foundation.org>,
+        lkft-triage@lists.linaro.org
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Shakeel Butt <shakeelb@google.com>,
         Roman Gushchin <guro@fb.com>,
         Stephen Rothwell <sfr@canb.auug.org.au>,
         Muchun Song <songmuchun@bytedance.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
         alexander.h.duyck@linux.intel.com,
         Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.co,
         Michal Hocko <mhocko@suse.com>,
         Vlastimil Babka <vbabka@suse.cz>
-Content-Type: text/plain; charset="UTF-8"
+References: <CA+G9fYtk3fKy7ct-rT=T8iFDhE4CbjGgdfxsOBrKT9y8ntwXyg@mail.gmail.com>
+From:   Alex Shi <alex.shi@linux.alibaba.com>
+Message-ID: <58f66f22-fd5f-685d-e608-99c35d89c1a3@linux.alibaba.com>
+Date:   Tue, 1 Dec 2020 15:44:50 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <CA+G9fYtk3fKy7ct-rT=T8iFDhE4CbjGgdfxsOBrKT9y8ntwXyg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, 30 Nov 2020 at 19:52, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
-> [  285.863025] BUG: kernel NULL pointer dereference, address: 00000000000000c8
 
-This looks to be the same as
-https://lore.kernel.org/linux-mm/20201130132345.GJ17338@dhcp22.suse.cz/T/#t
+
+在 2020/12/1 上午3:52, Naresh Kamboju 写道:
+> Crash log:
+> -----------
+> ioctl_sg01.c:81: TINFO: Found SCSI device /dev/sg1
+> [  285.862123] ==================================================================
+> [  285.863025] BUG: KASAN: null-ptr-deref in workingset_eviction+0xf2/0x1e0
+> [  285.863025] Read of size 4 at addr 00000000000000c8 by task kswapd0/245
+
+Hi Naresh,
+
+Good to know you again. :)
+
+Would you like to use command to check whichh line cause the panic:
+
+scripts/faddr2line vmlinux workingset_eviction+0xf2/0x1e0
+
+I can't reproduce it. and my gcc version mismatch with yours.
+
+Thanks
+Alex
