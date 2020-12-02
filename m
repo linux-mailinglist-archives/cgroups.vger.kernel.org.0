@@ -2,120 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F00D12CBCC2
-	for <lists+cgroups@lfdr.de>; Wed,  2 Dec 2020 13:18:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EC5782CC64F
+	for <lists+cgroups@lfdr.de>; Wed,  2 Dec 2020 20:13:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729879AbgLBMRW (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Dec 2020 07:17:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50402 "EHLO
+        id S2387961AbgLBTLv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Dec 2020 14:11:51 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58536 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729878AbgLBMRV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Dec 2020 07:17:21 -0500
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0585FC0613D6
-        for <cgroups@vger.kernel.org>; Wed,  2 Dec 2020 04:16:36 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id h7so539780pjk.1
-        for <cgroups@vger.kernel.org>; Wed, 02 Dec 2020 04:16:36 -0800 (PST)
+        with ESMTP id S2387739AbgLBTLu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Dec 2020 14:11:50 -0500
+Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A50EDC0613CF;
+        Wed,  2 Dec 2020 11:11:10 -0800 (PST)
+Received: by mail-qk1-x744.google.com with SMTP id z188so2318816qke.9;
+        Wed, 02 Dec 2020 11:11:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0D0YvfFeRVroyy8DOM8jNI9C4k7vyQ+vFDUfvEXQRIw=;
-        b=pZfhUnAfhJIC6/Dv5lxitZ9cKXI7bpi1N7AHDZuXk5iD1odIfF+g8ifMX49reRjF99
-         yLEwUP6xyJa0nYkrqHO91vMYQ0XAv/FNqFSpBKoRgkUEIaxAezWlS9w7l1dzjubGclHz
-         ThKFQZj7svmOUlI0TdwlQFxJqtLyJL8U5k8/hNqr/2y9OXXb/sFzwZi/Q8k5LSWxGNqG
-         qLYgioFTLRmCw5DxE2volAw4/zrCDm+38iAqBgx7OE56INmP/Ga0CGzxUAxMMxQl5750
-         sA7qPKmbiVH9tN0Hi/Oa6rm0yp0xRwGe3VrMmaVeLVrF2NOS+g5K8NvQLuwSa7TZc4TS
-         d/uA==
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
+        b=cuyop+6GEYsJfkfCvrlT56PR6leruYXY5xPg4Fdmi14/OZPEhEcIUgeCsS0pTNj7Eh
+         jzkIP1A/NrdAr19D53DRdBUsnOAOhlNewUybMARKFcP77devwmFS1CqYYaN7HC4m0lgi
+         DFbVKFSeopvdwV5JccZt++HutFbOhhiVtFp3yMOsECMbScMuv1/v1XE6VDoPwzjAowuL
+         75XHn4iGJsiobXi24yrPTzCNOk/Mzrp+2cWJ1wW0OBGhuX7sTcpU6W/a++z4rZypJnV5
+         xWMyeP1DfqXvkJB4MZcZsY3WyzipNR0PEe7As0InJw/dJbEJ4S8+5F1Az9sEW9b7Vrnl
+         Cwcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=0D0YvfFeRVroyy8DOM8jNI9C4k7vyQ+vFDUfvEXQRIw=;
-        b=hatd/ySLauDcvnvN09AW2hAoFsEawoEftd4zDFaE/MNYAxBs461boI+CEQiPUCQCuF
-         ZYY9Ztm+H0CYcA35Xc7kdKQZ0etaIwghsWpNsMOzGprfTA6zWD+KDb4xQe9a4UnnGB/+
-         OyMqH3gjsoUB5+dcGfXrR38jXVxxf6ngYRWr0sZWPwWQI5HYXt5dmYtxHo7znORPJLaf
-         sL7nWwpw+0KJ4GcyscaS4LxCk+BACdz4hQELD4C1U+Fb4e9/Wfe9lgWLXJhslrYyLyyy
-         3UcYkADasCG4nZmL1CJdXXJjuk3JYB5+OQAmuCNa6EGBRox/LUv2V33/6YWX2Beq8IkW
-         /xtQ==
-X-Gm-Message-State: AOAM531yfCkVlR6smotuTHIXTsLokdh0Kg/X7e1sej8dKx8KQsA5FjQI
-        yRGbMARIUCIm5cLw+wqTULoBAw==
-X-Google-Smtp-Source: ABdhPJwEcQ4LPF+w2bx+8qB8eyH1ySMsXXOgJG55j8ylaLQmmrGHP7+W2ehYLVoe0ItPybgrsHJf3g==
-X-Received: by 2002:a17:902:bc81:b029:d8:ef30:b518 with SMTP id bb1-20020a170902bc81b02900d8ef30b518mr2274981plb.81.1606911395581;
-        Wed, 02 Dec 2020 04:16:35 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id 77sm2348479pfv.16.2020.12.02.04.16.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 02 Dec 2020 04:16:35 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm/memcontrol: make the slab calculation consistent
-Date:   Wed,  2 Dec 2020 20:14:34 +0800
-Message-Id: <20201202121434.75099-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=v5D6PtLHVVQdV/ubjkOzdJ2GbL8TD6flP6rlB6RAW04=;
+        b=SWKH8gIAhDKovQ1+rWQaagnHk19acKM0NS1KfMjdhsqWczFJuv7bFIbeaR8GQu6okS
+         qP2JseA0HKZLnaepv/qbxF0Rth24RyJTaatznHQHP1Qg8bi+KHDQg9l9G0MnIpxPlt0p
+         ifC+f0j4OhgO1dOTlVl/UCuRacWKdneaS0bM9IARbvVuK4+38o/V8LWQPU7dHSEOaho6
+         8bMGwM5tnKPPP/0kgpqRRzo+mVH47AuAd0wd3NUxsgMibQa9ohHqYg3KEMRncdfl59+z
+         kO7CBn2LPqG3s6CDq1qfaFAoxeaNR7mXwdBqdnp9SI0U2bD2o2ht9hwhjGNS6QZcZRSB
+         +53Q==
+X-Gm-Message-State: AOAM530q9igWMPpqf3YpPPYMvqrdcqNl0qUvdv9u/abjjQ4Os8+TjJDN
+        qPtXzgDC6yamOpaPOK8p03A=
+X-Google-Smtp-Source: ABdhPJx6BRmRG4jxLpniauDUiQDUhRNB10J7uytRnFSA19h8R3Y8QAwNfA1bUo95Ef1gyghUhGvgKQ==
+X-Received: by 2002:a37:9c82:: with SMTP id f124mr4221666qke.314.1606936269763;
+        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:8dbd])
+        by smtp.gmail.com with ESMTPSA id b4sm1765150qtb.33.2020.12.02.11.11.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 02 Dec 2020 11:11:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 2 Dec 2020 14:10:41 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Yu Kuai <yukuai3@huawei.com>
+Cc:     axboe@kernel.dk, cgroups@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, zhangxiaoxu5@huawei.com
+Subject: Re: [PATCH] blk-throttle: don't check whether or not lower limit is
+ valid if CONFIG_BLK_DEV_THROTTLING_LOW is off
+Message-ID: <X8fmsbgvajlCvvLD@mtj.duckdns.org>
+References: <20201126031834.40807-1-yukuai3@huawei.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201126031834.40807-1-yukuai3@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Although the ratio of the slab is one, we also should read the ratio
-from the related memory_stats instead of hard-coding. And the local
-variable of size is already the value of slab_unreclaimable. So we
-do not need to read again. Simplify the code here.
+On Thu, Nov 26, 2020 at 11:18:34AM +0800, Yu Kuai wrote:
+> blk_throtl_update_limit_valid() will search for descendants to see if
+> 'LIMIT_LOW' of bps/iops and READ/WRITE is nonzero. However, they're always
+> zero if CONFIG_BLK_DEV_THROTTLING_LOW is not set, furthermore, a lot of
+> time will be wasted to iterate descendants.
+> 
+> Thus do nothing in blk_throtl_update_limit_valid() in such situation.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/memcontrol.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+Acked-by: Tejun Heo <tj@kernel.org>
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 9922f1510956..03a9c64560f6 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1545,12 +1545,22 @@ static int __init memory_stats_init(void)
- 	int i;
- 
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
-+		switch (memory_stats[i].idx) {
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--		if (memory_stats[i].idx == NR_ANON_THPS ||
--		    memory_stats[i].idx == NR_FILE_THPS ||
--		    memory_stats[i].idx == NR_SHMEM_THPS)
-+		case NR_ANON_THPS:
-+		case NR_FILE_THPS:
-+		case NR_SHMEM_THPS:
- 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
-+			break;
- #endif
-+		case NR_SLAB_UNRECLAIMABLE_B:
-+			VM_BUG_ON(i < 1);
-+			VM_BUG_ON(memory_stats[i - 1].idx != NR_SLAB_RECLAIMABLE_B);
-+			break;
-+		default:
-+			break;
-+		}
-+
- 		VM_BUG_ON(!memory_stats[i].ratio);
- 		VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
- 	}
-@@ -1587,8 +1597,10 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
- 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
- 
- 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
--			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
--			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-+			int idx = i - 1;
-+
-+			size += memcg_page_state(memcg, memory_stats[idx].idx) *
-+				memory_stats[idx].ratio;
- 			seq_buf_printf(&s, "slab %llu\n", size);
- 		}
- 	}
+Thanks.
+
 -- 
-2.11.0
-
+tejun
