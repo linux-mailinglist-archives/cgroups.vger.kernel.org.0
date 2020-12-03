@@ -2,153 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CD7D2CCCE2
-	for <lists+cgroups@lfdr.de>; Thu,  3 Dec 2020 03:55:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 449802CCD21
+	for <lists+cgroups@lfdr.de>; Thu,  3 Dec 2020 04:15:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727149AbgLCCyv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 2 Dec 2020 21:54:51 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
+        id S1729636AbgLCDOi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 2 Dec 2020 22:14:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726090AbgLCCyu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Dec 2020 21:54:50 -0500
+        with ESMTP id S1729538AbgLCDOh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 2 Dec 2020 22:14:37 -0500
 Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B218FC061A4E
-        for <cgroups@vger.kernel.org>; Wed,  2 Dec 2020 18:54:10 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id f1so315818plt.12
-        for <cgroups@vger.kernel.org>; Wed, 02 Dec 2020 18:54:10 -0800 (PST)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91E16C061A4E
+        for <cgroups@vger.kernel.org>; Wed,  2 Dec 2020 19:13:57 -0800 (PST)
+Received: by mail-pl1-x643.google.com with SMTP id b23so341525pls.11
+        for <cgroups@vger.kernel.org>; Wed, 02 Dec 2020 19:13:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GDcWWcWtZ2CIT3OcyxlFsQ8cIBNK++QYLLtJ9vIR6kA=;
-        b=sDSPa8a747MqIOZ3kxtOh3eGCz6jS+hENFwV7LofZs09YNQAcrvfmOunXFm1AN3MNz
-         8qIpEx3Esxeo1AKK3mb9soO9OCpbXBSWyeHgFnOhkYY0yvKmUFXLGjTTByFJ+sewzvsd
-         DNIjXqfF7QMMLXx0Q+ISBY6DsryjqzemNv1LEIxt7a1/rMC9LqD0539AzqRZKyX2jjQA
-         tB0+wgPGI/SuFEESCOsYdE6zo++XPwYovqBs2tq/nSnzwVIcXTidTqB33Jhunv9+Wubh
-         HVHhV8zsjUOOT4c9C/SaEZUBpmV4DM3n7Oye0Xtri3kHVVcu/5ac4U7J2P38HI9ITuPU
-         LEVA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rwVqmku+KuF7CBDwCXmp7GQf251F6L0Ar739gqzf9cU=;
+        b=tITewJgNthn6PxKyqtA6y7Hsga8qG37N3FDSi29gWHRtvQG+yNxwFH68T9T2/XjU2d
+         McUpVdjLgYPQlC7j8HhQPXZO+rMwHmoB1qk4zk1HY/jZ92ViyXbppXXZsVTD8iN8M8Av
+         TPbPm1yTQzGCsDMl7nhuEzLoA0QSHzG+aqEYuvfqcJ/7hAouPj31QXTnaVm4ZVCEB1hy
+         WGBtEaiDvKXSp9rE0YOCwfzz5B4NsC8gRkvzGjKJZx9QyHNyuspmL6hPsDRI1+P5oYzd
+         kEC1TPjDhslQHfF862x4i6EA/EofAGpWNJlm9oyLEjfSng0F8LXkHEddvJadX359XlfS
+         20Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GDcWWcWtZ2CIT3OcyxlFsQ8cIBNK++QYLLtJ9vIR6kA=;
-        b=W3Wz+raRtb42w7WKwGaCU4hN7CGy6gXFxNc0MZvIBWPeMZQAZ3V41wJeIP0sCEQ21T
-         na5WGxtvsvB69j82vFfwAcaxCvKOOD2mNaeuJ3Y92tjmLH1LowEt3xddKAHXatGVrsN2
-         CfCWD5+5WnRbNkeYjSt8IQtgNpEUSaakYp3+dY2ytUeGFNA21d2uFjkNinygc7zOz/Ho
-         MoTuVAZdv3gQzLDyYggSbp9B6NfkCSldX+fN8edvRq/S8gfag++wbsi8zdceJLMha0z5
-         BQgeNT0P416wRi3a/NYARkXFdf/lhPRzOVE2kqHcTqQUWUJWk33CCyTk9f8cDUrqTP4M
-         azdA==
-X-Gm-Message-State: AOAM531Ntbntgc1JDGRHVO54LVXi0L7EImBV5LtdjeRuS5LowhlC/8Vz
-        uX/E/SDa1PxFfrz07c/Hh4ChuPg9XEB0NJFsXS6wLPz6C4FlQ05o
-X-Google-Smtp-Source: ABdhPJzbn6ILlMeH2YCPHyVeHEwZs+Ygkrr5yTMIKPfugRZMa00bTRkTBHV5D83EzuP9SV2sBAF/rx93pjmJOcAxYT4=
-X-Received: by 2002:a17:90a:c588:: with SMTP id l8mr972593pjt.147.1606964050137;
- Wed, 02 Dec 2020 18:54:10 -0800 (PST)
-MIME-Version: 1.0
-References: <20201202121434.75099-1-songmuchun@bytedance.com> <20201202211646.GA1517142@carbon.lan>
-In-Reply-To: <20201202211646.GA1517142@carbon.lan>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=rwVqmku+KuF7CBDwCXmp7GQf251F6L0Ar739gqzf9cU=;
+        b=C3BwHPmpwvFkDSN1+8jhqjh4ky3OoHG1lVhpmJhCj+j2Z/YQg9u4zJeoko/6o2yt9X
+         iARtQW4Ze1npOvKi+D+PtbdT0R2mXY12axUSfH9r2d/UI9F9mtQISoIYCJUhCboN3tko
+         +XW//+FkzLk5pRFB404tcEAQ3pYrhnNa3LQM83VNPb7u4D0yQDXNYSc6/T9HjpsndZYn
+         ozFOaSr9CD/dXRhDt9Z8U8vEKUPY9WBJ/p8p8groyw55XkYyPU6PyW+396c1h1oaYARG
+         kiR9w6GzLptSqU1reyZVx2znwwCJ1u3jPvH929miPx4qpwKG1EXw+c0boLQojHJIs8Re
+         aamw==
+X-Gm-Message-State: AOAM530BQEWtMscBSb3Q5sh+3y8Mqsi9Ji7Nl38zZXN/1kOnvOAddMce
+        yeL3DOuHUKJqnB5cBqS4RioAUg==
+X-Google-Smtp-Source: ABdhPJzl03ea3XSeGXYOVgpi8aLf35MXOyZs4Z9pSvj8lIUn7ZAIrJEQm2Si9i8tcFkT/yKaS0jxEQ==
+X-Received: by 2002:a17:90a:4093:: with SMTP id l19mr1073959pjg.218.1606965236823;
+        Wed, 02 Dec 2020 19:13:56 -0800 (PST)
+Received: from localhost.localdomain ([103.136.220.95])
+        by smtp.gmail.com with ESMTPSA id f17sm418336pfk.70.2020.12.02.19.13.51
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 02 Dec 2020 19:13:56 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 3 Dec 2020 10:53:33 +0800
-Message-ID: <CAMZfGtWUWAO8J6iBpQLV0T8xPAuQvFTfX9UQ7G2eM_O9C7w83w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm/memcontrol: make the slab calculation consistent
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>,
+        Roman Gushchin <guro@fb.com>
+Subject: [PATCH v2] mm/memcontrol: make the slab calculation consistent
+Date:   Thu,  3 Dec 2020 11:11:11 +0800
+Message-Id: <20201203031111.3187-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 5:16 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Wed, Dec 02, 2020 at 08:14:34PM +0800, Muchun Song wrote:
-> > Although the ratio of the slab is one, we also should read the ratio
-> > from the related memory_stats instead of hard-coding. And the local
-> > variable of size is already the value of slab_unreclaimable. So we
-> > do not need to read again. Simplify the code here.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 22 +++++++++++++++++-----
-> >  1 file changed, 17 insertions(+), 5 deletions(-)
->
-> Hi Muchun!
->
-> >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 9922f1510956..03a9c64560f6 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1545,12 +1545,22 @@ static int __init memory_stats_init(void)
-> >       int i;
-> >
-> >       for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
-> > +             switch (memory_stats[i].idx) {
-> >  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> > -             if (memory_stats[i].idx == NR_ANON_THPS ||
-> > -                 memory_stats[i].idx == NR_FILE_THPS ||
-> > -                 memory_stats[i].idx == NR_SHMEM_THPS)
-> > +             case NR_ANON_THPS:
-> > +             case NR_FILE_THPS:
-> > +             case NR_SHMEM_THPS:
-> >                       memory_stats[i].ratio = HPAGE_PMD_SIZE;
-> > +                     break;
-> >  #endif
-> > +             case NR_SLAB_UNRECLAIMABLE_B:
-> > +                     VM_BUG_ON(i < 1);
-> > +                     VM_BUG_ON(memory_stats[i - 1].idx != NR_SLAB_RECLAIMABLE_B);
->
-> Please, convert these to BUILD_BUG_ON(), they don't have to be runtime checks.
+Although the ratio of the slab is one, we also should read the ratio
+from the related memory_stats instead of hard-coding. And the local
+variable of size is already the value of slab_unreclaimable. So we
+do not need to read again. Simplify the code here.
 
-Agree. But here we cannot use BUILD_BUG_ON(). The compiler will
-complain about it.
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+---
+Changes in v2:
+ - Add a comment in the memory_stat_format() suggested by Roman.
 
->
->
-> > +                     break;
-> > +             default:
-> > +                     break;
-> > +             }
-> > +
-> >               VM_BUG_ON(!memory_stats[i].ratio);
-> >               VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
-> >       }
-> > @@ -1587,8 +1597,10 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
-> >               seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
-> >
->
-> Can you, please, add a small comment here stating that we're printing
-> unreclaimable, reclaimable and the sum of both? It will simplify the reading of the code.
+ mm/memcontrol.c | 26 +++++++++++++++++++++-----
+ 1 file changed, 21 insertions(+), 5 deletions(-)
 
-Will do.
-
->
-> >               if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
-> > -                     size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
-> > -                            memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
-> > +                     int idx = i - 1;
-> > +
-> > +                     size += memcg_page_state(memcg, memory_stats[idx].idx) *
-> > +                             memory_stats[idx].ratio;
-> >                       seq_buf_printf(&s, "slab %llu\n", size);
-> >               }
-> >       }
->
-> Otherwise the patch looks good to me! Please, feel free to add
-> Acked-by: Roman Gushchin <guro@fb.com>
-> after addressing my comments.
->
-> Thanks!
-> > --
-> > 2.11.0
-> >
-
-
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 9922f1510956..75df129b7a52 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1545,12 +1545,22 @@ static int __init memory_stats_init(void)
+ 	int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
++		switch (memory_stats[i].idx) {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_ANON_THPS ||
+-		    memory_stats[i].idx == NR_FILE_THPS ||
+-		    memory_stats[i].idx == NR_SHMEM_THPS)
++		case NR_ANON_THPS:
++		case NR_FILE_THPS:
++		case NR_SHMEM_THPS:
+ 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
++			break;
+ #endif
++		case NR_SLAB_UNRECLAIMABLE_B:
++			VM_BUG_ON(i < 1);
++			VM_BUG_ON(memory_stats[i - 1].idx != NR_SLAB_RECLAIMABLE_B);
++			break;
++		default:
++			break;
++		}
++
+ 		VM_BUG_ON(!memory_stats[i].ratio);
+ 		VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
+ 	}
+@@ -1586,9 +1596,15 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 		size *= memory_stats[i].ratio;
+ 		seq_buf_printf(&s, "%s %llu\n", memory_stats[i].name, size);
+ 
++		/*
++		 * We are printing reclaimable, unreclaimable of the slab
++		 * and the sum of both.
++		 */
+ 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
+-			size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+-			       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
++			int idx = i - 1;
++
++			size += memcg_page_state(memcg, memory_stats[idx].idx) *
++				memory_stats[idx].ratio;
+ 			seq_buf_printf(&s, "slab %llu\n", size);
+ 		}
+ 	}
 -- 
-Yours,
-Muchun
+2.11.0
+
