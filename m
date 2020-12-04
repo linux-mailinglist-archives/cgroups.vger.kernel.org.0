@@ -2,130 +2,134 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345DC2CE165
-	for <lists+cgroups@lfdr.de>; Thu,  3 Dec 2020 23:12:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C8D52CF11E
+	for <lists+cgroups@lfdr.de>; Fri,  4 Dec 2020 16:51:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728826AbgLCWMn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 3 Dec 2020 17:12:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55678 "EHLO
+        id S1730815AbgLDPtF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 4 Dec 2020 10:49:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727050AbgLCWMm (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 3 Dec 2020 17:12:42 -0500
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AA3DC061A52
-        for <cgroups@vger.kernel.org>; Thu,  3 Dec 2020 14:12:02 -0800 (PST)
-Received: by mail-lj1-x244.google.com with SMTP id z1so4312871ljn.4
-        for <cgroups@vger.kernel.org>; Thu, 03 Dec 2020 14:12:02 -0800 (PST)
+        with ESMTP id S1730451AbgLDPtE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 4 Dec 2020 10:49:04 -0500
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFB0CC061A4F
+        for <cgroups@vger.kernel.org>; Fri,  4 Dec 2020 07:48:17 -0800 (PST)
+Received: by mail-qk1-x743.google.com with SMTP id y197so5775734qkb.7
+        for <cgroups@vger.kernel.org>; Fri, 04 Dec 2020 07:48:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QF1ANqOQBqZLcWlpFbE2WrA4M94QqjKls+F32sntMMY=;
-        b=T1kC1Kg7NGIo6tMwYyuuSIkbUM2VuNQz7qLiEEJZtDFibEewJn1anNB9g2y80hPxkX
-         iuvhJivzZgd6XEn3oUb3bwhkxuLp8C0ke4zyslQ0f29RT2lbodQCYp6n1erOyIs4LoZy
-         EUqgqNTRaA9IbgSoFHG/SrrM2zc5q8yCV93/QpCAmfQCi2kdb6q8EmgwRQYRFCvDvS8t
-         Bg2+nLT7Gmk2KOP7TRTnEDvSGvD7h+4Nk1weYi2DWGEOEuqKcxzWnMnngV0S8DBlk/Kk
-         ToaYG83BoQojs0cXLtz/RJ3CPGKDOIbfzrgK58ch/RGfQUP/Kdm39CIG8jJOESnFVjs8
-         0gIg==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=nwbnY1/AV2FFPs1NQO0btBf2+S5LCFRr1hUU4wSaSQQ=;
+        b=hCSiWy3HwYppo4VxA8ax1Gw1Vky5CN2uyplFnDzpqV5sUx45gMT5u+D0dKhPJ24uif
+         kIt5r7osKzB/LNSMvClSCCCssvQzyFWpZQv3zDXaOEQ+TAgDUgVWwAG5Oce2rARebo/d
+         vQURlgZ1gSdu9kqPR5StVTkj0ZweBohSOI7GmsAVPmNQA381cNF36vu69Rx274gnYPcT
+         wv6jNjFjq+av4h9y9xgXEd9gJeMEhxlBtk/aK85wocMiN3/bu3/3pGxuv8ngHrADpn9L
+         il4t1Kuv5lvozpqGBjLp80sk0hh4vVAU/asrOM38P16qlOEXKmQrDaSAydzjpZzXaHDo
+         N8Eg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QF1ANqOQBqZLcWlpFbE2WrA4M94QqjKls+F32sntMMY=;
-        b=hKwgx0lgeoNUmKbNI6dG8x8qQMtVoBA1OqtCF6iWURX6zgW1wWV5aeBxLH3MeQ+v74
-         MLWMuLerNCIqE+ZpU6dElpLagjkiRny+t3mVuSxksqkNjFT5y3xrKHzeIL1MsNQU2jLU
-         PHbNW6580jdF4Z/40NnMY/7ooTmoD5wXlhJ7wJ1cXXAN54XIWC0gslngi2dwzN/xwVLc
-         WKvtLLpB4aOTuU4Qb4JOh3RK7/jhxlnF1QpJPH6tYUJeX20F1GnDEZ9rZut+SNlZTOqA
-         xIwhN4J5m2jXjTMwX5V1B/7Fpe3NaOKQGcUwswy72e8KnaCoVTIa3G+k7kkrVOBP1YPB
-         Uq8A==
-X-Gm-Message-State: AOAM530QR2DlN4yOTYHOCjxbvQdMDQnsiQOG/SKmfi/h0CxAQXhFPzcH
-        dfRod/CVL3PKyD8O6mpJeqiKGqrbl8WNrUo4xXobBjADbUqy+Q==
-X-Google-Smtp-Source: ABdhPJxZcU+lCfn5RqsAVafhGSLZ7zVxw6S18ukw3rg0CDcwpepwRKN8lz8uLajcxg5pr4bmkUNKYM+C/v1mj2n/svs=
-X-Received: by 2002:a2e:b16a:: with SMTP id a10mr2083994ljm.446.1607033520505;
- Thu, 03 Dec 2020 14:12:00 -0800 (PST)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=nwbnY1/AV2FFPs1NQO0btBf2+S5LCFRr1hUU4wSaSQQ=;
+        b=j9u9NeQf1psyiCVrGL1OdeAZamYErVuAUvODbs/s9xs2DGjyj5ouTpwvfP0DbrOWbb
+         6iL5pYrm8wRb/7c2di1lzurTCO9mOx9ZVg2aAwAvYTLbcQTWQSLUNgKmnsT2/XKq3Xdu
+         eufu2yGpu0WEIND3UDtuQbY1Q6pANCjnr3nnUcRjeIosqLwLrQ4xVUCGRRpAqPfmgxKb
+         lFoZo3fkD9fKnlXeooINxNxfzlyXJlYJ3hVr0dOeic0aCGDXJdyLkDUp7Ac1ejqm2j6l
+         d09UeBTC74uM9zWCBao18byN5xZX919hYNjOL32tElMD1hC2J+YA4FtvLtxgGmsbmH4R
+         3ZeQ==
+X-Gm-Message-State: AOAM530iOr+NJusGKb+huhArQthQpQO4SP7ff69QAELmC9/Q+K/Q6ROI
+        vcohm7s/RGG03wiaGcQziP5qEA==
+X-Google-Smtp-Source: ABdhPJxZFIK3nn3G4ETckmaEhVgiyEWH/TFZK8Hci3TIRjQKM3LGbZ/qCwehoOQoWqjgaO7ap1vnWA==
+X-Received: by 2002:a05:620a:8d9:: with SMTP id z25mr146661qkz.127.1607096897156;
+        Fri, 04 Dec 2020 07:48:17 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:a180])
+        by smtp.gmail.com with ESMTPSA id o23sm5340401qkk.84.2020.12.04.07.48.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 04 Dec 2020 07:48:16 -0800 (PST)
+Date:   Fri, 4 Dec 2020 10:46:13 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Roman Gushchin <guro@fb.com>
+Subject: Re: [PATCH v2] mm/memcontrol: make the slab calculation consistent
+Message-ID: <20201204154613.GA176901@cmpxchg.org>
+References: <20201203031111.3187-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20201203220242.158165-1-mike.kravetz@oracle.com>
-In-Reply-To: <20201203220242.158165-1-mike.kravetz@oracle.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 3 Dec 2020 14:11:49 -0800
-Message-ID: <CALvZod44ZLA8U=ormvuKZhJ1vCJf8qOHMRSouih4E-oaLihV=Q@mail.gmail.com>
-Subject: Re: [PATCH] hugetlb_cgroup: fix offline of hugetlb cgroup with reservations
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Linux MM <linux-mm@kvack.org>, LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Greg Thelen <gthelen@google.com>,
-        Sandipan Das <sandipan@linux.ibm.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Adrian Moreno <amorenoz@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201203031111.3187-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Dec 3, 2020 at 2:04 PM Mike Kravetz <mike.kravetz@oracle.com> wrote:
->
-> Adrian Moreno was ruuning a kubernetes 1.19 + containerd/docker workload
-> using hugetlbfs.  In this environment the issue is reproduced by:
-> 1 - Start a simple pod that uses the recently added HugePages medium
->     feature (pod yaml attached)
-> 2 - Start a DPDK app. It doesn't need to run successfully (as in transfer
->     packets) nor interact with real hardware. It seems just initializing
->     the EAL layer (which handles hugepage reservation and locking) is
->     enough to trigger the issue
-> 3 - Delete the Pod (or let it "Complete").
->
-> This would result in a kworker thread going into a tight loop (top output):
->  1425 root      20   0       0      0      0 R  99.7   0.0   5:22.45
-> kworker/28:7+cgroup_destroy
->
-> 'perf top -g' reports:
-> -   63.28%     0.01%  [kernel]                    [k] worker_thread
->    - 49.97% worker_thread
->       - 52.64% process_one_work
->          - 62.08% css_killed_work_fn
->             - hugetlb_cgroup_css_offline
->                  41.52% _raw_spin_lock
->                - 2.82% _cond_resched
->                     rcu_all_qs
->                  2.66% PageHuge
->       - 0.57% schedule
->          - 0.57% __schedule
->
-> We are spinning in the do-while loop in hugetlb_cgroup_css_offline.
-> Worse yet, we are holding the master cgroup lock (cgroup_mutex) while
-> infinitely spinning.  Little else can be done on the system as the
-> cgroup_mutex can not be acquired.
->
-> Do note that the issue can be reproduced by simply offlining a hugetlb
-> cgroup containing pages with reservation counts.
->
-> The loop in hugetlb_cgroup_css_offline is moving page counts from the
-> cgroup being offlined to the parent cgroup.  This is done for each hstate,
-> and is repeated until hugetlb_cgroup_have_usage returns false.  The routine
-> moving counts (hugetlb_cgroup_move_parent) is only moving 'usage' counts.
-> The routine hugetlb_cgroup_have_usage is checking for both 'usage' and
-> 'reservation' counts.  Discussion about what to do with reservation
-> counts when reparenting was discussed here:
->
-> https://lore.kernel.org/linux-kselftest/CAHS8izMFAYTgxym-Hzb_JmkTK1N_S9tGN71uS6MFV+R7swYu5A@mail.gmail.com/
->
-> The decision was made to leave a zombie cgroup for with reservation
-> counts.  Unfortunately, the code checking reservation counts was
-> incorrectly added to hugetlb_cgroup_have_usage.
->
-> To fix the issue, simply remove the check for reservation counts.  While
-> fixing this issue, a related bug in hugetlb_cgroup_css_offline was noticed.
-> The hstate index is not reinitialized each time through the do-while loop.
-> Fix this as well.
->
-> Fixes: 1adc4d419aa2 ("hugetlb_cgroup: add interface for charge/uncharge hugetlb reservations")
-> Cc: <stable@vger.kernel.org>
-> Reported-by: Adrian Moreno <amorenoz@redhat.com>
-> Tested-by: Adrian Moreno <amorenoz@redhat.com>
-> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+On Thu, Dec 03, 2020 at 11:11:11AM +0800, Muchun Song wrote:
+> Although the ratio of the slab is one, we also should read the ratio
+> from the related memory_stats instead of hard-coding. And the local
+> variable of size is already the value of slab_unreclaimable. So we
+> do not need to read again. Simplify the code here.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Roman Gushchin <guro@fb.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+I agree that ignoring the ratio right now is not very pretty, but
+
+		size = memcg_page_state(memcg, NR_SLAB_RECLAIMABLE_B) +
+		       memcg_page_state(memcg, NR_SLAB_UNRECLAIMABLE_B);
+		seq_buf_printf(&s, "slab %llu\n", size);
+
+is way easier to understand and more robust than using idx and idx + 1
+and then requiring a series of BUG_ONs to ensure these two items are
+actually adjacent and in the right order.
+
+There is a redundant call to memcg_page_state(), granted, but that
+function is extremely cheap compared with e.g. seq_buf_printf().
+
+>  mm/memcontrol.c | 26 +++++++++++++++++++++-----
+>  1 file changed, 21 insertions(+), 5 deletions(-)
+
+IMO this really just complicates the code with little discernible
+upside. It's going to be a NAK from me, unfortunately.
+
+
+In retrospect, I think that memory_stats[] table was a mistake. It
+would probably be easier to implement this using a wrapper for
+memcg_page_state() that has a big switch() for unit
+conversion. Something like this:
+
+/* Translate stat items to the correct unit for memory.stat output */
+static unsigned long memcg_page_state_output(memcg, item)
+{
+	unsigned long value = memcg_page_state(memcg, item);
+	int unit = PAGE_SIZE;
+
+	switch (item) {
+	case NR_SLAB_RECLAIMABLE_B:
+	case NR_SLAB_UNRECLAIMABLE_B:
+	case WORKINGSET_REFAULT_ANON:
+	case WORKINGSET_REFAULT_FILE:
+	case WORKINGSET_ACTIVATE_ANON:
+	case WORKINGSET_ACTIVATE_FILE:
+	case WORKINGSET_RESTORE_ANON:
+	case WORKINGSET_RESTORE_FILE:
+	case MEMCG_PERCPU_B:
+		unit = 1;
+		break;
+	case NR_SHMEM_THPS:
+	case NR_FILE_THPS:
+	case NR_ANON_THPS:
+		unit = HPAGE_PMD_SIZE;
+		break;
+	case NR_KERNEL_STACK_KB:
+		unit = 1024;
+		break;
+	}
+	
+	return value * unit;
+}
+
+This would fix the ratio inconsistency, get rid of the awkward mix of
+static and runtime initialization of the table, is probably about the
+same amount of code, but simpler and more obvious overall.
