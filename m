@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4973F2D0293
-	for <lists+cgroups@lfdr.de>; Sun,  6 Dec 2020 11:19:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64ED82D0291
+	for <lists+cgroups@lfdr.de>; Sun,  6 Dec 2020 11:19:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727080AbgLFKSY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S1727108AbgLFKSY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Sun, 6 Dec 2020 05:18:24 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727056AbgLFKSX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 6 Dec 2020 05:18:23 -0500
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 162FAC08E85E
-        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 02:17:17 -0800 (PST)
-Received: by mail-pg1-x534.google.com with SMTP id g18so6468922pgk.1
-        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 02:17:17 -0800 (PST)
+        with ESMTP id S1727071AbgLFKSY (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 6 Dec 2020 05:18:24 -0500
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98D48C08E85F
+        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 02:17:25 -0800 (PST)
+Received: by mail-pl1-x62a.google.com with SMTP id x15so5595564pll.2
+        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 02:17:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=i2WmQI9Q0soqzGFU1vD0NNfzSFXtCmp1bcFtyNd4sgI=;
-        b=Ms1jKhSa+qgJDEXhLIQ4samWqeYhB2vhUcYFQ9kIBfeKOFDxvVzFk87TrixWrRD6Rr
-         +vaXPRp3mQ8tdRqpuDAFtslhGGYCDSz9lAeIhR+7d3Au95mDEpciTi58EJCUbOV74boF
-         irHf7UgHfqeYxqPOZMX694NrAsulQCs6XWfG4XayIwUmc6E7MAPpDhiT8R6HB7wMt/sK
-         SNrLW1p5/PnRMUlJ+0fav+HcOTb1EAz0rIYHqUEVW3GpZpT1zdHfzbuDuyQrNuUcrO3L
-         MmsEJi3uDyzEQa2sWlVjoK6VcSbmc9uIkM5UCU+YCzAwjoR5Wi2Lk1tuSgR+J6AkErEc
-         KAhQ==
+        bh=jqJ1l3kUFANKBttrjy8eqm/Bfbx0CB9v1pkRqyyS8to=;
+        b=KmA+ORfQc43rX3WMdlp11TQtIwpSJKpCxx5KoM4F25X7T30VLyaba67ZPkmP5cSM7c
+         PKM6k/+aB9OVyO/8dQ+UJ86/av3LnTXnc1p/BRBzA0G00SzeU8PcqZ9Urmcf9zAXuAoZ
+         xXzf2hK7TGTUPRpZVFDts8Ltd9Zsw1mZc60SLFI1uD+HV5B26N+YKp2clMDnKZYVQEBU
+         AL7xPd2zVYSTvthcCID8/4MrAWZvFilD4o1eUb1vzOhLiYzYXGP8SjCSKOeJEG3OUwKx
+         hyLQXCGOesN4uzI5XVZPYMZuoUNXP9kiHZSDYi9/0RQPtXc/uXCNVFSZxXt75fOvG6Ln
+         Zo+g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=i2WmQI9Q0soqzGFU1vD0NNfzSFXtCmp1bcFtyNd4sgI=;
-        b=Qz96kueVtsb3xnF9Ar+Rf3UUUtItRWwiwJ65wuNos7VjNFCugjuEmCOq2L7GDCBjuJ
-         gLsywk64sL0b0qGidYJFU8xVZCLbWPzu6T9gKsGkdUKivZUWz3+4Um7CYGDrEzeEjG7D
-         ThcXrZdL4h6dn4owuVHCj+jFaZN6IYc3WutNgcZKATnobICLRU5aWoESSSu4uQqKkHfe
-         p2P8InSzIn4LOzGod9mCJeQ8y7vE09hSaLLfeMk1ra6yzNVYTkuSzDFmQoKpJ3Bq+0q1
-         f/mxmXEz1kjR/ebIVLwe34moafCKTmz0RASsos9S2M4hJmpxfTLo5vLzQD78eIBquO2r
-         xBMA==
-X-Gm-Message-State: AOAM531Fx8eDq4EQNx7241n8T43X0bdStC0aYynznBSQCNHX1Rkp2voA
-        7IHLLWNEgDIb+JwTAp0Tb340yA==
-X-Google-Smtp-Source: ABdhPJxX4VV3xHN6Lrb6jwWVudCM8xvy7cP+M5Gcg95AHBIo8KyIJoYWtLsufEfRR9NNE3e7JelnGw==
-X-Received: by 2002:a62:8f03:0:b029:18c:968a:4cf9 with SMTP id n3-20020a628f030000b029018c968a4cf9mr11487716pfd.59.1607249836594;
-        Sun, 06 Dec 2020 02:17:16 -0800 (PST)
+        bh=jqJ1l3kUFANKBttrjy8eqm/Bfbx0CB9v1pkRqyyS8to=;
+        b=L0YefP42fs+KnsNz35STgDcBRg+9M6YyDsNlK9buS3nJ1jyvRafGnd/10QO/50fwqu
+         oAi32xqRFmHEx1dgJaZODu28SjcLCfv4trE4QXrE7+E+IggiYfb1f7m10FG3LdoH0xIX
+         0Hd+q79KOU18XdAJdY83lQo2aL6dHJuKL0Qmr0dBWaCW4SRde/gU0ZcEQIQWTGj6rTka
+         utZqAiEqPHTm+GJSEWiboj4K7ZaWcgGGGTFFZmwgQaqDMEpzwMgmhDoETlmRanEsczPg
+         XDOITBjX6y95QHxox8e0duQ+NqRaGuOKSiudEJ/eAWzp+wGHyTORdNmOA2pqUvyBmJHi
+         Dbhg==
+X-Gm-Message-State: AOAM533qL9IvRgAOrjt/gb5RLbfXRlzSlpdisEsPIlxGhHvMiofjuTrW
+        0ZDMUl5r3G0WtRo01Nir3UcYdw==
+X-Google-Smtp-Source: ABdhPJyATYkKaw9y7vPdixMLM0rw9slgfozfwgOvQwnqmmhL7taHvYOu1U+qJ+3OrLbTIC6GDGWDUg==
+X-Received: by 2002:a17:902:7b97:b029:d8:ec6e:5c28 with SMTP id w23-20020a1709027b97b02900d8ec6e5c28mr11410388pll.40.1607249845181;
+        Sun, 06 Dec 2020 02:17:25 -0800 (PST)
 Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id g16sm10337657pfb.201.2020.12.06.02.17.08
+        by smtp.gmail.com with ESMTPSA id g16sm10337657pfb.201.2020.12.06.02.17.17
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 02:17:16 -0800 (PST)
+        Sun, 06 Dec 2020 02:17:24 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -58,9 +58,9 @@ To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [RESEND PATCH v2 03/12] mm: memcontrol: convert NR_FILE_THPS account to pages
-Date:   Sun,  6 Dec 2020 18:14:42 +0800
-Message-Id: <20201206101451.14706-4-songmuchun@bytedance.com>
+Subject: [RESEND PATCH v2 04/12] mm: memcontrol: convert NR_SHMEM_THPS account to pages
+Date:   Sun,  6 Dec 2020 18:14:43 +0800
+Message-Id: <20201206101451.14706-5-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20201206101451.14706-1-songmuchun@bytedance.com>
 References: <20201206101451.14706-1-songmuchun@bytedance.com>
@@ -70,108 +70,167 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Converrt NR_FILE_THPS account to pages.
+Convert NR_SHMEM_THPS account to pages
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
- drivers/base/node.c | 3 +--
- fs/proc/meminfo.c   | 2 +-
- mm/filemap.c        | 2 +-
- mm/huge_memory.c    | 3 ++-
- mm/khugepaged.c     | 2 +-
- mm/memcontrol.c     | 5 ++---
- 6 files changed, 8 insertions(+), 9 deletions(-)
+ drivers/base/node.c |  3 +--
+ fs/proc/meminfo.c   |  2 +-
+ mm/filemap.c        |  2 +-
+ mm/huge_memory.c    |  3 ++-
+ mm/khugepaged.c     |  2 +-
+ mm/memcontrol.c     | 26 ++------------------------
+ mm/page_alloc.c     |  2 +-
+ mm/shmem.c          |  3 ++-
+ 8 files changed, 11 insertions(+), 32 deletions(-)
 
 diff --git a/drivers/base/node.c b/drivers/base/node.c
-index 7ebe4c2f64d1..2db28acdaa4f 100644
+index 2db28acdaa4f..3e1094717e40 100644
 --- a/drivers/base/node.c
 +++ b/drivers/base/node.c
-@@ -466,8 +466,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 				    HPAGE_PMD_NR),
+@@ -462,8 +462,7 @@ static ssize_t node_read_meminfo(struct device *dev,
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+ 			     ,
+ 			     nid, K(node_page_state(pgdat, NR_ANON_THPS)),
+-			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS) *
+-				    HPAGE_PMD_NR),
++			     nid, K(node_page_state(pgdat, NR_SHMEM_THPS)),
  			     nid, K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED) *
  				    HPAGE_PMD_NR),
--			     nid, K(node_page_state(pgdat, NR_FILE_THPS) *
--				    HPAGE_PMD_NR),
-+			     nid, K(node_page_state(pgdat, NR_FILE_THPS)),
- 			     nid, K(node_page_state(pgdat, NR_FILE_PMDMAPPED) *
- 				    HPAGE_PMD_NR)
- #endif
+ 			     nid, K(node_page_state(pgdat, NR_FILE_THPS)),
 diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 1f7e1945c313..f4157f26cbf5 100644
+index f4157f26cbf5..b4d8a6ee822d 100644
 --- a/fs/proc/meminfo.c
 +++ b/fs/proc/meminfo.c
-@@ -135,7 +135,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+@@ -131,7 +131,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "AnonHugePages:  ",
+ 		    global_node_page_state(NR_ANON_THPS));
+ 	show_val_kb(m, "ShmemHugePages: ",
+-		    global_node_page_state(NR_SHMEM_THPS) * HPAGE_PMD_NR);
++		    global_node_page_state(NR_SHMEM_THPS));
  	show_val_kb(m, "ShmemPmdMapped: ",
  		    global_node_page_state(NR_SHMEM_PMDMAPPED) * HPAGE_PMD_NR);
  	show_val_kb(m, "FileHugePages:  ",
--		    global_node_page_state(NR_FILE_THPS) * HPAGE_PMD_NR);
-+		    global_node_page_state(NR_FILE_THPS));
- 	show_val_kb(m, "FilePmdMapped:  ",
- 		    global_node_page_state(NR_FILE_PMDMAPPED) * HPAGE_PMD_NR);
- #endif
 diff --git a/mm/filemap.c b/mm/filemap.c
-index 28e7309c29c8..c4dcb1144883 100644
+index c4dcb1144883..5fdefbbc1bc2 100644
 --- a/mm/filemap.c
 +++ b/mm/filemap.c
-@@ -206,7 +206,7 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+@@ -204,7 +204,7 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+ 	if (PageSwapBacked(page)) {
+ 		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
  		if (PageTransHuge(page))
- 			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
+-			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
++			__mod_lruvec_page_state(page, NR_SHMEM_THPS, -HPAGE_PMD_NR);
  	} else if (PageTransHuge(page)) {
--		__dec_lruvec_page_state(page, NR_FILE_THPS);
-+		__mod_lruvec_page_state(page, NR_FILE_THPS, -HPAGE_PMD_NR);
+ 		__mod_lruvec_page_state(page, NR_FILE_THPS, -HPAGE_PMD_NR);
  		filemap_nr_thps_dec(mapping);
- 	}
- 
 diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 1a13e1dab3ec..37840bdeaad0 100644
+index 37840bdeaad0..0e8541bd9f50 100644
 --- a/mm/huge_memory.c
 +++ b/mm/huge_memory.c
-@@ -2748,7 +2748,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+@@ -2746,7 +2746,8 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		spin_unlock(&ds_queue->split_queue_lock);
+ 		if (mapping) {
  			if (PageSwapBacked(head))
- 				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
- 			else
--				__dec_lruvec_page_state(head, NR_FILE_THPS);
-+				__mod_lruvec_page_state(head, NR_FILE_THPS,
+-				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
++				__mod_lruvec_page_state(head, NR_SHMEM_THPS,
 +							-HPAGE_PMD_NR);
- 		}
- 
- 		__split_huge_page(page, list, end);
+ 			else
+ 				__mod_lruvec_page_state(head, NR_FILE_THPS,
+ 							-HPAGE_PMD_NR);
 diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-index ad316d2e1fee..1e1ced2208d0 100644
+index 1e1ced2208d0..4fe79ccfc312 100644
 --- a/mm/khugepaged.c
 +++ b/mm/khugepaged.c
-@@ -1859,7 +1859,7 @@ static void collapse_file(struct mm_struct *mm,
- 	if (is_shmem)
- 		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
- 	else {
--		__inc_lruvec_page_state(new_page, NR_FILE_THPS);
-+		__mod_lruvec_page_state(new_page, NR_FILE_THPS, HPAGE_PMD_NR);
- 		filemap_nr_thps_inc(mapping);
+@@ -1857,7 +1857,7 @@ static void collapse_file(struct mm_struct *mm,
  	}
  
+ 	if (is_shmem)
+-		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
++		__mod_lruvec_page_state(new_page, NR_SHMEM_THPS, HPAGE_PMD_NR);
+ 	else {
+ 		__mod_lruvec_page_state(new_page, NR_FILE_THPS, HPAGE_PMD_NR);
+ 		filemap_nr_thps_inc(mapping);
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2700c1db5a1a..c4557de2b211 100644
+index c4557de2b211..6d4365d2fd1c 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -1514,7 +1514,7 @@ static struct memory_stat memory_stats[] = {
- 	 * constant(e.g. powerpc).
- 	 */
+@@ -1497,7 +1497,7 @@ struct memory_stat {
+ 	unsigned int idx;
+ };
+ 
+-static struct memory_stat memory_stats[] = {
++static const struct memory_stat memory_stats[] = {
+ 	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
+ 	{ "file", PAGE_SIZE, NR_FILE_PAGES },
+ 	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
+@@ -1508,14 +1508,9 @@ static struct memory_stat memory_stats[] = {
+ 	{ "file_dirty", PAGE_SIZE, NR_FILE_DIRTY },
+ 	{ "file_writeback", PAGE_SIZE, NR_WRITEBACK },
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-	/*
+-	 * The ratio will be initialized in memory_stats_init(). Because
+-	 * on some architectures, the macro of HPAGE_PMD_SIZE is not
+-	 * constant(e.g. powerpc).
+-	 */
  	{ "anon_thp", PAGE_SIZE, NR_ANON_THPS },
--	{ "file_thp", 0, NR_FILE_THPS },
-+	{ "file_thp", PAGE_SIZE, NR_FILE_THPS },
- 	{ "shmem_thp", 0, NR_SHMEM_THPS },
+ 	{ "file_thp", PAGE_SIZE, NR_FILE_THPS },
+-	{ "shmem_thp", 0, NR_SHMEM_THPS },
++	{ "shmem_thp", PAGE_SIZE, NR_SHMEM_THPS },
  #endif
  	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
-@@ -1546,8 +1546,7 @@ static int __init memory_stats_init(void)
+ 	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+@@ -1540,23 +1535,6 @@ static struct memory_stat memory_stats[] = {
+ 	{ "workingset_nodereclaim", 1, WORKINGSET_NODERECLAIM },
+ };
  
- 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+-static int __init memory_stats_init(void)
+-{
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+-#ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_SHMEM_THPS)
+-			memory_stats[i].ratio = HPAGE_PMD_SIZE;
+-#endif
+-		VM_BUG_ON(!memory_stats[i].ratio);
+-		VM_BUG_ON(memory_stats[i].idx >= MEMCG_NR_STAT);
+-	}
+-
+-	return 0;
+-}
+-pure_initcall(memory_stats_init);
+-
+ static char *memory_stat_format(struct mem_cgroup *memcg)
+ {
+ 	struct seq_buf s;
+diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+index f97ca98d361f..b6a79196e870 100644
+--- a/mm/page_alloc.c
++++ b/mm/page_alloc.c
+@@ -5567,7 +5567,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
+ 			K(node_page_state(pgdat, NR_WRITEBACK)),
+ 			K(node_page_state(pgdat, NR_SHMEM)),
  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
--		if (memory_stats[i].idx == NR_FILE_THPS ||
--		    memory_stats[i].idx == NR_SHMEM_THPS)
-+		if (memory_stats[i].idx == NR_SHMEM_THPS)
- 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
- #endif
- 		VM_BUG_ON(!memory_stats[i].ratio);
+-			K(node_page_state(pgdat, NR_SHMEM_THPS) * HPAGE_PMD_NR),
++			K(node_page_state(pgdat, NR_SHMEM_THPS)),
+ 			K(node_page_state(pgdat, NR_SHMEM_PMDMAPPED)
+ 					* HPAGE_PMD_NR),
+ 			K(node_page_state(pgdat, NR_ANON_THPS)),
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 5da4f1a3e663..ea5d8c9ccb5b 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -713,7 +713,8 @@ static int shmem_add_to_page_cache(struct page *page,
+ 		}
+ 		if (PageTransHuge(page)) {
+ 			count_vm_event(THP_FILE_ALLOC);
+-			__inc_lruvec_page_state(page, NR_SHMEM_THPS);
++			__mod_lruvec_page_state(page, NR_SHMEM_THPS,
++						HPAGE_PMD_NR);
+ 		}
+ 		mapping->nrpages += nr;
+ 		__mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
 -- 
 2.11.0
 
