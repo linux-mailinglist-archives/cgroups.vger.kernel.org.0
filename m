@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 721AD2D02A3
+	by mail.lfdr.de (Postfix) with ESMTP id 051672D02A2
 	for <lists+cgroups@lfdr.de>; Sun,  6 Dec 2020 11:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726682AbgLFKS7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        id S1726787AbgLFKS7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
         Sun, 6 Dec 2020 05:18:59 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34768 "EHLO
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34770 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726597AbgLFKS6 (ORCPT
+        with ESMTP id S1726682AbgLFKS6 (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Sun, 6 Dec 2020 05:18:58 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E32CC061A52
-        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 02:17:52 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id 4so5590290plk.5
-        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 02:17:52 -0800 (PST)
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DCED5C061A53
+        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 02:18:03 -0800 (PST)
+Received: by mail-pf1-x443.google.com with SMTP id f9so6414419pfc.11
+        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 02:18:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=OffO4J0XNbKZKsjRiAzQ4jXTCwqv9VY0gL30Fq4+1Jk=;
-        b=H94p/twke3EGgzTfnzLG5zYHpHqM5U9I4h/8S6xaN8YSvCZ9DO+xCRNJwC6Z/juFsl
-         M6Tsvms6S5YZ3AfjawkS+pa4BYclyYqZ7ErIOUHfuViHuPEQJKE7YUPDUVxKXrSe9f+W
-         /RfGFNjF/dCQOKuXuj5rOX6YluRTAYjaWtfsjUt0UVOlFiCQyJQdkNVKiKC+nmLF4x2S
-         t+ClAU7xY+b1CeVAoG4FMpAXmde0vMVwPKAXitdvLV6I6kKeLmjwwcVcjKO7y8jbA/++
-         6pgQQpVzBIBijbMxqL/JI/EWPnG4lZP2c+/SrwDWsGQ9CTdpscRKJYHtqtnwm4wK7gPA
-         DPPg==
+        bh=IzVbUHzHNutFlJQXX/d4rCoABm7bks/8Sv9HD05GfEo=;
+        b=poeTINc8GQTJYdjLzUjOwVcyWKpDqMJuexxM4Jb6DPltaseMinhqh/fI4za09P7SpJ
+         ueTfpbdcaNT8FRgCzXBnvchsMG19r9qFb6dmWplY0+dV4prCug2v2aNQDXQeD4f4ITSk
+         EoVkV9OIP/YW0/Sa7OyTso7ZG60JcGENiXRqAvbK4UuODW674qsOoXE/pNVvUrmgshUS
+         85409VfqkcMfK8Xr4ByeyYmoKcONo5Ce9w22Krdh3gyADCxxiAkKBnxjcsgF8uV5S52E
+         vCvZZh3sftwph8jcw8YfxrYT88oU5Tt46j5Q212IwnFvnbLVED2uTA1ydilqWk7ajFo5
+         i5mQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=OffO4J0XNbKZKsjRiAzQ4jXTCwqv9VY0gL30Fq4+1Jk=;
-        b=ntqv9/nrGnFDlauWN6aQfZA0C4FE9URiDBwiUMinspnvinWy9xcFwDC1Gz6psAzb7n
-         wFmYwLsBphAc772Rp5C3Zmqb+SYcwbooCeis0INlEBKWN5nK78q8n6gss0wYtVGxdsva
-         BMY5JKYLXNfH+gkIrhqinfvA/2LyjRFq2ZcXpOhB9ak8fVMtJlZfjbn5kpn00c/zWt5i
-         kmjbso4KByzyyFU3YhPOFpO2ujsOhYTEVH6aH4+D2zXNzZEgjFa8/TIO9hlD68mco0Ri
-         yZKNOWCL/saF9vls0XHCjHvok77Y8naxdhNpyX3Plm6zR/L1HtlLoostdqFK3MJwVBqx
-         lJAw==
-X-Gm-Message-State: AOAM533h7IeQFCoPE5QCXWjayf5LJgGsCqoEWCZzqJUhc5CX4r5t/sQU
-        DgLKYAhDc5cI3tuebYCqVxQxTw==
-X-Google-Smtp-Source: ABdhPJyaSoVwqS1hV86Jy9HYtaaTN3KW8cLPtOEHhySz3KTEmRALmhiqeeK5DCu0P0C+H1csGtcR0Q==
-X-Received: by 2002:a17:90a:e386:: with SMTP id b6mr11649470pjz.134.1607249871646;
-        Sun, 06 Dec 2020 02:17:51 -0800 (PST)
+        bh=IzVbUHzHNutFlJQXX/d4rCoABm7bks/8Sv9HD05GfEo=;
+        b=kvWlp6KV4X4ApRmjrLPvV2Rhj++R+SLnNE0hFPfzEx7o5KO564TeYs/gCOdcyrpJwo
+         CpRrl3uttSWj92jXBQsqETYirS3E7BYSRO7J81QIc+dY+FKzNnc34VcullGKaBCBTA/D
+         qaGw4BqsmsJMBEZlBVWcbC61R19vdY1bk8ipycoSib4MkOFDGsBSXCk7WzvNYNEmhMKe
+         uZA4HgxDvnKjQ/6XwZT0ajHgIelHs7UFt0mk9VjX4zZwN3xMSU0jFW/EGNentitCT0V6
+         Vtl2Ouh4J0FtA4rVnSL4BXP7AeiRqo2RamF+TLXpWLGYEsp9CaFReo9PfiQ0sUedxGqJ
+         BB4w==
+X-Gm-Message-State: AOAM531fGGNLOO1mh5wvwSi71TeOCr1/9/U30/PGgb3iz1aT+WQftIpb
+        LWhssp/dYG8+dapQCBx8zeeHmA==
+X-Google-Smtp-Source: ABdhPJwOE+mifEeZdUynoRMflnzW+cfbd7QXeq8UPaKhUO7NDUpn7fwwqZ66YSE0/Dk/xryAVB2Udg==
+X-Received: by 2002:aa7:9501:0:b029:155:3b11:d5c4 with SMTP id b1-20020aa795010000b02901553b11d5c4mr11232823pfp.76.1607249883472;
+        Sun, 06 Dec 2020 02:18:03 -0800 (PST)
 Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id g16sm10337657pfb.201.2020.12.06.02.17.43
+        by smtp.gmail.com with ESMTPSA id g16sm10337657pfb.201.2020.12.06.02.17.51
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 02:17:51 -0800 (PST)
+        Sun, 06 Dec 2020 02:18:02 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -58,9 +58,9 @@ To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         Muchun Song <songmuchun@bytedance.com>
-Subject: [RESEND PATCH v2 07/12] mm: memcontrol: convert kernel stack account to bytes
-Date:   Sun,  6 Dec 2020 18:14:46 +0800
-Message-Id: <20201206101451.14706-8-songmuchun@bytedance.com>
+Subject: [RESEND PATCH v2 08/12] mm: memcontrol: convert NR_KERNEL_SCS_KB account to bytes
+Date:   Sun,  6 Dec 2020 18:14:47 +0800
+Message-Id: <20201206101451.14706-9-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 In-Reply-To: <20201206101451.14706-1-songmuchun@bytedance.com>
 References: <20201206101451.14706-1-songmuchun@bytedance.com>
@@ -70,104 +70,84 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The kernel stack account is the one that counts in KiB. This patch
-convert it from KiB to byte.
+Convert NR_KERNEL_SCS_KB account to bytes
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 ---
  drivers/base/node.c    | 2 +-
  fs/proc/meminfo.c      | 2 +-
  include/linux/mmzone.h | 2 +-
- kernel/fork.c          | 8 ++++----
- mm/memcontrol.c        | 2 +-
+ kernel/scs.c           | 4 ++--
  mm/page_alloc.c        | 2 +-
- 6 files changed, 9 insertions(+), 9 deletions(-)
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
 diff --git a/drivers/base/node.c b/drivers/base/node.c
-index f77652e6339f..92a75bad35c9 100644
+index 92a75bad35c9..bc01ce0b2fcd 100644
 --- a/drivers/base/node.c
 +++ b/drivers/base/node.c
-@@ -446,7 +446,7 @@ static ssize_t node_read_meminfo(struct device *dev,
- 			     nid, K(node_page_state(pgdat, NR_FILE_MAPPED)),
- 			     nid, K(node_page_state(pgdat, NR_ANON_MAPPED)),
+@@ -448,7 +448,7 @@ static ssize_t node_read_meminfo(struct device *dev,
  			     nid, K(i.sharedram),
--			     nid, node_page_state(pgdat, NR_KERNEL_STACK_KB),
-+			     nid, node_page_state(pgdat, NR_KERNEL_STACK_B) / SZ_1K,
+ 			     nid, node_page_state(pgdat, NR_KERNEL_STACK_B) / SZ_1K,
  #ifdef CONFIG_SHADOW_CALL_STACK
- 			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
+-			     nid, node_page_state(pgdat, NR_KERNEL_SCS_KB),
++			     nid, node_page_state(pgdat, NR_KERNEL_SCS_B) / SZ_1K,
  #endif
+ 			     nid, K(sum_zone_node_page_state(nid, NR_PAGETABLE)),
+ 			     nid, 0UL,
 diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index 5a83012d8b72..799a537d4218 100644
+index 799a537d4218..69895e83d4fc 100644
 --- a/fs/proc/meminfo.c
 +++ b/fs/proc/meminfo.c
-@@ -101,7 +101,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "SReclaimable:   ", sreclaimable);
- 	show_val_kb(m, "SUnreclaim:     ", sunreclaim);
- 	seq_printf(m, "KernelStack:    %8lu kB\n",
--		   global_node_page_state(NR_KERNEL_STACK_KB));
-+		   global_node_page_state(NR_KERNEL_STACK_B) / SZ_1K);
+@@ -104,7 +104,7 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 		   global_node_page_state(NR_KERNEL_STACK_B) / SZ_1K);
  #ifdef CONFIG_SHADOW_CALL_STACK
  	seq_printf(m, "ShadowCallStack:%8lu kB\n",
- 		   global_node_page_state(NR_KERNEL_SCS_KB));
+-		   global_node_page_state(NR_KERNEL_SCS_KB));
++		   global_node_page_state(NR_KERNEL_SCS_B) / SZ_1K);
+ #endif
+ 	show_val_kb(m, "PageTables:     ",
+ 		    global_zone_page_state(NR_PAGETABLE));
 diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 15132adaa233..bd34416293ec 100644
+index bd34416293ec..1f9c83778629 100644
 --- a/include/linux/mmzone.h
 +++ b/include/linux/mmzone.h
-@@ -202,7 +202,7 @@ enum node_stat_item {
- 	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
- 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
+@@ -204,7 +204,7 @@ enum node_stat_item {
  	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
--	NR_KERNEL_STACK_KB,	/* measured in KiB */
-+	NR_KERNEL_STACK_B,	/* measured in byte */
+ 	NR_KERNEL_STACK_B,	/* measured in byte */
  #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
+-	NR_KERNEL_SCS_KB,	/* measured in KiB */
++	NR_KERNEL_SCS_B,	/* measured in byte */
  #endif
-diff --git a/kernel/fork.c b/kernel/fork.c
-index 345f378e104d..2913d7c43dcb 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -382,11 +382,11 @@ static void account_kernel_stack(struct task_struct *tsk, int account)
+ 	NR_VM_NODE_STAT_ITEMS
+ };
+diff --git a/kernel/scs.c b/kernel/scs.c
+index 4ff4a7ba0094..8db89c932ddc 100644
+--- a/kernel/scs.c
++++ b/kernel/scs.c
+@@ -17,8 +17,8 @@ static void __scs_account(void *s, int account)
+ {
+ 	struct page *scs_page = virt_to_page(s);
  
- 	/* All stack pages are in the same node. */
- 	if (vm)
--		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_KB,
--				      account * (THREAD_SIZE / 1024));
-+		mod_lruvec_page_state(vm->pages[0], NR_KERNEL_STACK_B,
-+				      account * THREAD_SIZE);
- 	else
--		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_KB,
--				      account * (THREAD_SIZE / 1024));
-+		mod_lruvec_kmem_state(stack, NR_KERNEL_STACK_B,
-+				      account * THREAD_SIZE);
+-	mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_KB,
+-			    account * (SCS_SIZE / SZ_1K));
++	mod_node_page_state(page_pgdat(scs_page), NR_KERNEL_SCS_B,
++			    account * SCS_SIZE);
  }
  
- static int memcg_charge_kernel_stack(struct task_struct *tsk)
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 6d4365d2fd1c..48d70c1ad301 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1500,7 +1500,7 @@ struct memory_stat {
- static const struct memory_stat memory_stats[] = {
- 	{ "anon", PAGE_SIZE, NR_ANON_MAPPED },
- 	{ "file", PAGE_SIZE, NR_FILE_PAGES },
--	{ "kernel_stack", 1024, NR_KERNEL_STACK_KB },
-+	{ "kernel_stack", 1, NR_KERNEL_STACK_B },
- 	{ "percpu", 1, MEMCG_PERCPU_B },
- 	{ "sock", PAGE_SIZE, MEMCG_SOCK },
- 	{ "shmem", PAGE_SIZE, NR_SHMEM },
+ static void *scs_alloc(int node)
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index d103513b3e4f..d2821ba7f682 100644
+index d2821ba7f682..58916b3afdab 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -5572,7 +5572,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
- 			K(node_page_state(pgdat, NR_ANON_THPS)),
- #endif
+@@ -5574,7 +5574,7 @@ void show_free_areas(unsigned int filter, nodemask_t *nodemask)
  			K(node_page_state(pgdat, NR_WRITEBACK_TEMP)),
--			node_page_state(pgdat, NR_KERNEL_STACK_KB),
-+			node_page_state(pgdat, NR_KERNEL_STACK_B) / SZ_1K,
+ 			node_page_state(pgdat, NR_KERNEL_STACK_B) / SZ_1K,
  #ifdef CONFIG_SHADOW_CALL_STACK
- 			node_page_state(pgdat, NR_KERNEL_SCS_KB),
+-			node_page_state(pgdat, NR_KERNEL_SCS_KB),
++			node_page_state(pgdat, NR_KERNEL_SCS_B) / SZ_1K,
  #endif
+ 			pgdat->kswapd_failures >= MAX_RECLAIM_RETRIES ?
+ 				"yes" : "no");
 -- 
 2.11.0
 
