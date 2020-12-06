@@ -2,116 +2,150 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E02D2D0211
-	for <lists+cgroups@lfdr.de>; Sun,  6 Dec 2020 10:00:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC77E2D025F
+	for <lists+cgroups@lfdr.de>; Sun,  6 Dec 2020 11:03:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726081AbgLFI6s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 6 Dec 2020 03:58:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S1725867AbgLFKDh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 6 Dec 2020 05:03:37 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60584 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726007AbgLFI6s (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 6 Dec 2020 03:58:48 -0500
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1FAEC0613D0
-        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 00:58:07 -0800 (PST)
-Received: by mail-pl1-x643.google.com with SMTP id p6so5532748plo.6
-        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 00:58:07 -0800 (PST)
+        with ESMTP id S1725804AbgLFKDh (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 6 Dec 2020 05:03:37 -0500
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A52CCC0613D4
+        for <cgroups@vger.kernel.org>; Sun,  6 Dec 2020 02:02:56 -0800 (PST)
+Received: by mail-pj1-x1042.google.com with SMTP id z12so5658205pjn.1
+        for <cgroups@vger.kernel.org>; Sun, 06 Dec 2020 02:02:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S6K7q1C4aJV74LX9XzVIffEohV+cRacrmIp1D6GqZ88=;
-        b=wbbdNcohGtl2TDgFPwVXnP/R+H6oQayEahb3/U42bl0C7LgjfwxjWQhZocOA7q6nF1
-         FmtvtIEcyBL9V+t39mbO4lzaK3D9oTeBvtaHdFlFz5TlDEYOB9DOU0g0r52AFuZaHxwI
-         rNZH7gI3CebsuonBrBQOiF4iPffZnK0CGnQx6yEn+aOC1vD6rAOzROGitnJm3cR9VnOl
-         gqkZAkaKqh8+KCdEtr403lAWfvLGFsCx7aTVag6VoJpSRcIBDj5fiHqADmh6SBeDTCPy
-         342drhgb5CF35xSJJ4tpvkbgw+y4UbM3sqdXlFOrxBuNhZZjGjtPYWqJpBpiUtqLJ9P7
-         vLYA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yK27iUNadlI9MmI6B+s8BZZCxEUnviUifHj+P5KRXMg=;
+        b=ilNSry1fFb2VSxzC6tm0xGYazjZD9Ar0wYnM5PmkQPzKeO6m/8kxm5rNlI7oyTPPbk
+         i5xwLJoZlcE+oIS19DTByIbI8S3mWauEFjywj/RhH1PXOGTBSbM16m1Gl+AZFCYm0gyH
+         bqu6gclEOOrruiFK87psVFo1l/07z01Iq65RLsp9vxd5+qGAHT97LUR7X2J4zBebULJg
+         EbQ6P5WANSdYinm/+Jl5ZApt2ou6i8fmj/P4NnTZeBruaCmWfW2MUQXUTCXnA4EK+O5a
+         yyTurylWJoFQxbjQg32Oh61ACS8XIfEJKlqAriWqjT9VSLCtNs7tOFl0UM+mD4P2rW87
+         b+1Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=S6K7q1C4aJV74LX9XzVIffEohV+cRacrmIp1D6GqZ88=;
-        b=cOusCwEt5KxxvFKsBFA9P4eRo3QB7Q/vFe6dZ4H9jBlO4CjwrXBZVbiPNRA9ttDFZM
-         OsPjSUZmy3o1NUtgSbLw3+poIU9OFWP6/XGX/DN0QOSstetmHLG1FOcjiH/ZI5503c/q
-         fxXdVp90ShotFO4e8/wUbQMEnxhQxytsIWgncT2X4zO+cKRs3Qr/hOdHdFyE3KhAFAJo
-         zt1ndcSG5j8lQckVYlCxouk52hGm3c/s2SYLrXt5IKxG7JI1paivY+SigElSKrj/wE8c
-         zH237X6b8INeZVYzE2Hn+k+tyvmZcTWDz+IILjsBb4WYltr6gBManIMlRDIYOs2u+RIc
-         Z7bQ==
-X-Gm-Message-State: AOAM532wZ2wJW4StmaspwzAaM+TyxWq4nWjK/PVqFdqBeenVlhvy1T8r
-        wVqHj1hxdeyanIGZ4M0SKOIZIg==
-X-Google-Smtp-Source: ABdhPJyfHVyh7hYzrbWUhvvlsa1DqXRvUHBK3jetmU5XqNrfzpGIhr/V2qq4qyQHKsD7jAzQVJK8mA==
-X-Received: by 2002:a17:90a:4fe5:: with SMTP id q92mr11474674pjh.188.1607245087541;
-        Sun, 06 Dec 2020 00:58:07 -0800 (PST)
-Received: from localhost.localdomain ([103.136.221.70])
-        by smtp.gmail.com with ESMTPSA id l8sm6915502pjq.22.2020.12.06.00.58.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 06 Dec 2020 00:58:06 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, shakeelb@google.com, guro@fb.com,
-        sfr@canb.auug.org.au, alexander.h.duyck@linux.intel.com,
-        chris@chrisdown.name, laoar.shao@gmail.com,
-        richard.weiyang@gmail.com
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: optimize per-lruvec stats counter memory usage
-Date:   Sun,  6 Dec 2020 16:56:39 +0800
-Message-Id: <20201206085639.12627-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yK27iUNadlI9MmI6B+s8BZZCxEUnviUifHj+P5KRXMg=;
+        b=HXd0fZ6HRkngPsUC8qGoD5DtFE69j89Ga7krdXj+eqS5waBekx4d+cHPrlGL+2Z16I
+         866ErP8nqAxEQbxTcL46lunr2hc/NlIycBW8WkB6CxWGGgA/+cXVjHUeYeuyQ7WoUe8/
+         8nl+bR2zVjiudUYy7Q6KEtdljVyJOqmh5BzqzvGGj0b01UwYo2m9UArVuuDD+ylYDdVl
+         3t0wsYS6HtgdNRNImvsAK6ibK02o9zrc34dEr7DVoXtjM/839NGpg6At7m7YTyIodiEg
+         WZR9vYUvMFSEfvamvqN3PuqLPEyvGB/4vCvFFOjPtQYaEYFT4aqXQCv9wD5Ms7Yt+/Wn
+         3ufg==
+X-Gm-Message-State: AOAM5334RwdHhSA/1E9VTWz6belR65s0m+HuoSWiTEVQN6uYahv2vGZc
+        5+GeO6yvmdJgPS4bMTylSkb9diuwmj5jFZT7bjcHXQ==
+X-Google-Smtp-Source: ABdhPJzlTMynhkhES4yihb/sRbkNB9LxQF5JR1rRWkeIuqZTp8b5PPlWcwgHSCrkWCDSnWLuHFNfu1VIhoMtRrqcpDc=
+X-Received: by 2002:a17:902:ed0d:b029:da:c83b:5f40 with SMTP id
+ b13-20020a170902ed0db02900dac83b5f40mr11300264pld.20.1607248976015; Sun, 06
+ Dec 2020 02:02:56 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201206082318.11532-1-songmuchun@bytedance.com>
+In-Reply-To: <20201206082318.11532-1-songmuchun@bytedance.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Sun, 6 Dec 2020 18:02:19 +0800
+Message-ID: <CAMZfGtXX2k+-RGHx7CtbnoC4QOSHT2afS=9YX5GAjFN38=xkkw@mail.gmail.com>
+Subject: Re: [PATCH v2 00/12] Convert all vmstat counters to pages or bytes
+To:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com,
+        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
-of lruvec_stat_cpu is enough. And introduce struct per_cpu_lruvec_stat
-to optimize memory usage.
+I am very sorry that I have hit 'git send-email *' in a directory
+containing both v1 and v2 patchs. Please ignore this. I will
+resend this version. Very sorry for the noise. Thanks.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- include/linux/memcontrol.h | 6 +++++-
- mm/memcontrol.c            | 2 +-
- 2 files changed, 6 insertions(+), 2 deletions(-)
+On Sun, Dec 6, 2020 at 4:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
+>
+> Hi,
+>
+> This patch series is aimed to convert all THP vmstat counters to pages
+> and some KiB vmstat counters to bytes.
+>
+> The unit of some vmstat counters are pages, some are bytes, some are
+> HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
+> counters to the userspace, we have to know the unit of the vmstat counters
+> is which one. It makes the code complex. Because there are too many choices,
+> the probability of making a mistake will be greater.
+>
+> For example, the below is some bug fix:
+>   - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
+>   - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
+>
+> This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
+> And make the unit of the vmstat counters are either pages or bytes. Fewer choices
+> means lower probability of making mistakes :).
+>
+> This was inspired by Johannes and Roman. Thanks to them.
+>
+> Changes in v1 -> v2:
+>   - Change the series subject from "Convert all THP vmstat counters to pages"
+>     to "Convert all vmstat counters to pages or bytes".
+>   - Convert NR_KERNEL_SCS_KB account to bytes.
+>   - Convert vmstat slab counters to bytes.
+>   - Remove {global_}node_page_state_pages.
+>
+> Muchun Song (12):
+>   mm: memcontrol: fix NR_ANON_THPS account
+>   mm: memcontrol: convert NR_ANON_THPS account to pages
+>   mm: memcontrol: convert NR_FILE_THPS account to pages
+>   mm: memcontrol: convert NR_SHMEM_THPS account to pages
+>   mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
+>   mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
+>   mm: memcontrol: convert kernel stack account to bytes
+>   mm: memcontrol: convert NR_KERNEL_SCS_KB account to bytes
+>   mm: memcontrol: convert vmstat slab counters to bytes
+>   mm: memcontrol: scale stat_threshold for byted-sized vmstat
+>   mm: memcontrol: make the slab calculation consistent
+>   mm: memcontrol: remove {global_}node_page_state_pages
+>
+>  drivers/base/node.c     |  25 ++++-----
+>  fs/proc/meminfo.c       |  22 ++++----
+>  include/linux/mmzone.h  |  21 +++-----
+>  include/linux/vmstat.h  |  21 ++------
+>  kernel/fork.c           |   8 +--
+>  kernel/power/snapshot.c |   2 +-
+>  kernel/scs.c            |   4 +-
+>  mm/filemap.c            |   4 +-
+>  mm/huge_memory.c        |   9 ++--
+>  mm/khugepaged.c         |   4 +-
+>  mm/memcontrol.c         | 131 ++++++++++++++++++++++++------------------------
+>  mm/oom_kill.c           |   2 +-
+>  mm/page_alloc.c         |  17 +++----
+>  mm/rmap.c               |  19 ++++---
+>  mm/shmem.c              |   3 +-
+>  mm/vmscan.c             |   2 +-
+>  mm/vmstat.c             |  54 ++++++++------------
+>  17 files changed, 161 insertions(+), 187 deletions(-)
+>
+> --
+> 2.11.0
+>
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index f9a496c4eac7..34cf119976b1 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -92,6 +92,10 @@ struct lruvec_stat {
- 	long count[NR_VM_NODE_STAT_ITEMS];
- };
- 
-+struct per_cpu_lruvec_stat {
-+	s32 count[NR_VM_NODE_STAT_ITEMS];
-+};
-+
- /*
-  * Bitmap of shrinker::id corresponding to memcg-aware shrinkers,
-  * which have elements charged to this memcg.
-@@ -111,7 +115,7 @@ struct mem_cgroup_per_node {
- 	struct lruvec_stat __percpu *lruvec_stat_local;
- 
- 	/* Subtree VM stats (batched updates) */
--	struct lruvec_stat __percpu *lruvec_stat_cpu;
-+	struct per_cpu_lruvec_stat __percpu *lruvec_stat_cpu;
- 	atomic_long_t		lruvec_stat[NR_VM_NODE_STAT_ITEMS];
- 
- 	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 49fbcf003bf5..c874ea37b05d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5184,7 +5184,7 @@ static int alloc_mem_cgroup_per_node_info(struct mem_cgroup *memcg, int node)
- 		return 1;
- 	}
- 
--	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct lruvec_stat,
-+	pn->lruvec_stat_cpu = alloc_percpu_gfp(struct per_cpu_lruvec_stat,
- 					       GFP_KERNEL_ACCOUNT);
- 	if (!pn->lruvec_stat_cpu) {
- 		free_percpu(pn->lruvec_stat_local);
+
 -- 
-2.11.0
-
+Yours,
+Muchun
