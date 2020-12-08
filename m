@@ -2,66 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C6A12D2104
-	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 03:43:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E336A2D2110
+	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 03:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727693AbgLHCmC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Dec 2020 21:42:02 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41440 "EHLO
+        id S1728156AbgLHCoV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Dec 2020 21:44:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727807AbgLHCmB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 21:42:01 -0500
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD162C061793
-        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 18:41:15 -0800 (PST)
-Received: by mail-pl1-x644.google.com with SMTP id p6so6195948plr.7
-        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 18:41:15 -0800 (PST)
+        with ESMTP id S1728081AbgLHCoU (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 21:44:20 -0500
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7AFC061793
+        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 18:43:34 -0800 (PST)
+Received: by mail-pl1-x641.google.com with SMTP id y8so212124plp.8
+        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 18:43:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=rFKMN3Lenb+VaK77PoP0Px7plQtnVT6Nsw8KoPED3Ds=;
-        b=GviSs/sA7OMEyX9L7NulKkRHF51iOhb+ZP4MiSlV1zDEy8K/VWZmn2GDoe/e707lyo
-         Iy8K9sU893iw2hRgcNB3I9mrFRrravJar1qHdHTb+fwqrJ//DCb/i4CQxipeX20P2rL6
-         2mD8H3AsfNbkIwC/00SSaSb/mR1FTAW3UpQ6y2FtTC30CsX+Kx8125GqWvt6Wkpf7EI8
-         cLEr56nouqszr5E0aWMfnM5T/qdSd6XjO/WZI+/SQHHgiMsEvlmUolXN3YOIvDiXOMiO
-         ApD3AX07skTKA+RyADmmrxjd019fpFTfGJEfUl6anx/E6qfFggm+FLko4uTWrFgG3eby
-         mYfw==
+        bh=Jdb7C5Aq6omc7IwwxIaz9ZxTwUguDQHTm2UuR3rHd+Y=;
+        b=ydR/LN6K9fneUKUhkvE0+Qv6s3BVCHWfdKrE8qmGsJQvTKxAvH9WDn3PvEV1YToQ++
+         ENpqHWssU08a9ws5Cz79XXu2j8Q0956aFERX3PY4UC1SSHoXCBCdCGV/rgwtWULf+KOC
+         szt0cHALCdHrYWL4imlZnAkQp9vw0sgOXP0WXl1BcK0B2RH9Ba1SV/nEg7H9W2ZSk00y
+         risTzoaMsDDNspp3wyshZifGP61j6MGm1spuBHXbJ9fRUy491LUSUAXxifd/Pyb/+qJy
+         R6tsRdYWrGbaeU6n5MgdwPuTfvydofDO5YHGF6V+LZJ0YJeNSm19aKSbA34QXd277huE
+         dLwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=rFKMN3Lenb+VaK77PoP0Px7plQtnVT6Nsw8KoPED3Ds=;
-        b=Y4Ii/0/YFuvUuBeN7j0kbnwci36+uxcoPe+wFxPwyNHFgDFeaynJBuX/lEh9R2XZ3l
-         ouSJXrWevY4FwwvicSwNOPGDYVPurP+jroCyINbC+9vjm7+1zHOjdVeYYm9qyJyl8LCj
-         wV2yzEh7AtEKieaTOJs0FPkm3FSNvhp5iw8yEY8ZNINL6z5ujVoBSn3QgTDIrn/ajOf/
-         o0Xu8y3GnFs4Mpswhsmhu7hRyUNRRSeU7cWU/HVpgcyl/D1mm86dRFnzSwDkVwYBAWCC
-         R2rvkKq6rKtW68+IXrFcqyywCQTPdVAxZ3ZWljZtE7RqUcKufz4/ZT1TbMPEoM0a9eIp
-         VWnQ==
-X-Gm-Message-State: AOAM530ucrz9twqO2EZNA9nMEsUYDIMvxwNgN4wSO4jC5xPY1Nh3prN/
-        668pYYL3TyZV4KUOmeYzAl2tg9R2b+i2mB3fYvfRZw==
-X-Google-Smtp-Source: ABdhPJyW0aZTSOOLlbmbXWbngFtXa+woAAz2hOOzBNhuINR6CavZVPHFEJJO+nQyckR2TB3E46z41lVptmbzsWTdXj8=
+        bh=Jdb7C5Aq6omc7IwwxIaz9ZxTwUguDQHTm2UuR3rHd+Y=;
+        b=hXfUnUVexXNHb2KUPCRtgHs9yIfXYJ+kaPpIw+yq9CKznICP6UGhyoAeNCmYRGfkW0
+         17MQeMAnJBkAF5zc5hyqrH+R6Y9RloWMwJIQDbu6nFbi918MPTJCiIP+gRRV+8YNwnI0
+         I3t67DjLVSPiM3YPocbT7kBv/ukB5ZEJKR8ZFjwWwne6diUGeVe/8gStJw3hph3DcQmT
+         ZJSOXFeAwCV2yY915TSx7963QtXR4LrLwuhSK8byzzjNgg/KQXKbXYfupnaGLmAzS7pG
+         0BnuBKpQo13rFSaO48WB4YDUSK5Li3d170A2IQKOuseFe6TsBV9dNVkOXoXklHxnedID
+         Pq7Q==
+X-Gm-Message-State: AOAM530xmkVsF3f+TBeYzWfl/5pSouhKm3/eobbLMUbUD+TV4Igf+4w1
+        R39aC+AlsUjF3e/C1Q6fQHPniC6sQyXgYPMUP9bEFA==
+X-Google-Smtp-Source: ABdhPJyPzEAErBPAXhs9T4MgPYqRu/l5uY0/YAfd1sbtAWYcjj6t0I1hQ8V/3A5xcAjooM+5EAgJiAjAFZSjaBHO4E0=
 X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
- m18-20020a170902bb92b02900d9e9bfb775mr19295660pls.24.1607395275316; Mon, 07
- Dec 2020 18:41:15 -0800 (PST)
+ m18-20020a170902bb92b02900d9e9bfb775mr19302708pls.24.1607395414374; Mon, 07
+ Dec 2020 18:43:34 -0800 (PST)
 MIME-Version: 1.0
 References: <20201206101451.14706-1-songmuchun@bytedance.com>
  <20201207130018.GJ25569@dhcp22.suse.cz> <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com>
- <20201207150254.GL25569@dhcp22.suse.cz>
-In-Reply-To: <20201207150254.GL25569@dhcp22.suse.cz>
+ <20201207150254.GL25569@dhcp22.suse.cz> <20201207195141.GB2238414@carbon.dhcp.thefacebook.com>
+ <alpine.LSU.2.11.2012071218540.9574@eggly.anvils>
+In-Reply-To: <alpine.LSU.2.11.2012071218540.9574@eggly.anvils>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:40:39 +0800
-Message-ID: <CAMZfGtW8FMmNh0pEXJr2KVGPFD-VVWYSJoc_r3h7C+DxJGArdA@mail.gmail.com>
+Date:   Tue, 8 Dec 2020 10:42:58 +0800
+Message-ID: <CAMZfGtUKvTLOud1cL6mtisq6gtMu-X8th8uoyGtTD4d7LXPa+Q@mail.gmail.com>
 Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat
  counters to pages or bytes
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
+        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
         Alexey Dobriyan <adobriyan@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
         peterx@redhat.com, krisman@collabora.com,
         Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
@@ -77,69 +78,33 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 7, 2020 at 11:02 PM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, Dec 8, 2020 at 4:33 AM Hugh Dickins <hughd@google.com> wrote:
 >
-> On Mon 07-12-20 22:52:30, Muchun Song wrote:
-> > On Mon, Dec 7, 2020 at 9:00 PM Michal Hocko <mhocko@suse.com> wrote:
+> On Mon, 7 Dec 2020, Roman Gushchin wrote:
+> > On Mon, Dec 07, 2020 at 04:02:54PM +0100, Michal Hocko wrote:
 > > >
-> > > On Sun 06-12-20 18:14:39, Muchun Song wrote:
-> > > > Hi,
-> > > >
-> > > > This patch series is aimed to convert all THP vmstat counters to pages
-> > > > and some KiB vmstat counters to bytes.
-> > > >
-> > > > The unit of some vmstat counters are pages, some are bytes, some are
-> > > > HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-> > > > counters to the userspace, we have to know the unit of the vmstat counters
-> > > > is which one. It makes the code complex. Because there are too many choices,
-> > > > the probability of making a mistake will be greater.
-> > > >
-> > > > For example, the below is some bug fix:
-> > > >   - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-> > > >   - not committed(it is the first commit in this series) ("mm: memcontrol: fix NR_ANON_THPS account")
-> > > >
-> > > > This patch series can make the code simple (161 insertions(+), 187 deletions(-)).
-> > > > And make the unit of the vmstat counters are either pages or bytes. Fewer choices
-> > > > means lower probability of making mistakes :).
-> > > >
-> > > > This was inspired by Johannes and Roman. Thanks to them.
-> > >
-> > > It would be really great if you could summarize the current and after
-> > > the patch state so that exceptions are clear and easier to review. The
+> > > As I've said the THP accounting change makes more sense to me because it
+> > > allows future changes which are already undergoing so there is more
+> > > merit in those.
 > >
-> > Agree. Will do in the next version. Thanks.
-> >
-> >
-> > > existing situation is rather convoluted but we have at least units part
-> > > of the name so it is not too hard to notice that. Reducing exeptions
-> > > sounds nice but I am not really sure it is such an improvement it is
-> > > worth a lot of code churn. Especially when it comes to KB vs B. Counting
-> >
-> > There are two vmstat counters (NR_KERNEL_STACK_KB and
-> > NR_KERNEL_SCS_KB) whose units are KB. If we do this, all
-> > vmstat counter units are either pages or bytes in the end. When
-> > we expose those counters to userspace, it can be easy. You can
-> > reference to:
-> >
-> >     [RESEND PATCH v2 11/12] mm: memcontrol: make the slab calculation consistent
-> >
-> > From this point of view, I think that it is worth doing this. Right?
+> > +1
+> > And this part is absolutely trivial.
 >
-> Well, unless I am missing something, we have two counters in bytes, two
-> in kB, both clearly distinguishable by the B/KB suffix. Changing KB to B
-> will certainly reduce the different classes of units, no question about
-> that, but I am not really sure this is worth all the code churn. Maybe
-> others will think otherwise.
+> It does need to be recognized that, with these changes, every THP stats
+> update overflows the per-cpu counter, resorting to atomic global updates.
+> And I'd like to see that mentioned in the commit message.
+
+Thanks for reminding me. Will add.
+
 >
-> As I've said the THP accounting change makes more sense to me because it
-> allows future changes which are already undergoing so there is more
-> merit in those.
+> But this change is consistent with 4.7's 8f182270dfec ("mm/swap.c: flush
+> lru pvecs on compound page arrival"): we accepted greater overhead for
+> greater accuracy back then, so I think it's okay to do so for THP stats.
 
-OK, will delete the convert of KB to B. Thanks.
+Agree. Thanks.
 
-> --
-> Michal Hocko
-> SUSE Labs
+>
+> Hugh
 
 
 
