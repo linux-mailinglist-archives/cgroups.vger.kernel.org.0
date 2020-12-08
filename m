@@ -2,67 +2,65 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E336A2D2110
-	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 03:46:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 450D82D2115
+	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 03:46:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728156AbgLHCoV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Dec 2020 21:44:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41812 "EHLO
+        id S1728191AbgLHCpl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Dec 2020 21:45:41 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728081AbgLHCoU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 21:44:20 -0500
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD7AFC061793
-        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 18:43:34 -0800 (PST)
-Received: by mail-pl1-x641.google.com with SMTP id y8so212124plp.8
-        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 18:43:34 -0800 (PST)
+        with ESMTP id S1728181AbgLHCpk (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 21:45:40 -0500
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F55C061793
+        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 18:44:54 -0800 (PST)
+Received: by mail-pf1-x442.google.com with SMTP id c79so12440872pfc.2
+        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 18:44:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=Jdb7C5Aq6omc7IwwxIaz9ZxTwUguDQHTm2UuR3rHd+Y=;
-        b=ydR/LN6K9fneUKUhkvE0+Qv6s3BVCHWfdKrE8qmGsJQvTKxAvH9WDn3PvEV1YToQ++
-         ENpqHWssU08a9ws5Cz79XXu2j8Q0956aFERX3PY4UC1SSHoXCBCdCGV/rgwtWULf+KOC
-         szt0cHALCdHrYWL4imlZnAkQp9vw0sgOXP0WXl1BcK0B2RH9Ba1SV/nEg7H9W2ZSk00y
-         risTzoaMsDDNspp3wyshZifGP61j6MGm1spuBHXbJ9fRUy491LUSUAXxifd/Pyb/+qJy
-         R6tsRdYWrGbaeU6n5MgdwPuTfvydofDO5YHGF6V+LZJ0YJeNSm19aKSbA34QXd277huE
-         dLwA==
+        bh=bd4Hsr49ZJKHJxsRFcOWYguXCX0y9MtXs3EZNlzxdm4=;
+        b=OXUXdThRs0qPdY6KEOM/aFVNwkZvW9d+93Pe+/JG6Te3MYtWs1tQ8wuA4565rISPTo
+         IpMNiPjxjuwB4Z1DOxGmFYQI273fJ2EH4+DDBMSTVGeK+VSYmFHrt4pz5PodmjMHZbS3
+         oOOaWCeFh0oO+6FfRMD5IoRVV3WldU8+EEXkoj4pqNIEDdfBsAi0c1pT5GRdvfd6/zC/
+         zjZXFVFezJLBqBBA4qo2Y2R1A5YNenWVtVibEMpCLi7QwRVy4hmCYGFDAL+y1vOIaQj0
+         d0aI8xhqAnUttrYq9uvO2OWgwb1mbYo4zJt//eX1Psn46BEDnZ/VJNUmiOoqb/R1a5OU
+         lPIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Jdb7C5Aq6omc7IwwxIaz9ZxTwUguDQHTm2UuR3rHd+Y=;
-        b=hXfUnUVexXNHb2KUPCRtgHs9yIfXYJ+kaPpIw+yq9CKznICP6UGhyoAeNCmYRGfkW0
-         17MQeMAnJBkAF5zc5hyqrH+R6Y9RloWMwJIQDbu6nFbi918MPTJCiIP+gRRV+8YNwnI0
-         I3t67DjLVSPiM3YPocbT7kBv/ukB5ZEJKR8ZFjwWwne6diUGeVe/8gStJw3hph3DcQmT
-         ZJSOXFeAwCV2yY915TSx7963QtXR4LrLwuhSK8byzzjNgg/KQXKbXYfupnaGLmAzS7pG
-         0BnuBKpQo13rFSaO48WB4YDUSK5Li3d170A2IQKOuseFe6TsBV9dNVkOXoXklHxnedID
-         Pq7Q==
-X-Gm-Message-State: AOAM530xmkVsF3f+TBeYzWfl/5pSouhKm3/eobbLMUbUD+TV4Igf+4w1
-        R39aC+AlsUjF3e/C1Q6fQHPniC6sQyXgYPMUP9bEFA==
-X-Google-Smtp-Source: ABdhPJyPzEAErBPAXhs9T4MgPYqRu/l5uY0/YAfd1sbtAWYcjj6t0I1hQ8V/3A5xcAjooM+5EAgJiAjAFZSjaBHO4E0=
-X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
- m18-20020a170902bb92b02900d9e9bfb775mr19302708pls.24.1607395414374; Mon, 07
- Dec 2020 18:43:34 -0800 (PST)
+        bh=bd4Hsr49ZJKHJxsRFcOWYguXCX0y9MtXs3EZNlzxdm4=;
+        b=CCooinFuHbkk0dkIhg7WgjdDJrHNfMHzDMw0u/+2TM4zTL0tvsS09oh+dz0+O+PwoR
+         tpk3WagQ2n4g4Yv5I5QO/Wo3lCT8AiSzMvVSAWeSr7bx8laoA+VKOIgxvuDuXhdqzEAf
+         8f/iEUdzQGJwYPX6h3gBzfyi5Fbrmlh7wgvYj3ZdlSeW3hXas0jbySd1UYi4Q3QGdbiF
+         4ujlP23usq0lWepghrQfDmYTEX9CjsyqNDyGeJxUB0+y2pjFj2CxZpyKUBDqRfyq/ra1
+         kRmECbZbyOtvWO7VJuYxi0+8XJymO8tv4OhBKFVVkNG1CrWHCCnDxhov3teZbrbrkmwT
+         hFcw==
+X-Gm-Message-State: AOAM532iJaL4kzi/2Q9mGUg5IGkkYr2hCoett4nUb+EMgaxLq0xcGCO7
+        3Zsl0FtTdLMcHdI9kh6MJisJlrgyYuUk6yXRm3+h6A==
+X-Google-Smtp-Source: ABdhPJwqa+f1tyVp/LuQ33qHv6ozHYyyImMS8P4cYyJzsunu1zEoxxRxqEUkdKpgtpj01JOEb8oDa1RkcwItsk3p3Fo=
+X-Received: by 2002:a63:cd14:: with SMTP id i20mr16192071pgg.31.1607395494294;
+ Mon, 07 Dec 2020 18:44:54 -0800 (PST)
 MIME-Version: 1.0
 References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201207130018.GJ25569@dhcp22.suse.cz> <CAMZfGtWSEKWqR4f+23xt+jVF-NLSTVQ0L0V3xfZsQzV7aeebhw@mail.gmail.com>
- <20201207150254.GL25569@dhcp22.suse.cz> <20201207195141.GB2238414@carbon.dhcp.thefacebook.com>
- <alpine.LSU.2.11.2012071218540.9574@eggly.anvils>
-In-Reply-To: <alpine.LSU.2.11.2012071218540.9574@eggly.anvils>
+ <20201206101451.14706-10-songmuchun@bytedance.com> <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:42:58 +0800
-Message-ID: <CAMZfGtUKvTLOud1cL6mtisq6gtMu-X8th8uoyGtTD4d7LXPa+Q@mail.gmail.com>
-Subject: Re: [External] Re: [RESEND PATCH v2 00/12] Convert all vmstat
- counters to pages or bytes
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@suse.com>,
-        Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
+Date:   Tue, 8 Dec 2020 10:44:18 +0800
+Message-ID: <CAMZfGtWFrauMfoP6KisvaocY3Y86VXw6YjnV5hiZVWZA6tn-cw@mail.gmail.com>
+Subject: Re: [External] Re: [RESEND PATCH v2 09/12] mm: memcontrol: convert
+ vmstat slab counters to bytes
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
         Alexey Dobriyan <adobriyan@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Will Deacon <will@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
         peterx@redhat.com, krisman@collabora.com,
         Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
@@ -78,33 +76,134 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 4:33 AM Hugh Dickins <hughd@google.com> wrote:
+On Tue, Dec 8, 2020 at 3:46 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> On Mon, 7 Dec 2020, Roman Gushchin wrote:
-> > On Mon, Dec 07, 2020 at 04:02:54PM +0100, Michal Hocko wrote:
-> > >
-> > > As I've said the THP accounting change makes more sense to me because it
-> > > allows future changes which are already undergoing so there is more
-> > > merit in those.
+> On Sun, Dec 06, 2020 at 06:14:48PM +0800, Muchun Song wrote:
+> > the global and per-node counters are stored in pages, however memcg
+> > and lruvec counters are stored in bytes. This scheme looks weird.
+> > So convert all vmstat slab counters to bytes.
+>
+> There is a reason for this weird scheme:
+> percpu caches (see struct per_cpu_nodestat) are s8, so counting in bytes
+> will lead to overfills. Switching to s32 can lead to an increase in
+> the cache thrashing, especially on small machines.
+
+Thanks Roman. I see now.
+
+>
 > >
-> > +1
-> > And this part is absolutely trivial.
->
-> It does need to be recognized that, with these changes, every THP stats
-> update overflows the per-cpu counter, resorting to atomic global updates.
-> And I'd like to see that mentioned in the commit message.
-
-Thanks for reminding me. Will add.
-
->
-> But this change is consistent with 4.7's 8f182270dfec ("mm/swap.c: flush
-> lru pvecs on compound page arrival"): we accepted greater overhead for
-> greater accuracy back then, so I think it's okay to do so for THP stats.
-
-Agree. Thanks.
-
->
-> Hugh
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  include/linux/vmstat.h | 17 ++++++++++-------
+> >  mm/vmstat.c            | 21 ++++++++++-----------
+> >  2 files changed, 20 insertions(+), 18 deletions(-)
+> >
+> > diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
+> > index 322dcbfcc933..fd1a3d5d4926 100644
+> > --- a/include/linux/vmstat.h
+> > +++ b/include/linux/vmstat.h
+> > @@ -197,18 +197,26 @@ static inline
+> >  unsigned long global_node_page_state_pages(enum node_stat_item item)
+> >  {
+> >       long x = atomic_long_read(&vm_node_stat[item]);
+> > +
+> >  #ifdef CONFIG_SMP
+> >       if (x < 0)
+> >               x = 0;
+> >  #endif
+> > +     if (vmstat_item_in_bytes(item))
+> > +             x >>= PAGE_SHIFT;
+> >       return x;
+> >  }
+> >
+> >  static inline unsigned long global_node_page_state(enum node_stat_item item)
+> >  {
+> > -     VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> > +     long x = atomic_long_read(&vm_node_stat[item]);
+> >
+> > -     return global_node_page_state_pages(item);
+> > +     VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> > +#ifdef CONFIG_SMP
+> > +     if (x < 0)
+> > +             x = 0;
+> > +#endif
+> > +     return x;
+> >  }
+> >
+> >  static inline unsigned long zone_page_state(struct zone *zone,
+> > @@ -312,11 +320,6 @@ static inline void __mod_zone_page_state(struct zone *zone,
+> >  static inline void __mod_node_page_state(struct pglist_data *pgdat,
+> >                       enum node_stat_item item, int delta)
+> >  {
+> > -     if (vmstat_item_in_bytes(item)) {
+> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> > -             delta >>= PAGE_SHIFT;
+> > -     }
+> > -
+> >       node_page_state_add(delta, pgdat, item);
+> >  }
+> >
+> > diff --git a/mm/vmstat.c b/mm/vmstat.c
+> > index 8d77ee426e22..7fb0c7cb9516 100644
+> > --- a/mm/vmstat.c
+> > +++ b/mm/vmstat.c
+> > @@ -345,11 +345,6 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+> >       long x;
+> >       long t;
+> >
+> > -     if (vmstat_item_in_bytes(item)) {
+> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> > -             delta >>= PAGE_SHIFT;
+> > -     }
+> > -
+> >       x = delta + __this_cpu_read(*p);
+> >
+> >       t = __this_cpu_read(pcp->stat_threshold);
+> > @@ -554,11 +549,6 @@ static inline void mod_node_state(struct pglist_data *pgdat,
+> >       s8 __percpu *p = pcp->vm_node_stat_diff + item;
+> >       long o, n, t, z;
+> >
+> > -     if (vmstat_item_in_bytes(item)) {
+> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
+> > -             delta >>= PAGE_SHIFT;
+> > -     }
+> > -
+> >       do {
+> >               z = 0;  /* overflow to node counters */
+> >
+> > @@ -1012,19 +1002,28 @@ unsigned long node_page_state_pages(struct pglist_data *pgdat,
+> >                                   enum node_stat_item item)
+> >  {
+> >       long x = atomic_long_read(&pgdat->vm_stat[item]);
+> > +
+> >  #ifdef CONFIG_SMP
+> >       if (x < 0)
+> >               x = 0;
+> >  #endif
+> > +     if (vmstat_item_in_bytes(item))
+> > +             x >>= PAGE_SHIFT;
+> >       return x;
+> >  }
+> >
+> >  unsigned long node_page_state(struct pglist_data *pgdat,
+> >                             enum node_stat_item item)
+> >  {
+> > +     long x = atomic_long_read(&pgdat->vm_stat[item]);
+> > +
+> >       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
+> >
+> > -     return node_page_state_pages(pgdat, item);
+> > +#ifdef CONFIG_SMP
+> > +     if (x < 0)
+> > +             x = 0;
+> > +#endif
+> > +     return x;
+> >  }
+> >  #endif
+> >
+> > --
+> > 2.11.0
+> >
 
 
 
