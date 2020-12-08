@@ -2,211 +2,131 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 450D82D2115
-	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 03:46:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4AC912D21FB
+	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 05:23:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728191AbgLHCpl (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 7 Dec 2020 21:45:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42018 "EHLO
+        id S1726067AbgLHEVi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 7 Dec 2020 23:21:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56694 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728181AbgLHCpk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 21:45:40 -0500
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3F55C061793
-        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 18:44:54 -0800 (PST)
-Received: by mail-pf1-x442.google.com with SMTP id c79so12440872pfc.2
-        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 18:44:54 -0800 (PST)
+        with ESMTP id S1725874AbgLHEVi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 7 Dec 2020 23:21:38 -0500
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 458DBC061749
+        for <cgroups@vger.kernel.org>; Mon,  7 Dec 2020 20:20:52 -0800 (PST)
+Received: by mail-pf1-x441.google.com with SMTP id 131so12622739pfb.9
+        for <cgroups@vger.kernel.org>; Mon, 07 Dec 2020 20:20:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bd4Hsr49ZJKHJxsRFcOWYguXCX0y9MtXs3EZNlzxdm4=;
-        b=OXUXdThRs0qPdY6KEOM/aFVNwkZvW9d+93Pe+/JG6Te3MYtWs1tQ8wuA4565rISPTo
-         IpMNiPjxjuwB4Z1DOxGmFYQI273fJ2EH4+DDBMSTVGeK+VSYmFHrt4pz5PodmjMHZbS3
-         oOOaWCeFh0oO+6FfRMD5IoRVV3WldU8+EEXkoj4pqNIEDdfBsAi0c1pT5GRdvfd6/zC/
-         zjZXFVFezJLBqBBA4qo2Y2R1A5YNenWVtVibEMpCLi7QwRVy4hmCYGFDAL+y1vOIaQj0
-         d0aI8xhqAnUttrYq9uvO2OWgwb1mbYo4zJt//eX1Psn46BEDnZ/VJNUmiOoqb/R1a5OU
-         lPIA==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=INwAUa8avMAOYbaB9rtoZiE/Uy1WuPgrXID/tKq7Y4o=;
+        b=h/6saWcxTLU/DKFG4oIjuuEDovFaZD1Ql3H24mQ6ZWdxdgezFfyhebiqTeFEKAN3Tl
+         En+Ha/3H7N2CkoQD6qgmYoM/vrvVSNRjDmmsaVrJDh4wkkCNV6OOZCERX4tO5/u3g2Tz
+         d7YAzvkgah5iQyIP3ylMC62iw7/Y3NPAhGBMnlBQ58mB9zlkWhPTclA3CuPDSbnlXSc7
+         9WCjSpbQgg1FBySH7zUl9Dnrh4UF2wRMw34n+1CsWqJChlCjwVWi7Rgz0V+nli8AHDW8
+         n4KJWsxHERxQ0QGjcsNOdDjH2hjXp2mZhsBTJkMe+Dzhho2XWjyUNIBrnxu9VyX71VBT
+         wFhg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bd4Hsr49ZJKHJxsRFcOWYguXCX0y9MtXs3EZNlzxdm4=;
-        b=CCooinFuHbkk0dkIhg7WgjdDJrHNfMHzDMw0u/+2TM4zTL0tvsS09oh+dz0+O+PwoR
-         tpk3WagQ2n4g4Yv5I5QO/Wo3lCT8AiSzMvVSAWeSr7bx8laoA+VKOIgxvuDuXhdqzEAf
-         8f/iEUdzQGJwYPX6h3gBzfyi5Fbrmlh7wgvYj3ZdlSeW3hXas0jbySd1UYi4Q3QGdbiF
-         4ujlP23usq0lWepghrQfDmYTEX9CjsyqNDyGeJxUB0+y2pjFj2CxZpyKUBDqRfyq/ra1
-         kRmECbZbyOtvWO7VJuYxi0+8XJymO8tv4OhBKFVVkNG1CrWHCCnDxhov3teZbrbrkmwT
-         hFcw==
-X-Gm-Message-State: AOAM532iJaL4kzi/2Q9mGUg5IGkkYr2hCoett4nUb+EMgaxLq0xcGCO7
-        3Zsl0FtTdLMcHdI9kh6MJisJlrgyYuUk6yXRm3+h6A==
-X-Google-Smtp-Source: ABdhPJwqa+f1tyVp/LuQ33qHv6ozHYyyImMS8P4cYyJzsunu1zEoxxRxqEUkdKpgtpj01JOEb8oDa1RkcwItsk3p3Fo=
-X-Received: by 2002:a63:cd14:: with SMTP id i20mr16192071pgg.31.1607395494294;
- Mon, 07 Dec 2020 18:44:54 -0800 (PST)
-MIME-Version: 1.0
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201206101451.14706-10-songmuchun@bytedance.com> <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20201207194622.GA2238414@carbon.dhcp.thefacebook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=INwAUa8avMAOYbaB9rtoZiE/Uy1WuPgrXID/tKq7Y4o=;
+        b=XfngDaCu2qZLhB1SWNRUk1HaHFUM/iyunyMRVg8ZevPA3FkVMVKVU1U4yV5S3A9xBp
+         slZPdrVkYFWAXusyOLRxayi/6/Pl0Wjd6ZMkCkICEmZbE06ClnFw2X0Hbnz04WkRQ29B
+         CdJltztSXeXSBcwl+S27mcodwq9zFyleRcgzZ2X3e056+6sU1rbFIPkzDvBnf/ktT3vr
+         xvtmjzgs6mqm+jIjKF/OIxAzdE1oXUtSf5TubKeXwh7x0AM1oNJFD6jBU8exedfXHiuE
+         acLMuT4E7jy2ea1GHSCJxP6vDeRRFIYRlC/DWB32Bwf684cnia95vsa5S89KI/Pa9GTq
+         TI3Q==
+X-Gm-Message-State: AOAM530lNQBduQcIzmXl41Sw8Umrp/4CbF8SIX3RI9LrS6hh3/4bVn3S
+        ZBunqE1pBHDvnqO5G+w0MWca4Q==
+X-Google-Smtp-Source: ABdhPJwg6s8o790FlKSFquJnMGwqcffA65CpEykidVkNyFYWLAYFLP1GVkP70naEE9TEtRS09jE/VA==
+X-Received: by 2002:a17:90a:6fc7:: with SMTP id e65mr2280093pjk.116.1607401251862;
+        Mon, 07 Dec 2020 20:20:51 -0800 (PST)
+Received: from localhost.localdomain ([103.136.221.70])
+        by smtp.gmail.com with ESMTPSA id mr7sm1031166pjb.31.2020.12.07.20.20.44
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 07 Dec 2020 20:20:51 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Tue, 8 Dec 2020 10:44:18 +0800
-Message-ID: <CAMZfGtWFrauMfoP6KisvaocY3Y86VXw6YjnV5hiZVWZA6tn-cw@mail.gmail.com>
-Subject: Re: [External] Re: [RESEND PATCH v2 09/12] mm: memcontrol: convert
- vmstat slab counters to bytes
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, rafael@kernel.org,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com,
-        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
-        Marco Elver <elver@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
+        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
+        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v3 0/7] Convert all THP vmstat counters to pages
+Date:   Tue,  8 Dec 2020 12:18:40 +0800
+Message-Id: <20201208041847.72122-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Dec 8, 2020 at 3:46 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Sun, Dec 06, 2020 at 06:14:48PM +0800, Muchun Song wrote:
-> > the global and per-node counters are stored in pages, however memcg
-> > and lruvec counters are stored in bytes. This scheme looks weird.
-> > So convert all vmstat slab counters to bytes.
->
-> There is a reason for this weird scheme:
-> percpu caches (see struct per_cpu_nodestat) are s8, so counting in bytes
-> will lead to overfills. Switching to s32 can lead to an increase in
-> the cache thrashing, especially on small machines.
+Hi,
 
-Thanks Roman. I see now.
+This patch series is aimed to convert all THP vmstat counters to pages.
 
->
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  include/linux/vmstat.h | 17 ++++++++++-------
-> >  mm/vmstat.c            | 21 ++++++++++-----------
-> >  2 files changed, 20 insertions(+), 18 deletions(-)
-> >
-> > diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-> > index 322dcbfcc933..fd1a3d5d4926 100644
-> > --- a/include/linux/vmstat.h
-> > +++ b/include/linux/vmstat.h
-> > @@ -197,18 +197,26 @@ static inline
-> >  unsigned long global_node_page_state_pages(enum node_stat_item item)
-> >  {
-> >       long x = atomic_long_read(&vm_node_stat[item]);
-> > +
-> >  #ifdef CONFIG_SMP
-> >       if (x < 0)
-> >               x = 0;
-> >  #endif
-> > +     if (vmstat_item_in_bytes(item))
-> > +             x >>= PAGE_SHIFT;
-> >       return x;
-> >  }
-> >
-> >  static inline unsigned long global_node_page_state(enum node_stat_item item)
-> >  {
-> > -     VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
-> > +     long x = atomic_long_read(&vm_node_stat[item]);
-> >
-> > -     return global_node_page_state_pages(item);
-> > +     VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
-> > +#ifdef CONFIG_SMP
-> > +     if (x < 0)
-> > +             x = 0;
-> > +#endif
-> > +     return x;
-> >  }
-> >
-> >  static inline unsigned long zone_page_state(struct zone *zone,
-> > @@ -312,11 +320,6 @@ static inline void __mod_zone_page_state(struct zone *zone,
-> >  static inline void __mod_node_page_state(struct pglist_data *pgdat,
-> >                       enum node_stat_item item, int delta)
-> >  {
-> > -     if (vmstat_item_in_bytes(item)) {
-> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-> > -             delta >>= PAGE_SHIFT;
-> > -     }
-> > -
-> >       node_page_state_add(delta, pgdat, item);
-> >  }
-> >
-> > diff --git a/mm/vmstat.c b/mm/vmstat.c
-> > index 8d77ee426e22..7fb0c7cb9516 100644
-> > --- a/mm/vmstat.c
-> > +++ b/mm/vmstat.c
-> > @@ -345,11 +345,6 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
-> >       long x;
-> >       long t;
-> >
-> > -     if (vmstat_item_in_bytes(item)) {
-> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-> > -             delta >>= PAGE_SHIFT;
-> > -     }
-> > -
-> >       x = delta + __this_cpu_read(*p);
-> >
-> >       t = __this_cpu_read(pcp->stat_threshold);
-> > @@ -554,11 +549,6 @@ static inline void mod_node_state(struct pglist_data *pgdat,
-> >       s8 __percpu *p = pcp->vm_node_stat_diff + item;
-> >       long o, n, t, z;
-> >
-> > -     if (vmstat_item_in_bytes(item)) {
-> > -             VM_WARN_ON_ONCE(delta & (PAGE_SIZE - 1));
-> > -             delta >>= PAGE_SHIFT;
-> > -     }
-> > -
-> >       do {
-> >               z = 0;  /* overflow to node counters */
-> >
-> > @@ -1012,19 +1002,28 @@ unsigned long node_page_state_pages(struct pglist_data *pgdat,
-> >                                   enum node_stat_item item)
-> >  {
-> >       long x = atomic_long_read(&pgdat->vm_stat[item]);
-> > +
-> >  #ifdef CONFIG_SMP
-> >       if (x < 0)
-> >               x = 0;
-> >  #endif
-> > +     if (vmstat_item_in_bytes(item))
-> > +             x >>= PAGE_SHIFT;
-> >       return x;
-> >  }
-> >
-> >  unsigned long node_page_state(struct pglist_data *pgdat,
-> >                             enum node_stat_item item)
-> >  {
-> > +     long x = atomic_long_read(&pgdat->vm_stat[item]);
-> > +
-> >       VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
-> >
-> > -     return node_page_state_pages(pgdat, item);
-> > +#ifdef CONFIG_SMP
-> > +     if (x < 0)
-> > +             x = 0;
-> > +#endif
-> > +     return x;
-> >  }
-> >  #endif
-> >
-> > --
-> > 2.11.0
-> >
+The unit of some vmstat counters are pages, some are bytes, some are
+HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
+counters to the userspace, we have to know the unit of the vmstat counters
+is which one. When the unit is bytes or kB, both clearly distinguishable
+by the B/KB suffix. But for the THP vmstat counters, We may make mistakes.
 
+For example, the below is some bug fix for the THP vmstat counters:
+  - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
+  - Not committed which is the first commit in this series ("mm: memcontrol: fix NR_ANON_THPS account")
 
+This patch series can make the code clear. And make all the unit of the THP
+vmstat counters in pages. Finally, the unit of the vmstat counters are
+pages, kB and bytes. The B/KB suffix can tell us that the unit is bytes
+or kB. The rest which is without suffix are pages.
+
+As Hugh said, "It does need to be recognized that, with these changes, every
+THP stats update overflows the per-cpu counter, resorting to atomic global
+updates.
+
+But this change is consistent with 4.7's 8f182270dfec ("mm/swap.c: flush
+lru pvecs on compound page arrival"): we accepted greater overhead for
+greater accuracy back then, so I think it's okay to do so for THP stats."
+
+This was inspired by Johannes and Roman. Thanks to them.
+
+Changes in v2 -> v3:
+  - Change the series subject from "Convert all vmstat counters to pages or bytes"
+    to "Convert all THP vmstat counters to pages".
+  - Remove convert of KB to B.
+
+Changes in v1 -> v2:
+  - Change the series subject from "Convert all THP vmstat counters to pages"
+    to "Convert all vmstat counters to pages or bytes".
+  - Convert NR_KERNEL_SCS_KB account to bytes.
+  - Convert vmstat slab counters to bytes.
+  - Remove {global_}node_page_state_pages.
+
+Muchun Song (7):
+  mm: memcontrol: fix NR_ANON_THPS account
+  mm: memcontrol: convert NR_ANON_THPS account to pages
+  mm: memcontrol: convert NR_FILE_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
+  mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
+  mm: memcontrol: make the slab calculation consistent
+
+ drivers/base/node.c |  15 ++----
+ fs/proc/meminfo.c   |  10 ++--
+ mm/filemap.c        |   4 +-
+ mm/huge_memory.c    |   9 ++--
+ mm/khugepaged.c     |   4 +-
+ mm/memcontrol.c     | 139 ++++++++++++++++++++++++++--------------------------
+ mm/page_alloc.c     |   7 ++-
+ mm/rmap.c           |  19 ++++---
+ mm/shmem.c          |   3 +-
+ 9 files changed, 107 insertions(+), 103 deletions(-)
 
 -- 
-Yours,
-Muchun
+2.11.0
+
