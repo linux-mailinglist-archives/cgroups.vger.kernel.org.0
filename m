@@ -2,124 +2,78 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11AC92D3BF3
-	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 08:08:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F99C2D41BA
+	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 13:06:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726296AbgLIHHJ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Dec 2020 02:07:09 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52776 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725957AbgLIHHI (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Dec 2020 02:07:08 -0500
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B667DC0613CF
-        for <cgroups@vger.kernel.org>; Tue,  8 Dec 2020 23:06:28 -0800 (PST)
-Received: by mail-pl1-x642.google.com with SMTP id j1so457228pld.3
-        for <cgroups@vger.kernel.org>; Tue, 08 Dec 2020 23:06:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kkn786HNMnRJCcN2vJ93qEyfsAgh7pkxJtiGF06J3yU=;
-        b=JXrRB0nWVA5bEbEvNjxEzu/NNeNa7aKnAuns8JTBIx/sW/F+SxwH6QRAtQ0iiTX8h0
-         Pac4yR3jIe7TZKkrxsjkSHBXB2sYr2OJpHc4wBiXDQyKPB3oQF+wkfxiqHFAC5c0jW7g
-         yo4V3RXknI3qJ4Zrh7cHk1tdTj2f/wUWuSdQ0Liblz9+qjFB+QluSTdO+wyA/78lMxRC
-         4SI1SKgLSphvUkVovLeGAhK4IvUiJWFmOARy7q+vYzadZQLrsrDAK5jLog+gVokidCMh
-         31bF/AgWkPzKCdrxRNqlXaWLaA7X84nL2vH4nv0L3kZXAoY4FkkzIMz2vDn4MF3KTUap
-         yVnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kkn786HNMnRJCcN2vJ93qEyfsAgh7pkxJtiGF06J3yU=;
-        b=XNzyQD6qwkv5Fk+FEQmcTkf74nZ1l0tqP0TLpmqLconcVUsWBpz3uWgLKRm7prqMjk
-         nA/A7+Mc4vKfszF+6OUMCcIVBjWj/r+PUFHzyZ0W3AWmbCbVzJtIjjJPMweTBPG0puqY
-         k+ojJG+LMP7KHgzfDda6nBZC42WfLz8yXAEvmpadcdGs4aZXNBP7V9emx24SwtKCyyg8
-         EGnB7nx8LG/jLR/+B+G9u7kP3IOAPbUi+s4pDas/3XH5s3SjZx9CTxQYsdptW3IN0SMU
-         dehHtYEItfxyKs5SBS3ZzlPNf9F2mKQB1PQwQ8iGlFxhgkgHyEtsbELxGiexBsbUkyQO
-         58lw==
-X-Gm-Message-State: AOAM530MheUs4qGXPTcaYNaEAXy5EcdWxVCED5rGj8MGTQe1y3O02kAr
-        44/3ZGkl5iT51YfRrb94SbQgpNRGwm4qG88SrxHjIQ==
-X-Google-Smtp-Source: ABdhPJyqvToolagl8ieU1B5JnTy01mh7I3u/Qdo1C4b/4NaYIk2VlSrMTXjvguF/PaTMidy6INo/h29mnjEw/Azl95c=
-X-Received: by 2002:a17:902:bb92:b029:d9:e9bf:b775 with SMTP id
- m18-20020a170902bb92b02900d9e9bfb775mr1108490pls.24.1607497587958; Tue, 08
- Dec 2020 23:06:27 -0800 (PST)
+        id S1730288AbgLIMGr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Dec 2020 07:06:47 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9407 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730559AbgLIMGo (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Dec 2020 07:06:44 -0500
+Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4CrbN733V6z7BYm;
+        Wed,  9 Dec 2020 20:05:27 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
+ 14.3.487.0; Wed, 9 Dec 2020 20:05:49 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH] cgroup: Fix memory leak when parsing multiple source parameters
+Date:   Wed, 9 Dec 2020 20:13:22 +0800
+Message-ID: <20201209121322.77665-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201208095132.79383-1-songmuchun@bytedance.com>
- <20201209022118.GB2385286@carbon.DHCP.thefacebook.com> <CAMZfGtUMP6mz3DE7DHS55fyto=LZuQpcitt59WuwhZw8m2LqBg@mail.gmail.com>
- <20201209031115.GA2390587@carbon.lan>
-In-Reply-To: <20201209031115.GA2390587@carbon.lan>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Wed, 9 Dec 2020 15:05:49 +0800
-Message-ID: <CAMZfGtVJnZESZQZmPzk=mBqK0KH4L=-s_+ebTr-6Z76zdXXn7g@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v2] mm: memcontrol: optimize per-lruvec
- stats counter memory usage
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Chris Down <chris@chrisdown.name>,
-        Yafang Shao <laoar.shao@gmail.com>, richard.weiyang@gmail.com,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 11:52 AM Roman Gushchin <guro@fb.com> wrote:
->
-> On Wed, Dec 09, 2020 at 10:31:55AM +0800, Muchun Song wrote:
-> > On Wed, Dec 9, 2020 at 10:21 AM Roman Gushchin <guro@fb.com> wrote:
-> > >
-> > > On Tue, Dec 08, 2020 at 05:51:32PM +0800, Muchun Song wrote:
-> > > > The vmstat threshold is 32 (MEMCG_CHARGE_BATCH), so the type of s32
-> > > > of lruvec_stat_cpu is enough.
->
-> Actually the threshold can be as big as MEMCG_CHARGE_BATCH * PAGE_SIZE.
-> It still fits into s32, but without explicitly saying it it's hard to
-> understand why not choosing s8, as in vmstat.c.
+A memory leak is found in cgroup1_parse_param() when multiple source
+parameters overwrite fc->source in the fs_context struct without free.
 
-Yeah, here I need to update the commit log.
+unreferenced object 0xffff888100d930e0 (size 16):
+  comm "mount", pid 520, jiffies 4303326831 (age 152.783s)
+  hex dump (first 16 bytes):
+    74 65 73 74 6c 65 61 6b 00 00 00 00 00 00 00 00  testleak........
+  backtrace:
+    [<000000003e5023ec>] kmemdup_nul+0x2d/0xa0
+    [<00000000377dbdaa>] vfs_parse_fs_string+0xc0/0x150
+    [<00000000cb2b4882>] generic_parse_monolithic+0x15a/0x1d0
+    [<000000000f750198>] path_mount+0xee1/0x1820
+    [<0000000004756de2>] do_mount+0xea/0x100
+    [<0000000094cafb0a>] __x64_sys_mount+0x14b/0x1f0
 
->
-> > > >
-> > > > The size of struct lruvec_stat is 304 bytes on 64 bits system. As it
-> > > > is a per-cpu structure. So with this patch, we can save 304 / 2 * ncpu
-> > > > bytes per-memcg per-node where ncpu is the number of the possible CPU.
-> > > > If there are c memory cgroup (include dying cgroup) and n NUMA node in
-> > > > the system. Finally, we can save (152 * ncpu * c * n) bytes.
-> > >
-> > > Honestly, I'm not convinced.
-> > > Say, ncpu = 32, n = 2, c = 500. We're saving <5Mb of memory.
-> > > If the machine has 128Gb of RAM, it's .000000003%.
-> >
-> > Hi Roman,
-> >
-> > When the cpu hotplug is enabled, the ncpu can be 256 on
-> > some configurations. Also, the c can be more large when
-> > there are many dying cgroup in the system.
-> >
-> > So the savings depends on the environment and
-> > configurations. Right?
->
-> Of course, but machines with more CPUs tend to have more RAM as well.
+Fix this bug by permitting a single source parameter and rejecting with
+an error all subsequent ones.
 
-Here I mean possible CPU not online CPU. The number of possible
-CPUs may be greater than online CPUs. The per-cpu allocator is based
-on the number of possible CPUs. Right?
+Fixes: 8d2451f4994f ("cgroup1: switch to option-by-option parsing")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ kernel/cgroup/cgroup-v1.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Thanks.
-
->
-> Thanks!
-
-
-
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 191c329e4..1fd7d3d18 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -908,6 +908,9 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
+ 	if (opt == -ENOPARAM) {
+ 		if (strcmp(param->key, "source") == 0) {
++			if (fc->source)
++				return invalf(fc, "Multiple sources not
++						  supported");
+ 			fc->source = param->string;
+ 			param->string = NULL;
+ 			return 0;
 -- 
-Yours,
-Muchun
+2.23.0
+
