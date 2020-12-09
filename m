@@ -2,89 +2,106 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D7EB2D38EB
-	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 03:44:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A168A2D3938
+	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 04:24:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725789AbgLICnF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Dec 2020 21:43:05 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49132 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725877AbgLICnE (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Dec 2020 21:43:04 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92ZW6D015259;
-        Wed, 9 Dec 2020 02:41:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=vhPAwGbX5UKJfIemCq3LE77ldW/MS6Z/BCzHi9otysg=;
- b=T4qPBYnl6CDw7MhxbLNUcQjfUzICtHe7Qj9GkVpSQmPaYMc0vvfQl536HZLiYJTvoNJ9
- jVA851tnFUxV62TxuNng9POPjnJibMO3kJeLdLP1o1Fk6m2M/EpmZYaxGU+9aRc27Co5
- bVG0eIucX9pBiqAYyJBL3xcODZJgNK3QhdPLWXGwucydXvAMr25NL+Zvl/dCOW0NmPkn
- nQ3IS9QIgBUoraAEHf7P56v8UAdAsGwRTD+nHgSQetz1MF7CyaV55tU9Wu1hv+2lRvOA
- EdWQ9Gpd5doM08dD2BbYWdVB8UJuefPMG/FwZoN+G+ZNF3Vbbqd00W667q8W20J4gMsj Nw== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 35825m5yd2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 09 Dec 2020 02:41:13 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 0B92ZnNX160888;
-        Wed, 9 Dec 2020 02:41:12 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by userp3030.oracle.com with ESMTP id 358m4ytt8w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 09 Dec 2020 02:41:12 +0000
-Received: from abhmp0018.oracle.com (abhmp0018.oracle.com [141.146.116.24])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 0B92f6B2032250;
-        Wed, 9 Dec 2020 02:41:06 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 08 Dec 2020 18:41:05 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to
- finish on cpu online
-In-Reply-To: <20201207083827.GD3040@hirez.programming.kicks-ass.net>
-References: <20201203171431.256675-1-aklimov@redhat.com>
- <20201207083827.GD3040@hirez.programming.kicks-ass.net>
-Date:   Tue, 08 Dec 2020 21:40:57 -0500
-Message-ID: <87k0tritvq.fsf@oracle.com>
+        id S1727235AbgLIDXI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Dec 2020 22:23:08 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46816 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725789AbgLIDXE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Dec 2020 22:23:04 -0500
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B15C0613D6
+        for <cgroups@vger.kernel.org>; Tue,  8 Dec 2020 19:22:18 -0800 (PST)
+Received: by mail-wr1-x441.google.com with SMTP id 91so145379wrj.7
+        for <cgroups@vger.kernel.org>; Tue, 08 Dec 2020 19:22:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tEWLaiABhfSkvT1cOB+vXvjqCQDKr8VP2HOqqGxlXaU=;
+        b=pcvicRPw5fYEgoz+vgcA1n+jR1qIiuAy8vpfCm59ZqryG+PILmlYM1YTrFKF/wyXpZ
+         v1pywrJXjxoRPB8GkzlTagFXSd7kNkJGHzhriOnPCNwCDMK9i28G3mSf5EmV5tFFWE4Z
+         6VGGhT0BHDl63+AbvGzdMKqnakYnPxEZqOnlVrW8DEu4/xzih1VVvbKwacsHZeI7IW/b
+         XrzN4RVG4uKI220wjgDbdVZmGVqg1S/v9pzn8EPUQiis1Dv7fNabFblXHL9iULtncz1V
+         DdUZ7ySgDlhUQI5aYOh+BUKMieD+QCltb5ahUFhEoxsmGo1HCWbkmLUnwyv8b5KtDrFM
+         YCkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tEWLaiABhfSkvT1cOB+vXvjqCQDKr8VP2HOqqGxlXaU=;
+        b=rdVWthPig1IniLI6AtWiDzhgQHesxNEnszg+8TpJOJ1hwA1XhT9lvuNvLA4Zz7jd9A
+         8J3eQcF4q6XQsUbXQmJnhKz92d/Sf4BXn30anay3SL37Vfab8fLwcNf0BDJA3FIg3gz6
+         efp0czTVdlTTArOQ7n6MSyd+PzQ4+NPbL5AFU9SFo1XVDmruhQZePPTqjzubaWhD9dap
+         df7jrJPUlJTilcV7qx8Tc1sfE/p4CRZ+xm7DlrxKc4IrLhxA5kggxUjMbc5mhWHI/I5h
+         3+0dkTJOn2M2610Ev4j0KvN4HHVD82MJhCKNuNMvziwONkcpaXcslhS5RKnGwIzWWF6c
+         Wd9Q==
+X-Gm-Message-State: AOAM532N8xtv8ELUM0iP6NSrzh5j6CwT4ANP+/bofECcRyoHocZxw8nt
+        85y9Dahtb86lcwfwOOt26Wxsdw1Yfg7l32Ke7PQe1w==
+X-Google-Smtp-Source: ABdhPJys8XjTYlYD4Is3VJpGoB4xidKKlzXKFYfxomIpBCqGHtRRE3dodQQQJaEyQSL7UKQnrDuTMgyBoQjbgGeEUGk=
+X-Received: by 2002:a5d:6a83:: with SMTP id s3mr242674wru.334.1607484137328;
+ Tue, 08 Dec 2020 19:22:17 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 spamscore=0 suspectscore=0
- bulkscore=0 malwarescore=0 phishscore=0 adultscore=0 mlxlogscore=979
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9829 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0 bulkscore=0
- phishscore=0 mlxlogscore=978 clxscore=1015 priorityscore=1501 mlxscore=0
- spamscore=0 lowpriorityscore=0 malwarescore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012090015
+References: <20201208083510.14344-1-odin@uged.al>
+In-Reply-To: <20201208083510.14344-1-odin@uged.al>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 8 Dec 2020 19:22:06 -0800
+Message-ID: <CAJuCfpFjdE3k+eWoJLZMp9miffmueZ0hgLLF1b_V6Kb4=i+D3g@mail.gmail.com>
+Subject: Re: [PATCH] psi: fix monitor for root cgroup
+To:     Odin Ugedal <odin@uged.al>
+Cc:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        cgroups mailinglist <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>, dschatzberg@fb.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Peter Zijlstra <peterz@infradead.org> writes:
->> The nature of this bug is also described here (with different consequences):
->> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+On Tue, Dec 8, 2020 at 12:35 AM Odin Ugedal <odin@uged.al> wrote:
 >
-> Yeah, pesky deadlocks.. someone was going to try again.
+> Fix NULL pointer dereference when adding new psi monitor to the root
+> cgroup. PSI files for root cgroup was introduced in df5ba5be742 by using
+> system wide psi struct when reading, but file write/monitor was not
+> properly fixed. Since the PSI config for the root cgroup isn't
+> initialized, the current implementation tries to lock a NULL ptr,
+> resulting in a crash.
+>
+> Can be triggered by running this as root:
+> $ tee /sys/fs/cgroup/cpu.pressure <<< "some 10000 1000000"
+>
+>
+> Signed-off-by: Odin Ugedal <odin@uged.al>
+> ---
+>  kernel/cgroup/cgroup.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index e41c21819ba0..5d1fdf7c3ec6 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -3567,6 +3567,7 @@ static ssize_t cgroup_pressure_write(struct kernfs_open_file *of, char *buf,
+>  {
+>         struct psi_trigger *new;
+>         struct cgroup *cgrp;
+> +       struct psi_group *psi;
+>
+>         cgrp = cgroup_kn_lock_live(of->kn, false);
+>         if (!cgrp)
+> @@ -3575,7 +3576,8 @@ static ssize_t cgroup_pressure_write(struct kernfs_open_file *of, char *buf,
+>         cgroup_get(cgrp);
+>         cgroup_kn_unlock(of->kn);
+>
+> -       new = psi_trigger_create(&cgrp->psi, buf, nbytes, res);
+> +       psi = cgroup_ino(cgrp) == 1 ? &psi_system : &cgrp->psi;
+> +       new = psi_trigger_create(psi, buf, nbytes, res);
+>         if (IS_ERR(new)) {
+>                 cgroup_put(cgrp);
+>                 return PTR_ERR(new);
+> --
+> 2.29.2
+>
 
-I dug up the synchronous patch
-
-    https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
-
-but surprisingly wasn't able to reproduce the lockdep splat from
-
-    https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
-
-even though I could hit it a few weeks ago.  I'm going to try to mess
-with it later, but don't let me hold this up.
+Reviewed-by: Suren Baghdasaryan <surenb@google.com>
