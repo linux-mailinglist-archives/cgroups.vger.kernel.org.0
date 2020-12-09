@@ -2,296 +2,169 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A8ED2D3571
-	for <lists+cgroups@lfdr.de>; Tue,  8 Dec 2020 22:38:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 141942D3889
+	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 03:01:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730085AbgLHVhi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 8 Dec 2020 16:37:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49784 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728620AbgLHVhX (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Dec 2020 16:37:23 -0500
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5335FC061257
-        for <cgroups@vger.kernel.org>; Tue,  8 Dec 2020 13:36:12 -0800 (PST)
-Received: by mail-pg1-x549.google.com with SMTP id f6so106477pgh.3
-        for <cgroups@vger.kernel.org>; Tue, 08 Dec 2020 13:36:12 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=UEByDBKZVfTm3zy0Um+iwW/BbeQm2aD/QnGz0kihyFg=;
-        b=W3NdpQJzPiJZvI/6fFLeodj/HhxNDIAkFPpOhBeJiCCK8Jdz8YDdSjQ8vs13VBQVOG
-         BMyujz8LRlhnQV4SlDwFstUz7qSSiCV7QEOB0Zp0Kn6Eqxj9j2JSoH0Laqk+rzEoYb93
-         kiD7RZWwUaR2h3vpffnGwZ81F+t030NVz9XoYNeMsxdo0jW4D0GT6sXnJdF2eXn/pEGS
-         a/0aWKRE6iSnMShkHkCFOYyaqb1vkOnP/50B2jxlEgoSoAODV7Y/cnmMPsw3T4q9m1Z1
-         HnxNU5w2ufkg0GmRW19x5HFMGnKXMsv0QUm1tQv1I8rMSlyYk+ALy1dmdJ2dQKn5A+gg
-         U/Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=UEByDBKZVfTm3zy0Um+iwW/BbeQm2aD/QnGz0kihyFg=;
-        b=QRomj/cCKTuL6YP4DWVqzmZsBZh8Mc33EU2d8fL+lB+MNid9dlsul64zCHUy9WnFEd
-         SmHDW59QFVmXxz6aQwzMenaDK2cz8esTmc+B6NWzqYeDsiu8uxCyh3GFio5w3NGStk20
-         QNbPPishwJ8wkt7Z55m5iNqU35ao4y3nklQLACgn4nC1gxRuSWWVyRTFrkN817y135pq
-         NiVnvWcKDVMwQYNrUm5BYEv8lYujkAefT73UcnLyz3q/6uV1rdeJ0EfLzkb1BvZ+ryMF
-         togELfds3auNEJIzlublOzKL5lZQ66WbC7upXevNhw72MrYO1XCRTdVqd38c1EfJQ3G8
-         6KKQ==
-X-Gm-Message-State: AOAM530rNdTEReIqXVTyibCQ9NgUr9o+adxT4DHVXls/9JgaqRDtpLTW
-        KraS7sIg/s6f5BZBiWZpMT2PuBZhJBGa
-X-Google-Smtp-Source: ABdhPJzaPgMZEMT9lZlWOcI4nOAwkQ9UrM7pCYKAlU3coXMD/+QoLXKYKRcT4VT/gGDyOTo08ODO6/D8cS5N
-Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
- (user=vipinsh job=sendgmr) by 2002:aa7:838b:0:b029:18c:42ad:7721 with SMTP id
- u11-20020aa7838b0000b029018c42ad7721mr21520922pfm.15.1607463371759; Tue, 08
- Dec 2020 13:36:11 -0800 (PST)
-Date:   Tue,  8 Dec 2020 13:35:31 -0800
-In-Reply-To: <20201208213531.2626955-1-vipinsh@google.com>
-Message-Id: <20201208213531.2626955-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20201208213531.2626955-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.29.2.576.ga3fc446d84-goog
-Subject: [Patch v2 2/2] cgroup: SVM: Encryption IDs cgroup documentation.
-From:   Vipin Sharma <vipinsh@google.com>
-To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
-Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1726316AbgLIB7p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 8 Dec 2020 20:59:45 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:57278 "EHLO
+        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725796AbgLIB7o (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 8 Dec 2020 20:59:44 -0500
+Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 0B91w8gn007789;
+        Tue, 8 Dec 2020 17:58:40 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=W6kG7UAoQUNYWIJy2WWuZpDxaDsScbR3xDsevQzVfGWYpwKm6VKNruGodRnc2PMNUtj9
+ 0KEjKZlaWRClv0iwm74V+782zshPt5KKP3IJfdqFwtwjZQLGMWpUtuGQerBNjKrRyGTi
+ C/EPky8BHdRLd4bLIbJ56X1ccTcFGlfCYdM= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 35aj8vhfjq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Tue, 08 Dec 2020 17:58:40 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 8 Dec 2020 17:58:40 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IFpPyFtoCW/hnFvevdS3uYcAGqPurH8MGQdSCpMTfbawgOqyFnSpfZMQz9tOdEhJnI7MbTFQuQq5zNOU27+DeJWLkr9wbshITZ/5I1vONSt/tYCQGs/g3uiFjcq7hOyheswB94s0KhQlWYEeLzUVjyNdcuJntQYM4noiuY7ZOTb+U0jYvAqSXs3XpheXBkBqoOhWwQ9EUkB68lkyOhqevipK2fukgAkQcZsJA9AELJQWJ/kVcqdgfbm9pb37x/c/2o/INuIGzpYIjua8gzhgkxsYMEsp+XkukDb4YSlipKhEVDetFyczOJFQU1/yTp7G+o9EBqkcGbcEwTIKD++exg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=Az2GGhwwrzQkFVu2CVFgWXBIYtxhKzyBz800ilcBh9enPG/gSLqmeEJd+ztxwLPqn1iQJ55VCYjHqK5b7Ph4z2zZx5puT9QLE09z2NRrgNjJlE8JzO32DksaeEXlnq4pbbucMr30qAvm35ty5eKxaXf9Vuj9xxjjuJWr6uAD9LzdP5uFVffrKYMzfrvLZrLN1Ox2q5fXYGFkAOd8DYhuoeSr3sD34O8/ueLxgMpYRVIq1UhxbgjDbY4IQkzAqbhtlRNMbotDamw5aQy//G4HCcke3cadhnXO+DILL65+d1JddvZiAV6OARtGnavqYOLrYeFtbE3mosAGkgYKJ88WaQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aydL4QXg8XURDf2KOlBrMWX/E75tPJ8ATtsmVoERNmQ=;
+ b=UVJV2aSjngkSqBYVhHWAI9HoX73M8/ZzcKGWxENECd/M3B8O9q/s2R/SuBFSVtkCtIxt0+3HOOMo0vPf71Q++31ZjiHNfCdYYPeMQv/QsfBpfgtRAIfdwU+/l/EXCUrHU7DkzGK6ckUzLlXHjRX+cKQGLTNwqjDels6oho5hGrU=
+Authentication-Results: bytedance.com; dkim=none (message not signed)
+ header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BYAPR15MB2341.namprd15.prod.outlook.com (2603:10b6:a02:81::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12; Wed, 9 Dec
+ 2020 01:58:36 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::3925:e1f9:4c6a:9396%6]) with mapi id 15.20.3632.024; Wed, 9 Dec 2020
+ 01:58:36 +0000
+Date:   Tue, 8 Dec 2020 17:58:30 -0800
+From:   Roman Gushchin <guro@fb.com>
+To:     Muchun Song <songmuchun@bytedance.com>
+CC:     <gregkh@linuxfoundation.org>, <rafael@kernel.org>,
+        <adobriyan@gmail.com>, <akpm@linux-foundation.org>,
+        <hannes@cmpxchg.org>, <mhocko@kernel.org>,
+        <vdavydov.dev@gmail.com>, <hughd@google.com>,
+        <shakeelb@google.com>, <samitolvanen@google.com>,
+        <feng.tang@intel.com>, <neilb@suse.de>, <iamjoonsoo.kim@lge.com>,
+        <rdunlap@infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v3 1/7] mm: memcontrol: fix NR_ANON_THPS account
+Message-ID: <20201209015830.GA2385286@carbon.DHCP.thefacebook.com>
+References: <20201208041847.72122-1-songmuchun@bytedance.com>
+ <20201208041847.72122-2-songmuchun@bytedance.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201208041847.72122-2-songmuchun@bytedance.com>
+X-Originating-IP: [2620:10d:c090:400::5:1a15]
+X-ClientProxiedBy: CO2PR04CA0128.namprd04.prod.outlook.com
+ (2603:10b6:104:7::30) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:1a15) by CO2PR04CA0128.namprd04.prod.outlook.com (2603:10b6:104:7::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3654.12 via Frontend Transport; Wed, 9 Dec 2020 01:58:33 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 4f4f55bc-0a54-43b5-c6d4-08d89be5f0ce
+X-MS-TrafficTypeDiagnostic: BYAPR15MB2341:
+X-Microsoft-Antispam-PRVS: <BYAPR15MB234180BF831A9F79BB70BB55BECC0@BYAPR15MB2341.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:2582;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nIdCjorOJMnVND7UIsvJJy8S8FP1qBCTvmomi6UpnUxjHns1zmou7+furFDUdC3X7THValBhQsxmNM/z56qIE3hU08PrXc02EG6zJJEbaLvL8crcqZQb7P09ddq/26jp2vCx2G9YJVxG4fPUh4kyCqOxWtGGqTbl70graUDIrNo05hHuoLwbJNhCeJY5w2DDUgplcCRgq8vIDovaQIEDjdGdzhk/QZYEeebmGNGTR2r/NCf4sw9e2HWrHnJvHOtPlW+BJnhZ9qLguISmdsq0yAKvQnoWDEqk5QisIRz84WJRoFzRqxVlLGgLnKl+7Ba8
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(346002)(136003)(366004)(2906002)(4326008)(33656002)(55016002)(7416002)(5660300002)(86362001)(9686003)(7696005)(52116002)(508600001)(186003)(1076003)(66556008)(66476007)(66946007)(6506007)(83380400001)(8676002)(6916009)(16526019)(8936002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?G87zqvcP4HryEDlslHV1dd+aQUxh6rmu2ipBHbIDXhOQ3HMNK476l/VPr356?=
+ =?us-ascii?Q?2KnJqesiin9gseEpsrmTyfBMH/mlkMO7KjG2Guf+jVgMxEnTfDO84sXh/BZV?=
+ =?us-ascii?Q?JQ8/FnLZeQB/m1wmx3yfHEz7tbEBOSKcYF2bHW3MOcPkFJvOWVJmSfP3MKqv?=
+ =?us-ascii?Q?VN5qm0GedDwEekm0g1+f/Fmy3uEMkBAsJK1WZfBKzIO8XPQpjmdvpfyXv7Hl?=
+ =?us-ascii?Q?ZXx+vlk6M6xAXvgE9PbyhJUY7I1PATWcM297KYrx4pvoAcEAPLyFxArPPVKO?=
+ =?us-ascii?Q?DdImXUQJef3O9Kk1gSurqEP5AytTl8UFCzlZPX+z746kMD6O97h157jeieez?=
+ =?us-ascii?Q?iQDtsPB4MZUUGzkSQJ77AlioGEeqYT8a31xfu1tCpbHAUOloIgJwz7/1vWr9?=
+ =?us-ascii?Q?6puSKMoOymgig/cobpYQAZYSRaXuPftJStbIS977dghS4b9ZQLQ8mtonCfDd?=
+ =?us-ascii?Q?0C4T0hD3vNuJ2nXSaf9mEaiAcgzbZsUGk45+x89E40/1kI1LpeCSMhstCGNq?=
+ =?us-ascii?Q?5WhD/PuEePpiNeVhjEmUVYUBmqO9/aGArKMdK46s2thOm/5pYxNPAeZsCSqk?=
+ =?us-ascii?Q?wo7+9DWh6cOuLzBmTWVY+q9D2PZs7qkYLNXh/Hov0rhFZB4EtDrbKQ/Ycjn2?=
+ =?us-ascii?Q?wfGNvk2ClXZ8lDjdCnwMsNsw5f4kfFK4PPAILMMyAajJn7AcUSqOEsFh0aWO?=
+ =?us-ascii?Q?ZIL2eV+m5a8O4Da6rtXh+KfW4H64vdYlsx7+pUA6wRSk989I6IlFQZaSdB03?=
+ =?us-ascii?Q?3TnA7f5rpdzJxQImTG3fWUsPfSAO3CRnUa9/+/ejNTYdNTrnxACFFccXR8Q+?=
+ =?us-ascii?Q?X+ugXqMOh5Wd3lIUn2/xvMb/w1Yj5ibU0QmnlshWn0NQasxlkrbFBh2MUrc7?=
+ =?us-ascii?Q?P6KmlwmdjSr4lKMX2BDk9zCWVPVz7sL3gOLd+sCYWgISypFmwLPkWwPPpf5T?=
+ =?us-ascii?Q?c6dhTgzE7/i9Pm9bDhojYE428Rj1dTtsYIlQBQnprx0Lwml4oqeCaPd815JO?=
+ =?us-ascii?Q?dJlapINC7IyAcQbXzL58HoL5ag=3D=3D?=
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2020 01:58:36.1894
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f4f55bc-0a54-43b5-c6d4-08d89be5f0ce
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BfYHU3akEMe65CsozZG1cUWVrKKr9DA70mNjCkeuO9/jgQI40usGjL+WWcQFO4Eh
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2341
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
+ definitions=2020-12-09_02:2020-12-08,2020-12-09 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
+ malwarescore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ clxscore=1011 suspectscore=1 mlxscore=0 bulkscore=0 mlxlogscore=999
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2012090011
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Documentation for both cgroup versions, v1 and v2, of Encryption IDs
-controller. This new controller is used to track and limit usage of
-hardware memory encryption capabilities on the CPUs.
+On Tue, Dec 08, 2020 at 12:18:41PM +0800, Muchun Song wrote:
+> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+> by one rather than nr_pages.
+> 
+> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
-Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
----
- .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 ++++++++++++++++++
- Documentation/admin-guide/cgroup-v2.rst       |  78 ++++++++++++-
- 2 files changed, 184 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+Reviewed-by: Roman Gushchin <guro@fb.com>
 
-diff --git a/Documentation/admin-guide/cgroup-v1/encryption_ids.rst b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-new file mode 100644
-index 000000000000..891143b4e229
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-@@ -0,0 +1,108 @@
-+=========================
-+Encryption IDs Controller
-+=========================
-+
-+Overview
-+========
-+There are multiple hardware memory encryption capabilities provided by the
-+hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-+State (SEV-ES) from AMD.
-+
-+These features are being used in encrypting virtual machines (VMs) and user
-+space programs. However, only a small number of keys/IDs can be used
-+simultaneously.
-+
-+This limited availability of these IDs requires system admin to optimize
-+allocation, control, and track the usage of the resources in the cloud
-+infrastructure. This resource also needs to be protected from getting exhausted
-+by some malicious program and causing starvation for other programs.
-+
-+Encryption IDs controller provides capability to register the resource for
-+controlling and tracking through the cgroups.
-+
-+How to Enable Controller
-+========================
-+
-+- Enable Encryption controller::
-+
-+        CONFIG_CGROUP_ENCRYPTION_IDS=y
-+
-+- Above options will build Encryption controller support in the kernel.
-+  To mount the Encryption controller::
-+
-+        mount -t cgroup -o encryption none /sys/fs/cgroup/encryption
-+
-+
-+Interface Files
-+===============
-+Each encryption ID type have their own interface files,
-+encryption_id.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
-+sev-es.
-+
-+  encryption_ids.[ID TYPE].stat
-+        A read-only flat-keyed single value file. This file exists only in the
-+        root cgroup.
-+
-+        It shows the total number of encryption IDs available and currently in
-+        use on the platform::
-+          # cat encryption.sev.stat
-+          total 509
-+          used 0
-+
-+  encryption_ids.[ID TYPE].max
-+        A read-write file which exists on the non-root cgroups. File is used to
-+        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-+
-+        Limit can be set to max by::
-+          # echo max > encryption.sev.max
-+
-+        Limit can be set by::
-+          # echo 100 > encryption.sev.max
-+
-+        This file shows the max limit of the encryption ID in the cgroup::
-+          # cat encryption.sev.max
-+          max
-+
-+        OR::
-+          # cat encryption.sev.max
-+          100
-+
-+        Limits can be set more than the "total" capacity value in the
-+        encryption_ids.[ID TYPE].stat file, however, the controller ensures
-+        that the usage never exceeds the "total" and the max limit.
-+
-+  encryption_ids.[ID TYPE].current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        Shows the total number of encrypted IDs being used in the cgroup.
-+
-+Hierarchy
-+=========
-+
-+Encryption IDs controller supports hierarchical accounting. It supports
-+following features:
-+
-+1. Current usage in the cgroup shows IDs used in the cgroup and its descendent cgroups.
-+2. Current usage can never exceed the corresponding max limit set in the cgroup
-+   and its ancestor's chain up to the root.
-+
-+Suppose the following example hierarchy::
-+
-+                        root
-+                        /  \
-+                       A    B
-+                       |
-+                       C
-+
-+1. A will show the count of IDs used in A and C.
-+2. C's current IDs usage may not exceed any of the max limits set in C, A, or
-+   root.
-+
-+Migration and ownership
-+=======================
-+
-+An encryption ID is charged to the cgroup in which it is used first, and
-+stays charged to that cgroup until that ID is freed. Migrating a process
-+to a different cgroup do not move the charge to the destination cgroup
-+where the process has moved.
-+
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 608d7c279396..7938bb7c6e1c 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9. Encryption IDs
-+       5.9-1 Encryption IDs Interface Files
-+       5.9-2 Migration and Ownership
-+     5-10. Misc
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2149,6 +2152,77 @@ HugeTLB Interface Files
- 	are local to the cgroup i.e. not hierarchical. The file modified event
- 	generated on this file reflects only the local events.
- 
-+Encryption IDs
-+--------------
-+
-+There are multiple hardware memory encryption capabilities provided by the
-+hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-+State (SEV-ES) from AMD.
-+
-+These features are being used in encrypting virtual machines (VMs) and user
-+space programs. However, only a small number of keys/IDs can be used
-+simultaneously.
-+
-+This limited availability of these IDs requires system admin to optimize
-+allocation, control, and track the usage of the resources in the cloud
-+infrastructure. This resource also needs to be protected from getting exhausted
-+by some malicious program and causing starvation for other programs.
-+
-+Encryption IDs controller provides capability to register the resource for
-+controlling and tracking through the cgroups.
-+
-+Encryption IDs Interface Files
-+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-+
-+Each encryption ID type have their own interface files,
-+encryption_id.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
-+sev-es.
-+
-+  encryption_ids.[ID TYPE].stat
-+        A read-only flat-keyed single value file. This file exists only in the
-+        root cgroup.
-+
-+        It shows the total number of encryption IDs available and currently in
-+        use on the platform::
-+          # cat encryption.sev.stat
-+          total 509
-+          used 0
-+
-+  encryption_ids.[ID TYPE].max
-+        A read-write file which exists on the non-root cgroups. File is used to
-+        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-+
-+        Limit can be set to max by::
-+          # echo max > encryption.sev.max
-+
-+        Limit can be set by::
-+          # echo 100 > encryption.sev.max
-+
-+        This file shows the max limit of the encryption ID in the cgroup::
-+          # cat encryption.sev.max
-+          max
-+
-+        OR::
-+          # cat encryption.sev.max
-+          100
-+
-+        Limits can be set more than the "total" capacity value in the
-+        encryption_ids.[ID TYPE].stat file, however, the controller ensures
-+        that the usage never exceeds the "total" and the max limit.
-+
-+  encryption_ids.[ID TYPE].current
-+        A read-only single value file which exists on non-root cgroups.
-+
-+        Shows the total number of encrypted IDs being used in the cgroup.
-+
-+Migration and Ownership
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+An encryption ID is charged to the cgroup in which it is used first, and
-+stays charged to that cgroup until that ID is freed. Migrating a process
-+to a different cgroup do not move the charge to the destination cgroup
-+where the process has moved.
-+
- Misc
- ----
- 
--- 
-2.29.2.576.ga3fc446d84-goog
+Thanks!
 
+
+> ---
+>  mm/memcontrol.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index b80328f52fb4..8818bf64d6fe 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5653,10 +5653,8 @@ static int mem_cgroup_move_account(struct page *page,
+>  			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+>  			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+>  			if (PageTransHuge(page)) {
+> -				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+> -						   -nr_pages);
+> -				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+> -						   nr_pages);
+> +				__dec_lruvec_state(from_vec, NR_ANON_THPS);
+> +				__inc_lruvec_state(to_vec, NR_ANON_THPS);
+>  			}
+>  
+>  		}
+> -- 
+> 2.11.0
+> 
