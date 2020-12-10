@@ -2,135 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDA02D5EBC
-	for <lists+cgroups@lfdr.de>; Thu, 10 Dec 2020 15:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6152D612B
+	for <lists+cgroups@lfdr.de>; Thu, 10 Dec 2020 17:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732154AbgLJO4N (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Dec 2020 09:56:13 -0500
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:35558 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727249AbgLJO4K (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Dec 2020 09:56:10 -0500
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEZ7N7088316;
-        Thu, 10 Dec 2020 09:54:09 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=VsCisPySZHG4Vff0eAvJw4F76GzoTiGXaBqWHoCkKF0=;
- b=H/i0vBJaVrEsIxTNzzpSFA/FCskUwAue6ja+2YX99G5xdQAchy5YHz28mh0jiokEVJh3
- cVZVOQaOOGLQHSbKM9vb4OlkQS0lpZNLgdmAh8uifjptyOloMlsBkGmjAkOL/h1hmyzo
- 5ANkm8pODhkiJfDX7wP2kvW+FVbcpDzP7v9QbxASmDfzsNGCUl8QrHMs+c0AZVs4IHoc
- r9bYF0tv/FR5mng22P6Rrs6Qc283dFG5Jc4L9VdSpX8y9OHnYyDSwE27LhruKR4v7YxK
- zypN7M+fXF08EenWsawvPzSRb+wz9CHSdTqjHIRc4bmgMRRK7ZcttZS5CtfejBDyWve/ 3Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu9187-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 09:54:09 -0500
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 0BAEWOAc069949;
-        Thu, 10 Dec 2020 09:54:08 -0500
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 35bndu916u-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 09:54:08 -0500
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 0BAEqWrN021791;
-        Thu, 10 Dec 2020 14:54:05 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma03fra.de.ibm.com with ESMTP id 3581u8rpv5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 10 Dec 2020 14:54:05 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 0BAEs30S33030568
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 10 Dec 2020 14:54:03 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1B3044C70D;
-        Thu, 10 Dec 2020 14:54:03 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0F63E4C70F;
-        Thu, 10 Dec 2020 14:54:02 +0000 (GMT)
-Received: from oc7455500831.ibm.com (unknown [9.171.88.139])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 10 Dec 2020 14:54:01 +0000 (GMT)
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-To:     Tejun Heo <tj@kernel.org>, Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20201209205413.3391139-1-vipinsh@google.com>
- <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-From:   Christian Borntraeger <borntraeger@de.ibm.com>
-Message-ID: <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com>
-Date:   Thu, 10 Dec 2020 15:54:01 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S2389430AbgLJQGk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Dec 2020 11:06:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47382 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392294AbgLJQGg (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Dec 2020 11:06:36 -0500
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D0CC0613CF
+        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:06:20 -0800 (PST)
+Received: by mail-wr1-x444.google.com with SMTP id r3so6052350wrt.2
+        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:06:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9EEM0AX878xSa8V2cvUDpTLDczQ0IGzyz0LRReW9tzA=;
+        b=dG3nDfcSFKcJqfMUlDBawK6U+/17xUIuG5w7oEcJKBYdW1zerFAMxTR27Vw3ED9rWV
+         aZ5xpsrUl1k/73I4w1FR6llyHh342rQEBBSuerrIpeeWaTwd0YgiGKLpWIRVtTWvd0Vr
+         OvEPfWDYhl0k31LxHGSu2Y79gbq2+C/UQRm4+nfafn5ylsnB1sL/jMp6VoQ1CSC8wFkX
+         TGklkiZNfuDYk9kbL+3VXuWSYYQ0/jsni1x+f55I0oy0LfaTM5ZgzIiw6+vZ2IaGg5TV
+         VkN2qdkxGVbKvtdqLvrMGA2oN0cFpRSU6eGeFz2VAY046PYj+H8zuJcV2RZuDHBwQt/o
+         VW3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9EEM0AX878xSa8V2cvUDpTLDczQ0IGzyz0LRReW9tzA=;
+        b=YX0/dWIOn8iPNZwBKbcY1WXuFhsdpsp4TZxO0tSlR3RwriwTJZlyNNB8wKAf5Kuz3f
+         pQpgDARjbfrsFrpcn1gf4QenIzEAKE9YXAJ8UN1EYSlw0+wxnWsrJI7gGbz+5BWj3fBx
+         LFAoSvVHGYZjWIfL+f4UFn0ou4UMJ0gzsnyGZHZBV5oI9FrDJNM/yb8EIqOfkLv+/BUE
+         Y55SlFqCneLn2sUUYlxXnnC7l+7ETugWOLbsb2AsOOznUaD3iW54HTq0SjWrQoxdzvSJ
+         M7kpFA5iIWHjs0mqRivTP8ufIveo6UBx18/J3Pd5wmmT1SohGzsdnQJPdBKf3AOIAYzx
+         Pl+A==
+X-Gm-Message-State: AOAM532TudZgv5y3ve6kfNF1+UyEf+emI0v72NqKSrPSl7YEMJ7WdOa9
+        xTxGIiyaiszpj+CotP3f5IAB9A==
+X-Google-Smtp-Source: ABdhPJwbsAebsVatgwJVP7G/BlySZfheiXSb2ekaT+aAULkzlUatfjHBeww5kzznvVZDMQ8OamZaBw==
+X-Received: by 2002:adf:9124:: with SMTP id j33mr8598967wrj.376.1607616379710;
+        Thu, 10 Dec 2020 08:06:19 -0800 (PST)
+Received: from localhost (p4fdabc80.dip0.t-ipconnect.de. [79.218.188.128])
+        by smtp.gmail.com with ESMTPSA id x7sm2719625wmi.11.2020.12.10.08.06.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 10 Dec 2020 08:06:19 -0800 (PST)
+Date:   Thu, 10 Dec 2020 17:04:13 +0100
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
+        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
+        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
+        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        cgroups@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
+Message-ID: <20201210160413.GH264602@cmpxchg.org>
+References: <20201206101451.14706-1-songmuchun@bytedance.com>
+ <20201206101451.14706-2-songmuchun@bytedance.com>
 MIME-Version: 1.0
-In-Reply-To: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2020-12-10_05:2020-12-09,2020-12-10 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxlogscore=999
- priorityscore=1501 adultscore=0 malwarescore=0 impostorscore=0 mlxscore=0
- lowpriorityscore=0 phishscore=0 clxscore=1011 spamscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2012100088
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201206101451.14706-2-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 09.12.20 21:58, Tejun Heo wrote:
-> Hello,
+On Sun, Dec 06, 2020 at 06:14:40PM +0800, Muchun Song wrote:
+> The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+> by one rather than nr_pages.
 > 
-> Rough take after skimming:
-> 
-> * I don't have an overall objection. In terms of behavior, the only thing
->   which stood out was input rejection depending on the current usage. The
->   preferred way of handling that is rejecting future allocations rather than
->   failing configuration as that makes it impossible e.g. to lower limit and
->   drain existing usages from outside the container.
-> 
-> * However, the boilerplate to usefulness ratio doesn't look too good and I
->   wonder whether what we should do is adding a generic "misc" controller
->   which can host this sort of static hierarchical counting. I'll think more
->   on it.
+> Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-We first dicussed to have
-encryption_ids.stat
-encryption_ids.max
-encryption_ids.current
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-and we added the sev in later, so that we can also have tdx, seid, sgx or whatever.
-Maybe also 2 or more things at the same time.
+But please change the subject to
 
-Right now this code has
-
-encryption_ids.sev.stat
-encryption_ids.sev.max
-encryption_ids.sev.current
-
-And it would be trivial to extend it to have
-encryption_ids.seid.stat
-encryption_ids.seid.max
-encryption_ids.seid.current
-on s390 instead (for our secure guests).
-
-So in the end this is almost already a misc controller, the only thing that we
-need to change is the capability to also define things other than encryption.*.*
-And of course we would need to avoid adding lots of random garbage to such a thing.
-
-But if you feel ok with the burden to keep things kind of organized a misc
-controller would certainly work for the encryption ID usecase as well. 
-So I would be fine with the thing as is or a misc controlĺer.
-
-Christian
+	'mm: memcontrol: fix NR_ANON_THPS accounting in charge moving'
