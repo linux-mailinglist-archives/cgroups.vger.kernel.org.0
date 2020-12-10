@@ -2,91 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F5EA2D4C5A
-	for <lists+cgroups@lfdr.de>; Wed,  9 Dec 2020 22:00:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E54C22D5051
+	for <lists+cgroups@lfdr.de>; Thu, 10 Dec 2020 02:25:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725968AbgLIU7t (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 9 Dec 2020 15:59:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726501AbgLIU7q (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Dec 2020 15:59:46 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C01A8C0613CF;
-        Wed,  9 Dec 2020 12:59:05 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id l7so1324149qvt.4;
-        Wed, 09 Dec 2020 12:59:05 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
-        b=gphtz3zP8o+6zS3N+NSHv4/V28d6PSJir32f2MrZa2gKRKJDXP6TvwxbeBOq3deiDV
-         LlTp1Xc1fAAHw05jQqUsRiHBgY+ruguxqVbvb5cIlP3sy2WcS9YLU0Q5r6+dgB/iJTKB
-         vXdpg4K3iNVlSaW+QLGwC6orshyfnLvJ2mg0jYpB8AYnV66ox0Dd0Tv1asOBtczplSjD
-         YDAeLZ7WJooce78KC5lMONcwo6GD3XoXqxfLF58l8ufOJZp/UuMkKulOibk9ILEZpfhj
-         AkwSNALY3spqQNHSCUdoyrkmftK/32r7rM91m9khiDAb+5KieKcWlZ8xJIKJ13BZCNCP
-         oSGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=hLr4IoNk4mXvkDggJZgGkE0Lh0R6y+fsYHaJEGIfuuc=;
-        b=sMiJld+mKPSEiab5L9VVUpfoI4QMQXez3EYYuCh7A/HVfx6VfY49p9B519aPlCzrgz
-         k/XSEUEIwKzHm2N8Qx/9cuDZgZ90b2uOqBooCOJ1pr5MjuhuUUOATNLS8knHRB+u2u4K
-         EiXofb+1CzvPdoyfGMv5txTVTruMzSF+rPX/9gTRHdOodTt1pwivscJEbvSkWWFrqIXJ
-         wjHtXWIubw84ep9AMiCW5m3LoNOmSpJFmSTDVgwLwBy1fV+55X9Fj0mjXlDqybHhgo5j
-         j/7QNq1atbuIS78niFDvHb+2IOfgwHmkRhVL+W44i0peh8oUDPe9bXcs+mGBaJSgTw7M
-         BcJQ==
-X-Gm-Message-State: AOAM533F3D6rIWACzMtRKjcct3pXNoSUbMt9Nwcem4MjJpWc2SO3Hcxh
-        LjA+cy7IK2Xg6zeA/cD7B0M=
-X-Google-Smtp-Source: ABdhPJzok1orIEivGtZa4Drbbb5H+ooHUn+MU52a1sHSyGUAYRV1MwsFMFwtfkzWtn77HZnXC/7jYQ==
-X-Received: by 2002:a0c:8e47:: with SMTP id w7mr4983903qvb.55.1607547544798;
-        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:9bbd])
-        by smtp.gmail.com with ESMTPSA id f185sm1971959qkb.119.2020.12.09.12.59.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 09 Dec 2020 12:59:04 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 9 Dec 2020 15:58:33 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-Message-ID: <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
-References: <20201209205413.3391139-1-vipinsh@google.com>
+        id S1731917AbgLJBXS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 9 Dec 2020 20:23:18 -0500
+Received: from szxga07-in.huawei.com ([45.249.212.35]:9416 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1731652AbgLJBXJ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 9 Dec 2020 20:23:09 -0500
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Crx312lmZz7C5k;
+        Thu, 10 Dec 2020 09:21:49 +0800 (CST)
+Received: from localhost.localdomain.localdomain (10.175.113.25) by
+ DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
+ 14.3.487.0; Thu, 10 Dec 2020 09:22:12 +0800
+From:   Qinglang Miao <miaoqinglang@huawei.com>
+To:     Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>
+CC:     <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        Qinglang Miao <miaoqinglang@huawei.com>
+Subject: [PATCH v2] cgroup: Fix memory leak when parsing multiple source parameters
+Date:   Thu, 10 Dec 2020 09:29:43 +0800
+Message-ID: <20201210012943.92845-1-miaoqinglang@huawei.com>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20201209121322.77665-1-miaoqinglang@huawei.com>
+References: <20201209121322.77665-1-miaoqinglang@huawei.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201209205413.3391139-1-vipinsh@google.com>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.113.25]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+A memory leak is found in cgroup1_parse_param() when multiple source
+parameters overwrite fc->source in the fs_context struct without free.
 
-Rough take after skimming:
+unreferenced object 0xffff888100d930e0 (size 16):
+  comm "mount", pid 520, jiffies 4303326831 (age 152.783s)
+  hex dump (first 16 bytes):
+    74 65 73 74 6c 65 61 6b 00 00 00 00 00 00 00 00  testleak........
+  backtrace:
+    [<000000003e5023ec>] kmemdup_nul+0x2d/0xa0
+    [<00000000377dbdaa>] vfs_parse_fs_string+0xc0/0x150
+    [<00000000cb2b4882>] generic_parse_monolithic+0x15a/0x1d0
+    [<000000000f750198>] path_mount+0xee1/0x1820
+    [<0000000004756de2>] do_mount+0xea/0x100
+    [<0000000094cafb0a>] __x64_sys_mount+0x14b/0x1f0
 
-* I don't have an overall objection. In terms of behavior, the only thing
-  which stood out was input rejection depending on the current usage. The
-  preferred way of handling that is rejecting future allocations rather than
-  failing configuration as that makes it impossible e.g. to lower limit and
-  drain existing usages from outside the container.
+Fix this bug by permitting a single source parameter and rejecting with
+an error all subsequent ones.
 
-* However, the boilerplate to usefulness ratio doesn't look too good and I
-  wonder whether what we should do is adding a generic "misc" controller
-  which can host this sort of static hierarchical counting. I'll think more
-  on it.
+Fixes: 8d2451f4994f ("cgroup1: switch to option-by-option parsing")
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Qinglang Miao <miaoqinglang@huawei.com>
+---
+ v1->v2: fix compile problems caused by superfluous LF in err message.
+ kernel/cgroup/cgroup-v1.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-Thanks.
-
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index 191c329e4..32596fdbc 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -908,6 +908,8 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ 	opt = fs_parse(fc, cgroup1_fs_parameters, param, &result);
+ 	if (opt == -ENOPARAM) {
+ 		if (strcmp(param->key, "source") == 0) {
++			if (fc->source)
++				return invalf(fc, "Multiple sources not supported");
+ 			fc->source = param->string;
+ 			param->string = NULL;
+ 			return 0;
 -- 
-tejun
+2.23.0
+
