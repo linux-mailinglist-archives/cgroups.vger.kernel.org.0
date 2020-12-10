@@ -2,94 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 705C82D61F0
-	for <lists+cgroups@lfdr.de>; Thu, 10 Dec 2020 17:33:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA822D62B4
+	for <lists+cgroups@lfdr.de>; Thu, 10 Dec 2020 17:58:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2391279AbgLJQbS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 10 Dec 2020 11:31:18 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47144 "EHLO
+        id S2392445AbgLJQ5e (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 10 Dec 2020 11:57:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391791AbgLJQFC (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Dec 2020 11:05:02 -0500
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D3CAC061794
-        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:04:21 -0800 (PST)
-Received: by mail-wr1-x443.google.com with SMTP id r14so6029187wrn.0
-        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:04:21 -0800 (PST)
+        with ESMTP id S2392440AbgLJQ5Q (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 10 Dec 2020 11:57:16 -0500
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC14CC061794
+        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:56:36 -0800 (PST)
+Received: by mail-pg1-x541.google.com with SMTP id w5so3979858pgj.3
+        for <cgroups@vger.kernel.org>; Thu, 10 Dec 2020 08:56:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=6Uj7y3A8V2AwfLN+Pqn8MEopt38Al+RWbGM3+oeOM5I=;
-        b=C1AKu65PSoE7zQcCNy0JQRQoNgwkUc0P9zhgctECcKh2D2QvnaGL/kiQGLaAUPEWaf
-         ORRPEgv7zEwgBlOYKCoVem69+rPqrnkmdBRJTX9zh7pZS/K+n5f0RtDYbXvWCUp0JRpo
-         0wXQoSNA4pBGbpwJHKw6jX94wupKYKqYIe4yRh5fGSGwsyg0pIAwgOZeNPYdzmtWrckV
-         N14VPhHIRFwm7QftCfbb0M16p+2BInbAx6gHoZkqXnWuG3zEExM2DTEP4aA5k8V3ydJa
-         O4ze2uJfmUW6B2iTyHyVzbAn2dQt6f22d3RxlIZqOO6F5ZWBz65O3UvSHF0zV+vhT95C
-         Wr3Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WNgKN7a4ded1LeBkq8RoIInVbovzz2QvQreFxC7eifA=;
+        b=ngrw6r3STU/Y2YvnJY7eQsNYC2nhNp7w0fatD7eeX09k8h47QOCikE0TwWuSgtp318
+         UpbWRrRKJw+AxR0sEi/HWSxsLXfRq8h5A6rL3xl/+vhPCJLuOKcE6PHAYgcX6CVcj96r
+         ozPHOIebKkCQ2dasDIPUEULrRnSmQmY7edbwfV7AnRzgnQAd7Z4tGMVR+s+uNSdVjwoa
+         3Ybb4So9apwKgYFpDY0Va15eDsYUnFOYSOA9122EdxeG8SAekN3QckiVt4NIIQ2p8ogh
+         +LzA6FY+N50reiNcOrc0ywGp3fholP1Vxp1Lk6qEGtbrgH58W+2Rm7GEB7Pt5Mfs0l5R
+         Ud6A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=6Uj7y3A8V2AwfLN+Pqn8MEopt38Al+RWbGM3+oeOM5I=;
-        b=bQMGGTLeff/rO+voASQkpQD2b7T6ZAlLheUPMqZZPywywCDLjjcTGsjPcA5cAoO6cX
-         LooCF1nJHN8BKwxHE42QfqxxEgQOv6jkfhSX0LdX4tUZBdtj+K0uAI157VpNwKpByKp7
-         +TzUYU9rMgzanP9PEM8vh1DSSFCVvzi6gyi72QDOwStpn7bhrY01AfkXYKiCCIq8Ece0
-         YWOgYQ/rV9fyCAI0Cxrodg+OgPKSON65E0cMm9emx14BQ3ARfBB5UgVnoCz6IhVn/ZXn
-         YEJ03iYzy+GrDbz2Sf7CcEL3L2KelsXvr+zq5bChUOS2/2A487A7KJ+FpMrs6RDOfMYt
-         fuaA==
-X-Gm-Message-State: AOAM532fOBHUBnMa5b974lIvsPzYyNtjg+iJzEb2eeB5PDVJ90fsJWXz
-        tjKzY0/7cRajcfVu1LxfPC/D9g==
-X-Google-Smtp-Source: ABdhPJxAhmFLnIoY010MjFHtQXoLlmelUaEajcB2sidw/qB+PZ2ByzxgE4Jc6uiPBxPmNyTH1CpVhA==
-X-Received: by 2002:adf:fa05:: with SMTP id m5mr9203280wrr.26.1607616260242;
-        Thu, 10 Dec 2020 08:04:20 -0800 (PST)
-Received: from localhost (p4fdabc80.dip0.t-ipconnect.de. [79.218.188.128])
-        by smtp.gmail.com with ESMTPSA id k1sm9968055wrp.23.2020.12.10.08.04.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 10 Dec 2020 08:04:19 -0800 (PST)
-Date:   Thu, 10 Dec 2020 17:02:14 +0100
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
-        akpm@linux-foundation.org, mhocko@kernel.org,
-        vdavydov.dev@gmail.com, hughd@google.com, will@kernel.org,
-        guro@fb.com, rppt@kernel.org, tglx@linutronix.de, esyr@redhat.com,
-        peterx@redhat.com, krisman@collabora.com, surenb@google.com,
-        avagin@openvz.org, elver@google.com, rdunlap@infradead.org,
-        iamjoonsoo.kim@lge.com, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        cgroups@vger.kernel.org
-Subject: Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix NR_ANON_THPS account
-Message-ID: <20201210160214.GG264602@cmpxchg.org>
-References: <20201206101451.14706-1-songmuchun@bytedance.com>
- <20201206101451.14706-2-songmuchun@bytedance.com>
- <20201210160045.GF264602@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNgKN7a4ded1LeBkq8RoIInVbovzz2QvQreFxC7eifA=;
+        b=Xqiy+c76+u1tCxru2YA/jvhFo/+S0WaBcN8LXxh/ZMVyWxuyJLB4eu9YIi0GU9lMEb
+         WW3PIi4twyOQ49Y6JgJrDY4kb/NYybQVKna/VI50RUyn1LrN8DioN3zJESFUAiM8XFOE
+         lzuOvsYhgCGoCJ0Lhzl0cRuYuERZ7grRh+PC4dB2fBRnGQPRpzV08BQnzR5r/IkNl/eQ
+         XUrJhHNLRbysfZu3qlKvEYnsenLSugb+SuLM5tQHe76YPqrGJFhHms2Y+NJgB+UKmpq+
+         rhKkwa7A7sAhnaXvpOMNSdWD25MY2fenCscdduMN7zQDASO9neY01ezQjspa/Wy159C6
+         jYww==
+X-Gm-Message-State: AOAM5307cBdcz4n7+IpQeyYffr4ftKedApK12FNYUZiJl5wLvTfSONCG
+        ozVk8h353Vqp8lDMfMR+xo1cqrs+L/HhtaP/oBlKuA==
+X-Google-Smtp-Source: ABdhPJy9pD/1lJ2qDgAePSWfoMb1GSMyq/JYmVxrm4dOjUbd/QptTorDHdnT6QbcEBnOyfTp+iPIECjZd6VjWW8O9JQ=
+X-Received: by 2002:a63:c15:: with SMTP id b21mr7349998pgl.341.1607619396305;
+ Thu, 10 Dec 2020 08:56:36 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201210160045.GF264602@cmpxchg.org>
+References: <20201206101451.14706-1-songmuchun@bytedance.com>
+ <20201206101451.14706-2-songmuchun@bytedance.com> <20201210160413.GH264602@cmpxchg.org>
+In-Reply-To: <20201210160413.GH264602@cmpxchg.org>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 11 Dec 2020 00:56:00 +0800
+Message-ID: <CAMZfGtVqwUdXjS4WL97XUcrV4=U2si3pkcoeLbQbeS=k1uMgdA@mail.gmail.com>
+Subject: Re: [External] Re: [RESEND PATCH v2 01/12] mm: memcontrol: fix
+ NR_ANON_THPS account
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Hugh Dickins <hughd@google.com>, Will Deacon <will@kernel.org>,
+        Roman Gushchin <guro@fb.com>, Mike Rapoport <rppt@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, esyr@redhat.com,
+        peterx@redhat.com, krisman@collabora.com,
+        Suren Baghdasaryan <surenb@google.com>, avagin@openvz.org,
+        Marco Elver <elver@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Dec 10, 2020 at 05:00:47PM +0100, Johannes Weiner wrote:
+On Fri, Dec 11, 2020 at 12:06 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
 > On Sun, Dec 06, 2020 at 06:14:40PM +0800, Muchun Song wrote:
 > > The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
 > > by one rather than nr_pages.
-> 
-> This is a real bug, thanks for catching it.
-> 
-> However, your patch changes the user-visible output of /proc/vmstat!
-> 
-> NR_ANON_THPS isn't just used by memcg, it's a generic accounting item
-> of the memory subsystem. See this from the Fixes:-patch:
-> 
-> -                       __inc_node_page_state(page, NR_ANON_THPS);
-> +                       __inc_lruvec_page_state(page, NR_ANON_THPS);
-> 
-> While we've considered /proc/vmstat less official than other files
-> like meminfo, and have in the past freely added and removed items,
-> changing the unit of an existing one is not going to work.
+> >
+> > Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> But please change the subject to
+>
+>         'mm: memcontrol: fix NR_ANON_THPS accounting in charge moving'
 
-Argh, I hit send instead of cancel after noticing that I misread your
-patch completely. Scratch what I wrote above.
+OK. Will do that. Thanks.
+
+-- 
+Yours,
+Muchun
