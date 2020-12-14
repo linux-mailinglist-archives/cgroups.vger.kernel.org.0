@@ -2,51 +2,46 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E93892D8C7E
-	for <lists+cgroups@lfdr.de>; Sun, 13 Dec 2020 10:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B24632DB059
+	for <lists+cgroups@lfdr.de>; Tue, 15 Dec 2020 16:45:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728444AbgLMJUV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 13 Dec 2020 04:20:21 -0500
-Received: from server.kenspensetc.com ([185.148.128.76]:37036 "EHLO
-        server.kenspensetc.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728170AbgLMJUV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 13 Dec 2020 04:20:21 -0500
-Received: from localhost ([127.0.0.1]:46068 helo=server.kenspensetc.com)
-        by server.kenspensetc.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <sender@ridecals.com>)
-        id 1knKOH-0005ot-Ae; Thu, 10 Dec 2020 06:45:45 -0500
-Received: from [70.32.0.46] ([70.32.0.46]) by ridecals.com (Horde Framework)
- with HTTPS; Thu, 10 Dec 2020 06:45:45 -0500
-Date:   Thu, 10 Dec 2020 06:45:45 -0500
-Message-ID: <20201210064545.Horde.s3gci1V59B32CudeRfyzWmv@ridecals.com>
-From:   Russell Branting <sender@ridecals.com>
-Subject: Vital
-Reply-to: Goodagent01@gmail.com
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+        id S1728806AbgLOPoH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 15 Dec 2020 10:44:07 -0500
+Received: from 31.153.152.190.static.anycast.cnt-grms.ec ([190.152.153.31]:10400
+        "EHLO GESTOR-LDAP.localdomain" rhost-flags-OK-FAIL-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1730329AbgLOPn4 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 15 Dec 2020 10:43:56 -0500
+X-Greylist: delayed 25427 seconds by postgrey-1.27 at vger.kernel.org; Tue, 15 Dec 2020 10:43:56 EST
+Received: from 127.0.0.1 (localhost [127.0.0.1])
+        by GESTOR-LDAP.localdomain (Postfix) with SMTP id B196614A4A6;
+        Mon, 14 Dec 2020 14:03:18 -0500 (ECT)
+Received: from [134.116.100.224] by 127.0.0.1 with ESMTP id 13328480; Mon, 14 Dec 2020 20:55:58 +0200
+Message-ID: <9w8i-35w20$x@u5x9aam>
+From:   "United Nations Covid-19 Relief Unit" <sangiorgio@aclipisa.it>
+Reply-To: "United Nations Covid-19 Relief Unit" <sangiorgio@aclipisa.it>
+To:     mdbe46a@prodigy.com
+Subject: !!! Ask Details For Relief
+Date:   Mon, 14 Dec 20 20:55:58 GMT
+X-Mailer: Microsoft Outlook Express 5.50.4133.2400
 MIME-Version: 1.0
-Content-Disposition: inline
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - server.kenspensetc.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - ridecals.com
-X-Get-Message-Sender-Via: server.kenspensetc.com: authenticated_id: sender9@ridecals.com
-X-Authenticated-Sender: server.kenspensetc.com: sender9@ridecals.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: multipart/alternative;
+        boundary="_7_21F95.A__7.1"
+X-Priority: 3
+X-MSMail-Priority: Normal
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 
-I am instructed to inform you of your appointment as the next of kin  
-to your deceased relative estate. Kindly indicate your acceptance by  
-reconfirming your Full Name, Address & Phone Number for immediate  
-processing of the funds release to your control OR the deceased  
-deposited funds will be declared unclaimed.
+--_7_21F95.A__7.1
+Content-Type: text/plain;
+Content-Transfer-Encoding: quoted-printable
 
+You has been chosen via E-mail for the United Nations Covid-19 Relief F un=
+d, for more details reply to  sangiorgio@aclipisa.it
+
+Best regards,
+Dr. Susan Marshal
+
+--_7_21F95.A__7.1--
 
