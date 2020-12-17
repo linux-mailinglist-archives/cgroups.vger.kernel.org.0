@@ -2,119 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 004572DC781
-	for <lists+cgroups@lfdr.de>; Wed, 16 Dec 2020 21:04:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D9302DCB66
+	for <lists+cgroups@lfdr.de>; Thu, 17 Dec 2020 04:46:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728699AbgLPUDh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 16 Dec 2020 15:03:37 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35388 "EHLO
+        id S1728031AbgLQDqV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 16 Dec 2020 22:46:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50310 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728688AbgLPUDh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Dec 2020 15:03:37 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97967C061794
-        for <cgroups@vger.kernel.org>; Wed, 16 Dec 2020 12:02:56 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id u18so51501993lfd.9
-        for <cgroups@vger.kernel.org>; Wed, 16 Dec 2020 12:02:56 -0800 (PST)
+        with ESMTP id S1727233AbgLQDqV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 16 Dec 2020 22:46:21 -0500
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 544D1C0617A7
+        for <cgroups@vger.kernel.org>; Wed, 16 Dec 2020 19:45:35 -0800 (PST)
+Received: by mail-pl1-x62c.google.com with SMTP id e2so7228091plt.12
+        for <cgroups@vger.kernel.org>; Wed, 16 Dec 2020 19:45:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+T1M0djTrVYMWMJ7UcJwx0tkQ79zd8SuUMW71DQVsS0=;
-        b=q+DyxhaxnPb/nH8qJzxHDRUDbs6pwrBVZw6PzpLeFo3wtldBNCEn4e64bSK0nhLF5X
-         QvBT/wceHb8MK7Fm6YtVe7alN3zuwE0T3jaFFX9VRfhZKifVX3CDGzSjGXXVAJJpXSLk
-         BYqUA0lzyEkYCfA/0WuODCJH5mOGW4V8P0cbCJlM2NdsPkwY5ZpUVEVBumz8vq3xmZQm
-         PQyEwimqMI9kswHp6aDK7UXpsBu5joatambFWqpECUHqscsjIaEKpGZiYFMen0Kf3XVW
-         Q8YKf8+FVjWvyXB/rJ0RfDFFi19z72HtGBVwOT5yFzE5kLAsEpDIgG2ZzYj5KaG1wkfA
-         IjGQ==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o4lGSGZVjS2zM9d6QEvl1MhzyKEShz6mJMJJf7kQ2hE=;
+        b=RNf3Dpg13GyOC+Rnz6oHHcpZJm6x4wLec34gX8LW2PY+tgTEHYPASoLI3SjWpyuvpr
+         PJKZITynoHyKerkjOraWy8X6GU1t/uh7J7krDDvDGTvX8NMpdMupZuMDenJknjMQrxIO
+         gqsUZf1p6a1RnIjVIuCggKuEkiRmD6t1nCPPWA/q5BtIcwjxJJcwwEDPKzWA3NMR8r1T
+         sF6dtSg5yKKij6ZsXMchNYGUrP/54jW5LFsMCzMpl8AlrDas2jXmN61q10diZCpGe0oJ
+         HZ94nYZ0FNWOK/3oGaxwNf5gL2oWaf19zJ90XfdN7aZkgrl9n9EkcRwCWNn8wrFblc7E
+         sdEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+T1M0djTrVYMWMJ7UcJwx0tkQ79zd8SuUMW71DQVsS0=;
-        b=PWK6WKcvdXB3JBELW97b3xJA+Uh3QP/wqV46xq6Y0UGTnD2HUtC93CemBG+SOZYbNB
-         7KVlIIl9KmGqdlXRWDdiJsAPIA2TEE4ucV399zUPqmyT6ks45AP+tqJk9PRxIBwS9Ho1
-         d/7i+PyJjfo9OzTmuakh6luQpJh5RwCLqsen437/GEe1zErzS/tR6/TUzR0d6KZmjtkg
-         jQkd5MMFMHixO3n2OubxMPfMyIGBRJmx8Mio531F9kSWjnkEHze5/bzS0lKnu8YXTCAk
-         z6tceLBmn46IZhKSaW582UOTDTQtYPD3I3KdfBoUHYt9LsvgOCkrbW7zWsyoNVtVCZo/
-         ph3g==
-X-Gm-Message-State: AOAM531mZygZIk3SB1N+/uZBZyx8V0a1y3SDy1GQicMz44oh4sjS7dzN
-        bUrsWMQAa5K8FhpNqhvvSsItE30Z/tgf9T8DOCoqhA==
-X-Google-Smtp-Source: ABdhPJwIsp1KYDGfDYl/qLLsUR1dFSzUtaS6n+MO1KkOUvZ4UrkSMNj8fmCA+zqoeFpXCBoAmALBMZNzzSZUYt5+MhQ=
-X-Received: by 2002:a19:4813:: with SMTP id v19mr14625283lfa.655.1608148974571;
- Wed, 16 Dec 2020 12:02:54 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=o4lGSGZVjS2zM9d6QEvl1MhzyKEShz6mJMJJf7kQ2hE=;
+        b=uMtQBUe3ybkMqQJ8mBm3n3k6jCIzqiESjV+Qqp/z6B03d4GKA2M3TYOEPcMEApLT7J
+         4oFU0DHr3JesuJT9CzdqTYA8PlZPQX2TNRKKxjmrvvDk4E530FZxjd0llHBeqFr+M7v3
+         bX7pUVC7QxDv2FBnj+lQVqLP8HDurfGEOi74VswCYBXoqoIbMVKrJPl9ImyRN3c5Iz6s
+         SxzDyPVWPnkze6Ulb/xkiZ6cJT6bJIJsxUTJ1UUZlU3KWalgFU1+GYA8tT4SI3BBIzlI
+         ACnSO0lp3jyXl/B+pxI2gZatKRBFQWG8M23BjoHrxgX2UEHS93lbrCsv0RTIXfLF5eyh
+         tayg==
+X-Gm-Message-State: AOAM532LlsFgYXsvXJ0y/Mx4NZ+oIIb7zV6o5Yt6a8BX45n1RVdHPdLg
+        ar5zqw6peA96a91b6vqQNCnItQ==
+X-Google-Smtp-Source: ABdhPJxLSVMDVAZYEz3Ed50Gw3WMb56PvS+zSziMjU8RzLK8WmLR9X058TqqCeEh1d6UY/e6Mof2zg==
+X-Received: by 2002:a17:902:76c2:b029:dc:1aa4:28f1 with SMTP id j2-20020a17090276c2b02900dc1aa428f1mr4474288plt.79.1608176734812;
+        Wed, 16 Dec 2020 19:45:34 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.237])
+        by smtp.gmail.com with ESMTPSA id b2sm3792412pfo.164.2020.12.16.19.45.27
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 16 Dec 2020 19:45:34 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
+        akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
+        vdavydov.dev@gmail.com, hughd@google.com, shakeelb@google.com,
+        guro@fb.com, samitolvanen@google.com, feng.tang@intel.com,
+        neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v5 0/7] Convert all THP vmstat counters to pages
+Date:   Thu, 17 Dec 2020 11:43:49 +0800
+Message-Id: <20201217034356.4708-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-References: <20201209205413.3391139-1-vipinsh@google.com> <X9E6eZaIFDhzrqWO@mtj.duckdns.org>
- <4f7b9c3f-200e-6127-1d94-91dd9c917921@de.ibm.com> <5f8d4cba-d3f-61c2-f97-fdb338fec9b8@google.com>
- <X9onUwvKovJeHpKR@mtj.duckdns.org>
-In-Reply-To: <X9onUwvKovJeHpKR@mtj.duckdns.org>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Wed, 16 Dec 2020 12:02:37 -0800
-Message-ID: <CAHVum0dS+QxWFSK+evxQtZDHkZZx9pr0m_jEDHc9ovd5jQcfaA@mail.gmail.com>
-Subject: Re: [Patch v3 0/2] cgroup: KVM: New Encryption IDs cgroup controller
-To:     Tejun Heo <tj@kernel.org>
-Cc:     David Rientjes <rientjes@google.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
-        Sean Christopherson <seanjc@google.com>, lizefan@huawei.com,
-        hannes@cmpxchg.org, Janosch Frank <frankja@linux.ibm.com>,
-        corbet@lwn.net, joro@8bytes.org, vkuznets@redhat.com,
-        wanpengli@tencent.com, Jim Mattson <jmattson@google.com>,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Matt Gingell <gingell@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Dec 9, 2020 at 12:59 PM Tejun Heo <tj@kernel.org> wrote:
-> * I don't have an overall objection. In terms of behavior, the only thing
->   which stood out was input rejection depending on the current usage. The
->   preferred way of handling that is rejecting future allocations rather than
->   failing configuration as that makes it impossible e.g. to lower limit and
->   drain existing usages from outside the container.
+This patch series is aimed to convert all THP vmstat counters to pages.
 
-Thanks. In next version of the patch I will remove rejection of max value
-based on current usage.
+The unit of some vmstat counters are pages, some are bytes, some are
+HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
+counters to the userspace, we have to know the unit of the vmstat counters
+is which one. When the unit is bytes or kB, both clearly distinguishable
+by the B/KB suffix. But for the THP vmstat counters, we may make mistakes.
 
-On Wed, Dec 16, 2020 at 7:27 AM Tejun Heo <tj@kernel.org> wrote:
-> On Thu, Dec 10, 2020 at 03:44:35PM -0800, David Rientjes wrote:
-> > Concern with a single misc controller would be that any subsystem that
-> > wants to use it has to exactly fit this support: current, max, stat,
-> > nothing more.  The moment a controller needs some additional support, and
-> > its controller is already implemented in previous kernel versionv as a
-> > part of "misc," we face a problem.
->
-> Yeah, that's a valid concern, but given the history, there doesn't seem to
-> be much need beyond that for these use cases and the limited need seems
-> inherent to the way the resources are defined and consumed. So yeah, it can
-> either way.
+For example, the below is some bug fix for the THP vmstat counters:
 
-I think a misc controller should be able support other "Resource Distribution
-Models" mentioned in the cgroup v2 documentation besides limits. There might be
-use cases in future which want to use weight, protection or allocation models.
-If that happens it will be more difficult to support these different resources.
-This will also mean the same hierarchy might get charged differently by the
-same controller.
+  - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
+  - The first commit in this series ("fix NR_ANON_THPS accounting in charge moving")
 
-I like the idea of having a separate controller to keep the code simple and
-easier for maintenance.
+This patch series can make the code clear. And make all the unit of the THP
+vmstat counters in pages. Finally, the unit of the vmstat counters are
+pages, kB and bytes. The B/KB suffix can tell us that the unit is bytes
+or kB. The rest which is without suffix are pages.
 
-If you decide to have a separate misc controller please let me know what will
-be the overall expectations and I can change my patch to reflect that,
-otherwise I can send out a new patch with just removal of max input rejection.
+In this series, I changed the following vmstat counters unit from HPAGE_PMD_NR
+to pages. However, there is no change to the print format of output to user
+space.
 
-My understanding with a "misc" controller is it will be something like
-- cgroup v2
-  cgroup/misc.encryption_ids.{sev, tdx, seid}.{stat, max, current}
+  - NR_ANON_THPS
+  - NR_FILE_THPS
+  - NR_SHMEM_THPS
+  - NR_SHMEM_PMDMAPPED
+  - NR_FILE_PMDMAPPED
 
-- cgroup v1
-  cgroup/misc/misc.encryption_ids.{sev, tdx, seid}.{stat, max, current}
+Doing this also can make the statistics more accuracy for the THP vmstat
+counters. This series is consistent with 8f182270dfec ("mm/swap.c: flush lru
+pvecs on compound page arrival").
 
-Thanks
-Vipin
+Because we use struct per_cpu_nodestat to cache the vmstat counters, which
+leads to inaccurate statistics expecially THP vmstat counters. In the systems
+with hundreads of processors it can be GBs of memory. For example, for a 96
+CPUs system, the threshold is the maximum number of 125. And the per cpu
+counters can cache 23.4375 GB in total.
+
+The THP page is already a form of batched addition (it will add 512 worth of
+memory in one go) so skipping the batching seems like sensible. Although every
+THP stats update overflows the per-cpu counter, resorting to atomic global
+updates. But it can make the statistics more accuracy for the THP vmstat
+counters. From this point of view, I think that do this converting is
+reasonable.
+
+Thanks Hugh for mentioning this. This was inspired by Johannes and Roman.
+Thanks to them.
+
+Changes in v4 -> v5:
+  - Add motivation to each patch. Thanks to Michal.
+  - Replace some HPAGE_PMD_NR to thp_nr_pages(). Thanks to Matthew.
+
+Changes in v3 -> v4:
+  - Rename the first commit subject to "mm: memcontrol: fix NR_ANON_THPS
+    accounting in charge moving".
+  - Fix /proc/vmstat printing. Thanks to Johannes points out that.
+
+Changes in v2 -> v3:
+  - Change the series subject from "Convert all vmstat counters to pages or bytes"
+    to "Convert all THP vmstat counters to pages".
+  - Remove convert of KB to B.
+
+Changes in v1 -> v2:
+  - Change the series subject from "Convert all THP vmstat counters to pages"
+    to "Convert all vmstat counters to pages or bytes".
+  - Convert NR_KERNEL_SCS_KB account to bytes.
+  - Convert vmstat slab counters to bytes.
+  - Remove {global_}node_page_state_pages.
+
+Muchun Song (7):
+  mm: memcontrol: fix NR_ANON_THPS accounting in charge moving
+  mm: memcontrol: convert NR_ANON_THPS account to pages
+  mm: memcontrol: convert NR_FILE_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_THPS account to pages
+  mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
+  mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
+  mm: memcontrol: make the slab calculation consistent
+
+ drivers/base/node.c    |  27 +++++-----
+ fs/proc/meminfo.c      |  10 ++--
+ include/linux/mmzone.h |  14 ++++++
+ mm/filemap.c           |   4 +-
+ mm/huge_memory.c       |  11 +++--
+ mm/khugepaged.c        |   6 ++-
+ mm/memcontrol.c        | 132 +++++++++++++++++++++++--------------------------
+ mm/page_alloc.c        |   7 ++-
+ mm/rmap.c              |  26 ++++++----
+ mm/shmem.c             |   2 +-
+ mm/vmstat.c            |  11 ++++-
+ 11 files changed, 139 insertions(+), 111 deletions(-)
+
+-- 
+2.11.0
+
