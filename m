@@ -2,52 +2,52 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 944CC2E0490
-	for <lists+cgroups@lfdr.de>; Tue, 22 Dec 2020 04:04:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F2D6F2E04CD
+	for <lists+cgroups@lfdr.de>; Tue, 22 Dec 2020 04:39:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726045AbgLVDCc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 21 Dec 2020 22:02:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47104 "EHLO
+        id S1726112AbgLVDjm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 21 Dec 2020 22:39:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52840 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726044AbgLVDCb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Dec 2020 22:02:31 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1E00C0613D6
-        for <cgroups@vger.kernel.org>; Mon, 21 Dec 2020 19:01:51 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id l23so563933pjg.1
-        for <cgroups@vger.kernel.org>; Mon, 21 Dec 2020 19:01:51 -0800 (PST)
+        with ESMTP id S1725783AbgLVDjl (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 21 Dec 2020 22:39:41 -0500
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4170DC0613D6
+        for <cgroups@vger.kernel.org>; Mon, 21 Dec 2020 19:39:01 -0800 (PST)
+Received: by mail-pf1-x429.google.com with SMTP id q22so7644660pfk.12
+        for <cgroups@vger.kernel.org>; Mon, 21 Dec 2020 19:39:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:in-reply-to:message-id:references
          :user-agent:mime-version;
-        bh=xZEe9nKbt22VK8Tq7L3dwCEv8d6KPrIVgCMxlhwxx3Q=;
-        b=ToNIvWYMRuu67rHR26AoZ8LITvFFxwKDzFXUBeCMHNVl9SKWs2JiL/rESRW/P6aWJy
-         K6uYZlQtdKrjpUypOhtUEmTbzBVZ1JnAbGM/S6YJMjCxSnF+nSUXZCn3KOFY2LvCS6yz
-         yc7Ey0QONEBlbY7YFA13knO/pXtKTn6amSjABq3fNCUIvqUyZI1X2Z8kVdkrs0YKXy/X
-         dEzx3hydhKrzU/EAU6oDiekbRHBwAXYr4n9POMB0yGtPsLSNA9+Be7PDY1SzMd5y2a+n
-         5SeCwkA5h823mfelQnl3wo05eq4v51qbunVKJ1C1tFvEVszIU8m/T2XG6s27myJXTfMl
-         pMlQ==
+        bh=mQRnP/VE3MNPubHtDGscBCYTtM3M8Hnq7UmsE7TsaOU=;
+        b=aIf0pGKPSreq5IVVApVQmbb6IeRO6q0rWAZSyCbchKd3JzFF0dl9OPfFoHGNFNiHwF
+         L+PGmSJ8KKPAvSREpdpX6LSXrbYNPfsG8FVdHbjA8LD/1ePrfwtDbx3AWnxEuINxSew3
+         /G8z6kj9+V4oGzdjwzEy8MUC6hMWUMjOAvTi37ZruuJMuB+w38j3U49XOQ18xz5C7BVz
+         wUZXDjqM9Gt/WugmBrxR3FkzKW14NzEwrqYBEZvE9HaWZrMRdAjZMSLqC75JVU3Rd9C8
+         EcLCcFmN4/gMoHTqSqYVnXFo6AfOR/TIvdNCCQ3C5sK/AllRIAKhmLggrfk4onGmXCyA
+         2+tg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
          :references:user-agent:mime-version;
-        bh=xZEe9nKbt22VK8Tq7L3dwCEv8d6KPrIVgCMxlhwxx3Q=;
-        b=l8xMLars0jUMfEvL9qJHOJ8dCXSynrWVAgGOzy0cTe9Ng3ILNW8UBFDRRyuU4qHfLh
-         YTjDnfVkyO/B+N+tA0zzhXAF9iKaZ8D3JH94+d381OGcUrcUaVni65K3YJO67AgN+Xut
-         Aai28bzkL6eVHCCOtQlBnJ+taFhm+ETSvkinqGsmfU1yTTeiKS717lyqHUEflPi5rxch
-         spGE0XgRun4SpDSg2BowI0VtDQJg3cZVRdDcauVTAdLUPAemjrSqCu/lzBtfOD1X5meH
-         iN9aNNRCmbEwRU1K/M2aoqp0+3TjnVJHjo7tcgopaGE4h6M0RjGrL1ZlgH8rjrolGPXw
-         xFEg==
-X-Gm-Message-State: AOAM5326UE0XaNuEsMbGI56lvtZWz0LclxkbwL2hRqkBGSIah4PsSMal
-        dKtHLBWkRlmY6aqq33H1t7bXHQ==
-X-Google-Smtp-Source: ABdhPJxQKMQbikVhTLg7WnCqu4OC1ZFMiEFMVD8hOqdAYJTeB8Tk5LqWtoWGAW9lEgvQaZgWv4IFDw==
-X-Received: by 2002:a17:90a:d502:: with SMTP id t2mr19389131pju.131.1608606110682;
-        Mon, 21 Dec 2020 19:01:50 -0800 (PST)
+        bh=mQRnP/VE3MNPubHtDGscBCYTtM3M8Hnq7UmsE7TsaOU=;
+        b=M9CjIsaMYa/gRcGSL34Av8kk6qb/ViSOkbGK3WxLAlTKko9Rt+3R/husptuwdsXPVX
+         TO9xvAIlFLqbTLZn5AcP6UrB4vktyMjjpr26PwdsraOrhqn0zU7yIHra8Y2pVV+uX3VS
+         FRKSGydZn/14Tx7fv70KSHMtaouLDMcdFnJWdFs1mjsa9bN260kYU6JwKVdrUF9Lgy6i
+         ki3EIjDMlO5033Tl333k7lSn1H++GM2LLjD5acyF2t5dB7QYKqGAXSZihd/2DBj+mtQX
+         0G/rHcG6V7mtmO/BmSYbTJ8AVXHNWMEpBbGJEmn7w98H4S4s+slBJf4N977nawOnECGj
+         iutQ==
+X-Gm-Message-State: AOAM530G5sMih4uB4VVE3bqz+SL1PF/k26BD9tkTYc/84zbM1LnV/09S
+        7DJNAh8eYku12ASD0UQ7kwY6gw==
+X-Google-Smtp-Source: ABdhPJzRa1gPuiUdV7wKyv/rJCmjaS+AMnNm3WPKmFO8ip/FFKsK2HgBJHAyyXooG0/zw4pVdGEMrA==
+X-Received: by 2002:a63:609:: with SMTP id 9mr18084864pgg.391.1608608340308;
+        Mon, 21 Dec 2020 19:39:00 -0800 (PST)
 Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
-        by smtp.gmail.com with ESMTPSA id t22sm17623091pgm.18.2020.12.21.19.01.49
+        by smtp.gmail.com with ESMTPSA id nk11sm17068952pjb.26.2020.12.21.19.38.58
         (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Mon, 21 Dec 2020 19:01:49 -0800 (PST)
-Date:   Mon, 21 Dec 2020 19:01:37 -0800 (PST)
+        Mon, 21 Dec 2020 19:38:59 -0800 (PST)
+Date:   Mon, 21 Dec 2020 19:38:57 -0800 (PST)
 From:   Hugh Dickins <hughd@google.com>
 X-X-Sender: hugh@eggly.anvils
 To:     Alex Shi <alex.shi@linux.alibaba.com>
@@ -56,13 +56,14 @@ cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/3] mm/memcg: revise the using condition of lock_page_lruvec
+        Alexander Duyck <alexander.duyck@gmail.com>,
+        Hui Su <sh_def@163.com>, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/3] mm/memcg: remove rcu locking for lock_page_lruvec
  function series
-In-Reply-To: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
-Message-ID: <alpine.LSU.2.11.2012211827560.1045@eggly.anvils>
-References: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com>
+In-Reply-To: <1608186532-81218-2-git-send-email-alex.shi@linux.alibaba.com>
+Message-ID: <alpine.LSU.2.11.2012211901580.1045@eggly.anvils>
+References: <1608186532-81218-1-git-send-email-alex.shi@linux.alibaba.com> <1608186532-81218-2-git-send-email-alex.shi@linux.alibaba.com>
 User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
 Content-Type: TEXT/PLAIN; charset=US-ASCII
@@ -72,23 +73,35 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 On Thu, 17 Dec 2020, Alex Shi wrote:
 
-> The series function could be used under lock_page_memcg(), add this and
-> a bit style changes following commit_charge().
+> The rcu_read_lock was used to block memcg destory, but with the detailed
+> calling conditions, the memcg won't gone since the page is hold. So we
+> don't need it now, let's remove them to save locking load in debugging.
+
+"
+lock_page_lruvec() and its variants used rcu_read_lock() with the
+intention of safeguarding against the mem_cgroup being destroyed
+concurrently; but so long as they are called under the specified
+conditions (as they are), there is no way for the page's mem_cgroup
+to be destroyed.  Delete the unnecessary rcu_read_lock() and _unlock().
+"
+
+This has little to do with a "locking load in debugging" - so what?
+But everything to do with deleting bogosity, the sooner the better.
+
 > 
 > Signed-off-by: Alex Shi <alex.shi@linux.alibaba.com>
 > Cc: Hugh Dickins <hughd@google.com>
 
-This patch, or its intention,
 Acked-by: Hugh Dickins <hughd@google.com>
-but rewording suggested below, and requested above -
-which left me very puzzled before eventually I understood it.
-I don't think we need to talk about "a bit style changes",
-but the cross-reference to commit_charge() is helpful.
 
-"
-lock_page_lruvec() and its variants are safe to use under the same
-conditions as commit_charge(): add lock_page_memcg() to the comment.
-"
+This really surprised me!  Nice change, but how on earth did we not
+notice until now?  The rcu_read_lock() seems to have come in, without
+explanation, somewhere between lru_lock v9 and v11 (I never saw v10); and
+I guess I was so used to needing rcu_read_lock() in my own implementation,
+that I was blind to its irrelevance in yours.  Cc'ing Alex Duyck, since
+he was generally very alert to this kind of thing - be good to have his
+Ack too.  Also Cc'ing Hui Su, who sent a similar but unexplained patch
+just before yours.
 
 > Cc: Johannes Weiner <hannes@cmpxchg.org>
 > Cc: Michal Hocko <mhocko@kernel.org>
@@ -98,41 +111,45 @@ conditions as commit_charge(): add lock_page_memcg() to the comment.
 > Cc: linux-mm@kvack.org
 > Cc: linux-kernel@vger.kernel.org
 > ---
->  mm/memcontrol.c | 9 +++++----
->  1 file changed, 5 insertions(+), 4 deletions(-)
+>  mm/memcontrol.c | 6 ------
+>  1 file changed, 6 deletions(-)
 > 
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b80328f52fb4..e6b50d068b2f 100644
+> index e6b50d068b2f..98bbee1d2faf 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -1345,10 +1345,11 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct page *page)
->   * lock_page_lruvec - lock and return lruvec for a given page.
->   * @page: the page
->   *
-> - * This series functions should be used in either conditions:
-> - * PageLRU is cleared or unset
-> - * or page->_refcount is zero
-> - * or page is locked.
-> + * This series functions should be used in any one of following conditions:
-
-These functions are safe to use under any of the following conditions:
-
-> + * - PageLRU is cleared or unset
-> + * - page->_refcount is zero
-> + * - page is locked.
-
-Remove that full stop...
-
-> + * - lock_page_memcg()
-
-... and, if you wish (I don't care), add full stop at the end of that line.
-
-Maybe reorder those to the same order as listed in commit_charge().
-Copy its text exactly? I don't think so, actually, I find your wording
-(e.g. _refcount is zero) more explicit: good to have both descriptions.
-
->   */
->  struct lruvec *lock_page_lruvec(struct page *page)
->  {
+> @@ -1356,10 +1356,8 @@ struct lruvec *lock_page_lruvec(struct page *page)
+>  	struct lruvec *lruvec;
+>  	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	rcu_read_lock();
+>  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  	spin_lock(&lruvec->lru_lock);
+> -	rcu_read_unlock();
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+>  
+> @@ -1371,10 +1369,8 @@ struct lruvec *lock_page_lruvec_irq(struct page *page)
+>  	struct lruvec *lruvec;
+>  	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	rcu_read_lock();
+>  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  	spin_lock_irq(&lruvec->lru_lock);
+> -	rcu_read_unlock();
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+>  
+> @@ -1386,10 +1382,8 @@ struct lruvec *lock_page_lruvec_irqsave(struct page *page, unsigned long *flags)
+>  	struct lruvec *lruvec;
+>  	struct pglist_data *pgdat = page_pgdat(page);
+>  
+> -	rcu_read_lock();
+>  	lruvec = mem_cgroup_page_lruvec(page, pgdat);
+>  	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+> -	rcu_read_unlock();
+>  
+>  	lruvec_memcg_debug(lruvec, page);
+>  
 > -- 
 > 2.29.GIT
