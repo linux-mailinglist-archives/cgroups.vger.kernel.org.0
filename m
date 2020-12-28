@@ -2,161 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15BAD2E69C1
-	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 18:32:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9111C2E69D7
+	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 18:47:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728361AbgL1Rci (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Dec 2020 12:32:38 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34670 "EHLO
+        id S1728358AbgL1Rqu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Dec 2020 12:46:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728360AbgL1Rci (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 12:32:38 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13827C061798;
-        Mon, 28 Dec 2020 09:31:58 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id ce23so15068266ejb.8;
-        Mon, 28 Dec 2020 09:31:58 -0800 (PST)
+        with ESMTP id S1728091AbgL1Rqt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 12:46:49 -0500
+Received: from mail-qk1-x736.google.com (mail-qk1-x736.google.com [IPv6:2607:f8b0:4864:20::736])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B83C061796;
+        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
+Received: by mail-qk1-x736.google.com with SMTP id d14so9369396qkc.13;
+        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uMJv2lHE34Rym/NavReAV+zZuMZZwc2rochor9I7cUk=;
-        b=vLPjujywSriLbbbiWgkv3ouyHNliTmrBC13fnxtXf3p5EdEkmPy8fjwLxYBzletbU2
-         Y9VXV4wEV2YlNjWsd50etSvFYzhK6CanfhVa14AC0JRHzsAvc9QqZkaLC1okmuwCI/zp
-         6SgsMIAXYonjX0eU77bCj5AuZy4cUE1gc+vLMGI92yXhNKtyJ1w7Zi7ibDXAFuNn+1IR
-         W+gouTA96SF6W2a5hufEGWescv0KcA2OD/8Y7DLgL9YETPfbM+f/HCvQP0V/DDiT3JjA
-         80cZnTEJSqcl1k1jt968Mr69xOR+mHhFrrMBjy32xqIX/PjPpgQl1t88jsxwp90dfoZL
-         Byzw==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=VbG+zWmEgZSccqMOdqNiSByvxNCbGh0yLNOk1f1Ikbg=;
+        b=CJ5P1bSSL+8ExHCZ5JT4yd04Na/kEdSxzFPpPKJjoxZM1eUJxput5Ox5G37ptu+TEU
+         q2LCCopmGNJPTYJZONTtPUeM3NkAlnRnM+sgzpBOdN1tBFh5cWNBACH20yIoLIPVdejv
+         52SUA6Y0rGtkfFKWqzFMWyRfXsBtGYfXfIOcrj6W/NsCfAfsI+Qw78rcElhFoewWe5Rr
+         /Mi9JOrvAtPFVy3o6y3pbIPwWgcQ92RaSb7gINmTIS9XpOK1K1HfiJ9lF5mGXkHAA32H
+         HqNQYSuSK6732j45nCcjOi2AWUVZaADif9sLLnMwz3V3vIlLh3VJ6JbMZFg4FwZoSvGE
+         jYwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uMJv2lHE34Rym/NavReAV+zZuMZZwc2rochor9I7cUk=;
-        b=prwfh93Sc8/i4F2/NF8pQuiJUAGnRvTltbFRrFxtjvQwmOSZKRrFV+5bhY6QlVAOqv
-         Kr/eKd5RRumEaiEMFUqejVzUjHgW3lenWSbblT2wV36cCUIdpLItKm7qbSJr5gQAekzY
-         HHaNFPxy74u28oEr3l/HwKHNWpJ0OH0HKYaNg6Qo5QkgR6bFuoV1PImghEnNFlXv6v4O
-         xWDNBqnL55v1U8fMbOz0fsx0Pbd4CeVG2ntm00eojw65wwxirq6IYcE0OlGKudyPPFHE
-         DmfjCYQnNNHF6H/DX7kGlELYpadpX6K06ratubq8d9pTrI8jZuviw7qA5/w5DLfTkjES
-         yrGg==
-X-Gm-Message-State: AOAM531SWrZokgHolok/Wyiri2SgrRqWIlMH/qUqWUMyZlLtkvthlROX
-        QhvAsLyVBAAkbUriDA9Hfz7p3qgOp3ngHwaonwA=
-X-Google-Smtp-Source: ABdhPJwlEdPEG6+Ljrdij9m+oxcj4tYDG90MJqOSvbjZQgN/UtokII1B0CsF/WGzvH1xL8Y92L+rW2nu+KGZWALfB5Y=
-X-Received: by 2002:a17:906:6a45:: with SMTP id n5mr43209968ejs.514.1609176716860;
- Mon, 28 Dec 2020 09:31:56 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=VbG+zWmEgZSccqMOdqNiSByvxNCbGh0yLNOk1f1Ikbg=;
+        b=MgZ4f3OWeygklWz7gl8E1ZaomiuVMMBLkTIEnNfldJReF53rlie4TEOjUkwQQi0SHb
+         dX18fSgz1dEZ84Ids6gV6I5Fz2mrrGzLV9WnaHZNwNluEKlBQCiU3197fm3shgWmwt8p
+         xhMKEDmmfEu310BnlB39sKs7ZM71w1YNrnx4HDdTfSTimYU8wHutPTRMdccHNTD5iUfG
+         vtWAH1M1rpRUGMUyWZELuIAHE3YbsWxqFnjwrX9zBqOiFSFvmCZfPyS6sgHsOxOZlnz+
+         kG8wGP63gGV/XYizE9+Q9BUyc/5yJKAvetg8QeGV0MmFg7cLwEM6fjcIFoSSWAAdeXHj
+         3CLQ==
+X-Gm-Message-State: AOAM531BpIXWq1ZukwtPJzHwS3Wxad7WapgloJHq4JJKMjhMD2RuXlx6
+        i6ZhSwmXUNk6e+QELWd927g=
+X-Google-Smtp-Source: ABdhPJxC2vPNG/AA5oTc38D/0KIJ2WSoPxSEi2CsbVJm/V9KjXs2gXNPe788Mb5zqJclTpUjaKtKiQ==
+X-Received: by 2002:a37:6713:: with SMTP id b19mr43343979qkc.493.1609177568049;
+        Mon, 28 Dec 2020 09:46:08 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id o30sm23051571qtd.24.2020.12.28.09.46.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 28 Dec 2020 09:46:07 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Mon, 28 Dec 2020 12:45:28 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: [GIT PULL] cgroup changes for v5.11-rc1
+Message-ID: <X+oZuAwO1/GcBeqy@mtj.duckdns.org>
 MIME-Version: 1.0
-References: <20201227181310.3235210-1-shakeelb@google.com> <20201227181310.3235210-2-shakeelb@google.com>
- <CALvZod5bH6gP=_Qo5d2wx=mpRxXDKGcoxwO3oXGPqe=HXx8ifA@mail.gmail.com>
-In-Reply-To: <CALvZod5bH6gP=_Qo5d2wx=mpRxXDKGcoxwO3oXGPqe=HXx8ifA@mail.gmail.com>
-From:   Yang Shi <shy828301@gmail.com>
-Date:   Mon, 28 Dec 2020 09:31:45 -0800
-Message-ID: <CAHbLzkrR1VQLN8+i4S52F-6dJiTx7TExj+rMuMWqou7Ff7SkPA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] mm: fix numa stats for thp migration
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Muchun Song <songmuchun@bytedance.com>,
-        Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Dec 27, 2020 at 10:16 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Sun, Dec 27, 2020 at 10:14 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > Currently the kernel is not correctly updating the numa stats for
-> > NR_FILE_PAGES and NR_SHMEM on THP migration. Fix that. For NR_FILE_DIRTY
-> > and NR_ZONE_WRITE_PENDING, although at the moment there is no need to
-> > handle THP migration as kernel still does not have write support for
-> > file THP but to be more future proof, this patch adds the THP support
-> > for those stats as well.
-> >
-> > Fixes: e71769ae52609 ("mm: enable thp migration for shmem thp")
-> > Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> > Cc: <stable@vger.kernel.org>
-> > ---
-> >  mm/migrate.c | 23 ++++++++++++-----------
-> >  1 file changed, 12 insertions(+), 11 deletions(-)
-> >
-> > diff --git a/mm/migrate.c b/mm/migrate.c
-> > index 613794f6a433..ade163c6ecdf 100644
-> > --- a/mm/migrate.c
-> > +++ b/mm/migrate.c
-> > @@ -402,6 +402,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
-> >         struct zone *oldzone, *newzone;
-> >         int dirty;
-> >         int expected_count = expected_page_refs(mapping, page) + extra_count;
-> > +       int nr = thp_nr_pages(page);
-> >
-> >         if (!mapping) {
-> >                 /* Anonymous page without mapping */
-> > @@ -437,7 +438,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
-> >          */
-> >         newpage->index = page->index;
-> >         newpage->mapping = page->mapping;
-> > -       page_ref_add(newpage, thp_nr_pages(page)); /* add cache reference */
-> > +       page_ref_add(newpage, nr); /* add cache reference */
-> >         if (PageSwapBacked(page)) {
-> >                 __SetPageSwapBacked(newpage);
-> >                 if (PageSwapCache(page)) {
-> > @@ -459,7 +460,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
-> >         if (PageTransHuge(page)) {
-> >                 int i;
-> >
-> > -               for (i = 1; i < HPAGE_PMD_NR; i++) {
-> > +               for (i = 1; i < nr; i++) {
-> >                         xas_next(&xas);
-> >                         xas_store(&xas, newpage);
-> >                 }
-> > @@ -470,7 +471,7 @@ int migrate_page_move_mapping(struct address_space *mapping,
-> >          * to one less reference.
-> >          * We know this isn't the last reference.
-> >          */
-> > -       page_ref_unfreeze(page, expected_count - thp_nr_pages(page));
-> > +       page_ref_unfreeze(page, expected_count - nr);
-> >
-> >         xas_unlock(&xas);
-> >         /* Leave irq disabled to prevent preemption while updating stats */
-> > @@ -493,17 +494,17 @@ int migrate_page_move_mapping(struct address_space *mapping,
-> >                 old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
-> >                 new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
-> >
-> > -               __dec_lruvec_state(old_lruvec, NR_FILE_PAGES);
-> > -               __inc_lruvec_state(new_lruvec, NR_FILE_PAGES);
-> > +               __mod_lruvec_state(old_lruvec, NR_FILE_PAGES, -nr);
-> > +               __mod_lruvec_state(new_lruvec, NR_FILE_PAGES, nr);
-> >                 if (PageSwapBacked(page) && !PageSwapCache(page)) {
-> > -                       __dec_lruvec_state(old_lruvec, NR_SHMEM);
-> > -                       __inc_lruvec_state(new_lruvec, NR_SHMEM);
-> > +                       __mod_lruvec_state(old_lruvec, NR_SHMEM, -nr);
-> > +                       __mod_lruvec_state(new_lruvec, NR_SHMEM, nr);
-> >                 }
-> >                 if (dirty && mapping_can_writeback(mapping)) {
-> > -                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
-> > -                       __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
-> > -                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
-> > -                       __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
-> > +                       __mod_lruvec_state(old_lruvec, NR_FILE_DIRTY, -nr);
-> > +                       __mod_zone_page_tate(oldzone, NR_ZONE_WRITE_PENDING, -nr);
->
-> This should be __mod_zone_page_state(). I fixed locally but sent the
-> older patch by mistake.
+Hello, Linus.
 
-Acked-by: Yang Shi <shy828301@gmail.com>
+These three patches were scheduled for the merge window but I forgot to send
+them out. Sorry about that. None of them are significant and they fit well
+in a fix pull request too - two are cosmetic and one fixes a memory leak in
+the mount option parsing path.
 
->
-> > +                       __mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
-> > +                       __mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
-> >                 }
-> >         }
-> >         local_irq_enable();
-> > --
-> > 2.29.2.729.g45daf8777d-goog
-> >
->
+Thanks and happy holidays!
+
+The following changes since commit 127c501a03d5db8b833e953728d3bcf53c8832a9:
+
+  Merge tag '5.10-rc5-smb3-fixes' of git://git.samba.org/sfrench/cifs-2.6 (2020-11-24 15:33:18 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.11
+
+for you to fetch changes up to 2d18e54dd8662442ef5898c6bdadeaf90b3cebbc:
+
+  cgroup: Fix memory leak when parsing multiple source parameters (2020-12-16 10:10:32 -0500)
+
+----------------------------------------------------------------
+Bhaskar Chowdhury (1):
+      kernel: cgroup: Mundane spelling fixes throughout the file
+
+Hui Su (1):
+      cgroup/cgroup.c: replace 'of->kn->priv' with of_cft()
+
+Qinglang Miao (1):
+      cgroup: Fix memory leak when parsing multiple source parameters
+
+ kernel/cgroup/cgroup-v1.c |  2 ++
+ kernel/cgroup/cgroup.c    | 30 +++++++++++++++---------------
+ 2 files changed, 17 insertions(+), 15 deletions(-)
+
+-- 
+tejun
