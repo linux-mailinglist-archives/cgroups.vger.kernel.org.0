@@ -2,110 +2,76 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55022E345F
-	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 06:42:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DA32E2E3470
+	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 07:11:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727858AbgL1FmO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Dec 2020 00:42:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726671AbgL1FmO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 00:42:14 -0500
-Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4CC7EC061795
-        for <cgroups@vger.kernel.org>; Sun, 27 Dec 2020 21:41:34 -0800 (PST)
-Received: by mail-pf1-x432.google.com with SMTP id w6so5769129pfu.1
-        for <cgroups@vger.kernel.org>; Sun, 27 Dec 2020 21:41:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KdC1UTvK3n3P54mNUc/2MJ7F1GE6qXAssfNlwctQq5A=;
-        b=VgitC5bh7LY0I34mSYBnKJCn+g46m7lfhWc+52EAtE4Jtpn1zF5sEmiOiHFhniymQu
-         75MVFKMKs2DbndOSgVA22lLlgtsoO+s8idjhSQU0xCV0oAzbeoMRXt68n0RAtd9hFkFV
-         TKkOVCLHYeXHo3OJaDiiHCJpKpos4gOwZSSh4g0eeAdNHb2wU7CBUTdJfv38wDQqlWo4
-         b5gpSyPsRZ4xY+KUA4FLZryRruATzIIMSVW6aWoFBnS/G/Bws41pXp3vetiEl78tNJiD
-         +5GyYwHlJPG5buRTpVXncrX6sgDfBBj6k77xNvtNdNfDdAIIFMI8uhol7rByABB7Irvp
-         7FIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=KdC1UTvK3n3P54mNUc/2MJ7F1GE6qXAssfNlwctQq5A=;
-        b=WKrNdNSLw/Uo326TVO9K2gmvgKsWse+uWYLr2fE5GhibEyJ9xwvDYikDjfw7vX7PZU
-         9Sk1DQoWY6xCEh6pQDkTyxO6c/LTEbaYjXhPNLefsbyA1R2U6sWh0KMv1BZkTjOVoWE0
-         92N5AF+RvTocx2aI9yIfNrLWjrMQOP6hGr8RTBDSIwo5HQGC5XiUgoLlFdx67qdCfLO2
-         S6bdsWgChtcUEytdaxuRUPWaCjpUZK+wOEUl69cWEvbkZh/uA9yFJCvWp7HPVEOp/i8h
-         VGXi9JzdCLf9am/AWvzu0Ezt5XSGOmAq533JsQuWmMtVnf3K1nAuMpMxYNbxuFY8mU+A
-         c3mg==
-X-Gm-Message-State: AOAM531b58gOHM5q37iEH51dzoCGUwnM+uAEmGvTdxYktbagllZWL+F6
-        rIMTI38Jh5807DQQhLjcqn09vw0Qhaly6ZMxLfZvXQ==
-X-Google-Smtp-Source: ABdhPJwXVa9em2MWeoou1jv+F1kF93xbWKqRqnIRiQYiWDC7Q/2z2DBySCmNGhGBDwiw46Gn2gDqglDyT7Aw6y+4gWs=
-X-Received: by 2002:a63:480f:: with SMTP id v15mr28753074pga.341.1609134093727;
- Sun, 27 Dec 2020 21:41:33 -0800 (PST)
-MIME-Version: 1.0
-References: <20201227181310.3235210-1-shakeelb@google.com>
-In-Reply-To: <20201227181310.3235210-1-shakeelb@google.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 28 Dec 2020 13:40:54 +0800
-Message-ID: <CAMZfGtWqDLJkP1zk_W16F+ssiW5NujRF-LFoV2GJ-+gXvBswMQ@mail.gmail.com>
-Subject: Re: [External] [PATCH 1/2] mm: memcg: fix memcg file_dirty numa stat
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Naoya Horiguchi <n-horiguchi@ah.jp.nec.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>,
+        id S1726671AbgL1GLb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Dec 2020 01:11:31 -0500
+Received: from smtprelay0229.hostedemail.com ([216.40.44.229]:58640 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1726511AbgL1GLb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 01:11:31 -0500
+X-Greylist: delayed 552 seconds by postgrey-1.27 at vger.kernel.org; Mon, 28 Dec 2020 01:11:30 EST
+Received: from smtprelay.hostedemail.com (10.5.19.251.rfc1918.com [10.5.19.251])
+        by smtpgrave06.hostedemail.com (Postfix) with ESMTP id 4E0FE8123FDE
+        for <cgroups@vger.kernel.org>; Mon, 28 Dec 2020 06:02:19 +0000 (UTC)
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id D875C1802926E;
+        Mon, 28 Dec 2020 06:01:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:973:988:989:1260:1261:1263:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2565:2682:2685:2687:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3871:3872:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:7652:7875:9025:9388:9389:10004:10400:10848:11232:11658:11914:12043:12297:12555:12679:12740:12895:12986:13069:13161:13184:13229:13311:13357:13437:13439:13845:13894:14181:14659:14721:14764:14819:21080:21324:21451:21627:21672:21781:21881:30054:30079:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: dogs21_4b1837427491
+X-Filterd-Recvd-Size: 1828
+Received: from [192.168.1.159] (unknown [47.151.137.21])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Mon, 28 Dec 2020 06:01:36 +0000 (UTC)
+Message-ID: <2822d565280536f36ea6ddd521a7716813ef85a2.camel@perches.com>
+Subject: Re: [PATCH] cpuset: Remove stale URLs in the MAINTAINERS entry
+From:   Joe Perches <joe@perches.com>
+To:     Zefan Li <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Steve Wahl <steve.wahl@hpe.com>
+Date:   Sun, 27 Dec 2020 22:01:35 -0800
+In-Reply-To: <42668f2c-5ea1-da38-918e-ac4c86e3f03d@huawei.com>
+References: <42668f2c-5ea1-da38-918e-ac4c86e3f03d@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Dec 28, 2020 at 2:13 AM Shakeel Butt <shakeelb@google.com> wrote:
->
-> The kernel updates the per-node NR_FILE_DIRTY stats on page migration
-> but not the memcg numa stats. That was not an issue until recently the
-> commit 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface
-> for cgroup v2") exposed numa stats for the memcg. So fixing the
-> file_dirty per-memcg numa stat.
->
-> Fixes: 5f9a4f4a7096 ("mm: memcontrol: add the missing numa_stat interface for cgroup v2")
-
-Thanks for catching this problem.
-
-Reviewed-by: Muchun Song <songmuchun@bytedance.com>
-
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
-> Cc: <stable@vger.kernel.org>
+On Mon, 2020-12-28 at 11:17 +0800, Zefan Li wrote:
+> Those URLs are no longer accessable.
+> 
+> Reported-by: Steve Wahl <steve.wahl@hpe.com>
+> Signed-off-by: Zefan Li <lizefan@huawei.com>
 > ---
->  mm/migrate.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/mm/migrate.c b/mm/migrate.c
-> index ee5e612b4cd8..613794f6a433 100644
-> --- a/mm/migrate.c
-> +++ b/mm/migrate.c
-> @@ -500,9 +500,9 @@ int migrate_page_move_mapping(struct address_space *mapping,
->                         __inc_lruvec_state(new_lruvec, NR_SHMEM);
->                 }
->                 if (dirty && mapping_can_writeback(mapping)) {
-> -                       __dec_node_state(oldzone->zone_pgdat, NR_FILE_DIRTY);
-> +                       __dec_lruvec_state(old_lruvec, NR_FILE_DIRTY);
->                         __dec_zone_state(oldzone, NR_ZONE_WRITE_PENDING);
-> -                       __inc_node_state(newzone->zone_pgdat, NR_FILE_DIRTY);
-> +                       __inc_lruvec_state(new_lruvec, NR_FILE_DIRTY);
->                         __inc_zone_state(newzone, NR_ZONE_WRITE_PENDING);
->                 }
->         }
-> --
-> 2.29.2.729.g45daf8777d-goog
->
+>  MAINTAINERS | 2 --
+>  1 file changed, 2 deletions(-)
+> 
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index ae9b1dd748c4..2fe8eb54639e 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -4477,8 +4477,6 @@ CONTROL GROUP - CPUSET
+>  M:	Li Zefan <lizefan@huawei.com>
+>  L:	cgroups@vger.kernel.org
+>  S:	Maintained
+> -W:	http://www.bullopensource.org/cpuset/
+> -W:	http://oss.sgi.com/projects/cpusets/
+
+The general argument to avoid removal of these no longer valid links
+is that they may still be available from archive.org.
+
+For instance:
+
+https://web.archive.org/web/20170512010721/http://oss.sgi.com/projects/cpusets/
+
+It may be appropriate to copy the content into a local Documentation
+file somewhere to avoid the need to lookup old reference links.
 
 
---
-Yours,
-Muchun
