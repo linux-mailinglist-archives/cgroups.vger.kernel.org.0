@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0A472E68DF
-	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 17:44:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EC212E6900
+	for <lists+cgroups@lfdr.de>; Mon, 28 Dec 2020 17:44:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2634433AbgL1Qm2 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Dec 2020 11:42:28 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55006 "EHLO
+        id S2441155AbgL1Qmz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 28 Dec 2020 11:42:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55088 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2634423AbgL1QmZ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 11:42:25 -0500
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 551E0C061796
-        for <cgroups@vger.kernel.org>; Mon, 28 Dec 2020 08:41:45 -0800 (PST)
-Received: by mail-pl1-x62c.google.com with SMTP id be12so5878912plb.4
-        for <cgroups@vger.kernel.org>; Mon, 28 Dec 2020 08:41:45 -0800 (PST)
+        with ESMTP id S2441130AbgL1Qmx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 28 Dec 2020 11:42:53 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A9A3C06179E
+        for <cgroups@vger.kernel.org>; Mon, 28 Dec 2020 08:41:53 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id h10so5589134pfo.9
+        for <cgroups@vger.kernel.org>; Mon, 28 Dec 2020 08:41:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9BSdNC8lHN68aG8S1wMx9ZgOFQWuy+oQNc4t7FQtAYE=;
-        b=JCYWpHOzrc0moPNkbT4K1+8ejthEgyO6J+0H5rLuTnRgqihY4K8EhTtP+EVmWbPcFR
-         SM7d3vlwF1uregFJzL88mMfEgzxWPySQMav0rGrq2KbjIKi9z6NsdGFpenHQyBHrG15Q
-         s2zNXzxrf3uruZ6May8QER0dm9ZwgtH1Bw19ePcMnU0bT8yLCiLsRpSoA6a+Ee9uy80a
-         VTXp4hvFo5LyOivbl+eL4I9B5I1N1RPJlKFswoJegcrbaR06PqMguSQZH7Q5apu8Zx+e
-         IAJ5rjKcRFa1h+DzzYqVMqzYAsITA8GkCzfxMfOYD7VaBybB+Pi8J6qBO53r3G0QVr13
-         h6LA==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=sihbqHAwSrWiI/mby0PYKEUO9C1z2oJ0qLp+LWcjDHg=;
+        b=j0OfcSNpacng4hvdoRiR1uS85K8rrj0CdsiliQJQ8Og/XxzfCZ6Ea3Vf62WLk18s1t
+         097T5NlYVhpsy3KHkrlBaAGQB/80yljFxfLNi69xsPgf/5Pv/HhU0nZPqmt35olPihVB
+         oyfOiR0eqLBYui3e9zAcs8ntUCbtnuGhNAlBLauG7rodu0rZJfaNb3ApAb0ONT0iokb7
+         TnqteMs2En4iGsY7j/R/QtN4G9zGXpf1NW8pmmCI3Gqj5tbjpETbvDBGHFDTLcqFhejr
+         TFjBesOPf+dliiY+rEfOv5tFQAYyf7MvvZ3PWlCwDOXxqIVJk0ENuaH8f2Jp8QrEVSrM
+         EiVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9BSdNC8lHN68aG8S1wMx9ZgOFQWuy+oQNc4t7FQtAYE=;
-        b=ZWO3SniJ0T0KdLDwn9A6FxQTgLCh6ietTYs8KDnbPQAz+m2dIuirScHzFJbk59ecpy
-         J3iR9z1zIQNm81JcRLmqJKOEmAd2x8MBjGNxPLvH0WPHH4waDeqUwc5NDSxPC47/RIx9
-         WOByLbXSzRN0ioNNMn+G/37qXagrdZffC1TUXEJjNFCECFfnH7dXNrC8l6Up65wwRO/0
-         osUmqlWnzQjXKSahxfvGbcIhkN5cbKS+/03J7Yi5NM2Kuq9JVEqNDGWMQ/xNTz8lhrSB
-         LZ69XXUSS3krZfUorbVEZAmODHc5kATwzHoitOwIGPabI44fg5cK4z1eevqg/Zl30GLT
-         NjSg==
-X-Gm-Message-State: AOAM530d4lB3Bny5qCCW76owLtOb4Ji1Egb4wxoN4zakNdWPllry63Gv
-        B9q5K4XHJxYGRaURjmRRtyL+4A==
-X-Google-Smtp-Source: ABdhPJxAsU7Sl6jwmVE3eF9OBJcHYEzT4YfT0iEa1UE3vbAPHhVTqkxccOtN05cA6OtQKkHz+belZQ==
-X-Received: by 2002:a17:90a:f687:: with SMTP id cl7mr21932851pjb.38.1609173704721;
-        Mon, 28 Dec 2020 08:41:44 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=sihbqHAwSrWiI/mby0PYKEUO9C1z2oJ0qLp+LWcjDHg=;
+        b=LC/5iTEdka5siU19k/oPK4bnzxFN059+UvWR+5GuZ2SS6XbmBMXzwshB+xdrZzkAJT
+         oDhcGcA4rjuLyeaXSq3niYdWGw2SkYut02AWmd5PJLg6YeO7hjwV1AAb4nlWTOwkl5Sj
+         2rlP9l6ptfE2VhR/imY8qVuOhJKJlaDZgpnUQFrpM2095RO0XsRcW9ueXbJzMItoGlWj
+         isHEOWOLScgPboZa/G7nlebvI92K2mU/h4laUzmbcBx9toKT4IL14zD6E8RsogkAiQ6V
+         RCyI1MPueQkAlOqth0gkROvmFkOuG6TEuAPVwGNAtq3uYIiHKoSRVy0WczMgH6g96Tw0
+         W8jA==
+X-Gm-Message-State: AOAM530LRSvA+9Qbh44tcViQ2JbWqY64qSIEpJW7pmTrJCLJIrXfy6XS
+        CDzsuKuBkB4/iH5d1LdtuKLVcw==
+X-Google-Smtp-Source: ABdhPJwgt9/FNVb762Lx0ORcxyFLt25nlg3jWJEd+VXqNkkS117ss5mN792yc3AK8kPbqoIbIdOg7g==
+X-Received: by 2002:a63:78ca:: with SMTP id t193mr11854899pgc.391.1609173712855;
+        Mon, 28 Dec 2020 08:41:52 -0800 (PST)
 Received: from localhost.bytedance.net ([139.177.225.247])
-        by smtp.gmail.com with ESMTPSA id r68sm36686306pfr.113.2020.12.28.08.41.37
+        by smtp.gmail.com with ESMTPSA id r68sm36686306pfr.113.2020.12.28.08.41.45
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 28 Dec 2020 08:41:44 -0800 (PST)
+        Mon, 28 Dec 2020 08:41:52 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org,
@@ -55,113 +55,52 @@ To:     gregkh@linuxfoundation.org, rafael@kernel.org, adobriyan@gmail.com,
         neilb@suse.de, iamjoonsoo.kim@lge.com, rdunlap@infradead.org
 Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v6 0/7] Convert all THP vmstat counters to pages
-Date:   Tue, 29 Dec 2020 00:41:03 +0800
-Message-Id: <20201228164110.2838-1-songmuchun@bytedance.com>
+        Muchun Song <songmuchun@bytedance.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Subject: [PATCH v6 1/7] mm: memcontrol: fix NR_ANON_THPS accounting in charge moving
+Date:   Tue, 29 Dec 2020 00:41:04 +0800
+Message-Id: <20201228164110.2838-2-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20201228164110.2838-1-songmuchun@bytedance.com>
+References: <20201228164110.2838-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch series is aimed to convert all THP vmstat counters to pages.
+The unit of NR_ANON_THPS is HPAGE_PMD_NR already. So it should inc/dec
+by one rather than nr_pages.
 
-The unit of some vmstat counters are pages, some are bytes, some are
-HPAGE_PMD_NR, and some are KiB. When we want to expose these vmstat
-counters to the userspace, we have to know the unit of the vmstat counters
-is which one. When the unit is bytes or kB, both clearly distinguishable
-by the B/KB suffix. But for the THP vmstat counters, we may make mistakes.
+Fixes: 468c398233da ("mm: memcontrol: switch to native NR_ANON_THPS counter")
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Michal Hocko <mhocko@suse.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Acked-by: Pankaj Gupta <pankaj.gupta@cloud.ionos.com>
+Reviewed-by: Roman Gushchin <guro@fb.com>
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+---
+ mm/memcontrol.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
-For example, the below is some bug fix for the THP vmstat counters:
-
-  - 7de2e9f195b9 ("mm: memcontrol: correct the NR_ANON_THPS counter of hierarchical memcg")
-  - The first commit in this series ("fix NR_ANON_THPS accounting in charge moving")
-
-This patch series can make the code clear. And make all the unit of the THP
-vmstat counters in pages. Finally, the unit of the vmstat counters are
-pages, kB and bytes. The B/KB suffix can tell us that the unit is bytes
-or kB. The rest which is without suffix are pages.
-
-In this series, I changed the following vmstat counters unit from HPAGE_PMD_NR
-to pages. However, there is no change to the print format of output to user
-space.
-
-  - NR_ANON_THPS
-  - NR_FILE_THPS
-  - NR_SHMEM_THPS
-  - NR_SHMEM_PMDMAPPED
-  - NR_FILE_PMDMAPPED
-
-Doing this also can make the statistics more accuracy for the THP vmstat
-counters. This series is consistent with 8f182270dfec ("mm/swap.c: flush lru
-pvecs on compound page arrival").
-
-Because we use struct per_cpu_nodestat to cache the vmstat counters, which
-leads to inaccurate statistics especially THP vmstat counters. In the systems
-with hundreds of processors it can be GBs of memory. For example, for a 96
-CPUs system, the threshold is the maximum number of 125. And the per cpu
-counters can cache 23.4375 GB in total.
-
-The THP page is already a form of batched addition (it will add 512 worth of
-memory in one go) so skipping the batching seems like sensible. Although every
-THP stats update overflows the per-cpu counter, resorting to atomic global
-updates. But it can make the statistics more accuracy for the THP vmstat
-counters. From this point of view, I think that do this converting is
-reasonable.
-
-Thanks Hugh for mentioning this. This was inspired by Johannes and Roman.
-Thanks to them.
-
-Changes in v5 -> v6:
-  - Fix compiler errors when CONFIG_TRANSPARENT_HUGEPAGE is not set/enabled
-    reported by Randy Dunlap <rdunlap@infradead.org>. Thanks.
-  - Fix typo in the commit message.
-
-Changes in v4 -> v5:
-  - Add motivation to each patch. Thanks to Michal.
-  - Replace some HPAGE_PMD_NR to thp_nr_pages(). Thanks to Matthew.
-
-Changes in v3 -> v4:
-  - Rename the first commit subject to "mm: memcontrol: fix NR_ANON_THPS
-    accounting in charge moving".
-  - Fix /proc/vmstat printing. Thanks to Johannes points out that.
-
-Changes in v2 -> v3:
-  - Change the series subject from "Convert all vmstat counters to pages or bytes"
-    to "Convert all THP vmstat counters to pages".
-  - Remove convert of KB to B.
-
-Changes in v1 -> v2:
-  - Change the series subject from "Convert all THP vmstat counters to pages"
-    to "Convert all vmstat counters to pages or bytes".
-  - Convert NR_KERNEL_SCS_KB account to bytes.
-  - Convert vmstat slab counters to bytes.
-  - Remove {global_}node_page_state_pages.
-
-Muchun Song (7):
-  mm: memcontrol: fix NR_ANON_THPS accounting in charge moving
-  mm: memcontrol: convert NR_ANON_THPS account to pages
-  mm: memcontrol: convert NR_FILE_THPS account to pages
-  mm: memcontrol: convert NR_SHMEM_THPS account to pages
-  mm: memcontrol: convert NR_SHMEM_PMDMAPPED account to pages
-  mm: memcontrol: convert NR_FILE_PMDMAPPED account to pages
-  mm: memcontrol: make the slab calculation consistent
-
- drivers/base/node.c    |  27 +++++-----
- fs/proc/meminfo.c      |  10 ++--
- include/linux/mmzone.h |  17 +++++++
- mm/filemap.c           |   4 +-
- mm/huge_memory.c       |  11 +++--
- mm/khugepaged.c        |   6 ++-
- mm/memcontrol.c        | 132 +++++++++++++++++++++++--------------------------
- mm/page_alloc.c        |   7 ++-
- mm/rmap.c              |  26 ++++++----
- mm/shmem.c             |   2 +-
- mm/vmstat.c            |  11 ++++-
- 11 files changed, 142 insertions(+), 111 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index b80328f52fb4..8818bf64d6fe 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5653,10 +5653,8 @@ static int mem_cgroup_move_account(struct page *page,
+ 			__mod_lruvec_state(from_vec, NR_ANON_MAPPED, -nr_pages);
+ 			__mod_lruvec_state(to_vec, NR_ANON_MAPPED, nr_pages);
+ 			if (PageTransHuge(page)) {
+-				__mod_lruvec_state(from_vec, NR_ANON_THPS,
+-						   -nr_pages);
+-				__mod_lruvec_state(to_vec, NR_ANON_THPS,
+-						   nr_pages);
++				__dec_lruvec_state(from_vec, NR_ANON_THPS);
++				__inc_lruvec_state(to_vec, NR_ANON_THPS);
+ 			}
+ 
+ 		}
 -- 
 2.11.0
 
