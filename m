@@ -2,59 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B40A02E6C2D
-	for <lists+cgroups@lfdr.de>; Tue, 29 Dec 2020 00:18:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 542BC2E76B8
+	for <lists+cgroups@lfdr.de>; Wed, 30 Dec 2020 08:00:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730434AbgL1Wzr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 28 Dec 2020 17:55:47 -0500
-Received: from mail.kernel.org ([198.145.29.99]:45032 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1729335AbgL1TtA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 28 Dec 2020 14:49:00 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPS id C937F204EF;
-        Mon, 28 Dec 2020 19:48:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1609184899;
-        bh=yd/ZS0ejJylDvYi3mJmgufdq6c0/tnkh+6k5buIhhs8=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=skNfMl/zgqc+PDdZ9sjqmGyBc+ebgOvZG10vEq1cRqZKjam9Qov3Adw3eaTq/PmaX
-         4vQySezeQgRJTWdD787YA0L7gXDsPgD54fm6sY/OZlbbY/czSyeXyLzQ5RtxEkrtRe
-         d9O7i1fitrFJ144ZvT214+TTsO0fzmAWzcevZGiQP2I1q0uqfVHjI+OwQ8n/Ov1DuP
-         aEIbRhqZks4DaZw4nfftaR8EZWLVgb4LpGNZmafP+ZdwtFLHJOteyQqyZa/l813pfR
-         KvC2x45HEkXdrhytIvIeFOD1/vamJ6XcikBP4CNhufqnje58aUQepdhi6BaVhK9A5l
-         4m4hbVIHjJVcg==
-Received: from pdx-korg-docbuild-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-1.ci.codeaurora.org (Postfix) with ESMTP id B636D60108;
-        Mon, 28 Dec 2020 19:48:19 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup changes for v5.11-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <X+oZuAwO1/GcBeqy@mtj.duckdns.org>
-References: <X+oZuAwO1/GcBeqy@mtj.duckdns.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <X+oZuAwO1/GcBeqy@mtj.duckdns.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.11
-X-PR-Tracked-Commit-Id: 2d18e54dd8662442ef5898c6bdadeaf90b3cebbc
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 91afe604c15405a7b15d1464f224372cd82d3e2c
-Message-Id: <160918489967.31247.15729691714983862490.pr-tracker-bot@kernel.org>
-Date:   Mon, 28 Dec 2020 19:48:19 +0000
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+        id S1726185AbgL3HAT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 30 Dec 2020 02:00:19 -0500
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:53882 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726161AbgL3HAT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 30 Dec 2020 02:00:19 -0500
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04426;MF=abaci-bugfix@linux.alibaba.com;NM=1;PH=DS;RN=8;SR=0;TI=SMTPD_---0UKChRao_1609311552;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:abaci-bugfix@linux.alibaba.com fp:SMTPD_---0UKChRao_1609311552)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 30 Dec 2020 14:59:34 +0800
+From:   YANG LI <abaci-bugfix@linux.alibaba.com>
+To:     hannes@cmpxchg.org
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        YANG LI <abaci-bugfix@linux.alibaba.com>
+Subject: [PATCH] mm: fix: Uninitialized variable ret.
+Date:   Wed, 30 Dec 2020 14:59:11 +0800
+Message-Id: <1609311551-97108-1-git-send-email-abaci-bugfix@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The pull request you sent on Mon, 28 Dec 2020 12:45:28 -0500:
+The ret is being used but it isn't being initialized,
+need to assign a value to it, like 0.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.11
+Signed-off-by: YANG LI <abaci-bugfix@linux.alibaba.com>
+Reported-by: Abaci <abaci@linux.alibaba.com>
+---
+ mm/memcontrol.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/91afe604c15405a7b15d1464f224372cd82d3e2c
-
-Thank you!
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 605f671..15ba17d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3366,7 +3366,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+ {
+ 	bool enlarge = false;
+ 	bool drained = false;
+-	int ret;
++	int ret = 0;
+ 	bool limits_invariant;
+ 	struct page_counter *counter = memsw ? &memcg->memsw : &memcg->memory;
+ 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+1.8.3.1
+
