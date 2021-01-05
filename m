@@ -2,261 +2,228 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F40B2EB2BF
-	for <lists+cgroups@lfdr.de>; Tue,  5 Jan 2021 19:47:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9482D2EB381
+	for <lists+cgroups@lfdr.de>; Tue,  5 Jan 2021 20:32:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726671AbhAESqz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Jan 2021 13:46:55 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41272 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726258AbhAESqy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Jan 2021 13:46:54 -0500
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 105IZUMN029699;
-        Tue, 5 Jan 2021 10:46:05 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=0zNiS3/pqnh1Cu+cbbYpbdARDCnoWUy92aKObi58e/w=;
- b=e9UnTewacR3LkT90IJfQ8Dex/FhyRFTGUpj+ivjx3UreVngQGo0zeS8Q9HiQQVFKKGfm
- 0LqRfgIzOgXby5vtKMtJsX9L+MeJQMYgAR2c7sExnWc7sCsiORBreh6Vew0O3D/WmCCH
- PyS3cuDjBAhGRpbUOzDaf/Zhu4c/T3FVc6E= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 35vcs8caf7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 05 Jan 2021 10:46:05 -0800
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 5 Jan 2021 10:46:04 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CDh4CY4m+OQOCB8li+Tm+99tElfgaBhoEfR46iMU4xiy+DkJSx01zA/H9JIrhMsy6eEiwvCoW/Sln4WYl3JVLhRYOYBdAsQ6ClEIBZRVz4MioWQnpHL9Cp2HeIwddEXWyMVJJN5dxn81H7OoqyEvox4trejJj+j0vDJHJwE56CR1iLYw+5787G1D5R/GoQd5RHsB8ZYMkKri1zo4fW+xpm1rw79ATC5r7DJGWftx/Yb4wg7sI2l1s21Ogm0L9MYCNaGBPhtsOHUHNfY1nAyncJpOyu6ycw186rQv8uL4xHP3HwTwMkgolgyIEQke4XmyEhPj7FERlQ7jxYsQcRD4vQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0zNiS3/pqnh1Cu+cbbYpbdARDCnoWUy92aKObi58e/w=;
- b=CngWAc3Z59mdSfirN9An0eUxWd53zWyuMKSQX9mpzDwCuM97iL4MbswxUcoMSz6veQ4WtvXx1rGyLY1LMQHFgxXb+AocgGsp6kagZJ3+0Z7Looh2Gw7ulaHZiC7o5GJu6zbFf2QeyIiK7IN0cVRWI26GNnvOC8bx87nkF/l5GVpEdPZMi4s4kA6spD85MJ8R0naM73Fgx0SDFhYxfkw4OK+fkNhay9bGRRIjFx5JoUUVThlnHjFcS6z1tUz37CI9TJgJChGnESKywzDjFn1YPFtEDhnZoFYEinVStp+izHayatmuni/R/ryz4wtnchhyGJJzl2Re1YfNUNrAZsHi0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0zNiS3/pqnh1Cu+cbbYpbdARDCnoWUy92aKObi58e/w=;
- b=LpBCeW93Jarn+VG9CZ/CeNktYt/2p8WcKK/4Xp8ug4yb1+spnfC110dk6A0btJUcM3KQQRtA2Ggtznq+fYw1cInRcNZyDkle30MTok73gehdsg29Zx5Rx0zamj58yJ0zMjaja760Muvk9a2m//Sdi5V23ejebC/unLIB5neJioo=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3125.namprd15.prod.outlook.com (2603:10b6:a03:fc::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3721.20; Tue, 5 Jan
- 2021 18:46:03 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::780c:8570:cb1d:dd8c]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::780c:8570:cb1d:dd8c%6]) with mapi id 15.20.3721.024; Tue, 5 Jan 2021
- 18:46:03 +0000
-Date:   Tue, 5 Jan 2021 10:45:58 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Imran Khan <imran.f.khan@oracle.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <akpm@linux-foundation.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH] mm/memcontrol: Increase threshold for draining
- per-cpu stocked bytes.
-Message-ID: <20210105184558.GF371241@carbon.dhcp.thefacebook.com>
-References: <1609862862-3573-1-git-send-email-imran.f.khan@oracle.com>
- <20210105182352.GE371241@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210105182352.GE371241@carbon.dhcp.thefacebook.com>
-X-Originating-IP: [2620:10d:c090:400::5:e6f5]
-X-ClientProxiedBy: CO2PR04CA0083.namprd04.prod.outlook.com
- (2603:10b6:102:1::51) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:e6f5) by CO2PR04CA0083.namprd04.prod.outlook.com (2603:10b6:102:1::51) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6 via Frontend Transport; Tue, 5 Jan 2021 18:46:02 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 98781649-49db-4430-9c74-08d8b1aa272b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3125:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB31254A258B4F9EDA8454651DBED10@BYAPR15MB3125.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: XfjOUcOoGIzSs8K0uY+GmIo05Eq7/d/7IjsGaQrjrrgQP6EBYv3P8zcJpkWx2S9q3eh2aJMbEO82mIw5xlLOAn7C9o00TWJVxRDRUfIcz6NOsp1qNmjWRiWiMeC30RgIscOMPeb0kroovQ/7zuvgt4wPMTGiY7oZ1ryI5IG21q5bWhXM7Oi13f4z4LpLM6aqTUWpGx+N79/yJoxoA4utQP437pSP9I50o4asbTrzxG8L5ftWdZbc/3xNO0MjKsJKn0VJitznWDM+wuMYbcgXOC4Uk8uc1CCxPH8JixEmgTCWk/ZQGzLHuCcCRq0g6P/WsnLW6Y4xcKCX7Haw7HaqOLab0XN4fZKDUIcBGi7ksSo+Dsutek4cQnRTjoGtQiHj4JgF57FiJYM4u/jVv9tT8A==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(396003)(346002)(136003)(39860400002)(366004)(52116002)(8936002)(478600001)(5660300002)(2906002)(4326008)(66556008)(66476007)(55016002)(83380400001)(66946007)(1076003)(316002)(33656002)(6916009)(16526019)(8676002)(86362001)(186003)(6506007)(9686003)(7696005)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6lOKsAPj9TrbaDAK5lVSkeF1h9y+j0gbf2dtJGE89RbEFewiTwMdPzMAI2SV?=
- =?us-ascii?Q?szoafXnGxl163Q/KTK38EAO/hMWuNj2RRvTzp+vRVrxS0nJMKcXCTTlVEoef?=
- =?us-ascii?Q?8IyPwoo3aIx+Jw9zdylDR/SM0sira4+xVetNJar61V5HXPRrUtqNV98OjBid?=
- =?us-ascii?Q?dPrjI1h2o2WgaGPXrGIgeqVNiIv0mc70Le01W7kB2rLlyMv+LZbn3Khl5gax?=
- =?us-ascii?Q?lhuvjgKiDF7P3/HNkfLedxfkWHHjS1b51wNxmCMakxj+bTzEVCy09fmgi5vu?=
- =?us-ascii?Q?B1lRrEIjPYJ+2nB+3mcgcceMote8VdSyuDdEdviMx02jeVjxCOB47IQrKGla?=
- =?us-ascii?Q?RNww42Dmau9MOJHqV3AdjAr2gTKhDyILFxiH8TpFFHQCPoMKjwmEP/VsbEpp?=
- =?us-ascii?Q?ibWrujq+l+1//5gLLHT6J5UvhQwGd7WuklyHzENYpEi+6AVr00XjGyMuQcBa?=
- =?us-ascii?Q?vQXWU1BNzwO0lcx0H+OBn0UsuaFPEfjy+XUf33Ou0CLBHqCj7OxD/W3cFQmJ?=
- =?us-ascii?Q?YpmcTQruwPYi056sg7JvD8KiNlecDKsO/NiYkkMpu2VAcQ+tRxEpnw7bWbnW?=
- =?us-ascii?Q?Ovi16bdTXn++eWFdzDbN4a50I004voUW/i+XBiU/puuBmgd6XcgYd0bp+rsd?=
- =?us-ascii?Q?TAFPlQAfFMPBVNu886omh0RfERJP0X2vTStSkLitt66Aw/xg+Mbf7/c7QCRu?=
- =?us-ascii?Q?euhIz0yv3dzOBkdSK3EfgX7h3h/w7ct+zjRmB4Ey00w5BiYrcGeeMWXzVIt0?=
- =?us-ascii?Q?qf2eZFuEc6rWSKv74zExI1awElW8/AJD4E11OODowoirIz3wjwm2WLG1S9mF?=
- =?us-ascii?Q?u3yQSrp17g9Z52yzFBEuwx1ban24HPbxiNEMksYixHz5bnugzqSKwKkT/wfZ?=
- =?us-ascii?Q?1vdLygTLnZumAY1Non+ynxBUxzfe3lgqrxkUvaEtaGVtYyZrT9cjXtJrT33C?=
- =?us-ascii?Q?appMQwBhEhmqepxtxU/f1rCGS/ADydKs9/49C00iFwptBtVUoZV4uSC45B1r?=
- =?us-ascii?Q?VLc2mQQMP5SpdkModFJv+qbE0A=3D=3D?=
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 Jan 2021 18:46:03.1182
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 98781649-49db-4430-9c74-08d8b1aa272b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 00ZjAjDwMmk+lpN5ptjpl05CYlko7EGXxNA88b5NHOVD/3/UyVWO6xQxtTyBRk7Z
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3125
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-05_05:2021-01-05,2021-01-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 spamscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 bulkscore=0 malwarescore=0
- suspectscore=0 mlxlogscore=999 adultscore=0 mlxscore=0 phishscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050108
-X-FB-Internal: deliver
+        id S1730712AbhAETbw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Jan 2021 14:31:52 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30091 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1726258AbhAETbw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Jan 2021 14:31:52 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1609875024;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FYLw5N+U/E6yggeoX+94IfSIBU6gHdaEvQjzfPKPjQk=;
+        b=VZzZT2jBFnKU2mi/VguNSxF/42dlErWpWlb4FtxtNcH5ykQkGnSpsmAJnvx5SutnzWiMEP
+        nSkkW8M/o3Kh7ARnHJwFECfefWcHC/+XyRW9ExAk4oiMdz8wh2KqIWYMURlT1outK+FajJ
+        QqxD+jdzTePX0PhSk+parXGNDi/t6ZY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-488-O1qkZ10_OiasS06j4Lf_fw-1; Tue, 05 Jan 2021 14:30:22 -0500
+X-MC-Unique: O1qkZ10_OiasS06j4Lf_fw-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A42F8107ACE6;
+        Tue,  5 Jan 2021 19:30:18 +0000 (UTC)
+Received: from ovpn-115-104.rdu2.redhat.com (ovpn-115-104.rdu2.redhat.com [10.10.115.104])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5ACBC5D9CC;
+        Tue,  5 Jan 2021 19:30:14 +0000 (UTC)
+Message-ID: <aebcdd933df3abad378aeafc1a07dfe9bbb25548.camel@redhat.com>
+Subject: Re: [PATCH v21 00/19] per memcg lru lock
+From:   Qian Cai <qcai@redhat.com>
+To:     Alex Shi <alex.shi@linux.alibaba.com>, akpm@linux-foundation.org,
+        mgorman@techsingularity.net, tj@kernel.org, hughd@google.com,
+        khlebnikov@yandex-team.ru, daniel.m.jordan@oracle.com,
+        willy@infradead.org, hannes@cmpxchg.org, lkp@intel.com,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        cgroups@vger.kernel.org, shakeelb@google.com,
+        iamjoonsoo.kim@lge.com, richard.weiyang@gmail.com,
+        kirill@shutemov.name, alexander.duyck@gmail.com,
+        rong.a.chen@intel.com, mhocko@suse.com, vdavydov.dev@gmail.com,
+        shy828301@gmail.com
+Date:   Tue, 05 Jan 2021 14:30:13 -0500
+In-Reply-To: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+References: <1604566549-62481-1-git-send-email-alex.shi@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 05, 2021 at 10:23:52AM -0800, Roman Gushchin wrote:
-> On Tue, Jan 05, 2021 at 04:07:42PM +0000, Imran Khan wrote:
-> > While allocating objects whose size is multiple of PAGE_SIZE,
-> > say kmalloc-4K, we charge one page for extra bytes corresponding
-> > to the obj_cgroup membership pointer and remainder of the charged
-> > page gets added to per-cpu stocked bytes. If this allocation is
-> > followed by another allocation of the same size, the stocked bytes
-> > will not suffice and thus we endup charging an extra page
-> > again for membership pointer and remainder of this page gets added
-> > to per-cpu stocked bytes. This second addition will cause amount of
-> > stocked bytes to go beyond PAGE_SIZE and hence will result in
-> > invocation of drain_obj_stock.
-> > 
-> > So if we are in a scenario where we are consecutively allocating,
-> > several PAGE_SIZE multiple sized objects, the stocked bytes will
-> > never be enough to suffice a request and every second request will
-> > trigger draining of stocked bytes.
-> > 
-> > For example invoking __alloc_skb multiple times with
-> > 2K < packet size < 4K will give a call graph like:
-> > 
-> > __alloc_skb
-> >     |
-> >     |__kmalloc_reserve.isra.61
-> >     |    |
-> >     |    |__kmalloc_node_track_caller
-> >     |    |    |
-> >     |    |    |slab_pre_alloc_hook.constprop.88
-> >     |    |     obj_cgroup_charge
-> >     |    |    |    |
-> >     |    |    |    |__memcg_kmem_charge
-> >     |    |    |    |    |
-> >     |    |    |    |    |page_counter_try_charge
-> >     |    |    |    |
-> >     |    |    |    |refill_obj_stock
-> >     |    |    |    |    |
-> >     |    |    |    |    |drain_obj_stock.isra.68
-> >     |    |    |    |    |    |
-> >     |    |    |    |    |    |__memcg_kmem_uncharge
-> >     |    |    |    |    |    |    |
-> >     |    |    |    |    |    |    |page_counter_uncharge
-> >     |    |    |    |    |    |    |    |
-> >     |    |    |    |    |    |    |    |page_counter_cancel
-> >     |    |    |
-> >     |    |    |
-> >     |    |    |__slab_alloc
-> >     |    |    |    |
-> >     |    |    |    |___slab_alloc
-> >     |    |    |    |
-> >     |    |    |slab_post_alloc_hook
-> > 
-> > This frequent draining of stock bytes and resultant charging of pages
-> > increases the CPU load and hence deteriorates the scheduler latency.
-> > 
-> > The above mentioned scenario and it's impact can be seen by running
-> > hackbench with large packet size on v5.8 and subsequent kernels. The
-> > deterioration in hackbench number starts appearing from v5.9 kernel,
-> > 'commit f2fe7b09a52b ("mm: memcg/slab: charge individual slab objects
-> > instead of pages")'.
-> > 
-> > Increasing the draining limit to twice of KMALLOC_MAX_CACHE_SIZE
-> > (a safe upper limit for size of slab cache objects), will avoid draining
-> > of stock, every second allocation request, for the above mentioned
-> > scenario and hence will reduce the CPU load for such cases. For
-> > allocation of smaller objects or other allocation patterns the behaviour
-> > will be same as before.
-> > 
-> > This change increases the draining threshold for per-cpu stocked bytes
-> > from PAGE_SIZE to KMALLOC_MAX_CACHE_SIZE * 2.
+On Thu, 2020-11-05 at 16:55 +0800, Alex Shi wrote:
+> This version rebase on next/master 20201104, with much of Johannes's
+> Acks and some changes according to Johannes comments. And add a new patch
+> v21-0006-mm-rmap-stop-store-reordering-issue-on-page-mapp.patch to support
+> v21-0007.
 > 
-> Hello, Imran!
-> 
-> Yes, it makes total sense to me.
-> 
-> Btw, in earlier versions of the new slab controller there was a separate stock
-> for byte-sized charging and it was 32 pages large. Later Johannes suggested
-> the current layered design and he thought that because of the layering a single
-> page is enough for the upper layer.
-> 
-> > 
-> > Below are the hackbench numbers with and without this change on
-> > v5.10.0-rc7.
-> > 
-> > Without this change:
-> >     # hackbench process 10 1000 -s 100000
-> >     Running in process mode with 10 groups using 40 file descriptors
-> >     each (== 400 tasks)
-> >     Each sender will pass 100 messages of 100000 bytes
-> >     Time: 4.401
-> > 
-> >     # hackbench process 10 1000 -s 100000
-> >     Running in process mode with 10 groups using 40 file descriptors
-> >     each (== 400 tasks)
-> >     Each sender will pass 100 messages of 100000 bytes
-> >     Time: 4.470
-> > 
-> > With this change:
-> >     # hackbench process 10 1000 -s 100000
-> >     Running in process mode with 10 groups using 40 file descriptors
-> >     each (== 400 tasks)
-> >     Each sender will pass 100 messages of 100000 bytes
-> >     Time: 3.782
-> > 
-> >     # hackbench process 10 1000 -s 100000
-> >     Running in process mode with 10 groups using 40 file descriptors
-> >     each (== 400 tasks)
-> >     Each sender will pass 100 messages of 100000 bytes
-> >     Time: 3.827
-> > 
-> > As can be seen the change gives an improvement of about 15% in hackbench
-> > numbers.
-> > Also numbers obtained with the change are inline with those obtained
-> > from v5.8 kernel.
-> 
-> The difference is quite impressive!
-> 
-> I wonder if you tried smaller values than KMALLOC_MAX_CACHE_SIZE * 2?
-> Let's say 16 and 32?
-> 
-> KMALLOC_MAX_CACHE_SIZE * 2 makes sense to me, but then the whole construction
-> with two layer caching is very questionable. Anyway, it's not a reason to not
-> merge your patch, just something I wanna look at later.
+> This patchset followed 2 memcg VM_WARN_ON_ONCE_PAGE patches which were
+> added to -mm tree yesterday.
+>  
+> Many thanks for line by line review by Hugh Dickins, Alexander Duyck and
+> Johannes Weiner.
 
-Hm, can you, please, benchmark the following change (without your change)?
+Given the troublesome history of this patchset, and had been put into linux-next 
+recently, as well as it touched both THP and mlock. Is it a good idea to suspect
+this patchset introducing some races and a spontaneous crash with some mlock
+memory presume?
 
-@@ -3204,7 +3204,7 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
- 
- 		if (nr_pages) {
- 			rcu_read_lock();
--			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
-+			refill_stock(obj_cgroup_memcg(old), nr_pages);
- 			rcu_read_unlock();
- 		}
- 
+[10392.154328][T23803] huge_memory: total_mapcount: 5, page_count(): 6
+[10392.154835][T23803] page:00000000eb7725ad refcount:6 mapcount:0 mapping:0000000000000000 index:0x7fff72a0 pfn:0x20023760
+[10392.154865][T23803] head:00000000eb7725ad order:5 compound_mapcount:0 compound_pincount:0
+[10392.154889][T23803] anon flags: 0x87fff800009000d(locked|uptodate|dirty|head|swapbacked)
+[10392.154908][T23803] raw: 087fff800009000d 5deadbeef0000100 5deadbeef0000122 c0002016ff5e0849
+[10392.154933][T23803] raw: 000000007fff72a0 0000000000000000 00000006ffffffff c0002014eb676000
+[10392.154965][T23803] page dumped because: total_mapcount(head) > 0
+[10392.154987][T23803] pages's memcg:c0002014eb676000
+[10392.155023][T23803] ------------[ cut here ]------------
+[10392.155042][T23803] kernel BUG at mm/huge_memory.c:2767!
+[10392.155064][T23803] Oops: Exception in kernel mode, sig: 5 [#1]
+[10392.155084][T23803] LE PAGE_SIZE=64K MMU=Radix SMP NR_CPUS=256 NUMA PowerNV
+[10392.155114][T23803] Modules linked in: loop kvm_hv kvm ip_tables x_tables sd_mod bnx2x ahci tg3 libahci mdio libphy libata firmware_class dm_mirror dm_region_hash dm_log dm_mod
+[10392.155185][T23803] CPU: 44 PID: 23803 Comm: ranbug Not tainted 5.11.0-rc2-next-20210105 #2
+[10392.155217][T23803] NIP:  c0000000003b5218 LR: c0000000003b5214 CTR: 0000000000000000
+[10392.155247][T23803] REGS: c00000001a8d6ee0 TRAP: 0700   Not tainted  (5.11.0-rc2-next-20210105)
+[10392.155279][T23803] MSR:  9000000002823033 <SF,HV,VEC,VSX,FP,ME,IR,DR,RI,LE>  CR: 28422222  XER: 00000000
+[10392.155314][T23803] CFAR: c0000000003135ac IRQMASK: 1 
+[10392.155314][T23803] GPR00: c0000000003b5214 c00000001a8d7180 c000000007f70b00 000000000000001e 
+[10392.155314][T23803] GPR04: c000000000eacd38 0000000000000004 0000000000000027 c000001ffe8a7218 
+[10392.155314][T23803] GPR08: 0000000000000023 0000000000000000 0000000000000000 c000000007eacfc8 
+[10392.155314][T23803] GPR12: 0000000000002000 c000001ffffcda00 0000000000000000 0000000000000001 
+[10392.155314][T23803] GPR16: c00c0008008dd808 0000000000040000 0000000000000000 0000000000000020 
+[10392.155314][T23803] GPR20: c00c0008008dd800 0000000000000020 0000000000000006 0000000000000001 
+[10392.155314][T23803] GPR24: 0000000000000005 ffffffffffffffff c0002016ff5e0848 0000000000000000 
+[10392.155314][T23803] GPR28: c0002014eb676e60 c00c0008008dd800 c00000001a8d73a8 c00c0008008dd800 
+[10392.155533][T23803] NIP [c0000000003b5218] split_huge_page_to_list+0xa38/0xa40
+[10392.155558][T23803] LR [c0000000003b5214] split_huge_page_to_list+0xa34/0xa40
+[10392.155579][T23803] Call Trace:
+[10392.155595][T23803] [c00000001a8d7180] [c0000000003b5214] split_huge_page_to_list+0xa34/0xa40 (unreliable)
+[10392.155630][T23803] [c00000001a8d7270] [c0000000002dd378] shrink_page_list+0x1568/0x1b00
+shrink_page_list at mm/vmscan.c:1251 (discriminator 1)
+[10392.155655][T23803] [c00000001a8d7380] [c0000000002df798] shrink_inactive_list+0x228/0x5e0
+[10392.155678][T23803] [c00000001a8d7450] [c0000000002e0858] shrink_lruvec+0x2b8/0x6f0
+shrink_lruvec at mm/vmscan.c:2462
+[10392.155710][T23803] [c00000001a8d7590] [c0000000002e0fd8] shrink_node+0x348/0x970
+[10392.155742][T23803] [c00000001a8d7660] [c0000000002e1728] do_try_to_free_pages+0x128/0x560
+[10392.155765][T23803] [c00000001a8d7710] [c0000000002e3b78] try_to_free_pages+0x198/0x500
+[10392.155780][T23803] [c00000001a8d77e0] [c000000000356f5c] __alloc_pages_slowpath.constprop.112+0x64c/0x1380
+[10392.155795][T23803] [c00000001a8d79c0] [c000000000358170] __alloc_pages_nodemask+0x4e0/0x590
+[10392.155830][T23803] [c00000001a8d7a50] [c000000000381fb8] alloc_pages_vma+0xb8/0x340
+[10392.155854][T23803] [c00000001a8d7ac0] [c000000000324fe8] handle_mm_fault+0xf38/0x1bd0
+[10392.155887][T23803] [c00000001a8d7ba0] [c000000000316cd4] __get_user_pages+0x434/0x7d0
+[10392.155920][T23803] [c00000001a8d7cb0] [c0000000003197d0] __mm_populate+0xe0/0x290
+__mm_populate at mm/gup.c:1459
+[10392.155952][T23803] [c00000001a8d7d20] [c00000000032d5a0] do_mlock+0x180/0x360
+do_mlock at mm/mlock.c:688
+[10392.155975][T23803] [c00000001a8d7d90] [c00000000032d954] sys_mlock+0x24/0x40
+[10392.155999][T23803] [c00000001a8d7db0] [c00000000002f510] system_call_exception+0x170/0x280
+[10392.156032][T23803] [c00000001a8d7e10] [c00000000000d7c8] system_call_common+0xe8/0x218
+[10392.156065][T23803] Instruction dump:
+[10392.156082][T23803] e93d0008 71290001 41820014 7fe3fb78 38800000 4bf5e36d 60000000 3c82f8b7 
+[10392.156121][T23803] 7fa3eb78 38846b70 4bf5e359 60000000 <0fe00000> 60000000 3c4c07bc 3842b8e0 
+[10392.156160][T23803] ---[ end trace 2e3423677d4f91f3 ]---
+[10392.312793][T23803] 
+[10393.312808][T23803] Kernel panic - not syncing: Fatal exception
+[10394.723608][T23803] ---[ end Kernel panic - not syncing: Fatal exception ]---
+
+> 
+> So now this patchset includes 3 parts:
+> 1, some code cleanup and minimum optimization as a preparation. 
+> 2, use TestCleanPageLRU as page isolation's precondition.
+> 3, replace per node lru_lock with per memcg per node lru_lock.
+> 
+> Current lru_lock is one for each of node, pgdat->lru_lock, that guard for
+> lru lists, but now we had moved the lru lists into memcg for long time. Still
+> using per node lru_lock is clearly unscalable, pages on each of memcgs have
+> to compete each others for a whole lru_lock. This patchset try to use per
+> lruvec/memcg lru_lock to repleace per node lru lock to guard lru lists, make
+> it scalable for memcgs and get performance gain.
+> 
+> Currently lru_lock still guards both lru list and page's lru bit, that's ok.
+> but if we want to use specific lruvec lock on the page, we need to pin down
+> the page's lruvec/memcg during locking. Just taking lruvec lock first may be
+> undermined by the page's memcg charge/migration. To fix this problem, we could
+> take out the page's lru bit clear and use it as pin down action to block the
+> memcg changes. That's the reason for new atomic func TestClearPageLRU.
+> So now isolating a page need both actions: TestClearPageLRU and hold the
+> lru_lock.
+> 
+> The typical usage of this is isolate_migratepages_block() in compaction.c
+> we have to take lru bit before lru lock, that serialized the page isolation
+> in memcg page charge/migration which will change page's lruvec and new 
+> lru_lock in it.
+> 
+> The above solution suggested by Johannes Weiner, and based on his new memcg 
+> charge path, then have this patchset. (Hugh Dickins tested and contributed
+> much
+> code from compaction fix to general code polish, thanks a lot!).
+> 
+> Daniel Jordan's testing show 62% improvement on modified readtwice case
+> on his 2P * 10 core * 2 HT broadwell box on v18, which has no much different
+> with this v20.
+> https://lore.kernel.org/lkml/20200915165807.kpp7uhiw7l3loofu@ca-dmjordan1.us.oracle.com/
+> 
+> Thanks Hugh Dickins and Konstantin Khlebnikov, they both brought this
+> idea 8 years ago, and others who give comments as well: Daniel Jordan, 
+> Mel Gorman, Shakeel Butt, Matthew Wilcox, Alexander Duyck etc.
+> 
+> Thanks for Testing support from Intel 0day and Rong Chen, Fengguang Wu,
+> and Yun Wang. Hugh Dickins also shared his kbuild-swap case. Thanks!
+> 
+> 
+> Alex Shi (16):
+>   mm/thp: move lru_add_page_tail func to huge_memory.c
+>   mm/thp: use head for head page in lru_add_page_tail
+>   mm/thp: Simplify lru_add_page_tail()
+>   mm/thp: narrow lru locking
+>   mm/vmscan: remove unnecessary lruvec adding
+>   mm/rmap: stop store reordering issue on page->mapping
+>   mm/memcg: add debug checking in lock_page_memcg
+>   mm/swap.c: fold vm event PGROTATED into pagevec_move_tail_fn
+>   mm/lru: move lock into lru_note_cost
+>   mm/vmscan: remove lruvec reget in move_pages_to_lru
+>   mm/mlock: remove lru_lock on TestClearPageMlocked
+>   mm/mlock: remove __munlock_isolate_lru_page
+>   mm/lru: introduce TestClearPageLRU
+>   mm/compaction: do page isolation first in compaction
+>   mm/swap.c: serialize memcg changes in pagevec_lru_move_fn
+>   mm/lru: replace pgdat lru_lock with lruvec lock
+> 
+> Alexander Duyck (1):
+>   mm/lru: introduce the relock_page_lruvec function
+> 
+> Hugh Dickins (2):
+>   mm: page_idle_get_page() does not need lru_lock
+>   mm/lru: revise the comments of lru_lock
+> 
+>  Documentation/admin-guide/cgroup-v1/memcg_test.rst |  15 +-
+>  Documentation/admin-guide/cgroup-v1/memory.rst     |  21 +--
+>  Documentation/trace/events-kmem.rst                |   2 +-
+>  Documentation/vm/unevictable-lru.rst               |  22 +--
+>  include/linux/memcontrol.h                         | 110 +++++++++++
+>  include/linux/mm_types.h                           |   2 +-
+>  include/linux/mmzone.h                             |   6 +-
+>  include/linux/page-flags.h                         |   1 +
+>  include/linux/swap.h                               |   4 +-
+>  mm/compaction.c                                    |  94 +++++++---
+>  mm/filemap.c                                       |   4 +-
+>  mm/huge_memory.c                                   |  45 +++--
+>  mm/memcontrol.c                                    |  79 +++++++-
+>  mm/mlock.c                                         |  63 ++-----
+>  mm/mmzone.c                                        |   1 +
+>  mm/page_alloc.c                                    |   1 -
+>  mm/page_idle.c                                     |   4 -
+>  mm/rmap.c                                          |  11 +-
+>  mm/swap.c                                          | 208 ++++++++----------
+> ---
+>  mm/vmscan.c                                        | 207 ++++++++++----------
+>  mm/workingset.c                                    |   2 -
+>  21 files changed, 530 insertions(+), 372 deletions(-)
+> 
+
