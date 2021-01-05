@@ -2,187 +2,137 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1770A2EAFB3
-	for <lists+cgroups@lfdr.de>; Tue,  5 Jan 2021 17:10:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AF6A2EB188
+	for <lists+cgroups@lfdr.de>; Tue,  5 Jan 2021 18:40:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728878AbhAEQJU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 5 Jan 2021 11:09:20 -0500
-Received: from userp2130.oracle.com ([156.151.31.86]:55108 "EHLO
-        userp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726571AbhAEQJT (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Jan 2021 11:09:19 -0500
-Received: from pps.filterd (userp2130.oracle.com [127.0.0.1])
-        by userp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105FtgeL138082;
-        Tue, 5 Jan 2021 16:08:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id; s=corp-2020-01-29;
- bh=yNni/tK57EDeoptLP5V7FbpXjviboZZ0FQ2qjDTGI0k=;
- b=BZdT1mw9MX1u0oGQ6e+ZpQc4eAG3Vtt1aCAuGVfcz2ES7ceOfYdWhsPkQCpBdIihKl3o
- vt66aqLlVEv1D/mehQfNancEmNq/jyBEEs13OyY7FziAV8kFMYxxOIH/EP4xAc2LtCOL
- LjVRi0TkSZx8K4nxFlMqtzMNYR7iNtVLZ4ldGF/vljYyPRjy6KDVExFleoRU2mpOYhK2
- UkBgX2g0zPpXVbD+jjSkbx60zTJNZVQLdccrgeDmZ3ByR/2za0pBFwNrW61w4jk+ZnDn
- phduzwwMovodnMR3rXUC0aS6SG+iRNKCTfgtzZUml3MsRExCkdBj0KlN/AN91f5J46fc YQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2130.oracle.com with ESMTP id 35tg8r1gwk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Tue, 05 Jan 2021 16:08:33 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 105Fuk5u187374;
-        Tue, 5 Jan 2021 16:08:32 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 35v1f8smts-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 05 Jan 2021 16:08:32 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 105G8TBS017915;
-        Tue, 5 Jan 2021 16:08:29 GMT
-Received: from instance-20201023-0137.osdevelopmeniad.oraclevcn.com (/100.100.231.115)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 05 Jan 2021 16:08:28 +0000
-From:   Imran Khan <imran.f.khan@oracle.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org
-Cc:     akpm@linux-foundation.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Imran Khan <imran.f.khan@oracle.com>
-Subject: [RFC PATCH] mm/memcontrol: Increase threshold for draining per-cpu stocked bytes.
-Date:   Tue,  5 Jan 2021 16:07:42 +0000
-Message-Id: <1609862862-3573-1-git-send-email-imran.f.khan@oracle.com>
-X-Mailer: git-send-email 1.8.3.1
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 phishscore=0
- suspectscore=0 spamscore=0 bulkscore=0 adultscore=0 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101050099
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9855 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 phishscore=0 bulkscore=0
- spamscore=0 impostorscore=0 suspectscore=0 adultscore=0 mlxlogscore=999
- mlxscore=0 malwarescore=0 lowpriorityscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101050099
+        id S1729536AbhAERiu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 5 Jan 2021 12:38:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58514 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726151AbhAERit (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 5 Jan 2021 12:38:49 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54817C061574;
+        Tue,  5 Jan 2021 09:38:09 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id f26so68087qka.0;
+        Tue, 05 Jan 2021 09:38:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=bOiN/zd9h/CaIEMnPVzsFlx2JDr/hQqa7NqLbxPttmg=;
+        b=A6Yuo3om6XcBhTEO/4ecawxwdtaAZUgoobIbMueTX0iyKN5I3/eZSh8b2H/H9cDex2
+         DNgxYkpPOWU6ZWJyxvtFUYQYV25ZSDCFg4ocuHiarOztqojoRL1GML2sjQp4H95hu3Pe
+         JKCFNqc0/UEQHIAEIeopDEVKMj93Viv8k5GQV24uR80o2JheusvN5HxBJkIH5gyu7Un6
+         4vGn1EADmSXg+xHSlCuFCWDK9RiNFdrbVkB8oGgwyGKWMBQCaJ6EQRs2cpUK3NEmAv4i
+         GnVoLS83odSpWLkHzklUVWxOTzE2p8AJFt4IkDWuatBTYKVfIwIkuRwTeBD/gNG2UXo6
+         LuIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=bOiN/zd9h/CaIEMnPVzsFlx2JDr/hQqa7NqLbxPttmg=;
+        b=JhfciZ0Tm1U5OHLcb9KAB2b1eyWr5yhrSbWlmqZa8oTZ0e5pXu6L1wAHD2yQlMZUMd
+         x7NPTmk104huhsLQEY0AwK9vrcOGkM5uQGN24p8n/3jIhO5Pr+H/9x3euIcM15FHwMuw
+         S8JS/Nh1GXbAl9zS7IUvl3ongY2ClA1UT7qRAEiDy7649IYFdnGMru5xtbUrHAUCYEoS
+         dGBjVJ/O1VyvRBe8ZiTeAOPY3yCLpjBf2WlzPtaX3ppZr6z6Xn6GXJ5jeIu9jKuRypV7
+         4h2PiUdQII+Nls1qYxIBjK+jXoHK18Eb2S2vN50IrS7ykZCBy98vuz+iKZOKBgWKYgiH
+         gbBg==
+X-Gm-Message-State: AOAM532AevaWbPTUrKjMhNXdH4KtN6qna3CoYAceM5G2D4GflcmidXz2
+        JT68mdgjMZLitvT2O+jb6DY=
+X-Google-Smtp-Source: ABdhPJxZbLW5+IqyTbJnmEYdb0Rs+IQXH6gYL3AtynWZc0f8HuPaG/1JNjiasYeCf8JWMsrsXHGU4Q==
+X-Received: by 2002:a05:620a:1398:: with SMTP id k24mr574456qki.109.1609868288305;
+        Tue, 05 Jan 2021 09:38:08 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:ce7b])
+        by smtp.gmail.com with ESMTPSA id x3sm264757qtd.56.2021.01.05.09.38.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Jan 2021 09:38:07 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 5 Jan 2021 12:37:23 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Jens Axboe <axboe@kernel.dk>
+Cc:     linux-block@vger.kernel.org, cgroups@vger.kernel.org, bsd@fb.com,
+        kernel-team@fb.com
+Subject: blk-iocost: fix NULL iocg deref from racing against initialization
+Message-ID: <X/Sj014x+U8ubiFT@mtj.duckdns.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-While allocating objects whose size is multiple of PAGE_SIZE,
-say kmalloc-4K, we charge one page for extra bytes corresponding
-to the obj_cgroup membership pointer and remainder of the charged
-page gets added to per-cpu stocked bytes. If this allocation is
-followed by another allocation of the same size, the stocked bytes
-will not suffice and thus we endup charging an extra page
-again for membership pointer and remainder of this page gets added
-to per-cpu stocked bytes. This second addition will cause amount of
-stocked bytes to go beyond PAGE_SIZE and hence will result in
-invocation of drain_obj_stock.
+When initializing iocost for a queue, its rqos should be registered before
+the blkcg policy is activated to allow policy data initiailization to lookup
+the associated ioc. This unfortunately means that the rqos methods can be
+called on bios before iocgs are attached to all existing blkgs.
 
-So if we are in a scenario where we are consecutively allocating,
-several PAGE_SIZE multiple sized objects, the stocked bytes will
-never be enough to suffice a request and every second request will
-trigger draining of stocked bytes.
+While the race is theoretically possible on ioc_rqos_throttle(), it mostly
+happened in ioc_rqos_merge() due to the difference in how they lookup ioc.
+The former determines it from the passed in @rqos and then bails before
+dereferencing iocg if the looked up ioc is disabled, which most likely is
+the case if initialization is still in progress. The latter looked up ioc by
+dereferencing the possibly NULL iocg making it a lot more prone to actually
+triggering the bug.
 
-For example invoking __alloc_skb multiple times with
-2K < packet size < 4K will give a call graph like:
+* Make ioc_rqos_merge() use the same method as ioc_rqos_throttle() to look
+  up ioc for consistency.
 
-__alloc_skb
-    |
-    |__kmalloc_reserve.isra.61
-    |    |
-    |    |__kmalloc_node_track_caller
-    |    |    |
-    |    |    |slab_pre_alloc_hook.constprop.88
-    |    |     obj_cgroup_charge
-    |    |    |    |
-    |    |    |    |__memcg_kmem_charge
-    |    |    |    |    |
-    |    |    |    |    |page_counter_try_charge
-    |    |    |    |
-    |    |    |    |refill_obj_stock
-    |    |    |    |    |
-    |    |    |    |    |drain_obj_stock.isra.68
-    |    |    |    |    |    |
-    |    |    |    |    |    |__memcg_kmem_uncharge
-    |    |    |    |    |    |    |
-    |    |    |    |    |    |    |page_counter_uncharge
-    |    |    |    |    |    |    |    |
-    |    |    |    |    |    |    |    |page_counter_cancel
-    |    |    |
-    |    |    |
-    |    |    |__slab_alloc
-    |    |    |    |
-    |    |    |    |___slab_alloc
-    |    |    |    |
-    |    |    |slab_post_alloc_hook
+* Make ioc_rqos_throttle() and ioc_rqos_merge() test for NULL iocg before
+  dereferencing it.
 
-This frequent draining of stock bytes and resultant charging of pages
-increases the CPU load and hence deteriorates the scheduler latency.
+* Explain the danger of NULL iocgs in blk_iocost_init().
 
-The above mentioned scenario and it's impact can be seen by running
-hackbench with large packet size on v5.8 and subsequent kernels. The
-deterioration in hackbench number starts appearing from v5.9 kernel,
-'commit f2fe7b09a52b ("mm: memcg/slab: charge individual slab objects
-instead of pages")'.
-
-Increasing the draining limit to twice of KMALLOC_MAX_CACHE_SIZE
-(a safe upper limit for size of slab cache objects), will avoid draining
-of stock, every second allocation request, for the above mentioned
-scenario and hence will reduce the CPU load for such cases. For
-allocation of smaller objects or other allocation patterns the behaviour
-will be same as before.
-
-This change increases the draining threshold for per-cpu stocked bytes
-from PAGE_SIZE to KMALLOC_MAX_CACHE_SIZE * 2.
-
-Below are the hackbench numbers with and without this change on
-v5.10.0-rc7.
-
-Without this change:
-    # hackbench process 10 1000 -s 100000
-    Running in process mode with 10 groups using 40 file descriptors
-    each (== 400 tasks)
-    Each sender will pass 100 messages of 100000 bytes
-    Time: 4.401
-
-    # hackbench process 10 1000 -s 100000
-    Running in process mode with 10 groups using 40 file descriptors
-    each (== 400 tasks)
-    Each sender will pass 100 messages of 100000 bytes
-    Time: 4.470
-
-With this change:
-    # hackbench process 10 1000 -s 100000
-    Running in process mode with 10 groups using 40 file descriptors
-    each (== 400 tasks)
-    Each sender will pass 100 messages of 100000 bytes
-    Time: 3.782
-
-    # hackbench process 10 1000 -s 100000
-    Running in process mode with 10 groups using 40 file descriptors
-    each (== 400 tasks)
-    Each sender will pass 100 messages of 100000 bytes
-    Time: 3.827
-
-As can be seen the change gives an improvement of about 15% in hackbench
-numbers.
-Also numbers obtained with the change are inline with those obtained
-from v5.8 kernel.
-
-Signed-off-by: Imran Khan <imran.f.khan@oracle.com>
+Signed-off-by: Tejun Heo <tj@kernel.org>
+Reported-by: Jonathan Lemon <bsd@fb.com>
+Cc: stable@vger.kernel.org # v5.4+
 ---
- mm/memcontrol.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-iocost.c |   16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0d74b80..c04633c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3256,7 +3256,7 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
- 	}
- 	stock->nr_bytes += nr_bytes;
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index ac6078a349394..98d656bdb42b7 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2551,8 +2551,8 @@ static void ioc_rqos_throttle(struct rq_qos *rqos, struct bio *bio)
+ 	bool use_debt, ioc_locked;
+ 	unsigned long flags;
  
--	if (stock->nr_bytes > PAGE_SIZE)
-+	if (stock->nr_bytes > KMALLOC_MAX_CACHE_SIZE * 2)
- 		drain_obj_stock(stock);
+-	/* bypass IOs if disabled or for root cgroup */
+-	if (!ioc->enabled || !iocg->level)
++	/* bypass IOs if disabled, still initializing, or for root cgroup */
++	if (!ioc->enabled || !iocg || !iocg->level)
+ 		return;
  
- 	local_irq_restore(flags);
--- 
-1.8.3.1
-
+ 	/* calculate the absolute vtime cost */
+@@ -2679,14 +2679,14 @@ static void ioc_rqos_merge(struct rq_qos *rqos, struct request *rq,
+ 			   struct bio *bio)
+ {
+ 	struct ioc_gq *iocg = blkg_to_iocg(bio->bi_blkg);
+-	struct ioc *ioc = iocg->ioc;
++	struct ioc *ioc = rqos_to_ioc(rqos);
+ 	sector_t bio_end = bio_end_sector(bio);
+ 	struct ioc_now now;
+ 	u64 vtime, abs_cost, cost;
+ 	unsigned long flags;
+ 
+-	/* bypass if disabled or for root cgroup */
+-	if (!ioc->enabled || !iocg->level)
++	/* bypass if disabled, still initializing, or for root cgroup */
++	if (!ioc->enabled || !iocg || !iocg->level)
+ 		return;
+ 
+ 	abs_cost = calc_vtime_cost(bio, iocg, true);
+@@ -2863,6 +2863,12 @@ static int blk_iocost_init(struct request_queue *q)
+ 	ioc_refresh_params(ioc, true);
+ 	spin_unlock_irq(&ioc->lock);
+ 
++	/*
++	 * rqos must be added before activation to allow iocg_pd_init() to
++	 * lookup the ioc from q. This means that the rqos methods may get
++	 * called before policy activation completion, can't assume that the
++	 * target bio has an iocg associated and need to test for NULL iocg.
++	 */
+ 	rq_qos_add(q, rqos);
+ 	ret = blkcg_activate_policy(q, &blkcg_policy_iocost);
+ 	if (ret) {
