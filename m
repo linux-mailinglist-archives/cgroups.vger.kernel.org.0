@@ -2,98 +2,129 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FD002ED17C
-	for <lists+cgroups@lfdr.de>; Thu,  7 Jan 2021 15:13:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 162682EEAEA
+	for <lists+cgroups@lfdr.de>; Fri,  8 Jan 2021 02:29:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728060AbhAGOMX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 7 Jan 2021 09:12:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53656 "EHLO
+        id S1729672AbhAHB3k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 7 Jan 2021 20:29:40 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728047AbhAGOMV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jan 2021 09:12:21 -0500
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39AFC0612F4;
-        Thu,  7 Jan 2021 06:11:39 -0800 (PST)
-Received: by mail-pg1-x530.google.com with SMTP id q7so3080170pgm.5;
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
+        with ESMTP id S1729466AbhAHB3k (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 7 Jan 2021 20:29:40 -0500
+Received: from mail-pl1-x649.google.com (mail-pl1-x649.google.com [IPv6:2607:f8b0:4864:20::649])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35DFEC0612F5
+        for <cgroups@vger.kernel.org>; Thu,  7 Jan 2021 17:29:00 -0800 (PST)
+Received: by mail-pl1-x649.google.com with SMTP id h23so5219084plr.13
+        for <cgroups@vger.kernel.org>; Thu, 07 Jan 2021 17:29:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G+/yW7D6tgLkfN73HRcn97T4dV2Qj+zmTeZIf737PxQ=;
-        b=Qgbt7mCZ/t2lHcdTBmIgFYZN4t4oWy0AeqUjnjy23hkhVF+p9+Gat10t3UuhooBE5z
-         h73ZrSzcfENRWBuNBlC7OjGJOVC/5EoHwlT4efFOqV3UgGokjW3iJ7UnE4XjBZ70c+A0
-         yRyhNpfEKSyxLBE+3FfcCMq50v1v7xlWifXb1iuchM40Glv70zSixRf6fRT2i3xpw8y6
-         0wlXYCXfFUEuSWargxi9VqLhPKp8164+CIVWaPzRcZSjUlhnI3nI+ClgJPL/tB3fu2dF
-         EH6oGATMR84Yg7iXW9xR1kudfkcAivYbOm5/hOdfHHcxxoYrhx3xVafQdS3HVF54tC9p
-         6jnA==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=UMAjKymYTdkz3wAZcW0ar3R52PKBGQEKlAaIA5W8JIc=;
+        b=VkP6PA7UE9/mTi1zArELyLAnbHzFz9zmWujz5LV472BF45d0K+LOCwmZjUewY/CnlL
+         5p08Q87+7zDNT2cVA3FY2+GOOoMq399zFzY5srDg8xvmG+GEeACkNboVC/dBsSlAKIP/
+         Tr3OBHba424Ambsx8muEqncyjt6Rcs56TQ7LAs9usMK5Y9Bh6eRMyWUSTwYvbRufYK5d
+         btoxwHV6D1NXm3145EaHKhuIZzt3l9zAbeetJaubCXA43wZx7xdjgpSDCQvPlIDI9czw
+         inPhXzb6umDZQYFrj1YJPJqlloNBcrEflq1i7le/blUzlVf0QOo9X+I9bdi0wQXQk95l
+         mGew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=G+/yW7D6tgLkfN73HRcn97T4dV2Qj+zmTeZIf737PxQ=;
-        b=lQNG4rzyExCEqaSvWM1HFJZDron5BWdIF9edXQIY92f0T3E6yjUg4WGhxKgSkBrDom
-         7tedFLw6JLYTwd5HPw8G+36w9JeddZ8n+j6nl5QfUxZjqTQYtryTzTcWojtFrVI336h9
-         3OE4PZZb2DCB8VTAJmUucfsUXhYyuVA+xpuJTDhBMZ+aalgkSycXAJrmirrNmSEbpzhT
-         mEI1Z3vGoq31WEd1jDHLMy4iqq8m6PDyoaUuHg4IjBGnTgdfTR+EAFpQcO9+1phs0rmI
-         9BRyQhmjWcHMZoP6TZgvM3Y5z9iz5Axese/uFKO9Weoryki4dtSO4WyQ7hX2lZlj2efB
-         lGZQ==
-X-Gm-Message-State: AOAM531zL6J5yiKNzzP1IupJcJVKx3RfHkQ04F3PMuYy/KV6sZ19m72F
-        upbLix09veuu8kPt1mk9Ogc=
-X-Google-Smtp-Source: ABdhPJxCLlJNDCcKBg8oPw4WOYrexH5xZzBFchkKHbH8r5c526FZG0yMXTWOtJPqk3a1aorfCpI1fQ==
-X-Received: by 2002:a63:cf56:: with SMTP id b22mr2056725pgj.16.1610028699523;
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
-Received: from localhost.localdomain ([203.205.141.53])
-        by smtp.gmail.com with ESMTPSA id g16sm5857947pfh.187.2021.01.07.06.11.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 07 Jan 2021 06:11:39 -0800 (PST)
-From:   Jiang Biao <benbjiang@gmail.com>
-X-Google-Original-From: Jiang Biao <benbjiang@tencent.com>
-To:     tj@kernel.org, lizefan@huawei.com, corbet@lwn.net,
-        hannes@cmpxchg.org
-Cc:     linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiang Biao <benbjiang@tencent.com>
-Subject: [PATCH] Documentation: Fix typos found in cgroup-v2.rst
-Date:   Thu,  7 Jan 2021 22:11:18 +0800
-Message-Id: <20210107141118.9530-1-benbjiang@tencent.com>
-X-Mailer: git-send-email 2.21.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=UMAjKymYTdkz3wAZcW0ar3R52PKBGQEKlAaIA5W8JIc=;
+        b=j0sBV+Vpv8gVXVCQkoXQCYWvLcImBqGdAKTqolOZQsmqiDSfZr1lI8tJXT9jJYlF/7
+         quZ5m5L0pd0xs6zuwDqswrV9J6Smy9HwakAq3ScCJrLD858RohHn7g8khq0kZH6H+TN+
+         n3WXcfkd6MnAbLLzB3n3bw7h4t+6npDG6l1tnwvmMpqQGdlHwOnDCS9pdd1q15FfeTFI
+         8krgdIerc73f0+aNq7BWrkQVQs/6rKzYozyTJEKljy+ZzcuR+k/1KRtkBTY9U3zgbIM1
+         u5lc8qlZW1QGGn3mmSV5Hw6w3m9TZJV6Zq8I/WRuX9+J/jzXh6kp0yve+mx1EsZuljej
+         ZPVA==
+X-Gm-Message-State: AOAM532YXSDZXU27wIkPSwwdlP7wi1WBSeWeRYni+EEdIRW07lrN6O6Q
+        Sls4H1196MD+9qh34BXFvhCyor5PQSR3
+X-Google-Smtp-Source: ABdhPJywgrK9jyMUDKCNz3m0wFnLKznB0xVRQSlCqGFsJdE96eJQiXYDVSV4yV82EEY/h+cPxsoBC4cwL/qw
+Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
+X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+ (user=vipinsh job=sendgmr) by 2002:aa7:8813:0:b029:19d:cd3b:6f89 with SMTP id
+ c19-20020aa788130000b029019dcd3b6f89mr1241032pfo.42.1610069339726; Thu, 07
+ Jan 2021 17:28:59 -0800 (PST)
+Date:   Thu,  7 Jan 2021 17:28:44 -0800
+Message-Id: <20210108012846.4134815-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.2.729.g45daf8777d-goog
+Subject: [Patch v4 0/2] cgroup: KVM: New Encryption IDs cgroup controller
+From:   Vipin Sharma <vipinsh@google.com>
+To:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net
+Cc:     joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-From: Jiang Biao <benbjiang@tencent.com>
+Hello,
 
-Fix typos found in Documentation/admin-guide/cgroup-v2.rst.
+This patch adds a new cgroup controller, Encryption IDs, to track and
+limit the usage of encryption IDs on a host.
 
-Signed-off-by: Jiang Biao <benbjiang@tencent.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+AMD provides Secure Encrypted Virtualization (SEV) and SEV with
+Encrypted State (SEV-ES) to encrypt the guest OS's memory using limited
+number of Address Space Identifiers (ASIDs).
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 63521cd36ce5..e0f6ff7cfa93 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1558,7 +1558,7 @@ IO Interface Files
- 	  8:0 rbytes=90430464 wbytes=299008000 rios=8950 wios=1252 dbytes=50331648 dios=3021
- 
-   io.cost.qos
--	A read-write nested-keyed file with exists only on the root
-+	A read-write nested-keyed file which exists only on the root
- 	cgroup.
- 
- 	This file configures the Quality of Service of the IO cost
-@@ -1613,7 +1613,7 @@ IO Interface Files
- 	automatic mode can be restored by setting "ctrl" to "auto".
- 
-   io.cost.model
--	A read-write nested-keyed file with exists only on the root
-+	A read-write nested-keyed file which exists only on the root
- 	cgroup.
- 
- 	This file configures the cost model of the IO cost model based
+This limited number of ASIDs creates issues like SEV ASID starvation and
+unoptimized scheduling in the cloud infrastucture.
+
+In the RFC patch v1, I provided only SEV cgroup controller but based
+on the feedback and discussion it became clear that this cgroup
+controller can be extended to be used by Intel's Trusted Domain
+Extension (TDX) and s390's protected virtualization Secure Execution IDs
+(SEID)
+
+This patch series provides a generic Encryption IDs controller with
+tracking support of the SEV and SEV-ES ASIDs.
+
+Changes in v4:
+- The max value can be set lower than the current.
+- Added SEV-ES support.
+
+Changes in v3:
+- Fixes a build error when CONFIG_CGROUP is disabled.
+
+Changes in v2:
+- Changed cgroup name from sev to encryption_ids.
+- Replaced SEV specific names in APIs and documentations with generic
+  encryption IDs.
+- Providing 3 cgroup files per encryption ID type. For example in SEV,
+  - encryption_ids.sev.stat (only in the root cgroup directory).
+  - encryption_ids.sev.max
+  - encryption_ids.sev.current
+
+[1] https://lore.kernel.org/lkml/20200922004024.3699923-1-vipinsh@google.com/
+[2] https://lore.kernel.org/lkml/20201208213531.2626955-1-vipinsh@google.com/
+[3] https://lore.kernel.org/lkml/20201209205413.3391139-1-vipinsh@google.com/
+
+Vipin Sharma (2):
+  cgroup: svm: Add Encryption ID controller
+  cgroup: svm: Encryption IDs cgroup documentation.
+
+ .../admin-guide/cgroup-v1/encryption_ids.rst  | 108 +++++
+ Documentation/admin-guide/cgroup-v2.rst       |  78 +++-
+ arch/x86/kvm/svm/sev.c                        |  52 ++-
+ include/linux/cgroup_subsys.h                 |   4 +
+ include/linux/encryption_ids_cgroup.h         |  72 +++
+ include/linux/kvm_host.h                      |   4 +
+ init/Kconfig                                  |  14 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/encryption_ids.c                | 422 ++++++++++++++++++
+ 9 files changed, 741 insertions(+), 14 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
+ create mode 100644 include/linux/encryption_ids_cgroup.h
+ create mode 100644 kernel/cgroup/encryption_ids.c
+
 -- 
-2.21.0
+2.29.2.729.g45daf8777d-goog
 
