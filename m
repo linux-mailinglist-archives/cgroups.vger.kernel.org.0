@@ -2,37 +2,37 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1562C2F34CC
+	by mail.lfdr.de (Postfix) with ESMTP id 819502F34CD
 	for <lists+cgroups@lfdr.de>; Tue, 12 Jan 2021 16:56:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392120AbhALP4D (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Jan 2021 10:56:03 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45699 "EHLO
+        id S2391689AbhALP4E (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Jan 2021 10:56:04 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26955 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2391689AbhALPz7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jan 2021 10:55:59 -0500
+        by vger.kernel.org with ESMTP id S1729481AbhALP4D (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jan 2021 10:56:03 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610466872;
+        s=mimecast20190719; t=1610466876;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=oNbjwRheHHMXW9+EilRVjII802vyCF0GJdJoXH/vfDU=;
-        b=Tn8AJKuUzXauphR7Km3nb5QPprLrKP+74V2jcnQ7DQ+D5gA3PcAmontpBH/vVltDEo0vag
-        sxaUDgspwzDDJ2HIF/fQgjiKc/+ynixlFAgMtyNM2dGtd+W12ImD/V0dWLhO/ClA713xpH
-        56JNcJCXoSFMlDI3t/xckHMipIsZFPM=
+        bh=9IT6yiKkF8lRzpuZXeT04IN/gm10k9t0WsQGxRpDxkw=;
+        b=H8nyWU1qZR/hixMMbE3dt0V77VNMQLxpgGRYGiPWmWJQ+D47CNl0fmzcwlqtR/aehhC9lN
+        aORhTSwaBhBuZ2J3AAP/Ef6UXOvoXSK33o8670p5CXstpL71wGvKphjCSkTUHHBMroYuWo
+        n0Xu+sJYzqQ3nUFsXA3VSm5S/YKa7sg=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-329-xzwRhOkXPNi9LqLYs9dp6A-1; Tue, 12 Jan 2021 10:54:29 -0500
-X-MC-Unique: xzwRhOkXPNi9LqLYs9dp6A-1
+ us-mta-349--RHhA_E6M8OZ7D-ywV_o6Q-1; Tue, 12 Jan 2021 10:54:35 -0500
+X-MC-Unique: -RHhA_E6M8OZ7D-ywV_o6Q-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F1F4A107ACF9;
-        Tue, 12 Jan 2021 15:54:26 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E049318C89C4;
+        Tue, 12 Jan 2021 15:54:32 +0000 (UTC)
 Received: from x1.com (ovpn-113-251.rdu2.redhat.com [10.10.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 2C6855D9CD;
-        Tue, 12 Jan 2021 15:54:21 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 57B185D9CD;
+        Tue, 12 Jan 2021 15:54:27 +0000 (UTC)
 From:   Daniel Bristot de Oliveira <bristot@redhat.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Marco Perronet <perronet@mpi-sws.org>,
@@ -48,9 +48,9 @@ Cc:     Marco Perronet <perronet@mpi-sws.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
         cgroups@vger.kernel.org
-Subject: [PATCH 3/6] sched/deadline: Allow DL tasks on empty (cgroup v2) cpusets
-Date:   Tue, 12 Jan 2021 16:53:42 +0100
-Message-Id: <8380113688bd64a6deb3241ff6a0fff62b157f47.1610463999.git.bristot@redhat.com>
+Subject: [PATCH 4/6] sched/deadline: Block DL tasks on non-exclusive cpuset if bandwitdh control is enable
+Date:   Tue, 12 Jan 2021 16:53:43 +0100
+Message-Id: <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
 In-Reply-To: <cover.1610463999.git.bristot@redhat.com>
 References: <cover.1610463999.git.bristot@redhat.com>
 MIME-Version: 1.0
@@ -60,84 +60,129 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-cgroups v2 allows the cpuset controller to be enabled/disabled on
-demand. On Fedora 32, cpuset is disabled by default. To enable it,
-a user needs to:
+The current SCHED_DEADLINE design supports only global scheduler,
+or variants of it, i.e., clustered and partitioned, via cpuset config.
+To enable the partitioning of a system with clusters of CPUs, the
+documentation advises the usage of exclusive cpusets, creating an
+exclusive root_domain for the cpuset.
 
-  # cd /sys/fs/cgroup/
-  # echo +cpuset > cgroup.subtree_control
-
-Existing cgroups will expose the cpuset interface (e.g., cpuset.cpus
-file). By default, cpuset.cpus has no CPU assigned, which means that
-existing tasks will move to a cpuset without cpus.
-
-With that in mind, look what happens if a SCHED_DEADLINE task exists
-on any cgroup (user.slice by default on Fedora):
+Attempts to change the cpu affinity of a thread to a cpu mask different
+from the root domain results in an error. For instance:
 
 ----- %< -----
-  # chrt -d --sched-period 1000000000 --sched-runtime 100000000 0 sleep 100 &
-  # cd /sys/fs/cgroup/
-  # echo '+cpuset' > cgroup.subtree_control
-  [   65.384041] BUG: unable to handle page fault for address: ffffffffb720f7e0
-  [   65.384551] #PF: supervisor read access in kernel mode
-  [   65.384923] #PF: error_code(0x0000) - not-present page
-  [   65.385298] PGD 61a15067 P4D 61a15067 PUD 61a16063 PMD 800fffff9ddff062
-  [   65.385781] Oops: 0000 [#1] SMP PTI
-  [   65.386042] CPU: 0 PID: 799 Comm: sh Not tainted 5.10.0-rc3 #1
-  [   65.386461] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.13.0-2.fc32 04/01/2014
-  [   65.387077] RIP: 0010:dl_task_can_attach+0x40/0x250
-  [   65.387429] Code: 54 55 53 48 83 ec 18 48 89 3c 24 bf ff ff ff ff e8 05 a2 52 00
-                       4c 63 f0 48 c7 c5 00 9e 02 00 4a 8b 04 f5 00 09 47 b6 48 89 ea
-                       <4c> 8b a4 10 e0 09 00 00 49 8d 44 24 40 48 89 c7 48 89 44 24
-                       08 e8
-  [   65.388768] RSP: 0018:ffffaee8c056fcd8 EFLAGS: 00010283
-  [   65.389148] RAX: ffffffffb71e5000 RBX: ffffaee8c056fdd0 RCX: 0000000000000040
-  [   65.389661] RDX: 0000000000029e00 RSI: ffff9db202534e48 RDI: ffffffffb6d3a3e0
-  [   65.390174] RBP: 0000000000029e00 R08: 0000000000000000 R09: 0000000000000004
-  [   65.390686] R10: 0000000000000001 R11: 00000000ffa6fbff R12: ffffaee8c056fbf0
-  [   65.391196] R13: ffff9db2024e1400 R14: 0000000000000004 R15: ffff9db20ebb31e0
-  [   65.391710] FS:  00007f6df41b1740(0000) GS:ffff9db377c00000(0000) knlGS:0000000000000000
-  [   65.392289] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-  [   65.392705] CR2: ffffffffb720f7e0 CR3: 000000010680a003 CR4: 0000000000370ef0
-  [   65.393220] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-  [   65.393732] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-  [   65.394244] Call Trace:
-  [   65.394437]  cpuset_can_attach+0x8b/0x110
-  [   65.394732]  cgroup_migrate_execute+0x70/0x430
-  [   65.395057]  cgroup_update_dfl_csses+0x222/0x230
-  [   65.395392]  cgroup_subtree_control_write+0x2c6/0x3c0
-  [   65.395759]  kernfs_fop_write+0xce/0x1b0
-  [   65.396048]  vfs_write+0xc2/0x230
-  [   65.396291]  ksys_write+0x4f/0xc0
-  [   65.396533]  do_syscall_64+0x33/0x40
-  [   65.396797]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  [   65.397166] RIP: 0033:0x7f6df42a6537
-  [   65.397428] Code: 0d 00 f7 d8 64 89 02 48 c7 c0 ff ff ff ff eb b7 0f 1f 00 f3 0f
-                       1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05
-                       <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89
-                       74 24
-  [   65.398766] RSP: 002b:00007ffee4128018 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-  [   65.399838] RAX: ffffffffffffffda RBX: 0000000000000008 RCX: 00007f6df42a6537
-  [   65.400923] RDX: 0000000000000008 RSI: 000055b3f7e549e0 RDI: 0000000000000001
-  [   65.402003] RBP: 000055b3f7e549e0 R08: 000000000000000a R09: 0000000000000007
-  [   65.403082] R10: 0000000000000004 R11: 0000000000000246 R12: 0000000000000008
-  [   65.404156] R13: 00007f6df4378500 R14: 0000000000000008 R15: 00007f6df4378700
-  [   65.405218] Modules linked in: <lots of modules>
-  [   65.414172] CR2: ffffffffb720f7e0
-  [   65.415117] ---[ end trace 2dbff1a688549e65 ]---
+[root@x1 linux]# chrt -d --sched-period 1000000000 --sched-runtime 100000000 0 sleep 10000 &
+[1] 69020
+[root@x1 linux]# taskset -p -c 0 69020
+pid 69020's current affinity list: 0-7
+taskset: failed to set pid 69020's affinity: Device or resource busy
 ----- >% -----
 
-That happens because on dl_task_can_attach():
-        dest_cpu = cpumask_any_and(cpu_active_mask, cs_cpus_allowed);
+However, such restriction can be bypassed by disabling the
+SCHED_DEADLINE admission test, under the assumption that
+the user is aware of the implications of such a decision.
 
-returns a non active cpu.
+However, Marco Perronet noticed that it was possible to
+by-pass this mechanism because no restriction is currently
+imposed by the cpuset mechanism.
 
-Initially, I thought about returning an error and blocking the
-operation. However, that is indeed not needed. The cpuset without
-CPUs assigned will be a non-root cpuset, hence its cpu mask will
-be the same as the root one. So, the bandwidth was already accounted,
-and the task can proceed.
+For instance, this script:
+----- %< -----
+#!/bin/bash
 
+# Enter on the cgroup directory
+cd /sys/fs/cgroup/
+
+# Check it if is cgroup v2 and enable cpuset
+if [ -e cgroup.subtree_control ]; then
+	# Enable cpuset controller on cgroup v2
+	echo +cpuset > cgroup.subtree_control
+fi
+
+echo LOG: create a cpuset and assigned the CPU 0 to it
+# Create cpuset groups
+rmdir dl-group &> /dev/null
+mkdir dl-group
+
+# Restrict the task to the CPU 0
+echo 0 > dl-group/cpuset.mems
+echo 0 > dl-group/cpuset.cpus
+
+# Place a task in the root cgroup
+echo LOG: dispatching the first DL task
+chrt -d --sched-period 1000000000 --sched-runtime 100000000 0 sleep 100 &
+ROOT_PID="$!"
+ROOT_ALLOWED=`cat /proc/$ROOT_PID/status | grep Cpus_allowed_list | awk '{print $2}'`
+
+# Disapatch another task in the root cgroup, to move it later.
+echo LOG: dispatching the second DL task
+chrt -d --sched-period 1000000000 --sched-runtime 100000000 0 sleep 100 &
+CPUSET_PID="$!"
+
+# let them settle down
+sleep 1
+
+# Assign the second task to the cgroup
+echo LOG: moving the second DL task to the cpuset
+echo "$CPUSET_PID" > dl-group/cgroup.procs 2> /dev/null
+ACCEPTED=$?
+CPUSET_ALLOWED=`cat /proc/$CPUSET_PID/status | grep Cpus_allowed_list | awk '{print $2}'`
+
+if [ $ACCEPTED == 0 ]; then
+	echo FAIL: a DL task was accepted on a non-exclusive cpuset
+else
+	echo PASS: DL task was rejected on a non-exclusive cpuset
+fi
+
+if [ $ROOT_ALLOWED == $CPUSET_ALLOWED ]; then
+	echo PASS: the affinity did not change: $CPUSET_ALLOWED == $ROOT_ALLOWED
+else
+	echo FAIL: the cpu affinity is different: $CPUSET_ALLOWED == $ROOT_ALLOWED
+fi
+
+# Just ignore the clean up
+exec > /dev/null 2>&1
+kill -9 $CPUSET_PID
+kill -9 $ROOT_PID
+rmdir dl-group
+----- >% -----
+
+Shows these results:
+----- %< -----
+LOG: create a cpuset and assigned the CPU 0 to it
+LOG: dispatching the first DL task
+LOG: dispatching the second DL task
+LOG: moving the second DL task to the cpuset
+FAIL: a DL task was accepted on a non-exclusive cpuset
+FAIL: the cpu affinity is different: 0 == 0-3
+----- >% -----
+
+This result is a problem because the two tasks have a different
+cpu mask, but they end up sharing the cpu 0, which is something
+not supported in the current SCHED_DEADLINE designed (APA - Arbitrary
+Processor Affinities).
+
+To avoid such scenario, the correct action to be taken is rejecting
+the attach of SCHED_DEADLINE thread to a non-exclusive cpuset.
+
+With the proposed patch in place, the script above returns:
+
+----- %< -----
+LOG: create a cpuset and assigned the CPU 0 to it
+LOG: dispatching the first DL task
+LOG: dispatching the second DL task
+LOG: moving the second DL task to the cpuset
+PASS: DL task was rejected on a non-exclusive cpuset
+PASS: the affinity did not change: 0-3 == 0-3
+----- >% -----
+
+Still, likewise for taskset, this restriction can be bypassed by
+disabling the admission test, i.e.:
+
+# sysctl -w kernel.sched_rt_runtime_us=-1
+
+and work at their own risk.
+
+Reported-by: Marco Perronet <perronet@mpi-sws.org>
 Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
 Cc: Ingo Molnar <mingo@redhat.com>
 Cc: Peter Zijlstra <peterz@infradead.org>
@@ -159,19 +204,19 @@ Cc: cgroups@vger.kernel.org
  1 file changed, 7 insertions(+)
 
 diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index 943aa32cc1bc..788a391657a5 100644
+index 788a391657a5..c221e14d5b86 100644
 --- a/kernel/sched/deadline.c
 +++ b/kernel/sched/deadline.c
-@@ -2871,6 +2871,13 @@ int dl_task_can_attach(struct task_struct *p,
- 	bool overflow;
- 	int ret;
+@@ -2878,6 +2878,13 @@ int dl_task_can_attach(struct task_struct *p,
+ 	if (cpumask_empty(cs_cpus_allowed))
+ 		return 0;
  
 +	/*
-+	 * The cpuset has no cpus assigned, so the thread will not
-+	 * change its affinity.
++	 * Do not allow moving tasks to non-exclusive cpusets
++	 * if bandwidth control is enabled.
 +	 */
-+	if (cpumask_empty(cs_cpus_allowed))
-+		return 0;
++	if (dl_bandwidth_enabled() && !exclusive)
++		return -EBUSY;
 +
  	/*
  	 * The task is not moving to another root domain, so it is
