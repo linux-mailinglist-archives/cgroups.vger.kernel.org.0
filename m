@@ -2,222 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39F1F2F34D3
-	for <lists+cgroups@lfdr.de>; Tue, 12 Jan 2021 16:56:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7217A2F35D8
+	for <lists+cgroups@lfdr.de>; Tue, 12 Jan 2021 17:33:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2392580AbhALP4S (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 12 Jan 2021 10:56:18 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47321 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2392585AbhALP4S (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jan 2021 10:56:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1610466891;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wOhI5g5i5LSzzWOHJu+RbadpKHs6IKldH+QIJhJVpUE=;
-        b=ThTVJchzKYG3e7UAy7k1bu0sMfAYkekdgNfm0HzxswNmbIwJBW0BJkTWZNcfDh0NkB6vN1
-        4lrpU2qU1uLSHsALzU5g51tPXl7oTFTaz3FIejuSa4hsKwq7B2d4SSRKIefQbKjYqCmBGK
-        0/wyz9LKAl5a9sZJo5/PwvYoHjQZZjM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-575-nomEZXpxPgmLm-ZWESHhUg-1; Tue, 12 Jan 2021 10:54:49 -0500
-X-MC-Unique: nomEZXpxPgmLm-ZWESHhUg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E087107ACF7;
-        Tue, 12 Jan 2021 15:54:47 +0000 (UTC)
-Received: from x1.com (ovpn-113-251.rdu2.redhat.com [10.10.113.251])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 837CE5D9CD;
-        Tue, 12 Jan 2021 15:54:43 +0000 (UTC)
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Marco Perronet <perronet@mpi-sws.org>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        cgroups@vger.kernel.org
-Subject: [PATCH 6/6] sched/deadline: Fixes cpu/rd/dl_bw references for suspended tasks
-Date:   Tue, 12 Jan 2021 16:53:45 +0100
-Message-Id: <8c1cb0c850e2f3ab1d7a533aa4b33a30f9dbeda5.1610463999.git.bristot@redhat.com>
-In-Reply-To: <cover.1610463999.git.bristot@redhat.com>
-References: <cover.1610463999.git.bristot@redhat.com>
+        id S2392489AbhALQdT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 12 Jan 2021 11:33:19 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2387507AbhALQdT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 12 Jan 2021 11:33:19 -0500
+Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6754C061786
+        for <cgroups@vger.kernel.org>; Tue, 12 Jan 2021 08:32:38 -0800 (PST)
+Received: by mail-qk1-x729.google.com with SMTP id n142so2361878qkn.2
+        for <cgroups@vger.kernel.org>; Tue, 12 Jan 2021 08:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSfbgJHMgHLM9rzB5N8TPqwylQdBK6aN3u6pmU/8Jk4=;
+        b=XRtRi+npxUhv1aIaFonEpF9d9xK4DvoowayUJ3B3qkBd1aLaEH2E7JKQzu/AV9pDOT
+         fIETBbFsDj6lgUWnkEQOnMgb7rUD27wGjJ5x5wHlEWIAsCLQgmMLTbbFJKgO6jhO5aFm
+         4xwavol2Mz98x5eMv0tqfMrRy+KoNbmEtxmNcHHm2cFTepKbx9AmChWp/aH65taw8I7q
+         MYxPRcAhTffnCW9cbjoc4FdWKHgpDC4bT+m0LLWJAmr4sKbd8tpTA4wO5kOY8VehxlL7
+         tABlka6b/ikymYrABypNGD7TfR74nzqfsrYHaT9I0xbrxyLhmu4wIAZH3UjsqchkNTx6
+         2fuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=aSfbgJHMgHLM9rzB5N8TPqwylQdBK6aN3u6pmU/8Jk4=;
+        b=XrqWZroQs+lYBFYu1Z13LO/RRQN80mS1mcf1alpy01KU6He9kbN922CjUX9pQF3Y08
+         0ZMkf//PXiFC5J6gy8gun96MffStZPK9ISEYL/N87hftyc9LLloLkVNavLyRYebtqQW0
+         5YaP6Wv0bTDehAE+OdTgfTehg5/qqgDjgsq4Cwyz6oc+y39oLkhnpezlLSicptdEqsoK
+         aGb7/HwUBbx63L4Rswi0Y3FlpIFxgmOBlGJhUQHqbmzYJ0giR1qEDTlfaO2/4LCAYiy3
+         Nlp2je0CVyhrB3oV3Op4af/RI2SgwvHvQR4AZRT28Dyz4+T0nHvMz5QUw2/66D1tC994
+         +M1A==
+X-Gm-Message-State: AOAM530hMC458jI45Hdp/MK9e5jEgT6Reoe3AnZF0kzhc+Jjy7vUx7pl
+        tyUxCPhKpsl88M9Rje0cJiXBIA==
+X-Google-Smtp-Source: ABdhPJxHrShkZ/TEBY6Kc+dwor37fO2ZPO8LEL1PAw3K5sR2T3rxsJacgtbo9WyiKHFNnedWpoGcog==
+X-Received: by 2002:a37:aace:: with SMTP id t197mr89781qke.175.1610469157955;
+        Tue, 12 Jan 2021 08:32:37 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:1fb4])
+        by smtp.gmail.com with ESMTPSA id m190sm1530954qkb.42.2021.01.12.08.32.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Jan 2021 08:32:37 -0800 (PST)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: memcontrol: prevent starvation when writing memory.high
+Date:   Tue, 12 Jan 2021 11:30:11 -0500
+Message-Id: <20210112163011.127833-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-__set_cpus_allowed_ptr() migrates running or runnable, setting the
-task's cpu accordingly. The CPU is not set when the task is not
-runnable because of complications on the hotplug code. The
-task cpu will be updated in the next wakeup anyway.
+When a value is written to a cgroup's memory.high control file, the
+write() context first tries to reclaim the cgroup to size before
+putting the limit in place for the workload. Concurrent charges from
+the workload can keep such a write() looping in reclaim indefinitely.
 
-However, this creates a problem for the usage of task_cpu(p), which
-might point the task to a CPU in which it cannot run, or worse,
-a runqueue/root_domain it does not belong to, causing some
-odd errors. For example, the script below shows that a sleeping
-task cannot become SCHED_DEADLINE if they moved to another (exclusive)
-cpuset:
+In the past, a write to memory.high would first put the limit in place
+for the workload, then do targeted reclaim until the new limit has
+been met - similar to how we do it for memory.max. This wasn't prone
+to the described starvation issue. However, this sequence could cause
+excessive latencies in the workload, when allocating threads could be
+put into long penalty sleeps on the sudden memory.high overage created
+by the write(), before that had a chance to work it off.
 
------ %< -----
-  #!/bin/bash
-  # Enter on the cgroup directory
-  cd /sys/fs/cgroup/
+Now that memory_high_write() performs reclaim before enforcing the new
+limit, reflect that the cgroup may well fail to converge due to
+concurrent workload activity. Bail out of the loop after a few tries.
 
-  # Check it if is cgroup v2 and enable cpuset
-  if [ -e cgroup.subtree_control ]; then
-  	# Enable cpuset controller on cgroup v2
-  	echo +cpuset > cgroup.subtree_control
-  fi
-
-  echo LOG: create an exclusive cpuset and assigned the CPU 0 to it
-  # Create cpuset groups
-  rmdir dl-group &> /dev/null
-  mkdir dl-group
-
-  # Restrict the task to the CPU 0
-  echo 0 > dl-group/cpuset.mems
-  echo 0 > dl-group/cpuset.cpus
-  echo root >  dl-group/cpuset.cpus.partition
-
-  echo LOG: dispatching a regular task
-  sleep 100 &
-  CPUSET_PID="$!"
-
-  # let it settle down
-  sleep 1
-
-  # Assign the second task to the cgroup
-  echo LOG: moving the second DL task to the cpuset
-  echo "$CPUSET_PID" > dl-group/cgroup.procs 2> /dev/null
-
-  CPUSET_ALLOWED=`cat /proc/$CPUSET_PID/status | grep Cpus_allowed_list | awk '{print $2}'`
-
-  chrt -p -d --sched-period 1000000000 --sched-runtime 100000000 0 $CPUSET_PID
-  ACCEPTED=$?
-
-  if [ $ACCEPTED == 0 ]; then
-  	echo PASS: the task became DL
-  else
-  	echo FAIL: the task was rejected as DL
-  fi
-
-  # Just ignore the clean up
-  exec > /dev/null 2>&1
-  kill -9 $CPUSET_PID
-  kill -9 $ROOT_PID
-  rmdir dl-group
------ >% -----
-
-Long story short: the sleep task is (not runnable) on a cpu != 0. After
-moving to a cpuset with only the CPU 0, task_cpu() returns a cpu that
-does not belong to the cpuset the task is in, and the task is rejected
-in this if:
-
------ %< -----
-__sched_setscheduler():
-[...]
-        rq = task_rq_lock(p, &rf); <-- uses task_cpu(), that points to
-				   <-- the old cpu.
-[...]
-                if (dl_bandwidth_enabled() && dl_policy(policy) &&
-                                !(attr->sched_flags & SCHED_FLAG_SUGOV)) {
-                        cpumask_t *span = rq->rd->span;        <--- wrong rd!
-
-                        /*
-                         * Don't allow tasks with an affinity mask smaller than
-                         * the entire root_domain to become SCHED_DEADLINE. We
-                         * will also fail if there's no bandwidth available.
-                         */
-                        if (!cpumask_subset(span, p->cpus_ptr) ||
-                            rq->rd->dl_bw.bw == 0) {
-                                retval = -EPERM;   <--- returns here.
-                                goto unlock;
-                        }
-                }
------ >% -----
-
-Because the rq, and so the root domain, corresponding to the ones of
-the CPU in which the sleep command went to... sleep, not the ones
-it will run in the next wakeup because of its affinity.
-
-To avoid this problem, use the dl_task* helpers that return the task
-cpu, root domain, and the "root" dl_bw, aware of the status of
-task->cpu.
-
-Reported-by: Marco Perronet <perronet@mpi-sws.org>
-Signed-off-by: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Juri Lelli <juri.lelli@redhat.com>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-Cc: Steven Rostedt <rostedt@goodmis.org>
-Cc: Ben Segall <bsegall@google.com>
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Daniel Bristot de Oliveira <bristot@redhat.com>
-Cc: Li Zefan <lizefan@huawei.com>
-Cc: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: linux-kernel@vger.kernel.org
-Cc: cgroups@vger.kernel.org
+Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
+Cc: <stable@vger.kernel.org> # 5.8+
+Reported-by: Tejun Heo <tj@kernel.org>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- kernel/sched/core.c     | 6 +++---
- kernel/sched/deadline.c | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ mm/memcontrol.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 5961a97541c2..3c2775e6869f 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -5905,15 +5905,15 @@ static int __sched_setscheduler(struct task_struct *p,
- #ifdef CONFIG_SMP
- 		if (dl_bandwidth_enabled() && dl_policy(policy) &&
- 				!(attr->sched_flags & SCHED_FLAG_SUGOV)) {
--			cpumask_t *span = rq->rd->span;
-+			struct root_domain *rd = dl_task_rd(p);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 605f671203ef..63a8d47c1cd3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
  
- 			/*
- 			 * Don't allow tasks with an affinity mask smaller than
- 			 * the entire root_domain to become SCHED_DEADLINE. We
- 			 * will also fail if there's no bandwidth available.
- 			 */
--			if (!cpumask_subset(span, p->cpus_ptr) ||
--			    rq->rd->dl_bw.bw == 0) {
-+			if (!cpumask_subset(rd->span, p->cpus_ptr) ||
-+			    rd->dl_bw.bw == 0) {
- 				retval = -EPERM;
- 				goto unlock;
- 			}
-diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-index c221e14d5b86..1f6264cb8867 100644
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -2678,8 +2678,8 @@ int sched_dl_overflow(struct task_struct *p, int policy,
- 	u64 period = attr->sched_period ?: attr->sched_deadline;
- 	u64 runtime = attr->sched_runtime;
- 	u64 new_bw = dl_policy(policy) ? to_ratio(period, runtime) : 0;
--	int cpus, err = -1, cpu = task_cpu(p);
--	struct dl_bw *dl_b = dl_bw_of(cpu);
-+	int cpus, err = -1, cpu = dl_task_cpu(p);
-+	struct dl_bw *dl_b = dl_task_root_bw(p);
- 	unsigned long cap;
+ 	for (;;) {
+ 		unsigned long nr_pages = page_counter_read(&memcg->memory);
+-		unsigned long reclaimed;
  
- 	if (attr->sched_flags & SCHED_FLAG_SUGOV)
+ 		if (nr_pages <= high)
+ 			break;
+@@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 			continue;
+ 		}
+ 
+-		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+-							 GFP_KERNEL, true);
++		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
++					     GFP_KERNEL, true);
+ 
+-		if (!reclaimed && !nr_retries--)
++		if (!nr_retries--)
+ 			break;
+ 	}
+ 
 -- 
-2.29.2
+2.30.0
 
