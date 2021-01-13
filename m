@@ -2,96 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 981312F46FE
-	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 10:03:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EE612F4D82
+	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 15:49:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727056AbhAMJA3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Jan 2021 04:00:29 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727325AbhAMJA2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 04:00:28 -0500
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 843D7C061786
-        for <cgroups@vger.kernel.org>; Wed, 13 Jan 2021 00:59:48 -0800 (PST)
-Received: by mail-pg1-x533.google.com with SMTP id 30so1077084pgr.6
-        for <cgroups@vger.kernel.org>; Wed, 13 Jan 2021 00:59:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=khY3b9nNLG3pn8j5ObMad/IKodRFErErRiM9bDM1Hc4=;
-        b=m6cG2SZeoQC7z+233pF69aduzYVErPg7kpJnAwKckGrYeox/3cz6OJTflqkC44PiAA
-         Ua3Dnyw7IzJqquKUSYJT8KQNhPwx/nBUt+TMamSiADca5useKtiXMpzEHpsr0yAW9muC
-         jeANNgo8BBvZTjbXVu0nauEXPnwXC+FSgBVFUQYVJwMwOYOo9saJkLZD6BIkz7JDKVR2
-         pLzx/RtBzX8qVvXQ5W1+1ttaxU+EtbysSUCzkXMVGYWcUD+i61vC9rRSD4ttddp5Jesx
-         uxlQgYEDUlk/5/yBIopyVL7CSZ2GQ+AMakMnm7G6Dx2eldCI/JXBv3SwktDO5jhdL+ej
-         QURA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding;
-        bh=khY3b9nNLG3pn8j5ObMad/IKodRFErErRiM9bDM1Hc4=;
-        b=AC5HrG3iV3Zu/X88Mr/SC9iMWAXh5MCwsQIIV1oERO/8SwRpkaTf6Rlmt6luX/gwq3
-         VbcFXvuajB4ypbXMpWB6hZIfFh/4YAzdwLEhTs/4KUKvih9AsIhdXhEGyEjo8v8YucG9
-         dPlgZu+HB4I1sGSgCNPiE7hTT2p5wos2NprMJlpwkFMBKMSdrkHZ9wxo9PVmzQ3s/KmP
-         8QD6ju2pomblfrZUpdQkl20SBEFLrmlo34EZxaC22yC1SQsNYWpFAyNNXwv7Ax0z/jEH
-         p6rBWtyRzK5fFD5Vpek9QgAr8DJSek+PorxHrfEc0kgDwDHXJIadPsxC1KmE5XUBYAJm
-         aaxg==
-X-Gm-Message-State: AOAM531qd+SPK9Os2qexADJnMGhyi2rZ3/Oq0CXeS2YQL43yCxkIYqBI
-        b4Cf2cM2GIDbsZAOHx+zqs0XVp9PePjIIm0vPw==
-X-Google-Smtp-Source: ABdhPJwVWFuNi6dvy6mSyvRbPP0hwlr8Ien7QxybRLxE1DP9YCSVorjq8qfBj9l8qV1Qf5GS6SEOog==
-X-Received: by 2002:a65:688a:: with SMTP id e10mr1141158pgt.347.1610528387165;
-        Wed, 13 Jan 2021 00:59:47 -0800 (PST)
-Received: from [10.85.112.53] ([139.177.225.228])
-        by smtp.gmail.com with ESMTPSA id e10sm1738764pgu.42.2021.01.13.00.59.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 13 Jan 2021 00:59:46 -0800 (PST)
-Subject: [PATCH v2 2/2] MAINTAINERS: Update my email address
-From:   Zefan Li <lizefan.x@bytedance.com>
-To:     tj@kernel.org
-Cc:     Steve Wahl <steve.wahl@hpe.com>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <75494a75-a74b-3dba-9846-7f51d805023a@bytedance.com>
-Message-ID: <f8fe9c3b-db08-50da-d207-0952be5d2b85@bytedance.com>
-Date:   Wed, 13 Jan 2021 16:59:42 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.6.1
+        id S1727157AbhAMOrn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Jan 2021 09:47:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58200 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1727102AbhAMOrm (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 13 Jan 2021 09:47:42 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610549215; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=nt0P3UB52tUXihhKnY0EGJSOwPIXl2w0VfMCeDXigfg=;
+        b=MaYTpfeBCSb+4GfytJrC3yMQ85mJn3wsQrdPMm3X8mJpdVwihUs+pt5UikXfQ4Js75AVXa
+        p+88RPnduouIF3z9abzeMfvM3SCYKBhdqRIhhKakryDlNAwM89t/a65OMRWqoBMjPH7Fg8
+        YApkvhaPiozFN1PYsTU6iJ2/ww75CGU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 62A00AB92;
+        Wed, 13 Jan 2021 14:46:55 +0000 (UTC)
+Date:   Wed, 13 Jan 2021 15:46:54 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
+ memory.high
+Message-ID: <20210113144654.GD22493@dhcp22.suse.cz>
+References: <20210112163011.127833-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-In-Reply-To: <75494a75-a74b-3dba-9846-7f51d805023a@bytedance.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Signed-off-by: Zefan Li <lizefan.x@bytedance.com>
----
- MAINTAINERS | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
+> When a value is written to a cgroup's memory.high control file, the
+> write() context first tries to reclaim the cgroup to size before
+> putting the limit in place for the workload. Concurrent charges from
+> the workload can keep such a write() looping in reclaim indefinitely.
+> 
+> In the past, a write to memory.high would first put the limit in place
+> for the workload, then do targeted reclaim until the new limit has
+> been met - similar to how we do it for memory.max. This wasn't prone
+> to the described starvation issue. However, this sequence could cause
+> excessive latencies in the workload, when allocating threads could be
+> put into long penalty sleeps on the sudden memory.high overage created
+> by the write(), before that had a chance to work it off.
+> 
+> Now that memory_high_write() performs reclaim before enforcing the new
+> limit, reflect that the cgroup may well fail to converge due to
+> concurrent workload activity. Bail out of the loop after a few tries.
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 2a01cd3e0a2b..4987d1ce9ac6 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -4448,7 +4448,7 @@ F:	include/linux/console*
- 
- CONTROL GROUP (CGROUP)
- M:	Tejun Heo <tj@kernel.org>
--M:	Li Zefan <lizefan@huawei.com>
-+M:	Zefan Li <lizefan.x@bytedance.com>
- M:	Johannes Weiner <hannes@cmpxchg.org>
- L:	cgroups@vger.kernel.org
- S:	Maintained
-@@ -4472,7 +4472,7 @@ F:	block/blk-throttle.c
- F:	include/linux/blk-cgroup.h
- 
- CONTROL GROUP - CPUSET
--M:	Li Zefan <lizefan@huawei.com>
-+M:	Zefan Li <lizefan.x@bytedance.com>
- L:	cgroups@vger.kernel.org
- S:	Maintained
- T:	git git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git
+I can see that you have provided some more details in follow up replies
+but I do not see any explicit argument why an excessive time for writer
+is an actual problem. Could you be more specific?
+
+If the writer is time sensitive then there is a trivial way to
+workaround that and kill it by a signal (timeout 30s echo ....).
+
+Btw. this behavior has been considered http://lkml.kernel.org/r/20200710122917.GB3022@dhcp22.suse.cz/
+"
+With this change
+the reclaim here might be just playing never ending catch up. On the
+plus side a break out from the reclaim loop would just enforce the limit
+so if the operation takes too long then the reclaim burden will move
+over to consumers eventually. So I do not see any real danger.
+"
+
+> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
+> Cc: <stable@vger.kernel.org> # 5.8+
+
+Why is this worth backporting to stable? The behavior is different but I
+do not think any of them is harmful.
+
+> Reported-by: Tejun Heo <tj@kernel.org>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+
+I am not against the patch. The existing interface doesn't provide any
+meaningful feedback to the userspace anyway. User would have to re check
+to see the result of the operation. So how hard we try is really an
+implementation detail.
+
+> ---
+>  mm/memcontrol.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 605f671203ef..63a8d47c1cd3 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  
+>  	for (;;) {
+>  		unsigned long nr_pages = page_counter_read(&memcg->memory);
+> -		unsigned long reclaimed;
+>  
+>  		if (nr_pages <= high)
+>  			break;
+> @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+>  			continue;
+>  		}
+>  
+> -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> -							 GFP_KERNEL, true);
+> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
+> +					     GFP_KERNEL, true);
+>  
+> -		if (!reclaimed && !nr_retries--)
+> +		if (!nr_retries--)
+>  			break;
+>  	}
+>  
+> -- 
+> 2.30.0
+> 
+
 -- 
-2.11.0
-
+Michal Hocko
+SUSE Labs
