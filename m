@@ -2,157 +2,367 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A37A2F529A
-	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 19:45:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B8D2F52AB
+	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 19:49:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728472AbhAMSoA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Jan 2021 13:44:00 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60286 "EHLO
+        id S1728117AbhAMSsy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Jan 2021 13:48:54 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3418 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1728443AbhAMSn7 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 13:43:59 -0500
-Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10DIcNjg023750;
-        Wed, 13 Jan 2021 10:43:08 -0800
+        by vger.kernel.org with ESMTP id S1728108AbhAMSsy (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 13:48:54 -0500
+Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10DIicOo032117;
+        Wed, 13 Jan 2021 10:48:04 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
- b=MBrRSo97MoA0IaALi2Q5mdd8loBkX+gUGZBShyW4v4jTR4D3GTP4eZc3kZgJURK1y9Qh
- K1h5AVrQGEBHnNW321haB7o29qru8DLyMbzwLV/UD30SHzq72kaSxzy5k7n8nm6AB796
- o102NdaBhYNSI6fOsa6QRP43vj7zxj5yR5Q= 
+ mime-version; s=facebook; bh=gulwjmtfgPvzvG+CYkimturzVYttqGxf4st4wHxiViM=;
+ b=lVwQD0RL31fEbDkOy97ruT8/aGOFrRldSJwHVWMEj+fx8e+QK5wnD7rQQ3HNtEDRqlr9
+ R3Hel8e+VOSKvb0dQ46vbEpX1S4j3apQ4Y8a3M2qQ2rFVwSeSNAtGet4Fekn7hCvFNnZ
+ fEf31OZpIbZvzi84haR8hankF0biK1LR8eg= 
 Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fppeqvu-2
+        by mx0a-00082601.pphosted.com with ESMTP id 361fpueqes-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 Jan 2021 10:43:07 -0800
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
+        Wed, 13 Jan 2021 10:48:04 -0800
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.197) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 13 Jan 2021 10:43:07 -0800
+ 15.1.1979.3; Wed, 13 Jan 2021 10:48:01 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NSH9zXf9bBQbtE+m8FFBz/ArvQWs9cGVmVVLhnEl/cwqlkbaNtkzMHN+/gQYv9W7wq4qDHBHC2mHVieeSti0pQ0v68eAdjwfIlMO9zZ/aYmpu86Bytl4USUJCPwWNCuIyLFLP6N9dsU/iEIpT1hz2HnQjBxGfzik7+Mtgft7fLCzWXYmQ+KmgjWsxNXZyRmNNSSORpFIn36ITOY71A6kRNBT5lvvy5vvWDQpcyj6aW95dXWcJPB3/1TuHy86Z/ERtsyfsJEom0VfmVlweNZ9Y4L1WcJzkoYsj42Gn8jOWYUlcxIhGodCFmVwZl8IyOjV3KPIubCpA4qlj9DTry/wXg==
+ b=Tcfqoc2qqPAOW6UTNWSOkJJ52scsX30hpkfL5tly72mA6zKwj6YE1CDZLDnLxz46ePm1FpvlhKKm1BaMfIlc6Cii9is+sPm3FFKAfvXuY5ZObL6Kc2UTpSpbVt8H5giux2KXB3M5Da+zXOKtF3lmtgAhYl9ecTRpXju/eEgNy1P7VMt3Cadw5TqdZSOd6p1dNk8xnupVs+aOtnvyJYlYRnjoGWNiyeujEe9Ci9CWp4Hcrvw8ExI8wp+abNJCUcGih8Ae/tMmyFY8srD51LAdfycFl+cPk5h8snVzyaiQwuTrr4UP7RTfkshvu2z87+HuaaLxZC2UuMJA7JCDHJ/0Sw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
- b=MhqIoZaD3v/WSGM4JeHXK7/povnvDTWa35uOFgMfNb7ElGNT4CFgi9HuG9skeZU6fUZCDUvI4K861v/RaVPF/7JKjAsElu2xj5Xwrv3G2F6g/YLhWoOSwCUmiN53NqvCD9vuQ/JYZY0gxOUs1TLMCariyvpT7+3bJJZVYkBzTlnLNiezQJq51NxE3jlXu3PSZkPA098P+j9wKXqeY7B+4k4xygDBlKngDP0vSQhFGFO1OZhSgHNbTJd7G+8j68iQT17k3lo8UIIKzlrK/IKJ+nvyfFiJ0Whn+G1AziGuLZ9FcXnWXCV1TVAqyq1m5HGHmVVw59RtAk+hSqMaJS9rTQ==
+ bh=gulwjmtfgPvzvG+CYkimturzVYttqGxf4st4wHxiViM=;
+ b=LbEg8IMveSUJkZK9wpnINqt6cDLOz5yaLb4XSrPGuPW6B6VcCEdOLiNTtRuQMo2dd3A+JwStrm9yeKfAOguYCB9ZD90vUFU6bxPG09ZRG5nqi4bkM2ZNRx9y6X4eiI6tYt39ZejuLPQfAC5ciLPMCrOrc3zlnvYWE8bnoKnR04wAIy7Vv4SgxfI1QVIncVJCtHCy3QclnzkNkpA7OFKnYG+hSQe+YDHakeQQm7KRdISMPBbtH9g4G24IZymcvV1icUW7Sl3zU9mhi+ypkQHdk2W+xdcgadChcvL5ZcXmcBlfEQ2l9AfvWkPLw60/BIggLKRpS5uPuOTZQrxlRimNZw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
- b=i90H2L5DAEFMPBA5oVLwjZO0sOQYjczT3D9LpraG7EChgEUlTkLGz7A7SDhga6JpW5ekpdwijAPkEYoWCHDYwcAw5yvNKJHPttY5FuqP6+hpqd0rflJY2hZXYZn8mfniHYOFGzzglkTtl5a0kSGNjGQ+8HiuDneduEXTZrizO4c=
+ bh=gulwjmtfgPvzvG+CYkimturzVYttqGxf4st4wHxiViM=;
+ b=kneNKI5UHYK6MC+P1n7MTeqJI3R1schBSOgWtO6Xf6XtsjBp3OIpNz9Va6hKzOHB0mP0+pdqii8YAQXskzhFm9XCusYkRdDxy2FK/NuwQEy79vhsk0LPdepUI4IJ6IUl7Dl9ds+pmngv4voRcYS9dYoXQLhBeI/B/iC8M2yR21E=
 Authentication-Results: google.com; dkim=none (message not signed)
  header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SN6PR1501MB2094.namprd15.prod.outlook.com
- (2603:10b6:805:11::28) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Wed, 13 Jan
- 2021 18:43:06 +0000
+ (2603:10b6:805:e3::14) by SN6PR1501MB4144.namprd15.prod.outlook.com
+ (2603:10b6:805:e8::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
+ 2021 18:47:58 +0000
 Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
  ([fe80::65cb:e5a9:2b4c:ceba]) by SN6PR1501MB4141.namprd15.prod.outlook.com
  ([fe80::65cb:e5a9:2b4c:ceba%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
- 18:43:06 +0000
-Date:   Wed, 13 Jan 2021 10:43:02 -0800
+ 18:47:58 +0000
+Date:   Wed, 13 Jan 2021 10:47:53 -0800
 From:   Roman Gushchin <guro@fb.com>
-To:     Shakeel Butt <shakeelb@google.com>
-CC:     Arjun Roy <arjunroy@google.com>,
+To:     Arjun Roy <arjunroy@google.com>
+CC:     Shakeel Butt <shakeelb@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        netdev <netdev@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>, <linux-mm@kvack.org>,
+        <cgroups@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-Message-ID: <20210113184302.GA355124@carbon.dhcp.thefacebook.com>
+Message-ID: <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
 References: <20210112214105.1440932-1-shakeelb@google.com>
  <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
  <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
  <20210112234822.GA134064@carbon.dhcp.thefacebook.com>
  <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
- <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
+In-Reply-To: <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
 X-Originating-IP: [2620:10d:c090:400::5:31a8]
-X-ClientProxiedBy: MWHPR20CA0009.namprd20.prod.outlook.com
- (2603:10b6:300:13d::19) To SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14)
+X-ClientProxiedBy: MWHPR01CA0028.prod.exchangelabs.com (2603:10b6:300:101::14)
+ To SN6PR1501MB4141.namprd15.prod.outlook.com (2603:10b6:805:e3::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:31a8) by MWHPR20CA0009.namprd20.prod.outlook.com (2603:10b6:300:13d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Wed, 13 Jan 2021 18:43:04 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:31a8) by MWHPR01CA0028.prod.exchangelabs.com (2603:10b6:300:101::14) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.10 via Frontend Transport; Wed, 13 Jan 2021 18:47:56 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 2c29f2e0-1f5f-401c-2dfb-08d8b7f310da
-X-MS-TrafficTypeDiagnostic: SN6PR1501MB2094:
-X-Microsoft-Antispam-PRVS: <SN6PR1501MB209455B0C757A7F8318B005DBEA90@SN6PR1501MB2094.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: d6942526-faf6-4211-2941-08d8b7f3bf3d
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB4144:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB414416206099C27E84B66A51BEA90@SN6PR1501MB4144.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CEUVeyw9zStnXgyR6JrxW4yWbXxdh9Chn2cVuGzG4yyYbcHOB+D7dplM9g1u5+hswAPDHDd0a2lCnOMtZlFoYpeAXl05Z49SY7tH60Xqgg74OxqLU0E/DcdZp67RWi1NqJ8TB9S/M46hKsd+iKKgDSDVm3rCPnW4LukeKYL3+v9Ajsq+dLoGY949Enu16LaW0ZUjAmZyuw0cV0wQ+/VzaBOmAeAdO7AVjVfm5HA4k/8/sgvgZZaIeZGdmoqJmxryL4jCZWt3S2IzmnmP2nQiK1U7wUJpGrGbxpeLBtNGVW2/AU9uoliq/M/OaZXzCY8abqkUaKzOuYs6/WWe3rdMpzXpinhCPEnRsHjOnStthxWSs1zl4lv3y4QroLsQWKoJyFbJtlcAYUVzxq7UhNwmuw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(39860400002)(346002)(2906002)(8676002)(8936002)(5660300002)(4744005)(53546011)(9686003)(55016002)(1076003)(15650500001)(66556008)(6916009)(6506007)(86362001)(7696005)(33656002)(16526019)(52116002)(66946007)(83380400001)(7416002)(186003)(66476007)(316002)(478600001)(54906003)(4326008);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FU2Bc8csHHMlIdJq2YbQqh2ujo4gJmRPMEnCdiFnC82TLLu9qux7Qbiqefg3?=
- =?us-ascii?Q?m+D9bCERgvBne7SQYoiwGUngBurXY+yxMib9WW2iuN47TsG1a2qGzgm3+WMm?=
- =?us-ascii?Q?44EIY2sLUtD5aYvtEE4Fg34NSR4wJzYAwS2pBLzlHnBLoKo/cteZus9Bvx/F?=
- =?us-ascii?Q?cp8MMYaAUuwXft9W/I/3ch5RuGX1rvT5i4lE+oSziQ9J/kdRgOaUwo/UwkW2?=
- =?us-ascii?Q?xTz1moaYUtXtmXo0bcnCQBD0HguvytHetdCf+QbS2QJce/D/Uw4henvNTiUu?=
- =?us-ascii?Q?9rqc/IX54xROuxokij3FzPc0ZMgHnya3iN4Bg+yoF6maxDs6iAPvS4x5gPCv?=
- =?us-ascii?Q?yoiT/0u4vYTVh2mEIA7ZT/TLr37Ph0q5G2wtKXheRkNdDd7QPlmrQyJ7Rafs?=
- =?us-ascii?Q?7KZK1HFmK9hZ7B9Wy+mLd6xM4Hawt7FehW/U1ozYC95X0GzWCBOLlgv856ZH?=
- =?us-ascii?Q?55/jydILOAryVV/r/8U7LXB7hkq71ZLZK8S3DljD8GYdGngD9YN9NhTmrilN?=
- =?us-ascii?Q?Dzi+j/6gWaMTA3TIYftA+NLgGa4eoB5jA5L4KWNZt9x+Osb6JQD8yKY7Qe2B?=
- =?us-ascii?Q?cJCmeBQT3VugNcBRFD7OpX+UvZoA1qT4TX64igZeERcHlbyFPqkDRx0eBLUC?=
- =?us-ascii?Q?h/NxtHOp92/8RcsaiPY/4DYY7tn+QmzQ4Ivzn1ICUF6+HC/RrU8Gv9j1hUMN?=
- =?us-ascii?Q?2iTg4DiJWlzmFXYGmECtloTzrTwwEWXaa1x/6epIxYgU9AfBGaoqYzR7n612?=
- =?us-ascii?Q?fP27PMD7bJuwolKVBpI6/Vl+S6/Fcb2lxj6vmI0nsMOrpdJv9fkEfHTH26oW?=
- =?us-ascii?Q?X+1Z/QCluA+D1Xb6NbEIbLNdm83LctK/HsJHMvNJDOR3LGCWllWuXsHb7Gg5?=
- =?us-ascii?Q?9w6P5mKMvoX0UzgiE34j3hxXdFL7xJF0ONC5WREb8EPYnhHU/SIhNzpmrnbg?=
- =?us-ascii?Q?KWYYGxFQdeRDG6RMX20hD01TDm2PZQ6QIu8TD5QBvdGu4GhIiqIfmqjGkSvW?=
- =?us-ascii?Q?rcN/5msOzUUDzjnF4xhOZkWBFA=3D=3D?=
+X-Microsoft-Antispam-Message-Info: yNQkfAk6LM9S+PnLVBkNvTz0pp1QW1nRGKNSUZ6aZQLGyOUhdJC7v7uidjO9C8dFtaFHXHrnF5AzUKjEPWbwtNfTiK0hesvmYwYw7as7r0UCgEs7vabVAorp6VpJMtINL3UZjlUVYIq6OOFZlFrJuORWQ9XE146pETT4Adu+WlW6TXgQkwaLcdwZIfgnFYvEXs5i2xzJ5Y1okZPqDFEKrGAurtkd71Zw7qO3m49Svvf/zl+Qv/lcQqJoL6o2kxhtfGRJDL0NLfqllxsaL97SXWUoK+4BqgwttJlRZSveJYrmSn7QOqEBchJrwIjzYgaY5LB0BEuc1UMWnH9MDgZauu8+0ui8uEn7HMtEbtDIdUGNckLjPnwJyKtCtU2KzVEFXjvanMeLft0haaGMykuY1A==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(376002)(396003)(366004)(136003)(478600001)(6666004)(54906003)(66556008)(16526019)(6506007)(33656002)(66476007)(9686003)(7696005)(1076003)(5660300002)(186003)(86362001)(4326008)(8676002)(7416002)(83380400001)(316002)(8936002)(53546011)(55016002)(15650500001)(52116002)(2906002)(66946007)(6916009);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?16EuJNtGyL0Tv5OdFu6AAAyYS0eOPWjtTDANsk/b7Ro6K7V4+lmL5N7C9/fC?=
+ =?us-ascii?Q?uFrEd+vN9pr8cYTiK00FD2V6LPU24dXz1ITuLr40E6sNTc9//5nQd8q072jd?=
+ =?us-ascii?Q?P8as0Kq3UGK+S+ea1bUOW4L+T9sQcuZV/A+rhSC1QcPfZe9wjgif2FyfmGwe?=
+ =?us-ascii?Q?/hEO6rTdVZCLcINbD3LcmJPf4MQf3B4CvKJ+AJ8iYw16nbngEx7SPPrLwTX4?=
+ =?us-ascii?Q?ukOmcLZkxAJqftvCKH3sKBDFS8/jGXQu8nWDwBf1XB5IlTfstJ/mrk7aa1A3?=
+ =?us-ascii?Q?kgKs7y46uzpKZ+7A/XLUj96vewS5nrqZwFuM5ru5G8t3RCNXzTmVzhP7hIb2?=
+ =?us-ascii?Q?kOWYaBgwv+yCTkCMCQ0Ey7Iz8Lp6ZRwkGkN0DOg4EiSVMFw6MV/FFTzpzJTz?=
+ =?us-ascii?Q?XAPb2mFMEucp4n+t8NtsFYSNdXhjiwCLLFwziMMBrdMr42+M1y+ObCieKedB?=
+ =?us-ascii?Q?aHLjU/7mUrHzKszyKXYQz11k5ygaYntHlUNA37Mio4EMzPKdbEUzFvrATcYy?=
+ =?us-ascii?Q?xKwM4zSTj0X9luTkNPv7OMGpcP/3ZcHCrziIMGimrS3jDRVoVFvJPrawFLPA?=
+ =?us-ascii?Q?6E2fVcscKQhO34l5pKEF3NdES6XuBBJqvb05n4qUyWY7iR2XdnBA03bw3b1P?=
+ =?us-ascii?Q?mp9JGmRyty4mXsrdHaQGSTT5VfVOirTsTltbTcGF03/MSd1/xFGSQ/QUUt+e?=
+ =?us-ascii?Q?USxjw6XZyfRpQY6gRwJclNGXoL/3ftwbAVIYXj4fWr4cX6Cs1oFV+W32FGDn?=
+ =?us-ascii?Q?CfTh98n6+nF0uo8gJ/2/wzF6ngfnfOvcjqIAXKPuBcTHKlDDwmkwSkVAgOLx?=
+ =?us-ascii?Q?ya81oE/YcSiAMheimUjRnyzsQ5wl5ONaE5jACC12dpeufjn9BhliC8pXV0bZ?=
+ =?us-ascii?Q?4TZbfW3CfzBENld+torD1fC1RVQZO/QvwzORfi5Jaz3ugpQuxistY29ZZRFO?=
+ =?us-ascii?Q?QsG3bbqMtOyqf6RbOFDNvm333L9VcKbBAZIQgC+Y6U/NXHpFzfAkwZFOySgA?=
+ =?us-ascii?Q?SDF2Z6Q6yCMY1xelxgjVnuJaRg=3D=3D?=
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 18:43:06.0085
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 18:47:58.4918
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c29f2e0-1f5f-401c-2dfb-08d8b7f310da
+X-MS-Exchange-CrossTenant-Network-Message-Id: d6942526-faf6-4211-2941-08d8b7f3bf3d
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qjb8Yr1aEiOsC4eYej8ahDoXHzL64ioNlji5+o4KoEi14NRbKPWv2EV/GX+Zcjy3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2094
+X-MS-Exchange-CrossTenant-UserPrincipalName: Fvw1D4q6GZp2IkmJ8Oj9ctMhXOpHJVhvRyPdqr+5O2B6ZZIMPes0Nx202wwFEnpt
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB4144
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-13_09:2021-01-13,2021-01-13 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxlogscore=999
- mlxscore=0 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
- adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101130110
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
+ adultscore=0 lowpriorityscore=0 mlxlogscore=999 spamscore=0 malwarescore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101130111
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 04:18:44PM -0800, Shakeel Butt wrote:
-> On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
+On Tue, Jan 12, 2021 at 04:12:08PM -0800, Arjun Roy wrote:
+> On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
 > >
-> > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+> > On Tue, Jan 12, 2021 at 03:36:18PM -0800, Arjun Roy wrote:
+> > > On Tue, Jan 12, 2021 at 3:31 PM Roman Gushchin <guro@fb.com> wrote:
+> > > >
+> > > > On Tue, Jan 12, 2021 at 01:41:05PM -0800, Shakeel Butt wrote:
+> > > > > From: Arjun Roy <arjunroy@google.com>
+> > > > >
+> > > > > TCP zerocopy receive is used by high performance network applications to
+> > > > > further scale. For RX zerocopy, the memory containing the network data
+> > > > > filled by network driver is directly mapped into the address space of
+> > > > > high performance applications. To keep the TLB cost low, these
+> > > > > applications unmaps the network memory in big batches. So, this memory
+> > > > > can remain mapped for long time. This can cause memory isolation issue
+> > > > > as this memory becomes unaccounted after getting mapped into the
+> > > > > application address space. This patch adds the memcg accounting for such
+> > > > > memory.
+> > > > >
+> > > > > Accounting the network memory comes with its own unique challenge. The
+> > > > > high performance NIC drivers use page pooling to reuse the pages to
+> > > > > eliminate/reduce the expensive setup steps like IOMMU. These drivers
+> > > > > keep an extra reference on the pages and thus we can not depends on the
+> > > > > page reference for the uncharging. The page in the pool may keep a memcg
+> > > > > pinned for arbitrary long time or may get used by other memcg.
+> > > > >
+> > > > > This patch decouples the uncharging of the page from the refcnt and
+> > > > > associate it with the map count i.e. the page gets uncharged when the
+> > > > > last address space unmaps it. Now the question what if the driver drops
+> > > > > its reference while the page is still mapped. That is fine as the
+> > > > > address space also holds a reference to the page i.e. the reference
+> > > > > count can not drop to zero before the map count.
+> > > > >
+> > > > > Signed-off-by: Arjun Roy <arjunroy@google.com>
+> > > > > Co-developed-by: Shakeel Butt <shakeelb@google.com>
+> > > > > Signed-off-by: Shakeel Butt <shakeelb@google.com>
+> > > > > ---
+> > > > >  include/linux/memcontrol.h | 34 +++++++++++++++++++--
+> > > > >  mm/memcontrol.c            | 60 ++++++++++++++++++++++++++++++++++++++
+> > > > >  mm/rmap.c                  |  3 ++
+> > > > >  net/ipv4/tcp.c             | 27 +++++++++++++----
+> > > > >  4 files changed, 116 insertions(+), 8 deletions(-)
+> > > > >
+> > > > > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> > > > > index 7a38a1517a05..0b0e3b4615cf 100644
+> > > > > --- a/include/linux/memcontrol.h
+> > > > > +++ b/include/linux/memcontrol.h
+> > > > > @@ -349,11 +349,13 @@ extern struct mem_cgroup *root_mem_cgroup;
+> > > > >
+> > > > >  enum page_memcg_data_flags {
+> > > > >       /* page->memcg_data is a pointer to an objcgs vector */
+> > > > > -     MEMCG_DATA_OBJCGS = (1UL << 0),
+> > > > > +     MEMCG_DATA_OBJCGS       = (1UL << 0),
+> > > > >       /* page has been accounted as a non-slab kernel page */
+> > > > > -     MEMCG_DATA_KMEM = (1UL << 1),
+> > > > > +     MEMCG_DATA_KMEM         = (1UL << 1),
+> > > > > +     /* page has been accounted as network memory */
+> > > > > +     MEMCG_DATA_SOCK         = (1UL << 2),
+> > > > >       /* the next bit after the last actual flag */
+> > > > > -     __NR_MEMCG_DATA_FLAGS  = (1UL << 2),
+> > > > > +     __NR_MEMCG_DATA_FLAGS   = (1UL << 3),
+> > > > >  };
+> > > > >
+> > > > >  #define MEMCG_DATA_FLAGS_MASK (__NR_MEMCG_DATA_FLAGS - 1)
+> > > > > @@ -444,6 +446,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > > >       return page->memcg_data & MEMCG_DATA_KMEM;
+> > > > >  }
+> > > > >
+> > > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > > +{
+> > > > > +     return page->memcg_data & MEMCG_DATA_SOCK;
+> > > > > +}
+> > > > > +
+> > > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > > >  /*
+> > > > >   * page_objcgs - get the object cgroups vector associated with a page
+> > > > > @@ -1095,6 +1102,11 @@ static inline bool PageMemcgKmem(struct page *page)
+> > > > >       return false;
+> > > > >  }
+> > > > >
+> > > > > +static inline bool PageMemcgSock(struct page *page)
+> > > > > +{
+> > > > > +     return false;
+> > > > > +}
+> > > > > +
+> > > > >  static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+> > > > >  {
+> > > > >       return true;
+> > > > > @@ -1561,6 +1573,10 @@ extern struct static_key_false memcg_sockets_enabled_key;
+> > > > >  #define mem_cgroup_sockets_enabled static_branch_unlikely(&memcg_sockets_enabled_key)
+> > > > >  void mem_cgroup_sk_alloc(struct sock *sk);
+> > > > >  void mem_cgroup_sk_free(struct sock *sk);
+> > > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > > +                              unsigned int nr_pages);
+> > > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages);
+> > > > > +
+> > > > >  static inline bool mem_cgroup_under_socket_pressure(struct mem_cgroup *memcg)
+> > > > >  {
+> > > > >       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && memcg->tcpmem_pressure)
+> > > > > @@ -1589,6 +1605,18 @@ static inline void memcg_set_shrinker_bit(struct mem_cgroup *memcg,
+> > > > >                                         int nid, int shrinker_id)
+> > > > >  {
+> > > > >  }
+> > > > > +
+> > > > > +static inline int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg,
+> > > > > +                                            struct page **pages,
+> > > > > +                                            unsigned int nr_pages)
+> > > > > +{
+> > > > > +     return 0;
+> > > > > +}
+> > > > > +
+> > > > > +static inline void mem_cgroup_uncharge_sock_pages(struct page **pages,
+> > > > > +                                               unsigned int nr_pages)
+> > > > > +{
+> > > > > +}
+> > > > >  #endif
+> > > > >
+> > > > >  #ifdef CONFIG_MEMCG_KMEM
+> > > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > > > index db9836f4b64b..38e94538e081 100644
+> > > > > --- a/mm/memcontrol.c
+> > > > > +++ b/mm/memcontrol.c
+> > > > > @@ -7061,6 +7061,66 @@ void mem_cgroup_uncharge_skmem(struct mem_cgroup *memcg, unsigned int nr_pages)
+> > > > >       refill_stock(memcg, nr_pages);
+> > > > >  }
+> > > > >
+> > > > > +/**
+> > > > > + * mem_cgroup_charge_sock_pages - charge socket memory
+> > > > > + * @memcg: memcg to charge
+> > > > > + * @pages: array of pages to charge
+> > > > > + * @nr_pages: number of pages
+> > > > > + *
+> > > > > + * Charges all @pages to current's memcg. The caller should have a reference on
+> > > > > + * the given memcg.
+> > > > > + *
+> > > > > + * Returns 0 on success.
+> > > > > + */
+> > > > > +int mem_cgroup_charge_sock_pages(struct mem_cgroup *memcg, struct page **pages,
+> > > > > +                              unsigned int nr_pages)
+> > > > > +{
+> > > > > +     int ret = 0;
+> > > > > +
+> > > > > +     if (mem_cgroup_disabled() || mem_cgroup_is_root(memcg))
+> > > > > +             goto out;
+> > > > > +
+> > > > > +     ret = try_charge(memcg, GFP_KERNEL, nr_pages);
+> > > > > +
+> > > > > +     if (!ret) {
+> > > > > +             int i;
+> > > > > +
+> > > > > +             for (i = 0; i < nr_pages; i++)
+> > > > > +                     pages[i]->memcg_data = (unsigned long)memcg |
+> > > > > +                             MEMCG_DATA_SOCK;
+> > > > > +             css_get_many(&memcg->css, nr_pages);
+> > > > > +     }
+> > > > > +out:
+> > > > > +     return ret;
+> > > > > +}
+> > > > > +
+> > > > > +/**
+> > > > > + * mem_cgroup_uncharge_sock_pages - uncharge socket pages
+> > > > > + * @pages: array of pages to uncharge
+> > > > > + * @nr_pages: number of pages
+> > > > > + *
+> > > > > + * This assumes all pages are charged to the same memcg.
+> > > > > + */
+> > > > > +void mem_cgroup_uncharge_sock_pages(struct page **pages, unsigned int nr_pages)
+> > > > > +{
+> > > > > +     int i;
+> > > > > +     struct mem_cgroup *memcg;
+> > > > > +
+> > > > > +     if (mem_cgroup_disabled())
+> > > > > +             return;
+> > > > > +
+> > > > > +     memcg = page_memcg(pages[0]);
+> > > > > +
+> > > > > +     if (unlikely(!memcg))
+> > > > > +             return;
+> > > > > +
+> > > > > +     refill_stock(memcg, nr_pages);
+> > > > > +
+> > > > > +     for (i = 0; i < nr_pages; i++)
+> > > > > +             pages[i]->memcg_data = 0;
+> > > > > +     css_put_many(&memcg->css, nr_pages);
+> > > > > +}
+> > > >
+> > > > What about statistics? Should it be accounted towards "sock", "slab/kmem" or deserves
+> > > > a separate counter? Do we plan to eventually have shrinkers for this type of memory?
+> > > >
 > > >
-> [snip]
-> > > Historically we have a corresponding vmstat counter to each charged page.
-> > > It helps with finding accounting/stastistics issues: we can check that
-> > > memory.current ~= anon + file + sock + slab + percpu + stack.
-> > > It would be nice to preserve such ability.
-> > >
+> > > While the pages in question are part of an sk_buff, they may be
+> > > accounted towards sockmem. However, that charge is unaccounted when
+> > > the skb is freed after the receive operation. When they are in use by
+> > > the user application I do not think sockmem is the right place to have
+> > > a break-out counter.
 > >
-> > Perhaps one option would be to have it count as a file page, or have a
-> > new category.
+> > Does it mean that a page can be accounted twice (even temporarily)?
 > >
 > 
-> Oh these are actually already accounted for in NR_FILE_MAPPED.
+> This was an actual consideration for this patchset that we went back
+> and forth on a little bit.
+> Short answer, for this patch in its current form: yes. We're calling
+> mem_cgroup_charge_sock_pages() immediately prior to vm_insert_pages();
+> and the skb isn't cleaned up until afterwards. Thus we have a period
+> of double charging.
+> 
+> The pseudocode for the approach in this patch is:
+> 
+> while skb = next skb in queue is not null:
+>     charge_skb_pages(skb.pages) // sets page.memcg for each page
+>     // at this point pages are double counted
+>     vm_insert_pages(skb.pages)
+>     free(skb) // unrefs the pages, no longer double counted
+> 
+> An alternative version of this patch went the other way: have a short
+> period of undercharging.
+> 
+> while skb = next skb in queue is not null:
+>     for page in skb.pages set page.memcg
+>     vm_insert_pages(skb.pages)
+>     free(skb) // unrefs the pages. pages are now undercounted
+> charge_skb_pages(nr_pages_mapped, FORCE_CHARGE) // count is now correct again
+> ret
 
-Well, it's confusing. Can't we fix this by looking at the new page memcg flag?
+I have to think more, but at the first look the second approach is better.
+IMO forcing the charge is less of a problem than double accounting
+(we're forcing sock memory charging anyway). I'm afraid that even if the
+double counting is temporarily for each individual page, with a constant
+traffic it will create a permanent difference.
+
+Btw, what is a typical size of the TCP zerocopy data per-memcg? MBs? GBs?
+
+Thanks!
