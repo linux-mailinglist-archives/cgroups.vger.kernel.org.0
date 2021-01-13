@@ -2,118 +2,128 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCB582F51AD
-	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 19:08:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7A37A2F529A
+	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 19:45:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726970AbhAMSHn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Jan 2021 13:07:43 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:7750 "EHLO
+        id S1728472AbhAMSoA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Jan 2021 13:44:00 -0500
+Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:60286 "EHLO
         mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1726429AbhAMSHn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 13:07:43 -0500
+        by vger.kernel.org with ESMTP id S1728443AbhAMSn7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 13:43:59 -0500
 Received: from pps.filterd (m0148461.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10DHwPFU020974;
-        Wed, 13 Jan 2021 10:06:54 -0800
+        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10DIcNjg023750;
+        Wed, 13 Jan 2021 10:43:08 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
  subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=Tqk3s2gbpL7IEpMXx5QPwfd2m6Xl9/uAFYgdXH/d59k=;
- b=gNZVLsqO5R99DCECsq9hNLTTDhM4yZS6qMGfIcDhcDT8qV06EDTSouPaP1IoAsC9P5NA
- UPnV/ryBOR9qfrLkAOG+Goow25pWZptMLDhpGCZxW8j7YRxVITR4yBp/zuPPIDKzYJyU
- LLFNAwKp2dhEhhHmr6aHWZgmtZL67Bt78NU= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 361fppegtk-1
+ mime-version; s=facebook; bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
+ b=MBrRSo97MoA0IaALi2Q5mdd8loBkX+gUGZBShyW4v4jTR4D3GTP4eZc3kZgJURK1y9Qh
+ K1h5AVrQGEBHnNW321haB7o29qru8DLyMbzwLV/UD30SHzq72kaSxzy5k7n8nm6AB796
+ o102NdaBhYNSI6fOsa6QRP43vj7zxj5yR5Q= 
+Received: from mail.thefacebook.com ([163.114.132.120])
+        by mx0a-00082601.pphosted.com with ESMTP id 361fppeqvu-2
         (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 13 Jan 2021 10:06:54 -0800
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.172) with Microsoft SMTP Server
+        Wed, 13 Jan 2021 10:43:07 -0800
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
+ o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 13 Jan 2021 10:06:53 -0800
+ 15.1.1979.3; Wed, 13 Jan 2021 10:43:07 -0800
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SGgKo52U/SV10+PXmQJ5/w53BoVMrgBI40inZIP/hkqMC2+J3h7XsP8jrTBHG0OK7Qv5ELAAG72AHGEih/DXBA2LYO3jjwQBXL7T+Z32QtHbUeirLCl+hoNjpDvcM5Z455X0o8BNDpyjQqeJuUdIlSV9Gv6Vr6xBQ8L3tKx5NlBTJuqTUFjgC3GogUHtR5drxNgkmk9VnUbwqKHyVlSwDXGWC4f2jLjEDiZ8pg7PCTa/HP/yiXjujOauVf8Gk689Xl7tM0Qdj1FyWiaN0rcFOK/4g2jmJL1deglZLY6xkGS5zRurS1kxDjedBP8Wxr7ZkDMg/pKsNnpR/37Jl/Czeg==
+ b=NSH9zXf9bBQbtE+m8FFBz/ArvQWs9cGVmVVLhnEl/cwqlkbaNtkzMHN+/gQYv9W7wq4qDHBHC2mHVieeSti0pQ0v68eAdjwfIlMO9zZ/aYmpu86Bytl4USUJCPwWNCuIyLFLP6N9dsU/iEIpT1hz2HnQjBxGfzik7+Mtgft7fLCzWXYmQ+KmgjWsxNXZyRmNNSSORpFIn36ITOY71A6kRNBT5lvvy5vvWDQpcyj6aW95dXWcJPB3/1TuHy86Z/ERtsyfsJEom0VfmVlweNZ9Y4L1WcJzkoYsj42Gn8jOWYUlcxIhGodCFmVwZl8IyOjV3KPIubCpA4qlj9DTry/wXg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tqk3s2gbpL7IEpMXx5QPwfd2m6Xl9/uAFYgdXH/d59k=;
- b=EvKfWoI8nT5KjKVY2PhFaPteh+/cZwR1KJZOV7RdHUXVKWxH9403SHM6QR3CAfcARI+fcXV2artFCakDVhLOqcg/g3Dmi62Sfq9+cCpTvaIgrFDZLH4EIXgB8XXFabsxKK5P6bdh8WFOh8/G205nJ7ON4pBdXDzO0AVHelN7qDpJwY3kKFrSO9kHmKao/xRpfvpheCCZUKB4BJ5MvjsGTKbFCPXQxhATRVuJQnsA3Q/iEIOyMiL0jzU23pF0WdW1TjY+UkCbwkeznde0Y0Pmh1YfIAEhQLlKtC/UjCeF7gi7DAKpwxZV73SEh3AHqUbgYZdX/4JFb9ULjuLPcaoAaA==
+ bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
+ b=MhqIoZaD3v/WSGM4JeHXK7/povnvDTWa35uOFgMfNb7ElGNT4CFgi9HuG9skeZU6fUZCDUvI4K861v/RaVPF/7JKjAsElu2xj5Xwrv3G2F6g/YLhWoOSwCUmiN53NqvCD9vuQ/JYZY0gxOUs1TLMCariyvpT7+3bJJZVYkBzTlnLNiezQJq51NxE3jlXu3PSZkPA098P+j9wKXqeY7B+4k4xygDBlKngDP0vSQhFGFO1OZhSgHNbTJd7G+8j68iQT17k3lo8UIIKzlrK/IKJ+nvyfFiJ0Whn+G1AziGuLZ9FcXnWXCV1TVAqyq1m5HGHmVVw59RtAk+hSqMaJS9rTQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
  header.d=fb.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
  s=selector2-fb-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Tqk3s2gbpL7IEpMXx5QPwfd2m6Xl9/uAFYgdXH/d59k=;
- b=QCuZxlsWe2k6VrTbephjDi795JM88LcVOGCyz+zzzKYmF13ftylB8isTI5Ga2tivSXsfSM+quSJdt6o4WgwJozjzDdIVHBPKspn/ct8s4Fp+SHYTFWQ25hTI6qEIJVUqKID3D2IAg4J+8I9Pd43pPVfL9f/+i8J4wb8StieAzqk=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
+ bh=LmOPinyKx8+8x52Th4DE4vt+lyMbSY2O2z3Pq7Ov4WQ=;
+ b=i90H2L5DAEFMPBA5oVLwjZO0sOQYjczT3D9LpraG7EChgEUlTkLGz7A7SDhga6JpW5ekpdwijAPkEYoWCHDYwcAw5yvNKJHPttY5FuqP6+hpqd0rflJY2hZXYZn8mfniHYOFGzzglkTtl5a0kSGNjGQ+8HiuDneduEXTZrizO4c=
+Authentication-Results: google.com; dkim=none (message not signed)
+ header.d=none;google.com; dmarc=none action=none header.from=fb.com;
 Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
- (2603:10b6:805:e3::14) by SA0PR15MB3791.namprd15.prod.outlook.com
- (2603:10b6:806:8d::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.6; Wed, 13 Jan
- 2021 18:06:49 +0000
+ (2603:10b6:805:e3::14) by SN6PR1501MB2094.namprd15.prod.outlook.com
+ (2603:10b6:805:11::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3742.12; Wed, 13 Jan
+ 2021 18:43:06 +0000
 Received: from SN6PR1501MB4141.namprd15.prod.outlook.com
  ([fe80::65cb:e5a9:2b4c:ceba]) by SN6PR1501MB4141.namprd15.prod.outlook.com
  ([fe80::65cb:e5a9:2b4c:ceba%6]) with mapi id 15.20.3742.012; Wed, 13 Jan 2021
- 18:06:49 +0000
-Date:   Wed, 13 Jan 2021 10:06:44 -0800
+ 18:43:06 +0000
+Date:   Wed, 13 Jan 2021 10:43:02 -0800
 From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        <linux-mm@kvack.org>, <cgroups@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <20210113180620.GA353910@carbon.lan>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+CC:     Arjun Roy <arjunroy@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Eric Dumazet <edumazet@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        netdev <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
+Message-ID: <20210113184302.GA355124@carbon.dhcp.thefacebook.com>
+References: <20210112214105.1440932-1-shakeelb@google.com>
+ <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
+ <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
+ <20210112234822.GA134064@carbon.dhcp.thefacebook.com>
+ <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
+ <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210112163011.127833-1-hannes@cmpxchg.org>
+In-Reply-To: <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
 X-Originating-IP: [2620:10d:c090:400::5:31a8]
-X-ClientProxiedBy: MW4PR03CA0139.namprd03.prod.outlook.com
- (2603:10b6:303:8c::24) To SN6PR1501MB4141.namprd15.prod.outlook.com
+X-ClientProxiedBy: MWHPR20CA0009.namprd20.prod.outlook.com
+ (2603:10b6:300:13d::19) To SN6PR1501MB4141.namprd15.prod.outlook.com
  (2603:10b6:805:e3::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:31a8) by MW4PR03CA0139.namprd03.prod.outlook.com (2603:10b6:303:8c::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Wed, 13 Jan 2021 18:06:48 +0000
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:31a8) by MWHPR20CA0009.namprd20.prod.outlook.com (2603:10b6:300:13d::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.9 via Frontend Transport; Wed, 13 Jan 2021 18:43:04 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 3d04023b-2d16-4eb5-57e5-08d8b7edffbd
-X-MS-TrafficTypeDiagnostic: SA0PR15MB3791:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <SA0PR15MB37911A7E856E705F49E47129BEA90@SA0PR15MB3791.namprd15.prod.outlook.com>
+X-MS-Office365-Filtering-Correlation-Id: 2c29f2e0-1f5f-401c-2dfb-08d8b7f310da
+X-MS-TrafficTypeDiagnostic: SN6PR1501MB2094:
+X-Microsoft-Antispam-PRVS: <SN6PR1501MB209455B0C757A7F8318B005DBEA90@SN6PR1501MB2094.namprd15.prod.outlook.com>
 X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: fSqV9S6/Kt7VpSTFKMxJWEJvqg/WUz1e3+DRnPd5P0Me42LOdtBeAO1o0/vDNVOBJ4pobSYi5nkuLZhJbesXAYljjqT7vUnjNgf2tfwT8sRjy8mM4lBNH4YqJ72Eu3/yWLc2Qnq48din2IQK7ZUKRgPhtRR8j9OpozthUvPb4aqRcO5rviH555wLnHGk5TKblLGLLHusIxdtcr3HyjbWxGO9JK6g0WI55eqwdLYEkqmnz8jFqwue6H4Q6Q5QyRqOOjoGD6UmdrAGlZg1aB8cmKokGViWSr6gUXUb/06Rm//GoHgAOLtI1TYG7dlWbvEVhUJI8DzT13M8aJep5FWVckM+zlYePWGbzcmlEbFKRYhSaduSN6lA4AUwdRpKxSGb6/1EzJRL1qVQKMm85zxRNF1XbKzMzYBDk+ANPzT7hFJ6viW8e24oAMCyp9RMiE0D
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(136003)(376002)(396003)(39860400002)(33656002)(86362001)(52116002)(186003)(66476007)(6666004)(83380400001)(66556008)(478600001)(66946007)(7696005)(16526019)(6916009)(8676002)(9686003)(1076003)(316002)(5660300002)(55016002)(4326008)(8936002)(2906002)(36756003)(54906003)(6506007)(8886007)(27376004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?lrU/2GGTVG8us/OQ2FxQaXS3Cl45jeqlEB9c8I1rBWiEge1KlPAwq1z2V05A?=
- =?us-ascii?Q?L01pPOMeTzPWgf7WCd+52FQ+qcdaYXjq95WJdmw7x7xwgHnoilYWNrXKDJhp?=
- =?us-ascii?Q?tJjvbJ8KEpEKNvbndvm0Euftdo2H65ca2x56mD0U2sAEXxxCq0kBaHgfFA5a?=
- =?us-ascii?Q?1wnlMWqWIB69w5nTffcCE5h7JWtKkIFF7JTOlOB1vm3l710v0VcRytK4oMtD?=
- =?us-ascii?Q?KMp//VERfsscbrb4QwRDabk3j2Ka6yWYQz6gXqHbxHmPg68IoEW+S9nLc8od?=
- =?us-ascii?Q?CroAH93rRArTm+7ErK0S+GCvV0hEx15T2VDuJFQLZ2FgnNzp8FN1O4cVlHZC?=
- =?us-ascii?Q?7kD/8avosO3sRK4Y4HmxqlIyBaVru6sCbRWlKYYapH0dMKZi66jpIjpQ8dGf?=
- =?us-ascii?Q?aGehiidKObnn/1zPVVE4zTVslcRv+/82Qcdh/kMhwBMP14aeH0xcbCsqxqhZ?=
- =?us-ascii?Q?wDi/GTYCu4eRGKGRuymgueLOlQMdk78cLChM6AZOq3HUAFKV2fA2xhsQzp7H?=
- =?us-ascii?Q?lZ9hrU8Hvd1GMXx1W3Y8wcXc4rwFUZkC3RBCBhXvcbkXX1WxpGm8TZ5Xq7ar?=
- =?us-ascii?Q?F7sATsctTRH1p27Fz27/FYHjGI+YgvPieH52VCbSpTKwmiUUeI1J2qGMEIM9?=
- =?us-ascii?Q?FL1RCNRWSiJjslSzRKQeKbxFMF5buI/aHXe6jhtVatDZR2JM7AbkUdAtZUcn?=
- =?us-ascii?Q?fRZ1dq/78Zd9Yn7cDUW3dGU5/0PHHPArPupVG2KEO+YjjmgRbsQhQj1D90Pt?=
- =?us-ascii?Q?YGKfUHH7BL5XB49LaPwEKgAhO4MPZkIVhQt99GugLok7+6WRdqzZ8s06OOfp?=
- =?us-ascii?Q?uBjWbFx/pTaaMyByjbGTTdN1N1Ov4Xme+zS/bd9uE4kQkb035a2rqL5VSdUP?=
- =?us-ascii?Q?zvcuqq2VExOEeHm8f0wWRbQ2ngBzc/0yvYE0qtmvnOWvF48OpeuDTcGMZBMl?=
- =?us-ascii?Q?mQdW7nyG4bGtULA25x2ajlzGc5wMUKz61nldK6dM+txNMSgD5piezVgbXinv?=
- =?us-ascii?Q?EAeBix4jCEIIBgWbhJi9Owms9Q=3D=3D?=
+X-Microsoft-Antispam-Message-Info: CEUVeyw9zStnXgyR6JrxW4yWbXxdh9Chn2cVuGzG4yyYbcHOB+D7dplM9g1u5+hswAPDHDd0a2lCnOMtZlFoYpeAXl05Z49SY7tH60Xqgg74OxqLU0E/DcdZp67RWi1NqJ8TB9S/M46hKsd+iKKgDSDVm3rCPnW4LukeKYL3+v9Ajsq+dLoGY949Enu16LaW0ZUjAmZyuw0cV0wQ+/VzaBOmAeAdO7AVjVfm5HA4k/8/sgvgZZaIeZGdmoqJmxryL4jCZWt3S2IzmnmP2nQiK1U7wUJpGrGbxpeLBtNGVW2/AU9uoliq/M/OaZXzCY8abqkUaKzOuYs6/WWe3rdMpzXpinhCPEnRsHjOnStthxWSs1zl4lv3y4QroLsQWKoJyFbJtlcAYUVzxq7UhNwmuw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR1501MB4141.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(136003)(396003)(39860400002)(346002)(2906002)(8676002)(8936002)(5660300002)(4744005)(53546011)(9686003)(55016002)(1076003)(15650500001)(66556008)(6916009)(6506007)(86362001)(7696005)(33656002)(16526019)(52116002)(66946007)(83380400001)(7416002)(186003)(66476007)(316002)(478600001)(54906003)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?FU2Bc8csHHMlIdJq2YbQqh2ujo4gJmRPMEnCdiFnC82TLLu9qux7Qbiqefg3?=
+ =?us-ascii?Q?m+D9bCERgvBne7SQYoiwGUngBurXY+yxMib9WW2iuN47TsG1a2qGzgm3+WMm?=
+ =?us-ascii?Q?44EIY2sLUtD5aYvtEE4Fg34NSR4wJzYAwS2pBLzlHnBLoKo/cteZus9Bvx/F?=
+ =?us-ascii?Q?cp8MMYaAUuwXft9W/I/3ch5RuGX1rvT5i4lE+oSziQ9J/kdRgOaUwo/UwkW2?=
+ =?us-ascii?Q?xTz1moaYUtXtmXo0bcnCQBD0HguvytHetdCf+QbS2QJce/D/Uw4henvNTiUu?=
+ =?us-ascii?Q?9rqc/IX54xROuxokij3FzPc0ZMgHnya3iN4Bg+yoF6maxDs6iAPvS4x5gPCv?=
+ =?us-ascii?Q?yoiT/0u4vYTVh2mEIA7ZT/TLr37Ph0q5G2wtKXheRkNdDd7QPlmrQyJ7Rafs?=
+ =?us-ascii?Q?7KZK1HFmK9hZ7B9Wy+mLd6xM4Hawt7FehW/U1ozYC95X0GzWCBOLlgv856ZH?=
+ =?us-ascii?Q?55/jydILOAryVV/r/8U7LXB7hkq71ZLZK8S3DljD8GYdGngD9YN9NhTmrilN?=
+ =?us-ascii?Q?Dzi+j/6gWaMTA3TIYftA+NLgGa4eoB5jA5L4KWNZt9x+Osb6JQD8yKY7Qe2B?=
+ =?us-ascii?Q?cJCmeBQT3VugNcBRFD7OpX+UvZoA1qT4TX64igZeERcHlbyFPqkDRx0eBLUC?=
+ =?us-ascii?Q?h/NxtHOp92/8RcsaiPY/4DYY7tn+QmzQ4Ivzn1ICUF6+HC/RrU8Gv9j1hUMN?=
+ =?us-ascii?Q?2iTg4DiJWlzmFXYGmECtloTzrTwwEWXaa1x/6epIxYgU9AfBGaoqYzR7n612?=
+ =?us-ascii?Q?fP27PMD7bJuwolKVBpI6/Vl+S6/Fcb2lxj6vmI0nsMOrpdJv9fkEfHTH26oW?=
+ =?us-ascii?Q?X+1Z/QCluA+D1Xb6NbEIbLNdm83LctK/HsJHMvNJDOR3LGCWllWuXsHb7Gg5?=
+ =?us-ascii?Q?9w6P5mKMvoX0UzgiE34j3hxXdFL7xJF0ONC5WREb8EPYnhHU/SIhNzpmrnbg?=
+ =?us-ascii?Q?KWYYGxFQdeRDG6RMX20hD01TDm2PZQ6QIu8TD5QBvdGu4GhIiqIfmqjGkSvW?=
+ =?us-ascii?Q?rcN/5msOzUUDzjnF4xhOZkWBFA=3D=3D?=
 X-MS-Exchange-CrossTenant-AuthSource: SN6PR1501MB4141.namprd15.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 18:06:49.8016
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2021 18:43:06.0085
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-Network-Message-Id: 3d04023b-2d16-4eb5-57e5-08d8b7edffbd
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c29f2e0-1f5f-401c-2dfb-08d8b7f310da
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 4BeTiQpgnNUI9/d2kEokWqKHDvoX8n+xrwtUbux20l3sdNz4u3PiWxooZYvZ59N7
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR15MB3791
+X-MS-Exchange-CrossTenant-UserPrincipalName: qjb8Yr1aEiOsC4eYej8ahDoXHzL64ioNlji5+o4KoEi14NRbKPWv2EV/GX+Zcjy3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR1501MB2094
 X-OriginatorOrg: fb.com
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
  definitions=2021-01-13_09:2021-01-13,2021-01-13 signatures=0
@@ -121,68 +131,28 @@ X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlx
  mlxscore=0 phishscore=0 spamscore=0 clxscore=1015 bulkscore=0
  impostorscore=0 priorityscore=1501 lowpriorityscore=0 suspectscore=0
  adultscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2101130107
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2101130110
 X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 12, 2021 at 11:30:11AM -0500, Johannes Weiner wrote:
-> When a value is written to a cgroup's memory.high control file, the
-> write() context first tries to reclaim the cgroup to size before
-> putting the limit in place for the workload. Concurrent charges from
-> the workload can keep such a write() looping in reclaim indefinitely.
+On Tue, Jan 12, 2021 at 04:18:44PM -0800, Shakeel Butt wrote:
+> On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+> > >
+> [snip]
+> > > Historically we have a corresponding vmstat counter to each charged page.
+> > > It helps with finding accounting/stastistics issues: we can check that
+> > > memory.current ~= anon + file + sock + slab + percpu + stack.
+> > > It would be nice to preserve such ability.
+> > >
+> >
+> > Perhaps one option would be to have it count as a file page, or have a
+> > new category.
+> >
 > 
-> In the past, a write to memory.high would first put the limit in place
-> for the workload, then do targeted reclaim until the new limit has
-> been met - similar to how we do it for memory.max. This wasn't prone
-> to the described starvation issue. However, this sequence could cause
-> excessive latencies in the workload, when allocating threads could be
-> put into long penalty sleeps on the sudden memory.high overage created
-> by the write(), before that had a chance to work it off.
-> 
-> Now that memory_high_write() performs reclaim before enforcing the new
-> limit, reflect that the cgroup may well fail to converge due to
-> concurrent workload activity. Bail out of the loop after a few tries.
-> 
-> Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> Cc: <stable@vger.kernel.org> # 5.8+
-> Reported-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  mm/memcontrol.c | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 605f671203ef..63a8d47c1cd3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -6275,7 +6275,6 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  
->  	for (;;) {
->  		unsigned long nr_pages = page_counter_read(&memcg->memory);
-> -		unsigned long reclaimed;
->  
->  		if (nr_pages <= high)
->  			break;
-> @@ -6289,10 +6288,10 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
->  			continue;
->  		}
->  
-> -		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> -							 GFP_KERNEL, true);
-> +		try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
-> +					     GFP_KERNEL, true);
->  
-> -		if (!reclaimed && !nr_retries--)
-> +		if (!nr_retries--)
->  			break;
->  	}
->  
-> -- 
-> 2.30.0
-> 
+> Oh these are actually already accounted for in NR_FILE_MAPPED.
 
-Acked-by: Roman Gushchin <guro@fb.com>
-
-Thanks!
+Well, it's confusing. Can't we fix this by looking at the new page memcg flag?
