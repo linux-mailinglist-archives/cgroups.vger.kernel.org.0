@@ -2,59 +2,60 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C1FA2F536E
-	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 20:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BABB92F539E
+	for <lists+cgroups@lfdr.de>; Wed, 13 Jan 2021 20:49:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728632AbhAMTfk (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 13 Jan 2021 14:35:40 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47004 "EHLO
+        id S1728564AbhAMTt5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 13 Jan 2021 14:49:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50102 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728450AbhAMTfk (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 14:35:40 -0500
-Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7170C061786
-        for <cgroups@vger.kernel.org>; Wed, 13 Jan 2021 11:34:59 -0800 (PST)
-Received: by mail-lf1-x136.google.com with SMTP id o17so4498715lfg.4
-        for <cgroups@vger.kernel.org>; Wed, 13 Jan 2021 11:34:59 -0800 (PST)
+        with ESMTP id S1728555AbhAMTt5 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 13 Jan 2021 14:49:57 -0500
+Received: from mail-ed1-x534.google.com (mail-ed1-x534.google.com [IPv6:2a00:1450:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4BCB5C061575;
+        Wed, 13 Jan 2021 11:49:17 -0800 (PST)
+Received: by mail-ed1-x534.google.com with SMTP id i24so3233024edj.8;
+        Wed, 13 Jan 2021 11:49:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=5x9peSoztZZwP3wRwUEonf3kp2KcQ+8lUkdq4yGVsyU=;
-        b=dKHEpR8cis9PjPy0+s2wYpOJqK1jNlMC+AYrUDzd55sLM4EjSEbWjXCDMiHPNN4zdh
-         2P193WmaFtrb6GOXbsiKGuG1Wloi2abeZNrFAXtpZZhUOExC5T4Y7XhFOH8g2JUDuMnr
-         7QJY6Z40GpV8nHxvfUpsZW3+7c7FoTJPu26hvBTPXgk9p7lrw8JYrysx/Pf29BLn4Ty0
-         Dpb5apB5yMbdw7ne2ezOVgWBtKfjA9ZjEpVGRlisyGCZ8Cmxlhu2O9RiI/lRFnLeCCOf
-         lwBWTa7PnreEl+34r7HT3Tqu5FroOmAPNFcg2K+79LHu/GPJQHjGE8eCdAyPJW+rJsMh
-         C7Ag==
+        bh=Hum8GyG3YMlF2j+bxEQbnrEJdDI8ZwOXjUuAUt+nY5o=;
+        b=nyp9gl2zbAqKPACHRjRmZ6TXdtLeiEsBNMwfT3WGY+fCYVRR+c1leQub87DsLVeJfq
+         9NWb113ao8Eu34k9t8uRuezckTJ/iJhhD1vXiY3bq3Z1RUns4FgxxA8vhShVZQC+gFD4
+         Xt5UnainWHnatCq2QeBDPdnpIAYN+lFPOpAgok7mZDkcKkwRs+OJWgbEOi+N43JWS3zM
+         MROQgfyGprzFpIoKPPOxBqD6sJFKkJwWeN7ckn72dcS/RMONnGn7EaZMHK2PdcBbSyoX
+         6kyYuFnIpRCW7mPzT+ptucYB832V5x4L7njN+eCOZUlfHZy/RmkBpy6lCl6LFCShJHSR
+         OTsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=5x9peSoztZZwP3wRwUEonf3kp2KcQ+8lUkdq4yGVsyU=;
-        b=teGYEaQ1ipUV6FDlF803IX5xg4ps79tdy5rzTIfMcgDzucq9Gck0IBbXygmxXB/h2+
-         oNzPuPIYR/BZ5luTMovJtUrggQ5nLT6iDiDQO7ytirDkldbcgolQmfxLqBjSvAqwFkzu
-         p/K1QG6RHkUUhAExW68+DrNlZL58GX/GVoU6WRZ9AVuUbkMSK+D0tfL/Jwvfl+bYz/D3
-         vWghdwNtv2yweXISftl3oilz/URTihLbjyH0C9PR1YRMtKvK8RLTqE3pU6YVXQaT57/r
-         AF5Jy6JF4r61qrGT5k28tMp11QE6ms/oMYlQKr0uUgIF1/4PPFLoyOgeW8/lCXMXOCWn
-         IVug==
-X-Gm-Message-State: AOAM533Twy/sIP+VhAgutmlRD0g/87V1sJ3Q83MIaMnIbT/YtDFtiwBj
-        Ag0KpAus6RZ5Vh5hJbONOzF9FpUkVUaHAlFYWArvLg==
-X-Google-Smtp-Source: ABdhPJzgEk/DkNFqYOJv7Wp3xvz2mFJqsh5LD2B6QlApDjIaztQLZ1/D3AGlb0+PbTDL2rcNBlcg0ARxuR8CLhhhOiY=
-X-Received: by 2002:a05:6512:32ad:: with SMTP id q13mr1443000lfe.83.1610566497883;
- Wed, 13 Jan 2021 11:34:57 -0800 (PST)
+        bh=Hum8GyG3YMlF2j+bxEQbnrEJdDI8ZwOXjUuAUt+nY5o=;
+        b=PeNZDDLivyIk6KnzkPXb+jHNC1XOMeJRnj4kerDjtuMtSYYJ4Ve74EKpy4ZlBiBF2S
+         DoTpRon8gN9f6siSlw3M835MgkwPE14xaee60BFgiVkUix16lYUybYfJrhP/XSwEorog
+         9uu4TOnqzu8em9I/YTjKXn83uew/ky1ARvnu4PU7X2KcAkvls89uv3gt5nHjtQ6pq4Zo
+         kPtEKmLPWwQoPgjaDqHtpKAUJzz5+ecQ/wpNIxWllI5JgwvyAixKvRzi1DRFzfjY6dQ4
+         mjk5O39G4rHgsyQoetQdm2b0TKo+tsnuSr99a71bKKRosta04gxBaYZijSCZ9Kj817uj
+         qomQ==
+X-Gm-Message-State: AOAM532uXkgvqrCkDDrdLJNn2Nx6yEeFq9aSi8FqOAGVG07MuBRERVo5
+        mSuVznt8OXDX+o6qQ0i20IJN7ceQpqI85M6gAukKQK46a2tWog==
+X-Google-Smtp-Source: ABdhPJyJaxgJMfUXIfDa3mHs8m3ahoENpeSe735GUb4ZErj5SmpdGwF3yo0BrKjfh5HDkbATF/1dB2+wWsP+ziud/8A=
+X-Received: by 2002:a05:6402:1c8a:: with SMTP id cy10mr3106450edb.151.1610567356100;
+ Wed, 13 Jan 2021 11:49:16 -0800 (PST)
 MIME-Version: 1.0
 References: <20210112214105.1440932-1-shakeelb@google.com> <20210112233108.GD99586@carbon.dhcp.thefacebook.com>
  <CAOFY-A3=mCvfvMYBJvDL1LfjgYgc3kzebRNgeg0F+e=E1hMPXA@mail.gmail.com>
  <20210112234822.GA134064@carbon.dhcp.thefacebook.com> <CAOFY-A2YbE3_GGq-QpVOHTmd=35Lt-rxi8gpXBcNVKvUzrzSNg@mail.gmail.com>
- <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
-In-Reply-To: <20210113184753.GB355124@carbon.dhcp.thefacebook.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 13 Jan 2021 11:34:46 -0800
-Message-ID: <CALvZod57bG02rP7-Pyb_myssxDeROrU_+L6X9bwrrdEzQTxqYg@mail.gmail.com>
+ <CALvZod4am_dNcj2+YZmraCj0+BYHB9PnQqKcrhiOnV8gzd+S3w@mail.gmail.com>
+ <20210113184302.GA355124@carbon.dhcp.thefacebook.com> <CALvZod4V3M=P8_Z14asBG8bKa=mYic4_OPLeoz5M7J5tsx=Gug@mail.gmail.com>
+In-Reply-To: <CALvZod4V3M=P8_Z14asBG8bKa=mYic4_OPLeoz5M7J5tsx=Gug@mail.gmail.com>
+From:   Yang Shi <shy828301@gmail.com>
+Date:   Wed, 13 Jan 2021 11:49:02 -0800
+Message-ID: <CAHbLzkrqX9mJb0E_Y4Q76x=bZpg3RNxKa3k8cG_NiU+++1LWsQ@mail.gmail.com>
 Subject: Re: [PATCH] mm: net: memcg accounting for TCP rx zerocopy
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Arjun Roy <arjunroy@google.com>,
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Roman Gushchin <guro@fb.com>, Arjun Roy <arjunroy@google.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Eric Dumazet <edumazet@google.com>,
@@ -70,46 +71,38 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jan 13, 2021 at 10:48 AM Roman Gushchin <guro@fb.com> wrote:
+On Wed, Jan 13, 2021 at 11:13 AM Shakeel Butt <shakeelb@google.com> wrote:
 >
-[snip]
-> > > Does it mean that a page can be accounted twice (even temporarily)?
+> On Wed, Jan 13, 2021 at 10:43 AM Roman Gushchin <guro@fb.com> wrote:
+> >
+> > On Tue, Jan 12, 2021 at 04:18:44PM -0800, Shakeel Butt wrote:
+> > > On Tue, Jan 12, 2021 at 4:12 PM Arjun Roy <arjunroy@google.com> wrote:
+> > > >
+> > > > On Tue, Jan 12, 2021 at 3:48 PM Roman Gushchin <guro@fb.com> wrote:
+> > > > >
+> > > [snip]
+> > > > > Historically we have a corresponding vmstat counter to each charged page.
+> > > > > It helps with finding accounting/stastistics issues: we can check that
+> > > > > memory.current ~= anon + file + sock + slab + percpu + stack.
+> > > > > It would be nice to preserve such ability.
+> > > > >
+> > > >
+> > > > Perhaps one option would be to have it count as a file page, or have a
+> > > > new category.
+> > > >
 > > >
+> > > Oh these are actually already accounted for in NR_FILE_MAPPED.
 > >
-> > This was an actual consideration for this patchset that we went back
-> > and forth on a little bit.
-> > Short answer, for this patch in its current form: yes. We're calling
-> > mem_cgroup_charge_sock_pages() immediately prior to vm_insert_pages();
-> > and the skb isn't cleaned up until afterwards. Thus we have a period
-> > of double charging.
-> >
-> > The pseudocode for the approach in this patch is:
-> >
-> > while skb = next skb in queue is not null:
-> >     charge_skb_pages(skb.pages) // sets page.memcg for each page
-> >     // at this point pages are double counted
-> >     vm_insert_pages(skb.pages)
-> >     free(skb) // unrefs the pages, no longer double counted
-> >
-> > An alternative version of this patch went the other way: have a short
-> > period of undercharging.
-> >
-> > while skb = next skb in queue is not null:
-> >     for page in skb.pages set page.memcg
-> >     vm_insert_pages(skb.pages)
-> >     free(skb) // unrefs the pages. pages are now undercounted
-> > charge_skb_pages(nr_pages_mapped, FORCE_CHARGE) // count is now correct again
-> > ret
+> > Well, it's confusing. Can't we fix this by looking at the new page memcg flag?
 >
-> I have to think more, but at the first look the second approach is better.
-> IMO forcing the charge is less of a problem than double accounting
-> (we're forcing sock memory charging anyway). I'm afraid that even if the
-> double counting is temporarily for each individual page, with a constant
-> traffic it will create a permanent difference.
->
+> Yes we can. I am inclined more towards just using NR_FILE_PAGES (as
+> Arjun suggested) instead of adding a new metric.
 
-The double accounting behavior is a bit different in cgroup v1 vs v2
-world as skmem is accounted in memory for v2 and a separate tcp
-counter for v1. I am fine with either approaches mentioned by Arjun
-but I would prefer to not add complexity by doing one approach for v1
-and the other for v2.
+IMHO I tend to agree with Roman, it sounds confusing. I'm not sure how
+people relies on the counter to have ballpark estimation about the
+amount of reclaimable memory for specific memcg, but they are
+unreclaimable. And, I don't think they are accounted to
+NR_ACTIVE_FILE/NR_INACTIVE_FILE, right? So, the disparity between
+NR_FILE_PAGES and NR_{IN}ACTIVE_FILE may be confusing either.
+
+>
