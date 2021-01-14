@@ -2,172 +2,170 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF89A2F60FC
-	for <lists+cgroups@lfdr.de>; Thu, 14 Jan 2021 13:19:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E3D72F6139
+	for <lists+cgroups@lfdr.de>; Thu, 14 Jan 2021 13:47:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727923AbhANMSx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Jan 2021 07:18:53 -0500
-Received: from szxga04-in.huawei.com ([45.249.212.190]:10657 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727255AbhANMSx (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 07:18:53 -0500
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DGjx012GHz15t0F;
-        Thu, 14 Jan 2021 20:17:08 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 14 Jan 2021
- 20:18:03 +0800
-From:   Yu Kuai <yukuai3@huawei.com>
-To:     <tj@kernel.org>, <axboe@kernel.dk>, <paolo.valente@linaro.org>
-CC:     <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <yukuai3@huawei.com>,
-        <yi.zhang@huawei.com>
-Subject: [PATCH] bfq: don't check active group if bfq.weight is not changed
-Date:   Thu, 14 Jan 2021 20:24:26 +0800
-Message-ID: <20210114122426.603813-1-yukuai3@huawei.com>
-X-Mailer: git-send-email 2.25.4
-In-Reply-To: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
-References: <b4163392-0462-ff6f-b958-1f96f33d69e6@huawei.com>
+        id S1727056AbhANMpX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Jan 2021 07:45:23 -0500
+Received: from mx2.suse.de ([195.135.220.15]:50188 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726740AbhANMpW (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 14 Jan 2021 07:45:22 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610628275; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=DQyI62Ts2y3vpFgTZP2ClEtzkdY49hYrxY8Mhozx6ZM=;
+        b=XAL1/7+PnbWKJjPsHK2l1e7zdnCyCA6cNoVLhsOcIv/DDJm4AK7WHj9S2Arzd5PCFYJSn+
+        xxO+/a0tZw/Lteq0FAH8cR6bcfPpiajZOAief4od7tLB3lar/3SgZRX/3zADC460uN+jAy
+        lA4NzgX15rJriC50h7F2Ix71Z1UCkGs=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3EE7FB80C;
+        Thu, 14 Jan 2021 12:44:35 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 13:44:27 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Hao Lee <haolee.swjtu@gmail.com>
+Cc:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Remove unnecessary call to strstrip()
+Message-ID: <YAA8qyBUAurgCeEz@blackbook>
+References: <20210103024846.GA15337@haolee.github.io>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210103024846.GA15337@haolee.github.io>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Now the group scheduling in BFQ depends on the check of active group,
-but in most cases group scheduling is not used and the checking
-of active group will cause bfq_asymmetric_scenario() and its caller
-bfq_better_to_idle() to always return true, so the throughput
-will be impacted if the workload doesn't need idle (e.g. random rw)
+Hello.
 
-To fix that, adding check in bfq_io_set_weight_legacy() and
-bfq_pd_init() to check whether or not group scheduling is used
-(a non-default weight is used). If not, there is no need
-to check active group.
+On Sun, Jan 03, 2021 at 02:50:01AM +0000, Hao Lee <haolee.swjtu@gmail.com> wrote:
+> The string buf will be stripped in cgroup_procs_write_start() before it
+> is converted to int, so remove this unnecessary call to strstrip().
+Good catch, Hao.
 
-Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+Perhaps the code be then simplified a bit
+
+-- >8 --
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Date: Thu, 14 Jan 2021 13:23:39 +0100
+Subject: [PATCH] cgroup: cgroup.{procs,threads} factor out common parts
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+The functions cgroup_threads_start and cgroup_procs_start are almost
+identical. In order to reduce duplication, factor out the common code in
+similar fashion we already do for other threadgroup/task functions. No
+functional changes are intended.
+
+Suggested-by: Hao Lee <haolee.swjtu@gmail.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- block/bfq-cgroup.c  | 14 ++++++++++++--
- block/bfq-iosched.c |  8 +++-----
- block/bfq-iosched.h | 19 +++++++++++++++++++
- 3 files changed, 34 insertions(+), 7 deletions(-)
+ kernel/cgroup/cgroup.c | 55 +++++++++++-------------------------------
+ 1 file changed, 14 insertions(+), 41 deletions(-)
 
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index b791e2041e49..b4ac42c4bd9f 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -505,12 +505,18 @@ static struct blkcg_policy_data *bfq_cpd_alloc(gfp_t gfp)
- 	return &bgd->pd;
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 613845769103c..f6279df507f4b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4726,8 +4726,8 @@ static int cgroup_attach_permissions(struct cgroup *src_cgrp,
+ 	return ret;
  }
  
-+static inline int bfq_dft_weight(void)
-+{
-+	return cgroup_subsys_on_dfl(io_cgrp_subsys) ?
-+	       CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-+
-+}
-+
- static void bfq_cpd_init(struct blkcg_policy_data *cpd)
+-static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+-				  char *buf, size_t nbytes, loff_t off)
++static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
++				    bool threadgroup)
  {
- 	struct bfq_group_data *d = cpd_to_bfqgd(cpd);
+ 	struct cgroup *src_cgrp, *dst_cgrp;
+ 	struct task_struct *task;
+@@ -4738,7 +4738,7 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	if (!dst_cgrp)
+ 		return -ENODEV;
  
--	d->weight = cgroup_subsys_on_dfl(io_cgrp_subsys) ?
--		CGROUP_WEIGHT_DFL : BFQ_WEIGHT_LEGACY_DFL;
-+	d->weight = bfq_dft_weight();
- }
+-	task = cgroup_procs_write_start(buf, true, &locked);
++	task = cgroup_procs_write_start(buf, threadgroup, &locked);
+ 	ret = PTR_ERR_OR_ZERO(task);
+ 	if (ret)
+ 		goto out_unlock;
+@@ -4748,19 +4748,26 @@ static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
+ 	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+ 	spin_unlock_irq(&css_set_lock);
  
- static void bfq_cpd_free(struct blkcg_policy_data *cpd)
-@@ -554,6 +560,9 @@ static void bfq_pd_init(struct blkg_policy_data *pd)
- 	bfqg->bfqd = bfqd;
- 	bfqg->active_entities = 0;
- 	bfqg->rq_pos_tree = RB_ROOT;
-+
-+	if (entity->new_weight != bfq_dft_weight())
-+		bfqd_enable_active_group_check(bfqd);
- }
++	/* process and thread migrations follow same delegation rule */
+ 	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
+-					of->file->f_path.dentry->d_sb, true);
++					of->file->f_path.dentry->d_sb, threadgroup);
+ 	if (ret)
+ 		goto out_finish;
  
- static void bfq_pd_free(struct blkg_policy_data *pd)
-@@ -1013,6 +1022,7 @@ static void bfq_group_set_weight(struct bfq_group *bfqg, u64 weight, u64 dev_wei
- 		 */
- 		smp_wmb();
- 		bfqg->entity.prio_changed = 1;
-+		bfqd_enable_active_group_check(bfqg->bfqd);
- 	}
- }
+-	ret = cgroup_attach_task(dst_cgrp, task, true);
++	ret = cgroup_attach_task(dst_cgrp, task, threadgroup);
  
-diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
-index 9e4eb0fc1c16..1b695de1df95 100644
---- a/block/bfq-iosched.c
-+++ b/block/bfq-iosched.c
-@@ -699,11 +699,8 @@ static bool bfq_asymmetric_scenario(struct bfq_data *bfqd,
- 		(bfqd->busy_queues[0] && bfqd->busy_queues[2]) ||
- 		(bfqd->busy_queues[1] && bfqd->busy_queues[2]);
+ out_finish:
+ 	cgroup_procs_write_finish(task, locked);
+ out_unlock:
+ 	cgroup_kn_unlock(of->kn);
  
--	return varied_queue_weights || multiple_classes_busy
--#ifdef CONFIG_BFQ_GROUP_IOSCHED
--	       || bfqd->num_groups_with_pending_reqs > 0
--#endif
--		;
-+	return varied_queue_weights || multiple_classes_busy ||
-+	       bfqd_has_active_group(bfqd);
- }
- 
- /*
-@@ -6472,6 +6469,7 @@ static int bfq_init_queue(struct request_queue *q, struct elevator_type *e)
- 
- 	bfqd->queue_weights_tree = RB_ROOT_CACHED;
- 	bfqd->num_groups_with_pending_reqs = 0;
-+	bfqd->check_active_group = false;
- 
- 	INIT_LIST_HEAD(&bfqd->active_list);
- 	INIT_LIST_HEAD(&bfqd->idle_list);
-diff --git a/block/bfq-iosched.h b/block/bfq-iosched.h
-index 703895224562..216509013012 100644
---- a/block/bfq-iosched.h
-+++ b/block/bfq-iosched.h
-@@ -524,6 +524,8 @@ struct bfq_data {
- 
- 	/* true if the device is non rotational and performs queueing */
- 	bool nonrot_with_queueing;
-+	/* true if need to check num_groups_with_pending_reqs */
-+	bool check_active_group;
- 
- 	/*
- 	 * Maximum number of requests in driver in the last
-@@ -1066,6 +1068,17 @@ static inline void bfq_pid_to_str(int pid, char *str, int len)
- }
- 
- #ifdef CONFIG_BFQ_GROUP_IOSCHED
-+static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd)
-+{
-+	cmpxchg_relaxed(&bfqd->check_active_group, false, true);
+-	return ret ?: nbytes;
++	return ret;
 +}
 +
-+static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
++static ssize_t cgroup_procs_write(struct kernfs_open_file *of,
++				  char *buf, size_t nbytes, loff_t off)
 +{
-+	return bfqd->check_active_group &&
-+	       bfqd->num_groups_with_pending_reqs > 0;
-+}
-+
- struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
++	return __cgroup_procs_write(of, buf, true) ?: nbytes;
+ }
  
- #define bfq_log_bfqq(bfqd, bfqq, fmt, args...)	do {			\
-@@ -1085,6 +1098,12 @@ struct bfq_group *bfqq_group(struct bfq_queue *bfqq);
- } while (0)
+ static void *cgroup_threads_start(struct seq_file *s, loff_t *pos)
+@@ -4771,41 +4778,7 @@ static void *cgroup_threads_start(struct seq_file *s, loff_t *pos)
+ static ssize_t cgroup_threads_write(struct kernfs_open_file *of,
+ 				    char *buf, size_t nbytes, loff_t off)
+ {
+-	struct cgroup *src_cgrp, *dst_cgrp;
+-	struct task_struct *task;
+-	ssize_t ret;
+-	bool locked;
+-
+-	buf = strstrip(buf);
+-
+-	dst_cgrp = cgroup_kn_lock_live(of->kn, false);
+-	if (!dst_cgrp)
+-		return -ENODEV;
+-
+-	task = cgroup_procs_write_start(buf, false, &locked);
+-	ret = PTR_ERR_OR_ZERO(task);
+-	if (ret)
+-		goto out_unlock;
+-
+-	/* find the source cgroup */
+-	spin_lock_irq(&css_set_lock);
+-	src_cgrp = task_cgroup_from_root(task, &cgrp_dfl_root);
+-	spin_unlock_irq(&css_set_lock);
+-
+-	/* thread migrations follow the cgroup.procs delegation rule */
+-	ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
+-					of->file->f_path.dentry->d_sb, false);
+-	if (ret)
+-		goto out_finish;
+-
+-	ret = cgroup_attach_task(dst_cgrp, task, false);
+-
+-out_finish:
+-	cgroup_procs_write_finish(task, locked);
+-out_unlock:
+-	cgroup_kn_unlock(of->kn);
+-
+-	return ret ?: nbytes;
++	return __cgroup_procs_write(of, buf, false) ?: nbytes;
+ }
  
- #else /* CONFIG_BFQ_GROUP_IOSCHED */
-+static inline void bfqd_enable_active_group_check(struct bfq_data *bfqd) {}
-+
-+static inline bool bfqd_has_active_group(struct bfq_data *bfqd)
-+{
-+	return false;
-+}
- 
- #define bfq_log_bfqq(bfqd, bfqq, fmt, args...) do {	\
- 	char pid_str[MAX_PID_STR_LENGTH];	\
+ /* cgroup core interface files for the default hierarchy */
 -- 
-2.25.4
+2.29.2
 
