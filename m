@@ -2,149 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7795B2F653C
-	for <lists+cgroups@lfdr.de>; Thu, 14 Jan 2021 16:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A14E42F667E
+	for <lists+cgroups@lfdr.de>; Thu, 14 Jan 2021 17:56:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726864AbhANPwe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Jan 2021 10:52:34 -0500
-Received: from foss.arm.com ([217.140.110.172]:51986 "EHLO foss.arm.com"
+        id S1726633AbhANQzj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Jan 2021 11:55:39 -0500
+Received: from mx2.suse.de ([195.135.220.15]:60340 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1725950AbhANPwe (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 14 Jan 2021 10:52:34 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B437ED1;
-        Thu, 14 Jan 2021 07:51:48 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 521A03F70D;
-        Thu, 14 Jan 2021 07:51:45 -0800 (PST)
-Subject: Re: [PATCH 4/6] sched/deadline: Block DL tasks on non-exclusive
- cpuset if bandwitdh control is enable
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Marco Perronet <perronet@mpi-sws.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        cgroups@vger.kernel.org
-References: <cover.1610463999.git.bristot@redhat.com>
- <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <4b37b32b-0e16-ffbc-ca6a-fbee935c0813@arm.com>
-Date:   Thu, 14 Jan 2021 16:51:43 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1726473AbhANQzj (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 14 Jan 2021 11:55:39 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1610643293; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=DRTWHPlrQiiVrNwf4oflLPIJjJTF+5vr64DIMf+QTzg=;
+        b=KHpcDRFA4ImJgm0jszlZ5QuF1YjRRcDklHFKYmKcTHOppIbR9JtOCoQZRCer8cQKBcuzIq
+        EM6SveYBqUYvVaun91OGPhpL0Ko4u+/DF0/O9mkaHXT/wC/M0ICIXU71iYnKojIT7f0dfx
+        VwFQ5pJzaVHr2iO7YWrMt7Y2IQ/M3EE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7DA2AD18;
+        Thu, 14 Jan 2021 16:54:52 +0000 (UTC)
+Date:   Thu, 14 Jan 2021 17:54:50 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     chenzhou <chenzhou10@huawei.com>
+Cc:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+Message-ID: <YAB3Wuu+hFpN698N@blackbook>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="G5CWgaLxblIFSK1F"
+Content-Disposition: inline
+In-Reply-To: <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 12/01/2021 16:53, Daniel Bristot de Oliveira wrote:
-> The current SCHED_DEADLINE design supports only global scheduler,
-> or variants of it, i.e., clustered and partitioned, via cpuset config.
-> To enable the partitioning of a system with clusters of CPUs, the
-> documentation advises the usage of exclusive cpusets, creating an
-> exclusive root_domain for the cpuset.
-> 
-> Attempts to change the cpu affinity of a thread to a cpu mask different
-> from the root domain results in an error. For instance:
 
-[...]
+--G5CWgaLxblIFSK1F
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index 788a391657a5..c221e14d5b86 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -2878,6 +2878,13 @@ int dl_task_can_attach(struct task_struct *p,
->  	if (cpumask_empty(cs_cpus_allowed))
->  		return 0;
->  
-> +	/*
-> +	 * Do not allow moving tasks to non-exclusive cpusets
-> +	 * if bandwidth control is enabled.
-> +	 */
-> +	if (dl_bandwidth_enabled() && !exclusive)
-> +		return -EBUSY;
-> +
->  	/*
->  	 * The task is not moving to another root domain, so it is
->  	 * already accounted.
-> 
+On Thu, Jan 14, 2021 at 10:08:19PM +0800, chenzhou <chenzhou10@huawei.com> wrote:
+> In this case, at the beginning of function check_cgroupfs_options(), the mask
+> ctx->subsys_mask will be 0. And if we mount without 'none' and 'name=' options,
+> then in check_cgroupfs_options(), the flag ctx->all_ss will be set, that is, select all the subsystems.
+But even then, the line
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/kernel/cgroup/cgroup-v1.c?h=v5.11-rc3#n1012
+would select only 'enabled' controllers, wouldn't it?
 
-But doesn't this mean you only have to set this cgroup exclusive/root to
-run into the same issue:
+It's possible I missed something but if this means that cgroup_no_v1=
+doesn't hold to its expectations, I'd suggest adding proper Fixes: tag
+to the patch.
 
-with this patch:
+Thanks,
+Michal
 
-cgroupv1:
+--G5CWgaLxblIFSK1F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
---sched-runtime 100000000 0 sleep 500 &
-[1] 1668
-root@juno:/sys/fs/cgroup/cpuset# PID1=$!
+-----BEGIN PGP SIGNATURE-----
 
-root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
---sched-runtime 100000000 0 sleep 500 &
-[2] 1669
-root@juno:/sys/fs/cgroup/cpuset# PID2=$!
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmAAd1QACgkQia1+riC5
+qSgWoQ/+IhQQDXjrTBF5Pw5vod0YE5rO2MUWtzh4d1tLQTjzBng8E1jnWV3jAsD8
+wFqLWz3JxqFUQa9A0DEKWjwmHfu0ud0A6t/eCV24Xm6JoX8vcR1dVimMzCUd2Hjk
+QINq+w81pOhqZX0vjGPRW8J1cf8jMjQgQ0nZmHxm11TaGuO5G3dvhVJuFAjXyvEy
+568of571ti78CKzoa7zt5KK1ID2m3u3rk5WDuGGj4zlTg2QoqFOxrBprRaF/1eCu
+0Fk+LKva7qmiGP87uXFt124432CQ8AAGG+fsAzcBqKuIFFxcpzyrnkP8jNRZS0xV
+Sb7nZ7ivB50YyMJxorpXiRT2lhh+BtFbvydWuAs1PGh7z8B6AexE4XtF52XBeybB
+MSpQJ/0E9LuesHjcEFXLzGwFe7Dw5N0u4pNrKo5QMh63PveCx7KxIcdBWXihuBJm
+pDE9d707NJ2g4M4/88Hvs9QIiBmzOU9h/x2zKVNKMM4io7o51hUEHkUEG/4nb0/d
+tUvH1jxlFPeQh4UoazlKnTMq3ljI1gi1mBq6ytoptxVxdu4rvhBNcrd+nuKcWKtu
+vWwdZ8lh9crRwEWbLtIVY0flm2GX4Nu5xq/VF1y67QA1e+34NjwMX8a2GrrS1dBK
+q/NvMQTk62NfRzjrh+uabF5pEcA/K7EvnKQLGasG1RYmvas3YoI=
+=9rm1
+-----END PGP SIGNATURE-----
 
-root@juno:/sys/fs/cgroup/cpuset# mkdir A
-
-root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.mems
-root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.cpus
-
-root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
--bash: echo: write error: Device or resource busy
-
-root@juno:/sys/fs/cgroup/cpuset# echo 1 > ./A/cpuset.cpu_exclusive
-
-root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
-
-root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID1/status | grep
-Cpus_allowed_list | awk '{print $2}'
-0-5
-root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID2/status | grep
-Cpus_allowed_list | awk '{print $2}'
-0
-
-cgroupv2:
-
-root@juno:/sys/fs/cgroup# echo +cpuset > cgroup.subtree_control
-
-root@juno:/sys/fs/cgroup# chrt -d --sched-period 1000000000
---sched-runtime 100000000 0 sleep 500 &
-[1] 1687
-root@juno:/sys/fs/cgroup# PID1=$!
-
-root@juno:/sys/fs/cgroup# chrt -d --sched-period 1000000000
---sched-runtime 100000000 0 sleep 500 &
-[2] 1688
-root@juno:/sys/fs/cgroup# PID2=$!
-
-root@juno:/sys/fs/cgroup# mkdir A
-
-root@juno:/sys/fs/cgroup# echo 0 > ./A/cpuset.mems
-root@juno:/sys/fs/cgroup# echo 0 > ./A/cpuset.cpus
-
-root@juno:/sys/fs/cgroup# echo $PID2 > ./A/cgroup.procs
--bash: echo: write error: Device or resource busy
-
-root@juno:/sys/fs/cgroup# echo root > ./A/cpuset.cpus.partition
-
-root@juno:/sys/fs/cgroup# echo $PID2 > ./A/cgroup.procs
-
-root@juno:/sys/fs/cgroup# cat /proc/$PID1/status | grep
-Cpus_allowed_list | awk '{print $2}'
-0-5
-root@juno:/sys/fs/cgroup# cat /proc/$PID2/status | grep
-Cpus_allowed_list | awk '{print $2}'
-0
+--G5CWgaLxblIFSK1F--
