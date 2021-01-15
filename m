@@ -2,183 +2,162 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FAD62F86F5
-	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 21:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 490162F8704
+	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 22:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728644AbhAOU4W (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Jan 2021 15:56:22 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34894 "EHLO
+        id S1728181AbhAOVAy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Jan 2021 16:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35896 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727180AbhAOU4T (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jan 2021 15:56:19 -0500
-Received: from mail-qt1-x836.google.com (mail-qt1-x836.google.com [IPv6:2607:f8b0:4864:20::836])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 560F6C061793
-        for <cgroups@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
-Received: by mail-qt1-x836.google.com with SMTP id j26so7030233qtq.8
-        for <cgroups@vger.kernel.org>; Fri, 15 Jan 2021 12:55:39 -0800 (PST)
+        with ESMTP id S1727670AbhAOVAw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jan 2021 16:00:52 -0500
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 387D7C061757;
+        Fri, 15 Jan 2021 13:00:12 -0800 (PST)
+Received: by mail-qk1-x735.google.com with SMTP id 22so13067674qkf.9;
+        Fri, 15 Jan 2021 13:00:12 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
-        b=08diUBE1TRDu8jkonn5T7HGIPR4ggImv2F40SdRk2Vj2uUcUYhKHWt3hXjiCtm3yKM
-         ktR2KdE6uaQ1EEo4scHUcpcm3q/u8L3zD02rEv+YWZ+/RjgfnSCX4igqLCJNqbP8JkhD
-         wuai1GglPwLSYmuoHuc7NqKeNnvJ1fFTjed821X7BinBBXs30qDK83vV98QDudCTf35I
-         B+3ADJAZ0QlHeLaozMOEt0o3EiMZpPbbLotoxVgV/V9yQv0oW9G4KO4F/FfwPOppPk8E
-         Mq/xHc64yoKMTsKPSzaN74uXJU7RrcYKPM1MYdxLZUTxaZ/NPHUWglckARwnmnDXyPCl
-         4wIg==
+        bh=ljcsEiTwVFy9/fEf7cwMkyA7thV1aii+KQVznxeDjsM=;
+        b=BPbmAO0d2VW5YNWzjkrHt/PXcfpdUW3/1LwTgdr344QL/A3fRO/M3CYiTazM3UlT7h
+         NMKhDvXYYwVtM+rLvoqz52hYpYcUVz9UepwZwtMHTyqDfg/lcFlpCj0SMZvrahYeIXHD
+         pRKM/bx+f/MJTIpyXICeHTDaxvOwKPWPotCqE6mUn/oQTkGjBfwzF3O6hP+yEaDakjCi
+         6s9e4UhrIkl0jUxYtVr+QZICcIjUoI+kP3hQdkkksF3M0HyHhFQV1qtmBLijaRcYbzq7
+         YpGdfDsdTcK/gcL80BBhZ02vaeum/TTNMLa1M+ny4AZNDmuYHWshPglwce4Rk2uS8MuX
+         A12w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=SlNlvcKcVOLSQ+6ubVv+zQmNdKKd35YVKlEcU4lZbR0=;
-        b=tZqs/C8bxr3y9hN/OKKzrQc1/LiyYWsTu9O2ZeA6Ns+vbAAj7gXhFK3cncn313E1io
-         VIj38v2t1Q3NKmgyLnsI70+n0ZYqls8m5/ubcGGIr6zt1TEKGtsivopch734TOeAqUzO
-         reMRxIMmgKoJ+x8XXSl8+CsaRhY15M7AWOiy9Zh+dLyd5elMOn6itHOLsmbQg2tHBygI
-         O4bbAuCeOGvCXoOvpEAVzQO6hDQwPGwUInENozF2jwFF/yCJx6+A3tOzp1MYxtFfl3K5
-         K7VnoEwDXGhm3xQAs3Ma8D1OLpNkuQoEw7brfFGNd5mq2MtlcCVmQt993qhH3qo82zQ8
-         9dhA==
-X-Gm-Message-State: AOAM532TKLKxTKxOp29j3duCO9gzOX8PAJdQXZkOAFM71SyD+KSE7WmE
-        hsI1MlnX3G/Tjd37vTOXgByg1A==
-X-Google-Smtp-Source: ABdhPJwk80MpECSM3D92ftFoulMk04vWZTvZa9AnLWrgNQu5NlTm9g0uQg+Mlh5ocsoZenQ38JBsLw==
-X-Received: by 2002:ac8:45d7:: with SMTP id e23mr13629017qto.149.1610744138477;
-        Fri, 15 Jan 2021 12:55:38 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:dbed])
-        by smtp.gmail.com with ESMTPSA id 190sm5870540qkf.61.2021.01.15.12.55.37
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=ljcsEiTwVFy9/fEf7cwMkyA7thV1aii+KQVznxeDjsM=;
+        b=KufNiEoEBr3qJ/aMqRK9Zyu4rIkPh6vIpt+XcfTeWH0dBYicFF3dDGHeM+KBEz/vmK
+         LP5lc520vg1nxmkJTM5FAUoTUsP0kyqLLydC99t4UYNAafNDuL4S90+3cb2eNmzf/EnC
+         lBkUmeg13BWU8SaK2hBqz4RKtFOBjVhekvcZIo8Cq5LZ1kHeAQHmHknwCmZ+G04flNoC
+         oDgPxfdOLHzwX46QVPxiVHvj5Adtu133Jp4K6VNfH79qGhS8Aqca1W4YoFvNlvfOpUyx
+         yRiZqJmbgqJJXnbm57FiY724KQpE8RQup45bRMgEfvdJQGSRkUnNkd0f4BB6XF1AMCOk
+         IZOw==
+X-Gm-Message-State: AOAM530Md7IJ/ycoprMAkJERGG5sEoBMRA3FtDXK1hC8i9EhVqP8KgMs
+        A+Qj62J2jJbCBeGOKoLa0CQ=
+X-Google-Smtp-Source: ABdhPJy9j9l0S9T06cHCKDIQiabQzp4sALF2rBoDPKVS4UFcEfTl0ctIJO4IvRrChx1FEJcBZRDrJQ==
+X-Received: by 2002:a37:76c6:: with SMTP id r189mr14058674qkc.24.1610744411364;
+        Fri, 15 Jan 2021 13:00:11 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:97cc])
+        by smtp.gmail.com with ESMTPSA id a21sm5802091qkb.124.2021.01.15.13.00.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 12:55:37 -0800 (PST)
-Date:   Fri, 15 Jan 2021 15:55:36 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
- memory.high
-Message-ID: <YAIBSJg3btQ+2CNZ@cmpxchg.org>
-References: <20210112163011.127833-1-hannes@cmpxchg.org>
- <20210113144654.GD22493@dhcp22.suse.cz>
- <YAHA4uBSLlnxxAbu@cmpxchg.org>
- <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
+        Fri, 15 Jan 2021 13:00:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Fri, 15 Jan 2021 15:59:25 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20210108012846.4134815-2-vipinsh@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 09:03:41AM -0800, Roman Gushchin wrote:
-> On Fri, Jan 15, 2021 at 11:20:50AM -0500, Johannes Weiner wrote:
-> > On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
-> > > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
-> > > > When a value is written to a cgroup's memory.high control file, the
-> > > > write() context first tries to reclaim the cgroup to size before
-> > > > putting the limit in place for the workload. Concurrent charges from
-> > > > the workload can keep such a write() looping in reclaim indefinitely.
-> > > > 
-> > > > In the past, a write to memory.high would first put the limit in place
-> > > > for the workload, then do targeted reclaim until the new limit has
-> > > > been met - similar to how we do it for memory.max. This wasn't prone
-> > > > to the described starvation issue. However, this sequence could cause
-> > > > excessive latencies in the workload, when allocating threads could be
-> > > > put into long penalty sleeps on the sudden memory.high overage created
-> > > > by the write(), before that had a chance to work it off.
-> > > > 
-> > > > Now that memory_high_write() performs reclaim before enforcing the new
-> > > > limit, reflect that the cgroup may well fail to converge due to
-> > > > concurrent workload activity. Bail out of the loop after a few tries.
-> > > 
-> > > I can see that you have provided some more details in follow up replies
-> > > but I do not see any explicit argument why an excessive time for writer
-> > > is an actual problem. Could you be more specific?
-> > 
-> > Our writer isn't necessarily time sensitive, but there is a difference
-> > between a) the write taking a few seconds to reclaim down the
-> > requested delta and b) the writer essentially turning into kswapd for
-> > the workload and busy-spinning inside the kernel indefinitely.
-> > 
-> > We've seen the writer stuck in this function for minutes, long after
-> > the requested delta has been reclaimed, consuming alarming amounts of
-> > CPU cycles - CPU time that should really be accounted to the workload,
-> > not the system software performing the write.
-> > 
-> > Obviously, we could work around it using timeouts and signals. In
-> > fact, we may have to until the new kernel is deployed everywhere. But
-> > this is the definition of an interface change breaking userspace, so
-> > I'm a bit surprised by your laid-back response.
-> > 
-> > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
-> > > > Cc: <stable@vger.kernel.org> # 5.8+
-> > > 
-> > > Why is this worth backporting to stable? The behavior is different but I
-> > > do not think any of them is harmful.
-> > 
-> > The referenced patch changed user-visible behavior in a way that is
-> > causing real production problems for us. From stable-kernel-rules:
-> > 
-> >  - It must fix a real bug that bothers people (not a, "This could be a
-> >    problem..." type thing).
-> > 
-> > > > Reported-by: Tejun Heo <tj@kernel.org>
-> > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > > 
-> > > I am not against the patch. The existing interface doesn't provide any
-> > > meaningful feedback to the userspace anyway. User would have to re check
-> > > to see the result of the operation. So how hard we try is really an
-> > > implementation detail.
-> > 
-> > Yeah, I wish it was a bit more consistent from an interface POV.
-> > 
-> > Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
-> > trying to reclaim went into the tree at the same exact time as Chris's
-> > series "mm, memcg: reclaim harder before high throttling" (commit
-> > b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
-> > 
-> > Chris's patch changes memory.high reclaim on the allocation side from
-> > 
-> > 	reclaim once, sleep if there is still overage
-> > 
-> > to
-> > 
-> > 	reclaim the overage as long as you make forward progress;
-> > 	sleep after 16 no-progress loops if there is still overage
-> > 
-> > Roman's patch describes a problem where allocating threads go to sleep
-> > when memory.high is lowered by a wider step. This is exceedingly
-> > unlikely after Chris's change.
-> > 
-> > Because after Chris's change, memory.high is reclaimed on the
-> > allocation side as aggressively as memory.max. The only difference is
-> > that upon failure, one sleeps and the other OOMs.
-> > 
-> > If Roman's issue were present after Chris's change, then we'd also see
-> > premature OOM kills when memory.max is lowered by a large step. And I
-> > have never seen that happening.
-> > 
-> > So I suggest instead of my fix here, we revert Roman's patch instead,
-> > as it should no longer be needed. Thoughts?
-> 
-> Chris's patch was merged way earlier than mine into the kernel tree which
-> was used when I observed the problem in the production. So likely it was there.
+Hello,
 
-Chris's patch was in the tree earlier, but the first release
-containing it was tagged a day before you put in your change, so I
-doubt it was on the production system where you observed the issue.
+On Thu, Jan 07, 2021 at 05:28:45PM -0800, Vipin Sharma wrote:
+> 1. encrpytion_ids.sev.max
+> 	Sets the maximum usage of SEV IDs in the cgroup.
+> 2. encryption_ids.sev.current
+> 	Current usage of SEV IDs in the cgroup and its children.
+> 3. encryption_ids.sev.stat
+> 	Shown only at the root cgroup. Displays total SEV IDs available
+> 	on the platform and current usage count.
 
-As per above, it'd be very surprising to see premature sleeps when
-lowering memory.high, when allocation-side reclaim keeps going until
-the cgroup meets the definition of OOM.
+Sorry, should have raised these earlier:
 
-> I think it makes sense to try to reclaim memory first before putting
-> all processes in the cgroup into reclaim mode. Even without artificial delays
-> it creates some latency and btw doesn't make the reclaim process more efficient.
+* Can we shorten the name to encids?
 
-It's not obvious that this is a practical problem. It certainly isn't
-for memory.max, and there should be a good reason why the two should
-be different aside from the documented OOM vs sleep behavior.
+* Why is .sev a separate namespace? Isn't the controller supposed to cover
+  encryption ids across different implementations? It's not like multiple
+  types of IDs can be in use on the same machine, right?
 
-Absent any concrete evidence to the contrary, I'd make the behavior
-the same again for those two.
+> Other ID types can be easily added in the controller in the same way.
+
+I'm not sure this is necessarily a good thing.
+
+> +/**
+> + * enc_id_cg_uncharge_hierarchy() - Uncharge the enryption ID cgroup hierarchy.
+> + * @start_cg: Starting cgroup.
+> + * @stop_cg: cgroup at which uncharge stops.
+> + * @type: type of encryption ID to uncharge.
+> + * @amount: Charge amount.
+> + *
+> + * Uncharge the cgroup tree from the given start cgroup to the stop cgroup.
+> + *
+> + * Context: Any context. Expects enc_id_cg_lock to be held by the caller.
+> + */
+> +static void enc_id_cg_uncharge_hierarchy(struct encryption_id_cgroup *start_cg,
+> +					 struct encryption_id_cgroup *stop_cg,
+> +					 enum encryption_id_type type,
+> +					 unsigned int amount)
+> +{
+> +	struct encryption_id_cgroup *i;
+> +
+> +	lockdep_assert_held(&enc_id_cg_lock);
+> +
+> +	for (i = start_cg; i != stop_cg; i = parent_enc(i)) {
+> +		WARN_ON_ONCE(i->res[type].usage < amount);
+> +		i->res[type].usage -= amount;
+> +	}
+> +	css_put(&start_cg->css);
+
+I'm curious whether this is necessary given that a css can't be destroyed
+while tasks are attached. Are there cases where this wouldn't hold true? If
+so, it'd be great to have some comments on how that can happen.
+
+> +/**
+> + * enc_id_cg_max_write() - Update the maximum limit of the cgroup.
+> + * @of: Handler for the file.
+> + * @buf: Data from the user. It should be either "max", 0, or a positive
+> + *	 integer.
+> + * @nbytes: Number of bytes of the data.
+> + * @off: Offset in the file.
+> + *
+> + * Uses cft->private value to determine for which enryption ID type results be
+> + * shown.
+> + *
+> + * Context: Any context. Takes and releases enc_id_cg_lock.
+> + * Return:
+> + * * >= 0 - Number of bytes processed in the input.
+> + * * -EINVAL - If buf is not valid.
+> + * * -ERANGE - If number is bigger than unsigned int capacity.
+> + * * -EBUSY - If usage can become more than max limit.
+
+The aboves are stale, right?
+
+> +static int enc_id_cg_stat_show(struct seq_file *sf, void *v)
+> +{
+> +	unsigned long flags;
+> +	enum encryption_id_type type = seq_cft(sf)->private;
+> +
+> +	spin_lock_irqsave(&enc_id_cg_lock, flags);
+> +
+> +	seq_printf(sf, "total %u\n", enc_id_capacity[type]);
+> +	seq_printf(sf, "used %u\n", root_cg.res[type].usage);
+
+Dup with .current and no need to show total on every cgroup, right?
+
+Thanks.
+
+-- 
+tejun
