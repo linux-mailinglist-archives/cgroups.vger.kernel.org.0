@@ -2,79 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13E42F7078
-	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 03:20:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BF322F70DC
+	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 04:18:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732012AbhAOCUV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Jan 2021 21:20:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
+        id S1732388AbhAODSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Jan 2021 22:18:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732011AbhAOCUU (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 21:20:20 -0500
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1E2AC061575;
-        Thu, 14 Jan 2021 18:19:39 -0800 (PST)
-Received: by mail-ed1-x535.google.com with SMTP id c7so7909059edv.6;
-        Thu, 14 Jan 2021 18:19:39 -0800 (PST)
+        with ESMTP id S1732423AbhAODSW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 22:18:22 -0500
+Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659CDC061575;
+        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
+Received: by mail-qt1-x834.google.com with SMTP id j26so5158614qtq.8;
+        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fI/1lXfnira7lqXCcxJnPYuJ/g5t5oZZRm+ZWpb4+FI=;
-        b=VGOuUg1lWUtN6AREorPyWbQWKGBcytb/F+GaLsKenHyIPlKz+HUKMT4Kl4Sge2dUhU
-         XDNiOD0jPt6rr8C4CQXlUqloEimlDqMXEXjAeGQcC4Mi9pvz2iAcvpwxXsf3RoarjE9g
-         +nMD/72CnC2OUF7s+FLt6PGhxn+wwoM3/vQdujxJtk8wq0a7ZSfkuch8wQrI+asDCEw6
-         mUVOzy/QttEfGvP0E9sY5arphfqahtgBM15jB9KRzqTMJLlCC2Qcnt0Wq3MI/7NflSOI
-         055r+5Rb0saSZyD2c/kNmdFKtGwkEVQCyH3zEsKJed0QYiGMO0fERnbthvJYK9O07bIO
-         bNdA==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
+        b=odr0pw6Tc4JOSEerz1bsmasAi60PTA3HexpYK4sUs3CMn4UPSHFwTCje4xad/XxtEo
+         CL84jc8pHGUYe8mImzQQI3TrdZy6n/CgU1UHZSBLdxA5xctlwgyV+D4xOimaT3M6uWyT
+         yiC+nw82au74Mn/hxt1Q73E4iXvgTMSWKcum2qqT00gXo5gMUSwrJNfOUBzDgWGhaVZr
+         A+HnmBgxn9RcuYCDgGweJehTinfBAxFcUQLNNsL5QESd//9e+7jh3Jq2A0LopjvMf4re
+         P6TlcVR0r52q1udIrdYpghFbEKwq+iNPduY4Xrr4tZCXtYcK1zOszrey0pwB48dKpeTq
+         MTmg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fI/1lXfnira7lqXCcxJnPYuJ/g5t5oZZRm+ZWpb4+FI=;
-        b=fDvVYSgtb8T8OX0wdqd0nDvr50O3a8xCWW2LGhHnxwICRJVQKy5GI5EwVVGilg+guW
-         ekzzs+T8f4yuiiAfSsCantjYn2jg8WD1DemTXZQFv+qmgdcH8WBufvogaQxrzrwso666
-         zJRb8v1FOLUT5dTNNyU9MV7A+B0AS8Qau6NInvsJ5tPvIbd7022Mxyc5c5ne/vn63vl/
-         zq4bzFDhgNeelgCGrf+RP1KjMKobW7EQ6sOuTtgdppR/cqjWuxT/eHkH+SZe/rf9nTlj
-         wj/xIpTl3Nc2wMi7Mx5a0fpZ44vD3+aqo2Lz3ICuHtTlu4J0K0pm/3OiX5kvE8LhihCK
-         99QA==
-X-Gm-Message-State: AOAM5336Vm3oc7Qbd0DeHSYrjo8Sfx6TK1ga/QoiMG3TaDWsJYpma668
-        ua38hBpmBnavhn/aKlYQcOXWNYJerHobUXE9pqwcDkeV
-X-Google-Smtp-Source: ABdhPJwHsxft8uW3qgjkt20wAlHjG3MqNbxNTgCfw4SZ08xZJ+KWljc1nKDh4iCz4SY4AWQYa3is3qhIb75jlgwySb8=
-X-Received: by 2002:a05:6402:487:: with SMTP id k7mr7894363edv.130.1610677178473;
- Thu, 14 Jan 2021 18:19:38 -0800 (PST)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
+        b=ouu/qK/nCL88aUzcG46TMPXzEB570BC138ZuZMd4/8DGgIoG3Fpk0CkeByTEzMbBVd
+         4EbjNRbe1fZyClsGu1kjtdJgHdIiGjd5CI2AqdsjzNLENN1yo3Y3F6Wv8GPe4ZcMJ4l1
+         az++lL1ce3Wa9END7WOQaH7K67YroElq4AgXbbJElyJWVbLaQuampu1ju3hAqTamJeYI
+         Q7uxgVXWqmMBSWryZZg4AWgBxqkio8bNRs/HxQRqZUE/7WX1LkocJ3i+kfBayVv+T1Ev
+         vzB49N1cOU6jB921+T0Tv9S0yJtAtJbqTCUd2ablm59dOnDydF4wp/czaF1yx0G1kkEN
+         q3ZQ==
+X-Gm-Message-State: AOAM533sO3LamVBFGcgX0RZ972tuAbNke9fwbvNkAcQWTP222EyCyPaK
+        haslpmQW/7JtVMiRhxKb0Dc=
+X-Google-Smtp-Source: ABdhPJw8HJjhzyHwUf31NT2HnwAkb5iOzHboKS6INWtGtE+2frw4nADvVWrGcv0jHhVrEAShsd+hXQ==
+X-Received: by 2002:ac8:6f65:: with SMTP id u5mr9949979qtv.303.1610680686426;
+        Thu, 14 Jan 2021 19:18:06 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:c885])
+        by smtp.gmail.com with ESMTPSA id c7sm3929094qtw.70.2021.01.14.19.18.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 14 Jan 2021 19:18:05 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 14 Jan 2021 22:17:18 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     chenzhou <chenzhou10@huawei.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+Message-ID: <YAEJPs4DJIgAXWul@mtj.duckdns.org>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
+ <YAB3Wuu+hFpN698N@blackbook>
+ <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
 MIME-Version: 1.0
-References: <20210103024846.GA15337@haolee.github.io> <YAA8qyBUAurgCeEz@blackbook>
-In-Reply-To: <YAA8qyBUAurgCeEz@blackbook>
-From:   Hao Lee <haolee.swjtu@gmail.com>
-Date:   Fri, 15 Jan 2021 10:19:25 +0800
-Message-ID: <CA+PpKPnmzzdH4Wbb5LWT0+cjbS9=cwcxuPRMHf7GuukWdTfVuA@mail.gmail.com>
-Subject: Re: [PATCH] cgroup: Remove unnecessary call to strstrip()
-To:     =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc:     tj@kernel.org, lizefan@huawei.com,
-        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> Perhaps the code be then simplified a bit
->
-> -- >8 --
-> From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-> Date: Thu, 14 Jan 2021 13:23:39 +0100
-> Subject: [PATCH] cgroup: cgroup.{procs,threads} factor out common parts
-> MIME-Version: 1.0
-> Content-Type: text/plain; charset=UTF-8
-> Content-Transfer-Encoding: 8bit
->
-> The functions cgroup_threads_start and cgroup_procs_start are almost
-> identical. In order to reduce duplication, factor out the common code in
-> similar fashion we already do for other threadgroup/task functions. No
-> functional changes are intended.
+Hello,
 
-Nice work. I didn't realize this simplification :)
+On Fri, Jan 15, 2021 at 09:55:43AM +0800, chenzhou wrote:
+> Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
+> I think the case should return error with information "Disabled controller xx" rather than
+> attaching all the other enabled controllers.
+> 
+> For example, boot with cgroup_no_v1=cpu, and then mount with
+> "mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
+> be attached expect cpu.
 
-Regards,
-Hao Lee
+Okay, that explanation actually makes sense. Can you please update the
+description to include what's broken and how it's being fixed? It really
+isn't clear what the patch is trying to achieve from the current
+description.
+
+Thanks.
+
+-- 
+tejun
