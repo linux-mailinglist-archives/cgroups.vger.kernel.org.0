@@ -2,112 +2,67 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0A02F70EA
-	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 04:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F47A2F72A6
+	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 06:59:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726680AbhAODXX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Jan 2021 22:23:23 -0500
-Received: from aserp2120.oracle.com ([141.146.126.78]:49308 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725950AbhAODXW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 22:23:22 -0500
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KCLk168130;
-        Fri, 15 Jan 2021 03:22:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : in-reply-to : references : date : message-id : mime-version :
- content-type; s=corp-2020-01-29;
- bh=IOXbYHXHreW/DM/cC1BlOLyDYYZQRT6FD474gUtPV4A=;
- b=bEPJJSBKEY26381CteMXcM4TUtEgoNn7H/6Rj2Fypaq1KcWpgvxWwf+JT51UyPqMBfLU
- z4XGtzk1ndfrc/YAierZRu8Y86WIPMsivOrf/Y0gSoD3VutNeQ14tbaclOeHXO6zDT2U
- JDqZC1A1fdnzmxHZJY87mMZdb55T7Z+HczXUWTjsiU6OYzicqpmmTE6AtcFnknnwMjLg
- aXWGjJkmveVKL93gWjnihgvAyIxdmP8K2uKCqQWMSRElLbNy3MpZZTbY6Hq3znlVDiy2
- th6Uds65hwxEYViQeguOCfM9EEcXPWxXXjPogQle01Bu/mBImohggC0CRTiZiBXkdjVI /A== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 360kd0355f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 03:22:05 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3M1SL106622;
-        Fri, 15 Jan 2021 03:22:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by aserp3020.oracle.com with ESMTP id 360keaps4r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 15 Jan 2021 03:22:04 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F3LUj3020589;
-        Fri, 15 Jan 2021 03:21:31 GMT
-Received: from parnassus (/98.229.125.203)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 14 Jan 2021 19:21:30 -0800
-From:   Daniel Jordan <daniel.m.jordan@oracle.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to
- finish on cpu online
-In-Reply-To: <87k0tritvq.fsf@oracle.com>
-References: <20201203171431.256675-1-aklimov@redhat.com>
- <20201207083827.GD3040@hirez.programming.kicks-ass.net>
- <87k0tritvq.fsf@oracle.com>
-Date:   Thu, 14 Jan 2021 22:21:25 -0500
-Message-ID: <87im7yc2bu.fsf@oracle.com>
+        id S1727666AbhAOF7I (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 15 Jan 2021 00:59:08 -0500
+Received: from szxga04-in.huawei.com ([45.249.212.190]:10724 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726019AbhAOF7H (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jan 2021 00:59:07 -0500
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4DH9S171rYzl3sR;
+        Fri, 15 Jan 2021 13:57:05 +0800 (CST)
+Received: from [10.174.176.61] (10.174.176.61) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 15 Jan 2021 13:58:20 +0800
+Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
+ cgroup1_parse_param()
+To:     Tejun Heo <tj@kernel.org>
+References: <20201218061755.121205-1-chenzhou10@huawei.com>
+ <YABDWvI2PWQpnv59@blackbook>
+ <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
+ <YAB3Wuu+hFpN698N@blackbook>
+ <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+ <YAEJPs4DJIgAXWul@mtj.duckdns.org>
+CC:     =?UTF-8?Q?Michal_Koutn=c3=bd?= <mkoutny@suse.com>,
+        <lizefan.x@bytedance.com>, <hannes@cmpxchg.org>,
+        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+From:   chenzhou <chenzhou10@huawei.com>
+Message-ID: <c4e62492-4b12-c516-3c17-77d18f3ddfe2@huawei.com>
+Date:   Fri, 15 Jan 2021 13:58:20 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
- mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2101150015
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
- impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
- lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101150015
+In-Reply-To: <YAEJPs4DJIgAXWul@mtj.duckdns.org>
+Content-Type: text/plain; charset="windows-1252"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.61]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Daniel Jordan <daniel.m.jordan@oracle.com> writes:
-> Peter Zijlstra <peterz@infradead.org> writes:
->>> The nature of this bug is also described here (with different consequences):
->>> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+
+
+On 2021/1/15 11:17, Tejun Heo wrote:
+> Hello,
+>
+> On Fri, Jan 15, 2021 at 09:55:43AM +0800, chenzhou wrote:
+>> Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
+>> I think the case should return error with information "Disabled controller xx" rather than
+>> attaching all the other enabled controllers.
 >>
->> Yeah, pesky deadlocks.. someone was going to try again.
+>> For example, boot with cgroup_no_v1=cpu, and then mount with
+>> "mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
+>> be attached expect cpu.
+> Okay, that explanation actually makes sense. Can you please update the
+> description to include what's broken and how it's being fixed? It really
+> isn't clear what the patch is trying to achieve from the current
+> description.
+Ok, will update the description.
 >
-> I dug up the synchronous patch
+> Thanks.
 >
->     https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
->
-> but surprisingly wasn't able to reproduce the lockdep splat from
->
->     https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
->
-> even though I could hit it a few weeks ago.
 
-oh okay, you need to mount a legacy cpuset hierarchy.
-
-So as the above splat shows, making cpuset_hotplug_workfn() synchronous
-means cpu_hotplug_lock (and "cpuhp_state-down") can be acquired before
-cgroup_mutex.
-
-But there are at least four cgroup paths that take the locks in the
-opposite order.  They're all the same, they take cgroup_mutex and then
-cpu_hotplug_lock later on to modify one or more static keys.
-
-cpu_hotplug_lock should probably be ahead of cgroup_mutex because the
-latter is taken in a hotplug callback, and we should keep the static
-branches in cgroup, so the only way out I can think of is moving
-cpu_hotplug_lock to just before cgroup_mutex is taken and switching to
-_cpuslocked flavors of the static key calls.
-
-lockdep quiets down with that change everywhere, but it puts another big
-lock around a lot of cgroup paths.  Seems less heavyhanded to go with
-this RFC.  What do you all think?
-
-Absent further discussion, Alexey, do you plan to post another version?
