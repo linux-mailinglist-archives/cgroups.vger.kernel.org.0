@@ -2,91 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BF322F70DC
-	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 04:18:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0A02F70EA
+	for <lists+cgroups@lfdr.de>; Fri, 15 Jan 2021 04:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732388AbhAODSX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 14 Jan 2021 22:18:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32858 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732423AbhAODSW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 22:18:22 -0500
-Received: from mail-qt1-x834.google.com (mail-qt1-x834.google.com [IPv6:2607:f8b0:4864:20::834])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 659CDC061575;
-        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
-Received: by mail-qt1-x834.google.com with SMTP id j26so5158614qtq.8;
-        Thu, 14 Jan 2021 19:18:07 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
-        b=odr0pw6Tc4JOSEerz1bsmasAi60PTA3HexpYK4sUs3CMn4UPSHFwTCje4xad/XxtEo
-         CL84jc8pHGUYe8mImzQQI3TrdZy6n/CgU1UHZSBLdxA5xctlwgyV+D4xOimaT3M6uWyT
-         yiC+nw82au74Mn/hxt1Q73E4iXvgTMSWKcum2qqT00gXo5gMUSwrJNfOUBzDgWGhaVZr
-         A+HnmBgxn9RcuYCDgGweJehTinfBAxFcUQLNNsL5QESd//9e+7jh3Jq2A0LopjvMf4re
-         P6TlcVR0r52q1udIrdYpghFbEKwq+iNPduY4Xrr4tZCXtYcK1zOszrey0pwB48dKpeTq
-         MTmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=5ZQN0t+SyirEWcCnAtJWFZVAj9QfKHKmBdxx1H8XwTE=;
-        b=ouu/qK/nCL88aUzcG46TMPXzEB570BC138ZuZMd4/8DGgIoG3Fpk0CkeByTEzMbBVd
-         4EbjNRbe1fZyClsGu1kjtdJgHdIiGjd5CI2AqdsjzNLENN1yo3Y3F6Wv8GPe4ZcMJ4l1
-         az++lL1ce3Wa9END7WOQaH7K67YroElq4AgXbbJElyJWVbLaQuampu1ju3hAqTamJeYI
-         Q7uxgVXWqmMBSWryZZg4AWgBxqkio8bNRs/HxQRqZUE/7WX1LkocJ3i+kfBayVv+T1Ev
-         vzB49N1cOU6jB921+T0Tv9S0yJtAtJbqTCUd2ablm59dOnDydF4wp/czaF1yx0G1kkEN
-         q3ZQ==
-X-Gm-Message-State: AOAM533sO3LamVBFGcgX0RZ972tuAbNke9fwbvNkAcQWTP222EyCyPaK
-        haslpmQW/7JtVMiRhxKb0Dc=
-X-Google-Smtp-Source: ABdhPJw8HJjhzyHwUf31NT2HnwAkb5iOzHboKS6INWtGtE+2frw4nADvVWrGcv0jHhVrEAShsd+hXQ==
-X-Received: by 2002:ac8:6f65:: with SMTP id u5mr9949979qtv.303.1610680686426;
-        Thu, 14 Jan 2021 19:18:06 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:c885])
-        by smtp.gmail.com with ESMTPSA id c7sm3929094qtw.70.2021.01.14.19.18.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Jan 2021 19:18:05 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Thu, 14 Jan 2021 22:17:18 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     chenzhou <chenzhou10@huawei.com>
-Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        lizefan.x@bytedance.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] cgroup-v1: add disabled controller check in
- cgroup1_parse_param()
-Message-ID: <YAEJPs4DJIgAXWul@mtj.duckdns.org>
-References: <20201218061755.121205-1-chenzhou10@huawei.com>
- <YABDWvI2PWQpnv59@blackbook>
- <d4ba14b0-ee06-b793-a840-2c2ff369d890@huawei.com>
- <YAB3Wuu+hFpN698N@blackbook>
- <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+        id S1726680AbhAODXX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 14 Jan 2021 22:23:23 -0500
+Received: from aserp2120.oracle.com ([141.146.126.78]:49308 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725950AbhAODXW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 14 Jan 2021 22:23:22 -0500
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3KCLk168130;
+        Fri, 15 Jan 2021 03:22:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : in-reply-to : references : date : message-id : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=IOXbYHXHreW/DM/cC1BlOLyDYYZQRT6FD474gUtPV4A=;
+ b=bEPJJSBKEY26381CteMXcM4TUtEgoNn7H/6Rj2Fypaq1KcWpgvxWwf+JT51UyPqMBfLU
+ z4XGtzk1ndfrc/YAierZRu8Y86WIPMsivOrf/Y0gSoD3VutNeQ14tbaclOeHXO6zDT2U
+ JDqZC1A1fdnzmxHZJY87mMZdb55T7Z+HczXUWTjsiU6OYzicqpmmTE6AtcFnknnwMjLg
+ aXWGjJkmveVKL93gWjnihgvAyIxdmP8K2uKCqQWMSRElLbNy3MpZZTbY6Hq3znlVDiy2
+ th6Uds65hwxEYViQeguOCfM9EEcXPWxXXjPogQle01Bu/mBImohggC0CRTiZiBXkdjVI /A== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 360kd0355f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:22:05 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 10F3M1SL106622;
+        Fri, 15 Jan 2021 03:22:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 360keaps4r-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 15 Jan 2021 03:22:04 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 10F3LUj3020589;
+        Fri, 15 Jan 2021 03:21:31 GMT
+Received: from parnassus (/98.229.125.203)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 14 Jan 2021 19:21:30 -0800
+From:   Daniel Jordan <daniel.m.jordan@oracle.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Alexey Klimov <aklimov@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, tglx@linutronix.de, jobaker@redhat.com,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, lizefan.x@bytedance.com,
+        qais.yousef@arm.com, hannes@cmpxchg.org, klimov.linux@gmail.com
+Subject: Re: [RFC][PATCH] cpu/hotplug: wait for cpuset_hotplug_work to
+ finish on cpu online
+In-Reply-To: <87k0tritvq.fsf@oracle.com>
+References: <20201203171431.256675-1-aklimov@redhat.com>
+ <20201207083827.GD3040@hirez.programming.kicks-ass.net>
+ <87k0tritvq.fsf@oracle.com>
+Date:   Thu, 14 Jan 2021 22:21:25 -0500
+Message-ID: <87im7yc2bu.fsf@oracle.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7804658e-7644-8edb-5ca8-0c97389c8c62@huawei.com>
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 bulkscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2101150015
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9864 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0
+ impostorscore=0 bulkscore=0 adultscore=0 suspectscore=0 malwarescore=0
+ lowpriorityscore=0 clxscore=1011 mlxlogscore=999 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2101150015
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Daniel Jordan <daniel.m.jordan@oracle.com> writes:
+> Peter Zijlstra <peterz@infradead.org> writes:
+>>> The nature of this bug is also described here (with different consequences):
+>>> https://lore.kernel.org/lkml/20200211141554.24181-1-qais.yousef@arm.com/
+>>
+>> Yeah, pesky deadlocks.. someone was going to try again.
+>
+> I dug up the synchronous patch
+>
+>     https://lore.kernel.org/lkml/1579878449-10164-1-git-send-email-prsood@codeaurora.org/
+>
+> but surprisingly wasn't able to reproduce the lockdep splat from
+>
+>     https://lore.kernel.org/lkml/F0388D99-84D7-453B-9B6B-EEFF0E7BE4CC@lca.pw/
+>
+> even though I could hit it a few weeks ago.
 
-On Fri, Jan 15, 2021 at 09:55:43AM +0800, chenzhou wrote:
-> Yeah, this will select all enabled controllers, but which doesn't the behavior we want.
-> I think the case should return error with information "Disabled controller xx" rather than
-> attaching all the other enabled controllers.
-> 
-> For example, boot with cgroup_no_v1=cpu, and then mount with
-> "mount -t cgroup -o cpu cpu /sys/fs/cgroup/cpu", then all enabled controllers will
-> be attached expect cpu.
+oh okay, you need to mount a legacy cpuset hierarchy.
 
-Okay, that explanation actually makes sense. Can you please update the
-description to include what's broken and how it's being fixed? It really
-isn't clear what the patch is trying to achieve from the current
-description.
+So as the above splat shows, making cpuset_hotplug_workfn() synchronous
+means cpu_hotplug_lock (and "cpuhp_state-down") can be acquired before
+cgroup_mutex.
 
-Thanks.
+But there are at least four cgroup paths that take the locks in the
+opposite order.  They're all the same, they take cgroup_mutex and then
+cpu_hotplug_lock later on to modify one or more static keys.
 
--- 
-tejun
+cpu_hotplug_lock should probably be ahead of cgroup_mutex because the
+latter is taken in a hotplug callback, and we should keep the static
+branches in cgroup, so the only way out I can think of is moving
+cpu_hotplug_lock to just before cgroup_mutex is taken and switching to
+_cpuslocked flavors of the static key calls.
+
+lockdep quiets down with that change everywhere, but it puts another big
+lock around a lot of cgroup paths.  Seems less heavyhanded to go with
+this RFC.  What do you all think?
+
+Absent further discussion, Alexey, do you plan to post another version?
