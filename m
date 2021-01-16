@@ -2,161 +2,207 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD452F8B3B
-	for <lists+cgroups@lfdr.de>; Sat, 16 Jan 2021 05:33:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD2192F8CAA
+	for <lists+cgroups@lfdr.de>; Sat, 16 Jan 2021 10:36:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729745AbhAPEdG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 15 Jan 2021 23:33:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725815AbhAPEdF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 15 Jan 2021 23:33:05 -0500
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6CE8C0613D3
-        for <cgroups@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
-Received: by mail-pf1-x430.google.com with SMTP id x126so6781333pfc.7
-        for <cgroups@vger.kernel.org>; Fri, 15 Jan 2021 20:32:24 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
-        b=AhCJrurJWr5qakhtTFitP0L+ZLAyEUUdfmPca3QpxNzNGFZrZqXzwK7rGFldzEKG/g
-         rJg/IJDxekMuO8bfkHTyYr74RzsMadcBKp3YR9g06tgDFSHtXj+chssKalfaIawkjxih
-         BRVvlJPQYIvd4KdUAxAhR4o75d35icXrZB/EFP+iGbzySEycNsF4pX+FdJ9wg3SoTuE5
-         rFtP8JHAXY+SgOM6dFnjOivvQw+GG6iyCeM1dcpiO6/ytRmGQmhhFtnGXUsk/g7/6di8
-         Vd538ChRdWi0U4cRJs4gB1uu7Phm5CVMgdVGwZ8UBewEAtTIVAqqGMDPKErXtfOpnTpg
-         SEvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=78eb91iV6onC6q/hVFxGo4K1XPsW1qS27cVVQW2qr6s=;
-        b=IZBnymhVfLGZxY1pgA8lcGVzcOVEoOU5YsKrsSAiM0oY4LB9o/g8HsXXWopcs6c2Db
-         WWzMOpMY+662j3h7n7n/ucGyhYG8CsuZiVyZtcOC1yV2/CiK21M2pZ14XCDdbQkaYj75
-         Ys/rDFIoe2RASuB2GE5DQdSkIjaqOaFRbTdXjGQTYCXEpMfQWMsD2mA9jQz4zLQI+DoW
-         /FZ5JclvsOOkSjRyJ70mWdaDIcjFCPumXyxubrLzBVEx9BghWzcSMfphG5TvaEBVb26L
-         VCuZmxIPQFEisjhVf7bSmR/i2x6dK7tDHgkgJiJNBRHtslasuguqX/W6YwnnNQaISsN7
-         e07A==
-X-Gm-Message-State: AOAM532iDgEmHcNLE3LZvyXfPDShBQdE5P45iLv4WIHryui9OpaKxJ2G
-        x0uALukXKruBLuqQUJ0zsISBjQ==
-X-Google-Smtp-Source: ABdhPJyKP8sU4ECWM/iW0Xk589JXcKQYdttY9E5LYxNTDUNToqzSmjvyhu/nR8SzTobIC2lS6ErK0A==
-X-Received: by 2002:a62:7d90:0:b029:19d:917b:6c65 with SMTP id y138-20020a627d900000b029019d917b6c65mr16224433pfc.28.1610771544088;
-        Fri, 15 Jan 2021 20:32:24 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id a29sm9378348pfr.73.2021.01.15.20.32.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Jan 2021 20:32:23 -0800 (PST)
-Date:   Fri, 15 Jan 2021 20:32:19 -0800
-From:   Vipin Sharma <vipinsh@google.com>
+        id S1725917AbhAPJgy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 16 Jan 2021 04:36:54 -0500
+Received: from mga02.intel.com ([134.134.136.20]:31624 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725928AbhAPJgx (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 16 Jan 2021 04:36:53 -0500
+IronPort-SDR: xWum5sV2EEVS0quQAcloY8OVE8/9sNRuQztBTwq7sSTjNe5tD+vnweTX65S841nUCOIirSjluG
+ gT+zxQzd8vQA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9865"; a="165742492"
+X-IronPort-AV: E=Sophos;i="5.79,352,1602572400"; 
+   d="scan'208";a="165742492"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Jan 2021 01:36:12 -0800
+IronPort-SDR: hElq8B9l668AupGfAtmPa8nIxU7EIM6NsnjvzHJnUUAIrolgTdHsXocEzQhwM8Z5eGa2Hnf+0n
+ z6xP9GAi2xNA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.79,352,1602572400"; 
+   d="scan'208";a="354620331"
+Received: from lkp-server01.sh.intel.com (HELO 260eafd5ecd0) ([10.239.97.150])
+  by fmsmga008.fm.intel.com with ESMTP; 16 Jan 2021 01:36:10 -0800
+Received: from kbuild by 260eafd5ecd0 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1l0i09-0000ps-OK; Sat, 16 Jan 2021 09:36:09 +0000
+Date:   Sat, 16 Jan 2021 17:35:36 +0800
+From:   kernel test robot <lkp@intel.com>
 To:     Tejun Heo <tj@kernel.org>
-Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YAJsUyH2zspZxF2S@google.com>
-References: <20210108012846.4134815-1-vipinsh@google.com>
- <20210108012846.4134815-2-vipinsh@google.com>
- <YAICLR8PBXxAcOMz@mtj.duckdns.org>
- <YAIUwGUPDmYfUm/a@google.com>
- <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+Cc:     cgroups@vger.kernel.org
+Subject: [cgroup:for-5.12] BUILD SUCCESS
+ 415de5fdeb5ac28c2960df85b749700560dcd63c
+Message-ID: <6002b368.T6v6eXc/GwgKR2DC%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Jan 15, 2021 at 10:43:32PM -0500, Tejun Heo wrote:
-> On Fri, Jan 15, 2021 at 02:18:40PM -0800, Vipin Sharma wrote:
-> > > * Why is .sev a separate namespace? Isn't the controller supposed to cover
-> > >   encryption ids across different implementations? It's not like multiple
-> > >   types of IDs can be in use on the same machine, right?
-> > > 
-> > 
-> > On AMD platform we have two types SEV and SEV-ES which can exists
-> > simultaneously and they have their own quota.
-> 
-> Can you please give a brief explanation of the two and lay out a scenario
-> where the two are being used / allocated disjointly?
-> 
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.12
+branch HEAD: 415de5fdeb5ac28c2960df85b749700560dcd63c  cpuset: fix typos in comments
 
-SEV-ES has stronger memory encryption gurantees compared to SEV, apart
-from encrypting the application memory it also encrypts register state
-among other things. In a single host ASIDs can be distributed between
-these two types by BIOS settings.
+elapsed time: 725m
 
-Currently, Google Cloud has Confidential VM machines offering using SEV.
-ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
-cannot run on SEV-ES and vice versa
+configs tested: 145
+configs skipped: 3
 
-There are use cases for both types of VMs getting used in future.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> > > > Other ID types can be easily added in the controller in the same way.
-> > > 
-> > > I'm not sure this is necessarily a good thing.
-> > 
-> > This is to just say that when Intel and PowerPC changes are ready it
-> > won't be difficult for them to add their controller.
-> 
-> I'm not really enthused about having per-hardware-type control knobs. None
-> of other controllers behave that way. Unless it can be abstracted into
-> something common, I'm likely to object.
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+mips                  cavium_octeon_defconfig
+powerpc                      ppc6xx_defconfig
+c6x                              alldefconfig
+arm                           viper_defconfig
+arc                        nsimosci_defconfig
+mips                         rt305x_defconfig
+sh                      rts7751r2d1_defconfig
+powerpc                 mpc8272_ads_defconfig
+arm                           h3600_defconfig
+sh                  sh7785lcr_32bit_defconfig
+arm                       mainstone_defconfig
+sh                        apsh4ad0a_defconfig
+arm                        magician_defconfig
+arm                         assabet_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                     tqm8548_defconfig
+arm                  colibri_pxa300_defconfig
+xtensa                    xip_kc705_defconfig
+arm                             rpc_defconfig
+sparc64                             defconfig
+powerpc                      ppc44x_defconfig
+arm                          gemini_defconfig
+mips                     decstation_defconfig
+csky                             alldefconfig
+arm                           h5000_defconfig
+powerpc                 mpc837x_mds_defconfig
+mips                         cobalt_defconfig
+sh                          r7785rp_defconfig
+arm                          pcm027_defconfig
+sparc64                          alldefconfig
+arm                            mps2_defconfig
+openrisc                    or1ksim_defconfig
+mips                     cu1830-neo_defconfig
+sh                   sh7724_generic_defconfig
+mips                         mpc30x_defconfig
+arm                          exynos_defconfig
+mips                            gpr_defconfig
+arm                         bcm2835_defconfig
+sh                             sh03_defconfig
+powerpc                     tqm8555_defconfig
+mips                           ip32_defconfig
+sh                          kfr2r09_defconfig
+powerpc                  storcenter_defconfig
+arm                          pxa910_defconfig
+powerpc                       maple_defconfig
+sh                ecovec24-romimage_defconfig
+sparc                       sparc64_defconfig
+sh                        dreamcast_defconfig
+mips                         db1xxx_defconfig
+powerpc                       holly_defconfig
+mips                       rbtx49xx_defconfig
+csky                                defconfig
+sh                           se7206_defconfig
+powerpc                 mpc8560_ads_defconfig
+mips                     loongson1c_defconfig
+c6x                         dsk6455_defconfig
+m68k                             allmodconfig
+mips                           jazz_defconfig
+sh                            titan_defconfig
+arm                      tct_hammer_defconfig
+sh                         apsh4a3a_defconfig
+arc                        nsim_700_defconfig
+arm                        mini2440_defconfig
+sh                           se7780_defconfig
+powerpc                          g5_defconfig
+mips                        nlm_xlr_defconfig
+ia64                            zx1_defconfig
+sh                           se7619_defconfig
+mips                           ip28_defconfig
+arc                              allyesconfig
+mips                           ip27_defconfig
+powerpc                     kmeter1_defconfig
+m68k                                defconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allyesconfig
+nios2                               defconfig
+nds32                             allnoconfig
+c6x                              allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+s390                                defconfig
+parisc                              defconfig
+s390                             allyesconfig
+parisc                           allyesconfig
+i386                             allyesconfig
+sparc                            allyesconfig
+sparc                               defconfig
+i386                               tinyconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+x86_64               randconfig-a004-20210115
+x86_64               randconfig-a006-20210115
+x86_64               randconfig-a001-20210115
+x86_64               randconfig-a003-20210115
+x86_64               randconfig-a005-20210115
+x86_64               randconfig-a002-20210115
+i386                 randconfig-a002-20210115
+i386                 randconfig-a005-20210115
+i386                 randconfig-a006-20210115
+i386                 randconfig-a001-20210115
+i386                 randconfig-a003-20210115
+i386                 randconfig-a004-20210115
+i386                 randconfig-a012-20210115
+i386                 randconfig-a011-20210115
+i386                 randconfig-a016-20210115
+i386                 randconfig-a015-20210115
+i386                 randconfig-a013-20210115
+i386                 randconfig-a014-20210115
+riscv                    nommu_k210_defconfig
+riscv                            allyesconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+riscv                            allmodconfig
+x86_64                                   rhel
+x86_64                           allyesconfig
+x86_64                    rhel-7.6-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
-There was a discussion in Patch v1 and consensus was to have individual
-files because it makes kernel implementation extremely simple.
+clang tested configs:
+x86_64               randconfig-a015-20210115
+x86_64               randconfig-a012-20210115
+x86_64               randconfig-a013-20210115
+x86_64               randconfig-a016-20210115
+x86_64               randconfig-a014-20210115
+x86_64               randconfig-a011-20210115
 
-https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
-
-> 
-> > > > +static int enc_id_cg_stat_show(struct seq_file *sf, void *v)
-> > > > +{
-> > > > +	unsigned long flags;
-> > > > +	enum encryption_id_type type = seq_cft(sf)->private;
-> > > > +
-> > > > +	spin_lock_irqsave(&enc_id_cg_lock, flags);
-> > > > +
-> > > > +	seq_printf(sf, "total %u\n", enc_id_capacity[type]);
-> > > > +	seq_printf(sf, "used %u\n", root_cg.res[type].usage);
-> > > 
-> > > Dup with .current and no need to show total on every cgroup, right?
-> > 
-> > This is for the stat file which will only be seen in the root cgroup
-> > directory.  It is to know overall picture for the resource, what is the
-> > total capacity and what is the current usage. ".current" file is not
-> > shown on the root cgroup.
-> 
-> Ah, missed the flags. It's odd for the usage to be presented in two
-> different ways tho. I think it'd make more sense w/ cgroup.current at root
-> level. Is the total number available somewhere else in the system?
-
-This information is not available anywhere else in the system. Only
-other way to get this value is to use CPUID instruction (0x8000001F) of
-the processor. Which also has disdvantage if sev module in kernel
-doesn't use all of the available ASIDs for its work (right now it uses
-all) then there will be a mismatch between what user get through their
-code and what is actually getting used in the kernel by sev.
-
-In cgroup v2, I didn't see current files for other cgroups in root
-folder that is why I didn't show that file in root folder.
-
-Will you be fine if I show two files in the root, something like:
-
-encids.sev.capacity
-encids.sev.current
-
-In non root folder, it will be:
-encids.sev.max
-encids.sev.current
-
-I still prefer encids.sev.stat, as it won't repeat same information in
-each cgroup but let me know what you think.
-
-Thanks
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
