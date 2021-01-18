@@ -2,107 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B292F8E5E
-	for <lists+cgroups@lfdr.de>; Sat, 16 Jan 2021 18:39:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D7C82F980F
+	for <lists+cgroups@lfdr.de>; Mon, 18 Jan 2021 04:09:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1727522AbhAPRjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sat, 16 Jan 2021 12:39:07 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45306 "EHLO
+        id S1730056AbhARDJF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 17 Jan 2021 22:09:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49026 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727134AbhAPRjF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 16 Jan 2021 12:39:05 -0500
-Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 479DAC061573
-        for <cgroups@vger.kernel.org>; Sat, 16 Jan 2021 09:38:26 -0800 (PST)
-Received: by mail-lf1-x131.google.com with SMTP id o19so17987167lfo.1
-        for <cgroups@vger.kernel.org>; Sat, 16 Jan 2021 09:38:26 -0800 (PST)
+        with ESMTP id S1729621AbhARDJE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Sun, 17 Jan 2021 22:09:04 -0500
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E860EC061573
+        for <cgroups@vger.kernel.org>; Sun, 17 Jan 2021 19:08:23 -0800 (PST)
+Received: by mail-ot1-x333.google.com with SMTP id i30so2032974ota.6
+        for <cgroups@vger.kernel.org>; Sun, 17 Jan 2021 19:08:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=uged.al; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=RXhQCLR7kJ8wXIoAGktxHEJsN7Fs/rfacZeAYDKFmIs=;
-        b=sdBAnkXLZiSEhGYam1qUuWzP56Niue66DVFgEdt1Rz43y1S6IdNFkfCnwls9cXBoRu
-         H7Mnh4NEeCcFDxV/x+NRCPo572ISiOPh2+Ui0cn3wJesaGBeK2/nAQPu7QM/UfEsE1ps
-         9fcwB7f1eBXAxTylN12jvL0Ey7MioXV1IipxMvuY78uF7QVVq68JWJ/eBgv2qjDpGueo
-         k2Gej1o/CGHMjBTgKXsb/V0+efCE+YjLhpZvBazc6WFgZGVl/X8yPhswVTWPdp7BS3Ts
-         358Nhh/NuyKi85UnNoyDdLoB08blefdiCKCKwkCzcWQAElNQcFcIej5wktZ0dgdw+cT5
-         JPaw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PlQe4ElMPvugk6/KnMDsBpLgn9qSpVd0RRGjY15TtBQ=;
+        b=jEOTuxeeQdSsqnGagWGslg43TXvsjT1GjS43nG6bpxn/Q7TiDnkuEnWBWopiiNc2Si
+         o6RVR1YEam7YDczQFb6qnMaGUL3WvdVZBWy3Yak+6iDUPxkF8iyYGfncJxipvOv4+QYB
+         bsEd7l/iJIF0C43x8UeAjysvewqGoQWGedgYEO5PDxAFuO6Ssmb+PtUd13Ar2FbCmnAK
+         /Hp58BiE1RKUXDzd1UFZatihz1VFurXjXVFZIJihoPXLXU5VTvGitPZd0+6u8QYmjCZ4
+         G39JY3u1pOzCoiuluklb/G8chXju9jw2T2mb8a6ba2rJ59IC8DsFhxy9HiRaXKwKjreB
+         oUxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=RXhQCLR7kJ8wXIoAGktxHEJsN7Fs/rfacZeAYDKFmIs=;
-        b=YTLYuifphVjQmP1n3NhUGB0s2ewvi/4MnLncEAZMQgfjaLo5OU3s+UoXqiAjxhsiiy
-         PtYdiSLQLEcm1P2/NdDgBWLjJ63+Lw0uUmcSF4WgQKh2qpBQWWzsdkhFsPWNSGYq79Ie
-         A1u0/93gm3GNQIrYAapebswKmH0CaHGO3uTi0Q5xIE49ew3RxMEOXagpHFVCO0oecnc0
-         FMWJR9YQ9xS1Pmo/iwSaZKJEdAmm5AwIk73eDrBlPcUpvVB3uA7gnfEaB/ypbSSBLINz
-         e2Ov5itfetp1z0vuOSfZG6Te26tNa8qrRLnTYptTgGNPNZwdH2yPwoM3Ua5F7bsmDX/i
-         cGGQ==
-X-Gm-Message-State: AOAM530cY99o6hRZCnrM//kWUIJjy3uNau84QsVNZtVjQ3/nxT78dNTO
-        IeK+y34nAHUnsKchAq9BIlE80A==
-X-Google-Smtp-Source: ABdhPJyCc4QARongk4fah6RyGiiUm1Q5f/uw+HDYl+VU1QIrWNpifsB8yG5Y5a6N2WPCAwaf2CSaRg==
-X-Received: by 2002:a19:c750:: with SMTP id x77mr7443257lff.225.1610818704821;
-        Sat, 16 Jan 2021 09:38:24 -0800 (PST)
-Received: from xps.lan (238.89-10-169.nextgentel.com. [89.10.169.238])
-        by smtp.gmail.com with ESMTPSA id v7sm1134696ljk.60.2021.01.16.09.38.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Jan 2021 09:38:24 -0800 (PST)
-From:   Odin Ugedal <odin@uged.al>
-Cc:     tj@kernel.org, lizefan@huawei.com, hannes@cmpxchg.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dschatzberg@fb.com, surenb@google.com, Odin Ugedal <odin@uged.al>
-Subject: [PATCH v2 2/2] cgroup: update PSI file description in docs
-Date:   Sat, 16 Jan 2021 18:36:34 +0100
-Message-Id: <20210116173634.1615875-3-odin@uged.al>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210116173634.1615875-1-odin@uged.al>
-References: <20210116173634.1615875-1-odin@uged.al>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PlQe4ElMPvugk6/KnMDsBpLgn9qSpVd0RRGjY15TtBQ=;
+        b=NSWphC/psfFwz7UkTZKlGqZlk+tAV1n04RndyK4Vkq+uDWygOj5InPcN8JApkDHb5y
+         /04T8IDd/cgFC1J5XBPzjoKjXdmaRhg7nRQtqg8w2r5S8gw/onHT/U57xnnRjSOYd0PW
+         xGQ2fmucufgJt2J7bW4AITMkJNrruTwBf/mlKmaTw/2wmN/K3Wjd2i5bOFGe97+qhHQ/
+         ZmgdqOyezyFfBs9VEFs5ETvA0jt5UVo1A8uLTHTfk+UlUSOdODNMqd4JBEQ22sT7YNcj
+         5NLekK5xNmw7Bfta7ubx/7HKLi6SNZYAEgfcTsYL4AAjht9+u5uQ8CdGWYp+RbAPHih/
+         VmgA==
+X-Gm-Message-State: AOAM531yMfo8sXkvpFsPt0YViXoSoil/mdNIa8fSWUD+NFXLprQDqpCm
+        usX9jcOTJ+fE5kcjF5IM8OTKt94T+0ZHsaDlP64=
+X-Google-Smtp-Source: ABdhPJxmdCMJQzAjbC3KGwarCU74LQcVM/+5TUEZ5bdmRnXKhVLlUfEAPXoM4zwgtOC1reWBRHjWkZS0ckvy4o1K0SU=
+X-Received: by 2002:a05:6830:8c:: with SMTP id a12mr15941981oto.167.1610939303353;
+ Sun, 17 Jan 2021 19:08:23 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+References: <20210115143005.7071-1-wu860403@gmail.com> <YAH4w5T3/oCTGJny@mtj.duckdns.org>
+In-Reply-To: <YAH4w5T3/oCTGJny@mtj.duckdns.org>
+From:   liming wu <wu860403@gmail.com>
+Date:   Mon, 18 Jan 2021 11:07:47 +0800
+Message-ID: <CAPnMXWWmfzWh9J_G4OPT=eCFySaD2NAFE0_OiWFQKL-1R0uOkA@mail.gmail.com>
+Subject: Re: [PATCH] tg: add cpu's wait_count of a task group
+To:     Tejun Heo <tj@kernel.org>
+Cc:     cgroups@vger.kernel.org, 398776277 <398776277@qq.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Update PSI file description in cgroup-v2 docs to reflect the current
-implementation.
+Hello tejun:
+On Sat, Jan 16, 2021 at 4:20 AM Tejun Heo <tj@kernel.org> wrote:
+>
+> Hello,
+>
+> On Fri, Jan 15, 2021 at 10:30:05PM +0800, wu860403@gmail.com wrote:
+> > -     seq_printf(sf, "throttled_time %llu\n", cfs_b->throttled_time);
+> ...
+> > +     seq_printf(sf, "nr_periods %d\n"
+> > +                "nr_throttled %d\n"
+> > +                "throttled_usec %llu\n",
+> > +                cfs_b->nr_periods, cfs_b->nr_throttled,
+> > +                throttled_usec);
+>
+> This is interface breaking change. I don't think we can do this at this
+> point.
+Thanks for your reply, agree with it.
+> > @@ -8255,6 +8265,19 @@ static int cpu_extra_stat_show(struct seq_file *sf,
+> >                          "throttled_usec %llu\n",
+> >                          cfs_b->nr_periods, cfs_b->nr_throttled,
+> >                          throttled_usec);
+> > +             if (schedstat_enabled() && tg != &root_task_group) {
+> > +                     u64 ws = 0;
+> > +                     u64 wc = 0;
+> > +                     int i;
+> > +
+> > +                     for_each_possible_cpu(i) {
+> > +                             ws += schedstat_val(tg->se[i]->statistics.wait_sum);
+> > +                             wc += schedstat_val(tg->se[i]->statistics.wait_count);
+> > +                     }
+> > +
+> > +                     seq_printf(sf, "wait_sum %llu\n"
+> > +                             "wait_count %llu\n", ws, wc);
+> > +             }
+>
+> What does sum/count tell?
+It can tell the task group average latency of every context switch
+wait_sum is equivalent to sched_info->run_delay (the second parameter
+of /proc/$pid/schedstat)
+wait_count is equivalent to sched_info->pcount(the third parameter of
+/proc/$pid/schedstat)
 
-Signed-off-by: Odin Ugedal <odin@uged.al>
----
- Documentation/admin-guide/cgroup-v2.rst | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Thanks
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 63521cd36ce5..f638c9d3d9f2 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1029,7 +1029,7 @@ All time durations are in microseconds.
- 	one number is written, $MAX is updated.
- 
-   cpu.pressure
--	A read-only nested-key file which exists on non-root cgroups.
-+	A read-only nested-keyed file.
- 
- 	Shows pressure stall information for CPU. See
- 	:ref:`Documentation/accounting/psi.rst <psi>` for details.
-@@ -1475,7 +1475,7 @@ PAGE_SIZE multiple when read back.
- 	reduces the impact on the workload and memory management.
- 
-   memory.pressure
--	A read-only nested-key file which exists on non-root cgroups.
-+	A read-only nested-keyed file.
- 
- 	Shows pressure stall information for memory. See
- 	:ref:`Documentation/accounting/psi.rst <psi>` for details.
-@@ -1714,7 +1714,7 @@ IO Interface Files
- 	  8:16 rbps=2097152 wbps=max riops=max wiops=max
- 
-   io.pressure
--	A read-only nested-key file which exists on non-root cgroups.
-+	A read-only nested-keyed file.
- 
- 	Shows pressure stall information for IO. See
- 	:ref:`Documentation/accounting/psi.rst <psi>` for details.
--- 
-2.30.0
-
+Liming
