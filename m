@@ -2,155 +2,235 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E69EE2FBCF7
-	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 17:55:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F2A02FBCF8
+	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 17:55:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730564AbhASQwb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jan 2021 11:52:31 -0500
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:3724 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389525AbhASQsN (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 11:48:13 -0500
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 10JGXm0H006625;
-        Tue, 19 Jan 2021 08:46:46 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=facebook;
- bh=My85n9gAnslKDRKKwaErn0o9lUBJOk3+wcNS9dC0CKA=;
- b=EZ2HVGcz7tRC9Aq51cishSr5in8FOaYh14rq05LW/xVQrqGzY/KdW2DB3WzO50Iilc/H
- 6K454dHU69lI/bngMFXAsBMvIgFQhriMkDD2Z1kkHJi8OPQldq5nGMdfr3snGATLgT+x
- txgU8k4u7KvabmGXqfd1DnzihVPaRoYdx+4= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 363xunvgqa-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 19 Jan 2021 08:46:46 -0800
-Received: from NAM04-SN1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.196) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 19 Jan 2021 08:46:45 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=lAQF2azMI8ccQAwD661ZVEl31QwWjZ7PAFHO2z3z2utUoid7uHIDqx+Ujqge8JyYQYEfFw99c1JpaXKSP3kgsxNuDKoOKY3Yexgm7DRgYtkTKDnM03Z+ewd/+OedL3zs4w2FOuO7p6vfDQoWhwhWLRiWgB1YWz8WPqPXoNJw66Nq8avlqzKuOsCjh08diOsmxvGzz7GklYrqDp3/LMN4W0M+rYLu9kQq0iGQizUOPhlO4GTofFTqjciRRRVjMTcwIDQyfWqu6Xjii0fwb3R4kscFDi95h8g7Dmbvn9lfEUJSQa/+2DnglnJ8icn7hpL8HK0hdOktKs8DVcfzDQcoew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=My85n9gAnslKDRKKwaErn0o9lUBJOk3+wcNS9dC0CKA=;
- b=CtVu0NsM5ShCnPD4JJ0pIkCYF6aLkKBAXTD2HhcEaGRakw/kx+pwIKoFAqa4+8GAY4w2U3+ATes1jplq32JYimaVrv7n6uKZ2oYz8UYGAJer0wc6p0rdAL18Nct6FgHNBg7uVQ51O5avKzyCX+Qi6JxetJRNHv3zy4yHyUoPfA1izmg8NvSt59FiGrDKuOYWHpmYyKexurnzIGuWNcD2epwrwTVPAOgBDzQwqfDdU0DYH2oj6aVnDw55E6Azqo7QJScchpOctnTqZi9/X2MDJQYap3Nwfte9LgHjc9kWbTiaKa1wrcd+OGToVW+vkKJDyvioFex1faeGjDUxyPusPA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=My85n9gAnslKDRKKwaErn0o9lUBJOk3+wcNS9dC0CKA=;
- b=BaLHQMf0zTvqEIZCW2r1nsFLRY5cJ+TlhYGBOOLwYv8WaY8zxChdE1qzbP8AVdRcciiBvQ9bR1osavPxW0wWYTvtjiafrNDwDqx5Mdfg8TyBpgMEUOvo3qE/Mut22c5qO7QwJFVHw7x2x/iLnPvJ2RYEZr8G3hGiNr/CGGAs7jo=
-Received: from MN2PR15MB3293.namprd15.prod.outlook.com (2603:10b6:208:ff::16)
- by MN2PR15MB2591.namprd15.prod.outlook.com (2603:10b6:208:125::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3763.11; Tue, 19 Jan
- 2021 16:46:44 +0000
-Received: from MN2PR15MB3293.namprd15.prod.outlook.com
- ([fe80::7826:ceb6:2eda:10b4]) by MN2PR15MB3293.namprd15.prod.outlook.com
- ([fe80::7826:ceb6:2eda:10b4%7]) with mapi id 15.20.3763.014; Tue, 19 Jan 2021
- 16:46:44 +0000
-From:   Dan Schatzberg <dschatzberg@fb.com>
-To:     Odin Ugedal <odin@uged.al>
-CC:     "tj@kernel.org" <tj@kernel.org>,
-        "lizefan@huawei.com" <lizefan@huawei.com>,
-        "hannes@cmpxchg.org" <hannes@cmpxchg.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "surenb@google.com" <surenb@google.com>
-Subject: Re: [PATCH v2 0/2] cgroup: fix psi monitor for root cgroup
-Thread-Topic: [PATCH v2 0/2] cgroup: fix psi monitor for root cgroup
-Thread-Index: AQHW7C5KNSuQnXXXUEuP0zOBreZ6oqovLFtd
-Date:   Tue, 19 Jan 2021 16:46:44 +0000
-Message-ID: <MN2PR15MB32937C185D521E6AEEFB4095D0A30@MN2PR15MB3293.namprd15.prod.outlook.com>
-References: <20210116173634.1615875-1-odin@uged.al>
-In-Reply-To: <20210116173634.1615875-1-odin@uged.al>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: uged.al; dkim=none (message not signed)
- header.d=none;uged.al; dmarc=none action=none header.from=fb.com;
-x-originating-ip: [2620:10d:c091:480::1:8ff3]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: fe14d8c6-4bee-4204-b213-08d8bc99cdfe
-x-ms-traffictypediagnostic: MN2PR15MB2591:
-x-microsoft-antispam-prvs: <MN2PR15MB2591CED5BD8E4A466FE6BA10D0A30@MN2PR15MB2591.namprd15.prod.outlook.com>
-x-fb-source: Internal
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 07MPwtEijmryOlBN2M5JqlN8DHgbskF4jAao+uVXsP8d7SGysEkRAMw+U6cp7KgcQzq2NbhkYmlAmVCAtamQov+XERfQ8j24o7+Q4tD1kQcqFvQMbgvOgAaLa2fxc2YBEgBIvGEwTZRK0vUPE3ES0J0DbtlzzNrLxNU4XHLIDVlrplZhKsrKTP9g/dmL3ecL7Rj9rDUFbFyWpTB5YTu7XJ5Xhdfv+h7DXr+AqhyBP+rYA2A//aCoeK4jh6u98pIv28G4NDBxPBQL3nqm9sj4YX5gNOUXpTCHjxqEklGg05KOFfsnN02sZBlHuTgO4RqOie9bHonZp5o3otQkKSWjV8Wq3kDv+qHHbiLbMmwUsnpVnEQQhookh1ng8okBi+KJiuodcr0jXcpzVZ5JjJzL0g==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR15MB3293.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(39860400002)(396003)(366004)(346002)(76116006)(54906003)(66476007)(55016002)(478600001)(33656002)(4326008)(64756008)(66946007)(86362001)(66446008)(66556008)(71200400001)(6916009)(8676002)(2906002)(8936002)(316002)(52536014)(6506007)(4744005)(9686003)(83380400001)(186003)(7696005)(5660300002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?+bO5U8paN41EzBDZ1a2yLd/pBr4iR1lZD2WYzFjSGcabpBuqhBHSj/Q8xr?=
- =?iso-8859-1?Q?sOg/JBTtZVSuRhrPevvj23dcN1pju+xVAVyr8RDWrUcBEduK/DCJrfV2wV?=
- =?iso-8859-1?Q?4UbFIMXK3MTXzNK+a/1UwamuEOhKslnDVbnPu8oFpjQuz7yxQEqMPAYktW?=
- =?iso-8859-1?Q?Pmg46+uSzmmqYkMqVxNUDIVejrv5DBGKyrUVoLsQLRf6mM82IOk3IUAQEn?=
- =?iso-8859-1?Q?co7ECUndffYZ38ymXKDhELgdvv7XzBlXUOS2OLvlH4ZLlV021XKYB6rxyL?=
- =?iso-8859-1?Q?EGcIYaOhuinVJWuNRAvGjWMpQYkRSE663wJ/D11rwMPPtTQqS4Ky3f1g2B?=
- =?iso-8859-1?Q?FjJMkT0Sn8pADau0iy6QUZ3/PAvKg8tQdhxigWCApm5QLsluEgO7f/hLCD?=
- =?iso-8859-1?Q?4BxfKE0n8lz8EzzIls1arb9jyfc3ibodAEplj7Mf+ul5BmcUECNvLuCHUG?=
- =?iso-8859-1?Q?OVMZGqUatbkNrvteQ0yk18S+Wi/i1DgmS0v4Vu4BxgnvXssnqlr/7gbaYx?=
- =?iso-8859-1?Q?/CevhLxn4xT8JpkQdaXCxzJjVHZWa95k37XQnkpbCCHyrVvVcT9+BlPhPq?=
- =?iso-8859-1?Q?jPQyzpX0FG782wVVxDkvB7eKrKnScwVP1bolFKsNG7nvQInDGjRDdID0XW?=
- =?iso-8859-1?Q?pAotmZn+1huUSdBdHjFgYQxv5dqGZwTpSFfD8DKJT+rdy04M504rjL6nFe?=
- =?iso-8859-1?Q?pQYvp8CsPXsxjh856AV2f3lMY2K5UISql6I+T9F0/AGu3wHg6YozHbd/QQ?=
- =?iso-8859-1?Q?phU42+7HfT51f9dgdy6ABWs6EnL6xTfzDbHjCyE9z7X5+88QOnhG447fHL?=
- =?iso-8859-1?Q?NHJSwcbCB8VWMQepmhL1Ql4AjUaNOZCZwKIVjlm22ROns44X0MGpbfTaVq?=
- =?iso-8859-1?Q?wC6WqphNkPSnqfW9i71pe4rbN0+ouVugfaIqTG/3FY3vWFlYsdb5XgEWBC?=
- =?iso-8859-1?Q?z/XW/x2HGFhexBynDjEbQ4/uT1KjRSQa+H/EirWQ54gKQeeznrZPYpst8q?=
- =?iso-8859-1?Q?Klyj9ZKccXs725s1ac6aiUUYlwvUZq61MJohYaoPaczG77pdpxBeoxvcgD?=
- =?iso-8859-1?Q?DQ=3D=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+        id S2387927AbhASQwc (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jan 2021 11:52:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54286 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730005AbhASQsM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 11:48:12 -0500
+Received: from mail-qt1-x830.google.com (mail-qt1-x830.google.com [IPv6:2607:f8b0:4864:20::830])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44664C061575
+        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 08:47:32 -0800 (PST)
+Received: by mail-qt1-x830.google.com with SMTP id z6so7085681qtn.0
+        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 08:47:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HQhIiqouZYO54MDphZpxd2e5yZbQev4tgCFWsf4zZmo=;
+        b=SKZViz0B81l15glJySEmk2KHv0dZ42QnZw63XyroVp+LT997+JqLHviX++WY4bwsHw
+         Snuf9828SnnBvpcPDuzcVgzwoaAzwIoEXSRgWikHQNIebuJ5zjAQF1W8NGfMoeBU5cg2
+         fqussE3+f/VCdDM6WdROtEOn1ozeSND0xsgBSYkIgy2JccFTUI3fLGvM3TzKVRZ0opee
+         uNc0diVqCRL1wP7dEI9CQo8n6I10dbbFY/dQ2Llw1snQ6926q0DUTby6ljheVvzykUvH
+         soPCZPyR+SAqb2rH2Z3V778u+xC5PPQdRPgJdtl5+gWx5bypel3J4131SY82hw/Vhjri
+         HdLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HQhIiqouZYO54MDphZpxd2e5yZbQev4tgCFWsf4zZmo=;
+        b=PjTJeUWVIVbHOBNy4IVT1xOcvAvCcXG5KHvV2qMa8n5CW/d7E5aq15HuGrhiX6s8oH
+         ++pQ5OiFEU9DLasBeOpxnvHM2e2qCr8AulAnMJo/XJmVgPMHTav5GKbSzn0VDvw03l+g
+         0n1NLwW3NgPLvPBgyvFExRhaLJUtXYY3ooPUURjz+Mse5Kf1OU2YHxoHalOMFp7llz/8
+         z6zH8hYc3L/xwZWPyunAM7zw9LaISPekMkR3KaPFmEek0mQCVKz7Bybim0HzoeSrTs9J
+         yCMaf9HmvfbJgL4RLgI/eqlr3rzde2aQe8qwZqF5T0xkDfprE8E0spi0k4YaTvzACZy8
+         ViCA==
+X-Gm-Message-State: AOAM533BNsuuOCU3Ewyq29sBi6ejSmIn4J434AhvZQgKenrlyKe9cMTW
+        NxUXAWbUdsk8oql90O/7Y/4Jrw==
+X-Google-Smtp-Source: ABdhPJwE/MGthli/KCussSAE4vhaxFqSEWpfSlSLArsBv7ezEQscUgXUBOTZJraVuocscB/ps0H7xA==
+X-Received: by 2002:ac8:57c1:: with SMTP id w1mr5032944qta.313.1611074851420;
+        Tue, 19 Jan 2021 08:47:31 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q27sm13022037qkj.131.2021.01.19.08.47.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 08:47:30 -0800 (PST)
+Date:   Tue, 19 Jan 2021 11:47:29 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: prevent starvation when writing
+ memory.high
+Message-ID: <YAcNISYNGDA/26pw@cmpxchg.org>
+References: <20210112163011.127833-1-hannes@cmpxchg.org>
+ <20210113144654.GD22493@dhcp22.suse.cz>
+ <YAHA4uBSLlnxxAbu@cmpxchg.org>
+ <20210115170341.GA631549@carbon.dhcp.thefacebook.com>
+ <YAIBSJg3btQ+2CNZ@cmpxchg.org>
+ <20210115212723.GB631549@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR15MB3293.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: fe14d8c6-4bee-4204-b213-08d8bc99cdfe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Jan 2021 16:46:44.4204
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: dwlzHVTOsNFdve6WKHzmrAwTb7InJn3lpGhj33L+fLqM5ZpVYfHi8iwtDFzbr+ZW73v54XDilRokTBWbjc5sNw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR15MB2591
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.343,18.0.737
- definitions=2021-01-19_05:2021-01-18,2021-01-19 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 mlxscore=0 malwarescore=0
- clxscore=1011 adultscore=0 lowpriorityscore=0 priorityscore=1501
- mlxlogscore=999 spamscore=0 suspectscore=0 phishscore=0 bulkscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2101190096
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210115212723.GB631549@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-> This patchset fixes PSI monitors on the root cgroup, as they currently=0A=
-> only works on the non-root cgroups. Reading works for all, since that=0A=
-> was fixed when adding support for the root PSI files. It also contains=0A=
-> a doc update to reflect the current implementation.=0A=
-> =0A=
-> Changes since v1:=0A=
->=A0- Added Reviewed-by tag on the original patch (Suren)=0A=
->=A0- Updated patch title=0A=
->=A0- Added a separate patch to update doc=0A=
->=0A=
->=0A=
-> Odin Ugedal (2):=0A=
->=A0 cgroup: fix psi monitor for root cgroup=0A=
->=A0 cgroup: update PSI file description in docs=0A=
->=0A=
->=A0Documentation/admin-guide/cgroup-v2.rst | 6 +++---=0A=
->=A0kernel/cgroup/cgroup.c=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 | 4 +++-=0A=
->=A02 files changed, 6 insertions(+), 4 deletions(-)=0A=
-=0A=
-Both patches look good.=0A=
-=0A=
-Acked-by: Dan Schatzberg <dschatzberg@fb.com>=
+On Fri, Jan 15, 2021 at 01:27:23PM -0800, Roman Gushchin wrote:
+> On Fri, Jan 15, 2021 at 03:55:36PM -0500, Johannes Weiner wrote:
+> > On Fri, Jan 15, 2021 at 09:03:41AM -0800, Roman Gushchin wrote:
+> > > On Fri, Jan 15, 2021 at 11:20:50AM -0500, Johannes Weiner wrote:
+> > > > On Wed, Jan 13, 2021 at 03:46:54PM +0100, Michal Hocko wrote:
+> > > > > On Tue 12-01-21 11:30:11, Johannes Weiner wrote:
+> > > > > > When a value is written to a cgroup's memory.high control file, the
+> > > > > > write() context first tries to reclaim the cgroup to size before
+> > > > > > putting the limit in place for the workload. Concurrent charges from
+> > > > > > the workload can keep such a write() looping in reclaim indefinitely.
+> > > > > > 
+> > > > > > In the past, a write to memory.high would first put the limit in place
+> > > > > > for the workload, then do targeted reclaim until the new limit has
+> > > > > > been met - similar to how we do it for memory.max. This wasn't prone
+> > > > > > to the described starvation issue. However, this sequence could cause
+> > > > > > excessive latencies in the workload, when allocating threads could be
+> > > > > > put into long penalty sleeps on the sudden memory.high overage created
+> > > > > > by the write(), before that had a chance to work it off.
+> > > > > > 
+> > > > > > Now that memory_high_write() performs reclaim before enforcing the new
+> > > > > > limit, reflect that the cgroup may well fail to converge due to
+> > > > > > concurrent workload activity. Bail out of the loop after a few tries.
+> > > > > 
+> > > > > I can see that you have provided some more details in follow up replies
+> > > > > but I do not see any explicit argument why an excessive time for writer
+> > > > > is an actual problem. Could you be more specific?
+> > > > 
+> > > > Our writer isn't necessarily time sensitive, but there is a difference
+> > > > between a) the write taking a few seconds to reclaim down the
+> > > > requested delta and b) the writer essentially turning into kswapd for
+> > > > the workload and busy-spinning inside the kernel indefinitely.
+> > > > 
+> > > > We've seen the writer stuck in this function for minutes, long after
+> > > > the requested delta has been reclaimed, consuming alarming amounts of
+> > > > CPU cycles - CPU time that should really be accounted to the workload,
+> > > > not the system software performing the write.
+> > > > 
+> > > > Obviously, we could work around it using timeouts and signals. In
+> > > > fact, we may have to until the new kernel is deployed everywhere. But
+> > > > this is the definition of an interface change breaking userspace, so
+> > > > I'm a bit surprised by your laid-back response.
+> > > > 
+> > > > > > Fixes: 536d3bf261a2 ("mm: memcontrol: avoid workload stalls when lowering memory.high")
+> > > > > > Cc: <stable@vger.kernel.org> # 5.8+
+> > > > > 
+> > > > > Why is this worth backporting to stable? The behavior is different but I
+> > > > > do not think any of them is harmful.
+> > > > 
+> > > > The referenced patch changed user-visible behavior in a way that is
+> > > > causing real production problems for us. From stable-kernel-rules:
+> > > > 
+> > > >  - It must fix a real bug that bothers people (not a, "This could be a
+> > > >    problem..." type thing).
+> > > > 
+> > > > > > Reported-by: Tejun Heo <tj@kernel.org>
+> > > > > > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > > > > 
+> > > > > I am not against the patch. The existing interface doesn't provide any
+> > > > > meaningful feedback to the userspace anyway. User would have to re check
+> > > > > to see the result of the operation. So how hard we try is really an
+> > > > > implementation detail.
+> > > > 
+> > > > Yeah, I wish it was a bit more consistent from an interface POV.
+> > > > 
+> > > > Btw, if you have noticed, Roman's patch to enforce memcg->high *after*
+> > > > trying to reclaim went into the tree at the same exact time as Chris's
+> > > > series "mm, memcg: reclaim harder before high throttling" (commit
+> > > > b3ff92916af3b458712110bb83976a23471c12fa). It's likely they overlap.
+> > > > 
+> > > > Chris's patch changes memory.high reclaim on the allocation side from
+> > > > 
+> > > > 	reclaim once, sleep if there is still overage
+> > > > 
+> > > > to
+> > > > 
+> > > > 	reclaim the overage as long as you make forward progress;
+> > > > 	sleep after 16 no-progress loops if there is still overage
+> > > > 
+> > > > Roman's patch describes a problem where allocating threads go to sleep
+> > > > when memory.high is lowered by a wider step. This is exceedingly
+> > > > unlikely after Chris's change.
+> > > > 
+> > > > Because after Chris's change, memory.high is reclaimed on the
+> > > > allocation side as aggressively as memory.max. The only difference is
+> > > > that upon failure, one sleeps and the other OOMs.
+> > > > 
+> > > > If Roman's issue were present after Chris's change, then we'd also see
+> > > > premature OOM kills when memory.max is lowered by a large step. And I
+> > > > have never seen that happening.
+> > > > 
+> > > > So I suggest instead of my fix here, we revert Roman's patch instead,
+> > > > as it should no longer be needed. Thoughts?
+> > > 
+> > > Chris's patch was merged way earlier than mine into the kernel tree which
+> > > was used when I observed the problem in the production. So likely it was there.
+> > 
+> > Chris's patch was in the tree earlier, but the first release
+> > containing it was tagged a day before you put in your change, so I
+> > doubt it was on the production system where you observed the issue.
+> > 
+> > As per above, it'd be very surprising to see premature sleeps when
+> > lowering memory.high, when allocation-side reclaim keeps going until
+> > the cgroup meets the definition of OOM.
+> > 
+> > > I think it makes sense to try to reclaim memory first before putting
+> > > all processes in the cgroup into reclaim mode. Even without artificial delays
+> > > it creates some latency and btw doesn't make the reclaim process more efficient.
+> > 
+> > It's not obvious that this is a practical problem. It certainly isn't
+> > for memory.max,
+> 
+> Because memory.max is usually not adjusted dynamically?
+> 
+> > and there should be a good reason why the two should
+> > be different aside from the documented OOM vs sleep behavior.
+> 
+> Maybe we have different examples in our heads, but mine is a cgroup
+> with a significant amount of relatively cold pagecache and a multi-threaded
+> workload. Now somebody wants to tighten memory.high. Why would we put all
+> threads into a direct reclaim? I don't see a good reason.
+
+But how is that different than a multi-threaded workload simply
+running up against a static limit?
+
+As soon as one event puts the cgroup over the limit, all concurrent
+allocations will form a thundering herd of reclaimers. I don't see
+much of a difference between a burst of allocations exceeding the
+limit from below and the limit being lowered from above.
+
+Sure, the requested limit delta is usually bigger than a single
+allocation. However, memory.high enforcement is batched, and quite a
+few threads could contribute to the overage and be marked to enter
+direct reclaim before the first page is actually scanned. Also, while
+we do adjust memory.high dynamically, we do so no more than once every
+5-10 seconds, whereas a multi-threaded workload may breach its limit
+and provoke thundering herds many times a second.
+
+So I just cannot imagine the sequence of events here would make a
+practical difference for the aspect of the thundering herd (whereas it
+was VERY obvious with the premature sleep issue on the allocation
+side). But the thundering herd may start as soon as you lower the
+limit, whether you reclaim before or after. It may already be
+occurring against the higher limit before you even enter write().
+
+Allocation latency is a real concern, I agree with you there. But
+that's IMO more to do with how cgroup limits are enforced in
+general. That's why there have been multiple discussions and patch
+submissions around async reclaim.
+
+But the fact is, the change of sequence is causing real problems in
+production, and with the premature-throttling-on-large-delta-bug out
+of the way, the justification for keeping it are somewhat nebulous.
+
+So unless we can clearly show from production that the sequence still
+matters after Chris's patch, I'd say we go with the revert and take
+the small risk of getting data to the contrary.
+
+As opposed to accruing additional complexity and special-cased code on
+a hunch, that we then may carry unnecessarily for a very long time -
+until somebody later on, under the pressure of keeping all this stuff
+maintainable, takes the risk of chopping it again with much less of
+the original context and stake holders available.
