@@ -2,122 +2,153 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1492FBB69
-	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 16:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A40F2FBBCA
+	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 16:59:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2403786AbhASPjh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jan 2021 10:39:37 -0500
-Received: from foss.arm.com ([217.140.110.172]:36666 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391577AbhASPiv (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 19 Jan 2021 10:38:51 -0500
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A64A3D6E;
-        Tue, 19 Jan 2021 07:38:05 -0800 (PST)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 991063F66E;
-        Tue, 19 Jan 2021 07:38:02 -0800 (PST)
-Subject: Re: [PATCH 4/6] sched/deadline: Block DL tasks on non-exclusive
- cpuset if bandwitdh control is enable
-To:     Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Marco Perronet <perronet@mpi-sws.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        cgroups@vger.kernel.org
-References: <cover.1610463999.git.bristot@redhat.com>
- <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
- <4b37b32b-0e16-ffbc-ca6a-fbee935c0813@arm.com>
- <08dd4e61-5c4a-b010-2149-8f84ced3fb38@redhat.com>
-From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
-Message-ID: <f7cad09a-09e3-e150-d505-ac75aece0248@arm.com>
-Date:   Tue, 19 Jan 2021 16:37:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2387426AbhASP4G (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jan 2021 10:56:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42366 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390750AbhASPww (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 10:52:52 -0500
+Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E98CC061575;
+        Tue, 19 Jan 2021 07:52:11 -0800 (PST)
+Received: by mail-qv1-xf2e.google.com with SMTP id et9so9318405qvb.10;
+        Tue, 19 Jan 2021 07:52:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=QcyMDDVr7CULOAn4Y79GHadhfUa6Q0T6oHNJlZ8GjWw=;
+        b=Yer91Bx8c4Zuf1jc7YE1BhjV1iCXJqwpcbRE/LVgACcNIm3xYd/qExI++Vi5WEHKWn
+         h4Q3B9iNjHGBstOD7f7waSofR3i2l0oNGDU9laQHLyX+/zYYktlFoV0ZTe7fjLqqo7fd
+         sIiq82ij96CVIZIpR+mIPzExMbuBALZCMme1Nrmb0DboFYLMIBQLK05OPJO+ZyqTc05a
+         daKfvHLmry82KJR9/iqFcLQOQFZLGjLOmSspQyJ7tY0LKKjX5aiZ107DAR/NlIGF3PiX
+         XfTgFPaVwKS6MVwb49o+BNhXvKTxY4pd+TrVD35ssENsLzTINILsfmIxnI6Y8se5xAeu
+         vmQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=QcyMDDVr7CULOAn4Y79GHadhfUa6Q0T6oHNJlZ8GjWw=;
+        b=VDj7R91xJZSC8nABJ+VsSQYOEKILcSxhnMVbnOxk3xudlRnIRVzqkHdtC98td7Vx9l
+         08Qx2WaCQM2yHAs8kxCYA25ZDPCrZLNBnrJYMVbYAcrGSDcM7zVx6ow2jvua02ICF+fe
+         /h4cPZfmwxxGebpzQYpD2poWrsFp+sCC49cOGJkI52aH6YHl4afL1wCAu1TNhLFqJbVe
+         E5EDVTShxrvNF2EGnZdnV8wsKZJEEuET95GLAFCOS/FNU27YYeJaoMsvB1DbS7PmRXVs
+         EpianYAGXnTUU7uQyhLpnAdwTh60VyIndblOwWG/9Z/AKT83bi1OgVilrljYLANfFMzh
+         cRRA==
+X-Gm-Message-State: AOAM531iViPnMHGwtXdjBnzzwQwetzkH/CKYHhth4vRZB7JwY1aZFY8M
+        U3KEMjcMoiE+d7v/vbZLSNU=
+X-Google-Smtp-Source: ABdhPJz4PPSSVhf5I0deb91RGl3FbA/YHzb6yFRs2tv9zKL0ZEo+6Q0S21fXAdtf2SgRXv1OWNTsMg==
+X-Received: by 2002:ad4:5901:: with SMTP id ez1mr4795454qvb.6.1611071530224;
+        Tue, 19 Jan 2021 07:52:10 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:4cbf])
+        by smtp.gmail.com with ESMTPSA id e7sm5571073qto.46.2021.01.19.07.52.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 07:52:09 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Jan 2021 10:51:24 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+References: <20210108012846.4134815-1-vipinsh@google.com>
+ <20210108012846.4134815-2-vipinsh@google.com>
+ <YAICLR8PBXxAcOMz@mtj.duckdns.org>
+ <YAIUwGUPDmYfUm/a@google.com>
+ <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
 MIME-Version: 1.0
-In-Reply-To: <08dd4e61-5c4a-b010-2149-8f84ced3fb38@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YAJsUyH2zspZxF2S@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 19/01/2021 10:41, Daniel Bristot de Oliveira wrote:
-> On 1/14/21 4:51 PM, Dietmar Eggemann wrote:
->> On 12/01/2021 16:53, Daniel Bristot de Oliveira wrote:
+Hello,
 
-[...]
-
->> with this patch:
->>
->> cgroupv1:
->>
->> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
->> --sched-runtime 100000000 0 sleep 500 &
->> [1] 1668
->> root@juno:/sys/fs/cgroup/cpuset# PID1=$!
->>
->> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
->> --sched-runtime 100000000 0 sleep 500 &
->> [2] 1669
->> root@juno:/sys/fs/cgroup/cpuset# PID2=$!
->>
->> root@juno:/sys/fs/cgroup/cpuset# mkdir A
->>
->> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.mems
->> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.cpus
->>
->> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
->> -bash: echo: write error: Device or resource busy
->>
->> root@juno:/sys/fs/cgroup/cpuset# echo 1 > ./A/cpuset.cpu_exclusive
->>
->> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
->>
->> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID1/status | grep
->> Cpus_allowed_list | awk '{print $2}'
->> 0-5
->> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID2/status | grep
->> Cpus_allowed_list | awk '{print $2}'
->> 0
+On Fri, Jan 15, 2021 at 08:32:19PM -0800, Vipin Sharma wrote:
+> SEV-ES has stronger memory encryption gurantees compared to SEV, apart
+> from encrypting the application memory it also encrypts register state
+> among other things. In a single host ASIDs can be distributed between
+> these two types by BIOS settings.
 > 
-> On CPU v1 we also need to disable the load balance to create a root domain, right?
-
-IMHO, that's not necessary for this example. But yes, if we create 2
-exclusive cpusets A and B we want to turn off load-balancing on root
-level. It also doesn't hurt doing this in this example. But we end up
-with no sched domain since load-balance is disabled at root and A only
-contains CPU0.
-
-root@juno:/sys/fs/cgroup/cpuset# echo 0 > cpuset.sched_load_balance
-
-ls /proc/sys/kernel/sched_domain/cpu*/ doesn't show any (sched) domains.
-
->> cgroupv2:
+> Currently, Google Cloud has Confidential VM machines offering using SEV.
+> ASIDs are not compatible between SEV and SEV-ES, so a VM running on SEV
+> cannot run on SEV-ES and vice versa
 > 
-> Yeah, I see your point. I was seeing a different output because of Fedora
-> default's behavior of adding the tasks to the system.slice/user.slice...
+> There are use cases for both types of VMs getting used in future.
+
+Can you please elaborate? I skimmed through the amd manual and it seemed to
+say that SEV-ES ASIDs are superset of SEV but !SEV-ES ASIDs. What's the use
+case for mixing those two?
+
+> > > > > Other ID types can be easily added in the controller in the same way.
+> > > > 
+> > > > I'm not sure this is necessarily a good thing.
+> > > 
+> > > This is to just say that when Intel and PowerPC changes are ready it
+> > > won't be difficult for them to add their controller.
+> > 
+> > I'm not really enthused about having per-hardware-type control knobs. None
+> > of other controllers behave that way. Unless it can be abstracted into
+> > something common, I'm likely to object.
 > 
-> doing:
+> There was a discussion in Patch v1 and consensus was to have individual
+> files because it makes kernel implementation extremely simple.
 > 
->> root@juno:/sys/fs/cgroup# echo +cpuset > cgroup.subtree_control
+> https://lore.kernel.org/lkml/alpine.DEB.2.23.453.2011131615510.333518@chino.kir.corp.google.com/#t
+
+I'm very reluctant to ack vendor specific interfaces for a few reasons but
+most importantly because they usually indicate abstraction and/or the
+underlying feature not being sufficiently developed and they tend to become
+baggages after a while. So, here are my suggestions:
+
+* If there can be a shared abstraction which hopefully makes intuitive
+  sense, that'd be ideal. It doesn't have to be one knob but it shouldn't be
+  something arbitrary to specific vendors.
+
+* If we aren't there yet and vendor-specific interface is a must, attach
+  that part to an interface which is already vendor-aware.
+
+> This information is not available anywhere else in the system. Only
+> other way to get this value is to use CPUID instruction (0x8000001F) of
+> the processor. Which also has disdvantage if sev module in kernel
+> doesn't use all of the available ASIDs for its work (right now it uses
+> all) then there will be a mismatch between what user get through their
+> code and what is actually getting used in the kernel by sev.
 > 
-> # echo $$ > cgroup.procs
+> In cgroup v2, I didn't see current files for other cgroups in root
+> folder that is why I didn't show that file in root folder.
+> 
+> Will you be fine if I show two files in the root, something like:
+> 
+> encids.sev.capacity
+> encids.sev.current
+> 
+> In non root folder, it will be:
+> encids.sev.max
+> encids.sev.current
+> 
+> I still prefer encids.sev.stat, as it won't repeat same information in
+> each cgroup but let me know what you think.
 
-The current shell should be already in the root cgroup?
+Yeah, this will be a first and I was mostly wondering about the same number
+appearing under different files / names on root and !root cgroups. I'm
+leaning more towards capacity/current but let me think about it a bit more.
 
-root@juno:/sys/fs/cgroup# echo $$
-1644
-root@juno:/sys/fs/cgroup# cat cgroup.procs | grep $$
-1644
+Thank you.
 
-[...]
-
+-- 
+tejun
