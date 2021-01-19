@@ -2,205 +2,103 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316F12FBA22
-	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 15:55:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 92C6E2FBBA8
+	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 16:53:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387543AbhASOnz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jan 2021 09:43:55 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:45284 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1731669AbhASJms (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 04:42:48 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1611049272;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rA912ssEjdc11sdlbuultyIkt3xlDDquI7cJUnlq4yQ=;
-        b=Y/x9Zp4MXgsaLQ2NKchGcPgaF0E6Hehkt+aWnH5NdtV9GeeP5wHRkTLMIAVwqEkUgIOqys
-        qmBSG9PTSQqClP2rurnYpvlSlbLw8I34oJo70zR7ZaM3UHNaxnRuP78zWXSFDYYFcCPams
-        1Obni8UEkyJX1VILn7QTCTC4tstL5b0=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-374-C5smNCIwN_WdDFS6EwQozg-1; Tue, 19 Jan 2021 04:41:08 -0500
-X-MC-Unique: C5smNCIwN_WdDFS6EwQozg-1
-Received: by mail-wr1-f71.google.com with SMTP id g16so9661944wrv.1
-        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 01:41:07 -0800 (PST)
+        id S1729012AbhASPvz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jan 2021 10:51:55 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38270 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2391457AbhASPdw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 10:33:52 -0500
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E32FAC061573
+        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 07:33:11 -0800 (PST)
+Received: by mail-qt1-x82e.google.com with SMTP id v3so11643051qtw.4
+        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 07:33:11 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=kSkC2qIvnSbPN0EBpd70Gg0QmXoZHEfwntVfKkWRT5Y=;
+        b=heLkTAXMu7tor2Dhd0hqS7RlJXkXrZS8bRbn9D98yRqAUqeSwcmb03MFAJjeYTndSu
+         7Umtbpq1+cipanv6fsWnAeAopTJMUp0CtQDWtpeSRbh93VmEahoHq+gFACF/mZNJqKwc
+         RPpBA5u2q0hNlML5Uj6SCAqtSNx3zvrchDcVXzX89TKPbZlhe2xkRe+0ZtdedAKZnEey
+         TPdF9etfTVmMu9O+IfXatJSYl09Bj+rPqrGR4mgd7xAYPWJEAPKd8Sy502AXeuSPWpWk
+         pPlfRr4A65ATWgcPPXh+pgSNusrdfkxsSVjN1jvO10e7sSStKKcwKgS16Cdd27ZnGBXU
+         NGjQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=rA912ssEjdc11sdlbuultyIkt3xlDDquI7cJUnlq4yQ=;
-        b=tyDaBlwA8ysiUfC6I/zgk3QpV8IvT0iPZo0qow8BCAnVSRLc/9pl8Uw3jQWvEXUdth
-         TieLE40NcFQhqtcOmcgZ3Qm7H60Z2mbFRpNGOYe8AyNNPtdAiWY8YjjsSeyPfPjoCKd0
-         4q274jO6e/8NZmnrJbRJ/evFJjKs5zPPfswHHjO/CEH8nq6ypay6EjVnD7RtQ48Ea5cd
-         pYQaAx/fb7xGY0tYYzpgRoDr/03GQknb+kLpL+U/cv26c8L6rPXyuMT6d3gFfvuRw2SK
-         FZuTlyrOdfGWEH6NwDD6/+pbRRVwNa2YmzZ93uoD1MAo3xlUOgDBOBLbtygaAhU8nIir
-         AjKg==
-X-Gm-Message-State: AOAM530nXscsWPIw5D47G3uLT75iid6iLsNcRm4PVPM86Lc68ENKuKEo
-        Sy7mqFY3tQiXNn0272Iu3Z8Y1pqPfAJTJ6oV6pCILqRQ1JsZiwFJkblcGu91ZeJvI1KR7tOHbBi
-        iAXfK+2ooC0UelaZsVZAqaZoHi1NNa7rNSDBPvkJzefX5evsugT2ssPAN5axWqedoOMch
-X-Received: by 2002:a5d:6a83:: with SMTP id s3mr3525284wru.334.1611049266472;
-        Tue, 19 Jan 2021 01:41:06 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyo5rCi6LL5iRaFmuFsthO6gkLMi6OZSb9Yy7qdPtrmaxjbUb6NdSD+nzxdb0yoVGFffcs4LQ==
-X-Received: by 2002:a5d:6a83:: with SMTP id s3mr3525246wru.334.1611049266211;
-        Tue, 19 Jan 2021 01:41:06 -0800 (PST)
-Received: from x1.bristot.me (host-79-46-192-171.retail.telecomitalia.it. [79.46.192.171])
-        by smtp.gmail.com with ESMTPSA id w4sm3375305wmc.13.2021.01.19.01.41.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Jan 2021 01:41:05 -0800 (PST)
-Subject: Re: [PATCH 4/6] sched/deadline: Block DL tasks on non-exclusive
- cpuset if bandwitdh control is enable
-To:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Marco Perronet <perronet@mpi-sws.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Li Zefan <lizefan@huawei.com>, Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        cgroups@vger.kernel.org
-References: <cover.1610463999.git.bristot@redhat.com>
- <7b336c37cc3c38def6de181df8ba8c3148c5cc0c.1610463999.git.bristot@redhat.com>
- <4b37b32b-0e16-ffbc-ca6a-fbee935c0813@arm.com>
-From:   Daniel Bristot de Oliveira <bristot@redhat.com>
-Message-ID: <08dd4e61-5c4a-b010-2149-8f84ced3fb38@redhat.com>
-Date:   Tue, 19 Jan 2021 10:41:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.6.0
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=kSkC2qIvnSbPN0EBpd70Gg0QmXoZHEfwntVfKkWRT5Y=;
+        b=VX/Wnw7bhbol1/WsIcCDKIB7peOrnP4yvHg8FwxgxScBbHQIBe8hMVmZ8AjC0WQaHI
+         Y6JAAGQC0xY/4OjHXxq1/J2b+Tdn5v97QE9LUdPBMb2lT2TDg87TxJhsDNeRBecKvvLp
+         CNwhJbYL7SsRtYRFNcz56Z+J8SwI6LLKplUpsMpr4+rPdKA9+ItXHBuJX64Kms6jrab1
+         +5lMpXYk681k0mKmLxmGAkWbTxI1I06ObFrd04cfO6fUhTlZ7vqqIDmHCJyjeBuqZqD/
+         Vucyph/yl7XNSx1eoMec7zUrG+TbLKq4E2FuxUA1ASIxJLyz6PjqwK8VDx4lnCEPwX6s
+         M4rw==
+X-Gm-Message-State: AOAM533du/1Hkyyiu24sItcnwNGyfshOydy4JQHxbF13hQvyplQysEj/
+        LlV6aPh5ammqIBI9JwVO0Dw=
+X-Google-Smtp-Source: ABdhPJyH7FaQoSqC9/62OpW6VHNPKYyUC8W13ZyRqfDYx8D/kaCLocWuhH3ZyDcS+SCCf41WcdsF8g==
+X-Received: by 2002:ac8:4557:: with SMTP id z23mr2880308qtn.191.1611070391032;
+        Tue, 19 Jan 2021 07:33:11 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:4cbf])
+        by smtp.gmail.com with ESMTPSA id l24sm13427609qkl.46.2021.01.19.07.33.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 07:33:10 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 19 Jan 2021 10:32:25 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     liming wu <wu860403@gmail.com>
+Cc:     cgroups@vger.kernel.org, 398776277 <398776277@qq.com>
+Subject: Re: [PATCH] tg: add cpu's wait_count of a task group
+Message-ID: <YAb7icZqetp5c827@mtj.duckdns.org>
+References: <20210115143005.7071-1-wu860403@gmail.com>
+ <YAH4w5T3/oCTGJny@mtj.duckdns.org>
+ <CAPnMXWWmfzWh9J_G4OPT=eCFySaD2NAFE0_OiWFQKL-1R0uOkA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <4b37b32b-0e16-ffbc-ca6a-fbee935c0813@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAPnMXWWmfzWh9J_G4OPT=eCFySaD2NAFE0_OiWFQKL-1R0uOkA@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On 1/14/21 4:51 PM, Dietmar Eggemann wrote:
-> On 12/01/2021 16:53, Daniel Bristot de Oliveira wrote:
->> The current SCHED_DEADLINE design supports only global scheduler,
->> or variants of it, i.e., clustered and partitioned, via cpuset config.
->> To enable the partitioning of a system with clusters of CPUs, the
->> documentation advises the usage of exclusive cpusets, creating an
->> exclusive root_domain for the cpuset.
->>
->> Attempts to change the cpu affinity of a thread to a cpu mask different
->> from the root domain results in an error. For instance:
-> 
-> [...]
-> 
->> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
->> index 788a391657a5..c221e14d5b86 100644
->> --- a/kernel/sched/deadline.c
->> +++ b/kernel/sched/deadline.c
->> @@ -2878,6 +2878,13 @@ int dl_task_can_attach(struct task_struct *p,
->>  	if (cpumask_empty(cs_cpus_allowed))
->>  		return 0;
->>  
->> +	/*
->> +	 * Do not allow moving tasks to non-exclusive cpusets
->> +	 * if bandwidth control is enabled.
->> +	 */
->> +	if (dl_bandwidth_enabled() && !exclusive)
->> +		return -EBUSY;
->> +
->>  	/*
->>  	 * The task is not moving to another root domain, so it is
->>  	 * already accounted.
->>
-> 
-> But doesn't this mean you only have to set this cgroup exclusive/root to
-> run into the same issue:
-> 
-> with this patch:
-> 
-> cgroupv1:
-> 
-> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
-> --sched-runtime 100000000 0 sleep 500 &
-> [1] 1668
-> root@juno:/sys/fs/cgroup/cpuset# PID1=$!
-> 
-> root@juno:/sys/fs/cgroup/cpuset# chrt -d --sched-period 1000000000
-> --sched-runtime 100000000 0 sleep 500 &
-> [2] 1669
-> root@juno:/sys/fs/cgroup/cpuset# PID2=$!
-> 
-> root@juno:/sys/fs/cgroup/cpuset# mkdir A
-> 
-> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.mems
-> root@juno:/sys/fs/cgroup/cpuset# echo 0 > ./A/cpuset.cpus
-> 
-> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
-> -bash: echo: write error: Device or resource busy
-> 
-> root@juno:/sys/fs/cgroup/cpuset# echo 1 > ./A/cpuset.cpu_exclusive
-> 
-> root@juno:/sys/fs/cgroup/cpuset# echo $PID2 > ./A/cgroup.procs
-> 
-> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID1/status | grep
-> Cpus_allowed_list | awk '{print $2}'
-> 0-5
-> root@juno:/sys/fs/cgroup/cpuset# cat /proc/$PID2/status | grep
-> Cpus_allowed_list | awk '{print $2}'
-> 0
+Hello,
 
-On CPU v1 we also need to disable the load balance to create a root domain, right?
+On Mon, Jan 18, 2021 at 11:07:47AM +0800, liming wu wrote:
+> > > +             if (schedstat_enabled() && tg != &root_task_group) {
+> > > +                     u64 ws = 0;
+> > > +                     u64 wc = 0;
+> > > +                     int i;
+> > > +
+> > > +                     for_each_possible_cpu(i) {
+> > > +                             ws += schedstat_val(tg->se[i]->statistics.wait_sum);
+> > > +                             wc += schedstat_val(tg->se[i]->statistics.wait_count);
+> > > +                     }
+> > > +
+> > > +                     seq_printf(sf, "wait_sum %llu\n"
+> > > +                             "wait_count %llu\n", ws, wc);
+> > > +             }
+> >
+> > What does sum/count tell?
+> It can tell the task group average latency of every context switch
+> wait_sum is equivalent to sched_info->run_delay (the second parameter
+> of /proc/$pid/schedstat)
+> wait_count is equivalent to sched_info->pcount(the third parameter of
+> /proc/$pid/schedstat)
 
-> cgroupv2:
+Sounds good to me but can you please:
 
-Yeah, I see your point. I was seeing a different output because of Fedora
-default's behavior of adding the tasks to the system.slice/user.slice...
+* Rename wait_sum to wait_usec and make sure the duration is in usecs.
 
-doing:
+* Rename wait_count to nr_waits.
 
-> root@juno:/sys/fs/cgroup# echo +cpuset > cgroup.subtree_control
+* This should go through the scheduler tree. When you post the updated
+  version, please cc the scheduler folks from MAINAINERS.
 
-# echo $$ > cgroup.procs
+Thanks.
 
-> root@juno:/sys/fs/cgroup# chrt -d --sched-period 1000000000
-> --sched-runtime 100000000 0 sleep 500 &
-> [1] 1687
-> root@juno:/sys/fs/cgroup# PID1=$!
-> 
-> root@juno:/sys/fs/cgroup# chrt -d --sched-period 1000000000
-> --sched-runtime 100000000 0 sleep 500 &
-> [2] 1688
-> root@juno:/sys/fs/cgroup# PID2=$!
-> 
-> root@juno:/sys/fs/cgroup# mkdir A
-> 
-> root@juno:/sys/fs/cgroup# echo 0 > ./A/cpuset.mems
-> root@juno:/sys/fs/cgroup# echo 0 > ./A/cpuset.cpus
-> 
-> root@juno:/sys/fs/cgroup# echo $PID2 > ./A/cgroup.procs
-> -bash: echo: write error: Device or resource busy
-> 
-> root@juno:/sys/fs/cgroup# echo root > ./A/cpuset.cpus.partition
-> 
-> root@juno:/sys/fs/cgroup# echo $PID2 > ./A/cgroup.procs
-> 
-> root@juno:/sys/fs/cgroup# cat /proc/$PID1/status | grep
-> Cpus_allowed_list | awk '{print $2}'
-> 0-5
-> root@juno:/sys/fs/cgroup# cat /proc/$PID2/status | grep
-> Cpus_allowed_list | awk '{print $2}'
-> 0
-
-makes me see the same behavior. This will require further analysis.
-
-So, my plan now is to split this patch set into two, one with patches 1,3,5, and
-6, which fixes the most "easy" part of the problems, and another with 2 and 4
-that will require further investigation (discussed this with Dietmar already).
-
-Thoughts?
-
--- Daniel
-
+-- 
+tejun
