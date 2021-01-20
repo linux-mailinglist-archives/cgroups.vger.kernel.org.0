@@ -2,225 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F51C2FC169
-	for <lists+cgroups@lfdr.de>; Tue, 19 Jan 2021 21:44:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 31B032FC5B3
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jan 2021 01:24:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2389676AbhASSuO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jan 2021 13:50:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41720 "EHLO
+        id S1726594AbhATAVs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jan 2021 19:21:48 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2392124AbhASSA2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 13:00:28 -0500
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B8FC0617BB
-        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
-Received: by mail-lj1-x22e.google.com with SMTP id 3so2698276ljc.4
-        for <cgroups@vger.kernel.org>; Tue, 19 Jan 2021 09:45:30 -0800 (PST)
+        with ESMTP id S1727819AbhATATN (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 19:19:13 -0500
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3F551C061575;
+        Tue, 19 Jan 2021 16:18:29 -0800 (PST)
+Received: by mail-pl1-x633.google.com with SMTP id s15so11511443plr.9;
+        Tue, 19 Jan 2021 16:18:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
-        b=HgxRSY1UqbS9/rhXLTNfxHXeBBzedejKfHX0k4UFydcfqonYyGAaZOkwTPWns4jkPQ
-         esF/GfzCdXeprMZcR0ldlHasvbgdLzQUQKuoonWfyg/1PJiYiAQCs6nEFq4JCNR8UoZ6
-         L6PyL622kWecWT47tVu+mk1cmbD2RTPlWjumHdsO+G0rhUhQvmeVflWNxLMaEi1TcrFh
-         VEoIk82Z1RZibJHkxhJoWvXlijEayutV5Qeas5v5D4ueg87Fq9K4GiUyA/cnWqroNvz9
-         QaepTABYH2v3/iunQHx1HEYEiJL77LViNqhc0EsnX8b1A80s0ELoGjKZWBLJngIbcwTJ
-         w/cA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FQMMF/2jUk+oPAGJT0QPqCY9ZpMVcAq7Q7ndO7jDZtc=;
+        b=A/KxEfurUyp8y+7s9StUSf3ir/9EoE/2c4lS5n1+IITvoJo8b3yTx+DDVUl6vNOf04
+         36Myvm6/6LlI6Vb9lZmtuzvRetaNBXglRY5umGTeuDe9iJwS1DAabFbaIgfSOz8+TUM3
+         MwNUWV5h1Mg4kc0TvYoM8CZylV81Qm5ps2dLqoHkLY8slD8KuYPTbX+5RB4iaP6rZscV
+         M/UyrBBwSYeMmuPJfgH1P7qxJRWUHapuWJvtKtqt220WdzJ4CMNDhsBnUYX/w6XlAHeZ
+         CXCpSVXyhDjAKtgKrR2JkPL/Sg8WRABGtc2OWiON/xRKfWwo9kNG7QZkDYHwS9AYLJOn
+         LGcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Rd3A8g1IdM0Da3ayDEEkpfl0IAd1dLONzNOBcV3ebWU=;
-        b=ScIzGu//88rRv4sJCQpgEaCtkI7fjKuFGwnBBzqAg1SCEyOxS9qUahI5jfGS2tiCXz
-         Cl9i0n2AeZAaGW8mTeGaMfKBpd+XZdld8gb1aIHj4t4PqjqOA11opEdhO9nJUAse8g/C
-         yvlOdaBZMT/FYMpidarwBmRDy829UP5DgMwLeMf+G/qGuJymDJNpvemVjQbFQlldcWRl
-         L8k3S8FOcMy6YX1dgFU2sBaHEQ+Gl0W56x27cJu7otbmfFyLGIUm6UGR5jeWkaqLnQRy
-         ZdMCTfAE1SiDjOxiKnUNN0CQY91IbAVksCNIvLKGXSskqUARlLOWYHnyVH/iH9v/E4et
-         ZSfw==
-X-Gm-Message-State: AOAM531roZhqKF9bW81h2QIAk0eUQIRXLKYRbHmgQJzhcueuWWobGqe3
-        3mp1DbkQg2T7yg2puE/tRJ42J7aqaUheQFCRIZLgwQ==
-X-Google-Smtp-Source: ABdhPJyFFZcinaflCgiwdNd0xiMlKWjdDzL/Xpr4jPiXhnakZJ5AdohtfJ+lzfhFR9TjjIv+fAWjCZ2NgSAW2C3XYtE=
-X-Received: by 2002:a05:651c:328:: with SMTP id b8mr2402570ljp.106.1611078328902;
- Tue, 19 Jan 2021 09:45:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=FQMMF/2jUk+oPAGJT0QPqCY9ZpMVcAq7Q7ndO7jDZtc=;
+        b=NIKgiAAbUku6ZUQrHx3BDVvIuVA8EBU8qe3WS5GFDmoPBs4DBg6q8OZwmtA8Ey1N+U
+         BRiZV8wneInta+68qfsFWegGb4Cn5z4fsIom0JQqA3L8kU/GXmqUlncOvCvLFOS464qq
+         95gJCuQleX6JPdfN4I1kjyK5aT2VQGJU/x6GWndr5SO3cvHRPiJVJ9rdpeIINv5E7eB5
+         oY4mRBL3rmuiE6tYZ8agl7VkO72Tv1bS8yXayIjVbzEDTA1CIT2662XDt2XmH1bn0FOv
+         79QKXu8RUE6rL2eKkBXhd0bd/GTxbSUJiTeDMQ7Tjsyj0Q+9eHoDbRffbI5tZNKS2MsX
+         D1Lg==
+X-Gm-Message-State: AOAM530RBfzn+JN0w+2IqaXPMt6x9OyZRG2hSd/O+ZnEZ4mqHI90AbxM
+        FrWQ52LHv5u5m71L13bC9djOeud+M1lCSg==
+X-Google-Smtp-Source: ABdhPJwcUqTK3hFUvP6JMosjoOfZTAE2ZIgww53VBjFm5h/zKHH2xrQsFoUNtQYvO6xMtdsRV94Pdg==
+X-Received: by 2002:a17:90a:f988:: with SMTP id cq8mr2446968pjb.71.1611101907979;
+        Tue, 19 Jan 2021 16:18:27 -0800 (PST)
+Received: from kir-rhat.lan (c-76-104-243-248.hsd1.wa.comcast.net. [76.104.243.248])
+        by smtp.gmail.com with ESMTPSA id y6sm227452pfn.123.2021.01.19.16.18.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Jan 2021 16:18:27 -0800 (PST)
+From:   Kir Kolyshkin <kolyshkin@gmail.com>
+To:     corbet@lwn.net
+Cc:     linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
+        Kir Kolyshkin <kolyshkin@gmail.com>
+Subject: [PATCH 00/10] docs: cgroup nits and fixes
+Date:   Tue, 19 Jan 2021 16:18:14 -0800
+Message-Id: <20210120001824.385168-1-kolyshkin@gmail.com>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210116023204.670834-1-vipinsh@google.com> <20210116023204.670834-3-vipinsh@google.com>
- <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
-In-Reply-To: <2a009bd9-fde5-4911-3525-e28379fe3be2@infradead.org>
-From:   Vipin Sharma <vipinsh@google.com>
-Date:   Tue, 19 Jan 2021 09:45:12 -0800
-Message-ID: <CAHVum0e8qY7Nt23wSXU7KON8qZ5c6gnNWf=i5BeYji2+735COw@mail.gmail.com>
-Subject: Re: [Patch v5 2/2] cgroup: svm: Encryption IDs cgroup documentation.
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     Tom Lendacky <thomas.lendacky@amd.com>,
-        Brijesh <brijesh.singh@amd.com>, Jon <jon.grimm@amd.com>,
-        Eric <eric.vantassell@amd.com>, pbonzini@redhat.com,
-        Sean Christopherson <seanjc@google.com>,
-        Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org,
-        Janosch Frank <frankja@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>, corbet@lwn.net,
-        joro@8bytes.org, vkuznets@redhat.com, wanpengli@tencent.com,
-        Jim Mattson <jmattson@google.com>, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        Matt Gingell <gingell@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Dionna Glaze <dionnaglaze@google.com>, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Jan 18, 2021 at 9:55 AM Randy Dunlap <rdunlap@infradead.org> wrote:
->
-> On 1/15/21 6:32 PM, Vipin Sharma wrote:
-> > Documentation of Encryption IDs controller. This new controller is used
-> > to track and limit usage of hardware memory encryption capabilities on
-> > the CPUs.
-> >
-> > Signed-off-by: Vipin Sharma <vipinsh@google.com>
-> > Reviewed-by: David Rientjes <rientjes@google.com>
-> > Reviewed-by: Dionna Glaze <dionnaglaze@google.com>
-> > ---
-> >  .../admin-guide/cgroup-v1/encryption_ids.rst  |  1 +
-> >  Documentation/admin-guide/cgroup-v2.rst       | 78 ++++++++++++++++++-
-> >  2 files changed, 77 insertions(+), 2 deletions(-)
-> >  create mode 100644 Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> >
-> > diff --git a/Documentation/admin-guide/cgroup-v1/encryption_ids.rst b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> > new file mode 100644
-> > index 000000000000..8e9e9311daeb
-> > --- /dev/null
-> > +++ b/Documentation/admin-guide/cgroup-v1/encryption_ids.rst
-> > @@ -0,0 +1 @@
-> > +/Documentation/admin-guide/cgroup-v2.rst
-> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> > index 63521cd36ce5..72993571de2e 100644
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-> >         5-7-1. RDMA Interface Files
-> >       5-8. HugeTLB
-> >         5.8-1. HugeTLB Interface Files
-> > -     5-8. Misc
-> > -       5-8-1. perf_event
-> > +     5-9. Encryption IDs
-> > +       5.9-1 Encryption IDs Interface Files
-> > +       5.9-2 Migration and Ownership
-> > +     5-10. Misc
-> > +       5-10-1. perf_event
-> >       5-N. Non-normative information
-> >         5-N-1. CPU controller root cgroup process behaviour
-> >         5-N-2. IO controller root cgroup process behaviour
-> > @@ -2160,6 +2163,77 @@ HugeTLB Interface Files
-> >       are local to the cgroup i.e. not hierarchical. The file modified event
-> >       generated on this file reflects only the local events.
-> >
-> > +Encryption IDs
-> > +--------------
-> > +
-> > +There are multiple hardware memory encryption capabilities provided by the
-> > +hardware vendors, like Secure Encrypted Virtualization (SEV) and SEV Encrypted
-> > +State (SEV-ES) from AMD.
-> > +
-> > +These features are being used in encrypting virtual machines (VMs) and user
-> > +space programs. However, only a small number of keys/IDs can be used
-> > +simultaneously.
-> > +
-> > +This limited availability of these IDs requires system admin to optimize
->
->                                                           admins
->
-> > +allocation, control, and track the usage of the resources in the cloud
-> > +infrastructure. This resource also needs to be protected from getting exhausted
-> > +by some malicious program and causing starvation for other programs.
-> > +
-> > +Encryption IDs controller provides capability to register the resource for
->
->    The Encryption IDs controller provides the capability to register the resource for
->
-> > +controlling and tracking through the cgroups.
->
->                             through cgroups.
->
-> > +
-> > +Encryption IDs Interface Files
-> > +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +Each encryption ID type have their own interface files,
->
->                            has its own
->
-> > +encids.[ID TYPE].{max, current, stat}, where "ID TYPE" can be sev and
->
->                                                                      or
->
-> > +sev-es.
-> > +
-> > +  encids.[ID TYPE].stat
-> > +        A read-only flat-keyed single value file. This file exists only in the
-> > +        root cgroup.
-> > +
-> > +        It shows the total number of encryption IDs available and currently in
-> > +        use on the platform::
-> > +          # cat encids.sev.stat
-> > +          total 509
-> > +          used 0
->
-> This is described above as a single-value file...
->
-> Is the max value a hardware limit or a software (flexible) limit?
->
->
-> > +
-> > +  encids.[ID TYPE].max
-> > +        A read-write file which exists on the non-root cgroups. File is used to
-> > +        set maximum count of "[ID TYPE]" which can be used in the cgroup.
-> > +
-> > +        Limit can be set to max by::
-> > +          # echo max > encids.sev.max
-> > +
-> > +        Limit can be set by::
-> > +          # echo 100 > encids.sev.max
-> > +
-> > +        This file shows the max limit of the encryption ID in the cgroup::
-> > +          # cat encids.sev.max
-> > +          max
-> > +
-> > +        OR::
-> > +          # cat encids.sev.max
-> > +          100
-> > +
-> > +        Limits can be set more than the "total" capacity value in the
-> > +        encids.[ID TYPE].stat file, however, the controller ensures
-> > +        that the usage never exceeds the "total" and the max limit.
-> > +
-> > +  encids.[ID TYPE].current
-> > +        A read-only single value file which exists on non-root cgroups.
-> > +
-> > +        Shows the total number of encrypted IDs being used in the cgroup.
-> > +
-> > +Migration and Ownership
-> > +~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +An encryption ID is charged to the cgroup in which it is used first, and
-> > +stays charged to that cgroup until that ID is freed. Migrating a process
-> > +to a different cgroup do not move the charge to the destination cgroup
->
->                          does
->
-> > +where the process has moved.
-> > +
-> >  Misc
-> >  ----
-> >
-> >
->
->
-> --
-> ~Randy
-> You can't do anything without having to do something else first.
-> -- Belefant's Law
+These are mostly formatting fixes for a few cases where html
+looks plain wrong, plus a couple of added cross-references,
+and a typo.
 
-Thank you, I will fix them in the next patch.
+All issues spotted while reading cgroup docs. Results are checked
+manually for both html and pdf, using both Sphinx 2.4.4 and 3.2.1
+for rendering.
+
+All commits are against docs-next@52042e2db
+
+Kir Kolyshkin (10):
+  docs/scheduler/sched-bwc: formatting fix
+  docs/scheduler/sched-design-CFS: formatting fix
+  docs/scheduler/sched-bwc: fix note rendering
+  docs/scheduler/sched-bwc: add proper ref
+  docs/scheduler/sched-bwc: note/link cgroup v2
+  docs/admin-guide: cgroup-v2: typos and spaces
+  docs/admin-guide: cgroup-v2: fix cgroup.type rendering
+  doc/admin-guide/cgroup-v2: use tables
+  docs/admin-guide/cgroup-v2: nit
+  docs/admin-guide/cgroup-v2: fix mount opt rendering
+
+ Documentation/admin-guide/cgroup-v2.rst      | 60 +++++++++++---------
+ Documentation/scheduler/sched-bwc.rst        | 18 ++++--
+ Documentation/scheduler/sched-design-CFS.rst |  6 +-
+ Documentation/scheduler/sched-rt-group.rst   |  2 +
+ 4 files changed, 50 insertions(+), 36 deletions(-)
+
+-- 
+2.29.2
+
