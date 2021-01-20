@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 912B02FDE00
-	for <lists+cgroups@lfdr.de>; Thu, 21 Jan 2021 01:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC4442FDE02
+	for <lists+cgroups@lfdr.de>; Thu, 21 Jan 2021 01:33:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390101AbhAUAcX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jan 2021 19:32:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54758 "EHLO
+        id S1733125AbhAUAcu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jan 2021 19:32:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57502 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404150AbhATXZt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jan 2021 18:25:49 -0500
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02582C06134C
-        for <cgroups@vger.kernel.org>; Wed, 20 Jan 2021 15:18:34 -0800 (PST)
-Received: by mail-pl1-x62f.google.com with SMTP id t6so87831plq.1
-        for <cgroups@vger.kernel.org>; Wed, 20 Jan 2021 15:18:34 -0800 (PST)
+        with ESMTP id S2404197AbhATXeZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jan 2021 18:34:25 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8754C061575;
+        Wed, 20 Jan 2021 15:33:44 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id d11so80229qvo.11;
+        Wed, 20 Jan 2021 15:33:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=NCtWCoTo8mGZeKZotnt4ALec3dQ9/RkUFyVQNK1hMoE=;
-        b=NxCvtTTZAcHUjY80B8T/mRXR+ecVc3j49+/cThAhgIMNldAXEiEac1XjdCqjwr8KNN
-         EFQbyPbiLvLiFr1Vq5M65rOiTLar4w562qyOg8n7/djIcn6Sxvtl8sYS7yBydLTCmJwj
-         yxEKsR57CQ+eeJ51w9m+qmBkxNhu7Y09Wb+SLUBApFhMZLl4DnWR65Ef/2e8jEJ9sL/n
-         DKjbb0/eQQFSQ2OCj8ocfOhIQc6JKhcEmeGF0ld5PoaVuz+X1Zsyi2f5z+JyLv7b9gnL
-         z7Lho8Yw+GVs7q6rC4siRdgOeOgUYyaDl/s+stRG1t72bs4JORMfYs6Z+x5fNBRiWJdM
-         9vrQ==
+        bh=Kuz1Z8yFOKqntoZqWEZMArKOxWgkIyDqBbny1W4ic1M=;
+        b=HJlmkRDv2hPtYnuU5c270k+st/MAdNAqkEg/D9vHyvSK9kKH73Zjbctd7WVUKy6247
+         HkQxh4CdcW2DT9yAgApoSW5PpLB4pjrOWlxx/EKsDvpOSfDC7qReqn950tJtAfAKWOzy
+         KA/8CQvR6JfJrhPQtE9guNZttGprU+hbN4YyyaoiGtAJndqmJysGXPVyXyruoUDqLtL3
+         omGUe1oEcvwiIpLmBTJek7bTA7w2yT27u25onP7lsCxZK46SQNs+JCLRKlf+mq2gGetG
+         vydZ2LO27zn5lX+JaxD0f4njHfv2cQboM6Ync9BZTAbzNbGoWTk3d4aqmwS8isJMaTDe
+         Hmnw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=NCtWCoTo8mGZeKZotnt4ALec3dQ9/RkUFyVQNK1hMoE=;
-        b=f9JwOXrO4NmERtF/3iVfiPacCsLZU2JD1IKCGiTSKKZJ2DfCdpwVlCKM+T94+ufllY
-         VUVMTglp9C0MF2eS5B3MruUB3glTLr2hqz/8srzXRhhHspQ+DmJYxZ9UhRYE/d5SAYbB
-         CVMmAozX9dph7Itxd4qwAyNCCbEdAoO8Gzl4XKYg20zoRkvv6pGDioQ/gw0YISzxZPzu
-         jz5j1shWSxFA7d6j8NVg5MRWsfpODj5ZiWRPCo9Hp6tWlEIyYt7a5rmJVdjVlhMfGNBx
-         NTWKfe2+mmBjFUw1jhCg7NPvUvr+G5TL05fq27oywKaVkSA0eoiRBVS6NRWMOZLEBk+o
-         Y7jQ==
-X-Gm-Message-State: AOAM532X1xuxBCjow+38ovHxFDwSfFDOgKuJuga7K7vwSUAoXybA3gYS
-        5zWxRAwiGBAVPr/bpk8bREhd0Q==
-X-Google-Smtp-Source: ABdhPJzRDE4htyk7QPEMj8bZl6yWXO0FHI8XTpLWG/UTk5Qh/OejVMbcJ8DFH0WSdBb2VwaCDk8sQg==
-X-Received: by 2002:a17:902:f703:b029:de:9a3a:6902 with SMTP id h3-20020a170902f703b02900de9a3a6902mr11818514plo.68.1611184714108;
-        Wed, 20 Jan 2021 15:18:34 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
-        by smtp.gmail.com with ESMTPSA id k141sm1067449pfd.9.2021.01.20.15.18.32
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=Kuz1Z8yFOKqntoZqWEZMArKOxWgkIyDqBbny1W4ic1M=;
+        b=bW3taC2pZOpX1UlIfofqQZA2fABBXsII1HMlTO+PI6rmY8q80yZtB79zKNAQqv0RYb
+         5TWW8tHCl70GwXNQhl9HTMwmD6qV4tWTO7n58/kIpQZ5MCWFinhFx6b48EIoY5vUu3Rx
+         VgjfsqiT5OSoNjgHKVIYFjRlz8rd/W+XBiuCHDTNDbeKpwCALGz2ZC8m/uZbBYMtEHwt
+         N4prMtj+CUBG6dgxcgYCFmZGWMtLLKVeffyjmQjchzO6U8aI9gn8WYEm4BWSMmtfhGrl
+         gI5FnyuCiuB4Hy3ZKOr4PdXfozRQO8dRG4gsjbtfJ8l2Avsmqwf3Fep4R9xmw4no/8Nc
+         Up8Q==
+X-Gm-Message-State: AOAM530VSaqFNuVxZyJtlMcq8yx3rib6b9ahn5xSTHSj1tM/CCPpU1+B
+        kMBtrPpAlCPPeOSl3+vv2Cs=
+X-Google-Smtp-Source: ABdhPJy49pPbB59I9hYoepgHaQtdj/cmB7zsOt91Isoc34MzQW6yNtlLg5ytYAKLjA9+ZzrlWIBbIg==
+X-Received: by 2002:a0c:e651:: with SMTP id c17mr11632401qvn.34.1611185623591;
+        Wed, 20 Jan 2021 15:33:43 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:1b8f])
+        by smtp.gmail.com with ESMTPSA id 8sm2473388qkr.28.2021.01.20.15.33.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 15:18:33 -0800 (PST)
-Date:   Wed, 20 Jan 2021 15:18:29 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Tejun Heo <tj@kernel.org>
+        Wed, 20 Jan 2021 15:33:42 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 20 Jan 2021 18:32:56 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
 Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
         eric.vantassell@amd.com, pbonzini@redhat.com, seanjc@google.com,
         hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
@@ -60,7 +61,7 @@ Cc:     thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
         x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YAi6RcbxTSMmNssw@google.com>
+Message-ID: <YAi9qNqiBjGvXMoI@mtj.duckdns.org>
 References: <20210108012846.4134815-1-vipinsh@google.com>
  <20210108012846.4134815-2-vipinsh@google.com>
  <YAICLR8PBXxAcOMz@mtj.duckdns.org>
@@ -70,119 +71,55 @@ References: <20210108012846.4134815-1-vipinsh@google.com>
  <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
  <YAfYL7V6E4/P83Mg@google.com>
  <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <YAi6RcbxTSMmNssw@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+In-Reply-To: <YAi6RcbxTSMmNssw@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Jan 20, 2021 at 11:40:18AM -0500, Tejun Heo wrote:
-> Hello,
+Hello,
+
+On Wed, Jan 20, 2021 at 03:18:29PM -0800, Vipin Sharma wrote:
+> RDMA cgroup expose hardware details to users. In rdma.{max, current}
+> interface files we can see actual hardware names. Only difference
+
+No, what's shown is the device name followed by resources which are commonly
+defined for all rdma devices. The format is the same as io controller
+interface files.
+
+> compared to Encryption ID cgroup is that latter is exposing that detail
+> via file names.
 > 
-> On Tue, Jan 19, 2021 at 11:13:51PM -0800, Vipin Sharma wrote:
-> > > Can you please elaborate? I skimmed through the amd manual and it seemed to
-> > > say that SEV-ES ASIDs are superset of SEV but !SEV-ES ASIDs. What's the use
-> > > case for mixing those two?
-> > 
-> > For example, customers can be given options for which kind of protection they
-> > want to choose for their workloads based on factors like data protection
-> > requirement, cost, speed, etc.
+> Will you prefer that encryption ID cgroup do things similar to RDMA
+> cgroup? It can have 3 files
+
+I don't know how many times I have to repeat the same point to get it
+across. For any question about actual abstraction, you haven't provided any
+kind of actual research or analysis and just keep pushing the same thing
+over and over again. Maybe the situation is such that it makes sense to
+change the rule but that needs substantial justifications. I've been asking
+to see whether there are such justifications but all I've been getting are
+empty answers. Until such discussions take place, please consider the series
+nacked and please excuse if I don't respond promptly in this thread.
+
+> > Attaching the interface to kvm side, most likely, instead of exposing the
+> > feature through cgroup.
+> I am little confused, do you mean moving files from the kernel/cgroup/
+> to kvm related directories or you are recommending not to use cgroup at
+> all?  I hope it is the former :)
 > 
-> So, I'm looking for is a bit more in-depth analysis than that. ie. What's
-> the downside of SEV && !SEV-ES and is the disticntion something inherently
-> useful?
+> Only issue with this is that TDX is not limited to KVM, they have
+> potential use cases for MKTME without KVM.
 
-I will leave this for AMD folks to respond, as they can give much better
-answer than me.
+There are ways to integrate with cgroup through other interfaces - e.g. take
+a look at how bpf works with cgroups. Here, it isn't ideal but may work out
+if things actually require a lot of hardware dependent bits. There's also
+RDT which exists outside of cgroup for similar reasons.
 
-> > > I'm very reluctant to ack vendor specific interfaces for a few reasons but
-> > > most importantly because they usually indicate abstraction and/or the
-> > > underlying feature not being sufficiently developed and they tend to become
-> > > baggages after a while. So, here are my suggestions:
-> > 
-> > My first patch was only for SEV, but soon we got comments that this can
-> > be abstracted and used by TDX and SEID for their use cases.
-> > 
-> > I see this patch as providing an abstraction for simple accounting of
-> > resources used for creating secure execution contexts. Here, secure
-> > execution is achieved through different means. SEID, TDX, and SEV
-> > provide security using different features and capabilities. I am not
-> > sure if we will reach a point where all three and other vendors will use
-> > the same approach and technology for this purpose.
-> > 
-> > Instead of each one coming up with their own resource tracking for their
-> > features, this patch is providing a common framework and cgroup for
-> > tracking these resources.
-> 
-> What's implemented is a shared place where similar things can be thrown in
-> bu from user's perspective the underlying hardware feature isn't really
-> abstracted. It's just exposing whatever hardware knobs there are. If you
-> look at any other cgroup controllers, nothing is exposing this level of
-> hardware dependent details and I'd really like to keep it that way.
+Thanks.
 
-RDMA cgroup expose hardware details to users. In rdma.{max, current}
-interface files we can see actual hardware names. Only difference
-compared to Encryption ID cgroup is that latter is exposing that detail
-via file names.
-
-Will you prefer that encryption ID cgroup do things similar to RDMA
-cgroup? It can have 3 files
-1. encids.capacity (only on root)
-   Shows features (SEV, SEV-ES, TDX, SEID) available along with capacity
-   on the host.
-   $ cat encids.capacity
-   sev 400
-   sev-es 100
-
-2. encids.max (only on non-root)
-   Allows setting of the max value of a feature in the cgroup.
-   It will only show max for features shown in the capacity file.
-   $ cat encids.max
-   sev max
-   sev-es 100
-
-3. encids.current (all levels)
-   Shows total getting used in the cgroup and its descendants.
-   $ cat encids.current
-   sev 3
-   sev-es 0
-
-> 
-> So, what I'm asking for is more in-depth analysis of the landscape and
-> inherent differences among different vendor implementations to see whether
-> there can be better approaches or we should just wait and see.
-> 
-> > > * If there can be a shared abstraction which hopefully makes intuitive
-> > >   sense, that'd be ideal. It doesn't have to be one knob but it shouldn't be
-> > >   something arbitrary to specific vendors.
-> > 
-> > I think we should see these as features provided on a host. Tasks can
-> > be executed securely on a host with the guarantees provided by the
-> > specific feature (SEV, SEV-ES, TDX, SEID) used by the task.
-> > 
-> > I don't think each H/W vendor can agree to a common set of security
-> > guarantees and approach.
-> 
-> Do TDX and SEID have multiple key types tho?
-To my limited knowledge I don't think so. I don't know their future
-plans.
-
-> 
-> > > * If we aren't there yet and vendor-specific interface is a must, attach
-> > >   that part to an interface which is already vendor-aware.
-> > Sorry, I don't understand this approach. Can you please give more
-> > details about it?
-> 
-> Attaching the interface to kvm side, most likely, instead of exposing the
-> feature through cgroup.
-I am little confused, do you mean moving files from the kernel/cgroup/
-to kvm related directories or you are recommending not to use cgroup at
-all?  I hope it is the former :)
-
-Only issue with this is that TDX is not limited to KVM, they have
-potential use cases for MKTME without KVM.
-
-Thanks
-Vipin
+-- 
+tejun
