@@ -2,58 +2,58 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2DD22FC5A0
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jan 2021 01:21:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A29992FC592
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jan 2021 01:19:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1728942AbhATAUX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 19 Jan 2021 19:20:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39228 "EHLO
+        id S1730678AbhATATn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 19 Jan 2021 19:19:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729187AbhATAT2 (ORCPT
+        with ESMTP id S1730076AbhATAT2 (ORCPT
         <rfc822;cgroups@vger.kernel.org>); Tue, 19 Jan 2021 19:19:28 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0A1DC0613D3;
-        Tue, 19 Jan 2021 16:18:32 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id my11so2214650pjb.1;
-        Tue, 19 Jan 2021 16:18:32 -0800 (PST)
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3F84C0613D6;
+        Tue, 19 Jan 2021 16:18:33 -0800 (PST)
+Received: by mail-pg1-x535.google.com with SMTP id v19so14006143pgj.12;
+        Tue, 19 Jan 2021 16:18:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=tXzJgZeFW0MqXzTyG1CaFrbwaPZ1tQM/2q7+gv5S6M4=;
-        b=mIXcBx3kExnFoF3rAgXg8Y0Wu3FiLWLpnEXS/UczJOdkeL0yC1hqypRtVpXgGacxkM
-         jFXPPaebOVuteHEChay9KDmNeziCRTFDwPBe0G8qEWVc6Ajx6crLYnLLxo68GO6yg+op
-         +ZQPcjIEheoIfceVbvtgM2rHoRQTgIAWWEOsSR4+VNmhA+MvKh3SVqkSe3CpsQVPs1MB
-         ElUdO99Zv2hUhqifNRyDclRz0V/79CWbfIGu7qVORtMqlRfMz0R4QyjGf2E2hmDv425R
-         SxAu+WEkc0bc8kdw4dGzwxmge1QMdYiKJ8GWP6IqhpGMnQzybv5bwGMCncMKSbwx/KpZ
-         4snw==
+        bh=BDt3dRzzxyMOUVS7eh8bQyHtp1JLCsZLHuvxlUpRuiQ=;
+        b=nLjy6Gxfv1a4qY2nlC2Q1hEzRowvlssXmdDWcqH6bGPspja43Qfhxa7Ix0xWdumpK1
+         fqRacr0Kb8R5o0QBYPdYxbrWysEjuAX/uKmvA4Jal5djhdVZr47c2PAAwFwExDJn8DGz
+         sXn9eBhPSm1prO93M+BMkEIPoDoNgXceZJHFqmhyQGjhNLA71Nes4XsbcgtiKR6ue1fe
+         dKYZDs7VLYArrmlc0IScF7j5Px+C1lCsTHo9AxRPf81PciVHvIWxUzqkI+SDs3Xr3i38
+         R5Z6Y9+Uj0CFPdpS4LD960+wLMDwtkvbQ0UumajZGyMXdwb4y36b9QCkg5vinGXuWfvT
+         9Igw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=tXzJgZeFW0MqXzTyG1CaFrbwaPZ1tQM/2q7+gv5S6M4=;
-        b=NCtjFupzPvWH6wjyZbunyWRSprzqu/RQ25LRpUVopDUtWSCmRFF0MAnPzOXkWVfQdn
-         vJpCwtVPc8eSnZLnny2DS0XUzDys8edM3LAqrEHn2MV10rXFozR+92H4p/lwxb8JsO0u
-         7kauzVQZEKahXt5IsYM70H8XRNm6u9jv93s2iveSDaKAxZ9Mq+VL8+jKcqZf3sfX9Xqs
-         qHK9F/p4npdKKXpK8uEHeu0QFEt7Nhdf3edcWrZ7p0TPtcpklHfF5NUHQbXBHbadiOaU
-         qZlpZWM151gjmdS94dvNwMb6C5eRJkFRmXupHj0i9COBPiF6Hc6m1fzN1cFX1mgQUYuj
-         uGGA==
-X-Gm-Message-State: AOAM533bVqP/kbUtLbHH0oJchtiCdqspFq/u/qjUsuUOkEFj6mgnuQ5/
-        IxlMh3AIDyYahhN1j8KfnA+RJfyxcTIEkw==
-X-Google-Smtp-Source: ABdhPJyMf2Cd2x3S3zyTUWMkt3ynfH0UwolTGEyYSNQB8hhpfpLD3enhfPGJVNDJiZw2p94aOAtlCA==
-X-Received: by 2002:a17:90a:34cb:: with SMTP id m11mr2394836pjf.59.1611101912193;
-        Tue, 19 Jan 2021 16:18:32 -0800 (PST)
+        bh=BDt3dRzzxyMOUVS7eh8bQyHtp1JLCsZLHuvxlUpRuiQ=;
+        b=orO8Kq/pb6YGVNv1hLUNF5TtofBXMBb8WsP7alrWwPV7jl1vFjE4oyUZbrtOlj9tgw
+         u1h0K2GMhNUIWKYxFykfV9FIcoC/hs9Qq4DcFGlyHUST8PRC/GN7G+p7IY2x7k7kQt7n
+         QnNAB66Fx5j2ky04MhvOpWyANXxCcjSc9/p6FU3nmkryxjhCL6aVUNRkdpp9zKC2sxWx
+         qgeXID8idGdJqeiim0tfd/QnAmu7WhxNqx+iNQiGtdfFTB71XXS/VFVjoztGnd5u4LSm
+         RmGBZafwW66L2HDodoAk/baOXVdrNjthLPCerEDbp57TLOKx0gWyx+SmMCozZhGsYRlo
+         KkbA==
+X-Gm-Message-State: AOAM531mrFMcuHpismzZq6Pi4SDtYFiM+JFtS62dmOWczcu+ZF9RhPdw
+        /09phzt5IK4wJrUO9dESBok5Anq5T7jLmA==
+X-Google-Smtp-Source: ABdhPJzScD7Vi38wkKdYZPthdXPu4530hKaGLN6+ra/ZiJuYv9k6tEPGHprwJzpX9qcKDafDONVxaA==
+X-Received: by 2002:a63:e442:: with SMTP id i2mr6568758pgk.12.1611101913169;
+        Tue, 19 Jan 2021 16:18:33 -0800 (PST)
 Received: from kir-rhat.lan (c-76-104-243-248.hsd1.wa.comcast.net. [76.104.243.248])
-        by smtp.gmail.com with ESMTPSA id y6sm227452pfn.123.2021.01.19.16.18.31
+        by smtp.gmail.com with ESMTPSA id y6sm227452pfn.123.2021.01.19.16.18.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Jan 2021 16:18:31 -0800 (PST)
+        Tue, 19 Jan 2021 16:18:32 -0800 (PST)
 From:   Kir Kolyshkin <kolyshkin@gmail.com>
 To:     corbet@lwn.net
 Cc:     linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
         Kir Kolyshkin <kolyshkin@gmail.com>
-Subject: [PATCH 04/10] docs/scheduler/sched-bwc: add proper ref
-Date:   Tue, 19 Jan 2021 16:18:18 -0800
-Message-Id: <20210120001824.385168-5-kolyshkin@gmail.com>
+Subject: [PATCH 05/10] docs/scheduler/sched-bwc: note/link cgroup v2
+Date:   Tue, 19 Jan 2021 16:18:19 -0800
+Message-Id: <20210120001824.385168-6-kolyshkin@gmail.com>
 X-Mailer: git-send-email 2.29.2
 In-Reply-To: <20210120001824.385168-1-kolyshkin@gmail.com>
 References: <20210120001824.385168-1-kolyshkin@gmail.com>
@@ -63,38 +63,47 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Add a proper reference instead of just using the file name.
-
 Signed-off-by: Kir Kolyshkin <kolyshkin@gmail.com>
 ---
- Documentation/scheduler/sched-bwc.rst      | 3 ++-
- Documentation/scheduler/sched-rt-group.rst | 2 ++
- 2 files changed, 4 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/cgroup-v2.rst | 4 ++++
+ Documentation/scheduler/sched-bwc.rst   | 5 +++++
+ 2 files changed, 9 insertions(+)
 
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index e0f6ff7cfa93..b55362454886 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1,3 +1,5 @@
++.. _cgroup-v2:
++
+ ================
+ Control Group v2
+ ================
+@@ -954,6 +956,8 @@ All cgroup core files are prefixed with "cgroup."
+ Controllers
+ ===========
+ 
++.. _cgroup-v2-cpu:
++
+ CPU
+ ---
+ 
 diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
-index a44860d33ffc..dcec7440c222 100644
+index dcec7440c222..963fde3993dc 100644
 --- a/Documentation/scheduler/sched-bwc.rst
 +++ b/Documentation/scheduler/sched-bwc.rst
-@@ -4,7 +4,8 @@ CFS Bandwidth Control
+@@ -27,6 +27,11 @@ Management
+ ----------
+ Quota and period are managed within the cpu subsystem via cgroupfs.
  
- .. note::
-    This document only discusses CPU bandwidth control for SCHED_NORMAL.
--   The SCHED_RT case is covered in Documentation/scheduler/sched-rt-group.rst
-+   The SCHED_RT case is covered in
-+   :ref:`Documentation/scheduler/sched-rt-group.rst <sched-rt-group>`.
- 
- CFS bandwidth control is a CONFIG_FAIR_GROUP_SCHED extension which allows the
- specification of the maximum CPU bandwidth available to a group or hierarchy.
-diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
-index 655a096ec8fb..a3b4aa51c271 100644
---- a/Documentation/scheduler/sched-rt-group.rst
-+++ b/Documentation/scheduler/sched-rt-group.rst
-@@ -1,3 +1,5 @@
-+.. _sched-rt-group:
++.. note::
++   The cgroupfs files described in this section are only applicable
++   to cgroup v1. For cgroup v2, see
++   :ref:`Documentation/admin-guide/cgroupv2.rst <cgroup-v2-cpu>`.
 +
- ==========================
- Real-Time group scheduling
- ==========================
+ - cpu.cfs_quota_us: the total available run-time within a period (in
+   microseconds)
+ - cpu.cfs_period_us: the length of a period (in microseconds)
 -- 
 2.29.2
 
