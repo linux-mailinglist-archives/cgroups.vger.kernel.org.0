@@ -2,85 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A62012FD614
-	for <lists+cgroups@lfdr.de>; Wed, 20 Jan 2021 17:53:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EA9012FD76F
+	for <lists+cgroups@lfdr.de>; Wed, 20 Jan 2021 18:48:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2388833AbhATQwo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 20 Jan 2021 11:52:44 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54028 "EHLO
+        id S1727335AbhATRqm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 20 Jan 2021 12:46:42 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38242 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391507AbhATQpQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jan 2021 11:45:16 -0500
-Received: from mail-qt1-x82c.google.com (mail-qt1-x82c.google.com [IPv6:2607:f8b0:4864:20::82c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DAA0C061575;
-        Wed, 20 Jan 2021 08:44:34 -0800 (PST)
-Received: by mail-qt1-x82c.google.com with SMTP id c12so11158218qtv.5;
-        Wed, 20 Jan 2021 08:44:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=02Z6TkAFxEXED71l0h/isCElQR7bDCewo1h0J01+Wq0=;
-        b=ZFT116uGUty55tAT/lPBU+jK/pTkJif9rwc6f69o4n9DiLgm279sPG57CMy/5rnzVk
-         PfBUJZPULqvQU9M3UuFhTEVVFQDbx3agVb/qSmGHKpFGfnZmuW/e6sNCi6YPr7pj/UGw
-         V0kAZCN/2Pw+FzXKWB1Sk0RImOk4aaOwceptZTX94mOmjK08NFcsuHETyfHdkx8u/qL8
-         k4bgiPA2PWl7kPfKTu2hHcPmNAgfukZKjldhOkoPIHLfQDSGrwkhs/9uRnn+ifaD/sM5
-         ip1lcO42mVBRGiI1C9pdaeE+nTYOlrDsPgYHzi+vSOkighBozKL5FHt/uXzdZp75U53F
-         fczw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=02Z6TkAFxEXED71l0h/isCElQR7bDCewo1h0J01+Wq0=;
-        b=mveUfedZRVKqKNbz3bgdkqJvzwN7W2HJC04mG0WuzVaEppfrqdbJ4lZDIYheWSkEP0
-         mpujpBEjB3LMiraS/rCagsnSUScV3ufNS1uc2C5HppTCoCekCIY2NvLDJJs0zE479E4T
-         B3a3ABF3KXBV4N288q2L1ysMxoqjEgLCfEc9501kiNSzS+0bjPuLDpOQqtiU0JcfS8e0
-         040d3YVR8CPoxPJy6tpEBtV/q59BCmAYGAXdF6ISWj2O8l9IcqnSSeef+v+kMK6bvvgq
-         Gs7y9Tx0EA/XelDFUF7z/aPCsW6Job8sXcJwQP8QhleJkPThwihSwTREl9R9SfCI43d9
-         E3yw==
-X-Gm-Message-State: AOAM531iRLNMzbzJebD3BLA0qwNxMRMXhJabYZjl08+PSqJjUKUKzMoE
-        COpNG5jcr1h0hHzbjtcj5eQ=
-X-Google-Smtp-Source: ABdhPJxn1raxfX/V/yiPGSWI1xjOUpn9xVevENN/MHdwBus5VX4sEhwoUzZC3JMITmzBq/bYJcKmZg==
-X-Received: by 2002:ac8:4f51:: with SMTP id i17mr9627134qtw.78.1611161073787;
-        Wed, 20 Jan 2021 08:44:33 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:1b8f])
-        by smtp.gmail.com with ESMTPSA id f125sm1628553qkd.22.2021.01.20.08.44.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Jan 2021 08:44:33 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 20 Jan 2021 11:43:46 -0500
-From:   Tejun Heo <tj@kernel.org>
+        with ESMTP id S2390513AbhATRph (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 20 Jan 2021 12:45:37 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29E54C061575
+        for <cgroups@vger.kernel.org>; Wed, 20 Jan 2021 09:45:22 -0800 (PST)
+Received: from lwn.net (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 041346133;
+        Wed, 20 Jan 2021 17:43:02 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 041346133
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1611164583; bh=t10z/9IsGKuL0EHjMm0YRCyX2MRbbRcllIYkA3Oblow=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=InB65MkkxlBevNgPOKeV8RBG//YJUhsA2r8PVWvyNp2Mw5g/HNf5JeJ4xBBrfpNeo
+         YLiRFHpJjNRbBK2QfAcWa0TIPN6QdapdsXeur7r+4kbN9572oTXcIUFMchzrhQsGEU
+         JQ1/Xhp0vafrkWbJZg2tqjanqpyh6jlrzQXz480/KsYbpLwDrlNOinLdq7MVyCC2sO
+         8vlZ/cJNL19q9y6bW+1P8ey8JE8ZPHBiVKBXNc2+JUKEG9gqrvg5s0gaAO/SNyorrS
+         OPybZ7wtWIQwUAJWcusMDEVgpkFhNQLzeCkxX9k36h+d2ob6LB/VVKBYBykRWTRHsk
+         1ynMQWpV/glHg==
+Date:   Wed, 20 Jan 2021 10:43:01 -0700
+From:   Jonathan Corbet <corbet@lwn.net>
 To:     Kir Kolyshkin <kolyshkin@gmail.com>
-Cc:     corbet@lwn.net, linux-doc@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH 00/10] docs: cgroup nits and fixes
-Message-ID: <YAhdwtMS98iPma+S@mtj.duckdns.org>
+Cc:     linux-doc@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH 04/10] docs/scheduler/sched-bwc: add proper ref
+Message-ID: <20210120104301.2aeda8f9@lwn.net>
+In-Reply-To: <20210120001824.385168-5-kolyshkin@gmail.com>
 References: <20210120001824.385168-1-kolyshkin@gmail.com>
+        <20210120001824.385168-5-kolyshkin@gmail.com>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210120001824.385168-1-kolyshkin@gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Jan 19, 2021 at 04:18:14PM -0800, Kir Kolyshkin wrote:
-> These are mostly formatting fixes for a few cases where html
-> looks plain wrong, plus a couple of added cross-references,
-> and a typo.
+On Tue, 19 Jan 2021 16:18:18 -0800
+Kir Kolyshkin <kolyshkin@gmail.com> wrote:
+
+> Add a proper reference instead of just using the file name.
 > 
-> All issues spotted while reading cgroup docs. Results are checked
-> manually for both html and pdf, using both Sphinx 2.4.4 and 3.2.1
-> for rendering.
+> Signed-off-by: Kir Kolyshkin <kolyshkin@gmail.com>
+> ---
+>  Documentation/scheduler/sched-bwc.rst      | 3 ++-
+>  Documentation/scheduler/sched-rt-group.rst | 2 ++
+>  2 files changed, 4 insertions(+), 1 deletion(-)
 > 
-> All commits are against docs-next@52042e2db
+> diff --git a/Documentation/scheduler/sched-bwc.rst b/Documentation/scheduler/sched-bwc.rst
+> index a44860d33ffc..dcec7440c222 100644
+> --- a/Documentation/scheduler/sched-bwc.rst
+> +++ b/Documentation/scheduler/sched-bwc.rst
+> @@ -4,7 +4,8 @@ CFS Bandwidth Control
+>  
+>  .. note::
+>     This document only discusses CPU bandwidth control for SCHED_NORMAL.
+> -   The SCHED_RT case is covered in Documentation/scheduler/sched-rt-group.rst
+> +   The SCHED_RT case is covered in
+> +   :ref:`Documentation/scheduler/sched-rt-group.rst <sched-rt-group>`.
+>  
+>  CFS bandwidth control is a CONFIG_FAIR_GROUP_SCHED extension which allows the
+>  specification of the maximum CPU bandwidth available to a group or hierarchy.
+> diff --git a/Documentation/scheduler/sched-rt-group.rst b/Documentation/scheduler/sched-rt-group.rst
+> index 655a096ec8fb..a3b4aa51c271 100644
+> --- a/Documentation/scheduler/sched-rt-group.rst
+> +++ b/Documentation/scheduler/sched-rt-group.rst
+> @@ -1,3 +1,5 @@
+> +.. _sched-rt-group:
+> +
 
-For the series,
+So why do you need to do this?  The build system in recent kernels will
+generate that reference automatically without the extra markup.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Thanks,
 
-I suppose it'd be best to route this through the doc tree?
-
-Thanks.
-
--- 
-tejun
+jon
