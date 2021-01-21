@@ -2,92 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C472FE8E4
-	for <lists+cgroups@lfdr.de>; Thu, 21 Jan 2021 12:35:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A7D2FE9AD
+	for <lists+cgroups@lfdr.de>; Thu, 21 Jan 2021 13:11:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730498AbhAULe6 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 21 Jan 2021 06:34:58 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        id S1730028AbhAUMLx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 21 Jan 2021 07:11:53 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50698 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728019AbhAULeh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Jan 2021 06:34:37 -0500
-Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C34B4C061575;
-        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
-Received: by mail-yb1-xb30.google.com with SMTP id f6so1683034ybq.13;
-        Thu, 21 Jan 2021 03:33:49 -0800 (PST)
+        with ESMTP id S1729177AbhAUMLr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 21 Jan 2021 07:11:47 -0500
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D87AC061575
+        for <cgroups@vger.kernel.org>; Thu, 21 Jan 2021 04:11:06 -0800 (PST)
+Received: by mail-pf1-x42d.google.com with SMTP id j12so1358841pfj.12
+        for <cgroups@vger.kernel.org>; Thu, 21 Jan 2021 04:11:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
-        b=QjcSscZscimEm9YXE5dIYpYuqYcpiIxJB+SPAUkEjYLDPYGtuYJyR1e/+YCFiR0qlC
-         pDFpMw5HFKmXcyWysd1FhVkkiwiw7v2DpYdv5H8Un0R46SL6yVpM67dXd67OIZFvtDXY
-         dpW0qo3HPREc7uTvFBrV2HliAUzJOjyhbXreHkpZ5NZFYN9Csb2Q44ryDKdkBdzsyg2Q
-         VoumBKLrxmHUMCdVBuY/16Za7bqRWVO3VlUPwEvpVv0UDSxxSDwErL3NRwzBqW76e0s+
-         zuu9JC1a8X6Oy6MTQX4f5jonI9y7EqxIF9LQv0q6d2eNgRwvrVEBR8JqQdMw10JJcxBZ
-         8o1g==
+        bh=00EJOlGNqegMy5hWj3ItO3z7nmI6UcSXmhSyNLe26rA=;
+        b=Tpb68P6eh9RtW9ZhJwuC5B/7Aj+ZcjD8RwvLQuwoYlLwq/++4HrqNwWBiByaQYuCm0
+         5rJ6ffcjoutyckNMCnTx5L+fQNtdqgnu72Ps/43BQHDTXZ4Bh5Fp+vqsw9N5XxlsVs/R
+         hAwEet96Bu1G3nmsVE5V4LDFNd988ALXH3K7+A/iVOn7cdZevK2tz7CxhKIGSs/dX206
+         6hC9ekk9a+UaZ3Z6ryoi7bzoov1BnqdxC3X5LEIvjQ8JdL57Sf2/EJAKgD1/5zoZddFO
+         tuK9zXzQ3TJJ6c9J0P7v6Gl+Nwb/68bNk4nmIBDQX1fJ2yDMBZXYw04MUxSd33dzsnQK
+         jddg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=I+cG4Vp0KOKN+ozIhgZ8d42ujiCT1czKBVqBGfsh21E=;
-        b=gPNofxltzAEugMNKrOdXE7iawBLU6dHZdTeRcHC+88MnZXjXEmrOh2E8hlwl/fIzqr
-         XUzW0qan3zp9gVtw7KyIy/iLGkX9k+eXtaHJdygoNuMo8ZN4zHA6Hm04e1WMSe0oI297
-         6vlg1rQImp/mXMbxY6RewVihd+y33WAFYv6Zv0YlzaqoBaWz6uYFX5I59ToOKmesXG3W
-         8PvCEQDaBZEXzrOR5SS61nbvoCBfYOe/V1KbRx9ab5HRGPM01l853ZKEZFdpvHz+AfbE
-         sIlwvE2lpj6gq6Yv3i93ZkKY94oM0dC+Qcy75UAQ9rysj7uUKF+Klpehi+CJd6DRZ6U6
-         Ppeg==
-X-Gm-Message-State: AOAM532QcwkZXtM1C5+jou0L2SMAH0oZETSJ7ZYkLoAqlLqYmdIGfFJH
-        +kwiUlUMVOqa3L7BzbNZeb9GzDx4OeKzzL43xkQ=
-X-Google-Smtp-Source: ABdhPJx7CE06Ajx6zuXEJea156D0wq36xdLyL4K/2sS9pM1SZo8RtkpQgK8SOVM4JSKPoJSwnb6ypisyz8pGTv5Q+jY=
-X-Received: by 2002:a25:688c:: with SMTP id d134mr20778186ybc.477.1611228829127;
- Thu, 21 Jan 2021 03:33:49 -0800 (PST)
+        bh=00EJOlGNqegMy5hWj3ItO3z7nmI6UcSXmhSyNLe26rA=;
+        b=ZicQsjv84s0cYK0VFTvkxQpPPycZFQAiVrJXVzYH6B4R1M/hBouBPa2jdTjrjwta4R
+         HetOqUy6E70NpRqD4WuFzxihhy4tWv+CbO7MVhkVRb9/ldS/9bkVEQUtE0fyaElHmmZV
+         kvUJtuAaE1EFNgNfbTMG3yKCKip/YwbRP2Z9bGshtp8s4zYykxBW//0AoHGvczOwPT1o
+         1BAhTj2vJ+zapd8beuEQQKi6LSQpTeN152zZMPjJhSiqky+Gn70cmBLqWTFj/NgaiVFZ
+         ZsKO14vI5V/a9Eq1C6r4TdxjivLYkX/NadX2eeLad4BYTygV+kZztNCfgSunqQJxHaS3
+         MHUw==
+X-Gm-Message-State: AOAM5322IsEr7mW7uRRXRX1OOV7hv4f1JAKy01GCK5MfXh0ZvL9jSpPj
+        snweC2C+oDpmNgAMZ/mXvTQ=
+X-Google-Smtp-Source: ABdhPJyqxbcU99KoR1fsASF23wwPk/UuHSMnaag5YuU0LeKv386/1MGT4+6vgBaUZOfDQf3daVxsOg==
+X-Received: by 2002:a63:e54f:: with SMTP id z15mr14172633pgj.247.1611231066153;
+        Thu, 21 Jan 2021 04:11:06 -0800 (PST)
+Received: from localhost.localdomain ([150.109.106.156])
+        by smtp.gmail.com with ESMTPSA id i67sm5643467pfc.153.2021.01.21.04.11.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Jan 2021 04:11:05 -0800 (PST)
+From:   wu860403@gmail.com
+To:     tj@kernel.org, cgroups@vger.kernel.org
+Cc:     mingo@redhat.com, peterz@infradead.org, 398776277@qq.com,
+        Liming Wu <wu860403@gmail.com>
+Subject: [PATCH V2] tg: add sched wait_count of a task group
+Date:   Fri, 22 Jan 2021 04:11:57 +0800
+Message-Id: <20210121201157.1933-1-wu860403@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-From:   =?UTF-8?B?5oWV5Yas5Lqu?= <mudongliangabcd@gmail.com>
-Date:   Thu, 21 Jan 2021 19:33:23 +0800
-Message-ID: <CAD-N9QW6VGmAFPtJDcHahO=OQ=0Cy06-zaQf72mYL0=L_MEc_g@mail.gmail.com>
-Subject: "WARNING in cgroup_finalize_control" and "WARNING in
- cgroup_apply_control_disable" should be duplicate crash reports
-To:     andriin@fb.com, ast@kernel.org, bpf@vger.kernel.org,
-        cgroups@vger.kernel.org, christian@brauner.io,
-        Daniel Borkmann <daniel@iogearbox.net>, hannes@cmpxchg.org,
-        john.fastabend@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        linux-kernel <linux-kernel@vger.kernel.org>, lizefan@huawei.com,
-        netdev@vger.kernel.org, songliubraving@fb.com, tj@kernel.org,
-        yhs@fb.com
-Cc:     syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Dear kernel developers,
+From: Liming Wu <wu860403@gmail.com>
 
-I found that on the syzbot dashboard, =E2=80=9CWARNING in
-cgroup_finalize_control=E2=80=9D [1] and "WARNING in
-cgroup_apply_control_disable" [2] should share the same root cause.
+Now we can rely on PSI to reflect whether there is contention in
+the task group, but it cannot reflect the details of the contention.
+Through this metric, we can get avg latency of task group contention
+ from the dimension of scheduling.
+   delta(wait_usec)/delta(nr_waits)
+Also change wait_sum to wait_usec.
 
-The reasons for the above statement:
-1) the stack trace is the same, and this title difference is due to
-the inline property of "cgroup_apply_control_disable";
-2) their PoCs are the same as each other;
+Signed-off-by Liming Wu <wu860403@gmail.com>
+---
+ kernel/sched/core.c | 23 +++++++++++++++++++++--
+ 1 file changed, 21 insertions(+), 2 deletions(-)
 
-If you can have any issues with this statement or our information is
-useful to you, please let us know. Thanks very much.
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index e7e453492..45e46114e 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -8146,12 +8146,17 @@ static int cpu_cfs_stat_show(struct seq_file *sf, void *v)
+ 
+ 	if (schedstat_enabled() && tg != &root_task_group) {
+ 		u64 ws = 0;
++		u64 wc = 0;
+ 		int i;
+ 
+-		for_each_possible_cpu(i)
++		for_each_possible_cpu(i) {
+ 			ws += schedstat_val(tg->se[i]->statistics.wait_sum);
++			wc += schedstat_val(tg->se[i]->statistics.wait_count);
++		}
+ 
+-		seq_printf(sf, "wait_sum %llu\n", ws);
++		do_div(ws, NSEC_PER_USEC);
++		seq_printf(sf, "wait_usec %llu\n"
++			   "nr_waits %llu\n", ws, wc);
+ 	}
+ 
+ 	return 0;
+@@ -8255,6 +8260,20 @@ static int cpu_extra_stat_show(struct seq_file *sf,
+ 			   "throttled_usec %llu\n",
+ 			   cfs_b->nr_periods, cfs_b->nr_throttled,
+ 			   throttled_usec);
++		if (schedstat_enabled() && tg != &root_task_group) {
++			u64 ws = 0;
++			u64 wc = 0;
++			int i;
++
++			for_each_possible_cpu(i) {
++				ws += schedstat_val(tg->se[i]->statistics.wait_sum);
++				wc += schedstat_val(tg->se[i]->statistics.wait_count);
++			}
++
++			do_div(ws, NSEC_PER_USEC);
++			seq_printf(sf, "wait_usec %llu\n"
++				   "nr_waits %llu\n", ws, wc);
++		}
+ 	}
+ #endif
+ 	return 0;
+-- 
+2.20.1
 
-[1] =E2=80=9CWARNING in cgroup_finalize_control=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Dfe2fee189f1f8babd95615dcbb57871d6d18=
-920a
-
-[2] =E2=80=9CWARNING in cgroup_apply_control_disable=E2=80=9D -
-https://syzkaller.appspot.com/bug?id=3Dba5a3ed954137643a9337f90782c90e90ba3=
-02ed
-
---
-My best regards to you.
-
-     No System Is Safe!
-     Dongliang Mu
