@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C11304F6E
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D87304F6F
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232943AbhA0DKU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:10:20 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        id S233542AbhA0DKX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jan 2021 22:10:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727745AbhAZWBu (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 17:01:50 -0500
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E15C06174A;
-        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
-Received: by mail-qk1-x72c.google.com with SMTP id x81so14730873qkb.0;
-        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
+        with ESMTP id S1727925AbhAZWDV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 17:03:21 -0500
+Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE267C0613D6;
+        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
+Received: by mail-qk1-x731.google.com with SMTP id 19so17623281qkh.3;
+        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
-        b=DEjU2Vlz+c8s8l7i4VvNrOHrZX1BFA/CoCHLraoX/TGR7m7IOU/Tk+tMXGz2Ie8kVj
-         NRrXxn6RiYvZpVsXxyW2ANxFvOjsPw4fYgILW+Q5wT0h4ekogKQAo1eKS1P77lgKI3nI
-         1mkQ+1lcbvQhLF8LTabfIIo+NAgLtSI25NYjLc4f8IcvqpFBJSRSI43sJ5oVpm02n96D
-         QVU/+8yE+q/cn9U/oK+XTtYMJXq+KdR1HO8fMUu0+7yHtjfPTvUZedtrUjvG7fCSneZs
-         e9r9Ve3hIZgRPOpS/7mGJOTQ3Etujv//AbXyOlHj1gMJpEg1TnivcCjUgu+u+sloivxz
-         wPuA==
+        bh=gWT03kNJZSWxacIeOv6hjkOlCv2pmh2+pjFjp7VWYGQ=;
+        b=po/4EBxBrPQhQy3bPcyEACcYckHeCx+IqagN9LbPD7QWla65XueTFcJcZhFwMJm5q8
+         BkPgq90SfW5XB9q4rUfFX6Q3vmRMiuNukJ5gbVAmZ6/0QFvGhiqd98fNfF72QI9cj0Ts
+         3ogXVPNT6D3/2J0imMFB6/PEl6R35PvlqLRm2wFIoDdw/AXQE2G1hGL40IY+DVMULxmi
+         iCBTlotIA6yDRSNo6CTMqmoQCf0qIGCKYk7YpRU6ooc7Jioj0XEHtleX5dUCur8V8pdh
+         ihHDES1CmXI3fZis+DWWDI/VKa2rTH87g2JqBhjS1rzTSOWi+/XOtRg+At/G2P5QzXzb
+         b1ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
          :references:mime-version:content-disposition:in-reply-to;
-        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
-        b=d/+dpZBRwpV39dm8EzskT6p0ZDamIMjc17bYtgk+i8QCBZxWhDDIbZzrmBLfRpPRah
-         gTjm3cXaMkM2XO8wFzmWkQ0cZlpmTl9xDlUGL18UrCsvNROcc3NS0NRD82u4wcFSRLfd
-         Gp8tCSlVCARYlqSwjAIQWiRbiTgB/olGXUrfgq8BgHStjIJgytzZrgK+OK7TSbhltRfg
-         TiayRUtdw1XHxc9WoeQ/JmkNEuSSZdTa8CtpBhpUfnJxVo6uPlzlgjLO99uvMkBquOo3
-         CCiKC8woPe7ugKfjCqerzqksCT+SIoT9Q8GKPV27u5N1SE+qUhAMQTk5GYViOYEKSwwQ
-         JbhQ==
-X-Gm-Message-State: AOAM531m3KGh0bxj/2ebS+RKlojNjTpXXNHon96rAOtsS2bYERvVuWR2
-        9uV7mqRTanbr+kunlgoFWkc=
-X-Google-Smtp-Source: ABdhPJxCGoD28UZpYnoVrJkVxaNC0LAX7DFLMqKvCIyNhqeE9W8d95d/tnyrGdZGdIdjcWjqWJOcbA==
-X-Received: by 2002:a37:9f55:: with SMTP id i82mr6102308qke.205.1611698465257;
-        Tue, 26 Jan 2021 14:01:05 -0800 (PST)
+        bh=gWT03kNJZSWxacIeOv6hjkOlCv2pmh2+pjFjp7VWYGQ=;
+        b=OPfrGCAlYZ3e1Ux4tpeF+uHipjpOn3Pirdq7EWpp4JvmSAkJ/6cGWvb8dfqug+zJAH
+         S2ZK7GnjhqS/8bdCd/2X5iX4OXH40R0NrDC022f+3mVCMJHmOTl0hQeZZo11VrG7VPNj
+         iwWNl2naKWGPi3oGQfZYhTxpTaEGkMjDYxAhgUu/wNtJFyTDZYbidl2pjM5FXLfkDZzL
+         UFLk+ZE6P1a05gIx+YWV0TLAc4Yz9j9od6TOhlANR2UP5qr81n5W2NdVe58RRHfScB5L
+         a0t192iNGNqjgxb8lTpo/z0K/TTQV/BBCsRK4mMDhiaa2f0A0t/EB3YHjO8TUEyjXt8x
+         PqLA==
+X-Gm-Message-State: AOAM531QRT0pkHUC6kmIn6H/fvDR1DrB5hg72ur7dCmO6nPP6ZCct8Iy
+        oSnANSnedkhHBpWlMlx/970=
+X-Google-Smtp-Source: ABdhPJyyzX85Np38HsoeiXjHBOf7r59tdlimvNL993RgQ0jIX8eXag45KCmHYtUXT1OgHmK2eEYcjA==
+X-Received: by 2002:ae9:ddc4:: with SMTP id r187mr7793968qkf.391.1611698553042;
+        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
 Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id q92sm13832qtd.92.2021.01.26.14.01.04
+        by smtp.gmail.com with ESMTPSA id o15sm32861qtp.51.2021.01.26.14.02.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 14:01:04 -0800 (PST)
+        Tue, 26 Jan 2021 14:02:32 -0800 (PST)
 Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 26 Jan 2021 17:01:04 -0500
+Date:   Tue, 26 Jan 2021 17:02:32 -0500
 From:   Tejun Heo <tj@kernel.org>
 To:     David Rientjes <rientjes@google.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -65,9 +65,8 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YBCRIPcJyB2J85XS@slm.duckdns.org>
-References: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
- <YAJsUyH2zspZxF2S@google.com>
+Message-ID: <YBCReBXMczop/GQO@slm.duckdns.org>
+References: <YAJsUyH2zspZxF2S@google.com>
  <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
  <YAfYL7V6E4/P83Mg@google.com>
  <YAhc8khTUc2AFDcd@mtj.duckdns.org>
@@ -76,69 +75,20 @@ References: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
  <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com>
  <YAopkDN85GtWAj3a@google.com>
  <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
+ <YBCRIPcJyB2J85XS@slm.duckdns.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
+In-Reply-To: <YBCRIPcJyB2J85XS@slm.duckdns.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+On Tue, Jan 26, 2021 at 05:01:04PM -0500, Tejun Heo wrote:
+> * misc.max and misc.current: nested keyed files listing max and current
+>   usage for the cgroup.
 
-On Tue, Jan 26, 2021 at 12:49:14PM -0800, David Rientjes wrote:
-> > SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
-> > argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
-> > same ASID range, so the question is really, "do we expect to run SEV guests and
-> > any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
-> > directly backward compatible with SEV, the answer will eventually be "yes", as
-> > we'll want to keep running existing SEV guest while also spinning up new SEV-*
-> > guests.
-> > 
-> 
-> Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
-> guests on the same platform.
-
-Am I correct in thinking that the reason why these IDs are limited is
-because they need to be embedded into the page table entries? If so, we
-aren't talking about that many IDs and having to divide the already small
-pool into disjoint purposes doesn't seem like a particularly smart use of
-those bits. It is what it is, I guess.
-
-> I'm slightly concerned about extensibility if there is to be an 
-> incremental enhancement atop SEV-* or TDX with yet another pool of 
-> encryption ids.  (For example, when we only had hugepages, this name was 
-> perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
-> pages "enormous"? :)  I could argue (encryption_ids.basic.*,
-> encryption_ids.enhanced.*) should map to 
-> (encryption_ids.legacy.*, encryption_ids.*) but that's likely 
-> bikeshedding.
-> 
-> Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
-> partitioning?
-> 
-> Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
-> is now abstracted to be technology (vendor) neutral, does this make sense 
-> to you?
-
-The whole thing seems pretty immature to me and I agree with you that coming
-up with an abstraction at this stage feels risky.
-
-I'm leaning towards creating a misc controller to shove these things into:
-
-* misc.max and misc.current: nested keyed files listing max and current
-  usage for the cgroup.
-
-* Have an API to activate or update a given resource with total resource
-  count. I'd much prefer the resource list to be in the controller itself
-  rather than being through some dynamic API just so that there is some
-  review in what keys get added.
-
-* Top level cgroup lists which resource is active and how many are
-  available.
-
-So, behavior-wise, not that different from the proposed code. Just made
-generic into a misc controller. Would that work?
+Keyed files, not nested keyed files.
 
 Thanks.
 
