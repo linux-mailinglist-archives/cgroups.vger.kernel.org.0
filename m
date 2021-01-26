@@ -2,26 +2,26 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 353FD304F66
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:09:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E510304F6A
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231591AbhA0DJf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:09:35 -0500
+        id S231580AbhA0DJj (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jan 2021 22:09:39 -0500
 Received: from mga03.intel.com ([134.134.136.65]:28863 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727453AbhAZVqR (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:46:17 -0500
-IronPort-SDR: G2ayVyS6ZeJv7lE05TGF5cTgjPBXAuih5R8n4dmXnnHggBZAeV882BbnkNeB8CwjEtPMFed/Zi
- d8oh9Alfl9iQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180056558"
+        id S1726541AbhAZVqp (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:46:45 -0500
+IronPort-SDR: FETV6FTF+vAYxcaP2OibwJCg5tivi8lShWOD3bsd+kkFypTgYS8laan2p7ppKsxEeXlkWsHhn8
+ wY/DMJU03HUw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180056559"
 X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="180056558"
+   d="scan'208";a="180056559"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
   by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:44:37 -0800
-IronPort-SDR: tIdx5mzUYWnmP9Naq10L31XyFyKJMLQZTtXw82/SLdxN/7YkQ4w8MmNV01yngExONP6ZgG/XHX
- VLknynncDPPQ==
+IronPort-SDR: 2ae6tLysyhXYthrpXKJY7bn1HEolCNzb8kVzjeOw1gYWAb9q6U2u4NBMDYgFtUTNzIk+XORYCO
+ RuLb09byOB9A==
 X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="362139887"
+   d="scan'208";a="362139891"
 Received: from nvishwa1-desk.sc.intel.com ([172.25.29.76])
   by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2021 13:44:37 -0800
 From:   Brian Welty <brian.welty@intel.com>
@@ -36,13 +36,14 @@ To:     Brian Welty <brian.welty@intel.com>, cgroups@vger.kernel.org,
         intel-gfx@lists.freedesktop.org,
         Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
         Eero Tamminen <eero.t.tamminen@intel.com>
-Subject: [RFC PATCH 2/9] drm, cgroup: Bind drm and cgroup subsystem
-Date:   Tue, 26 Jan 2021 13:46:19 -0800
-Message-Id: <20210126214626.16260-3-brian.welty@intel.com>
+Subject: [RFC PATCH 3/9] drm, cgroup: Initialize drmcg properties
+Date:   Tue, 26 Jan 2021 13:46:20 -0800
+Message-Id: <20210126214626.16260-4-brian.welty@intel.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210126214626.16260-1-brian.welty@intel.com>
 References: <20210126214626.16260-1-brian.welty@intel.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
@@ -50,281 +51,318 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 From: Kenny Ho <Kenny.Ho@amd.com>
 
-Since the drm subsystem can be compiled as a module and drm devices can
-be added and removed during run time, add several functions to bind the
-drm subsystem as well as drm devices with drmcg.
+drmcg initialization involves allocating a per cgroup, per device data
+structure and setting the defaults.  There are two entry points for
+drmcg init:
 
-Two pairs of functions:
-drmcg_bind/drmcg_unbind - used to bind/unbind the drm subsystem to the
-cgroup subsystem as the drm core initialize/exit.
+1) When struct drmcg is created via css_alloc, initialization is done
+  for each device
 
-drmcg_register_dev/drmcg_unregister_dev - used to register/unregister
-drm devices to the cgroup subsystem as the devices are presented/removed
-from userspace.
+2) When DRM devices are created after drmcgs are created, per
+  device drmcg data structure is allocated at the beginning of
+  DRM device creation such that drmcg can begin tracking usage
+  statistics
 
-Signed-off-by: Kenny Ho <Kenny.Ho@amd.com>
+Entry point #2 usually applies to the root cgroup since it can be
+created before DRM devices are available.  The drmcg controller will go
+through all existing drm cgroups and initialize them with the new device
+accordingly.
+
+Extending Kenny's original work, this has been simplified some and
+the custom_init callback has been removed. (Brian)
+
+Signed-off-by Kenny Ho <Kenny.Ho@amd.com>
+Signed-off-by: Brian Welty <brian.welty@intel.com>
 ---
- drivers/gpu/drm/drm_drv.c  |   8 +++
- include/drm/drm_cgroup.h   |  39 +++++++++++
- include/linux/cgroup_drm.h |   4 ++
- kernel/cgroup/drm.c        | 131 +++++++++++++++++++++++++++++++++++++
- 4 files changed, 182 insertions(+)
- create mode 100644 include/drm/drm_cgroup.h
+ drivers/gpu/drm/drm_drv.c  |  3 ++
+ include/drm/drm_cgroup.h   | 17 +++++++
+ include/drm/drm_device.h   |  7 +++
+ include/linux/cgroup_drm.h | 13 ++++++
+ kernel/cgroup/drm.c        | 95 +++++++++++++++++++++++++++++++++++++-
+ 5 files changed, 134 insertions(+), 1 deletion(-)
 
 diff --git a/drivers/gpu/drm/drm_drv.c b/drivers/gpu/drm/drm_drv.c
-index 20d22e41d7ce..3b940926d672 100644
+index 3b940926d672..dac742445b38 100644
 --- a/drivers/gpu/drm/drm_drv.c
 +++ b/drivers/gpu/drm/drm_drv.c
-@@ -42,6 +42,7 @@
- #include <drm/drm_managed.h>
- #include <drm/drm_mode_object.h>
- #include <drm/drm_print.h>
-+#include <drm/drm_cgroup.h>
+@@ -570,6 +570,7 @@ static void drm_dev_init_release(struct drm_device *dev, void *res)
+ 	/* Prevent use-after-free in drm_managed_release when debugging is
+ 	 * enabled. Slightly awkward, but can't really be helped. */
+ 	dev->dev = NULL;
++	mutex_destroy(&dev->drmcg_mutex);
+ 	mutex_destroy(&dev->master_mutex);
+ 	mutex_destroy(&dev->clientlist_mutex);
+ 	mutex_destroy(&dev->filelist_mutex);
+@@ -612,6 +613,7 @@ static int drm_dev_init(struct drm_device *dev,
+ 	mutex_init(&dev->filelist_mutex);
+ 	mutex_init(&dev->clientlist_mutex);
+ 	mutex_init(&dev->master_mutex);
++	mutex_init(&dev->drmcg_mutex);
  
- #include "drm_crtc_internal.h"
- #include "drm_internal.h"
-@@ -893,6 +894,8 @@ int drm_dev_register(struct drm_device *dev, unsigned long flags)
- 	if (drm_core_check_feature(dev, DRIVER_MODESET))
- 		drm_modeset_register_all(dev);
+ 	ret = drmm_add_action(dev, drm_dev_init_release, NULL);
+ 	if (ret)
+@@ -652,6 +654,7 @@ static int drm_dev_init(struct drm_device *dev,
+ 	if (ret)
+ 		goto err;
  
-+	drmcg_register_dev(dev);
-+
- 	DRM_INFO("Initialized %s %d.%d.%d %s for %s on minor %d\n",
- 		 driver->name, driver->major, driver->minor,
- 		 driver->patchlevel, driver->date,
-@@ -928,6 +931,8 @@ EXPORT_SYMBOL(drm_dev_register);
-  */
- void drm_dev_unregister(struct drm_device *dev)
- {
-+	drmcg_unregister_dev(dev);
-+
- 	if (drm_core_check_feature(dev, DRIVER_LEGACY))
- 		drm_lastclose(dev);
++	drmcg_device_early_init(dev);
+ 	return 0;
  
-@@ -1030,6 +1035,7 @@ static const struct file_operations drm_stub_fops = {
- 
- static void drm_core_exit(void)
- {
-+	drmcg_unbind();
- 	unregister_chrdev(DRM_MAJOR, "drm");
- 	debugfs_remove(drm_debugfs_root);
- 	drm_sysfs_destroy();
-@@ -1056,6 +1062,8 @@ static int __init drm_core_init(void)
- 	if (ret < 0)
- 		goto error;
- 
-+	drmcg_bind(&drm_minor_acquire, &drm_dev_put);
-+
- 	drm_core_init_complete = true;
- 
- 	DRM_DEBUG("Initialized\n");
+ err:
 diff --git a/include/drm/drm_cgroup.h b/include/drm/drm_cgroup.h
-new file mode 100644
-index 000000000000..530c9a0b3238
---- /dev/null
+index 530c9a0b3238..43caf1b6a0de 100644
+--- a/include/drm/drm_cgroup.h
 +++ b/include/drm/drm_cgroup.h
-@@ -0,0 +1,39 @@
-+/* SPDX-License-Identifier: MIT
-+ * Copyright 2019 Advanced Micro Devices, Inc.
-+ */
-+#ifndef __DRM_CGROUP_H__
-+#define __DRM_CGROUP_H__
-+
-+#ifdef CONFIG_CGROUP_DRM
-+
-+void drmcg_bind(struct drm_minor (*(*acq_dm)(unsigned int minor_id)),
-+		void (*put_ddev)(struct drm_device *dev));
-+
-+void drmcg_unbind(void);
-+
-+void drmcg_register_dev(struct drm_device *dev);
-+
-+void drmcg_unregister_dev(struct drm_device *dev);
-+
-+#else
-+
-+static inline void drmcg_bind(
-+		struct drm_minor (*(*acq_dm)(unsigned int minor_id)),
-+		void (*put_ddev)(struct drm_device *dev))
-+{
-+}
-+
-+static inline void drmcg_unbind(void)
-+{
-+}
-+
-+static inline void drmcg_register_dev(struct drm_device *dev)
-+{
-+}
-+
-+static inline void drmcg_unregister_dev(struct drm_device *dev)
-+{
-+}
-+
-+#endif /* CONFIG_CGROUP_DRM */
-+#endif /* __DRM_CGROUP_H__ */
-diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
-index 345af54a5d41..307bb75db248 100644
---- a/include/linux/cgroup_drm.h
-+++ b/include/linux/cgroup_drm.h
-@@ -5,6 +5,10 @@
- #define _CGROUP_DRM_H
+@@ -4,6 +4,17 @@
+ #ifndef __DRM_CGROUP_H__
+ #define __DRM_CGROUP_H__
  
- #include <linux/cgroup.h>
 +#include <drm/drm_file.h>
 +
-+/* limit defined per the way drm_minor_alloc operates */
-+#define MAX_DRM_DEV (64 * DRM_MINOR_RENDER)
++struct drm_device;
++
++/**
++ * Per DRM device properties for DRM cgroup controller for the purpose
++ * of storing per device defaults
++ */
++struct drmcg_props {
++};
++
+ #ifdef CONFIG_CGROUP_DRM
+ 
+ void drmcg_bind(struct drm_minor (*(*acq_dm)(unsigned int minor_id)),
+@@ -15,6 +26,8 @@ void drmcg_register_dev(struct drm_device *dev);
+ 
+ void drmcg_unregister_dev(struct drm_device *dev);
+ 
++void drmcg_device_early_init(struct drm_device *device);
++
+ #else
+ 
+ static inline void drmcg_bind(
+@@ -35,5 +48,9 @@ static inline void drmcg_unregister_dev(struct drm_device *dev)
+ {
+ }
+ 
++static inline void drmcg_device_early_init(struct drm_device *device)
++{
++}
++
+ #endif /* CONFIG_CGROUP_DRM */
+ #endif /* __DRM_CGROUP_H__ */
+diff --git a/include/drm/drm_device.h b/include/drm/drm_device.h
+index d647223e8390..1cdccc9a653c 100644
+--- a/include/drm/drm_device.h
++++ b/include/drm/drm_device.h
+@@ -8,6 +8,7 @@
+ 
+ #include <drm/drm_hashtab.h>
+ #include <drm/drm_mode_config.h>
++#include <drm/drm_cgroup.h>
+ 
+ struct drm_driver;
+ struct drm_minor;
+@@ -318,6 +319,12 @@ struct drm_device {
+ 	 */
+ 	struct drm_fb_helper *fb_helper;
+ 
++        /** \name DRM Cgroup */
++	/*@{ */
++	struct mutex drmcg_mutex;
++	struct drmcg_props drmcg_props;
++	/*@} */
++
+ 	/* Everything below here is for legacy driver, never use! */
+ 	/* private: */
+ #if IS_ENABLED(CONFIG_DRM_LEGACY)
+diff --git a/include/linux/cgroup_drm.h b/include/linux/cgroup_drm.h
+index 307bb75db248..50f055804400 100644
+--- a/include/linux/cgroup_drm.h
++++ b/include/linux/cgroup_drm.h
+@@ -12,11 +12,19 @@
  
  #ifdef CONFIG_CGROUP_DRM
  
++/**
++ * Per DRM cgroup, per device resources (such as statistics and limits)
++ */
++struct drmcg_device_resource {
++	/* for per device stats */
++};
++
+ /**
+  * The DRM cgroup controller data structure.
+  */
+ struct drmcg {
+ 	struct cgroup_subsys_state	css;
++	struct drmcg_device_resource	*dev_resources[MAX_DRM_DEV];
+ };
+ 
+ /**
+@@ -40,6 +48,8 @@ static inline struct drmcg *css_to_drmcg(struct cgroup_subsys_state *css)
+  */
+ static inline struct drmcg *drmcg_get(struct task_struct *task)
+ {
++	if (!cgroup_subsys_enabled(gpu_cgrp_subsys))
++		return NULL;
+ 	return css_to_drmcg(task_get_css(task, gpu_cgrp_id));
+ }
+ 
+@@ -70,6 +80,9 @@ static inline struct drmcg *drmcg_parent(struct drmcg *cg)
+ 
+ #else /* CONFIG_CGROUP_DRM */
+ 
++struct drmcg_device_resource {
++};
++
+ struct drmcg {
+ };
+ 
 diff --git a/kernel/cgroup/drm.c b/kernel/cgroup/drm.c
-index 5e38a8230922..061bb9c458e4 100644
+index 061bb9c458e4..836929c27de8 100644
 --- a/kernel/cgroup/drm.c
 +++ b/kernel/cgroup/drm.c
-@@ -1,11 +1,142 @@
+@@ -1,11 +1,15 @@
  // SPDX-License-Identifier: MIT
- // Copyright 2019 Advanced Micro Devices, Inc.
-+#include <linux/bitmap.h>
-+#include <linux/mutex.h>
+-// Copyright 2019 Advanced Micro Devices, Inc.
++/*
++ * Copyright 2019 Advanced Micro Devices, Inc.
++ * Copyright © 2021 Intel Corporation
++ */
+ #include <linux/bitmap.h>
+ #include <linux/mutex.h>
  #include <linux/slab.h>
  #include <linux/cgroup.h>
  #include <linux/cgroup_drm.h>
-+#include <drm/drm_file.h>
-+#include <drm/drm_device.h>
-+#include <drm/drm_cgroup.h>
+ #include <drm/drm_file.h>
++#include <drm/drm_drv.h>
+ #include <drm/drm_device.h>
+ #include <drm/drm_cgroup.h>
  
- static struct drmcg *root_drmcg __read_mostly;
+@@ -54,6 +58,26 @@ void drmcg_unbind(void)
+ }
+ EXPORT_SYMBOL(drmcg_unbind);
  
-+/* global mutex for drmcg across all devices */
-+static DEFINE_MUTEX(drmcg_mutex);
-+
-+static DECLARE_BITMAP(known_devs, MAX_DRM_DEV);
-+
-+static struct drm_minor (*(*acquire_drm_minor)(unsigned int minor_id));
-+
-+static void (*put_drm_dev)(struct drm_device *dev);
-+
-+/**
-+ * drmcg_bind - Bind DRM subsystem to cgroup subsystem
-+ * @acq_dm: function pointer to the drm_minor_acquire function
-+ * @put_ddev: function pointer to the drm_dev_put function
-+ *
-+ * This function binds some functions from the DRM subsystem and make
-+ * them available to the drmcg subsystem.
-+ *
-+ * drmcg_unbind does the opposite of this function
-+ */
-+void drmcg_bind(struct drm_minor (*(*acq_dm)(unsigned int minor_id)),
-+		void (*put_ddev)(struct drm_device *dev))
++/* caller must hold dev->drmcg_mutex */
++static inline int init_drmcg_single(struct drmcg *drmcg, struct drm_device *dev)
 +{
-+	mutex_lock(&drmcg_mutex);
-+	acquire_drm_minor = acq_dm;
-+	put_drm_dev = put_ddev;
-+	mutex_unlock(&drmcg_mutex);
-+}
-+EXPORT_SYMBOL(drmcg_bind);
++	int minor = dev->primary->index;
++	struct drmcg_device_resource *ddr = drmcg->dev_resources[minor];
 +
-+/**
-+ * drmcg_unbind - Unbind DRM subsystem from cgroup subsystem
-+ *
-+ * drmcg_bind does the opposite of this function
-+ */
-+void drmcg_unbind(void)
-+{
-+	mutex_lock(&drmcg_mutex);
-+	acquire_drm_minor = NULL;
-+	put_drm_dev = NULL;
-+	mutex_unlock(&drmcg_mutex);
-+}
-+EXPORT_SYMBOL(drmcg_unbind);
++	if (ddr == NULL) {
++		ddr = kzalloc(sizeof(struct drmcg_device_resource),
++			GFP_KERNEL);
 +
-+/**
-+ * drmcg_register_dev - register a DRM device for usage in drm cgroup
-+ * @dev: DRM device
-+ *
-+ * This function make a DRM device visible to the cgroup subsystem.
-+ * Once the drmcg is aware of the device, drmcg can start tracking and
-+ * control resource usage for said device.
-+ *
-+ * drmcg_unregister_dev reverse the operation of this function
-+ */
-+void drmcg_register_dev(struct drm_device *dev)
-+{
-+	if (WARN_ON(dev->primary->index >= MAX_DRM_DEV))
-+		return;
-+
-+	mutex_lock(&drmcg_mutex);
-+	set_bit(dev->primary->index, known_devs);
-+	mutex_unlock(&drmcg_mutex);
-+}
-+EXPORT_SYMBOL(drmcg_register_dev);
-+
-+/**
-+ * drmcg_unregister_dev - Iterate through all stored DRM minors
-+ * @dev: DRM device
-+ *
-+ * Unregister @dev so that drmcg no longer control resource usage
-+ * of @dev.  The @dev was registered to drmcg using
-+ * drmcg_register_dev function
-+ */
-+void drmcg_unregister_dev(struct drm_device *dev)
-+{
-+	if (WARN_ON(dev->primary->index >= MAX_DRM_DEV))
-+		return;
-+
-+	mutex_lock(&drmcg_mutex);
-+	clear_bit(dev->primary->index, known_devs);
-+	mutex_unlock(&drmcg_mutex);
-+}
-+EXPORT_SYMBOL(drmcg_unregister_dev);
-+
-+/**
-+ * drm_minor_for_each - Iterate through all stored DRM minors
-+ * @fn: Function to be called for each pointer.
-+ * @data: Data passed to callback function.
-+ *
-+ * The callback function will be called for each registered device, passing
-+ * the minor, the @drm_minor entry and @data.
-+ *
-+ * If @fn returns anything other than %0, the iteration stops and that
-+ * value is returned from this function.
-+ */
-+static int drm_minor_for_each(int (*fn)(int id, void *p, void *data),
-+		void *data)
-+{
-+	int rc = 0;
-+
-+	mutex_lock(&drmcg_mutex);
-+	if (acquire_drm_minor) {
-+		unsigned int minor;
-+		struct drm_minor *dm;
-+
-+		minor = find_next_bit(known_devs, MAX_DRM_DEV, 0);
-+		while (minor < MAX_DRM_DEV) {
-+			dm = acquire_drm_minor(minor);
-+
-+			if (IS_ERR(dm))
-+				continue;
-+
-+			rc = fn(minor, (void *)dm, data);
-+
-+			put_drm_dev(dm->dev); /* release from acquire_drm_minor */
-+
-+			if (rc)
-+				break;
-+
-+			minor = find_next_bit(known_devs, MAX_DRM_DEV, minor+1);
-+		}
++		if (!ddr)
++			return -ENOMEM;
 +	}
-+	mutex_unlock(&drmcg_mutex);
 +
-+	return rc;
++	/* set defaults here */
++	drmcg->dev_resources[minor] = ddr;
++
++	return 0;
++}
++
+ /**
+  * drmcg_register_dev - register a DRM device for usage in drm cgroup
+  * @dev: DRM device
+@@ -137,23 +161,61 @@ static int drm_minor_for_each(int (*fn)(int id, void *p, void *data),
+ 	return rc;
+ }
+ 
++static int drmcg_css_free_fn(int id, void *ptr, void *data)
++{
++	struct drm_minor *minor = ptr;
++	struct drmcg *drmcg = data;
++
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return 0;
++
++	kfree(drmcg->dev_resources[minor->index]);
++
++	return 0;
 +}
 +
  static void drmcg_css_free(struct cgroup_subsys_state *css)
  {
  	struct drmcg *drmcg = css_to_drmcg(css);
+ 
++	drm_minor_for_each(&drmcg_css_free_fn, drmcg);
++
+ 	kfree(drmcg);
+ }
+ 
++static int init_drmcg_fn(int id, void *ptr, void *data)
++{
++	struct drm_minor *minor = ptr;
++	struct drmcg *drmcg = data;
++	int rc;
++
++	if (minor->type != DRM_MINOR_PRIMARY)
++		return 0;
++
++	mutex_lock(&minor->dev->drmcg_mutex);
++	rc = init_drmcg_single(drmcg, minor->dev);
++	mutex_unlock(&minor->dev->drmcg_mutex);
++
++	return rc;
++}
++
+ static struct cgroup_subsys_state *
+ drmcg_css_alloc(struct cgroup_subsys_state *parent_css)
+ {
+ 	struct drmcg *parent = css_to_drmcg(parent_css);
+ 	struct drmcg *drmcg;
++	int rc;
+ 
+ 	drmcg = kzalloc(sizeof(struct drmcg), GFP_KERNEL);
+ 	if (!drmcg)
+ 		return ERR_PTR(-ENOMEM);
+ 
++	rc = drm_minor_for_each(&init_drmcg_fn, drmcg);
++	if (rc) {
++		drmcg_css_free(&drmcg->css);
++		return ERR_PTR(rc);
++	}
++
+ 	if (!parent)
+ 		root_drmcg = drmcg;
+ 
+@@ -171,3 +233,34 @@ struct cgroup_subsys gpu_cgrp_subsys = {
+ 	.legacy_cftypes	= files,
+ 	.dfl_cftypes	= files,
+ };
++
++/**
++ * drmcg_device_early_init - initialize device specific resources for DRM cgroups
++ * @dev: the target DRM device
++ *
++ * Allocate and initialize device specific resources for existing DRM cgroups.
++ * Typically only the root cgroup exists before the initialization of @dev.
++ */
++void drmcg_device_early_init(struct drm_device *dev)
++{
++	struct cgroup_subsys_state *pos;
++
++	if (root_drmcg == NULL)
++		return;
++
++	/* init cgroups created before registration (i.e. root cgroup) */
++	rcu_read_lock();
++	css_for_each_descendant_pre(pos, &root_drmcg->css) {
++		css_get(pos);
++		rcu_read_unlock();
++
++		mutex_lock(&dev->drmcg_mutex);
++		init_drmcg_single(css_to_drmcg(pos), dev);
++		mutex_unlock(&dev->drmcg_mutex);
++
++		rcu_read_lock();
++		css_put(pos);
++	}
++	rcu_read_unlock();
++}
++EXPORT_SYMBOL(drmcg_device_early_init);
 -- 
 2.20.1
 
