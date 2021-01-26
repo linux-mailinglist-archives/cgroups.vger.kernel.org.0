@@ -2,218 +2,145 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D709A304F6B
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C11304F6E
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhA0DJu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:09:50 -0500
-Received: from mga03.intel.com ([134.134.136.65]:29044 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726808AbhAZVrr (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:47:47 -0500
-IronPort-SDR: 4zzgkgg1UmBG8wr+eTwYsSpHeJwkE7t4EpW9ohWLlnQ6n/frHVY987HL45eWRKpM+CaIu7PSd4
- dDJ1y94HAAqQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180056572"
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="180056572"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:44:38 -0800
-IronPort-SDR: zc66kQ1JtSLeYK+wt641PVVb/HET+nEaDxne1KFIOAlpQAAsXthG14gnFUqzJrerD6iJkLIOGH
- +M/naXge3Lrw==
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="362139908"
-Received: from nvishwa1-desk.sc.intel.com ([172.25.29.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2021 13:44:37 -0800
-From:   Brian Welty <brian.welty@intel.com>
-To:     Brian Welty <brian.welty@intel.com>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>, amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-Subject: [RFC PATCH 9/9] drm/i915: Use memory cgroup for enforcing device memory limit
-Date:   Tue, 26 Jan 2021 13:46:26 -0800
-Message-Id: <20210126214626.16260-10-brian.welty@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210126214626.16260-1-brian.welty@intel.com>
-References: <20210126214626.16260-1-brian.welty@intel.com>
+        id S232943AbhA0DKU (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jan 2021 22:10:20 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58470 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727745AbhAZWBu (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 17:01:50 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56E15C06174A;
+        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id x81so14730873qkb.0;
+        Tue, 26 Jan 2021 14:01:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
+        b=DEjU2Vlz+c8s8l7i4VvNrOHrZX1BFA/CoCHLraoX/TGR7m7IOU/Tk+tMXGz2Ie8kVj
+         NRrXxn6RiYvZpVsXxyW2ANxFvOjsPw4fYgILW+Q5wT0h4ekogKQAo1eKS1P77lgKI3nI
+         1mkQ+1lcbvQhLF8LTabfIIo+NAgLtSI25NYjLc4f8IcvqpFBJSRSI43sJ5oVpm02n96D
+         QVU/+8yE+q/cn9U/oK+XTtYMJXq+KdR1HO8fMUu0+7yHtjfPTvUZedtrUjvG7fCSneZs
+         e9r9Ve3hIZgRPOpS/7mGJOTQ3Etujv//AbXyOlHj1gMJpEg1TnivcCjUgu+u+sloivxz
+         wPuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=MIH2UNLi2fhCMoMNiRx154+VpM0NIRieyzpHxs5Dshw=;
+        b=d/+dpZBRwpV39dm8EzskT6p0ZDamIMjc17bYtgk+i8QCBZxWhDDIbZzrmBLfRpPRah
+         gTjm3cXaMkM2XO8wFzmWkQ0cZlpmTl9xDlUGL18UrCsvNROcc3NS0NRD82u4wcFSRLfd
+         Gp8tCSlVCARYlqSwjAIQWiRbiTgB/olGXUrfgq8BgHStjIJgytzZrgK+OK7TSbhltRfg
+         TiayRUtdw1XHxc9WoeQ/JmkNEuSSZdTa8CtpBhpUfnJxVo6uPlzlgjLO99uvMkBquOo3
+         CCiKC8woPe7ugKfjCqerzqksCT+SIoT9Q8GKPV27u5N1SE+qUhAMQTk5GYViOYEKSwwQ
+         JbhQ==
+X-Gm-Message-State: AOAM531m3KGh0bxj/2ebS+RKlojNjTpXXNHon96rAOtsS2bYERvVuWR2
+        9uV7mqRTanbr+kunlgoFWkc=
+X-Google-Smtp-Source: ABdhPJxCGoD28UZpYnoVrJkVxaNC0LAX7DFLMqKvCIyNhqeE9W8d95d/tnyrGdZGdIdjcWjqWJOcbA==
+X-Received: by 2002:a37:9f55:: with SMTP id i82mr6102308qke.205.1611698465257;
+        Tue, 26 Jan 2021 14:01:05 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id q92sm13832qtd.92.2021.01.26.14.01.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 Jan 2021 14:01:04 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Tue, 26 Jan 2021 17:01:04 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     David Rientjes <rientjes@google.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Vipin Sharma <vipinsh@google.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>,
+        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YBCRIPcJyB2J85XS@slm.duckdns.org>
+References: <YAJg5MB/Qn5dRqmu@mtj.duckdns.org>
+ <YAJsUyH2zspZxF2S@google.com>
+ <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+ <YAfYL7V6E4/P83Mg@google.com>
+ <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com>
+ <YAmj4Q2J9htW2Fe8@mtj.duckdns.org>
+ <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com>
+ <YAopkDN85GtWAj3a@google.com>
+ <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-To charge device memory allocations, we need to (1) identify appropriate
-cgroup to charge (currently decided at object creation time), and (2)
-make the charging call at the time that memory pages are being allocated.
+Hello,
 
-For (1), see prior DRM patch which associates current task's cgroup with
-GEM objects as they are created.  That cgroup will be charged/uncharged
-for all paging activity against the GEM object.
+On Tue, Jan 26, 2021 at 12:49:14PM -0800, David Rientjes wrote:
+> > SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
+> > argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
+> > same ASID range, so the question is really, "do we expect to run SEV guests and
+> > any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
+> > directly backward compatible with SEV, the answer will eventually be "yes", as
+> > we'll want to keep running existing SEV guest while also spinning up new SEV-*
+> > guests.
+> > 
+> 
+> Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
+> guests on the same platform.
 
-For (2), we call drm_get_object_charge_mem() in .get_pages callback
-for the GEM object type.  Uncharging is done in .put_pages when the
-memory is marked such that it can be evicted.  The try_charge() call will
-fail with -ENOMEM if the current memory allocation will exceed the cgroup
-device memory maximum, and allow for driver to perform memory reclaim.
+Am I correct in thinking that the reason why these IDs are limited is
+because they need to be embedded into the page table entries? If so, we
+aren't talking about that many IDs and having to divide the already small
+pool into disjoint purposes doesn't seem like a particularly smart use of
+those bits. It is what it is, I guess.
 
-We also set the total device memory reported by DRM cgroup by storing
-in drm_device.drmcg_props after initializing LMEM memory regions.
+> I'm slightly concerned about extensibility if there is to be an 
+> incremental enhancement atop SEV-* or TDX with yet another pool of 
+> encryption ids.  (For example, when we only had hugepages, this name was 
+> perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
+> pages "enormous"? :)  I could argue (encryption_ids.basic.*,
+> encryption_ids.enhanced.*) should map to 
+> (encryption_ids.legacy.*, encryption_ids.*) but that's likely 
+> bikeshedding.
+> 
+> Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
+> partitioning?
+> 
+> Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
+> is now abstracted to be technology (vendor) neutral, does this make sense 
+> to you?
 
-FIXME: to release drm cgroup reference requires this additional patch:
-  https://patchwork.freedesktop.org/patch/349029
+The whole thing seems pretty immature to me and I agree with you that coming
+up with an abstraction at this stage feels risky.
 
-Signed-off-by: Brian Welty <brian.welty@intel.com>
----
- drivers/gpu/drm/i915/gem/i915_gem_mman.c   |  1 +
- drivers/gpu/drm/i915/gem/i915_gem_region.c | 23 ++++++++++++++++++----
- drivers/gpu/drm/i915/intel_memory_region.c | 13 ++++++++++--
- drivers/gpu/drm/i915/intel_memory_region.h |  2 +-
- 4 files changed, 32 insertions(+), 7 deletions(-)
+I'm leaning towards creating a misc controller to shove these things into:
 
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_mman.c b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-index ec28a6cde49b..9fbe91d4d2f1 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_mman.c
-@@ -16,6 +16,7 @@
- #include "i915_gem_gtt.h"
- #include "i915_gem_ioctls.h"
- #include "i915_gem_object.h"
-+#include "i915_gem_lmem.h"
- #include "i915_gem_mman.h"
- #include "i915_trace.h"
- #include "i915_user_extensions.h"
-diff --git a/drivers/gpu/drm/i915/gem/i915_gem_region.c b/drivers/gpu/drm/i915/gem/i915_gem_region.c
-index 3e3dad22a683..690b36b25984 100644
---- a/drivers/gpu/drm/i915/gem/i915_gem_region.c
-+++ b/drivers/gpu/drm/i915/gem/i915_gem_region.c
-@@ -12,11 +12,14 @@ void
- i915_gem_object_put_pages_buddy(struct drm_i915_gem_object *obj,
- 				struct sg_table *pages)
- {
--	__intel_memory_region_put_pages_buddy(obj->mm.region, &obj->mm.blocks);
-+	u64 freed;
- 
-+	freed = __intel_memory_region_put_pages_buddy(obj->mm.region,
-+						      &obj->mm.blocks);
- 	obj->mm.dirty = false;
- 	sg_free_table(pages);
- 	kfree(pages);
-+	drm_gem_object_uncharge_mem(&obj->base, freed);
- }
- 
- int
-@@ -25,7 +28,7 @@ i915_gem_object_get_pages_buddy(struct drm_i915_gem_object *obj)
- 	const u64 max_segment = i915_sg_segment_size();
- 	struct intel_memory_region *mem = obj->mm.region;
- 	struct list_head *blocks = &obj->mm.blocks;
--	resource_size_t size = obj->base.size;
-+	resource_size_t charged, size = obj->base.size;
- 	resource_size_t prev_end;
- 	struct i915_buddy_block *block;
- 	unsigned int flags;
-@@ -44,12 +47,22 @@ i915_gem_object_get_pages_buddy(struct drm_i915_gem_object *obj)
- 	}
- 
- 	flags = I915_ALLOC_MIN_PAGE_SIZE;
--	if (obj->flags & I915_BO_ALLOC_CONTIGUOUS)
-+	if (obj->flags & I915_BO_ALLOC_CONTIGUOUS) {
- 		flags |= I915_ALLOC_CONTIGUOUS;
-+		charged = roundup_pow_of_two(size);
-+	} else {
-+		charged = size;
-+	}
-+
-+	ret = drm_gem_object_charge_mem(&obj->base, charged);
-+	if (ret) {
-+		DRM_DEBUG("DRMCG: charge_mem failed for %lld\n", charged);
-+		goto err_free_sg;
-+	}
- 
- 	ret = __intel_memory_region_get_pages_buddy(mem, size, flags, blocks);
- 	if (ret)
--		goto err_free_sg;
-+		goto err_uncharge;
- 
- 	GEM_BUG_ON(list_empty(blocks));
- 
-@@ -99,6 +112,8 @@ i915_gem_object_get_pages_buddy(struct drm_i915_gem_object *obj)
- 
- 	return 0;
- 
-+err_uncharge:
-+	drm_gem_object_uncharge_mem(&obj->base, charged);
- err_free_sg:
- 	sg_free_table(st);
- 	kfree(st);
-diff --git a/drivers/gpu/drm/i915/intel_memory_region.c b/drivers/gpu/drm/i915/intel_memory_region.c
-index 1bfcdd89b241..9b1edbf4361c 100644
---- a/drivers/gpu/drm/i915/intel_memory_region.c
-+++ b/drivers/gpu/drm/i915/intel_memory_region.c
-@@ -46,13 +46,18 @@ intel_memory_region_free_pages(struct intel_memory_region *mem,
- 	return size;
- }
- 
--void
-+u64
- __intel_memory_region_put_pages_buddy(struct intel_memory_region *mem,
- 				      struct list_head *blocks)
- {
-+	u64 freed;
-+
- 	mutex_lock(&mem->mm_lock);
--	mem->avail += intel_memory_region_free_pages(mem, blocks);
-+	freed = intel_memory_region_free_pages(mem, blocks);
-+	mem->avail += freed;
- 	mutex_unlock(&mem->mm_lock);
-+
-+	return freed;
- }
- 
- void
-@@ -241,6 +246,7 @@ void intel_memory_region_put(struct intel_memory_region *mem)
- 
- int intel_memory_regions_hw_probe(struct drm_i915_private *i915)
- {
-+	u64 lmem_total = 0;
- 	int err, i;
- 
- 	for (i = 0; i < ARRAY_SIZE(i915->mm.regions); i++) {
-@@ -260,6 +266,7 @@ int intel_memory_regions_hw_probe(struct drm_i915_private *i915)
- 			break;
- 		case INTEL_MEMORY_LOCAL:
- 			mem = intel_setup_fake_lmem(i915);
-+			lmem_total += mem->total;
- 			break;
- 		}
- 
-@@ -278,6 +285,8 @@ int intel_memory_regions_hw_probe(struct drm_i915_private *i915)
- 		i915->mm.regions[i] = mem;
- 	}
- 
-+	i915->drm.drmcg_props.memory_total = lmem_total;
-+
- 	return 0;
- 
- out_cleanup:
-diff --git a/drivers/gpu/drm/i915/intel_memory_region.h b/drivers/gpu/drm/i915/intel_memory_region.h
-index 6ffc0673f005..c9fca951a372 100644
---- a/drivers/gpu/drm/i915/intel_memory_region.h
-+++ b/drivers/gpu/drm/i915/intel_memory_region.h
-@@ -109,7 +109,7 @@ struct i915_buddy_block *
- __intel_memory_region_get_block_buddy(struct intel_memory_region *mem,
- 				      resource_size_t size,
- 				      unsigned int flags);
--void __intel_memory_region_put_pages_buddy(struct intel_memory_region *mem,
-+u64 __intel_memory_region_put_pages_buddy(struct intel_memory_region *mem,
- 					   struct list_head *blocks);
- void __intel_memory_region_put_block_buddy(struct i915_buddy_block *block);
- 
+* misc.max and misc.current: nested keyed files listing max and current
+  usage for the cgroup.
+
+* Have an API to activate or update a given resource with total resource
+  count. I'd much prefer the resource list to be in the controller itself
+  rather than being through some dynamic API just so that there is some
+  review in what keys get added.
+
+* Top level cgroup lists which resource is active and how many are
+  available.
+
+So, behavior-wise, not that different from the proposed code. Just made
+generic into a misc controller. Would that work?
+
+Thanks.
+
 -- 
-2.20.1
-
+tejun
