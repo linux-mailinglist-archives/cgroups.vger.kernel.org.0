@@ -2,135 +2,124 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDE1F304F63
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:09:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C7FB5304F68
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231229AbhA0DJV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:09:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404178AbhAZUud (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 15:50:33 -0500
-Received: from mail-pj1-x1034.google.com (mail-pj1-x1034.google.com [IPv6:2607:f8b0:4864:20::1034])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABEBAC061788
-        for <cgroups@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
-Received: by mail-pj1-x1034.google.com with SMTP id p15so2718491pjv.3
-        for <cgroups@vger.kernel.org>; Tue, 26 Jan 2021 12:49:18 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :mime-version;
-        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
-        b=Sl3WiOu4tIDOkkgv6i4aMIADj6Mw5A+pPOV31fbYQXGVQgOWouYMM9sniqU/pYH0k7
-         2bREpiqbqKcRGqldVB4KKeo0Crk7SCoIXJWfguKvvlG8NCnvIuoyx5dlIZKLjioqq8dd
-         UOkv/2z8yKxiOcEI6Qx+6Jjygo437bYF0l+IWzWFxzmvNrQi2oKLFiTj9uHv18Vo+8LS
-         SXfRYG5Bu3tI76sinpnZrXtxRnYYxLP7ukt94RAtwQabXFW7v37K9A3D3MX8L4iu30Gc
-         BV5CZUT7tAIm/dQbcvnszeOQCpOd+2emTElIqjZRG/A8fPqerkeY6wXr7UKHybt0vmC8
-         +gmg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:mime-version;
-        bh=JT5edQcn2lC/ohAJBe7VJY+gZeoJrzYd010rHqJGKDE=;
-        b=BOXx3m5ugLnv7t6+rO62RDA1Bf2tY519U1nu6GWm1eftkGmfG4WXTmrP1ZWODshntx
-         8YtzWEw/q5eXU1qZd0e3VTpWTzs2aWTSWfjYSZmeBSHbBf9z8Ogj3aNGt9g89nfKeu7g
-         +C8JyiSF3f0/CjwVAOI58Td1SFVHEdzLeCuq6ddIqaGdcUCkNaRrjWKoWpBm4hS+GaWi
-         o70SCsEFDIvBnEtPGmIEoVzHd7eFqkRlcOUPOUh3vZyB6nXQsyaGksOTRwYjRXkmfinf
-         4gFKDqrriUbPiBLKgDMb6EdY0+ryLmq4tUc8qqF2iIRH2cn8MkSHzDmwQkmLnPhAr5Lt
-         Au8Q==
-X-Gm-Message-State: AOAM5321sezRItVkQxLvLo2Ih3NXFE9G9lKouhBEC545t9gik+Yk0FWg
-        A2Tqlc8bgT2Bc32e6eXxIylHhg==
-X-Google-Smtp-Source: ABdhPJwA1UPfoLVM0WjNCKLOq5x/h3QTY0cFUQ35qcbp6rEGWNEdcfmYEUqAIdnU/kAhNaggnal1yw==
-X-Received: by 2002:a17:902:f683:b029:de:18c7:41fa with SMTP id l3-20020a170902f683b02900de18c741famr7595126plg.57.1611694157738;
-        Tue, 26 Jan 2021 12:49:17 -0800 (PST)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id 67sm24396pfv.20.2021.01.26.12.49.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 12:49:15 -0800 (PST)
-Date:   Tue, 26 Jan 2021 12:49:14 -0800 (PST)
-From:   David Rientjes <rientjes@google.com>
-To:     Sean Christopherson <seanjc@google.com>
-cc:     Tom Lendacky <thomas.lendacky@amd.com>, Tejun Heo <tj@kernel.org>,
-        Vipin Sharma <vipinsh@google.com>,
-        "Singh, Brijesh" <brijesh.singh@amd.com>,
-        "Grimm, Jon" <jon.grimm@amd.com>,
-        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
-        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-In-Reply-To: <YAopkDN85GtWAj3a@google.com>
-Message-ID: <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
-References: <YAICLR8PBXxAcOMz@mtj.duckdns.org> <YAIUwGUPDmYfUm/a@google.com> <YAJg5MB/Qn5dRqmu@mtj.duckdns.org> <YAJsUyH2zspZxF2S@google.com> <YAb//EYCkZ7wnl6D@mtj.duckdns.org> <YAfYL7V6E4/P83Mg@google.com> <YAhc8khTUc2AFDcd@mtj.duckdns.org>
- <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com> <YAmj4Q2J9htW2Fe8@mtj.duckdns.org> <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com> <YAopkDN85GtWAj3a@google.com>
+        id S231455AbhA0DJa (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jan 2021 22:09:30 -0500
+Received: from mga03.intel.com ([134.134.136.65]:28863 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726650AbhAZVpS (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 26 Jan 2021 16:45:18 -0500
+IronPort-SDR: w/S3a3BGN4WF5nxmhXbsnmZ28tzUl2c7+888KO9+rmgU+6nAeqQD64fXUFQJkEFjwI1oKWqjhz
+ 5dSHoIAoR9UQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180056553"
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="180056553"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:44:37 -0800
+IronPort-SDR: pxx/maiC2y8TN8v4a9MNIpLQaukuEIO7m6+F+beuK12x15k/ghwB9/i8eJB1vT2jFY5rzFHq4M
+ l0e928oDl2bA==
+X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
+   d="scan'208";a="362139880"
+Received: from nvishwa1-desk.sc.intel.com ([172.25.29.76])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2021 13:44:36 -0800
+From:   Brian Welty <brian.welty@intel.com>
+To:     Brian Welty <brian.welty@intel.com>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, dri-devel@lists.freedesktop.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Kenny Ho <Kenny.Ho@amd.com>, amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+Subject: [RFC PATCH 0/9] cgroup support for GPU devices 
+Date:   Tue, 26 Jan 2021 13:46:17 -0800
+Message-Id: <20210126214626.16260-1-brian.welty@intel.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, 21 Jan 2021, Sean Christopherson wrote:
+We'd like to revisit the proposal of a GPU cgroup controller for managing
+GPU devices but with just a basic set of controls.  This series is based on 
+the prior patch series from Kenny Ho [1].  We take Kenny's base patches
+which implement the basic framework for the controller, but we propose an
+alternate set of control files.  Here we've taken a subset of the controls
+proposed in earlier discussion on ML here [2]. 
 
-> True, but the expected dual-usage is more about backwards compatibility than
-> anything else.  Running an SEV-ES VM requires a heavily enlightened guest vBIOS
-> and kernel, which means that a VM that was created as an SEV guest cannot easily
-> be converted to an SEV-ES guest, and it would require cooperation from the guest
-> (if it's even feasible?).
-> 
-> SEV-SNP, another incremental enhancement (on SEV-ES), further strengthens the
-> argument for SEV and SEV-* coexistenence.  SEV-SNP and SEV-ES will share the
-> same ASID range, so the question is really, "do we expect to run SEV guests and
-> any flavor of SEV-* guests on the same platform".  And due to SEV-* not being
-> directly backward compatible with SEV, the answer will eventually be "yes", as
-> we'll want to keep running existing SEV guest while also spinning up new SEV-*
-> guests.
-> 
+This series proposes a set of device memory controls (gpu.memory.current,
+gpu.memory.max, and gpu.memory.total) and accounting of GPU time usage
+(gpu.sched.runtime).  GPU time sharing controls are left as future work.
+These are implemented within the GPU controller along with integration/usage
+of the device memory controls by the i915 device driver.
 
-Agreed, cloud providers will most certainly want to run both SEV and SEV-* 
-guests on the same platform.
+As an accelerator or GPU device is similar in many respects to a CPU with
+(or without) attached system memory, the basic principle here is try to
+copy the semantics of existing controls from other controllers when possible
+and where these controls serve the same underlying purpose.
+For example, the memory.max and memory.current controls are based on
+same controls from MEMCG controller.
 
-> That being said, it's certainly possible to abstract the different key types
-> between AMD and Intel (assuming s390 won't use the cgroup due to it's plethora
-> of keys).  TDX private keys are equivalent to SEV-ES ASIDs, and MKTME keys (if
-> the kernel ever gains a user) could be thrown into the same bucket as SEV IDs,
-> albeit with some minor mental gymnastics.
-> 
-> E.g. this mapping isn't horrendous:
-> 
->   encrpytion_ids.basic.*       == SEV   == MKTME
->   encrpytion_ids.enhanced.*    == SEV-* == TDX
-> 
-> The names will likely be a bit vague, but I don't think they'll be so far off
-> that it'd be impossible for someone with SEV/TDX knowledge to glean their intent.
-> And realistically, if anyone gets to the point where they care about controlling
-> SEV or TDX IDs, they've already plowed through hundreds of pages of dense
-> documentation; having to read a few lines of cgroup docs to understand basic vs.
-> enhanced probably won't faze them at all.
-> 
+Following with the implementation used by the existing RDMA controller,
+here we introduce a general purpose drm_cgroup_try_charge and uncharge
+pair of exported functions. These functions are to be used for
+charging and uncharging all current and future DRM resource controls.
 
-The abstraction makes sense for both AMD and Intel offerings today.  It 
-makes me wonder if we want a read-only 
-encryption_ids.{basic,enhanced}.type file to describe the underlying 
-technology ("SEV-ES/SEV-SNP", "TDX", etc).  Since the technology is 
-discoverable by other means and we are assuming one encryption type per 
-pool of encryption ids, we likely don't need this.
+Patches 1 - 4 are part original work and part refactoring of the prior
+work from Kenny Ho from his series for GPU / DRM controller v2 [1].
 
-I'm slightly concerned about extensibility if there is to be an 
-incremental enhancement atop SEV-* or TDX with yet another pool of 
-encryption ids.  (For example, when we only had hugepages, this name was 
-perfect; then we got 1GB pages which became "gigantic pages", so are 512GB 
-pages "enormous"? :)  I could argue (encryption_ids.basic.*,
-encryption_ids.enhanced.*) should map to 
-(encryption_ids.legacy.*, encryption_ids.*) but that's likely 
-bikeshedding.
+Patches 5 - 7 introduce new controls to the GPU / DRM controller for device
+memory accounting and GPU time tracking.
 
-Thomas: does encryption_ids.{basic,enhanced}.* make sense for ASID 
-partitioning?
+Patch 8 introduces DRM support for associating GEM objects with a cgroup.
 
-Tejun: if this makes sense for legacy SEV and SEV-* per Thomas, and this 
-is now abstracted to be technology (vendor) neutral, does this make sense 
-to you?
+Patch 9 implements i915 changes to use cgroups for device memory charging
+and enforcing device memory allocation limit.
+
+[1] https://lists.freedesktop.org/archives/dri-devel/2020-February/257052.html
+[2] https://lists.freedesktop.org/archives/dri-devel/2019-November/242599.html
+
+Brian Welty (6):
+  drmcg: Add skeleton seq_show and write for drmcg files
+  drmcg: Add support for device memory accounting via page counter
+  drmcg: Add memory.total file
+  drmcg: Add initial support for tracking gpu time usage
+  drm/gem: Associate GEM objects with drm cgroup
+  drm/i915: Use memory cgroup for enforcing device memory limit
+
+Kenny Ho (3):
+  cgroup: Introduce cgroup for drm subsystem
+  drm, cgroup: Bind drm and cgroup subsystem
+  drm, cgroup: Initialize drmcg properties
+
+ Documentation/admin-guide/cgroup-v2.rst    |  58 ++-
+ Documentation/cgroup-v1/drm.rst            |   1 +
+ drivers/gpu/drm/drm_drv.c                  |  11 +
+ drivers/gpu/drm/drm_gem.c                  |  89 ++++
+ drivers/gpu/drm/i915/gem/i915_gem_mman.c   |   1 +
+ drivers/gpu/drm/i915/gem/i915_gem_region.c |  23 +-
+ drivers/gpu/drm/i915/intel_memory_region.c |  13 +-
+ drivers/gpu/drm/i915/intel_memory_region.h |   2 +-
+ include/drm/drm_cgroup.h                   |  85 ++++
+ include/drm/drm_device.h                   |   7 +
+ include/drm/drm_gem.h                      |  17 +
+ include/linux/cgroup_drm.h                 | 113 +++++
+ include/linux/cgroup_subsys.h              |   4 +
+ init/Kconfig                               |   5 +
+ kernel/cgroup/Makefile                     |   1 +
+ kernel/cgroup/drm.c                        | 533 +++++++++++++++++++++
+ 16 files changed, 954 insertions(+), 9 deletions(-)
+ create mode 100644 Documentation/cgroup-v1/drm.rst
+ create mode 100644 include/drm/drm_cgroup.h
+ create mode 100644 include/linux/cgroup_drm.h
+ create mode 100644 kernel/cgroup/drm.c
+
+-- 
+2.20.1
+
