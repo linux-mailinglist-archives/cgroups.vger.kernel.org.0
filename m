@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1D87304F6F
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 04DB8304F6D
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 04:10:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhA0DKX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:10:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58796 "EHLO
+        id S233572AbhA0DKY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 26 Jan 2021 22:10:24 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1727925AbhAZWDV (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 17:03:21 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE267C0613D6;
-        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id 19so17623281qkh.3;
-        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
+        with ESMTP id S317766AbhA0BUZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 26 Jan 2021 20:20:25 -0500
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31666C0613D6
+        for <cgroups@vger.kernel.org>; Tue, 26 Jan 2021 17:12:05 -0800 (PST)
+Received: by mail-pg1-x529.google.com with SMTP id n10so422718pgl.10
+        for <cgroups@vger.kernel.org>; Tue, 26 Jan 2021 17:12:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=gWT03kNJZSWxacIeOv6hjkOlCv2pmh2+pjFjp7VWYGQ=;
-        b=po/4EBxBrPQhQy3bPcyEACcYckHeCx+IqagN9LbPD7QWla65XueTFcJcZhFwMJm5q8
-         BkPgq90SfW5XB9q4rUfFX6Q3vmRMiuNukJ5gbVAmZ6/0QFvGhiqd98fNfF72QI9cj0Ts
-         3ogXVPNT6D3/2J0imMFB6/PEl6R35PvlqLRm2wFIoDdw/AXQE2G1hGL40IY+DVMULxmi
-         iCBTlotIA6yDRSNo6CTMqmoQCf0qIGCKYk7YpRU6ooc7Jioj0XEHtleX5dUCur8V8pdh
-         ihHDES1CmXI3fZis+DWWDI/VKa2rTH87g2JqBhjS1rzTSOWi+/XOtRg+At/G2P5QzXzb
-         b1ww==
+        bh=h4YmZOf34leeTQFI3eVZ6RKnokT375TaRDpu5h/uKr0=;
+        b=C22G2NnLTkRdn/mttyEGOMoXxuTI2raLaGT4eCAOpNLzguJMhhMmlz0hxMQ5gA2Rj9
+         qTOfsm8D9kYABK9iahC0LW6TJZGFYlNTBRFUajK7C0nvPhjSPfRyPxrSld7uQxz5yEPk
+         8gOyD6zIHU7KjQD4jKwUI3I0eCeE4pQBotxDMRCpTJ3onB6SaWW6YcvXP1A3os4mkSh+
+         ZWrMmw2P91GRl1Zfse3yYl0EuS7KKt7X4SpR8JphUOejt6zAT3zvjROsAJ8vux6lw3Tb
+         YXzV6lDO0Zfg+oWDaGv5DDtrpWLiCpE/+MzqEQ1j9jOyYE+FHvZUTvAXPton0sk+fASu
+         ZqXw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=gWT03kNJZSWxacIeOv6hjkOlCv2pmh2+pjFjp7VWYGQ=;
-        b=OPfrGCAlYZ3e1Ux4tpeF+uHipjpOn3Pirdq7EWpp4JvmSAkJ/6cGWvb8dfqug+zJAH
-         S2ZK7GnjhqS/8bdCd/2X5iX4OXH40R0NrDC022f+3mVCMJHmOTl0hQeZZo11VrG7VPNj
-         iwWNl2naKWGPi3oGQfZYhTxpTaEGkMjDYxAhgUu/wNtJFyTDZYbidl2pjM5FXLfkDZzL
-         UFLk+ZE6P1a05gIx+YWV0TLAc4Yz9j9od6TOhlANR2UP5qr81n5W2NdVe58RRHfScB5L
-         a0t192iNGNqjgxb8lTpo/z0K/TTQV/BBCsRK4mMDhiaa2f0A0t/EB3YHjO8TUEyjXt8x
-         PqLA==
-X-Gm-Message-State: AOAM531QRT0pkHUC6kmIn6H/fvDR1DrB5hg72ur7dCmO6nPP6ZCct8Iy
-        oSnANSnedkhHBpWlMlx/970=
-X-Google-Smtp-Source: ABdhPJyyzX85Np38HsoeiXjHBOf7r59tdlimvNL993RgQ0jIX8eXag45KCmHYtUXT1OgHmK2eEYcjA==
-X-Received: by 2002:ae9:ddc4:: with SMTP id r187mr7793968qkf.391.1611698553042;
-        Tue, 26 Jan 2021 14:02:33 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id o15sm32861qtp.51.2021.01.26.14.02.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=h4YmZOf34leeTQFI3eVZ6RKnokT375TaRDpu5h/uKr0=;
+        b=e+cbetWNAG/Kasahyni+m1nGGwWnDmSjK089WFkXUJ60J4ZNWXqOe+jgzPSYKwJYUN
+         THE3oVrb+EgrcfTOZMXLOKOxwsz8RkCw/8wxk6LE5NoGK5AcsAEw4JdK/yoFnBbVC7wi
+         M0feY62/gbD2IMfh9sDR1O6zqptWm/N6qhscUNq+3Mb+DvX5b/Jyqd7qINJYgGOPZW14
+         8QCa0v/jrcdHhYB6ctZXIZTvROr9/SnB1KdiYvbHZP1ND3LggV3z/5f7LzS3aYoOEYXq
+         KsbLnzyz/z4mNuDs4X2VYiVYVOSycQtxYzUXk2aAZ9C7mq0Dho/jfl2zRHJjJIaxWW6v
+         A9fg==
+X-Gm-Message-State: AOAM5337952DqIsx+7FPJ9fdt9u2/Hg6GKtQfDRJ5/8wvOLua95fmsb9
+        w1715Omse4SbcpUOwGE2jETEDA==
+X-Google-Smtp-Source: ABdhPJyEFpCKvCKNjaSTTtBB/neKejTeHgWHIeRI3pSHLk8JaIe8gAIqZfxZc0fdfHzlPPO0ubyR3w==
+X-Received: by 2002:a65:6895:: with SMTP id e21mr8328535pgt.240.1611709924537;
+        Tue, 26 Jan 2021 17:12:04 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:1ea0:b8ff:fe75:b885])
+        by smtp.gmail.com with ESMTPSA id gx21sm136854pjb.31.2021.01.26.17.12.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 Jan 2021 14:02:32 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Tue, 26 Jan 2021 17:02:32 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     David Rientjes <rientjes@google.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
+        Tue, 26 Jan 2021 17:12:03 -0800 (PST)
+Date:   Tue, 26 Jan 2021 17:11:59 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
         Tom Lendacky <thomas.lendacky@amd.com>,
-        Vipin Sharma <vipinsh@google.com>,
         "Singh, Brijesh" <brijesh.singh@amd.com>,
         "Grimm, Jon" <jon.grimm@amd.com>,
         "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
@@ -65,7 +64,7 @@ Cc:     Sean Christopherson <seanjc@google.com>,
         x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
 Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
-Message-ID: <YBCReBXMczop/GQO@slm.duckdns.org>
+Message-ID: <YBC937MFGEEiI63o@google.com>
 References: <YAJsUyH2zspZxF2S@google.com>
  <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
  <YAfYL7V6E4/P83Mg@google.com>
@@ -85,12 +84,38 @@ List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
 On Tue, Jan 26, 2021 at 05:01:04PM -0500, Tejun Heo wrote:
+> The whole thing seems pretty immature to me and I agree with you that coming
+> up with an abstraction at this stage feels risky.
+> 
+> I'm leaning towards creating a misc controller to shove these things into:
+> 
 > * misc.max and misc.current: nested keyed files listing max and current
 >   usage for the cgroup.
+> 
+> * Have an API to activate or update a given resource with total resource
+>   count. I'd much prefer the resource list to be in the controller itself
+>   rather than being through some dynamic API just so that there is some
+>   review in what keys get added.
+> 
+> * Top level cgroup lists which resource is active and how many are
+>   available.
 
-Keyed files, not nested keyed files.
+Sounds good, we can have a single top level stat file
 
-Thanks.
+misc.stat
+  Shows how many are supported on the host:
+  $ cat misc.stat
+  sev 500
+  sev_es 10
 
--- 
-tejun
+If total value of some resource is 0 then it will be considered inactive and
+won't show in misc.{stat, current, max}
+
+We discussed earlier, instead of having "stat" file we should show
+"current" and "capacity" files in the root but I think we can just have stat
+at top showing total resources to keep it consistent with other cgroup
+files.
+
+Thanks
+Vipin
+
