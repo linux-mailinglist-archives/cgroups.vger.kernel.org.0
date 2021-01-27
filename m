@@ -2,239 +2,111 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFEDC30532C
-	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 07:25:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 473EF305DFD
+	for <lists+cgroups@lfdr.de>; Wed, 27 Jan 2021 15:14:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233594AbhA0DKO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 26 Jan 2021 22:10:14 -0500
-Received: from mga03.intel.com ([134.134.136.65]:28863 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1727035AbhAZVrr (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 26 Jan 2021 16:47:47 -0500
-IronPort-SDR: m45oUdgmB/aZrmxezzuTfathneEVcRkS3F5jFAFLOhzTx4eteEmMdSwKM8QdxtgUae20JsuVV+
- LwKbgHunB9mQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9876"; a="180056570"
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="180056570"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Jan 2021 13:44:37 -0800
-IronPort-SDR: mYnmEKpeuO6WzUZ+VqUfEZoCLGgLnNVRdsnqkI9kHOqYXasjUVc8ONVGKSZVdtN0WcB9l6Bhut
- EMTwDuPgUGOQ==
-X-IronPort-AV: E=Sophos;i="5.79,377,1602572400"; 
-   d="scan'208";a="362139905"
-Received: from nvishwa1-desk.sc.intel.com ([172.25.29.76])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-SHA; 26 Jan 2021 13:44:37 -0800
-From:   Brian Welty <brian.welty@intel.com>
-To:     Brian Welty <brian.welty@intel.com>, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, dri-devel@lists.freedesktop.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Kenny Ho <Kenny.Ho@amd.com>, amd-gfx@lists.freedesktop.org,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
-        intel-gfx@lists.freedesktop.org,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Eero Tamminen <eero.t.tamminen@intel.com>
-Subject: [RFC PATCH 8/9] drm/gem: Associate GEM objects with drm cgroup
-Date:   Tue, 26 Jan 2021 13:46:25 -0800
-Message-Id: <20210126214626.16260-9-brian.welty@intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210126214626.16260-1-brian.welty@intel.com>
-References: <20210126214626.16260-1-brian.welty@intel.com>
+        id S233089AbhA0OOO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 27 Jan 2021 09:14:14 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233450AbhA0OLi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 27 Jan 2021 09:11:38 -0500
+Received: from mail-qv1-xf2c.google.com (mail-qv1-xf2c.google.com [IPv6:2607:f8b0:4864:20::f2c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38BBEC061573;
+        Wed, 27 Jan 2021 06:10:58 -0800 (PST)
+Received: by mail-qv1-xf2c.google.com with SMTP id n3so1062387qvf.11;
+        Wed, 27 Jan 2021 06:10:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qR1ztsc0XnYzxWr2oOHJz7bbHSJoFk9Vyu/8scCawyE=;
+        b=jJY9ENK+bqbfjVnSzWlZYt78e2AyQ93qnHJUAsPedn8NjOaifnpgzSqbPEFAAgDegm
+         aVwn49VJjAb+XAg8nPBuvsacqBPpwmWLPQfOzCfdZ9aquybZ6GfsPMJpYK736rTeGfle
+         EVSwSoDjQRYEB1CfMDDkQvZaF0iCMrL9aitm0aRi3JhYBbhSWVbLC+kXlkcubgpv8WrQ
+         3ZnOYzC599R5uzlNpyf73COKLQ1ER6apTI9LmMlS9m+boODRHewKIXTiOZtoc7Z7OESH
+         elr9ZJh3/xbXKiSoiZYURJzOR/zeq9jANT3nATxDJNm+8Q5EOCtS7lldhhmQT1uQuKW7
+         SsbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=qR1ztsc0XnYzxWr2oOHJz7bbHSJoFk9Vyu/8scCawyE=;
+        b=OhACjsBJaGU5Y2M1/AOkdZdszab51d+Z1TaH2vTU8GGcziQ14tuiH7b74nmKxdB/hh
+         rMd5tbpyzmDKcidkh89NmKq9rYErG2qFdYJz1RR6bTs4gUflXtdOekh+0CfZN/Qwa5wY
+         ksMyZtl+nDi1Nsg2NVs2xVGuF18nsAb7ejTC1yBsZ6X4n1UYJku8iZk13B0A6kf5N2cx
+         BHVAA7T99uK62RQKWYDaUeDDMbHdAUTyffGx4s2W1yz/7JuVf37e+icm9eYEpJNsxCgf
+         F7gLw/NHaYqH5SeBGkjLocbKmBUvH6CFMbHhX1Z/cL9PpYTO0uQKwOh0WAh+VXXX32iW
+         2dwg==
+X-Gm-Message-State: AOAM530DrUkWD9Ha8UmOySdA/r+Lzi23jrsE9w7HbDe//pO4fptsdwuF
+        oXyg5EQTCIniFNTNIT1PkcM=
+X-Google-Smtp-Source: ABdhPJx3gHolqCE6LTrL5K3np2KUdMEtHCKJ7u90oHH05uS7Mib+fXYu7McdvhYIQIIRqZM+8zYt/A==
+X-Received: by 2002:a0c:b59a:: with SMTP id g26mr10350664qve.26.1611756657277;
+        Wed, 27 Jan 2021 06:10:57 -0800 (PST)
+Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
+        by smtp.gmail.com with ESMTPSA id t27sm1342291qtb.20.2021.01.27.06.10.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 27 Jan 2021 06:10:54 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Wed, 27 Jan 2021 09:10:53 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        "Singh, Brijesh" <brijesh.singh@amd.com>,
+        "Grimm, Jon" <jon.grimm@amd.com>,
+        "Van Tassell, Eric" <eric.vantassell@amd.com>, pbonzini@redhat.com,
+        lizefan@huawei.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, joro@8bytes.org,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v4 1/2] cgroup: svm: Add Encryption ID controller
+Message-ID: <YBF0bb7gGkF01VCR@slm.duckdns.org>
+References: <YAb//EYCkZ7wnl6D@mtj.duckdns.org>
+ <YAfYL7V6E4/P83Mg@google.com>
+ <YAhc8khTUc2AFDcd@mtj.duckdns.org>
+ <be699d89-1bd8-25ae-fc6f-1e356b768c75@amd.com>
+ <YAmj4Q2J9htW2Fe8@mtj.duckdns.org>
+ <d11e58ec-4a8f-5b31-063a-b6b45d4ccdc5@amd.com>
+ <YAopkDN85GtWAj3a@google.com>
+ <1744f6c-551b-8de8-263e-5dac291b7ef@google.com>
+ <YBCRIPcJyB2J85XS@slm.duckdns.org>
+ <YBC937MFGEEiI63o@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBC937MFGEEiI63o@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-This patch adds tracking of which cgroup to make charges against for a
-given GEM object.  We associate the current task's cgroup with GEM objects
-as they are created.  First user of this is for charging DRM cgroup for
-device memory allocations.  The intended behavior is for device drivers to
-make the cgroup charging calls at the time that backing store is allocated
-or deallocated for the object.
+Hello,
 
-Exported functions are provided for charging memory allocations for a
-GEM object to DRM cgroup. To aid in debugging, we store how many bytes
-have been charged inside the GEM object.  Add helpers for setting and
-clearing the object's associated cgroup which will check that charges are
-not being leaked.
+On Tue, Jan 26, 2021 at 05:11:59PM -0800, Vipin Sharma wrote:
+> Sounds good, we can have a single top level stat file
+> 
+> misc.stat
+>   Shows how many are supported on the host:
+>   $ cat misc.stat
+>   sev 500
+>   sev_es 10
+> 
+> If total value of some resource is 0 then it will be considered inactive and
+> won't show in misc.{stat, current, max}
+> 
+> We discussed earlier, instead of having "stat" file we should show
+> "current" and "capacity" files in the root but I think we can just have stat
+> at top showing total resources to keep it consistent with other cgroup
+> files.
 
-For shared objects, this may make the charge against a cgroup that is
-potentially not the same cgroup as the process using the memory.  Based
-on the memory cgroup's discussion of "memory ownership", this seems
-acceptable [1].
+Let's do misc.capacity and show only the entries which have their resources
+initialized.
 
-[1] https://www.kernel.org/doc/Documentation/cgroup-v2.txt, "Memory Ownership"
+Thanks.
 
-Signed-off-by: Brian Welty <brian.welty@intel.com>
----
- drivers/gpu/drm/drm_gem.c | 89 +++++++++++++++++++++++++++++++++++++++
- include/drm/drm_gem.h     | 17 ++++++++
- 2 files changed, 106 insertions(+)
-
-diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
-index c2ce78c4edc3..a12da41eaafe 100644
---- a/drivers/gpu/drm/drm_gem.c
-+++ b/drivers/gpu/drm/drm_gem.c
-@@ -29,6 +29,7 @@
- #include <linux/slab.h>
- #include <linux/mm.h>
- #include <linux/uaccess.h>
-+#include <linux/cgroup_drm.h>
- #include <linux/fs.h>
- #include <linux/file.h>
- #include <linux/module.h>
-@@ -112,6 +113,89 @@ drm_gem_init(struct drm_device *dev)
- 	return drmm_add_action(dev, drm_gem_init_release, NULL);
- }
- 
-+/**
-+ * drm_gem_object_set_cgroup - associate GEM object with a cgroup
-+ * @obj: GEM object which is being associated with a cgroup
-+ * @task: task associated with process control group to use
-+ *
-+ * This will acquire a reference on cgroup and use for charging GEM
-+ * memory allocations.
-+ * This helper could be extended in future to migrate charges to another
-+ * cgroup, print warning if this usage occurs.
-+ */
-+void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
-+			       struct task_struct *task)
-+{
-+	/* if object has existing cgroup, we migrate the charge... */
-+	if (obj->drmcg) {
-+		pr_warn("DRM: need to migrate cgroup charge of %lld\n",
-+			atomic64_read(&obj->drmcg_bytes_charged));
-+	}
-+	obj->drmcg = drmcg_get(task);
-+}
-+EXPORT_SYMBOL(drm_gem_object_set_cgroup);
-+
-+/**
-+ * drm_gem_object_unset_cgroup - clear GEM object's associated cgroup
-+ * @obj: GEM object
-+ *
-+ * This will release a reference on cgroup.
-+ */
-+void drm_gem_object_unset_cgroup(struct drm_gem_object *obj)
-+{
-+	WARN_ON(atomic64_read(&obj->drmcg_bytes_charged));
-+	drmcg_put(obj->drmcg);
-+}
-+EXPORT_SYMBOL(drm_gem_object_unset_cgroup);
-+
-+/**
-+ * drm_gem_object_charge_mem - try charging size bytes to DRM cgroup
-+ * @obj: GEM object which is being charged
-+ * @size: number of bytes to charge
-+ *
-+ * Try to charge @size bytes to GEM object's associated DRM cgroup.  This
-+ * will fail if a successful charge would cause the current device memory
-+ * usage to go above the cgroup's GPU memory maximum limit.
-+ *
-+ * Returns 0 on success.  Otherwise, an error code is returned.
-+ */
-+int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size)
-+{
-+	int ret;
-+
-+	ret = drm_cgroup_try_charge(obj->drmcg, obj->dev,
-+				    DRMCG_TYPE_MEM_CURRENT, size);
-+	if (!ret)
-+		atomic64_add(size, &obj->drmcg_bytes_charged);
-+	return ret;
-+}
-+EXPORT_SYMBOL(drm_gem_object_charge_mem);
-+
-+/**
-+ * drm_gem_object_uncharge_mem - uncharge size bytes from DRM cgroup
-+ * @obj: GEM object which is being uncharged
-+ * @size: number of bytes to uncharge
-+ *
-+ * Uncharge @size bytes from the DRM cgroup associated with specified
-+ * GEM object.
-+ *
-+ * Returns 0 on success.  Otherwise, an error code is returned.
-+ */
-+void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size)
-+{
-+	u64 charged = atomic64_read(&obj->drmcg_bytes_charged);
-+
-+	if (WARN_ON(!charged))
-+		return;
-+	if (WARN_ON(size > charged))
-+		size = charged;
-+
-+	atomic64_sub(size, &obj->drmcg_bytes_charged);
-+	drm_cgroup_uncharge(obj->drmcg, obj->dev, DRMCG_TYPE_MEM_CURRENT,
-+			    size);
-+}
-+EXPORT_SYMBOL(drm_gem_object_uncharge_mem);
-+
- /**
-  * drm_gem_object_init - initialize an allocated shmem-backed GEM object
-  * @dev: drm_device the object should be initialized for
-@@ -156,6 +240,8 @@ void drm_gem_private_object_init(struct drm_device *dev,
- 	obj->dev = dev;
- 	obj->filp = NULL;
- 
-+	drm_gem_object_set_cgroup(obj, current);
-+
- 	kref_init(&obj->refcount);
- 	obj->handle_count = 0;
- 	obj->size = size;
-@@ -950,6 +1036,9 @@ drm_gem_object_release(struct drm_gem_object *obj)
- 
- 	dma_resv_fini(&obj->_resv);
- 	drm_gem_free_mmap_offset(obj);
-+
-+	/* Release reference on cgroup used with GEM object charging */
-+	drm_gem_object_unset_cgroup(obj);
- }
- EXPORT_SYMBOL(drm_gem_object_release);
- 
-diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
-index 240049566592..06ea10fc17bc 100644
---- a/include/drm/drm_gem.h
-+++ b/include/drm/drm_gem.h
-@@ -37,6 +37,7 @@
- #include <linux/kref.h>
- #include <linux/dma-resv.h>
- 
-+#include <drm/drm_cgroup.h>
- #include <drm/drm_vma_manager.h>
- 
- struct dma_buf_map;
-@@ -222,6 +223,17 @@ struct drm_gem_object {
- 	 */
- 	struct file *filp;
- 
-+	/**
-+	 * @drmcg:
-+	 *
-+	 * cgroup used for charging GEM object page allocations against. This
-+	 * is set to the current cgroup during GEM object creation.
-+	 * Charging policy is up to the DRM driver to implement and should be
-+	 * charged when allocating backing store from device memory.
-+	 */
-+	struct drmcg *drmcg;
-+	atomic64_t drmcg_bytes_charged;
-+
- 	/**
- 	 * @vma_node:
- 	 *
-@@ -417,4 +429,9 @@ int drm_gem_fence_array_add_implicit(struct xarray *fence_array,
- int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device *dev,
- 			    u32 handle, u64 *offset);
- 
-+void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
-+			       struct task_struct *task);
-+void drm_gem_object_unset_cgroup(struct drm_gem_object *obj);
-+int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size);
-+void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size);
- #endif /* __DRM_GEM_H__ */
 -- 
-2.20.1
-
+tejun
