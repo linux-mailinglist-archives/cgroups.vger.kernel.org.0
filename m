@@ -2,28 +2,28 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 294AC30BEE5
-	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 13:59:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F80330D36D
+	for <lists+cgroups@lfdr.de>; Wed,  3 Feb 2021 07:34:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229511AbhBBM6k (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Feb 2021 07:58:40 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:58175 "EHLO optinix.in"
+        id S231222AbhBCGeP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Feb 2021 01:34:15 -0500
+Received: from [20.39.40.203] ([20.39.40.203]:53173 "EHLO optinix.in"
         rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S229483AbhBBM6g (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 2 Feb 2021 07:58:36 -0500
+        id S230072AbhBCGeO (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 3 Feb 2021 01:34:14 -0500
 dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
         c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
         bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=MJygeAmyspW8Uj9BFB9rFz+DkhCMNKFQIv4wAkQymVwNKRbLuSAc8VzrkYjRBpUb8Vmbdj13HtUupEoO4P0TTRuU+ukcCNHqQJDHqrmgt2Egn00gTpXFxcyUtDe5BWvRq/nGnRNJ7l36LwX/1Doy0EEVrzF7TX5IXF354DnRgJttuzkL3Ye680ATwlNrRZbhGvVhxXEwGBZ7QoPVKaXfLBVIKIVLCv0wV0+EU0ln31T0L56QrsUIt5N1qT
-        ix71pt5TaYeq/gIH4EFhYDGV3jR4oBdi0v5dxUn9876CSAJcTbhv6p3WWoVhX5PvZ6HyQ0H4OCGoodjBiUg1x6LceXWQ==
+        b=C4nWVipf2uuYSqpggHqoENR906oAv4hfMdu2pFzaqNe85FdxrHY7P1d1fr2dxw2AQ31Phyv3Pa6yu8VoDjMI2AGeEHSrwaapm4WxDgNAZ8RieLQf2TNzrxslYIHvoBuBHkNTy6jwcFqEOdxXXIuAyAh5PgihzhPN9EXdrqptL43QuHRL+AQlmtlAnJfjFAqFTg7ps9lLTyr5TNzEADxF8E2wl+whvVot1FTGlFd97dwMOL2N839vwlPaya
+        DlhwTYQthkocnQby15OejBdblqQ8UZ++9M7Fc+QcpDy1iq55/1ktIKipByf8/JK78FGM4zk6Apg0e+x+MVsoFouZ7wMg==
 Received: from User (Unknown [52.231.31.5])
         by optinix.in with ESMTP
-        ; Fri, 29 Jan 2021 11:21:59 +0000
-Message-ID: <04206FF4-3909-4C09-B901-20A40553860D@optinix.in>
+        ; Sun, 31 Jan 2021 17:55:44 +0000
+Message-ID: <EC75AD46-2A66-4991-84A5-16BCEEC37FD5@optinix.in>
 Reply-To: <ms.reem@yandex.com>
 From:   "Ms. Reem" <support@digitalsol.in>
 Subject: Re:read
-Date:   Fri, 29 Jan 2021 11:21:58 -0000
+Date:   Sun, 31 Jan 2021 17:55:43 -0000
 MIME-Version: 1.0
 Content-Type: text/plain;
         charset="Windows-1251"
