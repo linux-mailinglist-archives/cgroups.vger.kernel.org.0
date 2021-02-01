@@ -2,102 +2,97 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CC5030AD21
-	for <lists+cgroups@lfdr.de>; Mon,  1 Feb 2021 17:53:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 690BF30B367
+	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 00:23:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231774AbhBAQwG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Feb 2021 11:52:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231757AbhBAQwB (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Feb 2021 11:52:01 -0500
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B082AC061786;
-        Mon,  1 Feb 2021 08:51:19 -0800 (PST)
-Received: by mail-lf1-x12e.google.com with SMTP id a12so23740104lfb.1;
-        Mon, 01 Feb 2021 08:51:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wF7mWC2M9iBBc+ACGYALfCAPMzd/Re2kA54W5usB+9c=;
-        b=cOQzkJjTPteBDAyEwI88kZ6IB+wiDX+1y1GIGJanexyB8HynFGGumgPPIB53qiYArs
-         +e7ZbAKr52jZx90yInF//sIz6yDHJwouIdUUpr7f+3RpMaze56OrOgLqkai2EYjbnhH4
-         +TjotrLukfQlGShqfr5pes94GebIp75G5LolNlKBcwL38rvVt6GF8CQLI1q9GB1HPcmR
-         z6CAHvTshHpQ4KeHiHwtBkg9OEvkkecyzIew0dLXYR5N/LDEFQ7bsggyocEzRyVr7DKk
-         qvBdOSvfJVBUqSYoCtiKeZRvkxoEahCvcvZBJrQYAMMjBUSPic/kfUiYpdD6bVKsvhMk
-         3tsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=wF7mWC2M9iBBc+ACGYALfCAPMzd/Re2kA54W5usB+9c=;
-        b=Y1pQjEKYg8M5tDAuMWB4GcZzrE/9wTMdeoSK3zTO8Ie8CPtT/aXFYg5Ry0jIzTH4BL
-         hfTDPIRhNJlcCth2pmSezZwXG/ExkjqcJlSICKlGBVgCUhZ9mrYOVOTXebKj7gMVMFne
-         QoEA71I8Ja3KtmGmKL3kiaQt7JOUsYa2ylLVQ4IazLu8hS6Qvd96nSDb2Zi/gs704+jN
-         dSXZXcpAiijuuoPx0lpyrJp/IHJFbI2i28m+AjSpQKL7rdJ47/BdXHBm3AVykzc06X6y
-         +Z/YG6IIErZ+mY/kxUgsEkGqLcC0Z4JTq2IroRkCH3g++Lw9RMdpm5QP6+fZ2Y2KaK+C
-         2ZMw==
-X-Gm-Message-State: AOAM532zBjWeFqWbNmQ8LrshOAig7XrSIqpPc59SeL9DZItPDQNgD3/z
-        y3xyZF2rgys3ycL90szgqgTGD1ad9PrR9VHuhgY=
-X-Google-Smtp-Source: ABdhPJwU19Ykz6zVy5HPScLPfN7sZ41eNDew+I/XiJKnUJb0R2TV/4YtlOqZLFcdbXx3hMrOMozaP/L2VFq0o4gRw5Y=
-X-Received: by 2002:a19:ec03:: with SMTP id b3mr9452260lfa.608.1612198278259;
- Mon, 01 Feb 2021 08:51:18 -0800 (PST)
+        id S230194AbhBAXWY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Feb 2021 18:22:24 -0500
+Received: from mga09.intel.com ([134.134.136.24]:63479 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230070AbhBAXWX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 1 Feb 2021 18:22:23 -0500
+IronPort-SDR: TJIOth9aKhTMy+8ZLcXAL4XEYMfIYFvGg1YXdP0GNXZHzRWZSzd4wzCyxx3brAjd4eJoCWNJKZ
+ NYmPqYj8xK2w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9882"; a="180912141"
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="180912141"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:21:37 -0800
+IronPort-SDR: rkwNIz2b0CynlLQSBraKJF/Zx+NCJg2sKZ1YwCbqyPmXEy0SZF+z0NWvk+YdmCtiAxUf6qcXpi
+ oS++1PY/AHdg==
+X-IronPort-AV: E=Sophos;i="5.79,393,1602572400"; 
+   d="scan'208";a="412942564"
+Received: from brianwel-mobl1.amr.corp.intel.com (HELO [10.209.88.198]) ([10.209.88.198])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 01 Feb 2021 15:21:36 -0800
+Subject: Re: [RFC PATCH 0/9] cgroup support for GPU devices
+To:     Xingyou Chen <rockrush@rockwork.org>, cgroups@vger.kernel.org,
+        Tejun Heo <tj@kernel.org>, dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel@ffwll.ch>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Kenny Ho <Kenny.Ho@amd.com>, amd-gfx@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        intel-gfx@lists.freedesktop.org,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>
+References: <20210126214626.16260-1-brian.welty@intel.com>
+ <84b79978-84c9-52aa-b761-3f4be929064e@rockwork.org>
+From:   Brian Welty <brian.welty@intel.com>
+Message-ID: <5307d21b-7494-858c-30f0-cb5fe1d86004@intel.com>
+Date:   Mon, 1 Feb 2021 15:21:35 -0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com> <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
- <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
- <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
- <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
- <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com> <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
-In-Reply-To: <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
-From:   Kenny Ho <y2kenny@gmail.com>
-Date:   Mon, 1 Feb 2021 11:51:07 -0500
-Message-ID: <CAOWid-eXMqcNpjFxbcuUDU7Y-CCYJRNT_9mzqFYm1jeCPdADGQ@mail.gmail.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-To:     Daniel Vetter <daniel@ffwll.ch>
-Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Dave Airlie <airlied@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        Andrii Nakryiko <andriin@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
-        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Brian Welty <brian.welty@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <84b79978-84c9-52aa-b761-3f4be929064e@rockwork.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-[Resent in plain text.]
 
-On Mon, Feb 1, 2021 at 9:49 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> - there's been a pile of cgroups proposal to manage gpus at the drm
->   subsystem level, some by Kenny, and frankly this at least looks a bit
->   like a quick hack to sidestep the consensus process for that.
-No Daniel, this is quick *draft* to get a conversation going.  Bpf was
-actually a path suggested by Tejun back in 2018 so I think you are
-mischaracterizing this quite a bit.
+On 1/28/2021 7:00 PM, Xingyou Chen wrote:
+> On 2021/1/27 上午5:46, Brian Welty wrote:
+> 
+>> We'd like to revisit the proposal of a GPU cgroup controller for managing
+>> GPU devices but with just a basic set of controls.  This series is based on 
+>> the prior patch series from Kenny Ho [1].  We take Kenny's base patches
+>> which implement the basic framework for the controller, but we propose an
+>> alternate set of control files.  Here we've taken a subset of the controls
+>> proposed in earlier discussion on ML here [2]. 
+>>
+>> This series proposes a set of device memory controls (gpu.memory.current,
+>> gpu.memory.max, and gpu.memory.total) and accounting of GPU time usage
+>> (gpu.sched.runtime).  GPU time sharing controls are left as future work.
+>> These are implemented within the GPU controller along with integration/usage
+>> of the device memory controls by the i915 device driver.
+>>
+>> As an accelerator or GPU device is similar in many respects to a CPU with
+>> (or without) attached system memory, the basic principle here is try to
+>> copy the semantics of existing controls from other controllers when possible
+>> and where these controls serve the same underlying purpose.
+>> For example, the memory.max and memory.current controls are based on
+>> same controls from MEMCG controller.
+> 
+> It seems not to be DRM specific, or even GPU specific. Would we have an universal
+> control group for any accelerator, GPGPU device etc, that hold sharable resources
+> like device memory, compute utility, bandwidth, with extra control file to select
+> between devices(or vendors)?
+> 
+> e.g. /cgname.device that stores PCI BDF， or enum(intel, amdgpu, nvidia, ...),
+> defaults to none, means not enabled.
+> 
 
-"2018-11-20 Kenny Ho:
-To put the questions in more concrete terms, let say a user wants to
- expose certain part of a gpu to a particular cgroup similar to the
- way selective cpu cores are exposed to a cgroup via cpuset, how
- should we go about enabling such functionality?
+Hi, thanks for the feedback.  Yes, I tend to agree.  I've asked about this in
+earlier work; my suggestion is to name the controller something like 'XPU' to
+be clear that these controls could apply to more than GPU.
 
-2018-11-20 Tejun Heo:
-Do what the intel driver or bpf is doing?  It's not difficult to hook
-into cgroup for identification purposes."
+But at least for now, based on Tejun's reply [1], the feedback is to try and keep
+this controller as small and focused as possible on just GPU.  At least until
+we get some consensus on set of controls for GPU.....  but for this we need more
+active input from community......
 
-Kenny
+-Brian
+
+[1] https://lists.freedesktop.org/archives/dri-devel/2019-November/243167.html
