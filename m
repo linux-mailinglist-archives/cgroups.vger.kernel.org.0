@@ -2,64 +2,167 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F80330D36D
-	for <lists+cgroups@lfdr.de>; Wed,  3 Feb 2021 07:34:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4138C30AAD9
+	for <lists+cgroups@lfdr.de>; Mon,  1 Feb 2021 16:16:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231222AbhBCGeP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Feb 2021 01:34:15 -0500
-Received: from [20.39.40.203] ([20.39.40.203]:53173 "EHLO optinix.in"
-        rhost-flags-FAIL-FAIL-OK-OK) by vger.kernel.org with ESMTP
-        id S230072AbhBCGeO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 3 Feb 2021 01:34:14 -0500
-dkim-signature: v=1; a=rsa-sha256; d=digitalsol.in; s=dkim;
-        c=relaxed/relaxed; q=dns/txt; h=From:Reply-To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=wK2neTcOXNiSQ+RBxrnFed+mRrGUU/ndLGEgvo8IMCc=;
-        b=C4nWVipf2uuYSqpggHqoENR906oAv4hfMdu2pFzaqNe85FdxrHY7P1d1fr2dxw2AQ31Phyv3Pa6yu8VoDjMI2AGeEHSrwaapm4WxDgNAZ8RieLQf2TNzrxslYIHvoBuBHkNTy6jwcFqEOdxXXIuAyAh5PgihzhPN9EXdrqptL43QuHRL+AQlmtlAnJfjFAqFTg7ps9lLTyr5TNzEADxF8E2wl+whvVot1FTGlFd97dwMOL2N839vwlPaya
-        DlhwTYQthkocnQby15OejBdblqQ8UZ++9M7Fc+QcpDy1iq55/1ktIKipByf8/JK78FGM4zk6Apg0e+x+MVsoFouZ7wMg==
-Received: from User (Unknown [52.231.31.5])
-        by optinix.in with ESMTP
-        ; Sun, 31 Jan 2021 17:55:44 +0000
-Message-ID: <EC75AD46-2A66-4991-84A5-16BCEEC37FD5@optinix.in>
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <support@digitalsol.in>
-Subject: Re:read
-Date:   Sun, 31 Jan 2021 17:55:43 -0000
+        id S231210AbhBAO5F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Feb 2021 09:57:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231447AbhBAOuQ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Feb 2021 09:50:16 -0500
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CF3C06178A
+        for <cgroups@vger.kernel.org>; Mon,  1 Feb 2021 06:49:29 -0800 (PST)
+Received: by mail-wm1-x335.google.com with SMTP id u14so13420725wmq.4
+        for <cgroups@vger.kernel.org>; Mon, 01 Feb 2021 06:49:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
+        b=T0u0mZ+Z3spqI5csq8199vdWw2F0HEI5De5S85KRWxCdxr+4jQR5HF/ESPI+khBobI
+         0kID6zY387C7nAXsNhluEAdeknIbOqrsZ2D0JaogcRsYEATDQywghJ/9qSSQ5q5A55FI
+         yWsOBfzIjs33oPqk4PuKrYwi8nfXeV5MoJxBo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
+        b=cR2yOCatPnAybpt47w0PbU18tl0rzKa2h/2kO6slnjD+sH6tgjNcIpQd2EzNCQacbP
+         qc84dQmnVqth7Z92MEu62ZQXIN91yCQyoLQX9O35afkfG7CwEjMDhGPgf3GFEfRFbdg+
+         I5V1Fcr0AbYQRbdAjKv767gl5Obh8nBVG7nTfmgNr01vNT33rGA9ie99w2918+DVUB/J
+         NSC85gUsuomCskHd/iSTokSZ344Zu/7qqJP2pML1pU/F+zhkdCFPCHUBXRsI68ow1dSU
+         bqVZVYECgcyvKfpdMqxp7JSvxjuxBzbyaUpNkj6SUtJIwHe7uANJ9GgH9ohBM9KQ64Sx
+         hp+Q==
+X-Gm-Message-State: AOAM530QhE921Evr750hgb5rq9qDs5cUqnkyPwoutcReugAnqaQkjll1
+        bETrvKPenP9yPdW4BaisZxCT1Q==
+X-Google-Smtp-Source: ABdhPJzB4Q25SCm85fnRZK3Sfm9L/kEowDZQU6EzC3QxehecRfUoCDENb9bS5nw1au+0MSHzKsed+A==
+X-Received: by 2002:a7b:cd97:: with SMTP id y23mr15626961wmj.0.1612190968210;
+        Mon, 01 Feb 2021 06:49:28 -0800 (PST)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id z18sm26511725wro.91.2021.02.01.06.49.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Feb 2021 06:49:27 -0800 (PST)
+Date:   Mon, 1 Feb 2021 15:49:25 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Dave Airlie <airlied@gmail.com>
+Cc:     Kenny Ho <y2kenny@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        Andrii Nakryiko <andriin@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        Linux-Fsdevel <linux-fsdevel@vger.kernel.org>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Brian Welty <brian.welty@intel.com>
+Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
+Message-ID: <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
+References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
+ <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
+ <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
+ <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
+ <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
+ <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+ <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="Windows-1251"
-Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Adding gpu folks.
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
+On Tue, Nov 03, 2020 at 03:28:05PM -0800, Alexei Starovoitov wrote:
+> On Tue, Nov 03, 2020 at 05:57:47PM -0500, Kenny Ho wrote:
+> > On Tue, Nov 3, 2020 at 4:04 PM Alexei Starovoitov
+> > <alexei.starovoitov@gmail.com> wrote:
+> > >
+> > > On Tue, Nov 03, 2020 at 02:19:22PM -0500, Kenny Ho wrote:
+> > > > On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
+> > > > <alexei.starovoitov@gmail.com> wrote:
+> > > > > On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
+> > >
+> > > Sounds like either bpf_lsm needs to be made aware of cgv2 (which would
+> > > be a great thing to have regardless) or cgroup-bpf needs a drm/gpu specific hook.
+> > > I think generic ioctl hook is too broad for this use case.
+> > > I suspect drm/gpu internal state would be easier to access inside
+> > > bpf program if the hook is next to gpu/drm. At ioctl level there is 'file'.
+> > > It's probably too abstract for the things you want to do.
+> > > Like how VRAM/shader/etc can be accessed through file?
+> > > Probably possible through a bunch of lookups and dereferences, but
+> > > if the hook is custom to GPU that info is likely readily available.
+> > > Then such cgroup-bpf check would be suitable in execution paths where
+> > > ioctl-based hook would be too slow.
+> > Just to clarify, when you say drm specific hook, did you mean just a
+> > unique attach_type or a unique prog_type+attach_type combination?  (I
+> > am still a bit fuzzy on when a new prog type is needed vs a new attach
+> > type.  I think prog type is associated with a unique type of context
+> > that the bpf prog will get but I could be missing some nuances.)
+> > 
+> > When I was thinking of doing an ioctl wide hook, the file would be the
+> > device file and the thinking was to have a helper function provided by
+> > device drivers to further disambiguate.  For our (AMD's) driver, we
+> > have a bunch of ioctls for set/get/create/destroy
+> > (https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c#L1763)
+> > so the bpf prog can make the decision after the disambiguation.  For
+> > example, we have an ioctl called "kfd_ioctl_set_cu_mask."  You can
+> 
+> Thanks for the pointer.
+> That's one monster ioctl. So much copy_from_user.
+> BPF prog would need to be sleepable to able to examine the args in such depth.
+> After quick glance at the code I would put a new hook into
+> kfd_ioctl() right before
+> retcode = func(filep, process, kdata);
+> At this point kdata is already copied from user space 
+> and usize, that is cmd specific, is known.
+> So bpf prog wouldn't need to copy that data again.
+> That will save one copy.
+> To drill into details of kfd_ioctl_set_cu_mask() the prog would
+> need to be sleepable to do second copy_from_user of cu_mask.
+> At least it's not that big.
+> Yes, the attachment point will be amd driver specific,
+> but the program doesn't need to be.
+> It can be generic tracing prog that is agumented to use BTF.
+> Something like writeable tracepoint with BTF support would do.
+> So on the bpf side there will be minimal amount of changes.
+> And in the driver you'll add one or few writeable tracepoints
+> and the result of the tracepoint will gate
+> retcode = func(filep, process, kdata);
+> call in kfd_ioctl().
+> The writeable tracepoint would need to be cgroup-bpf based.
+> So that's the only tricky part. BPF infra doesn't have
+> cgroup+tracepoint scheme. It's probably going to be useful
+> in other cases like this. See trace_nbd_send_request.
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+Yeah I think this proposal doesn't work:
 
-Regards,
-Ms. Reem.
+- inspecting ioctl arguments that need copying outside of the
+  driver/subsystem doing that copying is fundamentally racy
 
+- there's been a pile of cgroups proposal to manage gpus at the drm
+  subsystem level, some by Kenny, and frankly this at least looks a bit
+  like a quick hack to sidestep the consensus process for that.
+
+So once we push this into drivers it's not going to be a bpf hook anymore
+I think.
+
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
