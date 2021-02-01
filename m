@@ -2,53 +2,64 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4138C30AAD9
-	for <lists+cgroups@lfdr.de>; Mon,  1 Feb 2021 16:16:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4CC5030AD21
+	for <lists+cgroups@lfdr.de>; Mon,  1 Feb 2021 17:53:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231210AbhBAO5F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Feb 2021 09:57:05 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33138 "EHLO
+        id S231774AbhBAQwG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Feb 2021 11:52:06 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231447AbhBAOuQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Feb 2021 09:50:16 -0500
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1CF3C06178A
-        for <cgroups@vger.kernel.org>; Mon,  1 Feb 2021 06:49:29 -0800 (PST)
-Received: by mail-wm1-x335.google.com with SMTP id u14so13420725wmq.4
-        for <cgroups@vger.kernel.org>; Mon, 01 Feb 2021 06:49:29 -0800 (PST)
+        with ESMTP id S231757AbhBAQwB (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Feb 2021 11:52:01 -0500
+Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B082AC061786;
+        Mon,  1 Feb 2021 08:51:19 -0800 (PST)
+Received: by mail-lf1-x12e.google.com with SMTP id a12so23740104lfb.1;
+        Mon, 01 Feb 2021 08:51:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
-        b=T0u0mZ+Z3spqI5csq8199vdWw2F0HEI5De5S85KRWxCdxr+4jQR5HF/ESPI+khBobI
-         0kID6zY387C7nAXsNhluEAdeknIbOqrsZ2D0JaogcRsYEATDQywghJ/9qSSQ5q5A55FI
-         yWsOBfzIjs33oPqk4PuKrYwi8nfXeV5MoJxBo=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wF7mWC2M9iBBc+ACGYALfCAPMzd/Re2kA54W5usB+9c=;
+        b=cOQzkJjTPteBDAyEwI88kZ6IB+wiDX+1y1GIGJanexyB8HynFGGumgPPIB53qiYArs
+         +e7ZbAKr52jZx90yInF//sIz6yDHJwouIdUUpr7f+3RpMaze56OrOgLqkai2EYjbnhH4
+         +TjotrLukfQlGShqfr5pes94GebIp75G5LolNlKBcwL38rvVt6GF8CQLI1q9GB1HPcmR
+         z6CAHvTshHpQ4KeHiHwtBkg9OEvkkecyzIew0dLXYR5N/LDEFQ7bsggyocEzRyVr7DKk
+         qvBdOSvfJVBUqSYoCtiKeZRvkxoEahCvcvZBJrQYAMMjBUSPic/kfUiYpdD6bVKsvhMk
+         3tsw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EGmzCB5chSwq9pe2qQDXhGstL/uSMglbti4AeZbvc9M=;
-        b=cR2yOCatPnAybpt47w0PbU18tl0rzKa2h/2kO6slnjD+sH6tgjNcIpQd2EzNCQacbP
-         qc84dQmnVqth7Z92MEu62ZQXIN91yCQyoLQX9O35afkfG7CwEjMDhGPgf3GFEfRFbdg+
-         I5V1Fcr0AbYQRbdAjKv767gl5Obh8nBVG7nTfmgNr01vNT33rGA9ie99w2918+DVUB/J
-         NSC85gUsuomCskHd/iSTokSZ344Zu/7qqJP2pML1pU/F+zhkdCFPCHUBXRsI68ow1dSU
-         bqVZVYECgcyvKfpdMqxp7JSvxjuxBzbyaUpNkj6SUtJIwHe7uANJ9GgH9ohBM9KQ64Sx
-         hp+Q==
-X-Gm-Message-State: AOAM530QhE921Evr750hgb5rq9qDs5cUqnkyPwoutcReugAnqaQkjll1
-        bETrvKPenP9yPdW4BaisZxCT1Q==
-X-Google-Smtp-Source: ABdhPJzB4Q25SCm85fnRZK3Sfm9L/kEowDZQU6EzC3QxehecRfUoCDENb9bS5nw1au+0MSHzKsed+A==
-X-Received: by 2002:a7b:cd97:: with SMTP id y23mr15626961wmj.0.1612190968210;
-        Mon, 01 Feb 2021 06:49:28 -0800 (PST)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id z18sm26511725wro.91.2021.02.01.06.49.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 01 Feb 2021 06:49:27 -0800 (PST)
-Date:   Mon, 1 Feb 2021 15:49:25 +0100
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        Dave Airlie <airlied@gmail.com>
-Cc:     Kenny Ho <y2kenny@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wF7mWC2M9iBBc+ACGYALfCAPMzd/Re2kA54W5usB+9c=;
+        b=Y1pQjEKYg8M5tDAuMWB4GcZzrE/9wTMdeoSK3zTO8Ie8CPtT/aXFYg5Ry0jIzTH4BL
+         hfTDPIRhNJlcCth2pmSezZwXG/ExkjqcJlSICKlGBVgCUhZ9mrYOVOTXebKj7gMVMFne
+         QoEA71I8Ja3KtmGmKL3kiaQt7JOUsYa2ylLVQ4IazLu8hS6Qvd96nSDb2Zi/gs704+jN
+         dSXZXcpAiijuuoPx0lpyrJp/IHJFbI2i28m+AjSpQKL7rdJ47/BdXHBm3AVykzc06X6y
+         +Z/YG6IIErZ+mY/kxUgsEkGqLcC0Z4JTq2IroRkCH3g++Lw9RMdpm5QP6+fZ2Y2KaK+C
+         2ZMw==
+X-Gm-Message-State: AOAM532zBjWeFqWbNmQ8LrshOAig7XrSIqpPc59SeL9DZItPDQNgD3/z
+        y3xyZF2rgys3ycL90szgqgTGD1ad9PrR9VHuhgY=
+X-Google-Smtp-Source: ABdhPJwU19Ykz6zVy5HPScLPfN7sZ41eNDew+I/XiJKnUJb0R2TV/4YtlOqZLFcdbXx3hMrOMozaP/L2VFq0o4gRw5Y=
+X-Received: by 2002:a19:ec03:: with SMTP id b3mr9452260lfa.608.1612198278259;
+ Mon, 01 Feb 2021 08:51:18 -0800 (PST)
+MIME-Version: 1.0
+References: <20201007152355.2446741-1-Kenny.Ho@amd.com> <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
+ <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
+ <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
+ <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
+ <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
+ <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
+ <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com> <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
+In-Reply-To: <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
+From:   Kenny Ho <y2kenny@gmail.com>
+Date:   Mon, 1 Feb 2021 11:51:07 -0500
+Message-ID: <CAOWid-eXMqcNpjFxbcuUDU7Y-CCYJRNT_9mzqFYm1jeCPdADGQ@mail.gmail.com>
+Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        Dave Airlie <airlied@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
         Alexander Viro <viro@zeniv.linux.org.uk>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
@@ -64,105 +75,29 @@ Cc:     Kenny Ho <y2kenny@gmail.com>, Kenny Ho <Kenny.Ho@amd.com>,
         amd-gfx list <amd-gfx@lists.freedesktop.org>,
         DRI Development <dri-devel@lists.freedesktop.org>,
         Brian Welty <brian.welty@intel.com>
-Subject: Re: [RFC] Add BPF_PROG_TYPE_CGROUP_IOCTL
-Message-ID: <YBgU9Vu0BGV8kCxD@phenom.ffwll.local>
-References: <20201007152355.2446741-1-Kenny.Ho@amd.com>
- <CAOWid-d=a1Q3R92s7GrzxWhXx7_dc8NQvQg7i7RYTVv3+jHxkQ@mail.gmail.com>
- <20201103053244.khibmr66p7lhv7ge@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-eQSPru0nm8+Xo3r6C0pJGq+5r8mzM8BL2dgNn2c9mt2Q@mail.gmail.com>
- <CAADnVQKuoZDB-Xga5STHdGSxvSP=B6jQ40kLdpL1u+J98bv65A@mail.gmail.com>
- <CAOWid-czZphRz6Y-H3OcObKCH=bLLC3=bOZaSB-6YBE56+Qzrg@mail.gmail.com>
- <20201103210418.q7hddyl7rvdplike@ast-mbp.dhcp.thefacebook.com>
- <CAOWid-djQ_NRfCbOTnZQ-A8Pr7jMP7KuZEJDSsvzWkdw7qc=yA@mail.gmail.com>
- <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201103232805.6uq4zg3gdvw2iiki@ast-mbp.dhcp.thefacebook.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Adding gpu folks.
+[Resent in plain text.]
 
-On Tue, Nov 03, 2020 at 03:28:05PM -0800, Alexei Starovoitov wrote:
-> On Tue, Nov 03, 2020 at 05:57:47PM -0500, Kenny Ho wrote:
-> > On Tue, Nov 3, 2020 at 4:04 PM Alexei Starovoitov
-> > <alexei.starovoitov@gmail.com> wrote:
-> > >
-> > > On Tue, Nov 03, 2020 at 02:19:22PM -0500, Kenny Ho wrote:
-> > > > On Tue, Nov 3, 2020 at 12:43 AM Alexei Starovoitov
-> > > > <alexei.starovoitov@gmail.com> wrote:
-> > > > > On Mon, Nov 2, 2020 at 9:39 PM Kenny Ho <y2kenny@gmail.com> wrote:
-> > >
-> > > Sounds like either bpf_lsm needs to be made aware of cgv2 (which would
-> > > be a great thing to have regardless) or cgroup-bpf needs a drm/gpu specific hook.
-> > > I think generic ioctl hook is too broad for this use case.
-> > > I suspect drm/gpu internal state would be easier to access inside
-> > > bpf program if the hook is next to gpu/drm. At ioctl level there is 'file'.
-> > > It's probably too abstract for the things you want to do.
-> > > Like how VRAM/shader/etc can be accessed through file?
-> > > Probably possible through a bunch of lookups and dereferences, but
-> > > if the hook is custom to GPU that info is likely readily available.
-> > > Then such cgroup-bpf check would be suitable in execution paths where
-> > > ioctl-based hook would be too slow.
-> > Just to clarify, when you say drm specific hook, did you mean just a
-> > unique attach_type or a unique prog_type+attach_type combination?  (I
-> > am still a bit fuzzy on when a new prog type is needed vs a new attach
-> > type.  I think prog type is associated with a unique type of context
-> > that the bpf prog will get but I could be missing some nuances.)
-> > 
-> > When I was thinking of doing an ioctl wide hook, the file would be the
-> > device file and the thinking was to have a helper function provided by
-> > device drivers to further disambiguate.  For our (AMD's) driver, we
-> > have a bunch of ioctls for set/get/create/destroy
-> > (https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/amd/amdkfd/kfd_chardev.c#L1763)
-> > so the bpf prog can make the decision after the disambiguation.  For
-> > example, we have an ioctl called "kfd_ioctl_set_cu_mask."  You can
-> 
-> Thanks for the pointer.
-> That's one monster ioctl. So much copy_from_user.
-> BPF prog would need to be sleepable to able to examine the args in such depth.
-> After quick glance at the code I would put a new hook into
-> kfd_ioctl() right before
-> retcode = func(filep, process, kdata);
-> At this point kdata is already copied from user space 
-> and usize, that is cmd specific, is known.
-> So bpf prog wouldn't need to copy that data again.
-> That will save one copy.
-> To drill into details of kfd_ioctl_set_cu_mask() the prog would
-> need to be sleepable to do second copy_from_user of cu_mask.
-> At least it's not that big.
-> Yes, the attachment point will be amd driver specific,
-> but the program doesn't need to be.
-> It can be generic tracing prog that is agumented to use BTF.
-> Something like writeable tracepoint with BTF support would do.
-> So on the bpf side there will be minimal amount of changes.
-> And in the driver you'll add one or few writeable tracepoints
-> and the result of the tracepoint will gate
-> retcode = func(filep, process, kdata);
-> call in kfd_ioctl().
-> The writeable tracepoint would need to be cgroup-bpf based.
-> So that's the only tricky part. BPF infra doesn't have
-> cgroup+tracepoint scheme. It's probably going to be useful
-> in other cases like this. See trace_nbd_send_request.
+On Mon, Feb 1, 2021 at 9:49 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+> - there's been a pile of cgroups proposal to manage gpus at the drm
+>   subsystem level, some by Kenny, and frankly this at least looks a bit
+>   like a quick hack to sidestep the consensus process for that.
+No Daniel, this is quick *draft* to get a conversation going.  Bpf was
+actually a path suggested by Tejun back in 2018 so I think you are
+mischaracterizing this quite a bit.
 
+"2018-11-20 Kenny Ho:
+To put the questions in more concrete terms, let say a user wants to
+ expose certain part of a gpu to a particular cgroup similar to the
+ way selective cpu cores are exposed to a cgroup via cpuset, how
+ should we go about enabling such functionality?
 
-Yeah I think this proposal doesn't work:
+2018-11-20 Tejun Heo:
+Do what the intel driver or bpf is doing?  It's not difficult to hook
+into cgroup for identification purposes."
 
-- inspecting ioctl arguments that need copying outside of the
-  driver/subsystem doing that copying is fundamentally racy
-
-- there's been a pile of cgroups proposal to manage gpus at the drm
-  subsystem level, some by Kenny, and frankly this at least looks a bit
-  like a quick hack to sidestep the consensus process for that.
-
-So once we push this into drivers it's not going to be a bpf hook anymore
-I think.
-
-Cheers, Daniel
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+Kenny
