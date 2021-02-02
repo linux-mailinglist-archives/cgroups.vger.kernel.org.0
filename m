@@ -2,39 +2,39 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E365D30C497
-	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 16:58:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3A230C459
+	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 16:50:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235906AbhBBP40 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Feb 2021 10:56:26 -0500
-Received: from mail.kernel.org ([198.145.29.99]:39394 "EHLO mail.kernel.org"
+        id S235178AbhBBPtG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Feb 2021 10:49:06 -0500
+Received: from mail.kernel.org ([198.145.29.99]:38142 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235253AbhBBPMW (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 2 Feb 2021 10:12:22 -0500
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0A0EC64F70;
-        Tue,  2 Feb 2021 15:06:46 +0000 (UTC)
+        id S235195AbhBBPN1 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 2 Feb 2021 10:13:27 -0500
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D7DF564F8A;
+        Tue,  2 Feb 2021 15:07:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1612278407;
-        bh=QEaEtUdgOwqKhjqXpL8Ve8WrJNYFJPvtx5Ol4GMzAww=;
+        s=k20201202; t=1612278433;
+        bh=mBU5b8VRc4MSpIsnNB2jc88+ZShmw8rX+D3GQtW1cFE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qdGb6c1ZlHQtvYng7x2dxV7szjJuFWD/KcwQA1IYWwDWatxZpIYFDH/d9a5i/aYs2
-         8r1tioxFvikMP6ebK1BLUXBLjkMQUXI3dQXVHWHMfUoFMYgw0OAApsxs0yV4NuUYXI
-         uIxzg8VB+c9jVr4logmaUK71FUyS028vS1cXP9Z8AxYcC2d6gz/uidxI1sIesncGF8
-         XfPvhigP4NaUb8tz6lrxkOIgOqeB/g0UNmnD8s1CzmoIM/+ZBXCsc+l1N9OG1vA8Kl
-         lA1XBGOP4vLqE9zZQl8rlJhHUVtNzFcWiNo/EpuGHWKFzR7uTY1Kj3EyeTYaNMk06+
-         rWxKsfPPzLXAw==
+        b=k8qBrVkS6+u3vpOjcpbGqyZAZCgWa99mbwU8or/q1RJ31RqT3eb/aD4mzilU/PuB2
+         mwVrUKajcYte/bTN37RrqFvHVdNPotn6LyvZOyv0CqpRTZBs4hHy/+wSqSnqmSN2rO
+         y6BPrryf93HGuWQoD4Iur3tCsWcqks7XCaKm3GtNKcyby4MiXou2KW1JLTTgL33cY2
+         TQ14YbFJPucq30Iddn2r9FrFTBIKTre7CFJFAl0AvLkZ8246ChA0om3geBiuvtIJtd
+         OhrVD5EZ3JQ/Jk5lO3ste3t9rYGe652trOYMTksFzrMB3plqe82JqY0OWUtaAdGmlY
+         iHaG8uk/U8HtA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Baolin Wang <baolin.wang@linux.alibaba.com>,
         Tejun Heo <tj@kernel.org>, Jens Axboe <axboe@kernel.dk>,
         Sasha Levin <sashal@kernel.org>, cgroups@vger.kernel.org,
         linux-block@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.10 24/25] blk-cgroup: Use cond_resched() when destroy blkgs
-Date:   Tue,  2 Feb 2021 10:06:14 -0500
-Message-Id: <20210202150615.1864175-24-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.4 17/17] blk-cgroup: Use cond_resched() when destroy blkgs
+Date:   Tue,  2 Feb 2021 10:06:51 -0500
+Message-Id: <20210202150651.1864426-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210202150615.1864175-1-sashal@kernel.org>
-References: <20210202150615.1864175-1-sashal@kernel.org>
+In-Reply-To: <20210202150651.1864426-1-sashal@kernel.org>
+References: <20210202150651.1864426-1-sashal@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 X-stable: review
@@ -74,10 +74,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 13 insertions(+), 5 deletions(-)
 
 diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 54fbe1e80cc41..f13688c4b9317 100644
+index 3d34ac02d76ef..cb3d44d200055 100644
 --- a/block/blk-cgroup.c
 +++ b/block/blk-cgroup.c
-@@ -1017,6 +1017,8 @@ static void blkcg_css_offline(struct cgroup_subsys_state *css)
+@@ -1089,6 +1089,8 @@ static void blkcg_css_offline(struct cgroup_subsys_state *css)
   */
  void blkcg_destroy_blkgs(struct blkcg *blkcg)
  {
@@ -86,7 +86,7 @@ index 54fbe1e80cc41..f13688c4b9317 100644
  	spin_lock_irq(&blkcg->lock);
  
  	while (!hlist_empty(&blkcg->blkg_list)) {
-@@ -1024,14 +1026,20 @@ void blkcg_destroy_blkgs(struct blkcg *blkcg)
+@@ -1096,14 +1098,20 @@ void blkcg_destroy_blkgs(struct blkcg *blkcg)
  						struct blkcg_gq, blkcg_node);
  		struct request_queue *q = blkg->q;
  
