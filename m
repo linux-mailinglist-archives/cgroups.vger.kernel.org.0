@@ -2,202 +2,80 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F51A30CA80
-	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 19:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B2D4F30CEC9
+	for <lists+cgroups@lfdr.de>; Tue,  2 Feb 2021 23:29:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238851AbhBBSus (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 2 Feb 2021 13:50:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55194 "EHLO
+        id S234625AbhBBW0B (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 2 Feb 2021 17:26:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45364 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238847AbhBBSso (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Feb 2021 13:48:44 -0500
-Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 687A6C061354
-        for <cgroups@vger.kernel.org>; Tue,  2 Feb 2021 10:48:03 -0800 (PST)
-Received: by mail-qk1-x730.google.com with SMTP id d85so20841540qkg.5
-        for <cgroups@vger.kernel.org>; Tue, 02 Feb 2021 10:48:03 -0800 (PST)
+        with ESMTP id S234402AbhBBWYx (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 2 Feb 2021 17:24:53 -0500
+Received: from mail-lf1-x136.google.com (mail-lf1-x136.google.com [IPv6:2a00:1450:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 87867C0613ED
+        for <cgroups@vger.kernel.org>; Tue,  2 Feb 2021 14:24:11 -0800 (PST)
+Received: by mail-lf1-x136.google.com with SMTP id h7so30418736lfc.6
+        for <cgroups@vger.kernel.org>; Tue, 02 Feb 2021 14:24:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=wH4c6SXNdhNwh+C23BEFkUNz9OTjPe+NannGM5GtmrQ=;
-        b=J29bxNRinL1CN+JqxD3H5YMXk5tmfxXkSEjOPJX/ssjGALv8pJGYjjR5KFiU19djZJ
-         S6ZsrjzCu/7fjI1R9wGkp68lqh0Ham2Gkmos778PuL03eCfcX0NJrzAZdDt3IblYPUkg
-         m+bR2gl8Du2Ksk+3F3P4Otlj2gPliOGcn9EL7zt/X9MOjB5pmNpc13Wp6wwl+p6vpN3R
-         ETUpZrK5m+SFtwGy8cKknOGHSThCZWAXNgKzokTBTDb36plDldtYBXVfUWucOZO4abs/
-         z7WaXx9SJRbFDMlQJNh08vgzpdCyFr4nbRhRFHVEc5AmJpfeG5ASg2LtbyD26zAjntrl
-         NDOQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qNAOPiZhBvntC8C14bTzDHN942diSkXcNrN3eK3rI1U=;
+        b=py//dvYEibEFwVmLb4PAzjrsTA3YCydFXpiKsTfJi98dIVrg7qVsUn1zCwPK/765J/
+         xrxxSxQX34Z5IqSMuCDIcyPNpFXaT6T/zkIQIiYAC7f+RArYPsUtyQj8fLsxWvPGFJQ6
+         Yl40cJATocGMAb/9yXMC7R1+HkxigN0/ks8Zgc91TApzoAVqBSnBZjmIZiKauDYWUF1N
+         OMrxP2/N93d7LP6Pz8DOpiBEGq4iTW3u84Q1agudNIm3TaixbI+oz0WhuOXFiGxVlbyI
+         n4KOlzRwFVBigG+zifCDblUVxu256mnuXXn89LsK4p3TXqjTFNn0xo+btKP8wd57wFTK
+         cZpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=wH4c6SXNdhNwh+C23BEFkUNz9OTjPe+NannGM5GtmrQ=;
-        b=jAZvq/AD4YeDxqEr4oygcom34efroSlUzBp4yWq/IfpxqTkA1uJyGLAP3ASNxrSSfn
-         K3sRILye+HQvjbJ/mYqwnxxE9PES38nwLg3MuNYyW5ytegJeyPH11wpju5bdSrnOh34K
-         9ab1ntYh4t4WIzOuhNGJgu+qgQTP3SSer6wpLZkwVcC3lc/nTKaRrFYttgaHEnbDcLph
-         JtMwHVUVbaWyaJyD/5op8OdPW5b6Dgva7E+81tacBwPemXJSLYCIz+Kuak4WJkp39jCL
-         5Oml45L1HsBRBsjSz47N9rCMplsgMCo1xez/BvQjQqJAcGI0Q4peIPQGYMVTmCneALo/
-         a2uw==
-X-Gm-Message-State: AOAM530XhluKjISGExOs9kprGckBeTJYIMX8BwmRTUZG+0cnuPShcr+U
-        P/jOtrfBGwpWA2mjCgKawCeiLQ==
-X-Google-Smtp-Source: ABdhPJyNb24nKjqr7ExMx3Nitbz7FaveWMnR7LErpEQpfoxBwRQEu+EI4Tol1j/vL6HvAGomXp8glA==
-X-Received: by 2002:ae9:d881:: with SMTP id u123mr22659274qkf.133.1612291682726;
-        Tue, 02 Feb 2021 10:48:02 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id k129sm18117119qkf.108.2021.02.02.10.48.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 02 Feb 2021 10:48:02 -0800 (PST)
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>
-Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: [PATCH 7/7] mm: memcontrol: consolidate lruvec stat flushing
-Date:   Tue,  2 Feb 2021 13:47:46 -0500
-Message-Id: <20210202184746.119084-8-hannes@cmpxchg.org>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20210202184746.119084-1-hannes@cmpxchg.org>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qNAOPiZhBvntC8C14bTzDHN942diSkXcNrN3eK3rI1U=;
+        b=oyhme3hYbd2Q0hIxXVD4nYw0o1zL53wAA6wkFZJYpoPSzLfizBQSjR3CdbQ1ucYguU
+         jRJJgqv4+cD+LHhjXfsNLcFDHa2d8kTgFnueFvUXIuc11IFjo4qep6LJm9LqqM3nHOQq
+         9d/Ys5pEPfb8SGL3p9Ebgne9XQTIpvMCKhhZgAFfvCvop3wTSGvdfvNZnoOHmKoH0Ux0
+         Yjkpj0GQQL/2V6gpjQXL39fkW7y8OAlTuOIaOHatCcy3G7WvNyy03cnqH/52KWGuCc+k
+         WI2JCSRfAFjYPo8p2gx1ONjANRxjGK+RbJNQt7pUpZOR5aFQZlKWqdEFg4HvY6aNzZw9
+         TqPg==
+X-Gm-Message-State: AOAM5307YraKX6CeQFnSWNfCnT2V1LdJ6eTt/JHUybekGtGktnKPdFil
+        40yDDwQeU5ZXdntJNZLZ1Ob8ajOW3XFaQnTxilHjPA==
+X-Google-Smtp-Source: ABdhPJxDKyG3Si6gHUp6yAdVzfGVlKmjgT+cjTkuQvXlB6iWVZokLvFIiH+94cQ/ka0xQ52TT6xd3w4eTNBbQYoHFlI=
+X-Received: by 2002:a05:6512:79:: with SMTP id i25mr38591lfo.549.1612304649273;
+ Tue, 02 Feb 2021 14:24:09 -0800 (PST)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210202184746.119084-1-hannes@cmpxchg.org> <20210202184746.119084-2-hannes@cmpxchg.org>
+In-Reply-To: <20210202184746.119084-2-hannes@cmpxchg.org>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 2 Feb 2021 14:23:57 -0800
+Message-ID: <CALvZod6fHOhGN2exBSsRS4+KMzXE=1O7ALF2Hq4ehjvVFW6+ig@mail.gmail.com>
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Kernel Team <kernel-team@fb.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-There are two functions to flush the per-cpu data of an lruvec into
-the rest of the cgroup tree: when the cgroup is being freed, and when
-a CPU disappears during hotplug. The difference is whether all CPUs or
-just one is being collected, but the rest of the flushing code is the
-same. Merge them into one function and share the common code.
+On Tue, Feb 2, 2021 at 12:18 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
+>
+> The memcg hotunplug callback erroneously flushes counts on the local
+> CPU, not the counts of the CPU going away; those counts will be lost.
+>
+> Flush the CPU that is actually going away.
+>
+> Also simplify the code a bit by using mod_memcg_state() and
+> count_memcg_events() instead of open-coding the upward flush - this is
+> comparable to how vmstat.c handles hotunplug flushing.
+>
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
----
- mm/memcontrol.c | 88 +++++++++++++++++++++++--------------------------
- 1 file changed, 42 insertions(+), 46 deletions(-)
+I think we need Fixes: a983b5ebee572 ("mm: memcontrol: fix excessive
+complexity in memory.stat reporting")
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b205b2413186..88e8afc49a46 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2410,39 +2410,56 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
- 	mutex_unlock(&percpu_charge_mutex);
- }
- 
--static int memcg_hotplug_cpu_dead(unsigned int cpu)
-+static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
- {
--	struct memcg_stock_pcp *stock;
--	struct mem_cgroup *memcg;
--
--	stock = &per_cpu(memcg_stock, cpu);
--	drain_stock(stock);
-+	int nid;
- 
--	for_each_mem_cgroup(memcg) {
-+	for_each_node(nid) {
-+		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-+		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = { 0, };
-+		struct batched_lruvec_stat *lstatc;
- 		int i;
- 
--		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
--			int nid;
--
--			for_each_node(nid) {
--				struct batched_lruvec_stat *lstatc;
--				struct mem_cgroup_per_node *pn;
--				long x;
--
--				pn = memcg->nodeinfo[nid];
-+		if (cpu == -1) {
-+			int cpui;
-+			/*
-+			 * The memcg is about to be freed, collect all
-+			 * CPUs, no need to zero anything out.
-+			 */
-+			for_each_online_cpu(cpui) {
-+				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpui);
-+				for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-+					stat[i] += lstatc->count[i];
-+			}
-+		} else {
-+			/*
-+			 * The CPU has gone away, collect and zero out
-+			 * its stats, it may come back later.
-+			 */
-+			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
- 				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
--
--				x = lstatc->count[i];
-+				stat[i] = lstatc->count[i];
- 				lstatc->count[i] = 0;
--
--				if (x) {
--					do {
--						atomic_long_add(x, &pn->lruvec_stat[i]);
--					} while ((pn = parent_nodeinfo(pn, nid)));
--				}
- 			}
- 		}
-+
-+		do {
-+			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-+				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
-+		} while ((pn = parent_nodeinfo(pn, nid)));
- 	}
-+}
-+
-+static int memcg_hotplug_cpu_dead(unsigned int cpu)
-+{
-+	struct memcg_stock_pcp *stock;
-+	struct mem_cgroup *memcg;
-+
-+	stock = &per_cpu(memcg_stock, cpu);
-+	drain_stock(stock);
-+
-+	for_each_mem_cgroup(memcg)
-+		memcg_flush_lruvec_page_state(memcg, cpu);
- 
- 	return 0;
- }
-@@ -3636,27 +3653,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
- 	}
- }
- 
--static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg)
--{
--	int node;
--
--	for_each_node(node) {
--		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
--		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
--		struct mem_cgroup_per_node *pi;
--		int cpu, i;
--
--		for_each_online_cpu(cpu)
--			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
--				stat[i] += per_cpu(
--					pn->lruvec_stat_cpu->count[i], cpu);
--
--		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
--			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
--				atomic_long_add(stat[i], &pi->lruvec_stat[i]);
--	}
--}
--
- #ifdef CONFIG_MEMCG_KMEM
- static int memcg_online_kmem(struct mem_cgroup *memcg)
- {
-@@ -5197,7 +5193,7 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
- 	 * Flush percpu lruvec stats to guarantee the value
- 	 * correctness on parent's and all ancestor levels.
- 	 */
--	memcg_flush_lruvec_page_state(memcg);
-+	memcg_flush_lruvec_page_state(memcg, -1);
- 	__mem_cgroup_free(memcg);
- }
- 
--- 
-2.30.0
-
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
