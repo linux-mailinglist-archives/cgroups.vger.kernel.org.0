@@ -2,99 +2,91 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B478630F416
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 14:45:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A885930F4CD
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 15:21:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236327AbhBDNoD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 08:44:03 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236325AbhBDNnW (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 08:43:22 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF3C8C061786;
-        Thu,  4 Feb 2021 05:42:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=esfcV78RrU8nXrE72X9LckMx7X5reL/P0pwhKEpoq3w=; b=EEFa99xE3ECGRhB28SI4ZjY4Yi
-        2zi2lbL6t/w3MDJsqbSTTXxUCdkmZqMCffLyoGa4IXzIkJUDPq7rHzsGvE1/JYKmPObvd6XPxTjHK
-        f+DJOdmlIuE9n6P33PTnV3QEg5Z3a+ZlgO1dCIsog9ISzdkaPbj7f0DfcTU4AooM6CflEI1pOZQAn
-        J76NZlxMOEMnWAvW1L0hycrU6rlq+RaSYTZOBqJYv3/WVZ8mpCOpDuAO2yA58ifD+umhnRBTmNAc3
-        leFwjnf15NZFu8n4wCvXpHg28KOKHhyARfSXOvPz6P1do77EDtYVz4dwaVqihgV7O6m3QUjbvepck
-        KlC815Ug==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7etV-000vze-JP; Thu, 04 Feb 2021 13:42:02 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5BBD83003D8;
-        Thu,  4 Feb 2021 14:42:00 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 1E4752C0034C0; Thu,  4 Feb 2021 14:42:00 +0100 (CET)
-Date:   Thu, 4 Feb 2021 14:42:00 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-Message-ID: <YBv5qDBdb/VAq0Vw@hirez.programming.kicks-ass.net>
-References: <20210204010157.1823669-1-aklimov@redhat.com>
- <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
- <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
+        id S236549AbhBDOUi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 09:20:38 -0500
+Received: from mx2.suse.de ([195.135.220.15]:58368 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236639AbhBDOUI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 4 Feb 2021 09:20:08 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612448358; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uNjcnDnZXUPYHHuK46oDIL84tyY2kS2LkC6T9yyAPCU=;
+        b=FpVLR3O5yTTiyeAwG18zs+GsUc9KTxfWONmuisoWJ5R5Qc+/oEzDmE8bSbH18CXTe6sjcR
+        iIb3W1B+PoapI11EyyaUQ6YIBmeGMGWmyFSi1EW3GHcp6M4GA6Qx4SolDI790FtL20ziY2
+        ZigN/iwMkJ+cKFNvY3YBp5715do75N0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A88CEB176;
+        Thu,  4 Feb 2021 14:19:18 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 15:19:17 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
+Message-ID: <YBwCZYWsQOFAGUar@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-7-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
+In-Reply-To: <20210202184746.119084-7-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 12:50:34PM +0000, Alexey Klimov wrote:
-> On Thu, Feb 4, 2021 at 9:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> >
-> > On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
-> > > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-> > >       err = _cpu_up(cpu, 0, target);
-> > >  out:
-> > >       cpu_maps_update_done();
-> > > +
-> > > +     /* To avoid out of line uevent */
-> > > +     if (!err)
-> > > +             cpuset_wait_for_hotplug();
-> > > +
-> > >       return err;
-> > >  }
-> > >
-> >
-> > > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
-> > >       struct device *dev = get_cpu_device(cpu);
-> > >
-> > >       dev->offline = false;
-> > > -     /* Tell user space about the state change */
-> > > -     kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-> > >  }
-> > >
-> >
-> > One concequence of this is that you'll now get a bunch of notifications
-> > across things like suspend/hybernate.
+On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
+> Replace the memory controller's custom hierarchical stats code with
+> the generic rstat infrastructure provided by the cgroup core.
 > 
-> The patch doesn't change the number of kobject_uevent()s. The
-> userspace will get the same number of uevents as before the patch (at
-> least if I can rely on my eyes).
+> The current implementation does batched upward propagation from the
+> write side (i.e. as stats change). The per-cpu batches introduce an
+> error, which is multiplied by the number of subgroups in a tree. In
+> systems with many CPUs and sizable cgroup trees, the error can be
+> large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
+> subgroups results in an error of up to 128M per stat item). This can
+> entirely swallow allocation bursts inside a workload that the user is
+> expecting to see reflected in the statistics.
+> 
+> In the past, we've done read-side aggregation, where a memory.stat
+> read would have to walk the entire subtree and add up per-cpu
+> counts. This became problematic with lazily-freed cgroups: we could
+> have large subtrees where most cgroups were entirely idle. Hence the
+> switch to change-driven upward propagation. Unfortunately, it needed
+> to trade accuracy for speed due to the write side being so hot.
+> 
+> Rstat combines the best of both worlds: from the write side, it
+> cheaply maintains a queue of cgroups that have pending changes, so
+> that the read side can do selective tree aggregation. This way the
+> reported stats will always be precise and recent as can be, while the
+> aggregation can skip over potentially large numbers of idle cgroups.
+> 
+> This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
+> NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
+> aggregation. It removes 3 words from the per-cpu data. It eliminates
+> memcg_exact_page_state(), since memcg_page_state() is now exact.
 
-bringup_hibernate_cpu() didn't used to generate an event, it does now.
-Same for bringup_nonboot_cpus().
+I am still digesting details and need to look deeper into how rstat
+works but removing our own stats is definitely a good plan. Especially
+when there are existing limitations and problems that would need fixing.
 
-Also, looking again, you don't seem to be reinstating the OFFLINE event
-you took out.
+Just to check that my high level understanding is correct. The
+transition is effectivelly removing a need to manually sync counters up
+the hierarchy and partially outsources that decision to rstat core. The
+controller is responsible just to tell the core how that syncing is done
+(e.g. which specific counters etc). Excplicit flushes are needed when
+you want an exact value (e.g. when values are presented to the
+userspace). I do not see any flushes to be done by the core pro-actively
+except for clean up on a release.
 
-
+Is the above correct understanding?
+-- 
+Michal Hocko
+SUSE Labs
