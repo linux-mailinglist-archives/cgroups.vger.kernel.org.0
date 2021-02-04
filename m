@@ -2,141 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7B3D130F800
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 17:36:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DE230F84F
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 17:47:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237991AbhBDQcM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 11:32:12 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238111AbhBDQbt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 11:31:49 -0500
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F413C061788
-        for <cgroups@vger.kernel.org>; Thu,  4 Feb 2021 08:31:09 -0800 (PST)
-Received: by mail-pg1-x52e.google.com with SMTP id o7so2493160pgl.1
-        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 08:31:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
-        b=YZLEXsBAH1Q6e3Y+HQtqMaUhliU9SQ3zmhdOHQH+2rBPWuZlC8ivhzt6Rp6OoEW/zI
-         +t4hg5wwXDDgx7ZNPxXGePwQ4/FKQIYYw5+JknWED8xyAERQ6TzplGInxk5/dNmSJLKc
-         1Flm0SpW/RqCoLemrCbH1+qDjpIFDsQu7DlVvxFXWkY1q7U/mJH3XJIuHHXtTtU/9sEP
-         2n9WfMvAUFGCWLbLDaLrhc3U0cscXjgE4aE9lItHCXtTvFU1lvmuLzMpd5yJ75vEPyQD
-         /0Z3nI5rplhLrYHOkjAz2j0jNo1PTBXBbnVVzziipPHWjAGbQijoHvNCAOyip/wI6HXi
-         atwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
-        b=WomfM7Lkmgacd31MNYEuyMkASGDPKcDHNXWq2scoMPTjYIeg2YLTTwP/AZy6pJS3dP
-         1vMadbCJ15ZrMxZqqPbjypU6903e8EHEcOhYnaKkRkhYvpKBfiNFGGfpjDqP3Y49EYo3
-         +GhQXg5pmYnEqxeb8tQ4eVFCDYnD49Fik3rNy+15EI+U1wlrSyHi0dVwFWhS4/E7JbcY
-         /PwMejIJ8V8p1HN+m8OO7X3tteuAJC3C8+CdX7qc+95J/+y/AYYh1AMhlcSDkW4DgKPJ
-         MYBNTIF239Mio5xNK9jOSs25HjhkZAVlL57m1A/o3jzn1QZ0iovUIYHcyMpWDEH7PGin
-         PfXw==
-X-Gm-Message-State: AOAM533WhtpSHHHLKCxoVo/EerwrJ7bndfth+6mgB5q7dothT+uf/pyp
-        iW40WXmfyyqYGhwzXBRBuvuq7w==
-X-Google-Smtp-Source: ABdhPJwYlQXBXlvG9krnqTBuDUsLn1Qrh7OgLBhLSDi/A7rfI8RShj/W7jKDY33fbqL9CVTrk5oc1A==
-X-Received: by 2002:a62:6382:0:b029:1d2:46ed:d813 with SMTP id x124-20020a6263820000b02901d246edd813mr32411pfb.44.1612456268576;
-        Thu, 04 Feb 2021 08:31:08 -0800 (PST)
-Received: from localhost.bytedance.net ([139.177.225.239])
-        by smtp.gmail.com with ESMTPSA id v23sm4728843pgo.43.2021.02.04.08.31.05
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 04 Feb 2021 08:31:07 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2] mm: memcontrol: replace the loop with a list_for_each_entry()
-Date:   Fri,  5 Feb 2021 00:30:55 +0800
-Message-Id: <20210204163055.56080-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        id S238076AbhBDQng (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 11:43:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40810 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238019AbhBDQnL (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 4 Feb 2021 11:43:11 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612456944; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=wsgw8MnfsGuS5yxbjBVn1LDBc6ZqPnfi34fb3SCAx6k=;
+        b=NgWdQMlyE3luXm8XWKjVOe9zxEg7WQv8SecLlF4cS78MHz5/hEi4X7DpQCw0sW1QSTz4hN
+        nktjmzFeN8/ZAV74ArRlOObu1QFbDkAvWW+gvQ0q7FaQ1W8UipbvtGwvyayYl/wCbxfbkn
+        Sjl3ubKHaA2GT9ueS1b9xCOOoCMP6GU=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E8941ABD5;
+        Thu,  4 Feb 2021 16:42:23 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 17:42:23 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 4/7] cgroup: rstat: support cgroup1
+Message-ID: <YBwj7wC4+mVcx8GO@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-5-hannes@cmpxchg.org>
+ <YBv5Dc1I9QpPH69n@dhcp22.suse.cz>
+ <YBwaWkJgqPNF3I3w@cmpxchg.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YBwaWkJgqPNF3I3w@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-The rule of list walk has gone since:
+On Thu 04-02-21 11:01:30, Johannes Weiner wrote:
+> On Thu, Feb 04, 2021 at 02:39:25PM +0100, Michal Hocko wrote:
+> > On Tue 02-02-21 13:47:43, Johannes Weiner wrote:
+> > > Rstat currently only supports the default hierarchy in cgroup2. In
+> > > order to replace memcg's private stats infrastructure - used in both
+> > > cgroup1 and cgroup2 - with rstat, the latter needs to support cgroup1.
+> > > 
+> > > The initialization and destruction callbacks for regular cgroups are
+> > > already in place. Remove the cgroup_on_dfl() guards to handle cgroup1.
+> > > 
+> > > The initialization of the root cgroup is currently hardcoded to only
+> > > handle cgrp_dfl_root.cgrp. Move those callbacks to cgroup_setup_root()
+> > > and cgroup_destroy_root() to handle the default root as well as the
+> > > various cgroup1 roots we may set up during mounting.
+> > > 
+> > > The linking of css to cgroups happens in code shared between cgroup1
+> > > and cgroup2 as well. Simply remove the cgroup_on_dfl() guard.
+> > > 
+> > > Linkage of the root css to the root cgroup is a bit trickier: per
+> > > default, the root css of a subsystem controller belongs to the default
+> > > hierarchy (i.e. the cgroup2 root). When a controller is mounted in its
+> > > cgroup1 version, the root css is stolen and moved to the cgroup1 root;
+> > > on unmount, the css moves back to the default hierarchy. Annotate
+> > > rebind_subsystems() to move the root css linkage along between roots.
+> > 
+> > I am not familiar with rstat API and from this patch it is not really
+> > clear to me how does it deal with memcg v1 use_hierarchy oddness.
+> 
+> That's gone, right?
+> 
+> static int mem_cgroup_hierarchy_write(struct cgroup_subsys_state *css,
+>                                       struct cftype *cft, u64 val)
+> {
+>         if (val == 1)
+>                 return 0;
+> 
+>         pr_warn_once("Non-hierarchical mode is deprecated. "
+>                      "Please report your usecase to linux-mm@kvack.org if you "
+>                      "depend on this functionality.\n");
+> 
+>         return -EINVAL;
+> }
 
- commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
+Ohh, right! I have completely forgot it hit the Linus tree.
 
-So remove the strange comment and replace the loop with a
-list_for_each_entry().
-
-There is only one caller of the uncharge_list(). So just fold it into
-mem_cgroup_uncharge_list() and remove it.
-
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
-v2:
- - Fold uncharge_list() to mem_cgroup_uncharge_list().
-
- mm/memcontrol.c | 35 ++++++++---------------------------
- 1 file changed, 8 insertions(+), 27 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ed5cc78a8dbf..8c035846c7a4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6862,31 +6862,6 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 	css_put(&ug->memcg->css);
- }
- 
--static void uncharge_list(struct list_head *page_list)
--{
--	struct uncharge_gather ug;
--	struct list_head *next;
--
--	uncharge_gather_clear(&ug);
--
--	/*
--	 * Note that the list can be a single page->lru; hence the
--	 * do-while loop instead of a simple list_for_each_entry().
--	 */
--	next = page_list->next;
--	do {
--		struct page *page;
--
--		page = list_entry(next, struct page, lru);
--		next = page->lru.next;
--
--		uncharge_page(page, &ug);
--	} while (next != page_list);
--
--	if (ug.memcg)
--		uncharge_batch(&ug);
--}
--
- /**
-  * mem_cgroup_uncharge - uncharge a page
-  * @page: page to uncharge
-@@ -6918,11 +6893,17 @@ void mem_cgroup_uncharge(struct page *page)
-  */
- void mem_cgroup_uncharge_list(struct list_head *page_list)
- {
-+	struct uncharge_gather ug;
-+	struct page *page;
-+
- 	if (mem_cgroup_disabled())
- 		return;
- 
--	if (!list_empty(page_list))
--		uncharge_list(page_list);
-+	uncharge_gather_clear(&ug);
-+	list_for_each_entry(page, page_list, lru)
-+		uncharge_page(page, &ug);
-+	if (ug.memcg)
-+		uncharge_batch(&ug);
- }
- 
- /**
 -- 
-2.11.0
-
+Michal Hocko
+SUSE Labs
