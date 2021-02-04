@@ -2,81 +2,110 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D84C30EFE8
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 10:47:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F057230F15B
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 12:01:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235220AbhBDJrT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 04:47:19 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50118 "EHLO
+        id S235435AbhBDK5C (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 05:57:02 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235073AbhBDJrS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 04:47:18 -0500
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4EFCC061573;
-        Thu,  4 Feb 2021 01:46:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=QF37dPCi57HEpfqUEK+5VUOa3KKAQXFiBdpPks8yG20=; b=NlCodaOYD+cypLcm3DpzdiK5SG
-        enboRJqS7Gco2hpMe/1qaYVqdyNlxcLRp4nvUZJEg2FjEMadpp2grRgO50XSeWSi+2pvzxTpJt2xU
-        L80uLyOvmhiADkKp93jPjS1slDGSoMJCY36LVm3Px1jF/9iCRd5EIyUa/PS1ohZEmlctc7vnci27C
-        Og2Cd3illgZyC3Ie6gF4QqEFVonx/tmvnXfvKBVXVzFFUGvoBVGvTRvwzMod/u2JSP25tj1q44UkO
-        qApjLYLA7hTMClH89C37qIuoIugDL2WAOM+hK8EE/upbpZTd1D4mj5i/ekzPehAFe5E6GgA9EoRon
-        usv3VBgQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1l7bDI-000g7b-9V; Thu, 04 Feb 2021 09:46:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 47F07303A02;
-        Thu,  4 Feb 2021 10:46:11 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 090352138F7C5; Thu,  4 Feb 2021 10:46:10 +0100 (CET)
-Date:   Thu, 4 Feb 2021 10:46:10 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Alexey Klimov <aklimov@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, daniel.m.jordan@oracle.com,
-        tglx@linutronix.de, jobaker@redhat.com, audralmitchel@gmail.com,
-        arnd@arndb.de, gregkh@linuxfoundation.org, rafael@kernel.org,
-        tj@kernel.org, lizefan@huawei.com, qais.yousef@arm.com,
-        hannes@cmpxchg.org, klimov.linux@gmail.com
-Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-Message-ID: <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
-References: <20210204010157.1823669-1-aklimov@redhat.com>
+        with ESMTP id S235464AbhBDK47 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 05:56:59 -0500
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BCC6DC0613ED
+        for <cgroups@vger.kernel.org>; Thu,  4 Feb 2021 02:56:19 -0800 (PST)
+Received: by mail-pf1-x435.google.com with SMTP id t29so1868810pfg.11
+        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 02:56:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
+        b=meRFeoFABKNahcTD5pEZi9cJb0xVYtEo0jR+vAzCdEludgjz8sf1Qlv2/xeRPDfibp
+         /MMKS0gDIAcIwS+spfwSSxSYmiHHlYLXKz78sdAEln7aHWvn0QsCJNlPvKVOmygR7EfF
+         nSWXTdN5o2V9xWtAhYeJgMlGZE86yc7er/RVSRnjuvKWa6RjgUQXsVKFyMLzh72oLILh
+         ZefaeRzKTsudfYwco8W1CE1Vr2eIFb+VxUGIitkSeo2UM5YS+/bx7Xwr9TH4t1EkX+rc
+         uS0RLOQkFJ07jRmOC12Y7X8c6oWiSWepD2xx1ceyRtqiYop3Hqiqt9lcpsOK7wc4pLM+
+         sZlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bomnKjBCXlMUt7cumGwFSxIt2tLEfiNfG1uDxtiHzHo=;
+        b=TC81d4964NcKZjOHmvQt5Z0m3rHBebz1YUhV18dzg5U0I4f9/PFQwyGmX4zgr1ozWS
+         kCiQ/CGH+azaZizUMp3+2pDuQf4LOU4MOGlVnWVwcwJth38a2p4j6eftUkSPzFwemR/L
+         30BiEJAS5K+dFORsnPQhULkvxiBilX70DhOlsZg2Zyn2fy8/KK9ufebIFEjvl1WO8oU/
+         cDrFtvb2LPUKrB5LRH3ZwoUAbEbdkRlbWr1Y6xmPFbCmOxGnmIq0CYLs+RG7uZSniC9u
+         RjAdtmbdcOq1s2r8PjCIEuP7dB26oDk2H5nqj2IbbLNRGNnqd+3yE6Hp3ub1dC+p1RYk
+         eh3Q==
+X-Gm-Message-State: AOAM530GRJDZGnb08E7IOZQB7YhfmFbb8AXVy6Nu5048PV4Gx3qYKhEC
+        OCZuzfk7Xl5XqU/1h7jVmAvyXw==
+X-Google-Smtp-Source: ABdhPJxUgUArlXg8y2yW1BuiqYJ2lzKT+G+NfzP6TzP4jp5cEnjoQAINnZWIf/miYy7OqREs06CHgA==
+X-Received: by 2002:a63:375d:: with SMTP id g29mr4490430pgn.226.1612436179150;
+        Thu, 04 Feb 2021 02:56:19 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id z15sm2043493pjz.41.2021.02.04.02.56.14
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 02:56:18 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH] mm: memcontrol: replace the loop with a list_for_each_entry()
+Date:   Thu,  4 Feb 2021 18:53:20 +0800
+Message-Id: <20210204105320.46072-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210204010157.1823669-1-aklimov@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
-> @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
->  	err = _cpu_up(cpu, 0, target);
->  out:
->  	cpu_maps_update_done();
-> +
-> +	/* To avoid out of line uevent */
-> +	if (!err)
-> +		cpuset_wait_for_hotplug();
-> +
->  	return err;
->  }
->  
+The rule of list walk has gone since:
 
-> @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
->  	struct device *dev = get_cpu_device(cpu);
->  
->  	dev->offline = false;
-> -	/* Tell user space about the state change */
-> -	kobject_uevent(&dev->kobj, KOBJ_ONLINE);
->  }
->  
+ commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
 
-One concequence of this is that you'll now get a bunch of notifications
-across things like suspend/hybernate.
+So remove the strange comment and replace the loop with a
+list_for_each_entry().
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 17 ++---------------
+ 1 file changed, 2 insertions(+), 15 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 6c7f1ea3955e..43341bd7ea1c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6891,24 +6891,11 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+ static void uncharge_list(struct list_head *page_list)
+ {
+ 	struct uncharge_gather ug;
+-	struct list_head *next;
++	struct page *page;
+ 
+ 	uncharge_gather_clear(&ug);
+-
+-	/*
+-	 * Note that the list can be a single page->lru; hence the
+-	 * do-while loop instead of a simple list_for_each_entry().
+-	 */
+-	next = page_list->next;
+-	do {
+-		struct page *page;
+-
+-		page = list_entry(next, struct page, lru);
+-		next = page->lru.next;
+-
++	list_for_each_entry(page, page_list, lru)
+ 		uncharge_page(page, &ug);
+-	} while (next != page_list);
+-
+ 	uncharge_batch(&ug);
+ }
+ 
+-- 
+2.11.0
+
