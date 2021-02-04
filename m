@@ -2,82 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F134F30F7DC
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 17:30:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B3D130F800
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 17:36:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238029AbhBDQ2l (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 11:28:41 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51156 "EHLO
+        id S237991AbhBDQcM (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 11:32:12 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52148 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237114AbhBDQ1P (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 11:27:15 -0500
-Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54778C061788
-        for <cgroups@vger.kernel.org>; Thu,  4 Feb 2021 08:26:34 -0800 (PST)
-Received: by mail-qk1-x72f.google.com with SMTP id t63so3897192qkc.1
-        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 08:26:34 -0800 (PST)
+        with ESMTP id S238111AbhBDQbt (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 11:31:49 -0500
+Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F413C061788
+        for <cgroups@vger.kernel.org>; Thu,  4 Feb 2021 08:31:09 -0800 (PST)
+Received: by mail-pg1-x52e.google.com with SMTP id o7so2493160pgl.1
+        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 08:31:09 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ACIgalIASwLRIdWMuW6Oj7uCmIS5PMrqjcUMfzNwZKE=;
-        b=MhxcF478bHTzeOjaqn3t+dgrOQ2TemimDwkXVDLohFRJNl95pHbGa9lLMm7eUh47yK
-         hqGCwPMieGsvldBevk/GTzZFLDZryCRd8tlWXVG8uYNf9AohQdvgTb+LxFJwSEjutywo
-         3E18OctPqEd11DhJx4NgXE4Yj0fHAQ0WIyhu+wgSKgvMnTRsuVjDtnLBrLvkb4TXY9Om
-         LcJVZVFkYyCc7nEmtuJiow7He54ZkAWBEXGmmJe/6WxLOur+I/zZe0/QnliUXFYnnBc3
-         +cNlrBxAgNgbdTKF95BPokovA+P0SqJ0wm/w/bqBYg83pfhDJKy0DV+MBi+sqDRpT+Bx
-         ZldA==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
+        b=YZLEXsBAH1Q6e3Y+HQtqMaUhliU9SQ3zmhdOHQH+2rBPWuZlC8ivhzt6Rp6OoEW/zI
+         +t4hg5wwXDDgx7ZNPxXGePwQ4/FKQIYYw5+JknWED8xyAERQ6TzplGInxk5/dNmSJLKc
+         1Flm0SpW/RqCoLemrCbH1+qDjpIFDsQu7DlVvxFXWkY1q7U/mJH3XJIuHHXtTtU/9sEP
+         2n9WfMvAUFGCWLbLDaLrhc3U0cscXjgE4aE9lItHCXtTvFU1lvmuLzMpd5yJ75vEPyQD
+         /0Z3nI5rplhLrYHOkjAz2j0jNo1PTBXBbnVVzziipPHWjAGbQijoHvNCAOyip/wI6HXi
+         atwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ACIgalIASwLRIdWMuW6Oj7uCmIS5PMrqjcUMfzNwZKE=;
-        b=dxGgEfluRN9eZ9GGtkFeSkZovMgGOlgSjnuVMbQXilrVGhiKlrKe7RU6yVSyqTEGRZ
-         u80BIpsBFRvtAYn/7L4360n5iErbQD7lOwd5cgtx06zEe7CjTinz20rb1bJsLUeASncX
-         QaxsKXEzKD0NQRbihD3/HoKzgXATWlGCaLqXreGD2S5dCZKzOKYHX9+VhFG4zeqWyRs+
-         A45LmJzYQ/FwdtjeT/C8HVO5LhLON5hF8DDRIbWkEVM1zEZmFTxV7a52/CJKB2zAozLg
-         xaMppnoDYspQqG68Sr6sRE2q1+PMJe/XAldwjuVTv6TumDgNsK48ibrlkXoW1Y3sAt/O
-         ZlhQ==
-X-Gm-Message-State: AOAM531BVS5L/hTA6TEuRU1mFCinIi0Y7Js/v8gY3aVtdYb3Q61jgnN7
-        rie+hEi0OMzGCowcwN4JiTD02w==
-X-Google-Smtp-Source: ABdhPJxIV4CD4lGok1rJ7D4sC9j6L8cQiM/cMuIlBrELVi3sX2eGXEMa9a2jlGvNzQjeqYhitY/mZA==
-X-Received: by 2002:a05:620a:5ae:: with SMTP id q14mr8254731qkq.156.1612455993552;
-        Thu, 04 Feb 2021 08:26:33 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id k25sm5549112qkk.66.2021.02.04.08.26.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 04 Feb 2021 08:26:32 -0800 (PST)
-Date:   Thu, 4 Feb 2021 11:26:32 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Roman Gushchin <guro@fb.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
-Message-ID: <YBwgOHL8dTjJpnKU@cmpxchg.org>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-7-hannes@cmpxchg.org>
- <20210203014726.GE1812008@carbon.dhcp.thefacebook.com>
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ci1gXzshUKxf8ZHIFWrDVwutYRYOBcIY5pJ9Y3PAGTs=;
+        b=WomfM7Lkmgacd31MNYEuyMkASGDPKcDHNXWq2scoMPTjYIeg2YLTTwP/AZy6pJS3dP
+         1vMadbCJ15ZrMxZqqPbjypU6903e8EHEcOhYnaKkRkhYvpKBfiNFGGfpjDqP3Y49EYo3
+         +GhQXg5pmYnEqxeb8tQ4eVFCDYnD49Fik3rNy+15EI+U1wlrSyHi0dVwFWhS4/E7JbcY
+         /PwMejIJ8V8p1HN+m8OO7X3tteuAJC3C8+CdX7qc+95J/+y/AYYh1AMhlcSDkW4DgKPJ
+         MYBNTIF239Mio5xNK9jOSs25HjhkZAVlL57m1A/o3jzn1QZ0iovUIYHcyMpWDEH7PGin
+         PfXw==
+X-Gm-Message-State: AOAM533WhtpSHHHLKCxoVo/EerwrJ7bndfth+6mgB5q7dothT+uf/pyp
+        iW40WXmfyyqYGhwzXBRBuvuq7w==
+X-Google-Smtp-Source: ABdhPJwYlQXBXlvG9krnqTBuDUsLn1Qrh7OgLBhLSDi/A7rfI8RShj/W7jKDY33fbqL9CVTrk5oc1A==
+X-Received: by 2002:a62:6382:0:b029:1d2:46ed:d813 with SMTP id x124-20020a6263820000b02901d246edd813mr32411pfb.44.1612456268576;
+        Thu, 04 Feb 2021 08:31:08 -0800 (PST)
+Received: from localhost.bytedance.net ([139.177.225.239])
+        by smtp.gmail.com with ESMTPSA id v23sm4728843pgo.43.2021.02.04.08.31.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Feb 2021 08:31:07 -0800 (PST)
+From:   Muchun Song <songmuchun@bytedance.com>
+To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org
+Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        Muchun Song <songmuchun@bytedance.com>
+Subject: [PATCH v2] mm: memcontrol: replace the loop with a list_for_each_entry()
+Date:   Fri,  5 Feb 2021 00:30:55 +0800
+Message-Id: <20210204163055.56080-1-songmuchun@bytedance.com>
+X-Mailer: git-send-email 2.21.0 (Apple Git-122)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210203014726.GE1812008@carbon.dhcp.thefacebook.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 02, 2021 at 05:47:26PM -0800, Roman Gushchin wrote:
-> On Tue, Feb 02, 2021 at 01:47:45PM -0500, Johannes Weiner wrote:
-> >  	for_each_node(node) {
-> >  		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
-> > +		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
->                                                               ^^
-> I'd drop the comma here. It seems that "{0}" version is way more popular
-> over the mm code and in the kernel in general.
+The rule of list walk has gone since:
 
-Is there a downside to the comma? I'm finding more { 0, } than { 0 }
-in mm code, and at least kernel-wide it seems both are acceptable
-(although { 0 } is more popular overall).
+ commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
 
-I don't care much either way. I can change it in v2 if there is one.
+So remove the strange comment and replace the loop with a
+list_for_each_entry().
+
+There is only one caller of the uncharge_list(). So just fold it into
+mem_cgroup_uncharge_list() and remove it.
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+v2:
+ - Fold uncharge_list() to mem_cgroup_uncharge_list().
+
+ mm/memcontrol.c | 35 ++++++++---------------------------
+ 1 file changed, 8 insertions(+), 27 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index ed5cc78a8dbf..8c035846c7a4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -6862,31 +6862,6 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
+ 	css_put(&ug->memcg->css);
+ }
+ 
+-static void uncharge_list(struct list_head *page_list)
+-{
+-	struct uncharge_gather ug;
+-	struct list_head *next;
+-
+-	uncharge_gather_clear(&ug);
+-
+-	/*
+-	 * Note that the list can be a single page->lru; hence the
+-	 * do-while loop instead of a simple list_for_each_entry().
+-	 */
+-	next = page_list->next;
+-	do {
+-		struct page *page;
+-
+-		page = list_entry(next, struct page, lru);
+-		next = page->lru.next;
+-
+-		uncharge_page(page, &ug);
+-	} while (next != page_list);
+-
+-	if (ug.memcg)
+-		uncharge_batch(&ug);
+-}
+-
+ /**
+  * mem_cgroup_uncharge - uncharge a page
+  * @page: page to uncharge
+@@ -6918,11 +6893,17 @@ void mem_cgroup_uncharge(struct page *page)
+  */
+ void mem_cgroup_uncharge_list(struct list_head *page_list)
+ {
++	struct uncharge_gather ug;
++	struct page *page;
++
+ 	if (mem_cgroup_disabled())
+ 		return;
+ 
+-	if (!list_empty(page_list))
+-		uncharge_list(page_list);
++	uncharge_gather_clear(&ug);
++	list_for_each_entry(page, page_list, lru)
++		uncharge_page(page, &ug);
++	if (ug.memcg)
++		uncharge_batch(&ug);
+ }
+ 
+ /**
+-- 
+2.11.0
+
