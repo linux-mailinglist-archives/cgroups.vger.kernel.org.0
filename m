@@ -2,117 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3D6930F85D
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 17:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2208730FA0A
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 18:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237386AbhBDQpm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 11:45:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42542 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236971AbhBDQoz (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 4 Feb 2021 11:44:55 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612457047; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uPMfnHJez5C0MYU9Bi3DY+Zzs1npEebnPNg9a6l1V9g=;
-        b=OyUf2t2CyZUBOw3fyaefDcbgpMBcVsea+tJUuphQlBvBy9pQkyrcEsJBBG4GEajmW7vM6g
-        H949fzmNE/GPXVwllufcLuwPy+hWIU2G05xDp8Yxm0U1lJsyNeCmeqSFogw1mxxO0JB1jW
-        4YsoerN08FU9CzXsrURvSYD6tYTNAaM=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A54D5AD19;
-        Thu,  4 Feb 2021 16:44:07 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 17:44:06 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 6/7] mm: memcontrol: switch to rstat
-Message-ID: <YBwkVoNa77Nn5TE9@dhcp22.suse.cz>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-7-hannes@cmpxchg.org>
- <YBwCZYWsQOFAGUar@dhcp22.suse.cz>
- <YBwdiu2Fj4JHgqhQ@cmpxchg.org>
+        id S238665AbhBDRop (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 12:44:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238610AbhBDRoi (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 12:44:38 -0500
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA87AC061786
+        for <cgroups@vger.kernel.org>; Thu,  4 Feb 2021 09:43:58 -0800 (PST)
+Received: by mail-qk1-x732.google.com with SMTP id n15so4124852qkh.8
+        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 09:43:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=GCBGFufjjtkKM79QaCqD4gnNbGr/Jp0wwB8/7DPDEJI=;
+        b=kNmXSlAAZOA5BA1Nd/FHNTmnZuUl+kBcrKvgz0V3T9PaqZLDkAdiv+vpuvjGJWzgIQ
+         1JbP6ozldUU5i9up9n52QDgGGYGoDr2vLQPsW3ypPSvSxzf47qEyMaHhjlht+j+pN+Am
+         0SC3HBoEE2tK35rFDjrbYwH6woQAqVY+EP9KnLUo6SV1bNagCuG4CyFcPPx5AvuoKcPK
+         hlMTyTVcLovypO7oBoPsJ00SQg0EViX0k+ScJ67WU8/8sMm7MpxTfTpmb9HHxGuwY84a
+         31WQ5Pt3MX0MummZwo7oyY4RA7sqHnFFYctmMseNA4rmTHJTHv75zulDM5FQKOCrxpog
+         rfpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=GCBGFufjjtkKM79QaCqD4gnNbGr/Jp0wwB8/7DPDEJI=;
+        b=dwm/6sB8/wUuP9V+8C5u/WKHRrQMjrny4qF7umWMKwYy0LNFkLcXNpuXHRsVcCPPnu
+         A3LG8E5yDORkDU9I2M9AEnB4+ySNrgEvKECj5FfxtasfanmJSJR3YLTRC3Yfg3pzzY87
+         5rpeAo4I9YBKJIhvO41jd3Xsuh6oyoMA76yEgdQg5l+4UxgeMlC6yDk/0gxSvvDqgN1P
+         OtRq9Zi6sSCHn1mct4PG2MZNS2gtGJSbR/UQ0Epg/pfsMgHS3+uVrFaPh5IJpnoJ2dM9
+         h83IlQCIYsSKJ7QWbT1qoim72kMJN1heUEqUzSjWpCFBJ3n1Jz5pgiApm9IQoroAPO5x
+         bRxQ==
+X-Gm-Message-State: AOAM533zwyMFwovhNpXEXnrzuBCDvv1VI9lSEl+fm/MeOMHGxCvmh+RP
+        99jE8QEi8FKfNmg/LLTHw3ao1w==
+X-Google-Smtp-Source: ABdhPJwSWSWJ3qN496EhBpkdEWHOjRYgA4xdU1ivxrfW3e7LvIBSZqrcATMr2s9xqu/1g+yI8+bOMA==
+X-Received: by 2002:a37:345:: with SMTP id 66mr248338qkd.358.1612460638075;
+        Thu, 04 Feb 2021 09:43:58 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id d16sm5443086qka.44.2021.02.04.09.43.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 04 Feb 2021 09:43:57 -0800 (PST)
+Date:   Thu, 4 Feb 2021 12:43:56 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: memcontrol: replace the loop with a
+ list_for_each_entry()
+Message-ID: <YBwyXPFoXrLcxsZR@cmpxchg.org>
+References: <20210204163055.56080-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YBwdiu2Fj4JHgqhQ@cmpxchg.org>
+In-Reply-To: <20210204163055.56080-1-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 04-02-21 11:15:06, Johannes Weiner wrote:
-> Hello Michal,
+On Fri, Feb 05, 2021 at 12:30:55AM +0800, Muchun Song wrote:
+> The rule of list walk has gone since:
 > 
-> On Thu, Feb 04, 2021 at 03:19:17PM +0100, Michal Hocko wrote:
-> > On Tue 02-02-21 13:47:45, Johannes Weiner wrote:
-> > > Replace the memory controller's custom hierarchical stats code with
-> > > the generic rstat infrastructure provided by the cgroup core.
-> > > 
-> > > The current implementation does batched upward propagation from the
-> > > write side (i.e. as stats change). The per-cpu batches introduce an
-> > > error, which is multiplied by the number of subgroups in a tree. In
-> > > systems with many CPUs and sizable cgroup trees, the error can be
-> > > large enough to confuse users (e.g. 32 batch pages * 32 CPUs * 32
-> > > subgroups results in an error of up to 128M per stat item). This can
-> > > entirely swallow allocation bursts inside a workload that the user is
-> > > expecting to see reflected in the statistics.
-> > > 
-> > > In the past, we've done read-side aggregation, where a memory.stat
-> > > read would have to walk the entire subtree and add up per-cpu
-> > > counts. This became problematic with lazily-freed cgroups: we could
-> > > have large subtrees where most cgroups were entirely idle. Hence the
-> > > switch to change-driven upward propagation. Unfortunately, it needed
-> > > to trade accuracy for speed due to the write side being so hot.
-> > > 
-> > > Rstat combines the best of both worlds: from the write side, it
-> > > cheaply maintains a queue of cgroups that have pending changes, so
-> > > that the read side can do selective tree aggregation. This way the
-> > > reported stats will always be precise and recent as can be, while the
-> > > aggregation can skip over potentially large numbers of idle cgroups.
-> > > 
-> > > This adds a second vmstats to struct mem_cgroup (MEMCG_NR_STAT +
-> > > NR_VM_EVENT_ITEMS) to track pending subtree deltas during upward
-> > > aggregation. It removes 3 words from the per-cpu data. It eliminates
-> > > memcg_exact_page_state(), since memcg_page_state() is now exact.
-> > 
-> > I am still digesting details and need to look deeper into how rstat
-> > works but removing our own stats is definitely a good plan. Especially
-> > when there are existing limitations and problems that would need fixing.
-> > 
-> > Just to check that my high level understanding is correct. The
-> > transition is effectivelly removing a need to manually sync counters up
-> > the hierarchy and partially outsources that decision to rstat core. The
-> > controller is responsible just to tell the core how that syncing is done
-> > (e.g. which specific counters etc).
+>  commit a9d5adeeb4b2 ("mm/memcontrol: allow to uncharge page without using page->lru field")
 > 
-> Yes, exactly.
+> So remove the strange comment and replace the loop with a
+> list_for_each_entry().
 > 
-> rstat implements a tree of cgroups that have local changes pending,
-> and a flush walk on that tree. But it's all driven by the controller.
+> There is only one caller of the uncharge_list(). So just fold it into
+> mem_cgroup_uncharge_list() and remove it.
 > 
-> memcg needs to tell rstat 1) when stats in a local cgroup change
-> e.g. when we do mod_memcg_state() (cgroup_rstat_updated), 2) when to
-> flush, e.g. before a memory.stat read (cgroup_rstat_flush), and 3) how
-> to flush one cgroup's per-cpu state and propagate it upward to the
-> parent during rstat's flush walk (.css_rstat_flush).
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Can we have this short summary in a changelog please?
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-> > Excplicit flushes are needed when you want an exact value (e.g. when
-> > values are presented to the userspace). I do not see any flushes to
-> > be done by the core pro-actively except for clean up on a release.
-> > 
-> > Is the above correct understanding?
-> 
-> Yes, that's correct.
-
-OK, thanks for the confirmation. I will have a closer look tomorrow but
-I do not see any problems now.
-
--- 
-Michal Hocko
-SUSE Labs
+Thank you, Muchun!
