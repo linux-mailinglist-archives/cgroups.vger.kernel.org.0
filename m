@@ -2,177 +2,165 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C47B030F3E7
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 14:32:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B3F3230F3E9
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 14:32:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236304AbhBDNa3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 08:30:29 -0500
-Received: from mx2.suse.de ([195.135.220.15]:48668 "EHLO mx2.suse.de"
+        id S236305AbhBDNb3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 08:31:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49442 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236274AbhBDNaJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 4 Feb 2021 08:30:09 -0500
+        id S235605AbhBDNb0 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:31:26 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612445361; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612445439; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=dZkOuW12hIR53DrmAky88GTVjhYI+Daf3Iw2dbiv0LQ=;
-        b=TdbJToAsUkuon6LIfJS/gfcAF3TmZpV0MAwilOEN7hAXoGPPHVm9hxn6QvDBt+tZqz9EWZ
-        YLGFA6bNDh1XbUHvzc6eHHJ4diAUPi5gHxG3whr4HO69VvU9F5kZNtSKHBSFXoSVf6fSQi
-        02kWp38rqG2N7IDfrUyXstGHHbb5y+M=
+        bh=L77nMZnbI0deUZjw7MqGG5ofM0TsnBeQ+FG94mc5hUg=;
+        b=WqurwoQ3ls6M84p/p3q/eS9NYyBjBYCT0Bneuxn9DKoko/Oqvxk3ml3DOnnH25Fy6soprN
+        6ijf3Tg/SGjedPIECzvKw80Pz7CGw2/Y2EJOY8u8RBf9C0gOSVNbsmLyGR6AH7vnbcwYpO
+        BXvzlthUJ2KeIXpyaCLOjpjapi/Vefc=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BC3D3AC43;
-        Thu,  4 Feb 2021 13:29:21 +0000 (UTC)
-Date:   Thu, 4 Feb 2021 14:29:21 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 57CBBAEAC;
+        Thu,  4 Feb 2021 13:30:39 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 14:30:38 +0100
 From:   Michal Hocko <mhocko@suse.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 2/7] mm: memcontrol: kill mem_cgroup_nodeinfo()
-Message-ID: <YBv2sYiMmPhYmW3h@dhcp22.suse.cz>
+Subject: Re: [PATCH 3/7] mm: memcontrol: privatize memcg_page_state query
+ functions
+Message-ID: <YBv2/hAXno4JDc8s@dhcp22.suse.cz>
 References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-3-hannes@cmpxchg.org>
+ <20210202184746.119084-4-hannes@cmpxchg.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210202184746.119084-3-hannes@cmpxchg.org>
+In-Reply-To: <20210202184746.119084-4-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 02-02-21 13:47:41, Johannes Weiner wrote:
-> No need to encapsulate a simple struct member access.
+On Tue 02-02-21 13:47:42, Johannes Weiner wrote:
+> There are no users outside of the memory controller itself. The rest
+> of the kernel cares either about node or lruvec stats.
 > 
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Acked-by: Michal Hocko <mhocko@suse.com>
 
 > ---
->  include/linux/memcontrol.h |  8 +-------
->  mm/memcontrol.c            | 21 +++++++++++----------
->  2 files changed, 12 insertions(+), 17 deletions(-)
+>  include/linux/memcontrol.h | 44 --------------------------------------
+>  mm/memcontrol.c            | 32 +++++++++++++++++++++++++++
+>  2 files changed, 32 insertions(+), 44 deletions(-)
 > 
 > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 7a38a1517a05..c7f387a6233e 100644
+> index c7f387a6233e..20ecdfae3289 100644
 > --- a/include/linux/memcontrol.h
 > +++ b/include/linux/memcontrol.h
-> @@ -602,12 +602,6 @@ void mem_cgroup_uncharge_list(struct list_head *page_list);
+> @@ -867,39 +867,6 @@ struct mem_cgroup *lock_page_memcg(struct page *page);
+>  void __unlock_page_memcg(struct mem_cgroup *memcg);
+>  void unlock_page_memcg(struct page *page);
 >  
->  void mem_cgroup_migrate(struct page *oldpage, struct page *newpage);
->  
-> -static struct mem_cgroup_per_node *
-> -mem_cgroup_nodeinfo(struct mem_cgroup *memcg, int nid)
+> -/*
+> - * idx can be of type enum memcg_stat_item or node_stat_item.
+> - * Keep in sync with memcg_exact_page_state().
+> - */
+> -static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
 > -{
-> -	return memcg->nodeinfo[nid];
+> -	long x = atomic_long_read(&memcg->vmstats[idx]);
+> -#ifdef CONFIG_SMP
+> -	if (x < 0)
+> -		x = 0;
+> -#endif
+> -	return x;
 > -}
 > -
->  /**
->   * mem_cgroup_lruvec - get the lru list vector for a memcg & node
->   * @memcg: memcg of the wanted lruvec
-> @@ -631,7 +625,7 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->  	if (!memcg)
->  		memcg = root_mem_cgroup;
+> -/*
+> - * idx can be of type enum memcg_stat_item or node_stat_item.
+> - * Keep in sync with memcg_exact_page_state().
+> - */
+> -static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+> -						   int idx)
+> -{
+> -	long x = 0;
+> -	int cpu;
+> -
+> -	for_each_possible_cpu(cpu)
+> -		x += per_cpu(memcg->vmstats_local->stat[idx], cpu);
+> -#ifdef CONFIG_SMP
+> -	if (x < 0)
+> -		x = 0;
+> -#endif
+> -	return x;
+> -}
+> -
+>  void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val);
 >  
-> -	mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-> +	mz = memcg->nodeinfo[pgdat->node_id];
->  	lruvec = &mz->lruvec;
->  out:
->  	/*
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8120d565dd79..7e05a4ebf80f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -414,13 +414,14 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
->  					 int size, int old_size)
+>  /* idx can be of type enum memcg_stat_item or node_stat_item */
+> @@ -1337,17 +1304,6 @@ static inline void mem_cgroup_print_oom_group(struct mem_cgroup *memcg)
 >  {
->  	struct memcg_shrinker_map *new, *old;
-> +	struct mem_cgroup_per_node *pn;
->  	int nid;
->  
->  	lockdep_assert_held(&memcg_shrinker_map_mutex);
->  
->  	for_each_node(nid) {
-> -		old = rcu_dereference_protected(
-> -			mem_cgroup_nodeinfo(memcg, nid)->shrinker_map, true);
-> +		pn = memcg->nodeinfo[nid];
-> +		old = rcu_dereference_protected(pn->shrinker_map, true);
->  		/* Not yet online memcg */
->  		if (!old)
->  			return 0;
-> @@ -433,7 +434,7 @@ static int memcg_expand_one_shrinker_map(struct mem_cgroup *memcg,
->  		memset(new->map, (int)0xff, old_size);
->  		memset((void *)new->map + old_size, 0, size - old_size);
->  
-> -		rcu_assign_pointer(memcg->nodeinfo[nid]->shrinker_map, new);
-> +		rcu_assign_pointer(pn->shrinker_map, new);
->  		call_rcu(&old->rcu, memcg_free_shrinker_map_rcu);
->  	}
->  
-> @@ -450,7 +451,7 @@ static void memcg_free_shrinker_maps(struct mem_cgroup *memcg)
->  		return;
->  
->  	for_each_node(nid) {
-> -		pn = mem_cgroup_nodeinfo(memcg, nid);
-> +		pn = memcg->nodeinfo[nid];
->  		map = rcu_dereference_protected(pn->shrinker_map, true);
->  		kvfree(map);
->  		rcu_assign_pointer(pn->shrinker_map, NULL);
-> @@ -713,7 +714,7 @@ static void mem_cgroup_remove_from_trees(struct mem_cgroup *memcg)
->  	int nid;
->  
->  	for_each_node(nid) {
-> -		mz = mem_cgroup_nodeinfo(memcg, nid);
-> +		mz = memcg->nodeinfo[nid];
->  		mctz = soft_limit_tree_node(nid);
->  		if (mctz)
->  			mem_cgroup_remove_exceeded(mz, mctz);
-> @@ -796,7 +797,7 @@ parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
->  	parent = parent_mem_cgroup(pn->memcg);
->  	if (!parent)
->  		return NULL;
-> -	return mem_cgroup_nodeinfo(parent, nid);
-> +	return parent->nodeinfo[nid];
 >  }
 >  
->  void __mod_memcg_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
-> @@ -1163,7 +1164,7 @@ struct mem_cgroup *mem_cgroup_iter(struct mem_cgroup *root,
->  	if (reclaim) {
->  		struct mem_cgroup_per_node *mz;
+> -static inline unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> -{
+> -	return 0;
+> -}
+> -
+> -static inline unsigned long memcg_page_state_local(struct mem_cgroup *memcg,
+> -						   int idx)
+> -{
+> -	return 0;
+> -}
+> -
+>  static inline void __mod_memcg_state(struct mem_cgroup *memcg,
+>  				     int idx,
+>  				     int nr)
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 7e05a4ebf80f..2f97cb4cef6d 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -789,6 +789,38 @@ void __mod_memcg_state(struct mem_cgroup *memcg, int idx, int val)
+>  	__this_cpu_write(memcg->vmstats_percpu->stat[idx], x);
+>  }
 >  
-> -		mz = mem_cgroup_nodeinfo(root, reclaim->pgdat->node_id);
-> +		mz = root->nodeinfo[reclaim->pgdat->node_id];
->  		iter = &mz->iter;
->  
->  		if (prev && reclaim->generation != iter->generation)
-> @@ -1265,7 +1266,7 @@ static void __invalidate_reclaim_iterators(struct mem_cgroup *from,
->  	int nid;
->  
->  	for_each_node(nid) {
-> -		mz = mem_cgroup_nodeinfo(from, nid);
-> +		mz = from->nodeinfo[nid];
->  		iter = &mz->iter;
->  		cmpxchg(&iter->position, dead_memcg, NULL);
->  	}
-> @@ -2438,7 +2439,7 @@ static int memcg_hotplug_cpu_dead(unsigned int cpu)
->  				struct mem_cgroup_per_node *pn;
->  				long x;
->  
-> -				pn = mem_cgroup_nodeinfo(memcg, nid);
-> +				pn = memcg->nodeinfo[nid];
->  				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
->  
->  				x = lstatc->count[i];
-> @@ -4145,7 +4146,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
->  		unsigned long file_cost = 0;
->  
->  		for_each_online_pgdat(pgdat) {
-> -			mz = mem_cgroup_nodeinfo(memcg, pgdat->node_id);
-> +			mz = memcg->nodeinfo[pgdat->node_id];
->  
->  			anon_cost += mz->lruvec.anon_cost;
->  			file_cost += mz->lruvec.file_cost;
+> +/*
+> + * idx can be of type enum memcg_stat_item or node_stat_item.
+> + * Keep in sync with memcg_exact_page_state().
+> + */
+> +static unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> +{
+> +	long x = atomic_long_read(&memcg->vmstats[idx]);
+> +#ifdef CONFIG_SMP
+> +	if (x < 0)
+> +		x = 0;
+> +#endif
+> +	return x;
+> +}
+> +
+> +/*
+> + * idx can be of type enum memcg_stat_item or node_stat_item.
+> + * Keep in sync with memcg_exact_page_state().
+> + */
+> +static unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+> +{
+> +	long x = 0;
+> +	int cpu;
+> +
+> +	for_each_possible_cpu(cpu)
+> +		x += per_cpu(memcg->vmstats_local->stat[idx], cpu);
+> +#ifdef CONFIG_SMP
+> +	if (x < 0)
+> +		x = 0;
+> +#endif
+> +	return x;
+> +}
+> +
+>  static struct mem_cgroup_per_node *
+>  parent_nodeinfo(struct mem_cgroup_per_node *pn, int nid)
+>  {
 > -- 
 > 2.30.0
 > 
