@@ -2,104 +2,141 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6004830F378
-	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 13:52:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AAF1B30F3E3
+	for <lists+cgroups@lfdr.de>; Thu,  4 Feb 2021 14:30:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236188AbhBDMwQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Feb 2021 07:52:16 -0500
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:37526 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236113AbhBDMwP (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Feb 2021 07:52:15 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1612443048;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        id S236284AbhBDN3u (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Feb 2021 08:29:50 -0500
+Received: from mx2.suse.de ([195.135.220.15]:48532 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236274AbhBDN3l (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 4 Feb 2021 08:29:41 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612445333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=DKbKu0SnosOmRjiPUA+TXW/OuCr5IvZDTkGTyTOp94w=;
-        b=RK/OQdu5xIBKLoMBp2fVjJTJhStDXtYNBdPvd9fqdr2vVf95w+60GluGeQXoK24XCDTfX9
-        VJOAxFiiJR85PoDptAlnHfoJNatTkmooBCMfIjpgm+FbNiRKAr6qmLelg0PZBp9VwoDWBx
-        AYt2ljqF8XxzEZ7ZmwHBtUAgBKqm/XI=
-Received: from mail-lj1-f198.google.com (mail-lj1-f198.google.com
- [209.85.208.198]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-491-Zt989t3DNuWVKKZyQsQgbA-1; Thu, 04 Feb 2021 07:50:46 -0500
-X-MC-Unique: Zt989t3DNuWVKKZyQsQgbA-1
-Received: by mail-lj1-f198.google.com with SMTP id p6so2550325ljg.12
-        for <cgroups@vger.kernel.org>; Thu, 04 Feb 2021 04:50:46 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DKbKu0SnosOmRjiPUA+TXW/OuCr5IvZDTkGTyTOp94w=;
-        b=PNZdG40UHbAQ6DoFjDvW8zxNQRjo0Tm5GauXrn8G4+3PLiT9SEZxOqPUs3aL28I49A
-         4rxPf5B+6H2Nulug/RpAP1sNAiQaYbl7/5EIAfsxxykmkN3G3RkZ5CXHi/rAre44uEBT
-         QvaDsYR4qERcaS9TSO7nkt6gHhIBpMhtmS1B5P0vyjgvWX9zGQMKubdmqauL2u2rcWou
-         VNvHeoDdFFZSbOJujFRKC0xrPxplhvOo5tCqLHAnGPdOSgmlTgiMuynME/4L/l/Q0Hus
-         6gDdWsmHnQ33qWwOAI5VKp2PrFYWKhhscPqEtSSgzNeT0H7sNfQmw1th5beHnukxeboV
-         AcNA==
-X-Gm-Message-State: AOAM533A6Q6mEydtkvYzydkgp0GIDSlkQ98k2Zr2iugXUAj00VPPyUAq
-        r5XYhrwjoPxgU774WrJYwU2GA54tkG/SNd+BEzOCucrDbzU8DOTz3ZUgYbK4L3rwRb4xwf9e9/e
-        2TSt5cSpxSspLBTGVzIKLNATYIRVBTuyejA==
-X-Received: by 2002:a05:651c:1211:: with SMTP id i17mr4722306lja.12.1612443045215;
-        Thu, 04 Feb 2021 04:50:45 -0800 (PST)
-X-Google-Smtp-Source: ABdhPJyHOKX7YPZDTcB8kVmsl+35+Wrszff6VDC/FDIqf7q2OzNxeFCKfC/HQWWx3bOgZ7G4RAjv3iIt2oes6DrPj2g=
-X-Received: by 2002:a05:651c:1211:: with SMTP id i17mr4722292lja.12.1612443045056;
- Thu, 04 Feb 2021 04:50:45 -0800 (PST)
+        bh=TRSYMjQRAzEHtFevMwBdexoUuf46f9eJ8r1i3WMioDI=;
+        b=GcyhMd8vU7FiMUrjfpReK3jejf2JcNNuC/9fOqe8iI3GUHpmlS3W1NeI89vJMlKOm5Jq6S
+        fDZJH9tjinKCe3lpv0vatkQWG57RzHKmtJxoGv6c+0wPresT11A9qR5KACB3Al8NZ421tf
+        /rv2Z0u8UcaKLgD2rl/LNbc/H8TKIKE=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 480C9ACB0;
+        Thu,  4 Feb 2021 13:28:53 +0000 (UTC)
+Date:   Thu, 4 Feb 2021 14:28:52 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
+        linux-mm@kvack.org, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: Re: [PATCH 1/7] mm: memcontrol: fix cpuhotplug statistics flushing
+Message-ID: <YBv2lAkaxcPD22dd@dhcp22.suse.cz>
+References: <20210202184746.119084-1-hannes@cmpxchg.org>
+ <20210202184746.119084-2-hannes@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210204010157.1823669-1-aklimov@redhat.com> <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
-In-Reply-To: <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
-From:   Alexey Klimov <aklimov@redhat.com>
-Date:   Thu, 4 Feb 2021 12:50:34 +0000
-Message-ID: <CAFBcO+_Z1LKqPPwEKq-XGX+RnWQa+vFBVJ9D9y0MNHGUkM_4Jw@mail.gmail.com>
-Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
- cpu onlining
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
-        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
-        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
-        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
-        qais.yousef@arm.com, hannes@cmpxchg.org,
-        Alexey Klimov <klimov.linux@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210202184746.119084-2-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 4, 2021 at 9:46 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
-> > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
-> >       err = _cpu_up(cpu, 0, target);
-> >  out:
-> >       cpu_maps_update_done();
-> > +
-> > +     /* To avoid out of line uevent */
-> > +     if (!err)
-> > +             cpuset_wait_for_hotplug();
-> > +
-> >       return err;
-> >  }
-> >
->
-> > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
-> >       struct device *dev = get_cpu_device(cpu);
-> >
-> >       dev->offline = false;
-> > -     /* Tell user space about the state change */
-> > -     kobject_uevent(&dev->kobj, KOBJ_ONLINE);
-> >  }
-> >
->
-> One concequence of this is that you'll now get a bunch of notifications
-> across things like suspend/hybernate.
+On Tue 02-02-21 13:47:40, Johannes Weiner wrote:
+> The memcg hotunplug callback erroneously flushes counts on the local
+> CPU, not the counts of the CPU going away; those counts will be lost.
+> 
+> Flush the CPU that is actually going away.
+> 
+> Also simplify the code a bit by using mod_memcg_state() and
+> count_memcg_events() instead of open-coding the upward flush - this is
+> comparable to how vmstat.c handles hotunplug flushing.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-The patch doesn't change the number of kobject_uevent()s. The
-userspace will get the same number of uevents as before the patch (at
-least if I can rely on my eyes).
-Or is there a concern that now the uevents are sent in a row
-sequentially which might abuse userspace uevents handling machinery?
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Best regards,
-Alexey
+Shakeel has already pointed out Fixes.
 
+> ---
+>  mm/memcontrol.c | 35 +++++++++++++++++++++--------------
+>  1 file changed, 21 insertions(+), 14 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index ed5cc78a8dbf..8120d565dd79 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2411,45 +2411,52 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
+>  static int memcg_hotplug_cpu_dead(unsigned int cpu)
+>  {
+>  	struct memcg_stock_pcp *stock;
+> -	struct mem_cgroup *memcg, *mi;
+> +	struct mem_cgroup *memcg;
+>  
+>  	stock = &per_cpu(memcg_stock, cpu);
+>  	drain_stock(stock);
+>  
+>  	for_each_mem_cgroup(memcg) {
+> +		struct memcg_vmstats_percpu *statc;
+>  		int i;
+>  
+> +		statc = per_cpu_ptr(memcg->vmstats_percpu, cpu);
+> +
+>  		for (i = 0; i < MEMCG_NR_STAT; i++) {
+>  			int nid;
+> -			long x;
+>  
+> -			x = this_cpu_xchg(memcg->vmstats_percpu->stat[i], 0);
+> -			if (x)
+> -				for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+> -					atomic_long_add(x, &memcg->vmstats[i]);
+> +			if (statc->stat[i]) {
+> +				mod_memcg_state(memcg, i, statc->stat[i]);
+> +				statc->stat[i] = 0;
+> +			}
+>  
+>  			if (i >= NR_VM_NODE_STAT_ITEMS)
+>  				continue;
+>  
+>  			for_each_node(nid) {
+> +				struct batched_lruvec_stat *lstatc;
+>  				struct mem_cgroup_per_node *pn;
+> +				long x;
+>  
+>  				pn = mem_cgroup_nodeinfo(memcg, nid);
+> -				x = this_cpu_xchg(pn->lruvec_stat_cpu->count[i], 0);
+> -				if (x)
+> +				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
+> +
+> +				x = lstatc->count[i];
+> +				lstatc->count[i] = 0;
+> +
+> +				if (x) {
+>  					do {
+>  						atomic_long_add(x, &pn->lruvec_stat[i]);
+>  					} while ((pn = parent_nodeinfo(pn, nid)));
+> +				}
+>  			}
+>  		}
+>  
+>  		for (i = 0; i < NR_VM_EVENT_ITEMS; i++) {
+> -			long x;
+> -
+> -			x = this_cpu_xchg(memcg->vmstats_percpu->events[i], 0);
+> -			if (x)
+> -				for (mi = memcg; mi; mi = parent_mem_cgroup(mi))
+> -					atomic_long_add(x, &memcg->vmevents[i]);
+> +			if (statc->events[i]) {
+> +				count_memcg_events(memcg, i, statc->events[i]);
+> +				statc->events[i] = 0;
+> +			}
+>  		}
+>  	}
+>  
+> -- 
+> 2.30.0
+> 
+
+-- 
+Michal Hocko
+SUSE Labs
