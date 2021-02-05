@@ -2,194 +2,151 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB53B31157A
-	for <lists+cgroups@lfdr.de>; Fri,  5 Feb 2021 23:33:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D1D5231154E
+	for <lists+cgroups@lfdr.de>; Fri,  5 Feb 2021 23:32:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232111AbhBEWcm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 Feb 2021 17:32:42 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42522 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232382AbhBEOQH (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 5 Feb 2021 09:16:07 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612538248; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=r8wialKdheVOWKUm2V9AI1x41rtNkGlqL+YFxoW4NCY=;
-        b=e9eORgSyJ69kSnIywPMO4ancKa6to5n2wceHlPgMzOSqkondXIZUfqhke6GyONiEL/h3Nz
-        NMbd5LMcG9rxDAPy5FzdlY3YjW78TIe7aKolEGddszgWxwLEJI97ivP3Of9W5YMIbI8mYU
-        zi0itQD0XQ3Ofa69Asm8BX4PN3W5ugE=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 206C5AC9B;
-        Fri,  5 Feb 2021 15:17:28 +0000 (UTC)
-Date:   Fri, 5 Feb 2021 16:17:27 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Roman Gushchin <guro@fb.com>,
-        linux-mm@kvack.org, cgroups@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com
-Subject: Re: [PATCH 7/7] mm: memcontrol: consolidate lruvec stat flushing
-Message-ID: <YB1hhwVybr0x5M2j@dhcp22.suse.cz>
-References: <20210202184746.119084-1-hannes@cmpxchg.org>
- <20210202184746.119084-8-hannes@cmpxchg.org>
+        id S232516AbhBEW2H (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Feb 2021 17:28:07 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41158 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231751AbhBEOVT (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Feb 2021 09:21:19 -0500
+Received: from mail-il1-x136.google.com (mail-il1-x136.google.com [IPv6:2607:f8b0:4864:20::136])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3437C061794
+        for <cgroups@vger.kernel.org>; Fri,  5 Feb 2021 07:58:52 -0800 (PST)
+Received: by mail-il1-x136.google.com with SMTP id y17so6189695ili.12
+        for <cgroups@vger.kernel.org>; Fri, 05 Feb 2021 07:58:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k4OJLV6TXS1KdESPsSN5ElFkZKiwedSKAnd29KVc8KM=;
+        b=1aw6G8+TFmecyaEdtijZI3sTpYEbc4iqst6CcMnq1bl2fPTIIjZ71I95liyMaaTEdM
+         njh8wvV/aPJZI3cAQlg8pI9VCAHNZHuKLMhrGZmIjboD1TagcPOdprngYyDCsor7ncGs
+         09+hFnX+T6ilxBP80u7+mkj2cilveG/6G+QwnlTtFDjDdpovBSaSLZ5qNqIrefNiphby
+         VSTGt1n3cYWec6DxUohkn8BjxwrXVLyOVle+kB8wOWx2v7YAVSkSqbzliKdWClAuWPGV
+         kqYy8HcxH7eYR3EvDfoIV5Amdw10sOwcttGJzzYnP2+3KWpVN8cAZGNfh6fikwGVHRSY
+         VcsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k4OJLV6TXS1KdESPsSN5ElFkZKiwedSKAnd29KVc8KM=;
+        b=ol/JA1lUB8b/RjBftEOFTbpBE6irSYwOQlCOlzNkLvo4xJJW06bwYyzXDl3v+BPXjG
+         7xB6/VTMyEKWl8wlJ8zCkfLoyASTKzn+DwFMj84ZBLm6yHFp5HxxvKHrY7PNJFvNvhLs
+         Ncnhf4Xz/QeoEIYvIi5T5WGzoaSoA9xdIvNfY1bWAFe2SMIuX4V8Zbr7WYdphBJmTX0t
+         rI8xodIjmvXJUlCzWq4s5m9iTt9zc0g8VKATUcWNNIzFFi1f37ASHLGwvJcNwUHdaoFX
+         mYeewU2Od2d/iM//VDUDMFik0ThMZjDyif0oEJdmwUVX1zxO4rVOAW8Et1zV2oVW4/6o
+         T/Yw==
+X-Gm-Message-State: AOAM533cgTWxLAsayqmNiW3I0qkClwOiXGvRSISEZsHg7Habmwmh9Lgz
+        SjwVohgwpABfIsLMiIPmk29WI8fPgzfr/Y8jWY07Hlz/IsPnCQ==
+X-Google-Smtp-Source: ABdhPJwhULqIS5l4qL1BjXkv2y/zKC3UJe21U6D62vItTdYaESCfEqvoP5XrUuqj+ZBAH5RcV/hzjTced12oZpPUHhQ=
+X-Received: by 2002:a63:de0e:: with SMTP id f14mr4752501pgg.273.1612539072639;
+ Fri, 05 Feb 2021 07:31:12 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210202184746.119084-8-hannes@cmpxchg.org>
+References: <20210205062310.74268-1-songmuchun@bytedance.com>
+ <YB0Ay+epP/hnFmDS@dhcp22.suse.cz> <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
+ <YB0cO7R1WtJgAxI2@dhcp22.suse.cz> <CAMZfGtXXjXKoxbOSB9h6JvgZKEGBh2sCf34usJXcBXxGjU6k0w@mail.gmail.com>
+ <YB04B1gMdE/B3G9c@dhcp22.suse.cz>
+In-Reply-To: <YB04B1gMdE/B3G9c@dhcp22.suse.cz>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 5 Feb 2021 23:30:36 +0800
+Message-ID: <CAMZfGtVBPdWUG6MuGcFt7A_Xr1zCJj-gnE0pKyhyJAy6bSSgnw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup oom task
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 02-02-21 13:47:46, Johannes Weiner wrote:
-> There are two functions to flush the per-cpu data of an lruvec into
-> the rest of the cgroup tree: when the cgroup is being freed, and when
-> a CPU disappears during hotplug. The difference is whether all CPUs or
-> just one is being collected, but the rest of the flushing code is the
-> same. Merge them into one function and share the common code.
+On Fri, Feb 5, 2021 at 8:20 PM Michal Hocko <mhocko@suse.com> wrote:
+>
+> On Fri 05-02-21 19:04:19, Muchun Song wrote:
+> > On Fri, Feb 5, 2021 at 6:21 PM Michal Hocko <mhocko@suse.com> wrote:
+> > >
+> > > On Fri 05-02-21 17:55:10, Muchun Song wrote:
+> > > > On Fri, Feb 5, 2021 at 4:24 PM Michal Hocko <mhocko@suse.com> wrote:
+> > > > >
+> > > > > On Fri 05-02-21 14:23:10, Muchun Song wrote:
+> > > > > > We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
+> > > > > > when page uncharged, but for the slab pages, we do not do this when page
+> > > > > > uncharged.
+> > > > >
+> > > > > How does the patch deal with this?
+> > > >
+> > > > When we uncharge a slab page via __memcg_kmem_uncharge,
+> > > > actually, this path forgets to do this for us compared to
+> > > > uncharge_batch(). Right?
+> > >
+> > > Yes this was more more or less clear (still would have been nicer to be
+> > > explicit). But you still haven't replied to my question I believe. I
+> > > assume you rely on refill_stock doing draining but how does this address
+> > > the problem? Is it sufficient to do wakeups in the batched way?
+> >
+> > Sorry, the subject title may not be suitable. IIUC, memcg_oom_recover
+> > aims to wake up the OOM task when we uncharge the page.
+>
+> Yes, your understanding is correct. This is a way to pro-actively wake
+> up oom victims when the memcg oom handling is outsourced to the
+> userspace. Please note that I haven't objected to the problem statement.
+>
+> I was questioning the fix for the problem.
+>
+> > I see uncharge_batch always do this. I am confused why
+> > __memcg_kmem_uncharge does not.
+>
+> Very likely an omission. I haven't checked closely but I suspect this
+> has been introduced by the recent kmem accounting changes.
+>
+> Why didn't you simply do the same thing and call memcg_oom_recover
+> unconditionally and instead depend on the draining? I suspect this was
+> because you wanted to recover also when draining which is not necessary
+> as pointed out in other email.
 
-IIUC the only reason for the cpu == -1 special case is to avoid
-zeroying, right? Is this optimization worth the special case? The code
-would be slightly easier to follow without this.
+Thanks for your explanations. You are right. It is my fault to depend
+on the draining. I should call memcg_oom_recover directly in the
+__memcg_kmem_uncharge. Right?
 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> [...]
+> > > > > Does this lead to any code generation improvements? I would expect
+> > > > > compiler to be clever enough to inline static functions if that pays
+> > > > > off. If yes make this a patch on its own.
+> > > >
+> > > > I have disassembled the code, I see memcg_oom_recover is not
+> > > > inline. Maybe because memcg_oom_recover has a lot of callers.
+> > > > Just guess.
+> > > >
+> > > > (gdb) disassemble uncharge_batch
+> > > >  [...]
+> > > >  0xffffffff81341c73 <+227>: callq  0xffffffff8133c420 <page_counter_uncharge>
+> > > >  0xffffffff81341c78 <+232>: jmpq   0xffffffff81341bc0 <uncharge_batch+48>
+> > > >  0xffffffff81341c7d <+237>: callq  0xffffffff8133e2c0 <memcg_oom_recover>
+> > >
+> > > So does it really help to do the inlining?
+> >
+> > I just think memcg_oom_recover is very small, inline maybe
+> > a good choice. Maybe I am wrong.
+>
+> In general I am not overly keen on changes without a proper
+> justification. In this particular case I would understand that a
+> function call that will almost never do anything but the test (because
+> oom_disabled is a rarely used) is just waste of cycles in some hot
+> paths (e.g. kmem uncharge). Maybe this even has some visible performance
+> benefit. If this is really the case then would it make sense to guard
+> this test by the existing cgroup_subsys_on_dfl(memory_cgrp_subsys)?
 
-Anyway the above is not really a fundamental objection. It is more important
-to unify the flushing.
+Agree. I think it can improve performance when this
+function is inline. Guarding the test should be also
+an improvement on cgroup v2.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
 
-> ---
->  mm/memcontrol.c | 88 +++++++++++++++++++++++--------------------------
->  1 file changed, 42 insertions(+), 46 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index b205b2413186..88e8afc49a46 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2410,39 +2410,56 @@ static void drain_all_stock(struct mem_cgroup *root_memcg)
->  	mutex_unlock(&percpu_charge_mutex);
->  }
->  
-> -static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> +static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg, int cpu)
->  {
-> -	struct memcg_stock_pcp *stock;
-> -	struct mem_cgroup *memcg;
-> -
-> -	stock = &per_cpu(memcg_stock, cpu);
-> -	drain_stock(stock);
-> +	int nid;
->  
-> -	for_each_mem_cgroup(memcg) {
-> +	for_each_node(nid) {
-> +		struct mem_cgroup_per_node *pn = memcg->nodeinfo[nid];
-> +		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = { 0, };
-> +		struct batched_lruvec_stat *lstatc;
->  		int i;
->  
-> -		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-> -			int nid;
-> -
-> -			for_each_node(nid) {
-> -				struct batched_lruvec_stat *lstatc;
-> -				struct mem_cgroup_per_node *pn;
-> -				long x;
-> -
-> -				pn = memcg->nodeinfo[nid];
-> +		if (cpu == -1) {
-> +			int cpui;
-> +			/*
-> +			 * The memcg is about to be freed, collect all
-> +			 * CPUs, no need to zero anything out.
-> +			 */
-> +			for_each_online_cpu(cpui) {
-> +				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpui);
-> +				for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> +					stat[i] += lstatc->count[i];
-> +			}
-> +		} else {
-> +			/*
-> +			 * The CPU has gone away, collect and zero out
-> +			 * its stats, it may come back later.
-> +			 */
-> +			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
->  				lstatc = per_cpu_ptr(pn->lruvec_stat_cpu, cpu);
-> -
-> -				x = lstatc->count[i];
-> +				stat[i] = lstatc->count[i];
->  				lstatc->count[i] = 0;
-> -
-> -				if (x) {
-> -					do {
-> -						atomic_long_add(x, &pn->lruvec_stat[i]);
-> -					} while ((pn = parent_nodeinfo(pn, nid)));
-> -				}
->  			}
->  		}
-> +
-> +		do {
-> +			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> +				atomic_long_add(stat[i], &pn->lruvec_stat[i]);
-> +		} while ((pn = parent_nodeinfo(pn, nid)));
->  	}
-> +}
-> +
-> +static int memcg_hotplug_cpu_dead(unsigned int cpu)
-> +{
-> +	struct memcg_stock_pcp *stock;
-> +	struct mem_cgroup *memcg;
-> +
-> +	stock = &per_cpu(memcg_stock, cpu);
-> +	drain_stock(stock);
-> +
-> +	for_each_mem_cgroup(memcg)
-> +		memcg_flush_lruvec_page_state(memcg, cpu);
->  
->  	return 0;
->  }
-> @@ -3636,27 +3653,6 @@ static u64 mem_cgroup_read_u64(struct cgroup_subsys_state *css,
->  	}
->  }
->  
-> -static void memcg_flush_lruvec_page_state(struct mem_cgroup *memcg)
-> -{
-> -	int node;
-> -
-> -	for_each_node(node) {
-> -		struct mem_cgroup_per_node *pn = memcg->nodeinfo[node];
-> -		unsigned long stat[NR_VM_NODE_STAT_ITEMS] = {0, };
-> -		struct mem_cgroup_per_node *pi;
-> -		int cpu, i;
-> -
-> -		for_each_online_cpu(cpu)
-> -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -				stat[i] += per_cpu(
-> -					pn->lruvec_stat_cpu->count[i], cpu);
-> -
-> -		for (pi = pn; pi; pi = parent_nodeinfo(pi, node))
-> -			for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
-> -				atomic_long_add(stat[i], &pi->lruvec_stat[i]);
-> -	}
-> -}
-> -
->  #ifdef CONFIG_MEMCG_KMEM
->  static int memcg_online_kmem(struct mem_cgroup *memcg)
->  {
-> @@ -5197,7 +5193,7 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
->  	 * Flush percpu lruvec stats to guarantee the value
->  	 * correctness on parent's and all ancestor levels.
->  	 */
-> -	memcg_flush_lruvec_page_state(memcg);
-> +	memcg_flush_lruvec_page_state(memcg, -1);
->  	__mem_cgroup_free(memcg);
->  }
->  
-> -- 
-> 2.30.0
-> 
-
--- 
-Michal Hocko
-SUSE Labs
+> --
+> Michal Hocko
+> SUSE Labs
