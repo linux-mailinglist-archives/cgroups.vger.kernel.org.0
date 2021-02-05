@@ -2,137 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62FF3107C2
-	for <lists+cgroups@lfdr.de>; Fri,  5 Feb 2021 10:26:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1571C3108FA
+	for <lists+cgroups@lfdr.de>; Fri,  5 Feb 2021 11:25:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229972AbhBEJXg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 Feb 2021 04:23:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229823AbhBEJPs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Feb 2021 04:15:48 -0500
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45ACDC061794
-        for <cgroups@vger.kernel.org>; Fri,  5 Feb 2021 01:15:08 -0800 (PST)
-Received: by mail-pl1-x633.google.com with SMTP id e12so3251101pls.4
-        for <cgroups@vger.kernel.org>; Fri, 05 Feb 2021 01:15:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=53pDsjk4dsfRxbD/kmYDiUVFcJx5hI2GOqEILwRUysY=;
-        b=lI6xNbyP7s/yr16Sg6aC5FlliprvUbrxjSsyUrxMaPEP1KqYYQyRHtd9K0UqINg26g
-         QmTgj8Spi3UKo86zeJGV83yXawxMbYM9CVFSrujTaGLXq/82Y0Ayv6njyfjK2fGS486s
-         aK97+eddmJcU79YSI2w/3NYY8Cz5dFwUkAM0cps0WLK3XdhrzxC9i+UYWwr1A8prvV8X
-         RP1T+YqbYhVSnYMEpWju7n9oT1AD5a3+cjb6SGUlmT1rX1pqmxW2MlNQEMuS1c1aXhPC
-         acMS102YFmfhPAkrdrIGjnj//Ku6/enRZpVxSIW/x5r9lGBvP3E6a4a3x/IPrwui2Jbe
-         D88w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=53pDsjk4dsfRxbD/kmYDiUVFcJx5hI2GOqEILwRUysY=;
-        b=N4XOpAH87hpWcUmE43nRMIE1j4fcETa9bJguqm/54hMqkvk/ZXrWLoAwvGuB+DdI0h
-         kvCc2g0a9x037rvZChnO6eZC0LaYnaQaKQ7mgpQD46tTAkI+WoD7bqJVFq3ZG1HldYlj
-         6avmy1VMBUEMqZYkV91QEz+u8sKk5OrULy8P3zuqhHJgzy290zlKpJBbZdLu9SiQlYUV
-         U4tssL2aHcMJmYCcjR4LyVb+mXIp3yVe/R8zfRstXp9SfZnS3+oRW245ldHWRCdTcN5z
-         XayfMT9C+AktpmGrFNkChvyGVGs4TZTQNfXC8dYn/vFzg+fTEexe5whktuAoa2/g3i4J
-         vkwA==
-X-Gm-Message-State: AOAM5334DJrFq1hpqaBBEBcJbKyM+PyjAXY2GQ0ZyeVR2hKiiSJxsz9K
-        qssQZ7k/Yt/Fa9RhXflohonErvNYeibuCZdBut0fFw==
-X-Google-Smtp-Source: ABdhPJxMGYIycGAi3Uj9lQkUIgQRunnV305CBd9rmYFIKTOmtfjshvUBHb8MsZSHh3bzL9Wh6v8UWUN4E/B3LOdY1Co=
-X-Received: by 2002:a17:902:b7c7:b029:e1:6cbe:db19 with SMTP id
- v7-20020a170902b7c7b02900e16cbedb19mr3444327plz.20.1612516507874; Fri, 05 Feb
- 2021 01:15:07 -0800 (PST)
-MIME-Version: 1.0
-References: <20210205062719.74431-1-songmuchun@bytedance.com> <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
-In-Reply-To: <YB0DnAlCaQza4Uf9@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Fri, 5 Feb 2021 17:14:30 +0800
-Message-ID: <CAMZfGtVhBrwgkJVwiah6eDsppSf8fYp+uZ=tZmHBLDFeTmQX3w@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH] mm: memcontrol: remove rcu_read_lock from get_mem_cgroup_from_page
-To:     Michal Hocko <mhocko@suse.com>
+        id S231316AbhBEKYT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Feb 2021 05:24:19 -0500
+Received: from mx2.suse.de ([195.135.220.15]:38156 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231341AbhBEKWf (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 5 Feb 2021 05:22:35 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1612520509; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=441WHve7NP2TxAMx0OJ30INfKQWqrKfmb5j39ihe/DY=;
+        b=vD+GXDhlMi+q+LG9eTNBL8QlKKkp0Yk2YsIRnv1U0jtK12zgNa84A5lVmwU25sEhOXR1g3
+        r/tOBtkZeacMgrU3FSrlbpsoUpc6zQv2UU0Pk7EeQE2dfk4jtBkU3TZXUhKrL67tRGs+5K
+        iR6YLPQo02cieBvDO2ytc1YLsSVnVWI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 181A3ACF4;
+        Fri,  5 Feb 2021 10:21:49 +0000 (UTC)
+Date:   Fri, 5 Feb 2021 11:21:47 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Muchun Song <songmuchun@bytedance.com>
 Cc:     Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
         Cgroups <cgroups@vger.kernel.org>,
         Linux Memory Management List <linux-mm@kvack.org>,
         LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [External] Re: [PATCH] mm: memcontrol: fix missing wakeup oom
+ task
+Message-ID: <YB0cO7R1WtJgAxI2@dhcp22.suse.cz>
+References: <20210205062310.74268-1-songmuchun@bytedance.com>
+ <YB0Ay+epP/hnFmDS@dhcp22.suse.cz>
+ <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMZfGtWKNNhc1Jy1jzp2uZU_PM6GNWup7d=yUVk9AehKFo_CRw@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 5, 2021 at 4:36 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Fri 05-02-21 14:27:19, Muchun Song wrote:
-> > The get_mem_cgroup_from_page() is called under page lock, so the page
-> > memcg cannot be changed under us.
->
-> Where is the page lock enforced?
-
-Because it is called from alloc_page_buffers(). This path is under
-page lock.
-
->
-> > Also, css_get is enough because page
-> > has a reference to the memcg.
->
-> tryget used to be there to guard against offlined memcg but we have
-> concluded this is impossible in this path. tryget stayed there to catch
-> some unexpected cases IIRC.
-
-Yeah, it can catch some unexpected cases. But why is this path
-special so that we need a tryget?
-
->
-> > If we really want to make the get_mem_cgroup_from_page() suitable for
-> > arbitrary page, we should use page_memcg_rcu() instead of page_memcg()
-> > and call it after rcu_read_lock().
->
-> What is the primary motivation to change this code? is the overhead of
-> tryget/RCU something that needs optimizing?
-
-Actually, the rcu_read_lock() is not necessary here. So it is better to
-remove it (indeed reduce some code).
-
-Thanks.
-
-
->
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  mm/memcontrol.c | 9 ++++-----
-> >  1 file changed, 4 insertions(+), 5 deletions(-)
+On Fri 05-02-21 17:55:10, Muchun Song wrote:
+> On Fri, Feb 5, 2021 at 4:24 PM Michal Hocko <mhocko@suse.com> wrote:
 > >
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 87f01bc05d1f..6c7f1ea3955e 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -1063,16 +1063,15 @@ EXPORT_SYMBOL(get_mem_cgroup_from_mm);
-> >   */
-> >  struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
-> >  {
-> > -     struct mem_cgroup *memcg = page_memcg(page);
-> > +     struct mem_cgroup *memcg;
+> > On Fri 05-02-21 14:23:10, Muchun Song wrote:
+> > > We call memcg_oom_recover() in the uncharge_batch() to wakeup OOM task
+> > > when page uncharged, but for the slab pages, we do not do this when page
+> > > uncharged.
 > >
-> >       if (mem_cgroup_disabled())
-> >               return NULL;
+> > How does the patch deal with this?
+> 
+> When we uncharge a slab page via __memcg_kmem_uncharge,
+> actually, this path forgets to do this for us compared to
+> uncharge_batch(). Right?
+
+Yes this was more more or less clear (still would have been nicer to be
+explicit). But you still haven't replied to my question I believe. I
+assume you rely on refill_stock doing draining but how does this address
+the problem? Is it sufficient to do wakeups in the batched way?
+
+> > > When we drain per cpu stock, we also should do this.
 > >
-> > -     rcu_read_lock();
-> >       /* Page should not get uncharged and freed memcg under us. */
-> > -     if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
-> > -             memcg = root_mem_cgroup;
-> > -     rcu_read_unlock();
-> > +     memcg = page_memcg(page) ? : root_mem_cgroup;
-> > +     css_get(&memcg->css);
-> > +
-> >       return memcg;
-> >  }
-> >  EXPORT_SYMBOL(get_mem_cgroup_from_page);
-> > --
-> > 2.11.0
->
-> --
-> Michal Hocko
-> SUSE Labs
+> > Can we have anything the per-cpu stock while entering the OOM path. IIRC
+> > we do drain all cpus before entering oom path.
+> 
+> You are right. I did not notice this. Thank you.
+> 
+> >
+> > > The memcg_oom_recover() is small, so make it inline.
+> >
+> > Does this lead to any code generation improvements? I would expect
+> > compiler to be clever enough to inline static functions if that pays
+> > off. If yes make this a patch on its own.
+> 
+> I have disassembled the code, I see memcg_oom_recover is not
+> inline. Maybe because memcg_oom_recover has a lot of callers.
+> Just guess.
+> 
+> (gdb) disassemble uncharge_batch
+>  [...]
+>  0xffffffff81341c73 <+227>: callq  0xffffffff8133c420 <page_counter_uncharge>
+>  0xffffffff81341c78 <+232>: jmpq   0xffffffff81341bc0 <uncharge_batch+48>
+>  0xffffffff81341c7d <+237>: callq  0xffffffff8133e2c0 <memcg_oom_recover>
+
+So does it really help to do the inlining?
+-- 
+Michal Hocko
+SUSE Labs
