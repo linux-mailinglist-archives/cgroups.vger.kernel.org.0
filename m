@@ -2,101 +2,94 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2E8931591C
-	for <lists+cgroups@lfdr.de>; Tue,  9 Feb 2021 23:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AE1D315A06
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 00:29:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233351AbhBIWHe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Feb 2021 17:07:34 -0500
-Received: from mga12.intel.com ([192.55.52.136]:8467 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233378AbhBIWFO (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Tue, 9 Feb 2021 17:05:14 -0500
-IronPort-SDR: rHJ2ugH56T2qKz4IS2f85pPrjGuy3YpYd+6jJtDb5SznAWjkr92tidvNPsvUK2EZhuifWei2aX
- Rs40/o4icssQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9890"; a="161113152"
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="161113152"
-Received: from orsmga006.jf.intel.com ([10.7.209.51])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Feb 2021 13:30:37 -0800
-IronPort-SDR: ntxFtm3gbYXN9YZW0jDW+P93csodkdqLTeOygb9DELVS/54Q5IXqSoho4FE39fWWsA4tGeFxqB
- 6mFZv6L04ljg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.81,166,1610438400"; 
-   d="scan'208";a="361953036"
-Received: from skl-02.jf.intel.com ([10.54.74.28])
-  by orsmga006.jf.intel.com with ESMTP; 09 Feb 2021 13:30:37 -0800
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+        id S234204AbhBIX0j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 9 Feb 2021 18:26:39 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234362AbhBIWrA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 17:47:00 -0500
+Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8B5C061793
+        for <cgroups@vger.kernel.org>; Tue,  9 Feb 2021 13:19:48 -0800 (PST)
+Received: by mail-qv1-xf31.google.com with SMTP id es14so9416236qvb.3
+        for <cgroups@vger.kernel.org>; Tue, 09 Feb 2021 13:19:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=E+GwgIRGKbJyN6BMx9osGrabexMLPqEhC8h9yJvwcPI=;
+        b=qVg6eWt/p+mtaLHMJ3UMS3pa7cP8tRdSZltmlPVvywtYM1Xz2GgR7lvaILGqsvNc5q
+         vYrdlEDpJ6LAExkiYJ+B2vgDJ4ic2ZFx3wDChTDEaZfGBOTtJtLCbFQKoE4/Vk9+CRMe
+         /MncFu/kd8cMm7K8t7NNOuyjR2eP2G5CTovSmA03FmKDfH7k80wPNw51QigLDkuqVVoO
+         9Jsosv3nlBPAAyWAq3Pt67mVcQfjR5jY5YDPEDWGyqd4Kp1yax1q4OadysJ422FdpCbt
+         WX/JTNoTftwxDefcRi52Porkf9IdP/D/O6sbzPHti4g2tYZ9YwaiO2XPK1xOKsZWKK6h
+         TUWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=E+GwgIRGKbJyN6BMx9osGrabexMLPqEhC8h9yJvwcPI=;
+        b=e7B7uXA8hC45nP7G52jTCBTajVKeHjl8TjcjYt1qgRKw2s+Mo6I89cOhXCZTne+Fee
+         Xc/Lc8SPseS3lVI4Z+ScbeecQK5Rf0A3lzLpkaA7tte2FZ2YCSqBgM+ltyCPUkXVdX2p
+         U7RL1afDIR7mjSnfIUURBaDu2ADBE4oNu6mGkNAoWKNadwBhOdwiccXPe39q0IjMRkuO
+         e/KJxCqBU6TNgHv+NxGrkGcwlSD/KXrN1/5E1Z35MJssA5/i8GaelO+ax3bf4RbTbiAY
+         Q+OB6QQsn9/ggV8MXUnBOQbuR2V0NKJyfa+OFqkIFxDSdGmxp7iDzsTs7MIsYQQqRwev
+         3l4g==
+X-Gm-Message-State: AOAM531Qd+dnkMEOSdr149QQK33hATJQ8aF2X73qD4fq35bX+sMPtjGg
+        bTvrcu6rNBDhGcFi/AGBdNLRKg==
+X-Google-Smtp-Source: ABdhPJzC1y781rKFs2oJ/EMXGnR/H0Bxxy1Ep70Zk8iEdT2DuGjbTeRKP6O9dCSwmHzW9pi7dRURgA==
+X-Received: by 2002:a05:6214:1643:: with SMTP id f3mr122351qvw.4.1612905588033;
+        Tue, 09 Feb 2021 13:19:48 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id 199sm20696467qkm.126.2021.02.09.13.19.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 13:19:47 -0800 (PST)
+Date:   Tue, 9 Feb 2021 16:19:46 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        Vladimir Davydov <vdavydov@virtuozzo.com>,
         Michal Hocko <mhocko@suse.cz>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Tim Chen <tim.c.chen@linux.intel.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Date:   Tue,  9 Feb 2021 12:29:47 -0800
-Message-Id: <3b6e4e9aa8b3ee1466269baf23ed82d90a8f791c.1612902157.git.tim.c.chen@linux.intel.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1612902157.git.tim.c.chen@linux.intel.com>
-References: <cover.1612902157.git.tim.c.chen@linux.intel.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Prakash Gupta <guptap@codeaurora.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in
+ test_clear_page_writeback()
+Message-ID: <YCL8cnXFtpdnAAUj@cmpxchg.org>
+References: <20210209202616.2257512-1-f.fainelli@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210209202616.2257512-1-f.fainelli@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On a per node basis, the mem cgroup soft limit tree on each node tracks
-how much a cgroup has exceeded its soft limit memory limit and sorts
-the cgroup by its excess usage.  On page release, the trees are not
-updated right away, until we have gathered a batch of pages belonging to
-the same cgroup. This reduces the frequency of updating the soft limit tree
-and locking of the tree and associated cgroup.
+On Tue, Feb 09, 2021 at 12:26:15PM -0800, Florian Fainelli wrote:
+> From: Johannes Weiner <hannes@cmpxchg.org>
+> 
+> commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
 
-However, the batch of pages could contain pages from multiple nodes but
-only the soft limit tree from one node would get updated.  Change the
-logic so that we update the tree in batch of pages, with each batch of
-pages all in the same mem cgroup and memory node.  An update is issued for
-the batch of pages of a node collected till now whenever we encounter
-a page belonging to a different node.
+...
 
-Reviewed-by: Ying Huang <ying.huang@intel.com>
-Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
----
- mm/memcontrol.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> This patch is present in a downstream Android tree:
+> 
+> https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
+> 
+> and I happened to have stumbled across the same problem too.
+> 
+> Johannes can you review it for correctness with respect to the 4.9
+> kernel? Thanks!
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index d72449eeb85a..f5a4a0e4e2ec 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -6804,6 +6804,7 @@ struct uncharge_gather {
- 	unsigned long pgpgout;
- 	unsigned long nr_kmem;
- 	struct page *dummy_page;
-+	int nid;
- };
- 
- static inline void uncharge_gather_clear(struct uncharge_gather *ug)
-@@ -6849,7 +6850,9 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 	 * exclusive access to the page.
- 	 */
- 
--	if (ug->memcg != page_memcg(page)) {
-+	if (ug->memcg != page_memcg(page) ||
-+	    /* uncharge batch update soft limit tree on a node basis */
-+	    (ug->dummy_page && ug->nid != page_to_nid(page))) {
- 		if (ug->memcg) {
- 			uncharge_batch(ug);
- 			uncharge_gather_clear(ug);
-@@ -6869,6 +6872,7 @@ static void uncharge_page(struct page *page, struct uncharge_gather *ug)
- 		ug->pgpgout++;
- 
- 	ug->dummy_page = page;
-+	ug->nid = page_to_nid(page);
- 	page->memcg_data = 0;
- 	css_put(&ug->memcg->css);
- }
--- 
-2.20.1
-
+Looks good to me.
