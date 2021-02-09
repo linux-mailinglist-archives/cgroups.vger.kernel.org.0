@@ -2,148 +2,367 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FDCD3157EB
-	for <lists+cgroups@lfdr.de>; Tue,  9 Feb 2021 21:47:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3CA63157ED
+	for <lists+cgroups@lfdr.de>; Tue,  9 Feb 2021 21:47:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233782AbhBIUqQ (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Feb 2021 15:46:16 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:41954 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233554AbhBIUhc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 15:37:32 -0500
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 119KKneR009967;
-        Tue, 9 Feb 2021 12:21:37 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=rQZ+1AV1cqgvwWTAojFxcAp22b/WbMienHTZZOLmlaY=;
- b=QJVbSMAnSwX4yKvePwDX/odVGv7p5u7kr545GNN5ZfHKbeYpnKRSZgjomhmNzYcqigjH
- bmMe20pTM5FXa4n60Wd5C+39ZZuWVqLfBmfwQUbxmQJ9i58qMFgDosafWIFFiJ4LwH01
- wwuOkxKxmFLsGnEftg3r8grleAqXHLquYg4= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36jbnp5d12-2
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 09 Feb 2021 12:21:37 -0800
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 9 Feb 2021 12:21:35 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Gjl/1wSTkgRs3szKbXKMNqcRhKzS69pCSIg/xOHauW5NrGOkVLDapbA7xxIIoY/Fk5wGegTu1CK5Um48gTZjC9mKJD/VPgqClJDG6aCEdt40/ZzpwSP+ndGu51Jyvf87dQIW+PKtT5q1DlPfQFtzUrnkfTBAqaLI9LpUQ5FdD0WVVZZQEW6s5EY6wSeBK6wtybLAFPlDWx82S4YtTVVR4J/TgfyxX+Yln8uMVxt5Kr6RNp+eMYAeNLYuJuBKmdPOBU7rYxFx7U0DHdSzGCBiaHChjJLrlrQ49FSH72qH2NNSk7j2AM4U30Cp3+NiL/KjIrmnmJ3rY8yKUSj+iRfI4w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rQZ+1AV1cqgvwWTAojFxcAp22b/WbMienHTZZOLmlaY=;
- b=GFq678sI3qYop9ZFfPfNjYpm/9JmAsm8lV9zOnol/F7X1LcCyLclmnZudalMYQjkfmaafdrF4p6opARgGPanyGi8GLhE5AoMY7GA00PelznfNsVDshBPPndwGa4hfBETwAnBJuVVrr4Wafwz3x/QiGgwwFAEXleyIC6uFDnYBUGxrNBmEcS0OQCgr3Rbi6xie1KW4FhoBwe0NY5ohVD7itINsR2XACHOStGqYcn1C4pWUm2ODWz063yZnhveMPhg93MP3lGCb+R0+utPCTTaCw0irbxPsyfapsxHgNA1EugRrs5dbeVChPxciWYnZNQEgzKarD1vZvC7DNgeJ+KVhw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=rQZ+1AV1cqgvwWTAojFxcAp22b/WbMienHTZZOLmlaY=;
- b=FVh4sxX7Sf57gDlmV3Qym0WiB6hI9ljKkJ0MYPJv6ChWTFYW4/FfghaP/ZQkNaIej7tx4sPEnf9em2aohR0/I9ht4CJGtxCK1bRNrjOsnvNzFrAba8+g50bP/FYg/ERwYBAM/jdznDTx4+GHQcpx+8fF/xmnJ9v5dbtfyP95Ujg=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3555.namprd15.prod.outlook.com (2603:10b6:a03:1f5::32) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3825.30; Tue, 9 Feb
- 2021 20:21:31 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3825.030; Tue, 9 Feb 2021
- 20:21:31 +0000
-Date:   Tue, 9 Feb 2021 12:21:28 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Shakeel Butt <shakeelb@google.com>, <linux-mm@kvack.org>,
-        <cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH v3 7/8] mm: memcontrol: consolidate lruvec stat flushing
-Message-ID: <20210209202128.GD524633@carbon.DHCP.thefacebook.com>
-References: <20210209163304.77088-1-hannes@cmpxchg.org>
- <20210209163304.77088-8-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209163304.77088-8-hannes@cmpxchg.org>
-X-Originating-IP: [2620:10d:c090:400::5:654c]
-X-ClientProxiedBy: BY3PR05CA0060.namprd05.prod.outlook.com
- (2603:10b6:a03:39b::35) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S233859AbhBIUqd (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 9 Feb 2021 15:46:33 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233766AbhBIUib (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 15:38:31 -0500
+Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCE0FC0698CA;
+        Tue,  9 Feb 2021 12:26:23 -0800 (PST)
+Received: by mail-pj1-x102d.google.com with SMTP id t2so2361988pjq.2;
+        Tue, 09 Feb 2021 12:26:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
+        b=cFA8RWjoqk7kkQ02pGbF4qLdtij5PbiMSKE4eM5V9hsvjyi0brdSTqJGBf+lNQ92UE
+         BFEDL7Vhe36DdcsaMeawpTtN+1P1Qa9xck72PSmKv8MOMglClobCgYrnSDxSZw5mNxae
+         pq+JkZvPjOf0nb7k67wVRO9Ib6I95pKAMsnGFWEewqcVU70eaaRD+aDNT5HVlhFBA4+X
+         s0wb8jrnHXOKPemrFzOXCFJtfdM3eZrBgIwOl/Cr8DDKNxDkZFTgrmyjVaNg/SUwxFw8
+         KPsTcvEsAW3WOm+XTi6fwJYzIN1IPl00dXcjnledRIxbPWT35+97pUmQYMDI/9fvrvJI
+         rJwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=2BWQkMPpxa9x04z6Kv/kh2y8uZYYBnvMqfwKV/uPs1Q=;
+        b=BKuYav/Iwu3ZLlQJL4g992YyuGXjrvRhJYT4KYkckfYkud3e2VL/1arzzgI2TJtP65
+         IhCLm6SNOZ46oHp2Z5M0Zm0qGVt0TZ8zIR9H/lYYZQgbaYBcQCOdCwTFNtNH5NrXZKmK
+         N2fXqWt18fQ1Qn7YL8gL3kW5LRnFQTfx8u2x2pCBf3PeJjbKEcKXE8ByFl6bjG1QIsoW
+         BsCdLrUjNU7qwa9ZFdC/ZhVvDv8jgrTPQOpeoJ9yMYrxaL05ctsNFXNtLUw/w+R0j1JM
+         VjKrpgHSNWiPHkjGdH4EiYABl/GUajs6iN8EBLZsK/K1CBd+dt3JfLnjwpJn+PfOAyPf
+         /NfA==
+X-Gm-Message-State: AOAM532DfcMHL3D1SuH/8kV5gNeWiTZ4VvfKFeRwStGc3X4MCrutodSQ
+        6ZPF6gfhsualuq3NEOcQ18RviWM5+iM=
+X-Google-Smtp-Source: ABdhPJyHrA8X9zLu5UkIbU+Y4fJrKVBS8QJ6CQtDNoOsJAAGAWey4xftFRkfBc+6oi8RTpiQGJQkbw==
+X-Received: by 2002:a17:902:e9c4:b029:e1:805d:7965 with SMTP id 4-20020a170902e9c4b02900e1805d7965mr22630294plk.53.1612902382975;
+        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id b27sm23275932pgb.82.2021.02.09.12.26.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 09 Feb 2021 12:26:22 -0800 (PST)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hannes@cmpxchg.org
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        Vladimir Davydov <vdavydov@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Prakash Gupta <guptap@codeaurora.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        cgroups@vger.kernel.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG)),
+        linux-mm@kvack.org (open list:CONTROL GROUP - MEMORY RESOURCE
+        CONTROLLER (MEMCG))
+Subject: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in test_clear_page_writeback()
+Date:   Tue,  9 Feb 2021 12:26:15 -0800
+Message-Id: <20210209202616.2257512-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.DHCP.thefacebook.com (2620:10d:c090:400::5:654c) by BY3PR05CA0060.namprd05.prod.outlook.com (2603:10b6:a03:39b::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3846.11 via Frontend Transport; Tue, 9 Feb 2021 20:21:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: df7c0a17-6857-4c48-ebd1-08d8cd3849d2
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3555:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3555DEB50FFF515D2DDD00DCBE8E9@BY5PR15MB3555.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:1468;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cnJFDe5n9l3/n/UFnspSjw1qaOL8NmOJG8PSQffUV1743gPoHr/louyIOmITa5o6pmMl3p1XSCqzwgBZsH3L2PGAfrFxXpPQkaazxqyaMQE6RArmnfVsVUcgOn85NYEWDgD9Rp/BvTedmKT6QqxlUJFbF99qGAvzdrbKP7br2ubmE+Rz49mEBYbXstIAQk07hOrgb6HKsoZGiA1k4ExkGTFoKep2OKrG7vDNYwbqXZTfkbIYJwtI3mJXNH4tsm2gCSxUep1FhPezoRhmU1E5jzE48faQPPLZRFrozZWc6/XAHNQEmZAE7Im1mF+MZpKJHkjMCVwqgEgYs5t+kKzE24bt8TaLunY2pqU+stmCjiYvtxg7Vv8vvZ9ac70zUt5sVyyMU1ckSch51J0+ohDAsB4MsuCJ6m1CZ37hv+L7xtFp/23MSZD7E0dCv2PlcbhtlYRPjYUz+GIOAbfRE/kNlWotNGCRh3n/t/hMfrnUFp3EcrPBe+/LD4VH+NesCBkjzJGQUYfp1jE2GSt9IAEEWw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(39860400002)(366004)(136003)(376002)(396003)(54906003)(9686003)(316002)(6506007)(55016002)(86362001)(4326008)(6916009)(8936002)(7696005)(66946007)(66556008)(66476007)(52116002)(16526019)(186003)(4744005)(1076003)(478600001)(8676002)(33656002)(2906002)(5660300002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?++gIJk1UiGyFYGhNPDhYVq0B+1HSn9t+gVXpykHIhFgrLejj15JM9R0V4UAU?=
- =?us-ascii?Q?77Df8DfqAW0catDoymPJ7NcdUp/mK4NNvPYPtHUoOw95vB7WAdNMwaxSucql?=
- =?us-ascii?Q?AM0iCO+2EabLDS1f3WFhSvbOUdmAK0IOoYJR0r6K+AYORQfdJy94NXDPog4M?=
- =?us-ascii?Q?8VqblkOhr++BE/D7u8+kVhZmtUlMRidZQOSEHXtMeTxUTEl62Sen53lusGTO?=
- =?us-ascii?Q?jZIS5JS5Js+wU1Fsr3yt4rkmlkF0VL+qs8FpuCo0YNbyk+DD6KJL6nzaBBFC?=
- =?us-ascii?Q?Wn0dqKQ6GRjk5aTMpMmyWncwv2fF5wqLL89jG3t6mbvtJjerDcJ8j48Ct7S/?=
- =?us-ascii?Q?Ay5cj2sCy6AlLtEGRux1qkboNcw2UIA8b23vY2jlJBlobhmUD8uPDWOGvNvB?=
- =?us-ascii?Q?+G9VuPsNnk0aPQbncW5L3HrBiFuTCLy3PUxkfQOOaWqMPy50s5gK9JDg3url?=
- =?us-ascii?Q?yC7x/Yr9qL3cz+R7UArL2GISv6vF0vBqZNvS205Ut+q9Ga2DOsiNxoPvMDCG?=
- =?us-ascii?Q?0h8o/OywFnUTIX8sUr711sRQJo79JbAktDGNladAiqnzp+8NzfRTFQsMBEoL?=
- =?us-ascii?Q?H85Xr1y1CC88t6JuKzxwjLgG+ld3iGqQathbCPRKCJOKnh7kTv2RvDTZiwRI?=
- =?us-ascii?Q?hT67jHd/IbD1nVWRnn9Sm3sSnd3XnaDnVDNCLcNwxqVUg/gPcO9+mPXEf9st?=
- =?us-ascii?Q?IzEfGezvC3S553s67p+ezOn4WtDOCXtZ5s+ENI9+ru9qHWabpiMQY5+2AfJT?=
- =?us-ascii?Q?Pv1nF24RRDslvL8ZPqmLQPTU8Wmrn79WXkUzHJTZHq+tZPABtJM96w1h6gKW?=
- =?us-ascii?Q?WrJ1wMvyaed26wenzM6eVJps8gNZQtjs1yG5MgP6dlqf6wAgzZaly3CyO4v3?=
- =?us-ascii?Q?3eWgnGiJkDUbreuY0qd52l2CZabSm3lM/Q8bKitn9ukOAG5YxD09ecWlDsfN?=
- =?us-ascii?Q?y8wUiNp+oYfeeYxguokTfuoqsq2/7WhQCIPOac3L25sCUulCXBZ+Ugfb/Dka?=
- =?us-ascii?Q?mAT7Ww5u0WPWrOgbXZg8eIgdkLbVeqg3/8JuoULdvZr6RM6KZh+0LszS/Gbm?=
- =?us-ascii?Q?5aTtbT8EwUlDoAlNCjM558WIm74wj4+Ssj+ZfqHzq7V3ldweD38DxnZUEBpQ?=
- =?us-ascii?Q?un+GO2/UDkhlcbVFQeksw15MlvEp4PUGMVa5rBPmNVtEz1vv/QIZ2yE+LV9O?=
- =?us-ascii?Q?HfZ7G+cH3TceNujrTp/YIgO/jwiWEdzbKaTE4rl5ptIdiIdQIi3gHRQjW73/?=
- =?us-ascii?Q?o9o4DVWyc6+XIhvP5c3QJeQMyC7SNILj8NsZMFlcQuGM4YRouaoO8W5YuXbJ?=
- =?us-ascii?Q?UhcMYoLTvzj8UzMp30ngoSDD3OtMyl36Eg6JrEr0J51+og=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: df7c0a17-6857-4c48-ebd1-08d8cd3849d2
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Feb 2021 20:21:31.6615
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zMV36rv1ZuZvePpVrfemuBLkTAorqJ4ne4HeDWiJV5Yj4BrJaUWxuE7hgLjbDgDb
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3555
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.737
- definitions=2021-02-09_07:2021-02-09,2021-02-09 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- impostorscore=0 mlxscore=0 adultscore=0 mlxlogscore=695 lowpriorityscore=0
- phishscore=0 spamscore=0 suspectscore=0 malwarescore=0 priorityscore=1501
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2102090102
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 11:33:03AM -0500, Johannes Weiner wrote:
-> There are two functions to flush the per-cpu data of an lruvec into
-> the rest of the cgroup tree: when the cgroup is being freed, and when
-> a CPU disappears during hotplug. The difference is whether all CPUs or
-> just one is being collected, but the rest of the flushing code is the
-> same. Merge them into one function and share the common code.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
+From: Johannes Weiner <hannes@cmpxchg.org>
 
-Acked-by: Roman Gushchin <guro@fb.com>
+commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
 
-Thanks!
+Jaegeuk and Brad report a NULL pointer crash when writeback ending tries
+to update the memcg stats:
+
+    BUG: unable to handle kernel NULL pointer dereference at 00000000000003b0
+    IP: test_clear_page_writeback+0x12e/0x2c0
+    [...]
+    RIP: 0010:test_clear_page_writeback+0x12e/0x2c0
+    Call Trace:
+     <IRQ>
+     end_page_writeback+0x47/0x70
+     f2fs_write_end_io+0x76/0x180 [f2fs]
+     bio_endio+0x9f/0x120
+     blk_update_request+0xa8/0x2f0
+     scsi_end_request+0x39/0x1d0
+     scsi_io_completion+0x211/0x690
+     scsi_finish_command+0xd9/0x120
+     scsi_softirq_done+0x127/0x150
+     __blk_mq_complete_request_remote+0x13/0x20
+     flush_smp_call_function_queue+0x56/0x110
+     generic_smp_call_function_single_interrupt+0x13/0x30
+     smp_call_function_single_interrupt+0x27/0x40
+     call_function_single_interrupt+0x89/0x90
+    RIP: 0010:native_safe_halt+0x6/0x10
+
+    (gdb) l *(test_clear_page_writeback+0x12e)
+    0xffffffff811bae3e is in test_clear_page_writeback (./include/linux/memcontrol.h:619).
+    614		mod_node_page_state(page_pgdat(page), idx, val);
+    615		if (mem_cgroup_disabled() || !page->mem_cgroup)
+    616			return;
+    617		mod_memcg_state(page->mem_cgroup, idx, val);
+    618		pn = page->mem_cgroup->nodeinfo[page_to_nid(page)];
+    619		this_cpu_add(pn->lruvec_stat->count[idx], val);
+    620	}
+    621
+    622	unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+    623							gfp_t gfp_mask,
+
+The issue is that writeback doesn't hold a page reference and the page
+might get freed after PG_writeback is cleared (and the mapping is
+unlocked) in test_clear_page_writeback().  The stat functions looking up
+the page's node or zone are safe, as those attributes are static across
+allocation and free cycles.  But page->mem_cgroup is not, and it will
+get cleared if we race with truncation or migration.
+
+It appears this race window has been around for a while, but less likely
+to trigger when the memcg stats were updated first thing after
+PG_writeback is cleared.  Recent changes reshuffled this code to update
+the global node stats before the memcg ones, though, stretching the race
+window out to an extent where people can reproduce the problem.
+
+Update test_clear_page_writeback() to look up and pin page->mem_cgroup
+before clearing PG_writeback, then not use that pointer afterward.  It
+is a partial revert of 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
+but leaves the pageref-holding callsites that aren't affected alone.
+
+Link: http://lkml.kernel.org/r/20170809183825.GA26387@cmpxchg.org
+Fixes: 62cccb8c8e7a ("mm: simplify lock_page_memcg()")
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+Reported-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Tested-by: Jaegeuk Kim <jaegeuk@kernel.org>
+Reported-by: Bradley Bolen <bradleybolen@gmail.com>
+Tested-by: Brad Bolen <bradleybolen@gmail.com>
+Cc: Vladimir Davydov <vdavydov@virtuozzo.com>
+Cc: Michal Hocko <mhocko@suse.cz>
+Cc: <stable@vger.kernel.org>	[4.6+]
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+[guptap@codeaurora.org: Resolved merge conflicts]
+Signed-off-by: Prakash Gupta <guptap@codeaurora.org>
+Signed-off-by: Florian Fainelli <f.fainelli@gmail.com>
+---
+This patch is present in a downstream Android tree:
+
+https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
+
+and I happened to have stumbled across the same problem too.
+
+Johannes can you review it for correctness with respect to the 4.9
+kernel? Thanks!
+
+ include/linux/memcontrol.h | 33 ++++++++++++++++++++++++-----
+ mm/memcontrol.c            | 43 +++++++++++++++++++++++++++-----------
+ mm/page-writeback.c        | 14 ++++++++++---
+ 3 files changed, 70 insertions(+), 20 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 8b35bdbdc214..fd77f8303ab9 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -490,9 +490,21 @@ bool mem_cgroup_oom_synchronize(bool wait);
+ extern int do_swap_account;
+ #endif
+ 
+-void lock_page_memcg(struct page *page);
++struct mem_cgroup *lock_page_memcg(struct page *page);
++void __unlock_page_memcg(struct mem_cgroup *memcg);
+ void unlock_page_memcg(struct page *page);
+ 
++static inline void __mem_cgroup_update_page_stat(struct page *page,
++						 struct mem_cgroup *memcg,
++						 enum mem_cgroup_stat_index idx,
++						 int val)
++{
++	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
++
++	if (memcg && memcg->stat)
++		this_cpu_add(memcg->stat->count[idx], val);
++}
++
+ /**
+  * mem_cgroup_update_page_stat - update page state statistics
+  * @page: the page
+@@ -508,13 +520,12 @@ void unlock_page_memcg(struct page *page);
+  *     mem_cgroup_update_page_stat(page, state, -1);
+  *   unlock_page(page) or unlock_page_memcg(page)
+  */
++
+ static inline void mem_cgroup_update_page_stat(struct page *page,
+ 				 enum mem_cgroup_stat_index idx, int val)
+ {
+-	VM_BUG_ON(!(rcu_read_lock_held() || PageLocked(page)));
+ 
+-	if (page->mem_cgroup)
+-		this_cpu_add(page->mem_cgroup->stat->count[idx], val);
++	__mem_cgroup_update_page_stat(page, page->mem_cgroup, idx, val);
+ }
+ 
+ static inline void mem_cgroup_inc_page_stat(struct page *page,
+@@ -709,7 +720,12 @@ mem_cgroup_print_oom_info(struct mem_cgroup *memcg, struct task_struct *p)
+ {
+ }
+ 
+-static inline void lock_page_memcg(struct page *page)
++static inline struct mem_cgroup *lock_page_memcg(struct page *page)
++{
++	return NULL;
++}
++
++static inline void __unlock_page_memcg(struct mem_cgroup *memcg)
+ {
+ }
+ 
+@@ -745,6 +761,13 @@ static inline void mem_cgroup_update_page_stat(struct page *page,
+ {
+ }
+ 
++static inline void __mem_cgroup_update_page_stat(struct page *page,
++						 struct mem_cgroup *memcg,
++						 enum mem_cgroup_stat_index idx,
++						 int nr)
++{
++}
++
+ static inline void mem_cgroup_inc_page_stat(struct page *page,
+ 					    enum mem_cgroup_stat_index idx)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d4232744c59f..27b0b4f03fcd 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1638,9 +1638,13 @@ bool mem_cgroup_oom_synchronize(bool handle)
+  * @page: the page
+  *
+  * This function protects unlocked LRU pages from being moved to
+- * another cgroup and stabilizes their page->mem_cgroup binding.
++ * another cgroup.
++ *
++ * It ensures lifetime of the returned memcg. Caller is responsible
++ * for the lifetime of the page; __unlock_page_memcg() is available
++ * when @page might get freed inside the locked section.
+  */
+-void lock_page_memcg(struct page *page)
++struct mem_cgroup *lock_page_memcg(struct page *page)
+ {
+ 	struct mem_cgroup *memcg;
+ 	unsigned long flags;
+@@ -1649,18 +1653,24 @@ void lock_page_memcg(struct page *page)
+ 	 * The RCU lock is held throughout the transaction.  The fast
+ 	 * path can get away without acquiring the memcg->move_lock
+ 	 * because page moving starts with an RCU grace period.
+-	 */
++	 *
++	 * The RCU lock also protects the memcg from being freed when
++	 * the page state that is going to change is the only thing
++	 * preventing the page itself from being freed. E.g. writeback
++	 * doesn't hold a page reference and relies on PG_writeback to
++	 * keep off truncation, migration and so forth.
++         */
+ 	rcu_read_lock();
+ 
+ 	if (mem_cgroup_disabled())
+-		return;
++		return NULL;
+ again:
+ 	memcg = page->mem_cgroup;
+ 	if (unlikely(!memcg))
+-		return;
++		return NULL;
+ 
+ 	if (atomic_read(&memcg->moving_account) <= 0)
+-		return;
++		return memcg;
+ 
+ 	spin_lock_irqsave(&memcg->move_lock, flags);
+ 	if (memcg != page->mem_cgroup) {
+@@ -1676,18 +1686,18 @@ void lock_page_memcg(struct page *page)
+ 	memcg->move_lock_task = current;
+ 	memcg->move_lock_flags = flags;
+ 
+-	return;
++	return memcg;
+ }
+ EXPORT_SYMBOL(lock_page_memcg);
+ 
+ /**
+- * unlock_page_memcg - unlock a page->mem_cgroup binding
+- * @page: the page
++ * __unlock_page_memcg - unlock and unpin a memcg
++ * @memcg: the memcg
++ *
++ * Unlock and unpin a memcg returned by lock_page_memcg().
+  */
+-void unlock_page_memcg(struct page *page)
++void __unlock_page_memcg(struct mem_cgroup *memcg)
+ {
+-	struct mem_cgroup *memcg = page->mem_cgroup;
+-
+ 	if (memcg && memcg->move_lock_task == current) {
+ 		unsigned long flags = memcg->move_lock_flags;
+ 
+@@ -1699,6 +1709,15 @@ void unlock_page_memcg(struct page *page)
+ 
+ 	rcu_read_unlock();
+ }
++
++/**
++ * unlock_page_memcg - unlock a page->mem_cgroup binding
++ * @page: the page
++ */
++void unlock_page_memcg(struct page *page)
++{
++	__unlock_page_memcg(page->mem_cgroup);
++}
+ EXPORT_SYMBOL(unlock_page_memcg);
+ 
+ /*
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index 462c778b9fb5..498c924f2fcd 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2717,9 +2717,10 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+ int test_clear_page_writeback(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
++	struct mem_cgroup *memcg;
+ 	int ret;
+ 
+-	lock_page_memcg(page);
++	memcg = lock_page_memcg(page);
+ 	if (mapping && mapping_use_writeback_tags(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct backing_dev_info *bdi = inode_to_bdi(inode);
+@@ -2747,13 +2748,20 @@ int test_clear_page_writeback(struct page *page)
+ 	} else {
+ 		ret = TestClearPageWriteback(page);
+ 	}
++	/*
++	 * NOTE: Page might be free now! Writeback doesn't hold a page
++	 * reference on its own, it relies on truncation to wait for
++	 * the clearing of PG_writeback. The below can only access
++	 * page state that is static across allocation cycles.
++	 */
+ 	if (ret) {
+-		mem_cgroup_dec_page_stat(page, MEM_CGROUP_STAT_WRITEBACK);
++		__mem_cgroup_update_page_stat(page, memcg,
++					      MEM_CGROUP_STAT_WRITEBACK, -1);
+ 		dec_node_page_state(page, NR_WRITEBACK);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		inc_node_page_state(page, NR_WRITTEN);
+ 	}
+-	unlock_page_memcg(page);
++	__unlock_page_memcg(memcg);
+ 	return ret;
+ }
+ 
+-- 
+2.25.1
+
