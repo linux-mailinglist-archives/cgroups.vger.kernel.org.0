@@ -2,94 +2,117 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AE1D315A06
-	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 00:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1369E315A02
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 00:29:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234204AbhBIX0j (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 9 Feb 2021 18:26:39 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36056 "EHLO
+        id S233762AbhBIXY4 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 9 Feb 2021 18:24:56 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234362AbhBIWrA (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 17:47:00 -0500
-Received: from mail-qv1-xf31.google.com (mail-qv1-xf31.google.com [IPv6:2607:f8b0:4864:20::f31])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB8B5C061793
-        for <cgroups@vger.kernel.org>; Tue,  9 Feb 2021 13:19:48 -0800 (PST)
-Received: by mail-qv1-xf31.google.com with SMTP id es14so9416236qvb.3
-        for <cgroups@vger.kernel.org>; Tue, 09 Feb 2021 13:19:48 -0800 (PST)
+        with ESMTP id S233663AbhBIWHM (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 17:07:12 -0500
+Received: from mail-qk1-x72b.google.com (mail-qk1-x72b.google.com [IPv6:2607:f8b0:4864:20::72b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48A75C08E86F
+        for <cgroups@vger.kernel.org>; Tue,  9 Feb 2021 13:45:45 -0800 (PST)
+Received: by mail-qk1-x72b.google.com with SMTP id o193so10119032qke.11
+        for <cgroups@vger.kernel.org>; Tue, 09 Feb 2021 13:45:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=E+GwgIRGKbJyN6BMx9osGrabexMLPqEhC8h9yJvwcPI=;
-        b=qVg6eWt/p+mtaLHMJ3UMS3pa7cP8tRdSZltmlPVvywtYM1Xz2GgR7lvaILGqsvNc5q
-         vYrdlEDpJ6LAExkiYJ+B2vgDJ4ic2ZFx3wDChTDEaZfGBOTtJtLCbFQKoE4/Vk9+CRMe
-         /MncFu/kd8cMm7K8t7NNOuyjR2eP2G5CTovSmA03FmKDfH7k80wPNw51QigLDkuqVVoO
-         9Jsosv3nlBPAAyWAq3Pt67mVcQfjR5jY5YDPEDWGyqd4Kp1yax1q4OadysJ422FdpCbt
-         WX/JTNoTftwxDefcRi52Porkf9IdP/D/O6sbzPHti4g2tYZ9YwaiO2XPK1xOKsZWKK6h
-         TUWw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EwcA9/MPS0+DC3O3HQWukmve7xuaXcZk9slnXQmx7cE=;
+        b=wIT3T2WvKrwC5BKbIvNn7kdMwcTAScbRrfy18Jb8Zhtzgv/tJ/NMmI6yFeXmx+k+zt
+         IAMVDHXZ9uks34GmNs68sEqzbBojhsn2RgNG8RCvtrE6RHopwENBg3jbgh3LGG65XQSy
+         NPt/yTL38hj2tqZqevSZK70ul/wLkw9hmJljmQgwnVN0Q99ewpN7hr7kmujDldtFzpWZ
+         J3W4K3szU4FwoHmBaYJDgsjBKctQ9T/3G7pFtNBuctYp5HkpCtTX4W7eVEV7lzKHiRIs
+         I9/OKo/fFDMkIqhPr5e6FzDVIWPZhLcxuAgqgIIuNa2vpkc0rGZEX0eq0P7wzNG8aWVC
+         x8iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=E+GwgIRGKbJyN6BMx9osGrabexMLPqEhC8h9yJvwcPI=;
-        b=e7B7uXA8hC45nP7G52jTCBTajVKeHjl8TjcjYt1qgRKw2s+Mo6I89cOhXCZTne+Fee
-         Xc/Lc8SPseS3lVI4Z+ScbeecQK5Rf0A3lzLpkaA7tte2FZ2YCSqBgM+ltyCPUkXVdX2p
-         U7RL1afDIR7mjSnfIUURBaDu2ADBE4oNu6mGkNAoWKNadwBhOdwiccXPe39q0IjMRkuO
-         e/KJxCqBU6TNgHv+NxGrkGcwlSD/KXrN1/5E1Z35MJssA5/i8GaelO+ax3bf4RbTbiAY
-         Q+OB6QQsn9/ggV8MXUnBOQbuR2V0NKJyfa+OFqkIFxDSdGmxp7iDzsTs7MIsYQQqRwev
-         3l4g==
-X-Gm-Message-State: AOAM531Qd+dnkMEOSdr149QQK33hATJQ8aF2X73qD4fq35bX+sMPtjGg
-        bTvrcu6rNBDhGcFi/AGBdNLRKg==
-X-Google-Smtp-Source: ABdhPJzC1y781rKFs2oJ/EMXGnR/H0Bxxy1Ep70Zk8iEdT2DuGjbTeRKP6O9dCSwmHzW9pi7dRURgA==
-X-Received: by 2002:a05:6214:1643:: with SMTP id f3mr122351qvw.4.1612905588033;
-        Tue, 09 Feb 2021 13:19:48 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EwcA9/MPS0+DC3O3HQWukmve7xuaXcZk9slnXQmx7cE=;
+        b=tfDNIbPu0jsjBU4WOZ9TjzMHmdFI0QR/dIWEpkYirSeFoom6eWLJFx+WQQyKyaD41k
+         ktXa7ASQ5RY/7TkE5wxAvTlrZZ6PnaPoOrDIT8YLuYs3ZcO3zpprHl6PcfEElkyNOwnA
+         FmM7WyYgmHZ7HTqvYITDsppCJoVSxOYussjJ9KtstqlEvKK+RbAhNUkIVL8Q4ei/7z+d
+         AiWWbSBAH8l3aN9p7Va8Wix+1yqx00wp6SBTzb+63Ysh6m0tPiyr0QYn31iJRcfJo3tp
+         +vuL9+Ci7mstRznvjFnny0sh2v+wZ8SGo9OxBzkrs0vJqXt4hweLbej110btBSTsO5Y1
+         mmOQ==
+X-Gm-Message-State: AOAM533UGuyiaK+QRhCe+QukQy/c+me3q1/ah664ofO3kEVBJyf844xC
+        z7W5N871Kt2+ZQ7YSk6vLsVf8w==
+X-Google-Smtp-Source: ABdhPJzV8LHr++DxdDhtyzXnSxFy0nGQ52UC/V1tfcP4eIaAhidTFu9Ol3JhP8qypdKFlZYfHliP/Q==
+X-Received: by 2002:a05:620a:1186:: with SMTP id b6mr239621qkk.180.1612907144543;
+        Tue, 09 Feb 2021 13:45:44 -0800 (PST)
 Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id 199sm20696467qkm.126.2021.02.09.13.19.47
+        by smtp.gmail.com with ESMTPSA id z25sm10277qkz.33.2021.02.09.13.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Feb 2021 13:19:47 -0800 (PST)
-Date:   Tue, 9 Feb 2021 16:19:46 -0500
+        Tue, 09 Feb 2021 13:45:43 -0800 (PST)
 From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     stable@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jaegeuk Kim <jaegeuk@kernel.org>,
-        Bradley Bolen <bradleybolen@gmail.com>,
-        Vladimir Davydov <vdavydov@virtuozzo.com>,
-        Michal Hocko <mhocko@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Prakash Gupta <guptap@codeaurora.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <cgroups@vger.kernel.org>,
-        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in
- test_clear_page_writeback()
-Message-ID: <YCL8cnXFtpdnAAUj@cmpxchg.org>
-References: <20210209202616.2257512-1-f.fainelli@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Hugh Dickins <hughd@google.com>, Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: page-writeback: simplify memcg handling in test_clear_page_writeback()
+Date:   Tue,  9 Feb 2021 16:45:43 -0500
+Message-Id: <20210209214543.112655-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210209202616.2257512-1-f.fainelli@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 09, 2021 at 12:26:15PM -0800, Florian Fainelli wrote:
-> From: Johannes Weiner <hannes@cmpxchg.org>
-> 
-> commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
+Page writeback doesn't hold a page reference, which allows truncate to
+free a page the second PageWriteback is cleared. This used to require
+special attention in test_clear_page_writeback(), where we had to be
+careful not to rely on the unstable page->memcg binding and look up
+all the necessary information before clearing the writeback flag.
 
-...
+Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+explicit reference on the page, and this dance is no longer needed.
 
-> This patch is present in a downstream Android tree:
-> 
-> https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
-> 
-> and I happened to have stumbled across the same problem too.
-> 
-> Johannes can you review it for correctness with respect to the 4.9
-> kernel? Thanks!
+Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
 
-Looks good to me.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/page-writeback.c | 9 +++------
+ 1 file changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+index eb34d204d4ee..f6c2c3165d4d 100644
+--- a/mm/page-writeback.c
++++ b/mm/page-writeback.c
+@@ -2722,12 +2722,9 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+ int test_clear_page_writeback(struct page *page)
+ {
+ 	struct address_space *mapping = page_mapping(page);
+-	struct mem_cgroup *memcg;
+-	struct lruvec *lruvec;
+ 	int ret;
+ 
+-	memcg = lock_page_memcg(page);
+-	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
++	lock_page_memcg(page);
+ 	if (mapping && mapping_use_writeback_tags(mapping)) {
+ 		struct inode *inode = mapping->host;
+ 		struct backing_dev_info *bdi = inode_to_bdi(inode);
+@@ -2755,11 +2752,11 @@ int test_clear_page_writeback(struct page *page)
+ 		ret = TestClearPageWriteback(page);
+ 	}
+ 	if (ret) {
+-		dec_lruvec_state(lruvec, NR_WRITEBACK);
++		dec_lruvec_page_state(page, NR_WRITEBACK);
+ 		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+ 		inc_node_page_state(page, NR_WRITTEN);
+ 	}
+-	__unlock_page_memcg(memcg);
++	unlock_page_memcg(page);
+ 	return ret;
+ }
+ 
+-- 
+2.30.0
+
