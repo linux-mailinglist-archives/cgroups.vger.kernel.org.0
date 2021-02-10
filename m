@@ -2,84 +2,140 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3FEC315AE3
-	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 01:20:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57C6B315ED5
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 06:17:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233272AbhBJASb convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Tue, 9 Feb 2021 19:18:31 -0500
-Received: from formacionestatal.es ([146.255.98.32]:47734 "EHLO
-        formacionestatal.es" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234398AbhBIXdv (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 9 Feb 2021 18:33:51 -0500
-Received: from 223.red-88-14-242.dynamicip.rima-tde.net (212.red-80-29-97.staticip.rima-tde.net [80.29.97.212])
-        by formacionestatal.es (Postfix) with ESMTPSA id 1173B6EACCE
-        for <cgroups@vger.kernel.org>; Tue,  9 Feb 2021 23:40:07 +0100 (CET)
+        id S230238AbhBJFRf (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Feb 2021 00:17:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36096 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229890AbhBJFRb (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Feb 2021 00:17:31 -0500
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32483C06174A
+        for <cgroups@vger.kernel.org>; Tue,  9 Feb 2021 21:16:51 -0800 (PST)
+Received: by mail-ot1-x329.google.com with SMTP id e4so737240ote.5
+        for <cgroups@vger.kernel.org>; Tue, 09 Feb 2021 21:16:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=Q8+AD77bMtoNW/HBzmZ8xMNYIgN4sAwD1/ADY3ZtEEk=;
+        b=Fdroa3m70eD8+7KTxXuHTcUNnT7RKmI2+/ujf5yGEJfyh0W9IHuWdQ5VrHoRK6KiKO
+         orVrw72k5YjskoOG5UvgLdG/VhwDwAzL+AT5d8n9kKs8NOrUjf1eD9km4BYGH86kloyE
+         na4Au9OoCTeFEnN4rZy0olzery/o76zJWHL/F4q0Er3uC2Wu2BN/BydsGVBJ9vFNEjv3
+         DGOM99xnrf4CLCxsyb52Jb4BBg+fytIkav8i4ZzrLv+joPRR4Zjr5LcjOKlhUVM9M64i
+         yf1ht/CMGODtIeTCmM5Y/XlMCZ7q21rDcMYbIM7kF3RiQZGI0RCBgeQvIwBdMrMHhydS
+         lARA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=Q8+AD77bMtoNW/HBzmZ8xMNYIgN4sAwD1/ADY3ZtEEk=;
+        b=HVnoYqgQ3aTE7rpB8MSsSM3LTKCifY7tadS9uq1qErKkLp17Jx6FT9jWcetN2cGN8E
+         0+pTuWKBpymayLY+KfmzrrjB7tgvGsZEtMyfVehfU6TNnk+D7nRXRwNVDPGA/T2wvte8
+         anNzzY2KmGZRST5pKFXRSIyhoK3onjvCmirU0irmuWKlKjLIoftFGP2e8AsVJb+Zr+5M
+         DFhWA1KBj/1YTrt30J6kxTohGxXSeia3Ye29raLgONOBcP4YIi45VKSPhTbMhuAztIuc
+         a2grOZY8Hl8q0F9cfMhUVTnuTpVN0vcHTxTCbikhFl1tFRTpUkeXC8wDrx9UTSBiJmW/
+         0ekA==
+X-Gm-Message-State: AOAM533FstvHmMDir6tInbINUQndjSXEufGnQ9BKNODY0zBL7KzGrs8+
+        mQBtcyeHgBuTBgJYznKC7ZppIQ==
+X-Google-Smtp-Source: ABdhPJwFPZeclIXiXIqkTT8I6kO/Wj7KR31FuttqTf7Yvbp8Oy2zwKu5VhmKY3vItcOqQSAJpwy2Rg==
+X-Received: by 2002:a9d:5d02:: with SMTP id b2mr915507oti.148.1612934210367;
+        Tue, 09 Feb 2021 21:16:50 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id w2sm195062otq.9.2021.02.09.21.16.48
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Tue, 09 Feb 2021 21:16:49 -0800 (PST)
+Date:   Tue, 9 Feb 2021 21:16:37 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Johannes Weiner <hannes@cmpxchg.org>
+cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Roman Gushchin <guro@fb.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: page-writeback: simplify memcg handling in
+ test_clear_page_writeback()
+In-Reply-To: <20210209214543.112655-1-hannes@cmpxchg.org>
+Message-ID: <alpine.LSU.2.11.2102092058290.7553@eggly.anvils>
+References: <20210209214543.112655-1-hannes@cmpxchg.org>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
 MIME-Version: 1.0
-From:   "FOESCO" <info8@formacionestatal.es>
-Reply-To: info8@formacionestatal.es
-To:     cgroups@vger.kernel.org
-Subject: =?Windows-1252?Q?Formaci=F3n_Bonificable_FEBRERO_2021?=
-Content-Type: text/plain
-Content-Transfer-Encoding: 8BIT
-X-Mailer: Smart_Send_4_3_3
-Date:   Tue, 9 Feb 2021 23:40:10 +0100
-Message-ID: <916849380434451834287@DESKTOP-E4PFAM0>
-X-Priority: 1
-X-MSMail-Priority: High
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-IMPORTANTE: (Por favor confirme la recepción de este correo ya que adjunta archivos PDF y en ocasiones no se recibe debido a algunos filtros antispam)
+On Tue, 9 Feb 2021, Johannes Weiner wrote:
 
+> Page writeback doesn't hold a page reference, which allows truncate to
+> free a page the second PageWriteback is cleared. This used to require
+> special attention in test_clear_page_writeback(), where we had to be
+> careful not to rely on the unstable page->memcg binding and look up
+> all the necessary information before clearing the writeback flag.
+> 
+> Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
+> BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
+> explicit reference on the page, and this dance is no longer needed.
+> 
+> Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
 
-Buenos días
+s/stat()/state()/
 
+This is a nice cleanup: I hadn't seen that connection at all.
 
-Adjuntamos en PDF el listado de Cursos Bonificables para empleados en activo o en ERTE (Convocatoria FEBRERO 2021).
+But I think you should take it further:
+__unlock_page_memcg() can then be static in mm/memcontrol.c,
+and its declarations deleted from include/linux/memcontrol.h?
 
-Todos los cursos son Bonificables, se descuentan del Crédito de Formación 2021.
+And further: delete __dec_lruvec_state() and dec_lruvec_state()
+from include/linux/vmstat.h - unless you feel that every "inc"
+ought to be matched by a "dec", even when unused.
 
-(Si desean consultar su Crédito de Formación 2021 pueden consultarlo con su gestor o bien les podemos mandar el documento de encomienda para poder realizar la consulta a FUNDAE)
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
+Acked-by: Hugh Dickins <hughd@google.com>
 
-INSTRUCCIONES DE SOLICITUD (copiar el enlace y pegar en la barra de búsqueda de internet):
-
-https://www.foesco.com/Ficha-de-incripcion-Foesco-v.81.01c-editable.pdf
-
-https://www.foesco.com/Contrato-de-encomienda-Foesco-81.01-editable.pdf
-
-
-Se han de cumplimentar únicamente los siguientes datos del IMPRESO DE SOLICITUD (1 impreso por curso) y se ha de mandar escaneado o en fotografía a este mismo correo electrónico.
-
-– Curso a realizar
-– Nombre completo y DNI del alumno
-– Número de afiliación a la Seguridad Social del alumno (Dato indicado en las nóminas)
-– Teléfono y e-mail del alumno
-– Nombre y CIF de la empresa
-– Dirección de la empresa
-– Teléfono y e-mail de la empresa
-– Teléfono y e-mail del gestor de la empresa
-– Cta. Cotización a la seguridad social de la empresa (Dato indicado en las nóminas)
-– Año de creación de la empresa
-– Nombre completo y DNI de un representante legal de la empresa
-
-
-Quedamos a la espera, cualquier duda la comentamos.
-
-
-Saludos.
-
-
-Departamento de Formación Bonificable.
-FOESCO Formación Estatal Continua.
-Entidad Organizadora: B200592AA
-www.foesco.com
-e-mail:     cursos@foesco.net
-Tel:     910 323 794
-
-(Horario de 9h a 15h y de 17h a 20h de Lunes a Viernes)
-
-FOESCO ofrece formación a empresas y trabajadores en activo a través de cursos bonificados por la Fundación Estatal para la Formación en el Empleo (antiguo FORCEM) que gestiona las acciones formativas de FORMACIÓN CONTINUA para trabajadores y se rige por la ley 30/2015 de 9 de Septiembre.
-
-Antes de imprimir este e-mail piense bien si es necesario hacerlo. Before printing this e-mail please think twice if you really need it. FOESCO Tfno: 910 382 880 Email: cursos@foesco.com. La información transmitida en este mensaje está dirigida solamente a las personas o entidades que figuran en el encabezamiento y contiene información confidencial, por lo que, si usted lo recibiera por error, por favor destrúyalo sin copiarlo, usarlo ni distribuirlo, comunicándolo inmediatamente al emisor del mensaje. De conformidad con lo dispuesto en el Reglamento Europeo del 2016/679, del 27 de Abril de 2016, FOESCO le informa que los datos por usted suministrados serán tratados con las medidas de seguridad conformes a la normativa vigente que se requiere. Dichos datos serán empleados con fines de gestión. Para el ejercicio de sus derechos de transparencia, información, acceso, rectificación, supresión o derecho al olvido, limitación del tratamiento , portabilidad de datos y oposición de sus datos de carácter personal deberá dirigirse a la dirección del Responsable del tratamiento a C/ LAGUNA DEL MARQUESADO Nº10, 28021, MADRID, "PULSANDO AQUI" <mailto:bajas@foesco.com?Subject=BAJA%20CORREOS> y "ENVIAR" o a traves de la dirección de correo electrónico: bajas@foesco.com <mailto:bajas@foesco.com?Subject=BAJA%20CORREOS>
+> ---
+>  mm/page-writeback.c | 9 +++------
+>  1 file changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/mm/page-writeback.c b/mm/page-writeback.c
+> index eb34d204d4ee..f6c2c3165d4d 100644
+> --- a/mm/page-writeback.c
+> +++ b/mm/page-writeback.c
+> @@ -2722,12 +2722,9 @@ EXPORT_SYMBOL(clear_page_dirty_for_io);
+>  int test_clear_page_writeback(struct page *page)
+>  {
+>  	struct address_space *mapping = page_mapping(page);
+> -	struct mem_cgroup *memcg;
+> -	struct lruvec *lruvec;
+>  	int ret;
+>  
+> -	memcg = lock_page_memcg(page);
+> -	lruvec = mem_cgroup_page_lruvec(page, page_pgdat(page));
+> +	lock_page_memcg(page);
+>  	if (mapping && mapping_use_writeback_tags(mapping)) {
+>  		struct inode *inode = mapping->host;
+>  		struct backing_dev_info *bdi = inode_to_bdi(inode);
+> @@ -2755,11 +2752,11 @@ int test_clear_page_writeback(struct page *page)
+>  		ret = TestClearPageWriteback(page);
+>  	}
+>  	if (ret) {
+> -		dec_lruvec_state(lruvec, NR_WRITEBACK);
+> +		dec_lruvec_page_state(page, NR_WRITEBACK);
+>  		dec_zone_page_state(page, NR_ZONE_WRITE_PENDING);
+>  		inc_node_page_state(page, NR_WRITTEN);
+>  	}
+> -	__unlock_page_memcg(memcg);
+> +	unlock_page_memcg(page);
+>  	return ret;
+>  }
+>  
+> -- 
+> 2.30.0
