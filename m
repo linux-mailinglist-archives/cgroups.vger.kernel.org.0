@@ -2,78 +2,310 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2F7315F44
-	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 07:16:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D338A316068
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 08:53:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231551AbhBJGQO convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Wed, 10 Feb 2021 01:16:14 -0500
-Received: from spam.auroraoh.com ([24.56.89.101]:54416 "EHLO
-        barracuda.auroraoh.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231576AbhBJGKh (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Feb 2021 01:10:37 -0500
-X-ASG-Debug-ID: 1612936505-112c0d6a799c710001-hhPYk8
-Received: from COASRV-MAIL2.auroraoh.loc (coasrv-mail2.auroraoh.loc [10.3.1.15]) by barracuda.auroraoh.com with ESMTP id XQeYMohorYfhN7Yi; Wed, 10 Feb 2021 00:55:05 -0500 (EST)
-X-Barracuda-Envelope-From: JanuskaD@auroraoh.com
-X-Barracuda-RBL-Trusted-Forwarder: 10.3.1.15
-Received: from [172.20.10.5] (197.210.29.8) by COASRV-MAIL2.auroraoh.loc
- (10.3.1.15) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5; Tue, 9 Feb 2021
- 02:43:16 -0500
-Content-Type: text/plain; charset="iso-8859-1"
-X-Barracuda-RBL-Trusted-Forwarder: 172.20.10.5
+        id S233215AbhBJHxg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Feb 2021 02:53:36 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39512 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233189AbhBJHxO (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 10 Feb 2021 02:53:14 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E3A89AC97;
+        Wed, 10 Feb 2021 07:52:30 +0000 (UTC)
+Subject: Re: [RFC PATCH 8/9] drm/gem: Associate GEM objects with drm cgroup
+To:     Daniel Vetter <daniel@ffwll.ch>,
+        Brian Welty <brian.welty@intel.com>
+Cc:     Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+        Eero Tamminen <eero.t.tamminen@intel.com>,
+        David Airlie <airlied@linux.ie>, Kenny Ho <Kenny.Ho@amd.com>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        amd-gfx@lists.freedesktop.org, Tejun Heo <tj@kernel.org>,
+        cgroups@vger.kernel.org,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>
+References: <20210126214626.16260-1-brian.welty@intel.com>
+ <20210126214626.16260-9-brian.welty@intel.com>
+ <YCJp//kMC7YjVMXv@phenom.ffwll.local>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <faeaef17-3656-ca31-3be9-49354db3116e@suse.de>
+Date:   Wed, 10 Feb 2021 08:52:29 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-To:     Recipients <januskad@auroraoh.com>
-X-ASG-Orig-Subj: We are a registered Private Loan Investment Company in the United Kingdom,
- we also registered with the Turkish British Chamber of Commerce and Industry
- (TBCCI) we have operations in Europe and Asia.
-From:   <januskad@auroraoh.com>
-Date:   Tue, 9 Feb 2021 15:43:15 +0800
-Reply-To: <cfolimiited@gmail.com>
-X-Priority: 1 (High)
-X-Antivirus: Avast (VPS 210207-2, 02/07/2021), Outbound message
-X-Antivirus-Status: Clean
-Message-ID: <8a74435f-3c35-4b52-8955-3a1b291858bc@COASRV-MAIL2.auroraoh.loc>
-X-Originating-IP: [197.210.29.8]
-X-ClientProxiedBy: COASRV-MAIL3.auroraoh.loc (10.3.1.13) To
- COASRV-MAIL2.auroraoh.loc (10.3.1.15)
-X-Barracuda-Connect: coasrv-mail2.auroraoh.loc[10.3.1.15]
-X-Barracuda-Start-Time: 1612936505
-X-Barracuda-URL: https://10.3.1.12:443/cgi-mod/mark.cgi
-X-Virus-Scanned: by bsmtpd at auroraoh.com
-X-Barracuda-Scan-Msg-Size: 755
-X-Barracuda-BRTS-Status: 1
-X-Barracuda-Spam-Score: 1.61
-X-Barracuda-Spam-Status: No, SCORE=1.61 using global scores of TAG_LEVEL=1000.0 QUARANTINE_LEVEL=1000.0 KILL_LEVEL=5.0 tests=BSF_SC0_SA609_NRN, BSF_SC0_SA912_RP_FR, BSF_SC0_SA_TO_FROM_ADDR_MATCH, NO_REAL_NAME
-X-Barracuda-Spam-Report: Code version 3.2, rules version 3.2.3.87878
-        Rule breakdown below
-         pts rule name              description
-        ---- ---------------------- --------------------------------------------------
-        0.00 NO_REAL_NAME           From: does not include a real name
-        0.01 BSF_SC0_SA912_RP_FR    Custom Rule BSF_SC0_SA912_RP_FR
-        0.50 BSF_SC0_SA_TO_FROM_ADDR_MATCH Sender Address Matches Recipient
-                                   Address
-        1.10 BSF_SC0_SA609_NRN      Custom Rule SA609_NRN
+In-Reply-To: <YCJp//kMC7YjVMXv@phenom.ffwll.local>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="t358AJk9LGksusmvn059A4ACV9zuTsn4c"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-We are seeking for beneficiaries who source for fund to expand/relocating their business interest abroad. We are ready to fund projects outside Turkey and United Kingdom in the form of Soft Loan. We grant loans to both corporate and private entities at a low interest rate of 2% R.O.I per annul.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--t358AJk9LGksusmvn059A4ACV9zuTsn4c
+Content-Type: multipart/mixed; boundary="37ZsdYh6Dp4INO2q6vcaH93ikD1BsiH24";
+ protected-headers="v1"
+From: Thomas Zimmermann <tzimmermann@suse.de>
+To: Daniel Vetter <daniel@ffwll.ch>, Brian Welty <brian.welty@intel.com>
+Cc: Tvrtko Ursulin <tvrtko.ursulin@linux.intel.com>,
+ Eero Tamminen <eero.t.tamminen@intel.com>, David Airlie <airlied@linux.ie>,
+ Kenny Ho <Kenny.Ho@amd.com>, intel-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, Chris Wilson <chris@chris-wilson.co.uk>,
+ amd-gfx@lists.freedesktop.org, Tejun Heo <tj@kernel.org>,
+ cgroups@vger.kernel.org, =?UTF-8?Q?Christian_K=c3=b6nig?=
+ <christian.koenig@amd.com>
+Message-ID: <faeaef17-3656-ca31-3be9-49354db3116e@suse.de>
+Subject: Re: [RFC PATCH 8/9] drm/gem: Associate GEM objects with drm cgroup
+References: <20210126214626.16260-1-brian.welty@intel.com>
+ <20210126214626.16260-9-brian.welty@intel.com>
+ <YCJp//kMC7YjVMXv@phenom.ffwll.local>
+In-Reply-To: <YCJp//kMC7YjVMXv@phenom.ffwll.local>
 
-We like to grant loan in the following sectors: oil/Gas, banking, real estate, stock speculation and mining, transportation, health sector and tobacco, Communication Services, Agriculture Forestry & Fishing, thus any sector. The terms are very flexible and interesting.
+--37ZsdYh6Dp4INO2q6vcaH93ikD1BsiH24
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
 
-Please contact us for more details;
+Hi
+
+Am 09.02.21 um 11:54 schrieb Daniel Vetter:
+> *: vmwgfx is the only non-gem driver, but there's plans to move at leas=
+t
+> vmwgfx internals (maybe not the uapi, we'll see) over to gem. Once that=
+'s
+> done it's truly all gpu memory.
+
+Do you have a URL to the discussion?
+
+While I recent worked on GEM, I thought that vmwgfx could easily switch=20
+to the GEM internals without adopting the interface.
+
+Personally, I think we should consider renaming struct drm_gem_object et =
+
+al. It's not strictly GEM UAPI, but nowadays anything memory-related.=20
+Maybe drm_mem_object would fit.
+
+Best regards
+Thomas
+
+>> ---
+>>   drivers/gpu/drm/drm_gem.c | 89 +++++++++++++++++++++++++++++++++++++=
+++
+>>   include/drm/drm_gem.h     | 17 ++++++++
+>>   2 files changed, 106 insertions(+)
+>>
+>> diff --git a/drivers/gpu/drm/drm_gem.c b/drivers/gpu/drm/drm_gem.c
+>> index c2ce78c4edc3..a12da41eaafe 100644
+>> --- a/drivers/gpu/drm/drm_gem.c
+>> +++ b/drivers/gpu/drm/drm_gem.c
+>> @@ -29,6 +29,7 @@
+>>   #include <linux/slab.h>
+>>   #include <linux/mm.h>
+>>   #include <linux/uaccess.h>
+>> +#include <linux/cgroup_drm.h>
+>>   #include <linux/fs.h>
+>>   #include <linux/file.h>
+>>   #include <linux/module.h>
+>> @@ -112,6 +113,89 @@ drm_gem_init(struct drm_device *dev)
+>>   	return drmm_add_action(dev, drm_gem_init_release, NULL);
+>>   }
+>>  =20
+>> +/**
+>> + * drm_gem_object_set_cgroup - associate GEM object with a cgroup
+>> + * @obj: GEM object which is being associated with a cgroup
+>> + * @task: task associated with process control group to use
+>> + *
+>> + * This will acquire a reference on cgroup and use for charging GEM
+>> + * memory allocations.
+>> + * This helper could be extended in future to migrate charges to anot=
+her
+>> + * cgroup, print warning if this usage occurs.
+>> + */
+>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
+>> +			       struct task_struct *task)
+>> +{
+>> +	/* if object has existing cgroup, we migrate the charge... */
+>> +	if (obj->drmcg) {
+>> +		pr_warn("DRM: need to migrate cgroup charge of %lld\n",
+>> +			atomic64_read(&obj->drmcg_bytes_charged));
+>> +	}
+>> +	obj->drmcg =3D drmcg_get(task);
+>> +}
+>> +EXPORT_SYMBOL(drm_gem_object_set_cgroup);
+>> +
+>> +/**
+>> + * drm_gem_object_unset_cgroup - clear GEM object's associated cgroup=
+
+>> + * @obj: GEM object
+>> + *
+>> + * This will release a reference on cgroup.
+>> + */
+>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj)
+>> +{
+>> +	WARN_ON(atomic64_read(&obj->drmcg_bytes_charged));
+>> +	drmcg_put(obj->drmcg);
+>> +}
+>> +EXPORT_SYMBOL(drm_gem_object_unset_cgroup);
+>> +
+>> +/**
+>> + * drm_gem_object_charge_mem - try charging size bytes to DRM cgroup
+>> + * @obj: GEM object which is being charged
+>> + * @size: number of bytes to charge
+>> + *
+>> + * Try to charge @size bytes to GEM object's associated DRM cgroup.  =
+This
+>> + * will fail if a successful charge would cause the current device me=
+mory
+>> + * usage to go above the cgroup's GPU memory maximum limit.
+>> + *
+>> + * Returns 0 on success.  Otherwise, an error code is returned.
+>> + */
+>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size)
+>> +{
+>> +	int ret;
+>> +
+>> +	ret =3D drm_cgroup_try_charge(obj->drmcg, obj->dev,
+>> +				    DRMCG_TYPE_MEM_CURRENT, size);
+>> +	if (!ret)
+>> +		atomic64_add(size, &obj->drmcg_bytes_charged);
+>> +	return ret;
+>> +}
+>> +EXPORT_SYMBOL(drm_gem_object_charge_mem);
+>> +
+>> +/**
+>> + * drm_gem_object_uncharge_mem - uncharge size bytes from DRM cgroup
+>> + * @obj: GEM object which is being uncharged
+>> + * @size: number of bytes to uncharge
+>> + *
+>> + * Uncharge @size bytes from the DRM cgroup associated with specified=
+
+>> + * GEM object.
+>> + *
+>> + * Returns 0 on success.  Otherwise, an error code is returned.
+>> + */
+>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size=
+)
+>> +{
+>> +	u64 charged =3D atomic64_read(&obj->drmcg_bytes_charged);
+>> +
+>> +	if (WARN_ON(!charged))
+>> +		return;
+>> +	if (WARN_ON(size > charged))
+>> +		size =3D charged;
+>> +
+>> +	atomic64_sub(size, &obj->drmcg_bytes_charged);
+>> +	drm_cgroup_uncharge(obj->drmcg, obj->dev, DRMCG_TYPE_MEM_CURRENT,
+>> +			    size);
+>> +}
+>> +EXPORT_SYMBOL(drm_gem_object_uncharge_mem);
+>> +
+>>   /**
+>>    * drm_gem_object_init - initialize an allocated shmem-backed GEM ob=
+ject
+>>    * @dev: drm_device the object should be initialized for
+>> @@ -156,6 +240,8 @@ void drm_gem_private_object_init(struct drm_device=
+ *dev,
+>>   	obj->dev =3D dev;
+>>   	obj->filp =3D NULL;
+>>  =20
+>> +	drm_gem_object_set_cgroup(obj, current);
+>> +
+>>   	kref_init(&obj->refcount);
+>>   	obj->handle_count =3D 0;
+>>   	obj->size =3D size;
+>> @@ -950,6 +1036,9 @@ drm_gem_object_release(struct drm_gem_object *obj=
+)
+>>  =20
+>>   	dma_resv_fini(&obj->_resv);
+>>   	drm_gem_free_mmap_offset(obj);
+>> +
+>> +	/* Release reference on cgroup used with GEM object charging */
+>> +	drm_gem_object_unset_cgroup(obj);
+>>   }
+>>   EXPORT_SYMBOL(drm_gem_object_release);
+>>  =20
+>> diff --git a/include/drm/drm_gem.h b/include/drm/drm_gem.h
+>> index 240049566592..06ea10fc17bc 100644
+>> --- a/include/drm/drm_gem.h
+>> +++ b/include/drm/drm_gem.h
+>> @@ -37,6 +37,7 @@
+>>   #include <linux/kref.h>
+>>   #include <linux/dma-resv.h>
+>>  =20
+>> +#include <drm/drm_cgroup.h>
+>>   #include <drm/drm_vma_manager.h>
+>>  =20
+>>   struct dma_buf_map;
+>> @@ -222,6 +223,17 @@ struct drm_gem_object {
+>>   	 */
+>>   	struct file *filp;
+>>  =20
+>> +	/**
+>> +	 * @drmcg:
+>> +	 *
+>> +	 * cgroup used for charging GEM object page allocations against. Thi=
+s
+>> +	 * is set to the current cgroup during GEM object creation.
+>> +	 * Charging policy is up to the DRM driver to implement and should b=
+e
+>> +	 * charged when allocating backing store from device memory.
+>> +	 */
+>> +	struct drmcg *drmcg;
+>> +	atomic64_t drmcg_bytes_charged;
+>> +
+>>   	/**
+>>   	 * @vma_node:
+>>   	 *
+>> @@ -417,4 +429,9 @@ int drm_gem_fence_array_add_implicit(struct xarray=
+ *fence_array,
+>>   int drm_gem_dumb_map_offset(struct drm_file *file, struct drm_device=
+ *dev,
+>>   			    u32 handle, u64 *offset);
+>>  =20
+>> +void drm_gem_object_set_cgroup(struct drm_gem_object *obj,
+>> +			       struct task_struct *task);
+>> +void drm_gem_object_unset_cgroup(struct drm_gem_object *obj);
+>> +int drm_gem_object_charge_mem(struct drm_gem_object *obj, u64 size);
+>> +void drm_gem_object_uncharge_mem(struct drm_gem_object *obj, u64 size=
+);
+>>   #endif /* __DRM_GEM_H__ */
+>> --=20
+>> 2.20.1
+>>
+>=20
+
+--=20
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+(HRB 36809, AG N=C3=BCrnberg)
+Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
 
-Kind regards,
+--37ZsdYh6Dp4INO2q6vcaH93ikD1BsiH24--
 
-Paul McCann
+--t358AJk9LGksusmvn059A4ACV9zuTsn4c
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
 
--- 
-This email has been checked for viruses by Avast antivirus software.
-https://www.avast.com/antivirus
+-----BEGIN PGP SIGNATURE-----
 
+wsF5BAABCAAjFiEExndm/fpuMUdwYFFolh/E3EQov+AFAmAjkL0FAwAAAAAACgkQlh/E3EQov+D/
+DA/9FuoxspimR/1k4JtNsUWDSx1lHZXLFoUIF3YYkJMb2+lU8r40EzEcaK4dCjMjNnJcWojEodwU
+tGeD495XQ86ZtwU/OMA9vFXVh624tywF3h9Tn4LTcX6Q3AqDk/SDTbJwVHM+7ADQlREhvlCX42N8
+XKzQe5AuN5+Eu1jU/uTJokirswB+1voV2i/m2lECZt8KKDLV3INlkY1d9XdqoIpJN1GRSKxUdLEe
+0x9m9dDUqW6mFH3RRprwl0/2yZ3qeZ/WNhEgWhN02GZ2/dWQQ2Hl72j5EQuT2ma6QK05hQakEF2q
+XXifa4i+EwR4v10sfK7Eb6wG3eD0TBjMZb4hkquJJXqK4RX78QGxoZ73ilvQyw4ESEgq8N0GvsTQ
+m+xP9BLuZaryZLP8yAjpzzFdDXFDXFKQykgPcgqXPCYkXorWtY6WAbI9AuRTQ7P0UC5EyJbKwubU
+r9m38RkjhDi7uIGeUv2/03Edkwsqcy1dud93GDFf3+IniGUbMUTn2yjWhuUK6bWiUua6PW+B0Fa+
+vqzcwhk0qPo9u+Ul5f3OcW8ihS3UqzanqI+hp4e2LL2TcwznyXEgjjfEc5k44xGwIBUw1nZ5bIGS
+7L7Fm08I8I/sxIk2d5e9UkDSEw0OePqoD8WQzNT/mhLiM2AY5OlXwxoMVpkLG79GMEozUiAQcjLS
+Wg4=
+=LnX9
+-----END PGP SIGNATURE-----
+
+--t358AJk9LGksusmvn059A4ACV9zuTsn4c--
