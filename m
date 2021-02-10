@@ -2,152 +2,99 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E63EB316200
-	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 10:22:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E823162A8
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 10:50:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230052AbhBJJVe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Feb 2021 04:21:34 -0500
-Received: from mx2.suse.de ([195.135.220.15]:50008 "EHLO mx2.suse.de"
+        id S229749AbhBJJtp (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Feb 2021 04:49:45 -0500
+Received: from mx2.suse.de ([195.135.220.15]:46478 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229684AbhBJJTR (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 10 Feb 2021 04:19:17 -0500
+        id S229610AbhBJJsh (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 10 Feb 2021 04:48:37 -0500
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1612948709; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+        t=1612950468; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
          mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=ASj2m7GT07IQH1F8g5mMfrRhbhZLOXHsiTlFLSHPhQs=;
-        b=IhNDtf/K8be4ssN5h3aEtbjD7q1P9y2RTK5JYLMDrdSoFCLe5AU2rSwLOfTw86//DhosMy
-        n7z4EDkqtrZkJVswhdgEO9Sk6ZnqtjKhUhkhTdLr/VsK9c/u/KMkNjgtavvKrQ9u5a6WLZ
-        QDiZ2U6LnZHJF8LmGEZb/Z7BO93S+ag=
+        bh=fdOKlGdBQ+hhHPE98TkFop+2UQxW0u+WMNNhnyafX9Q=;
+        b=TH4zS6eBWoevbm4jAsK0+oZMMY2MFI6CHMoLEJY2Jj0ho1cPXvNBVdNcmpQz+y80cOz2pb
+        lT5RtH88wV0Q+o3pZSJjNtoCvVw7QPP5KzSk4hyJZqBNGWhjiGGgqEoySHGkUceUMYIZal
+        b3CKioh8b9ixkAWkmkaSPdNs/EKGI9A=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AF47EB13F;
-        Wed, 10 Feb 2021 09:18:29 +0000 (UTC)
-Date:   Wed, 10 Feb 2021 10:18:27 +0100
+        by mx2.suse.de (Postfix) with ESMTP id 3FC32AD57;
+        Wed, 10 Feb 2021 09:47:48 +0000 (UTC)
+Date:   Wed, 10 Feb 2021 10:47:44 +0100
 From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] fs: buffer: use raw page_memcg() on locked page
-Message-ID: <YCOk40NPkTO+MINR@dhcp22.suse.cz>
-References: <20210209190126.97842-1-hannes@cmpxchg.org>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] mm: Fix dropped memcg from mem cgroup soft limit tree
+Message-ID: <YCOrwHvktsN5Kuc+@dhcp22.suse.cz>
+References: <cover.1612902157.git.tim.c.chen@linux.intel.com>
+ <d50e3bb513845d1f7816b94733576ce6f798682a.1612902157.git.tim.c.chen@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210209190126.97842-1-hannes@cmpxchg.org>
+In-Reply-To: <d50e3bb513845d1f7816b94733576ce6f798682a.1612902157.git.tim.c.chen@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue 09-02-21 14:01:26, Johannes Weiner wrote:
-> alloc_page_buffers() currently uses get_mem_cgroup_from_page() for
-> charging the buffers to the page owner, which does an rcu-protected
-> page->memcg lookup and acquires a reference. But buffer allocation has
-> the page lock held throughout, which pins the page to the memcg and
-> thereby the memcg - neither rcu nor holding an extra reference during
-> the allocation are necessary. Use a raw page_memcg() instead.
+On Tue 09-02-21 12:29:45, Tim Chen wrote:
+> During soft limit memory reclaim, we will temporarily remove the target
+> mem cgroup from the cgroup soft limit tree.  We then perform memory
+> reclaim, update the memory usage excess count and re-insert the mem
+> cgroup back into the mem cgroup soft limit tree according to the new
+> memory usage excess count.
 > 
-> This was the last user of get_mem_cgroup_from_page(), delete it.
+> However, when memory reclaim failed for a maximum number of attempts
+> and we bail out of the reclaim loop, we forgot to put the target mem
+> cgroup chosen for next reclaim back to the soft limit tree. This prevented
+> pages in the mem cgroup from being reclaimed in the future even though
+> the mem cgroup exceeded its soft limit.  Fix the logic and put the mem
+> cgroup back on the tree when page reclaim failed for the mem cgroup.
 > 
-> Reported-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> Reviewed-by: Ying Huang <ying.huang@intel.com>
+> Signed-off-by: Tim Chen <tim.c.chen@linux.intel.com>
+
+It seems this goes all the way to when it has been introduced by 
+4e41695356fb ("memory controller: soft limit reclaim on contention").
+Please add a Fixes tag pointing to the above one. While this looks like
+a rare event to happen because there should be some reclaimable memory
+usually.
 
 Acked-by: Michal Hocko <mhocko@suse.com>
 
 Thanks!
 
 > ---
->  fs/buffer.c                |  4 ++--
->  include/linux/memcontrol.h |  7 -------
->  mm/memcontrol.c            | 23 -----------------------
->  3 files changed, 2 insertions(+), 32 deletions(-)
+>  mm/memcontrol.c | 6 +++++-
+>  1 file changed, 5 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/buffer.c b/fs/buffer.c
-> index 96c7604f69b3..dc5d3e22c493 100644
-> --- a/fs/buffer.c
-> +++ b/fs/buffer.c
-> @@ -847,7 +847,8 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
->  	if (retry)
->  		gfp |= __GFP_NOFAIL;
->  
-> -	memcg = get_mem_cgroup_from_page(page);
-> +	/* The page lock pins the memcg */
-> +	memcg = page_memcg(page);
->  	old_memcg = set_active_memcg(memcg);
->  
->  	head = NULL;
-> @@ -868,7 +869,6 @@ struct buffer_head *alloc_page_buffers(struct page *page, unsigned long size,
->  	}
->  out:
->  	set_active_memcg(old_memcg);
-> -	mem_cgroup_put(memcg);
->  	return head;
->  /*
->   * In case anything failed, we just free everything we got.
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index a8c7a0ccc759..a44b2d51aecc 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -687,8 +687,6 @@ struct mem_cgroup *mem_cgroup_from_task(struct task_struct *p);
->  
->  struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm);
->  
-> -struct mem_cgroup *get_mem_cgroup_from_page(struct page *page);
-> -
->  struct lruvec *lock_page_lruvec(struct page *page);
->  struct lruvec *lock_page_lruvec_irq(struct page *page);
->  struct lruvec *lock_page_lruvec_irqsave(struct page *page,
-> @@ -1169,11 +1167,6 @@ static inline struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
->  	return NULL;
->  }
->  
-> -static inline struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
-> -{
-> -	return NULL;
-> -}
-> -
->  static inline void mem_cgroup_put(struct mem_cgroup *memcg)
->  {
->  }
 > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 51778fa9b462..9e455815fb7a 100644
+> index ed5cc78a8dbf..a51bf90732cb 100644
 > --- a/mm/memcontrol.c
 > +++ b/mm/memcontrol.c
-> @@ -1048,29 +1048,6 @@ struct mem_cgroup *get_mem_cgroup_from_mm(struct mm_struct *mm)
+> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
+>  			break;
+>  	} while (!nr_reclaimed);
+> -	if (next_mz)
+> +	if (next_mz) {
+> +		spin_lock_irq(&mctz->lock);
+> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
+> +		spin_unlock_irq(&mctz->lock);
+>  		css_put(&next_mz->memcg->css);
+> +	}
+>  	return nr_reclaimed;
 >  }
->  EXPORT_SYMBOL(get_mem_cgroup_from_mm);
 >  
-> -/**
-> - * get_mem_cgroup_from_page: Obtain a reference on given page's memcg.
-> - * @page: page from which memcg should be extracted.
-> - *
-> - * Obtain a reference on page->memcg and returns it if successful. Otherwise
-> - * root_mem_cgroup is returned.
-> - */
-> -struct mem_cgroup *get_mem_cgroup_from_page(struct page *page)
-> -{
-> -	struct mem_cgroup *memcg = page_memcg(page);
-> -
-> -	if (mem_cgroup_disabled())
-> -		return NULL;
-> -
-> -	rcu_read_lock();
-> -	/* Page should not get uncharged and freed memcg under us. */
-> -	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
-> -		memcg = root_mem_cgroup;
-> -	rcu_read_unlock();
-> -	return memcg;
-> -}
-> -EXPORT_SYMBOL(get_mem_cgroup_from_page);
-> -
->  static __always_inline struct mem_cgroup *active_memcg(void)
->  {
->  	if (in_interrupt())
 > -- 
-> 2.30.0
+> 2.20.1
 
 -- 
 Michal Hocko
