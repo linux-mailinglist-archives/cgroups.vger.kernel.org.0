@@ -2,81 +2,108 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BAB6316843
-	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 14:48:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84CB83168AE
+	for <lists+cgroups@lfdr.de>; Wed, 10 Feb 2021 15:08:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231193AbhBJNrs (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Feb 2021 08:47:48 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60758 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230061AbhBJNro (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Feb 2021 08:47:44 -0500
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D47A6C06174A
-        for <cgroups@vger.kernel.org>; Wed, 10 Feb 2021 05:47:03 -0800 (PST)
-Received: by mail-lf1-x12f.google.com with SMTP id w36so2983015lfu.4
-        for <cgroups@vger.kernel.org>; Wed, 10 Feb 2021 05:47:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x7AQuIHqlGeDKdDmQaoPxTGljXqoMuKxFCh/+vT0i5k=;
-        b=nOGKWwErjCXi0YFKi585FYnDqp7VZktLvttuvqdhK0nRwzl46aW1e6ZK2y4GhoJ9i8
-         KpIxBAdYnb+08xigU5i30VZuFTrxH9hEDGhvwYEsy/vXJ20y3z8qmZGxB570y+8nwDXr
-         KqRlvpUxKhal/kP45OJ60gFtDUeeffZe8T1LC5rRY+O2Fx+sJ5NgQqI1K5vhBdjd2A6B
-         qJw8QKEDXZMZlFJvt+pc5moGlNUZkY9BSRYZmVwipRgXbnYqLGFJEc+CMn2+gVC3m7gE
-         4OfOhMBxuIem8mVWHVp+YR/xI5Pyv3MgEexPFS4XvAKqbFwqVEoJy6zxsM+1KZMJkXNM
-         BJVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x7AQuIHqlGeDKdDmQaoPxTGljXqoMuKxFCh/+vT0i5k=;
-        b=YuCMV/W5yo8nbv6AhMqfuCuy81bgkr+tJzRJrF6K/HV1iu4d6fj4czdfWZAkJOceKu
-         hmWHvws6kyadc74+Kr9vYT6HT9CN4sWi7YUOglF3sekMz2M8G2CESau2QfoAqRcNCdQH
-         VMVkSt7tP7lxtq4UwVaaVWzMc+BMlJjdsW9ZOEl3a9Hvjd3jbw+iePq5l7h4ZTlRWgBV
-         fQyhgf97YZR5q8F8BpdovEaf537tUfZobND+bweESrWYisRhgMUSsfWdCu/adkoQYqgZ
-         wQ2801cDVsF1NwawfLkniWLW6LqXiao164PhAP+KaNp/9kFkOX0Zhq/2rlSawh3k88lP
-         vRng==
-X-Gm-Message-State: AOAM530FKU0YkHyF99SM3ans9EMAnUi7qaS8jDtirTYPIvRl/Cs+lde9
-        c+twpO9+Rn4ff4wyj9gXpb0b1Ig4byhEYORJV1P7lw==
-X-Google-Smtp-Source: ABdhPJz841Cfn+4sq64Q5uE+gYJv38/kovaen61M8ii6Y201iSug/qJh/kkiv/4ACj5E6wmRFUhiWf/OXsFV7bvBq+s=
-X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr1722867lff.347.1612964822071;
- Wed, 10 Feb 2021 05:47:02 -0800 (PST)
-MIME-Version: 1.0
-References: <20210209214543.112655-1-hannes@cmpxchg.org>
-In-Reply-To: <20210209214543.112655-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Wed, 10 Feb 2021 05:46:51 -0800
-Message-ID: <CALvZod7Tf+KBhT=3WCQ_uWa7_mZad6-L8wQJghxPRL_tVyQ8Cw@mail.gmail.com>
-Subject: Re: [PATCH] mm: page-writeback: simplify memcg handling in test_clear_page_writeback()
+        id S231699AbhBJOHo (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Feb 2021 09:07:44 -0500
+Received: from new1-smtp.messagingengine.com ([66.111.4.221]:60629 "EHLO
+        new1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230376AbhBJOHm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Feb 2021 09:07:42 -0500
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 8398F58023E;
+        Wed, 10 Feb 2021 09:06:53 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Wed, 10 Feb 2021 09:06:53 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm3; bh=l5u4BR58ii0Rtlvkm1LcKTg4vDo
+        3rxiz5sSs57woe04=; b=GWadpoLWa5oK1qyT9kAKnkuk4z3HMK8EyLv+f8LXr8N
+        BV74nI99cnQr2yRLHCmqYtZVPQbGUaRRzcid7awA5zFdLV6grl3vI4BQIaqf4987
+        xjxHfLQnZso4hvDdLxm/LQrsi6sjBKnxVV2azXxNi/Kcc7ObUupCBVefEXx91uzy
+        dtbHiZ0mCLLzWGMnpPSVrr6TGHtv4MejweI00W3GjkZM58/vI2gi6awtOnoPFBoo
+        9Nm7M7unF/WAg8dde/WBzioAvGJ5eg3qpG5iJcEgA43Tgj9cn366l5NRxCiED+qe
+        HZmssUAZ+0YJ3XzHrKeUhMbKucZqYRd6QKXWp/m9O4g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=l5u4BR
+        58ii0Rtlvkm1LcKTg4vDo3rxiz5sSs57woe04=; b=gqAmFjY+0aXFv7N7KpV6Wy
+        XWmV0P2Modn9HcYWUFf4uK9XgfgCyWhP1S8uWmLBRNGtBe64NQHQkerYwQLFEMMU
+        73pd79/iYaugbLtVasRuJsuYlBlOhATesE7MFKG9yuSlNUPDZg4XbCDDD/FYT2fe
+        NSkIJ4uGe7/2RghrtX1LNh/XpBhju3fgA5bJTJozP1CCu1oKN05aNQZIpqOAyudd
+        6O6cya6Lx49lLlb5rSqv62SAtUDYoLQ3ldwooCfppA8YRYHIFqz3yRiQjo4bcFzD
+        e2HCcHAv21ZFJ5+uyM1F1pAwSjx7HUtS614pWLpkCcEQglXs0vvb+z8tZvbCKDCg
+        ==
+X-ME-Sender: <xms:fOgjYDoFmn1Qn2F-1eEGOWd2lDfPNpxS8WXigqOYQtMhySlOJcZ9cA>
+    <xme:fOgjYNpxtECkBqqbZazmmA5J-rcJPCoh6ZRI4vRR_ppBJfX-itCsxjAPYGdWKiQse
+    45l8MaPbUC5nw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrheejgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepifhrvghgucfm
+    jfcuoehgrhgvgheskhhrohgrhhdrtghomheqnecuggftrfgrthhtvghrnhepfeevfedtte
+    eikeevhfevveegjeefhfdvgefgffejheekleelffehteeuvdejudevnecuffhomhgrihhn
+    pehmtgifhhhirhhtvghrrdhiohenucfkphepkeefrdekiedrjeegrdeigeenucevlhhush
+    htvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgr
+    hhdrtghomh
+X-ME-Proxy: <xmx:fOgjYAOudqOIDxM9owXZHWBuFVfanz-2J053rWZ8_ZFzqyO0yH8cuA>
+    <xmx:fOgjYG41hoP_DFpfZ9PpA9OH23lW_RipXX0XmDuyZGa6EaNL33Y95w>
+    <xmx:fOgjYC5Y0XU3p0OAFcs1F7NuL_Hyp5yNUY1WSTwRYSj4iEqSeWoTSg>
+    <xmx:fegjYCwzonPQVKpUj3ww1wVD-tjjosoI4uig9R8I-kALaNoPlRU2Hw>
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        by mail.messagingengine.com (Postfix) with ESMTPA id DEAB81080057;
+        Wed, 10 Feb 2021 09:06:51 -0500 (EST)
+Date:   Wed, 10 Feb 2021 15:06:49 +0100
+From:   Greg KH <greg@kroah.com>
 To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+Cc:     Florian Fainelli <f.fainelli@gmail.com>, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jaegeuk Kim <jaegeuk@kernel.org>,
+        Bradley Bolen <bradleybolen@gmail.com>,
+        Vladimir Davydov <vdavydov@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Prakash Gupta <guptap@codeaurora.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <cgroups@vger.kernel.org>,
+        "open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" 
+        <linux-mm@kvack.org>
+Subject: Re: [PATCH stable 4.9] mm: memcontrol: fix NULL pointer crash in
+ test_clear_page_writeback()
+Message-ID: <YCPoeaVXuQt8oX/c@kroah.com>
+References: <20210209202616.2257512-1-f.fainelli@gmail.com>
+ <YCL8cnXFtpdnAAUj@cmpxchg.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YCL8cnXFtpdnAAUj@cmpxchg.org>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 9, 2021 at 1:45 PM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> Page writeback doesn't hold a page reference, which allows truncate to
-> free a page the second PageWriteback is cleared. This used to require
-> special attention in test_clear_page_writeback(), where we had to be
-> careful not to rely on the unstable page->memcg binding and look up
-> all the necessary information before clearing the writeback flag.
->
-> Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
-> BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
-> explicit reference on the page, and this dance is no longer needed.
->
-> Use unlock_page_memcg() and dec_lruvec_page_stat() directly.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On Tue, Feb 09, 2021 at 04:19:46PM -0500, Johannes Weiner wrote:
+> On Tue, Feb 09, 2021 at 12:26:15PM -0800, Florian Fainelli wrote:
+> > From: Johannes Weiner <hannes@cmpxchg.org>
+> > 
+> > commit 739f79fc9db1b38f96b5a5109b247a650fbebf6d upstream
+> 
+> ...
+> 
+> > This patch is present in a downstream Android tree:
+> > 
+> > https://source.mcwhirter.io/craige/bluecross/commit/d4a742865c6b69ef931694745ef54965d7c9966c
+> > 
+> > and I happened to have stumbled across the same problem too.
+> > 
+> > Johannes can you review it for correctness with respect to the 4.9
+> > kernel? Thanks!
+> 
+> Looks good to me.
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Applied, thanks.
+
+greg k-h
