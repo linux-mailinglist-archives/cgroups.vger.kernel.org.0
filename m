@@ -2,116 +2,109 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FFF3182A9
-	for <lists+cgroups@lfdr.de>; Thu, 11 Feb 2021 01:34:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00B3D318C50
+	for <lists+cgroups@lfdr.de>; Thu, 11 Feb 2021 14:44:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231376AbhBKAdr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Feb 2021 19:33:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58978 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231239AbhBKAdn (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Feb 2021 19:33:43 -0500
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B6D7C0613D6
-        for <cgroups@vger.kernel.org>; Wed, 10 Feb 2021 16:33:03 -0800 (PST)
-Received: by mail-qk1-x733.google.com with SMTP id r77so3684662qka.12
-        for <cgroups@vger.kernel.org>; Wed, 10 Feb 2021 16:33:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FI7efxdLkrLWQRe2h+l+IMlmkcYgyIFOXgeNuZLjvTM=;
-        b=bycQ5yJtXDWmNNXRP0PrIO2BHNarVUWpIj1Op4PnadIWfTeHUhFPgAVAcbNAQ64VpH
-         gxfTtVSlBVO097jFW+zhdqSttQpMsvicByCNN7ar5id9u5oAPtspAY74GFvlnmfEHmhC
-         t8nupXeSt7Clnsv4DhVPcmUssp3sYyq0AsWT54E4hPYnU/koqUJzG/qwNWS7vPgXQQN3
-         YWn2m/e8g1FiLlSmgRgP3MF4D1d3AnGrxVkUC/yuiewY42CF582D/0HpJXSjfKINY+GG
-         aznJdtOMmyCCHd6oHMiKgq5Dik+4n3pRGtSCdoMQnrDnBZbDWZpcoxLRCFe2ZPWjsB/A
-         wG9g==
+        id S232056AbhBKNnC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Feb 2021 08:43:02 -0500
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:27186 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231484AbhBKNkf (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Feb 2021 08:40:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1613050746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=JGimXPuqcoE+a6jS2uYizeEDGioIlqVcs0oa7fVjFEs=;
+        b=eoOKuVQuUlbULVHDfyhDPJGOLDvCYnOKY+bibZBgGRcTJRW9HgZUZv4FVW8JoJAFOqKs1T
+        Ymw/lREW35uPn5ivZxr2v5ky1drRaxx+AEAVxD+Jdmz7hk+rV2zbRn2zxPGaMROophzM5D
+        ZAwwHtZydPWvM0HEtb7cScGiZNE0Hbs=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-516-k_Bi1eU_PxKYJpi1XGEWoA-1; Thu, 11 Feb 2021 08:39:04 -0500
+X-MC-Unique: k_Bi1eU_PxKYJpi1XGEWoA-1
+Received: by mail-lf1-f69.google.com with SMTP id x10so1514446lfu.22
+        for <cgroups@vger.kernel.org>; Thu, 11 Feb 2021 05:39:04 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FI7efxdLkrLWQRe2h+l+IMlmkcYgyIFOXgeNuZLjvTM=;
-        b=OuQBCKvDdIlZqF3nzZb/RgUtw2BMTXXbaSXuzJEGPKNEAMBrbQE1rWippisJTaXSCE
-         H88Rwo4jfQjT5RU8b0scgATZri0A4qb7UDe7hdn+m8ybYvD6xYxHkunDS3V+ejb1MqXY
-         yUy393BbZZ6qqqlZoGfhHuyMN3oi7R/q3PJORjIMLoCaD8o1LrGTwyUtWueQeqpTEqkp
-         1xOH8nJCrbdLtV0KnnBg20jIUw4UPCAACGbXyeKGOBWmgYxNGyrWjpkxGt8ikxaGLmRA
-         uQcCugr6ocm+TkkZiYfz5get1dQrXKM5jWIjh1zFefivDC2T2XA78vdjmHom/UEZx+mK
-         bTxQ==
-X-Gm-Message-State: AOAM530Adi2q9whxtog+i/QsNGIuD1pQQUvbIGHb5cDvrjN+bEjLBN17
-        l0EUjuen+C/Syo3801QOlf5J9Q==
-X-Google-Smtp-Source: ABdhPJw+WsFyBoPTEFShXk5UTUgRaU16ZfG6UUUpxD9HG2LBLCdo8+nkKZw9gz+A1oHoP1MvCo9r/A==
-X-Received: by 2002:a37:e20b:: with SMTP id g11mr6022864qki.292.1613003582320;
-        Wed, 10 Feb 2021 16:33:02 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id p12sm2428519qtw.27.2021.02.10.16.33.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 10 Feb 2021 16:33:01 -0800 (PST)
-Date:   Wed, 10 Feb 2021 19:33:00 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
-        Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>,
-        Arjun Roy <arjunroy@google.com>
-Subject: Re: [PATCH v2] mm: page-writeback: simplify memcg handling in
- test_clear_page_writeback()
-Message-ID: <YCR7PMk4RAM1uVeM@cmpxchg.org>
-References: <20210209214543.112655-1-hannes@cmpxchg.org>
- <alpine.LSU.2.11.2102092058290.7553@eggly.anvils>
- <alpine.LSU.2.11.2102100813050.8131@eggly.anvils>
- <YCQbYAWg4nvBFL6h@cmpxchg.org>
- <CALvZod6vgYcpgskf7NaRagH999L6VkfnVtD1UDb+JhQceCuUEA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=JGimXPuqcoE+a6jS2uYizeEDGioIlqVcs0oa7fVjFEs=;
+        b=DrYSgUNBcdDzjKqBhSBKAcjYjNfJjSa5Dz2SyEVEPwmHAqlGmvH4HCVytYiNelAU5n
+         1xxj/KBd5SBwF9+SQG4Y74Zu+vk1Qj1IMNAJSzGhTeVWaT45FXoL8noLCHBJ0PQcQxyc
+         0YqgfLA2wvwRXglR6YzsCmz1pnGfhqssCABZrwxNhkgQ1f0uEXEJA56b6HOcMgc7wprr
+         LZui0RQB5yVLgdnnT22EoGma3UKIZejHPqxwonqqugPWK3n/SjPPLeCEbFlEPplZToQj
+         OGSBIJX3HRhBzpjsoLKgygpMeX/5ptcTYkT0xykQeJd6J/fNota/4TR8D0sc/rk13gtS
+         n++A==
+X-Gm-Message-State: AOAM5311Z1sYETUWkw+ZKwajmXThhRgxh+NnxFPR1q2saPjKMaeL7+wt
+        AY7E7hhpAWQolonPZpeRUHOqfYhDchMKcqiCrPjMlFb64nqK4fO+RqfEJo7uWE9oAFv2ycJ8e/0
+        C920pCsWM9FcLCgJRURYLDK3OEJL6AcLnEQ==
+X-Received: by 2002:a05:6512:613:: with SMTP id b19mr4621144lfe.220.1613050742884;
+        Thu, 11 Feb 2021 05:39:02 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyafdC4oQ79x7WQSko3/Od0YIHV05+67+o7ZE7cQPjfzaYfD75xXBj87fVYcrtLlGrUvyKomtWkrFvsHjf63dM=
+X-Received: by 2002:a05:6512:613:: with SMTP id b19mr4621135lfe.220.1613050742707;
+ Thu, 11 Feb 2021 05:39:02 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALvZod6vgYcpgskf7NaRagH999L6VkfnVtD1UDb+JhQceCuUEA@mail.gmail.com>
+References: <20210204010157.1823669-1-aklimov@redhat.com> <YBvCYhdPai+pb8u2@hirez.programming.kicks-ass.net>
+ <20210205112219.kxdjpvjykrv6fi3x@e107158-lin>
+In-Reply-To: <20210205112219.kxdjpvjykrv6fi3x@e107158-lin>
+From:   Alexey Klimov <aklimov@redhat.com>
+Date:   Thu, 11 Feb 2021 13:38:51 +0000
+Message-ID: <CAFBcO+81bFBUuR=MrLttBEs8gKh0hx+EcJA2MCbqMzu=CUoybg@mail.gmail.com>
+Subject: Re: [PATCH] cpu/hotplug: wait for cpuset_hotplug_work to finish on
+ cpu onlining
+To:     Qais Yousef <qais.yousef@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        yury.norov@gmail.com, Daniel Jordan <daniel.m.jordan@oracle.com>,
+        tglx@linutronix.de, Joshua Baker <jobaker@redhat.com>,
+        audralmitchel@gmail.com, arnd@arndb.de, gregkh@linuxfoundation.org,
+        rafael@kernel.org, tj@kernel.org, lizefan@huawei.com,
+        hannes@cmpxchg.org, Alexey Klimov <klimov.linux@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Feb 10, 2021 at 02:59:32PM -0800, Shakeel Butt wrote:
-> On Wed, Feb 10, 2021 at 9:44 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > From 5bcc0f468460aa2670c40318bb657e8b08ef96d5 Mon Sep 17 00:00:00 2001
-> > From: Johannes Weiner <hannes@cmpxchg.org>
-> > Date: Tue, 9 Feb 2021 16:22:42 -0500
-> > Subject: [PATCH] mm: page-writeback: simplify memcg handling in
-> >  test_clear_page_writeback()
+On Fri, Feb 5, 2021 at 11:22 AM Qais Yousef <qais.yousef@arm.com> wrote:
+>
+> On 02/04/21 10:46, Peter Zijlstra wrote:
+> > On Thu, Feb 04, 2021 at 01:01:57AM +0000, Alexey Klimov wrote:
+> > > @@ -1281,6 +1282,11 @@ static int cpu_up(unsigned int cpu, enum cpuhp_state target)
+> > >     err = _cpu_up(cpu, 0, target);
+> > >  out:
+> > >     cpu_maps_update_done();
+> > > +
+> > > +   /* To avoid out of line uevent */
+> > > +   if (!err)
+> > > +           cpuset_wait_for_hotplug();
+> > > +
+> > >     return err;
+> > >  }
+> > >
 > >
-> > Page writeback doesn't hold a page reference, which allows truncate to
-> > free a page the second PageWriteback is cleared. This used to require
-> > special attention in test_clear_page_writeback(), where we had to be
-> > careful not to rely on the unstable page->memcg binding and look up
-> > all the necessary information before clearing the writeback flag.
+> > > @@ -2071,14 +2075,18 @@ static void cpuhp_online_cpu_device(unsigned int cpu)
+> > >     struct device *dev = get_cpu_device(cpu);
+> > >
+> > >     dev->offline = false;
+> > > -   /* Tell user space about the state change */
+> > > -   kobject_uevent(&dev->kobj, KOBJ_ONLINE);
+> > >  }
+> > >
 > >
-> > Since commit 073861ed77b6 ("mm: fix VM_BUG_ON(PageTail) and
-> > BUG_ON(PageWriteback)") test_clear_page_writeback() is called with an
-> > explicit reference on the page, and this dance is no longer needed.
-> >
-> > Use unlock_page_memcg() and dec_lruvec_page_state() directly.
-> >
-> > This removes the last user of the lock_page_memcg() return value,
-> > change it to void. Touch up the comments in there as well. This also
-> > removes the last extern user of __unlock_page_memcg(), make it
-> > static. Further, it removes the last user of dec_lruvec_state(),
-> > delete it, along with a few other unused helpers.
-> >
-> > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > Acked-by: Hugh Dickins <hughd@google.com>
-> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> 
-> The patch looks fine. I don't want to spoil the fun but just wanted to
-> call out that I might bring back __unlock_page_memcg() for the memcg
-> accounting of zero copy TCP memory work where we are uncharging the
-> page in page_remove_rmap().
+> > One concequence of this is that you'll now get a bunch of notifications
+> > across things like suspend/hybernate.
+>
+> And the resume latency will incur 5-30ms * nr_cpu_ids.
+>
+> Since you just care about device_online(), isn't cpu_device_up() a better place
+> for the wait? This function is special helper for device_online(), leaving
+> suspend/resume and kexec paths free from having to do this unnecessary wait.
 
-That shouldn't be an issue. Just add it back if/when you need it and
-we have a legitimate in-tree user for it again. It still helps to
-remove it now; if someboy later goes through the git log to identify
-dependencies, they'll find your patch adding it and can stop looking.
+Yup, the same idea here once Peter mentioned bringup_nonboot_cpus()
+and bringup_hibernate_cpu().
 
-Thanks for the review!
+Best regards,
+Alexey
+
