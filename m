@@ -2,138 +2,147 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9CB631B811
-	for <lists+cgroups@lfdr.de>; Mon, 15 Feb 2021 12:35:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F099F31CE8F
+	for <lists+cgroups@lfdr.de>; Tue, 16 Feb 2021 18:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229890AbhBOLfe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Feb 2021 06:35:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44630 "EHLO
+        id S229916AbhBPQ7p (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Feb 2021 11:59:45 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229652AbhBOLfb (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Feb 2021 06:35:31 -0500
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA9F2C061756
-        for <cgroups@vger.kernel.org>; Mon, 15 Feb 2021 03:34:50 -0800 (PST)
-Received: by mail-pj1-x102c.google.com with SMTP id d2so3743418pjs.4
-        for <cgroups@vger.kernel.org>; Mon, 15 Feb 2021 03:34:50 -0800 (PST)
+        with ESMTP id S229699AbhBPQ7m (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Feb 2021 11:59:42 -0500
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5DAD4C061574
+        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
+Received: by mail-qk1-x72c.google.com with SMTP id b14so10082755qkk.0
+        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 08:59:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=l865vVupJANTr8r5LWdTPagS4MMpwqLzjm7i9kZsffo=;
-        b=DIldKF3h+HGUTTkXdgO1HcOE27rqK13KgreCr9rYNZM8vICXYReY2h1jmZuKluHWy6
-         u0OVEHaui4daB/x4TMYYhtClWcVjd1m0fdqohXkkGUvciosAGNz19JMJKwZjpgsgVYun
-         on/KKfyItRgN7nvYufhX57/gHvVHvbYZ85k5wudAbXNnIkIYvWm3I+a1huWJHa/WETt+
-         T3XhrQqmyWPiGhhIldBpdvNYQe8AVk5kWi2g7mr8bcIlLaXchSl9uV+bYshA2SdQP43t
-         LhLaWW0/L8V7oh/rZ7cmJNLPSF9/zdfqgLlci7t0NEXtRvi0YuqKCmENP0WrKrJ+Awnv
-         5k7Q==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
+        b=QcYThMMEVLZEm7VRmsM12lMG8ZDFYS88jVBFd9Z67UWfpdmyePvN+QkKDAKq3kRSIH
+         dT4jdVZPlMZPWZg0Llj4TOx6NJWY0qbNUcZsx5ciWu7MNSKKlK4y4wXs0KmwHZZGjHFt
+         DLwXH+6VOSHgIPGNOVUJPLSqiiXkqe62CQYLohD4C8Ojp89gxsduXZpeeyr404CO/cwm
+         /btydGUcbGStYIzkl/TPAGiZTGJbhC5KYmqo3pe/CabYp0YnhLT8nLeX4MR7qc5/yscQ
+         YFbDP8zkkOL/UrZSrJpS5A/Jlc+/mgT+srW/uf4YPa9qIbeiSpupCbcbdQQoD8ITU4sW
+         4jQw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=l865vVupJANTr8r5LWdTPagS4MMpwqLzjm7i9kZsffo=;
-        b=i9NOVTgVidjqhyHQKidl+dujDfxeWo2++kVp7NG/SkCyAj3T6bwYw6VwsWdi52nwz8
-         4CSnBajJNbVrBoVy3V+IHQ/c0TtTA80gIL7WgQjerrzveotKW9RSmivESA6tEmkUIC+E
-         zHrdVswMbS1/B8cVRqisVBxUvpuCtA0nDv5jstGQ2IrZqRxR0Ml9D0z5nC1s37ZNq9ef
-         If8bsjN+93bmQujM5prh+Idgf9oRt3/Kz65B0uOeXNESpW6W+0RbX42Ru0zLUu+ptieC
-         pidulK1ix9APxgX3pWYzmXBjBsAmCHLLCT4l5fC5NsUtqeMS2G807c7JSFIvEFwpRXkq
-         dc1Q==
-X-Gm-Message-State: AOAM533EnZt/MoXCyCpTwq1LiV0LsZMZlTKbOBsxEieCbdHpzyjjdmdF
-        Ghv6iq285RHb3GnfHTNWux89yVZ4PBNG42EqwIMyx6CEISu06Q==
-X-Google-Smtp-Source: ABdhPJwxcxvwODy8C+DbFH/mkU9NvXGvPpfF0/C61BusA2btA/ciWluIl8Up2QQUeiwNml5TBWl1KweOn9KuNLOY9fs=
-X-Received: by 2002:a17:902:9341:b029:e1:7b4e:57a8 with SMTP id
- g1-20020a1709029341b02900e17b4e57a8mr14845364plp.34.1613388890312; Mon, 15
- Feb 2021 03:34:50 -0800 (PST)
-MIME-Version: 1.0
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7Sbc+/7yHkx+7SnjvZzsa9ETiyUzFfwyyH3lcCN73/I=;
+        b=Z8zdAARHdxIO/90hma6Tz+EetY1+E+1B76yHgj07QRd4i17+JAYtwYXL5Ipbu6ylyS
+         Fy1m4odTPJJ1OtzVJUE8irKm5CBLgWU5pEqrpuQEA5KvdlIBnbjrr3AHLtcbacFjOWon
+         4sg+tTS732dlivGaq/27HDj8R61MRkfLoAG3QvgAA6CW2w7oHHqPxeb0jcblWzNVIUy1
+         9iTo8XtkzyWwMyULWuK2xC56wDtF/teTDpU19yVQrOuno15C9aX1tp99HVSzcfbH+IFf
+         dB/0qLh6H2uin4BYuXuC/YDXwKFTFHMhjlp/KjHRP2c3jpitCNnbPuerhGPHJOz5j1FD
+         vyRA==
+X-Gm-Message-State: AOAM530K8bporlVVXbazgdsIKDa77Kss3Zith7II8n2RAg20CZUrl3Pb
+        gv9ALK1iCEE30LW3W1I1WgI1Sw==
+X-Google-Smtp-Source: ABdhPJxC5HWoRm7IEnPC6r53eTdFdTHnW0AZjQk6Jc2GQkHX3Cxml4Hkq9oeYehom45Pg7eqqCwSWg==
+X-Received: by 2002:a05:620a:148c:: with SMTP id w12mr18486430qkj.186.1613494741630;
+        Tue, 16 Feb 2021 08:59:01 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id q12sm7798492qki.91.2021.02.16.08.59.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Feb 2021 08:59:00 -0800 (PST)
+Date:   Tue, 16 Feb 2021 11:59:00 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     mhocko@kernel.org, vdavydov.dev@gmail.com,
+        akpm@linux-foundation.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+Message-ID: <YCv51LgGIWxVjLHT@cmpxchg.org>
 References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-3-songmuchun@bytedance.com> <YCpBUm2N4Bqm5PM5@dhcp22.suse.cz>
- <CAMZfGtVkh-DeYLLo8Nn7kHMCq055RSvL03eON1iqmhydYiQ-iQ@mail.gmail.com> <YCpMo6gLFyqANsgd@dhcp22.suse.cz>
-In-Reply-To: <YCpMo6gLFyqANsgd@dhcp22.suse.cz>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Mon, 15 Feb 2021 19:34:13 +0800
-Message-ID: <CAMZfGtUD3H6e+s_n+2q9aE3ABKJaooRj_vyELBaTTVUssSK-NA@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 3/4] mm: memcontrol: bail out early when id
- is zero
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+ <20210212170159.32153-4-songmuchun@bytedance.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210212170159.32153-4-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Feb 15, 2021 at 6:27 PM Michal Hocko <mhocko@suse.com> wrote:
->
-> On Mon 15-02-21 18:09:44, Muchun Song wrote:
-> > On Mon, Feb 15, 2021 at 5:39 PM Michal Hocko <mhocko@suse.com> wrote:
-> > >
-> > > On Sat 13-02-21 01:01:58, Muchun Song wrote:
-> > > > The memcg ID cannot be zero, but we can pass zero to mem_cgroup_from_id,
-> > > > so idr_find() is pointless and wastes CPU cycles.
-> > >
-> > > Is this possible at all to happen? If not why should we add a test for
-> > > _all_ invocations?
-> >
-> > Yeah, this indeed can happen. If we allocate a new swap cache page
-> > and charge it via mem_cgroup_charge, then the page will uncharge
-> > the swap counter via mem_cgroup_uncharge_swap. When the swap
-> > entry is indeed freed, we will call mem_cgroup_uncharge_swap again,
-> > In this routine, we can pass zero to mem_cgroup_from_id. Right?
->
-> If the above claim is correct, which I would need to double check then
-> it should have been part of the changelog! Please think of your poor
-> reviewers and the time they have to invest into the review.
+Hello Muchun,
 
-The easy way may be adding a printk to mem_cgroup_from_id when
-the parameter is zero.
+On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> The swap charges the actual number of swap entries on cgroup v2.
+> If a swap cache page is charged successful, and then we uncharge
+> the swap counter. It is wrong on cgroup v2. Because the swap
+> entry is not freed.
 
->
-> I would also like to see your waste of CPU cycles argument to be backed
-> by something. Are we talking about cycles due to an additional function
+The patch makes sense to me. But this code is a bit tricky, we should
+add more documentation to how it works and what the problem is.
 
-Yeah, when the parameter is already zero, idr_find() must return zero.
-So I think that the additional function call is unnecessary. I have added
-a printk to mem_cgroup_from_id, I found the parameter can be zero
-several times.
+How about this for the changelog?
 
-> call? Is this really something we should even care about?
+---
+mm: memcontrol: fix swap undercounting for shared pages in cgroup2
 
-Maybe not. Just my thoughts.
+When shared pages are swapped in partially, we can have some page
+tables referencing the in-memory page and some referencing the swap
+slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+differently due to the nature of how they account memory and swap:
 
-Thanks.
+Cgroup1 has a unified memory+swap counter that tracks a data page
+regardless whether it's in-core or swapped out. On swapin, we transfer
+the charge from the swap entry to the newly allocated swapcache page,
+even though the swap entry might stick around for a while. That's why
+we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
 
->
-> > > >
-> > > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > > > ---
-> > > >  mm/memcontrol.c | 3 +++
-> > > >  1 file changed, 3 insertions(+)
-> > > >
-> > > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > > > index a3f26522765a..68ed4b297c13 100644
-> > > > --- a/mm/memcontrol.c
-> > > > +++ b/mm/memcontrol.c
-> > > > @@ -5173,6 +5173,9 @@ static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
-> > > >  struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
-> > > >  {
-> > > >       WARN_ON_ONCE(!rcu_read_lock_held());
-> > > > +     /* The memcg ID cannot be zero. */
-> > > > +     if (id == 0)
-> > > > +             return NULL;
-> > > >       return idr_find(&mem_cgroup_idr, id);
-> > > >  }
-> > > >
-> > > > --
-> > > > 2.11.0
-> > >
-> > > --
-> > > Michal Hocko
-> > > SUSE Labs
->
-> --
-> Michal Hocko
-> SUSE Labs
+Cgroup2 tracks memory and swap as separate, independent resources and
+thus has split memory and swap counters. On swapin, we charge the
+newly allocated swapcache page as memory, while the swap slot in turn
+must remain charged to the swap counter as long as its allocated too.
+
+The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+make swap tracking an integral part of memory control"), because it
+accidentally removed the do_memsw_account() check in the branch inside
+mem_cgroup_uncharge() that was supposed to tell the difference between
+the charge transfer in cgroup1 and the separate counters in cgroup2.
+
+As a result, cgroup2 currently undercounts consumed swap when shared
+pages are partially swapped back in. This in turn allows a cgroup to
+consume more swap than its configured limit intends.
+
+Add the do_memsw_account() check back to fix this problem.
+---
+
+> Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+
+> ---
+>  mm/memcontrol.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c737c8f05992..be6bc5044150 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>  	memcg_check_events(memcg, page);
+>  	local_irq_enable();
+>  
+> -	if (PageSwapCache(page)) {
+> +	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+
+It's more descriptive to use do_memsw_account() here, IMO.
+
+We should also add a comment. How about this above the branch?
+
+	/*
+	 * Cgroup1's unified memory+swap counter has been charged with the
+	 * new swapcache page, finish the transfer by uncharging the swap
+	 * slot. The swap slot would also get uncharged when it dies, but
+	 * for shared pages it can stick around indefinitely and we'd count
+	 * the page twice the entire time.
+	 *
+	 * Cgroup2 has separate resource counters for memory and swap,
+	 * so this is a non-issue here. Memory and swap charge lifetimes
+	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+	 * page to memory here, and uncharge swap when the slot is freed.
+	 */
