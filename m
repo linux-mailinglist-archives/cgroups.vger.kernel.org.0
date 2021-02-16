@@ -2,61 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A68E331CED2
-	for <lists+cgroups@lfdr.de>; Tue, 16 Feb 2021 18:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2F831CEDC
+	for <lists+cgroups@lfdr.de>; Tue, 16 Feb 2021 18:18:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230391AbhBPRRX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 16 Feb 2021 12:17:23 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59386 "EHLO
+        id S229699AbhBPRSq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 16 Feb 2021 12:18:46 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230073AbhBPRRS (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Feb 2021 12:17:18 -0500
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F5FC06174A
-        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 09:16:37 -0800 (PST)
-Received: by mail-lj1-x231.google.com with SMTP id a22so12779698ljp.10
-        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 09:16:37 -0800 (PST)
+        with ESMTP id S230352AbhBPRSm (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 16 Feb 2021 12:18:42 -0500
+Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DDF98C061756
+        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 09:18:01 -0800 (PST)
+Received: by mail-lf1-x12f.google.com with SMTP id v24so17066815lfr.7
+        for <cgroups@vger.kernel.org>; Tue, 16 Feb 2021 09:18:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=E45USrfwyuPTU85r3q5N9FFFgs4PphB6lqH5aUk4Cag=;
-        b=uKAmePCYTggNcKv8e6HwrE/wfBPlHBLs09fukIDn1Ad8eGiyXdq6UVoUHACc5UoJCE
-         3zvOhCdBL7paJpiTVqgjW/9Ln+PbRjS+i/9EK2u5XKpZQ8iRUEu1fvlDnBpoENJ61vJV
-         xamLT1E0WOt/77sNcTXjJxBpkwIl5RrePfmtw0KFg2DKLqob1a4wdYxNfEB6iY+zZQLh
-         T73T2gxzFEIfdIthKZ+fVjxhiCYxIDTziJVgXH7GQiAJOCvGXQZK0xyN017joVbw4A0I
-         vLlIr+HnHG9caI+/8IiRynC1jQ7pDqyTTR8CIPFBsuFA8z4k9Hp5BTpdMneZU8Fsi1uF
-         2WVg==
+        bh=TAIlfyj1+vl6wEY03t8gQIxJzlIrwjx8g7cV2iEl46I=;
+        b=ajc+Ly1Kl3BQHBgTjkn+/wNh48GTRtZTdxzUnLJIhxY4ZFdqnb9AYLaI2XXT/ZVLrv
+         jyngOR5w7dsP5aWWRcFYUODEcZN65i1edh1DfsByO6EIB6AZ32Cuj5vOz3wZdy9r1zNg
+         Y1RHti10VjznC2eoihl0UL/cr+IAYRk25Oczds3MyxDy/ygc6AF2oSQvlGSgLRUMpRT6
+         uFlUP8t+nHMnChWyq4NleRHpwctatl95VSvcqZDV/sKZrHxa/2AT/Si5DDZkL/fAhjxt
+         c/Fyll05dd/xV/YbRAi7tz/eBZ8bA2MyA50QOh9upkC1Ic6UaOz9uHizMUsD+L4RszQ6
+         Mfpw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=E45USrfwyuPTU85r3q5N9FFFgs4PphB6lqH5aUk4Cag=;
-        b=ksQbcy+zZiC/XrC0N+nsaEyaXDFLZgkYt2q0FeScByIDlDvDP/jU1ADBVCWCgq4HOZ
-         wtPITPaYv9wS0IphMffs5Zftsyt5VEaNdJejRfxybeordLf0YA0V1kvylSbTNTVcyzbk
-         5rgSYKmcB8gWHq2rfRkrW67nYHICnTNC7npZ6tYndbDrv0Ylp4jy8pB6KrHPa7DgKF1c
-         qxTtAIZqg0G1FUEkqA/NZXcmgKln824uA1IHTFVgeN3chfBcg7uyJ9lBozzmnbPKnPKk
-         PH/UHuhjwzcXtAeeZrzzlo4oZ9RdMc6Fygd/UfRLf9u25JUYtMbnceD4pq8ChMT5b4qR
-         mmBw==
-X-Gm-Message-State: AOAM532dKvmnTIFTzWJYRfZ3bZzprevT2G+wG1mS0tOKLPxbvNsShIho
-        0iuxtHuXXxhTW1pK3piZ7shKyYiwIvRXlXRoc2q4qA==
-X-Google-Smtp-Source: ABdhPJwjYb7W4T0wg5Hy1MX2CVcAVbqrij6GPD2ReASzI+sXBNljFD1GbZ8juc2sgDG5QDu7KhRrecY1CRdwaSiFg6E=
-X-Received: by 2002:a2e:9806:: with SMTP id a6mr12304184ljj.456.1613495795934;
- Tue, 16 Feb 2021 09:16:35 -0800 (PST)
+        bh=TAIlfyj1+vl6wEY03t8gQIxJzlIrwjx8g7cV2iEl46I=;
+        b=dpWoYwGY9sJbIXlrKjHm86c2ZCJvobqTM+GdMQRm5gcelBl9JtpDb5ZV7keRxS0R7U
+         0m+9H4SmPYAYan34tqN08D9ya8WCKvUPYvWBOBfM8nCefNOAvQHLx9Ng+73UNCwjn7Gm
+         uUdkmzXmey0ROdQLz1Z2dBFm49ikm+xr4HtWQJkwnuoKep55MhGN2+2ZUB/pjbF53AL+
+         EujObxht1mOZIzVMW24/XD8QYAenPeGIjTY7eGjJ+cqU8b0hM3ymiVMEcRY7Ni3Tfllt
+         KWuJDYsO05NYHXX2+2F5gWvjyrL0w7CHAph3TYpI83h5u7nCb8jHdg/ZGcX8IG8uC/fI
+         5yJA==
+X-Gm-Message-State: AOAM531beoWk0DO/2L7pTiUwfPeQINjKACjpQYe0sPUeKPio8kpAcZlE
+        X4l3Ey4rblikMNlczY6B1/kMtEuHQDNWhgDtC5ThCg==
+X-Google-Smtp-Source: ABdhPJwONFMMXGr4fcY9J8n+r2ABk3IrHz+j4bqcUiSnw+UBoHcr+mheWKHCl5jqA0yctFSkbQDCLgqmr3CiqcS7MUw=
+X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr12389695lff.347.1613495879192;
+ Tue, 16 Feb 2021 09:17:59 -0800 (PST)
 MIME-Version: 1.0
 References: <20210212170159.32153-1-songmuchun@bytedance.com>
- <20210212170159.32153-4-songmuchun@bytedance.com> <CALvZod6tXn9qrRmzyspp+7usB-Xx4ayu6KrzmKvoU7zWajx85g@mail.gmail.com>
- <CAMZfGtUpsbiVW7AtBtfYjFvppv+7MmAcff_x872gbeMuv8zs3Q@mail.gmail.com>
-In-Reply-To: <CAMZfGtUpsbiVW7AtBtfYjFvppv+7MmAcff_x872gbeMuv8zs3Q@mail.gmail.com>
+ <20210212170159.32153-4-songmuchun@bytedance.com> <YCv51LgGIWxVjLHT@cmpxchg.org>
+In-Reply-To: <YCv51LgGIWxVjLHT@cmpxchg.org>
 From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 16 Feb 2021 09:16:24 -0800
-Message-ID: <CALvZod4mjDPfRvs0EZw3nZW8TuZqvye61ExD98Qfpm9JtsbGtg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on
- cgroup v2
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Huang Ying <ying.huang@intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
+Date:   Tue, 16 Feb 2021 09:17:45 -0800
+Message-ID: <CALvZod6RPUFnA4zZR20e7M=GriYwWob3DMQqUfhqUMd9aJUq2w@mail.gmail.com>
+Subject: Re: [PATCH 4/4] mm: memcontrol: fix swap uncharge on cgroup v2
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -67,57 +63,91 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 10:48 PM Muchun Song <songmuchun@bytedance.com> wrote:
+On Tue, Feb 16, 2021 at 9:05 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
 >
-> On Sat, Feb 13, 2021 at 2:57 AM Shakeel Butt <shakeelb@google.com> wrote:
-> >
-> > CCing more folks.
-> >
-> > On Fri, Feb 12, 2021 at 9:14 AM Muchun Song <songmuchun@bytedance.com> wrote:
-> > >
-> > > The swap charges the actual number of swap entries on cgroup v2.
-> > > If a swap cache page is charged successful, and then we uncharge
-> > > the swap counter. It is wrong on cgroup v2. Because the swap
-> > > entry is not freed.
-> > >
-> > > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
-> > > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> >
-> > What's the user visible impact of this change?
+> Hello Muchun,
 >
-> IIUC, I think that we cannot limit the swap to memory.swap.max
-> on cgroup v2.
+> On Sat, Feb 13, 2021 at 01:01:59AM +0800, Muchun Song wrote:
+> > The swap charges the actual number of swap entries on cgroup v2.
+> > If a swap cache page is charged successful, and then we uncharge
+> > the swap counter. It is wrong on cgroup v2. Because the swap
+> > entry is not freed.
 >
->   cd /sys/fs/cgroup/
->   mkdir test
->   cd test
->   echo 8192 > memory.max
->   echo 4096 > memory.swap.max
+> The patch makes sense to me. But this code is a bit tricky, we should
+> add more documentation to how it works and what the problem is.
 >
-> OK. Now we limit swap to 1 page and memory to 2 pages.
-> Firstly, we allocate 1 page from this memory cgroup and
-> swap this page to swap disk. We can see:
+> How about this for the changelog?
 >
->   memory.current: 0
->   memory.swap.current: 1
+> ---
+> mm: memcontrol: fix swap undercounting for shared pages in cgroup2
 >
-> Then we touch this page, we will swap in and charge
-> the swap cache page to the memory counter and uncharge
-> the swap counter.
+> When shared pages are swapped in partially, we can have some page
+> tables referencing the in-memory page and some referencing the swap
+> slot. Cgroup1 and cgroup2 handle these overlapping lifetimes slightly
+> differently due to the nature of how they account memory and swap:
 >
->   memory.current: 1
->   memory.swap.current: 0 (but actually we use a swap entry)
+> Cgroup1 has a unified memory+swap counter that tracks a data page
+> regardless whether it's in-core or swapped out. On swapin, we transfer
+> the charge from the swap entry to the newly allocated swapcache page,
+> even though the swap entry might stick around for a while. That's why
+> we have a mem_cgroup_uncharge_swap() call inside mem_cgroup_charge().
 >
-> Then we allocate another 1 page from this memory cgroup.
+> Cgroup2 tracks memory and swap as separate, independent resources and
+> thus has split memory and swap counters. On swapin, we charge the
+> newly allocated swapcache page as memory, while the swap slot in turn
+> must remain charged to the swap counter as long as its allocated too.
 >
->   memory.current: 2
->   memory.swap.current: 0 (but actually we use a swap entry)
+> The cgroup2 logic was broken by commit 2d1c498072de ("mm: memcontrol:
+> make swap tracking an integral part of memory control"), because it
+> accidentally removed the do_memsw_account() check in the branch inside
+> mem_cgroup_uncharge() that was supposed to tell the difference between
+> the charge transfer in cgroup1 and the separate counters in cgroup2.
 >
-> If we swap those 2 pages to swap disk. We can charge and swap
-> those 2 pages successfully. Right? Maybe I am wrong.
+> As a result, cgroup2 currently undercounts consumed swap when shared
+> pages are partially swapped back in. This in turn allows a cgroup to
+> consume more swap than its configured limit intends.
 >
+> Add the do_memsw_account() check back to fix this problem.
+> ---
+>
+> > Fixes: 2d1c498072de ("mm: memcontrol: make swap tracking an integral part of memory control")
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-I was trying to repro this but couldn't and later remembered that swap
-on zram skips the swapcache and thus is not impacted by this issue.
-This is reproducible on swap on disk and I see Johannes has already
-described in good detail.
+With Johannes's suggestions:
+
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
+
+>
+> > ---
+> >  mm/memcontrol.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > index c737c8f05992..be6bc5044150 100644
+> > --- a/mm/memcontrol.c
+> > +++ b/mm/memcontrol.c
+> > @@ -6753,7 +6753,7 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+> >       memcg_check_events(memcg, page);
+> >       local_irq_enable();
+> >
+> > -     if (PageSwapCache(page)) {
+> > +     if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && PageSwapCache(page)) {
+>
+> It's more descriptive to use do_memsw_account() here, IMO.
+>
+> We should also add a comment. How about this above the branch?
+>
+>         /*
+>          * Cgroup1's unified memory+swap counter has been charged with the
+>          * new swapcache page, finish the transfer by uncharging the swap
+>          * slot. The swap slot would also get uncharged when it dies, but
+>          * for shared pages it can stick around indefinitely and we'd count
+>          * the page twice the entire time.
+>          *
+>          * Cgroup2 has separate resource counters for memory and swap,
+>          * so this is a non-issue here. Memory and swap charge lifetimes
+>          * correspond 1:1 to page and swap slot lifetimes: we charge the
+>          * page to memory here, and uncharge swap when the slot is freed.
+>          */
