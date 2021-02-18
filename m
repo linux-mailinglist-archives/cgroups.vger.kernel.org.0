@@ -2,91 +2,96 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7996131EF1B
-	for <lists+cgroups@lfdr.de>; Thu, 18 Feb 2021 20:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E387931EF1F
+	for <lists+cgroups@lfdr.de>; Thu, 18 Feb 2021 20:01:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232488AbhBRTAg (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Feb 2021 14:00:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231919AbhBRRH2 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Feb 2021 12:07:28 -0500
-Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE49C061786
-        for <cgroups@vger.kernel.org>; Thu, 18 Feb 2021 09:06:45 -0800 (PST)
-Received: by mail-qk1-x735.google.com with SMTP id w19so2727841qki.13
-        for <cgroups@vger.kernel.org>; Thu, 18 Feb 2021 09:06:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=zVENMey1EdFzZhk4Yon7dEXfrybku0MTAsUKJNMONig=;
-        b=Y1SWeFTKNyObDh6T0tVdAgoEZMOAylAVj0RaiIh4kAxsIwLKcsBRG7tkJfxs3cHEKu
-         NOWc39l8M1vBqjKsIMnc+AtNj0YWSFBUUDAUFpgpXHuzPzLnk3MRbun/IK0sJH9iZqCi
-         RdKo6WX4ySkyoeKwlC94IFZsf1Ggdowq/47IJqc+GCWUnkGbAfJudf0kZ1qCFSoUNHHv
-         dY/nu1cl5r8HS/JXRG7goGXAtXL1RrdpPQrPCdy4hfiG1WW/Jl8mkMBXUYgonM//jEni
-         tEXmFMLO5cKxRzFHrI9OfkDp/+N6LspjAeUDpjjPIkd3xT5lsvZV4/93GtGUolxXXHfH
-         c9TQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=zVENMey1EdFzZhk4Yon7dEXfrybku0MTAsUKJNMONig=;
-        b=gnRKMajKkgBa77CyzsdSIoZe509GYRJBLbdtrzfZYdv0MyPcu4bIWiAdCmYvyOCKpF
-         Y4+TqPBQW5JgU9hPblxotCDrMti9lxQDU0t3EOeMCLW80kOSLw3ZF85X7z8HXNCo1KEu
-         SNYq80dVDhrmSTsFbrgMzguZalLi61LDFwO7WfKSmN9e64iyGgXu4Q01DopHxHyzO33y
-         tdeH0n3LTQS3NDLQAeZ6sI97v0o7Pm04lsbVc/54voWyVphIBhcsKdnBaEeM0psdhV1i
-         0kOqrxkZ7zxPU+xZwWMM2Foq7lBOctU4Qcc07hMLjOaqI4aPB2472PZQuH4KUrWnOutw
-         XM0w==
-X-Gm-Message-State: AOAM5330Kz9sQ8bd7QT1SHHGfUZlBfAFDbZtjrxW0CjkQ3BPRyIf/Sel
-        u7C247VoJHFPPpmUOSDmzdMQ9A==
-X-Google-Smtp-Source: ABdhPJx9iIU6TFeUSb0A5vm+Lg9Nywr+deM4uatCuWy5lkLBvlxLa/67dT0NGQDC3PG+xNOK/X/C/Q==
-X-Received: by 2002:ae9:f309:: with SMTP id p9mr5127370qkg.111.1613668004287;
-        Thu, 18 Feb 2021 09:06:44 -0800 (PST)
-Received: from localhost ([2620:10d:c091:480::1:b3a9])
-        by smtp.gmail.com with ESMTPSA id b9sm890037qkj.90.2021.02.18.09.06.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 18 Feb 2021 09:06:43 -0800 (PST)
-Date:   Thu, 18 Feb 2021 12:06:42 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+        id S233375AbhBRTAm (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Feb 2021 14:00:42 -0500
+Received: from mga02.intel.com ([134.134.136.20]:47036 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232417AbhBRSiT (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 18 Feb 2021 13:38:19 -0500
+IronPort-SDR: OaEJHUpjNaMZwe5N5kbFFW2c7vyWdzewFPtA8KVCuevQCLgaM3QrYu5eazSE4ixungQ6oyGOwT
+ i8ucj0sJGA8g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="170740653"
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="170740653"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
+IronPort-SDR: K3prdcyMQiILvxrHbSlBhLyrBhdsusQb3Ie+7kLhrXL3PlDG9elq+aDuhFcd4h4iwFlph3eae9
+ lRpPRtrwhOkQ==
+X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
+   d="scan'208";a="428315976"
+Received: from schen9-mobl.amr.corp.intel.com ([10.254.101.217])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 10:30:26 -0800
+Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
+ tree
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH v3 4/8] cgroup: rstat: support cgroup1
-Message-ID: <YC6eojaku6oaOqA2@cmpxchg.org>
-References: <20210209163304.77088-1-hannes@cmpxchg.org>
- <20210209163304.77088-5-hannes@cmpxchg.org>
- <20210217174232.GA19239@blackbody.suse.cz>
- <YC2CKyaeF2bqvpMk@cmpxchg.org>
- <YC6Lh8BRfMA2Ppdk@blackbook>
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
+Date:   Thu, 18 Feb 2021 10:30:20 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YC6Lh8BRfMA2Ppdk@blackbook>
+In-Reply-To: <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 18, 2021 at 04:45:11PM +0100, Michal Koutný wrote:
-> On Wed, Feb 17, 2021 at 03:52:59PM -0500, Johannes Weiner <hannes@cmpxchg.org> wrote:
-> > In this case, we're talking about a relatively small data structure
-> > and the overhead is per mountpoint.
-> IIUC, it is per each mountpoint's number of cgroups. But I still accept
-> the argument above. Furthermore, this can be changed later.
 
-Oops, you're right of course.
 
-> > The default root group has statically preallocated percpu data before
-> > and after this patch. See cgroup.c:
-> I stand corrected, the comment is still valid.
+On 2/18/21 12:24 AM, Michal Hocko wrote:
+
 > 
-> Therefore,
-> Reviewed-by: Michal Koutný <mkoutny@suse.com>
+> I have already acked this patch in the previous version along with Fixes
+> tag. It seems that my review feedback has been completely ignored also
+> for other patches in this series.
 
-Thanks for your reviews, Michal!
+Michal,
+
+My apology.  Our mail system screwed up and there are some mail missing
+from our mail system that I completely missed your mail.  
+Only saw them now after I looked into the lore.kernel.org.
+
+Responding to your comment:
+
+>Have you observed this happening in the real life? I do agree that the
+>threshold based updates of the tree is not ideal but the whole soft
+>reclaim code is far from optimal. So why do we care only now? The
+>feature is essentially dead and fine tuning it sounds like a step back
+>to me.
+
+Yes, I did see the issue mentioned in patch 2 breaking soft limit
+reclaim for cgroup v1.  There are still some of our customers using
+cgroup v1 so we will like to fix this if possible.
+
+For patch 3 regarding the uncharge_batch, it
+is more of an observation that we should uncharge in batch of same node
+and not prompted by actual workload.
+Thinking more about this, the worst that could happen
+is we could have some entries in the soft limit tree that overestimate
+the memory used.  The worst that could happen is a soft page reclaim
+on that cgroup.  The overhead from extra memcg event update could
+be more than a soft page reclaim pass.  So let's drop patch 3
+for now.
+
+Let me know if you will like me to resend patch 1 with the fixes tag
+for commit 4e41695356fb ("memory controller: soft limit reclaim on contention")
+and if there are any changes I should make for patch 2.
+
+Thanks.
+
+Tim
+
