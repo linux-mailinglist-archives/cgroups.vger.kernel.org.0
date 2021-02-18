@@ -2,145 +2,112 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D4B731F090
-	for <lists+cgroups@lfdr.de>; Thu, 18 Feb 2021 20:57:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CD69531F09E
+	for <lists+cgroups@lfdr.de>; Thu, 18 Feb 2021 21:01:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhBRTze (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 18 Feb 2021 14:55:34 -0500
-Received: from mga12.intel.com ([192.55.52.136]:2834 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232246AbhBRTxQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 18 Feb 2021 14:53:16 -0500
-IronPort-SDR: EGYZ0JRVTuRaO1WtKt6JW9o2MFS1PsIme1hfEA7v+8H8b/qvK4ecEvZAQkU5XWmypebhJp6N2a
- r9BAmXT0qu/Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9899"; a="162776059"
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="162776059"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 11:51:29 -0800
-IronPort-SDR: Laxqy638jBahXM/Nn1uEjjSLbDexQjGW13cAai0nmMz4tPOw4aaSlZ/8c1Uy4n9jHYq8NZ4hb4
- q3aVtuPVbnDA==
-X-IronPort-AV: E=Sophos;i="5.81,187,1610438400"; 
-   d="scan'208";a="428366282"
-Received: from schen9-mobl.amr.corp.intel.com ([10.254.101.217])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Feb 2021 11:51:29 -0800
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC4kV7dkJpxjW+df@dhcp22.suse.cz>
- <c3ffa2cb-cb2c-20b7-d722-c875934992e9@linux.intel.com>
- <YC68QRVsCONXscCl@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <286b1ade-46d9-2fca-1641-69de4694deb1@linux.intel.com>
-Date:   Thu, 18 Feb 2021 11:51:27 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
-MIME-Version: 1.0
-In-Reply-To: <YC68QRVsCONXscCl@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S230228AbhBRT65 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 18 Feb 2021 14:58:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59838 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231829AbhBRT4l (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 18 Feb 2021 14:56:41 -0500
+Received: from mail-pl1-x64a.google.com (mail-pl1-x64a.google.com [IPv6:2607:f8b0:4864:20::64a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DFA8C061788
+        for <cgroups@vger.kernel.org>; Thu, 18 Feb 2021 11:56:01 -0800 (PST)
+Received: by mail-pl1-x64a.google.com with SMTP id w10so1728969plg.1
+        for <cgroups@vger.kernel.org>; Thu, 18 Feb 2021 11:56:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=7bVBB7/eb43F7sJCb2A73jGKQH5d6crP4qDBABCXugI=;
+        b=MSGiXWGc/XBlhRD4FT6+UEMZ+VJARxb3RibM8Xi7pgr9pz0bgTNlOAetGX3p8x57hC
+         D9NGC/+GSPxXLIuX4N+ZhEma+EfYEksySW3hvgaO5RI92DO3YOkf+l3+Hz/4dRKkCJdf
+         4cMVb+Q2gHQlbE6XqbqTxkfw4bfAhObx0/dyqaDQRbt5/srIvx75jQGbX1PbYcJkSlg8
+         hI0qu06XNCzJQ1hwwZl3Vi7StUkGbOxBPOtK7067VGnDl7Ahv9l8EKanVlB9gfUPJ6gp
+         ChDRajvVL/VyOf74x+UM1yxcIda7D3fmjy8aa7r0MT38Aa/sNHX4SLupLZYl1t5ZYLIJ
+         5EvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=7bVBB7/eb43F7sJCb2A73jGKQH5d6crP4qDBABCXugI=;
+        b=isgitVwlNJQ7olCX9V5zNwOoImeqAJYDZBLvueqteszTbpMlTDwg5JNS55x4jX92eW
+         hKPbryDrNMJR2MwME1agcvci0JHREO3duGdimLUdl96OIV3cXDCdcCh5753Na+anoToe
+         dAU9h5ma12vH9Mh3dLSaPtjprh9HuwPB77GMtIbCmpalIB/wVzHwES522u9QoHIA71r2
+         Nmu1q4YN/XhnKWFaY6a5NHeH2ay4NjI7XJNl6BkfNlsjP4ml0i7FiZ14Y7cIdsfi7raZ
+         ZJpCAREYESssE31H70FWslLzrunmorGUs9zoPWT200x3scq7PWC1l7P6xQjQT19hpSD9
+         Ya9w==
+X-Gm-Message-State: AOAM532gH+/nB5zVTlx4hFdG5K+c8uQYwt+4/+sVn3use5BZ/ZV5NZML
+        7DzKtF9goVlFqCHzu1xpge1k+KYD5YuE
+X-Google-Smtp-Source: ABdhPJwJ107wMcTLi0gXo6iW/YPA31DgLY3oqSY85ZPspZZPcWLIo/f/8WwkOevVbXHZFcJm+ZFZ40/7R3qQ
+Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
+X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:580f:a4a0:74ce:b3b4])
+ (user=vipinsh job=sendgmr) by 2002:a62:6304:0:b029:1c0:d62d:d213 with SMTP id
+ x4-20020a6263040000b02901c0d62dd213mr5825540pfb.79.1613678160277; Thu, 18 Feb
+ 2021 11:56:00 -0800 (PST)
+Date:   Thu, 18 Feb 2021 11:55:47 -0800
+Message-Id: <20210218195549.1696769-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.0.617.g56c4b15f3c-goog
+Subject: [RFC 0/2] cgroup: New misc cgroup controller
+From:   Vipin Sharma <vipinsh@google.com>
+To:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com
+Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hello,
 
+This patch is creating a new misc cgroup controller for allocation and
+tracking of resources which are not abstract like other cgroup
+controllers.
 
-On 2/18/21 11:13 AM, Michal Hocko wrote:
-> On Thu 18-02-21 10:30:20, Tim Chen wrote:
->>
->>
->> On 2/18/21 12:24 AM, Michal Hocko wrote:
->>
->>>
->>> I have already acked this patch in the previous version along with Fixes
->>> tag. It seems that my review feedback has been completely ignored also
->>> for other patches in this series.
->>
->> Michal,
->>
->> My apology.  Our mail system screwed up and there are some mail missing
->> from our mail system that I completely missed your mail.  
->> Only saw them now after I looked into the lore.kernel.org.
-> 
-> I see. My apology for suspecting you from ignoring my review.
->  
->> Responding to your comment:
->>
->>> Have you observed this happening in the real life? I do agree that the
->>> threshold based updates of the tree is not ideal but the whole soft
->>> reclaim code is far from optimal. So why do we care only now? The
->>> feature is essentially dead and fine tuning it sounds like a step back
->>> to me.
->>
->> Yes, I did see the issue mentioned in patch 2 breaking soft limit
->> reclaim for cgroup v1.  There are still some of our customers using
->> cgroup v1 so we will like to fix this if possible.
-> 
-> It would be great to see more details.
-> 
+This controller was initially proposed as encryption_id but after
+the feedbacks, it is now changed to misc cgroup.
+https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
 
-The sceanrio I saw was we have multiple cgroups running pmbench.
-One cgroup exceeded the soft limit and soft reclaim is active on
-that cgroup.  So there are a whole bunch of memcg events associated
-with that cgroup.  Then another cgroup starts to exceed its
-soft limit.  
+Changes from the encryption_id controller are:
+1. There are only 3 files misc.{capacity, max, current} for all
+   resources compared to each resource having their own 3 files in
+   encryption_id cgroup.
+2. If a resource capacity is 0 then it is considered inactive and won't
+   show up in control files.
+2. This is a lockless implementation similar to page counter APIs
+   compared to single lock implementation in encryption_id cgroup.
 
-Memory is accessed at a much lower frequency
-for the second cgroup.  The memcg event update was not triggered for the
-second cgroup as the memcg event update didn't happened on the 1024th sample.
-The second cgroup was not placed on the soft limit tree and we didn't
-try to reclaim the excess pages.
+Please provide any feedback for this RFC or if it is good for
+merging then I can send a patch for merging.
 
-As time goes on, we saw that the first cgroup was kept close to its
-soft limit due to reclaim activities, while the second cgroup's memory
-usage slowly creep up as it keeps getting missed from the soft limit tree
-update as the update didn't fall on the modulo 1024 sample.  As a result,
-the memory usage of the second cgroup keeps growing over the soft limit
-for a long time due to its relatively rare occurrence.
+Thanks
 
->> For patch 3 regarding the uncharge_batch, it
->> is more of an observation that we should uncharge in batch of same node
->> and not prompted by actual workload.
->> Thinking more about this, the worst that could happen
->> is we could have some entries in the soft limit tree that overestimate
->> the memory used.  The worst that could happen is a soft page reclaim
->> on that cgroup.  The overhead from extra memcg event update could
->> be more than a soft page reclaim pass.  So let's drop patch 3
->> for now.
-> 
-> I would still prefer to handle that in the soft limit reclaim path and
-> check each memcg for the soft limit reclaim excess before the reclaim.
->  
+Vipin Sharma (2):
+  cgroup: sev: Add misc cgroup controller
+  cgroup: sev: Miscellaneous cgroup documentation.
 
-Something like this?
+ Documentation/admin-guide/cgroup-v1/misc.rst |   1 +
+ Documentation/admin-guide/cgroup-v2.rst      |  64 ++-
+ arch/x86/kvm/svm/sev.c                       |  60 ++-
+ arch/x86/kvm/svm/svm.h                       |   1 +
+ include/linux/cgroup_subsys.h                |   4 +
+ include/linux/misc_cgroup.h                  |  75 +++
+ init/Kconfig                                 |  14 +
+ kernel/cgroup/Makefile                       |   1 +
+ kernel/cgroup/misc.c                         | 456 +++++++++++++++++++
+ 9 files changed, 664 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+ create mode 100644 include/linux/misc_cgroup.h
+ create mode 100644 kernel/cgroup/misc.c
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8bddee75f5cb..b50cae3b2a1a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3472,6 +3472,14 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-                if (!mz)
-                        break;
- 
-+               /*
-+                * Soft limit tree is updated based on memcg events sampling.
-+                * We could have missed some updates on page uncharge and
-+                * the cgroup is below soft limit.  Skip useless soft reclaim.
-+                */
-+               if (!soft_limit_excess(mz->memcg))
-+                       continue;
-+
-                nr_scanned = 0;
-                reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
-
-Tim
+-- 
+2.30.0.617.g56c4b15f3c-goog
 
