@@ -2,108 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D0131F66C
-	for <lists+cgroups@lfdr.de>; Fri, 19 Feb 2021 10:19:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6618831FF23
+	for <lists+cgroups@lfdr.de>; Fri, 19 Feb 2021 20:01:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229656AbhBSJSC (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Feb 2021 04:18:02 -0500
-Received: from mx2.suse.de ([195.135.220.15]:49700 "EHLO mx2.suse.de"
+        id S229636AbhBSTBK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Feb 2021 14:01:10 -0500
+Received: from mga17.intel.com ([192.55.52.151]:31784 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229527AbhBSJQ5 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 19 Feb 2021 04:16:57 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613726169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=yYsAIWuqG5g0PtLS3vC3gPQPYDZPxGBMvNHr6Q07to4=;
-        b=nlWS+saaxoksajbabAIYBwVBt+uZsQwz6nCOYG34Y1s6kCiPBQcqrzCDyycIUsjJ5+4hfk
-        bDqBQs0nNzI8lq6UX+lrfdDaZdW5D4rc2SO5ABAN/7CpJ6Y6Y5+yItAIevIcXgkXRqIUHP
-        lPdZSsse/w5ZJPF/PUShm0iC9ip8ODI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4A49EACF6;
-        Fri, 19 Feb 2021 09:16:09 +0000 (UTC)
-Date:   Fri, 19 Feb 2021 10:16:08 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
+        id S229555AbhBSTBI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Fri, 19 Feb 2021 14:01:08 -0500
+IronPort-SDR: PaqsFw1mDJiPp332sbO256QKgggWn8YKVNiusLijRBsPLBLoJMFUqOeI1Ff0Q+h8pmPS7sc4MN
+ DWLHf26T2I5Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="163714562"
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="163714562"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
+IronPort-SDR: ydQjHIvRVWQzSbtxEkBhnUQPSo9AYdN4OeN+tifCiaNeCb1Aj2HAAXQSv7DrzF4eB5Hl8v+5wj
+ jAl7jBKIZnaw==
+X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
+   d="scan'208";a="378989329"
+Received: from schen9-mobl.amr.corp.intel.com ([10.251.10.112])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+To:     Michal Hocko <mhocko@suse.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Dave Hansen <dave.hansen@intel.com>,
         Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
         cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YC+B2KvJVSgfVDTe@dhcp22.suse.cz>
 References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+ <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+Date:   Fri, 19 Feb 2021 10:59:05 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+In-Reply-To: <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 17-02-21 12:41:36, Tim Chen wrote:
-> On a per node basis, the mem cgroup soft limit tree on each node tracks
-> how much a cgroup has exceeded its soft limit memory limit and sorts
-> the cgroup by its excess usage.  On page release, the trees are not
-> updated right away, until we have gathered a batch of pages belonging to
-> the same cgroup. This reduces the frequency of updating the soft limit tree
-> and locking of the tree and associated cgroup.
-> 
-> However, the batch of pages could contain pages from multiple nodes but
-> only the soft limit tree from one node would get updated.  Change the
-> logic so that we update the tree in batch of pages, with each batch of
-> pages all in the same mem cgroup and memory node.  An update is issued for
-> the batch of pages of a node collected till now whenever we encounter
-> a page belonging to a different node.  Note that this batching for
-> the same node logic is only relevant for v1 cgroup that has a memory
-> soft limit.
 
-Let me paste the discussion related to this patch from other reply:
-> >> For patch 3 regarding the uncharge_batch, it
-> >> is more of an observation that we should uncharge in batch of same node
-> >> and not prompted by actual workload.
-> >> Thinking more about this, the worst that could happen
-> >> is we could have some entries in the soft limit tree that overestimate
-> >> the memory used.  The worst that could happen is a soft page reclaim
-> >> on that cgroup.  The overhead from extra memcg event update could
-> >> be more than a soft page reclaim pass.  So let's drop patch 3
-> >> for now.
-> >
-> > I would still prefer to handle that in the soft limit reclaim path and
-> > check each memcg for the soft limit reclaim excess before the reclaim.
-> >
-> 
-> Something like this?
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 8bddee75f5cb..b50cae3b2a1a 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -3472,6 +3472,14 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->                 if (!mz)
->                         break;
-> 
-> +               /*
-> +                * Soft limit tree is updated based on memcg events sampling.
-> +                * We could have missed some updates on page uncharge and
-> +                * the cgroup is below soft limit.  Skip useless soft reclaim.
-> +                */
-> +               if (!soft_limit_excess(mz->memcg))
-> +                       continue;
-> +
->                 nr_scanned = 0;
->                 reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
 
-Yes I meant something like this but then I have looked more closely and
-this shouldn't be needed afterall. __mem_cgroup_largest_soft_limit_node
-already does all the work
-        if (!soft_limit_excess(mz->memcg) ||
-            !css_tryget(&mz->memcg->css))
-                goto retry;
-so this shouldn't really happen.
--- 
-Michal Hocko
-SUSE Labs
+On 2/19/21 1:11 AM, Michal Hocko wrote:
+> On Wed 17-02-21 12:41:35, Tim Chen wrote:
+
+>> Memory is accessed at a much lower frequency
+>> for the second cgroup.  The memcg event update was not triggered for the
+>> second cgroup as the memcg event update didn't happened on the 1024th sample.
+>> The second cgroup was not placed on the soft limit tree and we didn't
+>> try to reclaim the excess pages.
+>>
+>> As time goes on, we saw that the first cgroup was kept close to its
+>> soft limit due to reclaim activities, while the second cgroup's memory
+>> usage slowly creep up as it keeps getting missed from the soft limit tree
+>> update as the update didn't fall on the modulo 1024 sample.  As a result,
+>> the memory usage of the second cgroup keeps growing over the soft limit
+>> for a long time due to its relatively rare occurrence.
+> 
+> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
+> If all events correspond with a newly charged memory and the last event
+> was just about the soft limit boundary then we should be bound by 128k
+> pages (512M and much more if this were huge pages) which is a lot!
+> I haven't realized this was that much. Now I see the problem. This would
+> be a useful information for the changelog.
+> 
+> Your fix is focusing on the over-the-limit boundary which will solve the
+> problem but wouldn't that lead to to updates happening too often in
+> pathological situation when a memcg would get reclaimed immediatelly?
+
+Not really immediately.  The memcg that has the most soft limit excess will
+be chosen for page reclaim, which is the way it should be.  
+It is less likely that a memcg that just exceeded
+the soft limit becomes the worst offender immediately.  With the fix, we make
+sure that it is on the bad guys list and will not be ignored and be chosen
+eventually for reclaim.  It will not sneakily increase its memory usage
+slowly.   
+
+> 
+> One way around that would be to lower the SOFTLIMIT_EVENTS_TARGET. Have
+> you tried that? Do we even need a separate treshold for soft limit, why
+> cannot we simply update the tree each MEM_CGROUP_TARGET_THRESH?
+>  
+
+Lowering the threshold is a band aid that really doesn't fix the problem.
+I found that if the cgroup touches the memory infrequently enough, you
+could still miss the update of it.  And in the mean time, you are updating
+things a lot more frequently with added overhead.
+
+Tim
