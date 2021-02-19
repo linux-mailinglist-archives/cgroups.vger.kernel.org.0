@@ -2,47 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6618831FF23
-	for <lists+cgroups@lfdr.de>; Fri, 19 Feb 2021 20:01:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BB73B31FF30
+	for <lists+cgroups@lfdr.de>; Fri, 19 Feb 2021 20:04:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229636AbhBSTBK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Feb 2021 14:01:10 -0500
-Received: from mga17.intel.com ([192.55.52.151]:31784 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229555AbhBSTBI (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 19 Feb 2021 14:01:08 -0500
-IronPort-SDR: PaqsFw1mDJiPp332sbO256QKgggWn8YKVNiusLijRBsPLBLoJMFUqOeI1Ff0Q+h8pmPS7sc4MN
- DWLHf26T2I5Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9900"; a="163714562"
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="163714562"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
-IronPort-SDR: ydQjHIvRVWQzSbtxEkBhnUQPSo9AYdN4OeN+tifCiaNeCb1Aj2HAAXQSv7DrzF4eB5Hl8v+5wj
- jAl7jBKIZnaw==
-X-IronPort-AV: E=Sophos;i="5.81,189,1610438400"; 
-   d="scan'208";a="378989329"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.10.112])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2021 10:59:07 -0800
-Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
- usage excess
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
-Date:   Fri, 19 Feb 2021 10:59:05 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S229762AbhBSTDu (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 19 Feb 2021 14:03:50 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229620AbhBSTDs (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Feb 2021 14:03:48 -0500
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFE14C061574;
+        Fri, 19 Feb 2021 11:03:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=eQRc2hVweb9hW0U8/mfMxGsY5GwShDfUkREH/4Ybsf4=; b=o14JEMvMVJp6U2Yde53xvkmB5H
+        Sr3DZjZBhSij+WxewYeQLgg+oCv03f7wpMkRxYbvkaiuqHfReW1rLG++eegVtlty3hm0cjleO1cpy
+        oJ9jzzyBgkpLiNS8M/MM/Bgqv8P5/vpJmF8Qg21gwKNb+d6UN2nS3pscO7aHbCxlIoK/u2Umj3jix
+        yeRDJIIml5xqxWPYxVAEvD6qgxDyPuln/ejvkzUXOGcwXwqIEN6JWzxkVe/dz83u8/+DdI11OILhc
+        jvaidLJbypjw8NAUXCGl1UIuuC0l48I9jIZvyZGG3HmLqJafyULiiLLfUKrIMvH/09jU87qJRIXM/
+        kSfKRrWA==;
+Received: from [2601:1c0:6280:3f0::d05b]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1lDB3D-0004Le-Ib; Fri, 19 Feb 2021 19:02:51 +0000
+Subject: Re: [RFC 2/2] cgroup: sev: Miscellaneous cgroup documentation.
+To:     Vipin Sharma <vipinsh@google.com>, tj@kernel.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com
+Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210218195549.1696769-1-vipinsh@google.com>
+ <20210218195549.1696769-3-vipinsh@google.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <71092e0e-5c72-924b-c848-8ae9a589f6b0@infradead.org>
+Date:   Fri, 19 Feb 2021 11:02:41 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-In-Reply-To: <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+In-Reply-To: <20210218195549.1696769-3-vipinsh@google.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -50,52 +54,140 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Hi,
 
-
-On 2/19/21 1:11 AM, Michal Hocko wrote:
-> On Wed 17-02-21 12:41:35, Tim Chen wrote:
-
->> Memory is accessed at a much lower frequency
->> for the second cgroup.  The memcg event update was not triggered for the
->> second cgroup as the memcg event update didn't happened on the 1024th sample.
->> The second cgroup was not placed on the soft limit tree and we didn't
->> try to reclaim the excess pages.
->>
->> As time goes on, we saw that the first cgroup was kept close to its
->> soft limit due to reclaim activities, while the second cgroup's memory
->> usage slowly creep up as it keeps getting missed from the soft limit tree
->> update as the update didn't fall on the modulo 1024 sample.  As a result,
->> the memory usage of the second cgroup keeps growing over the soft limit
->> for a long time due to its relatively rare occurrence.
+On 2/18/21 11:55 AM, Vipin Sharma wrote:
+> Documentation of miscellaneous cgroup controller. This new controller is
+> used to track and limit usage of scalar resources.
 > 
-> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
-> If all events correspond with a newly charged memory and the last event
-> was just about the soft limit boundary then we should be bound by 128k
-> pages (512M and much more if this were huge pages) which is a lot!
-> I haven't realized this was that much. Now I see the problem. This would
-> be a useful information for the changelog.
+> Signed-off-by: Vipin Sharma <vipinsh@google.com>
+> Reviewed-by: David Rientjes <rientjes@google.com>
+> ---
+>  Documentation/admin-guide/cgroup-v1/misc.rst |  1 +
+>  Documentation/admin-guide/cgroup-v2.rst      | 64 +++++++++++++++++++-
+>  2 files changed, 63 insertions(+), 2 deletions(-)
+>  create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
 > 
-> Your fix is focusing on the over-the-limit boundary which will solve the
-> problem but wouldn't that lead to to updates happening too often in
-> pathological situation when a memcg would get reclaimed immediatelly?
+> diff --git a/Documentation/admin-guide/cgroup-v1/misc.rst b/Documentation/admin-guide/cgroup-v1/misc.rst
+> new file mode 100644
+> index 000000000000..8e9e9311daeb
+> --- /dev/null
+> +++ b/Documentation/admin-guide/cgroup-v1/misc.rst
+> @@ -0,0 +1 @@
+> +/Documentation/admin-guide/cgroup-v2.rst
+What is the purpose of this (above) file?
 
-Not really immediately.  The memcg that has the most soft limit excess will
-be chosen for page reclaim, which is the way it should be.  
-It is less likely that a memcg that just exceeded
-the soft limit becomes the worst offender immediately.  With the fix, we make
-sure that it is on the bad guys list and will not be ignored and be chosen
-eventually for reclaim.  It will not sneakily increase its memory usage
-slowly.   
-
-> 
-> One way around that would be to lower the SOFTLIMIT_EVENTS_TARGET. Have
-> you tried that? Do we even need a separate treshold for soft limit, why
-> cannot we simply update the tree each MEM_CGROUP_TARGET_THRESH?
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> index 1de8695c264b..1a41a3623b9b 100644
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
+>         5-7-1. RDMA Interface Files
+>       5-8. HugeTLB
+>         5.8-1. HugeTLB Interface Files
+> -     5-8. Misc
+> -       5-8-1. perf_event
+> +     5-9. Misc
+> +       5.9-1 Miscellaneous cgroup Interface Files
+> +       5.9-2 Migration and Ownership
+> +     5-10. Others
+> +       5-10-1. perf_event
+>       5-N. Non-normative information
+>         5-N-1. CPU controller root cgroup process behaviour
+>         5-N-2. IO controller root cgroup process behaviour
+> @@ -2161,6 +2164,63 @@ HugeTLB Interface Files
+>  	generated on this file reflects only the local events.
 >  
+>  Misc
+> +--------------
+> +
+> +The Miscellaneous cgroup provides the resource allocation and tracking
+> +mechanism for the scalar resources which cannot be abstracted like the other
+> +cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC config
+> +option.
+> +
+> +The first two resources added to the miscellaneous controller are Secure
+> +Encrypted Virtualization (SEV) ASIDs and SEV - Encrypted State (SEV-ES) ASIDs.
+> +These limited ASIDs are used for encrypting virtual machines memory on the AMD
+> +platform.
+> +
+> +Misc Interface Files
+> +~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +Miscellaneous controller provides 3 interface files:
+> +
+> +  misc.capacity
+> +        A read-only flat-keyed file shown only in the root cgroup.  It shows
+> +        miscellaneous scalar resources available on the platform along with
+> +        their quantities::
+> +	  $ cat misc.capacity
+> +	  sev 50
+> +	  sev_es 10
+> +
+> +  misc.current
+> +        A read-only flat-keyed file shown in the non-root cgroups.  It shows
+> +        the current usage of the resources in the cgroup and its children.::
+> +	  $ cat misc.current
+> +	  sev 3
+> +	  sev_es 0
+> +
+> +  misc.max
+> +        A read-write flat-keyed file shown in the non root cgroups. Allowed
+> +        maximum usage of the resources in the cgroup and its children.::
+> +	  $ cat misc.max
+> +	  sev max
+> +	  sev_es 4
+> +
+> +	Limit can be set by::
+> +	  # echo sev 1 > misc.max
+> +
+> +	Limit can be set to max by::
+> +	  # echo sev max > misc.max
+> +
+> +        Limits can be set more than the capacity value in the misc.capacity
 
-Lowering the threshold is a band aid that really doesn't fix the problem.
-I found that if the cgroup touches the memory infrequently enough, you
-could still miss the update of it.  And in the mean time, you are updating
-things a lot more frequently with added overhead.
+                             higher than
 
-Tim
+> +        file.
+> +
+> +Migration and Ownership
+> +~~~~~~~~~~~~~~~~~~~~~~~
+> +
+> +A miscellaneous scalar resource is charged to the cgroup in which it is used
+> +first, and stays charged to that cgroup until that resource is freed. Migrating
+> +a process to a different cgroup do not move the charge to the destination
+
+                                   does
+
+> +cgroup where the process has moved.
+> +
+> +Others
+>  ----
+
+That underline is too short for "Others".
+
+>  
+>  perf_event
+> 
+
+Try building this doc file, please.
+
+next-20210219/Documentation/admin-guide/cgroup-v2.rst:2196: WARNING: Unexpected indentation.
+next-20210219/Documentation/admin-guide/cgroup-v2.rst:2203: WARNING: Unexpected indentation.
+next-20210219/Documentation/admin-guide/cgroup-v2.rst:2210: WARNING: Unexpected indentation.
+next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
+
+Others
+----
+next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
+
+
+I think that the first 3 warnings are due to missing a blank line after ::
+or they could have something to do with mixed tabs and spaces in the misc.*
+properties descriptions.
+
+
+thanks.
+-- 
+~Randy
+
