@@ -2,141 +2,89 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2720A320247
-	for <lists+cgroups@lfdr.de>; Sat, 20 Feb 2021 01:36:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7DBD32061F
+	for <lists+cgroups@lfdr.de>; Sat, 20 Feb 2021 17:25:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229762AbhBTAft (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 19 Feb 2021 19:35:49 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59914 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229752AbhBTAfs (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 19 Feb 2021 19:35:48 -0500
-Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 094B1C061793
-        for <cgroups@vger.kernel.org>; Fri, 19 Feb 2021 16:34:31 -0800 (PST)
-Received: by mail-qv1-xf2b.google.com with SMTP id k8so3068630qvm.6
-        for <cgroups@vger.kernel.org>; Fri, 19 Feb 2021 16:34:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=dddqDG5OH+l1ND7BjX6aGGlaSzT3Qqk6VPLYVIkB8Zk=;
-        b=j3hoLdIcaOoMzPPzi5cxfKzQ6iy0+AxlZBenkTInEAaFtLcL7CAtbl/oK5f/dMNtoU
-         +wzNPu7pcJjBgE5T+v/+W/Z094r37wQbBGmS1/kYm+DgOsw+36T7wGKBlwApDIK+VA3X
-         3/o7H8q8f4SmFsjr+R9Q6kPeVToT8SBYBaPpBRFrATTV6AToiYmxPWkmzhf71RcHVHU4
-         QZZfcHEMxDHzTj2lg3wGzIe4j3yX2rvNk0L/sB9iTk9mfdmQbjFexGECkA4vF/ixM7Hu
-         G0fAWXTfnaIe5vEhXkeleTdZQRORgGrA9GYOxnX/TyDLoUF2GtgLWJdRTzDnXve8LS/W
-         5NXg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=dddqDG5OH+l1ND7BjX6aGGlaSzT3Qqk6VPLYVIkB8Zk=;
-        b=iI9ncz+p1mgDJ3qY8o/sS6uyIOOXAHJUgh02WN4PhxgenGAJc8/UU2ClyvrHIwYB3w
-         bhgrk+hnNJ7mDHekfRO6mi9EbepYIvivVLPDYXd6cNo82MH0aZYNw7/Zq4RLaIdPG5Iv
-         SDBvPXs2uZvx4vQN7TTo04yWrTvgTdM5oP442kcyiaLChpVvaLw2TPr64ZcTE9Dj9qWt
-         E6NDbJtJ6qN9J6yz2c0afkXn9sFDwDpaZSYAbn7uGeIJkCW+0orxwLREyay2VKAPFoBC
-         5a7XMTAxPRv/RYLCL9fEsILXURLIwCN2LNnEU5JnYlv0ls5dBK+1eLviKmgDCQYUdlNr
-         XPRg==
-X-Gm-Message-State: AOAM532MlOMFVHrxMic3/S36nNBkMsu4L6fhbQJgWlQ0qDB+9kwnWwC0
-        ULY2ydBlIwjlKJ3IsFLzeTslvw==
-X-Google-Smtp-Source: ABdhPJyz2aw4CyDY8MTIrmXm7JuOSGibUvPefK8lA9Kt+Ar2Xeti/RlZK4uikpYz2aUAJyEqVrXAzw==
-X-Received: by 2002:a0c:aece:: with SMTP id n14mr2253955qvd.52.1613781270232;
-        Fri, 19 Feb 2021 16:34:30 -0800 (PST)
-Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
-        by smtp.gmail.com with ESMTPSA id r2sm6445507qti.4.2021.02.19.16.34.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 19 Feb 2021 16:34:29 -0800 (PST)
-Date:   Fri, 19 Feb 2021 19:34:29 -0500
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] memcg: charge before adding to swapcache on swapin
-Message-ID: <YDBZFY8WnLewRqLg@cmpxchg.org>
-References: <20210219224405.1544597-1-shakeelb@google.com>
+        id S229796AbhBTQZI (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 20 Feb 2021 11:25:08 -0500
+Received: from mga11.intel.com ([192.55.52.93]:17962 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229774AbhBTQZI (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 20 Feb 2021 11:25:08 -0500
+IronPort-SDR: tcVOF3jv+LgyBsuwW8JvDcxsSx764QttOgsRqV3I7W6LAKH9ie/1+mMM87QDU/muQpXkrxUUmI
+ qtnrdb3w403A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9901"; a="180609299"
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="scan'208";a="180609299"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 08:23:20 -0800
+IronPort-SDR: umqKPvJnXSIFFoaWTBibCca5qVsWhPWL6JAy4xcv1E154Rnw1e7JthfFOHL/gwkdxeOeBtTD89
+ xRN3KZ6zILFg==
+X-IronPort-AV: E=Sophos;i="5.81,193,1610438400"; 
+   d="scan'208";a="401566446"
+Received: from schen9-mobl.amr.corp.intel.com ([10.251.12.105])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Feb 2021 08:23:20 -0800
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+ <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+Message-ID: <0f8117ef-c461-e2be-ea7a-6cbf727c9bb5@linux.intel.com>
+Date:   Sat, 20 Feb 2021 08:23:15 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210219224405.1544597-1-shakeelb@google.com>
+In-Reply-To: <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 02:44:05PM -0800, Shakeel Butt wrote:
-> Currently the kernel adds the page, allocated for swapin, to the
-> swapcache before charging the page. This is fine but now we want a
-> per-memcg swapcache stat which is essential for folks who wants to
-> transparently migrate from cgroup v1's memsw to cgroup v2's memory and
-> swap counters.
+
+
+On 2/19/21 10:59 AM, Tim Chen wrote:
 > 
-> To correctly maintain the per-memcg swapcache stat, one option which
-> this patch has adopted is to charge the page before adding it to
-> swapcache. One challenge in this option is the failure case of
-> add_to_swap_cache() on which we need to undo the mem_cgroup_charge().
-> Specifically undoing mem_cgroup_uncharge_swap() is not simple.
 > 
-> This patch circumvent this specific issue by removing the failure path
-> of  add_to_swap_cache() by providing __GFP_NOFAIL. Please note that in
-> this specific situation ENOMEM was the only possible failure of
-> add_to_swap_cache() which is removed by using __GFP_NOFAIL.
+> On 2/19/21 1:11 AM, Michal Hocko wrote:
+
+>>
+>> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
+>> If all events correspond with a newly charged memory and the last event
+>> was just about the soft limit boundary then we should be bound by 128k
+>> pages (512M and much more if this were huge pages) which is a lot!
+>> I haven't realized this was that much. Now I see the problem. This would
+>> be a useful information for the changelog.
+>>
+>> Your fix is focusing on the over-the-limit boundary which will solve the
+>> problem but wouldn't that lead to to updates happening too often in
+>> pathological situation when a memcg would get reclaimed immediatelly?
 > 
-> Another option was to use __mod_memcg_lruvec_state(NR_SWAPCACHE) in
-> mem_cgroup_charge() but then we need to take of the do_swap_page() case
-> where synchronous swap devices bypass the swapcache. The do_swap_page()
-> already does hackery to set and reset PageSwapCache bit to make
-> mem_cgroup_charge() execute the swap accounting code and then we would
-> need to add additional parameter to tell to not touch NR_SWAPCACHE stat
-> as that code patch bypass swapcache.
+> Not really immediately.  The memcg that has the most soft limit excess will
+> be chosen for page reclaim, which is the way it should be.  
+> It is less likely that a memcg that just exceeded
+> the soft limit becomes the worst offender immediately.  With the fix, we make
+> sure that it is on the bad guys list and will not be ignored and be chosen
+> eventually for reclaim.  It will not sneakily increase its memory usage
+> slowly.   
 > 
-> This patch added memcg charging API explicitly foe swapin pages and
-> cleaned up do_swap_page() to not set and reset PageSwapCache bit.
-> 
-> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-The patch makes sense to me. While it extends the charge interface, I
-actually quite like that it charges the page earlier - before putting
-it into wider circulation. It's a step in the right direction.
+I should also mention that the forced update is only performed once when
+the memcg first exceeded the soft limit as we check whether the memcg
+is already in the soft limit tree due to the !mz->on_tree check.
++	if (mz && !mz->on_tree && soft_limit_excess(mz->memcg) > 0)
++		force_update = true;
 
-But IMO the semantics of mem_cgroup_charge_swapin_page() are a bit too
-fickle: the __GFP_NOFAIL in add_to_swap_cache() works around it, but
-having a must-not-fail-after-this line makes the code tricky to work
-on and error prone.
+So the update overhead is very low. 
 
-It would be nicer to do a proper transaction sequence.
-
-> @@ -497,16 +497,15 @@ struct page *__read_swap_cache_async(swp_entry_t entry, gfp_t gfp_mask,
->  	__SetPageLocked(page);
->  	__SetPageSwapBacked(page);
->  
-> -	/* May fail (-ENOMEM) if XArray node allocation failed. */
-> -	if (add_to_swap_cache(page, entry, gfp_mask & GFP_RECLAIM_MASK, &shadow)) {
-> -		put_swap_page(page, entry);
-> +	if (mem_cgroup_charge_swapin_page(page, NULL, gfp_mask, entry))
->  		goto fail_unlock;
-> -	}
->  
-> -	if (mem_cgroup_charge(page, NULL, gfp_mask)) {
-> -		delete_from_swap_cache(page);
-> -		goto fail_unlock;
-> -	}
-> +	/*
-> +	 * Use __GFP_NOFAIL to not worry about undoing the changes done by
-> +	 * mem_cgroup_charge_swapin_page() on failure of add_to_swap_cache().
-> +	 */
-> +	add_to_swap_cache(page, entry,
-> +			  (gfp_mask|__GFP_NOFAIL) & GFP_RECLAIM_MASK, &shadow);
-
-How about:
-
-	mem_cgroup_charge_swapin_page()
-	add_to_swap_cache()
-	mem_cgroup_finish_swapin_page()
-
-where finish_swapin_page() only uncharges the swap entry (on cgroup1)
-once the swap->memory transition is complete?
-
-Otherwise the patch looks good to me.
+Tim
