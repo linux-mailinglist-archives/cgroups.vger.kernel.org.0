@@ -2,94 +2,114 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB89A320DD0
-	for <lists+cgroups@lfdr.de>; Sun, 21 Feb 2021 22:13:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5779B321229
+	for <lists+cgroups@lfdr.de>; Mon, 22 Feb 2021 09:43:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230133AbhBUVNG (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 21 Feb 2021 16:13:06 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35350 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229936AbhBUVNF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 21 Feb 2021 16:13:05 -0500
-Received: from mail-qv1-xf30.google.com (mail-qv1-xf30.google.com [IPv6:2607:f8b0:4864:20::f30])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82160C061574;
-        Sun, 21 Feb 2021 13:12:25 -0800 (PST)
-Received: by mail-qv1-xf30.google.com with SMTP id s10so4586233qvl.9;
-        Sun, 21 Feb 2021 13:12:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=LCUI5qaT8pUqYdarYBDd4M2SdOdGcx4WAwh3rcV5wfE=;
-        b=K2xYpI7uhz0ocTvxg1i4Gss/Fjo22LSFsmuhD+/1uZccNj0kMo9XZkOgCFXxi2tT4D
-         VMOksXOVCCbE6jmKoavxIN7iR0kN5SQkskoEUqmZbP3q3PkiBwMNTgzZw49p7+J9GqNN
-         V92osIH3Ok/wPvBSW7gQHFfp0jAdckcgjmECOC2LrjtmSttm0K8LF1+gkcRVduV7Cugj
-         2j4i9E77cSUzKiP3jdbJvEVclicSHNgdmzBqp7PpZHyU4fI7HYfOtHW/FZcjZpvAYOBv
-         aWe3S9rkHwuGEenkL8pKw1k4sgAjX5X9ZF7RSsuD17YAvM3BVReJ7VnEGabdiiiexE38
-         3vYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :mime-version:content-disposition:content-transfer-encoding;
-        bh=LCUI5qaT8pUqYdarYBDd4M2SdOdGcx4WAwh3rcV5wfE=;
-        b=oU2y/DvTVj9mVzjlQjbDLdfXpmMqxF6HWIOha6AI3nqWDaWL+YYhWBf1pfReVnJ83x
-         UtlhaAB1vkQzaBIBq3EW/noOXjPyYv7k360vI4gZaxODCam0a80LqnUNx8i1W+NuYLcl
-         k5JK3KwIJHukLwqlvbkx6iEWch/UuOmNQIKcV/sfDIqwYBzDb7YmTHpRx3EPQXacszEv
-         s0I+ojUz6W0E51+UUCWlo1kO6PbqnBSAGyzet8oWXU2f77nMGXM0iX39MTkiFTAM58bF
-         ywZjHnHkPokDmCbHAYXFQMMGIDaPenpceIzu/UaHiJTlo/M2JjEBsGKcXxDzRT6RRZWH
-         ShYg==
-X-Gm-Message-State: AOAM533+US0/mAoKpSk+SI2EUO4MhzDlMsfq+nvLMro/CBPp+uMDMbtv
-        utYXjn9r5UA4mp+eUwzQ5Fg=
-X-Google-Smtp-Source: ABdhPJzePxikO1oAL/7ATEo4HaTD2bd5/KxsTfeT8uJYvpyJ3CR4Z9QzvVA6NPWw08Hsrs3Rm8TeQA==
-X-Received: by 2002:a0c:c488:: with SMTP id u8mr10570635qvi.9.1613941944438;
-        Sun, 21 Feb 2021 13:12:24 -0800 (PST)
-Received: from localhost (dhcp-6c-ae-f6-dc-d8-61.cpe.echoes.net. [72.28.8.195])
-        by smtp.gmail.com with ESMTPSA id q6sm10860187qkd.41.2021.02.21.13.12.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Feb 2021 13:12:23 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 21 Feb 2021 16:12:22 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v5.12-rc1
-Message-ID: <YDLMthAFbC6OTeh9@slm.duckdns.org>
+        id S229990AbhBVIln (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Feb 2021 03:41:43 -0500
+Received: from mx2.suse.de ([195.135.220.15]:39826 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229549AbhBVIl2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 22 Feb 2021 03:41:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1613983241; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cW7dIegbk6LhcE9Xv6LCJLDHAKtdDtCBdL39sJGIE5Q=;
+        b=CxxARZ61+bbckdWC9mSQIGLcUMz5NxoXGw2kpO80V0YLOz+leyTYpDC/LpAhOvfzT1OZZS
+        kVWOwWXFddWMzjyQd/yVZgAnUSNKTAli7cNenfVsiSCx3XGcVPr/53T1PrxscBP0xslri+
+        kd1oOxrZYixyOnLCn7TLzk2Rd9AIaRA=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id EFFD7AD6B;
+        Mon, 22 Feb 2021 08:40:40 +0000 (UTC)
+Date:   Mon, 22 Feb 2021 09:40:32 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+Message-ID: <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+ <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello, Linus.
+On Fri 19-02-21 10:59:05, Tim Chen wrote:
+> 
+> 
+> On 2/19/21 1:11 AM, Michal Hocko wrote:
+> > On Wed 17-02-21 12:41:35, Tim Chen wrote:
+> 
+> >> Memory is accessed at a much lower frequency
+> >> for the second cgroup.  The memcg event update was not triggered for the
+> >> second cgroup as the memcg event update didn't happened on the 1024th sample.
+> >> The second cgroup was not placed on the soft limit tree and we didn't
+> >> try to reclaim the excess pages.
+> >>
+> >> As time goes on, we saw that the first cgroup was kept close to its
+> >> soft limit due to reclaim activities, while the second cgroup's memory
+> >> usage slowly creep up as it keeps getting missed from the soft limit tree
+> >> update as the update didn't fall on the modulo 1024 sample.  As a result,
+> >> the memory usage of the second cgroup keeps growing over the soft limit
+> >> for a long time due to its relatively rare occurrence.
+> > 
+> > Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
+> > If all events correspond with a newly charged memory and the last event
+> > was just about the soft limit boundary then we should be bound by 128k
+> > pages (512M and much more if this were huge pages) which is a lot!
+> > I haven't realized this was that much. Now I see the problem. This would
+> > be a useful information for the changelog.
+> > 
+> > Your fix is focusing on the over-the-limit boundary which will solve the
+> > problem but wouldn't that lead to to updates happening too often in
+> > pathological situation when a memcg would get reclaimed immediatelly?
+> 
+> Not really immediately.  The memcg that has the most soft limit excess will
+> be chosen for page reclaim, which is the way it should be.  
+> It is less likely that a memcg that just exceeded
+> the soft limit becomes the worst offender immediately. 
 
-Nothing interesting. Just two minor patches.
+Well this all depends on when the the soft limit reclaim triggeres. In
+other words how often you see the global memory reclaim. If we have a
+memcg with a sufficient excess then this will work mostly fine. I was more
+worried about a case when you have memcgs just slightly over the limit
+and the global memory pressure is a regular event. You can easily end up
+bouncing memcgs off and on the tree in a rapid fashion. 
 
-Thanks.
+> With the fix, we make
+> sure that it is on the bad guys list and will not be ignored and be chosen
+> eventually for reclaim.  It will not sneakily increase its memory usage
+> slowly.   
+> 
+> > 
+> > One way around that would be to lower the SOFTLIMIT_EVENTS_TARGET. Have
+> > you tried that? Do we even need a separate treshold for soft limit, why
+> > cannot we simply update the tree each MEM_CGROUP_TARGET_THRESH?
+> >  
+> 
+> Lowering the threshold is a band aid that really doesn't fix the problem.
+> I found that if the cgroup touches the memory infrequently enough, you
+> could still miss the update of it.  And in the mean time, you are updating
+> things a lot more frequently with added overhead.
 
-The following changes since commit b5e56576e16236de3c035ca86cd3ef16591722fb:
-
-  MAINTAINERS: Update my email address (2021-01-15 15:33:06 -0500)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-5.12
-
-for you to fetch changes up to 415de5fdeb5ac28c2960df85b749700560dcd63c:
-
-  cpuset: fix typos in comments (2021-01-15 15:36:41 -0500)
-
-----------------------------------------------------------------
-Aubrey Li (1):
-      cpuset: fix typos in comments
-
-Michal Koutný (1):
-      cgroup: cgroup.{procs,threads} factor out common parts
-
- kernel/cgroup/cgroup.c | 55 +++++++++++++-------------------------------------
- kernel/cgroup/cpuset.c |  6 +++---
- 2 files changed, 17 insertions(+), 44 deletions(-)
-
+Yes, I agree this is more of a workaround than a fix but I would rather
+go and touch the threshold which is simply bad than play more tricks
+which can lead to other potential problems. All that for a feature which
+is rarely used and quite problematic in itself. Not sure what Johannes
+thinks about that.
 -- 
-tejun
+Michal Hocko
+SUSE Labs
