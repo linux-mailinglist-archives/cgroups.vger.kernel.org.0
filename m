@@ -2,60 +2,83 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56BF532204F
-	for <lists+cgroups@lfdr.de>; Mon, 22 Feb 2021 20:41:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57F0332207C
+	for <lists+cgroups@lfdr.de>; Mon, 22 Feb 2021 20:52:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhBVTk5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Feb 2021 14:40:57 -0500
-Received: from mail.jvpinto.com ([65.49.11.60]:16705 "EHLO mail.JVPinto.com"
+        id S232782AbhBVTun (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Feb 2021 14:50:43 -0500
+Received: from mga17.intel.com ([192.55.52.151]:41743 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231326AbhBVTk4 (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 22 Feb 2021 14:40:56 -0500
-Received: from RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) by
- RW-EXC1.JVPinto.com (2002:ac20:10d::ac20:10d) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Mon, 22 Feb 2021 11:40:11 -0800
-Received: from User (52.231.198.195) by RW-EXC1.JVPinto.com (172.32.1.13) with
- Microsoft SMTP Server id 15.0.1497.2 via Frontend Transport; Mon, 22 Feb 2021
- 11:39:56 -0800
-Reply-To: <ms.reem@yandex.com>
-From:   "Ms. Reem" <johnpinto@jvpinto.com>
-Subject: Hello okay
-Date:   Mon, 22 Feb 2021 19:40:10 +0000
+        id S231732AbhBVTum (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 22 Feb 2021 14:50:42 -0500
+IronPort-SDR: AAq4QhssEWHBsgwb2vdNXBfRsBt+5LyCRkyzwBCwYQbGGIOFCDzZoYItryu7acTnsSMApEsLeH
+ NAho6/JAKZDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9903"; a="164410062"
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="164410062"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 11:48:38 -0800
+IronPort-SDR: HLGDj/ZjJ4XDI023LnEnQh6emWvqS+JOS1yOmF4b+JlIJbHCC+wOhMcHOiyb2gPXJHK5m2xRhI
+ ZIdvLJYrFBnw==
+X-IronPort-AV: E=Sophos;i="5.81,198,1610438400"; 
+   d="scan'208";a="389990117"
+Received: from schen9-mobl.amr.corp.intel.com ([10.251.12.88])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Feb 2021 11:48:37 -0800
+Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
+ usage excess
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <06f1f92f1f7d4e57c4e20c97f435252c16c60a27.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC+ApsntwnlVfCuK@dhcp22.suse.cz>
+ <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
+ <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
+ <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
+ <YDQBh5th9txxEFUm@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+Date:   Mon, 22 Feb 2021 11:48:37 -0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
+In-Reply-To: <YDQBh5th9txxEFUm@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <33cda8bca94a4717b31ea8432532e74e@RW-EXC1.JVPinto.com>
-To:     Undisclosed recipients:;
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (3) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home in Cambodia on their behalf and
-for our "Mutual Benefits".
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Cambodian/Vietnam Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+On 2/22/21 11:09 AM, Michal Hocko wrote:
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-ms.reem@yandex.com
+>>
+>> I actually have tried adjusting the threshold but found that it doesn't work well for
+>> the case with unenven memory access frequency between cgroups.  The soft
+>> limit for the low memory event cgroup could creep up quite a lot, exceeding
+>> the soft limit by hundreds of MB, even
+>> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
+> 
+> What was the underlying reason? Higher order allocations?
+> 
 
-Regards,
-Ms. Reem.
+Not high order allocation.
+
+The reason was because the run away memcg asks for memory much less often, compared
+to the other memcgs in the system.  So it escapes the sampling update and
+was not put onto the tree and exceeds the soft limit
+pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
+limit, it could escape the sampling the next time it exceeds the soft limit.
+
+As long as we are doing sampling update, this problem is baked in unless we
+add the check to make sure that the memcg is subjected to page reclaim as long
+as it exceeds the soft limit.
+
+Tim
+
