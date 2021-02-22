@@ -2,93 +2,187 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CEA032122B
-	for <lists+cgroups@lfdr.de>; Mon, 22 Feb 2021 09:43:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E9249321AEC
+	for <lists+cgroups@lfdr.de>; Mon, 22 Feb 2021 16:14:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229989AbhBVInw (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 22 Feb 2021 03:43:52 -0500
-Received: from mx2.suse.de ([195.135.220.15]:42134 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229934AbhBVInw (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 22 Feb 2021 03:43:52 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1613983386; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BGr3u1/QiWkqeNGAS3nuSf2LPGyseFbACm8rcGmaFMU=;
-        b=jyTfTBszQLX9et73++r8X7IxIMrqlNpH9jZPmxVJzzdhnlZPOwgMlrZ6YcBxmmoy7ZqRr5
-        qbnq8T2JOps4nShL425LoAycwSUXe1OHGYvGk+eF2wrI48AKF5j2qyuB2JUpW6u+PxgFj3
-        WJ04qlNgi/dXFFcAUlVp1OXf9kWxaTc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 33741AFD7;
-        Mon, 22 Feb 2021 08:43:06 +0000 (UTC)
-Date:   Mon, 22 Feb 2021 09:41:40 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Tim Chen <tim.c.chen@linux.intel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        id S230378AbhBVPNb (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 22 Feb 2021 10:13:31 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39936 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230202AbhBVPNZ (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 22 Feb 2021 10:13:25 -0500
+Received: from mail-wm1-x333.google.com (mail-wm1-x333.google.com [IPv6:2a00:1450:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A172C061786;
+        Mon, 22 Feb 2021 07:12:43 -0800 (PST)
+Received: by mail-wm1-x333.google.com with SMTP id i9so3926085wml.5;
+        Mon, 22 Feb 2021 07:12:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W0TOeWb9HGAVOiFV96tO3iwrSfpr1HUMq4Lyw23rID8=;
+        b=FXji/u2iaXY+XOLURddZgd2B9Komiw4Zs+cHylXgLODWE9GujYAMZXOAJt49ncgKkj
+         KXasUXoXmvp4d8wnMqKd80kcI7te+i8Ssj5jDkgEWFuHlI+B6a2sASXp0MxfAR6JnXe8
+         PMBmzH05uvtN8ixL0Xf+EQKCWEzHPeryma2B8WEKKwAVtI0pXqr1NlCyNenHmBJpSL8S
+         /+oAK7AHbhG8Bp1qrmvN2UnpdRZab4b+NfCGuGFlZhbfGdnHHN2BEQP/z7fvhdeo8a9n
+         SKJFfnaPm0+G5TFN4ZPUDwZLEAxSLZT3kXUZZdZbgYAQSBq86aQw+eD/RGBp29tx1xWa
+         GH7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=W0TOeWb9HGAVOiFV96tO3iwrSfpr1HUMq4Lyw23rID8=;
+        b=AiJa2u4ZYYG4cGGbUvDlKsPNrYsvn5sC3tbefZHBa1Fet7VYgmMduMZdM6UvoN1GPC
+         S5Z3ig8x9Qa5yh2+itwSGbSgnFMSj3sQQcJlLBHyTGB/o/sGGyxj0hyg1cJxe9jN3KTa
+         yWoiDNiT2DU/alDTIBxJBKNYfcHPbSlcUp4VBZ4obMKn1JzDiTCcKD2dp4bP6384QFVU
+         4UODJjq/Ebe8gqeo6wqkcKzxqh2Lvav9qQyC77kHNvop/ZnlBo6llZhXb7vaNPT2x+87
+         HclkeuZrk5h/tBIIsOGCOOugYCCWMjjxLP2/lbKyUO+v7iAEQMwjZb6LMpL4CZVyjw48
+         irbA==
+X-Gm-Message-State: AOAM531Y+q21hjEBnQGvbOWuWFArByIiEuZ4QoCeH6wPNcMuUr4lHDu1
+        xf9Si1zm2rbgoTrQSCoOO2eztQ63JJXBOhEpv9I=
+X-Google-Smtp-Source: ABdhPJwJjaqNTMZMEqWfwHu3GKPnp7PUpKeoIN2SSKme4SlDCBTSRJD1aRWbEX4S9qfmjT5mjltYPQ==
+X-Received: by 2002:a05:600c:26c4:: with SMTP id 4mr9157865wmv.126.1614006761746;
+        Mon, 22 Feb 2021 07:12:41 -0800 (PST)
+Received: from debby (176-141-241-253.abo.bbox.fr. [176.141.241.253])
+        by smtp.gmail.com with ESMTPSA id q25sm20952001wmq.15.2021.02.22.07.12.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Feb 2021 07:12:41 -0800 (PST)
+From:   Romain Perier <romain.perier@gmail.com>
+To:     Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
         Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
-Message-ID: <YDNuRFgJPH4bPEbq@dhcp22.suse.cz>
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
- <YC+B2KvJVSgfVDTe@dhcp22.suse.cz>
- <1ecd277e-c236-08e1-f068-3dd65ee0e640@linux.intel.com>
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jiri Pirko <jiri@nvidia.com>,
+        Sumit Semwal <sumit.semwal@linaro.org>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mimi Zohar <zohar@linux.ibm.com>,
+        Dmitry Kasatkin <dmitry.kasatkin@gmail.com>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
+        Chuck Lever <chuck.lever@oracle.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Steffen Maier <maier@linux.ibm.com>,
+        Benjamin Block <bblock@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Felipe Balbi <balbi@kernel.org>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Cc:     Romain Perier <romain.perier@gmail.com>, cgroups@vger.kernel.org,
+        linux-crypto@vger.kernel.org, netdev@vger.kernel.org,
+        linux-media@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linaro-mm-sig@lists.linaro.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        linux-integrity@vger.kernel.org, linux-nfs@vger.kernel.org,
+        linux-m68k@lists.linux-m68k.org, linux-hwmon@vger.kernel.org,
+        linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+        target-devel@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-usb@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 00/20] Manual replacement of all strlcpy in favor of strscpy
+Date:   Mon, 22 Feb 2021 16:12:11 +0100
+Message-Id: <20210222151231.22572-1-romain.perier@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1ecd277e-c236-08e1-f068-3dd65ee0e640@linux.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri 19-02-21 11:28:47, Tim Chen wrote:
-> 
-> 
-> On 2/19/21 1:16 AM, Michal Hocko wrote:
-> 
-> >>
-> >> Something like this?
-> >>
-> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >> index 8bddee75f5cb..b50cae3b2a1a 100644
-> >> --- a/mm/memcontrol.c
-> >> +++ b/mm/memcontrol.c
-> >> @@ -3472,6 +3472,14 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
-> >>                 if (!mz)
-> >>                         break;
-> >>
-> >> +               /*
-> >> +                * Soft limit tree is updated based on memcg events sampling.
-> >> +                * We could have missed some updates on page uncharge and
-> >> +                * the cgroup is below soft limit.  Skip useless soft reclaim.
-> >> +                */
-> >> +               if (!soft_limit_excess(mz->memcg))
-> >> +                       continue;
-> >> +
-> >>                 nr_scanned = 0;
-> >>                 reclaimed = mem_cgroup_soft_reclaim(mz->memcg, pgdat,
-> > 
-> > Yes I meant something like this but then I have looked more closely and
-> > this shouldn't be needed afterall. __mem_cgroup_largest_soft_limit_node
-> > already does all the work
-> >         if (!soft_limit_excess(mz->memcg) ||
-> >             !css_tryget(&mz->memcg->css))
-> >                 goto retry;
-> > so this shouldn't really happen.
-> > 
-> 
-> Ah, that's true.  The added check for soft_limit_excess is not needed.
-> 
-> Do you think it is still a good idea to add patch 3 to
-> restrict the uncharge update in page batch of the same node and cgroup?
+strlcpy() copy a C-String into a sized buffer, the result is always a
+valid NULL-terminated that fits in the buffer, howerver it has severals
+issues. It reads the source buffer first, which is dangerous if it is non
+NULL-terminated or if the corresponding buffer is unbounded. Its safe
+replacement is strscpy(), as suggested in the deprecated interface [1].
 
-I would rather drop it. The less the soft limit reclaim code is spread
-around the better.
+We plan to make this contribution in two steps:
+- Firsly all cases of strlcpy's return value are manually replaced by the
+  corresponding calls of strscpy() with the new handling of the return
+  value (as the return code is different in case of error).
+- Then all other cases are automatically replaced by using coccinelle.
+
+This series covers manual replacements.
+
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html#strlcpy
+
+Romain Perier (20):
+  cgroup: Manual replacement of the deprecated strlcpy() with return
+    values
+  crypto: Manual replacement of the deprecated strlcpy() with return
+    values
+  devlink: Manual replacement of the deprecated strlcpy() with return
+    values
+  dma-buf: Manual replacement of the deprecated strlcpy() with return
+    values
+  kobject: Manual replacement of the deprecated strlcpy() with return
+    values
+  ima: Manual replacement of the deprecated strlcpy() with return values
+  SUNRPC: Manual replacement of the deprecated strlcpy() with return
+    values
+  kernfs: Manual replacement of the deprecated strlcpy() with return
+    values
+  m68k/atari: Manual replacement of the deprecated strlcpy() with return
+    values
+  module: Manual replacement of the deprecated strlcpy() with return
+    values
+  hwmon: Manual replacement of the deprecated strlcpy() with return
+    values
+  s390/hmcdrv: Manual replacement of the deprecated strlcpy() with
+    return values
+  scsi: zfcp: Manual replacement of the deprecated strlcpy() with return
+    values
+  target: Manual replacement of the deprecated strlcpy() with return
+    values
+  ALSA: usb-audio: Manual replacement of the deprecated strlcpy() with
+    return values
+  tracing/probe: Manual replacement of the deprecated strlcpy() with
+    return values
+  vt: Manual replacement of the deprecated strlcpy() with return values
+  usb: gadget: f_midi: Manual replacement of the deprecated strlcpy()
+    with return values
+  usbip: usbip_host: Manual replacement of the deprecated strlcpy() with
+    return values
+  s390/watchdog: Manual replacement of the deprecated strlcpy() with
+    return values
+
+ arch/m68k/emu/natfeat.c                 |  6 +--
+ crypto/lrw.c                            |  6 +--
+ crypto/xts.c                            |  6 +--
+ drivers/dma-buf/dma-buf.c               |  4 +-
+ drivers/hwmon/pmbus/max20730.c          | 66 +++++++++++++------------
+ drivers/s390/char/diag_ftp.c            |  4 +-
+ drivers/s390/char/sclp_ftp.c            |  6 +--
+ drivers/s390/scsi/zfcp_fc.c             |  8 +--
+ drivers/target/target_core_configfs.c   | 33 ++++---------
+ drivers/tty/vt/keyboard.c               |  5 +-
+ drivers/usb/gadget/function/f_midi.c    |  4 +-
+ drivers/usb/gadget/function/f_printer.c |  8 +--
+ drivers/usb/usbip/stub_main.c           |  6 +--
+ drivers/watchdog/diag288_wdt.c          | 12 +++--
+ fs/kernfs/dir.c                         | 27 +++++-----
+ kernel/cgroup/cgroup.c                  |  2 +-
+ kernel/module.c                         |  4 +-
+ kernel/trace/trace_uprobe.c             | 11 ++---
+ lib/kobject_uevent.c                    |  6 +--
+ net/core/devlink.c                      |  6 +--
+ net/sunrpc/clnt.c                       |  6 ++-
+ security/integrity/ima/ima_policy.c     |  8 ++-
+ sound/usb/card.c                        |  4 +-
+ 23 files changed, 129 insertions(+), 119 deletions(-)
+
 -- 
-Michal Hocko
-SUSE Labs
+2.20.1
+
