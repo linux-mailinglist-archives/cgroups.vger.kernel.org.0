@@ -2,121 +2,82 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42923227C7
-	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 10:28:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A8AD322D4B
+	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 16:19:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231394AbhBWJ05 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Feb 2021 04:26:57 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48832 "EHLO
+        id S232705AbhBWPTR (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Feb 2021 10:19:17 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39724 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231638AbhBWJ0g (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Feb 2021 04:26:36 -0500
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71C77C06174A
-        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 01:25:56 -0800 (PST)
-Received: by mail-pg1-x52f.google.com with SMTP id t26so12013583pgv.3
-        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 01:25:56 -0800 (PST)
+        with ESMTP id S232698AbhBWPTP (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Feb 2021 10:19:15 -0500
+Received: from mail-qk1-x72a.google.com (mail-qk1-x72a.google.com [IPv6:2607:f8b0:4864:20::72a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CDDCC06174A
+        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 07:18:33 -0800 (PST)
+Received: by mail-qk1-x72a.google.com with SMTP id z190so16414048qka.9
+        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 07:18:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mu2c4DZ3wSvp2hWIYY8iGN/5x9vHcWAfw9ARv3kyqaM=;
-        b=LO30HGhJEEoDclp09pG3Zhuhe4o587oo39dmuNomrLg61H6NzuMkL0xL1vBoOKFkuy
-         s5wFOFudC2zzK0/9HCBgmyHk5dt3QNNyE0FvMB/0LHRZjtr3OfC/Jda4G713nBDXbkUw
-         DsvahiAtdD1q5HImPQ1tnNyvxxDLAp8akFgugDk60PJQJGTk185uuHOcXRA4aZBl2gDS
-         hMOS3C/AZ20hOPMt7eW25LMJz7bQNwRsbBIeLbNVU7Ct3lFZ1nK7RpS847vlMYKXsgTd
-         8L0GHFjCVFxsl4ObqTHMsj1/xeCdD5wC1ADe1TFzPuwQvd5lHI3iYz0HRPZIOOWXpq5K
-         i2rA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BEgzN/eWl9ypgO18zGxZMbgknCN0HuQ7lE1kZsV2Mqc=;
+        b=1olQJtG/wvtNQelqBB7lkff1dMw5my00CEjeWJ1HstDl1DCMGbdlX+7YLDlDBZwK8C
+         FjBU18p9rB4l/AUnaEq9Qxjl+WCChyHx3OQVGcWWqgdACPeyzBL0AdQEU7KkosHV80Ql
+         ry7PE2TuhFrccnUA6Dyo2q9wTcfDkGwkbr/udctYwcZYbzmz9V3WU+zZEyiMPQXhaspB
+         8FbO8VTuMKy4oOP9czAfGPOIDW3Pb8/QLa3XNYvFx5URd/JIhkT7kfTlOAAbWTfQBIdV
+         Y+fBDVr3jrNydsKaeRtTuq9X8HZU60XJlsiVbDJ7x6VuqH20iGNfwwgMm3sfXgMqkePz
+         657A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mu2c4DZ3wSvp2hWIYY8iGN/5x9vHcWAfw9ARv3kyqaM=;
-        b=BK9IjVVclJ9NUKUkanxAzw4R48tkocB6oo4UnTaZJfs9yrUECkuNTDjs3szPV1gWUA
-         NZGLHUzP4ZbSWrFz/3O6ZQZtK1z0rTSGRTBvJUOG4mOeyfkleNEVpsLcnK1EReyLZUp2
-         MQCmrKQ7gYM0HEmBuFz8+Y0+jbBvxcH4btgLcb+ssjrychP2/MkzoS+4lW3xr6YnrquH
-         TZD7hlOo76OMR5a7DPBSLrdzDHetdF10UBWIAizq5sXx2YQuHjtXXwFvoZn/Oq4xg97h
-         ZoON00RF7vGBKaKF+NbbRorK1m/IVkxV23f4jgkhW5xtuxZ6xW6ILDG2y6t6+X0xn/n0
-         U3gQ==
-X-Gm-Message-State: AOAM5302lQqzHnm9NlyE3Nsb8R3/RZOGTVszNcwLnYTQLjfhT2bxanpE
-        O14z27WNScq2eSEivdDm5055eQ==
-X-Google-Smtp-Source: ABdhPJzvGlwiRLMi9EIg0liLMWJEFp4n/kdqajnxkrCrhCu8fi9gpNP4ucf237OTb4TvSn/w6Cne1g==
-X-Received: by 2002:a62:ae05:0:b029:1ed:9384:3e6f with SMTP id q5-20020a62ae050000b02901ed93843e6fmr10898262pff.44.1614072355999;
-        Tue, 23 Feb 2021 01:25:55 -0800 (PST)
-Received: from localhost.localdomain ([139.177.225.236])
-        by smtp.gmail.com with ESMTPSA id iq6sm2397154pjb.6.2021.02.23.01.25.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 23 Feb 2021 01:25:55 -0800 (PST)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     hannes@cmpxchg.org, mhocko@kernel.org, vdavydov.dev@gmail.com,
-        akpm@linux-foundation.org, guro@fb.com, shakeelb@google.com
-Cc:     cgroups@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH] mm: memcontrol: fix slub memory accounting
-Date:   Tue, 23 Feb 2021 17:24:23 +0800
-Message-Id: <20210223092423.42420-1-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BEgzN/eWl9ypgO18zGxZMbgknCN0HuQ7lE1kZsV2Mqc=;
+        b=QtZHrBX/yuYukI39sHqacBzN4ka7dcy2kTJVK1cA4IaBNc4OMsAE108HaVvVTzg6NL
+         xbYnea2idhYhMQwMuJqdLdZaUvaA3KuyY0fUncR2ki1sS9aI6MdUwMYWOgbNGSGa3d5e
+         UKx8QJ/PfIc6e7vFFwAl/W+6OPFRIY8gQwKGrFDci/+Wq9PfZq2ZjL7hYQQtSLCz2S/z
+         HV9DocZXJ5Ormu+VLVUZEOCpkB4Yo+xofWd/OjgaKRFpzuirfuM9N9X8MT+K35kOtwzt
+         Vu14k9sZJw/99wTcnsXzDahVpJ/Xyt/VcROSGVJqeaUlH3LjSPOWhuOAXTSrtwuNCjuk
+         IljQ==
+X-Gm-Message-State: AOAM530MSc30T4SFChoIzG3RNsrL0M4/hdezKFUaC1Ifv7LP6OoK7RGH
+        b3BCCO2fLw1cKsr+MiAALyaqklQY3K5BVw==
+X-Google-Smtp-Source: ABdhPJyxluBmo33wmV5Zdq8xSmAKSugIRQowaGA7cWV7LaCwSlnoQNrB4c6x0C4GImZr3BuOFDIxJg==
+X-Received: by 2002:a05:620a:4152:: with SMTP id k18mr23885378qko.446.1614093512638;
+        Tue, 23 Feb 2021 07:18:32 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:a2a2])
+        by smtp.gmail.com with ESMTPSA id d1sm12739451qtq.94.2021.02.23.07.18.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 23 Feb 2021 07:18:32 -0800 (PST)
+Date:   Tue, 23 Feb 2021 10:18:30 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Michal Hocko <mhocko@suse.cz>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] mm: Fix missing mem cgroup soft limit tree updates
+Message-ID: <YDUcxs5Zw+265Vpx@cmpxchg.org>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <e269f5df3af1157232b01a9b0dae3edf4880d786.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC4BcsNFEmW7XeqB@cmpxchg.org>
+ <d141f9ec-5502-b011-167f-e24d891b0dfe@linux.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d141f9ec-5502-b011-167f-e24d891b0dfe@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-SLUB currently account kmalloc() and kmalloc_node() allocations larger
-than order-1 page per-node. But it forget to update the per-memcg
-vmstats. So it can lead to inaccurate statistics of "slab_unreclaimable"
-which is from memory.stat. Fix it by using mod_lruvec_page_state instead
-of mod_node_page_state.
+On Mon, Feb 22, 2021 at 10:38:27AM -0800, Tim Chen wrote:
+> Johannes,
+> 
+> Thanks for your feedback.  Since Michal has concerns about the overhead
+> this patch could incur, I think we'll hold the patch for now.  If later
+> on Michal think that this patch is a good idea, I'll incorporate these
+> changes you suggested.
 
-Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/slab_common.c | 4 ++--
- mm/slub.c        | 8 ++++----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+That works for me.
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 821f657d38b5..20ffb2b37058 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -906,8 +906,8 @@ void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
- 	page = alloc_pages(flags, order);
- 	if (likely(page)) {
- 		ret = page_address(page);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    PAGE_SIZE << order);
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      PAGE_SIZE << order);
- 	}
- 	ret = kasan_kmalloc_large(ret, size, flags);
- 	/* As ret might get tagged, call kmemleak hook after KASAN. */
-diff --git a/mm/slub.c b/mm/slub.c
-index e564008c2329..f2f953de456e 100644
---- a/mm/slub.c
-+++ b/mm/slub.c
-@@ -4057,8 +4057,8 @@ static void *kmalloc_large_node(size_t size, gfp_t flags, int node)
- 	page = alloc_pages_node(node, flags, order);
- 	if (page) {
- 		ptr = page_address(page);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    PAGE_SIZE << order);
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      PAGE_SIZE << order);
- 	}
- 
- 	return kmalloc_large_node_hook(ptr, size, flags);
-@@ -4193,8 +4193,8 @@ void kfree(const void *x)
- 
- 		BUG_ON(!PageCompound(page));
- 		kfree_hook(object);
--		mod_node_page_state(page_pgdat(page), NR_SLAB_UNRECLAIMABLE_B,
--				    -(PAGE_SIZE << order));
-+		mod_lruvec_page_state(page, NR_SLAB_UNRECLAIMABLE_B,
-+				      -(PAGE_SIZE << order));
- 		__free_pages(page, order);
- 		return;
- 	}
--- 
-2.11.0
-
+Thanks!
