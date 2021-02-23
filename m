@@ -2,139 +2,174 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71144322DAD
-	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 16:39:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECCDD322E7E
+	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 17:14:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233161AbhBWPjH (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Feb 2021 10:39:07 -0500
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:63486 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231177AbhBWPjF (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Feb 2021 10:39:05 -0500
-Received: from pps.filterd (m0044010.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 11NFJuhb002240;
-        Tue, 23 Feb 2021 07:38:01 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=8Dnke+Xe9pmyGZPvfL7ey84TMNULpiFlkwLnLEfkkZ0=;
- b=Ix9HGaP6s3CXvh+Ec67e/h6DSqmrOE5z0WPR43Gbm11/kwZAlAqe2aPF730G2VWmgd/J
- 9josdEMcWqdVJYHkoc5bVIYgFR0511QO213GUndZmDQX76y1cR5yPOBhKqhiZWBb/day
- ENW7t7B1d3RlunVdZJn+rJ+or1s8OTQfpyY= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 36ukctbsr0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Tue, 23 Feb 2021 07:38:01 -0800
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.174) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Tue, 23 Feb 2021 07:37:59 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BseDYVJBTouiX0wG5gkiQ8y1fLceRauGWsflPyGa0dSLGY644iM5bn4nl4MQ4NbRwISByfYyf8m48rjafl7JH6CT+Y0tNXZ4IpzNrM92qpc2mqbaN29jrBScPD2uV/x/vnrx/bK8KG+NiA69nlyOCxWLY3qH/n7pH8lX98s0rPdcCNfPJdKMRQM9tLl8cnPS7BKuxmvppi5aPuXoku0nzZNJtK5ksL5E8im87UTsoc1P361cVmZ36ejdVD64Cm/M3MzH1fH7SASaoThpCr6cfGFd39O9KPdJwC37uMY+FjtoDrRt9sVKsaMX793E5ny1fPCfEpT4xIuYVckKjc6Rmg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8Dnke+Xe9pmyGZPvfL7ey84TMNULpiFlkwLnLEfkkZ0=;
- b=aqSBQFrcyPBpZuV4tv9c1o7RiPH/qfRQ3y5XTRC/baEWu6BiKHGj2+h6Tjmez53MUk9rNbELeckM3NBiKgn0s58fPUXHfqnQuM5y+qXek3rtTSlf8+G+k5PwBRFDnHRKeHmpka1pKgCfn5iwIHsaJ8l0af1Y2fAXZTThjOcY94bwN7zro7U1gECfxVOPOftWIIIXBhuThR0ZIcRn3zXpfPbhUQYFLg2USWuQiJW1covFIm6GazoSxECGkyAnlQXOamNZvNFx78PxUB4rqVobfTNaT8s3wtm2hIZKKAnUf2KB3QGQxSs3f2kUyoUYzRZcxVVSsXc1Bd+cMRadulhRmA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: bytedance.com; dkim=none (message not signed)
- header.d=none;bytedance.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3602.namprd15.prod.outlook.com (2603:10b6:a03:1f8::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.29; Tue, 23 Feb
- 2021 15:37:58 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::53a:b2c3:8b03:12d1%7]) with mapi id 15.20.3868.033; Tue, 23 Feb 2021
- 15:37:58 +0000
-Date:   Tue, 23 Feb 2021 07:37:54 -0800
-From:   Roman Gushchin <guro@fb.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-CC:     <hannes@cmpxchg.org>, <mhocko@kernel.org>,
-        <vdavydov.dev@gmail.com>, <akpm@linux-foundation.org>,
-        <shakeelb@google.com>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] mm: memcontrol: fix slub memory accounting
-Message-ID: <YDUhUtzLBmSV325H@carbon.lan>
-References: <20210223092423.42420-1-songmuchun@bytedance.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210223092423.42420-1-songmuchun@bytedance.com>
-X-Originating-IP: [2620:10d:c090:400::5:719f]
-X-ClientProxiedBy: MWHPR08CA0050.namprd08.prod.outlook.com
- (2603:10b6:300:c0::24) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S233329AbhBWQO3 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Feb 2021 11:14:29 -0500
+Received: from mx2.suse.de ([195.135.220.15]:55178 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233532AbhBWQO1 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 23 Feb 2021 11:14:27 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614096818; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=hSSWb6rYIaUJkIAo1VQ5w7wYavKCbYbcsKfGHrXCuTI=;
+        b=hXfpY2GYOXDt7KiTCZVUgesYyjIx0kKpHd9RZrR/pgeVldRGMEMifQSKN65pZMx9FvxA+u
+        tBrrGszcyktmLgFDXTSndHIyFf8tcEMfmP0C9UuDcRz3jqVe2729q4qQjSGWEFjo4c03C2
+        YGzII7qT68I1SAI5rg32EEGb5EHjuE4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 80C98ACCF;
+        Tue, 23 Feb 2021 16:13:38 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 17:13:30 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Romain Perier <romain.perier@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com, Tejun Heo <tj@kernel.org>,
+        Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 01/20] cgroup: Manual replacement of the deprecated
+ strlcpy() with return values
+Message-ID: <YDUpqn+cRWg1ZYYT@blackbook>
+References: <20210222151231.22572-1-romain.perier@gmail.com>
+ <20210222151231.22572-2-romain.perier@gmail.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.lan (2620:10d:c090:400::5:719f) by MWHPR08CA0050.namprd08.prod.outlook.com (2603:10b6:300:c0::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3868.27 via Frontend Transport; Tue, 23 Feb 2021 15:37:57 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cf6eb310-d0df-4e68-7bf9-08d8d810ff33
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3602:
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3602E5A2891B4F3D91A467C9BE809@BY5PR15MB3602.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: B0ms235NVAWg5DLGZlmzhBSyEVcvJBNmll/38W3TEBRg1eTk/Pk1e7zsjlEBPSmAGk53ltjgs2nvd6R4iKY6WvfUNGH+5hP6hMiDuLH3WBAkeE9MjpMi9DuJhjnBVg9pjDppnMgwo+DNDZSDlTnAprc8PBs7h0APOjloHMuHyz2I+gQZQoWabMHRglQ0+QQ8u524RRgqrNe5dF1rB2R0ZABi2PdzXQARDPd8cHyBp7RRrDzAzkOl6n8kl9aT34fcdgfrTwsVuIsXk423OnivcOaI5aoSgDe8aAHZeXeRFBSrlLxXycbYWOknQcYhNn46PFqETmp31hnxGvpCQc68H6DZ3KD93kYJqg/vmFsB7rj+REVFmUbZAmlxzAU5nnLf9/Ok1dpqLjEbtzPTrPeFvo8QavQyMN+UQ3uKBOeeNaEQRJL6GiADL8/bol3qQchtg86L/wjwip5Tb9dQDUWJXM0rX7V2EGi+0CwInPwyXM2lae9LfxqsQWHTWERxSyqyEsEcYlkp8b/xx3Hiv8G6hQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(346002)(39860400002)(376002)(136003)(396003)(316002)(478600001)(36756003)(83380400001)(86362001)(15650500001)(4744005)(5660300002)(66556008)(66476007)(66946007)(6666004)(4326008)(16526019)(186003)(2906002)(8676002)(8886007)(52116002)(7696005)(55016002)(8936002)(6916009)(9686003)(6506007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?QBii8X6Dz3ZSm7V6DcGb8M1sSnt+hbGmcQpQHoqL4MVyAUbSVK1b8wjZG2+I?=
- =?us-ascii?Q?0XM1GgxcofhF8ojhmDMauXgbEx6QI9KyvLTQU4Xyl9+bH5g5Q4L2Latx6Rbj?=
- =?us-ascii?Q?hmHH/oaSLDAEXO/DK0W6IVz/prYPLmilvQyXWD6Ie082P9ggI6/RbUI9EXNl?=
- =?us-ascii?Q?YjmxscNRvoW1EPpwgXfAai6goXF3CNvqLbql9cGBmznEDxuA9iHOPMxsYq1r?=
- =?us-ascii?Q?PngpfPK0ANT57NhNdd2ScOSCvUINoiX41d7AAb8SgbmgBsjN/UunVup3pn/l?=
- =?us-ascii?Q?GdqpDaDWCnNo/r6Diawi5IUHvj9Wc0PIB1MpuWw67yItsRsyFGhSMnQUemt5?=
- =?us-ascii?Q?ITAQeQHaJiCpjRTJzC+AYOBaw6QReMbmfc84Mp8WlVNVR4Tt05tabod90H9v?=
- =?us-ascii?Q?sOe22M/yoH9N/TNlxeVeRgNCYxx/kU5ltOXTi5YBHwl1JC4EjxV1kr78+nTI?=
- =?us-ascii?Q?Maol6tIgAAeudjOZuTCPR92aJMOx191Xne8hS/eTBPkfCIIlB+44IIShpaus?=
- =?us-ascii?Q?FdevPNz7SQJ12Zx50pIIRii5oRBhfMtXY4mhbpNA4cXuvJvqV49zN2OEAe4K?=
- =?us-ascii?Q?Hr4iN9N4b10I8msR+KAkYq9KVJUy7aMdrIy/mfzZFbHFooGFuPiWUzn5hj4M?=
- =?us-ascii?Q?eBPNtws6G61Mw1CoYJ2qch39q+yP75dnJqJ8+Q+M73tctZWaQIREapLG+dbE?=
- =?us-ascii?Q?udZPrG1wvltsmUTqY1EYTK99B7EvC/7tJzn0IfAphEpFPBusWogleW6st9Ki?=
- =?us-ascii?Q?IsvoTXJHz6ZniIfUJ7kXF9VYh+kDZau8G3WTeHt2FIZTFdufJxHRZrt2+FUv?=
- =?us-ascii?Q?VNqvVS3zpRooNiyeynzDYQGg2LPch1wPVUljiXZSgdAqxamS6eHlPy/7mr9c?=
- =?us-ascii?Q?x17jn7x2HsqbU/Dh75TVti3dniiQY6lZ3szlrggqswJAq2xqy9EH32g4asOd?=
- =?us-ascii?Q?HbsZQLXXl7fPMuOHAwwK5KlHAo7kzOTe667znRTrhY1pVIHgNz3IUEtW95w1?=
- =?us-ascii?Q?r8B+FUOQoU1ZNjdowDt9TVxECg0o+mwbLsmrVC28og28Epb3ADK0rhzlgnJI?=
- =?us-ascii?Q?qdIlJQoAAfIVpTIdbNuuOJmRlKfi6Zyaj0u/kqwVhxYytCQhtXSc4ytElxnT?=
- =?us-ascii?Q?cKc2wwBKIYU3aqi5rGNCmwA/PSmC8/kWkDQLa4aC0nPhs2saqHhbLFITkJbY?=
- =?us-ascii?Q?a1lRlASS2OsKTymCw4xcPDNmxBiPo5oppMk9Klc2769U1jF3EEG2/rKc2yW6?=
- =?us-ascii?Q?yDSu5OsZ8ENzDVPJCjrG2wOcf+oUA+gJMXSnJrEnpirdZhAFgeP3qupqjOlg?=
- =?us-ascii?Q?hXjncksFRUJlCtdYNOkn32K0MBwGt1HJXVMbaY1qpCfq6w=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: cf6eb310-d0df-4e68-7bf9-08d8d810ff33
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Feb 2021 15:37:58.7054
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vJZFgEkkZuWL0jo7X3Q9ki0JiCrPzi5nSbXVIznH5cHTSwzxEmv7fwXZkk/C4h+g
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3602
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
- definitions=2021-02-23_08:2021-02-23,2021-02-23 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 adultscore=0
- priorityscore=1501 clxscore=1015 mlxlogscore=784 malwarescore=0
- phishscore=0 impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0
- spamscore=0 lowpriorityscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2102230131
-X-FB-Internal: deliver
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="1/tBU1JjKCYi4JT4"
+Content-Disposition: inline
+In-Reply-To: <20210222151231.22572-2-romain.perier@gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 05:24:23PM +0800, Muchun Song wrote:
-> SLUB currently account kmalloc() and kmalloc_node() allocations larger
-> than order-1 page per-node. But it forget to update the per-memcg
-> vmstats. So it can lead to inaccurate statistics of "slab_unreclaimable"
-> which is from memory.stat. Fix it by using mod_lruvec_page_state instead
-> of mod_node_page_state.
-> 
-> Fixes: 6a486c0ad4dc ("mm, sl[ou]b: improve memory accounting")
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 
-Reviewed-by: Roman Gushchin <guro@fb.com>
+--1/tBU1JjKCYi4JT4
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Thanks!
+Hello.
+
+On Mon, Feb 22, 2021 at 04:12:12PM +0100, Romain Perier <romain.perier@gmai=
+l.com> wrote:
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -2265,7 +2265,7 @@ int task_cgroup_path(struct task_struct *task, char=
+ *buf, size_t buflen)
+Actually, this function isn't used at all. So I'd instead propose the
+patch below.
+
+-- >8 --
+=46rom 4f7e0b9c0412f60e0b0e8b7d1ef6eb2790dca567 Mon Sep 17 00:00:00 2001
+=46rom: =3D?UTF-8?q?Michal=3D20Koutn=3DC3=3DBD?=3D <mkoutny@suse.com>
+Date: Tue, 23 Feb 2021 17:05:57 +0100
+Subject: [PATCH] cgroup: Drop task_cgroup_path()
+MIME-Version: 1.0
+Content-Type: text/plain; charset=3DUTF-8
+Content-Transfer-Encoding: 8bit
+
+The function has no current users and it is a remnant from kdbus
+enthusiasm era 857a2beb09ab ("cgroup: implement
+task_cgroup_path_from_hierarchy()"). Drop it to eliminate unused code.
+
+Suggested-by: Romain Perier <romain.perier@gmail.com>
+Signed-off-by: Michal Koutn=FD <mkoutny@suse.com>
+---
+ include/linux/cgroup.h |  1 -
+ kernel/cgroup/cgroup.c | 39 ---------------------------------------
+ 2 files changed, 40 deletions(-)
+
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index 4f2f79de083e..e9c41b15fd4e 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -115,7 +115,6 @@ int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss,=
+ struct cftype *cfts);
+ int cgroup_rm_cftypes(struct cftype *cfts);
+ void cgroup_file_notify(struct cgroup_file *cfile);
+=20
+-int task_cgroup_path(struct task_struct *task, char *buf, size_t buflen);
+ int cgroupstats_build(struct cgroupstats *stats, struct dentry *dentry);
+ int proc_cgroup_show(struct seq_file *m, struct pid_namespace *ns,
+ 		     struct pid *pid, struct task_struct *tsk);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index c80fe99f85ae..d75ffd461222 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -2235,45 +2235,6 @@ int cgroup_path_ns(struct cgroup *cgrp, char *buf, s=
+ize_t buflen,
+ }
+ EXPORT_SYMBOL_GPL(cgroup_path_ns);
+=20
+-/**
+- * task_cgroup_path - cgroup path of a task in the first cgroup hierarchy
+- * @task: target task
+- * @buf: the buffer to write the path into
+- * @buflen: the length of the buffer
+- *
+- * Determine @task's cgroup on the first (the one with the lowest non-zero
+- * hierarchy_id) cgroup hierarchy and copy its path into @buf.  This
+- * function grabs cgroup_mutex and shouldn't be used inside locks used by
+- * cgroup controller callbacks.
+- *
+- * Return value is the same as kernfs_path().
+- */
+-int task_cgroup_path(struct task_struct *task, char *buf, size_t buflen)
+-{
+-	struct cgroup_root *root;
+-	struct cgroup *cgrp;
+-	int hierarchy_id =3D 1;
+-	int ret;
+-
+-	mutex_lock(&cgroup_mutex);
+-	spin_lock_irq(&css_set_lock);
+-
+-	root =3D idr_get_next(&cgroup_hierarchy_idr, &hierarchy_id);
+-
+-	if (root) {
+-		cgrp =3D task_cgroup_from_root(task, root);
+-		ret =3D cgroup_path_ns_locked(cgrp, buf, buflen, &init_cgroup_ns);
+-	} else {
+-		/* if no hierarchy exists, everyone is in "/" */
+-		ret =3D strlcpy(buf, "/", buflen);
+-	}
+-
+-	spin_unlock_irq(&css_set_lock);
+-	mutex_unlock(&cgroup_mutex);
+-	return ret;
+-}
+-EXPORT_SYMBOL_GPL(task_cgroup_path);
+-
+ /**
+  * cgroup_migrate_add_task - add a migration target task to a migration co=
+ntext
+  * @task: target task
+--=20
+2.30.1
+
+
+--1/tBU1JjKCYi4JT4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA1KaUACgkQia1+riC5
+qSj6iw/+KM9ZHrO8LHe4huudTAA4UslnunDL7DeMWOO8qvCWXfW5qAfXsb8C/+TL
+hLackrNtbaVvrTVT8bYtf6ie7aHMwrWS1SYcmx7t+1pSwjUry3MBALru/3M2l2P0
+9JebE5iRyiESr4M0LeYYt2RmAw+upkGld5VQKAUoPujsee1q+ZRs07lz2sjSQs73
+YJ9juFrUGcyP2IkUzRe4+YHjhMd4IoIpATUYzorS3uc3Q1EZaD0s4BjLIdRj6Z2E
+ZW4PLBl7Tu0K+A/sXrYWhRpE8WZfjKXrs35QIsjK7KZhJ7DSxoDfyhfBb+6p5F3o
+8LRM8ekF+9abw/3WBaKZjGNEG5iJp3Zet8xrnNZkGrVb6b8LoRYPF1t8aS1t6Kb8
+dgLzYRsGO5VCrJhBkHgDN7XJIxA+hvKzUCAeU0DCBdw3koJyEtV8H4g5XJYHKB0f
+r7UPn/vHvOoIXmmYIeRt8RZvXgqXlBIpzlPwYGCP6yC8mbaalKW/Ur6z1PCg9QV9
+NNZ1oR+HhQFayDpUuouR/NR/BpnTByCiqeaCH3M591U+/rJGEpda9t+y0riHfzxC
+kiIWdxSEczzG2OA8MIgf0OwVm7jdDwtVvCn3Al8F12HNvSlKJCEXfH2D0t1j8Cns
+tfw2SvWhRtQPEhhwpqFF8FHq//HpSJakR+S/kidHhEu0SxBhtqc=
+=mKOE
+-----END PGP SIGNATURE-----
+
+--1/tBU1JjKCYi4JT4--
