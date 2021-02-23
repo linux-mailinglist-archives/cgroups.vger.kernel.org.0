@@ -2,90 +2,105 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B6BD322EEE
-	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 17:41:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 90F323230A6
+	for <lists+cgroups@lfdr.de>; Tue, 23 Feb 2021 19:25:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233542AbhBWQkq (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Tue, 23 Feb 2021 11:40:46 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57252 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233416AbhBWQko (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Tue, 23 Feb 2021 11:40:44 -0500
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B17DFC061786
-        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 08:40:03 -0800 (PST)
-Received: by mail-lj1-x235.google.com with SMTP id q23so3864573lji.8
-        for <cgroups@vger.kernel.org>; Tue, 23 Feb 2021 08:40:03 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+E3RqKwI3DqPgCvOyDy4gIUAe0bpQ6Te+CARgN71T3Q=;
-        b=GhVta4M2dkEUmj17lyRCCl5KAtHb5qECT6ll8PfiYJYL+xyd5EIkxm+jnsnp4LgOlZ
-         fo0vMcBFEttAdGXi8HlTG0RiPUE2KVzD3kQ/R0Y0t+f/2kyPTKNfUpht4YXxP3mmLuKy
-         71bYLKPMzAfBzcWRj0zEPNBOUnXUVY0DyC0qH7w1QuqUW74NYEi/hGzwvMpkFbucKUz6
-         /J17k3uojknHtxBXUR2HNiGXiie9Vt2mVTlXH6s/WHxnajKgtLpdaUSx0A5jgWxdCIi/
-         8WP2Bjo888QxYCbTCr7wPv6aQNB+FmewUo+AzmfOZbj0S2VvnJCfSzfRJhizLlOe2u72
-         0UDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+E3RqKwI3DqPgCvOyDy4gIUAe0bpQ6Te+CARgN71T3Q=;
-        b=l7yJ0Dd8osJUQNTIKwigsMrPTOk2SpbWgWdLXHi43ePX/S2jB7eOi09YQ6G803Te8L
-         zEi0bSzjSwvMzrrCBq5jBin5Gd2WNdenl9Axmy+gJM7FJF/sqlreVkqoYMDDFT1AyeUe
-         I9RQ0h+zONdiuzhmyG/RYs89D9FfAUFrZmZwTpm3iWmcD9ta/B7J3Arc9ix/Y9YB0Hjv
-         lQCgK9h40wMok0Xkw0WXzZcafj3QLiN2e1sAGOAo92c/2ULrjKi943YB25KA0gFOVBZ/
-         95GXBKkvS3CAzgp3jJQytvNOuGRbi9m2o3sp0AzVppcunEcJvGX4NrSTMd7WzrK5CW1D
-         P6ow==
-X-Gm-Message-State: AOAM532T7v53UdEhmjDMYd2nZ+A/jSFSLxBkvbrFEQ89TzqNXBbmrSBL
-        tyvyIV4ljNuK8QjtDkdZRmWu//wv7tRE+NaA3OK+AP4nFQI=
-X-Google-Smtp-Source: ABdhPJxDmAkEYhL3kIjIJ8vXDU1llWl2if3R+WoY60Q0/4E8qQ50rSwMtF1b6ZutD0HAV9BY/3awG/i911SNczxHoWI=
-X-Received: by 2002:a2e:b4e8:: with SMTP id s8mr17985871ljm.34.1614098401989;
- Tue, 23 Feb 2021 08:40:01 -0800 (PST)
+        id S233249AbhBWSZY (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Tue, 23 Feb 2021 13:25:24 -0500
+Received: from mx2.suse.de ([195.135.220.15]:49710 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233133AbhBWSZX (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Tue, 23 Feb 2021 13:25:23 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614104677; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=XbjS8vUMSKt77z3E7DlvrJ60e+qrAIbjzGDe/XybRK8=;
+        b=WV9e18U9LOLZfXySyD6DPWQ9kGd89w1u7ieLGsL1hwOeS9bYjIYC+DSsJUtANPV0TjZU9M
+        +9r5xp23/mpAPOBjX50BU5akyn/t/Ayowi4aRfL14Hy9dC3BbUeJXjTSyxB6TLbWPG3wfA
+        xEpW7VGe2tt/oXGuKvCTZjNt3yxwcBM=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id D0FF7AE55;
+        Tue, 23 Feb 2021 18:24:36 +0000 (UTC)
+Date:   Tue, 23 Feb 2021 19:24:33 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/2] cgroup: New misc cgroup controller
+Message-ID: <YDVIYQhZ6ArGsr3n@blackbook>
+References: <20210218195549.1696769-1-vipinsh@google.com>
 MIME-Version: 1.0
-References: <20210223055505.2594953-1-shakeelb@google.com>
-In-Reply-To: <20210223055505.2594953-1-shakeelb@google.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 23 Feb 2021 08:39:51 -0800
-Message-ID: <CALvZod73d_ECo+OVW9NMbnCe5g2iYxL6jCQaSTktvR-=z6vdgQ@mail.gmail.com>
-Subject: Re: [PATCH v2] memcg: charge before adding to swapcache on swapin
-To:     Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="wVuyn8fuAPNhRfeX"
+Content-Disposition: inline
+In-Reply-To: <20210218195549.1696769-1-vipinsh@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Mon, Feb 22, 2021 at 9:55 PM Shakeel Butt <shakeelb@google.com> wrote:
-[snip]
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -596,6 +596,9 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *memcg)
->  }
->
->  int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask);
-> +int mem_cgroup_charge_swapin_page(struct page *page, struct mm_struct *mm,
-> +                                 gfp_t gfp, swp_entry_t entry);
-> +void mem_cgroup_finish_swapin_page(struct page *page, swp_entry_t entry);
->
->  void mem_cgroup_uncharge(struct page *page);
->  void mem_cgroup_uncharge_list(struct list_head *page_list);
-> @@ -1141,6 +1144,17 @@ static inline int mem_cgroup_charge(struct page *page, struct mm_struct *mm,
->         return 0;
->  }
->
-> +static inline int mem_cgroup_charge_swapin_page(struct page *page,
-> +                       struct mm_struct *mm, gfp_t gfp, swp_entry_t entry);
 
-I didn't build-test the !CONFIG_MEMCG config and missed this
-semicolon. Andrew, let me know if you want me to send a new version.
+--wVuyn8fuAPNhRfeX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> +{
-> +       return 0;
-> +}
-> +
+Hello.
+
+On Thu, Feb 18, 2021 at 11:55:47AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> This patch is creating a new misc cgroup controller for allocation and
+> tracking of resources which are not abstract like other cgroup
+> controllers.
+Please don't refer to this as "allocation" anywhere, that has a specific
+meaning (see Resource Distribution Models in
+Documentation/admin-gruide/cgroup-v2.rst).
+
+> This controller was initially proposed as encryption_id but after
+> the feedbacks, it is now changed to misc cgroup.
+> https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
+Interesting generalization. I wonder what else could fit under this as
+well. (It resembles pids controller on the cover.)
+
+> Please provide any feedback for this RFC or if it is good for
+> merging then I can send a patch for merging.
+A new controller is added exposed with v1 attributes. I'm not convinced
+it is desirable to change the frozen v1 controllers' API? (And therefore
+promote it as well.)
+
+Beware, bikeshedding. The name is very non-descriptive, potentially
+suggesting catch-all semantics. It'd deserve a further thought. My idea
+would be limit(s) or counter controller.
+
+
+My few cents here (and some more in reply to the patch),
+Michal
+
+--wVuyn8fuAPNhRfeX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA1SF0ACgkQia1+riC5
+qSjyug/+JnqIiM/q5Fq9IapQYcrjFfqbXe/ULrbJurWNM7N1IY/PQQd6XKqXv+GH
+bjV7UZCa8Rr+TWaVx4/dw7HycGzwCpxVGZ3afm1R2KujhucRR6x3Jfu3al08HASh
+tyALCpp7s7bKb1b3ehnq6vEonsEinSbiXYHl4iWXN8EL2Kl/bQNOq1qqshLUMNGL
+1WXuvfM0seMziFSh/BogVLx77yzInWj1Q4nE19yWYWh2go+CcZjTSAFc2uJn0fWn
+DIMvt4QaXNEOrr1nyLqSJWR3WVl8OGTx7jec9u9IGmLDT1cmXLM7cEpSuRxEW8KQ
+A7Dd2NBQ0foZsUFC8N+mWqpDMKAUP9ZG4KIplBubWJittkd4MIcpoBReO6DVdHzM
+Zc6IdpCON8+kYVGaHSswOkx30BdIEeTf8wmIywkkDRQcrHS6fYO8QqqThzsfcWiD
+uWIvZMDqu9X4LqPctqCkr/Aw8goAW764Q35xABYonDIUhJfZfcdR7sRFZrIdl3xk
++UmPWynRCXJ5/XIj4Trm4H/AvwOR2zX8NywuoGF9r8tfHcBR8gqwtMyg8un4eEcG
+jroaVCayT9ZJI+49XV7qvZNaF+yg8GL0EDimIl7r0m5vi157AGxWhH7jfOFlbN6Q
+JFP5/0x+ZIssTiTuytqRC+cE+j3Jl1LVZ+MZjz68btbTckO83Y8=
+=WGjH
+-----END PGP SIGNATURE-----
+
+--wVuyn8fuAPNhRfeX--
