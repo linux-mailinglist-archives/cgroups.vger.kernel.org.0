@@ -2,30 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5149B324D42
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 10:54:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 510403256BA
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 20:32:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhBYJx7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Feb 2021 04:53:59 -0500
-Received: from mx2.suse.de ([195.135.220.15]:40404 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235331AbhBYJxp (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 25 Feb 2021 04:53:45 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1614246779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pa5Bv87vsQTpNehYktuqD4xYQKRjzqObciTH5tWVW3c=;
-        b=u1ctV2DOvv5M/TvL8/NGNEplVlPYpTSVWIJY6Fgko4qtzjF/gHw0OWAMLiSHDQ2b2mkXzZ
-        OJMe1QSJXKkXn6QoauxzkkNhwaGXQ3gVkDh7eGFtuQUB386tBsy+u3z/9gwTwUoQmKXP4R
-        NSylMMyzM4WXnI5wUI+gcDsJ9XQ5aVI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 23A6DADDC;
-        Thu, 25 Feb 2021 09:52:59 +0000 (UTC)
-Date:   Thu, 25 Feb 2021 10:52:49 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
+        id S234459AbhBYTbn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Feb 2021 14:31:43 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234780AbhBYT3e (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Feb 2021 14:29:34 -0500
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51416C06174A
+        for <cgroups@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
+Received: by mail-pf1-x42a.google.com with SMTP id b145so4287478pfb.4
+        for <cgroups@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
+        b=XAH5DbX0NmfVOZxrBQ+uQ636JLbgHKyf211mfe0oio2b5HL4OwBHllfrayb5aPqFAn
+         nWNdqykSp2SPQx8Gx5x6frsT1jZ7KF1iNTaqjfzHL6P/RXcS9j0n0kFaXHlVnybSjAmr
+         T1sA3Q5mtuCtDlkBw7zl9DfLWWrlAGvpl4t6ID1wDcTcdcLipJRr/R+Yj5j6iqpt21sw
+         zKLoW2cRYxfCfjqcqsZD9GL+j3uWv5aUfKAsQ8t9kBvHkV5GMMwUeXIPqFKbR0oElrRx
+         m9ja9x2qv+DAe51QHMjWLI/k1N14adZPcUKSnBErPA5m/lSfEBsTmqVhKa5otSB0NDb0
+         fhQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
+        b=bpgdbr4aUMzVi0M2PZPvR/iaHDfAB6N1HVTbNnZOkgi1CHR4IiCj22j9fkZU0zrILe
+         V5Udvde5bA4nUhiquYyJ84fpu4lz5wutJZiC/BKZR7vVTxBjA1C7Gn7FqTjzuEOyVGG/
+         GiG/8fjx+MKOzMoAUFWLVRxUO5xNFptkeGPgrvc7u1yH9seg/6IrB+lC/AFWcHnC5qzC
+         XDJKkwCs46kNetYLPpWm7MoFscphjcR98T53FZunfFtP8AwUHC+OrCEEFjuBaoeo1P6c
+         j5SYIStSRrOzm+Gdrubt9biijA1pk08WGjQ52t4iGVE32SX1NlIXQHHvwh8nayicbMhu
+         b2eQ==
+X-Gm-Message-State: AOAM530kNN60F2E1xNp33Y4BWHVkrPAMGQZ/GeWn2Ip0dKRiS10mIhyH
+        4+dQHwSnayJWA25EhyezwlokEw==
+X-Google-Smtp-Source: ABdhPJyXQztSjriJUwr+YzP+mFraH1PK/i2Qee5tybeVsmvbD3+TQKAmth+5mPNoDOkUQyEtlsqkJg==
+X-Received: by 2002:a63:6705:: with SMTP id b5mr4351009pgc.165.1614281333590;
+        Thu, 25 Feb 2021 11:28:53 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
+        by smtp.gmail.com with ESMTPSA id gj24sm6736615pjb.4.2021.02.25.11.28.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 25 Feb 2021 11:28:52 -0800 (PST)
+Date:   Thu, 25 Feb 2021 11:28:46 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
         jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
         hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
@@ -36,68 +61,76 @@ Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
         kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YDdzcfLxsCeYxLNG@blackbook>
+Message-ID: <YDf6bpSxX6I5xdqZ@google.com>
 References: <20210218195549.1696769-1-vipinsh@google.com>
  <20210218195549.1696769-2-vipinsh@google.com>
  <YDVIdycgk8XL0Zgx@blackbook>
  <YDcuQFMbe5MaatBe@google.com>
+ <YDdzcfLxsCeYxLNG@blackbook>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="kWQSwDEX83EtuxH+"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <YDcuQFMbe5MaatBe@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDdzcfLxsCeYxLNG@blackbook>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Thu, Feb 25, 2021 at 10:52:49AM +0100, Michal Koutný wrote:
+> On Wed, Feb 24, 2021 at 08:57:36PM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> > This function is meant for hot unplug functionality too.
+> Then I'm wondering if the current form is sufficient, i.e. the generic
+> controller can hardly implement preemption but possibly it should
+> prevent any additional charges of the resource. (Or this can be
+> implemented the other subsystem and explained in the
+> misc_cg_set_capacity() docs.)
 
---kWQSwDEX83EtuxH+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+My approach here is that it is the responsibility of the caller to:
+1. Check the return value and proceed accordingly.
+2. Ideally, let all of the usage be 0 before deactivating this resource
+   by setting capacity to 0
 
-On Wed, Feb 24, 2021 at 08:57:36PM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> This function is meant for hot unplug functionality too.
-Then I'm wondering if the current form is sufficient, i.e. the generic
-controller can hardly implement preemption but possibly it should
-prevent any additional charges of the resource. (Or this can be
-implemented the other subsystem and explained in the
-misc_cg_set_capacity() docs.)
+But I see your point that it makes sense for this call to always
+succeed. I think I can simplify this function now to just have xchg() (for
+memory barrier) so that new value is immediately reflected in
+misc_cg_try_charge() and no new charges will succeed.
 
-> Just to be on the same page are you talking about adding an events file
-> like in pids?
-Actually, I meant just the kernel log message. As it's the simpler part
-and even pid events have some inconsistencies wrt hierarchical
-reporting.
+Is the above change good?
 
-> However, if I take reference at the first charge and remove reference at
-> last uncharge then I can keep the ref count in correct sync.
-I see now how it works. I still find it a bit complex. What about making
-misc_cg an input parameter and making it the callers responsibility to
-keep a reference? (Perhaps with helpers for the most common case.)
+> 
+> > Just to be on the same page are you talking about adding an events file
+> > like in pids?
+> Actually, I meant just the kernel log message. As it's the simpler part
+> and even pid events have some inconsistencies wrt hierarchical
+> reporting.
 
+I see, thanks, I will add some log messages, 
 
-Thanks,
-Michal
+if (new_usage > res->max || new_usage > misc_res_capacity[type)) {
+  pr_info("cgroup: charge rejected by misc controller for %s resource in ",
+          misc_res_name[type]);
+  pr_cont_cgroup_path(i->css.cgroup);
+  pr_cont("\n");
+  ...
+}
 
---kWQSwDEX83EtuxH+
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+Only difference compared to pids will be that here logs will be printed
+for every failure.
 
------BEGIN PGP SIGNATURE-----
+I was thinking to add more information in the log like what is the current
+limits (max and capacity) and what new usage would have been. Will there
+be any objection to extra information?
 
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA3c20ACgkQia1+riC5
-qSi9BhAAlE9yZPtCtt/Vj6a3n7ho7173BwjAGMkNrRYQK8qoh8ebExxRtCAKL0E1
-lyWI0cSq4Wul9uHduKwRLljqNpBziZYHrrpaQsT7uQw4A7yn62zAU2xbqDFm558D
-9TSQxO59pXdYzyemTPLmkOmkPwjHE5YUfodskMG35tbgFzIxc5SN3izteu3rl/8b
-A9Z2Q4Lo/iXi9qKNTpBtQzsNnhxO7ZL+ElkdhEINYX8G2H8tQ0DNVz+vXDXroMPp
-N3L3CA00iWrr52jtOoec3TrMsVgnlU5l3jIJASbgt4s68ukWEbgpzdHGEj8U/BfW
-dLoxQPNN8sWRChl4nehFtRq06z7hduHdOtqdgYq6y4UDKWJvBObjRFcPYIHuxN6W
-MMZOKRvm4ocUENTLK5jbv4I87E7D3457NIYUnmp0+F24tB/D5kRAkT2tNIq7nfWO
-e9GmQEeN30UyIudcI9NK7lHdJFEyXYasSR3nDKazdcDSBtxfQ0n65dmEVMtyMkRg
-e9Hot1A97AmYYSzJNoUFKKem5f75wvS+/U6dOA3gM43U/69lxNL1mQLeHVkodjTK
-Bz9YZgvDvx5sOsTfvmVNe2iFz5y35we5zh3hqLJWOEFSsPJ2lI2aTeVhku7x9w8N
-/U90fUVnkjCV7X1gKYOav/vJprMAHOv3CtkfBVp1zXdvzZO2YsE=
-=rCA2
------END PGP SIGNATURE-----
+> 
+> > However, if I take reference at the first charge and remove reference at
+> > last uncharge then I can keep the ref count in correct sync.
+> I see now how it works. I still find it a bit complex. What about making
+> misc_cg an input parameter and making it the callers responsibility to
+> keep a reference? (Perhaps with helpers for the most common case.)
 
---kWQSwDEX83EtuxH+--
+Yeah, that can simplify the misc controller, I will have to add couple of
+more helper APIs for callers having simple use cases. I will make this
+change.
+
+Thanks
+Vipin
