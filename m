@@ -2,129 +2,161 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DBE653247C2
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 01:08:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E3C93249E9
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 05:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhBYAHe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Feb 2021 19:07:34 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
+        id S235277AbhBYE6c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Feb 2021 23:58:32 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234646AbhBYAHc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Feb 2021 19:07:32 -0500
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3364C06174A
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 16:06:51 -0800 (PST)
-Received: by mail-pg1-x536.google.com with SMTP id o63so2608208pgo.6
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 16:06:51 -0800 (PST)
+        with ESMTP id S234849AbhBYE6W (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Feb 2021 23:58:22 -0500
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEF2C061788
+        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
+Received: by mail-pf1-x431.google.com with SMTP id t29so2797167pfg.11
+        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=dwsRL0iFuNLsIwlduzLk8A4HpuT+349o+yzvI+GvJGg=;
-        b=FNfLLnAZf2wdLfsTREG5f4CUE90hhdj+9efnR0CcEASFvTBlIxbq2WH8aD66ed0cWP
-         u9dRyt1Oj6/lfDKABYmqQbAGmMmI/X9cRN3qMQgoex1+4N5PBvszos8ZfcL7YE+BQnHc
-         Dh/Dnaa1VnZhDlc8qYhgJFZnCdUpC03FVrogZi77qKJApoq49AGkV+XAN8eOJPhW6uyf
-         Df3zBYK1751kzdlFraymh+st+EgK1j7iViJWlOfxzrePopY3x+EOvXWqZvKzf6XfjChS
-         CLcqOiLshfzlIREJlcF+0l01oRXxU2HSvPTaQejPlLR4yh+2oehsS7SPhi7bE20wq4ax
-         IcIA==
+        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
+        b=qcnZZYCJi98bpluIA+Q6PbpZt/DTsw6UAEq6IRMRd1PNOsFM6BO9kPihfoQQQb87Rx
+         fsrwNx3FnRYOVp90fuaDu9oOIAHKQZ5JRcw5J4/+z10kW3ty+3KpTL1AUzSuEpCF/9CX
+         c2ODR7C0MZAeApvSVIMhXxFEE4oO34Tfc3p1nBRDx/buMluyiYYrdFtAv9BTvjIwkNuL
+         P7AGSBh/JZKXRr05hZuaMm7Vp/wH9GiJkDriIApAxmnd3CcoDOrjpj0FWSALeojZv+P/
+         0JAirMem5/JvDvQ14shHJRy+NVY7k2H+KT9Fep2BLYxsIHztz/JM1LZDgnAXK8U1qVJf
+         fFAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=dwsRL0iFuNLsIwlduzLk8A4HpuT+349o+yzvI+GvJGg=;
-        b=hWRSVBQgOBmVjADjuH9j3XjHk3ZHyfAIDU40ZIQdD5DtDR0PtCFpzIjbd5Te8jIRI+
-         PRL8pBcNowB/IsyzGffSBh4bXPtpMbcBijNUGLJt/f464xfRJLKqwdLQjlqzrs9dkZgc
-         Pt7e8dhalYTaL1cEuNMY9VXObQOmzzW2nXf/yNQwfNCMSRVnv2JaWtSZuV12b7wYYeAI
-         byt3zV5FiwUH3riHYS0B1kAHJMIeu53AgkLcCs7jYsKaZ6n7VN4aunvS0D8VmbPQhRsk
-         dS88Kx0MoepbvCngmKS/lqR5zpbT6WjS9ICwNX4zwocEwjJo5OtkAzY0WvcY5ZSaTYv2
-         QsoQ==
-X-Gm-Message-State: AOAM531pzVRuLnN+hOMb0enpnjT9Iryimv3+70p+BEEL0ZJK2535rEmf
-        H1CfegqtZWwgViwc4QGO7vsc2A==
-X-Google-Smtp-Source: ABdhPJxABfBShq1Krl8qx+eI5WYhSRtbAKRM77ikODQYw8yEC7MAcrpJKJjlocmRf535KdMK+BW8OA==
-X-Received: by 2002:a63:f202:: with SMTP id v2mr450469pgh.24.1614211610972;
-        Wed, 24 Feb 2021 16:06:50 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:94bf:1b67:285c:b7ce])
-        by smtp.gmail.com with ESMTPSA id i7sm3977728pjs.1.2021.02.24.16.06.50
+        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
+        b=CWVkhnX3kSEPNmIlwP+BXlAaroKRdAQ7LLGmoD9+S8TiROlkA0LmiSfDDi+eIkw/LE
+         d6vkIUBQPEVEXWOPCzL2D2yIQr5nyuqfSlmzL4clGU79YPlNsyP4UNL3v9csGpnNMciY
+         qphRgYcLRkVaBESKiYnrRhEytCu3gvcPoDdrD0VIId0e9dSCehAM+DXnyfsyw4PXIdw/
+         8VLrzYmhxwFpS9dnQsTq2iZjGaDuA4gi+Qkj/sf3LYvZMN9H/2WqDT+V/daNzgWU20YH
+         SPGpRwQe/XG3XDvSunMil/0d9cGGsOhQjRf+7KOvB8bVA3YEVz2/unil5MlanmnPJnD8
+         Wo5w==
+X-Gm-Message-State: AOAM531SuHec7u0lO/kbXRP6PL1qm3zOQsg90Vp+NaeoHHwV8Qm50Xa7
+        PUhDnDiT/ko3feaBTQj0PLJqjQ==
+X-Google-Smtp-Source: ABdhPJzHz+X6qOY/Ap20Mg+cl6p/k3veTQ4izjUkq9XK8Lc2iDiGHMlEOejfq7dwuBVVLuLS+3zY+w==
+X-Received: by 2002:aa7:9dd1:0:b029:1ed:bee2:c65e with SMTP id g17-20020aa79dd10000b02901edbee2c65emr1483923pfq.5.1614229061213;
+        Wed, 24 Feb 2021 20:57:41 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
+        by smtp.gmail.com with ESMTPSA id v129sm4399042pfc.110.2021.02.24.20.57.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 16:06:50 -0800 (PST)
-Date:   Wed, 24 Feb 2021 16:06:44 -0800
+        Wed, 24 Feb 2021 20:57:40 -0800 (PST)
+Date:   Wed, 24 Feb 2021 20:57:36 -0800
 From:   Vipin Sharma <vipinsh@google.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 0/2] cgroup: New misc cgroup controller
-Message-ID: <YDbqFE21UsEaFDuU@google.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        thomas.lendacky@amd.com
+Cc:     tj@kernel.org, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YDcuQFMbe5MaatBe@google.com>
 References: <20210218195549.1696769-1-vipinsh@google.com>
- <YDVIYQhZ6ArGsr3n@blackbook>
+ <20210218195549.1696769-2-vipinsh@google.com>
+ <YDVIdycgk8XL0Zgx@blackbook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDVIYQhZ6ArGsr3n@blackbook>
+In-Reply-To: <YDVIdycgk8XL0Zgx@blackbook>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:24:33PM +0100, Michal Koutný wrote:
-> Hello.
+On Tue, Feb 23, 2021 at 07:24:55PM +0100, Michal Koutný wrote:
+> On Thu, Feb 18, 2021 at 11:55:48AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> > --- a/arch/x86/kvm/svm/sev.c
+> > +++ b/arch/x86/kvm/svm/sev.c
+> > [...]
+> > +#ifndef CONFIG_KVM_AMD_SEV
+> > +/*
+> > + * When this config is not defined, SEV feature is not supported and APIs in
+> > + * this file are not used but this file still gets compiled into the KVM AMD
+> > + * module.
+> I'm not familiar with the layout of KVM/SEV compile targets but wouldn't
+> it be simpler to exclude whole svm/sev.c when !CONFIG_KVM_AMD_SEV?
 > 
-> On Thu, Feb 18, 2021 at 11:55:47AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> > This patch is creating a new misc cgroup controller for allocation and
-> > tracking of resources which are not abstract like other cgroup
-> > controllers.
-> Please don't refer to this as "allocation" anywhere, that has a specific
-> meaning (see Resource Distribution Models in
-> Documentation/admin-gruide/cgroup-v2.rst).
 
-Yeah, it should be "Limits". I will update the text.
+Tom,
+Is there any plan to exclude sev.c compilation if CONFIG_KVM_AMD_SEV is
+not set?
+
+> > +++ b/kernel/cgroup/misc.c
+> > [...]
+> > +/**
+> > + * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
+> > + * @type: Type of the misc res.
+> > + * @capacity: Supported capacity of the misc res on the host.
+> > + *
+> > + * If capacity is 0 then the charging a misc cgroup fails for that type.
+> > + *
+> > + * The caller must serialize invocations on the same resource.
+> > + *
+> > + * Context: Process context.
+> > + * Return:
+> > + * * %0 - Successfully registered the capacity.
+> > + * * %-EINVAL - If @type is invalid.
+> > + * * %-EBUSY - If current usage is more than the capacity.
+> When is this function supposed to be called? At boot only or is this
+> meant for some kind of hot unplug functionality too?
+> 
+
+This function is meant for hot unplug functionality too.
+
+> > +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg **cg,
+> > +		       unsigned int amount)
+> > [...]
+> > +		new_usage = atomic_add_return(amount, &res->usage);
+> > +		if (new_usage > res->max ||
+> > +		    new_usage > misc_res_capacity[type]) {
+> > +			ret = -EBUSY;
+> I'm not sure the user of this resource accounting will always be able to
+> interpret EBUSY returned from depths of the subsystem.
+> See what's done in pids controller in order to give some useful
+> information about why operation failed.
+
+Just to be on the same page are you talking about adding an events file
+like in pids?
 
 > 
-> > This controller was initially proposed as encryption_id but after
-> > the feedbacks, it is now changed to misc cgroup.
-> > https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
-> Interesting generalization. I wonder what else could fit under this as
-> well. (It resembles pids controller on the cover.)
-> 
-> > Please provide any feedback for this RFC or if it is good for
-> > merging then I can send a patch for merging.
-> A new controller is added exposed with v1 attributes. I'm not convinced
-> it is desirable to change the frozen v1 controllers' API? (And therefore
-> promote it as well.)
+> > +			goto err_charge;
+> > +		}
+> > +
+> > +		// First one to charge gets a reference.
+> > +		if (new_usage == amount)
+> > +			css_get(&i->css);
+> 1) Use the /* comment */ style.
+> 2) You pin the whole path from task_cg up to root (on the first charge).
+> That's unnecessary since children reference their parents.
+> Also why do you get the reference only for the first charger? While it
+> may work, it seems too convoluted to me.
+> It'd be worth documenting what the caller can expect wrt to ref count of
+> the returned misc_cg.
 
-This is a very trivial controller. I believe once it becomes public it
-can be helpful down the line to the v1 users, who cannot use v2 yet, for
-some simple resource accounting, like us, we have the need for ASIDs
-accounting in v1 until we move to v2. If the community has strong
-objection then I can remove v1 support.
+Suppose a user charges 5 resources in a single charge call but uncharges
+them in 5 separate calls one by one. I cannot take reference on every
+charge and put the reference for every uncharge as it is not guaranteed
+to have equal number of charge-uncharge pairs and we will end up with
+the wrong ref count.
 
-> 
-> Beware, bikeshedding. The name is very non-descriptive, potentially
-> suggesting catch-all semantics. It'd deserve a further thought. My idea
-> would be limit(s) or counter controller.
+However, if I take reference at the first charge and remove reference at
+last uncharge then I can keep the ref count in correct sync.
 
-Limit and counter are kind of suggesting the underlying technique for
-accounting instead of a generic name to denote resource types managed by
-this controller. One can argue that if top level names are similar to
-Resource Destribution Model then may be it makes sense to combine
-resources with similar accounting technique under one controller.
-
-I am looking at misc as a controller which is for resources not having
-proper home in other controllers or not big enough to deserve their own
-controller.
-
-I agree with you coming up with a name which check all boxes of
-requirements won't be possible. We have discussed name sev cgroup,
-kvm cgroup, encryption_id cgroup before reaching to an agreement on misc
-cgroup. I am open to other names if they are better suited for this
-controller and makes more sense.
+I can rewrite if condition to (new_usage == amount && task_cg == i)
+this will avoid pinning whole path up to the root. I was thinking that
+original code was simpler, clearly I was wrong.
 
 Thanks
 Vipin
