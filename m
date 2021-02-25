@@ -2,135 +2,70 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 510403256BA
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 20:32:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FAA9325753
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 21:11:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234459AbhBYTbn (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Feb 2021 14:31:43 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33280 "EHLO
+        id S233745AbhBYUKS (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Feb 2021 15:10:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42078 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234780AbhBYT3e (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Feb 2021 14:29:34 -0500
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51416C06174A
-        for <cgroups@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
-Received: by mail-pf1-x42a.google.com with SMTP id b145so4287478pfb.4
-        for <cgroups@vger.kernel.org>; Thu, 25 Feb 2021 11:28:54 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
-        b=XAH5DbX0NmfVOZxrBQ+uQ636JLbgHKyf211mfe0oio2b5HL4OwBHllfrayb5aPqFAn
-         nWNdqykSp2SPQx8Gx5x6frsT1jZ7KF1iNTaqjfzHL6P/RXcS9j0n0kFaXHlVnybSjAmr
-         T1sA3Q5mtuCtDlkBw7zl9DfLWWrlAGvpl4t6ID1wDcTcdcLipJRr/R+Yj5j6iqpt21sw
-         zKLoW2cRYxfCfjqcqsZD9GL+j3uWv5aUfKAsQ8t9kBvHkV5GMMwUeXIPqFKbR0oElrRx
-         m9ja9x2qv+DAe51QHMjWLI/k1N14adZPcUKSnBErPA5m/lSfEBsTmqVhKa5otSB0NDb0
-         fhQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=eg2T+GAall58PHie1pc/1M6D3b3c5ZA2F5gwbRjHzXI=;
-        b=bpgdbr4aUMzVi0M2PZPvR/iaHDfAB6N1HVTbNnZOkgi1CHR4IiCj22j9fkZU0zrILe
-         V5Udvde5bA4nUhiquYyJ84fpu4lz5wutJZiC/BKZR7vVTxBjA1C7Gn7FqTjzuEOyVGG/
-         GiG/8fjx+MKOzMoAUFWLVRxUO5xNFptkeGPgrvc7u1yH9seg/6IrB+lC/AFWcHnC5qzC
-         XDJKkwCs46kNetYLPpWm7MoFscphjcR98T53FZunfFtP8AwUHC+OrCEEFjuBaoeo1P6c
-         j5SYIStSRrOzm+Gdrubt9biijA1pk08WGjQ52t4iGVE32SX1NlIXQHHvwh8nayicbMhu
-         b2eQ==
-X-Gm-Message-State: AOAM530kNN60F2E1xNp33Y4BWHVkrPAMGQZ/GeWn2Ip0dKRiS10mIhyH
-        4+dQHwSnayJWA25EhyezwlokEw==
-X-Google-Smtp-Source: ABdhPJyXQztSjriJUwr+YzP+mFraH1PK/i2Qee5tybeVsmvbD3+TQKAmth+5mPNoDOkUQyEtlsqkJg==
-X-Received: by 2002:a63:6705:: with SMTP id b5mr4351009pgc.165.1614281333590;
-        Thu, 25 Feb 2021 11:28:53 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
-        by smtp.gmail.com with ESMTPSA id gj24sm6736615pjb.4.2021.02.25.11.28.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 25 Feb 2021 11:28:52 -0800 (PST)
-Date:   Thu, 25 Feb 2021 11:28:46 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
-        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
-        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
-        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YDf6bpSxX6I5xdqZ@google.com>
-References: <20210218195549.1696769-1-vipinsh@google.com>
- <20210218195549.1696769-2-vipinsh@google.com>
- <YDVIdycgk8XL0Zgx@blackbook>
- <YDcuQFMbe5MaatBe@google.com>
- <YDdzcfLxsCeYxLNG@blackbook>
+        with ESMTP id S233743AbhBYUKR (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 25 Feb 2021 15:10:17 -0500
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DD8AC061574;
+        Thu, 25 Feb 2021 12:09:37 -0800 (PST)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 3EFDC2C1;
+        Thu, 25 Feb 2021 20:09:35 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 3EFDC2C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1614283775; bh=eamGHQqfFKFIt3F2dJcpYXGTGQYPLSSArF/d6nsrqBI=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=q+8lFvoxPuQgBWLF7iC/BJjOOrr3jc1kYz2wxI0csNbg7zAs2stlHxtSR681ir+HD
+         ZzMFNW2KOGcczgTqvvw/5SQHfs2INL0lSjD8x5XD8ED/9dViIwz3eUMR96dnWCdmMJ
+         3DuwiLtPCy2CpL9Wrjupc2k/+VV2mAjHh7S9tG9LCOodaviQmiuN6zdO/G3HduqjDA
+         1rUNtHm/DsKxAoeeaHkGc09WMGpKQ8lFuJQIrtkQIpi2WFWpIvNcbPSjgkKeX5QA4E
+         HpeWqk9ZCZ4G+XlAWOvXPqJynx9OuLkkNGr22iAVt7foh8cr9y6RZQMMet2WBrs7A+
+         jG+yZKR1XQEgA==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Antonio Terceiro <antonio.terceiro@linaro.org>,
+        cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     Tejun Heo <tj@kernel.org>, Zefan Li <lizefan.x@bytedance.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jiong Wang <jiong.wang@netronome.com>
+Subject: Re: [PATCH] Documentation: cgroup-v2: fix path to example BPF program
+In-Reply-To: <20210224131631.349287-1-antonio.terceiro@linaro.org>
+References: <20210224131631.349287-1-antonio.terceiro@linaro.org>
+Date:   Thu, 25 Feb 2021 13:09:34 -0700
+Message-ID: <87zgzrc3k1.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDdzcfLxsCeYxLNG@blackbook>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Feb 25, 2021 at 10:52:49AM +0100, Michal Koutný wrote:
-> On Wed, Feb 24, 2021 at 08:57:36PM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> > This function is meant for hot unplug functionality too.
-> Then I'm wondering if the current form is sufficient, i.e. the generic
-> controller can hardly implement preemption but possibly it should
-> prevent any additional charges of the resource. (Or this can be
-> implemented the other subsystem and explained in the
-> misc_cg_set_capacity() docs.)
+Antonio Terceiro <antonio.terceiro@linaro.org> writes:
 
-My approach here is that it is the responsibility of the caller to:
-1. Check the return value and proceed accordingly.
-2. Ideally, let all of the usage be 0 before deactivating this resource
-   by setting capacity to 0
+> This file has been moved into the "progs" subdirectory in
+> bd4aed0ee73ca873bef3cb3ec746dd796f03df28, together with all test BPF
+> programs.
+>
+> Signed-off-by: Antonio Terceiro <antonio.terceiro@linaro.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Zefan Li <lizefan.x@bytedance.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Jiong Wang <jiong.wang@netronome.com>
+> ---
+>  Documentation/admin-guide/cgroup-v2.rst | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-But I see your point that it makes sense for this call to always
-succeed. I think I can simplify this function now to just have xchg() (for
-memory barrier) so that new value is immediately reflected in
-misc_cg_try_charge() and no new charges will succeed.
+Applied, thanks.  I did fix the changelog to include a Fixes: tag with
+the commit listed in the proper format.
 
-Is the above change good?
+Thanks,
 
-> 
-> > Just to be on the same page are you talking about adding an events file
-> > like in pids?
-> Actually, I meant just the kernel log message. As it's the simpler part
-> and even pid events have some inconsistencies wrt hierarchical
-> reporting.
-
-I see, thanks, I will add some log messages, 
-
-if (new_usage > res->max || new_usage > misc_res_capacity[type)) {
-  pr_info("cgroup: charge rejected by misc controller for %s resource in ",
-          misc_res_name[type]);
-  pr_cont_cgroup_path(i->css.cgroup);
-  pr_cont("\n");
-  ...
-}
-
-Only difference compared to pids will be that here logs will be printed
-for every failure.
-
-I was thinking to add more information in the log like what is the current
-limits (max and capacity) and what new usage would have been. Will there
-be any objection to extra information?
-
-> 
-> > However, if I take reference at the first charge and remove reference at
-> > last uncharge then I can keep the ref count in correct sync.
-> I see now how it works. I still find it a bit complex. What about making
-> misc_cg an input parameter and making it the callers responsibility to
-> keep a reference? (Perhaps with helpers for the most common case.)
-
-Yeah, that can simplify the misc controller, I will have to add couple of
-more helper APIs for callers having simple use cases. I will make this
-change.
-
-Thanks
-Vipin
+jon
