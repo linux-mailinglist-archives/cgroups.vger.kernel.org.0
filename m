@@ -2,54 +2,55 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46ECA324769
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 00:14:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DBE653247C2
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 01:08:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236177AbhBXXOK (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Feb 2021 18:14:10 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55158 "EHLO
+        id S234931AbhBYAHe (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 24 Feb 2021 19:07:34 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38402 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236150AbhBXXOJ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Feb 2021 18:14:09 -0500
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD5B1C061786
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 15:13:29 -0800 (PST)
-Received: by mail-pg1-x532.google.com with SMTP id e6so2524964pgk.5
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 15:13:29 -0800 (PST)
+        with ESMTP id S234646AbhBYAHc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Feb 2021 19:07:32 -0500
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3364C06174A
+        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 16:06:51 -0800 (PST)
+Received: by mail-pg1-x536.google.com with SMTP id o63so2608208pgo.6
+        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 16:06:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=muWCsWrQoBXyu4MckQ9XwIgh71Pik8fohBKy8+YwG04=;
-        b=eALgcZew2EajyVeA/DiBEfM4a24dApZHnvUSzXm8kKOfeR1mXWz+bNzjmsq3m/8hka
-         aYPKhw/8/x67hSwUlOdFPiH6qFX9rkoBkdESplPOCsj+JbhWaEasMiAEJ8AgzYIAqm4p
-         yp67ujCmh5HofiMxCbHagDi6aOpZ+DYHw/28E0B6cYsGbwJ2RKhYBUtvsLz9dMsfm8gl
-         1hwODTkdUw1wXyhfduiO3n9tXE81lWrCqXiRDudm/cd+QUo6Vx0uktrikPYHPySKbZ3v
-         Y+quj12JNP7Ur3mxgMxUor82l251R8I8o3h1oJHehxxHbxjaCpy83dNl1o9exjZC+ZeX
-         x6KA==
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=dwsRL0iFuNLsIwlduzLk8A4HpuT+349o+yzvI+GvJGg=;
+        b=FNfLLnAZf2wdLfsTREG5f4CUE90hhdj+9efnR0CcEASFvTBlIxbq2WH8aD66ed0cWP
+         u9dRyt1Oj6/lfDKABYmqQbAGmMmI/X9cRN3qMQgoex1+4N5PBvszos8ZfcL7YE+BQnHc
+         Dh/Dnaa1VnZhDlc8qYhgJFZnCdUpC03FVrogZi77qKJApoq49AGkV+XAN8eOJPhW6uyf
+         Df3zBYK1751kzdlFraymh+st+EgK1j7iViJWlOfxzrePopY3x+EOvXWqZvKzf6XfjChS
+         CLcqOiLshfzlIREJlcF+0l01oRXxU2HSvPTaQejPlLR4yh+2oehsS7SPhi7bE20wq4ax
+         IcIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=muWCsWrQoBXyu4MckQ9XwIgh71Pik8fohBKy8+YwG04=;
-        b=hVfCJ8yN8wFO206lU9Z+8q9Fav1NiBK4y7qblA3XXD+wdT2+eGiyqnzgAq9lmtIVYM
-         ydWppTLvDQAD1pL/J9ipwy9PfnTAgWx9rwJaBpFfF/Odo9CVy8CNslrrMbOVFo01kL0O
-         ZO6LJf5khCQpDKujF2V+bk//LGQJNVMyIT8ppArHDHecd32ZL8RmNxz/37KfZ0giPIW3
-         MVcvltA3OMbaQkgcgl6tniJIbh0Nm78DZY9ee4qwu3niB7CbasilPQAjdgD5ctUMTMCj
-         dmWgbGp46F3lg/5wEAX8i4dJYFsiTGhZy+hbW2aDmiBP5Cs8H6PJAZVpzAIECCAIOs81
-         qMiw==
-X-Gm-Message-State: AOAM5300kMwGunhXDsX7qpz/58Q1C6jyNUpwIKmAEdq2rwVx+sog+QoK
-        axnnk2d6L4VvoFvFnYSMn7xs6g==
-X-Google-Smtp-Source: ABdhPJyvL7EJ65szTm5CqCguT3Le4nTVYm9ifanT54NrHZFg7olEuboR95EaeuMWTGAASbHj1KswEQ==
-X-Received: by 2002:aa7:8c49:0:b029:1ed:c1dc:4421 with SMTP id e9-20020aa78c490000b02901edc1dc4421mr318307pfd.43.1614208408889;
-        Wed, 24 Feb 2021 15:13:28 -0800 (PST)
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=dwsRL0iFuNLsIwlduzLk8A4HpuT+349o+yzvI+GvJGg=;
+        b=hWRSVBQgOBmVjADjuH9j3XjHk3ZHyfAIDU40ZIQdD5DtDR0PtCFpzIjbd5Te8jIRI+
+         PRL8pBcNowB/IsyzGffSBh4bXPtpMbcBijNUGLJt/f464xfRJLKqwdLQjlqzrs9dkZgc
+         Pt7e8dhalYTaL1cEuNMY9VXObQOmzzW2nXf/yNQwfNCMSRVnv2JaWtSZuV12b7wYYeAI
+         byt3zV5FiwUH3riHYS0B1kAHJMIeu53AgkLcCs7jYsKaZ6n7VN4aunvS0D8VmbPQhRsk
+         dS88Kx0MoepbvCngmKS/lqR5zpbT6WjS9ICwNX4zwocEwjJo5OtkAzY0WvcY5ZSaTYv2
+         QsoQ==
+X-Gm-Message-State: AOAM531pzVRuLnN+hOMb0enpnjT9Iryimv3+70p+BEEL0ZJK2535rEmf
+        H1CfegqtZWwgViwc4QGO7vsc2A==
+X-Google-Smtp-Source: ABdhPJxABfBShq1Krl8qx+eI5WYhSRtbAKRM77ikODQYw8yEC7MAcrpJKJjlocmRf535KdMK+BW8OA==
+X-Received: by 2002:a63:f202:: with SMTP id v2mr450469pgh.24.1614211610972;
+        Wed, 24 Feb 2021 16:06:50 -0800 (PST)
 Received: from google.com ([2620:0:1008:10:94bf:1b67:285c:b7ce])
-        by smtp.gmail.com with ESMTPSA id o65sm2713167pfg.44.2021.02.24.15.13.27
+        by smtp.gmail.com with ESMTPSA id i7sm3977728pjs.1.2021.02.24.16.06.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 15:13:28 -0800 (PST)
-Date:   Wed, 24 Feb 2021 15:13:23 -0800
+        Wed, 24 Feb 2021 16:06:50 -0800 (PST)
+Date:   Wed, 24 Feb 2021 16:06:44 -0800
 From:   Vipin Sharma <vipinsh@google.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
 Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
         jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
         hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
@@ -59,73 +60,71 @@ Cc:     tj@kernel.org, thomas.lendacky@amd.com, brijesh.singh@amd.com,
         gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
         kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YDbdk/aY88t/khY2@google.com>
+Subject: Re: [RFC 0/2] cgroup: New misc cgroup controller
+Message-ID: <YDbqFE21UsEaFDuU@google.com>
 References: <20210218195549.1696769-1-vipinsh@google.com>
- <20210218195549.1696769-3-vipinsh@google.com>
- <71092e0e-5c72-924b-c848-8ae9a589f6b0@infradead.org>
+ <YDVIYQhZ6ArGsr3n@blackbook>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <71092e0e-5c72-924b-c848-8ae9a589f6b0@infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YDVIYQhZ6ArGsr3n@blackbook>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Fri, Feb 19, 2021 at 11:02:41AM -0800, Randy Dunlap wrote:
-> > +++ b/Documentation/admin-guide/cgroup-v1/misc.rst
-> > @@ -0,0 +1 @@
-> > +/Documentation/admin-guide/cgroup-v2.rst
-> What is the purpose of this (above) file?
-
-This new controller has both cgroup v1 and v2 support. Tejun suggested
-if we can point to v2 doc from v1. If this is not recommended approach I
-can add all of the v2 documention of misc controller here, let me know.
-
-I missed a heading and adding this file in cgroup-v1/index.rst.
-Fixed it now.
-
-> > +        Limits can be set more than the capacity value in the misc.capacity
+On Tue, Feb 23, 2021 at 07:24:33PM +0100, Michal Koutný wrote:
+> Hello.
 > 
->                              higher than
-> 
+> On Thu, Feb 18, 2021 at 11:55:47AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> > This patch is creating a new misc cgroup controller for allocation and
+> > tracking of resources which are not abstract like other cgroup
+> > controllers.
+> Please don't refer to this as "allocation" anywhere, that has a specific
+> meaning (see Resource Distribution Models in
+> Documentation/admin-gruide/cgroup-v2.rst).
 
-Done
+Yeah, it should be "Limits". I will update the text.
 
-> > +a process to a different cgroup do not move the charge to the destination
 > 
->                                    does
+> > This controller was initially proposed as encryption_id but after
+> > the feedbacks, it is now changed to misc cgroup.
+> > https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
+> Interesting generalization. I wonder what else could fit under this as
+> well. (It resembles pids controller on the cover.)
+> 
+> > Please provide any feedback for this RFC or if it is good for
+> > merging then I can send a patch for merging.
+> A new controller is added exposed with v1 attributes. I'm not convinced
+> it is desirable to change the frozen v1 controllers' API? (And therefore
+> promote it as well.)
 
-Done
+This is a very trivial controller. I believe once it becomes public it
+can be helpful down the line to the v1 users, who cannot use v2 yet, for
+some simple resource accounting, like us, we have the need for ASIDs
+accounting in v1 until we move to v2. If the community has strong
+objection then I can remove v1 support.
 
-> > +Others
-> >  ----
 > 
-> That underline is too short for "Others".
-> 
+> Beware, bikeshedding. The name is very non-descriptive, potentially
+> suggesting catch-all semantics. It'd deserve a further thought. My idea
+> would be limit(s) or counter controller.
 
-Fixed.
+Limit and counter are kind of suggesting the underlying technique for
+accounting instead of a generic name to denote resource types managed by
+this controller. One can argue that if top level names are similar to
+Resource Destribution Model then may be it makes sense to combine
+resources with similar accounting technique under one controller.
 
-> Try building this doc file, please.
-> 
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2196: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2203: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2210: WARNING: Unexpected indentation.
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
-> 
-> Others
-> ----
-> next-20210219/Documentation/admin-guide/cgroup-v2.rst:2232: WARNING: Title underline too short.
-> 
-> 
-> I think that the first 3 warnings are due to missing a blank line after ::
-> or they could have something to do with mixed tabs and spaces in the misc.*
-> properties descriptions.
-> 
+I am looking at misc as a controller which is for resources not having
+proper home in other controllers or not big enough to deserve their own
+controller.
 
-Sorry, I was not familiar with Sphinx build and didn't build using that.
-I have fixed all of the above warnings. My next patch will reflect
-fixes.
+I agree with you coming up with a name which check all boxes of
+requirements won't be possible. We have discussed name sev cgroup,
+kvm cgroup, encryption_id cgroup before reaching to an agreement on misc
+cgroup. I am open to other names if they are better suited for this
+controller and makes more sense.
 
 Thanks
-
+Vipin
