@@ -2,31 +2,30 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 793503259A8
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 23:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF9813259D0
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 23:51:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhBYW15 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 25 Feb 2021 17:27:57 -0500
-Received: from mga12.intel.com ([192.55.52.136]:33744 "EHLO mga12.intel.com"
+        id S231335AbhBYWuv (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Feb 2021 17:50:51 -0500
+Received: from mga17.intel.com ([192.55.52.151]:41696 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231881AbhBYW1g (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 25 Feb 2021 17:27:36 -0500
-IronPort-SDR: uQBRiXE8ffy4Dd+tHy0u2+jC9MQtzLeyUnSjejC0f60gTFMk5tpCiNyX5YSBcDWVBzV7sRTQ6K
- cnoGO5/xRWiQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="164916683"
+        id S231326AbhBYWuu (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 25 Feb 2021 17:50:50 -0500
+IronPort-SDR: U4+q9rhKLJ/oHQ8W6WkAK+iUy4PGP/ljldIjDJCif5ebdZrfnKOqSFNJCQWcYXfJFp2u4NE+i/
+ aORolfRPHSbQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9906"; a="165566197"
 X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="164916683"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:25:48 -0800
-IronPort-SDR: 3xeohI4Olwdz2iRO+Wcc4cNuCWodhBY1jeeoz7LVZ+cZBwoZwLjM3a7ax373SR3+PoXrk0U++r
- pxX9gr5hypXQ==
+   d="scan'208";a="165566197"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:49:05 -0800
+IronPort-SDR: iNQrhR4B49D66thWy+kAZeBWhban/MHq1DSL3qHgMM8rR/clwTk3ySMQQF0TJ3oixjADsJcSNG
+ AfByzWW6o0dQ==
 X-IronPort-AV: E=Sophos;i="5.81,207,1610438400"; 
-   d="scan'208";a="365618944"
+   d="scan'208";a="442790842"
 Received: from schen9-mobl.amr.corp.intel.com ([10.254.86.33])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:25:48 -0800
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Feb 2021 14:49:03 -0800
 Subject: Re: [PATCH v2 2/3] mm: Force update of mem cgroup soft limit tree on
  usage excess
-From:   Tim Chen <tim.c.chen@linux.intel.com>
 To:     Michal Hocko <mhocko@suse.com>
 Cc:     Andrew Morton <akpm@linux-foundation.org>,
         Johannes Weiner <hannes@cmpxchg.org>,
@@ -40,12 +39,16 @@ References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
  <884d7559-e118-3773-351d-84c02642ca96@linux.intel.com>
  <YDNuAIztiGJpLEtw@dhcp22.suse.cz>
  <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
-Message-ID: <cc046fc0-930d-76f6-7cd5-2aba582d72dd@linux.intel.com>
-Date:   Thu, 25 Feb 2021 14:25:47 -0800
+ <YDQBh5th9txxEFUm@dhcp22.suse.cz>
+ <cf5ca7a1-7965-f307-22e1-e216316904cf@linux.intel.com>
+ <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
+From:   Tim Chen <tim.c.chen@linux.intel.com>
+Message-ID: <b5b1944d-846b-3212-fe4a-f10f5fcb87d7@linux.intel.com>
+Date:   Thu, 25 Feb 2021 14:48:58 -0800
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.6.0
 MIME-Version: 1.0
-In-Reply-To: <e132f836-b5d5-3776-22d6-669e713983e4@linux.intel.com>
+In-Reply-To: <YDY+PydRUGQpHNaJ@dhcp22.suse.cz>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -55,120 +58,67 @@ X-Mailing-List: cgroups@vger.kernel.org
 
 
 
-On 2/22/21 9:41 AM, Tim Chen wrote:
-> 
-> 
-> On 2/22/21 12:40 AM, Michal Hocko wrote:
->> On Fri 19-02-21 10:59:05, Tim Chen wrote:
->  occurrence.
+On 2/24/21 3:53 AM, Michal Hocko wrote:
+> On Mon 22-02-21 11:48:37, Tim Chen wrote:
+>>
+>>
+>> On 2/22/21 11:09 AM, Michal Hocko wrote:
+>>
 >>>>
->>>> Soft limit is evaluated every THRESHOLDS_EVENTS_TARGET * SOFTLIMIT_EVENTS_TARGET.
->>>> If all events correspond with a newly charged memory and the last event
->>>> was just about the soft limit boundary then we should be bound by 128k
->>>> pages (512M and much more if this were huge pages) which is a lot!
->>>> I haven't realized this was that much. Now I see the problem. This would
->>>> be a useful information for the changelog.
->>>>
->>>> Your fix is focusing on the over-the-limit boundary which will solve the
->>>> problem but wouldn't that lead to to updates happening too often in
->>>> pathological situation when a memcg would get reclaimed immediatelly?
+>>>> I actually have tried adjusting the threshold but found that it doesn't work well for
+>>>> the case with unenven memory access frequency between cgroups.  The soft
+>>>> limit for the low memory event cgroup could creep up quite a lot, exceeding
+>>>> the soft limit by hundreds of MB, even
+>>>> if I drop the SOFTLIMIT_EVENTS_TARGET from 1024 to something like 8.
 >>>
->>> Not really immediately.  The memcg that has the most soft limit excess will
->>> be chosen for page reclaim, which is the way it should be.  
->>> It is less likely that a memcg that just exceeded
->>> the soft limit becomes the worst offender immediately. 
+>>> What was the underlying reason? Higher order allocations?
+>>>
 >>
->> Well this all depends on when the the soft limit reclaim triggeres. In
->> other words how often you see the global memory reclaim. If we have a
->> memcg with a sufficient excess then this will work mostly fine. I was more
->> worried about a case when you have memcgs just slightly over the limit
->> and the global memory pressure is a regular event. You can easily end up
->> bouncing memcgs off and on the tree in a rapid fashion. 
+>> Not high order allocation.
 >>
+>> The reason was because the run away memcg asks for memory much less often, compared
+>> to the other memcgs in the system.  So it escapes the sampling update and
+>> was not put onto the tree and exceeds the soft limit
+>> pretty badly.  Even if it was put onto the tree and gets page reclaimed below the
+>> limit, it could escape the sampling the next time it exceeds the soft limit.
 > 
-> If you are concerned about such a case, we can add an excess threshold,
-> say 4 MB (or 1024 4K pages), before we trigger a forced update. You think
-> that will cover this concern?
-> 
+> I am sorry but I really do not follow. Maybe I am missing something
+> obvious but the the rate of events (charge/uncharge) shouldn't be really
+> important. There is no way to exceed the limit without charging memory
+> (either a new or via task migration in v1 and immigrate_on_move). If you
+> have SOFTLIMIT_EVENTS_TARGET 8 then you should be 128 * 8 events to
+> re-evaluate. Huge pages can make the runaway much bigger but how it
+> would be possible to runaway outside of that bound.
+
 
 Michal,
 
-How about modifiying this patch with a threshold? Like the following?
+Let's take an extreme case where memcg 1 always generate the
+first event and memcg 2 generates the rest of 128*8-1 events
+and the pattern repeat.  The update tree happens on the 128*8th event
+so memcg 1 did not trigger update tree.  In this case we will
+keep missing memcg 1's event and not put memcg 1 on the tree.
+
+Something like this pattern of memory events
+
+
+cg1 cg2 cg2 cg2 ....cg2 cg1 cg2 cg2 cg2....cg2 cg1 cg2 .....
+                     ^                      ^
+		  update tree              update tree
+
+Of course in real life the update events are random in nature.
+However, due to the low occurrence of memcg 1 event, we can miss
+updating it for a long time due to its lower probability of occurrence.
+
+> 
+> Btw. do we really need SOFTLIMIT_EVENTS_TARGET at all? Why cannot we
+> just stick with a single threshold? mem_cgroup_update_tree can be made
+> a effectivelly a noop when there is no soft limit in place so overhead
+> shouldn't matter for the vast majority of workloads.
+> 
+
+I think there are two limits because the original code wants
+memc_cgroup_threshold to be updated more frequently than the
+soft_limit_tree.  The soft limit tree update is more costly.
 
 Tim
-
----
-From 5a78ab56e2e654290cacab2f5a1631e1da1d90d2 Mon Sep 17 00:00:00 2001
-From: Tim Chen <tim.c.chen@linux.intel.com>
-Date: Wed, 3 Feb 2021 14:08:48 -0800
-Subject: [PATCH] mm: Force update of mem cgroup soft limit tree on usage
- excess
-
-To rate limit updates to the mem cgroup soft limit tree, we only perform
-updates every SOFTLIMIT_EVENTS_TARGET (defined as 1024) memory events.
-
-However, this sampling based updates may miss a critical update: i.e. when
-the mem cgroup first exceeded its limit but it was not on the soft limit tree.
-It should be on the tree at that point so it could be subjected to soft
-limit page reclaim. If the mem cgroup had few memory events compared with
-other mem cgroups, we may not update it and place in on the mem cgroup
-soft limit tree for many memory events.  And this mem cgroup excess
-usage could creep up and the mem cgroup could be hidden from the soft
-limit page reclaim for a long time.
-
-Fix this issue by forcing an update to the mem cgroup soft limit tree if a
-mem cgroup has exceeded its memory soft limit but it is not on the mem
-cgroup soft limit tree.
-
----
- mm/memcontrol.c | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a51bf90732cb..e0f6948f8ea5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -104,6 +104,7 @@ static bool do_memsw_account(void)
- 
- #define THRESHOLDS_EVENTS_TARGET 128
- #define SOFTLIMIT_EVENTS_TARGET 1024
-+#define SOFTLIMIT_EXCESS_THRESHOLD 1024
- 
- /*
-  * Cgroups above their limits are maintained in a RB-Tree, independent of
-@@ -985,15 +986,29 @@ static bool mem_cgroup_event_ratelimit(struct mem_cgroup *memcg,
-  */
- static void memcg_check_events(struct mem_cgroup *memcg, struct page *page)
- {
-+	struct mem_cgroup_per_node *mz;
-+	bool force_update = false;
-+
-+	mz = mem_cgroup_nodeinfo(memcg, page_to_nid(page));
-+	/*
-+	 * mem_cgroup_update_tree may not be called for a memcg exceeding
-+	 * soft limit due to the sampling nature of update. Don't allow
-+	 * a memcg to be left out of the tree if it has too much usage
-+	 * excess.
-+	 */
-+	if (mz && !mz->on_tree &&
-+	    soft_limit_excess(mz->memcg) > SOFTLIMIT_EXCESS_THRESHOLD)
-+		force_update = true;
-+
- 	/* threshold event is triggered in finer grain than soft limit */
--	if (unlikely(mem_cgroup_event_ratelimit(memcg,
-+	if (unlikely((force_update) || mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_THRESH))) {
- 		bool do_softlimit;
- 
- 		do_softlimit = mem_cgroup_event_ratelimit(memcg,
- 						MEM_CGROUP_TARGET_SOFTLIMIT);
- 		mem_cgroup_threshold(memcg);
--		if (unlikely(do_softlimit))
-+		if (unlikely((force_update) || do_softlimit))
- 			mem_cgroup_update_tree(memcg, page);
- 	}
- }
--- 
-2.20.1
-
-
