@@ -2,161 +2,102 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3C93249E9
-	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 05:59:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5149B324D42
+	for <lists+cgroups@lfdr.de>; Thu, 25 Feb 2021 10:54:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235277AbhBYE6c (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 24 Feb 2021 23:58:32 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44122 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234849AbhBYE6W (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 24 Feb 2021 23:58:22 -0500
-Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8EEF2C061788
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
-Received: by mail-pf1-x431.google.com with SMTP id t29so2797167pfg.11
-        for <cgroups@vger.kernel.org>; Wed, 24 Feb 2021 20:57:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
-        b=qcnZZYCJi98bpluIA+Q6PbpZt/DTsw6UAEq6IRMRd1PNOsFM6BO9kPihfoQQQb87Rx
-         fsrwNx3FnRYOVp90fuaDu9oOIAHKQZ5JRcw5J4/+z10kW3ty+3KpTL1AUzSuEpCF/9CX
-         c2ODR7C0MZAeApvSVIMhXxFEE4oO34Tfc3p1nBRDx/buMluyiYYrdFtAv9BTvjIwkNuL
-         P7AGSBh/JZKXRr05hZuaMm7Vp/wH9GiJkDriIApAxmnd3CcoDOrjpj0FWSALeojZv+P/
-         0JAirMem5/JvDvQ14shHJRy+NVY7k2H+KT9Fep2BLYxsIHztz/JM1LZDgnAXK8U1qVJf
-         fFAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=GCPvH/ftBaPKrIrg1SrRaA28WOD5QZfwlnEHwgccJos=;
-        b=CWVkhnX3kSEPNmIlwP+BXlAaroKRdAQ7LLGmoD9+S8TiROlkA0LmiSfDDi+eIkw/LE
-         d6vkIUBQPEVEXWOPCzL2D2yIQr5nyuqfSlmzL4clGU79YPlNsyP4UNL3v9csGpnNMciY
-         qphRgYcLRkVaBESKiYnrRhEytCu3gvcPoDdrD0VIId0e9dSCehAM+DXnyfsyw4PXIdw/
-         8VLrzYmhxwFpS9dnQsTq2iZjGaDuA4gi+Qkj/sf3LYvZMN9H/2WqDT+V/daNzgWU20YH
-         SPGpRwQe/XG3XDvSunMil/0d9cGGsOhQjRf+7KOvB8bVA3YEVz2/unil5MlanmnPJnD8
-         Wo5w==
-X-Gm-Message-State: AOAM531SuHec7u0lO/kbXRP6PL1qm3zOQsg90Vp+NaeoHHwV8Qm50Xa7
-        PUhDnDiT/ko3feaBTQj0PLJqjQ==
-X-Google-Smtp-Source: ABdhPJzHz+X6qOY/Ap20Mg+cl6p/k3veTQ4izjUkq9XK8Lc2iDiGHMlEOejfq7dwuBVVLuLS+3zY+w==
-X-Received: by 2002:aa7:9dd1:0:b029:1ed:bee2:c65e with SMTP id g17-20020aa79dd10000b02901edbee2c65emr1483923pfq.5.1614229061213;
-        Wed, 24 Feb 2021 20:57:41 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:9474:84b:e7ae:d5fc])
-        by smtp.gmail.com with ESMTPSA id v129sm4399042pfc.110.2021.02.24.20.57.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Feb 2021 20:57:40 -0800 (PST)
-Date:   Wed, 24 Feb 2021 20:57:36 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        thomas.lendacky@amd.com
-Cc:     tj@kernel.org, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+        id S235352AbhBYJx7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 25 Feb 2021 04:53:59 -0500
+Received: from mx2.suse.de ([195.135.220.15]:40404 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235331AbhBYJxp (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Thu, 25 Feb 2021 04:53:45 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1614246779; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pa5Bv87vsQTpNehYktuqD4xYQKRjzqObciTH5tWVW3c=;
+        b=u1ctV2DOvv5M/TvL8/NGNEplVlPYpTSVWIJY6Fgko4qtzjF/gHw0OWAMLiSHDQ2b2mkXzZ
+        OJMe1QSJXKkXn6QoauxzkkNhwaGXQ3gVkDh7eGFtuQUB386tBsy+u3z/9gwTwUoQmKXP4R
+        NSylMMyzM4WXnI5wUI+gcDsJ9XQ5aVI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 23A6DADDC;
+        Thu, 25 Feb 2021 09:52:59 +0000 (UTC)
+Date:   Thu, 25 Feb 2021 10:52:49 +0100
+From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     thomas.lendacky@amd.com, tj@kernel.org, brijesh.singh@amd.com,
+        jon.grimm@amd.com, eric.vantassell@amd.com, pbonzini@redhat.com,
+        hannes@cmpxchg.org, frankja@linux.ibm.com, borntraeger@de.ibm.com,
+        corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 Subject: Re: [RFC 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YDcuQFMbe5MaatBe@google.com>
+Message-ID: <YDdzcfLxsCeYxLNG@blackbook>
 References: <20210218195549.1696769-1-vipinsh@google.com>
  <20210218195549.1696769-2-vipinsh@google.com>
  <YDVIdycgk8XL0Zgx@blackbook>
+ <YDcuQFMbe5MaatBe@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="kWQSwDEX83EtuxH+"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YDVIdycgk8XL0Zgx@blackbook>
+In-Reply-To: <YDcuQFMbe5MaatBe@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Tue, Feb 23, 2021 at 07:24:55PM +0100, Michal Koutný wrote:
-> On Thu, Feb 18, 2021 at 11:55:48AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> > --- a/arch/x86/kvm/svm/sev.c
-> > +++ b/arch/x86/kvm/svm/sev.c
-> > [...]
-> > +#ifndef CONFIG_KVM_AMD_SEV
-> > +/*
-> > + * When this config is not defined, SEV feature is not supported and APIs in
-> > + * this file are not used but this file still gets compiled into the KVM AMD
-> > + * module.
-> I'm not familiar with the layout of KVM/SEV compile targets but wouldn't
-> it be simpler to exclude whole svm/sev.c when !CONFIG_KVM_AMD_SEV?
-> 
 
-Tom,
-Is there any plan to exclude sev.c compilation if CONFIG_KVM_AMD_SEV is
-not set?
+--kWQSwDEX83EtuxH+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> > +++ b/kernel/cgroup/misc.c
-> > [...]
-> > +/**
-> > + * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
-> > + * @type: Type of the misc res.
-> > + * @capacity: Supported capacity of the misc res on the host.
-> > + *
-> > + * If capacity is 0 then the charging a misc cgroup fails for that type.
-> > + *
-> > + * The caller must serialize invocations on the same resource.
-> > + *
-> > + * Context: Process context.
-> > + * Return:
-> > + * * %0 - Successfully registered the capacity.
-> > + * * %-EINVAL - If @type is invalid.
-> > + * * %-EBUSY - If current usage is more than the capacity.
-> When is this function supposed to be called? At boot only or is this
-> meant for some kind of hot unplug functionality too?
-> 
+On Wed, Feb 24, 2021 at 08:57:36PM -0800, Vipin Sharma <vipinsh@google.com> wrote:
+> This function is meant for hot unplug functionality too.
+Then I'm wondering if the current form is sufficient, i.e. the generic
+controller can hardly implement preemption but possibly it should
+prevent any additional charges of the resource. (Or this can be
+implemented the other subsystem and explained in the
+misc_cg_set_capacity() docs.)
 
-This function is meant for hot unplug functionality too.
+> Just to be on the same page are you talking about adding an events file
+> like in pids?
+Actually, I meant just the kernel log message. As it's the simpler part
+and even pid events have some inconsistencies wrt hierarchical
+reporting.
 
-> > +int misc_cg_try_charge(enum misc_res_type type, struct misc_cg **cg,
-> > +		       unsigned int amount)
-> > [...]
-> > +		new_usage = atomic_add_return(amount, &res->usage);
-> > +		if (new_usage > res->max ||
-> > +		    new_usage > misc_res_capacity[type]) {
-> > +			ret = -EBUSY;
-> I'm not sure the user of this resource accounting will always be able to
-> interpret EBUSY returned from depths of the subsystem.
-> See what's done in pids controller in order to give some useful
-> information about why operation failed.
+> However, if I take reference at the first charge and remove reference at
+> last uncharge then I can keep the ref count in correct sync.
+I see now how it works. I still find it a bit complex. What about making
+misc_cg an input parameter and making it the callers responsibility to
+keep a reference? (Perhaps with helpers for the most common case.)
 
-Just to be on the same page are you talking about adding an events file
-like in pids?
 
-> 
-> > +			goto err_charge;
-> > +		}
-> > +
-> > +		// First one to charge gets a reference.
-> > +		if (new_usage == amount)
-> > +			css_get(&i->css);
-> 1) Use the /* comment */ style.
-> 2) You pin the whole path from task_cg up to root (on the first charge).
-> That's unnecessary since children reference their parents.
-> Also why do you get the reference only for the first charger? While it
-> may work, it seems too convoluted to me.
-> It'd be worth documenting what the caller can expect wrt to ref count of
-> the returned misc_cg.
+Thanks,
+Michal
 
-Suppose a user charges 5 resources in a single charge call but uncharges
-them in 5 separate calls one by one. I cannot take reference on every
-charge and put the reference for every uncharge as it is not guaranteed
-to have equal number of charge-uncharge pairs and we will end up with
-the wrong ref count.
+--kWQSwDEX83EtuxH+
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
 
-However, if I take reference at the first charge and remove reference at
-last uncharge then I can keep the ref count in correct sync.
+-----BEGIN PGP SIGNATURE-----
 
-I can rewrite if condition to (new_usage == amount && task_cg == i)
-this will avoid pinning whole path up to the root. I was thinking that
-original code was simpler, clearly I was wrong.
+iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmA3c20ACgkQia1+riC5
+qSi9BhAAlE9yZPtCtt/Vj6a3n7ho7173BwjAGMkNrRYQK8qoh8ebExxRtCAKL0E1
+lyWI0cSq4Wul9uHduKwRLljqNpBziZYHrrpaQsT7uQw4A7yn62zAU2xbqDFm558D
+9TSQxO59pXdYzyemTPLmkOmkPwjHE5YUfodskMG35tbgFzIxc5SN3izteu3rl/8b
+A9Z2Q4Lo/iXi9qKNTpBtQzsNnhxO7ZL+ElkdhEINYX8G2H8tQ0DNVz+vXDXroMPp
+N3L3CA00iWrr52jtOoec3TrMsVgnlU5l3jIJASbgt4s68ukWEbgpzdHGEj8U/BfW
+dLoxQPNN8sWRChl4nehFtRq06z7hduHdOtqdgYq6y4UDKWJvBObjRFcPYIHuxN6W
+MMZOKRvm4ocUENTLK5jbv4I87E7D3457NIYUnmp0+F24tB/D5kRAkT2tNIq7nfWO
+e9GmQEeN30UyIudcI9NK7lHdJFEyXYasSR3nDKazdcDSBtxfQ0n65dmEVMtyMkRg
+e9Hot1A97AmYYSzJNoUFKKem5f75wvS+/U6dOA3gM43U/69lxNL1mQLeHVkodjTK
+Bz9YZgvDvx5sOsTfvmVNe2iFz5y35we5zh3hqLJWOEFSsPJ2lI2aTeVhku7x9w8N
+/U90fUVnkjCV7X1gKYOav/vJprMAHOv3CtkfBVp1zXdvzZO2YsE=
+=rCA2
+-----END PGP SIGNATURE-----
 
-Thanks
-Vipin
+--kWQSwDEX83EtuxH+--
