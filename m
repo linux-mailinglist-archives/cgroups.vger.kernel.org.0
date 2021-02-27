@@ -2,27 +2,27 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0F8A327137
-	for <lists+cgroups@lfdr.de>; Sun, 28 Feb 2021 07:40:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D76B8327139
+	for <lists+cgroups@lfdr.de>; Sun, 28 Feb 2021 07:40:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230440AbhB1Gie (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 28 Feb 2021 01:38:34 -0500
-Received: from mga09.intel.com ([134.134.136.24]:22647 "EHLO mga09.intel.com"
+        id S230406AbhB1GjO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sun, 28 Feb 2021 01:39:14 -0500
+Received: from mga09.intel.com ([134.134.136.24]:58903 "EHLO mga09.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230464AbhB1GiE (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Sun, 28 Feb 2021 01:38:04 -0500
-IronPort-SDR: Sc1KuAKvbpj3lqQu0KNtLaYHZ8yB0binlW+4g2e1NCfJLXkUxY9Ljviv/nIroAxZGyFQ9D37HL
- LNyRU0ZPvQ/A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9908"; a="186323898"
+        id S230435AbhB1GjJ (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sun, 28 Feb 2021 01:39:09 -0500
+IronPort-SDR: 70EMW9O4rG/DeSm0gD9kRC9aDRhjxqerY/J/89QzUNAjpZt66oJI7KYH6A22xJoZV52X9IdOyX
+ O1EN0NStCtAA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9908"; a="186323899"
 X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="186323898"
+   d="scan'208";a="186323899"
 Received: from orsmga004.jf.intel.com ([10.7.209.38])
   by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 27 Feb 2021 22:33:09 -0800
-IronPort-SDR: uViKB7IpUnlUj71C+dfdHvaySm/kdSYhIWEQXMIrwmw5k196QwVOQ1eaDa11HjurQEQ606e+Cz
- Xd9N9SVSujtw==
+IronPort-SDR: wwnUe/gQ2DURd1fuukWv5FTP+PhsRLJQVbgzAvyohgvnXCCQ/Z/PK+ojVCBdGiyw0lBhOibOA2
+ sZ4cXi7/Va0Q==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.81,211,1610438400"; 
-   d="scan'208";a="517029715"
+   d="scan'208";a="517029718"
 Received: from otc-wp-03.jf.intel.com ([10.54.39.79])
   by orsmga004.jf.intel.com with ESMTP; 27 Feb 2021 22:33:09 -0800
 From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
@@ -42,9 +42,9 @@ Cc:     Alex Williamson <alex.williamson@redhat.com>,
         "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
         Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
         Jacob Pan <jacob.jun.pan@linux.intel.com>
-Subject: [PATCH V4 07/18] iommu/ioasid: Add ioasid_set iterator helper functions
-Date:   Sat, 27 Feb 2021 14:01:15 -0800
-Message-Id: <1614463286-97618-8-git-send-email-jacob.jun.pan@linux.intel.com>
+Subject: [PATCH V4 08/18] iommu/ioasid: Introduce ioasid_set private ID
+Date:   Sat, 27 Feb 2021 14:01:16 -0800
+Message-Id: <1614463286-97618-9-git-send-email-jacob.jun.pan@linux.intel.com>
 X-Mailer: git-send-email 2.7.4
 In-Reply-To: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
 References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
@@ -52,165 +52,196 @@ Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Users of an ioasid_set may not keep track of all the IOASIDs allocated
-under the set. When collective actions are needed for each IOASIDs, it
-is useful to iterate over all the IOASIDs within the set. For example,
-when the ioasid_set is freed, the user might perform the same cleanup
-operation on each IOASID.
+When an IOASID set is used for guest SVA, each VM will acquire its
+ioasid_set for IOASID allocations. IOASIDs within the VM must have a
+host/physical IOASID backing, mapping between guest and host IOASIDs can
+be non-identical. IOASID set private ID (SPID) is introduced in this
+patch to be used as guest IOASID. However, the concept of ioasid_set
+specific namespace is generic, thus named SPID.
 
-This patch adds an API to iterate all the IOASIDs within the set.
+As SPID namespace is within the IOASID set, the IOASID core can provide
+lookup services at both directions. SPIDs may not be available when its
+IOASID is allocated, the mapping between SPID and IOASID is usually
+established when a guest page table is bound to a host PASID.
 
 Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 ---
- drivers/iommu/ioasid.c | 84 ++++++++++++++++++++++++++++++++++++++++++
- include/linux/ioasid.h | 20 ++++++++++
- 2 files changed, 104 insertions(+)
+ drivers/iommu/ioasid.c | 104 +++++++++++++++++++++++++++++++++++++++++
+ include/linux/ioasid.h |  18 +++++++
+ 2 files changed, 122 insertions(+)
 
 diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
-index a10f8154c680..9a3ba157dec3 100644
+index 9a3ba157dec3..7707bb608bdd 100644
 --- a/drivers/iommu/ioasid.c
 +++ b/drivers/iommu/ioasid.c
-@@ -700,6 +700,61 @@ void ioasid_free(struct ioasid_set *set, ioasid_t ioasid)
- 	spin_unlock(&ioasid_allocator_lock);
+@@ -26,6 +26,7 @@ enum ioasid_state {
+  * struct ioasid_data - Meta data about ioasid
+  *
+  * @id:		Unique ID
++ * @spid:	Private ID unique within a set
+  * @refs:	Number of active users
+  * @state:	Track state of the IOASID
+  * @set:	ioasid_set of the IOASID belongs to
+@@ -34,6 +35,7 @@ enum ioasid_state {
+  */
+ struct ioasid_data {
+ 	ioasid_t id;
++	ioasid_t spid;
+ 	enum ioasid_state state;
+ 	struct ioasid_set *set;
+ 	void *private;
+@@ -413,6 +415,107 @@ void ioasid_detach_data(ioasid_t ioasid)
  }
- EXPORT_SYMBOL_GPL(ioasid_free);
-+
-+/**
-+ * ioasid_free_all_in_set
-+ *
-+ * @brief
-+ * Free all PASIDs from system-wide IOASID pool, all subscribers gets
-+ * notified and do cleanup of their own.
-+ * Note that some references of the IOASIDs within the set can still
-+ * be held after the free call. This is OK in that the IOASIDs will be
-+ * marked inactive, the only operations can be done is ioasid_put.
-+ * No need to track IOASID set states since there is no reclaim phase.
-+ *
-+ * @param
-+ * struct ioasid_set where all IOASIDs within the set will be freed.
-+ */
-+void ioasid_free_all_in_set(struct ioasid_set *set)
+ EXPORT_SYMBOL_GPL(ioasid_detach_data);
+ 
++static ioasid_t ioasid_find_by_spid_locked(struct ioasid_set *set, ioasid_t spid, bool get)
 +{
++	ioasid_t ioasid = INVALID_IOASID;
 +	struct ioasid_data *entry;
 +	unsigned long index;
 +
-+	if (!ioasid_set_is_valid(set))
-+		return;
-+
-+	if (xa_empty(&set->xa))
-+		return;
-+
-+	if (!atomic_read(&set->nr_ioasids))
-+		return;
-+	spin_lock(&ioasid_allocator_lock);
-+	xa_for_each(&set->xa, index, entry) {
-+		ioasid_free_locked(set, index);
-+		/* Free from per set private pool */
-+		xa_erase(&set->xa, index);
++	if (!xa_load(&ioasid_sets, set->id)) {
++		pr_warn("Invalid set\n");
++		goto done;
 +	}
++
++	xa_for_each(&set->xa, index, entry) {
++		if (spid == entry->spid) {
++			if (get)
++				refcount_inc(&entry->refs);
++			ioasid = index;
++		}
++	}
++done:
++	return ioasid;
++}
++
++/**
++ * ioasid_attach_spid - Attach ioasid_set private ID to an IOASID
++ *
++ * @ioasid: the system-wide IOASID to attach
++ * @spid:   the ioasid_set private ID of @ioasid
++ *
++ * After attching SPID, future lookup can be done via ioasid_find_by_spid().
++ */
++int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
++{
++	struct ioasid_data *data;
++	int ret = 0;
++
++	if (spid == INVALID_IOASID)
++		return -EINVAL;
++
++	spin_lock(&ioasid_allocator_lock);
++	data = xa_load(&active_allocator->xa, ioasid);
++
++	if (!data) {
++		pr_err("No IOASID entry %d to attach SPID %d\n",
++			ioasid, spid);
++		ret = -ENOENT;
++		goto done_unlock;
++	}
++	/* Check if SPID is unique within the set */
++	if (ioasid_find_by_spid_locked(data->set, spid, false) != INVALID_IOASID) {
++		ret = -EINVAL;
++		goto done_unlock;
++	}
++	data->spid = spid;
++
++done_unlock:
++	spin_unlock(&ioasid_allocator_lock);
++	return ret;
++}
++EXPORT_SYMBOL_GPL(ioasid_attach_spid);
++
++void ioasid_detach_spid(ioasid_t ioasid)
++{
++	struct ioasid_data *data;
++
++	spin_lock(&ioasid_allocator_lock);
++	data = xa_load(&active_allocator->xa, ioasid);
++
++	if (!data || data->spid == INVALID_IOASID) {
++		pr_err("Invalid IOASID entry %d to detach\n", ioasid);
++		goto done_unlock;
++	}
++	data->spid = INVALID_IOASID;
++
++done_unlock:
 +	spin_unlock(&ioasid_allocator_lock);
 +}
-+EXPORT_SYMBOL_GPL(ioasid_free_all_in_set);
++EXPORT_SYMBOL_GPL(ioasid_detach_spid);
 +
 +/**
-+ * ioasid_set_for_each_ioasid
-+ * @brief
-+ * Iterate over all the IOASIDs within the set
-+ */
-+void ioasid_set_for_each_ioasid(struct ioasid_set *set,
-+				void (*fn)(ioasid_t id, void *data),
-+				void *data)
-+{
-+	struct ioasid_data *entry;
-+	unsigned long index;
-+
-+	xa_for_each(&set->xa, index, entry)
-+		fn(index, data);
-+}
-+EXPORT_SYMBOL_GPL(ioasid_set_for_each_ioasid);
-+
- int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid)
- {
- 	struct ioasid_data *data;
-@@ -789,6 +844,35 @@ bool ioasid_put(struct ioasid_set *set, ioasid_t ioasid)
- }
- EXPORT_SYMBOL_GPL(ioasid_put);
- 
-+/**
-+ * @brief
-+ * Find the ioasid_set of an IOASID. As long as the IOASID is valid,
-+ * the set must be valid since the refcounting is based on the number of IOASID
-+ * in the set.
++ * ioasid_find_by_spid - Find the system-wide IOASID by a set private ID and
++ * its set.
 + *
-+ * @param ioasid
-+ * @return struct ioasid_set*
++ * @set:	the ioasid_set to search within
++ * @spid:	the set private ID
++ * @get:	flag indicates whether to take a reference once found
++ *
++ * Given a set private ID and its IOASID set, find the system-wide IOASID. Take
++ * a reference upon finding the matching IOASID if @get is true. Return
++ * INVALID_IOASID if the IOASID is not found in the set or the set is not valid.
 + */
-+struct ioasid_set *ioasid_find_set(ioasid_t ioasid)
++ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid, bool get)
 +{
-+	struct ioasid_allocator_data *idata;
-+	struct ioasid_data *ioasid_data;
-+	struct ioasid_set *set = NULL;
++	ioasid_t ioasid;
 +
-+	rcu_read_lock();
-+	idata = rcu_dereference(active_allocator);
-+	ioasid_data = xa_load(&idata->xa, ioasid);
-+	if (!ioasid_data) {
-+		set = ERR_PTR(-ENOENT);
-+		goto unlock;
-+	}
-+	set = ioasid_data->set;
-+unlock:
-+	rcu_read_unlock();
-+	return set;
++	spin_lock(&ioasid_allocator_lock);
++	ioasid = ioasid_find_by_spid_locked(set, spid, get);
++	spin_unlock(&ioasid_allocator_lock);
++	return ioasid;
 +}
-+EXPORT_SYMBOL_GPL(ioasid_find_set);
++EXPORT_SYMBOL_GPL(ioasid_find_by_spid);
 +
- /**
-  * ioasid_find - Find IOASID data
-  * @set: the IOASID set
+ static inline bool ioasid_set_is_valid(struct ioasid_set *set)
+ {
+ 	return xa_load(&ioasid_sets, set->id) == set;
+@@ -616,6 +719,7 @@ ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min, ioasid_t max,
+ 	}
+ 	data->id = id;
+ 	data->state = IOASID_STATE_IDLE;
++	data->spid = INVALID_IOASID;
+ 
+ 	/* Store IOASID in the per set data */
+ 	if (xa_err(xa_store(&set->xa, id, data, GFP_ATOMIC))) {
 diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
-index cabaf0b0348f..e7f3e6108724 100644
+index e7f3e6108724..dcab02886cb5 100644
 --- a/include/linux/ioasid.h
 +++ b/include/linux/ioasid.h
-@@ -73,12 +73,17 @@ int ioasid_get_locked(struct ioasid_set *set, ioasid_t ioasid);
- bool ioasid_put(struct ioasid_set *set, ioasid_t ioasid);
- bool ioasid_put_locked(struct ioasid_set *set, ioasid_t ioasid);
- void ioasid_free(struct ioasid_set *set, ioasid_t ioasid);
-+void ioasid_free_all_in_set(struct ioasid_set *set);
- void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid,
- 		  bool (*getter)(void *));
-+struct ioasid_set *ioasid_find_set(ioasid_t ioasid);
- int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
+@@ -81,6 +81,9 @@ int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
  void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
  int ioasid_attach_data(ioasid_t ioasid, void *data);
  void ioasid_detach_data(ioasid_t ioasid);
-+void ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
-+				void (*fn)(ioasid_t id, void *data),
-+				void *data);
- #else /* !CONFIG_IOASID */
- static inline void ioasid_install_capacity(ioasid_t total)
- {
-@@ -158,5 +163,20 @@ static inline int ioasid_attach_data(ioasid_t ioasid, void *data)
- static inline void ioasid_detach_data(ioasid_t ioasid)
- {
++int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid);
++void ioasid_detach_spid(ioasid_t ioasid);
++ioasid_t ioasid_find_by_spid(struct ioasid_set *set, ioasid_t spid, bool get);
+ void ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
+ 				void (*fn)(ioasid_t id, void *data),
+ 				void *data);
+@@ -173,6 +176,21 @@ static inline struct ioasid_set *ioasid_find_set(ioasid_t ioasid)
+ 	return ERR_PTR(-ENOTSUPP);
  }
+ 
++static inline int ioasid_attach_spid(ioasid_t ioasid, ioasid_t spid)
++{
++	return -ENOTSUPP;
++}
 +
-+static inline void ioasid_free_all_in_set(struct ioasid_set *set)
++static inline void ioasid_detach_spid(ioasid_t ioasid)
 +{
 +}
 +
-+static inline struct ioasid_set *ioasid_find_set(ioasid_t ioasid)
++static inline ioasid_t ioasid_find_by_spid(struct ioasid_set *set,
++					   ioasid_t spid, bool get)
 +{
-+	return ERR_PTR(-ENOTSUPP);
++	return INVALID_IOASID;
 +}
 +
-+static inline void ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
-+					      void (*fn)(ioasid_t id, void *data),
-+					      void *data)
-+{
-+}
- #endif /* CONFIG_IOASID */
- #endif /* __LINUX_IOASID_H */
+ static inline void ioasid_set_for_each_ioasid(struct ioasid_set *sdata,
+ 					      void (*fn)(ioasid_t id, void *data),
+ 					      void *data)
 -- 
 2.25.1
 
