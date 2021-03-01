@@ -2,51 +2,51 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E2E7327783
-	for <lists+cgroups@lfdr.de>; Mon,  1 Mar 2021 07:26:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CC4D327787
+	for <lists+cgroups@lfdr.de>; Mon,  1 Mar 2021 07:26:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231910AbhCAGZP (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Mar 2021 01:25:15 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48070 "EHLO
+        id S231966AbhCAG0F (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Mar 2021 01:26:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231893AbhCAGZL (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Mar 2021 01:25:11 -0500
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38D65C061786
-        for <cgroups@vger.kernel.org>; Sun, 28 Feb 2021 22:24:29 -0800 (PST)
-Received: by mail-pj1-x1031.google.com with SMTP id e9so11054567pjj.0
-        for <cgroups@vger.kernel.org>; Sun, 28 Feb 2021 22:24:29 -0800 (PST)
+        with ESMTP id S231926AbhCAGZw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Mar 2021 01:25:52 -0500
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542DAC06178B
+        for <cgroups@vger.kernel.org>; Sun, 28 Feb 2021 22:24:47 -0800 (PST)
+Received: by mail-pj1-x1035.google.com with SMTP id c19so10379489pjq.3
+        for <cgroups@vger.kernel.org>; Sun, 28 Feb 2021 22:24:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ArNP2uMW7gBd9O3E1At2VYbyrloUhhFWuEfRdcUZEjk=;
-        b=FmkE8GWV8yLmAy4FQqBaXkvB1sBv0RQ+xcane5Rs5Hhuz1tEJBH/X01FCxfS3oxZkR
-         jVL8zzVXmCvfOqg7kIhSZ0sPFgYq2/eAHQJGVs6Iv6Y8r1MR+LzS1SpJh7M9HkHaqZdk
-         /VjoRJgHDgOyH3AYuRAPnPlneUwZ9KE/MQbkyAQCFpZW17rhEc3FpJfx3qB7ogIBj/ZI
-         FpJKZrKsugP43BKNm96zoNPgBtsPOcjUhk6pLv2UagTvzgyltWaQ6l0kYoW3IXeYxDuD
-         hK7D1wt3himG81sb1Jpgi9YVhdc5tCS6BEiAvLAPvF7MU2ALb6hiEoowNrXu3VYSRfIa
-         Ff2Q==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=o7QhLv5gQurpL6BkSCLndHABMXsANOfSdd3xoUJITvQ=;
+        b=Yar2qzoSxku0EoB9WmsR/XSu1T9sO9Fx49sg1/60AwPq3qbgiP/Y8Ck4ZCrh4R6OXA
+         KoZDdJzIOuO7ltFFb5kUO55IP9PwiOYtJ+QNaGTS1h7GkKdxO+01SNIzhVbNvIi/8loz
+         sinz/+KSOoHEo03bdgot6IzvHDT///+t45el89jQmqGASFqmWSAo6netSHf9+g3SDwWY
+         xHx4D99m4+YRf6zSAEYFB5A9ay2HO7ONkgea70W3E5xLJkikMgIJgq4cSS80xRGJvPh/
+         yOFpm7UI9g2P2XOF49h4yRPoNYA7oLRwBKLB+mCzEuDssMTYf8H1xy38Duov3x/OhCEJ
+         iodg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ArNP2uMW7gBd9O3E1At2VYbyrloUhhFWuEfRdcUZEjk=;
-        b=HFNW5qWmODZ9DCi0U3nax3xZ82SJMP12tmWgeA9fAZ+FcYTbY4gnD80jKi/TMfiKbc
-         zWLSiyfD3+eUVIMx1YhneVTP43BkKqLotfnXe8sfXjpl+a7fDX0DY2Zw9ST5mgvwNFmZ
-         4yT1bV5kirOTUgLa7b75lKarvuOZ2jk8tYhfVmz/v7v8YrWAujndNCao5hysgVpPlvtb
-         Josy+0vwAeVBMIJGYnV8uaHHXDb4tynbYp7ozA4p8DhSg+78v4nMBS346cwdTs4qNRtm
-         P9KjZHdqhsrOdEJ218ECaPV99MJkF1CRu7jdLxBIIqrtrgR9aqRw44mx3JL9csruqUXo
-         a5HA==
-X-Gm-Message-State: AOAM530l99w7lnJu9YImhpgemnVoA3asKS3GRdBOBiPT4Mh1KCqWwOIy
-        LemWeCcPxynMV0VuLJLF9jvs9w==
-X-Google-Smtp-Source: ABdhPJxK+/+grHuuVMH/Q+Maq6CdxUlgQreML/kvOOFZmo8+o1ttYQO6LKfeje2r9vpdaoQVSalAzQ==
-X-Received: by 2002:a17:90a:5302:: with SMTP id x2mr16503209pjh.232.1614579868545;
-        Sun, 28 Feb 2021 22:24:28 -0800 (PST)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=o7QhLv5gQurpL6BkSCLndHABMXsANOfSdd3xoUJITvQ=;
+        b=mep3+St0pxYIIIVZqro4wlSHbxclLtDjUqVrLcGXhIuOU3R7u/h70Do+G4bw1OufRQ
+         PJXuwvuc4CovsZ0xI9tEWzq89vmAoWq2N+NqJYQmvm+XPjxpkQ3S3EbVwd16c8yhRIiR
+         Um0sfqR42DKt+iHEyt4OcVQIZR6eOGSyzj7GXoShACn0VUEJ7LzpFKCI+38hjXqGontG
+         H0P5eYtt2hWShSkYFQdiC1OetoU8dubimxlgjRJjPyThWcZr3TlBp96J88lTLS9jY8og
+         HOZZgmztOxi3UrFpHV2drk+4HS3rgtjjYT7ORDnZQywzt63RZSscGVRwwnKUchFysP7d
+         bXaA==
+X-Gm-Message-State: AOAM5336Z0Etp/+tC/DzwEOCMHII/ifROMR6c9xNB4AOjfNaJWmn1RNc
+        4MGY9KvWuin1f/yNpNRXPdtLTw==
+X-Google-Smtp-Source: ABdhPJwG2x6S0WoOhSbLApU+6gZ68jAo9FncXvx14C+W9F4m8AqCqBOXVN9iwo2ZJyMz0HrV1Ek8wQ==
+X-Received: by 2002:a17:90a:8c84:: with SMTP id b4mr15827997pjo.21.1614579886895;
+        Sun, 28 Feb 2021 22:24:46 -0800 (PST)
 Received: from localhost.localdomain ([139.177.225.227])
-        by smtp.gmail.com with ESMTPSA id x6sm14304626pfd.12.2021.02.28.22.24.11
+        by smtp.gmail.com with ESMTPSA id x6sm14304626pfd.12.2021.02.28.22.24.28
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 28 Feb 2021 22:24:28 -0800 (PST)
+        Sun, 28 Feb 2021 22:24:46 -0800 (PST)
 From:   Muchun Song <songmuchun@bytedance.com>
 To:     viro@zeniv.linux.org.uk, jack@suse.cz, amir73il@gmail.com,
         ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
@@ -70,88 +70,123 @@ Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
         netdev@vger.kernel.org, bpf@vger.kernel.org,
         cgroups@vger.kernel.org, linux-mm@kvack.org,
         duanxiongchun@bytedance.com
-Subject: [PATCH 0/5] Use obj_cgroup APIs to change kmem pages
-Date:   Mon,  1 Mar 2021 14:22:22 +0800
-Message-Id: <20210301062227.59292-1-songmuchun@bytedance.com>
+Subject: [PATCH 1/5] mm: memcontrol: introduce obj_cgroup_{un}charge_page
+Date:   Mon,  1 Mar 2021 14:22:23 +0800
+Message-Id: <20210301062227.59292-2-songmuchun@bytedance.com>
 X-Mailer: git-send-email 2.21.0 (Apple Git-122)
+In-Reply-To: <20210301062227.59292-1-songmuchun@bytedance.com>
+References: <20210301062227.59292-1-songmuchun@bytedance.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Since Roman series "The new cgroup slab memory controller" applied. All
-slab objects are changed via the new APIs of obj_cgroup. This new APIs
-introduce a struct obj_cgroup instead of using struct mem_cgroup directly
-to charge slab objects. It prevents long-living objects from pinning the
-original memory cgroup in the memory. But there are still some corner
-objects (e.g. allocations larger than order-1 page on SLUB) which are
-not charged via the API of obj_cgroup. Those objects (include the pages
-which are allocated from buddy allocator directly) are charged as kmem
-pages which still hold a reference to the memory cgroup.
+We know that the unit of charging slab object is bytes, the unit of
+charging kmem page is PAGE_SIZE. So If we want to reuse obj_cgroup
+APIs to charge the kmem pages, we should pass PAGE_SIZE (as third
+parameter) to obj_cgroup_charge(). Because the charing size is page
+size, we always need to refill objcg stock. This is pointless. As we
+already know the charing size. So we can directly skip touch the
+objcg stock and introduce obj_cgroup_{un}charge_page() to charge or
+uncharge a kmem page.
 
-E.g. We know that the kernel stack is charged as kmem pages because the
-size of the kernel stack can be greater than 2 pages (e.g. 16KB on x86_64
-or arm64). If we create a thread (suppose the thread stack is charged to
-memory cgroup A) and then move it from memory cgroup A to memory cgroup
-B. Because the kernel stack of the thread hold a reference to the memory
-cgroup A. The thread can pin the memory cgroup A in the memory even if
-we remove the cgroup A. If we want to see this scenario by using the
-following script. We can see that the system has added 500 dying cgroups.
+In the later patch, we can reuse those helpers to charge/uncharge
+the kmem pages. This is just code movement without any functional
+change.
 
-	#!/bin/bash
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+---
+ mm/memcontrol.c | 46 +++++++++++++++++++++++++++++++---------------
+ 1 file changed, 31 insertions(+), 15 deletions(-)
 
-	cat /proc/cgroups | grep memory
-
-	cd /sys/fs/cgroup/memory
-	echo 1 > memory.move_charge_at_immigrate
-
-	for i in range{1..500}
-	do
-		mkdir kmem_test
-		echo $$ > kmem_test/cgroup.procs
-		sleep 3600 &
-		echo $$ > cgroup.procs
-		echo `cat kmem_test/cgroup.procs` > cgroup.procs
-		rmdir kmem_test
-	done
-
-	cat /proc/cgroups | grep memory
-
-This patchset aims to make those kmem pages drop the reference to memory
-cgroup by using the APIs of obj_cgroup. Finally, we can see that the number
-of the dying cgroups will not increase if we run the above test script.
-
-Patch 1-3 are using obj_cgroup APIs to charge kmem pages. The remote
-memory cgroup charing APIs is a mechanism to charge kernel memory to a
-given memory cgroup. So I also make it use the APIs of obj_cgroup.
-Patch 4-5 are doing this.
-
-Muchun Song (5):
-  mm: memcontrol: introduce obj_cgroup_{un}charge_page
-  mm: memcontrol: make page_memcg{_rcu} only applicable for non-kmem
-    page
-  mm: memcontrol: reparent the kmem pages on cgroup removal
-  mm: memcontrol: move remote memcg charging APIs to CONFIG_MEMCG_KMEM
-  mm: memcontrol: use object cgroup for remote memory cgroup charging
-
- fs/buffer.c                          |  10 +-
- fs/notify/fanotify/fanotify.c        |   6 +-
- fs/notify/fanotify/fanotify_user.c   |   2 +-
- fs/notify/group.c                    |   3 +-
- fs/notify/inotify/inotify_fsnotify.c |   8 +-
- fs/notify/inotify/inotify_user.c     |   2 +-
- include/linux/bpf.h                  |   2 +-
- include/linux/fsnotify_backend.h     |   2 +-
- include/linux/memcontrol.h           | 109 +++++++++++---
- include/linux/sched.h                |   6 +-
- include/linux/sched/mm.h             |  30 ++--
- kernel/bpf/syscall.c                 |  35 ++---
- kernel/fork.c                        |   4 +-
- mm/memcontrol.c                      | 276 ++++++++++++++++++++++-------------
- mm/page_alloc.c                      |   4 +-
- 15 files changed, 324 insertions(+), 175 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2db2aeac8a9e..2eafbae504ac 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3060,6 +3060,34 @@ static void memcg_free_cache_id(int id)
+ 	ida_simple_remove(&memcg_cache_ida, id);
+ }
+ 
++static inline void obj_cgroup_uncharge_page(struct obj_cgroup *objcg,
++					    unsigned int nr_pages)
++{
++	rcu_read_lock();
++	__memcg_kmem_uncharge(obj_cgroup_memcg(objcg), nr_pages);
++	rcu_read_unlock();
++}
++
++static int obj_cgroup_charge_page(struct obj_cgroup *objcg, gfp_t gfp,
++				  unsigned int nr_pages)
++{
++	struct mem_cgroup *memcg;
++	int ret;
++
++	rcu_read_lock();
++retry:
++	memcg = obj_cgroup_memcg(objcg);
++	if (unlikely(!css_tryget(&memcg->css)))
++		goto retry;
++	rcu_read_unlock();
++
++	ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
++
++	css_put(&memcg->css);
++
++	return ret;
++}
++
+ /**
+  * __memcg_kmem_charge: charge a number of kernel pages to a memcg
+  * @memcg: memory cgroup to charge
+@@ -3184,11 +3212,8 @@ static void drain_obj_stock(struct memcg_stock_pcp *stock)
+ 		unsigned int nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+ 		unsigned int nr_bytes = stock->nr_bytes & (PAGE_SIZE - 1);
+ 
+-		if (nr_pages) {
+-			rcu_read_lock();
+-			__memcg_kmem_uncharge(obj_cgroup_memcg(old), nr_pages);
+-			rcu_read_unlock();
+-		}
++		if (nr_pages)
++			obj_cgroup_uncharge_page(old, nr_pages);
+ 
+ 		/*
+ 		 * The leftover is flushed to the centralized per-memcg value.
+@@ -3246,7 +3271,6 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes)
+ 
+ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+ {
+-	struct mem_cgroup *memcg;
+ 	unsigned int nr_pages, nr_bytes;
+ 	int ret;
+ 
+@@ -3263,24 +3287,16 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+ 	 * refill_obj_stock(), called from this function or
+ 	 * independently later.
+ 	 */
+-	rcu_read_lock();
+-retry:
+-	memcg = obj_cgroup_memcg(objcg);
+-	if (unlikely(!css_tryget(&memcg->css)))
+-		goto retry;
+-	rcu_read_unlock();
+-
+ 	nr_pages = size >> PAGE_SHIFT;
+ 	nr_bytes = size & (PAGE_SIZE - 1);
+ 
+ 	if (nr_bytes)
+ 		nr_pages += 1;
+ 
+-	ret = __memcg_kmem_charge(memcg, gfp, nr_pages);
++	ret = obj_cgroup_charge_page(objcg, gfp, nr_pages);
+ 	if (!ret && nr_bytes)
+ 		refill_obj_stock(objcg, PAGE_SIZE - nr_bytes);
+ 
+-	css_put(&memcg->css);
+ 	return ret;
+ }
+ 
 -- 
 2.11.0
 
