@@ -2,58 +2,57 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 360A8328A51
-	for <lists+cgroups@lfdr.de>; Mon,  1 Mar 2021 19:16:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CA1E328DAD
+	for <lists+cgroups@lfdr.de>; Mon,  1 Mar 2021 20:15:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239092AbhCASP0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 1 Mar 2021 13:15:26 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59038 "EHLO
+        id S241262AbhCATPX (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 1 Mar 2021 14:15:23 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239418AbhCASMl (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Mar 2021 13:12:41 -0500
-Received: from mail-lj1-x236.google.com (mail-lj1-x236.google.com [IPv6:2a00:1450:4864:20::236])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 711DDC06178C
-        for <cgroups@vger.kernel.org>; Mon,  1 Mar 2021 10:11:59 -0800 (PST)
-Received: by mail-lj1-x236.google.com with SMTP id 2so16047847ljr.5
-        for <cgroups@vger.kernel.org>; Mon, 01 Mar 2021 10:11:59 -0800 (PST)
+        with ESMTP id S241255AbhCATNL (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 1 Mar 2021 14:13:11 -0500
+Received: from mail-qk1-x734.google.com (mail-qk1-x734.google.com [IPv6:2607:f8b0:4864:20::734])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6223FC061793
+        for <cgroups@vger.kernel.org>; Mon,  1 Mar 2021 11:09:58 -0800 (PST)
+Received: by mail-qk1-x734.google.com with SMTP id s7so7598736qkg.4
+        for <cgroups@vger.kernel.org>; Mon, 01 Mar 2021 11:09:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BGU0eUrGcHK/RDV2rfGKNSJvLH9RO1hVgeZSC29kjwo=;
-        b=ht1sFzXFGRfS8LWY4p2VzOH9ey6K1YEdVoK6ois+19WsBeTJoAIp0tgzWGYsYZupDU
-         qJFKb8PFVL3nJiTyit/TnKA8aEKQDxwwg71VD/oSYIQZaacqGy9Zwb2Fq8Pbi+ExaAsQ
-         VL6amJZRvFp93GD92cT48zqHKb0jTeHHHfyb5JEJEiyWdxMJa/5UUKgZZmbMNPXLu1L+
-         d7BSvB3G1hdvVn0qWuUDLAj/ndRvD7LVDuiJLAM1+CPfKY5NqqlhAQW6YxI5bLXG/pkJ
-         l/f7aZVczU7/iYKir9kKh5hnoT+daU64GUZ0uEi3m6Kvqzx8q9w4NEkVdDFmjzlboJ+r
-         yNCA==
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=i+xARtY+5W8Bn1AE04i/Ad5rFPbMh8nDWeTLAZo2lK0=;
+        b=Dmi55bD0YEnhSqHee72cnYtTysJPc/UwD5dR9ydldk6GNoQl1/DniyGpHgFg80docR
+         e1KdvcdDDqDdYhzqdjbwQC3WwGcI+gVUYGwEy/2ZHD9FDnWf38mhuSNKbYuja0dkYMwc
+         Dt1ZWtdL/AKMrYyS1KxGZHqiczC3VM3kJ6R+dzCrcHrTE05NQ5F/8yLtHGymvg1aq6BM
+         EXf4Kdm1R/J3x2USifUap32jpSxasFV9xs+YN9M/8OjxeDZd0alUdKogErFvkkhpAax4
+         4O0hiOHJwEitkpq+e0RPMg7fyDENlKa7NIV1yli4o3coe+gnJvv16u0eFWOoTS7x0HeU
+         rH1g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BGU0eUrGcHK/RDV2rfGKNSJvLH9RO1hVgeZSC29kjwo=;
-        b=jQKOeTJxmIR5J5SywGi10x76KcUqnQPgH6sRqcuztMN/RoGBL27oU1ihDuKiXGEkt5
-         tS357cIlMUDx74HeVsCfbPkgIDerJM6Xk4pD7WIefqpGbqFzfJJCM9HrGXj55ZC+lp49
-         h53lCKCZdBmCwDjpnXkjEOH4qEcKkSewJOr96+qE67BnxuimiNqgAyWQ2Nl1+CQB79Kr
-         iAWa79TmQOUl/Sf4eWggxkPCbEFDgDtZVxqCXWzGb44mW3FKK0du6G5thJm8KH7mX2Ca
-         9KwUUM5VERy1QQv7UaGdWqomeN+5vlhLmT4laCC26NawAyGMFPVgOkbgkP/tBYkx7Le+
-         UX8w==
-X-Gm-Message-State: AOAM533m0/4u0q6T24D2JSVKOoGoNPaafFn5I3o116H5m3bX8GONLVfl
-        85h4cxnoBAA5FQr6B79xcHoDwhx4t3x13GMu4GIbMg==
-X-Google-Smtp-Source: ABdhPJyyN10CMbekqIe2EaCLHXVwEmhEw2eA0ojmVgi3XY81XzPa0cvQd4lzpVVcj9/BVccaJ8HjfF/Ze2+dV2hAXeM=
-X-Received: by 2002:a2e:9cc4:: with SMTP id g4mr981268ljj.34.1614622317485;
- Mon, 01 Mar 2021 10:11:57 -0800 (PST)
-MIME-Version: 1.0
-References: <20210301062227.59292-1-songmuchun@bytedance.com> <20210301062227.59292-3-songmuchun@bytedance.com>
-In-Reply-To: <20210301062227.59292-3-songmuchun@bytedance.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Mon, 1 Mar 2021 10:11:45 -0800
-Message-ID: <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
-Subject: Re: [PATCH 2/5] mm: memcontrol: make page_memcg{_rcu} only applicable
- for non-kmem page
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
-        Amir Goldstein <amir73il@gmail.com>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=i+xARtY+5W8Bn1AE04i/Ad5rFPbMh8nDWeTLAZo2lK0=;
+        b=IZjJLdk8uKIY9tBwTzwP1A1cFjj1INMfYNCbW4dsQ3dEc3S/K9wvOtuHmiJOAUOB8C
+         ZAfy+c12bGwPumZ25JNGxIYCEjsltFjuqbs/LLsOr27UQL6qCdZLm+gewxtuqg/MTcbA
+         TPv5M6t6jC6/LvQ5O1jLtMZEUpg/sZHGAseDeGENl458q8YsYTbmZTIXF6xT4v9ctAU7
+         YKZs4ItUQxqeFuXGXbxX93dbUoRDfttdTbwcSYf2Eh2bNZTqFQXCejHDDZTtyjIHfJqr
+         k8grSzrQWQvQaCBDCMJGM7mWCD8Md8PvKIOcxTEVGpWLgWL3tdi62EN8mcJTx2upgM9D
+         dmzw==
+X-Gm-Message-State: AOAM532PVWPsXuoGUD2feQaAZBNXj5iV4u1u+p+2UMi1SaGpoBel9Ewk
+        Dd4uoje5prLXNaSAKQ84KVH0Og==
+X-Google-Smtp-Source: ABdhPJzw9sBKATTH9+l4/FyjFyJ4xvsDXuoyNe+xu6pg1Fsl6HJWxo2SNSKnwbilZI0nWJ3JIsIPhA==
+X-Received: by 2002:a37:4a49:: with SMTP id x70mr15969541qka.118.1614625797396;
+        Mon, 01 Mar 2021 11:09:57 -0800 (PST)
+Received: from localhost ([2620:10d:c091:480::1:c0b0])
+        by smtp.gmail.com with ESMTPSA id 18sm3329057qkr.90.2021.03.01.11.09.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 01 Mar 2021 11:09:56 -0800 (PST)
+Date:   Mon, 1 Mar 2021 14:09:55 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Muchun Song <songmuchun@bytedance.com>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>,
         Alexei Starovoitov <ast@kernel.org>,
         Daniel Borkmann <daniel@iogearbox.net>,
         Andrii Nakryiko <andrii@kernel.org>,
@@ -67,7 +66,6 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
         dietmar.eggemann@arm.com, Steven Rostedt <rostedt@goodmis.org>,
         Benjamin Segall <bsegall@google.com>,
         Mel Gorman <mgorman@suse.de>, bristot@redhat.com,
-        Johannes Weiner <hannes@cmpxchg.org>,
         Michal Hocko <mhocko@kernel.org>,
         Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
@@ -92,129 +90,67 @@ Cc:     Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
         netdev <netdev@vger.kernel.org>, bpf <bpf@vger.kernel.org>,
         Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
         duanxiongchun@bytedance.com
-Content-Type: text/plain; charset="UTF-8"
+Subject: Re: [PATCH 2/5] mm: memcontrol: make page_memcg{_rcu} only
+ applicable for non-kmem page
+Message-ID: <YD08A+fEp/4pw10I@cmpxchg.org>
+References: <20210301062227.59292-1-songmuchun@bytedance.com>
+ <20210301062227.59292-3-songmuchun@bytedance.com>
+ <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod7sysj0+wrzLTXnwn7s_Gf-V2eFPJ6cLcoRmR0LdAFk0Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sun, Feb 28, 2021 at 10:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
->
-> We want to reuse the obj_cgroup APIs to reparent the kmem pages when
-> the memcg offlined. If we do this, we should store an object cgroup
-> pointer to page->memcg_data for the kmem pages.
->
-> Finally, page->memcg_data can have 3 different meanings.
->
->   1) For the slab pages, page->memcg_data points to an object cgroups
->      vector.
->
->   2) For the kmem pages (exclude the slab pages), page->memcg_data
->      points to an object cgroup.
->
->   3) For the user pages (e.g. the LRU pages), page->memcg_data points
->      to a memory cgroup.
->
-> Currently we always get the memcg associated with a page via page_memcg
-> or page_memcg_rcu. page_memcg_check is special, it has to be used in
-> cases when it's not known if a page has an associated memory cgroup
-> pointer or an object cgroups vector. Because the page->memcg_data of
-> the kmem page is not pointing to a memory cgroup in the later patch,
-> the page_memcg and page_memcg_rcu cannot be applicable for the kmem
-> pages. In this patch, we introduce page_memcg_kmem to get the memcg
-> associated with the kmem pages. And make page_memcg and page_memcg_rcu
-> no longer apply to the kmem pages.
->
-> In the end, there are 4 helpers to get the memcg associated with a
-> page. The usage is as follows.
->
->   1) Get the memory cgroup associated with a non-kmem page (e.g. the LRU
->      pages).
->
->      - page_memcg()
->      - page_memcg_rcu()
+Muchun, can you please reduce the CC list to mm/memcg folks only for
+the next submission? I think probably 80% of the current recipients
+don't care ;-)
 
-Can you rename these to page_memcg_lru[_rcu] to make them explicitly
-for LRU pages?
+On Mon, Mar 01, 2021 at 10:11:45AM -0800, Shakeel Butt wrote:
+> On Sun, Feb 28, 2021 at 10:25 PM Muchun Song <songmuchun@bytedance.com> wrote:
+> >
+> > We want to reuse the obj_cgroup APIs to reparent the kmem pages when
+> > the memcg offlined. If we do this, we should store an object cgroup
+> > pointer to page->memcg_data for the kmem pages.
+> >
+> > Finally, page->memcg_data can have 3 different meanings.
+> >
+> >   1) For the slab pages, page->memcg_data points to an object cgroups
+> >      vector.
+> >
+> >   2) For the kmem pages (exclude the slab pages), page->memcg_data
+> >      points to an object cgroup.
+> >
+> >   3) For the user pages (e.g. the LRU pages), page->memcg_data points
+> >      to a memory cgroup.
+> >
+> > Currently we always get the memcg associated with a page via page_memcg
+> > or page_memcg_rcu. page_memcg_check is special, it has to be used in
+> > cases when it's not known if a page has an associated memory cgroup
+> > pointer or an object cgroups vector. Because the page->memcg_data of
+> > the kmem page is not pointing to a memory cgroup in the later patch,
+> > the page_memcg and page_memcg_rcu cannot be applicable for the kmem
+> > pages. In this patch, we introduce page_memcg_kmem to get the memcg
+> > associated with the kmem pages. And make page_memcg and page_memcg_rcu
+> > no longer apply to the kmem pages.
+> >
+> > In the end, there are 4 helpers to get the memcg associated with a
+> > page. The usage is as follows.
+> >
+> >   1) Get the memory cgroup associated with a non-kmem page (e.g. the LRU
+> >      pages).
+> >
+> >      - page_memcg()
+> >      - page_memcg_rcu()
+> 
+> Can you rename these to page_memcg_lru[_rcu] to make them explicitly
+> for LRU pages?
 
->
->   2) Get the memory cgroup associated with a kmem page (exclude the slab
->      pages).
->
->      - page_memcg_kmem()
->
->   3) Get the memory cgroup associated with a page. It has to be used in
->      cases when it's not known if a page has an associated memory cgroup
->      pointer or an object cgroups vector. Returns NULL for slab pages or
->      uncharged pages, otherwise, returns memory cgroup for charged pages
->      (e.g. kmem pages, LRU pages).
->
->      - page_memcg_check()
->
-> In some place, we use page_memcg to check whether the page is charged.
-> Now we introduce page_memcg_charged helper to do this.
->
-> This is a preparation for reparenting the kmem pages. To support reparent
-> kmem pages, we just need to adjust page_memcg_kmem and page_memcg_check in
-> the later patch.
->
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> ---
-[snip]
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -855,10 +855,11 @@ void __mod_lruvec_page_state(struct page *page, enum node_stat_item idx,
->                              int val)
->  {
->         struct page *head = compound_head(page); /* rmap on tail pages */
-> -       struct mem_cgroup *memcg = page_memcg(head);
-> +       struct mem_cgroup *memcg;
->         pg_data_t *pgdat = page_pgdat(page);
->         struct lruvec *lruvec;
->
-> +       memcg = PageMemcgKmem(head) ? page_memcg_kmem(head) : page_memcg(head);
+The next patch removes page_memcg_kmem() again to replace it with
+page_objcg(). That should (luckily) remove the need for this
+distinction and keep page_memcg() simple and obvious.
 
-Should page_memcg_check() be used here?
-
->         /* Untracked pages have no memcg, no lruvec. Update only the node */
->         if (!memcg) {
->                 __mod_node_page_state(pgdat, idx, val);
-> @@ -3170,12 +3171,13 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
->   */
->  void __memcg_kmem_uncharge_page(struct page *page, int order)
->  {
-> -       struct mem_cgroup *memcg = page_memcg(page);
-> +       struct mem_cgroup *memcg;
->         unsigned int nr_pages = 1 << order;
->
-> -       if (!memcg)
-> +       if (!page_memcg_charged(page))
->                 return;
->
-> +       memcg = page_memcg_kmem(page);
->         VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
->         __memcg_kmem_uncharge(memcg, nr_pages);
->         page->memcg_data = 0;
-> @@ -6831,24 +6833,25 @@ static void uncharge_batch(const struct uncharge_gather *ug)
->  static void uncharge_page(struct page *page, struct uncharge_gather *ug)
->  {
->         unsigned long nr_pages;
-> +       struct mem_cgroup *memcg;
->
->         VM_BUG_ON_PAGE(PageLRU(page), page);
->
-> -       if (!page_memcg(page))
-> +       if (!page_memcg_charged(page))
->                 return;
->
->         /*
->          * Nobody should be changing or seriously looking at
-> -        * page_memcg(page) at this point, we have fully
-> -        * exclusive access to the page.
-> +        * page memcg at this point, we have fully exclusive
-> +        * access to the page.
->          */
-> -
-> -       if (ug->memcg != page_memcg(page)) {
-> +       memcg = PageMemcgKmem(page) ? page_memcg_kmem(page) : page_memcg(page);
-
-Same, should page_memcg_check() be used here?
+It would be better to not introduce page_memcg_kmem() in the first
+place in this patch, IMO.
