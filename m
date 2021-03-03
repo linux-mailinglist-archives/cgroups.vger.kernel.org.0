@@ -2,55 +2,31 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 575B232C280
-	for <lists+cgroups@lfdr.de>; Thu,  4 Mar 2021 01:04:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CC1EF32C8FB
+	for <lists+cgroups@lfdr.de>; Thu,  4 Mar 2021 02:17:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234267AbhCCUy1 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 3 Mar 2021 15:54:27 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51040 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhCCPpQ (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Wed, 3 Mar 2021 10:45:16 -0500
-Received: from mail-qv1-xf32.google.com (mail-qv1-xf32.google.com [IPv6:2607:f8b0:4864:20::f32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8931C06175F;
-        Wed,  3 Mar 2021 07:44:31 -0800 (PST)
-Received: by mail-qv1-xf32.google.com with SMTP id s17so7334739qvr.12;
-        Wed, 03 Mar 2021 07:44:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
-        b=Yo/WbLtNEcukoBaVIbtOmoJkqQ78eohGvlv9L6yTWcdDIuU+1DKAsD3fh1HE47Xrp+
-         QFlB7j0powGVx/NAToiiojNwZYwizMSL3bMhnmCO5LXvVsufMjP7GNnPm8L/4Z04DNED
-         PwkvridEsCPsRoNu/6CyDKV6GbFO6q2fPyLhHKJnUfbBGoKhaEDc7kAAkZXc5ASnjGnj
-         COSukL6HNRaAnW+dWsCVUTEWV6O1Sj57SBKzdk7nqI1XHIiwgqRSH+n321SqE/5pCgGy
-         ZRtUeRAi9hqP8qbDLI7pXQc3l3kAvlrBrJ0G4HVsFGa3WxRqSwAhAuIuaJFI+TFc8FpN
-         EZ4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=yAenZ2k324Y74inyHnLSpf4GKMijWe+eb5zJ0f7us3Y=;
-        b=GOPo44OjVFNC9CLZGaKYRfU+mn2tolvjltWa3daK+7ZlcpvFxAwq2hdmkJLsmQBTSE
-         +PDZQ8p2iZm1odp2wxytxbXAlUxIu//KYIN97JTUbfTfkfJn+1JWmMOeAHEgnQ76g1oa
-         mX2redR5lC67iGBY92ma3ZR26+TNxWLWImWfh4n6XKTQ169oTuEGk9pge1NrdXKw4HU+
-         ApyMrc2L/35etDuQjxfvm2/hKUnh4ECraMlj1yEbFLTKQNq9uXVMSIE3z8V3xG3yxK4W
-         gcrpY0yVG/JYIsYKC6TGX6/xI/7SICj6mxmRl2Nj1M+vBAa0Dj3bolMuRrYbE1xBakVL
-         dBcw==
-X-Gm-Message-State: AOAM531wBswscg5TgokYVxEh8Y8lSMLtFfpf4+qxCoJxLRdsEo+JQM39
-        ymVEFo5Jt28D5WGvXh+xL8oBVANgJ1a/Tg==
-X-Google-Smtp-Source: ABdhPJzfFnuZzOw9IZBrOfo12BzAhQPTqGWB0InFeznSDVw2hz00sFHfeQE8i+h+temYeCDQwJeU0A==
-X-Received: by 2002:ad4:4581:: with SMTP id x1mr3253236qvu.9.1614786270710;
-        Wed, 03 Mar 2021 07:44:30 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id g6sm1590177qtg.91.2021.03.03.07.44.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 07:44:29 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Wed, 3 Mar 2021 10:44:28 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
+        id S241544AbhCDA7s (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 3 Mar 2021 19:59:48 -0500
+Received: from mga05.intel.com ([192.55.52.43]:40969 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237335AbhCCVRK (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Wed, 3 Mar 2021 16:17:10 -0500
+IronPort-SDR: j1K1quAxMPqOSSXqKXoCFfkbWh7b+tUA6mPo+1zL8/cC5wc4hw245lSDE0vwP+Mvfcn9ywcZTj
+ QkFCJbpKQVng==
+X-IronPort-AV: E=McAfee;i="6000,8403,9912"; a="272282417"
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="272282417"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 13:15:15 -0800
+IronPort-SDR: 4GumHzw+bqY2IuEknONcScAZW86HiX+ue90j58IjKak+hmhbzwOuAwfFlCGtOaA4n6eEKtFaub
+ IoJjZGUM6C9g==
+X-IronPort-AV: E=Sophos;i="5.81,220,1610438400"; 
+   d="scan'208";a="406603184"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Mar 2021 13:15:11 -0800
+Date:   Wed, 3 Mar 2021 13:17:26 -0800
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Tejun Heo <tj@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Joerg Roedel <joro@8bytes.org>,
         Lu Baolu <baolu.lu@linux.intel.com>,
@@ -65,39 +41,62 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Jonathan Corbet <corbet@lwn.net>,
         Raj Ashok <ashok.raj@intel.com>,
         "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
+        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        jacob.jun.pan@linux.intel.com
 Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
-Message-ID: <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+Message-ID: <20210303131726.7a8cb169@jacob-builder>
+In-Reply-To: <YD+u3CXhwOi2LC+4@slm.duckdns.org>
 References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+        <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+        <YD+u3CXhwOi2LC+4@slm.duckdns.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:
-> IOASIDs are used to associate DMA requests with virtual address spaces.
-> They are a system-wide limited resource made available to the userspace
-> applications. Let it be VMs or user-space device drivers.
+Hi Tejun,
+
+On Wed, 3 Mar 2021 10:44:28 -0500, Tejun Heo <tj@kernel.org> wrote:
+
+> On Sat, Feb 27, 2021 at 02:01:23PM -0800, Jacob Pan wrote:
+> > IOASIDs are used to associate DMA requests with virtual address spaces.
+> > They are a system-wide limited resource made available to the userspace
+> > applications. Let it be VMs or user-space device drivers.
+> > 
+> > This RFC patch introduces a cgroup controller to address the following
+> > problems:
+> > 1. Some user applications exhaust all the available IOASIDs thus
+> > depriving others of the same host.
+> > 2. System admins need to provision VMs based on their needs for IOASIDs,
+> > e.g. the number of VMs with assigned devices that perform DMA requests
+> > with PASID.  
 > 
-> This RFC patch introduces a cgroup controller to address the following
-> problems:
-> 1. Some user applications exhaust all the available IOASIDs thus
-> depriving others of the same host.
-> 2. System admins need to provision VMs based on their needs for IOASIDs,
-> e.g. the number of VMs with assigned devices that perform DMA requests
-> with PASID.
+> Please take a look at the proposed misc controller:
+> 
+>  http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
+> 
+> Would that fit your bill?
+The interface definitely can be reused. But IOASID has a different behavior
+in terms of migration and ownership checking. I guess SEV key IDs are not
+tied to a process whereas IOASIDs are. Perhaps this can be solved by
+adding
++	.can_attach	= ioasids_can_attach,
++	.cancel_attach	= ioasids_cancel_attach,
+Let me give it a try and come back.
 
-Please take a look at the proposed misc controller:
+Thanks for the pointer.
 
- http://lkml.kernel.org/r/20210302081705.1990283-2-vipinsh@google.com
+Jacob
 
-Would that fit your bill?
+> 
+> Thanks.
+> 
 
-Thanks.
 
--- 
-tejun
+Thanks,
+
+Jacob
