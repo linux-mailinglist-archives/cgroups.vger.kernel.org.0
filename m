@@ -2,118 +2,113 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E01C732DBBD
-	for <lists+cgroups@lfdr.de>; Thu,  4 Mar 2021 22:27:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B274E32DDB2
+	for <lists+cgroups@lfdr.de>; Fri,  5 Mar 2021 00:19:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238112AbhCDV1m (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Mar 2021 16:27:42 -0500
-Received: from mga03.intel.com ([134.134.136.65]:46354 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237839AbhCDV1k (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 4 Mar 2021 16:27:40 -0500
-IronPort-SDR: ay2YA9k2DmLcJTf5v8ZyRlwRmAVn8f+u0uD6c0gEJHOVbXvgXksVF2votuNLeWRRmPL+mbiu20
- i8fB+ayvg3jg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9913"; a="187565543"
-X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="187565543"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 13:25:53 -0800
-IronPort-SDR: MQ7Ih7H0p2xK1hWg7n4AeoanVjOPZRwTjBXJnjrogCBsf4jtzESf6/D/mAX8KKNBeg8DF+etxU
- JJCkaD1zIg3A==
-X-IronPort-AV: E=Sophos;i="5.81,223,1610438400"; 
-   d="scan'208";a="384637280"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Mar 2021 13:25:53 -0800
-Date:   Thu, 4 Mar 2021 13:28:09 -0800
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Tejun Heo <tj@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        <iommu@lists.linux-foundation.org>, <cgroups@vger.kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>,
-        jacob.jun.pan@linux.intel.com
-Subject: Re: [RFC PATCH 15/18] cgroup: Introduce ioasids controller
-Message-ID: <20210304132809.75b3fa55@jacob-builder>
-In-Reply-To: <20210304190253.GL4247@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
-        <1614463286-97618-16-git-send-email-jacob.jun.pan@linux.intel.com>
-        <YD+u3CXhwOi2LC+4@slm.duckdns.org>
-        <20210303131726.7a8cb169@jacob-builder>
-        <20210303160205.151d114e@jacob-builder>
-        <YECtMZNqSgh7jkGP@myrica>
-        <20210304094603.4ab6c1c4@jacob-builder>
-        <20210304175402.GG4247@nvidia.com>
-        <20210304110144.39ef0941@jacob-builder>
-        <20210304190253.GL4247@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S232480AbhCDXT5 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Mar 2021 18:19:57 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36840 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232720AbhCDXTw (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Mar 2021 18:19:52 -0500
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92666C06175F
+        for <cgroups@vger.kernel.org>; Thu,  4 Mar 2021 15:19:52 -0800 (PST)
+Received: by mail-yb1-xb4a.google.com with SMTP id 194so378194ybl.5
+        for <cgroups@vger.kernel.org>; Thu, 04 Mar 2021 15:19:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=/tCag2eM5nibLNaUG4o5xV/pF/skcGVt2I4xreL6gfI=;
+        b=LQXYw+cnQ5skNeBCxADkh40ZLQqdcnVS3py7rRwFSc5jFkf7xMzj9/kzaAN030I1cc
+         ALcihEajKRdWwIjzVkdnEEJ5clsDxKQCKHquzcrv8S9dEvFia/6LDSqmEcIN11QY9L6s
+         saub2b4HcnLstNNeZJqAxnWxq24Uy7PY/kp2g+fFrOD3byGvmkozYDdoNEj/CKOcCnzr
+         mAe6R+sOd5omrR9C1LNlE2Xm/myYz5zAmPVWmxnMkeZ0NlyjRM2duTuxU/21B5qSsWFQ
+         jaWvUqgeCXHh+Gdf8ecYjuYDFAHn+R3NKCwzyTigP2dz/HK4C6F8nONvHgpXHdCe/Efg
+         uRcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=/tCag2eM5nibLNaUG4o5xV/pF/skcGVt2I4xreL6gfI=;
+        b=DpzXGbD96j5IyO/jloVdSMM4xdUbDUhrbqgEXgyiRyYu3obcrZv+ICtdt2vTq7mZXf
+         cQb0GPR8rSlZwHwYzhzo1NeajDP+lS3YHJq+HId3ONodxQUCbSrDj/Jc3A2CHjVhFVmA
+         0DT2QZj73aWcOELb6jBpTSY0XqJtbK/1uOuRYKcSKhKC3fCx4THjMsPzNh4vQ0zA/ce0
+         JsWExtgQ2rezu9DTO0VArsOrhwXWeppcRQhWQgyCypCJk/vjXzk6IbFggJqCUGm8bN0F
+         tdysGPJbPVQi8t2D3RvVsiLtu+lXo2kpAkwy5iRtYxVUS2+5gA13hpgDToTt2iQI1aHw
+         yHoA==
+X-Gm-Message-State: AOAM531TYQr59Na0IXACkHP9IVKVkQMSF7KI14BjMxt/iNnZkH38DQIg
+        uN82uIzPvRUAriK32HVBODpnKGNEX2tZ
+X-Google-Smtp-Source: ABdhPJzCDUXR9u2rQTEwXTd/5pmu8kU2aaY9EivX2IsEE/Kg4Magvz6cMaCrKA0IcEd5OAkrrgrDlwzPON77
+Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
+X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1b1:4021:52a5:84d])
+ (user=vipinsh job=sendgmr) by 2002:a25:c707:: with SMTP id
+ w7mr9662857ybe.225.1614899991739; Thu, 04 Mar 2021 15:19:51 -0800 (PST)
+Date:   Thu,  4 Mar 2021 15:19:44 -0800
+Message-Id: <20210304231946.2766648-1-vipinsh@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
+Subject: [Patch v3 0/2] cgroup: New misc cgroup controller
+From:   Vipin Sharma <vipinsh@google.com>
+To:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com
+Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
+        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
+        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
+        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vipin Sharma <vipinsh@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Jason,
+Hello
 
-On Thu, 4 Mar 2021 15:02:53 -0400, Jason Gunthorpe <jgg@nvidia.com> wrote:
+This patch series is creating a new misc cgroup controller for limiting
+and tracking of resources which are not abstract like other cgroup
+controllers.
 
-> On Thu, Mar 04, 2021 at 11:01:44AM -0800, Jacob Pan wrote:
-> 
-> > > For something like qemu I'd expect to put the qemu process in a cgroup
-> > > with 1 PASID. Who cares what qemu uses the PASID for, or how it was
-> > > allocated?  
-> > 
-> > For vSVA, we will need one PASID per guest process. But that is up to
-> > the admin based on whether or how many SVA capable devices are directly
-> > assigned.  
-> 
-> I hope the virtual IOMMU driver can communicate the PASID limit and
-> the cgroup machinery in the guest can know what the actual limit is.
-> 
-For VT-d, emulated vIOMMU can communicate with the guest IOMMU driver on how
-many PASID bits are supported (extended cap reg PASID size fields). But it
-cannot communicate how many PASIDs are in the pool(host cgroup capacity).
+This controller was initially proposed as encryption_id but after
+the feedbacks, it is now changed to misc cgroup.
+https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
 
-The QEMU process may not be the only one in a cgroup so it cannot give hard
-guarantees. I don't see a good way to communicate accurately at runtime as
-the process migrates or limit changes.
+Changes in RFC v3:
+1. Changed implementation to support 64 bit counters.
+2. Print kernel logs only once per resource per cgroup.
+3. Capacity can be set less than the current usage.
 
-We were thinking to adopt the "Limits" model as defined in the cgroup-v2
-doc.
-"
-Limits
-------
+Changes in RFC v2:
+1. Documentation fixes.
+2. Added kernel log messages.
+3. Changed charge API to treat misc_cg as input parameter.
+4. Added helper APIs to get and release references on the cgroup.
 
-A child can only consume upto the configured amount of the resource.
-Limits can be over-committed - the sum of the limits of children can
-exceed the amount of resource available to the parent.
-"
+[1] https://lore.kernel.org/lkml/20210218195549.1696769-1-vipinsh@google.com
+[2] https://lore.kernel.org/lkml/20210302081705.1990283-1-vipinsh@google.com/
 
-So the guest cgroup would still think it has full 20 bits of PASID at its
-disposal. But PASID allocation may fail before reaching the full 20 bits
-(2M).
-Similar on the host side, we only enforce the limit set by the cgroup but
-not guarantee it.
+Vipin Sharma (2):
+  cgroup: sev: Add misc cgroup controller
+  cgroup: sev: Miscellaneous cgroup documentation.
 
-> I was thinking of a case where qemu is using a single PASID to setup
-> the guest kVA or similar
-> 
-got it.
+ Documentation/admin-guide/cgroup-v1/index.rst |   1 +
+ Documentation/admin-guide/cgroup-v1/misc.rst  |   4 +
+ Documentation/admin-guide/cgroup-v2.rst       |  69 ++-
+ arch/x86/kvm/svm/sev.c                        |  65 ++-
+ arch/x86/kvm/svm/svm.h                        |   1 +
+ include/linux/cgroup_subsys.h                 |   4 +
+ include/linux/misc_cgroup.h                   | 130 ++++++
+ init/Kconfig                                  |  14 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/misc.c                          | 402 ++++++++++++++++++
+ 10 files changed, 679 insertions(+), 12 deletions(-)
+ create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+ create mode 100644 include/linux/misc_cgroup.h
+ create mode 100644 kernel/cgroup/misc.c
 
-> Jason
+-- 
+2.30.1.766.gb4fecdf3b7-goog
 
-
-Thanks,
-
-Jacob
