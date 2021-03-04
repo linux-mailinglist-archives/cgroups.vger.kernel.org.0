@@ -2,61 +2,63 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C183E32CCC9
-	for <lists+cgroups@lfdr.de>; Thu,  4 Mar 2021 07:24:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4900632CECC
+	for <lists+cgroups@lfdr.de>; Thu,  4 Mar 2021 09:53:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235085AbhCDGXV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Mar 2021 01:23:21 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42672 "EHLO
+        id S236749AbhCDIwN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 4 Mar 2021 03:52:13 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46466 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235074AbhCDGWt (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Mar 2021 01:22:49 -0500
-Received: from mail-pg1-x52a.google.com (mail-pg1-x52a.google.com [IPv6:2607:f8b0:4864:20::52a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 844F2C06175F
-        for <cgroups@vger.kernel.org>; Wed,  3 Mar 2021 22:22:09 -0800 (PST)
-Received: by mail-pg1-x52a.google.com with SMTP id e6so18226208pgk.5
-        for <cgroups@vger.kernel.org>; Wed, 03 Mar 2021 22:22:09 -0800 (PST)
+        with ESMTP id S236805AbhCDIv7 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Mar 2021 03:51:59 -0500
+Received: from mail-qv1-xf2b.google.com (mail-qv1-xf2b.google.com [IPv6:2607:f8b0:4864:20::f2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C29EAC061756;
+        Thu,  4 Mar 2021 00:51:18 -0800 (PST)
+Received: by mail-qv1-xf2b.google.com with SMTP id h7so6242846qvm.2;
+        Thu, 04 Mar 2021 00:51:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=wa5muaXHut4hfwXTsUBvUfthAuhKwhmv9/hS3aAHRxQ=;
-        b=Ei8dVn1tS3L8d+KCjI+VuCzSj+Cfa7yV0HFL1DM94rBiWSDms9SHkHwivMYn04bjmx
-         OY7XuGQpzmXg0EUzXpFAvpzAbXLTJKYqOnctbovAHMT8rOH5KdM45V87GeUhl5QmBmOf
-         9SsmlkYM/nbtIcpXpwLUik8NdP/SeznAYt/+RCuNSN4C49b2N8+qrYgTtMsFHLPlCq3i
-         oFaz4h5lYyjePLRasP1ShTXGMxKB4OpTzRm53eQV4pK89hTc9zr8XIMmx5W/jGKNj+L3
-         M9VgZ1z/fQqUt6B/WABIinlH+Kr151hgBCYsKRas0sZSUw/S+UXNv+4IxVwtGr+bxBZB
-         7OiA==
+        bh=I4gktfqxylGB3DlwpHUJlo46LXTYxo6+TuJCmtDgwqg=;
+        b=WYjdeOOvSLFpvDoGjRRqZlAOwzlmZdzsKW62eY2+C+MatfU5IHlRHugMRRHognkKJa
+         7I/NGS3uGqF63bl8cu+Sd8jPUj2wa8lNZWhg6s7FdnFPLRsxr7AK4HzzeD65KBmPz6wN
+         VQcjeJJbBgX5qiMV1/Cq6/FQCVXVPWIa+tMGhn9gGdfcb2+PL56qDI1QfMLy9cayAD8R
+         QXnYX4JEzS6BN9ANqF2JSjPoHHX1U+rqiF5qO+KIN6ax+4qAeRnkp97wMpAOHuQIRs5o
+         Kj46nYkNjqGS+ndlohRvyB8MUQ4HYU2dQPbGtA8rAwwGGcZ43FjhtD3OMnmovFe3Uaft
+         0aqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wa5muaXHut4hfwXTsUBvUfthAuhKwhmv9/hS3aAHRxQ=;
-        b=Y6K067WcdpDgAslWvdU2tddgn8mu4dZQzEtCxOId/bHmMknhZ9AiG+j4enWvrlUuIT
-         hdB8Psiz+S6GQE/YPiWNc2Jyl7MM9Bc8mHvxVVnAVc2sMWCOh57EKtcIjH6Q90/73wO2
-         /DQPSdTri4IhDTNqxlziEpb94U3K1A3ubNMxFhtfQt8W1rnfVoYlVBZhVrtGhpZ1l4HY
-         ZxBK1/E+7zmKd6PalbQ7gCpra3XDK4yrfHwdOJJTNCOVeuD0fZgHl2TFYTEc6vAqUeQc
-         WolK9zCY3cWn++1j4HYN5uVTdCsSjRdZz1SnXRFjiqPp3F4ltAOthpnw6Ug4s0JMEgus
-         HECQ==
-X-Gm-Message-State: AOAM5304ziuBCr+pK0EHEUwUrtyCh3BLUmzeYPXXA0Wim1B3YdeaeLNs
-        fsw8qyHnp3TzG+7BjxpOYVaj8w==
-X-Google-Smtp-Source: ABdhPJxxhHevBDuxsi5CHKFWK0/YIVXgJSyzO2vm7eUTrnkAE2fGT16nVrdFVJcwBDOhVAjGBkGaQg==
-X-Received: by 2002:a63:3e03:: with SMTP id l3mr1928769pga.452.1614838928731;
-        Wed, 03 Mar 2021 22:22:08 -0800 (PST)
-Received: from google.com ([2620:0:1008:10:5ddf:a7e:5239:ef47])
-        by smtp.gmail.com with ESMTPSA id q128sm26609812pfb.51.2021.03.03.22.22.07
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=I4gktfqxylGB3DlwpHUJlo46LXTYxo6+TuJCmtDgwqg=;
+        b=SCssvo3JnDfv2x8MNnb1/0o+1zLiG2oje8dRx4H1mu3yQalM9G/sMrsYMNayyjE51W
+         sCSb5goftX0iIsrtcfVzhxMcUL7ngF4pW+yzTuM0fwH/mCb1GoG9fcn5O5yIxghzliR0
+         0YezW/4DwQkIjzDV7SUCH0gAvwfkrleLMaEbwynXHPgQHbyo2S+3igidli5SB8zei8yZ
+         whfSFSkj1i8EIiIOlYd+3Iend4J7BapyEn5YMveSeBeihBljxq4uqKPNBQSrP5nTOgOx
+         0R1eP+vMPA+0IWVAAKadCbWMh8Op6LcgJf82lSkL0rLgwsJwXITO1TLJkPt1YKHopkYM
+         f4IA==
+X-Gm-Message-State: AOAM5310QWmMUK2qvXWN5TcTp/zSFJlNBoihJskbq3tpgY0GIh1CBB42
+        3VNl1VlyHSY8VuhWLBkBqyc=
+X-Google-Smtp-Source: ABdhPJzBUoqqJVrNBlQvGGRR49f0+8IuJLMipV5zoSogL0KIUeUBdiMnYRbldFvy1u4CXAnQ7dzQOw==
+X-Received: by 2002:ad4:53ac:: with SMTP id j12mr2877734qvv.3.1614847877771;
+        Thu, 04 Mar 2021 00:51:17 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id m16sm1347504qkm.100.2021.03.04.00.51.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Mar 2021 22:22:08 -0800 (PST)
-Date:   Wed, 3 Mar 2021 22:22:03 -0800
-From:   Vipin Sharma <vipinsh@google.com>
-To:     Jacob Pan <jacob.jun.pan@intel.com>
-Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        Thu, 04 Mar 2021 00:51:17 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 4 Mar 2021 03:51:16 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Vipin Sharma <vipinsh@google.com>
+Cc:     Jacob Pan <jacob.jun.pan@intel.com>, mkoutny@suse.com,
+        rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
         rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
         x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
@@ -65,43 +67,47 @@ Cc:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
         Alex Williamson <alex.williamson@redhat.com>,
         Jason Gunthorpe <jgg@nvidia.com>
 Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <YEB8i6Chq4K/GGF6@google.com>
+Message-ID: <YECfhCJtHUL9cB2L@slm.duckdns.org>
 References: <20210302081705.1990283-1-vipinsh@google.com>
  <20210302081705.1990283-3-vipinsh@google.com>
  <20210303185513.27e18fce@jacob-builder>
+ <YEB8i6Chq4K/GGF6@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210303185513.27e18fce@jacob-builder>
+In-Reply-To: <YEB8i6Chq4K/GGF6@google.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed, Mar 03, 2021 at 06:55:13PM -0800, Jacob Pan wrote:
-> Hi Vipin,
-> 
-> On Tue,  2 Mar 2021 00:17:05 -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> 
-> > +Migration and Ownership
-> > +~~~~~~~~~~~~~~~~~~~~~~~
-> > +
-> > +A miscellaneous scalar resource is charged to the cgroup in which it is
-> > used +first, and stays charged to that cgroup until that resource is
-> > freed. Migrating +a process to a different cgroup does not move the
-> > charge to the destination +cgroup where the process has moved.
-> > +
-> I am trying to see if IOASIDs cgroup can also fit in this misc controller
-> as yet another resource type.
-> https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
-> However, unlike sev IOASIDs need to be migrated if the process is moved to
-> another cgroup. i.e. charge the destination and uncharge the source.
-> 
-> Do you think this behavior can be achieved by differentiating resource
-> types? i.e. add attach callbacks for certain types. Having a single misc
-> interface seems cleaner than creating another controller.
+Hello,
 
-I think it makes sense to add support for migration for the resources
-which need it. Resources like SEV, SEV-ES will not participate in
-migration and won't stop can_attach() to succeed, other resources which
-need migration will allow or stop based on their limits and capacity in
-the destination.
+On Wed, Mar 03, 2021 at 10:22:03PM -0800, Vipin Sharma wrote:
+> > I am trying to see if IOASIDs cgroup can also fit in this misc controller
+> > as yet another resource type.
+> > https://lore.kernel.org/linux-iommu/20210303131726.7a8cb169@jacob-builder/T/#u
+> > However, unlike sev IOASIDs need to be migrated if the process is moved to
+> > another cgroup. i.e. charge the destination and uncharge the source.
+> > 
+> > Do you think this behavior can be achieved by differentiating resource
+> > types? i.e. add attach callbacks for certain types. Having a single misc
+> > interface seems cleaner than creating another controller.
+> 
+> I think it makes sense to add support for migration for the resources
+> which need it. Resources like SEV, SEV-ES will not participate in
+> migration and won't stop can_attach() to succeed, other resources which
+> need migration will allow or stop based on their limits and capacity in
+> the destination.
+
+Please note that cgroup2 by and large don't really like or support charge
+migration or even migrations themselves. We tried that w/ memcg on cgroup1
+and it turned out horrible. The expected usage model as decribed in the doc
+is using migration to seed a cgroup (or even better, use the new clone call
+to start in the target cgroup) and then stay there until exit. All existing
+controllers assume this usage model and I'm likely to nack deviation unless
+there are some super strong justifications.
+
+Thanks.
+
+-- 
+tejun
