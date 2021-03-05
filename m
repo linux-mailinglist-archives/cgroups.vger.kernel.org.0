@@ -2,194 +2,181 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 825E432DDB7
-	for <lists+cgroups@lfdr.de>; Fri,  5 Mar 2021 00:20:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BEC632E353
+	for <lists+cgroups@lfdr.de>; Fri,  5 Mar 2021 09:06:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232880AbhCDXUA (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 4 Mar 2021 18:20:00 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36876 "EHLO
+        id S229517AbhCEIGr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Mar 2021 03:06:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbhCDXT6 (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Thu, 4 Mar 2021 18:19:58 -0500
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44E28C061756
-        for <cgroups@vger.kernel.org>; Thu,  4 Mar 2021 15:19:58 -0800 (PST)
-Received: by mail-qk1-x749.google.com with SMTP id h126so172609qkd.4
-        for <cgroups@vger.kernel.org>; Thu, 04 Mar 2021 15:19:58 -0800 (PST)
+        with ESMTP id S229464AbhCEIGr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Mar 2021 03:06:47 -0500
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E30C3C061574
+        for <cgroups@vger.kernel.org>; Fri,  5 Mar 2021 00:06:46 -0800 (PST)
+Received: by mail-ot1-x336.google.com with SMTP id t16so1008812ott.3
+        for <cgroups@vger.kernel.org>; Fri, 05 Mar 2021 00:06:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=9IvSzdbIQqhRyiLJGvOnZfh3hjug63Y1v74jXsaZzZ4=;
-        b=VUg8JS9esKxgJWQYeNlIzJMv7J5UCwAEn9AMSgO287mOoiWqXjSpqdssGtIduTiM4C
-         2CCOvYag+IijZjoV9/WVXuJF2mWAH15yxfEnXdcauXFD+5BrdwRNxA0YtL7GNYKIRM8O
-         FPrE/nHGdjLL5z2m6gnnfO0uw3uSCDpHBarfDEvXOVa/9Wbddi+9EhLffgVfeOtECb30
-         UhH8JlovXbpoZAwIijoUlGUKuHPTedj6B0bBL6+wgHcgfnoR+2VrjqV/m0MUbjylNJaS
-         Xvr/XyqAMkdEBc/gNRZqG5MUu1icZGhhm1XywvN9o5ymWWCeV8FsjtYCLDumfLnpXN7w
-         I0Hw==
+        h=date:from:to:cc:subject:in-reply-to:message-id:references
+         :user-agent:mime-version;
+        bh=6Ntm9TYj9xnK5FJwNfSHccWZk0cH/kRpY9uFJXEGdp4=;
+        b=JtDs5SGsyGwpKyZGB+UWCFD0bUCHtF++4j4LEkMR3zxnUbR7upuo3bGIoFiSGBtExy
+         Xlu/idUZ+1LErYPG3Cd+Eej2W0DQW2t7bP3RcQmpj9eZu4zrngwcstsiZFWkh71eDLt/
+         +nuDyIl5YfMHCEMynjwMtQeeO6PCpHLId8kJOUlmRAn8t86VTxSa7bVNI5eCWjXFbzhI
+         KCpyR8GReEwx6f8/TqrakkXvX+xSDklxWlzkQs7H9jr7uriW6UvyRmVeN1EPjJMszwh4
+         sar5jzloP5Iz83AbJ/YuFjSfDDuDnnZOE9T5EQ1HK2xhxG5tmJUpTCiIjgvl02WDu9W+
+         adnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=9IvSzdbIQqhRyiLJGvOnZfh3hjug63Y1v74jXsaZzZ4=;
-        b=EVMtntler0tOd98U/mvpPqWUtiQMzX2sD0BbSc+cd+JQFPVnLbS4tA9JP85kgMXrRX
-         +f0kMz+z9gq5TDNYt19orczDgZMz6jC9FOo4xilo2u9NvM3VExjxG+qzCnqgtilCUYeT
-         NvTposvayKUqJyHV6I1tfwoAcmBK9T8/BuAPAolLEmvUSvBC4ZW2TuhtM06QyemIK3JR
-         xX7qsz0n/LRPqYx/8tisMxssWBa6VlYEVART4ogC5LC/9ChhUIbj7UJqfv1yyiScjJCd
-         06ZrghooIF+UjWuZJX0dOrjEZ16d7w/Mcg60AnG7zwYeuCsK4Q33XoSyyPAR1dRx0PIE
-         z3/Q==
-X-Gm-Message-State: AOAM531ZgJsGWJ/P9DO5HGw1d4K6dDkTDRcdt/PEIEKKnJeZ77gWtNq1
-        +X9hHV13iRjffaXPZYmA3YiuM+MuZZ8S
-X-Google-Smtp-Source: ABdhPJzQ4UL90vQgpQH42Fu9aOvSGIfVFVvsaXTA5xGaLFstkGCwyeaT6vZtX18j0w5LBvPvs35Oen1A1UJb
-Sender: "vipinsh via sendgmr" <vipinsh@vipinsh.kir.corp.google.com>
-X-Received: from vipinsh.kir.corp.google.com ([2620:0:1008:10:1b1:4021:52a5:84d])
- (user=vipinsh job=sendgmr) by 2002:a05:6214:d4b:: with SMTP id
- 11mr6511589qvr.42.1614899997447; Thu, 04 Mar 2021 15:19:57 -0800 (PST)
-Date:   Thu,  4 Mar 2021 15:19:46 -0800
-In-Reply-To: <20210304231946.2766648-1-vipinsh@google.com>
-Message-Id: <20210304231946.2766648-3-vipinsh@google.com>
-Mime-Version: 1.0
-References: <20210304231946.2766648-1-vipinsh@google.com>
-X-Mailer: git-send-email 2.30.1.766.gb4fecdf3b7-goog
-Subject: [Patch v3 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-From:   Vipin Sharma <vipinsh@google.com>
-To:     tj@kernel.org, mkoutny@suse.com, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com
-Cc:     corbet@lwn.net, seanjc@google.com, vkuznets@redhat.com,
-        wanpengli@tencent.com, jmattson@google.com, joro@8bytes.org,
-        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, hpa@zytor.com,
-        gingell@google.com, rientjes@google.com, dionnaglaze@google.com,
-        kvm@vger.kernel.org, x86@kernel.org, cgroups@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Vipin Sharma <vipinsh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
+         :references:user-agent:mime-version;
+        bh=6Ntm9TYj9xnK5FJwNfSHccWZk0cH/kRpY9uFJXEGdp4=;
+        b=A/OFyuR6xDWCqbtM8Qg54Fwn3HnKy5e1WnS+xWh9Rf0Xdm0FRQt10VMyvTddsTZkeP
+         ZhPnqlpqcpsH6bodJGgOUZsSi7LCAN6HzSwZgW4AS+SZ3I8JVhrrqKr1p/x6OfIKjE1p
+         ODy6AscuHIt+9JsXOfILlaReLXnIcLBCuN5jdh+yZdXgljIVQJSV69fG1vff6FC8YLSP
+         ihubWJIw9johV2npO9BIVSTpJoVwqWtdFoZAfxrsXEcm+ibJBARgmgU7il9D+Djdwiv/
+         u6YkL/yen2m7Hl9ZMgFOma0NepnQVJvNuFGtVGsr4FIbr759WsT/Oa55ynJgtJjohgH2
+         deUQ==
+X-Gm-Message-State: AOAM533Bw8DRyH3GnSAV08WDfWeCR0bijW/rLW0L1RsatfPOFUEjplzq
+        sQ80VsrT6i1Ti3iGbIn71pu1tA==
+X-Google-Smtp-Source: ABdhPJxThJ5wrHrPS0uUauUNUFu56eKAS9O2j6jzhAW+ts6AM6FgX1hw/FEjfEL4rW3W5UQs8HgcbA==
+X-Received: by 2002:a9d:701e:: with SMTP id k30mr6969214otj.157.1614931606122;
+        Fri, 05 Mar 2021 00:06:46 -0800 (PST)
+Received: from eggly.attlocal.net (172-10-233-147.lightspeed.sntcca.sbcglobal.net. [172.10.233.147])
+        by smtp.gmail.com with ESMTPSA id d21sm376885oic.54.2021.03.05.00.06.44
+        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 05 Mar 2021 00:06:45 -0800 (PST)
+Date:   Fri, 5 Mar 2021 00:06:31 -0800 (PST)
+From:   Hugh Dickins <hughd@google.com>
+X-X-Sender: hugh@eggly.anvils
+To:     Shakeel Butt <shakeelb@google.com>
+cc:     Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] memcg: charge before adding to swapcache on swapin
+In-Reply-To: <20210304014229.521351-1-shakeelb@google.com>
+Message-ID: <alpine.LSU.2.11.2103042248590.18572@eggly.anvils>
+References: <20210304014229.521351-1-shakeelb@google.com>
+User-Agent: Alpine 2.11 (LSU 23 2013-08-11)
+MIME-Version: 1.0
+Content-Type: TEXT/PLAIN; charset=US-ASCII
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Documentation of miscellaneous cgroup controller. This new controller is
-used to track and limit the usage of scalar resources.
+On Wed, 3 Mar 2021, Shakeel Butt wrote:
 
-Signed-off-by: Vipin Sharma <vipinsh@google.com>
-Reviewed-by: David Rientjes <rientjes@google.com>
----
- Documentation/admin-guide/cgroup-v1/index.rst |  1 +
- Documentation/admin-guide/cgroup-v1/misc.rst  |  4 ++
- Documentation/admin-guide/cgroup-v2.rst       | 69 ++++++++++++++++++-
- 3 files changed, 72 insertions(+), 2 deletions(-)
- create mode 100644 Documentation/admin-guide/cgroup-v1/misc.rst
+> Currently the kernel adds the page, allocated for swapin, to the
+> swapcache before charging the page. This is fine but now we want a
+> per-memcg swapcache stat which is essential for folks who wants to
+> transparently migrate from cgroup v1's memsw to cgroup v2's memory and
+> swap counters. In addition charging a page before exposing it to other
+> parts of the kernel is a step in the right direction.
+> 
+> To correctly maintain the per-memcg swapcache stat, this patch has
+> adopted to charge the page before adding it to swapcache. One
+> challenge in this option is the failure case of add_to_swap_cache() on
+> which we need to undo the mem_cgroup_charge(). Specifically undoing
+> mem_cgroup_uncharge_swap() is not simple.
+> 
+> To resolve the issue, this patch introduces transaction like interface
+> to charge a page for swapin. The function mem_cgroup_charge_swapin_page()
+> initiates the charging of the page and mem_cgroup_finish_swapin_page()
+> completes the charging process. So, the kernel starts the charging
+> process of the page for swapin with mem_cgroup_charge_swapin_page(),
+> adds the page to the swapcache and on success completes the charging
+> process with mem_cgroup_finish_swapin_page().
+> 
+> Signed-off-by: Shakeel Butt <shakeelb@google.com>
 
-diff --git a/Documentation/admin-guide/cgroup-v1/index.rst b/Documentation/admin-guide/cgroup-v1/index.rst
-index 226f64473e8e..99fbc8a64ba9 100644
---- a/Documentation/admin-guide/cgroup-v1/index.rst
-+++ b/Documentation/admin-guide/cgroup-v1/index.rst
-@@ -17,6 +17,7 @@ Control Groups version 1
-     hugetlb
-     memcg_test
-     memory
-+    misc
-     net_cls
-     net_prio
-     pids
-diff --git a/Documentation/admin-guide/cgroup-v1/misc.rst b/Documentation/admin-guide/cgroup-v1/misc.rst
-new file mode 100644
-index 000000000000..661614c24df3
---- /dev/null
-+++ b/Documentation/admin-guide/cgroup-v1/misc.rst
-@@ -0,0 +1,4 @@
-+===============
-+Misc controller
-+===============
-+Please refer "Misc" documentation in Documentation/admin-guide/cgroup-v2.rst
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 1de8695c264b..74777323b7fd 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -63,8 +63,11 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-        5-7-1. RDMA Interface Files
-      5-8. HugeTLB
-        5.8-1. HugeTLB Interface Files
--     5-8. Misc
--       5-8-1. perf_event
-+     5-9. Misc
-+       5.9-1 Miscellaneous cgroup Interface Files
-+       5.9-2 Migration and Ownership
-+     5-10. Others
-+       5-10-1. perf_event
-      5-N. Non-normative information
-        5-N-1. CPU controller root cgroup process behaviour
-        5-N-2. IO controller root cgroup process behaviour
-@@ -2163,6 +2166,68 @@ HugeTLB Interface Files
- Misc
- ----
- 
-+The Miscellaneous cgroup provides the resource limiting and tracking
-+mechanism for the scalar resources which cannot be abstracted like the other
-+cgroup resources. Controller is enabled by the CONFIG_CGROUP_MISC config
-+option.
-+
-+The first two resources added to the miscellaneous controller are Secure
-+Encrypted Virtualization (SEV) ASIDs and SEV - Encrypted State (SEV-ES) ASIDs.
-+These limited ASIDs are used for encrypting virtual machines memory on the AMD
-+platform.
-+
-+Misc Interface Files
-+~~~~~~~~~~~~~~~~~~~~
-+
-+Miscellaneous controller provides 3 interface files:
-+
-+  misc.capacity
-+        A read-only flat-keyed file shown only in the root cgroup.  It shows
-+        miscellaneous scalar resources available on the platform along with
-+        their quantities::
-+
-+	  $ cat misc.capacity
-+	  sev 50
-+	  sev_es 10
-+
-+  misc.current
-+        A read-only flat-keyed file shown in the non-root cgroups.  It shows
-+        the current usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.current
-+	  sev 3
-+	  sev_es 0
-+
-+  misc.max
-+        A read-write flat-keyed file shown in the non root cgroups. Allowed
-+        maximum usage of the resources in the cgroup and its children.::
-+
-+	  $ cat misc.max
-+	  sev max
-+	  sev_es 4
-+
-+	Limit can be set by::
-+
-+	  # echo sev 1 > misc.max
-+
-+	Limit can be set to max by::
-+
-+	  # echo sev max > misc.max
-+
-+        Limits can be set higher than the capacity value in the misc.capacity
-+        file.
-+
-+Migration and Ownership
-+~~~~~~~~~~~~~~~~~~~~~~~
-+
-+A miscellaneous scalar resource is charged to the cgroup in which it is used
-+first, and stays charged to that cgroup until that resource is freed. Migrating
-+a process to a different cgroup does not move the charge to the destination
-+cgroup where the process has moved.
-+
-+Others
-+------
-+
- perf_event
- ~~~~~~~~~~
- 
--- 
-2.30.1.766.gb4fecdf3b7-goog
+Quite apart from helping with the stat you want, what you've ended
+up with here is a nice cleanup in several different ways (and I'm
+glad Johannes talked you out of __GFP_NOFAIL: much better like this).
+I'll say
 
+Acked-by: Hugh Dickins <hughd@google.com>
+
+but I am quite unhappy with the name mem_cgroup_finish_swapin_page():
+it doesn't finish the swapin, it doesn't finish the page, and I'm
+not persuaded by your paragraph above that there's any "transaction"
+here (if there were, I'd suggest "commit" instead of "finish"'; and
+I'd get worried by the css_put before it's called - but no, that's
+fine, it's independent).
+
+How about complementing mem_cgroup_charge_swapin_page() with
+mem_cgroup_uncharge_swapin_swap()?  I think that describes well
+what it does, at least in the do_memsw_account() case, and I hope
+we can overlook that it does nothing at all in the other case.
+
+And it really doesn't need a page argument: both places it's called
+have just allocated an order-0 page, there's no chance of a THP here;
+but you might have some idea of future expansion, or matching
+put_swap_page() - I won't object if you prefer to pass in the page.
+
+But more interesting, though off-topic, comments on it below...
+
+> +/*
+> + * mem_cgroup_finish_swapin_page - complete the swapin page charge transaction
+> + * @page: page charged for swapin
+> + * @entry: swap entry for which the page is charged
+> + *
+> + * This function completes the transaction of charging the page allocated for
+> + * swapin.
+> + */
+> +void mem_cgroup_finish_swapin_page(struct page *page, swp_entry_t entry)
+> +{
+>  	/*
+>  	 * Cgroup1's unified memory+swap counter has been charged with the
+>  	 * new swapcache page, finish the transfer by uncharging the swap
+> @@ -6760,20 +6796,14 @@ int mem_cgroup_charge(struct page *page, struct mm_struct *mm, gfp_t gfp_mask)
+>  	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+>  	 * page to memory here, and uncharge swap when the slot is freed.
+>  	 */
+> -	if (do_memsw_account() && PageSwapCache(page)) {
+> -		swp_entry_t entry = { .val = page_private(page) };
+> +	if (!mem_cgroup_disabled() && do_memsw_account()) {
+
+I understand why you put that !mem_cgroup_disabled() check in there,
+but I have a series of observations on that.
+
+First I was going to say that it would be better left to
+mem_cgroup_uncharge_swap() itself.
+
+Then I was going to say that I think it's already covered here
+by the cgroup_memory_noswap check inside do_memsw_account().
+
+Then, going back to mem_cgroup_uncharge_swap(), I realized that 5.8's
+2d1c498072de ("mm: memcontrol: make swap tracking an integral part of
+memory control") removed the do_swap_account or cgroup_memory_noswap
+checks from mem_cgroup_uncharge_swap() and swap_cgroup_swapon() and
+swap_cgroup_swapoff() - so since then we have been allocating totally
+unnecessary swap_cgroup arrays when mem_cgroup_disabled() (and
+mem_cgroup_uncharge_swap() has worked by reading the zalloced array).
+
+I think, or am I confused? If I'm right on that, one of us ought to
+send another patch putting back, either cgroup_memory_noswap checks
+or mem_cgroup_disabled() checks in those three places - I suspect the
+static key mem_cgroup_disabled() is preferable, but I'm getting dozy.
+
+Whatever we do with that - and it's really not any business for this
+patch - I think you can drop the mem_cgroup_disabled() check from
+mem_cgroup_uncharge_swapin_swap().
+
+>  		/*
+>  		 * The swap entry might not get freed for a long time,
+>  		 * let's not wait for it.  The page already received a
+>  		 * memory+swap charge, drop the swap entry duplicate.
+>  		 */
+> -		mem_cgroup_uncharge_swap(entry, nr_pages);
+> +		mem_cgroup_uncharge_swap(entry, thp_nr_pages(page));
+>  	}
+> -
+> -out_put:
+> -	css_put(&memcg->css);
+> -out:
+> -	return ret;
+>  }
