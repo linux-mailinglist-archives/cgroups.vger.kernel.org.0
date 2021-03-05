@@ -2,114 +2,86 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FDBD32F37C
-	for <lists+cgroups@lfdr.de>; Fri,  5 Mar 2021 20:08:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D375732F505
+	for <lists+cgroups@lfdr.de>; Fri,  5 Mar 2021 22:01:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhCETID (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 5 Mar 2021 14:08:03 -0500
-Received: from mga11.intel.com ([192.55.52.93]:64879 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229791AbhCETIA (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 5 Mar 2021 14:08:00 -0500
-IronPort-SDR: k5s6LlXd0vtwLQfRm5qS3KLczx+4fbA4PYBCzGONWsF1330Morp1/GX9j3qW4drO4aRHH6MG2I
- ZxT2HVX+XJHw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9914"; a="184338888"
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="184338888"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:08:00 -0800
-IronPort-SDR: hHPr2NOdMM3kwVF0lCWTAa3OSE3EVPljoLuM7c8D8zhnq6pEaijfvn/l6lZ9dBLkVNRvJayJj6
- T/ZhnlnY+VaA==
-X-IronPort-AV: E=Sophos;i="5.81,226,1610438400"; 
-   d="scan'208";a="368694013"
-Received: from schen9-mobl.amr.corp.intel.com ([10.251.16.203])
-  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Mar 2021 11:08:00 -0800
-Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
- tree
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Dave Hansen <dave.hansen@intel.com>,
-        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
- <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
- <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
- <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
- <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
-From:   Tim Chen <tim.c.chen@linux.intel.com>
-Message-ID: <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
-Date:   Fri, 5 Mar 2021 11:07:59 -0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        id S230147AbhCEVAy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 5 Mar 2021 16:00:54 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229729AbhCEVAV (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 5 Mar 2021 16:00:21 -0500
+Received: from mail-qk1-x730.google.com (mail-qk1-x730.google.com [IPv6:2607:f8b0:4864:20::730])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3DA56C061760
+        for <cgroups@vger.kernel.org>; Fri,  5 Mar 2021 13:00:21 -0800 (PST)
+Received: by mail-qk1-x730.google.com with SMTP id n79so3427362qke.3
+        for <cgroups@vger.kernel.org>; Fri, 05 Mar 2021 13:00:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=La3mwDa8nISUh2U9bi9oHzPu358czH3TeQ0ByYgJZqY=;
+        b=VfhA/pXDD661QUgX1Mxa4DhK6hKrLISfubA84eRcP5m7HrACNGN9aEnYTpgLPqDTKl
+         g4TbBNYRDsU/94H2jOc7T/WxPyFqm19l9G7+Q1geXVCnQcSU5+0ssJYshieCtlZBKv8G
+         ZhfXtpPkowYLxrCPZDBq+iHGWe+2Ke52zeeoRbeMAElVHx7F1isMeyzGcS7h/D6oaDkV
+         Ro/dMjTsOIUEVp7J0fkdOfo9OM7pFGQuyPmXZK2etHIsJqi+AAuIWwkhelx/s2kSoHn5
+         0GHaF5UMUWdWwHNA8bAi9C2HW1FxI9M8Ef6GARBBntVKOnNojeQRWUUzzV0DCeMyIcnc
+         o4Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=La3mwDa8nISUh2U9bi9oHzPu358czH3TeQ0ByYgJZqY=;
+        b=RaOtYUxgGAiLq2HI/RIiPFM2Wz84/O161m/9IqQ0nif+gNepfLm2rW5ywcU9yWCtiG
+         ikH5W4Josmur1KN4QrTHU7T93gi/ORZ+BR69DWsflywUQiQWKdOx4fq6h35EBJTmovdW
+         rA26lr2FY6CvXs1vURpvFE7vibBWmzVFkuQd4zPzZiXsOk2jObT1al+KjBI9hbrxJKlA
+         qQMzTAi1xMIXePRftCKYMdjfqBmJ2IlSqUflV0iv9lZC0ItaV6mwmKQvnwetOm52XcN6
+         zixLv+aH8YIWFmx1ezgdpC2MQ0EndPZW1r94GEkY3yS839yWEgSl0yQ8mGZ49Y1tg5Do
+         ZAuw==
+X-Gm-Message-State: AOAM532sQUan7mzE5SE+FEcOrIoyuwyxpkrh8ab27pXvRruNxtaxBFgV
+        6OWghPUmOJqydkBtaGN9ZVA5Gw==
+X-Google-Smtp-Source: ABdhPJxzOw3dJnmPVcIA9UuDAQ5evSE+9f2gbj+kUUGfQGp8XckRO4m6bZqcEJymjnerKacRpyQ5iA==
+X-Received: by 2002:a05:620a:108f:: with SMTP id g15mr11227500qkk.298.1614978020436;
+        Fri, 05 Mar 2021 13:00:20 -0800 (PST)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id h75sm2653603qke.80.2021.03.05.13.00.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Mar 2021 13:00:19 -0800 (PST)
+Date:   Fri, 5 Mar 2021 16:00:19 -0500
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Hugh Dickins <hughd@google.com>, Roman Gushchin <guro@fb.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3] memcg: charge before adding to swapcache on swapin
+Message-ID: <YEKb4/MAVv8zDPNw@cmpxchg.org>
+References: <20210304014229.521351-1-shakeelb@google.com>
+ <alpine.LSU.2.11.2103042248590.18572@eggly.anvils>
+ <YEJbZi+tpSATjsT/@cmpxchg.org>
+ <CALvZod4iVF1tg8H-zcUVp6Kf+L9jeJBF62hNHuLNKrdcxyJXYQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALvZod4iVF1tg8H-zcUVp6Kf+L9jeJBF62hNHuLNKrdcxyJXYQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-
-
-On 3/5/21 1:11 AM, Michal Hocko wrote:
-> On Thu 04-03-21 09:35:08, Tim Chen wrote:
->>
->>
->> On 2/18/21 11:13 AM, Michal Hocko wrote:
->>
->>>
->>> Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
->>> Acked-by: Michal Hocko <mhocko@suse.com>
->>>
->>> Thanks!
->>>> ---
->>>>  mm/memcontrol.c | 6 +++++-
->>>>  1 file changed, 5 insertions(+), 1 deletion(-)
->>>>
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index ed5cc78a8dbf..a51bf90732cb 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
->>>>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
->>>>  			break;
->>>>  	} while (!nr_reclaimed);
->>>> -	if (next_mz)
->>>> +	if (next_mz) {
->>>> +		spin_lock_irq(&mctz->lock);
->>>> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
->>>> +		spin_unlock_irq(&mctz->lock);
->>>>  		css_put(&next_mz->memcg->css);
->>>> +	}
->>>>  	return nr_reclaimed;
->>>>  }
->>>>  
->>>> -- 
->>>> 2.20.1
->>>
->>
->> Mel,
->>
->> Reviewing this patch a bit more, I realize that there is a chance that the removed
->> next_mz could be inserted back to the tree from a memcg_check_events
->> that happen in between.  So we need to make sure that the next_mz
->> is indeed off the tree and update the excess value before adding it
->> back.  Update the patch to the patch below.
+On Fri, Mar 05, 2021 at 08:42:00AM -0800, Shakeel Butt wrote:
+> On Fri, Mar 5, 2021 at 8:25 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
+> >
+> [...]
+> > I'd also rename cgroup_memory_noswap to cgroup_swapaccount - to match
+> > the commandline and (hopefully) make a bit clearer what it effects.
 > 
-> This scenario is certainly possible but it shouldn't really matter much
-> as __mem_cgroup_insert_exceeded bails out when the node is on the tree
-> already.
-> 
+> Do we really need to keep supporting "swapaccount=0"? Is swap
+> page_counter really a performance issue for systems with memcg and
+> swap? To me, deprecating "swapaccount=0" simplifies already
+> complicated code.
 
-Makes sense. We should still update the excess value with
+Now that you mention it, it's probably really not worth it.
 
-+		excess = soft_limit_excess(next_mz->memcg);
-+		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
-
-before doing insertion.  The excess value was recorded from previous
-mz in the loop and needs to be updated to that of next_mz.
-
-Tim
+I'll replace my cleanup patch with a removal patch that eliminates
+everything behind swapaccount= except for a deprecation warning...
