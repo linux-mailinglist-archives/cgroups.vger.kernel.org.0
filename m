@@ -2,91 +2,115 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B655330106
-	for <lists+cgroups@lfdr.de>; Sun,  7 Mar 2021 13:49:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 475E233096E
+	for <lists+cgroups@lfdr.de>; Mon,  8 Mar 2021 09:35:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230460AbhCGMtO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Sun, 7 Mar 2021 07:49:14 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37172 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230399AbhCGMsp (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sun, 7 Mar 2021 07:48:45 -0500
-Received: from mail-qk1-x731.google.com (mail-qk1-x731.google.com [IPv6:2607:f8b0:4864:20::731])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68BB6C06174A;
-        Sun,  7 Mar 2021 04:48:42 -0800 (PST)
-Received: by mail-qk1-x731.google.com with SMTP id n79so6717425qke.3;
-        Sun, 07 Mar 2021 04:48:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Sh8Gq3xXPV8r6pCBgU3qRZ/zv3llBCo/ukoG7YI1B6o=;
-        b=W1llN+mC69wsu46WFlBMoFXcOnmVr7w0NFEv8x9AJaKgTSImmeCGxTwulSESANzMZb
-         5QrRLyXhWRLdMn3gd1w7hSGEjUbXmxrPBJhCpf4ux983dCPe45FS6mktIWQisPQhK9Tq
-         NLveo8d3ow+mrKYvQ3/lYmyhm6XFWaI62Se/mDoLeEQxG1pEq/xvPZroRcaQI8iRPw45
-         OCAfkJvZelYLqfG/lrbAps9A4zLtFQBb/iUebqGE129kI3dXK+o6bcV2UoCZUlLFIYDP
-         xGMCNUzTC2uJraLOZlHmOfbCc+uflS6Vi+SrfcoEJHdcKiM3w5V7v/WrAO1Rw+XJL31t
-         P8yw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Sh8Gq3xXPV8r6pCBgU3qRZ/zv3llBCo/ukoG7YI1B6o=;
-        b=SMtzRnbgjnY96v5iXLG1jKJ3QgaaU21ndupZPGJqGqtmoO9r80ydxuchTUiNNk9gn5
-         SZzhG5ZWLSoAvlwKvwjuSc3+O2nAUIiHXUFtuqM+BxHmc6vU/dscrB54i7Ndw7Z3APrD
-         DtFpA9JPn4Bunwu4h1ox0rHNWKl6Dq0iumRQV1+g+IVtyZCBIABg7o7/2RbpJzWUoIEG
-         QbJKwI7+27/w0iI2Mh4qfFcqxL2ePrajXu1fK6BQ3nLRC7MrBmi54VLe2L9VQOjIEnfL
-         jknMbUniOzwLJY6VHOb0RVzk98ktZRftT0c0MiiUeyr7s9bn549e27zOksJiJ0+2KkKw
-         pTTA==
-X-Gm-Message-State: AOAM530yG88O+/m0hHILgfn/2rhVqR8WL9Pj4V2zvCFjwIhsgzeIu1sK
-        5LeNyFkSbk4vs6yBIheB1xU=
-X-Google-Smtp-Source: ABdhPJx3c7mILG8MIBfrQS6fPbhTs6qFOLaaIS6D52odgn+G5oEd+ci+KjN5R16r7BoJb1S4sbz+hw==
-X-Received: by 2002:a37:a282:: with SMTP id l124mr16162623qke.37.1615121321567;
-        Sun, 07 Mar 2021 04:48:41 -0800 (PST)
-Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
-        by smtp.gmail.com with ESMTPSA id e190sm5640131qkd.122.2021.03.07.04.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 07 Mar 2021 04:48:41 -0800 (PST)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Sun, 7 Mar 2021 07:48:40 -0500
-From:   Tejun Heo <tj@kernel.org>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     mkoutny@suse.com, rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
-Message-ID: <YETLqGIw1GekWdYK@slm.duckdns.org>
-References: <20210304231946.2766648-1-vipinsh@google.com>
+        id S230481AbhCHIed (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 8 Mar 2021 03:34:33 -0500
+Received: from mx2.suse.de ([195.135.220.15]:44356 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230095AbhCHIe2 (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Mon, 8 Mar 2021 03:34:28 -0500
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1615192466; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TxNbQKNdS8Bk5nTMx7iGX1d+YD0DAigE/GiZ5gzAA50=;
+        b=ZZ1a1HjC/nl8Om4mducww6VRiweUKlyk0AOG02UpuuhFQ9flgmUuu2fbSXN5LH08nRxxKO
+        tTHr2mRvYFWxQJldGJ07bAPb+pWXp2p1YhZHxCaZL+bFbOl4c9jdprGg3zF6hzEoILQDqN
+        Hcn1CbQo/4NBBgG4C9KubCoKFiBQVo0=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 47679AC0C;
+        Mon,  8 Mar 2021 08:34:26 +0000 (UTC)
+Date:   Mon, 8 Mar 2021 09:34:17 +0100
+From:   Michal Hocko <mhocko@suse.com>
+To:     Tim Chen <tim.c.chen@linux.intel.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Ying Huang <ying.huang@intel.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/3] mm: Fix dropped memcg from mem cgroup soft limit
+ tree
+Message-ID: <YEXhfJhmXrLuxGWB@dhcp22.suse.cz>
+References: <cover.1613584277.git.tim.c.chen@linux.intel.com>
+ <8d35206601ccf0e1fe021d24405b2a0c2f4e052f.1613584277.git.tim.c.chen@linux.intel.com>
+ <YC68Xo9+R2msn/ul@dhcp22.suse.cz>
+ <72cb8618-73af-ce08-d5d5-30cab30755a3@linux.intel.com>
+ <YEH1xF8xm9MCsQ+q@dhcp22.suse.cz>
+ <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210304231946.2766648-1-vipinsh@google.com>
+In-Reply-To: <087bed0e-5b5f-0e25-c247-7fcb34de1513@linux.intel.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
-
-On Thu, Mar 04, 2021 at 03:19:44PM -0800, Vipin Sharma wrote:
-> This patch series is creating a new misc cgroup controller for limiting
-> and tracking of resources which are not abstract like other cgroup
-> controllers.
+On Fri 05-03-21 11:07:59, Tim Chen wrote:
 > 
-> This controller was initially proposed as encryption_id but after
-> the feedbacks, it is now changed to misc cgroup.
-> https://lore.kernel.org/lkml/20210108012846.4134815-2-vipinsh@google.com/
+> 
+> On 3/5/21 1:11 AM, Michal Hocko wrote:
+> > On Thu 04-03-21 09:35:08, Tim Chen wrote:
+> >>
+> >>
+> >> On 2/18/21 11:13 AM, Michal Hocko wrote:
+> >>
+> >>>
+> >>> Fixes: 4e41695356fb ("memory controller: soft limit reclaim on contention")
+> >>> Acked-by: Michal Hocko <mhocko@suse.com>
+> >>>
+> >>> Thanks!
+> >>>> ---
+> >>>>  mm/memcontrol.c | 6 +++++-
+> >>>>  1 file changed, 5 insertions(+), 1 deletion(-)
+> >>>>
+> >>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> >>>> index ed5cc78a8dbf..a51bf90732cb 100644
+> >>>> --- a/mm/memcontrol.c
+> >>>> +++ b/mm/memcontrol.c
+> >>>> @@ -3505,8 +3505,12 @@ unsigned long mem_cgroup_soft_limit_reclaim(pg_data_t *pgdat, int order,
+> >>>>  			loop > MEM_CGROUP_MAX_SOFT_LIMIT_RECLAIM_LOOPS))
+> >>>>  			break;
+> >>>>  	} while (!nr_reclaimed);
+> >>>> -	if (next_mz)
+> >>>> +	if (next_mz) {
+> >>>> +		spin_lock_irq(&mctz->lock);
+> >>>> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
+> >>>> +		spin_unlock_irq(&mctz->lock);
+> >>>>  		css_put(&next_mz->memcg->css);
+> >>>> +	}
+> >>>>  	return nr_reclaimed;
+> >>>>  }
+> >>>>  
+> >>>> -- 
+> >>>> 2.20.1
+> >>>
+> >>
+> >> Mel,
+> >>
+> >> Reviewing this patch a bit more, I realize that there is a chance that the removed
+> >> next_mz could be inserted back to the tree from a memcg_check_events
+> >> that happen in between.  So we need to make sure that the next_mz
+> >> is indeed off the tree and update the excess value before adding it
+> >> back.  Update the patch to the patch below.
+> > 
+> > This scenario is certainly possible but it shouldn't really matter much
+> > as __mem_cgroup_insert_exceeded bails out when the node is on the tree
+> > already.
+> > 
+> 
+> Makes sense. We should still update the excess value with
+> 
+> +		excess = soft_limit_excess(next_mz->memcg);
+> +		__mem_cgroup_insert_exceeded(next_mz, mctz, excess);
+> 
+> before doing insertion.  The excess value was recorded from previous
+> mz in the loop and needs to be updated to that of next_mz.
 
-Vipin, thank you very much for your persistence and patience. The patchset
-looks good to me. Michal, as you've been reviewing the series, can you
-please take another look and ack them if you don't find anything
-objectionable?
-
+Yes. Sorry, I have missed that part previously.
 -- 
-tejun
+Michal Hocko
+SUSE Labs
