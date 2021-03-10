@@ -2,78 +2,68 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDE57333A3B
-	for <lists+cgroups@lfdr.de>; Wed, 10 Mar 2021 11:41:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3BEB8333FC5
+	for <lists+cgroups@lfdr.de>; Wed, 10 Mar 2021 15:01:38 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhCJKlT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Mar 2021 05:41:19 -0500
-Received: from mx2.suse.de ([195.135.220.15]:46404 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229747AbhCJKlQ (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 10 Mar 2021 05:41:16 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615372875; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=nZTPkVjV+mQdbkg1znHnpckUqBiD+p2S+HbVcCoP3kY=;
-        b=bwZeSFYTFUaI6k5iEVR5XFMy1jPlekVWZKMv+nY/aKA6C+txpjGOWyhpx/j5aXqEg0ZQji
-        57JZ+A9hVmISWq5KpmmR+Li43cWJMh4Y5jD9UtZz132HBk1cpZfQ1XYn5BEOOUvyy+mzPG
-        /hk5kqKbchb70cq4l+HcBR/14KoqXwk=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6160DAE42;
-        Wed, 10 Mar 2021 10:41:15 +0000 (UTC)
-Date:   Wed, 10 Mar 2021 11:41:07 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH 0/9] memcg accounting from OpenVZ
-Message-ID: <YEiiQ2TGnJcEtL3d@dhcp22.suse.cz>
-References: <5affff71-e503-9fb9-50cb-f6d48286dd52@virtuozzo.com>
- <CALvZod5YOtqXcSqn2Zj2Nb_SKgDRKOMW4o5i-u_yj7CanQVtGQ@mail.gmail.com>
- <ad68d004-fa84-3d21-60b7-d4a342ad4007@virtuozzo.com>
+        id S231519AbhCJOBF (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Wed, 10 Mar 2021 09:01:05 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230477AbhCJOBA (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Wed, 10 Mar 2021 09:01:00 -0500
+Received: from mail-ej1-x631.google.com (mail-ej1-x631.google.com [IPv6:2a00:1450:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44201C061761
+        for <cgroups@vger.kernel.org>; Wed, 10 Mar 2021 06:01:00 -0800 (PST)
+Received: by mail-ej1-x631.google.com with SMTP id bm21so38890268ejb.4
+        for <cgroups@vger.kernel.org>; Wed, 10 Mar 2021 06:01:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=URiq+ec3+BxcG1NDx3dMF3sCE/FNaQYIdgLFH+Ugvgm6YQyxL+u7SWKSSFp/RO4guK
+         kfOwaifi9xoV4igMGLN5ZDIljq44SsViGDV6Lh6xWTGrUHVNgtnytdMbJpmb/MWCPL/G
+         rYkYn81Wc/cbxjHQUBv6XnpXrGs7fHIklfeIYFiTztnwXHD3U2Z/RcePZMQ44b6EKDq1
+         F019lMoHqczecTXCbSJuIEx8rxLRMDaMmfTBRgQz4gftRZJK3ZzTi5dEPM6p043nCYNa
+         brKUx19YQ7cifm/BmPGLamwNKLcMK8v8QueCVXlE88WVgSHrzKvIJpAJFwNNIEzAGO5Y
+         S+Wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=5rh8dKjg0pKk0KNWl2xSO7nhxy+c296f7suB18dXI8U=;
+        b=LEhuayluZzcfgnEGzeFtVZbgI4WYZs5iKHCO5vio+idrvnXsjgU1I1o79e4vW9BLZH
+         rb40B22EcSU71kleJF9h67VxMryZyDC3IKl3RHT+lGBYB7/UYzjX2MOxylfuOvVMWNrw
+         EI8rUa7ZRiyZHPHAiw8DcqXT22pNTS6JggV5+8RBLeA3F7lX9Dnh5f0v+244Q3X/puG8
+         FjcTC9R+CSS7wIk/E5Yc8hs6AKNs6FbHd0Y5/rf0D9BcPOrCCtsV92oyw6qLdySsCSJj
+         UgoRJXBrICaKpXCZ57upYUN/96c9CiAd3lqlhp97WRbG4TWy8hK1VOlKlTx3PY/ffj4J
+         +BLQ==
+X-Gm-Message-State: AOAM532WmlKGKkpPgsi5EKY/1DsBGFMzQkla4O+q2RS7Fui/bX2G/Hou
+        QYj49MZeN0waeMxLnH9H1SGufCbmBTn78P93tBE=
+X-Google-Smtp-Source: ABdhPJzdCl60z5tvz9t/ueyvD28Q6xqjKxCjtyFN1dzri/wBDU2lX4uVVzwAl8Icl7LFjxN/Mm2wCc1Xiy2XfINvsa4=
+X-Received: by 2002:a17:906:2551:: with SMTP id j17mr3749097ejb.441.1615384858773;
+ Wed, 10 Mar 2021 06:00:58 -0800 (PST)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad68d004-fa84-3d21-60b7-d4a342ad4007@virtuozzo.com>
+Received: by 2002:ab4:92c3:0:0:0:0:0 with HTTP; Wed, 10 Mar 2021 06:00:58
+ -0800 (PST)
+From:   JOHN UMAH <pastorjohnumnewaposchurch@gmail.com>
+Date:   Wed, 10 Mar 2021 14:00:58 +0000
+Message-ID: <CANw=0K4=AFv2ivmE+e06nTO1iaw83yG-FrN1SHOdnXyYO3o5pw@mail.gmail.com>
+Subject: Caleb Leo Foundation,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Wed 10-03-21 13:17:19, Vasily Averin wrote:
-> On 3/10/21 12:12 AM, Shakeel Butt wrote:
-> > On Tue, Mar 9, 2021 at 12:04 AM Vasily Averin <vvs@virtuozzo.com> wrote:
-> >>
-> >> OpenVZ many years accounted memory of few kernel objects,
-> >> this helps us to prevent host memory abuse from inside memcg-limited container.
-> >>
-> > 
-> > The text is cryptic but I am assuming you wanted to say that OpenVZ
-> > has remained on a kernel which was still on opt-out kmem accounting
-> > i.e. <4.5. Now OpenVZ wants to move to a newer kernel and thus these
-> > patches are needed, right?
-> 
-> Something like this.
-> Frankly speaking I badly understand which arguments should I provide to upstream
-> to enable accounting for some new king of objects.
-> 
-> OpenVZ used own accounting subsystem since 2001 (i.e. since v2.2.x linux kernels) 
-> and we have accounted all required kernel objects by using our own patches.
-> When memcg was added to upstream Vladimir Davydov added accounting of some objects
-> to upstream but did not skipped another ones.
-> Now OpenVZ uses RHEL7-based kernels with cgroup v1 in production, and we still account
-> "skipped" objects by our own patches just because we accounted such objects before.
-> We're working on rebase to new kernels and we prefer to push our old patches to upstream. 
+Caleb Leo Foundation
+1501 K St NWWashington DC 20005
+United States of America
+You've received $ 1,300,000 from the Calab Leo Foundation course
+Humanitarian aid / poverty reduction program.
+In the case of claims for this gift, please fill in the following form;
 
-That is certainly an interesting information. But for a changelog it
-would be more appropriate to provide information about how much memory
-user can induce and whether there is any way to limit that memory by
-other means. How practical those other means are and which usecases will
-benefit from the containment.
-
--- 
-Michal Hocko
-SUSE Labs
+Full name:
+Telephone number:
+State:
+Country:
+kindly respond for more details.
+in God We Trust.
