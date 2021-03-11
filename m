@@ -2,95 +2,84 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C13F336DE3
-	for <lists+cgroups@lfdr.de>; Thu, 11 Mar 2021 09:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B706C3370E3
+	for <lists+cgroups@lfdr.de>; Thu, 11 Mar 2021 12:11:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230475AbhCKIfx (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Thu, 11 Mar 2021 03:35:53 -0500
-Received: from mx2.suse.de ([195.135.220.15]:45072 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhCKIfc (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Thu, 11 Mar 2021 03:35:32 -0500
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615451731; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=SPSvV0WAkJhngu3aMbeieIGtboHQE6ozlBVf1GQ8Sww=;
-        b=hMByrvkbSYioy7yXZtEnsXK7gQssCDpTUh7KNFoXt5p4SQbgBT8MSPdoyKSf/inCqJUI3u
-        SPR5qwEBCYsPA7VxCzZiscKONdpqLeHcJwUVfRfC0MDaZIzS5FX392ldn/NZBvp0ZuhVZB
-        pKmxwq+CmSCGhgO0QwbafOqq4vIxjAc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6948CAC17;
-        Thu, 11 Mar 2021 08:35:31 +0000 (UTC)
-Date:   Thu, 11 Mar 2021 09:35:30 +0100
-From:   Michal Hocko <mhocko@suse.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     Shakeel Butt <shakeelb@google.com>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Subject: Re: [PATCH 0/9] memcg accounting from OpenVZ
-Message-ID: <YEnWUrYOArju66ym@dhcp22.suse.cz>
-References: <5affff71-e503-9fb9-50cb-f6d48286dd52@virtuozzo.com>
- <CALvZod5YOtqXcSqn2Zj2Nb_SKgDRKOMW4o5i-u_yj7CanQVtGQ@mail.gmail.com>
- <ad68d004-fa84-3d21-60b7-d4a342ad4007@virtuozzo.com>
- <YEiiQ2TGnJcEtL3d@dhcp22.suse.cz>
- <24a416f7-9def-65c9-599e-d56f7c328d33@virtuozzo.com>
+        id S232418AbhCKLK7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Mar 2021 06:10:59 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232335AbhCKLK1 (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Mar 2021 06:10:27 -0500
+Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 42702C061574;
+        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
+Received: by mail-qt1-x82b.google.com with SMTP id f12so804908qtq.4;
+        Thu, 11 Mar 2021 03:10:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
+        b=P849DNFgS5nte6HYXGD6ebAhhBZ3CyFnv9N3Sr2OhrHYwPjZon8k1Uf09nEsePPWI0
+         H9dmyx+EEhFA/GBdul8L0iS9ImrDHwqzKxTUxo7LNAZ4EBKimkA8s4dQS0umgEhbgttx
+         jRTxH4Wng6J+VJxQ4lnEAxHZe3iMCaQMx9n22CblexjSVPeCf+1Nl4XSIsdSbNdMbWdx
+         i5ZhN1Ux4/9F8jxSWEX+T5YsVD+Y/92mIsKAy2YM0NsJSyw4CDCt1snVu0JcpbWQsBOc
+         wvKxY6zBFQwDQAV1K40PCqBou18XW6/Fmbt1sZ4xYK0NirvYCvAJ0nxsL+CcWem4M5TY
+         F93g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4FDhkUkdj8fWqlipDBp6WuM7/UyISTb34fe+zJutuhk=;
+        b=LZe8mrbt3dxu9TItngECZrR/KjoiYm3guq2QYb7u376he988e/AzfeXvHPfYcKhSJY
+         gUfKJK1nrWRJWMi8v7Vv68s9E+nP3EtW7NDHGHbs0FRz3Ya1qaurGO8H5EvNy1eL8IX/
+         DzPaUkUNFT4k6Iz5vVkbnCk4wZf3wzedrgJrrWLtyphfJya4Ay7sR7px+d1Gvknb581Q
+         8dnM7L8SkidZYXXm0F0MJ+NlGYNhfIT5vEDbEcLMjTwxVy3fTL84lpTonwQdN/wqbx6L
+         ynZdhGL/8SM7P6OOwX/TiAU6YATVhBFLGS/kYNccvIhQJ/DBcojO4zlBLMggmKItecUi
+         9GKA==
+X-Gm-Message-State: AOAM530blBrq87pkPABsZHGkI4GzzcOI3bG486VBXX8kl0OVQY6CGbBF
+        0x7cLjvbSZPPw0noHumKO1k=
+X-Google-Smtp-Source: ABdhPJzAmUcpvcKbe7oVuT3jh2pvL8XEzD3mV8sjVbg+GAQtSR/Ff9hDTjoyaSog8q0e8a30rdRYew==
+X-Received: by 2002:ac8:4314:: with SMTP id z20mr6848730qtm.127.1615461026174;
+        Thu, 11 Mar 2021 03:10:26 -0800 (PST)
+Received: from localhost (2603-7000-9602-8233-06d4-c4ff-fe48-9d05.res6.spectrum.com. [2603:7000:9602:8233:6d4:c4ff:fe48:9d05])
+        by smtp.gmail.com with ESMTPSA id p7sm1673704qkc.75.2021.03.11.03.10.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Mar 2021 03:10:25 -0800 (PST)
+Sender: Tejun Heo <htejun@gmail.com>
+Date:   Thu, 11 Mar 2021 06:10:25 -0500
+From:   Tejun Heo <tj@kernel.org>
+To:     Chengming Zhou <zhouchengming@bytedance.com>
+Cc:     lizefan.x@bytedance.com, hannes@cmpxchg.org, corbet@lwn.net,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        songmuchun@bytedance.com
+Subject: Re: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
+Message-ID: <YEn6od+CCVjNZIS9@slm.duckdns.org>
+References: <20210311061752.310831-1-zhouchengming@bytedance.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <24a416f7-9def-65c9-599e-d56f7c328d33@virtuozzo.com>
+In-Reply-To: <20210311061752.310831-1-zhouchengming@bytedance.com>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu 11-03-21 10:00:17, Vasily Averin wrote:
-> On 3/10/21 1:41 PM, Michal Hocko wrote:
-[...]
-> > That is certainly an interesting information. But for a changelog it
-> > would be more appropriate to provide information about how much memory
-> > user can induce and whether there is any way to limit that memory by
-> > other means. How practical those other means are and which usecases will
-> > benefit from the containment.
-> 
-> Right now I would like to understand how should I argument my requests about
-> accounting of new kind of objects.
-> 
-> Which description it enough to enable object accounting?
+On Thu, Mar 11, 2021 at 02:17:52PM +0800, Chengming Zhou wrote:
+> We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
+> of the cgroup on v1, but haven't the equivalent interface on v2,
+> making it difficult to calculate the per-cgroup cpu load in cadvisor
+> or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
 
-Doesn't the above paragraph give you a hint?
+So, this is what the PSI metrics are for and we've been using it for that
+for quite a while now. I'd much prefer not adding something duplicate (and
+incomplete).
 
-> Could you please specify some edge rules?
+Thanks.
 
-There are no strong rules AFAIK. I would say that it is important is
-that the user can trigger a lot of or unbound amount of objects.
-
-> Should I push such patches trough this list? 
-
-yes linux-mm and ccing memcg maintainers is the proper way. It would be
-great to CC maintainers of the affected subsystem as well.
-
-> Is it probably better to send them to mailing lists of according subsystems?
-
-> Should I notify them somehow at least?
-> 
-> "untrusted netadmin inside memcg-limited container can create unlimited number of routing entries, trigger OOM on host that will be unable to find the reason of memory  shortage and  kill huge"
-> 
-> "each mount inside memcg-limited container creates non-accounted mount object,
->  but new mount namespace creation consumes huge piece of non-accounted memory for cloned mounts"
-> 
-> "unprivileged user inside memcg-limited container can create non-accounted multi-page per-thread kernel objects for LDT"
-> 
-> "non-accounted multi-page tty objects can be created from inside memcg-limited container"
-> 
-> "unprivileged user inside memcg-limited container can trigger creation of huge number of non-accounted fasync_struct objects"
-
-OK, that sounds better to me. It would be also great if you can mention
-whether there are any other means to limit those objects if there are
-any.
-
-Thanks!
 -- 
-Michal Hocko
-SUSE Labs
+tejun
