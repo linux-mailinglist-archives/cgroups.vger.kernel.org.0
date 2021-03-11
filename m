@@ -2,140 +2,176 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F2A3347D6
-	for <lists+cgroups@lfdr.de>; Wed, 10 Mar 2021 20:24:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CAFA6336BF4
+	for <lists+cgroups@lfdr.de>; Thu, 11 Mar 2021 07:18:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229828AbhCJTXh (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Wed, 10 Mar 2021 14:23:37 -0500
-Received: from mail-mw2nam12on2045.outbound.protection.outlook.com ([40.107.244.45]:9056
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231126AbhCJTXF (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Wed, 10 Mar 2021 14:23:05 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=oMOeLHvM36ebBS28N+2KqCfIkzfnNYbzHFtm8GIO0TTtr/h11S5fg52gosDyjmCUrQQhhB/DSZNdGerQoWdCriv460FQOqHbjCuPyaV1x6Z4CqMfXTijncn635B9tIG4GuoSwYQg+UDm44IBTFF8bbV/DJ5n47IBeqVUuQyIYCZiA8if3BlHr4/jPHkfnfUqts++Spi1Rs5054nj3c5BPHD2gateWaKBlY1NLreQKALImHeqnYba6xqcliaCphSGG/b8ZyM0nOfHmnvzG6Gl6PR82zAGL5a1PbhO22CillaZNO1VmaPar0aCpDy9pvx3gQ4XqDV27FBy4kEjQWksYw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F9vW5Tkli/mGOXhgNDkiWxksYvTGh56Erxhualjjxwc=;
- b=ibh3lrb4evhJWlId9mZ0fISjGGEJ3ktAvvy9HRNcXZAlqRIdQ4NA9gmb1OYzwlICPu54bX6qyCdX2QIx4jIftw+SUnCAi1Eh1UNp4XvWoMJnYSolCqIgx8oIyl+O7pYXXDXvTnl6BUTchaAYTYyfGYYFFGmDrr9Pu0GKYKVgABfU6mfAP2sq2MzY2eZFmjvj00GIW6AVzy+BCdR/RZpfxV1CPMzc9in+p6bQ8Pu6+SJQwIlhyOR+nwYaTIcy+dcHkVD/2kjUWdi6UHyKP8sZtfqLqJkxdRl965rEcCmpCdV9piJESJNzqVOyHyShe9Kwfz3B5zX7a68GC1JXpnjGhA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=F9vW5Tkli/mGOXhgNDkiWxksYvTGh56Erxhualjjxwc=;
- b=LaXeEE8/z8xKwzOnzuOHFOraxwyZ4k4XccBmPjvoy2x9oSfZ1vT0VnPlV1BL+9aH+F3tqxaytcPbjqKMqIg79Xdo12+0pV4y/l8pIYcV51XnWlw8a8pqMqNkcY/yFNu3Zb3Hev6uZx5yq+HV1BjFVkmNoou1bsK8LRXAHd3fqQTswur7Q7VHNaC/mW1lq52x5pPCKN3t1Q7/Do+PfLRix9V6deI9tZTgmjcgYnxo08TRqhz4aaUJJFhSzEXwb/BjJA933SVHpS7inLZo1JnIsUELtMyUvSqQ8z6hSpNYXnF7xhmXe6snJxJ43jz0qLKpeIE1/Oned/IRWVvZdeR2ng==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Wed, 10 Mar
- 2021 19:23:03 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3912.027; Wed, 10 Mar 2021
- 19:23:03 +0000
-Date:   Wed, 10 Mar 2021 15:23:01 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [RFC PATCH 18/18] ioasid: Add /dev/ioasid for userspace
-Message-ID: <20210310192301.GC2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-19-git-send-email-jacob.jun.pan@linux.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1614463286-97618-19-git-send-email-jacob.jun.pan@linux.intel.com>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: MN2PR11CA0030.namprd11.prod.outlook.com
- (2603:10b6:208:23b::35) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S229930AbhCKGSV (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Thu, 11 Mar 2021 01:18:21 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38612 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhCKGSE (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Thu, 11 Mar 2021 01:18:04 -0500
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABBA9C061574
+        for <cgroups@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+Received: by mail-pl1-x632.google.com with SMTP id a24so9686475plm.11
+        for <cgroups@vger.kernel.org>; Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
+        b=rhbKo8dcc8lTdzeUYcMZoyURBR3BB+R/PES6oMiL7hFf6Hfd2KdUNdjN3OUvIs24TK
+         Kld96DWzTaLfOLMLQ4UQ+NNx04wNaN7EPmGc0Rrs/meIZhbVWMZRyFRs0xgvufGs53+1
+         WZbD536dxbOG4ZX3uDXg6AXioZz0EA90qLurDWnmAee19bYnY5otEd1TRemCbakfWAKL
+         mfI+Cvmzdumpdq3HmPzqS/JiVMKhF+gCqZT2yLK1tmyCFPc4VVUpdmR6swDdUIApIgfY
+         qBS2ud3yIfWJyKT4/qh412WYUWrg/xwTXvwTyZLpEnvAJxOJvTLTF3sbjzl3uecblNhE
+         Sfrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=GtG19LOebEp2WxfXZAPDVqDaGg46AUd7BpnKVeJq4kc=;
+        b=WJ4zgiwJWDBj83CVM2eQnc67KXKWk+PVoKZrOb9Qc05n41Zx8LZzggrk9gw1FGW1vI
+         3FvdzUvSlyDFsG5XjFL/3L6HKS6yCMyxMgzToRnC2V+hsic4d22qW8arGEJHUvlRe8PG
+         DSD7qo+xQZfswAH4OfG+ZhV5le3acZ6rho71oGBn1zty7os+W3x9bzHLTDo6dNTsp7uL
+         qSpgdSnXQAqevMzZfe52jqDYSY28W53GGvzJ9+mYtcfgJtBHDh6XlETD28BSMSmX79Ga
+         q9sBUHJ6Ke5UTmiDKjm+Waa3A4DwhH3Xs08GvSOqOj/ufy7D1zKR+P0eEPMPVLdi9kjO
+         DiGQ==
+X-Gm-Message-State: AOAM530jeWSxsbwPRxaFeWwfadhkj+66ZVNzlhdH8WzasKjzqnyNbziD
+        YTRF6KlTLlFAjiZ/vsCD9eohXA==
+X-Google-Smtp-Source: ABdhPJxyBUhrIkIxAqjaPMJ2bwK4AiMhyUompTTx88o6LU8BPAUdCjOWSAZUPGQMmMmsuEoYqfZllg==
+X-Received: by 2002:a17:90a:c096:: with SMTP id o22mr7450750pjs.119.1615443484161;
+        Wed, 10 Mar 2021 22:18:04 -0800 (PST)
+Received: from localhost.localdomain ([139.177.225.230])
+        by smtp.gmail.com with ESMTPSA id 25sm1241346pfh.199.2021.03.10.22.17.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Mar 2021 22:18:03 -0800 (PST)
+From:   Chengming Zhou <zhouchengming@bytedance.com>
+To:     tj@kernel.org, lizefan.x@bytedance.com, hannes@cmpxchg.org,
+        corbet@lwn.net, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org
+Cc:     dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+        mgorman@suse.de, bristot@redhat.com, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        zhouchengming@bytedance.com, songmuchun@bytedance.com
+Subject: [PATCH] cgroup-v2: Add taskstats counters in cgroup.stat
+Date:   Thu, 11 Mar 2021 14:17:52 +0800
+Message-Id: <20210311061752.310831-1-zhouchengming@bytedance.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by MN2PR11CA0030.namprd11.prod.outlook.com (2603:10b6:208:23b::35) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17 via Frontend Transport; Wed, 10 Mar 2021 19:23:02 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lK4Q9-00AtRk-OB; Wed, 10 Mar 2021 15:23:01 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: ac3cf66f-1eab-49c7-adac-08d8e3f9ec91
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2938:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2938BCD41EF4666DD4C76C18C2919@DM6PR12MB2938.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: u8wNKAJIGz+io6EWMz+4g3t/7xCEEGRPKAtFO2AYBL+t5ZsiMnuL8O2ZEvuKmdHwpKdlSmBDY1H2LdTLF69tMI2gju3RZ1FMjL8WJ+MFA17TwakaoiuX8slesYbC7TC6UmS4U15hXRp9ec6e4exWn2n/QrKUzwOzAVNfr8QpSqtCjl7u/oy82WJfS6LAX5qaldcNSZQvGryKNnD2PX/hqM+qU5E1qfKC+i4woIRQF9CqFkefCaDo19obpVQCRkKKuQjCkKxtMok64aZSJY8QrxBDYHcroExB7vTX8+FlAlvglkqPLMEBs18tynbOHyEroyPzXXVw77JZ7jsTGC9bevWzh+rvh/E6gO8Q/WgYMTrEQus2lvKaRFTZZCeugvYzdNvHnfhtf/8ZuuUsozYKnBBIldZMSj9dp0SiA3lF35uu2kmDUhNP/bMRNPw+3wCGJWw3ehRZ6HjCiIwHYMmbm3p28ApfKDQpdjvDwTUD62nn3kWQ8mOm7OPSRfvzC4iyELocJFH9HCr7jEcvkZht2Q==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39860400002)(366004)(136003)(346002)(396003)(316002)(426003)(86362001)(9746002)(26005)(478600001)(7416002)(4744005)(54906003)(1076003)(8676002)(33656002)(8936002)(2906002)(4326008)(5660300002)(66946007)(66476007)(66556008)(9786002)(186003)(36756003)(6916009)(2616005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?oDtHu1GZ3iYtTwMddLawo+MRw1h5A1kqSYRmosLGp8q7OwzRB4RucnAphwOF?=
- =?us-ascii?Q?+1B5jImQAStBljSLU6TpwK/YTPADireCh1TWsAHLPg0k4D7t2YcsTuT1lIXG?=
- =?us-ascii?Q?r8FR3NvqBBIX69UdGuecG9vD7d6l15ttIH6pDSyeoZOXWgAJXBS6sPIBf30j?=
- =?us-ascii?Q?rqpz3A1FD4d5hU8dBzOoEJ33IaV/hwJVUveq/+95GH0TiYLE9TkWh5ci9ILB?=
- =?us-ascii?Q?GAfoFNWMFaXQzx9lTfg58Ju3btQYmdjBgzT6ZhovVZ0NEd7syO119ey2bPf/?=
- =?us-ascii?Q?9GLeuaURKGZXVJtTz0zdLU9CPK6bT8gkp6WQQXDlwAYpO6KE506Mu0D1XPoP?=
- =?us-ascii?Q?P6aDpDNKCwe185DdnTTokJa1FbqxaVJ1rPK80uKJ8kmwWuVREZTHCGeEaRCJ?=
- =?us-ascii?Q?JEqFyEjfRj/kigXf/81qAg7Yzb2OtYjDLUMpCO4VrD3dHKWBhl5UfOsn1R2a?=
- =?us-ascii?Q?orIjFVwn6mEEkuOe7uP3NGq+ntchhkrwuVZWRyZ3vhUL/y/XTUNLvvzKbD4C?=
- =?us-ascii?Q?NehZZ+94EG5HcgFNxnPY6VZZDqrqKOsi5zUjQ9HsIJcaBlH02xSrfJOV+LXa?=
- =?us-ascii?Q?if4VJy49zC8zQixYJaxF1Nt8FWBqnVRO6BExFu04O+OvoK02qvHl3EIQ3wWI?=
- =?us-ascii?Q?pFYXqrEg4lLtmeGPactT5e6+idR1e/bhPLHVCO5ET2LlsFnngjuPPxOMPIPY?=
- =?us-ascii?Q?ydCsXbHItnd309Vo11fSwWktCBF+NHJIlPluwTFu7srSeW5dP3vtU43SQjtc?=
- =?us-ascii?Q?OZ5irWotDARL3M4smHOqa9H7CwTj/YeLU2FWNjHiLMQxpABEbbnwBC8KJIcL?=
- =?us-ascii?Q?bHpWSSZxvTSrwAEr5OuMV7ZDIDcLB8Bk5Lbq/LihQ6haPsgsDZ2bWewKhlmg?=
- =?us-ascii?Q?3//+UgmW4D8jKX9bkFW6uXAlkby6Vu4M2+v99Q4Xy0eQfv7C9dxUEKir4gLa?=
- =?us-ascii?Q?IoJEjAfz2BxEAoUQvvQTTInWkxIOJ3mQGsxXtC84jsBAsg2HrQBafdS3Lvy9?=
- =?us-ascii?Q?oKtFIKAMchyuyGEaOb0R/iqkedIhhC3P/bAErpuvmTIA3tS9XEbrAP7FNcgw?=
- =?us-ascii?Q?aEQDBQybR276ErvCkVwcJs07pke9ZCSRZbd5I6KGH5FDy7lbESvZNTwItcbC?=
- =?us-ascii?Q?g8oSu1EtX9wUQkI06reFrM95W0WqGFK4ppXz+gJDZ6DyNwsCo5SjNE17zVAU?=
- =?us-ascii?Q?Up2Bai+uO6SAeQfX6AG6WfiwTnslULAiWO8X0hpjxE2mNOXXi+Kc4x9//NXD?=
- =?us-ascii?Q?ksoFabLYNeEnqltTYiQOWzp0p4ePmUbp86EX09J1EaYwLTu8S/GywgwyB1LA?=
- =?us-ascii?Q?evcYri2jKJFLndfBs23IVkIrsnBbC98ljp50v+wxiL/zvw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ac3cf66f-1eab-49c7-adac-08d8e3f9ec91
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Mar 2021 19:23:03.0116
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: cYcNppCp5zwkCAmmq9nzz7BXOA/YU70Ml8kcQG37Pr2sSBnLO/esv8oRQhlbnfcm
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2938
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Sat, Feb 27, 2021 at 02:01:26PM -0800, Jacob Pan wrote:
+We have the netlink CGROUPSTATS_CMD_GET interface to get taskstats
+of the cgroup on v1, but haven't the equivalent interface on v2,
+making it difficult to calculate the per-cgroup cpu load in cadvisor
+or implement the cgroup proc interface in lxcfs, like /proc/loadavg.
 
-> +/* -------- IOCTLs for IOASID file descriptor (/dev/ioasid) -------- */
-> +
-> +/**
-> + * IOASID_GET_API_VERSION - _IO(IOASID_TYPE, IOASID_BASE + 0)
-> + *
-> + * Report the version of the IOASID API.  This allows us to bump the entire
-> + * API version should we later need to add or change features in incompatible
-> + * ways.
-> + * Return: IOASID_API_VERSION
-> + * Availability: Always
-> + */
-> +#define IOASID_GET_API_VERSION		_IO(IOASID_TYPE, IOASID_BASE + 0)
+Since we already have these counters maintained in psi subsystem,
+so this patch sum them up and export in the cgroup.stat interface.
 
-I think this is generally a bad idea, if you change the API later then
-also change the ioctl numbers and everything should work out
+Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst |  9 +++++++
+ include/linux/psi.h                     |  1 +
+ kernel/cgroup/cgroup.c                  |  3 +++
+ kernel/sched/psi.c                      | 34 +++++++++++++++++++++++++
+ 4 files changed, 47 insertions(+)
 
-eg use the 4th argument to IOC to specify something about the ABI
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 64c62b979f2f..4184e749f687 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -923,6 +923,15 @@ All cgroup core files are prefixed with "cgroup."
+ 		A dying cgroup can consume system resources not exceeding
+ 		limits, which were active at the moment of cgroup deletion.
+ 
++	  nr_iowait_tasks
++	    Total number of tasks in iowait.
++
++	  nr_memstall_tasks
++	    Total number of tasks in memstall.
++
++	  nr_running_tasks
++	    Total number of runnable tasks.
++
+   cgroup.freeze
+ 	A read-write single value file which exists on non-root cgroups.
+ 	Allowed values are "0" and "1". The default is "0".
+diff --git a/include/linux/psi.h b/include/linux/psi.h
+index 7361023f3fdd..ea98239424ca 100644
+--- a/include/linux/psi.h
++++ b/include/linux/psi.h
+@@ -30,6 +30,7 @@ int psi_show(struct seq_file *s, struct psi_group *group, enum psi_res res);
+ int psi_cgroup_alloc(struct cgroup *cgrp);
+ void psi_cgroup_free(struct cgroup *cgrp);
+ void cgroup_move_task(struct task_struct *p, struct css_set *to);
++void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp);
+ 
+ struct psi_trigger *psi_trigger_create(struct psi_group *group,
+ 			char *buf, size_t nbytes, enum psi_res res);
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 9153b20e5cc6..2724ae318a3b 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3502,6 +3502,9 @@ static int cgroup_stat_show(struct seq_file *seq, void *v)
+ 	seq_printf(seq, "nr_dying_descendants %d\n",
+ 		   cgroup->nr_dying_descendants);
+ 
++#ifdef CONFIG_PSI
++	psi_taskstat_show(seq, cgroup);
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/kernel/sched/psi.c b/kernel/sched/psi.c
+index 967732c0766c..0ae8bd278ca4 100644
+--- a/kernel/sched/psi.c
++++ b/kernel/sched/psi.c
+@@ -1000,6 +1000,40 @@ void cgroup_move_task(struct task_struct *task, struct css_set *to)
+ 
+ 	task_rq_unlock(rq, task, &rf);
+ }
++
++void psi_taskstat_show(struct seq_file *m, struct cgroup *cgrp)
++{
++	struct psi_group *group;
++	int cpu;
++	int s;
++	unsigned int taskstat[NR_PSI_TASK_COUNTS - 1] = { 0, };
++
++	if (static_branch_likely(&psi_disabled))
++		return;
++
++	group = cgroup_ino(cgrp) == 1 ? &psi_system : &cgrp->psi;
++
++	for_each_possible_cpu(cpu) {
++		struct psi_group_cpu *groupc = per_cpu_ptr(group->pcpu, cpu);
++		unsigned int tasks[NR_PSI_TASK_COUNTS];
++		unsigned int seq;
++
++		do {
++			seq = read_seqcount_begin(&groupc->seq);
++			memcpy(tasks, groupc->tasks, sizeof(groupc->tasks));
++		} while (read_seqcount_retry(&groupc->seq, seq));
++
++		for (s = 0; s < NR_ONCPU; s++)
++			taskstat[s] += tasks[s];
++	}
++
++	seq_printf(m, "nr_iowait_tasks %u\n"
++		   "nr_memstall_tasks %u\n"
++		   "nr_running_tasks %u\n",
++		   taskstat[NR_IOWAIT],
++		   taskstat[NR_MEMSTALL],
++		   taskstat[NR_RUNNING]);
++}
+ #endif /* CONFIG_CGROUPS */
+ 
+ int psi_show(struct seq_file *m, struct psi_group *group, enum psi_res res)
+-- 
+2.25.1
 
-Jason
