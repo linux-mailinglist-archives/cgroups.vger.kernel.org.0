@@ -2,169 +2,130 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB6EA339068
-	for <lists+cgroups@lfdr.de>; Fri, 12 Mar 2021 15:55:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C62CE339586
+	for <lists+cgroups@lfdr.de>; Fri, 12 Mar 2021 18:50:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229487AbhCLOyz (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Mar 2021 09:54:55 -0500
-Received: from mail-dm6nam10on2066.outbound.protection.outlook.com ([40.107.93.66]:29121
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230443AbhCLOyn (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Fri, 12 Mar 2021 09:54:43 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y/Cg3uEH6M7VOqkn3tPyXQTA8hgo+3jiY6FQVgvPcuN0LS61yRXfsLoZNY9Sfqdl7x3r9ewij7c6ZgYGXTuD9ONac7psR+W+AT+3Aop2Zlx43gwJioDegnDhknzszUrHarNBT6x6cdN5gA3h8UFg1c26FrvwaL24etciLDm4QgN7RWSRDwVY23UV88zzukkUPx7SqRjcDco6uYW9H6N8/9wVqhDxIrMiXrtuJMbYOsYgNDWCnZFtOrx7tdye3HeKyl6v+Qb4jnbiob6Su7QoAVLF/FkBKU5Ln+S9ACsDExcW7IRfVyiYpkRGV91GpCX17p3x5T/ukDW+l8vMRA5W9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QrKz109+QtTaiqMToTFOgc22uC4OAicGA0DKsvjRXMY=;
- b=IR7ryu6LQyX1vmCBW4xmOCorzaqCBg+TIexQTr7gzFH/WYfWhLYU04NIy7qPWa50kBMIGp3+38//8c226Nm3e2CyD7AgEZiwADnJhiABrkioAliPC3f8aSKr3LrIxjRhcLyBaGUxbAZfo0tF5SNgd9NCrf57rAok1Sy/4+lDunQe9oZ2263W+RhobowCn9vNUUpQm8D66TK92Ri0+tVhVU8acagEQu0pBJy3KYlRj/BQ8l28J/k2Idl/EiIUnSafysI+ZlupbuMy9CTQjb1oWEisaxshvwK19iylpvjyK+reHgq3rj4/w+o3PLhqA/TysDEma02Iv/sty1bQXM3S2w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QrKz109+QtTaiqMToTFOgc22uC4OAicGA0DKsvjRXMY=;
- b=MI8se11LehMz4nD8CW+Fe1EtXtt4c2b4iNfnNwP0vEKXlEtBv5JuMqiLBd+S5nq1fx4CKudRZzUBzu1F5v2syyushNA7k6rQd+4QDqZIHJd4wAi9u3vbVJMRq4hsNPoagXSMUs32rpns/1o1b3Kow++aJMRMxrQQQS34S84atRstbgPpA58S1vv3QCqujaZ0Uo8vUi++CTf+yIiJie4wCu8X05adN5vDnfz0N7HvFYWD+AtXzZDjCZAnBWJVCurO0QeG13mYO6o/1R9okVqHzOwS0+txC5JoNCZ1igDxsN9uTrFkV8Tk7DCp2rLCWq5Zzcw/95WhAK6gotNX+wbEaw==
-Authentication-Results: linux.intel.com; dkim=none (message not signed)
- header.d=none;linux.intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB2938.namprd12.prod.outlook.com (2603:10b6:5:18a::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.32; Fri, 12 Mar
- 2021 14:54:42 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::1c62:7fa3:617b:ab87%6]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
- 14:54:42 +0000
-Date:   Fri, 12 Mar 2021 10:54:39 -0400
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Jacob Pan <jacob.jun.pan@linux.intel.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        iommu@lists.linux-foundation.org, cgroups@vger.kernel.org,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Eric Auger <eric.auger@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Raj Ashok <ashok.raj@intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>, Yi Liu <yi.l.liu@intel.com>,
-        Wu Hao <hao.wu@intel.com>, Dave Jiang <dave.jiang@intel.com>
-Subject: Re: [RFC PATCH 18/18] ioasid: Add /dev/ioasid for userspace
-Message-ID: <20210312145439.GD2356281@nvidia.com>
-References: <1614463286-97618-1-git-send-email-jacob.jun.pan@linux.intel.com>
- <1614463286-97618-19-git-send-email-jacob.jun.pan@linux.intel.com>
- <20210310192301.GC2356281@nvidia.com>
- <20210311145534.6fe9bb9a@jacob-builder>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210311145534.6fe9bb9a@jacob-builder>
-X-Originating-IP: [142.162.115.133]
-X-ClientProxiedBy: BL1PR13CA0305.namprd13.prod.outlook.com
- (2603:10b6:208:2c1::10) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S232699AbhCLRtr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Mar 2021 12:49:47 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233170AbhCLRtc (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Mar 2021 12:49:32 -0500
+Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FD0C061761
+        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 09:49:31 -0800 (PST)
+Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so11422004pjv.1
+        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 09:49:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=csMPZAYxCBTEQbPB3Xmop3XmbNBt5+uYFADY2kRb6qA=;
+        b=o9KG5np4GiSzQMqkEaxSRIqmTD15b/mJFR0bihIPG/1y69mD7nFyMiABc8fYtXdqOk
+         GFpEv76l31p8dmd//oe7ARKidD3Cb0XkZaJduHtnrKMONTq935ng9PTueZ4JHI7R1IAI
+         l5f2a42VDoEXXfyBPIZ3RxzHdfYzyXJSs5giZu/ivRvMJelLVtiHSNvV20sMuLjQTWYJ
+         iLNLdo3EbAApFxiSxmQSqJljwgZ6BYuoQAOInEE/vhT86GYPfiRQLgYNuTp6f7v4O/ZP
+         n2/Cf3MmFDF1tubVD7LXT2U0k2QQXJCKgW6bh2shK8GwEMNLfm4BUR1rZN6/SxNuT0ix
+         ZnLg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=csMPZAYxCBTEQbPB3Xmop3XmbNBt5+uYFADY2kRb6qA=;
+        b=egxORtK6Je3BifOdbHn6LnAOMYrayurnrRo0C+SnljwTpQ8unVeTbT0I3dmMHpg2O5
+         ce2DYv0bFXtNHVDbkV9kF5ib9I4oMTSrK+J97LPo5xI4bgfdma1uHbzXns8PvvhYWdBK
+         7KKskm2/mEAZMd4pDEKtIOOqN8bYQxK+ArDLXeiGBES5ZsjRKAQWLLIxXmeazsQbY5wp
+         2lEae06KAmchPvSA4d36E2qEiwuLoOrhaVStWGdcKpyHhEW2atfioXHnwSw/NRsCwcBy
+         n4JfogLgxPCZ0iG42MBHrZsn/vxpIVaTsalSBNT1sCSWvT0gHyjvyxSV0fgvuJc4Rjtl
+         WWyw==
+X-Gm-Message-State: AOAM532w5tGpHnNxLz98Zr3GFmor5iBn/ewto4OJZLTWZIpyWp8Xkuof
+        vMkZZf0ivAgwYci5Os/lomceRg==
+X-Google-Smtp-Source: ABdhPJxDcsQ5VU1Ul+tvaM/5WNQYzRGAcYEvzabmGHrHnG/f8+KP0FFlDC91xTOQsYGcCfrDagW7rA==
+X-Received: by 2002:a17:90a:29e4:: with SMTP id h91mr14914204pjd.225.1615571371008;
+        Fri, 12 Mar 2021 09:49:31 -0800 (PST)
+Received: from google.com ([2620:0:1008:10:18a1:1d64:e35b:961e])
+        by smtp.gmail.com with ESMTPSA id e8sm6017651pgb.35.2021.03.12.09.49.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 12 Mar 2021 09:49:30 -0800 (PST)
+Date:   Fri, 12 Mar 2021 09:49:26 -0800
+From:   Vipin Sharma <vipinsh@google.com>
+To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc:     Tejun Heo <tj@kernel.org>, rdunlap@infradead.org,
+        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
+        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
+        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
+        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
+        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
+Message-ID: <YEupplaAWU1i0G6B@google.com>
+References: <20210304231946.2766648-1-vipinsh@google.com>
+ <YETLqGIw1GekWdYK@slm.duckdns.org>
+ <YEpoS90X19Z2QOro@blackbook>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (142.162.115.133) by BL1PR13CA0305.namprd13.prod.outlook.com (2603:10b6:208:2c1::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3955.10 via Frontend Transport; Fri, 12 Mar 2021 14:54:41 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lKjBX-00BwIz-Sw; Fri, 12 Mar 2021 10:54:39 -0400
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 668dc24c-10f7-42bd-7822-08d8e566c43c
-X-MS-TrafficTypeDiagnostic: DM6PR12MB2938:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB2938F43958F2B51C2C8C6908C26F9@DM6PR12MB2938.namprd12.prod.outlook.com>
-X-MS-Exchange-Transport-Forked: True
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: JAqJAS6YzxfhMnw4Y7DJqZNsU3b77EKHxsr3JIJrnvU27ElbKnzXPfEGpN06+zIfyjgEyLwKMmKLajWmChKGVsHnOedRLGCTLg1MCUFzCETpbNKwzUGGIopqy235vbgJvPvYPqVcPh5fDmKHsmWNz4p1nyNcUyOjU1ozcVXh5M9LGouComOTQw5u+fHuYu1bzrA5BWxgT7JxT7kvftVarKvR/Q/90Dtf+N/YzLoXnCO8KwCzk1DVE0dtpUKeKQY4QFwEgcCuFKy6G/0dGTOhdKCY6km/3pUhi2B8NnZR9wz0kmUEIx7G46o2nbDloKgmEr+MFe8v7xtgqXTO+Atw4u5/2sScQAJ2q3S/vPehTpd+Urrs2el2ppJkxpllTvi9jJk1fLQG3nuUUwkPjC99+dX57/jzoz/55xDM3cHh3odYAqMD4Rp1NpUden/EDbGDUVlzfiYzrfLoev2XzgolmxiTQip7/AX/bPFaB9FtQmd3j6dE8/ApzgxI1K8DVS1FcFjEYBRaPpvhxjGQ5V0DL/N7uu8Q5BQ9tYgbah7eHjzPgnhJX7TNUV76WnFQuVFy
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(39860400002)(396003)(366004)(136003)(5660300002)(1076003)(7416002)(316002)(2906002)(9786002)(478600001)(186003)(6916009)(54906003)(8936002)(9746002)(426003)(26005)(2616005)(86362001)(4326008)(8676002)(33656002)(36756003)(66556008)(66946007)(66476007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?aXrpdGF12x73C3geqdd9IUXB4zCmFm3irTTmtVD6uRYkSUQlYJB6GjoluwPm?=
- =?us-ascii?Q?bK/KoxIdma99mD9lm11vafRffvqUyoAOEdNqWXWdvQAzU6alt9s4Luf8ff1O?=
- =?us-ascii?Q?RxrtYw5BefUxNt2KQa4femYB04LI+k2e0UEraqhmhb4usrCiwGBGOHHBnDZx?=
- =?us-ascii?Q?zvf3ktZoBPUgki8C2K6BfoMQGBwUp/cnEQdbDcgMKpTg7rsAPEit/qKdzw4p?=
- =?us-ascii?Q?y6WUtfMDoWd+QwrULpnqmAmtGkXy7qUWlReEIPcHO0ROBKqdNz68wBGdeFdV?=
- =?us-ascii?Q?qwoNgmk4KkVSt+Nc9zZFp0lXdwJ8ug35oTEyztmxKtRKAoSBI80QIM51E3cF?=
- =?us-ascii?Q?0E12PTIZf06jV/+/Sb3l/8OXYa19fAA9k0X1vp0DBnfuey+59KiSUvVUyPSy?=
- =?us-ascii?Q?eIDCzvxgBpAtfKnaXmh/JHDvU3Ctv451joiWiHanq74Rq8pRIZ3GCYW/JJof?=
- =?us-ascii?Q?Yf0QLy5GvVU9xiJU3ISfQzMje6JwhBGbpLrJWpFXq/lxWI5weRMJPrjYosz3?=
- =?us-ascii?Q?5aa2Bkgfovl1nu5berg0uKduDlFu6ssF/Q/+NJhhLavCUyB2jPwtkVZVI3GN?=
- =?us-ascii?Q?Ztqd/H69oCJuW1iENQp3mvXz8hfape2WjyMyc3/Gy8tK5CNtGlRZ7z0TxFYt?=
- =?us-ascii?Q?LCdTdlJjxm005YbkCVgKMlCPGnLnZXMqm2dWbFigoaEnuI3xiffcso4gBQe4?=
- =?us-ascii?Q?CSbKjexuR0QN8nwa6Q588cqalWYkBsbekZVeW5X7u7vdmQLFTFIYjgs6k1/3?=
- =?us-ascii?Q?JO7m6GqEJjJtZBJI8ZmKtWB1i1TMPo2UCSQxrDPcEAcL33pehRnGMBQ8CqGt?=
- =?us-ascii?Q?T+dZDXRcGnwh9ZF09PaJATGGzWfUIv8Bd+eaWtJ++P49Y1wUQKMxwHW6HYS2?=
- =?us-ascii?Q?EWdZur4lZ/QvkB9twTrnrz0Coq+Kugf5ipZJu1A/tS8VcNo1owqupYIgHn5H?=
- =?us-ascii?Q?7UmS/KKkltKfB8p04WW6nTr8QE471mwNNjtpOnhKTPS1HI2GECbWZGwlTMgQ?=
- =?us-ascii?Q?FiFEsRh8jq4sGtzC9By3K5wXX2c1pHMcH6jxGrlUVs6AVj2VOCaOZ7VQ0RDU?=
- =?us-ascii?Q?zA/0oJVgIqaNF8BIuIuK48uwY6CxhXqz2eS03sIpnBchvaQ1HbPvqdNKdi0z?=
- =?us-ascii?Q?7bvhLTYKOuGUx0EfpCNERjdJ9pK7w/5aiJtDWBjHb/+8POi/Aoo6QlPaw72I?=
- =?us-ascii?Q?0Qy3FS/ynhGn/ui0EMUa+FRJjWF3AB+Nssf0+uMEB2f2CBLYlieKQX9a4D9h?=
- =?us-ascii?Q?tUprYDhnI8iYmmd9tepSwLMS7h71k+PEeh0utxO2IIb2AH0tBRJjUETF/6eE?=
- =?us-ascii?Q?chFFee+0xXhvUcHtGffqgMuW1JDNrgwIy2+ZkiRyKNykLw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 668dc24c-10f7-42bd-7822-08d8e566c43c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Mar 2021 14:54:42.0194
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nf2h16lYqkvpmjqLkygwbxNYbCASjNFp3fy/D/zcJd3Sff0qI3JXigSUqwGkoyRH
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB2938
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YEpoS90X19Z2QOro@blackbook>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 02:55:34PM -0800, Jacob Pan wrote:
-> Hi Jason,
-> 
-> Thanks for the review.
-> 
-> On Wed, 10 Mar 2021 15:23:01 -0400, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> 
-> > On Sat, Feb 27, 2021 at 02:01:26PM -0800, Jacob Pan wrote:
-> > 
-> > > +/* -------- IOCTLs for IOASID file descriptor (/dev/ioasid) -------- */
-> > > +
-> > > +/**
-> > > + * IOASID_GET_API_VERSION - _IO(IOASID_TYPE, IOASID_BASE + 0)
-> > > + *
-> > > + * Report the version of the IOASID API.  This allows us to bump the
-> > > entire
-> > > + * API version should we later need to add or change features in
-> > > incompatible
-> > > + * ways.
-> > > + * Return: IOASID_API_VERSION
-> > > + * Availability: Always
-> > > + */
-> > > +#define IOASID_GET_API_VERSION		_IO(IOASID_TYPE,
-> > > IOASID_BASE + 0)  
-> > 
-> > I think this is generally a bad idea, if you change the API later then
-> > also change the ioctl numbers and everything should work out
-> > 
-> > eg use the 4th argument to IOC to specify something about the ABI
-> > 
-> Let me try to understand the idea, do you mean something like this?
-> #define IOASID_GET_INFO _IOC(_IOC_NONE, IOASID_TYPE, IOASID_BASE + 1,
-> sizeof(struct ioasid_info))
-> 
-> If we later change the size of struct ioasid_info, IOASID_GET_INFO would be
-> a different ioctl number. Then we will break the existing user space that
-> uses the old number. So I am guessing you meant we need to have a different
-> name also. i.e.
+On Thu, Mar 11, 2021 at 07:58:19PM +0100, Michal Koutný wrote:
+> I admit, I didn't follow the past dicussions completely, however,
+> (Vipin) could it be in the cover letter/commit messages shortly
+> summarized why cgroups and a controller were chosen to implement
+> restrictions of these resources, what were the alternatives any why were
+> they rejected?
 
-Something like that is more appropriate. Generally we should not be
-planning to 'remove' IOCTLs. The kernel must always have backwards
-compat, so any new format you introduce down the road has to have new
-IOCTL number so the old format can continue to be supported.
+I will add some more information in the cover letter of the next version.
 
-Negotiation of support can usually by done by probing for ENOIOCTLCMD
-or similar on the new ioctls, not an API version
+Basically, SEV will mostly be used by cloud providers for providing
+confidential VMs. Since they are limited we need a good way to schedule
+these jobs in cloud infrastructure. To achieve this we either come up
+with some ioctl for "/dev/sev" to know about its usage, availability,
+etc. This requires existing scheduling mechanism in the cloud to have an
+extension for this interaction. Now same thing needs to be done for TDX.
+IBM SEID doesn't have scarcity of this resource but they are also
+interested in tracking and limiting the usage. Each one coming up with
+their own interaction is a duplicate effort when they all need similar
+thing. One can say that abstraction should be at KVM level but these
+resources can be used outside VM as well.
 
-Jason
+Most of the cloud infrastructure use cgroups for knowing the host state,
+track the resources usage, enforce limits on them, etc. They use this
+info to optimize work allocation in the fleet and make sure no rogue job
+consumes more than it needs and starves other. Adding these resources
+to cgroup is a natural choice with least friction. Cgroup itself says it
+is a mechanism to distribute system resources along the hierarchy in a
+controlled mechanism and configurable manner. Most of the resources in
+cgroups are abstracted enough but their are still resources which are
+not abstract but have limited availability or have specific use cases.
+
+> 
+> In the previous discussion, I saw the reasoning for the list of the
+> resources to be hardwired in the controller itself in order to get some
+> scrutiny of possible changes. That makes sense to me. But with that, is
+> it necessary to commit to the new controller API via EXPORT_SYMBOL? (I
+> don't mean this as a licensing question but what the external API should
+> be (if any).)
+
+As per my understanding this is the only for way for loadable modules
+(kvm-amd in this case) to access Kernel APIs. Let me know if there is a
+better way to do it.
+
+> 
+> Besides the generic remarks above, I'd still suggest some slight
+> implementation changes, posted inline to the patch.
+
+I will work on them.
+
+I appreciate you guys taking out time and helping me out with this patch
+series.
+
+Thanks
+Vipin
