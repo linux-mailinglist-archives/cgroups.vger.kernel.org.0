@@ -2,130 +2,118 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62CE339586
-	for <lists+cgroups@lfdr.de>; Fri, 12 Mar 2021 18:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FA85339723
+	for <lists+cgroups@lfdr.de>; Fri, 12 Mar 2021 20:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232699AbhCLRtr (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Fri, 12 Mar 2021 12:49:47 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46240 "EHLO
+        id S234181AbhCLTHi (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Fri, 12 Mar 2021 14:07:38 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34750 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233170AbhCLRtc (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Mar 2021 12:49:32 -0500
-Received: from mail-pj1-x102b.google.com (mail-pj1-x102b.google.com [IPv6:2607:f8b0:4864:20::102b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6FD0C061761
-        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 09:49:31 -0800 (PST)
-Received: by mail-pj1-x102b.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so11422004pjv.1
-        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 09:49:31 -0800 (PST)
+        with ESMTP id S234086AbhCLTHW (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Fri, 12 Mar 2021 14:07:22 -0500
+Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26CC4C061574
+        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 11:07:22 -0800 (PST)
+Received: by mail-pj1-x102f.google.com with SMTP id a22-20020a17090aa516b02900c1215e9b33so11180878pjq.5
+        for <cgroups@vger.kernel.org>; Fri, 12 Mar 2021 11:07:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=csMPZAYxCBTEQbPB3Xmop3XmbNBt5+uYFADY2kRb6qA=;
-        b=o9KG5np4GiSzQMqkEaxSRIqmTD15b/mJFR0bihIPG/1y69mD7nFyMiABc8fYtXdqOk
-         GFpEv76l31p8dmd//oe7ARKidD3Cb0XkZaJduHtnrKMONTq935ng9PTueZ4JHI7R1IAI
-         l5f2a42VDoEXXfyBPIZ3RxzHdfYzyXJSs5giZu/ivRvMJelLVtiHSNvV20sMuLjQTWYJ
-         iLNLdo3EbAApFxiSxmQSqJljwgZ6BYuoQAOInEE/vhT86GYPfiRQLgYNuTp6f7v4O/ZP
-         n2/Cf3MmFDF1tubVD7LXT2U0k2QQXJCKgW6bh2shK8GwEMNLfm4BUR1rZN6/SxNuT0ix
-         ZnLg==
+        bh=tJjzSwOgveQ7vdx3Cu3uc6PULmHuHzmVLjdTR0gLlhA=;
+        b=ntQoBbcWXqtifUBev/B0KOJ7BdEhMcK4Vt5DvxlbjWTaLmYcIzto4hVOQ019Ktjclt
+         IzpMHUC/yiAR42nNISAaWyzIojLrbFqvLiuqfCJeg4pkWHKlQIuqvE/fB5ka2n9/pkxv
+         YKc+kNafGRjUbzhy/8GpyCOkWZhLaF7gTkkwxvjBQ05Zb4MpXjI1NEx/9kHWr5VG/hr9
+         fyFTu4Dx4sGcxcI4/77RGpWwmxVRidKc9jp2iRX8mPbvdvav/UYKiLxb3Kwnjf/GxyYm
+         jnVuPX8KHdjB2ohJT5DD6zNXt2j3Go/jUeaKAltxlVB+ClDE9O+cvF1HmjxqqD3oE3ec
+         Q9sA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to;
-        bh=csMPZAYxCBTEQbPB3Xmop3XmbNBt5+uYFADY2kRb6qA=;
-        b=egxORtK6Je3BifOdbHn6LnAOMYrayurnrRo0C+SnljwTpQ8unVeTbT0I3dmMHpg2O5
-         ce2DYv0bFXtNHVDbkV9kF5ib9I4oMTSrK+J97LPo5xI4bgfdma1uHbzXns8PvvhYWdBK
-         7KKskm2/mEAZMd4pDEKtIOOqN8bYQxK+ArDLXeiGBES5ZsjRKAQWLLIxXmeazsQbY5wp
-         2lEae06KAmchPvSA4d36E2qEiwuLoOrhaVStWGdcKpyHhEW2atfioXHnwSw/NRsCwcBy
-         n4JfogLgxPCZ0iG42MBHrZsn/vxpIVaTsalSBNT1sCSWvT0gHyjvyxSV0fgvuJc4Rjtl
-         WWyw==
-X-Gm-Message-State: AOAM532w5tGpHnNxLz98Zr3GFmor5iBn/ewto4OJZLTWZIpyWp8Xkuof
-        vMkZZf0ivAgwYci5Os/lomceRg==
-X-Google-Smtp-Source: ABdhPJxDcsQ5VU1Ul+tvaM/5WNQYzRGAcYEvzabmGHrHnG/f8+KP0FFlDC91xTOQsYGcCfrDagW7rA==
-X-Received: by 2002:a17:90a:29e4:: with SMTP id h91mr14914204pjd.225.1615571371008;
-        Fri, 12 Mar 2021 09:49:31 -0800 (PST)
+        bh=tJjzSwOgveQ7vdx3Cu3uc6PULmHuHzmVLjdTR0gLlhA=;
+        b=Jb9rwWmZDgFAcLx3brf0MDaQbCgUnHaV8NxVh0+Qcjb2vsip+gbcwkBwOVNndFpR8q
+         I0y+7Q8wq0+B92svJPS8FGs3FIooUy5aEhxvz2FcYUX2RBFdtmtJUL+UgkhEDYbV7CTe
+         ln4cP9QdeoRDkfVzXNKIYSL6Q18ibTgNdWvL/UaskR9FJfADjCFX7jVP3yIkk0jKnXKL
+         0A5nyiZX6rg9hSvCCUZXjBDlcedTIjwLuwQfVuKj85HKNLdDQ7+GqX5PPizA3/fOQVe6
+         FvuIuYQnCc/iQWmpSnJ1niWda6CfKw8wLRif+7502xaXCyVCjoMjyScTOxhrWGubPEuj
+         2Qyg==
+X-Gm-Message-State: AOAM533hdsYVzUSxgTuQoQLf8Wx5p5Olxqh06wjJ/jGGysa/gCIkTRv8
+        X5y1ewPT2F/YXf+a8tL8wIqwLw==
+X-Google-Smtp-Source: ABdhPJyGnJc8lVpyplLP6vlQnQwwdL2pHC8tPobUN/3QxEpjMo2qw2d2f4Wb0MPIAgUMFkwynpk4RA==
+X-Received: by 2002:a17:902:ba0a:b029:e6:5c5c:d3b8 with SMTP id j10-20020a170902ba0ab02900e65c5cd3b8mr466876pls.79.1615576041235;
+        Fri, 12 Mar 2021 11:07:21 -0800 (PST)
 Received: from google.com ([2620:0:1008:10:18a1:1d64:e35b:961e])
-        by smtp.gmail.com with ESMTPSA id e8sm6017651pgb.35.2021.03.12.09.49.29
+        by smtp.gmail.com with ESMTPSA id b3sm2917024pjg.41.2021.03.12.11.07.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Mar 2021 09:49:30 -0800 (PST)
-Date:   Fri, 12 Mar 2021 09:49:26 -0800
+        Fri, 12 Mar 2021 11:07:20 -0800 (PST)
+Date:   Fri, 12 Mar 2021 11:07:14 -0800
 From:   Vipin Sharma <vipinsh@google.com>
 To:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc:     Tejun Heo <tj@kernel.org>, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
+Cc:     tj@kernel.org, rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
         rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
         x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
-Message-ID: <YEupplaAWU1i0G6B@google.com>
+Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
+Message-ID: <YEu74hkEPEyvxC85@google.com>
 References: <20210304231946.2766648-1-vipinsh@google.com>
- <YETLqGIw1GekWdYK@slm.duckdns.org>
- <YEpoS90X19Z2QOro@blackbook>
+ <20210304231946.2766648-2-vipinsh@google.com>
+ <YEpod5X29YqMhW/g@blackbook>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <YEpoS90X19Z2QOro@blackbook>
+In-Reply-To: <YEpod5X29YqMhW/g@blackbook>
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-On Thu, Mar 11, 2021 at 07:58:19PM +0100, Michal Koutný wrote:
-> I admit, I didn't follow the past dicussions completely, however,
-> (Vipin) could it be in the cover letter/commit messages shortly
-> summarized why cgroups and a controller were chosen to implement
-> restrictions of these resources, what were the alternatives any why were
-> they rejected?
+On Thu, Mar 11, 2021 at 07:59:03PM +0100, Michal Koutný wrote:
+> Given different two-fold nature (SEV caller vs misc controller) of some
+> remarks below, I think it makes sense to split this into two patches:
+> a) generic controller implementation,
+> b) hooking the controller into SEV ASIDs management.
 
-I will add some more information in the cover letter of the next version.
+Sounds good. I will split it.
 
-Basically, SEV will mostly be used by cloud providers for providing
-confidential VMs. Since they are limited we need a good way to schedule
-these jobs in cloud infrastructure. To achieve this we either come up
-with some ioctl for "/dev/sev" to know about its usage, availability,
-etc. This requires existing scheduling mechanism in the cloud to have an
-extension for this interaction. Now same thing needs to be done for TDX.
-IBM SEID doesn't have scarcity of this resource but they are also
-interested in tracking and limiting the usage. Each one coming up with
-their own interaction is a duplicate effort when they all need similar
-thing. One can say that abstraction should be at KVM level but these
-resources can be used outside VM as well.
+> > +	if (misc_res_capacity[type])
+> > +		cg->res[type].max = max;
+> In theory, parallel writers can clash here, so having the limit atomic
+> type to prevent this would resolve it. See also commit a713af394cf3
+> ("cgroup: pids: use atomic64_t for pids->limit").
 
-Most of the cloud infrastructure use cgroups for knowing the host state,
-track the resources usage, enforce limits on them, etc. They use this
-info to optimize work allocation in the fleet and make sure no rogue job
-consumes more than it needs and starves other. Adding these resources
-to cgroup is a natural choice with least friction. Cgroup itself says it
-is a mechanism to distribute system resources along the hierarchy in a
-controlled mechanism and configurable manner. Most of the resources in
-cgroups are abstracted enough but their are still resources which are
-not abstract but have limited availability or have specific use cases.
+We should be fine without atomic64_t because we are using unsigned
+long and not 64 bit explicitly. This will work on both 32 and 64 bit
+machines.
 
-> 
-> In the previous discussion, I saw the reasoning for the list of the
-> resources to be hardwired in the controller itself in order to get some
-> scrutiny of possible changes. That makes sense to me. But with that, is
-> it necessary to commit to the new controller API via EXPORT_SYMBOL? (I
-> don't mean this as a licensing question but what the external API should
-> be (if any).)
+But I will add READ_ONCE and WRITE_ONCE because of potential chances of
+load tearing and store tearing.
 
-As per my understanding this is the only for way for loadable modules
-(kvm-amd in this case) to access Kernel APIs. Let me know if there is a
-better way to do it.
+Do you agree?
 
-> 
-> Besides the generic remarks above, I'd still suggest some slight
-> implementation changes, posted inline to the patch.
+> > +static int misc_cg_capacity_show(struct seq_file *sf, void *v)
+> > +{
+> > +	int i;
+> > +	unsigned long cap;
+> > +
+> > +	for (i = 0; i < MISC_CG_RES_TYPES; i++) {
+> > +		cap = READ_ONCE(misc_res_capacity[i]);
+> Why is READ_ONCE only here and not in other places that (actually) check
+> against the set capacity value? Also, there should be a paired
+> WRITE_ONCCE in misc_cg_set_capacity().
 
-I will work on them.
-
-I appreciate you guys taking out time and helping me out with this patch
-series.
+This was only here to avoid multiple reads of capacity and making sure
+if condition and seq_print will see the same value. Also, I was not
+aware of load and store tearing of properly aligned and machine word
+size variables. I will add READ_ONCE and WRITE_ONCE at
+other places.
 
 Thanks
 Vipin
