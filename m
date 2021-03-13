@@ -2,111 +2,93 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A189D339EC7
-	for <lists+cgroups@lfdr.de>; Sat, 13 Mar 2021 16:06:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 54B93339F3F
+	for <lists+cgroups@lfdr.de>; Sat, 13 Mar 2021 17:55:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233893AbhCMPFc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+cgroups@lfdr.de>); Sat, 13 Mar 2021 10:05:32 -0500
-Received: from smtp.econet.co.zw ([77.246.51.158]:9572 "EHLO
-        ironportDMZ.econet.co.zw" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233927AbhCMPFO (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Sat, 13 Mar 2021 10:05:14 -0500
-X-Greylist: delayed 427 seconds by postgrey-1.27 at vger.kernel.org; Sat, 13 Mar 2021 10:05:13 EST
-IronPort-SDR: qfaVQ7hVSKoh9VjOfOViWYNw+QrxVdNcKfeVd2Gs3j3lTudIqOJ1NPly/MwD9cxy+Q3q2KHLQ5
- uJuMBWVWdIrO5AePNPFMRaqCLIJZRToxlm+8pzLFJGQfBEEsWtFVpjH6HJ9UrrV4AWkToO5YLL
- 33w8jG1GPinnz0ZQxwA3SDhhsOrNXemgd8AIXEYDryBupa0M/XkLlrQqLNgEl3PMeO9QI/Ay0r
- 7IFJ5QY9jVziFSyH6PyPj7X1x8xAlqE7t01/98+NKmajLCH8YDhi9W4C6q1VgfaNWyfrY3Lzak
- JCo=
-IronPort-HdrOrdr: A9a23:yecDaK+3eI7caEAMqGZuk+B2I+orLtY04lQ7vn1ZYxpTb8Ceio
- SSh/wdzxD5k3I8X3snlNCGNsC7MBDh3LRy5pQcOqrnYRn+tAKTTL1KwIP+z1TbdRHW2fVa0c
- 5bH5RWLP3VIRxEgd3h4A++euxA/PCi/LqzjenTi1dBJDsaDZ1I1AtyBgaFHkAefmAvbvAEPa
- GR/89W4wenEE57Uu2BCmQYRO+GntXXlfvdEGY7LiQ64wqDhy7A0tHHOiWfty1uKg9n8PMHy0
- zMkwm8376iteq61w+07R63071m3P/oyt5OH6W3+6woAwSprgataKJFd9S5zVcIidDq0U0rls
- LNvgdIBbUQ10/s
-X-IronPort-AV: E=Sophos;i="5.81,245,1610402400"; 
-   d="scan'208";a="3351263"
-Received: from unknown (HELO WVALE-MB-SVR-05.econetzw.local) ([192.168.101.173])
-  by ironportLAN.econet.co.zw with ESMTP; 13 Mar 2021 16:58:03 +0200
-Received: from WVALE-CAS-SVR-9.econetzw.local (192.168.101.184) by
- WVALE-MB-SVR-05.econetzw.local (192.168.101.173) with Microsoft SMTP Server
- (TLS) id 15.0.1473.3; Sat, 13 Mar 2021 16:57:58 +0200
-Received: from User (165.231.148.189) by WVALE-CAS-SVR-9.econetzw.local
- (10.10.11.230) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
- Transport; Sat, 13 Mar 2021 16:58:08 +0200
-Reply-To: <r19772744@daum.net>
-From:   "Reem E. A" <chawora@econet.co.zw>
-Subject: Re:
-Date:   Sat, 13 Mar 2021 14:57:56 -0800
+        id S233671AbhCMQym (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Sat, 13 Mar 2021 11:54:42 -0500
+Received: from mga09.intel.com ([134.134.136.24]:64049 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233635AbhCMQym (ORCPT <rfc822;cgroups@vger.kernel.org>);
+        Sat, 13 Mar 2021 11:54:42 -0500
+IronPort-SDR: XHwBZlFY/Szwfaecu1Fnj9dy6hsWuALE4JNeTMJU8Nrmfr3cLuGNn6aCCzYzPJYZh/ZSxTiH0j
+ hyufNr9HmLUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9922"; a="189040915"
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="189040915"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 08:54:41 -0800
+IronPort-SDR: q+dZ4Wdw1KWvvWQuaBlglJ3vdF/LGB5BBKjuN9QbvctfyF6y/4AbdDbUELjkR9dOXXCNvcfIBx
+ p7xtDLTWeL8w==
+X-IronPort-AV: E=Sophos;i="5.81,245,1610438400"; 
+   d="scan'208";a="411366510"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Mar 2021 08:54:41 -0800
+Date:   Sat, 13 Mar 2021 08:57:01 -0800
+From:   Jacob Pan <jacob.jun.pan@intel.com>
+To:     Tejun Heo <tj@kernel.org>
+Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
+        rdunlap@infradead.org, thomas.lendacky@amd.com,
+        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
+        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
+        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
+        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
+        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, gingell@google.com,
+        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
+        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Raj, Ashok" <ashok.raj@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
+        jacob.jun.pan@intel.com
+Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
+Message-ID: <20210313085701.1fd16a39@jacob-builder>
+In-Reply-To: <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
+References: <20210302081705.1990283-1-vipinsh@google.com>
+        <20210302081705.1990283-3-vipinsh@google.com>
+        <20210303185513.27e18fce@jacob-builder>
+        <YEB8i6Chq4K/GGF6@google.com>
+        <YECfhCJtHUL9cB2L@slm.duckdns.org>
+        <20210312125821.22d9bfca@jacob-builder>
+        <YEvZ4muXqiSScQ8i@google.com>
+        <20210312145904.4071a9d6@jacob-builder>
+        <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="Windows-1251"
-Content-Transfer-Encoding: 8BIT
-X-Priority: 3
-X-MSMail-Priority: Normal
-X-Mailer: Microsoft Outlook Express 6.00.2600.0000
-X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
-Message-ID: <b99538e3b75947028b7a16ba29f0debb@WVALE-CAS-SVR-9.econetzw.local>
-To:     Undisclosed recipients:;
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hello,
+Hi Tejun,
 
-My name is Ms. Reem Ebrahim Al-Hashimi, I am the "Minister of state
-and Petroleum" also "Minister of State for International Cooperation"
-in UAE. I write to you on behalf of my other "three (2) colleagues"
-who has approved me to solicit for your "partnership in claiming of
-{us$47=Million}" from a Financial Home on their behalf and
-for our "Mutual Benefits".
+On Sat, 13 Mar 2021 05:20:39 -0500, Tejun Heo <tj@kernel.org> wrote:
 
-The Fund {us$47=Million} is our share from the (over-invoiced) Oil/Gas
-deal with Turkish Government within 2013/2014, however, we
-don't want our government to know about the fund. If this proposal
-interests you, let me know, by sending me an email and I will send to
-you detailed information on how this business would be successfully
-transacted. Be informed that nobody knows about the secret of this
-fund except us, and we know how to carry out the entire transaction.
-So I am compelled to ask, that you will stand on our behalf and
-receive this fund into any account that is solely controlled by you.
+> On Fri, Mar 12, 2021 at 02:59:04PM -0800, Jacob Pan wrote:
+> > Our primary goal is to limit the amount of IOASIDs that VMs can
+> > allocate. If a VM is migrated to a different cgroup, I think we need to
+> > charge/uncharge the destination/source cgroup in order enforce the
+> > limit. I am not an expert here, any feedback would be appreciated.  
+> 
+> That simply isn't a supported usage model. None of other resources will
+> get tracked if you do that.
+Isn't PIDs controller doing the charge/uncharge? I was under the impression
+that each resource can be independently charged/uncharged, why it affects
+other resources? Sorry for the basic question.
 
-We will compensate you with 15% of the total amount involved as
-gratification for being our partner in this transaction. Reply to:
-reem.alhashimi@yandex.com
+I also didn't quite get the limitation on cgroup v2 migration, this is much
+simpler than memcg. Could you give me some pointers?
 
-Regards,
-Ms. Reem.
-This mail was sent through Econet Wireless, a Global telecoms leader.
+BTW, since the IOASIDs are used to tag DMA and bound with guest process(mm)
+for shared virtual addressing. fork() cannot be supported, so I guess clone
+is not a solution here.
 
-DISCLAIMER
+Thanks,
 
-The information in this message is confidential and is legally privileged. It is intended solely for the addressee. Access to this message by anyone else is unauthorized. If received in error please accept our apologies and notify the sender immediately. You must also delete the original message from your machine. If you are not the intended recipient, any use, disclosure, copying, distribution or action taken in reliance of it, is prohibited and may be unlawful. The information, attachments, opinions or advice contained in this email are not the views or opinions of Econet Wireless, its subsidiaries or affiliates. Econet Wireless therefore accepts no liability for claims, losses, or damages arising from the inaccuracy, incorrectness, or lack of integrity of such information.
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/AgileBanner.png]
-WORK ISN'T A PLACE
-IT'S WHAT WE DO
-________________________________
-
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/telephone.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/email.png]
-
-<mailto:>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/location.png]
-
-
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/website.png]
-
-www.econet.co.zw<https://www.econet.co.zw>
-
-
-[https://mail.econet.co.zw/OWA/auth/current/themes/resources/Agile/inspired.jpg]
+Jacob
