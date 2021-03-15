@@ -2,143 +2,142 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03DF633C9FF
-	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 00:38:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D8F5433CA14
+	for <lists+cgroups@lfdr.de>; Tue, 16 Mar 2021 00:41:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhCOXiO (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 19:38:14 -0400
-Received: from mga06.intel.com ([134.134.136.31]:47444 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233779AbhCOXhv (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 15 Mar 2021 19:37:51 -0400
-IronPort-SDR: xC46zmYawu1Ti+Z7aGKkw/MlCzzWoVdaA2whKmWXYvwtAbCBHBkAF03p8BAxyVxF/wOVsHCNfM
- nlRkqnXA2bFA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9924"; a="250534644"
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="250534644"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 16:37:51 -0700
-IronPort-SDR: Arp01YLngEKK/mATz7xeSEqowA0Khd72bSSt/H+r5puobLJP6QT2p1qIcoV2q13QyL/MIlM9d6
- 1Agfyzc8fi9w==
-X-IronPort-AV: E=Sophos;i="5.81,251,1610438400"; 
-   d="scan'208";a="412010634"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2021 16:37:51 -0700
-Date:   Mon, 15 Mar 2021 16:40:12 -0700
-From:   Jacob Pan <jacob.jun.pan@intel.com>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Vipin Sharma <vipinsh@google.com>, mkoutny@suse.com,
-        rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, "Tian, Kevin" <kevin.tian@intel.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        "Raj, Ashok" <ashok.raj@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "jean-philippe@linaro.org" <jean-philippe@linaro.org>,
-        jacob.jun.pan@intel.com
-Subject: Re: [RFC v2 2/2] cgroup: sev: Miscellaneous cgroup documentation.
-Message-ID: <20210315164012.4adeabe8@jacob-builder>
-In-Reply-To: <YE/ddx5+ToNsgUF0@slm.duckdns.org>
-References: <20210303185513.27e18fce@jacob-builder>
-        <YEB8i6Chq4K/GGF6@google.com>
-        <YECfhCJtHUL9cB2L@slm.duckdns.org>
-        <20210312125821.22d9bfca@jacob-builder>
-        <YEvZ4muXqiSScQ8i@google.com>
-        <20210312145904.4071a9d6@jacob-builder>
-        <YEyR9181Qgzt+Ps9@mtj.duckdns.org>
-        <20210313085701.1fd16a39@jacob-builder>
-        <YEz+8HbfkbGgG5Tm@mtj.duckdns.org>
-        <20210315151155.383a7e6e@jacob-builder>
-        <YE/ddx5+ToNsgUF0@slm.duckdns.org>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S230112AbhCOXl0 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 19:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57964 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230299AbhCOXlC (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 19:41:02 -0400
+Received: from mail-qt1-x82e.google.com (mail-qt1-x82e.google.com [IPv6:2607:f8b0:4864:20::82e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F2112C061756
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
+Received: by mail-qt1-x82e.google.com with SMTP id m7so10456142qtq.11
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sHh364PFI7gr7Rg7wpaysNQPtI9BiNpDxSsKea0W7pA=;
+        b=KbheRMtg2robQTyXPOEUrlWiONJ6e2isDPkgv9TYBs4HWXHrRdzR9F4j8VM+dTeX2M
+         eabV8ybFsCDihGBWhwgMPDDTOX737BCr06IpzJThWzsqHtEJiT5yZZq3Z89KjreYoS2W
+         9GMEiDZw38HOxAu7Z1TuHEAcU6cUTzw/i3xPEKKtM4aJJtASYaaboQmNpTbWdtH+uOIs
+         tAPWz2umjmR8R0K+EHsBDPmG35CNquRmgrNIM+onWovfmkuPW6eYCeH4T0Bg0KGQ1Jbo
+         2m7pNiKU76I12k+7IUBC77cbwWHyrwEwwo1g1QPp8LoL/FS4EHStaALOmG1cd3x7bIUn
+         ms7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sHh364PFI7gr7Rg7wpaysNQPtI9BiNpDxSsKea0W7pA=;
+        b=GaTegRFtPSiYw66ZsB7Wb4jJcpp7oc+rQ/UvICMcUiUsqlPiQhbGzbHKyY+LV4O39B
+         zT5+Y8B4EYJJafx9JALCXoPZCDthkYQa5OqKVnRMhUd6eZ/BiDfGzrEI6oXqvlOyJhZx
+         FgjseQdHyhcG/4it8qcPWv+22o186BkHdNNO0n23OyATf9CeBc1aVlTzyL2eObel4v0K
+         M+bwSiX5ezaXlr9hfAj9WejTDANFK9uuKC/FYRpB5N26gtyG/HBPI7EtOfkVF3ZZ7hGo
+         h9YxPCPTsft7qYUrFa9arfLiJCemGSAropgs6DiclsynIB+YzJBEBy0HNbC3NKzLAYxy
+         KA6g==
+X-Gm-Message-State: AOAM531oah6Eslv60GGwTyQ3fhSbmuNAZrPWfSsy1D+hDGE8UfGLvnp4
+        WrQIpJeQbRUs0f66WiYJ8dcVog==
+X-Google-Smtp-Source: ABdhPJz9md7FgYM4eYPuO/5SfyVzkVTi0KXgspL4ZAqLFAN4N7SNYwrgpLRwef8H/S3+tBIwqC2sgw==
+X-Received: by 2002:ac8:1186:: with SMTP id d6mr14164688qtj.124.1615851661253;
+        Mon, 15 Mar 2021 16:41:01 -0700 (PDT)
+Received: from localhost (70.44.39.90.res-cmts.bus.ptd.net. [70.44.39.90])
+        by smtp.gmail.com with ESMTPSA id o7sm13242112qki.63.2021.03.15.16.41.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Mar 2021 16:41:00 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>, Tejun Heo <tj@kernel.org>,
+        =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com
+Subject: [PATCH] mm: memcontrol: switch to rstat fix
+Date:   Mon, 15 Mar 2021 19:41:00 -0400
+Message-Id: <20210315234100.64307-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
-Hi Tejun,
+Fix a sleep in atomic section problem: wb_writeback() takes a spinlock
+and calls wb_over_bg_thresh() -> mem_cgroup_wb_stats, but the regular
+rstat flushing function called from in there does lockbreaking and may
+sleep. Switch to the atomic variant, cgroup_rstat_irqsafe().
 
-On Mon, 15 Mar 2021 18:19:35 -0400, Tejun Heo <tj@kernel.org> wrote:
+To be consistent with other memcg flush calls, but without adding
+another memcg wrapper, inline and drop memcg_flush_vmstats() instead.
 
-> Hello,
-> 
-> On Mon, Mar 15, 2021 at 03:11:55PM -0700, Jacob Pan wrote:
-> > > Migration itself doesn't have restrictions but all resources are
-> > > distributed on the same hierarchy, so the controllers are supposed to
-> > > follow the same conventions that can be implemented by all
-> > > controllers. 
-> > Got it, I guess that is the behavior required by the unified hierarchy.
-> > Cgroup v1 would be ok? But I am guessing we are not extending on v1?  
-> 
-> A new cgroup1 only controller is unlikely to be accpeted.
-> 
-> > The IOASIDs are programmed into devices to generate DMA requests tagged
-> > with them. The IOMMU has a per device IOASID table with each entry has
-> > two pointers:
-> >  - the PGD of the guest process.
-> >  - the PGD of the host process
-> > 
-> > The result of this 2 stage/nested translation is that we can share
-> > virtual address (SVA) between guest process and DMA. The host process
-> > needs to allocate multiple IOASIDs since one IOASID is needed for each
-> > guest process who wants SVA.
-> > 
-> > The DMA binding among device-IOMMU-process is setup via a series of user
-> > APIs (e.g. via VFIO).
-> > 
-> > If a process calls fork(), the children does not inherit the IOASIDs and
-> > their bindings. Children who wish to use SVA has to call those APIs to
-> > establish the binding for themselves.
-> > 
-> > Therefore, if a host process allocates 10 IOASIDs then does a
-> > fork()/clone(), it cannot charge 10 IOASIDs in the new cgroup. i.e. the
-> > 10 IOASIDs stays with the process wherever it goes.
-> > 
-> > I feel this fit in the domain model, true?  
-> 
-> I still don't get where migration is coming into the picture. Who's
-> migrating where?
-> 
-Sorry, perhaps I can explain by an example.
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/memcontrol.c | 15 +++++----------
+ 1 file changed, 5 insertions(+), 10 deletions(-)
 
-There are two cgroups: cg_A and cg_B with limit set to 20 for both. Process1
-is in cg_A. The initial state is:
-cg_A/ioasid.current=0, cg_A/ioasid.max=20
-cg_B/ioasid.current=0, cg_B/ioasid.max=20
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index f7fb12d3c2fc..9091913ec877 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -757,11 +757,6 @@ mem_cgroup_largest_soft_limit_node(struct mem_cgroup_tree_per_node *mctz)
+ 	return mz;
+ }
+ 
+-static void memcg_flush_vmstats(struct mem_cgroup *memcg)
+-{
+-	cgroup_rstat_flush(memcg->css.cgroup);
+-}
+-
+ /**
+  * __mod_memcg_state - update cgroup memory statistics
+  * @memcg: the memory cgroup
+@@ -1572,7 +1567,7 @@ static char *memory_stat_format(struct mem_cgroup *memcg)
+ 	 *
+ 	 * Current memory state:
+ 	 */
+-	memcg_flush_vmstats(memcg);
++	cgroup_rstat_flush(memcg->css.cgroup);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ 		u64 size;
+@@ -3523,7 +3518,7 @@ static unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
+ 	unsigned long val;
+ 
+ 	if (mem_cgroup_is_root(memcg)) {
+-		memcg_flush_vmstats(memcg);
++		cgroup_rstat_flush(memcg->css.cgroup);
+ 		val = memcg_page_state(memcg, NR_FILE_PAGES) +
+ 			memcg_page_state(memcg, NR_ANON_MAPPED);
+ 		if (swap)
+@@ -3925,7 +3920,7 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
+ 	int nid;
+ 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
+ 
+-	memcg_flush_vmstats(memcg);
++	cgroup_rstat_flush(memcg->css.cgroup);
+ 
+ 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
+ 		seq_printf(m, "%s=%lu", stat->name,
+@@ -3997,7 +3992,7 @@ static int memcg_stat_show(struct seq_file *m, void *v)
+ 
+ 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
+ 
+-	memcg_flush_vmstats(memcg);
++	cgroup_rstat_flush(memcg->css.cgroup);
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+ 		unsigned long nr;
+@@ -4500,7 +4495,7 @@ void mem_cgroup_wb_stats(struct bdi_writeback *wb, unsigned long *pfilepages,
+ 	struct mem_cgroup *memcg = mem_cgroup_from_css(wb->memcg_css);
+ 	struct mem_cgroup *parent;
+ 
+-	memcg_flush_vmstats(memcg);
++	cgroup_rstat_flush_irqsafe(memcg->css.cgroup);
+ 
+ 	*pdirty = memcg_page_state(memcg, NR_FILE_DIRTY);
+ 	*pwriteback = memcg_page_state(memcg, NR_WRITEBACK);
+-- 
+2.30.1
 
-Now, consider the following steps:
-
-1. Process1 allocated 10 IOASIDs,
-cg_A/ioasid.current=10,
-cg_B/ioasid.current=0
-
-2. then we want to move/migrate Process1 to cg_B. so we need uncharge 10 of
-cg_A, charge 10 of cg_B
-
-3. After the migration, I expect
-cg_A/ioasid.current=0,
-cg_B/ioasid.current=10
-
-We don't enforce the limit during this organizational change since we can't
-force free IOASIDs. But any new allocations will be subject to the limit
-set in ioasid.max.
-
-> Thanks.
-> 
-
-
-Thanks,
-
-Jacob
