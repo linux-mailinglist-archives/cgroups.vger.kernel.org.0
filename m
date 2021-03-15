@@ -2,109 +2,100 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4A7D33C688
-	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 20:10:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1ADA33C6C6
+	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 20:25:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhCOTKT (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 15:10:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230243AbhCOTKN (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 15 Mar 2021 15:10:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615835412; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=gBh9rZ1pe0Dw23aY7I0BceM5dAfPMfFrVDEvEe02JBQ=;
-        b=LtTDSfiEFPCuY2dr1iPNxVN3WP7R4nJ6QBfYlBO9dIEx3AZD7DORPVEpyqSZwxaNBD67ho
-        thqQwRLsCImAVaMVNPEnBPxDviIafWx0by0BLCZeyNCaYS1XjGqT0/nwMs8kOH0kUWCam7
-        aDMSyE7WKRGcejD1r5ZNrf11mumaWEc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 126BDAE8F;
-        Mon, 15 Mar 2021 19:10:12 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 20:10:09 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     Tejun Heo <tj@kernel.org>, rdunlap@infradead.org,
-        thomas.lendacky@amd.com, brijesh.singh@amd.com, jon.grimm@amd.com,
-        eric.vantassell@amd.com, pbonzini@redhat.com, hannes@cmpxchg.org,
-        frankja@linux.ibm.com, borntraeger@de.ibm.com, corbet@lwn.net,
-        seanjc@google.com, vkuznets@redhat.com, wanpengli@tencent.com,
-        jmattson@google.com, joro@8bytes.org, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 0/2] cgroup: New misc cgroup controller
-Message-ID: <YE+xEbwUoRj+snTY@blackbook>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <YETLqGIw1GekWdYK@slm.duckdns.org>
- <YEpoS90X19Z2QOro@blackbook>
- <YEupplaAWU1i0G6B@google.com>
+        id S233516AbhCOTZN (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 15:25:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59226 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233508AbhCOTYp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 15:24:45 -0400
+Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED34AC06174A
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 12:24:44 -0700 (PDT)
+Received: by mail-lj1-x22c.google.com with SMTP id z25so17639099lja.3
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 12:24:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/f9XDzNIvYjkey3GMR3Z4bha9CeQdt1BP03J0f875v4=;
+        b=PpWndKMOuohcxOMFuTeXlpG64sQCd3ZU/cQ60Wm1qdLeMdXwSwBOaaPIq4BMw+LAS4
+         KMi2z2s8zzwjzpplYncxfQBebjDw5eXXNOjWrTvwndD6OBstb99cPQXmE5Xor0dHAqTb
+         N7NL2BmcnIfkAqui+DuNLMdOV1LXtEpGLly6qTkfAK1VD0hjDjhbj/tsz8P7dukD1Pwt
+         03s15ZiJb7Y9vqgw9ZvEOGVFFj6b2G+Tv7Qef2TJekWIrLtUGyxVFKgFd+P10s0CdkZx
+         PbgjJNzidVKLyEJyIfGA0t1M8rSxnGXg+aFtafRdUEkuYLfy1x8yOOqiukrROwasx1lc
+         dsbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/f9XDzNIvYjkey3GMR3Z4bha9CeQdt1BP03J0f875v4=;
+        b=exsUpiZpo+/3uUG0BR6oOXRRJcU+jW2xcj9PlRm5WtXZsDTLdtUjkiK8O7+8ifGn7X
+         JY/Z5pb2dcSRak1p80o2jUGotYyQD75HK3aVg3YCQk+wlBAlfsmQceDlZb2m2xuPEJVE
+         xspc1QaHHGqhAmmmP49RCh8g8H8azkek9NIIFYotNhnrypIOEIA/YIW/3MfT7fwCx1oC
+         E3zA3Kz4xecjKGe9BTKU/B2lX+yqH5A7sR3jvY6lHkJmx0NjTpx+4CVkFY0L4N+1nuGM
+         sJwFrEyAEL91LVb8vZxr1cWZBkZ1j7iIFrPdO6SVJD1nVGu7qL0gZdfWQ5L3lwhr0wCL
+         FDKA==
+X-Gm-Message-State: AOAM5312MlLDpOLiBNiSDfOWmHwJUa0pg0FuWFiDFmVcyFinwYrzAZWb
+        /f21bVDax8DgB147PwbbTGOXp5HKoZ22bucRGxf7rdf6GmI=
+X-Google-Smtp-Source: ABdhPJy0NjnN+FMF8APlbSCEIAwZYmvUOqzVQJZCZumFdWQf4p/XUb0N0SlWRyZWxNKLYezMt31oTdWUOKVnhj33+lk=
+X-Received: by 2002:a2e:9195:: with SMTP id f21mr329002ljg.160.1615836283259;
+ Mon, 15 Mar 2021 12:24:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="WauBitk+7AKZVUrp"
-Content-Disposition: inline
-In-Reply-To: <YEupplaAWU1i0G6B@google.com>
+References: <YEnWUrYOArju66ym@dhcp22.suse.cz> <85b5f428-294b-af57-f496-5be5fddeeeea@virtuozzo.com>
+ <20210315100942.3cc98bb4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210315100942.3cc98bb4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Mon, 15 Mar 2021 12:24:31 -0700
+Message-ID: <CALvZod4ct6X_M1fzKufX1jKoO2JEE_ONwEmiDWTbpt-fut85yA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/8] memcg: accounting for fib6_nodes cache
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Vasily Averin <vvs@virtuozzo.com>,
+        Cgroups <cgroups@vger.kernel.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Linux MM <linux-mm@kvack.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+On Mon, Mar 15, 2021 at 10:09 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Mon, 15 Mar 2021 15:23:00 +0300 Vasily Averin wrote:
+> > An untrusted netadmin inside a memcg-limited container can create a
+> > huge number of routing entries. Currently, allocated kernel objects
+> > are not accounted to proper memcg, so this can lead to global memory
+> > shortage on the host and cause lot of OOM kiils.
+> >
+> > One such object is the 'struct fib6_node' mostly allocated in
+> > net/ipv6/route.c::__ip6_ins_rt() inside the lock_bh()/unlock_bh() section:
+> >
+> >  write_lock_bh(&table->tb6_lock);
+> >  err = fib6_add(&table->tb6_root, rt, info, mxc);
+> >  write_unlock_bh(&table->tb6_lock);
+> >
+> > It this case is not enough to simply add SLAB_ACCOUNT to corresponding
+> > kmem cache. The proper memory cgroup still cannot be found due to the
+> > incorrect 'in_interrupt()' check used in memcg_kmem_bypass().
+> > To be sure that caller is not executed in process contxt
+> > '!in_task()' check should be used instead
+>
+> Sorry for a random question, I didn't get the cover letter.
+>
+> What's the overhead of adding SLAB_ACCOUNT?
+>
 
---WauBitk+7AKZVUrp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+The potential overhead is for MEMCG users where we need to
+charge/account each allocation from SLAB_ACCOUNT kmem caches. However
+charging is done in batches, so the cost is amortized. If there is a
+concern about a specific workload then it would be good to see the
+impact of this patch for that workload.
 
-On Fri, Mar 12, 2021 at 09:49:26AM -0800, Vipin Sharma <vipinsh@google.com> wrote:
-> I will add some more information in the cover letter of the next version.
-Thanks.
-
-> Each one coming up with their own interaction is a duplicate effort
-> when they all need similar thing.
-Could this be expressed as a new BPF hook (when allocating/freeing such
-a resource unit)?
-
-The decision could be made based on the configured limit or even some
-other predicate.
-
-(I saw this proposed already but I haven't seen some more reasoning
-whether it's worse/better. IMO, BPF hooks are "cheaper" than full-blown
-controllers, though it's still new user API.)
-
-
-> As per my understanding this is the only for way for loadable modules
-> (kvm-amd in this case) to access Kernel APIs. Let me know if there is a
-> better way to do it.
-I understood the symbols are exported for such modularized builds.
-However, making them non-GPL exposes them to any out-of-tree modules,
-although, the resource types are supposed to stay hardcoded in the misc
-controller. So my point was to make them EXPORT_SYMBOL_GPL to mark
-they're just a means of implementing the modularized builds and not an
-API. (But they'd remain API for out-of-tree GPL modules anyway, so take
-this reasoning of mine with a grain of salt.)
-
-Michal
-
---WauBitk+7AKZVUrp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPsQ0ACgkQia1+riC5
-qSh1cQ/9GddlgkcRcRP9oxFJbsVUxhnntwF8wqSof5oSUCBDSWP5Hz7M3P05aFrI
-5VTcopKswg9sI+xO2rMiZb2guzOsy4soqTHRj6emRwbs09Pmtb9uEPrg3nbTZsAR
-jUHnNRkhPB7LVMhyVRH4wmZRcD1mq0HiJLkzQNaPVG8D3XG0ge6xVr6+doCc2Ev6
-UTrbbtcdBXmZX8hnLutMYu+QWNWQJyWJjii1nJKwby1v6heb10/fN40Ai1DQiOrR
-l21qKqxrzUjzpJUOv7Rek/FHvKf1u6HcIEI8H1wx/tMdbptH7IMH6fAtRSDpzbnl
-rPzovNq6h6r49VwFPKAaY0kx8u0Yv+IUME2GrjpmuxO+O3dvDJiaQeltisxlfWLn
-/Cn236Hzs3aGAHHqqLDJXoxarCmdbFbLL5KjLfK8onoUuNkKf9jmZ2puG04Lgin6
-iuvW2VEwUeKDXGxly0+JmzbRatQlvjfltDf7QlHx5zZxbGXYXVDFaz0AKx2hS6h+
-XeoV5ko/poc6htsxJWdygD+DXl8y0c9JJlQsLHhBr5JPszYaw3BegCedwvZdF4ph
-5QczC/tm0JiKqlb9tNIJ/kv2qIC97DbLt0Q0wv3idoAAZ9iTCwOSwRIdA79txnm4
-brb1x019FyJQXQbSL9pP2saG0dbJ7PYgNHp//N/zFMahETXHkq4=
-=lJqH
------END PGP SIGNATURE-----
-
---WauBitk+7AKZVUrp--
+> Please make sure you CC netdev on series which may impact networking.
