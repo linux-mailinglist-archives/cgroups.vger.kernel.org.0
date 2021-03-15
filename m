@@ -2,106 +2,74 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32D933C5C1
-	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 19:35:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1C1333C652
+	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 20:04:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229802AbhCOSed (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 14:34:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:38734 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232041AbhCOSeT (ORCPT <rfc822;cgroups@vger.kernel.org>);
-        Mon, 15 Mar 2021 14:34:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1615833258; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=H+y7FsHAfr9H0V0nZlpCJwqn4arhOTDKupfGhSsi4L0=;
-        b=KjlbibSfXB7NG662v+nqeUvX9bQmFZ6Tn4FZ8LSyV2Dy1wShX6HyGPkQ/3oP/oi8ltOa82
-        p4LArpJEH3uiUS4qK5AotGb4JiNd6JM5FPMBGV9OllfNYp2H0+Bq9mcfUIPNFQ81bOWovM
-        7fmYs578Xsmg19z3fl9mWp/3G2HomOI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2014DAE8F;
-        Mon, 15 Mar 2021 18:34:18 +0000 (UTC)
-Date:   Mon, 15 Mar 2021 19:34:15 +0100
-From:   Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-To:     Vipin Sharma <vipinsh@google.com>
-Cc:     tj@kernel.org, rdunlap@infradead.org, thomas.lendacky@amd.com,
-        brijesh.singh@amd.com, jon.grimm@amd.com, eric.vantassell@amd.com,
-        pbonzini@redhat.com, hannes@cmpxchg.org, frankja@linux.ibm.com,
-        borntraeger@de.ibm.com, corbet@lwn.net, seanjc@google.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, tglx@linutronix.de, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, gingell@google.com,
-        rientjes@google.com, dionnaglaze@google.com, kvm@vger.kernel.org,
-        x86@kernel.org, cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [Patch v3 1/2] cgroup: sev: Add misc cgroup controller
-Message-ID: <YE+op0MZKG41EALi@blackbook>
-References: <20210304231946.2766648-1-vipinsh@google.com>
- <20210304231946.2766648-2-vipinsh@google.com>
- <YEpod5X29YqMhW/g@blackbook>
- <YEu74hkEPEyvxC85@google.com>
+        id S231901AbhCOTDy (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 15:03:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54700 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232919AbhCOTDr (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 15:03:47 -0400
+Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 174B2C06174A
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 12:03:47 -0700 (PDT)
+Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ms.lwn.net (Postfix) with ESMTPSA id 892742E5;
+        Mon, 15 Mar 2021 19:03:45 +0000 (UTC)
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 892742E5
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+        t=1615835025; bh=QypNFyeA1Y53RZBH32uQ1ZH1dtdi/T309FCBH6S4fH0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=Wa25vhrYYTPme8v9i8z/h4H+WCw9Du519YF597ebySIFfUh6SJsVVzTxf2yyixL+B
+         SsBN1xBVB7VCTQvowlwB1mMloRihUDmbX0OByHyHAkWBHzOQLPgILVHLvvlMNSRHkT
+         mjGQ4cwNK04rRknRmNvMZeV5bHdTPtAJ+yjNH0h6JjhEOeyZxig6Cw8yIIfpK9I4MA
+         EMvfb1uugVcskVKgEQcYvMsKrhfeqJg+O3HmagSX9TAuweeySVqGkX/GDyxeN1KDiI
+         MbyxHuxQTi9BcUs/+0v8xmxITu54PKZmR0lGF1EtdzwidAfhlpR3t/cB/J+sq8Uj3H
+         mhcweNPe30E1g==
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Bhaskar Chowdhury <unixbhaskar@gmail.com>, tj@kernel.org,
+        lizefan@huawei.com, hannes@cmpxchg.org, cgroups@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     rdunlap@infradead.org, Bhaskar Chowdhury <unixbhaskar@gmail.com>
+Subject: Re: [PATCH] docs: admin-guide: cgroup-v1: Fix typos in the file
+ memory.rst
+In-Reply-To: <20210313061029.28024-1-unixbhaskar@gmail.com>
+References: <20210313061029.28024-1-unixbhaskar@gmail.com>
+Date:   Mon, 15 Mar 2021 13:03:45 -0600
+Message-ID: <87im5s2q9a.fsf@meer.lwn.net>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="s/zzXfvrLmfa0Un9"
-Content-Disposition: inline
-In-Reply-To: <YEu74hkEPEyvxC85@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <cgroups.vger.kernel.org>
 X-Mailing-List: cgroups@vger.kernel.org
 
+Bhaskar Chowdhury <unixbhaskar@gmail.com> writes:
 
---s/zzXfvrLmfa0Un9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> s/overcommited/overcommitted/
+> s/Overcommiting/Overcommitting/
+>
+> Signed-off-by: Bhaskar Chowdhury <unixbhaskar@gmail.com>
+> ---
+>  Documentation/admin-guide/cgroup-v1/memory.rst | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/Documentation/admin-guide/cgroup-v1/memory.rst b/Documentation/admin-guide/cgroup-v1/memory.rst
+> index 52688ae34461..0d574fd3f8e3 100644
+> --- a/Documentation/admin-guide/cgroup-v1/memory.rst
+> +++ b/Documentation/admin-guide/cgroup-v1/memory.rst
+> @@ -360,8 +360,8 @@ U != 0, K = unlimited:
+>
+>  U != 0, K < U:
+>      Kernel memory is a subset of the user memory. This setup is useful in
+> -    deployments where the total amount of memory per-cgroup is overcommited.
+> -    Overcommiting kernel memory limits is definitely not recommended, since the
+> +    deployments where the total amount of memory per-cgroup is overcommitted.
+> +    Overcommitting kernel memory limits is definitely not recommended, since the
+>      box can still run out of non-reclaimable memory.
 
-On Fri, Mar 12, 2021 at 11:07:14AM -0800, Vipin Sharma <vipinsh@google.com>=
- wrote:
-> We should be fine without atomic64_t because we are using unsigned
-> long and not 64 bit explicitly. This will work on both 32 and 64 bit
-> machines.
-I see.
+Applied, thanks.
 
-> But I will add READ_ONCE and WRITE_ONCE because of potential chances of
-> load tearing and store tearing.
->=20
-> Do you agree?
-Yes.
-
-> This was only here to avoid multiple reads of capacity and making sure
-> if condition and seq_print will see the same value.
-Aha.
-
-> Also, I was not aware of load and store tearing of properly aligned
-> and machine word size variables. I will add READ_ONCE and WRITE_ONCE
-> at other places.
-Yeah, although it's theoretical, I think it also serves well to annotate
-such unsychronized accesses.
-
-Thanks,
-Michal
-
---s/zzXfvrLmfa0Un9
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEEoQaUCWq8F2Id1tNia1+riC5qSgFAmBPqKEACgkQia1+riC5
-qSihOg//SpH6gNPHIcbQ+iF47BrOX3zJwft1PTn3D8d3byIaot3/Sym+j12ttkQU
-xstX/U3Mvimyouy50DFaYLiQ+EWMOPm8dzEw2nPOQFrL0bT6cjRdFnAzH7Y2m87c
-GufRjzeGwn8H2dRTPHiUjc+ETQhdjIRUOL5yUgoJkDGmV1m63j4rQUS5JXoHuW/i
-WH8ePRhc4SlGS/Ifgu3/+g0a3z+K46umCrHA9//BHI5gPyuvobyCdwIjrFekSDAq
-5vWwp6YGavoX5ZoZALUpokgcZR/iVRhTpt5m6psuYFhb+i+sWi/jYVgAeGSzZgCU
-G9uvFogZrPASTAHTss+MwdXoKUWWckG33D5MA8RtTXobewWrO7GcpTCFb79Mm0pF
-JzdVgBuMMuphLjkXHgQnSX8wHQQ7R545TuaSLXZBM9AqDPFjScEwdi68qRKPqopt
-wqqL64XiFnoICLnZjFpp11cL1gccY4cHYo71eNrVA1bdscO1iiO/c5xPbh9JD6cX
-I/cwAksf9R+bW+XUWrgsDvx9VuCiWfhEtiT/obqgDyHEQfE7JtgVX2IDN1o1pLcM
-+aGLPoyU/4Nc6aK898xqpJdzY/kCNB73YUuhdgH8lf1tY1P0myDTTivn7+XqZXd3
-hfMM6u+AdaUZhqymfylaEnTpQpBH4VfRAsBS0SnFuUnT93GnkqU=
-=+zv/
------END PGP SIGNATURE-----
-
---s/zzXfvrLmfa0Un9--
+jon
