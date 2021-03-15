@@ -2,53 +2,53 @@ Return-Path: <cgroups-owner@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5897933BF8D
-	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 16:16:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9EE833BF8E
+	for <lists+cgroups@lfdr.de>; Mon, 15 Mar 2021 16:16:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229774AbhCOPO7 (ORCPT <rfc822;lists+cgroups@lfdr.de>);
-        Mon, 15 Mar 2021 11:14:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60832 "EHLO
+        id S233944AbhCOPQD (ORCPT <rfc822;lists+cgroups@lfdr.de>);
+        Mon, 15 Mar 2021 11:16:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32790 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232031AbhCOPOy (ORCPT
-        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 11:14:54 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF98FC061762
-        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 08:14:54 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id r24so7143162otq.13
-        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 08:14:54 -0700 (PDT)
+        with ESMTP id S233509AbhCOPPp (ORCPT
+        <rfc822;cgroups@vger.kernel.org>); Mon, 15 Mar 2021 11:15:45 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 92004C06174A
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 08:15:45 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id l11so4108141otq.7
+        for <cgroups@vger.kernel.org>; Mon, 15 Mar 2021 08:15:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xpuZaiVrlNlwHASDhPqhddOX6dJW8QhrY9uWLI1rY04=;
-        b=edTWOLsBDmAlUGB7ucxeGLpXdgsmMVpfpuLUfSKoSpL6qBsDWSBR5ns5bV+aTTtYHL
-         zA+g2MigGIdR8EeLa4iPweB3MWhPZiRm1POzYbneUQ2Ot87YFb7LzTaY4XIgShIwfcMS
-         J250iOuJVnLOfLxIYEp6lbTIv8wCbspmuHnzFSTYFHNsGYmTigGvaFjGG1EL71CN5ShM
-         6ZBnOcmUlMrmEoaczCt/267Gc8zTKXsjYUOxQRIB4MXRQrN0+PqUWWA8Sht9A6H2ours
-         F6Jon+u3cwNGtzJlUeKGA0Se49N1rTP/H5iq/V6VPo0R6HaiQPjVbisl9xcncZBMBEt0
-         xxkw==
+        bh=np/p9Ih58kbyvM0hIUqkXcnFFKPhSSCXOoOrFZ44REo=;
+        b=MUPk/pbvsn449ONYJk455H6Kc7gE2u7S1noOh1h4Ceekj651HdpXnqPF/fmlu5WPOY
+         DEMZjWTp3NjUYHaEVjXHq9/IpuVXsQNeu0rECQ2cRPbOYtmxEGxnt3Zw182ID7NEz35P
+         CIUegNIVDabVbfTwMJT6CQUvgQNwZva/YpRFrAvOxpnGrB6pQBpNIQ40cU8N8bMx9eGl
+         oUS6TFxnnRHPRrwCEy8p3u5SCf9hme2AESiU5ArpFKAn+UuCf70dKHW61rRBGmqU2iDF
+         7ELKnpHho+NQSVdMrwNtVaNb4HFspvuEEKZ5jxvoxVayIb3tfeDsUE7ThTfq0g1JayYf
+         dkUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=xpuZaiVrlNlwHASDhPqhddOX6dJW8QhrY9uWLI1rY04=;
-        b=LdUZgqW98XaJe5Uk8YX8xnv9NxVYNspCIvNo20Me5jKyYolC5jMyD+limKNYO5bZbS
-         5AhD82YuwoMoVTTLHwvYpEdGg+ksbOqq15NooVSy/pSS+uT0JX438s/79a1d2Lh+2tV5
-         vh7E8MO/Eo63LU3fqX3q4Q8QQzIcY8x0XV5a8j6VJdtIrjY3wYBH+qoc3GRZEUytGlsw
-         iJhKR1NyJqeolMh/qn9Y2P3WGBHPw2efZRQTqHP2pHFuYoieQmQ2kONNshaliL6cXJB9
-         jzcC9HwFAQ8B5HZNe1fq4b+hTRy4iK7eSVLJfQAvLMffp8QY7l8OdcS4YsNFzsi+xymP
-         qj9A==
-X-Gm-Message-State: AOAM533K4DXUH379h/GdTYF+yKgwyuH9xqgBbIs02S2MUXPHsX7mSROl
-        s1mvBDjq8ukBwOjhpN9HATQ=
-X-Google-Smtp-Source: ABdhPJyHLAbB9ge3t1JALEcwKeHlRTfpQNUN86IBr4nQMmDouNtmsDAU6lx90PGYFy96YB/U5NHeQA==
-X-Received: by 2002:a05:6830:118f:: with SMTP id u15mr14254665otq.43.1615821294223;
-        Mon, 15 Mar 2021 08:14:54 -0700 (PDT)
+        bh=np/p9Ih58kbyvM0hIUqkXcnFFKPhSSCXOoOrFZ44REo=;
+        b=ZoQKj+TnBTE0JVaAWufylLq7D8zjRK9QL5UEYAcrb2E0AKY6DzEWubvUEeeAxrltY3
+         CNkVLHjVM7LA8py6gThF8APVVYTKqQEg56Ug8eZZfn0F2yoqyGVJ339HYc+rbqqzb1TC
+         /5Gel/3bytjP5L22EUWbJ+1J12xGDHkWHwRiJe9StGaP5LeVPYovI24totSCwiizfFx7
+         /ru4ecdsgg4cwcAymlisotsYEeSuh1en7TgGpgUXMhdYsgJJeu4OzA+cAakHPqGu9oEZ
+         Mg+TjQpAdhI0sYmI4o82y0Pn37JX09HrmJQKzXelxCXjOHFZ1VhVfw3qg6sbDIksMucb
+         sWPA==
+X-Gm-Message-State: AOAM5315+/xqBesrRqnmgqG3iqKRC1D0Y6gpf/+ldjPDU02RLNDncgs1
+        AZd2mppvcldxGyoicz+jf6g=
+X-Google-Smtp-Source: ABdhPJyUzyDPFptw1eG2mxbBN5j32n7BW8PMllgbZti9p0QJ7Rr9O3t1aGKq2vFOkq1Ui3/JT+Tm/Q==
+X-Received: by 2002:a05:6830:1352:: with SMTP id r18mr15322205otq.283.1615821345096;
+        Mon, 15 Mar 2021 08:15:45 -0700 (PDT)
 Received: from Davids-MacBook-Pro.local ([8.48.134.56])
-        by smtp.googlemail.com with ESMTPSA id e15sm7220081otk.64.2021.03.15.08.14.53
+        by smtp.googlemail.com with ESMTPSA id w1sm7045730oop.1.2021.03.15.08.15.43
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 15 Mar 2021 08:14:54 -0700 (PDT)
-Subject: Re: [PATCH v2 3/8] memcg: accounting for fib_rules
+        Mon, 15 Mar 2021 08:15:44 -0700 (PDT)
+Subject: Re: [PATCH v2 4/8] memcg: accounting for ip_fib caches
 To:     Vasily Averin <vvs@virtuozzo.com>, cgroups@vger.kernel.org,
         Michal Hocko <mhocko@kernel.org>
 Cc:     linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
@@ -59,14 +59,14 @@ Cc:     linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
         Jakub Kicinski <kuba@kernel.org>,
         Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>
 References: <YEnWUrYOArju66ym@dhcp22.suse.cz>
- <cb893761-cf6e-fa92-3219-712e485259b4@virtuozzo.com>
+ <d569bf43-b30a-02af-f7ad-ccc794a50589@virtuozzo.com>
 From:   David Ahern <dsahern@gmail.com>
-Message-ID: <4800bd7d-92b9-ee82-6b9d-71bc13769964@gmail.com>
-Date:   Mon, 15 Mar 2021 09:14:52 -0600
+Message-ID: <afe47a9a-ec1e-36cb-7184-96a4c457f1f4@gmail.com>
+Date:   Mon, 15 Mar 2021 09:15:43 -0600
 User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.16; rv:78.0)
  Gecko/20100101 Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <cb893761-cf6e-fa92-3219-712e485259b4@virtuozzo.com>
+In-Reply-To: <d569bf43-b30a-02af-f7ad-ccc794a50589@virtuozzo.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -80,11 +80,12 @@ On 3/15/21 6:23 AM, Vasily Averin wrote:
 > are not accounted to proper memcg, so this can lead to global memory
 > shortage on the host and cause lot of OOM kiils.
 > 
-> This patch enables accounting for 'struct fib_rules'
+> This patch enables accounting for ip_fib_alias and ip_fib_trie caches
 > ---
->  net/core/fib_rules.c | 4 ++--
+>  net/ipv4/fib_trie.c | 4 ++--
 >  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
 
 Acked-by: David Ahern <dsahern@kernel.org>
+
 
